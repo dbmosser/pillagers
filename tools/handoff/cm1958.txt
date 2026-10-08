@@ -1,0 +1,7 @@
+v19.58: the kill feed keeps its place under a low panel
+
+In co-op the kill feed stays clear of the CONDITIONS panel wherever it is dragged.
+
+Check 19.58. Fails on v19.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

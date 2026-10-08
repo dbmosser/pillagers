@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.58 - THE KILL FEED KEEPS ITS PLACE UNDER A LOW PANEL
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.48: the kill feed was pushed under the CONDITIONS panel whenever the panel was in its column, so a panel dragged low pulled the feed down over its own rows and onto the weapon readout. The feed now moves only when the panel covers its usual place, to below the panel when that still clears the weapon readout, otherwise above it.
+
+MEASURED. Check 19.58 passes, and fails on v19.57.
 ## v19.57 - THE COOK, RELOAD AND SEARCH BARS GROW AT 4K
 
 Co-op hunt while he was away. Seen on the 4K screenshots of 2026-10-08, after v19.55: the readouts over the operator (the frag cook countdown with its plate and bar, the reload bar, the search bar with its items left count) still kept their 1080p size at 4K. Each now grows with the screen about its own place, like the world prompts.

@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.57';
+var VER='19.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33406,7 +33406,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.57: At 4K the cook countdown, reload bar and search bar over your operator are full size. Check 19.57 fails on v19.56',
+  now:'v19.58: In co-op the kill feed stays clear of the CONDITIONS panel wherever it is dragged. Check 19.58 fails on v19.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39689,8 +39689,14 @@ function netFeedDraw(){
   // v19.48, from the review (2026-10-08): 46 percent clears a normal CONDITIONS panel, but one grown with its grip, dragged down or
   // long with contracts reached past it, and the feed printed over its rows. The feed starts under the panel whenever the panel is
   // in its column (never lower than three quarters down).
-  var _fy0=H*0.46, _fcb=HUDBOX.cond;
-  if(_fcb&&_fcb.x<W-LH(16)*_fhr&&_fcb.x+_fcb.w>W-LH(220)*_fhr) _fy0=Math.min(H*0.75,Math.max(_fy0,_fcb.y+_fcb.h+LH(20)*_fhr));
+  // v19.58, from the review (2026-10-08): v19.48 pushed the feed under the panel whenever the panel was in its column, so a panel
+  // dragged low pulled the feed down over its own rows and onto the weapon readout. The feed moves only when the panel covers its
+  // own band at 46 percent: below the panel when that still clears the weapon readout (about 78 percent down), else above the panel.
+  var _fy0=H*0.46, _fcb=HUDBOX.cond, _fn=Math.max(1,(NET.feed||[]).length), _fbh=_fn*LH(22)*_fhr;
+  if(_fcb&&_fcb.x<W-LH(16)*_fhr&&_fcb.x+_fcb.w>W-LH(220)*_fhr&&_fcb.y<_fy0+_fbh&&_fcb.y+_fcb.h>_fy0-LH(13)*_fhr){
+    var _fbelow=_fcb.y+_fcb.h+LH(20)*_fhr, _fabove=_fcb.y-(_fn-1)*LH(22)*_fhr-LH(12)*_fhr;
+    if(_fbelow+_fbh<=H*0.78) _fy0=_fbelow; else if(_fabove>=LH(20)*_fhr) _fy0=_fabove;
+  }
   ctx.save(); ctx.scale(_fhr,_fhr); y=Math.round(_fy0/_fhr); x=(W-LH(16)*_fhr)/_fhr;   // v19.07: below CONDITIONS
   ctx.font=FS(TYPE.label); ctx.textAlign='right';
   for(i=NET.feed.length-1;i>=0;i--){
