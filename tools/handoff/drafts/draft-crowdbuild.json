@@ -1,0 +1,16 @@
+{
+    "title":  "THE UNDERCROFT CROWD HAS BUILDS",
+    "why":  "Following v20.01: the people walking the Undercroft floor roll every rack for their look, but the build was left out on purpose back when a build drew nothing. Now that it changes the body, the crowd rolls it too, so the floor has Broad and Curved people in it, and the Curved ones move like yours.",
+    "now":  "Some of the people in the Undercroft are Broad or Curved now.",
+    "edits":  [
+                  {
+                      "anchor":  "    for(var i=0;i\u003cCOSMETICS.length;i++){ var c=COSMETICS[i]; if(c.id===\u0027crown\u0027||c.kind===\u0027build\u0027||c.crowd===0) continue;",
+                      "replacement":  "    // v16.xx: and the build now that it draws (v20.01), so the floor has Broad and Curved people in it too\n    for(var i=0;i\u003cCOSMETICS.length;i++){ var c=COSMETICS[i]; if(c.id===\u0027crown\u0027||c.crowd===0) continue;"
+                  },
+                  {
+                      "anchor":  "           own:_c});",
+                      "replacement":  "           build:_lk.build,own:_c});"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Undercroft crowd has builds: in 300 rolled looks there are Broad and Curved people, and a crowd member is drawn in the build rolled\u0027,\n   run:function(){\n     if(typeof hubRollLook!==\u0027function\u0027) return \u0027SKIP: no crowd roller here\u0027;\n     var bad=[], n={}, i, lk;\n     for(i=0;i\u003c300;i++){ lk=hubRollLook(); n[lk.build||\u0027none\u0027]=(n[lk.build||\u0027none\u0027]||0)+1; }\n     if(!n.curved||!n.broad) bad.push(\u0027no Broad or Curved in 300 crowd looks (\u0027+JSON.stringify(n)+\u0027)\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

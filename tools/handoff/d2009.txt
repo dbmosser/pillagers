@@ -1,0 +1,5 @@
+## v20.09 - THE UNDERCROFT CROWD HAS BUILDS
+
+Co-op hunt while he was away. Following v20.01: the people walking the Undercroft floor roll every rack for their look, but the build was left out on purpose back when a build drew nothing. Now that it changes the body, the crowd rolls it too, so the floor has Broad and Curved people in it, and the Curved ones move like yours.
+
+MEASURED. Check 20.09 passes, and fails on v20.08.

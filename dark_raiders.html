@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.08';
+var VER='20.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31500,7 +31500,8 @@ function hubRollLook(){
     // v11.13, his ruling: a piece marked crowd:0 is his alone, like the crown.
     // Measured before this line: 182 ghost masks and 172 Spartan helmets in
     // 2,000 rolls, so on an eight man floor one of the two was usually there.
-    for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(c.id==='crown'||c.kind==='build'||c.crowd===0) continue; (byKind[c.kind]=byKind[c.kind]||[]).push(c.id); }
+    // v20.09: and the build now that it draws (v20.01), so the floor has Broad and Curved people in it too
+    for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(c.id==='crown'||c.crowd===0) continue; (byKind[c.kind]=byKind[c.kind]||[]).push(c.id); }
     for(var k in byKind){ var ids=byKind[k], id=ids[(Math.random()*ids.length)|0]; if(k==='face') lk.faceMark=id; else lk[k]=id; }
   }
   return lk;
@@ -32390,7 +32391,7 @@ function drawHubWorld(dt){
           {hero:0,moving:!!_mv,sprint:false,ads:false,hurt:0,rl:0,
            skin:_lk.skin,hair:_lk.hair,hat:_lk.hat,cut:_lk.cut,faceIx:_lk.faceIx,
            beard:_lk.beard,eyes:_lk.eyes,faceMark:_lk.faceMark,boots:_lk.boots,gloves:_lk.gloves,pack:_lk.pack,patch:_lk.patch,tattoo:_lk.tattoo,   // v10.24: the whole look
-           own:_c});
+           build:_lk.build,own:_c});
         if(_fd2<1) wc.restore();
       }
       // v8.70, HIS REPORT: the roll graphic was wrong down here. SPACE rolls in
@@ -33600,7 +33601,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.08: The Curved jiggle bounces with each step and settles, instead of shaking. Check 20.08 fails on v20.07',
+  now:'v20.09: Some of the people in the Undercroft are Broad or Curved now. Check 20.09 fails on v20.08',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

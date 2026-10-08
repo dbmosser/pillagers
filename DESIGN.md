@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.09 - THE UNDERCROFT CROWD HAS BUILDS
+
+Co-op hunt while he was away. Following v20.01: the people walking the Undercroft floor roll every rack for their look, but the build was left out on purpose back when a build drew nothing. Now that it changes the body, the crowd rolls it too, so the floor has Broad and Curved people in it, and the Curved ones move like yours.
+
+MEASURED. Check 20.09 passes, and fails on v20.08.
 ## v20.08 - THE JIGGLE FOLLOWS THE BODY
 
 Co-op hunt while he was away. Measured walking in a raid after v20.02: the chest sat on its limit at every step, which reads as a glitch. Two causes: the spring rang at the same pace as the footsteps, so each step pumped it higher, and it was fed the walk across the map as well as the body bob. It is now a quicker spring, clear of the walking and sprinting pace, damped so each wobble is gone before the next step, fed only the body rise and fall, and stepped in small slices so a slow frame cannot throw it.
