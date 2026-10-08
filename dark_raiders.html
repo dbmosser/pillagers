@@ -1512,7 +1512,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.70';
+var VER='18.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7349,6 +7349,10 @@ function FSz(spec,z){
     return (Math.round(parseFloat(nn)*z*100)/100)+'px';
   }));
 }
+// v18.71, SEEN ON THE 4K RAID SCREENSHOT (2026-10-07): THE BELT TEXT GROWS WITH THE BELT. The belt slots are sized by the room
+// they have (up to LH(112)), but the key number, the count and the caption over them were the smallest HUD type, so at 4K a
+// count was a speck in the corner of a big slot. They now take a share of the slot size, never smaller than before.
+function beltFS(bw,k){ var f=FS(TYPE.micro), m=(/([\d.]+)px/).exec(f), n=m?parseFloat(m[1]):11, want=Math.round(bw*k); return (want>n)?f.replace((/([\d.]+)px/),want+'px'):f; }
 function FS(spec){
   var k=spec+'|'+uiScale(),hit=_fs[k];
   if(hit) return hit;
@@ -25985,8 +25989,8 @@ function drawBuzzFx(){
         ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
       }
       ctx.globalAlpha=1;
-      ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(160,172,184,.8)';
-      ctx.fillText(String(q+1),bx+LH(4),hy+LH(11));
+      ctx.font=beltFS(bw,0.13); ctx.fillStyle='rgba(160,172,184,.8)';   // v18.71: grows with the slot
+      ctx.fillText(String(q+1),bx+LH(4),hy+Math.max(LH(11),Math.round(bw*0.13)+LH(3)));
       // A slot he arranged himself is marked, so an assigned bar can be told from
       // the default one at a glance.
       if(S.assigned){
@@ -25994,7 +25998,7 @@ function drawBuzzFx(){
         ctx.fillRect(bx+bw-LH(7),hy+LH(3),LH(4),LH(4));
       }
       if(S.count!==null&&S.count!==undefined){
-        ctx.font=FS(TYPE.micro);
+        ctx.font=beltFS(bw,0.16);   // v18.71: grows with the slot
         ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
       }
@@ -26004,8 +26008,8 @@ function drawBuzzFx(){
     // down there: there is nothing to fire at and nobody to signal. It stays in a
     // raid, where both are real and he uses them.
     if(state!=='hub'){
-      ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
-      ctx.fillText(sl[sel].name+'   [FIRE] use'+(padOn()?'':'    [V] signal'),W/2,hy-LH(6));   // v13.52: no pad button reaches V
+      ctx.font=beltFS(bw,0.12); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';   // v18.71: grows with the slots under it
+      ctx.fillText(sl[sel].name+'   [FIRE] use'+(padOn()?'':'    ['+keyName(keysOf('KeyV'))+'] signal'),W/2,hy-LH(6));   // v13.52: no pad button reaches V; v18.71: the key as set
       ctx.textAlign='left';
     }
   }
@@ -32766,7 +32770,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.70: Extraction labels near the edge of the screen are no longer cut off. Check 18.70 fails on v18.69',
+  now:'v18.71: At 4K the numbers on the belt and the caption above it are readable. Check 18.71 fails on v18.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

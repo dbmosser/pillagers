@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v18.71 - THE BELT TEXT GROWS WITH THE BELT
+
+Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07 (he plays at 4K): the belt slots grow with the screen, but the key number, the count in each slot and the caption over the belt stayed the smallest HUD type, so at 4K a count was a speck in the corner of a big slot. They now take a share of the slot size, never smaller than before, and the caption names the signal key as set.
+
+MEASURED. Check 18.71 passes, and fails on v18.70.
 ## v18.70 - AN EXTRACTION RING LABEL STAYS WHOLE ON SCREEN
 
 Co-op hunt while he was away. Seen on the 4K raid screenshot of 2026-10-07: an extraction ring near the side of the screen had its label run off the edge, EXTRACTION POINT - SOUND THE ALARM TO BEGIN C and nothing more. The label now slides along to stay whole on screen while the ring itself stays where it is. His words in the label are unchanged.

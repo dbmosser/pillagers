@@ -1,0 +1,7 @@
+v18.71: the belt text grows with the belt
+
+At 4K the numbers on the belt and the caption above it are readable.
+
+Check 18.71. Fails on v18.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
