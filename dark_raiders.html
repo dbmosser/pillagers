@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.57';
+var VER='20.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12554,7 +12554,13 @@ function padFocusables(root){
   // played on a pad only, could not pick its character (v17.93). The rows are in the list now. They are laid out and never
   // disabled, and A runs the row's own click, which already does nothing on the save in play and on the save the other window has
   // open. [data-slot] exists only in the title's #slotlist, so no other panel gains a control. No player text and no number moved.
-  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select,[data-plan],.imenurow:not(.dim),[data-slot]');
+  // v20.58, from the whole-game bug hunt of 2026-10-08 (H45): A CONTROLLER CAN DRESS, AND CAN SAY HOW THE RUN FELT. The FASHION rack
+  // tiles are .costile divs, the slot rows and the three saved looks are .avslot divs, and the HOW DID THAT RUN FEEL tags on the
+  // end-of-raid card are .tag divs, and this list named none of them. So in FASHION the pad reached only SURPRISE ME, the three SAVE
+  // buttons and CLOSE: no cosmetic could be worn or bought, no slot chosen and no saved look worn, the operator panel on the ascent
+  // check had the same gap, and no run tag could be picked. They are in the list now and A runs the click a mouse runs (a locked
+  // tile that cannot be bought still clanks). The card still opens on Log run and return (padMenu).
+  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select,[data-plan],.imenurow:not(.dim),[data-slot],.costile,.avslot,.tag');
   for(var i=0;i<q.length;i++){
     var el=q[i],cs=getComputedStyle(el);
     // v16.52, stability (controller audit): the PARTY window opens with the pad highlight on its CONTROLLER row, and one press of
@@ -12628,6 +12634,8 @@ function padMenu(pressed){
   if(!list.length) return true;
   // v14.26: the title opens on ENTER THE UNDERCROFT, not on GO FULLSCREEN above it.
   if(md.id==='title'&&(!PAD.focus||!md.contains(PAD.focus))){ var _tsb=document.getElementById('titlestart'); if(_tsb&&list.indexOf(_tsb)>=0) padSetFocus(_tsb); }
+  // v20.58 (H45): the end-of-raid card opens on Log run and return, now that the run tags above it are controls too
+  if(md.id==='outcome'&&(!PAD.focus||!md.contains(PAD.focus))){ var _ocb=document.getElementById('oc_btn'); if(_ocb&&list.indexOf(_ocb)>=0) padSetFocus(_ocb); }
   // The remembered control may have been re-rendered out from under us.
   // v14.22, controller audit finding 4: A REBUILT PANEL KEEPS THE PAD'S PLACE. A click that rebuilds the panel (a belt plan
   // cell, Arm, standard or a kit cell on the ascent check; any change in Settings) replaces the focused control, and this
@@ -33812,7 +33820,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.57: At 4K the HP number sits inside its bar. Check 20.57 fails on v20.56',
+  now:'v20.58: On a controller you can now wear, buy and save looks at the Fashion station, and pick how the run felt after a raid. Check 20.58 fails on v20.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

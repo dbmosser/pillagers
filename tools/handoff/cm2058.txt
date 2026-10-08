@@ -1,0 +1,7 @@
+v20.58: a controller can use fashion and the run tags
+
+On a controller you can now wear, buy and save looks at the Fashion station, and pick how the run felt after a raid.
+
+Check 20.58. Fails on v20.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

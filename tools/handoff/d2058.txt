@@ -1,0 +1,5 @@
+## v20.58 - A CONTROLLER CAN USE FASHION AND THE RUN TAGS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller, the Fashion station let the highlight reach only SURPRISE ME, the three SAVE buttons and CLOSE. The rack tiles, the slot rows down the left and the saved looks were never on the list of things a controller can land on, so a pad player could not wear or buy a single cosmetic, show one slot's rack, or put on a saved look. The operator panel on the ascent check had the same gap, and none of the HOW DID THAT RUN FEEL tags on the end-of-raid card could be picked. All of them can be reached now, and A does what a mouse click does. The end-of-raid card still opens with the highlight on Log run and return.
+
+MEASURED. Check 20.58 passes, and fails on v20.57.

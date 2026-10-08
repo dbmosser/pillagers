@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.58 - A CONTROLLER CAN USE FASHION AND THE RUN TAGS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller, the Fashion station let the highlight reach only SURPRISE ME, the three SAVE buttons and CLOSE. The rack tiles, the slot rows down the left and the saved looks were never on the list of things a controller can land on, so a pad player could not wear or buy a single cosmetic, show one slot's rack, or put on a saved look. The operator panel on the ascent check had the same gap, and none of the HOW DID THAT RUN FEEL tags on the end-of-raid card could be picked. All of them can be reached now, and A does what a mouse click does. The end-of-raid card still opens with the highlight on Log run and return.
+
+MEASURED. Check 20.58 passes, and fails on v20.57.
 ## v20.57 - THE HP NUMBER FITS ITS BAR
 
 Co-op hunt while he was away. Seen on the 4K screenshot of a raid (2026-10-08): the big HP number grows with the text size on top of the corner zoom, while its bar grows with the zoom only, so at 4K the number stood a third taller than the bar and stuck out over its top edge. It is now never taller than the bar holds, and centred in it. At 1080p with the usual text size nothing changes.
