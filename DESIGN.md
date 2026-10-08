@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.28 - THE WHAT IS NEW CARD WAITS FOR THE BACKPACK
+
+Co-op hunt while he was away. Seen on the 4K Undercroft backpack screenshot of 2026-10-08: with the what is new card still up, opening the backpack laid the bag over the card and its lines read through the bag panel, two layers of text on top of each other. While the backpack is open the card now waits; it is back when the bag closes, until you walk it off as before.
+
+MEASURED. Check 19.28 passes, and fails on v19.27.
 ## v19.27 - THE BAR SHOWS ITS DRINKS
 
 Co-op hunt while he was away. Seen on the 4K bar screenshot of 2026-10-08: The Last Pour listed Liquor and Blotter as bare lines of text, the only station with no pictures. Each drink now leads with its picture, the same icon the raid shows down the left while it is in your blood, so the two connect at a glance.

@@ -1,0 +1,7 @@
+v19.28: the what is new card waits for the backpack
+
+Opening the backpack in the Undercroft no longer shows the what is new card through it.
+
+Check 19.28. Fails on v19.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5721,6 +5721,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.28',what:'the what is new card waits while the floor backpack is open: with the bag open no card line is drawn, and with it closed the card is back',
+   run:function(){
+     if(!(window.__wnseen&&window.__hubEnter&&window.__hubFrame&&window.__showScreen&&window.__hubBagSet)) return 'SKIP: this fixture cannot drive the floor card';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], P2=__P(), keepRuns=P2.runs, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText, shown;
+     function card(){ rec.length=0; __wnseen(0); __hubFrame(0.016); return rec.some(function(r){ return r.indexOf('NEW IN v')===0; }); }
+     try{
+       __topClear(); __runPrep();
+       P2.runs=Math.max(1,keepRuns||0);
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       proto.fillText=function(t){ rec.push(String(t)); return o.apply(this,arguments); };
+       __hubBagSet(true);
+       if(card()) bad.push('the card is drawn under the open backpack');
+       __hubBagSet(false);
+       if(!card()) bad.push('control: with the backpack closed the card is not drawn');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ proto.fillText=o; try{ __hubBagSet(false); }catch(_b){} P2.runs=keepRuns; __wnseen(1); try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.27',what:'the bar shows its drinks: each drink row leads with a picture, and Liquor and Blotter have different pictures',
    run:function(){
      if(!window.__station||!window.__hubEnter||typeof renderBar!=='function') return 'SKIP: no bar here';

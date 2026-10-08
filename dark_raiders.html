@@ -1528,7 +1528,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.27';
+var VER='19.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32308,7 +32308,9 @@ function drawHubHUD(ox,oy){
   // cold walked into a list of changes to controls he had never used. A profile
   // with no runs stamps itself current here and the card is never drawn.
   if(!WNSEEN&&!(((P&&P.runs)||0)>0)) WNSEEN=1;
-  if(!WNSEEN){
+  // v19.28, seen on the 4K Undercroft backpack screenshot (2026-10-08): with the card still up, opening the backpack laid the bag over it
+  // and the card's lines read through the panel. While the backpack is open the card waits; it is back when the bag closes, until walked off.
+  if(!WNSEEN&&!(typeof hubBagOpen!=='undefined'&&hubBagOpen)){
     // v8.79, HIS NOTE: "the NEW IN vXXX text is too small". Two sizes up on the
     // heading and one on the body, which is only possible because the entries
     // wrap now instead of each being one unbroken centred line. Two passes: try
@@ -33287,7 +33289,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.27: The bar shows a picture for each drink, matching its status icon in a raid. Check 19.27 fails on v19.26',
+  now:'v19.28: Opening the backpack in the Undercroft no longer shows the what is new card through it. Check 19.28 fails on v19.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
