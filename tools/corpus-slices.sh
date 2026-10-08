@@ -1,6 +1,8 @@
 #!/bin/bash
 # Usage: bash tools/corpus-slices.sh OUT.txt 0 N 120   (N = __REGRESS.length; corpus Chrome on 9344 via tools/cdp.ps1 -Start -Port 9344)
 # The corpus in slices, each in a fresh tab, so a long page never builds up and a hung check costs one slice, not the run.
+# 2026-10-08 05:35: a poll waits up to 150 s, because some checks run 70 s or more without yielding (v8.82, the sims) and a
+# 60 s poll landing inside them read as a hang. A check is called hung only after 5 polls in a row (about 22 min) get no number.
 # 2026-10-08 05:15 fix: only a NUMBER is progress. A hung page answers TIMEOUT, which the old loop took as progress and then
 # logged as index 0 and restarted the slice from 1. Now a page that will not answer for 6 polls (about 18 minutes) is paused
 # with the debugger (pause.ps1), which records the check it was in and the stack, and the next slice starts after that check.
@@ -17,9 +19,9 @@ while [ $A -lt $END ]; do
   last=0; still=0; busy=0; done_=0
   while true; do
     sleep 120
-    p=$(CDP -Match "$TAG=1" -TimeoutSec 60 -Expr "(function(){ var P=window.__PROG; return P?(P.finished?'DONE':String(P.done)):'none'; })()")
+    p=$(CDP -Match "$TAG=1" -TimeoutSec 150 -Expr "(function(){ var P=window.__PROG; return P?(P.finished?'DONE':String(P.done)):'none'; })()")
     case "$p" in DONE) done_=1; break;; esac
-    if ! [[ "$p" =~ ^[0-9]+$ ]]; then busy=$((busy+1)); [ $busy -ge 6 ] && break; continue; fi; busy=0
+    if ! [[ "$p" =~ ^[0-9]+$ ]]; then busy=$((busy+1)); [ $busy -ge 5 ] && break; continue; fi; busy=0
     if [ "$p" = "$last" ]; then still=$((still+1)); else still=0; last="$p"; fi
     [ $still -ge 8 ] && break
   done
