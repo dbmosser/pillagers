@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.01 - THE BUILD CHANGES YOUR BODY
+
+Co-op hunt while he was away. His order of 2026-10-08: build should change your character, Curved clearly female with larger chest and hips. The BUILD row in FASHION had never been read by the painter, so all three drew the same figure. Lean is unchanged. Broad is a V of a torso, wide at the shoulders. Curved is an hourglass: a fuller chest lit from above, a narrow waist with a belt, hips that flare past the legs with the trousers running up into them, and in the face lashes and a rose mouth so she reads at raid size. It shows everywhere you are drawn: the raid, the Undercroft and the FASHION figure.
+
+MEASURED. Check 20.01 passes, and fails on v20.00.
 ## v20.00 - THE PARTY FRAME STAYS CLEAR OF THE CREDITS
 
 Co-op hunt while he was away. Seen on the 4K PARTY screenshot of 2026-10-08: in a window about 830 menu pixels tall (1080p or 1440p fullscreen, or a 4K window) the PARTY frame top line ran 33 pixels down, straight under the CREDITS readout in the corner. The frame now keeps 75 pixels clear of the top and bottom; the party content still fits with room.
