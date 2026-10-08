@@ -1,0 +1,16 @@
+{
+    "title":  "THE STASH KEY ROW IS READABLE",
+    "why":  "Found by the same 4K menu text scan of 2026-10-08: the key row under the stash (DRAG move, RIGHT CLICK all actions, SHIFT, CTRL, ALT, 1-9, and the controller row of v19.70) was set at 10.5 pixels on a row half empty. It is 12.5 now and still one line.",
+    "now":  "The key row under the stash is easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "    font-size:10.5px; letter-spacing:.13em; color:var(--ash); text-transform:uppercase; }",
+                      "replacement":  "    font-size:12.5px; letter-spacing:.13em; color:var(--ash); text-transform:uppercase; }   /* v16.xx, seen on a 4K menu text scan (2026-10-08): 10.5px, the smallest print in any menu, on a row half empty */"
+                  },
+                  {
+                      "anchor":  "    background:var(--bone); color:#11161d; font-size:10.5px; font-weight:700;",
+                      "replacement":  "    background:var(--bone); color:#11161d; font-size:12.5px; font-weight:700;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stash key row is readable: DRAG, RIGHT CLICK and the rest and their words are drawn at 12.5px or more, and the row stays on one line\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station\u0026\u0026window.__wnseen)) return \u0027SKIP: this fixture cannot open the stash\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing renders\u0027;\n     var bad=[], kb, items, k, tops={}, i;\n     try{\n       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);\n       __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027);\n       kb=document.getElementById(\u0027invkeybar\u0027); if(!kb||!kb.getBoundingClientRect().width) return \u0027SKIP: the stash key row is not showing\u0027;\n       items=[].slice.call(kb.children); k=kb.querySelector(\u0027kbd\u0027);\n       if(!items.length||!k) return \u0027SKIP: no keys in the row\u0027;\n       if(!(parseFloat(getComputedStyle(items[0]).fontSize)\u003e=12.4)) bad.push(\u0027the key words are \u0027+getComputedStyle(items[0]).fontSize);\n       if(!(parseFloat(getComputedStyle(k).fontSize)\u003e=12.4)) bad.push(\u0027the key caps are \u0027+getComputedStyle(k).fontSize);\n       for(i=0;i\u003citems.length;i++){ var rr=items[i].getBoundingClientRect(); if(rr.width\u003e0\u0026\u0026rr.height\u003e0) tops[Math.round(rr.top+rr.height/2)]=1; }\n       if(Object.keys(tops).length\u003e1) bad.push(\u0027the key row wraps onto \u0027+Object.keys(tops).length+\u0027 lines\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

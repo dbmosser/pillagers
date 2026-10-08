@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.77 - THE STASH KEY ROW IS READABLE
+
+Co-op hunt while he was away. Found by the same 4K menu text scan of 2026-10-08: the key row under the stash (DRAG move, RIGHT CLICK all actions, SHIFT, CTRL, ALT, 1-9, and the controller row of v19.70) was set at 10.5 pixels on a row half empty. It is 12.5 now and still one line.
+
+MEASURED. Check 19.77 passes, and fails on v19.76.
 ## v19.76 - THE STASH FILTER ROW IS READABLE
 
 Co-op hunt while he was away. Found by a 4K menu text scan of 2026-10-08: the stash category tabs (ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS), the search box and SORT were set at 10.5 to 11 pixels, the smallest print in any menu, in a row with room to spare. They are 13 now and still fit on one line.

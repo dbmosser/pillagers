@@ -1,0 +1,1 @@
+| THE STASH KEY ROW IS READABLE | v19.77 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 19.77 passes, fails on v19.76 |

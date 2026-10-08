@@ -5721,6 +5721,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.77',what:'the stash key row is readable: DRAG, RIGHT CLICK and the rest and their words are drawn at 12.5px or more, and the row stays on one line',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], kb, items, k, tops={}, i;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('term','KeyE');
+       kb=document.getElementById('invkeybar'); if(!kb||!kb.getBoundingClientRect().width) return 'SKIP: the stash key row is not showing';
+       items=[].slice.call(kb.children); k=kb.querySelector('kbd');
+       if(!items.length||!k) return 'SKIP: no keys in the row';
+       if(!(parseFloat(getComputedStyle(items[0]).fontSize)>=12.4)) bad.push('the key words are '+getComputedStyle(items[0]).fontSize);
+       if(!(parseFloat(getComputedStyle(k).fontSize)>=12.4)) bad.push('the key caps are '+getComputedStyle(k).fontSize);
+       for(i=0;i<items.length;i++){ var rr=items[i].getBoundingClientRect(); if(rr.width>0&&rr.height>0) tops[Math.round(rr.top+rr.height/2)]=1; }
+       if(Object.keys(tops).length>1) bad.push('the key row wraps onto '+Object.keys(tops).length+' lines');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.76',what:'the stash filter row is readable: the category tabs, the search box and SORT are drawn at 13px or more, and the tabs stay on one line',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
