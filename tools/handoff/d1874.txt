@@ -1,0 +1,5 @@
+## v18.74 - THE OVERSEER HEALTH BAR WAITS UNTIL YOU SEE HIM
+
+Co-op hunt while he was away. His note of 2026-10-07: the Overseer health bar appeared as soon as he was within range, through walls or behind you, which gave away that he was near before you ever saw him. The bar now waits until you have actually seen him (the same view, distance, darkness and walls that decide what you see on screen), then stays up as before while he is alive and near. Each player gets the bar when they have seen him themselves.
+
+MEASURED. Check 18.74 passes, and fails on v18.73.

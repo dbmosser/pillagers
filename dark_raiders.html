@@ -1512,7 +1512,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='18.73';
+var VER='18.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26135,6 +26135,11 @@ function drawBossBar(){
   if(G.bossRef&&G.ents.indexOf(G.bossRef)>=0) e=G.bossRef;
   else for(i=0;i<G.ents.length;i++) if(G.ents[i]&&G.ents[i].name===BOSS_NAME){ e=G.ents[i]; break; }
   if(!e||!(e.hp>0)||Math.hypot(e.x-p.x,e.y-p.y)>900) return;
+  // v18.74, HIS NOTE (2026-10-07): "dont show the overseers health bar until the player actually sees the overseer". Being within
+  // 900 was enough, so the bar announced THE OVERSEER through walls and behind your back. It now waits until this player has
+  // seen him once (canSee: the same view cone, range, darkness and walls that decide what you see), and from then on shows as
+  // before while he is alive and near. Each window keeps its own: player 2 sees the bar when player 2 has seen him.
+  if(!e.barSeen){ var _bsv=false; try{ _bsv=canSee(p.x,p.y,p.face,e.x,e.y,G.vseg); }catch(_bs){ _bsv=false; } if(!_bsv) return; e.barSeen=1; }
   f=Math.max(0,Math.min(1,e.hp/(e.maxhp||e.hp)));
   w=Math.min(520,W*0.4); x=W/2-w/2; y=Math.round(LH(108)*hudRes());   // v18.49: below the clock, the compass and the extract arrow, scaled with them (was LH(64), inside the stack)
   ctx.save();
@@ -32770,7 +32775,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v18.73: The three step cards on the title are solid. Check 18.73 fails on v18.72',
+  now:'v18.74: The Overseer health bar only appears once you have actually seen the Overseer. Check 18.74 fails on v18.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

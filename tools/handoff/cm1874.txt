@@ -1,0 +1,7 @@
+v18.74: the overseer health bar waits until you see him
+
+The Overseer health bar only appears once you have actually seen the Overseer.
+
+Check 18.74. Fails on v18.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
