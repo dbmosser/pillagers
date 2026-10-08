@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.60 - THE DOOR PROMPT DODGES AT ITS DRAWN SIZE
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.55: the door prompt grows about its place at 4K, but its step out of the way of the weapon readout in the corner was still tested at the 1080p size and its lift applied inside the scale, so near the corner a grown prompt could print over the readout, or jump twice as far as it needed. It is tested at the size drawn now.
+
+MEASURED. Check 19.60 passes, and fails on v19.59.
 ## v19.59 - A BOARD DRAGGED LOW STILL NAMES A RIVAL
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.44: giving the out and down line its own row took that row out of the board three-row floor, so a board dragged into the lower part of the screen (or grown with its grip) showed only YOU and a count, no rival named. The row now comes out of the room above the floor, never out of the floor.

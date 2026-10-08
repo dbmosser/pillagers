@@ -1,0 +1,7 @@
+v19.60: the door prompt dodges at its drawn size
+
+At 4K a door prompt near the corner readout steps clear of it.
+
+Check 19.60. Fails on v19.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v19.60 - THE DOOR PROMPT DODGES AT ITS DRAWN SIZE
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.55: the door prompt grows about its place at 4K, but its step out of the way of the weapon readout in the corner was still tested at the 1080p size and its lift applied inside the scale, so near the corner a grown prompt could print over the readout, or jump twice as far as it needed. It is tested at the size drawn now.
+
+MEASURED. Check 19.60 passes, and fails on v19.59.
