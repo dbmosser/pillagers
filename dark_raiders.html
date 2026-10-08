@@ -1586,7 +1586,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.10';
+var VER='20.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22908,10 +22908,25 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(st.bulk>0){
     var bk=st.bulk,bw2=13+bk*3.2,bx2=x+leanX-bw2/2;
     var aHi='#a6bacb',aMid='#71879a',aLo='#3f505d';
-    wc.fillStyle=INK; rrF(bx2-1,ty-20.5,bw2+2,10.2,2.6);
+    if(_BLD==='curved'){
+      // v20.11, from the build design review (2026-10-08): the plate was a box that hid a Curved waist and chest. On Curved it is cut
+      // to her outline, and the chest is moulded into the steel, riding the same spring as the cloth one (v20.02).
+      var _cx=x+leanX, _mb=ty-18.0+(_JG.c||0);
+      wc.save(); buildPath(_cx,ty,BUILD_CURVED,0.6); wc.clip();
+      wc.fillStyle=INK; wc.fillRect(_cx-12,ty-20.5,24,10.2);
+      wc.restore();
+      wc.save(); buildPath(_cx,ty,BUILD_CURVED,-0.4); wc.clip();
+      wc.fillStyle=aMid; wc.fillRect(_cx-12,ty-19.6,24,8.4);
+      wc.fillStyle=aHi; wc.fillRect(_cx-12,ty-19.6,24,2);
+      wc.fillStyle=aLo; wc.fillRect(_cx-12,ty-13.2,24,1.8);
+      wc.beginPath(); wc.ellipse(_cx-2.8,_mb+1.0,2.9,2.3,0,0,6.2832); wc.ellipse(_cx+2.8,_mb+1.0,2.9,2.3,0,0,6.2832); wc.fill();
+      wc.fillStyle=aHi; wc.beginPath(); wc.ellipse(_cx-2.8,_mb,2.6,2.0,0,0,6.2832); wc.ellipse(_cx+2.8,_mb,2.6,2.0,0,0,6.2832); wc.fill();
+      wc.restore();
+    } else {    wc.fillStyle=INK; rrF(bx2-1,ty-20.5,bw2+2,10.2,2.6);
     wc.fillStyle=aMid; rrF(bx2,ty-19.6,bw2,8.4,2);
     wc.fillStyle=aHi; wc.fillRect(bx2+1,ty-19.6,bw2-2,2);
     wc.fillStyle=aLo; wc.fillRect(bx2+1,ty-13.2,bw2-2,1.8);
+    }
     if(bk>=2){
       wc.fillStyle=INK;
       rrF(bx2-3.6,ty-22.6,6,6.4,2.2); rrF(bx2+bw2-2.4,ty-22.6,6,6.4,2.2);
@@ -33601,7 +33616,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.10: Broad has a thicker gun arm and Curved a slimmer one. Check 20.10 fails on v20.09',
+  now:'v20.11: Armour plates follow a Curved figure instead of boxing it in. Check 20.11 fails on v20.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

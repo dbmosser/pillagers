@@ -1,0 +1,5 @@
+## v20.11 - ARMOUR FITS A CURVED BODY
+
+Co-op hunt while he was away. From the build design review of 2026-10-08: an Armour Plate was drawn as the same steel box on every body, so on a Curved body it hid her waist and chest. On Curved the plate is cut to her outline and the chest is moulded into the steel, moving with her; the shoulder plates and collar of the heavier tiers are as before.
+
+MEASURED. Check 20.11 passes, and fails on v20.10.

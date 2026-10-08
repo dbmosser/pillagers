@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.11 - ARMOUR FITS A CURVED BODY
+
+Co-op hunt while he was away. From the build design review of 2026-10-08: an Armour Plate was drawn as the same steel box on every body, so on a Curved body it hid her waist and chest. On Curved the plate is cut to her outline and the chest is moulded into the steel, moving with her; the shoulder plates and collar of the heavier tiers are as before.
+
+MEASURED. Check 20.11 passes, and fails on v20.10.
 ## v20.10 - THE GUN ARM FOLLOWS THE BUILD
 
 Co-op hunt while he was away. Following v20.01: the arm that holds the gun was the same thickness on every body. On Broad it is thicker and on Curved slimmer, so the arm matches the shoulders it hangs from; Lean is unchanged.

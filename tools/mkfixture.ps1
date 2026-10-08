@@ -5722,6 +5722,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.11',what:'armour fits a Curved body: the chest plate on a Curved body stays inside her waist, and is still there in the middle',
+   run:function(){
+     if(typeof drawOp!=='function'||typeof COSKEY==='undefined') return 'SKIP: no painter here';
+     var k=COSKEY.build||'cosBuild', b0=P[k], w0=wc, cv=document.createElement('canvas'), x2, bad=[], out, mid;
+     cv.width=240; cv.height=220; x2=cv.getContext('2d'); if(!x2) return 'SKIP: no canvas';
+     function at(lx,ly){ var d=x2.getImageData(Math.round(120+lx*4),Math.round(190+ly*4),1,1).data; return d; }
+     try{
+       P[k]='curved';
+       x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,240,220); x2.setTransform(4,0,0,4,120,190); wc=x2;
+       drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,bulk:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); wc=w0; x2.setTransform(1,0,0,1,0,0);
+       out=at(7.2,-14.9); mid=at(0,-12.4);
+       if(out[3]>40) bad.push('the plate shows outside the Curved waist');
+       if(!(mid[3]>200&&mid[2]>mid[0])) bad.push('no steel plate in the middle ('+mid[0]+','+mid[1]+','+mid[2]+')');
+     }catch(e){ wc=w0; bad.push('threw: '+(e&&e.message||e)); }
+     finally{ wc=w0; P[k]=b0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.10',what:'the gun arm follows the build: drawn with a gun at rest, the Broad sleeve is thicker than the Lean one and the Curved sleeve slimmer',
    run:function(){
      if(typeof drawOp!=='function'||typeof COSKEY==='undefined') return 'SKIP: no painter here';
