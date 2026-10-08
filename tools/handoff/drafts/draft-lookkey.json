@@ -1,0 +1,12 @@
+{
+    "title":  "TRYING ON OUTFITS KEEPS THE PREVIEWS",
+    "why":  "Found by the review of 2026-10-08, in v19.13 with v19.09 and v19.17: the piece previews are painted with the outfit off and the outfit previews never depended on it, but the worn outfit was part of the look the caches are kept for, so every outfit click in FASHION threw away all 57 pictures and repainted them unchanged. The worn outfit is left out of that look now.",
+    "now":  "Clicking through outfits in FASHION no longer repaints every picture.",
+    "edits":  [
+                  {
+                      "anchor":  "function cosLookKey(){ return [\u0027outfit\u0027,\u0027skin\u0027,",
+                      "replacement":  "// v16.xx, from the review (2026-10-08): the worn outfit is left out. The piece previews are painted with the outfit off (v19.09) and the\n// outfit previews never keyed on it, so trying on outfits threw away all 57 pictures and repainted them unchanged on every click.\nfunction cosLookKey(){ return [\u0027skin\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027trying on an outfit keeps the FASHION previews: after a hat preview is painted, wearing a different outfit and asking for the same hat repaints nothing\u0027,\n   run:function(){\n     if(typeof cosPreviewURL!==\u0027function\u0027||typeof COSKEY===\u0027undefined\u0027||typeof OUTFITS===\u0027undefined\u0027) return \u0027SKIP: no previews here\u0027;\n     var bad=[], ok=COSKEY.outfit, o0=P[ok], ow0=cosOwned, hats=COSMETICS.filter(function(c){ return c\u0026\u0026c.kind===\u0027hat\u0027; }), outs=Object.keys(OUTFITS).filter(function(k){ return k!==\u0027outnone\u0027; }), proto=HTMLCanvasElement.prototype, oTD=proto.toDataURL, n=0;\n     if(!hats.length||outs.length\u003c2) return \u0027SKIP: too few hats or outfits\u0027;\n     try{\n       cosOwned=function(){ return true; };\n       P[ok]=outs[0]; cosPreviewURL(\u0027hat\u0027,hats[0].id);\n       proto.toDataURL=function(){ n++; return oTD.apply(this,arguments); };\n       P[ok]=outs[1]; cosPreviewURL(\u0027hat\u0027,hats[0].id);\n       if(n\u003e0) bad.push(\u0027wearing a different outfit repainted the hat preview (\u0027+n+\u0027 pictures)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ proto.toDataURL=oTD; cosOwned=ow0; if(o0===undefined) delete P[ok]; else P[ok]=o0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

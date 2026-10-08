@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.49 - TRYING ON OUTFITS KEEPS THE PREVIEWS
+
+Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.13 with v19.09 and v19.17: the piece previews are painted with the outfit off and the outfit previews never depended on it, but the worn outfit was part of the look the caches are kept for, so every outfit click in FASHION threw away all 57 pictures and repainted them unchanged. The worn outfit is left out of that look now.
+
+MEASURED. Check 19.49 passes, and fails on v19.48.
 ## v19.48 - THE KILL FEED STARTS UNDER CONDITIONS
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.07: the co-op kill feed started at 46 percent of the screen height, which clears a normal CONDITIONS panel, but a panel grown with its grip, dragged down or long with contracts reached past that, and each kill printed over its rows for six seconds. The feed now starts under the panel whenever the panel is in its column.

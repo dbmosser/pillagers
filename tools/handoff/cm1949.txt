@@ -1,0 +1,7 @@
+v19.49: trying on outfits keeps the previews
+
+Clicking through outfits in FASHION no longer repaints every picture.
+
+Check 19.49. Fails on v19.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
