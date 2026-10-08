@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.60 - THE SURVIVOR YOU HELPED NEVER SHOOTS YOU
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Once you give the hiding survivor what he needs, he walks to a ring and shoots any sentry or crawler within reach. If you were fighting the same machine, a round of his that went wide hit you for full damage. It could put you down, and the card named him as the one who did it. A survivor you helped is on your side, so his rounds now pass through you the way your hire rounds already did. A survivor who turned hostile still hits you.
+
+MEASURED. Check 20.60 passes, and fails on v20.59.
 ## v20.59 - THE WHAT IS NEW CARD NAMES THE CONTROLLER AND 4K FIXES
 
 Co-op hunt while he was away. The card was stamped v20.49 and the stamp may not trail the build by more than 0.15. Its new second line names the controller fixes (picking a save on the title, FASHION and the run tags on a pad, v20.51 and v20.58) and the 4K layout fixes (the boss bar under the messages, the HP number in its bar, the station prompts above the belt, v20.50, v20.55, v20.57); the many other bug fixes are in the change list.

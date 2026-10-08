@@ -1,0 +1,7 @@
+v20.60: the survivor you helped never shoots you
+
+The survivor you help no longer hits you with his shots at the machines.
+
+Check 20.60. Fails on v20.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

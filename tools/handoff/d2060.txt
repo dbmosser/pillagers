@@ -1,0 +1,5 @@
+## v20.60 - THE SURVIVOR YOU HELPED NEVER SHOOTS YOU
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Once you give the hiding survivor what he needs, he walks to a ring and shoots any sentry or crawler within reach. If you were fighting the same machine, a round of his that went wide hit you for full damage. It could put you down, and the card named him as the one who did it. A survivor you helped is on your side, so his rounds now pass through you the way your hire rounds already did. A survivor who turned hostile still hits you.
+
+MEASURED. Check 20.60 passes, and fails on v20.59.
