@@ -1,0 +1,7 @@
+v19.61: the co-op revive bar grows at 4k
+
+At 4K the co-op revive bar is full size.
+
+Check 19.61. Fails on v19.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

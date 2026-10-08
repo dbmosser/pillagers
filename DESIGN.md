@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.61 - THE CO-OP REVIVE BAR GROWS AT 4K
+
+Co-op hunt while he was away. Found by the review of 2026-10-08: v19.55 and v19.57 grew the prompts and bars drawn over the world at 4K, but the bar and REVIVING word over a teammate you are reviving in co-op were left at their 1080p size between them. They grow with the screen now too.
+
+MEASURED. Check 19.61 passes, and fails on v19.60.
 ## v19.60 - THE DOOR PROMPT DODGES AT ITS DRAWN SIZE
 
 Co-op hunt while he was away. Found by the review of 2026-10-08, in v19.55: the door prompt grows about its place at 4K, but its step out of the way of the weapon readout in the corner was still tested at the 1080p size and its lift applied inside the scale, so near the corner a grown prompt could print over the readout, or jump twice as far as it needed. It is tested at the size drawn now.

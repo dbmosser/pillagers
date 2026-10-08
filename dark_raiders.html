@@ -1537,7 +1537,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.60';
+var VER='19.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27429,8 +27429,9 @@ ctx.fillStyle='#4de3d0';
   }
   try{ if(NET.on&&G.netRevT>0&&G.netRevS>=0&&NET.up[G.netRevS]){   // v16.21, his note: the revive has a bar, like a search
     var _rg=NET.up[G.netRevS], _rs=w2s(_rg.x,26,_rg.y);
-    if(_rs){ bar(_rs.x-30,_rs.y-8,60,6,Math.min(1,G.netRevT/NET_REV_T),'#4de3d0');
-      ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#4de3d0'; ctx.fillText('REVIVING',_rs.x,_rs.y-14); ctx.textAlign='left'; }
+    // v19.61, from the review (2026-10-08): the teammate revive bar grows with the screen like the search and reload bars beside it (v19.57)
+    if(_rs){ var _hsV=hudAtIn(_rs.x,_rs.y); try{ bar(_rs.x-30,_rs.y-8,60,6,Math.min(1,G.netRevT/NET_REV_T),'#4de3d0');
+      ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#4de3d0'; ctx.fillText('REVIVING',_rs.x,_rs.y-14); ctx.textAlign='left'; } finally { if(_hsV) ctx.restore(); } }
   } }catch(_rvb){}
   if(G.searching&&!(G.player&&G.player.downed)){   // v14.08: not while down
     var s2=w2s(G.searching.x,26,G.searching.y);
@@ -33410,7 +33411,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.60: At 4K a door prompt near the corner readout steps clear of it. Check 19.60 fails on v19.59',
+  now:'v19.61: At 4K the co-op revive bar is full size. Check 19.61 fails on v19.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
