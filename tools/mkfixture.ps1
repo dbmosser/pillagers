@@ -5722,6 +5722,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.45',what:'ending a same machine party puts the sound back in both speakers: with player 1 panned hard left by SPLIT SPEAKERS, ending the party leaves the pan in the middle and the master gain at 1',
+   run:function(){
+     if(typeof NET!=='object'||!NET||typeof netSameStop!=='function'||typeof netSndApply!=='function'||typeof netSndWho!=='function'||typeof netSndSplitOn!=='function') return 'SKIP: no same machine party sound here';
+     var NK={}, k, bad=[], oWho=netSndWho, oSplit=netSndSplitOn, gN={gain:{value:1}}, pN={pan:{value:0}};
+     for(k in NET) NK[k]=NET[k];
+     try{
+       // A same machine party, this window player 1, world sound in both windows and SPLIT SPEAKERS on, read through stand-ins
+       // so the shared setting in the browser is never written.
+       NET.bc=null; NET.same='host'; NET.pair='zq7731'; NET.mode='coop';
+       NET.sndG=gN; NET.sndP=pN; NET.sndAc=null;
+       netSndWho=function(){ return 'both'; };
+       netSndSplitOn=function(){ return !!NET.same; };
+       netSndApply();
+       if(Math.abs(pN.pan.value+1)>0.01) return 'SKIP: staging: SPLIT SPEAKERS did not pan player 1 to the left here ('+pN.pan.value+')';
+       gN.gain.value=0.37;
+       netSameStop();
+       if(NET.same) return 'SKIP: ending the party left this window in it';
+       if(Math.abs(pN.pan.value)>0.01) bad.push('after the party ended every sound is still panned to '+pN.pan.value+' (minus 1 is the left speaker only)');
+       if(Math.abs(gN.gain.value-1)>0.01) bad.push('after the party ended the master gain is '+gN.gain.value+', not 1');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       netSndWho=oWho; netSndSplitOn=oSplit;
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.44',what:'focus aim toggled on a pad never rides into the next raid: with RS clicked to focus aim and the raid ended with it still on, the next raid starts with the toggle off, and its first pad frame with nothing held is not in focus aim',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof pollPad!=='function'||typeof PAD!=='object'||!PAD) return 'SKIP: no raid or pad path in this fixture';

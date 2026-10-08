@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.44';
+var VER='20.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33721,7 +33721,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.44: On a controller, a new raid always starts with focus aim off, whatever the last raid ended in. Check 20.44 fails on v20.43',
+  now:'v20.45: After you end a two player party on one machine, sound plays in both speakers again. Check 20.45 fails on v20.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38592,7 +38592,11 @@ function netSndSet(on){
 }
 function netSndToggle(){ return netSndSet(!NET.sndOn); }
 function netSndInit(){ netSndLoad(); NET.sndOther=-1; netSndRoute(); netSndApply(); netSndPost(); return NET.sndOn; }
-function netSndRelease(){ NET.sndOther=-1; if(NET.sndG){ try{ NET.sndG.gain.value=1; }catch(e){} } return true; }
+// v20.45, from the whole-game bug hunt of 2026-10-08 (H50): ENDING A SAME MACHINE PARTY PUTS THE SOUND BACK IN BOTH SPEAKERS. With
+// SPLIT SPEAKERS on (the default) the party panned this window hard left (player 1) or hard right (player 2), and ending the party
+// only put the master gain back to 1. The panner kept its side, so every sound after it, guns, steps, the ambience and the
+// Undercroft music, came out of one speaker until a reload, and the rows that set it only show in a party. It goes back to the middle.
+function netSndRelease(){ NET.sndOther=-1; if(NET.sndG){ try{ NET.sndG.gain.value=1; }catch(e){} } if(NET.sndP){ try{ NET.sndP.pan.value=0; }catch(e2){} } return true; }
 function netSndLabel(on){ return on?'SOUND ON':'SOUND OFF'; }
 function netSndOtherLabel(){ return (NET.sndOther===1)?'sound on':((NET.sndOther===0)?'sound off':'not said yet'); }
 // What a test page reads: the switch, the other window's word, and the master gain as the game holds it.

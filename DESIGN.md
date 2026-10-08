@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.45 - SOUND BACK IN BOTH SPEAKERS AFTER A PARTY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In two player co-op on one machine, split speakers (on unless you switch it off) puts player 1 in the left speaker and player 2 in the right. Ending the party never put that back, so after END THE PARTY every sound in that window, guns, footsteps, the ambience and the Undercroft music, came out of one speaker only until the page was reloaded, and the sound rows that could change it only show during a party. Ending the party now puts the sound back in both speakers.
+
+MEASURED. Check 20.45 passes, and fails on v20.44.
 ## v20.44 - FOCUS AIM DOES NOT CARRY INTO THE NEXT RAID
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller, clicking the right stick turns focus aim on until it is clicked again. If a raid ended with it on, by extracting, dying or abandoning, the next raid started in focus aim on its very first frame: walking at about 60% speed, no sprint, [ADS] on the screen and the amber crosshair, until he clicked the stick again or held sprint. The switch was only ever turned off by a part of the controller code that the end-of-raid card never lets run. Every raid now starts with focus aim off.

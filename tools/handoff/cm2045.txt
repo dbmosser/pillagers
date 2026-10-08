@@ -1,0 +1,7 @@
+v20.45: sound back in both speakers after a party
+
+After you end a two player party on one machine, sound plays in both speakers again.
+
+Check 20.45. Fails on v20.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
