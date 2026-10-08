@@ -40144,11 +40144,14 @@ window.__REGRESS=[
          else if(!g) bad.push('control: the Depot has no grid to scroll');
          else{
            var mr=ap.getBoundingClientRect();
-           g.scrollTop=0;
+           // Retargeted 2026-10-08: since v18.81 each column scrolls on its own, and since v19.16 the box inside the operator
+           // panel does; scroll whichever box actually holds SURPRISE ME (the grid if none does).
+           var sc=sur.parentNode; while(sc&&sc!==ap){ var _ov=getComputedStyle(sc).overflowY; if((_ov==='auto'||_ov==='scroll')&&sc.scrollHeight>sc.clientHeight+2) break; sc=sc.parentNode; } if(!sc||sc===ap) sc=g;
+           sc.scrollTop=0;
            var atTop=sur.getBoundingClientRect().bottom-mr.bottom;
-           g.scrollTop=g.scrollHeight;
+           sc.scrollTop=sc.scrollHeight;
            var atBot=sur.getBoundingClientRect().bottom-mr.bottom;
-           g.scrollTop=0;
+           sc.scrollTop=0;
            if(atBot>1) bad.push('SURPRISE ME is still '+Math.round(atBot)+' pixels below the Depot window even scrolled all the way down');
            // AND THE WHEEL CAN DO IT: the game only scrolls a box whose overflow
            // is auto or scroll, so hidden would leave it unreachable in play.
