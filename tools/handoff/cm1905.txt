@@ -1,0 +1,7 @@
+v19.05: the extraction card shows the haul
+
+The EXTRACTED card shows pictures of what you brought home.
+
+Check 19.05. Fails on v19.04.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

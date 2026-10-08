@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.05 - THE EXTRACTION CARD SHOWS THE HAUL
+
+Co-op hunt while he was away. Seen on the extraction card screenshot of 2026-10-07: the card told you how many items you secured and what they were worth, but never showed them. A strip of their pictures now sits under that line, most valuable first, each framed in its rarity colour, up to twelve and then a count.
+
+MEASURED. Check 19.05 passes, and fails on v19.04.
 ## v19.04 - THE KIA CARD SHOWS WHAT WAS LOST WITH PICTURES
 
 Co-op hunt while he was away. Seen on the KIA card screenshot of 2026-10-07: the card listed what you lost as plain names (Medkit LOST, Bandage LOST, Compact SMG LOST). Each line now carries the item or gun picture in front of its name, the same pictures the backpack and stash use, so the loss reads at a glance.

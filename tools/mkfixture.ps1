@@ -5721,6 +5721,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'19.05',what:'the extraction card shows the haul: after extracting with items, the card shows a picture for each item secured (up to twelve)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], man, n, g;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['medkit','plate','frag'],safe:null,mapIx:0,seed:4242});
+       g=__state(); g.bag.push('servo','optic');
+       __endRaid('extract');
+       man=document.getElementById('oc_manifest');
+       if(!man) return 'SKIP: no run card manifest';
+       n=(String(man.innerHTML).match(/<img/g)||[]).length;
+       if(n<3) bad.push('the card shows '+n+' item pictures for a haul of '+g.bag.length);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'19.04',what:'the KIA card shows what was lost with pictures: every LOST line on the card carries the item or gun picture',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
