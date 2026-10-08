@@ -1,0 +1,7 @@
+v20.25: the craft resources are readable
+
+The resources a recipe needs are easier to read.
+
+Check 20.25. Fails on v20.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v20.25 - THE CRAFT RESOURCES ARE READABLE
+
+Co-op hunt while he was away. Seen on the 4K CRAFT screenshot of 2026-10-08: the REQUIRED RESOURCES rows on a recipe card (Scrap Metal 0/3, Copper Wire 0/2) were 13 pixels with 22 pixel pictures, the smallest thing on the card, and they are what tells you whether you can craft. They are 16 and 17 now, with 30 pixel pictures.
+
+MEASURED. Check 20.25 passes, and fails on v20.24.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.25 - THE CRAFT RESOURCES ARE READABLE
+
+Co-op hunt while he was away. Seen on the 4K CRAFT screenshot of 2026-10-08: the REQUIRED RESOURCES rows on a recipe card (Scrap Metal 0/3, Copper Wire 0/2) were 13 pixels with 22 pixel pictures, the smallest thing on the card, and they are what tells you whether you can craft. They are 16 and 17 now, with 30 pixel pictures.
+
+MEASURED. Check 20.25 passes, and fails on v20.24.
 ## v20.24 - THE LOADOUT QUESTION FITS ITS BUTTONS
 
 Co-op hunt while he was away. Seen on the 4K ascent screenshot of 2026-10-08: the WHAT ARE YOU TAKING UP card held five choices in a fixed 560 pixel card, so RANDOM FROM STASH broke over three lines and MY LOADOUT over two. The card now grows to fit its buttons on one line, never narrower than before, with its words kept to the old width; a plain yes or no question looks as it did.

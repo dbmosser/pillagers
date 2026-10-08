@@ -5722,6 +5722,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.25',what:'the craft resource rows are readable: on a recipe card the resource names are 16px or more with 30px pictures',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the shop';
+     var bad=[], tab, c, row, nm, im;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('trader','KeyE');
+       tab=[].slice.call(document.querySelectorAll('#tradertabs .invtab')).filter(function(x){ return x.textContent.trim()==='CRAFT'; })[0];
+       if(!tab) return 'SKIP: no CRAFT tab'; tab.click();
+       c=document.querySelector('#craftgrid .vcell'); if(!c) return 'SKIP: no recipe'; c.click();
+       row=document.querySelector('#craftdetail .cres'); if(!row) return 'SKIP: no resource rows';
+       nm=row.querySelector('.crn'); im=row.querySelector('img');
+       if(!(parseFloat(getComputedStyle(nm).fontSize)>=15.9)) bad.push('the resource name is '+getComputedStyle(nm).fontSize);
+       if(im&&!(im.getBoundingClientRect().width>=im.ownerDocument.documentElement.clientWidth*0+0&&parseFloat(getComputedStyle(im).width)>=29)) bad.push('the resource picture is '+getComputedStyle(im).width);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.24',what:'the loadout question fits its buttons: on the WHAT ARE YOU TAKING UP card every choice sits on one line',
    run:function(){
      if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot reach the lift';
