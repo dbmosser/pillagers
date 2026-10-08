@@ -1,0 +1,7 @@
+v19.21: the what is new card grows with the screen
+
+At 4K the what is new card is as easy to read as at 1080p.
+
+Check 19.21. Fails on v19.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

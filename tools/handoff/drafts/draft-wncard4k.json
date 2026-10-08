@@ -1,0 +1,40 @@
+{
+    "title":  "THE WHAT IS NEW CARD GROWS WITH THE SCREEN",
+    "why":  "Seen on the 4K screenshot of 2026-10-08: the card that greets a returning player was drawn at its 1080p size on a 4K screen, so its words were half the height of the station names around it and hard to read from the couch (his v8.79 note was already that this text is too small). It is now drawn scaled with the screen, like the rest of the floor text; at 1080p nothing changes.",
+    "now":  "At 4K the what is new card is as easy to read as at 1080p.",
+    "edits":  [
+                  {
+                      "anchor":  "    var wnRole=\u0027head\u0027,wnRows=[],wnW=0,wnH=0,wnLH=0,wnGaps=0;",
+                      "replacement":  "    // v16.xx, seen on the 4K screenshot (2026-10-08): the card was drawn at its 1080p size on a 4K screen, a quarter of the area, its\n    // words half the height of the station names around it (his v8.79 note was that this text is too small). It is now drawn in a\n    // space scaled with the screen like the rest of the floor text, so it reads the same from the couch at 1080p, 1440p and 4K.\n    var _wnr=Math.max(1,(typeof hudRes===\u0027function\u0027)?hudRes():1), _wnWW=W/_wnr, _wnHH=H/_wnr;\n    ctx.save(); ctx.scale(_wnr,_wnr);    var wnRole=\u0027head\u0027,wnRows=[],wnW=0,wnH=0,wnLH=0,wnGaps=0;"
+                  },
+                  {
+                      "anchor":  "      wnW=Math.min(W-LH(60),LH(1000));",
+                      "replacement":  "      wnW=Math.min(_wnWW-LH(60),LH(1000));"
+                  },
+                  {
+                      "anchor":  "      if(wnH\u003c=H-LH(60)) break;",
+                      "replacement":  "      if(wnH\u003c=_wnHH-LH(60)) break;"
+                  },
+                  {
+                      "anchor":  "    if(wnH\u003eH-LH(60)){",
+                      "replacement":  "    if(wnH\u003e_wnHH-LH(60)){"
+                  },
+                  {
+                      "anchor":  "      var _wnFit=H-LH(60), _wnAcc=LH(90), _wnKeep=0, _wk;",
+                      "replacement":  "      var _wnFit=_wnHH-LH(60), _wnAcc=LH(90), _wnKeep=0, _wk;"
+                  },
+                  {
+                      "anchor":  "    var wnX=W/2-wnW/2, wnY=H/2-wnH/2-LH(10);",
+                      "replacement":  "    var wnX=_wnWW/2-wnW/2, wnY=_wnHH/2-wnH/2-LH(10);"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(\u0027NEW IN v\u0027+WHATSNEW_VER,W/2,wnY+LH(32));",
+                      "replacement":  "    ctx.fillText(\u0027NEW IN v\u0027+WHATSNEW_VER,_wnWW/2,wnY+LH(32));"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(\u0027press ENTER or walk to dismiss\u0027,W/2,wnY+wnH-LH(12));\n    ctx.textAlign=\u0027left\u0027;\n    if(p.moving){ WNSEEN=1; }",
+                      "replacement":  "    ctx.fillText(\u0027press ENTER or walk to dismiss\u0027,_wnWW/2,wnY+wnH-LH(12));\n    ctx.textAlign=\u0027left\u0027;\n    ctx.restore();\n    if(p.moving){ WNSEEN=1; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card grows with the screen: at 4K its heading and its lines are drawn about twice their 1080p size, and the whole card still fits the screen\u0027,\n   run:function(){\n     if(!(window.__wnseen\u0026\u0026window.__hubEnter\u0026\u0026window.__hubFrame\u0026\u0026window.__forceSize\u0026\u0026window.__showScreen)) return \u0027SKIP: this fixture cannot drive the floor card\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing renders\u0027;\n     var bad=[], P2=__P(), keepRuns=P2.runs, rec=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText, s1, s4;\n     function grab(){ rec.length=0; __wnseen(0); __hubFrame(0.016); var hd=null, dm=null, ln=null, i; for(i=0;i\u003crec.length;i++){ if(!hd\u0026\u0026rec[i].t.indexOf(\u0027NEW IN v\u0027)===0) hd=rec[i]; if(!dm\u0026\u0026/press ENTER or walk to dismiss/.test(rec[i].t)) dm=rec[i]; if(!ln\u0026\u0026/^1\\. /.test(rec[i].t)) ln=rec[i]; } return {hd:hd,dm:dm,ln:ln}; }\n     try{\n       __topClear(); __runPrep();\n       P2.runs=Math.max(1,keepRuns||0);\n       G=null; keys={}; __showScreen(\u0027hub\u0027); __hubEnter();\n       proto.fillText=function(t,x,y){ var m=this.getTransform(), d=(typeof DPR===\u0027number\u0027\u0026\u0026DPR\u003e0)?DPR:1, fm=(/([\\d.]+)px/).exec(String(this.font)); rec.push({t:String(t),px:(fm?parseFloat(fm[1]):0)*m.d/d,y:(m.d*y+m.f)/d}); return o.apply(this,arguments); };\n       __forceSize(1920,1080); if(!(H\u003e400)) return \u0027SKIP: the canvas came back \u0027+W+\u0027x\u0027+H;\n       s1=grab();\n       __forceSize(3840,2160); if(!(W\u003e3000)) return \u0027SKIP: the canvas would not go to 4K (\u0027+W+\u0027x\u0027+H+\u0027)\u0027;\n       s4=grab();\n       if(!s1.hd||!s4.hd) return \u0027SKIP: the card was not drawn\u0027;\n       if(s4.hd.px\u003cs1.hd.px*1.7) bad.push(\u0027at 4K the heading is \u0027+s4.hd.px.toFixed(1)+\u0027 px against \u0027+s1.hd.px.toFixed(1)+\u0027 px at 1080p, not grown with the screen\u0027);\n       if(s1.ln\u0026\u0026s4.ln\u0026\u0026s4.ln.px\u003cs1.ln.px*1.7) bad.push(\u0027at 4K the card lines are \u0027+s4.ln.px.toFixed(1)+\u0027 px against \u0027+s1.ln.px.toFixed(1)+\u0027 px at 1080p\u0027);\n       if(s4.hd.y\u003c0||s4.hd.y\u003eH) bad.push(\u0027at 4K the heading is drawn at y \u0027+Math.round(s4.hd.y)+\u0027 on a screen \u0027+H+\u0027 tall\u0027);\n       if(!s4.dm) bad.push(\u0027at 4K the dismiss line was not drawn\u0027);\n       else if(s4.dm.y\u003c0||s4.dm.y\u003eH) bad.push(\u0027at 4K the dismiss line is at y \u0027+Math.round(s4.dm.y)+\u0027 on a screen \u0027+H+\u0027 tall\u0027);\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{ proto.fillText=o; P2.runs=keepRuns; __wnseen(1); try{ saveProfile(); }catch(_s){} try{ __forceSize(1920,1080); }catch(_f){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

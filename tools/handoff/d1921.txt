@@ -1,0 +1,5 @@
+## v19.21 - THE WHAT IS NEW CARD GROWS WITH THE SCREEN
+
+Co-op hunt while he was away. Seen on the 4K screenshot of 2026-10-08: the card that greets a returning player was drawn at its 1080p size on a 4K screen, so its words were half the height of the station names around it and hard to read from the couch (his v8.79 note was already that this text is too small). It is now drawn scaled with the screen, like the rest of the floor text; at 1080p nothing changes.
+
+MEASURED. Check 19.21 passes, and fails on v19.20.

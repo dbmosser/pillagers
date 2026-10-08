@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.21 - THE WHAT IS NEW CARD GROWS WITH THE SCREEN
+
+Co-op hunt while he was away. Seen on the 4K screenshot of 2026-10-08: the card that greets a returning player was drawn at its 1080p size on a 4K screen, so its words were half the height of the station names around it and hard to read from the couch (his v8.79 note was already that this text is too small). It is now drawn scaled with the screen, like the rest of the floor text; at 1080p nothing changes.
+
+MEASURED. Check 19.21 passes, and fails on v19.20.
 ## v19.20 - A FASHION CLICK BUILDS THE RACKS ONCE
 
 Co-op hunt while he was away. Found by the review of 2026-10-07: every click on a FASHION tile built the whole rack list twice, once directly and once more through the operator panel, which redraws the racks itself, so about half a megabyte of pictures was parsed twice per click (about 120 ms a click at 1080p, measured). The racks are now built once.
