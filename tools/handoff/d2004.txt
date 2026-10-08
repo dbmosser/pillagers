@@ -1,0 +1,5 @@
+## v20.04 - THE BUILD TILES SHOW YOU IN EACH BUILD
+
+Co-op hunt while he was away. Following v20.01 (his order of 2026-10-08): the three BUILD tiles in FASHION showed the same little block picture, because a build used to change nothing. They now show your operator in Lean, Broad and Curved, like the outfit and hair tiles do.
+
+MEASURED. Check 20.04 passes, and fails on v20.03.

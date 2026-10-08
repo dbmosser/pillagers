@@ -5722,6 +5722,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.04',what:'the BUILD tiles in FASHION show you in each build: each of the three tiles has a painted picture, and the three pictures differ',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open FASHION';
+     var bad=[], tiles, srcs={}, i, im, n=0;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('mirror','KeyE');
+       tiles=[].slice.call(document.querySelectorAll('.modal.on .costile[data-kind="build"]'));
+       if(tiles.length<3) return 'SKIP: the BUILD row is not showing';
+       for(i=0;i<tiles.length;i++){ im=tiles[i].querySelector('img'); if(!im){ bad.push('the '+tiles[i].getAttribute('data-id')+' tile has no picture'); continue; } srcs[im.getAttribute('src')]=1; n++; }
+       if(n===tiles.length&&Object.keys(srcs).length<tiles.length) bad.push('the build pictures are not all different');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(m){ m.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.03',what:'your teammate sees your build: the look you send carries the build, a bad build id is dropped, and the teammate is drawn in the build sent on the floor and in a raid',
    run:function(){
      if(typeof netLook!=='function'||typeof netLookClean!=='function'||typeof netDrawPeer!=='function'||typeof netUpDrawOne!=='function') return 'SKIP: no co-op look here';

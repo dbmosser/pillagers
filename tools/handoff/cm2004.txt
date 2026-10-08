@@ -1,0 +1,7 @@
+v20.04: the build tiles show you in each build
+
+The FASHION BUILD tiles show you in Lean, Broad and Curved.
+
+Check 20.04. Fails on v20.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.04 - THE BUILD TILES SHOW YOU IN EACH BUILD
+
+Co-op hunt while he was away. Following v20.01 (his order of 2026-10-08): the three BUILD tiles in FASHION showed the same little block picture, because a build used to change nothing. They now show your operator in Lean, Broad and Curved, like the outfit and hair tiles do.
+
+MEASURED. Check 20.04 passes, and fails on v20.03.
 ## v20.03 - YOUR TEAMMATE SEES YOUR BUILD
 
 Co-op hunt while he was away. His answer of 2026-10-08: everyone sees the build, the way they see your outfit and hair. The look each player sends now carries the build, a bad id is dropped like any other, and the teammate is drawn in the build sent, on the Undercroft floor and in a raid, in two windows on one PC or online.
