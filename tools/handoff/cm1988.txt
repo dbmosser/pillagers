@@ -1,0 +1,7 @@
+v19.88: the undercroft pause box lists the floor pad buttons
+
+Pausing in the Undercroft on a controller shows the Undercroft controller buttons.
+
+Check 19.88. Fails on v19.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v19.88 - THE UNDERCROFT PAUSE BOX LISTS THE FLOOR PAD BUTTONS
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: with a pad, the pause box in the Undercroft listed the raid layout (A dodge roll, X reload, RT fire), but on the floor A works a station, X, Y and RB are its other actions, and LS click jogs, so nearly every line contradicted the pad in hand. On the floor the box now lists the floor buttons; in a raid it lists the raid ones as before.
+
+MEASURED. Check 19.88 passes, and fails on v19.87.
 ## v19.87 - AN OPEN PAUSE BOX FOLLOWS THE PAD
 
 Co-op hunt while he was away. Found by the code review of 2026-10-08: the pause box key line (v19.71) was chosen only when the box opened. When a pad cable came out mid-raid the box opened on the keyboard keys, and plugging the pad back in left them up; a pad pulled out with the box already open left the pad buttons up for a keyboard player. The line now changes the moment the pad comes or goes.

@@ -1,0 +1,5 @@
+## v19.88 - THE UNDERCROFT PAUSE BOX LISTS THE FLOOR PAD BUTTONS
+
+Co-op hunt while he was away. Found by the code review of 2026-10-08: with a pad, the pause box in the Undercroft listed the raid layout (A dodge roll, X reload, RT fire), but on the floor A works a station, X, Y and RB are its other actions, and LS click jogs, so nearly every line contradicted the pad in hand. On the floor the box now lists the floor buttons; in a raid it lists the raid ones as before.
+
+MEASURED. Check 19.88 passes, and fails on v19.87.

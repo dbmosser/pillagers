@@ -1562,7 +1562,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='19.87';
+var VER='19.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13065,6 +13065,9 @@ function keysLegendHtml(){
   // v19.71, seen on the 4K controller screenshot (2026-10-08): on a controller (player 2 in co-op) the pause box listed MOUSE aim,
   // LMB fire and WASD move, keys the pad player does not have. With a pad on it lists the pad layout, from the same table as the
   // full controls panel (LEGEND_PAD), so the two never disagree.
+  // v19.88, from the code review of 2026-10-08: in the Undercroft the pad does other things (A works a station, X, Y and RB are its
+  // other actions, LS click jogs; the floor branch of pollPad), so the box there lists the floor buttons, not the raid ones.
+  if(PAD&&PAD.on&&(typeof G==='undefined'||!G||state==='hub')) return [['L STICK','walk'],['LS CLICK','jog'],['A','use a station'],['X / Y / RB','the other station actions'],['Y','take a teammate offer'],['VIEW','backpack'],['MENU','pause']].map(function(r){ return '<b style="color:var(--bone)">'+padB(r[0])+'</b> '+r[1]; }).join(' &nbsp; ');
   if(PAD&&PAD.on&&typeof LEGEND_PAD!=='undefined'&&LEGEND_PAD) return LEGEND_PAD.map(function(sec){ return sec[1].map(function(r){ return '<b style="color:var(--bone)">'+padB(r[0])+'</b> '+r[1]; }   /* v19.86, code review: through padB, so a PlayStation pad reads SQUARE reload as the H panel does */).join(' &nbsp; '); }).join(' &nbsp; ');
   return 'MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; '+s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' move &nbsp; '+s('Space')+' dodge roll &nbsp; '+s('ShiftLeft')+' hold to sprint &nbsp; '+
     s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' interact &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyF')+' melee strike &nbsp; 1-9 tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
@@ -33478,7 +33481,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v19.87: Plugging a controller in or out while paused switches the pause box hints at once. Check 19.87 fails on v19.86',
+  now:'v19.88: Pausing in the Undercroft on a controller shows the Undercroft controller buttons. Check 19.88 fails on v19.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
