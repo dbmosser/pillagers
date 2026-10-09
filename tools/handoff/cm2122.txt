@@ -1,0 +1,7 @@
+v21.22: the undercroft song follows the players
+
+In two player play on one machine, the Undercroft song plays for whoever is on the floor and never reaches a player in a raid.
+
+Check 21.22. Fails on v21.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.21';
+var VER='21.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4014,7 +4014,9 @@ function musicWanted(){
   // music to the player 1 window, unless the world sound is set to player 2 only, when it is the one window that can be heard.
   // With SPLIT SPEAKERS on, the song still plays from both speakers (netMusOut). Solo play and the invite
   // code party never set NET.same, so nothing changes there.
-  if(typeof NET==='object'&&NET&&NET.same==='p2'&&netSndWho()!=='p2') return false;
+  // v21.22, from the review of the night builds (2026-10-09, R5): player 2 leaves the song to player 1 only while player 1 is on the
+  // floor too (NET.hostSeed is set while the host is up top). Back first from a raid the host is still in, his floor was silent.
+  if(typeof NET==='object'&&NET&&NET.same==='p2'&&netSndWho()!=='p2'&&!NET.hostSeed) return false;
   return true;                            // the Undercroft, and only the Undercroft
 }
 // What is happening, as one number. G.musThreat is the nearest hunting body,
@@ -4025,6 +4027,7 @@ function musicWanted(){
 // thing you do and the music should know it.
 
 function tickMusic(){
+  try{ if(typeof NET==='object'&&NET&&NET.same&&NET.musP) netMusPan(); }catch(_mpt){}   // v21.22 (R5): the song moves to the middle when both players are on the floor
   if(!musicWanted()){
     // Fade rather than cut, and forget the clock so the theme restarts clean
     // from the top of bar one instead of resuming mid-phrase.
@@ -34226,7 +34229,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.21: In co-op, an armoury gun you drop comes home on an abandon unless the other player takes it. Check 21.21 fails on v21.20',
+  now:'v21.22: In two player play on one machine, the Undercroft song plays for whoever is on the floor and never reaches a player in a raid. Check 21.22 fails on v21.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39106,11 +39109,28 @@ function netSndDefault(side){ return side!=='p2'; }
 // v20.86 (H53): THE ONE SONG PLAYS IN THE MIDDLE. With SPLIT SPEAKERS on, everything a window plays is panned to its side, so
 // the one Undercroft song would sit in player 1's speaker only. The music goes through a gain of its own that follows this
 // window's sound switch but skips the split panner, so it plays from both speakers.
+// v21.22, from the review of the night builds (2026-10-09, R5): WHERE THE ONE SONG SITS. Centred only while both players are on the
+// floor. While the other player is still up top (the host spectating with the party in the raid, or player 2 back first), this window's
+// song keeps to its own side with SPLIT SPEAKERS on, as every sound of this window does, so no Undercroft music reaches the speaker
+// of a player in a raid (his ruling: no raid music).
+function netMusPan(){
+  var up, on, pan=0;
+  if(!NET.musP) return 0;
+  up=(NET.same==='p2')?!!NET.hostSeed:!!NET.specG;
+  on=(typeof netSndWhoOn==='function')?netSndWhoOn():true;
+  if(on&&up&&netSndWho()==='both'&&netSndSplitOn()) pan=(NET.same==='p2')?1:-1;
+  try{ NET.musP.pan.value=pan; }catch(e){}
+  return pan;
+}
 function netMusOut(a){
   if(!a) return null;
   if(!NET.same) return a.destination;
   if(!NET.musG||NET.musAc!==a){
-    try{ NET.musG=a.createGain(); NET.musG.gain.value=NET.sndOn?1:0; NET.musG.connect(a.destination); NET.musAc=a; }
+    try{ NET.musG=a.createGain(); NET.musG.gain.value=NET.sndOn?1:0; NET.musAc=a;
+         // v21.22 (R5): through a panner of its own, centred while both players are on the floor (netMusPan)
+         NET.musP=null; try{ if(a.createStereoPanner){ NET.musP=a.createStereoPanner(); NET.musG.connect(NET.musP); NET.musP.connect(a.destination); } }catch(_mp){ NET.musP=null; }
+         if(!NET.musP) NET.musG.connect(a.destination);
+         netMusPan(); }
     catch(e){ NET.musG=null; NET.musAc=null; return netSndOut(a); }
   }
   return NET.musG;
@@ -39186,7 +39206,7 @@ function netSndInit(){ netSndLoad(); NET.sndOther=-1; netSndRoute(); netSndApply
 // SPLIT SPEAKERS on (the default) the party panned this window hard left (player 1) or hard right (player 2), and ending the party
 // only put the master gain back to 1. The panner kept its side, so every sound after it, guns, steps, the ambience and the
 // Undercroft music, came out of one speaker until a reload, and the rows that set it only show in a party. It goes back to the middle.
-function netSndRelease(){ NET.sndOther=-1; if(NET.sndG){ try{ NET.sndG.gain.value=1; }catch(e){} } if(NET.sndP){ try{ NET.sndP.pan.value=0; }catch(e2){} } return true; }
+function netSndRelease(){ NET.sndOther=-1; if(NET.sndG){ try{ NET.sndG.gain.value=1; }catch(e){} } if(NET.musG){ try{ NET.musG.gain.value=1; }catch(e3){} } if(NET.musP){ try{ NET.musP.pan.value=0; }catch(e4){} }   /* v21.22 (R6): the music comes back with the rest when the party ends */ if(NET.sndP){ try{ NET.sndP.pan.value=0; }catch(e2){} } return true; }
 function netSndLabel(on){ return on?'SOUND ON':'SOUND OFF'; }
 function netSndOtherLabel(){ return (NET.sndOther===1)?'sound on':((NET.sndOther===0)?'sound off':'not said yet'); }
 // What a test page reads: the switch, the other window's word, and the master gain as the game holds it.
