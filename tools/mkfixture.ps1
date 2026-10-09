@@ -5722,6 +5722,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.18',what:'F9 records the game: the first press starts a recording of the world and the HUD with a REC mark on the page, the second stops it',
+   run:function(){
+     if(typeof recStart!=='function'||typeof REC!=='object') return 'control: there is no recorder in this build';
+     if(typeof MediaRecorder==='undefined'||!HTMLCanvasElement.prototype.captureStream) return 'SKIP: this browser cannot record';
+     var bad=[], m;
+     try{
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:'F9',key:'F9',bubbles:true}));
+       if(!REC.on) bad.push('F9 did not start a recording');
+       else{
+         m=document.getElementById('recmark');
+         if(!m||m.style.display!=='block') bad.push('no REC mark while recording');
+         if(!REC.cv||!(REC.cv.width>=320)) bad.push('the recording canvas was not made');
+         if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; };   // the test keeps nothing and downloads nothing
+       }
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:'F9',key:'F9',bubbles:true}));
+       if(REC.on) bad.push('F9 again did not stop the recording');
+       m=document.getElementById('recmark');
+       if(m&&m.style.display!=='none') bad.push('the REC mark stayed after the recording stopped');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } }catch(_s){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.17',what:'attract mode: on the title after the idle time a clip plays over the screen with PRESS ANY KEY, a key stops it, and off the title it never shows',
    run:function(){
      if(typeof attTick!=='function'||typeof ATT!=='object') return 'control: there is no attract mode in this build';

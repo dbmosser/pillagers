@@ -1,0 +1,7 @@
+v21.18: f9 records your play for the title
+
+Press F9 to record your play and F9 again to stop; the title then shows it when nobody is playing.
+
+Check 21.18. Fails on v21.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

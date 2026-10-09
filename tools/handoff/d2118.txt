@@ -1,0 +1,5 @@
+## v21.18 - F9 RECORDS YOUR PLAY FOR THE TITLE
+
+Co-op hunt while he was away. His ask of 2026-10-08, the other half of attract mode: a way to record himself playing so the title can show it. F9 now starts recording the game (the world and the HUD, up to 1920 wide at 30 frames a second, with a red REC mark on screen that is not in the clip) and F9 again stops it; it stops by itself after 3 minutes. The clip becomes the one the title plays when nobody is playing, and a copy is saved to the downloads as pillagers-attract.webm.
+
+MEASURED. Check 21.18 passes, and fails on v21.17.

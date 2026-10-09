@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.18 - F9 RECORDS YOUR PLAY FOR THE TITLE
+
+Co-op hunt while he was away. His ask of 2026-10-08, the other half of attract mode: a way to record himself playing so the title can show it. F9 now starts recording the game (the world and the HUD, up to 1920 wide at 30 frames a second, with a red REC mark on screen that is not in the clip) and F9 again stops it; it stops by itself after 3 minutes. The clip becomes the one the title plays when nobody is playing, and a copy is saved to the downloads as pillagers-attract.webm.
+
+MEASURED. Check 21.18 passes, and fails on v21.17.
 ## v21.17 - ATTRACT MODE ON THE TITLE
 
 Co-op hunt while he was away. His ask of 2026-10-08: when nobody is playing, the first screen should show gameplay, as old arcade games did. On the title, after 30 seconds with no key, mouse or controller input, a gameplay clip now plays over the whole screen under PRESS ANY KEY, and any input stops it without doing anything else. The clip is one recorded in the game (the next build adds F9 to record), or else a video named attract.mp4 or attract.webm next to the game file, so a clip recorded any other way works too.
