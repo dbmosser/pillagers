@@ -1,0 +1,7 @@
+v21.02: contract rows are one height
+
+On the CONTRACTS list a finished contract with its CLAIM button is now the same height as the others.
+
+Check 21.02. Fails on v21.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

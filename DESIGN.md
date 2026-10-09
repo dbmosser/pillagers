@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.02 - CONTRACT ROWS ARE ONE HEIGHT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K CONTRACTS screenshot. A finished contract shows a CLAIM button on its progress line, and that button was a full size button in a small line, so the finished row stood about a third taller than every other row and the list looked uneven. The button is a little slimmer there now, and every contract row is the same height.
+
+MEASURED. Check 21.02 passes, and fails on v21.01.
 ## v21.01 - THE WHAT IS NEW CARD NAMES MORE 4K POLISH
 
 Co-op hunt while he was away. The card was stamped v20.87 and the stamp may not trail the build by more than 0.15. Its new second line names the map and raid fixes from the 4K screenshot pass of 2026-10-08: a solid map, its tags kept inside, ring labels clear of the screen edge and the backpack, and a run card that fits; the rest are in the change list.
