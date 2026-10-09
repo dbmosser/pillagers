@@ -1,0 +1,7 @@
+v20.68: the shop says how many you bought
+
+Buying several of one item at the shop now says how many you bought and what all of them cost.
+
+Check 20.68. Fails on v20.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

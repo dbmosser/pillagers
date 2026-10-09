@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.68 - THE SHOP SAYS HOW MANY YOU BOUGHT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At the shop you can raise the amount with + and buy several at once. Five Bandages took $3,300 and all five arrived, but the message said Bought Bandage for $660, because each unit is bought one at a time and each said its own line over the last. The shop now says the whole order once: how many, and what they cost together.
+
+MEASURED. Check 20.68 passes, and fails on v20.67.
 ## v20.67 - SORT BY RARITY FOLLOWS THE COLOURS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A gun in the stash wears the colour of its tier: the Longshot is gold, the Marksman Rifle purple, the Magnum blue. But SORT: RARITY ordered guns by an older rarity kept for prices, so the gold Longshot sorted below every purple item, the purple Marksman Rifle sat among the blues, and the blue Magnum and Burst Carbine among the greens. The sort now uses the colour each cell shows.
