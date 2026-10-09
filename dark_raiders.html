@@ -1649,7 +1649,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.06';
+var VER='21.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27696,6 +27696,12 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     var _zr=Math.max(1,hudRes());
     var zcx=(zwid+24*_zr<W)?clamp(zs.x,zwid/2+12*_zr,W-zwid/2-12*_zr):zs.x;
     var zsy=hudDodge(zcx,zs.y,zwid/2+6*_zr,LH(15)*_zr,0);
+    // v21.07, from the whole-game bug hunt of 2026-10-08 (V-D5), seen on the 4K backpack screenshot: A RING LABEL NEVER PRINTS UNDER
+    // THE OPEN BACKPACK. The label is drawn before the backpack panel, so where the two met the words showed faintly through the panel
+    // and ran on past its edge, across B or I to close. While the backpack is open a label that would touch the panel (where it was
+    // drawn last frame, G.bagPanel) is left out; the ring on the ground still shows, and the label is back when the backpack shuts.
+    var _zbp=G.bagOpen?G.bagPanel:null;
+    if(_zbp&&zcx-zwid/2-6*_zr<_zbp.x+_zbp.w&&zcx+zwid/2+6*_zr>_zbp.x&&zsy-LH(11)*_zr<_zbp.y+_zbp.h&&zsy+LH(4)*_zr>_zbp.y) continue;
     ctx.fillStyle='rgba(6,9,13,.78)';
     ctx.fillRect(zcx-zwid/2-6*_zr,zsy-LH(11)*_zr,zwid+12*_zr,LH(15)*_zr);
     ctx.fillStyle=za?'#4de3d0':'rgba(168,180,193,.95)';
@@ -34013,7 +34019,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.06: On a big screen the extraction label no longer runs up against the edge of the screen. Check 21.06 fails on v21.05',
+  now:'v21.07: The extraction label no longer shows through the open backpack. Check 21.07 fails on v21.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

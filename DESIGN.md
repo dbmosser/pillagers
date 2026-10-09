@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.07 - THE RING LABEL NEVER SHOWS THROUGH THE BACKPACK
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K backpack screenshot. With the backpack open near an extraction ring, the ring label (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN) was drawn underneath the backpack panel: half of it showed faintly through the panel and the rest ran on outside it, across the close hint. While the backpack is open, a ring label that would sit behind it is now left out. The ring on the ground still shows, and the label comes back as soon as the backpack is shut.
+
+MEASURED. Check 21.07 passes, and fails on v21.06.
 ## v21.06 - THE RING LABEL KEEPS CLEAR OF THE SCREEN EDGE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K raid screenshot. When an extraction ring is near the side of the screen, its label (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN) slides along to stay whole. On a big screen the dark strip behind the words is wider, but the gap kept to the edge was not, so the strip ran right up against the edge of the screen. The gap now grows with the screen as well. On a 1080p screen nothing moves.

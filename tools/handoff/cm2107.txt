@@ -1,0 +1,7 @@
+v21.07: the ring label never shows through the backpack
+
+The extraction label no longer shows through the open backpack.
+
+Check 21.07. Fails on v21.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
