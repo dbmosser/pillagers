@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.00 - WIRT LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K gambler screenshot. At Wirt the GAMBLE box was a narrow box only as wide as its one line and its button, and the LIMITED TIME OFFER box under it was about two and a half times wider, so the two centred boxes had no edge in common and the window looked unfinished. Both boxes are now the same width and stack as one neat column. Nothing in them changed.
+
+MEASURED. Check 21.00 passes, and fails on v20.99.
 ## v20.99 - STAT CARDS SIT LEVEL
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K YOUR STATS screenshot. A card that holds a name instead of a number, MOST RAIDED with COLD STORAGE or USUALLY KILLED BY with a long name, prints the name smaller so it fits, and that made its line shorter: the name and the line under it sat higher than the 0 and the 33% on the cards beside it, so the bottom row of cards was out of step. The name now takes the same height as a number and sits at its bottom, so every card in a row lines up.

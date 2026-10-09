@@ -1,0 +1,7 @@
+v21.00: wirt lines up
+
+At Wirt the gamble box and the offer box are now the same width.
+
+Check 21.00. Fails on v20.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
