@@ -1,0 +1,7 @@
+v20.82: fewer big robots for player 2 too
+
+In co-op, after the host is out, a ship call brings the same few sentries it does solo.
+
+Check 20.82. Fails on v20.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.81';
+var VER='20.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33913,7 +33913,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.81: Far gunfire, explosions and the ship coming in can be heard as far as their rings show. Check 20.81 fails on v20.80',
+  now:'v20.82: In co-op, after the host is out, a ship call brings the same few sentries it does solo. Check 20.82 fails on v20.81',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40716,7 +40716,10 @@ function netSpecRings(dt){
       do{ ss=freeSpot(G.map,30); st++; }while(netNearDist(ss)<700&&st<40);
       if(netNearDist(ss)>=700){
         z.siegeSpawned++;
-        nm=rr()<.5?mkSentry(ss.x,ss.y):mkCrawler(ss.x,ss.y);
+        // v20.82, from the whole-game bug hunt of 2026-10-08 (H61): THREE IN TEN ARE SENTRIES HERE TOO. The siege a spectating host runs
+        // for his party kept the old one in two when v18.06 (his son: fewer big robots) made the siege three in ten, so a ring player 2
+        // held after the host was out drew more sentries than the same call brings solo. The same single draw, the same share now.
+        nm=rr()<.3?mkSentry(ss.x,ss.y):mkCrawler(ss.x,ss.y);
         nm.siegeBorn=1; nm.alert=3; nm.state='investigate'; nm.tx=z.x+rnd(-60,60); nm.ty=z.y+rnd(-60,60);
         G.ents.push(nm);
         if(G.tel) G.tel.siegeArrivals=(G.tel.siegeArrivals||0)+1;

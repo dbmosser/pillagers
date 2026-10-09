@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.82 - FEWER BIG ROBOTS FOR PLAYER 2 TOO
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Since v18.06 (his son: fewer big robots) three machines in ten that answer a ship call are sentries, the rest crawlers. But when the host is out and keeps the raid running for player 2, his window still sent a sentry half the time, so a ring player 2 held drew more sentries than the same call solo or with the host still in. It now sends three in ten there too.
+
+MEASURED. Check 20.82 passes, and fails on v20.81.
 ## v20.81 - FAR SOUNDS ARE HEARD WHERE THEIR RINGS ARE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Every sound in the game faded to nothing a little short of 900 away, but gunfire, explosions, alarms and the extraction sounds draw their noise ring out to 1150 to 1500. So with the ship called and you looting 1000 away, the inbound pings and the touchdown were silent while their rings showed. Those sounds now carry as far as their rings: the same level as before up close, then a fade that ends just past the ring. Every other sound is unchanged.
