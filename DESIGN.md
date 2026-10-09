@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.52 - A HIRE ON AN ORDER MOVES ONCE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08 (the second half of H13, left open then). Any loud noise, a Crier alarm or the siege pull sent your hire toward the noise, and then his FOLLOW or HOLD order moved him again in the same frame, so he moved at about twice his speed and jittered between the two. A hire under FOLLOW or HOLD now lets the noise go and is moved by his order alone. A hire with no order still investigates.
+
+MEASURED. Check 21.52 passes, and fails on v21.51.
 ## v21.51 - THE WHAT IS NEW CARD NAMES THE SMALL FIXES OF THE DAY
 
 Co-op hunt while he was away. The card was stamped v21.43 and the stamp may not trail the build by more than 0.15. Its new second line names the small fixes of 2026-10-09 (v21.45 to v21.50); the review fixes and the second 4K pass are in the change list.

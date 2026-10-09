@@ -5723,6 +5723,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.52',what:'a hire on FOLLOW who hears a noise is moved by his order alone: the investigate step lets him go and he is back on loot',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof updateEnts!=='function'||typeof hireOrdered!=='function') return typeof hireOrdered!=='function'?'control: the investigate step still moves a hire on an order':'SKIP: no raid here';
+     var bad=[], g, e=null, i, o0, E0;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='raider'&&!g.ents[i].downed){ e=g.ents[i]; break; }
+       if(!e) return 'SKIP: staging: no pillager to hire';
+       o0=g.mercOrder; e.merc=1; e.hostile=false; g.mercOrder='follow';
+       e.x=g.player.x+150; e.y=g.player.y; e.state='investigate'; e.tx=g.player.x+900; e.ty=g.player.y;
+       E0=g.ents; g.ents=[e];
+       updateEnts(0.05);
+       g.ents=E0;
+       if(e.state==='investigate') bad.push('a hire on FOLLOW stayed on the noise, so the investigate step still moves him');
+     }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
+     finally{ try{ var g2=__state(); if(g2&&E0) g2.ents=E0; if(g2) g2.mercOrder=o0; if(e){ e.merc=0; } if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.51',what:'the what is new card is stamped within 0.15 of the build and leads with the small fixes news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

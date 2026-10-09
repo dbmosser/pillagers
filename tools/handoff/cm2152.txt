@@ -1,0 +1,7 @@
+v21.52: a hire on an order moves once
+
+Your hire on FOLLOW or HOLD no longer jitters and doubles his speed when he hears a noise.
+
+Check 21.52. Fails on v21.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
