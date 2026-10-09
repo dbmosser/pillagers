@@ -17,7 +17,9 @@ case "$1" in
     # byte-for-byte identical on every commit: 750 KB of duplicate, and the docs
     # named one while the game is called the other. The game is Pillagers, so that
     # is the name that survives.
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "Compress-Archive -Force -Path 'C:\claudecode\dark raiders\tools\publish\index.html' -DestinationPath 'C:\claudecode\dark raiders\tools\publish\pillagers-web.zip'"
+    # 2026-10-09: AND THE ATTRACT CLIP (v21.17). An attract.mp4 or attract.webm beside the game is copied next to index.html and goes
+    # in the zip, so the title shows his gameplay to anyone who plays the itch build. With no clip the zip is index.html alone, as before.
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "\$d='C:\claudecode\dark raiders'; \$p=@(\"\$d\tools\publish\index.html\"); foreach(\$f in @('attract.mp4','attract.webm')){ if(Test-Path \"\$d\\\$f\"){ Copy-Item -Force \"\$d\\\$f\" \"\$d\tools\publish\\\$f\"; \$p+=\"\$d\tools\publish\\\$f\" } }; Compress-Archive -Force -Path \$p -DestinationPath \"\$d\tools\publish\pillagers-web.zip\""
     # THE ITCH PUSH, and it does nothing until he has set it up. butler is itch's
     # own uploader; it is not installed here and needs an API key only he can make.
     # The guard means this line is inert today and live the moment
