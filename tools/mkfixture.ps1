@@ -5722,6 +5722,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.05',what:'a sector map marker tag stays inside the map frame: a locked room tag on the right edge of the map and one on the left edge are both drawn wholly inside the frame',
+   run:function(){
+     if(typeof mapLabel!=='function'||typeof mapLabelReset!=='function'||typeof mapProj!=='function') return 'SKIP: no map tags here';
+     if(!(W>0&&H>0)) return 'SKIP: no screen';
+     var bad=[], oFT=ctx.fillText, rec=[], M=mapProj(), fl=M.ox, fr=M.ox+WORLD_W*M.sc, t1='ZQX COLD VAULT  -  LOCKED', t2='ZQY EAST SAFE  -  LOCKED', i, r, saved=false;
+     try{
+       ctx.save(); saved=true;
+       ctx.fillText=function(s,x,y){ rec.push({s:String(s),x:x,w:CanvasRenderingContext2D.prototype.measureText.call(ctx,String(s)).width,ta:ctx.textAlign}); };
+       mapLabelReset();
+       mapLabel(t1,fr-4,M.oy+M.sc*WORLD_H*0.3,'#ffc04a');
+       mapLabel(t2,fl+4,M.oy+M.sc*WORLD_H*0.7,'#ffc04a');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; if(saved){ try{ ctx.restore(); }catch(_r){} } try{ mapLabelReset(); }catch(_m){} }
+     var seen=0;
+     for(i=0;i<rec.length;i++){ r=rec[i]; if(r.s!==t1&&r.s!==t2) continue; seen++;
+       if(r.ta!=='center'){ bad.push(r.s+' was drawn '+r.ta+' aligned'); continue; }
+       if(r.x+r.w/2>fr+1) bad.push(r.s+' runs '+Math.round(r.x+r.w/2-fr)+' px past the right of the map frame');
+       if(r.x-r.w/2<fl-1) bad.push(r.s+' runs '+Math.round(fl-(r.x-r.w/2))+' px past the left of the map frame'); }
+     if(!seen&&!bad.length) return 'SKIP: no tag was drawn';
+     return bad.length?bad.join('; '):null; }},
   {v:'21.04',what:'the open map hides the whole HUD: a white mark painted under the map backing comes out exactly the map colour, with nothing showing through',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';

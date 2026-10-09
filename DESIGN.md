@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.05 - MAP TAGS STAY INSIDE THE MAP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K map screenshot. The tags on the sector map (a locked room, a cache, an encampment) are centred over what they mark, so a locked room near the edge of the sector printed its name across the map border and out past the map: FOREMAN OFFICE - LOCKED and BLAST FREEZER - LOCKED both ran over the frame line. A tag that would cross the border now slides along to sit just inside it. Tags away from the edge do not move.
+
+MEASURED. Check 21.05 passes, and fails on v21.04.
 ## v21.04 - THE MAP HIDES THE HUD COMPLETELY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K map screenshot. The sector map is laid over the raid on a dark backing that was 99 percent solid, so on a big screen the HUD under it still ghosted through: the controls card, the standing tag, the health bar and the extraction banner were faintly readable down both sides of the map. The backing is now fully solid, in the same colour.

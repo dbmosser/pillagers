@@ -1,0 +1,7 @@
+v21.05: map tags stay inside the map
+
+Locked room and cache tags on the sector map no longer run over the map border.
+
+Check 21.05. Fails on v21.04.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
