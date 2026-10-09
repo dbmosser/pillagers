@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.19 - THE FLOOR BELT STAYS OUT OF THE WINDOWS
+
+Co-op hunt while he was away. From the 4K screenshot pass of 2026-10-08: the Undercroft belt is drawn on the floor under every station window, and it showed faintly along the bottom edge below the window frame, keys and all. While a window is open it is no longer drawn, as the floor heading already is not; the windows that need a belt have their own.
+
+MEASURED. Check 21.19 passes, and fails on v21.18.
 ## v21.18 - F9 RECORDS YOUR PLAY FOR THE TITLE
 
 Co-op hunt while he was away. His ask of 2026-10-08, the other half of attract mode: a way to record himself playing so the title can show it. F9 now starts recording the game (the world and the HUD, up to 1920 wide at 30 frames a second, with a red REC mark on screen that is not in the clip) and F9 again stops it; it stops by itself after 3 minutes. The clip becomes the one the title plays when nobody is playing, and a copy is saved to the downloads as pillagers-attract.webm.

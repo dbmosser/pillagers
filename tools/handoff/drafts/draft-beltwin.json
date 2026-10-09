@@ -1,0 +1,12 @@
+{
+    "title":  "THE FLOOR BELT STAYS OUT OF THE WINDOWS",
+    "why":  "From the 4K screenshot pass of 2026-10-08: the Undercroft belt is drawn on the floor under every station window, and it showed faintly along the bottom edge below the window frame, keys and all. While a window is open it is no longer drawn, as the floor heading already is not; the windows that need a belt have their own.",
+    "now":  "The Undercroft belt no longer shows through the bottom of station windows.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(CFG.hubBelt===0){ HUBBELT.cells=[]; return; }",
+                      "replacement":  "  if(CFG.hubBelt===0){ HUBBELT.cells=[]; return; }\n  // v16.xx, from the 4K visual pass of 2026-10-08 (V-A14): THE FLOOR BELT STAYS OUT OF A STATION WINDOW. The belt is drawn on the\n  // floor canvas, under every window, and showed faintly along the bottom edge below the window frame, keys and all, as the floor\n  // heading did before v20.88. While a window is open over the floor it is not drawn; the window has its own belt where it needs one.\n  if(hubWinOn()){ HUBBELT.cells=[]; return; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Undercroft floor belt is not drawn under an open station window, and is drawn again on the bare floor\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station)||typeof drawHubBelt!==\u0027function\u0027||typeof hubWinOn!==\u0027function\u0027) return \u0027SKIP: no Undercroft here\u0027;\n     var bad=[], r, n0, n1;\n     try{\n       __topClear(); __hubEnter(); __wnseen(1);\n       if(CFG.hubBelt===0) return \u0027SKIP: the floor belt is off in this fixture\u0027;\n       HUBBELT.cells=[]; drawHubBelt(); n0=HUBBELT.cells.length;\n       if(!n0) return \u0027SKIP: staging: the bare floor drew no belt\u0027;\n       r=__station(\u0027trader\u0027);\n       if(!hubWinOn()) return \u0027SKIP: staging: the shop window did not open (\u0027+JSON.stringify(r)+\u0027)\u0027;\n       HUBBELT.cells=[]; drawHubBelt(); n1=HUBBELT.cells.length;\n       if(n1) bad.push(\u0027with the shop window open the floor belt was drawn under it (\u0027+n1+\u0027 cells)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ __hubEnter(); }catch(_h){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

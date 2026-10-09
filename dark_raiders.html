@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.18';
+var VER='21.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30853,6 +30853,10 @@ function hubFootY(){
 }
 function drawHubBelt(){
   if(CFG.hubBelt===0){ HUBBELT.cells=[]; return; }
+  // v21.19, from the 4K visual pass of 2026-10-08 (V-A14): THE FLOOR BELT STAYS OUT OF A STATION WINDOW. The belt is drawn on the
+  // floor canvas, under every window, and showed faintly along the bottom edge below the window frame, keys and all, as the floor
+  // heading did before v20.88. While a window is open over the floor it is not drawn; the window has its own belt where it needs one.
+  if(hubWinOn()){ HUBBELT.cells=[]; return; }
   var old=G, st=hubBagState();
   try{ G=st; drawBelt(); HUBBELT.cells=(st.hotCells||[]).slice(); }
   catch(_hbl){ HUBBELT.cells=[]; }
@@ -34218,7 +34222,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.18: Press F9 to record your play and F9 again to stop; the title then shows it when nobody is playing. Check 21.18 fails on v21.17',
+  now:'v21.19: The Undercroft belt no longer shows through the bottom of station windows. Check 21.19 fails on v21.18',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

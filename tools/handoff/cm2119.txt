@@ -1,0 +1,7 @@
+v21.19: the floor belt stays out of the windows
+
+The Undercroft belt no longer shows through the bottom of station windows.
+
+Check 21.19. Fails on v21.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

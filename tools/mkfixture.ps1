@@ -5722,6 +5722,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.19',what:'the Undercroft floor belt is not drawn under an open station window, and is drawn again on the bare floor',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station)||typeof drawHubBelt!=='function'||typeof hubWinOn!=='function') return 'SKIP: no Undercroft here';
+     var bad=[], r, n0, n1;
+     try{
+       __topClear(); __hubEnter(); __wnseen(1);
+       if(CFG.hubBelt===0) return 'SKIP: the floor belt is off in this fixture';
+       HUBBELT.cells=[]; drawHubBelt(); n0=HUBBELT.cells.length;
+       if(!n0) return 'SKIP: staging: the bare floor drew no belt';
+       r=__station('trader');
+       if(!hubWinOn()) return 'SKIP: staging: the shop window did not open ('+JSON.stringify(r)+')';
+       HUBBELT.cells=[]; drawHubBelt(); n1=HUBBELT.cells.length;
+       if(n1) bad.push('with the shop window open the floor belt was drawn under it ('+n1+' cells)');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __hubEnter(); }catch(_h){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.18',what:'F9 records the game: the first press starts a recording of the world and the HUD with a REC mark on the page, the second stops it',
    run:function(){
      if(typeof recStart!=='function'||typeof REC!=='object') return 'control: there is no recorder in this build';
