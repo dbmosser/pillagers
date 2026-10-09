@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.69';
+var VER='20.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3450,7 +3450,10 @@ function payGear(g){
     // carried out the same gun. The line above added nothing in that case and
     // the sentence below said it had. He is paid what the gun is worth instead,
     // and the line says exactly that, so nothing on the receipt is a fiction.
-    var _pgv=(ITEMS['gun_'+g.k]&&ITEMS['gun_'+g.k].val)||0;
+    // v20.70, from the whole-game bug hunt of 2026-10-08 (H33): THE VALUE THE GAME SHOWS FOR THAT GUN. This paid the raw table value,
+    // while the stash, Tag as junk and Sell one all say and pay the value scaled by How much is out there (ival, v15.93), so on Rich
+    // the receipt paid less than the gun was worth everywhere else, and on Lean more. The receipt and the payment use ival now.
+    var _pgv=ival('gun_'+g.k);
     if(_pgv>0){ P.credits=(P.credits||0)+_pgv;
       return WEAPONS[g.k].name+', already yours, so its value of '+'$'+_pgv.toLocaleString()+' instead'; }
     return WEAPONS[g.k].name+', which you already own';
@@ -33856,7 +33859,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.69: ESC or TAB in the stash search box clears the words first, then closes the stash. Check 20.69 fails on v20.68',
+  now:'v20.70: A contract gun you already own now pays the same value the stash shows for it. Check 20.70 fails on v20.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

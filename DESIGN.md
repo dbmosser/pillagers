@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.70 - AN OWNED CONTRACT GUN PAYS WHAT IT IS WORTH
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When a contract paid a gun he already owned, he was paid its value instead, but the raw table value: with How much is out there set to Rich or Lean, the receipt and the money did not match the value the stash, Tag as junk and Sell one show and pay for the same gun. It now pays, and says, the same value as everywhere else. At the default setting nothing changes.
+
+MEASURED. Check 20.70 passes, and fails on v20.69.
 ## v20.69 - ESC CLOSES THE STASH FROM THE SEARCH BOX
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With the cursor in the stash search box, ESC cleared the words as promised, but the next ESC did nothing, and kept doing nothing for as long as the cursor stayed in the box. With the box empty, the first ESC did nothing either, and TAB only moved the cursor. The keys on the floor ignore a key typed into a box, and the box only answered when it had words to clear. Now an empty box hands ESC and TAB back: the cursor leaves the box and the stash closes, as it does from anywhere else.

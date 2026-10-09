@@ -1,0 +1,7 @@
+v20.70: an owned contract gun pays what it is worth
+
+A contract gun you already own now pays the same value the stash shows for it.
+
+Check 20.70. Fails on v20.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v20.70 - AN OWNED CONTRACT GUN PAYS WHAT IT IS WORTH
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When a contract paid a gun he already owned, he was paid its value instead, but the raw table value: with How much is out there set to Rich or Lean, the receipt and the money did not match the value the stash, Tag as junk and Sell one show and pay for the same gun. It now pays, and says, the same value as everywhere else. At the default setting nothing changes.
+
+MEASURED. Check 20.70 passes, and fails on v20.69.
