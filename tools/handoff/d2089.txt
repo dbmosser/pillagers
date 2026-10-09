@@ -1,0 +1,5 @@
+## v20.89 - THE SHOPKEEPER LINE SITS IN THE FOOTER
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The message line at the bottom of the screen (what the shopkeeper says when you walk up, what you just bought) landed right on the bottom edge of the shop grid and of the Fashion racks, its box drawn over the panel frame. In the shop, Fashion, the Mainframe and Settings it now sits a little lower, level with the CLOSE button in the empty middle of the button row, clear of every panel. Everywhere else it is where it was.
+
+MEASURED. Check 20.89 passes, and fails on v20.88.

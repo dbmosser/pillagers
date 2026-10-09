@@ -59,6 +59,12 @@
     background:rgba(6,9,13,.94); color:var(--bone); font-size:15px;
     letter-spacing:.02em; opacity:0; transition:opacity .18s ease; }
   #hubtoast.on{ opacity:1; }
+  /* v20.89, from the whole-game bug hunt of 2026-10-08 (V-A2): THE ANSWER LINE SITS IN THE FOOTER OF A STATION WINDOW. At 38 up
+     its box landed on the bottom edge of the shop grid and of the Fashion racks, its top border drawn over the panel frame line (the
+     4K screenshots of both). In the shop, Fashion, the Mainframe and Settings it now sits 26 up, the window padding, so it is level
+     with CLOSE in the empty middle of the button row and clear of every panel. Everywhere else it is where it was. */
+  body:has(#tradermodal.on) #hubtoast, body:has(#appearmodal.on) #hubtoast,
+  body:has(#opmodal.on) #hubtoast, body:has(#settingsmodal.on) #hubtoast{ bottom:26px; }
   .screen { position:absolute; inset:0; z-index:10;
     background:
       radial-gradient(1100px 500px at 20% -10%, rgba(255,192,74,.09), transparent 60%),
@@ -1605,7 +1611,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.88';
+var VER='20.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33951,7 +33957,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.88: The Undercroft heading no longer pokes out above the top of the shop, Fashion and the other windows. Check 20.88 fails on v20.87',
+  now:'v20.89: The shopkeeper line no longer sits on the bottom edge of the shop and Fashion panels. Check 20.89 fails on v20.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

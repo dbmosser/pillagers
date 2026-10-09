@@ -1,0 +1,7 @@
+v20.89: the shopkeeper line sits in the footer
+
+The shopkeeper line no longer sits on the bottom edge of the shop and Fashion panels.
+
+Check 20.89. Fails on v20.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
