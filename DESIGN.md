@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.08 - THE PAUSE BOX KEYS IN ONE STYLE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K pause screenshot. In the list of keys on the pause box, most keys were in bold but MOUSE, LMB, RMB, 1-9 and TAB were in plain grey, so the line looked like two different styles, and TAB was listed twice with two jobs (TAB back out, then P / TAB pause). Every key is now in the same bold, P is listed as pause, and TAB is listed once, as the controls card says it: pause, or back out.
+
+MEASURED. Check 21.08 passes, and fails on v21.07.
 ## v21.07 - THE RING LABEL NEVER SHOWS THROUGH THE BACKPACK
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K backpack screenshot. With the backpack open near an extraction ring, the ring label (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN) was drawn underneath the backpack panel: half of it showed faintly through the panel and the rest ran on outside it, across the close hint. While the backpack is open, a ring label that would sit behind it is now left out. The ring on the ground still shows, and the label comes back as soon as the backpack is shut.

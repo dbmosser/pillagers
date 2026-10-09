@@ -5722,6 +5722,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.08',what:'the pause box key line is one style: every entry starts with its key in bold, and the TAB key is named once',
+   run:function(){
+     if(typeof keysLegendHtml!=='function') return 'SKIP: no pause key line here';
+     var bad=[], hasPad=(typeof PAD==='object'&&PAD), on0=hasPad?PAD.on:false, h='', parts, i, txt, tabs, nd='T'+'AB';
+     try{
+       if(hasPad) PAD.on=false;
+       h=String(keysLegendHtml());
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(hasPad) PAD.on=on0; }
+     if(!h) return bad.length?bad.join('; '):'SKIP: the key line is empty';
+     parts=h.split(' &nbsp; ');
+     for(i=0;i<parts.length;i++){ if(!(/^<b[ >]/).test(parts[i])) bad.push('the entry '+parts[i].replace(/<[^>]*>/g,'')+' has no bold key'); }
+     txt=h.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ');
+     tabs=txt.split(nd).length-1;
+     if(tabs!==1) bad.push(nd+' is named '+tabs+' times in the key line');
+     return bad.length?bad.slice(0,5).join('; '):null; }},
   {v:'21.07',what:'a ring label never prints under the open backpack: with the ring behind the panel its label is drawn while the backpack is shut and left out while it is open',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';

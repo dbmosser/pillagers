@@ -1,0 +1,7 @@
+v21.08: the pause box keys in one style
+
+The pause box lists every key in the same bold, and TAB once.
+
+Check 21.08. Fails on v21.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
