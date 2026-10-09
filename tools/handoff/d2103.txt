@@ -1,0 +1,5 @@
+## v21.03 - THE EXTRACT NAMES ON THE MAP READ CLEARLY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K map screenshot. Over each extraction ring the sector map writes its letter (EXTRACT C) and a line under it (closes in 2 min 57 sec, or STAYS OPEN). On a big screen both lines grow, but the room between them did not, so the two lines touched and the countdown read as part of the name. The room between them now grows with the screen as well. On a 1080p screen nothing moves.
+
+MEASURED. Check 21.03 passes, and fails on v21.02.

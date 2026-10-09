@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.03 - THE EXTRACT NAMES ON THE MAP READ CLEARLY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K map screenshot. Over each extraction ring the sector map writes its letter (EXTRACT C) and a line under it (closes in 2 min 57 sec, or STAYS OPEN). On a big screen both lines grow, but the room between them did not, so the two lines touched and the countdown read as part of the name. The room between them now grows with the screen as well. On a 1080p screen nothing moves.
+
+MEASURED. Check 21.03 passes, and fails on v21.02.
 ## v21.02 - CONTRACT ROWS ARE ONE HEIGHT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K CONTRACTS screenshot. A finished contract shows a CLAIM button on its progress line, and that button was a full size button in a small line, so the finished row stood about a third taller than every other row and the list looked uneven. The button is a little slimmer there now, and every contract row is the same height.

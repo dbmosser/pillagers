@@ -1,0 +1,7 @@
+v21.03: the extract names on the map read clearly
+
+On a big screen the extract names on the map no longer touch the countdown under them.
+
+Check 21.03. Fails on v21.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
