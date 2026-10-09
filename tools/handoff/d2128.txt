@@ -1,0 +1,5 @@
+## v21.28 - THE WHAT IS NEW CARD NAMES ATTRACT MODE
+
+Co-op hunt while he was away. The card was stamped v21.16 and the stamp may not trail the build by more than 0.15. Its new second line names attract mode and the F9 recorder (v21.17, v21.18) and the Undercroft song that follows the players (v21.22); the fixes from the review of the night builds are in the change list.
+
+MEASURED. Check 21.28 passes, and fails on v21.27.

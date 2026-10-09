@@ -1,0 +1,7 @@
+v21.28: the what is new card names attract mode
+
+The what is new card names attract mode.
+
+Check 21.28. Fails on v21.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

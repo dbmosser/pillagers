@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.28 - THE WHAT IS NEW CARD NAMES ATTRACT MODE
+
+Co-op hunt while he was away. The card was stamped v21.16 and the stamp may not trail the build by more than 0.15. Its new second line names attract mode and the F9 recorder (v21.17, v21.18) and the Undercroft song that follows the players (v21.22); the fixes from the review of the night builds are in the change list.
+
+MEASURED. Check 21.28 passes, and fails on v21.27.
 ## v21.27 - NO CLOSES IN 0:00 ON A RING STILL RUNNING
 
 Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). A ring called before its closing time keeps running past it, and the closing row added in v21.15 then read closes in 0:00 on a ring that was still open. Past the closing time the row is now left off, and the call or the extraction in progress shows alone.
