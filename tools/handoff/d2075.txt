@@ -1,0 +1,5 @@
+## v20.75 - 4K: CENTRE PANELS GROW WITH THE SCREEN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At 4K the world, the backpack, the belt and the extraction lines are drawn about twice their 1080p size, but a few things in the middle of the screen stayed small: the Peddler trade panel, YOU DIED, the NOTORIETY stamp and the centre line such as HOLD E TO EXTRACT, and the hit ticks shrank inside the hole of the crosshair. They now grow with the screen the way the world prompts and the downed screen already do. At 1080p nothing moves.
+
+MEASURED. Check 20.75 passes, and fails on v20.74.

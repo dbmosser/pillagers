@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.75 - 4K: CENTRE PANELS GROW WITH THE SCREEN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At 4K the world, the backpack, the belt and the extraction lines are drawn about twice their 1080p size, but a few things in the middle of the screen stayed small: the Peddler trade panel, YOU DIED, the NOTORIETY stamp and the centre line such as HOLD E TO EXTRACT, and the hit ticks shrank inside the hole of the crosshair. They now grow with the screen the way the world prompts and the downed screen already do. At 1080p nothing moves.
+
+MEASURED. Check 20.75 passes, and fails on v20.74.
 ## v20.74 - THE FULL CONTROLS LIST CLEARS THE BELT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Pressing H twice in a raid opens the full controls list, which was meant to stop above the belt. It still kept room for the belt as it was long ago, and the belt has since grown, so at 1080p the bottom of the list covered the top of the line over the belt (the item name, FIRE use and V signal) and its dark strip, with H hide sitting right on it. The list now stops just above the belt as it is drawn on the screen. At 4K, where it already cleared, nothing moves.

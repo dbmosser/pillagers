@@ -1,0 +1,7 @@
+v20.75: 4k: centre panels grow with the screen
+
+At 4K the Peddler panel, YOU DIED, the NOTORIETY stamp, the centre extract line and the hit ticks match the size of the rest of the screen.
+
+Check 20.75. Fails on v20.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
