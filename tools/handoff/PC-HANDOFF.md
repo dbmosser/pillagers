@@ -614,3 +614,5 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 03:03 usage weekly 47% at 03:02 (target 52% by 08:00). 4K visual pass 2 on v21.28: 21 shots in tools/handoff/shots4k/pass-1009, 5 reviewers told to skip the first pass notes; drafts ship after
 2026-10-09 03:46 4K pass 2 shipped v21.29-v21.42 (rackstatus, footwin, kitedge, secfacts, condcols, killname, claimgap, runband, feellabel, mapheadgap, bagtextedge, guncardfit, mapmarks4k, beltmid); 33 notes appended to visual-queue; card v21.43
 2026-10-09 03:46 usage weekly 48% at 03:46; corpus + review of v21.21-v21.42 next
+2026-10-09 04:01 review round 2 (6 agents) on v21.21-v21.42: 1 confirmed (high, my R1 fix v21.21 re-opened the H23 two-saves duplication after an abandon or a closed window), 1 refuted (split-off music = intended). Fixed v21.44 gunpiled: P.gunPiled record, off P.raidSpliced at the drop, home-marked by the abandon, taken back out on the host's gungone
+2026-10-09 07:22 morning corpus 0..1271 on v21.43: 1 FAIL (v19.50 fade strip) passes alone = corpus order (a long report left on the card makes it scroll); check now SKIPs a scrolling card. Corpus clean.

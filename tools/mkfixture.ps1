@@ -10378,6 +10378,8 @@ window.__REGRESS=[
        oc.classList.add('on');
        s=getComputedStyle(a,'::before'); top=parseFloat(s.top); h=parseFloat(s.height);
        if(!(h>0)) return 'SKIP: no fade strip';
+       // 2026-10-09: the claim is about a card that does not scroll; in a corpus the card can still hold a long report from an earlier check
+       if([oc].concat([].slice.call(oc.querySelectorAll('*'))).some(function(el){ return el.scrollHeight>el.clientHeight+2&&/(auto|scroll)/.test(getComputedStyle(el).overflowY); })) return 'SKIP: the run card scrolls, where the fade over the words is meant';
        ar=a.getBoundingClientRect(); nr=nb.getBoundingClientRect();
        var z=ar.height>0&&a.offsetHeight>0?ar.height/a.offsetHeight:1;
        if(ar.top+top*z<nr.bottom-1) bad.push('the fade strip starts '+Math.round(nr.bottom-(ar.top+top*z))+' px inside the note box');
