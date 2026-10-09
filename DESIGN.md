@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.64 - A WEAK POINT HIT SAYS WEAK SPOT
+
+Co-op hunt while he was away. His note of 2026-10-09: hitting an enemy flashed OPTIC 2X (or VENT 3.4X, DORSAL SPINE 3.6X), which reads like a scope setting, not like a hit on a weak point. It now flashes WEAK SPOT, in the same colour as the weak point, so the bonus hit is clear at a glance.
+
+MEASURED. Check 21.64 passes, and fails on v21.63.
 ## v21.63 - A FOUND GUN NEVER BUMPS A BETTER ONE
 
 Co-op hunt while he was away. His note of 2026-10-09: he picked up a Scav Pistol and it took the place of a better gun, which should never happen. A found gun was weighed against the gun in your hands alone, so while you held Bare Hands in one slot a Scav Pistol counted as better and went into your hands with a far better gun in the other slot. It is now weighed against the best gun you carry in either slot: a gun takes a slot by itself only when it beats both, and anything else goes into the backpack.

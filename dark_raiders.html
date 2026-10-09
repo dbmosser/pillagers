@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.63';
+var VER='21.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20893,7 +20893,7 @@ function updateBullets(dt){
                 edmg*=WK.mult;
                 applyWeak(en,WK);
                 if(!G.sim){
-                  label(en.x,en.y-Math.round(en.r*1.3),WK.name+'  x'+WK.mult,WK.c,0,true);
+                  label(en.x,en.y-Math.round(en.r*1.3),'WEAK SPOT',WK.c,0,true);   /* v21.64, HIS NOTE (2026-10-09): OPTIC 2X read as a scope, not a weak point; it says WEAK SPOT, in the weak point colour */
                   spark(b.x,b.y,WK.c,26,340);
                   sfx('clank',b.x,b.y);
                   G.tel.weakHits=(G.tel.weakHits||0)+1;
@@ -34381,7 +34381,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.63: A gun you pick up only takes a slot when it is better than both your guns; otherwise it goes in the backpack. Check 21.63 fails on v21.62',
+  now:'v21.64: Hitting an enemy weak point now flashes WEAK SPOT instead of OPTIC 2X. Check 21.64 fails on v21.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

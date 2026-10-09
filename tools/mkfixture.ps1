@@ -5723,6 +5723,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.64',what:'a hit on a weak point says WEAK SPOT, not the part name and a multiplier',
+   run:function(){
+     var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd='WK.name+'+"'  x'+WK.mult";
+     if(src.indexOf(nd)>=0) return 'a weak point hit still shows the part name and its multiplier (OPTIC 2X)';
+     if(src.indexOf("'WEAK "+"SPOT'")<0) return 'a weak point hit does not say WEAK SPOT';
+     return null; }},
   {v:'21.63',what:'a found Scav Pistol never takes a slot while you carry a better gun: holding Bare Hands in slot 2 with a rifle in slot 1, it goes into the backpack',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof grantLoot!=='function'||typeof swapGuns!=='function'||!ITEMS.gun_pistol) return 'SKIP: no pickup here';

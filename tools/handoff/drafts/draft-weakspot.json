@@ -1,0 +1,12 @@
+{
+    "title":  "A WEAK POINT HIT SAYS WEAK SPOT",
+    "why":  "His note of 2026-10-09: hitting an enemy flashed OPTIC 2X (or VENT 3.4X, DORSAL SPINE 3.6X), which reads like a scope setting, not like a hit on a weak point. It now flashes WEAK SPOT, in the same colour as the weak point, so the bonus hit is clear at a glance.",
+    "now":  "Hitting an enemy weak point now flashes WEAK SPOT instead of OPTIC 2X.",
+    "edits":  [
+                  {
+                      "anchor":  "label(en.x,en.y-Math.round(en.r*1.3),WK.name+\u0027  x\u0027+WK.mult,WK.c,0,true);",
+                      "replacement":  "label(en.x,en.y-Math.round(en.r*1.3),\u0027WEAK SPOT\u0027,WK.c,0,true);   /* v16.xx, HIS NOTE (2026-10-09): OPTIC 2X read as a scope, not a weak point; it says WEAK SPOT, in the weak point colour */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a hit on a weak point says WEAK SPOT, not the part name and a multiplier\u0027,\n   run:function(){\n     var src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027), nd=\u0027WK.name+\u0027+\"\u0027  x\u0027+WK.mult\";\n     if(src.indexOf(nd)\u003e=0) return \u0027a weak point hit still shows the part name and its multiplier (OPTIC 2X)\u0027;\n     if(src.indexOf(\"\u0027WEAK \"+\"SPOT\u0027\")\u003c0) return \u0027a weak point hit does not say WEAK SPOT\u0027;\n     return null; }},"
+}

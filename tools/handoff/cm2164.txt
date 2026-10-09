@@ -1,0 +1,7 @@
+v21.64: a weak point hit says weak spot
+
+Hitting an enemy weak point now flashes WEAK SPOT instead of OPTIC 2X.
+
+Check 21.64. Fails on v21.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
