@@ -1,0 +1,20 @@
+{
+    "title":  "THE ATTRACT TITLES READ OVER THE FOOTAGE",
+    "why":  "Seen on the first real attract clip (2026-10-09): PRESS ANY KEY sat right on the recorded belt caption and PILLAGERS on the recorded clock, both hard to read over the gameplay. Each now sits on a soft dark band, and PRESS ANY KEY is raised clear of the belt row in the clip.",
+    "now":  "On the title gameplay clip, PILLAGERS and PRESS ANY KEY now read clearly over the footage.",
+    "edits":  [
+                  {
+                      "anchor":  "#attract .attpress{position:absolute;left:0;right:0;bottom:8%;",
+                      "replacement":  "#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);"
+                  },
+                  {
+                      "anchor":  "#attract .attname{position:absolute;left:0;right:0;top:6%;",
+                      "replacement":  "#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);"
+                  },
+                  {
+                      "anchor":  "function attEl(){",
+                      "replacement":  "// v16.xx, seen on the first real attract clip (2026-10-09): PRESS ANY KEY sat on the recorded belt caption and PILLAGERS on the recorded clock,\n// both hard to read over the footage. Each now sits on a soft dark band, and PRESS ANY KEY is raised clear of the belt row in the clip.\nfunction attEl(){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the attract titles read over any footage: each sits on a dark band, and PRESS ANY KEY is clear of the recorded belt row\u0027,\n   run:function(){\n     if(typeof attEl!==\u0027function\u0027) return \u0027SKIP: no attract mode here\u0027;\n     var d=attEl(), p=d.querySelector(\u0027.attpress\u0027), n=d.querySelector(\u0027.attname\u0027), was=d.style.display, bad=[], sp, sn;\n     try{\n       d.style.display=\u0027block\u0027;\n       sp=getComputedStyle(p); sn=getComputedStyle(n);\n       if(!/gradient/.test(sp.backgroundImage)) bad.push(\u0027PRESS ANY KEY has no band behind it\u0027);\n       if(!/gradient/.test(sn.backgroundImage)) bad.push(\u0027PILLAGERS has no band behind it\u0027);\n       var r=p.getBoundingClientRect();\n       if(r.bottom\u003einnerHeight*0.88) bad.push(\u0027PRESS ANY KEY sits on the recorded belt row (\u0027+Math.round(r.bottom)+\u0027 of \u0027+innerHeight+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ d.style.display=was; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

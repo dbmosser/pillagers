@@ -1,0 +1,7 @@
+v21.53: the attract titles read over the footage
+
+On the title gameplay clip, PILLAGERS and PRESS ANY KEY now read clearly over the footage.
+
+Check 21.53. Fails on v21.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

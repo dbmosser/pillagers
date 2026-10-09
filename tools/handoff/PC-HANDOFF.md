@@ -625,3 +625,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 09:52 heartbeat (HE IS HERE, idle 142 s, light): no new FAILs; v21.49 rectitle (F9 on the title records nothing, says where to press it; a black clip would have become the attract clip)
 2026-10-09 10:22 heartbeat (he is here, idle 412 s, light): no new FAILs; v21.50 recstoptitle (an F9 recording stops when the title comes up)
 2026-10-09 10:52 heartbeat (light): no new FAILs; v21.51 card refresh (stamped 21.51, next by ~21.65)
+2026-10-09 11:23 heartbeat (away 26 min, light): no new FAILs; v21.52 hireonce (H13 second half: a hire on FOLLOW/HOLD drops 'investigate' and moves once a frame). Hunt now 62 of 63 (H60 left: map build draws)

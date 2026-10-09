@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.53 - THE ATTRACT TITLES READ OVER THE FOOTAGE
+
+Co-op hunt while he was away. Seen on the first real attract clip (2026-10-09): PRESS ANY KEY sat right on the recorded belt caption and PILLAGERS on the recorded clock, both hard to read over the gameplay. Each now sits on a soft dark band, and PRESS ANY KEY is raised clear of the belt row in the clip.
+
+MEASURED. Check 21.53 passes, and fails on v21.52.
 ## v21.52 - A HIRE ON AN ORDER MOVES ONCE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08 (the second half of H13, left open then). Any loud noise, a Crier alarm or the siege pull sent your hire toward the noise, and then his FOLLOW or HOLD order moved him again in the same frame, so he moved at about twice his speed and jittered between the two. A hire under FOLLOW or HOLD now lets the noise go and is moved by his order alone. A hire with no order still investigates.

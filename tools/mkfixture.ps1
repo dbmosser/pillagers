@@ -5723,6 +5723,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.53',what:'the attract titles read over any footage: each sits on a dark band, and PRESS ANY KEY is clear of the recorded belt row',
+   run:function(){
+     if(typeof attEl!=='function') return 'SKIP: no attract mode here';
+     var d=attEl(), p=d.querySelector('.attpress'), n=d.querySelector('.attname'), was=d.style.display, bad=[], sp, sn;
+     try{
+       d.style.display='block';
+       sp=getComputedStyle(p); sn=getComputedStyle(n);
+       if(!/gradient/.test(sp.backgroundImage)) bad.push('PRESS ANY KEY has no band behind it');
+       if(!/gradient/.test(sn.backgroundImage)) bad.push('PILLAGERS has no band behind it');
+       var r=p.getBoundingClientRect();
+       if(r.bottom>innerHeight*0.88) bad.push('PRESS ANY KEY sits on the recorded belt row ('+Math.round(r.bottom)+' of '+innerHeight+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ d.style.display=was; }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.52',what:'a hire on FOLLOW who hears a noise is moved by his order alone: the investigate step lets him go and he is back on loot',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof updateEnts!=='function'||typeof hireOrdered!=='function') return typeof hireOrdered!=='function'?'control: the investigate step still moves a hire on an order':'SKIP: no raid here';
