@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.06 - THE RING LABEL KEEPS CLEAR OF THE SCREEN EDGE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K raid screenshot. When an extraction ring is near the side of the screen, its label (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN) slides along to stay whole. On a big screen the dark strip behind the words is wider, but the gap kept to the edge was not, so the strip ran right up against the edge of the screen. The gap now grows with the screen as well. On a 1080p screen nothing moves.
+
+MEASURED. Check 21.06 passes, and fails on v21.05.
 ## v21.05 - MAP TAGS STAY INSIDE THE MAP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K map screenshot. The tags on the sector map (a locked room, a cache, an encampment) are centred over what they mark, so a locked room near the edge of the sector printed its name across the map border and out past the map: FOREMAN OFFICE - LOCKED and BLAST FREEZER - LOCKED both ran over the frame line. A tag that would cross the border now slides along to sit just inside it. Tags away from the edge do not move.

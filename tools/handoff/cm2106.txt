@@ -1,0 +1,7 @@
+v21.06: the ring label keeps clear of the screen edge
+
+On a big screen the extraction label no longer runs up against the edge of the screen.
+
+Check 21.06. Fails on v21.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
