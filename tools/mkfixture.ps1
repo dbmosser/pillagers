@@ -5722,6 +5722,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.17',what:'attract mode: on the title after the idle time a clip plays over the screen with PRESS ANY KEY, a key stops it, and off the title it never shows',
+   run:function(){
+     if(typeof attTick!=='function'||typeof ATT!=='object') return 'control: there is no attract mode in this build';
+     var bad=[], t=document.getElementById('title'), was=t&&t.classList.contains('on'), s0=ATT.src, tr0=ATT.tried, d;
+     try{
+       if(!t) return 'SKIP: no title screen';
+       t.classList.add('on');
+       ATT.src='data:video/mp4;base64,AAAA'; ATT.tried=true; ATT.last=Date.now()-(ATTRACT_IDLE+5)*1000;
+       attTick();
+       d=document.getElementById('attract');
+       if(!ATT.on||!d||d.style.display!=='block') bad.push('after the idle time on the title no clip showed');
+       else if(!/PRESS ANY KEY/.test(d.textContent||'')) bad.push('the clip does not say PRESS ANY KEY');
+       window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyQ',key:'q',bubbles:true}));
+       if(ATT.on||(d&&d.style.display!=='none')) bad.push('a key did not stop the clip');
+       if(Date.now()-ATT.last>2000) bad.push('a key did not start the idle clock again');
+       t.classList.remove('on'); ATT.last=Date.now()-(ATTRACT_IDLE+5)*1000;
+       attTick();
+       if(ATT.on) bad.push('the clip showed off the title');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ attStop(); }catch(_s){} ATT.src=s0; ATT.tried=tr0; ATT.last=Date.now(); if(t){ if(was) t.classList.add('on'); else t.classList.remove('on'); } }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.16',what:'the what is new card is stamped within 0.15 of the build and leads with the your notes news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

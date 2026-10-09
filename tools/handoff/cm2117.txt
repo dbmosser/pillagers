@@ -1,0 +1,7 @@
+v21.17: attract mode on the title
+
+Leave the title screen alone for 30 seconds and a gameplay clip plays until you press a key.
+
+Check 21.17. Fails on v21.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

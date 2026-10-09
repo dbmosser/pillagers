@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.17 - ATTRACT MODE ON THE TITLE
+
+Co-op hunt while he was away. His ask of 2026-10-08: when nobody is playing, the first screen should show gameplay, as old arcade games did. On the title, after 30 seconds with no key, mouse or controller input, a gameplay clip now plays over the whole screen under PRESS ANY KEY, and any input stops it without doing anything else. The clip is one recorded in the game (the next build adds F9 to record), or else a video named attract.mp4 or attract.webm next to the game file, so a clip recorded any other way works too.
+
+MEASURED. Check 21.17 passes, and fails on v21.16.
 ## v21.16 - THE WHAT IS NEW CARD NAMES HIS NOTES
 
 Co-op hunt while he was away. The card was stamped v21.01 and the stamp may not trail the build by more than 0.15. Its new second line names the three fixes from his notes of 2026-10-08: two random guns from RANDOM FROM STASH (v21.13), a gun pushed out of a belt slot kept in the backpack (v21.14), and the closing time kept on the map during an extract (v21.15).
