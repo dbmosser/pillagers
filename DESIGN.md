@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.09 - THE RUN CARD FITS THE SCREEN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K end of raid screenshots: the 29 feel tags were held to a narrow column in the middle of the card, so they stacked eleven rows deep. The card ran past the screen with a scrollbar down its edge, the line under the buttons was out of sight, and on a death card the note box was half hidden under the two buttons. The tags, the note box and that line now use the full width of the card, about eight rows of tags, so a normal card fits on the screen with nothing hidden.
+
+MEASURED. Check 21.09 passes, and fails on v21.08.
 ## v21.08 - THE PAUSE BOX KEYS IN ONE STYLE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K pause screenshot. In the list of keys on the pause box, most keys were in bold but MOUSE, LMB, RMB, 1-9 and TAB were in plain grey, so the line looked like two different styles, and TAB was listed twice with two jobs (TAB back out, then P / TAB pause). Every key is now in the same bold, P is listed as pause, and TAB is listed once, as the controls card says it: pause, or back out.

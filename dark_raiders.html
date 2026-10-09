@@ -579,7 +579,12 @@
   .manifest{ font-size:14.5px; color:var(--bone); text-align:center; line-height:1.7; max-width:560px; }
   .hint{ font-size:14px; color:var(--ash); line-height:1.65; padding:9px 12px; }
   .hint b{ color:var(--bone); font-weight:500; }
-  .tagwrap{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; max-width:560px; margin:14px 0 8px; }
+  /* v21.09, from the whole-game bug hunt of 2026-10-08 (V-E1), seen on the 4K run card screenshots: THE FEEL TAGS USE THE CARD WIDTH.
+     The 29 tags were held to a column 560 wide in a card with 774 of room, so they stacked eleven rows deep: the card ran past the
+     screen with a scrollbar down its edge, the line under the buttons was out of sight, and on a death card the note box hid half
+     under the pinned buttons. The tags, the note box and that line now take the full width of the card (about eight rows of tags),
+     so a normal card fits. The card itself keeps its 880 cap. */
+  .tagwrap{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; max-width:774px; margin:14px 0 8px; }
   .tag{ font-size:13px; padding:6px 12px; border:1px solid var(--steel-hi); color:var(--ash);
     cursor:pointer; text-transform:uppercase; letter-spacing:.05em; transition:all .12s; }
   .tag:hover{ border-color:var(--ash); color:var(--bone); }
@@ -858,12 +863,12 @@
   <div class="manifest" id="oc_party" style="display:none;margin-top:12px"></div>
   <div style="font-size:10.5px;color:var(--ash);letter-spacing:.2em;margin-top:16px">HOW DID THAT RUN FEEL</div>
   <div class="tagwrap" id="tagwrap"></div>
-  <textarea id="oc_note" rows="2" style="max-width:520px" placeholder="Anything else? (optional)"></textarea>
+  <textarea id="oc_note" rows="2" style="max-width:774px" placeholder="Anything else? (optional)"></textarea>
   <div class="ocacts">
     <button style="padding:8px 22px" id="oc_btn">Log run and return</button>
     <button style="padding:8px 22px" id="oc_copy">Copy report</button>
   </div>
-  <div style="font-size:11px;color:var(--ash);margin-top:8px;max-width:520px;line-height:1.5;margin-bottom:26px">Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.</div>
+  <div style="font-size:11px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px">Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.</div>
 </div>
 </div>
 
@@ -1649,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.08';
+var VER='21.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34024,7 +34029,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.08: The pause box lists every key in the same bold, and TAB once. Check 21.08 fails on v21.07',
+  now:'v21.09: The end of raid card lays its feel tags out wider, so it fits on the screen and the note box is never hidden. Check 21.09 fails on v21.08',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

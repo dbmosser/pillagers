@@ -1,0 +1,7 @@
+v21.09: the run card fits the screen
+
+The end of raid card lays its feel tags out wider, so it fits on the screen and the note box is never hidden.
+
+Check 21.09. Fails on v21.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
