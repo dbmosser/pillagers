@@ -5723,6 +5723,40 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.37',what:'the run card headings are readable: HOW DID THAT RUN FEEL, and HOW IT WENT on a death card, are no more than a point under the feel tags',
+   run:function(){
+     var tw=document.getElementById('tagwrap'), lb=tw&&tw.previousElementSibling, oc=document.getElementById('outcome'), was=oc&&oc.classList.contains('on'), bad=[], fl, ft, tg, ds, i, hw=null, nd='HOW IT'+' WENT', staged=false;
+     if(!tw||!lb||!oc||typeof buildTags!=='function') return 'SKIP: no run card here';
+     if(String(lb.textContent).replace(/\s+/g,'').length<5) return 'SKIP: the heading above the tags is blank here';
+     try{
+       if(!tw.querySelector('.tag')) buildTags();
+       oc.classList.add('on');
+       tg=tw.querySelector('.tag');
+       if(!tg) return 'SKIP: no feel tags here';
+       ft=parseFloat(getComputedStyle(tg).fontSize); fl=parseFloat(getComputedStyle(lb).fontSize);
+       if(!(fl>0&&ft>0)) return 'SKIP: no font sizes here';
+       if(fl<ft*0.9) bad.push('the heading above the feel tags is '+fl+' px over tags of '+ft+' px, the smallest text on the card');
+       if(!was) oc.classList.remove('on');
+       if(window.__deploy&&window.__endRaid&&window.__topClear){
+         __topClear(); __runPrep(); __cleanProfile();
+         __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+         staged=true;
+         if(G&&!G.over&&G.player&&G.tel){
+           G.tel.hitLog=[{n:'QZ TEST HAMMER',a:37,t:61,hp:63}];
+           G.player.downed=false; __endRaid('dead');
+           ds=document.querySelectorAll('#oc_manifest div');
+           for(i=0;i<ds.length;i++) if(!ds[i].children.length&&String(ds[i].textContent).replace(/\s+/g,' ').trim()===nd){ hw=ds[i]; break; }
+           if(hw){ fl=parseFloat(getComputedStyle(hw).fontSize); if(fl<ft*0.9) bad.push('the '+nd+' heading on a death card is '+fl+' px over tags of '+ft+' px'); }
+         }
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       if(staged){
+         try{ if(G&&!G.over){ G.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+         __topClear(); __cleanProfile();
+       } else if(!was) oc.classList.remove('on');
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.36',what:'the run card button strip runs the full width of the card, so it never shows as a box inset behind the two buttons, and the card does not scroll sideways for it',
    run:function(){
      var oc=document.getElementById('outcome'), w=oc&&oc.querySelector('.ocwin'), a=oc&&oc.querySelector('.ocacts'), was=oc&&oc.classList.contains('on'), bad=[], cw, gl, gr;

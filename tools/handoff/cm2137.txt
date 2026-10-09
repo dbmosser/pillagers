@@ -1,0 +1,7 @@
+v21.37: the run card headings are readable
+
+The headings on the death and extract card are bigger and easier to read.
+
+Check 21.37. Fails on v21.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
