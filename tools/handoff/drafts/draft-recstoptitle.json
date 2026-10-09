@@ -1,0 +1,12 @@
+{
+    "title":  "A RECORDING STOPS AT THE TITLE",
+    "why":  "A recording started with F9 kept running if you went back to the title screen, where the game canvas is empty, so the clip filled up with black and that black ending played on the title afterwards. It now stops by itself when the title comes up.",
+    "now":  "An F9 recording stops by itself when you go back to the title screen.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(Date.now()-REC.t0\u003eREC.max*1000){ recStop(); return; }",
+                      "replacement":  "  if(Date.now()-REC.t0\u003eREC.max*1000){ recStop(); return; }\n  if(typeof attTitleUp===\u0027function\u0027\u0026\u0026attTitleUp()){ recStop(); return; }   // v16.xx: back on the title the canvas is empty, so a running recording stops there instead of filling with black"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a recording still running when the title comes up stops by itself\u0027,\n   run:function(){\n     if(typeof recStart!==\u0027function\u0027||typeof REC!==\u0027object\u0027||typeof attTitleUp!==\u0027function\u0027) return \u0027SKIP: no recorder here\u0027;\n     if(typeof MediaRecorder===\u0027undefined\u0027||!HTMLCanvasElement.prototype.captureStream) return \u0027SKIP: this browser cannot record\u0027;\n     var bad=[], t=document.getElementById(\u0027title\u0027), was=t\u0026\u0026t.classList.contains(\u0027on\u0027);\n     if(!t) return \u0027SKIP: no title\u0027;\n     try{\n       t.classList.remove(\u0027on\u0027);\n       if(!recStart()) return \u0027SKIP: the recording did not start\u0027;\n       if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; };\n       t.classList.add(\u0027on\u0027); recDraw();\n       if(REC.on) bad.push(\u0027the recording kept running on the title\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } }catch(_s){} if(was) t.classList.add(\u0027on\u0027); else t.classList.remove(\u0027on\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

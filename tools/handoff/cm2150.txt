@@ -1,0 +1,7 @@
+v21.50: a recording stops at the title
+
+An F9 recording stops by itself when you go back to the title screen.
+
+Check 21.50. Fails on v21.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

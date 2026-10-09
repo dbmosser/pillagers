@@ -5723,6 +5723,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.50',what:'a recording still running when the title comes up stops by itself',
+   run:function(){
+     if(typeof recStart!=='function'||typeof REC!=='object'||typeof attTitleUp!=='function') return 'SKIP: no recorder here';
+     if(typeof MediaRecorder==='undefined'||!HTMLCanvasElement.prototype.captureStream) return 'SKIP: this browser cannot record';
+     var bad=[], t=document.getElementById('title'), was=t&&t.classList.contains('on');
+     if(!t) return 'SKIP: no title';
+     try{
+       t.classList.remove('on');
+       if(!recStart()) return 'SKIP: the recording did not start';
+       if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; };
+       t.classList.add('on'); recDraw();
+       if(REC.on) bad.push('the recording kept running on the title');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } }catch(_s){} if(was) t.classList.add('on'); else t.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.49',what:'F9 on the title records nothing and says where to press it',
    run:function(){
      if(typeof recStart!=='function'||typeof REC!=='object'||typeof attTitleUp!=='function') return 'SKIP: no recorder here';

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.50 - A RECORDING STOPS AT THE TITLE
+
+Co-op hunt while he was away. A recording started with F9 kept running if you went back to the title screen, where the game canvas is empty, so the clip filled up with black and that black ending played on the title afterwards. It now stops by itself when the title comes up.
+
+MEASURED. Check 21.50 passes, and fails on v21.49.
 ## v21.49 - F9 ON THE TITLE RECORDS NOTHING
 
 Co-op hunt while he was away. The title screen is made of page elements over an empty game canvas, so pressing F9 there recorded a black clip, and that clip then became the one the title plays when nobody is playing. F9 on the title now records nothing and says to press it in a raid or the Undercroft.
