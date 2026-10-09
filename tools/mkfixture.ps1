@@ -5723,6 +5723,38 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.39',what:'the backpack words line up with the item grid: the BACKPACK title, EQUIPPED and the selected item line start where the first tile starts, and the key line and the price end where the grid ends',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     if(typeof bagStacks!=='function'||!ITEMS.servo) return 'SKIP: no backpack grid here';
+     var bad=[], g, oFT=ctx.fillText, seen=[], c0, bp, gL, gR, st, nm, i, q, f;
+     function find(fn){ for(var j=seen.length-1;j>=0;j--) if(fn(seen[j])) return seen[j]; return null; }   // the backpack is drawn late in the frame
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       g.bag.push('servo'); g.bag.push('servo'); g.mapOpen=false; g.bagOpen=true; g.bagSel=0;
+       __frame(0.016);
+       ctx.fillText=function(s,x,y){ seen.push({s:String(s),x:x,a:ctx.textAlign}); return oFT.apply(this,arguments); };
+       try{ __frame(0.016); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
+       c0=(g.bagCells||[])[0]; bp=g.bagPanel;
+       if(!c0||!bp) return 'SKIP: the backpack grid was not drawn';
+       gL=c0.x; gR=bp.x+bp.w-(c0.x-bp.x);
+       if(!(gL-bp.x>12)) return 'SKIP: the grid sits at the panel edge here, so there is nothing to line up';
+       st=bagStacks()[g.bagSel||0]; nm=(st&&ITEMS[st.key])?ITEMS[st.key].name:null;
+       f=[['the BACKPACK title',function(o){ return o.s==='BACKPACK'&&o.a!=='right'; },gL],
+          ['EQUIPPED',function(o){ return o.s==='EQUIPPED'; },gL],
+          ['the selected item line',function(o){ return !!nm&&o.s.indexOf(nm)===0&&o.a!=='right'&&o.a!=='center'; },gL],
+          ['the key line',function(o){ return o.s.indexOf('to close')>=0&&o.a==='right'; },gR],
+          ['the price',function(o){ return o.s.indexOf(' each')>=0&&o.s.charAt(0)==='$'&&o.a==='right'; },gR]];
+       for(i=0;i<f.length;i++){
+         q=find(f[i][1]);
+         if(!q){ bad.push('control: '+f[i][0]+' was not drawn'); continue; }
+         if(Math.abs(q.x-f[i][2])>1) bad.push(f[i][0]+' is drawn at '+Math.round(q.x-bp.x)+' from the panel edge, the grid '+(f[i][2]===gL?'starts':'ends')+' at '+Math.round(f[i][2]-bp.x));
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ var g2=__state(); if(g2){ g2.bagOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.38',what:'at 4K the SECTOR MAP header stands clear of the map frame as it does at 1080p: its baseline sits at least 8 map zooms above the map, past the frame that grows with the screen, and at 1080p it is where it was',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__forceSize)) return 'SKIP: this fixture cannot deploy at a forced size';

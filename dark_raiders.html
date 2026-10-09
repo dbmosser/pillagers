@@ -1681,7 +1681,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.38';
+var VER='21.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31031,6 +31031,13 @@ function drawBag(){
   // which is exactly how its belt reserve drifted out of date for three builds.
   G.bagPanel={x:x,y:y,w:PW,h:hh};
   hudPanel(x,y,PW,hh,0.96);   // v18.13: the one HUD panel
+  // v21.39, from the 4K visual pass of 2026-10-09 (W-D1): THE BACKPACK WORDS LINE UP WITH THE GRID. Every line of text in this panel
+  // sat 11 pixels in from the panel edge at every screen size, while the tiles start a margin in (MARG, which grows with the screen),
+  // so at 4K the title, the gun, its numbers and the item line hugged the left edge of the panel about 75 pixels left of the first
+  // tile, and the key line, the rounds and the price hugged the right edge. From here on x and PW are the text column, which starts
+  // where the grid starts and ends where it ends. The panel, the box the mouse uses (G.bagPanel, recorded above) and the grid are
+  // where they were.
+  var _tm=Math.max(0,(gx-x)-11); x+=_tm; PW-=2*_tm;
 
   var cy=y+LH(19)*BZ;
   ctx.font=bFS(TYPE.head); ctx.fillStyle='#ffc04a';
@@ -34280,7 +34287,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.38: On a 4K screen the SECTOR MAP header no longer sits on the map frame. Check 21.38 fails on v21.37',
+  now:'v21.39: The words in the backpack line up with the item tiles instead of hugging the panel edges. Check 21.39 fails on v21.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

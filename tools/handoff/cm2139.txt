@@ -1,0 +1,7 @@
+v21.39: the backpack words line up with the grid
+
+The words in the backpack line up with the item tiles instead of hugging the panel edges.
+
+Check 21.39. Fails on v21.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

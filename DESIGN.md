@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.39 - THE BACKPACK WORDS LINE UP WITH THE GRID
+
+Co-op hunt while he was away. Found by the 4K visual pass of 2026-10-09 (W-D1). In the raid backpack every line of words sat a fixed 11 pixels in from the edge of the panel, while the item tiles sit a margin in that grows with the screen. On the 4K screenshot the BACKPACK title, the gun, its numbers and the selected item hugged the left edge about 75 pixels left of the first tile, and the close keys, the rounds and the price hugged the right edge, so the panel looked unaligned. The words now start where the tiles start and end where the tiles end, at every screen size. The panel and the tiles have not moved.
+
+MEASURED. Check 21.39 passes, and fails on v21.38.
 ## v21.38 - THE MAP HEADER STANDS CLEAR OF THE FRAME
 
 Co-op hunt while he was away. Found by the 4K visual pass of 2026-10-09 (W-D3). On the 4K sector map the header line (SECTOR MAP, CLICK to set a waypoint and the weather on the right) stood right on the map frame, touching its top line. The frame has grown with the screen for a long time, but the gap under the header was a fixed 10 pixels, which at 4K the thicker frame used up. The gap now grows with the screen too, so the header sits clear of the frame at 4K as it does at 1080p. At 1080p nothing moves.
