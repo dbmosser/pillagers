@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.22';
+var VER='21.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19655,7 +19655,7 @@ navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
       var wantS=e.face;
 if(e.state==='alarm'){
         var ds=dist(e,p);
-        if(sees){ e.markX=p.x; e.markY=p.y; }
+        if(sees){ e.markX=p.x; e.markY=p.y; e.markSeat=(p&&p.net)?(p.seat|0):0; }   // v21.23, from the review of 2026-10-09 (R3): the marked player follows the marked place
         // v12.50, 2026-09-07 audit: THREE CONTINUOUS SECONDS, not three added up
         // over a whole alarm. The counter below was zeroed only when the alarm
         // began, so a man who ducked behind three different walls for a second
@@ -20919,7 +20919,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // lost sight of you. Same three fields the sight path sets.
               else if(en.state!=='alarm'){
                 en.state='alarm'; en.lost=0; en.wind=rnd(3,4);
-                en.markX=p.x; en.markY=p.y;
+                en.markX=p.x; en.markY=p.y; en.markSeat=0;   // v21.23 (R3): your round marks you
               }
               if(!b._hitTold){ b._hitTold=1; G.tel.hits++; }   // v11.84: one hit per round, however many it passes through
               // Hit feedback at the reticle. The sprite flash and spark happen out
@@ -34229,7 +34229,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.22: In two player play on one machine, the Undercroft song plays for whoever is on the floor and never reaches a player in a raid. Check 21.22 fails on v21.21',
+  now:'v21.23: In co-op, a Crier always marks the player it is watching, and its alarm plays once. Check 21.23 fails on v21.22',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41423,7 +41423,7 @@ function netMarkTake(peer,m){
   k=netClean(m.k,6); e=NET.entMap?NET.entMap[m.nid|0]:null; mine=((m.seat|0)===NET.seat);
   if(k==='on'){
     if(e){ e.wind=clamp(isFinite(+m.wind)?+m.wind:3.5,0,6); e.state='alarm'; }
-    if(!G.sim){ if(e) sfxHere('alarm',e.x,e.y); if(mine) say('A crier has you. Kill it or move.'); }
+    if(!G.sim){ if(mine) say('A crier has you. Kill it or move.'); }   /* v21.23 (R4): the host already sends the alarm sound, so it is not played twice here */
     return 'mark:on';
   }
   if(k==='fire'){
@@ -41509,7 +41509,7 @@ function netShotTake(peer,m){
   if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC) e.hostile=true;
   if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.6; }
   else if(e.kind!=='snitch'){ if(e.kind!=='peddler'&&e.kind!=='stray'){ e.alert=2.6; e.state='chase'; e.tx=sx; e.ty=sy; } }   // v20.42 (H2): a party round into the Peddler or the Survivor moves no stall and sets no chase, as your own round
-  else if(e.state!=='alarm'){ e.state='alarm'; e.lost=0; e.wind=3.5; e.markX=sx; e.markY=sy; }
+  else if(e.state!=='alarm'){ e.state='alarm'; e.lost=0; e.wind=3.5; e.markX=sx; e.markY=sy; e.markSeat=s; }   /* v21.23 (R3): a round from one of the party marks him */
   if(!G.sim){ spark(e.x,e.y,e.kind==='raider'?'#ff5a4a':'#ffc25c',9,220); sfxHere('hit',e.x,e.y); }   // v20.40 (H52): the window that fired plays its own
   return 'shot';
 }

@@ -1,0 +1,5 @@
+## v21.23 - THE CRIER MARKS THE RIGHT PLAYER EVERY TIME
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09), two follow-ups to v20.38. A Crier remembered which player it was marking only when it first spotted someone, so if it then switched to the other player, or was woken by a round, it could brand the wrong player when it fired. And on player 2 window its alarm played twice, once from the host and once more from the windup word. The marked player now follows the marked place on every path, and the alarm plays once.
+
+MEASURED. Check 21.23 passes, and fails on v21.22.

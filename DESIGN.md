@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.23 - THE CRIER MARKS THE RIGHT PLAYER EVERY TIME
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09), two follow-ups to v20.38. A Crier remembered which player it was marking only when it first spotted someone, so if it then switched to the other player, or was woken by a round, it could brand the wrong player when it fired. And on player 2 window its alarm played twice, once from the host and once more from the windup word. The marked player now follows the marked place on every path, and the alarm plays once.
+
+MEASURED. Check 21.23 passes, and fails on v21.22.
 ## v21.22 - THE UNDERCROFT SONG FOLLOWS THE PLAYERS
 
 Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). v20.86 gave two players on one machine a single Undercroft song, played by the player 1 window and centred. But when player 2 came back to the floor while the host was still in the raid, nothing played at all, and when the host was back first the centred song reached player 2 in the middle of his raid. Now player 2 plays the song while the host is up top, the song is centred only when both players are on the floor and otherwise stays on its own side, and ending the party brings the music back at full volume.

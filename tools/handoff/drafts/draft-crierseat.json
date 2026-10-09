@@ -1,0 +1,24 @@
+{
+    "title":  "THE CRIER MARKS THE RIGHT PLAYER EVERY TIME",
+    "why":  "Found by the review of the night builds (2026-10-09), two follow-ups to v20.38. A Crier remembered which player it was marking only when it first spotted someone, so if it then switched to the other player, or was woken by a round, it could brand the wrong player when it fired. And on player 2 window its alarm played twice, once from the host and once more from the windup word. The marked player now follows the marked place on every path, and the alarm plays once.",
+    "now":  "In co-op, a Crier always marks the player it is watching, and its alarm plays once.",
+    "edits":  [
+                  {
+                      "anchor":  "        if(sees){ e.markX=p.x; e.markY=p.y; }",
+                      "replacement":  "        if(sees){ e.markX=p.x; e.markY=p.y; e.markSeat=(p\u0026\u0026p.net)?(p.seat|0):0; }   // v16.xx, from the review of 2026-10-09 (R3): the marked player follows the marked place"
+                  },
+                  {
+                      "anchor":  "                en.markX=p.x; en.markY=p.y;",
+                      "replacement":  "                en.markX=p.x; en.markY=p.y; en.markSeat=0;   // v16.xx (R3): your round marks you"
+                  },
+                  {
+                      "anchor":  "e.wind=3.5; e.markX=sx; e.markY=sy; }",
+                      "replacement":  "e.wind=3.5; e.markX=sx; e.markY=sy; e.markSeat=s; }   /* v16.xx (R3): a round from one of the party marks him */"
+                  },
+                  {
+                      "anchor":  "if(!G.sim){ if(e) sfxHere(\u0027alarm\u0027,e.x,e.y); if(mine) say(\u0027A crier has you. Kill it or move.\u0027); }",
+                      "replacement":  "if(!G.sim){ if(mine) say(\u0027A crier has you. Kill it or move.\u0027); }   /* v16.xx (R4): the host already sends the alarm sound, so it is not played twice here */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a Crier marks the player whose round woke it and plays its alarm once on player 2 window: a party round sets the marked seat, and the windup word adds no second alarm\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||typeof NET!==\u0027object\u0027||!NET||typeof netShotTake!==\u0027function\u0027||typeof netMarkTake!==\u0027function\u0027||typeof netEntMake!==\u0027function\u0027) return \u0027SKIP: no raid or party here\u0027;\n     var NK={}, k, bad=[], oSfx=sfx, oSay=say, heard=[], g, c=null, i, d, peer1={seat:1,state:\u0027in\u0027};\n     for(k in NET) NK[k]=NET[k];\n     try{\n       NET.on=false; NET.role=null; NET.peers=[];\n       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: no live raid\u0027;\n       for(i=0;i\u003cg.ents.length;i++) if(g.ents[i].kind===\u0027snitch\u0027){ c=g.ents[i]; break; }\n       if(!c) return \u0027SKIP: staging: no Crier\u0027;\n       say=function(){}; sfx=function(t){ heard.push(String(t)); };\n       NET.on=true; NET.role=\u0027host\u0027; NET.seat=0; NET.peers=[peer1]; NET.upSeed=g.seed\u003e\u003e\u003e0;\n       netEntsInit(g);\n       c.state=\u0027patrol\u0027; c.markSeat=0;\n       netShotTake(peer1,{t:\u0027shot\u0027,id:c.nid,dmg:1,x:Math.round(c.x+100),y:Math.round(c.y)});\n       if(c.state!==\u0027alarm\u0027) return \u0027SKIP: staging: the round did not start the alarm\u0027;\n       if(c.markSeat!==1) bad.push(\u0027a round from player 2 started the alarm but the Crier marks seat \u0027+c.markSeat);\n       NET.role=\u0027join\u0027; NET.seat=1; NET.peers=[{seat:0,state:\u0027in\u0027}];\n       d=netEntMake(952,\u0027snitch\u0027,g.player.x+200,g.player.y); NET.entMap[952]=d; d.nIn=1; g.ents.push(d);\n       heard=[];\n       netMarkTake({seat:0,state:\u0027in\u0027},{t:\u0027mark\u0027,k:\u0027on\u0027,nid:952,wind:3.5,seat:1});\n       if(heard.indexOf(\u0027alarm\u0027)\u003e=0) bad.push(\u0027the windup word played a second alarm on player 2 window\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       sfx=oSfx; say=oSay;\n       for(k in NET) if(!(k in NK)) delete NET[k];\n       for(k in NK) NET[k]=NK[k];\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,7 @@
+v21.23: the crier marks the right player every time
+
+In co-op, a Crier always marks the player it is watching, and its alarm plays once.
+
+Check 21.23. Fails on v21.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
