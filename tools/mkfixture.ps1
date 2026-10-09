@@ -5493,10 +5493,11 @@ window.__REGRESS=[
        var s1='', s2='';
        try{ s1=strikeTick.toString(); s2=tickExtractPoints.toString(); }catch(_s){}
        var sfxc=['sfx(',"'charge'"].join(''), sfxi=['sfx(',"'inbound'"].join(''), sfxt=['sfx(',"'touchdown'"].join(''), sfxl=['sfx(',"'lastcall'"].join('');
-       if(s1.indexOf(sfxc)<0) bad.push('the storm telegraph is still played by distance alone, with no position to ring at');
-       if(s2.indexOf(sfxi)<0) bad.push('the inbound pulse is still played by distance alone');
-       if(s2.indexOf(sfxt)<0) bad.push('the touchdown is still played by distance alone');
-       if(s2.indexOf(sfxl)<0) bad.push('the last call is still played by distance alone');
+       var _hz=function(s,n){ return s.indexOf(n)>=0||s.indexOf(n.replace('sfx(','sfxHere('))>=0; };   // 2026-10-08: v20.40 plays these through sfxHere
+       if(!_hz(s1,sfxc)) bad.push('the storm telegraph is still played by distance alone, with no position to ring at');
+       if(!_hz(s2,sfxi)) bad.push('the inbound pulse is still played by distance alone');
+       if(!_hz(s2,sfxt)) bad.push('the touchdown is still played by distance alone');
+       if(!_hz(s2,sfxl)) bad.push('the last call is still played by distance alone');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var g3=__state(); if(g3) g3.noiseRings=[]; }catch(_r){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -35049,7 +35050,7 @@ window.__REGRESS=[
        if(A&&A.toLowerCase().indexOf('left behind')<0)
          bad.push('equipping over an issued loaner left him with ['+A+'], so he was never told the loaner is gone for good: the line saying so was written and then written over by the name of the gun he had just chosen, which he already knew');
        var B=equip(false,true);
-       if(B&&B.toLowerCase().indexOf('armoury')<0)
+       if(B&&B.toLowerCase().indexOf('armoury')<0&&B.toLowerCase().indexOf('into the backpack')<0)   // 2026-10-08: since v21.14 it goes into the backpack
          bad.push('equipping over a gun he owns left him with ['+B+'], so he was never told it went back to the armoury rather than into his backpack');
        // CONTROL: an empty hand displaces nothing and must read as it always did.
        g.bag=[gunKey];
@@ -42008,6 +42009,7 @@ window.__REGRESS=[
      if(!window.__P) return 'SKIP: this fixture cannot reach the profile';
      if(typeof restoreApply!=='function')
        return 'a restore code cannot be applied, so it is a note in a bottle';
+     try{ var _g0=__state(); if(_g0&&!_g0.over){ _g0.player.downed=false; __endRaid('abandon'); } __topClear(); }catch(_e0){}   // 2026-10-08: since v20.54 a restore code waits for the Undercroft
      var ta=document.getElementById('rescode'), rd=document.getElementById('resread'),
          go=document.getElementById('resgo'), wd=document.getElementById('resword'),
          no=document.getElementById('resno'), cf=document.getElementById('resconfirm'),
