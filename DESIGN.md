@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.33 - THE DAY AND WEATHER BUTTONS LINE UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the lift page: the word SURFACE is a little narrower than the word WEATHER, so the DAY button started a few pixels left of SURPRISE ME directly under it, and the two rows of choices did not form a column. Both row names now take the same width, so the first button of each row starts in the same place.
+
+MEASURED. Check 21.33 passes, and fails on v21.32.
 ## v21.32 - THE SECTOR FACTS START UNDER THE NAME
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the lift page: on every sector card the line of facts under the sector name (your runs there, the size, the named zones, the keyed rooms, the test robot) started a little to the right of the name above it, as if indented, because it borrowed the inner margin of a hint line. It now starts at the left edge of the name, so each card reads as one clean block. The words are unchanged.

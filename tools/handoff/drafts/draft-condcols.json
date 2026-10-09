@@ -1,0 +1,16 @@
+{
+    "title":  "THE DAY AND WEATHER BUTTONS LINE UP",
+    "why":  "Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the lift page: the word SURFACE is a little narrower than the word WEATHER, so the DAY button started a few pixels left of SURPRISE ME directly under it, and the two rows of choices did not form a column. Both row names now take the same width, so the first button of each row starts in the same place.",
+    "now":  "On the lift page the DAY and SURPRISE ME buttons start in one column.",
+    "edits":  [
+                  {
+                      "anchor":  "    \u003cspan style=\"font-size:13px;letter-spacing:.14em;color:var(--ash)\"\u003eSURFACE\u003c/span\u003e",
+                      "replacement":  "    \u003c!-- v16.xx, from the whole-game bug hunt of 2026-10-08 (W-B3), seen on the 4K lift picture: THE TWO CHOICE ROWS SHARE ONE COLUMN.\n         SURFACE is a little narrower than WEATHER, so DAY started a few pixels left of SURPRISE ME under it. Both row names now take\n         the same width, a little wider than WEATHER, so the first button of each row starts in the same place. --\u003e\n    \u003cspan style=\"font-size:13px;letter-spacing:.14em;color:var(--ash);min-width:5.8em\"\u003eSURFACE\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cspan style=\"font-size:13px;letter-spacing:.14em;color:var(--ash)\"\u003eWEATHER\u003c/span\u003e",
+                      "replacement":  "    \u003cspan style=\"font-size:13px;letter-spacing:.14em;color:var(--ash);min-width:5.8em\"\u003eWEATHER\u003c/span\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027on the lift page the DAY button and the SURPRISE ME button under it start in one column\u0027,\n   run:function(){\n     if(typeof __station!==\u0027function\u0027||typeof __hubEnter!==\u0027function\u0027) return \u0027SKIP: no stations here\u0027;\n     var bad=[], t, a, b, ra, rb;\n     function shut(){ var q=document.querySelectorAll(\u0027.modal.on\u0027), i; for(i=0;i\u003cq.length;i++) q[i].classList.remove(\u0027on\u0027); }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       t=document.getElementById(\u0027title\u0027); if(t) t.classList.remove(\u0027on\u0027);\n       __hubEnter(); __station(\u0027lift\u0027,\u0027KeyE\u0027);\n       a=document.getElementById(\u0027condday\u0027); b=document.querySelector(\u0027#sectorwx .wxb\u0027);\n       if(!a||!b) return \u0027SKIP: no surface or weather row here\u0027;\n       ra=a.getBoundingClientRect(); rb=b.getBoundingClientRect();\n       if(!(ra.width\u003e0\u0026\u0026rb.width\u003e0)) return \u0027SKIP: the lift page did not open\u0027;\n       if(!(rb.top\u003era.top)) return \u0027SKIP: the weather row is not under the surface row here\u0027;\n       if(Math.abs(ra.left-rb.left)\u003e0.75) bad.push(\u0027DAY starts \u0027+(rb.left-ra.left).toFixed(1)+\u0027 px left of SURPRISE ME under it\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ shut(); __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

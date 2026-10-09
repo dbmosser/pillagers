@@ -1164,7 +1164,10 @@
   <!-- v9.97, HIS NOTE: day or night is chosen here, on the way up. -->
   <div id="sectorcond" style="display:flex;align-items:center;gap:8px;margin-top:11px">
     <!-- v19.81, seen on a 4K menu text scan (2026-10-08): SURFACE and WEATHER were 11px beside 14px hints; 13 now -->
-    <span style="font-size:13px;letter-spacing:.14em;color:var(--ash)">SURFACE</span>
+    <!-- v21.33, from the whole-game bug hunt of 2026-10-08 (W-B3), seen on the 4K lift picture: THE TWO CHOICE ROWS SHARE ONE COLUMN.
+         SURFACE is a little narrower than WEATHER, so DAY started a few pixels left of SURPRISE ME under it. Both row names now take
+         the same width, a little wider than WEATHER, so the first button of each row starts in the same place. -->
+    <span style="font-size:13px;letter-spacing:.14em;color:var(--ash);min-width:5.8em">SURFACE</span>
     <button class="deploy ghost" id="condday" data-cond="day" style="flex:0 0 auto;padding:7px 18px">DAY</button>
     <button class="deploy ghost" id="condnight" data-cond="night" style="flex:0 0 auto;padding:7px 18px">NIGHT</button>
     <span id="condhint" style="font-size:14px;color:var(--ash)"></span>
@@ -1174,7 +1177,7 @@
        default; Partly Cloudy is only reachable through it, because it is the one
        state that exists to TURN into another. -->
   <div id="sectorwx" style="display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap">
-    <span style="font-size:13px;letter-spacing:.14em;color:var(--ash)">WEATHER</span>
+    <span style="font-size:13px;letter-spacing:.14em;color:var(--ash);min-width:5.8em">WEATHER</span>
     <button class="deploy ghost wxb" data-wx="any" style="flex:0 0 auto;padding:7px 14px">SURPRISE ME</button>
     <button class="deploy ghost wxb" data-wx="clear" style="flex:0 0 auto;padding:7px 14px">CLEAR</button>
     <button class="deploy ghost wxb" data-wx="rain" style="flex:0 0 auto;padding:7px 14px">RAIN</button>
@@ -1665,7 +1668,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.32';
+var VER='21.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34259,7 +34262,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.32: On the lift page the facts under each sector name line up with the name. Check 21.32 fails on v21.31',
+  now:'v21.33: On the lift page the DAY and SURPRISE ME buttons start in one column. Check 21.33 fails on v21.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

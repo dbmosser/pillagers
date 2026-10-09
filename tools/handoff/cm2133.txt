@@ -1,0 +1,7 @@
+v21.33: the day and weather buttons line up
+
+On the lift page the DAY and SURPRISE ME buttons start in one column.
+
+Check 21.33. Fails on v21.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

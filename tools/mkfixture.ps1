@@ -5723,6 +5723,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.33',what:'on the lift page the DAY button and the SURPRISE ME button under it start in one column',
+   run:function(){
+     if(typeof __station!=='function'||typeof __hubEnter!=='function') return 'SKIP: no stations here';
+     var bad=[], t, a, b, ra, rb;
+     function shut(){ var q=document.querySelectorAll('.modal.on'), i; for(i=0;i<q.length;i++) q[i].classList.remove('on'); }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('lift','KeyE');
+       a=document.getElementById('condday'); b=document.querySelector('#sectorwx .wxb');
+       if(!a||!b) return 'SKIP: no surface or weather row here';
+       ra=a.getBoundingClientRect(); rb=b.getBoundingClientRect();
+       if(!(ra.width>0&&rb.width>0)) return 'SKIP: the lift page did not open';
+       if(!(rb.top>ra.top)) return 'SKIP: the weather row is not under the surface row here';
+       if(Math.abs(ra.left-rb.left)>0.75) bad.push('DAY starts '+(rb.left-ra.left).toFixed(1)+' px left of SURPRISE ME under it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ shut(); __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.32',what:'on the lift page the facts under each sector name start at the left edge of the name, not indented to the right of it',
    run:function(){
      if(typeof __station!=='function'||typeof __hubEnter!=='function') return 'SKIP: no stations here';
