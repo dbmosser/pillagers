@@ -1,0 +1,5 @@
+## v20.92 - THE STASH SEARCH BOX LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the stash: in the row of tabs along the top, the search box was a thin strip about two thirds the height of the tabs and the SORT button, set lower than both, and the row stopped short with an empty stretch after SORT. The search box and SORT now sit level with the tabs at the same height, and the box takes the rest of the row, so the top of the stash reads as one clean bar.
+
+MEASURED. Check 20.92 passes, and fails on v20.91.

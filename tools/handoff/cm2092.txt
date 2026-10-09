@@ -1,0 +1,7 @@
+v20.92: the stash search box lines up
+
+The stash search box is as tall as the tabs and fills the rest of the row.
+
+Check 20.92. Fails on v20.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.92 - THE STASH SEARCH BOX LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the stash: in the row of tabs along the top, the search box was a thin strip about two thirds the height of the tabs and the SORT button, set lower than both, and the row stopped short with an empty stretch after SORT. The search box and SORT now sit level with the tabs at the same height, and the box takes the rest of the row, so the top of the stash reads as one clean bar.
+
+MEASURED. Check 20.92 passes, and fails on v20.91.
 ## v20.91 - THE SHOP TABS HOLD STILL
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The chosen tab was drawn in heavier letters than the others, and heavier letters are wider, so every time you switched between BUY, CRAFT and HIRE the tabs slid sideways a few pixels (the Mainframe and Settings tabs did the same). Every tab in a window now uses one weight, the same as the buttons, and the chosen tab is still the gold one.
