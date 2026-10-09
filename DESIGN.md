@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.38 - THE MAP HEADER STANDS CLEAR OF THE FRAME
+
+Co-op hunt while he was away. Found by the 4K visual pass of 2026-10-09 (W-D3). On the 4K sector map the header line (SECTOR MAP, CLICK to set a waypoint and the weather on the right) stood right on the map frame, touching its top line. The frame has grown with the screen for a long time, but the gap under the header was a fixed 10 pixels, which at 4K the thicker frame used up. The gap now grows with the screen too, so the header sits clear of the frame at 4K as it does at 1080p. At 1080p nothing moves.
+
+MEASURED. Check 21.38 passes, and fails on v21.37.
 ## v21.37 - THE RUN CARD HEADINGS ARE READABLE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K pictures of the death and extract cards. The HOW DID THAT RUN FEEL heading over the feel tags was the smallest text on the card, smaller than the tags it heads, so from the couch on a TV it was hard to make out. It is two points bigger now, still a touch under the tags so it reads as their heading, and the HOW IT WENT heading over the hits on a death card got the same size so the two match.

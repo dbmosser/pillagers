@@ -1681,7 +1681,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.37';
+var VER='21.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31340,7 +31340,12 @@ function drawMapOverlayRaw(){
   ctx.strokeRect(ox,oy,WORLD_W*sc,WORLD_H*sc);
   ctx.lineWidth=1*_MZ;
   ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
-  ctx.fillText('SECTOR MAP',ox,oy-10);
+  // v21.38, from the 4K visual pass of 2026-10-09 (W-D3): THE MAP HEADER STANDS CLEAR OF THE FRAME. The header line (SECTOR MAP, the
+  // waypoint hint and the weather) sat 10 pixels above the map at every screen size, but since v9.15 the frame grows with the screen
+  // (3*_MZ out from the map, 3*_MZ thick), so at 4K the frame reached 9 pixels up and the words stood on it. The gap grows by the same
+  // _MZ now. At 1080p _MZ is 1 and nothing moves.
+  var _hdY=oy-10*_MZ;
+  ctx.fillText('SECTOR MAP',ox,_hdY);
   // fixed offsets collided with the scaled font; walk a cursor instead
   var _hx=ox+ctx.measureText('SECTOR MAP').width+28;
 
@@ -31348,11 +31353,11 @@ function drawMapOverlayRaw(){
   // v7.55, his note: the no-intel shrug told the player what they already know.
   if(G.intel){
     var _hsub='elites and keys are live intel';
-    ctx.fillText(_hsub,_hx,oy-10);
+    ctx.fillText(_hsub,_hx,_hdY);
     _hx+=ctx.measureText(_hsub).width+28;
   }
   ctx.fillStyle='#ffc04a';
-  ctx.fillText(G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',_hx,oy-10);
+  ctx.fillText(G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',_hx,_hdY);
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
   ctx.fillStyle=wx().id==='clear'?'#9aa8d0':'#4de3d0';
@@ -31378,12 +31383,12 @@ function drawMapOverlayRaw(){
       var _wfp=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11;
       var _trL=((_trR.left-_cvR.left)*_wk-_wm.e)/_wm.a, _trB=((_trR.bottom-_cvR.top)*_wk-_wm.f)/(_wm.d||1);
       // v19.33, seen on the 4K map screenshot after v19.32: 14 pixels read as touching beside the big 900 at 4K; the gap is a word wide now
-      if(_trB>oy-10-_wfp&&_trL<_wxR+_wfp*1.6) _wxR=Math.min(_wxR,_trL-Math.max(14,_wfp*1.6));
+      if(_trB>_hdY-_wfp&&_trL<_wxR+_wfp*1.6) _wxR=Math.min(_wxR,_trL-Math.max(14,_wfp*1.6));
     }
   }catch(_wx){}
   ctx.fillText((isDay()?tod().name:'night')+'  '+G.wx.name+
     (G.wxNext?('  \u2192 '+G.wxNext.name+'  '+Math.round(G.wxT*100)+'%'):''),
-    _wxR,oy-10);
+    _wxR,_hdY);
   ctx.textAlign='left';
   for(i=0;i<G.map.buildings.length;i++){
     var b=G.map.buildings[i];
@@ -34275,7 +34280,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.37: The headings on the death and extract card are bigger and easier to read. Check 21.37 fails on v21.36',
+  now:'v21.38: On a 4K screen the SECTOR MAP header no longer sits on the map frame. Check 21.38 fails on v21.37',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

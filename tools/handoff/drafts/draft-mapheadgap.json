@@ -1,0 +1,28 @@
+{
+    "title":  "THE MAP HEADER STANDS CLEAR OF THE FRAME",
+    "why":  "Found by the 4K visual pass of 2026-10-09 (W-D3). On the 4K sector map the header line (SECTOR MAP, CLICK to set a waypoint and the weather on the right) stood right on the map frame, touching its top line. The frame has grown with the screen for a long time, but the gap under the header was a fixed 10 pixels, which at 4K the thicker frame used up. The gap now grows with the screen too, so the header sits clear of the frame at 4K as it does at 1080p. At 1080p nothing moves.",
+    "now":  "On a 4K screen the SECTOR MAP header no longer sits on the map frame.",
+    "edits":  [
+                  {
+                      "anchor":  "  ctx.fillText(\u0027SECTOR MAP\u0027,ox,oy-10);",
+                      "replacement":  "  // v16.xx, from the 4K visual pass of 2026-10-09 (W-D3): THE MAP HEADER STANDS CLEAR OF THE FRAME. The header line (SECTOR MAP, the\n  // waypoint hint and the weather) sat 10 pixels above the map at every screen size, but since v9.15 the frame grows with the screen\n  // (3*_MZ out from the map, 3*_MZ thick), so at 4K the frame reached 9 pixels up and the words stood on it. The gap grows by the same\n  // _MZ now. At 1080p _MZ is 1 and nothing moves.\n  var _hdY=oy-10*_MZ;\n  ctx.fillText(\u0027SECTOR MAP\u0027,ox,_hdY);"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(_hsub,_hx,oy-10);",
+                      "replacement":  "    ctx.fillText(_hsub,_hx,_hdY);"
+                  },
+                  {
+                      "anchor":  "\u0027CLICK to set a waypoint\u0027,_hx,oy-10);",
+                      "replacement":  "\u0027CLICK to set a waypoint\u0027,_hx,_hdY);"
+                  },
+                  {
+                      "anchor":  "if(_trB\u003eoy-10-_wfp\u0026\u0026",
+                      "replacement":  "if(_trB\u003e_hdY-_wfp\u0026\u0026"
+                  },
+                  {
+                      "anchor":  "    _wxR,oy-10);",
+                      "replacement":  "    _wxR,_hdY);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027at 4K the SECTOR MAP header stands clear of the map frame as it does at 1080p: its baseline sits at least 8 map zooms above the map, past the frame that grows with the screen, and at 1080p it is where it was\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__forceSize)) return \u0027SKIP: this fixture cannot deploy at a forced size\u0027;\n     if(typeof drawMapOverlay!==\u0027function\u0027||typeof mapProj!==\u0027function\u0027||typeof hudRes!==\u0027function\u0027) return \u0027SKIP: no sector map here\u0027;\n     var bad=[], g, oFT=ctx.fillText, y1, y4, m1, m4, z4;\n     function grab(){ var got=null; ctx.fillText=function(s,x,y){ if(got===null\u0026\u0026String(s)===\u0027SECTOR MAP\u0027) got=y; return oFT.apply(this,arguments); }; ctx.save(); try{ drawMapOverlay(); } finally { ctx.restore(); delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; } return got; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       try{ __pinDPR(1); }catch(_d){}\n       __forceSize(1920,1080);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       g.bagOpen=false; g.mapOpen=false;\n       y1=grab(); m1=mapProj();\n       __forceSize(3840,2160); if(!(W\u003e3000)) return \u0027SKIP: the canvas would not go to 4K\u0027;\n       z4=hudRes(); y4=grab(); m4=mapProj();\n       if(y1===null||y4===null) return \u0027SKIP: the map header was not drawn\u0027;\n       if(!(z4\u003e1.5)) return \u0027SKIP: the screen factor did not grow at 4K\u0027;\n       if(Math.abs(y1-(m1.oy-10))\u003e0.5) bad.push(\u0027at 1080p the header moved: its baseline is \u0027+(m1.oy-y1).toFixed(1)+\u0027 above the map, not 10\u0027);\n       if(y4\u003em4.oy-8*z4) bad.push(\u0027at 4K the header baseline is \u0027+(m4.oy-y4).toFixed(1)+\u0027 pixels above the map while the frame reaches \u0027+(4.5*z4).toFixed(1)+\u0027 up, so the words stand on the frame\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ cv.style.width=\u0027\u0027;cv.style.height=\u0027\u0027;hcv.style.width=\u0027\u0027;hcv.style.height=\u0027\u0027; resize(); }catch(_f){} try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

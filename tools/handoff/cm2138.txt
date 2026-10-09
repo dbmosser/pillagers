@@ -1,0 +1,7 @@
+v21.38: the map header stands clear of the frame
+
+On a 4K screen the SECTOR MAP header no longer sits on the map frame.
+
+Check 21.38. Fails on v21.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
