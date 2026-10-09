@@ -1,0 +1,7 @@
+v21.42: the undercroft belt sits in the middle
+
+On the Undercroft floor the belt now sits in the middle of the screen, under the key line.
+
+Check 21.42. Fails on v21.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

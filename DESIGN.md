@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.42 - THE UNDERCROFT BELT SITS IN THE MIDDLE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K Undercroft picture. The belt along the bottom of the Undercroft floor was placed as it is in a raid, centred in the gap between the health block and the gear stack. The health block is the wider of the two, and neither is drawn on the floor, so the belt sat well right of the middle, under a key line, a station prompt and a backpack that are all centred. On the floor it is now centred on the screen at the same size. The raid belt does not move.
+
+MEASURED. Check 21.42 passes, and fails on v21.41.
 ## v21.41 - THE MAP MARKERS GROW AT 4K
 
 Co-op hunt while he was away. Found by the 4K visual pass of 2026-10-09 (W-D4). On the 4K sector map the names and the cache rings have been full size for a while, but many of the marks under them were still drawn at their 1080p size in pixels: the Peddler was a speck under a big PEDDLER, the encampment a small diamond under a big ENCAMPMENT, and the same for the strongbox, the seal, the waypoint, the survivor, a revealed cache, the intel keys and elites, the keyhole and the dot in an open ring. They now grow with the screen along with their names, so every mark is as easy to see at 4K as at 1080p. At 1080p nothing moves.
