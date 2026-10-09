@@ -1,0 +1,7 @@
+v20.79: playstation button names everywhere
+
+On a PlayStation pad the backpack, the Peddler, the Undercroft footer and the stash tips name the PlayStation buttons.
+
+Check 20.79. Fails on v20.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

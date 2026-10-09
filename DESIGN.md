@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.79 - PLAYSTATION BUTTON NAMES EVERYWHERE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a DualSense or DualShock pad most lines name the PlayStation buttons, but a few written out by hand still named the Xbox ones: the hint under the backpack grid said A and B under a header saying CROSS and CIRCLE, the Peddler marked the chosen row [A] under a line saying [CROSS] take, the Undercroft footer said LS JOG where the raid legend says L3, and the belt plan and DROP HERE tips said with A. They now name the button on the pad in your hands.
+
+MEASURED. Check 20.79 passes, and fails on v20.78.
 ## v20.78 - A HIT BUZZ PLAYS ITS FULL LENGTH
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A controller buzzes harder and longer for a bigger hit, but while you held the trigger on an automatic gun the light tick of the next round replaced the buzz after a tenth of a second, so in a firefight every hit felt like the same short blip. The blast thump and the teammate-down buzz were cut the same way. A weaker buzz now waits until the stronger one has played out.
