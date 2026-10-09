@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.64 - A CRIER CANNOT TURN BACK A MAN WHO IS LEAVING
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A pillager already running for the ring with a full pack turned around when a Crier nearby finished its alarm, walked back to the marked spot, and looted one more box before leaving again. Every other call in the game lets a man who is leaving keep leaving. He still hears the alarm, but he keeps running now. The alarm also no longer gives your hire orders, the same as a pillager shouting for his crew never did.
+
+MEASURED. Check 20.64 passes, and fails on v20.63.
 ## v20.63 - PILLAGERS THROW AGAIN IN A LONG FIGHT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A pillager carrying several Frag Charges threw his first one and then, in practice, never again. The 20 second wait after a throw only counted down while he was taking a shot, a sliver at a time, so it took about six minutes of steady firing at 60 frames a second, and longer than the whole raid at 144: the faster your screen, the fewer charges came your way. The wait for his smoke did the same, so a man who smoked when he was hurt never smoked again when he broke and ran. Both waits now run with the clock. This is a balance change: in a long fight a pillager with charges in his pack now throws one at most every 20 seconds, as was always intended, and the same on every screen.

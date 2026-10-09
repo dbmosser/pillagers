@@ -1,0 +1,7 @@
+v20.64: a crier cannot turn back a man who is leaving
+
+A pillager running for extraction keeps running when a Crier raises the alarm.
+
+Check 20.64. Fails on v20.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.63';
+var VER='20.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19595,9 +19595,18 @@ if(eb===e||eb.kind==='snitch'||eb.neutral||eb.kind==='peddler'||eb.kind==='stray
             // SPEC 8.3: raiders hear it too and know something is happening
             // there. They come looking for a distracted target.
             if(eb.state!=='chase'){
-              eb.state='investigate';
-              eb.tx=e.markX+rnd(-40,40); eb.ty=e.markY+rnd(-40,40);
+              // v20.64, from the whole-game bug hunt of 2026-10-08 (H13): A MAN LEAVING KEEPS LEAVING, AND YOUR HIRE TAKES NO ORDERS FROM
+              // A CRIER. The alarm turned a pillager already running for the ring back to the mark, where he went back to looting and
+              // opened one more box before setting off again; every other pull keeps a man who is leaving (v2.93, the crew shout, the
+              // siege). He still hears it (the alert), as he does under the siege. The alarm no longer sends your hire either, as the
+              // crew shout never does; the noise of the alarm is a separate rule (ping) and is unchanged. Both scatter draws are still
+              // taken, in the same order, for every man the old loop reached, so the seeded stream does not move.
+              var _amx=e.markX+rnd(-40,40), _amy=e.markY+rnd(-40,40);
+              if(eb.merc) continue;
               eb.alert=Math.max(eb.alert,2.5);
+              if(eb.state==='extract') continue;
+              eb.state='investigate';
+              eb.tx=_amx; eb.ty=_amy;
             }
           }
         }
@@ -33842,7 +33851,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.63: Pillagers with spare charges or smoke now use them again in a long fight, at most one charge every 20 seconds. Check 20.63 fails on v20.62',
+  now:'v20.64: A pillager running for extraction keeps running when a Crier raises the alarm. Check 20.64 fails on v20.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

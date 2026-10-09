@@ -1,0 +1,5 @@
+## v20.64 - A CRIER CANNOT TURN BACK A MAN WHO IS LEAVING
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A pillager already running for the ring with a full pack turned around when a Crier nearby finished its alarm, walked back to the marked spot, and looted one more box before leaving again. Every other call in the game lets a man who is leaving keep leaving. He still hears the alarm, but he keeps running now. The alarm also no longer gives your hire orders, the same as a pillager shouting for his crew never did.
+
+MEASURED. Check 20.64 passes, and fails on v20.63.
