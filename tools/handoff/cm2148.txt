@@ -1,0 +1,7 @@
+v21.48: the rec mark shows the time
+
+While recording with F9, the REC mark shows how long you have recorded out of 3 minutes.
+
+Check 21.48. Fails on v21.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

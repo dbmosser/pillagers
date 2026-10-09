@@ -1683,7 +1683,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.47';
+var VER='21.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33417,6 +33417,7 @@ try{ setInterval(attTick,500); }catch(_ai){}
 // ship it). The red REC mark is a page element, not part of the drawing, so it is never in the clip. Menus drawn as page
 // elements are not in the clip either, which suits a gameplay reel.
 var REC={on:false,mr:null,cv:null,cx:null,chunks:[],t0:0,raf:0,mark:null,max:180};
+function fmtClock(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2); }   // v21.48: m:ss for the REC mark
 function recTell(s){ try{ if(typeof G!=='undefined'&&G&&!G.over&&!G.sim) say(s); else if(typeof hubToast==='function') hubToast(s); }catch(e){} }
 function recMark(on){
   if(!REC.mark){
@@ -33436,6 +33437,8 @@ function recDraw(){
     if(cv&&cv.width) x.drawImage(cv,0,0,c.width,c.height);
     if(hcv&&hcv.width&&hcv.style.display!=='none') x.drawImage(hcv,0,0,c.width,c.height);
   }catch(e){}
+  // v21.48: THE REC MARK SAYS HOW LONG, so the 3 minute stop is never a surprise (it is a page element, never in the clip)
+  if(REC.mark){ var _rs=Math.floor((Date.now()-REC.t0)/1000), _rt='&#9679; REC '+fmtClock(_rs)+' / '+fmtClock(REC.max); if(REC.mark._t!==_rt){ REC.mark._t=_rt; REC.mark.innerHTML=_rt; } }
   if(Date.now()-REC.t0>REC.max*1000){ recStop(); return; }
   REC.raf=requestAnimationFrame(recDraw);
 }
@@ -34322,7 +34325,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.47: The hire tab shows fees you cannot afford in grey, as the shop does. Check 21.47 fails on v21.46',
+  now:'v21.48: While recording with F9, the REC mark shows how long you have recorded out of 3 minutes. Check 21.48 fails on v21.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

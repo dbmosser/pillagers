@@ -5723,6 +5723,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.48',what:'the REC mark shows the time recorded against the 3 minute limit',
+   run:function(){
+     if(typeof recStart!=='function'||typeof REC!=='object') return 'SKIP: no recorder here';
+     if(typeof MediaRecorder==='undefined'||!HTMLCanvasElement.prototype.captureStream) return 'SKIP: this browser cannot record';
+     var bad=[], m, t;
+     try{
+       if(!recStart()) return 'SKIP: the recording did not start';
+       if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; };
+       REC.t0=Date.now()-65000; recDraw();
+       m=document.getElementById('recmark'); t=m?String(m.textContent):'';
+       if(!/1:05/.test(t)) bad.push('65 seconds in, the REC mark reads '+JSON.stringify(t));
+       if(!/3:00/.test(t)) bad.push('the REC mark does not show the 3 minute limit');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } }catch(_s){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.47',what:'on the hire tab a fee you cannot pay reads grey, as in the shop',
    run:function(){
      if(!(window.__hubEnter&&window.__station)||typeof renderMercGrid!=='function'||typeof mercCost!=='function'||typeof IDENTITIES==='undefined') return 'SKIP: no hire tab here';

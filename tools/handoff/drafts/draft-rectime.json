@@ -1,0 +1,16 @@
+{
+    "title":  "THE REC MARK SHOWS THE TIME",
+    "why":  "The F9 recorder (v21.18) stops by itself after 3 minutes, but its red REC mark gave no time, so the stop could come as a surprise. It now reads REC 1:05 / 3:00 as it goes. It is a page element, so it is never in the clip.",
+    "now":  "While recording with F9, the REC mark shows how long you have recorded out of 3 minutes.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(Date.now()-REC.t0\u003eREC.max*1000){ recStop(); return; }",
+                      "replacement":  "  // v16.xx: THE REC MARK SAYS HOW LONG, so the 3 minute stop is never a surprise (it is a page element, never in the clip)\n  if(REC.mark){ var _rs=Math.floor((Date.now()-REC.t0)/1000), _rt=\u0027\u0026#9679; REC \u0027+fmtClock(_rs)+\u0027 / \u0027+fmtClock(REC.max); if(REC.mark._t!==_rt){ REC.mark._t=_rt; REC.mark.innerHTML=_rt; } }\n  if(Date.now()-REC.t0\u003eREC.max*1000){ recStop(); return; }"
+                  },
+                  {
+                      "anchor":  "function recTell(s){",
+                      "replacement":  "function fmtClock(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+\u0027:\u0027+(\u00270\u0027+(s%60)).slice(-2); }   // v16.xx: m:ss for the REC mark\nfunction recTell(s){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the REC mark shows the time recorded against the 3 minute limit\u0027,\n   run:function(){\n     if(typeof recStart!==\u0027function\u0027||typeof REC!==\u0027object\u0027) return \u0027SKIP: no recorder here\u0027;\n     if(typeof MediaRecorder===\u0027undefined\u0027||!HTMLCanvasElement.prototype.captureStream) return \u0027SKIP: this browser cannot record\u0027;\n     var bad=[], m, t;\n     try{\n       if(!recStart()) return \u0027SKIP: the recording did not start\u0027;\n       if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; };\n       REC.t0=Date.now()-65000; recDraw();\n       m=document.getElementById(\u0027recmark\u0027); t=m?String(m.textContent):\u0027\u0027;\n       if(!/1:05/.test(t)) bad.push(\u002765 seconds in, the REC mark reads \u0027+JSON.stringify(t));\n       if(!/3:00/.test(t)) bad.push(\u0027the REC mark does not show the 3 minute limit\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } }catch(_s){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.48 - THE REC MARK SHOWS THE TIME
+
+Co-op hunt while he was away. The F9 recorder (v21.18) stops by itself after 3 minutes, but its red REC mark gave no time, so the stop could come as a surprise. It now reads REC 1:05 / 3:00 as it goes. It is a page element, so it is never in the clip.
+
+MEASURED. Check 21.48 passes, and fails on v21.47.
 ## v21.47 - THE HIRE TAB GREYS WHAT YOU CANNOT AFFORD
 
 Co-op hunt while he was away. Following v21.46 in the shop: on the hire tab every fee was the same amber, whatever you hold. A fee you cannot pay now reads grey there too, so both tabs say at a glance what you can afford.
