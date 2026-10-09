@@ -1,0 +1,7 @@
+v21.51: the what is new card names the small fixes of the day
+
+The what is new card names the small fixes of the day.
+
+Check 21.51. Fails on v21.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

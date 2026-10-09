@@ -623,3 +623,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 08:52 heartbeat (away 11 h, light): no new FAILs; v21.47 hirepoor (hire fees you cannot pay read grey, as the shop)
 2026-10-09 09:22 heartbeat (away 11.6 h, light): no new FAILs; v21.48 rectime (REC mark shows m:ss / 3:00)
 2026-10-09 09:52 heartbeat (HE IS HERE, idle 142 s, light): no new FAILs; v21.49 rectitle (F9 on the title records nothing, says where to press it; a black clip would have become the attract clip)
+2026-10-09 10:22 heartbeat (he is here, idle 412 s, light): no new FAILs; v21.50 recstoptitle (an F9 recording stops when the title comes up)

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.51 - THE WHAT IS NEW CARD NAMES THE SMALL FIXES OF THE DAY
+
+Co-op hunt while he was away. The card was stamped v21.43 and the stamp may not trail the build by more than 0.15. Its new second line names the small fixes of 2026-10-09 (v21.45 to v21.50); the review fixes and the second 4K pass are in the change list.
+
+MEASURED. Check 21.51 passes, and fails on v21.50.
 ## v21.50 - A RECORDING STOPS AT THE TITLE
 
 Co-op hunt while he was away. A recording started with F9 kept running if you went back to the title screen, where the game canvas is empty, so the clip filled up with black and that black ending played on the title afterwards. It now stops by itself when the title comes up.
