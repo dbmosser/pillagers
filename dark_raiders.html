@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.24';
+var VER='21.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27334,9 +27334,10 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
       var hm=G.hitMark,hk=clamp(1-hm.t/hm.life,0,1);
       // v20.75, from the whole-game bug hunt of 2026-10-08 (H42): the hit ticks grow with the screen, as the reticle has since v9.53.
       // Its gap is 8 times the screen factor, so at 4K the 1080p ticks sat inside the hole of the cross.
-      var hIn=((hm.kill?7:5)+(1-hk)*(hm.kill?7:4))*_rz,hOut=hIn+(hm.kill?7:5)*_rz;
+      var _hmz=hudRes();   // v21.25, from the review of 2026-10-09 (R7): its own screen factor; _rz is set only when the cross is drawn, so over a HUD panel the ticks were NaN and never drew
+      var hIn=((hm.kill?7:5)+(1-hk)*(hm.kill?7:4))*_hmz,hOut=hIn+(hm.kill?7:5)*_hmz;
       ctx.strokeStyle=hm.kill?'rgba(255,192,74,'+(hk*.95)+')':'rgba(240,248,252,'+(hk*.9)+')';
-      ctx.lineWidth=(hm.kill?2.4:1.8)*_rz;
+      ctx.lineWidth=(hm.kill?2.4:1.8)*_hmz;
       ctx.beginPath();
       ctx.moveTo(rx0-hOut,ry0-hOut); ctx.lineTo(rx0-hIn,ry0-hIn);
       ctx.moveTo(rx0+hIn,ry0-hIn);   ctx.lineTo(rx0+hOut,ry0-hOut);
@@ -34229,7 +34230,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.24: In co-op, the hot ground keeps moving for player 2 after the host is out. Check 21.24 fails on v21.23',
+  now:'v21.25: Hit ticks show even when your crosshair is over a HUD panel. Check 21.25 fails on v21.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

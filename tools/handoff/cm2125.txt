@@ -1,0 +1,7 @@
+v21.25: hit ticks show over the hud panels
+
+Hit ticks show even when your crosshair is over a HUD panel.
+
+Check 21.25. Fails on v21.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.25 - HIT TICKS SHOW OVER THE HUD PANELS
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). Since v20.75 the hit ticks grow with the screen, but they read a size set only when the crosshair cross is drawn. With the crosshair over a HUD panel the cross is not drawn, so the ticks got no size and did not show at all: a hit gave no tick. They now have their own size.
+
+MEASURED. Check 21.25 passes, and fails on v21.24.
 ## v21.24 - THE HOT GROUND KEEPS MOVING AFTER THE HOST IS OUT
 
 Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). Since v20.39 the host moves the hot ground for the party, but the host stops moving it when his own run ends. So once he died or extracted, the hot ground on player 2 map froze for the rest of the raid and no machines were sent to it. The raid the host keeps running for his party now moves it too, without a line or a sound on his side.

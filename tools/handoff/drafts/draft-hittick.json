@@ -1,0 +1,16 @@
+{
+    "title":  "HIT TICKS SHOW OVER THE HUD PANELS",
+    "why":  "Found by the review of the night builds (2026-10-09). Since v20.75 the hit ticks grow with the screen, but they read a size set only when the crosshair cross is drawn. With the crosshair over a HUD panel the cross is not drawn, so the ticks got no size and did not show at all: a hit gave no tick. They now have their own size.",
+    "now":  "Hit ticks show even when your crosshair is over a HUD panel.",
+    "edits":  [
+                  {
+                      "anchor":  "      var hIn=((hm.kill?7:5)+(1-hk)*(hm.kill?7:4))*_rz,hOut=hIn+(hm.kill?7:5)*_rz;",
+                      "replacement":  "      var _hmz=hudRes();   // v16.xx, from the review of 2026-10-09 (R7): its own screen factor; _rz is set only when the cross is drawn, so over a HUD panel the ticks were NaN and never drew\n      var hIn=((hm.kill?7:5)+(1-hk)*(hm.kill?7:4))*_hmz,hOut=hIn+(hm.kill?7:5)*_hmz;"
+                  },
+                  {
+                      "anchor":  "      ctx.lineWidth=(hm.kill?2.4:1.8)*_rz;",
+                      "replacement":  "      ctx.lineWidth=(hm.kill?2.4:1.8)*_hmz;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027hit ticks draw with real numbers even when the crosshair is over a HUD panel: the tick block has its own screen factor\u0027,\n   run:function(){\n     if(typeof drawHUD!==\u0027function\u0027) return \u0027SKIP: no HUD here\u0027;\n     var src=String(drawHUD), i=src.indexOf(\u0027var hIn=\u0027), seg=src.slice(i,i+260), nd=\u0027*\u0027+\u0027_rz\u0027;\n     if(i\u003c0) return \u0027SKIP: no hit ticks here\u0027;\n     if(seg.indexOf(nd)\u003e=0) return \u0027the hit ticks still use the cross factor, which is not set when the crosshair is over a HUD panel\u0027;\n     return null; }},"
+}

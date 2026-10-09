@@ -5723,6 +5723,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.25',what:'hit ticks draw with real numbers even when the crosshair is over a HUD panel: the tick block has its own screen factor',
+   run:function(){
+     if(typeof drawHUD!=='function') return 'SKIP: no HUD here';
+     var src=String(drawHUD), i=src.indexOf('var hIn='), seg=src.slice(i,i+260), nd='*'+'_rz';
+     if(i<0) return 'SKIP: no hit ticks here';
+     if(seg.indexOf(nd)>=0) return 'the hit ticks still use the cross factor, which is not set when the crosshair is over a HUD panel';
+     return null; }},
   {v:'21.24',what:'the hot ground keeps moving for the party after the host is out: the raid the host keeps running moves it, and silently on his side',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof tickHot!=='function'||typeof netSpecTick!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no hot ground or party here';

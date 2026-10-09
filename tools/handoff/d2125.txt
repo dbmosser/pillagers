@@ -1,0 +1,5 @@
+## v21.25 - HIT TICKS SHOW OVER THE HUD PANELS
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). Since v20.75 the hit ticks grow with the screen, but they read a size set only when the crosshair cross is drawn. With the crosshair over a HUD panel the cross is not drawn, so the ticks got no size and did not show at all: a hit gave no tick. They now have their own size.
+
+MEASURED. Check 21.25 passes, and fails on v21.24.
