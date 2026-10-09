@@ -1,0 +1,7 @@
+v21.59: the attract clip says button on a controller
+
+With a controller in use, the title gameplay clip says PRESS ANY BUTTON.
+
+Check 21.59. Fails on v21.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

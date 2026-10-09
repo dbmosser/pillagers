@@ -1,0 +1,12 @@
+{
+    "title":  "THE ATTRACT CLIP SAYS BUTTON ON A CONTROLLER",
+    "why":  "On a TV with a controller, the title gameplay clip said PRESS ANY KEY. It now says PRESS ANY BUTTON when a controller is in use, and PRESS ANY KEY otherwise.",
+    "now":  "With a controller in use, the title gameplay clip says PRESS ANY BUTTON.",
+    "edits":  [
+                  {
+                      "anchor":  "function attShow(src){\n  var d=attEl(), v=d.querySelector(\u0027video\u0027);",
+                      "replacement":  "function attShow(src){\n  var d=attEl(), v=d.querySelector(\u0027video\u0027);\n  try{ var _ap=d.querySelector(\u0027.attpress\u0027); if(_ap) _ap.textContent=padOn()?\u0027PRESS ANY BUTTON\u0027:\u0027PRESS ANY KEY\u0027; }catch(_apx){}   // v16.xx: on a controller it says button"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the attract clip says PRESS ANY BUTTON with a controller in use and PRESS ANY KEY without\u0027,\n   run:function(){\n     if(typeof attShow!==\u0027function\u0027||typeof attStop!==\u0027function\u0027||typeof PAD!==\u0027object\u0027) return \u0027SKIP: no attract mode here\u0027;\n     var bad=[], on0=PAD.on, d, t;\n     try{\n       PAD.on=true; attShow(\u0027data:video/mp4;base64,AAAA\u0027); d=document.getElementById(\u0027attract\u0027); t=d?d.textContent:\u0027\u0027;\n       if(!/PRESS ANY BUTTON/.test(t)) bad.push(\u0027with a controller it reads \u0027+JSON.stringify(t));\n       attStop(); PAD.on=false; attShow(\u0027data:video/mp4;base64,AAAA\u0027); t=d?d.textContent:\u0027\u0027;\n       if(!/PRESS ANY KEY/.test(t)) bad.push(\u0027without a controller it reads \u0027+JSON.stringify(t));\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ attStop(); }catch(_s){} PAD.on=on0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

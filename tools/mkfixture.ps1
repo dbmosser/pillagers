@@ -5723,6 +5723,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.59',what:'the attract clip says PRESS ANY BUTTON with a controller in use and PRESS ANY KEY without',
+   run:function(){
+     if(typeof attShow!=='function'||typeof attStop!=='function'||typeof PAD!=='object') return 'SKIP: no attract mode here';
+     var bad=[], on0=PAD.on, d, t;
+     try{
+       PAD.on=true; attShow('data:video/mp4;base64,AAAA'); d=document.getElementById('attract'); t=d?d.textContent:'';
+       if(!/PRESS ANY BUTTON/.test(t)) bad.push('with a controller it reads '+JSON.stringify(t));
+       attStop(); PAD.on=false; attShow('data:video/mp4;base64,AAAA'); t=d?d.textContent:'';
+       if(!/PRESS ANY KEY/.test(t)) bad.push('without a controller it reads '+JSON.stringify(t));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ attStop(); }catch(_s){} PAD.on=on0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.58',what:'the what is new card is stamped within 0.15 of the build and leads with the attract polish news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

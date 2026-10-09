@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.59 - THE ATTRACT CLIP SAYS BUTTON ON A CONTROLLER
+
+Co-op hunt while he was away. On a TV with a controller, the title gameplay clip said PRESS ANY KEY. It now says PRESS ANY BUTTON when a controller is in use, and PRESS ANY KEY otherwise.
+
+MEASURED. Check 21.59 passes, and fails on v21.58.
 ## v21.58 - THE WHAT IS NEW CARD NAMES THE ATTRACT POLISH
 
 Co-op hunt while he was away. The card was stamped v21.51 and the stamp may not trail the build by more than 0.15. Its new second line names the attract mode and recorder polish of 2026-10-09 (v21.48 to v21.56) and the hire fix (v21.52); the rest are in the change list.

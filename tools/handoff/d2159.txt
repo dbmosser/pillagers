@@ -1,0 +1,5 @@
+## v21.59 - THE ATTRACT CLIP SAYS BUTTON ON A CONTROLLER
+
+Co-op hunt while he was away. On a TV with a controller, the title gameplay clip said PRESS ANY KEY. It now says PRESS ANY BUTTON when a controller is in use, and PRESS ANY KEY otherwise.
+
+MEASURED. Check 21.59 passes, and fails on v21.58.
