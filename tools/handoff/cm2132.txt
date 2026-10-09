@@ -1,0 +1,7 @@
+v21.32: the sector facts start under the name
+
+On the lift page the facts under each sector name line up with the name.
+
+Check 21.32. Fails on v21.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

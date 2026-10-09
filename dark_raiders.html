@@ -1665,7 +1665,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.31';
+var VER='21.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34259,7 +34259,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.31: On the stash screen the backpack and belt counts line up with the right edge of the slots. Check 21.31 fails on v21.30',
+  now:'v21.32: On the lift page the facts under each sector name line up with the name. Check 21.32 fails on v21.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43213,8 +43213,12 @@ var _myR=0;
        (sel?' <span style="color:var(--amber);font-size:14px;letter-spacing:.08em">ASCENDING HERE</span>':'')+
        // v19.26, seen on the 4K lift screenshot (2026-10-08): he blanked both sector lines (his text edits), which left an empty
        // band between the name and the facts. A blank line takes no room now; with Edit the words on it stays, to be clicked back.
-       '<div class="hint" style="'+((CFG.textEdit!==1&&!String(TX(SECTOR_CHAR[i])||'').trim())?'display:none;':'')+'margin:10px 0 0;font-size:17px;line-height:1.5">'+SECTOR_CHAR[i]+'</div>'+
-       '<div class="hint" style="margin:8px 0 0;font-size:16px;line-height:1.6;color:var(--ash)">'+facts.join('  &middot;  ')+'</div></div></div>';
+       '<div class="hint" style="'+((CFG.textEdit!==1&&!String(TX(SECTOR_CHAR[i])||'').trim())?'display:none;':'')+'margin:10px 0 0;padding-left:0;font-size:17px;line-height:1.5">'+SECTOR_CHAR[i]+'</div>'+
+       // v21.32, from the whole-game bug hunt of 2026-10-08 (W-B2), seen on the 4K lift picture: THE SECTOR LINES START UNDER THE NAME.
+       // Both lines under a sector name are hint lines, and a hint line carries a 12 px inner margin, so on every sector card the
+       // facts (and the description line, when it has words) started 12 px right of the name above them, as if indented. They start
+       // at the left edge of the name now. The words are untouched.
+       '<div class="hint" style="margin:8px 0 0;padding-left:0;font-size:16px;line-height:1.6;color:var(--ash)">'+facts.join('  &middot;  ')+'</div></div></div>';
   }
   host.innerHTML=h;
   try{ sectorPreviews(host); }catch(_sv){}   // v17.79: the sector maps

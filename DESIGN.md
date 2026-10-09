@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.32 - THE SECTOR FACTS START UNDER THE NAME
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the lift page: on every sector card the line of facts under the sector name (your runs there, the size, the named zones, the keyed rooms, the test robot) started a little to the right of the name above it, as if indented, because it borrowed the inner margin of a hint line. It now starts at the left edge of the name, so each card reads as one clean block. The words are unchanged.
+
+MEASURED. Check 21.32 passes, and fails on v21.31.
 ## v21.31 - THE LOADOUT COUNTS LINE UP WITH THE SLOTS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the stash: on the right of the LOADOUT column, the counts beside LOADOUT, BACKPACK and TACTICAL BELT (0c going up, 0 PACKED, 0 ON KEYS) stopped well short of the right edge of the backpack slots and belt keys under them, while the names on the left start exactly where the slots start. The counts now end where the slots end, so both sides of the column line up.
