@@ -5722,6 +5722,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.11',what:'at 4K the boss plate is drawn at the screen scale, like the message plate above it: the name of THE OVERSEER is drawn under a transform grown by the screen factor',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof drawBossBar!=='function'||typeof bossTick!=='function'||typeof hudRes!=='function') return 'SKIP: no boss bar here';
+     var bad=[], g, b, W0=W, H0=H, own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), of=ctx.fillText, a0=null, a1=null, r, nm;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       g.t=Math.max(g.t||0,30); g.bossDone=0; var cb0=CFG.boss; if(CFG.boss===0) CFG.boss=1; b=bossTick(true); CFG.boss=cb0; if(!b) return 'SKIP: staging: no Overseer';
+       b.x=g.player.x+200; b.y=g.player.y; b.barSeen=1; b.hp=Math.max(1,Math.round(b.maxhp*0.5)); nm=b.name;
+       W=3840; H=2160; r=hudRes();
+       if(!(r>1.5)) return 'SKIP: staging: the screen factor did not rise';
+       ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+       ctx.fillText=function(t){ if(String(t)===nm){ var m=ctx.getTransform(); a1=m.a; } return of.apply(this,arguments); };
+       a0=ctx.getTransform().a;
+       drawBossBar();
+       ctx.restore();
+       if(a1===null) return 'SKIP: staging: the boss plate was not drawn';
+       if(Math.abs(a1/a0-r)>0.05) bad.push('at 4K (screen factor '+r.toFixed(2)+') the boss name is drawn at scale '+(a1/a0).toFixed(2));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       W=W0; H=H0;
+       if(own) ctx.fillText=of; else delete ctx.fillText;
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.10',what:'the three names on the top row of the Undercroft sit on one line: the gambler name is drawn at the height of the lift and Mainframe names beside it',
    run:function(){
      if(!(window.__hubEnter&&window.__hubFrame&&window.__showScreen&&window.__wnseen)||typeof HB==='undefined') return 'SKIP: this fixture cannot draw the floor';

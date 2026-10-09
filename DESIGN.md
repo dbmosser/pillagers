@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.11 - THE BOSS PLATE GROWS AT 4K
+
+Co-op hunt while he was away. Seen on the 4K screenshot of a raid (2026-10-08): the message plate is drawn at the screen scale, but the boss plate under it kept its 1080p size, so at 4K the name of THE OVERSEER was small print under a big message and its health bar a thin line. It is now drawn at the same scale, starting where it did. At 1080p nothing changes.
+
+MEASURED. Check 21.11 passes, and fails on v21.10.
 ## v21.10 - THE TOP ROW OF STATION NAMES LINES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K Undercroft screenshot: the three stations on the back wall of the room should read as one row, but the gambler stood a little lower than the lift and the Mainframe, so WIRT THE GAMBLER sat visibly below ENTER RAID! and THE MAINFRAME, with his machine lower too. He now stands on the same line, so the three names and machines line up.

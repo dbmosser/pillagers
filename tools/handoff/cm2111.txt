@@ -1,0 +1,7 @@
+v21.11: the boss plate grows at 4k
+
+At 4K the boss name and health bar are drawn as big as the message above them.
+
+Check 21.11. Fails on v21.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
