@@ -1,0 +1,7 @@
+v21.47: the hire tab greys what you cannot afford
+
+The hire tab shows fees you cannot afford in grey, as the shop does.
+
+Check 21.47. Fails on v21.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

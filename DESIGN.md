@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.47 - THE HIRE TAB GREYS WHAT YOU CANNOT AFFORD
+
+Co-op hunt while he was away. Following v21.46 in the shop: on the hire tab every fee was the same amber, whatever you hold. A fee you cannot pay now reads grey there too, so both tabs say at a glance what you can afford.
+
+MEASURED. Check 21.47 passes, and fails on v21.46.
 ## v21.46 - THE SHOP GREYS WHAT YOU CANNOT AFFORD
 
 Co-op hunt while he was away. From the 4K screenshot pass of 2026-10-09: in the shop every price was the same amber, so a 2,340 item looked as buyable as a 300 one with 900 credits in hand. A price you cannot pay now reads grey, so the shop says at a glance what you can buy.
