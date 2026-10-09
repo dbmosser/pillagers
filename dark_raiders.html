@@ -1681,7 +1681,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.42';
+var VER='21.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1692,7 +1692,7 @@ var VER='21.42';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='21.28';
+var WHATSNEW_VER='21.43';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -1712,6 +1712,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  '4K POLISH, PART TWO. The Fashion racks, loadout counts, sector facts, backpack words and run card line up, and map markers grow at 4K.',
   'ATTRACT MODE. Press F9 in a raid to record your play; the title shows it when nobody is playing. The Undercroft song now follows the players.',
   'YOUR NOTES. RANDOM FROM STASH gives two random guns, a gun pushed out of a belt slot goes in your backpack, and the map keeps an extract closing time.',
   'MORE 4K POLISH. The map hides the HUD and keeps its tags inside, ring labels keep clear of the edge and the backpack, and the run card fits the screen.',
@@ -34306,7 +34307,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.42: On the Undercroft floor the belt now sits in the middle of the screen, under the key line. Check 21.42 fails on v21.41',
+  now:'v21.43: The what is new card names the second 4K pass. Check 21.43 fails on v21.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v21.43: the what is new card names the second 4k pass
+
+The what is new card names the second 4K pass.
+
+Check 21.43. Fails on v21.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

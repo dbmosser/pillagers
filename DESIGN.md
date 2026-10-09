@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.43 - THE WHAT IS NEW CARD NAMES THE SECOND 4K PASS
+
+Co-op hunt while he was away. The card was stamped v21.28 and the stamp may not trail the build by more than 0.15. Its new second line names the fixes from the second 4K screenshot pass of 2026-10-09 (v21.29 to v21.42); the rest are in the change list.
+
+MEASURED. Check 21.43 passes, and fails on v21.42.
 ## v21.42 - THE UNDERCROFT BELT SITS IN THE MIDDLE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K Undercroft picture. The belt along the bottom of the Undercroft floor was placed as it is in a raid, centred in the gap between the health block and the gear stack. The health block is the wider of the two, and neither is drawn on the floor, so the belt sat well right of the middle, under a key line, a station prompt and a backpack that are all centred. On the floor it is now centred on the screen at the same size. The raid belt does not move.
