@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES HIS NOTES",
+    "why":  "The card was stamped v21.01 and the stamp may not trail the build by more than 0.15. Its new second line names the three fixes from his notes of 2026-10-08: two random guns from RANDOM FROM STASH (v21.13), a gun pushed out of a belt slot kept in the backpack (v21.14), and the closing time kept on the map during an extract (v21.15).",
+    "now":  "The what is new card names the fixes from your notes.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002721.01\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002721.16\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
+                      "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027YOUR NOTES. RANDOM FROM STASH gives two random guns, a gun pushed out of a belt slot goes in your backpack, and the map keeps an extract closing time.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and leads with the your notes news, shown whole\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof wnShort!==\u0027function\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e21.16+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027YOUR \u0027+\u0027NOTES\u0027)!==0) bad.push(\u0027the card does not lead with the your notes news\u0027);\n     else if(wnShort(WHATSNEW[1]).slice(-3)===\u0027...\u0027) bad.push(\u0027the new line is cut on the card\u0027);\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

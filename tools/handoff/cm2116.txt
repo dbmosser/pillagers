@@ -1,0 +1,7 @@
+v21.16: the what is new card names his notes
+
+The what is new card names the fixes from your notes.
+
+Check 21.16. Fails on v21.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

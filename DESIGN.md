@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.16 - THE WHAT IS NEW CARD NAMES HIS NOTES
+
+Co-op hunt while he was away. The card was stamped v21.01 and the stamp may not trail the build by more than 0.15. Its new second line names the three fixes from his notes of 2026-10-08: two random guns from RANDOM FROM STASH (v21.13), a gun pushed out of a belt slot kept in the backpack (v21.14), and the closing time kept on the map during an extract (v21.15).
+
+MEASURED. Check 21.16 passes, and fails on v21.15.
 ## v21.15 - THE MAP KEEPS THE CLOSING TIME DURING AN EXTRACT
 
 Co-op hunt while he was away. His note of 2026-10-08: on the map, when an extraction is called or in progress, you still need to see how long that extraction stays open in raid time, to plan the route. The map swapped the closing countdown for the call or the hold, so it vanished just when it mattered. It now stays on, on its own row under the ring, in the same words every other ring uses.
