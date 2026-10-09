@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.71';
+var VER='21.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10109,7 +10109,7 @@ function pedBuy(ix){
   var _pAmmo=!!(ITEMS[st.k]&&ITEMS[st.k].use==='ammo');
   if(!_pAmmo&&bagWeight()+wt>cap){ say('Backpack full.'); return; }
   P.credits-=st.price; saveProfile();
-  st.sold=true; G.trade.traded=1;
+  st.sold=true; G.trade.traded=1; if(typeof NET==='object'&&NET&&NET.on&&!G.sim) netPedSoldSend(G.trade,ix);   // v21.72 (K4): and the rest of the party is told the row is sold
   if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
   else {
     G.bag.push(st.k); autoBelt(st.k);
@@ -34415,7 +34415,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.71: In co-op, an item player 2 lets go over the host hire drops at his feet instead of vanishing. Check 21.71 fails on v21.70',
+  now:'v21.72: In co-op, a stall item one player buys from the Peddler shows SOLD for the other and is not in his dropped stock. Check 21.72 fails on v21.71',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38511,6 +38511,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='wdmg'||m.t==='wall') return netWallTake(peer,m);   // v17.36, co-op hunt 2026-09-28: a hit on a wall asked of the host, or a wall that fell, from the host
   if(m.t==='door') return netDoorTake(peer,m);   // v20.29 (H15): a door opened with its key, for the whole party
+  if(m.t==='pedsold') return netPedSoldTake(peer,m);   // v21.72 (K4): a Peddler row bought on another window is sold here too
   if(m.t==='mark') return netMarkTake(peer,m);   // v20.38 (H11): a Crier or THE OVERSEER on one of the party, told to his window
   if(m.t==='gungone') return netGunGoneTake(peer,m);   // v21.21 (R1): an armoury gun he dropped was taken by someone else
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
@@ -41003,6 +41004,30 @@ function netDoorTake(peer,m){
     return 'door';
   }
   return 'gone';
+}
+// v21.72, from the whole-game bug hunt of 2026-10-08 (K4): A PEDDLER SALE IS SOLD FOR THE WHOLE PARTY. Every window keeps its own
+// copy of the stall (the same rows, from the shared seed), and a purchase was never told: a row player 2 bought was still for sale
+// on the host, so the stall gun or the showpiece could be bought twice, and when the Peddler died there the PEDLAR STOCK cache
+// dropped it again. The window that sells now tells the others, as a door opened with its key is told (netDoorSend): the host
+// tells everyone, a joined window tells the host, which tells the rest. No Credits move on the receiving side and no seeded draw
+// moves.
+function netPedSoldSend(e,ix){
+  var i, w;
+  if(!e||!e.nid) return false;
+  w={t:'pedsold',sd:G.seed>>>0,id:e.nid,ix:ix|0};
+  if(netEntsHost()){ netBroadcast(w); return true; }
+  if(netEntsPeer()){ for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],w); return true; }
+  return false;
+}
+function netPedSoldTake(peer,m){
+  var e, st;
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(!G||(G.over&&G!==NET.specG)||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
+  e=(NET.entMap&&NET.entMap[m.id|0])||null;
+  if(!e||e.kind!=='peddler'||!Array.isArray(e.stock)) return 'gone';
+  st=e.stock[m.ix|0]; if(!st) return 'bad';
+  if(!st.sold){ st.sold=true; if(NET.role==='host') netBroadcast({t:'pedsold',sd:G.seed>>>0,id:m.id|0,ix:m.ix|0}); }
+  return 'pedsold';
 }
 function netWorldSend(){
   var z=[], s=[], i, Z, S, m, n=0;

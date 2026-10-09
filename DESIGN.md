@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.72 - A PEDDLER SALE IS SOLD FOR THE WHOLE PARTY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op each window keeps its own copy of the Peddler stall, and a purchase was never told to the other. Player 2 could buy the stall gun and the host still saw it for sale and could buy it again, and when the Peddler died on the host, his PEDLAR STOCK cache dropped every row the host still had as unsold, so the gun player 2 already bought came out a second time. A sale on either window is now told to the other, so the row reads SOLD for everyone and the cache leaves it out.
+
+MEASURED. Check 21.72 passes, and fails on v21.71.
 ## v21.71 - NO GIFTS INTO A COPY OF THE HOST HIRE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, player 2 could drag an item out of his backpack and let go over the host hire. His window said the item went to the hire and took it out of his backpack, but the hire on his screen is only a copy of the one the host runs, so the real hire never got it: not in his pack, not in his cut, not on his body if he died. The item was gone from both saves. Letting go over the host hire on player 2 window now drops the item at his feet instead, where the whole party can search it.

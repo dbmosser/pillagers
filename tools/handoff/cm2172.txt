@@ -1,0 +1,7 @@
+v21.72: a peddler sale is sold for the whole party
+
+In co-op, a stall item one player buys from the Peddler shows SOLD for the other and is not in his dropped stock.
+
+Check 21.72. Fails on v21.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
