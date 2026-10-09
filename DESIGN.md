@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.81 - FAR SOUNDS ARE HEARD WHERE THEIR RINGS ARE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Every sound in the game faded to nothing a little short of 900 away, but gunfire, explosions, alarms and the extraction sounds draw their noise ring out to 1150 to 1500. So with the ship called and you looting 1000 away, the inbound pings and the touchdown were silent while their rings showed. Those sounds now carry as far as their rings: the same level as before up close, then a fade that ends just past the ring. Every other sound is unchanged.
+
+MEASURED. Check 20.81 passes, and fails on v20.80.
 ## v20.80 - MACHINES IN SIGHT ARE HEARD FIRST
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Machine voices share a small budget so a crowd does not turn into a wall of noise. But a voice was paid for before the game counted the wall in the way, and a machine behind a wall further than about 460 plays at no volume at all. In a siege, crawlers hunting behind walls used up the whole budget in silence, and a machine in plain sight could not be heard. A voice too faint to hear now costs nothing, so the ones you can hear always play.

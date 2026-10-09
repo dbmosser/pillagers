@@ -1,0 +1,7 @@
+v20.81: far sounds are heard where their rings are
+
+Far gunfire, explosions and the ship coming in can be heard as far as their rings show.
+
+Check 20.81. Fails on v20.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
