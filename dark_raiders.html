@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.77';
+var VER='20.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33896,7 +33896,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.77: On a fast monitor one flick of the stick in a menu moves the highlight one place. Check 20.77 fails on v20.76',
+  now:'v20.78: On a controller a hit, a blast or a teammate going down buzzes its full length even while you fire. Check 20.78 fails on v20.77',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38715,7 +38715,12 @@ function padRumble(s,ms){
   var now=(typeof performance!=='undefined')?performance.now():Date.now();
   if(!(now-RUMBLE.usedAt<60000)) return 'idle';
   if(now-RUMBLE.at<50&&s<=RUMBLE.s) return 'soon';
-  RUMBLE.at=now; RUMBLE.s=s;
+  // v20.78, from the whole-game bug hunt of 2026-10-08 (H48): A WEAKER BUZZ NEVER CUTS A STRONGER ONE SHORT. Only the first 50 ms of
+  // a buzz were kept, so the light tick of the next round (0.12 for 35 ms) replaced a 230 ms hit buzz after 100 ms, and every hit in
+  // a firefight felt like the same blip; the blast thump and the teammate-down buzz were cut the same way. A weaker request is now
+  // dropped until the stronger buzz has played out; an equal or stronger one still takes over at once.
+  if(now<(RUMBLE.until||0)&&s<RUMBLE.s) return 'soon';
+  RUMBLE.at=now; RUMBLE.s=s; RUMBLE.until=now+Math.min(1000,ms);
   if(RUMBLE.gp) return padRumbleOn(RUMBLE.gp,s,ms)?'own':'none';
   if(typeof NET!=='undefined'&&NET&&NET.same&&NET.pair&&typeof netSamePost==='function') return netSamePost({t:'rumble',pair:NET.pair,s:+s.toFixed(2),ms:Math.round(ms)})?'sent':'none';
   return 'none';

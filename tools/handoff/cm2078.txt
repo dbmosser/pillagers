@@ -1,0 +1,7 @@
+v20.78: a hit buzz plays its full length
+
+On a controller a hit, a blast or a teammate going down buzzes its full length even while you fire.
+
+Check 20.78. Fails on v20.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v20.78 - A HIT BUZZ PLAYS ITS FULL LENGTH
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A controller buzzes harder and longer for a bigger hit, but while you held the trigger on an automatic gun the light tick of the next round replaced the buzz after a tenth of a second, so in a firefight every hit felt like the same short blip. The blast thump and the teammate-down buzz were cut the same way. A weaker buzz now waits until the stronger one has played out.
+
+MEASURED. Check 20.78 passes, and fails on v20.77.

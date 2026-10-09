@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.78 - A HIT BUZZ PLAYS ITS FULL LENGTH
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A controller buzzes harder and longer for a bigger hit, but while you held the trigger on an automatic gun the light tick of the next round replaced the buzz after a tenth of a second, so in a firefight every hit felt like the same short blip. The blast thump and the teammate-down buzz were cut the same way. A weaker buzz now waits until the stronger one has played out.
+
+MEASURED. Check 20.78 passes, and fails on v20.77.
 ## v20.77 - THE STICK STEPS MENUS AT ONE SPEED
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Holding the left stick in a menu (the stash, the shop, Settings) repeats a step, but the wait was counted in drawn frames. On a 144 or 240 Hz monitor one quick flick moved the highlight two or three places and a hold raced through 12 to 20 steps a second, and with the frame cap at 30 it crawled. The wait is now a fifth of a second of real time on every screen, which is what a 60 Hz screen always had.
