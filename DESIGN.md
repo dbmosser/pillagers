@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.36 - THE RUN CARD BUTTON STRIP RUNS EDGE TO EDGE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K pictures of the death and extract cards. A faint darker box sat behind LOG RUN AND RETURN and COPY REPORT, with its sides stopping well short of the card edges. That strip is there so the buttons stay readable when a long card scrolls under them, but it was only as wide as the text column and a shade off the colour of the card, so it read as a stray panel. It now runs from edge to edge of the card, so it blends in and there is no box to see. The buttons stay where they were.
+
+MEASURED. Check 21.36 passes, and fails on v21.35.
 ## v21.35 - CLAIM ALL SITS CLEAR OF THE CONTRACTS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the second 4K screenshot pass (2026-10-09). On the Mainframe CONTRACTS tab the long CLAIM ALL COMPLETED bar sat flush on top of the contract list and the cream detail card, with its rounded bottom edge resting on the top line of the list, so the three ran together. The REWARDS tab already leaves a small gap under its own CLAIM ALL. CONTRACTS now leaves one too.

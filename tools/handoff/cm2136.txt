@@ -1,0 +1,7 @@
+v21.36: the run card button strip runs edge to edge
+
+The faint box behind the two buttons on the death and extract card is gone.
+
+Check 21.36. Fails on v21.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

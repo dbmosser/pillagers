@@ -5723,6 +5723,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.36',what:'the run card button strip runs the full width of the card, so it never shows as a box inset behind the two buttons, and the card does not scroll sideways for it',
+   run:function(){
+     var oc=document.getElementById('outcome'), w=oc&&oc.querySelector('.ocwin'), a=oc&&oc.querySelector('.ocacts'), was=oc&&oc.classList.contains('on'), bad=[], cw, gl, gr;
+     if(!oc||!w||!a) return 'SKIP: no run card here';
+     try{
+       oc.classList.add('on');
+       cw=w.clientWidth;
+       if(!(cw>200&&a.offsetWidth>50)) return 'SKIP: the run card is not laid out ('+cw+' wide)';
+       if(a.offsetParent!==w) return 'SKIP: the button strip is not measured from the card here';
+       gl=a.offsetLeft; gr=cw-(a.offsetLeft+a.offsetWidth);
+       if(gl>3) bad.push('the button strip starts '+gl+' px in from the left edge of the card, so it shows as a box behind the buttons');
+       if(gr>3) bad.push('the button strip stops '+gr+' px short of the right edge of the card');
+       if(w.scrollWidth>cw+1) bad.push('the card scrolls sideways ('+w.scrollWidth+' of content in '+cw+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(!was) oc.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.35',what:'on the Mainframe CONTRACTS tab the CLAIM ALL bar has a gap under it: the contract list and the detail card start clear of its bottom edge instead of sitting flush on it',
    run:function(){
      if(!(window.__hubEnter&&window.__station)) return 'SKIP: no Undercroft here';
