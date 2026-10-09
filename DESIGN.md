@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.44 - A DROPPED ARMOURY GUN IS NEVER IN TWO SAVES
+
+Co-op hunt while he was away. Found by the second review of the night builds (2026-10-09). The v21.21 fix kept a dropped armoury gun on your lists so an abandon brings it home, but then if you abandoned and the other player took the gun afterwards, it ended up in both saves, and a reload after a closed window did the same. Now the drop is written down: an abandon still brings the gun home, a closed window does not, and when the other player takes it the game takes it back out of your armoury if the abandon had put it there.
+
+MEASURED. Check 21.44 passes, and fails on v21.43.
 ## v21.43 - THE WHAT IS NEW CARD NAMES THE SECOND 4K PASS
 
 Co-op hunt while he was away. The card was stamped v21.28 and the stamp may not trail the build by more than 0.15. Its new second line names the fixes from the second 4K screenshot pass of 2026-10-09 (v21.29 to v21.42); the rest are in the change list.

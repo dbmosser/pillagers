@@ -1,0 +1,7 @@
+v21.44: a dropped armoury gun is never in two saves
+
+In co-op, an armoury gun you drop is never copied into both saves.
+
+Check 21.44. Fails on v21.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
