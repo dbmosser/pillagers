@@ -1683,7 +1683,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.54';
+var VER='21.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29626,7 +29626,7 @@ function drawRaiderBoard(){
     rows=rows.slice(0,_rFit-1);
   }
   var _rShown=rows.length+(_rHid?1:0);
-  var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1+LH(6));
+  var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1-LH(3));   // v21.55, from the 4K visual pass (V-B11): the board ended a full empty row under the last name; now the room under it matches the room over the heading
   hudPanel(PADX-8,y0-LH(13),LW,boxH);   // v18.13: the one HUD panel
   ctx.font=FS(TYPE.micro);
   ctx.fillStyle='#ffc04a';
@@ -34347,7 +34347,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.54: While you record with F9, the controls list is hidden so the clip shows clean gameplay. Check 21.54 fails on v21.53',
+  now:'v21.55: The CURRENT PILLAGERS board no longer has an empty row at the bottom. Check 21.55 fails on v21.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

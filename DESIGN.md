@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.55 - THE PILLAGER BOARD ENDS UNDER ITS LAST NAME
+
+Co-op hunt while he was away. From the 4K screenshot pass (V-B11, parked until the 4K panel fix landed): the CURRENT PILLAGERS board ended a full empty row below its last name, while its heading sat close to the top edge. The board now ends just under the last name, with the same room below as above, and the status icons under it move up to match.
+
+MEASURED. Check 21.55 passes, and fails on v21.54.
 ## v21.54 - THE CONTROLS LIST STAYS OUT OF A RECORDING
 
 Co-op hunt while he was away. Seen on the first real attract clip (2026-10-09): the clip carried the on-screen controls list (WASD move, CTRL crouch and the rest), which clutters a gameplay reel. While F9 records, the list is now not drawn; it comes back the moment the recording stops.

@@ -5723,6 +5723,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.55',what:'the CURRENT PILLAGERS board ends just under its last name, with no empty row',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof drawRaiderBoard!=='function'||typeof hudPanel!=='function') return 'SKIP: no board here';
+     var bad=[], g, panels=[], ys=[], oP=hudPanel, own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), of=ctx.fillText, P0, last;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       hudPanel=function(x,y,w,h){ panels.push({x:x,y:y,w:w,h:h}); return oP.apply(this,arguments); };
+       ctx.fillText=function(t,x,y){ ys.push(y); return of.apply(this,arguments); };
+       drawRaiderBoard();
+       if(!panels.length||ys.length<3) return 'SKIP: staging: the board drew too little';
+       P0=panels[0]; last=Math.max.apply(null,ys.filter(function(y){ return y>P0.y&&y<P0.y+P0.h+40; }));
+       if(P0.y+P0.h-last>LH(8)) bad.push('the board ends '+Math.round(P0.y+P0.h-last)+' px under its last name, a full empty row');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ hudPanel=oP; if(own) ctx.fillText=of; else delete ctx.fillText; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.54',what:'while F9 records, the controls list is not drawn, and it is back when the recording stops',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof drawLegend!=='function'||typeof REC!=='object') return 'SKIP: no legend or recorder here';

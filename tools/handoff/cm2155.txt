@@ -1,0 +1,7 @@
+v21.55: the pillager board ends under its last name
+
+The CURRENT PILLAGERS board no longer has an empty row at the bottom.
+
+Check 21.55. Fails on v21.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

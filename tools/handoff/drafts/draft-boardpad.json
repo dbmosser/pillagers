@@ -1,0 +1,12 @@
+{
+    "title":  "THE PILLAGER BOARD ENDS UNDER ITS LAST NAME",
+    "why":  "From the 4K screenshot pass (V-B11, parked until the 4K panel fix landed): the CURRENT PILLAGERS board ended a full empty row below its last name, while its heading sat close to the top edge. The board now ends just under the last name, with the same room below as above, and the status icons under it move up to match.",
+    "now":  "The CURRENT PILLAGERS board no longer has an empty row at the bottom.",
+    "edits":  [
+                  {
+                      "anchor":  "  var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1+LH(6));",
+                      "replacement":  "  var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1-LH(3));   // v16.xx, from the 4K visual pass (V-B11): the board ended a full empty row under the last name; now the room under it matches the room over the heading"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the CURRENT PILLAGERS board ends just under its last name, with no empty row\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||typeof drawRaiderBoard!==\u0027function\u0027||typeof hudPanel!==\u0027function\u0027) return \u0027SKIP: no board here\u0027;\n     var bad=[], g, panels=[], ys=[], oP=hudPanel, own=Object.prototype.hasOwnProperty.call(ctx,\u0027fillText\u0027), of=ctx.fillText, P0, last;\n     try{\n       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: no live raid\u0027;\n       hudPanel=function(x,y,w,h){ panels.push({x:x,y:y,w:w,h:h}); return oP.apply(this,arguments); };\n       ctx.fillText=function(t,x,y){ ys.push(y); return of.apply(this,arguments); };\n       drawRaiderBoard();\n       if(!panels.length||ys.length\u003c3) return \u0027SKIP: staging: the board drew too little\u0027;\n       P0=panels[0]; last=Math.max.apply(null,ys.filter(function(y){ return y\u003eP0.y\u0026\u0026y\u003cP0.y+P0.h+40; }));\n       if(P0.y+P0.h-last\u003eLH(8)) bad.push(\u0027the board ends \u0027+Math.round(P0.y+P0.h-last)+\u0027 px under its last name, a full empty row\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ hudPanel=oP; if(own) ctx.fillText=of; else delete ctx.fillText; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,5 @@
+## v21.55 - THE PILLAGER BOARD ENDS UNDER ITS LAST NAME
+
+Co-op hunt while he was away. From the 4K screenshot pass (V-B11, parked until the 4K panel fix landed): the CURRENT PILLAGERS board ended a full empty row below its last name, while its heading sat close to the top edge. The board now ends just under the last name, with the same room below as above, and the status icons under it move up to match.
+
+MEASURED. Check 21.55 passes, and fails on v21.54.
