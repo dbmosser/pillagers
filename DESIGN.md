@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.30 - THE KEY LINE STAYS OUT OF A WINDOW
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K pictures of the shop and Fashion. Tonight the floor belt stopped showing through the bottom of a station window, but the key line that sits above the belt then dropped to the very bottom of the screen, so WASD WALK, SHIFT JOG and E USE STATION showed in the strip under the window, cut through by its frame line. The key line is now hidden while a window is open, like the floor heading, and comes back when the window closes.
+
+MEASURED. Check 21.30 passes, and fails on v21.29.
 ## v21.29 - THE FASHION RACKS LINE UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K FASHION picture. In the OUTFIT rack a name too long for one line (The Skeleton, The Tomb Explorer, The Street Poet) pushed its OWNED or WORN word a whole line lower than the tiles beside it, so the row looked ragged. The status word now sits at the foot of every tile, so a row lines up whatever the names, and the names stay right under their pictures.
