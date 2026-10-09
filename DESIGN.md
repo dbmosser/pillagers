@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.77 - THE STICK STEPS MENUS AT ONE SPEED
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Holding the left stick in a menu (the stash, the shop, Settings) repeats a step, but the wait was counted in drawn frames. On a 144 or 240 Hz monitor one quick flick moved the highlight two or three places and a hold raced through 12 to 20 steps a second, and with the frame cap at 30 it crawled. The wait is now a fifth of a second of real time on every screen, which is what a 60 Hz screen always had.
+
+MEASURED. Check 20.77 passes, and fails on v20.76.
 ## v20.76 - THE CONTROLLER PING IS D-UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller the full controls list and the pause box said LB + RB pings, and in a party the small legend said it too, under a line already saying D-UP pings. Both bumpers together never ping: each tap walks the belt and holding both zooms out and in at once. The ping has been on D-UP since v16.46. The full list now says D-UP, and the small party legend lists the ping once.

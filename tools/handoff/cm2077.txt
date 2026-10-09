@@ -1,0 +1,7 @@
+v20.77: the stick steps menus at one speed
+
+On a fast monitor one flick of the stick in a menu moves the highlight one place.
+
+Check 20.77. Fails on v20.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

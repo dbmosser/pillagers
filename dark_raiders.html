@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.76';
+var VER='20.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12672,10 +12672,14 @@ function padMenu(pressed){
   else if(tap(14)) mv=[-1,0]; else if(tap(15)) mv=[1,0];
   // The left stick works too, on a repeat timer so one push is one step.
   var lx=padAxis((navigator.getGamepads&&PAD.ax)?PAD.ax[0]:0), ly=padAxis(PAD.ax?PAD.ax[1]:0);
-  PAD.mrep=(PAD.mrep||0)-(1/60);
-  if(!mv&&(Math.abs(lx)>0.6||Math.abs(ly)>0.6)&&PAD.mrep<=0){
+  // v20.77, from the whole-game bug hunt of 2026-10-08 (H47): THE STICK REPEAT IN A MENU RUNS ON THE CLOCK. It took 1/60 off a
+  // timer once per drawn frame, so it stepped every 12 frames: a fifth of a second at 60 Hz, but 83 ms at 144 Hz and 50 ms at
+  // 240 Hz, where one quick flick moved the highlight two or three places, and 0.4 s with the frame cap at 30. It now waits a
+  // fifth of a second of real time between steps at any frame rate, as the D-UP and bumper holds already do.
+  var _mnow=netPadNow();
+  if(!mv&&(Math.abs(lx)>0.6||Math.abs(ly)>0.6)&&!(PAD.mrepAt!=null&&_mnow-PAD.mrepAt<0.195)){
     mv=(Math.abs(lx)>Math.abs(ly))?[lx>0?1:-1,0]:[0,ly>0?1:-1];
-    PAD.mrep=0.20;
+    PAD.mrepAt=_mnow;
   }
   if(mv){ var nx=padStep(list,PAD.focus,mv[0],mv[1]); if(nx){ padSetFocus(nx); if(GRAB&&GRAB.pad){ GRAB.moved=1; stashPadGhost(); } } }   // v16.80: a held pad grab moves with the highlight
   // v15.52, rack audit finding: BUILD A RACK KEEPS THE CONTROLLER HIGHLIGHT WHEN IT GREYS OUT. A disabled control kept under
@@ -33892,7 +33896,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.76: On a controller the controls list says D-UP pings, the button that really does. Check 20.76 fails on v20.75',
+  now:'v20.77: On a fast monitor one flick of the stick in a menu moves the highlight one place. Check 20.77 fails on v20.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
