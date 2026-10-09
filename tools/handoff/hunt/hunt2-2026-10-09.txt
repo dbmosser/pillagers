@@ -1,0 +1,692 @@
+WHOLE-GAME HUNT ROUND 2 (v21.59, 2026-10-09): 43 confirmed, 0 refuted 
+=== K1 [high] [CO-OP NETWORKING] When the host leaves, player 2's raid freezes about 2 seconds later: a pillager last seen looting has himself as his loot target and throws every frame
+SCENARIO: Two-player co-op with player 2 up top. Player 1 reloads or closes his window, presses END THE PARTY, or his kept raid ends with the 'out' word. Player 2 takes the raid over (the 2026-10-02 ruling). At that moment some pillager from the build was crouched at a box in the last snapshot player 2 received, which happens most of the time because pillagers spend much of a raid looting. Within 1 to 2 seconds of the takeover, player 2's window throws a TypeError on every frame inside updateEnts. render2D is never reached again, so the raid screen freezes on its last picture and the remaining player can no longer see or play the raid he was supposed to keep.
+EVIDENCE: On a linked window, netEntFlagsApply (41459) uses the body itself as a stand-in goal so the crouch draws: `if(f&2048){ e.goal=e; if(e.state!=='loot') e.state='loot'; } else if(e.goal===e) e.goal=null;`. Bit 2048 is raiderCrouched (15187: state 'loot' and within 34 of e.goal). Bodies that drop out of range keep the flags from their last row. netHostGone (42334-42365) keeps every built body (the ones in G.ents, and it pushes the stale ones in NET.entMap back in) and never clears goal. After the takeover, updateEnts runs the full AI. In the loot branch, `if(!e.goal||e.goal.opened)` (20397) keeps the goal, because e.opened is undefined. `dist(e,e.goal)<30` is 0, so lootT counts up (it starts at 1 when bit 65536 was set). At lootT>2 (20522-20524) the code runs `e.goal.opened=true; for(var q=0;q<e.goal.loot.length;q++)`. A raider has no loot field (mkRaider at 9724 has bag, looted and goal, but no loot), so this throws `Cannot read properties of undefined (reading 'length')`. updateEnts is called at 33874 with no try, and loop() asks for the next frame first (33748), so the same throw happens every frame and render2D (34036) is never reached.
+FIX: In netHostGone, right after the splice loop at 42358 (before the `if(_boss)` line), clear the stand-ins that exist only on the linked window:
+`for(_i=0;_i<G.ents.length;_i++){ _e=G.ents[_i]; if(!_e) continue; if(_e.goal===_e){ _e.goal=null; _e.lootT=0; } if(_e.reviving===_e) _e.reviving=null; }`
+This sends the pillager back through the retarget at 20397, and he picks a real box on a fresh 2-second search.
+
+Optional guard at 20397: `if(!e.goal||e.goal.opened||!e.goal.loot){`, so anything that is not a container is never treated as a loot target.
+
+=== K2 [high] [AI] A hire on FOLLOW walks over and takes any item you drop, so a co-op trade drop (or any Z / pad Y drop) disappears into a pack nobody can search
+SCENARIO: Hire someone and go up. FOLLOW is the default order. In co-op, player 2 stands next to player 1 (the host) and presses Z (pad Y) to drop a Medkit for him. That is the trade route since v18.27. Before player 1 can reach it, the hire walks the 110-140 units to the pile, kneels for 2 s and the pile is gone. Nothing is said, apart from a quiet pick blip. Solo works the same way: drop something at your feet to free a slot and stand still, and the hire takes it. His pack cannot be searched (v6.72). His cut is 10% of his haul, and only if he boarded before you. So the item is lost unless the hire dies and leaves a body. If player 2 dropped an armoury gun, nobody 'took it out of the pile' through a search, so the v21.21/v21.44 piled-gun record never hears about it.
+EVIDENCE: FOLLOW pick, lines 20303-20304: `if(_CT.opened||_CT.mine||(_CT.prog||0)>0||shutRoomAt(G.map,_CT.x,_CT.y)) continue; if(dist(e,_CT)<160&&dist(p,_CT)<420){ e.mgoal=_CT; ...}`. The take is at 20315-20317: `if(e.mlootT>2){ e.mgoal.opened=true; for(...) e.bag.push(e.mgoal.loot[_mq]); ...}`. A dropped pile is an ordinary unopened 'crate' with prog 0. Solo dropItem (14870-14871) builds it with `mkContainer(...,'crate')` and `c.dropped=1`. A party drop is built on the host by netPileTake (14835-14838) with the same type, `c.dropped=1; c.dropBy=peer.seat`, pushed into the host's G.containers, which is what the host's hire scans. Nothing in the pick tests `dropped`, although the restock loop already treats a dropped pile as special (18860, 'a pile you dropped is not a crate the world restocks'). Geometry: FOLLOW stops the hire at dF>120 (20324). The pile lands 6-18 units from your feet (14870 / 14835), so the hire is about 105-140 from it, inside the 160 pick radius, and you are well inside 420. His pack has no search path (17875-17879), and the cut is 10% only for a hire who boarded first (21759-21767).
+FIX: At line 20303, add the dropped flag to the hire's FOLLOW skip test:
+`if(_CT.opened||_CT.mine||_CT.dropped||(_CT.prog||0)>0||shutRoomAt(G.map,_CT.x,_CT.y)) continue;`
+
+This covers your own Z / pad Y drops, a party pile built by `netPileTake` (it also has `dropped=1`), and the piles the bag sheds when it is full.
+
+Also do the same for a hire on the LOOT order. In the raider loot pick at line 20400, after `if(ct.opened) continue;`, add:
+`if(e.merc&&ct.dropped) continue;`
+
+This leaves pillagers free to take piles as before; only your hire stops. No seeded draw moves: both changes only skip boxes in a pick loop that rolls nothing.
+
+=== K3 [high] [LOOT AND INVENTORY] Co-op: an item player 2 drags onto the host's hire is destroyed (it goes into a local copy of the hire the host never sees)
+SCENARIO: Co-op with the host's hire up top. Player 2 plays with a mouse in his own window (invite code). He opens his backpack and drags a Medkit, or a gun, out of it. He lets go over the hire, either on purpose (GIVE) or while dragging an item outside the panel to drop it for his teammate (v18.30) with the hire standing beside him. His window says 'Medkit to <hire name>.' and the item leaves his backpack. The host's hire never gets it: it is not in the hire's bag, it does not count toward the host's 10 percent cut, and it is not on the hire's body if he dies. It is gone from both saves.
+EVIDENCE: The host's hire is built in player 2's window too. netUpStart, line 39463, sets `P.merc=netClean(m.merc,24)||null` before startRaid. buildRaid, lines 11120-11140, then makes the hire locally with `M2.merc=1; ... ents.push(M2)`. The give block in the raid mouseup, lines 12483-12500, has no linked-window test: `if(_gme.kind!=='raider'||!_gme.merc||_gme.downed) continue; if(dist(G.player,_gme)<=110){ ... G.bag.splice(_gix,1); _gme.bag.push(d.key); say(...+' to '+_gme.name+'.'); ...`. On player 2's window `_gme` is the eased copy, and nothing sends the gift to the host. Everything that matters reads the host's object instead: the cut at 21746 (`for(var mb=0;mb<mercEnt.bag.length;mb++) mhaul+=ival(mercEnt.bag[mb])`) and the body at 19126-19139 (`_drop=e.bag.slice()` on the host). Player 2's own endRaid skips the hire (21718 `if(P.merc&&!G.sim&&!G.netUp)`). This is the same copy-of-a-host-body class v17.28 closed for the Stray (17716) and for picking up a downed pillager (17630).
+FIX: At line 12483, add the linked-window guard used at 17630 and 17716:
+
+    if(!dropped&&G&&!G.over&&d&&d.key&&!netEntsPeer()){
+
+On player 2's window, a release over the host's hire then falls through to the v18.30 drop branch at 12505. Outside the panel, dropItem (14848) makes a real pile through the host, so the item is never lost. Optionally, so the gesture does not fail silently, add an else line for a release over a merc within 110 on a linked window, for example `say(_gme.name+' works for your host. Drop it and he can pick it up.')`. If gifts from player 2 to the host's hire are wanted later, send the host a word that pushes the key into the real hire's bag, instead of using the local copy.
+
+=== K4 [high] [LOOT AND INVENTORY] Co-op: player 2's Peddler purchases are never told to the host, so a stall item can be bought twice and the PEDLAR STOCK cache drops it again (duplicate item)
+SCENARIO: Two-player co-op (same PC or invite code). Player 2 walks to the Peddler, presses E and buys the stall's gun, for example an Autorifle, or the showpiece. In player 2's window the row reads SOLD and the gun is in his backpack. 1) In the host window the same row is still for sale, so the host can buy the one-of-a-kind gun too. 2) Later the Peddler dies on the host: the host shoots him, or a pillager or machine kills him. The host builds the PEDLAR STOCK cache from every row its own copy still lists as unsold, so the Autorifle player 2 already bought is in the cache, and whoever searches it gets a second one. Done on purpose (buy as player 2, then the host shoots the Peddler), this copies the stall's gun and showpiece every raid.
+EVIDENCE: The stall lookup in updatePlayer, lines 17597-17601: `var ped=null; for(...){ var PE=G.ents[pe]; if(PE.kind==='peddler'&&!PE.fleeT&&!PE._back&&dist(p,PE)<74){ ped=PE; break; } }`. It has no `!netEntsPeer()` test. The two other neutral interactions in the same function do have one, added at v17.28 because 'the survivor there is a copy the host runs': the Stray at 17716 (`SE.kind==='stray'&&!SE.helped&&!netEntsPeer()&&...`) and the downed-pillager pick-up at 17630. Player 2's Peddler is his own copy from the shared-seed build: mkPeddler at 9876-9898 rolls the stock with seeded pick/ri, so both windows have the same rows. updateEnts returns early on a linked window (18850 `if(NET.on&&netEntsPeer()){ netEntsEase(dt); return; }`), so the Peddler's death only ever runs on the host. pedBuy, lines 10084-10108, is local only: `if(!st||st.sold) return; ... P.credits-=st.price; saveProfile(); st.sold=true; ... G.bag.push(st.k)`. The file has no net word for a stall purchase (a grep for a 'ped' message type finds none). The host's death drop at 19056-19061 reads its own unsold rows: `for(var ps=0;ps<e.stock.length;ps++) if(!e.stock[ps].sold) pdrop.push(e.stock[ps].k); ... cpd.tag='PEDLAR STOCK'; G.containers.push(cpd);`, and the cache reaches player 2 as an ordinary 'new' box.
+FIX: Mark a sale on both windows, the same way netDoorSend/netDoorTake do it (40924-40941):
+
+1) New sender next to netDoorSend:
+function netPedSoldSend(e,ix){ var i, w; if(!e||!e.nid) return false; w={t:'pedsold',sd:G.seed>>>0,id:e.nid,ix:ix|0}; if(netEntsHost()){ netBroadcast(w); return true; } if(netEntsPeer()){ for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],w); return true; } return false; }
+
+2) Handler:
+function netPedSoldTake(peer,m){ var e, st; if(!peer||peer.state!=='in') return 'ignored'; if(!G||G.over||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other'; e=(NET.entMap&&NET.entMap[m.id|0])||null; if(!e||e.kind!=='peddler'||!e.stock) return 'gone'; st=e.stock[m.ix|0]; if(!st) return 'bad'; if(!st.sold){ st.sold=true; if(NET.role==='host') netBroadcast({t:'pedsold',sd:G.seed>>>0,id:m.id|0,ix:m.ix|0}); } return 'pedsold'; }
+Dispatch it beside line 38448: if(m.t==='pedsold') return netPedSoldTake(peer,m);
+
+3) In pedBuy, right after `st.sold=true; G.trade.traded=1;`, add: if(NET.on&&!G.sim) netPedSoldSend(G.trade,ix);
+
+Now the row the host or player 2 bought shows SOLD on the other window too, and the host's PEDLAR STOCK drop at 19058 leaves it out.
+
+Smaller stopgap, the v17.28 Stray rule: add &&!netEntsPeer() to the test at 17600 so a linked window cannot trade with its copy. This stops the duplicate, but player 2 loses the stall, and the host's purchases would still show as for sale in player 2's view.
+
+=== K5 [high] [SAVE AND PROFILE] Co-op: an armoury gun dropped for a teammate stays in its owner's save once his window is gone, and the teammate banks it too
+SCENARIO: (a) The host (player 1) moves his own armoury rifle into the backpack and drops it with Z for his son, the documented 'trading is dropping' route. Before player 2 takes it, the host's window closes (closed by mistake, F5, crash, or END THE PARTY followed by an abandon). Player 2's window picks up the raid. Since v20.30 the host-made pile still holds the rifle, so player 2 searches it on the solo path and extracts with it. On reload the host's own save puts the rifle back in his armoury, so both saves have it. (b) The same gap the other way: player 2 drops his armoury gun, abandons (the gun goes home), and closes his window. Player 1 then takes the pile and extracts. netGunTold finds no peer for player 2's seat, so player 2's armoury is never told, and both saves have the gun.
+EVIDENCE: dropItem's host/solo path 14870-14882 only builds the pile (c.dropped=1). It leaves P.raidSpliced alone, and with no save since the splice the stored P.weapons still lists the gun. Only the guest branch (14861-14866, v21.44) takes the gun off the saved list at the drop. netContNewWord 42183-42184 sends every host box with lk:netLootList(ct.loot), and netContMake 42326 keeps it in ct.netLk. When the host link drops, netDrop 38533-38536 calls netHostGone('lost'), which runs netBoxMine on every box (42346). netBoxMine 42309-42310 sets ct.loot=ct.netLk, so the pile is searchable with the gun in it. From then on player 2 is solo (NET.upSeed=0, then netReset), and netGunsGone/netGunTold (42049, 42077) only run on a living host. The host's reload: applyLoadedProfile 3203-3206 pushes every P.raidSpliced id back into P.weapons. For (b): netGunTold 42053 `q=netPeerOfSeat(ct.dropBy); if(!q) return 0;`, so the word is dropped, although player 2's saved P.gunPiled entry (home=1) would have let netGunGoneTake remove the gun on his next link.
+FIX: (a) dropItem, host path. Right after `G.containers.push(c);` (14881), take the gun off the saved list only when a teammate is still up top in this shared raid. Count teammates the way netSpecStart does:
+
+  if(!G.sim&&typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&typeof netUpShared==='function'&&netUpShared()){
+    var _hn=0,_hu; for(_hu=0;_hu<NET.up.length;_hu++) if(netUpShown(NET.up[_hu])&&!netUpGone(NET.up[_hu])) _hn++;
+    var _hk=(/^gun_/.test(key)&&ITEMS[key]&&ITEMS[key].gk)?ITEMS[key].gk:null,_hj;
+    if(_hn&&_hk&&(G.spliced||[]).indexOf(_hk)>=0&&P.raidSpliced){ _hj=P.raidSpliced.indexOf(_hk); if(_hj>=0){ P.raidSpliced.splice(_hj,1); try{ saveProfile(); }catch(_hs){} } }
+  }
+
+Keep the id on G.spliced. An abandon while the window lives still brings the gun home, and netGunsGone (including its G.over==='abandon' branch) still handles a teammate taking it.
+
+Also stop a gun he takes back himself from being lost. In grantLoot's item loop, for a pile (ct.dropped):
+
+  if(!G.sim&&ct.dropped&&itm.use==='gun'&&itm.gk&&G.spliced&&G.spliced.indexOf(itm.gk)>=0){ P.raidSpliced=P.raidSpliced||[]; if(P.raidSpliced.indexOf(itm.gk)<0){ P.raidSpliced.push(itm.gk); try{ saveProfile(); }catch(_rs){} } }
+
+This also closes the same gap in the R1b guest branch, because netLootTake reaches grantLoot through openContainer.
+
+(b) netPileTake (14836): also store `c.dropPid=peer.pid;`. In netGunTold (42053), when !q, queue the word instead of dropping it:
+
+  if(!q){ for(i=0;i<items.length;i++){ it=ITEMS[items[i]]; if(it&&it.use==='gun'&&it.gk){ (NET.gunOwed=NET.gunOwed||[]).push({pid:ct.dropPid||'',seat:ct.dropBy,gk:it.gk,sd:NET.upSeed>>>0}); n++; } } return n; }
+
+In the host's hello handler, after the welcome send (38480), send and then remove every NET.gunOwed entry whose pid matches peer.pid (match the seat when pid is empty):
+
+  netSend(peer,{t:'gungone',k:e.gk,late:1,sd:e.sd})
+
+In netGunGoneTake, handle a late word before the G.spliced/raidSpliced lines: if m.late is set, act only when P.gunPiled holds an entry with that gk and sd===(m.sd>>>0); otherwise return 'ignored'. For a matched late word, skip the G.spliced/P.raidSpliced removal and do only the gunPiled/home=1 armoury removal and the slot repair. A stale word can then never strip a gun from a later raid.
+
+Residual, optional: END THE PARTY with both windows alive. Before broadcasting 'bye', the host can send a {t:'cont',st:'left'} word with the armoury gun keys (gk on G.spliced) removed from each of his unopened dropped piles. The guest's netLk then matches, and the gun stays in the host's world. A lost link with both windows alive cannot be fixed this way and stays a smaller gap.
+
+=== K6 [high] [SAVE AND PROFILE] Co-op: a guest who abandons and rejoins the same raid gets his dropped armoury gun twice, because startRaid wipes the piled-gun record
+SCENARIO: Player 2 (the guest) carries his own armoury DMR up and moves it into the backpack, so it comes off P.weapons and onto G.spliced. He drops it with Z to trade, and the host makes the pile. He then abandons from the pause box. The abandon puts the DMR back in his armoury and marks the record home=1. Back in the Undercroft he presses JOIN THE RAID IN PROGRESS (or walks to the lift), which the game allows after an abandon. The rejoin build wipes P.gunPiled. The pile with the DMR is still in the host's raid, and the late window is sent the host's boxes. (a) Player 1 searches the pile and extracts. The host tells player 2 'gungone', but with the record wiped nothing comes out of his armoury, so both saves have the DMR. (b) Player 2 searches his own pile again and extracts. No word is sent for a dropper's own pile, and with the DMR already in P.weapons, bankItem (or the kept-gun loop) puts a second copy, gun_dmr, in his stash. One gun has become two.
+EVIDENCE: dropItem guest branch 14861-14866: `P.raidSpliced.splice(...)`; `(P.gunPiled=...).push({gk:_pk,sd:(NET.upSeed>>>0)})`; saveProfile. G.spliced keeps the id. Abandon branch 22101-22105 pushes every G.spliced id back into P.weapons, then gunPiledHome() (42057) sets e.home=1. An abandon does not ban a rejoin: the host sets lateOut only for how==='dead'||'extract' (39632), and the guest sets lateBan only for dead/extract (39693), so netLateBtn (39556) shows the button. A rejoin runs netUpTake 39576 -> netUpStart -> startRaid (39465), and startRaid 11507 does `if(P&&Array.isArray(P.gunPiled)&&P.gunPiled.length) P.gunPiled=[];` without checking whose raid the entries belong to. The `sd` field written at 14864 is read nowhere in the file. netUpStart then saves (39490). netGunGoneTake 42066-42068 takes the gun out of P.weapons only through a P.gunPiled entry with home set, so after the wipe it does nothing. netGunTold 42051 sends no word when ct.dropBy===taker, and bankItem 21533/21557 pushes a stash copy when the id is already owned. The late window gets the pile through netContHello 42213.
+FIX: Change 1, startRaid line 11507. Replace the unconditional wipe with code that keeps the entries for the raid being joined and puts their guns back on the ground. pendSeed is still set at this point; buildRaid clears it at 10282.
+
+  var _gpSd=(typeof NET==='object'&&NET&&NET.upHold&&typeof pendSeed==='number')?(pendSeed>>>0):-1, _gpBack=[];
+  if(P&&Array.isArray(P.gunPiled)&&P.gunPiled.length){
+    P.gunPiled=P.gunPiled.filter(function(e){ return e&&e.gk&&_gpSd>=0&&(e.sd>>>0)===_gpSd; });
+    P.gunPiled.forEach(function(e){ if(e.home){ var j=P.weapons.indexOf(e.gk); if(j>=0){ P.weapons.splice(j,1); _gpBack.push(e.gk); } e.home=0; } });
+    if(_gpBack.length){
+      if(P.equipped&&P.equipped!=='fists'&&P.weapons.indexOf(P.equipped)<0) P.equipped=P.weapons.length?P.weapons[0]:'fists';
+      if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists'&&P.weapons.indexOf(P.equippedSec)<0) P.equippedSec='none';
+      if((P.equippedSec||'none')===P.equipped) P.equippedSec='none';
+    }
+  }
+
+Then, right after `G=buildRaid(false);` (11523):
+
+  if(_gpBack.length&&G&&!G.sim){ G.spliced=G.spliced||[]; _gpBack.forEach(function(gk){ G.spliced.push(gk); }); }
+
+Do not add these ids to P.raidSpliced. dropItem leaves them off on purpose, so a closed window never brings the gun home. netUpStart's saveProfile (39490) stores the result. If the surface does not match, netUpPutP(snap) restores P.weapons, the equipped slots and P.gunPiled.
+
+Change 2, netLootTake on the guest, right after `where=openContainer(at,items);` (42230). When he takes a gun back out of a pile, its record goes, so a later rejoin cannot strip a gun he already took back:
+
+  if(ct&&ct.dropped&&P&&Array.isArray(P.gunPiled)&&P.gunPiled.length){ var _gq, _gz, _gc=0; for(_gq=0;_gq<items.length;_gq++){ var _gt=ITEMS[items[_gq]]; if(!_gt||_gt.use!=='gun'||!_gt.gk) continue; for(_gz=0;_gz<P.gunPiled.length;_gz++) if(P.gunPiled[_gz]&&P.gunPiled[_gz].gk===_gt.gk){ P.gunPiled.splice(_gz,1); _gc++; break; } } if(_gc){ try{ saveProfile(); }catch(_gps){} } }
+
+What this gives:
+- On the rejoin, the pile holds the only copy, and the gun does not also come up in his hands.
+- If player 1 takes the pile, 'gungone' takes the id off G.spliced, and player 2's save has no copy.
+- If player 2 takes it back and extracts, bankItem puts it in his armoury once.
+- If he abandons again, G.spliced brings it home and gunPiledHome marks it again.
+
+=== K7 [medium] [CO-OP NETWORKING] Kid mode damage cut and kid firing switch off for player 2 the moment the host's link drops and he takes over the raid
+SCENARIO: Same-PC co-op with Kid mode set to 1/10 and Kid firing on. Player 1 reloads, closes his window, or presses END THE PARTY while his son (player 2) is up top. Player 2's window takes over the raid as the ruling says. From that moment the child takes full damage from every hit (10x what he took a second earlier) and his gun stops aiming and firing by itself, though both rows still read ON in Settings. If the host's raid instead ends with the 'out' word, both stay on. So the same takeover behaves two different ways.
+EVIDENCE: The damage cut is gated on the live link: damagePlayer 14282 `if(...NET.on&&NET.role==='join'&&isFinite(amt)) amt*=netKidMul();`. Kid firing is gated the same way: netAfOn 40587 `NET.on&&NET.role==='join'&&(afOwn()||NET.afHost===1)`. A lost link runs netDrop on the joined side (38533-38536): `netHostGone('lost'); netReset(true);`. A 'bye' runs `netHostGone('bye'); netReset(true);` (38521). netReset sets `NET.on=false; ... NET.role=null;` (38561), so both gates go false for the rest of the raid that player 2 now runs alone. The 'out' path (39614) calls netHostGone without netReset, so NET.on and role stay set there. NET.kidHost and NET.afHost are never cleared, so the values are still at hand.
+FIX: Mark the raid as one this window joined, at the takeover. `G` is built fresh for each raid by `buildRaid` (11523, 22416), so the flag lasts only for that raid. `netHostGone` returns early for `G.sim` and needs role 'join', so only player 2's real raid gets the flag.
+
+1. In `netHostGone` (42334), right after the line `if(!netContPeer()) return false;`, add:
+   `G.netWasJoin=1;   // kid mode and kid firing stay with player 2 after a takeover`
+
+2. In `damagePlayer` at 14282, replace the gate with:
+   `if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))&&isFinite(amt)) amt*=netKidMul();`
+
+3. Replace `netAfOn` at 40587 with:
+   `function netAfOn(){ return !!(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))&&(afOwn()||NET.afHost===1)); }`
+
+`netKidMul` reads `NET.kidHost` and `netAfOn` reads `NET.afHost`. Neither is cleared by `netReset`, so the host's last values still apply after the reset, together with player 2's own saved settings.
+
+=== K8 [medium] [CO-OP NETWORKING] Player 2 never sees Howler shells, pillager grenades or pillager smoke: only the host window has them, yet the hits still land on player 2
+SCENARIO: Co-op. A Howler targets player 2. The host window draws the growing red ring where the shell will land and the shell on its arc for 2.1 s. Player 2's window draws nothing: he hears the launch alarm at the Howler, then about 2 seconds later a boom at his feet, and loses up to dmg+6 health with no ring to dodge (the code says the ring 'IS the game of it'). The same goes for a pillager frag thrown at player 2: no grenade and no countdown, just a charge sound ring, then up to 98 damage. A pillager's smoke cloud also never appears for player 2, so he sees clearly through a cloud that the host's enemies treat as blocking sight.
+EVIDENCE: Shells are made only in the host's updateEnts: `G.shells.push({mortar:1,...})` at 19480 (heard) and 20005 (seen). A linked window's updateEnts returns at 18850 (netEntsEase), so its G.shells never holds a mortar. The ring and the shell are drawn only from G.shells mortar entries (24882-24895). The impact still reaches player 2: howlerImpact calls `if(NET.on) netAreaHitPeers(SH.tx,SH.ty,R,...)` (13956). Pillager frags `G.frags.push(_rf)` (16522) and pillager smokes (16485, 19831) are host-only too. explodeFrag hits the party through netAreaHitPeers (13841). The only throw word, netThrSend, is called only for a player's own smoke and decoy (13791-13792) and for the 'nz' blast. A grep of the net section finds no word carrying G.shells, G.frags or a pillager smoke. netThrTake (39949-39960) handles only smoke, decoy and nz.
+FIX: Mirror the three host-only objects to the linked windows as draw-only copies, using the existing reliable 'thr' word. The host keeps landing every hit through netAreaHitPeers, so nothing is applied twice.
+
+(a) Let netThrSend take extra fields: `function netThrSend(k,x,y,ex){ ... m={t:'thr',k:k,x:Math.round(x),y:Math.round(y)}; if(ex) for(var f in ex) m[f]=ex[f]; ... }`
+
+(b) Send the words from the host. Right after each mortar push at 19480 and 20005, keeping the new shell in a variable sh: `if(NET.on&&netEntsHost()) netThrSend('sh',sh.tx,sh.ty,{x0:Math.round(e.x),y0:Math.round(e.y),air:+sh.air.toFixed(2)});`. After `G.frags.push(_rf)` at 16522: `if(NET.on&&netEntsHost()) netThrSend('fr',_rf.x,_rf.y,{fuse:_rf.fuse});`. After each pillager smoke push at 16485 and 19831: `if(NET.on&&netEntsHost()) netThrSend('smoke',e.x,e.y);`. The smoke reuses the existing word and handler, and a joined window does not relay it.
+
+(c) Take them in netThrTake (39949). Widen the kind gate to also accept 'sh' and 'fr', but only on a joined window: `if((k==='sh'||k==='fr')&&NET.role==='host') return 'ignored';`. Then:
+`if(k==='sh'){ G.shells.push({mortar:1,fx:1,x0:+m.x0||x,y0:+m.y0||y,tx:x,ty:y,t:0,air:clamp(+m.air||2.1,.2,5),dmg:0}); return 'thr:sh'; }`
+`if(k==='fr'){ G.frags.push({x:x,y:y,t:0,fuse:clamp(+m.fuse||1.1,.05,3),fx:1}); return 'thr:fr'; }`
+Put both lines before the host relay loop. Only the host sends these kinds, so they need no relay.
+
+(d) Make the copies harmless in updateThrowables. In the shell loop (13978): `if(SH.t>=SH.air){ G.shells.splice(shI,1); if(SH.fx){ if(!G.sim){ spark(SH.tx,SH.ty,'#ff9a5c',22,300); decal(SH.tx,SH.ty,'#181310',fxn(14,20)); G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); } G.shake=Math.max(G.shake,6); flash(SH.tx,SH.ty,220,'#ff9a5c',.4); } else howlerImpact(SH); }`. In the frag loop (14030): `if(fr.t>=fr.fuse){ G.frags.splice(i,1); if(fr.fx){ spark/decal/puff/flash/shake as in explodeFrag 13811-13814 } else explodeFrag(fr); }`. The fx copies play no sfx (the 'boom' already arrives through netFxNoise), no ping, no damagePlayer, no netAreaHitPeers, no netShotSend, no wall damage and no netThrSend. As an option, the host's own frag (13799) can be mirrored the same way so player 2 also sees the host's grenade.
+
+=== K9 [medium] [UNDERCROFT MENUS AND STATIONS] ESC in the Keys window (Settings > CHANGE KEYS, opened from the pause box) also shuts the pause box and the raid starts again
+SCENARIO: In a raid press P, press Settings, then CHANGE KEYS. The Keys window opens. Press ESC to back out. The Keys window closes, and on the same press the pause box closes too. Settings is gone as well, so the solo raid is suddenly live again with the player's hands off the controls. Second case: click an action, so it reads PRESS A KEY, then press ESC (the window says 'ESC cancels a press'). With the pause box up, that ESC cancels the press and also closes the whole Keys window. In the player 2 window the same listener lets netKeyFwd pass every key pressed while rebinding on to player 1, so a key bound for player 2 is also played as a key in player 1's window.
+EVIDENCE: keysOpen (13385) calls openModal('keysmodal'), and openModal (34735-34742) takes .on off every other .modal, so Settings is closed while the pause box (a .pausebox, not a .modal) stays up. The Keys window's key listener is registered at 13388, on window, in the capture phase: `ev.preventDefault(); ev.stopPropagation(); if(KEYS.waiting){ ... KEYS.waiting=null; ... } else if(ev.code==='Escape'){ m.classList.remove('on'); }` (13391-13393). stopPropagation does not stop later listeners on the same target. The v16.93 comment at 13506-13509 says exactly this. The pause-box listener, also window capture, is registered later at 13498 and runs next: `var _fm=document.querySelector('.modal.on') ... if(_fm||_tx){ ... escCloseTopModal(); ... return; } ... togglePauseBox(false);` (13519-13522). With the Keys window already shut and Settings closed by openModal, _fm is null, so togglePauseBox(false) runs and syncPause unpauses the raid. In the waiting case the Keys window is still on, so _fm is the Keys window and escCloseTopModal presses its CLOSE. netKeyFwd (38884, window capture, registered later still) also runs in a player 2 window. The CHANGE KEYS button is live in a raid (44490, no _rOff), and Settings opens from the pause box (42869). This breaks the v17.19 rule at 13515-13518, that a window in front of the box takes the key and the box stays up.
+FIX: 1) At line 13391, stop the key for every other window listener, the same way the pause box does at 13509:
+  ev.preventDefault(); ev.stopPropagation(); if(ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+With this, ESC with nothing waiting closes only the Keys window and the pause box stays up with the raid paused. ESC while waiting only cancels the press. In the player 2 window, netKeyFwd no longer sends rebinding keys to player 1. The stale-save listener at 3002 is registered earlier and still runs.
+
+2) Optional, so that backing out returns the player to Settings, where he came from:
+- In keysOpen, before openModal('keysmodal') (13385), add:
+  var _sm=document.getElementById('settingsmodal'); m._fromSet=!!(_sm&&_sm.classList.contains('on'));
+- Change the closekeys handler (13383) to:
+  KEYS.waiting=null; m.classList.remove('on'); if(m._fromSet){ m._fromSet=false; try{ openSettings(); }catch(_os){} } else { try{ renderSettings(); }catch(_r2){} }
+- Change the ESC branch at 13393 to click the same door:
+  else if(ev.code==='Escape'||(ev.code==='Tab'&&!ev.repeat)){ var _ck=document.getElementById('closekeys'); if(_ck) _ck.click(); else m.classList.remove('on'); }
+The Tab part follows his TAB-equals-ESC ruling. Leave it out if Tab should stay inert in this window.
+
+=== K10 [medium] [HUD AND MAP RENDERING] On a controller the sector map marker is placed blind: the right-stick map cursor is never drawn, and the header tells a pad player to CLICK
+SCENARIO: A player on a pad (player 2 in same-PC co-op, or a solo pad player on the TV) holds D-UP to open the sector map and pushes the right stick to move the marker cursor, as v16.47 intends. Nothing on the map moves. The reticle is hidden while the map is open. The only pointer on screen is the OS arrow, which sits wherever the real mouse was (in the P2 window it is not that window's mouse at all). He taps D-UP and a marker lands at a spot he never saw. The same tap also shuts the map, so he cannot see where it went either. The map header meanwhile reads 'CLICK to set a waypoint' or 'CLICK set waypoint Â· RIGHT-CLICK clear', which names mouse buttons a pad does not have. Marking a place for the other player (his order, v16.46) is guesswork on a controller.
+EVIDENCE: pollPad 12988-12992: `if(G&&!G.over&&G.mapOpen&&G.player&&(rx||ry||G.mapCur)){ ... G.mapCur.x=clamp(G.mapCur.x+rx*WORLD_W*0.5*_mdt,...); ... mouse.x=_MPc.ox+G.mapCur.x*_MPc.sc; mouse.y=...}`. The stick only writes mouse.x/y. 13183-13188: the D-UP tap calls netWpFromMap() and then runs `if(_mcT){ G.mapOpen=false; G.mapCur=null; }`. drawHUD 27253 sets the CSS cursor to 'default' while the map is open (an OS arrow at the physical mouse, not at mouse.x/y), and 27256 draws the reticle only `if(!p.downed&&!G.bagOpen&&!G.mapOpen)`. drawMapOverlay/drawMapOverlayRaw (31341-31869) never read mouse.x, mouse.y or G.mapCur; a grep shows that G.mapCur appears only in the pad code at 12988-13188. Header at 31411: `ctx.fillText(G.waypoint?'CLICK set waypoint  Â·  RIGHT-CLICK clear':'CLICK to set a waypoint',_hx,_hdY);` has no pad branch.
+FIX: Two changes in dark_raiders.html.
+
+**1. Draw the pad map cursor.** In drawMapOverlayRaw, inside the _pmDraw closure, after the netMapDots line (31843), add the block below. It goes in _pmDraw so it draws after the labels (MAPLAST) with the right transform. G.mapCur is only ever set by the pad's right stick (12988-12993) and is cleared when the map closes, so no PAD.on check is needed.
+
+```
+if(G.mapCur){
+  var _mcx=ox+G.mapCur.x*sc, _mcy=oy+G.mapCur.y*sc;
+  ctx.strokeStyle='#ffc04a';
+  ctx.lineWidth=2*_pmz;
+  ctx.beginPath(); ctx.arc(_mcx,_mcy,9*_pmz,0,6.2832); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(_mcx-16*_pmz,_mcy); ctx.lineTo(_mcx-5*_pmz,_mcy);
+  ctx.moveTo(_mcx+5*_pmz,_mcy); ctx.lineTo(_mcx+16*_pmz,_mcy);
+  ctx.moveTo(_mcx,_mcy-16*_pmz); ctx.lineTo(_mcx,_mcy-5*_pmz);
+  ctx.moveTo(_mcx,_mcy+5*_pmz); ctx.lineTo(_mcx,_mcy+16*_pmz);
+  ctx.stroke();
+  ctx.lineWidth=1;
+}
+```
+
+**2. Give the header a pad wording.** At 31411, replace the fillText with:
+
+```
+ctx.fillText(padOn()?'R STICK move the marker  Â·  D-UP tap to place it':(G.waypoint?'CLICK set waypoint  Â·  RIGHT-CLICK clear':'CLICK to set a waypoint'),_hx,_hdY);
+```
+
+The two mouse strings stay word for word, so his baked TX edits still match them. padB is not needed here, because the new string has no face-button names for it to swap.
+
+=== K11 [medium] [UNDERCROFT MENUS AND STATIONS] With a controller the stash never says what the highlighted item is or what it is worth, and Sell one cannot be reached
+SCENARIO: Player 2, or the owner on the TV, opens THE STASH with a controller and moves the highlight over the stash and armoury cells. The detail line above the grid never changes. It keeps the idle hint 'Hover an item and press J to tag it JUNK...', so the pad player never sees the item's name, its $ value, whether a contract or recipe wants it, its TAGGED JUNK state, or a gun's damage and magazine. The per-item buttons that appear in that line on hover (Equip as your gun, the 1-9 key buttons, Equip, Sell one) never appear. The Y item menu has no sell row either, so a pad player cannot sell a single item at all, only tag it and use the sell-everything button.
+EVIDENCE: padSetFocus (12736-12743) only moves the .padfocus class and calls scrollIntoView. It never fires mouseenter or mouseleave. The stash detail has two writers only: detailIdle (36210-36214) and the cell's `cell.onmouseenter=function(){ ... detail.innerHTML='<b ...>'+escHtml(it.name)+'</b>  x'+counts[k]+'  &middot;  $'+ival(k)... '<span id="stashacts"...>' ... act('Sell one',...)` (36276-36367). The armoury cells use the same pattern: mouseenter at 36411 and mouseleave/detailIdle at 36419. itemMenuRows (35623-35692), the menu Y opens (12755-12756), offers Equip, Split, Put on key, Drop on the floor and Tag as junk, with no sell row. No CSS or other code shows details for .padfocus (only the outline rules at 658-662).
+FIX: Give the menu Y opens (and right-click opens) its own Sell one row, using the same body as the hover button. In itemMenuRows, inside the final `if(ctx!=='kit'){` block (35686-35691), right after the Tag/Untag junk row, add:
+
+    rows.push({label:'Sell one',hint:'$'+ival(key).toLocaleString(),act:function(){
+      var ix=P.stash.indexOf(key); if(ix<0) return;
+      P.stash.splice(ix,1); clearKeysFor(key);
+      P.credits+=ival(key); P.xp=(P.xp||0)+ival(key); syncXpLevel();   // same as the hover Sell one, v10.02 / v12.67
+      saveProfile(); refreshInv();
+    }});
+
+If it should appear only on the Stash screen and not on the ascent check, wrap the push in `var _hb=document.getElementById('hub'); if(_hb&&_hb.classList.contains('on')){...}`. The row's onclick already runs closeItemMenu() and then act() (35731), so A on the row works on a pad with no other change.
+
+Optional, for the details only: in padSetFocus, after `el.classList.add('padfocus')`, add `if(el.onmouseenter&&el.closest&&el.closest('#stashgrid')) try{ el.onmouseenter(); }catch(_m){}`. The highlighted stash item then shows its name, value, KEEP note and stats in the detail line. Do not depend on that line's buttons for the pad, because stepping down to them passes through other cells and changes which item the line shows.
+
+=== K12 [medium] [SAVE AND PROFILE] A late joiner's clocks run from the host's raid start: the 'swift' contract, the abandon XP fee, the instant-quit test and the card time
+SCENARIO: Two-player co-op with 'Player 2 comes back after death' on, or any drop-in. Player 2 joins the raid in progress at 4:00 with a contract 'Extract within 3 minutes of landing' on his board, and extracts 90 seconds after landing. The contract does not complete, because its clock started when the host's raid did. Another case: he rejoins and changes his mind 10 seconds later. ABANDON charges him at least 100 XP ('Walked out on the job. XP -10x'), where the same abandon 10 seconds into a fresh raid costs nothing. The 'instant quit' rule does not apply either, so a raid he barely touched is logged as a run. His run card says '4 mins 10 seconds on the surface', while the run log records 10 s.
+EVIDENCE: netLateApply 39539-39541 sets G.t and G.timeLeft to the host's values and records G.lateEl=elapsed(). elapsed() 6152-6156 is raidLen-timeLeft, which is the host's clock. runElapsed() 42864 subtracts G.lateEl, and v17.64 (42862-42863) says 'his run length and the XP an abandon costs him count from when he joined'. The run record uses it (dur, 22237), and so does the fee amount (42889). Four places still use elapsed(): conductMet 'swift' 3692 `return elapsed()<=180;`; the abandon confirm gate 42885 `if(G&&!G.over&&elapsed()>60)`; endRaid's instant-quit test 21644-21645 `var el=elapsed(); if(how==='abandon'&&el<1.5&&...)`; and the card time 22170 `var _tsec=Math.round(elapsed())`.
+FIX: In C:\claudecode\dark raiders\dark_raiders.html, change these four places from elapsed() to runElapsed() (runElapsed already exists at 42864 and endRaid uses it at 22237):
+
+(1) conductMet, line 3692: `if(ck==='swift') return runElapsed()<=180;`
+(2) The confirm gate, line 42885: `if(G&&!G.over&&runElapsed()>60){`. This makes it match the label test at 42845/42853, so 'free this early' is true.
+(3) endRaid, line 21644: `var el=runElapsed();`
+(4) The card time, line 22170: `var _tsec=Math.round(runElapsed()), ...`
+
+Optionally, for consistency, change the dead swift note at 27636 to `180-runElapsed()`.
+
+Leave gameOptRaidNow (42874) on elapsed(), because it resizes the shared raid clock. For anyone who did not join late, G.lateEl is undefined and runElapsed()==elapsed(), so solo and normal party raids behave exactly as before.
+
+=== K13 [medium] [CO-OP NETWORKING] A door player 2 opens with a key while the host spectates stays shut in the host's world, so enemies treat the open doorway as a wall
+SCENARIO: Co-op. Player 1 dies or extracts, and his window keeps the raid running for player 2 (spectating). Player 2 then uses a key on a locked room. The room opens on his screen, but the host's kept world never opens it. Every machine and pillager (all run by the host) still sees and paths against the door walls. They cannot see player 2 through the doorway, their rounds stop on the closed door, and crawlers cannot walk in. Player 2's own shots from inside still land, because the host applies a party round with no line check. The room becomes a safe sniper nest, and a third or fourth player never gets the door either.
+EVIDENCE: Player 2's key path calls `lockedOpen(doorNear); netDoorSend(doorNear.id);` (17538-17539), and netDoorSend sends {t:'door'} to the host (40927). While the host spectates, netOnMsg swaps G to NET.specG for every word (38403-38408). endRaid sets G.over before netSpecStart (21575-21577), so the kept world always has G.over set. netDoorTake then bails: `if(!G||G.over||!G.map||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';` (40934), and its rebroadcast never runs. Every other host handler that must work for a spectating host tests netEntsHost()/netContHost(), which accept `G===NET.specG` (41156). Examples are netWallTake, netPileTake (14831, which spells it out as `(G.over&&G!==NET.specG)`), netBeaconTake and netShotTake.
+FIX: At line 40934 in netDoorTake, let a spectating host's kept raid take the word, the same rule netPileTake uses at 14831:
+
+  if(!G||(G.over&&G!==NET.specG)||!G.map||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
+
+netOnMsg has already swapped G to NET.specG. So lockedOpen splices the door walls out of the kept world and calls rebuildGeometry there, which fixes the segs, the vseg and the nav grid for the host-run enemies. Then the existing `if(NET.role==='host') netBroadcast(...)` at 40937 passes the door on to the rest of the party. Nothing else needs to change.
+
+=== K14 [medium] [HUD AND MAP RENDERING] A controller cannot cut THE SEAL or give the survivor his item: pad X never holds E there, and the seal prompt says HOLD E
+SCENARIO: A pad player (player 2, or solo on the TV) walks up to THE SEAL. The prompt reads 'HOLD E TO CUT THE SEAL', which names a key the pad does not have. He holds X, the button the pad legend gives for 'search / open / call for extraction'. X reloads the gun and the seal never cuts, so he cannot progress the seal. It is the same at a found survivor: the prompt reads '[X] GIVE MEDKIT', but pressing X reloads and nothing is handed over. Both work only by luck, when a container, ring, door, downed man or the Peddler happens to be in reach at the same moment.
+EVIDENCE: pollPad 13151 picks what pad X holds on the press: `PAD.xMode=(G.nearContainer||G.nearPad||G.nearDown||G.nearDoor||G.nearPed||_xm)?'KeyE':'KeyR';`. G.nearSeal and G.nearStray are missing from that list. 13154-13155 then hold KeyR, not KeyE. The seal cuts only on `if(G.nearSeal&&keys['KeyE']&&!p.downed)` (17549-17550), and the survivor gift only on `if(stray&&keys['KeyE']&&!G.strayLock)` (17716-17719, G.nearStray set at 17718). sealSpot (8949-8958) puts the seal at least 30 units from every wall and building, so usually nothing else is in reach. The HUD prompt at 28587 is a literal: `ctx.fillText('HOLD E TO CUT THE SEAL',_slp.x,_slp.y);`. Every other prompt goes through keyLabel, for example the GIVE prompt at 28578, which therefore promises [X].
+FIX: In pollPad at line 13151, add the two missing reaches to the list that makes X hold E:
+`PAD.xMode=(G.nearContainer||G.nearPad||G.nearDown||G.nearDoor||G.nearPed||G.nearSeal||G.nearStray||_xm)?'KeyE':'KeyR';`
+The choice is still made on the press and kept for the hold, so a held X keeps cutting the seal, and strayLock still makes the gift fire once per press. Both values are set each standing frame before the next poll (17549, 17718), and both are null when not in reach.
+
+At line 28587, draw the prompt through keyLabel the way the other prompts do:
+`ctx.fillStyle='#ffc04a'; ctx.fillText('HOLD '+keyLabel('KeyE','E')+' TO CUT THE SEAL',_slp.x,_slp.y);`
+This shows [X] on a pad and the bound key on a keyboard. On a keyboard with E not moved it still reads HOLD E.
+
+=== K15 [medium] [COMBAT] Co-op: grenades and pillager smoke never appear in the other player's window (player 2 cannot see the charge at his feet)
+SCENARIO: Two-player co-op. A pillager fighting player 2 throws a Frag Charge at him. On the host the charge lies at P2's feet blinking for 1.1 s, then blows. In P2's window there is no charge and no blast flash. He hears the rising 'charge' sound, then takes up to 98 damage (or goes down) from an empty patch of floor. A pillager who drops smoke when hurt or fleeing gets a cloud on the host that hides him from the host's AI, but P2's window draws no cloud. The players' own charges are also invisible to each other: a host frag or a P2 frag in flight or on the ground is only drawn in the window that threw it.
+EVIDENCE: raiderThrow pushes the pillager's charge only into the host's own list: 16521-16523 `var _rf={...fuse:FRAG_FUSE,by:e}; G.frags.push(_rf); if(!G.sim){ sfx('clank',...); sfx('charge',...); }`. The pillager smokes do the same: 16485 and 19831 `G.smokes.push({...})`, with no word sent. The player's throw goes into G.throws (13706) and then G.frags (13799). netThrSend is only called for 'smoke', 'decoy' (13791-13792) and the 'nz' noise (13816), and netThrTake rejects any other kind: 39953 `if(k!=='smoke'&&k!=='decoy'&&k!=='nz') return 'bad';`. The world word (40942-40953) carries rings, bolts, the clock and the hot ground, but no frags or smokes. Charges are drawn only from the local G.frags (24941-24951) and G.throws (25982-25989). The blast still reaches P2 through netAreaHitPeers (13841, opt down:true). Only the sounds cross over, because sfx relays through netFxNoise (4329); spark, flash and the puffs do not.
+FIX: 1) Pillager smokes: at 16485 and 19831, right after G.smokes.push(...), add `netThrSend('smoke',e.x,e.y);`. netThrSend already returns at once outside a shared raid. It also works on the host's spectate tick (netEntsHost covers NET.specG), and the joiner's netThrTake already pushes the cloud.
+
+2) Charges: add a 'frag' kind that carries the fuse left.
+- Change the signature to `function netThrSend(k,x,y,fu)` and add `if(k==='frag') m.f=+(+fu||FRAG_FUSE).toFixed(2);` after m is built.
+- In raiderThrow, after `G.frags.push(_rf);` (16522), add `netThrSend('frag',_rf.x,_rf.y,_rf.fuse);`.
+- In activateThrow's frag branch (13799), keep the pushed object, e.g. `var _pf={...,mine:1}; G.frags.push(_pf); netThrSend('frag',_pf.x,_pf.y,_pf.fuse);`. The host sends it to every peer. A joiner sends it to the host, and the host passes it on to the others with the relay loop already in netThrTake.
+- In netThrTake, allow it: `if(k!=='smoke'&&k!=='decoy'&&k!=='nz'&&k!=='frag') return 'bad';`. Make the relay keep the fuse: `netSend(q,{t:'thr',k:k,x:x,y:y,f:m.f})`. Then add `if(k==='frag'){ G.frags.push({x:x,y:y,t:0,fuse:clamp(+m.f||FRAG_FUSE,0.08,FRAG_FUSE),fx:1}); return 'thr:frag'; }` before the smoke and decoy lines.
+
+3) The fx copy must only show the blast. In updateThrowables (14030), change it to `if(fr.t>=fr.fuse){ if(fr.fx){ if(!G.sim){ spark(fr.x,fr.y,'#ffcf7a',34,340); G.puffs.push({x:fr.x,y:fr.y,t:0,life:.6,c:'#ffb267',r:52}); } flash(fr.x,fr.y,310,'#ffb267',.45); } else explodeFrag(fr); G.frags.splice(i,1); }`.
+- No sfx('boom') here, because the real blast's boom already arrives through netFxNoise.
+- No explodeFrag, so there is no second damage pass, no second netThrSend('nz'), and no kill or notoriety wrongly credited to the host (an fx frag has no .by and would otherwise count as 'YOUR OWN CHARGE').
+- The existing draw loop at 24941 then shows the blinking charge in every window.
+
+4) Optional: player 2's own frags in flight. The ~0.25-1 s arc in G.throws stays local. Sending at activateThrow covers the charge from the moment it lands, which is the part that matters.
+
+=== K16 [medium] [COMBAT] Co-op: player 2's rounds skip the armour of every pillager that arrives after the start, and use a private copy of it on the rest
+SCENARIO: Two-player co-op, a few minutes in. A wave or siege pillager in a Breacher Plate (cap 120, 84 armour, 66% absorb) comes at both players. The host's rounds lose two thirds of their damage until the plate is gone: about 205 points to put him down. Player 2's rounds go straight to his 78 health and drop him about 2.6 times faster. On pillagers built with the map, each window wears down its own copy of the armour. If both players shoot the same man, the plate has to be chewed through twice, and the host's view of his armour never moves for P2's hits.
+EVIDENCE: mkRaider gives 56% of pillagers armour: 9760-9762 `r.rig=...; r.armor=RRG.cap*0.7`. Host round path 20900-20903: `else if(en.armor>0){ var esk=armorById(en.rig).absorb||0; var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab; }`. On a linked window the damage is worked out there and sent: 20915 `if(NET.on&&netEntsPeer()) netShotSend(en,edmg,...); else en.hp-=edmg;`. A body that arrives after the build is made by netEntMake with `armor:0` and `rig:'none'` (41427-41428). netEntFill copies the rig but never the armour (41443). So the mirror's en.armor is 0 and nothing is soaked. The host then applies the number as it is: netShotTake 41627 `e.hp-=d;`, with no armour test anywhere in 41615-41642. Built bodies are P2's own seed copies (comment at 17627-17629), so their armour only falls with P2's own hits, while the host's copy is never touched by them.
+FIX: Let the host apply armour to player 2's rounds, the way it does for its own.
+
+(1) Player-round branch at about line 20900. Change `} else if(en.armor>0){` to `} else if(NET.on&&netEntsPeer()){ var NAR=1; } else if(en.armor>0){`. Then, at 20915, build the flag for netShotSend. Use 1, or 1.5 when it was a back shot. Use 0 for a weak-point or Bulwark hit, since the host soaks neither.
+
+Simplest version: declare `var _ar=0;` just before the WK test. Set `_ar=1;` inside the new linked-window branch. Then in the back-shot block (20912) add `if(_ar) _ar=1.5;`. Call `netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_ar)`.
+
+(2) netShotSend (41603): add a fifth parameter `ar`, and after building m add `if(ar>0) m.ar=+ar;`.
+
+(3) netShotTake (41615): after the weak-point line at 41626 and before `e.hp-=d;` at 41627, add:
+`if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _ab=d/m.ar, _sk=armorById(e.rig).absorb||0, _ea=Math.min(e.armor,_ab*_sk); e.armor-=_ea; d=(_ab-_ea)*m.ar; }`
+
+This keeps the host's own order: soak first, then the 1.5x back-shot bonus. The man's armour then exists only on the host, and player 2's local copy is no longer touched. Fists and frags carry no flag and stay unsoaked, as they are on the host.
+
+Optional: player 2's damage number will now show the damage before the soak. If that matters, let player 2 estimate the soak for the number only. Use `armorById(en.rig).absorb` and do not touch en.armor.
+
+=== K17 [medium] [AUDIO, CONTROLLER AND INPUT] F11 in the player 2 window never fullscreens it, and it takes player 1's window out of fullscreen instead
+SCENARIO: Same-PC co-op on two screens. Player 1's window is fullscreen on the TV. Dad drags the player 2 window to the second screen, as its title line tells him to, and presses F11 there (his 2026-10-03 report, 'F11 did not fullscreen the player 2 window'). The player 2 window stays windowed. The key is handed to the player 1 window, which runs the fullscreen toggle there: player 1 drops out of fullscreen. If player 1 was not fullscreen, the request there fails and is rejected because no click came with it. F9 in the player 2 window likewise starts or stops a recording of player 1's window, not its own.
+EVIDENCE: In the player 2 window NET.same is always 'p2' with a pair (netSameBootP2, 38938). It is never cleared there, because netSameStop is skipped for NETP2 (38570). netKeyFwd (38861-38874) is a window capture listener registered at 38884. For every key, F11 and F9 included, it posts {t:'key'} to player 1 and then calls `ev.preventDefault(); ev.stopImmediatePropagation();`. The v17.92 F11 listener is also a window capture listener, but it is registered later, at 42675, so it never runs in the player 2 window. In player 1's window, netSameOnMsg dispatches the key on document.body (38898), the F11 listener there runs, and fsToggle (42657-42668) calls exitFullscreen when fsOn(). Exiting fullscreen needs no user gesture. The v17.92 check (tools/handoff/f1792.ps1) dispatched F11 in a solo fixture with NET.same unset, so it never reached this path.
+FIX: In netKeyFwd (dark_raiders.html 38863), add a line right after `var tn=..., cd=String(ev.code||'');` and before the box check and netKeyHeld bookkeeping, so that neither keydown nor keyup of F11 is posted or swallowed:
+
+  if(cd==='F11') return;   // F11 belongs to this window: the v17.92 window toggle (42675) fullscreens the player 2 window itself, and player 1 is never toggled out of fullscreen
+
+The F11 keydown then carries on to the window capture listener at 42675, which calls fsToggle on the player 2 window. Keep F9 forwarded unless the owner rules that F9 in the player 2 window should record that window. If he does, add `||cd==='F9'` to the same test. A regression check should boot a fixture with NET.same='p2' and a pair set, dispatch an F11 keydown, and confirm that fsToggle ran in that window and that no {t:'key',code:'F11'} message was posted.
+
+=== K18 [medium] [COMBAT] Co-op: player 2 can shoot the Survivor and kill him or the Peddler for free, and his window keeps saying 'The survivor returns fire.'
+SCENARIO: Player 2 shoots the Survivor. Each hit prints 'The survivor returns fire.' in his window, but on the host the Survivor never turns. He keeps walking to the ring as a helped man, and his rounds still pass through both players. P2 kills him, or kills the Peddler for his stock. No notoriety is charged to anyone: the host's window says 'Someone shot the survivor. Not on you.' or 'The Peddler is dead. Someone else did that.', and P2 then loots the PEDLAR STOCK cache. Done by the host, the same kill costs a permanent notoriety point and shows the notoriety stamp.
+EVIDENCE: P2's own bullet path flips only his local copy: 20904-20907 `if(en.kind==='stray'&&!en.hostile&&!G.sim){ en.hostile=1; en.helped=0; say('The survivor returns fire.'); }`. The next snapshot puts both flags back: netEntFlagsApply 41453 `e.hostile=!!(f&16)` and 41462 `e.helped=(f&524288)?1:0`, so the line repeats on every hit. On the host, netShotTake turns only raiders hostile (41636), and for a stray it sets nothing (41638). The Survivor fires only when `e.hostile` (19266-19271), and his rounds pass through players while helped (21056). On the kill, netShotTake sets `e.byPlayer=false; e.bySeat=s` (41635). The death paths charge notoriety only on `e.byPlayer` (stray 19042-19049, Peddler 19065-19070). The seat gets a kill word (41398), but netKillTake (41846-41866) only counts kills, contracts and raider grudges and has no notoriety case for 'peddler' or 'stray'.
+FIX: (a) netShotTake, next to line 41636: `if(e.kind==='stray'&&!e.hostile){ e.hostile=1; e.helped=0; e.foeSeat=s; }`. A host round that turns him (20904) should set `en.foeSeat=0`.
+
+In the stray AI (19266-19271), aim at the seat that turned him instead of always `p`:
+`var _sT=p; if(e.foeSeat>0){ var _sL=netPlayersList(); for(var _sj=0;_sj<_sL.length;_sj++) if(_sL[_sj].net&&_sL[_sj].seat===e.foeSeat){ _sT=_sL[_sj]; break; } }`
+Then use `_sT` in place of `p` in the dist, losClear, face and fireWeapon calls. His rounds already reach P2 through the party hit path.
+
+On P2's window, line 20904 should only say the line and leave the flags alone, because the host's snapshot owns them. Change the condition to `if(en.kind==='stray'&&!en.hostile&&!G.sim&&!(NET.on&&netEntsPeer())){...}`. If the line is still wanted there, guard it with `else if(en.kind==='stray'&&!en._rfTold&&NET.on&&netEntsPeer()){ en._rfTold=1; say('The survivor returns fire.'); }`.
+
+(b) netKillTake, after contractKill (41858), charge P2's own save the way the host's death paths do:
+`if(k==='peddler'||k==='stray'){ P.notoriety=(P.notoriety||0)+1; saveProfile(); say(k==='stray'?('He was not armed. Notoriety '+P.notoriety+'.'):('The Peddler is dead. Word gets around. Notoriety '+P.notoriety+'.')); if(e) label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true); notoStamp(k==='stray'?'YOU SHOT AN UNARMED SURVIVOR':'YOU KILLED THE PEDDLER'); }`
+The existing `netEntsPeer()` gate at 41854 already plays the part of the host's specOut guard. The host's 'Not on you.' and 'Someone else did that.' lines are correct for the host and stay.
+
+=== K19 [medium] [AI] Calling extraction moves the Peddler's stall to the ring and leaves the Peddler and the Survivor alerted for the rest of the raid
+SCENARIO: Call extraction at any ring within 2200 of the Peddler, which is most of the map. From then on his table, stock and lantern are drawn at the extraction ring instead of beside him, and he wears a yellow '?'. His alert is now 3 and never decays, so standing at the stall plays the threat ambience as if a machine were on top of you (the very thing v14.33 removed for noise). He is also counted in 'N converging on the ring' while within 1500 of it. If he is hurt later, after he flees he walks to the extraction ring and says 'The Peddler is back at his pitch.' there. The Survivor gets the same '?', the same permanent alert and the same false converging count.
+EVIDENCE: Local call, 16299-16309: for every body within 2200, `se.alert=Math.max(se.alert,3);`, then `if(!onYourTail(se.state)){ se.state='investigate'; se.tx=z.x+rnd(-40,40); se.ty=z.y+rnd(-40,40); }`. There is no neutral, peddler or stray test. netBeaconTake 41030 is the same for a party call. The Peddler is `neutral:1`, `state:'idle',tx:x,ty:y` (9895-9896), and his tx/ty are his pitch. drawPeddlerS draws the furniture at `hx=e.tx, hy=e.ty` (24054). The _back walk navSeeks to tx/ty (19345-19367). His branch ends in `continue` (19374), before the alert decay at 19491, so alert 3 stays. The Survivor is the same (state 'idle', 9918; branch continue 19320). The ambience counts any `alert>0` body within 760 (33887-33891). The '?' comes from state 'investigate' (28109). The converging count reads investigate within 1500 (28545-28548). Every other pull already excludes them: the noise ping (14119-14123), the Crier alarm (19769-19772, 'moved his stall'), the round (20980) and the blast (13885).
+FIX: Skip the neutrals in all four pull loops, and keep the seeded rnd draws wherever the old loop made them (the stream discipline rule).
+
+(1) Local call, 16301-16302. Directly after `if(dist(se,z)>2200) continue;` add:
+`if(se.neutral||se.kind==='peddler'||se.kind==='stray'){ if(!onYourTail(se.state)){ rnd(-40,40); rnd(-40,40); } continue; }   // a fixture: tx/ty are his pitch; the two jitter rolls are still drawn so the seeded stream is unchanged`
+
+(2) Local siege pull, 16784. Directly after `var _jx=rnd(-50,50), _jy=rnd(-50,50);` and before the pullZ/cap block, add:
+`if(be.neutral||be.kind==='peddler'||be.kind==='stray') continue;`
+This keeps the draws and also stops him taking a pull-cap slot.
+
+(3) netBeaconTake, 41025. Directly after `if(dist(_we,Z)>2200) continue;` add:
+`if(_we.neutral||_we.kind==='peddler'||_we.kind==='stray') continue;`
+No draw is needed here: the net code draws nothing seeded.
+
+(4) Host spectator siege pull, 41222. Directly after `jx=rnd(-50,50); jy=rnd(-50,50);` add:
+`if(be.neutral||be.kind==='peddler'||be.kind==='stray') continue;`
+
+=== K20 [medium] [AI] Dormant Listeners pushed into 'investigate' by the beacon call, the hot-ground move or the siege pull later charge instantly with no scream and no wake beat
+SCENARIO: Call extraction anywhere. Every dormant Listener between about 760 and 2200 units from that ring (most Listeners on the map) is quietly switched to 'investigate'. It then stands still, drawn upright and awake, with a '?' over it. The hot ground moving every 115 s does the same to whichever Listener is among the two nearest machines to the new centre. Later you (or player 2, still looting while player 1 waits at the ring) walk past one, or miss the ship and head off. The first sound it hears sends it straight at you at full speed. There is no 0.9 s beat, no alarm scream and no 'Something woke up.' line. That warning is the only counterplay to a machine that hits for 34.
+EVIDENCE: The beacon call at 16299-16309 runs for every body within 2200: `if(!onYourTail(se.state)){ se.state='investigate'; ...}`. The party call does the same at 41030. tickHot candidates (29266-29275) exclude only raider, peddler, stray and chase/alarm, then set `cand[c].state='investigate'`. The siege pulls at 16793 and 41225 do the same within their cap. None of these skips kind 'listener'. The call's own ping cannot wake the far ones: listenersHearInner caps reach at LISTEN_R 760 (9391, 9450). The Listener branch only converts 'chase' (19390) and runs 'hunt' (19396). Any other state falls to `else { e.moving=false; e.millT=0; }` (19462-19465) and never returns to 'dormant'. Only a finished hunt does that (19460). On a noise, listenersHearInner gives the wake only to `if(e.state==='dormant'){ e.state='hunt'; e.wakeT=0.9; sfx('alarm'...); ... say('Something woke up.') }`. Any other state gets the bare `else e.state='hunt';` (9456-9463), so wakeT stays 0 and the 19380 beat ('so the scream lands before the charge does and you get one moment to decide') is skipped. Draw: 24087 `dorm=(e.state==='dormant')`, so it is drawn awake. The marker at 28109 shows '?'.
+FIX: Three small changes:
+(1) Hearing, line 9456: change `if(e.state==='dormant'){` to `if(e.state!=='hunt'&&e.state!=='chase'){`. A Listener in any stray state then gets the scream, wakeT 0.9, the line and the alert ping, whatever order the pulls and pings run in during a frame.
+(2) Listener update, right after `e.legs+=dt*10;` (19379): add `if(e.state!=='hunt'&&e.state!=='chase') e.state='dormant';`. It then draws dormant again with no '?' marker and no name plate.
+(3) tickHot, line 29268: change it to `if(e.state==='chase'||e.state==='alarm'||e.kind==='listener') continue;`. The hot-ground move then never takes a Listener, which also stops it switching off one that is hunting. You could also skip `kind==='listener'` in the beacon call loop (16309), the party call loop (41025) and the two siege pulls (16793, 41225), the same way the Crier alarm handles Listeners separately. With (1) and (2) in place those four are only cosmetic.
+
+Keep the rnd() jitter draws in the siege pulls where they are, so the seeded stream does not change.
+
+=== K21 [medium] [LOOT AND INVENTORY] Using, dropping or giving away kit you carried up cuts hazard pay, the XP haul term, haul contracts and best haul (carriedIn is never lowered)
+SCENARIO: Worked example at the default loot dial. Pack 2 Medkits ($210 each), so G.carriedIn = 420 and no loaner Bandages are issued. Use both Medkits in fights. Find $2,000 of salvage and extract on +35% Terms. The card says '2,000' secured, but hazard pay is round((2000-420) x 0.35) = $553 instead of $700. A contract 'Extract with a haul worth $2,000 or more' fails (1,580 < 2,000). The XP haul term is 55 instead of 70, and P.best records 1,580. A fresh player who goes up with no heals and uses the 2 issued loaner Bandages is docked $120 on every run the same way. In co-op, dropping carried Medkits for your teammate (the trading-is-dropping ruling) docks you their value, while the teammate is credited them as found. The game says the opposite: What's New (line 1758) promises 'contracts and hazard pay count only what the run found', and the Terms page says 'Hazard pay +X% on anything you carry out'.
+EVIDENCE: startRaid line 11525: `G.carriedIn=bagValue();`. This counts every packed item and the issued Bandages. Only two places ever change it: pedBuy (10108) adds to it, and pedSellAll (10050-10053) subtracts, which is the v20.47 fix for the sale case (H18). Every other way carried kit leaves the bag does nothing to it: useMedical `G.bag.splice(idx,1)` (15071), useHot heal (16106), useArmor (15973), useStim (16052), netAidStart (40038), dropItem (14844), the gift to the hire (12492) and strayGive (9969). The readers subtract the full carried-in value from what is left in the bag: hazard pay 21856 `Math.round(Math.max(0,haul-(G.carriedIn||0))*tPay)`, the haul contract 3735 `(haul-(G.carriedIn||0))>=c.v`, career best 21965, the hire-debt test 21735, and spForRun 21384 through the run record's `carriedIn:G.carriedIn` (22247). So a carried item that was used counts against the haul even though it is no longer in it.
+FIX: Put the block in endRaid right after the `if(G.sim){ ... return; }` block that ends at about line 21632, so it comes before P.runs++, the hire settle at 21735 and every other reader. The `i` is the var already declared at 21600.
+
+```
+if(G.carriedKit&&G.carriedKit.length){
+  var _bc={},_gone=0;
+  for(i=0;i<G.bag.length;i++) _bc[G.bag[i]]=(_bc[G.bag[i]]||0)+1;
+  for(i=0;i<G.carriedKit.length;i++){
+    var _ck=G.carriedKit[i];
+    if(_bc[_ck]>0) _bc[_ck]--;
+    else _gone+=ival(_ck);
+  }
+  if(_gone>0){
+    G.carriedIn=Math.max(0,(G.carriedIn||0)-_gone);
+    G.kitSold=(G.kitSold||0)+_gone;
+  }
+}
+```
+
+What it does:
+- It matches the carried copies against the bag by count. Whatever was carried up and is no longer in the bag (used, dropped or given away) comes off G.carriedIn once.
+- Hazard pay, the haul contract, the XP haul term, the hire-debt test and P.best then count only the carried copies still in the bag.
+- The same value goes onto G.kitSold, so runEarnings (carriedIn+kitSold) and lifetime earnings are unchanged.
+- Issued Bandages need no special case, because G.carriedKit already lists them (startRaid copies the bag at 11526). Kit sold at the stall is already off G.carriedKit (v20.47), so it is not taken off twice.
+
+Optional: rename kitSold to something like kitGone in a later pass, because it will now also hold used and dropped kit.
+
+=== K22 [medium] [AUDIO, CONTROLLER AND INPUT] ESC on the CHANGE KEYS window, opened from the pause box, also closes the pause box and the raid starts again
+SCENARIO: Solo raid. Press P, then Settings, then CHANGE KEYS. Press ESC to leave the Keys window (its own text says ESC cancels a press). Three things go wrong. (a) Not waiting for a key: the Keys window closes and the pause box closes too, so the raid runs again with nothing on screen. Settings was already shut when the Keys window opened, so one press drops him from a menu straight into a live fight. (b) After clicking an action ('PRESS A KEY'): ESC cancels the wait and also shuts the whole Keys window. (c) In the player 2 window, every key pressed in the Keys window is also passed to player 1's window. An ESC there pauses player 1, or shuts his map or backpack, mid-fight.
+EVIDENCE: The Keys listener, window capture at 13388-13394: `ev.preventDefault(); ev.stopPropagation(); if(KEYS.waiting){...KEYS.waiting=null;...} else if(ev.code==='Escape'){ m.classList.remove('on'); }`. stopPropagation does not stop later listeners on the same window. The pause box closer is registered after it, also window capture, at 13498-13523. It then runs on the same ESC: `_fm=document.querySelector('.modal.on')`. If a window is still up (case b) it calls `escCloseTopModal()` (13520), which clicks #closekeys. If nothing is up (case a) it calls `togglePauseBox(false)` (13522). keysOpen uses openModal('keysmodal') (13385), and openModal removes .on from every other .modal (34736-34742), so Settings is gone and nothing is left in front. netKeyFwd is registered later still, also window capture (38884), so in the player 2 window it forwards the same key to player 1. v16.93 (13506-13509) and v17.19 fixed this same 'one press, two windows' fault for the pause box itself by using stopImmediatePropagation.
+FIX: In the Keys window listener (dark_raiders.html 13388-13394), use up the key so that no later window capture listener sees it: not the pause box closer at 13498, and not netKeyFwd at 38884. Also ignore a held ESC so it cannot close the window right after cancelling a press:
+
+try{ window.addEventListener('keydown',function(ev){
+  var m=document.getElementById('keysmodal');
+  if(!m||!m.classList.contains('on')) return;
+  ev.preventDefault(); ev.stopPropagation();
+  if(ev.stopImmediatePropagation) ev.stopImmediatePropagation();   // the pause box closer (13498) and netKeyFwd (38884) are later capture listeners on this same window
+  if(ev.repeat&&ev.code==='Escape') return;
+  if(KEYS.waiting){ if(ev.code!=='Escape') keysBind(KEYS.waiting,ev.code); KEYS.waiting=null; keysRender(); try{ renderSettings(); }catch(_r3){} }
+  else if(ev.code==='Escape'){ m.classList.remove('on'); }
+},true); }catch(_kw){}
+
+Result: ESC while waiting only cancels the press. ESC while not waiting shuts only the Keys window, so the pause box stays up and the raid stays paused. In the player 2 window, keys pressed in the Keys window are no longer passed to player 1. If F11 fullscreen should keep working while the window is open, skip the stopImmediatePropagation call when ev.code==='F11' and KEYS.waiting is not set.
+
+Optional: in the ESC branch and in #closekeys.onclick (13383), call openSettings() when the window was opened from Settings. He then lands back on Settings rather than the bare pause box.
+
+=== K23 [low] [SAVE AND PROFILE] Co-op: player 2's imported friend (P.ghost) is put on a body the host runs as someone else, and player 2's kill of it turns his friend hostile for good
+SCENARIO: Player 2 has imported a friend at the Mainframe, which sets P.ghost on his save. In a party raid his window renames the first pillager to the friend and writes the friend's identity onto that body, but the host runs that body as an ordinary pillager. If the friend's report favours a different gun, player 2's screen shows the friend's name and that gun on a man who shoots like the pillager the host rolled. When player 2 kills him, the kill word writes the grudge to the friend's record ('<friend> will remember that'). From then on the friend walks player 2's solo raids hostile, with a grudge, and the pillager actually killed has no record of it. The reverse also happens: a ghost on the host is shown on player 2 under the original pillager's name, and player 2's kill of it lands on that pillager's record.
+EVIDENCE: applyGhost 34164-34200 has no party check: `if(!P.ghost||!G||G.sim) return;`. It sets e.name, e.ident='ghost_'+tag, e.wep, e.hostile/friendlyPC and G.tel.ghostIn. startRaid calls it at 11549, and netUpStart runs startRaid for the guest build (39465). netEntsInit then numbers that same object into NET.entMap (39488). The host's rows carry only state flags (41377/41453: hostile, friendlyPC and so on), not the name, ident or gun. netKillTake 41855-41863 takes the local copy from NET.entMap and does `rr2=idRec(e.ident); rr2.kills++; rr2.standing=...; saveProfile(); sayWhenFree((e.name||'He')+' will remember that.')`. applyGhost 34182-34183 then reads that record on later raids: `if(_gr.kills>0){ e.hostile=true; e.grudge=true; ...}`.
+FIX: Make applyGhost return early on a party guest build, the same way startRaid already skips the guest's own hire (line 11533). In C:\claudecode\dark raiders\dark_raiders.html, change line 34165 to:
+
+`if(!P.ghost||!G||G.sim||(typeof NET==='object'&&NET&&NET.upHold)) return;`
+
+On player 2's window the body then keeps the identity the host rolled, so kills, betrayals and grudges land on the real pillager. G.tel.ghostIn also stays 0 there, which is correct because his friend was not in that raid. Late joins also build through netUpStart, so they are covered too.
+
+Optional, for the reverse case: right after netUpAnnounce, the host can broadcast netEntNewWord(e) for any built body with e.ghost. On player 2's window, netEntWord with op 'new' and a known id only re-runs netEntFill on the existing body. That updates its name, ident and gun to the host's friend without adding a second body. A late joiner would miss this word unless it is sent again in netLateReply.
+
+=== K24 [low] [SAVE AND PROFILE] A district contract names a place on the wrong sector in the Mainframe detail card, the mid-raid CONTRACT DONE line and the run card
+SCENARIO: On COLD STORAGE the board rolls 'Search 3 containers in THE SUMP' (district 2). The player then picks THE COLD MILE on the sector page. The board row now names the Mile's zone for district 2, but selecting the contract shows the cream detail card headed 'Search 3 containers in THE SUMP', a place that does not exist on the Mile. He searches the containers on the Mile. The raid line reads 'CONTRACT DONE: Search 3 containers in THE SUMP. Complete contract at mainframe.' and the run card says 'CONTRACT COMPLETE: ... THE SUMP'. Two sectors are offered (both beta:1, 6390 and 6529). The same happens to a guest whose P.mapIx is set to the host's map by netUpStart (39462).
+EVIDENCE: genContract 3592-3596 writes the sentence once, with districtPlaceName(d) for the sector selected at roll time. The sector click 43327-43331 sets P.mapIx and never rewrites it, and the load-time fix (3084-3099) only adds a missing ' in ' or replaces palette words. v12.70 added contractDesc (3453-3457) to work the place out live, and the board row (36564) and the raid panel (27673) use it. Three readers still use the stale c.desc: renderConDetail 37370 `'<h4>'+escHtml(c.desc||'Contract')+'</h4>'`, contractStep 3660/3663 (`G.tel.contractsMid.push({desc:c.desc...})`, `say('CONTRACT DONE: '+(c.desc||'contract')...)`), and contractExtract 3744 `_done.push(c.desc||'contract')`. contractExtract's results feed the card at 21896-21898. The zone names differ between the two maps: COLD STORAGE district 2 is THE SUMP (6403), and the Mile has its own zones (6540).
+FIX: In C:\claudecode\dark raiders\dark_raiders.html, make three changes so these readers name the place on the current sector:
+- 37370: change `escHtml(c.desc||'Contract')` to `escHtml(contractDesc(c))`
+- 3660: change `desc:c.desc||'contract'` to `desc:contractDesc(c)`
+- 3663: change `(c.desc||'contract')` to `contractDesc(c)`
+
+The 3660 change also fixes the run card's CONTRACT COMPLETE line, because the card reads `_mid[_mq].desc` at 3754. Line 3744 can switch to contractDesc(c) for consistency, but a district contract never reaches it. contractDesc returns c.desc unchanged for every type except district, so every other contract reads exactly as before.
+
+=== K25 [low] [HUD AND MAP RENDERING] At 1440p and 4K the emote strip (V) is painted over the belt keys
+SCENARIO: In a raid at 4K the player presses V to signal a pillager. The four emote buttons are drawn at their 1080p size and place, H-LH(112) from the bottom. The belt has grown with the screen, so the strip lands on top of the belt: it covers the top of keys 2 to 6, including their slot numbers, and its hint 'weapon down, they will listen' prints on the belt's top edge. At 1440p it covers the top 31 px of the cells. At 1080p it covers the belt caption strip. While the strip is up the number row picks emotes, so the hidden belt numbers and the strip's own 1 to 4 overlap in the same place.
+EVIDENCE: drawHUD 28890-28892: `var ebw=LH(112),ebh=LH(30)... ey0=H-LH(112);`, with no hudRes term. It is drawn at 28889-28908, after drawBelt (28170). drawBelt sizes and places the belt from the screen (26717-26724: `bw=Math.max(20,Math.min(bw,LH(112)))`, `hy=H-bw-LH(13)`). At 4K (UIK 1.56): bw=175, hy=2160-175-20=1965, while ey0=2160-175=1985, so the strip spans y 1985-2032, inside the cells (1965-2140). The key numbers sit at hy+max(LH(11),round(bw*0.13)+LH(3)) = 1993, under the strip. At 1440p: hy=1440-139-20=1281 against ey0=1265, so the strip covers y 1281-1312 of the cells. drawUseBar (26961) also hard-codes the strip at H-LH(112).
+FIX: Add one helper that places the strip above the belt as drawn this frame, and use it in both places that need the strip's position.
+
+Put it near drawUseBar:
+function emoteStripY(){ var c=(G&&G.hotCells&&G.hotCells.length)?G.hotCells[0]:null, hy=c?c.y:H-LH(70), bw=c?c.w:LH(60), cap=parseFloat(((/([\d.]+)px/).exec(beltCapFS(bw))||[0,11])[1])||11; return Math.round(hy-LH(6)-cap*0.95-LH(6)-LH(30)); }
+This is the top of the belt caption's dark strip (hy-LH(6)-cap*0.95), minus a gap of LH(6), minus the strip height LH(30).
+
+In drawHUD (28892), change `ey0=H-LH(112)` to `ey0=emoteStripY()`. The hint at ey0-LH(8) then sits above the strip and clear of the belt.
+
+In drawUseBar (26961), change `y=Math.min(y,Math.round(H-LH(112)-LH(30)-h))` to `y=Math.min(y,emoteStripY()-LH(30)-h)`. This keeps the same distance it has now between the strip and the bandage/plate bar.
+
+At 1080p the strip moves up by about 23 px, so it also stops covering the caption. Scaling ebw, ebh and the strip fonts by hudRes is a separate size change and is not needed to fix the overlap.
+
+=== K26 [low] [AUDIO, CONTROLLER AND INPUT] Kid firing shoots player 2's gun behind the open Peddler stall
+SCENARIO: Co-op with Kid firing on (Settings, KID MODE, or set by the host). Player 2 opens the Peddler's stall with X and starts browsing while a machine or hostile pillager comes into gun range with a clear line. His gun fires by itself through the panel, round after round. That spends his magazine and makes noise that draws more machines, and it turns his facing. A round can also hit the Peddler standing beside him, which bolts him and shuts the stall. Every other way of firing is blocked while the stall is open: a left click, the pad's RT, and A held into the stall.
+EVIDENCE: netAutoFire (40662-40686) is called at the top of updatePlayer (17007). Its fire test at 40668 is `p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!p.downed&&...`, with no G.trade. When afTarget finds a body it sets `mouse.down=held||!!PAD.firing; PAD.afire=1;` (40684). The fire code at 17450-17476 reads mouse.down and calls fireWeapon with no stall test. The stall's own return comes later, at 17765 ('the fire and cook code above runs every frame before the stall's return', 17753-17755). The other paths are guarded on purpose: the canvas mousedown returns on G.trade (12061, v15.35, 'A MOUSE CLICK ON THE OPEN STALL NEVER FIRES THE GUN BEHIND IT'), the pad stall branch calls padRelease (13052, v14.20), and opening the stall clears mouse.down (17762). netAfOn is true only in a linked window (role 'join', 40587), which is player 2.
+FIX: In netAutoFire, add `!G.trade` to both tests.
+
+- Line 40668: `if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed&&...`
+- Line 40675: `if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed){ ... afLook ... }`
+
+With the stall open, `e` is then null, and the existing line 40674 (`if(PAD.afire){ PAD.afire=0; if(!PAD.firing) mouse.down=false; }`) lets go of the trigger. The frame the stall opens still fires once, because netAutoFire runs before 17762. Every frame after that is clean, and the cursor and facing are left alone. Optionally add "or the open stall" to the "Nothing fires under the open backpack or map" sentence in the comment at 40582.
+
+=== K27 [low] [HUD AND MAP RENDERING] The lift's sector map previews draw the extraction rings where the map file puts them, not where the raid actually puts them
+SCENARIO: At the lift, the player studies the COLD STORAGE preview to plan a route. Ring C is drawn inside the dock bay building at (1700,400). In the raid it stands at about (1822,696), south of the bays. That is roughly 30 preview pixels off, about four ring radii. On THE COLD MILE five of the six rings are drawn at their unmoved points (for example 4900,420, while the live ring is at 4740,420). The zone names are also nudged away from the wrong spots, so they can print over the real rings. The in-raid sector map is right, so the two maps of the same sector disagree.
+EVIDENCE: sectorPreviewDraw 43249-43251: `if(M.extracts) for(...){ e=M.extracts[i]; ... c.arc(ox+e.x*sc,oy+e.y*sc,Math.max(4,78*sc),0,6.2832) ...}`. M is FIXED_MAPS[ix] (43272), the authored definition. The label avoider (43236-43237) also tests M.extracts. The raid moves every ring that touches a building: buildMap returns `extracts:extractsOutside(def.extracts,buildings)` (7292), extractsOutside (7663-7681) spirals each one out, and the live zones are built from those moved copies (10442-10447: `zones.push({x:map.extracts[z].x,y:map.extracts[z].y,...})`). The buildings come straight from def.buildings (6560-6567), so the same move can be computed from M.
+FIX: 1. Give extractsOutside an optional world size, so the edge clamp no longer depends on the globals. Change `function extractsOutside(list,builds){` to `function extractsOutside(list,builds,W,H){ W=W||WORLD_W; H=H||WORLD_H;`. Then use `clamp(e.x+Math.cos(th)*rad,140,W-140)` and `clamp(e.y+Math.sin(th)*rad,140,H-140)` in the spiral at 7673-7674. The raid result does not change, because buildFixedMap sets WORLD_W=def.w and WORLD_H=def.h first. You can also pass `def.w,def.h` at 7292 so it is explicit.
+
+2. In sectorPreviewDraw, right after the `if(!c) return 0;` line, add `var EX=(M.extracts&&M.buildings)?extractsOutside(M.extracts,M.buildings,M.w,M.h):(M.extracts||[]);`. It costs very little and runs once per render, and leaving it uncached means it always follows CFG.extOutside. Then use EX in place of M.extracts in three places:
+   - hits() at 43236: `if(!EX) return false; for(j=0;j<EX.length;j++){ e2=EX[j]; ...`
+   - place() at 43237: `if(EX) for(j=0;j<EX.length;j++){ e2=EX[j]; ...`
+   - the ring loop at 43249: `for(i=0;i<EX.length;i++){ e=EX[i]; ...`
+
+This draws no random numbers and changes nothing in the raid build.
+
+=== K28 [low] [HUD AND MAP RENDERING] The empty-gun reticle says 'EMPTY - R' on a controller (and after reload is rebound)
+SCENARIO: A pad player's magazine runs dry mid-fight. The crosshair turns amber, gets struck through, and reads 'EMPTY - R'. A pad has no R; reload is X, as LEGEND_MINI_PAD and LEGEND_PAD say. A keyboard player who moved reload in CHANGE KEYS is also told R. This is the line his v2.99 note put on the cursor so the eyes never have to leave it.
+EVIDENCE: drawHUD 27402: `ctx.fillText(rState==='jam'?'JAMMED':(rState==='dry'?'NO AMMO':'EMPTY - R'),rx0,ry0+gap+len+LH(14));` is a literal. keyLabel (12614-12622) maps KeyR to 'X' on a pad (PADLABEL 12592) and to the bound key on keyboards (v18.59), and every other prompt on this HUD uses it. On a pad, X with nothing in reach holds KeyR (13151-13154), so X is the button that reloads.
+FIX: In C:\claudecode\dark raiders\dark_raiders.html:27402, replace the literal `'EMPTY - R'` with `'EMPTY - '+keyLabel('KeyR','R')`. The line becomes:
+`ctx.fillText(rState==='jam'?'JAMMED':(rState==='dry'?'NO AMMO':'EMPTY - '+keyLabel('KeyR','R')),rx0,ry0+gap+len+LH(14));`
+It then reads EMPTY - X on an Xbox pad, EMPTY - SQUARE on a PlayStation pad, the bound key after CHANGE KEYS, and EMPTY - R otherwise, as before.
+
+=== K29 [low] [AUDIO, CONTROLLER AND INPUT] Once the player 1 window is gone, the player 2 window's Undercroft never plays music
+SCENARIO: Same-PC co-op. Player 1's window is closed or crashes mid-raid, and player 2 takes the raid over, as the 2026-10-02 ruling says he should. He extracts and lands on the Undercroft floor in his own window, which is now the only window. No Undercroft song plays, on any later visit either, until that window is reloaded. The same happens if player 1's window is closed while both players are on the floor.
+EVIDENCE: musicWanted, line 4053: `if(typeof NET==='object'&&NET&&NET.same==='p2'&&netSndWho()!=='p2'&&!NET.hostSeed) return false;`. The player 2 window never clears NET.same: netReset skips netSameStop for NETP2 (38570, 'the player 2 window keeps both'), and only netSameStop sets NET.same='' (38766). netHostGone sets `NET.hostSeed=0` (42344). WORLD SOUND defaults to 'both', and netSndWho returns 'both' when the key is unset (39282). So with the host gone the test is true on every frame, and tickMusic fades to silence and returns (4065-4070). The rule assumes a player 1 window is playing the song (v20.86/v21.22 comments at 4045-4053), but nothing checks that one still exists.
+FIX: dark_raiders.html line 4053: player 2 should leave the song to player 1 only while a player 1 window is actually linked. Use the existing link counter, netInCount() (38617), which counts peers in state 'in'. On the player 2 side the only peer is the host link, and netReset empties NET.peers when the host is gone:
+
+if(typeof NET==='object'&&NET&&NET.same==='p2'&&netSndWho()!=='p2'&&!NET.hostSeed&&netInCount()>0) return false;
+
+Once the host is gone (bye, lost link, or a window closed while both are on the floor), netInCount() is 0 and the player 2 window plays its own song again. While linked, nothing changes, so the H53 rule of one song for the pair still holds.
+
+Optional hardening in the same spirit: in netReset, when NETP2 is set, also clear NET.hostSeed=0. If player 2 is on the floor when a host who is up top drops, the old hostSeed survives, because netHostGone returns early when player 2 is not in a raid. That stale value would then steer netMusPan to the right speaker with no reason to.
+
+=== K30 [low] [AUDIO, CONTROLLER AND INPUT] Taking a trade offer with pad Y on the Undercroft floor also opens the station's Y window (PARTY, HIRE or RACKS)
+SCENARIO: Co-op in the Undercroft. Dad offers an item, and the line reads '<name> offers you <item>. Press T or Y to take it.' His son is standing at the lift, the shop counter or the Mainframe and presses Y on the controller. The offer is taken, and in the same frame the station's Y action fires: the PARTY window opens at the lift, HIRE at SHOP, CRAFT, AND HIRE, or the RACKS tab at THE MAINFRAME, over the trade he just accepted. On the keyboard, T has the same two meanings at the lift (the terms), but there the key is spent on the offer and nothing opens.
+EVIDENCE: The floor pad branch in pollPad, 13029-13030: `if(pressed(3)&&!PAD.prev[3]&&...&&NET.hg&&NET.hg.in&&!NET.hg.in.yes){ netHubGiftKey(); }` is followed at once by `padHold('KeyF',pressed(3));`, which holds F on the same press. loop runs pollPad (33775) before updateHubWorld (33791). updateHubWorld fires any station act whose key is down: `if(best&&!HB.eLock){ for(var ak in best.acts){ if(keys[ak]){ ... best.acts[ak][1](); break; } } }` (32592-32594). The KeyF acts are lift 'party' (32364), trader 'hire' (32368) and mainframe 'racks' (32380). The keyboard path returns before setting the key: `if(e.code==='KeyT'&&...&&netHubGiftKey()){ e.preventDefault(); return; }` (11618, ahead of keys[e.code]=true at 11619).
+FIX: Edit the floor branch of pollPad: spend Y when it takes the offer, and keep KeyF off until Y is let go.
+
+At lines 13029-13030, replace the two lines with:
+
+  if(pressed(3)&&!PAD.prev[3]&&typeof netHubGiftKey==='function'&&NET.hg&&NET.hg.in&&!NET.hg.in.yes&&netHubGiftKey()) PAD.yGift=1;   // the press that takes an offer is spent on it, as T is at 11618
+  if(!pressed(3)) PAD.yGift=0;
+  padHold('KeyF',pressed(3)&&!PAD.yGift);
+
+How this behaves:
+- Only the case where `netHubGiftKey()` returns true sets the latch. If the offer has run out (it returns false), Y still works the station, the same as the keyboard path.
+- Optionally, also add `PAD.yGift=0;` inside `padRelease()` (12894). Then a latch left set when a panel opens cannot eat the first Y press after the player comes back to the floor.
+
+=== K31 [low] [AI] Co-op: the Pillbox, Peddler and Survivor lines go to the host when player 2 is the one who walks up, and player 2 never gets them
+SCENARIO: Two-player raid. Player 2 walks into the 520 reach of THE PILLBOX on the far side of the map. The host's window prints 'THE PILLBOX HAS SEEN YOU.' although the host is nowhere near it, and the one-time latch is spent. Player 2, who is about to be shot by a 1250 hp emplacement, gets no line. In the same way, the host is told 'The Peddler waves you over.' or 'Someone is hiding in here. He needs a medkit.' (and gets the NEEDS label and the SURVIVOR map mark) for player 2's discovery, and player 2 gets nothing. v20.38 (H11) fixed exactly this for the Crier and THE OVERSEER only.
+EVIDENCE: In updateEnts, `p=netTargetFor(e)` (18977). That is the nearest standing player, party included, for anything not a hire (41311-41321). The lines read that p and say() on the host: Pillbox 19597-19600 (`var _cd2=dist(e,p); if(_cd2<e.rng&&!e.sang){ e.sang=1; if(!G.sim){ say('THE PILLBOX HAS SEEN YOU.'); ...`), Peddler 19370-19373 (`canSee(p.x,p.y,...)` then `e.hailed=1; say(...)`), Survivor 19307-19312 (`e.found=1; say(...); label(...)`). Player 2's window never runs these, because updateEnts returns at 18850. The snapshot flags (41452-41462) carry no 'found' bit, so his map's survivor mark (31696) never appears either. Compare the H11 routing: 19627 and 19717-19719 send netMarkSend to the seat, and netMarkTake (41546-41566) says the line on the marked player's window.
+FIX: Use the same routing H11 used for 'big' at 19627.
+
+(1) Pillbox, line 19600:
+`if(_cd2<e.rng&&!e.sang){ e.sang=1; if(!G.sim){ if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'pill',nid:e.nid|0,seat:p.seat|0}); } else say('THE PILLBOX HAS SEEN YOU.'); sfx('dish',e.x,e.y); } }`
+Keep the sfx where it is, because the relay already gives player 2 the sound.
+
+(2) Peddler, line 19372:
+`if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'ped',nid:e.nid|0,seat:p.seat|0}); } else say(pedOpen()?'The Peddler waves you over.':'The Peddler turns his back on you.');`
+Optionally keep the hail per player, for example `e.hailed` for the host and `e['hailed'+p.seat]` for a seat, so the host still gets his own hail later.
+
+(3) Survivor, lines 19309-19311: when `p&&p.net`, do not say 'Someone is hiding in here' on the host. Say 'Your partner found a survivor. He needs a '+ITEMS[e.want].name.toLowerCase()+'.' instead, and keep e.found=1 so the host, the only one who can hand it over (17716), gets the map mark. Skip the world label. Also send `netMarkSend({t:'mark',k:'sv',nid:e.nid|0,seat:p.seat|0})`.
+
+(4) In netMarkTake (41546), before `return 'bad'`, add:
+```
+if(k==='pill'){ if(mine&&!G.sim) say('THE PILLBOX HAS SEEN YOU.'); return 'mark:pill'; }
+if(k==='ped'){ if(mine&&!G.sim) say('The Peddler waves you over.'); return 'mark:ped'; }
+if(k==='sv'){ if(e) e.found=1; if(mine&&!G.sim) say('Someone is hiding in here. The host can give him what he needs.'); return 'mark:sv'; }
+```
+netClean(m.k,6) keeps all three keys whole. The 'sv' word sets found on player 2's copy so his map mark (31696) appears, and no flag bit is needed.
+
+=== K32 [low] [AI] Co-op takeover: a pillager mirrored as 'crouched looting' throws a TypeError in updateEnts once the remaining player runs the raid
+SCENARIO: Two-player raid. Player 2's window receives a row for a pillager crouched at a box. The host's window then closes, or the link drops, and player 2 takes over the raid (the 2026-10-02 ruling). That pillager's goal is himself. He crouches in place 'looting himself' for up to two seconds and then throws 'Cannot read properties of undefined (reading length)'. The rest of that frame is skipped (the remaining bodies, the bullets, the throwables and the draw), and an error entry goes into the crash list. It happens once for every pillager whose last row carried the crouch bit.
+EVIDENCE: netEntFlagsApply 41459: `if(f&2048){ e.goal=e; if(e.state!=='loot') e.state='loot'; }`. 41461 sets `e.lootT=(f&65536)?1:0`. netHostGone (42344-42358) keeps every body the window built itself (no e.net) as it is, and never clears goal. In the loot branch, `if(!e.goal||e.goal.opened)` keeps a goal that is the raider himself (e.opened is undefined, 20397). Then `if(e.goal&&dist(e,e.goal)<30){ e.lootT+=dt; if(e.lootT>2){ e.goal.opened=true; for(var q=0;q<e.goal.loot.length;q++)` (20519-20524). A raider has bag, not loot (mkRaider 9724-9726), so `e.goal.loot` is undefined and the throw escapes updateEnts. The error listener at 33693-33697 logs it with noteCrash. The next frame recovers, because opened is now true.
+FIX: In netHostGone, right after the G.ents splice loop at 42358 (by then the bodies put back from NET.entMap are in G.ents too, so one pass covers both), clear the stand-in fields that only the mirror sets:
+
+  for(_i=0;_i<G.ents.length;_i++){ _e=G.ents[_i]; if(!_e) continue; if(_e.goal===_e){ _e.goal=null; _e.lootT=0; } if(_e.reviving===_e) _e.reviving=null; }
+
+With goal null, the loot branch at 20397 picks a real box on the first solo frame, and lootT starts from 0 for it. As a second guard (optional), change 20397 to `if(!e.goal||e.goal.opened||e.goal===e){`. A mirror stand-in then can never reach the loot code at 20524. Neither change draws from the seeded stream.
+
+=== K33 [low] [LOOT AND INVENTORY] Raid belt: dragging the Medical key at full health binds a Bandage you do not carry (the v15.69 floor fix was never applied to the raid belt)
+SCENARIO: In a raid at full health, carrying only Medkits (no Bandages). Open the backpack and drag the Medical belt cell to key 6 to give your heals their own key. The game says 'Bandage to slot 6' and saves a dead Bandage key (grey, 0) into your belt plan. Your Medkits stay on Medical and key 6 never heals you. The same press on the Undercroft floor belt was fixed at v15.69. The raid belt keeps the old test.
+EVIDENCE: hotbarSlots 15781-15783: `var hi=findHeal(); out.push({k:'heal',...,icon:(hi>=0?G.bag[hi]:'bandage'),count:countHeals(),...})`. At full health findHeal skips every heal (15272 `if(G.player&&healReach(G.player)>=healCeil(it)) continue;`), so the Medical cell shows the 'bandage' fallback while count is the number of Medkits. The raid mousedown, line 12144, drags the icon whenever the count is above zero: `(_hs2.kind!=='heal'||_hs2.count>0)?_hs2.icon:null`. The mouseup on another key then writes `G.hotAssign[HC.i]=d.key` and saves P.hotAssign (12455-12471). The 'item has left the backpack' guard at 12451 applies only to backpack drags (`d.fromHot===undefined`). The floor version, line 12091, already tests the bag: `(_sl.kind!=='heal'||G.bag.indexOf(_sl.icon)>=0)`, with the v15.69 comment describing exactly this fault.
+FIX: At line 12144, change `(_hs2.kind!=='heal'||_hs2.count>0)` to `(_hs2.kind!=='heal'||G.bag.indexOf(_hs2.icon)>=0)`. This matches the floor belt's test at line 12091. A drag from the Medical cell then starts only when the backpack really holds the heal the cell shows. With only Medkits at full health, the press just selects the key and binds nothing. The player can still bind a Medkit to any key by dragging its backpack tile.
+
+=== K34 [low] [COMBAT] A shot, a blast or nearby gunfire leaves a Choir pillbox, a Warden (THE OVERSEER too) or a Crier marked as hunting or searching for the rest of the raid
+SCENARIO: You shoot the Choir pillbox once, or fire near it. From then on it carries a red '!' (or a yellow '?'), it counts in 'N converging on the ring' whenever the ship is inbound within 1500 of it, and it drives the heartbeat when you pass within about 320, although it is bolted to the floor and never moves. A Warden or THE OVERSEER shot while unaware keeps the '!' as it wanders home. A Crier caught in a frag blast, or called by a sentry's contact shout, wanders with a red '!' and counts as converging until it next sees someone.
+EVIDENCE: The shared writers put any kind into 'chase' or 'investigate': the host round at 20980 (`if(en.kind!=='peddler'&&en.kind!=='stray'){ en.alert=2.6; en.state='chase'; ...}`, which covers choir and warden), netShotTake 41638, explodeFrag 13885-13888 (snitch not excluded), packCall 9340-9346 (snitch included, `e.state='chase'`), and ping 14124-14126 (`if(e.state==='patrol'||e.state==='loot'){ e.state='investigate'; ...}`, no choir, warden or snitch exclusion). These three kinds run their own branches and `continue` before the generic chase and investigate code that ends those states (19965, 20193-20218): choir 19591-19617 never touches e.state, warden 19619-19683 reads only seenYou, and the snitch 19692-19806 handles only 'alarm' and treats anything else as a wander. Readers: '!'/'?' marker 28109-28110, converging count 28547-28548, heartbeat 33970-33972, the hunting voice 4555.
+FIX: 1) Choir: make this the first line inside `if(e.kind==='choir'){` (19591):
+`if(e.state!=='patrol') e.state='patrol';   // it has no hunt or search; a round, a blast, a noise (its own gun included) or the ship call never leaves it marked`
+e.alert is left alone; the choir sets alert to 4 itself when it sees you, and alert decays at 19491.
+
+2) Warden and THE OVERSEER: put this right after the `if(sees){ ... }` block (after 19627, before `var wantW`):
+`if(!e.seenYou&&e.state!=='patrol') e.state='patrol';   // unaware: the shot, blast, noise or ring spot is kept in e.tx/e.ty, and the walk at 19674 still goes there`
+A Warden that has seen you hunts forever by design, so its state is left as it is.
+
+3) Crier (snitch): do NOT reset it every frame, because 19698 would then send it out of the house instead of to the noise. End the borrowed state when its wander picks the next point. Change 19799 to:
+`else { if(e.state!=='patrol') e.state='patrol'; var spn=freeSpot(G.map,24); e.tx=spn.x; e.ty=spn.y; e.cd=rnd(3,6); }`
+Arriving still sets e.cd=0 at 19802, so the label drops the frame after it reaches the noise, frag or pack spot, or when its clock runs out. The draws are the same as before.
+
+Optional, without moving the stream: in both beacon-pull loops (16784 and 41221-41225), add `if(be.kind==='choir') continue;` right after the `_jx/_jy` draws. This stops a bolted-down pillbox taking one of the siege's pull slots.
+
+=== K35 [low] [COMBAT] Co-op: player 2's Longshot shot into a Choir's DORSAL SPINE is thrown away by the host, though his screen shows a 414 hit
+SCENARIO: Player 2 flanks a Choir pillbox and puts a Longshot round into its DORSAL SPINE (x3.6). His window shows 'DORSAL SPINE x3.6' and a 414 damage number, and the host sees the same number. The pillbox takes no damage and gets no overheat stun. The best shot in the game does nothing, only for player 2. The host's identical shot lands.
+EVIDENCE: WEAPONS.sniper dmg 115 (2101). WEAKPTS.choir spine mult 3.6 (8609). P2's bullet path multiplies before sending: 20873 `edmg*=WK.mult;` gives 414, then 20915 netShotSend(en,414,...,WK), while the label and number are drawn locally (20876, 20923-20924). The host refuses it: netShotTake 41623 `d=+m.dmg; if(!isFinite(d)||d<=0||d>400) return 'bad';`. That return comes before applyWeak (41626) and `e.hp-=d` (41627). Field quality is fixed at x1 (GUNQ 2147-2148), so 414 is a normal value and not a corrupt one.
+FIX: In netShotTake (line 41623 of C:\claudecode\dark raiders\dark_raiders.html), raise the limit above the largest real hit and keep the check against bad values:
+
+`d=+m.dmg; if(!isFinite(d)||d<=0||d>600) return 'bad';`
+
+The largest real hit is a Longshot into the DORSAL SPINE, 115 x 3.6 = 414. A frag is at most 140 and the best back shot is 172.5, so 600 leaves room and still blocks junk values. If a gun or weak point gets stronger later, work the limit out instead of fixing it at a number. For example, set a constant NET_SHOT_MAX once after WEAPONS and WEAKPTS are defined: the highest WEAPONS dmg times the highest WEAKPTS mult, times 1.1. Then test `d>NET_SHOT_MAX`.
+
+=== K36 [low] [AI] A Crier knocked out of patrol by noise, a frag or a machine's contact call stays in 'investigate' or 'chase' for the rest of the raid
+SCENARIO: Walk or fire near a patrolling Crier that does not see you, or let a sentry that spots you call its pack within 620 of one, or catch one in a frag blast. The Crier keeps wandering at random, but for the rest of the raid it wears a '?' or a red '!'. The red '!' is the same marker an alarming Crier wears, though it is not raising anything. It counts in 'N converging on the ring'. A 'chase' Crier within 430 drives the heartbeat. A stuck Crier that wanders indoors never leaves, because the head-for-the-door rule (his v9.04 note) only runs in 'patrol'. Only seeing you and finishing or cancelling an alarm puts it back.
+EVIDENCE: The snitch branch (19692-19807) handles only 'patrol' (the building exit, 19698-19706) and 'alarm' (19722). Every other state falls into the wander else (19797-19803) and is never reset. The only writes back to 'patrol' in the file are 19730 and 19756. Entry points: ping sets patrol->investigate for any non-quiet noise (14126), including your steps (17285) and gunfire (14712). Footprints (18914-18925) include 'snitch'. packCall lists 'snitch' and sets `e.state='chase'` (9340-9346). The frag path sets 'chase' on it (13885-13886), unlike the round, which starts a real alarm (20986-20989). The beacon call (16309) and tickHot (29274) set 'investigate'. Readers: marker 28109-28110, converging count 28547, heartbeat `if(ce.state!=='chase') continue` (33967-33972), repair needs patrol (18884). The v9.04 snitch code in the general wander (20700-20712) is unreachable, because the snitch branch always hits `continue` at 19806.
+FIX: In the snitch wander else, change line 19799 to put the Crier back on patrol at the moment it picks its next wander point:
+
+`else { if(e.state!=='patrol') e.state='patrol'; var spn=freeSpot(G.map,24); e.tx=spn.x; e.ty=spn.y; e.cd=rnd(3,6); }`
+
+A Crier that heard a noise, was called by its pack or was caught in a blast still walks to that point for its current leg. That leg ends on arrival, because `dist<30` sets cd=0, or when cd runs out. It then goes back to 'patrol', so the '?' is honest while it walks, and the v9.04 leave-the-building rule applies again. The change adds no draw and keeps the reroll on the same frame, so the seeded stream does not move.
+
+Optional extra: in packCall (9346) and the frag path (13886), give a Crier 'investigate' instead of 'chase'. A Crier that is not raising anything then never wears the red '!' and never drives the heartbeat. For example, in packCall use `e.state=(e.kind==='snitch')?'investigate':'chase';`, and in the frag path add `if(e.kind==='snitch') e.state='investigate';` after the chase line.
+
+=== K37 [low] [LOOT AND INVENTORY] A stowed gun's rounds stay queued after the gun leaves the backpack, so the next gun of that model taken from the backpack comes up with the old load (often an empty magazine)
+SCENARIO: Fire your SMG empty and drag it into the backpack, which stows 0 rounds for 'smg'. Then sell the backpack at the stall, give the SMG to your hire, or (as player 2) drop it for your teammate. Later, holding two real guns, you find another SMG. It goes into the backpack, and you press its belt key to equip it: 'Compact SMG equipped' with 0 rounds in the magazine, instead of the half magazine a gun found in the field always gets. The other way round, stow a full gun and sell it, and the next one comes up with a free full magazine.
+EVIDENCE: bagHeldGun 15597 `stowRounds(g.id,isHand?p.ammo:p.secAmmo)` pushes onto `G.stowAmmo[id]` (15579-15582). Only takeRounds (15583-15587) ever takes an entry off the queue, first in first out by gun id, and equipFromBag calls it for any gun of that model (15711 `var _rd=takeRounds(gk,g.mag);` then `p.ammo=_rd`). Several ways a gun leaves the backpack never take its entry off: pedSellAll (10027-10049, the gun is sold and G.bag=kept), the gift to the hire (12492), the gift 'yes' (40308-40313), and dropItem's linked-window branch (14848-14868), where the teammate's window grants the gun from its own stowAmmo and gets the half-magazine default. The leftover entry is then handed to the next same-model gun equipped from the backpack.
+FIX: Add a helper next to takeRounds (after 15587):
+  function dropRounds(gk){ var q=G&&G.stowAmmo&&G.stowAmmo[gk]; if(q&&q.length) q.shift(); }
+
+Call it wherever a gun leaves the backpack for good:
+1. pedSellAll, in the sold branch at 10038, right after tot/full/n are counted:
+   if(ITEMS[k]&&ITEMS[k].use==='gun'&&ITEMS[k].gk) dropRounds(ITEMS[k].gk);
+   This branch only runs for items that are really sold, and n>0 then guarantees the sale goes through.
+2. The hire gift, after G.bag.splice(_gix,1) at 12492:
+   if(ITEMS[d.key]&&ITEMS[d.key].use==='gun'&&ITEMS[d.key].gk) dropRounds(ITEMS[d.key].gk);
+3. netGiftTake 'yes', after G.bag.splice(ix,1) at 40310:
+   if(ITEMS[go.k]&&ITEMS[go.k].use==='gun'&&ITEMS[go.k].gk) dropRounds(ITEMS[go.k].gk);
+4. The linked-window drop: do NOT shift in dropItem. His own pile, searched back up, still reads its entry through ct.dropped (15435/15487). Shift instead in netGunGoneTake, after gk is validated at 42061:
+   if(typeof G!=='undefined'&&G) dropRounds(gk);
+   The host sends 'gungone' only when someone other than the dropper takes a gun from his pile.
+
+Leave the solo drop (14870) unchanged, because its pile's pickup reads the entry.
+
+=== K38 [low] [UNDERCROFT MENUS AND STATIONS] Co-op: Terms the host signs on the floor while his teammate is still up top change that teammate's raid live
+SCENARIO: Co-op. The host extracts or dies while player 2 is still in the raid, so the host window keeps the raid running for him (spectating). While he waits on the floor, the host opens THE TERMS at the lift and signs THEY KNOW YOU and SILENT RUNNING for his next run. From that moment, in player 2's ongoing raid, every new pillager wave walks in hostile with a grudge, and every Listener hears 1.5x farther. Player 2 never signed these Terms and gets no hazard pay for them.
+EVIDENCE: The lift's T act has no spectate guard: `KeyT:['the terms',function(){ renderTerms(); openModal('termsmodal'); }]` (32360). toggleTerm (21232-21236) writes termsOn(), which is P.terms on the floor. The host's raid never stores its Terms: the 21221-21222 comment says 'Solo and the host never set G.terms'. Only netUpStart sets G.terms, at 39466. So in the kept raid termsOn() (21224) falls through to the host's live P.terms. netSpecTick runs that world with G=S (41256-41261: updateEnts, tickRaiderWaves). These read the Terms live: tickRaiderWaves at 16610 `if(!G.sim&&hasTerm('known')){ NR.hostile=true; NR.alert=2.5; NR.grudge=true; }`, and listenersHear at 9419 and 9450 `LISTEN_R*(hasTerm('silence')?1.5:1)`.
+FIX: Two lines in C:\claudecode\dark raiders\dark_raiders.html:
+
+1. startRaid, right after `G=buildRaid(false);` (11523), add:
+`if(!G.sim) G.terms=termsOn().slice();`
+The new G has no terms yet, so this copies P.terms. For a guest, netUpStart still overwrites it at 39466.
+
+2. termsOn (21224): let the kept raid read its own list even though it is over. Change
+`if(R&&!G.over) return R;`
+to
+`if(R&&(!G.over||(typeof NET==='object'&&NET&&NET.specG===G))) return R;`
+
+Why this is safe:
+- On the floor G is null (43113, 21673), so toggleTerm, renderTerms and the 'termsclear' button still read and write P.terms.
+- A spectating host cannot start a new build, because ascending is refused at 39414.
+- The host's own pay is unchanged: termsPay(1)/termsOf at endRaid already read the same list, since P.terms cannot change during his own raid.
+
+A smaller alternative for step 1 is to set the list when the raid is kept: in netSpecStart (41175) add `if(!Array.isArray(G.terms)) G.terms=termsOn().slice();`. Step 2 is still needed either way.
+
+=== K39 [low] [UNDERCROFT MENUS AND STATIONS] The party kit question's RANDOM FROM STASH and TOP GEAR stay armed after the party ascent closes the card, and show up on the 'Let X go?' card
+SCENARIO: Co-op. Player 2 gets the kit question and does not answer within 15 s (or presses Not yet, as above). The host's timer takes the party up, and the ascent shuts the card without an answer. After the raid, player 2 goes to HIRE and presses Hire nobody to let his hire go. The 'Let X go?' card shows LET THEM GO and Not yet, and also RANDOM FROM STASH and TOP GEAR. Pressing either one closes the card without releasing the hire. It replaces his packed backpack with a random or top-gear pick, swaps the guns in his hands, and sends a stray kit answer to the host.
+EVIDENCE: askKit shows the two extra buttons and arms them: ASKRAND and ASKTOP at 32622-32623, `_kr.style.display=''; _kt.style.display=''` at 32624. Only the card's own four buttons call kitExtraHide() (44015, 44023, 44029, 44036). showScreen closes windows by stripping .on only (33516-33517), so ASKRAND and ASKTOP and the two visible buttons survive a startRaid from netUpStart. The Hire nobody handler (38050-38071) resets ASKYES and ASKALT and hides #askalt, but never #askrand and #asktop, then calls openModal('askmodal'). The askrand and asktop handler (44026-44033) runs the stale ASKRAND or ASKTOP: `if(P.freeKit) freeKitRestore(); P.freeKit=0; kitFill(true|false); saveProfile(); then();`. kitFill rewrites P.kit, P.equipped and P.equippedSec (32673-32704), and then() is the old kitok sender (41838).
+FIX: 1) In the Hire nobody handler (document.getElementById('mercclear').onclick, about line 38065), hide the kit-only answers before the card opens:
+  ASKALT=null; kitExtraHide();
+This also nulls ASKRAND and ASKTOP and hides #askrand and #asktop.
+2) Belt and braces, so no answer outlives its card: in showScreen, right after the loop that strips .modal.on (33516-33517), add
+  try{ kitExtraHide(); }catch(_ke){} ASKYES=null; ASKALT=null; ASKBACK=null;
+This is safe: every ask button nulls its callback before running it, and neither opener calls showScreen between arming and openModal. With this change, a party ascent that closes an unanswered kit card leaves no callback behind.
+
+=== K40 [low] [UNDERCROFT MENUS AND STATIONS] FASHION: tiles that need 2 or 3 Warden kills say 'put a Warden down', so they stay locked after the kill the tile asked for
+SCENARIO: A player who has never killed a Warden sees The Machine outfit, Hood, Ghost Mask and the Spider tattoo marked 'put a Warden down'. He kills one Warden, extracts, and comes back to FASHION. Those four tiles are still locked and still say 'put a Warden down'. Clicking them only clanks, and nothing anywhere says that 2 or 3 kills are needed.
+EVIDENCE: cosOwned honours the count: `if(k==='warden') return ((P.kills&&P.kills.warden)||0)>=v;` (23031). cosNeed ignores it: `if(k==='warden') return 'put a Warden down';` (23044). Four racks need more than one kill: outrobot warden:3 (22870), hood warden:2 (22886), ghostmask warden:3 (22889), tatspider warden:2 (22945). The tile text is cosNeed(c) (45069), and a locked click just clanks (45086).
+FIX: In cosNeed (dark_raiders.html:23044) replace the warden line with:
+  if(k==='warden'){ var _wn=+v||1, _wk=(typeof P!=='undefined'&&P&&P.kills&&P.kills.warden)||0; return _wn===1?'put a Warden down':('put '+_wn+' Wardens down ('+Math.min(_wn,_wk)+' of '+_wn+')'); }
+v is a string here (bits[1] is not converted), so it is turned into a number before comparing. Single-kill tiles keep the exact wording they have now. Multi-kill tiles show how many kills are needed and how far the player has got.
+
+=== K41 [low] [LOOT AND INVENTORY] Co-op: a loaner Bandage you try to give a teammate who is already healing comes back as a found Bandage and is banked to your stash
+SCENARIO: Co-op. You went up with no heals, so you hold the 2 issued loaner Bandages. Your teammate is at 80 health. You hold Y beside him (or use the belt key while facing him) to bandage him, and in that same second he puts on a Bandage of his own. Your Bandage reaches his window, which refuses it as full and sends it back: 'Your teammate is already healing. Bandage kept.' It is now a found Bandage. At extraction it is banked into your stash, though the quartermaster's loaners are never meant to be banked. The same happens when his raid has just ended ('gone').
+EVIDENCE: netAidStart, line 40044, spends the loaner from the issued count when the heal starts: `if(!arm&&key==='bandage'&&(G.issuedBandages||0)>0){ G.issuedBandages--; if(G.bandSeen!==undefined) G.bandSeen--; p.prep.issB=1; }`. When the heal is kept locally, netAidFinish's kept() puts the loaner back (40055 `if(PR.issB){ G.issuedBandages=(G.issuedBandages||0)+1; ... }`). The refusal from the teammate's window takes another road. netAidApply returns it with `netAidBack(by,key,'full')` (40359) or 'gone' (40351). The aid word (40334 `{t:'aid',s:s,by:by,k:key}`) and the aidx word (40378) carry no loaner mark, and netAidKept (40400-40405) only does `G.bag.push(key)`. trackIssuedBandages treats a rise as a find (15132-15134), so at extraction `_issB=G.issuedBandages` is one short and that Bandage goes through bankItem into P.stash (21899-21902).
+FIX: Carry the loaner mark through the round trip on the wire. A local "loaners out" counter on the healer would be wrong: a heal that lands sends no reply, so the counter would never clear.
+
+1. netAidFinish:
+   - Joiner send (40060): `netSend(NET.peers[i],{t:'aid',s:s,k:PR.key,ib:PR.issB?1:0})`.
+   - Host path (40059): `netAidPass(s,NET.seat,PR.key,PR.issB?1:0)`.
+
+2. netAidPass(s,by,key,ib):
+   - When s is your own seat: `return netAidApply(by,key,ib)`.
+   - The send becomes `{t:'aid',s:s,by:by,k:key,ib:ib?1:0}`.
+
+3. netAidTake: let `ib=m.ib?1:0`.
+   - Host: `netAidPass(m.s,peer.seat,k,ib)`, and on 'nobody' or 'lost' call `netAidBack(peer.seat,k,'gone',ib)`.
+   - Join: `netAidApply(by,k,ib)`.
+
+4. netAidApply(by,key,ib): pass ib to each of its three netAidBack calls ('gone', 'down', 'full').
+
+5. netAidBack(by,key,why,ib):
+   - `w={t:'aidx',s:by,f:NET.seat,k:key,w:why,ib:ib?1:0}`.
+   - Host sending to himself: `netAidKept(NET.seat,key,why,ib)`.
+
+6. netAidBackTake:
+   - Host for himself: `netAidKept(peer.seat,k,m.w,m.ib)`.
+   - Host relay: add `ib:m.ib?1:0` to the aidx word.
+   - Join: `netAidKept(...,k,m.w,m.ib)`.
+
+7. netAidKept(from,key,why,ib): after `G.bag.push(key)`, add `if(ib&&key==='bandage'){ G.issuedBandages=(G.issuedBandages||0)+1; if(G.bandSeen!==undefined) G.bandSeen++; }`. This matches kept() at 40055, so the frame tracker sees no change and the extraction holds the Bandage back for the quartermaster.
+
+=== K42 [low] [CO-OP NETWORKING] A loaner Bandage handed to a teammate who refuses it comes back as a found Bandage and is banked at extraction
+SCENARIO: Co-op. Player 2 deploys with the two issued loaner Bandages. Player 1 is already running his own Bandage up to 85. Player 2 holds Y (or uses the belt) to bandage player 1. Player 1's window refuses it as 'full' (or he is down, or his raid just ended), and the Bandage goes back to player 2 with 'is already healing. Bandage kept.' It is no longer counted as issued. Player 2 extracts and the loaner is banked into his stash as a real Bandage. Had he died, it would be billed as LOST. This can happen twice per raid.
+EVIDENCE: netAidStart spends the loaner from the issued count and marks the wind-up: `G.issuedBandages--; ... p.prep.issB=1;` (40044). The local refusal path puts the mark back: kept() at 40053-40056 runs `if(PR.issB){ G.issuedBandages=(G.issuedBandages||0)+1; ... }`. A remote refusal does not: the aid word carries no flag (40060 `{t:'aid',s:s,k:PR.key}`). netAidApply answers 'full' or 'down' through netAidBack (40352, 40359). The aidx word has no ib field (40378), and netAidKept just does `G.bag.push(key)` (40404) with no issued count. trackIssuedBandages (15129-15135) only lowers the issued count, so the returned Bandage stays a find.
+FIX: Carry the loaner mark ib (0 or 1) on every leg of the aid round trip.
+
+(1) netAidFinish
+- 40059: `r=netAidPass(s,NET.seat,PR.key,PR.issB?1:0)`
+- 40060: send `{t:'aid',s:s,k:PR.key,ib:PR.issB?1:0}`
+
+(2) netAidPass
+- Change the signature to `function netAidPass(s,by,key,ib)`.
+- Self path: `return netAidApply(by,key,ib)`.
+- Relay: send `{t:'aid',s:s,by:by,k:key,ib:ib?1:0}`.
+
+(3) netAidTake
+- Host: `var k=netClean(m.k,24), ib=m.ib?1:0, r=netAidPass(m.s,peer.seat,k,ib); if(r==='nobody'||r==='lost') netAidBack(peer.seat,k,'gone',ib);`
+- Joiner: `return netAidApply(...,netClean(m.k,24),m.ib?1:0)`.
+
+(4) netAidApply
+- Change the signature to `function netAidApply(by,key,ib)`.
+- Pass ib to all three netAidBack calls (40351, 40352, 40359).
+
+(5) netAidBack
+- Change the signature to `function netAidBack(by,key,why,ib)`.
+- Use `w={t:'aidx',s:by,f:NET.seat,k:key,w:why,ib:ib?1:0}`.
+- Host self path: `return netAidKept(NET.seat,key,why,ib)`.
+
+(6) netAidBackTake
+- Host self: `netAidKept(peer.seat,k,m.w,m.ib?1:0)`.
+- Host relay: add `ib:m.ib?1:0` to the aidx it forwards.
+- Joiner: `netAidKept(...,k,m.w,m.ib?1:0)`.
+
+(7) netAidKept
+- Change the signature to `function netAidKept(from,key,why,ib)`.
+- Right after `G.bag.push(key);` add: `if(ib&&key==='bandage'){ G.issuedBandages=(G.issuedBandages||0)+1; if(G.bandSeen!==undefined) G.bandSeen++; }`
+- This matches kept() at 40055.
+
+Do not use a healer-side pending counter instead. A successful aid is never acknowledged, so the counter would never clear, and a later refused found Bandage would wrongly become a loaner.
+
+=== K43 [low] [UNDERCROFT MENUS AND STATIONS] Co-op: 'Not yet' on the party kit question does not hold the teammate back; he is pulled up 15 s later anyway
+SCENARIO: Co-op. The host presses ASCEND TO THIS SECTOR and answers MY LOADOUT. Player 2's window shows 'What are you taking up?'. Player 2 wants to buy a Medkit first, so he presses Not yet. On a controller B always lands on Not yet, and ESC or TAB press it too. Nothing tells the host. About 15 seconds later the host's timer sends the party up. Player 2 is pulled out of the Undercroft into the raid with whatever happened to be packed, out of any window he had opened.
+EVIDENCE: The teammate card is raised by netKitTake 'kitask' as `askKit(function(){ netSend(peer,{t:'kitok'}); },true);` (41838). Only the answer callbacks send kitok. The Not yet handler (44020-44025) is `ASKYES=null; ASKALT=null; ...remove('on'); kitExtraHide(); askRestore();`, and with mate set ASKBACK is null (32656), so nothing goes to the host. The host side, netKitGate (41803-41811), arms `setTimeout(netKitGo,NET_KIT_WAIT*1000)` with NET_KIT_WAIT=15 (41749). netKitGo (41813-41827) then runs w.f() = ascendNow. That startRaid announces the raid, and the teammate's netUpStart (39449-39465) commits his kit and builds the raid, because netUpBusy (39431-39437) is '' for a window on the floor, even one with a station window open. padMenu's B looks for /not yet/ (12844), and escCloseTopModal falls back to #askno (34713).
+FIX: Keep the v16.37 design: the host takes everyone up, and a teammate who does not answer goes up with his current kit after NET_KIT_WAIT. Make the teammate's card say so.
+
+1. In askKit (32601), after the asksub HTML is set (32615-32619), add: if(mate&&ss) ss.innerHTML+='<br><br><b>Your party is going up.</b> If you do not answer within '+NET_KIT_WAIT+' seconds, you go up with the kit you have now.';
+
+2. Label the decline button truthfully on a teammate card. Next to the ASKBACK line (32656), add: var _no=document.getElementById('askno'); if(_no) _no.textContent=mate?'KEEP MY KIT':'Not yet';
+
+3. Reset the label in the #askno handler (44020) so other cards that reuse the modal still show it: document.getElementById('askno').textContent='Not yet'; (The Hire nobody card at about 38069 opens askmodal without setting this text.)
+
+4. Add 'keep my kit' to the controller B pattern at 12844, so B still lands on that button: /leave|close|not yet|keep my kit|back|done|return/i
+
+Optional, so the host does not sit out the full 15 s after the teammate chose to keep his kit:
+- Add a global ASKNO=null.
+- In askKit, set ASKNO=mate?then:null.
+- In the #askno handler: var g=ASKNO; ASKNO=null; ... if(g) g();
+- Clear ASKNO in the askyes, askalt, askrand and asktop handlers.
+
+Do not add the 'kitno' message that cancels the host's ascent.
+
