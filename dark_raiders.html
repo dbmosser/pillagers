@@ -228,6 +228,13 @@
 .costile.lock:hover{border-color:var(--steel-hi);background:rgba(0,0,0,.32)}
 .cosname{margin-top:6px;font-size:12px;letter-spacing:1px}
 .cosreq{margin-top:2px;font-size:11px;opacity:.65;letter-spacing:1px;text-transform:uppercase}
+/* v21.29, from the whole-game bug hunt of 2026-10-08 (W-A1): THE OWNED LINE SITS LEVEL ACROSS A RACK. A rack tile was a plain box, so a
+   name that broke over two lines (The Skeleton, The Tomb Explorer, The Street Poet on the 4K FASHION picture) pushed its OWNED or WORN
+   line a whole line lower than the tiles beside it, and the OUTFIT rack read as a ragged row. A tile is a column now and its status
+   line sits at the foot of the tile, so every status in a row lines up; the name stays right under the picture, and a row where every
+   name fits on one line looks as it did. */
+.costile{display:flex;flex-direction:column;align-items:center}
+.costile .cosreq{margin-top:auto;padding-top:2px}
   .invtab{ font-size:17px; letter-spacing:.14em; text-transform:uppercase;
     padding:10px 22px; border:1px solid var(--steel-hi); border-radius:3px;
     color:var(--ash); cursor:pointer; background:rgba(0,0,0,.25); }
@@ -1654,7 +1661,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.28';
+var VER='21.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34242,7 +34249,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.28: The what is new card names attract mode. Check 21.28 fails on v21.27',
+  now:'v21.29: In Fashion, the OWNED and WORN words now line up across each rack, even under a two line name. Check 21.29 fails on v21.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.29 - THE FASHION RACKS LINE UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K FASHION picture. In the OUTFIT rack a name too long for one line (The Skeleton, The Tomb Explorer, The Street Poet) pushed its OWNED or WORN word a whole line lower than the tiles beside it, so the row looked ragged. The status word now sits at the foot of every tile, so a row lines up whatever the names, and the names stay right under their pictures.
+
+MEASURED. Check 21.29 passes, and fails on v21.28.
 ## v21.28 - THE WHAT IS NEW CARD NAMES ATTRACT MODE
 
 Co-op hunt while he was away. The card was stamped v21.16 and the stamp may not trail the build by more than 0.15. Its new second line names attract mode and the F9 recorder (v21.17, v21.18) and the Undercroft song that follows the players (v21.22); the fixes from the review of the night builds are in the change list.
