@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.01 - THE WHAT IS NEW CARD NAMES MORE 4K POLISH
+
+Co-op hunt while he was away. The card was stamped v20.87 and the stamp may not trail the build by more than 0.15. Its new second line names the map and raid fixes from the 4K screenshot pass of 2026-10-08: a solid map, its tags kept inside, ring labels clear of the screen edge and the backpack, and a run card that fits; the rest are in the change list.
+
+MEASURED. Check 21.01 passes, and fails on v21.00.
 ## v21.00 - WIRT LINES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K gambler screenshot. At Wirt the GAMBLE box was a narrow box only as wide as its one line and its button, and the LIMITED TIME OFFER box under it was about two and a half times wider, so the two centred boxes had no edge in common and the window looked unfinished. Both boxes are now the same width and stack as one neat column. Nothing in them changed.
