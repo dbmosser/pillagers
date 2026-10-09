@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.60';
+var VER='20.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13617,6 +13617,12 @@ function releaseCook(){
 function cookOff(){
   var p=G.player;
   p.cooking=0; p.cookT=0; p.cookKind=null;
+  // v20.61, from the whole-game bug hunt of 2026-10-08 (H5): A CHARGE THAT GOES OFF IN YOUR HAND HURTS YOU, EVEN JUST AFTER A REVIVE.
+  // Every pick-up (your own F, your hire, a teammate) gives two seconds of cover, and damagePlayer ignores a hit while it runs, so
+  // a Frag Charge cooked within 0.9 seconds of standing up went off in your hand and took nothing from you while it took up to 140
+  // from everything around you. The roll already drops its cover at the cook-off (v15.08); every cook-off does now, here, so the
+  // two standing paths get it too. The blast draws only what any hit on you draws.
+  p.iv=0;
   say('It went off in your hand.');
   explodeFrag({x:p.x,y:p.y});
 }
@@ -33825,7 +33831,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.60: The survivor you help no longer hits you with his shots at the machines. Check 20.60 fails on v20.59',
+  now:'v20.61: A frag charge held too long in your hand now hurts you even just after you are picked up. Check 20.61 fails on v20.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

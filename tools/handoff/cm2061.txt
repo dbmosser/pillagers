@@ -1,0 +1,7 @@
+v20.61: a charge in your hand hurts after a revive
+
+A frag charge held too long in your hand now hurts you even just after you are picked up.
+
+Check 20.61. Fails on v20.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

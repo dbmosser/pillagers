@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.61 - A CHARGE IN YOUR HAND HURTS AFTER A REVIVE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Every time you are picked up (by yourself, your hire or a teammate) you get two seconds in which nothing can hurt you. A Frag Charge cooked in that window and held too long went off in your hand and did nothing to you, while it hit everything around you for up to 140. A roll already dropped its cover when a charge went off in your hand; now every charge that goes off in your hand does, so it hurts you the same as it would at any other time.
+
+MEASURED. Check 20.61 passes, and fails on v20.60.
 ## v20.60 - THE SURVIVOR YOU HELPED NEVER SHOOTS YOU
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Once you give the hiding survivor what he needs, he walks to a ring and shoots any sentry or crawler within reach. If you were fighting the same machine, a round of his that went wide hit you for full damage. It could put you down, and the card named him as the one who did it. A survivor you helped is on your side, so his rounds now pass through you the way your hire rounds already did. A survivor who turned hostile still hits you.
