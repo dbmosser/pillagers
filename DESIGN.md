@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.15 - THE MAP KEEPS THE CLOSING TIME DURING AN EXTRACT
+
+Co-op hunt while he was away. His note of 2026-10-08: on the map, when an extraction is called or in progress, you still need to see how long that extraction stays open in raid time, to plan the route. The map swapped the closing countdown for the call or the hold, so it vanished just when it mattered. It now stays on, on its own row under the ring, in the same words every other ring uses.
+
+MEASURED. Check 21.15 passes, and fails on v21.14.
 ## v21.14 - A GUN PUSHED OUT OF A SLOT GOES IN YOUR BACKPACK
 
 Co-op hunt while he was away. His report of 2026-10-08: he moved a gun into belt slot 2 and the Meridian Lance that was there vanished, and it was not in his backpack. A gun from his own armoury that a backpack gun pushed out of a slot was sent back to the armoury in the middle of the raid, so it left his hands and never reached the backpack, and the one line saying so was written over. Now it goes into the backpack with its rounds and counts as a gun carried up, exactly as picking a gun up into the backpack does: kept on an extraction, lost on a death.

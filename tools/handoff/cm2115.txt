@@ -1,0 +1,7 @@
+v21.15: the map keeps the closing time during an extract
+
+On the map, a called extraction and one in progress still show when they close.
+
+Check 21.15. Fails on v21.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.14';
+var VER='21.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31697,6 +31697,11 @@ if(G.trail&&G.trail.length>1){
       else _zSub='closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)));
       ctx.font=FS(TYPE.label);   // v11.85: the countdown, readable
       ctx.fillText(_zSub,ox+Z.x*sc,oy+Z.y*sc-Math.max(4,Z.r*sc)-LH(6)*_MZ);
+      // v21.15, HIS NOTE (2026-10-08): "on the map when an extract is in progress you still need to show the aggregate amt of time
+      // that extract stays open in terms of match length so player can plan his route". A called ring and a ring in progress showed
+      // only the call or the hold, and the closing countdown every other ring shows was gone just when the route is planned. It
+      // stays now, on its own row under the ring, in the same words the other rings use.
+      if(Z.open&&(_zAct||_zHold)) ctx.fillText((Z.closeAt===undefined)?'STAYS OPEN':('closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)))),ox+Z.x*sc,oy+Z.y*sc+Math.max(4,Z.r*sc)+LH(16)*_MZ);
       ctx.textAlign='left';
     }
   })();
@@ -34069,7 +34074,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.14: A gun pushed out of a belt slot by another goes into your backpack. Check 21.14 fails on v21.13',
+  now:'v21.15: On the map, a called extraction and one in progress still show when they close. Check 21.15 fails on v21.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
