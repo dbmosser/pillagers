@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.58 - THE WHAT IS NEW CARD NAMES THE ATTRACT POLISH
+
+Co-op hunt while he was away. The card was stamped v21.51 and the stamp may not trail the build by more than 0.15. Its new second line names the attract mode and recorder polish of 2026-10-09 (v21.48 to v21.56) and the hire fix (v21.52); the rest are in the change list.
+
+MEASURED. Check 21.58 passes, and fails on v21.57.
 ## v21.57 - THE RUN CARD SCROLLBAR STAYS INSIDE ITS CORNERS
 
 Co-op hunt while he was away. From the 4K screenshot pass (V-E4): on a run card long enough to scroll, the scrollbar ran right to the top and bottom edges and poked out past the rounded corners. Its track now keeps a margin, so it stays inside the card.

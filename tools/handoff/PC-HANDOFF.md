@@ -630,3 +630,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 12:22 heartbeat (away 86 min, light): no new FAILs; v21.54 reclegend (controls list hidden while F9 records)
 2026-10-09 12:52 heartbeat (away ~2 h, light): no new FAILs; shop grid redraws after a buy (checked); v21.55 boardpad (V-B11: the pillager board ends under its last name)
 2026-10-09 13:22 heartbeat (he is here, idle 7 s, light, no corpus): v21.56 legendf9 (full controls list names F9)
+2026-10-09 13:52 heartbeat (he is here, light): feedback prompt is his baked edit (left); v21.57 ocscroll (V-E4 run card scrollbar inside corners)
