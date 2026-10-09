@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.35 - CLAIM ALL SITS CLEAR OF THE CONTRACTS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the second 4K screenshot pass (2026-10-09). On the Mainframe CONTRACTS tab the long CLAIM ALL COMPLETED bar sat flush on top of the contract list and the cream detail card, with its rounded bottom edge resting on the top line of the list, so the three ran together. The REWARDS tab already leaves a small gap under its own CLAIM ALL. CONTRACTS now leaves one too.
+
+MEASURED. Check 21.35 passes, and fails on v21.34.
 ## v21.34 - YOUR STATS NAMES WHO KILLED YOU PROPERLY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the second 4K screenshot pass (2026-10-09). The USUALLY KILLED BY card on YOUR STATS printed the killer the way the game stores it internally: warden in small letters, sitting between COLD STORAGE and Level 4 on the same row, and a player killed mostly by pillagers would have read raider, a word the game no longer uses. It now prints the name the player knows, in capitals, the way the death card already says KILLED BY.

@@ -5723,6 +5723,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.35',what:'on the Mainframe CONTRACTS tab the CLAIM ALL bar has a gap under it: the contract list and the detail card start clear of its bottom edge instead of sitting flush on it',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: no Undercroft here';
+     var bad=[], r, cb, cl, cd, pane, a, b, c, gap;
+     try{
+       __topClear(); __hubEnter();
+       r=__station('mf','KeyE');
+       cb=document.getElementById('conclaimall'); cl=document.getElementById('contracts'); cd=document.getElementById('condetail'); pane=document.getElementById('opane_con');
+       if(!cb||!cl||!pane) return 'SKIP: no CONTRACTS tab in this build';
+       if(getComputedStyle(pane).display==='none') return 'SKIP: staging: the CONTRACTS tab did not open ('+JSON.stringify(r)+')';
+       a=cb.getBoundingClientRect(); b=cl.getBoundingClientRect();
+       if(!(a.height>0&&b.height>0)) return 'SKIP: staging: the claim bar or the list has no size here';
+       gap=b.top-a.bottom;
+       if(!(gap>=5)) bad.push('the contract list starts '+gap.toFixed(1)+' px below the CLAIM ALL bar (flush on it)');
+       if(cd){ c=cd.getBoundingClientRect(); if(c.height>0&&!(c.top-a.bottom>=5)) bad.push('the detail card starts '+(c.top-a.bottom).toFixed(1)+' px below the CLAIM ALL bar'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __hubEnter(); }catch(_h){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.34',what:'YOUR STATS names the usual killer the way the player knows it, in capitals: deaths logged to a raider read PILLAGER and deaths to the warden read WARDEN, never the lower case name the run log keeps',
    run:function(){
      if(typeof renderStatCards!=='function'||typeof P!=='object'||!P) return 'SKIP: no stat cards here';

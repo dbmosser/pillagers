@@ -1090,7 +1090,9 @@
   <div class="invtabs" id="optabs" style="padding:0 0 10px 0"></div>
   <div class="tpane" id="opane_con" style="display:flex;flex-direction:column;flex:1;min-height:0">
     <div class="msub">Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.</div>
-    <button class="deploy ghost" id="conclaimall" style="margin:8px 0 0;padding:8px 18px;width:100%">CLAIM ALL COMPLETED</button>
+    <!-- v21.35, from the 4K visual pass of 2026-10-09 (W-C3): the CLAIM ALL bar sat flush on the contract list and the detail card, its
+         rounded bottom edge on the list's top line with no gap, while the REWARDS tab keeps 8px under its own CLAIM ALL. It keeps 10px now. -->
+    <button class="deploy ghost" id="conclaimall" style="margin:8px 0 10px;padding:8px 18px;width:100%">CLAIM ALL COMPLETED</button>
     <div class="vend">
       <div class="plist" id="contracts" style="flex:1.5;min-height:220px;overflow-y:auto;border:1px solid var(--steel-hi);border-radius:3px"></div>
       <div class="vdet" id="condetail"></div>
@@ -1668,7 +1670,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.34';
+var VER='21.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34262,7 +34264,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.34: YOUR STATS now names who usually kills you in capitals and by its real name, such as PILLAGER or WARDEN. Check 21.34 fails on v21.33',
+  now:'v21.35: On the Mainframe CONTRACTS tab the CLAIM ALL bar no longer sits flush on the contract list. Check 21.35 fails on v21.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

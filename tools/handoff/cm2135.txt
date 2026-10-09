@@ -1,0 +1,7 @@
+v21.35: claim all sits clear of the contracts
+
+On the Mainframe CONTRACTS tab the CLAIM ALL bar no longer sits flush on the contract list.
+
+Check 21.35. Fails on v21.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
