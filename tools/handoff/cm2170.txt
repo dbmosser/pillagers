@@ -1,0 +1,7 @@
+v21.70: your hire leaves dropped items alone
+
+Your hire no longer picks up items you or your teammate drop.
+
+Check 21.70. Fails on v21.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

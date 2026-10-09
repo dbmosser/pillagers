@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.69';
+var VER='21.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20341,7 +20341,12 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
               // box inside a room whose door is still shut is skipped now (shutRoomAt, beside navReachable); once the key
               // opens the room its boxes are picked as before, and a room never shuts again. No text, number or seeded
               // draw moved.
-              if(_CT.opened||_CT.mine||(_CT.prog||0)>0||shutRoomAt(G.map,_CT.x,_CT.y)) continue;
+              // v21.70, from the whole-game bug hunt of 2026-10-08 (K2): AND HE LEAVES A PILE YOU DROPPED WHERE IT IS. A dropped item
+              // lands a few steps from your feet, well inside his 160 reach while he follows you, so he walked over, knelt and took it
+              // into a pack nobody can search: a Medkit dropped for a teammate (the co-op trade since v18.27), or anything dropped to
+              // free a slot. A pile you or the party dropped (dropped, set by dropItem and netPileTake) is skipped now; every other
+              // box is picked as before. Nothing here draws from the seeded stream.
+              if(_CT.opened||_CT.mine||_CT.dropped||(_CT.prog||0)>0||shutRoomAt(G.map,_CT.x,_CT.y)) continue;
               if(dist(e,_CT)<160&&dist(p,_CT)<420){ e.mgoal=_CT; e.mlootT=0; break; }
             }
           }
@@ -20438,7 +20443,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
       if(!e.goal||e.goal.opened){
         e.goal=null; var bd=1e9;
         for(var c4=0;c4<G.containers.length;c4++){
-          var ct=G.containers[c4]; if(ct.opened) continue;
+          var ct=G.containers[c4]; if(ct.opened) continue; if(e.merc&&ct.dropped) continue;   // v21.70 (K2): your hire on LOOT leaves a dropped pile alone too; pillagers still take one
           if(e.skips&&e.skips.indexOf(ct)>=0) continue;
           var dd=dist(e,ct); if(dd<bd){ bd=dd; e.goal=ct; }
         }
@@ -34405,7 +34410,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.69: In co-op, the raid no longer freezes a moment after the host leaves. Check 21.69 fails on v21.68',
+  now:'v21.70: Your hire no longer picks up items you or your teammate drop. Check 21.70 fails on v21.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,5 @@
+## v21.70 - YOUR HIRE LEAVES DROPPED ITEMS ALONE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A hire on FOLLOW, the default order, took any item you dropped. It lands a few steps from your feet, so he walked over, knelt for two seconds and put it in his pack, which nobody can search. In co-op that ate the Medkit or gun you dropped for your teammate, and solo it ate anything you dropped to free a slot. He now leaves a dropped pile alone on FOLLOW and on LOOT and still takes every other box. Pillagers can still take a pile.
+
+MEASURED. Check 21.70 passes, and fails on v21.69.

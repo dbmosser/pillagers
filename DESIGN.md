@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.70 - YOUR HIRE LEAVES DROPPED ITEMS ALONE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A hire on FOLLOW, the default order, took any item you dropped. It lands a few steps from your feet, so he walked over, knelt for two seconds and put it in his pack, which nobody can search. In co-op that ate the Medkit or gun you dropped for your teammate, and solo it ate anything you dropped to free a slot. He now leaves a dropped pile alone on FOLLOW and on LOOT and still takes every other box. Pillagers can still take a pile.
+
+MEASURED. Check 21.70 passes, and fails on v21.69.
 ## v21.69 - THE RAID NO LONGER FREEZES WHEN THE HOST LEAVES
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when the host window closed, lost its link or ended the party, the other player takes the raid over. But a pillager the host had last shown crouched at a box was, in that window, searching himself: that is how the crouch is drawn there. After the takeover he kept searching himself, and about two seconds later the game hit an error on every frame, so the raid picture froze and the remaining player could not play on. At the takeover every pillager now lets go of that stand-in and picks a real box to search.
