@@ -1,0 +1,5 @@
+## v21.31 - THE LOADOUT COUNTS LINE UP WITH THE SLOTS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the stash: on the right of the LOADOUT column, the counts beside LOADOUT, BACKPACK and TACTICAL BELT (0c going up, 0 PACKED, 0 ON KEYS) stopped well short of the right edge of the backpack slots and belt keys under them, while the names on the left start exactly where the slots start. The counts now end where the slots end, so both sides of the column line up.
+
+MEASURED. Check 21.31 passes, and fails on v21.30.

@@ -1,0 +1,7 @@
+v21.31: the loadout counts line up with the slots
+
+On the stash screen the backpack and belt counts line up with the right edge of the slots.
+
+Check 21.31. Fails on v21.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

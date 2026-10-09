@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.31 - THE LOADOUT COUNTS LINE UP WITH THE SLOTS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the stash: on the right of the LOADOUT column, the counts beside LOADOUT, BACKPACK and TACTICAL BELT (0c going up, 0 PACKED, 0 ON KEYS) stopped well short of the right edge of the backpack slots and belt keys under them, while the names on the left start exactly where the slots start. The counts now end where the slots end, so both sides of the column line up.
+
+MEASURED. Check 21.31 passes, and fails on v21.30.
 ## v21.30 - THE KEY LINE STAYS OUT OF A WINDOW
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K pictures of the shop and Fashion. Tonight the floor belt stopped showing through the bottom of a station window, but the key line that sits above the belt then dropped to the very bottom of the screen, so WASD WALK, SHIFT JOG and E USE STATION showed in the strip under the window, cut through by its frame line. The key line is now hidden while a window is open, like the floor heading, and comes back when the window closes.

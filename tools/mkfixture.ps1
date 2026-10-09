@@ -5723,6 +5723,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.31',what:'on the stash screen the counts beside LOADOUT, BACKPACK and TACTICAL BELT end at the right edge of the backpack slots, as the names start at their left edge',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station&&window.__wnseen)) return 'SKIP: this fixture cannot open the stash';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], hub=document.getElementById('hub'), col, kg, i, r, lo=1e9, hi=-1e9, cr, sc, el, er, n=0,
+         ids=['kitval','kitn','quickn'], nm=['the LOADOUT value','the BACKPACK count','the TACTICAL BELT count'];
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('term','KeyE');
+       col=document.getElementById('kitcol'); kg=document.getElementById('kitgrid');
+       if(!col||!kg||!(col.getBoundingClientRect().width>0)) return 'SKIP: the stash did not open';
+       for(i=0;i<kg.children.length;i++){ r=kg.children[i].getBoundingClientRect(); if(r.width>0&&r.height>0){ if(r.left<lo) lo=r.left; if(r.right>hi) hi=r.right; } }
+       if(!(hi>lo)) return 'SKIP: the backpack drew no slots here';
+       cr=col.getBoundingClientRect(); sc=kg.scrollHeight>kg.clientHeight+2;
+       for(i=0;i<ids.length;i++){
+         el=document.getElementById(ids[i]); el=el?el.parentNode:null;
+         if(!el){ bad.push('no '+nm[i]+' on the screen'); continue; }
+         er=el.getBoundingClientRect(); if(!(er.width>0)) continue;
+         n++;
+         if(!sc){ if(Math.abs(er.right-hi)>2) bad.push(nm[i]+' ends '+Math.round(hi-er.right)+' px short of the right edge of the backpack slots'); }
+         else if(Math.abs((cr.right-er.right)-(lo-cr.left))>3) bad.push(nm[i]+' ends '+Math.round(cr.right-er.right)+' px in from the right of the column while the slots start '+Math.round(lo-cr.left)+' px in from the left');
+       }
+       if(!n) return 'SKIP: the counts have no size here';
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(hub) hub.classList.remove('on'); }catch(_h){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.30',what:'the Undercroft key line (WASD WALK, E USE STATION) is not painted under an open station window, where it showed in the strip below the frame, and is back when the window closes',
    run:function(){
      if(!window.__hubEnter||!window.__station) return 'SKIP: this fixture cannot open a station';
