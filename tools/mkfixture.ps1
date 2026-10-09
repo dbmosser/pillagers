@@ -49936,6 +49936,10 @@ window.__vpAlive=function(){
 window.__topClear=function(){
   var oc=document.getElementById('outcome'), n=0;
   if(oc&&oc.classList.contains('on')){ oc.classList.remove('on'); n++; }
+  // 2026-10-08: a save written by a check in the other gate tab (same origin: the control run of a restore check) marks this tab
+  // stale through the storage event, and the stale card then eats ESC and Enter and stops every save, so the stash ESC check
+  // failed on two drafted builds. A test tab is never a player tab another window wrote under, so the mark is cleared here.
+  try{ if(SAVE_STALE){ SAVE_STALE=false; var _ss=document.getElementById('stalesave'); if(_ss&&_ss.parentNode) _ss.parentNode.removeChild(_ss); n++; } }catch(_st){}
   return n;
 };
 // And the ruler is pinned and the saved profile cleaned before the corpus runs,
