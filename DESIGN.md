@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.62 - A NEW GUN DOES NOT FINISH THE OLD RELOAD
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. If you pressed reload on the Scav Pistol and then searched a box holding a better gun, the new gun came to your hands half loaded, but the pistol reload kept running. When it finished, the new gun was filled to a full magazine and you heard Reloaded, skipping its own longer reload. Every other way of changing the gun in your hands already stopped the reload; this one does now too, so the new gun needs its own reload.
+
+MEASURED. Check 20.62 passes, and fails on v20.61.
 ## v20.61 - A CHARGE IN YOUR HAND HURTS AFTER A REVIVE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Every time you are picked up (by yourself, your hire or a teammate) you get two seconds in which nothing can hurt you. A Frag Charge cooked in that window and held too long went off in your hand and did nothing to you, while it hit everything around you for up to 140. A roll already dropped its cover when a charge went off in your hand; now every charge that goes off in your hand does, so it hurts you the same as it would at any other time.

@@ -1,0 +1,5 @@
+## v20.62 - A NEW GUN DOES NOT FINISH THE OLD RELOAD
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. If you pressed reload on the Scav Pistol and then searched a box holding a better gun, the new gun came to your hands half loaded, but the pistol reload kept running. When it finished, the new gun was filled to a full magazine and you heard Reloaded, skipping its own longer reload. Every other way of changing the gun in your hands already stopped the reload; this one does now too, so the new gun needs its own reload.
+
+MEASURED. Check 20.62 passes, and fails on v20.61.

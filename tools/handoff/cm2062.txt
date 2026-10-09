@@ -1,0 +1,7 @@
+v20.62: a new gun does not finish the old reload
+
+A better gun picked up during a reload no longer gets a free full magazine from the old reload.
+
+Check 20.62. Fails on v20.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

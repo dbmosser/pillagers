@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.61';
+var VER='20.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15321,7 +15321,11 @@ function grantLoot(ct,keys,delay0){
         var _qr=(found.qRank===undefined?1:found.qRank);
         if(_qr>(T.bestQ===undefined?-1:T.bestQ)) T.bestQ=_qr;
         var oldDmg=p.wep.dmg||0;
-        p.wep=found; p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false;   // v13.81
+        // v20.62, from the whole-game bug hunt of 2026-10-08 (H6): AND THE OLD GUN'S RELOAD STOPS. This swap left p.reloading running,
+        // and tickReload tops up whatever gun is in hand when it ends, so a better gun that came up half loaded while the Scav Pistol
+        // was reloading was filled to a full magazine 1.4 seconds later and said Reloaded, skipping its own longer reload. Every other
+        // change of the gun in hand (bagHeldGun, swapGuns, equipFromBag) already clears it.
+        p.wep=found; p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0;   // v13.81
         G.tel.weapon=p.wep.name;
         if(!G.sim){
           var cmp=oldDmg>0?Math.round((found.dmg*(found.pellets||1)/Math.max(1,oldDmg*(1))-1)*100):0;
@@ -33831,7 +33835,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.61: A frag charge held too long in your hand now hurts you even just after you are picked up. Check 20.61 fails on v20.60',
+  now:'v20.62: A better gun picked up during a reload no longer gets a free full magazine from the old reload. Check 20.62 fails on v20.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
