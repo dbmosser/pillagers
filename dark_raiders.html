@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.62';
+var VER='20.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16231,6 +16231,14 @@ function raiderUseKit(e,dt){
   // cost balances itself: what he uses is value that never reaches the settle,
   // and keeping him alive is worth more than ten percent of a bandage.
   if(CFG.raiderKit===0||!e||e.downed||e.finished) return;
+  // v20.63, from the whole-game bug hunt of 2026-10-08 (H12): HIS THROW AND SMOKE CLOCKS RUN WITH THE RAID CLOCK. They only counted
+  // down inside raiderThrow, which runs on a chance to fire (about one call a third of a second while he has a target in sight),
+  // and one frame of time came off per call: the 20 seconds after a charge took about six minutes of firing at 60 frames a second
+  // and longer than a whole raid at 144, so a man carrying three charges threw one, and a man who smoked at 45 percent never smoked
+  // again when he broke and ran (the flee smoke only reads the clock). updateEnts runs this once a frame for every pillager, so 20
+  // seconds is 20 seconds at any frame rate. No seeded draw is made here.
+  if(e.thrT>0) e.thrT-=dt;
+  if(e.smkT>0) e.smkT-=dt;
   var i,it;
   // ---- EQUIP. A better gun in the bag belongs in his hands, same tier test the
   // player's autoEquip uses. He does not carry two, so the old one is dropped
@@ -16301,8 +16309,7 @@ function raiderUseKit(e,dt){
 // blast and near enough that it lands.
 function raiderThrow(e,foe,fd,dt){
   if(CFG.raiderKit===0||!e||!foe||e.downed) return false;
-  e.thrT=(e.thrT||0)-dt;
-  if(e.thrT>0) return false;
+  if(e.thrT>0) return false;   // v20.63 (H12): the clock itself runs in raiderUseKit, once a frame
 // smoke first: a hurt man breaks sight before he trades grenades.
   if(e.hp<(e.maxhp||100)*0.45&&(e.smkT===undefined||e.smkT<=0)){
     e.smkT=14;
@@ -16310,7 +16317,7 @@ function raiderThrow(e,foe,fd,dt){
     if(!G.sim) sfx('clank',e.x,e.y);
     return true;
   }
-  if(e.smkT!==undefined) e.smkT-=dt;
+  // v20.63 (H12): the smoke clock runs in raiderUseKit, once a frame
   // v12.20: the near edge of the band follows the blast radius (it was 180
   // against a 150 blast; at 190 he stood in his own charge), plus the scatter
   // of the aim point below and his own body.
@@ -33835,7 +33842,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.62: A better gun picked up during a reload no longer gets a free full magazine from the old reload. Check 20.62 fails on v20.61',
+  now:'v20.63: Pillagers with spare charges or smoke now use them again in a long fight, at most one charge every 20 seconds. Check 20.63 fails on v20.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

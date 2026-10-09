@@ -1,0 +1,7 @@
+v20.63: pillagers throw again in a long fight
+
+Pillagers with spare charges or smoke now use them again in a long fight, at most one charge every 20 seconds.
+
+Check 20.63. Fails on v20.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
