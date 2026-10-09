@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.98 - THE BAR LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K bar screenshot. At THE LAST POUR the small line under each drink (under Liquor and under Blotter) began a step to the right of the drink name above it, so each row had two left edges. The line now starts right under the name. The words are unchanged.
+
+MEASURED. Check 20.98 passes, and fails on v20.97.
 ## v20.97 - THE RACKS PAGE LINES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K RACKS screenshot. The sentence at the top of the page started at its left edge, the row of ten rack boxes and the BUILD A RACK, FOLD and SLOT buttons started a step to the right of it, and the small lines under each button a second step further in, so the page looked like three ragged columns. Everything on the page now starts on the same left edge.

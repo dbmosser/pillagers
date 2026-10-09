@@ -1,0 +1,7 @@
+v20.98: the bar lines up
+
+At the bar, the line under each drink now starts right under its name.
+
+Check 20.98. Fails on v20.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
