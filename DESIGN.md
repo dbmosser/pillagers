@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.69 - ESC CLOSES THE STASH FROM THE SEARCH BOX
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With the cursor in the stash search box, ESC cleared the words as promised, but the next ESC did nothing, and kept doing nothing for as long as the cursor stayed in the box. With the box empty, the first ESC did nothing either, and TAB only moved the cursor. The keys on the floor ignore a key typed into a box, and the box only answered when it had words to clear. Now an empty box hands ESC and TAB back: the cursor leaves the box and the stash closes, as it does from anywhere else.
+
+MEASURED. Check 20.69 passes, and fails on v20.68.
 ## v20.68 - THE SHOP SAYS HOW MANY YOU BOUGHT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At the shop you can raise the amount with + and buy several at once. Five Bandages took $3,300 and all five arrived, but the message said Bought Bandage for $660, because each unit is bought one at a time and each said its own line over the last. The shop now says the whole order once: how many, and what they cost together.

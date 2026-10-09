@@ -5722,6 +5722,39 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.69',what:'ESC or TAB in the stash search box clears the words first and then closes the stash, and with the box empty the first press closes it',
+   run:function(){
+     var hub=document.getElementById('hub'), bad=[], sq=null, oq=(typeof STASH_Q==='string')?STASH_Q:'', hubWas, pb;
+     if(!hub||typeof renderHub!=='function'||typeof backOut!=='function'||typeof stashFilterApply!=='function') return 'SKIP: no stash screen here';
+     if(document.querySelector('.modal.on')) return 'SKIP: a window is open over the page';
+     pb=document.getElementById('pausebox'); if(pb&&pb.classList.contains('on')) return 'SKIP: the pause box is up';
+     hubWas=hub.classList.contains('on');
+     function key(el,c){ var e=new KeyboardEvent('keydown',{code:c,key:c,bubbles:true,cancelable:true}); el.dispatchEvent(e); return e; }
+     function open(){ renderHub(); hub.classList.add('on'); var s=document.getElementById('stashsearch'); if(s){ try{ s.focus(); }catch(_f){} } return s; }
+     try{
+       __topClear(); __cleanProfile();
+       sq=open(); if(!sq) return 'SKIP: no stash search box';
+       sq.value='zqxh31'; STASH_Q='zqxh31'; stashFilterApply();
+       key(sq,'Escape');
+       if(sq.value!==''||STASH_Q!=='') bad.push('ESC did not clear the search words');
+       if(!hub.classList.contains('on')) bad.push('ESC with words in the box closed the stash before clearing them');
+       else { key(sq,'Escape'); if(hub.classList.contains('on')) bad.push('a second ESC, with the words cleared, left the stash open'); }
+       sq=open(); if(!sq) return 'SKIP: the search box did not come back';
+       sq.value=''; STASH_Q='';
+       key(sq,'Escape');
+       if(hub.classList.contains('on')) bad.push('ESC in an empty search box left the stash open');
+       sq=open(); if(!sq) return 'SKIP: the search box did not come back';
+       sq.value=''; STASH_Q='';
+       key(sq,'Tab');
+       if(hub.classList.contains('on')) bad.push('TAB in an empty search box left the stash open');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var s2=document.getElementById('stashsearch'); if(s2) s2.blur(); }catch(_b){}
+       try{ STASH_Q=oq; stashFilterApply(); }catch(_q){}
+       try{ if(hubWas){ renderHub(); hub.classList.add('on'); } else hub.classList.remove('on'); }catch(_hb){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.68',what:'buying a quantity at the shop says the whole order once: five of one item bought together read 5x and the price of all five, and the wallet and the stash agree',
    run:function(){
      if(typeof renderShop!=='function'||typeof SHOP==='undefined'||!document.getElementById('shopdetail')||!document.getElementById('shop')||!window.__P) return 'SKIP: no shop detail in this build';

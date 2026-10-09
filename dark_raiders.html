@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.68';
+var VER='20.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33856,7 +33856,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.68: Buying several of one item at the shop now says how many you bought and what all of them cost. Check 20.68 fails on v20.67',
+  now:'v20.69: ESC or TAB in the stash search box clears the words first, then closes the stash. Check 20.69 fails on v20.68',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -35587,7 +35587,12 @@ try{ renderFreeKit(); }catch(_fk){}
       var sq=document.createElement('input'); sq.id='stashsearch'; sq.type='text'; sq.placeholder='search the stash'; sq.value=STASH_Q;
       sq.style.cssText='flex:1;min-width:0;font-size:13px;padding:4px 8px';
       sq.oninput=function(){ STASH_Q=sq.value; stashFilterApply(); };
-      sq.onkeydown=function(ev){ if((ev.code==='Escape'||ev.code==='Tab')&&sq.value){ sq.value=''; STASH_Q=''; stashFilterApply(); ev.preventDefault(); ev.stopPropagation(); } };
+      // v20.69, from the whole-game bug hunt of 2026-10-08 (H31): AN EMPTY SEARCH BOX HANDS ESC AND TAB BACK. The floor keys skip a
+      // key typed into a box, so once the words were cleared (or the box was empty to begin with) ESC did nothing for as long as the
+      // cursor stayed in it, and TAB only moved the cursor on. With nothing left to clear, the key now leaves the box and backs out
+      // of the front window, the stash, as it does everywhere else on the floor. A held key never closes it.
+      sq.onkeydown=function(ev){ if((ev.code==='Escape'||ev.code==='Tab')&&sq.value){ sq.value=''; STASH_Q=''; stashFilterApply(); ev.preventDefault(); ev.stopPropagation(); }
+        else if((ev.code==='Escape'||ev.code==='Tab')&&!ev.repeat){ ev.preventDefault(); ev.stopPropagation(); try{ sq.blur(); }catch(_sb){} backOut(); } };
       var sb=document.createElement('div'); sb.className='invtab'; sb.id='stashsort'; sb.style.fontSize='13px';
       sb.textContent='SORT: '+(STASH_SORTS[P.stashSort||'default']||'DEFAULT');
       sb.onclick=function(){ var ks=Object.keys(STASH_SORTS), i=ks.indexOf(P.stashSort||'default'); P.stashSort=ks[(i+1)%ks.length]; saveProfile(); renderHub(); };

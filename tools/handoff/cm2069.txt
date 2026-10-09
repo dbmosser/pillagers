@@ -1,0 +1,7 @@
+v20.69: esc closes the stash from the search box
+
+ESC or TAB in the stash search box clears the words first, then closes the stash.
+
+Check 20.69. Fails on v20.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

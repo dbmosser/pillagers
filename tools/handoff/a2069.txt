@@ -1,0 +1,1 @@
+| ESC CLOSES THE STASH FROM THE SEARCH BOX | v20.69 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 20.69 passes, fails on v20.68 |
