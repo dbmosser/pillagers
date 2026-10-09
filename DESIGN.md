@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.86 - ONE UNDERCROFT SONG IN TWO PLAYER PLAY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In two player play on one machine, both windows played the Undercroft music, and each picked its own song at random, so four times in five two different songs played at once, out of step, one in each speaker with split speakers on. Now only the player 1 window plays the music. When the world sound is set to player 2 only, the player 2 window plays it instead, since that is the window you can hear. With split speakers on, the song plays from both speakers, not one.
+
+MEASURED. Check 20.86 passes, and fails on v20.85.
 ## v20.85 - YOUR HIRE NO LONGER HIDES ENEMY FOOTSTEPS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Footsteps for things you cannot see play for one body at a time, the nearest one moving. A hire on FOLLOW walks a short way behind you whenever you walk, so he was always the nearest, and every step was his: a crawler or pillager walking behind a wall a few rooms off made no sound. The hire, the survivor and the Peddler are now left out, so the steps you hear are the ones that matter.

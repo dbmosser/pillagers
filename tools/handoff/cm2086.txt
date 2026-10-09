@@ -1,0 +1,7 @@
+v20.86: one undercroft song in two player play
+
+In two player play on one machine, the Undercroft plays one song, not two at once.
+
+Check 20.86. Fails on v20.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
