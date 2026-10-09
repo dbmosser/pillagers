@@ -383,7 +383,11 @@
      screen and leave 734px of empty blue underneath. */
   .vend{ display:flex; gap:24px; min-height:0; flex:0 1 auto; align-items:stretch;
     max-height:78vh; max-width:1720px; }
-  .vendgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,190px));
+  /* v20.90, from the whole-game bug hunt of 2026-10-08 (V-A3): THE TILES FILL THEIR FRAME. The columns stopped at 190, so the BUY,
+     CRAFT and HIRE grids left an empty strip almost a tile wide inside the right edge of their frame (four tiles and a gap on the 4K
+     screenshots, five and a gap at 1080p). The columns now share the whole width, never under 170, so a tile stays about the size
+     it was and one more fits on a row. */
+  .vendgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
     justify-content:start; gap:14px; padding:16px; overflow-y:auto; align-content:start;
     flex:1.5; min-width:0; border:1px solid var(--steel-hi); border-radius:3px; }
   .vcell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
@@ -1611,7 +1615,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.89';
+var VER='20.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33957,7 +33961,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.89: The shopkeeper line no longer sits on the bottom edge of the shop and Fashion panels. Check 20.89 fails on v20.88',
+  now:'v20.90: The shop, bench and hire tiles now fill their frame, with no empty strip on the right. Check 20.90 fails on v20.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

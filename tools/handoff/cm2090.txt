@@ -1,0 +1,7 @@
+v20.90: the shop tiles fill their frame
+
+The shop, bench and hire tiles now fill their frame, with no empty strip on the right.
+
+Check 20.90. Fails on v20.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
