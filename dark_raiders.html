@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.70';
+var VER='21.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12490,7 +12490,12 @@ window.addEventListener('mouseup',function(e){
     // GIVE, v3.76: the other half of the v3.75 trade. Drag an item out of your
     // open bag and release it over your merc and it is his, into the same live
     // bag E searches. His name confirms it, so a miss reads as a miss.
-    if(!dropped&&G&&!G.over&&d&&d.key){
+    // v21.71, from the whole-game bug hunt of 2026-10-08 (K3): NOT ON A LINKED WINDOW. Up top in co-op the hire on player 2 window
+    // is only his copy of the host hire, which the host runs, so a gift put the item into a bag nobody else ever sees: it left the
+    // backpack, but it was never in the real hire pack, his cut or his body, and it was gone from both saves. The pick-up of a
+    // downed pillager and the Survivor hand-over have the same guard (v17.28). There the release now falls through to the drop
+    // below, so the item becomes a pile the host makes and the whole party can search.
+    if(!dropped&&G&&!G.over&&d&&d.key&&!netEntsPeer()){
       for(var _gm=0;_gm<G.ents.length;_gm++){
         var _gme=G.ents[_gm];
         if(_gme.kind!=='raider'||!_gme.merc||_gme.downed) continue;
@@ -34410,7 +34415,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.70: Your hire no longer picks up items you or your teammate drop. Check 21.70 fails on v21.69',
+  now:'v21.71: In co-op, an item player 2 lets go over the host hire drops at his feet instead of vanishing. Check 21.71 fails on v21.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

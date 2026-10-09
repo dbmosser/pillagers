@@ -1,0 +1,7 @@
+v21.71: no gifts into a copy of the host hire
+
+In co-op, an item player 2 lets go over the host hire drops at his feet instead of vanishing.
+
+Check 21.71. Fails on v21.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

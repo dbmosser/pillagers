@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.71 - NO GIFTS INTO A COPY OF THE HOST HIRE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, player 2 could drag an item out of his backpack and let go over the host hire. His window said the item went to the hire and took it out of his backpack, but the hire on his screen is only a copy of the one the host runs, so the real hire never got it: not in his pack, not in his cut, not on his body if he died. The item was gone from both saves. Letting go over the host hire on player 2 window now drops the item at his feet instead, where the whole party can search it.
+
+MEASURED. Check 21.71 passes, and fails on v21.70.
 ## v21.70 - YOUR HIRE LEAVES DROPPED ITEMS ALONE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A hire on FOLLOW, the default order, took any item you dropped. It lands a few steps from your feet, so he walked over, knelt for two seconds and put it in his pack, which nobody can search. In co-op that ate the Medkit or gun you dropped for your teammate, and solo it ate anything you dropped to free a slot. He now leaves a dropped pile alone on FOLLOW and on LOOT and still takes every other box. Pillagers can still take a pile.
