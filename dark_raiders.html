@@ -1681,7 +1681,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.44';
+var VER='21.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34320,7 +34320,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.44: In co-op, an armoury gun you drop is never copied into both saves. Check 21.44 fails on v21.43',
+  now:'v21.45: The YOUR STATS heading now says how many runs it counts. Check 21.45 fails on v21.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36587,7 +36587,7 @@ P.contracts.forEach(function(c,ci){
     _cb.onclick=claimAllContracts;
   })();
   var ll=document.getElementById('loglist'); ll.innerHTML='';
-  document.getElementById('logct').textContent=P.log.length;
+  document.getElementById('logct').textContent=P.log.length+(P.log.length===1?' RUN':' RUNS');   // v21.45, from the 4K visual pass (2026-10-09): the heading read YOUR STATS 7, a number with nothing to say what it counts
   for(i=P.log.length-1;i>=0;i--) ll.appendChild(fmtRun(P.log[i]));
   if(!P.log.length){
     var em2=document.createElement('div'); em2.className='hint';

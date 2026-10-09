@@ -5723,6 +5723,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.45',what:'the YOUR STATS heading says what its number counts: the runs logged',
+   run:function(){
+     if(typeof renderHub!=='function') return 'SKIP: no stats here';
+     var el=document.getElementById('logct'), n;
+     if(!el) return 'SKIP: no run count on the stats heading';
+     try{ renderHub(); }catch(e){ return 'threw: '+(e&&e.message||e); }
+     n=(P.log||[]).length;
+     if(String(el.textContent).indexOf(String(n))!==0) return 'SKIP: the heading count is not the run count ('+el.textContent+')';
+     if(!/RUNS?$/.test(String(el.textContent))) return 'the stats heading shows '+JSON.stringify(el.textContent)+' with nothing saying it counts runs';
+     return null; }},
   {v:'21.44',what:'an armoury gun player 2 dropped is never in two saves: after his abandon put it back and his card closed, the host taking it takes it out of his armoury, and a closed window never brings it back',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof dropItem!=='function'||typeof netGunGoneTake!=='function') return 'SKIP: no raid or party here';

@@ -1,0 +1,12 @@
+{
+    "title":  "YOUR STATS SAYS WHAT ITS NUMBER COUNTS",
+    "why":  "Seen on the 4K screenshot of the Mainframe (2026-10-09): the heading read YOUR STATS 7, a bare number. It is the runs logged, which the cards under it count from, so it now says 7 RUNS. The heading words are untouched.",
+    "now":  "The YOUR STATS heading now says how many runs it counts.",
+    "edits":  [
+                  {
+                      "anchor":  "  document.getElementById(\u0027logct\u0027).textContent=P.log.length;",
+                      "replacement":  "  document.getElementById(\u0027logct\u0027).textContent=P.log.length+(P.log.length===1?\u0027 RUN\u0027:\u0027 RUNS\u0027);   // v16.xx, from the 4K visual pass (2026-10-09): the heading read YOUR STATS 7, a number with nothing to say what it counts"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the YOUR STATS heading says what its number counts: the runs logged\u0027,\n   run:function(){\n     if(typeof renderHub!==\u0027function\u0027) return \u0027SKIP: no stats here\u0027;\n     var el=document.getElementById(\u0027logct\u0027), n;\n     if(!el) return \u0027SKIP: no run count on the stats heading\u0027;\n     try{ renderHub(); }catch(e){ return \u0027threw: \u0027+(e\u0026\u0026e.message||e); }\n     n=(P.log||[]).length;\n     if(String(el.textContent).indexOf(String(n))!==0) return \u0027SKIP: the heading count is not the run count (\u0027+el.textContent+\u0027)\u0027;\n     if(!/RUNS?$/.test(String(el.textContent))) return \u0027the stats heading shows \u0027+JSON.stringify(el.textContent)+\u0027 with nothing saying it counts runs\u0027;\n     return null; }},"
+}

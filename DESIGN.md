@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.45 - YOUR STATS SAYS WHAT ITS NUMBER COUNTS
+
+Co-op hunt while he was away. Seen on the 4K screenshot of the Mainframe (2026-10-09): the heading read YOUR STATS 7, a bare number. It is the runs logged, which the cards under it count from, so it now says 7 RUNS. The heading words are untouched.
+
+MEASURED. Check 21.45 passes, and fails on v21.44.
 ## v21.44 - A DROPPED ARMOURY GUN IS NEVER IN TWO SAVES
 
 Co-op hunt while he was away. Found by the second review of the night builds (2026-10-09). The v21.21 fix kept a dropped armoury gun on your lists so an abandon brings it home, but then if you abandoned and the other player took the gun afterwards, it ended up in both saves, and a reload after a closed window did the same. Now the drop is written down: an abandon still brings the gun home, a closed window does not, and when the other player takes it the game takes it back out of your armoury if the abandon had put it there.

@@ -1,0 +1,7 @@
+v21.45: your stats says what its number counts
+
+The YOUR STATS heading now says how many runs it counts.
+
+Check 21.45. Fails on v21.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
