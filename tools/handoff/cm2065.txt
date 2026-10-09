@@ -1,0 +1,7 @@
+v20.65: a listener hears player 2 run
+
+In co-op, a hunting Listener now hears player 2 by his own sprint, not the sprint of the host.
+
+Check 20.65. Fails on v20.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.65 - A LISTENER HEARS PLAYER 2 RUN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A Listener that is hunting you keeps tracking you while you move, and it hears a sprinting player from further off than a walking one. In co-op, when it was hunting player 2, it judged that by whether the host was sprinting. So player 2 could sprint away and slip it at a range where the host never could, and player 2 walking quietly was still tracked from the sprinting distance whenever the host happened to run. It now listens to the sprint of the player it is hunting. Solo is unchanged.
+
+MEASURED. Check 20.65 passes, and fails on v20.64.
 ## v20.64 - A CRIER CANNOT TURN BACK A MAN WHO IS LEAVING
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A pillager already running for the ring with a full pack turned around when a Crier nearby finished its alarm, walked back to the marked spot, and looted one more box before leaving again. Every other call in the game lets a man who is leaving keep leaving. He still hears the alarm, but he keeps running now. The alarm also no longer gives your hire orders, the same as a pillager shouting for his crew never did.
