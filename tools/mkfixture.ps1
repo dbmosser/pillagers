@@ -5722,6 +5722,35 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.85',what:'a hire on FOLLOW never takes the enemy footsteps: with the hire walking 150 away and a crawler walking 400 away the step heard is the crawler, and with only the hire walking no step plays',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof window.__enemyAudioReal!=='function'||typeof STEP_T==='undefined'||typeof ac!=='function') return 'SKIP: the real enemy step tick was not kept aside by this fixture';
+     var EA=window.__enemyAudioReal, bad=[], calls=[], oBlip=blip, oAc=ac, g0=null, g, p, hire, cr;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); p=g&&g.player; if(!g||!p||g.over||g.sim) return 'SKIP: no live raid';
+       g0=g; g.ents.length=0; p.iv=99;
+       hire={kind:'raider',merc:1,friendly:1,hostile:false,grudge:false,name:'ZQXHIRE',x:p.x+150,y:p.y,state:'follow',moving:true,hp:90,maxhp:90,alert:0};
+       cr={kind:'crawler',name:'ZQXCRAWL',x:p.x-400,y:p.y,state:'patrol',moving:true,hp:30,maxhp:30,alert:0};
+       g.ents.push(hire); g.ents.push(cr);
+       ac=function(){ return {currentTime:1,state:'running'}; };
+       blip=function(t,d){ calls.push({t:String(t),d:+d}); };
+       STEP_T=0; calls.length=0; EA(0.016);
+       if(calls.length!==1) bad.push('one step tick played '+calls.length+' steps, not 1');
+       else if(!(Math.abs(calls[0].d-400*1.35)<1)) bad.push('the step heard came from '+Math.round(calls[0].d/1.35)+' away, the hire walking behind you, not the crawler 400 away');
+       cr.moving=false; STEP_T=0; calls.length=0; EA(0.016);
+       if(calls.length) bad.push('with only the hire walking a footstep still played, from '+Math.round(calls[0].d/1.35)+' away');
+       // CONTROL: the same man, walking in the same spot but not on your side, is heard.
+       hire.merc=0; hire.friendly=0; hire.hostile=true; STEP_T=0; calls.length=0; EA(0.016);
+       if(!(calls.length===1&&Math.abs(calls[0].d-150*1.35)<1)) bad.push('control: a hostile pillager walking 150 away made no step ('+JSON.stringify(calls)+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       blip=oBlip; ac=oAc; STEP_T=0;
+       try{ if(g0){ g0.ents.length=0; if(g0.player){ g0.player.iv=0; g0.player.downed=false; } if(!g0.over) __endRaid('abandon'); } }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.84',what:'the hot ground starts away from the drop point: a disc rolled onto the start is chosen again at least 920 away and inside the map, a disc rolled far away stays where it fell, and the boxes rolled after it do not move',
    run:function(){
      if(typeof buildRaid!=='function'||typeof freeSpot!=='function'||typeof FIXED_MAPS==='undefined'||typeof RNGS==='undefined') return 'SKIP: no raid builder here';

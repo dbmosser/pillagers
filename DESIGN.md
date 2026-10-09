@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.85 - YOUR HIRE NO LONGER HIDES ENEMY FOOTSTEPS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Footsteps for things you cannot see play for one body at a time, the nearest one moving. A hire on FOLLOW walks a short way behind you whenever you walk, so he was always the nearest, and every step was his: a crawler or pillager walking behind a wall a few rooms off made no sound. The hire, the survivor and the Peddler are now left out, so the steps you hear are the ones that matter.
+
+MEASURED. Check 20.85 passes, and fails on v20.84.
 ## v20.84 - THE HOT GROUND STARTS AWAY FROM YOU
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The hot ground is meant to start away from where you land, so going there is a choice. Nothing checked that, and about one raid in eleven on COLD STORAGE dropped you inside the disc, so every box paid the bonus from the first second and there was nothing to decide. A disc that starts too close to the drop point is now placed again, at least 300 beyond its edge, and the rest of the map comes out exactly as before.

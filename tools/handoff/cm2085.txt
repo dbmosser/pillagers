@@ -1,0 +1,7 @@
+v20.85: your hire no longer hides enemy footsteps
+
+With a hire following you, you can hear enemy footsteps again.
+
+Check 20.85. Fails on v20.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
