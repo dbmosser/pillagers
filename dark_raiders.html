@@ -1681,7 +1681,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.40';
+var VER='21.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31517,7 +31517,12 @@ function drawMapOverlayRaw(){
     var cqx=ox+CM.x*sc,cqy=oy+CM.y*sc;
     ctx.strokeStyle='#ff5040'; ctx.lineWidth=2*_MZ;
     ctx.beginPath();
-    ctx.moveTo(cqx,cqy-9); ctx.lineTo(cqx+9,cqy); ctx.lineTo(cqx,cqy+9); ctx.lineTo(cqx-9,cqy); ctx.closePath();
+    // v21.41, from the 4K visual pass of 2026-10-09 (W-D4): THE MAP MARKERS GROW WITH THE SCREEN. The words on the sector map, the
+    // cache rings and his own marker have grown with the screen since v19.63, v19.65 and v10.92, but this diamond, the keyhole, the
+    // intel key and elite dots, the seal, the strongbox, a revealed cache, the survivor, the Peddler, the dot in an open ring and the
+    // waypoint kept their 1080p size in pixels. At 4K the Peddler was a speck under a big PEDDLER and the encampment a small diamond
+    // under a big ENCAMPMENT. They, and the gaps to their names, grow by the map zoom (_MZ) now. At 1080p _MZ is 1 and nothing moves.
+    ctx.moveTo(cqx,cqy-9*_MZ); ctx.lineTo(cqx+9*_MZ,cqy); ctx.lineTo(cqx,cqy+9*_MZ); ctx.lineTo(cqx-9*_MZ,cqy); ctx.closePath();
     ctx.stroke();
     mapLabel('ENCAMPMENT',cqx,cqy-14*_MZ,'#ff8a76');
   }
@@ -31532,10 +31537,10 @@ function drawMapOverlayRaw(){
     ctx.strokeStyle=LKM.open?'rgba(127,196,160,.8)':'#ffc04a'; ctx.lineWidth=2*_MZ;
     ctx.strokeRect(lqx,lqy,lqw,lqh);
     ctx.lineWidth=1;
-    var kcx=lqx+lqw/2,kcy=lqy+lqh/2-3;
+    var kcx=lqx+lqw/2,kcy=lqy+lqh/2-3*_MZ;   // v21.41 (W-D4): the keyhole at the map zoom
     ctx.fillStyle=LKM.open?'rgba(127,196,160,.9)':'#ffc04a';
     ctx.beginPath(); ctx.arc(kcx,kcy,3.2*_MZ,0,6.2832); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(kcx-2.2,kcy+7.5); ctx.lineTo(kcx+2.2,kcy+7.5); ctx.lineTo(kcx,kcy+1); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(kcx-2.2*_MZ,kcy+7.5*_MZ); ctx.lineTo(kcx+2.2*_MZ,kcy+7.5*_MZ); ctx.lineTo(kcx,kcy+_MZ); ctx.closePath(); ctx.fill();
     mapLabel((LKM.name||'LOCKED ROOM')+(LKM.open?'  ·  OPEN':'  ·  LOCKED'),lqx+lqw/2,lqy-6*_MZ,LKM.open?'#7fc4a0':'#ffc04a');
   }
   // INTEL, v3.81: a burned Data Core lights the map for one raid. Gold key
@@ -31557,15 +31562,15 @@ function drawMapOverlayRaw(){
       if(IKC.opened||!(IKC.loot||[]).some(function(_k){ return String(_k).indexOf('key_')===0; })) continue;
       var ikx=ox+IKC.x*sc,iky=oy+IKC.y*sc;
       ctx.fillStyle='#ffc04a';
-      ctx.beginPath(); ctx.arc(ikx,iky-3,2.6,0,6.2832); ctx.fill();
-      ctx.fillRect(ikx-1,iky-2,2,6);
+      ctx.beginPath(); ctx.arc(ikx,iky-3*_MZ,2.6*_MZ,0,6.2832); ctx.fill();   // v21.41 (W-D4): the intel key at the map zoom
+      ctx.fillRect(ikx-_MZ,iky-2*_MZ,2*_MZ,6*_MZ);
       mapLabel('KEY',ikx,iky-9*_MZ,'#ffc04a');
     }
     for(i=0;i<G.ents.length;i++){
       var IEE=G.ents[i];
       if(!IEE.elite||IEE.downed) continue;
       ctx.fillStyle='#d08ce8';
-      ctx.beginPath(); ctx.arc(ox+IEE.x*sc,oy+IEE.y*sc,3.4,0,6.2832); ctx.fill();
+      ctx.beginPath(); ctx.arc(ox+IEE.x*sc,oy+IEE.y*sc,3.4*_MZ,0,6.2832); ctx.fill();   // v21.41 (W-D4): at the map zoom
     }
     mapLabel('INTEL LIVE',ox+52*_MZ,oy+14*_MZ,'#4de3d0');
   }
@@ -31593,33 +31598,33 @@ function drawMapOverlayRaw(){
   }
   // THE SEAL, always marked. It is the reason you came back.
   if(G.seal){
-    var slx=ox+G.seal.x*sc,sly=oy+G.seal.y*sc;
+    var slx=ox+G.seal.x*sc,sly=oy+G.seal.y*sc;   // v21.41 (W-D4): the seal ring at the map zoom
     var SRm=sealHere(),needM=sealNeed(SRm.tier);
     var pctM=clamp((SRm.cut+G.seal.gained)/needM,0,1);
-    ctx.strokeStyle=G.seal.done?'#ffc04a':'#8fd0ff'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(slx,sly,12,0,6.2832); ctx.stroke();
-    ctx.strokeStyle=G.seal.done?'#ffc04a':'#4de3d0'; ctx.lineWidth=3;
-    ctx.beginPath(); ctx.arc(slx,sly,12,-1.5708,-1.5708+6.2832*pctM); ctx.stroke();
+    ctx.strokeStyle=G.seal.done?'#ffc04a':'#8fd0ff'; ctx.lineWidth=2*_MZ;
+    ctx.beginPath(); ctx.arc(slx,sly,12*_MZ,0,6.2832); ctx.stroke();
+    ctx.strokeStyle=G.seal.done?'#ffc04a':'#4de3d0'; ctx.lineWidth=3*_MZ;
+    ctx.beginPath(); ctx.arc(slx,sly,12*_MZ,-1.5708,-1.5708+6.2832*pctM); ctx.stroke();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle=G.seal.done?'#ffc04a':'#8fd0ff';
-    ctx.fillText(G.seal.done?'SEAL BROKEN':('SEAL '+Math.round(pctM*100)+'%'),slx,sly-16);
+    ctx.fillText(G.seal.done?'SEAL BROKEN':('SEAL '+Math.round(pctM*100)+'%'),slx,sly-16*_MZ);
     ctx.textAlign='left';
   }
   // THE STRONGBOX. Marked from the start: it is not a secret, it is a dare.
   for(i=0;i<G.containers.length;i++){
     var sbm=G.containers[i];
     if(!sbm.strong||sbm.opened) continue;
-    var sbx=ox+sbm.x*sc,sby=oy+sbm.y*sc;
-    ctx.strokeStyle='#ffc04a'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(sbx,sby,10,0,6.2832); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(sbx-14,sby); ctx.lineTo(sbx-10,sby);
-    ctx.moveTo(sbx+10,sby); ctx.lineTo(sbx+14,sby);
-    ctx.moveTo(sbx,sby-14); ctx.lineTo(sbx,sby-10);
-    ctx.moveTo(sbx,sby+10); ctx.lineTo(sbx,sby+14); ctx.stroke();
+    var sbx=ox+sbm.x*sc,sby=oy+sbm.y*sc;   // v21.41 (W-D4): the strongbox mark at the map zoom
+    ctx.strokeStyle='#ffc04a'; ctx.lineWidth=2*_MZ;
+    ctx.beginPath(); ctx.arc(sbx,sby,10*_MZ,0,6.2832); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sbx-14*_MZ,sby); ctx.lineTo(sbx-10*_MZ,sby);
+    ctx.moveTo(sbx+10*_MZ,sby); ctx.lineTo(sbx+14*_MZ,sby);
+    ctx.moveTo(sbx,sby-14*_MZ); ctx.lineTo(sbx,sby-10*_MZ);
+    ctx.moveTo(sbx,sby+10*_MZ); ctx.lineTo(sbx,sby+14*_MZ); ctx.stroke();
     ctx.fillStyle='#ffc04a';
-    ctx.beginPath(); ctx.arc(sbx,sby,3.6,0,6.2832); ctx.fill();
+    ctx.beginPath(); ctx.arc(sbx,sby,3.6*_MZ,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    ctx.fillText('STRONGBOX',sbx,sby-15); ctx.textAlign='left';
+    ctx.fillText('STRONGBOX',sbx,sby-15*_MZ); ctx.textAlign='left';
   }
   // YOUR BODY. The bm.mine write is unreachable (P.body is cleared on every
   // raid start and nothing recreates it), so this loop marks nothing; it stays
@@ -31641,61 +31646,61 @@ function drawMapOverlayRaw(){
   for(i=0;i<G.containers.length;i++){
     var rc=G.containers[i];
     if(!rc.revealed||rc.opened) continue;
-    var rmx=ox+rc.x*sc,rmy=oy+rc.y*sc;
-    ctx.strokeStyle='#e6b4ff'; ctx.lineWidth=1.6;
-    ctx.beginPath(); ctx.arc(rmx,rmy,8,0,6.2832); ctx.stroke();
+    var rmx=ox+rc.x*sc,rmy=oy+rc.y*sc;   // v21.41 (W-D4): at the map zoom
+    ctx.strokeStyle='#e6b4ff'; ctx.lineWidth=1.6*_MZ;
+    ctx.beginPath(); ctx.arc(rmx,rmy,8*_MZ,0,6.2832); ctx.stroke();
     ctx.fillStyle='#e6b4ff';
-    ctx.beginPath(); ctx.arc(rmx,rmy,3.4,0,6.2832); ctx.fill();
+    ctx.beginPath(); ctx.arc(rmx,rmy,3.4*_MZ,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    ctx.fillText('CACHE',rmx,rmy-12); ctx.textAlign='left';
+    ctx.fillText('CACHE',rmx,rmy-12*_MZ); ctx.textAlign='left';
   }
   // The survivor, but only once you have actually found him. He is hiding.
   for(i=0;i<G.ents.length;i++){
     var sm=G.ents[i];
     if(sm.kind!=='stray'||!sm.found) continue;
-    var smx=ox+sm.x*sc,smy=oy+sm.y*sc;
-    ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(smx,smy,6,0,6.2832); ctx.fill();
+    var smx=ox+sm.x*sc,smy=oy+sm.y*sc;   // v21.41 (W-D4): at the map zoom
+    ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(smx,smy,6*_MZ,0,6.2832); ctx.fill();
     ctx.fillStyle=sm.helped?'#5a9a6a':'#7fc4a0';
-    ctx.beginPath(); ctx.arc(smx,smy,4,0,6.2832); ctx.fill();
+    ctx.beginPath(); ctx.arc(smx,smy,4*_MZ,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    ctx.fillText(sm.helped?'SURVIVOR':'SURVIVOR (NEEDS)',smx,smy-11); ctx.textAlign='left';
+    ctx.fillText(sm.helped?'SURVIVOR':'SURVIVOR (NEEDS)',smx,smy-11*_MZ); ctx.textAlign='left';
   }
   // The Peddler is marked. Half your bag is worth walking to him for, and a
   // trade you never found is not a decision, it is a secret.
   for(i=0;i<G.ents.length;i++){
     var pdm=G.ents[i]; if(pdm.kind!=='peddler') continue;
-    var pmx=ox+pdm.x*sc,pmy=oy+pdm.y*sc;
-    ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(pmx,pmy,6.4,0,6.2832); ctx.fill();
+    var pmx=ox+pdm.x*sc,pmy=oy+pdm.y*sc;   // v21.41 (W-D4): at the map zoom
+    ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(pmx,pmy,6.4*_MZ,0,6.2832); ctx.fill();
     ctx.fillStyle=pedOpen()?'#ffc04a':'#8a5a4a';
-    ctx.beginPath(); ctx.arc(pmx,pmy,4.4,0,6.2832); ctx.fill();
+    ctx.beginPath(); ctx.arc(pmx,pmy,4.4*_MZ,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
     ctx.fillStyle=pedOpen()?'#ffc04a':'#8a5a4a';
-    ctx.fillText(pedOpen()?'PEDDLER':'PEDDLER (CLOSED)',pmx,pmy-11);
+    ctx.fillText(pedOpen()?'PEDDLER':'PEDDLER (CLOSED)',pmx,pmy-11*_MZ);
     ctx.textAlign='left';
   }
   for(i=0;i<G.zones.length;i++){
     var zz=G.zones[i],act=!!zz.open;
     ctx.strokeStyle=act?'#4de3d0':'rgba(127,146,216,.42)'; ctx.lineWidth=act?2:1;
     ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,zz.r*sc+3,0,6.2832); ctx.stroke();
-    if(act){ ctx.fillStyle='#4de3d0'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3,0,6.2832); ctx.fill(); }
+    if(act){ ctx.fillStyle='#4de3d0'; ctx.beginPath(); ctx.arc(ox+zz.x*sc,oy+zz.y*sc,3*_MZ,0,6.2832); ctx.fill(); }   // v21.41 (W-D4): at the map zoom
   }
   // THE WAYPOINT, v3.02. Drawn before the player marker so his own dot always
   // sits on top of it, and drawn as a ring plus crosshair rather than a filled
   // dot so it cannot be mistaken for an extract or for himself.
   try{ if(NET.on) netWpMapDraw(ox,oy,sc); }catch(_wm){}   // v16.46: the party's map markers on the map
   if(G.waypoint){
-    var wpx=ox+G.waypoint.x*sc, wpy=oy+G.waypoint.y*sc;
-    ctx.strokeStyle='#ffc04a'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(wpx,wpy,7,0,6.2832); ctx.stroke();
-    ctx.lineWidth=1;
+    var wpx=ox+G.waypoint.x*sc, wpy=oy+G.waypoint.y*sc;   // v21.41 (W-D4): the waypoint at the map zoom
+    ctx.strokeStyle='#ffc04a'; ctx.lineWidth=2*_MZ;
+    ctx.beginPath(); ctx.arc(wpx,wpy,7*_MZ,0,6.2832); ctx.stroke();
+    ctx.lineWidth=_MZ;
     ctx.beginPath();
-    ctx.moveTo(wpx-11,wpy); ctx.lineTo(wpx-3,wpy);
-    ctx.moveTo(wpx+3,wpy);  ctx.lineTo(wpx+11,wpy);
-    ctx.moveTo(wpx,wpy-11); ctx.lineTo(wpx,wpy-3);
-    ctx.moveTo(wpx,wpy+3);  ctx.lineTo(wpx,wpy+11);
+    ctx.moveTo(wpx-11*_MZ,wpy); ctx.lineTo(wpx-3*_MZ,wpy);
+    ctx.moveTo(wpx+3*_MZ,wpy);  ctx.lineTo(wpx+11*_MZ,wpy);
+    ctx.moveTo(wpx,wpy-11*_MZ); ctx.lineTo(wpx,wpy-3*_MZ);
+    ctx.moveTo(wpx,wpy+3*_MZ);  ctx.lineTo(wpx,wpy+11*_MZ);
     ctx.stroke();
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#ffc04a'; ctx.textAlign='center';
-    ctx.fillText('WAYPOINT',wpx,wpy-14); ctx.textAlign='left';
+    ctx.fillText('WAYPOINT',wpx,wpy-14*_MZ); ctx.textAlign='left';
   }
 // v4.31: what you have never seen is not on your map. Seen once, seen
   // forever, across runs. Painted over everything except your own marker and
@@ -34295,7 +34300,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.40: The gun card in the corner is no wider than its words and no longer touches the screen edge. Check 21.40 fails on v21.39',
+  now:'v21.41: On a 4K screen the Peddler, encampment, strongbox, seal and waypoint marks on the map are full size. Check 21.41 fails on v21.40',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

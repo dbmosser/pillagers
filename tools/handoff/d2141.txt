@@ -1,0 +1,5 @@
+## v21.41 - THE MAP MARKERS GROW AT 4K
+
+Co-op hunt while he was away. Found by the 4K visual pass of 2026-10-09 (W-D4). On the 4K sector map the names and the cache rings have been full size for a while, but many of the marks under them were still drawn at their 1080p size in pixels: the Peddler was a speck under a big PEDDLER, the encampment a small diamond under a big ENCAMPMENT, and the same for the strongbox, the seal, the waypoint, the survivor, a revealed cache, the intel keys and elites, the keyhole and the dot in an open ring. They now grow with the screen along with their names, so every mark is as easy to see at 4K as at 1080p. At 1080p nothing moves.
+
+MEASURED. Check 21.41 passes, and fails on v21.40.

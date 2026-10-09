@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.41 - THE MAP MARKERS GROW AT 4K
+
+Co-op hunt while he was away. Found by the 4K visual pass of 2026-10-09 (W-D4). On the 4K sector map the names and the cache rings have been full size for a while, but many of the marks under them were still drawn at their 1080p size in pixels: the Peddler was a speck under a big PEDDLER, the encampment a small diamond under a big ENCAMPMENT, and the same for the strongbox, the seal, the waypoint, the survivor, a revealed cache, the intel keys and elites, the keyhole and the dot in an open ring. They now grow with the screen along with their names, so every mark is as easy to see at 4K as at 1080p. At 1080p nothing moves.
+
+MEASURED. Check 21.41 passes, and fails on v21.40.
 ## v21.40 - THE GUN CARD FITS ITS WORDS
 
 Co-op hunt while he was away. Found by the 4K visual pass of 2026-10-09 (W-D2). The gun card in the bottom right corner (the gun, its rounds, the stowed weapon and the backpack key) was always drawn at a fixed large width, so with the usual short lines more than half of it was an empty dark block, and its right edge ran onto the very edge of the screen while every other panel keeps clear of it. The card is now as wide as its words need (the same width as the area you drag it by, longer only for a long gun name), and its right edge lines up with the hidden chip above it, a little in from the screen edge. The words on it have not moved.

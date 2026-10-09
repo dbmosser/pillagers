@@ -1,0 +1,7 @@
+v21.41: the map markers grow at 4k
+
+On a 4K screen the Peddler, encampment, strongbox, seal and waypoint marks on the map are full size.
+
+Check 21.41. Fails on v21.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
