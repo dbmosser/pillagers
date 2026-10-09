@@ -1,0 +1,7 @@
+v20.66: the party score shows on the run card
+
+In co-op, the run card now shows the party score with downs, revives and items for every player.
+
+Check 20.66. Fails on v20.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

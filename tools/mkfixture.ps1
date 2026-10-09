@@ -5722,6 +5722,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.66',what:'the co-op run card shows the PARTY score block with downs and revives, and the older party summary sent right after it no longer wipes it, on this window and when a teammate finishes',
+   run:function(){
+     if(typeof netScoreSend!=='function'||typeof netScoreTake!=='function'||typeof netScoreDraw!=='function'||typeof netSumTake!=='function'||typeof netSumDraw!=='function') return 'SKIP: no co-op score screen here';
+     if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET) return 'SKIP: no raid or party in this fixture';
+     var NK={}, k, sent=[], bad=[], oSend=netSend, peer={seat:1,state:'in',name:'ZQX MATE'}, seed, t;
+     for(k in NET) NK[k]=NET[k];
+     function txt(){ var e=document.getElementById('oc_party'); return e?String(e.textContent||''):''; }
+     function shown(){ var e=document.getElementById('oc_party'); return !!e&&e.style.display!=='none'; }
+     try{
+       NET.on=false; NET.role=null; NET.peers=[];
+       __topClear(); __runPrep(); __cleanProfile(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       netSend=function(p,m){ sent.push(m); return true; };
+       NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[peer]; NET.up=[]; NET.upSeed=G.seed>>>0; seed=NET.upSeed; NET.sc={}; NET.sum={};
+       NET.roster=[{seat:0,name:'ZQX HOST',host:1},{seat:1,name:'ZQX MATE'}];
+       __endRaid('extract');
+       if(!sent.some(function(m){ return m&&m.t==='sc'; })||!sent.some(function(m){ return m&&m.t==='sum'; })) return 'SKIP: staging: the ended raid did not send both party words';
+       t=txt();
+       if(!/revives/.test(t)||!/downs/.test(t)) bad.push('the run card has no PARTY score block with downs and revives ('+t.slice(0,100)+')');
+       if(!shown()) bad.push('the party block on the run card is hidden');
+       netScoreTake(peer,{t:'sc',sc:{how:'dead',k:7,h:0,it:0,dn:3,rv:2,sd:seed}});
+       netSumTake(peer,{t:'sum',how:'dead',k:7,v:0});
+       t=txt();
+       if(!/3 downs/.test(t)||!/2 revives/.test(t)||!/ZQX MATE/.test(t)) bad.push('after the teammate finished, the card does not show his 3 downs and 2 revives ('+t.slice(0,140)+')');
+       if(!shown()) bad.push('after the teammate finished, the party block is hidden');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       netSend=oSend;
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       try{ var pe=document.getElementById('oc_party'); if(pe){ pe.innerHTML=''; pe.style.display='none'; } }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.65',what:'in co-op a hunting Listener hears the sprint of the player it hunts: player 2 sprinting is heard at the sprinting reach while the host walks, and player 2 walking is not heard there while the host sprints',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof netTargetFor!=='function'||typeof mkListener!=='function'||typeof updateEnts!=='function') return 'SKIP: no raid or party here';
