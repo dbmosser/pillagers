@@ -1,0 +1,5 @@
+## v21.21 - A DROPPED ARMOURY GUN COMES HOME UNLESS SOMEONE TAKES IT
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). In co-op, v20.34 took an armoury gun off the list of guns you carried up the moment you dropped it, so the other player could take it without it staying in your save too. But if nobody took it, or you searched it back up yourself, an abandon no longer brought it home: the gun was gone for good. Now the gun stays on your list until someone else actually takes it out of the pile, and only then is your window told. A pile the other player dropped also no longer takes a gun off the host list.
+
+MEASURED. Check 21.21 passes, and fails on v21.20.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.21 - A DROPPED ARMOURY GUN COMES HOME UNLESS SOMEONE TAKES IT
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). In co-op, v20.34 took an armoury gun off the list of guns you carried up the moment you dropped it, so the other player could take it without it staying in your save too. But if nobody took it, or you searched it back up yourself, an abandon no longer brought it home: the gun was gone for good. Now the gun stays on your list until someone else actually takes it out of the pile, and only then is your window told. A pile the other player dropped also no longer takes a gun off the host list.
+
+MEASURED. Check 21.21 passes, and fails on v21.20.
 ## v21.20 - THE GUN CARD STEPS ASIDE FOR THE BACKPACK
 
 Co-op hunt while he was away. From the 4K screenshot pass of 2026-10-08: the open backpack covered the top left of the gun card in the bottom right corner (STOWED, the gun name, the rounds) at every screen size, and the backpack already shows the gun in your hands, its numbers and its rounds at its own top. While the backpack is open the card is now hidden, and it is back the moment the backpack shuts.

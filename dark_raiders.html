@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.20';
+var VER='21.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14802,11 +14802,9 @@ function dropItem(idx){
     var _q=netPeerOfSeat(0), _ib=(key==='bandage'&&(G.issuedBandages||0)>0)?1:0;
     if(_q&&netSend(_q,{t:'pile',k:key,x:Math.round(p.x),y:Math.round(p.y),ib:_ib})){
       if(_ib){ G.issuedBandages--; if(G.bandSeen!==undefined) G.bandSeen--; }
-      // v20.34, from the whole-game bug hunt of 2026-10-08 (H23): AN ARMOURY GUN DROPPED FOR THE PARTY IS THE PARTY'S NOW. The pile
-      // is the host's, so whoever searches it banks the gun, but this window still had the gun on its list of armoury guns carried
-      // up, and an abandon put it back in this armoury: one gun in two saves. It comes off the list at the drop, as a gift does.
-      var _gk=(/^gun_/.test(key)&&ITEMS[key]&&ITEMS[key].gk)?ITEMS[key].gk:null, _j;
-      if(_gk){ _j=(G.spliced||[]).indexOf(_gk); if(_j>=0) G.spliced.splice(_j,1); if(P.raidSpliced){ _j=P.raidSpliced.indexOf(_gk); if(_j>=0) P.raidSpliced.splice(_j,1); } try{ saveProfile(); }catch(_sp){} }
+      // v21.21, from the review of the night builds (2026-10-09, R1): an armoury gun dropped here stays on this window's list of guns
+      // carried up until someone else takes it out of the pile (netGunTold on the host, netGunGoneTake here). v20.34 took it off at
+      // the drop, so a gun nobody took, or one he searched back up himself, was gone from his save after an abandon.
       return key;
     }
   }
@@ -15287,6 +15285,7 @@ function openContainer(ct,onlyKeys){
   if(_hotLine) sayWhenFree(_hotLine);
 }
 function grantLoot(ct,keys,delay0){
+  try{ if(typeof NET==='object'&&NET&&NET.on&&NET.role==='host') netGunTold(ct,keys,0); }catch(_ngt){}   // v21.21 (R1): the host took a gun out of a pile one of the party dropped
   // v12.73, 2026-09-08 first-hour audit: WHAT HAPPENED TO HIS GUNS SURVIVES THE
   // SUMMARY. say() holds one line and the last call in a frame wins, so the two
   // lines written inside the loop below, both of them about which gun is now in
@@ -34227,7 +34226,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.20: The gun card in the corner hides while the backpack is open, instead of being half covered. Check 21.20 fails on v21.19',
+  now:'v21.21: In co-op, an armoury gun you drop comes home on an abandon unless the other player takes it. Check 21.21 fails on v21.20',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38319,6 +38318,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
   if(m.t==='wdmg'||m.t==='wall') return netWallTake(peer,m);   // v17.36, co-op hunt 2026-09-28: a hit on a wall asked of the host, or a wall that fell, from the host
   if(m.t==='door') return netDoorTake(peer,m);   // v20.29 (H15): a door opened with its key, for the whole party
   if(m.t==='mark') return netMarkTake(peer,m);   // v20.38 (H11): a Crier or THE OVERSEER on one of the party, told to his window
+  if(m.t==='gungone') return netGunGoneTake(peer,m);   // v21.21 (R1): an armoury gun he dropped was taken by someone else
   if(m.t==='bcn') return netBeaconTake(peer,m);   // v16.06: a teammate called the beacon; the host calls it for the party
   if(m.t==='rev') return netRevTake(peer,m);   // v16.05: a teammate picked this player up, or (on the host) passes it on
   if(m.t==='aid') return netAidTake(peer,m);   // v16.23: a teammate used his bandage or plate on this player, or (on the host) passes it on
@@ -41896,9 +41896,37 @@ function netSrchEndSeat(s){ return (NET.role==='host')?netSrchEnd(s):false; }
 // (it is banked on his save), so it comes off the list an abandon or a closed window puts back in the host armoury. It stayed
 // on it, and the one gun was in both saves. One id per gun handed over, and only from a pile the host dropped, so a found field
 // copy in an ordinary box never takes the host own gun off the list.
+// v21.21, from the review of the night builds (2026-10-09, R1): A GUN TAKEN FROM A PILE ONE OF THE PARTY DROPPED IS TOLD TO HIM. An
+// armoury gun he dropped stays on his list of guns carried up (so an abandon brings it home) until someone ELSE takes it out of the
+// pile; then the host tells his window, which takes it off the list, as a gift does. If he takes it back himself nothing is said.
+function netGunTold(ct,items,taker){
+  var i, it, q, n=0;
+  if(!ct||typeof ct.dropBy!=='number'||ct.dropBy<=0||ct.dropBy===taker||!items||!items.length) return 0;
+  if(typeof G==='undefined'||!G||G.sim||typeof netEntsHost!=='function'||!netEntsHost()) return 0;
+  q=netPeerOfSeat(ct.dropBy); if(!q) return 0;
+  for(i=0;i<items.length;i++){ it=ITEMS[items[i]]; if(it&&it.use==='gun'&&it.gk){ netSend(q,{t:'gungone',k:it.gk}); n++; } }
+  return n;
+}
+function netGunGoneTake(peer,m){
+  var gk, j, back=0;
+  if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
+  gk=netClean(m.k,24); if(!gk||!WEAPONS[gk]) return 'bad';
+  if(typeof G!=='undefined'&&G&&Array.isArray(G.spliced)){ j=G.spliced.indexOf(gk); if(j>=0) G.spliced.splice(j,1); }
+  if(P&&Array.isArray(P.raidSpliced)){ j=P.raidSpliced.indexOf(gk); if(j>=0) P.raidSpliced.splice(j,1); }
+  // an abandon has already put the list back in his armoury, so the gun comes out of the armoury too (netGunsGone, v17.23)
+  if(typeof G!=='undefined'&&G&&G.over==='abandon'&&P&&Array.isArray(P.weapons)){ j=P.weapons.indexOf(gk); if(j>=0){ P.weapons.splice(j,1); back=1; } }
+  if(back){
+    if(P.equipped&&P.equipped!=='fists'&&P.weapons.indexOf(P.equipped)<0) P.equipped=P.weapons.length?P.weapons[0]:'fists';
+    if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists'&&P.weapons.indexOf(P.equippedSec)<0) P.equippedSec='none';
+    if((P.equippedSec||'none')===P.equipped) P.equippedSec='none';
+  }
+  try{ saveProfile(); }catch(_s){}
+  return 'gungone';
+}
 function netGunsGone(ct,items){
   var i, it, j, n=0, back=0;
   if(G.sim||!ct||!ct.dropped||!items||!G.spliced||!G.spliced.length) return 0;
+  if(typeof ct.dropBy==='number'&&ct.dropBy>0) return 0;   // v21.21 (R1): a pile one of the party dropped never holds the host's own armoury gun
   for(i=0;i<items.length;i++){
     it=ITEMS[items[i]]; if(!it||it.use!=='gun'||!it.gk) continue;
     j=G.spliced.indexOf(it.gk); if(j<0) continue;
@@ -41964,9 +41992,10 @@ function netSrchTick(dt){
       hot=netHotBonus(ct); if(hot.length) items=items.concat(hot);   // v20.39 (H59)
       netContOpenHost(ct,+s);
       netGunsGone(ct,items);   // v17.06, co-op hunt 2026-09-28: a host armoury gun handed over is his no more
+      netGunTold(ct,items,+s);   // v21.21 (R1)
       netSend(q,{t:'loot',cid:r.cid,items:items,done:1,hot:hot.length?1:0});
       delete NET.holds[s];
-    } else if(items.length){ netGunsGone(ct,items); netSend(q,{t:'loot',cid:r.cid,items:items}); }
+    } else if(items.length){ netGunsGone(ct,items); netGunTold(ct,items,+s); netSend(q,{t:'loot',cid:r.cid,items:items}); }
     n++;
   }
   return n;

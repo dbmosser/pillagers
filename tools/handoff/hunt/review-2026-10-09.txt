@@ -1,0 +1,89 @@
+REVIEW OF THE 2026-10-08 NIGHT BUILDS (v20.29-v21.20): 9 confirmed regressions
+
+=== R1 [high] v20.34 (99681dd2) Guest loses an armoury gun on abandon if he drops it and nobody else takes it
+SCENARIO: Co-op, player 2 is the guest. He carries an armoury gun up, moves it into the backpack (this splices it out of P.weapons and onto G.spliced), and drops it (Z or the drop control). Then either (a) he leaves it on the ground, or (b) he searches his own pile back up. Then he abandons the raid, or his window closes mid-raid. Before v20.34 the abandon (or the next load, through P.raidSpliced) put the gun back in his armoury, the same as solo does. Now the gun is gone from his save for good, though nobody else ever took it.
+EVIDENCE: dropItem, guest branch, lines 14805-14811: `var _gk=(/^gun_/.test(key)&&ITEMS[key]&&ITEMS[key].gk)?ITEMS[key].gk:null, _j; if(_gk){ _j=(G.spliced||[]).indexOf(_gk); if(_j>=0) G.spliced.splice(_j,1); if(P.raidSpliced){ ... P.raidSpliced.splice(_j,1); } saveProfile(); }`. This runs as soon as the 'pile' word is sent, before anyone has taken the gun. Only G.spliced brings an armoury gun back on abandon (endRaid abandon branch, line 22032: `if(G.spliced){ for(...) if(P.weapons.indexOf(G.spliced[i])<0) P.weapons.push(G.spliced[i]); }`), and on load only P.raidSpliced does (line ~3169). If he picks the gun back up, nothing puts it back on the list: openContainer/grantLoot never re-splice it, because the splice sites (15373, 15410, 15540, 15645) only fire when the id is still in P.weapons, and it no longer is. The gift path (~40167) can remove the id at once because a gift always leaves. A drop does not always leave. The host already records who dropped the pile (netPileTake, line 14787: `c.dropBy=peer.seat`), but nothing reads that field. The same code also takes the armoury copy off the list when he drops a field copy of the same gun.
+FIX: 1. In dropItem's guest branch (lines 14805-14809), delete the _gk block that splices G.spliced and P.raidSpliced and saves. Keep the issued-Bandage lines and return key, as before v20.34.
+
+2. On the host, when gun items come out of a container with typeof ct.dropBy==='number' and the taker's seat differs from ct.dropBy, tell the dropper's window:
+
+   netSend(netPeerOfSeat(ct.dropBy), {t:'gungone', k:key})
+
+   Do this in two places:
+   - netSrchTick, next to both netGunsGone calls (lines 41966 and 41969), with the taker = +s.
+   - The host's own staged pull and openContainer on such a pile, with the taker = seat 0.
+
+3. Also gate netGunsGone on (ct.dropBy===undefined || ct.dropBy===0) and on the taker not being the host. Then a guest re-taking his own pile no longer strips the host's matching id (the v17.06 bug).
+
+4. On the guest, add a 'gungone' handler that does what the gift path at line 40167 does:
+
+   j=(G.spliced||[]).indexOf(gk); if(j>=0) G.spliced.splice(j,1);
+   if(P.raidSpliced){ j=P.raidSpliced.indexOf(gk); if(j>=0) P.raidSpliced.splice(j,1); }
+   saveProfile();
+
+   If his raid has already ended in an abandon, also take the id out of P.weapons and repair P.equipped and P.equippedSec, as netGunsGone's v17.23 branch (lines 41912-41920) does.
+
+5. A dropper who searches his own pile back up gets no word. His id stays on the list, so solo, host and guest behave the same.
+
+=== R2 [low] v20.39 (59e7aaf0) Hot ground stops moving for player 2 once the host is out
+SCENARIO: Co-op. The host dies or extracts while player 2 stays up top, and the host's window keeps the raid running (netSpecTick). From then on the hot ground on player 2's map never moves again, and no machines are sent to it, for the rest of the raid. Before v20.39 player 2's window moved it every 115 seconds itself.
+EVIDENCE: Line 33753: `if(!netEntsPeer()) try{ tickHot(dt); }catch(e){}`. The linked window no longer moves the disc and waits for the host's world word (netWorldTake, the m.hz block). On the host, tickHot runs only inside the raid-frame branch `else if((!G.paused||netPauseLive())&&!G.over)`, so it stops once the host's run is over. netSpecTick (lines ~41110-41125) steps updateEnts, updateBullets, updateThrowables, tickRaiderWaves, netSrchTick and netSpecRings but never tickHot. Its netWorldSend therefore keeps sending the same hz with the same moves count, so `if(k>(a.moves|0))` on player 2 is never true again.
+FIX: In netSpecTick, next to the v20.37 line `tickRaiderWaves(wdt);` (line 41115), add `try{ tickHot(wdt); }catch(_th){}`. The host's kept raid then moves the disc and sends its machines there, and netWorldSend carries the new moves count to player 2. Optional: inside tickHot, change `if(!G.sim){ say(...); sfx(...) }` to `if(!G.sim&&!NET.specTick)`. That stops the host's window, by then on the run card or in the Undercroft, from playing the 'charge' sound for a raid it is no longer in. Player 2 still gets the line through netWorldTake.
+
+=== R3 [low] v20.38 (add4708c) Stale Crier markSeat sends the mark to the wrong player
+SCENARIO: Co-op. A Crier spots player 2 (markSeat becomes his seat), then loses him or fires. Later the host shoots that same Crier without killing it, which starts a new alarm through the bullet path. When it fires, the host gets no 'Crier raised the alarm' line and no MARKED banner. Player 2 gets the line and the banner instead, possibly from across the map. The reinforcements still converge on the host's position. Before v20.38 the host always got them, which was right in this case.
+EVIDENCE: markSeat is set only by the sight path, line ~19649: `e.markSeat=(p&&p.net)?(p.seat|0):0;`. Two other paths start an alarm without touching it: the host's own round at line 20919 (`en.state='alarm'; en.lost=0; en.wind=rnd(3,4); en.markX=p.x; en.markY=p.y;`) and a party round in netShotTake at line 41492 (`e.state='alarm'; e.lost=0; e.wind=3.5; e.markX=sx; e.markY=sy;`). The fire branch then reads the old value: line 19691 `netMarkSend({...seat:e.markSeat|0...})` and line 19692 `if(!e.markSeat){ G.marked=2.2; ... }`. These alarms also send no 'on' word, so the wrongly marked player gets no countdown.
+FIX: Keep the seat in step with the marked position. In the snitch alarm branch, line 19656, change `if(sees){ e.markX=p.x; e.markY=p.y; }` to `if(sees){ e.markX=p.x; e.markY=p.y; e.markSeat=(p&&p.net)?(p.seat|0):0; }`. Also set it where the bullet paths start an alarm:
+- `en.markSeat=0;` beside line 20919, the host's round;
+- `e.markSeat=s;` beside line 41492, netShotTake.
+
+This way a Crier never fires on a seat it isn't marking. None of these lines makes a seeded draw. Optionally, send the 'on' word from both bullet paths too, as line 19651 does, so the marked player sees the countdown.
+
+=== R4 [low] v20.38 (add4708c) Crier alarm plays twice on player 2's window
+SCENARIO: Co-op. A Crier starts winding up anywhere within player 2's earshot. Player 2 hears the alarm twice, a beat apart, and gets two noise rings if the Crier is out of sight. This is the same doubling v20.40 set out to remove.
+EVIDENCE: The host still plays the windup through the relaying sfx, line ~19644: `sfx('alarm',e.x,e.y);`. Because netUpShared() is true, netFxNoise queues it and player 2's netFxTake plays it. The new mark word then plays it again on player 2: netMarkTake 'on', line 41406: `if(!G.sim){ if(e) sfxHere('alarm',e.x,e.y); ... }`. v20.40 changed this call to sfxHere, which only stops it bouncing back to the host. Player 2 still hears both.
+FIX: At line 41406 in netMarkTake 'on', drop the sound and keep the line: `if(!G.sim){ if(mine) say('A crier has you. Kill it or move.'); }`. The host's relayed sfx('alarm') at line 19644 already gives player 2 one alarm and one ring, the same way the 'fire' branch works.
+
+=== R5 [medium] v20.86 (b06100f5) Same-machine co-op: the Undercroft song follows the window instead of the players, so player 2's floor goes silent and the song leaks into player 2's raid
+SCENARIO: Two players on one machine, WORLD SOUND set to BOTH PLAYERS (the default), SPLIT SPEAKERS on (the default). (a) Player 2 dies or extracts first, or links while the host is already up top. He is back on the Undercroft floor while the host is still in the raid. Before this build his window played its own Undercroft song. Now no music plays anywhere: his window hands the music to the player 1 window, and that window is in a raid, where music is off. (b) The host dies or extracts first while player 2 is still up top. The host spectates from the floor, and his window plays the Undercroft song. Before, split speakers panned that song into the host's left speaker only. It now skips the panner, so player 2 hears Undercroft music in his own speaker in the middle of his raid, which breaks the no-raid-music ruling.
+EVIDENCE: dark_raiders.html:4017 `if(typeof NET==='object'&&NET&&NET.same==='p2'&&netSndWho()!=='p2') return false;`. Player 2 defers to player 1 based only on the window's role. Nothing checks whether player 1 is on the floor (player 1's musicWanted returns false at :4009 `if(G) return false;` while he is in a raid). Music output, :4045 `MUS.lp.connect(netMusOut(a))` and :39109-39117 netMusOut: NET.musG connects straight to a.destination and skips NET.sndP, the split panner (:39124). Before this build MUS.lp went through netSndOut, which is sndG -> sndP panned -1 for the host (:39141). Player 2 can be on the floor while the host is up top: drop-in at :39351 and :39410 (NET.hostSeed), and no rejoining a raid you left. The host is on the floor while spectating: netSpecStart at :41023 keeps NET.specG, and :39268 'Cannot ascend while your party is still in the raid'.
+FIX: 1) dark_raiders.html:4017. Player 2 defers only while the host is on the floor: `if(typeof NET==='object'&&NET&&NET.same==='p2'&&netSndWho()!=='p2'&&!NET.hostSeed) return false;`. In the player 2 window, NET.hostSeed is set when the host goes up (39427, 38374) and cleared when the host is out or spectating (39469) or on raidno (38317).
+
+2) Centre the song only while both players are on the floor. In netMusOut (39109), connect musG to a new NET.musP StereoPanner, and connect that to a.destination. Then set its pan each tickMusic (or in netSndApply) to:
+`(netSndWhoOn()&&netSndWho()==='both'&&netSndSplitOn()&&(NET.same==='p2'?!!NET.hostSeed:!!NET.specG))?((NET.same==='p2')?1:-1):0`
+
+So a teammate up top keeps the old one-sided pan, and both players on the floor get the one song in the middle.
+
+=== R6 [low] v20.86 (b06100f5) END THE PARTY leaves the host's Undercroft music muted when world sound was PLAYER 2 ONLY
+SCENARIO: Play two players on one machine with WORLD SOUND set to PLAYER 2 ONLY. Press END THE PARTY in the player 1 window and keep playing solo there. Every world sound comes back, but the Undercroft music stays silent for the rest of the session. Changing the setting does not help, because the WORLD SOUND row and the storage listener only act in a same-machine mode. Only a reload or a new pairing brings it back.
+EVIDENCE: In the host, netSndApply (:39141) sets `NET.musG.gain.value=on?1:0`, which is 0 for 'p2'. MUS.lp is moved onto musG by netSndRoute (:39158-39159) and stays there (MUS.lp is built once, :4036-4046). END THE PARTY runs netReset -> netSameStop (:38441, :38635-38641) -> netSndRelease (:39189): `NET.sndOther=-1; if(NET.sndG){ ...gain.value=1; } if(NET.sndP){ ...pan.value=0; }`. It resets sndG and sndP but never NET.musG. Before this build the music hung off sndG, so the release brought it back.
+FIX: In netSndRelease (:39189), next to the sndG reset, add `if(NET.musG){ try{ NET.musG.gain.value=1; }catch(e3){} }`.
+
+=== R7 [low] v20.75 (c502da71) Hit ticks vanish while the crosshair is over a HUD panel's bar, glyph or resize grip
+SCENARIO: In a raid, aim with the crosshair over the title bar, collapse glyph or resize corner of a HUD panel (the raider board, for example) and hit or kill something. Before this build the four hit ticks flashed there as usual. Now nothing is drawn, so you get no hit or kill confirmation while the pointer is over those parts.
+EVIDENCE: _rz is assigned only in the reticle's else branch: :27205 `if(_overBox){ hudCursor(...) } else { ... var _rz=hudRes(); ...` (:27237). The v20.75 hitmark block, which runs after that if/else for both branches, reads it: :27335 `var hIn=((hm.kill?7:5)+(1-hk)*(hm.kill?7:4))*_rz,hOut=hIn+(hm.kill?7:5)*_rz;` and :27337 `ctx.lineWidth=(hm.kill?2.4:1.8)*_rz;`. In the _overBox branch _rz is the hoisted undefined, so hIn and hOut are NaN. Canvas silently ignores moveTo, lineTo and lineWidth with NaN, so the ticks never draw. Nothing throws.
+FIX: In the hit-tick block, compute the factor locally instead of relying on the reticle branch's variable. After `var hm=G.hitMark,hk=...` at :27332, add `var _hmz=hudRes();` and use `_hmz` in place of `_rz` on :27335 and :27337. Moving `var _rz=hudRes();` from :27237 to just above `if(_overBox)` at :27206 also works and keeps the reticle unchanged, because hudRes() has no side effects.
+
+=== R8 [low] v21.17 (c355772e) A controller press during the attract clip works the hidden title menu
+SCENARIO: A player with a controller (a couch player, or player 2) leaves the title alone for 30 seconds and the attract clip starts. He taps A to stop it. The press goes straight through to the title under the clip: padMenu clicks ENTER THE UNDERCROFT (or whatever control has the pad highlight), so he is moved on from the title without choosing. The clip itself is often not stopped by a quick tap, because the pad is only checked every half second. D-pad presses also move the highlight on the title he cannot see. The commit says 'the press that stops the clip does nothing else'. That is true for keys and the mouse, but not for a controller.
+EVIDENCE: dark_raiders.html 33301-33317: the only pad check for the attract is attTick on setInterval(attTick,500). It reads navigator.getGamepads() once every 500 ms and calls attPoke() if a button is down at that moment, so a tap of about 100 ms is usually missed. Only the key, mouse, wheel and touch listeners (33309-33315) swallow the input while ATT.on. Meanwhile pollPad runs every frame (33652) and reaches padMenu (12960). For md.id==='title', padMenu puts the highlight on #titlestart (12729) and on A's rising edge does PAD.focus.click() (12786). Nothing there checks ATT.on, so the click runs under the full-screen #attract overlay (z-index 9000) whether or not attTick also catches the press. In a same-PC window that is not in front, attTick's raw getGamepads read gets no live data (netPadTick passes pad state to that window by hand), so the pad cannot stop the clip at all. Its forwarded A presses still reach padMenu.
+FIX: Add this in pollPad just before `if(padMenu(pressed)){ padRelease(); return; }` (line 12960). It uses pollPad's own bt and ax, and also covers the player 2 window, whose pad state comes from netPadTick:
+
+```
+if(typeof ATT!=='undefined'&&ATT&&ATT.on){
+  var _atb=false, _ati;
+  for(_ati=0;_ati<bt.length;_ati++) if(pressed(_ati)) _atb=true;
+  for(_ati=0;_ati<ax.length;_ati++) if(Math.abs(ax[_ati]||0)>0.45) _atb=true;
+  if(_atb) attPoke();
+  for(_ati=0;_ati<bt.length;_ati++) PAD.prev[_ati]=pressed(_ati);
+  padRelease(); return;
+}
+```
+
+The press that stops the clip is used up because PAD.prev is stamped, so tap(0) on the next frame sees the A as already held and clicks nothing until it is released. (Optional, beyond the smallest fix: also set ATT.last=Date.now() when _atb is true while the title is up, so pad use between the 500 ms ticks restarts the 30-second idle timer.)
+
+=== R9 [low] v21.15 (f7312628) An extraction already called past its closing time reads 'closes in 0:00' on the map
+SCENARIO: A player calls extraction C about 20 seconds before C's closing time. A called extraction still completes after that time (tickZoneClose leaves it open). On the map, the new row under the ring counts down to 'closes in 0:00' and then stays there for the rest of the inbound wait and the hold, while the ring is still open and the ship is still coming. A player planning his route reads it as closed and heads elsewhere, though he could still make that ship.
+EVIDENCE: dark_raiders.html 31714: if(Z.open&&(_zAct||_zHold)) ctx.fillText((Z.closeAt===undefined)?'STAYS OPEN':('closes in '+fmtMS(Math.max(0,Math.ceil(G.timeLeft-Z.closeAt)))),...). At 16856-16857 the closer runs if(cz.open&&G.timeLeft<=cz.closeAt){ if(cz.beaconT!==null&&cz.beaconT!==undefined){ continue; } ...}, so a called ring (beaconT set, including the hold, where beaconT<=0) stays open after closeAt. The comment above it says 'a point already pulled completes its full sequence even past its cutoff'. The new row has no case for that, so Math.max(0,...) pins it at 0:00 on a ring that is still open.
+FIX: At line 31714, draw the row only while the closing time is still ahead: change the condition to if(Z.open&&(_zAct||_zHold)&&(Z.closeAt===undefined||G.timeLeft>Z.closeAt)). Past the closing time this brings back the v21.14 look, with only the CALLED or EXTRACT IN PROGRESS line showing. Another option is to print a fitting word such as 'LAST SHIP' when G.timeLeft<=Z.closeAt.
+

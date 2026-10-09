@@ -1,0 +1,7 @@
+v21.21: a dropped armoury gun comes home unless someone takes it
+
+In co-op, an armoury gun you drop comes home on an abandon unless the other player takes it.
+
+Check 21.21. Fails on v21.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
