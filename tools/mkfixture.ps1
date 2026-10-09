@@ -5723,6 +5723,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.27',what:'a called extraction already past its closing time shows no closes in 0:00 line on the map',
+   run:function(){
+     if(typeof drawMapOverlayRaw!=='function') return 'SKIP: no map here';
+     var src=String(drawMapOverlayRaw), nd='G.timeLeft>'+'Z.closeAt';
+     if(src.indexOf('_zAct||_zHold')<0) return 'SKIP: no closing row on a called ring here';
+     if(src.indexOf(nd)<0) return 'a called ring past its closing time still reads closes in 0:00';
+     return null; }},
   {v:'21.26',what:'while the attract clip plays, the controller poll stops the clip and never reaches the title menu',
    run:function(){
      if(typeof pollPad!=='function'||typeof ATT!=='object') return 'SKIP: no attract mode here';

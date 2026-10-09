@@ -1,0 +1,7 @@
+v21.27: no closes in 0:00 on a ring still running
+
+The map no longer says closes in 0:00 on an extraction that is still running.
+
+Check 21.27. Fails on v21.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

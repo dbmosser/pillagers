@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.27 - NO CLOSES IN 0:00 ON A RING STILL RUNNING
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). A ring called before its closing time keeps running past it, and the closing row added in v21.15 then read closes in 0:00 on a ring that was still open. Past the closing time the row is now left off, and the call or the extraction in progress shows alone.
+
+MEASURED. Check 21.27 passes, and fails on v21.26.
 ## v21.26 - A CONTROLLER ONLY STOPS THE ATTRACT CLIP
 
 Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). The attract clip checked the controller only twice a second, while the title menu under it read the controller every frame, so pressing A could start the game from the hidden menu, and in the player 2 window the controller could not stop the clip at all. Now any controller button or stick stops the clip and does nothing else.

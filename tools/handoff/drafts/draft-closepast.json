@@ -1,0 +1,12 @@
+{
+    "title":  "NO CLOSES IN 0:00 ON A RING STILL RUNNING",
+    "why":  "Found by the review of the night builds (2026-10-09). A ring called before its closing time keeps running past it, and the closing row added in v21.15 then read closes in 0:00 on a ring that was still open. Past the closing time the row is now left off, and the call or the extraction in progress shows alone.",
+    "now":  "The map no longer says closes in 0:00 on an extraction that is still running.",
+    "edits":  [
+                  {
+                      "anchor":  "if(Z.open\u0026\u0026(_zAct||_zHold)) ctx.fillText(",
+                      "replacement":  "if(Z.open\u0026\u0026(_zAct||_zHold)\u0026\u0026(Z.closeAt===undefined||G.timeLeft\u003eZ.closeAt)) ctx.fillText(   /* v16.xx (R9): a ring called before its cutoff runs past it; no 0:00 then */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a called extraction already past its closing time shows no closes in 0:00 line on the map\u0027,\n   run:function(){\n     if(typeof drawMapOverlayRaw!==\u0027function\u0027) return \u0027SKIP: no map here\u0027;\n     var src=String(drawMapOverlayRaw), nd=\u0027G.timeLeft\u003e\u0027+\u0027Z.closeAt\u0027;\n     if(src.indexOf(\u0027_zAct||_zHold\u0027)\u003c0) return \u0027SKIP: no closing row on a called ring here\u0027;\n     if(src.indexOf(nd)\u003c0) return \u0027a called ring past its closing time still reads closes in 0:00\u0027;\n     return null; }},"
+}
