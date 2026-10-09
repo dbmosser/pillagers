@@ -5722,6 +5722,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.73',what:'the what is new card is stamped within 0.15 of the build and leads with the small fixes news, shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>20.73+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('SMALL THINGS'+' FIXED')!==0) bad.push('the card does not lead with the small fixes news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'20.72',what:'a restore code carries the achievements: a code made by a character with LIFER, MACHINE BREAKER and 143 machines gives them back, and a code with none pasted over a character who has them leaves none and never rescans the old run log',
    run:function(){
      if(!window.__P||typeof restoreMake!=='function'||typeof restoreApply!=='function'||typeof ACHS==='undefined') return 'SKIP: no restore or achievements here';

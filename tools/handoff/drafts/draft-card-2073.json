@@ -1,0 +1,16 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES THE SMALL FIXES",
+    "why":  "The card was stamped v20.59 and the stamp may not trail the build by more than 0.15. Its new second line names a few of the small fixes from the bug hunt (v20.60 to v20.72); the rest are in the change list.",
+    "now":  "The what is new card names some of the small fixes.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002720.59\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002720.73\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
+                      "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027SMALL THINGS FIXED. Sort by rarity follows the cell colours, the shop says how many you bought, ESC closes the stash from search, and a helped Survivor never shoots you.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and leads with the small fixes news, shown whole\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof wnShort!==\u0027function\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e20.73+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027SMALL THINGS\u0027+\u0027 FIXED\u0027)!==0) bad.push(\u0027the card does not lead with the small fixes news\u0027);\n     else if(wnShort(WHATSNEW[1]).slice(-3)===\u0027...\u0027) bad.push(\u0027the new line is cut on the card\u0027);\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

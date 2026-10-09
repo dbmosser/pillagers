@@ -1,0 +1,5 @@
+## v20.73 - THE WHAT IS NEW CARD NAMES THE SMALL FIXES
+
+Co-op hunt while he was away. The card was stamped v20.59 and the stamp may not trail the build by more than 0.15. Its new second line names a few of the small fixes from the bug hunt (v20.60 to v20.72); the rest are in the change list.
+
+MEASURED. Check 20.73 passes, and fails on v20.72.
