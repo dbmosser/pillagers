@@ -1,0 +1,7 @@
+v20.93: the party trading line lines up
+
+In the PARTY window the TRADING lines start on the same edge as the rest.
+
+Check 20.93. Fails on v20.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

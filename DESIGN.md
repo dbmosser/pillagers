@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.93 - THE PARTY TRADING LINE LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the PARTY window: the TRADING paragraph started a step to the right of every other line in the window and of the HOST A PARTY button under it, because it was styled as a hint line, which carries its own side padding. It now starts on the same edge as the rest, with the same size and the same words.
+
+MEASURED. Check 20.93 passes, and fails on v20.92.
 ## v20.92 - THE STASH SEARCH BOX LINES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the stash: in the row of tabs along the top, the search box was a thin strip about two thirds the height of the tabs and the SORT button, set lower than both, and the row stopped short with an empty stretch after SORT. The search box and SORT now sit level with the tabs at the same height, and the box takes the rest of the row, so the top of the stash reads as one clean bar.

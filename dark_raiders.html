@@ -983,7 +983,10 @@
   </div>
   <div class="msub" id="partyerr" style="color:var(--hazard);font-weight:700;display:none"></div>
   <div class="plist" id="partyroster" style="border:1px solid var(--steel-hi);display:none"></div>
-  <div class="hint" id="partytrade" style="margin-top:8px">TRADING. Up top: open the backpack, pick the item and press Z (Y on a controller) to drop it at your feet; your teammate searches the pile like any box. In the Undercroft: right-click a stash item (Y on a controller) and choose Drop on the floor; your teammate walks to the crate and presses E (A on a controller).</div>
+  <!-- v20.93, from the whole-game bug hunt of 2026-10-08 (V-B2), seen on the 4K PARTY picture: THE TRADING LINE STARTS WHERE THE
+       OTHER LINES START. It is a hint line, and hint lines carry their own side padding, so its words began a step to the right of
+       the lines above it and of HOST A PARTY under it. It keeps its size and words and loses the side padding. -->
+  <div class="hint" id="partytrade" style="margin-top:8px;padding-left:0;padding-right:0">TRADING. Up top: open the backpack, pick the item and press Z (Y on a controller) to drop it at your feet; your teammate searches the pile like any box. In the Undercroft: right-click a stash item (Y on a controller) and choose Drop on the floor; your teammate walks to the crate and presses E (A on a controller).</div>
   <div class="pbox" id="partystart" style="display:flex;gap:14px;margin-top:10px;align-items:flex-start;flex-wrap:wrap">
     <button id="partyhost" style="padding:8px 22px">HOST A PARTY</button>
     <div style="flex:1;min-width:260px">
@@ -1620,7 +1623,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.92';
+var VER='20.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33966,7 +33969,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.92: The stash search box is as tall as the tabs and fills the rest of the row. Check 20.92 fails on v20.91',
+  now:'v20.93: In the PARTY window the TRADING lines start on the same edge as the rest. Check 20.93 fails on v20.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
