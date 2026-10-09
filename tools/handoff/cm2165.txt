@@ -1,0 +1,7 @@
+v21.65: recovering shows only when you are
+
+The RECOVERING icon now shows only while your health is really coming back.
+
+Check 21.65. Fails on v21.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.65 - RECOVERING SHOWS ONLY WHEN YOU ARE
+
+Co-op hunt while he was away. His note of 2026-10-09: the left side said RECOVERING to 85 while his health was not going up. The icon worked out the regen rule for itself, so it showed whenever the numbers allowed it, also in moments the regen was not running. It now shows only while the regen actually runs, so it never says RECOVERING while your health stands still. Out of a fight you still creep back one point every 3 seconds, up to 85.
+
+MEASURED. Check 21.65 passes, and fails on v21.64.
 ## v21.64 - A WEAK POINT HIT SAYS WEAK SPOT
 
 Co-op hunt while he was away. His note of 2026-10-09: hitting an enemy flashed OPTIC 2X (or VENT 3.4X, DORSAL SPINE 3.6X), which reads like a scope setting, not like a hit on a weak point. It now flashes WEAK SPOT, in the same colour as the weak point, so the bonus hit is clear at a glance.

@@ -1,0 +1,5 @@
+## v21.65 - RECOVERING SHOWS ONLY WHEN YOU ARE
+
+Co-op hunt while he was away. His note of 2026-10-09: the left side said RECOVERING to 85 while his health was not going up. The icon worked out the regen rule for itself, so it showed whenever the numbers allowed it, also in moments the regen was not running. It now shows only while the regen actually runs, so it never says RECOVERING while your health stands still. Out of a fight you still creep back one point every 3 seconds, up to 85.
+
+MEASURED. Check 21.65 passes, and fails on v21.64.
