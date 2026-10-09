@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.97 - THE RACKS PAGE LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K RACKS screenshot. The sentence at the top of the page started at its left edge, the row of ten rack boxes and the BUILD A RACK, FOLD and SLOT buttons started a step to the right of it, and the small lines under each button a second step further in, so the page looked like three ragged columns. Everything on the page now starts on the same left edge.
+
+MEASURED. Check 20.97 passes, and fails on v20.96.
 ## v20.96 - THE REWARD LIST LINES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K REWARDS screenshot. Each reward row ends with a box showing the XP it unlocks at, and each box was only as wide as its number, so the 7,200 box was narrower than the 16,800 box and the 100,800 box wider still. The boxes, and the gold to go figures beside them, zigzagged down the list instead of standing in a column. Every box is now the same width, wide enough for the last reward at 1,200,000, so the list reads as two clean columns.

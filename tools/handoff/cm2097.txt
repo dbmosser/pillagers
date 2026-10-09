@@ -1,0 +1,7 @@
+v20.97: the racks page lines up
+
+The RACKS page at the Mainframe now lines up on one left edge.
+
+Check 20.97. Fails on v20.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
