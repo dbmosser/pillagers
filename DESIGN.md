@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.04 - THE MAP HIDES THE HUD COMPLETELY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K map screenshot. The sector map is laid over the raid on a dark backing that was 99 percent solid, so on a big screen the HUD under it still ghosted through: the controls card, the standing tag, the health bar and the extraction banner were faintly readable down both sides of the map. The backing is now fully solid, in the same colour.
+
+MEASURED. Check 21.04 passes, and fails on v21.03.
 ## v21.03 - THE EXTRACT NAMES ON THE MAP READ CLEARLY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K map screenshot. Over each extraction ring the sector map writes its letter (EXTRACT C) and a line under it (closes in 2 min 57 sec, or STAYS OPEN). On a big screen both lines grow, but the room between them did not, so the two lines touched and the countdown read as part of the name. The room between them now grows with the screen as well. On a 1080p screen nothing moves.

@@ -1,0 +1,5 @@
+## v21.04 - THE MAP HIDES THE HUD COMPLETELY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K map screenshot. The sector map is laid over the raid on a dark backing that was 99 percent solid, so on a big screen the HUD under it still ghosted through: the controls card, the standing tag, the health bar and the extraction banner were faintly readable down both sides of the map. The backing is now fully solid, in the same colour.
+
+MEASURED. Check 21.04 passes, and fails on v21.03.

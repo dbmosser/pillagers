@@ -1649,7 +1649,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.03';
+var VER='21.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31225,7 +31225,10 @@ function drawMapOverlayRaw(){
   // read DISTRICTS directly, but every piece of the map's own chrome was left
   // behind by the v0.84 recolour, so holding M dropped you out of a navy and
   // amber game into a grey one.
-  ctx.fillStyle='rgba(9,12,34,.99)'; ctx.fillRect(0,0,W,H);   // v19.03, seen on the map screenshot (2026-10-07): at .94 the message toast under the map ghosted through across THE LONG DOCK; the map now hides what is under it
+  // v21.04, from the whole-game bug hunt of 2026-10-08 (V-D2), seen on the 4K map screenshot: THE MAP BACKING IS SOLID. At .99 the
+  // HUD under the map still ghosted through on a big screen (the controls card, STANDING, HP 100, CONCEALED and the extraction banner
+  // all faintly readable down both sides of the map). The backing is the same colour, fully opaque.
+  ctx.fillStyle='rgb(9,12,34)'; ctx.fillRect(0,0,W,H);   // v19.03, seen on the map screenshot (2026-10-07): at .94 the message toast under the map ghosted through across THE LONG DOCK; the map now hides what is under it
   var _MP=mapProj(),sc=_MP.sc,ox=_MP.ox,oy=_MP.oy;
   // double frame, matching the windows in the terminal
   // v9.15: the frame follows the screen too. Measured before this: 4 pixels
@@ -34000,7 +34003,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.03: On a big screen the extract names on the map no longer touch the countdown under them. Check 21.03 fails on v21.02',
+  now:'v21.04: Nothing from the raid HUD shows through the open map any more. Check 21.04 fails on v21.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

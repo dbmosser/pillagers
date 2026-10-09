@@ -1,0 +1,1 @@
+| THE MAP HIDES THE HUD COMPLETELY | v21.04 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 21.04 passes, fails on v21.03 |
