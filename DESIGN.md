@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.74 - THE FULL CONTROLS LIST CLEARS THE BELT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Pressing H twice in a raid opens the full controls list, which was meant to stop above the belt. It still kept room for the belt as it was long ago, and the belt has since grown, so at 1080p the bottom of the list covered the top of the line over the belt (the item name, FIRE use and V signal) and its dark strip, with H hide sitting right on it. The list now stops just above the belt as it is drawn on the screen. At 4K, where it already cleared, nothing moves.
+
+MEASURED. Check 20.74 passes, and fails on v20.73.
 ## v20.73 - THE WHAT IS NEW CARD NAMES THE SMALL FIXES
 
 Co-op hunt while he was away. The card was stamped v20.59 and the stamp may not trail the build by more than 0.15. Its new second line names a few of the small fixes from the bug hunt (v20.60 to v20.72); the rest are in the change list.

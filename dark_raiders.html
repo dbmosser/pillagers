@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.73';
+var VER='20.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28615,7 +28615,7 @@ var _slp=w2s(p.x,66,p.y);
       ctx.translate(_legDX,_legShift+_legDY);   // bottom on the target, plus his drag
       hudZoomIn('legend',0,_legTarget);    // then grow upward from there
     }
-    drawLegend();
+    drawLegend(G.legendOn===2?_fz:1);   // v20.74 (H40): the full list is told its zoom
     ctx.restore();
     if(HUDBOX.legend){
       // v9.46: SCREEN SPACE, and the shift added the way the draw adds it.
@@ -29484,7 +29484,7 @@ function drawCrierMarkers(){
     }
   }
 }
-function drawLegend(){
+function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is drawn at, so it can stop above the belt as seen on the screen
   var MONO=FS(TYPE.micro);   // audit: bypassed FS, sat below the floor
   delete HUDBOX.legend;
   // v18.86, seen on the 4K raid screenshot (2026-10-07): with the backpack open the controls legend ran under its left edge and its
@@ -29578,6 +29578,16 @@ var _hL=rows*LH(12);
   // the caption and the top of every cell. The belt top is H-LH(70) and its
   // caption sits a further LH(6) above that.
   var top=Math.max(8,H-(LH(70)+LH(20))-boxH);
+  // v20.74, from the whole-game bug hunt of 2026-10-08 (H40): THE FULL LIST STOPS ABOVE THE BELT AS IT IS DRAWN NOW. The reserve above
+  // is the belt of v8.48; since v8.81 the belt sizes itself and its caption sits higher, so at 1080p the plate covered the top of the
+  // caption and the dark strip behind it, and H  hide sat on the strip. The bottom now comes from the belt cells drawn this frame and
+  // the caption over them, through the zoom this list is drawn at, with a small gap. It only ever moves the list up.
+  var _hc0=(G&&G.hotCells&&G.hotCells.length&&state!=='hub')?G.hotCells[0]:null, _lfz=(typeof fz==='number'&&fz>0)?fz:1, _cpx, _cap;
+  if(_hc0&&_hc0.w>0){
+    _cpx=parseFloat(((/([\d.]+)px/).exec(String(beltCapFS(_hc0.w)))||[0,11])[1])||11;
+    _cap=Math.round(_hc0.y-LH(6)-_cpx*0.95)-LH(4);
+    top=Math.max(8,Math.min(top,Math.floor(H-(H-_cap)/_lfz)-boxH-4));
+  }
   // v19.41, seen on the 4K controls screenshot (2026-10-08): his v12.79 note took the second column (gear rules, sound key) out of
   // this list, but the panel kept its two-column width and the line between the columns, so half of it was empty with a stray
   // divider down the middle. The panel is as wide as the widest line it holds now, still centred, and the divider is gone.
@@ -33860,7 +33870,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.73: The what is new card names some of the small fixes. Check 20.73 fails on v20.72',
+  now:'v20.74: The full controls list (H twice) no longer covers the line over the belt. Check 20.74 fails on v20.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

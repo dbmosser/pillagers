@@ -1,0 +1,7 @@
+v20.74: the full controls list clears the belt
+
+The full controls list (H twice) no longer covers the line over the belt.
+
+Check 20.74. Fails on v20.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
