@@ -5723,6 +5723,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.24',what:'the hot ground keeps moving for the party after the host is out: the raid the host keeps running moves it, and silently on his side',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof tickHot!=='function'||typeof netSpecTick!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no hot ground or party here';
+     var bad=[], nd='tick'+'Hot(', g, H, m0, oSfx=sfx, oSay=say, said=0, st0=NET.specTick;
+     if(String(netSpecTick).indexOf(nd)<0) bad.push('the raid the host keeps for his party never moves the hot ground');
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.hotZone) return bad.length?bad.join('; '):'SKIP: no hot ground';
+       H=g.hotZone; m0=H.moves|0; H.at=HOT_EVERY;
+       sfx=function(){ said++; }; say=function(){ said++; };
+       NET.specTick=true;
+       tickHot(0.01);
+       NET.specTick=st0;
+       if((H.moves|0)!==m0+1) bad.push('the hot ground did not move ('+m0+' to '+(H.moves|0)+')');
+       if(said) bad.push('the host watching his party was told or played a sound for a raid he is out of');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ NET.specTick=st0; sfx=oSfx; say=oSay; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.23',what:'a Crier marks the player whose round woke it and plays its alarm once on player 2 window: a party round sets the marked seat, and the windup word adds no second alarm',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof netShotTake!=='function'||typeof netMarkTake!=='function'||typeof netEntMake!=='function') return 'SKIP: no raid or party here';

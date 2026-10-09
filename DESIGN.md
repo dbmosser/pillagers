@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.24 - THE HOT GROUND KEEPS MOVING AFTER THE HOST IS OUT
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). Since v20.39 the host moves the hot ground for the party, but the host stops moving it when his own run ends. So once he died or extracted, the hot ground on player 2 map froze for the rest of the raid and no machines were sent to it. The raid the host keeps running for his party now moves it too, without a line or a sound on his side.
+
+MEASURED. Check 21.24 passes, and fails on v21.23.
 ## v21.23 - THE CRIER MARKS THE RIGHT PLAYER EVERY TIME
 
 Co-op hunt while he was away. Found by the review of the night builds (2026-10-09), two follow-ups to v20.38. A Crier remembered which player it was marking only when it first spotted someone, so if it then switched to the other player, or was woken by a round, it could brand the wrong player when it fired. And on player 2 window its alarm played twice, once from the host and once more from the windup word. The marked player now follows the marked place on every path, and the alarm plays once.

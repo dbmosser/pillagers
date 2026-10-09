@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.23';
+var VER='21.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29172,7 +29172,7 @@ function tickHot(dt){
   H.at=0; H.moves=(H.moves||0)+1;
   var sp=freeSpot(G.map,60);
   H.x=clamp(sp.x,H.r,WORLD_W-H.r); H.y=clamp(sp.y,H.r,WORLD_H-H.r);
-  if(!G.sim){
+  if(!G.sim&&!(typeof NET==='object'&&NET&&NET.specTick)){   // v21.24 (R2): a host watching his party makes no line or sound for it; the party is told by the world word
     say('The hot ground has moved. Check your map.');
     try{ sfx('charge',G.player.x,G.player.y); }catch(e){}
   }
@@ -34229,7 +34229,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.23: In co-op, a Crier always marks the player it is watching, and its alarm plays once. Check 21.23 fails on v21.22',
+  now:'v21.24: In co-op, the hot ground keeps moving for player 2 after the host is out. Check 21.24 fails on v21.23',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41133,6 +41133,7 @@ function netSpecTick(dt){
     G.t+=wdt; if(raidClockOn()) G.timeLeft=Math.max(0,G.timeLeft-wdt);
     refreshVseg(); updateEnts(wdt); updateBullets(wdt); updateThrowables(wdt);
     tickRaiderWaves(wdt);   // v20.37 (H10): new pillagers still arrive for the party; only a raid frame ran this, and that stops with the host run
+    try{ tickHot(wdt); }catch(_sth){}   // v21.24, from the review of 2026-10-09 (R2): and the hot ground keeps moving for the party (v20.39 left it to the host, whose raid frame stops)
     // v16.53, stability (co-op review): the host runs every search the party holds, but only in netUpTick, which stops once
     // the host run is over. So after the host died or extracted, a teammate search was granted and never moved: the bar
     // filled and nothing came out, on every box for the rest of the raid.

@@ -1,0 +1,16 @@
+{
+    "title":  "THE HOT GROUND KEEPS MOVING AFTER THE HOST IS OUT",
+    "why":  "Found by the review of the night builds (2026-10-09). Since v20.39 the host moves the hot ground for the party, but the host stops moving it when his own run ends. So once he died or extracted, the hot ground on player 2 map froze for the rest of the raid and no machines were sent to it. The raid the host keeps running for his party now moves it too, without a line or a sound on his side.",
+    "now":  "In co-op, the hot ground keeps moving for player 2 after the host is out.",
+    "edits":  [
+                  {
+                      "anchor":  "    tickRaiderWaves(wdt);   // v20.37 (H10): new pillagers still arrive for the party; only a raid frame ran this, and that stops with the host run",
+                      "replacement":  "    tickRaiderWaves(wdt);   // v20.37 (H10): new pillagers still arrive for the party; only a raid frame ran this, and that stops with the host run\n    try{ tickHot(wdt); }catch(_sth){}   // v16.xx, from the review of 2026-10-09 (R2): and the hot ground keeps moving for the party (v20.39 left it to the host, whose raid frame stops)"
+                  },
+                  {
+                      "anchor":  "  if(!G.sim){\n    say(\u0027The hot ground has moved. Check your map.\u0027);",
+                      "replacement":  "  if(!G.sim\u0026\u0026!(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.specTick)){   // v16.xx (R2): a host watching his party makes no line or sound for it; the party is told by the world word\n    say(\u0027The hot ground has moved. Check your map.\u0027);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the hot ground keeps moving for the party after the host is out: the raid the host keeps running moves it, and silently on his side\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||typeof tickHot!==\u0027function\u0027||typeof netSpecTick!==\u0027function\u0027||typeof NET!==\u0027object\u0027||!NET) return \u0027SKIP: no hot ground or party here\u0027;\n     var bad=[], nd=\u0027tick\u0027+\u0027Hot(\u0027, g, H, m0, oSfx=sfx, oSay=say, said=0, st0=NET.specTick;\n     if(String(netSpecTick).indexOf(nd)\u003c0) bad.push(\u0027the raid the host keeps for his party never moves the hot ground\u0027);\n     try{\n       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.hotZone) return bad.length?bad.join(\u0027; \u0027):\u0027SKIP: no hot ground\u0027;\n       H=g.hotZone; m0=H.moves|0; H.at=HOT_EVERY;\n       sfx=function(){ said++; }; say=function(){ said++; };\n       NET.specTick=true;\n       tickHot(0.01);\n       NET.specTick=st0;\n       if((H.moves|0)!==m0+1) bad.push(\u0027the hot ground did not move (\u0027+m0+\u0027 to \u0027+(H.moves|0)+\u0027)\u0027);\n       if(said) bad.push(\u0027the host watching his party was told or played a sound for a raid he is out of\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ NET.specTick=st0; sfx=oSfx; say=oSay; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
