@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.96 - THE REWARD LIST LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K REWARDS screenshot. Each reward row ends with a box showing the XP it unlocks at, and each box was only as wide as its number, so the 7,200 box was narrower than the 16,800 box and the 100,800 box wider still. The boxes, and the gold to go figures beside them, zigzagged down the list instead of standing in a column. Every box is now the same width, wide enough for the last reward at 1,200,000, so the list reads as two clean columns.
+
+MEASURED. Check 20.96 passes, and fails on v20.95.
 ## v20.95 - THE SECTOR MAPS ARE SHARP AT 4K
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the lift page (WHERE ARE YOU GOING?): the little map of each sector was drawn at 1080p size and then stretched about two and a half times, so the zone names and building edges were soft and blurred next to the crisp words around them. Each map is now drawn at the size the screen really shows it, so it is as sharp as the rest of the page. Its size and place on the page are unchanged, and at 1080p nothing changes.

@@ -1,0 +1,5 @@
+## v20.96 - THE REWARD LIST LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K REWARDS screenshot. Each reward row ends with a box showing the XP it unlocks at, and each box was only as wide as its number, so the 7,200 box was narrower than the 16,800 box and the 100,800 box wider still. The boxes, and the gold to go figures beside them, zigzagged down the list instead of standing in a column. Every box is now the same width, wide enough for the last reward at 1,200,000, so the list reads as two clean columns.
+
+MEASURED. Check 20.96 passes, and fails on v20.95.

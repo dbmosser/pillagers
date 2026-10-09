@@ -1,0 +1,7 @@
+v20.96: the reward list lines up
+
+On the REWARDS list the XP boxes and the to go figures now line up in straight columns.
+
+Check 20.96. Fails on v20.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

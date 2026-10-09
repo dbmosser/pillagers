@@ -5722,6 +5722,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.96',what:'the reward marks stand in one column: every box at the end of a REWARDS row is the same width and starts at the same place',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot open the Mainframe';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], t, bs, i, r, w0=1e9, w1=0, l0=1e9, l1=0, n=0, wide='', thin='';
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); if(window.__wnseen) __wnseen(1);
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('mf','KeyR');
+       bs=[].slice.call(document.querySelectorAll('#seasonlist .row button'));
+       for(i=0;i<bs.length;i++){
+         r=bs[i].getBoundingClientRect(); if(!(r.width>0)) continue; n++;
+         if(r.width<w0){ w0=r.width; thin=String(bs[i].textContent||'').trim(); }
+         if(r.width>w1){ w1=r.width; wide=String(bs[i].textContent||'').trim(); }
+         l0=Math.min(l0,r.left); l1=Math.max(l1,r.left);
+       }
+       if(n<6) return 'SKIP: fewer than six reward rows have layout';
+       if(w1-w0>1) bad.push('the boxes run from '+w0.toFixed(1)+' px ('+thin+') to '+w1.toFixed(1)+' px ('+wide+') wide');
+       if(l1-l0>1) bad.push('their left edges wander over '+(l1-l0).toFixed(1)+' px');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.95',what:'the sector maps on the lift page are drawn at the screen resolution: with the menus at twice size each map holds twice its page size in pixels, keeps its 420 page width, and is drawn out to its far corner',
    run:function(){
      if(typeof sectorPreviewDraw!=='function'||typeof renderSector!=='function'||typeof menuScale!=='function') return 'SKIP: this build has no sector maps';
