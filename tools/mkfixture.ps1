@@ -8260,6 +8260,7 @@ window.__REGRESS=[
   {v:'20.34',what:'an armoury gun dropped for the party leaves this window armoury list, so an abandon cannot put it back while the host keeps it',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof dropItem!=='function') return 'SKIP: no raid or party in this fixture';
+     if(typeof netGunTold==='function') return 'SKIP: since the review of 2026-10-09 (R1) a dropped gun stays on the list until someone else takes it; the newer check covers it';
      var NK={}, k, bad=[], oSend=netSend, sent=[], gk=null, key=null, rs0, i, ks=Object.keys(ITEMS);
      for(i=0;i<ks.length;i++) if(/^gun_/.test(ks[i])&&ITEMS[ks[i]]&&ITEMS[ks[i]].gk){ key=ks[i]; gk=ITEMS[key].gk; break; }
      if(!key) return 'SKIP: no armoury gun item here';
