@@ -1,0 +1,7 @@
+v21.63: a found gun never bumps a better one
+
+A gun you pick up only takes a slot when it is better than both your guns; otherwise it goes in the backpack.
+
+Check 21.63. Fails on v21.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

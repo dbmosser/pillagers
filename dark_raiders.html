@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.62';
+var VER='21.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15405,8 +15405,13 @@ function grantLoot(ct,keys,delay0){
       // made from the inventory with the two slot keys. autoEquip 1 restores the
       // old behaviour for anyone who wants it, because the upgrade-on-pickup rule
       // was load bearing for a long time and the starters still rank through it.
-      var tierUp=(WTIER[itm.gk]||0)>(WTIER[p.wep.id]||0);
-      var condUp=(WTIER[itm.gk]||0)===(WTIER[p.wep.id]||0)&&found.qRank>(p.wep.qRank===undefined?1:p.wep.qRank);
+      // v21.63, HIS NOTE (2026-10-09): "i picked up a scav pistol and it replaced the better gun in slot 1 -- this should never happen".
+      // A found gun was weighed against the gun in your hands alone, so holding Bare Hands in one slot a Scav Pistol counted as better
+      // and was put in your hands while a far better gun sat in the other slot. It is weighed against the best gun you carry in either
+      // slot now: a gun takes a slot by itself only when it beats both; anything else goes into the backpack.
+      var _bestT=Math.max(WTIER[p.wep.id]||0,(p.sec&&p.sec.mag!==0)?(WTIER[p.sec.id]||0):0);
+      var tierUp=(WTIER[itm.gk]||0)>_bestT;
+      var condUp=(WTIER[itm.gk]||0)===_bestT&&(WTIER[itm.gk]||0)===(WTIER[p.wep.id]||0)&&found.qRank>(p.wep.qRank===undefined?1:p.wep.qRank);
       // v10.68, HIS NOTE of 2026-09-03: "when i find a gun it should go to the
       // next open slot, not kick my scav pistol out of slot 1". v10.62 did this
       // for a gun equipped out of the backpack and could not reach this path,
@@ -34376,7 +34381,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.62: A pillager you shoot now turns and fires back. Check 21.62 fails on v21.61',
+  now:'v21.63: A gun you pick up only takes a slot when it is better than both your guns; otherwise it goes in the backpack. Check 21.63 fails on v21.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

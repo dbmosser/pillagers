@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.63 - A FOUND GUN NEVER BUMPS A BETTER ONE
+
+Co-op hunt while he was away. His note of 2026-10-09: he picked up a Scav Pistol and it took the place of a better gun, which should never happen. A found gun was weighed against the gun in your hands alone, so while you held Bare Hands in one slot a Scav Pistol counted as better and went into your hands with a far better gun in the other slot. It is now weighed against the best gun you carry in either slot: a gun takes a slot by itself only when it beats both, and anything else goes into the backpack.
+
+MEASURED. Check 21.63 passes, and fails on v21.62.
 ## v21.62 - A SHOT PILLAGER RETURNS FIRE
 
 Co-op hunt while he was away. His note of 2026-10-09: when a pillager takes fire he should return fire. A shot pillager turned to chase but fired only once the shooter was inside his view cone and he had held him for a third of a second, so a shot from the side or behind went unanswered. Now for 2.5 seconds after he is hit he turns to the shooter and fires back whenever the line is clear and the shooter is in range, after a 0.2 second flinch. Hires are untouched. This makes fights with pillagers harder.

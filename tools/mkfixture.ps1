@@ -5723,6 +5723,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.63',what:'a found Scav Pistol never takes a slot while you carry a better gun: holding Bare Hands in slot 2 with a rifle in slot 1, it goes into the backpack',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof grantLoot!=='function'||typeof swapGuns!=='function'||!ITEMS.gun_pistol) return 'SKIP: no pickup here';
+     var bad=[], w0=(P.weapons||[]).slice(), e0=P.equipped, s0=P.equippedSec, g, p, sl;
+     try{
+       __topClear(); __runPrep();
+       P.weapons=['rifle']; P.equipped='rifle'; P.equippedSec='none';
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); p=g.player;
+       if(!p.wep||p.wep.id!=='rifle') return 'SKIP: staging: did not deploy holding the rifle';
+       swapGuns();
+       grantLoot({x:p.x,y:p.y,loot:[],dropped:0},['gun_pistol']);
+       sl=hotbarSlots().slice(0,2).map(function(s){ return s.icon; });
+       if(sl.indexOf('pistol')>=0) bad.push('the Scav Pistol took a slot ('+sl.join(', ')+') while a rifle was carried');
+       if(g.bag.indexOf('gun_pistol')<0) bad.push('the Scav Pistol is not in the backpack');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} P.weapons=w0; P.equipped=e0; P.equippedSec=s0; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.62',what:'a pillager shot from behind returns fire within half a second instead of waiting to have the shooter in his view cone',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof updateEnts!=='function'||typeof netShotTake!=='function') return 'SKIP: no raid here';
