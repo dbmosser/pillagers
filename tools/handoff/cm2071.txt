@@ -1,0 +1,7 @@
+v20.71: a restore code leaves the floor crates behind
+
+A restore code no longer hands the floor crates of the replaced save to the restored character.
+
+Check 20.71. Fails on v20.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

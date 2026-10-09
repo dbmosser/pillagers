@@ -5722,6 +5722,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.71',what:'a restore code takes the replaced character floor crates with it: after the restore and its reload the restored stash gains none of them, and they leave this floor',
+   run:function(){
+     if(!window.__P||typeof restoreApply!=='function'||typeof floorDropsRestore!=='function'||!ITEMS.medkit||!ITEMS.scrap) return 'SKIP: no restore or floor crates in this build';
+     var P2=__P(), snap=JSON.parse(JSON.stringify(P2)), bad=[], hb=(typeof HB==='object'&&HB)?HB:null, hd=hb?hb.drops:null, seat=(typeof NET==='object'&&NET)?NET.seat:0, i, n=0, sc=0, k, ok;
+     try{
+       __topClear(); __cleanProfile();
+       if(hb) hb.drops=[{id:'zqx-h32-a',k:'medkit',x:200,y:200,by:seat},{id:'zqx-h32-b',k:'medkit',x:230,y:200,by:seat}];
+       P2.stash=['scrap']; P2.floorDrops=[{id:'zqx-h32-a',k:'medkit'},{id:'zqx-h32-b',k:'medkit'}];
+       ok=restoreApply({v:1,n:'ZQXRESTORE32',c:4321,x:10,l:1,s:{scrap:3}});
+       if(!ok) return 'SKIP: restoreApply refused the staged code';
+       // CONTROL: the code did replace the stash.
+       for(i=0;i<P2.stash.length;i++) if(P2.stash[i]==='scrap') sc++;
+       if(sc!==3||P2.pname!=='ZQXRESTORE32') return 'SKIP: the staged code did not replace the save (stash '+JSON.stringify(P2.stash)+')';
+       if(hb&&(hb.drops||[]).some(function(q){ return q&&(q.id==='zqx-h32-a'||q.id==='zqx-h32-b'); })) bad.push('the replaced character crates still sit on this floor, where they can be taken into the restored stash');
+       floorDropsRestore();   // what the boot after the restore reload does
+       for(i=0;i<P2.stash.length;i++) if(P2.stash[i]==='medkit') n++;
+       if(n) bad.push('after the restore and its reload the restored stash gained '+n+' Medkits the replaced character left on the floor');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ for(k in P2) if(!(k in snap)) delete P2[k]; for(k in snap) P2[k]=snap[k]; saveProfile(); }catch(_r){}
+       try{ if(hb) hb.drops=hd; }catch(_h){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.70',what:'a contract gun he already owns pays the value the game shows for that gun: with the loot dial off its default the payment and the receipt are the scaled value, not the table value',
    run:function(){
      if(typeof payGear!=='function'||typeof ival!=='function'||typeof CGEAR!=='object'||!CGEAR||!window.__P) return 'SKIP: no contract gear here';
