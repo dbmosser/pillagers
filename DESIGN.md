@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.87 - THE WHAT IS NEW CARD NAMES THE 4K POLISH
+
+Co-op hunt while he was away. The card was stamped v20.73 and the stamp may not trail the build by more than 0.15. Its new second line names the first fixes from the 4K screenshot pass of 2026-10-08: shop tiles, steady tabs, the stash search bar, sharp sector maps, and the Mainframe, bar and Wirt pages lined up; the rest are in the change list.
+
+MEASURED. Check 20.87 passes, and fails on v20.86.
 ## v20.86 - ONE UNDERCROFT SONG IN TWO PLAYER PLAY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In two player play on one machine, both windows played the Undercroft music, and each picked its own song at random, so four times in five two different songs played at once, out of step, one in each speaker with split speakers on. Now only the player 1 window plays the music. When the world sound is set to player 2 only, the player 2 window plays it instead, since that is the window you can hear. With split speakers on, the song plays from both speakers, not one.
