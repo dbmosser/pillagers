@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.69 - THE RAID NO LONGER FREEZES WHEN THE HOST LEAVES
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when the host window closed, lost its link or ended the party, the other player takes the raid over. But a pillager the host had last shown crouched at a box was, in that window, searching himself: that is how the crouch is drawn there. After the takeover he kept searching himself, and about two seconds later the game hit an error on every frame, so the raid picture froze and the remaining player could not play on. At the takeover every pillager now lets go of that stand-in and picks a real box to search.
+
+MEASURED. Check 21.69 passes, and fails on v21.68.
 ## v21.68 - THE WHAT IS NEW CARD NAMES HIS PLAYTEST
 
 Co-op hunt while he was away. The card was stamped v21.58 and the stamp may not trail the build by more than 0.15. Its new second line names the changes from his playtest notes of 2026-10-09 (v21.60 to v21.67); the rest (WEAK SPOT, the found gun rule, the honest RECOVERING) are in the change list.

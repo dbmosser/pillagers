@@ -1,0 +1,1 @@
+| THE RAID NO LONGER FREEZES WHEN THE HOST LEAVES | v21.69 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 21.69 passes, fails on v21.68 |

@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.68';
+var VER='21.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34405,7 +34405,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.68: The what is new card names the playtest changes. Check 21.68 fails on v21.67',
+  now:'v21.69: In co-op, the raid no longer freezes a moment after the host leaves. Check 21.69 fails on v21.68',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42411,6 +42411,11 @@ function netHostGone(why){
     if(!(_e.hp<=0)){ _e.nIn=1; G.ents.push(_e); }
   }
   for(_i=G.ents.length-1;_i>=0;_i--){ _e=G.ents[_i]; if(_e&&_e.net){ if(_e.name===BOSS_NAME) _boss=_e; G.ents.splice(_i,1); } }
+  // v21.69, from the whole-game bug hunt of 2026-10-08 (K1): A PILLAGER LAST SEEN AT A BOX LOOKS FOR A REAL ONE. To draw the crouch,
+  // this window gave a pillager the host showed crouched at a box himself as the box (and a man reviving a friend himself as the
+  // friend). At the takeover he kept that stand-in, searched himself for up to two seconds, and then the game threw an error on
+  // every frame, so the raid froze for the remaining player. The stand-ins go now, and he picks a real box on a fresh search.
+  for(_i=0;_i<G.ents.length;_i++){ _e=G.ents[_i]; if(!_e) continue; if(_e.goal===_e){ _e.goal=null; _e.lootT=0; } if(_e.reviving===_e) _e.reviving=null; }
   if(_boss){ G.bossDone=0; _b=bossTick(true); if(_b&&_boss.maxhp>0&&_boss.hp>0) _b.hp=Math.max(1,Math.round(_b.maxhp*Math.min(1,_boss.hp/_boss.maxhp))); }
   else if((G.t||0)>=2) G.bossDone=1;
   G.netLeft='';

@@ -1,0 +1,7 @@
+v21.69: the raid no longer freezes when the host leaves
+
+In co-op, the raid no longer freezes a moment after the host leaves.
+
+Check 21.69. Fails on v21.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
