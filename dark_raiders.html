@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.75';
+var VER='20.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28838,7 +28838,10 @@ var LEGEND_PAD=[
   ['FIGHT',[['R STICK','aim'],['RT','fire / use selected'],['LT / RS CLICK','focus aim, hold / toggle'],['D-LEFT/RIGHT','aim distance'],['X','reload']]],
   ['GEAR',[['LB/RB tap','change tactical belt slot'],['LB/RB hold','zoom out / in'],['D-DOWN','revive when down'],['VIEW','backpack']]],
   ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
-  ['TEAM',[['Y','backpack open: drop an item for a teammate'],['LB + RB','ping, twice for danger']]]   // v18.27: his order, trading is dropping
+  // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): THE PING IS D-UP ON A CONTROLLER. This row said LB + RB, but both
+  // bumpers together walk the belt and zoom and have not pinged since v16.46 moved the ping to D-UP, so the row taught a button
+  // that does nothing. It names D-UP now, the same button the WORLD row above names.
+  ['TEAM',[['Y','backpack open: drop an item for a teammate'],['DPAD UP','ping, twice for danger']]]   // v18.27: his order, trading is dropping
 ];
 // Every line here used to run past the right edge of its own panel, by 83 to 164
 // pixels on a box only 222 wide, so the rules he asked for spilled out of their
@@ -29530,7 +29533,9 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
   // about a fifth of the area the full list took and clear of the message line.
   if(G.legendOn===1){
     var MN=((PAD&&PAD.on)?LEGEND_MINI_PAD:LEGEND_MINI).slice(),mi;
-    if(typeof NET==='object'&&NET&&NET.on) MN.push([(PAD&&PAD.on)?'Y':'Z','drop to trade'],[(PAD&&PAD.on)?'LB + RB':'N','ping']);   // v18.27: his order, trading is dropping
+    // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): ON A CONTROLLER THE PARTY ROWS ADD NO SECOND PING. The pad list
+    // above already says D-UP ping, and the row added here named both bumpers, which never ping. On keys N still pings.
+    if(typeof NET==='object'&&NET&&NET.on){ if(PAD&&PAD.on) MN.push(['Y','drop to trade']); else MN.push(['Z','drop to trade'],['N','ping']); }   // v18.27: his order, trading is dropping
     var _mr=Math.ceil(MN.length/2);
     if(!(PAD&&PAD.on)) for(mi=0;mi<MN.length;mi++) MN[mi]=[legendKeys(MN[mi][0]),MN[mi][1]];   // v18.60: the keys as set
     var _kw=0, _lw=0; ctx.font=FS(TYPE.micro); for(mi=0;mi<MN.length;mi++) _kw=Math.max(_kw,ctx.measureText(padB(MN[mi][0])).width);
@@ -33887,7 +33892,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.75: At 4K the Peddler panel, YOU DIED, the NOTORIETY stamp, the centre extract line and the hit ticks match the size of the rest of the screen. Check 20.75 fails on v20.74',
+  now:'v20.76: On a controller the controls list says D-UP pings, the button that really does. Check 20.76 fails on v20.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

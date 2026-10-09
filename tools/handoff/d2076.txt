@@ -1,0 +1,5 @@
+## v20.76 - THE CONTROLLER PING IS D-UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller the full controls list and the pause box said LB + RB pings, and in a party the small legend said it too, under a line already saying D-UP pings. Both bumpers together never ping: each tap walks the belt and holding both zooms out and in at once. The ping has been on D-UP since v16.46. The full list now says D-UP, and the small party legend lists the ping once.
+
+MEASURED. Check 20.76 passes, and fails on v20.75.

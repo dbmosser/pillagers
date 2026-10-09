@@ -1,0 +1,7 @@
+v20.76: the controller ping is d-up
+
+On a controller the controls list says D-UP pings, the button that really does.
+
+Check 20.76. Fails on v20.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

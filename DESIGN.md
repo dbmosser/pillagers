@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.76 - THE CONTROLLER PING IS D-UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller the full controls list and the pause box said LB + RB pings, and in a party the small legend said it too, under a line already saying D-UP pings. Both bumpers together never ping: each tap walks the belt and holding both zooms out and in at once. The ping has been on D-UP since v16.46. The full list now says D-UP, and the small party legend lists the ping once.
+
+MEASURED. Check 20.76 passes, and fails on v20.75.
 ## v20.75 - 4K: CENTRE PANELS GROW WITH THE SCREEN
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At 4K the world, the backpack, the belt and the extraction lines are drawn about twice their 1080p size, but a few things in the middle of the screen stayed small: the Peddler trade panel, YOU DIED, the NOTORIETY stamp and the centre line such as HOLD E TO EXTRACT, and the hit ticks shrank inside the hole of the crosshair. They now grow with the screen the way the world prompts and the downed screen already do. At 1080p nothing moves.
