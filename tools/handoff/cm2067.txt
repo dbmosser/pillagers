@@ -1,0 +1,7 @@
+v20.67: sort by rarity follows the colours
+
+Stash SORT RARITY now orders guns by the rarity colour they show.
+
+Check 20.67. Fails on v20.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.67 - SORT BY RARITY FOLLOWS THE COLOURS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A gun in the stash wears the colour of its tier: the Longshot is gold, the Marksman Rifle purple, the Magnum blue. But SORT: RARITY ordered guns by an older rarity kept for prices, so the gold Longshot sorted below every purple item, the purple Marksman Rifle sat among the blues, and the blue Magnum and Burst Carbine among the greens. The sort now uses the colour each cell shows.
+
+MEASURED. Check 20.67 passes, and fails on v20.66.
 ## v20.66 - THE PARTY SCORE SHOWS ON THE RUN CARD
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At the end of a co-op raid the run card is meant to show the party score he picked: how each player's raid ended, kills, what was carried out and how many items, downs and revives. It never showed. An older, smaller party summary (how it ended, kills, value) was written into the same place a moment later and replaced it every time, on your window and again when your teammate finished. The run card now shows the party score, and the older summary is used only when there is no score to show.
