@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.88 - THE FLOOR HEADING STAYS OUT OF THE WINDOWS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On the 4K screenshots of the shop and Fashion, the top half of the words THE UNDERCROFT showed above the top edge of the window, cut in half by its frame. The floor behind a station window kept painting its heading in the corner, and the window is slightly see-through with its frame a little in from the screen edge, so the heading poked out above it. The heading is no longer painted while a window is open, and comes back as soon as the window closes.
+
+MEASURED. Check 20.88 passes, and fails on v20.87.
 ## v20.87 - THE WHAT IS NEW CARD NAMES THE 4K POLISH
 
 Co-op hunt while he was away. The card was stamped v20.73 and the stamp may not trail the build by more than 0.15. Its new second line names the first fixes from the 4K screenshot pass of 2026-10-08: shop tiles, steady tabs, the stash search bar, sharp sector maps, and the Mainframe, bar and Wirt pages lined up; the rest are in the change list.

@@ -1,0 +1,7 @@
+v20.88: the floor heading stays out of the windows
+
+The Undercroft heading no longer pokes out above the top of the shop, Fashion and the other windows.
+
+Check 20.88. Fails on v20.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

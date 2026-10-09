@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.87';
+var VER='20.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32885,6 +32885,13 @@ function hubStationNames(S,ox,oy){
   wc.textAlign='left';
   wc.restore();
 }
+// v20.88, from the whole-game bug hunt of 2026-10-08 (V-A1): IS A WINDOW OPEN OVER THE FLOOR. Any window that is on counts, except
+// the tuning and sim consoles, which openModal lets sit over whatever they tune.
+function hubWinOn(){
+  var m=document.querySelectorAll('.modal.on'), i;
+  for(i=0;i<m.length;i++) if(m[i].id!=='tunemodal'&&m[i].id!=='simmodal') return true;
+  return false;
+}
 function drawHubHUD(ox,oy){
   if(titleOn()) return;   // v17.84: nothing of the floor HUD under the title
   var p=HB.player;
@@ -32901,7 +32908,12 @@ function drawHubHUD(ox,oy){
   ctx.save(); ctx.scale(_hhr,_hhr);
   ctx.shadowColor='rgba(4,6,9,.95)'; ctx.shadowBlur=4;
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
-  ctx.fillText('THE UNDERCROFT',16,28);
+  // v20.88, from the whole-game bug hunt of 2026-10-08 (V-A1): THE FLOOR HEADING STAYS OUT OF A STATION WINDOW. A window is a
+  // slightly see-through sheet with its frame 14 pixels in from the screen edge, and the floor kept painting this heading in the
+  // corner behind it, so on the 4K screenshots the top half of THE UNDERCROFT showed above the frame line of the shop, Fashion and
+  // the other windows, cut in half by it. It is not painted while a window is open and is back the frame it closes. The money
+  // line under it sits behind the frame and is left as it was.
+  if(!hubWinOn()) ctx.fillText('THE UNDERCROFT',16,28);
   ctx.shadowColor='transparent'; ctx.shadowBlur=0;
   ctx.restore();
   try{ drawHubGiftLine(); }catch(_hg){}   // v18.05: an open trade offer, on the floor
@@ -33939,7 +33951,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.87: The what is new card names the 4K polish. Check 20.87 fails on v20.86',
+  now:'v20.88: The Undercroft heading no longer pokes out above the top of the shop, Fashion and the other windows. Check 20.88 fails on v20.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

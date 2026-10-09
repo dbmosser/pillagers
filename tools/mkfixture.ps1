@@ -5722,6 +5722,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.88',what:'the floor heading stays out of a station window: with the shop or Fashion open THE UNDERCROFT is not painted behind the window, where its top half showed above the frame, and with the window shut it is painted again',
+   run:function(){
+     if(typeof __station!=='function'||typeof __hubEnter!=='function'||typeof __hubStep!=='function') return 'SKIP: no Undercroft floor here';
+     var bad=[], t, oFT=ctx.fillText, rec=[], hd='THE UNDER'+'CROFT', ids=['trader','mirror'], i, open;
+     function drawn(){ var j; for(j=0;j<rec.length;j++) if(rec[j]===hd) return true; return false; }
+     function shut(){ var a=document.querySelectorAll('.modal.on'), k; for(k=0;k<a.length;k++) a[k].classList.remove('on'); }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); shut();
+       ctx.fillText=function(s){ rec.push(String(s)); return oFT.apply(this,arguments); };
+       rec=[]; __hubStep(0.016);
+       if(!drawn()) return 'SKIP: the floor drew no heading with no window open';
+       for(i=0;i<ids.length;i++){
+         __station(ids[i],'KeyE');
+         open=document.querySelector('.modal.on');
+         if(!open){ bad.push('the '+ids[i]+' station opened no window'); continue; }
+         rec=[]; __hubStep(0.016);
+         if(drawn()) bad.push('the floor heading is painted behind the '+open.id+' window');
+         shut();
+       }
+       rec=[]; __hubStep(0.016);
+       if(!drawn()) bad.push('the floor heading did not come back when the window shut');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; shut(); __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.87',what:'the what is new card is stamped within 0.15 of the build and leads with the 4k polish news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
