@@ -1,0 +1,7 @@
+v21.40: the gun card fits its words
+
+The gun card in the corner is no wider than its words and no longer touches the screen edge.
+
+Check 21.40. Fails on v21.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

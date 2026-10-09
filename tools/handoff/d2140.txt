@@ -1,0 +1,5 @@
+## v21.40 - THE GUN CARD FITS ITS WORDS
+
+Co-op hunt while he was away. Found by the 4K visual pass of 2026-10-09 (W-D2). The gun card in the bottom right corner (the gun, its rounds, the stowed weapon and the backpack key) was always drawn at a fixed large width, so with the usual short lines more than half of it was an empty dark block, and its right edge ran onto the very edge of the screen while every other panel keeps clear of it. The card is now as wide as its words need (the same width as the area you drag it by, longer only for a long gun name), and its right edge lines up with the hidden chip above it, a little in from the screen edge. The words on it have not moved.
+
+MEASURED. Check 21.40 passes, and fails on v21.39.
