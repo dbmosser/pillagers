@@ -1,0 +1,7 @@
+v21.12: the loaner bandages are not your loss
+
+The death card no longer lists the two issued loaner Bandages as lost or counts their money as gone.
+
+Check 21.12. Fails on v21.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

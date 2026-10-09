@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.11';
+var VER='21.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21920,7 +21920,14 @@ var _cdone=contractExtract(G.bag,haul);
     for(j=0;j<nSafe;j++){ saved.push(G.bag[idx[j]]); bankItem(G.bag[idx[j]]); }
     var savedVal=0;
     for(j=0;j<saved.length;j++) savedVal+=ival(saved[j]);
-    var lostIdx=idx.slice(nSafe),shown=lostIdx.slice(0,7);
+    // v21.12, from the whole-game bug hunt of 2026-10-08 (H20): THE ISSUED LOANER BANDAGES ARE NOT LOST. The quartermaster issues
+    // two Bandages to anyone who goes up without a heal, and they are his: the extraction card leaves them out of what was secured,
+    // and this card leaves an issued loaner gun out because you never owned it. Here they were rows reading LOST, in the count and
+    // in the money gone ($120 on every such death). The ones still carried come off the ledger now, as on the extraction card.
+    var lostIdx=idx.slice(nSafe), _dIss=0, _dj;
+    trackIssuedBandages();
+    for(_dj=lostIdx.length-1;_dj>=0&&_dIss<(G.issuedBandages||0);_dj--) if(G.bag[lostIdx[_dj]]==='bandage'){ lostIdx.splice(_dj,1); _dIss++; }
+    var shown=lostIdx.slice(0,7);
     for(j=0;j<shown.length;j++){
       var _lk2=G.bag[shown[j]];
       var li2=ITEMS[_lk2];
@@ -21968,7 +21975,7 @@ var _cdone=contractExtract(G.bag,haul);
     var _lostN=lostIdx.length;
     var _lostWhat=_lostN+' item'+(_lostN===1?'':'s');
     if(_gunN) _lostWhat+=' and '+_gunN+' gun'+(_gunN===1?'':'s');
-    lines.push(_lostWhat+' lost, '+'$'+((haul-savedVal)+_gunVal).toLocaleString()+' gone');
+    lines.push(_lostWhat+' lost, '+'$'+((haul-savedVal-_dIss*ival('bandage'))+_gunVal).toLocaleString()+' gone');
     if(saved.length) lines.push('Rebate held '+saved.length+' item'+(saved.length>1?'s':'')+' ('+'$'+savedVal.toLocaleString()+')');   // v12.35: the automatic rebate, not the deleted pocket
     // v6.09: metres, like every other distance in the game. This printed raw world
     // units with an 'm' on the end, so it disagreed with the header above it by a
@@ -34039,7 +34046,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.11: At 4K the boss name and health bar are drawn as big as the message above them. Check 21.11 fails on v21.10',
+  now:'v21.12: The death card no longer lists the two issued loaner Bandages as lost or counts their money as gone. Check 21.12 fails on v21.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
