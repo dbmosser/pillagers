@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.68 - THE WHAT IS NEW CARD NAMES HIS PLAYTEST
+
+Co-op hunt while he was away. The card was stamped v21.58 and the stamp may not trail the build by more than 0.15. Its new second line names the changes from his playtest notes of 2026-10-09 (v21.60 to v21.67); the rest (WEAK SPOT, the found gun rule, the honest RECOVERING) are in the change list.
+
+MEASURED. Check 21.68 passes, and fails on v21.67.
 ## v21.67 - PILLAGERS DROP BETTER GEAR
 
 Co-op hunt while he was away. His note of 2026-10-09: gear that drops from enemies dying needs to be better. A dead pillager left what he had looted, mostly bandages, ammo, wire and boards, plus his gun. Every body now also carries one roll from the best loot table (cores, titanium, optics, plates, medkits and real guns), and one in a medium or heavy rig a second, so the fight pays like the loot it guards. The map is unchanged.

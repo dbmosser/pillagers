@@ -1,0 +1,7 @@
+v21.68: the what is new card names his playtest
+
+The what is new card names the playtest changes.
+
+Check 21.68. Fails on v21.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

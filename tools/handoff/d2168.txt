@@ -1,0 +1,5 @@
+## v21.68 - THE WHAT IS NEW CARD NAMES HIS PLAYTEST
+
+Co-op hunt while he was away. The card was stamped v21.58 and the stamp may not trail the build by more than 0.15. Its new second line names the changes from his playtest notes of 2026-10-09 (v21.60 to v21.67); the rest (WEAK SPOT, the found gun rule, the honest RECOVERING) are in the change list.
+
+MEASURED. Check 21.68 passes, and fails on v21.67.
