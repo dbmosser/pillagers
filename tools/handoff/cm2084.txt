@@ -1,0 +1,7 @@
+v20.84: the hot ground starts away from you
+
+The hot ground no longer starts on top of your drop point.
+
+Check 20.84. Fails on v20.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

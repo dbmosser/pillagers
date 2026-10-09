@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.84 - THE HOT GROUND STARTS AWAY FROM YOU
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The hot ground is meant to start away from where you land, so going there is a choice. Nothing checked that, and about one raid in eleven on COLD STORAGE dropped you inside the disc, so every box paid the bonus from the first second and there was nothing to decide. A disc that starts too close to the drop point is now placed again, at least 300 beyond its edge, and the rest of the map comes out exactly as before.
+
+MEASURED. Check 20.84 passes, and fails on v20.83.
 ## v20.83 - PLAYER 2 HEARS THE WEATHER TURN
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op only the host window turns the sky. The host was told The weather is turning, with its sound, while there was still time to act on it, but player 2 got the new sky with no word at all: fog closing in or a storm starting with no heads-up. Player 2 is now told the same line once, when the turn starts, and each window plays the turn sound once for itself, instead of player 2 also hearing the host sound from wherever the host stands.

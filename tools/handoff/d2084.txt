@@ -1,0 +1,5 @@
+## v20.84 - THE HOT GROUND STARTS AWAY FROM YOU
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The hot ground is meant to start away from where you land, so going there is a choice. Nothing checked that, and about one raid in eleven on COLD STORAGE dropped you inside the disc, so every box paid the bonus from the first second and there was nothing to decide. A disc that starts too close to the drop point is now placed again, at least 300 beyond its edge, and the rest of the map comes out exactly as before.
+
+MEASURED. Check 20.84 passes, and fails on v20.83.

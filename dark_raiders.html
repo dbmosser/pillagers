@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.83';
+var VER='20.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10426,6 +10426,19 @@ function buildRaid(sim){
   var _hz=freeSpot(map,60);
   // v7.57, his note: the disc must sit 100% inside the map.
   var hotZone={x:clamp(_hz.x,620,WORLD_W-620),y:clamp(_hz.y,620,WORLD_H-620),r:620,at:0,moves:0};
+  // v20.84, from the whole-game bug hunt of 2026-10-08 (H63): THE HOT GROUND STARTS AWAY FROM THE DROP POINT, as the note above
+  // promises. Nothing measured it, so about one raid in eleven on COLD STORAGE landed you inside the disc: every box paid the
+  // bonus from the first second and there was no choice to go or to avoid. A centre nearer than 920 (the disc and 300 more) is
+  // chosen again on its own side stream, the first of up to 40 tries that is far enough, else the farthest. The draw above is
+  // kept and the side stream is put back after, so the seeded map build does not move.
+  if(dist(hotZone,start)<620+300) sideStream(seed,6,function(){
+    var _hb=null, _hbd=-1, _hq, _hc, _ht;
+    for(_ht=0;_ht<40&&_hbd<620+300;_ht++){
+      _hq=freeSpot(map,60); _hc={x:clamp(_hq.x,620,WORLD_W-620),y:clamp(_hq.y,620,WORLD_H-620)};
+      if(dist(_hc,start)>_hbd){ _hbd=dist(_hc,start); _hb=_hc; }
+    }
+    if(_hb&&_hbd>dist(hotZone,start)){ hotZone.x=_hb.x; hotZone.y=_hb.y; }
+  });
   var no=Math.max(2,Math.round(18*AREA*CFG.contDens*mapContMul()));
   for(i=0;i<no;i++){ var sp2=freeSpot(map,30);
     containers.push(mkContainer(sp2.x,sp2.y,rr()<.7?'crate':'body',
@@ -33913,7 +33926,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.83: In co-op, player 2 is now told when the weather is turning, as the host is. Check 20.83 fails on v20.82',
+  now:'v20.84: The hot ground no longer starts on top of your drop point. Check 20.84 fails on v20.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
