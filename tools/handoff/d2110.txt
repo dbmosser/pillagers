@@ -1,0 +1,5 @@
+## v21.10 - THE TOP ROW OF STATION NAMES LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K Undercroft screenshot: the three stations on the back wall of the room should read as one row, but the gambler stood a little lower than the lift and the Mainframe, so WIRT THE GAMBLER sat visibly below ENTER RAID! and THE MAINFRAME, with his machine lower too. He now stands on the same line, so the three names and machines line up.
+
+MEASURED. Check 21.10 passes, and fails on v21.09.

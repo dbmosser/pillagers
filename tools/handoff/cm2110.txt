@@ -1,0 +1,7 @@
+v21.10: the top row of station names lines up
+
+In the Undercroft, WIRT THE GAMBLER now lines up with ENTER RAID! and THE MAINFRAME across the top of the room.
+
+Check 21.10. Fails on v21.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.10 - THE TOP ROW OF STATION NAMES LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K Undercroft screenshot: the three stations on the back wall of the room should read as one row, but the gambler stood a little lower than the lift and the Mainframe, so WIRT THE GAMBLER sat visibly below ENTER RAID! and THE MAINFRAME, with his machine lower too. He now stands on the same line, so the three names and machines line up.
+
+MEASURED. Check 21.10 passes, and fails on v21.09.
 ## v21.09 - THE RUN CARD FITS THE SCREEN
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K end of raid screenshots: the 29 feel tags were held to a narrow column in the middle of the card, so they stacked eleven rows deep. The card ran past the screen with a scrollbar down its edge, the line under the buttons was out of sight, and on a death card the note box was half hidden under the two buttons. The tags, the note box and that line now use the full width of the card, about eight rows of tags, so a normal card fits on the screen with nothing hidden.
