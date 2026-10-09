@@ -1,0 +1,7 @@
+v20.95: the sector maps are sharp at 4k
+
+At 4K the sector maps on the lift page are sharp, not blurred.
+
+Check 20.95. Fails on v20.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

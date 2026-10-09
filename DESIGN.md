@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.95 - THE SECTOR MAPS ARE SHARP AT 4K
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the lift page (WHERE ARE YOU GOING?): the little map of each sector was drawn at 1080p size and then stretched about two and a half times, so the zone names and building edges were soft and blurred next to the crisp words around them. Each map is now drawn at the size the screen really shows it, so it is as sharp as the rest of the page. Its size and place on the page are unchanged, and at 1080p nothing changes.
+
+MEASURED. Check 20.95 passes, and fails on v20.94.
 ## v20.94 - THE SELL NOTE LINES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the stash: the line under the sell button (selling salvage here pays XP) started a step to the right of the button edge and of the help line above it, because it was styled as a hint line, which carries its own side padding. It now starts on the button edge, with the same size and the same words.

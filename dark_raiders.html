@@ -1626,7 +1626,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.94';
+var VER='20.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33972,7 +33972,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.94: On the stash screen the line under the sell button starts on the button edge. Check 20.94 fails on v20.93',
+  now:'v20.95: At 4K the sector maps on the lift page are sharp, not blurred. Check 20.95 fails on v20.94',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42776,9 +42776,11 @@ function sectorTitle(n){ return String(n||'').toLowerCase().replace(/\b[a-z]/g,f
 // empty page. Each row now carries a drawn map of its sector from the fixed layout (no build, no seeded draw): the ground, the
 // named zones, the buildings and landmarks, and the extraction points as rings. Drawn once per render into a small canvas.
 function sectorPreviewDraw(cv,M){
-  var c=cv.getContext('2d'), W0=cv.width, H0=cv.height, sc=Math.min(W0/M.w,H0/M.h), ox=(W0-M.w*sc)/2, oy=(H0-M.h*sc)/2, i, z, b, e, n=0;
+  // v20.95 (V-B4): a map canvas made sharp (sectorPrevSharp below) is drawn in its page size and scaled up into its larger store
+  var c=cv.getContext('2d'), _sk=!!(cv._k&&cv._lw&&cv._lh), W0=_sk?cv._lw:cv.width, H0=_sk?cv._lh:cv.height, sc=Math.min(W0/M.w,H0/M.h), ox=(W0-M.w*sc)/2, oy=(H0-M.h*sc)/2, i, z, b, e, n=0;
   if(!c) return 0;
-  c.clearRect(0,0,W0,H0);
+  c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,cv.width,cv.height);
+  if(_sk) c.setTransform(cv.width/W0,0,0,cv.height/H0,0,0);
   c.fillStyle=(M.ground&&M.ground.day)||'#55647A'; c.fillRect(ox,oy,M.w*sc,M.h*sc);
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number') continue;
     c.fillStyle='rgba(255,255,255,'+(0.03+0.03*((i%3)))+')'; c.fillRect(ox+z.x*sc,oy+z.y*sc,z.w*sc,z.h*sc);
@@ -42811,11 +42813,26 @@ function sectorPreviewDraw(cv,M){
     c.strokeStyle='#4de3d0'; c.lineWidth=2; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,Math.max(4,78*sc),0,6.2832); c.stroke();
     c.fillStyle='rgba(77,227,208,.25)'; c.fill(); n++; }
   c.textAlign='left';
+  c.setTransform(1,0,0,1,0,0);
   return n;
+}
+// v20.95, from the whole-game bug hunt of 2026-10-08 (V-B4), seen on the 4K lift picture: THE SECTOR MAPS ARE SHARP AT 4K. Each map
+// was drawn on a canvas of 420 pixels and the page then stretched it to the menu size, about two and a half times at 4K, so the
+// zone names and the building edges came out soft and blurred. The canvas now holds as many pixels as the screen shows there (the
+// menu size times the screen pixel ratio, never below 1 and at most 3), keeps its place and size on the page, and the map is drawn
+// scaled into it. At 1080p with the usual menu size nothing changes.
+function sectorPrevSharp(cv){
+  var k;
+  if(!cv._lw){ cv._lw=cv.width; cv._lh=cv.height; }
+  k=(window.devicePixelRatio||1)*((typeof menuScale==='function')?menuScale():1);
+  k=Math.max(1,Math.min(3,k||1));
+  cv.style.width=cv._lw+'px'; cv.style.height=cv._lh+'px';
+  cv.width=Math.round(cv._lw*k); cv.height=Math.round(cv._lh*k); cv._k=k;
+  return k;
 }
 function sectorPreviews(host){
   var cvs=host.querySelectorAll('canvas.secprev'), i, ix, n=0;
-  for(i=0;i<cvs.length;i++){ ix=parseInt(cvs[i].getAttribute('data-map'),10); if(FIXED_MAPS[ix]){ try{ sectorPreviewDraw(cvs[i],FIXED_MAPS[ix]); n++; }catch(_sp){} } }
+  for(i=0;i<cvs.length;i++){ ix=parseInt(cvs[i].getAttribute('data-map'),10); if(FIXED_MAPS[ix]){ try{ sectorPrevSharp(cvs[i]); sectorPreviewDraw(cvs[i],FIXED_MAPS[ix]); n++; }catch(_sp){} } }
   return n;
 }
 function renderSector(){
