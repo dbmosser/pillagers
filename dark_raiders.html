@@ -233,6 +233,11 @@
     color:var(--ash); cursor:pointer; background:rgba(0,0,0,.25); }
   .invtab:hover{ color:var(--bone); border-color:var(--amber); }
   .invtab.on{ color:#0d1435; background:var(--amber); border-color:var(--amber); font-weight:700; }
+  /* v20.91, from the whole-game bug hunt of 2026-10-08 (V-A5): THE TABS IN A WINDOW HOLD STILL. The chosen tab was drawn at 700 and
+     the rest at 400, and heavier letters are wider, so every switch between BUY, CRAFT and HIRE (and the Mainframe and Settings tabs)
+     slid the tabs sideways by a few pixels. Every tab in a window is 600 now, the weight of the buttons; the chosen one is still the
+     gold one. The stash filter row is left as it was. */
+  .modal .invtab, .modal .invtab.on{ font-weight:600; }
   /* v6.22, his 1080p note. Bigger cells on a tall viewport so the panel is used
      rather than merely fitted. The icon inside stays its rendered size on purpose;
      upscaling a rasterised icon by 1.4x blurs it and buys nothing. */
@@ -1615,7 +1620,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.90';
+var VER='20.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33961,7 +33966,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.90: The shop, bench and hire tiles now fill their frame, with no empty strip on the right. Check 20.90 fails on v20.89',
+  now:'v20.91: The tabs in the shop, the Mainframe and Settings no longer slide sideways when you switch them. Check 20.91 fails on v20.90',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

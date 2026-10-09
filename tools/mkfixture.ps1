@@ -5722,6 +5722,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'20.91',what:'the shop tabs hold still: switching from BUY to CRAFT to HIRE moves no tab sideways and changes no tab width',
+   run:function(){
+     if(typeof __station!=='function'||typeof __hubEnter!=='function'||typeof openTrader!=='function') return 'SKIP: no shop here';
+     var bad=[], t, tabs=['buy','craft','hire'], i, k, pos=[], m, worst=0, at='';
+     function grab(){ var o={}, a=document.querySelectorAll('#tradertabs .invtab'), j, r; for(j=0;j<a.length;j++){ r=a[j].getBoundingClientRect(); o[String(a[j].textContent||'').trim()]={l:r.left,w:r.width}; } return o; }
+     function shut(){ var a=document.querySelectorAll('.modal.on'), q; for(q=0;q<a.length;q++) a[q].classList.remove('on'); }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('trader','KeyE');
+       for(i=0;i<tabs.length;i++){ openTrader(tabs[i]); pos.push(grab()); }
+       if(!Object.keys(pos[0]).length) return 'SKIP: the shop drew no tabs';
+       for(k in pos[0]){
+         if(!(pos[0][k].w>0)) continue;
+         for(i=1;i<pos.length;i++){
+           if(!pos[i][k]) continue;
+           m=Math.max(Math.abs(pos[i][k].l-pos[0][k].l),Math.abs(pos[i][k].w-pos[0][k].w));
+           if(m>worst){ worst=m; at=k+' tab (on '+tabs[i].toUpperCase()+')'; }
+         }
+       }
+       if(worst>0.75) bad.push('the '+at+' moves or changes width by '+worst.toFixed(1)+' px when the tab changes');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ shut(); __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'20.90',what:'the shop, bench and hire tiles fill their frame: on BUY, CRAFT and HIRE the last tile of a full row ends within a quarter of a tile of the right edge of the frame, with no empty strip beside the tiles',
    run:function(){
      if(typeof __station!=='function'||typeof __hubEnter!=='function'||typeof openTrader!=='function') return 'SKIP: no shop here';

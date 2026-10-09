@@ -1,0 +1,7 @@
+v20.91: the shop tabs hold still
+
+The tabs in the shop, the Mainframe and Settings no longer slide sideways when you switch them.
+
+Check 20.91. Fails on v20.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

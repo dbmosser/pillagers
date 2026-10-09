@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.91 - THE SHOP TABS HOLD STILL
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The chosen tab was drawn in heavier letters than the others, and heavier letters are wider, so every time you switched between BUY, CRAFT and HIRE the tabs slid sideways a few pixels (the Mainframe and Settings tabs did the same). Every tab in a window now uses one weight, the same as the buttons, and the chosen tab is still the gold one.
+
+MEASURED. Check 20.91 passes, and fails on v20.90.
 ## v20.90 - THE SHOP TILES FILL THEIR FRAME
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The tiles on the BUY, CRAFT and HIRE tabs stopped at a fixed size, so each grid left an empty strip almost a tile wide inside the right edge of its frame (four tiles and a gap on the 4K screenshots). The tiles now share the full width of the frame at about the size they were, so the strip is gone and one more tile fits on each row.
