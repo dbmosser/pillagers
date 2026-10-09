@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.54 - THE CONTROLS LIST STAYS OUT OF A RECORDING
+
+Co-op hunt while he was away. Seen on the first real attract clip (2026-10-09): the clip carried the on-screen controls list (WASD move, CTRL crouch and the rest), which clutters a gameplay reel. While F9 records, the list is now not drawn; it comes back the moment the recording stops.
+
+MEASURED. Check 21.54 passes, and fails on v21.53.
 ## v21.53 - THE ATTRACT TITLES READ OVER THE FOOTAGE
 
 Co-op hunt while he was away. Seen on the first real attract clip (2026-10-09): PRESS ANY KEY sat right on the recorded belt caption and PILLAGERS on the recorded clock, both hard to read over the gameplay. Each now sits on a soft dark band, and PRESS ANY KEY is raised clear of the belt row in the clip.

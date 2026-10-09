@@ -626,3 +626,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 10:22 heartbeat (he is here, idle 412 s, light): no new FAILs; v21.50 recstoptitle (an F9 recording stops when the title comes up)
 2026-10-09 10:52 heartbeat (light): no new FAILs; v21.51 card refresh (stamped 21.51, next by ~21.65)
 2026-10-09 11:23 heartbeat (away 26 min, light): no new FAILs; v21.52 hireonce (H13 second half: a hire on FOLLOW/HOLD drops 'investigate' and moves once a frame). Hunt now 62 of 63 (H60 left: map build draws)
+2026-10-09 11:54 heartbeat (away 56 min, light): attract mode verified end to end in the 4K Chrome (F9 8 s -> 2 MB webm in IndexedDB, title idle 30 s -> clip plays 1920x1037 with the titles; download stubbed); v21.53 attband (titles on dark bands, PRESS ANY KEY above the clip belt)

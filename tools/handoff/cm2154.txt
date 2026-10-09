@@ -1,0 +1,7 @@
+v21.54: the controls list stays out of a recording
+
+While you record with F9, the controls list is hidden so the clip shows clean gameplay.
+
+Check 21.54. Fails on v21.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

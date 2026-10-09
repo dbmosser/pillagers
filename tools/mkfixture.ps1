@@ -5723,6 +5723,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.54',what:'while F9 records, the controls list is not drawn, and it is back when the recording stops',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof drawLegend!=='function'||typeof REC!=='object') return 'SKIP: no legend or recorder here';
+     var bad=[], g, n=0, own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), of=ctx.fillText, on0=REC.on, lo0;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       lo0=g.legendOn; g.legendOn=1; g.bagOpen=false;
+       ctx.fillText=function(){ n++; return of.apply(this,arguments); };
+       REC.on=false; n=0; drawLegend(1);
+       if(!n) return 'SKIP: staging: the controls list drew nothing';
+       REC.on=true; n=0; drawLegend(1);
+       if(n) bad.push('while recording the controls list still drew '+n+' words');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ REC.on=on0; if(own) ctx.fillText=of; else delete ctx.fillText; try{ var g2=__state(); if(g2){ g2.legendOn=lo0; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.53',what:'the attract titles read over any footage: each sits on a dark band, and PRESS ANY KEY is clear of the recorded belt row',
    run:function(){
      if(typeof attEl!=='function') return 'SKIP: no attract mode here';
