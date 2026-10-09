@@ -1,0 +1,7 @@
+v21.34: your stats names who killed you properly
+
+YOUR STATS now names who usually kills you in capitals and by its real name, such as PILLAGER or WARDEN.
+
+Check 21.34. Fails on v21.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
