@@ -5722,6 +5722,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.13',what:'RANDOM FROM STASH gives two different random guns he owns, hand and back, never the Scav Pistol while he owns another gun; with one other gun the back slot is empty',
+   run:function(){
+     if(typeof kitFill!=='function'||!WEAPONS.pistol) return 'SKIP: no random kit here';
+     var bad=[], w0=P.weapons, e0=P.equipped, s0=P.equippedSec, k0=P.kit, i, seenA={}, seenB={}, nA=0, nB=0;
+     try{
+       P.weapons=['pistol','rifle','shotgun','smg'];
+       for(i=0;i<60;i++){
+         P.equipped='pistol'; P.equippedSec='pistol';
+         kitFill(true);
+         if(P.equipped==='pistol') bad.push('the hand gun was the Scav Pistol');
+         if(P.equippedSec==='pistol') bad.push('the back gun was the Scav Pistol');
+         if(!P.equippedSec||P.equippedSec==='none') bad.push('no second gun with three others owned');
+         else if(P.equippedSec===P.equipped) bad.push('the same gun in both slots');
+         seenA[P.equipped]=1; seenB[P.equippedSec]=1;
+         if(bad.length) break;
+       }
+       nA=Object.keys(seenA).length; nB=Object.keys(seenB).length;
+       if(!bad.length&&(nA<2||nB<2)) bad.push('the picks are not random ('+nA+' hand guns and '+nB+' back guns over 60 rolls)');
+       P.weapons=['pistol','rifle']; P.equipped='pistol'; P.equippedSec='pistol';
+       kitFill(true);
+       if(P.equipped!=='rifle') bad.push('with the Scav Pistol and one rifle the hand gun was '+P.equipped);
+       if(P.equippedSec!=='none') bad.push('with the Scav Pistol and one rifle the back gun was '+P.equippedSec+', not empty');
+       P.weapons=['pistol']; P.equipped='fists'; P.equippedSec='none';
+       kitFill(true);
+       if(P.equipped!=='pistol') bad.push('with only the Scav Pistol owned it was not taken ('+P.equipped+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.weapons=w0; P.equipped=e0; P.equippedSec=s0; P.kit=k0; }
+     return bad.length?bad.slice(0,3).join('; '):null; }},
   {v:'21.12',what:'the death card leaves the two issued loaner Bandages out of what was lost: dying with them and three finds lists 2 items and 2 Bandages of money fewer than the same backpack with nothing issued, and no Bandage reads LOST',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and end a raid';

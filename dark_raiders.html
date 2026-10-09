@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.12';
+var VER='21.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32544,7 +32544,20 @@ var ASKYES=null, ASKALT=null, ASKBACK=null, ASKRAND=null, ASKTOP=null;
 // RANDOM FROM STASH: a gun he owns picked at random and six stash items of those kinds picked at random.
 function kitFill(rand){
   var own=(P.weapons||[]).filter(function(g){ return g&&g!=='fists'&&WEAPONS[g]; }), g=null, pool=(P.stash||[]).slice(), out=[], i, j, t, cap=0, tc={}, c;
-  if(own.length){ if(rand) g=own[Math.floor(Math.random()*own.length)]; else { own.sort(function(a,b){ return (WTIER[b]||0)-(WTIER[a]||0); }); g=own[0]; } }
+  if(own.length){
+    if(rand){
+      // v21.13, HIS ORDER (2026-10-08): "'random from stash' loadout should never start player with a scav pistol if i have guns
+      // in the stash. give me 2 random stash guns always". It picked one gun at random from everything he owns, the Scav Pistol
+      // included, and left the second slot as it was, so he could go up holding a Scav Pistol or carrying one on his back. Now
+      // both slots are filled at random from his guns, two different kinds, and the Scav Pistol is never picked while he owns
+      // any other gun; with only one other gun, it goes in his hands and the back slot stays empty.
+      var _rp=own.filter(function(k){ return k!=='pistol'; }), _rs;
+      if(!_rp.length) _rp=own.slice();
+      g=_rp[Math.floor(Math.random()*_rp.length)];
+      _rs=_rp.filter(function(k){ return k!==g; });
+      P.equippedSec=_rs.length?_rs[Math.floor(Math.random()*_rs.length)]:'none';
+    } else { own.sort(function(a,b){ return (WTIER[b]||0)-(WTIER[a]||0); }); g=own[0]; }
+  }
   if(g){ if(P.equippedSec===g) P.equippedSec='none'; P.equipped=g; }
   try{ cap=rigCeil(myRig()); }catch(_rc){ cap=0; }
   function ok(k){ var q=ITEMS[k]; return !!q&&(q.use==='throw'||q.use==='ammo'||q.use==='heal'||(q.use==='armor'&&cap>0)); }
@@ -34046,7 +34059,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.12: The death card no longer lists the two issued loaner Bandages as lost or counts their money as gone. Check 21.12 fails on v21.11',
+  now:'v21.13: RANDOM FROM STASH gives you two random guns from your stash, never the Scav Pistol while you own others. Check 21.13 fails on v21.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v21.13: random from stash gives two guns
+
+RANDOM FROM STASH gives you two random guns from your stash, never the Scav Pistol while you own others.
+
+Check 21.13. Fails on v21.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

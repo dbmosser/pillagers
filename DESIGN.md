@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.13 - RANDOM FROM STASH GIVES TWO GUNS
+
+Co-op hunt while he was away. His order of 2026-10-08: RANDOM FROM STASH should never start you with a Scav Pistol if you have other guns, and should always give two random guns. It picked one gun at random from everything you own, the Scav Pistol included, and left your second slot as it was. Now both your hand and back slots get a random gun you own, two different kinds, and the Scav Pistol is only used when it is the one gun you have. With just one other gun, it goes in your hands and the back slot stays empty.
+
+MEASURED. Check 21.13 passes, and fails on v21.12.
 ## v21.12 - THE LOANER BANDAGES ARE NOT YOUR LOSS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Anyone who goes up without a heal is issued two loaner Bandages. They belong to the quartermaster: the extraction card hands them back and does not count them as secured, and the death card already leaves a loaner gun out because you never owned it. But on a death the card listed each loaner Bandage as LOST and added their $120 to the money gone, so a death with $800 of loot read $920 gone. The loaners still carried now come off the death card, from the list, the count and the money.
