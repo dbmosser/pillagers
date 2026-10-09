@@ -5723,6 +5723,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.66',what:'his note: the single shot guns hit harder, so they keep up with the automatics',
+   run:function(){
+     var want={pistol:23,tacker:20,scuttle:12,magnum:62,dmr:64,sniper:170,lance:150,shotgun:16,whisper:24}, bad=[], k;
+     for(k in want) if(!WEAPONS[k]||WEAPONS[k].dmg!==want[k]) bad.push(k+' does '+(WEAPONS[k]&&WEAPONS[k].dmg)+', not '+want[k]);
+     if(WEAPONS.whisper&&WEAPONS.whisper.rof!==400) bad.push('the Whisper fires every '+WEAPONS.whisper.rof+' ms, not 400');
+     function sus(w){ var per=w.dmg*(w.pellets||1)*(w.burst||1), shots=w.mag/(w.burst||1); return per*shots/(shots*w.rof/1000+w.reload/1000); }
+     var ar=sus(WEAPONS.rifle);
+     ['shotgun','lance','dmr','magnum','sniper'].forEach(function(k2){ var s=sus(WEAPONS[k2]); if(s<ar*0.6) bad.push(WEAPONS[k2].name+' sustains '+Math.round(s)+' a second against '+Math.round(ar)+' for the Auto Rifle'); });
+     return bad.length?bad.join('; '):null; }},
   {v:'21.65',what:'the RECOVERING icon shows only while the regen really runs',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof drawHUD!=='function'||typeof tickRegen!=='function') return 'SKIP: no HUD here';

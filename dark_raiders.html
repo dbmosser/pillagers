@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.65';
+var VER='21.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2089,26 +2089,26 @@ function ival(k){ return Math.round((ITEMS[k]?ITEMS[k].val:0)*CFG.lootMult); }  
 var WEAPONS={
   fists:{id:'fists',name:'Bare Hands',dmg:6,rof:420,spread:.30,mag:0,reload:0,rng:60,auto:false,noise:0,tint:'#cdd6dd'},
 
-  pistol:{id:'pistol',name:'Scav Pistol',dmg:19,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:'#ffd48a'},
+  pistol:{id:'pistol',name:'Scav Pistol',dmg:23,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:'#ffd48a'},
   smg:{id:'smg',name:'Compact SMG',dmg:12,rof:88,spread:.115,mag:30,reload:1850,rng:360,auto:true,noise:300,tint:'#ffe0a0'},
   rifle:{optic:1.25,id:'rifle',name:'Auto Rifle',dmg:23,rof:132,spread:.070,mag:25,reload:2050,rng:520,auto:true,noise:420,tint:'#ffcf7a'},
-  dmr:{optic:1.9,id:'dmr',name:'Marksman Rifle',dmg:48,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:'#fff0c0'},
+  dmr:{optic:1.9,id:'dmr',name:'Marksman Rifle',dmg:64,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:'#fff0c0'},
   // v6.69, his note: a beefy Scav Pistol. Two body shots instead of five, for half the
   // magazine, twice the trigger delay and a report that brings the room.
-  magnum:{id:'magnum',name:'Magnum',dmg:46,rof:620,spread:.042,mag:6,reload:1900,rng:480,auto:false,noise:520,tint:'#ffb870'},
+  magnum:{id:'magnum',name:'Magnum',dmg:62,rof:620,spread:.042,mag:6,reload:1900,rng:480,auto:false,noise:520,tint:'#ffb870'},
   // v6.69, his note: a ton of damage, shoots really slow. 1600ms between shots is the
   // slowest trigger in the game by a distance; Scuttle at 780 was the old record.
-  sniper:{optic:2.4,id:'sniper',name:'Longshot',dmg:115,rof:1600,spread:.006,mag:5,reload:3200,rng:900,auto:false,noise:640,tint:'#e8f0ff'},
+  sniper:{optic:2.4,id:'sniper',name:'Longshot',dmg:170,rof:1600,spread:.006,mag:5,reload:3200,rng:900,auto:false,noise:640,tint:'#e8f0ff'},
   // Four issued starters, one rolled at random on every deploy. Tuned at or just
   // under the Scav Pistol and Compact SMG so the shop and loot guns stay upgrades.
-  tacker:{id:'tacker',name:'Tacker',dmg:17,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:'#ffd9a8',starter:1},
+  tacker:{id:'tacker',name:'Tacker',dmg:20,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:'#ffd9a8',starter:1},
   sputter:{id:'sputter',name:'Sputter',dmg:11,rof:80,spread:.130,mag:28,reload:1750,rng:330,auto:true,noise:300,tint:'#ffe6b8',starter:1},
   chatter:{id:'chatter',name:'Chatter',dmg:20,rof:150,spread:.085,mag:22,reload:1950,rng:470,auto:true,noise:400,tint:'#ffd18a',starter:1},
-  scuttle:{id:'scuttle',name:'Scuttle',dmg:9,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:'#ffc98a',starter:1},
+  scuttle:{id:'scuttle',name:'Scuttle',dmg:12,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:'#ffc98a',starter:1},
   // Field families added at v1.08, because his answer to gear versus valuables
   // was 'not even close'. Three genuinely different fire patterns, not stat dups.
   carbine:{id:'carbine',name:'Burst Carbine',dmg:17,burst:3,rof:360,spread:.055,mag:24,reload:1900,rng:500,auto:false,noise:400,tint:'#ffd88a'},
-  shotgun:{id:'shotgun',name:'Riot Scattergun',dmg:12,pellets:6,rof:650,spread:.170,mag:7,reload:2400,rng:260,auto:false,noise:500,tint:'#ffbe7a'},
+  shotgun:{id:'shotgun',name:'Riot Scattergun',dmg:16,pellets:6,rof:650,spread:.170,mag:7,reload:2400,rng:260,auto:false,noise:500,tint:'#ffbe7a'},
   lmg:{optic:1.15,id:'lmg',name:'Support MG',dmg:16,rof:105,spread:.105,mag:60,reload:3400,rng:540,auto:true,noise:460,tint:'#ffca90'},
   // NEVER SOLD, v5.46, corrected at v8.52. Neither is stocked by the shop or by
   // the Peddler, and neither is a seal payout. You get one out of a cache, a safe
@@ -2118,14 +2118,20 @@ var WEAPONS={
   // which the board has contradicted since those rows were added: a reward grants
   // the bare MODEL into the armoury, so it is owned, and an owned gun is wearable
   // and enters the wear and repair economy a field-only gun stays out of.
-  whisper:{optic:1.1,id:'whisper',name:'Whisper',dmg:14,rof:520,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:'#a8d8c0'},
-  lance:{optic:1.6,id:'lance',name:'Meridian Lance',dmg:96,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'}
+  whisper:{optic:1.1,id:'whisper',name:'Whisper',dmg:24,rof:400,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:'#a8d8c0'},
+  lance:{optic:1.6,id:'lance',name:'Meridian Lance',dmg:150,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'}
 };
 var STARTERS=['tacker','sputter','chatter','scuttle'];
 // How guns rank against each other. Used both for auto-equipping a better find
 // in the field and for deciding which of the two carried guns to equip on return.
 // v5.93: whisper and lance were missing entirely and every reader defaults a
 // missing gun to 0, which ranked the two elite guns below bare hands.
+// v21.66, HIS NOTE (2026-10-09): "the shotgun and any single shot gun like the whisper, meridian lance etc need to deal more damage to be
+// competitive against the automatics like the auto rifle and smg". Sustained damage with reloads was about 107 a second for the Auto
+// Rifle and 85 to 99 for the SMG and the Support MG, against 45 to 70 for the single shots and 24 for the Whisper. Per shot now: Scav
+// Pistol 23, Tacker 20, Scuttle 12 a pellet, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet,
+// Whisper 24 and a shot every 0.40 s. The single shots land about 70 to 110 a second sustained; they still trade the magazine for reach and
+// the hit that ends a fight. The Burst Carbine (three a pull, about 85) is unchanged.
 var WTIER={fists:0,tacker:1,pistol:1,sputter:2,scuttle:2,smg:2,chatter:2,magnum:3,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4,whisper:4,sniper:5,lance:5};
 // Field gun quality. Every gun found in the world rolls a condition, so a gun
 // find is a slot machine and not a table lookup: his answer on gear versus
@@ -34385,7 +34391,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.65: The RECOVERING icon now shows only while your health is really coming back. Check 21.65 fails on v21.64',
+  now:'v21.66: Shotguns and single shot guns (Whisper, Meridian Lance, Longshot, Magnum, Marksman) hit harder. Check 21.66 fails on v21.65',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

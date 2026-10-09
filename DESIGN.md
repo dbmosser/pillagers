@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.66 - THE SINGLE SHOT GUNS HIT HARDER
+
+Co-op hunt while he was away. His note of 2026-10-09: the shotgun and the single shot guns, like the Whisper and the Meridian Lance, need more damage to compete with the Auto Rifle and the SMG. Counting reloads, the Auto Rifle did about 107 damage a second and the SMG and Support MG 85 to 99, while the single shots managed 45 to 70 and the Whisper 24. Per shot now: Scav Pistol 23, Tacker 20, Scuttle 12 a pellet, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet, and the Whisper 24 with a faster rate. The single shots now land about 70 to 110 a second and keep their reach and their fight-ending hits. The Burst Carbine is unchanged.
+
+MEASURED. Check 21.66 passes, and fails on v21.65.
 ## v21.65 - RECOVERING SHOWS ONLY WHEN YOU ARE
 
 Co-op hunt while he was away. His note of 2026-10-09: the left side said RECOVERING to 85 while his health was not going up. The icon worked out the regen rule for itself, so it showed whenever the numbers allowed it, also in moments the regen was not running. It now shows only while the regen actually runs, so it never says RECOVERING while your health stands still. Out of a fight you still creep back one point every 3 seconds, up to 85.

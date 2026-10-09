@@ -1,0 +1,48 @@
+{
+    "title":  "THE SINGLE SHOT GUNS HIT HARDER",
+    "why":  "His note of 2026-10-09: the shotgun and the single shot guns, like the Whisper and the Meridian Lance, need more damage to compete with the Auto Rifle and the SMG. Counting reloads, the Auto Rifle did about 107 damage a second and the SMG and Support MG 85 to 99, while the single shots managed 45 to 70 and the Whisper 24. Per shot now: Scav Pistol 23, Tacker 20, Scuttle 12 a pellet, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet, and the Whisper 24 with a faster rate. The single shots now land about 70 to 110 a second and keep their reach and their fight-ending hits. The Burst Carbine is unchanged.",
+    "now":  "Shotguns and single shot guns (Whisper, Meridian Lance, Longshot, Magnum, Marksman) hit harder.",
+    "edits":  [
+                  {
+                      "anchor":  "var WTIER={",
+                      "replacement":  "// v16.xx, HIS NOTE (2026-10-09): \"the shotgun and any single shot gun like the whisper, meridian lance etc need to deal more damage to be\n// competitive against the automatics like the auto rifle and smg\". Sustained damage with reloads was about 107 a second for the Auto\n// Rifle and 85 to 99 for the SMG and the Support MG, against 45 to 70 for the single shots and 24 for the Whisper. Per shot now: Scav\n// Pistol 23, Tacker 20, Scuttle 12 a pellet, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet,\n// Whisper 24 and a shot every 0.40 s. The single shots land about 70 to 110 a second sustained; they still trade the magazine for reach and\n// the hit that ends a fight. The Burst Carbine (three a pull, about 85) is unchanged.\nvar WTIER={"
+                  },
+                  {
+                      "anchor":  "  pistol:{id:\u0027pistol\u0027,name:\u0027Scav Pistol\u0027,dmg:19,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:\u0027#ffd48a\u0027},",
+                      "replacement":  "  pistol:{id:\u0027pistol\u0027,name:\u0027Scav Pistol\u0027,dmg:23,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:\u0027#ffd48a\u0027},"
+                  },
+                  {
+                      "anchor":  "  tacker:{id:\u0027tacker\u0027,name:\u0027Tacker\u0027,dmg:17,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:\u0027#ffd9a8\u0027,starter:1},",
+                      "replacement":  "  tacker:{id:\u0027tacker\u0027,name:\u0027Tacker\u0027,dmg:20,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:\u0027#ffd9a8\u0027,starter:1},"
+                  },
+                  {
+                      "anchor":  "  scuttle:{id:\u0027scuttle\u0027,name:\u0027Scuttle\u0027,dmg:9,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:\u0027#ffc98a\u0027,starter:1},",
+                      "replacement":  "  scuttle:{id:\u0027scuttle\u0027,name:\u0027Scuttle\u0027,dmg:12,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:\u0027#ffc98a\u0027,starter:1},"
+                  },
+                  {
+                      "anchor":  "  magnum:{id:\u0027magnum\u0027,name:\u0027Magnum\u0027,dmg:46,rof:620,spread:.042,mag:6,reload:1900,rng:480,auto:false,noise:520,tint:\u0027#ffb870\u0027},",
+                      "replacement":  "  magnum:{id:\u0027magnum\u0027,name:\u0027Magnum\u0027,dmg:62,rof:620,spread:.042,mag:6,reload:1900,rng:480,auto:false,noise:520,tint:\u0027#ffb870\u0027},"
+                  },
+                  {
+                      "anchor":  "  dmr:{optic:1.9,id:\u0027dmr\u0027,name:\u0027Marksman Rifle\u0027,dmg:48,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:\u0027#fff0c0\u0027},",
+                      "replacement":  "  dmr:{optic:1.9,id:\u0027dmr\u0027,name:\u0027Marksman Rifle\u0027,dmg:64,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:\u0027#fff0c0\u0027},"
+                  },
+                  {
+                      "anchor":  "  sniper:{optic:2.4,id:\u0027sniper\u0027,name:\u0027Longshot\u0027,dmg:115,rof:1600,spread:.006,mag:5,reload:3200,rng:900,auto:false,noise:640,tint:\u0027#e8f0ff\u0027},",
+                      "replacement":  "  sniper:{optic:2.4,id:\u0027sniper\u0027,name:\u0027Longshot\u0027,dmg:170,rof:1600,spread:.006,mag:5,reload:3200,rng:900,auto:false,noise:640,tint:\u0027#e8f0ff\u0027},"
+                  },
+                  {
+                      "anchor":  "  lance:{optic:1.6,id:\u0027lance\u0027,name:\u0027Meridian Lance\u0027,dmg:96,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:\u0027#d8b4ff\u0027}",
+                      "replacement":  "  lance:{optic:1.6,id:\u0027lance\u0027,name:\u0027Meridian Lance\u0027,dmg:150,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:\u0027#d8b4ff\u0027}"
+                  },
+                  {
+                      "anchor":  "  shotgun:{id:\u0027shotgun\u0027,name:\u0027Riot Scattergun\u0027,dmg:12,pellets:6,rof:650,spread:.170,mag:7,reload:2400,rng:260,auto:false,noise:500,tint:\u0027#ffbe7a\u0027},",
+                      "replacement":  "  shotgun:{id:\u0027shotgun\u0027,name:\u0027Riot Scattergun\u0027,dmg:16,pellets:6,rof:650,spread:.170,mag:7,reload:2400,rng:260,auto:false,noise:500,tint:\u0027#ffbe7a\u0027},"
+                  },
+                  {
+                      "anchor":  "  whisper:{optic:1.1,id:\u0027whisper\u0027,name:\u0027Whisper\u0027,dmg:14,rof:520,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:\u0027#a8d8c0\u0027},",
+                      "replacement":  "  whisper:{optic:1.1,id:\u0027whisper\u0027,name:\u0027Whisper\u0027,dmg:24,rof:400,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:\u0027#a8d8c0\u0027},"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his note: the single shot guns hit harder, so they keep up with the automatics\u0027,\n   run:function(){\n     var want={pistol:23,tacker:20,scuttle:12,magnum:62,dmr:64,sniper:170,lance:150,shotgun:16,whisper:24}, bad=[], k;\n     for(k in want) if(!WEAPONS[k]||WEAPONS[k].dmg!==want[k]) bad.push(k+\u0027 does \u0027+(WEAPONS[k]\u0026\u0026WEAPONS[k].dmg)+\u0027, not \u0027+want[k]);\n     if(WEAPONS.whisper\u0026\u0026WEAPONS.whisper.rof!==400) bad.push(\u0027the Whisper fires every \u0027+WEAPONS.whisper.rof+\u0027 ms, not 400\u0027);\n     function sus(w){ var per=w.dmg*(w.pellets||1)*(w.burst||1), shots=w.mag/(w.burst||1); return per*shots/(shots*w.rof/1000+w.reload/1000); }\n     var ar=sus(WEAPONS.rifle);\n     [\u0027shotgun\u0027,\u0027lance\u0027,\u0027dmr\u0027,\u0027magnum\u0027,\u0027sniper\u0027].forEach(function(k2){ var s=sus(WEAPONS[k2]); if(s\u003car*0.6) bad.push(WEAPONS[k2].name+\u0027 sustains \u0027+Math.round(s)+\u0027 a second against \u0027+Math.round(ar)+\u0027 for the Auto Rifle\u0027); });\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

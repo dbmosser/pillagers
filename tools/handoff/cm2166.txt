@@ -1,0 +1,7 @@
+v21.66: the single shot guns hit harder
+
+Shotguns and single shot guns (Whisper, Meridian Lance, Longshot, Magnum, Marksman) hit harder.
+
+Check 21.66. Fails on v21.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
