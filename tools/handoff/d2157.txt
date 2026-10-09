@@ -1,0 +1,5 @@
+## v21.57 - THE RUN CARD SCROLLBAR STAYS INSIDE ITS CORNERS
+
+Co-op hunt while he was away. From the 4K screenshot pass (V-E4): on a run card long enough to scroll, the scrollbar ran right to the top and bottom edges and poked out past the rounded corners. Its track now keeps a margin, so it stays inside the card.
+
+MEASURED. Check 21.57 passes, and fails on v21.56.

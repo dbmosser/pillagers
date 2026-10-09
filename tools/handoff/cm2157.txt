@@ -1,0 +1,7 @@
+v21.57: the run card scrollbar stays inside its corners
+
+On a long run card, the scrollbar now stays inside the rounded corners.
+
+Check 21.57. Fails on v21.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

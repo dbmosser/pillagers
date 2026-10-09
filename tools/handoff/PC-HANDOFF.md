@@ -629,3 +629,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 11:54 heartbeat (away 56 min, light): attract mode verified end to end in the 4K Chrome (F9 8 s -> 2 MB webm in IndexedDB, title idle 30 s -> clip plays 1920x1037 with the titles; download stubbed); v21.53 attband (titles on dark bands, PRESS ANY KEY above the clip belt)
 2026-10-09 12:22 heartbeat (away 86 min, light): no new FAILs; v21.54 reclegend (controls list hidden while F9 records)
 2026-10-09 12:52 heartbeat (away ~2 h, light): no new FAILs; shop grid redraws after a buy (checked); v21.55 boardpad (V-B11: the pillager board ends under its last name)
+2026-10-09 13:22 heartbeat (he is here, idle 7 s, light, no corpus): v21.56 legendf9 (full controls list names F9)

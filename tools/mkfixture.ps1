@@ -5723,6 +5723,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.57',what:'on a run card that scrolls, the scrollbar track keeps clear of the rounded corners',
+   run:function(){
+     var i, j, ss=document.styleSheets, R, hit=false;
+     for(i=0;i<ss.length&&!hit;i++){ try{ R=ss[i].cssRules||[]; }catch(e){ continue; }
+       for(j=0;j<R.length;j++) if(R[j].selectorText&&R[j].selectorText.indexOf('.ocwin::-webkit-scrollbar-track')>=0&&/margin/.test(R[j].cssText)){ hit=true; break; } }
+     return hit?null:'the run card scrollbar track has no margin, so its thumb runs past the rounded corners';
+   }},
   {v:'21.56',what:'the full controls list names F9, the recorder',
    run:function(){
      if(typeof LEGEND==='undefined') return 'SKIP: no controls list here';

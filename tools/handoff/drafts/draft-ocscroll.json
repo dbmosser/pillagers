@@ -1,0 +1,12 @@
+{
+    "title":  "THE RUN CARD SCROLLBAR STAYS INSIDE ITS CORNERS",
+    "why":  "From the 4K screenshot pass (V-E4): on a run card long enough to scroll, the scrollbar ran right to the top and bottom edges and poked out past the rounded corners. Its track now keeps a margin, so it stays inside the card.",
+    "now":  "On a long run card, the scrollbar now stays inside the rounded corners.",
+    "edits":  [
+                  {
+                      "anchor":  "  .ocwin{ max-height:min(86vh,calc(100% - 32px)); }   /* v18.97: and the card always fits inside the screen, at any menu zoom */",
+                      "replacement":  "  .ocwin{ max-height:min(86vh,calc(100% - 32px)); }   /* v18.97: and the card always fits inside the screen, at any menu zoom */\n  .ocwin::-webkit-scrollbar-track{ margin:16px 0; }   /* v16.xx, from the 4K visual pass (V-E4): on a run card that scrolls, the scrollbar stays inside the rounded corners */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027on a run card that scrolls, the scrollbar track keeps clear of the rounded corners\u0027,\n   run:function(){\n     var i, j, ss=document.styleSheets, R, hit=false;\n     for(i=0;i\u003css.length\u0026\u0026!hit;i++){ try{ R=ss[i].cssRules||[]; }catch(e){ continue; }\n       for(j=0;j\u003cR.length;j++) if(R[j].selectorText\u0026\u0026R[j].selectorText.indexOf(\u0027.ocwin::-webkit-scrollbar-track\u0027)\u003e=0\u0026\u0026/margin/.test(R[j].cssText)){ hit=true; break; } }\n     return hit?null:\u0027the run card scrollbar track has no margin, so its thumb runs past the rounded corners\u0027;\n   }},"
+}

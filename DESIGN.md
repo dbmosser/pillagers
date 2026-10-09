@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.57 - THE RUN CARD SCROLLBAR STAYS INSIDE ITS CORNERS
+
+Co-op hunt while he was away. From the 4K screenshot pass (V-E4): on a run card long enough to scroll, the scrollbar ran right to the top and bottom edges and poked out past the rounded corners. Its track now keeps a margin, so it stays inside the card.
+
+MEASURED. Check 21.57 passes, and fails on v21.56.
 ## v21.56 - THE CONTROLS LIST NAMES F9
 
 Co-op hunt while he was away. The F9 recorder (v21.18) was named only on the what is new card, which scrolls away as builds come in. The full controls list (H, twice) now has it: F9, record your play for the title.
