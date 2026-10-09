@@ -1,0 +1,7 @@
+v21.20: the gun card steps aside for the backpack
+
+The gun card in the corner hides while the backpack is open, instead of being half covered.
+
+Check 21.20. Fails on v21.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

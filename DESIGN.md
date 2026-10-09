@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.20 - THE GUN CARD STEPS ASIDE FOR THE BACKPACK
+
+Co-op hunt while he was away. From the 4K screenshot pass of 2026-10-08: the open backpack covered the top left of the gun card in the bottom right corner (STOWED, the gun name, the rounds) at every screen size, and the backpack already shows the gun in your hands, its numbers and its rounds at its own top. While the backpack is open the card is now hidden, and it is back the moment the backpack shuts.
+
+MEASURED. Check 21.20 passes, and fails on v21.19.
 ## v21.19 - THE FLOOR BELT STAYS OUT OF THE WINDOWS
 
 Co-op hunt while he was away. From the 4K screenshot pass of 2026-10-08: the Undercroft belt is drawn on the floor under every station window, and it showed faintly along the bottom edge below the window frame, keys and all. While a window is open it is no longer drawn, as the floor heading already is not; the windows that need a belt have their own.

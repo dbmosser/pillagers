@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.19';
+var VER='21.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28308,6 +28308,11 @@ if(p.armor>0){
   // edge at every monitor size, by the panel's zoom; the content ends at by.
   HUDBOX.gear=(function(){ var R=hudZoomRect('gear',W,H,{x:W-252,y:by-LH(80),w:246,h:LH(80)+30});
     R.x+=_boG.dx; R.y+=_boG.dy; return R; })();   // v8.44: see the note on HUDBOX.body
+  // v21.20, from the 4K visual pass of 2026-10-08 (V-D10): THE GUN CARD STEPS ASIDE FOR THE BACKPACK. The open backpack panel covered
+  // the top left of this card (STOWED, the gun name, the rounds) at every screen size, and the backpack already shows the gun in
+  // your hands, its numbers and its rounds at its own top. While the backpack is open the card is not drawn (a clip with no area,
+  // so everything below still runs and the box the mouse uses stays where it is); it is back the moment the backpack shuts.
+  if(G.bagOpen){ ctx.beginPath(); ctx.rect(0,0,0,0); ctx.clip(); }
   ctx.textAlign='right';
   ctx.font=FS(TYPE.head); ctx.fillStyle='#cdd6dd';
   // v9.01: no gun is ever anything but CLEAN now, so this can never draw. Left
@@ -34222,7 +34227,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.19: The Undercroft belt no longer shows through the bottom of station windows. Check 21.19 fails on v21.18',
+  now:'v21.20: The gun card in the corner hides while the backpack is open, instead of being half covered. Check 21.20 fails on v21.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
