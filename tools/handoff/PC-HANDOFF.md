@@ -621,3 +621,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 07:53 heartbeat (away 10 h, light): no new FAILs; shipped v21.45 logruns (YOUR STATS 7 -> 7 RUNS)
 2026-10-09 08:22 heartbeat (away 10.6 h, light): no new FAILs; shipped v21.46 shoppoor (shop prices you cannot pay read grey; V-A10 from the queue, a small UX add)
 2026-10-09 08:52 heartbeat (away 11 h, light): no new FAILs; v21.47 hirepoor (hire fees you cannot pay read grey, as the shop)
+2026-10-09 09:22 heartbeat (away 11.6 h, light): no new FAILs; v21.48 rectime (REC mark shows m:ss / 3:00)

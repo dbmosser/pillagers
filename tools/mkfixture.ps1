@@ -5723,6 +5723,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.49',what:'F9 on the title records nothing and says where to press it',
+   run:function(){
+     if(typeof recStart!=='function'||typeof REC!=='object'||typeof attTitleUp!=='function') return 'SKIP: no recorder here';
+     var bad=[], t=document.getElementById('title'), was=t&&t.classList.contains('on'), m;
+     if(!t) return 'SKIP: no title';
+     try{
+       t.classList.add('on');
+       var r=recStart();
+       if(r||REC.on){ bad.push('F9 on the title started a recording of an empty screen'); if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); }
+       m=document.getElementById('recmark');
+       if(!m||!/raid|Undercroft/.test(m.textContent||'')) bad.push('F9 on the title said nothing about where to press it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } recMark(false); }catch(_s){} if(!was) t.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.48',what:'the REC mark shows the time recorded against the 3 minute limit',
    run:function(){
      if(typeof recStart!=='function'||typeof REC!=='object') return 'SKIP: no recorder here';

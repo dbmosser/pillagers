@@ -1,0 +1,12 @@
+{
+    "title":  "F9 ON THE TITLE RECORDS NOTHING",
+    "why":  "The title screen is made of page elements over an empty game canvas, so pressing F9 there recorded a black clip, and that clip then became the one the title plays when nobody is playing. F9 on the title now records nothing and says to press it in a raid or the Undercroft.",
+    "now":  "F9 on the title screen tells you to press it in a raid or the Undercroft instead of recording a black clip.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(REC.on) return false;",
+                      "replacement":  "  if(REC.on) return false;\n  // v16.xx: NOT ON THE TITLE. The title is page elements over an empty canvas, so F9 there recorded a black clip, and that clip then\n  // became the one the title plays when nobody is playing. It says where to press it instead.\n  if(typeof attTitleUp===\u0027function\u0027\u0026\u0026attTitleUp()){\n    var _rt=document.getElementById(\u0027recmark\u0027); recMark(true);\n    if(REC.mark){ REC.mark.innerHTML=\u0027Press F9 in a raid or the Undercroft to record\u0027; setTimeout(function(){ if(!REC.on){ recMark(false); REC.mark.innerHTML=\u0027\u0026#9679; REC\u0027; } },2600); }\n    return false;\n  }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027F9 on the title records nothing and says where to press it\u0027,\n   run:function(){\n     if(typeof recStart!==\u0027function\u0027||typeof REC!==\u0027object\u0027||typeof attTitleUp!==\u0027function\u0027) return \u0027SKIP: no recorder here\u0027;\n     var bad=[], t=document.getElementById(\u0027title\u0027), was=t\u0026\u0026t.classList.contains(\u0027on\u0027), m;\n     if(!t) return \u0027SKIP: no title\u0027;\n     try{\n       t.classList.add(\u0027on\u0027);\n       var r=recStart();\n       if(r||REC.on){ bad.push(\u0027F9 on the title started a recording of an empty screen\u0027); if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); }\n       m=document.getElementById(\u0027recmark\u0027);\n       if(!m||!/raid|Undercroft/.test(m.textContent||\u0027\u0027)) bad.push(\u0027F9 on the title said nothing about where to press it\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } recMark(false); }catch(_s){} if(!was) t.classList.remove(\u0027on\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

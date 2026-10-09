@@ -1,0 +1,7 @@
+v21.49: f9 on the title records nothing
+
+F9 on the title screen tells you to press it in a raid or the Undercroft instead of recording a black clip.
+
+Check 21.49. Fails on v21.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
