@@ -1,0 +1,7 @@
+v21.60: the pillbox is gentler
+
+The pillbox hits softer, fires slower and goes down faster.
+
+Check 21.60. Fails on v21.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

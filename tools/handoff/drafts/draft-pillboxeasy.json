@@ -1,0 +1,20 @@
+{
+    "title":  "THE PILLBOX IS GENTLER",
+    "why":  "His note of 2026-10-09: the pillbox should deal less damage and/or fire slower, and have less health. Both are done: a shot does 17 instead of 22 and comes every 0.6 to 0.9 seconds instead of 0.42 to 0.66, about 23 damage a second where it was about 40, and its health drops from 1250 to 850, a third less. Its range is unchanged, so you can still hurt it from outside its reach.",
+    "now":  "The pillbox hits softer, fires slower and goes down faster.",
+    "edits":  [
+                  {
+                      "anchor":  "var CHOIR_HP=1250, CHOIR_RNG=520;",
+                      "replacement":  "// v16.xx, HIS NOTE (2026-10-09): \"pillbox should deal less damage and/or fire slower -- also should have less health\". Health 1250 to 850,\n// a shot 22 to 17, and a shot every 0.60 to 0.90 s instead of 0.42 to 0.66: about 23 damage a second where it was about 40. The\n// stand-off band is unchanged (range 520), and the one cadence draw stays one draw, so the seeded stream does not move.\nvar CHOIR_HP=850, CHOIR_RNG=520;"
+                  },
+                  {
+                      "anchor":  "    cd:0,alert:0,spd:0,dmg:22,rng:CHOIR_RNG,cone:6.2832,",
+                      "replacement":  "    cd:0,alert:0,spd:0,dmg:17,rng:CHOIR_RNG,cone:6.2832,   // v16.xx: 22 to 17, his note"
+                  },
+                  {
+                      "anchor":  "          e.cd=rnd(0.42,0.66);",
+                      "replacement":  "          e.cd=rnd(0.60,0.90);   // v16.xx, his note: fires slower (was 0.42 to 0.66)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pillbox is gentler, his note: 850 health, 17 a shot, and a shot every 0.60 to 0.90 seconds\u0027,\n   run:function(){\n     if(typeof mkChoir!==\u0027function\u0027||typeof CHOIR_HP===\u0027undefined\u0027) return \u0027SKIP: no pillbox here\u0027;\n     var bad=[], c=mkChoir(0,0), e0=CFG.eHp;\n     if(CHOIR_HP!==850) bad.push(\u0027pillbox health is \u0027+CHOIR_HP+\u0027, not 850\u0027);\n     if(c.dmg!==17) bad.push(\u0027a pillbox shot does \u0027+c.dmg+\u0027, not 17\u0027);\n     var src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027), nd=\u0027e.cd=rnd(0.\u0027+\u002760,0.90)\u0027;\n     if(src.indexOf(nd)\u003c0) bad.push(\u0027the pillbox still fires every 0.42 to 0.66 seconds\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -632,3 +632,10 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 13:22 heartbeat (he is here, idle 7 s, light, no corpus): v21.56 legendf9 (full controls list names F9)
 2026-10-09 13:52 heartbeat (he is here, light): feedback prompt is his baked edit (left); v21.57 ocscroll (V-E4 run card scrollbar inside corners)
 2026-10-09 14:22 heartbeat (light): v21.58 card refresh (stamped 21.58, next by ~21.72)
+2026-10-09 14:52 heartbeat: usage weekly 60% (Fable 17%: his work), 5h 20%. My context is 78% of 1M, so each heartbeat is costly: MINIMAL heartbeats until 18:00 (check idle + logs; ship only a trivial fix). v21.59 attpadtext (PRESS ANY BUTTON on a pad)
+2026-10-09 15:20 heartbeat (minimal, his workday): logs unchanged, no FAILs; nothing shipped to save his budget
+2026-10-09 15:50 heartbeat (minimal, his workday): logs unchanged, no FAILs; nothing shipped
+2026-10-09 16:20 heartbeat (minimal, his workday): no FAILs; nothing shipped
+2026-10-09 16:36 HE IS DONE WORKING: burn the rest by Sun 01:00 (weekly 60%, ~1.25%/h). Opus recommended. Starting whole-game hunt round 2 on v21.59
+2026-10-09 16:38 perf probe v21.59 at 3804x2055 (no throttle): world render 6.1 ms/frame; per frame fillRect 409, fill 310, beginPath 391, arc 131, drawImage 144; top callers drawContS/rrF (containers ~150 draws) then render2D inline. No lag to fix; container sprite baking parked as a later perf item
+2026-10-09 17:12 hunt round 2 on v21.59 (51 agents, ~6% weekly): 43 confirmed (6 high), in tools/handoff/hunt/hunt2-2026-10-09.txt. Weekly 66% (Fable 20%: the Fable counter moved during the hunt, so subagents may default to Fable; workflows now set model opus). Drafting burst of 8 (opus) running

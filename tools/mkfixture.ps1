@@ -5723,6 +5723,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.60',what:'the pillbox is gentler, his note: 850 health, 17 a shot, and a shot every 0.60 to 0.90 seconds',
+   run:function(){
+     if(typeof mkChoir!=='function'||typeof CHOIR_HP==='undefined') return 'SKIP: no pillbox here';
+     var bad=[], c=mkChoir(0,0), e0=CFG.eHp;
+     if(CHOIR_HP!==850) bad.push('pillbox health is '+CHOIR_HP+', not 850');
+     if(c.dmg!==17) bad.push('a pillbox shot does '+c.dmg+', not 17');
+     var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd='e.cd=rnd(0.'+'60,0.90)';
+     if(src.indexOf(nd)<0) bad.push('the pillbox still fires every 0.42 to 0.66 seconds');
+     return bad.length?bad.join('; '):null; }},
   {v:'21.59',what:'the attract clip says PRESS ANY BUTTON with a controller in use and PRESS ANY KEY without',
    run:function(){
      if(typeof attShow!=='function'||typeof attStop!=='function'||typeof PAD!=='object') return 'SKIP: no attract mode here';

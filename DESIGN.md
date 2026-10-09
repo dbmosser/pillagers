@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.60 - THE PILLBOX IS GENTLER
+
+Co-op hunt while he was away. His note of 2026-10-09: the pillbox should deal less damage and/or fire slower, and have less health. Both are done: a shot does 17 instead of 22 and comes every 0.6 to 0.9 seconds instead of 0.42 to 0.66, about 23 damage a second where it was about 40, and its health drops from 1250 to 850, a third less. Its range is unchanged, so you can still hurt it from outside its reach.
+
+MEASURED. Check 21.60 passes, and fails on v21.59.
 ## v21.59 - THE ATTRACT CLIP SAYS BUTTON ON A CONTROLLER
 
 Co-op hunt while he was away. On a TV with a controller, the title gameplay clip said PRESS ANY KEY. It now says PRESS ANY BUTTON when a controller is in use, and PRESS ANY KEY otherwise.

@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.59';
+var VER='21.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9485,13 +9485,16 @@ var SPEED_FLOOR=46;
 // lower than a Warden's because it fires far more often, and rng 520 is
 // deliberately eighty short of a Marksman Rifle so there is a stand-off band
 // where you can hurt it and it cannot reach you. That band is the fight.
-var CHOIR_HP=1250, CHOIR_RNG=520;
+// v21.60, HIS NOTE (2026-10-09): "pillbox should deal less damage and/or fire slower -- also should have less health". Health 1250 to 850,
+// a shot 22 to 17, and a shot every 0.60 to 0.90 s instead of 0.42 to 0.66: about 23 damage a second where it was about 40. The
+// stand-off band is unchanged (range 520), and the one cadence draw stays one draw, so the seeded stream does not move.
+var CHOIR_HP=850, CHOIR_RNG=520;
 function mkChoir(x,y){
   var _chp=Math.round(CHOIR_HP*CFG.eHp);
   return {kind:'choir',x:x,y:y,r:26,hp:_chp,maxhp:_chp,
     name:mkName('PILLBOX',['A','M','R','V']),   // v10.08, his answer 47: renamed from ORGAN
     face:rnd(0,6.28),state:'patrol',tx:x,ty:y,homeX:x,homeY:y,
-    cd:0,alert:0,spd:0,dmg:22,rng:CHOIR_RNG,cone:6.2832,
+    cd:0,alert:0,spd:0,dmg:17,rng:CHOIR_RNG,cone:6.2832,   // v21.60: 22 to 17, his note
     hitT:0,seenYou:false,windup:0,overheat:0,sang:0};
 }
 // v17.45, HIS PICK 21 (2026-09-30): ONE BIG BOSS, THE OVERSEER, in a lair at the middle of every map. A warden four times
@@ -19606,7 +19609,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
         if(e.overheat<=0&&e.cd<=0){
           fireWeapon(e,{dmg:e.dmg,spread:.085,rng:e.rng,noise:430,tint:'#e0a0ff'},
                      p.x+rnd(-14,14),p.y+rnd(-14,14),false);
-          e.cd=rnd(0.42,0.66);
+          e.cd=rnd(0.60,0.90);   // v21.60, his note: fires slower (was 0.42 to 0.66)
           if(!G.sim) sfx('shot',e.x,e.y);
         }
       } else {
@@ -34350,7 +34353,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.59: With a controller in use, the title gameplay clip says PRESS ANY BUTTON. Check 21.59 fails on v21.58',
+  now:'v21.60: The pillbox hits softer, fires slower and goes down faster. Check 21.60 fails on v21.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
