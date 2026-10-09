@@ -1,0 +1,7 @@
+v20.80: machines in sight are heard first
+
+Machines you can hear are no longer drowned out by silent ones behind walls.
+
+Check 20.80. Fails on v20.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
