@@ -1,0 +1,12 @@
+{
+    "title":  "A CONTROLLER ONLY STOPS THE ATTRACT CLIP",
+    "why":  "Found by the review of the night builds (2026-10-09). The attract clip checked the controller only twice a second, while the title menu under it read the controller every frame, so pressing A could start the game from the hidden menu, and in the player 2 window the controller could not stop the clip at all. Now any controller button or stick stops the clip and does nothing else.",
+    "now":  "A controller press during the title gameplay clip only stops the clip.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(padMenu(pressed)){ padRelease(); return; }",
+                      "replacement":  "  // v16.xx, from the review of 2026-10-09 (R8): WHILE THE ATTRACT CLIP PLAYS, A CONTROLLER ONLY STOPS IT. The clip watched the pad\n  // only twice a second and the title menu under it took A every frame, so a tap could click the hidden menu. Any button or stick\n  // now stops the clip, the press is held as already seen so it does nothing else, and the menu waits.\n  if(typeof ATT!==\u0027undefined\u0027\u0026\u0026ATT\u0026\u0026ATT.on){\n    var _atb=false, _ati;\n    for(_ati=0;_ati\u003cbt.length;_ati++) if(pressed(_ati)) _atb=true;\n    for(_ati=0;_ati\u003cax.length;_ati++) if(Math.abs(ax[_ati]||0)\u003e0.45) _atb=true;\n    if(_atb) attPoke();\n    for(_ati=0;_ati\u003cbt.length;_ati++) PAD.prev[_ati]=pressed(_ati);\n    padRelease(); return;\n  }\n  if(padMenu(pressed)){ padRelease(); return; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027while the attract clip plays, the controller poll stops the clip and never reaches the title menu\u0027,\n   run:function(){\n     if(typeof pollPad!==\u0027function\u0027||typeof ATT!==\u0027object\u0027) return \u0027SKIP: no attract mode here\u0027;\n     var src=String(pollPad), i=src.indexOf(\u0027padMenu(pressed)\u0027), j=src.indexOf(\u0027ATT.on\u0027);\n     if(i\u003c0) return \u0027SKIP: the pad menu hand off moved\u0027;\n     if(j\u003c0||j\u003ei) return \u0027a controller press during the attract clip still reaches the hidden title menu\u0027;\n     return null; }},"
+}

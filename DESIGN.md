@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.26 - A CONTROLLER ONLY STOPS THE ATTRACT CLIP
+
+Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). The attract clip checked the controller only twice a second, while the title menu under it read the controller every frame, so pressing A could start the game from the hidden menu, and in the player 2 window the controller could not stop the clip at all. Now any controller button or stick stops the clip and does nothing else.
+
+MEASURED. Check 21.26 passes, and fails on v21.25.
 ## v21.25 - HIT TICKS SHOW OVER THE HUD PANELS
 
 Co-op hunt while he was away. Found by the review of the night builds (2026-10-09). Since v20.75 the hit ticks grow with the screen, but they read a size set only when the crosshair cross is drawn. With the crosshair over a HUD panel the cross is not drawn, so the ticks got no size and did not show at all: a hit gave no tick. They now have their own size.

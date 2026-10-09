@@ -5723,6 +5723,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.26',what:'while the attract clip plays, the controller poll stops the clip and never reaches the title menu',
+   run:function(){
+     if(typeof pollPad!=='function'||typeof ATT!=='object') return 'SKIP: no attract mode here';
+     var src=String(pollPad), i=src.indexOf('padMenu(pressed)'), j=src.indexOf('ATT.on');
+     if(i<0) return 'SKIP: the pad menu hand off moved';
+     if(j<0||j>i) return 'a controller press during the attract clip still reaches the hidden title menu';
+     return null; }},
   {v:'21.25',what:'hit ticks draw with real numbers even when the crosshair is over a HUD panel: the tick block has its own screen factor',
    run:function(){
      if(typeof drawHUD!=='function') return 'SKIP: no HUD here';

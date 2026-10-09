@@ -1654,7 +1654,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.25';
+var VER='21.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12960,6 +12960,17 @@ function pollPad(){
   PAD.ax=ax;
   // v6.84: a panel on screen owns the pad. Checked before the hub and raid branches,
   // because with a modal up the state is still 'hub' and the floor would eat the input.
+  // v21.26, from the review of 2026-10-09 (R8): WHILE THE ATTRACT CLIP PLAYS, A CONTROLLER ONLY STOPS IT. The clip watched the pad
+  // only twice a second and the title menu under it took A every frame, so a tap could click the hidden menu. Any button or stick
+  // now stops the clip, the press is held as already seen so it does nothing else, and the menu waits.
+  if(typeof ATT!=='undefined'&&ATT&&ATT.on){
+    var _atb=false, _ati;
+    for(_ati=0;_ati<bt.length;_ati++) if(pressed(_ati)) _atb=true;
+    for(_ati=0;_ati<ax.length;_ati++) if(Math.abs(ax[_ati]||0)>0.45) _atb=true;
+    if(_atb) attPoke();
+    for(_ati=0;_ati<bt.length;_ati++) PAD.prev[_ati]=pressed(_ati);
+    padRelease(); return;
+  }
   if(padMenu(pressed)){ padRelease(); return; }
   if(state==='hub'){
     // This branch used to assign keys['KeyW'] and friends unconditionally, which
@@ -34230,7 +34241,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.25: Hit ticks show even when your crosshair is over a HUD panel. Check 21.25 fails on v21.24',
+  now:'v21.26: A controller press during the title gameplay clip only stops the clip. Check 21.26 fails on v21.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

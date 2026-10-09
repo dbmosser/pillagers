@@ -1,0 +1,7 @@
+v21.26: a controller only stops the attract clip
+
+A controller press during the title gameplay clip only stops the clip.
+
+Check 21.26. Fails on v21.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
