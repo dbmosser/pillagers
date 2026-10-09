@@ -1,0 +1,7 @@
+v21.14: a gun pushed out of a slot goes in your backpack
+
+A gun pushed out of a belt slot by another goes into your backpack.
+
+Check 21.14. Fails on v21.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

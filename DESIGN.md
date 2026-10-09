@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.14 - A GUN PUSHED OUT OF A SLOT GOES IN YOUR BACKPACK
+
+Co-op hunt while he was away. His report of 2026-10-08: he moved a gun into belt slot 2 and the Meridian Lance that was there vanished, and it was not in his backpack. A gun from his own armoury that a backpack gun pushed out of a slot was sent back to the armoury in the middle of the raid, so it left his hands and never reached the backpack, and the one line saying so was written over. Now it goes into the backpack with its rounds and counts as a gun carried up, exactly as picking a gun up into the backpack does: kept on an extraction, lost on a death.
+
+MEASURED. Check 21.14 passes, and fails on v21.13.
 ## v21.13 - RANDOM FROM STASH GIVES TWO GUNS
 
 Co-op hunt while he was away. His order of 2026-10-08: RANDOM FROM STASH should never start you with a Scav Pistol if you have other guns, and should always give two random guns. It picked one gun at random from everything you own, the Scav Pistol included, and left your second slot as it was. Now both your hand and back slots get a random gun you own, two different kinds, and the Scav Pistol is only used when it is the one gun you have. With just one other gun, it goes in your hands and the back slot stays empty.

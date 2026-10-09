@@ -1,0 +1,5 @@
+## v21.14 - A GUN PUSHED OUT OF A SLOT GOES IN YOUR BACKPACK
+
+Co-op hunt while he was away. His report of 2026-10-08: he moved a gun into belt slot 2 and the Meridian Lance that was there vanished, and it was not in his backpack. A gun from his own armoury that a backpack gun pushed out of a slot was sent back to the armoury in the middle of the raid, so it left his hands and never reached the backpack, and the one line saying so was written over. Now it goes into the backpack with its rounds and counts as a gun carried up, exactly as picking a gun up into the backpack does: kept on an extraction, lost on a death.
+
+MEASURED. Check 21.14 passes, and fails on v21.13.
