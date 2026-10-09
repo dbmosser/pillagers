@@ -1,0 +1,7 @@
+v20.99: stat cards sit level
+
+On YOUR STATS, a card showing a name (like MOST RAIDED) now lines up with the number cards beside it.
+
+Check 20.99. Fails on v20.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

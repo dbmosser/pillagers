@@ -761,6 +761,11 @@
   .scard .sk{ font-size:13px; }
   .scard .sv{ font-size:28px; }
   .scard .sv.word{ font-size:19px; }
+  /* v20.99, from the 4K visual pass of 2026-10-08 (V-C5): A NAME ON A STAT CARD SITS LEVEL WITH THE NUMBERS BESIDE IT. A card that
+     holds a name (MOST RAIDED, USUALLY KILLED BY) sets it smaller than a number, so its line was shorter, and the name and the line
+     under it sat higher than the 0 and the 33% on the cards beside it. The name now takes the height of a number line (28px at
+     1.15, as above) and sits at its foot, so the two lines of every card in a row are level. A long name still wraps. */
+  .scard .sv.word{ min-height:calc(28px * 1.15); display:flex; flex-direction:column; justify-content:flex-end; }
   .scard .ss{ font-size:14px; line-height:1.35; }
   .scard.wide{ grid-column:1/-1; }
   /* v17.94, THE STYLING PASS, STAGE A (his order 2026-10-03: styling across all menus and HUDs). One look for every HTML menu, laid
@@ -1636,7 +1641,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.98';
+var VER='20.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33982,7 +33987,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.98: At the bar, the line under each drink now starts right under its name. Check 20.98 fails on v20.97',
+  now:'v20.99: On YOUR STATS, a card showing a name (like MOST RAIDED) now lines up with the number cards beside it. Check 20.99 fails on v20.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

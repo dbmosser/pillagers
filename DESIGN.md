@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.99 - STAT CARDS SIT LEVEL
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K YOUR STATS screenshot. A card that holds a name instead of a number, MOST RAIDED with COLD STORAGE or USUALLY KILLED BY with a long name, prints the name smaller so it fits, and that made its line shorter: the name and the line under it sat higher than the 0 and the 33% on the cards beside it, so the bottom row of cards was out of step. The name now takes the same height as a number and sits at its bottom, so every card in a row lines up.
+
+MEASURED. Check 20.99 passes, and fails on v20.98.
 ## v20.98 - THE BAR LINES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08, on the 4K bar screenshot. At THE LAST POUR the small line under each drink (under Liquor and under Blotter) began a step to the right of the drink name above it, so each row had two left edges. The line now starts right under the name. The words are unchanged.
