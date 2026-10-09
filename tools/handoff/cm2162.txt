@@ -1,0 +1,7 @@
+v21.62: a shot pillager returns fire
+
+A pillager you shoot now turns and fires back.
+
+Check 21.62. Fails on v21.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

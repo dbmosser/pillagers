@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.61';
+var VER='21.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18848,6 +18848,12 @@ function hireOrdered(e){
   e.state='loot';
   return true;
 }
+// v21.62, his note: a hostile pillager hit by a round turns to the shooter and opens a return fire window (see the chase fire test)
+function returnFire(e,sx,sy){
+  if(!e||e.kind!=='raider'||e.merc||e.friendlyPC||e.downed||e.hp<=0) return false;
+  e.retT=2.5; e.face=Math.atan2(sy-e.y,sx-e.x);
+  return true;
+}
 function updateEnts(dt){
   try{ bossTick(); }catch(_bt){}   // v17.45: his pick 21, THE OVERSEER comes up two seconds in
   if(NET.on&&netEntsPeer()){ netEntsEase(dt); return; }   // v15.80: a linked window up top runs no pillager or machine of its own: the host does, and this slides each body to where the host put it
@@ -20091,13 +20097,19 @@ else if(e.cd>Math.min(0.35,(e.wep?e.wep.rof/1000:0.3)*1.5)){
           if(_rcv) moveToward(e,_rcv.x,_rcv.y,e.spd*.85,dt);
           else moveToward(e,e.x+Math.cos(pang+e.flank*1.5708)*40,e.y+Math.sin(pang+e.flank*1.5708)*40,e.spd*.55,dt);
         }
+        if(e.retT>0) e.retT-=dt;   // v21.62: the return fire window runs down
 e.plantT=(Math.hypot(e.x-_rpx,e.y-_rpy)>0.5)?0:((e.plantT||0)+dt);
         e.steady=(CFG.raiderSteady!==0)&&e.plantT>0.55&&
                  dist(e,p)<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar);
         // v8.11: how long he has actually had eyes on you. Cleared on losing
         // sight, so ducking behind something buys the beat back.
         e.acqT=sees?((e.acqT||0)+dt):0;
-        if(e.cd<=0&&sees&&d<e.rng&&e.acqT>=(CFG.raiderReact===undefined?0.34:CFG.raiderReact)){
+        // v21.62, HIS NOTE (2026-10-09): "when a pillager bot takes fire they should return fire". A shot pillager turned to chase but
+        // fired only once the shooter was in his view cone and he had held him a third of a second, so a shot from the side or the back
+        // went unanswered. For 2.5 s after he is hit he fires back whenever the line to his target is clear and in range, after a
+        // 0.2 s flinch, even before he has him in his cone.
+        var _rtf=!sees&&e.retT>0&&e.retT<=2.3&&d<e.rng&&losClear(e.x,e.y,p.x,p.y,G.vseg);
+        if(e.cd<=0&&(sees||_rtf)&&d<e.rng&&(_rtf||e.acqT>=(CFG.raiderReact===undefined?0.34:CFG.raiderReact))){
 // A planted man aims. Measured off actual displacement rather than a
           // state flag, so it cannot disagree with what he did: half a unit of
           // movement in a frame counts as moving. 0.55 seconds of stillness is
@@ -20980,7 +20992,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // in 'chase' for the rest of the raid: the red mark, a place in the count coming for the ring, the threat music and the
               // heartbeat. He still bolts and comes home (his own branch reads his health). The Survivor is a fixture too. A blast
               // has skipped both since v11.36; a round now does the same.
-              else if(en.kind!=='snitch'){ if(en.kind!=='peddler'&&en.kind!=='stray'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; } }
+              else if(en.kind!=='snitch'){ if(en.kind!=='peddler'&&en.kind!=='stray'){ en.alert=2.6; en.state='chase'; en.tx=p.x; en.ty=p.y; returnFire(en,p.x,p.y); } }
               // v8.41, audit: an alarm has to be STARTED, not just named. Entering
               // this state without wind/markX/markY left the countdown at NaN, so
               // it never completed and never called anything in - it just looped
@@ -34364,7 +34376,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.61: Downed and holding E in an extraction ring, the downed screen shows a clear EXTRACTING bar. Check 21.61 fails on v21.60',
+  now:'v21.62: A pillager you shoot now turns and fires back. Check 21.62 fails on v21.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41649,7 +41661,7 @@ function netShotTake(peer,m){
   if(e.hp<=0){ e.byPlayer=false; e.bySeat=s; } else if(!e.downed){ e.byPlayer=false; e.bySeat=0; }
   if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC) e.hostile=true;
   if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.6; }
-  else if(e.kind!=='snitch'){ if(e.kind!=='peddler'&&e.kind!=='stray'){ e.alert=2.6; e.state='chase'; e.tx=sx; e.ty=sy; } }   // v20.42 (H2): a party round into the Peddler or the Survivor moves no stall and sets no chase, as your own round
+  else if(e.kind!=='snitch'){ if(e.kind!=='peddler'&&e.kind!=='stray'){ e.alert=2.6; e.state='chase'; e.tx=sx; e.ty=sy; returnFire(e,sx,sy); } }   // v20.42 (H2): a party round into the Peddler or the Survivor moves no stall and sets no chase, as your own round
   else if(e.state!=='alarm'){ e.state='alarm'; e.lost=0; e.wind=3.5; e.markX=sx; e.markY=sy; e.markSeat=s; }   /* v21.23 (R3): a round from one of the party marks him */
   if(!G.sim){ spark(e.x,e.y,e.kind==='raider'?'#ff5a4a':'#ffc25c',9,220); sfxHere('hit',e.x,e.y); }   // v20.40 (H52): the window that fired plays its own
   return 'shot';

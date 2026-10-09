@@ -1,0 +1,5 @@
+## v21.62 - A SHOT PILLAGER RETURNS FIRE
+
+Co-op hunt while he was away. His note of 2026-10-09: when a pillager takes fire he should return fire. A shot pillager turned to chase but fired only once the shooter was inside his view cone and he had held him for a third of a second, so a shot from the side or behind went unanswered. Now for 2.5 seconds after he is hit he turns to the shooter and fires back whenever the line is clear and the shooter is in range, after a 0.2 second flinch. Hires are untouched. This makes fights with pillagers harder.
+
+MEASURED. Check 21.62 passes, and fails on v21.61.

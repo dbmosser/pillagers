@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.62 - A SHOT PILLAGER RETURNS FIRE
+
+Co-op hunt while he was away. His note of 2026-10-09: when a pillager takes fire he should return fire. A shot pillager turned to chase but fired only once the shooter was inside his view cone and he had held him for a third of a second, so a shot from the side or behind went unanswered. Now for 2.5 seconds after he is hit he turns to the shooter and fires back whenever the line is clear and the shooter is in range, after a 0.2 second flinch. Hires are untouched. This makes fights with pillagers harder.
+
+MEASURED. Check 21.62 passes, and fails on v21.61.
 ## v21.61 - THE DOWNED SCREEN SHOWS YOUR EXTRACTION
 
 Co-op hunt while he was away. His note of 2026-10-09: when you are downed and hold E to extract, there was no clear progress bar on the downed screen to tell you that you are extracting. The ring prompt and its hold bars are drawn only for a player on his feet, so nothing moved. The downed screen now shows EXTRACTING, or CALLING EXTRACTION, with a bar as large as the bleed bar above it.
