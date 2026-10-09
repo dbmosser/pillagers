@@ -1,0 +1,7 @@
+v21.56: the controls list names f9
+
+The full controls list now shows F9 to record your play for the title.
+
+Check 21.56. Fails on v21.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

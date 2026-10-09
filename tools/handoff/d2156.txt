@@ -1,0 +1,5 @@
+## v21.56 - THE CONTROLS LIST NAMES F9
+
+Co-op hunt while he was away. The F9 recorder (v21.18) was named only on the what is new card, which scrolls away as builds come in. The full controls list (H, twice) now has it: F9, record your play for the title.
+
+MEASURED. Check 21.56 passes, and fails on v21.55.

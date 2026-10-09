@@ -5723,6 +5723,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.56',what:'the full controls list names F9, the recorder',
+   run:function(){
+     if(typeof LEGEND==='undefined') return 'SKIP: no controls list here';
+     if(typeof recStart!=='function') return 'SKIP: no recorder here';
+     var hit=LEGEND.some(function(g){ return (g[1]||[]).some(function(r){ return r[0]==='F9'; }); });
+     return hit?null:'the full controls list does not say F9 records your play';
+   }},
   {v:'21.55',what:'the CURRENT PILLAGERS board ends just under its last name, with no empty row',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof drawRaiderBoard!=='function'||typeof hudPanel!=='function') return 'SKIP: no board here';

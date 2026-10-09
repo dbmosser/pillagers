@@ -1,0 +1,12 @@
+{
+    "title":  "THE CONTROLS LIST NAMES F9",
+    "why":  "The F9 recorder (v21.18) was named only on the what is new card, which scrolls away as builds come in. The full controls list (H, twice) now has it: F9, record your play for the title.",
+    "now":  "The full controls list now shows F9 to record your play for the title.",
+    "edits":  [
+                  {
+                      "anchor":  "  [\u0027ALSO\u0027,[[\u0027CAPS\u0027,\u0027walk on, hands free\u0027],[\u0027NUM + -\u0027,\u0027zoom\u0027],[\u0027- =\u0027,\u0027HUD size\u0027],[\u00270\u0027,\u0027reset zoom\u0027]]]",
+                      "replacement":  "  [\u0027ALSO\u0027,[[\u0027CAPS\u0027,\u0027walk on, hands free\u0027],[\u0027NUM + -\u0027,\u0027zoom\u0027],[\u0027- =\u0027,\u0027HUD size\u0027],[\u00270\u0027,\u0027reset zoom\u0027],[\u0027F9\u0027,\u0027record your play for the title\u0027]]]   // v16.xx: the recorder (v21.18) was named only on the what is new card"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the full controls list names F9, the recorder\u0027,\n   run:function(){\n     if(typeof LEGEND===\u0027undefined\u0027) return \u0027SKIP: no controls list here\u0027;\n     if(typeof recStart!==\u0027function\u0027) return \u0027SKIP: no recorder here\u0027;\n     var hit=LEGEND.some(function(g){ return (g[1]||[]).some(function(r){ return r[0]===\u0027F9\u0027; }); });\n     return hit?null:\u0027the full controls list does not say F9 records your play\u0027;\n   }},"
+}

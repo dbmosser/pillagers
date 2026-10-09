@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.56 - THE CONTROLS LIST NAMES F9
+
+Co-op hunt while he was away. The F9 recorder (v21.18) was named only on the what is new card, which scrolls away as builds come in. The full controls list (H, twice) now has it: F9, record your play for the title.
+
+MEASURED. Check 21.56 passes, and fails on v21.55.
 ## v21.55 - THE PILLAGER BOARD ENDS UNDER ITS LAST NAME
 
 Co-op hunt while he was away. From the 4K screenshot pass (V-B11, parked until the 4K panel fix landed): the CURRENT PILLAGERS board ended a full empty row below its last name, while its heading sat close to the top edge. The board now ends just under the last name, with the same room below as above, and the status icons under it move up to match.
