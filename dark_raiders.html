@@ -1605,7 +1605,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='20.82';
+var VER='20.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5902,7 +5902,7 @@ function wxTick(dt){
   G.wxAt=rnd(120,220);
   if(!G.sim){
     say('The weather is turning. '+nw.line);
-    sfx('charge',G.player.x,G.player.y);
+    sfxHere('charge',G.player.x,G.player.y);   // v20.83 (H62): played here only; player 2 now hears the turn in his own window, not a second time from where the host stands
   }
 }
 // ====================================================== THE STORM STRIKES, v6.87
@@ -33913,7 +33913,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v20.82: In co-op, after the host is out, a ship call brings the same few sentries it does solo. Check 20.82 fails on v20.81',
+  now:'v20.83: In co-op, player 2 is now told when the weather is turning, as the host is. Check 20.83 fails on v20.82',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40479,7 +40479,12 @@ function netWorldTake(peer,m){
   if(!netEntsPeer()||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
   if(typeof m.tl==='number'&&isFinite(m.tl)&&Math.abs((G.timeLeft||0)-m.tl)>0.3) G.timeLeft=m.tl;
   w=netWxOf(m.wx); if(w) G.wx=w;
+  // v20.83, from the whole-game bug hunt of 2026-10-08 (H62): PLAYER 2 IS TOLD THE WEATHER IS TURNING. Only the host window turns
+  // the sky, and the line that gives you time to act before the turn is done was said there alone, so this window changed the
+  // sky without a word. A host word that starts a new turn now says it here too, once, with the charge sound played here only.
+  var _wo=G.wxNext;
   G.wxNext=netWxOf(m.wn); G.wxT=(typeof m.wt==='number'&&isFinite(m.wt))?clamp(m.wt,0,1):0;
+  if(G.wxNext&&(!_wo||_wo.id!==G.wxNext.id)&&!(G.wx&&G.wx.id===G.wxNext.id)&&G.player){ say('The weather is turning. '+G.wxNext.line); sfxHere('charge',G.player.x,G.player.y); }
   if(m.bd&&typeof m.bd.length==='number') netBoardTake(m.bd);   // v16.34: the host board
   if(typeof m.kd==='number'&&isFinite(m.kd)) NET.kidHost=clamp(m.kd,KID_MIN,1);   // v16.44: kid mode as the host has it; v17.02, co-op hunt 2026-09-28: down to 1/20, not 1/10
   NET.kbHost=(m.kb===1)?1:((m.kb===0)?0:null);   // v17.71: player 2 comes back after death, as the host has it

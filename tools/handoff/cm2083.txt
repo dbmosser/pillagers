@@ -1,0 +1,7 @@
+v20.83: player 2 hears the weather turn
+
+In co-op, player 2 is now told when the weather is turning, as the host is.
+
+Check 20.83. Fails on v20.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

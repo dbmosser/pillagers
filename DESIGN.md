@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.83 - PLAYER 2 HEARS THE WEATHER TURN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op only the host window turns the sky. The host was told The weather is turning, with its sound, while there was still time to act on it, but player 2 got the new sky with no word at all: fog closing in or a storm starting with no heads-up. Player 2 is now told the same line once, when the turn starts, and each window plays the turn sound once for itself, instead of player 2 also hearing the host sound from wherever the host stands.
+
+MEASURED. Check 20.83 passes, and fails on v20.82.
 ## v20.82 - FEWER BIG ROBOTS FOR PLAYER 2 TOO
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Since v18.06 (his son: fewer big robots) three machines in ten that answer a ship call are sentries, the rest crawlers. But when the host is out and keeps the raid running for player 2, his window still sent a sentry half the time, so a ring player 2 held drew more sentries than the same call solo or with the host still in. It now sends three in ten there too.
