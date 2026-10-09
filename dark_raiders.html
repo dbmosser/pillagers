@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.60';
+var VER='21.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28659,6 +28659,17 @@ var _slp=w2s(p.x,66,p.y);
     // This opens with what he can still do about it.
     ctx.fillText(p.revived?'Bleeding out. Crawl to an open extraction point.':
       '['+keyLabel('KeyF','F')+'] SELF-REVIVE, one per raid',W/2,_rowY);
+    // v21.61, HIS NOTE (2026-10-09): "when downed and holding E to extract, there's no clear progress bar on the downed screen that tells
+    // you that you are extracting". The ring prompt and its hold bars are drawn only for a player on his feet, so a downed player
+    // holding E in a ring saw nothing move. The downed screen now shows the hold itself, as large as the bleed bar above it.
+    if(padZ&&padZ.open&&((padZ.pullT||0)>0||(padZ.callT||0)>0)){
+      var _xp=(padZ.pullT||0)>0, _xf=_xp?clamp(padZ.pullT/1.4,0,1):clamp(padZ.callT/1.6,0,1), _xc=_xp?'#7fc4a0':'#4de3d0';
+      _rowY+=Math.round(_hD*1.35);
+      ctx.font=_fD; ctx.fillStyle=_xc;
+      ctx.fillText(_xp?'EXTRACTING':'CALLING EXTRACTION',W/2,_rowY);
+      bar(W/2-100,_rowY+Math.round(_hD*0.4),200,10,_xf,_xc);
+      _rowY+=Math.round(_hD*0.4)+10;
+    }
     // v9.71: the surrender, offered only in the state he described. It lights up
     // as he holds it and the bar is the same 200 wide as the bleed bar above, so
     // the two read as the same instrument.
@@ -34353,7 +34364,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.60: The pillbox hits softer, fires slower and goes down faster. Check 21.60 fails on v21.59',
+  now:'v21.61: Downed and holding E in an extraction ring, the downed screen shows a clear EXTRACTING bar. Check 21.61 fails on v21.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

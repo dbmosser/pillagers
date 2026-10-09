@@ -1,0 +1,7 @@
+v21.61: the downed screen shows your extraction
+
+Downed and holding E in an extraction ring, the downed screen shows a clear EXTRACTING bar.
+
+Check 21.61. Fails on v21.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

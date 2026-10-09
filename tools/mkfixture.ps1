@@ -5723,6 +5723,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.61',what:'downed in a ring and holding E, the downed screen shows the extraction hold as a bar with its name',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof drawHUD!=='function') return 'SKIP: no HUD here';
+     var bad=[], g, p, Z=null, i, said=[], own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), of=ctx.fillText, k0;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       p=g.player;
+       for(i=0;i<g.zones.length;i++) if(g.zones[i].open!==false){ Z=g.zones[i]; break; }
+       if(!Z) return 'SKIP: staging: no open ring';
+       p.x=Z.x; p.y=Z.y; p.downed=true; p.downT=12; p.revived=true; Z.open=true; Z.pullT=0.7; Z.callT=0;
+       ctx.fillText=function(t){ said.push(String(t)); return of.apply(this,arguments); };
+       drawHUD();
+       if(!said.some(function(t){ return t.indexOf('DOWN')===0; })) return 'SKIP: staging: the downed screen was not drawn';
+       if(!said.some(function(t){ return t==='EXTRACTING'; })) bad.push('downed and holding E in a ring, the downed screen does not show the extraction hold');
+       Z.pullT=0; Z.callT=0.8; said=[]; drawHUD();
+       if(!said.some(function(t){ return t==='CALLING EXTRACTION'; })) bad.push('downed and calling the ring, the downed screen does not show the call');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(own) ctx.fillText=of; else delete ctx.fillText; try{ var g2=__state(); if(g2&&!g2.over){ if(Z){ Z.pullT=0; Z.callT=0; } g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.60',what:'the pillbox is gentler, his note: 850 health, 17 a shot, and a shot every 0.60 to 0.90 seconds',
    run:function(){
      if(typeof mkChoir!=='function'||typeof CHOIR_HP==='undefined') return 'SKIP: no pillbox here';

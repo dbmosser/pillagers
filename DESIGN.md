@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.61 - THE DOWNED SCREEN SHOWS YOUR EXTRACTION
+
+Co-op hunt while he was away. His note of 2026-10-09: when you are downed and hold E to extract, there was no clear progress bar on the downed screen to tell you that you are extracting. The ring prompt and its hold bars are drawn only for a player on his feet, so nothing moved. The downed screen now shows EXTRACTING, or CALLING EXTRACTION, with a bar as large as the bleed bar above it.
+
+MEASURED. Check 21.61 passes, and fails on v21.60.
 ## v21.60 - THE PILLBOX IS GENTLER
 
 Co-op hunt while he was away. His note of 2026-10-09: the pillbox should deal less damage and/or fire slower, and have less health. Both are done: a shot does 17 instead of 22 and comes every 0.6 to 0.9 seconds instead of 0.42 to 0.66, about 23 damage a second where it was about 40, and its health drops from 1250 to 850, a third less. Its range is unchanged, so you can still hurt it from outside its reach.
