@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.66';
+var VER='21.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18866,6 +18866,18 @@ function returnFire(e,sx,sy){
   e.retT=2.5; e.face=Math.atan2(sy-e.y,sx-e.x);
   return true;
 }
+// v21.67, HIS NOTE (2026-10-09): "gear that drops from enemies dying needs to be better". A pillager's body held what he had looted (two
+// to four rolls, mostly on the body and locker tables, which are bandages, ammo, wire and boards) and his own gun. Every body now also
+// carries one roll on the safe table (cores, titanium, optics, plates, medkits and real guns), and a man in a medium or heavy rig a
+// second, so the fight pays like the loot it guards. Rolled at the death, never at the map build, so the seeded build is unchanged.
+function bodyBonus(e){
+  var out=[], n, RT, i, k;
+  if(!e||e.kind!=='raider'||e.merc||e.friendlyPC||!LOOT||!LOOT.safe) return out;
+  RT={none:0,light:1,medium:2,heavy:3}[e.rig]||0;
+  n=1+(RT>=2?1:0);
+  for(i=0;i<n;i++){ k=rollLoot(LOOT.safe); if(k) out.push(k); }
+  return out;
+}
 function updateEnts(dt){
   try{ bossTick(); }catch(_bt){}   // v17.45: his pick 21, THE OVERSEER comes up two seconds in
   if(NET.on&&netEntsPeer()){ netEntsEase(dt); return; }   // v15.80: a linked window up top runs no pillager or machine of its own: the host does, and this slides each body to where the host put it
@@ -19157,6 +19169,7 @@ if(e.state==='possum'){
         // him afterwards, which is the obvious way to farm the new payout.
         if(e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]&&!e.paidRevive&&_drop.indexOf('gun_'+e.wep.id)<0)
           _drop.push('gun_'+e.wep.id);
+        _drop=_drop.concat(bodyBonus(e));   // v21.67, his note: what a pillager drops is better
         var c=setLoot(mkContainer(e.x,e.y,'body'),_drop); G.containers.push(c);
         // WHOSE BODY THIS IS, v2.71. A dead raider became an anonymous 'body'
         // container, so a feud aftermath, two corpses in a doorway, read as
@@ -34391,7 +34404,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.66: Shotguns and single shot guns (Whisper, Meridian Lance, Longshot, Magnum, Marksman) hit harder. Check 21.66 fails on v21.65',
+  now:'v21.67: Dead pillagers now drop better gear: an extra high value item, two from a man in medium or heavy armour. Check 21.67 fails on v21.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

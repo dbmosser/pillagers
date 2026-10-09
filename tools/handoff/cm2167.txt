@@ -1,0 +1,7 @@
+v21.67: pillagers drop better gear
+
+Dead pillagers now drop better gear: an extra high value item, two from a man in medium or heavy armour.
+
+Check 21.67. Fails on v21.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

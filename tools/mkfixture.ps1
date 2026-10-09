@@ -5723,6 +5723,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.67',what:'his note: a dead pillager drops better gear, one safe table roll on every body and two for a medium or heavy rig',
+   run:function(){
+     if(typeof bodyBonus!=='function') return 'control: a dead pillager drops nothing extra';
+     var bad=[], a=bodyBonus({kind:'raider',rig:'none'}), b=bodyBonus({kind:'raider',rig:'heavy'}), c=bodyBonus({kind:'raider',rig:'none',merc:1});
+     if(a.length!==1) bad.push('a pillager in no rig drops '+a.length+' extra, not 1');
+     if(b.length!==2) bad.push('a pillager in a heavy rig drops '+b.length+' extra, not 2');
+     if(c.length) bad.push('your hire drops extra gear');
+     var safe=(LOOT.safe||[]).map(function(r){ return r[0]; });
+     a.concat(b).forEach(function(k){ if(safe.indexOf(k)<0&&k!=='KEY'&&!/^key_/.test(k)) bad.push(k+' is not from the safe table'); });
+     var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd='_drop.concat(body'+'Bonus(e))';
+     if(src.indexOf(nd)<0) bad.push('the body drop never adds the bonus');
+     return bad.length?bad.join('; '):null; }},
   {v:'21.66',what:'his note: the single shot guns hit harder, so they keep up with the automatics',
    run:function(){
      var want={pistol:23,tacker:20,scuttle:12,magnum:62,dmr:64,sniper:170,lance:150,shotgun:16,whisper:24}, bad=[], k;

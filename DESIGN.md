@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.67 - PILLAGERS DROP BETTER GEAR
+
+Co-op hunt while he was away. His note of 2026-10-09: gear that drops from enemies dying needs to be better. A dead pillager left what he had looted, mostly bandages, ammo, wire and boards, plus his gun. Every body now also carries one roll from the best loot table (cores, titanium, optics, plates, medkits and real guns), and one in a medium or heavy rig a second, so the fight pays like the loot it guards. The map is unchanged.
+
+MEASURED. Check 21.67 passes, and fails on v21.66.
 ## v21.66 - THE SINGLE SHOT GUNS HIT HARDER
 
 Co-op hunt while he was away. His note of 2026-10-09: the shotgun and the single shot guns, like the Whisper and the Meridian Lance, need more damage to compete with the Auto Rifle and the SMG. Counting reloads, the Auto Rifle did about 107 damage a second and the SMG and Support MG 85 to 99, while the single shots managed 45 to 70 and the Whisper 24. Per shot now: Scav Pistol 23, Tacker 20, Scuttle 12 a pellet, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet, and the Whisper 24 with a faster rate. The single shots now land about 70 to 110 a second and keep their reach and their fight-ending hits. The Burst Carbine is unchanged.
