@@ -5723,6 +5723,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.46',what:'in the shop a price you cannot pay reads grey and one you can stays amber',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station)||typeof renderShopGrid!=='function'||typeof SHOP==='undefined') return 'SKIP: no shop here';
+     var bad=[], c0=P.credits, g, cells, i, lo=-1, hi=-1, cl, ch;
+     try{
+       __topClear(); __hubEnter(); __wnseen(1); __station('trader');
+       for(i=0;i<SHOP.length;i++){ if(lo<0||SHOP[i].price<SHOP[lo].price) lo=i; if(hi<0||SHOP[i].price>SHOP[hi].price) hi=i; }
+       if(lo<0||SHOP[hi].price<=SHOP[lo].price) return 'SKIP: staging: every price is the same';
+       P.credits=SHOP[lo].price; renderShopGrid();
+       g=document.getElementById('shopgrid'); cells=g?g.querySelectorAll('.vcell'):[];
+       if(!cells[hi]||!cells[lo]) return 'SKIP: staging: the shop tiles are not one per entry';
+       cl=getComputedStyle(cells[lo].querySelector('.vp')).color; ch=getComputedStyle(cells[hi].querySelector('.vp')).color;
+       if(!cells[hi].classList.contains('poor')) bad.push('a price above what he holds is not marked');
+       if(cells[lo].classList.contains('poor')) bad.push('a price he can pay is marked');
+       if(cl===ch) bad.push('a price he cannot pay reads the same colour as one he can ('+ch+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.credits=c0; try{ renderShopGrid(); __hubEnter(); }catch(_r){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.45',what:'the YOUR STATS heading says what its number counts: the runs logged',
    run:function(){
      if(typeof renderHub!=='function') return 'SKIP: no stats here';

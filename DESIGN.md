@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.46 - THE SHOP GREYS WHAT YOU CANNOT AFFORD
+
+Co-op hunt while he was away. From the 4K screenshot pass of 2026-10-09: in the shop every price was the same amber, so a 2,340 item looked as buyable as a 300 one with 900 credits in hand. A price you cannot pay now reads grey, so the shop says at a glance what you can buy.
+
+MEASURED. Check 21.46 passes, and fails on v21.45.
 ## v21.45 - YOUR STATS SAYS WHAT ITS NUMBER COUNTS
 
 Co-op hunt while he was away. Seen on the 4K screenshot of the Mainframe (2026-10-09): the heading read YOUR STATS 7, a bare number. It is the runs logged, which the cards under it count from, so it now says 7 RUNS. The heading words are untouched.

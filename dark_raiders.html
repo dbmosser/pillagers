@@ -424,6 +424,8 @@
   .vcell.took:after{ content:'TAKEN'; position:absolute; left:0; right:0; top:38%;
     text-align:center; font-size:13px; letter-spacing:.16em; color:var(--gain);
     text-shadow:0 1px 3px rgba(6,9,13,.9); }
+  /* v21.46, from the 4K visual pass (2026-10-09): a price you cannot pay reads grey, so the shop says at a glance what you can buy */
+  .vcell.poor .vp{ color:#7d8894 !important; opacity:.8; }
   .vcell .vp{ position:absolute; right:7px; top:5px; font-size:15px; font-weight:700;
     color:var(--amber); text-shadow:0 1px 2px #000; }
   .vcell .vlk{ position:absolute; left:7px; top:5px; font-size:13px; color:var(--ash); }
@@ -1681,7 +1683,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.45';
+var VER='21.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34320,7 +34322,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.45: The YOUR STATS heading now says how many runs it counts. Check 21.45 fails on v21.44',
+  now:'v21.46: The shop shows prices you cannot afford in grey. Check 21.46 fails on v21.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37404,7 +37406,7 @@ function renderShopGrid(){
     var btn=row.querySelector('button');
     var locked=(P.xp||0)<o.rep;
     var cell=document.createElement('div');
-    cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'');
+    cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'')+((o.price>(P.credits||0))?' poor':'');   // v21.46: a price you cannot pay reads grey
     cell.innerHTML=iconImgHTML(shopEntryIcon(o),64)+
       '<div class="vlbl">'+escHtml(shopEntryLabel(o))+'</div>'+
       '<span class="vp">'+o.price.toLocaleString()+'</span>'+

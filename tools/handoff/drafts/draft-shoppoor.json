@@ -1,0 +1,16 @@
+{
+    "title":  "THE SHOP GREYS WHAT YOU CANNOT AFFORD",
+    "why":  "From the 4K screenshot pass of 2026-10-09: in the shop every price was the same amber, so a 2,340 item looked as buyable as a 300 one with 900 credits in hand. A price you cannot pay now reads grey, so the shop says at a glance what you can buy.",
+    "now":  "The shop shows prices you cannot afford in grey.",
+    "edits":  [
+                  {
+                      "anchor":  "  .vcell .vp{ position:absolute; right:7px; top:5px;",
+                      "replacement":  "  /* v16.xx, from the 4K visual pass (2026-10-09): a price you cannot pay reads grey, so the shop says at a glance what you can buy */\n  .vcell.poor .vp{ color:#7d8894 !important; opacity:.8; }\n  .vcell .vp{ position:absolute; right:7px; top:5px;"
+                  },
+                  {
+                      "anchor":  "    cell.className=\u0027vcell\u0027+(i===P._shopSel?\u0027 on\u0027:\u0027\u0027)+(locked?\u0027 locked\u0027:\u0027\u0027);",
+                      "replacement":  "    cell.className=\u0027vcell\u0027+(i===P._shopSel?\u0027 on\u0027:\u0027\u0027)+(locked?\u0027 locked\u0027:\u0027\u0027)+((o.price\u003e(P.credits||0))?\u0027 poor\u0027:\u0027\u0027);   // v16.xx: a price you cannot pay reads grey"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027in the shop a price you cannot pay reads grey and one you can stays amber\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station)||typeof renderShopGrid!==\u0027function\u0027||typeof SHOP===\u0027undefined\u0027) return \u0027SKIP: no shop here\u0027;\n     var bad=[], c0=P.credits, g, cells, i, lo=-1, hi=-1, cl, ch;\n     try{\n       __topClear(); __hubEnter(); __wnseen(1); __station(\u0027trader\u0027);\n       for(i=0;i\u003cSHOP.length;i++){ if(lo\u003c0||SHOP[i].price\u003cSHOP[lo].price) lo=i; if(hi\u003c0||SHOP[i].price\u003eSHOP[hi].price) hi=i; }\n       if(lo\u003c0||SHOP[hi].price\u003c=SHOP[lo].price) return \u0027SKIP: staging: every price is the same\u0027;\n       P.credits=SHOP[lo].price; renderShopGrid();\n       g=document.getElementById(\u0027shopgrid\u0027); cells=g?g.querySelectorAll(\u0027.vcell\u0027):[];\n       if(!cells[hi]||!cells[lo]) return \u0027SKIP: staging: the shop tiles are not one per entry\u0027;\n       cl=getComputedStyle(cells[lo].querySelector(\u0027.vp\u0027)).color; ch=getComputedStyle(cells[hi].querySelector(\u0027.vp\u0027)).color;\n       if(!cells[hi].classList.contains(\u0027poor\u0027)) bad.push(\u0027a price above what he holds is not marked\u0027);\n       if(cells[lo].classList.contains(\u0027poor\u0027)) bad.push(\u0027a price he can pay is marked\u0027);\n       if(cl===ch) bad.push(\u0027a price he cannot pay reads the same colour as one he can (\u0027+ch+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ P.credits=c0; try{ renderShopGrid(); __hubEnter(); }catch(_r){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

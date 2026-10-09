@@ -618,3 +618,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 2026-10-09 07:22 morning corpus 0..1271 on v21.43: 1 FAIL (v19.50 fade strip) passes alone = corpus order (a long report left on the card makes it scroll); check now SKIPs a scrolling card. Corpus clean.
 2026-10-09 07:22 MORNING STATE: HEAD v21.44, corpus clean, weekly 48% (5h 1%, resets 12:20 local). LIGHT MODE Fri 08:00-18:00 for his work (20% reserve): heartbeats only, one small fix each, no workflows, no corpus while he is at the PC. Evening: ~0.8%/h to 80% by Sun 01:00
 2026-10-09 07:23 heartbeat (he is away, idle 9.6 h; light): logs unchanged, morning corpus clean. Tooling: ship.sh zips attract.mp4/attract.webm beside the game into pillagers-web.zip (tested with and without a clip)
+2026-10-09 07:53 heartbeat (away 10 h, light): no new FAILs; shipped v21.45 logruns (YOUR STATS 7 -> 7 RUNS)

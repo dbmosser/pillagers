@@ -1,0 +1,5 @@
+## v21.46 - THE SHOP GREYS WHAT YOU CANNOT AFFORD
+
+Co-op hunt while he was away. From the 4K screenshot pass of 2026-10-09: in the shop every price was the same amber, so a 2,340 item looked as buyable as a 300 one with 900 credits in hand. A price you cannot pay now reads grey, so the shop says at a glance what you can buy.
+
+MEASURED. Check 21.46 passes, and fails on v21.45.

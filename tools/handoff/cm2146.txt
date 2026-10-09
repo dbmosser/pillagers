@@ -1,0 +1,7 @@
+v21.46: the shop greys what you cannot afford
+
+The shop shows prices you cannot afford in grey.
+
+Check 21.46. Fails on v21.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
