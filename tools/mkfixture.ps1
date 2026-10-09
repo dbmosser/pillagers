@@ -44036,6 +44036,7 @@ window.__REGRESS=[
        // from the game rather than assumed from what was packed.
        var bagVal=0, bagN=g.bag.length;
        for(var i=0;i<g.bag.length;i++) bagVal+=ival(g.bag[i]);
+       var _iss=Math.min(g.issuedBandages||0,g.bag.filter(function(k){ return k==='bandage'; }).length); bagVal-=_iss*ival('bandage');   // 2026-10-08 (H20): an issued loaner Bandage is not lost, so it is not in the money gone
        __endRaid('dead');
        var oc=document.getElementById('outcome');
        var t=(oc?(oc.innerText||''):'').replace(/\s+/g,' ');
