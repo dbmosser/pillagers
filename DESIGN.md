@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.94 - THE SELL NOTE LINES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the stash: the line under the sell button (selling salvage here pays XP) started a step to the right of the button edge and of the help line above it, because it was styled as a hint line, which carries its own side padding. It now starts on the button edge, with the same size and the same words.
+
+MEASURED. Check 20.94 passes, and fails on v20.93.
 ## v20.93 - THE PARTY TRADING LINE LINES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Seen on the 4K picture of the PARTY window: the TRADING paragraph started a step to the right of every other line in the window and of the HOST A PARTY button under it, because it was styled as a hint line, which carries its own side padding. It now starts on the same edge as the rest, with the same size and the same words.

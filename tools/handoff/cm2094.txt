@@ -1,0 +1,7 @@
+v20.94: the sell note lines up
+
+On the stash screen the line under the sell button starts on the button edge.
+
+Check 20.94. Fails on v20.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
