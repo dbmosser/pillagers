@@ -1,0 +1,7 @@
+v20.72: a restore code carries the achievements
+
+A restore code now brings your achievements with you, and never keeps those of the save it replaces.
+
+Check 20.72. Fails on v20.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v20.72 - A RESTORE CODE CARRIES THE ACHIEVEMENTS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A restore code neither carried the achievements nor cleared them. A friend's character pasted over a veteran came up wearing LIFER and MACHINE BREAKER it never earned, with the old gamble history under THE GAMBLE, and a player restoring his own code on a new browser came back with no achievements and his lifetime kill counts gone. The code now carries the achievements earned and the two kill counts behind them, a restore never hands over the replaced character's, and the old run log is not counted for them again.
+
+MEASURED. Check 20.72 passes, and fails on v20.71.
 ## v20.71 - A RESTORE CODE LEAVES THE FLOOR CRATES BEHIND
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Items dropped on the Undercroft floor are written down so that a reload brings them home to the stash. A restore code replaced the whole save but left that list, so the reload after a restore put the old character's floor crates into the restored character's stash: items that character never owned. The list now goes with the save it came from: the crates leave the floor at the restore, and UNDO still brings them home to the old character.
