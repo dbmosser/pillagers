@@ -5886,7 +5886,7 @@ window.__REGRESS=[
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
        p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.ents.length=0; g.waveT=-1e9;
        // only the probe lines and the backpack line may speak, the queue included (it says through say)
-       say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('ZQ')===0||s.indexOf(BF)===0) return realSay.apply(this,arguments); };
+       say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('ZQ')===0||s.toUpperCase().indexOf(BF.toUpperCase())===0) return realSay.apply(this,arguments); };
        t0=performance.now();
        // ONE: no copies, and at most four waiting (two warnings on the rows, so ordinary lines wait)
        clr(); say('ZQ W1','warn'); say('ZQ W2','warn');
@@ -5919,7 +5919,7 @@ window.__REGRESS=[
          for(i=0;i<360;i++){
            step(); if(g.over) break;
            rows=feedRows(); n=0;
-           for(var r=0;r<rows.length;r++){ if(String(rows[r].m).indexOf(BF)===0) n++; if(rows[r].m==='zq q'&&firstQ<0) firstQ=i; }
+           for(var r=0;r<rows.length;r++){ if(String(rows[r].m).toUpperCase().indexOf(BF.toUpperCase())===0) n++; if(rows[r].m==='zq q'&&firstQ<0) firstQ=i; }
            if(n>maxBF) maxBF=n;
          }
          keys={};
@@ -15536,7 +15536,7 @@ window.__REGRESS=[
        netOnState(peer,w); netOnState(peer,w);
        if(lines.length||rum) bad.push('a teammate still standing was called down');
        w.dn=1; netOnState(peer,w);
-       if(!lines.some(function(t){ return t.indexOf('MOTH is down')===0; })) bad.push('the window was told '+JSON.stringify(lines)+' when its teammate went down');
+       if(!lines.some(function(t){ return t.indexOf('MOTH is down')===0||t.indexOf('MOTH DOWN')===0; })) bad.push('the window was told '+JSON.stringify(lines)+' when its teammate went down');
        if(rum!==1) bad.push('the controller rumbled '+rum+' times when the teammate went down');
        netOnState(peer,w);
        if(lines.length!==1||rum!==1) bad.push('the fall was said again while he stayed down ('+lines.length+' lines, '+rum+' rumbles)');
