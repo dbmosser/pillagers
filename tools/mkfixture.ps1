@@ -20267,7 +20267,7 @@ window.__REGRESS=[
      var src='';
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
-     if(src.indexOf("if(typeof NET==='object'&&NET&&NET.on&&NET.role==='join'&&isFinite(amt)) amt*=netKidMul();")<0) bad.push('damage to player 2 is not scaled');
+     if(src.indexOf("if(typeof NET==='object'&&NET&&NET.on&&NET.role==='join'&&isFinite(amt)) amt*=netKidMul();")<0&&src.indexOf("if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))&&isFinite(amt)) amt*=netKidMul();")<0) bad.push('damage to player 2 is not scaled');   // v21.97 also scales a raid this window joined and took over
      return bad.length?bad.join('; '):null; }},
   {v:'16.43',what:'ping: a ping reaches the party through the host with who made it, and snaps to an enemy near the cursor',
    run:function(){
