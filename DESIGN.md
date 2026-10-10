@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.06 - F11 FULLSCREENS THE PLAYER 2 WINDOW
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On one PC with two screens, F11 in the player 2 window never fullscreened it, his report of 2026-10-03. That window hands every key to the player 1 window, F11 included, so its own fullscreen toggle never ran, and the player 1 window ran the toggle instead: a fullscreen player 1 dropped out of fullscreen. F11 now stays in the window it was pressed in and fullscreens that window. Every other key still goes to player 1.
+
+MEASURED. Check 22.06 passes, and fails on v22.05.
 ## v22.05 - THE WHAT IS NEW CARD NAMES THE CO-OP FIXES
 
 Co-op hunt while he was away. The card was stamped v21.89 and the stamp may not trail the build by more than 0.15. Its new second line names the bug hunt fixes of 2026-10-10: dropped guns in one save, charges and shells on both screens, and the controller map cursor and stash sell; the rest are in the change list.

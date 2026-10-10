@@ -5741,6 +5741,35 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'22.06',what:'F11 in the player 2 window runs that window fullscreen toggle and is never handed to player 1; other keys still go to player 1',
+   run:function(){
+     if(typeof netKeyFwd!=='function'||typeof netSamePost!=='function'||typeof fsToggle!=='function'||typeof netKeyHeld==='undefined'||typeof NET!=='object'||!NET) return 'SKIP: no player 2 window here';
+     var NK={}, k, bad=[], oPost=netSamePost, oFs=fsToggle, posts=[], fs=0, kh0=netKeyHeld, k0=keys;
+     function key(ty,code){ window.dispatchEvent(new KeyboardEvent(ty,{code:code,key:code,bubbles:true,cancelable:true})); }
+     function sent(code){ return posts.filter(function(m){ return m&&m.t==='key'&&m.code===code; }).length; }
+     for(k in NET) NK[k]=NET[k];
+     try{
+       __topClear();
+       keys={}; netKeyHeld={};
+       netSamePost=function(m){ posts.push(JSON.parse(JSON.stringify(m))); return true; };
+       fsToggle=function(){ fs++; return true; };
+       NET.same='p2'; NET.pair='zqk17pair';
+       // CONTROL: a plain key pressed in the player 2 window is handed to player 1, down and up
+       key('keydown','KeyJ'); key('keyup','KeyJ');
+       if(sent('KeyJ')!==2) return 'SKIP: staging: the player 2 window did not hand a key to player 1 ('+sent('KeyJ')+' words)';
+       if(fs) return 'SKIP: staging: a plain key ran the fullscreen toggle';
+       key('keydown','F11'); key('keyup','F11');
+       if(sent('F11')) bad.push('F11 in the player 2 window was handed to player 1 ('+sent('F11')+' words), which takes his window out of fullscreen');
+       if(fs!==1) bad.push('F11 in the player 2 window ran its own fullscreen toggle '+fs+' times, not once');
+       if(netKeyHeld.F11) bad.push('the player 2 window still counts F11 as a key held for player 1');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       netSamePost=oPost; fsToggle=oFs; netKeyHeld=kh0; keys=k0||{};
+       for(k in NET) if(!(k in NK)) delete NET[k];
+       for(k in NK) NET[k]=NK[k];
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'22.05',what:'the what is new card is stamped within 0.15 of the build and leads with the co-op fixes news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

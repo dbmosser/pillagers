@@ -1,0 +1,7 @@
+v22.06: f11 fullscreens the player 2 window
+
+F11 in the player 2 window now fullscreens that window and leaves the player 1 window alone.
+
+Check 22.06. Fails on v22.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
