@@ -1,0 +1,7 @@
+v21.76: a hit closes the map and the backpack
+
+Taking a hit now closes the map and the backpack, so you see the fight at once.
+
+Check 21.76. Fails on v21.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.76 - A HIT CLOSES THE MAP AND THE BACKPACK
+
+Co-op hunt while he was away. His notes of 2026-10-09: if you have the map open and take damage, the map should close, and the same for the backpack. A hit that lands now shuts both, so the fight is on screen the moment it reaches you. An item you were dragging in the backpack goes back where it was, as it does when you press ESC. A hit that does not land (while you are briefly protected) leaves them open.
+
+MEASURED. Check 21.76 passes, and fails on v21.75.
 ## v21.75 - THE GUN CARD NO LONGER SAYS STOWED
 
 Co-op hunt while he was away. His note of 2026-10-09: the HUD said his gun was stowed while he had it out. The small line above the gun name in the lower right read STOWED and then whatever was in the other slot, so with one gun it said STOWED Bare Hands right over the gun in his hands, which reads as that gun being put away. The line now says OTHER GUN with that gun name and rounds, and when the other slot holds only Bare Hands there is no line at all.

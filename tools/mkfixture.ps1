@@ -5723,6 +5723,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.76',what:'his notes: a hit that lands closes the map and the backpack',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof damagePlayer!=='function') return 'SKIP: no raid here';
+     var bad=[], g, p;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); p=g.player; if(!g||g.over) return 'SKIP: no live raid';
+       p.iv=0; p.hp=100; G.mapOpen=true; G.bagOpen=false;
+       damagePlayer(5,'test','Test');
+       if(G.mapOpen) bad.push('the map stays open after a hit');
+       p.iv=0; p.hp=100; G.bagOpen=true; G.drag={key:'bandage',px:0,py:0};
+       damagePlayer(5,'test','Test');
+       if(G.bagOpen) bad.push('the backpack stays open after a hit');
+       if(G.drag) bad.push('a drag survives the backpack closing');
+       p.iv=5; p.hp=100; G.mapOpen=true;
+       damagePlayer(5,'test','Test');
+       if(!G.mapOpen) bad.push('a hit that did not land (invulnerable) still closed the map');
+       G.mapOpen=false;
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ G.mapOpen=false; G.bagOpen=false; G.drag=null; var g2=__state(); if(g2&&!g2.over){ g2.player.iv=0; g2.player.hp=100; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.75',what:'his note: the gun card never says STOWED over the gun in your hands; the other gun reads OTHER GUN and Bare Hands gets no line',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof drawHUD!=='function') return 'SKIP: no HUD here';
