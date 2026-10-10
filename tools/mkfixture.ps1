@@ -5723,6 +5723,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.78',what:'his notes: the Crier lines read like a shooter HUD, A CRIER IS REVEALING YOUR LOCATION and then CRIER REVEALED YOUR LOCATION',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)||typeof mkSnitch!=='function') return 'SKIP: this fixture cannot deploy and step';
+     var bad=[], said=[], realSay=say;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       var g=__state(), p=g.player, i;
+       say=function(m){ said.push(String(m)); return realSay.apply(null,arguments); };
+       for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='snitch') g.ents[i].hp=0;
+       var cr=mkSnitch(p.x+240,p.y); cr.state='alarm'; cr.wind=0.01; cr.markX=p.x; cr.markY=p.y; cr.lost=0; g.ents.push(cr);
+       __ents(0.1);
+       if(!said.some(function(t){ return /^CRIER REVEALED YOUR (LAST )?LOCATION$/.test(t); })) bad.push('the alarm line is not CRIER REVEALED YOUR LOCATION (said: '+said.join(' | ').slice(0,120)+')');
+       var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd="'A CRIER IS REVEALING"+" YOUR LOCATION'";
+       if(src.split(nd).length-1<2) bad.push('the spot line is not A CRIER IS REVEALING YOUR LOCATION on both windows');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ say=realSay; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.77',what:'his note: a Listener touching a player who stands still keeps striking and never goes dormant at his side',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__sim) return 'SKIP: no raid here';

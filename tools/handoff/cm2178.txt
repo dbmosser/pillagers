@@ -1,0 +1,7 @@
+v21.78: the crier lines read like a shooter
+
+Criers now say A CRIER IS REVEALING YOUR LOCATION, then CRIER REVEALED YOUR LOCATION.
+
+Check 21.78. Fails on v21.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

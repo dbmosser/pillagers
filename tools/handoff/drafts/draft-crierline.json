@@ -1,0 +1,24 @@
+{
+    "title":  "THE CRIER LINES READ LIKE A SHOOTER",
+    "why":  "His notes of 2026-10-09: the line A crier has you. Kill it or move. should say a Crier is revealing your location, and the way the game words what it tells you is weird and not like an AAA game. When a Crier spots you it now says A CRIER IS REVEALING YOUR LOCATION, and when it calls you in it says CRIER REVEALED YOUR LOCATION, or CRIER REVEALED YOUR LAST LOCATION when it had already lost sight of you. The countdown, the MARKED banner and the rule that breaking its line of sight for three seconds calls it off are unchanged. The rest of the raid text is being rewritten in the same voice.",
+    "now":  "Criers now say A CRIER IS REVEALING YOUR LOCATION, then CRIER REVEALED YOUR LOCATION.",
+    "edits":  [
+                  {
+                      "anchor":  "if(!e.markSeat) say(\u0027A crier has you. Kill it or move.\u0027);",
+                      "replacement":  "if(!e.markSeat) say(\u0027A CRIER IS REVEALING YOUR LOCATION\u0027);   // v21.78, his note (2026-10-09): his words, in the voice of a shooter HUD"
+                  },
+                  {
+                      "anchor":  "say(sees?\u0027The Crier raised the alarm. They know exactly where you are.\u0027   // v11.94, HIS NOTE: name the Crier\n                 :\u0027The Crier raised the alarm. They are heading to where it last saw you.\u0027);",
+                      "replacement":  "say(sees?\u0027CRIER REVEALED YOUR LOCATION\u0027:\u0027CRIER REVEALED YOUR LAST LOCATION\u0027);   // v21.78: still names the Crier (v11.94, his note)"
+                  },
+                  {
+                      "anchor":  "if(mine) say(\u0027A crier has you. Kill it or move.\u0027);",
+                      "replacement":  "if(mine) say(\u0027A CRIER IS REVEALING YOUR LOCATION\u0027);"
+                  },
+                  {
+                      "anchor":  "say(m.sees?\u0027The Crier raised the alarm. They know exactly where you are.\u0027:\u0027The Crier raised the alarm. They are heading to where it last saw you.\u0027);",
+                      "replacement":  "say(m.sees?\u0027CRIER REVEALED YOUR LOCATION\u0027:\u0027CRIER REVEALED YOUR LAST LOCATION\u0027);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his notes: the Crier lines read like a shooter HUD, A CRIER IS REVEALING YOUR LOCATION and then CRIER REVEALED YOUR LOCATION\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__ents)||typeof mkSnitch!==\u0027function\u0027) return \u0027SKIP: this fixture cannot deploy and step\u0027;\n     var bad=[], said=[], realSay=say;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       var g=__state(), p=g.player, i;\n       say=function(m){ said.push(String(m)); return realSay.apply(null,arguments); };\n       for(i=0;i\u003cg.ents.length;i++) if(g.ents[i].kind===\u0027snitch\u0027) g.ents[i].hp=0;\n       var cr=mkSnitch(p.x+240,p.y); cr.state=\u0027alarm\u0027; cr.wind=0.01; cr.markX=p.x; cr.markY=p.y; cr.lost=0; g.ents.push(cr);\n       __ents(0.1);\n       if(!said.some(function(t){ return /^CRIER REVEALED YOUR (LAST )?LOCATION$/.test(t); })) bad.push(\u0027the alarm line is not CRIER REVEALED YOUR LOCATION (said: \u0027+said.join(\u0027 | \u0027).slice(0,120)+\u0027)\u0027);\n       var src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027), nd=\"\u0027A CRIER IS REVEALING\"+\" YOUR LOCATION\u0027\";\n       if(src.split(nd).length-1\u003c2) bad.push(\u0027the spot line is not A CRIER IS REVEALING YOUR LOCATION on both windows\u0027);\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{ say=realSay; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

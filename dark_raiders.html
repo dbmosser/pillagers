@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.77';
+var VER='21.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19772,7 +19772,7 @@ navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
         // The marked seat is kept on the Crier; the host hears the line only when it is him, and the party is told the windup so
         // every window draws the countdown and the marked player gets his own line and banner.
         e.markSeat=(p&&p.net)?(p.seat|0):0;
-        if(!e.markSeat) say('A crier has you. Kill it or move.');
+        if(!e.markSeat) say('A CRIER IS REVEALING YOUR LOCATION');   // v21.78, his note (2026-10-09): his words, in the voice of a shooter HUD
         if(NET.on) netMarkSend({t:'mark',k:'on',nid:e.nid|0,wind:+(+e.wind).toFixed(2),seat:e.markSeat});
       }
       var wantS=e.face;
@@ -19817,8 +19817,7 @@ if(e.state==='alarm'){
           if(!e.markSeat){ G.marked=2.2; T.marked=(T.marked||0)+1; }
           // v20.38 (H11): the lines below are for the host only when the Crier marked him; player 2 gets them from the word above
           if(!e.markSeat)
-say(sees?'The Crier raised the alarm. They know exactly where you are.'   // v11.94, HIS NOTE: name the Crier
-                 :'The Crier raised the alarm. They are heading to where it last saw you.');
+say(sees?'CRIER REVEALED YOUR LOCATION':'CRIER REVEALED YOUR LAST LOCATION');   // v21.78: still names the Crier (v11.94, his note)
           // Reinforcements converge on the MARKED position, not your current
           // one, which is what makes repositioning the counterplay.
           for(var sb=0;sb<G.ents.length;sb++){
@@ -34441,7 +34440,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.77: A Listener that reaches you no longer falls asleep at your side when you stand still. It keeps striking. Check 21.77 fails on v21.76',
+  now:'v21.78: Criers now say A CRIER IS REVEALING YOUR LOCATION, then CRIER REVEALED YOUR LOCATION. Check 21.78 fails on v21.77',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41666,14 +41665,14 @@ function netMarkTake(peer,m){
   k=netClean(m.k,6); e=NET.entMap?NET.entMap[m.nid|0]:null; mine=((m.seat|0)===NET.seat);
   if(k==='on'){
     if(e){ e.wind=clamp(isFinite(+m.wind)?+m.wind:3.5,0,6); e.state='alarm'; }
-    if(!G.sim){ if(mine) say('A crier has you. Kill it or move.'); }   /* v21.23 (R4): the host already sends the alarm sound, so it is not played twice here */
+    if(!G.sim){ if(mine) say('A CRIER IS REVEALING YOUR LOCATION'); }   /* v21.23 (R4): the host already sends the alarm sound, so it is not played twice here */
     return 'mark:on';
   }
   if(k==='fire'){
     if(e) e.wind=null;
     if(mine){
       G.marked=2.2; if(G.tel) G.tel.marked=(G.tel.marked||0)+1;
-      if(!G.sim) say(m.sees?'The Crier raised the alarm. They know exactly where you are.':'The Crier raised the alarm. They are heading to where it last saw you.');
+      if(!G.sim) say(m.sees?'CRIER REVEALED YOUR LOCATION':'CRIER REVEALED YOUR LAST LOCATION');
     }
     return 'mark:fire';
   }

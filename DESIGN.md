@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.78 - THE CRIER LINES READ LIKE A SHOOTER
+
+Co-op hunt while he was away. His notes of 2026-10-09: the line A crier has you. Kill it or move. should say a Crier is revealing your location, and the way the game words what it tells you is weird and not like an AAA game. When a Crier spots you it now says A CRIER IS REVEALING YOUR LOCATION, and when it calls you in it says CRIER REVEALED YOUR LOCATION, or CRIER REVEALED YOUR LAST LOCATION when it had already lost sight of you. The countdown, the MARKED banner and the rule that breaking its line of sight for three seconds calls it off are unchanged. The rest of the raid text is being rewritten in the same voice.
+
+MEASURED. Check 21.78 passes, and fails on v21.77.
 ## v21.77 - A LISTENER AT YOUR SIDE KEEPS STRIKING
 
 Co-op hunt while he was away. His note of 2026-10-09: Listeners charged him and then did not hurt him, especially when he stood still. A Listener tracks you only by the sound of your feet, so once it reached a man who had stopped moving it heard nothing, waited seven seconds and went dormant right beside him, and a dormant Listener never strikes. Measured on the old build: five blows, then asleep at his side for good. Now a Listener within reach of you keeps track of you whether you stand, crouch or move, and keeps striking. Further away, standing still still makes it lose you, as before. Crawlers were measured too: they bite every 0.7 seconds at your side whether you stand, crouch or move.
