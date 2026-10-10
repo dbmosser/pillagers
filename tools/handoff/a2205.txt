@@ -1,0 +1,1 @@
+| THE WHAT IS NEW CARD NAMES THE CO-OP FIXES | v22.05 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 22.05 passes, fails on v22.04 |

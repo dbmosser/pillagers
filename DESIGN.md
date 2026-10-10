@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.05 - THE WHAT IS NEW CARD NAMES THE CO-OP FIXES
+
+Co-op hunt while he was away. The card was stamped v21.89 and the stamp may not trail the build by more than 0.15. Its new second line names the bug hunt fixes of 2026-10-10: dropped guns in one save, charges and shells on both screens, and the controller map cursor and stash sell; the rest are in the change list.
+
+MEASURED. Check 22.05 passes, and fails on v22.04.
 ## v22.04 - PLAYER 2 ROUNDS MEET THE ARMOUR
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, the armour of a pillager who came up during the raid did nothing against player 2: a Breacher Plate soaks two thirds of every round from the host, but player 2 went straight through it and dropped the man two or three times faster. On pillagers from the start of the raid, each window wore down its own copy of the plate, so with both players shooting it had to be chewed through twice. Player 2 now sends his round whole and the host takes it off the one plate it keeps, exactly as it does for its own rounds.
