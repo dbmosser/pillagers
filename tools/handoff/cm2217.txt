@@ -1,0 +1,7 @@
+v22.17: the empty reticle names the reload key
+
+The empty crosshair now says [X] RELOAD on a controller and [R] RELOAD on a keyboard, the reload button you have.
+
+Check 22.17. Fails on v22.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
