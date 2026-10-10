@@ -1,0 +1,2009 @@
+{
+    "scores":  [
+                   {
+                       "name":  "CALM UNTIL IT MATTERS (ARC Raiders faithful)",
+                       "aaa":  8,
+                       "consistency":  8,
+                       "combatClarity":  8,
+                       "risk":  4,
+                       "rulings":  6,
+                       "notes":  "Total 34. The most AAA set of lanes. An alert banner sits in the old MARKED row with a caps headline over a sentence detail, which is the voice he has since asked for. It also has a pickup stack, one prompt style at his v10.52 SEARCH size (27954), a REVIVE prompt over a downed teammate, a location tag, a lore card, world text drawn over the fog, and a clear never-say-twice list.\n\nFlaws I checked in the code:\n- It never fixes tools/mkfixture.ps1:1105, which replaces say() with a copy of the old body. Its T02/T03 module checks would therefore fail on the new build too.\n- Its boss-bar chain reads HUDFEEDB, but drawBossBar runs at 27279, before the message line is drawn at 27834.\n- Its MARKED BY THE CRIER and A CRIER HAS YOU rewrites are void now that v21.78 has shipped his own Crier words.\n- It calls a belt cell \u0027key N\u0027, where the legend says slot (29094, 29149).\n- Its one-prompt picker is new logic that sits next to input handling."
+                   },
+                   {
+                       "name":  "Tiered TV-readable system (COD BR / Fortnite hierarchy)",
+                       "aaa":  7,
+                       "consistency":  7,
+                       "combatClarity":  6,
+                       "risk":  4,
+                       "rulings":  4,
+                       "notes":  "Total 28. It gets the harness right (T00 wraps the real say) and has the cleanest plate fix: wrap measureText for TX, since only fillText is wrapped today (2773).\n\nWhere it goes wrong:\n- Its alerts are sentence case under a rule of \u0027never capitals for emphasis\u0027, and it rewrites \u0027THE PILLBOX HAS SEEN YOU.\u0027 as \u0027The Pillbox has seen you.\u0027. That is the opposite of his v21.78 shooter-HUD caps.\n- Eight say-variants and a rebuilt bottom stack (action line over the use bar and the extraction band) raise the risk of misrouting and of 4K overlap.\n- Drawn keycaps that drop the \u0027[\u0027 would change his \u0027[F] SELF-REVIVE, one per raid\u0027 row (28737) and many check needles.\n- It replaces his v8.27 notoriety stamp with a banner.\n- It puts a centre banner at H*0.25 for minute marks, weather and contracts, which sits in the play view on a TV.\n- Its Crier rewrite is void after v21.78."
+                   },
+                   {
+                       "name":  "One message module, AAA callouts (pragmatic consolidation)",
+                       "aaa":  6,
+                       "consistency":  7,
+                       "combatClarity":  6,
+                       "risk":  9,
+                       "rulings":  7,
+                       "notes":  "Total 35, the base. It is the only design that read the code and the harness as they actually are:\n- the fixture\u0027s copied say (1105)\n- G.msgQ mapped with String at mkfixture 30387\n- the fake G at 16692\n- 92 checks that reassign say\n- the boss bar drawing first, so a layout pass is needed\n- G.sim stays a no-op and nothing calls rnd()\n- TX runs on the whole line before any split\n- his words are kept byte for byte\n\nWeaker as AAA:\n- Loot still rides the one top-centre callout; there is no pickup lane.\n- A critical line can be replaced by a pickup after its 2 s dwell.\n- It drops SEARCH from head to label size, against his v10.52 note (27954).\n- It puts shadowBlur on about 20 strings a frame.\n- Its Crier rewrite is void after v21.78."
+                   }
+               ],
+    "spec":  "## PILLAGERS RAID TEXT: ONE MODULE, FIVE LANES, HIS VOICE\\n\\n**Base.** Design 3 (\u0027one message module\u0027). It scored best on risk and on his rulings, and it is the only design that read the check harness correctly.\\n\\n**Taken from design 1:**\\n- the alert banner in the old MARKED row\\n- the pickup stack\\n- one prompt style at his SEARCH size\\n- a REVIVE prompt over a downed teammate\\n- the location tag and the lore card\\n- world text drawn over the fog\\n- the never-say-twice list\\n\\n**Taken from design 2:** the harness-first build order and the one-line measureText fix.\\n\\n### Facts this design rests on (checked on v21.78, today)\\n- **His Crier lines set the voice.** Today he shipped \u0027A CRIER IS REVEALING YOUR LOCATION\u0027 (19775, 41668) and \u0027CRIER REVEALED YOUR LOCATION\u0027 / \u0027CRIER REVEALED YOUR LAST LOCATION\u0027 (19820, 41675), marked \u0027his words, in the voice of a shooter HUD\u0027. The v21.78 handoff (tools/handoff/d2178.txt) says the rest of the raid text will be rewritten in that voice. All three designs reworded these lines, so those rewrites are void.\\n- **The fixture hides say().** tools/mkfixture.ps1:1105 replaces say() with a copy of its old body. No change to say() is visible to any check until the fixture wraps the real function (build R00).\\n- **Checks depend on the old shape.** 92 checks reassign say= or sayWhenFree=. The check at mkfixture 30387 maps G.msgQ with String. The check at 16692 swaps in a fake G={over,sim,msgT,msgQ}.\\n- **Plates are measured on the wrong words.** Only fillText goes through TX (2773). measureText and strokeText do not, so every plate is sized on the untranslated string.\\n- **The boss bar draws first.** drawBossBar runs at 27279, before the message line is drawn at 27834, and places itself from the plate\u0027s fixed size (27258). A taller top lane needs a layout pass at the top of drawHUD.\\n- **Timers freeze.** msgT and the queue tick only in the running branch (33968-33972). They freeze in the death beat (33920) and during the burn (33957).\\n- **No TXSHIP conflicts.** No raid line is a TXSHIP key (2683). His keys that touch a raid are DOM card lines and the Ascend panel weather rows, and this design leaves them untouched.\\n- **The legend names a belt cell a slot.** It reads \u0027select tactical belt slot\u0027 (29094) and \u0027change tactical belt slot\u0027 (29149).\\n\\n### 1. The voice\\n**One shape for every line that comes and goes:**\\n- A **CAPS HEADLINE** of at most 34 characters (his Crier line is 34). Subject first, present tense, no end punctuation.\\n- When a number or an instruction is needed, add a **detail** in sentence case. At most 48 characters, ending in a period.\\n\\n**How each lane draws it:**\\n- **Alert lane:** the headline row over the detail row.\\n- **Feed:** one row, \u0027HEADLINE  ·  Detail.\u0027, with the detail in dim.\\n- **Pickup rows:** item name, count, caps tag.\\n\\n**Names:**\\n- A name inside a caps headline is uppercased when the string is built. SEARCH NAME and NAME ELIMINATED already work this way.\\n- A name inside a detail keeps its stored case. Item names are Title Case, as in ITEMS.\\n- Nothing calls toLowerCase on a name.\\n\\n**His sentence lines are drawn exactly as written, in the detail style:**\\n- \u0027Knocked down. Extraction progress bar reset. Hold E to try again.\u0027 (16216)\\n- \u0027Nothing to pick up.\u0027 (15624)\\n- \u0027Search resumed, N% done.\u0027 (17934, 42087)\\n- \u0027Self-revive spent. One per raid.\u0027 (17015)\\n- \u0027CONTRACT DONE: X. Complete contract at mainframe.\u0027 (3671) is split at his colon and nowhere else. The headline is CONTRACT DONE; the detail is the rest, word for word.\\n\\n**New text never uses:** caps for emphasis inside a sentence, ellipses, semicolons, parentheses, colon labels or spaced hyphens. The only separator is two spaces, a middle dot, two spaces. Patch scripts write the dot as the \\\\u00b7 escape, because PS 5.1 reads .ps1 files as ANSI.\\n\\n### 2. Lanes\\n**TOP STATUS** (27509-27575)\\n- Clock, compass and arrow. Their words are unchanged, except that the compass always reads \u0027EXTRACT A 120m\u0027 or \u0027WAYPOINT 120m\u0027.\\n- Bare text with a 2×hudRes px INK outline. Always on.\\n\\n**ALERT LANE** (top at LH(96) inside hudZoomIn(\u0027msg\u0027), so his message-size dial still works)\\n- The MARKED row (27576-27580) is retired; this lane takes its place.\\n- One slot, for crit, warn and ext lines.\\n- **Style:**\\n  - a measured plate (the danger plate for crit and warn)\\n  - a 4-unit accent bar in the kind colour\\n  - a small path glyph: triangle-! for a threat, a clock for time, a ring for extraction, two heads for the party\\n  - the headline in hudFS(TYPE.head) 700, in the kind colour\\n  - the detail in TYPE.label, in bone\\n- **Timing:** fades in over 0.12 s, holds steady with no flicker, fades out over 0.4 s. It lasts 3.5 s (crit 4.5 s), or for as long as its condition holds, up to 8 s. Held conditions: the Crier mark while G.marked\u003e0, the burn while G.nuking, a teammate down until he is up.\\n- **Replacing:** a line of equal or higher kind replaces the current one after 0.6 s (crit replaces at once). A lower line waits in a 3-slot alert queue for up to 1.5 s, then drops into the feed as an objective row, so it is never lost. A line with the same key refreshes in place.\\n- Writes HUDALERTB.\\n\\n**FEED** (under the alert lane at HUDALERTB+LH(4), or at LH(96) when no alert shows)\\n- Two rows, newest on top, the older one at 75% alpha. TYPE.label.\\n- **Kinds:** obj (amber pip), info (bone), ally (blue pip), chat (dim), sys (steel, caps only).\\n- **Timing:** lasts clamp(2.2+0.05×chars, 3, 6) s; fades in over 0.15 s and out over 0.5 s. A row is protected for 1.2 s (obj 2.0 s).\\n- Writes HUDFEEDB. The boss bar, the offer line and the controller word chain under it.\\n\\n**PICKUP STACK** (right edge)\\n- Right aligned. It grows up from above the hidden chip and the gun card (HUDBOX.gear top − LH(10)×hudRes), stays under the co-op kill feed (H×0.46), and never rises above H×0.62.\\n- **Rows:** the existing item icon, the name in its rarity colour, \u0027x3\u0027, then a dim caps tag. Tags: SLOT 3, IN HAND, EQUIPPED, BACKPACK, TO THE ARMOURY, DROPPED, FROM KITE, GIVEN TO KITE.\\n- Money rows: \u0027+$1,240\u0027 in gain green, \u0027-$540\u0027 in dim. BACKPACK FULL is a red row.\\n- **Timing:** 4 rows, 4 s each. The same item within 4 s merges and refreshes.\\n- Hidden while the backpack or the map is open.\\n\\n**PROMPT** (at the object)\\n- Drawn with hudAtIn. Its lift is in world units (lift×ZOOM()), so it stays on the object at 4K and under ADS.\\n- One prompt only: the top one in reach, in this order: revive teammate \u003e extract or call \u003e revive pillager \u003e give \u003e unlock \u003e seal \u003e search \u003e deal. It must be the target E acts on.\\n- **Style:** TYPE.head (his v10.52 size) on a measured plate. The key is amber, in brackets, from keyLabel; the verb and object are bone caps.\\n  - Press: \u0027[E] SEARCH CRATE\u0027\\n  - Hold: \u0027HOLD [E] TO CUT THE SEAL\u0027\\n  - Second line, TYPE.label sentence case: \u0027Needs the Archive Key\u0027, \u00272 items left\u0027, \u0027Kite  ·  12s\u0027\\n\\n**WORLD TEXT**\\n- Labels, damage numbers, nameplates and teammate tags draw after the darkness and fog sheets.\\n- Plates come from actualBoundingBox.\\n- WEAK SPOT shows at most once per target per 0.5 s. Loot labels (his 6 s) are evicted last.\\n- ? and ! sit above the nameplate: lift×ZOOM, hudFS head, outlined.\\n- A Crier winding up shows only \u0027CRIER 3.2s\u0027: no ALARM word and no !.\\n- A downed teammate shows \u0027DOWN  ·  12s\u0027 in red. In reach, he also gets \u0027[E] REVIVE KITE  ·  12s\u0027.\\n- Pings, Waypoints and arrows use hudFS and \u0027m\u0027, with kind names from the vocabulary.\\n- One teammate colour everywhere.\\n\\n**PERSISTENT INSTRUMENTS.** The lanes never repeat what these already show:\\n- the extraction band: it owns every extraction countdown, with his extractNowLine and INBOUND\\n- the ring badges (his zoneBadge)\\n- the reticle: [R] RELOAD, NO AMMO\\n- the gun card: RELOADING, the gun in hand\\n- the use bar: APPLYING, SLOTTING\\n- the status icons on the left, with the heal ring\\n- the downed overlay, YOU DIED and the centre verb\\n- the notoriety stamp (his v8.27)\\n- the boss bar, once THE OVERSEER is seen\\n- the offer line, CONDITIONS and the Current Pillagers board\\n- the co-op kill feed and the teammate rows\\n\\n**LOCATION TAG**\\n- Uses the alert slot when it is free: the authored name in caps (THE SUMP), dim, letter-spaced, outlined, no plate.\\n- Shows for 2.5 s, at most once per name every 20 s.\\n- Dropped, never queued, while an alert holds or a hostile chases within 700.\\n\\n**LORE CARD**\\n- Left of centre, above the belt band. hudPanel .84, a caps amber title, and a wrapped body no wider than 0.30W.\\n- Shows for 14 s, or until he is 300 units away. Hidden under any alert or the use bar.\\n\\n**COVERS**\\n- **Solo pause box:** sys and info lines go to #hubtoast (z 200, scaled with the menus since v12.25), not to the lanes. The co-op overlay pause keeps the lanes.\\n- **Map open:** the alert lane and the feed draw after drawMapOverlay.\\n- **Errors:** go to the run report only, plus one sys row per raid.\\n\\n### 3. The module\\n**Entry points.** say(m,kind,o) and sayWhenFree(m,kind,o). Calls with one string work as they do today (kind defaults to info).\\n- o: {sub, key, hold, life, item, n, tag}\\n- kind: crit, warn, ext, obj, ally, info, chat, sys, pick, log\\n- Ranks: crit 6 \u003e warn 5 \u003e ext 4 \u003e obj 3 \u003e ally 2 = info 2 \u003e chat 1 \u003e sys 0\\n\\n**What each kind carries:**\\n- **crit:** TEN SECONDS, the burn, teammate down, host out, you running the raid, a grenade going off in your hand\\n- **warn:** the Crier lines, the Pillbox, something huge, something woke, playing dead, more pillagers up, your rival, a pillager turning hostile, a grenade hitting cover, the Survivor returning fire, THIRTY SECONDS, THE SIEGE\\n- **ext:** called, in progress, closing, closed, left without you, a teammate\u0027s call, knocked down mid-pull\\n- **obj:** contract done, an elite or machine boss destroyed, the seal, doors, hot ground, minute marks, cache marked, a hire dead, a survivor found\\n- **info and ally:** results, denials, heals, slot moves, people\\n- **chat:** weather, deer and birds, The Peddler, nods, drinks wearing off, restocks\\n- **sys:** zoom, HUD size, Superhot, Waypoint, controller, auto-jog, recorder, running slowly, error saved\\n- **pick:** the pickup stack\\n- **log:** the run report only\\n\\n**Queue**\\n- G.msgQ stays an array of strings; its metadata sits in a parallel G.msgQM.\\n- A line that outranks the visible rows shows at once.\\n- Cap 4. A line whose key or text is already showing or queued refreshes that line instead.\\n- Time to live while waiting: obj 10 s; info and ally 4 s; chat and sys 3 s.\\n- Drains highest rank first, first in first out within a rank. With 2 or more waiting, the newest row lives 1.8 s.\\n\\n**Chat lines** are dropped while any alert holds or a hostile chases or alarms within 700, and repeat at most once per key every 20 s.\\n\\n**What checks can read**\\n- G.msg and G.msgT mirror the head line: the alert while one holds, otherwise the newest feed row. Pickups never touch them.\\n- G.msgK, G.msgSub and G.msgLog (a ring of 16) are there for checks.\\n\\n**Timers.** They tick on frame time (dt capped at 0.1) in the running branch, the death beat, the burn and the co-op pause overlay. They freeze only in a solo pause.\\n\\n**Cosmetic only.** The module returns at once when G.sim is set, never calls rnd, rr or pick, takes its time from G.t and changes no game state. No seeded draw, bot benchmark or paired A/B can move.\\n\\n**TX.**\\n- The module runs TX() once on the whole line before it splits or measures, so his whole-line edits still match.\\n- measureText is wrapped to measure TX(t) (R02).\\n- hudText strokes TX(s), then fills s; the fillText wrapper translates it.\\n\\n**No sound of its own.** The event that raised a line already plays its sound.\\n\\n### 4. Style guide\\n**Colour tokens (HUDC), one meaning each:**\\n- text #e8f0f6: the default\\n- dim #8a96a1: details, ambient lines, system lines\\n- danger #ff5a4a: threats, lethal timers, closed, down. The only red.\\n- warn #ffc04a: time pressure, objectives, key glyphs\\n- extract #4de3d0: extraction only\\n- gain #7fc4a0: healed, revived, money in\\n- ally #bfe0ff: every teammate mark\\n- special #d08ce8: elites and caches\\n- rarity colours: item names only\\n- plate rgba(6,9,13,.78); danger plate rgba(40,8,6,.84); outline INK\\n\\n**Readability.** Every glyph sits on a measured plate or carries the 2×hudRes INK outline (strokeText, round join). No shadowBlur, for frame cost.\\n\\n**Type sizes:**\\n- TYPE.head: alert headlines and prompts\\n- TYPE.label: feed, pickups, details, prompt second lines\\n- TYPE.micro: panel rows and counters only\\n- Nothing that can kill you is drawn smaller than TYPE.label.\\n\\n**Numbers:**\\n- \u002712s\u0027 below 60 s; \u0027m:ss\u0027 at 60 s and over (never \u0027min\u0027 or \u0027sec\u0027)\\n- tenths only on fuses (the cook, the Crier windup)\\n- \u0027120m\u0027, \u0027$1,240\u0027, \u0027x3\u0027, \u00273/5\u0027, \u002745%\u0027\\n- His lines that write \u002712S\u0027 stay as they are.\\n\\n**Keys.** Always from keyLabel/padB in the window that draws the line, in amber brackets. One device only: never \u0027T or Y\u0027. On a keyboard with the default keys, his worded lines read byte for byte as before (the v21.74 seal precedent).\\n\\n**Vocabulary (one word per thing):**\\n- People and machines: Pillager; Crier; Sentry, Crawler, Listener, Warden, Bulwark, Pillbox, Howler; the Survivor; The Peddler; THE OVERSEER.\\n- Carrying: the tactical belt, whose cell is a slot. Backpack. The Stash, whose gun rack is the armoury (the Undercroft\u0027s word).\\n- Getting out: you call FOR extraction and hold [E] to extract. Never \u0027way out\u0027, \u0027point\u0027 on its own, \u0027pulled\u0027 or \u0027lands\u0027.\\n- Marks: Waypoint (his \u0027Marked Waypoint\u0027), never Marker.\\n- Outcomes: machines are DESTROYED, pillagers ELIMINATED or DOWNED, a hire is dead, a downed body is revived.\\n- Money is Credits, shown as $. The surface is \u0027up top\u0027, never \u0027the map\u0027 as a place.\\n- Gun, not weapon. Issued gear, not kit. GRENADE (his cookShout word) for a thrown Frag Charge in a headline.\\n\\n### 5. Two players on one PC\\n- Each window has its own G, so the module is per window by construction.\\n- **Private lines stay in their own window:** your pickups and results, alerts aimed at you, and lines behind seat gates (marks, gifts, aid, kills).\\n- **Shared events cross over the existing net words** and are worded for each window. The caller\u0027s window shows EXTRACTION CALLED; the other shows \u0027Kite called for extraction at B.\u0027\\n- Shared events: extraction calls, the boss destroyed, doors, weather, hot ground, restocks, host out, the raid clock and the burn.\\n- **Teammate down** is a crit alert on every window except the downed player\u0027s; his downed overlay owns his own screen.\\n- Keys resolve in the window that draws the line. One teammate colour everywhere.\\n\\n### 6. 4K\\n- Every screen string goes through hudFS, FSz(...,hudRes), hudZoomIn or hudAtIn.\\n- Every world lift is multiplied by ZOOM().\\n- Every layout check runs at 3840x2160 and at 1920x1080, with __forceSize and __pinDPR.\\n\\n### 7. His words: never reworded, only the key token through keyLabel\\nThe list is in mustNotChange.\\n\\n**Left as he wrote them; only he can unify them:**\\n- the ring badge\u0027s SOUND THE ALARM and \u002712S\u0027 (26954)\\n- extractNowLine\u0027s \u002712S\u0027 (26971)\\n- the lowercase \u0027mainframe\u0027 in CONTRACT DONE\\n\\n### 8. Checks\\n- Each check runs against the previous build first and must fail there.\\n- Needles are assembled (\u0027KNOW WHERE YOU \u0027+\u0027ARE\u0027), never written whole.\\n- Stub a ctx method as an own property and delete it in finally.\\n- Drive the real path: __loop frames, a held KeyE, staged pulls, and navigator.getGamepads stubs for the pad (PAD is rebuilt every frame).\\n- Read what was drawn with txRecord or __textTrace, and what was said with __msgLog / __hudSaid(lane).\\n- Restore P.txt, keys and the profile in finally.\\n- Each build that moves or rewords a line greps mkfixture.ps1 for that line\u0027s old needles and moves them in the same build.\\n\\n### 9. Build order\\n- R00-R01: the module lands first (harness wrap, then kinds).\\n- R02-R07: the look, two rows, the safety wrap, the rank guard, the queue.\\n- R08-R15: the alert lane and everything that belongs in it.\\n- R16-R19: the pickup stack.\\n- R20-R27: keys per device, one prompt style, the teammate revive prompt, one teammate colour.\\n- R28-R33: lines that repeat a panel, or that nobody can see, are removed.\\n- R34-R39: chatter, errors, the pause, the map, the lore card.\\n- R40-R47: 4K and world text.\\n- R48-R55: numbers, never-words, name case, and the voice passes.\\n\\nR52 (tactical belt and gun lines) ships after the 4-gun belt build, his order, next in the queue.\\n\\nA line\u0027s move into a lane and its restyle to that lane\u0027s rules count as one change.\\n\\n### 10. Parked\\n- Player 2\u0027s killing shot never shows a kill number (20976-20986).\\n- Taunt sentences are drawn as a think mark.\\n- DOWNED and crew PICKED UP labels show through walls (19064, 20444).\\n- The emote strip covers the belt at 1440p and 4K.\\n- The ARMOUR label is taller than its bar.\\n- The posture chip always shows STANDING.\\n- There is no voice-chat talking indicator.\\n- A solo kill feed (design 2) is a new feature, so it waits until after the alpha.",
+    "channelMap":  [
+                       {
+                           "from":  "say() raid line G.msg (about 240 call sites, one 3.2 s overwrite slot)",
+                           "to":  "The message module: alert lane (crit/warn/ext), feed (obj/info/ally/chat/sys), pickup stack (pick), run report (log)",
+                           "why":  "One overwrite slot let a pickup wipe a Crier or clock line, and wiped CONTRACT DONE and the boss line in the same frame (19129-19163)"
+                       },
+                       {
+                           "from":  "sayWhenFree / G.msgQ (FIFO, no cap, no priority, no expiry)",
+                           "to":  "The module queue: G.msgQ strings plus G.msgQM meta, ranked, capped at 4, deduped, with a time to live",
+                           "why":  "Teammate down (38738) waited behind trivia, and per-frame callers (17921, 16291, 42073) starved it"
+                       },
+                       {
+                           "from":  "MARKED row \u0027MARKED - THEY KNOW WHERE YOU ARE\u0027 (27579)",
+                           "to":  "Retired; the alert lane holds his CRIER REVEALED line while G.marked\u003e0",
+                           "why":  "It repeated the Crier line, flickered at sin(t*10), and said they know where you are on the last-location branch too"
+                       },
+                       {
+                           "from":  "Crier say lines (his v21.78 words, 19775/19820/41668/41675)",
+                           "to":  "Alert lane, kind warn, words untouched",
+                           "why":  "His shooter-HUD voice; it now holds the slot instead of being overwritten"
+                       },
+                       {
+                           "from":  "Clock warnings (tickClockWarn 32836) and outHint (32856)",
+                           "to":  "THIRTY and TEN SECONDS in the alert lane; minute marks as feed obj rows; outHint as a short detail",
+                           "why":  "Lethal time pressure was overwritable, and the hint ran about 70 characters with \u0027way out\u0027"
+                       },
+                       {
+                           "from":  "Extraction say lines (16367, 16866, 16896, 16943, 16948, 41144, 16216)",
+                           "to":  "Alert lane, kind ext; the band keeps every countdown",
+                           "why":  "Three or four wordings of one state at once, and a 130+ character call line"
+                       },
+                       {
+                           "from":  "\u0027Called. Inbound Ns. Stay alive.\u0027 every 2.5 s (16291)",
+                           "to":  "Removed",
+                           "why":  "The band and the EXTRACTION CALLED alert say it, and the repeat starved the queue"
+                       },
+                       {
+                           "from":  "In-ring \u0027INBOUND Ns\u0027 prompt (28037)",
+                           "to":  "Steps aside while the band shows it",
+                           "why":  "The same countdown was drawn twice; CALL and EXTRACT already step aside (v19.56)"
+                       },
+                       {
+                           "from":  "Loot say lines (Found: 15545, Took 17969/42349, Bought 10129, Sold 10085, Gave 40406, Took from 40412, Dropped 12524/14837, Backpack full 10111/17921)",
+                           "to":  "Pickup stack",
+                           "why":  "Each staged pull overwrote the last, and lists had no length limit"
+                       },
+                       {
+                           "from":  "Where-it-went lines (sayWhenFree(where) 17973/40412, 15477, 15518, 15722-15753, 15782)",
+                           "to":  "Pickup row tags (SLOT 2, IN HAND, EQUIPPED, TO THE ARMOURY)",
+                           "why":  "A second queued sentence for one pickup"
+                       },
+                       {
+                           "from":  "World prompts (door 27905, pillager revive 27943, ring 28018-28037, band call row 28639, seal 28666, GIVE, Peddler deal)",
+                           "to":  "One prompt style at TYPE.head on a plate, one prompt at a time",
+                           "why":  "Three sizes, two grammars, mostly no plate; GIVE and the seal prompt were not 4K scaled"
+                       },
+                       {
+                           "from":  "Party name tag (netUpTags 39902)",
+                           "to":  "Ally colour, \u0027DOWN  ·  12s\u0027 when he is down, and [E] REVIVE in reach",
+                           "why":  "A downed teammate had nothing over him in the world"
+                       },
+                       {
+                           "from":  "? and ! markers (drawHUD VIS loop)",
+                           "to":  "World markers lifted by ZOOM, hudFS head, outlined; no ! on a winding Crier",
+                           "why":  "At 4K they landed on the body; on a Crier four texts stacked"
+                       },
+                       {
+                           "from":  "Crier ALARM world word (drawSnitchS 24247) and CRIER n.ns marker (drawCrierMarkers 29768)",
+                           "to":  "The CRIER n.ns marker only, hudFS, not over the open backpack",
+                           "why":  "The ALARM word was painted over by the nameplate"
+                       },
+                       {
+                           "from":  "Reticle state words (27478)",
+                           "to":  "Reticle with keyLabel ([R] RELOAD) and hudFS",
+                           "why":  "\u0027EMPTY - R\u0027 named the wrong key on the pad and stayed 1080p size at 4K"
+                       },
+                       {
+                           "from":  "Reloaded / Reloading. / Reloading... / Out of ammo. / gun up / cell xN (15168, 17382, 17527, 17528, 15679, 16069)",
+                           "to":  "Removed; the gun card and reticle own them",
+                           "why":  "They repeated persistent HUD state on every reload or keypress"
+                       },
+                       {
+                           "from":  "Applying... / Slotting... / Bandaging NM. / Reviving NM. Hold E. (15097, 16138, 16005, 40136, 41807)",
+                           "to":  "Removed; the use bar and the REVIVING bar own them",
+                           "why":  "One fact told three ways"
+                       },
+                       {
+                           "from":  "Offer say lines (40394, 40192) and the expiry lines said from drawGiftLine (26991, 26992)",
+                           "to":  "The offer line only, with one key per window; the expiry moves to the lane tick as a feed row",
+                           "why":  "Two wordings of one offer, both devices\u0027 keys shown to both players, and say() called from the draw path"
+                       },
+                       {
+                           "from":  "Notoriety say lines (9868, 19094, 19117)",
+                           "to":  "Removed; his notoriety stamp and the NOTORIETY +1 label carry it",
+                           "why":  "The same fact shown three times"
+                       },
+                       {
+                           "from":  "DOWN say line (14521), They have you (16217), Walked out (43015), emote narration (8499)",
+                           "to":  "Removed",
+                           "why":  "The overlay, the outcome card or the bubble already says it, or the line is never drawn"
+                       },
+                       {
+                           "from":  "Zone and landmark sentences (34023, 34036, 34049)",
+                           "to":  "Location tag in the alert slot",
+                           "why":  "Chatty sentences with lowercased names (placeName 32888) overwrote danger lines"
+                       },
+                       {
+                           "from":  "Map-wide chatter (20661, 20721, 19338, 19100, 19122, 19408, 19416) and flavour (19967, 21103, 35101, weather)",
+                           "to":  "Feed chat, gated to within 900 units or in sight; 20721 removed",
+                           "why":  "Events from anywhere on the map took the line"
+                       },
+                       {
+                           "from":  "Errors and perf (33772, 25759, 17830, 22710, 33817)",
+                           "to":  "Run report (log), plus one sys row per raid or per session",
+                           "why":  "Raw JS on the player line"
+                       },
+                       {
+                           "from":  "Lines said from the solo pause box or Settings (33690, 11994, 11602, 42997, 13294, backups 44498-44680)",
+                           "to":  "#hubtoast over the pause box",
+                           "why":  "They sat frozen under the box and played after resume"
+                       },
+                       {
+                           "from":  "Lines said with the sector map open (12051, 12058, 40587)",
+                           "to":  "Alert lane and feed drawn after drawMapOverlay (29034)",
+                           "why":  "The opaque map hid them"
+                       },
+                       {
+                           "from":  "Map story (24762-24765, said from the draw path)",
+                           "to":  "Lore card, decided in the update path",
+                           "why":  "200-310 characters ran off both edges for 3.2 s"
+                       },
+                       {
+                           "from":  "recTell (33509) and sayAny (35046)",
+                           "to":  "Feed sys and chat through the module",
+                           "why":  "Same lane, same look"
+                       },
+                       {
+                           "from":  "World labels, damage numbers, nameplates (render2D, before the litC/fogC sheets)",
+                           "to":  "World text drawn after the fog, plates from actualBoundingBox, WEAK SPOT throttled, loot evicted last",
+                           "why":  "Dimmed to 30-55% at night, 13 u plates under 15.6-18.7 u text, loot names evicted by WEAK SPOT floods"
+                       },
+                       {
+                           "from":  "Co-op pings, Waypoints, mate arrows, noise chevrons",
+                           "to":  "hudFS, \u0027m\u0027 units, kind names from the vocabulary, ally colour",
+                           "why":  "1080p size at 4K; SNITCH/CHOIR/STRAY leaked from netPingName 40784"
+                       },
+                       {
+                           "from":  "Boss bar (27240), offer line (26985), controller word (39237)",
+                           "to":  "Chained under HUDFEEDB, computed by msgLayout() at the top of drawHUD",
+                           "why":  "They read the fixed plate bottom, and the boss bar draws before the message line"
+                       },
+                       {
+                           "from":  "Offer line and use-bar caption",
+                           "to":  "Same place, grown at 4K",
+                           "why":  "Only their y or their bar scaled"
+                       },
+                       {
+                           "from":  "hubToast / say2 / netSay / HUBSAY (Undercroft)",
+                           "to":  "Unchanged",
+                           "why":  "Not raid text"
+                       },
+                       {
+                           "from":  "Extraction band, ring badges, downed overlay, centre verb, notoriety stamp, status icons, CONDITIONS, board, kill feed",
+                           "to":  "Unchanged roles; tokens, outline and bracket keys only",
+                           "why":  "His asks and his words; they are the persistent readouts the lanes no longer repeat"
+                       }
+                   ],
+    "builds":  [
+                   {
+                       "key":  "R00",
+                       "title":  "The fixture runs the game\u0027s own say()",
+                       "where":  "tools/mkfixture.ps1:1091-1109 (tooling only, no game change)",
+                       "change":  "Replace the copied body with var __sayReal=say; say=function(m){ window.__lastSay=m; return __sayReal.apply(this,arguments); }; window.__sayReal=__sayReal. Add window.__msgLog=function(){ return (G\u0026\u0026G.msgLog)||[]; } and window.__hudSaid(lane), which reads G.feed, G.alert or G.pick and returns [] until those exist. Each later build that adds a lane fills its reader.",
+                       "check":  "Deploy a raid. typeof __sayReal===\u0027function\u0027. say!==__sayReal. The fixture\u0027s say source no longer contains the assembled needle \u0027G.msg\u0027+\u0027T=3.2\u0027. __say(\u0027zq\u0027+\u0027wrap\u0027) leaves G.msg===\u0027zqwrap\u0027 and __lastSay===\u0027zqwrap\u0027. On the old fixture __sayReal is undefined, so it FAILS. Then run the whole corpus on unchanged v21.78: it must stay green.",
+                       "risk":  "Every later build depends on this. The 92 checks that reassign say themselves keep working, because they replace the wrapper."
+                   },
+                   {
+                       "key":  "R01",
+                       "title":  "One message module: kinds, metadata and a log",
+                       "where":  "say/sayWhenFree 14073-14087",
+                       "change":  "Add a MSGK table: crit 6, warn 5, ext 4, obj 3, ally 2, info 2, chat 1, sys 0, plus pick and log, each with a colour token and a life. The signatures become say(m,kind,o) and sayWhenFree(m,kind,o); a one-string call is kind info. say() also writes G.msgK and G.msgSub and pushes {m,k,t:G.t} into G.msgLog (a ring of 16). G.msg, G.msgT=3.2 and the G.msgQ strings behave exactly as now. Queued metadata goes in a parallel G.msgQM. Fields are created lazily (the fake G at mkfixture 16692). The first statement returns when G.sim is set, and nothing calls rnd, rr or pick.",
+                       "check":  "say(\u0027zq kind\u0027,\u0027warn\u0027) gives G.msgK===\u0027warn\u0027, G.msg===\u0027zq kind\u0027, G.msgT===3.2, and a last __msgLog() entry of kind warn. sayWhenFree(\u0027zq q\u0027,\u0027obj\u0027) while a line shows leaves G.msgQ as [\u0027zq q\u0027] (strings) and G.msgQM[0].k===\u0027obj\u0027. On the old build G.msgK is undefined, so it FAILS.",
+                       "risk":  "Low: nothing about drawing or timing changes."
+                   },
+                   {
+                       "key":  "R02",
+                       "title":  "Plates fit the words that are drawn",
+                       "where":  "Canvas wrapper 2764-2788",
+                       "change":  "Wrap CanvasRenderingContext2D.prototype.measureText the way fillText is wrapped, so it measures TX(t). The recorder branch inside fillText calls the raw measureText, so nothing is translated twice. Every plate measured on a string now fits his rewording: the message line (27848), ring badge, notoriety stamp, offer line, cook shout, search count, kill feed and controller word. Parsecheck adds an assert that no TXSHIP value is itself a TXSHIP key.",
+                       "check":  "Set P.txt[\u0027zq short\u0027]=\u0027zq a much longer replacement\u0027, and restore it in finally. With ctx.font=FS(TYPE.label), measureText(\u0027zq short\u0027).width equals measureText(\u0027zq a much longer replacement\u0027).width. On the old build the first is narrower, so it FAILS.",
+                       "risk":  "Every plate measure now does one TX lookup. fillText already does that on every string, so the cost is the same order. Run the frame-cost probe once."
+                   },
+                   {
+                       "key":  "R03",
+                       "title":  "One look, first on the message line",
+                       "where":  "Helpers beside hudFS (7616-7633); message block 27834-27855",
+                       "change":  "Add the HUDC colour tokens (spec section 4). Add hudPlate(x,y,w,h,accent): a rounded LH(4) plate with an optional 4-unit accent bar. Add hudText(s,x,y): strokeText(TX(s)) with a 2*hudRes px INK round-join outline, then fillText(s). The message line draws through them. Its plate height comes from the font px, not LH(17), and the dead fillStyle at 27839 is removed.",
+                       "check":  "say(\u0027zq look\u0027). Spy ctx.strokeText and ctx.roundRect/arcTo as own properties and delete them in finally. Run one drawHUD under txRecord. The line must be stroked, the plate rounded, the plate height at least 1.25x the font px, and typeof HUDC===\u0027object\u0027. On the old build there is no stroke and a flat LH(17) rect, so it FAILS.",
+                       "risk":  "roundRect needs an arcTo fallback. strokeText bypasses the TX wrapper, which is why hudText passes it TX(s) itself."
+                   },
+                   {
+                       "key":  "R04",
+                       "title":  "Two rows instead of one overwrite",
+                       "where":  "say 14081; message block; new msgLayout() at the top of drawHUD, before drawBossBar (27279); boss bar y 27258; drawGiftLine y 26998; netPadHud 39237",
+                       "change":  "G.feed holds 2 rows, newest on top, the older at 75% alpha. say() pushes a row instead of replacing the line, and G.msg/G.msgT mirror the newest row. msgLayout() works out the lane heights before anything in the top band is drawn and sets HUDMSGB. The boss bar, the offer line and the controller word start under HUDMSGB instead of the fixed plate bottom.",
+                       "check":  "say(\u0027zq a\u0027); say(\u0027zq b\u0027) in one tick, then one __frame under txRecord. Both are drawn in the top band with \u0027zq b\u0027 above \u0027zq a\u0027, and G.msg===\u0027zq b\u0027. With one row up, the boss plate top is where v21.78 puts it (within 1 px). On the old build only \u0027zq b\u0027 is drawn, so it FAILS.",
+                       "risk":  "Medium. The v20.55 top-stack checks must read HUDMSGB. With a single row, nothing moves."
+                   },
+                   {
+                       "key":  "R05",
+                       "title":  "No line runs off the screen",
+                       "where":  "Feed draw",
+                       "change":  "Rows get a maximum width of min(0.46*W, LH(600)*hudRes) in the msg zoom space and wrap at a word into at most 2 lines. The full text goes to T.longLines in the run report. This is a safety net; lines are still written to fit the length caps.",
+                       "check":  "At 1920x1080 and 3840x2160 (__forceSize, __pinDPR), say an assembled 260-character line. Every drawn piece\u0027s box lies inside 0..W, there are at most 2 pieces, and T.longLines holds the line. On the old build one fillText about 2.5x W wide is drawn, so it FAILS.",
+                       "risk":  "Wrapped rows push the boss bar down, so msgLayout must use the real row count."
+                   },
+                   {
+                       "key":  "R06",
+                       "title":  "A lower line cannot push a higher one off",
+                       "where":  "say 14081",
+                       "change":  "A visible row is protected for 1.2 s (obj 2.0 s, crit 2.0 s). A new line ranked below both protected rows waits in the queue. A line of equal or higher rank displaces the lowest-ranked, oldest row. A displaced obj row goes back into the queue.",
+                       "check":  "say(\u0027ZQ HIGH\u0027,\u0027warn\u0027); say(\u0027zq lo 1\u0027); say(\u0027zq lo 2\u0027); draw. \u0027ZQ HIGH\u0027 and \u0027zq lo 2\u0027 are drawn and \u0027zq lo 1\u0027 is queued. After 2.1 s of __loop frames, \u0027zq lo 1\u0027 shows. On the old build \u0027ZQ HIGH\u0027 is pushed off, so it FAILS.",
+                       "risk":  "Nothing in the game is tagged above info yet, so play does not change."
+                   },
+                   {
+                       "key":  "R07",
+                       "title":  "The waiting queue: ranked, capped, no repeats, no stale lines",
+                       "where":  "sayWhenFree 14077; drain 33972; per-frame callers 17921, 42073, 42123",
+                       "change":  "A line that outranks the visible rows shows at once. The queue caps at 4. A line whose key or text is already showing or queued refreshes it instead of adding a copy. Time to live: obj 10 s, info and ally 4 s, chat and sys 3 s. It drains highest rank first, FIFO within a rank, and with 2 or more waiting the newest row lives 1.8 s. Backpack full and \u0027is searching this one\u0027 pass keys, so a per-frame call refreshes in place instead of topping up msgT.",
+                       "check":  "sayWhenFree(\u0027zq q\u0027) while a line shows, then hold KeyE on a full backpack for 6 s of __loop frames. \u0027zq q\u0027 is drawn within 4 s, and Backpack full fills at most one row. On the old build the per-frame say keeps msgT up and \u0027zq q\u0027 is never drawn, so it FAILS. The v13.32, 13.33, 13.35 and 13.40 queue checks stay green.",
+                       "risk":  "FIFO within info is kept for the v13.35/13.40 sequence checks."
+                   },
+                   {
+                       "key":  "R08",
+                       "title":  "The alert lane, first for the Crier",
+                       "where":  "New drawAlert at LH(96) inside hudZoomIn(\u0027msg\u0027); feed moved under HUDALERTB; Crier 19775, 19820, 41668, 41675; MARKED row 27576-27580",
+                       "change":  "Lines of kind crit, warn or ext take one alert slot. It has a measured danger plate, a 4-unit accent bar, a small path glyph, a hudFS(TYPE.head) caps headline, an optional TYPE.label detail, a 0.12 s fade-in, a steady alpha and a 0.4 s fade-out. His Crier lines are tagged warn with their words unchanged, and the fire line holds while G.marked\u003e0. The MARKED row is retired. G.marked still drives the red screen edge.",
+                       "check":  "Stage the fire branch with sees false. Sample 4 frames 0.05 s apart: the drawn alert headline is \u0027CRIER REVEALED YOUR LAST LOCATION\u0027 at a constant alpha on a plate. No drawn text contains \u0027KNOW WHERE YOU \u0027+\u0027ARE\u0027. A say(\u0027zq loot\u0027) 0.3 s later does not displace it. On the old build the MARKED row says that phrase and flickers between 0.6 and 1, and the Crier line is a plain row, so it FAILS. Move check 21.78\u0027s needles if it reads G.msg.",
+                       "risk":  "The feed starts lower while an alert shows. Re-measure the top chain against the notoriety stamp at H*0.26, at 1080p and at 4K."
+                   },
+                   {
+                       "key":  "R09",
+                       "title":  "Threats in the alert lane, in his voice",
+                       "where":  "9469, 11578, 13732 (frag branch), 13797, 16645, 19034, 19657, 19684, 41679, 19963, 20973",
+                       "change":  "Tag these warn (13797 is crit) and rewrite them as shooter callouts (see the rewrites). Moving each line and restyling it count as one change.",
+                       "check":  "Stage a Pillbox that sees the player (the 19657 path), then say(\u0027zq loot\u0027) in the same frame. \u0027THE PILLBOX HAS SEEN YOU\u0027 must be drawn as the alert headline at head px on the danger plate, and \u0027zq loot\u0027 as a feed row. On the previous build the Pillbox line is a feed row ending in a period, so it FAILS.",
+                       "risk":  "Grep the corpus for the old sentences used as needles and move them in this build."
+                   },
+                   {
+                       "key":  "R10",
+                       "title":  "The clock in the alert lane, with a short hint",
+                       "where":  "tickClockWarn 32836-32855, outHint 32856-32886",
+                       "change":  "THIRTY SECONDS (warn) and TEN SECONDS (crit) become alerts, with outHint as a detail of at most 48 characters. Minute marks become obj feed rows with a single space. outHint loses \u0027way out\u0027, \u0027is down\u0027 and \u0027lands\u0027, and names its key through keyLabel. The v12.93 state branches stay; only the words change.",
+                       "check":  "Set G.timeLeft=30.02 and step 0.05 s. The alert headline is \u0027THIRTY SECONDS\u0027. Its detail is at most 48 characters and contains no \u0027way \u0027+\u0027out\u0027. The headline is still drawn after a say() 0.3 s later. With a pad stub and the beacon landed, the in-ring hint names X. On the old build one line of about 70 characters is gone after the say, so it FAILS. Move the clock checks near mkfixture 5076-5081.",
+                       "risk":  "Keep every outHint branch."
+                   },
+                   {
+                       "key":  "R11",
+                       "title":  "Party emergencies never wait",
+                       "where":  "38738 (teammate down), 39713 (host out), 42482 (host left or connection lost)",
+                       "change":  "Each posts a crit alert at once instead of going through sayWhenFree. TEAMMATE DOWN shows on every window except his, and holds until he is up or 8 s pass. The padRumble stays and no sound is added.",
+                       "check":  "Queue three sayWhenFree lines, then deliver a party word with dn=1 for seat 1 in a live linked raid. TEAMMATE DOWN is drawn on the next frame. On the old build it waits behind about 9.6 s of lines, so it FAILS.",
+                       "risk":  "Keep the raid seed (sd) test at 38738."
+                   },
+                   {
+                       "key":  "R12",
+                       "title":  "The lanes keep time in the death beat and the burn",
+                       "where":  "Tick 33968-33972 (running branch only); death beat 33920; burn 33957",
+                       "change":  "The alert, feed, pickup and queue timers tick on frame time (dt clamped to 0.1) in the running branch, the death beat and the burn. They freeze only in a solo pause. The burn alert holds on its own condition, G.nuking.",
+                       "check":  "say(\u0027zq x\u0027), trigger the burn, and run 4 s of __loop frames: \u0027zq x\u0027 is no longer drawn and the burn alert is. In a second arm with deathBeat=1.5, G.msgT is below 2.4 after 60 frames. On the old build msgT stays at 3.2, so it FAILS.",
+                       "risk":  "A hidden pane throttles rAF, so drive __loop with real dt values."
+                   },
+                   {
+                       "key":  "R13",
+                       "title":  "Extraction moments in the alert lane",
+                       "where":  "16367-16369 (call), 16866 (open), 16896 (left without you), 16943, 16948, 41144, 16216",
+                       "change":  "These become ext alerts, teal, or amber for closing, closed, left without you and knocked down. The call splits into EXTRACTION CALLED with \u0027Inbound 1:30. Then hold [E] to extract.\u0027, then THE SIEGE with \u0027About N machines are coming to this ring.\u0027, then a feed row for the backpack clause. EXTRACTION IS OPEN becomes his phrase EXTRACT IN PROGRESS! with \u0027Hold [E] to extract.\u0027. No detail carries live seconds except the one inbound figure, because the band owns every countdown. 16216 keeps his words and is tagged ext.",
+                       "check":  "Complete a call in a ring by holding E with __loop frames. Over the next 4 s both headlines are drawn, and no said or drawn line exceeds 56 characters. The siege detail\u0027s number equals the siege size (move the siege check near mkfixture 4795-4832). On the old build one line of 130+ characters is drawn, so it FAILS.",
+                       "risk":  "The siege maths (_g, _scap, _siv, _sc) stay byte for byte."
+                   },
+                   {
+                       "key":  "R14",
+                       "title":  "No repeating \u0027Called. Inbound\u0027 line",
+                       "where":  "16287-16291",
+                       "change":  "Remove the 2.5 s repeat. The band\u0027s EXTRACT A INBOUND 12s and the EXTRACTION CALLED alert already answer a second press.",
+                       "check":  "Wrap say and stand in an inbound ring holding E for 6 s. No said line carries \u0027Called. \u0027+\u0027Inbound\u0027. On the old build there are 2 or 3, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R15",
+                       "title":  "The in-ring INBOUND prompt steps aside",
+                       "where":  "28035-28037",
+                       "change":  "Skip the world \u0027INBOUND Ns\u0027 prompt while the ring is G.active and the band shows the countdown, as the CALL and EXTRACT prompts already do (v19.56).",
+                       "check":  "Stand in G.active with beaconT=20 and draw. Exactly 1 drawn string contains \u0027INBOUND\u0027. On the old build there are 2, so it FAILS.",
+                       "risk":  "A ring that is not G.active keeps its prompt."
+                   },
+                   {
+                       "key":  "R16",
+                       "title":  "The pickup stack",
+                       "where":  "New drawPickups on the right edge; staged pull 17969; summary 15545; co-op take 42349",
+                       "change":  "say(name,\u0027pick\u0027,{item,n,tag}) pushes a row: the item icon, the name in its rarity colour, a count and a dim caps tag. The stack holds 4 rows for 4 s; the same item within 4 s merges. It is hidden while the backpack or the map is open. \u0027Took X.\u0027 and \u0027Found:\u0027 leave the feed. His 6 s world loot labels stay.",
+                       "check":  "Stage a crate with 3 items and hold KeyE with __loop frames through the search. In one drawn frame all three names appear at x \u003e 0.6*W, and the feed is empty. On the previous build only the last two \u0027Took\u0027 rows show, so it FAILS. Loot checks move to __hudSaid(\u0027pick\u0027).",
+                       "risk":  "The stack must dodge the co-op kill feed (H*0.46) and the gear corner. Take a 1080p and a 4K picture."
+                   },
+                   {
+                       "key":  "R17",
+                       "title":  "Pickup rows say where it went",
+                       "where":  "15477, 15518, 15722-15753, 15782, 17973, 40412",
+                       "change":  "The where-it-went sentence becomes the row\u0027s tag: SLOT 2, IN HAND, EQUIPPED, TO THE ARMOURY, ISSUED GEAR LEFT BEHIND. The sayWhenFree(where) calls go.",
+                       "check":  "Pick up a gun with the second gun slot empty. Its row tag is \u0027SLOT 2\u0027 and G.msgQ stays empty. On the old build a second line is queued, so it FAILS.",
+                       "risk":  "The item name stays its own token."
+                   },
+                   {
+                       "key":  "R18",
+                       "title":  "Trade, cache pay, gifts and drops in the pickup stack",
+                       "where":  "9999, 10002, 10085, 10098, 10129, 40406, 12524, 14837",
+                       "change":  "Buys, sells, cache pay, gifts and drops become rows (\u0027+$1,240\u0027, \u0027-$540\u0027, DROPPED, FROM KITE, GIVEN TO KITE). The long stall lines become one short feed row.",
+                       "check":  "Buy one item at a staged stall and sell the backpack. The rows hold the item, a \u0027-$\u0027 row and a \u0027+$\u0027 row with separators, and no feed row exceeds 56 characters. On the old build lines of 56 to 135 characters are said, so it FAILS.",
+                       "risk":  "The Credits maths is untouched; only where the words go changes."
+                   },
+                   {
+                       "key":  "R19",
+                       "title":  "Backpack full is one red row",
+                       "where":  "10111, 17921-17922",
+                       "change":  "A keyed red pickup row reads BACKPACK FULL. On the keyboard its detail is \u0027[\u0027+keyLabel(\u0027KeyZ\u0027,\u0027Z\u0027)+\u0027] drops the selected item.\u0027. On a pad it names the button pollPad gives bagDropSel, or drops the key clause. The raw capacity number goes.",
+                       "check":  "With a pad stub, hold E on a full backpack for 3 s. Exactly one BACKPACK FULL row is drawn and no said line contains \u0027 Z \u0027. On the old build a feed row names Z, so it FAILS.",
+                       "risk":  "Read the pad drop binding from pollPad; do not invent one."
+                   },
+                   {
+                       "key":  "R20",
+                       "title":  "Keys follow the device in the remaining raid lines",
+                       "where":  "16216 (his words: only the E token), 17180-17181 (CAPS)",
+                       "change":  "keyLabel/padB in the drawing window. With the keyboard and E unmoved, 16216 reads byte for byte as before (the v21.74 seal precedent).",
+                       "check":  "With a pad stub, drive the knocked-down-mid-pull branch. The line contains the pad name for KeyE and no \u0027 E \u0027. On the keyboard it equals \u0027Knocked down. Extraction progress bar reset. Hold E to try again.\u0027. On the old build it says \u0027Hold E\u0027 on the pad, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R21",
+                       "title":  "The offer line names one key",
+                       "where":  "drawGiftLine 26993-26994",
+                       "change":  "The take key is padOn()?padB(\u0027Y\u0027):keyLabel(\u0027KeyT\u0027,\u0027T\u0027). Format: \u0027{Name} offers you {Item}  ·  [T] to take it  ·  12s\u0027 and \u0027Offered {Item} to {Name}  ·  Waiting  ·  12s\u0027.",
+                       "check":  "With a pad stub the line contains \u0027Y\u0027 and no \u0027T or\u0027. On the keyboard it contains \u0027[T]\u0027 and no \u0027or Y\u0027. On the old build it says \u0027T or Y\u0027, so it FAILS.",
+                       "risk":  "PADLABEL maps KeyT to RB, so the pad take key must stay Y."
+                   },
+                   {
+                       "key":  "R22",
+                       "title":  "The reticle names the reload key",
+                       "where":  "27478",
+                       "change":  "\u0027EMPTY - R\u0027 becomes \u0027[\u0027+keyLabel(\u0027KeyR\u0027,\u0027R\u0027)+\u0027] RELOAD\u0027. NO AMMO keeps its word.",
+                       "check":  "With a pad stub, empty the magazine and draw. The reticle text is \u0027[X] RELOAD\u0027 and contains no \u0027 - R\u0027. On the old build it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R23",
+                       "title":  "The gun card\u0027s backpack cue follows key changes",
+                       "where":  "28568",
+                       "change":  "On the keyboard \u0027B / I  BACKPACK\u0027 is built from keyLabel(\u0027KeyB\u0027,\u0027B\u0027) and keyLabel(\u0027KeyI\u0027,\u0027I\u0027). The pad branch is unchanged.",
+                       "check":  "Rebind KeyB to K through the keys table and draw. The cue names K. On the old build it reads \u0027B / I\u0027, so it FAILS.",
+                       "risk":  "Unmoved keys read as before."
+                   },
+                   {
+                       "key":  "R24",
+                       "title":  "One prompt style at the SEARCH size",
+                       "where":  "Door 27905-27925, pillager revive 27943, ring 28018-28033, band call row 28639, downed call 28802, centre verb 28847/28689, seal 28666, stray GIVE, Peddler deal",
+                       "change":  "Every world prompt is FS(TYPE.head) (his v10.52 \u0027too small\u0027, 27954), drawn through hudAtIn on a measured hudPlate, with the key amber in brackets and the verb and object in bone caps. Hold prompts read \u0027HOLD [E] TO ...\u0027. The second line is TYPE.label in sentence case. GIVE and the seal prompt join hudAtIn.",
+                       "check":  "At 1920x1080 and 3840x2160, draw a locked-door prompt and a crate prompt in turn. Their font px are equal, each sits on a plate, and the seal and band rows contain \u0027HOLD [\u0027. On the old build the sizes differ (label against head), there are no plates and it reads \u0027HOLD E TO\u0027, so it FAILS.",
+                       "risk":  "Re-measure the v19.56 step-aside at 4K, and move any check whose needle is \u0027HOLD E TO\u0027."
+                   },
+                   {
+                       "key":  "R25",
+                       "title":  "One prompt at a time",
+                       "where":  "drawHUD projected prompts (27890-28170)",
+                       "change":  "A picker draws only the highest prompt in reach: revive teammate, extract or call, revive pillager, give, unlock, seal, search, deal. It reads the same near-target fields updatePlayer sets, so the prompt shown is the one E acts on.",
+                       "check":  "Stage a locked door and a crate both in reach. Exactly one \u0027[\u0027 prompt is drawn, and it names the target a held E acts on. On the old build two are drawn, so it FAILS.",
+                       "risk":  "Read the input order from updatePlayer; never invent one."
+                   },
+                   {
+                       "key":  "R26",
+                       "title":  "A downed teammate shows DOWN and [E] REVIVE",
+                       "where":  "netUpTags 39902; revive range NET_REV_R 64 (41766)",
+                       "change":  "His tag gains \u0027DOWN  ·  12s\u0027 in danger red. Within NET_REV_R the HUD draws \u0027[E] REVIVE {NAME}  ·  12s\u0027, styled like the pillager prompt. Nothing is drawn over yourself.",
+                       "check":  "In a two-seat fixture, set the mate to g.dn=1 at 40 units. \u0027REVIVE\u0027 and his name are drawn over him. At 400 units only DOWN shows. On the old build only the name shows, so it FAILS.",
+                       "risk":  "Drawing only; the shared bleed clock is read, never written."
+                   },
+                   {
+                       "key":  "R27",
+                       "title":  "One teammate colour",
+                       "where":  "netUpTags 39902, netMateArrow 40505, the ping point colour",
+                       "change":  "Use HUDC.ally (#bfe0ff) where a teammate is named or marked, and danger red when he is down.",
+                       "check":  "In co-op, the tag\u0027s fillStyle equals the team row\u0027s. On the old build they are #ffc04a and #bfe0ff, so it FAILS.",
+                       "risk":  "Amber stays for the Waypoint and for keys."
+                   },
+                   {
+                       "key":  "R28",
+                       "title":  "The feed stops repeating the gun card and the reticle",
+                       "where":  "15168, 17382, 17527, 17528, 15679, 16069",
+                       "change":  "Remove Reloaded, \u0027Reloading.\u0027, \u0027Reloading...\u0027, \u0027Out of ammo.\u0027, \u0027{gun} up\u0027 and \u0027{cell}  x{count}\u0027. The blipMine reload and dry sounds stay.",
+                       "check":  "Empty the magazine, reload, empty the reserve and fire, with say wrapped. Nothing is said, while the gun card draws RELOADING. On the old build 3 or more lines are said, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R29",
+                       "title":  "Wind-ups show on the use bar only",
+                       "where":  "15097, 16138, 16005, 40136, 41807",
+                       "change":  "Remove \u0027Applying X...\u0027, \u0027Slotting X...\u0027, \u0027Bandaging NM.\u0027 / \u0027Slotting a plate for NM.\u0027 and \u0027Reviving NM. Hold E.\u0027. The result lines stay.",
+                       "check":  "Use a Bandage at 50 health. The use bar draws APPLYING BANDAGE and no logged line starts with \u0027Applying\u0027. On the old build one does, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R30",
+                       "title":  "An offer is shown once, and ends from the update",
+                       "where":  "40394, 40192; drawGiftLine 26991-26992",
+                       "change":  "Remove the say lines that repeat the offer line. The two expiry lines move from drawGiftLine into the lane tick as feed rows, so drawGiftLine only draws.",
+                       "check":  "Wrap say and call drawGiftLine with an expired offer: zero says. One tick later there is one feed row. A gift word to this seat logs no \u0027offers you\u0027. On the old build drawGiftLine itself says the expiry, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R31",
+                       "title":  "Notoriety is said once",
+                       "where":  "9868, 19094, 19117, 10008",
+                       "change":  "Remove the three say() lines; his stamp and the NOTORIETY +1 label carry the fact. 10008 becomes the feed row \u0027NOTORIETY DOWN TO {n}\u0027.",
+                       "check":  "Shoot an unarmed survivor through the real path. G.notoAt is set, the label is pushed, and no logged line contains \u0027Notoriety\u0027. On the old build one does, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R32",
+                       "title":  "Lines nobody can see go",
+                       "where":  "14521-14522, 16217, 43015, 8499",
+                       "change":  "Remove DOWN (the overlay says it with his \u0027one per raid\u0027), \u0027They have you\u0027 (endRaid runs in the same frame), \u0027Walked out on the job\u0027 (the outcome card says it at 22176) and the emote narration say(E.say) (the bubble shows it, and the result follows in the same call).",
+                       "check":  "Down the player by damage: no logged line starts with \u0027DOWN.\u0027 while the overlay draws SELF-REVIVE. Hail with nobody near: the only logged line is NOBODY IN EARSHOT. On the old build both extra lines are logged, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R33",
+                       "title":  "Holding a key never repeats a line",
+                       "where":  "16270-16285 (closed ring), 42073, 42123",
+                       "change":  "The closed-ring line and its clank fire once per ring visit. \u0027Is searching this one\u0027 is keyed, so it does not repeat while E is held.",
+                       "check":  "Hold E in a closed ring for 6 s with say wrapped: exactly one closed line. On the old build it is said 3 times, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R34",
+                       "title":  "The location tag",
+                       "where":  "34023, 34036, 34049; drawAlert idle branch",
+                       "change":  "Entering a zone or landmark draws its authored name in caps in the alert slot when that slot is free: dim, letter-spaced, outlined, for 2.5 s, at most once per name every 20 s. It is dropped while an alert holds or a hostile chases within 700. placeName lowercasing is no longer used for display.",
+                       "check":  "Teleport across a zone boundary. The zone name is drawn in caps in the alert slot and no logged line says \u0027Crossing into\u0027. With a Crawler chasing within 700 nothing shows. On the old build a lowercase sentence is logged, so it FAILS.",
+                       "risk":  "Update the zone-channel comment."
+                   },
+                   {
+                       "key":  "R35",
+                       "title":  "Far-off chatter stays off your screen",
+                       "where":  "20661, 20721, 19338, 19100, 19122, 19408, 19416; chat kind on 19967, 21103, 35101, 6013, 41083, 11566",
+                       "change":  "Gate these on distance below 900 or canSee. 20721 goes, because the board marks EXTRACTED. Flavour lines are tagged chat.",
+                       "check":  "A pillager extracts 4000 units away: no line, and T.raidersExtracted still counts. On the old build the line is said, so it FAILS.",
+                       "risk":  "Telemetry must keep counting."
+                   },
+                   {
+                       "key":  "R36",
+                       "title":  "Errors leave the player\u0027s screen",
+                       "where":  "33772, 25759, 17830, 22710, 33817",
+                       "change":  "Raw text goes to the run report as kind log. One sys row per raid reads \u0027ERROR SAVED TO YOUR RUN REPORT\u0027. The two perf lines become one sys row per session.",
+                       "check":  "Call noteCrash twice with the assembled \u0027zq\u0027+\u0027boom\u0027. No drawn or logged screen text contains it, the crash log does, and exactly one sys row shows. On the old build \u0027Something broke: zqboom\u0027 is drawn, so it FAILS.",
+                       "risk":  "The crashTold latch stays."
+                   },
+                   {
+                       "key":  "R37",
+                       "title":  "Lines said under the solo pause box show on it",
+                       "where":  "say() 14081; covers 33690, 11994, 11602, 42997, 13294, 44498-44680",
+                       "change":  "When G.paused\u0026\u0026!netPauseLive(), sys and info lines go to hubToast, which sits at z 200 over the pause box and has scaled with the menus since v12.25. They do not go to the lanes.",
+                       "check":  "Open the pause box and press Backspace. #hubtoast is on with the cursor line, and G.feed is unchanged. On the old build hubtoast is untouched, so it FAILS.",
+                       "risk":  "The co-op overlay pause keeps the lanes. Grep the checks that read G.msg after Settings changes made in a raid."
+                   },
+                   {
+                       "key":  "R38",
+                       "title":  "Lines said with the map open draw over it",
+                       "where":  "Lane draw; drawMapOverlay call 29034",
+                       "change":  "While G.mapOpen, the alert lane and the feed are drawn after drawMapOverlay.",
+                       "check":  "Open the map and set a Waypoint. Under txRecord, \u0027WAYPOINT SET\u0027 is drawn after the \u0027SECTOR MAP\u0027 header. On the old build it is drawn first, under the opaque backing, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R39",
+                       "title":  "The map story on a lore card",
+                       "where":  "24762-24765 (said from the draw path); new drawLore",
+                       "change":  "Whether the story has been read is decided in the update path. The text shows on a hudPanel card (caps title, wrapped body) for 14 s, or until he is 300 units away, and never in the feed. G.storyRead and T.storyRead are still set once.",
+                       "check":  "Put the player at G.map.story. The body is drawn wrapped inside the screen and no lane holds the story. On the old build G.msg holds 200 to 300 characters, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R40",
+                       "title":  "The offer line and the use-bar caption grow at 4K",
+                       "where":  "drawGiftLine 26998-27005; drawUseBar 27011 caption",
+                       "change":  "Their font and plate are drawn under the screen scale, as the boss plate already is (v21.11).",
+                       "check":  "At 3840x2160, both captions\u0027 font px are at least 1.9x their 1080p px, and HUDGIFTB reports the scaled bottom. On the old build the ratio is 1.0, so it FAILS.",
+                       "risk":  "The controller word follows HUDGIFTB."
+                   },
+                   {
+                       "key":  "R41",
+                       "title":  "Reticle words grow at 4K",
+                       "where":  "27434-27478",
+                       "change":  "NO AMMO, [R] RELOAD and the reload seconds use hudFS. Their offsets and ring widths scale by hudRes.",
+                       "check":  "At 3840x2160, the NO AMMO font px is at least 1.9x its 1080p px. On the old build they are equal, so it FAILS.",
+                       "risk":  "Pin the DPR."
+                   },
+                   {
+                       "key":  "R42",
+                       "title":  "? and ! sit above the nameplate at every size",
+                       "where":  "Alert markers (drawHUD VIS loop, about 28160-28184)",
+                       "change":  "The lift becomes (spriteTop+22)*ZOOM(), the font hudFS(TYPE.head), with the outline. A winding Crier shows no \u0027!\u0027.",
+                       "check":  "At 4K with a chasing Sentry in view, the \u0027!\u0027 baseline is above its nameplate plate top. On a winding Crier no \u0027!\u0027 is drawn. On the old build the \u0027!\u0027 sits on the body, so it FAILS.",
+                       "risk":  "Check that it stays on screen under ADS zoom."
+                   },
+                   {
+                       "key":  "R43",
+                       "title":  "Co-op marks, the Crier marker and noise chevrons grow at 4K",
+                       "where":  "netPingDraw, netWpDraw, netMateArrow 40505, drawCrierMarkers 29768, drawNoiseMarkers",
+                       "change":  "Labels use hudFS, sizes and paddings scale by hudRes, units become \u0027m\u0027, and Crier markers are not drawn over the open backpack.",
+                       "check":  "At 4K, the ping and CRIER labels are at least 1.9x their 1080p px, and the ping ends in \u0027m\u0027. On the old build it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R44",
+                       "title":  "Bare HUD text gets the outline",
+                       "where":  "Clock 27537, compass 27567, band rows 28600-28640, prompts, REVIVING, search count, Crier label, pings",
+                       "change":  "Draw these through hudText, which adds a 2*hudRes INK stroke.",
+                       "check":  "Under txRecord with a strokeText spy, the clock, the compass and \u0027[E] CALL FOR EXTRACTION\u0027 are each stroked. On the old build none are, so it FAILS.",
+                       "risk":  "About 20 strokes a frame. Run the frame-cost probe before and after."
+                   },
+                   {
+                       "key":  "R45",
+                       "title":  "World text draws over the dark and the fog",
+                       "where":  "render2D label, damage-number, nameplate and party-tag passes moved after the litC/fogC blits",
+                       "change":  "Only the order changes; no new passes.",
+                       "check":  "On a night raid, spy wc.drawImage and wc.fillText during one render. The first label fillText comes after the fog drawImage. On the old build it comes before, so it FAILS.",
+                       "risk":  "Run the pixel checks alone in their own tab. Labels stay gated by canSee where they are today."
+                   },
+                   {
+                       "key":  "R46",
+                       "title":  "WEAK SPOT once per target, and loot names kept",
+                       "where":  "20943 (his words); label() cap 14254",
+                       "change":  "A 0.5 s throttle per target on the WEAK SPOT label. When the 40-label cap is hit, the oldest label without an item key is evicted first.",
+                       "check":  "Push 3 loot labels, then 8 weak hits on one target in one frame, then 40 more callouts. Exactly 1 WEAK SPOT is pushed and the 3 loot labels survive. On the old build there are 8 and the loot labels are evicted, so it FAILS.",
+                       "risk":  "The damage numbers, spark and clank per pellet stay."
+                   },
+                   {
+                       "key":  "R47",
+                       "title":  "Label plates fit their text",
+                       "where":  "label() 14214-14255; label renderer in render2D",
+                       "change":  "The plate comes from actualBoundingBoxAscent/Descent, as in the v18.63 Undercroft fix. LBL_STEP follows the font height.",
+                       "check":  "Push a big loot label. Its plate height is at least 1.15x the font px. On the old build it is a fixed 13 u, so it FAILS.",
+                       "risk":  "Stacked loot columns grow taller."
+                   },
+                   {
+                       "key":  "R48",
+                       "title":  "One way to write numbers",
+                       "where":  "15399, 10012, pings and markers, fmtMS in raid lines (16896, 42997, 15145)",
+                       "change":  "Credits read \u0027$1,234\u0027 (the \u0027c\u0027 unit goes), distances \u0027m\u0027, and durations of 60 s or more \u0027m:ss\u0027.",
+                       "check":  "An item worth 1234 has a label matching /\\$1,234/, a ping ends in \u0027m\u0027, and the left-without-you detail contains \u00271:30\u0027 and no \u0027min\u0027. On the old build it FAILS.",
+                       "risk":  "His own \u002712S\u0027 strings are untouched."
+                   },
+                   {
+                       "key":  "R49",
+                       "title":  "Never-words out of raid text",
+                       "where":  "Container prompt 27965 (BOTWRECK), tag set near 19106 (PEDLAR), netPingName 40784, kill labels 19239 and 41649, board near 29765",
+                       "change":  "BOTWRECK becomes WRECK and PEDLAR STOCK becomes PEDDLER STOCK. Pings use a kind table (CRIER, PILLBOX, SURVIVOR, THE PEDDLER). A machine kill reads DESTROYED. The board reads \u0027n dead\u0027.",
+                       "check":  "Drive each path and scan the drawn and said text for an assembled never-word list (\u0027SNI\u0027+\u0027TCH\u0027, \u0027CHO\u0027+\u0027IR\u0027, \u0027STR\u0027+\u0027AY\u0027, \u0027BOT\u0027+\u0027WRECK\u0027, \u0027PED\u0027+\u0027LAR\u0027, and a machine name followed by \u0027 DOWN\u0027). None are found. On the old build they are, so it FAILS.",
+                       "risk":  "Internal kinds stay in the code."
+                   },
+                   {
+                       "key":  "R50",
+                       "title":  "Names keep their capitals",
+                       "where":  "9979, 19360, 17725, 40149-40152, 40496, 41799",
+                       "change":  "Remove toLowerCase on item names, add aOrAn(name), and make the missing-name fallback \u0027Your teammate\u0027 at the start of a detail (\u0027YOUR TEAMMATE\u0027 in a headline).",
+                       "check":  "A survivor who needs an Armour Plate gives \u0027He needs an Armour Plate.\u0027. An aid line with no seat name starts with \u0027Your teammate\u0027 or \u0027YOUR TEAMMATE\u0027. On the old build it reads \u0027a armour plate\u0027, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R51",
+                       "title":  "Voice pass: heal and armour lines",
+                       "where":  "15082-15146, 16000-16002, 16082-16135, 17020, 17050, 40120-40152, 40444-40496",
+                       "change":  "Rewrite as caps feed rows (see the rewrites). The numbers come from healCeil and armorCap, never typed.",
+                       "check":  "Drive a scripted heal slice: full health, bandage-only, no medical, armour full, stim. Every logged line has a caps headline of at most 34 characters, a detail of at most 48 after \u0027  ·  \u0027, and no \u0027...\u0027. The 85 comes from healCeil. On the old build \u0027Already at full\u0027 is logged, so it FAILS.",
+                       "risk":  "None."
+                   },
+                   {
+                       "key":  "R52",
+                       "title":  "Voice pass: tactical belt and gun lines (after the 4-gun belt)",
+                       "where":  "12326-12554, 13575-13759, 14848, 15625-15638, 16044-16055, 17451, 17473, 8493-8494, 11814, 16093, 13604",
+                       "change":  "Rewrite as caps rows, one cell word (slot), \u0027gun\u0027 not \u0027weapon\u0027, \u0027issued gear\u0027 not \u0027kit\u0027.",
+                       "check":  "Drive assign, swap, unassign, an empty select and a Bandage onto a gun slot. No line contains \u0027cell\u0027, \u0027belt slot\u0027 without \u0027tactical\u0027, \u0027 key \u0027 before a digit, \u0027;\u0027 or \u0027weapon slot\u0027. On the old build \u0027traded places with ...; ... is on key\u0027 is logged, so it FAILS. The v13.35 needle \u0027to belt slot\u0027 moves in this build.",
+                       "risk":  "Ships after the 4-gun belt build, so the slot numbers match the new belt."
+                   },
+                   {
+                       "key":  "R53",
+                       "title":  "Voice pass: objective lines",
+                       "where":  "3671, 19162, 19163, 19173, 19203, 41646, 19157, 17602, 17572, 41028, 29349, 41113, 15334, 42361, 19359-19360, 6108",
+                       "change":  "CONTRACT DONE is split at his colon into headline and detail, word for word. Elite and machine deaths read \u0027{NAME} DESTROYED\u0027 with a detail, and 19163 is no longer said for the boss. The seal, doors, hot ground and survivor lines become caps rows.",
+                       "check":  "Kill a Warden one kill short of a contract. \u0027CONTRACT DONE\u0027 is drawn as its own headline string with his detail next to it, and a headline ending in \u0027DESTROYED\u0027 is drawn. No \u0027is down. Its core\u0027 line is logged. On the old build there is one \u0027CONTRACT DONE: ...\u0027 string and an \u0027is down\u0027 line, so it FAILS.",
+                       "risk":  "Not a TXSHIP key. His words are split, never reworded."
+                   },
+                   {
+                       "key":  "R54",
+                       "title":  "Voice pass: people",
+                       "where":  "8506-8581, 9977-10052, 11908, 17725-18002, 19100-19422, 19944-19967, 20319-20327, 20965, 21103, 35101, 39610, 39635, 39722, 40181-40418, 41799, 41839, 42073",
+                       "change":  "Pillager hail replies, hires, the Survivor, The Peddler, co-op aid, revives and gifts become caps rows (see the rewrites).",
+                       "check":  "Run a scripted slice: hail a friendly, hail with nobody near, order the hire, get revived by a teammate. Every logged line passes the voice rule, and the words \u0027slab\u0027, \u0027pulls you up\u0027 and \u0027Order:\u0027 are absent. On the old build \u0027Order:\u0027 is logged, so it FAILS.",
+                       "risk":  "Seat gates on gifts, aid and revives stay exactly as they are."
+                   },
+                   {
+                       "key":  "R55",
+                       "title":  "Voice pass: system labels",
+                       "where":  "11975-11978, 11994, 12051, 12058, 40587, 12950, 13294, 14469, 17180-17187, 33553-33581, 42997, 44478, 11571, weather lines 5926, 5928",
+                       "change":  "Caps system labels with a short detail, Waypoint as the one marker word, and weather lines of at most 56 characters that do not use \u0027the map\u0027 as a place.",
+                       "check":  "Run zoom + and -, set and clear a Waypoint (solo and in co-op), toggle auto-jog, and start the storm. Every logged line passes the voice rule, no \u0027Marker\u0027 or \u0027the map\u0027 appears, and the storm detail is at most 56 characters. On the old build \u0027Waypoint marked\u0027 and \u0027Zoom 115%\u0027 are logged, so it FAILS.",
+                       "risk":  "The Ascend panel weather TXSHIP keys (\u0027Storming. Harder going, so XP pays 1.1x.\u0027 and the others) are different strings and are not touched."
+                   }
+               ],
+    "rewrites":  [
+                     {
+                         "line":  27579,
+                         "zone":  "alert lane",
+                         "old":  "MARKED - THEY KNOW WHERE YOU ARE",
+                         "new":  "(removed: the alert lane holds his CRIER REVEALED YOUR LOCATION / LAST LOCATION while G.marked\u003e0)"
+                     },
+                     {
+                         "line":  19657,
+                         "zone":  "alert warn",
+                         "old":  "THE PILLBOX HAS SEEN YOU.",
+                         "new":  "THE PILLBOX HAS SEEN YOU"
+                     },
+                     {
+                         "line":  19684,
+                         "zone":  "alert warn (also 41679)",
+                         "old":  "Something very large has noticed you.",
+                         "new":  "SOMETHING HUGE HAS NOTICED YOU"
+                     },
+                     {
+                         "line":  9469,
+                         "zone":  "alert warn",
+                         "old":  "Something woke up.",
+                         "new":  "SOMETHING WOKE UP"
+                     },
+                     {
+                         "line":  19034,
+                         "zone":  "alert warn",
+                         "old":  "It was playing dead.",
+                         "new":  "IT WAS PLAYING DEAD"
+                     },
+                     {
+                         "line":  16645,
+                         "zone":  "alert warn",
+                         "old":  "More pillagers have entered the area.",
+                         "new":  "MORE PILLAGERS HAVE COME UP"
+                     },
+                     {
+                         "line":  11578,
+                         "zone":  "alert warn",
+                         "old":  "YOUR RIVAL is out here: {name}. He will shoot on sight.",
+                         "new":  "YOUR RIVAL IS UP TOP / {name} shoots on sight."
+                     },
+                     {
+                         "line":  19963,
+                         "zone":  "alert warn",
+                         "old":  "{name} does not like that.",
+                         "new":  "PILLAGER TURNED HOSTILE / {name} does not like that."
+                     },
+                     {
+                         "line":  13732,
+                         "zone":  "alert warn",
+                         "old":  "It hit cover. MOVE.",
+                         "new":  "GRENADE HIT COVER / Get clear of the blast."
+                     },
+                     {
+                         "line":  13732,
+                         "zone":  "feed info",
+                         "old":  "It hit cover, dropped short.",
+                         "new":  "THROW HIT COVER  ·  It dropped short."
+                     },
+                     {
+                         "line":  13797,
+                         "zone":  "alert crit",
+                         "old":  "It went off in your hand.",
+                         "new":  "GRENADE WENT OFF IN YOUR HAND"
+                     },
+                     {
+                         "line":  20973,
+                         "zone":  "alert warn",
+                         "old":  "The survivor returns fire.",
+                         "new":  "THE SURVIVOR RETURNS FIRE"
+                     },
+                     {
+                         "line":  32843,
+                         "zone":  "alert warn",
+                         "old":  "THIRTY SECONDS. {outHint}",
+                         "new":  "THIRTY SECONDS / {outHint(1)}"
+                     },
+                     {
+                         "line":  32852,
+                         "zone":  "alert crit",
+                         "old":  "TEN SECONDS. {outHint}",
+                         "new":  "TEN SECONDS / {outHint(1)}"
+                     },
+                     {
+                         "line":  32846,
+                         "zone":  "feed obj",
+                         "old":  "{n} minutes left.  {outHint}",
+                         "new":  "{N} MINUTES LEFT  ·  {outHint(0)} (1 MINUTE LEFT; hint from 3 minutes, one space)"
+                     },
+                     {
+                         "line":  33955,
+                         "zone":  "alert crit (held while G.nuking)",
+                         "old":  "MERIDIAN IS BURNING THE SITE.",
+                         "new":  "MERIDIAN IS BURNING THE SITE"
+                     },
+                     {
+                         "line":  32872,
+                         "zone":  "outHint detail",
+                         "old":  "Your way out is down. Hold E to extract, {n}s left.",
+                         "new":  "Hold [E] to extract, {n}s left."
+                     },
+                     {
+                         "line":  32873,
+                         "zone":  "outHint detail",
+                         "old":  "Your way out is {n}s away. Stay in the ring.",
+                         "new":  "Extraction inbound in {n}s. Stay in the ring."
+                     },
+                     {
+                         "line":  32874,
+                         "zone":  "outHint detail",
+                         "old":  "Your extraction is {n}m {dir}. It lands in {n}s. | It leaves in {n}s.",
+                         "new":  "Your extraction is {n}m {dir}, inbound in {n}s. | Your extraction is {n}m {dir}, leaving in {n}s."
+                     },
+                     {
+                         "line":  32884,
+                         "zone":  "outHint detail",
+                         "old":  "You are standing in the way out. Hold E to call it.",
+                         "new":  "Hold [E] here to call for extraction."
+                     },
+                     {
+                         "line":  32885,
+                         "zone":  "outHint detail",
+                         "old":  "Nearest way out {n}m {dir}. Stand in it and hold E.",
+                         "new":  "Nearest extraction {n}m {dir}."
+                     },
+                     {
+                         "line":  38738,
+                         "zone":  "alert crit (every window but his)",
+                         "old":  "{name} is down. Pick them up.",
+                         "new":  "TEAMMATE DOWN / {Name} needs a revive."
+                     },
+                     {
+                         "line":  39713,
+                         "zone":  "alert crit",
+                         "old":  "{host} is out of this raid ({how}). Extract to finish your run.",
+                         "new":  "HOST IS OUT / {Host} {died | extracted | abandoned the raid}. Extract to finish your run."
+                     },
+                     {
+                         "line":  42482,
+                         "zone":  "alert crit",
+                         "old":  "Your host is out of the raid. You are running it now. | Connection to your host was lost. You are running the raid now.",
+                         "new":  "YOU ARE RUNNING THE RAID / Your host is out. | YOU ARE RUNNING THE RAID / The connection to your host was lost."
+                     },
+                     {
+                         "line":  39722,
+                         "zone":  "feed ally",
+                         "old":  "{name} is out of this raid ({how}).",
+                         "new":  "{NAME} DIED | {NAME} EXTRACTED | {NAME} ABANDONED THE RAID"
+                     },
+                     {
+                         "line":  16367,
+                         "zone":  "alert ext + alert warn + feed info",
+                         "old":  "Pulled. Inbound 1 min 30 sec, then hold E to extract. THE SIEGE: about {n} machines are coming to this ring. Heavy backpack: they heard that.",
+                         "new":  "EXTRACTION CALLED / Inbound 1:30. Then hold [E] to extract. (clock branch: Inbound 1:30. The raid clock runs out first.) -\u003e THE SIEGE / About {n} machines are coming to this ring. -\u003e HEAVY BACKPACK  ·  They heard that. | LOADED BACKPACK  ·  Expect company. | LIGHT BACKPACK  ·  Fewer will come."
+                     },
+                     {
+                         "line":  16291,
+                         "zone":  "removed",
+                         "old":  "Called. Inbound {n}s. Stay alive.",
+                         "new":  "(removed: the band\u0027s EXTRACT A INBOUND 12s and the EXTRACTION CALLED alert)"
+                     },
+                     {
+                         "line":  16866,
+                         "zone":  "alert ext",
+                         "old":  "EXTRACTION IS OPEN. Hold E to extract, {n}s.",
+                         "new":  "EXTRACT IN PROGRESS! (his phrase, its own literal) / Hold [E] to extract."
+                     },
+                     {
+                         "line":  16896,
+                         "zone":  "alert ext (amber)",
+                         "old":  "Extraction left without you. Hold E to call for another, 1 min 30 sec out.",
+                         "new":  "EXTRACTION LEFT WITHOUT YOU / Hold [E] in a ring to call for extraction. | Another call cannot beat the raid clock."
+                     },
+                     {
+                         "line":  16943,
+                         "zone":  "alert ext (amber)",
+                         "old":  "Extraction {L} closes in two minutes.",
+                         "new":  "EXTRACTION {L} CLOSING / It closes in two minutes."
+                     },
+                     {
+                         "line":  16948,
+                         "zone":  "alert ext (amber)",
+                         "old":  "Extraction {L} is closed.",
+                         "new":  "EXTRACTION {L} CLOSED"
+                     },
+                     {
+                         "line":  16282,
+                         "zone":  "feed info (once per ring visit)",
+                         "old":  "This point is CLOSED. The open one is {n}m away, marked on your map.",
+                         "new":  "EXTRACTION {L} IS CLOSED  ·  Extraction {M} is open, {n}m {dir}. (none open: EXTRACTION {L} IS CLOSED)"
+                     },
+                     {
+                         "line":  41144,
+                         "zone":  "alert ext (other windows)",
+                         "old":  "{name} called extraction. Inbound in {n}s.",
+                         "new":  "EXTRACTION CALLED / {Name} called for extraction at {L}."
+                     },
+                     {
+                         "line":  16216,
+                         "zone":  "alert ext (his words, key token only)",
+                         "old":  "Knocked down. Extraction progress bar reset. Hold E to try again.",
+                         "new":  "Knocked down. Extraction progress bar reset. Hold \u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027 to try again."
+                     },
+                     {
+                         "line":  20661,
+                         "zone":  "feed chat (within 900 or in sight)",
+                         "old":  "{name} called extraction.",
+                         "new":  "{NAME} CALLED FOR EXTRACTION"
+                     },
+                     {
+                         "line":  20721,
+                         "zone":  "removed",
+                         "old":  "{name} extracted with the goods.",
+                         "new":  "(removed: the Current Pillagers board marks EXTRACTED)"
+                     },
+                     {
+                         "line":  3671,
+                         "zone":  "feed obj (his words, split at his colon)",
+                         "old":  "CONTRACT DONE: {desc}. Complete contract at mainframe.",
+                         "new":  "CONTRACT DONE  ·  {desc}. Complete contract at mainframe."
+                     },
+                     {
+                         "line":  19162,
+                         "zone":  "feed obj (also 41646)",
+                         "old":  "{boss} is down. Its hoard is open.",
+                         "new":  "THE OVERSEER DESTROYED  ·  Its hoard is open."
+                     },
+                     {
+                         "line":  19163,
+                         "zone":  "feed obj (not said for the boss)",
+                         "old":  "{Warden} is down. Its core is exposed.",
+                         "new":  "{NAME} DESTROYED  ·  It dropped a cache."
+                     },
+                     {
+                         "line":  19173,
+                         "zone":  "feed obj",
+                         "old":  "{Pillbox} has stopped singing.",
+                         "new":  "{NAME} DESTROYED  ·  Search the wreck."
+                     },
+                     {
+                         "line":  19203,
+                         "zone":  "feed obj",
+                         "old":  "{Listener} destroyed. It dropped a cache.",
+                         "new":  "{NAME} DESTROYED  ·  It dropped a cache."
+                     },
+                     {
+                         "line":  19157,
+                         "zone":  "feed obj",
+                         "old":  "{hire} is down. His family will be told, and billed to you.",
+                         "new":  "{NAME} IS DEAD  ·  You owe his family."
+                     },
+                     {
+                         "line":  17602,
+                         "zone":  "feed obj",
+                         "old":  "The seal is cut. Whatever Meridian put behind it is yours if you live.",
+                         "new":  "SEAL BROKEN  ·  What Meridian sealed is yours if you live."
+                     },
+                     {
+                         "line":  17572,
+                         "zone":  "feed obj (also 41028)",
+                         "old":  "{door} is open.",
+                         "new":  "{DOOR NAME} OPEN"
+                     },
+                     {
+                         "line":  29349,
+                         "zone":  "feed obj (also 41113)",
+                         "old":  "The hot ground has moved. Check your map.",
+                         "new":  "HOT GROUND MOVED  ·  Check your map."
+                     },
+                     {
+                         "line":  15334,
+                         "zone":  "feed obj (also 42361)",
+                         "old":  "Hot ground. Extra loot in here.",
+                         "new":  "HOT GROUND  ·  Extra loot in here."
+                     },
+                     {
+                         "line":  19360,
+                         "zone":  "feed obj",
+                         "old":  "Someone is hiding in here. He needs a {item, lowercased}.",
+                         "new":  "SURVIVOR FOUND  ·  He needs {a/an} {Item}."
+                     },
+                     {
+                         "line":  19359,
+                         "zone":  "feed obj",
+                         "old":  "The survivor is still there.",
+                         "new":  "THE SURVIVOR IS STILL THERE"
+                     },
+                     {
+                         "line":  6108,
+                         "zone":  "feed obj",
+                         "old":  "Something fused in the ground where that landed.",
+                         "new":  "LIGHTNING FUSED A CACHE"
+                     },
+                     {
+                         "line":  9999,
+                         "zone":  "feed obj + pickup",
+                         "old":  "He marks a cache on your map. He pays you ${n} and presses a {item} into your hands.",
+                         "new":  "CACHE MARKED ON YOUR MAP + pickup rows: +$1,240 and {Item}  ·  FROM THE SURVIVOR"
+                     },
+                     {
+                         "line":  10002,
+                         "zone":  "feed info + pickup",
+                         "old":  "He has nothing left to tell you, so he gives you what he has. He pays you ${n} and presses a {item} into your hands.",
+                         "new":  "NOTHING LEFT TO TELL  ·  He gives you what he has. + pickup rows: +$1,240 and {Item}"
+                     },
+                     {
+                         "line":  10085,
+                         "zone":  "pickup + feed info",
+                         "old":  "Sold {n} for ${tot}, his 55 percent. The Credits ride with you now - walk them out or lose them. Carried home whole it was worth ${full}.",
+                         "new":  "pickup row: +$1,240  ·  SOLD {n} + feed: SOLD {n} ITEMS  ·  Extract to bank the Credits."
+                     },
+                     {
+                         "line":  10098,
+                         "zone":  "feed info",
+                         "old":  "You cannot cover ${price} from banked Credits. The ${carry} on you is not banked until you walk out.",
+                         "new":  "NOT ENOUGH BANKED CREDITS  ·  ${price} needed."
+                     },
+                     {
+                         "line":  10111,
+                         "zone":  "pickup (red row)",
+                         "old":  "Backpack full.",
+                         "new":  "BACKPACK FULL"
+                     },
+                     {
+                         "line":  10129,
+                         "zone":  "pickup",
+                         "old":  "Bought {item} for ${price}. On your tactical belt, key {n}. | In your backpack. | {n} rounds into your reserve.",
+                         "new":  "{Item}  ·  SLOT {n} | {Item}  ·  BACKPACK | Ammo x{n}  ·  RESERVE, plus a -$540 row"
+                     },
+                     {
+                         "line":  10052,
+                         "zone":  "feed info",
+                         "old":  "Nothing in your backpack he wants.",
+                         "new":  "HE WANTS NOTHING YOU CARRY"
+                     },
+                     {
+                         "line":  9977,
+                         "zone":  "feed info",
+                         "old":  "He needs ammunition. You cannot spare {n} rounds.",
+                         "new":  "HE NEEDS AMMUNITION  ·  You cannot spare {n} rounds."
+                     },
+                     {
+                         "line":  9979,
+                         "zone":  "feed info",
+                         "old":  "He needs a {item, lowercased}. You have none.",
+                         "new":  "HE NEEDS {A/AN} {ITEM}  ·  You have none."
+                     },
+                     {
+                         "line":  17921,
+                         "zone":  "pickup (red row, keyed)",
+                         "old":  "Backpack full ({cap}) and nothing left worth dropping. | Backpack full ({cap}). Z drops the selected item.",
+                         "new":  "BACKPACK FULL  ·  Nothing in it is worth dropping. | BACKPACK FULL  ·  [Z] drops the selected item. (pad: its own drop button)"
+                     },
+                     {
+                         "line":  15545,
+                         "zone":  "pickup",
+                         "old":  "Found: {item, item, item}",
+                         "new":  "one row per item: {Item} in its rarity colour, x count"
+                     },
+                     {
+                         "line":  17969,
+                         "zone":  "pickup",
+                         "old":  "Took {item}.",
+                         "new":  "{Item} (plus a where tag)"
+                     },
+                     {
+                         "line":  42349,
+                         "zone":  "pickup",
+                         "old":  "Took {item}, {item}.",
+                         "new":  "one row per item"
+                     },
+                     {
+                         "line":  40412,
+                         "zone":  "pickup",
+                         "old":  "Took {item} from {nm}.",
+                         "new":  "{Item}  ·  FROM {NAME}"
+                     },
+                     {
+                         "line":  40406,
+                         "zone":  "pickup",
+                         "old":  "Gave {item} to {nm}.",
+                         "new":  "{Item}  ·  GIVEN TO {NAME}"
+                     },
+                     {
+                         "line":  12524,
+                         "zone":  "pickup (also 14837)",
+                         "old":  "Dropped {item}{. Your teammate can search it.}",
+                         "new":  "{Item}  ·  DROPPED (co-op: DROPPED FOR YOUR TEAMMATE)"
+                     },
+                     {
+                         "line":  17725,
+                         "zone":  "pickup",
+                         "old":  "He puts his {item, lowercased} in your hands.",
+                         "new":  "{Item}  ·  FROM {NAME}"
+                     },
+                     {
+                         "line":  15477,
+                         "zone":  "pickup tag",
+                         "old":  "{gun} to your empty slot. {gun} stays in hand. Select {gun} on your tactical belt to swap.",
+                         "new":  "{Gun}  ·  SLOT {n}"
+                     },
+                     {
+                         "line":  15518,
+                         "zone":  "pickup tag",
+                         "old":  "{gun} equipped{, +n% damage}.",
+                         "new":  "{Gun}  ·  EQUIPPED (+{n}% DAMAGE)"
+                     },
+                     {
+                         "line":  15737,
+                         "zone":  "pickup tag",
+                         "old":  "{gun} is yours; it goes back to the armoury.",
+                         "new":  "{Gun}  ·  TO THE ARMOURY"
+                     },
+                     {
+                         "line":  15722,
+                         "zone":  "pickup tag",
+                         "old":  "{gun} was issued kit, left behind.",
+                         "new":  "{Gun}  ·  ISSUED GEAR LEFT BEHIND"
+                     },
+                     {
+                         "line":  15753,
+                         "zone":  "pickup tag",
+                         "old":  "{gun} to secondary | {gun} equipped",
+                         "new":  "{Gun}  ·  SLOT 2 | {Gun}  ·  EQUIPPED"
+                     },
+                     {
+                         "line":  15782,
+                         "zone":  "pickup tag",
+                         "old":  "{item} to belt slot {n}.",
+                         "new":  "{Item}  ·  SLOT {n}"
+                     },
+                     {
+                         "line":  15638,
+                         "zone":  "pickup tag",
+                         "old":  "{gun} into the backpack.",
+                         "new":  "{Gun}  ·  BACKPACK"
+                     },
+                     {
+                         "line":  15082,
+                         "zone":  "feed info (also 16130)",
+                         "old":  "Already healing. | Already at full",
+                         "new":  "ALREADY HEALING | HEALTH FULL"
+                     },
+                     {
+                         "line":  15089,
+                         "zone":  "feed info",
+                         "old":  "Only bandages left, and they will not take you past 85. You need a Medkit.",
+                         "new":  "BANDAGES STOP AT {healCeil}  ·  You need a Medkit."
+                     },
+                     {
+                         "line":  15091,
+                         "zone":  "feed info",
+                         "old":  "No medical supplies",
+                         "new":  "NO BANDAGES OR MEDKITS"
+                     },
+                     {
+                         "line":  15094,
+                         "zone":  "feed info (also 16136)",
+                         "old":  "Already applying {item}.",
+                         "new":  "ALREADY APPLYING {ITEM}"
+                     },
+                     {
+                         "line":  15138,
+                         "zone":  "feed info",
+                         "old":  "{plate} slotted. Armour {n}.",
+                         "new":  "{ITEM} SLOTTED  ·  Armour {n}."
+                     },
+                     {
+                         "line":  15145,
+                         "zone":  "feed info",
+                         "old":  "{item} is healing you, 6 sec | Patched up",
+                         "new":  "(healing branch removed: the status icon shows HEALING and its seconds) | PATCHED UP"
+                     },
+                     {
+                         "line":  15097,
+                         "zone":  "removed (also 16138)",
+                         "old":  "Applying {item}...",
+                         "new":  "(removed: the use bar says APPLYING)"
+                     },
+                     {
+                         "line":  16005,
+                         "zone":  "removed",
+                         "old":  "Slotting {plate}...",
+                         "new":  "(removed: the use bar says SLOTTING)"
+                     },
+                     {
+                         "line":  16000,
+                         "zone":  "feed info",
+                         "old":  "Armour is already full.",
+                         "new":  "ARMOUR FULL"
+                     },
+                     {
+                         "line":  16002,
+                         "zone":  "feed info",
+                         "old":  "Already slotting {plate}.",
+                         "new":  "ALREADY SLOTTING {ITEM}"
+                     },
+                     {
+                         "line":  16082,
+                         "zone":  "feed info",
+                         "old":  "No stim.",
+                         "new":  "NO STIM INJECTOR LEFT"
+                     },
+                     {
+                         "line":  16085,
+                         "zone":  "feed info",
+                         "old":  "Stim. Ten seconds of legs.",
+                         "new":  "STIM INJECTOR ACTIVE  ·  10s of unlimited stamina."
+                     },
+                     {
+                         "line":  17050,
+                         "zone":  "feed chat",
+                         "old":  "The stim wears off.",
+                         "new":  "STIM INJECTOR WORE OFF"
+                     },
+                     {
+                         "line":  16135,
+                         "zone":  "feed info",
+                         "old":  "{item} will not take you past {n}.",
+                         "new":  "{ITEM} STOPS AT {n}"
+                     },
+                     {
+                         "line":  16113,
+                         "zone":  "feed info (also 40118)",
+                         "old":  "No {item} left.",
+                         "new":  "NO {ITEM} LEFT"
+                     },
+                     {
+                         "line":  17020,
+                         "zone":  "feed info",
+                         "old":  "Back on your feet. Self-revive used.",
+                         "new":  "SELF-REVIVE USED  ·  Back on your feet."
+                     },
+                     {
+                         "line":  40120,
+                         "zone":  "feed info",
+                         "old":  "Select a Bandage, a Medkit or a plate on your tactical belt to patch up {nm}.",
+                         "new":  "SELECT A HEAL  ·  Bandage, Medkit or Armour Plate."
+                     },
+                     {
+                         "line":  40126,
+                         "zone":  "feed info",
+                         "old":  "Armour on {nm} is full. | Already slotting a plate.",
+                         "new":  "{NAME}\u0027S ARMOUR IS FULL | ALREADY SLOTTING A PLATE"
+                     },
+                     {
+                         "line":  40127,
+                         "zone":  "feed info",
+                         "old":  "{nm} does not need a {item}.",
+                         "new":  "{NAME} DOES NOT NEED THAT"
+                     },
+                     {
+                         "line":  40136,
+                         "zone":  "removed",
+                         "old":  "Bandaging {nm}. | Slotting a plate for {nm}.",
+                         "new":  "(removed: the use bar says APPLYING X ON NAME)"
+                     },
+                     {
+                         "line":  40149,
+                         "zone":  "feed info",
+                         "old":  "{nm} moved away. {item} kept. | {nm} could not take it. {item} kept.",
+                         "new":  "{NAME} MOVED AWAY  ·  {Item} kept. | {NAME} COULD NOT TAKE IT  ·  {Item} kept."
+                     },
+                     {
+                         "line":  40152,
+                         "zone":  "feed info",
+                         "old":  "Plate slotted for {nm}. | Patched up {nm}.",
+                         "new":  "PLATE SLOTTED FOR {NAME} | PATCHED UP {NAME}"
+                     },
+                     {
+                         "line":  40444,
+                         "zone":  "feed ally",
+                         "old":  "{nm} slotted a plate for you. Armour {n}.",
+                         "new":  "{NAME} SLOTTED A PLATE FOR YOU  ·  Armour {n}."
+                     },
+                     {
+                         "line":  40451,
+                         "zone":  "feed ally",
+                         "old":  "{nm} patched you up.",
+                         "new":  "{NAME} PATCHED YOU UP"
+                     },
+                     {
+                         "line":  40496,
+                         "zone":  "feed info",
+                         "old":  "{nm} is already healing. {item} kept. | {nm} could not take it. {item} kept.",
+                         "new":  "{NAME} IS ALREADY HEALING  ·  {Item} kept. | {NAME} COULD NOT TAKE IT  ·  {Item} kept."
+                     },
+                     {
+                         "line":  15168,
+                         "zone":  "removed",
+                         "old":  "Reloaded",
+                         "new":  "(removed: gun card and reticle)"
+                     },
+                     {
+                         "line":  17382,
+                         "zone":  "removed (also 17527)",
+                         "old":  "Reloading. | Reloading...",
+                         "new":  "(removed: gun card RELOADING and the reticle ring)"
+                     },
+                     {
+                         "line":  17528,
+                         "zone":  "removed",
+                         "old":  "Out of ammo.",
+                         "new":  "(removed: reticle NO AMMO)"
+                     },
+                     {
+                         "line":  15679,
+                         "zone":  "removed",
+                         "old":  "{gun} up",
+                         "new":  "(removed: the gun card names the gun in hand)"
+                     },
+                     {
+                         "line":  16069,
+                         "zone":  "removed",
+                         "old":  "{cell name}  x{count}",
+                         "new":  "(removed: the tactical belt shows the count)"
+                     },
+                     {
+                         "line":  12326,
+                         "zone":  "feed info",
+                         "old":  "{gun} to slot {n}. | {gun} traded places with {other}; {gun} is on key {k}.",
+                         "new":  "{GUN} TO SLOT {n} | {GUN} SWAPPED WITH {OTHER}  ·  {Gun} is in slot {k}."
+                     },
+                     {
+                         "line":  12334,
+                         "zone":  "feed info",
+                         "old":  "{gun} to slot {h}. {item} to slot {n}.",
+                         "new":  "{GUN} TO SLOT {h}  ·  {Item} to slot {n}."
+                     },
+                     {
+                         "line":  12336,
+                         "zone":  "feed info",
+                         "old":  "Drop it off the belt to stow it in the backpack; its own key brings it up.",
+                         "new":  "IT IS ON YOUR TACTICAL BELT  ·  Drag it off to stow it."
+                     },
+                     {
+                         "line":  12387,
+                         "zone":  "feed info (also 12396)",
+                         "old":  "{gun} cannot go on key {n}; it stays where it is. | {gun} stays where it is: it is your only gun, so there is no other gun for it to trade places with.",
+                         "new":  "{GUN} CANNOT GO IN SLOT {n} | {GUN} STAYS  ·  It is your only gun."
+                     },
+                     {
+                         "line":  12394,
+                         "zone":  "feed info (also 12417)",
+                         "old":  "{gun} to slot {n}. {other} to slot {m}.",
+                         "new":  "{GUN} TO SLOT {n}  ·  {Other} to slot {m}."
+                     },
+                     {
+                         "line":  12398,
+                         "zone":  "feed info (also 16054)",
+                         "old":  "{item} is no longer in your backpack.",
+                         "new":  "{ITEM} IS NOT IN YOUR BACKPACK"
+                     },
+                     {
+                         "line":  12406,
+                         "zone":  "feed info (paused branch goes to the pause toast)",
+                         "old":  "Cannot equip a gun while {rolling|paused|down}. | Cannot equip that right now.",
+                         "new":  "CANNOT EQUIP WHILE ROLLING | CANNOT EQUIP WHILE DOWN | CANNOT EQUIP THAT NOW"
+                     },
+                     {
+                         "line":  12434,
+                         "zone":  "feed info",
+                         "old":  "Slot {n} is a weapon slot. Guns only.",
+                         "new":  "SLOT {n} TAKES GUNS ONLY"
+                     },
+                     {
+                         "line":  12486,
+                         "zone":  "feed info",
+                         "old":  "{item} to slot {n}",
+                         "new":  "{ITEM} TO SLOT {n}"
+                     },
+                     {
+                         "line":  12510,
+                         "zone":  "feed ally",
+                         "old":  "{item} to {hire}.",
+                         "new":  "{ITEM} TO {HIRE}"
+                     },
+                     {
+                         "line":  12554,
+                         "zone":  "feed info",
+                         "old":  "{item} off slot {n}.",
+                         "new":  "{ITEM} OFF SLOT {n}"
+                     },
+                     {
+                         "line":  13575,
+                         "zone":  "feed info",
+                         "old":  "{throwable} ready",
+                         "new":  "{THROWABLE} READY"
+                     },
+                     {
+                         "line":  13579,
+                         "zone":  "feed info",
+                         "old":  "No throwable on your tactical belt. | No throwables",
+                         "new":  "NO THROWABLE ON THE TACTICAL BELT | NO THROWABLES LEFT"
+                     },
+                     {
+                         "line":  13747,
+                         "zone":  "feed info (also 17473)",
+                         "old":  "No {throwable} left. {gun key line}",
+                         "new":  "NO {THROWABLE} LEFT  ·  {gun key line}"
+                     },
+                     {
+                         "line":  13759,
+                         "zone":  "feed info",
+                         "old":  "Throw the one in your hand first.",
+                         "new":  "THROW THE ONE IN YOUR HAND FIRST"
+                     },
+                     {
+                         "line":  13604,
+                         "zone":  "feed info",
+                         "old":  "Too tired to roll.",
+                         "new":  "TOO TIRED TO ROLL"
+                     },
+                     {
+                         "line":  8493,
+                         "zone":  "feed info (also 11814, 16093)",
+                         "old":  "Not while you are down.",
+                         "new":  "NOT WHILE DOWN"
+                     },
+                     {
+                         "line":  8494,
+                         "zone":  "feed info",
+                         "old":  "Not while you are rolling.",
+                         "new":  "NOT WHILE ROLLING"
+                     },
+                     {
+                         "line":  14848,
+                         "zone":  "feed info",
+                         "old":  "The highlight is on your belt. Move the item into the backpack to drop it. | ...to offer it.",
+                         "new":  "THAT IS ON YOUR TACTICAL BELT  ·  Move it to your backpack to drop it. | ...to offer it."
+                     },
+                     {
+                         "line":  15625,
+                         "zone":  "feed info",
+                         "old":  "{gun} is issued kit; it stays in your hands.",
+                         "new":  "ISSUED GEAR STAYS IN YOUR HANDS"
+                     },
+                     {
+                         "line":  15626,
+                         "zone":  "feed info",
+                         "old":  "{gun} has no place in your backpack.",
+                         "new":  "{GUN} DOES NOT FIT IN YOUR BACKPACK"
+                     },
+                     {
+                         "line":  16044,
+                         "zone":  "feed info",
+                         "old":  "No second weapon. Drag one here to carry it.",
+                         "new":  "NO SECOND GUN  ·  Put one in this slot to carry it."
+                     },
+                     {
+                         "line":  16055,
+                         "zone":  "feed info",
+                         "old":  "Cannot equip {gun} right now.",
+                         "new":  "CANNOT EQUIP {GUN} NOW"
+                     },
+                     {
+                         "line":  17451,
+                         "zone":  "feed info",
+                         "old":  "Nothing in that cell. {gun key line}",
+                         "new":  "SLOT {n} IS EMPTY  ·  {gun key line}"
+                     },
+                     {
+                         "line":  11571,
+                         "zone":  "feed info",
+                         "old":  "You are carrying a loaner. Equip your own gun from the stash before your next ascent.",
+                         "new":  "YOU CARRY A LOANER  ·  Equip your own gun at The Stash."
+                     },
+                     {
+                         "line":  8506,
+                         "zone":  "feed info",
+                         "old":  "Lower your weapon to talk.",
+                         "new":  "LOWER YOUR GUN TO TALK"
+                     },
+                     {
+                         "line":  8499,
+                         "zone":  "removed",
+                         "old":  "You raise a hand. | You lower your weapon. | You point. | You nod.",
+                         "new":  "(removed: the emote bubble shows it)"
+                     },
+                     {
+                         "line":  8518,
+                         "zone":  "feed ally",
+                         "old":  "{name} has not forgotten. He is not listening.",
+                         "new":  "{NAME} HAS NOT FORGOTTEN  ·  He is not listening."
+                     },
+                     {
+                         "line":  8534,
+                         "zone":  "feed ally (keyed per hail)",
+                         "old":  "{name} lowers his gun.",
+                         "new":  "{NAME} LOWERS HIS GUN"
+                     },
+                     {
+                         "line":  8545,
+                         "zone":  "feed ally",
+                         "old":  "{name} waves back.",
+                         "new":  "{NAME} WAVES BACK"
+                     },
+                     {
+                         "line":  8570,
+                         "zone":  "feed ally",
+                         "old":  "{name} has nothing to spare but his gun.",
+                         "new":  "{NAME} HAS NOTHING TO SPARE"
+                     },
+                     {
+                         "line":  8581,
+                         "zone":  "feed info",
+                         "old":  "Nobody in earshot.",
+                         "new":  "NOBODY IN EARSHOT"
+                     },
+                     {
+                         "line":  11908,
+                         "zone":  "feed ally",
+                         "old":  "Order: {hire}, loot on your own. | on me. | hold here.",
+                         "new":  "{HIRE} LOOTS ON HIS OWN | {HIRE} FOLLOWS YOU | {HIRE} HOLDS HERE"
+                     },
+                     {
+                         "line":  17734,
+                         "zone":  "feed ally (also 17735)",
+                         "old":  "{name} is back on his feet. He will remember that. | Back on his feet.",
+                         "new":  "{NAME} IS BACK UP  ·  He will remember that. | HE IS BACK UP"
+                     },
+                     {
+                         "line":  17788,
+                         "zone":  "feed info",
+                         "old":  "He has heard what you did to the last one. No deal.",
+                         "new":  "NO DEAL  ·  He heard what you did to the last one."
+                     },
+                     {
+                         "line":  18002,
+                         "zone":  "feed info",
+                         "old":  "That is everything {hire} is carrying.",
+                         "new":  "{HIRE} IS CARRYING NOTHING ELSE"
+                     },
+                     {
+                         "line":  19100,
+                         "zone":  "feed chat (gated)",
+                         "old":  "Someone shot the survivor. Not on you.",
+                         "new":  "SOMEONE SHOT THE SURVIVOR  ·  Not on you."
+                     },
+                     {
+                         "line":  19122,
+                         "zone":  "feed chat (gated)",
+                         "old":  "The Peddler is dead. Someone else did that.",
+                         "new":  "THE PEDDLER IS DEAD  ·  Someone else did that."
+                     },
+                     {
+                         "line":  19145,
+                         "zone":  "feed ally (also 41968)",
+                         "old":  "{name} will remember that.",
+                         "new":  "{NAME} WILL REMEMBER THAT"
+                     },
+                     {
+                         "line":  19338,
+                         "zone":  "feed chat (gated)",
+                         "old":  "The survivor made it to Extraction {L}.",
+                         "new":  "THE SURVIVOR REACHED EXTRACTION {L}"
+                     },
+                     {
+                         "line":  19379,
+                         "zone":  "feed info",
+                         "old":  "The Peddler bolts. No trade while he is bleeding.",
+                         "new":  "THE PEDDLER BOLTS  ·  No trade while he bleeds."
+                     },
+                     {
+                         "line":  19408,
+                         "zone":  "feed chat (within 900)",
+                         "old":  "The Peddler has set up shop here.",
+                         "new":  "THE PEDDLER HAS SET UP SHOP"
+                     },
+                     {
+                         "line":  19416,
+                         "zone":  "feed chat (gated)",
+                         "old":  "The Peddler is back at his pitch.",
+                         "new":  "THE PEDDLER IS BACK AT HIS PITCH"
+                     },
+                     {
+                         "line":  19422,
+                         "zone":  "feed ally",
+                         "old":  "The Peddler waves you over. | The Peddler turns his back on you.",
+                         "new":  "THE PEDDLER WAVES YOU OVER | THE PEDDLER TURNS HIS BACK"
+                     },
+                     {
+                         "line":  19944,
+                         "zone":  "feed ally",
+                         "old":  "{name} trusted you.",
+                         "new":  "{NAME} TRUSTED YOU"
+                     },
+                     {
+                         "line":  19967,
+                         "zone":  "feed chat (once per pillager)",
+                         "old":  "{name} nods at you. | {name} is watching you.",
+                         "new":  "{NAME} NODS AT YOU | {NAME} IS WATCHING YOU"
+                     },
+                     {
+                         "line":  20319,
+                         "zone":  "feed ally",
+                         "old":  "{hire} is coming for you.",
+                         "new":  "{HIRE} IS COMING TO REVIVE YOU"
+                     },
+                     {
+                         "line":  20327,
+                         "zone":  "feed ally",
+                         "old":  "{hire} pulls you up. That is what you paid for.",
+                         "new":  "{HIRE} REVIVED YOU  ·  That is what you paid for."
+                     },
+                     {
+                         "line":  20965,
+                         "zone":  "feed info",
+                         "old":  "The slab eats it. Get behind him.",
+                         "new":  "THE BULWARK BLOCKED IT  ·  Get behind it."
+                     },
+                     {
+                         "line":  21103,
+                         "zone":  "feed chat",
+                         "old":  "The deer goes down. | You shot a bird.",
+                         "new":  "YOU SHOT A DEER | YOU SHOT A BIRD"
+                     },
+                     {
+                         "line":  35101,
+                         "zone":  "feed chat",
+                         "old":  "The liquor wears off. | The colours drain away.",
+                         "new":  "THE LIQUOR WEARS OFF | THE COLOURS DRAIN AWAY"
+                     },
+                     {
+                         "line":  39610,
+                         "zone":  "feed ally",
+                         "old":  "{name} is joining the raid.",
+                         "new":  "{NAME} IS JOINING THE RAID"
+                     },
+                     {
+                         "line":  39635,
+                         "zone":  "feed ally",
+                         "old":  "You joined the raid in progress.",
+                         "new":  "YOU JOINED THE RAID IN PROGRESS"
+                     },
+                     {
+                         "line":  40181,
+                         "zone":  "feed ally (also 40195)",
+                         "old":  "Taking it.",
+                         "new":  "TAKING IT"
+                     },
+                     {
+                         "line":  40188,
+                         "zone":  "feed info",
+                         "old":  "Nobody close enough to give it to.",
+                         "new":  "NOBODY CLOSE ENOUGH TO TAKE IT"
+                     },
+                     {
+                         "line":  40192,
+                         "zone":  "removed (also 40394)",
+                         "old":  "Offered {item} to {nm}. | {nm} offers you {item}. Press T or Y to take it.",
+                         "new":  "(removed: the offer line shows it)"
+                     },
+                     {
+                         "line":  40418,
+                         "zone":  "feed ally",
+                         "old":  "{nm} is down and cannot take it. | {nm} is not up top any more. | {nm} could not hand it over.",
+                         "new":  "{NAME} IS DOWN AND CANNOT TAKE IT | {NAME} IS NO LONGER UP TOP | {NAME} COULD NOT HAND IT OVER"
+                     },
+                     {
+                         "line":  41799,
+                         "zone":  "feed ally",
+                         "old":  "{name | PILLAGER} revived.",
+                         "new":  "{NAME | YOUR TEAMMATE} IS BACK UP"
+                     },
+                     {
+                         "line":  41807,
+                         "zone":  "removed",
+                         "old":  "Reviving {nm}. Hold {E}.",
+                         "new":  "(removed: the REVIVE prompt and the REVIVING bar)"
+                     },
+                     {
+                         "line":  41839,
+                         "zone":  "feed ally",
+                         "old":  "Revived by {name | a teammate}.",
+                         "new":  "{NAME | YOUR TEAMMATE} REVIVED YOU"
+                     },
+                     {
+                         "line":  42073,
+                         "zone":  "feed ally (keyed; also 42123)",
+                         "old":  "{name | One of your party} is searching this one.",
+                         "new":  "{NAME | YOUR TEAMMATE} IS SEARCHING THIS ONE"
+                     },
+                     {
+                         "line":  26991,
+                         "zone":  "feed ally (from the lane tick)",
+                         "old":  "The offer from {name} ran out.",
+                         "new":  "OFFER FROM {NAME} EXPIRED"
+                     },
+                     {
+                         "line":  26992,
+                         "zone":  "feed ally (from the lane tick)",
+                         "old":  "{name} did not take the {item}.",
+                         "new":  "{NAME} DID NOT TAKE THE {ITEM}"
+                     },
+                     {
+                         "line":  26993,
+                         "zone":  "offer line",
+                         "old":  "{name} offers you {item}.  T or {Y} to take it.  {n}s",
+                         "new":  "{Name} offers you {Item}  ·  [T] to take it  ·  {n}s ([Y] on a pad)"
+                     },
+                     {
+                         "line":  26994,
+                         "zone":  "offer line",
+                         "old":  "Offered {item} to {name}. Waiting for them to take it.  {n}s",
+                         "new":  "Offered {Item} to {Name}  ·  Waiting  ·  {n}s"
+                     },
+                     {
+                         "line":  9868,
+                         "zone":  "removed (also 19094, 19117)",
+                         "old":  "He was not fighting you. Notoriety {n}. | He was not armed. Notoriety {n}. | The Peddler is dead. Word gets around. Notoriety {n}.",
+                         "new":  "(removed: his notoriety stamp and the NOTORIETY +1 label)"
+                     },
+                     {
+                         "line":  10008,
+                         "zone":  "feed info",
+                         "old":  "Word of that will travel too. Notoriety {n}.",
+                         "new":  "NOTORIETY DOWN TO {n}"
+                     },
+                     {
+                         "line":  14521,
+                         "zone":  "removed",
+                         "old":  "DOWN. F to get back up. You get one per raid. | DOWN. Your one self-revive is spent. Crawl for an extraction, or hold SPACE to give up.",
+                         "new":  "(removed: the downed overlay says DOWN, [F] SELF-REVIVE, one per raid and HOLD [SPACE] TO SURRENDER)"
+                     },
+                     {
+                         "line":  16217,
+                         "zone":  "removed",
+                         "old":  "They have you. Pulling you out.",
+                         "new":  "(removed: endRaid runs in the same frame; the overlay row THEY HAVE YOU stays)"
+                     },
+                     {
+                         "line":  43015,
+                         "zone":  "removed",
+                         "old":  "Walked out on the job. XP -{n}. | Walked out on the job. No XP to lose.",
+                         "new":  "(removed: the outcome card line at 22176 says it)"
+                     },
+                     {
+                         "line":  34023,
+                         "zone":  "location tag",
+                         "old":  "Entering the {landmark, lowercased}.",
+                         "new":  "{LANDMARK NAME as authored}"
+                     },
+                     {
+                         "line":  34036,
+                         "zone":  "location tag (also 34049)",
+                         "old":  "Crossing into the {zone, lowercased}.",
+                         "new":  "{ZONE NAME as authored}"
+                     },
+                     {
+                         "line":  24765,
+                         "zone":  "lore card",
+                         "old":  "{STORY NAME}. {story text, 200-310 chars}",
+                         "new":  "card title {STORY NAME}; card body {story text}, wrapped"
+                     },
+                     {
+                         "line":  6013,
+                         "zone":  "feed chat (also 41083)",
+                         "old":  "The weather is turning. {weather line}",
+                         "new":  "WEATHER TURNING  ·  {weather line}"
+                     },
+                     {
+                         "line":  11566,
+                         "zone":  "feed chat",
+                         "old":  "{weather line}",
+                         "new":  "WEATHER  ·  {weather line}"
+                     },
+                     {
+                         "line":  5926,
+                         "zone":  "weather line",
+                         "old":  "Grid is down. Every lamp on the map is dead.",
+                         "new":  "Grid is down. Every lamp up top is dead."
+                     },
+                     {
+                         "line":  5928,
+                         "zone":  "weather line",
+                         "old":  "Storm. Lightning lights up the map, and every flash makes you visible from farther away.",
+                         "new":  "Storm. Each lightning flash shows you from farther away."
+                     },
+                     {
+                         "line":  11975,
+                         "zone":  "feed sys (also 11976, 11978)",
+                         "old":  "Zoom {n}%",
+                         "new":  "ZOOM {n}%"
+                     },
+                     {
+                         "line":  11994,
+                         "zone":  "feed sys or pause toast",
+                         "old":  "HUD size {n}%",
+                         "new":  "HUD SIZE {n}%"
+                     },
+                     {
+                         "line":  44478,
+                         "zone":  "feed sys",
+                         "old":  "Superhot follows the host while you are in a party.",
+                         "new":  "SUPERHOT FOLLOWS THE HOST"
+                     },
+                     {
+                         "line":  12051,
+                         "zone":  "feed sys (over the map)",
+                         "old":  "Waypoint cleared",
+                         "new":  "WAYPOINT CLEARED"
+                     },
+                     {
+                         "line":  12058,
+                         "zone":  "feed sys (over the map)",
+                         "old":  "Waypoint marked",
+                         "new":  "WAYPOINT SET"
+                     },
+                     {
+                         "line":  40587,
+                         "zone":  "feed sys (over the map)",
+                         "old":  "Marker placed. Your party can see it. | Waypoint marked",
+                         "new":  "WAYPOINT SET  ·  Your party can see it. | WAYPOINT SET"
+                     },
+                     {
+                         "line":  12950,
+                         "zone":  "feed sys",
+                         "old":  "Controller connected. Left stick moves, right stick aims.",
+                         "new":  "CONTROLLER CONNECTED"
+                     },
+                     {
+                         "line":  13294,
+                         "zone":  "pause toast",
+                         "old":  "Controller disconnected. Plug it in, then resume.",
+                         "new":  "CONTROLLER DISCONNECTED  ·  Plug it in, then resume."
+                     },
+                     {
+                         "line":  14469,
+                         "zone":  "feed sys (also 17187)",
+                         "old":  "Auto-jog off.",
+                         "new":  "AUTO-JOG OFF"
+                     },
+                     {
+                         "line":  17181,
+                         "zone":  "feed sys",
+                         "old":  "Auto-jog on. Tap CAPS or move to stop.",
+                         "new":  "AUTO-JOG ON  ·  Tap [CAPS] or move to stop."
+                     },
+                     {
+                         "line":  17180,
+                         "zone":  "feed info",
+                         "old":  "Stop first, then tap CAPS to auto-jog.",
+                         "new":  "STOP FIRST  ·  Then tap [CAPS] to auto-jog."
+                     },
+                     {
+                         "line":  33575,
+                         "zone":  "feed sys",
+                         "old":  "Recording. Press F9 again to stop (it stops by itself after 3 minutes).",
+                         "new":  "RECORDING  ·  [F9] stops it, or it stops at 3:00."
+                     },
+                     {
+                         "line":  33553,
+                         "zone":  "feed sys (also 33558, 33563)",
+                         "old":  "This browser cannot record the game.",
+                         "new":  "THIS BROWSER CANNOT RECORD"
+                     },
+                     {
+                         "line":  33580,
+                         "zone":  "feed sys",
+                         "old":  "That recording was too short to keep.",
+                         "new":  "RECORDING TOO SHORT TO KEEP"
+                     },
+                     {
+                         "line":  33581,
+                         "zone":  "feed sys",
+                         "old":  "Recording kept: it plays on the title when nobody is playing. A copy is in your downloads. | This browser could not keep the recording; a copy is in your downloads.",
+                         "new":  "RECORDING KEPT  ·  A copy is in your downloads. | RECORDING NOT KEPT  ·  A copy is in your downloads."
+                     },
+                     {
+                         "line":  33690,
+                         "zone":  "pause toast",
+                         "old":  "Cursor reset.",
+                         "new":  "CURSOR RESET"
+                     },
+                     {
+                         "line":  42997,
+                         "zone":  "pause toast",
+                         "old":  "Raid clock changed: {n min n sec} left.",
+                         "new":  "RAID CLOCK SET TO {m:ss}"
+                     },
+                     {
+                         "line":  22710,
+                         "zone":  "feed sys (once per session; replaces 33817 too)",
+                         "old":  "Running slowly: the render resolution stepped down on its own. Settings has Auto resolution and Effects. | Running slowly? Settings has Render resolution and Effects to lighten the load.",
+                         "new":  "RUNNING SLOWLY  ·  Lower Effects in Settings."
+                     },
+                     {
+                         "line":  33772,
+                         "zone":  "feed sys (once per raid)",
+                         "old":  "Something broke: {error}. It was written into your run report.",
+                         "new":  "ERROR SAVED TO YOUR RUN REPORT"
+                     },
+                     {
+                         "line":  25759,
+                         "zone":  "run report only",
+                         "old":  "Render fault logged: {kind}: {error}",
+                         "new":  "(run report only)"
+                     },
+                     {
+                         "line":  17830,
+                         "zone":  "run report only",
+                         "old":  "Wall glitch logged in your run report.",
+                         "new":  "(run report only)"
+                     },
+                     {
+                         "line":  27478,
+                         "zone":  "reticle",
+                         "old":  "EMPTY - R",
+                         "new":  "[{keyLabel(\u0027KeyR\u0027,\u0027R\u0027)}] RELOAD"
+                     },
+                     {
+                         "line":  28568,
+                         "zone":  "gun card",
+                         "old":  "B / I  BACKPACK",
+                         "new":  "{keyLabel(\u0027KeyB\u0027,\u0027B\u0027)} / {keyLabel(\u0027KeyI\u0027,\u0027I\u0027)}  BACKPACK (reads the same with keys unmoved)"
+                     },
+                     {
+                         "line":  27567,
+                         "zone":  "top status",
+                         "old":  "EXTRACT {n}m | EXTRACTION {n}m",
+                         "new":  "EXTRACT {L} {n}m (every state) | WAYPOINT {n}m"
+                     },
+                     {
+                         "line":  39240,
+                         "zone":  "top chain",
+                         "old":  "CONTROLLER PAUSED: click one of the game windows",
+                         "new":  "CONTROLLER PAUSED  ·  Click a game window."
+                     },
+                     {
+                         "line":  28633,
+                         "zone":  "extraction band",
+                         "old":  "{n} converging on the ring",
+                         "new":  "{n} CONVERGING ON THE RING"
+                     },
+                     {
+                         "line":  28639,
+                         "zone":  "prompt (also 28802)",
+                         "old":  "HOLD E TO CALL FOR EXTRACTION",
+                         "new":  "HOLD [E] TO CALL FOR EXTRACTION"
+                     },
+                     {
+                         "line":  28666,
+                         "zone":  "prompt",
+                         "old":  "HOLD E TO CUT THE SEAL",
+                         "new":  "HOLD [E] TO CUT THE SEAL"
+                     },
+                     {
+                         "line":  28847,
+                         "zone":  "centre verb (also 28689)",
+                         "old":  "HOLD E TO EXTRACT",
+                         "new":  "HOLD [E] TO EXTRACT"
+                     },
+                     {
+                         "line":  28033,
+                         "zone":  "prompt",
+                         "old":  "[E] EXTRACT - {n}s",
+                         "new":  "[E] EXTRACT  ·  {n}s"
+                     },
+                     {
+                         "line":  27943,
+                         "zone":  "prompt",
+                         "old":  "[E] REVIVE {name}  {n}s",
+                         "new":  "[E] REVIVE {NAME}  ·  {n}s"
+                     },
+                     {
+                         "line":  27916,
+                         "zone":  "prompt detail",
+                         "old":  "needs the {Key Name}",
+                         "new":  "Needs the {Key Name}"
+                     },
+                     {
+                         "line":  27965,
+                         "zone":  "prompt",
+                         "old":  "[E] SEARCH BOTWRECK",
+                         "new":  "[E] SEARCH WRECK"
+                     },
+                     {
+                         "line":  19106,
+                         "zone":  "cache tag",
+                         "old":  "PEDLAR STOCK",
+                         "new":  "PEDDLER STOCK"
+                     },
+                     {
+                         "line":  19239,
+                         "zone":  "world callout (also 41649)",
+                         "old":  "{MACHINE NAME} DOWN",
+                         "new":  "{MACHINE NAME} DESTROYED"
+                     },
+                     {
+                         "line":  29765,
+                         "zone":  "Current Pillagers board",
+                         "old":  "{n} out  ·  {n} down",
+                         "new":  "{n} out  ·  {n} dead"
+                     },
+                     {
+                         "line":  15399,
+                         "zone":  "world callout",
+                         "old":  "{Item Name} {value}c",
+                         "new":  "{Item Name}  ${value with separators}"
+                     },
+                     {
+                         "line":  10012,
+                         "zone":  "world callout",
+                         "old":  "+${pay}",
+                         "new":  "+$1,240 (with separators)"
+                     },
+                     {
+                         "line":  40784,
+                         "zone":  "ping label",
+                         "old":  "{NAME}: {SNITCH | CHOIR | STRAY | kind}  {n}M | {NAME}: DANGER  {n}M",
+                         "new":  "{NAME}  ·  {CRIER | PILLBOX | SURVIVOR | name}  ·  {n}m | {NAME}  ·  DANGER  ·  {n}m"
+                     },
+                     {
+                         "line":  40505,
+                         "zone":  "edge arrow",
+                         "old":  "{NAME}  {d}M  DOWN",
+                         "new":  "{NAME}  ·  {d}m  ·  DOWN"
+                     },
+                     {
+                         "line":  40590,
+                         "zone":  "world marker",
+                         "old":  "{NAME} MARKER  {d}M",
+                         "new":  "{NAME}  ·  WAYPOINT  ·  {d}m"
+                     },
+                     {
+                         "line":  39902,
+                         "zone":  "teammate tag",
+                         "old":  "{NAME} (amber, no state)",
+                         "new":  "{NAME} in ally blue; when down: {NAME}  ·  DOWN  ·  {n}s, and [E] REVIVE {NAME}  ·  {n}s in reach"
+                     }
+                 ],
+    "mustNotChange":  [
+                          "TXSHIP keys (2683) and TXPSHIP number shapes are never reworded, re-cased or joined onto. A new template must not share a TXPSHIP shape: parsecheck asserts TX(sample)===sample.",
+                          "His Crier words (v21.78, 2026-10-09), byte for byte: \u0027A CRIER IS REVEALING YOUR LOCATION\u0027 (19775, 41668); \u0027CRIER REVEALED YOUR LOCATION\u0027 and \u0027CRIER REVEALED YOUR LAST LOCATION\u0027 (19820, 41675). His countdown and the three-second line-of-sight call-off stay as they are.",
+                          "\u0027Knocked down. Extraction progress bar reset. Hold E to try again.\u0027 (16216, his v16.19 words). Only the E token may go through keyLabel, so it reads identically on an unmoved keyboard.",
+                          "\u0027CONTRACT DONE: {desc}. Complete contract at mainframe.\u0027 (3671, his v8.68 wording). It may be split at his colon for display only; every word is kept, including the lowercase \u0027mainframe\u0027.",
+                          "\u0027Nothing to pick up.\u0027 (15624, his v14.78 word); \u0027Self-revive spent. One per raid.\u0027 (17015, his v11.94 note); \u0027Search resumed, N% done.\u0027 (17934, 42087, his v11.94 note).",
+                          "His words in these drawn lines: zoneBadge\u0027s four lines (26954-26960, v11.54/v17.95), including SOUND THE ALARM and \u002712S\u0027; extractNowLine \u0027EXTRACT IN PROGRESS!  A  12S LEFT\u0027 (26971, v17.95); cookShout \u0027COOKED GRENADE! THROW GRENADE NOW\u0027 (26963-26967, v11.55); \u0027LIGHTNING INCOMING\u0027 (strikeLabel 6023); \u0027WEAK SPOT\u0027 (20943, v21.64); INBOUND; the downed rows, including \u0027[F] SELF-REVIVE, one per raid\u0027 (28737) and \u0027HOLD [SPACE] TO SURRENDER\u0027 (28765).",
+                          "His HUD asks: status icons on the LEFT with the heal ring; the Overseer bar only after this player has seen him (the barSeen latch); the heal and plate use bar; scoped ADS zoom; belt slot order 8 to 1; the Blotter.",
+                          "No raid music. CLOSE and ESC on every menu. Bandages heal to 85 and a Medkit to 100: every line reads healCeil and never types the number.",
+                          "The notoriety stamp at H*0.26 (his v8.27 order: where he cannot miss it) and the NOTORIETY +1 world label.",
+                          "The SEARCH prompt stays FS(TYPE.head) (his v10.52 \u0027the prompt was too small\u0027, 27954). Other prompts grow to it; it never shrinks.",
+                          "World loot labels last 6 s (his v3.51). Kill labels stay gated by canSee (19237).",
+                          "\u0027Marked Waypoint\u0027 (his 2026-08-26 note) makes Waypoint the one marker word.",
+                          "say(m) and sayWhenFree(m) keep their names and their one-string form. G.msg and G.msgT stay the true state of the head line. G.msgQ stays an array of strings (mkfixture 30387 maps it with String). New fields are created lazily (a check swaps in a fake G at mkfixture 16692).",
+                          "The module is cosmetic only: it returns on G.sim, never calls rnd, rr or pick, takes its time from G.t and writes no game state. Seeded streams, the bot sim, container-count fingerprints and the 320-seed paired A/B do not move.",
+                          "The v12.93 outHint state machine and the siege maths (_g, _scap, _siv, _sc) stay byte for byte. Only their words change.",
+                          "Telemetry keeps counting when a line is removed or gated: T.raidersExtracted, G.storyRead and T.storyRead, T.marked, T.downs, the crashTold latch.",
+                          "The Undercroft text paths stay unchanged: hubToast, say2, netSay, HUBSAY, and the Ascend panel weather rows that are TXSHIP keys (\u0027Clear. No bonus for an easy sky.\u0027, \u0027Storming. Harder going, so XP pays 1.1x.\u0027 and the others).",
+                          "Internal names stay in the code (kind snitch, choir, botwreck, raider; hotCells, drawBelt). Only the drawn words change.",
+                          "Each window keeps its own G. Private lines stay seat-gated: Crier marks, gifts, aid, revives, kills.",
+                          "No new sound for any line: the event that raised it already plays its alarm, siren or blip. The padRumble on teammate down stays."
+                      ],
+    "openQuestions":  [
+                          "The cook shout \u0027COOKED GRENADE! THROW GRENADE NOW\u0027 starts once 1.0 s of fuse is left, but FRAG_FUSE is 1.1 (13668, 26966). So it is on for about 91% of every frag cook and no longer marks the last moment. His What\u0027s New card already asks him for a number (1917). Should it start with 0.5 s left, or stay as it is?",
+                          "drawBuzzFx runs after drawHUD, so Liquor and the Blotter warp every HUD word, including the alert lane, prompts and the downed overlay. Should text lanes stay steady under a dose while the world still swims? Today the warp makes a fight harder to read, and that may be intended."
+                      ]
+}
