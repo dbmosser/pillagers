@@ -1,0 +1,7 @@
+v22.10: used kit no longer cuts hazard pay
+
+Kit you carry up and then use, drop or give away no longer cuts hazard pay or the haul.
+
+Check 22.10. Fails on v22.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

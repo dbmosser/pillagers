@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.10 - USED KIT NO LONGER CUTS HAZARD PAY
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Hazard pay, the XP for the haul, haul contracts and your best haul all count what you bring out less what you carried up. Kit you carried up and then used, dropped or gave away still counted as carried up, so two Medkits used in a fight cut $420 off the haul: $2,000 found on +35% Terms paid $553 instead of $700, and the loaner Bandages did the same to a new player every run. Now only carried kit still in your backpack at the end is taken off, and lifetime earnings are unchanged.
+
+MEASURED. Check 22.10 passes, and fails on v22.09.
 ## v22.09 - A LISTENER ALWAYS SCREAMS BEFORE IT CHARGES
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Calling extraction, the siege pull and the hot ground moving quietly switched far-off sleeping Listeners to looking around. Such a Listener then stood still, drawn awake with a question mark over it, and the first sound it heard sent it straight at you at full speed, with no scream, no pause and no Something woke up line. That warning is the only answer to a machine that hits for 34. The hot ground moving could also switch off a Listener that was hunting you. Now a Listener that is not hunting goes back to sleep on its next step, any Listener that wakes gets its scream and its pause, and the hot ground never takes a Listener.

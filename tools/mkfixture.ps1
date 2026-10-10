@@ -5741,6 +5741,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'22.10',what:'kit carried up and then used no longer counts against the haul: at the raid end the carried-up value falls by what is gone from the backpack, by count, what went up still adds up, and kit still in the backpack changes nothing',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof ival!=='function') return 'SKIP: no raid here';
+     var bad=[], g, ci0, ks0, mv, ix;
+     function nOf(a,x){ var n=0, j; for(j=0;j<(a||[]).length;j++) if(a[j]===x) n++; return n; }
+     try{
+       __topClear(); __runPrep(); __cleanProfile();
+       __deploy({kit:['medkit','medkit'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       mv=ival('medkit'); if(!(mv>0)) return 'SKIP: a Medkit is worth nothing here';
+       if(nOf(g.carriedKit,'medkit')!==2||nOf(g.bag,'medkit')!==2) return 'SKIP: staging: the two Medkits did not go up';
+       ci0=g.carriedIn||0; ks0=g.kitSold||0;
+       ix=g.bag.indexOf('medkit'); g.bag.splice(ix,1);
+       g.player.downed=false; __endRaid('abandon');
+       if(Math.abs((g.carriedIn||0)-(ci0-mv))>0.5) bad.push('one of the two Medkits carried up was used and the run still counts '+(g.carriedIn||0)+' as carried up, not '+(ci0-mv));
+       if(Math.abs(((g.carriedIn||0)+(g.kitSold||0))-(ci0+ks0))>0.5) bad.push('what went up no longer adds up: '+ci0+' and '+ks0+' became '+(g.carriedIn||0)+' and '+(g.kitSold||0));
+       __topClear();
+       __deploy({kit:['medkit','medkit'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return bad.length?bad.join('; '):'SKIP: no second raid';
+       ci0=g.carriedIn||0; ks0=g.kitSold||0;
+       g.player.downed=false; __endRaid('abandon');
+       if(Math.abs((g.carriedIn||0)-ci0)>0.5||Math.abs((g.kitSold||0)-ks0)>0.5) bad.push('with both Medkits carried up still in the backpack the carried-up value moved from '+ci0+' to '+(g.carriedIn||0));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'22.09',what:'a Listener that a call or the hot ground sent to look goes back to sleep on its next step and wakes with its scream and its beat, and the hot ground moving never takes a Listener, sleeping or hunting',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof mkListener!=='function'||typeof listenersHear!=='function'||typeof updateEnts!=='function'||typeof tickHot!=='function'||typeof freeSpot!=='function') return 'SKIP: no raid or Listener here';
