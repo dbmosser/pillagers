@@ -1,0 +1,7 @@
+v22.09: a listener always screams before it charges
+
+A Listener always screams and pauses before it charges, even after you call extraction.
+
+Check 22.09. Fails on v22.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

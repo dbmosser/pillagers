@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.09 - A LISTENER ALWAYS SCREAMS BEFORE IT CHARGES
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Calling extraction, the siege pull and the hot ground moving quietly switched far-off sleeping Listeners to looking around. Such a Listener then stood still, drawn awake with a question mark over it, and the first sound it heard sent it straight at you at full speed, with no scream, no pause and no Something woke up line. That warning is the only answer to a machine that hits for 34. The hot ground moving could also switch off a Listener that was hunting you. Now a Listener that is not hunting goes back to sleep on its next step, any Listener that wakes gets its scream and its pause, and the hot ground never takes a Listener.
+
+MEASURED. Check 22.09 passes, and fails on v22.08.
 ## v22.08 - CALLING EXTRACTION LEAVES THE PEDDLER BE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Calling extraction pulled in everything for a long way around the ring, the Peddler and the Survivor included. From then on the Peddler's table, stock and lantern were drawn at the ring instead of beside him, both of them wore a yellow question mark, standing at the stall played the threat sound as if a machine were on top of you, and both were counted among the machines coming for the ring. The siege pull every two seconds did the same, on your own raid and on a party call. Every other alarm in the game already leaves the two of them alone; the call and the siege now do too.
