@@ -47268,15 +47268,21 @@ window.__REGRESS=[
          if(a.sec!==a.want) bad.push('the '+a.want+' he found did not go to his empty second slot (it holds '+a.sec+')');
          if(a.bag.indexOf('gun_pistol')>=0) bad.push('his Scav Pistol went in the bag even though the second slot was standing empty');
        }
-       // 2. BOTH SLOTS FULL is unchanged, and a rifle in the second slot is
+       // 2. BOTH SLOTS FULL is unchanged, and the gun in the second slot is
        //    nothing the pickup could have produced by accident.
-       var b=drive('rifle');
+       // v21.63 retarget: a found gun takes a hand only when it beats BOTH guns he carries (his note: a found gun never bumps a better
+       // one), and the rifle outranks the SMG this box holds, so the second slot now holds the lowest gun below the one found, other
+       // than the pistol. Before v21.63 any gun there gave the same result, so this holds on both sides of that build.
+       var SK=null, wk;
+       for(wk in WTIER) if(wk!=='fists'&&wk!=='pistol'&&wk!==a.want&&WEAPONS[wk]&&ITEMS['gun_'+wk]&&ITEMS['gun_'+wk].gk===wk&&(WTIER[wk]||0)<(WTIER[a.want]||0)&&(SK===null||(WTIER[wk]||0)<(WTIER[SK]||0))) SK=wk;
+       if(!SK){ if(!bad.length) return 'SKIP: no gun ranks below the '+a.want+' other than the Scav Pistol, so the both-full arm cannot be staged'; }
+       var b=SK?drive(SK):{skip:'no gun below the '+a.want};
        if(b.skip) bad.push('the both-full arm could not run: '+b.skip);
        else if(b.err) bad.push('looting threw with both slots full: '+b.err);
        else if(!b.searched) bad.push('the both-full arm searched nothing');
        else{
          if(b.wep!==b.want) bad.push('with both slots full the '+b.want+' did not go into his hands (he holds '+b.wep+')');
-         if(b.sec!=='rifle') bad.push('with both slots full his second slot was disturbed (it holds '+b.sec+' instead of the rifle)');
+         if(b.sec!==SK) bad.push('with both slots full his second slot was disturbed (it holds '+b.sec+' instead of the '+SK+')');
          if(b.bag.indexOf('gun_pistol')<0) bad.push('with both slots full the Scav Pistol he was holding did not go to the bag');
        }
      } finally {
