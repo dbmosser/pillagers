@@ -1,0 +1,7 @@
+v22.32: threats in the alert lane, in his voice
+
+Threat lines are short caps callouts in the alert slot, such as THE PILLBOX HAS SEEN YOU and PILLAGER TURNED HOSTILE.
+
+Check 22.32. Fails on v22.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

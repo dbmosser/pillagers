@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.32 - THREATS IN THE ALERT LANE, IN HIS VOICE
+
+Co-op hunt while he was away. His order of 2026-10-09: every line the player reads in a raid reads like Call of Duty, Fortnite or ARC Raiders. The threat lines were sentences in the message rows (Something woke up. It was playing dead. The survivor returns fire.) and could be pushed down by the next remark. They are now short caps callouts in the alert slot: SOMETHING WOKE UP, IT WAS PLAYING DEAD, THE PILLBOX HAS SEEN YOU, SOMETHING HUGE HAS NOTICED YOU, MORE PILLAGERS HAVE COME UP, YOUR RIVAL IS UP TOP with his name and that he shoots on sight under it, PILLAGER TURNED HOSTILE with the name under it, GRENADE HIT COVER with Get clear of the blast under it, THE SURVIVOR RETURNS FIRE, and GRENADE WENT OFF IN YOUR HAND as a critical alert (THE SURVIVOR RETURNS FIRE took the same words in v22.07).
+
+MEASURED. Check 22.32 passes, and fails on v22.31.
 ## v22.31 - FASHION SAYS HOW MANY WARDENS A TILE NEEDS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The Machine outfit, the Hood, the Ghost Mask and the Spider tattoo need two or three Warden kills, but their tiles said put a Warden down, the same as the one kill tiles. After the one kill the tile asked for, they stayed locked, still saying put a Warden down, and a click only clanked. Those tiles now say how many Wardens they need and how many he has put down so far, for example put 3 Wardens down (1 of 3). The one kill tiles read exactly as before.

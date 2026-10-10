@@ -1,0 +1,5 @@
+## v22.32 - THREATS IN THE ALERT LANE, IN HIS VOICE
+
+Co-op hunt while he was away. His order of 2026-10-09: every line the player reads in a raid reads like Call of Duty, Fortnite or ARC Raiders. The threat lines were sentences in the message rows (Something woke up. It was playing dead. The survivor returns fire.) and could be pushed down by the next remark. They are now short caps callouts in the alert slot: SOMETHING WOKE UP, IT WAS PLAYING DEAD, THE PILLBOX HAS SEEN YOU, SOMETHING HUGE HAS NOTICED YOU, MORE PILLAGERS HAVE COME UP, YOUR RIVAL IS UP TOP with his name and that he shoots on sight under it, PILLAGER TURNED HOSTILE with the name under it, GRENADE HIT COVER with Get clear of the blast under it, THE SURVIVOR RETURNS FIRE, and GRENADE WENT OFF IN YOUR HAND as a critical alert (THE SURVIVOR RETURNS FIRE took the same words in v22.07).
+
+MEASURED. Check 22.32 passes, and fails on v22.31.
