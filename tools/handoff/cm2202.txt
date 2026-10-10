@@ -1,0 +1,7 @@
+v22.02: a late joiner is timed from when he came up
+
+In co-op, a teammate who joins late is timed from when he came up, for contracts, the abandon fee and his run card.
+
+Check 22.02. Fails on v22.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.02 - A LATE JOINER IS TIMED FROM WHEN HE CAME UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A teammate who joins a raid already in progress takes the host clock. His run length and his abandon fee were already counted from when he came up, but four things still counted from the start of the host raid: the extract within three minutes contract could never be met, an abandon ten seconds after joining cost him at least 100 XP, a quit at once was logged as a run instead of an instant quit, and his run card said 4 minutes on the surface when he had been up 10 seconds. All four now count his own time. Nothing changes for a player who went up at the start.
+
+MEASURED. Check 22.02 passes, and fails on v22.01.
 ## v22.01 - A CONTROLLER CAN READ AND SELL ONE STASH ITEM
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On the Stash screen the line above the grid (the item name, how many, its price, what wants it, a gun damage) and the Sell one button only appear when the mouse comes onto an item. A controller highlight never did that, so a pad player never saw what he had picked or what it was worth, and could not sell a single item at all, only tag it as junk and sell every tagged item. The highlight now fills that line as the mouse does, and the item menu Y opens has a Sell one row that pays the same price.
