@@ -1654,8 +1654,11 @@ function myRig(){ return armorById('std'); }
 var ARMOR_MAX=60;
 var HOTBAR_N=9;
 // v21.83, the four-gun belt, build 2: the first GUNKEYS keys of the belt are GUN KEYS, tied to guns rather than to hands. A gun on
-// one keeps it in his hands and in the backpack (gunKeysSettle). Two for now, so keys 1 and 2 read as they always have.
-var GUNKEYS=2;
+// one keeps it in his hands and in the backpack (gunKeysSettle).
+// v21.93, HIS ORDER OF 2026-10-09, build 3: "MAKE THE GUNS GO TO SLOTS 1-4 AND THEN EVERYTHING ELSE SLIDES DOWN BY 2" and "THEN
+// ADDTNL GUNS GO TO BACKPACK AFTER 4 GUNS ON BELT". Four gun keys: Smoke, Decoy and Frag are keys 5 to 7, Medical key 8, a plate
+// key 9. A fifth gun goes into the backpack with no key (autoBelt). Old saved belt plans slide down two once (beltSlidePlan).
+var GUNKEYS=4;
 function armorCap(){ return (G&&G.player&&G.player.armorCap!==undefined)?G.player.armorCap:ARMOR_MAX; }
 // The rig the SIM wears. 'std' has been the cfgv-17 default since v7.03, so a
 // missing or typo'd dial must measure the shipped baseline (cap 60), not the
@@ -1687,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.92';
+var VER='21.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2588,7 +2591,7 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   // cut at the great door, was told Banked, reloaded the page, and the second
   // load took it, once, silently. mig945 is the rig buyback, harmless on an
   // empty stash, and is stamped for the same reason: the rule is the rule.
-  mig739:1,mig945:1,
+  mig739:1,mig945:1,beltV:2,   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)
   // v11.73, from the 2026-09-06 menu audit: BORN SET, like dayMigrated above.
   // The pname default lives inside applyLoadedProfile, which only runs when a
   // save exists, so a player who has never saved had no name at all and the
@@ -3051,6 +3054,24 @@ function rigBuyback(pr){
   if(n){ pr.credits=(pr.credits||0)+paid; pr.rigBuyback={n:n,c:paid}; }
   return {n:n,credits:paid};
 }
+// v21.93, the four-gun belt, build 3: AN OLD SAVED BELT PLAN SLIDES DOWN TWO, ONCE (P.beltV=2). Keys 1 and 2 stay as he set them;
+// a gun he bound to keys 3 to 9 moves to key 3, then key 4; everything else moves down two, so a Frag on key 5 is on key 7, where
+// the Frag now sits; a key pushed past key 9 takes the highest free key from 9 down. A new profile is born with beltV set.
+function beltSlidePlan(h){
+  if(!h||typeof h!=='object') return h;
+  var out={}, ks=[], rest=[], over=[], k, i, j, ix, gn=2;
+  for(k in h) if(Object.prototype.hasOwnProperty.call(h,k)&&h[k]!==undefined&&h[k]!==null&&isFinite(+k)) ks.push(+k);
+  ks.sort(function(a,b){ return a-b; });
+  for(i=0;i<ks.length;i++){
+    ix=ks[i];
+    if(ix<2) out[ix]=h[ix];
+    else if(String(h[ix]).indexOf('gun_')===0&&gn<4) out[gn++]=h[ix];
+    else rest.push(ix);
+  }
+  for(i=0;i<rest.length;i++){ ix=rest[i]+2; if(ix<HOTBAR_N&&out[ix]===undefined) out[ix]=h[rest[i]]; else over.push(h[rest[i]]); }
+  for(i=0;i<over.length;i++) for(j=HOTBAR_N-1;j>=0;j--) if(out[j]===undefined){ out[j]=over[i]; break; }
+  return out;
+}
 function applyLoadedProfile(r){
       // v14.43, title and saves audit finding 3: A SAVE THE LOADER CANNOT READ IS KEPT BEFORE IT IS REPLACED. Stored data that
       // will not parse, or has no numeric credits, is ignored below, and boot then saves the fresh character over that key, so
@@ -3161,6 +3182,14 @@ if(!P.packRefund&&P.pack>0){
 // That plan is not a plan he made, so it goes, once. Guns are separately
 // protected in hotbarSlots so nothing like it can bite again.
 if(P.hotAssignAuto){ P.hotAssign={}; delete P.hotAssignAuto; } if(!P.menuZoom)P.menuZoom=1.3; if(P.menuZoom<1)P.menuZoom=1;   /* v10.22: never below the screen */ if(!Array.isArray(P.kit))P.kit=[]; if(!Array.isArray(P.dropKit))P.dropKit=[];
+// v21.93, the four-gun belt, build 3: the plan, the plan set aside for the freebie kit and the one kept from before it slide down
+// two, once (beltSlidePlan above).
+if(P.beltV!==2){
+  P.hotAssign=beltSlidePlan(P.hotAssign||{});
+  if(P.kitSaved&&P.kitSaved.hot) P.kitSaved.hot=beltSlidePlan(P.kitSaved.hot);
+  if(P.hotBeforeFree) P.hotBeforeFree=beltSlidePlan(P.hotBeforeFree);
+  P.beltV=2;
+}
 if(P.netEarn===undefined) P.netEarn=netEarnFromLog();   // v10.27: a profile from before the counter sums its log once
 // BETA v1: one sector is offered, so a profile pointing at any other is moved
 // to the one that is. Not a display filter - the stored destination itself.
@@ -13318,8 +13347,8 @@ function pollPad(){
     if(_lbN&&PAD.lbAt!=null&&_bnow-PAD.lbAt>=0.25){ PAD.lbHeld=1; if(typeof setZoom==='function') setZoom(zoomTarget()/Math.exp(1.1*_bdt)); }
     if(_rbN&&PAD.rbAt!=null&&_bnow-PAD.rbAt>=0.25){ PAD.rbHeld=1; if(typeof setZoom==='function') setZoom(zoomTarget()*Math.exp(1.1*_bdt)); }
     if(_slN>0){
-      if(!_lbN&&PAD.prev[4]&&!PAD.lbHeld) setHot((hotSel()-1+_slN)%_slN);
-      if(!_rbN&&PAD.prev[5]&&!PAD.rbHeld) setHot((hotSel()+1)%_slN);
+      if(!_lbN&&PAD.prev[4]&&!PAD.lbHeld) beltStep(-1);   // v21.93: over vacant gun keys
+      if(!_rbN&&PAD.prev[5]&&!PAD.rbHeld) beltStep(1);
     }
   }
   if(!_lbN) PAD.lbAt=null;
@@ -16045,6 +16074,24 @@ function gunKeysSettle(o){
     has=false; for(k in A) if(A[k]==='gun_'+w.id) has=true;
     if(!has){ A[h]='gun_'+w.id; U[h]=1; }
   }
+  // v21.93, the four-gun belt, build 3: AT THE RAID START THE PACKED GUNS TAKE KEYS 3 AND 4, in backpack order, as the Undercroft belt
+  // showed them: a key no key of his covers that shows a vacant gun slot or stowed Bare Hands. One key per kind of gun, none for a copy of
+  // a gun in his hands, and the rest stay in the backpack with no key.
+  if(o.deploy){
+    var _dsl=hotbarSlots(), _dseen={}, _di, _dj, _dk, _dit;
+    for(_di=0;_di<G.bag.length;_di++){
+      _dk=G.bag[_di]; _dit=ITEMS[_dk];
+      if(!_dit||_dit.use!=='gun'||!_dit.gk||_dseen[_dk]) continue;
+      _dseen[_dk]=1;
+      if(holds(_dit.gk)) continue;
+      has=false; for(k in A) if(A[k]===_dk) has=true;
+      if(has) continue;
+      at=-1;
+      for(_dj=2;_dj<GUNKEYS&&at<0;_dj++) if(A[_dj]===undefined&&_dsl[_dj]&&_dsl[_dj].kind==='gun'&&!_dsl[_dj].assigned&&(_dsl[_dj].vacant||(_dsl[_dj].icon==='fists'&&!_dsl[_dj].inHand))) at=_dj;
+      if(at<0) break;
+      A[at]=_dk; U[at]=1; _dsl=hotbarSlots();
+    }
+  }
   for(h=0;h<2;h++){
     w=HG[h]; if(!w||w.id==='fists'||w.mag===0||!ITEMS['gun_'+w.id]) continue;
     has=false; for(k in A) if(A[k]==='gun_'+w.id) has=true;
@@ -16102,6 +16149,23 @@ function autoBelt(key){
   G.hotAssign=G.hotAssign||{};
   for(var ai in G.hotAssign) if(G.hotAssign[ai]===key) return;
   var slots=hotbarSlots();
+  // v21.93, the four-gun belt, build 3: A GUN GOES ON A GUN KEY. It takes the lowest gun key no key of his covers that shows a vacant
+  // gun slot or stowed Bare Hands (never the cell in his hands), and never an item key past the gun keys. With four guns on the keys it goes into the backpack only.
+  if(it.use==='gun'){
+    if(G.hubFloor) return;
+    for(var gi=0;gi<GUNKEYS&&gi<slots.length;gi++){
+      var gs=slots[gi];
+      if(G.hotAssign[gi]===undefined&&gs&&gs.kind==='gun'&&!gs.assigned&&(gs.vacant||(gs.icon==='fists'&&!gs.inHand))){
+        G.hotAssign[gi]=key; G.hotAuto=G.hotAuto||{}; G.hotAuto[gi]=1;
+        var _gbTxt=it.name+' to belt slot '+(gi+1)+'.';
+        say(_gbTxt);
+        return _gbTxt;
+      }
+    }
+    var _gfTxt=('Gun slots full. '+it.name+' in backpack').toUpperCase();
+    say(_gfTxt);
+    return _gfTxt;
+  }
   for(var bi=0;bi<slots.length;bi++){
     if(slots[bi].kind==='empty'&&G.hotAssign[bi]===undefined){
       G.hotAssign[bi]=key;
@@ -16274,13 +16338,26 @@ function hotbarSlots(){
   // v21.83, the four-gun belt, build 2: THE FILL. Each gun key no assignment took gets, in key order, a real gun in his hands that no
   // gun key shows (A then B), then Bare Hands (A then B), then a vacant gun cell. With no pins (the sim, the Undercroft) that is A
   // on key 1 and B on key 2, the cells of before. v17.17 below now places only what the fill could not.
-  var _hcUsed=[false,false], _fk, _fh, _fp;
+  var _hcUsed=[false,false], _fk, _fh, _fp, _fpk, _pkUsed={};
+  // v21.93, the four-gun belt, build 3: ON THE UNDERCROFT FLOOR A FREE GUN KEY PREVIEWS A PACKED GUN, in packed order, one key for
+  // each kind, none for a gun in his hands or a gun a key of his already shows, so the floor belt shows the keys the raid starts on.
+  function _hcPacked(){
+    for(var _pi=0;_pi<G.bag.length;_pi++){
+      var _pk=G.bag[_pi], _pit=ITEMS[_pk], _psh=false, _pj;
+      if(!_pit||_pit.use!=='gun'||!_pit.gk||_pkUsed[_pk]) continue;
+      if((p.wep&&p.wep.id===_pit.gk)||(p.sec&&p.sec.id===_pit.gk)) continue;
+      for(_pj=0;_pj<out.length;_pj++) if(out[_pj]&&out[_pj].itemKey===_pk) _psh=true;
+      if(_psh) continue;
+      _pkUsed[_pk]=1; return _pk;
+    }
+    return null;
+  }
   function _hcReal(hc){ return !!(hc&&!hc.vacant&&hc.icon&&hc.icon!=='fists'&&hc.count!==null); }
   function _hcOnKey(hc){ for(var _ok=0;_ok<GUNKEYS;_ok++){ var _oc=out[_ok]; if(_oc&&_oc.equipped&&!!_oc.inHand===!!hc.inHand) return true; } return false; }
   for(_fk=0;_fk<GUNKEYS&&_fk<out.length;_fk++){
     if(!(out[_fk]&&out[_fk].gunFill)) continue;
-    _fp=-1;
-    if(G.hubFloor){
+    _fp=-1; _fpk=null;
+    if(G.hubFloor&&_fk<2){   // v21.93: keys 1 and 2; keys 3 and 4 fill as in a raid, with the packed guns after the guns in his hands
       // v21.90, from the review of 21.83: THE UNDERCROFT BELT KEEPS ITS OLD ORDER until the floor edits the gun keys itself: gun 1
       // only on key 1 and gun 2 only on key 2, and a gun whose key holds an item of his goes on to v17.17 below. Filling a covered
       // key 1 put gun 1 on key 2 and sent gun 2 to key 9, where the floor release (v18.91, which goes by gun 1 and gun 2) could
@@ -16288,10 +16365,15 @@ function hotbarSlots(){
       if(_fk<2&&!_hcUsed[_fk]&&_hc[_fk]) _fp=_fk;
     } else {
       for(_fh=0;_fh<2&&_fp<0;_fh++) if(!_hcUsed[_fh]&&_hcReal(_hc[_fh])&&!_hcOnKey(_hc[_fh])) _fp=_fh;
-      for(_fh=0;_fh<2&&_fp<0;_fh++) if(!_hcUsed[_fh]&&_hc[_fh]&&!_hc[_fh].vacant&&!_hcReal(_hc[_fh])) _fp=_fh;
-      if(_fp<0&&_hc[1]&&_hc[1].vacant&&!_hcUsed[1]) _fp=1;
+      if(_fp<0&&G.hubFloor) _fpk=_hcPacked();   // v21.93: a packed gun before Bare Hands on keys 3 and 4 of the floor
+      if(!_fpk) for(_fh=0;_fh<2&&_fp<0;_fh++) if(!_hcUsed[_fh]&&_hc[_fh]&&!_hc[_fh].vacant&&!_hcReal(_hc[_fh])) _fp=_fh;
+      if(_fp<0&&!_fpk&&_hc[1]&&_hc[1].vacant&&!_hcUsed[1]) _fp=1;
     }
-    if(_fp>=0){ out[_fk]=_hc[_fp]; _hcUsed[_fp]=true; }
+    if(_fpk){
+      var _fpi=ITEMS[_fpk], _fpm=(WEAPONS[_fpi.gk]&&WEAPONS[_fpi.gk].mag)||0;
+      out[_fk]={k:'item:'+_fpk,name:_fpi.name,icon:_fpk,kind:'gun',inHand:false,count:Math.ceil(_fpm/2),c:_fpi.c||'#cdd6dd',itemKey:_fpk,floorGun:1};
+    }
+    else if(_fp>=0){ out[_fk]=_hc[_fp]; _hcUsed[_fp]=true; if(_hc[_fp].vacant&&_fk>=2) _hc[_fp].name=(_fk===2?'Third weapon':'Fourth weapon'); }
     else out[_fk]={k:'gunkey:'+_fk,name:(_fk<2?'Second weapon':(_fk===2?'Third weapon':'Fourth weapon')),kind:'gun',inHand:false,icon:null,count:0,c:'#4d5762',vacant:1};
   }
   for(var _dg=0;_dg<2;_dg++){
@@ -16371,6 +16453,14 @@ function useArmor(){
   blip('pick');
 }
 function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
+// v21.93, the four-gun belt, build 3: THE PAD WALK STEPS OVER A VACANT GUN KEY, which never takes the highlight (setHot), so the
+// bumpers would stop dead at one. dir is 1 (RB) or -1 (LB); it wraps at both ends as before.
+function beltStep(dir){
+  var sl=hotbarSlots(), n=sl.length, i=hotSel(), k;
+  if(n<=0) return;
+  for(k=0;k<n;k++){ i=(i+dir+n)%n; if(!(sl[i]&&sl[i].vacant)) break; }
+  setHot(i);
+}
 // v12.31, audit P1: THE CELL THAT HOLDS THE GUN IN YOUR HANDS. Cell 1 is only
 // that cell while nothing is assigned over it; bind the held gun to key 5 and
 // the dedupe blanks cell 1, so a fall-back to 0 by number landed on an empty
@@ -16395,6 +16485,13 @@ function setHot(i){
   i=clamp(i,0,sl.length-1);
   // v14.00, loadout audit: the selected key still equips a gun that is in the backpack rather than the hands.
   if(i===G.hot&&!(sl[i]&&sl[i].kind==='gun'&&sl[i].itemKey&&!sl[i].equipped)) return;
+  // v21.93, the four-gun belt, build 3: A VACANT GUN KEY NEVER TAKES THE HIGHLIGHT. With four gun keys two of them are usually
+  // vacant, and the highlight on one held nothing, so the trigger had nothing to fire. It says so and the highlight stays.
+  if(sl[i]&&sl[i].vacant){
+    if(!G.sim) say(i<2?'No second weapon. Drag one here to carry it.':('Gun slot '+(i+1)+' empty').toUpperCase());
+    blip('pick');
+    return;
+  }
   var _hot0=G.hot;   // v21.83: where the highlight goes back to when a draw is refused
   G.hot=i;
   var s2=sl[i];
@@ -17802,7 +17899,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     p.cookT=(p.cookT||0)+dt;
     if(p.cookKind==='frag'&&p.cookT>=FRAG_FUSE) cookOff();
   }
-  var hotGun=(!HSC||HSC.kind==='gun'||HSC.kind==='item');
+  var hotGun=(!HSC||(HSC.kind==='gun'&&!HSC.vacant)||HSC.kind==='item');   // v21.93: a vacant gun key fires nothing; it says which key does
   if(mouse.down&&!hotGun){
     // THROWABLES COOK, v3.11. Press pulls the pin and starts the clock in your
     // hand; release throws whatever fuse is left. Everything else on the hotbar
@@ -17811,7 +17908,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     // v12.31, audit P1: a blank cell 1 at the raid start killed the first click.
     // v13.42, HIS RULING: the raid now starts on the gun cell (startRaid), and a
     // press on a blank cell never selects the gun; it says which key does.
-    if(HSC&&HSC.kind==='empty'){
+    if(HSC&&(HSC.kind==='empty'||HSC.vacant)){
       if(!p.fired){
         p.fired=true;
         if(!G.sim) say('Nothing in that cell. '+gunKeyLine());
@@ -18073,7 +18170,7 @@ if(!p.fired||p.wep.auto){
           // paid went into the backpack, but doThrow, startCook and the belt throw cell read only G.pouch, so the cell showed x0
           // and the key said none was left. A throwable goes into the pouch now, as it does from a container and the drop kit.
           if(ITEMS[_rpk].use==='throw'&&G.pouch&&G.pouch[ITEMS[_rpk].tk]!==undefined) G.pouch[ITEMS[_rpk].tk]++;
-          else G.bag.push(_rpk);
+          else { G.bag.push(_rpk); autoBelt(_rpk); }   // v21.93: a gun he pays goes on a free gun key, as loot does (a Stim on a free key)
           // THE BODY MUST NOT PAY IT AGAIN. The death path re-adds the held gun
           // to any body that is not already carrying it, so without this you
           // could revive a man for his shotgun and then shoot him for a second.
@@ -29615,8 +29712,8 @@ var LEGEND_PAD=[
 var GEARRULES=[
   // v12.14: there is no X (or pad Y) swap; the belt is the swap. Pressing the
   // key of the stowed gun brings it up (setHot, the v8.67 rule).
-  ['WEAPONS','Keys 1 and 2 bring up'],
-  ['','either gun.'],
+  ['WEAPONS','Keys 1 to 4 bring up'],   // v21.93: four gun keys
+  ['','your guns.'],
   // v8.51, audit: this said a better gun equips itself only "if you switch it on
   // in Settings". autoEquipOn returns the dial for the BOT and true for a human,
   // deliberately, and Settings has no such row - so the card described a switch
@@ -34895,7 +34992,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.92: A teammate going down, an extraction closing and your rival showing up are never lost when many lines arrive at once. Check 21.92 fails on v21.91',
+  now:'v21.93: Keys 1 to 4 are your guns, the grenades and Medical are keys 5 to 8, and a fifth gun goes to the backpack. Check 21.93 fails on v21.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

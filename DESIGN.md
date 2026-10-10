@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.93 - FOUR GUN KEYS
+
+Co-op hunt while he was away. Your order: the guns go on keys 1 to 4 and everything else slides down two, and a gun past the fourth goes to the backpack. Keys 1 to 4 are gun keys now: your two guns, then the guns you packed, in the order you packed them, on the Undercroft belt and at the raid start alike. Smoke, Decoy and Frag are keys 5, 6 and 7, Medical is key 8 and a plate key 9. A gun you find, buy from the Peddler or are paid for a revive takes the first free gun key; with four guns on the keys the next one goes into the backpack and the line says GUN SLOTS FULL. A gun key with no gun on it never takes the highlight (it says it is empty), the bumpers step over it, and the trigger never fires from it. A belt you set up before this build slides down two once, so your Frag key is still on the Frag: keys 1 and 2 stay, a gun you put on a later key goes to key 3 or 4, everything else moves down two, and anything pushed past key 9 takes the highest free key.
+
+MEASURED. Check 21.93 passes, and fails on v21.92.
 ## v21.92 - A TEAMMATE DOWN IS NEVER LOST
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text should behave like Call of Duty, Fortnite or ARC Raiders. The new waiting queue (v21.91) holds at most four lines and lets a waiting line go after four seconds, dropping the least important first. The teammate down line, the extraction closing and closed lines and the rival line all went through it as ordinary lines, so in a busy second (a firefight, loot, kills) the cap or the time limit could drop them, and each is said only once. They now carry their rank: a teammate down is critical and shows at once over ordinary rows, the extraction lines rank as extraction lines and the rival line as a warning, so they come out of the queue first and are never the ones dropped.

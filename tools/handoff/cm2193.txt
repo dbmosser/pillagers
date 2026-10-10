@@ -1,0 +1,7 @@
+v21.93: four gun keys
+
+Keys 1 to 4 are your guns, the grenades and Medical are keys 5 to 8, and a fifth gun goes to the backpack.
+
+Check 21.93. Fails on v21.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
