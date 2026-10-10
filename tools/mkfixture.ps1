@@ -1516,7 +1516,9 @@ window.__REGRESS=[
    run:function(){
      var P=__P(); P.weapons=['smg','rifle']; P.hotAssign={};
      __resetCfg(); __pinDefaults(0);
-     var d=__deploy({kit:['bandage','medkit','plate','gun_rifle'],safe:null,mapIx:0,seed:4242});
+     // v21.93 retarget (four gun keys): no plate in the kit, so the belt with guns on keys 1 to 4 and Medical on key 8 still has an
+     // empty key to drop on. The plate played no part in this check.
+     var d=__deploy({kit:['bandage','medkit','gun_rifle'],safe:null,mapIx:0,seed:4242});
      if(d.error) return d.error;
      var g=__state(); if(!g) return 'no raid';
      g.ents.length=0; g.player.iv=99;
@@ -1533,25 +1535,32 @@ window.__REGRESS=[
        for(var f2=0;f2<6;f2++) __loop(performance.now()+f2*16.7);
        return JSON.parse(JSON.stringify(__state().hotAssign||{}));
      }
-     var sl=__belt.slots();
-     if(sl[0].kind!=='gun'||sl[5].kind!=='heal'||sl[7].kind!=='empty')
-       return 'the bar is not the shape this check assumes (0 gun, 5 heal, 7 empty), so it is testing nothing';
+     // v21.93 retarget (four gun keys): the keys are found by what they show, not by number (two gun keys before v21.93, four
+     // after it, everything else two keys down): GI the gun in his hands, HI the Medical key, E1 the last empty key, E2 another
+     // empty key, else a throw key (any item goes on any ordinary key, v6.61).
+     var sl=__belt.slots(), GI=-1, HI=-1, E1=-1, E2=-1, i;
+     for(i=0;i<sl.length;i++){ if(GI<0&&sl[i]&&sl[i].kind==='gun'&&sl[i].inHand) GI=i; if(HI<0&&sl[i]&&sl[i].kind==='heal') HI=i; }
+     for(i=sl.length-1;i>=0;i--) if(sl[i]&&sl[i].kind==='empty'){ E1=i; break; }
+     for(i=0;i<sl.length&&E2<0;i++) if(i!==E1&&sl[i]&&sl[i].kind==='empty') E2=i;
+     for(i=0;i<sl.length&&E2<0;i++) if(i!==E1&&sl[i]&&sl[i].kind==='throw') E2=i;
+     if(GI<0||HI<0||E1<0||E2<0)
+       return 'the bar is not the shape this check assumes (a gun in hand, a Medical key, an empty key and one more ordinary key), so it is testing nothing';
      // A consumable onto an empty slot takes.
-     var a=drop({key:'bandage',bagIx:__state().bag.indexOf('bandage')},7);
-     if(a['7']!=='bandage') return 'a bandage dropped on an empty slot did not stick';
+     var a=drop({key:'bandage',bagIx:__state().bag.indexOf('bandage')},E1);
+     if(a[E1]!=='bandage') return 'a bandage dropped on an empty slot did not stick';
      // v8.67, his order: a gun goes on ANY slot, same as any other equippable.
-     var b=drop({key:'gun_rifle',bagIx:__state().bag.indexOf('gun_rifle')},5);
-     if(b['5']!=='gun_rifle') return 'a gun was refused from an ordinary belt slot';
-     // A consumable on a GUN slot is still refused: 1 and 2 are the two in your hands.
-     var c=drop({key:'medkit',bagIx:__state().bag.indexOf('medkit')},0);
-     if(c['0']) return 'a consumable was accepted onto a gun slot';
+     var b=drop({key:'gun_rifle',bagIx:__state().bag.indexOf('gun_rifle')},HI);
+     if(b[HI]!=='gun_rifle') return 'a gun was refused from an ordinary belt slot';
+     // A consumable on a GUN slot is still refused: a gun key showing the gun in his hands (an automatic gun pin may sit there).
+     var c=drop({key:'medkit',bagIx:__state().bag.indexOf('medkit')},GI);
+     if(c[GI]==='medkit') return 'a consumable was accepted onto a gun slot';
      // Moving one already on the bar must MOVE it, not leave a copy behind.
-     var e2=drop({key:'bandage',fromHot:7},8);
-     if(e2['7']) return 'moving an item off slot 7 left a copy behind';
-     if(e2['8']!=='bandage') return 'moving an item to slot 8 did not land it';
+     var e2=drop({key:'bandage',fromHot:E1},E2);
+     if(e2[E1]) return 'moving an item off slot '+(E1+1)+' left a copy behind';
+     if(e2[E2]!=='bandage') return 'moving an item to slot '+(E2+1)+' did not land it';
      // Dropping onto its own slot is a click and must change nothing.
-     var f3=drop({key:'bandage',fromHot:8},8);
-     if(f3['8']!=='bandage') return 'dropping an item back on its own slot lost it';
+     var f3=drop({key:'bandage',fromHot:E2},E2);
+     if(f3[E2]!=='bandage') return 'dropping an item back on its own slot lost it';
      return null; }},
   {v:'8.65',what:'the two gun slots swap weapons and never fire one',
    run:function(){
@@ -13522,8 +13531,11 @@ window.__REGRESS=[
      up(K1); sl=hotbarSlots();
      if(g.bag.indexOf('gun_'+c)>=0) return 'SKIP: the drop did not equip the backpack gun at all, so where it went cannot be read';
      if(!(sl[0]&&sl[0].icon===c)) bad.push('the backpack gun ('+c+') on key 8, dropped on key 1 with Bare Hands on key 2, did not land on key 1: key 1 shows '+((sl[0]&&sl[0].icon)||'nothing')+' and key 2 shows '+((sl[1]&&sl[1].icon)||'nothing'));
-     if(g.hotAssign[7]!==undefined) bad.push('key 8 still holds the gun after it was dropped on key 1, so the next try finds it out of the backpack');
-     if(!(p.wep&&p.wep.id===a)) bad.push('the drop changed the gun in his hands from '+a+' to '+(p.wep&&p.wep.id));
+     // v21.83 retarget (four gun keys, keys are tied to guns): the dropped gun takes key 1 and comes up into his hands, the gun key 1
+     // showed takes the key the dropped gun came from, and with a free hand nothing is given up. So key 8 must not still hold the
+     // dropped gun, and the gun he had must still be with him, in his hands or stowed, never sent to the backpack.
+     if(g.hotAssign[7]==='gun_'+c) bad.push('key 8 still holds the gun after it was dropped on key 1, so the next try finds it out of the backpack');
+     if(!((p.wep&&p.wep.id===a)||(p.sec&&p.sec.id===a))) bad.push('the drop put away the gun he had in his hands ('+a+'): he now holds '+(p.wep&&p.wep.id)+' and '+(p.sec&&p.sec.id));
    }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
    finally{
      try{ var g2=__state(); if(g2){ g2.drag=null; g2.bagOpen=false; g2.hotCells=null; g2.hotAssign={}; if(g2.player){ g2.player.iv=0; g2.player.downed=false; } if(!g2.over) __endRaid('abandon'); } }catch(_e){}
@@ -26646,7 +26658,12 @@ window.__REGRESS=[
        // All five killed in one frame down the ordinary death path: nobody else in the raid, not by the player, not a revive.
        for(k=0;k<made.length;k++){ made[k].hp=0; made[k].finished=1; made[k].downed=0; }
        g.ents.length=0; for(k=0;k<made.length;k++) g.ents.push(made[k]);
-       updateEnts(0.016);
+       // v21.67 retarget: every body now also carries a roll or two on the safe table (bodyBonus), which can be a Longshot, a pistol or
+       // a Marksman Rifle and so read as a second copy. This check counts the copies of the guns he carried, so the bonus is held
+       // empty for the kill and put back after it; the bonus has its own check.
+       var _bb0=(typeof bodyBonus==='function')?bodyBonus:null;
+       if(_bb0) bodyBonus=function(){ return []; };
+       try{ updateEnts(0.016); } finally { if(_bb0) bodyBonus=_bb0; }
        var bA=body(A), bB=body(B), bC=body(C), bD=body(D), bE=body(E);
        // CONTROL: each of them died and left a named body to search.
        if(!(bA&&bB&&bC&&bD&&bE)) return 'SKIP: the staged kill did not leave all five bodies here ('+[bA,bB,bC,bD,bE].map(function(x){ return x?'body':'none'; }).join(', ')+')';
@@ -28061,6 +28078,10 @@ window.__REGRESS=[
      if(typeof hotbarSlots!=='function'||typeof equipFromBag!=='function'||typeof setHot!=='function'||typeof hotSel!=='function') return 'SKIP: no tactical belt or equip from the backpack in this build';
      if(!ITEMS.gun_smg||!ITEMS.gun_carbine||!WEAPONS.pistol||!WEAPONS.smg||!WEAPONS.carbine||!WEAPONS.fists) return 'SKIP: no pistol, SMG or carbine in this build';
      var bad=[], g=null, p=null, sl;
+     // v21.93 retarget (four gun keys): the gun keys are keys 1 to GUNKEYS and everything else slid down two, so the ordinary keys
+     // this check puts a gun on are found from GUNKEYS: KA is the first ordinary key (key 3 with two gun keys, key 5 with four) and
+     // KB two past it (key 5, now key 7). The rule is the same: a gun on an ordinary key never leaves the gun keys black.
+     var GK=(typeof GUNKEYS==='number'&&GUNKEYS>=2)?GUNKEYS:2, KA=GK, KB=GK+2;
      function copyW(id){ var w={},k; for(k in WEAPONS[id]) w[k]=WEAPONS[id][k]; return w; }
      // The pistol in his hands; the carbine stowed, or bare hands in the second slot.
      function hands(two){
@@ -28079,37 +28100,37 @@ window.__REGRESS=[
        g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
        p=g.player;
        // ONE, HIS NOTE: two guns carried, the SMG in the backpack on key 3, taken the way the key takes it.
-       hands(true); g.bag=['gun_smg']; g.hotAssign={2:'gun_smg'};
+       hands(true); g.bag=['gun_smg']; g.hotAssign={}; g.hotAssign[KA]='gun_smg';
        sl=hotbarSlots();
-       // CONTROL: cell 1 is the pistol in his hands and key 3 is the SMG in the backpack.
+       // CONTROL: cell 1 is the pistol in his hands and key KA is the SMG in the backpack.
        if(!(sl[0]&&sl[0].kind==='gun'&&sl[0].icon==='pistol')) return skip('cell 1 is not the pistol in his hands here ('+cell(0)+')');
-       if(!(sl[2]&&sl[2].assigned&&sl[2].itemKey==='gun_smg'&&!sl[2].equipped)) return skip('key 3 is not the SMG in the backpack here ('+cell(2)+')');
+       if(!(sl[KA]&&sl[KA].assigned&&sl[KA].itemKey==='gun_smg'&&!sl[KA].equipped)) return skip('key '+(KA+1)+' is not the SMG in the backpack here ('+cell(KA)+')');
        equipFromBag(g.bag.indexOf('gun_smg'),0);
-       // CONTROL: the SMG is in his hands in place of the pistol, and key 3 shows it there.
+       // CONTROL: the SMG is in his hands in place of the pistol, and key KA shows it there.
        if(!(p.wep&&p.wep.id==='smg')) return skip('the SMG did not come up in his hands here (holding '+(p.wep&&p.wep.id)+')');
        sl=hotbarSlots();
-       if(!(sl[2]&&sl[2].equipped&&sl[2].icon==='smg')) return skip('key 3 does not show the SMG in his hands here ('+cell(2)+')');
-       if(!(sl[0]&&sl[0].kind==='gun'&&sl[0].icon==='smg')) bad.push('with the SMG taken from the backpack by key 3, cell 1 is '+cell(0)+' while he holds the SMG');
-       // TWO: one gun carried, and key 3 pressed. The SMG goes to the empty second slot and comes up.
-       hands(false); g.bag=['gun_smg']; g.hotAssign={2:'gun_smg'};
-       setHot(2);
+       if(!(sl[KA]&&sl[KA].equipped&&sl[KA].icon==='smg')) return skip('key '+(KA+1)+' does not show the SMG in his hands here ('+cell(KA)+')');
+       if(!(sl[0]&&sl[0].kind==='gun'&&sl[0].icon==='smg')) bad.push('with the SMG taken from the backpack by key '+(KA+1)+', cell 1 is '+cell(0)+' while he holds the SMG');
+       // TWO: one gun carried, and key KA pressed. The SMG goes to the empty second slot and comes up.
+       hands(false); g.bag=['gun_smg']; g.hotAssign={}; g.hotAssign[KA]='gun_smg';
+       setHot(KA);
        // CONTROL: the SMG is in his hands and the pistol is stowed.
-       if(!(p.wep&&p.wep.id==='smg'&&p.sec&&p.sec.id==='pistol')) return skip('key 3 did not bring the SMG up over a stowed pistol here (holding '+(p.wep&&p.wep.id)+')');
+       if(!(p.wep&&p.wep.id==='smg'&&p.sec&&p.sec.id==='pistol')) return skip('key '+(KA+1)+' did not bring the SMG up over a stowed pistol here (holding '+(p.wep&&p.wep.id)+')');
        sl=hotbarSlots();
-       if(!(sl[1]&&sl[1].kind==='gun'&&sl[1].icon==='smg')) bad.push('with one gun carried and the SMG brought up by key 3, cell 2 is '+cell(1)+' while he holds the SMG');
-       if(hotSel()!==2) bad.push('key 3 brought the SMG up and the highlight went to cell '+(hotSel()+1)+' instead of staying on key 3');
-       // THREE: the carbine stowed and on key 5. Key 5 brings it up, and the highlight stays on key 5.
-       hands(true); g.bag=[]; g.hotAssign={4:'gun_carbine'};
+       if(!(sl[1]&&sl[1].kind==='gun'&&sl[1].icon==='smg')) bad.push('with one gun carried and the SMG brought up by key '+(KA+1)+', cell 2 is '+cell(1)+' while he holds the SMG');
+       if(hotSel()!==KA) bad.push('key '+(KA+1)+' brought the SMG up and the highlight went to cell '+(hotSel()+1)+' instead of staying on key '+(KA+1));
+       // THREE: the carbine stowed and on key KB. Key KB brings it up, and the highlight stays on key KB.
+       hands(true); g.bag=[]; g.hotAssign={}; g.hotAssign[KB]='gun_carbine';
        sl=hotbarSlots();
-       // CONTROL: key 5 shows the stowed carbine.
-       if(!(sl[4]&&sl[4].equipped&&sl[4].icon==='carbine'&&!sl[4].inHand)) return skip('key 5 does not show the stowed carbine here ('+cell(4)+')');
-       if(!(sl[1]&&sl[1].kind==='gun'&&sl[1].icon==='carbine')) bad.push('with the stowed carbine on key 5, cell 2 is '+cell(1)+' while he carries the carbine');
-       setHot(4);
+       // CONTROL: key KB shows the stowed carbine.
+       if(!(sl[KB]&&sl[KB].equipped&&sl[KB].icon==='carbine'&&!sl[KB].inHand)) return skip('key '+(KB+1)+' does not show the stowed carbine here ('+cell(KB)+')');
+       if(!(sl[1]&&sl[1].kind==='gun'&&sl[1].icon==='carbine')) bad.push('with the stowed carbine on key '+(KB+1)+', cell 2 is '+cell(1)+' while he carries the carbine');
+       setHot(KB);
        // CONTROL: the carbine came up.
-       if(!(p.wep&&p.wep.id==='carbine')) return skip('key 5 did not bring the carbine up here (holding '+(p.wep&&p.wep.id)+')');
-       if(hotSel()!==4) bad.push('key 5 brought the carbine up and the highlight went to cell '+(hotSel()+1)+' instead of staying on key 5');
+       if(!(p.wep&&p.wep.id==='carbine')) return skip('key '+(KB+1)+' did not bring the carbine up here (holding '+(p.wep&&p.wep.id)+')');
+       if(hotSel()!==KB) bad.push('key '+(KB+1)+' brought the carbine up and the highlight went to cell '+(hotSel()+1)+' instead of staying on key '+(KB+1));
        // FOUR: the same room, and key 2, which shows the carbine too, brings it up; the highlight stays on key 2.
-       hands(true); g.bag=[]; g.hotAssign={4:'gun_carbine'};
+       hands(true); g.bag=[]; g.hotAssign={}; g.hotAssign[KB]='gun_carbine';
        sl=hotbarSlots();
        if(sl[1]&&sl[1].kind==='gun'&&sl[1].icon==='carbine'){
          setHot(1);
@@ -29564,13 +29585,19 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
        g0=g; g.hotAuto={};
-       // CONTROL: with only the Medkit carried and on key 8, Medical is blanked, and key 8 is his Medkit key.
-       g.hotAssign={7:'medkit'}; g.bag=['medkit'];
-       var sl=hotbarSlots();
-       if(!sl[7]||!sl[7].assigned||sl[7].itemKey!=='medkit') return 'SKIP: key 8 is not his Medkit key here';
+       // v21.93 retarget (four gun keys): Medical itself moved to key 8, so the Medkit goes on the last empty key (key 9 with four gun
+       // keys, key 9 before too), found by what it shows, never on the Medical key, which his own item would cover (v6.61).
+       g.hotAssign={}; g.bag=['medkit'];
+       var sl=hotbarSlots(), MK=-1, i;
+       for(i=sl.length-1;i>=0&&MK<0;i--) if(sl[i]&&sl[i].kind==='empty') MK=i;
+       if(MK<0) return 'SKIP: no empty key on the belt to put the Medkit on';
+       // CONTROL: with only the Medkit carried and on that key, Medical is blanked, and the key is his Medkit key.
+       g.hotAssign={}; g.hotAssign[MK]='medkit';
+       sl=hotbarSlots();
+       if(!sl[MK]||!sl[MK].assigned||sl[MK].itemKey!=='medkit') return 'SKIP: key '+(MK+1)+' is not his Medkit key here';
        if(medical(g)) return 'SKIP: Medical still shows with every heal carried on a key';
        g.bag=['medkit','bandage'];
-       if(!medical(g)) bad.push('with a Medkit on key 8 and a Bandage carried the belt has no Medical cell, so the Bandage cannot be used');
+       if(!medical(g)) bad.push('with a Medkit on key '+(MK+1)+' and a Bandage carried the belt has no Medical cell, so the Bandage cannot be used');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ if(g0&&!g0.over) __endRaid('abandon'); }catch(_e){}
@@ -40974,7 +41001,8 @@ window.__REGRESS=[
      if(!row) return 'SKIP: the card has no WEAPONS rule';
      var txt=(typeof row[1]==='function')?String(row[1]()):String(row[1]);
      if(/\bX swaps\b|\bY swaps\b/.test(txt)) bad.push('the WEAPONS rule still teaches a swap key that does not exist: "'+txt+'"');
-     if(!/1 and 2/.test(txt)) bad.push('the WEAPONS rule does not name the belt keys: "'+txt+'"');
+     // v21.93 retarget: four gun keys, so the rule names keys 1 to 4 (it named keys 1 and 2 before).
+     if(!/\b1 (and|to) [2-9]\b/.test(txt)) bad.push('the WEAPONS rule does not name the belt keys: "'+txt+'"');
      return bad.length?bad.join('; '):null; }},
   {v:'12.13',what:'taking the freebie kit at the lift clears the tactical belt plan the same as the stash screen button does, so no key points at an item left in the stash (2026-09-06 first-ten-minutes audit)',
    run:function(){
