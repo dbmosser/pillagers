@@ -1,0 +1,7 @@
+v22.31: fashion says how many wardens a tile needs
+
+FASHION tiles that need two or three Warden kills now say how many, and how many you have so far.
+
+Check 22.31. Fails on v22.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

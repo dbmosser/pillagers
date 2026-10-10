@@ -5741,6 +5741,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'22.31',what:'a FASHION tile that needs two or three Warden kills says how many and how far he has got, and a one-kill tile still says put a Warden down',
+   run:function(){
+     if(typeof cosNeed!=='function'||typeof cosOwned!=='function'||typeof COSMETICS==='undefined'||typeof renderCosmetics!=='function') return 'SKIP: no FASHION racks here';
+     var bad=[], oK=P.kills, oAll=P.cosAll, kk={}, k, i, c, one=null, two=null, three=null, box, el, t;
+     for(i=0;i<COSMETICS.length;i++){ c=COSMETICS[i]; if(c.how==='warden:1'&&!one) one=c; if(c.how==='warden:2'&&!two) two=c; if(c.how==='warden:3'&&!three) three=c; }
+     if(!one||!two||!three) return 'SKIP: no Warden tiles of one, two and three kills';
+     try{
+       if(oK&&typeof oK==='object') for(k in oK) kk[k]=oK[k];
+       kk.warden=1; P.kills=kk; P.cosAll=false;
+       if(cosOwned(three)||cosOwned(two)) return 'SKIP: staging: a two or three kill tile is open after one kill';
+       if(!cosOwned(one)) return 'SKIP: staging: a one kill tile is shut after one kill';
+       t=cosNeed(three);
+       if(t!=='put 3 Wardens down (1 of 3)') bad.push('a three kill tile after one kill reads "'+t+'"');
+       t=cosNeed(two);
+       if(t!=='put 2 Wardens down (1 of 2)') bad.push('a two kill tile after one kill reads "'+t+'"');
+       kk.warden=0;
+       t=cosNeed(one);
+       if(t!=='put a Warden down') bad.push('a one kill tile now reads "'+t+'"');
+       kk.warden=1;
+       box=document.createElement('div');
+       renderCosmetics(box,two.kind);
+       el=box.querySelector('.costile[data-id="'+two.id+'"] .cosreq');
+       if(!el) bad.push('the '+two.name+' tile was not drawn');
+       else if(el.textContent!=='put 2 Wardens down (1 of 2)') bad.push('the '+two.name+' tile in FASHION reads "'+el.textContent+'" after one Warden kill');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       if(oK===undefined) delete P.kills; else P.kills=oK;
+       if(oAll===undefined) delete P.cosAll; else P.cosAll=oAll;
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'22.30',what:'a kit question the party ascent closed unanswered leaves nothing on the Let them go card: RANDOM FROM STASH and TOP GEAR are hidden there, and pressing one rewrites no packing and sends no kit answer',
    run:function(){
      if(typeof askKit!=='function'||typeof kitExtraHide!=='function') return 'SKIP: no kit question here';

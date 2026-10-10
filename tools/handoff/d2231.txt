@@ -1,0 +1,5 @@
+## v22.31 - FASHION SAYS HOW MANY WARDENS A TILE NEEDS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The Machine outfit, the Hood, the Ghost Mask and the Spider tattoo need two or three Warden kills, but their tiles said put a Warden down, the same as the one kill tiles. After the one kill the tile asked for, they stayed locked, still saying put a Warden down, and a click only clanked. Those tiles now say how many Wardens they need and how many he has put down so far, for example put 3 Wardens down (1 of 3). The one kill tiles read exactly as before.
+
+MEASURED. Check 22.31 passes, and fails on v22.30.
