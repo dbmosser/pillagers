@@ -1,0 +1,7 @@
+v22.20: player 2 hears the pillbox, peddler and survivor
+
+In co-op, the Pillbox warning, the Peddler greeting and the hidden Survivor line go to the player who walked up.
+
+Check 22.20. Fails on v22.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

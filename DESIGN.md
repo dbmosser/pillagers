@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.20 - PLAYER 2 HEARS THE PILLBOX, PEDDLER AND SURVIVOR
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when player 2 walked into reach of THE PILLBOX, up to the Peddler or onto the hidden Survivor, the line went to the host window: the host read THE PILLBOX HAS SEEN YOU from across the map, and player 2, about to be shot, read nothing. The Crier and THE OVERSEER were fixed this way before; these three now are too. Player 2 window says his own line as a short callout (THE PILLBOX HAS SEEN YOU, SURVIVOR FOUND), the host gets TEAMMATE FOUND A SURVIVOR with what he needs, and the Peddler greets each player once.
+
+MEASURED. Check 22.20 passes, and fails on v22.19.
 ## v22.19 - Y ON A TRADE OFFER OPENS NOTHING ELSE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op in the Undercroft, when one player offers an item, the other can take it with T or with Y on the controller. Standing at the lift, the shop counter or the Mainframe, the same Y press also worked the station, so the PARTY window, HIRE or the RACKS tab opened over the trade he had just accepted. On the keyboard T was already spent on the offer. Y is now spent on the offer too: the station waits until Y is let go, and with no offer waiting Y works the station as before.
