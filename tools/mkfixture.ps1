@@ -8830,22 +8830,25 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
      if(typeof drawBossBar!=='function'||typeof drawGiftLine!=='function'||typeof netPadHud!=='function'||typeof netPadDead!=='function'||typeof BOSS_NAME==='undefined'||typeof ctx.getTransform!=='function') return 'SKIP: no boss bar, offer line or controller word here';
-     var bad=[], g, p, i, e=null, oFR=ctx.fillRect, oFT=ctx.fillText, oPD=netPadDead, oSay=say, rec=[], MSG='ZQX PROBE LINE THIRTY EIGHT', CP=['CONTROLLER','PAUSED'].join(' '), SZ=[[1920,1080],[3840,2160]], si, forced=false, at, nm, M, B, O, C;
+     var bad=[], g, p, i, e=null, oFR=ctx.fillRect, oFT=ctx.fillText, oRR=ctx.roundRect, oPD=netPadDead, oSay=say, rec=[], MSG='ZQX PROBE LINE THIRTY EIGHT', CP=['CONTROLLER','PAUSED'].join(' '), SZ=[[1920,1080],[3840,2160]], si, forced=false, at, nm, M, B, O, C;
      function wrap(){
        ctx.fillRect=function(x,y,w,h){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1, a=(m.b*x+m.d*y+m.f)/d, b=(m.b*x+m.d*(y+h)+m.f)/d; rec.push({r:1,fs:String(ctx.fillStyle),y0:Math.min(a,b),y1:Math.max(a,b)}); return oFR.apply(this,arguments); };
        ctx.fillText=function(s){ rec.push({t:String(s)}); return oFT.apply(this,arguments); };
+       // v21.82 retarget (the raid text R03): the message plate is a rounded plate now (hudPlate), so a roundRect is a plate too,
+       // recorded as r:2. Only the message band reads it; the boss, offer and controller bands read the fillRect plates as before.
+       if(oRR) ctx.roundRect=function(x,y,w,h){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1, a=(m.b*x+m.d*y+m.f)/d, b=(m.b*x+m.d*(y+h)+m.f)/d; rec.push({r:2,fs:String(ctx.fillStyle),y0:Math.min(a,b),y1:Math.max(a,b)}); return oRR.apply(this,arguments); };
      }
-     function unwrap(){ delete ctx.fillRect; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
+     function unwrap(){ delete ctx.fillRect; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; delete ctx.roundRect; if(oRR&&ctx.roundRect!==oRR) ctx.roundRect=oRR; }
      // the plate of a line: the n rectangles painted just before its text, as one band
-     function band(test,n){
+     function band(test,n,rnd){
        var j, q, got=0, o=null;
        for(j=rec.length-1;j>=0;j--) if(rec[j].t!==undefined&&test(rec[j].t)) break;
        if(j<0) return null;
-       for(q=j-1;q>=0&&got<n;q--) if(rec[q].r){ got++; if(!o) o={y0:rec[q].y0,y1:rec[q].y1}; else { o.y0=Math.min(o.y0,rec[q].y0); o.y1=Math.max(o.y1,rec[q].y1); } }
+       for(q=j-1;q>=0&&got<n;q--) if(rec[q].r===1||(rnd&&rec[q].r===2)){ got++; if(!o) o={y0:rec[q].y0,y1:rec[q].y1}; else { o.y0=Math.min(o.y0,rec[q].y0); o.y1=Math.max(o.y1,rec[q].y1); } }
        return got===n?o:null;
      }
      // the boss plate: the rectangle painted just before the dark red of the bar, with the bar
-     function bossBand(){ var j; for(j=1;j<rec.length;j++) if(rec[j].r&&rec[j].fs==='#3a0d0d'&&rec[j-1].r) return {y0:Math.min(rec[j-1].y0,rec[j].y0),y1:Math.max(rec[j-1].y1,rec[j].y1)}; return null; }
+     function bossBand(){ var j, R1=rec.filter(function(q){ return q.r!==2; }); for(j=1;j<R1.length;j++) if(R1[j].r&&R1[j].fs==='#3a0d0d'&&R1[j-1].r) return {y0:Math.min(R1[j-1].y0,R1[j].y0),y1:Math.max(R1[j-1].y1,R1[j].y1)}; return null; }
      function hit(a,b){ return a.y0<b.y1-0.5&&b.y0<a.y1-0.5; }
      function rd(a){ return Math.round(a.y0)+' to '+Math.round(a.y1); }
      try{
@@ -8867,7 +8870,7 @@ window.__REGRESS=[
          g.msg=MSG; g.msgT=3; g.giftOut=null; g.giftIn={id:'zq38',k:'bandage',from:1,t:g.t};
          rec=[]; wrap();
          try{ __frame(0.016); netPadHud(); } finally { unwrap(); }
-         M=band(function(s){ return s===MSG; },1);
+         M=band(function(s){ return s===MSG; },1,true);
          B=bossBand();
          O=band(function(s){ return s.indexOf(' offers you ')>=0; },1);
          C=band(function(s){ return s.indexOf(CP)===0; },1);
