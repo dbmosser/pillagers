@@ -47238,7 +47238,7 @@ window.__REGRESS=[
      // One arm: deploy with the pistol in hand and secKey in the second slot,
      // stand on the container and HOLD E through the real frame loop. This is
      // the play path on purpose; the bot never runs this code.
-     function drive(secKey){
+     function drive(secKey,upKey){
        P2.equipped='pistol'; P2.equippedSec=secKey;
        P2.weapons=(secKey==='none')?['pistol']:['pistol',secKey];
        try{ saveProfile(); }catch(_s){}
@@ -47247,6 +47247,8 @@ window.__REGRESS=[
        var f=findBox(g);
        if(!f) return {skip:'no container near him holds a gun better than the Scav Pistol'};
        if(p.wep.id!=='pistol') return {skip:'he did not deploy holding the Scav Pistol, he holds '+p.wep.id};
+       // v21.63 retarget: upKey, when given, is the gun that box holds instead, so a found gun can beat both guns he carries.
+       if(upKey){ for(var uj=0;uj<f.box.loot.length;uj++) if(f.box.loot[uj]==='gun_'+f.want){ f.box.loot[uj]='gun_'+upKey; break; } f.want=upKey; }
        p.x=f.box.x; p.y=f.box.y+4;
        var K=keysOff(); K['KeyE']=true;
        var err=null;
@@ -47271,12 +47273,12 @@ window.__REGRESS=[
        // 2. BOTH SLOTS FULL is unchanged, and the gun in the second slot is
        //    nothing the pickup could have produced by accident.
        // v21.63 retarget: a found gun takes a hand only when it beats BOTH guns he carries (his note: a found gun never bumps a better
-       // one), and the rifle outranks the SMG this box holds, so the second slot now holds the lowest gun below the one found, other
-       // than the pistol. Before v21.63 any gun there gave the same result, so this holds on both sides of that build.
-       var SK=null, wk;
-       for(wk in WTIER) if(wk!=='fists'&&wk!=='pistol'&&wk!==a.want&&WEAPONS[wk]&&ITEMS['gun_'+wk]&&ITEMS['gun_'+wk].gk===wk&&(WTIER[wk]||0)<(WTIER[a.want]||0)&&(SK===null||(WTIER[wk]||0)<(WTIER[SK]||0))) SK=wk;
-       if(!SK){ if(!bad.length) return 'SKIP: no gun ranks below the '+a.want+' other than the Scav Pistol, so the both-full arm cannot be staged'; }
-       var b=SK?drive(SK):{skip:'no gun below the '+a.want};
+       // one), and the rifle outranks the SMG this box holds, so in this arm the box holds the lowest gun that outranks the rifle
+       // instead (UP). Before v21.63 any better gun gave the same result, so this holds on both sides of that build.
+       var SK='rifle', UP=null, wk;
+       for(wk in WTIER) if(wk!==SK&&WEAPONS[wk]&&ITEMS['gun_'+wk]&&ITEMS['gun_'+wk].gk===wk&&(WTIER[wk]||0)>(WTIER[SK]||0)&&(UP===null||(WTIER[wk]||0)<(WTIER[UP]||0))) UP=wk;
+       if(!UP&&!bad.length) return 'SKIP: no gun outranks the rifle here, so the both-full arm cannot be staged';
+       var b=UP?drive(SK,UP):{skip:'no gun outranks the rifle'};
        if(b.skip) bad.push('the both-full arm could not run: '+b.skip);
        else if(b.err) bad.push('looting threw with both slots full: '+b.err);
        else if(!b.searched) bad.push('the both-full arm searched nothing');
