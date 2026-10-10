@@ -28,8 +28,8 @@
                       "replacement":  "say(\u0027IT WAS PLAYING DEAD\u0027,\u0027warn\u0027);"
                   },
                   {
-                      "anchor":  "      if(_cd2\u003ce.rng\u0026\u0026!e.sang){ e.sang=1; if(!G.sim){ say(\u0027THE PILLBOX HAS SEEN YOU.\u0027); sfx(\u0027dish\u0027,e.x,e.y); } }",
-                      "replacement":  "      if(_cd2\u003ce.rng\u0026\u0026!e.sang){ e.sang=1; if(!G.sim){ say(\u0027THE PILLBOX HAS SEEN YOU\u0027,\u0027warn\u0027); sfx(\u0027dish\u0027,e.x,e.y); } }   // v16.xx, the raid text rewrite (R09): a threat is an alert headline in the shooter voice (his order of 2026-10-09)"
+                      "anchor":  "else say(\u0027THE PILLBOX HAS SEEN YOU.\u0027);",
+                      "replacement":  "else say(\u0027THE PILLBOX HAS SEEN YOU\u0027,\u0027warn\u0027);"
                   },
                   {
                       "anchor":  "else say(\u0027Something very large has noticed you.\u0027);",

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.21 - THE WHAT IS NEW CARD NAMES THE HUNT FIXES
+
+Co-op hunt while he was away. The card was stamped v22.05 and the stamp may not trail the build by more than 0.15. Its new second line names the bug hunt fixes shipped on the evening of 2026-10-10: player 2 told by the Pillbox, the Peddler and the Survivor, his Undercroft music back, and the reload key on the empty reticle; the rest are in the change list.
+
+MEASURED. Check 22.21 passes, and fails on v22.20.
 ## v22.20 - PLAYER 2 HEARS THE PILLBOX, PEDDLER AND SURVIVOR
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when player 2 walked into reach of THE PILLBOX, up to the Peddler or onto the hidden Survivor, the line went to the host window: the host read THE PILLBOX HAS SEEN YOU from across the map, and player 2, about to be shot, read nothing. The Crier and THE OVERSEER were fixed this way before; these three now are too. Player 2 window says his own line as a short callout (THE PILLBOX HAS SEEN YOU, SURVIVOR FOUND), the host gets TEAMMATE FOUND A SURVIVOR with what he needs, and the Peddler greets each player once.
