@@ -1,0 +1,5 @@
+## v22.08 - CALLING EXTRACTION LEAVES THE PEDDLER BE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Calling extraction pulled in everything for a long way around the ring, the Peddler and the Survivor included. From then on the Peddler's table, stock and lantern were drawn at the ring instead of beside him, both of them wore a yellow question mark, standing at the stall played the threat sound as if a machine were on top of you, and both were counted among the machines coming for the ring. The siege pull every two seconds did the same, on your own raid and on a party call. Every other alarm in the game already leaves the two of them alone; the call and the siege now do too.
+
+MEASURED. Check 22.08 passes, and fails on v22.07.

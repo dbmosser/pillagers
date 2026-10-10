@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.08 - CALLING EXTRACTION LEAVES THE PEDDLER BE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Calling extraction pulled in everything for a long way around the ring, the Peddler and the Survivor included. From then on the Peddler's table, stock and lantern were drawn at the ring instead of beside him, both of them wore a yellow question mark, standing at the stall played the threat sound as if a machine were on top of you, and both were counted among the machines coming for the ring. The siege pull every two seconds did the same, on your own raid and on a party call. Every other alarm in the game already leaves the two of them alone; the call and the siege now do too.
+
+MEASURED. Check 22.08 passes, and fails on v22.07.
 ## v22.07 - SHOOTING THE SURVIVOR COSTS PLAYER 2 TOO
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, a round from player 2 into the Survivor turned him only on player 2 own screen, which the host then put back, so THE SURVIVOR RETURNS FIRE repeated on every hit while the real Survivor kept walking to the ring and never fired. Killing him or the Peddler cost player 2 nothing, while the same kill by the host costs a notoriety point. Now a round from player 2 turns the Survivor on the host and he fires back at player 2, the line is said once, and a Survivor or Peddler that player 2 kills adds a notoriety point to his own save.

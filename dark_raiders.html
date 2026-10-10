@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.07';
+var VER='22.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16858,6 +16858,12 @@ function tryExtractTick(dt,wantCall){
       for(var si=0;si<G.ents.length;si++){
         var se=G.ents[si];
         if(dist(se,z)>2200) continue;
+        // v22.08, from the whole-game bug hunt of 2026-10-08 (K19): THE CALL LEAVES THE PEDDLER AND THE SURVIVOR AT THEIR PITCH. Their
+        // tx/ty are where they stand, not a target, so this pull set the stall down at the ring and left both alerted and looking for
+        // the rest of the raid: a yellow mark, a place in the count coming for the ring and the threat sound at the stall. Every other
+        // pull already skips them (the noise, the Crier alarm, a round, a blast); this one does now. The two scatter draws are still
+        // taken for them, so the seeded stream does not move.
+        if(se.neutral||se.kind==='peddler'||se.kind==='stray'){ if(!onYourTail(se.state)){ rnd(-40,40); rnd(-40,40); } continue; }
         se.alert=Math.max(se.alert,3);
         if(se.kind==='raider'&&se.bag&&se.bag.length>=5) continue;  // already leaving with theirs
         // v9.86: NOT SOMETHING ALREADY ON YOU. This is the rule the noise waker
@@ -17342,6 +17348,7 @@ var nm=rr()<.3?mkSentry(ss2.x,ss2.y):mkCrawler(ss2.x,ss2.y);   // v18.06: his so
       // lets this one through, so siegePull cannot shift the PRNG underneath a
       // paired comparison.
       var _jx=rnd(-50,50), _jy=rnd(-50,50);
+      if(be.neutral||be.kind==='peddler'||be.kind==='stray') continue;   // v22.08 (K19): and the siege pull, after the same two draws; nor do they take a pull slot
       if(be.pullZ!==z){
         if(z.pullN>=_pullCap) continue;
         be.pullZ=z; z.pullN++;
@@ -35101,7 +35108,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.07: In co-op, the Survivor fires back at player 2 when shot, and killing him or the Peddler costs player 2 notoriety. Check 22.07 fails on v22.06',
+  now:'v22.08: Calling extraction no longer moves the Peddler stall or alerts the Peddler and the Survivor. Check 22.08 fails on v22.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41829,7 +41836,8 @@ function netBeaconTake(peer,m){
   // sent to the ring, never overwriting a hunt (the rule of the local call). No jitter is drawn: the net code draws nothing seeded.
   try{
     ping(Z.x,Z.y,700*(1+0.8*(_cg===null?0:_cg)),true,false,'env','fire');
-    for(var _wi=0;_wi<G.ents.length;_wi++){ var _we=G.ents[_wi]; if(dist(_we,Z)>2200) continue; _we.alert=Math.max(_we.alert,3); if(_we.kind==='raider'&&_we.bag&&_we.bag.length>=5) continue; if(!onYourTail(_we.state)){ _we.state='investigate'; _we.tx=Z.x; _we.ty=Z.y; } }
+    // v22.08 (K19): the party call leaves the Peddler and the Survivor at their pitch too, as the local call does (no draw here)
+    for(var _wi=0;_wi<G.ents.length;_wi++){ var _we=G.ents[_wi]; if(dist(_we,Z)>2200) continue; if(_we.neutral||_we.kind==='peddler'||_we.kind==='stray') continue; _we.alert=Math.max(_we.alert,3); if(_we.kind==='raider'&&_we.bag&&_we.bag.length>=5) continue; if(!onYourTail(_we.state)){ _we.state='investigate'; _we.tx=Z.x; _we.ty=Z.y; } }
   }catch(_wk){}
   if(!(G.active&&G.active!==Z&&G.active.beaconT!==null&&G.active.beaconT!==undefined)){ G.active=Z; G.beaconT=Z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }   // v16.11: never taken off a call of the host's own (v12.57)
   if(G.tel) G.tel.beaconCalls=(G.tel.beaconCalls||0)+1;
@@ -42027,6 +42035,7 @@ function netSpecRings(dt){
         be=G.ents[bi];
         if(dist(be,z)>1500||be.state==='chase') continue;
         jx=rnd(-50,50); jy=rnd(-50,50);
+        if(be.neutral||be.kind==='peddler'||be.kind==='stray') continue;   // v22.08 (K19): as the siege pull of the host's own raid
         if(be.pullZ!==z){ if(z.pullN>=pc) continue; be.pullZ=z; z.pullN++; }
         be.alert=Math.max(be.alert,2.4);
         if(be.state!=='extract'&&!onYourTail(be.state)){ be.state='investigate'; be.tx=z.x+jx; be.ty=z.y+jy; }

@@ -1,0 +1,7 @@
+v22.08: calling extraction leaves the peddler be
+
+Calling extraction no longer moves the Peddler stall or alerts the Peddler and the Survivor.
+
+Check 22.08. Fails on v22.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
