@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.15';
+var VER='22.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7752,7 +7752,11 @@ function extRingClear(x,y,builds){
   }
   return true;
 }
-function extractsOutside(list,builds){
+function extractsOutside(list,builds,W,H){
+  // v22.16, from the whole-game bug hunt of 2026-10-08 (K27): the world size can be given, so the lift's sector maps can move the
+  // rings as the raid does with no raid built. The raid gives none and builds its map with WORLD_W and WORLD_H already set to the
+  // sector size, so its rings land where they always did.
+  W=W||WORLD_W; H=H||WORLD_H;
   var out=[],i,rad,a2;
   for(i=0;i<list.length;i++){
     var e=list[i];
@@ -7762,8 +7766,8 @@ function extractsOutside(list,builds){
     for(rad=40;rad<=1400&&!moved;rad+=40){
       for(a2=0;a2<16;a2++){
         var th=a2/16*6.2832;
-        var nx=clamp(e.x+Math.cos(th)*rad,140,WORLD_W-140);
-        var ny=clamp(e.y+Math.sin(th)*rad,140,WORLD_H-140);
+        var nx=clamp(e.x+Math.cos(th)*rad,140,W-140);
+        var ny=clamp(e.y+Math.sin(th)*rad,140,H-140);
         if(extRingClear(nx,ny,builds)){ copy.x=Math.round(nx); copy.y=Math.round(ny); moved=true; break; }
       }
     }
@@ -35268,7 +35272,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.15: Kid firing no longer shoots while player 2 has the Peddler stall open. Check 22.15 fails on v22.14',
+  now:'v22.16: The sector maps at the lift show the extraction rings where they really are in the raid. Check 22.16 fails on v22.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44253,6 +44257,12 @@ function sectorPreviewDraw(cv,M){
   // v20.95 (V-B4): a map canvas made sharp (sectorPrevSharp below) is drawn in its page size and scaled up into its larger store
   var c=cv.getContext('2d'), _sk=!!(cv._k&&cv._lw&&cv._lh), W0=_sk?cv._lw:cv.width, H0=_sk?cv._lh:cv.height, sc=Math.min(W0/M.w,H0/M.h), ox=(W0-M.w*sc)/2, oy=(H0-M.h*sc)/2, i, z, b, e, n=0;
   if(!c) return 0;
+  // v22.16, from the whole-game bug hunt of 2026-10-08 (K27): THE RINGS WHERE THE RAID PUTS THEM. The raid moves every extraction
+  // ring that touches a building out into the open (extractsOutside), and this map drew them where the map file has them, so ring
+  // C on COLD STORAGE sat inside the dock bays and five rings on THE COLD MILE were off, and the zone names kept clear of the wrong
+  // spots. The same move is made here from the same buildings and the sector size, with no seeded draw, so the lift map and the
+  // raid map agree.
+  var EX=(M.extracts&&M.buildings)?extractsOutside(M.extracts,M.buildings,M.w,M.h):(M.extracts||null);
   c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,cv.width,cv.height);
   if(_sk) c.setTransform(cv.width/W0,0,0,cv.height/H0,0,0);
   c.fillStyle=(M.ground&&M.ground.day)||'#55647A'; c.fillRect(ox,oy,M.w*sc,M.h*sc);
@@ -44270,8 +44280,8 @@ function sectorPreviewDraw(cv,M){
       c.fillStyle='rgba(205,214,221,.85)'; c.textAlign='center';
       // v19.97, seen on the 4K lift screenshot (2026-10-08): a zone name was printed through an extraction ring (THE LONG DOCK, BLAST
       // LINE). A name that would touch a ring moves to the nearest clear place just above or below it, inside its own zone.
-      function hits(y,hh,hw){ var j,e2,rx,ry,r2,nx,ny; if(!M.extracts) return false; for(j=0;j<M.extracts.length;j++){ e2=M.extracts[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)<r2*r2) return true; } return false; }
-      function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy], j, e2, ry, r2, k, y, best=null; if(M.extracts) for(j=0;j<M.extracts.length;j++){ e2=M.extracts[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k<cand.length;k++){ y=cand[k]; if(y<top||y>bot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)<Math.abs(best-cy)) best=y; } return best===null?cy:best; }
+      function hits(y,hh,hw){ var j,e2,rx,ry,r2,nx,ny; if(!EX) return false; for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)<r2*r2) return true; } return false; }
+      function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy], j, e2, ry, r2, k, y, best=null; if(EX) for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k<cand.length;k++){ y=cand[k]; if(y<top||y>bot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)<Math.abs(best-cy)) best=y; } return best===null?cy:best; }
       c.font='bold '+fs+'px Rubik, system-ui, sans-serif';
       while(fs>8&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px Rubik, system-ui, sans-serif'; }
       if(c.measureText(nm).width>zw&&nm.indexOf(' ')>0){
@@ -44283,7 +44293,7 @@ function sectorPreviewDraw(cv,M){
       }
       cy=place(fs*0.5+1,c.measureText(nm).width/2+2); c.fillText(nm,cx,cy+3);
     })(); }
-  if(M.extracts) for(i=0;i<M.extracts.length;i++){ e=M.extracts[i]; if(!e) continue;
+  if(EX) for(i=0;i<EX.length;i++){ e=EX[i]; if(!e) continue;
     c.strokeStyle='#4de3d0'; c.lineWidth=2; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,Math.max(4,78*sc),0,6.2832); c.stroke();
     c.fillStyle='rgba(77,227,208,.25)'; c.fill(); n++; }
   c.textAlign='left';

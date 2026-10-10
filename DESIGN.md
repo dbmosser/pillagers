@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.16 - THE LIFT MAPS SHOW THE RINGS WHERE THEY ARE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. At the lift, the small sector maps drew the extraction rings where the map file puts them. In the raid, every ring that touches a building is moved out into the open, so on COLD STORAGE ring C was drawn inside the dock bays, well away from where it really stands, and on THE COLD MILE five of the six rings were off. The two maps of the same sector disagreed, and a route planned at the lift led to the wrong spot. The lift maps now move the rings the same way the raid does, and the zone names keep clear of the real rings. Nothing in the raid changes.
+
+MEASURED. Check 22.16 passes, and fails on v22.15.
 ## v22.15 - KID FIRING HOLDS FIRE AT THE STALL
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With Kid firing on, player 2 could open the Peddler stall and browse while a machine or a hostile pillager came into range, and his gun fired by itself through the panel, round after round. That spent his magazine, made noise that drew more machines, turned him, and a round could hit the Peddler beside him and shut the stall. A click, the pad trigger and a held A were already kept off the gun while the stall is open; Kid firing now waits too, and starts again when the stall shuts.

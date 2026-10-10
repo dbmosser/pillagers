@@ -1,0 +1,7 @@
+v22.16: the lift maps show the rings where they are
+
+The sector maps at the lift show the extraction rings where they really are in the raid.
+
+Check 22.16. Fails on v22.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
