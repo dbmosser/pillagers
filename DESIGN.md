@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.94 - A RAID LINE SHOWS ITS DETAIL
+
+Co-op hunt while he was away. His order of 2026-10-09: raid lines read like Call of Duty, Fortnite or ARC Raiders, a short caps headline and, only when a number or a key is needed, a short detail after it. The message rows could carry a detail but never drew it, so a headline like BACKPACK FULL could not say which key drops an item without going back to a long sentence. A row with a detail now reads HEADLINE, a middle dot, then the detail; every line without one looks exactly as it did.
+
+MEASURED. Check 21.94 passes, and fails on v21.93.
 ## v21.93 - FOUR GUN KEYS
 
 Co-op hunt while he was away. Your order: the guns go on keys 1 to 4 and everything else slides down two, and a gun past the fourth goes to the backpack. Keys 1 to 4 are gun keys now: your two guns, then the guns you packed, in the order you packed them, on the Undercroft belt and at the raid start alike. Smoke, Decoy and Frag are keys 5, 6 and 7, Medical is key 8 and a plate key 9. A gun you find, buy from the Peddler or are paid for a revive takes the first free gun key; with four guns on the keys the next one goes into the backpack and the line says GUN SLOTS FULL. A gun key with no gun on it never takes the highlight (it says it is empty), the bumpers step over it, and the trigger never fires from it. A belt you set up before this build slides down two once, so your Frag key is still on the Frag: keys 1 and 2 stay, a gun you put on a later key goes to key 3 or 4, everything else moves down two, and anything pushed past key 9 takes the highest free key.

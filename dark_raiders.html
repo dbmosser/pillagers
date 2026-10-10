@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.93';
+var VER='21.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27715,6 +27715,12 @@ function feedRows(){
   return r;
 }
 function msgRowH(){ var mf=(/([\d.]+)px/).exec(FS(TYPE.label)), px=mf?parseFloat(mf[1]):LH(12); return Math.round(px*1.42); }
+// v21.94, the raid text rewrite (fix after the queue): A LINE SHOWS ITS DETAIL. say(m,kind,{sub}) has carried a detail since v21.80
+// (G.msgSub, the row's sub) but no row drew it, so a headline that needs a number or a key (BACKPACK FULL and which key drops)
+// could not be written without losing it. A row with a detail now reads as one line, the headline, two spaces, a middle dot, two
+// spaces, then the detail, as the design's feed row does; it wraps and is measured like any other line. A row with no detail is
+// drawn exactly as before.
+function msgRowText(r){ return (r&&r.sub)?String(r.m)+'  \u00b7  '+String(r.sub):String(r&&r.m); }
 // v21.87, the raid text rewrite (R05): NO LINE RUNS OFF THE SCREEN. A message row was one fillText as wide as its words, so a long
 // line (a contract name, a long item, his own rewording) ran past both edges of the screen and its ends were never read. A row
 // now has a maximum width, min(0.46 x W, LH(600) x hudRes) on screen, and a line wider than that wraps at a word into a second
@@ -27758,11 +27764,11 @@ function msgLayout(){
     try{
       ctx.font=FS(TYPE.label);
       for(i=0;i<rows.length;i++){
-        n=msgWrap(rows[i].m,mw).length;
+        n=msgWrap(msgRowText(rows[i]),mw).length;   // v21.94: with its detail
         if(i) ex+=msgRowH()+LH(3);
         if(n>1){
           ex+=(n-1)*la;
-          if(G&&G.tel){ ll=(G.tel.longLines=G.tel.longLines||[]); if(ll.indexOf(rows[i].m)<0&&ll.length<20) ll.push(rows[i].m); }
+          if(G&&G.tel){ ll=(G.tel.longLines=G.tel.longLines||[]); if(ll.indexOf(msgRowText(rows[i]))<0&&ll.length<20) ll.push(msgRowText(rows[i])); }
         }
       }
     } finally { ctx.restore(); }
@@ -28389,7 +28395,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     // v21.87 (R05): a row wraps into at most two lines no wider than msgMaxW, on one plate, and the next row starts under it.
     var _mh=msgRowH(), _mla=msgLineA(), _mmx=msgMaxW(), _mty=LH(96);
     for(var _mri=0;_mri<_frows.length;_mri++){
-      var _mrw=_frows[_mri], _ma=clamp(_mrw.T,0,1)*(_mri?0.75:1), _mln=msgWrap(_mrw.m,_mmx), _mw=0, _mph;
+      var _mrw=_frows[_mri], _ma=clamp(_mrw.T,0,1)*(_mri?0.75:1), _mln=msgWrap(msgRowText(_mrw),_mmx), _mw=0, _mph;
       for(var _mli=0;_mli<_mln.length;_mli++) _mw=Math.max(_mw,ctx.measureText(_mln[_mli]).width);
       _mph=_mh+(_mln.length-1)*_mla;
       ctx.globalAlpha=_ma;
@@ -34992,7 +34998,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.93: Keys 1 to 4 are your guns, the grenades and Medical are keys 5 to 8, and a fifth gun goes to the backpack. Check 21.93 fails on v21.92',
+  now:'v21.94: A raid message can show a short detail after its headline, like BACKPACK FULL then the key that drops an item. Check 21.94 fails on v21.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

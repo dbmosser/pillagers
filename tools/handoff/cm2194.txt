@@ -1,0 +1,7 @@
+v21.94: a raid line shows its detail
+
+A raid message can show a short detail after its headline, like BACKPACK FULL then the key that drops an item.
+
+Check 21.94. Fails on v21.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

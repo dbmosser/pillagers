@@ -1,0 +1,5 @@
+## v21.94 - A RAID LINE SHOWS ITS DETAIL
+
+Co-op hunt while he was away. His order of 2026-10-09: raid lines read like Call of Duty, Fortnite or ARC Raiders, a short caps headline and, only when a number or a key is needed, a short detail after it. The message rows could carry a detail but never drew it, so a headline like BACKPACK FULL could not say which key drops an item without going back to a long sentence. A row with a detail now reads HEADLINE, a middle dot, then the detail; every line without one looks exactly as it did.
+
+MEASURED. Check 21.94 passes, and fails on v21.93.

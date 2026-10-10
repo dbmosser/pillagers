@@ -5730,6 +5730,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.94',what:'a raid line with a detail shows it on its row as HEADLINE, a middle dot, then the detail, and a line with no detail is drawn as before',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var bad=[], ev=[], g, realSay=say, H1=['ZQ','HEAD'].join(' '), D1=['zq','detail'].join(' '), PL=['zq','plain'].join(' '), want=H1+'  \u00b7  '+D1, oFT=ctx.fillText, j, got=false, gotPl=false, gotBare=false;
+     function unspy(){ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
+     function spy(){ ev=[]; ctx.fillText=function(t){ ev.push(String(t)); return oFT.apply(this,arguments); }; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); }catch(_d){}
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       keys={}; g.mapOpen=false; g.bagOpen=false; g.msgT=0; g.msg=''; g.msgQ=[]; g.msgQM=[]; g.feed=[];
+       realSay(PL); realSay(H1,'info',{sub:D1});
+       if(g.msg!==H1) bad.push('G.msg is '+JSON.stringify(g.msg)+', not the headline alone');
+       say=function(){};
+       spy();
+       try{ __frame(0.016); } finally { unspy(); }
+       for(j=0;j<ev.length;j++){ if(ev[j]===want) got=true; if(ev[j]===H1) gotBare=true; if(ev[j]===PL) gotPl=true; }
+       if(!got) bad.push('the line with a detail was not drawn as '+JSON.stringify(want)+(gotBare?' (only the headline was drawn)':''));
+       if(!gotPl) bad.push('the line with no detail was not drawn exactly as said');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ unspy(); say=realSay; keys={}; try{ var g2=__state(); if(g2){ g2.msgT=0; g2.msg=''; g2.feed=[]; g2.msgQ=[]; g2.msgQM=[]; } if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.93',what:'four gun keys: with the rifle and SMG in his hands and a shotgun, a marksman rifle and a carbine packed, keys 1 to 4 show the rifle, the SMG, the shotgun and the marksman rifle on the Undercroft belt and at the raid start, Smoke, Decoy, Frag and Medical slide down two to keys 5 to 8, the fifth gun stays in the backpack with no key, a vacant gun key never takes the highlight and the pad walk steps over it, and an old saved belt plan slides down two once',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__state||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot deploy a raid or load a profile';
