@@ -1,0 +1,7 @@
+v22.39: an old belt plan never covers medical or the plate
+
+An old belt plan with items on keys 8 and 9 now moves them to keys 3 and 4, so Medical and the plate keep their keys.
+
+Check 22.39. Fails on v22.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
