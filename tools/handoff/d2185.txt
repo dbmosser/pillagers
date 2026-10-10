@@ -1,0 +1,5 @@
+## v21.85 - A BLOCKED THROW SAYS SO IN A HEADLINE
+
+Co-op hunt while he was away. His order of 2026-10-09: every raid line should read like Call of Duty, Fortnite or ARC Raiders, short caps headlines and no explaining. A grenade that stopped on cover close to you said It hit cover. MOVE. and a smoke or decoy said It hit cover, dropped short. They now read GRENADE HIT COVER, as a warning, and THROW BLOCKED. The planned rewrite had a second line (Get clear of the blast, It dropped short) that was advice or explaining, so it was cut: the headline says it all.
+
+MEASURED. Check 21.85 passes, and fails on v21.84.

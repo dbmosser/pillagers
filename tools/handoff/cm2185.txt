@@ -1,0 +1,7 @@
+v21.85: a blocked throw says so in a headline
+
+A grenade stopped short by cover says GRENADE HIT COVER and a smoke or decoy says THROW BLOCKED.
+
+Check 21.85. Fails on v21.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

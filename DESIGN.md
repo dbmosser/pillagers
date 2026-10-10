@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.85 - A BLOCKED THROW SAYS SO IN A HEADLINE
+
+Co-op hunt while he was away. His order of 2026-10-09: every raid line should read like Call of Duty, Fortnite or ARC Raiders, short caps headlines and no explaining. A grenade that stopped on cover close to you said It hit cover. MOVE. and a smoke or decoy said It hit cover, dropped short. They now read GRENADE HIT COVER, as a warning, and THROW BLOCKED. The planned rewrite had a second line (Get clear of the blast, It dropped short) that was advice or explaining, so it was cut: the headline says it all.
+
+MEASURED. Check 21.85 passes, and fails on v21.84.
 ## v21.84 - A WRAPPED LINE KEEPS HIS WORDS
 
 Co-op hunt while he was away. Found by the review of the raid text batch. Since v21.81 every plate is measured on the words that are actually drawn, which is right, but three places split a line into rows themselves: the CONDITIONS panel, the What is New card and the zone names on the sector maps. They split the original words and measured the pieces with the new measure, so a line he had reworded either broke into pieces of the original (his words vanished and the old sentence showed over two lines) or, for one row of a wrapped line he had reworded, the row was never formed at all. These three now translate the whole line first and wrap his wording, so his words are what you see, wrapped to fit.
