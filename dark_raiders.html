@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.76';
+var VER='21.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19454,6 +19454,13 @@ if(e.state==='hunt'){
           var _lr=(_lf?(_lsp?300:210):(_lsp?430:290))*(CFG.listenGain===undefined?1.35:CFG.listenGain)/1.35;
           if(dist(e,p)<_lr){ e.heardX=p.x; e.heardY=p.y; e.millT=0; }
         }
+        // v21.77, HIS NOTE (2026-10-09): "listeners and crawlers exhibiting weird behavior where they don't hurt me when they charge me,
+        // particularly if im standing still". A Listener follows you only by the sound of your feet, so once it reached a man who had
+        // stopped moving it heard nothing, waited out its seven seconds at the spot and went dormant pressed against him, and a
+        // dormant Listener never strikes. Measured: five blows in the first seven seconds, then asleep at his side for good. A thing
+        // touching you has found you, as the crawler rule of v11.07 says: inside its reach plus a stride it keeps you, still or
+        // crouched, and it never settles while you are in reach. Out of reach, standing still still loses it, as it always has.
+        if((CFG.listenTouch===undefined?1:CFG.listenTouch)&&!p.downed&&(dist(e,p)-(e.r+(p.r||11)))<=MELEE_REACH+20){ e.heardX=p.x; e.heardY=p.y; e.millT=0; }
         // Recovering from its own blow: it is still coming, but slowly, and that
         // is the only window in the fight. Never fully rooted, so backing off has
         // to be a decision rather than a free reset.
@@ -34434,7 +34441,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.76: Taking a hit now closes the map and the backpack, so you see the fight at once. Check 21.76 fails on v21.75',
+  now:'v21.77: A Listener that reaches you no longer falls asleep at your side when you stand still. It keeps striking. Check 21.77 fails on v21.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

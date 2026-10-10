@@ -1,0 +1,7 @@
+v21.77: a listener at your side keeps striking
+
+A Listener that reaches you no longer falls asleep at your side when you stand still. It keeps striking.
+
+Check 21.77. Fails on v21.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

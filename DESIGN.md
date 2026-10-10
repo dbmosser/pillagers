@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.77 - A LISTENER AT YOUR SIDE KEEPS STRIKING
+
+Co-op hunt while he was away. His note of 2026-10-09: Listeners charged him and then did not hurt him, especially when he stood still. A Listener tracks you only by the sound of your feet, so once it reached a man who had stopped moving it heard nothing, waited seven seconds and went dormant right beside him, and a dormant Listener never strikes. Measured on the old build: five blows, then asleep at his side for good. Now a Listener within reach of you keeps track of you whether you stand, crouch or move, and keeps striking. Further away, standing still still makes it lose you, as before. Crawlers were measured too: they bite every 0.7 seconds at your side whether you stand, crouch or move.
+
+MEASURED. Check 21.77 passes, and fails on v21.76.
 ## v21.76 - A HIT CLOSES THE MAP AND THE BACKPACK
 
 Co-op hunt while he was away. His notes of 2026-10-09: if you have the map open and take damage, the map should close, and the same for the backpack. A hit that lands now shuts both, so the fight is on screen the moment it reaches you. An item you were dragging in the backpack goes back where it was, as it does when you press ESC. A hit that does not land (while you are briefly protected) leaves them open.
