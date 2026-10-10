@@ -1,0 +1,7 @@
+v21.95: an armoury gun dropped for a teammate is in one save
+
+In co-op, an armoury gun dropped for a teammate no longer ends up in both saves when a window closes.
+
+Check 21.95. Fails on v21.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

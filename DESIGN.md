@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.95 - AN ARMOURY GUN DROPPED FOR A TEAMMATE IS IN ONE SAVE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, an armoury gun dropped for a teammate could end up in both saves once a window was gone. When the host dropped his own gun and his window closed before the teammate took it, the teammate picked up the raid and banked the gun, and the host got it back on his next load. And when player 2 dropped his gun, abandoned and closed his window, the host taking it could not tell anyone, so player 2 kept it too. Now the host's drop comes off his saved list while a teammate is up top (taking it back puts it on again), and the word for a closed window waits on the host and is sent when that player links again.
+
+MEASURED. Check 21.95 passes, and fails on v21.94.
 ## v21.94 - A RAID LINE SHOWS ITS DETAIL
 
 Co-op hunt while he was away. His order of 2026-10-09: raid lines read like Call of Duty, Fortnite or ARC Raiders, a short caps headline and, only when a number or a key is needed, a short detail after it. The message rows could carry a detail but never drew it, so a headline like BACKPACK FULL could not say which key drops an item without going back to a long sentence. A row with a detail now reads HEADLINE, a middle dot, then the detail; every line without one looks exactly as it did.

@@ -1,0 +1,5 @@
+## v21.95 - AN ARMOURY GUN DROPPED FOR A TEAMMATE IS IN ONE SAVE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, an armoury gun dropped for a teammate could end up in both saves once a window was gone. When the host dropped his own gun and his window closed before the teammate took it, the teammate picked up the raid and banked the gun, and the host got it back on his next load. And when player 2 dropped his gun, abandoned and closed his window, the host taking it could not tell anyone, so player 2 kept it too. Now the host's drop comes off his saved list while a teammate is up top (taking it back puts it on again), and the word for a closed window waits on the host and is sent when that player links again.
+
+MEASURED. Check 21.95 passes, and fails on v21.94.
