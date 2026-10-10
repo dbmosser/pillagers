@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.25 - A CRIER GOES BACK ON PATROL
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A Crier that heard a noise, was called by a machine that spotted you, or was caught in a blast wandered at random for the rest of the raid wearing a question mark or a red mark, the same red mark as a Crier raising the alarm, though it was raising nothing. It was counted among the machines coming for the ring, could drive the heartbeat, and if it wandered indoors it never left, because the rule that walks a Crier out of a house only works on patrol. It now walks to the noise, and once it gets there or its timer runs out it goes back on patrol.
+
+MEASURED. Check 22.25 passes, and fails on v22.24.
 ## v22.24 - THE SPINE SHOT LANDS FOR PLAYER 2
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, player 2 could flank a Choir pillbox and put a Longshot round into its DORSAL SPINE. His screen showed the 414 hit, but the host threw the shot away as a broken number, because anything over 400 was refused. The Choir took nothing and was not stunned. The limit is now 600, above every real hit in the game, so the best shot lands for both players and a broken number is still refused.
