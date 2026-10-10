@@ -1,0 +1,7 @@
+v21.73: the what is new card names the co-op hunt fixes
+
+The what is new card names the co-op hunt fixes.
+
+Check 21.73. Fails on v21.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

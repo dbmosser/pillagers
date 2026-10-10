@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.73 - THE WHAT IS NEW CARD NAMES THE CO-OP HUNT FIXES
+
+Co-op hunt while he was away. The card was stamped v21.68 and the stamp may not trail the build by more than 0.15. Its new second line names the high fixes from the second whole-game hunt of 2026-10-09; the rest are in the change list.
+
+MEASURED. Check 21.73 passes, and fails on v21.72.
 ## v21.72 - A PEDDLER SALE IS SOLD FOR THE WHOLE PARTY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op each window keeps its own copy of the Peddler stall, and a purchase was never told to the other. Player 2 could buy the stall gun and the host still saw it for sale and could buy it again, and when the Peddler died on the host, his PEDLAR STOCK cache dropped every row the host still had as unsold, so the gun player 2 already bought came out a second time. A sale on either window is now told to the other, so the row reads SOLD for everyone and the cache leaves it out.
