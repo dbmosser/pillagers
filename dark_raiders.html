@@ -1687,7 +1687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.85';
+var VER='21.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14164,7 +14164,14 @@ function say(m,kind,o){
     var k=msgKind(kind), lg=(G.msgLog=G.msgLog||[]);
     lg.push({m:m,k:k,t:G.t||0}); if(lg.length>16) lg.shift();
     if(k==='log') return;
-    G.msg=m; G.msgT=3.2; G.msgK=k; G.msgSub=(o&&o.sub)||''; return;
+    // v21.86, the raid text rewrite (R04): TWO ROWS INSTEAD OF ONE OVERWRITE. A second line said while one still showed wrote
+    // over it, so two things that happened in the same second left only the last on screen. The line showing now moves down to
+    // the second row (G.feed[1], with the time it had left) and the new one takes the top; a third pushes the oldest off. The
+    // same line said again (a per-frame caller) only refreshes the top row. G.msg and G.msgT stay the top row, as before.
+    var f=(G.feed=G.feed||[]);
+    if(G.msgT>0&&G.msg&&G.msg!==m) f[1]={m:G.msg,k:G.msgK||'info',sub:G.msgSub||'',T:G.msgT};
+    G.msg=m; G.msgT=3.2; G.msgK=k; G.msgSub=(o&&o.sub)||'';
+    f[0]={m:m,k:k,sub:G.msgSub,T:3.2}; return;
   }
   // v8.13, audit: no raid to say it into. The Mainframe's eleven messages and
   // Settings' backup and restore all came through here and were swallowed
@@ -27215,7 +27222,7 @@ function extractNowLine(letter,secs){
 // and this offer line shared one band and printed on top of each other. Each now starts below the one above it and notes its
 // own bottom edge, in screen pixels, for the next (HUDBOSSB, HUDGIFTB; 0 when it was not drawn). With no boss bar and no
 // offer up, nothing moves.
-var HUDBOSSB=0, HUDGIFTB=0;
+var HUDBOSSB=0, HUDGIFTB=0, HUDMSGB=0;   // v21.86 (R04): HUDMSGB is the bottom of the message rows, set by msgLayout
 function drawGiftLine(){
   var gi, go, t, s=null, it, w, y;
   HUDGIFTB=0;
@@ -27229,6 +27236,7 @@ function drawGiftLine(){
   if(!s) return null;
   y=Math.round(LH(132)*hudRes());   // v18.49: below the boss bar and above the message plate (was LH(104), on the toast)
   if(HUDBOSSB>0) y=Math.max(y,HUDBOSSB+LH(4)+LH(15));   // v20.55 (H38): its plate starts under the boss bar when the bar is up
+  if(HUDMSGB>0) y=Math.max(y,HUDMSGB+LH(4)+LH(15));   // v21.86 (R04): and under a second message row (with one row this is LH(132) exactly)
   ctx.save(); ctx.font=FS(TYPE.label); ctx.textAlign='center';
   w=ctx.measureText(s).width;
   ctx.fillStyle='rgba(6,9,13,.78)'; ctx.fillRect(W/2-w/2-12,y-LH(15),w+24,LH(22));
@@ -27471,6 +27479,27 @@ function drawStatusIcons(){
   return s;
 }
 var CONDWRAP={}, CONDWRAPN=0;   // v19.82: the CONDITIONS box's wrapped lines, by font, width and text (see wrap() below)
+// v21.86, the raid text rewrite (R04): THE MESSAGE ROWS ARE LAID OUT BEFORE ANYTHING UNDER THEM IS DRAWN. feedRows() is what the
+// message band shows this frame, newest first: the top row (G.msg while G.msgT runs) and the row it pushed down, while that one
+// still has time and the top row shows. msgLayout() runs at the top of drawHUD, before the boss bar, and sets HUDMSGB, the bottom
+// of the band in screen pixels. With one row (or none) it is exactly the old fixed bottom, (LH(96)+LH(17)) under the message
+// scale, so nothing moves; a second row adds one row step, and the boss bar, the offer line and the controller word start under it.
+function feedRows(){
+  var r=[], f;
+  if(!G||!(G.msgT>0)||!G.msg) return r;
+  r.push({m:G.msg,k:G.msgK||'info',sub:G.msgSub||'',T:G.msgT});
+  f=G.feed&&G.feed[1];
+  if(f&&f.T>0&&f.m&&f.m!==G.msg) r.push(f);
+  return r;
+}
+function msgRowH(){ var mf=(/([\d.]+)px/).exec(FS(TYPE.label)), px=mf?parseFloat(mf[1]):LH(12); return Math.round(px*1.42); }
+function msgLayout(){
+  var z=(HUDZ.msg||1)*hudRes()*hudUserZ('msg'), rows=feedRows(), ex=0;
+  if(G) G.feed=rows;
+  if(rows.length>1) ex=(rows.length-1)*(msgRowH()+LH(3));
+  HUDMSGB=Math.round((LH(96)+LH(17)+ex)*z);
+  return rows;
+}
 function drawBossBar(){
   var e=null, p=G&&G.player, i, w, x, y, f;
   HUDBOSSB=0;   // v20.55 (H38): nothing drawn yet this frame
@@ -27486,6 +27515,7 @@ function drawBossBar(){
   f=Math.max(0,Math.min(1,e.hp/(e.maxhp||e.hp)));
   w=Math.min(520,W*0.4); x=W/2-w/2; y=Math.round(LH(108)*hudRes());   // v18.49: below the clock, the compass and the extract arrow, scaled with them (was LH(64), inside the stack)
   y=Math.round((LH(96)+LH(17))*(HUDZ.msg||1)*hudRes()*hudUserZ('msg'))+LH(4)+LH(16);   // v20.55 (H38): the plate starts under the message plate, at every screen size and message size
+  if(HUDMSGB>0) y=HUDMSGB+LH(4)+LH(16);   // v21.86 (R04): under the message rows msgLayout laid out this frame (the same place with one row)
   // v21.11, seen on the 4K screenshot (2026-10-08): THE BOSS PLATE GROWS WITH THE SCREEN. The message plate above it is drawn at
   // the screen's scale, but this plate kept its 1080p size, so at 4K the name of THE OVERSEER was small print under a big message
   // and its bar a thin line. It is now drawn at the same scale, grown about its top centre, so it still starts where it did.
@@ -27510,6 +27540,7 @@ function drawBossBar(){
   // the top of this function, before the clearRect that starts every HUD frame, so THE OVERSEER's health bar (v17.45) and the
   // "NAME offers you ITEM, T or Y to take it, Ns" line (v17.52) never reached the screen; only the three second toast did,
   // which is why a player who looked away never knew an offer was waiting. Drawn here, after the clear and the vignette.
+  try{ msgLayout(); }catch(_ml){ HUDMSGB=0; }   // v21.86 (R04): the message rows first, so everything under them knows where they end
   try{ drawBossBar(); }catch(_bb){}   // v17.45: his pick 21
   try{ drawGiftLine(); }catch(_gl){}   // v17.52: an open trade offer stays on screen
   try{ drawUseBar(); }catch(_ub){}   // v18.75, his note: the bandage, medkit and plate wind-ups on the HUD
@@ -28066,7 +28097,8 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
   })();
   ctx.restore();
   if(HUDBOX.cond) HUDBOX.cond=hudZoomRect('cond',W,0,HUDBOX.cond);
-  if(G.msgT>0){
+  var _frows=feedRows();   // v21.86 (R04): the rows msgLayout laid out
+  if(_frows.length){
     // v10.43, his answers 25 and 30: the message line scales with the monitor
     // like every panel, anchored at the top centre. It was 19px at 4K.
     ctx.save(); hudZoomIn('msg',W/2,0);
@@ -28082,12 +28114,17 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     // whose height comes from the font it carries (1.42 x the px, which is LH(17) at every default size, so the boss bar and the
     // offer line under it keep their places), the words are outlined in ink so they read over snow and over fire alike, and the
     // fade is one alpha for plate and words. The fillStyle that was set here and overwritten before anything was drawn is gone.
+    // v21.86 (R04): one plate per row, the newest on top at LH(96) and the one it pushed down a row step under it at 75% alpha.
     ctx.textAlign='center';
-    var _ma=clamp(G.msgT,0,1), _mw=ctx.measureText(G.msg).width, _mf=(/([\d.]+)px/).exec(ctx.font), _mpx=_mf?parseFloat(_mf[1]):LH(12), _mh=Math.round(_mpx*1.42);
-    ctx.globalAlpha=_ma;
-    hudPlate(W/2-_mw/2-LH(8),LH(96),_mw+LH(16),_mh);
-    ctx.fillStyle=HUDC.text;
-    hudText(G.msg,W/2,LH(96)+Math.round(_mh*13/17),2);
+    var _mh=msgRowH(), _mst=_mh+LH(3);
+    for(var _mri=0;_mri<_frows.length;_mri++){
+      var _mrw=_frows[_mri], _ma=clamp(_mrw.T,0,1)*(_mri?0.75:1), _mw=ctx.measureText(_mrw.m).width, _mty=LH(96)+_mri*_mst;
+      ctx.globalAlpha=_ma;
+      hudPlate(W/2-_mw/2-LH(8),_mty,_mw+LH(16),_mh);
+      ctx.fillStyle=HUDC.text;
+      hudText(_mrw.m,W/2,_mty+Math.round(_mh*13/17),2);
+    }
+    ctx.globalAlpha=1;
     ctx.textAlign='left';
     ctx.restore();                              // v10.43: end of the message scale
   }
@@ -34204,6 +34241,7 @@ function loop(ts){
       if(!netEntsPeer()) try{ tickHot(dt); }catch(e){}   // v20.39 (H59): a linked window keeps the hot ground where the host has it (netWorldTake), as it keeps his weather
       if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
       if(G.msgT>0) G.msgT-=dt;
+      if(G.feed&&G.feed[1]&&G.feed[1].T>0) G.feed[1].T-=dt;   // v21.86 (R04): the second message row runs out on the same clock
       // v13.32: one waiting line, shown when the current message runs out rather than
       // written over it in the same frame.
       // v13.33: a short queue in place of the one slot, so two waiting lines both show.
@@ -34678,7 +34716,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.85: A grenade stopped short by cover says GRENADE HIT COVER and a smoke or decoy says THROW BLOCKED. Check 21.85 fails on v21.84',
+  now:'v21.86: Two raid lines in the same second both show, the newest on top, instead of the second erasing the first. Check 21.86 fails on v21.85',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39482,7 +39520,7 @@ function netPadHud(){
     ctx.font=FS(TYPE.label); ctx.textAlign='center'; w=ctx.measureText(t).width;
     // v20.55 (H38): and under the boss bar and the offer line when they are up. Their bottoms are screen pixels and this plate
     // is drawn under the message scale, so the gap is divided by that scale. With neither up it stays at LH(120).
-    var _pz=(HUDZ.msg||1)*hudRes()*hudUserZ('msg'), _py=Math.max(LH(120),Math.ceil((Math.max(HUDBOSSB,HUDGIFTB)+LH(4))/_pz));
+    var _pz=(HUDZ.msg||1)*hudRes()*hudUserZ('msg'), _py=Math.max(LH(120),Math.ceil((Math.max(HUDBOSSB,HUDGIFTB,HUDMSGB)+LH(4))/_pz));   // v21.86 (R04): and the message rows
     ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(W/2-w/2-LH(8),_py,w+LH(16),LH(17));
     ctx.fillStyle='#ffc04a'; ctx.fillText(t,W/2,_py+LH(133)-LH(120));
     ctx.restore();

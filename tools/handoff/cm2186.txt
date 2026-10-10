@@ -1,0 +1,7 @@
+v21.86: two message rows
+
+Two raid lines in the same second both show, the newest on top, instead of the second erasing the first.
+
+Check 21.86. Fails on v21.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

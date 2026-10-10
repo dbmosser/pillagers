@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.86 - TWO MESSAGE ROWS
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text should read like Call of Duty, Fortnite or ARC Raiders. Those games stack callouts; this one wrote each new line over the last, so when two things happened in the same second (a pickup and a warning, a kill and a call) only the last one was ever seen. The message band now has two rows: the new line takes the top and the one it would have erased moves under it, a little dimmer, for the time it had left. The boss bar, the trade offer line and the controller word under the band move down only while two rows are showing; with one row everything sits exactly where it did.
+
+MEASURED. Check 21.86 passes, and fails on v21.85.
 ## v21.85 - A BLOCKED THROW SAYS SO IN A HEADLINE
 
 Co-op hunt while he was away. His order of 2026-10-09: every raid line should read like Call of Duty, Fortnite or ARC Raiders, short caps headlines and no explaining. A grenade that stopped on cover close to you said It hit cover. MOVE. and a smoke or decoy said It hit cover, dropped short. They now read GRENADE HIT COVER, as a warning, and THROW BLOCKED. The planned rewrite had a second line (Get clear of the blast, It dropped short) that was advice or explaining, so it was cut: the headline says it all.
