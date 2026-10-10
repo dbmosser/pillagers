@@ -1,0 +1,7 @@
+v21.91: the waiting queue: ranked, capped, no repeats
+
+Waiting raid lines come out most important first, never twice, and never long after the moment has passed.
+
+Check 21.91. Fails on v21.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
