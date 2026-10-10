@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.29 - THE TEAMMATE KIT CARD SAYS THE PARTY GOES UP
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when the host goes up, his teammate is asked what he is taking up. If the teammate pressed Not yet to buy a Medkit first (B on a controller, ESC and TAB press it too), nothing told the host, and about 15 seconds later the party went up anyway and pulled him out of the Undercroft with whatever was packed. The host still takes everyone up, as before. The teammate card now reads PARTY IS GOING UP with the seconds left before he goes up with the kit he has, and its way out reads KEEP MY KIT, which is what it does. The host card and the Hire nobody card still say Not yet.
+
+MEASURED. Check 22.29 passes, and fails on v22.28.
 ## v22.28 - A REFUSED LOANER BANDAGE STAYS A LOANER
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when you bandaged a teammate with one of the two loaner Bandages and his window could not take it (he was already healing to 85, he was down, or his raid had just ended), the Bandage came back to you as a found one, and at extraction it was banked into your stash. The heal and the reply now carry the loaner mark both ways, so a refused loaner comes back as a loaner and goes back to the quartermaster as before.

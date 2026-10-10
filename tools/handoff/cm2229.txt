@@ -1,0 +1,7 @@
+v22.29: the teammate kit card says the party goes up
+
+In co-op, the kit question tells a teammate the party goes up without him answering, and its way out reads KEEP MY KIT.
+
+Check 22.29. Fails on v22.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
