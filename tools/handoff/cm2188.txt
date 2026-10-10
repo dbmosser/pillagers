@@ -1,0 +1,7 @@
+v21.88: a lower line cannot push a higher one off
+
+A warning on the message rows stays up until it has been read, and a line that had to give way comes back instead of being lost.
+
+Check 21.88. Fails on v21.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.88 - A LOWER LINE CANNOT PUSH A HIGHER ONE OFF
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text should behave like Call of Duty, Fortnite or ARC Raiders, where a warning stays up long enough to read. With two message rows, a third line in the same second pushed the oldest row off whatever it said, so an ordinary remark could wipe a warning before it was read. Each row is now held for a moment after it shows (a little longer for objectives and critical lines). A line that ranks below both held rows waits its turn; a line of the same or higher rank takes the lowest, oldest row, and a row taken before it could be read waits and comes back. Waiting lines come back as soon as a row is free, never by pushing a held one off.
+
+MEASURED. Check 21.88 passes, and fails on v21.87.
 ## v21.87 - NO LINE RUNS OFF THE SCREEN
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text should read like Call of Duty, Fortnite or ARC Raiders, and in those games no callout ever runs off the edge of the screen. Here a long message (a long contract or item name, or a line he reworded) was drawn as one strip as wide as its words, so both ends ran past the screen edges and were never read. A message row now has a maximum width and wraps at a word into a second line on the same plate; anything longer than two lines is cut at a word with a truncation mark, and its full text is kept in the run report. Lines that already fit are drawn exactly as before.
