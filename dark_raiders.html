@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.18';
+var VER='22.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13057,7 +13057,7 @@ function padRelease(){
   // v17.00, co-op hunt 2026-09-28: AND THE X PRESS LATCH. PAD.xWas was written only in the raid branch, so a menu, another
   // screen or the stall between two X presses left it set, the next X was not seen as a new press, and the choice of the X
   // before (reload) was held again beside a box, which was then never searched until X was let go and pressed once more.
-  PAD.xWas=false;
+  PAD.xWas=false; PAD.yGift=0;   // v22.19 (K30): and the Y spent on a trade offer, so a panel in between never eats the next Y on the floor
   if(PAD.held){ for(var c in PAD.held){ if(PAD.held[c]) keys[c]=false; } PAD.held={}; }
   if(PAD.firing){ mouse.down=false; PAD.firing=0; }
   if(PAD.adsing){ if(G&&G.player) G.player.ads=false; PAD.adsing=0; }
@@ -13188,8 +13188,13 @@ function pollPad(){
     // RAID table and has no entry for A, so it named the act below the one each
     // button actually performed. PADLABEL_HUB is the table for these four.
     padHold('KeyR',pressed(2));
-    if(pressed(3)&&!PAD.prev[3]&&typeof netHubGiftKey==='function'&&NET.hg&&NET.hg.in&&!NET.hg.in.yes){ netHubGiftKey(); }   // v18.05: Y takes an offer on the floor
-    padHold('KeyF',pressed(3));
+    // v22.19, from the whole-game bug hunt of 2026-10-08 (K30): THE Y THAT TAKES AN OFFER IS SPENT ON IT, as T is on the keyboard
+    // (v18.05). The same press went on to hold the station Y key, so a controller player who took an offer at the lift, the shop
+    // counter or the Mainframe also opened PARTY, HIRE or RACKS over it in the same frame. The station Y now waits until Y is let
+    // go; with no offer waiting, or one that has run out, Y works the station as before.
+    if(pressed(3)&&!PAD.prev[3]&&typeof netHubGiftKey==='function'&&NET.hg&&NET.hg.in&&!NET.hg.in.yes&&netHubGiftKey()) PAD.yGift=1;   // v18.05: Y takes an offer on the floor
+    if(!pressed(3)) PAD.yGift=0;
+    padHold('KeyF',pressed(3)&&!PAD.yGift);
     padHold('KeyT',pressed(5));
     // v13.47: View opens and closes the backpack, Menu pauses, one change per press.
     if(pressed(8)&&!PAD.prev[8]) floorPadTap('KeyI');
@@ -35280,7 +35285,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.18: In same machine co-op, the player 2 window plays the Undercroft music again once the player 1 window is gone. Check 22.18 fails on v22.17',
+  now:'v22.19: Taking a trade offer with Y on the controller no longer opens the station window behind it. Check 22.19 fails on v22.18',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

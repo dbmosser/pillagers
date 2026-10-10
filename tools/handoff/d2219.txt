@@ -1,0 +1,5 @@
+## v22.19 - Y ON A TRADE OFFER OPENS NOTHING ELSE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op in the Undercroft, when one player offers an item, the other can take it with T or with Y on the controller. Standing at the lift, the shop counter or the Mainframe, the same Y press also worked the station, so the PARTY window, HIRE or the RACKS tab opened over the trade he had just accepted. On the keyboard T was already spent on the offer. Y is now spent on the offer too: the station waits until Y is let go, and with no offer waiting Y works the station as before.
+
+MEASURED. Check 22.19 passes, and fails on v22.18.

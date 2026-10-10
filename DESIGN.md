@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.19 - Y ON A TRADE OFFER OPENS NOTHING ELSE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op in the Undercroft, when one player offers an item, the other can take it with T or with Y on the controller. Standing at the lift, the shop counter or the Mainframe, the same Y press also worked the station, so the PARTY window, HIRE or the RACKS tab opened over the trade he had just accepted. On the keyboard T was already spent on the offer. Y is now spent on the offer too: the station waits until Y is let go, and with no offer waiting Y works the station as before.
+
+MEASURED. Check 22.19 passes, and fails on v22.18.
 ## v22.18 - PLAYER 2 GETS THE UNDERCROFT MUSIC BACK
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In same machine co-op the player 2 window leaves the Undercroft song to the player 1 window, so only one song plays for the pair. But once the player 1 window was closed or crashed, or ended the party, the player 2 window still waited for it, so its Undercroft stayed silent on every visit until it was reloaded. When the link to player 1 ends, the player 2 window now plays the song itself, and it hands it back as soon as player 1 links again.

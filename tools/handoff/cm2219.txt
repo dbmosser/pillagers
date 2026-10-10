@@ -1,0 +1,7 @@
+v22.19: y on a trade offer opens nothing else
+
+Taking a trade offer with Y on the controller no longer opens the station window behind it.
+
+Check 22.19. Fails on v22.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
