@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.00 - A CONTROLLER SEES WHERE THE MAP MARKER GOES
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller the right stick moves a cursor over the open sector map and a tap of D-UP places the marker there, but that cursor was never drawn. The only pointer on the map was the mouse arrow, wherever the real mouse happened to sit, so a pad player placed his marker blind, and the header told him to CLICK, a button a pad does not have. The cursor is now drawn as a ring and cross where the marker will land, and on a controller the header says R STICK to move it and D-UP to place it. The mouse wording is unchanged.
+
+MEASURED. Check 22.00 passes, and fails on v21.99.
 ## v21.99 - ESC ON THE KEYS WINDOW KEEPS THE RAID PAUSED
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In a raid: P, then Settings, then CHANGE KEYS, then ESC to back out. The Keys window closed and the pause box closed with it on the same press, so the raid was suddenly live again with the hands off the controls. With a key change waiting (PRESS A KEY), ESC cancelled it and also shut the whole Keys window. In the player 2 window every key pressed in the Keys window was also played in the player 1 window. The Keys window now uses up its own key: ESC cancels a waiting change, or closes only the Keys window, and the pause box stays up with the raid paused.

@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.99';
+var VER='22.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32109,7 +32109,7 @@ function drawMapOverlayRaw(){
     _hx+=ctx.measureText(_hsub).width+28;
   }
   ctx.fillStyle='#ffc04a';
-  ctx.fillText(G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',_hx,_hdY);
+  ctx.fillText(padOn()?'R STICK move marker  \u00b7  D-UP place marker':G.waypoint?'CLICK set waypoint  ·  RIGHT-CLICK clear':'CLICK to set a waypoint',_hx,_hdY);
   // conditions belong on the map, since they change how far you can see
   ctx.textAlign='right';
   ctx.fillStyle=wx().id==='clear'?'#9aa8d0':'#4de3d0';
@@ -32542,6 +32542,23 @@ if(G.trail&&G.trail.length>1){
   ctx.lineTo(_pmx+Math.cos(p.face)*24*_pmz,_pmy+Math.sin(p.face)*24*_pmz); ctx.stroke();
   ctx.lineWidth=1;
   try{ if(NET.on) netMapDots(ox,oy,sc,_pmz); }catch(_nmd){}   // v16.08: the party on the sector map (the net section)
+  // v22.00, from the whole-game bug hunt of 2026-10-08 (K10): THE CONTROLLER MAP CURSOR IS DRAWN. Since v16.47 the right stick
+  // moves a cursor across the open map and a tap of D-UP places the marker there, but nothing drew that cursor: the only pointer
+  // on the map was the mouse arrow, wherever the real mouse sat, so a pad player placed his marker blind. A ring and a cross now
+  // show where it will land, after the labels like the marker above. G.mapCur is set only by the right stick and is cleared when
+  // the map shuts, so a mouse player never sees it.
+  if(G.mapCur){
+    var _mcx=ox+G.mapCur.x*sc, _mcy=oy+G.mapCur.y*sc;
+    var _mcP=function(){
+      ctx.beginPath(); ctx.arc(_mcx,_mcy,9*_pmz,0,6.2832);
+      ctx.moveTo(_mcx-16*_pmz,_mcy); ctx.lineTo(_mcx-5*_pmz,_mcy); ctx.moveTo(_mcx+5*_pmz,_mcy); ctx.lineTo(_mcx+16*_pmz,_mcy);
+      ctx.moveTo(_mcx,_mcy-16*_pmz); ctx.lineTo(_mcx,_mcy-5*_pmz); ctx.moveTo(_mcx,_mcy+5*_pmz); ctx.lineTo(_mcx,_mcy+16*_pmz);
+      ctx.stroke();
+    };
+    ctx.strokeStyle='#120e0c'; ctx.lineWidth=4.5*_pmz; _mcP();   // an ink edge, so it never disappears into a gold block
+    ctx.strokeStyle='#ffc04a'; ctx.lineWidth=2*_pmz; _mcP();
+    ctx.lineWidth=1;
+  }
   };
   if(MAPLAST){ MAPLAST.push({fn:_pmDraw,m:ctx.getTransform(),ga:ctx.globalAlpha}); } else _pmDraw();
   // SURVEYED. Bottom left of the map, out of the way of every marker on it.
@@ -35054,7 +35071,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.99: ESC on the CHANGE KEYS window now cancels a press or closes only that window, and the raid stays paused. Check 21.99 fails on v21.98',
+  now:'v22.00: On a controller the sector map now shows where your marker will land, and says R STICK and D-UP. Check 22.00 fails on v21.99',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v22.00: a controller sees where the map marker goes
+
+On a controller the sector map now shows where your marker will land, and says R STICK and D-UP.
+
+Check 22.00. Fails on v21.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

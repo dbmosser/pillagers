@@ -1,0 +1,1 @@
+| A CONTROLLER SEES WHERE THE MAP MARKER GOES | v22.00 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 22.00 passes, fails on v21.99 |
