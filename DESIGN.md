@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.27 - THE KEPT RAID KEEPS ITS OWN TERMS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when the host dies or extracts while his teammate is still up top, the host window keeps the raid running for the teammate. If the host then signed Terms at the lift for his next run, they changed the teammate's raid at once: under THEY KNOW YOU every new pillager wave walked in hostile with a grudge, and under SILENT RUNNING every Listener heard half again as far, with no hazard pay for either. The kept raid now keeps the Terms it was built with until it ends, and the Terms signed on the floor are for the host's next run.
+
+MEASURED. Check 22.27 passes, and fails on v22.26.
 ## v22.26 - A GUN TAKES ITS ROUNDS WITH IT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A gun put into the backpack keeps the rounds it had, and those rounds came back with the next gun of that model taken from the backpack. When the gun left the backpack another way (sold at the stall, given to the hire or a teammate, or taken by a teammate from a pile) its rounds stayed behind, so the next SMG you equipped could come up with an empty magazine, or a free full one. Now those rounds leave with the gun, and the next one comes up on half a magazine as any found gun does. A gun lying in your own pile still keeps its load.

@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.26';
+var VER='22.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22020,7 +22020,12 @@ var TERMS=[
 // Terms now keeps them (G.terms), and those are read while it runs and as it ends (termsPay(1), termsOf). Solo and the host
 // never set G.terms, so they read their own list as before; the Undercroft always reads the player's own.
 function termsRaid(){ return (typeof G!=='undefined'&&G&&!G.sim&&Array.isArray(G.terms))?G.terms:null; }
-function termsOn(){ var R=termsRaid(); if(R&&!G.over) return R; if(!Array.isArray(P.terms)) P.terms=[]; return P.terms; }
+// v22.27, from the whole-game bug hunt of 2026-10-08 (K38): THE RAID A HOST KEEPS FOR HIS PARTY KEEPS ITS OWN TERMS. Once the host
+// was out, the raid he runs on for a teammate still up top (NET.specG) is over in his window, so it read his own signed list, and
+// Terms he signed on the floor for his next run changed that teammate's raid at once: every new pillager wave hostile with a
+// grudge under THEY KNOW YOU, every Listener hearing 50% farther under SILENT RUNNING, and no hazard pay for either. That raid now
+// keeps the list it was built with (netSpecStart) and reads it until it ends; the floor still reads and signs his own list.
+function termsOn(){ var R=termsRaid(); if(R&&(!G.over||(typeof NET==='object'&&NET&&NET.specG===G))) return R; if(!Array.isArray(P.terms)) P.terms=[]; return P.terms; }
 function termsOf(){ return termsRaid()||termsOn(); }   // the raid's own, even as it ends
 function hasTerm(id){ return termsOn().indexOf(id)>=0; }
 function termsPay(raid){
@@ -35327,7 +35332,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.26: A gun that leaves your backpack takes its stowed rounds with it, so the next one of that model comes up on half a magazine. Check 22.26 fails on v22.25',
+  now:'v22.27: In co-op, Terms the host signs while his teammate is still up top no longer change that raid. Check 22.27 fails on v22.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42214,6 +42219,7 @@ function netSpecStart(how){
   for(i=0;i<NET.up.length;i++) if(netUpShown(NET.up[i])&&netUpGone(NET.up[i])) n--;   // v16.86: a teammate whose out word came on this seed is not waited for, whatever his last position word filed
   if(!n) return false;
   NET.specG=G; NET.specHow=String(how||'extract'); NET.specAcc=0; NET.specIdle=0; NET.specErr=0;
+  if(!Array.isArray(G.terms)) G.terms=termsOn().slice();   // v22.27 (K38): the Terms this raid was built with, kept for the party; Terms signed on the floor meanwhile are for the next run
   if(G.player) G.player.specOut=1;
   G.searching=null; G.searchT=0;   // v16.53: and a box the host was searching when his run ended is let go, not held for ever
   netBroadcast({t:'up',st:'spec',how:netClean(how,12)});

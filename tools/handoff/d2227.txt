@@ -1,0 +1,5 @@
+## v22.27 - THE KEPT RAID KEEPS ITS OWN TERMS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when the host dies or extracts while his teammate is still up top, the host window keeps the raid running for the teammate. If the host then signed Terms at the lift for his next run, they changed the teammate's raid at once: under THEY KNOW YOU every new pillager wave walked in hostile with a grudge, and under SILENT RUNNING every Listener heard half again as far, with no hazard pay for either. The kept raid now keeps the Terms it was built with until it ends, and the Terms signed on the floor are for the host's next run.
+
+MEASURED. Check 22.27 passes, and fails on v22.26.

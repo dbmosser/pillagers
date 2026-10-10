@@ -1,0 +1,7 @@
+v22.27: the kept raid keeps its own terms
+
+In co-op, Terms the host signs while his teammate is still up top no longer change that raid.
+
+Check 22.27. Fails on v22.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
