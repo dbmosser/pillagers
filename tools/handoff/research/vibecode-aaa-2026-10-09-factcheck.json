@@ -1,0 +1,772 @@
+{
+    "checks":  [
+                   {
+                       "claim":  "Best-practices: a pass/fail check Claude can run is the top recommendation; gate the stop with a Stop hook; Claude Code overrides a Stop hook after 8 blocks in a row with no tool call in between, so exit early when stop_hook_active is true",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/best-practices",
+                       "note":  "Best-practices says \u0027Give Claude a check it can run... the difference between a session you watch and one you walk away from\u0027 and lists the Stop hook as the \u0027deterministic gate\u0027. The 8-block cap is on /docs/en/hooks (Stop input: 8-consecutive-continuation cap, count resets on each tool call, CLAUDE_CODE_STOP_HOOK_BLOCK_CAP raises it) and /docs/en/hooks-guide (\u0027Stop hook hits the block cap\u0027, which tells you to check stop_hook_active)."
+                   },
+                   {
+                       "claim":  "Harness-design post: a separate skeptical evaluator was the biggest lever; Claude is a poor QA agent that talks itself into approving issues; solo retro game maker run 20 min/$9 with entities not responding to input; full harness 6 h/$200",
+                       "verdict":  "partly",
+                       "url":  "https://www.anthropic.com/engineering/harness-design-long-running-apps",
+                       "note":  "Dated 2026-03-24. Confirmed quotes: \u0027Out of the box, Claude is a poor QA agent\u0027; the model would \u0027talk itself into deciding they weren\u0027t a big deal\u0027; solo about 20 min and $9 with \u0027nothing responded to input\u0027; harness about 6 h and $200 (\u0027over 20x more expensive\u0027). The page calls the separation \u0027a strong lever\u0027, not the biggest one."
+                   },
+                   {
+                       "claim":  "Anthropic\u0027s DAW experiment: Claude cannot hear, so QA on musical taste was weak",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.anthropic.com/engineering/harness-design-long-running-apps",
+                       "note":  "Quote: \u0027Claude can\u0027t actually hear, which made the QA feedback loop less effective with respect to musical taste.\u0027 The DAW run took about 4 h and cost $124. The 2013 W3C OfflineAudioContext thread was not re-checked."
+                   },
+                   {
+                       "claim":  "Long-running-agent harness: JSON feature list (200+ entries) chosen over Markdown; agents may change only the \u0027passes\u0027 field; \u0027It is unacceptable to remove or edit tests\u0027; each session reads git log and the progress file and runs a basic end-to-end test first",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+                       "note":  "Dated 2025-11-26. All points are quoted on the page, including \u0027over 200 features\u0027 and that the model is \u0027less likely to inappropriately change or overwrite JSON files\u0027."
+                   },
+                   {
+                       "claim":  "Vision: Claude 4.7+ reads up to 2576 px long edge / 4,784 visual tokens; 3840x2160 is downscaled to 2576x1449; 1920x1080 is read natively for 2,691 tokens",
+                       "verdict":  "confirmed",
+                       "url":  "https://platform.claude.com/docs/en/build-with-claude/vision",
+                       "note":  "Table rows match exactly. The standard tier (older models) is 1568 px and downsizes 1920x1080 to 1456x819 (1,560 tokens). The arithmetic 2576/3840 = 67% is correct."
+                   },
+                   {
+                       "claim":  "Memory: only the first 200 lines or 25KB of MEMORY.md load at session start; CLAUDE.md should stay under 200 lines; imports don\u0027t reduce context cost; a file over 4 MiB is skipped",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/memory",
+                       "note":  "The page says the content past that limit \u0027is not loaded at session start\u0027. CLAUDE.md target is \u0027under 200 lines per CLAUDE.md file\u0027. Imports \u0027don\u0027t reduce its context cost\u0027. \u0027Claude Code loads a CLAUDE.md file of up to 4 MiB in full and skips a larger file.\u0027"
+                   },
+                   {
+                       "claim":  "Hooks: PreToolUse exit 2 denies the call; PostToolUse exit 2 shows stderr to Claude; stderr on exit 0 is never shown; additionalContext is injected; strings over 10,000 chars go to a file with a 2,000-char preview",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/hooks",
+                       "note":  "All confirmed, including \u0027Claude never sees stderr from a hook that exits 0\u0027. The 10,000-char cap also covers systemMessage, initialUserMessage and plain stdout, and no setting raises it. Claude Code doesn\u0027t prompt Claude to read the overflow file."
+                   },
+                   {
+                       "claim":  "Hooks guide: PostToolUse \u0027Edit|Write\u0027 runs after edits; Stop hook can block; override after 8 blocks in a row; agent hooks default to 60 s and up to 50 tool turns and are experimental",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/hooks-guide",
+                       "note":  "Quote: \u0027Claude Code overrides a Stop hook after it blocks eight times in a row with no tool call from Claude in between.\u0027 Agent hooks have \u0027a longer default timeout of 60 seconds and up to 50 tool-use turns\u0027, and the page says \u0027Agent hooks are experimental\u0027."
+                   },
+                   {
+                       "claim":  "Code-intelligence/path-scoped features (path rules, subdirectory CLAUDE.md, LSP diagnostics, worktrees) are keyed to file paths, so a single 45,000-line HTML file defeats them",
+                       "verdict":  "partly",
+                       "url":  "https://code.claude.com/docs/en/plugins/code-intelligence",
+                       "note":  "The page confirms LSP diagnostics after each edit to files the server handles. The official table lists TypeScript/JavaScript but no HTML server, so inline JS in .html may get no diagnostics (not stated outright). The page doesn\u0027t discuss path rules, worktrees or single large files. \u0027Defeats all of them\u0027 is the researcher\u0027s inference."
+                   },
+                   {
+                       "claim":  "Subagents: only the final message returns; walkthrough shows 6,100 tokens read vs a 420-token result; defaults of 20 concurrent and 3 nesting levels; per-agent model; isolation: worktree",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/sub-agents",
+                       "note":  "The sub-agents page confirms 20 concurrent (CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS, v2.1.217+), three layers of nesting (v2.1.219+, earlier versions differ), the model field and isolation: worktree. The 6,100/420 figure is on https://code.claude.com/docs/en/context-window, not the sub-agents page: \u0027The subagent read 6,100 tokens of files. You got a 420-token result.\u0027"
+                   },
+                   {
+                       "claim":  "Workflows: 16 concurrent agents by default (fewer with fewer CPUs; 1-256 via CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS); 1,000 agents per run; warning above 25 agents or 1.5M projected tokens; size guideline small \u003c5, medium \u003c10, large \u003c50",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/workflows",
+                       "note":  "All numbers match. The env var needs v2.1.269+; the size guideline needs v2.1.202+ (default medium, or small on Pro with v2.1.271+). The warning is advisory only. A chosen size guideline replaces the 25-agent warning threshold."
+                   },
+                   {
+                       "claim":  "/goal: a small fast model judges the condition; it does not run commands or read files and judges only the transcript; up to 4,000 chars; include a stated check and a bound like \u0027or stop after 20 turns\u0027",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/goal",
+                       "note":  "Quote: the evaluator \u0027doesn\u0027t run commands or read files independently\u0027. \u0027The condition can be up to 4,000 characters.\u0027 The bound example \u0027or stop after 20 turns\u0027 is on the page. /goal is a wrapper around a session-scoped prompt-based Stop hook."
+                   },
+                   {
+                       "claim":  "Skills: only descriptions load at startup; listing text cut at 1,536 chars; keep SKILL.md under 500 lines; after compaction each skill re-attached with first 5,000 tokens within a shared 25,000-token budget, oldest dropped first",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/skills",
+                       "note":  "All figures quoted. The 1,536 cap covers description plus when_to_use combined. The page says descriptions are in context; it does not say \u0027name and description only\u0027."
+                   },
+                   {
+                       "claim":  "Frontend-design post: \u0027distributional convergence\u0027; about 400 tokens of steering naming references and things to avoid helped immediately; a critic says single-session iteration drifts to the mean",
+                       "verdict":  "partly",
+                       "url":  "https://claude.com/blog/improving-frontend-design-through-skills",
+                       "note":  "Dated 2025-11-12. \u0027Distributional convergence\u0027 and \u0027a ~400 token prompt\u0027 are confirmed. The critic\u0027s point about drifting toward the mean is not on this page; source it separately or drop it."
+                   },
+                   {
+                       "claim":  "Session hygiene: /clear after two failed corrections, avoid kitchen-sink sessions, scope investigations or use subagents, tell CLAUDE.md what compaction must preserve; steering post says output styles and --append-system-prompt are never compacted and hooks bypass compaction",
+                       "verdict":  "partly",
+                       "url":  "https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more",
+                       "note":  "The steering post (2026-06-18) confirms that output styles \u0027never get compacted\u0027, append-system-prompt is \u0027Never compacted\u0027, and hooks \u0027Bypass compaction entirely\u0027. The hygiene rules (two failed corrections, kitchen sink, compaction instructions in CLAUDE.md) are on https://code.claude.com/docs/en/best-practices, not in the steering post. The steering post also says root CLAUDE.md files are re-read after compaction."
+                   },
+                   {
+                       "claim":  "Claude Code Game Studios (49 subagents, 73 skills, 12 hooks, 11 path-scoped rule files) criticized for same-model \u0027independent\u0027 reviewers sharing a compacting context and thin markdown memory; model tiering, path rules, parseable gate verdicts and full/lean/solo modes work",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.productionalchemist.com/p/claude-code-game-studios-49-agents",
+                       "note":  "Dated 2026-05-19 (Rob Sandberg). All counts and points match."
+                   },
+                   {
+                       "claim":  "Unity\u0027s official MCP is an open beta (May 2026) needing Unity 6 and a subscription",
+                       "verdict":  "partly",
+                       "url":  "https://unity.com/blog/unity-ai-mcp-how-to-get-started",
+                       "note":  "Post dated 2026-05-11. Open beta confirmed. Requirements: Unity 6 (6000.0)+, the AI Assistant package, a Unity Cloud-linked project, and \u0027an active trial or subscription\u0027. Capabilities listed are scene/hierarchy reading, console log/error reading and script editing. Running the game and screenshots are not mentioned."
+                   },
+                   {
+                       "claim":  "A 2026 roundup says most Godot MCP servers still don\u0027t give Claude a live view of runtime errors",
+                       "verdict":  "wrong",
+                       "url":  "https://www.summerengine.com/blog/best-godot-mcp-server",
+                       "note":  "The roundup (2026-06-06, details as of 2026-09-25) says the opposite: Coding-Solo\u0027s server \u0027captures console output and errors\u0027, GDAI MCP \u0027reads debugger output and script errors\u0027, and Summer Engine feeds errors back. The real gaps it lists are screenshots, simulated input and asset generation."
+                   },
+                   {
+                       "claim":  "Official ElevenLabs MCP generates sound effects from text; free tier 10k credits/month",
+                       "verdict":  "partly",
+                       "url":  "https://glama.ai/mcp/servers/elevenlabs/elevenlabs-mcp",
+                       "note":  "Official badge, a text_to_sound_effects tool and \u0027a free tier with 10k credits per month\u0027 are confirmed. The local tool limits durations to 0.5-5 s. The repo is deprecated and unmaintained in favour of the hosted MCP at https://api.elevenlabs.io/v1/mcp. mcp-asset-gen/gpt-image-1 was not checked at this URL."
+                   },
+                   {
+                       "claim":  "OpenAI \u0027develop-web-game\u0027 skill (first listed 2026-02-01, upstream openai/skills): render_game_to_text() returns compact JSON with a coordinate-system note; advanceTime(ms) steps at 1/60 s then renders",
+                       "verdict":  "partly",
+                       "url":  "https://smithery.ai/skills/davila7/develop-web-game",
+                       "note":  "The content is confirmed: the JSON with an \u0027origin and axis directions\u0027 note, and code that runs update(1/60) per step then render(). The page gives no date and doesn\u0027t name openai/skills; it lists the source as davila7/claude-code-templates."
+                   },
+                   {
+                       "claim":  "develop-web-game loop rules: small steps, open and look at the newest screenshots (making them is not enough), check the text state matches the screen, fix the first new console error first",
+                       "verdict":  "partly",
+                       "url":  "https://skills.cat/skills/trailofbits/skills-curated/openai-develop-web-game",
+                       "note":  "All the rules are quoted on the page. The page doesn\u0027t confirm OpenAI authorship; it is listed under trailofbits/skills-curated with only \u0027Updated 7mo ago\u0027."
+                   },
+                   {
+                       "claim":  "Playwright clock overrides rAF/cAF, performance, Date, timers, requestIdleCallback and Event.timeStamp; a community game-QA skill uses it with a seeded PRNG and maxDiffPixels 200 / threshold 0.3",
+                       "verdict":  "partly",
+                       "url":  "https://playwright.dev/docs/clock",
+                       "note":  "The override list is confirmed and also includes Temporal.Now. install() must come before other clock calls (\u0027undefined behavior\u0027 otherwise). runFor() fires timers along the way. The community skill and its 200/0.3 tolerances are not on this page."
+                   },
+                   {
+                       "claim":  "toHaveScreenshot waits for two identical consecutive shots, uses pixelmatch, defaults threshold 0.2 (YIQ), scale \u0027css\u0027, animations \u0027disabled\u0027 (CSS/transitions/Web Animations only); baselines named per browser and platform; generate baselines in the same environment",
+                       "verdict":  "partly",
+                       "url":  "https://playwright.dev/docs/api/class-pageassertions",
+                       "note":  "The cited page confirms the two-shot wait, 0.2 YIQ, \u0027css\u0027 and \u0027disabled\u0027 (stops CSS animations, CSS transitions and Web Animations). Pixelmatch, the -chromium-darwin style naming and the environment warning are on https://playwright.dev/docs/test-snapshots, where they are confirmed. Cite both."
+                   },
+                   {
+                       "claim":  "Willison\u0027s Fable 5 raccoon-heist one-shot: canvas rendered at 2x on phones; DPR-1 desktop tests masked it; Playwright checks on desktop, portrait-phone and landscape-phone",
+                       "verdict":  "confirmed",
+                       "url":  "https://simonwillison.net/2026/Aug/5/raccoon-heist/",
+                       "note":  "Dated 2026-08-05; ran in Claude Code for web. The cause was a cssText assignment that wiped Three.js inline sizing. Textures and title art came from gpt-image-2."
+                   },
+                   {
+                       "claim":  "chrome-devtools-mcp has 59 tools including perf traces with insights, CPU throttling, WxHxDPR viewport, screencast, 14 heap-snapshot tools, execute_3p_developer_tool and WebMCP",
+                       "verdict":  "confirmed",
+                       "url":  "https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/main/docs/tool-reference.md",
+                       "note":  "59 total: Input 10, Navigation 6, Emulation 2, Performance 3, Network 2, Debugging 9, Memory 14, Extensions 5, Third-party 2, WebMCP 2, PWA 4. Screencast, third-party and WebMCP tools need experimental flags."
+                   },
+                   {
+                       "claim":  "Chrome DevTools MCP public preview 2025-09-23: perf traces, console/network reading, simulated input in real Chrome",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.chrome.com/blog/chrome-devtools-mcp",
+                       "note":  "Dated 2025-09-23; performance_start_trace is named."
+                   },
+                   {
+                       "claim":  "Levels\u0027 Vibe Jam 2026 post: a judge said best entries are \u0027third-year game student\u0027 quality; Levels said entries are \u0027getting close to production-ready games\u0027",
+                       "verdict":  "partly",
+                       "url":  "https://levels.io/vibe-jam-2026-winners-quality",
+                       "note":  "The page is dated 2026-06-17. The judge is Tim Soret, and the wording is \u0027Not the top 20%, but a 3rd year student yes!\u0027 (no \u0027game\u0027). Levels\u0027 \u0027getting close to production-ready games that could compete with real game studios\u0027 is confirmed."
+                   },
+                   {
+                       "claim":  "Vibe Jam 2026 winner built with Claude Code in about two weeks: about 27,000 lines, 188+ commits, 2-3 parallel sessions each owning different code",
+                       "verdict":  "confirmed",
+                       "url":  "https://wccftech.com/ios-developer-made-capybara-game-using-vibe-coding-and-won-25000/",
+                       "note":  "The figures are confirmed, self-reported via the developer\u0027s Reddit post (9 years of iOS experience, $25,000 prize). The article is dated 2026-07-13, not May/June."
+                   },
+                   {
+                       "claim":  "Grumbulus: about 15,000 lines vanilla JS, Canvas 2D, Web Audio procedural music, no engine; AI bug classes include nonexistent methods, unread flags, wrong ordering, screen vs world space",
+                       "verdict":  "confirmed",
+                       "url":  "https://gonzoml.substack.com/p/how-we-built-a-full-browser-game",
+                       "note":  "Dated 2026-03-25. Concrete examples: a boss check that always returned false, 15 unread pedestrian flags, wave score captured after reset, and Thor drawn about 3,000 px off-screen."
+                   },
+                   {
+                       "claim":  "game-creator plugin gates every code-changing step with a five-phase QA subagent and adds \u0027design-intent\u0027 tests that fail when a mechanic is too weak",
+                       "verdict":  "partly",
+                       "url":  "https://github.com/opusgamelabs/game-creator",
+                       "note":  "Confirmed: a Claude Code plugin whose QA runs after every code-modifying step, in five phases (build, runtime, gameplay, architecture, visual), with autofix up to 3 attempts. Design-intent tests are not mentioned in the README."
+                   },
+                   {
+                       "claim":  "World of ClaudeCraft, a Claude-built MMO, runs one deterministic sim core in browser, server and headless RL hosts, with an architecture test enforcing it",
+                       "verdict":  "partly",
+                       "url":  "https://github.com/levy-street/world-of-claudecraft",
+                       "note":  "The three hosts and tests/architecture.test.ts (checks forbidden imports, DOM globals, clock and Math.random) are confirmed. The README doesn\u0027t say it was built with Claude (it has CLAUDE.md/AGENTS.md) and gives no build dates."
+                   },
+                   {
+                       "claim":  "Void Balls: about 29,000 lines of AI code and about 19,000 lines of tests (88 files); tests credited as the safety net for refactors; strict 7-colour palette",
+                       "verdict":  "partly",
+                       "url":  "https://www.loopedin.games/blog/how-i-built-void-balls-using-ai",
+                       "note":  "Dated 2026-06-19. Confirmed: 173 scripts (about 29k lines of C#), 88 test files (about 19k lines), a locked 7-colour palette and 8 specialized agents. The page doesn\u0027t credit the tests as a refactor safety net. Note it is C#, likely Unity, not a browser game."
+                   },
+                   {
+                       "claim":  "CODEX MORTIS (TypeScript, PixiJS, bitECS, Electron, Claude Code) shipped 1.0 with 4-player online co-op; its weakest point was static sprites \u0027stumbling around as still images\u0027",
+                       "verdict":  "partly",
+                       "url":  "https://gigazine.net/gsc_news/en/20251215-codex-mortis/",
+                       "note":  "Dated 2025-12-15. The stack, Claude Code (Opus 4.1/4.5) and the Steam-forum animation quote are confirmed; the developer used shader wobble instead of animation. Co-op and the 1.0 release are not on this page."
+                   },
+                   {
+                       "claim":  "Shipped AI-built games are mostly roguelites, bullet hells, auto-battlers; \u0027the first 80% comes together fast\u0027 while the last 20% needs human judgment",
+                       "verdict":  "partly",
+                       "url":  "https://app.cinevva.com/signals/2026-03-23-solo-devs-shipping-not-vibing",
+                       "note":  "The page says \u0027mostly roguelikes, bullet hells, and auto-battlers\u0027 (the most systematizable genres). The 80/20 phrase does not appear."
+                   },
+                   {
+                       "claim":  "Best-practices: the highest-leverage practice is a runnable check, enforced as a gate (Stop hook or /goal) and graded by a fresh-context reviewer so the worker isn\u0027t grading itself",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/best-practices",
+                       "note":  "Quote: a verification subagent or workflow \u0027has a fresh model try to refute the result, so the agent doing the work isn\u0027t the one grading it.\u0027 The word \u0027highest-leverage\u0027 is not used; the tip wording is \u0027the difference between a session you watch and one you walk away from\u0027."
+                   },
+                   {
+                       "claim":  "Parallel agents overwrite each other without worktrees and a shared plan; merges are clean only when agents edit different files",
+                       "verdict":  "not-found",
+                       "url":  "https://www.morphllm.com/claude-code-git-worktree",
+                       "note":  "The page returned HTTP 429 and was not read."
+                   },
+                   {
+                       "claim":  "fly.pieter.com claimed \u0027$1M ARR in 17 days\u0027 from in-game sponsorship, driven by about 100M X views",
+                       "verdict":  "partly",
+                       "url":  "https://levels.io/full-multiplayer-python-websockets-game-ai",
+                       "note":  "Post dated 2025-02-22. \u0027$1M ARR in just 17 days\u0027 is Levels\u0027 own unverified claim. Sponsorship as the revenue source was not found in the first 100k chars. The 100M views figure is secondhand (\u0027Someone messaged me saying he counted...\u0027); the linked post shows about 1.58M views."
+                   },
+                   {
+                       "claim":  "Vibe Jam 2026 advice: one change per prompt then run, first ten seconds carry the hook, near-instant loads, test hosted link in a fresh browser with no account",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.summerengine.com/blog/cursor-vibe-jam-2026-guide",
+                       "note":  "Dated 2026-06-06; all four points are quoted."
+                   },
+                   {
+                       "claim":  "Weekend roguelike: Claude Code screenshot self-testing helped, but phased build silently skipped sprites; \u0027still character placeholders\u0027",
+                       "verdict":  "confirmed",
+                       "url":  "https://barretblake.dev/posts/development/2026/03/ai-roguelike/",
+                       "note":  "Dated 2026-03-16. Quotes: \u0027it never implemented the use of sprites\u0027 and \u0027At the end it was still character placeholders.\u0027"
+                   },
+                   {
+                       "claim":  "About 7% of Steam games (7,818 of about 114,126) and about 1 in 5 2025 releases disclosed gen AI as of July 2025; visual assets about 60% of disclosures",
+                       "verdict":  "confirmed",
+                       "url":  "https://wnhub.io/news/stores-and-publishing/item-48292",
+                       "note":  "Data as of 2025-07-13; published 2025-07-17. 6.9% precisely."
+                   },
+                   {
+                       "claim":  "Nuclear Throne pistol-shot juice numbers (6 px camera kick, +4 shake, 2 px gun kick, 16 px/frame bullets with 0-4 degree spread, circle first frame, shells 2-4 px/frame at 100-150 degrees, 3 px/frame knockback, 1 white + 2 hurt frames, 10-20 ms pause, layered material hit sound)",
+                       "verdict":  "confirmed",
+                       "url":  "https://infovore.org/?p=5275",
+                       "note":  "Dated 2013-10-22. The source is an RPS interview of Jan Willem Nijman by Graham Smith, not a talk. Units for shake (+4) and gun kick (2) are unspecified. Shell speed is at 30 fps on 320x240."
+                   },
+                   {
+                       "claim":  "Bevy 2D screen-shake example: trauma +0.4, decay 0.5/s, exponent 2, max roll 10 degrees, max translation 20 px, noise speed 20, Perlin noise, applied at render time and restored next frame",
+                       "verdict":  "confirmed",
+                       "url":  "https://bevy.org/examples/camera/2d-screen-shake/",
+                       "note":  "All constants match. The page credits Eiserloh\u0027s \u0027Juicing Your Cameras With Math\u0027 but doesn\u0027t state the 2016 year."
+                   },
+                   {
+                       "claim":  "Sakurai hitstop: equal freeze, scales with damage, per-attack tweaks (projectiles less, electric more), a cap, shrinking vibration with hurtboxes fixed, short in multiplayer because a third player gets a free hit",
+                       "verdict":  "confirmed",
+                       "url":  "https://sourcegaming.info/2015/11/11/thoughts-on-hitstop-sakurais-famitsu-column-vol-490-1/",
+                       "note":  "Dated 2015-11-11. The attacker vibrates too, not only the victim. Grounded characters shake horizontally and airborne ones vertically."
+                   },
+                   {
+                       "claim":  "ARC Raiders removed enemy HP bars, damage numbers and hit indicators (an earlier PvE build had them); Strandberg: \u0027playing the Excel sheet of a game\u0027; physical feedback instead",
+                       "verdict":  "confirmed",
+                       "url":  "https://gamingbolt.com/arc-raiders-lacks-enemy-hp-bars-since-embark-doesnt-want-you-playing-the-excel-sheet-of-a-game",
+                       "note":  "GamingBolt 2025-11-05, citing a GamesRadar interview whose date is not given."
+                   },
+                   {
+                       "claim":  "XAG 101: text body height minimum 26 px at 1080p / 52 px at 4K on console, 18/36 on PC; scale to 200% with icons; never two-axis scrolling",
+                       "verdict":  "confirmed",
+                       "url":  "https://devdocs.xbox.com/build/game-principles/accessibility/xag-deep-dives/xag-101-text-display.md",
+                       "note":  "Quote: \u0027Scaling never forces two-axis scrolling within a single UI.\u0027"
+                   },
+                   {
+                       "claim":  "XAG 102: 4.5:1 standard and 3:1 large contrast; large = 52 px at 1080p / 104 px at 4K; 7:1 high contrast; measure against the lowest-contrast part; solid plate with adjustable opacity plus outlines",
+                       "verdict":  "confirmed",
+                       "url":  "https://devdocs.xbox.com/build/game-principles/accessibility/xag-deep-dives/xag-102-contrast.md",
+                       "note":  "All values match."
+                   },
+                   {
+                       "claim":  "Xbox title-safe at 4K is inner 90% (3456x1944); 1080p 1720x1000 (96 px L/R, 40 px T/B); action-safe 4K inner 95% (3648x2052)",
+                       "verdict":  "confirmed",
+                       "url":  "https://devdocs.xbox.com/build/core-features/graphics/overviews/screen-areas",
+                       "note":  "The source itself is inconsistent: 96 px per side gives 1728 wide, not 1720. 1080p action-safe is 1792x1016. Avoid the 32 px L/R and 8 px T/B system-UI bands."
+                   },
+                   {
+                       "claim":  "ARC Raiders HUD per wiki: shields/health bottom-left with squad; weapon/ammo/quick item bottom-right; compass top-centre with extracts within about 400 m; countdown below; map extract icons recolour at 5 min, grey when closed; shotgun circle reticle; wheels; F10 hides HUD",
+                       "verdict":  "confirmed",
+                       "url":  "https://arcraiders.wiki/wiki/Game_UI",
+                       "note":  "This is a community wiki. Settings can\u0027t be changed while downed."
+                   },
+                   {
+                       "claim":  "Marathon launch UI: near-identical icons for implants/cores/mods forcing hover tooltips; no quick looted-vs-equipped compare; about 20 font combinations on one menu page; Bungie promised fixes while keeping the style",
+                       "verdict":  "partly",
+                       "url":  "https://marathonhub.gg/news/bungie-says-marathons-ui-will-improve-but-the-sauce-is-staying/",
+                       "note":  "Dated 2026-03-03. Icons, the compare complaint and Elliot Gray\u0027s promise (\u0027don\u0027t think for a second that we\u0027re gonna remove the SAUCE\u0027) are confirmed. The 20-font-combination count is not on this page."
+                   },
+                   {
+                       "claim":  "Marathon 1.0.5 (17 March 2026): less melee/knife camera shake, softer Hacked effect, waypoints fade on ADS, clearer revive prompt, downed players can activate exfil beacons",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.shacknews.com/article/148342/marathon-update-1-0-5-patch-notes",
+                       "note":  "All five lines are quoted from the patch notes."
+                   },
+                   {
+                       "claim":  "Helldivers 2 mix: per-category loudness targets, Wwise HDR priority, dialogue ducks music highs only and explosions lows only, ducking scales with intensity, off-screen sounds turned down, big enemies attenuate less, weapon brightness drops over sustained fire, longer buildups for big threats",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.asoundeffect.com/helldivers-2-game-sound-design/",
+                       "note":  "Dated 2024-04-26 (older)."
+                   },
+                   {
+                       "claim":  "Embark records guns with three mics (on gun, between, hundreds of metres away); explosions likewise; hundreds of context rules; ARC sound patterns change with state; backpack sound changes with fullness",
+                       "verdict":  "confirmed",
+                       "url":  "https://arcraiders.com/news/soundscapes-blog",
+                       "note":  "Dated 2025-09-03."
+                   },
+                   {
+                       "claim":  "Fortnite turned Visualize Sound Effects on by default on 23 July 2024, with colour-coded rings (gunshots orange/red, chests gold, footsteps/animals/vehicles white)",
+                       "verdict":  "partly",
+                       "url":  "https://caniplaythat.com/?p=14083",
+                       "note":  "Article dated 2024-08-09; the default-on change on July 23 is confirmed. The specific colour mapping is not on the page; it says only \u0027differently colored directional rings\u0027."
+                   },
+                   {
+                       "claim":  "SYNTHETIK: mag ejection loses remaining rounds; timed active reload installs instantly and boosts damage; stop-and-go accuracy; headshots in top-down; heavy variants trade speed for recoil control",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.synthetikgame.com/weapons",
+                       "note":  "Active reload is tied only to instant install and bonus damage. Accuracy control is described as a general mechanic."
+                   },
+                   {
+                       "claim":  "Black Ops 6 has ten HUD presets including \u0027Magnified\u0027 (larger icons for players far from the screen), per-faction colours, colour filters, and a hit-marker visuals toggle",
+                       "verdict":  "partly",
+                       "url":  "https://insider-gaming.com/how-to-customize-the-hud-in-black-ops-6/",
+                       "note":  "Dated 2024-08-31. The ten presets, faction colours, filters and the Hit Marker Visuals toggle under Crosshair Settings are confirmed. The article names Magnified but doesn\u0027t describe what it does."
+                   },
+                   {
+                       "claim":  "Embark GDC 2026 talk: ARC Raiders was reset from scratch after structured playtests/surveys found it not fun despite strong tech; rebuilt around design intent and pillars instead of big design docs",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.invenglobal.com/articles/20259/nexon-reveals-arc-raiders-reboot-story-at-gdc-2026-after-massive-aaa-reset",
+                       "note":  "Article dated 2026-02-26; speaker Caio Braga. The session date in March is not given."
+                   },
+                   {
+                       "claim":  "MDN canvas optimization (updated Aug 2026): pre-render offscreen, no scaling in drawImage, integer coords, layered canvases, avoid shadowBlur and text, batch calls, render small and scale up with CSS",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas",
+                       "note":  "Last modified 2026-08-25. The page also lists alpha:false and high-DPI handling."
+                   },
+                   {
+                       "claim":  "Engines treat DPR as a quality setting chosen at runtime from a startup benchmark or GPU-tier lookup and exposed in settings, because fill rate limits frame rate",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.playcanvas.com/user-manual/optimization/runtime-devicepixelratio/",
+                       "note":  "Undated doc; all three points are quoted."
+                   },
+                   {
+                       "claim":  "Blur cost grows with image size and radius; pre-render blurred versions once instead of blurring every frame",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.chrome.com/blog/animated-blur/",
+                       "note":  "Dated 2017-10-11 (older). It recommends pre-computing increasingly blurred copies and cross-fading between them."
+                   },
+                   {
+                       "claim":  "Canvas 2D lighting via an offscreen light map (radial gradients with \u0027lighter\u0027, composited with \u0027multiply\u0027); MDN lists 26 composite modes",
+                       "verdict":  "partly",
+                       "url":  "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation",
+                       "note":  "26 modes are confirmed, including lighter, multiply, screen and destination-out (last modified 2025-11-03). The light-map recipe is not described on the MDN page; it is a standard technique that wasn\u0027t verified at this URL."
+                   },
+                   {
+                       "claim":  "Visibility polygons: rays to segment endpoints plus +/-0.00001 rad, sort by angle, fill; soft shadows from about 11 offset origins",
+                       "verdict":  "partly",
+                       "url":  "https://ncase.me/sight-and-light/",
+                       "note":  "The 11 origins / 11 visibility polygons are confirmed. The fetch result didn\u0027t quote the +/-0.00001 rad offset."
+                   },
+                   {
+                       "claim":  "PixiJS v8 Bunnymark at 100k: moving sprites CPU about 50 to 15 ms, GPU about 9 to 2 ms; static CPU about 21 to 0.12 ms; WebGPU not automatically faster because Pixi is often CPU-bound",
+                       "verdict":  "confirmed",
+                       "url":  "https://pixijs.com/blog/pixi-v8-launches",
+                       "note":  "Dated 2024-03-05 (older)."
+                   },
+                   {
+                       "claim":  "Phaser 4 (April 2026) deprecated Canvas; filters, lighting, SpriteGPULayer, TilemapGPULayer are WebGL-only; keep draw calls to \u0027a few hundred\u0027; filters/blend modes/lighting break batches; avoid repeated full-screen passes",
+                       "verdict":  "partly",
+                       "url":  "https://phaser.io/tutorials/phaser-4-rendering-concepts",
+                       "note":  "Confirmed: SpriteGPULayer, TilemapGPULayer and CaptureFrame are WebGL-only; \u0027Don\u0027t use more than a few hundred\u0027 draw calls; the batch breakers; fill as the GPU bottleneck. Not on this page: Canvas deprecation (the page still mentions canvas-renderer features), filters/lighting being explicitly WebGL-only, and the release date. The search budget ran out before this could be checked elsewhere."
+                   },
+                   {
+                       "claim":  "Chromium removed automatic WebGL fallback to SwiftShader (intent Feb 2025, deprecated since Chrome 130, opt-in from about 137-139); re-enable with --use-gl=angle --use-angle=swiftshader-webgl --enable-unsafe-swiftshader",
+                       "verdict":  "partly",
+                       "url":  "https://chromium.googlesource.com/chromium/src/+/da170c2267b2201954efe1c8fa5d2d89ab09f7bf/docs/gpu/swiftshader.md",
+                       "note":  "The deprecation (\u0027WebGL context creation will soon fail\u0027) and the exact flags are confirmed. The doc gives no Chrome versions or intent date."
+                   },
+                   {
+                       "claim":  "Dual Kawase (Bjorge, ARM, SIGGRAPH 2015): downsample centre x4 plus 4 diagonals, upsample 8 taps, each level halves resolution",
+                       "verdict":  "confirmed",
+                       "url":  "https://blog.frost.kiwi/dual-kawase/",
+                       "note":  "Created 2025-09-03, edited 2025-09-06. Downsample is /8. Upsample uses 4 edges x1 and 4 diagonals x2, /12. No explicit cost-vs-radius formula is given for Dual Kawase."
+                   },
+                   {
+                       "claim":  "JFA distance field takes ceil(log2(max(w,h))) ping-pong passes; with the SDF a ray needs about 32 max steps instead of 256 fixed",
+                       "verdict":  "confirmed",
+                       "url":  "https://jason.today/gi",
+                       "note":  "Dated 2024-07-27 (older)."
+                   },
+                   {
+                       "claim":  "Radiance cascades run in a browser via WebGL/three.js; best native timing 1.85 ms at 512x512 and 7.67 ms at 1024x1024 on an RTX 3080 Laptop (Holographic RC)",
+                       "verdict":  "partly",
+                       "url":  "https://arxiv.org/abs/2505.02041v1",
+                       "note":  "Submitted 2025-05-04; the timings are confirmed. Browser/three.js availability is not from this source."
+                   },
+                   {
+                       "claim":  "MDN WebGL best practices (Oct 2026): sync calls stall 1 ms or more; use KHR_parallel_shader_compile; skip mipmaps for 2D (+30% memory); alpha:false can be expensive",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices",
+                       "note":  "Last modified 2026-10-07. The wording is \u0027can take as long as 1ms, but... even longer\u0027."
+                   },
+                   {
+                       "claim":  "WebGPU in all major browsers by 2025-11-25: Chrome/Edge 113+ (Windows D3D12), Firefox 141 Windows and 145 macOS ARM, Safari 26; Linux still in progress",
+                       "verdict":  "confirmed",
+                       "url":  "https://web.dev/blog/webgpu-supported-major-browsers",
+                       "note":  "Firefox 145 macOS support is limited to Tahoe 26 on ARM64. Firefox still lacks Linux, Android and Intel Macs."
+                   },
+                   {
+                       "claim":  "Skia Graphite launched July 2025 on Apple Silicon Macs (+15% MotionMark 1.3 on M3), uses depth testing to cut overdraw; Windows via Dawn D3D11 still in progress late 2025",
+                       "verdict":  "partly",
+                       "url":  "https://blog.google/chromium/introducing-skia-graphite-chromes/",
+                       "note":  "Dated 2025-07-08. Apple Silicon, \u0027almost 15%\u0027 on M3 and depth testing are confirmed. The article doesn\u0027t mention a Windows rollout or D3D11."
+                   },
+                   {
+                       "claim":  "OffscreenCanvas plus transferControlToOffscreen moves rendering to a Worker (Chrome 69, Firefox 105, Safari 16.4); stays smooth when the main thread is busy; workers have no DOM",
+                       "verdict":  "confirmed",
+                       "url":  "https://web.dev/articles/offscreen-canvas",
+                       "note":  "Last updated 2023-12-08 (older); Edge 79 is also listed."
+                   },
+                   {
+                       "claim":  "Steam AI disclosure covers player-facing shipped content (artwork, sound, narrative, localization); dev/efficiency tools are outside its focus; code is not among the examples",
+                       "verdict":  "confirmed",
+                       "url":  "https://partner.steamgames.com/doc/gettingstarted/contentsurvey",
+                       "note":  "The list ends in \u0027etc.\u0027 The quote is \u0027Efficiency gains through the use of these tools is not the focus of this section.\u0027 The revision date wasn\u0027t checked."
+                   },
+                   {
+                       "claim":  "itch.io treats LLM-written code as gen-AI content; disclosure is mandatory only for assets and encouraged for games; AI tags are not penalised or auto-filtered",
+                       "verdict":  "confirmed",
+                       "url":  "https://itch.io/t/4309690/generative-ai-disclosure-tagging",
+                       "note":  "leafo, 2024-11-20. Negative filtering was announced as \u0027coming soon\u0027, and lying with the tags removes discovery indexing."
+                   },
+                   {
+                       "claim":  "About 19.5% of about 8,700 Steam Next Fest demos (June 2026) disclosed gen AI; Valve enforcement reported inconsistently",
+                       "verdict":  "partly",
+                       "url":  "https://www.gamineai.com/blog/steam-ai-disclosure-debate-what-indies-decide-after-sweeney-2026",
+                       "note":  "Page dated 2026-08-01. \u0027Roughly 19.5%\u0027 of \u0027~8,700\u0027 is relayed from Dataconomy (2026-06-17). The page doesn\u0027t name the Next Fest edition and says nothing about inconsistent Valve enforcement."
+                   },
+                   {
+                       "claim":  "ARC Raiders shipped AI TTS built from actors\u0027 audio; Embark re-recorded many lines with humans; CEO: \u0027A real professional actor is better than AI\u0027",
+                       "verdict":  "confirmed",
+                       "url":  "https://kotaku.com/arc-raiders-replaced-ai-generated-content-human-recorded-dialogue-voices-2000678774",
+                       "note":  "Dated 2026-03-13. Patrick Soderlund said it to GamesIndustry.biz; the actors were paid a licensing fee."
+                   },
+                   {
+                       "claim":  "ElevenLabs SFX API (eleven_text_to_sound_v2): 0.5-30 s clips, loop flag, Opus or PCM 48 kHz, 40 credits per second",
+                       "verdict":  "partly",
+                       "url":  "https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert",
+                       "note":  "Model, range, loop and opus_48000_*/pcm_48000 are confirmed. The 40 credits/second figure is not on this page."
+                   },
+                   {
+                       "claim":  "ElevenLabs SFX royalty-free commercially; free plan requires attribution to elevenlabs.io, paid doesn\u0027t; no use to build competing products",
+                       "verdict":  "confirmed",
+                       "url":  "https://elevenlabs.io/sound-effects/commercial",
+                       "note":  "All three points are quoted."
+                   },
+                   {
+                       "claim":  "Eleven Music terms (updated 2026-10-09) bar self-serve plans from Studio Games but exempt Indie Games (\u003c$500k game revenue, \u003c$1M yearly games revenue for the developer)",
+                       "verdict":  "confirmed",
+                       "url":  "https://elevenlabs.io/eleven-music-model-specific-terms",
+                       "note":  "\u0027Last updated: 09 October 2026.\u0027 Revenue is net of fees and refunds and includes affiliates. Film, TV and radio are also excluded on self-serve plans."
+                   },
+                   {
+                       "claim":  "Suno since 2026-09-03 caps downloads at 20/month on Pro and 60 on Premier, commercial use needs an approved download, free users get 7 lifetime personal-use downloads; Udio disabled downloads after its Universal deal",
+                       "verdict":  "partly",
+                       "url":  "https://routenote.com/blog/suno-announces-20-monthly-downloads-and-new-music-industry-models/",
+                       "note":  "Dated 2026-08-12. The caps, date and free-tier limit are confirmed (Premier via Suno Studio is unlimited). No \u0027approved download\u0027 process is described, only that a download isn\u0027t automatically a commercial right. The Udio/Universal download change is not in this article."
+                   },
+                   {
+                       "claim":  "Stable Audio 3.0 (2026-05-20) released open-weights \u0027Small SFX\u0027 (459M params) for consumer laptops; Community License lets you own outputs and use them commercially under $1M revenue",
+                       "verdict":  "confirmed",
+                       "url":  "https://the-decoder.com/stability-ai-launches-stable-audio-3-0-with-up-to-six-minute-tracks-and-open-weights/",
+                       "note":  "\u0027Designed for smartphones and consumer laptops\u0027. Above $1M you need an enterprise licence."
+                   },
+                   {
+                       "claim":  "Blender MCP: arbitrary Python, viewport/camera/animation-frame images, 3D generation (Tripo, Hunyuan3D, Rodin), Poly Haven CC0 assets; package now mcp-for-blender; v2.1.7 added update",
+                       "verdict":  "confirmed",
+                       "url":  "https://github.com/ahujasid/blender-mcp",
+                       "note":  "Optional BLENDER_MCP_SAFE_MODE exists, off by default."
+                   },
+                   {
+                       "claim":  "AI 3D generator licences: Meshy free CC BY 4.0, Tripo free non-commercial, Hunyuan3D excludes EU/UK/South Korea, TRELLIS.2 MIT",
+                       "verdict":  "confirmed",
+                       "url":  "https://app.cinevva.com/guides/ai-3d-model-generators",
+                       "note":  "Published 2026-07-17, terms checked 2026-09-14. Hunyuan 2.1 has no specific check date. TRELLIS.2\u0027s render dependencies have separate terms."
+                   },
+                   {
+                       "claim":  "agent-sprite-forge (MIT, about 4.4k stars, v0.4): master still, I2V clips, measured loops, retimed one-shots, HD/pixel finish, QA gates; \u0027numeric QA never approves anatomy or motion by itself\u0027",
+                       "verdict":  "confirmed",
+                       "url":  "https://github.com/0x0funky/agent-sprite-forge",
+                       "note":  "Validation runs are dated 2026-10-06. The MIT licence doesn\u0027t cover generated outputs."
+                   },
+                   {
+                       "claim":  "AI 2D sprite generators: frame drift is the usual failure, most don\u0027t output on a grid, PixelLab tops out around 400x400, Scenario and Leonardo free tiers can\u0027t ship",
+                       "verdict":  "partly",
+                       "url":  "https://app.cinevva.com/guides/ai-pixel-art-generators",
+                       "note":  "Dated 2026-09-04. Drift, the grid point (PixelLab, Retro Diffusion, Sprixen and Sprite-AI do output on a grid) and the free-tier restrictions are confirmed. 400x400 is given only for PixelLab\u0027s Pixel Artisan tier ($24/mo), not as an overall maximum."
+                   },
+                   {
+                       "claim":  "PixelLab hosted MCP for Claude Code: 8-direction objects, top-down Wang tilesets, character animations; async jobs; commercial use on all tiers",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.pixellab.ai/llms.txt",
+                       "note":  "The endpoint is https://api.pixellab.ai/mcp. Jobs take about 30 s to 5 min, polled with get_* tools."
+                   },
+                   {
+                       "claim":  "codeart2d skill calls itself an \u0027explicit-only last resort\u0027 and rules out painterly/HD-2D art and realistic fire, smoke, water",
+                       "verdict":  "confirmed",
+                       "url":  "https://skills-hub.ai/skills/agent-sprite-forge-codeart2d",
+                       "note":  "v1.0.0. The date shows as 10/6/2026, most likely 2026-10-06."
+                   },
+                   {
+                       "claim":  "USCO Part 2 (2025-01-29): \u0027prompts alone do not provide sufficient human control...\u0027; assistive AI use doesn\u0027t cancel protection for human-authored parts",
+                       "verdict":  "confirmed",
+                       "url":  "https://ipwatchdog.com/2025/01/29/part-two-copyright-office-ai-report-says-creative-prompting-doesnt-constitute-authorship/",
+                       "note":  "The quote is prefixed by \u0027[G]iven current generally available technology\u0027."
+                   },
+                   {
+                       "claim":  "ElevenLabs Voice Library voices carry a free commercial licence; the 2025 SAG-AFTRA IMA governs replicas of real performers, not synthetic voices; XTTS v2 weights are non-commercial",
+                       "verdict":  "partly",
+                       "url":  "https://app.cinevva.com/guides/ai-voice-acting-games",
+                       "note":  "The IMA was ratified 2025-07-09 by a 95% vote, and it governs signatory studios and union performers. XTTS v2 is \u0027CPML, non-commercial weights, prototype use only\u0027. The Voice Library free commercial licence is not on this page."
+                   },
+                   {
+                       "claim":  "ZzFX is under 1 KB, 20 parameters, MIT, and can pre-render into buffers; live per-note generation is CPU-heavy so devs pre-render",
+                       "verdict":  "partly",
+                       "url":  "https://keithclark.co.uk/articles/zzfxm/",
+                       "note":  "Pre-rendering (zzfxG/zzfxP) and \u0027very CPU intensive\u0027 per-note generation are confirmed. The page says only \u0027a few hundred bytes\u0027 and \u0027a handful of numbers\u0027. The 20-parameter count and MIT licence are not on it."
+                   },
+                   {
+                       "claim":  "Firefox repeated ctx.filter blur is about 28x slower than Chrome, which fast-paths an unchanged filter; bug still open",
+                       "verdict":  "confirmed",
+                       "url":  "https://bugzilla.mozilla.org/show_bug.cgi?id=1978851",
+                       "note":  "Status NEW, opened about 1 year ago, updated about 4 months ago."
+                   },
+                   {
+                       "claim":  "Deterministic beginFrame capture (--deterministic-mode etc.) only works with chrome-headless-shell on Linux; crashes or misbehaves on macOS/Windows; rAF doesn\u0027t fire; performance.now follows passed frame ticks",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.heygen.com/research/html-to-video",
+                       "note":  "The page date (2026-06-22) was not re-verified in the fetch."
+                   },
+                   {
+                       "claim":  "ASE 2022 canvas-game paper: per-object comparison using the game\u0027s object list caught 100% of 24 injected visual bugs vs 44.6% for snapshot testing",
+                       "verdict":  "confirmed",
+                       "url":  "https://arxiv.org/abs/2208.02335",
+                       "note":  "It uses four similarity metrics. Submitted to arXiv 2022-08-03."
+                   },
+                   {
+                       "claim":  "VideoGameQA-Bench: best visual regression 45.2% (o4-mini), best image glitch 82.8% (GPT-4o), Claude Sonnet 3.7 24.0% / 65.1%; false positives, especially hallucinated clipping",
+                       "verdict":  "confirmed",
+                       "url":  "https://arxiv.org/html/2505.15952v2",
+                       "note":  "The numbers match Table 2. The NeurIPS 2025 venue is not stated on this arXiv v2 page (Dec 2025)."
+                   },
+                   {
+                       "claim":  "C-compiler project (16 agents): harness prints a few lines, ERROR plus reason on one line, precomputed stats; --fast 1%/10% sample fixed per agent but random across VMs; GCC oracle; CI added late",
+                       "verdict":  "confirmed",
+                       "url":  "https://www.anthropic.com/engineering/building-c-compiler",
+                       "note":  "Published 2026-02-05."
+                   },
+                   {
+                       "claim":  "Best-practices: hooks are deterministic while CLAUDE.md is advisory; \u0027Bloated CLAUDE.md files cause Claude to ignore your actual instructions\u0027; if Claude already does it right, delete the rule or turn it into a hook",
+                       "verdict":  "confirmed",
+                       "url":  "https://code.claude.com/docs/en/best-practices",
+                       "note":  "All quoted verbatim."
+                   },
+                   {
+                       "claim":  "playwright-cli saves snapshots (.yml) and screenshots under .playwright-cli/ instead of context; README says more token-efficient than MCP; third parties claim about 4x fewer tokens",
+                       "verdict":  "partly",
+                       "url":  "https://github.com/microsoft/playwright-cli",
+                       "note":  "Snapshots as timestamped .yml under .playwright-cli/ and \u0027CLI invocations are more token-efficient\u0027 are confirmed. The default screenshot location is not stated, and no 4x or per-screenshot token figures appear (third-party claims unverified)."
+                   },
+                   {
+                       "claim":  "LoAF (Chrome 123): frames over 50 ms via \u0027long-animation-frame\u0027; duration, blockingDuration, renderStart, script entries over 5 ms with sourceFunctionName/invoker; 200-entry buffer; keep worst N and send on visibilitychange; attribution to entry point",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.chrome.com/docs/web-platform/long-animation-frames",
+                       "note":  "Origin trial ran in Chrome 116-122."
+                   },
+                   {
+                       "claim":  "DevTools CPU throttling pauses the main thread in bursts (about 75% at 4x); Chrome 134 calibrated presets (3.7x example); doesn\u0027t simulate GPU, memory or thermal",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.chrome.com/blog/devtools-grounded-real-world",
+                       "note":  "Dated 2025-04-04. It also doesn\u0027t simulate disk speed."
+                   },
+                   {
+                       "claim":  "Headless Chrome skipped rAF until GitLab added --disable-backgrounding-occluded-windows; common sets add --disable-renderer-backgrounding and --disable-background-timer-throttling; three such windows kept a laptop at about 13 W overnight",
+                       "verdict":  "partly",
+                       "url":  "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193013",
+                       "note":  "The rAF skip and that flag are confirmed (MR targeted merge 2025-05-30, edited 2025-06-02). The other flags and the 13 W anecdote are not on this page."
+                   },
+                   {
+                       "claim":  "Canvas crash reporting: install error and unhandledrejection listeners before game code; a throw in rAF freezes the canvas; add a report button; group by signature",
+                       "verdict":  "confirmed",
+                       "url":  "https://bugnet.io/blog/crash-reporting-for-javascript-canvas-games",
+                       "note":  "Dated 2026-03-01; this is a vendor blog."
+                   },
+                   {
+                       "claim":  "Analytics Engine: 20 blobs, 20 doubles, 1 index (96 B); 16 KB blobs per point (raised from 5 KB June 2025); 250 points per invocation; 3-month retention; free 100k writes/day and 10k reads/day; not billing yet",
+                       "verdict":  "partly",
+                       "url":  "https://developers.cloudflare.com/analytics/analytics-engine/limits/",
+                       "note":  "The limits page confirms all limits and retention. The free quotas and \u0027you will not be billed... yet\u0027 are on https://developers.cloudflare.com/analytics/analytics-engine/pricing/ (confirmed). The \u0027raised from 5 KB in June 2025\u0027 history is not stated."
+                   },
+                   {
+                       "claim":  "Factorio integration tests compare a state CRC to stored values regenerated on purpose; earlier desyncs were debugged by CRC-ing the map every tick and replaying to the first differing tick",
+                       "verdict":  "partly",
+                       "url":  "https://factorio.com/blog/post/fff-60",
+                       "note":  "FFF #60 (2014-11-14) confirms the CRC integration tests. The per-tick CRC desync replay is not in this post."
+                   },
+                   {
+                       "claim":  "Fixed timestep: accumulator of dt steps, clamp a long frame to 0.25 s, render alpha = accumulator/dt blend",
+                       "verdict":  "confirmed",
+                       "url":  "https://gafferongames.com/post/fix_your_timestep/",
+                       "note":  "Dated 2004-06-10. The 0.25 clamp appears in the final code; the prose ties spiral-of-death prevention to clamping steps."
+                   },
+                   {
+                       "claim":  "EA Sims Mobile: tuning-JSON simulator about 1,000x faster (about 1,000 actions/s); A* agents found an event needing about 13 appointments vs 3-4; designers fixed it",
+                       "verdict":  "confirmed",
+                       "url":  "https://ar5iv.labs.arxiv.org/html/1811.06962",
+                       "note":  "A* was capped at 2,000 nodes per action. The event was \u0027Sweet Hearts\u0027. 2018 (older)."
+                   },
+                   {
+                       "claim":  "TITAN: state abstraction, action ranking, reflective memory, LLM bug oracles; 95% task completion, four new bugs, eight production QA pipelines; BugCraft reproduced 30.23% of Minecraft crashes",
+                       "verdict":  "partly",
+                       "url":  "https://arxiv.org/abs/2509.22170",
+                       "note":  "The TITAN numbers are confirmed (submitted 2025-09-26). The BugCraft 30.23% figure is not on this page."
+                   },
+                   {
+                       "claim":  "Meta ACH: 10,795 classes, 9,095 mutants, 571 tests, 73% accepted; equivalent-mutant judge 0.95 precision / 0.96 recall after pre-processing",
+                       "verdict":  "confirmed",
+                       "url":  "https://arxiv.org/abs/2501.12862",
+                       "note":  "Raw figures were 0.79/0.47. The arXiv entry says \u0027Submitted to FSE 2025 Industry Track\u0027, not that it was accepted."
+                   },
+                   {
+                       "claim":  "Voidgun: authoritative server in the host\u0027s browser tab at 45 Hz, up to 32 players, Box2D, bots, in-memory loopback for host, WebRTC for remotes",
+                       "verdict":  "confirmed",
+                       "url":  "https://voidgun.itch.io/voidgun/devlog/1448660/how-bringing-a-udp-game-to-the-browser-led-me-to-build-a-cross-platform-webrtc-library-for-libgdx",
+                       "note":  "The page date is not confirmed; it shows only \u0027219 days ago\u0027."
+                   },
+                   {
+                       "claim":  "Voidgun: reliable ordered channel for chat/kills/flags/login; unreliable one for inputs/snapshots; leaving WebSockets removed 50-200 ms stalls",
+                       "verdict":  "confirmed",
+                       "url":  "https://voidgun.itch.io/voidgun/devlog/1448660/how-bringing-a-udp-game-to-the-browser-led-me-to-build-a-cross-platform-webrtc-library-for-libgdx",
+                       "note":  "Described as unordered with zero retransmits; the literal option names are not used."
+                   },
+                   {
+                       "claim":  "TURN is not optional: 15-20% of Voidgun players couldn\u0027t connect before TURN, effectively 100% after; vendors put relay need at 10-25%",
+                       "verdict":  "partly",
+                       "url":  "https://voidgun.itch.io/voidgun/devlog/1448660/how-bringing-a-udp-game-to-the-browser-led-me-to-build-a-cross-platform-webrtc-library-for-libgdx",
+                       "note":  "15-20% and \u0027effectively 100%\u0027 are confirmed. The 10-25% vendor range is not on this page."
+                   },
+                   {
+                       "claim":  "Cloudflare TURN: $0.05/GB egress; first 1,000 GB a month free, shared with SFU; ingress and STUN free; each allocation limited to about 5-10 kpps and 50-100 Mbps",
+                       "verdict":  "partly",
+                       "url":  "https://developers.cloudflare.com/realtime/turn/faq/",
+                       "note":  "Updated 2026-07-14. $0.05/GB egress, a 1,000 GB free tier, free ingress and free STUN are confirmed. The page doesn\u0027t say the allowance is monthly or shared with the SFU, only that billing is one line item. The kpps/Mbps figures are per-client troubleshooting thresholds where packets may drop, not hard per-allocation limits. Credentials last up to 48 h."
+                   },
+                   {
+                       "claim":  "TURN credentials come from a server-side POST to .../turn/keys/{KEY_ID}/credentials/generate-ice-servers with ttl; returns iceServers; revocable; the key must never reach the browser",
+                       "verdict":  "confirmed",
+                       "url":  "https://developers.cloudflare.com/realtime/turn/generate-credentials/",
+                       "note":  "Revoke via POST .../credentials/$USERNAME/revoke, which returns 204."
+                   },
+                   {
+                       "claim":  "Durable Objects on Workers Free (SQLite only): 100k requests/day, 13,000 GB-s/day; incoming WS messages bill 20:1, outgoing free; hibernation makes idle rooms free; setTimeout/setInterval prevents hibernation",
+                       "verdict":  "partly",
+                       "url":  "https://developers.cloudflare.com/durable-objects/platform/pricing",
+                       "note":  "Updated 2026-09-30. Free plan, quotas, 20:1, free outgoing, idle-hibernatable objects not billed, and 128 MB per object for duration billing are all confirmed. The setTimeout clause was not on the pricing page; it presumably comes from the WebSocket best-practices page, which was not re-checked."
+                   },
+                   {
+                       "claim":  "DO limits: 1,000 rps soft per object; CPU 30 s default, up to 5 min; a 20-60 Hz loop never hibernates so it bills 128 MB wall time; placement near first get(), locationHint best-effort",
+                       "verdict":  "partly",
+                       "url":  "https://developers.cloudflare.com/durable-objects/platform/limits/",
+                       "note":  "Updated 2026-06-01. 1,000 rps and 30 s/5 min (cpu_ms 300000) are confirmed. 128 MB billing is on the pricing page. \u0027Never hibernates\u0027 is an inference. Placement/locationHint is not on this page."
+                   },
+                   {
+                       "claim":  "Hathora hosting shut down 5 May 2026 after the Fireworks AI acquisition; Stormgate lost online modes; Unity Multiplay ended 31 March 2026",
+                       "verdict":  "confirmed",
+                       "url":  "https://crux.supercraft.host/blog/hathora-shut-down-where-to-go-after-may-2026/",
+                       "note":  "This is a secondary source (a competitor\u0027s blog); announced 2026-03-04. Stormgate disabled Versus/Co-op on 2026-05-01. The Unity date comes from a related-reading link. Primary sources were not checked."
+                   },
+                   {
+                       "claim":  "Fiedler snapshot interpolation: buffer about 3x send interval plus jitter (survive 2 lost packets): 10 pps 300-350 ms, 30 pps 150 ms, 60 pps 85 ms; Hermite with velocity; 200 ms extrapolation looked bad",
+                       "verdict":  "confirmed",
+                       "url":  "https://gafferongames.com/post/snapshot_interpolation/",
+                       "note":  "Dated 2014-11-30."
+                   },
+                   {
+                       "claim":  "Fiedler snapshot compression: quantize, delta vs acked baseline, 1 bit per unchanged, index-encode changed; 901 cubes at 60 Hz from 17.38 Mbps to about 15 kbps idle; arithmetic coding 25% smaller",
+                       "verdict":  "confirmed",
+                       "url":  "https://gafferongames.com/post/snapshot_compression/",
+                       "note":  "Dated 2015-01-04. It also drops linear velocity and uses smallest-three quaternions."
+                   },
+                   {
+                       "claim":  "Lag compensation rewinds by about interp delay + RTT/2 + one tick; Colyseus 0.18 has allowRewindState, rewind.lastSeenBy, a 500 ms default maxRewindMs, and records on each broadcast",
+                       "verdict":  "partly",
+                       "url":  "https://docs.colyseus.io/netcode/lag-compensation",
+                       "note":  "The API names, 0.18+, 500 ms and recording on broadcast are confirmed. The page gives the rewind distance as \u0027roughly renderDelay + RTT + one tick\u0027 (full RTT); RTT/2 appears only in how far behind clients display targets."
+                   },
+                   {
+                       "claim":  "NetplayJS offers rollback and lockstep wrappers for Canvas 2D browser games, with host-state fallback when not deterministic",
+                       "verdict":  "confirmed",
+                       "url":  "https://github.com/rameshvarun/netplayjs",
+                       "note":  "It has RollbackWrapper, LockstepWrapper and LocalWrapper; the host sends state by default unless the game is marked deterministic. The page loads netplayjs@0.4.1."
+                   },
+                   {
+                       "claim":  "Chrome hidden tabs get no rAF; timers 1/s; an open RTCDataChannel only exempts from 1/min intensive throttling; audio in the last 30 s keeps minimal throttling; silent audio doesn\u0027t count",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.chrome.com/blog/timer-throttling-in-chrome-88",
+                       "note":  "Chrome 88, 2021-01-18 (older). Intensive throttling also needs over 5 min hidden and a chain count of 5 or more."
+                   },
+                   {
+                       "claim":  "Chrome on Windows treats a fully covered window as background (rendering stops, JS throttled); minimized, other-virtual-desktop and screen-locked windows count; partly visible windows don\u0027t",
+                       "verdict":  "confirmed",
+                       "url":  "https://chromium.googlesource.com/chromium/src/+/main/docs/windows_native_window_occlusion_tracking.md",
+                       "note":  "Minimized windows are described as \u0027hidden\u0027 rather than explicitly \u0027occluded\u0027 (same effect). Transparent or cloaked windows don\u0027t occlude."
+                   },
+                   {
+                       "claim":  "The Gamepad spec ignores focus and requires only visibility; the Chromium maintainer says some OS input APIs have focus requirements, and behaviour differs between controllers",
+                       "verdict":  "partly",
+                       "url":  "https://lists.w3.org/Archives/Public/public-webapps-github/2024Sep/0476.html",
+                       "note":  "Matt Reynolds, 2024-09-27, w3c/gamepad #215. The OS focus quote and per-controller variance are confirmed. He says \u0027The Chromium implementation requires visibility\u0027 and asks whether the spec should check visibility; he does not quote spec text."
+                   },
+                   {
+                       "claim":  "playEffect(\u0027dual-rumble\u0027|\u0027trigger-rumble\u0027, {...}); a new call overrides the effect in progress; rejects InvalidStateError when hidden; not Baseline",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.mozilla.org/en-US/docs/Web/API/GamepadHapticActuator/playEffect",
+                       "note":  "The preempted call resolves \u0027preempted\u0027. Status is \u0027Limited availability\u0027."
+                   },
+                   {
+                       "claim":  "WebTransport became Baseline when Safari 26.4 shipped it on 24 March 2026 (reliable streams and datagrams); about 91% coverage; server support thin",
+                       "verdict":  "partly",
+                       "url":  "https://webkit.org/blog/17862/webkit-features-for-safari-26-4/",
+                       "note":  "Safari 26.4 (2026-03-24) adding WebTransport with reliable and unreliable delivery is confirmed. The post doesn\u0027t say Baseline, and the 91% figure and server-support point come from elsewhere."
+                   },
+                   {
+                       "claim":  "RTCDataChannel: 64 KB assumed if max-message-size absent; most browsers accept at least 256 KB; without RFC 8260 interleaving a large message head-of-line-blocks other channels",
+                       "verdict":  "confirmed",
+                       "url":  "https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels",
+                       "note":  "Quoted verbatim."
+                   },
+                   {
+                       "claim":  "Cloudflare Realtime SFU fans out DataChannels (one publisher, many subscribers, one with reply access); reliability per named channel, mirrored by subscribers; TURN to SFU free; shared 1,000 GB then $0.05/GB",
+                       "verdict":  "partly",
+                       "url":  "https://developers.cloudflare.com/realtime/sfu/datachannels/",
+                       "note":  "Updated 2026-09-22. Fan-out, per-channel policy and \u0027At most one subscriber can hold\u0027 reply access are confirmed. Pricing is not on this page; the TURN FAQ confirms TURN-to-SFU traffic is free."
+                   },
+                   {
+                       "claim":  "Photon free 20 CCU is dev/non-commercial with 60 GB/month; plans under 500 CCU hard-capped (MaxCcuReached); free 100 CCU commercial is Fusion/Quantum only; prices conflict",
+                       "verdict":  "not-found",
+                       "url":  "https://doc.photonengine.com/photon/v1/pricing",
+                       "note":  "The page returned a cookie/security wall, so no content could be checked."
+                   },
+                   {
+                       "claim":  "Valve calls ISteamNetworking \u0027an older, deprecated API\u0027 that may be removed; ISteamNetworkingMessages/Sockets relay via SDR by default and hide IPs; steamworks.js exposes only the legacy P2P calls plus lobbies, overlay and Steam Input",
+                       "verdict":  "partly",
+                       "url":  "https://partner.steamgames.com/doc/features/multiplayer/networking",
+                       "note":  "The Steamworks parts are confirmed. The steamworks.js API surface was not checked."
+                   },
+                   {
+                       "claim":  "thoughtbot join codes: reject alphanumeric for look-alikes (0/O, 1/I, 2/Z, 5/S, 8/B, U/V) and profanity; 6 random digits; unique among active games; bounded retries; collisions likely around 500,000 active games",
+                       "verdict":  "partly",
+                       "url":  "https://thoughtbot.com/blog/join-code-system-design",
+                       "note":  "Dated 2025-11-10. Only 0/O and 1/I are cited as look-alikes; the longer list is not confirmed. The rest is confirmed, including JOIN_CODE_GENERATION_MAX_ATTEMPTS and the 50% collision chance at about 500,000 active games."
+                   }
+               ]
+}

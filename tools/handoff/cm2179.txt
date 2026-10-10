@@ -1,0 +1,7 @@
+v21.79: a gun keeps its quality in the backpack
+
+A gun keeps its name, grade and rounds when it goes into the backpack and comes back out.
+
+Check 21.79. Fails on v21.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

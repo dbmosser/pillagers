@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.79 - A GUN KEEPS ITS QUALITY IN THE BACKPACK
+
+Co-op hunt while he was away. The first step of the four-gun belt. A gun put in the backpack used to lose everything about it: its rolled name, grade, colour and stats, so it came back out as a plain field gun with the basic magazine, and its rounds were cut down to fit. A gun now goes into the backpack as itself and comes back out the same, with the rounds it went in with. A gun you find straight into the backpack keeps the roll it was found with, and a gun on a belt key while it sits in the backpack shows its own name and colour. A gun you drop and pick back up still comes back at field grade, as before, so dropping is never a way to reroll.
+
+MEASURED. Check 21.79 passes, and fails on v21.78.
 ## v21.78 - THE CRIER LINES READ LIKE A SHOOTER
 
 Co-op hunt while he was away. His notes of 2026-10-09: the line A crier has you. Kill it or move. should say a Crier is revealing your location, and the way the game words what it tells you is weird and not like an AAA game. When a Crier spots you it now says A CRIER IS REVEALING YOUR LOCATION, and when it calls you in it says CRIER REVEALED YOUR LOCATION, or CRIER REVEALED YOUR LAST LOCATION when it had already lost sight of you. The countdown, the MARKED banner and the rule that breaking its line of sight for three seconds calls it off are unchanged. The rest of the raid text is being rewritten in the same voice.

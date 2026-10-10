@@ -1,0 +1,5 @@
+## v21.79 - A GUN KEEPS ITS QUALITY IN THE BACKPACK
+
+Co-op hunt while he was away. The first step of the four-gun belt. A gun put in the backpack used to lose everything about it: its rolled name, grade, colour and stats, so it came back out as a plain field gun with the basic magazine, and its rounds were cut down to fit. A gun now goes into the backpack as itself and comes back out the same, with the rounds it went in with. A gun you find straight into the backpack keeps the roll it was found with, and a gun on a belt key while it sits in the backpack shows its own name and colour. A gun you drop and pick back up still comes back at field grade, as before, so dropping is never a way to reroll.
+
+MEASURED. Check 21.79 passes, and fails on v21.78.
