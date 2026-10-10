@@ -1,0 +1,7 @@
+v22.30: no kit answers on the let them go card
+
+The Let them go card at HIRE no longer shows RANDOM FROM STASH and TOP GEAR left over from a party ascent.
+
+Check 22.30. Fails on v22.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.30 - NO KIT ANSWERS ON THE LET THEM GO CARD
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when a teammate did not answer the kit question before the party went up, the ascent closed the card but left RANDOM FROM STASH and TOP GEAR on it, still armed. After the raid, Hire nobody at HIRE showed them on the Let them go card, and pressing either one shut the card without letting the hire go, replaced his packed backpack with a random or top gear pick, swapped the guns in his hands and sent the host a stray kit answer. The Let them go card now takes them off before it opens.
+
+MEASURED. Check 22.30 passes, and fails on v22.29.
 ## v22.29 - THE TEAMMATE KIT CARD SAYS THE PARTY GOES UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when the host goes up, his teammate is asked what he is taking up. If the teammate pressed Not yet to buy a Medkit first (B on a controller, ESC and TAB press it too), nothing told the host, and about 15 seconds later the party went up anyway and pulled him out of the Undercroft with whatever was packed. The host still takes everyone up, as before. The teammate card now reads PARTY IS GOING UP with the seconds left before he goes up with the kit he has, and its way out reads KEEP MY KIT, which is what it does. The host card and the Hire nobody card still say Not yet.
