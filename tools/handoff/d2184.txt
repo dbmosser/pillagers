@@ -1,0 +1,5 @@
+## v21.84 - A WRAPPED LINE KEEPS HIS WORDS
+
+Co-op hunt while he was away. Found by the review of the raid text batch. Since v21.81 every plate is measured on the words that are actually drawn, which is right, but three places split a line into rows themselves: the CONDITIONS panel, the What is New card and the zone names on the sector maps. They split the original words and measured the pieces with the new measure, so a line he had reworded either broke into pieces of the original (his words vanished and the old sentence showed over two lines) or, for one row of a wrapped line he had reworded, the row was never formed at all. These three now translate the whole line first and wrap his wording, so his words are what you see, wrapped to fit.
+
+MEASURED. Check 21.84 passes, and fails on v21.83.

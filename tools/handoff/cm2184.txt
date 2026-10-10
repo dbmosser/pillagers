@@ -1,0 +1,7 @@
+v21.84: a wrapped line keeps his words
+
+A reworded line in the CONDITIONS panel, the What is New card or a sector map zone name wraps his words instead of the original.
+
+Check 21.84. Fails on v21.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

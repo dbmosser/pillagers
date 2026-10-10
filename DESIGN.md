@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.84 - A WRAPPED LINE KEEPS HIS WORDS
+
+Co-op hunt while he was away. Found by the review of the raid text batch. Since v21.81 every plate is measured on the words that are actually drawn, which is right, but three places split a line into rows themselves: the CONDITIONS panel, the What is New card and the zone names on the sector maps. They split the original words and measured the pieces with the new measure, so a line he had reworded either broke into pieces of the original (his words vanished and the old sentence showed over two lines) or, for one row of a wrapped line he had reworded, the row was never formed at all. These three now translate the whole line first and wrap his wording, so his words are what you see, wrapped to fit.
+
+MEASURED. Check 21.84 passes, and fails on v21.83.
 ## v21.83 - A GUN KEEPS ITS KEY
 
 Co-op hunt while he was away. The second step of the four-gun belt. Keys 1 and 2 used to be your two hands, not your guns: draw a third gun off another key and it showed on key 1, the gun it replaced went into the backpack with no key at all, and pressing that key again brought up something else. Now a gun keeps its key. Draw the shotgun off key 7 and key 7 shows the shotgun in your hands, key 1 still shows your rifle (in the backpack, with the rounds it will come back with) and key 2 your SMG; press key 1 and the rifle comes back up while the shotgun stays on key 7. A gun you find or pick up into your hands takes a free gun key, or the key of the gun it pushed out. Dragging a gun key off the belt still puts that gun in the backpack, dragging it onto the other gun key makes the two keys trade, and a gun dropped on a gun key takes that key. Still two gun keys; four come next.
