@@ -2390,8 +2390,10 @@ window.__REGRESS=[
      // to 1.15 and its row ceiling 56 percent of the screen to 38, so the default
      // is 384x202 rather than 501x264. This number exists to catch the DEFAULT
      // drifting by accident, so it moves with a deliberate change and not before.
-     if(Math.abs(B.w-384)>12||Math.abs(B.h-202)>14)
-       bad.push('the default board is '+B.w+'x'+B.h+', it should be about 384x202');
+     // v21.55 (V-B11, the 4K visual pass) ended the board under its last name on purpose: 16 px less, 384x186 from that build on.
+     var bh0=(typeof VER!=='undefined'&&parseFloat(VER)>=21.55)?186:202;
+     if(Math.abs(B.w-384)>12||Math.abs(B.h-bh0)>14)
+       bad.push('the default board is '+B.w+'x'+B.h+', it should be about 384x'+bh0);
      var cv=document.getElementById('cv'), r=cv.getBoundingClientRect();
      function ev(t,x,y,tgt){ (tgt||cv).dispatchEvent(new MouseEvent(t,
        {button:0,bubbles:true,clientX:r.left+x,clientY:r.top+y})); }
@@ -15235,22 +15237,24 @@ window.__REGRESS=[
   {v:'17.88',what:'in a same machine pair a window pauses only when the pad it plays is unplugged; the other window pad coming out does nothing to it',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof togglePauseBox!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no raid, pause box or party in this fixture';
-     var bad=[], lines=[], oSay=say, st0=state, same0=NET.same, ix0=NET.padIx, ev;
+     var bad=[], lines=[], oSay=say, st0=state, same0=NET.same, ix0=NET.padIx, hadPx=('ix' in PAD), px0=PAD.ix, ev;
      function drop(ix){ var e=new Event('gamepaddisconnected'); try{ Object.defineProperty(e,'gamepad',{value:{index:ix}}); }catch(_d){} window.dispatchEvent(e); }
      try{
        say=function(t){ lines.push(String(t)); };
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over) return 'SKIP: staging: no raid';
        state='raid'; try{ togglePauseBox(false); }catch(_p0){}
-       NET.same='host'; NET.padIx=0;
+       // v18.52 (the code comb) reacts to the pad this window last PLAYED (PAD.ix, kept by pollPad), and a pair window that never
+       // played one ignores every unplug. So this window plays pad 0 here, or the check leaned on an earlier check leaving PAD.ix 0.
+       NET.same='host'; NET.padIx=0; PAD.ix=0;
        drop(1);
        if(pauseOpen) bad.push('the other window pad coming out paused this window');
-       if(lines.some(function(t){ return /Controller disconnected/.test(t); })) bad.push('the other window pad coming out said '+JSON.stringify(lines));
+       if(lines.some(function(t){ return /Controller disconnected/i.test(t); })) bad.push('the other window pad coming out said '+JSON.stringify(lines));
        drop(0);
        if(!pauseOpen) bad.push('this window own pad coming out did not pause');
-       if(!lines.some(function(t){ return /Controller disconnected/.test(t); })) bad.push('this window own pad coming out said nothing');
+       if(!lines.some(function(t){ return /Controller disconnected/i.test(t); })) bad.push('this window own pad coming out said nothing');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ say=oSay; state=st0; NET.same=same0; NET.padIx=ix0; try{ togglePauseBox(false); }catch(_p2){} try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
+     finally{ say=oSay; state=st0; NET.same=same0; NET.padIx=ix0; if(hadPx) PAD.ix=px0; else delete PAD.ix; try{ togglePauseBox(false); }catch(_p2){} try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'17.87',what:'a slow PC is told once where the levers are: ten seconds of frames mostly over 25 ms say the line, smooth frames never do, and it is said once a session',
    run:function(){
@@ -34187,14 +34191,21 @@ window.__REGRESS=[
        // YOUR round, in the shape the fire path pushes, so the kill flag is set where the game sets it.
        G2.bullets.push({x:p.x+ux*17,y:p.y+uy*17,vx:ux*1180,vy:uy*1180,dmg:500,life:0.5,player:true,owner:p,tint:'#ffd48a',thru:0});
        var seen=[];
-       function note(){ var g=__state(); if(g&&g.msg&&(seen.length===0||seen[seen.length-1]!==g.msg)) seen.push(String(g.msg)); }
+       // v21.86 (raid text R04) gave the message line two rows: a line said while another shows moves the older one down to the
+       // second row instead of writing over it. Every line on either row counts as shown, the older row first, with its detail.
+       function rowTxt(m,s){ return String(m)+(s?' '+s:''); }
+       function note(){ var g=__state(); if(!g) return; var up=[], f1=g.feed&&g.feed[1];
+         if(g.msgT>0&&g.msg&&f1&&f1.T>0&&f1.m&&f1.m!==g.msg) up.push(rowTxt(f1.m,f1.sub));
+         if(g.msg) up.push(rowTxt(g.msg,g.msgSub));
+         for(var u=0;u<up.length;u++) if(seen.indexOf(up[u])<0) seen.push(up[u]); }
        for(i=0;i<540;i++){ __loop(t0+(++f)*16.7); note(); if(__state()!==G2) break; }
        var head=['CONTRACT','DONE'].join(' ');
-       var tail=['will','remember','that.'].join(' ');
+       var tail=['will','remember','that'].join(' ');
+       var grudge=(nm+' '+tail).toUpperCase();   // either voice: Name will remember that. or NAME WILL REMEMBER THAT
        var cIx=-1, rIx=-1;
        for(i=0;i<seen.length;i++){
-         if(cIx<0&&seen[i].indexOf(head)===0&&seen[i].indexOf(desc)>=0) cIx=i;
-         if(rIx<0&&seen[i]===nm+' '+tail) rIx=i;
+         if(cIx<0&&seen[i].toUpperCase().indexOf(head)===0&&seen[i].indexOf(desc)>=0) cIx=i;
+         if(rIx<0&&seen[i].toUpperCase().indexOf(grudge)===0) rIx=i;
        }
        var shown=' [shown: '+seen.join(' | ').slice(0,240)+']';
        // CONTROLS: the round killed him, the kill was yours, the contract finished and the grudge was written, or the lines prove nothing.
@@ -34445,10 +34456,16 @@ window.__REGRESS=[
        for(var f=0;f<n;f++){
          frames(1);
          var g0=__state(); if(!g0||g0.over) return;
-         if(g0.msg&&g0.msgT>0&&(seen.length===0||seen[seen.length-1]!==String(g0.msg))) seen.push(String(g0.msg));
+         // v21.86 (raid text R04): two rows. A line said over another moves it down to the second row rather than writing over
+         // it, so a line on either row (older row first, with its detail) is on screen.
+         var up=[], f1=g0.feed&&g0.feed[1];
+         if(g0.msg&&g0.msgT>0&&f1&&f1.T>0&&f1.m&&f1.m!==g0.msg) up.push(String(f1.m)+(f1.sub?' '+f1.sub:''));
+         if(g0.msg&&g0.msgT>0) up.push(String(g0.msg)+(g0.msgSub?' '+g0.msgSub:''));
+         seen.n=seen.n||{};   // frames each line was on a row: written over means it was not there long enough to read
+         for(var u=0;u<up.length;u++){ if(seen.indexOf(up[u])<0) seen.push(up[u]); seen.n[up[u]]=(seen.n[up[u]]||0)+1; }
        }
      }
-     function at(seen,needle){ for(var i=0;i<seen.length;i++) if(seen[i].indexOf(needle)>=0) return i; return -1; }
+     function at(seen,needle){ for(var i=0;i<seen.length;i++) if(seen[i].toLowerCase().indexOf(needle.toLowerCase())>=0) return i; return -1; }
      function shown(seen){ return '['+seen.join(' | ').slice(0,240)+']'; }
      // THE PLAY PATH: one item staged in the box, X held until it opens, then hands
      // off while the message line plays out (up to ten seconds, stopping once found).
@@ -34465,6 +34482,7 @@ window.__REGRESS=[
        keysOff();
        if(!box.opened) return null;
        for(var r=0;r<20&&at(seen,needle)<0;r++) watch(30,seen);
+       watch(60,seen);   // one more second, so the frames each line stayed up are counted
        return seen;
      }
      try{
@@ -34495,8 +34513,8 @@ window.__REGRESS=[
            var slotAt=at(s1,slotNeedle), tookAt=at(s1,'Took ');
            if(slotAt<0)
              bad.push('a better gun searched out of a box went into his free second slot and the line saying so, and how to swap to it, never reached the screen '+shown(s1)+': Took wrote over it in the same frame');
-           else if(tookAt>=0&&slotAt<tookAt)
-             bad.push('the second slot line showed and was then written over by Took '+shown(s1));
+           else if(((s1.n||{})[s1[slotAt]]||0)<45)   // v21.86 rows: Took said after it moves it to the second row; it must stay up 0.75 s
+             bad.push('the second slot line showed and was then written over by Took after '+((s1.n||{})[s1[slotAt]]||0)+' frames '+shown(s1));
          }
        }
        // TWO: A STIM, with the belt plan cleared so a free key takes it.
@@ -34618,29 +34636,35 @@ window.__REGRESS=[
        var G2=__state();
        if(!G2||G2.over||G2.sim) return {none:'the quick ascent key did not start a raid'};
        var seen=[], t0=performance.now();
-       function note(){ var g=__state(); if(g&&g.msg&&seen.indexOf(g.msg)<0) seen.push(String(g.msg)); }
+       // v21.86 (raid text R04): two message rows, and a raid line may carry its detail (o.sub, v21.94). A line on either row,
+       // headline or detail, counts as shown, so the planned YOU CARRY A LOANER with Equip your own gun as its detail reads too.
+       function note(){ var g=__state(); if(!g) return; var up=[], f1=g.feed&&g.feed[1];
+         if(g.msg) up.push(String(g.msg)+(g.msgSub?' '+g.msgSub:''));
+         if(g.msgT>0&&g.msg&&f1&&f1.T>0&&f1.m&&f1.m!==g.msg) up.push(String(f1.m)+(f1.sub?' '+f1.sub:''));
+         for(var u=0;u<up.length;u++) if(seen.indexOf(up[u])<0) seen.push(up[u]); }
        note();
        for(i=0;i<300;i++){ __loop(t0+(i+1)*16.7); note(); }
        return {issued:!!G2.player.wepIssued, seen:seen};
      }
+     function hasN(m){ return String(m).toLowerCase().indexOf(needle.toLowerCase())>=0; }
      try{
        // ONE: nothing equipped, a pack gun in the stash. He lands with a loaner.
        var A=ascend('fists',['pistol'],['gun_smg','bandage']);
        if(A.none) return 'SKIP: '+A.none;
        if(!A.issued) return 'SKIP: staging: the quick ascent did not issue a loaner, so there is nothing to measure';
-       var hitA=A.seen.filter(function(m){ return m.indexOf(needle)>=0; });
+       var hitA=A.seen.filter(hasN);
        if(!hitA.length)
          bad.push('a player who takes the quick ascent with nothing equipped lands with a loaner and is never told his own gun waits in the stash [shown: '+A.seen.join(' | ').slice(0,200)+']');
 
        // TWO: nothing equipped, and no gun in the stash either.
        var B=ascend('fists',['pistol'],['bandage']);
-       if(!B.none&&B.seen.some(function(m){ return m.indexOf(needle)>=0; }))
+       if(!B.none&&B.seen.some(hasN))
          bad.push('a player with no gun in his stash is told on landing to equip one from it');
 
        // THREE: a gun of his own equipped, another in the stash. No loaner, no line.
        var C=ascend('pistol',['pistol'],['gun_smg']);
        if(!C.none&&C.issued) bad.push('staging: a player with his own pistol equipped was issued a loaner');
-       else if(!C.none&&C.seen.some(function(m){ return m.indexOf(needle)>=0; }))
+       else if(!C.none&&C.seen.some(hasN))
          bad.push('a player who went up with his own gun is told he is carrying a loaner');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -38939,6 +38963,9 @@ window.__REGRESS=[
      // Assembled, never written whole: a check that greps the page for a line it
      // spells out finds itself, which has cost three builds already.
      var RAISED='The Crier raised '+'the alarm';
+     // v21.78 put the alarm in the shooter voice (CRIER REVEALED YOUR LOCATION, or YOUR LAST LOCATION); either wording is the alarm.
+     var REVEALED='CRIER '+'REVEALED';
+     function raised(s){ return s.indexOf(RAISED)>=0||s.indexOf(REVEALED)>=0; }
      function arm(hidden){
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],mapIx:0,seed:4242});
@@ -38968,7 +38995,7 @@ window.__REGRESS=[
        if(!A) return 'SKIP: no live raid to stage a Crier in';
        if(A.none) return 'SKIP: '+A.none;
        if(A.state==='alarm') return 'SKIP: three seconds out of sight did not take the Crier out of its alarm at all, so the cancel under test never ran';
-       if(A.said.indexOf(RAISED)>=0)
+       if(raised(A.said))
          bad.push('the cancel fired the alarm it was cancelling: three seconds out of sight put the Crier back on patrol and it called the alarm in on the very same frame, saying "'+A.said+'"');
        if(A.marked>0) bad.push('the cancelled alarm still marked him: the marked flag went up by '+A.marked+' on the frame the alarm was called off');
        if(A.tel>0) bad.push('the cancelled alarm still counted against him: the marked figure in his run report went up by '+A.tel);
@@ -38978,7 +39005,7 @@ window.__REGRESS=[
        // alarm MUST still fire, or a build that simply broke the Crier is green.
        var B=arm(false);
        if(B&&!B.none){
-         if(B.said.indexOf(RAISED)<0) bad.push('control: a Crier that kept eyes on him no longer raises the alarm at all, it said "'+B.said+'", so the counterplay has been turned into an escape');
+         if(!raised(B.said)) bad.push('control: a Crier that kept eyes on him no longer raises the alarm at all, it said "'+B.said+'", so the counterplay has been turned into an escape');
          if(!(B.marked>0)) bad.push('control: a Crier that kept eyes on him no longer marks him, so this check cannot see an alarm and its findings prove nothing');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
