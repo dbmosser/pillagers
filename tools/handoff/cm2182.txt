@@ -1,0 +1,7 @@
+v21.82: the message line takes the new look
+
+The raid message line is outlined in ink on a rounded plate, the first part of the new HUD look.
+
+Check 21.82. Fails on v21.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

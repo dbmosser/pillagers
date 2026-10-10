@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.82 - THE MESSAGE LINE TAKES THE NEW LOOK
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text should look and read like Call of Duty, Fortnite or ARC Raiders. The HUD now has one palette where each colour means one thing (red only for danger, teal only for extraction, blue for teammates), a rounded plate and an ink outline for text. The message line at the top of the screen is the first to use them: its words are outlined so they read on snow or fire, its plate has rounded corners and is sized from the text it carries, and plate and words fade together. It sits exactly where it did, so nothing under it moves.
+
+MEASURED. Check 21.82 passes, and fails on v21.81.
 ## v21.81 - TEXT PLATES FIT THE WORDS ON THEM
 
 Co-op hunt while he was away. His order of 2026-10-09 is to rewrite the raid text in the voice of a shooter HUD, and the words he rewrites himself have to sit properly on their plates. The game sized every plate, badge and box on the original wording while it drew his, so a longer line ran off the end of its plate and a shorter one sat in an empty box. Measuring now uses the same words that are drawn, his edits and the built in ones included, so every plate fits the line it carries.
