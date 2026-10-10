@@ -6075,7 +6075,9 @@ window.__REGRESS=[
        g.sim=true; say('zq sim','crit'); g.sim=false;
        if(g.msg==='zq sim'||__msgLog()[15].m==='zq sim') bad.push('say() acts while G.sim is set');
        // The queue: strings in msgQ, the kind beside it, and the kind survives the drain.
-       g.msgQ=[]; say('zq showing'); sayWhenFree('zq q','obj');
+       // v21.88 retarget (the raid text R06): the rows are emptied first. With two protected rows up, a direct say of equal rank
+       // now sends the row it takes back to the queue, so 'zq odd' would wait in front of 'zq q'; this part tests the queue alone.
+       g.msgQ=[]; g.msgQM=[]; g.msgT=0; g.msg=''; g.feed=[]; say('zq showing'); sayWhenFree('zq q','obj');
        if(!(g.msgQ&&g.msgQ.length===1&&g.msgQ[0]==='zq q')) bad.push('the queue no longer holds the plain string ('+JSON.stringify(g.msgQ)+')');
        if(!(g.msgQM&&g.msgQM.length===1&&g.msgQM[0]&&g.msgQM[0].k==='obj')) bad.push('the waiting line lost its kind');
        g.msgT=0.01;
