@@ -1,0 +1,7 @@
+v22.13: the alert lane, first for the crier
+
+Danger, critical and extraction lines take their own steady alert slot at the top of the screen, starting with his Crier lines.
+
+Check 22.13. Fails on v22.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

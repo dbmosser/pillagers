@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.13 - THE ALERT LANE, FIRST FOR THE CRIER
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like Call of Duty, Fortnite or ARC Raiders, where a threat is a callout of its own. A Crier marking you was one more message row that the next remark pushed down, and a second MARKED row under the compass flashed its own sentence ten times a second for as long as the mark ran. Lines that warn of danger, critical lines and extraction lines now take one alert slot at the top of the message band: a dark red plate for a threat with an accent bar and a warning glyph, the headline in the callout size and an optional detail under it. It fades in, holds perfectly steady, and fades out; a remark said meanwhile goes to the feed rows under it instead of pushing it off. His Crier lines keep his words exactly and are the first alerts; the fire line holds while the mark runs. The flashing MARKED row is gone; the red edge of the screen still shows the mark.
+
+MEASURED. Check 22.13 passes, and fails on v22.12.
 ## v22.12 - A DISTRICT CONTRACT NAMES THE RIGHT PLACE EVERYWHERE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A contract to search containers in a district wrote its sentence once, for the sector picked when the board rolled it. After a change of sector the board row named the right place, but the cream card at the Mainframe, the CONTRACT DONE line in the raid and the CONTRACT COMPLETE line on the run card still named a place on the other sector, such as THE SUMP on THE COLD MILE. All three now name the place on the sector being played, as the board row and the raid panel already did. Every other contract reads exactly as before.
