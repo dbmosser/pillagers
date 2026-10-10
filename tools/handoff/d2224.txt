@@ -1,0 +1,5 @@
+## v22.24 - THE SPINE SHOT LANDS FOR PLAYER 2
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, player 2 could flank a Choir pillbox and put a Longshot round into its DORSAL SPINE. His screen showed the 414 hit, but the host threw the shot away as a broken number, because anything over 400 was refused. The Choir took nothing and was not stunned. The limit is now 600, above every real hit in the game, so the best shot lands for both players and a broken number is still refused.
+
+MEASURED. Check 22.24 passes, and fails on v22.23.

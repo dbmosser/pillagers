@@ -1,0 +1,7 @@
+v22.24: the spine shot lands for player 2
+
+In co-op, a Longshot into the DORSAL SPINE of a Choir now lands for player 2 too.
+
+Check 22.24. Fails on v22.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

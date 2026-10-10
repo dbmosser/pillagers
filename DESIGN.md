@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.24 - THE SPINE SHOT LANDS FOR PLAYER 2
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, player 2 could flank a Choir pillbox and put a Longshot round into its DORSAL SPINE. His screen showed the 414 hit, but the host threw the shot away as a broken number, because anything over 400 was refused. The Choir took nothing and was not stunned. The limit is now 600, above every real hit in the game, so the best shot lands for both players and a broken number is still refused.
+
+MEASURED. Check 22.24 passes, and fails on v22.23.
 ## v22.23 - A SHOT PILLBOX OR WARDEN DROPS ITS MARK
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. One shot at a Choir pillbox, or gunfire near it, left it wearing a red or yellow mark for the rest of the raid. It was counted among the machines coming for the ring and drove the heartbeat when you walked past, although it is bolted to the floor and never moves. A Warden or THE OVERSEER shot before it had seen you kept the red mark as it wandered. The pillbox now goes back to its watch every step, and a Warden that has not seen you drops the mark on its next step. A Warden that has seen you still hunts you as before.
