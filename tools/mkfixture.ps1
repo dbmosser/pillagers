@@ -1102,11 +1102,18 @@ window.__setBlip=function(f){ blip=f; };
 // dropped it on the floor. Two probes reported "the fallback does not fire"
 // while the game did it correctly. An override of a real function has to mirror
 // the real function, or it is a second implementation that tests itself.
-try{ say=function(m){
-  window.__lastSay=m;
-  if(G&&!G.sim){ G.msg=m; G.msgT=3.2; return; }
-  if(!G&&typeof hubToast==='function') hubToast(m);
-}; }catch(e){}
+// v21.80, the raid text rewrite (R00): and it was about to fall behind a third time, because say() is
+// becoming the message module (kinds, a log, lanes). So the fixture no longer copies the body at all: it
+// WRAPS the game's own say(), records the last line, and hands every argument to the real thing. A check
+// that swaps say for its own spy still works, because it replaces this wrapper and puts it back.
+try{ var __sayReal=say; window.__sayReal=__sayReal;
+  say=function(m){ window.__lastSay=m; return __sayReal.apply(this,arguments); };
+}catch(e){}
+// The module's own record, for checks: the last lines said (a ring kept by the game once it has one), and
+// what a lane is showing (feed, alert or pick). Both read [] until the build that adds them lands.
+window.__msgLog=function(){ try{ return (G&&G.msgLog)||[]; }catch(e){ return []; } };
+window.__hudSaid=function(lane){ try{ if(!G) return []; var o=lane==='alert'?G.alert:lane==='pick'?G.pick:G.feed;
+  return !o?[]:Array.isArray(o)?o:[o]; }catch(e){ return []; } };
 try{ tickAmbience=function(){}; }catch(e){}
 try{ window.__enemyAudioReal=tickEnemyAudio; }catch(e){}   // v10.57: the real one, for the step checks
 try{ tickEnemyAudio=function(){}; }catch(e){}
