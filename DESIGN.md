@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.37 - THE WHAT IS NEW CARD NAMES THE RAID ALERTS
+
+Co-op hunt while he was away. The card was stamped v22.21 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text alert lane shipped on the evening of 2026-10-10: threats, the clock warnings and party emergencies as steady caps callouts, with the Crier line held while the mark runs; the rest are in the change list.
+
+MEASURED. Check 22.37 passes, and fails on v22.36.
 ## v22.36 - THE LANES KEEP TIME IN THE DEATH BEAT AND THE BURN
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text behaves like a shooter HUD. The message rows, the alert and the waiting queue ran down only while the raid was running normally, so they froze in the moment after you die and for the whole burn at the end of the clock: a remark said just before stood on screen through the burn, and nothing waiting ever came out. They now keep time on the frame clock in all three, and stop only in a solo pause, which stops the world. MERIDIAN IS BURNING THE SITE is a critical alert that holds while the site burns.

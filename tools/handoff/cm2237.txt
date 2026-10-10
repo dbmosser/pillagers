@@ -1,0 +1,7 @@
+v22.37: the what is new card names the raid alerts
+
+The what is new card names the raid alerts.
+
+Check 22.37. Fails on v22.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
