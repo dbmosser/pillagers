@@ -1,0 +1,7 @@
+v21.92: a teammate down is never lost
+
+A teammate going down, an extraction closing and your rival showing up are never lost when many lines arrive at once.
+
+Check 21.92. Fails on v21.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.92 - A TEAMMATE DOWN IS NEVER LOST
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text should behave like Call of Duty, Fortnite or ARC Raiders. The new waiting queue (v21.91) holds at most four lines and lets a waiting line go after four seconds, dropping the least important first. The teammate down line, the extraction closing and closed lines and the rival line all went through it as ordinary lines, so in a busy second (a firefight, loot, kills) the cap or the time limit could drop them, and each is said only once. They now carry their rank: a teammate down is critical and shows at once over ordinary rows, the extraction lines rank as extraction lines and the rival line as a warning, so they come out of the queue first and are never the ones dropped.
+
+MEASURED. Check 21.92 passes, and fails on v21.91.
 ## v21.91 - THE WAITING QUEUE: RANKED, CAPPED, NO REPEATS
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text should behave like Call of Duty, Fortnite or ARC Raiders, where a callout is current or it is gone. Lines that had to wait queued up first come, first served with no limit, so a burst of lines played out for half a minute, the same line could wait three times over, a line about something long past still showed late, and a warning waited behind remarks. Now a line that outranks everything showing appears at once; a line already showing or already waiting is refreshed instead of copied; at most four lines wait, the most important first; a waiting line goes stale after a few seconds (ten for an objective); and while two or more wait each shows a little shorter so the queue catches up. The backpack full line and the teammate searching line carry a key, so said every frame they stay on one row.
