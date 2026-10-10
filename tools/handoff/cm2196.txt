@@ -1,0 +1,7 @@
+v21.96: a rejoin never doubles a dropped gun
+
+In co-op, abandoning and joining the same raid again no longer turns a dropped armoury gun into two.
+
+Check 21.96. Fails on v21.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

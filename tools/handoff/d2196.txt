@@ -1,0 +1,5 @@
+## v21.96 - A REJOIN NEVER DOUBLES A DROPPED GUN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, player 2 could drop his armoury gun to trade, abandon (which brings the gun home), and then join the same raid again with JOIN THE RAID IN PROGRESS. Joining wiped the note of guns he had dropped, so if player 1 then took the gun, nothing came out of player 2's armoury, and if player 2 took it back himself he banked a second copy. Now the note is kept for the raid he joins again: the gun stays in the pile and comes out of his armoury for that raid, another abandon still brings it home, and taking it back clears the note.
+
+MEASURED. Check 21.96 passes, and fails on v21.95.

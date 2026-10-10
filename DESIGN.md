@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.96 - A REJOIN NEVER DOUBLES A DROPPED GUN
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, player 2 could drop his armoury gun to trade, abandon (which brings the gun home), and then join the same raid again with JOIN THE RAID IN PROGRESS. Joining wiped the note of guns he had dropped, so if player 1 then took the gun, nothing came out of player 2's armoury, and if player 2 took it back himself he banked a second copy. Now the note is kept for the raid he joins again: the gun stays in the pile and comes out of his armoury for that raid, another abandon still brings it home, and taking it back clears the note.
+
+MEASURED. Check 21.96 passes, and fails on v21.95.
 ## v21.95 - AN ARMOURY GUN DROPPED FOR A TEAMMATE IS IN ONE SAVE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, an armoury gun dropped for a teammate could end up in both saves once a window was gone. When the host dropped his own gun and his window closed before the teammate took it, the teammate picked up the raid and banked the gun, and the host got it back on his next load. And when player 2 dropped his gun, abandoned and closed his window, the host taking it could not tell anyone, so player 2 kept it too. Now the host's drop comes off his saved list while a teammate is up top (taking it back puts it on again), and the word for a closed window waits on the host and is sent when that player links again.

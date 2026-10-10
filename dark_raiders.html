@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.95';
+var VER='21.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11596,7 +11596,22 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
 }
 function startRaid(){
   if(netGuestHeld()) return false;   // v15.91: in a party only the host takes the lift; a guest goes up on the host word (the net section)
-  if(P&&Array.isArray(P.gunPiled)&&P.gunPiled.length) P.gunPiled=[];   // v21.44 (R1b): a new raid closes the record of the last one's piled guns
+  // v21.96, from the whole-game bug hunt of 2026-10-08 (K6): THE RECORD OF PILED GUNS IS KEPT FOR THE RAID HE JOINS AGAIN. A new raid
+  // wiped the whole record (v21.44), so a guest who dropped his armoury gun, abandoned (the gun went home) and pressed JOIN THE RAID IN
+  // PROGRESS lost it while the pile still lay in the host's raid: the host taking the gun took nothing out of his armoury, and his own
+  // search banked a second copy. On a party build the entries for the raid being joined stay; a gun the abandon put back comes out of
+  // the armoury again (it lies in the pile, so he does not also come up holding it) and onto this raid's list below, so another
+  // abandon still brings it home. Every other raid closes the record as before, so solo is unchanged.
+  var _gpSd=(typeof NET==='object'&&NET&&NET.upHold&&typeof pendSeed==='number')?(pendSeed>>>0):-1, _gpBack=[];
+  if(P&&Array.isArray(P.gunPiled)&&P.gunPiled.length){
+    P.gunPiled=P.gunPiled.filter(function(e){ return !!(e&&e.gk&&_gpSd>=0&&(e.sd>>>0)===_gpSd); });
+    P.gunPiled.forEach(function(e){ if(e.home){ var j=Array.isArray(P.weapons)?P.weapons.indexOf(e.gk):-1; if(j>=0){ P.weapons.splice(j,1); _gpBack.push(e.gk); } e.home=0; } });
+    if(_gpBack.length){
+      if(P.equipped&&P.equipped!=='fists'&&P.weapons.indexOf(P.equipped)<0) P.equipped=P.weapons.length?P.weapons[0]:'fists';
+      if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists'&&P.weapons.indexOf(P.equippedSec)<0) P.equippedSec='none';
+      if((P.equippedSec||'none')===P.equipped) P.equippedSec='none';
+    }
+  }
   // v16.69, stability (co-op review): NOTHING LEFT OPEN IN THE UNDERCROFT RIDES UP. A teammate with the pause box or the floor
   // backpack open when the host took the party up (netUpStart), or a host who opened either during the kit wait (netKitGo), went
   // up with it still open. The floor pause box, labelled PAUSED and RETURN TO THE UNDERCROFT, sat over the raid start and took
@@ -11613,6 +11628,7 @@ function startRaid(){
   // now starts with the toggle off and the steadying after a shot spent. No player text, no number and no seeded draw moved.
   if(typeof PAD!=='undefined'&&PAD){ PAD.adsTog=false; PAD.adsT=0; }
   G=buildRaid(false);
+  if(_gpBack.length&&G&&!G.sim){ G.spliced=G.spliced||[]; for(var _gpi=0;_gpi<_gpBack.length;_gpi++) if(G.spliced.indexOf(_gpBack[_gpi])<0) G.spliced.push(_gpBack[_gpi]); }   // v21.96 (K6): the gun in the pile is this raid's to bring home on an abandon
   try{ gunKeysSettle({deploy:1}); }catch(_gks){}   // v21.83: the guns in his hands take the gun keys the belt shows them on
   try{ G.hot=gunCell(); }catch(_gh){}   // v13.42: a raid starts with the gun in hand selected, wherever his belt put it
   G.carriedIn=bagValue();
@@ -35010,7 +35026,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.95: In co-op, an armoury gun dropped for a teammate no longer ends up in both saves when a window closes. Check 21.95 fails on v21.94',
+  now:'v21.96: In co-op, abandoning and joining the same raid again no longer turns a dropped armoury gun into two. Check 21.96 fails on v21.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42948,6 +42964,8 @@ function netLootTake(peer,m){
   at=ct||{x:G.player.x,y:G.player.y};
   if(items.length){
     where=openContainer(at,items);
+    // v21.96 (K6): a gun he piled and now takes back out of a pile is his again, so its record goes and a later rejoin cannot strip it
+    if(ct&&ct.dropped&&P&&Array.isArray(P.gunPiled)&&P.gunPiled.length){ var _gq, _gz, _gt, _gc=0; for(_gq=0;_gq<items.length;_gq++){ _gt=ITEMS[items[_gq]]; if(!_gt||_gt.use!=='gun'||!_gt.gk) continue; for(_gz=0;_gz<P.gunPiled.length;_gz++) if(P.gunPiled[_gz]&&P.gunPiled[_gz].gk===_gt.gk){ P.gunPiled.splice(_gz,1); _gc++; break; } } if(_gc){ try{ saveProfile(); }catch(_gps){} } }
     if(ct&&typeof ct.netLeft==='number') ct.netLeft=Math.max(0,ct.netLeft-items.length);   // v16.32: the count on the bar falls as each item comes out
     if(ct) netLkTake(ct,items);   // v20.30 (H21): and this window remembers what is left in the box, for the day the host is gone
     if(!G.sim){
