@@ -5,7 +5,7 @@
     "edits":  [
                   {
                       "anchor":  "try{ sayWhenFree((netSeatName(s)||\u0027Your teammate\u0027)+\u0027 is down. Pick them up.\u0027,\u0027crit\u0027); padRumble(0.55,420); }catch(_md){}",
-                      "replacement":  "try{ say(\u0027TEAMMATE DOWN\u0027,\u0027crit\u0027,{sub:(netSeatName(s)||\u0027Your teammate\u0027)+\u0027 needs a revive.\u0027,key:\u0027tmdown\u0027+s,icon:\u0027party\u0027,hold:(function(gg){ return function(){ return !!(gg\u0026\u0026gg.dn); }; })(g)}); padRumble(0.55,420); }catch(_md){}   // v16.xx (R11): TEAMMATE DOWN, an alert held while he is down"
+                      "replacement":  "try{ say(\u0027TEAMMATE DOWN\u0027,\u0027crit\u0027,{sub:(netSeatName(s)||\u0027Your teammate\u0027)+\u0027 needs a revive.\u0027,key:\u0027tmdown\u0027+s,icon:\u0027party\u0027,hold:(function(gg){ return function(){ return !!(gg\u0026\u0026gg.dn); }; })(g)}); padRumble(0.55,420); }catch(_md){}"
                   },
                   {
                       "anchor":  "  if(up\u0026\u0026m.dn\u0026\u0026!g.dn\u0026\u0026g.n\u003e1\u0026\u0026",

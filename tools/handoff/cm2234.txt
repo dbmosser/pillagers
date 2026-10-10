@@ -1,0 +1,7 @@
+v22.34: the pad walk no longer draws the packed guns
+
+On a controller the bumpers walk past the packed guns on keys 3 and 4 without drawing them; RT draws the one you stop on.
+
+Check 22.34. Fails on v22.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

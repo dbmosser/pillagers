@@ -5,7 +5,7 @@
     "edits":  [
                   {
                       "anchor":  "lg.push({m:m,k:k,t:G.t||0});",
-                      "replacement":  "lg.push({m:m,k:k,t:G.t||0,sub:(o\u0026\u0026o.sub)||\u0027\u0027});   // v16.xx (R13): with its detail"
+                      "replacement":  "lg.push({m:m,k:k,t:G.t||0,sub:(o\u0026\u0026o.sub)||\u0027\u0027});"
                   },
                   {
                       "anchor":  "say(\u0027Knocked down. Extraction progress bar reset. Hold E to try again.\u0027);",

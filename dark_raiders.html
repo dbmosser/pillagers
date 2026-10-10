@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.33';
+var VER='22.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16668,8 +16668,22 @@ function beltStep(dir){
   var sl=hotbarSlots(), n=sl.length, i=hotSel(), k;
   if(n<=0) return;
   for(k=0;k<n;k++){ i=(i+dir+n)%n; if(!(sl[i]&&sl[i].vacant)) break; }
+  // v22.34, from the review of the four-gun belt (build 3): THE PAD WALK NO LONGER DRAWS EVERY PACKED GUN IT PASSES. setHot reads a
+  // press on a key showing a gun in the backpack as an order to draw it, so RB from key 2 to Smoke on key 5 brought the gun on key
+  // 3 up, then the gun on key 4, and he reached Smoke holding a gun he never chose, each draw cancelling a reload. The walk now only
+  // moves the highlight onto such a key and names it; the trigger draws it (and fires nothing on that press), the way a number key
+  // draws it at once.
+  if(bagGunCell(sl[i])){
+    G.hot=i;
+    if(!G.sim) say(String(sl[i].name||'Gun').toUpperCase(),'info',{sub:padB('RT TO DRAW')});
+    blip('pick');
+    return;
+  }
   setHot(i);
 }
+// v22.34: a belt cell showing a gun that is in the backpack, not in his hands (a gun key pin or a gun he bound). The Undercroft
+// preview cells (floorGun) and vacant gun keys are not.
+function bagGunCell(c){ return !!(c&&c.kind==='gun'&&c.itemKey&&!c.equipped&&!c.floorGun&&!c.vacant); }
 // v12.31, audit P1: THE CELL THAT HOLDS THE GUN IN YOUR HANDS. Cell 1 is only
 // that cell while nothing is assigned over it; bind the held gun to key 5 and
 // the dedupe blanks cell 1, so a fall-back to 0 by number landed on an empty
@@ -18116,7 +18130,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     p.cookT=(p.cookT||0)+dt;
     if(p.cookKind==='frag'&&p.cookT>=FRAG_FUSE) cookOff();
   }
-  var hotGun=(!HSC||(HSC.kind==='gun'&&!HSC.vacant)||HSC.kind==='item');   // v21.93: a vacant gun key fires nothing; it says which key does
+  var hotGun=(!HSC||(HSC.kind==='gun'&&!HSC.vacant&&!bagGunCell(HSC))||HSC.kind==='item');   // v21.93: a vacant gun key fires nothing; it says which key does   // v22.34: nor does a packed gun the pad walk highlighted
   if(mouse.down&&!hotGun){
     // THROWABLES COOK, v3.11. Press pulls the pin and starts the clock in your
     // hand; release throws whatever fuse is left. Everything else on the hotbar
@@ -18125,7 +18139,13 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     // v12.31, audit P1: a blank cell 1 at the raid start killed the first click.
     // v13.42, HIS RULING: the raid now starts on the gun cell (startRaid), and a
     // press on a blank cell never selects the gun; it says which key does.
-    if(HSC&&(HSC.kind==='empty'||HSC.vacant)){
+    // v22.34, from the review of the four-gun belt (build 3): A PACKED GUN THE PAD WALK HIGHLIGHTED IS DRAWN BY THE TRIGGER. The press
+    // brings it up through setHot (by the give-up rule) and fires nothing; the next press fires it. The highlight never names one
+    // gun and fires another.
+    if(bagGunCell(HSC)){
+      if(!p.fired){ p.fired=true; setHot(hotSel()); }
+    }
+    else if(HSC&&(HSC.kind==='empty'||HSC.vacant)){
       if(!p.fired){
         p.fired=true;
         if(!G.sim) say('Nothing in that cell. '+gunKeyLine());
@@ -35352,7 +35372,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.33: THIRTY SECONDS and TEN SECONDS are alerts with one short hint that names your use key. Check 22.33 fails on v22.32',
+  now:'v22.34: On a controller the bumpers walk past the packed guns on keys 3 and 4 without drawing them; RT draws the one you stop on. Check 22.34 fails on v22.33',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41715,7 +41735,7 @@ function netAutoFire(p){
   // and shut the stall. With the stall open the trigger is let go and the cursor is left alone.
   if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed&&!(p.reloading>0)&&!(p.jam>0)&&!p.cooking&&p.wep&&p.wep.mag>0&&(p.ammo>0||p.reserve>0)){
     hs=hotbarSlots()[hotSel()];
-    if(hs&&hs.kind==='gun') e=afTarget(p);
+    if(hs&&hs.kind==='gun'&&!bagGunCell(hs)) e=afTarget(p);   // v22.34: a packed gun the pad walk highlighted is not in his hands
   }
   if(!e){
     var lk=null;

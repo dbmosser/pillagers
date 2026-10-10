@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.34 - THE PAD WALK NO LONGER DRAWS THE PACKED GUNS
+
+Co-op hunt while he was away. Found by the review of the four-gun belt (build 3). On a controller the bumpers walk the tactical belt. With a third and a fourth gun packed on keys 3 and 4, RB from key 2 to Smoke on key 5 drew the gun on key 3, then the gun on key 4, so he reached Smoke holding a gun he never chose, and each draw cancelled a reload; LB back reshuffled them again. This hit every pad raid with three or more guns, player 2 on a controller included. The walk now only moves the highlight onto a packed gun and names it (RT TO DRAW); the trigger draws it and fires nothing on that press, the next press fires it. Kid firing does not draw it either. A number key still draws a packed gun at once.
+
+MEASURED. Check 22.34 passes, and fails on v22.33.
 ## v22.33 - THE CLOCK IN THE ALERT LANE, WITH A SHORT HINT
 
 Co-op hunt while he was away. His order of 2026-10-09: every raid line reads like a shooter HUD. THIRTY SECONDS and TEN SECONDS were one row of about seventy characters, the mark and then a sentence about the way out, that the next remark pushed down. They are now alerts with a clock glyph: THIRTY SECONDS as a warning and TEN SECONDS as a critical line, each with one short hint under it (at most 48 characters). The hint no longer says way out, is down or lands, and it names the use key through the key labels, so on a controller it says [X]. The minute marks read 3 MINUTES LEFT as objective rows. When the marks fire and their sounds are unchanged.
