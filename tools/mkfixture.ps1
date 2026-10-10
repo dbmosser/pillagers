@@ -9365,14 +9365,14 @@ window.__REGRESS=[
        updateEnts(0.05);
        if(c.wind!==null&&c.wind!==undefined) return 'SKIP: staging: the Crier windup did not run out';
        if(g.marked>0) bad.push('the host was branded MARKED by a Crier that marked player 2');
-       if(lines.some(function(s){ return s.indexOf('raised the alarm')>=0; })) bad.push('the host was told a Crier raised the alarm on him');
+       if(lines.some(function(s){ return s.indexOf('raised the alarm')>=0||s.indexOf('CRIER REVEALED')>=0; })) bad.push('the host was told a Crier raised the alarm on him');   // v21.78: either wording
        if(!words.some(function(w){ return w.t==='mark'&&w.k==='fire'&&w.seat===1; })) bad.push('player 2 was never told the Crier fired');
        netBroadcast=oBc; lines=[];
        NET.role='join'; NET.seat=1; NET.peers=[peer];
        d=netEntMake(951,'snitch',g.player.x+200,g.player.y); NET.entMap=NET.entMap||{}; NET.entMap[951]=d; d.nIn=1; g.ents.push(d);
        netMarkTake(peer,{t:'mark',k:'on',nid:951,wind:3.5,seat:1});
        if(!(d.wind>3.4)) bad.push('player 2 window has no countdown for the Crier on him ('+d.wind+')');
-       if(!lines.some(function(s){ return s.indexOf('crier has you')>=0; })) bad.push('player 2 was not told a Crier has him');
+       if(!lines.some(function(s){ return s.indexOf('crier has you')>=0||s.indexOf('CRIER IS REVEALING')>=0; })) bad.push('player 2 was not told a Crier has him');   // v21.78: either wording
        w0=d.wind; netEntsEase(1); if(!(d.wind<w0-0.9)) bad.push('the countdown on player 2 window does not run ('+w0+' to '+d.wind+')');
        g.marked=0; netMarkTake(peer,{t:'mark',k:'fire',nid:951,seat:1,sees:1});
        if(!(g.marked>2)) bad.push('player 2 window shows no MARKED banner when the Crier fires');
@@ -40422,7 +40422,7 @@ window.__REGRESS=[
        for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='snitch') g.ents[i].hp=0;   // the map's own criers, out of the way
        var cr=mkSnitch(p.x+240,p.y); cr.state='alarm'; cr.wind=0.01; cr.markX=p.x; cr.markY=p.y; cr.lost=0; g.ents.push(cr);
        __ents(0.1);
-       if(!said.some(function(t){ return t.indexOf('The Crier raised the alarm.')===0; })) bad.push('the alarm line does not name the Crier (said: '+said.filter(function(t){ return /larm/.test(t); }).join(' | ').slice(0,90)+')');
+       if(!said.some(function(t){ return t.indexOf('The Crier raised the alarm.')===0||t.indexOf('CRIER REVEALED')===0; })) bad.push('the alarm line does not name the Crier (said: '+said.filter(function(t){ return /larm/.test(t); }).join(' | ').slice(0,90)+')');
        if(said.some(function(t){ return t.indexOf('Alarm went out. It')===0||t.indexOf('Alarm went out. They')===0; })) bad.push('the old Alarm went out line still prints');
        // TWO: the Pillbox, destroyed.
        said.length=0;
