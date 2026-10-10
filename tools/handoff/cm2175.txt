@@ -1,0 +1,7 @@
+v21.75: the gun card no longer says stowed
+
+The gun card no longer says STOWED over the gun in your hands. Your second gun is listed as OTHER GUN.
+
+Check 21.75. Fails on v21.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

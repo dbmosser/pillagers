@@ -1,0 +1,5 @@
+## v21.75 - THE GUN CARD NO LONGER SAYS STOWED
+
+Co-op hunt while he was away. His note of 2026-10-09: the HUD said his gun was stowed while he had it out. The small line above the gun name in the lower right read STOWED and then whatever was in the other slot, so with one gun it said STOWED Bare Hands right over the gun in his hands, which reads as that gun being put away. The line now says OTHER GUN with that gun name and rounds, and when the other slot holds only Bare Hands there is no line at all.
+
+MEASURED. Check 21.75 passes, and fails on v21.74.

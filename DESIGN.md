@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.75 - THE GUN CARD NO LONGER SAYS STOWED
+
+Co-op hunt while he was away. His note of 2026-10-09: the HUD said his gun was stowed while he had it out. The small line above the gun name in the lower right read STOWED and then whatever was in the other slot, so with one gun it said STOWED Bare Hands right over the gun in his hands, which reads as that gun being put away. The line now says OTHER GUN with that gun name and rounds, and when the other slot holds only Bare Hands there is no line at all.
+
+MEASURED. Check 21.75 passes, and fails on v21.74.
 ## v21.74 - A CONTROLLER CUTS THE SEAL AND HELPS THE SURVIVOR
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller X does whatever E does when something is in reach (search, open, call for extraction) and reloads otherwise. THE SEAL and a found survivor were not on that list, and the seal stands clear of every wall, so usually nothing else was in reach: holding X there reloaded the gun, the seal never cut, and the survivor never got his item, though his prompt said [X] GIVE. The seal prompt also said HOLD E on a controller. X now holds E at both, and the seal prompt names the button in hand.

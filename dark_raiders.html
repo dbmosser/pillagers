@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.74';
+var VER='21.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27147,6 +27147,12 @@ function statusGlyph(id,cx,cy,u,col){
   }
 }
 // Called once a frame from drawHUD. Returns how many icons it drew.
+// v21.73: the gun card's line for the gun you are NOT holding, or '' when the other slot holds only Bare Hands.
+function stowLine(p){
+  var s=p&&p.sec;
+  if(!s||s.id==='fists') return '';
+  return 'OTHER GUN  '+s.name+((s.mag>0)?'  '+p.secAmmo:'');
+}
 function drawStatusIcons(){
   var p=G&&G.player, L=STATUSL, E, i, j, n=0, s=0, hr, S, g, r, ox, oy, yBot, rows, B, wC, nf, vf, x, y, cx, cy, tx, tw, lw, rr, u, hx, ph;
   if(!p||G.over||G.sim||G.mapOpen) return 0;
@@ -28492,7 +28498,7 @@ if(p.armor>0){
   // moves it by starts (so its resize grip sits under its left edge), and grows left only for a long gun name or stowed line. The words on
   // it, the box the mouse uses and the belt clamp are as they were.
   try{ var _gz=(HUDZ.gear||1)*hudRes()*hudUserZ('gear'), _wpR=W-8/_gz, _wtx=ctx.measureText(_cornName).width;
-       if(p.sec){ ctx.font=FS(TYPE.micro); _wtx=Math.max(_wtx,ctx.measureText('STOWED  '+p.sec.name+((p.sec.mag>0)?'  '+p.secAmmo:'')).width); ctx.font=FS(TYPE.head); }
+       if(stowLine(p)){ ctx.font=FS(TYPE.micro); _wtx=Math.max(_wtx,ctx.measureText(stowLine(p)).width); ctx.font=FS(TYPE.head); }
        var _wpx=Math.min(W-252,W-16-_wtx-LH(14)), _wpw=_wpR-_wpx, _hcL=(G.hotCells&&G.hotCells.length)?G.hotCells[G.hotCells.length-1]:null;
        var _gdx=(typeof _boG==='object'&&_boG)?(_boG.dx||0):0, _lim=_hcL?(W+((_hcL.x+_hcL.w+LH(8))-_gdx-W)/_gz):-1e9;   // the belt edge, brought into this corner's scaled space
        if(_hcL&&_wpx<_lim){ _wpx=_lim; _wpw=_wpR-_wpx; }   // v18.39: never over the belt (it covered key 9)
@@ -28514,9 +28520,12 @@ if(p.armor>0){
   // v10.89, HIS NOTE: the stowed gun is still shown, because it was never meant
   // to be a secret, but the bracket in front of it promised a key that no longer
   // exists. The hotbar is how a gun comes up now.
-  if(p.sec){
+  // v21.73, HIS NOTE (2026-10-09): "it says my gun is stowed even tho i've got it out". The line over the gun name read STOWED and
+  // then the other slot, so over the gun in his hands it said STOWED Bare Hands, which reads as the gun he holds being put away. It
+  // now names the other gun plainly (OTHER GUN, its name, its rounds), and with nothing but Bare Hands in the other slot there is no line.
+  if(stowLine(p)){
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#7d8894';
-    var _cornStow='STOWED  '+p.sec.name+((p.sec.mag>0)?'  '+p.secAmmo:'');   // v18.61, seen on the raid screenshot (2026-10-07): bare hands read STOWED Bare Hands 0; a weapon with no magazine shows no count, as the held line says MELEE
+    var _cornStow=stowLine(p);
     _cornMark(_cornStow);
     ctx.fillText(_cornStow,W-16,by-LH(52));
   }
@@ -34421,7 +34430,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.74: On a controller, holding X now cuts THE SEAL and hands the survivor his item. Check 21.74 fails on v21.73',
+  now:'v21.75: The gun card no longer says STOWED over the gun in your hands. Your second gun is listed as OTHER GUN. Check 21.75 fails on v21.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
