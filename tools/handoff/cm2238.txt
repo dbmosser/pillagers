@@ -1,0 +1,7 @@
+v22.38: extraction moments in the alert lane
+
+Calling for extraction shows EXTRACTION CALLED, then THE SIEGE with its size, then a short backpack row, instead of one 130 character line.
+
+Check 22.38. Fails on v22.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

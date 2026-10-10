@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.38 - EXTRACTION MOMENTS IN THE ALERT LANE
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD. Calling for extraction said one line of about 130 characters (Pulled, the wait, how to extract, THE SIEGE and its size, and a sentence about the backpack), so most of it ran off the plate or was pushed down. It is now EXTRACTION CALLED with the wait and the key that extracts under it, then THE SIEGE with how many machines are coming, then a short backpack row (HEAVY BACKPACK, They heard that). The window opening reads his phrase EXTRACT IN PROGRESS! with Hold [E] to extract. A missed window reads EXTRACTION LEFT WITHOUT YOU in amber, closing rings read EXTRACTION B CLOSING and EXTRACTION B CLOSED in amber, a teammate calling reads EXTRACTION CALLED with his name and the ring, and his knocked down line keeps his words as an extraction alert. The band under the clock still owns every countdown, and the siege maths are untouched.
+
+MEASURED. Check 22.38 passes, and fails on v22.37.
 ## v22.37 - THE WHAT IS NEW CARD NAMES THE RAID ALERTS
 
 Co-op hunt while he was away. The card was stamped v22.21 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text alert lane shipped on the evening of 2026-10-10: threats, the clock warnings and party emergencies as steady caps callouts, with the Crier line held while the mark runs; the rest are in the change list.

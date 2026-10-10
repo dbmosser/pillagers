@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.37';
+var VER='22.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14489,7 +14489,7 @@ function say(m,kind,o){
   if(G&&G.sim) return;
   if(G){
     var k=msgKind(kind), lg=(G.msgLog=G.msgLog||[]);
-    lg.push({m:m,k:k,t:G.t||0}); if(lg.length>16) lg.shift();
+    lg.push({m:m,k:k,t:G.t||0,sub:(o&&o.sub)||''}); if(lg.length>16) lg.shift();
     if(k==='log') return;
     if(msgAlertK(k)){ alertSay(m,k,o); return; }   // v22.13 (R08): crit, warn and ext take the alert lane, not a feed row
     // v21.86, the raid text rewrite (R04): TWO ROWS INSTEAD OF ONE OVERWRITE. A second line said while one still showed wrote
@@ -16915,7 +16915,7 @@ function tryExtractTick(dt,wantCall){
       // it every second frame and a downed man could never board at all, which
       // is exactly the lock-out he hit.
       z.pullT=null; z.boardT=0; z.pullFloor=0;
-      say('Knocked down. Extraction progress bar reset. Hold E to try again.');   // v16.17, his note: extraction hold meant nothing to him; v16.19: his words, Extraction progress bar reset
+      say('Knocked down. Extraction progress bar reset. Hold E to try again.','ext',{c:'warn',key:'xcall'});   // v16.17, his note: extraction hold meant nothing to him; v16.19: his words, Extraction progress bar reset
       return;
     }
     if(p.downed&&CFG.hauledAboard!==0){
@@ -17067,14 +17067,19 @@ function tryExtractTick(dt,wantCall){
       // step, and Standard divides by 1 and does not move.
       var _siv=(8-4.6*_g)/(CFG.siegeVol===undefined?1:CFG.siegeVol);
       var _sc=Math.max(1,Math.min(_scap,Math.floor(CFG.extractWait/Math.max(0.1,_siv))));
-      var _why=(_g>=0.66)?' Heavy backpack: they heard that.'
-              :((_g>=0.33)?' Your backpack is heavy. Expect company.'
-                          :' Light backpack. Fewer will come.');
+      var _wh=(_g>=0.66)?'HEAVY BACKPACK':((_g>=0.33)?'LOADED BACKPACK':'LIGHT BACKPACK'),
+          _wd=(_g>=0.66)?'They heard that.':((_g>=0.33)?'Expect company.':'Fewer will come.');
       // v15.14, dials audit finding 6: A RAID KEEPS THE CLOCK IT STARTED WITH. The pull line asks this raid, not the dial, so a
       // dial moved mid-raid cannot warn of a clock the raid does not have, or stay quiet about one it does.
-      say('Pulled. Inbound '+fmtMS(CFG.extractWait)+
-          ((raidClockOn()&&G.timeLeft<CFG.extractWait)?'. The raid clock runs out first.':', then hold E to extract.')+   // v12.24: not with the clock OFF
-          ' THE SIEGE: about '+_sc+' machines are coming to this ring.'+_why);
+      // v22.38, the raid text rewrite (R13): EXTRACTION MOMENTS IN THE ALERT LANE. His order of 2026-10-09 is a shooter HUD; the call
+      // was one line of about 130 characters (Pulled, the wait, how to extract, THE SIEGE and its size, and the backpack), so most of
+      // it ran past the plate or was pushed down. It is now EXTRACTION CALLED (the wait as m:ss, then the key that extracts, or that
+      // the raid clock runs out first), then THE SIEGE with how many are coming, then a feed row for the backpack. The band under the
+      // clock owns every live countdown, so only the one inbound figure is in a detail. The count is the same _sc as before.
+      var _xw=Math.round(CFG.extractWait), _xs=(_xw>=60)?(Math.floor(_xw/60)+':'+((_xw%60)<10?'0':'')+(_xw%60)):(_xw+'s'), _xk='['+keyLabel('KeyE','E')+']';
+      say('EXTRACTION CALLED','ext',{key:'xcall',sub:'Inbound '+_xs+((raidClockOn()&&G.timeLeft<CFG.extractWait)?'. The raid clock runs out first.':('. Then hold '+_xk+' to extract.'))});   // v12.24: not with the clock OFF
+      say('THE SIEGE','warn',{key:'siege',sub:'About '+_sc+(_sc===1?' machine is':' machines are')+' coming to this ring.'});
+      say(_wh,'info',{sub:_wd});
     }
     return;
   }
@@ -17573,7 +17578,7 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
         G.tel.ringCrowd={mapBorn:_rcm,siegeBorn:_rcs};
       }
       if(dist(p,z)<1400){ sfxHere('touchdown',z.x,z.y); sfxHere('alarm',z.x,z.y);   // v11.59: mark themselves
-        say('EXTRACTION IS OPEN. Hold E to extract, '+Math.round(z.hold)+'s.'); }
+        say('EXTRACT IN PROGRESS!','ext',{key:'xcall',sub:'Hold ['+keyLabel('KeyE','E')+'] to extract.'}); }   // v22.38 (R13): his phrase; the band shows the seconds
     }
     // THE WINDOW CLOSING, once a second for the last eight. This is the only
     // sound in the family that is meant to be unpleasant: it is the one that
@@ -17603,7 +17608,7 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
       // as CLOSED. Past the closing time the line now stops at its first sentence and leaves the news to that queued line; with
       // too little clock left it says a call cannot beat the clock; every other miss still offers the call and its wait.
       if(dist(p,z)<1400){ blip('clank');
-        say('Extraction left without you.'+((z.closeAt!==undefined&&G.timeLeft<=z.closeAt)?'':((raidClockOn()&&G.timeLeft<CFG.extractWait)?' Another call cannot beat the raid clock.':(' Hold E to call for another, '+fmtMS(CFG.extractWait)+' out.')))); }
+        say('EXTRACTION LEFT WITHOUT YOU','ext',{c:'warn',key:'xcall',sub:((z.closeAt!==undefined&&G.timeLeft<=z.closeAt)?'':((raidClockOn()&&G.timeLeft<CFG.extractWait)?'Another call cannot beat the raid clock.':('Hold ['+keyLabel('KeyE','E')+'] in a ring to call for extraction.')))}); }   // v22.38 (R13)
     }
   }
   // THE MIRRORS ARE A VIEW, NOT A CACHE, v2.29. G.beaconT, G.shipHold and
@@ -17650,12 +17655,12 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
     if(!cz.warned&&G.timeLeft<=cz.closeAt+120){
       cz.warned=1;
       // v10.75, his one-word rule: the same letter the map and the banner use.
-      sayWhenFree('Extraction '+extLetter(cz)+' closes in two minutes.','ext');   // v21.92: an extraction line, ranked over ordinary rows so the queue never drops it;   // v14.11, HUD audit: waits its turn instead of writing over a line
+      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSING','ext',{c:'warn',sub:'It closes in two minutes.'});   // v22.38 (R13)   // v21.92: an extraction line, ranked over ordinary rows so the queue never drops it;   // v14.11, HUD audit: waits its turn instead of writing over a line
     }
     if(cz.open&&G.timeLeft<=cz.closeAt){
       if(cz.beaconT!==null&&cz.beaconT!==undefined){ continue; }  // pulled: it completes
       cz.open=false;
-      sayWhenFree('Extraction '+extLetter(cz)+' is closed.','ext');   // v21.92: ranked as an extraction line;   // v10.75: the letter, as everywhere else; v14.11: waits its turn
+      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSED','ext',{c:'warn'});   // v22.38 (R13)   // v21.92: ranked as an extraction line;   // v10.75: the letter, as everywhere else; v14.11: waits its turn
       if(G.active===cz){
         for(var aj=0;aj<G.zones.length;aj++) if(G.zones[aj].open){ G.active=G.zones[aj]; break; }
       }
@@ -35382,7 +35387,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.37: The what is new card names the raid alerts. Check 22.37 fails on v22.36',
+  now:'v22.38: Calling for extraction shows EXTRACTION CALLED, then THE SIEGE with its size, then a short backpack row, instead of one 130 character line. Check 22.38 fails on v22.37',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42139,7 +42144,7 @@ function netBeaconTake(peer,m){
   }catch(_wk){}
   if(!(G.active&&G.active!==Z&&G.active.beaconT!==null&&G.active.beaconT!==undefined)){ G.active=Z; G.beaconT=Z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }   // v16.11: never taken off a call of the host's own (v12.57)
   if(G.tel) G.tel.beaconCalls=(G.tel.beaconCalls||0)+1;
-  blip('beacon'); say((netSeatName(peer.seat)||'Your teammate')+' called extraction. Inbound in '+Math.ceil(Z.beaconT)+'s.');
+  blip('beacon'); say('EXTRACTION CALLED','ext',{key:'xcall',sub:(netSeatName(peer.seat)||'Your teammate')+' called for extraction at '+extLetter(Z)+'.'});   // v22.38 (R13)
   return 'called';
 }
 // v16.08, MULTIPLAYER: THE PARTY ON THE SECTOR MAP (plan phase 4, map dots). The sector map drew only you, so a teammate out of
