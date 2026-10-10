@@ -1,0 +1,7 @@
+v22.18: player 2 gets the undercroft music back
+
+In same machine co-op, the player 2 window plays the Undercroft music again once the player 1 window is gone.
+
+Check 22.18. Fails on v22.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

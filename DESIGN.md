@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.18 - PLAYER 2 GETS THE UNDERCROFT MUSIC BACK
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In same machine co-op the player 2 window leaves the Undercroft song to the player 1 window, so only one song plays for the pair. But once the player 1 window was closed or crashed, or ended the party, the player 2 window still waited for it, so its Undercroft stayed silent on every visit until it was reloaded. When the link to player 1 ends, the player 2 window now plays the song itself, and it hands it back as soon as player 1 links again.
+
+MEASURED. Check 22.18 passes, and fails on v22.17.
 ## v22.17 - THE EMPTY RETICLE NAMES THE RELOAD KEY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When the magazine runs dry the crosshair turns amber and reads EMPTY - R, so the eyes never have to leave it (his v2.99 note). On a controller there is no R: reload is X. A keyboard player who moved reload in CHANGE KEYS was also told R. It now reads like a shooter HUD and names the reload button of the device in hand, as every other prompt does: [X] RELOAD on a pad, [SQUARE] RELOAD on a PlayStation pad, [R] RELOAD on a keyboard (the raid text plan, R22). NO AMMO and JAMMED keep their words.
