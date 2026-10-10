@@ -1,0 +1,7 @@
+v22.35: party emergencies never wait
+
+TEAMMATE DOWN shows at once and holds while he is down; HOST IS OUT and YOU ARE RUNNING THE RAID are alerts too.
+
+Check 22.35. Fails on v22.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

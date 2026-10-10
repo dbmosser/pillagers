@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.35 - PARTY EMERGENCIES NEVER WAIT
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where a teammate going down is a callout that shows at once and stays while it is true. It was a sentence (NAME is down. Pick them up.) that went through the waiting queue and ran out after a few seconds while he was still on the floor. It is now TEAMMATE DOWN, a critical alert with a party glyph and NAME needs a revive. under it, shown on the next frame and held for as long as he is down, up to eight seconds; it goes once he is up. The host leaving (HOST IS OUT, with how his run ended) and taking over the raid (YOU ARE RUNNING THE RAID) are critical alerts too. The controller rumble stays and the party status window keeps its sentences.
+
+MEASURED. Check 22.35 passes, and fails on v22.34.
 ## v22.34 - THE PAD WALK NO LONGER DRAWS THE PACKED GUNS
 
 Co-op hunt while he was away. Found by the review of the four-gun belt (build 3). On a controller the bumpers walk the tactical belt. With a third and a fourth gun packed on keys 3 and 4, RB from key 2 to Smoke on key 5 drew the gun on key 3, then the gun on key 4, so he reached Smoke holding a gun he never chose, and each draw cancelled a reload; LB back reshuffled them again. This hit every pad raid with three or more guns, player 2 on a controller included. The walk now only moves the highlight onto a packed gun and names it (RT TO DRAW); the trigger draws it and fires nothing on that press, the next press fires it. Kid firing does not draw it either. A number key still draws a packed gun at once.
