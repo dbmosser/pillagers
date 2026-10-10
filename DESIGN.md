@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.36 - THE LANES KEEP TIME IN THE DEATH BEAT AND THE BURN
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text behaves like a shooter HUD. The message rows, the alert and the waiting queue ran down only while the raid was running normally, so they froze in the moment after you die and for the whole burn at the end of the clock: a remark said just before stood on screen through the burn, and nothing waiting ever came out. They now keep time on the frame clock in all three, and stop only in a solo pause, which stops the world. MERIDIAN IS BURNING THE SITE is a critical alert that holds while the site burns.
+
+MEASURED. Check 22.36 passes, and fails on v22.35.
 ## v22.35 - PARTY EMERGENCIES NEVER WAIT
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where a teammate going down is a callout that shows at once and stays while it is true. It was a sentence (NAME is down. Pick them up.) that went through the waiting queue and ran out after a few seconds while he was still on the floor. It is now TEAMMATE DOWN, a critical alert with a party glyph and NAME needs a revive. under it, shown on the next frame and held for as long as he is down, up to eight seconds; it goes once he is up. The host leaving (HOST IS OUT, with how his run ended) and taking over the raid (YOU ARE RUNNING THE RAID) are critical alerts too. The controller rumble stays and the party status window keeps its sentences.

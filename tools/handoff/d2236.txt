@@ -1,0 +1,5 @@
+## v22.36 - THE LANES KEEP TIME IN THE DEATH BEAT AND THE BURN
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text behaves like a shooter HUD. The message rows, the alert and the waiting queue ran down only while the raid was running normally, so they froze in the moment after you die and for the whole burn at the end of the clock: a remark said just before stood on screen through the burn, and nothing waiting ever came out. They now keep time on the frame clock in all three, and stop only in a solo pause, which stops the world. MERIDIAN IS BURNING THE SITE is a critical alert that holds while the site burns.
+
+MEASURED. Check 22.36 passes, and fails on v22.35.

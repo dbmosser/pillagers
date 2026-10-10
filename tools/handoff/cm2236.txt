@@ -1,0 +1,7 @@
+v22.36: the lanes keep time in the death beat and the burn
+
+Raid lines keep running down after you die and while the site burns, and the burn is a critical alert.
+
+Check 22.36. Fails on v22.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

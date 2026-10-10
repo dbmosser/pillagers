@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.35';
+var VER='22.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14457,6 +14457,21 @@ function alertDraw(L){   // inside the message scale, at the top of the band
   for(i=0;i<L.hl.length;i++) hudText(L.hl[i],tx,y0+L.bl[i],2);
   if(L.sl.length){ ctx.font=L.lf; ctx.fillStyle=HUDC.text; for(i=0;i<L.sl.length;i++) hudText(L.sl[i],tx,y0+L.bl[L.hl.length+i],2); }
   ctx.globalAlpha=oa; ctx.textAlign=oal;
+}
+// v22.36, the raid text rewrite (R12): THE LANES KEEP TIME IN THE DEATH BEAT AND THE BURN. The message rows, the alert and the
+// waiting queue ran down only in the running branch of the frame, so they froze in the 1.5 s death beat and for the whole burn:
+// a remark said just before stood on screen through the burn, and the queue never moved. msgTick runs them on frame time (dt,
+// capped at 0.1 s) in the running branch, the death beat and the burn alike; only a solo pause, which stops the world, stops them.
+// MERIDIAN IS BURNING THE SITE is a critical alert held while the site burns (G.nuking).
+function msgTick(dt){
+  if(!G) return;
+  dt=(dt>0)?Math.min(0.1,dt):0;
+  if(G.msgT>0) G.msgT-=dt;
+  if(G.feed&&G.feed[1]&&G.feed[1].T>0) G.feed[1].T-=dt;   // v21.86 (R04): the second message row runs out on the same clock
+  alertTick(dt);   // the alert lane and its queue (R08)
+  // v13.32, v13.33: a short queue of lines that must not be lost, shown when the rows free up. v21.88 (R06): only into a row that is
+  // free or past its protection. v21.91 (R07): the highest ranked waiting line first, stale ones dropped, 1.8 s while two or more wait.
+  if(G.msgQ&&G.msgQ.length&&msgFree()){ var _qn=msgQNext(); if(_qn){ G.msgDrain=1; try{ say(_qn.m,_qn.k,_qn.o); } finally { G.msgDrain=0; } if(_qn.n>=2&&G.msg===_qn.m&&G.msgT>1.8) G.msgT=1.8; } }
 }
 function sayWhenFree(m,kind,o){
   if(G&&!G.sim&&G.msgT>0){
@@ -34843,6 +34858,7 @@ function loop(ts){
   if((!G.paused||netPauseLive())&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
     // the death beat: the world keeps moving underwater-slow, you do not
     G.deathBeat-=dt;
+    msgTick(dt);   // v22.36 (R12): the lanes keep time in the death beat
     var bdt=netUpShared()?dt:dt*0.25;   // v16.04: in a shared co-op raid the slow-down is not put on the world the party is still playing in
     G.t+=bdt;
     refreshVseg(); updateEnts(bdt); updateBullets(bdt); updateThrowables(bdt);
@@ -34875,9 +34891,10 @@ function loop(ts){
     } else if(raidClockOn()&&G.timeLeft<=0&&!G.nuking&&!_boarding){
       G.timeLeft=0; G.nuking=1; G.nukeT=0;
       G.tel.deathKiller='timer'; G.player.pendKiller='timer';
-      say('MERIDIAN IS BURNING THE SITE.');
+      say('MERIDIAN IS BURNING THE SITE','crit',{key:'burn',hold:'nuking'});   // v22.36 (R12): a critical alert held while it burns
       try{ sfx('alarm',G.player.x,G.player.y); }catch(e){}
     } else if(G.nuking){
+      msgTick(dt);   // v22.36 (R12): and in the burn
       tickNuke(dt);
     } else {
       refreshVseg();
@@ -34888,15 +34905,7 @@ function loop(ts){
       if(!G.over){ updateBullets(dt); updateThrowables(dt); }
       if(!netEntsPeer()) try{ tickHot(dt); }catch(e){}   // v20.39 (H59): a linked window keeps the hot ground where the host has it (netWorldTake), as it keeps his weather
       if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
-      if(G.msgT>0) G.msgT-=dt;
-      if(G.feed&&G.feed[1]&&G.feed[1].T>0) G.feed[1].T-=dt;   // v21.86 (R04): the second message row runs out on the same clock
-      alertTick(dt);   // v22.13 (R08): the alert lane and its queue run on the same clock
-      // v13.32: one waiting line, shown when the current message runs out rather than
-      // written over it in the same frame.
-      // v13.33: a short queue in place of the one slot, so two waiting lines both show.
-      // v21.88 (R06): a waiting line comes out as soon as a row is free or past its protection (msgFree), and only into such a row.
-      // v21.91 (R07): the highest ranked waiting line first, stale ones dropped (msgQNext), and 1.8 s while two or more wait.
-      if(G.msgQ&&G.msgQ.length&&msgFree()){ var _qn=msgQNext(); if(_qn){ G.msgDrain=1; try{ say(_qn.m,_qn.k,_qn.o); } finally { G.msgDrain=0; } if(_qn.n>=2&&G.msg===_qn.m&&G.msgT>1.8) G.msgT=1.8; } }   // v21.80: a waiting line keeps its kind
+      msgTick(dt);   // v22.36 (R12): the rows, the alert and the queue (see msgTick)
       if(G.marked>0) G.marked-=dt;
       // Sound. Threat is the nearest hunting body, so the room tightens before
       // you see anything, and a heartbeat comes up as integrity falls.
@@ -35372,7 +35381,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.35: TEAMMATE DOWN shows at once and holds while he is down; HOST IS OUT and YOU ARE RUNNING THE RAID are alerts too. Check 22.35 fails on v22.34',
+  now:'v22.36: Raid lines keep running down after you die and while the site burns, and the burn is a critical alert. Check 22.36 fails on v22.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
