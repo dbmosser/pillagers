@@ -1,0 +1,5 @@
+## v21.87 - NO LINE RUNS OFF THE SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text should read like Call of Duty, Fortnite or ARC Raiders, and in those games no callout ever runs off the edge of the screen. Here a long message (a long contract or item name, or a line he reworded) was drawn as one strip as wide as its words, so both ends ran past the screen edges and were never read. A message row now has a maximum width and wraps at a word into a second line on the same plate; anything longer than two lines is cut at a word with a truncation mark, and its full text is kept in the run report. Lines that already fit are drawn exactly as before.
+
+MEASURED. Check 21.87 passes, and fails on v21.86.

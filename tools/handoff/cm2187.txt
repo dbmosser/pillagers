@@ -1,0 +1,7 @@
+v21.87: no line runs off the screen
+
+A long raid message wraps into two lines on its plate instead of running off both edges of the screen.
+
+Check 21.87. Fails on v21.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

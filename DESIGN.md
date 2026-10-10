@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.87 - NO LINE RUNS OFF THE SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text should read like Call of Duty, Fortnite or ARC Raiders, and in those games no callout ever runs off the edge of the screen. Here a long message (a long contract or item name, or a line he reworded) was drawn as one strip as wide as its words, so both ends ran past the screen edges and were never read. A message row now has a maximum width and wraps at a word into a second line on the same plate; anything longer than two lines is cut at a word with a truncation mark, and its full text is kept in the run report. Lines that already fit are drawn exactly as before.
+
+MEASURED. Check 21.87 passes, and fails on v21.86.
 ## v21.86 - TWO MESSAGE ROWS
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text should read like Call of Duty, Fortnite or ARC Raiders. Those games stack callouts; this one wrote each new line over the last, so when two things happened in the same second (a pickup and a warning, a kill and a call) only the last one was ever seen. The message band now has two rows: the new line takes the top and the one it would have erased moves under it, a little dimmer, for the time it had left. The boss bar, the trade offer line and the controller word under the band move down only while two rows are showing; with one row everything sits exactly where it did.
