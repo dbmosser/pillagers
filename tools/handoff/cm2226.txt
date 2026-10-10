@@ -1,0 +1,7 @@
+v22.26: a gun takes its rounds with it
+
+A gun that leaves your backpack takes its stowed rounds with it, so the next one of that model comes up on half a magazine.
+
+Check 22.26. Fails on v22.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

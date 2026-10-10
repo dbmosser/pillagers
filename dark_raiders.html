@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.25';
+var VER='22.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10144,6 +10144,7 @@ function pedSellAll(){
     // never banked (v13.54); 33 each was free money every raid.
     if(k==='bandage'&&_iss>0){ _iss--; kept.push(k); continue; }
     tot+=Math.round(ival(k)*pedBuyRate()); full+=ival(k); n++; if(k==='bandage') _soldB++;   // v15.36, peddler audit finding 8: a found Bandage he buys
+    if(ITEMS[k]&&ITEMS[k].use==='gun'&&ITEMS[k].gk) dropRounds(ITEMS[k].gk);   // v22.26 (K37): a gun sold takes its stowed rounds with it
     if(_ck[k]>0){ _ck[k]--; _ckOut.push(k); _ckV+=ival(k); }   // v20.47 (H18): a copy the lift carried up, sold
   }
   if(!n){ if(!G.sim) say('Nothing in your backpack he wants.'); return; }
@@ -12653,6 +12654,7 @@ window.addEventListener('mouseup',function(e){
             var _gix=G.bag.indexOf(d.key);
             if(_gix>=0){
               G.bag.splice(_gix,1);
+              if(ITEMS[d.key]&&ITEMS[d.key].use==='gun'&&ITEMS[d.key].gk) dropRounds(ITEMS[d.key].gk);   // v22.26 (K37): a gun given to the hire takes its stowed rounds with it
               _gme.bag.push(d.key);
               say((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to '+_gme.name+'.');
               blip('pick'); dropped=true;
@@ -16059,6 +16061,11 @@ function takeRounds(id,mag){
   if(q&&q.length) return Math.min(mag,Math.max(0,q.shift()|0));
   return Math.ceil(mag/2);
 }
+// v22.26, from the whole-game bug hunt of 2026-10-08 (K37): A STOWED GUN'S ROUNDS LEAVE WITH THE GUN. Only takeRounds ever took an
+// entry off the queue, so a gun sold at the stall, handed to a teammate or the hire, or taken by a teammate out of a pile left its
+// rounds queued, and the next gun of that model taken from the backpack came up with the old load (often an empty magazine) instead
+// of half a magazine. Each of those now drops the oldest entry. A gun lying in his own pile keeps its entry: he may search it back up.
+function dropRounds(id){ var q=(typeof G!=='undefined'&&G&&G.stowAmmo)?G.stowAmmo[id]:null; if(q&&q.length) q.shift(); }
 // v21.79, the four-gun belt, build 1: A GUN KEEPS ITS ROLLED QUALITY IN THE BACKPACK. The backpack holds a bare key string, so a gun
 // put in it lost everything the roll gave it: its rolled name, grade, tint, damage, magazine, rate, reload and spread, and it came
 // back out as a plain field gun with the base magazine (a rolled magazine of 31 came back as 25, and its rounds were cut to fit).
@@ -35320,7 +35327,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.25: A Crier that heard something goes back on patrol once it has looked, and walks out of houses again. Check 22.25 fails on v22.24',
+  now:'v22.26: A gun that leaves your backpack takes its stowed rounds with it, so the next one of that model comes up on half a magazine. Check 22.26 fails on v22.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41307,6 +41314,7 @@ function netGiftTake(peer,m){
     ix=G.bag.lastIndexOf(go.k); G.giftOut=null;
     if(ix<0){ netGiftSend(fr,{op:'no',id:m.id}); return 'gone'; }
     G.bag.splice(ix,1);
+    if(ITEMS[go.k]&&ITEMS[go.k].use==='gun'&&ITEMS[go.k].gk) dropRounds(ITEMS[go.k].gk);   // v22.26 (K37): a gun handed over takes its stowed rounds with it
     var ib=0;
     if(go.k==='bandage'&&(G.issuedBandages||0)>0){ G.issuedBandages--; if(G.bandSeen!==undefined) G.bandSeen--; ib=1; }
     if(/^gun_/.test(go.k)&&ITEMS[go.k]&&ITEMS[go.k].gk){ gk=ITEMS[go.k].gk; j=(G.spliced||[]).indexOf(gk); if(j>=0) G.spliced.splice(j,1); if(P.raidSpliced){ j=P.raidSpliced.indexOf(gk); if(j>=0) P.raidSpliced.splice(j,1); } try{ saveProfile(); }catch(_sp){} }
@@ -43139,6 +43147,7 @@ function netGunGoneTake(peer,m){
   var gk, j, back=0;
   if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
   gk=netClean(m.k,24); if(!gk||!WEAPONS[gk]) return 'bad';
+  if(!m.late&&typeof G!=='undefined'&&G) dropRounds(gk);   // v22.26 (K37): a gun a teammate took out of his pile takes its stowed rounds with it
   // v21.95 (K5): A LATE WORD (it waited on the host for this link) is about a raid that is over for him. It touches nothing of the raid
   // he may be in now; it acts only when he still holds the record of that gun piled in that raid, and then takes the gun out of his
   // armoury if his abandon put it back there.
@@ -43172,6 +43181,7 @@ function netGunGoneTake(peer,m){
 }
 function netGunsGone(ct,items){
   var i, it, j, n=0, back=0;
+  if(!G.sim&&ct&&ct.dropped&&!(typeof ct.dropBy==='number'&&ct.dropBy>0)&&items) for(i=0;i<items.length;i++){ it=ITEMS[items[i]]; if(it&&it.use==='gun'&&it.gk) dropRounds(it.gk); }   // v22.26 (K37): a gun from the host's own pile a teammate took takes its stowed rounds with it
   if(G.sim||!ct||!ct.dropped||!items||!G.spliced||!G.spliced.length) return 0;
   if(typeof ct.dropBy==='number'&&ct.dropBy>0) return 0;   // v21.21 (R1): a pile one of the party dropped never holds the host's own armoury gun
   for(i=0;i<items.length;i++){

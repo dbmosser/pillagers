@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.26 - A GUN TAKES ITS ROUNDS WITH IT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A gun put into the backpack keeps the rounds it had, and those rounds came back with the next gun of that model taken from the backpack. When the gun left the backpack another way (sold at the stall, given to the hire or a teammate, or taken by a teammate from a pile) its rounds stayed behind, so the next SMG you equipped could come up with an empty magazine, or a free full one. Now those rounds leave with the gun, and the next one comes up on half a magazine as any found gun does. A gun lying in your own pile still keeps its load.
+
+MEASURED. Check 22.26 passes, and fails on v22.25.
 ## v22.25 - A CRIER GOES BACK ON PATROL
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A Crier that heard a noise, was called by a machine that spotted you, or was caught in a blast wandered at random for the rest of the raid wearing a question mark or a red mark, the same red mark as a Crier raising the alarm, though it was raising nothing. It was counted among the machines coming for the ring, could drive the heartbeat, and if it wandered indoors it never left, because the rule that walks a Crier out of a house only works on patrol. It now walks to the noise, and once it gets there or its timer runs out it goes back on patrol.
