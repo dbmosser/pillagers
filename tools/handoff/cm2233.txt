@@ -1,0 +1,7 @@
+v22.33: the clock in the alert lane, with a short hint
+
+THIRTY SECONDS and TEN SECONDS are alerts with one short hint that names your use key.
+
+Check 22.33. Fails on v22.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

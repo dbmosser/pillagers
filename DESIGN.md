@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.33 - THE CLOCK IN THE ALERT LANE, WITH A SHORT HINT
+
+Co-op hunt while he was away. His order of 2026-10-09: every raid line reads like a shooter HUD. THIRTY SECONDS and TEN SECONDS were one row of about seventy characters, the mark and then a sentence about the way out, that the next remark pushed down. They are now alerts with a clock glyph: THIRTY SECONDS as a warning and TEN SECONDS as a critical line, each with one short hint under it (at most 48 characters). The hint no longer says way out, is down or lands, and it names the use key through the key labels, so on a controller it says [X]. The minute marks read 3 MINUTES LEFT as objective rows. When the marks fire and their sounds are unchanged.
+
+MEASURED. Check 22.33 passes, and fails on v22.32.
 ## v22.32 - THREATS IN THE ALERT LANE, IN HIS VOICE
 
 Co-op hunt while he was away. His order of 2026-10-09: every line the player reads in a raid reads like Call of Duty, Fortnite or ARC Raiders. The threat lines were sentences in the message rows (Something woke up. It was playing dead. The survivor returns fire.) and could be pushed down by the next remark. They are now short caps callouts in the alert slot: SOMETHING WOKE UP, IT WAS PLAYING DEAD, THE PILLBOX HAS SEEN YOU, SOMETHING HUGE HAS NOTICED YOU, MORE PILLAGERS HAVE COME UP, YOUR RIVAL IS UP TOP with his name and that he shoots on sight under it, PILLAGER TURNED HOSTILE with the name under it, GRENADE HIT COVER with Get clear of the blast under it, THE SURVIVOR RETURNS FIRE, and GRENADE WENT OFF IN YOUR HAND as a critical alert (THE SURVIVOR RETURNS FIRE took the same words in v22.07).
