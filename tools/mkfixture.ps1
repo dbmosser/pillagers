@@ -5928,7 +5928,10 @@ window.__REGRESS=[
        if(!equipFromBag(g.bag.lastIndexOf('gun_shotgun'),2)) return 'SKIP: the shotgun could not be drawn into the stowed slot';
        if(!(p.sec&&p.sec.id==='shotgun'&&p.wep&&p.wep.id==='rifle')) return 'SKIP: staging: the shotgun did not go into the stowed slot beside the rifle';
        sl=hotbarSlots();
-       if(gid(sl[1])!=='shotgun') bad.push('the shotgun drawn into the stowed slot in place of the SMG on key 2 did not take key 2, which shows '+desc(sl[1]));
+       // retargeted for the four gun keys (build 3): with a gun key free the drawn shotgun takes that key and the SMG keeps key 2 in
+       // the backpack; with none free it takes key 2 as before. Either way key 2 never goes to the rifle in his hands.
+       var _shk=-1; for(i=0;i<sl.length&&i<((typeof GUNKEYS==='number')?GUNKEYS:2);i++) if(gid(sl[i])==='shotgun'){ _shk=i; break; }
+       if(gid(sl[1])!=='shotgun'&&!(_shk>=0&&gid(sl[1])==='smg')) bad.push('the shotgun drawn into the stowed slot in place of the SMG on key 2 did not take key 2 or a free gun key, and key 2 shows '+desc(sl[1]));
        __endRaid('abandon'); __topClear();
        // 3. Gun 1 not his, so a loaner is issued; his SMG is gun 2.
        P.weapons=['smg']; P.equipped='rifle'; P.equippedSec='smg'; P.hotAssign={};
