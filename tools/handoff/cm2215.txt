@@ -1,0 +1,7 @@
+v22.15: kid firing holds fire at the stall
+
+Kid firing no longer shoots while player 2 has the Peddler stall open.
+
+Check 22.15. Fails on v22.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

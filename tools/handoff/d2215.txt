@@ -1,0 +1,5 @@
+## v22.15 - KID FIRING HOLDS FIRE AT THE STALL
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With Kid firing on, player 2 could open the Peddler stall and browse while a machine or a hostile pillager came into range, and his gun fired by itself through the panel, round after round. That spent his magazine, made noise that drew more machines, turned him, and a round could hit the Peddler beside him and shut the stall. A click, the pad trigger and a held A were already kept off the gun while the stall is open; Kid firing now waits too, and starts again when the stall shuts.
+
+MEASURED. Check 22.15 passes, and fails on v22.14.

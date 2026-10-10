@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.15 - KID FIRING HOLDS FIRE AT THE STALL
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With Kid firing on, player 2 could open the Peddler stall and browse while a machine or a hostile pillager came into range, and his gun fired by itself through the panel, round after round. That spent his magazine, made noise that drew more machines, turned him, and a round could hit the Peddler beside him and shut the stall. A click, the pad trigger and a held A were already kept off the gun while the stall is open; Kid firing now waits too, and starts again when the stall shuts.
+
+MEASURED. Check 22.15 passes, and fails on v22.14.
 ## v22.14 - THE EMOTE STRIP SITS ABOVE THE BELT
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The four emote buttons (V) were placed a fixed height from the bottom of the screen, while the belt grows with the screen. At 4K the strip covered the top of belt keys 2 to 6 with their numbers and its hint printed on the belt edge, at 1440p it covered the top of the keys, and at 1080p it covered the belt caption. The strip is now placed from the belt as it is drawn: just above the caption, and above the extraction lines while they show. A bandage or plate bar still sits above the strip.

@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.14';
+var VER='22.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35268,7 +35268,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.14: The emote strip (V) now sits above the belt at every screen size instead of over the belt keys. Check 22.14 fails on v22.13',
+  now:'v22.15: Kid firing no longer shoots while player 2 has the Peddler stall open. Check 22.15 fails on v22.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41611,14 +41611,19 @@ function netAutoFire(p){
   if(PAD.afRsT!=null&&PAD.afRsT>G.t) PAD.afRsT=null;   // v17.03, co-op hunt 2026-09-28: a take-over time from an earlier raid (the raid clock starts at 0 each raid) held kid firing off
   if(PAD.aiming) PAD.afRsT=G.t;   // v16.83, his rule: player 2 aiming with the right stick takes over from kid firing
   if(PAD.afRsT!=null&&G.t-PAD.afRsT<0.6){ if(PAD.afire){ PAD.afire=0; if(!PAD.firing) mouse.down=false; } return null; }   // and for a moment after he lets go
-  if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!p.downed&&!(p.reloading>0)&&!(p.jam>0)&&!p.cooking&&p.wep&&p.wep.mag>0&&(p.ammo>0||p.reserve>0)){
+  // v22.15, from the whole-game bug hunt of 2026-10-08 (K26): KID FIRING NEVER SHOOTS THROUGH THE OPEN PEDDLER STALL. A click, RT
+  // and A held into the stall are all kept off the gun while it is open (v14.20, v15.35), but this test had no stall in it, so
+  // player 2 browsing the stall with a machine or a hostile pillager in range and in sight fired round after round through the
+  // panel: his magazine spent, the noise drawing more machines, his facing turned, and a round could hit the Peddler beside him
+  // and shut the stall. With the stall open the trigger is let go and the cursor is left alone.
+  if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed&&!(p.reloading>0)&&!(p.jam>0)&&!p.cooking&&p.wep&&p.wep.mag>0&&(p.ammo>0||p.reserve>0)){
     hs=hotbarSlots()[hotSel()];
     if(hs&&hs.kind==='gun') e=afTarget(p);
   }
   if(!e){
     var lk=null;
     if(PAD.afire){ PAD.afire=0; if(!PAD.firing) mouse.down=false; }
-    if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!p.downed){ try{ lk=afLook(p); }catch(_al){ lk=null; } }   // v18.08: his order, turn toward the nearest enemy in sight
+    if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed){ try{ lk=afLook(p); }catch(_al){ lk=null; } }   // v18.08: his order, turn toward the nearest enemy in sight
     if(lk){ pz=ZOOM(); cx=(G.camX===undefined?p.x-W/(2*pz):G.camX); cy=(G.camY===undefined?p.y-H/pz*0.54:G.camY); mouse.x=(lk.x-cx)*pz; mouse.y=(lk.y-cy)*pz; mouse.init=true; }
     return null;
   }
