@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.03';
+var VER='22.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21464,6 +21464,7 @@ function updateBullets(dt){
               var edmg=b.dmg;
               // SPEC 8.7: a weak point is checked BEFORE armour, because it is
               // the gap in the armour. Nothing soaks a round through the vent.
+              var _nar=0;   // v22.04 (K16): on a linked window, the armour flag the host soaks this round with
               var WK=weakHit(en,b.x,b.y,ux,uy);   // v20.27 (H1): along the round's path
               if(WK){
                 edmg*=WK.mult;
@@ -21493,6 +21494,14 @@ function updateBullets(dt){
                   sfx('clank',b.x,b.y);
                   if(!en._shTold){ en._shTold=1; say('The slab eats it. Get behind him.'); }
                 }
+              } else if(NET.on&&netEntsPeer()){
+                // v22.04, from the whole-game bug hunt of 2026-10-08 (K16): THE HOST SOAKS PLAYER 2'S ROUNDS WITH THE ARMOUR IT KEEPS.
+                // This window soaked the round with its own copy of the man's armour and sent what was left. A pillager who came up
+                // after the build is drawn here with no armour at all, so a Breacher Plate soaked nothing for player 2 and he dropped
+                // the man two or three times faster than the host did, and on a pillager from the build the plate had to be worn
+                // down twice, once in each window. The round now goes to the host whole, with a flag, and the host takes it off the
+                // armour it runs, in the same order as its own rounds: armour first, then the back shot bonus.
+                _nar=1;
               } else if(en.armor>0){
                 var esk=armorById(en.rig).absorb||0;
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
@@ -21505,10 +21514,10 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               if(!WK){
                 var _bsa=Math.atan2(b.vy,b.vx);
                 if(Math.abs(Math.atan2(Math.sin(_bsa-en.face),Math.cos(_bsa-en.face)))<0.9){
-                  edmg*=1.5; _backShot=true;
+                  edmg*=1.5; _backShot=true; if(_nar) _nar=1.5;
                 }
               }
-              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK); else en.hp-=edmg;   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
+              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar); else en.hp-=edmg;   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
               en.hitT=.16;
               // HIS Q42. The number IS the feedback: without it a weak point and
               // a body shot look identical, which is most of why the weak point
@@ -35082,7 +35091,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.03: In co-op, a door opened with a key while the host watches opens for everyone, enemies included. Check 22.03 fails on v22.02',
+  now:'v22.04: In co-op, pillager armour now soaks the rounds of player 2 the same as the rounds of the host. Check 22.04 fails on v22.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42383,13 +42392,14 @@ function netHitTake(peer,m){
 }
 // A LINKED WINDOW: its round, blade or charge landed on a body the host runs. The damage worked out here goes to the host,
 // with where this player stands, the bearing of the blow and the weak point it found; the body itself is not touched here.
-function netShotSend(e,dmg,ang,wk){
+function netShotSend(e,dmg,ang,wk,ar){
   var q, m;
   if(!e||!e.nid||!NET.on||NET.role!=='join'||!netEntsPeer()) return false;
   q=netPeerOfSeat(0); if(!q) return false;
   m={t:'shot',id:e.nid,dmg:+(+dmg).toFixed(2),x:+(+G.player.x).toFixed(1),y:+(+G.player.y).toFixed(1)};
   if(typeof ang==='number'&&isFinite(ang)) m.a=+ang.toFixed(3);
   if(wk&&wk.name) m.wk=netClean(wk.name,16);
+  if(ar>0) m.ar=+ar;   // v22.04 (K16): a round the host soaks with its own armour for this man: 1, or 1.5 for a back shot
   return netSend(q,m);
 }
 // THE HOST: a shot request from one of the party. Applied if the body is alive; the seat is marked for the kill by the rule
@@ -42407,6 +42417,7 @@ function netShotTake(peer,m){
   s=peer.seat;
   sx=(typeof m.x==='number'&&isFinite(m.x))?m.x:e.x; sy=(typeof m.y==='number'&&isFinite(m.y))?m.y:e.y;
   if(typeof m.wk==='string'&&m.wk){ L=weakOf(e); if(L) for(i=0;i<L.length;i++) if(L[i].name===m.wk){ applyWeak(e,L[i]); break; } }
+  if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=armorById(e.rig).absorb||0, _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
   e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s;   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){

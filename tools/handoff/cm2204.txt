@@ -1,0 +1,7 @@
+v22.04: player 2 rounds meet the armour
+
+In co-op, pillager armour now soaks the rounds of player 2 the same as the rounds of the host.
+
+Check 22.04. Fails on v22.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

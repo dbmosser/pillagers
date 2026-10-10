@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.04 - PLAYER 2 ROUNDS MEET THE ARMOUR
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, the armour of a pillager who came up during the raid did nothing against player 2: a Breacher Plate soaks two thirds of every round from the host, but player 2 went straight through it and dropped the man two or three times faster. On pillagers from the start of the raid, each window wore down its own copy of the plate, so with both players shooting it had to be chewed through twice. Player 2 now sends his round whole and the host takes it off the one plate it keeps, exactly as it does for its own rounds.
+
+MEASURED. Check 22.04 passes, and fails on v22.03.
 ## v22.03 - A DOOR OPENED FOR THE PARTY OPENS FOR THE ENEMIES TOO
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, after the host died or extracted, his window keeps the raid running for player 2. If player 2 then opened a locked room with a key, it opened on his screen only: in the raid the host runs, the door stayed shut, so every machine and pillager still treated the doorway as a wall. They could not see him through it or walk in, while his shots from inside still landed, and a third player never got the door at all. The raid the host keeps now opens the door too and passes it on to the rest of the party.
