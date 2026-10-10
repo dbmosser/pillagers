@@ -1,0 +1,1 @@
+| KID MODE STAYS ON AFTER THE HOST LEAVES | v21.97 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 21.97 passes, fails on v21.96 |

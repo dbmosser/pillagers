@@ -1,0 +1,7 @@
+v21.97: kid mode stays on after the host leaves
+
+In co-op, Kid mode and Kid firing stay on for player 2 after the host leaves the raid.
+
+Check 21.97. Fails on v21.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

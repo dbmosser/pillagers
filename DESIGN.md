@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.97 - KID MODE STAYS ON AFTER THE HOST LEAVES
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With Kid mode and Kid firing on, when the host window closed, lost its link or ended the party, player 2 takes the raid over. From that moment the child took every hit in full and his gun stopped aiming and firing by itself, though both rows still read ON in Settings, because both only worked while a host was linked. When the host run ended the other way, with the out word, both stayed on. Now a raid player 2 joined keeps Kid mode and Kid firing to the end, however the host left. Solo play is unchanged.
+
+MEASURED. Check 21.97 passes, and fails on v21.96.
 ## v21.96 - A REJOIN NEVER DOUBLES A DROPPED GUN
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, player 2 could drop his armoury gun to trade, abandon (which brings the gun home), and then join the same raid again with JOIN THE RAID IN PROGRESS. Joining wiped the note of guns he had dropped, so if player 1 then took the gun, nothing came out of player 2's armoury, and if player 2 took it back himself he banked a second copy. Now the note is kept for the raid he joins again: the gun stays in the pile and comes out of his armoury for that raid, another abandon still brings it home, and taking it back clears the note.
