@@ -1,0 +1,7 @@
+v22.22: the medical key never binds a bandage you do not have
+
+In a raid at full health, dragging the Medical belt key no longer binds a Bandage you do not carry.
+
+Check 22.22. Fails on v22.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

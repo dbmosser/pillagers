@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.21';
+var VER='22.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12273,7 +12273,12 @@ cv.addEventListener('mousedown',function(e){
         // cells (Medical, Armour Plate, the grenades) carried no item key, so
         // only a cell he had already assigned could be picked up. A derived
         // cell drags by the item it shows.
-        var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]&&(_hs2.kind!=='heal'||_hs2.count>0)?_hs2.icon:null)):null;   // an empty Medical cell shows a bandage it does not hold
+        // v22.22, from the whole-game bug hunt of 2026-10-08 (K33): A PRESS ON THE MEDICAL KEY OF THE RAID BELT DRAGS ONLY A HEAL THE
+        // BACKPACK HOLDS. At full health findHeal skips every heal, so the Medical cell shows a Bandage as a stand-in while it counts
+        // the Medkits, and the count test let the press pick that Bandage up: the release bound a dead Bandage key (grey, 0) into the
+        // belt plan and the Medkits stayed on Medical. The floor belt has tested the backpack since v15.69; the raid belt does too
+        // now. A Medkit still goes on any key from its backpack tile.
+        var _dk=_hs2?(_hs2.itemKey||((_hs2.kind==='heal'||_hs2.kind==='armor'||_hs2.kind==='throw')&&_hs2.icon&&ITEMS[_hs2.icon]&&(_hs2.kind!=='heal'||G.bag.indexOf(_hs2.icon)>=0)?_hs2.icon:null)):null;   // an empty Medical cell shows a bandage it does not hold
         // v11.97, HIS NOTE: a belt key holding a gun drags like any other key.
         // v21.83, the four-gun belt, build 2: a gun key showing a gun in his hands drags as the hand cell does (v11.97), named by the
         // hand it is in, so a release off the belt stows it and a release on another gun key trades the two keys. The press only
@@ -35301,7 +35306,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.21: The what is new card names the hunt fixes. Check 22.21 fails on v22.20',
+  now:'v22.22: In a raid at full health, dragging the Medical belt key no longer binds a Bandage you do not carry. Check 22.22 fails on v22.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
