@@ -1,0 +1,7 @@
+v22.28: a refused loaner bandage stays a loaner
+
+In co-op, a loaner Bandage your teammate cannot take comes back as a loaner and is not banked.
+
+Check 22.28. Fails on v22.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

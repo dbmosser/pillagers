@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.28 - A REFUSED LOANER BANDAGE STAYS A LOANER
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when you bandaged a teammate with one of the two loaner Bandages and his window could not take it (he was already healing to 85, he was down, or his raid had just ended), the Bandage came back to you as a found one, and at extraction it was banked into your stash. The heal and the reply now carry the loaner mark both ways, so a refused loaner comes back as a loaner and goes back to the quartermaster as before.
+
+MEASURED. Check 22.28 passes, and fails on v22.27.
 ## v22.27 - THE KEPT RAID KEEPS ITS OWN TERMS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when the host dies or extracts while his teammate is still up top, the host window keeps the raid running for the teammate. If the host then signed Terms at the lift for his next run, they changed the teammate's raid at once: under THEY KNOW YOU every new pillager wave walked in hostile with a grudge, and under SILENT RUNNING every Listener heard half again as far, with no hazard pay for either. The kept raid now keeps the Terms it was built with until it ends, and the Terms signed on the floor are for the host's next run.

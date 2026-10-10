@@ -1,0 +1,5 @@
+## v22.28 - A REFUSED LOANER BANDAGE STAYS A LOANER
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, when you bandaged a teammate with one of the two loaner Bandages and his window could not take it (he was already healing to 85, he was down, or his raid had just ended), the Bandage came back to you as a found one, and at extraction it was banked into your stash. The heal and the reply now carry the loaner mark both ways, so a refused loaner comes back as a loaner and goes back to the quartermaster as before.
+
+MEASURED. Check 22.28 passes, and fails on v22.27.

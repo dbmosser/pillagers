@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.27';
+var VER='22.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35332,7 +35332,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.27: In co-op, Terms the host signs while his teammate is still up top no longer change that raid. Check 22.27 fails on v22.26',
+  now:'v22.28: In co-op, a loaner Bandage your teammate cannot take comes back as a loaner and is not banked. Check 22.28 fails on v22.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41067,8 +41067,12 @@ function netAidFinish(PR){
     say(nm+why+(it?it.name:'It')+' kept.'); return false;
   }
   if(!g||!netUpShown(g)||netUpGone(g)||g.dn||Math.hypot(g.x-p.x,g.y-p.y)>NET_REV_R*1.5) return kept(' moved away. ');
-  if(NET.role==='host'){ r=netAidPass(s,NET.seat,PR.key); if(r!=='passed'&&r!=='aid') return kept(' could not take it. '); }
-  else for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'aid',s:s,k:PR.key});
+  // v22.28, from the whole-game bug hunt of 2026-10-08 (K41, K42): A LOANER BANDAGE THE TEAMMATE CANNOT TAKE COMES BACK A LOANER. The
+  // aid word and the word back now carry the loaner mark (ib) on every leg, so a Bandage his window sends back (he is already healing,
+  // he is down, or his raid just ended) goes back on the issued count here, as one kept on this window does (kept, above). It came
+  // back as a found Bandage and was banked at the extraction.
+  if(NET.role==='host'){ r=netAidPass(s,NET.seat,PR.key,PR.issB?1:0); if(r!=='passed'&&r!=='aid') return kept(' could not take it. '); }
+  else for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'aid',s:s,k:PR.key,ib:PR.issB?1:0});
   say((it&&it.use==='armor')?('Plate slotted for '+nm+'.'):('Patched up '+nm+'.')); blip('pick');
   return true;
 }
@@ -41340,10 +41344,10 @@ function netGiftTake(peer,m){
     return 'no';
   }
   return 'bad';
-}function netAidPass(s,by,key){
+}function netAidPass(s,by,key,ib){   // v22.28 (K41): and the loaner mark
   var i;
-  if(s===NET.seat) return netAidApply(by,key);
-  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&NET.peers[i].seat===s) return netSend(NET.peers[i],{t:'aid',s:s,by:by,k:key})?'passed':'lost';
+  if(s===NET.seat) return netAidApply(by,key,ib);
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&NET.peers[i].seat===s) return netSend(NET.peers[i],{t:'aid',s:s,by:by,k:key,ib:ib?1:0})?'passed':'lost';
   return 'nobody';
 }
 function netAidTake(peer,m){
@@ -41351,24 +41355,24 @@ function netAidTake(peer,m){
   if(typeof m.s!=='number'||m.s!==(m.s|0)) return 'bad';
   // v17.10, co-op hunt 2026-09-28: an aid word from a friend that the host could not pass on (no link on that seat, or the send
   // failed) was lost while the friend read Patched up; it now goes back to him (netAidBack), as a refused one does.
-  if(NET.role==='host'){ var r=netAidPass(m.s,peer.seat,netClean(m.k,24)); if(r==='nobody'||r==='lost') netAidBack(peer.seat,netClean(m.k,24),'gone'); return r; }
-  if(NET.role==='join'){ if(m.s!==NET.seat) return 'ignored'; return netAidApply((typeof m.by==='number')?(m.by|0):0,netClean(m.k,24)); }
+  if(NET.role==='host'){ var r=netAidPass(m.s,peer.seat,netClean(m.k,24),m.ib?1:0); if(r==='nobody'||r==='lost') netAidBack(peer.seat,netClean(m.k,24),'gone',m.ib?1:0); return r; }   // v22.28 (K41): the loaner mark rides along
+  if(NET.role==='join'){ if(m.s!==NET.seat) return 'ignored'; return netAidApply((typeof m.by==='number')?(m.by|0):0,netClean(m.k,24),m.ib?1:0); }
   return 'off';
 }
-function netAidApply(by,key){
+function netAidApply(by,key,ib){   // v22.28 (K41): ib, the loaner mark, goes back with anything refused
   var p, it=ITEMS[key], nm=netSeatName(by)||'Your teammate';
   // v17.10, co-op hunt 2026-09-28: a heal or plate that lands here when it cannot be used (this raid is over, he is down, or he
   // is in his death beat, where a heal went into a dead man) was thrown away while the teammate who spent it read Patched up.
   // It now goes back to him (netAidBack), who puts it back in his backpack.
-  if(typeof G==='undefined'||!G||G.over||G.sim||!G.player||!it){ if(it) netAidBack(by,key,'gone'); return 'no raid'; }
-  p=G.player; if(p.downed||p.dying){ netAidBack(by,key,'down'); return 'down'; }
+  if(typeof G==='undefined'||!G||G.over||G.sim||!G.player||!it){ if(it) netAidBack(by,key,'gone',ib); return 'no raid'; }
+  p=G.player; if(p.downed||p.dying){ netAidBack(by,key,'down',ib); return 'down'; }
   if(it.use==='armor'){ p.armor=Math.min(armorCap(),(p.armor||0)+(it.amt||0)); say(nm+' slotted a plate for you. Armour '+Math.round(p.armor)+'.'); }
   else if(it.use==='heal'){
     // v17.08, co-op hunt 2026-09-28: a heal from a teammate was poured into the heal already running here, which keeps its own
     // ceiling, so while his own Bandage was winding up or running to 85 the teammate Bandage gave nothing and was gone. What is
     // already on its way (netAidReach) is now tested against this item ceiling, as every self heal is, and an item that cannot
     // raise him goes back to the teammate who sent it (netAidBack) instead of being spent.
-    if(netAidReach(p)>=healCeil(it)){ netAidBack(by,key,'full'); return 'full'; }
+    if(netAidReach(p)>=healCeil(it)){ netAidBack(by,key,'full',ib); return 'full'; }
     applyHeal(key); say(nm+' patched you up.');
   }
   else return 'bad';
@@ -41386,10 +41390,10 @@ function netAidReach(p){
 // v17.08, co-op hunt 2026-09-28: A HEAL OR PLATE HIS WINDOW COULD NOT USE GOES BACK TO THE TEAMMATE WHO SPENT IT ({t:'aidx'}),
 // routed as the aid word came: a friend sends it to the host, and the host takes it himself or passes it to the seat by. The
 // healer window puts it back in his backpack with a line (netAidKept). Returns what it did, so a check can read the answer.
-function netAidBack(by,key,why){
-  var i, w={t:'aidx',s:by,f:NET.seat,k:key,w:why};
+function netAidBack(by,key,why,ib){
+  var i, w={t:'aidx',s:by,f:NET.seat,k:key,w:why,ib:ib?1:0};   // v22.28 (K41): with the loaner mark
   if(NET.role==='host'){
-    if(by===NET.seat) return netAidKept(NET.seat,key,why);
+    if(by===NET.seat) return netAidKept(NET.seat,key,why,ib);
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&NET.peers[i].seat===by) return netSend(NET.peers[i],w)?'passed':'lost';
     return 'nobody';
   }
@@ -41402,18 +41406,19 @@ function netAidBackTake(peer,m){
   if(typeof m.s!=='number'||m.s!==(m.s|0)) return 'bad';
   k=netClean(m.k,24);
   if(NET.role==='host'){
-    if(m.s===NET.seat) return netAidKept(peer.seat,k,m.w);
-    for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&NET.peers[i].seat===m.s) return netSend(NET.peers[i],{t:'aidx',s:m.s,f:peer.seat,k:k,w:netClean(m.w,8)})?'passed':'lost';
+    if(m.s===NET.seat) return netAidKept(peer.seat,k,m.w,m.ib?1:0);   // v22.28 (K41): the loaner mark, on every leg
+    for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&NET.peers[i].seat===m.s) return netSend(NET.peers[i],{t:'aidx',s:m.s,f:peer.seat,k:k,w:netClean(m.w,8),ib:m.ib?1:0})?'passed':'lost';
     return 'nobody';
   }
-  if(NET.role==='join'){ if(m.s!==NET.seat) return 'ignored'; return netAidKept((typeof m.f==='number')?(m.f|0):0,k,m.w); }
+  if(NET.role==='join'){ if(m.s!==NET.seat) return 'ignored'; return netAidKept((typeof m.f==='number')?(m.f|0):0,k,m.w,m.ib?1:0); }
   return 'off';
 }
-function netAidKept(from,key,why){
+function netAidKept(from,key,why,ib){
   var it=ITEMS[key], nm=netSeatName(from)||'Your teammate';
   if(!it||(it.use!=='heal'&&it.use!=='armor')) return 'bad';
   if(typeof G==='undefined'||!G||G.over||G.sim||!G.player||!G.bag) return 'no raid';
   G.bag.push(key);
+  if(ib&&key==='bandage'){ G.issuedBandages=(G.issuedBandages||0)+1; if(G.bandSeen!==undefined) G.bandSeen++; }   // v22.28 (K41): a loaner sent back is still a loaner, as kept() in netAidFinish puts one back
   say(nm+((why==='full')?' is already healing. ':' could not take it. ')+it.name+' kept.'); blip('pick');
   return 'kept';
 }
