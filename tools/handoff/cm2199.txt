@@ -1,0 +1,7 @@
+v21.99: esc on the keys window keeps the raid paused
+
+ESC on the CHANGE KEYS window now cancels a press or closes only that window, and the raid stays paused.
+
+Check 21.99. Fails on v21.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.99 - ESC ON THE KEYS WINDOW KEEPS THE RAID PAUSED
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In a raid: P, then Settings, then CHANGE KEYS, then ESC to back out. The Keys window closed and the pause box closed with it on the same press, so the raid was suddenly live again with the hands off the controls. With a key change waiting (PRESS A KEY), ESC cancelled it and also shut the whole Keys window. In the player 2 window every key pressed in the Keys window was also played in the player 1 window. The Keys window now uses up its own key: ESC cancels a waiting change, or closes only the Keys window, and the pause box stays up with the raid paused.
+
+MEASURED. Check 21.99 passes, and fails on v21.98.
 ## v21.98 - EVERYONE SEES THE CHARGES AND THE SHELLS
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op only the host window had the Howler shells, the pillager charges and the pillager smoke, and a charge a player threw was only in his own window. Player 2 saw no red ring where a shell would land and no charge blinking at his feet, just a boom and the damage, and he saw clearly through a smoke cloud the enemies treated as solid. Each shell, charge and smoke is now told to the other windows, which draw it and show the blast. The real one still does the damage in the window that made it, so nothing hits twice.

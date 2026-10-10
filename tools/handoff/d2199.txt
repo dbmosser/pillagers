@@ -1,0 +1,5 @@
+## v21.99 - ESC ON THE KEYS WINDOW KEEPS THE RAID PAUSED
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In a raid: P, then Settings, then CHANGE KEYS, then ESC to back out. The Keys window closed and the pause box closed with it on the same press, so the raid was suddenly live again with the hands off the controls. With a key change waiting (PRESS A KEY), ESC cancelled it and also shut the whole Keys window. In the player 2 window every key pressed in the Keys window was also played in the player 1 window. The Keys window now uses up its own key: ESC cancels a waiting change, or closes only the Keys window, and the pause box stays up with the raid paused.
+
+MEASURED. Check 21.99 passes, and fails on v21.98.
