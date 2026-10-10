@@ -7451,6 +7451,7 @@ window.__REGRESS=[
        var old=JSON.parse(JSON.stringify(__P())); delete old.beltV; old.hotAssign={2:'medkit',4:'frag',7:'stim',8:'gun_smg'};
        __applyLoaded(old);
        var ha=__P().hotAssign||{}, exp={2:'gun_smg',4:'medkit',6:'frag',8:'stim'}, ek, got=JSON.stringify(ha);
+       if(ha[3]==='stim'&&ha[8]===undefined){ delete exp[8]; exp[3]='stim'; }   /* retargeted for belt4fixb: the Stim pushed past key 9 takes key 9, or a free gun key 4 so it never covers the plate key */
        if(Object.keys(ha).length!==4) bad.push('the old plan {3: Medkit, 5: Frag, 8: Stim, 9: SMG} loaded as '+got);
        else for(ek in exp) if(ha[ek]!==exp[ek]){ bad.push('the old plan {3: Medkit, 5: Frag, 8: Stim, 9: SMG} loaded as '+got+', not the SMG on key 3, Medkit 5, Frag 7, Stim 9'); break; }
        if(__P().beltV!==2) bad.push('the slid plan is not marked as slid (beltV '+__P().beltV+')');
@@ -36446,17 +36447,17 @@ window.__REGRESS=[
        p.sec=null;   // the second slot is free: the branch under test
        p.x=box.x; p.y=box.y; p.downed=false;
        keysOff(); frames(3);
-       say=function(m){ heard.push(String(m)); try{ return _say.apply(null,arguments); }catch(_s){} };
+       say=function(m,k,o){ heard.push(String(m)+((o&&o.sub)?' | '+o.sub:'')); try{ return _say.apply(null,arguments); }catch(_s){} };   /* retargeted for belt4fixd: the detail under the line is read too */
        keysOff(); __keysRef()['KeyX']=true;
        for(var w=0;w<60;w++){ frames(10); if(box.opened) break; }
        keysOff(); frames(4);
        if(!box.opened) return 'SKIP: the container never opened, so nothing was picked up';
        var line='';
-       for(var h=0;h<heard.length;h++) if(heard[h].indexOf('to your empty slot')>=0){ line=heard[h]; break; }
+       for(var h=0;h<heard.length;h++) if(heard[h].indexOf('to your empty slot')>=0||/ STOWED \| /.test(heard[h])){ line=heard[h]; break; }   /* belt4fixd: SHOTGUN STOWED with PRESS 2 TO SWAP under it */
        if(!line) return 'SKIP: the pickup did not take the free-second-slot branch, so the line under test was never spoken';
-       if(/\bX swaps\b/.test(line))
+       if(/\bX swaps\b/.test(line)||/\bPRESS X TO SWAP\b/.test(line))
          bad.push('finding a better gun tells him X swaps to it, and X does not swap weapons: it searches what he is standing on, so the instruction sends him to the wrong key at the moment he wants his new gun');
-       if(line.indexOf('tactical belt')<0)
+       if(line.indexOf('tactical belt')<0&&!/ TO SWAP$/.test(line))
          bad.push('the pickup line does not say how to swap to the new gun, so he is left guessing: ['+line+']');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
