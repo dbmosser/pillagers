@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.89 - THE WHAT IS NEW CARD NAMES THE RAID TEXT WORK
+
+Co-op hunt while he was away. The card was stamped v21.73 and the stamp may not trail the build by more than 0.15. Its new second line names the first raid text builds of 2026-10-09: two message rows, wrapping, and warnings that stay up; the rest are in the change list.
+
+MEASURED. Check 21.89 passes, and fails on v21.88.
 ## v21.88 - A LOWER LINE CANNOT PUSH A HIGHER ONE OFF
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text should behave like Call of Duty, Fortnite or ARC Raiders, where a warning stays up long enough to read. With two message rows, a third line in the same second pushed the oldest row off whatever it said, so an ordinary remark could wipe a warning before it was read. Each row is now held for a moment after it shows (a little longer for objectives and critical lines). A line that ranks below both held rows waits its turn; a line of the same or higher rank takes the lowest, oldest row, and a row taken before it could be read waits and comes back. Waiting lines come back as soon as a row is free, never by pushing a held one off.

@@ -1,0 +1,7 @@
+v21.89: the what is new card names the raid text work
+
+The what is new card names the raid text work.
+
+Check 21.89. Fails on v21.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

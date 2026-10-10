@@ -1687,7 +1687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.88';
+var VER='21.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1698,7 +1698,7 @@ var VER='21.88';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='21.73';
+var WHATSNEW_VER='21.89';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -1718,6 +1718,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'RAID TEXT. Two lines in the same second both show, a long line wraps instead of running off the screen, and a warning stays up until read.',
   'CO-OP HUNT FIXES. The raid no longer freezes when the host leaves, and your hire, the Peddler and dropped guns stop losing or doubling items.',
   'YOUR PLAYTEST. Single shot guns hit harder, pillagers return fire and drop better gear, the pillbox is gentler, and a downed extraction shows its bar.',
   'ATTRACT POLISH. The title clip reads clearly, F9 hides the controls list and shows its time, and the controls list now names F9. A hire on an order moves once.',
@@ -34805,7 +34806,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.88: A warning on the message rows stays up until it has been read, and a line that had to give way comes back instead of being lost. Check 21.88 fails on v21.87',
+  now:'v21.89: The what is new card names the raid text work. Check 21.89 fails on v21.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
