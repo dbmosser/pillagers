@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.11 - YOUR IMPORTED FRIEND STAYS OUT OF A PARTY RAID
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When player 2 had imported a friend at the Mainframe, his window put that friend on the first pillager of a party raid, but the host ran that body as an ordinary pillager. Player 2 saw the friend name and gun on a man who fought as someone else, and killing him wrote the grudge to the friend, so the friend walked every later solo raid hostile while the pillager actually killed had no record of it. On player 2 the bodies now keep the names and records the host rolled. Solo raids and the host are unchanged, and the friend still turns up in raids that window runs.
+
+MEASURED. Check 22.11 passes, and fails on v22.10.
 ## v22.10 - USED KIT NO LONGER CUTS HAZARD PAY
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. Hazard pay, the XP for the haul, haul contracts and your best haul all count what you bring out less what you carried up. Kit you carried up and then used, dropped or gave away still counted as carried up, so two Medkits used in a fight cut $420 off the haul: $2,000 found on +35% Terms paid $553 instead of $700, and the loaner Bandages did the same to a new player every run. Now only carried kit still in your backpack at the end is taken off, and lifetime earnings are unchanged.

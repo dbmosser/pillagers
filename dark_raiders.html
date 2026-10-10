@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.10';
+var VER='22.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34944,7 +34944,12 @@ function importGhost(){
 // friendly the way a parley holds, and greed-tuned from their real record. A
 // high extract rate leaves early with what it has; a low one gets greedy.
 function applyGhost(){
-  if(!P.ghost||!G||G.sim) return;
+  // v22.11, from the whole-game bug hunt of 2026-10-08 (K23): NEVER ON A PARTY GUEST BUILD. In a party raid the host runs every
+  // body, and he never dressed one as this window's imported friend, so player 2 saw the friend's name and gun on a man who fought
+  // as the pillager the host rolled, and killing him turned the friend hostile with a grudge in every later raid while the man
+  // actually killed had no record of it. On a guest build (NET.upHold, which also keeps his own hire at home) the bodies keep the
+  // names and records the host rolled. Solo and the host build are unchanged.
+  if(!P.ghost||!G||G.sim||(typeof NET==='object'&&NET&&NET.upHold)) return;
   for(var i=0;i<G.ents.length;i++){
     var e=G.ents[i];
     if(e.kind!=='raider'||e.merc) continue;
@@ -35132,7 +35137,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.10: Kit you carry up and then use, drop or give away no longer cuts hazard pay or the haul. Check 22.10 fails on v22.09',
+  now:'v22.11: In co-op, player 2 no longer sees his imported friend on a pillager the host runs, and killing that pillager no longer turns the friend hostile. Check 22.11 fails on v22.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

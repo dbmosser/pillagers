@@ -1,0 +1,7 @@
+v22.11: your imported friend stays out of a party raid
+
+In co-op, player 2 no longer sees his imported friend on a pillager the host runs, and killing that pillager no longer turns the friend hostile.
+
+Check 22.11. Fails on v22.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
