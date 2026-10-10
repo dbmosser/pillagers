@@ -1,0 +1,5 @@
+## v21.98 - EVERYONE SEES THE CHARGES AND THE SHELLS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op only the host window had the Howler shells, the pillager charges and the pillager smoke, and a charge a player threw was only in his own window. Player 2 saw no red ring where a shell would land and no charge blinking at his feet, just a boom and the damage, and he saw clearly through a smoke cloud the enemies treated as solid. Each shell, charge and smoke is now told to the other windows, which draw it and show the blast. The real one still does the damage in the window that made it, so nothing hits twice.
+
+MEASURED. Check 21.98 passes, and fails on v21.97.

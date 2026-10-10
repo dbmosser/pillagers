@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.98 - EVERYONE SEES THE CHARGES AND THE SHELLS
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op only the host window had the Howler shells, the pillager charges and the pillager smoke, and a charge a player threw was only in his own window. Player 2 saw no red ring where a shell would land and no charge blinking at his feet, just a boom and the damage, and he saw clearly through a smoke cloud the enemies treated as solid. Each shell, charge and smoke is now told to the other windows, which draw it and show the blast. The real one still does the damage in the window that made it, so nothing hits twice.
+
+MEASURED. Check 21.98 passes, and fails on v21.97.
 ## v21.97 - KID MODE STAYS ON AFTER THE HOST LEAVES
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. With Kid mode and Kid firing on, when the host window closed, lost its link or ended the party, player 2 takes the raid over. From that moment the child took every hit in full and his gun stopped aiming and firing by itself, though both rows still read ON in Settings, because both only worked while a host was linked. When the host run ended the other way, with the out word, both stayed on. Now a raid player 2 joined keeps Kid mode and Kid firing to the end, however the host left. Solo play is unchanged.

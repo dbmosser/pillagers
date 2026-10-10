@@ -1,0 +1,7 @@
+v21.98: everyone sees the charges and the shells
+
+In co-op, both players now see Howler shells landing, every charge on the ground and pillager smoke.
+
+Check 21.98. Fails on v21.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
