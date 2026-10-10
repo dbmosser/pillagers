@@ -6105,7 +6105,9 @@ window.__REGRESS=[
        // The queue: strings in msgQ, the kind beside it, and the kind survives the drain.
        // v21.88 retarget (the raid text R06): the rows are emptied first. With two protected rows up, a direct say of equal rank
        // now sends the row it takes back to the queue, so 'zq odd' would wait in front of 'zq q'; this part tests the queue alone.
-       g.msgQ=[]; g.msgQM=[]; g.msgT=0; g.msg=''; g.feed=[]; say('zq showing'); sayWhenFree('zq q','obj');
+       // v21.89 retarget (the raid text R07): a waiting line that outranks every row showing is said at once, and an objective
+       // outranks an ordinary line, so the two rows it waits behind are warnings: it still waits there on every build.
+       g.msgQ=[]; g.msgQM=[]; g.msgT=0; g.msg=''; g.feed=[]; say('zq showing a','warn'); say('zq showing b','warn'); sayWhenFree('zq q','obj');
        if(!(g.msgQ&&g.msgQ.length===1&&g.msgQ[0]==='zq q')) bad.push('the queue no longer holds the plain string ('+JSON.stringify(g.msgQ)+')');
        if(!(g.msgQM&&g.msgQM.length===1&&g.msgQM[0]&&g.msgQM[0].k==='obj')) bad.push('the waiting line lost its kind');
        g.msgT=0.01;
