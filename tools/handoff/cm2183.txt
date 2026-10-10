@@ -1,0 +1,7 @@
+v21.83: a gun keeps its key
+
+A gun keeps its belt key when you draw it or put it away, so key 1 stays your rifle.
+
+Check 21.83. Fails on v21.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

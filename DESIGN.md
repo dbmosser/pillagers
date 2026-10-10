@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.83 - A GUN KEEPS ITS KEY
+
+Co-op hunt while he was away. The second step of the four-gun belt. Keys 1 and 2 used to be your two hands, not your guns: draw a third gun off another key and it showed on key 1, the gun it replaced went into the backpack with no key at all, and pressing that key again brought up something else. Now a gun keeps its key. Draw the shotgun off key 7 and key 7 shows the shotgun in your hands, key 1 still shows your rifle (in the backpack, with the rounds it will come back with) and key 2 your SMG; press key 1 and the rifle comes back up while the shotgun stays on key 7. A gun you find or pick up into your hands takes a free gun key, or the key of the gun it pushed out. Dragging a gun key off the belt still puts that gun in the backpack, dragging it onto the other gun key makes the two keys trade, and a gun dropped on a gun key takes that key. Still two gun keys; four come next.
+
+MEASURED. Check 21.83 passes, and fails on v21.82.
 ## v21.82 - THE MESSAGE LINE TAKES THE NEW LOOK
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text should look and read like Call of Duty, Fortnite or ARC Raiders. The HUD now has one palette where each colour means one thing (red only for danger, teal only for extraction, blue for teammates), a rounded plate and an ink outline for text. The message line at the top of the screen is the first to use them: its words are outlined so they read on snow or fire, its plate has rounded corners and is sized from the text it carries, and plate and words fade together. It sits exactly where it did, so nothing under it moves.
