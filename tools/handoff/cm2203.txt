@@ -1,0 +1,7 @@
+v22.03: a door opened for the party opens for the enemies too
+
+In co-op, a door opened with a key while the host watches opens for everyone, enemies included.
+
+Check 22.03. Fails on v22.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

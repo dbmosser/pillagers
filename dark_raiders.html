@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.02';
+var VER='22.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35082,7 +35082,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.02: In co-op, a teammate who joins late is timed from when he came up, for contracts, the abandon fee and his run card. Check 22.02 fails on v22.01',
+  now:'v22.03: In co-op, a door opened with a key while the host watches opens for everyone, enemies included. Check 22.03 fails on v22.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41686,7 +41686,11 @@ function netDoorTake(peer,m){
   var i, Lk;
   if(!peer||peer.state!=='in') return 'ignored';
   if(!(typeof m.id==='number'||(typeof m.id==='string'&&m.id.length<48))) return 'bad';
-  if(!G||G.over||!G.map||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
+  // v22.03, from the whole-game bug hunt of 2026-10-08 (K13): A DOOR OPENED WHILE THE HOST WATCHES OPENS IN HIS KEPT RAID TOO. The
+  // raid a host keeps running for his party after his own run is over (NET.specG) always has G.over set, so a door player 2 opened
+  // with a key stayed shut there: every machine and pillager, all run by the host, still saw and walked against the door, and no
+  // third player ever got it. That kept raid takes the word now, as a dropped pile already does; any other raid that is over does not.
+  if(!G||(G.over&&G!==NET.specG)||!G.map||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
   Lk=G.map.locked||[];
   for(i=0;i<Lk.length;i++) if(Lk[i].id===m.id){
     if(lockedOpen(Lk[i])){ say(Lk[i].name+' is open.'); if(NET.role==='host') netBroadcast({t:'door',sd:G.seed>>>0,id:m.id}); }

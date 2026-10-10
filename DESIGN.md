@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.03 - A DOOR OPENED FOR THE PARTY OPENS FOR THE ENEMIES TOO
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, after the host died or extracted, his window keeps the raid running for player 2. If player 2 then opened a locked room with a key, it opened on his screen only: in the raid the host runs, the door stayed shut, so every machine and pillager still treated the doorway as a wall. They could not see him through it or walk in, while his shots from inside still landed, and a third player never got the door at all. The raid the host keeps now opens the door too and passes it on to the rest of the party.
+
+MEASURED. Check 22.03 passes, and fails on v22.02.
 ## v22.02 - A LATE JOINER IS TIMED FROM WHEN HE CAME UP
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A teammate who joins a raid already in progress takes the host clock. His run length and his abandon fee were already counted from when he came up, but four things still counted from the start of the host raid: the extract within three minutes contract could never be met, an abandon ten seconds after joining cost him at least 100 XP, a quit at once was logged as a run instead of an instant quit, and his run card said 4 minutes on the surface when he had been up 10 seconds. All four now count his own time. Nothing changes for a player who went up at the start.
