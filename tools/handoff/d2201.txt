@@ -1,0 +1,5 @@
+## v22.01 - A CONTROLLER CAN READ AND SELL ONE STASH ITEM
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On the Stash screen the line above the grid (the item name, how many, its price, what wants it, a gun damage) and the Sell one button only appear when the mouse comes onto an item. A controller highlight never did that, so a pad player never saw what he had picked or what it was worth, and could not sell a single item at all, only tag it as junk and sell every tagged item. The highlight now fills that line as the mouse does, and the item menu Y opens has a Sell one row that pays the same price.
+
+MEASURED. Check 22.01 passes, and fails on v22.00.

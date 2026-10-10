@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.01 - A CONTROLLER CAN READ AND SELL ONE STASH ITEM
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On the Stash screen the line above the grid (the item name, how many, its price, what wants it, a gun damage) and the Sell one button only appear when the mouse comes onto an item. A controller highlight never did that, so a pad player never saw what he had picked or what it was worth, and could not sell a single item at all, only tag it as junk and sell every tagged item. The highlight now fills that line as the mouse does, and the item menu Y opens has a Sell one row that pays the same price.
+
+MEASURED. Check 22.01 passes, and fails on v22.00.
 ## v22.00 - A CONTROLLER SEES WHERE THE MAP MARKER GOES
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller the right stick moves a cursor over the open sector map and a tap of D-UP places the marker there, but that cursor was never drawn. The only pointer on the map was the mouse arrow, wherever the real mouse happened to sit, so a pad player placed his marker blind, and the header told him to CLICK, a button a pad does not have. The cursor is now drawn as a ring and cross where the marker will land, and on a controller the header says R STICK to move it and D-UP to place it. The mouse wording is unchanged.

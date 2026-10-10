@@ -1,0 +1,1 @@
+| A CONTROLLER CAN READ AND SELL ONE STASH ITEM | v22.01 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 22.01 passes, fails on v22.00 |
