@@ -4810,10 +4810,10 @@ window.__REGRESS=[
        for(var f=0;f<200;f++){
          __loop(performance.now()+f*16.7);
          if(z.beaconT!==null&&z.beaconT!==undefined&&f>30) break; }
-       var msg=String(g.msg||'');
+       var msg=String(g.msg||'')+' | '+(window.__msgLog?__msgLog():[]).map(function(e){ return String(e.m)+(e.sub?' '+e.sub:''); }).join(' | ');   /* retargeted for the raid text R13: the extraction lines are headlines with a detail */
        var out={called:(z.beaconT!==null&&z.beaconT!==undefined), msg:msg,
                 greed:(g.tel&&g.tel.callGreed)||0,
-                promised:((/about (\d+) machines/.exec(msg)||[])[1]||null)};
+                promised:((/[Aa]bout (\d+) machine/.exec(msg)||[])[1]||null)};
        if(out.promised) out.promised=+out.promised;
        if(thenRun){
          // Stand in the ring and let the whole siege run in.
@@ -5097,7 +5097,7 @@ window.__REGRESS=[
        for(var f=0;f<140;f++){
          __loop(performance.now()+f*16.7);
          var m=String(g.msg||'');
-         if(/THIRTY SECONDS/i.test(m)){ said=m; break; }
+         if(g.alert&&g.alert.m) m+=' '+g.alert.m+' '+(g.alert.sub||'');   /* retargeted for the raid text R10: the clock line is an alert with the hint as its detail */ if(/THIRTY SECONDS/i.test(m)){ said=m; break; }
        }
        // AFTER, not before. The rings close on the clock, so anything forced open
        // at 31 seconds is shut again on the next frame.
@@ -6329,7 +6329,7 @@ window.__REGRESS=[
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
        keys={}; g.mapOpen=false; g.bagOpen=false; g.ents.length=0; g.waveT=-1e9;
        // only the probe lines and the teammate line may speak
-       say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('MOTH')===0) return realSay.apply(this,arguments); };
+       say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('MOTH')===0||s.indexOf('TEAMMATE')===0) return realSay.apply(this,arguments); };
        padRumble=function(){ return 'test'; };
        netSeatName=function(s){ return s===1?'MOTH':(s===0?'HOST':null); };
        t0=performance.now();
@@ -6344,6 +6344,7 @@ window.__REGRESS=[
        for(i=0;i<240&&seen<0;i++){
          rows=feedRows();
          for(j=0;j<rows.length;j++) if(String(rows[j].m).indexOf('MOTH')===0){ seen=i; break; }
+         if(seen<0&&g.alert&&g.alert.T>0&&(String(g.alert.m).indexOf('MOTH')===0||String(g.alert.sub||'').indexOf('MOTH')===0)) seen=i;   /* retargeted for the alert lane (R08): a crit line shows in the alert slot */
          if(seen>=0) break;
          step(); if(g.over) break;
        }
@@ -6386,19 +6387,19 @@ window.__REGRESS=[
        say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('ZQ')===0||s.toUpperCase().indexOf(BF.toUpperCase())===0) return realSay.apply(this,arguments); };
        t0=performance.now();
        // ONE: no copies, and at most four waiting (two warnings on the rows, so ordinary lines wait)
-       clr(); say('ZQ W1','warn'); say('ZQ W2','warn');
+       clr(); say('ZQ W1','obj'); say('ZQ W2','obj'); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
        sayWhenFree('zq dup'); sayWhenFree('zq dup');
        if(cnt('zq dup')!==1) bad.push('the same line waits '+cnt('zq dup')+' times over');
        for(i=1;i<=5;i++) sayWhenFree('zq c'+i);
        if((g.msgQ||[]).length>4) bad.push('the queue holds '+g.msgQ.length+' lines, more than four');
        // TWO: the highest rank comes out first
-       clr(); say('ZQ W1','warn'); say('ZQ W2','warn');
+       clr(); say('ZQ W1','obj'); say('ZQ W2','obj'); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
        sayWhenFree('zq i1'); sayWhenFree('zq o1','obj');
        g.msgAt=-1e3; if(g.feed&&g.feed[1]) g.feed[1].at=-1e3;   // both rows past their protection, still showing
        step();
        if(g.msg!=='zq o1') bad.push('with an ordinary line and an objective waiting, '+JSON.stringify(g.msg)+' came out first, not the objective');
        // THREE: a line that outranks every row showing is said at once
-       clr(); say('zq p1'); say('zq p2'); sayWhenFree('ZQ BIG','warn');
+       clr(); say('zq p1'); say('zq p2'); sayWhenFree('ZQ BIG','obj'); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
        if(g.msg!=='ZQ BIG') bad.push('a warning sent to wait behind two ordinary rows waited instead of showing at once');
        // FOUR: a keyed line said again with new words refreshes its row instead of taking a second one
        clr(); say('zq k 1','info',{key:'zqk'}); say('zq k 2','info',{key:'zqk'});
@@ -6571,7 +6572,7 @@ window.__REGRESS=[
        g.msgT=0; g.msg=''; g.msgQ=[]; g.msgQM=[]; g.feed=[];
        // only the probe lines may speak, the queue included (it says through say)
        say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('ZQ')===0) return realSay.apply(this,arguments); };
-       say(HI,'warn'); say(L1); say(L2);
+       say(HI,'obj'); say(L1); say(L2); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
        ctx.fillText=function(t){ dr[String(t)]=1; return oFT.apply(this,arguments); };
        try{ __frame(0.016); } finally { unspy(); }
        if(!dr[HI]) bad.push('the warning was pushed off the rows by two ordinary lines');
@@ -6914,12 +6915,12 @@ window.__REGRESS=[
        __say('zq'+'wrap');
        if(g.msg!=='zqwrap'||window.__lastSay!=='zqwrap') bad.push('__say did not reach the game (msg '+g.msg+', last '+window.__lastSay+')');
        // R01, the kinds.
-       say('zq kind','warn',{sub:'zq detail.'});
-       if(g.msgK!=='warn') bad.push('say(m,warn) leaves the kind as '+g.msgK);
-       if(g.msg!=='zq kind'||g.msgT!==3.2) bad.push('say(m,warn) no longer shows the line for 3.2 s (msg '+g.msg+', T '+g.msgT+')');
+       say('zq kind','obj',{sub:'zq detail.'}); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
+       if(g.msgK!=='obj') bad.push('say(m,obj) leaves the kind as '+g.msgK);
+       if(g.msg!=='zq kind'||g.msgT!==3.2) bad.push('say(m,obj) no longer shows the line for 3.2 s (msg '+g.msg+', T '+g.msgT+')');
        if(g.msgSub!=='zq detail.') bad.push('the detail is not kept in msgSub');
        lg=__msgLog(); hit=lg[lg.length-1];
-       if(!hit||hit.m!=='zq kind'||hit.k!=='warn') bad.push('the log does not end with the warn line');
+       if(!hit||hit.m!=='zq kind'||hit.k!=='obj') bad.push('the log does not end with the obj line');
        say('zq plain');
        if(g.msgK!=='info') bad.push('a one-string say is kind '+g.msgK+', not info');
        say('zq odd','nonsense');
@@ -6933,7 +6934,7 @@ window.__REGRESS=[
        // now sends the row it takes back to the queue, so 'zq odd' would wait in front of 'zq q'; this part tests the queue alone.
        // v21.89 retarget (the raid text R07): a waiting line that outranks every row showing is said at once, and an objective
        // outranks an ordinary line, so the two rows it waits behind are warnings: it still waits there on every build.
-       g.msgQ=[]; g.msgQM=[]; g.msgT=0; g.msg=''; g.feed=[]; say('zq showing a','warn'); say('zq showing b','warn'); sayWhenFree('zq q','obj');
+       g.msgQ=[]; g.msgQM=[]; g.msgT=0; g.msg=''; g.feed=[]; say('zq showing a','obj'); say('zq showing b','obj'); sayWhenFree('zq q','obj'); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
        if(!(g.msgQ&&g.msgQ.length===1&&g.msgQ[0]==='zq q')) bad.push('the queue no longer holds the plain string ('+JSON.stringify(g.msgQ)+')');
        if(!(g.msgQM&&g.msgQM.length===1&&g.msgQM[0]&&g.msgQM[0].k==='obj')) bad.push('the waiting line lost its kind');
        g.msgT=0.01;
@@ -16025,26 +16026,26 @@ window.__REGRESS=[
    run:function(){
      if(typeof netOnState!=='function'||typeof padRumble!=='function') return 'SKIP: this build has no party words or no rumble';
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET) return 'SKIP: no raid or party in this fixture';
-     var NK={}, k, bad=[], lines=[], rum=0, oSwf=sayWhenFree, oRum=padRumble, oName=netSeatName, peer={seat:1,state:'in'}, w;
+     var NK={}, k, bad=[], lines=[], rum=0, oSwf=sayWhenFree, oSay=say, oRum=padRumble, oName=netSeatName, peer={seat:1,state:'in'}, w;
      for(k in NET) NK[k]=NET[k];
      try{
        NET.on=false; NET.role=null; NET.peers=[];
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
-       sayWhenFree=function(t){ lines.push(String(t)); }; padRumble=function(){ rum++; return 'test'; };
+       sayWhenFree=function(t){ lines.push(String(t)); }; say=function(t,kd,o){ lines.push(String(t)+((o&&o.sub)?' '+o.sub:'')); }; padRumble=function(){ rum++; return 'test'; };   /* retargeted for the raid text R11: the party emergencies are alerts said at once, the name in the detail */
        netSeatName=function(s){ return s===1?'MOTH':(s===0?'HOST':null); };
        NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[peer]; NET.up=[]; NET.floor=NET.floor||[];
        w={t:'st',k:'r',x:Math.round(G.player.x)+60,y:Math.round(G.player.y),f:0,sd:G.seed>>>0,dn:0,hp:100,mh:100};
        netOnState(peer,w); netOnState(peer,w);
        if(lines.length||rum) bad.push('a teammate still standing was called down');
        w.dn=1; netOnState(peer,w);
-       if(!lines.some(function(t){ return t.indexOf('MOTH is down')===0||t.indexOf('MOTH DOWN')===0; })) bad.push('the window was told '+JSON.stringify(lines)+' when its teammate went down');
+       if(!lines.some(function(t){ return t.indexOf('MOTH is down')===0||t.indexOf('MOTH DOWN')===0||(t.indexOf('TEAMMATE DOWN')===0&&t.indexOf('MOTH')>0); })) bad.push('the window was told '+JSON.stringify(lines)+' when its teammate went down');
        if(rum!==1) bad.push('the controller rumbled '+rum+' times when the teammate went down');
        netOnState(peer,w);
        if(lines.length!==1||rum!==1) bad.push('the fall was said again while he stayed down ('+lines.length+' lines, '+rum+' rumbles)');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       sayWhenFree=oSwf; padRumble=oRum; netSeatName=oName;
+       sayWhenFree=oSwf; say=oSay; padRumble=oRum; netSeatName=oName;
        for(k in NET) if(!(k in NK)) delete NET[k];
        for(k in NK) NET[k]=NK[k];
        try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){}
@@ -19587,7 +19588,7 @@ window.__REGRESS=[
        if((/\bleft\b/i).test(st)) bad.push(tag+'the party status still says left ('+st+')');
        if(!L) bad.push(tag+'nothing was said in the raid');
        else{
-         if(L.indexOf(NM)<0||L.indexOf('is out of this raid')<0||(want&&L.indexOf(want)<0)) bad.push(tag+'the raid line does not say who is out and how ('+L+')');
+         if(L.indexOf(NM)<0||(L.indexOf('is out of this raid')<0&&L.indexOf('HOST IS OUT')<0)||(want&&L.indexOf(want)<0)) bad.push(tag+'the raid line does not say who is out and how ('+L+')');
          if((/\bleft\b/i).test(L)) bad.push(tag+'the raid line still says left ('+L+')');
        }
      }
@@ -19596,14 +19597,14 @@ window.__REGRESS=[
        NET.on=true; NET.role='join'; NET.seat=1; NET.specG=null; NET.upSeed=G.seed>>>0; NET.up=[];
        peer={state:'in',seat:0,name:NM,timers:[],dc:{readyState:'open',send:function(){}}}; NET.peers=[peer];
        NET.roster=[{seat:0,pid:'zqxhost',name:NM,host:true},{seat:1,pid:'zqxmate',name:'ZQX MATE'}];
-       sayWhenFree=function(m){ said.push(String(m)); };
+       sayWhenFree=function(m){ said.push(String(m)); }; window.__zqSay1674=say; say=function(m,kd,o){ said.push(String(m)+((o&&o.sub)?' '+o.sub:'')); };   /* retargeted for the raid text R11: the party emergencies are alerts said at once, the name in the detail */
        one('dead','killed');
        one('extract','extracted');
        one('abandon','abandoned');
        one(null,'');
      }
      finally{
-       try{ sayWhenFree=_swf; }catch(_s){}
+       try{ sayWhenFree=_swf; if(window.__zqSay1674){ say=window.__zqSay1674; window.__zqSay1674=null; } }catch(_s){}
        try{ keys={}; if(oc) oc.classList.remove('on'); }catch(_k){}
        try{ NET.on=keepN.on; NET.role=keepN.role; NET.peers=keepN.peers||[]; NET.upSeed=keepN.upSeed; NET.seat=keepN.seat; NET.up=keepN.up||[]; NET.roster=keepN.roster||[]; NET.status=keepN.status; NET.specG=keepN.specG; }catch(_n){}
        try{ G=null; state=keepSt; }catch(_g){}
@@ -26912,7 +26913,7 @@ window.__REGRESS=[
      }
      // One loop frame carrying the clock from prev to now through the v15.24 clock warning: what it said and what it played.
      function cross(prev,now){ lines.length=0; heard.length=0; tickClockWarn(prev,now); }
-     function said(head){ for(var k=0;k<lines.length;k++) if(lines[k].indexOf(head)===0) return true; return false; }
+     function said(head){ var hh=String(head).replace(/\.$/,'').toUpperCase(); for(var k=0;k<lines.length;k++) if(String(lines[k]).toUpperCase().indexOf(hh)===0) return true; return false; }   /* retargeted for the raid text R10: THIRTY SECONDS and 1 MINUTE LEFT are caps headlines with no full stop */
      function show(c){ return c?(c.t+(c.c===RED?' in red':' in its plain colour')):'no clock'; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -27746,10 +27747,10 @@ window.__REGRESS=[
        p.x=Z.x+300; p.y=Z.y;
        lines.length=0; queued.length=0; heard.length=0;
        tickExtractPoints(0.05);
-       for(var i=0;i<lines.length;i++) if(lines[i].indexOf(LEFT)===0) return lines[i];
+       for(var i=0;i<lines.length;i++) if(lines[i].toUpperCase().indexOf(LEFT.toUpperCase())===0) return lines[i];
        return null;
      }
-     function shutSaid(){ for(var i=0;i<queued.length;i++) if(queued[i].indexOf(SHUT)>=0) return true; return false; }
+     function shutSaid(){ for(var i=0;i<queued.length;i++) if(queued[i].indexOf(SHUT)>=0||/ CLOSED\b/.test(queued[i])) return true; return false; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -27774,20 +27775,20 @@ window.__REGRESS=[
        g.ents.length=0;
        // The clock cases use a point with no closing time; on a map where every point has one, this one loses it (restored below).
        z.closeAt=undefined;
-       say=function(m){ lines.push(String(m)); };
-       sayWhenFree=function(m){ queued.push(String(m)); };
+       say=function(m,kd,o){ lines.push(String(m)+((o&&o.sub)?' '+o.sub:'')); };
+       sayWhenFree=function(m,kd,o){ queued.push(String(m)+((o&&o.sub)?' '+o.sub:'')); };   /* retargeted for the raid text R13: the extraction lines are headlines with a detail */
        blip=function(t){ heard.push(String(t)); };
        // CONTROL: with 200 seconds on the clock the window runs out, the clank sounds and the point stays open, on either build.
        var c0=run(z,200);
        if(!c0) return 'SKIP: staging: a window run out with 200 seconds on the clock said no missed extraction line here ('+(lines.join(' | ')||'nothing said')+')';
        if(z.hold!==null||z.beaconT!==null||heard.indexOf('clank')<0||!z.open) return 'SKIP: staging: the window did not end cleanly here (window '+z.hold+', open '+z.open+', sounds '+(heard.join(',')||'none')+')';
        // KEPT: with a new call able to arrive, the line still offers one.
-       if(c0.indexOf(CALL)<0) bad.push('a window that ran out with 200 seconds on the raid clock no longer told him to call for another: '+c0);
+       if(c0.indexOf(CALL)<0&&c0.indexOf('call for extraction')<0) bad.push('a window that ran out with 200 seconds on the raid clock no longer told him to call for another: '+c0);
        // THE FIX, CLOCK: the window runs out with half an extraction wait on the clock, so a new call arrives after the raid ends.
        var tl=Math.max(1,Math.floor(W/2));
        var c1=run(z,tl);
        if(!c1||z.hold!==null) return skip('staging: a window run out with '+tl+' seconds on the clock said no missed extraction line here');
-       if(c1.indexOf(CALL)>=0) bad.push('a window that ran out with '+tl+' seconds on the raid clock still told him to call for another, a call that takes '+W+' seconds and cannot arrive: '+c1);
+       if(c1.indexOf(CALL)>=0||c1.indexOf('call for extraction')>=0) bad.push('a window that ran out with '+tl+' seconds on the raid clock still told him to call for another, a call that takes '+W+' seconds and cannot arrive: '+c1);
        else if(c1.indexOf(CLOCK)<0) bad.push('a window that ran out with '+tl+' seconds on the raid clock offered no call and did not say why: '+c1);
        // THE FIX, CLOSING: the window of a point runs out 5 seconds past its closing time, with plenty of clock left.
        if(!z2) return skip('no other point here has a closing time more than an extraction wait from the end of the raid');
@@ -27796,7 +27797,7 @@ window.__REGRESS=[
        if(!c2||z2.hold!==null) return skip('staging: a window run out past its closing time said no missed extraction line here');
        // CONTROL: the close loop shut that point in the same tick and queued its closed line, on either build.
        if(z2.open||!shutSaid()) return skip('staging: the point past its closing time was not shut in the same tick here (open '+z2.open+', queued '+(queued.join(' | ')||'nothing')+')');
-       if(c2.indexOf(CALL)>=0) bad.push('a window that ran out 5 seconds past the point closing time still told him to call for another at a point shut in that same tick: '+c2);
+       if(c2.indexOf(CALL)>=0||c2.indexOf('call for extraction')>=0) bad.push('a window that ran out 5 seconds past the point closing time still told him to call for another at a point shut in that same tick: '+c2);
        if(c2.indexOf(CLOCK)>=0) bad.push('a window that ran out past the point closing time blamed the raid clock with '+tc+' seconds left: '+c2);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -28388,16 +28389,16 @@ window.__REGRESS=[
        if(has('clockwarn')||has('clocktick')||said('THIRTY')) return skip('a frame at 100 seconds already warned here ('+heard.join(',')+')');
        // CONTROL: a frame that walks the clock over thirty seconds says the thirty second line, on either build.
        if(!frame(30.02,29.99)) return skip('the live frame did not run the raid clock at thirty seconds here');
-       if(!said('THIRTY SECONDS.')) return skip('a frame over thirty seconds said no thirty second line here, so the warning cannot be read from a frame');
+       if(!said('THIRTY SECONDS')) return skip('a frame over thirty seconds said no thirty second line here, so the warning cannot be read from a frame');
        // THE FIX, ONE: the sound under that line is a clock siren, not the alarm a machine raises when it spots him.
        if(!has('clockwarn')) bad.push('the thirty second warning plays '+(has('alarm')?'the machine alarm, the same short quiet sound a machine or a pillager makes when it raises an alarm,':'no sound')+' and no clock siren of its own');
        // THE FIX, TWO: a frame that carries the clock from 31.2 past the mark to 28.9 still warns.
        if(!frame(31.2,28.9)) return skip('the live frame did not run the raid clock at 31.2 seconds here');
-       if(!said('THIRTY SECONDS.')||!has('clockwarn')) bad.push('a frame that carried the clock from 31.2 to 28.9 seconds '+(said('THIRTY SECONDS.')?'said the thirty second line with no siren':'gave no thirty second warning at all')+' ('+(heard.join(',')||'no sound')+')');
+       if(!said('THIRTY SECONDS')||!has('clockwarn')) bad.push('a frame that carried the clock from 31.2 to 28.9 seconds '+(said('THIRTY SECONDS')?'said the thirty second line with no siren':'gave no thirty second warning at all')+' ('+(heard.join(',')||'no sound')+')');
        // THE FIX, THREE: the last ten seconds tick, and ten is said.
        if(!frame(10.4,9.6)) return skip('the live frame did not run the raid clock at ten seconds here');
        if(!has('clocktick')) bad.push('the clock crossing ten seconds made no tick ('+(heard.join(',')||'no sound')+')');
-       if(!said('TEN SECONDS.')) bad.push('the clock crossing ten seconds said nothing');
+       if(!said('TEN SECONDS')) bad.push('the clock crossing ten seconds said nothing');
        // THE FIX, FOUR: the siren starts louder than the machine alarm, read off a stand-in audio context. The fixture silences
        // blip at the source and keeps the real one aside.
        blip=_blip; say=_say;
@@ -31682,20 +31683,20 @@ window.__REGRESS=[
        if(!g||!g.player||g.sim) return 'SKIP: no live raid';
        if(!(g.zones&&g.zones.length>=2)) return 'SKIP: fewer than two extraction points';
        g.ents.length=0;
-       function reset(){ for(var i=0;i<g.zones.length;i++){ var z=g.zones[i]; z.open=true; z.warned=1; z.closeAt=-9999; z.beaconT=null; z.hold=null; z.pullT=null; } g.msg=''; g.msgT=0; g.msgQ=[]; }
-       function lines(){ return [String(g.msg||'')].concat((g.msgQ||[]).map(String)); }
+       function reset(){ for(var i=0;i<g.zones.length;i++){ var z=g.zones[i]; z.open=true; z.warned=1; z.closeAt=-9999; z.beaconT=null; z.hold=null; z.pullT=null; } g.msg=''; g.msgT=0; g.msgQ=[]; g.alert=null; g.alertQ=[]; }
+       function lines(){ return [String(g.msg||''),String((g.alert&&g.alert.m)||'')+' '+String((g.alert&&g.alert.sub)||'')].concat((g.msgQ||[]).map(String),(g.alertQ||[]).map(function(e){ return String(e&&e.m)+' '+String((e&&e.o&&e.o.sub)||''); })); }   /* retargeted for the alert lane (R08): extraction lines show or wait in the alert slot */
        // CONTROL: a ring closing alone says so.
        reset();
        g.zones[0].closeAt=g.timeLeft+5; g.zones[0].warned=1;
        tickExtractPoints(0.016);
-       if(!lines().some(function(t){ return t.indexOf(CLOSED)>=0; })) return 'SKIP: a ring closing alone said nothing through the tick, so nothing here can be measured';
+       if(!lines().some(function(t){ return t.indexOf(CLOSED)>=0||/ CLOSED\b/.test(t); })) return 'SKIP: a ring closing alone said nothing through the tick, so nothing here can be measured';
        // THE FINDING: one ring closes and another is warned in the same tick.
        reset();
        g.zones[0].closeAt=g.timeLeft+5; g.zones[0].warned=1;
        g.zones[1].closeAt=g.timeLeft-60; g.zones[1].warned=0;
        tickExtractPoints(0.016);
        var L=lines();
-       var hasC=L.some(function(t){ return t.indexOf(CLOSED)>=0; }), hasW=L.some(function(t){ return t.indexOf(WARN)>=0; });
+       var hasC=L.some(function(t){ return t.indexOf(CLOSED)>=0||/ CLOSED\b/.test(t); }), hasW=L.some(function(t){ return t.indexOf(WARN)>=0; });
        if(!(hasC&&hasW)) bad.push('a closure and a two-minute warning said in the same tick left only: '+L.filter(function(t){return t;}).join(' | '));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -37036,24 +37037,24 @@ window.__REGRESS=[
        // NOTHING CALLED. Both original sentences, word for word.
        p.x=mine.x; p.y=mine.y;
        var inNone=outHint(1);
-       if(inNone!=='You are standing in the way out. Hold E to call it.')
+       if(inNone!=='You are standing in the way out. Hold E to call it.'&&!/^Hold \[E\] here to call for extraction\.$/.test(inNone))   /* retargeted for the raid text R10: the hint in its short words */
          bad.push('control: with nothing called, standing in a ring no longer says the line it has always said; it says ['+inNone+']');
        p.x=mine.x+mine.r+900; p.y=mine.y;
        var outNone=outHint(1);
-       if(!/^Nearest way out \d+m [a-z ]+\. Stand in it and hold E\.$/.test(outNone))
+       if(!/^Nearest way out \d+m [a-z ]+\. Stand in it and hold E\.$/.test(outNone)&&!/^Nearest extraction \d+m [a-z ]+\.$/.test(outNone))
          bad.push('control: with nothing called, standing away from every ring no longer says the line it has always said; it says ['+outNone+']');
        // A SHIP INBOUND, and he is standing in the ring he called.
        mine.beaconT=17; mine.hold=null; g.active=mine; g.beaconT=17;
        p.x=mine.x; p.y=mine.y;
        var inb=outHint(1);
-       if(/[Hh]old E to call/.test(inb))
+       if(/[Hh]old E to call|call for extraction/.test(inb))
          bad.push('with a ship already inbound to the ring he is standing in, the warning still tells him to hold E to call one');
        if(inb.indexOf('17')<0)
          bad.push('the warning does not tell him how long his ride is: it says ['+inb+'] with 17 seconds to go');
        // THE SHIP IS DOWN. Holding E here extracts, so the line must say extract.
        mine.beaconT=0; mine.hold=12; mine.holdMax=30;
        var land=outHint(1);
-       if(/[Hh]old E to call/.test(land))
+       if(/[Hh]old E to call|call for extraction/.test(land))
          bad.push('standing on a landed ship the warning tells him to hold E to CALL an extraction, which is not what holding E there does: it extracts him, so the line names a different action than the one that happens');
        if(!/extract/i.test(land))
          bad.push('standing on a landed ship the warning never says the word extract: it says ['+land+']');
@@ -37070,7 +37071,7 @@ window.__REGRESS=[
        var near=Math.sqrt((p.x-other.x)*(p.x-other.x)+(p.y-other.y)*(p.y-other.y));
        if(near<far){
          var wrong=outHint(1);
-         if(/Stand in it and hold E/.test(wrong)||/[Hh]old E to call/.test(wrong))
+         if(/Stand in it and hold E/.test(wrong)||/[Hh]old E to call|call for extraction/.test(wrong))
            bad.push('with his own ship already called, the warning points him at the nearer ring he has NOT called and tells him to start a second wait there, while the arrow beside it points the other way at the ride he has: it says ['+wrong+']');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -39386,11 +39387,11 @@ window.__REGRESS=[
        g.ents.push(cr);
        g.marked=0; if(g.tel) g.tel.marked=0;
        g.msg='';
-       var m0=g.marked||0, t0=(g.tel&&g.tel.marked)||0;
+       g.alert=null; g.alertQ=[]; var m0=g.marked||0, t0=(g.tel&&g.tel.marked)||0;
        __ents(0.05);
        return {state:cr.state,wind:cr.wind,lost:cr.lost,
                marked:(g.marked||0)-m0,tel:((g.tel&&g.tel.marked)||0)-t0,
-               said:String(g.msg||'')};
+               said:String(g.msg||'')+((g.alert&&g.alert.m)?' '+g.alert.m:'')};   /* retargeted for the alert lane (R08): the Crier line is an alert */
      }
      try{
        // THE FINDING: he has been out of its sight for three seconds, which is
@@ -40917,10 +40918,10 @@ window.__REGRESS=[
        for(i=0;i<g.zones.length;i++) if(g.zones[i].closeAt!==undefined) bad.push('with the clock off ring '+i+' carries a closing time of '+g.zones[i].closeAt);
        p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={}; window.__lastSay=null;
        var line=null, first=null;
-       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(first===null) first=String(window.__lastSay||''); if(Z.beaconT!==null&&Z.beaconT!==undefined) line=String(window.__lastSay||''); }
+       for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(first===null) first=String(window.__lastSay||''); if(Z.beaconT!==null&&Z.beaconT!==undefined){ line=String(window.__lastSay||''); (function(){ var LL=__msgLog(), jj; for(jj=LL.length-1;jj>=0;jj--) if(/^(Pulled|EXTRACTION CALLED)/.test(String(LL[jj].m))){ line=String(LL[jj].m)+(LL[jj].sub?' '+LL[jj].sub:''); return; } })(); }   /* retargeted for the raid text R13: the extraction lines are headlines with a detail */ }
        if(first&&first.indexOf(warn2)>=0) bad.push('with the clock off the drop warned that a ring '+warn2);
        if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E two seconds at the ring edge did not call for extraction');
-       if(line===null||line.indexOf('Pulled')!==0) bad.push('control: the call did not say Pulled (said "'+String(line).slice(0,60)+'")');
+       if(line===null||!/^(Pulled|EXTRACTION CALLED)/.test(line)) bad.push('control: the call did not say Pulled (said "'+String(line).slice(0,60)+'")');
        else if(line.indexOf(warn)>=0) bad.push('with the clock off the call still says the raid clock '+warn);
        // EXTRACTION LANDS: one tick past the end of the inbound wait sets the window.
        Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z;
