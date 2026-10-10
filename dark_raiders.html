@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.13';
+var VER='22.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27699,6 +27699,18 @@ function drawGiftLine(){
 // miss on a TV and gone into the crowd of a fight. Each wind-up now also gets a HUD bar, centred above the belt, with what is
 // going on and the seconds left: APPLYING BANDAGE, APPLYING MEDKIT, SLOTTING ARMOUR PLATE, or ... ON NAME for a teammate. Two
 // at once (a plate while a bandage goes on, v11.82) stack, the plate above. Drawn on the HUD after its clear. Returns how many.
+// v22.14, from the whole-game bug hunt of 2026-10-08 (K25): THE EMOTE STRIP SITS ABOVE THE BELT. It was placed a fixed height from
+// the bottom of the screen (H-LH(112)), while the belt grows with the screen, so at 1440p and 4K the strip was painted over the top of
+// the belt keys and their numbers, and at 1080p over the belt caption. Its top is now worked out from the belt as drawn this frame:
+// above the caption strip (v19.34) with a small gap, and above the extraction lines while they show, as the wind-up bar already goes
+// (v19.10). The wind-up bar keeps the same distance above the strip it had.
+function emoteStripY(){
+  var c=(G&&G.hotCells&&G.hotCells.length)?G.hotCells[0]:null, hy=c?c.y:H-LH(70), bw=c?c.w:LH(60), p=G&&G.player, y;
+  var cap=parseFloat(((/([\d.]+)px/).exec(String(beltCapFS(bw)))||[0,11])[1])||11;
+  y=Math.round(hy-LH(6)-cap*0.95-LH(6)-LH(30));
+  try{ if(p&&((G.beaconT!==null&&!G.over)||(G.active&&dist(p,G.active)<G.active.r))) y=Math.min(y,Math.round(hy-(LH(48)+LH(34))*Math.max(1,(typeof hudRes==='function')?hudRes():1)-LH(30))); }catch(_ex){}
+  return y;
+}
 function drawUseBar(){
   var p=G&&G.player, L=[], i, PR, it, nm, f, w, h, x, y, by, cap, s, n=0, bw0, hr;
   if(!p||G.over||G.sim) return 0;
@@ -27716,7 +27728,7 @@ function drawUseBar(){
   // in this same band above the belt, later in the frame, so putting a bandage on while waiting at a ring printed them across the
   // bar. While they show, the bar goes above them; while the emote strip is open, above that too.
   try{ if((G.beaconT!==null&&!G.over)||(G.active&&dist(p,G.active)<G.active.r)) y=Math.min(y,Math.round(by-(LH(48)+LH(34))*Math.max(1,hudRes())-h)); }catch(_ex){}
-  if(G.emoteBar) y=Math.min(y,Math.round(H-LH(112)-LH(30)-h));
+  if(G.emoteBar) y=Math.min(y,emoteStripY()-LH(30)-h);   // v22.14 (K25): above the strip, wherever the strip sits now
   ctx.save();
   ctx.font=FS(TYPE.label); ctx.textAlign='center';
   for(i=0;i<L.length;i++){
@@ -29765,7 +29777,7 @@ var _slp=w2s(p.x,66,p.y);
   if(G.emoteBar&&!G.trade){
     var ebw=LH(112),ebh=LH(30),egap=LH(6);
     var etw=EMOTES.length*ebw+(EMOTES.length-1)*egap;
-    var ex0=Math.round(W/2-etw/2),ey0=H-LH(112);
+    var ex0=Math.round(W/2-etw/2),ey0=emoteStripY();   // v22.14 (K25): above the belt and its caption as drawn this frame, not a fixed height
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1'; ctx.textAlign='center';
     ctx.fillText(weaponDown()?'weapon down, they will listen':'lower your weapon first',
       W/2,ey0-LH(8));
@@ -35256,7 +35268,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.13: Danger, critical and extraction lines take their own steady alert slot at the top of the screen, starting with his Crier lines. Check 22.13 fails on v22.12',
+  now:'v22.14: The emote strip (V) now sits above the belt at every screen size instead of over the belt keys. Check 22.14 fails on v22.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.14 - THE EMOTE STRIP SITS ABOVE THE BELT
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. The four emote buttons (V) were placed a fixed height from the bottom of the screen, while the belt grows with the screen. At 4K the strip covered the top of belt keys 2 to 6 with their numbers and its hint printed on the belt edge, at 1440p it covered the top of the keys, and at 1080p it covered the belt caption. The strip is now placed from the belt as it is drawn: just above the caption, and above the extraction lines while they show. A bandage or plate bar still sits above the strip.
+
+MEASURED. Check 22.14 passes, and fails on v22.13.
 ## v22.13 - THE ALERT LANE, FIRST FOR THE CRIER
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like Call of Duty, Fortnite or ARC Raiders, where a threat is a callout of its own. A Crier marking you was one more message row that the next remark pushed down, and a second MARKED row under the compass flashed its own sentence ten times a second for as long as the mark ran. Lines that warn of danger, critical lines and extraction lines now take one alert slot at the top of the message band: a dark red plate for a threat with an accent bar and a warning glyph, the headline in the callout size and an optional detail under it. It fades in, holds perfectly steady, and fades out; a remark said meanwhile goes to the feed rows under it instead of pushing it off. His Crier lines keep his words exactly and are the first alerts; the fire line holds while the mark runs. The flashing MARKED row is gone; the red edge of the screen still shows the mark.

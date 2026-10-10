@@ -1,0 +1,7 @@
+v22.14: the emote strip sits above the belt
+
+The emote strip (V) now sits above the belt at every screen size instead of over the belt keys.
+
+Check 22.14. Fails on v22.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
