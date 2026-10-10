@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.73';
+var VER='21.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13164,7 +13164,12 @@ function pollPad(){
       // nor R, so the choice now waits, holding nothing, until the reach has been looked up again after the press (G.nearN), and
       // the search grace starts then. Out of a roll, or downed, it is chosen on the press as before.
       if(_xDown&&!PAD.xWas){ PAD.xMode=null; PAD.xNearN=(G.player&&G.player.roll>0&&!G.player.downed)?(G.nearN||0):null; }
-      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=(G.nearContainer||G.nearPad||G.nearDown||G.nearDoor||G.nearPed||_xm)?'KeyE':'KeyR'; if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }
+      // v21.74, from the whole-game bug hunt of 2026-10-08 (K14): X HOLDS E AT THE SEAL AND AT A SURVIVOR. Neither was on this list,
+      // so at THE SEAL (which stands clear of every wall, so usually nothing else is in reach) X held R and reloaded and the seal never
+      // cut, and at a found survivor the [X] GIVE prompt was a reload too. A seal already open is left out (its reach is not looked
+      // up again once it opens), and so is a survivor the prompt does not offer (not yet found, or turned hostile), so X still
+      // reloads in a fight with him.
+      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=(G.nearContainer||G.nearPad||G.nearDown||G.nearDoor||G.nearPed||(G.nearSeal&&!G.nearSeal.done)||(G.nearStray&&G.nearStray.found&&!G.nearStray.hostile)||_xm)?'KeyE':'KeyR'; if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }
       if(_xDown&&G.player&&G.player.downed) PAD.xMode='KeyE';   // v17.04, co-op hunt 2026-09-28: downed, X holds E, also a hold carried onto the floor (above)
       PAD.xWas=_xDown;
       padHold('KeyR',_xDown&&PAD.xMode==='KeyR');
@@ -28639,7 +28644,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     var _SRh=sealHere();
     ctx.font=FS(TYPE.head); ctx.textAlign='center';
 var _slp=w2s(p.x,66,p.y);
-    ctx.fillStyle='#ffc04a'; ctx.fillText('HOLD E TO CUT THE SEAL',_slp.x,_slp.y);
+    ctx.fillStyle='#ffc04a'; ctx.fillText('HOLD '+keyLabel('KeyE','E')+' TO CUT THE SEAL',_slp.x,_slp.y);   // v21.74 (K14): the button in hand, as every other prompt; on the keyboard with E unmoved it reads as before
     bar(_slp.x-70,_slp.y+LH(6),140,7,clamp((_SRh.cut+G.seal.gained)/Math.max(1,sealNeed(_SRh.tier)),0,1),'#ffc04a');
     ctx.textAlign='left';
   }
@@ -34416,7 +34421,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.73: The what is new card names the co-op hunt fixes. Check 21.73 fails on v21.72',
+  now:'v21.74: On a controller, holding X now cuts THE SEAL and hands the survivor his item. Check 21.74 fails on v21.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.74 - A CONTROLLER CUTS THE SEAL AND HELPS THE SURVIVOR
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On a controller X does whatever E does when something is in reach (search, open, call for extraction) and reloads otherwise. THE SEAL and a found survivor were not on that list, and the seal stands clear of every wall, so usually nothing else was in reach: holding X there reloaded the gun, the seal never cut, and the survivor never got his item, though his prompt said [X] GIVE. The seal prompt also said HOLD E on a controller. X now holds E at both, and the seal prompt names the button in hand.
+
+MEASURED. Check 21.74 passes, and fails on v21.73.
 ## v21.73 - THE WHAT IS NEW CARD NAMES THE CO-OP HUNT FIXES
 
 Co-op hunt while he was away. The card was stamped v21.68 and the stamp may not trail the build by more than 0.15. Its new second line names the high fixes from the second whole-game hunt of 2026-10-09; the rest are in the change list.

@@ -1,0 +1,7 @@
+v21.74: a controller cuts the seal and helps the survivor
+
+On a controller, holding X now cuts THE SEAL and hands the survivor his item.
+
+Check 21.74. Fails on v21.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
