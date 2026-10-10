@@ -1,0 +1,7 @@
+v22.23: a shot pillbox or warden drops its mark
+
+A pillbox or a Warden you hit before it saw you no longer wears a hunting mark for the rest of the raid.
+
+Check 22.23. Fails on v22.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

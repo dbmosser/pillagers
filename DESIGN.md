@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.23 - A SHOT PILLBOX OR WARDEN DROPS ITS MARK
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. One shot at a Choir pillbox, or gunfire near it, left it wearing a red or yellow mark for the rest of the raid. It was counted among the machines coming for the ring and drove the heartbeat when you walked past, although it is bolted to the floor and never moves. A Warden or THE OVERSEER shot before it had seen you kept the red mark as it wandered. The pillbox now goes back to its watch every step, and a Warden that has not seen you drops the mark on its next step. A Warden that has seen you still hunts you as before.
+
+MEASURED. Check 22.23 passes, and fails on v22.22.
 ## v22.22 - THE MEDICAL KEY NEVER BINDS A BANDAGE YOU DO NOT HAVE
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In a raid at full health, carrying only Medkits, dragging the Medical belt key to another key to give the heals a key of their own said Bandage to slot 6 and saved a grey Bandage key with nothing behind it, while the Medkits stayed on Medical. At full health the Medical key shows a Bandage picture as a stand-in, and the drag took that picture for the item. The drag now starts only when the backpack really holds the heal the key shows, as the Undercroft belt has done since v15.69. A Medkit can still be put on any key from its backpack tile.
