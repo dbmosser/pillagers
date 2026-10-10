@@ -1,0 +1,7 @@
+v21.80: every raid line knows what kind it is
+
+Raid messages now carry a kind and a short log, the base for the shooter style text. Nothing on screen changes yet.
+
+Check 21.80. Fails on v21.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

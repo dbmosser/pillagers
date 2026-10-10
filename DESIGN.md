@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.80 - EVERY RAID LINE KNOWS WHAT KIND IT IS
+
+Co-op hunt while he was away. His order of 2026-10-09: the way the game words what it tells you in a raid is weird and not like an AAA game, so the raid text is being rewritten in the voice of a shooter HUD, with an alert slot, a feed and a pickup stack. This is the first step and changes nothing you can see. Every message the raid shows now carries a kind (critical, warning, extraction, objective, teammate, info, ambient, system), the last 16 lines are kept in a short log, and a line that waits its turn keeps its kind. The later builds use the kind to put each line in the right place and colour, and the checks use the log to read exactly what the game said. The test harness also stops using its own copy of the message code and runs the real one.
+
+MEASURED. Check 21.80 passes, and fails on v21.79.
 ## v21.79 - A GUN KEEPS ITS QUALITY IN THE BACKPACK
 
 Co-op hunt while he was away. The first step of the four-gun belt. A gun put in the backpack used to lose everything about it: its rolled name, grade, colour and stats, so it came back out as a plain field gun with the basic magazine, and its rounds were cut down to fit. A gun now goes into the backpack as itself and comes back out the same, with the rounds it went in with. A gun you find straight into the backpack keeps the roll it was found with, and a gun on a belt key while it sits in the backpack shows its own name and colour. A gun you drop and pick back up still comes back at field grade, as before, so dropping is never a way to reroll.
