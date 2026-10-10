@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.12 - A DISTRICT CONTRACT NAMES THE RIGHT PLACE EVERYWHERE
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. A contract to search containers in a district wrote its sentence once, for the sector picked when the board rolled it. After a change of sector the board row named the right place, but the cream card at the Mainframe, the CONTRACT DONE line in the raid and the CONTRACT COMPLETE line on the run card still named a place on the other sector, such as THE SUMP on THE COLD MILE. All three now name the place on the sector being played, as the board row and the raid panel already did. Every other contract reads exactly as before.
+
+MEASURED. Check 22.12 passes, and fails on v22.11.
 ## v22.11 - YOUR IMPORTED FRIEND STAYS OUT OF A PARTY RAID
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. When player 2 had imported a friend at the Mainframe, his window put that friend on the first pillager of a party raid, but the host ran that body as an ordinary pillager. Player 2 saw the friend name and gun on a man who fought as someone else, and killing him wrote the grudge to the friend, so the friend walked every later solo raid hostile while the pillager actually killed had no record of it. On player 2 the bodies now keep the names and records the host rolled. Solo raids and the host are unchanged, and the friend still turns up in raids that window runs.

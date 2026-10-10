@@ -1,0 +1,7 @@
+v22.12: a district contract names the right place everywhere
+
+A district contract names the place on the sector you are playing on the Mainframe card, in the raid and on the run card.
+
+Check 22.12. Fails on v22.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

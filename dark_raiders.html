@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.11';
+var VER='22.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3712,10 +3712,14 @@ function contractStep(c){
   if(G){
     G.tel=G.tel||{};
     G.tel.contractsMid=G.tel.contractsMid||[];
-    G.tel.contractsMid.push({desc:c.desc||'contract',
+    // v22.12, from the whole-game bug hunt of 2026-10-08 (K24): THE DONE LINE AND THE RUN CARD NAME THE PLACE ON THIS SECTOR. A
+    // district contract writes its sentence once, for the sector picked when it was rolled, so after a change of sector this line
+    // and the card's CONTRACT COMPLETE named a place on the other sector. contractDesc works the place out live, as the board row
+    // and the raid panel already do; every other kind of contract reads exactly as before.
+    G.tel.contractsMid.push({desc:contractDesc(c),
       label:(c.type==='kill'?('kill-'+c.tgt):c.type)});
     // v8.68, his wording.
-    if(!G.sim) say('CONTRACT DONE: '+(c.desc||'contract')+'. Complete contract at mainframe.');
+    if(!G.sim) say('CONTRACT DONE: '+contractDesc(c)+'. Complete contract at mainframe.');
   }
 }
 function contractKill(kind){
@@ -35137,7 +35141,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.11: In co-op, player 2 no longer sees his imported friend on a pillager the host runs, and killing that pillager no longer turns the friend hostile. Check 22.11 fails on v22.10',
+  now:'v22.12: A district contract names the place on the sector you are playing on the Mainframe card, in the raid and on the run card. Check 22.12 fails on v22.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -38163,7 +38167,7 @@ function renderConDetail(){
   var h='<div class="vpills"><span class="vpill" style="background:'+TT.c+';color:#14130f">'+
     escHtml(String(TT.name).toUpperCase())+'</span>'+
     (done?'<span class="vpill r" style="background:#2f6f4e">READY</span>':'')+'</div>'+
-    '<h4>'+escHtml(c.desc||'Contract')+'</h4>'+
+    '<h4>'+escHtml((c.desc||c.type==='district')?contractDesc(c):'Contract')+'</h4>'+   // v22.12 (K24): the place on the sector he is playing, as the board row
     '<div class="crlab">PROGRESS</div>'+
     '<div class="vstat"><span>'+Math.min(c.prog,c.n)+' of '+c.n+'</span><span>'+
       Math.round(pct*100)+'%</span></div>'+
