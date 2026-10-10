@@ -1,0 +1,7 @@
+v22.07: shooting the survivor costs player 2 too
+
+In co-op, the Survivor fires back at player 2 when shot, and killing him or the Peddler costs player 2 notoriety.
+
+Check 22.07. Fails on v22.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

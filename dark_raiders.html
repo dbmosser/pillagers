@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.06';
+var VER='22.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19843,10 +19843,15 @@ if(e.kind==='stray'){
       if(e.gone) continue;   // v11.87: he reached an extraction and left
       var sdd=dist(e,p);
       if(!G.sim&&e.hostile&&!e.downed){
-        if(sdd<420&&losClear(e.x,e.y,p.x,p.y,G.vseg)){
-          e.face=Math.atan2(p.y-e.y,p.x-e.x);
+        // v22.07, from the whole-game bug hunt of 2026-10-08 (K18): HE FIRES BACK AT THE ONE WHO TURNED HIM. Turned by a round from
+        // one of the party (netShotTake sets foeSeat), he aims at that player while he can see him, not at whoever stands nearest.
+        // With no seat (solo, or a host round) it is p, as before.
+        var _sT=p, _sL, _sj;
+        if(e.foeSeat>0&&NET.on){ _sL=netPlayersList(); for(_sj=0;_sj<_sL.length;_sj++) if(_sL[_sj]&&_sL[_sj].net&&_sL[_sj].seat===e.foeSeat&&!_sL[_sj].downed){ _sT=_sL[_sj]; break; } }
+        if(dist(e,_sT)<420&&losClear(e.x,e.y,_sT.x,_sT.y,G.vseg)){
+          e.face=Math.atan2(_sT.y-e.y,_sT.x-e.x);
           e.cd=(e.cd||0)-dt;
-          if(e.cd<=0){ e.cd=0.9; fireWeapon(e,WEAPONS.pistol,p.x,p.y,false); }
+          if(e.cd<=0){ e.cd=0.9; fireWeapon(e,WEAPONS.pistol,_sT.x,_sT.y,false); }
         }
         continue;
       }
@@ -21507,9 +21512,13 @@ function updateBullets(dt){
                 var esk=armorById(en.rig).absorb||0;
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
               }
+              // v22.07, from the whole-game bug hunt of 2026-10-08 (K18): ON A LINKED WINDOW THE HOST TURNS HIM. Up top in co-op this
+              // body is a copy of the one the host runs: turning it here was put back by the next snapshot, so the line came again on
+              // every hit while the real Survivor kept walking to the ring. The round goes to the host (below), which turns him now;
+              // here the line is said once. Solo and the host window are unchanged.
 if(en.kind==='stray'&&!en.hostile&&!G.sim){
-                en.hostile=1; en.helped=0;
-                say('The survivor returns fire.');
+                if(NET.on&&netEntsPeer()){ if(!en._rfTold){ en._rfTold=1; say('THE SURVIVOR RETURNS FIRE','warn'); } }
+                else { en.hostile=1; en.helped=0; en.foeSeat=0; say('THE SURVIVOR RETURNS FIRE','warn'); }
               }
               var _backShot=false;
               if(!WK){
@@ -35092,7 +35101,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.06: F11 in the player 2 window now fullscreens that window and leaves the player 1 window alone. Check 22.06 fails on v22.05',
+  now:'v22.07: In co-op, the Survivor fires back at player 2 when shot, and killing him or the Peddler costs player 2 notoriety. Check 22.07 fails on v22.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42434,6 +42443,7 @@ function netShotTake(peer,m){
   }
   if(e.hp<=0){ e.byPlayer=false; e.bySeat=s; } else if(!e.downed){ e.byPlayer=false; e.bySeat=0; }
   if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC) e.hostile=true;
+  if(e.kind==='stray'&&!e.hostile){ e.hostile=1; e.helped=0; e.foeSeat=s; }   // v22.07 (K18): a round from one of the party turns the Survivor, as the host own round does, and he fires back at that seat
   if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.6; }
   else if(e.kind!=='snitch'){ if(e.kind!=='peddler'&&e.kind!=='stray'){ e.alert=2.6; e.state='chase'; e.tx=sx; e.ty=sy; returnFire(e,sx,sy); } }   // v20.42 (H2): a party round into the Peddler or the Survivor moves no stall and sets no chase, as your own round
   else if(e.state!=='alarm'){ e.state='alarm'; e.lost=0; e.wind=3.5; e.markX=sx; e.markY=sy; e.markSeat=s; }   /* v21.23 (R3): a round from one of the party marks him */
@@ -42661,6 +42671,15 @@ function netKillTake(peer,m){
     rr2=idRec(e.ident); rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
     saveProfile();
     sayWhenFree((e.name||'He')+' will remember that.');
+  }
+  // v22.07, from the whole-game bug hunt of 2026-10-08 (K18): A SURVIVOR OR THE PEDDLER THIS PLAYER KILLED COSTS HIM. The death
+  // branch in updateEnts charges notoriety only for the host round (byPlayer), so a kill by one of the party was free. It is
+  // charged here, on this window save, with the stamp and the NOTORIETY +1 label the host gets for his own (the raid text plan dropped the sentence).
+  if(k==='stray'||k==='peddler'){
+    P.notoriety=(P.notoriety||0)+1; saveProfile();
+    T[k==='stray'?'strayKilled':'pedKilled']=1;
+    if(e) label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
+    notoStamp(k==='stray'?'YOU SHOT AN UNARMED SURVIVOR':'YOU KILLED THE PEDDLER');
   }
   return 'kill';
 }

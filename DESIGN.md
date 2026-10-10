@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.07 - SHOOTING THE SURVIVOR COSTS PLAYER 2 TOO
+
+Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. In co-op, a round from player 2 into the Survivor turned him only on player 2 own screen, which the host then put back, so THE SURVIVOR RETURNS FIRE repeated on every hit while the real Survivor kept walking to the ring and never fired. Killing him or the Peddler cost player 2 nothing, while the same kill by the host costs a notoriety point. Now a round from player 2 turns the Survivor on the host and he fires back at player 2, the line is said once, and a Survivor or Peddler that player 2 kills adds a notoriety point to his own save.
+
+MEASURED. Check 22.07 passes, and fails on v22.06.
 ## v22.06 - F11 FULLSCREENS THE PLAYER 2 WINDOW
 
 Co-op hunt while he was away. Found by the whole-game bug hunt of 2026-10-08. On one PC with two screens, F11 in the player 2 window never fullscreened it, his report of 2026-10-03. That window hands every key to the player 1 window, F11 included, so its own fullscreen toggle never ran, and the player 1 window ran the toggle instead: a fullscreen player 1 dropped out of fullscreen. F11 now stays in the window it was pressed in and fullscreens that window. Every other key still goes to player 1.
