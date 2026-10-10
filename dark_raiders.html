@@ -1687,7 +1687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.89';
+var VER='21.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12450,27 +12450,45 @@ window.addEventListener('mouseup',function(e){
           var _gHis=!!(_gOld&&!_gOld.u);
           for(_gq in _gA) if(_gA[_gq]===d.key){ if(!_gU[_gq]) _gHis=true; delete _gA[_gq]; delete _gU[_gq]; }
           _gA[HC.i]=d.key; _gU[HC.i]=1;
-          var _gLost='';
+          // v21.90, from the review of 21.83: THE NO KEY LINE IS WORKED OUT AFTER THE DROP, from where the thing the key showed really
+          // ended up. It said a loaner had no key when the loaner then took his own gun 2 key, and it named issued kit that was left
+          // behind. It names nothing that is gone, nothing a key holds, and no gun a key still shows.
+          var _gLost='', _gNoKey=0;
+          var _gLostNow=function(){
+            if(!_gNoKey||!_gOld) return '';
+            var _li=ITEMS[_gOld.a], _lk, _ls;
+            if(_li&&_li.use==='gun'){
+              if(!((_pp.wep&&_pp.wep.id===_li.gk)||(_pp.sec&&_pp.sec.id===_li.gk))&&G.bag.indexOf(_gOld.a)<0) return '';
+              for(_lk in G.hotAssign) if(G.hotAssign[_lk]===_gOld.a) return '';
+              _ls=hotbarSlots(); for(_lk=0;_lk<_ls.length;_lk++) if(_ls[_lk]&&_ls[_lk].kind==='gun'&&_ls[_lk].icon===_li.gk) return '';
+            }
+            return ' '+(String(_si.name||'Gun')+': no key').toUpperCase();
+          };
           if(_gOld){
             var _gTo=-1, _gOid=ITEMS[_gOld.a]&&ITEMS[_gOld.a].gk;
             if(d.fromHot!==undefined&&_gA[d.fromHot]===undefined) _gTo=d.fromHot;
             else { var _gS=hotbarSlots(); for(_gq=0;_gq<GUNKEYS&&_gTo<0;_gq++) if(_gq!==HC.i&&_gA[_gq]===undefined&&_gS[_gq]&&_gS[_gq].kind==='gun'&&!_gS[_gq].assigned&&(_gS[_gq].vacant||_gS[_gq].icon==='fists'||_gS[_gq].icon===_gOid)) _gTo=_gq; }
             if(_gTo>=0){ _gA[_gTo]=_gOld.a; if(_gOld.u) _gU[_gTo]=1; }
-            else _gLost=' '+(String(_si.name||'Gun')+': no key').toUpperCase();
+            else _gNoKey=1;   // v21.90: named once the drop is done (_gLostNow)
           }
           if(_gHis&&!G.sim){ var _gF={}; for(var _gFk in _gA) if(!_gU[_gFk]) _gF[_gFk]=_gA[_gFk]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_gF))); try{ saveProfile(); }catch(_gFe){} }
           if(_r8on){
             G.hot=gunCell(); blip('pick');
             var _gNow=hotbarSlots()[HC.i];
+            _gLost=_gLostNow();
             say(((_gNow&&_gNow.name)||_dit.name)+' to slot '+(HC.i+1)+'.'+_gLost);
           } else {
-            var _gSlot=(_gOldHand===1&&!_pp.wepIssued)?1:((_gOldHand===2&&!_pp.secIssued)?2:giveUpSlot());
+            // v21.90, from the review of 21.83: THE GUN THE KEY SHOWED IS THE ONE GIVEN UP, issued kit too: a loaner is left behind
+            // as v18.88 left it. Issued kit fell to the give-up rule, which put his own other gun, on a key he never touched, into
+            // the backpack and kept the loaner.
+            var _gSlot=_gOldHand?_gOldHand:giveUpSlot();
             if(!equipFromBag(_bx,_gSlot)) say('Cannot equip that right now.');
             else {
               if(_pp.wep.id!==_r8gk&&_pp.sec&&_pp.sec.id===_r8gk) swapGuns();
               G.hot=HC.i;
               var _gUp=hotbarSlots()[HC.i];
               if(!(_gUp&&_gUp.kind==='gun'&&_gUp.inHand)) G.hot=gunCell();
+              _gLost=_gLostNow();
               say(((_gUp&&_gUp.name)||_dit.name)+' to slot '+(HC.i+1)+'.'+_gLost+(_gunKeyHint?' '+_gunKeyHint:''));
             }
           }
@@ -15595,7 +15613,7 @@ function grantLoot(ct,keys,delay0){
         // v13.81, combat audit: a gun from a crate you dropped comes back with its own load (v12.42), not half a magazine.
         var _gkPush=(p.sec&&p.sec.id!=='fists'&&p.sec.mag!==0&&!p.secIssued)?p.sec.id:null;   // v21.83
         p.sec=found; p.secAmmo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(found.mag/2); p.secIssued=false; p.secFromArmory=false;
-        gunKeysSettle({pushed:_gkPush});   // v21.83: the found gun takes a gun key; the gun it pushed out keeps its own
+        gunKeysSettle({pushed:_gkPush,arrived:found.id});   // v21.83: the found gun takes a gun key; the gun it pushed out keeps its own (v21.90: named)
         T.gunsEquipped=(T.gunsEquipped||0)+1;
         var _qs=(found.qRank===undefined?1:found.qRank);
         if(_qs>(T.bestQ===undefined?-1:T.bestQ)) T.bestQ=_qs;
@@ -15650,7 +15668,7 @@ function grantLoot(ct,keys,delay0){
         // change of the gun in hand (bagHeldGun, swapGuns, equipFromBag) already clears it.
         var _gkPush2=(p.wep&&p.wep.id!=='fists'&&p.wep.mag!==0&&!p.wepIssued)?p.wep.id:null;   // v21.83
         p.wep=found; p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0;   // v13.81
-        gunKeysSettle({pushed:_gkPush2});   // v21.83: the found gun takes a gun key; the gun it pushed out keeps its own
+        gunKeysSettle({pushed:_gkPush2,arrived:found.id});   // v21.83: the found gun takes a gun key; the gun it pushed out keeps its own (v21.90: named)
         G.tel.weapon=p.wep.name;
         if(!G.sim){
           var cmp=oldDmg>0?Math.round((found.dmg*(found.pellets||1)/Math.max(1,oldDmg*(1))-1)*100):0;
@@ -15941,7 +15959,7 @@ function equipFromBag(ix,slot){
   _gunKeyHint='';
   if(!G.sim){
     var _pushId=(oldW&&oldW.id!=='fists'&&oldW.mag!==0&&!oldIssued)?oldW.id:null;
-    gunKeysSettle({pushed:_pushId});
+    gunKeysSettle({pushed:_pushId,arrived:gk});   // v21.90: the drawn gun is the one that may take the pushed-out key
     if(_pushId&&!_oldLine&&G.bag.indexOf('gun_'+_pushId)>=0&&!((p.wep&&p.wep.id===_pushId)||(p.sec&&p.sec.id===_pushId))&&G.hotAssign)
       for(var _pk in G.hotAssign) if(G.hotAssign[_pk]==='gun_'+_pushId){ _gunKeyHint=(oldW.name+' to backpack, key '+(+_pk+1)).toUpperCase(); break; }
   }
@@ -15967,6 +15985,14 @@ function gunKeysSettle(o){
   for(k in A){ var it=ITEMS[A[k]]; if(U[k]&&it&&it.use==='gun'&&!holds(it.gk)&&G.bag.indexOf(A[k])<0){ delete A[k]; delete U[k]; } }
   for(k in U) if(A[k]===undefined) delete U[k];
   var sw=!!p.swapped, HG=[sw?p.sec:p.wep, sw?p.wep:p.sec];
+  // v21.90, from the review of 21.83: AT THE RAID START EACH GUN FIRST TAKES ITS OWN KEY (gun 1 key 1, gun 2 key 2) when no key of
+  // his covers it, so the raid starts on the keys the Undercroft belt showed: with a Medkit on key 1, gun 2 on key 2 and gun 1 on
+  // the last free key (v17.17), not gun 1 on key 2.
+  if(o.deploy) for(h=0;h<2&&h<GUNKEYS;h++){
+    w=HG[h]; if(!w||w.id==='fists'||w.mag===0||!ITEMS['gun_'+w.id]||A[h]!==undefined) continue;
+    has=false; for(k in A) if(A[k]==='gun_'+w.id) has=true;
+    if(!has){ A[h]='gun_'+w.id; U[h]=1; }
+  }
   for(h=0;h<2;h++){
     w=HG[h]; if(!w||w.id==='fists'||w.mag===0||!ITEMS['gun_'+w.id]) continue;
     has=false; for(k in A) if(A[k]==='gun_'+w.id) has=true;
@@ -15974,7 +16000,9 @@ function gunKeysSettle(o){
     sl=hotbarSlots(); at=-1;
     for(i=0;i<GUNKEYS&&at<0;i++) if(A[i]===undefined&&sl[i]&&sl[i].kind==='gun'&&!sl[i].assigned&&sl[i].icon===w.id) at=i;
     for(i=0;i<GUNKEYS&&at<0;i++) if(A[i]===undefined&&sl[i]&&sl[i].kind==='gun'&&!sl[i].assigned&&(sl[i].vacant||sl[i].icon==='fists')) at=i;
-    if(at<0&&o.pushed&&o.pushed!==w.id) for(k in A) if(A[k]==='gun_'+o.pushed&&U[k]&&G.bag.indexOf(A[k])>=0){ at=+k; break; }
+    // v21.90, from the review of 21.83: the key of the gun pushed out goes only to the gun that just came into his hands
+    // (o.arrived), never to a gun already there that lost its own key in the same move.
+    if(at<0&&o.pushed&&o.pushed!==w.id&&o.arrived===w.id) for(k in A) if(A[k]==='gun_'+o.pushed&&U[k]&&G.bag.indexOf(A[k])>=0){ at=+k; break; }
     if(at>=0){ A[at]='gun_'+w.id; U[at]=1; }
   }
   sl=hotbarSlots();
@@ -16200,9 +16228,17 @@ function hotbarSlots(){
   for(_fk=0;_fk<GUNKEYS&&_fk<out.length;_fk++){
     if(!(out[_fk]&&out[_fk].gunFill)) continue;
     _fp=-1;
-    for(_fh=0;_fh<2&&_fp<0;_fh++) if(!_hcUsed[_fh]&&_hcReal(_hc[_fh])&&!_hcOnKey(_hc[_fh])) _fp=_fh;
-    for(_fh=0;_fh<2&&_fp<0;_fh++) if(!_hcUsed[_fh]&&_hc[_fh]&&!_hc[_fh].vacant&&!_hcReal(_hc[_fh])) _fp=_fh;
-    if(_fp<0&&_hc[1]&&_hc[1].vacant&&!_hcUsed[1]) _fp=1;
+    if(G.hubFloor){
+      // v21.90, from the review of 21.83: THE UNDERCROFT BELT KEEPS ITS OLD ORDER until the floor edits the gun keys itself: gun 1
+      // only on key 1 and gun 2 only on key 2, and a gun whose key holds an item of his goes on to v17.17 below. Filling a covered
+      // key 1 put gun 1 on key 2 and sent gun 2 to key 9, where the floor release (v18.91, which goes by gun 1 and gun 2) could
+      // bring neither gun back onto key 1; and with no gun 1 it showed gun 2 on key 1 and Bare Hands on key 2.
+      if(_fk<2&&!_hcUsed[_fk]&&_hc[_fk]) _fp=_fk;
+    } else {
+      for(_fh=0;_fh<2&&_fp<0;_fh++) if(!_hcUsed[_fh]&&_hcReal(_hc[_fh])&&!_hcOnKey(_hc[_fh])) _fp=_fh;
+      for(_fh=0;_fh<2&&_fp<0;_fh++) if(!_hcUsed[_fh]&&_hc[_fh]&&!_hc[_fh].vacant&&!_hcReal(_hc[_fh])) _fp=_fh;
+      if(_fp<0&&_hc[1]&&_hc[1].vacant&&!_hcUsed[1]) _fp=1;
+    }
     if(_fp>=0){ out[_fk]=_hc[_fp]; _hcUsed[_fp]=true; }
     else out[_fk]={k:'gunkey:'+_fk,name:(_fk<2?'Second weapon':(_fk===2?'Third weapon':'Fourth weapon')),kind:'gun',inHand:false,icon:null,count:0,c:'#4d5762',vacant:1};
   }
@@ -34806,7 +34842,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.89: The what is new card names the raid text work. Check 21.89 fails on v21.88',
+  now:'v21.90: With an item on key 1 the Undercroft belt shows your guns where it always did, and a gun dropped on a loaner key replaces the loaner. Check 21.90 fails on v21.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

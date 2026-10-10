@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.90 - GUN KEYS: THE FLOOR AND THE LOANER
+
+Co-op hunt while he was away. Two slips in the last build, found in review. On the Undercroft floor, with an item of yours on key 1, the belt put gun 1 on key 2 and sent gun 2 down to key 9, and from there neither gun could be dragged back onto key 1 (the fix for your report that a gun could not move from slot 8 to slot 1). The floor belt shows your guns where it always did again: gun 2 on key 2, gun 1 on a later key, and dragging it onto key 1 moves your item off. The raid starts on those same keys. And in a raid with an issued loaner in your hands, dropping a backpack gun on the loaner key put your own second gun into the backpack and kept the loaner, and the line said the loaner had no key. The gun on the key you drop on is the one replaced now, the loaner is left behind as before, and the no key line only names a gun that really has no key.
+
+MEASURED. Check 21.90 passes, and fails on v21.89.
 ## v21.89 - THE WHAT IS NEW CARD NAMES THE RAID TEXT WORK
 
 Co-op hunt while he was away. The card was stamped v21.73 and the stamp may not trail the build by more than 0.15. Its new second line names the first raid text builds of 2026-10-09: two message rows, wrapping, and warnings that stay up; the rest are in the change list.

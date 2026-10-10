@@ -1,0 +1,7 @@
+v21.90: gun keys: the floor and the loaner
+
+With an item on key 1 the Undercroft belt shows your guns where it always did, and a gun dropped on a loaner key replaces the loaner.
+
+Check 21.90. Fails on v21.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
