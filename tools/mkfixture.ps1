@@ -5730,6 +5730,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'21.81',what:'the raid text rewrite: measureText measures the words that are drawn (his rewording included), so plates fit them',
+   run:function(){
+     if(typeof TX!=='function'||typeof P!=='object'||!P) return 'SKIP: no profile here';
+     var bad=[], keep=P.txt, cv, c, wa, wb, wc2, k, v, n=0;
+     try{
+       cv=document.createElement('canvas'); cv.width=400; cv.height=60; c=cv.getContext('2d');
+       c.font=(typeof FS==='function'&&typeof TYPE==='object'&&TYPE.label)?FS(TYPE.label):'16px sans-serif';
+       P.txt={}; for(k in (keep||{})) P.txt[k]=keep[k];
+       wb=c.measureText('zq a much longer replacement').width;
+       wc2=c.measureText('zq short').width;
+       P.txt['zq short']='zq a much longer replacement';
+       wa=c.measureText('zq short').width;
+       if(!(wb>wc2+20)) bad.push('the probe strings do not differ in width ('+wb+' / '+wc2+')');
+       if(Math.abs(wa-wb)>0.5) bad.push('a reworded line measures '+Math.round(wa)+' px but draws '+Math.round(wb)+' px wide');
+       // The empty string, a number and a non-string still measure without throwing.
+       c.measureText(''); c.measureText(String(12345));
+       // No shipped rewording is itself a shipped line, so a string measured twice through TX is the string drawn.
+       P.txt={};
+       for(k in TXSHIP){ if(!TXSHIP.hasOwnProperty(k)) continue; v=TXSHIP[k]; n++; if(TX(v)!==v){ bad.push('the shipped rewording of a line translates again: '+String(v).slice(0,50)); break; } }
+       if(!n) bad.push('no shipped lines to read');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{ P.txt=keep; }
+     return bad.length?bad.join('; '):null; }},
   {v:'21.80',what:'the raid text module: the fixture runs the real say(), and say() carries a kind, a log and the kind of a waiting line',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__loop) return 'SKIP: no raid here';

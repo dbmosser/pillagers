@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v21.81 - TEXT PLATES FIT THE WORDS ON THEM
+
+Co-op hunt while he was away. His order of 2026-10-09 is to rewrite the raid text in the voice of a shooter HUD, and the words he rewrites himself have to sit properly on their plates. The game sized every plate, badge and box on the original wording while it drew his, so a longer line ran off the end of its plate and a shorter one sat in an empty box. Measuring now uses the same words that are drawn, his edits and the built in ones included, so every plate fits the line it carries.
+
+MEASURED. Check 21.81 passes, and fails on v21.80.
 ## v21.80 - EVERY RAID LINE KNOWS WHAT KIND IT IS
 
 Co-op hunt while he was away. His order of 2026-10-09: the way the game words what it tells you in a raid is weird and not like an AAA game, so the raid text is being rewritten in the voice of a shooter HUD, with an alert slot, a feed and a pickup stack. This is the first step and changes nothing you can see. Every message the raid shows now carries a kind (critical, warning, extraction, objective, teammate, info, ambient, system), the last 16 lines are kept in a short log, and a line that waits its turn keeps its kind. The later builds use the kind to put each line in the right place and colour, and the checks use the log to read exactly what the game said. The test harness also stops using its own copy of the message code and runs the real one.

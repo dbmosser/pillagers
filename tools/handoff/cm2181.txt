@@ -1,0 +1,7 @@
+v21.81: text plates fit the words on them
+
+Text plates and boxes are sized on the words actually drawn, so reworded lines fit their plates.
+
+Check 21.81. Fails on v21.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

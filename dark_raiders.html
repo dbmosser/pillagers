@@ -1684,7 +1684,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='21.80';
+var VER='21.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2768,14 +2768,19 @@ function txSet(orig,next){
 var TXHIT=[], TXREC=0;
 (function(){
   try{
-    var proto=CanvasRenderingContext2D.prototype, _ft=proto.fillText;
+    var proto=CanvasRenderingContext2D.prototype, _ft=proto.fillText, _mt=proto.measureText;
     if(proto.__txWrapped) return;
     proto.__txWrapped=1;
+    // v21.81, the raid text rewrite (R02): PLATES FIT THE WORDS THAT ARE DRAWN. Only fillText came through this door, so every
+    // plate, badge and box sized with measureText was sized on the ORIGINAL wording while the screen drew his (P.txt or a
+    // baked TXSHIP line). A longer rewording ran off its plate, a shorter one sat in an empty box. measureText now measures
+    // TX(t), the same string fillText will draw. The recorder below measures through the raw one, as t is already translated.
+    proto.measureText=function(t){ return _mt.call(this,(typeof t==='string'&&t.length)?TX(t):t); };
     proto.fillText=function(t,x,y,mw){
       if(typeof t==='string'&&t.length){
         var o=t; t=TX(t);
         if(TXREC){
-          var w=0; try{ w=this.measureText(t).width; }catch(e2){}
+          var w=0; try{ w=_mt.call(this,t).width; }catch(e2){}
           var px=18, fm=/([\d.]+)px/.exec(this.font||'');
           if(fm) px=+fm[1];
           TXHIT.push({o:o,t:t,x:x,y:y,w:w,h:px,al:this.textAlign||'left',
@@ -34520,7 +34525,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v21.80: Raid messages now carry a kind and a short log, the base for the shooter style text. Nothing on screen changes yet. Check 21.80 fails on v21.79',
+  now:'v21.81: Text plates and boxes are sized on the words actually drawn, so reworded lines fit their plates. Check 21.81 fails on v21.80',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
