@@ -1,0 +1,128 @@
+{
+    "title":  "TACTICAL BELT AND GUN LINES IN CAPS",
+    "why":  "His order of 2026-10-09: raid text reads like a shooter HUD with one word for each thing, and a place on the tactical belt is a slot. The belt lines said ON KEY 9, a gun taken from the backpack said one long sentence with a semicolon (Scav Pistol is yours; it goes back to the armoury. Shotgun equipped), and the throwable, roll and jam lines were still sentences. Belt lines now read MEDKIT TO SLOT 9 and MEDKIT OFF SLOT 9, a non-gun on a gun slot reads SLOT 1 TAKES GUNS ONLY, a gun taken reads SHOTGUN EQUIPPED with what happened to the old one as the detail, issued kit is issued gear, a gun put away is a pickup row tagged BACKPACK, and TOO TIRED TO ROLL, NO THROWABLES LEFT, FRAG CHARGE READY, NO FRAG CHARGE LEFT with the gun key as the detail, JAM CLEARED and THROW THE ONE IN YOUR HAND FIRST are caps callouts. The Undercroft floor belt is unchanged.",
+    "now":  "Tactical belt and gun lines read as caps callouts with the slot word, such as MEDKIT TO SLOT 9 and SHOTGUN EQUIPPED.",
+    "edits":  [
+                  {
+                      "anchor":  "          say((_gw8n+\u0027 on key \u0027+(_onCell+1)).toUpperCase(),\u0027info\u0027,(_gwTi\u0026\u0026_gwTi.use!==\u0027gun\u0027)?{sub:(_gwTi.name+\u0027 on key \u0027+(d.fromHot+1)).toUpperCase()}:null);   // v22.43: the shooter voice",
+                      "replacement":  "          say((_gw8n+\u0027 to slot \u0027+(_onCell+1)).toUpperCase(),\u0027info\u0027,(_gwTi\u0026\u0026_gwTi.use!==\u0027gun\u0027)?{sub:(_gwTi.name+\u0027 to slot \u0027+(d.fromHot+1)).toUpperCase()}:null);   // v22.43: the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "            _gaI=ITEMS[_gaP]; if(_gaI) _gaM={sub:(_gaI.name+\u0027 on key \u0027+(d.fromHot+1)).toUpperCase()};",
+                      "replacement":  "            _gaI=ITEMS[_gaP]; if(_gaI) _gaM={sub:(_gaI.name+\u0027 to slot \u0027+(d.fromHot+1)).toUpperCase()};   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "          say((_gw8n+\u0027 on key \u0027+(_onCell+1)).toUpperCase(),\u0027info\u0027,_gaM);   // the shooter voice",
+                      "replacement":  "          say((_gw8n+\u0027 to slot \u0027+(_onCell+1)).toUpperCase(),\u0027info\u0027,_gaM);   // the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "            say((((_gNow\u0026\u0026_gNow.name)||_dit.name)+\u0027 on key \u0027+(HC.i+1)).toUpperCase(),\u0027info\u0027,_gLost?{sub:_gLost.trim()}:null);",
+                      "replacement":  "            say((((_gNow\u0026\u0026_gNow.name)||_dit.name)+\u0027 to slot \u0027+(HC.i+1)).toUpperCase(),\u0027info\u0027,_gLost?{sub:_gLost.trim()}:null);   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "              var _gSub=[_gLost.trim(),_gunKeyHint].filter(function(_gs){ return !!_gs; }).join(\u0027 \\u00b7 \u0027); say((((_gUp\u0026\u0026_gUp.name)||_dit.name)+\u0027 on key \u0027+(HC.i+1)).toUpperCase(),\u0027info\u0027,_gSub?{sub:_gSub}:null);",
+                      "replacement":  "              var _gSub=[_gLost.trim(),_gunKeyHint].filter(function(_gs){ return !!_gs; }).join(\u0027 \\u00b7 \u0027); say((((_gUp\u0026\u0026_gUp.name)||_dit.name)+\u0027 to slot \u0027+(HC.i+1)).toUpperCase(),\u0027info\u0027,_gSub?{sub:_gSub}:null);   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "          say(\u0027GUNS ONLY\u0027,\u0027info\u0027,{sub:\u0027KEY \u0027+(HC.i+1)});   // v22.43: the shooter voice",
+                      "replacement":  "          say(\u0027SLOT \u0027+(HC.i+1)+\u0027 TAKES GUNS ONLY\u0027);   // v22.43: the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "        say(((ITEMS[d.key]?ITEMS[d.key].name:\u0027Item\u0027)+\u0027 on key \u0027+(HC.i+1)).toUpperCase());   // v22.58: the shooter voice",
+                      "replacement":  "        say(((ITEMS[d.key]?ITEMS[d.key].name:\u0027Item\u0027)+\u0027 to slot \u0027+(HC.i+1)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "        say(((ITEMS[_wasKey]?ITEMS[_wasKey].name:\u0027Item\u0027)+\u0027 off key \u0027+(d.fromHot+1)).toUpperCase());   // v22.58: the shooter voice",
+                      "replacement":  "        say(((ITEMS[_wasKey]?ITEMS[_wasKey].name:\u0027Item\u0027)+\u0027 off slot \u0027+(d.fromHot+1)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "        var _gbTxt=(it.name+\u0027 on key \u0027+(gi+1)).toUpperCase();   // v22.43: the shooter voice",
+                      "replacement":  "        var _gbTxt=(it.name+\u0027 to slot \u0027+(gi+1)).toUpperCase();   // v22.43: the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "      var _beltTxt=(it.name+\u0027 on key \u0027+(bi+1)).toUpperCase();   // v22.43: the shooter voice",
+                      "replacement":  "      var _beltTxt=(it.name+\u0027 to slot \u0027+(bi+1)).toUpperCase();   // v22.43: the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "        var _svTxt=(it.name+\u0027 on key \u0027+(_svi+1)).toUpperCase();",
+                      "replacement":  "        var _svTxt=(it.name+\u0027 to slot \u0027+(_svi+1)).toUpperCase();   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "            say((ITEMS[_rpk].name+\u0027 received\u0027).toUpperCase(),\u0027info\u0027,{sub:_rpKy\u003e=0?(\u0027KEY \u0027+(_rpKy+1)):(ITEMS[_rpk].use===\u0027throw\u0027?\u0027ON BELT\u0027:\u0027IN BACKPACK\u0027)});",
+                      "replacement":  "            say((ITEMS[_rpk].name+\u0027 received\u0027).toUpperCase(),\u0027info\u0027,{sub:_rpKy\u003e=0?(\u0027SLOT \u0027+(_rpKy+1)):(ITEMS[_rpk].use===\u0027throw\u0027?\u0027ON BELT\u0027:\u0027IN BACKPACK\u0027)});   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "      for(var _pk in G.hotAssign) if(G.hotAssign[_pk]===\u0027gun_\u0027+_pushId){ _gunKeyHint=(oldW.name+\u0027 in backpack \\u00b7 key \u0027+(+_pk+1)).toUpperCase(); break; }",
+                      "replacement":  "      for(var _pk in G.hotAssign) if(G.hotAssign[_pk]===\u0027gun_\u0027+_pushId){ _gunKeyHint=(oldW.name+\u0027 in backpack \\u00b7 slot \u0027+(+_pk+1)).toUpperCase(); break; }   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "    if(oldIssued) _oldLine=oldW.name+\u0027 was issued kit, left behind.\u0027;",
+                      "replacement":  "    if(oldIssued) _oldLine=\u0027Issued \u0027+oldW.name+\u0027 left behind.\u0027;   // v22.xx (R52): issued gear, not kit; a detail"
+                  },
+                  {
+                      "anchor":  "      _oldLine=oldW.name+\u0027 into the backpack.\u0027;",
+                      "replacement":  "      _oldLine=oldW.name+\u0027 to backpack.\u0027;   // v22.xx (R52): a detail"
+                  },
+                  {
+                      "anchor":  "    else if(oldArm\u0026\u0026P.weapons.indexOf(oldW.id)\u003e=0) _oldLine=oldW.name+\u0027 is yours; it goes back to the armoury.\u0027;",
+                      "replacement":  "    else if(oldArm\u0026\u0026P.weapons.indexOf(oldW.id)\u003e=0) _oldLine=oldW.name+\u0027 back to the armoury.\u0027;   // v22.xx (R52): no semicolon"
+                  },
+                  {
+                      "anchor":  "                    :(g.name+(toSec?\u0027 to secondary\u0027:\u0027 equipped\u0027));",
+                      "replacement":  "                    :(g.name+(toSec?\u0027 stowed\u0027:\u0027 equipped\u0027)).toUpperCase();   // v22.xx (R52): X EQUIPPED, or X STOWED when it went to the other hand"
+                  },
+                  {
+                      "anchor":  "  if(_kept\u0026\u0026!_oldLine) say(_newLine,\u0027info\u0027,_gunKeyHint?{sub:_gunKeyHint}:null);\n  else if(_gunKeyHint) say(_eqLine.replace(/\\.$/,\u0027\u0027),\u0027info\u0027,{sub:_gunKeyHint});\n  else say(_eqLine);",
+                      "replacement":  "  // v22.xx, the raid text rewrite (R52): one caps headline, the gun he now has, and what happened to the gun it pushed out as the\n  // detail with the slot it kept (Issued Scav Pistol left behind. / Meridian Lance back to the armoury.), never one long sentence.\n  var _eqSub=[_oldLine,_gunKeyHint].filter(function(_es){ return !!_es; }).join(\u0027 \\u00b7 \u0027);\n  say(_newLine,\u0027info\u0027,_eqSub?{sub:_eqSub}:null);"
+                  },
+                  {
+                      "anchor":  "  if(issued){ say(\u0027ISSUED KIT\u0027,\u0027info\u0027,{sub:\u0027CANNOT STOW\u0027}); return false; }   // v22.43: the shooter voice",
+                      "replacement":  "  if(issued){ say(\u0027ISSUED GEAR STAYS IN YOUR HANDS\u0027); return false; }   // v22.43: the shooter voice   // v22.xx (R52): issued gear, not kit"
+                  },
+                  {
+                      "anchor":  "  if(!ITEMS[\u0027gun_\u0027+g.id]){ say(g.name+\u0027 has no place in your backpack.\u0027); return false; }",
+                      "replacement":  "  if(!ITEMS[\u0027gun_\u0027+g.id]){ say(\u0027CANNOT STOW THAT GUN\u0027,\u0027info\u0027,{sub:g.name+\u0027 has no backpack form.\u0027}); return false; }   // v22.xx (R52)"
+                  },
+                  {
+                      "anchor":  "  say(g.name+\u0027 into the backpack.\u0027); blip(\u0027pick\u0027);",
+                      "replacement":  "  say(g.name,\u0027pick\u0027,{item:\u0027gun_\u0027+g.id,tag:\u0027BACKPACK\u0027}); blip(\u0027pick\u0027);   // v22.xx (R52): a pickup row tagged BACKPACK"
+                  },
+                  {
+                      "anchor":  "      say(ITEMS[THROWKEYS[n]].name+\u0027 ready\u0027);",
+                      "replacement":  "      say((ITEMS[THROWKEYS[n]].name+\u0027 ready\u0027).toUpperCase());   // v22.xx (R52)"
+                  },
+                  {
+                      "anchor":  "  say(_unkeyed?\u0027No throwable on your tactical belt.\u0027:\u0027No throwables\u0027);",
+                      "replacement":  "  say(_unkeyed?\u0027NO THROWABLE ON THE TACTICAL BELT\u0027:\u0027NO THROWABLES LEFT\u0027);   // v22.xx (R52)"
+                  },
+                  {
+                      "anchor":  "      if(!G.sim){ say(\u0027Too tired to roll.\u0027); blip(\u0027clank\u0027); }",
+                      "replacement":  "      if(!G.sim){ say(\u0027TOO TIRED TO ROLL\u0027); blip(\u0027clank\u0027); }   // v22.xx (R52)"
+                  },
+                  {
+                      "anchor":  "  if(!G.sim) say(\u0027No \u0027+((ITEMS[tk]\u0026\u0026ITEMS[tk].name)||\u0027throwable\u0027)+\u0027 left. \u0027+gunKeyLine());",
+                      "replacement":  "  if(!G.sim) say((\u0027No \u0027+((ITEMS[tk]\u0026\u0026ITEMS[tk].name)||\u0027throwable\u0027)+\u0027 left\u0027).toUpperCase(),\u0027info\u0027,{sub:gunKeyLine()});   // v22.xx (R52): the gun key as the detail"
+                  },
+                  {
+                      "anchor":  "  if(p.cooking){ if(!G.sim) say(\u0027Throw the one in your hand first.\u0027); return; }   // v13.62: one grenade at a time",
+                      "replacement":  "  if(p.cooking){ if(!G.sim) say(\u0027THROW THE ONE IN YOUR HAND FIRST\u0027); return; }   // v13.62: one grenade at a time   // v22.xx (R52)"
+                  },
+                  {
+                      "anchor":  "        if(!G.sim) say(\u0027No \u0027+(HSC.name||\u0027throwable\u0027)+\u0027 left. \u0027+gunKeyLine());",
+                      "replacement":  "        if(!G.sim) say((\u0027No \u0027+(HSC.name||\u0027throwable\u0027)+\u0027 left\u0027).toUpperCase(),\u0027info\u0027,{sub:gunKeyLine()});   // v22.xx (R52)"
+                  },
+                  {
+                      "anchor":  "      if(HSC.count===0){ if(!G.sim) say(\u0027No \u0027+(HSC.name||\u0027item\u0027)+\u0027 left. \u0027+gunKeyLine()); }",
+                      "replacement":  "      if(HSC.count===0){ if(!G.sim) say((\u0027No \u0027+(HSC.name||\u0027item\u0027)+\u0027 left\u0027).toUpperCase(),\u0027info\u0027,{sub:gunKeyLine()}); }   // v22.xx (R52)"
+                  },
+                  {
+                      "anchor":  "  if(p.jam\u003e0){ p.jam-=dt; if(p.jam\u003c=0\u0026\u0026!G.sim) say(\u0027Cleared.\u0027); }",
+                      "replacement":  "  if(p.jam\u003e0){ p.jam-=dt; if(p.jam\u003c=0\u0026\u0026!G.sim) say(\u0027JAM CLEARED\u0027); }   // v22.xx (R52)"
+                  },
+                  {
+                      "anchor":  "            say(p.wep.name+\u0027 jammed.\u0027);",
+                      "replacement":  "            say((p.wep.name+\u0027 jammed\u0027).toUpperCase());   // v22.xx (R52)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027tactical belt and gun lines in the slot word: a Medkit dropped on slot 9 says MEDKIT TO SLOT 9, dragged off says MEDKIT OFF SLOT 9, a tired roll, a throwable select with none, an empty throwable slot and an issued gun put away each say a caps headline, and no belt or gun line says cell, belt slot without tactical, key and a number, a semicolon, weapon slot or kit\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__P)) return \u0027SKIP: this fixture cannot deploy a raid\u0027;\n     if(typeof hotbarSlots!==\u0027function\u0027||typeof tryRoll!==\u0027function\u0027||typeof cycleThrow!==\u0027function\u0027||typeof emptyThrowCell!==\u0027function\u0027||typeof bagHeldGun!==\u0027function\u0027||typeof cv===\u0027undefined\u0027||!cv||typeof mouse!==\u0027object\u0027||!mouse||!ITEMS.medkit) return \u0027SKIP: no belt drags, rolls or throwables here\u0027;\n     var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down, realSay=say, said=[],\n         g=null, p=null, MK=ITEMS.medkit.name.toUpperCase(), K9={x:900,y:700,w:40,h:40,i:8}, K1={x:100,y:700,w:40,h:40,i:0}, k, l, all=[];\n     function up(C){ if(C){ mouse.x=C.x+20; mouse.y=C.y+20; } else { mouse.x=1500; mouse.y=300; } window.dispatchEvent(new MouseEvent(\u0027mouseup\u0027,{button:0})); }\n     function last(){ return said.length?said[said.length-1]:null; }\n     function need(tag,want){ var L=last(); if(!L) bad.push(tag+\u0027: said nothing\u0027); else if(want\u0026\u0026!want.test(L.m)) bad.push(tag+\u0027: said \u0027+JSON.stringify(L.m)); }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       p=g.player; g.ents.length=0; p.iv=99; keys={}; p.roll=0; p.downed=false; p.dying=false;\n       say=function(t,kd,o){ said.push({m:String(t),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); all.push(said[said.length-1]); };\n       g.bag=[\u0027medkit\u0027]; g.drag=null; g.hotPruned={};\n       g.bagOpen=true; g.bagCells=[]; g.bagPanel=null; g.mapOpen=false; g.trade=null; g.paused=false;\n       g.hotCells=[K1,K9];\n       // ONE: a Medkit dropped on slot 9, then dragged off\n       said.length=0; g.drag={key:\u0027medkit\u0027,bagIx:0,px:0,py:0}; up(K9); g.drag=null;\n       if(g.hotAssign\u0026\u0026g.hotAssign[8]===\u0027medkit\u0027){\n         need(\u0027a Medkit dropped on slot 9\u0027,new RegExp(\u0027^\u0027+MK+\u0027 TO SLOT 9$\u0027));\n         said.length=0; g.drag={key:\u0027medkit\u0027,fromHot:8,px:K9.x+20,py:K9.y+20}; up(null); g.drag=null;\n         need(\u0027slot 9 dragged off the belt\u0027,new RegExp(\u0027^\u0027+MK+\u0027 OFF SLOT 9$\u0027));\n       } else bad.push(\u0027staging: the Medkit did not go on slot 9 (\u0027+JSON.stringify(g.hotAssign)+\u0027)\u0027);\n       g.bagOpen=false; g.hotCells=[];\n       // TWO: a tired roll\n       p.stam=0; p.rollCd=0; p.roll=0; g.rollSayT=0; said.length=0; tryRoll(); need(\u0027a roll with no stamina\u0027,/^TOO TIRED TO ROLL$/); p.stam=100;\n       // THREE: a throwable select with none, and an empty throwable slot\n       if(g.pouch) for(k in g.pouch) g.pouch[k]=0;\n       said.length=0; cycleThrow(); need(\u0027a throwable select with none\u0027,/^NO THROWABLE/);\n       said.length=0; emptyThrowCell(\u0027frag\u0027); need(\u0027an empty throwable slot\u0027,/ LEFT$/);\n       // FOUR: the issued gun put away\n       if(!p.wep||p.wep.id===\u0027fists\u0027||!(p.wep.mag\u003e0)){ for(k in WEAPONS) if(k!==\u0027fists\u0027\u0026\u0026WEAPONS[k]\u0026\u0026WEAPONS[k].mag\u003e0){ var cw={}, f; for(f in WEAPONS[k]) cw[f]=WEAPONS[k][f]; p.wep=cw; p.ammo=cw.mag; break; } }\n       p.swapped=false; p.wepIssued=true; said.length=0; bagHeldGun(\u0027gunA\u0027); need(\u0027an issued gun put away\u0027,/^ISSUED GEAR/); p.wepIssued=false;\n       // every line said: caps, and the slot word\n       for(k=0;k\u003call.length;k++){\n         l=all[k]; var s=l.m+\u0027 \u0027+l.sub;\n         if(l.m===\u0027Nothing to \u0027+\u0027pick up.\u0027) continue;   // his word (v14.78), never reworded\n         if(l.m!==l.m.toUpperCase()||l.m.length\u003e34||(/[.!?;:]$/).test(l.m)) bad.push(JSON.stringify(l.m)+\u0027 is not a caps headline of at most 34\u0027);\n         if((/\\bcell\\b/i).test(s)) bad.push(JSON.stringify(s)+\u0027 says cell\u0027);\n         if((/belt slot/i).test(s)\u0026\u0026!(/tactical belt slot/i).test(s)) bad.push(JSON.stringify(s)+\u0027 says belt slot\u0027);\n         if((/\\bkey \\d/i).test(s)) bad.push(JSON.stringify(s)+\u0027 names a key and a number, not a slot\u0027);\n         if(s.indexOf(\u0027;\u0027)\u003e=0) bad.push(JSON.stringify(s)+\u0027 has a semicolon\u0027);\n         if((/weapon slot/i).test(s)) bad.push(JSON.stringify(s)+\u0027 says weapon slot\u0027);\n         if((/\\bkit\\b/i).test(s)) bad.push(JSON.stringify(s)+\u0027 says kit, not issued gear\u0027);\n       }\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       say=realSay; mouse.x=mx0; mouse.y=my0; mouse.down=md0; keys={};\n       try{ var g2=__state(); if(g2){ g2.drag=null; g2.bagOpen=false; if(!g2.over){ g2.player.downed=false; g2.player.wepIssued=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){}\n       try{ var P3=__P(); P3.hotAssign=ha0; }catch(_h){}\n       __topClear(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}

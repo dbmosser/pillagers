@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.05 - TACTICAL BELT AND GUN LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD with one word for each thing, and a place on the tactical belt is a slot. The belt lines said ON KEY 9, a gun taken from the backpack said one long sentence with a semicolon (Scav Pistol is yours; it goes back to the armoury. Shotgun equipped), and the throwable, roll and jam lines were still sentences. Belt lines now read MEDKIT TO SLOT 9 and MEDKIT OFF SLOT 9, a non-gun on a gun slot reads SLOT 1 TAKES GUNS ONLY, a gun taken reads SHOTGUN EQUIPPED with what happened to the old one as the detail, issued kit is issued gear, a gun put away is a pickup row tagged BACKPACK, and TOO TIRED TO ROLL, NO THROWABLES LEFT, FRAG CHARGE READY, NO FRAG CHARGE LEFT with the gun key as the detail, JAM CLEARED and THROW THE ONE IN YOUR HAND FIRST are caps callouts. The Undercroft floor belt is unchanged.
+
+MEASURED. Check 23.05 passes, and fails on v23.04.
 ## v23.04 - HEAL AND ARMOUR LINES IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps headline with a short detail only when needed, never a sentence. The heal and armour lines that were still sentences now read that way: NO STIM INJECTOR LEFT, STIM INJECTOR ACTIVE with 10s of unlimited stamina (the seconds come from the stim itself), STIM INJECTOR WORE OFF, SELF-REVIVE USED with Back on your feet, PATCHED UP, and for a teammate PATCHED UP KITE, PLATE SLOTTED FOR KITE, KITE PATCHED YOU UP, PLATE FROM KITE with your armour, KITE MOVED AWAY and KITE ALREADY HEALING with the item kept as the detail. A Bandage healing over time no longer says Bandage is healing you, 2 sec, because the status icon on the left already shows HEALING and its seconds. His Self-revive spent line is unchanged.

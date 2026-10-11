@@ -1,0 +1,7 @@
+v23.05: tactical belt and gun lines in caps
+
+Tactical belt and gun lines read as caps callouts with the slot word, such as MEDKIT TO SLOT 9 and SHOTGUN EQUIPPED.
+
+Check 23.05. Fails on v23.04.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

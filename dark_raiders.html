@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.04';
+var VER='23.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12576,7 +12576,7 @@ window.addEventListener('mouseup',function(e){
           if(_gwHis&&!G.sim){ var _gw8f={}; for(var _gw8k in _gwA) if(!_gwU[_gw8k]) _gw8f[_gw8k]=_gwA[_gw8k]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_gw8f))); try{ saveProfile(); }catch(_gw8e){} }
           G.hot=gunCell(); blip('pick');
           var _gwTi=_gwT&&ITEMS[_gwT.a];
-          say((_gw8n+' on key '+(_onCell+1)).toUpperCase(),'info',(_gwTi&&_gwTi.use!=='gun')?{sub:(_gwTi.name+' on key '+(d.fromHot+1)).toUpperCase()}:null);   // v22.43: the shooter voice
+          say((_gw8n+' to slot '+(_onCell+1)).toUpperCase(),'info',(_gwTi&&_gwTi.use!=='gun')?{sub:(_gwTi.name+' to slot '+(d.fromHot+1)).toUpperCase()}:null);   // v22.43: the shooter voice   // v22.xx (R52): the slot word
         }
         else {
           // v22.52, the four-gun belt, build 5 (his order of 2026-10-09: the player can load up the belt with all guns or whatever else
@@ -12590,12 +12590,12 @@ window.addEventListener('mouseup',function(e){
           _gaA[_onCell]=d.key;
           if(_gaP!==undefined&&_gaP!==d.key&&d.fromHot!==undefined&&_gaA[d.fromHot]===undefined){
             _gaA[d.fromHot]=_gaP; if(_gaPu) _gaU[d.fromHot]=1;
-            _gaI=ITEMS[_gaP]; if(_gaI) _gaM={sub:(_gaI.name+' on key '+(d.fromHot+1)).toUpperCase()};
+            _gaI=ITEMS[_gaP]; if(_gaI) _gaM={sub:(_gaI.name+' to slot '+(d.fromHot+1)).toUpperCase()};   // v22.xx (R52): the slot word
           }
           for(_gaK in _gaU) if(_gaA[_gaK]===undefined) delete _gaU[_gaK];
           if(!G.sim){ var _gaF={}; for(_gaK in _gaA) if(!_gaU[_gaK]) _gaF[_gaK]=_gaA[_gaK]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_gaF))); try{ saveProfile(); }catch(_gaE){} }
           G.hot=gunCell(); blip('pick');
-          say((_gw8n+' on key '+(_onCell+1)).toUpperCase(),'info',_gaM);   // the shooter voice
+          say((_gw8n+' to slot '+(_onCell+1)).toUpperCase(),'info',_gaM);   // the shooter voice   // v22.xx (R52): the slot word
         }
       }
       d={key:null}; dropped=true;
@@ -12689,7 +12689,7 @@ window.addEventListener('mouseup',function(e){
             G.hot=gunCell(); blip('pick');
             var _gNow=hotbarSlots()[HC.i];
             _gLost=_gLostNow();
-            say((((_gNow&&_gNow.name)||_dit.name)+' on key '+(HC.i+1)).toUpperCase(),'info',_gLost?{sub:_gLost.trim()}:null);
+            say((((_gNow&&_gNow.name)||_dit.name)+' to slot '+(HC.i+1)).toUpperCase(),'info',_gLost?{sub:_gLost.trim()}:null);   // v22.xx (R52): the slot word
           } else {
             // v21.90, from the review of 21.83: THE GUN THE KEY SHOWED IS THE ONE GIVEN UP, issued kit too: a loaner is left behind
             // as v18.88 left it. Issued kit fell to the give-up rule, which put his own other gun, on a key he never touched, into
@@ -12702,7 +12702,7 @@ window.addEventListener('mouseup',function(e){
               var _gUp=hotbarSlots()[HC.i];
               if(!(_gUp&&_gUp.kind==='gun'&&_gUp.inHand)) G.hot=gunCell();
               _gLost=_gLostNow();
-              var _gSub=[_gLost.trim(),_gunKeyHint].filter(function(_gs){ return !!_gs; }).join(' \u00b7 '); say((((_gUp&&_gUp.name)||_dit.name)+' on key '+(HC.i+1)).toUpperCase(),'info',_gSub?{sub:_gSub}:null);
+              var _gSub=[_gLost.trim(),_gunKeyHint].filter(function(_gs){ return !!_gs; }).join(' \u00b7 '); say((((_gUp&&_gUp.name)||_dit.name)+' to slot '+(HC.i+1)).toUpperCase(),'info',_gSub?{sub:_gSub}:null);   // v22.xx (R52): the slot word
             }
           }
           dropped=true;
@@ -12718,7 +12718,7 @@ window.addEventListener('mouseup',function(e){
         // uses for the extraction prompt, and it applies here for the same reason:
         // a gesture that silently does nothing teaches you the feature is missing.
         if(_si&&_siDerived){
-          say('GUNS ONLY','info',{sub:'KEY '+(HC.i+1)});   // v22.43: the shooter voice
+          say('SLOT '+(HC.i+1)+' TAKES GUNS ONLY');   // v22.43: the shooter voice   // v22.xx (R52): the slot word
           dropped=true; break;
         }
         // v8.67, HIS ORDER: a gun goes on any slot. This used to refuse with
@@ -12770,7 +12770,7 @@ window.addEventListener('mouseup',function(e){
         }
         G.hot=HC.i;
         blip('pick');
-        say(((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' on key '+(HC.i+1)).toUpperCase());   // v22.58: the shooter voice
+        say(((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to slot '+(HC.i+1)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word
         dropped=true;
         break;
       }
@@ -12839,7 +12839,7 @@ window.addEventListener('mouseup',function(e){
         P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_uf)));
         try{ saveProfile(); }catch(_ue){}
         blip('pick');
-        say(((ITEMS[_wasKey]?ITEMS[_wasKey].name:'Item')+' off key '+(d.fromHot+1)).toUpperCase());   // v22.58: the shooter voice
+        say(((ITEMS[_wasKey]?ITEMS[_wasKey].name:'Item')+' off slot '+(d.fromHot+1)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word
       }
     }
     if(!dropped) mouse.down=false;
@@ -13879,11 +13879,11 @@ function cycleThrow(){
       // is passed over, and the hand and the highlight now move together or not at all.
       if(_cf<0){ _unkeyed++; continue; }
       G.tsel=n; G.hot=_cf;
-      say(ITEMS[THROWKEYS[n]].name+' ready');
+      say((ITEMS[THROWKEYS[n]].name+' ready').toUpperCase());   // v22.xx (R52)
       return;
     }
   }
-  say(_unkeyed?'No throwable on your tactical belt.':'No throwables');
+  say(_unkeyed?'NO THROWABLE ON THE TACTICAL BELT':'NO THROWABLES LEFT');   // v22.xx (R52)
 }
 // His playtest, 2026-08-22: "the roll, it rolls too far, and it should take a
 // lot of stamina to do it." Both, as one change, because they are the same
@@ -13908,7 +13908,7 @@ function tryRoll(){
     G.rollSayT=(G.rollSayT||0);
     if(G.rollSayT<=0){
       G.rollSayT=1.5;
-      if(!G.sim){ say('Too tired to roll.'); blip('clank'); }
+      if(!G.sim){ say('TOO TIRED TO ROLL'); blip('clank'); }   // v22.xx (R52)
     }
     return;
   }
@@ -14062,7 +14062,7 @@ function throwFrom(tk,cookT){
 function emptyThrowCell(tk){
   // v13.42, HIS RULING OF 2026-09-13: names what is missing and the key for the gun,
   // and never selects the gun for him.
-  if(!G.sim) say('No '+((ITEMS[tk]&&ITEMS[tk].name)||'throwable')+' left. '+gunKeyLine());
+  if(!G.sim) say(('No '+((ITEMS[tk]&&ITEMS[tk].name)||'throwable')+' left').toUpperCase(),'info',{sub:gunKeyLine()});   // v22.xx (R52): the gun key as the detail
 }
 // v13.42: the sentence every empty cell ends with. The key is the belt cell that
 // holds the gun in his hands, so a gun bound to key 5 says 5.
@@ -14074,7 +14074,7 @@ function gunKeyLine(){
 function doThrow(){
   var p=G.player;
   if(p.downed||p.roll>0) return;
-  if(p.cooking){ if(!G.sim) say('Throw the one in your hand first.'); return; }   // v13.62: one grenade at a time
+  if(p.cooking){ if(!G.sim) say('THROW THE ONE IN YOUR HAND FIRST'); return; }   // v13.62: one grenade at a time   // v22.xx (R52)
   var tk=THROWKEYS[G.tsel];
   if(G.pouch[tk]<=0){ emptyThrowCell(tk); return; }
   G.pouch[tk]--; G.tel.thr[tk]++;
@@ -16537,8 +16537,8 @@ function bagHeldGun(slot){
   var isHand=(slot==='gunA')?!sw:sw;
   var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
   if(!g||g.id==='fists'||g.mag===0){ say('Nothing to pick up.'); return false; }   // v14.78: his word
-  if(issued){ say('ISSUED KIT','info',{sub:'CANNOT STOW'}); return false; }   // v22.43: the shooter voice
-  if(!ITEMS['gun_'+g.id]){ say(g.name+' has no place in your backpack.'); return false; }
+  if(issued){ say('ISSUED GEAR STAYS IN YOUR HANDS'); return false; }   // v22.43: the shooter voice   // v22.xx (R52): issued gear, not kit
+  if(!ITEMS['gun_'+g.id]){ say('CANNOT STOW THAT GUN','info',{sub:g.name+' has no backpack form.'}); return false; }   // v22.xx (R52)
   G.bag.push('gun_'+g.id);
   stowRounds(g.id,isHand?p.ammo:p.secAmmo);   // v12.42: the load goes with it
   gunQPush(g);   // v21.79: and its rolled quality
@@ -16552,7 +16552,7 @@ function bagHeldGun(slot){
   }
   G.tel.weapon=p.wep.name;
   gunKeysSettle();   // v21.83: the gun keeps its key in the backpack; the highlight goes to the gun in his hands
-  say(g.name+' into the backpack.'); blip('pick');
+  say(g.name,'pick',{item:'gun_'+g.id,tag:'BACKPACK'}); blip('pick');   // v22.xx (R52): a pickup row tagged BACKPACK
   return true;
 }
 function swapGuns(){
@@ -16641,7 +16641,7 @@ function equipFromBag(ix,slot){
   if(oldW&&oldW.id!=='fists'){
     // v12.84: KEPT, not spoken. The line below about what he is now holding used
     // to overwrite this in the same frame, so he was never told.
-    if(oldIssued) _oldLine=oldW.name+' was issued kit, left behind.';
+    if(oldIssued) _oldLine='Issued '+oldW.name+' left behind.';   // v22.xx (R52): issued gear, not kit; a detail
     // v8.32, audit: a gun from your OWN armoury is not loot. Bagging it made a
     // second sellable copy of something P.weapons still lists, and carriedGuns
     // reads your hands only - so the copy dodged the death rule that is meant
@@ -16654,9 +16654,9 @@ function equipFromBag(ix,slot){
     else if(oldArm&&ITEMS['gun_'+oldW.id]){
       G.bag.push('gun_'+oldW.id); stowRounds(oldW.id,toSec?p.secAmmo:p.ammo); gunQPush(oldW);   // v21.79: with its quality
       if(!G.sim){ var _swi=P.weapons.indexOf(oldW.id); if(_swi>=0){ P.weapons.splice(_swi,1); (G.spliced=G.spliced||[]).push(oldW.id); (P.raidSpliced=P.raidSpliced||[]).push(oldW.id); } }
-      _oldLine=oldW.name+' into the backpack.';
+      _oldLine=oldW.name+' to backpack.';   // v22.xx (R52): a detail
     }
-    else if(oldArm&&P.weapons.indexOf(oldW.id)>=0) _oldLine=oldW.name+' is yours; it goes back to the armoury.';
+    else if(oldArm&&P.weapons.indexOf(oldW.id)>=0) _oldLine=oldW.name+' back to the armoury.';   // v22.xx (R52): no semicolon
     else { G.bag.push('gun_'+oldW.id); stowRounds(oldW.id,toSec?p.secAmmo:p.ammo); gunQPush(oldW); }   // v12.42: and the displaced gun keeps its load too (v21.79: and its quality)
   }
   // v12.42: what it came in with, if this is a gun that was stowed; half a
@@ -16672,7 +16672,7 @@ function equipFromBag(ix,slot){
   // v12.84: one line, both facts. What happened to the gun he displaced is the
   // half he cannot work out for himself, and it was the half being destroyed.
   var _newLine=_kept?(g.name+' stowed').toUpperCase()   // v22.43: the shooter voice (the gun in hand is not named: it did not move)
-                    :(g.name+(toSec?' to secondary':' equipped'));
+                    :(g.name+(toSec?' stowed':' equipped')).toUpperCase();   // v22.xx (R52): X EQUIPPED, or X STOWED when it went to the other hand
   // v21.83: the gun keys settle. The drawn gun keeps the key it was drawn from, or takes a free gun key, or the key of the gun it
   // pushed out; the gun pushed out keeps its own key in the backpack, and the line names that key.
   _gunKeyHint='';
@@ -16680,14 +16680,15 @@ function equipFromBag(ix,slot){
     var _pushId=(oldW&&oldW.id!=='fists'&&oldW.mag!==0&&!oldIssued)?oldW.id:null;
     gunKeysSettle({pushed:_pushId,arrived:gk});   // v21.90: the drawn gun is the one that may take the pushed-out key
     if(_pushId&&!_oldLine&&G.bag.indexOf('gun_'+_pushId)>=0&&!((p.wep&&p.wep.id===_pushId)||(p.sec&&p.sec.id===_pushId))&&G.hotAssign)
-      for(var _pk in G.hotAssign) if(G.hotAssign[_pk]==='gun_'+_pushId){ _gunKeyHint=(oldW.name+' in backpack \u00b7 key '+(+_pk+1)).toUpperCase(); break; }
+      for(var _pk in G.hotAssign) if(G.hotAssign[_pk]==='gun_'+_pushId){ _gunKeyHint=(oldW.name+' in backpack \u00b7 slot '+(+_pk+1)).toUpperCase(); break; }   // v22.xx (R52): the slot word
   }
   var _eqLine=_oldLine?(_oldLine+' '+_newLine):_newLine;
   // v22.43, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 3): a gun routed to the free slot
   // reads SHOTGUN STOWED, and the key of the gun pushed out is the detail under the line, not a capital tail on a sentence.
-  if(_kept&&!_oldLine) say(_newLine,'info',_gunKeyHint?{sub:_gunKeyHint}:null);
-  else if(_gunKeyHint) say(_eqLine.replace(/\.$/,''),'info',{sub:_gunKeyHint});
-  else say(_eqLine);
+  // v22.xx, the raid text rewrite (R52): one caps headline, the gun he now has, and what happened to the gun it pushed out as the
+  // detail with the slot it kept (Issued Scav Pistol left behind. / Meridian Lance back to the armoury.), never one long sentence.
+  var _eqSub=[_oldLine,_gunKeyHint].filter(function(_es){ return !!_es; }).join(' \u00b7 ');
+  say(_newLine,'info',_eqSub?{sub:_eqSub}:null);
   blip('pick');
   return true;
 }
@@ -16816,7 +16817,7 @@ function autoBelt(key,quiet){
       if(G.hotAssign[gi]===undefined&&gs&&gs.kind==='gun'&&!gs.assigned&&(_abP?_abDup(gi,gs):(gs.vacant||(gs.icon==='fists'&&!gs.inHand)))){
         G.hotAssign[gi]=key; G.hotAuto=G.hotAuto||{}; G.hotAuto[gi]=1;
         if(_abP&&G.hot===gi) G.hot=gunCell();   // v22.57: the highlight never stays on a key that now shows a backpack gun
-        var _gbTxt=(it.name+' on key '+(gi+1)).toUpperCase();   // v22.43: the shooter voice
+        var _gbTxt=(it.name+' to slot '+(gi+1)).toUpperCase();   // v22.43: the shooter voice   // v22.xx (R52): the slot word
         BELTAT=gi; if(!quiet) say(_gbTxt);
         return _gbTxt;
       }
@@ -16832,7 +16833,7 @@ function autoBelt(key,quiet){
       // reach the profile, and mine yield to derived cells instead of masking.
       G.hotAuto=G.hotAuto||{};
       G.hotAuto[bi]=1;
-      var _beltTxt=(it.name+' on key '+(bi+1)).toUpperCase();   // v22.43: the shooter voice
+      var _beltTxt=(it.name+' to slot '+(bi+1)).toUpperCase();   // v22.43: the shooter voice   // v22.xx (R52): the slot word
       BELTAT=bi; if(!quiet) say(_beltTxt);
       // v13.35: handed back as well, because the loot grant writes its Found line over this one.
       return _beltTxt;
@@ -16845,7 +16846,7 @@ function autoBelt(key,quiet){
     for(var _svi=GUNKEYS-1;_svi>=2;_svi--){
       if(G.hotAssign[_svi]===undefined&&slots[_svi]&&slots[_svi].vacant){
         G.hotAssign[_svi]=key; G.hotAuto=G.hotAuto||{}; G.hotAuto[_svi]=1;
-        var _svTxt=(it.name+' on key '+(_svi+1)).toUpperCase();
+        var _svTxt=(it.name+' to slot '+(_svi+1)).toUpperCase();   // v22.xx (R52): the slot word
         BELTAT=_svi; if(!quiet) say(_svTxt);
         return _svTxt;
       }
@@ -18561,7 +18562,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
   // needs cycling, and you find out in the middle of a fight. Rolled per shot
   // and only on a gun that is actually fouled, so a maintained weapon never
   // does this.
-  if(p.jam>0){ p.jam-=dt; if(p.jam<=0&&!G.sim) say('Cleared.'); }
+  if(p.jam>0){ p.jam-=dt; if(p.jam<=0&&!G.sim) say('JAM CLEARED'); }   // v22.xx (R52)
   // The red damage block: hold, then drain toward the real value. Drain is
   // proportional so a big hit takes visibly longer to bleed off than a small one.
   if(p.hpGhost===undefined||p.hpGhost<p.hp) p.hpGhost=p.hp;
@@ -18639,7 +18640,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // one, which is the automatic-weapon safety that rule was written for.
       if(!p.cooking&&!p.fired&&!((HSC.count|0)>0)){
         p.fired=true;   // v13.42, HIS RULING: the Frag cell keeps the highlight and the gun is never raised for him
-        if(!G.sim) say('No '+(HSC.name||'throwable')+' left. '+gunKeyLine());
+        if(!G.sim) say(('No '+(HSC.name||'throwable')+' left').toUpperCase(),'info',{sub:gunKeyLine()});   // v22.xx (R52)
       }
       // v15.06, throwables audit finding 4: AND THE TRIGGER COOKS THE GRENADE IN THE HIGHLIGHTED CELL. startCook reads the hidden
       // selector, so a hand left on another grenade cooked that one under this cell's count.
@@ -18654,7 +18655,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // v13.42, HIS RULING OF 2026-09-13: spending the last of a stack no longer
       // selects the gun. The highlight stays where he put it, and a press on the
       // spent cell says what is missing and which key brings the gun up.
-      if(HSC.count===0){ if(!G.sim) say('No '+(HSC.name||'item')+' left. '+gunKeyLine()); }
+      if(HSC.count===0){ if(!G.sim) say(('No '+(HSC.name||'item')+' left').toUpperCase(),'info',{sub:gunKeyLine()}); }   // v22.xx (R52)
       else useHot();
     }
   }
@@ -18678,7 +18679,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
           // reported a jam even once the bot could have one.
           G.tel.jams=(G.tel.jams||0)+1;
           if(!G.sim){
-            say(p.wep.name+' jammed.');
+            say((p.wep.name+' jammed').toUpperCase());   // v22.xx (R52)
             blip('clank'); G.shake=Math.max(G.shake,2);
           }
         } else {
@@ -18905,7 +18906,7 @@ if(!p.fired||p.wep.auto){
             // v22.43, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 3): the line said he put it
             // in your hands, and since v21.93 the item goes into the backpack (a gun onto a free gun key). It names where it went.
             var _rpKy=-1; for(var _rpa in (G.hotAssign||{})) if(G.hotAssign[_rpa]===_rpk){ _rpKy=+_rpa; break; }
-            say((ITEMS[_rpk].name+' received').toUpperCase(),'info',{sub:_rpKy>=0?('KEY '+(_rpKy+1)):(ITEMS[_rpk].use==='throw'?'ON BELT':'IN BACKPACK')});
+            say((ITEMS[_rpk].name+' received').toUpperCase(),'info',{sub:_rpKy>=0?('SLOT '+(_rpKy+1)):(ITEMS[_rpk].use==='throw'?'ON BELT':'IN BACKPACK')});   // v22.xx (R52): the slot word
             label(downRdr.x,downRdr.y-34,'+'+ITEMS[_rpk].name.toUpperCase(),'#ffc04a',0.35,false);
           }
         }
@@ -36023,7 +36024,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.04: Heal, stim, self-revive and teammate aid lines read as short caps callouts, and a heal over time shows on its status icon instead of a line. Check 23.04 fails on v23.03',
+  now:'v23.05: Tactical belt and gun lines read as caps callouts with the slot word, such as MEDKIT TO SLOT 9 and SHOTGUN EQUIPPED. Check 23.05 fails on v23.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
