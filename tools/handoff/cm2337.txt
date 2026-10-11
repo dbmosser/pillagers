@@ -1,0 +1,7 @@
+v23.37: arcade: action comes to you
+
+In the arcade a pack of hunters drops in near the players every 10 to 22 seconds, bigger and tougher as the team score climbs, with WAVE n called out.
+
+Check 23.37. Fails on v23.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.37 - ARCADE: ACTION COMES TO YOU
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 14 of 20. A walk-up player should never wander a quiet map looking for a fight, so in the arcade the fight comes to him. Every 22 seconds at the start, and faster as the team score climbs (down to every 10 seconds), a pack of two to six hunters drops in about 800 to 1,000 away and heads straight for one of the players, with WAVE 1, WAVE 2 and so on called out. Crawlers at first, sentries once the team passes 4,000, hostile pillagers from 8,000 and an elite leading every pack from 16,000. It holds off while the players already have enough on them nearby, so it never buries them. Normal raids are untouched.
+
+MEASURED. Check 23.37 passes, and fails on v23.36.
 ## v23.36 - ARCADE: OVERSEER SCORES 2,000 FOR PLAYER 2
 
 Co-op hunt while he was away. Found by the review of arcade builds 7 to 13. In the arcade the Overseer is worth 2,000, but when player 2 fired the last round his window scored it as a plain warden, 400, because the copy of the body on his window never knew it was the boss. His window now knows the Overseer by its name, as the rest of the party code already does, so the kill is worth 2,000 whoever lands it. Normal raids are untouched.
