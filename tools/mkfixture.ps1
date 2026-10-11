@@ -9670,8 +9670,8 @@ window.__REGRESS=[
          pd=seen.filter(function(s){ return / TO CUT THE SEAL$/.test(s); });
          g.nearSeal=null;
          if(kb.length){
-           if(keysOf('KeyE')==='KeyE'&&kb[0]!=='HOLD E TO CUT THE SEAL') bad.push('on the keyboard the seal prompt reads '+kb[0]);
-           if(pd.indexOf('HOLD X TO CUT THE SEAL')<0) bad.push('on a controller the seal prompt reads '+(pd[0]||'nothing')+', not HOLD X');
+           if(keysOf('KeyE')==='KeyE'&&kb[0]!=='HOLD E TO CUT THE SEAL'&&kb[0]!=='HOLD [E] TO CUT THE SEAL') bad.push('on the keyboard the seal prompt reads '+kb[0]);
+           if(pd.indexOf('HOLD X TO CUT THE SEAL')<0&&pd.indexOf('HOLD [X] TO CUT THE SEAL')<0) bad.push('on a controller the seal prompt reads '+(pd[0]||'nothing')+', not HOLD X');
          }
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -39565,7 +39565,7 @@ window.__REGRESS=[
        var txt=drawn();
        if(txt.indexOf('TO SURRENDER')>=0)
          bad.push('the downed screen offers the surrender prompt while he is lying inside a landed extraction that would carry him out with everything');
-       if(txt.indexOf('HOLD E TO EXTRACT')<0)
+       if(txt.indexOf('HOLD E TO EXTRACT')<0&&txt.indexOf('HOLD [E] TO EXTRACT')<0)
          bad.push('the downed screen never names the one action that saves him: he is inside a landed extraction, holding E boards him with the full backpack, and the screen shows no verb at all because it is measuring the ring he called rather than the ring he is in');
        // CONTROL: ONE RING, HIS OWN, LANDED. Exactly the v12.81 case, which must be
        // untouched: blocked, and the verb shown.
@@ -39575,7 +39575,7 @@ window.__REGRESS=[
        if(surrenderBlocked()!==true)
          bad.push('control: the single-ring case v12.81 fixed is broken again, so a landed extraction he called himself no longer blocks the surrender');
        var txt2=drawn();
-       if(txt2.indexOf('HOLD E TO EXTRACT')<0)
+       if(txt2.indexOf('HOLD E TO EXTRACT')<0&&txt2.indexOf('HOLD [E] TO EXTRACT')<0)
          bad.push('control: the single-ring case no longer shows the extract verb either');
        // CONTROL: OUTSIDE EVERY RING the surrender is his, and v9.71 asked for it.
        clear();
