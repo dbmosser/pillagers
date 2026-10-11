@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.35 - ARCADE: THE ARCADE HUD
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 13 of 20. A walk-up player needs the score, the way out and when he drops back in, and nothing else. In the arcade the CONDITIONS panel, the CURRENT PILLAGERS board, the notoriety stamp and the WANTS REVENGE callouts are gone. The compass arrow under the EXTRACT readout is twice the size with a dark edge, so the way out reads at a glance. After a respawn or a re-drop, DROPPING IN 3, 2, 1 counts down big in the centre. Normal raids are untouched.
+
+MEASURED. Check 23.35 passes, and fails on v23.34.
 ## v23.34 - ARCADE: AN UPGRADE NEVER REPLACES THE GUN IN HAND
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 12 of 20. In the arcade a walk-up player keeps the gun he is shooting. A found gun with a higher tier than his stowed gun takes the stowed slot, and the old stowed gun goes into the backpack on a free gun key (tag STOWED). Otherwise a gun better than the worst gun he carries goes into the backpack on key 3 or 4 (tag KEY 3). Otherwise, or when it is a copy of a gun he already has, it is scrapped for points like a valuable (tag SCRAPPED). Normal raids are untouched.

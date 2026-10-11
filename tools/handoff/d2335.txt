@@ -1,0 +1,5 @@
+## v23.35 - ARCADE: THE ARCADE HUD
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 13 of 20. A walk-up player needs the score, the way out and when he drops back in, and nothing else. In the arcade the CONDITIONS panel, the CURRENT PILLAGERS board, the notoriety stamp and the WANTS REVENGE callouts are gone. The compass arrow under the EXTRACT readout is twice the size with a dark edge, so the way out reads at a glance. After a respawn or a re-drop, DROPPING IN 3, 2, 1 counts down big in the centre. Normal raids are untouched.
+
+MEASURED. Check 23.35 passes, and fails on v23.34.

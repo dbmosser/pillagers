@@ -1,0 +1,7 @@
+v23.35: arcade: the arcade hud
+
+In the arcade the HUD drops the conditions, the board, notoriety and the revenge lines, the extract arrow is bigger, and DROPPING IN counts down.
+
+Check 23.35. Fails on v23.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
