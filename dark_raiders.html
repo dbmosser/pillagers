@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.01';
+var VER='23.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3473,6 +3473,14 @@ var KILLCAP={sentry:11,crawler:17,raider:4,snitch:2};
 // is not always the name the player knows the thing by. Since v2.97 exactly one
 // of them differs, and that is precisely the case a bare kind string gets wrong.
 var UNITNAME={sentry:'sentry',crawler:'crawler',raider:'pillager',snitch:'crier',listener:'listener'};
+// v22.xx, the raid text rewrite (R49): NEVER-WORDS OUT OF RAID TEXT. The internal kinds (snitch, choir, stray, botwreck) leaked
+// onto the screen: a ping on a Crier read SNITCH, a dead Crier was labelled SNITCH DOWN, a machine wreck was SEARCH BOTWRECK and
+// the Peddler cache was PEDLAR STOCK. KINDWORD is the one table from a kind to the word the player knows (his vocabulary); the
+// kinds stay in the code. A machine is DESTROYED and a person ELIMINATED, never DOWN, which is the word for a knocked-down body.
+var KINDWORD={sentry:'SENTRY',crawler:'CRAWLER',raider:'PILLAGER',snitch:'CRIER',listener:'LISTENER',choir:'PILLBOX',warden:'WARDEN',
+  bulwark:'BULWARK',howler:'HOWLER',stray:'SURVIVOR',peddler:'THE PEDDLER'};
+function kindWord(k){ return KINDWORD[k]||String(k||'').toUpperCase(); }
+function killWord(e){ return (e&&(e.kind==='raider'||e.kind==='stray'||e.kind==='peddler'))?' ELIMINATED':' DESTROYED'; }
 // SPEC 16: contracts that pay in GEAR, not only credits. A board that hands out
 // money and nothing else is a slower version of selling loot, and it made the
 // whole feature something you completed by accident rather than something you
@@ -20295,7 +20303,7 @@ if(e.state==='possum'){
         for(var ps=0;ps<e.stock.length;ps++) if(!e.stock[ps].sold) pdrop.push(e.stock[ps].k);
         pdrop.push(pick(['core','titan','ledger'])); pdrop.push('cell');
         var cpd=setLoot(mkContainer(e.x,e.y,'cache'),pdrop);
-        cpd.cache=1; cpd.time=1.4; cpd.tag='PEDLAR STOCK'; G.containers.push(cpd);
+        cpd.cache=1; cpd.time=1.4; cpd.tag='PEDDLER STOCK'; G.containers.push(cpd);   // v22.xx (R49): his vocabulary spells it Peddler
         // v8.23, audit: same rule. The Peddler standing still with 150hp and no
         // gun is a target raiders will take, and the player was paying for it.
         // v17.11, co-op hunt 2026-09-28: and the same once the host is out of the raid the party still runs.
@@ -20424,7 +20432,7 @@ if(e.state==='possum'){
       // shoot each other, so an ungated label prints readable text through walls
       // telling you something died and exactly where.
       if(canSee(p.x,p.y,p.face,e.x,e.y,G.vseg))
-        label(e.x,e.y-16,(e.name||e.kind.toUpperCase())+(e.kind==='raider'?' ELIMINATED':' DOWN'),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);
+        label(e.x,e.y-16,(e.name||kindWord(e.kind))+killWord(e),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);   // v22.xx (R49): a machine is DESTROYED, never DOWN
       if(e.kind!=='raider') decal(e.x,e.y,'#241a10',rnd(14,22));
       spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffc04a',22,300);
       deathAnimAdd(e);   // v17.47: his pick 29, the death animation
@@ -29469,7 +29477,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
         if(nc2.fallenCrew!==undefined&&CFG.raiderFeud!==0) _fcr=['#c8452f','#4a90c2','#c2a54a','#7a4ac2'][nc2.fallenCrew%4];
       }
       else if(nc2.tag) _ft=_skey+String(nc2.tag).toUpperCase();
-      else _ft=_skey+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BACKPACK"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':nc2.type.toUpperCase()));
+      else _ft=_skey+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BACKPACK"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':(nc2.type==='botwreck')?'WRECK':nc2.type.toUpperCase()));   // v22.xx (R49): SEARCH WRECK, the internal kind stays in the code
       // His #23: item names in the world when you are near them. A single-item
       // crate that YOU dropped or a body someone emptied loot into is not a
       // mystery box, so it says what it holds; multi-item finds stay unsearched
@@ -30701,7 +30709,7 @@ var GEARRULES=[
   ['','Open with them. Anything hunting'],
   ['','you keeps its front turned to you.'],
 ['BEHIND','Only the SENTRY, WARDEN,'],
-  ['','BULWARK and CHOIR have an'],
+  ['','BULWARK and PILLBOX have an'],   // v22.xx (R49): the Pillbox by its name
   ['','opening at the back. Everything'],
   ['','else takes the same damage from'],
   ['','any angle, so flank those four'],
@@ -31279,7 +31287,7 @@ function drawRaiderBoard(){
   }
   if(out+dead>0){
     ctx.fillStyle='rgba(140,152,163,.75)';
-    ctx.fillText(out+' out  ·  '+dead+' down',PADX,yy+LH(1));
+    ctx.fillText(out+' out  ·  '+dead+' dead',PADX,yy+LH(1));   // v22.xx (R49): the dead are dead; down is a knocked-down body
   }
 }
 function drawCrierMarkers(){
@@ -36009,7 +36017,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.01: The what is new card names the sharper raid text. Check 23.01 fails on v23.00',
+  now:'v23.02: Pings, kill labels, the wreck prompt, the Peddler cache and the pillager board use the names you know: CRIER, PILLBOX, WRECK, DESTROYED and dead. Check 23.02 fails on v23.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42429,7 +42437,7 @@ function netAutoFire(p){
 var NET_PING_T=10, NET_PING_SNAP=70;   // v16.46: 10 s, the length Fortnite gives a ping
 // v17.57: what a ping calls the body under it: a pillager or THE OVERSEER by name (a linked window knows the boss by its name
 // only), any other body by its kind. The ping said WARDEN on the boss.
-function netPingName(hit){ return ((hit.kind==='raider'||hit.boss||hit.name===BOSS_NAME)&&hit.name)?netClean(hit.name,24):String(hit.kind).toUpperCase(); }function netPingMake(){
+function netPingName(hit){ return ((hit.kind==='raider'||hit.boss||hit.name===BOSS_NAME)&&hit.name)?netClean(hit.name,24):kindWord(hit.kind); }   /* v22.xx (R49): CRIER, PILLBOX, SURVIVOR, THE PEDDLER, never the internal kind */ function netPingMake(){
   var w, i, e, bd=NET_PING_SNAP, d, hit=null, m;
   if(typeof G==='undefined'||!G||G.over||!G.player||!NET.on||!NET.upSeed) return null;
   // v16.61, stability (co-op review): the double press is read BEFORE the 0.5 s limit. That limit stood first and answered
@@ -42493,7 +42501,7 @@ function netPingDraw(){
     ctx.beginPath(); ctx.moveTo(x,y-LH(12)*r); ctx.lineTo(x+LH(9)*r,y); ctx.lineTo(x,y+LH(12)*r); ctx.lineTo(x-LH(9)*r,y); ctx.closePath(); ctx.stroke();
     ctx.restore();
     nm=(p.s===NET.seat)?'YOU':(netSeatName(p.s)||'PILLAGER');
-    lbl=nm+(p.w?(': '+p.w):(p.dg?': DANGER':''))+'  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';   // v22.xx (R43): 120m
+    lbl=nm+(p.w?('  \u00b7  '+p.w):(p.dg?'  \u00b7  DANGER':''))+'  \u00b7  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';   // v22.xx (R43): 120m   // v22.xx (R49): no colon labels; NAME, what, distance
     ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c; hudText(lbl,clamp(x,LH(60)*r,W-LH(60)*r),y-LH(16)*r); ctx.textAlign='left';
     n++;
   }
@@ -43307,7 +43315,7 @@ function netEntDeathFx(e){
   if(e&&e.name===BOSS_NAME){ try{ say(BOSS_NAME+' is down. Its hoard is open.'); }catch(_bs){} }   // v17.56: the teammate hears the boss go down, as the host does
   try{
     var p=G.player;
-    if(p&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-16,(e.name||String(e.kind).toUpperCase())+(e.kind==='raider'?' ELIMINATED':' DOWN'),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);
+    if(p&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-16,(e.name||kindWord(e.kind))+killWord(e),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);   // v22.xx (R49)
     spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffc04a',22,300);
     if(G.puffs) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffc04a',r:26});
   }catch(_fx){}

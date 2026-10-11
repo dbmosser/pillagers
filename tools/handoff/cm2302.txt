@@ -1,0 +1,7 @@
+v23.02: never-words out of raid text
+
+Pings, kill labels, the wreck prompt, the Peddler cache and the pillager board use the names you know: CRIER, PILLBOX, WRECK, DESTROYED and dead.
+
+Check 23.02. Fails on v23.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

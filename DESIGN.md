@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.02 - NEVER-WORDS OUT OF RAID TEXT
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD and uses one word for each thing, his vocabulary. The internal names leaked onto the screen: a ping on a Crier read SNITCH (and CHOIR for a Pillbox, STRAY for the Survivor), a dead Crier was labelled SNITCH DOWN, a machine wreck prompted SEARCH BOTWRECK, the Peddler cache read PEDLAR STOCK, the field guide said CHOIR, and the Current Pillagers board counted the dead as down. A ping now names the CRIER, PILLBOX, SURVIVOR or THE PEDDLER with no colon label, a machine is DESTROYED and a person ELIMINATED, a wreck prompts SEARCH WRECK, the cache reads PEDDLER STOCK, the guide says PILLBOX and the board reads 2 dead. The internal names stay in the code.
+
+MEASURED. Check 23.02 passes, and fails on v23.01.
 ## v23.01 - THE WHAT IS NEW CARD NAMES THE SHARPER RAID TEXT
 
 Co-op hunt while he was away. The card was stamped v22.85 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text builds shipped around midnight on 2026-10-11: loot labels, nameplates and damage numbers draw over the dark and the fog, the offer line, reticle words and co-op marks grow at 4K, and raid times and prices are written one way; the rest are in the change list.
