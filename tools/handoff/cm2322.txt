@@ -1,0 +1,7 @@
+v23.22: arcade: death respawns
+
+In the arcade demo a death drops you back into the same raid with a fresh loadout after a 3 second hold.
+
+Check 23.22. Fails on v23.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
