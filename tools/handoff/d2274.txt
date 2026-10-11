@@ -1,0 +1,5 @@
+## v22.74 - WIND-UPS ON THE USE BAR ONLY
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. Using a Bandage or a Medkit said Applying, a plate said Slotting, and patching up a teammate said Bandaging or Slotting a plate for him, all while the use bar under the belt already showed APPLYING BANDAGE or SLOTTING ARMOUR PLATE with its fill and seconds. Those lines are gone; refusals and results still speak.
+
+MEASURED. Check 22.74 passes, and fails on v22.73.

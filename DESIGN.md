@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.74 - WIND-UPS ON THE USE BAR ONLY
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. Using a Bandage or a Medkit said Applying, a plate said Slotting, and patching up a teammate said Bandaging or Slotting a plate for him, all while the use bar under the belt already showed APPLYING BANDAGE or SLOTTING ARMOUR PLATE with its fill and seconds. Those lines are gone; refusals and results still speak.
+
+MEASURED. Check 22.74 passes, and fails on v22.73.
 ## v22.73 - NO REPEATS OF THE GUN CARD
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. A reload said Reloading and then Reloaded, an empty gun said Out of ammo, a swap said the gun name, and a belt key said the item and its count. The gun card already shows RELOADING and the gun in hand, the crosshair shows R RELOAD and NO AMMO, and the belt shows the key and its count, so those lines are gone. Every sound stays.

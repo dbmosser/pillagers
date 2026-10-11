@@ -1,0 +1,7 @@
+v22.74: wind-ups on the use bar only
+
+Healing and slotting a plate no longer put a line in the feed as they start; the use bar shows it.
+
+Check 22.74. Fails on v22.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
