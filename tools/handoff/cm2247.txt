@@ -1,0 +1,7 @@
+v22.47: the alert lane in the shooter voice
+
+Raid alerts read as short callouts: SIEGE INCOMING, EXTRACTION MISSED, HOST DISCONNECTED, PILLAGER REINFORCEMENTS and short details instead of sentences.
+
+Check 22.47. Fails on v22.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

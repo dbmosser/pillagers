@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.47 - THE ALERT LANE IN THE SHOOTER VOICE
+
+Co-op hunt while he was away. His order of 2026-10-09: a line the player reads in a raid is a short caps headline like Call of Duty, Fortnite or ARC Raiders, with a short detail only when needed, never an explaining sentence. The review of the third batch of raid text found details that still explained and three headlines that narrated. They now read as callouts: SIEGE INCOMING with About 6 machines inbound, a closing ring with the time it has left, EXTRACTION MISSED with Hold E to call again, the call with only its inbound time, a teammate call as his name then EXTRACT and the letter, HOST DISCONNECTED with You are hosting now, PILLAGER REINFORCEMENTS, SPOTTED BY SOMETHING HUGE, GRENADE HIT COVER with Get clear, and the in-ring hints in a few words. The inbound hint keeps its seconds.
+
+MEASURED. Check 22.47 passes, and fails on v22.46.
 ## v22.46 - AN ALERT IS UP LONG ENOUGH TO READ
 
 Co-op hunt while he was away. The review of the raid text alert lane found that an alert gave way to any line of equal or higher rank after only 0.6 s, about half a second of reading once it had faded in. EXTRACTION CALLED and its detail flashed before THE SIEGE took the slot, and when two rings closed in the same second each one flashed in turn. An alert now holds the slot for 2 seconds, the same time a message row of an objective or a critical line is protected, before anything but a critical line can take it; a line waiting behind it waits its turn instead of dropping into the feed.

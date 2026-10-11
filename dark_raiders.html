@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.46';
+var VER='22.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13918,7 +13918,7 @@ function throwFrom(tk,cookT){
   // v21.85, the raid text rewrite, his order of 2026-10-09 (raid lines read like a shooter HUD): the throw that stops on cover says
   // so in a headline. A frag stopped short is a warn, GRENADE HIT COVER, his cookShout word for a thrown Frag Charge; a smoke or a
   // decoy stopped short is THROW BLOCKED. No advice and no explaining detail: the headline is the whole message.
-  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)){ if(tk==='frag') say('GRENADE HIT COVER','warn',{sub:'Get clear of the blast.'}); else say('THROW BLOCKED','info'); }   // v12.20: the warning covers the whole blast
+  if(blocked&&rngT<(tk==='frag'?(CFG.fragR===undefined?190:CFG.fragR):110)){ if(tk==='frag') say('GRENADE HIT COVER','warn',{sub:'Get clear'}); else say('THROW BLOCKED','info'); }   // v12.20: the warning covers the whole blast   // v22.xx (tr3fixc): the shooter voice
   ping(p.x,p.y,90,false,false,'player','move');
 }
 // The instant path, unchanged in behaviour and still what the gamepad and any
@@ -14381,6 +14381,14 @@ function msgRowsUp(){   // the rows showing now, head first: {m,k,key}
 // the feed as an objective row, so it is never lost. An alert a crit took before it had shown 0.6 s goes back to that queue. The
 // feed rows (G.msg and G.feed) carry everything else and now start under the alert while one shows. Cosmetic only: nothing here
 // runs while G.sim is set, draws a random number or changes game state.
+// v22.xx, the raid text rewrite (fix after batch 3, tr3fixc): THE ALERT LANE IN THE SHOOTER VOICE. HIS ORDER (2026-10-09): a line
+// the player reads in a raid is a short caps headline and, only when needed, a short detail, never an explaining sentence. The
+// review of batch 3 found details that still explained (the pillager who does not like it, the siege that is coming to this ring,
+// how to call again, who called and where in a sentence, why you now run the raid) and three narrated headlines. They now read as
+// callouts: SIEGE INCOMING with About N machines inbound, a closing ring with the time left as m:ss, EXTRACTION MISSED, the call
+// with only its inbound figure, a teammate call as NAME then EXTRACT and the letter, HOST DISCONNECTED or HOST IS OUT with You
+// are hosting now, PILLAGER REINFORCEMENTS, SPOTTED BY SOMETHING HUGE, and the in-ring hints in two to four words. The inbound hint
+// keeps its seconds (his v12.93 audit rule: it says how long the ride is). No state, sound or timing changes.
 var ALERTK={crit:1,warn:1,ext:1};
 // v22.xx, the raid text rewrite (fix after batch 3, tr3fixb): AN ALERT IS UP LONG ENOUGH TO READ. A line of equal or higher rank
 // replaced the alert once it had shown 0.6 s, which is about half a second of reading after the fade in: EXTRACTION CALLED and its
@@ -17144,8 +17152,8 @@ function tryExtractTick(dt,wantCall){
       // the raid clock runs out first), then THE SIEGE with how many are coming, then a feed row for the backpack. The band under the
       // clock owns every live countdown, so only the one inbound figure is in a detail. The count is the same _sc as before.
       var _xw=Math.round(CFG.extractWait), _xs=(_xw>=60)?(Math.floor(_xw/60)+':'+((_xw%60)<10?'0':'')+(_xw%60)):(_xw+'s'), _xk='['+keyLabel('KeyE','E')+']';
-      say('EXTRACTION CALLED','ext',{key:'xcall',sub:'Inbound '+_xs+((raidClockOn()&&G.timeLeft<CFG.extractWait)?'. The raid clock runs out first.':('. Then hold '+_xk+' to extract.'))});   // v12.24: not with the clock OFF
-      say('THE SIEGE','warn',{key:'siege',sub:'About '+_sc+(_sc===1?' machine is':' machines are')+' coming to this ring.'});
+      say('EXTRACTION CALLED','ext',{key:'xcall',sub:'Inbound '+_xs+((raidClockOn()&&G.timeLeft<CFG.extractWait)?' \u00b7 Clock runs out first':'')});   // v12.24: not with the clock OFF   // v22.xx (tr3fixc): the shooter voice
+      say('SIEGE INCOMING','warn',{key:'siege',sub:'About '+_sc+(_sc===1?' machine':' machines')+' inbound'});   // v22.xx (tr3fixc): the shooter voice
       say(_wh,'info',{sub:_wd});
     }
     return;
@@ -17423,7 +17431,7 @@ function tickRaiderWaves(dt){
   G.ents.push(NR);
   G.roster.push({ref:NR,name:NR.name,crew:NR.crew,val:0,out:false});
   G.waveN++;
-  if(!G.sim) say('MORE PILLAGERS HAVE COME UP','warn');
+  if(!G.sim) say('PILLAGER REINFORCEMENTS','warn');   // v22.xx (tr3fixc): the shooter voice
 }
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
@@ -17675,7 +17683,7 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
       // as CLOSED. Past the closing time the line now stops at its first sentence and leaves the news to that queued line; with
       // too little clock left it says a call cannot beat the clock; every other miss still offers the call and its wait.
       if(dist(p,z)<1400){ blip('clank');
-        say('EXTRACTION LEFT WITHOUT YOU','ext',{c:'warn',key:'xcall',sub:((z.closeAt!==undefined&&G.timeLeft<=z.closeAt)?'':((raidClockOn()&&G.timeLeft<CFG.extractWait)?'Another call cannot beat the raid clock.':('Hold ['+keyLabel('KeyE','E')+'] in a ring to call for extraction.')))}); }   // v22.38 (R13)
+        say('EXTRACTION MISSED','ext',{c:'warn',key:'xcall',sub:((z.closeAt!==undefined&&G.timeLeft<=z.closeAt)?'':((raidClockOn()&&G.timeLeft<CFG.extractWait)?'No time to call again':('Hold ['+keyLabel('KeyE','E')+'] to call again')))}); }   // v22.38 (R13)   // v22.xx (tr3fixc): the shooter voice
     }
   }
   // THE MIRRORS ARE A VIEW, NOT A CACHE, v2.29. G.beaconT, G.shipHold and
@@ -17722,7 +17730,7 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
     if(!cz.warned&&G.timeLeft<=cz.closeAt+120){
       cz.warned=1;
       // v10.75, his one-word rule: the same letter the map and the banner use.
-      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSING','ext',{c:'warn',sub:'It closes in two minutes.'});   // v22.38 (R13)   // v21.92: an extraction line, ranked over ordinary rows so the queue never drops it;   // v14.11, HUD audit: waits its turn instead of writing over a line
+      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSING','ext',{c:'warn',sub:'Closes in '+fmtClock(Math.round(G.timeLeft-cz.closeAt))});   // v22.38 (R13)   // v21.92: an extraction line, ranked over ordinary rows so the queue never drops it;   // v14.11, HUD audit: waits its turn instead of writing over a line   // v22.xx (tr3fixc): the shooter voice, the time it really has left
     }
     if(cz.open&&G.timeLeft<=cz.closeAt){
       if(cz.beaconT!==null&&cz.beaconT!==undefined){ continue; }  // pulled: it completes
@@ -20501,7 +20509,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
       if(sees){ e.seenYou=true; e.tx=p.x; e.ty=p.y; e.alert=4;
       if(e.boss&&e.lairX!==undefined&&Math.hypot(p.x-e.lairX,p.y-e.lairY)>1100){ e.tx=e.lairX; e.ty=e.lairY; e.seenYou=true; }   // v17.45: his pick 21, it guards its lair
-        if(!e.announced){ e.announced=true; if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'big',nid:e.nid|0,seat:p.seat|0}); } else say('SOMETHING HUGE HAS NOTICED YOU','warn'); sfx('alarm',e.x,e.y); } }   // v20.38 (H11): said to the player it noticed
+        if(!e.announced){ e.announced=true; if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'big',nid:e.nid|0,seat:p.seat|0}); } else say('SPOTTED BY SOMETHING HUGE','warn'); sfx('alarm',e.x,e.y); } }   // v20.38 (H11): said to the player it noticed   // v22.xx (tr3fixc): the shooter voice
       // v22.23 (K34): A WARDEN THAT HAS NOT SEEN YOU IS NOT HUNTING YOU. A round, a blast or a noise put it in 'chase' or
       // 'investigate', which this branch never reads or ends, so it kept the red mark as it wandered. Where it was sent stays in
       // tx/ty for its walk. One that has seen you hunts for good, as before. THE OVERSEER runs this branch too.
@@ -20790,7 +20798,7 @@ var _rdS=G.shells[_rdi];
         var pd2=dist(e,p);
         if(!e.merc&&!e.friendlyPC&&(pd2<180||(CFG.provokeReal===0?e.hitT>0:e.pHitT>0))){
           e.hostile=true;
-          if(!G.sim) say('PILLAGER TURNED HOSTILE','warn',{sub:e.name+' does not like that.'});   // v22.32, the raid text rewrite (R09): a threat is an alert headline in the shooter voice (his order of 2026-10-09)
+          if(!G.sim) say('PILLAGER TURNED HOSTILE','warn',{sub:e.name});   // v22.32, the raid text rewrite (R09): a threat is an alert headline in the shooter voice (his order of 2026-10-09)   // v22.xx (tr3fixc): the shooter voice
         } else {
           if(!e.metSaid&&!G.sim){
             e.metSaid=1;
@@ -33912,18 +33920,18 @@ function outHint(urgent){
     var din=dist(G.player,ac);
     if(din<ac.r)
       return landed?('Hold '+_K+' to extract, '+Math.ceil(ac.hold)+'s left.')
-                   :('Extraction inbound in '+Math.ceil(ac.beaconT)+'s. Stay in the ring.');
+                   :('Inbound '+Math.ceil(ac.beaconT)+'s \u00b7 Stay in the ring');   // v22.xx (tr3fixc): the shooter voice
     return 'Extraction '+metres(din)+'m '+compass8(ac.x-G.player.x,ac.y-G.player.y)+'. '+
            (landed?('Leaves in '+Math.ceil(ac.hold)+'s.'):('Inbound in '+Math.ceil(ac.beaconT)+'s.'));
   }
   var no=nearestOut();
   // v9.39: nearestOut returns nothing when every ring is shut, which is a real
   // sentence rather than a missing one.
-  if(!no) return 'Every extraction is closed.';
+  if(!no) return 'All extractions closed';   // v22.xx (tr3fixc): the shooter voice
   var far=metres(no.d);
   var dir=compass8(no.z.x-G.player.x,no.z.y-G.player.y);
   // Standing in it already is a different instruction from walking to it.
-  if(no.d<no.z.r) return 'Hold '+_K+' here to call for extraction.';
+  if(no.d<no.z.r) return 'Hold '+_K+' to call extraction';   // v22.xx (tr3fixc): the shooter voice
   return 'Nearest extraction '+far+'m '+dir+'.';
 }
 // A place already called "THE something" brings its own article.
@@ -35485,7 +35493,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.46: An alert now stays up at least 2 seconds before another one replaces it, unless the new one is critical. Check 22.46 fails on v22.45',
+  now:'v22.47: Raid alerts read as short callouts: SIEGE INCOMING, EXTRACTION MISSED, HOST DISCONNECTED, PILLAGER REINFORCEMENTS and short details instead of sentences. Check 22.47 fails on v22.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42251,7 +42259,7 @@ function netBeaconTake(peer,m){
   }catch(_wk){}
   if(!(G.active&&G.active!==Z&&G.active.beaconT!==null&&G.active.beaconT!==undefined)){ G.active=Z; G.beaconT=Z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }   // v16.11: never taken off a call of the host's own (v12.57)
   if(G.tel) G.tel.beaconCalls=(G.tel.beaconCalls||0)+1;
-  blip('beacon'); say('EXTRACTION CALLED','ext',{key:'xcall',sub:(netSeatName(peer.seat)||'Your teammate')+' called for extraction at '+extLetter(Z)+'.'});   // v22.38 (R13)
+  blip('beacon'); say('EXTRACTION CALLED','ext',{key:'xcall',sub:String(netSeatName(peer.seat)||'Teammate').toUpperCase()+' \u00b7 EXTRACT '+extLetter(Z)});   // v22.38 (R13)   // v22.xx (tr3fixc): the shooter voice
   return 'called';
 }
 // v16.08, MULTIPLAYER: THE PARTY ON THE SECTOR MAP (plan phase 4, map dots). The sector map drew only you, so a teammate out of
@@ -42788,7 +42796,7 @@ function netMarkTake(peer,m){
     }
     return 'mark:fire';
   }
-  if(k==='big'){ if(mine&&!G.sim) say('SOMETHING HUGE HAS NOTICED YOU','warn'); return 'mark:big'; }
+  if(k==='big'){ if(mine&&!G.sim) say('SPOTTED BY SOMETHING HUGE','warn'); return 'mark:big'; }   // v22.xx (tr3fixc): the shooter voice
   // v22.20, from the whole-game bug hunt of 2026-10-08 (K31): THE PILLBOX, THE PEDDLER AND THE SURVIVOR, told to the player who
   // walked up. The host sends these when one of the party is the player they saw (updateEnts); his own lines are said there.
   if(k==='pill'){ if(mine&&!G.sim) say('THE PILLBOX HAS SEEN YOU','warn'); return 'mark:pill'; }
@@ -43663,7 +43671,7 @@ function netHostGone(why){
   else if((G.t||0)>=2) G.bossDone=1;
   G.netLeft='';
   NET.status=(why==='out')?'Your host is out of the raid. You are running it now.':'Connection to your host was lost. You are running the raid now.';
-  try{ say('YOU ARE RUNNING THE RAID','crit',{sub:(why==='out')?'Your host is out.':'The connection to your host was lost.',icon:'party'}); }catch(_hs){}   // v22.35 (R11): an alert at once
+  try{ say((why==='out')?'HOST IS OUT':'HOST DISCONNECTED','crit',{sub:'You are hosting now',icon:'party'}); }catch(_hs){}   // v22.35 (R11): an alert at once   // v22.xx (tr3fixc): the shooter voice
   return true;
 }
 // The containers as this window holds them, for the test page handle.
