@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.56 - TRADE IN THE PICKUP STACK
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, short callouts and never an explaining sentence. A sale at the stall said one sentence of up to 135 characters, a purchase said what it cost and where it went in a sentence, the Survivor paying said up to 110 characters, and a gift said Took or Gave in a sentence. They are now rows in the pickup stack: the item tagged where it went, a dim minus row for the price, a green plus row for the sale tagged CARRIED, the Survivor pay and salvage tagged FROM THE SURVIVOR, and a gift tagged FROM or GIVEN TO the teammate. The sale keeps one short line, SOLD 3 ITEMS with what the backpack is worth carried home; the refusal is NOT ENOUGH BANKED CREDITS with the price; a cache he marks is CACHE MARKED. The Credits maths is untouched.
+
+MEASURED. Check 22.56 passes, and fails on v22.55.
 ## v22.55 - A GUN DRAGS BACK TO ITS KEY
 
 Co-op hunt while he was away. From the review of the four-gun belt, build 5. A gun in his hands always shows on a gun key as well (his v15.25 note: key 1 never goes black while he holds a gun), so after he dragged the rifle from key 1 to key 6, key 1 still showed it. Dragging it from key 6 back onto key 1 was taken as a drop on its own key: nothing changed, nothing was said, and key 6 and his belt plan kept the rifle. Now the drag back takes it off key 6, pins it on key 1 like any gun dropped on a gun key, and the line names the key.

@@ -1,0 +1,7 @@
+v22.56: trade in the pickup stack
+
+Buying, selling, the Survivor pay and gifts show as rows in the pickup stack, with plus and minus money rows.
+
+Check 22.56. Fails on v22.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

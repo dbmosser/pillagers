@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.55';
+var VER='22.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10097,14 +10097,15 @@ function strayGive(e){
   G.strayPaid=(G.strayPaid||0)+pay;
   var gift=pick(['titan','core','optic','servo']);
   try{ grantLoot(mkContainer(e.x,e.y,'crate'),[gift]); G.strayGave=gift; }catch(_sg){}
-  var _tail=' He pays you $'+pay.toLocaleString()+(G.strayGave?' and presses a '+ITEMS[gift].name+' into your hands.':'.');
+  // v22.56 (R18): what he pays and what he hands over are rows in the pickup stack tagged FROM THE SURVIVOR, and the cache he
+  // marks is one objective line, CACHE MARKED, instead of a sentence of up to 110 characters.
+  if(G.strayGave) pickTag(gift,'FROM THE SURVIVOR');
+  say('+'+'$'+pay.toLocaleString(),'pick',{tag:'FROM THE SURVIVOR',c:'gain'});
   var c=strayReveal();
   if(c){
     c.revealed=1;
-    say('He marks a cache on your map.'+_tail);
+    say('CACHE MARKED','obj');
     label(e.x,e.y-20,'CACHE MARKED','#e6b4ff',0,true);
-  } else {
-    say('He has nothing left to tell you, so he gives you what he has.'+_tail);
   }
   if(G.tel) G.tel.strayHelped=(G.tel.strayHelped||0)+1;
   if((P.notoriety||0)>0){
@@ -10188,9 +10189,13 @@ function pedSellAll(){
     // not a refusal: he may well still want the certainty, and that is a real
     // reason. It is just no longer a blind one.
     var _full=full;
-    say('Sold '+n+' for '+'$'+tot.toLocaleString()+', his '+Math.round(pedBuyRate()*100)+
-      ' percent. The Credits ride with you now - walk them out or lose them. Carried '+
-      'home whole it was worth '+'$'+_full.toLocaleString()+'.');
+    // v22.56, the raid text rewrite (R18): TRADE IN THE PICKUP STACK. HIS ORDER (2026-10-09): the raid text reads like a shooter
+    // HUD, short callouts and never an explaining sentence. The sale said one sentence of 120 to 135 characters, wrapped over two
+    // rows in the middle of the screen. The money is now a +$ row in the pickup stack in the gain colour, tagged CARRIED (it rides
+    // with him and pays out only if he walks out, v7.62), and one short line keeps the other half of the trade (v3.27): what the
+    // same backpack is worth carried home. The stall panel still shows the carried total (v12.74).
+    say('+'+'$'+tot.toLocaleString(),'pick',{tag:'CARRIED',c:'gain'});
+    say('SOLD '+n+(n===1?' ITEM':' ITEMS'),'info',{sub:'Worth '+'$'+_full.toLocaleString()+' carried home.'});
     blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
   }
 }
@@ -10201,7 +10206,9 @@ function pedBuy(ix){
   if(!st||st.sold) return;
   // v12.74: the refusal says WHICH money it means, so a man carrying stall
   // money is told it is not banked yet rather than that he has nothing.
-  if((P.credits||0)<st.price){ say('You cannot cover '+'$'+st.price.toLocaleString()+' from banked Credits.'+((G.pedCarry||0)>0?(' The '+'$'+(G.pedCarry||0).toLocaleString()+' on you is not banked until you walk out.'):'')); return; }
+  // v22.56 (R18): a caps headline and a short detail, not a sentence of up to 110 characters. It still says the money is banked
+  // money, and names the stall money on him that is not banked yet (v12.74).
+  if((P.credits||0)<st.price){ say('NOT ENOUGH BANKED CREDITS','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'.'+((G.pedCarry||0)>0?(' '+'$'+(G.pedCarry||0).toLocaleString()+' carried is not banked.'):'')}); return; }
 
   var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
   // v12.60, 2026-09-08 audit: AMMUNITION GOES WHERE AMMUNITION GOES. Every other
@@ -10219,7 +10226,7 @@ function pedBuy(ix){
   st.sold=true; G.trade.traded=1; if(typeof NET==='object'&&NET&&NET.on&&!G.sim) netPedSoldSend(G.trade,ix);   // v21.72 (K4): and the rest of the party is told the row is sold
   if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
   else {
-    G.bag.push(st.k); autoBelt(st.k);
+    G.bag.push(st.k); autoBelt(st.k,1);   // v22.56 (R18): quietly; the row below says the slot it took
     // v13.91, contracts audit: bought with banked Credits, so not earned by the run. It joins what the
     // lift carried in, which hazard pay, the haul and item cards and the XP haul term all subtract.
     G.carriedIn=(G.carriedIn||0)+ival(st.k); (G.carriedKit=G.carriedKit||[]).push(st.k);
@@ -10232,9 +10239,10 @@ function pedBuy(ix){
   // so the rifle he paid for was on the belt and not in the backpack he opened.
   // The line says which surface it is on, as the found-gun line does.
   var _bk=0; if(G.hotAssign) for(var _bi in G.hotAssign) if(G.hotAssign[_bi]===st.k){ _bk=(+_bi)+1; break; }
-  say('Bought '+ITEMS[st.k].name+' for '+'$'+st.price.toLocaleString()+'. '+
-      (_pAmmo?((ITEMS[st.k].amt||0)+' rounds into your reserve.')
-             :(_bk?('On your tactical belt, key '+_bk+'.'):'In your backpack.')));   // v12.60: say where the rounds actually went
+  // v22.56 (R18): the purchase is two rows in the pickup stack, the item tagged where it went (SLOT 6, BACKPACK, or the rounds
+  // it put in the reserve, v12.60) and a dim -$ row for the price, instead of a sentence in the middle of the screen.
+  say(ITEMS[st.k].name,'pick',{item:st.k,tag:_pAmmo?('+'+(ITEMS[st.k].amt||0)+' ROUNDS'):(_bk?('SLOT '+_bk):'BACKPACK')});
+  say('-'+'$'+st.price.toLocaleString(),'pick',{tag:'BOUGHT',c:'dim'});
   // The purchase gets the same voice the find would have, v2.72. Buying a gun
   // from the Peddler chirped like picking up scrap while pulling the identical
   // gun from a crate rang like metal, and the difference was only which counter
@@ -14506,7 +14514,7 @@ function pickSay(m,o){
   var q=(G.pick=G.pick||[]), now=G.t||0, it=(o&&o.item)||'', n=(o&&o.n>0)?Math.round(o.n):1, i, r;
   for(i=0;i<q.length;i++){
     r=q[i];
-    if(r.T>0&&(it?r.item===it:(!r.item&&r.m===String(m)))){   // the same item while its row is up: one row, counted
+    if(r.T>0&&(it?r.item===it:(!r.item&&r.m===String(m)))&&(r.tag||'')===((o&&o.tag)?String(o.tag):'')){   // the same item, going the same way, while its row is up: one row, counted (v22.56, R18: and the same tag, so a sale never adds to a purchase)
       r.n+=n; r.T=PICKLIFE; r.m=String(m); if(o&&o.tag) r.tag=String(o.tag); if(o&&o.c) r.c=o.c;
       if(i<q.length-1){ q.splice(i,1); q.push(r); }
       return;
@@ -14514,6 +14522,12 @@ function pickSay(m,o){
   }
   q.push({m:String(m),item:it,n:n,tag:(o&&o.tag)?String(o.tag):'',c:(o&&o.c)||'',T:(o&&o.life>0)?o.life:PICKLIFE,at:now});
   while(q.length>PICKN) q.shift();
+}
+// v22.56 (R18): the tag on the newest row of an item, set after the grant that pushed it (a gift FROM a teammate, the Survivor).
+function pickTag(item,tag){
+  var q=G&&G.pick, i;
+  if(!q) return;
+  for(i=q.length-1;i>=0;i--) if(q[i].item===item&&q[i].T>0){ q[i].tag=String(tag||''); return; }
 }
 function pickTick(dt){
   var q=G&&G.pick, i;
@@ -35626,7 +35640,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.55: A gun put on a later key drags back onto the gun key that shows it. Check 22.55 fails on v22.54',
+  now:'v22.56: Buying, selling, the Survivor pay and gifts show as rows in the pickup stack, with plus and minus money rows. Check 22.56 fails on v22.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41643,13 +41657,16 @@ function netGiftTake(peer,m){
     if(go.k==='bandage'&&(G.issuedBandages||0)>0){ G.issuedBandages--; if(G.bandSeen!==undefined) G.bandSeen--; ib=1; }
     if(/^gun_/.test(go.k)&&ITEMS[go.k]&&ITEMS[go.k].gk){ gk=ITEMS[go.k].gk; j=(G.spliced||[]).indexOf(gk); if(j>=0) G.spliced.splice(j,1); if(P.raidSpliced){ j=P.raidSpliced.indexOf(gk); if(j>=0) P.raidSpliced.splice(j,1); } try{ saveProfile(); }catch(_sp){} }
     netGiftSend(fr,{op:'give',id:m.id,k:go.k,ib:ib});
-    say('Gave '+(ITEMS[go.k]?ITEMS[go.k].name:go.k)+' to '+nm+'.'); return 'gave';
+    if(G&&!G.hubFloor&&ITEMS[go.k]) say(ITEMS[go.k].name,'pick',{item:go.k,tag:'GIVEN TO '+String(nm).toUpperCase()});   // v22.56 (R18): a row in the pickup stack
+    else say('Gave '+(ITEMS[go.k]?ITEMS[go.k].name:go.k)+' to '+nm+'.');
+    return 'gave';
   }
   if(m.op==='give'){
     gi=G.giftIn; if(!it||!gi||gi.id!==m.id) return 'stale';
     G.giftIn=null;
     where=openContainer({x:G.player.x,y:G.player.y,issuedB:m.ib?1:0},[key]);
-    say('Took '+it.name+' from '+nm+'.');   // v22.54 (R17): where it went is the tag on its pickup row
+    if(G&&!G.hubFloor) pickTag(key,'FROM '+String(nm).toUpperCase());   // v22.56 (R18): its pickup row says who it came from
+    else say('Took '+it.name+' from '+nm+'.');
     return 'took';
   }
   if(m.op==='no'){
