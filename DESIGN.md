@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.75 - AN OFFER IS SHOWN ONCE
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. A trade offer said Offered or offers you in the feed while the offer line under the boss bar already named who, what, the key and the seconds, so those two lines are gone. The lines that say an offer ran out or was not taken were said from the drawing code; they now come from the update as one feed row each, OFFER FROM NAME EXPIRED and NAME DID NOT TAKE THE ITEM.
+
+MEASURED. Check 22.75 passes, and fails on v22.74.
 ## v22.74 - WIND-UPS ON THE USE BAR ONLY
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. Using a Bandage or a Medkit said Applying, a plate said Slotting, and patching up a teammate said Bandaging or Slotting a plate for him, all while the use bar under the belt already showed APPLYING BANDAGE or SLOTTING ARMOUR PLATE with its fill and seconds. Those lines are gone; refusals and results still speak.

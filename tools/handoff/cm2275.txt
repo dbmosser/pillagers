@@ -1,0 +1,7 @@
+v22.75: an offer is shown once
+
+A trade offer is shown once, on the offer line, and its end is one short feed row.
+
+Check 22.75. Fails on v22.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

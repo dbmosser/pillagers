@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.74';
+var VER='22.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14712,6 +14712,7 @@ function msgTick(dt){
   if(G.feed&&G.feed[1]&&G.feed[1].T>0) G.feed[1].T-=dt;   // v21.86 (R04): the second message row runs out on the same clock
   alertTick(dt);   // the alert lane and its queue (R08)
   pickTick(dt);   // v22.50 (R16): the pickup stack
+  giftTick();   // v22.75 (R30): an offer that ran out ends here, not in drawGiftLine
   // v13.32, v13.33: a short queue of lines that must not be lost, shown when the rows free up. v21.88 (R06): only into a row that is
   // free or past its protection. v21.91 (R07): the highest ranked waiting line first, stale ones dropped, 1.8 s while two or more wait.
   if(G.msgQ&&G.msgQ.length&&msgFree()){ var _qn=msgQNext(); if(_qn){ G.msgDrain=1; try{ say(_qn.m,_qn.k,_qn.o); } finally { G.msgDrain=0; } if(_qn.n>=2&&G.msg===_qn.m&&G.msgT>1.8) G.msgT=1.8; } }
@@ -28133,9 +28134,8 @@ function drawGiftLine(){
   HUDGIFTB=0;
   if(typeof G==='undefined'||!G||G.over||!G.player) return null;
   gi=G.giftIn; go=G.giftOut;
-  // v18.23, FROM THE TRADE AUDIT (2026-10-03): A TRADE THAT ENDS SAYS SO. An offer that ran out, on either side, simply vanished.
-  if(gi&&!gi.yes&&(G.t||0)-gi.t>GIFT_T){ G.giftIn=null; try{ say('The offer from '+(netSeatName(gi.from)||'your teammate')+' ran out.'); }catch(_x1){} gi=null; }
-  if(go&&(G.t||0)-go.t>GIFT_T+5){ G.giftOut=null; try{ it=ITEMS[go.k]; say((netSeatName(go.to)||'Your teammate')+' did not take the '+(it?it.name:go.k)+'.'); }catch(_x2){} go=null; }
+  // v22.75, the raid text rewrite (R30): drawGiftLine only draws. The v18.23 expiry lines (A TRADE THAT ENDS SAYS SO) were said
+  // from here, so a frame that did not draw the HUD never ended the offer; they are said from giftTick in the lane tick now.
   // v22.64, the raid text rewrite (R21): THE OFFER LINE NAMES ONE KEY. It said T or Y to take it whatever was in his hands. It now
   // names the one key of the device in hand, in brackets: Y on a controller (the take button pollPad gives netGiftKey; PADLABEL puts
   // KeyT on RB, so it is never read from there), and the key T is bound to on a keyboard. The parts are split by the middle dot.
@@ -28152,6 +28152,16 @@ function drawGiftLine(){
   ctx.restore();
   HUDGIFTB=y+LH(7);   // v20.55 (H38): the bottom of this plate, for the controller word
   return s;
+}
+// v22.75, the raid text rewrite (R30): AN OFFER ENDS FROM THE UPDATE. The v18.23 rule stands (a trade that ends says so), from
+// msgTick instead of the draw: an offer to this player that ran out is OFFER FROM NAME EXPIRED, and an offer of his that nobody
+// took is NAME DID NOT TAKE THE ITEM, each one ally feed row.
+function giftTick(){
+  var gi, go, it;
+  if(typeof G==='undefined'||!G||G.over||!G.player||G.sim) return;
+  gi=G.giftIn; go=G.giftOut;
+  if(gi&&!gi.yes&&(G.t||0)-gi.t>GIFT_T){ G.giftIn=null; try{ say(('Offer from '+(netSeatName(gi.from)||'your teammate')+' expired').toUpperCase(),'ally'); }catch(_x1){} }
+  if(go&&(G.t||0)-go.t>GIFT_T+5){ G.giftOut=null; try{ it=ITEMS[go.k]; say(((netSeatName(go.to)||'Your teammate')+' did not take the '+(it?it.name:go.k)).toUpperCase(),'ally'); }catch(_x2){} }
 }// v17.45, his pick 21: the boss bar, top centre, while THE OVERSEER is alive and within 900 of this player.
 // v18.75, HIS NOTE (2026-10-07): "need to be a bar for using the bandage/med pack, like how the bar to use armor works". Both
 // wind-ups (v3.54: 1.5 s for medical, 2 s for a plate) had only a small strip above the player, 48 world units wide, easy to
@@ -35759,7 +35769,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.74: Healing and slotting a plate no longer put a line in the feed as they start; the use bar shows it. Check 22.74 fails on v22.73',
+  now:'v22.75: A trade offer is shown once, on the offer line, and its end is one short feed row. Check 22.75 fails on v22.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41574,7 +41584,7 @@ function netGiftKey(){
     nm=netSeatName(s)||'your teammate';
     G.giftOut={id:String(Date.now()%1e9)+'-'+Math.floor(Math.random()*1e4),k:k,to:s,t:G.t};
     netGiftSend(s,{op:'offer',id:G.giftOut.id,k:k});
-    say('Offered '+it.name+' to '+nm+'.'); return true;
+    return true;   // v22.75 (R30): no Offered line; the offer line under the boss bar says it while it waits
   }
   gi=G.giftIn;
   if(gi&&!gi.yes&&G.t-gi.t<=GIFT_T){ gi.yes=1; netGiftSend(gi.from,{op:'yes',id:gi.id}); say('TAKING IT','ally'); return true; }   // v22.72 (tr5fixc): the caps callout
@@ -41776,7 +41786,7 @@ function netGiftTake(peer,m){
     // v18.23, FROM THE TRADE AUDIT (2026-10-03): A PLAYER WHO IS DOWN CANNOT TAKE, SO THE GIVER IS TOLD AT ONCE instead of waiting out the offer.
     if(G.player.downed){ netGiftSend(fr,{op:'no',id:m.id,why:'down'}); return 'down'; }
     G.giftIn={id:String(m.id).slice(0,40),k:key,from:fr,t:G.t};
-    say(nm+' offers you '+it.name+'. Press T or '+padB('Y')+' to take it.'); return 'offer';
+    return 'offer';   // v22.75 (R30): no offers you line; the offer line names who, what, the one key and the seconds
   }
   if(m.op==='yes'){
     go=G.giftOut;
