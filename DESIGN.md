@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.15 - TWO TEAMMATES DOWN ARE TWO ALERTS
+
+Co-op hunt while he was away. In a party of three or four, a second teammate going down said TEAMMATE DOWN while the first one still showed, and because the alert lane matched an alert by its headline alone it refreshed the first in place: the detail became REVIVE and the second name, and the first man down vanished from the screen while he still lay there. An alert with a key of its own is now a new alert even with the same headline, so the second takes the slot and the first waits in the alert queue and comes back. Alerts with the same key, or no key, refresh exactly as before.
+
+MEASURED. Check 23.15 passes, and fails on v23.14.
 ## v23.14 - THE STASH BELT KEYS ARE SQUARE AGAIN
 
 Co-op hunt while he was away. Found by the full test run of 2026-10-11. Since the four gun keys (v22.45) the stash screen shows the gun picture on belt keys 1 to 4, and in a narrow stash window the picture box made every key taller than wide, 35 by 42, which breaks the square keys of v18.98 (seen on his 4K stash picture). The keys hide what spills over now, so they stay square at every width. Nothing else on the stash screen moves.

@@ -1,0 +1,7 @@
+v23.15: two teammates down are two alerts
+
+With two teammates down, each one keeps a TEAMMATE DOWN alert.
+
+Check 23.15. Fails on v23.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
