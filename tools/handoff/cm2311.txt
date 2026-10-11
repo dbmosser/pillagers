@@ -1,0 +1,7 @@
+v23.11: people lines fit and grudges read hostile
+
+People lines fit the headline length and grudges no longer show in the teammate colour.
+
+Check 23.11. Fails on v23.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

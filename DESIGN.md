@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.11 - PEOPLE LINES FIT AND GRUDGES READ HOSTILE
+
+Co-op hunt while he was away. His order of 2026-10-09: a raid line is a short caps headline of at most 34 letters with a short detail only when needed. With a long name four people headlines ran past 34: NAME IS JOINING THE RAID, NAME ABANDONED THE RAID, NAME CARRIES NOTHING ELSE and NAME WILL REMEMBER THAT. They now read NAME IS JOINING, NAME ABANDONED, NAME EMPTY and NAME WANTS REVENGE. A grudge, a betrayal and the Peddler turning his back were drawn in the teammate blue, so a threat read as a friend; they now use the plain colour. Details that explained are gone: HAND-OVER FAILED names the teammate as its detail, NAME REVIVED YOU and NO DEAL stand alone, THE PEDDLER BOLTS says No trade., and a shot the Bulwark stops says BULWARK SHIELD with Flank it.
+
+MEASURED. Check 23.11 passes, and fails on v23.10.
 ## v23.10 - TWO CONTRACTS DONE TOGETHER BOTH SHOW
 
 Co-op hunt while he was away. Since the objective lines went to caps, every finished contract says the same headline, CONTRACT DONE, with its own words as the detail. One crate that finished an open contract and a district contract in the same frame said the line twice, and the second refreshed the first in place and wrote its detail over it, so the first contract was never named in the raid. Two lines that each carry a key of their own are now two lines even with the same headline, and each contract says its line under its own key. Lines with no key refresh in place exactly as before.

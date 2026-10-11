@@ -1,0 +1,64 @@
+{
+    "title":  "PEOPLE LINES FIT AND GRUDGES READ HOSTILE",
+    "why":  "His order of 2026-10-09: a raid line is a short caps headline of at most 34 letters with a short detail only when needed. With a long name four people headlines ran past 34: NAME IS JOINING THE RAID, NAME ABANDONED THE RAID, NAME CARRIES NOTHING ELSE and NAME WILL REMEMBER THAT. They now read NAME IS JOINING, NAME ABANDONED, NAME EMPTY and NAME WANTS REVENGE. A grudge, a betrayal and the Peddler turning his back were drawn in the teammate blue, so a threat read as a friend; they now use the plain colour. Details that explained are gone: HAND-OVER FAILED names the teammate as its detail, NAME REVIVED YOU and NO DEAL stand alone, THE PEDDLER BOLTS says No trade., and a shot the Bulwark stops says BULWARK SHIELD with Flank it.",
+    "now":  "People lines fit the headline length and grudges no longer show in the teammate colour.",
+    "edits":  [
+                  {
+                      "anchor":  "  try{ say(String(netSeatName(peer.seat)||\u0027Your teammate\u0027).toUpperCase()+\u0027 IS JOINING THE RAID\u0027,\u0027ally\u0027); }catch(_ls){}   // v17.62: the host hears who is coming   // v22.xx (R54): a caps callout",
+                      "replacement":  "  try{ say(String(netSeatName(peer.seat)||\u0027Your teammate\u0027).toUpperCase()+\u0027 IS JOINING\u0027,\u0027ally\u0027); }catch(_ls){}   // v17.62: the host hears who is coming   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "  if(st===\u0027out\u0027\u0026\u0026s!==0\u0026\u0026typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim){ hw=netClean(m.how,12); hw=(hw===\u0027dead\u0027)?\u0027killed\u0027:(hw===\u0027extract\u0027)?\u0027extracted\u0027:(hw===\u0027abandon\u0027)?\u0027abandoned\u0027:\u0027\u0027; try{ sayWhenFree(String(nm).toUpperCase()+((hw===\u0027killed\u0027)?\u0027 DIED\u0027:(hw===\u0027extracted\u0027)?\u0027 EXTRACTED\u0027:(hw===\u0027abandoned\u0027)?\u0027 ABANDONED THE RAID\u0027:\u0027 IS OUT\u0027),\u0027ally\u0027); }catch(_so){} }  if(st===\u0027no\u0027){ NET.status=nm+\u0027 could not go up with you: \u0027+netUpWhyText(m.why)+\u0027.\u0027; netRefresh(); try{ if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over) sayWhenFree(NET.status); }catch(_sn){} }   /* v22.xx (R54): NAME EXTRACTED, a caps callout */",
+                      "replacement":  "  if(st===\u0027out\u0027\u0026\u0026s!==0\u0026\u0026typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim){ hw=netClean(m.how,12); hw=(hw===\u0027dead\u0027)?\u0027killed\u0027:(hw===\u0027extract\u0027)?\u0027extracted\u0027:(hw===\u0027abandon\u0027)?\u0027abandoned\u0027:\u0027\u0027; try{ sayWhenFree(String(nm).toUpperCase()+((hw===\u0027killed\u0027)?\u0027 DIED\u0027:(hw===\u0027extracted\u0027)?\u0027 EXTRACTED\u0027:(hw===\u0027abandoned\u0027)?\u0027 ABANDONED\u0027:\u0027 IS OUT\u0027),\u0027ally\u0027); }catch(_so){} }  if(st===\u0027no\u0027){ NET.status=nm+\u0027 could not go up with you: \u0027+netUpWhyText(m.why)+\u0027.\u0027; netRefresh(); try{ if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over) sayWhenFree(NET.status); }catch(_sn){} }   /* v22.xx (R54): NAME EXTRACTED, a caps callout */   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "          say(String(near.mercSrc.name).toUpperCase()+\u0027 CARRIES NOTHING ELSE\u0027);   // v22.xx (R54): a caps callout",
+                      "replacement":  "          say(String(near.mercSrc.name).toUpperCase()+\u0027 EMPTY\u0027,\u0027info\u0027);   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "          sayWhenFree(String(e.name).toUpperCase()+\u0027 WILL REMEMBER THAT\u0027,\u0027ally\u0027);   // v13.38: waits its turn. contractKill above may have just said the contract is done in this same step, and a plain say wrote over it before any frame drew it.   // v22.xx (R54): a caps callout",
+                      "replacement":  "          sayWhenFree(String(e.name).toUpperCase()+\u0027 WANTS REVENGE\u0027,\u0027info\u0027);   // v13.38: waits its turn. contractKill above may have just said the contract is done in this same step, and a plain say wrote over it before any frame drew it.   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "    sayWhenFree(String(e.name||\u0027He\u0027).toUpperCase()+\u0027 WILL REMEMBER THAT\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout",
+                      "replacement":  "    sayWhenFree(String(e.name||\u0027He\u0027).toUpperCase()+\u0027 WANTS REVENGE\u0027,\u0027info\u0027);   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "            say(String(e.name).toUpperCase()+\u0027 TRUSTED YOU\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout",
+                      "replacement":  "            say(String(e.name).toUpperCase()+\u0027 TRUSTED YOU\u0027,\u0027info\u0027);   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "  sayWhenFree(String(e.name||\u0027He\u0027).toUpperCase()+\u0027 TRUSTED YOU\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout",
+                      "replacement":  "  sayWhenFree(String(e.name||\u0027He\u0027).toUpperCase()+\u0027 TRUSTED YOU\u0027,\u0027info\u0027);   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "        else say(pedOpen()?\u0027THE PEDDLER WAVES YOU OVER\u0027:\u0027THE PEDDLER TURNS HIS BACK\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout",
+                      "replacement":  "        else say(pedOpen()?\u0027THE PEDDLER WAVES YOU OVER\u0027:\u0027THE PEDDLER TURNS HIS BACK\u0027,pedOpen()?\u0027ally\u0027:\u0027info\u0027);   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "  if(k===\u0027ped\u0027){ if(mine\u0026\u0026!G.sim) say(pedOpen()?\u0027THE PEDDLER WAVES YOU OVER\u0027:\u0027THE PEDDLER TURNS HIS BACK\u0027,\u0027ally\u0027); return \u0027mark:ped\u0027; }",
+                      "replacement":  "  if(k===\u0027ped\u0027){ if(mine\u0026\u0026!G.sim) say(pedOpen()?\u0027THE PEDDLER WAVES YOU OVER\u0027:\u0027THE PEDDLER TURNS HIS BACK\u0027,pedOpen()?\u0027ally\u0027:\u0027info\u0027); return \u0027mark:ped\u0027; }   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "    say((m.why===\u0027down\u0027||m.why===\u0027gone\u0027)?(String(nm).toUpperCase()+(m.why===\u0027down\u0027?\u0027 IS DOWN\u0027:\u0027 LEFT THE RAID\u0027)):\u0027HAND-OVER FAILED\u0027,\u0027ally\u0027,{sub:(m.why===\u0027down\u0027||m.why===\u0027gone\u0027)?\u0027Cannot take it.\u0027:(\u0027With \u0027+nm+\u0027.\u0027)});   // v18.23: the reason, when there is one   // v22.xx (R54): a caps callout",
+                      "replacement":  "    say((m.why===\u0027down\u0027||m.why===\u0027gone\u0027)?(String(nm).toUpperCase()+(m.why===\u0027down\u0027?\u0027 IS DOWN\u0027:\u0027 LEFT THE RAID\u0027)):\u0027HAND-OVER FAILED\u0027,\u0027ally\u0027,{sub:(m.why===\u0027down\u0027||m.why===\u0027gone\u0027)?\u0027Cannot take it.\u0027:String(nm)});   // v18.23: the reason, when there is one   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "          blip(\u0027pick\u0027); say(String(e.name).toUpperCase()+\u0027 REVIVED YOU\u0027,\u0027ally\u0027,{sub:\u0027That is what you paid for.\u0027});   // v22.xx (R54): a caps callout",
+                      "replacement":  "          blip(\u0027pick\u0027); say(String(e.name).toUpperCase()+\u0027 REVIVED YOU\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "    if(!pedOpen()) say(\u0027NO DEAL\u0027,\u0027info\u0027,{sub:\u0027He heard what you did to the last one.\u0027});   // v22.xx (R54): a caps callout",
+                      "replacement":  "    if(!pedOpen()) say(\u0027NO DEAL\u0027,\u0027info\u0027);   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "        if(!e.fleeT\u0026\u0026!G.sim) say(\u0027THE PEDDLER BOLTS\u0027,\u0027info\u0027,{sub:\u0027No trade while he bleeds.\u0027});   // v22.xx (R54): a caps callout",
+                      "replacement":  "        if(!e.fleeT\u0026\u0026!G.sim) say(\u0027THE PEDDLER BOLTS\u0027,\u0027info\u0027,{sub:\u0027No trade.\u0027});   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  },
+                  {
+                      "anchor":  "                  if(!en._shTold){ en._shTold=1; say(\u0027THE BULWARK BLOCKED IT\u0027,\u0027info\u0027,{sub:\u0027Get behind it.\u0027}); }   // v22.xx (R54): the Bulwark by its name, never the slab",
+                      "replacement":  "                  if(!en._shTold){ en._shTold=1; say(\u0027BULWARK SHIELD\u0027,\u0027info\u0027,{sub:\u0027Flank it.\u0027}); }   // v22.xx (R54): the Bulwark by its name, never the slab   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027people lines fit the 34 letter headline and a grudge never reads as friendly: with a 16 letter seat name and a 20 letter pillager tag every people headline is at most 34, the grudge and the betrayal lines and the Peddler turning his back are not said in the teammate colour, and the hand-over, revive, Peddler and Bulwark lines carry no explaining sentence (read off the game source)\u0027,\n   run:function(){\n     var bad=[], src=\u0027\u0027, i, cut, ss, OLD, NEW, nm16=\u0027ABCDEFGHIJKLMNOP\u0027, nm20=\u0027FBI_SURVEILLANCE_VAN\u0027, H;\n     try{ ss=document.getElementsByTagName(\u0027script\u0027); for(i=0;i\u003css.length;i++) src+=ss[i].textContent||\u0027\u0027; }catch(_s){}\n     cut=src.indexOf(\u0027window.__frame=function\u0027); if(cut\u003e0) src=src.slice(0,cut);\n     if(src.length\u003c100000) return \u0027SKIP: the game source is not readable here\u0027;\n     OLD=[\u0027 IS JOINING THE\u0027+\u0027 RAID\u0027,\u0027 ABANDONED THE\u0027+\u0027 RAID\u0027,\u0027 CARRIES NOTHING\u0027+\u0027 ELSE\u0027,\u0027 WILL REMEMBER\u0027+\u0027 THAT\u0027,\u0027That is what you\u0027+\u0027 paid for\u0027,\u0027He heard what you did\u0027+\u0027 to the last one\u0027,\u0027No trade while\u0027+\u0027 he bleeds\u0027,\u0027THE BULWARK\u0027+\u0027 BLOCKED IT\u0027,\"(\u0027With \u0027+\"+\"nm+\u0027.\u0027)\",\"TURNS HIS BACK\u0027,\u0027\"+\"ally\u0027\",\"TRUSTED YOU\u0027,\u0027\"+\"ally\u0027\",\"REMEMBER THAT\u0027,\u0027\"+\"ally\u0027\"];\n     for(i=0;i\u003cOLD.length;i++) if(src.indexOf(OLD[i])\u003e=0) bad.push(\u0027the build still says \u0027+JSON.stringify(OLD[i]));\n     NEW=[\" IS\"+\" JOINING\u0027\",\" ABANDONED\u0027\"+\":\u0027 IS OUT\u0027\",\" EMPTY\u0027\"+\",\u0027info\u0027\",\" WANTS\"+\" REVENGE\u0027,\u0027info\u0027\",\"TRUSTED YOU\u0027\"+\",\u0027info\u0027\",\"\u0027Cannot take it.\u0027\"+\":String(nm)\",\"\u0027BULWARK\"+\" SHIELD\u0027\"];\n     for(i=0;i\u003cNEW.length;i++) if(src.indexOf(NEW[i])\u003c0) bad.push(\u0027the build has no \u0027+JSON.stringify(NEW[i]));\n     H=[nm16+\u0027 IS JOINING\u0027,nm16+\u0027 ABANDONED\u0027,\u0027HAND-OVER FAILED\u0027,nm20+\u0027 EMPTY\u0027,nm20+\u0027 WANTS REVENGE\u0027,nm20+\u0027 TRUSTED YOU\u0027];\n     for(i=0;i\u003cH.length;i++) if(H[i].length\u003e34) bad.push(JSON.stringify(H[i])+\u0027 is over 34\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}
