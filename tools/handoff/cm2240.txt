@@ -1,0 +1,7 @@
+v22.40: no repeating called line
+
+Holding E in a ring already called no longer repeats a Called line every few seconds.
+
+Check 22.40. Fails on v22.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

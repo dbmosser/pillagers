@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.40 - NO REPEATING CALLED LINE
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. Holding E in a ring already called and still inbound said Called, Inbound and Stay alive again every two and a half seconds. The band above the belt already counts the extraction in, and the EXTRACTION CALLED alert already answers the press, so the repeating line is gone.
+
+MEASURED. Check 22.40 passes, and fails on v22.39.
 ## v22.39 - AN OLD BELT PLAN NEVER COVERS MEDICAL OR THE PLATE
 
 Co-op hunt while he was away. Found by the review of the four-gun belt (build 3). The one-time slide of an old saved belt plan moved keys 3 to 9 down two. Before the four gun keys, keys 8 and 9 were the two free keys, so a plan with a Medkit on key 8 and a Stim on key 9 is natural; both slid past key 9 and landed on the highest free keys, which are now the plate key 9 and Medical on key 8. With Medical covered by the Stim, the Bandages issued at every ascent and any heal he did not bind could not be used from the belt for the whole raid, and a carried Armour Plate had no key. A binding pushed past key 9 now takes a free gun key 3 or 4 (any item may go on a gun key), and with neither free it is dropped from the plan rather than covering a throw, Medical or the plate. Plans already slid are not touched again.
