@@ -1,0 +1,7 @@
+v23.27: arcade: every dial put back on leaving
+
+Leaving the arcade puts every game dial back as it was, whatever a guest changed in Settings.
+
+Check 23.27. Fails on v23.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v23.27 - ARCADE: EVERY DIAL PUT BACK ON LEAVING
+
+Co-op hunt while he was away. From the review of the arcade core. The arcade sets his profile aside and puts it back when it is left, but the live game dials were not set aside with it: only the two dials the arcade itself changes were put back. A guest who opened Settings from the pause box and changed the damage, kid mode, the volume or the text size, picked a preset, or moved a tuning slider changed his dials, and the save made when the arcade was left wrote all of them into his profile. Now every dial is copied when the arcade begins and put back exactly before that save, so leaving the arcade leaves his settings as they were. Normal play is not touched.
+
+MEASURED. Check 23.27 passes, and fails on v23.26.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.27 - ARCADE: EVERY DIAL PUT BACK ON LEAVING
+
+Co-op hunt while he was away. From the review of the arcade core. The arcade sets his profile aside and puts it back when it is left, but the live game dials were not set aside with it: only the two dials the arcade itself changes were put back. A guest who opened Settings from the pause box and changed the damage, kid mode, the volume or the text size, picked a preset, or moved a tuning slider changed his dials, and the save made when the arcade was left wrote all of them into his profile. Now every dial is copied when the arcade begins and put back exactly before that save, so leaving the arcade leaves his settings as they were. Normal play is not touched.
+
+MEASURED. Check 23.27 passes, and fails on v23.26.
 ## v23.26 - ARCADE: PLAYER 2 BACK FROM A RAID JOINS
 
 Co-op hunt while he was away. From the review of the arcade core. If player 2 was still in a normal co-op raid when player 1 picked the arcade, player 2 said busy and was never asked again, so it could not join the arcade without a reload. Worse, when player 1 then dropped into an arcade raid, the player 2 window back in the Undercroft tried to build that raid as a normal one and only stopped because the two surfaces did not match, with a went up without you message. Now a window outside the arcade never takes an arcade raid; the player 2 window takes it as the invitation instead and shows PLAYER 2: PRESS A. Player 1 also asks a busy player 2 again every 3 seconds until it says it is in, and an invitation that comes twice never undoes a press of A. Normal co-op is exactly as it was.
