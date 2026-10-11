@@ -1,0 +1,5 @@
+## v22.61 - A GIFT TAKEN IS ALWAYS SHOWN
+
+Co-op hunt while he was away. The review of the fourth batch of raid text found that in co-op the giver could lose an item without ever being told. A gift is offered from the open backpack, and the pickup stack is hidden while the backpack is open, but its rows still ran out. When the teammate took the item, the GIVEN TO row lived four seconds unseen, so if he shut the backpack later the item was gone and nothing had said so; the old Gave line went to the message rows, which show with the backpack open. Pickup rows now keep their time while the backpack or the map is open and show when it closes.
+
+MEASURED. Check 22.61 passes, and fails on v22.60.

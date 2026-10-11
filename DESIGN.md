@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.61 - A GIFT TAKEN IS ALWAYS SHOWN
+
+Co-op hunt while he was away. The review of the fourth batch of raid text found that in co-op the giver could lose an item without ever being told. A gift is offered from the open backpack, and the pickup stack is hidden while the backpack is open, but its rows still ran out. When the teammate took the item, the GIVEN TO row lived four seconds unseen, so if he shut the backpack later the item was gone and nothing had said so; the old Gave line went to the message rows, which show with the backpack open. Pickup rows now keep their time while the backpack or the map is open and show when it closes.
+
+MEASURED. Check 22.61 passes, and fails on v22.60.
 ## v22.60 - THE NEWEST PICKUP ROW ALWAYS SHOWS
 
 Co-op hunt while he was away. The review of the fourth batch of raid text found that the pickup stack on the right drew nothing at all at Settings text size 175 or 200 percent, or with the gun card made bigger or dragged up: its ceiling at 62 percent down the screen stopped it before the first row whenever the gun card left less than a row of room. BACKPACK FULL now lives only in that stack, so holding E on a box with a full backpack just stopped the search with nothing on screen, and purchases, the Survivor pay, gifts and every looted item vanished too. The ceiling now always leaves room for the newest row, and the stack never starts above the top of the screen.

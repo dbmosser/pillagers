@@ -1,0 +1,7 @@
+v22.61: a gift taken is always shown
+
+A pickup row said while the backpack or map is open, such as GIVEN TO a teammate, now waits and shows when it closes.
+
+Check 22.61. Fails on v22.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
