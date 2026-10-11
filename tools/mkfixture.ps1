@@ -5748,7 +5748,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keysRef)) return 'SKIP: this fixture cannot deploy or step';
      var bad=[], g, p, z=null, i, t0, f=0, realSay=say, realBlip=blip, said=[], clanks=0, K, ND='This point is '+'CLOSED', n=0, kz=null;
-     function cnt(){ var c=0; for(var j=0;j<said.length;j++) if(said[j].indexOf(ND)===0) c++; return c; }
+     function cnt(){ var c=0; for(var j=0;j<said.length;j++) if(said[j].indexOf(ND)===0||/^EXTRACTION [A-Z?] IS CLOSED/.test(said[j])) c++; return c; }   /* tr6fixc: the caps form counts too */
      function hold(nf,x,y){ for(var j=0;j<nf&&!g.over;j++){ p.x=x; p.y=y; g.ents.length=0; K['KeyE']=true; __loop(t0+(++f)*16.7); } }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -25606,7 +25606,7 @@ window.__REGRESS=[
      if(typeof keys==='undefined'||!keys||typeof pauseOpen==='undefined') return 'SKIP: no keys or pause state in this build';
      if(typeof G!=='undefined'&&G&&G.sim) return 'SKIP: a sim is running';
      var bad=[], snap=null, g=null, p=null;
-     var DOWN='Not while you are down.', ROLL='Not while you are rolling.';
+     var DOWN='Not while you are down.', ROLL='Not while you are rolling.', DOWN2='NOT WHILE DOWN', ROLL2='NOT WHILE ROLLING';   /* tr6fixc: the caps form counts too */
      // A later control that cannot run keeps a failure already found, so the old build fails rather than skips.
      function skip(m){ return bad.length?(bad.join('; ')+' (then SKIP: '+m+')'):('SKIP: '+m); }
      function clearKeys(){ for(var kk in keys) keys[kk]=false; }
@@ -25641,7 +25641,7 @@ window.__REGRESS=[
        g.emoteBar=false; g.msg=''; g.msgT=0;
        press('KeyV');
        if(g.emoteBar) bad.push('V while he is down opened the emote bar over the downed screen');
-       if(String(g.msg||'')!==DOWN) bad.push('V while he is down said "'+g.msg+'" rather than why it opens nothing');
+       if(String(g.msg||'')!==DOWN&&String(g.msg||'')!==DOWN2) bad.push('V while he is down said "'+g.msg+'" rather than why it opens nothing');
        // GUARD: V still shuts a bar that is open while he is down, the same closer as on his feet.
        g.emoteBar=true; press('KeyV');
        if(g.emoteBar) bad.push('V did not shut an open emote bar while he is down');
@@ -25651,7 +25651,7 @@ window.__REGRESS=[
        if(!g.emoteBar) return skip('V on his feet did not open the emote bar again here');
        p.roll=0.3; g.msg=''; g.msgT=0;
        press('Digit1');
-       if(String(g.msg||'')!==ROLL) bad.push('a digit on the emote bar in a roll said "'+g.msg+'" rather than why nothing happened');
+       if(String(g.msg||'')!==ROLL&&String(g.msg||'')!==ROLL2) bad.push('a digit on the emote bar in a roll said "'+g.msg+'" rather than why nothing happened');
        if(!g.emoteBar) bad.push('a digit on the emote bar in a roll shut the bar with no emote done');
        // CONTROL: the roll over, the same row does the emote and shuts the bar, on either build.
        p.roll=0; g.emoteCd=0; g.msg=''; g.msgT=0;
@@ -43951,7 +43951,7 @@ window.__REGRESS=[
        var sl=hotbarSlots(), s2=sl[2];
        if(!(s2&&s2.assigned&&s2.itemKey==='bandage')) bad.push('staging: belt cell 3 is not the assigned Bandage cell (kind '+(s2&&s2.kind)+')');
        useHot();
-       if(!/No Bandage left/.test(g.msg||'')) bad.push('a spent Bandage key said "'+(g.msg||'')+'", not No Bandage left');
+       if(!/No Bandage left|NO BANDAGE LEFT/.test(g.msg||'')) bad.push('a spent Bandage key said "'+(g.msg||'')+'", not No Bandage left');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
@@ -44641,12 +44641,12 @@ window.__REGRESS=[
        g.bag=['bandage','bandage']; p.hp=cap; window.__lastSay=null;
        var r1=useMedical(), s1=String(window.__lastSay||'');
        if(r1||g.bag.length!==2) bad.push('at '+cap+' health with only Bandages the verb spent one');
-       if(!/Only bandages left/.test(s1)) bad.push('at '+cap+' health with only Bandages the verb said "'+s1+'"');
+       if(!/Only bandages left|BANDAGES STOP AT/.test(s1)) bad.push('at '+cap+' health with only Bandages the verb said "'+s1+'"');
        // TWO: a Medkit at full health.
        g.bag=['medkit']; p.hp=p.maxhp; p.healQ=0; window.__lastSay=null;
        var r2=useMedical(), s2=String(window.__lastSay||'');
        if(r2||g.bag.length!==1) bad.push('at full health the verb spent the Medkit');
-       if(!/Already at full/.test(s2)) bad.push('at full health with a Medkit the verb said "'+s2+'"');
+       if(!/Already at full|HEALTH FULL/.test(s2)) bad.push('at full health with a Medkit the verb said "'+s2+'"');
        // THREE: a Bandage already inbound reaches the ceiling; the second is kept.
        g.bag=['bandage']; p.hp=cap-20; p.healQ=25; p.healCap=cap; p.prep=null; window.__lastSay=null;
        var r3=useMedical();
