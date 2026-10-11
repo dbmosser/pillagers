@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.91 - OFFER LINE AND USE BAR GROW AT 4K
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, the same size on every screen. The trade offer line under the boss plate and the caption over the bandage, medkit and plate bar kept their 1080p size on a 4K screen, small print beside a HUD drawn twice as big. Both now grow with the screen: the offer line and its plate are drawn at the screen scale and the controller word under it moves down with it, and the use bar caption and the room around it grow by the same factor. At 1080p nothing moves.
+
+MEASURED. Check 22.91 passes, and fails on v22.90.
 ## v22.90 - WEATHER IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the seventh batch of raid text found the weather still said as sentences, such as Rain. It covers your noise, and theirs. at the drop and The weather is turning. Storm. Lightning lights up the map... when the sky starts to turn. Each sky now has a caps headline for the drop (RAIN, FOG, STORM, BLACKOUT, PARTLY CLOUDY; a clear sky still says nothing, his v6.68 note) and one for the turn (STORM INCOMING, RAIN INCOMING, FOG ROLLING IN, GRID GOING DOWN, CLOUDS ROLLING IN, SKIES CLEARING), with a short detail under it such as Covers your noise and theirs or Lightning shows you from farther off (his v16.03 order: farther, not across the whole map). The fog detail is his own v7.43 line, kept whole. Player 2 is told the turn the same way. The skies, their odds and their effects did not move.

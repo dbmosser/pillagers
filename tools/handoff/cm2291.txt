@@ -1,0 +1,7 @@
+v22.91: offer line and use bar grow at 4k
+
+On a 4K screen the trade offer line and the bandage bar caption are now as big as the rest of the HUD.
+
+Check 22.91. Fails on v22.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
