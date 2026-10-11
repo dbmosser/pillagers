@@ -5943,7 +5943,7 @@ window.__REGRESS=[
        p=g.player; p.downed=false; keys={};
        NET.on=true; NET.role='host'; NET.seat=0; NET.peers=[peer]; NET.roster=[{seat:0,name:'HOST'},{seat:1,name:'ZQXKID'}];
        netSend=function(q,m){ return true; };
-       say=function(m){ said.push(String(m)); try{ return _say.apply(this,arguments); }catch(_s){} };
+       say=function(m,kd,o){ said.push(String(m)+((o&&o.sub)?('  '+o.sub):'')); try{ return _say.apply(this,arguments); }catch(_s){} };   /* tr6fixb: the detail counts, so the name may sit there */
        // ONE: an offer to this player that ran out, drawn.
        g.giftIn={id:'r30a',k:'bandage',from:1,t:(g.t||0)-GIFT_T-1}; g.giftOut=null; said.length=0;
        drawGiftLine();
