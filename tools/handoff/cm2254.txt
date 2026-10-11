@@ -1,0 +1,7 @@
+v22.54: pickup rows say where it went
+
+A pickup row says where the item went: SLOT 2, IN HAND or BACKPACK.
+
+Check 22.54. Fails on v22.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

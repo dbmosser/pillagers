@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.54 - PICKUP ROWS SAY WHERE IT WENT
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, one short callout per thing. A gun into the free slot said SHOTGUN STOWED with PRESS 2 TO SWAP under it, a gun into his hands said its name equipped with a damage figure, a gun or a Stim on a belt key said SHOTGUN ON KEY 3, and a full belt said GUN SLOTS FULL: each a second line about an item already in the pickup stack, waiting behind the first and pushing other lines off. Where it went is now the dim caps tag on the item row in the pickup stack: SLOT 2 (the slot is the key that swaps to it), IN HAND, or BACKPACK when no key was free. Nothing else is said for it.
+
+MEASURED. Check 22.54 passes, and fails on v22.53.
 ## v22.53 - THE WHAT IS NEW CARD NAMES THE PICKUP STACK
 
 Co-op hunt while he was away. The card was stamped v22.37 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text pickup stack shipped on the evening of 2026-10-10: items picked up are short rows on the right edge with their icon, a count and where they went; the rest are in the change list.
