@@ -1692,7 +1692,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.27';
+var VER='23.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36082,7 +36082,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.27: Leaving the arcade puts every game dial back as it was, whatever a guest changed in Settings. Check 23.27 fails on v23.26',
+  now:'v23.28: In the arcade controller 1 plays player 1 and controller 2 plays player 2, and his kept controller picks come back on leaving. Check 23.28 fails on v23.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44599,6 +44599,24 @@ function arcadePick(){
   if(r==='p2'||r==='unsupported') NET.arcPick=0;
   return r;
 }
+// v23.28, HIS ORDER (2026-10-11), build 7 of 20 (arcade7): BOTH PLAYERS ON PADS. His design: controller 1 is player 1, controller 2 is
+// player 2. Entering the arcade puts this window on its arcade pad IN MEMORY (the host on the first controller, player 2 on the
+// second) and tells the other window (netPadPost), so player 1 plays fully on a pad while the keyboard and mouse still drive him.
+// It never writes the kept pick (netPadSet writes salvagerun:samepad:*), and leaving the arcade loads his kept pick back
+// (netPadLoad) and tells the other window again. A new pick starts the kept sides over, as netPadSet does.
+function arcadePadsIn(role){
+  var ix=(role==='p2')?1:0;
+  if(NET.padIx!==ix){ NET.padIx=ix; NET.padWas=null; }
+  netPadPost();
+  return NET.padIx;
+}
+function arcadePadsOut(){
+  var was=NET.padIx;
+  netPadLoad();
+  if(NET.padIx!==was) NET.padWas=null;
+  netPadPost();
+  return NET.padIx;
+}
 function arcadeEnter(role){
   role=(role==='p2')?'p2':'host';
   var mi=(P&&typeof P.mapIx==='number')?P.mapIx:0;
@@ -44610,6 +44628,7 @@ function arcadeEnter(role){
   }
   arcadeCfgIn();
   ARCADE.wantIn=0; ARCADE.p2Busy=0;   // v23.26 (arcfixa)
+  arcadePadsIn(ARCADE.role);   // v23.28 (arcade7): controller 1 is player 1, controller 2 is player 2, in memory only
   if(ARCADE.role==='host') netSamePost({t:'arcon',pair:NET.pair});
   arcadeAttShow();
   return true;
@@ -44753,6 +44772,7 @@ function arcadeLeave(){
   var hadRaid=arcadeRaidStop('leave'), r=arcadeSandboxOut();
   try{ if(ATT.on) attStop(); ATT.last=Date.now(); }catch(_at){}
   NET.arcPick=0; NET.arcBoot=0; ARCADE.wantIn=0;
+  arcadePadsOut();   // v23.28 (arcade7): his kept controller pick back
   if(hadRaid){ try{ showScreen('hub'); }catch(_sh2){} }
   return r;
 }

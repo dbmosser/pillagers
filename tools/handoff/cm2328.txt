@@ -1,0 +1,7 @@
+v23.28: arcade: both players on pads
+
+In the arcade controller 1 plays player 1 and controller 2 plays player 2, and his kept controller picks come back on leaving.
+
+Check 23.28. Fails on v23.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

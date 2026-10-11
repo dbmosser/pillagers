@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.28 - ARCADE: BOTH PLAYERS ON PADS
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 7 of 20. In the arcade, controller 1 is player 1 and controller 2 is player 2, so two people can walk up and play with no setup. Entering the arcade puts each window on its controller for the session only and tells the other window, and the keyboard and mouse still drive player 1. The controller picks he keeps from the PARTY window are never written while the arcade is on, and leaving the arcade puts his kept picks back. Normal co-op is untouched.
+
+MEASURED. Check 23.28 passes, and fails on v23.27.
 ## v23.27 - ARCADE: EVERY DIAL PUT BACK ON LEAVING
 
 Co-op hunt while he was away. From the review of the arcade core. The arcade sets his profile aside and puts it back when it is left, but the live game dials were not set aside with it: only the two dials the arcade itself changes were put back. A guest who opened Settings from the pause box and changed the damage, kid mode, the volume or the text size, picked a preset, or moved a tuning slider changed his dials, and the save made when the arcade was left wrote all of them into his profile. Now every dial is copied when the arcade begins and put back exactly before that save, so leaving the arcade leaves his settings as they were. Normal play is not touched.
