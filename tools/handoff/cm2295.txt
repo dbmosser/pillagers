@@ -1,0 +1,7 @@
+v22.95: bare hud text gets the outline
+
+The raid clock, compass, extraction lines and party marks now have a dark outline, so they read over any ground.
+
+Check 22.95. Fails on v22.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,60 @@
+{
+    "title":  "BARE HUD TEXT GETS THE OUTLINE",
+    "why":  "His order of 2026-10-09: the raid text reads like a shooter HUD, where every word reads on any ground. The raid clock, the compass, the extraction lines above the belt, REVIVING, the Crier countdown and the party ping, Waypoint and arrow labels were filled with no outline and no plate, so over snow, a lit street or a fire they washed out. They now carry a thin dark ink outline, as the message rows have since v21.82, and the world prompts carry it on their plates too. The words, colours and places are unchanged, and no glow is used, for frame cost.",
+    "now":  "The raid clock, compass, extraction lines and party marks now have a dark outline, so they read over any ground.",
+    "edits":  [
+                  {
+                      "anchor":  "  ctx.fillStyle=(o\u0026\u0026o.col)||HUDC.text; ctx.fillText(t,x,y);",
+                      "replacement":  "  // v22.xx, the raid text rewrite (R44): the prompt line carries the ink outline as well as its plate (2 x hudRes on the screen,\n  // under whatever scale the caller has put it, so hudAtIn does not double it).\n  var _pa=Math.abs((ctx.getTransform?ctx.getTransform().a:1)||1)/((typeof DPR===\u0027number\u0027\u0026\u0026DPR\u003e0)?DPR:1);\n  ctx.fillStyle=(o\u0026\u0026o.col)||HUDC.text; hudText(t,x,y,2*Math.max(1,(typeof hudRes===\u0027function\u0027)?hudRes():1)/Math.max(0.25,_pa));"
+                  },
+                  {
+                      "anchor":  "  ctx.fillText(mm+\u0027:\u0027+(ss\u003c10?\u00270\u0027:\u0027\u0027)+ss,W/2,_yClk);",
+                      "replacement":  "  // v22.xx, the raid text rewrite (R44): BARE HUD TEXT GETS THE OUTLINE. HIS ORDER (2026-10-09): the raid text reads like a shooter HUD,\n  // where every word reads on any ground. The clock, the compass, the extraction band lines, the REVIVING word, the Crier countdown\n  // and the party ping, Waypoint and arrow labels were filled with no outline and no plate, so over snow, a lit street or a fire they\n  // washed out. Each now goes through hudText: a 2 x hudRes ink stroke with round joins, then the same fill. No shadowBlur (frame\n  // cost); about twenty strokes a frame at most. The words, colours and places are unchanged.\n  hudText(mm+\u0027:\u0027+(ss\u003c10?\u00270\u0027:\u0027\u0027)+ss,W/2,_yClk);"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(_lbl+\u0027 \u0027+metres(zd)+\u0027m\u0027,W/2,_yCmp);",
+                      "replacement":  "    hudText(_lbl+\u0027 \u0027+metres(zd)+\u0027m\u0027,W/2,_yCmp);"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(holding?extractNowLine(_exL,G.shipHold):(\u0027EXTRACT \u0027+_exL+\u0027 INBOUND  \u0027+Math.ceil(G.beaconT)+\u0027s\u0027),W/2,_exBan);   // v16.30, his word: inbound",
+                      "replacement":  "    hudText(holding?extractNowLine(_exL,G.shipHold):(\u0027EXTRACT \u0027+_exL+\u0027 INBOUND  \u0027+Math.ceil(G.beaconT)+\u0027s\u0027),W/2,_exBan);   // v16.30, his word: inbound"
+                  },
+                  {
+                      "anchor":  "      ctx.fillText(metres(_ed)+\u0027m\u0027,W/2+14*_exR,_exRow);",
+                      "replacement":  "      hudText(metres(_ed)+\u0027m\u0027,W/2+14*_exR,_exRow);"
+                  },
+                  {
+                      "anchor":  "        ctx.fillText(inbound+\u0027 converging on the ring\u0027,W/2,_exRow);",
+                      "replacement":  "        hudText(inbound+\u0027 converging on the ring\u0027,W/2,_exRow);"
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=\u0027#4de3d0\u0027; ctx.fillText(\u0027HOLD [\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] TO CALL FOR EXTRACTION\u0027,W/2,_exRow);   // v22.66 (R24): the key in brackets, as every prompt",
+                      "replacement":  "    ctx.fillStyle=\u0027#4de3d0\u0027; hudText(\u0027HOLD [\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] TO CALL FOR EXTRACTION\u0027,W/2,_exRow);   // v22.66 (R24): the key in brackets, as every prompt"
+                  },
+                  {
+                      "anchor":  "ctx.fillStyle=\u0027#4de3d0\u0027; ctx.fillText(\u0027REVIVING\u0027,_rs.x,_rs.y-14);",
+                      "replacement":  "ctx.fillStyle=\u0027#4de3d0\u0027; hudText(\u0027REVIVING\u0027,_rs.x,_rs.y-14,2);"
+                  },
+                  {
+                      "anchor":  "      ctx.fillText(\u0027CRIER \u0027+left.toFixed(1)+\u0027s\u0027,s.x,s.y-LH(22)*_cr);",
+                      "replacement":  "      hudText(\u0027CRIER \u0027+left.toFixed(1)+\u0027s\u0027,s.x,s.y-LH(22)*_cr);"
+                  },
+                  {
+                      "anchor":  "      ctx.fillText(\u0027CRIER \u0027+left.toFixed(1)+\u0027s\u0027,_lx,_ly);",
+                      "replacement":  "      hudText(\u0027CRIER \u0027+left.toFixed(1)+\u0027s\u0027,_lx,_ly);"
+                  },
+                  {
+                      "anchor":  "  ctx.fillText(nm+\u0027  \u0027+d+\u0027m\u0027+(g.dn?\u0027  DOWN\u0027:\u0027\u0027),clamp(ax-Math.cos(a)*LH(30)*r,LH(40)*r,W-LH(40)*r),clamp(ay-Math.sin(a)*LH(22)*r,LH(14)*r,H-LH(8)*r));",
+                      "replacement":  "  hudText(nm+\u0027  \u0027+d+\u0027m\u0027+(g.dn?\u0027  DOWN\u0027:\u0027\u0027),clamp(ax-Math.cos(a)*LH(30)*r,LH(40)*r,W-LH(40)*r),clamp(ay-Math.sin(a)*LH(22)*r,LH(14)*r,H-LH(8)*r));"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(nm+\u0027 MARKER  \u0027+((G\u0026\u0026G.player)?metres(dist(G.player,w)):0)+\u0027m\u0027,clamp(x,LH(70)*r,W-LH(70)*r),y-LH(18)*r); ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "    hudText(nm+\u0027 MARKER  \u0027+((G\u0026\u0026G.player)?metres(dist(G.player,w)):0)+\u0027m\u0027,clamp(x,LH(70)*r,W-LH(70)*r),y-LH(18)*r); ctx.textAlign=\u0027left\u0027;"
+                  },
+                  {
+                      "anchor":  "    ctx.font=hudFS(TYPE.micro); ctx.textAlign=\u0027center\u0027; ctx.fillStyle=c; ctx.fillText(lbl,clamp(x,LH(60)*r,W-LH(60)*r),y-LH(16)*r); ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "    ctx.font=hudFS(TYPE.micro); ctx.textAlign=\u0027center\u0027; ctx.fillStyle=c; hudText(lbl,clamp(x,LH(60)*r,W-LH(60)*r),y-LH(16)*r); ctx.textAlign=\u0027left\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027bare HUD text gets the ink outline: in a drawn HUD standing in the uncalled ring, the raid clock, the compass line and HOLD [E] TO CALL FOR EXTRACTION are each stroked, and a world prompt such as [E] CALL FOR EXTRACTION is stroked as well as plated\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)||typeof drawHUD!==\u0027function\u0027||typeof hudPrompt!==\u0027function\u0027) return \u0027SKIP: no raid HUD or prompt here\u0027;\n     var bad=[], g=null, p=null, OWN=Object.prototype.hasOwnProperty, oST=ctx.strokeText, oFT=ctx.fillText, ownS=OWN.call(ctx,\u0027strokeText\u0027), ownF=OWN.call(ctx,\u0027fillText\u0027), st=[], ft=[], z, i, clk=0, cmp=0, cal=0, pr=0, fclk=0, fcmp=0, fcal=0, s, CALL=\u0027TO CALL FOR \u0027+\u0027EXTRACTION\u0027, PR=\u0027] CALL FOR \u0027+\u0027EXTRACTION\u0027;\n     function spy(){ st=[]; ft=[]; ctx.strokeText=function(t){ st.push(String(t)); return oST.apply(this,arguments); }; ctx.fillText=function(t){ ft.push(String(t)); return oFT.apply(this,arguments); }; }\n     function unspy(){ if(ownS) ctx.strokeText=oST; else delete ctx.strokeText; if(ownF) ctx.fillText=oFT; else delete ctx.fillText; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player; keys={}; g.bagOpen=false; g.mapOpen=false; g.ents.length=0; p.downed=false;\n       z=g.active; if(!z) return \u0027SKIP: staging: no ring\u0027;\n       g.beaconT=null; z.beaconT=null; z.callT=0; p.x=z.x; p.y=z.y;\n       spy();\n       try{ drawHUD(); } finally { unspy(); }\n       for(i=0;i\u003cft.length;i++){ s=ft[i]; if((/^\\d+:\\d\\d$/).test(s)) fclk++; if((/^(EXTRACT|EXTRACTION|WAYPOINT) \\d+m$/).test(s)) fcmp++; if(s.indexOf(CALL)\u003e0\u0026\u0026s.indexOf(\u0027HOLD\u0027)===0) fcal++; }\n       for(i=0;i\u003cst.length;i++){ s=st[i]; if((/^\\d+:\\d\\d$/).test(s)) clk++; if((/^(EXTRACT|EXTRACTION|WAYPOINT) \\d+m$/).test(s)) cmp++; if(s.indexOf(CALL)\u003e0\u0026\u0026s.indexOf(\u0027HOLD\u0027)===0) cal++; }\n       if(!fclk) return \u0027SKIP: staging: the raid clock was not drawn\u0027;\n       if(!fcmp) return \u0027SKIP: staging: the compass line was not drawn\u0027;\n       if(!fcal) return \u0027SKIP: staging: HOLD [E] TO CALL FOR EXTRACTION was not drawn in the ring\u0027;\n       if(!clk) bad.push(\u0027the raid clock is drawn with no outline\u0027);\n       if(!cmp) bad.push(\u0027the compass line is drawn with no outline\u0027);\n       if(!cal) bad.push(\u0027HOLD [E] TO CALL FOR EXTRACTION is drawn with no outline\u0027);\n       spy();\n       ctx.save();\n       try{ hudPrompt(\u0027[\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] CALL FOR EXTRACTION\u0027,W/2,H/2,{col:HUDC.extract}); } finally { ctx.restore(); unspy(); }\n       for(i=0;i\u003cst.length;i++) if(st[i].indexOf(PR)\u003e0) pr++;\n       if(!pr) bad.push(\u0027the world prompt [E] CALL FOR EXTRACTION is drawn with no outline\u0027);\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       unspy(); keys={};\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}

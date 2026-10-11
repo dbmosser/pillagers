@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.95 - BARE HUD TEXT GETS THE OUTLINE
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where every word reads on any ground. The raid clock, the compass, the extraction lines above the belt, REVIVING, the Crier countdown and the party ping, Waypoint and arrow labels were filled with no outline and no plate, so over snow, a lit street or a fire they washed out. They now carry a thin dark ink outline, as the message rows have since v21.82, and the world prompts carry it on their plates too. The words, colours and places are unchanged, and no glow is used, for frame cost.
+
+MEASURED. Check 22.95 passes, and fails on v22.94.
 ## v22.94 - CO-OP MARKS AND CRIER MARKER GROW AT 4K
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, the same size on every screen, with distances as 120m. A teammate ping, a teammate Waypoint, the arrow to a teammate off screen, the Crier ring and countdown and the noise chevrons at the screen edge were drawn at their 1080p size on a 4K screen, and their distances read 120M. They now grow with the screen and read 120m, and the Crier countdown is no longer drawn over the open backpack. At 1080p only the unit letter changes.

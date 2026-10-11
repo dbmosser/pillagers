@@ -1,0 +1,1 @@
+| BARE HUD TEXT GETS THE OUTLINE | v22.95 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 22.95 passes, fails on v22.94 |
