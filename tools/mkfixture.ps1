@@ -20515,7 +20515,7 @@ window.__REGRESS=[
        netSeatName=function(s){ return s===1?'MOTH':(s===0?'HOST':null); };
        NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[peer]; if(!NET.up) NET.up=[];
        netUpWord(peer,{t:'up',st:'out',how:'extract'});
-       if(!lines.some(function(t){ return t.indexOf('MOTH is out of this raid (extracted)')===0; })) bad.push('the host was told '+JSON.stringify(lines));
+       if(!lines.some(function(t){ return t.indexOf('MOTH is out of this raid (extracted)')===0||t.indexOf('MOTH EXTRACTED')===0; })) bad.push('the host was told '+JSON.stringify(lines));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        netSend=oSend; sayWhenFree=oSwf; netSeatName=oName;
@@ -20538,7 +20538,7 @@ window.__REGRESS=[
        NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[peer];
        netUpAnnounce(G); lines.length=0;
        netLateReply(peer);
-       if(!lines.some(function(t){ return t.indexOf('MOTH is joining the raid')===0; })) bad.push('the host was told '+JSON.stringify(lines));
+       if(!lines.some(function(t){ return t.indexOf('MOTH is joining the raid')===0||t.indexOf('MOTH IS JOINING THE RAID')===0; })) bad.push('the host was told '+JSON.stringify(lines));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        netSend=oSend; say=oSay; netSeatName=oName;
@@ -25157,7 +25157,7 @@ window.__REGRESS=[
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      src=src.split('\n').filter(function(l){ return !(/^\s*\/\//).test(l); }).map(function(l){ var k=l.indexOf('   // '); return k>=0?l.slice(0,k):l; }).join('\n');
      OLD=['The raid runs on until','still up top. The','back down. The raid','takes the party up. Stay','Keep holding','pulls you up.'+String.fromCharCode(39)+');','LEFT THE SURFACE. THE RUN','THE WHOLE PARTY.'+String.fromCharCode(39),'every flash shows you the map and','Wear a headset','The browser asks first','Emotes still work'];
-     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid',(src.indexOf('Reviving ')>=0?'Reviving ':'REVIVING'),'Revived by ','Connection to your host was lost','every flash makes you visible','Headset recommended'];
+     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid',(src.indexOf('Reviving ')>=0?'Reviving ':'REVIVING'),(src.indexOf('Revived by ')>=0?'Revived by ':' REVIVED YOU'),'Connection to your host was lost','every flash makes you visible','Headset recommended'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the rulebook line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
