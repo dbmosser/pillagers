@@ -1,0 +1,7 @@
+v23.41: arcade: party scoreboard and initials
+
+In the arcade a top 10 run now enters 3 initials for TONIGHTS BEST, and passing the best of the night calls NEW HIGH SCORE.
+
+Check 23.41. Fails on v23.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

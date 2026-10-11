@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.41 - ARCADE: PARTY SCOREBOARD AND INITIALS
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 18 of 20. The party night needs a board to beat. The arcade now keeps its own scoreboard under its own storage key, never his save: one row per run, written at every extraction and again at the run end, so a crash or a reload keeps the score. TONIGHTS BEST on the attract shows the top 10 of the last 12 hours with initials, plus BEST EVER. A run that makes tonights top 10 gets a 3 letter initials card on the RUN OVER card, on both windows: on the pad up and down change the letter, right or A goes on, left or B goes back and MENU finishes, and player 2 works it from its own pad; on the keyboard type the letters, Backspace and Enter. 20 seconds with no input keeps what is there, or ??? if nobody touched it, and while the card is up nobody drops in by accident. NEW HIGH SCORE is called once per run on both windows when the team passes tonights best. Normal raids write and draw nothing new.
+
+MEASURED. Check 23.41 passes, and fails on v23.40.
 ## v23.40 - ARCADE: THE ATTRACT LOOP
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 17 of 20. The arcade attract was only the recorded clip, or a black screen, under PRESS ANY BUTTON. It now cycles like an arcade cabinet: the clip for 40 seconds, then TONIGHTS BEST for 10 seconds (the party board once it exists, the last run score and the best ever), then HOW TO PLAY for 10 seconds with the keyboard and controller for each action. With no clip it cycles the board and HOW TO PLAY only. After a run the RUN OVER card shows first and the loop then goes on from the board. HAPPY HALLOWEEN sits under PRESS ANY BUTTON. While a run is live and this window is out of it (a benched player 1, or player 2 still hearing the host score) a strip reads JOIN YOUR TEAM with the team score, and LINKING while player 2 waits to get in. Leaving the arcade takes all of it off the normal title attract, and normal raids are untouched.
