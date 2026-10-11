@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.05';
+var VER='23.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3743,7 +3743,9 @@ function contractStep(c){
     G.tel.contractsMid.push({desc:contractDesc(c),
       label:(c.type==='kill'?('kill-'+c.tgt):c.type)});
     // v8.68, his wording.
-    if(!G.sim) say('CONTRACT DONE: '+contractDesc(c)+'. Complete contract at mainframe.');
+    // v22.xx, the raid text rewrite (R53): his words, split at his colon for display only. CONTRACT DONE is the headline and the rest,
+    // word for word with his lowercase mainframe, is the detail.
+    if(!G.sim) say('CONTRACT DONE','obj',{sub:contractDesc(c)+'. Complete contract at mainframe.'});
   }
 }
 function contractKill(kind){
@@ -6193,7 +6195,7 @@ function strikeTick(dt){
           var ct=mkContainer(_fx,_fy,'cache',G.map.districtAt?G.map.districtAt(_fx,_fy):-1);
           setLoot(ct,[key]); ct.tag='FULGURITE'; ct.time=1.0; ct.cache=1;   // v11.89: setLoot, so best is right
           G.containers.push(ct);
-          if(!G.sim) say('Something fused in the ground where that landed.');
+          if(!G.sim) say('LIGHTNING FUSED A CACHE','obj');   // v22.xx (R53): an objective row in caps
         }
       }
     }
@@ -16212,7 +16214,7 @@ function openContainer(ct,onlyKeys){
   grantLoot(ct,ct.loot,_wnDelay);
   // v13.40: the Found line is showing now, so the hot ground line waits its turn behind it
   // instead of lying under it. Declared in the hot zone block above; undefined elsewhere.
-  if(_hotLine) sayWhenFree(_hotLine);
+  if(_hotLine) sayWhenFree('HOT GROUND','obj',{sub:'Extra loot in here.'});   // v22.xx (R53): an objective row in caps
 }
 var _lootSub='';   // v22.43: the detail of the gun line grantLoot hands back; the staged pull says it under that line
 function grantLoot(ct,keys,delay0){
@@ -18750,7 +18752,7 @@ if(!p.fired||p.wep.auto){
       lockedOpen(doorNear);   // v20.29 (H15): the same opening on every window
       netDoorSend(doorNear.id);
       G.tel.doorsOpened=(G.tel.doorsOpened||0)+1;
-      say(doorNear.name+' is open.'); blip('pick'); ping(p.x,p.y,340,false,false,'player','move');
+      say((doorNear.name+' open').toUpperCase(),'obj'); blip('pick'); ping(p.x,p.y,340,false,false,'player','move');   // v22.xx (R53): an objective row in caps
     }
   }
   // THE SEAL. Hold E at the door and it cuts, loudly, for as long as you stand
@@ -18780,7 +18782,7 @@ if(!p.fired||p.wep.auto){
           var loot=sealPayout(SR.tier);
           var sc=setLoot(mkContainer(G.seal.x+rnd(-24,24),G.seal.y+rnd(20,40),'cache'),loot);
           sc.cache=1; sc.time=1.2; sc.tag='SEAL PAYOUT'; G.containers.push(sc);
-          say('The seal is cut. Whatever Meridian put behind it is yours if you live.');
+          say('SEAL BROKEN','obj',{sub:'What Meridian sealed is yours if you live.'});   // v22.xx (R53): an objective row in caps
           label(G.seal.x,G.seal.y-26,'SEAL BROKEN','#ffc04a',0,true);
           spark(G.seal.x,G.seal.y,'#ffc04a',40,420);
         }
@@ -20122,7 +20124,7 @@ if(G.prints){
       // crate with no key in it and sent him across the map for nothing, even when he had left the key inside, because the
       // restock throws that loot away. It leaves the list now; G.intelKeys is unset on a raid with no core burned.
       if(G.intelKeys){ var _ikr=G.intelKeys.indexOf(_rc); if(_ikr>=0) G.intelKeys.splice(_ikr,1); }
-      if(!G.sim&&dist(_rc,G.player)<700) say('Something restocked nearby.');
+      if(!G.sim&&dist(_rc,G.player)<700) say('SOMETHING RESTOCKED NEARBY','chat');   // v22.xx (R53): a chat row in caps
     }
   }
   // The SHOOTING marker decays here rather than in the fire branch, because this
@@ -20356,13 +20358,13 @@ if(e.state==='possum'){
         G.mercDead=1;
         var rec3=idRec(e.ident);
         rec3.deaths++; if(G.mercId&&P.mercOut&&typeof P.mercOut==='object') P.mercOut.dead=1; saveProfile();   // v17.21, co-op hunt 2026-09-28: the save says he died, so a page-away still bills him
-        say(e.name+' is down. His family will be told, and billed to you.');
+        say(String(e.name).toUpperCase()+' IS DEAD','obj',{sub:'You owe his family.'});   // v22.xx (R53): an objective row in caps
       }
       if(e.kind==='warden'){
         var cw=setLoot(mkContainer(e.x,e.y,'cache'),['wcore',pick(['reactor','codex','bloom']),pick(['titan','core','coil'])]);
         cw.cache=1; cw.time=2.0; cw.tag='WARDEN WRECK'; G.containers.push(cw);
-        if(e.boss){ var cb=setLoot(mkContainer(e.x+40,e.y+10,'cache'),['reactor','codex','bloom','titan','coil']); cb.cache=1; cb.time=3.0; cb.tag='OVERSEER HOARD'; G.containers.push(cb); say(e.name+' is down. Its hoard is open.'); }   // v17.45: his pick 21
-        say(e.name+' is down. Its core is exposed.');
+        if(e.boss){ var cb=setLoot(mkContainer(e.x+40,e.y+10,'cache'),['reactor','codex','bloom','titan','coil']); cb.cache=1; cb.time=3.0; cb.tag='OVERSEER HOARD'; G.containers.push(cb); say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Its hoard is open.'}); }   // v17.45: his pick 21   // v22.xx (R53): an objective row in caps
+        if(!e.boss) say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'It dropped a cache.'});   // v22.xx (R53): not said again for the boss
         decal(e.x,e.y,'#3a2a10',rnd(30,44));
       } else if(e.kind==='choir'){
         // It was bolted to a cache and it was made of good parts. The pipes are
@@ -20372,7 +20374,7 @@ if(e.state==='possum'){
           [pick(['relay','codex','bloom']),pick(['titan','core','coil']),
            pick(['gun_whisper','gun_lance']),'servo']);
         cq.cache=1; cq.time=2.4; cq.tag='PILLBOX WRECK'; G.containers.push(cq);
-        say(e.name+' has stopped singing.');
+        say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Search the wreck.'});   // v22.xx (R53): an objective row in caps
         decal(e.x,e.y,'#2a1a3a',rnd(28,40));
       } else if(e.kind==='raider'&&(e.bag.length||(e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]))){
         // v6.53: what he was holding goes on the body with what he had looted. The
@@ -20402,7 +20404,7 @@ if(e.state==='possum'){
         var cl2=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['core','titan','coil']),pick(['optic','servo','board']),'cell']);
         cl2.time=1.3; G.containers.push(cl2);
-        if(!G.sim) say(e.name+' destroyed. It dropped a cache.');   // v11.94, HIS NOTE: he could not tell this was a death
+        if(!G.sim) say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'It dropped a cache.'});   // v11.94, HIS NOTE: he could not tell this was a death   // v22.xx (R53): an objective row in caps
       // AMMUNITION COMES BACK OFF THE THINGS THAT MADE YOU SPEND IT, v1.68.
       // Measured over 40 raids on v1.67: the player fires 202 rounds a raid and 40
       // percent of raids run COMPLETELY DRY, spending an average of 98 seconds unable
@@ -30874,7 +30876,7 @@ function tickHot(dt){
   var sp=freeSpot(G.map,60);
   H.x=clamp(sp.x,H.r,WORLD_W-H.r); H.y=clamp(sp.y,H.r,WORLD_H-H.r);
   if(!G.sim&&!(typeof NET==='object'&&NET&&NET.specTick)){   // v21.24 (R2): a host watching his party makes no line or sound for it; the party is told by the world word
-    say('The hot ground has moved. Check your map.');
+    say('HOT GROUND MOVED','obj',{sub:'Check your map.'});   // v22.xx (R53): an objective row in caps
     try{ sfx('charge',G.player.x,G.player.y); }catch(e){}
   }
   // Danger follows the loot. Nearest two idle machines are sent to it rather
@@ -36024,7 +36026,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.05: Tactical belt and gun lines read as caps callouts with the slot word, such as MEDKIT TO SLOT 9 and SHOTGUN EQUIPPED. Check 23.05 fails on v23.04',
+  now:'v23.06: Contract, kill, door, seal and hot ground lines read as caps callouts, with his contract words kept whole as the detail. Check 23.06 fails on v23.05',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42698,7 +42700,7 @@ function netDoorTake(peer,m){
   if(!G||(G.over&&G!==NET.specG)||!G.map||((+m.sd)>>>0)!==(G.seed>>>0)) return 'other';
   Lk=G.map.locked||[];
   for(i=0;i<Lk.length;i++) if(Lk[i].id===m.id){
-    if(lockedOpen(Lk[i])){ say(Lk[i].name+' is open.'); if(NET.role==='host') netBroadcast({t:'door',sd:G.seed>>>0,id:m.id}); }
+    if(lockedOpen(Lk[i])){ say((Lk[i].name+' open').toUpperCase(),'obj'); if(NET.role==='host') netBroadcast({t:'door',sd:G.seed>>>0,id:m.id}); }   // v22.xx (R53): an objective row in caps
     return 'door';
   }
   return 'gone';
@@ -42783,7 +42785,7 @@ function netWorldTake(peer,m){
   if(m.hz&&typeof m.hz.length==='number'&&G.hotZone&&isFinite(+m.hz[0])&&isFinite(+m.hz[1])){
     a=G.hotZone; k=m.hz[2]|0;
     a.x=clamp(+m.hz[0],a.r,WORLD_W-a.r); a.y=clamp(+m.hz[1],a.r,WORLD_H-a.r);
-    if(k>(a.moves|0)){ a.moves=k; a.at=0; if(!G.sim) say('The hot ground has moved. Check your map.'); }
+    if(k>(a.moves|0)){ a.moves=k; a.at=0; if(!G.sim) say('HOT GROUND MOVED','obj',{sub:'Check your map.'}); }   // v22.xx (R53): an objective row in caps
   }
   return 'wd';
 }
@@ -43319,7 +43321,7 @@ function netEntWord(peer,m){
 // drops is the host world, a later slice). Nothing here draws from the seeded stream.
 function netEntDeathFx(e){
   try{ deathAnimAdd(e); }catch(_dz){}   // v17.47: his pick 29, the death animation in a linked window
-  if(e&&e.name===BOSS_NAME){ try{ say(BOSS_NAME+' is down. Its hoard is open.'); }catch(_bs){} }   // v17.56: the teammate hears the boss go down, as the host does
+  if(e&&e.name===BOSS_NAME){ try{ say(BOSS_NAME+' DESTROYED','obj',{sub:'Its hoard is open.'}); }catch(_bs){} }   // v17.56: the teammate hears the boss go down, as the host does   // v22.xx (R53): an objective row in caps
   try{
     var p=G.player;
     if(p&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-16,(e.name||kindWord(e.kind))+killWord(e),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);   // v22.xx (R49)
@@ -44103,7 +44105,7 @@ function netLootTake(peer,m){
       if(T){ T.containers++; if(T.firstLoot===null) T.firstLoot=G.t; if(ct.cache) T.cachesOpened=(T.cachesOpened||0)+1; if(ct.strong) T.strongbox=(T.strongbox||0)+1; }
       try{ contractOpen(ct); }catch(_co){}
     }
-    if(m.hot===1){ if(T) T.hotOpened=(T.hotOpened||0)+1; if(!G.sim) sayWhenFree('Hot ground. Extra loot in here.'); }   // v20.39 (H59): the bonus the host rolled for this search
+    if(m.hot===1){ if(T) T.hotOpened=(T.hotOpened||0)+1; if(!G.sim) sayWhenFree('HOT GROUND','obj',{sub:'Extra loot in here.'}); }   // v20.39 (H59): the bonus the host rolled for this search   // v22.xx (R53): an objective row in caps
     if(ct) netContOpen(ct,NET.seat);
     if(NET.srch&&NET.srch.cid===(m.cid|0)) NET.srch=null;
     if(ct&&G.searching===ct){ G.searching=null; G.searchT=0; }
@@ -44137,7 +44139,7 @@ function netContWord(peer,m){
   if(st==='shut'){
     ct.opened=false; ct.openedAt=null; ct.prog=0; ct.pulled=0; ct.loot=[]; ct.best='common'; ct.netBy=-1; ct.netCounted=0; ct.netLit=0;
     ct.netLk=netLootKeys(m.lk); ct.netPl=((m.pl|0)>0)?(m.pl|0):0; ct.netLeft=ct.netLk.length;   // v20.30 (H22): what the restock put in it
-    if(!G.sim&&G.player&&dist(ct,G.player)<700) say('Something restocked nearby.');
+    if(!G.sim&&G.player&&dist(ct,G.player)<700) say('SOMETHING RESTOCKED NEARBY','chat');   // v22.xx (R53): a chat row in caps
     return 'cont:shut';
   }
   return 'bad';

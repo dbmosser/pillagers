@@ -1,0 +1,7 @@
+v23.06: objective lines in caps
+
+Contract, kill, door, seal and hot ground lines read as caps callouts, with his contract words kept whole as the detail.
+
+Check 23.06. Fails on v23.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

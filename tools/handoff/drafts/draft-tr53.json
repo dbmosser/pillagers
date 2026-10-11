@@ -1,0 +1,76 @@
+{
+    "title":  "OBJECTIVE LINES IN CAPS",
+    "why":  "His order of 2026-10-09: raid text reads like a shooter HUD, a short caps headline with a short detail only when needed. His contract line is split at his own colon for display: CONTRACT DONE is the headline and the rest, word for word with his lowercase mainframe, is the detail. A machine kill read Warden X-4 is down. Its core is exposed. and Pillbox A-2 has stopped singing.; they now read WARDEN X-4 DESTROYED and PILLBOX A-2 DESTROYED with the cache or the wreck as the detail, and THE OVERSEER is said once as THE OVERSEER DESTROYED with Its hoard is open. Doors read ARCHIVE DOOR OPEN, the seal SEAL BROKEN, a dead hire NAME IS DEAD with You owe his family., the lightning cache LIGHTNING FUSED A CACHE, and the hot ground HOT GROUND and HOT GROUND MOVED with their details.",
+    "now":  "Contract, kill, door, seal and hot ground lines read as caps callouts, with his contract words kept whole as the detail.",
+    "edits":  [
+                  {
+                      "anchor":  "    if(!G.sim) say(\u0027CONTRACT DONE: \u0027+contractDesc(c)+\u0027. Complete contract at mainframe.\u0027);",
+                      "replacement":  "    // v22.xx, the raid text rewrite (R53): his words, split at his colon for display only. CONTRACT DONE is the headline and the rest,\n    // word for word with his lowercase mainframe, is the detail.\n    if(!G.sim) say(\u0027CONTRACT DONE\u0027,\u0027obj\u0027,{sub:contractDesc(c)+\u0027. Complete contract at mainframe.\u0027});"
+                  },
+                  {
+                      "anchor":  "        if(e.boss){ var cb=setLoot(mkContainer(e.x+40,e.y+10,\u0027cache\u0027),[\u0027reactor\u0027,\u0027codex\u0027,\u0027bloom\u0027,\u0027titan\u0027,\u0027coil\u0027]); cb.cache=1; cb.time=3.0; cb.tag=\u0027OVERSEER HOARD\u0027; G.containers.push(cb); say(e.name+\u0027 is down. Its hoard is open.\u0027); }   // v17.45: his pick 21",
+                      "replacement":  "        if(e.boss){ var cb=setLoot(mkContainer(e.x+40,e.y+10,\u0027cache\u0027),[\u0027reactor\u0027,\u0027codex\u0027,\u0027bloom\u0027,\u0027titan\u0027,\u0027coil\u0027]); cb.cache=1; cb.time=3.0; cb.tag=\u0027OVERSEER HOARD\u0027; G.containers.push(cb); say(String(e.name).toUpperCase()+\u0027 DESTROYED\u0027,\u0027obj\u0027,{sub:\u0027Its hoard is open.\u0027}); }   // v17.45: his pick 21   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "        say(e.name+\u0027 is down. Its core is exposed.\u0027);",
+                      "replacement":  "        if(!e.boss) say(String(e.name).toUpperCase()+\u0027 DESTROYED\u0027,\u0027obj\u0027,{sub:\u0027It dropped a cache.\u0027});   // v22.xx (R53): not said again for the boss"
+                  },
+                  {
+                      "anchor":  "        say(e.name+\u0027 has stopped singing.\u0027);",
+                      "replacement":  "        say(String(e.name).toUpperCase()+\u0027 DESTROYED\u0027,\u0027obj\u0027,{sub:\u0027Search the wreck.\u0027});   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "        if(!G.sim) say(e.name+\u0027 destroyed. It dropped a cache.\u0027);   // v11.94, HIS NOTE: he could not tell this was a death",
+                      "replacement":  "        if(!G.sim) say(String(e.name).toUpperCase()+\u0027 DESTROYED\u0027,\u0027obj\u0027,{sub:\u0027It dropped a cache.\u0027});   // v11.94, HIS NOTE: he could not tell this was a death   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "  if(e\u0026\u0026e.name===BOSS_NAME){ try{ say(BOSS_NAME+\u0027 is down. Its hoard is open.\u0027); }catch(_bs){} }   // v17.56: the teammate hears the boss go down, as the host does",
+                      "replacement":  "  if(e\u0026\u0026e.name===BOSS_NAME){ try{ say(BOSS_NAME+\u0027 DESTROYED\u0027,\u0027obj\u0027,{sub:\u0027Its hoard is open.\u0027}); }catch(_bs){} }   // v17.56: the teammate hears the boss go down, as the host does   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "        say(e.name+\u0027 is down. His family will be told, and billed to you.\u0027);",
+                      "replacement":  "        say(String(e.name).toUpperCase()+\u0027 IS DEAD\u0027,\u0027obj\u0027,{sub:\u0027You owe his family.\u0027});   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "      say(doorNear.name+\u0027 is open.\u0027); blip(\u0027pick\u0027); ping(p.x,p.y,340,false,false,\u0027player\u0027,\u0027move\u0027);",
+                      "replacement":  "      say((doorNear.name+\u0027 open\u0027).toUpperCase(),\u0027obj\u0027); blip(\u0027pick\u0027); ping(p.x,p.y,340,false,false,\u0027player\u0027,\u0027move\u0027);   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "    if(lockedOpen(Lk[i])){ say(Lk[i].name+\u0027 is open.\u0027); if(NET.role===\u0027host\u0027) netBroadcast({t:\u0027door\u0027,sd:G.seed\u003e\u003e\u003e0,id:m.id}); }",
+                      "replacement":  "    if(lockedOpen(Lk[i])){ say((Lk[i].name+\u0027 open\u0027).toUpperCase(),\u0027obj\u0027); if(NET.role===\u0027host\u0027) netBroadcast({t:\u0027door\u0027,sd:G.seed\u003e\u003e\u003e0,id:m.id}); }   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "          say(\u0027The seal is cut. Whatever Meridian put behind it is yours if you live.\u0027);",
+                      "replacement":  "          say(\u0027SEAL BROKEN\u0027,\u0027obj\u0027,{sub:\u0027What Meridian sealed is yours if you live.\u0027});   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "          if(!G.sim) say(\u0027Something fused in the ground where that landed.\u0027);",
+                      "replacement":  "          if(!G.sim) say(\u0027LIGHTNING FUSED A CACHE\u0027,\u0027obj\u0027);   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "  if(_hotLine) sayWhenFree(_hotLine);",
+                      "replacement":  "  if(_hotLine) sayWhenFree(\u0027HOT GROUND\u0027,\u0027obj\u0027,{sub:\u0027Extra loot in here.\u0027});   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "    if(m.hot===1){ if(T) T.hotOpened=(T.hotOpened||0)+1; if(!G.sim) sayWhenFree(\u0027Hot ground. Extra loot in here.\u0027); }   // v20.39 (H59): the bonus the host rolled for this search",
+                      "replacement":  "    if(m.hot===1){ if(T) T.hotOpened=(T.hotOpened||0)+1; if(!G.sim) sayWhenFree(\u0027HOT GROUND\u0027,\u0027obj\u0027,{sub:\u0027Extra loot in here.\u0027}); }   // v20.39 (H59): the bonus the host rolled for this search   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "    say(\u0027The hot ground has moved. Check your map.\u0027);",
+                      "replacement":  "    say(\u0027HOT GROUND MOVED\u0027,\u0027obj\u0027,{sub:\u0027Check your map.\u0027});   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "    if(k\u003e(a.moves|0)){ a.moves=k; a.at=0; if(!G.sim) say(\u0027The hot ground has moved. Check your map.\u0027); }",
+                      "replacement":  "    if(k\u003e(a.moves|0)){ a.moves=k; a.at=0; if(!G.sim) say(\u0027HOT GROUND MOVED\u0027,\u0027obj\u0027,{sub:\u0027Check your map.\u0027}); }   // v22.xx (R53): an objective row in caps"
+                  },
+                  {
+                      "anchor":  "      if(!G.sim\u0026\u0026dist(_rc,G.player)\u003c700) say(\u0027Something restocked nearby.\u0027);",
+                      "replacement":  "      if(!G.sim\u0026\u0026dist(_rc,G.player)\u003c700) say(\u0027SOMETHING RESTOCKED NEARBY\u0027,\u0027chat\u0027);   // v22.xx (R53): a chat row in caps"
+                  },
+                  {
+                      "anchor":  "    if(!G.sim\u0026\u0026G.player\u0026\u0026dist(ct,G.player)\u003c700) say(\u0027Something restocked nearby.\u0027);",
+                      "replacement":  "    if(!G.sim\u0026\u0026G.player\u0026\u0026dist(ct,G.player)\u003c700) say(\u0027SOMETHING RESTOCKED NEARBY\u0027,\u0027chat\u0027);   // v22.xx (R53): a chat row in caps"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027objective lines in caps: a Warden destroyed one kill short of a kill contract says CONTRACT DONE as its own headline with his words after his colon as the detail (drawn as CONTRACT DONE, the dot, then his words), and WARDEN ... DESTROYED with It dropped a cache., and no line says is down. Its core; a door, the seal and the hot ground say caps headlines\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__P)||typeof mkWarden!==\u0027function\u0027||typeof contractKill!==\u0027function\u0027||typeof contractDesc!==\u0027function\u0027||typeof msgRowText!==\u0027function\u0027||typeof canSee!==\u0027function\u0027) return \u0027SKIP: no Warden, contracts or feed rows here\u0027;\n     var bad=[], P2=__P(), con0=P2.contracts, g=null, p=null, i, a, rr=null, e, c, said=[], realSay=say, realWF=sayWhenFree, hit=null, des=null, all, HIS, OLD=\u0027is down. Its \u0027+\u0027core\u0027;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player; p.downed=false; p.iv=99;\n       c={type:\u0027kill\u0027,tgt:\u0027warden\u0027,n:2,prog:1,desc:\u0027Destroy 2 Wardens\u0027,reward:100,id:\u0027zqx53\u0027};\n       P2.contracts=[c];\n       HIS=contractDesc(c)+\u0027. Complete contract at mainframe.\u0027;\n       say=function(m,k,o){ said.push({m:String(m),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); return realSay.apply(this,arguments); };\n       for(a=0;a\u003c16\u0026\u0026!rr;a++){ var ang=a*Math.PI/8, tx=p.x+Math.cos(ang)*140, ty=p.y+Math.sin(ang)*140; p.face=ang; if(canSee(p.x,p.y,p.face,tx,ty,g.vseg)) rr={x:tx,y:ty}; }\n       if(!rr) return \u0027SKIP: staging: no clear line of sight from the spawn\u0027;\n       e=mkWarden(rr.x,rr.y); e.hp=0; e.byPlayer=1; e.state=\u0027patrol\u0027; e.boss=0;\n       g.ents.length=0; g.ents.push(e);\n       said.length=0; __ents(0.016);\n       if(c.prog\u003cc.n) contractKill(\u0027warden\u0027);\n       all=said.map(function(l){ return l.m+(l.sub?(\u0027 | \u0027+l.sub):\u0027\u0027); });\n       for(i=0;i\u003csaid.length;i++){\n         if(said[i].m.indexOf(\u0027CONTRACT DONE\u0027)===0) hit=said[i];\n         if((/DESTROYED$/).test(said[i].m)) des=said[i];\n         if((said[i].m+\u0027 \u0027+said[i].sub).indexOf(OLD)\u003e=0) bad.push(\u0027a Warden destroyed still says \u0027+JSON.stringify(said[i].m));\n       }\n       if(!hit) bad.push(\u0027the contract finished with no CONTRACT DONE line (said: \u0027+JSON.stringify(all)+\u0027)\u0027);\n       else {\n         if(hit.m!==\u0027CONTRACT DONE\u0027) bad.push(\u0027CONTRACT DONE is not its own headline: \u0027+JSON.stringify(hit.m));\n         if(hit.sub!==HIS) bad.push(\u0027the CONTRACT DONE detail is \u0027+JSON.stringify(hit.sub)+\u0027, not his words \u0027+JSON.stringify(HIS));\n         if(msgRowText({m:hit.m,sub:hit.sub}).indexOf(\u0027CONTRACT DONE  \\u00b7  \u0027+HIS)!==0) bad.push(\u0027the feed row does not draw CONTRACT DONE, the dot, then his words\u0027);\n       }\n       if(!des) bad.push(\u0027a Warden destroyed said no headline ending in DESTROYED (said: \u0027+JSON.stringify(all)+\u0027)\u0027);\n       else if(des.m!==des.m.toUpperCase()||des.m.length\u003e34) bad.push(\u0027the Warden line \u0027+JSON.stringify(des.m)+\u0027 is not a caps headline of at most 34\u0027);\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       say=realSay; sayWhenFree=realWF; P2.contracts=con0; keys={};\n       try{ var g2=__state(); if(g2){ g2.ents.length=0; if(!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){}\n       __topClear(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.06 - OBJECTIVE LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps headline with a short detail only when needed. His contract line is split at his own colon for display: CONTRACT DONE is the headline and the rest, word for word with his lowercase mainframe, is the detail. A machine kill read Warden X-4 is down. Its core is exposed. and Pillbox A-2 has stopped singing.; they now read WARDEN X-4 DESTROYED and PILLBOX A-2 DESTROYED with the cache or the wreck as the detail, and THE OVERSEER is said once as THE OVERSEER DESTROYED with Its hoard is open. Doors read ARCHIVE DOOR OPEN, the seal SEAL BROKEN, a dead hire NAME IS DEAD with You owe his family., the lightning cache LIGHTNING FUSED A CACHE, and the hot ground HOT GROUND and HOT GROUND MOVED with their details.
+
+MEASURED. Check 23.06 passes, and fails on v23.05.
 ## v23.05 - TACTICAL BELT AND GUN LINES IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD with one word for each thing, and a place on the tactical belt is a slot. The belt lines said ON KEY 9, a gun taken from the backpack said one long sentence with a semicolon (Scav Pistol is yours; it goes back to the armoury. Shotgun equipped), and the throwable, roll and jam lines were still sentences. Belt lines now read MEDKIT TO SLOT 9 and MEDKIT OFF SLOT 9, a non-gun on a gun slot reads SLOT 1 TAKES GUNS ONLY, a gun taken reads SHOTGUN EQUIPPED with what happened to the old one as the detail, issued kit is issued gear, a gun put away is a pickup row tagged BACKPACK, and TOO TIRED TO ROLL, NO THROWABLES LEFT, FRAG CHARGE READY, NO FRAG CHARGE LEFT with the gun key as the detail, JAM CLEARED and THROW THE ONE IN YOUR HAND FIRST are caps callouts. The Undercroft floor belt is unchanged.
