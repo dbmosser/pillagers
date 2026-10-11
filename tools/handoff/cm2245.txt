@@ -1,0 +1,7 @@
+v22.45: the undercroft belt edits all four gun keys
+
+The Undercroft belt puts a gun on any key, the Stash screen belt shows the gun keys, and the guns on keys 1 and 2 come home as gun 1 and gun 2.
+
+Check 22.45. Fails on v22.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

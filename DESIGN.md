@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.45 - THE UNDERCROFT BELT EDITS ALL FOUR GUN KEYS
+
+Co-op hunt while he was away. The four-gun belt, build 4 (his order of 2026-10-09: guns on keys 1 to 4, and the player can load up the belt with any gun he wants). On the Undercroft floor a gun in his hands could only trade places with the other gun: dropped on any other key it was refused with words saying keys 1 and 2 were his two guns. Now it binds the gun to that key in his plan, the way the Stash screen belt does, and what he had on that key goes to the key the gun came from; on key 3 or 4 the key it left fills as the raid start does, so the floor still shows exactly the keys the raid starts on. The Stash screen belt showed a bare number on keys 1 to 4 he had not bound; it now shows the gun the floor belt has there, dimmed. And decision D3: after an extraction the guns on keys 1 and 2 (in his hands or in the backpack) are gun 1 and gun 2 at home, instead of the best gun in his hands by tier; every other gun goes home as before.
+
+MEASURED. Check 22.45 passes, and fails on v22.44.
 ## v22.44 - A DISPLACED ALERT IS NEVER LOST
 
 Co-op hunt while he was away. The review of the raid text alert lane found that an alert another line replaced after half a second was thrown away. Calling for extraction showed EXTRACTION CALLED, with the wait and whether the raid clock runs out first, for about half a second before THE SIEGE took its place; at six minutes left in every default raid one ring CLOSED and another ring CLOSING flashed for half a second; and TEAMMATE DOWN or the Crier mark vanished for good the moment another urgent line came in, though the teammate was still down. A replaced alert that still has life, or whose condition still holds, now waits and comes back as soon as the slot is free, and drops into the message feed if it cannot.
