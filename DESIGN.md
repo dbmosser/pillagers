@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.01 - THE WHAT IS NEW CARD NAMES THE SHARPER RAID TEXT
+
+Co-op hunt while he was away. The card was stamped v22.85 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text builds shipped around midnight on 2026-10-11: loot labels, nameplates and damage numbers draw over the dark and the fog, the offer line, reticle words and co-op marks grow at 4K, and raid times and prices are written one way; the rest are in the change list.
+
+MEASURED. Check 23.01 passes, and fails on v23.00.
 ## v23.00 - ONE WAY TO WRITE NUMBERS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD. Raid lines wrote the same things several ways: a looted item was labelled 1234c while every other price read $1,234, and time read 12s on the band, 1:30 on the call and 7 min 30 sec on the map, the conditions rows, the downed overlay and the raid clock line. A loot label now reads the value as $1,234, and every raid duration reads 12s below a minute and m:ss from a minute up. Changing the raid length from Settings in a raid now says RAID CLOCK SET TO 7:30 as a system row. The Undercroft panels and the run card keep their written-out times.
