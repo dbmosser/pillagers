@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.43 - THE BELT LINES READ LIKE A SHOOTER HUD
+
+Co-op hunt while he was away. His order of 2026-10-09: every line the player reads in a raid reads like Call of Duty, Fortnite or ARC Raiders, a short capital headline and only when needed a short detail. The review of the four-gun belt (build 3) found the belt still talking in sentences. Now: GUN SLOT 2 EMPTY (was No second weapon. Drag one here to carry it.); SHOTGUN ON KEY 3 and STIM INJECTOR ON KEY 9 (was Shotgun to belt slot 3.); GUN SLOTS FULL with MARKSMAN RIFLE IN BACKPACK under it (was one long line); EMPTY SLOT with PRESS 1 FOR YOUR GUN under it; GUNS ONLY with KEY 3 under it; GUN KEYS ONLY with DRAG OFF BELT TO STOW under it; a gun key trade SHOTGUN ON KEY 3 with MEDKIT ON KEY 1 under it; SHOTGUN UP with RIFLE IN BACKPACK, KEY 1 under it; CANNOT EQUIP; SHOTGUN STOWED for a gun that went to the free slot, with the key that swaps to it under it when it was found; ISSUED KIT with CANNOT STOW under it; and the revive pay, which still said he puts his gun in your hands although it goes into the backpack, now says SHOTGUN RECEIVED with its key or IN BACKPACK under it. Nothing the lines describe changed.
+
+MEASURED. Check 22.43 passes, and fails on v22.42.
 ## v22.42 - A STIM KEEPS ITS KEY WHEN THE PLATE TAKES KEY 9
 
 Co-op hunt while he was away. Found by the review of the four-gun belt (build 3). With four gun keys, three throws and Medical, key 9 is the only empty key, and it is the plate key whenever he carries an Armour Plate. A Stim the game had put on key 9 lost its key the moment he picked a plate up (the automatic pin found no empty key to move to and was deleted), and a Stim found or paid at a revive while carrying a plate (the freebie kit always has one) got no key and no line. Before the four gun keys, keys 8 and 9 were both free, so neither happened. Such a Stim now goes on a vacant gun key 3 or 4 (any item may go on a gun key), and with none free it says NO FREE KEY. Gun keys a gun needs are never taken.

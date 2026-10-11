@@ -1,0 +1,96 @@
+{
+    "title":  "THE BELT LINES READ LIKE A SHOOTER HUD",
+    "why":  "His order of 2026-10-09: every line the player reads in a raid reads like Call of Duty, Fortnite or ARC Raiders, a short capital headline and only when needed a short detail. The review of the four-gun belt (build 3) found the belt still talking in sentences. Now: GUN SLOT 2 EMPTY (was No second weapon. Drag one here to carry it.); SHOTGUN ON KEY 3 and STIM INJECTOR ON KEY 9 (was Shotgun to belt slot 3.); GUN SLOTS FULL with MARKSMAN RIFLE IN BACKPACK under it (was one long line); EMPTY SLOT with PRESS 1 FOR YOUR GUN under it; GUNS ONLY with KEY 3 under it; GUN KEYS ONLY with DRAG OFF BELT TO STOW under it; a gun key trade SHOTGUN ON KEY 3 with MEDKIT ON KEY 1 under it; SHOTGUN UP with RIFLE IN BACKPACK, KEY 1 under it; CANNOT EQUIP; SHOTGUN STOWED for a gun that went to the free slot, with the key that swaps to it under it when it was found; ISSUED KIT with CANNOT STOW under it; and the revive pay, which still said he puts his gun in your hands although it goes into the backpack, now says SHOTGUN RECEIVED with its key or IN BACKPACK under it. Nothing the lines describe changed.",
+    "now":  "The tactical belt lines now read like a shooter HUD: GUN SLOT 2 EMPTY, SHOTGUN ON KEY 3, GUN SLOTS FULL, EMPTY SLOT, SHOTGUN STOWED.",
+    "edits":  [
+                  {
+                      "anchor":  "    if(!G.sim) say(i\u003c2?\u0027No second weapon. Drag one here to carry it.\u0027:(\u0027Gun slot \u0027+(i+1)+\u0027 empty\u0027).toUpperCase());",
+                      "replacement":  "    // v22.43, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 3): every gun key reads the same.\n    if(!G.sim) say((\u0027Gun slot \u0027+(i+1)+\u0027 empty\u0027).toUpperCase());"
+                  },
+                  {
+                      "anchor":  "  if(s2.vacant){ if(!G.sim) say(\u0027No second weapon. Drag one here to carry it.\u0027); _hinted=true; }",
+                      "replacement":  "  if(s2.vacant){ if(!G.sim) say((\u0027Gun slot \u0027+(i+1)+\u0027 empty\u0027).toUpperCase()); _hinted=true; }"
+                  },
+                  {
+                      "anchor":  "    else if(!drawGun(_bix)){ say(\u0027Cannot equip \u0027+s2.name+\u0027 right now.\u0027); G.hot=_hot0; }",
+                      "replacement":  "    else if(!drawGun(_bix)){ say(\u0027CANNOT EQUIP\u0027,\u0027info\u0027,{sub:String(s2.name).toUpperCase()}); G.hot=_hot0; }"
+                  },
+                  {
+                      "anchor":  "        var _gbTxt=it.name+\u0027 to belt slot \u0027+(gi+1)+\u0027.\u0027;",
+                      "replacement":  "        var _gbTxt=(it.name+\u0027 on key \u0027+(gi+1)).toUpperCase();   // v22.43: the shooter voice"
+                  },
+                  {
+                      "anchor":  "    var _gfTxt=(\u0027Gun slots full. \u0027+it.name+\u0027 in backpack\u0027).toUpperCase();\n    say(_gfTxt);",
+                      "replacement":  "    var _gfTxt=\u0027GUN SLOTS FULL\u0027;   // v22.43: a headline and its detail, not one long line\n    say(_gfTxt,\u0027info\u0027,{sub:(it.name+\u0027 in backpack\u0027).toUpperCase()});"
+                  },
+                  {
+                      "anchor":  "      var _beltTxt=it.name+\u0027 to belt slot \u0027+(bi+1)+\u0027.\u0027;",
+                      "replacement":  "      var _beltTxt=(it.name+\u0027 on key \u0027+(bi+1)).toUpperCase();   // v22.43: the shooter voice"
+                  },
+                  {
+                      "anchor":  "        var _svTxt=it.name+\u0027 to belt slot \u0027+(_svi+1)+\u0027.\u0027;",
+                      "replacement":  "        var _svTxt=(it.name+\u0027 on key \u0027+(_svi+1)).toUpperCase();"
+                  },
+                  {
+                      "anchor":  "        if(!G.sim) say(\u0027Nothing in that cell. \u0027+gunKeyLine());",
+                      "replacement":  "        if(!G.sim) say(\u0027EMPTY SLOT\u0027,\u0027info\u0027,{sub:gunKeyLine().replace(/\\.$/,\u0027\u0027).toUpperCase()});   // v22.43: the shooter voice"
+                  },
+                  {
+                      "anchor":  "          say(\u0027Slot \u0027+(HC.i+1)+\u0027 is a weapon slot. Guns only.\u0027);",
+                      "replacement":  "          say(\u0027GUNS ONLY\u0027,\u0027info\u0027,{sub:\u0027KEY \u0027+(HC.i+1)});   // v22.43: the shooter voice"
+                  },
+                  {
+                      "anchor":  "        else say(\u0027Drop it off the belt to stow it in the backpack; its own key brings it up.\u0027);",
+                      "replacement":  "        else say(\u0027GUN KEYS ONLY\u0027,\u0027info\u0027,{sub:\u0027DRAG OFF BELT TO STOW\u0027});   // v22.43: the shooter voice"
+                  },
+                  {
+                      "anchor":  "          say((_gwTi\u0026\u0026_gwTi.use!==\u0027gun\u0027)?(_gw8n+\u0027 to slot \u0027+(_onCell+1)+\u0027. \u0027+_gwTi.name+\u0027 to slot \u0027+(d.fromHot+1)+\u0027.\u0027):(_gw8n+\u0027 to slot \u0027+(_onCell+1)+\u0027.\u0027));",
+                      "replacement":  "          say((_gw8n+\u0027 on key \u0027+(_onCell+1)).toUpperCase(),\u0027info\u0027,(_gwTi\u0026\u0026_gwTi.use!==\u0027gun\u0027)?{sub:(_gwTi.name+\u0027 on key \u0027+(d.fromHot+1)).toUpperCase()}:null);   // v22.43: the shooter voice"
+                  },
+                  {
+                      "anchor":  "_gunKeyHint=(oldW.name+\u0027 to backpack, key \u0027+(+_pk+1)).toUpperCase();",
+                      "replacement":  "_gunKeyHint=(oldW.name+\u0027 in backpack \\u00b7 key \u0027+(+_pk+1)).toUpperCase();"
+                  },
+                  {
+                      "anchor":  "  say(_gunKeyHint?(_eqLine.replace(/\\.$/,\u0027\u0027)+\u0027. \u0027+_gunKeyHint):_eqLine);",
+                      "replacement":  "  // v22.43, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 3): a gun routed to the free slot\n  // reads SHOTGUN STOWED, and the key of the gun pushed out is the detail under the line, not a capital tail on a sentence.\n  if(_kept\u0026\u0026!_oldLine) say(_newLine,\u0027info\u0027,_gunKeyHint?{sub:_gunKeyHint}:null);\n  else if(_gunKeyHint) say(_eqLine.replace(/\\.$/,\u0027\u0027),\u0027info\u0027,{sub:_gunKeyHint});\n  else say(_eqLine);"
+                  },
+                  {
+                      "anchor":  "swapGuns(); if(_gunKeyHint) say(p.wep.name+\u0027 up. \u0027+_gunKeyHint); }",
+                      "replacement":  "swapGuns(); if(_gunKeyHint) say((p.wep.name+\u0027 up\u0027).toUpperCase(),\u0027info\u0027,{sub:_gunKeyHint}); }"
+                  },
+                  {
+                      "anchor":  "  var _newLine=_kept?(g.name+\u0027 to your empty slot. \u0027+_kept.name+\u0027 stays in hand.\u0027)",
+                      "replacement":  "  var _newLine=_kept?(g.name+\u0027 stowed\u0027).toUpperCase()   // v22.43: the shooter voice (the gun in hand is not named: it did not move)"
+                  },
+                  {
+                      "anchor":  "function grantLoot(ct,keys,delay0){",
+                      "replacement":  "var _lootSub=\u0027\u0027;   // v22.43: the detail of the gun line grantLoot hands back; the staged pull says it under that line\nfunction grantLoot(ct,keys,delay0){"
+                  },
+                  {
+                      "anchor":  "  var _gunLine=\u0027\u0027, _beltKeep=[], _beltGot;",
+                      "replacement":  "  var _gunLine=\u0027\u0027, _beltKeep=[], _beltGot; _lootSub=\u0027\u0027;"
+                  },
+                  {
+                      "anchor":  "          _gunLine=found.name+\u0027 to your empty slot. \u0027+p.wep.name+\u0027 stays in hand. Select \u0027+found.name+\u0027 on your tactical belt to swap.\u0027;",
+                      "replacement":  "          // v22.43, his order of 2026-10-09 (the shooter voice): SHOTGUN STOWED, and under it the key that swaps to it (the bumpers on a\n          // controller), read off the belt after the settle, so it names the key the gun really took.\n          _gunLine=(found.name+\u0027 stowed\u0027).toUpperCase();\n          var _swk=-1, _sws=hotbarSlots(), _swj;\n          for(_swj=0;_swj\u003c_sws.length\u0026\u0026_swk\u003c0;_swj++) if(_sws[_swj]\u0026\u0026_sws[_swj].kind===\u0027gun\u0027\u0026\u0026!_sws[_swj].vacant\u0026\u0026!_sws[_swj].inHand\u0026\u0026_sws[_swj].icon===found.id) _swk=_swj;\n          if(_swk\u003c0) _swk=1;\n          _lootSub=(padOn()?padB(\u0027LB or RB to swap\u0027):(\u0027Press \u0027+keyLabel(\u0027Digit\u0027+(_swk+1),String(_swk+1))+\u0027 to swap\u0027)).toUpperCase();"
+                  },
+                  {
+                      "anchor":  "      say(_gunLine?((keys.length\u003e1)?(_gunLine+\u0027 \u0027+_sum):_gunLine):_sum);",
+                      "replacement":  "      if(_gunLine\u0026\u0026_lootSub){ say(_gunLine,\u0027info\u0027,{sub:_lootSub}); if(keys.length\u003e1) say(_sum); }   // v22.43: the stowed gun and its swap key\n      else say(_gunLine?((keys.length\u003e1)?(_gunLine+\u0027 \u0027+_sum):_gunLine):_sum);"
+                  },
+                  {
+                      "anchor":  "            if(_where) sayWhenFree(_where);",
+                      "replacement":  "            if(_where) sayWhenFree(_where,\u0027info\u0027,_lootSub?{sub:_lootSub}:null);   // v22.43: with the swap key under a stowed gun"
+                  },
+                  {
+                      "anchor":  "  if(issued){ say(g.name+\u0027 is issued kit; it stays in your hands.\u0027); return false; }",
+                      "replacement":  "  if(issued){ say(\u0027ISSUED KIT\u0027,\u0027info\u0027,{sub:\u0027CANNOT STOW\u0027}); return false; }   // v22.43: the shooter voice"
+                  },
+                  {
+                      "anchor":  "            say(\u0027He puts his \u0027+ITEMS[_rpk].name.toLowerCase()+\u0027 in your hands.\u0027);",
+                      "replacement":  "            // v22.43, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 3): the line said he put it\n            // in your hands, and since v21.93 the item goes into the backpack (a gun onto a free gun key). It names where it went.\n            var _rpKy=-1; for(var _rpa in (G.hotAssign||{})) if(G.hotAssign[_rpa]===_rpk){ _rpKy=+_rpa; break; }\n            say((ITEMS[_rpk].name+\u0027 received\u0027).toUpperCase(),\u0027info\u0027,{sub:_rpKy\u003e=0?(\u0027KEY \u0027+(_rpKy+1)):(ITEMS[_rpk].use===\u0027throw\u0027?\u0027ON BELT\u0027:\u0027IN BACKPACK\u0027)});"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the belt lines read like a shooter HUD (his order of 2026-10-09): a vacant key 2 says GUN SLOT 2 EMPTY, the trigger on an empty key says EMPTY SLOT with the gun key under it, a found gun on a gun key says SHOTGUN ON KEY 2, a fifth gun says GUN SLOTS FULL with the gun IN BACKPACK under it, and none of the old belt sentences is left in the game\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||!window.__state||!window.__sim) return \u0027SKIP: this fixture cannot deploy or step a raid\u0027;\n     if(typeof autoBelt!==\u0027function\u0027||typeof setHot!==\u0027function\u0027||typeof GUNKEYS===\u0027undefined\u0027||GUNKEYS\u003c4) return \u0027SKIP: no four gun keys here\u0027;\n     if(!WEAPONS.rifle||!WEAPONS.smg||!ITEMS.gun_shotgun||!ITEMS.gun_dmr||!ITEMS.gun_carbine||!ITEMS.gun_smg) return \u0027SKIP: no rifle, smg, shotgun, marksman rifle or carbine here\u0027;\n     if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026(G.sim||!G.over)) return \u0027SKIP: a raid or a sim is live\u0027;\n     var bad=[], g=null, p=null, s0=say, md0=mouse.down, heard=[], r, h, i, src=\u0027\u0027, OLD;\n     function said(re){ for(var j=0;j\u003cheard.length;j++) if(re.test(heard[j].m)) return heard[j]; return null; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       // ONE: one gun up, nothing stowed\n       P.weapons=[\u0027rifle\u0027]; P.equipped=\u0027rifle\u0027; P.equippedSec=null; P.hotAssign={};\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); p=g\u0026\u0026g.player; if(!g||g.over||!p) return \u0027SKIP: no live raid\u0027;\n       if(p.sec\u0026\u0026p.sec.id===\u0027fists\u0027){ p.sec=null; p.secAmmo=0; }   // no second slot at all (Bare Hands would fill key 2)\n       var sl=hotbarSlots();\n       if(!(sl[1]\u0026\u0026sl[1].vacant)) return \u0027SKIP: staging: key 2 is not a vacant gun key with one gun\u0027;\n       g.ents.length=0; p.iv=99; p.roll=0; p.downed=false; g.paused=false; g.bagOpen=false; g.mapOpen=false; keys={};\n       say=function(m,k,o){ heard.push({m:String(m),sub:String((o\u0026\u0026o.sub)||\u0027\u0027)}); };\n       heard=[]; setHot(1);\n       if(!said(/^GUN SLOT 2 EMPTY$/)) bad.push(\u0027the vacant key 2 says \u0027+JSON.stringify(heard.map(function(x){ return x.m; }))+\u0027, not GUN SLOT 2 EMPTY\u0027);\n       heard=[]; g.hot=2; p.fired=false; mouse.down=true; __sim(0.016); mouse.down=false; __sim(0.016);\n       h=said(/^EMPTY SLOT$/);\n       if(!h) bad.push(\u0027the trigger on the vacant key 3 says \u0027+JSON.stringify(heard.map(function(x){ return x.m; }))+\u0027, not EMPTY SLOT\u0027);\n       else if(!/^(PRESS \\S+ FOR YOUR GUN|.+ TO YOUR GUN)$/.test(h.sub)) bad.push(\u0027EMPTY SLOT has \u0027+JSON.stringify(h.sub)+\u0027 under it, not the key of the gun in capitals\u0027);\n       g.hot=0;\n       heard=[]; g.bag.push(\u0027gun_shotgun\u0027); r=autoBelt(\u0027gun_shotgun\u0027);\n       if(!/^[^a-z]+ ON KEY 2$/.test(String(r||\u0027\u0027))||!said(/ ON KEY 2$/)) bad.push(\u0027a shotgun found onto key 2 says \u0027+JSON.stringify(r)+\u0027, not SHOTGUN ON KEY 2\u0027);\n       heard=[]; g.bag.push(\u0027gun_dmr\u0027); autoBelt(\u0027gun_dmr\u0027); g.bag.push(\u0027gun_smg\u0027); autoBelt(\u0027gun_smg\u0027);\n       heard=[]; g.bag.push(\u0027gun_carbine\u0027); r=autoBelt(\u0027gun_carbine\u0027);\n       h=said(/^GUN SLOTS FULL$/);\n       if(!h) bad.push(\u0027a fifth gun says \u0027+JSON.stringify(heard.map(function(x){ return x.m; }))+\u0027, not GUN SLOTS FULL\u0027);\n       else if(!/ IN BACKPACK$/.test(h.sub)||h.sub!==h.sub.toUpperCase()) bad.push(\u0027GUN SLOTS FULL has \u0027+JSON.stringify(h.sub)+\u0027 under it, not the gun IN BACKPACK\u0027);\n       for(i=0;i\u003cheard.length;i++) if(heard[i].m.length\u003e34) bad.push(\u0027the headline \u0027+JSON.stringify(heard[i].m)+\u0027 is longer than 34 characters\u0027);\n       // TWO: no old belt sentence is left in the game\n       [].slice.call(document.scripts).forEach(function(s){ src+=s.textContent||\u0027\u0027; });\n       OLD=[[\u0027No second\u0027,\u0027 weapon. Drag one\u0027],[\u0027Nothing in\u0027,\u0027 that cell. \u0027],[\u0027 is a weapon\u0027,\u0027 slot. Guns only\u0027],[\u0027its own key\u0027,\u0027 brings it up\u0027],[\u0027 to your empty\u0027,\u0027 slot. \u0027],[\u0027 is issued\u0027,\u0027 kit; it stays\u0027],[\u0027He puts\u0027,\u0027 his \u0027],[\u0027 to belt\u0027,\u0027 slot \u0027],[\u0027Gun slots full\u0027,\u0027. \u0027],[\u0027Cannot equip\u0027,\" \\u0027+s2.name\"],[\u0027 to backpack\u0027,\", key \"]];\n       for(i=0;i\u003cOLD.length;i++){ var nd=OLD[i][0]+OLD[i][1]; if(src.indexOf(nd)\u003e=0) bad.push(\u0027the game still says \u0027+JSON.stringify(nd)); }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       say=s0; mouse.down=md0; keys={};\n       try{ var g2=__state(); if(g2){ g2.drag=null; if(g2.player){ g2.player.iv=0; g2.player.downed=false; } if(!g2.over) __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

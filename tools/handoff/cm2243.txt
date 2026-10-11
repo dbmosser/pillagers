@@ -1,0 +1,7 @@
+v22.43: the belt lines read like a shooter hud
+
+The tactical belt lines now read like a shooter HUD: GUN SLOT 2 EMPTY, SHOTGUN ON KEY 3, GUN SLOTS FULL, EMPTY SLOT, SHOTGUN STOWED.
+
+Check 22.43. Fails on v22.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
