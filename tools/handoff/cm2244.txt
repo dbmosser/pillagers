@@ -1,0 +1,7 @@
+v22.44: a displaced alert is never lost
+
+An alert pushed aside by a more urgent one comes back when that one ends, so EXTRACTION CALLED and TEAMMATE DOWN stay readable.
+
+Check 22.44. Fails on v22.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

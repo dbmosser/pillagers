@@ -1,0 +1,5 @@
+## v22.44 - A DISPLACED ALERT IS NEVER LOST
+
+Co-op hunt while he was away. The review of the raid text alert lane found that an alert another line replaced after half a second was thrown away. Calling for extraction showed EXTRACTION CALLED, with the wait and whether the raid clock runs out first, for about half a second before THE SIEGE took its place; at six minutes left in every default raid one ring CLOSED and another ring CLOSING flashed for half a second; and TEAMMATE DOWN or the Crier mark vanished for good the moment another urgent line came in, though the teammate was still down. A replaced alert that still has life, or whose condition still holds, now waits and comes back as soon as the slot is free, and drops into the message feed if it cannot.
+
+MEASURED. Check 22.44 passes, and fails on v22.43.

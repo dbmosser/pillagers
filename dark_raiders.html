@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.43';
+var VER='22.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14382,18 +14382,28 @@ function alertHeld(a){
   }catch(_h){}
   return false;
 }
+// v22.xx, the raid text rewrite (fix after batch 3, tr3fixa): A DISPLACED ALERT IS NEVER LOST. The alert lane promised that a line
+// is never lost, but an alert another line replaced after it had shown 0.6 s was simply thrown away. So EXTRACTION CALLED and its
+// detail (the wait, or that the raid clock runs out first) showed for about half a second before THE SIEGE took the slot; at six
+// minutes left in every default raid one ring CLOSED and another ring CLOSING flashed for half a second; and a held alert
+// (TEAMMATE DOWN while he stays down, the Crier mark while it runs) vanished for good the moment any crit came in. Now an alert
+// that is replaced while it still has more than a second of life, or while its condition still holds, goes back to the alert
+// queue with the life it had left. It waits there without pushing anything aside and returns as soon as the slot is free: up to
+// 5 s, or up to 8 s while its condition holds, and if it still cannot show it drops into the feed as before. A held line whose
+// condition ends while it waits has nothing left to say and is dropped.
 function alertShow(m,k,o,now){
   var a=alertUp();
-  if(a&&a.m!==m&&now-a.at<0.6) alertEnq(a.m,a.k,{sub:a.sub,key:a.key,hold:a.hold,icon:a.icon,c:a.c},a.at);   // a crit took it before it was read: it waits, from when it first showed
+  if(a&&a.m!==m&&(now-a.at<0.6||alertHeld(a)||(a.T>1.0&&!a.hold)))   // v22.xx (tr3fixa): it goes back to the queue with the life it had left
+    alertEnq(a.m,a.k,{sub:a.sub,key:a.key,hold:a.hold,icon:a.icon,c:a.c,life:alertHeld(a)?Math.max(a.T,1.5):a.T},now,1);
   G.alert={m:m,k:k,sub:(o&&o.sub)||'',key:(o&&o.key)||'',hold:(o&&o.hold)||null,icon:(o&&o.icon)||'',c:(o&&o.c)||'',
            T:(o&&o.life>0)?o.life:MSGK[k].life,at:now};
 }
 function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',(o.sub||o.key)?{sub:o.sub||'',key:o.key||''}:null); }
 function alertQDrop(m,key){ var q=G.alertQ, i; if(!q) return; for(i=q.length-1;i>=0;i--) if(q[i].m===m||(key&&q[i].key===key)) q.splice(i,1); }
-function alertEnq(m,k,o,now){
+function alertEnq(m,k,o,now,back){   // v22.xx (tr3fixa): back, an alert another line displaced
   var q=(G.alertQ=G.alertQ||[]), key=(o&&o.key)||'', i, lo, lr;
   for(i=0;i<q.length;i++) if(q[i].m===m||(key&&q[i].key===key)){ q[i].m=m; q[i].k=k; q[i].o=o||null; q[i].key=key; return; }
-  q.push({m:m,k:k,o:o||null,key:key,t:now});
+  q.push({m:m,k:k,o:o||null,key:key,t:now,back:back?1:0});
   while(q.length>3){ lo=0; lr=1e9; for(i=0;i<q.length;i++) if(MSGK[q[i].k].r<lr){ lr=MSGK[q[i].k].r; lo=i; } alertToFeed(q.splice(lo,1)[0]); }
 }
 function alertSay(m,k,o){
@@ -14410,11 +14420,15 @@ function alertTick(dt){
   var a=G.alert, now=G.t||0, q=G.alertQ, i, b, br, e;
   if(a&&a.T>0){ a.T-=dt; if(a.T<0.4&&alertHeld(a)&&now-a.at<8) a.T=0.4; }
   if(!q||!q.length) return;
-  for(i=q.length-1;i>=0;i--) if(now-q[i].t>1.5) alertToFeed(q.splice(i,1)[0]);   // waited 1.5 s: into the feed, never lost
+  for(i=q.length-1;i>=0;i--){
+    e=q[i];
+    if(e.back&&e.o&&e.o.hold&&!alertHeld({hold:e.o.hold})){ q.splice(i,1); continue; }   // v22.xx (tr3fixa): its condition is over
+    if(now-e.t>(e.back?((e.o&&e.o.hold)?8:5):1.5)) alertToFeed(q.splice(i,1)[0]);   // waited 1.5 s (a displaced alert 5 s, a held one 8 s): into the feed, never lost
+  }
   if(!q.length) return;
-  a=alertUp(); b=0; br=-1e9;
-  for(i=0;i<q.length;i++) if(MSGK[q[i].k].r>br){ br=MSGK[q[i].k].r; b=i; }
-  if(!a||(br>=MSGK[msgKind(a.k)].r&&now-a.at>=0.6)){ e=q.splice(b,1)[0]; alertShow(e.m,e.k,e.o,now); }
+  a=alertUp(); b=-1; br=-1e9;
+  for(i=0;i<q.length;i++) if((!a||!q[i].back)&&MSGK[q[i].k].r>br){ br=MSGK[q[i].k].r; b=i; }   // v22.xx (tr3fixa): a displaced alert waits for a free slot
+  if(b>=0&&(!a||(br>=MSGK[msgKind(a.k)].r&&now-a.at>=0.6))){ e=q.splice(b,1)[0]; alertShow(e.m,e.k,e.o,now); }
 }
 function msgPx(f){ var m=(/([\d.]+)px/).exec(f); return m?parseFloat(m[1]):LH(12); }
 function alertLayout(){   // with the message scale not yet applied: the alert plate, its lines and their baselines, or null
@@ -35431,7 +35445,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.43: The tactical belt lines now read like a shooter HUD: GUN SLOT 2 EMPTY, SHOTGUN ON KEY 3, GUN SLOTS FULL, EMPTY SLOT, SHOTGUN STOWED. Check 22.43 fails on v22.42',
+  now:'v22.44: An alert pushed aside by a more urgent one comes back when that one ends, so EXTRACTION CALLED and TEAMMATE DOWN stay readable. Check 22.44 fails on v22.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
