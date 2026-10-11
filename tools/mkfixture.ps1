@@ -8675,6 +8675,9 @@ window.__REGRESS=[
            step(); if(g.over) break;
            rows=feedRows(); n=0;
            for(var r=0;r<rows.length;r++){ if(String(rows[r].m).toUpperCase().indexOf(BF.toUpperCase())===0) n++; if(rows[r].m==='zq q'&&firstQ<0) firstQ=i; }
+           // tr19fix: since the raid text rewrite (R19) the full backpack is one keyed red row in the pickup stack (G.pick), not a feed
+           // row; it is counted there too, so said every frame it must still fill one row in all, on the build before and after.
+           for(var r2=0;r2<(g.pick||[]).length;r2++) if(String(g.pick[r2].m).toUpperCase().indexOf(BF.toUpperCase())===0) n++;
            if(n>maxBF) maxBF=n;
          }
          keys={};
