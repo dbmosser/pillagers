@@ -5825,11 +5825,11 @@ window.__REGRESS=[
        eB=netEntMake(778801,'warden',g.player.x+400,g.player.y); eB.name=BOSS_NAME; eB.hp=0; NET.entMap[778801]=eB;
        eW=netEntMake(778802,'warden',g.player.x+500,g.player.y); eW.name=''; eW.hp=0; NET.entMap[778802]=eW;
        if(eB.boss) return 'SKIP: staging: this build mirror already carries boss';
-       m0=ARCADE.mine|0;
+       ARCADE.streak=null; m0=ARCADE.mine|0;   // arcade15: each kill scored alone, outside a streak
        r=netKillTake(peer,{t:'kill',seat:1,id:778801,k:'warden',el:0});
        if(r!=='kill') return 'SKIP: staging: the kill word answered '+r;
        if((ARCADE.mine|0)-m0!==2000) bad.push('player 2 killing THE OVERSEER scored '+((ARCADE.mine|0)-m0)+', not 2000');
-       m0=ARCADE.mine|0;
+       ARCADE.streak=null; m0=ARCADE.mine|0;
        r=netKillTake(peer,{t:'kill',seat:1,id:778802,k:'warden',el:0});
        if((ARCADE.mine|0)-m0!==400) bad.push('player 2 killing a plain warden scored '+((ARCADE.mine|0)-m0)+', not 400');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
