@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.48 - A GUN CARRIED OUT KEEPS ITS SLOT
+
+Co-op hunt while he was away. From the review of the four-gun belt, build 4. Decision D3 makes the guns on keys 1 and 2 gun 1 and gun 2 at home. When key 2 showed no gun (he had moved gun 2 to key 3, or put a Medkit on key 2) and the better gun was gun 2, D3 put the gun from key 1 back in gun 1 and left gun 2 empty: he came home with one gun and Bare Hands, the other gun he carried out sat in the armoury in no slot, the extraction deleted his key for it, and his next raid went up without it. The gun D3 moves out of gun 1 now takes gun 2 when gun 2 is empty, as long as he carried it out.
+
+MEASURED. Check 22.48 passes, and fails on v22.47.
 ## v22.47 - THE ALERT LANE IN THE SHOOTER VOICE
 
 Co-op hunt while he was away. His order of 2026-10-09: a line the player reads in a raid is a short caps headline like Call of Duty, Fortnite or ARC Raiders, with a short detail only when needed, never an explaining sentence. The review of the third batch of raid text found details that still explained and three headlines that narrated. They now read as callouts: SIEGE INCOMING with About 6 machines inbound, a closing ring with the time it has left, EXTRACTION MISSED with Hold E to call again, the call with only its inbound time, a teammate call as his name then EXTRACT and the letter, HOST DISCONNECTED with You are hosting now, PILLAGER REINFORCEMENTS, SPOTTED BY SOMETHING HUGE, GRENADE HIT COVER with Get clear, and the in-ring hints in a few words. The inbound hint keeps its seconds.

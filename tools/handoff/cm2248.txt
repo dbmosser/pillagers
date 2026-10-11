@@ -1,0 +1,7 @@
+v22.48: a gun carried out keeps its slot
+
+After an extraction a gun he carried out is never left in no slot, even when key 2 showed no gun.
+
+Check 22.48. Fails on v22.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

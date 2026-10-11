@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.47';
+var VER='22.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22910,8 +22910,17 @@ var _cdone=contractExtract(G.bag,haul);
     if((P.equippedSec||'none')===P.equipped) P.equippedSec='none';
     // v22.45, decision D3: the gun on key 1 is gun 1 and the gun on key 2 is gun 2, over the tier sort above; every other gun he carried
     // went home above as it always did (the armoury or the stash). Only a gun the armoury now holds takes a slot.
+    var _d3o=P.equipped;
     if(_d3[0]&&P.weapons.indexOf(_d3[0])>=0){ if(P.equippedSec===_d3[0]) P.equippedSec='none'; P.equipped=_d3[0]; }
     if(_d3[1]&&_d3[1]!==P.equipped&&P.weapons.indexOf(_d3[1])>=0) P.equippedSec=_d3[1];
+    // v22.48, from the review of build 4: D3 NEVER UNSLOTS A GUN HE CARRIED OUT. With the SMG on key 1 and the Longshot moved to key 3
+    // (or a Medkit on key 2), key 2 showed no gun: the tier sort made the Longshot gun 1 and the SMG gun 2, then D3 put the SMG in gun 1,
+    // emptied gun 2 and nothing refilled it. He came home with the SMG and Bare Hands, the Longshot in the armoury in no slot, and the
+    // extraction then deleted his key 3 for it. The gun D3 moved out of gun 1 now takes gun 2 when gun 2 is empty, as long as it is a
+    // gun he carried out (never the freebie kit pistol, which the list already leaves out), the v12.38 rule.
+    if(_d3o&&_d3o!==P.equipped&&_d3o!=='fists'&&((P.equippedSec||'none')==='none'||P.equippedSec==='fists')&&P.weapons.indexOf(_d3o)>=0){
+      for(var _d3j=0;_d3j<_keq.length;_d3j++) if(_keq[_d3j].id===_d3o){ P.equippedSec=_d3o; break; }
+    }
     for(i=0;i<THROWKEYS.length;i++){
       var tk=THROWKEYS[i];
       for(var q=0;q<G.pouch[tk];q++) P.stash.push(tk);
@@ -35493,7 +35502,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.47: Raid alerts read as short callouts: SIEGE INCOMING, EXTRACTION MISSED, HOST DISCONNECTED, PILLAGER REINFORCEMENTS and short details instead of sentences. Check 22.47 fails on v22.46',
+  now:'v22.48: After an extraction a gun he carried out is never left in no slot, even when key 2 showed no gun. Check 22.48 fails on v22.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
