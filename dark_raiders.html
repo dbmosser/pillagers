@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.87';
+var VER='22.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14747,6 +14747,52 @@ function alertDraw(L){   // inside the message scale, at the top of the band
 // a remark said just before stood on screen through the burn, and the queue never moved. msgTick runs them on frame time (dt,
 // capped at 0.1 s) in the running branch, the death beat and the burn alike; only a solo pause, which stops the world, stops them.
 // MERIDIAN IS BURNING THE SITE is a critical alert held while the site burns (G.nuking).
+// v22.xx, the raid text rewrite (R39): THE MAP STORY ON A LORE CARD. HIS ORDER (2026-10-09): the raid text reads like Call of Duty,
+// Fortnite or ARC Raiders, and in those a found document opens as a card you can read, never as a 250 character message row. The
+// map story (THE MANIFEST clipboard, THE GATE PASS printer) was said as one message line of its name and its whole text, which the
+// message row cut at two lines with a truncation mark, so most of it was never read, and it was decided in the draw path. Whether
+// it has been read is now decided here, in the update (loreTick, from msgTick), and G.storyRead and the run report storyRead are
+// still set once. The text shows on a HUD panel card (drawLore): left of centre above the tactical belt, its name as a caps amber
+// title and its body wrapped no wider than 30 percent of the screen, for 14 s or until he is 300 away. It is hidden under any alert
+// or the use bar, and while the backpack or the map is open. It never goes into the feed. Cosmetic only: no random draw, no state
+// beyond the read flags it always set.
+var LORELIFE=14, LOREFAR=300;
+function loreTick(dt){
+  if(!G||G.sim||!G.map||!G.player) return;
+  var st=G.map.story, p=G.player, L=G.lore;
+  if(st&&!G.storyRead&&Math.hypot(p.x-st.x,p.y-st.y)<60){
+    G.storyRead=1; if(G.tel) G.tel.storyRead=1;
+    G.lore=L={name:String(st.name||'').toUpperCase(),text:String(st.text||''),x:st.x,y:st.y,T:LORELIFE,at:G.t||0};
+  }
+  if(L){ L.T-=dt; if(!(L.T>0)||Math.hypot(p.x-L.x,p.y-L.y)>LOREFAR) G.lore=null; }
+}
+function drawLore(){
+  var L=G&&G.lore, p=G&&G.player, rs, w, pad, fT, fB, pB, pT, lh, th, lines=[], words, cur, i, tr, x, y, h, top, al, now;
+  if(!L||!p||G.over||G.bagOpen||G.mapOpen||alertUp()||p.prep||p.prepA) return 0;
+  now=G.t||0; al=Math.max(0,Math.min(1,(now-L.at)/0.3,L.T/0.6));
+  if(!(al>0)) return 0;
+  rs=Math.max(1,hudRes());
+  pad=Math.round(LH(10)*rs); fT=hudFS(TYPE.head); fB=hudFS(TYPE.label); pT=msgPx(fT); pB=msgPx(fB);
+  lh=Math.round(pB*1.35); th=Math.round(pT*1.3);
+  w=Math.round(Math.min(W*0.30,LH(420)*rs));
+  ctx.save();
+  try{
+    ctx.font=fB;
+    words=TX(L.text).split(' '); cur='';   // his wording of the whole text is what is wrapped, as the CONDITIONS wrap does
+    for(i=0;i<words.length;i++){ tr=cur?cur+' '+words[i]:words[i]; if(cur&&txRawW(ctx,tr)>w-pad*2){ lines.push(cur); cur=words[i]; } else cur=tr; }
+    if(cur) lines.push(cur);
+    h=pad*2+th+lines.length*lh;
+    top=H*0.82; if(G.hotCells&&G.hotCells.length){ for(i=0;i<G.hotCells.length;i++) if(G.hotCells[i].y>H*0.4) top=Math.min(top,G.hotCells[i].y); }
+    y=Math.max(LH(8),Math.round(top-LH(14)*rs-h)); x=Math.max(LH(8),Math.round(W/2-LH(16)*rs-w));
+    ctx.globalAlpha=al;
+    hudPanel(x,y,w,h,0.84);
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    ctx.font=fT; ctx.fillStyle=HUDC.warn; ctx.fillText(L.name,x+pad,y+pad+Math.round(pT*0.9));
+    ctx.font=fB; ctx.fillStyle=HUDC.text;
+    for(i=0;i<lines.length;i++) ctx.fillText(lines[i],x+pad,y+pad+th+Math.round(pB*0.95)+i*lh);
+  } finally { ctx.restore(); }
+  return lines.length;
+}
 function msgTick(dt){
   if(!G) return;
   dt=(dt>0)?Math.min(0.1,dt):0;
@@ -14754,6 +14800,7 @@ function msgTick(dt){
   if(G.feed&&G.feed[1]&&G.feed[1].T>0) G.feed[1].T-=dt;   // v21.86 (R04): the second message row runs out on the same clock
   alertTick(dt);   // the alert lane and its queue (R08)
   locTick(dt);   // v22.xx (R34): the location tag
+  loreTick(dt);   // v22.xx (R39): the map story card
   pickTick(dt);   // v22.50 (R16): the pickup stack
   giftTick();   // v22.75 (R30): an offer that ran out ends here, not in drawGiftLine
   // v13.32, v13.33: a short queue of lines that must not be lost, shown when the rows free up. v21.88 (R06): only into a row that is
@@ -25977,10 +26024,7 @@ if(G.map.story){
     wc.fillStyle='#2b2f36'; wc.fillRect(_st2.x-7,_st2.y-26,14,28);
     wc.fillStyle='#9aa8b2'; wc.fillRect(_st2.x-5,_st2.y-24,10,3);
     wc.fillStyle='#ffc04a'; wc.fillRect(_st2.x-3,_st2.y-18,6,2);
-    if(!G.sim&&!G.storyRead&&G.player&&dist(G.player,_st2)<60){
-      G.storyRead=1; G.tel.storyRead=1;
-      say(_st2.name+'. '+_st2.text);
-    }
+    // v22.xx (R39): whether the story is read is decided in the update (loreTick), and it shows on the lore card (drawLore)
   }
   if(G.prints) for(i=0;i<G.prints.length;i++){
     var _fp=G.prints[i],_fa=clamp(1-_fp.t/6,0,1)*0.35;
@@ -28608,6 +28652,7 @@ function drawBossBar(){
   try{ drawBossBar(); }catch(_bb){}   // v17.45: his pick 21
   try{ drawGiftLine(); }catch(_gl){}   // v17.52: an open trade offer stays on screen
   try{ drawUseBar(); }catch(_ub){}   // v18.75, his note: the bandage, medkit and plate wind-ups on the HUD
+  try{ drawLore(); }catch(_lr){}   // v22.xx (R39): the map story card
   if(p.hp<32&&!p.downed){
     // v9.69, HIS NOTE: "red flashing for low health should slow down 2x when not
     // in combat". It ran at one rate forever, a cycle every 1.05 seconds, as
@@ -35869,7 +35914,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.87: Messages and alerts said while the sector map is open now show over the map instead of under it. Check 22.87 fails on v22.86',
+  now:'v22.88: The story you find on each map now opens as a readable card instead of a cut-off message line. Check 22.88 fails on v22.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

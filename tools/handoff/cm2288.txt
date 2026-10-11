@@ -1,0 +1,7 @@
+v22.88: the map story on a lore card
+
+The story you find on each map now opens as a readable card instead of a cut-off message line.
+
+Check 22.88. Fails on v22.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

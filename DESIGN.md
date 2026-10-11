@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.88 - THE MAP STORY ON A LORE CARD
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and a found document opens as a card you can read. The map story was said as one message row of about 250 characters, which the row cut at two lines, so most of it was never read. It now shows on a card left of centre above the tactical belt: its name as an amber caps title and the whole text wrapped under it, for 14 seconds or until you walk 300 away. It hides under an alert or the use bar and never goes into the message feed.
+
+MEASURED. Check 22.88 passes, and fails on v22.87.
 ## v22.87 - LINES SAID WITH THE MAP OPEN DRAW OVER IT
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and a callout is never hidden by the map. The message band was drawn before the sector map, whose dark backing covers the screen, so with the map open a Waypoint marked line, a ring closing or a Crier marking you was drawn underneath it and never seen. With the map open the band is now drawn after the map, over it. With the map shut nothing changes.
