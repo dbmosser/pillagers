@@ -1,0 +1,7 @@
+v22.68: a downed teammate shows down and [e] revive
+
+A downed teammate shows DOWN with his seconds, and within reach [E] REVIVE with his name.
+
+Check 22.68. Fails on v22.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

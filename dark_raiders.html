@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.67';
+var VER='22.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29195,6 +29195,23 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
       if(_hsR) ctx.restore();
     }
   }
+  // v22.68, the raid text rewrite (R26): A DOWNED TEAMMATE SHOWS [E] REVIVE. Holding E beside a downed teammate picks him up (v16.05,
+  // within NET_REV_R), but nothing over him said so: a downed pillager got [E] REVIVE NAME with his seconds, a teammate only his name.
+  // Within reach, the teammate E would pick up (netMateDown, the same test netRevHold uses) gets the same prompt as the pillager:
+  // [E] REVIVE NAME and the seconds his word says he has left. It is drawn only when promptPick says E acts on him (R25). The bleed
+  // clock is read from his word, never written.
+  if(_pk==='mate'){
+    (function(){
+      var ms=-1, mg=null, j, sp, hs;
+      try{ ms=netMateDown(p); }catch(_e){ ms=-1; }
+      for(j=0;j<NET.up.length;j++) if(NET.up[j]&&NET.up[j].seat===ms){ mg=NET.up[j]; break; }
+      if(!mg) return;
+      sp=w2s(mg.x,26,mg.y); hs=hudAtIn(sp.x,sp.y);
+      hudPrompt('['+keyLabel('KeyE','E')+'] REVIVE '+String(netSeatName(ms)||'PILLAGER').toUpperCase()+((mg.dt>0)?('  \u00b7  '+mg.dt+'s'):''),sp.x,sp.y);
+      ctx.textAlign='left';
+      if(hs) ctx.restore();
+    })();
+  }
   var nc2=G.nearContainer;
   if(nc2&&!G.searching&&!p.downed&&(_pk==='search'||G.nearPad)){   // v22.67 (R25): one prompt at a time; in a ring it names X, its own key
     var s=w2s(nc2.x,26,nc2.y);
@@ -35734,7 +35751,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.67: Only one E prompt is drawn at a time, the one a held E acts on. Check 22.67 fails on v22.66',
+  now:'v22.68: A downed teammate shows DOWN with his seconds, and within reach [E] REVIVE with his name. Check 22.68 fails on v22.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41243,6 +41260,13 @@ function netUpTags(){
       tw=wc.measureText(nm).width;
       wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);
       wc.fillStyle='#ffc04a'; wc.fillText(nm,g.x-tw/2,g.y-52);
+      // v22.68, the raid text rewrite (R26): a teammate who is down says so over his head, DOWN and the seconds his word says he
+      // has left, in danger red on a danger plate above his name, seen from anywhere on screen. Read from his word, never written.
+      if(g.dn){
+        var dl='DOWN'+((g.dt>0)?('  \u00b7  '+g.dt+'s'):''), dw=wc.measureText(dl).width;
+        wc.fillStyle='rgba(40,8,6,.86)'; wc.fillRect(g.x-dw/2-4,g.y-77,dw+8,13);
+        wc.fillStyle='#ff5a4a'; wc.fillText(dl,g.x-dw/2,g.y-67);
+      }
       n++;
     }
   }catch(e){}

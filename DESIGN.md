@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.68 - A DOWNED TEAMMATE SHOWS DOWN AND [E] REVIVE
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid reads like a shooter HUD. Holding E beside a downed teammate picks him up, but nothing over him said so: a downed pillager got [E] REVIVE with his seconds, a teammate only his name. A downed teammate now shows DOWN and the seconds he has left over his head, in red, seen from anywhere on screen, and within reach he gets the same prompt as the pillager: [E] REVIVE and his name with his seconds. Nothing is drawn over yourself, and his bleed clock is only read.
+
+MEASURED. Check 22.68 passes, and fails on v22.67.
 ## v22.67 - ONE PROMPT AT A TIME
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid reads like a shooter HUD. With a door he held the key for and a crate both in reach, both prompts said [E] and E did the door first; beside a downed pillager, a survivor and a crate it was three [E] prompts at once. Only the prompt for the target a held E acts on is drawn now, in the order the game itself takes E: a door he has the key for, the seal, a downed teammate, a downed pillager, the survivor, the Peddler, the ring he stands in, then the crate. A locked door with no key still shows LOCKED, and inside a ring the search prompt still names X, its own key.
