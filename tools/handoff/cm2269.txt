@@ -1,0 +1,7 @@
+v22.69: the what is new card names the prompts
+
+The what is new card names the prompt builds.
+
+Check 22.69. Fails on v22.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

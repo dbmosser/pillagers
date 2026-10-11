@@ -1,0 +1,5 @@
+## v22.69 - THE WHAT IS NEW CARD NAMES THE PROMPTS
+
+Co-op hunt while he was away. The card was stamped v22.53 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text prompt builds shipped on the evening of 2026-10-10: every world prompt is drawn at the SEARCH size on a plate, one at a time, with the key of the device in hand, and a downed teammate shows DOWN and [E] REVIVE; the rest are in the change list.
+
+MEASURED. Check 22.69 passes, and fails on v22.68.

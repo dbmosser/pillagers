@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.69 - THE WHAT IS NEW CARD NAMES THE PROMPTS
+
+Co-op hunt while he was away. The card was stamped v22.53 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text prompt builds shipped on the evening of 2026-10-10: every world prompt is drawn at the SEARCH size on a plate, one at a time, with the key of the device in hand, and a downed teammate shows DOWN and [E] REVIVE; the rest are in the change list.
+
+MEASURED. Check 22.69 passes, and fails on v22.68.
 ## v22.68 - A DOWNED TEAMMATE SHOWS DOWN AND [E] REVIVE
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid reads like a shooter HUD. Holding E beside a downed teammate picks him up, but nothing over him said so: a downed pillager got [E] REVIVE with his seconds, a teammate only his name. A downed teammate now shows DOWN and the seconds he has left over his head, in red, seen from anywhere on screen, and within reach he gets the same prompt as the pillager: [E] REVIVE and his name with his seconds. Nothing is drawn over yourself, and his bleed clock is only read.
