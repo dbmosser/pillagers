@@ -9791,7 +9791,7 @@ window.__REGRESS=[
        h4=el.querySelector('h4');
        if(!h4) bad.push('the detail card drew no heading');
        else if(h4.textContent!==want) bad.push('the detail card reads "'+h4.textContent+'" on the sector where the place is '+nB);
-       say=function(m){ said.push(String(m)); };
+       say=function(m,k,o){ said.push(String(m)+((o&&o.sub)?(' '+o.sub):'')); };   // tr53fix: CONTRACT DONE with his words as the detail
        G={tel:{},sim:false};
        contractStep(c);
        mid=(G.tel&&G.tel.contractsMid)||[];
@@ -14929,7 +14929,7 @@ window.__REGRESS=[
        a0=A.loot.length;
        netSend=function(q,m){ sent.push(JSON.parse(JSON.stringify(m))); return true; };
        netSendFast=function(q,m){ fast.push(JSON.parse(JSON.stringify(m))); return true; };
-       netBroadcast=function(){}; say=function(s){ lines.push(String(s)); };
+       netBroadcast=function(){}; say=function(s,k,o){ lines.push(String(s)+((o&&o.sub)?(' '+o.sub):'')); };
        NET.on=true; NET.role='host'; NET.seat=0; NET.peers=[{seat:1,state:'in'}]; NET.upSeed=g.seed>>>0;
        netContInit(g);
        H=g.hotZone; H.x=A.x; H.y=A.y;
@@ -14944,7 +14944,7 @@ window.__REGRESS=[
        x2=Math.round(clamp(H.x>WORLD_W/2?H.x-1500:H.x+1500,H.r,WORLD_W-H.r));
        netWorldTake(peer,{t:'wd',sd:g.seed>>>0,hz:[x2,Math.round(H.y),(H.moves|0)+1]});
        if(Math.abs(H.x-x2)>1) bad.push('a linked window kept its own hot ground ('+Math.round(H.x)+', not '+x2+')');
-       if(!lines.some(function(s){ return s.indexOf('hot ground has moved')>=0; })) bad.push('a linked window was not told the hot ground moved');
+       if(!lines.some(function(s){ return (/hot ground (has )?moved/i).test(s); })) bad.push('a linked window was not told the hot ground moved');   // tr53fix: or HOT GROUND MOVED
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        netSend=oSend; netSendFast=oFast; netBroadcast=oBc; say=oSay;
