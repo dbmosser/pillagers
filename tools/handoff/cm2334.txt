@@ -1,0 +1,7 @@
+v23.34: arcade: an upgrade never replaces the gun in hand
+
+In the arcade a found gun never replaces the gun in your hands: it is stowed, packed on key 3 or 4, or scrapped for points.
+
+Check 23.34. Fails on v23.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.34 - ARCADE: AN UPGRADE NEVER REPLACES THE GUN IN HAND
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 12 of 20. In the arcade a walk-up player keeps the gun he is shooting. A found gun with a higher tier than his stowed gun takes the stowed slot, and the old stowed gun goes into the backpack on a free gun key (tag STOWED). Otherwise a gun better than the worst gun he carries goes into the backpack on key 3 or 4 (tag KEY 3). Otherwise, or when it is a copy of a gun he already has, it is scrapped for points like a valuable (tag SCRAPPED). Normal raids are untouched.
+
+MEASURED. Check 23.34 passes, and fails on v23.33.
 ## v23.33 - ARCADE: WALK-OVER LOOT
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 11 of 20. In the arcade a box in reach that still holds loot is searched with no key, so a walk-up player loots by walking over it, and the bar fills six times as fast (also for a box player 2 searches through the host). A valuable never goes into the backpack: it scores a tenth of its value at once and the same goes into the haul pot that an extraction pays again, shown as +N on its pickup row. Ammo, heals, throws, plates and keys go where they always went. A pile the player dropped, a box a teammate holds and a hired man are never searched by walking over them. Normal raids are untouched.
