@@ -1694,7 +1694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.46';
+var VER='23.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36129,7 +36129,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.46: In the arcade G on the keyboard and D-DOWN on the controller heal at once with what you carry, and the controls card shows it. Check 23.46 fails on v23.45',
+  now:'v23.47: While the arcade is on the screens stay awake, and leaving the arcade lets them sleep again. Check 23.47 fails on v23.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -45167,6 +45167,46 @@ function arcadePadsOut(){
   netPadPost();
   return NET.padIx;
 }
+// v23.47, HIS YES (2026-10-11) to the five recommendations, arcade24: SCREEN WAKE LOCK. The party machine sits on the attract loop
+// for hours with nobody touching it, and a monitor that goes to sleep looks like a broken game. While the arcade is on, each
+// window holds a screen wake lock (navigator.wakeLock.request('screen')). The browser drops the lock whenever the tab is hidden,
+// so it is asked for again when the tab comes back (visibilitychange), and it is let go at leave (arcadeLeave, which the operator
+// chord and the host arcoff both reach). The API is missing or refused in some browsers and contexts, so every call is wrapped and
+// a refusal changes nothing else. Only the arcade asks for it; normal play never holds a wake lock.
+var ARCADE_WAKE={lock:null,want:0,pend:0,asks:0};
+function arcadeWakeOn(){
+  ARCADE_WAKE.want=1;
+  if(ARCADE_WAKE.pend) return false;
+  if(ARCADE_WAKE.lock&&!ARCADE_WAKE.lock.released) return false;
+  ARCADE_WAKE.lock=null;
+  var wl=null, pr=null;
+  try{ wl=navigator.wakeLock; }catch(_wn){ wl=null; }
+  if(!wl||typeof wl.request!=='function') return false;
+  try{
+    ARCADE_WAKE.pend=1; ARCADE_WAKE.asks++;
+    pr=wl.request('screen');
+    if(pr&&typeof pr.then==='function') pr.then(function(s){
+      ARCADE_WAKE.pend=0;
+      if(!s) return;
+      if(!ARCADE.on||!ARCADE_WAKE.want){ try{ var q=s.release(); if(q&&q.catch) q.catch(function(){}); }catch(_wr){} return; }
+      ARCADE_WAKE.lock=s;
+    },function(){ ARCADE_WAKE.pend=0; });
+    else ARCADE_WAKE.pend=0;
+  }catch(_wq){ ARCADE_WAKE.pend=0; return false; }
+  return true;
+}
+function arcadeWakeOff(){
+  ARCADE_WAKE.want=0;
+  var s=ARCADE_WAKE.lock;
+  ARCADE_WAKE.lock=null;
+  if(!s||s.released) return false;
+  try{ var q=s.release(); if(q&&q.catch) q.catch(function(){}); }catch(_wo){}
+  return true;
+}
+function arcadeWakeVis(){
+  try{ if(!document.hidden&&ARCADE.on&&ARCADE_WAKE.want) arcadeWakeOn(); }catch(_wv){}
+}
+try{ document.addEventListener('visibilitychange',arcadeWakeVis); }catch(_wvl){}
 function arcadeEnter(role){
   role=(role==='p2')?'p2':'host';
   var mi=(P&&typeof P.mapIx==='number')?P.mapIx:0;
@@ -45182,6 +45222,7 @@ function arcadeEnter(role){
   arcadePadsIn(ARCADE.role);   // v23.28 (arcade7): controller 1 is player 1, controller 2 is player 2, in memory only
   if(ARCADE.role==='host') netSamePost({t:'arcon',pair:NET.pair});
   arcadeAttStart();   // v23.40 (arcade17): the attract loop from the top
+  try{ arcadeWakeOn(); }catch(_aw){}   // v23.47 (arcade24): the screens stay awake while the arcade is on
   return true;
 }
 // The arcade words on the pair channel (netSameOnMsg hands every word starting arc here, pair already checked).
@@ -45471,6 +45512,7 @@ function arcadeLeave(){
   if(!ARCADE.on) return false;
   if(ARCADE.role==='host') netSamePost({t:'arcoff',pair:NET.pair});
   var hadRaid=arcadeRaidStop('leave'), r=arcadeSandboxOut();
+  try{ arcadeWakeOff(); }catch(_aw2){}   // v23.47 (arcade24): the screens may sleep again
   try{ if(ATT.on) attStop(); ATT.last=Date.now(); }catch(_at){}
   try{ arcadeAttUndress(); }catch(_au){}   // v23.40 (arcade17): the title attract has none of the arcade pages
   NET.arcPick=0; NET.arcBoot=0; ARCADE.wantIn=0;

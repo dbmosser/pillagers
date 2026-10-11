@@ -1,0 +1,7 @@
+v23.47: arcade: screen wake lock
+
+While the arcade is on the screens stay awake, and leaving the arcade lets them sleep again.
+
+Check 23.47. Fails on v23.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
