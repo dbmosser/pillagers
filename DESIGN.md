@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.36 - ARCADE: OVERSEER SCORES 2,000 FOR PLAYER 2
+
+Co-op hunt while he was away. Found by the review of arcade builds 7 to 13. In the arcade the Overseer is worth 2,000, but when player 2 fired the last round his window scored it as a plain warden, 400, because the copy of the body on his window never knew it was the boss. His window now knows the Overseer by its name, as the rest of the party code already does, so the kill is worth 2,000 whoever lands it. Normal raids are untouched.
+
+MEASURED. Check 23.36 passes, and fails on v23.35.
 ## v23.35 - ARCADE: THE ARCADE HUD
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 13 of 20. A walk-up player needs the score, the way out and when he drops back in, and nothing else. In the arcade the CONDITIONS panel, the CURRENT PILLAGERS board, the notoriety stamp and the WANTS REVENGE callouts are gone. The compass arrow under the EXTRACT readout is twice the size with a dark edge, so the way out reads at a glance. After a respawn or a re-drop, DROPPING IN 3, 2, 1 counts down big in the centre. Normal raids are untouched.

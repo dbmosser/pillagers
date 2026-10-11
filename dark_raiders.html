@@ -1692,7 +1692,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.35';
+var VER='23.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36106,7 +36106,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.35: In the arcade the HUD drops the conditions, the board, notoriety and the revenge lines, the extract arrow is bigger, and DROPPING IN counts down. Check 23.35 fails on v23.34',
+  now:'v23.36: In the arcade the Overseer scores 2,000 for player 2 as it does for the host. Check 23.36 fails on v23.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43791,7 +43791,10 @@ function netKillTake(peer,m){
   if(T.kills&&T.kills[k]!==undefined) T.kills[k]++;
   try{ contractKill(k); }catch(_ck){}
   if(m.el||(e&&e.elite)) T.eliteKills=(T.eliteKills||0)+1;
-  if(G.arcade) arcadeKill(k,!!(m.el||(e&&e.elite)),!!(e&&e.boss));   // v23.29 (arcade8): the arcade score of player 2
+  // v23.36 (arcmidfixa), review of arcade builds 7 to 13: AN OVERSEER KILL BY PLAYER 2 SCORED 400, NOT 2,000. The body here is a mirror
+  // made by netEntMake/netEntFill, which never set boss, so player 2 scored the Overseer as a plain warden. A mirror is known as the
+  // boss by its name, as every other mirror site does (name===BOSS_NAME). The kill word itself is unchanged.
+  if(G.arcade) arcadeKill(k,!!(m.el||(e&&e.elite)),!!(e&&(e.boss||e.name===BOSS_NAME)));   // v23.29 (arcade8): the arcade score of player 2
   if(k==='raider'&&e&&e.ident){
     rr2=idRec(e.ident); rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
     saveProfile();

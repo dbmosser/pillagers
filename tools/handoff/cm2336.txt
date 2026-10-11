@@ -1,0 +1,7 @@
+v23.36: arcade: overseer scores 2,000 for player 2
+
+In the arcade the Overseer scores 2,000 for player 2 as it does for the host.
+
+Check 23.36. Fails on v23.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
