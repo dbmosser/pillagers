@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.63 - KEYS FOLLOW THE DEVICE
+
+Co-op hunt while he was away. His order of 2026-10-09: a raid line names the key of the device in hand, in the shooter voice. Knocked down in the middle of a pull said Hold E to try again even with a controller in hand, where the pull is on X. His words stay word for word; only the E is now the key the pull is on, so an unmoved keyboard reads exactly as before. The auto-jog lines are now STOP FIRST, AUTO-JOG ON and AUTO-JOG OFF, with the bound key in the detail.
+
+MEASURED. Check 22.63 passes, and fails on v22.62.
 ## v22.62 - BACKPACK FULL SAYS WHAT TO PRESS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, short caps callouts, never an explaining sentence. The review of the fourth batch of raid text found the BACKPACK FULL detail still a sentence, [Z] drops the selected item., and not even true where it was read: Z drops only with the backpack open, and the pickup stack shows only with it shut. It now reads [B] BACKPACK then [Z] DROP (on a controller [VIEW] BACKPACK then [Y] DROP), and the same with autoloot on, where it used to say nothing was left worth dropping while rare items could still be dropped by hand. The stall refusal NOT ENOUGH BANKED CREDITS now reads Costs and the price, then Carrying and the stall money on him, instead of a sentence repeating that it is not banked. The SOLD line keeps Worth and the carried home figure: it is a short detail with the number he needs, as the raid text design allows.

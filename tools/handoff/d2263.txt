@@ -1,0 +1,5 @@
+## v22.63 - KEYS FOLLOW THE DEVICE
+
+Co-op hunt while he was away. His order of 2026-10-09: a raid line names the key of the device in hand, in the shooter voice. Knocked down in the middle of a pull said Hold E to try again even with a controller in hand, where the pull is on X. His words stay word for word; only the E is now the key the pull is on, so an unmoved keyboard reads exactly as before. The auto-jog lines are now STOP FIRST, AUTO-JOG ON and AUTO-JOG OFF, with the bound key in the detail.
+
+MEASURED. Check 22.63 passes, and fails on v22.62.

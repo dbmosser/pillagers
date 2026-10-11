@@ -1,0 +1,7 @@
+v22.63: keys follow the device
+
+Knocked down mid-pull names the pull key of the device in hand, and the auto-jog lines are caps headlines.
+
+Check 22.63. Fails on v22.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
