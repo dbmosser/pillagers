@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.97';
+var VER='22.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14995,6 +14995,14 @@ function notoStamp(why){
   G.shake=Math.max(G.shake||0,7);
   try{ sfx('alarm',G.player.x,G.player.y); }catch(_ns){}
 }
+// v22.xx, the raid text rewrite (R47): LABEL PLATES FIT THEIR TEXT. HIS ORDER (2026-10-09): the raid text reads like a shooter HUD, and
+// every word sits on a plate that fits it. The floating labels (loot found, targets down, WEAK SPOT) sat on a plate a fixed 13 units
+// tall, laid 10 above the baseline, while a loot name is set in TYPE.label at about 18 units: the plate covered the lower two thirds
+// of the letters and the caps stuck out of its top. The plate is now as tall as the letters (their measured ascent and descent, never
+// less than the font's caps and descender share) with a padding grown with the font, as the Undercroft names have been since v18.63;
+// the item icon grows to the plate. The step between labels stacked over one crate follows the same height (labelPlateH), so a stack
+// of loot names no longer overlaps its own plates. A stacked column grows a little taller.
+function labelPlateH(px){ px=(px>0)?px:13; return Math.round(px*0.74+px*0.2+2*Math.max(3,px*0.18)); }
 function label(x,y,txt,col,delay,big,ik){
   if(G.sim) return;
   // Push off any live label that would land on top of this one. Without this a
@@ -15013,6 +15021,8 @@ function label(x,y,txt,col,delay,big,ik){
     myW=wc.measureText(txt).width+(ik?LH(26):0);
     wc.restore();
   }catch(_lm){}
+  var _lph=labelPlateH(msgPx(FS(big?TYPE.label:TYPE.micro)));   // v22.xx (R47): the plate this label is drawn on
+  LBL_STEP=Math.max(LBL_STEP,_lph+2);
   var row=0,tries=0;
   while(tries++<40){
     var clash=false,ny=y-row*LBL_STEP;
@@ -15022,7 +15032,7 @@ function label(x,y,txt,col,delay,big,ik){
       // the rise at the label's life, so they agree about the position on screen.
       var oy=o.y-Math.min(Math.max(o.t,0),o.life)*LBL_RISE;
       var gap=((o.w||100)+myW)/2+8;
-      if(Math.abs(o.x-x)<gap&&Math.abs(oy-ny)<13){ clash=true; break; }
+      if(Math.abs(o.x-x)<gap&&Math.abs(oy-ny)<Math.max(13,_lph)){ clash=true; break; }
     }
     if(!clash) break;
     row++;
@@ -27270,11 +27280,13 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     // opening a container was a line of text; now the item's own portrait rises
     // out of the crate beside its name, using the icon set v2.87 built. The
     // plate widens to hold it so nothing overlaps.
-    var icw=lb.ik?15:0;
+    // v22.xx (R47): the plate is as tall as the letters, from their measured box, and the icon grows with it
+    var _lbm=wc.measureText(lb.txt), lw=_lbm.width, _lbp=msgPx(wc.font);
+    var _lba=Math.max(_lbm.actualBoundingBoxAscent||0,_lbp*0.74), _lbd=Math.max(_lbm.actualBoundingBoxDescent||0,_lbp*0.2), _lbq=Math.max(3,_lbp*0.18), _lbh=_lba+_lbd+_lbq*2, _lbt=lb.y-rise-_lba-_lbq;
+    var _lbs=Math.max(13,Math.round(_lbh-4)), icw=lb.ik?_lbs+2:0;
     wc.fillStyle='rgba(6,9,13,.55)';
-    var lw=wc.measureText(lb.txt).width;
-    wc.fillRect(lb.x-lw/2-4-icw,lb.y-rise-10,lw+8+icw,13);
-    if(lb.ik) drawItemIcon(wc,lb.ik,lb.x-lw/2-icw+3,lb.y-rise-4,13);
+    wc.fillRect(lb.x-lw/2-4-icw,_lbt,lw+8+icw,_lbh);
+    if(lb.ik) drawItemIcon(wc,lb.ik,lb.x-lw/2-icw/2-2,_lbt+_lbh/2,_lbs);
     wc.fillStyle=lb.c;
     // v8.39, audit: same defect as the nameplate. Box centred, text drawn from
     // the centre. With an icon the plate is widened to the LEFT (icw), so the
@@ -35984,7 +35996,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.97: A shotgun blast on a weak spot now shows WEAK SPOT once instead of once per pellet, and loot names stay up during a fight. Check 22.97 fails on v22.96',
+  now:'v22.98: Loot names and callouts over the world now sit on a dark plate that fits the whole word. Check 22.98 fails on v22.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

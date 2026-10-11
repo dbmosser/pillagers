@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.98 - LABEL PLATES FIT THEIR TEXT
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where every word sits on a plate that fits it. The floating loot names, target callouts and WEAK SPOT sat on a plate a fixed 13 units tall, shorter than the letters, so the caps stuck out of the top of it. The plate is now as tall as the letters with a padding grown with the font, the item icon grows to the plate, and labels stacked over one crate step by the plate height so they no longer overlap. A stacked column of loot names is a little taller.
+
+MEASURED. Check 22.98 passes, and fails on v22.97.
 ## v22.97 - WEAK SPOT ONCE PER TARGET
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where a hit callout shows once, not once per pellet. A shotgun blast on a vent pushed one WEAK SPOT label per pellet, eight stacked words in one frame, and the flood of callouts pushed the names of what he had just looted out of the list of world labels. WEAK SPOT now shows at most once per target every half second, and when the list is full the oldest label that is not a loot name goes first. The damage, spark, clank and hit tick of every pellet are unchanged.

@@ -1,0 +1,7 @@
+v22.98: label plates fit their text
+
+Loot names and callouts over the world now sit on a dark plate that fits the whole word.
+
+Check 22.98. Fails on v22.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
