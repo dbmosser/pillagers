@@ -41816,9 +41816,13 @@ window.__REGRESS=[
        g.bag=[]; p.downed=false; p.hp=100;
        __endRaid('extract');
        if(P2.weapons.indexOf('pistol')<0||P2.weapons.indexOf('sniper')<0) bad.push('control: the extraction did not leave both guns in the armoury (it holds '+P2.weapons.join(',')+')');
-       if(P2.equipped!=='sniper') bad.push('control: the extraction did not promote the Longshot into gun 1 (gun 1 reads '+P2.equipped+'), so the tier sort this check is about did not run');
+       // v22.45 retarget (the four-gun belt, decision D3): the guns on keys 1 and 2 go home as gun 1 and gun 2, so with the pistol on key 1
+       // and the Longshot on key 2 gun 1 stays the pistol; before v22.45 the tier sort promoted the Longshot. Either way each gun he carried
+       // out stays in its own slot, never one gun in both, which is the rule this check protects. G2 is the gun gun 2 must hold.
+       var G2=(P2.equipped==='pistol')?'sniper':'pistol';
+       if(P2.equipped!=='sniper'&&P2.equipped!=='pistol') bad.push('control: after the extraction gun 1 reads '+P2.equipped+', neither gun he carried out');
        if(P2.equippedSec===P2.equipped) bad.push('after extracting with both guns, gun 1 and gun 2 both read '+P2.equipped+', so one gun is in two hands and the Scav Pistol he still owns has been unslotted by a run in which he lost nothing');
-       else if(P2.equippedSec!=='pistol') bad.push('gun 2 reads '+P2.equippedSec+' after the extraction, not the Scav Pistol he carried out');
+       else if(P2.equippedSec!==G2) bad.push('gun 2 reads '+P2.equippedSec+' after the extraction, not the '+G2+' he carried out');
        // WHAT THE LAST SCREEN BEFORE THE LIFT PRINTS.
        if(window.__renderStage&&document.getElementById('stagesum')){
          __topClear();
@@ -41837,7 +41841,7 @@ window.__REGRESS=[
        var g2=__state(), p2=g2.player;
        if(!p2.sec||p2.sec.id==='fists') bad.push('the next raid comes up with nothing in gun 2 after an extraction that lost no gun');
        else if(p2.wep&&p2.sec.id===p2.wep.id) bad.push('the next raid comes up holding two copies of the '+p2.sec.id);
-       else if(p2.sec.id!=='pistol') bad.push('the next raid comes up with '+p2.sec.id+' in gun 2, not the Scav Pistol he carried out');
+       else if(p2.sec.id!==G2) bad.push('the next raid comes up with '+p2.sec.id+' in gun 2, not the '+G2+' he carried out');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var g3=__state(); if(g3&&!g3.over){ g3.player.downed=false; g3.bag=[]; __endRaid('extract'); } }catch(_e){}
