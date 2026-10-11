@@ -1,0 +1,5 @@
+## v22.50 - THE PICKUP STACK
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like Call of Duty, Fortnite or ARC Raiders, and in those what you pick up is a short row at the side of the screen, never a sentence in the middle of it. Every item pulled out of a box was said twice in the message rows, Found and then Took, so a box of three items wrote six lines over each other and only the last two could be read, pushing anything that mattered off. Each item is now a row in a pickup stack on the right edge, above the gun card: its icon, its name in its rarity colour and a count. Four rows, four seconds each; the same item again adds to its count. It hides while the backpack or the map is open. The loot labels at the box stay.
+
+MEASURED. Check 22.50 passes, and fails on v22.49.

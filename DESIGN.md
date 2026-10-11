@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.50 - THE PICKUP STACK
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like Call of Duty, Fortnite or ARC Raiders, and in those what you pick up is a short row at the side of the screen, never a sentence in the middle of it. Every item pulled out of a box was said twice in the message rows, Found and then Took, so a box of three items wrote six lines over each other and only the last two could be read, pushing anything that mattered off. Each item is now a row in a pickup stack on the right edge, above the gun card: its icon, its name in its rarity colour and a count. Four rows, four seconds each; the same item again adds to its count. It hides while the backpack or the map is open. The loot labels at the box stay.
+
+MEASURED. Check 22.50 passes, and fails on v22.49.
 ## v22.49 - THE KIT PISTOL STAYS OFF GUN 1
 
 Co-op hunt while he was away. From the review of the four-gun belt, build 4. On the freebie kit the Scav Pistol is in hand and on key 1. Drawing another gun from the backpack while holding it puts the pistol in the backpack, still on key 1, and decision D3 (the guns on keys 1 and 2 go home as gun 1 and gun 2) then made the kit pistol gun 1 at home. The rule of v15.58 is that the kit pistol is kept but never equipped, so taking the kit never changes the gun he goes up with. D3 left it out only while it was in his hands; it now leaves it out in the backpack too.

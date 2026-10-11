@@ -1,0 +1,7 @@
+v22.50: the pickup stack
+
+What you pick up shows as rows on the right edge, above the gun card, with its icon and count.
+
+Check 22.50. Fails on v22.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
