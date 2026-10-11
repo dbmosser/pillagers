@@ -1,0 +1,7 @@
+v22.64: the offer line names one key
+
+The trade offer line names one take key, the one of the device in hand.
+
+Check 22.64. Fails on v22.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

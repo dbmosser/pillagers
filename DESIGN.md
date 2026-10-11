@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.64 - THE OFFER LINE NAMES ONE KEY
+
+Co-op hunt while he was away. His order of 2026-10-09: a raid line names the key of the device in hand. The trade offer line said T or Y to take it whatever he was holding. It now names one key in brackets: Y on a controller, and the key T is bound to on a keyboard. The parts are split by a middle dot, and the giver sees the item, Waiting and the seconds left.
+
+MEASURED. Check 22.64 passes, and fails on v22.63.
 ## v22.63 - KEYS FOLLOW THE DEVICE
 
 Co-op hunt while he was away. His order of 2026-10-09: a raid line names the key of the device in hand, in the shooter voice. Knocked down in the middle of a pull said Hold E to try again even with a controller in hand, where the pull is on X. His words stay word for word; only the E is now the key the pull is on, so an unmoved keyboard reads exactly as before. The auto-jog lines are now STOP FIRST, AUTO-JOG ON and AUTO-JOG OFF, with the bound key in the detail.
