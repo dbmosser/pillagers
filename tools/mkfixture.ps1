@@ -36551,7 +36551,11 @@ window.__REGRESS=[
        P2.notoriety=2;
        g.msgQ=[]; g.msgT=0; g.msg='';
        var seen=[];
-       var note=function(){ var g1=__state(); if(g1&&g1.msg&&(seen.length===0||seen[seen.length-1]!==g1.msg)) seen.push(String(g1.msg)); };
+       // tr18fix: since the raid text rewrite (R18) what he pays is a +$ row in the pickup stack tagged FROM THE SURVIVOR, where no
+       // line can write over it, instead of the He pays you sentence; either one shown counts, on the build before and after.
+       var pickPaid=false;
+       var note=function(){ var g1=__state(); if(g1&&g1.msg&&(seen.length===0||seen[seen.length-1]!==g1.msg)) seen.push(String(g1.msg));
+         if(g1&&g1.pick) for(var q=0;q<g1.pick.length;q++) if(String(g1.pick[q].m).charAt(0)==='+'&&/SURVIVOR/.test(String(g1.pick[q].tag||''))) pickPaid=true; };
        // THE PLAYER PATH: E held through one player update beside him, the same
        // test the key handler feeds (updatePlayer, the stray scan and strayLock).
        g.strayLock=0; keys['KeyE']=true;
@@ -36567,7 +36571,7 @@ window.__REGRESS=[
        }
        var at=function(nn){ for(var k=0;k<seen.length;k++) if(seen[k].indexOf(nn)>=0) return k; return -1; };
        var a=at(PAID), b=at(WORD);
-       if(e.helped&&a<0) bad.push('the line saying the survivor paid him and what he handed over was written over in the same frame and never shown [shown: '+show(seen)+']');
+       if(e.helped&&a<0&&!pickPaid) bad.push('the line saying the survivor paid him and what he handed over was written over in the same frame and never shown [shown: '+show(seen)+']');
        if(e.helped&&b<0) bad.push('the notoriety line was never shown [shown: '+show(seen)+']');
        if(a>=0&&b>=0&&!(a<b)) bad.push('the notoriety line was shown before the line about the pay [shown: '+show(seen)+']');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -40852,13 +40856,15 @@ window.__REGRESS=[
        g.trade=pd; g.hotAssign={}; g.hotAuto={}; g.bag=[];
        P2.credits=5000; p.reserve=0;
        // THE FINDING: he is dry, and he buys the box that says it refills a magazine.
-       g.msg=''; pedBuy(0);
+       g.msg=''; g.pick=[]; pedBuy(0);
        if((p.reserve|0)!==WANT)
          bad.push('an Ammo Box bought at the stall put '+(p.reserve|0)+' rounds in the reserve and not the '+WANT+' it carries: he paid at the moment he had nothing to shoot with and the reserve did not move');
        if(g.bag.indexOf('ammobox')>=0)
          bad.push('the bought Ammo Box is sitting in the backpack, where the belt use verb falls straight past it without a word, so it is a brick he cannot spend');
-       var m1=String(g.msg||'');
-       if(m1.indexOf('backpack')>=0)
+       // tr18fix: since the raid text rewrite (R18) the purchase is a row in the pickup stack (G.pick), the Ammo Box tagged with the
+       // rounds it put in the reserve, so the line read here is the message line and that row together, on the build before and after.
+       var m1=String(g.msg||'')+((g.pick||[]).filter(function(r){ return r.item==='ammobox'; }).map(function(r){ return ' | '+r.m+' '+(r.tag||''); }).join(''));
+       if(m1.toLowerCase().indexOf('backpack')>=0)
          bad.push('the purchase line says the ammunition went into the backpack: "'+m1+'"');
        if(m1.indexOf(String(WANT))<0)
          bad.push('the purchase line does not say how many rounds he got: "'+m1+'"');
@@ -42750,22 +42756,24 @@ window.__REGRESS=[
        pd.stock=[{k:'gun_rifle',price:10,sold:false},{k:'medkit',price:20,sold:false},{k:'medkit',price:30,sold:false}];
        g.trade=pd; g.hotAssign={}; g.hotAuto={}; g.bag=[];
        P2.credits=5000;
+       // tr18fix: since the raid text rewrite (R18) a purchase is a row in the pickup stack (G.pick) for the item, tagged where it went
+       // (SLOT 6 or BACKPACK), instead of a Bought sentence; either one says where it went, on the build before and after.
+       var tg='', hasRow=false;
+       function buy(ix,k){ g.msg=''; g.pick=[]; pedBuy(ix); tg=''; hasRow=false; (g.pick||[]).forEach(function(r){ if(r.item===k){ hasRow=true; tg=String(r.tag||''); } }); return g.msg||''; }
        // THE RIFLE: autoBelt pins it to the first free belt cell, so the line must name that key.
-       g.msg=''; pedBuy(0);
-       var m1=g.msg||'';
-       if(m1.indexOf('Bought')<0) bad.push('control: the rifle purchase did not say Bought (said "'+m1+'")');
+       var m1=buy(0,'gun_rifle');
+       if(m1.indexOf('Bought')<0&&!hasRow) bad.push('control: the rifle purchase did not say Bought (said "'+m1+'") and has no pickup row');
        var onBelt=false; for(var bi in (g.hotAssign||{})) if(g.hotAssign[bi]==='gun_rifle') onBelt=true;
        if(!onBelt) bad.push('staging: autoBelt did not pin the bought rifle to a belt cell, so the line has no key to name');
-       else if(!/tactical belt, key [1-9]/.test(m1)) bad.push('the rifle line said "'+m1+'" and not which belt key it went to');
+       else if(!/tactical belt, key [1-9]/.test(m1)&&!/^SLOT [1-9]$/.test(tg)) bad.push('the rifle line said "'+m1+'" (row tag "'+tg+'") and not which belt key it went to');
        if(g.bag.indexOf('gun_rifle')<0) bad.push('control: the bought rifle is not in the bag');
        // THE MEDKIT WITH NO KEY SET: the backpack.
-       g.msg=''; pedBuy(1);
-       var m2=g.msg||'';
-       if(!/In your backpack/.test(m2)) bad.push('a medkit bought with no key set said "'+m2+'" and not In your backpack');
+       var m2=buy(1,'medkit');
+       if(!/In your backpack/.test(m2)&&tg!=='BACKPACK') bad.push('a medkit bought with no key set said "'+m2+'" (row tag "'+tg+'") and not In your backpack');
        // THE MEDKIT ON KEY 6.
-       g.hotAssign[5]='medkit'; g.msg=''; pedBuy(2);
-       var m3=g.msg||'';
-       if(!/tactical belt, key 6/.test(m3)) bad.push('a medkit bought with key 6 set to medkit said "'+m3+'" and not key 6');
+       g.hotAssign[5]='medkit';
+       var m3=buy(2,'medkit');
+       if(!/tactical belt, key 6/.test(m3)&&tg!=='SLOT 6') bad.push('a medkit bought with key 6 set to medkit said "'+m3+'" (row tag "'+tg+'") and not key 6');
        // THE PURCHASE ITSELF, unchanged: the credits fell by the three prices.
        if(P2.credits!==5000-60) bad.push('control: credits are '+P2.credits+' after three purchases priced 10, 20 and 30 from 5000');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
