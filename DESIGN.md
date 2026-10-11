@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.97 - WEAK SPOT ONCE PER TARGET
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where a hit callout shows once, not once per pellet. A shotgun blast on a vent pushed one WEAK SPOT label per pellet, eight stacked words in one frame, and the flood of callouts pushed the names of what he had just looted out of the list of world labels. WEAK SPOT now shows at most once per target every half second, and when the list is full the oldest label that is not a loot name goes first. The damage, spark, clank and hit tick of every pellet are unchanged.
+
+MEASURED. Check 22.97 passes, and fails on v22.96.
 ## v22.96 - WORLD TEXT DRAWS OVER THE DARK AND FOG
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where a name or a number over the world is always readable. Teammate tags, nameplates, damage numbers and the floating labels (loot found, targets down, WEAK SPOT) were drawn under the darkness and the fog of war, so by night they were dimmed twice and a loot name at the edge of the light was a smudge. They are now drawn after both, in the same place and size. Only the draw order changes, and nameplates still show only on what you can see.

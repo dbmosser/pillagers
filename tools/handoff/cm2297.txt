@@ -1,0 +1,7 @@
+v22.97: weak spot once per target
+
+A shotgun blast on a weak spot now shows WEAK SPOT once instead of once per pellet, and loot names stay up during a fight.
+
+Check 22.97. Fails on v22.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
