@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.25 - ARCADE: PLAYER 2 DROPS IN WITH A
+
+Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 6 of 20. Player 2 now joins with A on its own controller. If nobody is playing yet, player 1 window builds an arcade raid with player 1 benched (frozen, never hit, never a target) under the attract, which now reads PLAYER 1: PRESS ANY BUTTON, and player 2 drops in at a map spawn. Any press from player 1 brings him off the bench beside player 2. If player 1 is already playing, player 2 joins his raid in progress beside him, and the host hears PLAYER 2 JOINED. If player 1 raid was built before the link between the windows was up, player 1 gets a fresh raid on the same sector and keeps his score (PLAYER 2 JOINING). Player 2 never goes up without pressing A, never commits a packed kit, and keeps asking every few seconds until it is in. Normal co-op is exactly as it was.
+
+MEASURED. Check 23.25 passes, and fails on v23.24.
 ## v23.24 - ARCADE: THE MODE ROW AND BOTH WINDOWS
 
 Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 5 of 20. The title has a new row, 2 PLAYER ARCADE DEMO, under the co-op row. It opens the player 2 window the way co-op does and puts both windows into the arcade: his save is set aside, the what is new card is skipped, and the arcade attract covers the screen. The player 1 window drops straight into an endless arcade raid on any key, click, touch or controller button (F1 to F12, Shift, Ctrl and Alt do not, and moving the mouse never does). The player 2 window says PLAYER 2: PRESS A and joins with A on its own controller (the join itself is the next build). A rebooted player 2 window is put back into the arcade, and leaving the arcade takes player 2 out too. Normal play and normal co-op are exactly as they were.

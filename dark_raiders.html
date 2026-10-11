@@ -1692,7 +1692,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.24';
+var VER='23.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35598,7 +35598,7 @@ function loop(ts){
       tickNuke(dt);
     } else {
       refreshVseg();
-      if(G.arcade&&ARCADE.holdT>0){ ARCADE.holdT=Math.max(0,ARCADE.holdT-dt); netPausedStep(dt); }   // v23.22 (arcade3): the drop-in hold after an arcade respawn, he stands still while the world runs on
+      if(G.arcade&&((+ARCADE.holdT||0)>0||(G.player&&G.player.specOut))){ ARCADE.holdT=Math.max(0,(+ARCADE.holdT||0)-dt); netPausedStep(dt); }   // v23.22 (arcade3): the drop-in hold after an arcade respawn, he stands still while the world runs on. v23.25 (arcade6): and a benched player 1
       else if(G.paused&&netPauseLive()) netPausedStep(dt);   // v16.04: paused in a shared co-op raid, he stands still while the world runs on
       else updatePlayer(dt);
       if(G&&G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; }   // v16.11: E given back after the step a pick-up took it (netRevHold)
@@ -36082,7 +36082,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.24: The title has a 2 PLAYER ARCADE DEMO row: any key or button drops you straight into an arcade raid. Check 23.24 fails on v23.23',
+  now:'v23.25: Player 2 joins the arcade with A: player 1 waits on the bench until he presses a button. Check 23.25 fails on v23.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41177,6 +41177,7 @@ function netUpAnnounce(g){
   if(!NET.on||NET.role!=='host'||!g||g.sim) return null;
   m={t:'raid',seed:g.seed>>>0,mapIx:clamp((P&&P.mapIx)|0,0,FIXED_MAPS.length-1),cond:(P&&P.cond==='night')?'night':'day',wx:(g.wx&&g.wx.id)||'',
      iss:g.issDraw?1:0,terms:netUpTerms(termsOn()),merc:(P&&typeof P.merc==='string')?P.merc:'',cfg:netUpCfgDiff(),fp:netUpFp(g)};
+  if(g.arcade) m.arc=1;   // v23.25 (arcade6): an arcade raid word says so; only arcade words gain the field
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=m.seed; NET.upFp=m.fp; NET.sum={}; NET.wps={}; NET.pings=[];
   netEntsInit(g);   // v15.80: every body numbered in list order, the numbers a linked window gives the same bodies
   netContInit(g);   // v15.91: every container numbered in list order, the numbers a linked window gives the same containers
@@ -41234,7 +41235,7 @@ function netUpStart(m){
   // the save that a surface which does not match puts back, not told Noted and then rolled away. startRaid shuts it for the rest.
   try{ if(pauseOpen) togglePauseBox(false); }catch(_pz0){}
   snap=netUpSnapP();
-  try{ commitKit(); }catch(e0){}   // its own packed kit, as MY LOADOUT commits it, saved under its own dials
+  if(!m.arc) try{ commitKit(); }catch(e0){}   // its own packed kit, as MY LOADOUT commits it, saved under its own dials   // v23.25 (arcade6): never for an arcade word, whose kit is the sandbox random kit
   for(k in CFG) if(Object.prototype.hasOwnProperty.call(CFG,k)) keepCfg[k]=CFG[k];
   keep={terms:P.terms,merc:P.merc,intel:P.intel,wxPick:P.wxPick};
   NET.upHold=true; NET.upIss=(m.iss===1)?true:((m.iss===0)?false:null);
@@ -41292,12 +41293,14 @@ function netLateReply(peer){
   var m={}, k; for(k in NET.upWord) if(Object.prototype.hasOwnProperty.call(NET.upWord,k)) m[k]=NET.upWord[k];
   m.late={t:+(+G.t||0).toFixed(2),left:(typeof G.timeLeft==='number')?+G.timeLeft.toFixed(2):null,x:Math.round(G.player.x),y:Math.round(G.player.y)};
   m.gone=gone;
+  if(G.arcade&&G.player.specOut) m.late.bench=1;   // v23.25 (arcade6): player 1 is benched, so player 2 is not stood beside him
   // v17.58: and the walls already down. Every wall keeps the number it was built with (v17.36); a wall that fell went out once,
   // as a word, so a late window built them all and stood behind walls the host had blown open, its shots stopped by them.
   var have={}, wn=NET.wallN0|0, wi; m.wg=[];
   for(wi=0;wi<G.map.walls.length;wi++){ have[G.map.walls[wi].wid]=1; if(G.map.walls[wi].wid+1>wn) wn=G.map.walls[wi].wid+1; }
   for(wi=0;wi<wn&&m.wg.length<1500;wi++) if(!have[wi]) m.wg.push(wi);
   if(!netSend(peer,m)) return 'lost';
+  if(G.arcade){ try{ say('PLAYER 2 JOINED','ally'); }catch(_aj){} } else   // v23.25 (arcade6): the arcade callout; the line below is the normal one
   try{ say(String(netSeatName(peer.seat)||'Your teammate').toUpperCase()+' IS JOINING','ally'); }catch(_ls){}   // v17.62: the host hears who is coming   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
   // v17.50: then every body that came up after the build (the boss, a late crew), which the late window never heard announced
   for(id=0;id<G.ents.length;id++) if(G.ents[id]&&G.ents[id].nid>=(NET.entBuilt||1e9)) netSend(peer,netEntNewWord(G.ents[id]));
@@ -41323,6 +41326,7 @@ function netLateApply(m){
   try{ G.lateEl=elapsed(); }catch(_le){}   // v17.64: this player came up now; his own run counts from here
   p=G.player;
   if(typeof L.x==='number'&&typeof L.y==='number'&&isFinite(L.x)&&isFinite(L.y)){ p.x=L.x+36; p.y=L.y+8; if(typeof resolvePlayer==='function'){ try{ resolvePlayer(p); }catch(_rp){} } }
+  if(G.arcade&&L.bench){ try{ arcadeRedropSpot(p,G,0); }catch(_ars){} }   // v23.25 (arcade6): player 1 is benched, so player 2 starts at the map spawn farthest from live hostiles
   say('YOU JOINED THE RAID IN PROGRESS','ally');   // v22.xx (R54): a caps callout
   return 'late';
 }
@@ -41336,6 +41340,7 @@ function netLateAsk(){
 function netLateBtn(){
   var hub=document.body, b=document.getElementById('joinlate'), want, tt=document.getElementById('title');   // v17.51: on the page, not in the hidden terminal panel
   want=!!(hub&&NET.on&&NET.role==='join'&&NET.hostSeed&&(NET.lateBan>>>0)!==(NET.hostSeed>>>0)&&state==='hub'&&!(tt&&tt.classList.contains('on'))&&!(typeof G!=='undefined'&&G&&!G.over));
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) want=false;   // v23.25 (arcade6): the arcade joins with A, never with this button
   if(!want){ if(b&&b.parentNode) b.parentNode.removeChild(b); return false; }
   if(!b){
     b=document.createElement('button'); b.id='joinlate'; b.className='deploy';
@@ -41349,6 +41354,17 @@ function netLateBtn(){
   var why;
   if(!peer||peer.state!=='in'||NET.role!=='join') return 'ignored';
   if(typeof m.seed!=='number'||!isFinite(m.seed)) return 'bad';
+  // v23.25 (arcade6): an arcade window takes only arcade words, and only once its player pressed A (wantIn) or while it is in an
+  // arcade raid already. The same raid in hand is kept; an older arcade raid is stopped first, so the new word is never refused
+  // as up top already.
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on){
+    if(!m.arc) return 'arc:plain';
+    NET.hostSeed=m.seed>>>0;
+    if(typeof G!=='undefined'&&G&&G.arcade&&!G.over){
+      if((G.seed>>>0)===(m.seed>>>0)) return 'arc:have';
+      arcadeRaidStop('swap');
+    } else if(!ARCADE.wantIn) return 'arc:wait';
+  }
   why=netUpBusy();
   if(why==='still on the run card'&&netCardOff()) why=netUpBusy();   // v16.55
   if(why==='on the title'&&typeof NET.start==='function'){ try{ NET.start(); }catch(_ts2){} why=netUpBusy(); }   // v17.14, co-op hunt 2026-09-28: the title is passed as the kit question passes it, so the host word carries him up
@@ -41356,6 +41372,7 @@ function netLateBtn(){
   if(!m.late) NET.lateBan=0;   // v17.67: a new raid from the host; a death in the last one does not keep him out of this one
   if(why){ NET.err='Your party went up without you: this window was '+why+'.'; netBroadcast({t:'up',st:'no',why:why}); netRefresh(); return 'busy'; }
   var _lr=netUpStart(m);
+  if(m.arc&&_lr==='up'&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ ARCADE.wantIn=0; ARCADE.late=0; }   // v23.25 (arcade6): in; a later arcade word is taken because he is in an arcade raid
   if(m.late&&typeof G!=='undefined'&&G&&!G.over){ try{ netLateApply(m); }catch(_la){} }   // v17.46: his pick 3, a late join
   return _lr;
 }
@@ -44467,7 +44484,7 @@ function arcadeRespawn(why){
   }
   arcadeKitApply(p,G,why||'dead');
   p.vx=0; p.vy=0; G.anchX=undefined; G.shake=0;
-  ARCADE.deaths=(ARCADE.deaths|0)+1;
+  if(why!=='bench') ARCADE.deaths=(ARCADE.deaths|0)+1;   // v23.25 (arcade6): coming off the bench is not a death
   ARCADE.holdT=3;
   return true;
 }
@@ -44582,10 +44599,15 @@ function arcadeOnMsg(m){
       return arcadeEnter('p2')?'arcon':'fail';
     }
     if(m.t==='arcoff') return arcadeLeave()?'arcoff':'ignored';
+    // v23.25 (arcade6): the answers to arcjoin. fresh 1: wait for the raid word. fresh 0: ask to join the raid in progress (again every
+    // 1.5 s from arcadeAttTick until in). arcnew: the host is building a fresh raid, wait for its word.
+    if(m.t==='arcgo'){ if(!ARCADE.wantIn) return 'ignored'; ARCADE.late=m.fresh?0:1; ARCADE.askAt=Date.now(); if(ARCADE.late) netLateAsk(); return 'arcgo'; }
+    if(m.t==='arcnew'){ ARCADE.late=0; ARCADE.askAt=Date.now(); return 'arcnew'; }
     return 'ignored';
   }
   if(NET.same==='host'){
     if(m.t==='arcbusy'){ try{ say('PLAYER 2 IS IN A RAID','warn'); }catch(_sb){} return 'busy'; }
+    if(m.t==='arcjoin') return arcadeJoinAsk();   // v23.25 (arcade6): player 2 pressed A
     return 'ignored';
   }
   return 'off';
@@ -44593,7 +44615,7 @@ function arcadeOnMsg(m){
 // The arcade attract: the attract overlay with the clip when there is one, PRESS ANY BUTTON (host) or PLAYER 2: PRESS A, up
 // whenever this window has no arcade raid.
 function arcadeAttShow(){
-  var d=attEl(), v=d.querySelector('video'), ap=d.querySelector('.attpress'), w=(ARCADE.role==='p2')?'PLAYER 2: PRESS A':'PRESS ANY BUTTON', pr;
+  var d=attEl(), v=d.querySelector('video'), ap=d.querySelector('.attpress'), w=(ARCADE.role==='p2')?'PLAYER 2: PRESS A':(arcadeBenched()?'PLAYER 1: PRESS ANY BUTTON':'PRESS ANY BUTTON'), pr;
   if(ap&&ap.textContent!==w) ap.textContent=w;
   ATT.on=true; if(d.style.display!=='block') d.style.display='block';
   if(ATT.src){
@@ -44604,13 +44626,18 @@ function arcadeAttShow(){
 }
 function arcadeAttTick(){
   if(!ARCADE.on) return;
-  if(G&&G.arcade){ if(ATT.on) attStop(); return; }
+  if(G&&G.arcade&&!arcadeBenched()){ if(ATT.on) attStop(); return; }   // v23.25 (arcade6): a benched player 1 keeps the attract
+  // v23.25 (arcade6): player 2 asked to join and is not in yet: ask again (arcjoin every 3 s, or the raid in progress every 1.5 s after arcgo fresh 0)
+  if(ARCADE.role==='p2'&&ARCADE.wantIn&&!(G&&G.arcade)){
+    var nw=Date.now();
+    if(nw-(+ARCADE.askAt||0)>=(ARCADE.late?1500:3000)){ ARCADE.askAt=nw; if(ARCADE.late) netLateAsk(); else netSamePost({t:'arcjoin',pair:NET.pair}); }
+  }
   arcadeAttShow();
 }
 // A key, click, touch or wheel in this window while the arcade is on. Returns whether it was taken.
 function arcadeKeyAtt(e){
   if(!ARCADE.on||!e) return false;
-  if(G&&G.arcade) return false;            // a raid is on here: the key plays
+  if(G&&G.arcade&&!arcadeBenched()) return false;            // a raid is on here: the key plays (v23.25, arcade6: unless player 1 is benched)
   if(ARCADE.role!=='host') return false;   // player 2 joins with A on its own pad; its keys go on to player 1 (netKeyFwd)
   var ty=String(e.type||''), cd=String(e.code||''), ky=String(e.key||'');
   if(ty==='wheel') return false;
@@ -44621,13 +44648,14 @@ function arcadeKeyAtt(e){
   }
   try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){}   // the press that drops in does nothing else
   if(ty==='keydown'&&e.repeat) return true;
-  arcadeDropIn();
+  if(arcadeBenched()) arcadeUnbench(); else arcadeDropIn();   // v23.25 (arcade6)
   return true;
 }
 // A new press on this window pad in the arcade attract.
 function arcadePadAtt(anyNew,aNew){
   if(!ARCADE.on) return false;
-  if(ARCADE.role==='p2'){ if(!aNew) return false; ARCADE.wantIn=1; netSamePost({t:'arcjoin',pair:NET.pair}); return true; }
+  if(ARCADE.role==='p2'){ if(!aNew) return false; ARCADE.wantIn=1; ARCADE.late=0; ARCADE.askAt=Date.now(); netSamePost({t:'arcjoin',pair:NET.pair}); return true; }   // v23.25 (arcade6): arcadeAttTick asks again until he is in
+  if(anyNew&&arcadeBenched()) return arcadeUnbench();   // v23.25 (arcade6): a benched player 1 comes back beside player 2
   return anyNew?arcadeDropIn():false;
 }
 // The host drops straight into an arcade raid: no title, no character select, no kit question.
@@ -44639,6 +44667,51 @@ function arcadeDropIn(){
   try{ ok=arcadeDeploy({role:'host'}); }catch(_ad){ ok=false; }
   if(!ok){ try{ arcadeAttShow(); }catch(_ar){} }
   return ok;
+}
+// v23.25, HIS ORDER (2026-10-11), build 6 of 20 (arcade6): PLAYER 2 DROPS IN WITH A. Player 2 pressing A asks the host (arcjoin), and
+// the host answers one of three ways. No arcade raid on: it builds one with player 1 BENCHED (specOut: frozen, nobody is target,
+// no damage, no kill credit) under the attract, which now reads PLAYER 1: PRESS ANY BUTTON, and tells player 2 to wait for the
+// raid word (arcgo fresh 1). An arcade raid on that the party was told about: arcgo fresh 0, and player 2 asks to join the raid
+// in progress (netLateAsk, every 1.5 s until it is in). An arcade raid built before the link was up (no raid word went out for
+// it): arcadeRebuild, a fresh raid on the same sector with player 1 keeping his score, after arcnew. With no link yet the host
+// does nothing and player 2 asks again every 3 s. Player 2 takes only arcade raid words (m.arc), only after A, never commits a
+// packed kit, and starts beside player 1 (or at a map spawn while he is benched). Any press from a benched player 1 brings him
+// back beside player 2 with a fresh kit and the drop-in hold. Normal co-op is untouched: every line is behind ARCADE.on or G.arcade.
+function arcadeBenched(){ return !!(ARCADE.on&&ARCADE.role==='host'&&G&&G.arcade&&!G.over&&G.player&&G.player.specOut); }
+function arcadeUnbench(){
+  if(!arcadeBenched()) return false;
+  G.player.specOut=0;
+  try{ attStop(); }catch(_as){}
+  arcadeRespawn('bench');
+  return true;
+}
+// The host, on arcjoin. Returns what it did.
+function arcadeJoinAsk(){
+  if(!ARCADE.on||ARCADE.role!=='host') return 'off';
+  if(!(G&&G.arcade&&!G.over)){
+    if(G&&!G.over) return 'busy';
+    netSamePost({t:'arcgo',fresh:1,pair:NET.pair});
+    try{ attStop(); }catch(_as){}
+    if(!arcadeDeploy({role:'host'})||!G||!G.player){ try{ arcadeAttShow(); }catch(_aa){} return 'fail'; }
+    G.player.specOut=1; G.player.vx=0; G.player.vy=0;
+    arcadeAttShow();
+    return 'bench';
+  }
+  if(!NET.on) return 'nolink';
+  if(NET.upWord&&(NET.upWord.seed>>>0)===(G.seed>>>0)){ netSamePost({t:'arcgo',fresh:0,pair:NET.pair}); return 'go'; }
+  return arcadeRebuild()?'new':'fail';
+}
+// A fresh arcade raid on the same sector for a player 2 who cannot join this one: player 1 keeps his score (and his bench).
+function arcadeRebuild(){
+  if(!ARCADE.on||ARCADE.role!=='host'||!G||!G.arcade) return false;
+  var s={mine:ARCADE.mine|0,mate:ARCADE.mate|0,ext:ARCADE.ext|0,deaths:ARCADE.deaths|0}, bench=!!(G.player&&G.player.specOut), ok;
+  netSamePost({t:'arcnew',pair:NET.pair});
+  ok=arcadeDeploy({role:'host',mapIx:P.mapIx});
+  ARCADE.mine=s.mine; ARCADE.mate=s.mate; ARCADE.ext=s.ext; ARCADE.deaths=s.deaths;
+  if(!ok||!G||!G.player){ try{ arcadeAttShow(); }catch(_aa){} return false; }
+  if(bench){ G.player.specOut=1; arcadeAttShow(); }
+  try{ say('PLAYER 2 JOINING','ally'); }catch(_sj){}
+  return true;
 }
 // Leaving the arcade: the arcade raid stops, then the sandbox out puts his profile and his dials back. v23.24: the host tells
 // player 2 (arcoff), and the attract goes.
