@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.03';
+var VER='23.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15982,9 +15982,10 @@ function tickPrepSlot(p,slot,dt){
     // v15.40, hud audit finding: THE INCOMING HEAL SHOWS ONLY THE HEALTH THAT WILL ARRIVE. The seconds in this line were the
     // whole queue over the rate, and the queue knows nothing of the ceilings. A Bandage landing at 80 said 6 sec while the drain
     // reaches 85 in under 2 and drops the rest. The seconds are now to healReach, where the drain really stops. Same sentence.
-    say(it&&it.hot>0&&CFG.healOverTime!==0
-      ?(it.name+' is healing you, '+fmtMS(Math.max(0,healReach(p)-p.hp)/(p.healRate||10)))
-      :'Patched up');
+    // v22.xx, the raid text rewrite (R51): HEAL AND ARMOUR LINES IN CAPS. A heal over time said Bandage is healing you, 2 sec, which
+    // the status icon on the left already shows as HEALING with its seconds (his v15.40 ring), so it is no longer said. A heal that
+    // lands at once still says PATCHED UP.
+    if(!(it&&it.hot>0&&CFG.healOverTime!==0)) say('PATCHED UP');
   }
   blip('pick');
 }
@@ -17234,10 +17235,10 @@ var STIM_SEC=10, STIM_SPD=1.2;
 function useStim(ix){
   var p=G.player;
   if(ix===undefined||ix<0||G.bag[ix]!=='stim') ix=G.bag.indexOf('stim');
-  if(ix<0){ say('No stim.'); return false; }
+  if(ix<0){ say(('No '+((ITEMS.stim&&ITEMS.stim.name)||'Stim')+' left').toUpperCase()); return false; }   // v22.xx (R51): NO STIM INJECTOR LEFT
   G.bag.splice(ix,1);
   p.stam=100; p.stamLock=0; p.stamRelease=0; p.stimT=STIM_SEC;
-  blip('pick'); say('Stim. Ten seconds of legs.');
+  blip('pick'); say((((ITEMS.stim&&ITEMS.stim.name)||'Stim')+' active').toUpperCase(),'info',{sub:STIM_SEC+'s of unlimited stamina.'});   // v22.xx (R51): STIM INJECTOR ACTIVE, the seconds from STIM_SEC
   if(G.tel) G.tel.stims=(G.tel.stims||0)+1;
   return true;
 }
@@ -18186,7 +18187,7 @@ function selfRevive(){
   // of these and it is gone once used, so the decision is WHEN to spend it rather
   // than whether the bag happens to hold a bandage at the moment you go down.
   p.hp=40; p.downed=false; p.revived=true; p.iv=2; p.pendKiller=null;
-  G.tel.revives++; blip('pick'); say('Back on your feet. Self-revive used.');
+  G.tel.revives++; blip('pick'); say('SELF-REVIVE USED','info',{sub:'Back on your feet.'});   // v22.xx (R51): the caps headline, the rest as the detail
   return true;
 }
 
@@ -18216,7 +18217,7 @@ function updatePlayer(dt){
   if(p.iv>0) p.iv-=dt;
   // v11.83, HIS SPEC: the stim clock, up here with the other timers so it keeps
   // running through a roll and while downed (both return before the stamina line).
-  if(p.stimT>0){ p.stimT-=dt; if(p.stimT<=0){ p.stimT=0; if(!G.sim) say('The stim wears off.'); } }
+  if(p.stimT>0){ p.stimT-=dt; if(p.stimT<=0){ p.stimT=0; if(!G.sim) say((((ITEMS.stim&&ITEMS.stim.name)||'Stim')+' wore off').toUpperCase(),'chat'); } }   // v22.xx (R51): STIM INJECTOR WORE OFF
   // v13.75, downed audit: the drink clock too. It ticked below the downed and roll returns, so a
   // drink stopped wearing off on the floor and in every roll.
   if(!G.sim) tickBuzz(dt);
@@ -36022,7 +36023,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.03: A survivor asks for an Armour Plate by its name, with the right article, and a teammate with no name starts a line as Your teammate. Check 23.03 fails on v23.02',
+  now:'v23.04: Heal, stim, self-revive and teammate aid lines read as short caps callouts, and a heal over time shows on its status icon instead of a line. Check 23.04 fails on v23.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41791,7 +41792,7 @@ function netAidFinish(PR){
   function kept(why){
     G.bag.push(PR.key);
     if(PR.issB){ G.issuedBandages=(G.issuedBandages||0)+1; if(G.bandSeen!==undefined) G.bandSeen++; }   // v17.07, co-op hunt 2026-09-28: still a loaner
-    say(nm+why+(it?it.name:'It')+' kept.'); return false;
+    say(String(nm+why).replace(/[.\s]+$/,'').toUpperCase(),'info',{sub:(it?it.name:'It')+' kept.'}); return false;   // v22.xx (R51): NAME MOVED AWAY with Bandage kept. as the detail
   }
   if(!g||!netUpShown(g)||netUpGone(g)||g.dn||Math.hypot(g.x-p.x,g.y-p.y)>NET_REV_R*1.5) return kept(' moved away. ');
   // v22.28, from the whole-game bug hunt of 2026-10-08 (K41, K42): A LOANER BANDAGE THE TEAMMATE CANNOT TAKE COMES BACK A LOANER. The
@@ -41800,7 +41801,7 @@ function netAidFinish(PR){
   // back as a found Bandage and was banked at the extraction.
   if(NET.role==='host'){ r=netAidPass(s,NET.seat,PR.key,PR.issB?1:0); if(r!=='passed'&&r!=='aid') return kept(' could not take it. '); }
   else for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'aid',s:s,k:PR.key,ib:PR.issB?1:0});
-  say((it&&it.use==='armor')?('Plate slotted for '+nm+'.'):('Patched up '+nm+'.')); blip('pick');
+  say(((it&&it.use==='armor')?('Plate slotted for '+nm):('Patched up '+nm)).toUpperCase(),'ally'); blip('pick');   // v22.xx (R51): PLATE SLOTTED FOR NAME, PATCHED UP NAME
   return true;
 }
 // v17.44, HIS PICK 4 (2026-09-30): TRADING IN A RAID, without seeing the other backpack. With the backpack open, T (or Y on a
@@ -42096,14 +42097,14 @@ function netAidApply(by,key,ib){   // v22.28 (K41): ib, the loaner mark, goes ba
   // It now goes back to him (netAidBack), who puts it back in his backpack.
   if(typeof G==='undefined'||!G||G.over||G.sim||!G.player||!it){ if(it) netAidBack(by,key,'gone',ib); return 'no raid'; }
   p=G.player; if(p.downed||p.dying){ netAidBack(by,key,'down',ib); return 'down'; }
-  if(it.use==='armor'){ p.armor=Math.min(armorCap(),(p.armor||0)+(it.amt||0)); say(nm+' slotted a plate for you. Armour '+Math.round(p.armor)+'.'); }
+  if(it.use==='armor'){ p.armor=Math.min(armorCap(),(p.armor||0)+(it.amt||0)); say(('Plate from '+nm).toUpperCase(),'ally',{sub:'Armour '+Math.round(p.armor)+'.'}); }   // v22.xx (R51): PLATE FROM NAME, within 34 with a 16 letter name
   else if(it.use==='heal'){
     // v17.08, co-op hunt 2026-09-28: a heal from a teammate was poured into the heal already running here, which keeps its own
     // ceiling, so while his own Bandage was winding up or running to 85 the teammate Bandage gave nothing and was gone. What is
     // already on its way (netAidReach) is now tested against this item ceiling, as every self heal is, and an item that cannot
     // raise him goes back to the teammate who sent it (netAidBack) instead of being spent.
     if(netAidReach(p)>=healCeil(it)){ netAidBack(by,key,'full',ib); return 'full'; }
-    applyHeal(key); say(nm+' patched you up.');
+    applyHeal(key); say((nm+' patched you up').toUpperCase(),'ally');   // v22.xx (R51)
   }
   else return 'bad';
   blip('pick');
@@ -42149,7 +42150,7 @@ function netAidKept(from,key,why,ib){
   if(typeof G==='undefined'||!G||G.over||G.sim||!G.player||!G.bag) return 'no raid';
   G.bag.push(key);
   if(ib&&key==='bandage'){ G.issuedBandages=(G.issuedBandages||0)+1; if(G.bandSeen!==undefined) G.bandSeen++; }   // v22.28 (K41): a loaner sent back is still a loaner, as kept() in netAidFinish puts one back
-  say(nm+((why==='full')?' is already healing. ':' could not take it. ')+it.name+' kept.'); blip('pick');
+  say((nm+((why==='full')?' already healing':' could not take it')).toUpperCase(),'info',{sub:it.name+' kept.'}); blip('pick');   // v22.xx (R51): NAME ALREADY HEALING with Bandage kept. as the detail
   return 'kept';
 }
 // v16.26, THE QUEUE (his order for the niceties of the genre): YOUR TEAMMATES ON THE HUD. Above your own health, bottom left, one

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.04 - HEAL AND ARMOUR LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps headline with a short detail only when needed, never a sentence. The heal and armour lines that were still sentences now read that way: NO STIM INJECTOR LEFT, STIM INJECTOR ACTIVE with 10s of unlimited stamina (the seconds come from the stim itself), STIM INJECTOR WORE OFF, SELF-REVIVE USED with Back on your feet, PATCHED UP, and for a teammate PATCHED UP KITE, PLATE SLOTTED FOR KITE, KITE PATCHED YOU UP, PLATE FROM KITE with your armour, KITE MOVED AWAY and KITE ALREADY HEALING with the item kept as the detail. A Bandage healing over time no longer says Bandage is healing you, 2 sec, because the status icon on the left already shows HEALING and its seconds. His Self-revive spent line is unchanged.
+
+MEASURED. Check 23.04 passes, and fails on v23.03.
 ## v23.03 - NAMES KEEP THEIR CAPITALS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, and a name reads the same everywhere. Two survivor lines lowercased the item they asked for to fit a sentence, which broke the article too: He needs a armour plate. The refusal now reads HE NEEDS AN ARMOUR PLATE with You have none as the detail, finding him reads SURVIVOR FOUND with He needs an Armour Plate. as the detail, and his label reads NEEDS ARMOUR PLATE with no colon. A teammate with no seat name started a heal line in lowercase (your teammate moved away); it now reads Your teammate.

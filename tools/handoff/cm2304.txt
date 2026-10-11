@@ -1,0 +1,7 @@
+v23.04: heal and armour lines in caps
+
+Heal, stim, self-revive and teammate aid lines read as short caps callouts, and a heal over time shows on its status icon instead of a line.
+
+Check 23.04. Fails on v23.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
