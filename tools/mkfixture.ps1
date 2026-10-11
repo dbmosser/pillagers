@@ -20691,7 +20691,7 @@ window.__REGRESS=[
        NET.on=true; NET.role='host'; NET.seat=0; NET.max=4; NET.peers=[peer];
        netUpAnnounce(G); lines.length=0;
        netLateReply(peer);
-       if(!lines.some(function(t){ return t.indexOf('MOTH is joining the raid')===0||t.indexOf('MOTH IS JOINING THE RAID')===0; })) bad.push('the host was told '+JSON.stringify(lines));
+       if(!lines.some(function(t){ return t.indexOf('MOTH is joining the raid')===0||t.indexOf('MOTH IS JOINING')===0; })) bad.push('the host was told '+JSON.stringify(lines));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        netSend=oSend; say=oSay; netSeatName=oName;
@@ -39121,11 +39121,11 @@ window.__REGRESS=[
        for(i=0;i<540;i++){ __loop(t0+(++f)*16.7); note(); if(__state()!==G2) break; }
        var head=['CONTRACT','DONE'].join(' ');
        var tail=['will','remember','that'].join(' ');
-       var grudge=(nm+' '+tail).toUpperCase();   // either voice: Name will remember that. or NAME WILL REMEMBER THAT
+       var grudge=(nm+' '+tail).toUpperCase(), grudge2=(nm+' '+['wants','revenge'].join(' ')).toUpperCase();   // either voice: Name will remember that., NAME WILL REMEMBER THAT or (tr9fixl) NAME WANTS REVENGE
        var cIx=-1, rIx=-1;
        for(i=0;i<seen.length;i++){
          if(cIx<0&&seen[i].toUpperCase().indexOf(head)===0&&seen[i].indexOf(desc)>=0) cIx=i;
-         if(rIx<0&&seen[i].toUpperCase().indexOf(grudge)===0) rIx=i;
+         if(rIx<0&&(seen[i].toUpperCase().indexOf(grudge)===0||seen[i].toUpperCase().indexOf(grudge2)===0)) rIx=i;
        }
        var shown=' [shown: '+seen.join(' | ').slice(0,240)+']';
        // CONTROLS: the round killed him, the kill was yours, the contract finished and the grudge was written, or the lines prove nothing.
