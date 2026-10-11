@@ -58513,6 +58513,9 @@ window.__vpAlive=function(){
 // that read it open it themselves. So every check starts with it shut.
 window.__topClear=function(){
   var oc=document.getElementById('outcome'), n=0;
+  // 2026-10-11 (arcade2): a check that left the 2 PLAYER ARCADE DEMO on would gate every later save and play on the sandbox
+  // profile, so the arcade is left first (its raid stopped, his profile and dials put back). Only arcade builds have it.
+  try{ if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&typeof arcadeLeave==='function'){ arcadeLeave(); n++; } }catch(_ar){}
   if(oc&&oc.classList.contains('on')){ oc.classList.remove('on'); n++; }
   // 2026-10-08: a save written by a check in the other gate tab (same origin: the control run of a restore check) marks this tab
   // stale through the storage event, and the stale card then eats ESC and Enter and stops every save, so the stash ESC check
