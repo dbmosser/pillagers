@@ -1,0 +1,7 @@
+v22.87: lines said with the map open draw over it
+
+Messages and alerts said while the sector map is open now show over the map instead of under it.
+
+Check 22.87. Fails on v22.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

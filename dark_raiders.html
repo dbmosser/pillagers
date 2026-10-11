@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.86';
+var VER='22.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29163,6 +29163,12 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
   })();
   ctx.restore();
   if(HUDBOX.cond) HUDBOX.cond=hudZoomRect('cond',W,0,HUDBOX.cond);
+  // v22.xx, the raid text rewrite (R38): A LINE SAID WITH THE MAP OPEN DRAWS OVER IT. HIS ORDER (2026-10-09): the raid text reads like
+  // a shooter HUD, and in those a callout is never hidden by the map. The message band (the alert, the location tag and the feed)
+  // was drawn here, before the sector map, whose opaque backing is drawn last, so with the map open WAYPOINT MARKED, a ring
+  // closing or a Crier marking you was drawn underneath it and never seen. The band is now one function (_lanes): it is drawn here
+  // as before with the map shut, and after drawMapOverlay with the map open, so it shows over the map.
+  var _lanes=function(){
   var _frows=feedRows(), _alL=ALERTL, _loc=_alL?null:locUp();   // v21.86 (R04): the rows msgLayout laid out; v22.13 (R08): and the alert over them; v22.xx (R34): or the location tag
   if(_frows.length||_alL||_loc){
     // v10.43, his answers 25 and 30: the message line scales with the monitor
@@ -29200,6 +29206,8 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     ctx.restore();                              // v10.43: end of the message scale
   }
+  };
+  if(!G.mapOpen) _lanes();   // v22.xx (R38): with the map open the band is drawn after it, below
   // Extraction ring labels, drawn on the HUD above the fog. Three unexplained
   // circles on the ground was a real complaint; they say what they are now, and
   // where your extraction is was never secret information anyway.
@@ -30396,7 +30404,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       }
     }
   })();
-  if(G.mapOpen) drawMapOverlay();
+  if(G.mapOpen){ drawMapOverlay(); try{ _lanes(); }catch(_ln){} }   // v22.xx (R38): the message band over the map
 }
 // EVERYTHING KNOWN ABOUT AN ITEM, as [label,value] rows. Shared by the stash
 // hover and the in-raid bag hover so both windows say the same thing.
@@ -35861,7 +35869,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.86: A line said while the solo pause box is open now shows over the box instead of behind it. Check 22.86 fails on v22.85',
+  now:'v22.87: Messages and alerts said while the sector map is open now show over the map instead of under it. Check 22.87 fails on v22.86',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.87 - LINES SAID WITH THE MAP OPEN DRAW OVER IT
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and a callout is never hidden by the map. The message band was drawn before the sector map, whose dark backing covers the screen, so with the map open a Waypoint marked line, a ring closing or a Crier marking you was drawn underneath it and never seen. With the map open the band is now drawn after the map, over it. With the map shut nothing changes.
+
+MEASURED. Check 22.87 passes, and fails on v22.86.
 ## v22.86 - LINES UNDER THE PAUSE BOX SHOW ON IT
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and a menu answers on the menu. With the pause box open in a solo raid, a key or a Settings change said its line into the raid feed behind the box, where nobody could read it, and it only showed after the box shut. A system or info line said while the solo pause holds now shows on the answer line over the box. In a shared raid, where the pause is an overlay and the world runs on, lines stay in the raid feed.
