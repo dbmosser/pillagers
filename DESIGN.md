@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.60 - THE NEWEST PICKUP ROW ALWAYS SHOWS
+
+Co-op hunt while he was away. The review of the fourth batch of raid text found that the pickup stack on the right drew nothing at all at Settings text size 175 or 200 percent, or with the gun card made bigger or dragged up: its ceiling at 62 percent down the screen stopped it before the first row whenever the gun card left less than a row of room. BACKPACK FULL now lives only in that stack, so holding E on a box with a full backpack just stopped the search with nothing on screen, and purchases, the Survivor pay, gifts and every looted item vanished too. The ceiling now always leaves room for the newest row, and the stack never starts above the top of the screen.
+
+MEASURED. Check 22.60 passes, and fails on v22.59.
 ## v22.59 - BACKPACK FULL IS ONE RED ROW
 
 Co-op hunt while he was away. His order of 2026-10-09: a raid line is a short caps headline and, only when needed, a short detail. A full backpack said Backpack full with the raw capacity number in brackets and Z drops the selected item, in the middle of the screen, naming Z even with a controller in hand. It is now one red row in the pickup stack, BACKPACK FULL, refreshed while E is held and never a second row, with the button that drops the selected item as its detail: the bound key on a keyboard, Y on a controller. The stall says the same row when the backpack has no room.

@@ -1,0 +1,7 @@
+v22.60: the newest pickup row always shows
+
+The newest pickup row, including BACKPACK FULL, always shows on the right, even at big text sizes or with the gun card enlarged.
+
+Check 22.60. Fails on v22.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v22.60 - THE NEWEST PICKUP ROW ALWAYS SHOWS
+
+Co-op hunt while he was away. The review of the fourth batch of raid text found that the pickup stack on the right drew nothing at all at Settings text size 175 or 200 percent, or with the gun card made bigger or dragged up: its ceiling at 62 percent down the screen stopped it before the first row whenever the gun card left less than a row of room. BACKPACK FULL now lives only in that stack, so holding E on a box with a full backpack just stopped the search with nothing on screen, and purchases, the Survivor pay, gifts and every looted item vanished too. The ceiling now always leaves room for the newest row, and the stack never starts above the top of the screen.
+
+MEASURED. Check 22.60 passes, and fails on v22.59.
