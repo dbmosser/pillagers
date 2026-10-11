@@ -6648,7 +6648,7 @@ window.__REGRESS=[
      if(typeof togglePauseBox!=='function'||typeof syncPause!=='function'||typeof restoreCursor!=='function') return 'SKIP: no pause box in this build';
      var bad=[], g, el=document.getElementById('hubtoast'), f0, NC='Cursor '+'reset', i, inFeed=false, NZ='ZQ '+'PING';
      if(!el) return 'SKIP: no answer line in this page';
-     function feedHas(s){ var F=g.feed||[], j; if(g.msgT>0&&String(g.msg).indexOf(s)>=0) return true; for(j=0;j<F.length;j++) if(F[j]&&F[j].T>0&&String(F[j].m).indexOf(s)>=0) return true; return false; }
+     function feedHas(s){ var F=g.feed||[], j, U=String(s).toUpperCase(); if(g.msgT>0&&String(g.msg).toUpperCase().indexOf(U)>=0) return true; for(j=0;j<F.length;j++) if(F[j]&&F[j].T>0&&String(F[j].m).toUpperCase().indexOf(U)>=0) return true; return false; }   // tr55fix: in any case (CURSOR RESET)
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -6659,7 +6659,7 @@ window.__REGRESS=[
        if(!g.paused) return 'SKIP: staging: the pause box did not pause the raid';
        if(netPauseLive()) return 'SKIP: staging: this raid is shared, so its pause is the overlay';
        window.dispatchEvent(new KeyboardEvent('keydown',{code:'Backspace',key:'Backspace',bubbles:true}));
-       if(String(el.textContent).indexOf(NC)<0||!el.classList.contains('on')) bad.push('BACKSPACE under the solo pause box did not show the cursor line on the answer line (it reads '+JSON.stringify(el.textContent)+', on '+el.classList.contains('on')+')');
+       if(String(el.textContent).toUpperCase().indexOf(NC.toUpperCase())<0||!el.classList.contains('on')) bad.push('BACKSPACE under the solo pause box did not show the cursor line on the answer line (it reads '+JSON.stringify(el.textContent)+', on '+el.classList.contains('on')+')');
        if(feedHas(NC)) bad.push('BACKSPACE under the solo pause box put the cursor line in the raid feed behind the box');
        // CONTROL: the box shut, a system line goes to the feed as before.
        togglePauseBox(false); syncPause(); g.paused=false;
@@ -20283,7 +20283,7 @@ window.__REGRESS=[
        state='raid'; try{ togglePauseBox(false); }catch(_p0){}
        ev=new Event('gamepaddisconnected'); window.dispatchEvent(ev);
        if(!pauseOpen) bad.push('a controller unplugged in a raid did not pause');
-       if(!lines.some(function(t){ return /Controller disconnected/.test(t); })) bad.push('nothing said the controller was unplugged ('+JSON.stringify(lines)+')');
+       if(!lines.some(function(t){ return /Controller disconnected/i.test(t); })) bad.push('nothing said the controller was unplugged ('+JSON.stringify(lines)+')');
        try{ togglePauseBox(false); }catch(_p1){}
        __endRaid('abandon'); __topClear(); state='hub'; lines.length=0;
        window.dispatchEvent(new Event('gamepaddisconnected'));
