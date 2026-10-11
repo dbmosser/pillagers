@@ -1,0 +1,7 @@
+v22.94: co-op marks and crier marker grow at 4k
+
+On a 4K screen pings, teammate marks, the Crier countdown and the noise arrows are now full size, and distances read 120m.
+
+Check 22.94. Fails on v22.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

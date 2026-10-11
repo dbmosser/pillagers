@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.93';
+var VER='22.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30657,13 +30657,13 @@ var GEARRULES=[
 // A hostile ping outside the viewport painted exactly zero pixels, measured. So
 // sound you cannot see now gets a chevron on the screen edge pointing at it.
 function drawNoiseMarkers(){
-  var p=G.player,i;
+  var p=G.player,i,_nr=Math.max(1,(typeof hudRes==='function')?hudRes():1);   // v22.xx (R43): the chevrons grow with the screen
   for(i=0;i<G.pings.length;i++){
     var pn=G.pings[i];
     if(!pn.h) continue;
     var s=w2s(pn.x,0,pn.y);
     if(!s) continue;
-    var pad=26;
+    var pad=26*_nr;
     var off=(s.x<pad||s.x>W-pad||s.y<pad||s.y>H-pad);
     if(!off) continue;
     var dp=dist(p,pn);
@@ -30687,7 +30687,7 @@ function drawNoiseMarkers(){
     var mx=ps.x+ca*tt,my=ps.y+sa*tt;
     ctx.save();
     ctx.translate(mx,my); ctx.rotate(ang);
-    var sz=6+Math.min(pn.s,600)/110;
+    var sz=(6+Math.min(pn.s,600)/110)*_nr;
     ctx.fillStyle='rgba(255,90,70,'+(a*0.95)+')';
     ctx.beginPath();
     ctx.moveTo(sz,0); ctx.lineTo(-sz*0.7,sz*0.75); ctx.lineTo(-sz*0.7,-sz*0.75);
@@ -31225,23 +31225,23 @@ function drawRaiderBoard(){
   }
 }
 function drawCrierMarkers(){
-  var p=G.player,ps=w2s(p.x,0,p.y);
-  if(!ps) return;
+  var p=G.player,ps=w2s(p.x,0,p.y), _cr=Math.max(1,(typeof hudRes==='function')?hudRes():1);   // v22.xx (R43): grown with the screen
+  if(!ps||G.bagOpen) return;   // v22.xx (R43): never over the open backpack
   for(var i=0;i<G.ents.length;i++){
     var e=G.ents[i];
     if(e.kind!=='snitch'||e.state!=='alarm') continue;
     if(e.wind===undefined||e.wind===null) continue;
     var left=Math.max(0,e.wind);
     var pulse=0.55+0.45*Math.sin(G.t*9);
-    var s=w2s(e.x,26,e.y);
-    var pad=26;
+    var s=w2s(e.x,26*ZOOM(),e.y);   // v22.xx (R43): the lift is in world units, so the ring stays on the Crier at 4K and zoomed in
+    var pad=26*_cr;
     var onScreen=s&&s.x>pad&&s.x<W-pad&&s.y>pad&&s.y<H-pad;
     if(onScreen){
-      ctx.strokeStyle='rgba(255,90,74,'+pulse+')'; ctx.lineWidth=2;
-      ctx.beginPath(); ctx.arc(s.x,s.y,LH(17),0,6.2832); ctx.stroke();
-      ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+      ctx.strokeStyle='rgba(255,90,74,'+pulse+')'; ctx.lineWidth=2*_cr;
+      ctx.beginPath(); ctx.arc(s.x,s.y,LH(17)*_cr,0,6.2832); ctx.stroke();
+      ctx.font=hudFS(TYPE.micro); ctx.textAlign='center';
       ctx.fillStyle='rgba(255,120,100,.95)';
-      ctx.fillText('CRIER '+left.toFixed(1)+'s',s.x,s.y-LH(22));
+      ctx.fillText('CRIER '+left.toFixed(1)+'s',s.x,s.y-LH(22)*_cr);
       ctx.textAlign='left';
     } else {
       var ang=Math.atan2(e.y-p.y,e.x-p.x);
@@ -31250,19 +31250,19 @@ function drawCrierMarkers(){
       if(sa>1e-6) tt=Math.min(tt,(H-pad-ps.y)/sa); else if(sa<-1e-6) tt=Math.min(tt,(pad-ps.y)/sa);
       if(!(tt>0&&tt<1e9)) tt=0;
       var mx=ps.x+ca*tt,my=ps.y+sa*tt;
-      ctx.save(); ctx.translate(mx,my); ctx.rotate(ang);
+      ctx.save(); ctx.translate(mx,my); ctx.rotate(ang); if(_cr>1) ctx.scale(_cr,_cr);
       ctx.fillStyle='rgba(255,90,74,'+pulse+')';
       ctx.beginPath(); ctx.moveTo(15,0); ctx.lineTo(-10,10); ctx.lineTo(-10,-10);
       ctx.closePath(); ctx.fill();
       ctx.restore();
-      ctx.font=FS(TYPE.micro); ctx.textAlign='center';
+      ctx.font=hudFS(TYPE.micro); ctx.textAlign='center';
       ctx.fillStyle='rgba(255,120,100,.95)';
       // Inward from the edge, not upward. A chevron pinned to the top of the
       // screen had its label clamped into the extraction banner; pushing the text
       // toward screen centre puts it on the side that always has room, whichever
       // edge the chevron is on.
-      var _lx=clamp(mx-ca*LH(26),LH(42),W-LH(42));
-      var _ly=clamp(my-sa*LH(26),LH(20),H-LH(12));
+      var _lx=clamp(mx-ca*LH(26)*_cr,LH(42)*_cr,W-LH(42)*_cr);
+      var _ly=clamp(my-sa*LH(26)*_cr,LH(20)*_cr,H-LH(12)*_cr);
       ctx.fillText('CRIER '+left.toFixed(1)+'s',_lx,_ly);
       ctx.textAlign='left';
     }
@@ -35951,7 +35951,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.93: The ? and ! over a machine now sit just above its name at every screen size and zoom. Check 22.93 fails on v22.92',
+  now:'v22.94: On a 4K screen pings, teammate marks, the Crier countdown and the noise arrows are now full size, and distances read 120m. Check 22.94 fails on v22.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42088,19 +42088,19 @@ function netAidKept(from,key,why,ib){
 // stands is pulled to the edge, inset by a margin; an arrow there points at him with his name and how far he is. Red when he is
 // down. Nothing when he is on screen. Returns the arrow drawn, for a check.
 function netMateArrow(g){
-  var s=w2s(g.x,0,g.y), M=LH(34), cx=W/2, cy=H/2, dx, dy, k, ax, ay, a, nm, d, c;
+  var r=Math.max(1,(typeof hudRes==='function')?hudRes():1), s=w2s(g.x,0,g.y), M=LH(34)*r, cx=W/2, cy=H/2, dx, dy, k, ax, ay, a, nm, d, c;   // v22.xx (R43): grown with the screen
   if(!s||(s.x>=M&&s.x<=W-M&&s.y>=M&&s.y<=H-M)) return null;
   dx=s.x-cx; dy=s.y-cy; if(!dx&&!dy) return null;
   k=Math.min((W/2-M)/Math.max(1e-6,Math.abs(dx)),(H/2-M)/Math.max(1e-6,Math.abs(dy)));
   ax=cx+dx*k; ay=cy+dy*k; a=Math.atan2(dy,dx);
   c=g.dn?HUDC.danger:HUDC.ally;   // v22.70 (R27): one teammate colour
-  ctx.save(); ctx.translate(ax,ay); ctx.rotate(a);
+  ctx.save(); ctx.translate(ax,ay); ctx.rotate(a); if(r>1) ctx.scale(r,r);
   ctx.fillStyle=c; ctx.strokeStyle='rgba(6,9,13,.9)'; ctx.lineWidth=2;
   ctx.beginPath(); ctx.moveTo(LH(14),0); ctx.lineTo(-LH(8),-LH(9)); ctx.lineTo(-LH(4),0); ctx.lineTo(-LH(8),LH(9)); ctx.closePath(); ctx.stroke(); ctx.fill();
   ctx.restore();
   nm=netSeatName(g.seat)||'PILLAGER'; d=(G&&G.player)?metres(dist(G.player,{x:g.x,y:g.y})):0;
-  ctx.font=FS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c;
-  ctx.fillText(nm+'  '+d+'M'+(g.dn?'  DOWN':''),clamp(ax-Math.cos(a)*LH(30),LH(40),W-LH(40)),clamp(ay-Math.sin(a)*LH(22),LH(14),H-LH(8)));
+  ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c;
+  ctx.fillText(nm+'  '+d+'m'+(g.dn?'  DOWN':''),clamp(ax-Math.cos(a)*LH(30)*r,LH(40)*r,W-LH(40)*r),clamp(ay-Math.sin(a)*LH(22)*r,LH(14)*r,H-LH(8)*r));
   ctx.textAlign='left';
   return {x:ax,y:ay,a:a};
 }
@@ -42174,18 +42174,18 @@ function netWpFromMap(){
   return G.waypoint;
 }
 function netWpDraw(){
-  var s, w, q, x, y, M=LH(30), nm, n=0;
+  var r=Math.max(1,(typeof hudRes==='function')?hudRes():1), s, w, q, x, y, M=LH(30)*r, nm, n=0;   // v22.xx (R43): grown with the screen
   if(!NET.wps) return 0;
   for(s in NET.wps){
     if(!Object.prototype.hasOwnProperty.call(NET.wps,s)) continue;
     w=NET.wps[s]; q=w2s(w.x,0,w.y); if(!q) continue;
     x=clamp(q.x,M,W-M); y=clamp(q.y,M,H-M);
-    ctx.strokeStyle='#bfe0ff'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(x,y,LH(9),0,6.2832); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x-LH(14),y); ctx.lineTo(x-LH(4),y); ctx.moveTo(x+LH(4),y); ctx.lineTo(x+LH(14),y); ctx.moveTo(x,y-LH(14)); ctx.lineTo(x,y-LH(4)); ctx.moveTo(x,y+LH(4)); ctx.lineTo(x,y+LH(14)); ctx.stroke();
+    ctx.strokeStyle='#bfe0ff'; ctx.lineWidth=2*r;
+    ctx.beginPath(); ctx.arc(x,y,LH(9)*r,0,6.2832); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-LH(14)*r,y); ctx.lineTo(x-LH(4)*r,y); ctx.moveTo(x+LH(4)*r,y); ctx.lineTo(x+LH(14)*r,y); ctx.moveTo(x,y-LH(14)*r); ctx.lineTo(x,y-LH(4)*r); ctx.moveTo(x,y+LH(4)*r); ctx.lineTo(x,y+LH(14)*r); ctx.stroke();
     nm=netSeatName(+s)||'PILLAGER';
-    ctx.font=FS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle='#bfe0ff';
-    ctx.fillText(nm+' MARKER  '+((G&&G.player)?metres(dist(G.player,w)):0)+'M',clamp(x,LH(70),W-LH(70)),y-LH(18)); ctx.textAlign='left';
+    ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle='#bfe0ff';
+    ctx.fillText(nm+' MARKER  '+((G&&G.player)?metres(dist(G.player,w)):0)+'m',clamp(x,LH(70)*r,W-LH(70)*r),y-LH(18)*r); ctx.textAlign='left';
     n++;
   }
   return n;
@@ -42412,8 +42412,14 @@ function netPingPush(s,o){
   try{ if(typeof G!=='undefined'&&G&&!G.sim) blip('pick'); }catch(_bp){}
   return NET.pings.length;
 }
+// v22.xx, the raid text rewrite (R43): CO-OP MARKS, THE CRIER MARKER AND THE NOISE CHEVRONS GROW AT 4K. HIS ORDER (2026-10-09): the raid
+// text reads like a shooter HUD, the same size on every screen, and its distances read 120m. A ping, a teammate Waypoint, the arrow
+// to a teammate off screen, the Crier ring and countdown and the noise chevrons at the screen edge were all drawn in 1080p pixels,
+// so at 4K they were half the size of the HUD around them, and the distances read 120M. Their words are now hudFS, their shapes,
+// line widths, gaps and edge margins grow by the screen factor, and the distances end in a small m. The Crier marker is not drawn
+// over the open backpack. At 1080p only the unit letter changes.
 function netPingDraw(){
-  var i, p, now=Date.now(), s, M=LH(30), e, nm, lbl, x, y, n=0, c;
+  var r=Math.max(1,(typeof hudRes==='function')?hudRes():1), i, p, now=Date.now(), s, M=LH(30)*r, e, nm, lbl, x, y, n=0, c;
   netWpDraw();   // v16.46: the party's map markers, in the world
   if(!NET.pings||!NET.pings.length) return 0;
   for(i=NET.pings.length-1;i>=0;i--){
@@ -42425,12 +42431,12 @@ function netPingDraw(){
     x=clamp(s.x,M,W-M); y=clamp(s.y,M,H-M);
     c=p.dg?'#ff4a3a':(p.w?'#ff8a3c':((p.s===NET.seat)?HUDC.warn:HUDC.ally));   // v22.70 (R27): a teammate ping in the teammate colour, your own in amber like your Waypoint
     ctx.save(); ctx.globalAlpha=0.55+0.45*Math.abs(Math.sin(now/180));
-    ctx.strokeStyle=c; ctx.lineWidth=2.5;
-    ctx.beginPath(); ctx.moveTo(x,y-LH(12)); ctx.lineTo(x+LH(9),y); ctx.lineTo(x,y+LH(12)); ctx.lineTo(x-LH(9),y); ctx.closePath(); ctx.stroke();
+    ctx.strokeStyle=c; ctx.lineWidth=2.5*r;
+    ctx.beginPath(); ctx.moveTo(x,y-LH(12)*r); ctx.lineTo(x+LH(9)*r,y); ctx.lineTo(x,y+LH(12)*r); ctx.lineTo(x-LH(9)*r,y); ctx.closePath(); ctx.stroke();
     ctx.restore();
     nm=(p.s===NET.seat)?'YOU':(netSeatName(p.s)||'PILLAGER');
-    lbl=nm+(p.w?(': '+p.w):(p.dg?': DANGER':''))+'  '+((G&&G.player)?metres(dist(G.player,p)):0)+'M';
-    ctx.font=FS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c; ctx.fillText(lbl,clamp(x,LH(60),W-LH(60)),y-LH(16)); ctx.textAlign='left';
+    lbl=nm+(p.w?(': '+p.w):(p.dg?': DANGER':''))+'  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';   // v22.xx (R43): 120m
+    ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c; ctx.fillText(lbl,clamp(x,LH(60)*r,W-LH(60)*r),y-LH(16)*r); ctx.textAlign='left';
     n++;
   }
   return n;

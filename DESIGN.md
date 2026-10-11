@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.94 - CO-OP MARKS AND CRIER MARKER GROW AT 4K
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, the same size on every screen, with distances as 120m. A teammate ping, a teammate Waypoint, the arrow to a teammate off screen, the Crier ring and countdown and the noise chevrons at the screen edge were drawn at their 1080p size on a 4K screen, and their distances read 120M. They now grow with the screen and read 120m, and the Crier countdown is no longer drawn over the open backpack. At 1080p only the unit letter changes.
+
+MEASURED. Check 22.94 passes, and fails on v22.93.
 ## v22.93 - ALERT MARKS SIT ABOVE THE NAMEPLATE
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where the alert mark sits clear over the name of what is on you. The ? and ! were lifted a fixed number of screen pixels while the nameplate under them grows with the zoom, so at 1080p the mark sat inside the plate and at 4K, zoomed in or down the sights it sat on the body. The mark now sits just above the plate at every size, outlined and grown with the screen, and a Crier winding up shows only its own countdown, with no ! over it.
