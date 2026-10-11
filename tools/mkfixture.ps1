@@ -6821,7 +6821,7 @@ window.__REGRESS=[
          z.hold=null; z.beaconT=null; z.open=true; if(z===g.active){ g.beaconT=null; g.shipHold=null; }
          e.state='extract'; e.x=z.x; e.y=z.y; e.extracting=0; e.rcallT=1.59; e.hp=Math.max(e.hp||0,50);
          __ents(0.05);
-         if(z.beaconT===null||z.beaconT===undefined) bad.push('SKIP: staging: the pillager in the ring did not call extraction');
+         if(z.beaconT===null||z.beaconT===undefined) bad.push('SKIP: staging: the pillager in the ring did not call for extraction');
          else if(named()) bad.push('a pillager calling extraction 4000 away said a line: '+said.join(' | '));
          said.length=0;
          z.hold=null; z.beaconT=null; z.open=true; if(z===g.active){ g.beaconT=null; g.shipHold=null; }
@@ -8482,7 +8482,7 @@ window.__REGRESS=[
      }
      if(!staged) return 'SKIP: staging: no raid started with the SMG on key 1, key 2 showing no gun and the Longshot on key 3';
      return bad.length?bad.join('; '):null; }},
-  {v:'22.47',what:'the alert lane in the shooter voice: the in-ring hints read Hold [E] to call extraction, Inbound 17s then Stay in the ring, and All extractions closed, and the explaining details and narrated headlines of batch 3 are gone from the game',
+  {v:'22.47',what:'the alert lane in the shooter voice: the in-ring hints read Hold [E] to call for extraction, Inbound 17s then Stay in the ring, and All extractions closed, and the explaining details and narrated headlines of batch 3 are gone from the game',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof outHint!=='function'||typeof padOn!=='function') return 'SKIP: no hint here';
@@ -8498,7 +8498,7 @@ window.__REGRESS=[
        for(i=0;i<g.zones.length;i++) if(g.zones[i].open!==false){ z=g.zones[i]; break; }
        if(!z) return 'SKIP: no open extraction ring here';
        p.x=z.x; p.y=z.y;
-       h=outHint(1); if(h!=='Hold [E] to call extraction'&&h!=='Hold [E] to call for extraction') bad.push('in a ring with nothing called the hint is '+JSON.stringify(h));
+       h=outHint(1); if(h!=='Hold [E] to call'+' extraction'&&h!=='Hold [E] to call for extraction') bad.push('in a ring with nothing called the hint is '+JSON.stringify(h));
        z.beaconT=17; z.hold=null; g.active=z; g.beaconT=17;
        h=outHint(1); if(h!=='Inbound 17s \u00b7 Stay in the ring') bad.push('in a ring with the ride 17 s out the hint is '+JSON.stringify(h));
        z.beaconT=null; g.active=null; g.beaconT=null;
