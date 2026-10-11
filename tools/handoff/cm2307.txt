@@ -1,0 +1,7 @@
+v23.07: people lines in caps
+
+Hire orders, revives, teammates joining and leaving, and the Survivor, Peddler and pillager replies read as caps callouts.
+
+Check 23.07. Fails on v23.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

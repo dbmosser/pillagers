@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.06';
+var VER='23.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10156,7 +10156,7 @@ function strayGive(e){
   if(ix<0&&e.want==='ammobox'){
     var need=ITEMS.ammobox.amt;
     if(G.player.reserve>=need){ G.player.reserve-=need; fromReserve=true; }
-    else { say('He needs ammunition. You cannot spare '+need+' rounds.'); return; }
+    else { say('HE NEEDS AMMUNITION','info',{sub:'You cannot spare '+need+' rounds.'}); return; }   // v22.xx (R54): a caps callout
   }
   if(ix<0&&!fromReserve){ say(('He needs '+aOrAn(ITEMS[e.want].name)+' '+ITEMS[e.want].name).toUpperCase(),'info',{sub:'You have none.'}); return; }   // v22.xx (R50): HE NEEDS AN ARMOUR PLATE, never a armour plate
   if(!fromReserve) G.bag.splice(ix,1);
@@ -10233,7 +10233,7 @@ function pedSellAll(){
     if(ITEMS[k]&&ITEMS[k].use==='gun'&&ITEMS[k].gk) dropRounds(ITEMS[k].gk);   // v22.26 (K37): a gun sold takes its stowed rounds with it
     if(_ck[k]>0){ _ck[k]--; _ckOut.push(k); _ckV+=ival(k); }   // v20.47 (H18): a copy the lift carried up, sold
   }
-  if(!n){ if(!G.sim) say('Nothing in your backpack he wants.'); return; }
+  if(!n){ if(!G.sim) say('HE WANTS NOTHING YOU CARRY'); return; }   // v22.xx (R54): a caps callout
   // v15.36, peddler audit finding 8: SELLING FOUND BANDAGES NEVER TURNS ISSUED BANDAGES INTO FOUND ONES. Since v13.71 the stall
   // keeps the issued Bandages and buys only the found ones, but the sale left G.bandSeen where the last frame put it. On the
   // next frame trackIssuedBandages saw the Bandage count fall by the number sold and, by the older v13.67 rule that every fall
@@ -12120,8 +12120,8 @@ function raidKey(code,repeat,ev){
     if(_mrc){
       G.mercOrder=(G.mercOrder==='loot')?'follow':(G.mercOrder==='follow'?'hold':'loot');
       if(G.mercOrder==='hold') G.mercHold={x:_mrc.x,y:_mrc.y};
-      say('Order: '+(G.mercOrder==='loot'?(_mrc.name+', loot on your own.')
-        :(G.mercOrder==='follow'?(_mrc.name+', on me.'):(_mrc.name+', hold here.'))));
+      // v22.xx, the raid text rewrite (R54): the order is the headline, his name first (GRIT LOOTS ON HIS OWN, FOLLOWS YOU, HOLDS HERE)
+      say(String(_mrc.name).toUpperCase()+(G.mercOrder==='loot'?' LOOTS ON HIS OWN':(G.mercOrder==='follow'?' FOLLOWS YOU':' HOLDS HERE')),'ally');
       blip('pick');
     }
   }
@@ -18917,8 +18917,8 @@ if(!p.fired||p.wep.auto){
         var rrv=idRec(downRdr.ident);
         rrv.standing=(rrv.standing||0)+3; rrv.met++;
         saveProfile();
-        say(downRdr.name+' is back on his feet. He will remember that.');
-      } else say('Back on his feet.');
+        say(String(downRdr.name).toUpperCase()+' IS BACK UP','ally',{sub:'He will remember that.'});   // v22.xx (R54): a caps callout
+      } else say('HE IS BACK UP','ally');
       label(downRdr.x,downRdr.y-18,'REVIVED','#7fc4a0',0,true);
     }
   }
@@ -18971,7 +18971,7 @@ if(!p.fired||p.wep.auto){
     // left mouse.down set, and the fire and cook code above runs every frame before the stall's return below, so an automatic
     // kept firing through its magazine behind the panel. The stall lets go of it the way padRelease lets go of pad A (v14.20):
     // the next frame ends the hold, and a grenade being cooked is thrown rather than left to cook off in his hand.
-    if(!pedOpen()) say('He has heard what you did to the last one. No deal.');
+    if(!pedOpen()) say('NO DEAL','info',{sub:'He heard what you did to the last one.'});   // v22.xx (R54): a caps callout
     // v15.83, trade audit finding: THE SECTOR MAP NEVER SITS OVER THE OPEN STALL. Nothing here read mapOpen, so E with the map
     // up (or pad X, which padHold turns into E) opened the stall underneath the map, hidden, with its keys live. The map shuts
     // as the stall opens, the way the downed screen clears it (v14.07), so the panel he just opened is the one in front and
@@ -19190,7 +19190,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
           // the moment he picks something else up, with no opened flag, no
           // container count, no windfall roll and no litter thrown at his feet.
           near.prog=0; near.pulled=0; G.searching=null; G.searchT=0;
-          say('That is everything '+near.mercSrc.name+' is carrying.');
+          say(String(near.mercSrc.name).toUpperCase()+' CARRIES NOTHING ELSE');   // v22.xx (R54): a caps callout
         } else {
           // v8.53, audit: near.mine was written in exactly one place, on a corpse
           // container that could never be created, so this call was unreachable.
@@ -20350,7 +20350,7 @@ if(e.state==='possum'){
           var rr2=idRec(e.ident);
           rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
           saveProfile();
-          sayWhenFree(e.name+' will remember that.');   // v13.38: waits its turn. contractKill above may have just said the contract is done in this same step, and a plain say wrote over it before any frame drew it.
+          sayWhenFree(String(e.name).toUpperCase()+' WILL REMEMBER THAT','ally');   // v13.38: waits its turn. contractKill above may have just said the contract is done in this same step, and a plain say wrote over it before any frame drew it.   // v22.xx (R54): a caps callout
         }
       }
       // SPEC 3.5: the death benefit. Owed whoever killed him, and it stings.
@@ -20593,7 +20593,7 @@ if(e.kind==='stray'){
       // damage source counts and the shared damage path stays untouched.
       if(e._lastHp===undefined) e._lastHp=e.hp;
       if(e.hp<e._lastHp){
-        if(!e.fleeT&&!G.sim) say('The Peddler bolts. No trade while he is bleeding.');
+        if(!e.fleeT&&!G.sim) say('THE PEDDLER BOLTS','info',{sub:'No trade while he bleeds.'});   // v22.xx (R54): a caps callout
         e.fleeT=12;
       }
       e._lastHp=e.hp;
@@ -20640,7 +20640,7 @@ if(e.kind==='stray'){
       if(!e[_hk]&&pdd<240&&!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)){
         e[_hk]=1;
         if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'ped',nid:e.nid|0,seat:p.seat|0}); }
-        else say(pedOpen()?'The Peddler waves you over.':'The Peddler turns his back on you.');
+        else say(pedOpen()?'THE PEDDLER WAVES YOU OVER':'THE PEDDLER TURNS HIS BACK','ally');   // v22.xx (R54): a caps callout
       }
       continue;
     }
@@ -21195,7 +21195,7 @@ var _rdS=G.shells[_rdi];
           if(!G.sim&&_bs>0){ var _bq=netPeerOfSeat(_bs); if(_bq) netSend(_bq,{t:'betray',seat:_bs,id:e.nid|0}); }
           else if(!G.sim&&!(G.player&&G.player.specOut)){
             var rb=idRec(e.ident); rb.standing=Math.min((rb.standing||0)-3,-1); saveProfile();
-            say(e.name+' trusted you.');
+            say(String(e.name).toUpperCase()+' TRUSTED YOU','ally');   // v22.xx (R54): a caps callout
           }
         }
       }
@@ -21560,7 +21560,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
     else if(e.kind==='raider'&&e.merc&&!e.downed&&p.downed&&CFG.raiderDown!==0){
       var dPv=dist(e,p);
       want=Math.atan2(p.y-e.y,p.x-e.x);
-      if(!e.revSaid){ e.revSaid=1; say(e.name+' is coming for you.'); }
+      if(!e.revSaid){ e.revSaid=1; say(String(e.name).toUpperCase()+' IS COMING FOR YOU','ally'); }   // v22.xx (R54): a caps callout
       if(dPv>44){ navSeek(e,p.x,p.y,e.spd,dt); e.revProgP=0; }
       else{
         e.revProgP=(e.revProgP||0)+dt;
@@ -21568,7 +21568,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
           e.revProgP=0; e.revSaid=0;
           p.downed=false; p.hp=Math.round(p.maxhp*0.4); p.iv=2; p.pendKiller=null;
           if(G.tel){ G.tel.revives=(G.tel.revives||0)+1; G.tel.mercRevives=(G.tel.mercRevives||0)+1; }
-          blip('pick'); say(e.name+' pulls you up. That is what you paid for.');
+          blip('pick'); say(String(e.name).toUpperCase()+' REVIVED YOU','ally',{sub:'That is what you paid for.'});   // v22.xx (R54): a caps callout
           label(p.x,p.y-22,'PICKED UP','#4de3d0',0,true);
         }
       }
@@ -22214,7 +22214,7 @@ function updateBullets(dt){
                 if(!G.sim){
                   spark(b.x,b.y,'#9fb4c4',10,220);
                   sfx('clank',b.x,b.y);
-                  if(!en._shTold){ en._shTold=1; say('The slab eats it. Get behind him.'); }
+                  if(!en._shTold){ en._shTold=1; say('THE BULWARK BLOCKED IT','info',{sub:'Get behind it.'}); }   // v22.xx (R54): the Bulwark by its name, never the slab
                 }
               } else if(NET.on&&netEntsPeer()){
                 // v22.04, from the whole-game bug hunt of 2026-10-08 (K16): THE HOST SOAKS PLAYER 2'S ROUNDS WITH THE ARMOUR IT KEEPS.
@@ -36026,7 +36026,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.06: Contract, kill, door, seal and hot ground lines read as caps callouts, with his contract words kept whole as the detail. Check 23.06 fails on v23.05',
+  now:'v23.07: Hire orders, revives, teammates joining and leaving, and the Survivor, Peddler and pillager replies read as caps callouts. Check 23.07 fails on v23.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41235,7 +41235,7 @@ function netLateReply(peer){
   for(wi=0;wi<G.map.walls.length;wi++){ have[G.map.walls[wi].wid]=1; if(G.map.walls[wi].wid+1>wn) wn=G.map.walls[wi].wid+1; }
   for(wi=0;wi<wn&&m.wg.length<1500;wi++) if(!have[wi]) m.wg.push(wi);
   if(!netSend(peer,m)) return 'lost';
-  try{ say((netSeatName(peer.seat)||'Your teammate')+' is joining the raid.'); }catch(_ls){}   // v17.62: the host hears who is coming
+  try{ say(String(netSeatName(peer.seat)||'Your teammate').toUpperCase()+' IS JOINING THE RAID','ally'); }catch(_ls){}   // v17.62: the host hears who is coming   // v22.xx (R54): a caps callout
   // v17.50: then every body that came up after the build (the boss, a late crew), which the late window never heard announced
   for(id=0;id<G.ents.length;id++) if(G.ents[id]&&G.ents[id].nid>=(NET.entBuilt||1e9)) netSend(peer,netEntNewWord(G.ents[id]));
   // v17.59: and the map markers already placed (the host's, and any other teammate's), which went out once, as they were placed
@@ -41260,7 +41260,7 @@ function netLateApply(m){
   try{ G.lateEl=elapsed(); }catch(_le){}   // v17.64: this player came up now; his own run counts from here
   p=G.player;
   if(typeof L.x==='number'&&typeof L.y==='number'&&isFinite(L.x)&&isFinite(L.y)){ p.x=L.x+36; p.y=L.y+8; if(typeof resolvePlayer==='function'){ try{ resolvePlayer(p); }catch(_rp){} } }
-  say('You joined the raid in progress.');
+  say('YOU JOINED THE RAID IN PROGRESS','ally');   // v22.xx (R54): a caps callout
   return 'late';
 }
 function netLateAsk(){
@@ -41347,7 +41347,7 @@ function netUpWord(peer,m){
   // shut: a host who went up alone was told nothing, and did not know his teammate had stayed below.
   // v17.63: a teammate whose raid ended is named in the raid of the others, as the host is (spec): killed, extracted or abandoned.
   // Before, the host was told nothing and found his teammate gone from the screen.
-  if(st==='out'&&s!==0&&typeof G!=='undefined'&&G&&!G.over&&!G.sim){ hw=netClean(m.how,12); hw=(hw==='dead')?'killed':(hw==='extract')?'extracted':(hw==='abandon')?'abandoned':''; try{ sayWhenFree(nm+' is out of this raid'+(hw?' ('+hw+')':'')+'.'); }catch(_so){} }  if(st==='no'){ NET.status=nm+' could not go up with you: '+netUpWhyText(m.why)+'.'; netRefresh(); try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree(NET.status); }catch(_sn){} }
+  if(st==='out'&&s!==0&&typeof G!=='undefined'&&G&&!G.over&&!G.sim){ hw=netClean(m.how,12); hw=(hw==='dead')?'killed':(hw==='extract')?'extracted':(hw==='abandon')?'abandoned':''; try{ sayWhenFree(String(nm).toUpperCase()+((hw==='killed')?' DIED':(hw==='extracted')?' EXTRACTED':(hw==='abandoned')?' ABANDONED THE RAID':' IS OUT'),'ally'); }catch(_so){} }  if(st==='no'){ NET.status=nm+' could not go up with you: '+netUpWhyText(m.why)+'.'; netRefresh(); try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree(NET.status); }catch(_sn){} }   /* v22.xx (R54): NAME EXTRACTED, a caps callout */
   if(NET.role==='host'&&st==='out'&&(m.how==='dead'||m.how==='extract')&&NET.upWord&&!(m.how==='dead'&&kbOn())){ if(!NET.lateOut) NET.lateOut={}; NET.lateOut[s]=NET.upWord.seed>>>0; }   // v17.66, his ruling: that seat sits this raid out
   if(NET.role==='host'){
     out={t:'up',s:s,st:st}; if(typeof m.sd==='number') out.sd=m.sd>>>0; if(m.why!==undefined) out.why=netClean(m.why,24); if(m.how!==undefined) out.how=netClean(m.how,12);
@@ -42074,7 +42074,7 @@ function netGiftTake(peer,m){
   if(m.op==='no'){
     if(G.giftIn&&G.giftIn.id===m.id) G.giftIn=null;
     if(G.giftOut&&G.giftOut.id===m.id) G.giftOut=null;   // v18.23: and the giver's open offer closes with the no
-    say(m.why==='down'?(nm+' is down and cannot take it.'):(m.why==='gone'?(nm+' is not up top any more.'):(nm+' could not hand it over.')));   // v18.23: the reason, when there is one
+    say((m.why==='down'||m.why==='gone')?(String(nm).toUpperCase()+(m.why==='down'?' IS DOWN':' LEFT THE RAID')):'HAND-OVER FAILED','ally',{sub:(m.why==='down'||m.why==='gone')?'Cannot take it.':('With '+nm+'.')});   // v18.23: the reason, when there is one   // v22.xx (R54): a caps callout
     return 'no';
   }
   return 'bad';
@@ -43538,7 +43538,7 @@ function netRevApply(by){
   if(!g||Math.hypot(g.x-p.x,g.y-p.y)>NET_REV_R*1.5) return 'far';
   p.downed=false; p.hp=Math.round(p.maxhp*0.4); p.iv=2; p.pendKiller=null;
   if(G.tel) G.tel.revives=(G.tel.revives||0)+1;
-  blip('pick'); say('Revived by '+(netSeatName(by)||'a teammate')+'.');
+  blip('pick'); say(String(netSeatName(by)||'Your teammate').toUpperCase()+' REVIVED YOU','ally');   // v22.xx (R54): a caps callout
   label(p.x,p.y-22,'REVIVED','#4de3d0',0,true);
   return 'up';
 }
@@ -43677,7 +43677,7 @@ function netKillTake(peer,m){
   if(k==='raider'&&e&&e.ident){
     rr2=idRec(e.ident); rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
     saveProfile();
-    sayWhenFree((e.name||'He')+' will remember that.');
+    sayWhenFree(String(e.name||'He').toUpperCase()+' WILL REMEMBER THAT','ally');   // v22.xx (R54): a caps callout
   }
   // v22.07, from the whole-game bug hunt of 2026-10-08 (K18): A SURVIVOR OR THE PEDDLER THIS PLAYER KILLED COSTS HIM. The death
   // branch in updateEnts charges notoriety only for the host round (byPlayer), so a kill by one of the party was free. It is
@@ -43701,7 +43701,7 @@ function netBetrayTake(peer,m){
   e=(NET.entMap&&NET.entMap[m.id|0])||(NET.entDead&&NET.entDead[m.id|0])||null;
   if(!e||!e.ident) return 'gone';
   rb=idRec(e.ident); rb.standing=Math.min((rb.standing||0)-3,-1); saveProfile();
-  sayWhenFree((e.name||'He')+' trusted you.');
+  sayWhenFree(String(e.name||'He').toUpperCase()+' TRUSTED YOU','ally');   // v22.xx (R54): a caps callout
   return 'betray';
 }
 // The bodies as this window holds them, for the test page handle.
@@ -43781,7 +43781,7 @@ function netSrchHold(near,dt){
     // or four), or on the host kept it marked held by him with its bar frozen. A linked window sends the stop at once.
     if(G.searching){ G.searching=null; G.searchT=0; }
     if(NET.role==='join') netSrchStop();
-    if(near.netSaidT===undefined||G.t-near.netSaidT>2.5){ near.netSaidT=G.t; nm=netSeatName(near.netBy); if(!G.sim) say((nm||'One of your party')+' is searching this one.','info',{key:'netsrch'}); }
+    if(near.netSaidT===undefined||G.t-near.netSaidT>2.5){ near.netSaidT=G.t; nm=netSeatName(near.netBy); if(!G.sim) say(String(nm||'Your teammate').toUpperCase()+' IS SEARCHING','info',{key:'netsrch'}); }   // v22.xx (R54): a caps callout
     return 'held';
   }
   if(G.searching!==near&&near.netAskT!==undefined&&G.t-near.netAskT<1){   // a request the host turned down is not made again every frame
@@ -43831,7 +43831,7 @@ function netSrchAnswer(peer,m){
   NET.srch=null;
   if(ct&&G.searching===ct){ G.searching=null; G.searchT=0; }
   why=netClean(m.why,12);
-  if(ct&&why==='held'){ ct.netBy=(typeof m.by==='number')?(m.by|0):-1; ct.netSaidT=G.t; nm=netSeatName(ct.netBy); if(!G.sim) say((nm||'One of your party')+' is searching this one.','info',{key:'netsrch'}); }
+  if(ct&&why==='held'){ ct.netBy=(typeof m.by==='number')?(m.by|0):-1; ct.netSaidT=G.t; nm=netSeatName(ct.netBy); if(!G.sim) say(String(nm||'Your teammate').toUpperCase()+' IS SEARCHING','info',{key:'netsrch'}); }   // v22.xx (R54): a caps callout
   else if(ct&&why==='open'){ ct.opened=true; ct.loot=[]; ct.prog=0; }
   return 'srch:'+(why||'no');
 }

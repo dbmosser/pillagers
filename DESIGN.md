@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.07 - PEOPLE LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps headline with a short detail only when needed. The lines about people were still sentences: Order: Grit, on me., Revived by Kite., Grit pulls you up. That is what you paid for., The slab eats it. Get behind him., Kite is joining the raid., Kite is out of this raid (extracted). and the Survivor, Peddler and pillager replies. They now read GRIT FOLLOWS YOU, KITE REVIVED YOU, GRIT REVIVED YOU, THE BULWARK BLOCKED IT with Get behind it., KITE IS JOINING THE RAID, KITE EXTRACTED, HE NEEDS AMMUNITION, NO DEAL, THE PEDDLER BOLTS, NAME TRUSTED YOU, NAME WILL REMEMBER THAT and KITE IS SEARCHING. Every seat gate on gifts, aid and revives is unchanged.
+
+MEASURED. Check 23.07 passes, and fails on v23.06.
 ## v23.06 - OBJECTIVE LINES IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps headline with a short detail only when needed. His contract line is split at his own colon for display: CONTRACT DONE is the headline and the rest, word for word with his lowercase mainframe, is the detail. A machine kill read Warden X-4 is down. Its core is exposed. and Pillbox A-2 has stopped singing.; they now read WARDEN X-4 DESTROYED and PILLBOX A-2 DESTROYED with the cache or the wreck as the detail, and THE OVERSEER is said once as THE OVERSEER DESTROYED with Its hoard is open. Doors read ARCHIVE DOOR OPEN, the seal SEAL BROKEN, a dead hire NAME IS DEAD with You owe his family., the lightning cache LIGHTNING FUSED A CACHE, and the hot ground HOT GROUND and HOT GROUND MOVED with their details.

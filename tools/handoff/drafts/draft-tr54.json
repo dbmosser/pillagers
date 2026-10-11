@@ -1,0 +1,96 @@
+{
+    "title":  "PEOPLE LINES IN CAPS",
+    "why":  "His order of 2026-10-09: raid text reads like a shooter HUD, a short caps headline with a short detail only when needed. The lines about people were still sentences: Order: Grit, on me., Revived by Kite., Grit pulls you up. That is what you paid for., The slab eats it. Get behind him., Kite is joining the raid., Kite is out of this raid (extracted). and the Survivor, Peddler and pillager replies. They now read GRIT FOLLOWS YOU, KITE REVIVED YOU, GRIT REVIVED YOU, THE BULWARK BLOCKED IT with Get behind it., KITE IS JOINING THE RAID, KITE EXTRACTED, HE NEEDS AMMUNITION, NO DEAL, THE PEDDLER BOLTS, NAME TRUSTED YOU, NAME WILL REMEMBER THAT and KITE IS SEARCHING. Every seat gate on gifts, aid and revives is unchanged.",
+    "now":  "Hire orders, revives, teammates joining and leaving, and the Survivor, Peddler and pillager replies read as caps callouts.",
+    "edits":  [
+                  {
+                      "anchor":  "    else { say(\u0027He needs ammunition. You cannot spare \u0027+need+\u0027 rounds.\u0027); return; }",
+                      "replacement":  "    else { say(\u0027HE NEEDS AMMUNITION\u0027,\u0027info\u0027,{sub:\u0027You cannot spare \u0027+need+\u0027 rounds.\u0027}); return; }   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "  if(!n){ if(!G.sim) say(\u0027Nothing in your backpack he wants.\u0027); return; }",
+                      "replacement":  "  if(!n){ if(!G.sim) say(\u0027HE WANTS NOTHING YOU CARRY\u0027); return; }   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "    if(!pedOpen()) say(\u0027He has heard what you did to the last one. No deal.\u0027);",
+                      "replacement":  "    if(!pedOpen()) say(\u0027NO DEAL\u0027,\u0027info\u0027,{sub:\u0027He heard what you did to the last one.\u0027});   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "        if(!e.fleeT\u0026\u0026!G.sim) say(\u0027The Peddler bolts. No trade while he is bleeding.\u0027);",
+                      "replacement":  "        if(!e.fleeT\u0026\u0026!G.sim) say(\u0027THE PEDDLER BOLTS\u0027,\u0027info\u0027,{sub:\u0027No trade while he bleeds.\u0027});   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "        else say(pedOpen()?\u0027The Peddler waves you over.\u0027:\u0027The Peddler turns his back on you.\u0027);",
+                      "replacement":  "        else say(pedOpen()?\u0027THE PEDDLER WAVES YOU OVER\u0027:\u0027THE PEDDLER TURNS HIS BACK\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "      say(\u0027Order: \u0027+(G.mercOrder===\u0027loot\u0027?(_mrc.name+\u0027, loot on your own.\u0027)\n        :(G.mercOrder===\u0027follow\u0027?(_mrc.name+\u0027, on me.\u0027):(_mrc.name+\u0027, hold here.\u0027))));",
+                      "replacement":  "      // v22.xx, the raid text rewrite (R54): the order is the headline, his name first (GRIT LOOTS ON HIS OWN, FOLLOWS YOU, HOLDS HERE)\n      say(String(_mrc.name).toUpperCase()+(G.mercOrder===\u0027loot\u0027?\u0027 LOOTS ON HIS OWN\u0027:(G.mercOrder===\u0027follow\u0027?\u0027 FOLLOWS YOU\u0027:\u0027 HOLDS HERE\u0027)),\u0027ally\u0027);"
+                  },
+                  {
+                      "anchor":  "        say(downRdr.name+\u0027 is back on his feet. He will remember that.\u0027);\n      } else say(\u0027Back on his feet.\u0027);",
+                      "replacement":  "        say(String(downRdr.name).toUpperCase()+\u0027 IS BACK UP\u0027,\u0027ally\u0027,{sub:\u0027He will remember that.\u0027});   // v22.xx (R54): a caps callout\n      } else say(\u0027HE IS BACK UP\u0027,\u0027ally\u0027);"
+                  },
+                  {
+                      "anchor":  "          say(\u0027That is everything \u0027+near.mercSrc.name+\u0027 is carrying.\u0027);",
+                      "replacement":  "          say(String(near.mercSrc.name).toUpperCase()+\u0027 CARRIES NOTHING ELSE\u0027);   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "          sayWhenFree(e.name+\u0027 will remember that.\u0027);   // v13.38: waits its turn. contractKill above may have just said the contract is done in this same step, and a plain say wrote over it before any frame drew it.",
+                      "replacement":  "          sayWhenFree(String(e.name).toUpperCase()+\u0027 WILL REMEMBER THAT\u0027,\u0027ally\u0027);   // v13.38: waits its turn. contractKill above may have just said the contract is done in this same step, and a plain say wrote over it before any frame drew it.   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "    sayWhenFree((e.name||\u0027He\u0027)+\u0027 will remember that.\u0027);",
+                      "replacement":  "    sayWhenFree(String(e.name||\u0027He\u0027).toUpperCase()+\u0027 WILL REMEMBER THAT\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "            say(e.name+\u0027 trusted you.\u0027);",
+                      "replacement":  "            say(String(e.name).toUpperCase()+\u0027 TRUSTED YOU\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "  sayWhenFree((e.name||\u0027He\u0027)+\u0027 trusted you.\u0027);",
+                      "replacement":  "  sayWhenFree(String(e.name||\u0027He\u0027).toUpperCase()+\u0027 TRUSTED YOU\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "      if(!e.revSaid){ e.revSaid=1; say(e.name+\u0027 is coming for you.\u0027); }",
+                      "replacement":  "      if(!e.revSaid){ e.revSaid=1; say(String(e.name).toUpperCase()+\u0027 IS COMING FOR YOU\u0027,\u0027ally\u0027); }   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "          blip(\u0027pick\u0027); say(e.name+\u0027 pulls you up. That is what you paid for.\u0027);",
+                      "replacement":  "          blip(\u0027pick\u0027); say(String(e.name).toUpperCase()+\u0027 REVIVED YOU\u0027,\u0027ally\u0027,{sub:\u0027That is what you paid for.\u0027});   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "                  if(!en._shTold){ en._shTold=1; say(\u0027The slab eats it. Get behind him.\u0027); }",
+                      "replacement":  "                  if(!en._shTold){ en._shTold=1; say(\u0027THE BULWARK BLOCKED IT\u0027,\u0027info\u0027,{sub:\u0027Get behind it.\u0027}); }   // v22.xx (R54): the Bulwark by its name, never the slab"
+                  },
+                  {
+                      "anchor":  "  try{ say((netSeatName(peer.seat)||\u0027Your teammate\u0027)+\u0027 is joining the raid.\u0027); }catch(_ls){}   // v17.62: the host hears who is coming",
+                      "replacement":  "  try{ say(String(netSeatName(peer.seat)||\u0027Your teammate\u0027).toUpperCase()+\u0027 IS JOINING THE RAID\u0027,\u0027ally\u0027); }catch(_ls){}   // v17.62: the host hears who is coming   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "  say(\u0027You joined the raid in progress.\u0027);",
+                      "replacement":  "  say(\u0027YOU JOINED THE RAID IN PROGRESS\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "  if(st===\u0027out\u0027\u0026\u0026s!==0\u0026\u0026typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim){ hw=netClean(m.how,12); hw=(hw===\u0027dead\u0027)?\u0027killed\u0027:(hw===\u0027extract\u0027)?\u0027extracted\u0027:(hw===\u0027abandon\u0027)?\u0027abandoned\u0027:\u0027\u0027; try{ sayWhenFree(nm+\u0027 is out of this raid\u0027+(hw?\u0027 (\u0027+hw+\u0027)\u0027:\u0027\u0027)+\u0027.\u0027); }catch(_so){} }  if(st===\u0027no\u0027){ NET.status=nm+\u0027 could not go up with you: \u0027+netUpWhyText(m.why)+\u0027.\u0027; netRefresh(); try{ if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over) sayWhenFree(NET.status); }catch(_sn){} }",
+                      "replacement":  "  if(st===\u0027out\u0027\u0026\u0026s!==0\u0026\u0026typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim){ hw=netClean(m.how,12); hw=(hw===\u0027dead\u0027)?\u0027killed\u0027:(hw===\u0027extract\u0027)?\u0027extracted\u0027:(hw===\u0027abandon\u0027)?\u0027abandoned\u0027:\u0027\u0027; try{ sayWhenFree(String(nm).toUpperCase()+((hw===\u0027killed\u0027)?\u0027 DIED\u0027:(hw===\u0027extracted\u0027)?\u0027 EXTRACTED\u0027:(hw===\u0027abandoned\u0027)?\u0027 ABANDONED THE RAID\u0027:\u0027 IS OUT\u0027),\u0027ally\u0027); }catch(_so){} }  if(st===\u0027no\u0027){ NET.status=nm+\u0027 could not go up with you: \u0027+netUpWhyText(m.why)+\u0027.\u0027; netRefresh(); try{ if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over) sayWhenFree(NET.status); }catch(_sn){} }   /* v22.xx (R54): NAME EXTRACTED, a caps callout */"
+                  },
+                  {
+                      "anchor":  "    say(m.why===\u0027down\u0027?(nm+\u0027 is down and cannot take it.\u0027):(m.why===\u0027gone\u0027?(nm+\u0027 is not up top any more.\u0027):(nm+\u0027 could not hand it over.\u0027)));   // v18.23: the reason, when there is one",
+                      "replacement":  "    say((m.why===\u0027down\u0027||m.why===\u0027gone\u0027)?(String(nm).toUpperCase()+(m.why===\u0027down\u0027?\u0027 IS DOWN\u0027:\u0027 LEFT THE RAID\u0027)):\u0027HAND-OVER FAILED\u0027,\u0027ally\u0027,{sub:(m.why===\u0027down\u0027||m.why===\u0027gone\u0027)?\u0027Cannot take it.\u0027:(\u0027With \u0027+nm+\u0027.\u0027)});   // v18.23: the reason, when there is one   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "  blip(\u0027pick\u0027); say(\u0027Revived by \u0027+(netSeatName(by)||\u0027a teammate\u0027)+\u0027.\u0027);",
+                      "replacement":  "  blip(\u0027pick\u0027); say(String(netSeatName(by)||\u0027Your teammate\u0027).toUpperCase()+\u0027 REVIVED YOU\u0027,\u0027ally\u0027);   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "    if(near.netSaidT===undefined||G.t-near.netSaidT\u003e2.5){ near.netSaidT=G.t; nm=netSeatName(near.netBy); if(!G.sim) say((nm||\u0027One of your party\u0027)+\u0027 is searching this one.\u0027,\u0027info\u0027,{key:\u0027netsrch\u0027}); }",
+                      "replacement":  "    if(near.netSaidT===undefined||G.t-near.netSaidT\u003e2.5){ near.netSaidT=G.t; nm=netSeatName(near.netBy); if(!G.sim) say(String(nm||\u0027Your teammate\u0027).toUpperCase()+\u0027 IS SEARCHING\u0027,\u0027info\u0027,{key:\u0027netsrch\u0027}); }   // v22.xx (R54): a caps callout"
+                  },
+                  {
+                      "anchor":  "  if(ct\u0026\u0026why===\u0027held\u0027){ ct.netBy=(typeof m.by===\u0027number\u0027)?(m.by|0):-1; ct.netSaidT=G.t; nm=netSeatName(ct.netBy); if(!G.sim) say((nm||\u0027One of your party\u0027)+\u0027 is searching this one.\u0027,\u0027info\u0027,{key:\u0027netsrch\u0027}); }",
+                      "replacement":  "  if(ct\u0026\u0026why===\u0027held\u0027){ ct.netBy=(typeof m.by===\u0027number\u0027)?(m.by|0):-1; ct.netSaidT=G.t; nm=netSeatName(ct.netBy); if(!G.sim) say(String(nm||\u0027Your teammate\u0027).toUpperCase()+\u0027 IS SEARCHING\u0027,\u0027info\u0027,{key:\u0027netsrch\u0027}); }   // v22.xx (R54): a caps callout"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027people lines in caps: the three hire orders, a hail with nobody near, a revive by a teammate, a survivor who wants ammunition you cannot spare, a gift a downed teammate cannot take and a teammate searching your box each say a caps headline of at most 34 with any detail of at most 48, and no line says Order:, slab or pulls you up\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)||typeof raidKey!==\u0027function\u0027||typeof netRevApply!==\u0027function\u0027||typeof strayGive!==\u0027function\u0027||typeof mkStray!==\u0027function\u0027||typeof netGiftTake!==\u0027function\u0027||typeof doEmote!==\u0027function\u0027||typeof EMOTES===\u0027undefined\u0027) return \u0027SKIP: no hire orders, revives, survivors, gifts or emotes here\u0027;\n     var bad=[], g=null, p=null, i, hx=-1, said=[], realSay=say, realWF=sayWhenFree, all=[], keepN={on:NET.on,seat:NET.seat,roster:NET.roster,up:NET.up,role:NET.role,peers:NET.peers},\n         OLD=[\u0027Order\u0027+\u0027:\u0027,\u0027sl\u0027+\u0027ab\u0027,\u0027pulls \u0027+\u0027you up\u0027], hire, e, r0=null;\n     function need(tag,n0){ if(said.length\u003c=n0) bad.push(tag+\u0027 said nothing\u0027); }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player; p.downed=false; p.roll=0; p.ads=false; p.iv=99; g.paused=false;\n       say=function(m,k,o){ said.push({m:String(m),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); return realSay.apply(this,arguments); };\n       sayWhenFree=function(m,k,o){ said.push({m:String(m),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); };\n       // ONE: the hire orders\n       hire={kind:\u0027raider\u0027,merc:1,downed:0,name:\u0027Zqxhire\u0027,x:p.x+60,y:p.y,hp:100,maxhp:100,bag:[],state:\u0027follow\u0027};\n       g.ents.length=0; g.ents.push(hire);\n       for(i=0;i\u003c3;i++){ var n0=said.length; raidKey(\u0027KeyO\u0027,false); need(\u0027hire order \u0027+(i+1),n0); }\n       g.ents.length=0;\n       // TWO: a hail with nobody near\n       for(i=0;i\u003cEMOTES.length;i++) if(EMOTES[i].k===\u0027hail\u0027) hx=i;\n       if(hx\u003e=0){ g.emoteCd=0; var n1=said.length; doEmote(hx); need(\u0027a hail with nobody near\u0027,n1); }\n       // THREE: a revive by a teammate\n       NET.roster=[{seat:0,name:\u0027Host\u0027},{seat:1,name:\u0027Zqxkid\u0027}]; NET.up=[]; NET.up[1]={x:p.x+10,y:p.y,seat:1}; NET.role=\u0027join\u0027; NET.peers=[];\n       p.downed=true; g.deathBeat=null; var n2=said.length; r0=netRevApply(1); p.downed=false;\n       if(r0!==\u0027not down\u0027\u0026\u0026r0!==\u0027far\u0027\u0026\u0026r0!==\u0027no raid\u0027) need(\u0027a revive by a teammate\u0027,n2);\n       // FOUR: a survivor who wants ammunition you cannot spare\n       e=mkStray(p.x+40,p.y); e.want=\u0027ammobox\u0027; e.helped=0; p.reserve=0;\n       for(i=g.bag.length-1;i\u003e=0;i--) if(g.bag[i]===\u0027ammobox\u0027) g.bag.splice(i,1);\n       var n3=said.length; strayGive(e); need(\u0027a survivor who wants ammunition\u0027,n3);\n       // FIVE: a gift a downed teammate cannot take\n       g.giftOut={id:\u0027zqx54\u0027,k:\u0027bandage\u0027,to:1,t:g.t};\n       netGiftTake({state:\u0027in\u0027,seat:1,name:\u0027Zqxkid\u0027},{t:\u0027gift\u0027,op:\u0027no\u0027,id:\u0027zqx54\u0027,why:\u0027down\u0027});\n       g.giftOut=null;\n       // every line said\n       for(i=0;i\u003csaid.length;i++){\n         var l=said[i], s=l.m+\u0027 \u0027+l.sub;\n         if(l.m!==l.m.toUpperCase()||l.m.length\u003e34||(/[.!?,;:]$/).test(l.m)) bad.push(JSON.stringify(l.m)+\u0027 is not a caps headline of at most 34\u0027);\n         if(l.sub.length\u003e48) bad.push(JSON.stringify(l.m)+\u0027 has a detail of \u0027+l.sub.length+\u0027 characters\u0027);\n         for(var q=0;q\u003cOLD.length;q++) if(s.indexOf(OLD[q])\u003e=0) bad.push(JSON.stringify(s)+\u0027 still says \u0027+OLD[q]);\n       }\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       say=realSay; sayWhenFree=realWF; NET.on=keepN.on; NET.seat=keepN.seat; NET.roster=keepN.roster; NET.up=keepN.up; NET.role=keepN.role; NET.peers=keepN.peers; keys={};\n       try{ var g2=__state(); if(g2){ g2.ents.length=0; g2.giftOut=null; if(!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){}\n       __topClear(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}
