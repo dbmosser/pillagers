@@ -1691,7 +1691,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.16';
+var VER='23.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20286,7 +20286,9 @@ if(e.state==='possum'){
           // v8.79, his wording: DOWNED here, ELIMINATED on the kill below. These
           // were "IS DOWN" and "DOWN", which is the same word for a man who can
           // be picked back up and a man who cannot.
-          label(e.x,e.y-16,(e.name||'PILLAGER')+' DOWNED','#ffc04a',0,true);
+          // v23.17, parked by the raid text audit of 2026-10-09: ONLY A FALL YOU COULD SEE. Machines down pillagers anywhere on the map, and this
+          // label printed through walls, telling him where a man lay; the kill label below has asked canSee since it shipped.
+          if(G.player&&canSee(G.player.x,G.player.y,G.player.face,e.x,e.y,G.vseg)) label(e.x,e.y-16,(e.name||'PILLAGER')+' DOWNED','#ffc04a',0,true);
           // v15.29, sound audit finding: A PILLAGER GOING DOWN SOUNDS WHERE HE FALLS. The hit sound here was played with no
           // distance and no pan, which blip plays at full volume and centred: the very sound damagePlayer makes when you are
           // hit. Machines fight pillagers anywhere on the map (machVsRaider), so a sentry dropping one 2000 units away played
@@ -21712,7 +21714,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
           TG.byPlayer=false;   // v13.98, AI audit: as your own revive does, his next death is not yours unless you cause it
           TG.bySeat=0;   // v16.99, co-op hunt 2026-09-28: nor a teammate kill, as your own pick-up now clears it too
           e.reviving=null; e.revProg=0;
-          if(!G.sim){ label(TG.x,TG.y-18,'PICKED UP','#ffc04a',0,true); }
+          if(!G.sim&&G.player&&canSee(G.player.x,G.player.y,G.player.face,TG.x,TG.y,G.vseg)){ label(TG.x,TG.y-18,'PICKED UP','#ffc04a',0,true); }   // v23.17: only a pick-up he could see
           if(G.tel) G.tel.crewRevives=(G.tel.crewRevives||0)+1;
         }
       }
@@ -36043,7 +36045,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.16: The what is new card names the new HUD voice. Check 23.16 fails on v23.15',
+  now:'v23.17: The DOWNED and PICKED UP labels over pillagers show only when you can see him, not through walls. Check 23.17 fails on v23.16',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.17 - NO DOWNED LABEL THROUGH THE WALLS
+
+Co-op hunt while he was away. Parked by the raid text audit of 2026-10-09. Machines fight pillagers anywhere on the surface, and when one went down the NAME DOWNED label printed over him wherever he was, readable through walls, telling you where a man lay. The PICKED UP label for a crew revive did the same. Both now show only when you could actually see him, as the ELIMINATED label always has.
+
+MEASURED. Check 23.17 passes, and fails on v23.16.
 ## v23.16 - THE WHAT IS NEW CARD NAMES THE HUD VOICE
 
 Co-op hunt while he was away. The card was stamped v23.01 and the stamp may not trail the build by more than 0.15. Its new second line names the last raid text builds of 2026-10-11: heal, belt, objective, people and system lines in short caps callouts, a second teammate down no longer replaces the first alert, and the stash belt keys are square again.

@@ -1,0 +1,7 @@
+v23.17: no downed label through the walls
+
+The DOWNED and PICKED UP labels over pillagers show only when you can see him, not through walls.
+
+Check 23.17. Fails on v23.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

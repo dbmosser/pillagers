@@ -1,0 +1,5 @@
+## v23.17 - NO DOWNED LABEL THROUGH THE WALLS
+
+Co-op hunt while he was away. Parked by the raid text audit of 2026-10-09. Machines fight pillagers anywhere on the surface, and when one went down the NAME DOWNED label printed over him wherever he was, readable through walls, telling you where a man lay. The PICKED UP label for a crew revive did the same. Both now show only when you could actually see him, as the ELIMINATED label always has.
+
+MEASURED. Check 23.17 passes, and fails on v23.16.
