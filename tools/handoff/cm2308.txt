@@ -1,0 +1,7 @@
+v23.08: system labels in caps
+
+Zoom, HUD size, Waypoint, controller, cursor, recorder and loaner lines read as caps system labels, and Waypoint is the one marker word.
+
+Check 23.08. Fails on v23.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,92 @@
+{
+    "title":  "SYSTEM LABELS IN CAPS",
+    "why":  "His order of 2026-10-09: raid text reads like a shooter HUD, with Waypoint as the one marker word (his Marked Waypoint) and up top, never the map, as the place. The system lines were sentences: Zoom 115%, HUD size 100%, Waypoint marked, Marker placed. Your party can see it., Controller connected. Left stick moves, right stick aims., Cursor reset., the recorder lines and the loaner reminder. They now read ZOOM 115%, HUD SIZE 100%, WAYPOINT SET (with Your party can see it. in a party), WAYPOINT CLEARED, CONTROLLER CONNECTED, CONTROLLER DISCONNECTED with Plug it in, then resume., CURSOR RESET, RECORDING with [F9] stops it, or it stops at 3:00., RECORDING KEPT, SUPERHOT FOLLOWS THE HOST and YOU CARRY A LOANER with Equip your own gun at The Stash. The blackout detail reads Every lamp up top is dead. The Undercroft lines are unchanged.",
+    "now":  "Zoom, HUD size, Waypoint, controller, cursor, recorder and loaner lines read as caps system labels, and Waypoint is the one marker word.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(code===\u0027NumpadAdd\u0027){ setZoom(zoomTarget()*1.15); if(G\u0026\u0026!G.over) say(\u0027Zoom \u0027+Math.round(ZT*100)+\u0027%\u0027); }",
+                      "replacement":  "  if(code===\u0027NumpadAdd\u0027){ setZoom(zoomTarget()*1.15); if(G\u0026\u0026!G.over) say(\u0027ZOOM \u0027+Math.round(ZT*100)+\u0027%\u0027,\u0027sys\u0027); }   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "  if(code===\u0027NumpadSubtract\u0027){ setZoom(zoomTarget()/1.15); if(G\u0026\u0026!G.over) say(\u0027Zoom \u0027+Math.round(ZT*100)+\u0027%\u0027); }",
+                      "replacement":  "  if(code===\u0027NumpadSubtract\u0027){ setZoom(zoomTarget()/1.15); if(G\u0026\u0026!G.over) say(\u0027ZOOM \u0027+Math.round(ZT*100)+\u0027%\u0027,\u0027sys\u0027); }   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "  if(code===\u0027Digit0\u0027||code===\u0027Numpad0\u0027){ setZoom(1); if(G\u0026\u0026!G.over) say(\u0027Zoom 100%\u0027); }",
+                      "replacement":  "  if(code===\u0027Digit0\u0027||code===\u0027Numpad0\u0027){ setZoom(1); if(G\u0026\u0026!G.over) say(\u0027ZOOM 100%\u0027,\u0027sys\u0027); }   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "  if(G\u0026\u0026!G.over\u0026\u0026!G.sim) say(_ups); else if(typeof say2===\u0027function\u0027) say2(_ups);",
+                      "replacement":  "  if(G\u0026\u0026!G.over\u0026\u0026!G.sim) say(_ups.toUpperCase(),\u0027sys\u0027); else if(typeof say2===\u0027function\u0027) say2(_ups);   // v22.xx (R55): HUD SIZE 100% in a raid; the Undercroft line is unchanged"
+                  },
+                  {
+                      "anchor":  "    if(G\u0026\u0026!G.over\u0026\u0026!G.sim) say(_shL); else if(typeof say2===\u0027function\u0027) say2(_shL);",
+                      "replacement":  "    if(G\u0026\u0026!G.over\u0026\u0026!G.sim) say(\u0027SUPERHOT FOLLOWS THE HOST\u0027,\u0027sys\u0027); else if(typeof say2===\u0027function\u0027) say2(_shL);   // v22.xx (R55): in a raid; the Undercroft line is unchanged"
+                  },
+                  {
+                      "anchor":  "    if(e.button===2){ G.waypoint=null; say(\u0027Waypoint cleared\u0027); try{ if(NET.on) netWpSend(); }catch(_wc){} return; }",
+                      "replacement":  "    if(e.button===2){ G.waypoint=null; say(\u0027WAYPOINT CLEARED\u0027,\u0027sys\u0027); try{ if(NET.on) netWpSend(); }catch(_wc){} return; }   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "        blip(\u0027pick\u0027); say(\u0027Waypoint marked\u0027);",
+                      "replacement":  "        blip(\u0027pick\u0027); say(\u0027WAYPOINT SET\u0027,\u0027sys\u0027);   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "  blip(\u0027pick\u0027); say((typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.on)?\u0027Marker placed. Your party can see it.\u0027:\u0027Waypoint marked\u0027);",
+                      "replacement":  "  blip(\u0027pick\u0027); say(\u0027WAYPOINT SET\u0027,\u0027sys\u0027,(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.on)?{sub:\u0027Your party can see it.\u0027}:null);   // v22.xx (R55): Waypoint, never Marker (his Marked Waypoint)"
+                  },
+                  {
+                      "anchor":  "    if(G\u0026\u0026!G.over) say(\u0027Controller connected. Left stick moves, right stick aims.\u0027);",
+                      "replacement":  "    if(G\u0026\u0026!G.over) say(\u0027CONTROLLER CONNECTED\u0027,\u0027sys\u0027);   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "  if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026typeof state!==\u0027undefined\u0027\u0026\u0026state===\u0027raid\u0027){ try{ if(!pauseOpen) togglePauseBox(true); }catch(_pd){} try{ say(\u0027Controller disconnected. Plug it in, then resume.\u0027); }catch(_pd2){} }",
+                      "replacement":  "  if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026typeof state!==\u0027undefined\u0027\u0026\u0026state===\u0027raid\u0027){ try{ if(!pauseOpen) togglePauseBox(true); }catch(_pd){} try{ say(\u0027CONTROLLER DISCONNECTED\u0027,\u0027sys\u0027,{sub:\u0027Plug it in, then resume.\u0027}); }catch(_pd2){} }   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "  if(G\u0026\u0026!G.over) say(\u0027Cursor reset.\u0027);",
+                      "replacement":  "  if(G\u0026\u0026!G.over) say(\u0027CURSOR RESET\u0027,\u0027sys\u0027);   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "function recTell(s){ try{ if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim) say(s); else if(typeof hubToast===\u0027function\u0027) hubToast(s); }catch(e){} }",
+                      "replacement":  "function recTell(s,sub){ try{ if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim) say(s,\u0027sys\u0027,sub?{sub:sub}:null); else if(typeof hubToast===\u0027function\u0027) hubToast(s+(sub?(\u0027  \\u00b7  \u0027+sub):\u0027\u0027)); }catch(e){} }   // v22.xx (R55): a caps label with a short detail"
+                  },
+                  {
+                      "anchor":  "  if(typeof MediaRecorder===\u0027undefined\u0027||!HTMLCanvasElement.prototype.captureStream){ recTell(\u0027This browser cannot record the game.\u0027); return false; }",
+                      "replacement":  "  if(typeof MediaRecorder===\u0027undefined\u0027||!HTMLCanvasElement.prototype.captureStream){ recTell(\u0027THIS BROWSER CANNOT RECORD\u0027); return false; }"
+                  },
+                  {
+                      "anchor":  "  try{ REC.mr=new MediaRecorder(REC.cv.captureStream(30),o); }catch(e){ recTell(\u0027This browser cannot record the game.\u0027); return false; }",
+                      "replacement":  "  try{ REC.mr=new MediaRecorder(REC.cv.captureStream(30),o); }catch(e){ recTell(\u0027THIS BROWSER CANNOT RECORD\u0027); return false; }"
+                  },
+                  {
+                      "anchor":  "  try{ REC.mr.start(1000); }catch(e){ REC.on=false; recTell(\u0027This browser cannot record the game.\u0027); return false; }",
+                      "replacement":  "  try{ REC.mr.start(1000); }catch(e){ REC.on=false; recTell(\u0027THIS BROWSER CANNOT RECORD\u0027); return false; }"
+                  },
+                  {
+                      "anchor":  "  recTell(\u0027Recording. Press F9 again to stop (it stops by itself after 3 minutes).\u0027);",
+                      "replacement":  "  recTell(\u0027RECORDING\u0027,\u0027[F9] stops it, or it stops at 3:00.\u0027);   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "  if(!b||b.size\u003c20000){ recTell(\u0027That recording was too short to keep.\u0027); return; }",
+                      "replacement":  "  if(!b||b.size\u003c20000){ recTell(\u0027RECORDING TOO SHORT TO KEEP\u0027); return; }   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "  attClipPut(b,function(ok){ recTell(ok?(\u0027Recording kept: it plays on the title when nobody is playing. A copy is in your downloads.\u0027):\u0027This browser could not keep the recording; a copy is in your downloads.\u0027); });",
+                      "replacement":  "  attClipPut(b,function(ok){ recTell(ok?\u0027RECORDING KEPT\u0027:\u0027RECORDING NOT KEPT\u0027,\u0027A copy is in your downloads.\u0027); });   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "      var _loanLn=\u0027You are carrying a loaner. Equip your own gun from the stash before your next ascent.\u0027;",
+                      "replacement":  "      var _loanLn=\u0027YOU CARRY A LOANER\u0027;   // v22.xx (R55): a system label in caps"
+                  },
+                  {
+                      "anchor":  "      sayWhenFree(_loanLn);   // v13.33: through the queue, so nothing writes over it",
+                      "replacement":  "      sayWhenFree(_loanLn,\u0027info\u0027,{sub:\u0027Equip your own gun at The Stash.\u0027});   // v13.33: through the queue, so nothing writes over it"
+                  },
+                  {
+                      "anchor":  "   cap:\u0027BLACKOUT\u0027,turn:\u0027GRID GOING DOWN\u0027,sub:\u0027Every lamp on the map is dead\u0027},",
+                      "replacement":  "   cap:\u0027BLACKOUT\u0027,turn:\u0027GRID GOING DOWN\u0027,sub:\u0027Every lamp up top is dead\u0027},   // v22.xx (R55): up top is the place, never the map"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027system labels in caps: zoom in and out, the HUD size, a Waypoint set and cleared alone and set in a party, the cursor reset and auto-jog each say a caps headline of at most 34 with any detail of at most 48, nothing says Marker or the map, and every weather detail is at most 56 characters and never names the map as a place\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)||typeof raidKey!==\u0027function\u0027||typeof netWpFromMap!==\u0027function\u0027||typeof mapProj!==\u0027function\u0027||typeof WEATHER===\u0027undefined\u0027||typeof cv===\u0027undefined\u0027||!cv||typeof mouse!==\u0027object\u0027) return \u0027SKIP: no raid keys, map Waypoint or weather here\u0027;\n     var bad=[], g=null, p=null, i, said=[], realSay=say, realWF=sayWhenFree, z0, mx0=mouse.x, my0=mouse.y, MP, keepN={on:NET.on,peers:NET.peers,seat:NET.seat}, MK=\u0027Mark\u0027+\u0027er\u0027, TM=\u0027the \u0027+\u0027map\u0027;\n     function line(tag,n0){ if(said.length\u003c=n0) bad.push(tag+\u0027 said nothing\u0027); }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player; p.downed=false; g.paused=false; z0=(typeof zoomTarget===\u0027function\u0027)?zoomTarget():1;\n       say=function(m,k,o){ said.push({m:String(m),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); return realSay.apply(this,arguments); };\n       sayWhenFree=function(m,k,o){ said.push({m:String(m),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); };\n       var n=said.length; raidKey(\u0027NumpadAdd\u0027,false); line(\u0027zoom in\u0027,n);\n       n=said.length; raidKey(\u0027NumpadSubtract\u0027,false); line(\u0027zoom out\u0027,n);\n       if(typeof setZoom===\u0027function\u0027) setZoom(z0,true);\n       // the Waypoint, alone and in a party, and cleared from the map\n       g.mapOpen=true; MP=mapProj(); mouse.x=MP.ox+20; mouse.y=MP.oy+20;\n       NET.on=false; n=said.length; netWpFromMap(); line(\u0027a Waypoint set alone\u0027,n);\n       NET.on=true; NET.peers=[]; n=said.length; try{ netWpFromMap(); }catch(_w){} line(\u0027a Waypoint set in a party\u0027,n); NET.on=false;\n       n=said.length; cv.dispatchEvent(new MouseEvent(\u0027mousedown\u0027,{button:2,bubbles:true})); line(\u0027a Waypoint cleared\u0027,n);\n       g.mapOpen=false;\n       // the cursor and auto-jog\n       if(typeof restoreCursor===\u0027function\u0027){ n=said.length; window.dispatchEvent(new KeyboardEvent(\u0027keydown\u0027,{code:\u0027Backspace\u0027,key:\u0027Backspace\u0027,bubbles:true})); }\n       keys={}; p.autoJog=false;\n       for(i=0;i\u003csaid.length;i++){\n         var l=said[i], s=l.m+\u0027 \u0027+l.sub;\n         if(l.m!==l.m.toUpperCase()||l.m.length\u003e34||(/[.!?,;:]$/).test(l.m)) bad.push(JSON.stringify(l.m)+\u0027 is not a caps headline of at most 34\u0027);\n         if(l.sub.length\u003e48) bad.push(JSON.stringify(l.m)+\u0027 has a detail of \u0027+l.sub.length+\u0027 characters\u0027);\n         if(s.indexOf(MK)\u003e=0||s.toUpperCase().indexOf(MK.toUpperCase()+\u0027 \u0027)\u003e=0) bad.push(JSON.stringify(s)+\u0027 says Marker, not Waypoint\u0027);\n         if(s.toLowerCase().indexOf(TM)\u003e=0) bad.push(JSON.stringify(s)+\u0027 names the map as a place\u0027);\n       }\n       // the weather details\n       for(i=0;i\u003cWEATHER.length;i++){\n         var w=WEATHER[i], sb=String(w.sub||\u0027\u0027);\n         if(sb.length\u003e56) bad.push(\u0027the \u0027+w.id+\u0027 weather detail is \u0027+sb.length+\u0027 characters\u0027);\n         if(sb.toLowerCase().indexOf(TM)\u003e=0) bad.push(\u0027the \u0027+w.id+\u0027 weather detail names the map as a place: \u0027+JSON.stringify(sb));\n       }\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       say=realSay; sayWhenFree=realWF; NET.on=keepN.on; NET.peers=keepN.peers; NET.seat=keepN.seat; mouse.x=mx0; mouse.y=my0; keys={};\n       try{ if(typeof setZoom===\u0027function\u0027) setZoom(z0,true); }catch(_z){}\n       try{ var g2=__state(); if(g2){ g2.mapOpen=false; g2.waypoint=null; if(!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){}\n       __topClear(); __resetCfg(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}
