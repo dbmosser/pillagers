@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.66 - ONE PROMPT STYLE AT THE SEARCH SIZE
+
+Co-op hunt while he was away. His note of v10.52 said the SEARCH prompt was too small, so it went up to the callout size; every other prompt at a place in the world stayed small, each in its own colour and with no plate, so a locked door read smaller than a crate and a prompt over a busy floor was hard to read. Every world prompt (doors, a downed pillager, the rings, the survivor, the seal and the crates) is now drawn one way: at the SEARCH size, on a plate measured to the words, the key in amber brackets, and a short second line where one is needed (Needs the key name under a locked door). Hold prompts read HOLD [E] TO, as the seal, the in-ring call row and the extract verb now do. Words other than the key brackets are unchanged, except LOCKED and the seconds, which lose their spaced hyphen.
+
+MEASURED. Check 22.66 passes, and fails on v22.65.
 ## v22.65 - THE BACKPACK CUE FOLLOWS KEY CHANGES
 
 Co-op hunt while he was away. His order of 2026-10-09: a raid line names the key the action is really on. The cue under the gun card always said B / I BACKPACK, even after CHANGE KEYS moved the backpack to another key. It now names the keys as set; unmoved keys read B / I as before, and the controller cue is unchanged.

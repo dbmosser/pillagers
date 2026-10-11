@@ -1,0 +1,7 @@
+v22.66: one prompt style at the search size
+
+Every world prompt is drawn at the SEARCH size on a plate, with the key in amber brackets.
+
+Check 22.66. Fails on v22.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
