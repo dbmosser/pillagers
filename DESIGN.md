@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.00 - ONE WAY TO WRITE NUMBERS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD. Raid lines wrote the same things several ways: a looted item was labelled 1234c while every other price read $1,234, and time read 12s on the band, 1:30 on the call and 7 min 30 sec on the map, the conditions rows, the downed overlay and the raid clock line. A loot label now reads the value as $1,234, and every raid duration reads 12s below a minute and m:ss from a minute up. Changing the raid length from Settings in a raid now says RAID CLOCK SET TO 7:30 as a system row. The Undercroft panels and the run card keep their written-out times.
+
+MEASURED. Check 23.00 passes, and fails on v22.99.
 ## v22.99 - OFFER AND RING LINES IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout, never a sentence. The review of the eighth batch of raid text found three lines still in the old voice. The offer line read Kite offers you Bandage, [T] to take it, 12s, and the giver saw Offered Bandage to Kite, Waiting, 12s; they now read KITE OFFERS BANDAGE, [T] TAKE, 12s and OFFER SENT, BANDAGE TO KITE, 12s. The count under EXTRACT A INBOUND read 3 converging on the ring and now reads 3 HOSTILES CLOSING IN, red past four as before (INBOUND stays his word for the craft). A teammate mark read KITE MARKER 120m; his word is Waypoint (his Marked Waypoint note), so it reads KITE WAYPOINT 120m. The keys, the seconds, the counting and where each line sits did not move.

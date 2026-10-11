@@ -1,0 +1,7 @@
+v23.00: one way to write numbers
+
+Loot labels show their value as $1,234, and raid times read 12s or 7:30, never 7 min 30 sec.
+
+Check 23.00. Fails on v22.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
