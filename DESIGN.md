@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.42 - A STIM KEEPS ITS KEY WHEN THE PLATE TAKES KEY 9
+
+Co-op hunt while he was away. Found by the review of the four-gun belt (build 3). With four gun keys, three throws and Medical, key 9 is the only empty key, and it is the plate key whenever he carries an Armour Plate. A Stim the game had put on key 9 lost its key the moment he picked a plate up (the automatic pin found no empty key to move to and was deleted), and a Stim found or paid at a revive while carrying a plate (the freebie kit always has one) got no key and no line. Before the four gun keys, keys 8 and 9 were both free, so neither happened. Such a Stim now goes on a vacant gun key 3 or 4 (any item may go on a gun key), and with none free it says NO FREE KEY. Gun keys a gun needs are never taken.
+
+MEASURED. Check 22.42 passes, and fails on v22.41.
 ## v22.41 - THE IN-RING INBOUND PROMPT STEPS ASIDE
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text never repeats what is already on screen. Standing in the ring he called, INBOUND and its seconds were printed over his own character while the band above the belt said EXTRACT A INBOUND with the same seconds. The prompt now steps aside while that ring is the one the band counts in, as the call and extract prompts already did. A ring that is not the active one keeps its prompt.

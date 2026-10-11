@@ -1,0 +1,7 @@
+v22.42: a stim keeps its key when the plate takes key 9
+
+A Stim keeps a belt key when you carry an Armour Plate: it goes on a free gun key 3 or 4.
+
+Check 22.42. Fails on v22.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
