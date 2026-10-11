@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.53 - ARCADE: THE WORLD STAYS LIGHT
+
+Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade29, found by the 3-hour arcade soak. Over 3 hours of nonstop play the enemies on the map grew from 41 to 217 and the containers from 154 to 598, because the waves land near the players and the old ones stay where they were left, and every kill leaves a body or a wreck. Now, in the arcade only, the run owner takes off a wave enemy that has been far from every player for a minute while not chasing, and a searched or empty body, wreck or dropped pile that is far from everyone and over five minutes old. Player 2 sees them go too. Normal raids are untouched.
+
+MEASURED. Check 23.53 passes, and fails on v23.52.
 ## v23.52 - ARCADE: WAVES FOLLOW THE RAID OWNER
 
 Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade28 (a low finding of the arcade 14-25 review). When the host window left mid-run, player 2 took the raid over as his 2026-10-02 ruling says, but the enemy waves never came again, because only the host ran them. Now whoever owns the run runs the waves: the host, or the player 2 that took the raid over. A player 2 still sharing the host world never spawns its own. Normal raids are untouched.

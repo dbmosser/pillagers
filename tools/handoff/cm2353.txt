@@ -1,0 +1,7 @@
+v23.53: arcade: the world stays light
+
+In the arcade, far idle wave enemies and old searched bodies and wrecks are cleared away, so a long party night stays smooth.
+
+Check 23.53. Fails on v23.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1694,7 +1694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.52';
+var VER='23.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35654,6 +35654,7 @@ function loop(ts){
       if(G&&G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; }   // v16.11: E given back after the step a pick-up took it (netRevHold)
       if(!G.over){ updateEnts(dt); }
       if(G.arcade&&!G.over) try{ arcadeWaveTick(dt); }catch(_awt){}   // v23.37 (arcade14): action comes to you, host or solo only
+      if(G.arcade&&!G.over) try{ arcadeCullTick(dt); }catch(_act){}   // v23.53 (arcade29): the world stays light, the run authority only
       if(!G.over){ updateBullets(dt); updateThrowables(dt); }
       if(!netEntsPeer()) try{ tickHot(dt); }catch(e){}   // v20.39 (H59): a linked window keeps the hot ground where the host has it (netWorldTake), as it keeps his weather
       if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
@@ -36133,7 +36134,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.52: In the arcade the enemy waves keep coming after player 2 takes over a raid the host left. Check 23.52 fails on v23.51',
+  now:'v23.53: In the arcade, far idle wave enemies and old searched bodies and wrecks are cleared away, so a long party night stays smooth. Check 23.53 fails on v23.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44181,8 +44182,17 @@ function netContLitter(ct){
 }
 // THE HOST: a box that arrived since the last tick is numbered and told to the party.
 function netContNumber(){
-  var ct, n=0;
+  var ct, n=0, i;
   if(!NET.contMap) NET.contMap={};
+  if(G.arcade&&Array.isArray(G.arcCull)&&G.arcCull.length){   // v23.53 (arcade29): the cull took boxes out of the list, so a box that arrived is the one with no number
+    for(i=0;i<G.containers.length;i++){
+      ct=G.containers[i]; if(!ct||typeof ct.cid==='number') continue;
+      ct.cid=NET.contN; if(typeof ct.netBy!=='number') ct.netBy=-1; ct.netOpen=ct.opened?1:0; ct.netLn=ct.loot?ct.loot.length:0; ct.netPu=ct.pulled|0;
+      NET.contMap[NET.contN]=ct; NET.contN++;
+      netBroadcast(netContNewWord(ct)); n++;
+    }
+    return n;
+  }
   while(NET.contN<G.containers.length){
     ct=G.containers[NET.contN]; ct.cid=NET.contN; if(typeof ct.netBy!=='number') ct.netBy=-1; ct.netOpen=ct.opened?1:0; ct.netLn=ct.loot?ct.loot.length:0; ct.netPu=ct.pulled|0;
     NET.contMap[NET.contN]=ct; NET.contN++;
@@ -44223,7 +44233,8 @@ function netContHello(peer){
   if(!netContHost()||!peer||peer.state!=='in') return false;
   netContNumber();
   for(i=NET.contN0;i<NET.contN;i++){ ct=NET.contMap[i]; if(ct) netSend(peer,netContNewWord(ct)); }
-  for(i=0;i<NET.contN0;i++){ ct=NET.contMap[i]; if(ct&&ct.netTold&&!ct.opened) netSend(peer,netContLeftWord(ct)); }   // v20.30 (H21): and what is left in a box from the build that someone part searched or that came back
+  for(i=0;i<NET.contN0;i++){ ct=NET.contMap[i]; if(ct&&ct.netTold&&!ct.opened) netSend(peer,netContLeftWord(ct)); }
+  if(G.arcade&&Array.isArray(G.arcCull)) for(i=0;i<G.arcCull.length;i++) if(G.arcCull[i]<NET.contN0) netSend(peer,{t:'cont',st:'gone',cid:G.arcCull[i]});   // v23.53 (arcade29): a box from the build the cull took   // v20.30 (H21): and what is left in a box from the build that someone part searched or that came back
   for(i=0;i<NET.contN;i++){ ct=NET.contMap[i]; if(!ct) continue; if(ct.opened) open.push(i); if(typeof ct.netBy==='number'&&ct.netBy>=0) held.push([i,ct.netBy]); }
   netSend(peer,{t:'cont',st:'all',open:open,held:held});
   return true;
@@ -44284,6 +44295,14 @@ function netContWord(peer,m){
     return 'cont:all';
   }
   ct=netContOf(cid); if(!ct) return 'cont:unknown';
+  if(st==='gone'){   // v23.53 (arcade29): the run authority took a far, old, searched box off the list in an arcade raid; it leaves here too
+    if(!G.arcade) return 'bad';
+    i=G.containers.indexOf(ct); if(i>=0) G.containers.splice(i,1);
+    delete NET.contMap[cid];
+    if(NET.srch&&NET.srch.cid===cid) NET.srch=null;
+    if(G.searching===ct){ G.searching=null; G.searchT=0; }
+    return 'cont:gone';
+  }
   if(st==='held'){ ct.netBy=by; if(by!==NET.seat&&G.searching===ct){ G.searching=null; G.searchT=0; netSrchStop(); } return 'cont:held'; }
   if(st==='free'){ if(by<0||ct.netBy===by) ct.netBy=-1; return 'cont:free'; }
   if(st==='left'){ ct.netLk=netLootKeys(m.lk); ct.netPl=((m.pl|0)>0)?(m.pl|0):0; if(!ct.opened) ct.netLeft=ct.netLk.length; return 'cont:left'; }   // v20.30 (H21)
@@ -44930,6 +44949,60 @@ function arcadeWaveTick(dt){
   ARCADE.waveT=0;
   if(made){ ARCADE.waveN=(ARCADE.waveN|0)+1; say('WAVE '+ARCADE.waveN,'warn'); }
   return made;
+}
+// v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS
+// LIGHT. Over 3 hours of nonstop play the bodies grew from 41 to 217 and the containers from 154 to 598: the waves land near the
+// players and the old ones stay where they were left, and every kill leaves a body or a wreck. Once a second the run authority (the
+// host, or the player 2 that took the raid over, the same rule as arcadeWaveTick) takes off a wave body that has been more than
+// 2,200 from every player for 60 s straight while not chasing, alarmed or hunting, and an opened or empty body, wreck or dropped
+// pile more than 1,500 from every player and older than 5 minutes. A body leaves player 2 by the gone word any body that leaves the
+// host world sends (netEntsTick). A box leaves by an arcade-only gone word (netContWord), told again to a window that joins late
+// (netContHello), and a box that arrives after a cull is numbered by its missing number (netContNumber). Nobody on the map: nothing
+// goes. Only an arcade run reaches any of it.
+var ARCADE_CULL={entFar:2200,entT:60,boxFar:1500,boxT:300,step:1};
+function arcadeCullMen(){
+  var a=[], p=G.player, i, u;
+  if(p&&!p.specOut&&isFinite(p.x)&&isFinite(p.y)) a.push(p);
+  if(typeof NET==='object'&&NET&&NET.on&&Array.isArray(NET.up)){
+    for(i=0;i<NET.up.length;i++){ u=NET.up[i]; if(u&&u.seat!==NET.seat&&isFinite(u.x)&&isFinite(u.y)) a.push(u); }
+  }
+  return a;
+}
+function arcadeCullFar(o,men,r){ var j; for(j=0;j<men.length;j++) if(dist(o,men[j])<=r) return false; return true; }
+function arcadeCullTick(dt){
+  if(!G||!G.arcade||G.over||G.sim||!Array.isArray(G.ents)||!Array.isArray(G.containers)) return 0;
+  if((ARCADE.role==='p2'&&!G.netWasJoin)||netEntsPeer()) return 0;
+  var men, i, j, e, ct, st, now=+G.t||0, n=0, host=false;
+  G.arcCullT=(+G.arcCullT||0)+((dt>0)?dt:0);
+  if(G.arcCullT<ARCADE_CULL.step) return 0;
+  st=G.arcCullT; G.arcCullT=0;
+  men=arcadeCullMen(); if(!men.length) return 0;
+  for(i=G.ents.length-1;i>=0;i--){
+    e=G.ents[i];
+    if(!e||!e.arcWave||e.boss||!(e.hp>0)) continue;
+    if(e.state==='chase'||e.state==='alarm'||e.state==='hunt'||!arcadeCullFar(e,men,ARCADE_CULL.entFar)){ e.arcFar=0; continue; }
+    e.arcFar=(+e.arcFar||0)+st;
+    if(e.arcFar<ARCADE_CULL.entT) continue;
+    if(Array.isArray(G.roster)) for(j=0;j<G.roster.length;j++) if(G.roster[j]&&G.roster[j].ref===e){ G.roster[j].out=true; G.roster[j].outAt=elapsed(); break; }
+    G.ents.splice(i,1); n++;
+  }
+  host=(typeof netContHost==='function')&&netContHost();
+  if(host) netContNumber();   // every box numbered before any leaves the list
+  for(i=G.containers.length-1;i>=0;i--){
+    ct=G.containers[i];
+    if(!ct||!(ct.type==='body'||ct.type==='botwreck'||ct.dropped)) continue;
+    if(typeof ct.arcAt!=='number'){ ct.arcAt=now; continue; }   // first seen now: its five minutes start here
+    if(!(ct.opened||!(ct.loot&&ct.loot.length))) continue;
+    if(now-ct.arcAt<ARCADE_CULL.boxT||G.searching===ct||(typeof ct.netBy==='number'&&ct.netBy>=0)) continue;
+    if(!arcadeCullFar(ct,men,ARCADE_CULL.boxFar)) continue;
+    G.containers.splice(i,1); n++;
+    if(typeof ct.cid==='number'){
+      (G.arcCull=Array.isArray(G.arcCull)?G.arcCull:[]).push(ct.cid);
+      if(NET.contMap) delete NET.contMap[ct.cid];
+      if(host) netBroadcast({t:'cont',st:'gone',cid:ct.cid});
+    }
+  }
+  return n;
 }
 function arcadeRunId(){ ARCADE.runN=(ARCADE.runN|0)+1; return 'r'+Date.now().toString(36)+'_'+ARCADE.runN; }
 function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return el?n*2:n; }
