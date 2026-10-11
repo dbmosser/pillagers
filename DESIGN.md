@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.14 - THE STASH BELT KEYS ARE SQUARE AGAIN
+
+Co-op hunt while he was away. Found by the full test run of 2026-10-11. Since the four gun keys (v22.45) the stash screen shows the gun picture on belt keys 1 to 4, and in a narrow stash window the picture box made every key taller than wide, 35 by 42, which breaks the square keys of v18.98 (seen on his 4K stash picture). The keys hide what spills over now, so they stay square at every width. Nothing else on the stash screen moves.
+
+MEASURED. Check 23.14 passes, and fails on v23.13.
 ## v23.13 - PARTY SUMMARY WRITES MONEY AS DOLLARS
 
 Co-op hunt while he was away. R48 made one way to write money, Credits shown as $1,234, but the party summary on the run card (how each teammate ended, kills and value) still wrote the value as 1,234c. It now writes $1,234 like every other money figure.

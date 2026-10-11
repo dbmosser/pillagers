@@ -319,7 +319,8 @@
   #hub[data-slayout="10"] [data-plan], #hub[data-slayout="6"] [data-plan], #hub[data-slayout="7"] [data-plan]{ width:76px !important; height:76px !important; }
   /* v18.98, seen on the 4K stash screenshot (2026-10-07): the tactical belt on the stash screen wrapped, keys 1 to 8 in a row and key 9 alone on a second line. The nine keys now always share one row, each shrinking to fit (never past its layout size) and staying square. */
   #hub #hotplanwrap > div > div{ flex-wrap:nowrap !important; }
-  #hub #hotplanwrap [data-plan]{ flex:1 1 0 !important; min-width:0 !important; max-width:76px; height:auto !important; aspect-ratio:1/1; }
+  #hub #hotplanwrap [data-plan]{ flex:1 1 0 !important; min-width:0 !important; max-width:76px; height:auto !important; aspect-ratio:1/1; overflow:hidden; min-height:0 !important; }
+  /* v23.14: the four gun keys of v22.45 put a gun picture on keys 1 to 4 of this row, and its box set the height, so at a narrow width every key grew taller than wide (35 by 42). Hidden overflow lets the square win again (v18.98). */
   #hub[data-slayout="10"] [data-plan] .ic, #hub[data-slayout="6"] [data-plan] .ic, #hub[data-slayout="7"] [data-plan] .ic{ width:48px !important; height:48px !important; }
 
   /* v21.31, from the whole-game bug hunt of 2026-10-08 (W-B1), seen on the 4K stash picture: THE LOADOUT COUNTS END WHERE THE SLOTS END.
@@ -1690,7 +1691,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.13';
+var VER='23.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36034,7 +36035,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.13: The party summary on the run card writes each value as dollars. Check 23.13 fails on v23.12',
+  now:'v23.14: The tactical belt keys on the stash screen are square again. Check 23.14 fails on v23.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

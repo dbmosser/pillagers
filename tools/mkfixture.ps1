@@ -5744,6 +5744,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.14',what:'the stash belt keys are square again with the gun pictures of the four gun keys in them',
+   run:function(){
+     if(typeof __station!=='function'||typeof __hubEnter!=='function'||typeof applyMenuZoom!=='function') return 'SKIP: no stash here';
+     var bad=[], t, z0=P.menuZoom, cells, i, r, hpw=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('title'); if(t) t.classList.remove('on');
+       P.menuZoom=2.4; __hubEnter(); __station('term','KeyE');
+       try{ applyMenuZoom(); if(typeof renderHub==='function') renderHub(); }catch(_r){}
+       hpw=document.getElementById('hotplanwrap'); if(hpw) hpw.style.width='440px';
+       cells=document.querySelectorAll('#hub #hotplanwrap [data-plan]');
+       if(cells.length<9) return 'SKIP: the stash belt was not drawn ('+cells.length+' keys)';
+       for(i=0;i<cells.length;i++){ r=cells[i].getBoundingClientRect(); if(Math.abs(r.width-r.height)>3) bad.push('key '+(i+1)+' is '+Math.round(r.width)+' by '+Math.round(r.height)); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(hpw) hpw.style.width=''; }catch(_w){} if(z0===undefined) delete P.menuZoom; else P.menuZoom=z0; try{ applyMenuZoom(); }catch(_z){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.slice(0,3).join('; '):null; }},
   {v:'23.13',what:'the party summary on the run card writes money as $1,234, the one way the game writes Credits since R48, and never as 1,234c',
    run:function(){
      if(typeof netSumDraw!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no party summary in this build';

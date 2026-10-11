@@ -1,0 +1,7 @@
+v23.14: the stash belt keys are square again
+
+The tactical belt keys on the stash screen are square again.
+
+Check 23.14. Fails on v23.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
