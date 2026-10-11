@@ -1,0 +1,7 @@
+v22.59: backpack full is one red row
+
+A full backpack is one red BACKPACK FULL row naming the drop button of the device in hand.
+
+Check 22.59. Fails on v22.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

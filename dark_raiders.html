@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.58';
+var VER='22.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10221,7 +10221,7 @@ function pedBuy(ix){
   // in the reserve take no room in a backpack, and a full backpack must not stop
   // a man buying ammunition.
   var _pAmmo=!!(ITEMS[st.k]&&ITEMS[st.k].use==='ammo');
-  if(!_pAmmo&&bagWeight()+wt>cap){ say('Backpack full.'); return; }
+  if(!_pAmmo&&bagWeight()+wt>cap){ say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:bagDropHint()}); return; }   // v22.59 (R19): the same red row as a search
   P.credits-=st.price; saveProfile();
   st.sold=true; G.trade.traded=1; if(typeof NET==='object'&&NET&&NET.on&&!G.sim) netPedSoldSend(G.trade,ix);   // v21.72 (K4): and the rest of the party is told the row is sold
   if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
@@ -14516,6 +14516,9 @@ var PICKN=4, PICKLIFE=4;
 function pickSay(m,o){
   if(!G) return;
   var q=(G.pick=G.pick||[]), now=G.t||0, it=(o&&o.item)||'', n=(o&&o.n>0)?Math.round(o.n):1, i, r;
+  // v22.59 (R19): a keyed row (o.key) said again, as BACKPACK FULL is every frame E is held on a full backpack, refreshes where it
+  // is: new words, a new detail, its full time again, and no count.
+  if(o&&o.key){ for(i=0;i<q.length;i++){ r=q[i]; if(r.key===o.key&&r.T>0){ r.m=String(m); r.sub=o.sub?String(o.sub):''; if(o.c) r.c=o.c; r.T=PICKLIFE; return; } } }
   for(i=0;i<q.length;i++){
     r=q[i];
     if(r.T>0&&(it?r.item===it:(!r.item&&r.m===String(m)))&&(r.tag||'')===((o&&o.tag)?String(o.tag):'')){   // the same item, going the same way, while its row is up: one row, counted (v22.56, R18: and the same tag, so a sale never adds to a purchase)
@@ -14524,10 +14527,14 @@ function pickSay(m,o){
       return;
     }
   }
-  q.push({m:String(m),item:it,n:n,tag:(o&&o.tag)?String(o.tag):'',c:(o&&o.c)||'',T:(o&&o.life>0)?o.life:PICKLIFE,at:now});
+  q.push({m:String(m),item:it,n:n,tag:(o&&o.tag)?String(o.tag):'',c:(o&&o.c)||'',T:(o&&o.life>0)?o.life:PICKLIFE,at:now,key:(o&&o.key)?String(o.key):'',sub:(o&&o.sub)?String(o.sub):''});   // v22.59 (R19): key and detail
   while(q.length>PICKN) q.shift();
 }
 // v22.56 (R18): the tag on the newest row of an item, set after the grant that pushed it (a gift FROM a teammate, the Survivor).
+// v22.59 (R19): the detail under BACKPACK FULL names the button that drops the selected item on the device in hand: the key Z is
+// bound to on the keyboard (keyLabel, so an unmoved keyboard reads [Z]), and Y on a controller, the button pollPad gives
+// bagDropSel with the backpack open (padB names it for a PlayStation pad).
+function bagDropHint(){ return padOn()?padB('[Y] drops the selected item.'):('['+keyLabel('KeyZ','Z')+'] drops the selected item.'); }
 function pickTag(item,tag){
   var q=G&&G.pick, i;
   if(!q) return;
@@ -14562,7 +14569,7 @@ function drawPickups(){
       al=Math.max(0,Math.min(1,(now-r.at)/0.15,r.T/0.5));
       if(!(al>0)) continue;
       ctx.font=fL; ctx.textAlign='right'; ctx.textBaseline='alphabetic';
-      col=pickCol(r); nm=String(r.m); cnt=(r.n>1)?('x'+r.n):''; tag=r.tag?String(r.tag).toUpperCase():'';
+      col=pickCol(r); nm=String(r.m); cnt=(r.n>1)?('x'+r.n):''; tag=r.sub?String(r.sub):(r.tag?String(r.tag).toUpperCase():'');   // v22.59 (R19): a detail is drawn as written
       wN=ctx.measureText(nm).width; wC=cnt?ctx.measureText(cnt).width:0; wT=tag?ctx.measureText(tag).width:0;
       w=pad+((r.item&&ITEMS[r.item])?isz+pad*0.75:0)+wN+(cnt?pad*0.75+wC:0)+(tag?pad+wT:0)+pad;
       ctx.globalAlpha=oa*al;
@@ -18863,8 +18870,12 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
     // elite, so if that is all you are carrying it still refuses.
     if(bagWeight()>=cap&&P.autoloot) autoCull(cap);
     if(bagWeight()>=cap){
-      say(P.autoloot?('Backpack full ('+cap+') and nothing left worth dropping.')
-                    :('Backpack full ('+cap+'). Z drops the selected item.'),'info',{key:'bagfull'});   // v21.91 (R07): said every frame E is held, so it refreshes its row
+      // v22.59, the raid text rewrite (R19): BACKPACK FULL IS ONE RED ROW. HIS ORDER (2026-10-09): a raid line is a short caps
+      // headline and, only when needed, a short detail. This said Backpack full with the raw capacity number in brackets and Z drops
+      // the selected item, in the middle of the screen, naming Z even with a controller in hand. It is now one keyed red row in the
+      // pickup stack, BACKPACK FULL, refreshed every frame E is held (v21.91: never a second row), with the button that drops the
+      // selected item on the device in hand as its detail, or that nothing is left worth dropping when autoloot is on.
+      say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:P.autoloot?'Nothing left worth dropping.':bagDropHint()});
       G.searching=null; G.searchT=0;
     }
     else {
@@ -35655,7 +35666,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.58: The belt, drop, gift, swap and plate lines read like a shooter HUD. Check 22.58 fails on v22.57',
+  now:'v22.59: A full backpack is one red BACKPACK FULL row naming the drop button of the device in hand. Check 22.59 fails on v22.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

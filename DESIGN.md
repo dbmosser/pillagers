@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.59 - BACKPACK FULL IS ONE RED ROW
+
+Co-op hunt while he was away. His order of 2026-10-09: a raid line is a short caps headline and, only when needed, a short detail. A full backpack said Backpack full with the raw capacity number in brackets and Z drops the selected item, in the middle of the screen, naming Z even with a controller in hand. It is now one red row in the pickup stack, BACKPACK FULL, refreshed while E is held and never a second row, with the button that drops the selected item as its detail: the bound key on a keyboard, Y on a controller. The stall says the same row when the backpack has no room.
+
+MEASURED. Check 22.59 passes, and fails on v22.58.
 ## v22.58 - BELT LINES IN THE HUD VOICE
 
 Co-op hunt while he was away. His order of 2026-10-09 (the shooter voice), from the review of the four-gun belt, build 5. The belt drag still spoke in sentences: Medkit to slot 3, Rifle off slot 6, Cannot equip a gun while rolling, Rifle is no longer in your backpack, Dropped Medkit. Your teammate can search it, Medkit to (hire), Armour is already full, Slotting Armour Plate..., and the gun swap said Rifle up in small letters. Each is now a short capital headline (MEDKIT ON KEY 3, RIFLE OFF KEY 6, CANNOT EQUIP with ROLLING under it, NOT IN BACKPACK, DROPPED MEDKIT with TEAM CAN LOOT, GAVE MEDKIT, ARMOUR FULL, SLOTTING ARMOUR PLATE, RIFLE UP).
