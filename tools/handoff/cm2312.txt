@@ -1,0 +1,7 @@
+v23.12: raid details are short
+
+Raid details are short callouts, and the gun key reads [5] GUN.
+
+Check 23.12. Fails on v23.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.12 - RAID DETAILS ARE SHORT
+
+Co-op hunt while he was away. His order of 2026-10-09: a raid line is a short caps headline with a short detail only when needed, never an explaining sentence, and a key is always named in brackets. The detail under NO FRAG CHARGE LEFT and EMPTY SLOT read Press 5 for your gun. (LB or RB to your gun. on a pad); it now reads [5] GUN or [LB] [RB] GUN. The Survivor says Needs Armour Plate., and with too few rounds NOT ENOUGH AMMUNITION with Needs 40 rounds. Hot ground says Bonus loot., the seal Seal payout dropped., and a dead hire names the real amount, Death benefit $3,400 owed., instead of You owe his family. System lines are caps only: CONTROLLER DISCONNECTED with RECONNECT TO RESUME, RECORDING with [F9] STOP and 3:00 MAX, and SAVED TO DOWNLOADS. CANNOT STOW THAT GUN stands alone and the loaner headline is LOANER GUN.
+
+MEASURED. Check 23.12 passes, and fails on v23.11.
 ## v23.11 - PEOPLE LINES FIT AND GRUDGES READ HOSTILE
 
 Co-op hunt while he was away. His order of 2026-10-09: a raid line is a short caps headline of at most 34 letters with a short detail only when needed. With a long name four people headlines ran past 34: NAME IS JOINING THE RAID, NAME ABANDONED THE RAID, NAME CARRIES NOTHING ELSE and NAME WILL REMEMBER THAT. They now read NAME IS JOINING, NAME ABANDONED, NAME EMPTY and NAME WANTS REVENGE. A grudge, a betrayal and the Peddler turning his back were drawn in the teammate blue, so a threat read as a friend; they now use the plain colour. Details that explained are gone: HAND-OVER FAILED names the teammate as its detail, NAME REVIVED YOU and NO DEAL stand alone, THE PEDDLER BOLTS says No trade., and a shot the Bulwark stops says BULWARK SHIELD with Flank it.

@@ -1,0 +1,64 @@
+{
+    "title":  "RAID DETAILS ARE SHORT",
+    "why":  "His order of 2026-10-09: a raid line is a short caps headline with a short detail only when needed, never an explaining sentence, and a key is always named in brackets. The detail under NO FRAG CHARGE LEFT and EMPTY SLOT read Press 5 for your gun. (LB or RB to your gun. on a pad); it now reads [5] GUN or [LB] [RB] GUN. The Survivor says Needs Armour Plate., and with too few rounds NOT ENOUGH AMMUNITION with Needs 40 rounds. Hot ground says Bonus loot., the seal Seal payout dropped., and a dead hire names the real amount, Death benefit $3,400 owed., instead of You owe his family. System lines are caps only: CONTROLLER DISCONNECTED with RECONNECT TO RESUME, RECORDING with [F9] STOP and 3:00 MAX, and SAVED TO DOWNLOADS. CANNOT STOW THAT GUN stands alone and the loaner headline is LOANER GUN.",
+    "now":  "Raid details are short callouts, and the gun key reads [5] GUN.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(padOn()) return padB(\u0027LB or RB to your gun.\u0027);   // v13.52: no pad button reaches a digit; the bumpers walk the belt",
+                      "replacement":  "  if(padOn()) return padB(\u0027[LB] [RB] GUN\u0027);   // v13.52: no pad button reaches a digit; the bumpers walk the belt   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "  return \u0027Press \u0027+keyLabel(\u0027Digit\u0027+(gc+1),String(gc+1))+\u0027 for your gun.\u0027;",
+                      "replacement":  "  return \u0027[\u0027+keyLabel(\u0027Digit\u0027+(gc+1),String(gc+1))+\u0027] GUN\u0027;   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "        else say(\u0027SURVIVOR FOUND\u0027,\u0027obj\u0027,{sub:\u0027He needs \u0027+aOrAn(ITEMS[e.want].name)+\u0027 \u0027+ITEMS[e.want].name+\u0027.\u0027});",
+                      "replacement":  "        else say(\u0027SURVIVOR FOUND\u0027,\u0027obj\u0027,{sub:\u0027Needs \u0027+ITEMS[e.want].name+\u0027.\u0027});   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "    else { say(\u0027HE NEEDS AMMUNITION\u0027,\u0027info\u0027,{sub:\u0027You cannot spare \u0027+need+\u0027 rounds.\u0027}); return; }   // v22.xx (R54): a caps callout",
+                      "replacement":  "    else { say(\u0027NOT ENOUGH AMMUNITION\u0027,\u0027info\u0027,{sub:\u0027Needs \u0027+need+\u0027 rounds.\u0027}); return; }   // v22.xx (R54): a caps callout   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "      var _hotLine=G.sim?\u0027\u0027:\u0027Hot ground. Extra loot in here.\u0027;",
+                      "replacement":  "      var _hotLine=G.sim?\u0027\u0027:\u0027HOT GROUND\u0027;   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "  if(_hotLine) sayWhenFree(\u0027HOT GROUND\u0027,\u0027obj\u0027,{sub:\u0027Extra loot in here.\u0027});   // v22.xx (R53): an objective row in caps",
+                      "replacement":  "  if(_hotLine) sayWhenFree(\u0027HOT GROUND\u0027,\u0027obj\u0027,{sub:\u0027Bonus loot.\u0027});   // v22.xx (R53): an objective row in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "    if(m.hot===1){ if(T) T.hotOpened=(T.hotOpened||0)+1; if(!G.sim) sayWhenFree(\u0027HOT GROUND\u0027,\u0027obj\u0027,{sub:\u0027Extra loot in here.\u0027}); }   // v20.39 (H59): the bonus the host rolled for this search   // v22.xx (R53): an objective row in caps",
+                      "replacement":  "    if(m.hot===1){ if(T) T.hotOpened=(T.hotOpened||0)+1; if(!G.sim) sayWhenFree(\u0027HOT GROUND\u0027,\u0027obj\u0027,{sub:\u0027Bonus loot.\u0027}); }   // v20.39 (H59): the bonus the host rolled for this search   // v22.xx (R53): an objective row in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "          say(\u0027SEAL BROKEN\u0027,\u0027obj\u0027,{sub:\u0027What Meridian sealed is yours if you live.\u0027});   // v22.xx (R53): an objective row in caps",
+                      "replacement":  "          say(\u0027SEAL BROKEN\u0027,\u0027obj\u0027,{sub:\u0027Seal payout dropped.\u0027});   // v22.xx (R53): an objective row in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "        say(String(e.name).toUpperCase()+\u0027 IS DEAD\u0027,\u0027obj\u0027,{sub:\u0027You owe his family.\u0027});   // v22.xx (R53): an objective row in caps",
+                      "replacement":  "        say(String(e.name).toUpperCase()+\u0027 IS DEAD\u0027,\u0027obj\u0027,{sub:\u0027Death benefit $\u0027+MERC_DEATH.toLocaleString()+\u0027 owed.\u0027});   // v22.xx (R53): an objective row in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "  if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026typeof state!==\u0027undefined\u0027\u0026\u0026state===\u0027raid\u0027){ try{ if(!pauseOpen) togglePauseBox(true); }catch(_pd){} try{ say(\u0027CONTROLLER DISCONNECTED\u0027,\u0027sys\u0027,{sub:\u0027Plug it in, then resume.\u0027}); }catch(_pd2){} }   // v22.xx (R55): a system label in caps",
+                      "replacement":  "  if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026typeof state!==\u0027undefined\u0027\u0026\u0026state===\u0027raid\u0027){ try{ if(!pauseOpen) togglePauseBox(true); }catch(_pd){} try{ say(\u0027CONTROLLER DISCONNECTED\u0027,\u0027sys\u0027,{sub:\u0027RECONNECT TO RESUME\u0027}); }catch(_pd2){} }   // v22.xx (R55): a system label in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "  recTell(\u0027RECORDING\u0027,\u0027[F9] stops it, or it stops at 3:00.\u0027);   // v22.xx (R55): a system label in caps",
+                      "replacement":  "  recTell(\u0027RECORDING\u0027,\u0027[F9] STOP  \\u00b7  3:00 MAX\u0027);   // v22.xx (R55): a system label in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "  attClipPut(b,function(ok){ recTell(ok?\u0027RECORDING KEPT\u0027:\u0027RECORDING NOT KEPT\u0027,\u0027A copy is in your downloads.\u0027); });   // v22.xx (R55): a system label in caps",
+                      "replacement":  "  attClipPut(b,function(ok){ recTell(ok?\u0027RECORDING KEPT\u0027:\u0027RECORDING NOT KEPT\u0027,\u0027SAVED TO DOWNLOADS\u0027); });   // v22.xx (R55): a system label in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "  if(!ITEMS[\u0027gun_\u0027+g.id]){ say(\u0027CANNOT STOW THAT GUN\u0027,\u0027info\u0027,{sub:g.name+\u0027 has no backpack form.\u0027}); return false; }   // v22.xx (R52)",
+                      "replacement":  "  if(!ITEMS[\u0027gun_\u0027+g.id]){ say(\u0027CANNOT STOW THAT GUN\u0027,\u0027info\u0027); return false; }   // v22.xx (R52)   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  },
+                  {
+                      "anchor":  "      var _loanLn=\u0027YOU CARRY A LOANER\u0027;   // v22.xx (R55): a system label in caps",
+                      "replacement":  "      var _loanLn=\u0027LOANER GUN\u0027;   // v22.xx (R55): a system label in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027raid details are short, never explaining sentences: the gun key reads [5] GUN on the keyboard and [LB] [RB] GUN on a pad, a survivor who wants ammunition you lack says NOT ENOUGH AMMUNITION with Needs 40 rounds., a dead hire names the real death benefit, and no line keeps the old explaining details (hot ground, the seal, the controller, the recorder, a gun with no backpack form, the loaner headline)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)||typeof gunKeyLine!==\u0027function\u0027||typeof padOn!==\u0027function\u0027||typeof mkStray!==\u0027function\u0027||typeof strayGive!==\u0027function\u0027) return \u0027SKIP: no gun key line or survivor here\u0027;\n     var bad=[], src=\u0027\u0027, i, cut, ss, OLD, NEW, oPad=padOn, said=[], realSay=say, g=null, p=null, e, kl, pl, gc, n0;\n     try{\n       try{ ss=document.getElementsByTagName(\u0027script\u0027); for(i=0;i\u003css.length;i++) src+=ss[i].textContent||\u0027\u0027; }catch(_s){}\n       cut=src.indexOf(\u0027window.__frame=function\u0027); if(cut\u003e0) src=src.slice(0,cut);\n       if(src.length\u003e100000){\n         OLD=[\u0027Extra loot\u0027+\u0027 in here\u0027,\u0027What Meridian\u0027+\u0027 sealed\u0027,\u0027You owe his\u0027+\u0027 family\u0027,\u0027Plug it in,\u0027+\u0027 then resume\u0027,\u0027stops it, or it\u0027+\u0027 stops\u0027,\u0027A copy is in your\u0027+\u0027 downloads\u0027,\u0027 has no backpack\u0027+\u0027 form\u0027,\u0027YOU CARRY A\u0027+\u0027 LOANER\u0027,\"{sub:\u0027He needs \u0027+\"+\"aOrAn\",\u0027You cannot\u0027+\u0027 spare\u0027,\" for your\"+\" gun.\u0027\",\u0027LB or RB to\u0027+\u0027 your gun\u0027];\n         for(i=0;i\u003cOLD.length;i++) if(src.indexOf(OLD[i])\u003e=0) bad.push(\u0027the build still says \u0027+JSON.stringify(OLD[i]));\n         NEW=[\"\u0027Death benefit $\u0027\"+\"+MERC_DEATH\",\"\u0027Bonus\"+\" loot.\u0027\",\"\u0027SAVED TO\"+\" DOWNLOADS\u0027\",\"\u0027RECONNECT TO\"+\" RESUME\u0027\"];\n         for(i=0;i\u003cNEW.length;i++) if(src.indexOf(NEW[i])\u003c0) bad.push(\u0027the build has no \u0027+JSON.stringify(NEW[i]));\n       }\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player; p.downed=false;\n       padOn=function(){ return false; };\n       gc=(typeof gunCell===\u0027function\u0027)?gunCell():4;\n       kl=String(gunKeyLine());\n       if(kl!==\u0027[\u0027+keyLabel(\u0027Digit\u0027+(gc+1),String(gc+1))+\u0027] GUN\u0027) bad.push(\u0027on the keyboard the gun key line reads \u0027+JSON.stringify(kl));\n       padOn=function(){ return true; };\n       pl=String(gunKeyLine());\n       if(!(/^\\[\\S+\\] \\[\\S+\\] GUN$/).test(pl)) bad.push(\u0027on a pad the gun key line reads \u0027+JSON.stringify(pl));\n       padOn=oPad;\n       say=function(m,k,o){ said.push({m:String(m),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); return realSay.apply(this,arguments); };\n       e=mkStray(p.x+40,p.y); e.want=\u0027ammobox\u0027; e.helped=0; p.reserve=0;\n       for(i=g.bag.length-1;i\u003e=0;i--) if(g.bag[i]===\u0027ammobox\u0027) g.bag.splice(i,1);\n       n0=said.length; strayGive(e);\n       var need=(ITEMS.ammobox\u0026\u0026ITEMS.ammobox.amt)||40, hit=null;\n       for(i=n0;i\u003csaid.length;i++) if(said[i].m.indexOf(\u0027AMMUNITION\u0027)\u003e=0) hit=said[i];\n       if(!hit) bad.push(\u0027a survivor who wants ammunition you lack said no AMMUNITION line (\u0027+JSON.stringify(said.slice(n0))+\u0027)\u0027);\n       else if(hit.m!==\u0027NOT ENOUGH AMMUNITION\u0027||hit.sub!==\u0027Needs \u0027+need+\u0027 rounds.\u0027) bad.push(\u0027the ammunition line reads \u0027+JSON.stringify(hit.m+\u0027 | \u0027+hit.sub));\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       padOn=oPad; say=realSay; keys={};\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}
