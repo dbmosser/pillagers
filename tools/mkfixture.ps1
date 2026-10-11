@@ -36747,8 +36747,11 @@ window.__REGRESS=[
      if(!__vpAlive()) return 'SKIP: the pane has no layout ('+window.innerWidth+'x'+window.innerHeight+'), so the frame loop cannot draw';
      if(typeof ITEMS==='undefined'||typeof WEAPONS==='undefined'||typeof WTIER==='undefined') return 'SKIP: this fixture cannot reach the item tables';
      var bad=[], measured=0;
-     var slotNeedle=['to','your','empty','slot'].join(' ');
-     var beltNeedle=['to','belt','slot'].join(' ');
+     // tr17fix: the slot line has read MERIDIAN LANCE STOWED with PRESS 2 TO SWAP under it since v22.43 and a belt key line STIM
+     // ON KEY 5, and since the raid text rewrite (R17) where it went is the tag on the item's pickup row (SLOT 2, read below as
+     // PICKUP name SLOT 2). Any of them tells him where it went; the rule (it reaches the screen and stays up) holds before and after.
+     var slotNeedle=new RegExp([['to','your','empty','slot'].join(' '),['to','swap'].join(' '),'^pickup .+ slot \\d+$'].join('|'),'i');
+     var beltNeedle=new RegExp([['to','belt','slot'].join(' '),' on key \\d+','^pickup .+ slot \\d+$'].join('|'),'i');
      var T0=performance.now();
      function frames(k){ for(var f=0;f<(k||6);f++){ T0+=16.7; var st=__state(); if(!st||st.over) return; __loop(T0); } }
      function keysOff(){ var K=__keysRef(); for(var kk in K) K[kk]=false; }
@@ -36763,11 +36766,12 @@ window.__REGRESS=[
          var up=[], f1=g0.feed&&g0.feed[1];
          if(g0.msg&&g0.msgT>0&&f1&&f1.T>0&&f1.m&&f1.m!==g0.msg) up.push(String(f1.m)+(f1.sub?' '+f1.sub:''));
          if(g0.msg&&g0.msgT>0) up.push(String(g0.msg)+(g0.msgSub?' '+g0.msgSub:''));
+         for(var pq=0;pq<(g0.pick||[]).length;pq++) if(g0.pick[pq].tag) up.push('PICKUP '+g0.pick[pq].m+' '+g0.pick[pq].tag);   // tr17fix: a pickup row and its tag (R17)
          seen.n=seen.n||{};   // frames each line was on a row: written over means it was not there long enough to read
          for(var u=0;u<up.length;u++){ if(seen.indexOf(up[u])<0) seen.push(up[u]); seen.n[up[u]]=(seen.n[up[u]]||0)+1; }
        }
      }
-     function at(seen,needle){ for(var i=0;i<seen.length;i++) if(seen[i].toLowerCase().indexOf(needle.toLowerCase())>=0) return i; return -1; }
+     function at(seen,needle){ for(var i=0;i<seen.length;i++) if((needle instanceof RegExp)?needle.test(seen[i]):(seen[i].toLowerCase().indexOf(needle.toLowerCase())>=0)) return i; return -1; }
      function shown(seen){ return '['+seen.join(' | ').slice(0,240)+']'; }
      // THE PLAY PATH: one item staged in the box, X held until it opens, then hands
      // off while the message line plays out (up to ten seconds, stopping once found).
@@ -37191,17 +37195,17 @@ window.__REGRESS=[
        p.sec=null;   // the second slot is free: the branch under test
        p.x=box.x; p.y=box.y; p.downed=false;
        keysOff(); frames(3);
-       say=function(m,k,o){ heard.push(String(m)+((o&&o.sub)?' | '+o.sub:'')); try{ return _say.apply(null,arguments); }catch(_s){} };   /* retargeted for belt4fixd: the detail under the line is read too */
+       say=function(m,k,o){ heard.push(String(m)+((o&&o.sub)?' | '+o.sub:'')+((k==='pick'&&o&&o.tag)?' # '+o.tag:'')); try{ return _say.apply(null,arguments); }catch(_s){} };   /* retargeted for belt4fixd: the detail under the line is read too; tr17fix: and the tag on a pickup row (R17), SLOT 2, the key that swaps to it */
        keysOff(); __keysRef()['KeyX']=true;
        for(var w=0;w<60;w++){ frames(10); if(box.opened) break; }
        keysOff(); frames(4);
        if(!box.opened) return 'SKIP: the container never opened, so nothing was picked up';
        var line='';
-       for(var h=0;h<heard.length;h++) if(heard[h].indexOf('to your empty slot')>=0||/ STOWED \| /.test(heard[h])){ line=heard[h]; break; }   /* belt4fixd: SHOTGUN STOWED with PRESS 2 TO SWAP under it */
+       for(var h=0;h<heard.length;h++) if(heard[h].indexOf('to your empty slot')>=0||/ STOWED \| /.test(heard[h])||/ # SLOT \d+$/.test(heard[h])){ line=heard[h]; break; }   /* belt4fixd: SHOTGUN STOWED with PRESS 2 TO SWAP under it; tr17fix: or its pickup row tagged SLOT 2 */
        if(!line) return 'SKIP: the pickup did not take the free-second-slot branch, so the line under test was never spoken';
        if(/\bX swaps\b/.test(line)||/\bPRESS X TO SWAP\b/.test(line))
          bad.push('finding a better gun tells him X swaps to it, and X does not swap weapons: it searches what he is standing on, so the instruction sends him to the wrong key at the moment he wants his new gun');
-       if(line.indexOf('tactical belt')<0&&!/ TO SWAP$/.test(line))
+       if(line.indexOf('tactical belt')<0&&!/ TO SWAP$/.test(line)&&!/ # SLOT \d+$/.test(line))
          bad.push('the pickup line does not say how to swap to the new gun, so he is left guessing: ['+line+']');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -40066,16 +40070,21 @@ window.__REGRESS=[
          if(g.msg) s.push(String(g.msg)+(g.msgSub?' '+g.msgSub:''));
          if(f1&&f1.m&&f1.m!==g.msg) s.push(String(f1.m)+(f1.sub?' '+f1.sub:''));
          pk=(g.pick||[]).map(function(r){ return String(r.m); });
+         gt=''; (g.pick||[]).forEach(function(r){ if(r.item===gunK) gt=String(r.tag||''); });
          return s.join(' | ');
        }
+       // tr17fix: since the raid text rewrite (R17) the slot a gun took (the key that swaps to it) is the SLOT N tag on its pickup
+       // row (gt) instead of a line with TO SWAP; either one tells him, on the build before and after.
+       var gt='';
+       function told(m){ return /\bswaps?\b/i.test(m)||/^SLOT \d+$/.test(gt); }
        // THE FINDING: one gun, into the empty slot.
        var m1=pull([gunK]);
-       if(!m1) return 'SKIP: the grant said nothing at all, so there is no line to read';
-       if(!/\bswaps?\b/i.test(m1))   // r1324: the line ends "to swap." since v13.24 corrected "X swaps"; v22.43: PRESS 2 TO SWAP, in capitals
-         bad.push('after pulling a gun into his empty second slot the only line left on screen was ['+m1+']: the line telling him the slot is armed and which key swaps to it was written and then written over in the same frame, so a number key went live under his finger and nothing ever said so');
+       if(!m1&&!pk.length) return 'SKIP: the grant said nothing at all, so there is no line to read';
+       if(!told(m1))   // r1324: the line ends "to swap." since v13.24 corrected "X swaps"; v22.43: PRESS 2 TO SWAP, in capitals
+         bad.push('after pulling a gun into his empty second slot the only line left on screen was ['+m1+'] and its pickup row tag is ['+gt+']: the line telling him the slot is armed and which key swaps to it was written and then written over in the same frame, so a number key went live under his finger and nothing ever said so');
        // AND WITH COMPANY: both facts have to survive, the gun and the list.
        var m2=pull([gunK,plainK]);
-       if(!/\bswaps?\b/i.test(m2))   // r1324: the same needle, either form of the verb
+       if(!told(m2))   // r1324: the same needle, either form of the verb
          bad.push('pulling that gun alongside another item lost the gun line again ['+m2+']');
        if(m2.indexOf(ITEMS[plainK].name)<0&&pk.indexOf(ITEMS[plainK].name)<0)
          bad.push('pulling that gun alongside another item lost the list of what he took ['+m2+'] (pickup rows: '+pk.join(', ')+')');
