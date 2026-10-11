@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.84 - ERRORS LEAVE THE SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and none of them print a program error on the screen. A crash said Something broke and up to 80 characters of the raw error, and a draw fault said Render fault logged and its raw text. The raw text now goes to the run report only, and the screen gets one row per raid, ERROR SAVED TO YOUR RUN REPORT. The two slow frame lines are short caps rows with the setting to change underneath, still once a session.
+
+MEASURED. Check 22.84 passes, and fails on v22.83.
 ## v22.83 - FAR-OFF CHATTER STAYS OFF YOUR SCREEN
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, which tells you what is happening to you. A pillager calling or riding out a ring across the map, the Survivor reaching a ring, the Peddler setting up shop, or someone else killing the Survivor or the Peddler all said a line wherever you were. Now those lines show only when it happens within 900 of you or in sight. A pillager riding out says nothing, because the Current Pillagers board already marks him EXTRACTED, and the run report still counts him. Weather, deer and birds, the Peddler, a nod and a drink wearing off are now the lowest kind of line, so they never push one that matters off the screen.

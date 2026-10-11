@@ -1,0 +1,7 @@
+v22.84: errors leave the screen
+
+A game error no longer prints its raw text on the screen; one row says it was saved to your run report.
+
+Check 22.84. Fails on v22.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

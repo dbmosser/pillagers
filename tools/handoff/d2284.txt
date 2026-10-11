@@ -1,0 +1,5 @@
+## v22.84 - ERRORS LEAVE THE SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and none of them print a program error on the screen. A crash said Something broke and up to 80 characters of the raw error, and a draw fault said Render fault logged and its raw text. The raw text now goes to the run report only, and the screen gets one row per raid, ERROR SAVED TO YOUR RUN REPORT. The two slow frame lines are short caps rows with the setting to change underneath, still once a session.
+
+MEASURED. Check 22.84 passes, and fails on v22.83.

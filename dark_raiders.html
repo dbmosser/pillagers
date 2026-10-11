@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.83';
+var VER='22.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18909,7 +18909,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
         // v4.14: he reported this glitch and the camera was built for him, so
         // when it finally clicks he should hear the shutter, not find out from
         // a report line days later.
-        say('Wall glitch logged in your run report.');
+        say('WALL GLITCH SAVED TO RUN REPORT','sys');   // v22.xx (R36): a system row in caps
         break;
       }
     }
@@ -23913,7 +23913,7 @@ function drsTick(gapMs,now){
     DRS.scale=Math.max(DRS.min,Math.round((DRS.scale-DRS.step)*100)/100); DRS.slowT=0; DRS.moves++;
     if(DRS.upAt&&now-DRS.upAt<20000) DRS.bounce=Math.min(4,DRS.bounce+1);
     DRS.last=now;
-    if(!DRS.said){ DRS.said=1; try{ sayWhenFree('Running slowly: the render resolution stepped down on its own. Settings has Auto resolution and Effects.'); }catch(_ds){} }
+    if(!DRS.said){ DRS.said=1; try{ sayWhenFree('RESOLUTION STEPPED DOWN','sys',{sub:'Running slowly. Auto resolution in Settings.'}); }catch(_ds){} }   // v22.xx (R36): a system row in caps
     return true;
   }
   if(DRS.fastT>8000*(1+DRS.bounce)&&DRS.scale<1-1e-6&&now-DRS.last>8000){
@@ -26966,7 +26966,7 @@ var SHD=G.shells[i];
       if(!G.drawErr){
         G.drawErr=(it.pl?'player':(it.e?it.e.kind:(it.cr?'critter':(it.w?'wall':(it.lm?'lamp':'container')))))+': '+drErr.message;
         if(G.tel) G.tel.drawErr=G.drawErr;
-        say('Render fault logged: '+G.drawErr);
+        errRow('RENDER FAULT  \u00b7  '+G.drawErr);   // v22.xx (R36): the raw text to the run report, one row on the screen
       }
     }
   }
@@ -35123,6 +35123,22 @@ var CRASH_KEEP=12, CRASH_SAME_MS=5000, crashTold=false;
 // that must never call saveProfile, which would write the file-scope default P
 // over a real save. It goes to its own key and is merged in after the read.
 var PLOADED=false, PRECRASH=(NETSLOT||NETP2)?(SKEY+':precrash'):'salvagerun:precrash';   // v15.74: a ?netslot copy keeps its boot crash list beside its own save; v15.76: the player 2 window too
+// v22.xx, the raid text rewrite (R36): ERRORS LEAVE THE SCREEN. HIS ORDER (2026-10-09): the raid text reads like Call of
+// Duty, Fortnite or ARC Raiders, and none of them print a program error into the middle of the screen. A crash said Something
+// broke: and up to 80 characters of the raw error, a draw fault said Render fault logged: and its raw text. The raw text now goes
+// to the run report only (P.crashes as before, and the line log as kind log, which is never shown), and the screen gets one
+// system row per raid, ERROR SAVED TO YOUR RUN REPORT (errRow, G.errSaid). Outside a raid a crash still says that row once a
+// sitting (the crashTold latch stays). The two slow frame lines are system rows in caps with the setting in the detail, each
+// still once a session, and the wall glitch camera keeps its own row so he hears the shutter on the spot.
+var ERRROW='ERROR SAVED TO YOUR RUN REPORT';
+function errRow(raw){
+  if(G&&!G.sim){
+    if(raw) say(String(raw),'log');
+    if(!G.errSaid){ G.errSaid=1; crashTold=true; say(ERRROW,'sys'); }
+    return;
+  }
+  if(!crashTold){ crashTold=true; say(ERRROW,'sys'); }
+}
 function noteCrash(kind,msg,where){
   try{
     if(!Array.isArray(P.crashes)) P.crashes=[];
@@ -35163,7 +35179,7 @@ function noteCrash(kind,msg,where){
     }
     // v14.49: and a new entry saves at most once a second, so a burst of different errors cannot save every frame either.
     if(!(noteCrash.savedAt>0)||(now-noteCrash.savedAt)>=(hit?CRASH_SAME_MS:1000)){ noteCrash.savedAt=now; try{ saveProfile(); }catch(_sp){} }
-    if(!crashTold){ crashTold=true; say('Something broke: '+msg.slice(0,80)+'. It was written into your run report.'); }
+    errRow('ERROR  \u00b7  '+msg.slice(0,80));   // v22.xx (R36): the raw text to the run report, one row on the screen
   }catch(_nc){}
 }
 // v14.51, report audit finding 2: WHERE A CRASH HAPPENED SURVIVES A LONG MESSAGE. In Chrome a stack starts with the message itself,
@@ -35208,7 +35224,7 @@ function perfNote(gapMs){
   while(PERF.win.length&&now-PERF.win[0][0]>10000) PERF.win.shift();
   if(PERF.said||PERF.win.length<60) return false;
   for(i=0;i<PERF.win.length;i++) if(PERF.win[i][1]>25) slow++;
-  if(slow*2>PERF.win.length){ PERF.said=1; try{ sayWhenFree('Running slowly? Settings has Render resolution and Effects to lighten the load.'); }catch(_ps){} return true; }
+  if(slow*2>PERF.win.length){ PERF.said=1; try{ sayWhenFree('RUNNING SLOWLY','sys',{sub:'Lower Render resolution or Effects in Settings.'}); }catch(_ps){} return true; }   // v22.xx (R36): a system row in caps
   return false;
 }
 var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
@@ -35837,7 +35853,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.83: Pillager, Survivor and Peddler lines from across the map no longer show unless it happens near you or in sight. Check 22.83 fails on v22.82',
+  now:'v22.84: A game error no longer prints its raw text on the screen; one row says it was saved to your run report. Check 22.84 fails on v22.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
