@@ -1,0 +1,7 @@
+v23.33: arcade: walk-over loot
+
+In the arcade walking over a box loots it fast, and valuables become points and pot instead of backpack weight.
+
+Check 23.33. Fails on v23.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

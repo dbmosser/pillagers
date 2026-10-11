@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.33 - ARCADE: WALK-OVER LOOT
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 11 of 20. In the arcade a box in reach that still holds loot is searched with no key, so a walk-up player loots by walking over it, and the bar fills six times as fast (also for a box player 2 searches through the host). A valuable never goes into the backpack: it scores a tenth of its value at once and the same goes into the haul pot that an extraction pays again, shown as +N on its pickup row. Ammo, heals, throws, plates and keys go where they always went. A pile the player dropped, a box a teammate holds and a hired man are never searched by walking over them. Normal raids are untouched.
+
+MEASURED. Check 23.33 passes, and fails on v23.32.
 ## v23.32 - THE WHAT IS NEW CARD NAMES THE ARCADE
 
 Co-op hunt while he was away. The card was stamped v23.16 and the stamp may not trail the build by more than 0.15. Its new second line names the 2 player arcade demo builds of 2026-10-11: drop-in play from the title menu, a combined team score, a spawn shield and easier fights for newcomers.
