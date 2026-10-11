@@ -30464,23 +30464,25 @@ window.__REGRESS=[
        }
        if(!A) return 'SKIP: no two extraction points here stand apart';
        // Assembled, so the needle is never written out whole in the page. No pad is faked, so on the keyboard this reads E.
-       var HE=['HOLD',keyLabel('KeyE','E'),'TO','EXTRACT'].join(' ');
+       var HE=['HOLD',keyLabel('KeyE','E'),'TO','EXTRACT'].join(' '), HEB=['HOLD','['+keyLabel('KeyE','E')+']','TO','EXTRACT'].join(' ');
+       // tr5fixa: since v22.66 the prompt names the key in brackets (HOLD [E] TO EXTRACT); either form is the centre verb.
+       var hasHE=function(a){ return a.indexOf(HE)>=0||a.indexOf(HEB)>=0; };
        // CONTROL: one call, landed at A, him standing in it. The prompt is drawn on either build, so the recorder sees the centre verb.
        stage(false,A,A);
        if(!(g.active===A&&standingRing()===A&&ringLanded(A)&&g.beaconT!==null&&g.beaconT<=0&&g.shipHold===20)) return 'SKIP: staging: a single landed point did not reach the pointer and the HUD mirrors here (beacon '+g.beaconT+', window '+g.shipHold+')';
        var c0=drawn();
-       if(c0.indexOf(HE)<0) return 'SKIP: standing in a single landed point, the HUD drew no prompt to hold '+keyLabel('KeyE','E')+' and extract here, so this trace cannot see the centre verb';
+       if(!hasHE(c0)) return 'SKIP: standing in a single landed point, the HUD drew no prompt to hold '+keyLabel('KeyE','E')+' and extract here, so this trace cannot see the centre verb';
        // THE FINDING: B called after A and still inbound, so the pointer is on B, and him standing in landed A.
        stage(true,B,A);
        // CONTROL: the tick left the pointer and the mirrors on inbound B, and A is still landed with him inside it, on either build.
        if(!(g.active===B&&g.beaconT!==null&&g.beaconT>0&&g.shipHold===null&&ringLanded(A)&&standingRing()===A)) return 'SKIP: staging: the pointer did not stay on the inbound point with him in the landed one here (pointer on the inbound point '+(g.active===B)+', beacon '+g.beaconT+', window '+g.shipHold+')';
        var s1=drawn();
-       if(s1.indexOf(HE)<0) bad.push('standing in a landed extraction point while a later call was still inbound at another point, the HUD drew no prompt to hold '+keyLabel('KeyE','E')+' and extract, though a hold there extracts him');
+       if(!hasHE(s1)) bad.push('standing in a landed extraction point while a later call was still inbound at another point, the HUD drew no prompt to hold '+keyLabel('KeyE','E')+' and extract, though a hold there extracts him');
        // KEPT: standing in inbound B instead, with A landed elsewhere, nothing has landed under him and no prompt to extract is drawn.
        stage(true,B,B);
        if(!(g.active===B&&standingRing()===B&&!ringLanded(B)&&ringLanded(A))) return skip('staging: standing in the inbound point did not read as the inbound point here');
        var k1=drawn();
-       if(k1.indexOf(HE)>=0) bad.push('standing in an extraction point still inbound, with another landed elsewhere, the HUD drew the prompt to hold '+keyLabel('KeyE','E')+' and extract, where a hold does not extract');
+       if(hasHE(k1)) bad.push('standing in an extraction point still inbound, with another landed elsewhere, the HUD drew the prompt to hold '+keyLabel('KeyE','E')+' and extract, where a hold does not extract');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ CFG.raiderWaves=keepWaves; }catch(_w){}
@@ -30599,6 +30601,8 @@ window.__REGRESS=[
      var ZK=['open','beaconT','hold','holdMax','pullT','callT','siege','siegeSpawnT','siegeSpawned','siegeGreed','pingT','warned'];
      // Assembled, so the needles are never written out whole in the page.
      var HX=['HOLD','X','TO','EXTRACT'].join(' '), HE=['HOLD','E','TO','EXTRACT'].join(' '), CX=['HOLD','X','TO','CALL','FOR','EXTRACTION'].join(' ');
+     // tr5fixa: since v22.66 the prompts name the key in brackets (HOLD [X] TO EXTRACT); each needle matches either form.
+     var has=function(a,n){ var w=n.split(' '); w[1]='['+w[1]+']'; return a.indexOf(n)>=0||a.indexOf(w.join(' '))>=0; };
      try{ navigator.getGamepads=function(){ return []; }; stubbed=(navigator.getGamepads!==NG); }catch(_s){}
      if(!stubbed){ try{ navigator.getGamepads=NG; }catch(_r0){} return 'SKIP: this browser will not let the pad be faked'; }
      // A connected pad with every button up, or no pad at all, and one poll so PAD.on follows it.
@@ -30650,32 +30654,32 @@ window.__REGRESS=[
        stage(false,false);
        if(standingRing()!==z) return 'SKIP: staging: another open ring covers the middle of this one here';
        var c0=drawn();
-       if(c0.indexOf(CX)<0) return 'SKIP: standing in an uncalled ring with a pad on, the HUD did not draw the call prompt naming X, so this trace cannot see the extraction prompts';
+       if(!has(c0,CX)) return 'SKIP: standing in an uncalled ring with a pad on, the HUD did not draw the call prompt naming X, so this trace cannot see the extraction prompts';
        // THE FINDING, STANDING: the ring landed and him in it. The ring badge is skipped here, so the centre line is the only verb.
        stage(true,false);
        if(!(g.active===z&&g.beaconT!==null&&g.beaconT<=0&&g.shipHold===20)) return 'SKIP: staging: the landed ring did not reach the HUD mirrors here (beacon '+g.beaconT+', window '+g.shipHold+')';
        var s1=drawn();
-       if(s1.indexOf(HE)>=0) bad.push('with a pad on, standing in a landed ring, the HUD told him to hold E to extract, a key the pad does not have');
-       if(s1.indexOf(HX)<0) bad.push('with a pad on, standing in a landed ring, the HUD never told him to hold X to extract');
+       if(has(s1,HE)) bad.push('with a pad on, standing in a landed ring, the HUD told him to hold E to extract, a key the pad does not have');
+       if(!has(s1,HX)) bad.push('with a pad on, standing in a landed ring, the HUD never told him to hold X to extract');
        // CONTROL: down in an uncalled ring with the pad on, the downed screen names X for the call on either build.
        stage(false,true);
        var c1=drawn();
-       if(c1.indexOf(CX)<0) return skip('down in an uncalled ring with a pad on, the downed screen did not draw the call prompt naming X here');
+       if(!has(c1,CX)) return skip('down in an uncalled ring with a pad on, the downed screen did not draw the call prompt naming X here');
        // THE FINDING, DOWN: the ring landed and him lying in it. The ring badge is not drawn while he is down.
        stage(true,true);
        if(typeof ringLanded==='function'&&!ringLanded(z)) return skip('staging: the ring he lies in does not read as landed here');
        var s2=drawn();
-       if(s2.indexOf(HE)>=0) bad.push('with a pad on, down in a landed ring, the downed screen told him to hold E to extract, a key the pad does not have');
-       if(s2.indexOf(HX)<0) bad.push('with a pad on, down in a landed ring, the downed screen never told him to hold X to extract');
+       if(has(s2,HE)) bad.push('with a pad on, down in a landed ring, the downed screen told him to hold E to extract, a key the pad does not have');
+       if(!has(s2,HX)) bad.push('with a pad on, down in a landed ring, the downed screen never told him to hold X to extract');
        // THE KEYBOARD IS UNCHANGED: no pad, the same landed ring, standing and down, still names E.
        pad(false);
        if(padOn()) return skip('the fake pad did not let go');
        stage(true,false);
        var k1=drawn();
-       if(k1.indexOf(HE)<0) bad.push('with no pad, standing in a landed ring, the HUD no longer told him to hold E to extract');
+       if(!has(k1,HE)) bad.push('with no pad, standing in a landed ring, the HUD no longer told him to hold E to extract');
        stage(true,true);
        var k2=drawn();
-       if(k2.indexOf(HE)<0) bad.push('with no pad, down in a landed ring, the downed screen no longer told him to hold E to extract');
+       if(!has(k2,HE)) bad.push('with no pad, down in a landed ring, the downed screen no longer told him to hold E to extract');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ if(realFill){ if(ownFill) ctx.fillText=realFill; else delete ctx.fillText; } }catch(_r){}
