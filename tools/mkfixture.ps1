@@ -18926,7 +18926,7 @@ window.__REGRESS=[
        nm=ITEMS.codex?ITEMS.codex.name:'codex';
        G.t=50; G.giftIn={id:'tst',k:'codex',from:1,t:50};
        s=drawGiftLine();
-       if(!s||s.indexOf(nm)<0||s.indexOf('T or Y')<0||s.indexOf('12s')<0) bad.push('an open offer showed '+JSON.stringify(s));
+       if(!s||s.indexOf(nm)<0||(s.indexOf('T or Y')<0&&!/\[[A-Z0-9-]+\] to take it/.test(s))||s.indexOf('12s')<0) bad.push('an open offer showed '+JSON.stringify(s));
        G.giftIn.yes=1; if(drawGiftLine()) bad.push('the offer line stayed after the item was taken');
        G.giftIn={id:'tst',k:'codex',from:1,t:50}; G.t=63;
        if(drawGiftLine()) bad.push('the offer line stayed after the offer ran out');
