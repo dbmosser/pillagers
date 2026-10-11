@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.09';
+var VER='23.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3745,7 +3745,7 @@ function contractStep(c){
     // v8.68, his wording.
     // v22.xx, the raid text rewrite (R53): his words, split at his colon for display only. CONTRACT DONE is the headline and the rest,
     // word for word with his lowercase mainframe, is the detail.
-    if(!G.sim) say('CONTRACT DONE','obj',{sub:contractDesc(c)+'. Complete contract at mainframe.'});
+    if(!G.sim) say('CONTRACT DONE','obj',{sub:contractDesc(c)+'. Complete contract at mainframe.',key:'cdone'+((P&&P.contracts)?P.contracts.indexOf(c):0)});   // v23.xx (tr9fixk): a key per contract, so two that finish together both show
   }
 }
 function contractKill(kind){
@@ -14449,7 +14449,7 @@ function msgVictim(rows,rk,now,drain){
 function msgFree(){
   if(!G||!(G.msgT>0)||!G.msg) return true;
   var f=G.feed&&G.feed[1], now=G.t||0;
-  if(!(f&&f.T>0&&f.m&&f.m!==G.msg)) return true;
+  if(!(f&&f.T>0&&f.m&&(f.m!==G.msg||msgDiffKey(f.key,G.msgKey)))) return true;   // v23.xx (tr9fixk): two keyed lines with one headline are two lines
   return !msgProt({k:G.msgK,at:G.msgAt},now)||!msgProt(f,now);
 }
 // v21.91, the raid text rewrite (R07): THE WAITING QUEUE IS RANKED, CAPPED, NEVER REPEATS AND NEVER GOES STALE. It was a plain
@@ -14467,9 +14467,17 @@ function msgQPrune(now){
   var q=msgQAlign(), qm=G.msgQM, i, e;
   for(i=q.length-1;i>=0;i--){ e=qm[i]; if(e&&typeof e.t==='number'&&now-e.t>msgQTTL(e.k)){ q.splice(i,1); qm.splice(i,1); } }
 }
+// v23.xx, the raid text rewrite (fix after batch 9, tr9fixk): TWO KEYED LINES WITH ONE HEADLINE ARE TWO LINES. Since R53 every
+// finished contract says the same headline, CONTRACT DONE, with its own words as the detail. A row was the same line as another
+// when its headline matched, so when one crate finished an open contract and a district contract in the same frame, the second
+// line refreshed the first in place and wrote its detail over it: the first contract was never named in the raid. Now two lines
+// that both carry a key (o.key) and whose keys differ are two lines even when the headline is the same, in the feed rows, in the
+// queue and in sayWhenFree. Each contract says its line under a key of its own. A line with no key, or with the same key, is the
+// same line exactly as before.
+function msgDiffKey(a,b){ return !!a&&!!b&&a!==b; }
 function msgQFind(m,key){
   var q=msgQAlign(), qm=G.msgQM, i;
-  for(i=0;i<q.length;i++) if(q[i]===m||(key&&qm[i]&&qm[i].o&&qm[i].o.key===key)) return i;
+  for(i=0;i<q.length;i++) if((q[i]===m&&!msgDiffKey(qm[i]&&qm[i].o&&qm[i].o.key,key))||(key&&qm[i]&&qm[i].o&&qm[i].o.key===key)) return i;   // v23.xx (tr9fixk): two keyed lines with one headline are two lines
   return -1;
 }
 function msgQDrop(m,key){ var i; while((i=msgQFind(m,key))>=0){ G.msgQ.splice(i,1); G.msgQM.splice(i,1); } }
@@ -14495,7 +14503,7 @@ function msgRowsUp(){   // the rows showing now, head first: {m,k,key}
   var r=[], f=G.feed&&G.feed[1];
   if(!(G.msgT>0)||!G.msg) return r;
   r.push({m:G.msg,k:G.msgK||'info',key:G.msgKey||''});
-  if(f&&f.T>0&&f.m&&f.m!==G.msg) r.push(f);
+  if(f&&f.T>0&&f.m&&(f.m!==G.msg||msgDiffKey(f.key,G.msgKey))) r.push(f);   // v23.xx (tr9fixk): two keyed lines with one headline are two lines
   return r;
 }
 // v22.13, the raid text rewrite (R08): THE ALERT LANE. HIS ORDER (2026-10-09): the raid text reads like Call of Duty, Fortnite or
@@ -14841,7 +14849,7 @@ function sayWhenFree(m,kind,o){
   if(G&&!G.sim&&G.msgT>0&&msgKind(kind)!=='pick'){   // v22.50 (R16): a pickup row has its own stack and never waits behind the feed
     var up=msgRowsUp(), key=(o&&o.key)||'', rk=MSGK[msgKind(kind)].r, i, over=up.length>0, shown=false;
     for(i=0;i<up.length;i++){
-      if(up[i].m===m||(key&&up[i].key===key)) shown=true;
+      if((up[i].m===m&&!msgDiffKey(up[i].key,key))||(key&&up[i].key===key)) shown=true;   // v23.xx (tr9fixk): two keyed lines with one headline are two lines
       if(MSGK[msgKind(up[i].k)].r>=rk) over=false;
     }
     if(!shown&&!over){ msgEnq(m,kind,o); return; }   // v21.91 (R07): showing already refreshes in place, and a line that outranks every row is said now
@@ -14870,9 +14878,9 @@ function say(m,kind,o){
     // v21.88 (R06): with both rows up, msgVictim decides which row gives way, or that this line waits (see msgProt above).
     // v21.91 (R07): a line already on a row, by its text or by its key (o.key), refreshes that row where it is; the second row
     // keeps its place and its first time. A line said is taken out of the queue if it was also waiting there.
-    var f=(G.feed=G.feed||[]), now=G.t||0, key=(o&&o.key)||'', hv=!!(G.msgT>0&&G.msg), same=hv&&(G.msg===m||(!!key&&G.msgKey===key)),
-        r1=(hv&&f[1]&&f[1].T>0&&f[1].m&&f[1].m!==G.msg)?f[1]:null, hd, v;
-    if(!same&&r1&&(r1.m===m||(key&&r1.key===key))){ r1.m=m; r1.k=k; r1.sub=(o&&o.sub)||''; r1.T=3.2; if(G.msgQ&&G.msgQ.length) msgQDrop(m,key); return; }
+    var f=(G.feed=G.feed||[]), now=G.t||0, key=(o&&o.key)||'', hv=!!(G.msgT>0&&G.msg), same=hv&&((G.msg===m&&!msgDiffKey(G.msgKey,key))||(!!key&&G.msgKey===key)),   // v23.xx (tr9fixk): two keyed lines with one headline are two lines
+        r1=(hv&&f[1]&&f[1].T>0&&f[1].m&&(f[1].m!==G.msg||msgDiffKey(f[1].key,G.msgKey)))?f[1]:null, hd, v;   // v23.xx (tr9fixk): two keyed lines with one headline are two lines
+    if(!same&&r1&&((r1.m===m&&!msgDiffKey(r1.key,key))||(key&&r1.key===key))){ r1.m=m; r1.k=k; r1.sub=(o&&o.sub)||''; r1.T=3.2; if(G.msgQ&&G.msgQ.length) msgQDrop(m,key); return; }
     if(G.msgQ&&G.msgQ.length) msgQDrop(m,key);
     if(hv&&!same){
       hd={m:G.msg,k:G.msgK||'info',sub:G.msgSub||'',T:G.msgT,at:G.msgAt,key:G.msgKey||''};
@@ -28629,7 +28637,7 @@ function feedRows(){
   if(!G||!(G.msgT>0)||!G.msg) return r;
   r.push({m:G.msg,k:G.msgK||'info',sub:G.msgSub||'',T:G.msgT});
   f=G.feed&&G.feed[1];
-  if(f&&f.T>0&&f.m&&f.m!==G.msg) r.push(f);
+  if(f&&f.T>0&&f.m&&(f.m!==G.msg||msgDiffKey(f.key,G.msgKey))) r.push(f);   // v23.xx (tr9fixk): two keyed lines with one headline are two lines
   return r;
 }
 function msgRowH(){ var mf=(/([\d.]+)px/).exec(FS(TYPE.label)), px=mf?parseFloat(mf[1]):LH(12); return Math.round(px*1.42); }
@@ -36026,7 +36034,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.09: Standing in a ring, the hint reads Hold E to call for extraction again. Check 23.09 fails on v23.08',
+  now:'v23.10: Two contracts that finish on the same box each show their own CONTRACT DONE line. Check 23.10 fails on v23.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

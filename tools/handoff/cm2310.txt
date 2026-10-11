@@ -1,0 +1,7 @@
+v23.10: two contracts done together both show
+
+Two contracts that finish on the same box each show their own CONTRACT DONE line.
+
+Check 23.10. Fails on v23.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.10 - TWO CONTRACTS DONE TOGETHER BOTH SHOW
+
+Co-op hunt while he was away. Since the objective lines went to caps, every finished contract says the same headline, CONTRACT DONE, with its own words as the detail. One crate that finished an open contract and a district contract in the same frame said the line twice, and the second refreshed the first in place and wrote its detail over it, so the first contract was never named in the raid. Two lines that each carry a key of their own are now two lines even with the same headline, and each contract says its line under its own key. Lines with no key refresh in place exactly as before.
+
+MEASURED. Check 23.10 passes, and fails on v23.09.
 ## v23.09 - YOU CALL FOR EXTRACTION
 
 Co-op hunt while he was away. His v9.59 note: the game says call FOR extraction. Since v22.47 the hint under the last-seconds alert, standing in a ring with nothing called, dropped the word for again, the shorter verb phrase he had asked to be gone, and two old checks of that rule were red. It now reads Hold [E] to call for extraction.
