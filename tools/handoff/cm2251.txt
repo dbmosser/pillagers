@@ -1,0 +1,7 @@
+v22.51: the belt answers in the hud voice
+
+The belt answers on the Undercroft floor and the Stash screen are short ALL CAPS callouts.
+
+Check 22.51. Fails on v22.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

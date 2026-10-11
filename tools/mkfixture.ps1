@@ -5744,6 +5744,47 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'22.51',what:'the floor belt and Stash screen belt answers read like a shooter HUD (from the review of the four-gun belt, build 4): a click on an unbound Stash screen belt key answers in short ALL CAPS on the keyboard and on a pad, and the floor belt gun drag has no explaining sentence left (only gun, traded places, to slot, how to take a gun out of his hands)',
+   run:function(){
+     if(!window.__showScreen||!window.__P||!window.__topClear) return 'SKIP: this fixture cannot show the Stash screen';
+     if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
+     var bad=[], src=[].slice.call(document.scripts).map(function(s){ return s.textContent||''; }).join('\n'), i;
+     var OLD=[[' is your',' only gun, so there'],['\' traded',' places with \''],['\' to slot \'+(_hb8',''],['To take a gun',' out of your hands'],['Hover an item',' in the stash and press'],['Pick an item up',' with A first, then']];
+     for(i=0;i<OLD.length;i++){ var nd=OLD[i].join(''); if(src.indexOf(nd)>=0) bad.push('the game still has the explaining line '+JSON.stringify(nd+'...')); }
+     var P2=__P(), ha0=P2.hotAssign, hub=document.getElementById('hub'), hubWas=!!(hub&&hub.classList.contains('on')), pOn=(typeof PAD!=='undefined'&&PAD)?PAD.on:null;
+     var shut=['stagemodal','sectormodal','outcome','title','pausebox'], was={}, si;
+     for(si=0;si<shut.length;si++){ var se=document.getElementById(shut[si]); was[shut[si]]=!!(se&&se.classList.contains('on')); if(se) se.classList.remove('on'); }
+     function clickSay(pad){
+       if(typeof PAD!=='undefined'&&PAD) PAD.on=!!pad;
+       P2.hotAssign={};
+       __showScreen('hub'); if(hub) hub.classList.add('on');
+       var cell=(hub||document).querySelector('[data-plan="5"]');
+       if(!cell) return null;
+       var t0=document.getElementById('hubtoast'); if(t0) t0.textContent='';
+       window.__lastSay=null;
+       try{ cell.click(); }catch(e1){}
+       var t1=document.getElementById('hubtoast');
+       return String((t1&&t1.textContent)||window.__lastSay||'').trim();
+     }
+     try{
+       var r=[['keyboard',clickSay(false)],['pad',clickSay(true)]];
+       for(i=0;i<r.length;i++){
+         var s=r[i][1];
+         if(s===null){ if(!bad.length) return 'SKIP: the Stash screen drew no belt key 6'; continue; }
+         if(!s){ bad.push('on the '+r[i][0]+' a click on an unbound Stash screen belt key said nothing'); continue; }
+         if(s!==s.toUpperCase()) bad.push('on the '+r[i][0]+' a click on an unbound Stash screen belt key says '+JSON.stringify(s)+', not a short ALL CAPS callout');
+         if(/[.!?]$/.test(s)) bad.push('on the '+r[i][0]+' the belt key answer ends in punctuation: '+JSON.stringify(s));
+         if(!/tactical belt/i.test(s)) bad.push('on the '+r[i][0]+' the belt key answer no longer names the tactical belt: '+JSON.stringify(s));
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(typeof PAD!=='undefined'&&PAD&&pOn!==null) PAD.on=pOn; }catch(_p){}
+       P2.hotAssign=ha0;
+       for(si=0;si<shut.length;si++){ var e2=document.getElementById(shut[si]); if(!e2) continue; if(was[shut[si]]) e2.classList.add('on'); else e2.classList.remove('on'); }
+       if(hub){ if(hubWas) hub.classList.add('on'); else hub.classList.remove('on'); }
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'22.50',what:'the pickup stack: searching a crate of three items with X held through the frame loop draws all three names on the right of the screen in one frame after the search, and no feed row names any of them',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__forceSize)) return 'SKIP: this fixture cannot deploy, step the loop or size the screen';

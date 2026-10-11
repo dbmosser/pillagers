@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.50';
+var VER='22.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12377,24 +12377,28 @@ window.addEventListener('mouseup',function(e){
           // Medical that was the Bandage fallback: the key went grey with a red 0 on the Stash screen and Medical was gone. A key
           // he bound himself is left exactly as it was, which is all the old write of the same value did.
           // v18.91, his report (2026-10-07): a gun cell dropped on the other gun's key makes it that gun: gun 1 and gun 2 trade places in his hands (P.equipped and P.equippedSec, what the raid starts with), so the key he let go on shows it. Dropped back on its own key, the item bound there goes to the key the gun came from. Anywhere else it is refused in words, on the floor's own line, because say() here writes to the backpack copy, which nothing draws.
+          // v22.51, from the review of the four-gun belt, build 4 (his order of 2026-10-09, the shooter HUD voice): THE FLOOR BELT
+          // TOASTS READ LIKE A SHOOTER HUD. The drag of a gun on this belt answered in explaining sentences (only gun, traded places,
+          // to slot, how to take a gun out of his hands) beside the new ALL CAPS toast of v22.45; they are short ALL CAPS callouts now,
+          // and name keys, not slots, as the rest of the belt does.
           if(d.gunSlot){
             if(d.fromHot===_H.i) return;
             var _hb8s=hotbarSlots(), _hb8t=_hb8s[_H.i], _hb8w=WEAPONS[d.key.slice(4)], _hb8n=(_hb8w&&_hb8w.name)||'That gun', _hb8h=(d.gunSlot==='gunA')?0:1;
             if(_hb8t&&(_hb8t.k==='gunA'||_hb8t.k==='gunB')&&_hb8t.k!==d.gunSlot){
               var _hb8a=P.equipped, _hb8b=P.equippedSec;
-              if(!(_hb8a&&_hb8a!=='fists'&&WEAPONS[_hb8a]&&_hb8b&&_hb8b!=='none'&&_hb8b!=='fists'&&WEAPONS[_hb8b])){ hubToast(_hb8n+' is your only gun, so there is no other gun for it to trade places with.'); return; }
+              if(!(_hb8a&&_hb8a!=='fists'&&WEAPONS[_hb8a]&&_hb8b&&_hb8b!=='none'&&_hb8b!=='fists'&&WEAPONS[_hb8b])){ hubToast('ONLY ONE GUN'); return; }
               P.equipped=_hb8b; P.equippedSec=_hb8a;
               G.player=hubBagState().player;
               // v19.18, from the review (2026-10-07): name the key the gun really shows on, as in a raid.
               var _hb8z=hotbarSlots(), _hb8at=-1, _hb8id=d.key.slice(4), _hb8o=(_hb8t&&_hb8t.name)||'the other gun', _hb8q;
               if(_hb8z[_H.i]&&_hb8z[_H.i].kind==='gun'&&_hb8z[_H.i].icon===_hb8id) _hb8at=_H.i;
               else for(_hb8q=0;_hb8q<_hb8z.length;_hb8q++) if(_hb8z[_hb8q]&&_hb8z[_hb8q].kind==='gun'&&_hb8z[_hb8q].icon===_hb8id){ _hb8at=_hb8q; break; }
-              blip('pick'); hubToast((_hb8at===_H.i)?(_hb8n+' to slot '+(_H.i+1)+'.'):(_hb8n+' traded places with '+_hb8o+(_hb8at>=0?('; '+_hb8n+' is on key '+(_hb8at+1)+'.'):'.')));
+              blip('pick'); hubToast(((_hb8at>=0)?(_hb8n+' on key '+(_hb8at+1)+((_hb8at===_H.i)?'':(' \u00b7 swapped with '+_hb8o))):('swapped with '+_hb8o)).toUpperCase());
               return;
             }
             if(_H.i===_hb8h&&d.fromHot>=2&&G.hotAssign&&G.hotAssign[_hb8h]!==undefined&&G.hotAssign[d.fromHot]===undefined){
               var _hb8c=G.hotAssign[_hb8h]; delete G.hotAssign[_hb8h]; G.hotAssign[d.fromHot]=_hb8c;
-              blip('pick'); hubToast(_hb8n+' to slot '+(_hb8h+1)+'. '+((ITEMS[_hb8c]&&ITEMS[_hb8c].name)||'Item')+' to slot '+(d.fromHot+1)+'.');
+              blip('pick'); hubToast((_hb8n+' on key '+(_hb8h+1)+' \u00b7 '+((ITEMS[_hb8c]&&ITEMS[_hb8c].name)||'Item')+' on key '+(d.fromHot+1)).toUpperCase());
               return;
             }
             // v22.45, the four-gun belt, build 4: THE UNDERCROFT BELT EDITS ALL FOUR GUN KEYS. A gun in his hands dropped on any key but
@@ -12435,7 +12439,7 @@ window.addEventListener('mouseup',function(e){
       // item off its key. A release within 24 units of the press is a click, the raid's v14.61 threshold; a real drag still
       // lets go, and a drag with no press point lets go as before.
       // v18.91, his report (2026-10-07): a gun cell let go off the floor belt stays in his hands, and says how to take it out.
-          if(d.gunSlot){ if(!(d.px!==undefined&&Math.sqrt((mouse.x-d.px)*(mouse.x-d.px)+(mouse.y-d.py)*(mouse.y-d.py))<=24)) hubToast('To take a gun out of your hands, open it in the armoury on the Stash screen.'); return; }
+          if(d.gunSlot){ if(!(d.px!==undefined&&Math.sqrt((mouse.x-d.px)*(mouse.x-d.px)+(mouse.y-d.py)*(mouse.y-d.py))<=24)) hubToast('UNEQUIP IN ARMOURY'); return; }
           if(d.fromHot!==undefined&&G.hotAssign&&!(d.px!==undefined&&Math.sqrt((mouse.x-d.px)*(mouse.x-d.px)+(mouse.y-d.py)*(mouse.y-d.py))<=24)) delete G.hotAssign[d.fromHot];
     });
     // Written through on every release, so closing is not the only way to keep it.
@@ -35580,7 +35584,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.50: What you pick up shows as rows on the right edge, above the gun card, with its icon and count. Check 22.50 fails on v22.49',
+  now:'v22.51: The belt answers on the Undercroft floor and the Stash screen are short ALL CAPS callouts. Check 22.51 fails on v22.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -37362,7 +37366,7 @@ try{ renderFreeKit(); }catch(_fk){}
           delete P.hotAssign[ix]; saveProfile(); renderHub();
         } else {
           // v20.79, from the whole-game bug hunt of 2026-10-08 (H49): through padB, so a PlayStation pad is told CROSS, not A.
-          say2((PAD&&PAD.on)?padB('Pick an item up with A first, then A on this key puts it there.'):'Hover an item in the stash and press a number key to put it on your tactical belt.');   // v16.80: a pad player is told the pad way
+          say2((PAD&&PAD.on)?padB('TACTICAL BELT \u00b7 PICK UP AN ITEM WITH A, THEN A HERE'):'TACTICAL BELT \u00b7 HOVER AN ITEM + PRESS 1-9');   // v22.51: the shooter HUD voice, his name for the belt kept (v10.26)   // v16.80: a pad player is told the pad way
         }
       };
       // v8.72, HIS REPORT: you can drag an item OFF the belt now. These cells have

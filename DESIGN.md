@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.51 - THE BELT ANSWERS IN THE HUD VOICE
+
+Co-op hunt while he was away. From the review of the four-gun belt, build 4, and his order of 2026-10-09 that every line the player reads sounds like a shooter HUD. Dragging a gun on the Undercroft floor belt still answered in explaining sentences beside the new ALL CAPS toast: that gun is your only gun, X traded places with Y, X to slot 1, and how to take a gun out of your hands. They are short ALL CAPS callouts now (ONLY ONE GUN, RIFLE ON KEY 2 then SWAPPED WITH SMG, UNEQUIP IN ARMOURY) and say key, not slot, like the rest of the belt. A click on an empty key of the Stash screen belt now says TACTICAL BELT then HOVER AN ITEM + PRESS 1-9, and the pad way on a controller.
+
+MEASURED. Check 22.51 passes, and fails on v22.50.
 ## v22.50 - THE PICKUP STACK
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like Call of Duty, Fortnite or ARC Raiders, and in those what you pick up is a short row at the side of the screen, never a sentence in the middle of it. Every item pulled out of a box was said twice in the message rows, Found and then Took, so a box of three items wrote six lines over each other and only the last two could be read, pushing anything that mattered off. Each item is now a row in a pickup stack on the right edge, above the gun card: its icon, its name in its rarity colour and a count. Four rows, four seconds each; the same item again adds to its count. It hides while the backpack or the map is open. The loot labels at the box stay.
