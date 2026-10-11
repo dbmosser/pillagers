@@ -18838,7 +18838,7 @@ window.__REGRESS=[
      var bad=[], c0=CFG.gfxAuto, s0=CFG.gfxScale, f0=CFG.fpsCap, d0=JSON.stringify(DRS), i, w1, w2, sc, ks=(GAMEOPTS||[]).map(function(o){ return o.k; }), oSwf=sayWhenFree, lines=[], t=0;
      if(ks.indexOf('gfxAuto')<0) bad.push('Settings has no Auto resolution row');
      try{
-       sayWhenFree=function(s){ lines.push(String(s)); };
+       sayWhenFree=function(s,k,o){ lines.push(String(s)+((o&&o.sub)?"  "+o.sub:"")); };   /* retargeted for the raid text R36: the line is a caps system row with the setting in its detail */
        CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0;
        resize(); w1=cv.width;
        for(i=0;i<120;i++){ t+=16; drsTick(16,t); }
@@ -18847,7 +18847,7 @@ window.__REGRESS=[
        if(!(DRS.scale<1)) bad.push('slow frames left the scale at '+DRS.scale);
        if(DRS.scale<0.5-1e-6) bad.push('the scale fell under Low: '+DRS.scale);
        if(Math.abs(DRS.scale-0.5)>1e-6) bad.push('a minute of slow frames stopped at '+DRS.scale+', not at Low');
-       if(lines.length!==1||!/stepped down/.test(lines[0])) bad.push('the first step down said '+JSON.stringify(lines));
+       if(lines.length!==1||!(/stepped down/i).test(lines[0])) bad.push('the first step down said '+JSON.stringify(lines));
        resize(); w2=cv.width;
        if(!(w2<w1*0.6)) bad.push('the canvas did not shrink ('+w1+' to '+w2+')');
        sc=DRS.scale;
@@ -19073,14 +19073,14 @@ window.__REGRESS=[
      if(typeof perfNote!=='function') return 'a slow PC is told nothing';
      var bad=[], lines=[], oSwf=sayWhenFree, w0=PERF.win, s0=PERF.said, i, n0, t0;
      try{
-       sayWhenFree=function(t){ lines.push(String(t)); };
+       sayWhenFree=function(t,k,o){ lines.push(String(t)+((o&&o.sub)?"  "+o.sub:"")); };   /* retargeted for the raid text R36: the line is a caps system row with the setting in its detail */
        PERF.win=[]; PERF.said=0; n0=performance.now();
        for(i=0;i<120;i++) perfNote(16.7);
        if(lines.length) bad.push('smooth frames said '+JSON.stringify(lines));
        PERF.win=[]; t0=performance.now()-9000;
        for(i=0;i<120;i++) PERF.win.push([t0+i*75,40]);
        perfNote(40);
-       if(lines.length!==1||!/Render resolution/.test(lines[0])) bad.push('slow frames said '+JSON.stringify(lines));
+       if(lines.length!==1||!(/render resolution/i).test(lines[0])) bad.push('slow frames said '+JSON.stringify(lines));
        for(i=0;i<120;i++) perfNote(40);
        if(lines.length!==1) bad.push('the line was said '+lines.length+' times');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
