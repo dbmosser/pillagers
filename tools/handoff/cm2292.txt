@@ -1,0 +1,7 @@
+v22.92: reticle words grow at 4k
+
+On a 4K screen NO AMMO, JAMMED, the reload key and the reload seconds by the crosshair are now as big as the crosshair.
+
+Check 22.92. Fails on v22.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

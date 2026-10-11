@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.92 - RETICLE WORDS GROW AT 4K
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, the same size on every screen. The crosshair grew with the screen at v9.53, but the words under it (NO AMMO, JAMMED, [R] RELOAD), the reload seconds beside it and the widths of the magazine and reload rings kept their 1080p size, so on a 4K screen they were small print beside a big cross. They now grow by the same screen factor. At 1080p nothing moves.
+
+MEASURED. Check 22.92 passes, and fails on v22.91.
 ## v22.91 - OFFER LINE AND USE BAR GROW AT 4K
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, the same size on every screen. The trade offer line under the boss plate and the caption over the bandage, medkit and plate bar kept their 1080p size on a 4K screen, small print beside a HUD drawn twice as big. Both now grow with the screen: the offer line and its plate are drawn at the screen scale and the controller word under it moves down with it, and the use bar caption and the room around it grow by the same factor. At 1080p nothing moves.
