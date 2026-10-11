@@ -1,0 +1,5 @@
+## v22.85 - THE WHAT IS NEW CARD NAMES THE QUIETER SCREEN
+
+Co-op hunt while he was away. The card was stamped v22.69 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text builds shipped late on 2026-10-10: a zone or landmark you walk into shows its name as a caps tag at the top, lines about things far across the map are no longer said, and a game error no longer prints its raw text on the screen; the rest are in the change list.
+
+MEASURED. Check 22.85 passes, and fails on v22.84.

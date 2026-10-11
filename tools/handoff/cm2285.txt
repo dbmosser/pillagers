@@ -1,0 +1,7 @@
+v22.85: the what is new card names the quieter screen
+
+The what is new card names the quieter raid screen.
+
+Check 22.85. Fails on v22.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

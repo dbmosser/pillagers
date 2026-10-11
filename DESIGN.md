@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.85 - THE WHAT IS NEW CARD NAMES THE QUIETER SCREEN
+
+Co-op hunt while he was away. The card was stamped v22.69 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text builds shipped late on 2026-10-10: a zone or landmark you walk into shows its name as a caps tag at the top, lines about things far across the map are no longer said, and a game error no longer prints its raw text on the screen; the rest are in the change list.
+
+MEASURED. Check 22.85 passes, and fails on v22.84.
 ## v22.84 - ERRORS LEAVE THE SCREEN
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and none of them print a program error on the screen. A crash said Something broke and up to 80 characters of the raw error, and a draw fault said Render fault logged and its raw text. The raw text now goes to the run report only, and the screen gets one row per raid, ERROR SAVED TO YOUR RUN REPORT. The two slow frame lines are short caps rows with the setting to change underneath, still once a session.
