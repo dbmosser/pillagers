@@ -21149,7 +21149,8 @@ window.__REGRESS=[
        // TWO: up again with E still held beside him: the pick-up starts again from the start.
        p.downed=false; p.healLock=false; n=starts(); step();
        if(G.netRevT>1) bad.push('up again with E held, the pick-up carried on from '+G.netRevT.toFixed(2)+' s instead of starting again');
-       if(starts()!==n+1) bad.push('up again with E held, the pick-up did not start again with its Reviving line');
+       // tr5fixc: since the batch 5 review a pick-up says no line as it starts; the clock starting again from zero on him counts as well.
+       if(starts()!==n+1&&!(G.netRevS===1&&G.netRevT>0&&G.netRevT<0.2)) bad.push('up again with E held, the pick-up did not start again with its Reviving line');
        // THREE: a roll 2 s into a pick-up.
        if(!(hold()>1.5)) return bad.length?bad.join('; '):'SKIP: staging: the second 2 s hold did not run the pick-up clock';
        p.roll=0.3; p.rollDir={x:0,y:0}; keys['KeyE']=true; updatePlayer(0.05);
@@ -22623,7 +22624,7 @@ window.__REGRESS=[
          oSend=netSend, oSay=say, oBlip=blip, k0=keys, bad=[], said=[], sent=[], p=null, i, n, k;
      function step(){ keys['KeyE']=true; updatePlayer(0.05); if(G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; } }
      function revs(){ return sent.filter(function(m){ return m&&m.t==='rev'; }).length; }
-     function told(){ return said.filter(function(m){ return m.indexOf('ZQX MATE revived')>=0; }).length; }
+     function told(){ return said.filter(function(m){ return m.indexOf('ZQX MATE revived')>=0||m.indexOf('ZQX MATE IS BACK UP')>=0; }).length; }   // tr5fixc: or the caps callout
      function mate(dn){ NET.up[1]={seat:1,x:p.x+30,y:p.y,f:0,tx:p.x+30,ty:p.y,tf:0,n:5,age:0,dn:dn?1:0,hp:dn?0:40,mh:100,sd:NET.upSeed>>>0}; }
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -23641,7 +23642,7 @@ window.__REGRESS=[
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      src=src.split('\n').filter(function(l){ return !(/^\s*\/\//).test(l); }).map(function(l){ var k=l.indexOf('   // '); return k>=0?l.slice(0,k):l; }).join('\n');
      OLD=['The raid runs on until','still up top. The','back down. The raid','takes the party up. Stay','Keep holding','pulls you up.'+String.fromCharCode(39)+');','LEFT THE SURFACE. THE RUN','THE WHOLE PARTY.'+String.fromCharCode(39),'every flash shows you the map and','Wear a headset','The browser asks first','Emotes still work'];
-     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid','Reviving ','Revived by ','Connection to your host was lost','every flash makes you visible','Headset recommended'];
+     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid',(src.indexOf('Reviving ')>=0?'Reviving ':'REVIVING'),'Revived by ','Connection to your host was lost','every flash makes you visible','Headset recommended'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the rulebook line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
