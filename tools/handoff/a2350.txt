@@ -1,0 +1,1 @@
+| ARCADE: RUN END ALWAYS REACHES PLAYER 2 | v23.50 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 23.50 passes, fails on v23.49 |

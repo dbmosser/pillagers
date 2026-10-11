@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.50 - ARCADE: RUN END ALWAYS REACHES PLAYER 2
+
+Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade26, a low finding of the arcade review. When the run ended on player 1, player 2 was told twice: once on the link between the two windows and once on the co-op link. If the co-op word came first, player 2 thought player 1 had left and picked the raid up as its own, so the run end after it was ignored and player 2 kept playing alone. Now player 1 marks that co-op word as a run end, and player 2 stops on whichever word comes first and goes back to its attract. Player 1 also says it again every half second until player 2 answers or 3 seconds pass. If player 1 window really goes away, player 2 still picks the raid up, as he ruled. Normal raids are untouched.
+
+MEASURED. Check 23.50 passes, and fails on v23.49.
 ## v23.49 - ARCADE: VALUABLES IGNORE A FULL BACKPACK
 
 Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade25, a low finding of the arcade review. In an arcade raid a valuable never goes into the backpack: it turns into team score and pot, ammo goes to the reserve and a throwable to the pouch. But the search still refused any box with BACKPACK FULL once the backpack was at its cap, and with autoloot on it threw out the worst of the backpack to make room nobody needed. Now in the arcade a box holding only those things is searched by walking over it even with a full backpack, and nothing is thrown out for it. A box with a heal, a plate or a gun in it is refused as before. The backpack has no cap today on his order, so this only matters if a cap ever comes back. Normal raids are untouched.

@@ -1694,7 +1694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.49';
+var VER='23.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36133,7 +36133,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.49: In the arcade a full backpack no longer stops you looting a box of valuables, ammo or throwables, because none of it goes into the backpack. Check 23.49 fails on v23.48',
+  now:'v23.50: In the arcade, ending the run on player 1 always sends player 2 back to its attract. Check 23.50 fails on v23.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41472,7 +41472,10 @@ function netUpWord(peer,m){
   // (netUpGone) until he comes up again (in), and the end of the raid or of the party clears the marks.
   if(!NET.upOut) NET.upOut={};
   NET.upOut[s]=(st==='in')?0:(NET.upSeed>>>0);
-  if(NET.role==='join'&&st==='out'&&s===0) netHostGone('out');   // v15.91: the host raid ended with nobody left to run it: abandon for the whole party
+  // v23.50 (arcade26): an out word the host marks as its arcade run end (ae) stops the player 2 arcade raid back to its attract, as
+  // arcend does, and is acknowledged (arcendok). Taken as a host gone before, player 2 picked the raid up and played on alone.
+  if(NET.role==='join'&&st==='out'&&s===0&&m.ae&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&NET.same==='p2'&&typeof G!=='undefined'&&G&&G.arcade&&!G.netWasJoin){ arcadeEndTake(); netSamePost({t:'arcendok',pair:NET.pair,run:''}); }
+  else if(NET.role==='join'&&st==='out'&&s===0) netHostGone('out');   // v15.91: the host raid ended with nobody left to run it: abandon for the whole party
   if(NET.role==='join'&&s===0&&(st==='out'||st==='spec')){ NET.hostSeed=0; try{ netLateBtn(); }catch(_lb){} }   // v17.46: his pick 3, the host is out
   // v16.74, his order: the host is not gone when he spectates (v16.14): his run ended and he keeps the raid running for the
   // party. A friend read Host has left the raid while the host was still on his KILLED IN ACTION card. Now the party status
@@ -41548,7 +41551,7 @@ function netScoreDraw(){
   el.innerHTML=(n>1)?('<div style="margin-top:12px;border-top:1px solid var(--steel-hi);padding-top:9px"><div style="font-size:10.5px;letter-spacing:.2em;color:var(--ash);margin-bottom:6px">PARTY</div>'+h+'</div>'):'';
   el.style.display=(n>1)?'':'none';   // v20.66, from the whole-game bug hunt of 2026-10-08 (H26, H41): the block shows; the element starts hidden and nothing here ever showed it
   return el.innerHTML;
-}function netUpEnd(how){
+}function netUpEnd(how,ae){   // v23.50 (arcade26): ae marks the out word of an arcade run end on the host; nothing else passes it
   if(!NET.on) return false;
   var _sd=NET.upSeed>>>0;   // v18.53: the raid this out word is about, read before it is let go below
   if(NET.role==='join'&&(how==='dead'||how==='extract')&&NET.upSeed&&!(how==='dead'&&kbOn())) NET.lateBan=NET.upSeed>>>0;   // v17.66, his ruling: no rejoining a raid you died or extracted in; v17.71: the kid menu lets player 2 back after death
@@ -41558,7 +41561,8 @@ function netScoreDraw(){
   NET.contMap={}; NET.contN=0; NET.contN0=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;   // v15.91: and the containers
   NET.upOut={};   // v16.86: the raid is let go, and with it every seat marked out on it
   NET.upWord=null;   // v17.46: his pick 3, no late join into a raid that is over
-  netBroadcast({t:'up',st:'out',how:netClean(how,12),sd:_sd});   // v18.53: names its raid (sd), so a late word never marks the next one
+  var _ow={t:'up',st:'out',how:netClean(how,12),sd:_sd}; if(ae) _ow.ae=1;   // v23.50 (arcade26): the arcade run end mark; a normal raid sends the word as before
+  netBroadcast(_ow);   // v18.53: names its raid (sd), so a late word never marks the next one
   return true;
 }
 // Called from loop while a party is on and a raid is in hand, every frame. Eases the others toward where they last said
@@ -44707,7 +44711,7 @@ function arcadeRaidStop(why){
   ARCADE.banner=null;   // v23.23 (arcade4)
   try{ ambienceOff(); }catch(_ao){}
   if(why==='idle'||why==='end'){   // v23.39 (arcade16): an idle out or a run end lets the party raid go (abandon, never a late ban) and stops the recorder
-    try{ if(typeof NET==='object'&&NET&&NET.on) netUpEnd('abandon'); }catch(_ne){}
+    try{ if(typeof NET==='object'&&NET&&NET.on) netUpEnd('abandon',(why==='end'&&ARCADE.role==='host')?1:0); }catch(_ne){}   // v23.50 (arcade26): the host run end is marked ae
     try{ recStop(); }catch(_rs){}
   }
   try{ togglePauseBox(false); }catch(_tp){}
@@ -45268,10 +45272,11 @@ function arcadeOnMsg(m){
     if(m.t==='arcoff') return arcadeLeave()?'arcoff':'ignored';
     if(m.t==='arcend'){   // v23.39 (arcade16): the host ended the run: tear down silently, back to the attract
       if(!ARCADE.on) return 'ignored';
-      if(G&&G.arcade&&!G.netWasJoin) arcadeRaidStop('end');
-      ARCADE.wantIn=0; ARCADE.late=0; ARCADE.idleSaid=0;
-      try{ arcadeAttShow(); }catch(_ae){}
-      return 'arcend';
+      var _er=String(m.run||'').slice(0,40);   // v23.50 (arcade26): acknowledged every time (arcendok), so the host stops repeating it
+      netSamePost({t:'arcendok',pair:NET.pair,run:_er});
+      if(_er&&ARCADE.endRun===_er) return 'ignored';   // v23.50 (arcade26): a repeat of a run end already taken changes nothing
+      ARCADE.endRun=_er;
+      return arcadeEndTake();
     }
     // v23.25 (arcade6): the answers to arcjoin. fresh 1: wait for the raid word. fresh 0: ask to join the raid in progress (again every
     // 1.5 s from arcadeAttTick until in). arcnew: the host is building a fresh raid, wait for its word.
@@ -45282,6 +45287,7 @@ function arcadeOnMsg(m){
   if(NET.same==='host'){
     if(m.t==='arcbusy'){ if(!ARCADE.p2Busy){ try{ say('PLAYER 2 IS IN A RAID','warn'); }catch(_sb){} } ARCADE.p2Busy=1; ARCADE.offerAt=Date.now(); return 'busy'; }   // v23.26 (arcfixa): offered again from arcadeAttTick, said once
     if(m.t==='arcin'){ ARCADE.p2Busy=0; return 'arcin'; }   // v23.26 (arcfixa): player 2 is in the arcade
+    if(m.t==='arcendok'){ if(ARCADE.endSend&&(!m.run||String(m.run)===ARCADE.endSend.id)) ARCADE.endSend=null; return 'arcendok'; }   // v23.50 (arcade26): player 2 took the run end, no more repeats
     if(m.t==='arcjoin'){ ARCADE.p2Busy=0; return arcadeJoinAsk(); }   // v23.25 (arcade6): player 2 pressed A
     if(m.t==='arcini'){ if(!ARCADE.ini||ARCADE.ini.mirror) return 'ignored'; arcadeIniOp(String(m.op||'').slice(0,4)); return 'arcini'; }   // v23.41 (arcade18): the player 2 pad on the initials card
     if(m.t==='arcact'){ ARCADE.mateAt=Date.now(); return 'arcact'; }   // v23.39 (arcade16): player 2 is playing
@@ -45412,6 +45418,7 @@ function arcadeAttShow(){
 function arcadeAttTick(){
   if(!ARCADE.on) return;
   try{ arcadeScFlush(Date.now()); }catch(_sf){}   // v23.29 (arcade8): a held score word, and the 2 s repeat
+  try{ arcadeEndTick(Date.now()); }catch(_et){}   // v23.50 (arcade26): the arcend repeat until arcendok or 3 s
   try{ arcadeIdleTick(Date.now()); }catch(_ai){}   // v23.39 (arcade16): idle return and the run end
   try{ arcadeIniTick(Date.now()); }catch(_it){}   // v23.41 (arcade18): 20 s untouched keeps what is there
   try{ arcadeHiTick(); }catch(_ht){}   // v23.41 (arcade18): NEW HIGH SCORE, once per run
@@ -45603,12 +45610,46 @@ function arcadeRunEnd(why){
       mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:String(why||''),team:arcadeTeam(),p1:host?me:mt,p2:host?mt:me};
   var _bw=false; try{ _bw=arcadeBoardPut(); }catch(_bp){}   // v23.41 (arcade18): the final board row
-  if(host) netSamePost({t:'arcend',pair:NET.pair});
+  if(host) arcadeEndSend();   // v23.50 (arcade26): arcend with the run id, repeated until arcendok or 3 s
   arcadeRaidStop('end');
   ARCADE.wantIn=0; ARCADE.idleSaid=0;
   try{ if(_bw&&ARCADE.run&&arcadeBoardQual(ARCADE.run.id)) arcadeIniStart(ARCADE.run.id); }catch(_is){}   // v23.41 (arcade18): a top 10 run asks for initials
   try{ arcadeAttShow(); }catch(_as){}
   return true;
+}
+// v23.50, HIS YES (2026-10-11) to the five recommendations, arcade26 (a low finding of the arcade 14-25 review): RUN END ALWAYS REACHES
+// PLAYER 2. The host run end told player 2 twice: arcend on the pair channel and the out word on the co-op link (netUpEnd, from
+// arcadeRaidStop). When the out word came first, player 2 took it as a host gone (netHostGone), picked the raid up as its own
+// (netWasJoin), and the arcend after it then left that raid alone, so player 2 played on alone. Now the host marks its run end out
+// word (ae) and player 2 stops its arcade raid on whichever word comes first, back to its attract (arcadeEndTake); an out word with
+// no mark (the host window went away) still hands player 2 the raid, his 2026-10-02 ruling. The host names the run in arcend and
+// repeats it every half second until player 2 acknowledges it (arcendok) or 3 s pass, or a new arcade raid is up. Only the arcade
+// reaches any of it.
+var ARCADE_END={ms:3000,every:500};
+function arcadeEndSend(){
+  var id=String((ARCADE.run&&ARCADE.run.id)||''), now=Date.now();
+  ARCADE.endSend={id:id,at:now,last:now};
+  netSamePost({t:'arcend',pair:NET.pair,run:id});
+  return true;
+}
+// Run from the attract tick. Returns what it did: '', again or done.
+function arcadeEndTick(now){
+  var e=ARCADE.endSend;
+  if(!e) return '';
+  now=+now||Date.now();
+  if(!ARCADE.on||ARCADE.role!=='host'||now-e.at>=ARCADE_END.ms||(G&&G.arcade)){ ARCADE.endSend=null; return 'done'; }
+  if(now-e.last<ARCADE_END.every) return '';
+  e.last=now;
+  netSamePost({t:'arcend',pair:NET.pair,run:e.id});
+  return 'again';
+}
+// Player 2 takes the host run end, from arcend or the marked out word, whichever comes first.
+function arcadeEndTake(){
+  if(!ARCADE.on) return 'ignored';
+  if(G&&G.arcade&&!G.netWasJoin) arcadeRaidStop('end');
+  ARCADE.wantIn=0; ARCADE.late=0; ARCADE.idleSaid=0;
+  try{ arcadeAttShow(); }catch(_ae){}
+  return 'arcend';
 }
 // Player 2 goes out of the arcade raid, back to its attract.
 function arcadeP2Out(why){

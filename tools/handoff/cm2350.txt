@@ -1,0 +1,7 @@
+v23.50: arcade: run end always reaches player 2
+
+In the arcade, ending the run on player 1 always sends player 2 back to its attract.
+
+Check 23.50. Fails on v23.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
