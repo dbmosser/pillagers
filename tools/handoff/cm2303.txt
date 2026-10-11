@@ -1,0 +1,7 @@
+v23.03: names keep their capitals
+
+A survivor asks for an Armour Plate by its name, with the right article, and a teammate with no name starts a line as Your teammate.
+
+Check 23.03. Fails on v23.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

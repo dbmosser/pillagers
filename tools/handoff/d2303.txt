@@ -1,0 +1,5 @@
+## v23.03 - NAMES KEEP THEIR CAPITALS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, and a name reads the same everywhere. Two survivor lines lowercased the item they asked for to fit a sentence, which broke the article too: He needs a armour plate. The refusal now reads HE NEEDS AN ARMOUR PLATE with You have none as the detail, finding him reads SURVIVOR FOUND with He needs an Armour Plate. as the detail, and his label reads NEEDS ARMOUR PLATE with no colon. A teammate with no seat name started a heal line in lowercase (your teammate moved away); it now reads Your teammate.
+
+MEASURED. Check 23.03 passes, and fails on v23.02.

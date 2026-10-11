@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.02';
+var VER='23.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3481,6 +3481,10 @@ var KINDWORD={sentry:'SENTRY',crawler:'CRAWLER',raider:'PILLAGER',snitch:'CRIER'
   bulwark:'BULWARK',howler:'HOWLER',stray:'SURVIVOR',peddler:'THE PEDDLER'};
 function kindWord(k){ return KINDWORD[k]||String(k||'').toUpperCase(); }
 function killWord(e){ return (e&&(e.kind==='raider'||e.kind==='stray'||e.kind==='peddler'))?' ELIMINATED':' DESTROYED'; }
+// v22.xx, the raid text rewrite (R50): NAMES KEEP THEIR CAPITALS. Item names are Title Case (Armour Plate), and two survivor lines
+// lowercased them to fit a sentence, which also broke the article: He needs a armour plate. aOrAn gives the article from the name
+// as written, and a name inside a detail keeps its case; inside a caps headline it is uppercased when the line is built.
+function aOrAn(s){ return (/^[aeiou]/i).test(String(s||''))?'an':'a'; }
 // SPEC 16: contracts that pay in GEAR, not only credits. A board that hands out
 // money and nothing else is a slower version of selling loot, and it made the
 // whole feature something you completed by accident rather than something you
@@ -10152,7 +10156,7 @@ function strayGive(e){
     if(G.player.reserve>=need){ G.player.reserve-=need; fromReserve=true; }
     else { say('He needs ammunition. You cannot spare '+need+' rounds.'); return; }
   }
-  if(ix<0&&!fromReserve){ say('He needs a '+ITEMS[e.want].name.toLowerCase()+'. You have none.'); return; }
+  if(ix<0&&!fromReserve){ say(('He needs '+aOrAn(ITEMS[e.want].name)+' '+ITEMS[e.want].name).toUpperCase(),'info',{sub:'You have none.'}); return; }   // v22.xx (R50): HE NEEDS AN ARMOUR PLATE, never a armour plate
   if(!fromReserve) G.bag.splice(ix,1);
   e.helped=1; e.want2=null;
   blip('pick');
@@ -20563,9 +20567,10 @@ if(e.kind==='stray'){
           if(NET.on) netMarkSend({t:'mark',k:'sv',nid:e.nid|0,seat:p.seat|0,w:String(e.want||'')});
           if(!e.helped) say('TEAMMATE FOUND A SURVIVOR','obj',{sub:'Needs '+ITEMS[e.want].name});
         } else {
-        say(e.helped?'The survivor is still there.'
-          :('Someone is hiding in here. He needs a '+ITEMS[e.want].name.toLowerCase()+'.'));
-        if(!e.helped) label(e.x,e.y-20,'NEEDS: '+ITEMS[e.want].name.toUpperCase(),'#7fc4a0',0,true);
+        // v22.xx, the raid text rewrite (R50): the name keeps its case in the detail, with the right article (He needs an Armour Plate.)
+        if(e.helped) say('THE SURVIVOR IS STILL THERE','obj');
+        else say('SURVIVOR FOUND','obj',{sub:'He needs '+aOrAn(ITEMS[e.want].name)+' '+ITEMS[e.want].name+'.'});
+        if(!e.helped) label(e.x,e.y-20,'NEEDS '+ITEMS[e.want].name.toUpperCase(),'#7fc4a0',0,true);   // v22.xx (R50): no colon label
         blip('pick',260);
         }
       }
@@ -36017,7 +36022,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.02: Pings, kill labels, the wreck prompt, the Peddler cache and the pillager board use the names you know: CRIER, PILLBOX, WRECK, DESTROYED and dead. Check 23.02 fails on v23.01',
+  now:'v23.03: A survivor asks for an Armour Plate by its name, with the right article, and a teammate with no name starts a line as Your teammate. Check 23.03 fails on v23.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41752,7 +41757,7 @@ function netAidHold(quiet){
   p=G.player; if(p.downed||p.dying) return false;
   s=netAidTarget(p,true); if(s<0) return false;
   if(!NET.up[s]) return false;
-  nm=netSeatName(s)||'your teammate';
+  nm=netSeatName(s)||'Your teammate';   // v22.xx (R50): it starts the line
   try{ hs=hotbarSlots()[hotSel()]; }catch(_hs){ hs=null; }
   if(hs&&hs.kind==='heal') key=hs.icon;
   else if(hs&&hs.kind==='armor') key='plate';
@@ -41762,7 +41767,7 @@ function netAidHold(quiet){
   if(!key||!ITEMS[key]){ if(!quiet) say('SELECT A HEAL','info',{sub:'Bandage, Medkit or Armour Plate.'}); return false; }
   return !!netAidStart(s,key);   // its own lines refuse a teammate who needs nothing, or an item you have none of
 }function netAidStart(s,key){
-  var p=G.player, it=ITEMS[key], g=NET.up[s], nm=netSeatName(s)||'your teammate', bi, arm, ceil;
+  var p=G.player, it=ITEMS[key], g=NET.up[s], nm=netSeatName(s)||'Your teammate', bi, arm, ceil;   // v22.xx (R50): it starts the line
   if(!it||!g) return false;
   arm=(it.use==='armor');
   if(arm){ if(g.ac>0&&g.ar>=g.ac){ say(String(nm).toUpperCase()+' ARMOUR FULL'); return false; } if(p.prepA){ say('ALREADY SLOTTING','info',{sub:String(ITEMS[p.prepA.key]?ITEMS[p.prepA.key].name:'Plate').toUpperCase()}); return false; } }
@@ -41779,7 +41784,7 @@ function netAidHold(quiet){
   return true;
 }
 function netAidFinish(PR){
-  var p=G.player, s=PR.aid, g=NET.up[s], nm=netSeatName(s)||'your teammate', it=ITEMS[PR.key], i, r;
+  var p=G.player, s=PR.aid, g=NET.up[s], nm=netSeatName(s)||'Your teammate', it=ITEMS[PR.key], i, r;   // v22.xx (R50): it starts the line
   // v17.10, co-op hunt 2026-09-28: a teammate whose raid has ended is gone too (netUpGone), and on the host a heal that could
   // not be passed to anyone (no link on his seat, or the send failed) was lost while the line said Patched up; both keep it,
   // and a kept loaner Bandage stays a loaner (v17.07).
@@ -41832,7 +41837,7 @@ function netGiftKey(){
     k=G.bag[st.idxs[st.idxs.length-1]]; it=ITEMS[k]; if(!it) return false;
     s=netGiftSeat();
     if(s<0){ say('NO TEAMMATE IN RANGE'); return true; }   // v22.80 (tr6fixb): the caps callout
-    nm=netSeatName(s)||'your teammate';
+    nm=netSeatName(s)||'Your teammate';   // v22.xx (R50)
     G.giftOut={id:String(Date.now()%1e9)+'-'+Math.floor(Math.random()*1e4),k:k,to:s,t:G.t};
     netGiftSend(s,{op:'offer',id:G.giftOut.id,k:k});
     return true;   // v22.75 (R30): no Offered line; the offer line under the boss bar says it while it waits
