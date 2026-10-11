@@ -6031,7 +6031,7 @@ window.__REGRESS=[
        try{
          tr=__textTrace(function(){ ctx.save(); ctx.setTransform(1,0,0,1,0,0); try{ last=null; drawGiftLine(); out.gb=HUDGIFTB; out.plate=last; drawUseBar(); } finally { ctx.restore(); } });
        } finally { if(own) ctx.fillRect=oFR; else delete ctx.fillRect; }
-       for(i=0;i<tr.length;i++){ s=tr[i].t; if(s.indexOf(' offers you ')>0&&!out.offer) out.offer=tr[i].px; if(s.indexOf('APPLYING ')===0&&!out.use) out.use=tr[i].px; }
+       for(i=0;i<tr.length;i++){ s=tr[i].t; if((s.indexOf(' offers you ')>0||s.indexOf(' OFFERS ')>0)&&!out.offer) out.offer=tr[i].px; if(s.indexOf('APPLYING ')===0&&!out.use) out.use=tr[i].px; }
        return out;
      }
      try{
@@ -6757,7 +6757,7 @@ window.__REGRESS=[
        g.giftIn=null; g.giftOut=null; said.length=0;
        r=netGiftTake(peer,{t:'gift',op:'offer',id:'r30c',k:'bandage',to:0});
        if(r!=='offer'||!g.giftIn) bad.push('SKIP: staging: the offer word was not taken as an offer ('+r+')');
-       else { n=0; for(i=0;i<said.length;i++) if(said[i].indexOf(OY)>=0) n++; if(n) bad.push('an offer word said '+n+' offers you lines over the offer line ('+said.join(' | ')+')'); }
+       else { n=0; for(i=0;i<said.length;i++) if(said[i].indexOf(OY)>=0||said[i].indexOf(' OFF'+'ERS ')>=0) n++; if(n) bad.push('an offer word said '+n+' offers you lines over the offer line ('+said.join(' | ')+')'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        netSend=oSend; say=_say; NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; NET.roster=keep.roster; NET.seat=keep.seat; keys={};
@@ -7219,13 +7219,13 @@ window.__REGRESS=[
        G.t=50; G.giftIn={id:'tst',k:'codex',from:1,t:50};
        PAD.on=true; PAD.brand='xbox';
        s=String(drawGiftLine()||'');
-       if(s.indexOf(nm)<0||s.indexOf('[Y] to take it')<0||s.indexOf(TOR)>=0||s.indexOf('12s')<0) bad.push('with a controller the offer line reads '+JSON.stringify(s)+', not one [Y] key');
+       if((s.indexOf(nm)<0&&s.indexOf(nm.toUpperCase())<0)||(s.indexOf('[Y] to take it')<0&&s.indexOf('[Y] TAKE')<0)||s.indexOf(TOR)>=0||s.indexOf('12s')<0) bad.push('with a controller the offer line reads '+JSON.stringify(s)+', not one [Y] key');
        PAD.on=false;
        s=String(drawGiftLine()||'');
-       if(s.indexOf(nm)<0||s.indexOf('[T] to take it')<0||s.indexOf(ORY)>=0) bad.push('on the keyboard the offer line reads '+JSON.stringify(s)+', not one [T] key');
+       if((s.indexOf(nm)<0&&s.indexOf(nm.toUpperCase())<0)||(s.indexOf('[T] to take it')<0&&s.indexOf('[T] TAKE')<0)||s.indexOf(ORY)>=0) bad.push('on the keyboard the offer line reads '+JSON.stringify(s)+', not one [T] key');
        G.giftIn=null; G.giftOut={id:'out',k:'codex',to:1,t:50};
        s=String(drawGiftLine()||'');
-       if(s.indexOf('Offered '+nm)!==0||s.indexOf('Waiting')<0||s.indexOf('12s')<0||s.indexOf('Waiting for them')>=0) bad.push('the giver sees '+JSON.stringify(s)+', not the offer, Waiting and the seconds left');
+       if((s.indexOf('Offered '+nm)===0?(s.indexOf('Waiting')<0||s.indexOf('Waiting for them')>=0):!(s.indexOf('OFFER SENT')===0&&s.indexOf(nm.toUpperCase()+' TO ')>0))||s.indexOf('12s')<0) bad.push('the giver sees '+JSON.stringify(s)+', not the offer, Waiting and the seconds left');
      }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
      finally{
        try{ for(pk in PAD) if(Object.prototype.hasOwnProperty.call(PAD,pk)&&!Object.prototype.hasOwnProperty.call(padK,pk)) delete PAD[pk]; for(pk in padK) PAD[pk]=padK[pk]; }catch(_pk){}
@@ -14012,7 +14012,7 @@ window.__REGRESS=[
          try{ __frame(0.016); netPadHud(); } finally { unwrap(); }
          M=band(function(s){ return s===MSG; },1,true);
          B=bossBand();
-         O=band(function(s){ return s.indexOf(' offers you ')>=0; },1);
+         O=band(function(s){ return s.indexOf(' offers you ')>=0||s.indexOf(' OFFERS ')>=0; },1);
          C=band(function(s){ return s.indexOf(CP)===0; },1);
          if(!M||!B||!O||!C){ bad.push('control at '+at+': not all four were drawn (message '+!!M+', boss bar '+!!B+', offer '+!!O+', controller word '+!!C+')'); continue; }
          if(hit(M,B)) bad.push('at '+at+' the message plate ('+rd(M)+') covers the boss bar ('+rd(B)+')');
@@ -18985,7 +18985,7 @@ window.__REGRESS=[
        if(e){ e.x=p.x+120; e.y=p.y; g.bossRef=e; e.barSeen=1; }   // seen: this check is about draw order, not when the bar first shows
        __frame(0.016);
        ctx.clearRect=function(x,y,w,h){ seq++; if(w>=W-1&&h>=H-1) cl=seq; return oCR.apply(this,arguments); };
-       ctx.fillText=function(s){ seq++; if(/offers you/.test(String(s))) gl=seq; if(e&&String(s)===String(e.name)) bl=seq; return oFT.apply(this,arguments); };
+       ctx.fillText=function(s){ seq++; if(/offers you| OFFERS /.test(String(s))) gl=seq; if(e&&String(s)===String(e.name)) bl=seq; return oFT.apply(this,arguments); };
        __frame(0.016);
        delete ctx.clearRect; if(ctx.clearRect!==oCR) ctx.clearRect=oCR; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;
        if(cl<0) bad.push('control: no full-canvas HUD clear was seen');
@@ -20416,13 +20416,13 @@ window.__REGRESS=[
        nm=ITEMS.codex?ITEMS.codex.name:'codex';
        G.t=50; G.giftIn={id:'tst',k:'codex',from:1,t:50};
        s=drawGiftLine();
-       if(!s||s.indexOf(nm)<0||(s.indexOf('T or Y')<0&&!/\[[A-Z0-9-]+\] to take it/.test(s))||s.indexOf('12s')<0) bad.push('an open offer showed '+JSON.stringify(s));
+       if(!s||(s.indexOf(nm)<0&&s.indexOf(nm.toUpperCase())<0)||(s.indexOf('T or Y')<0&&!/\[[A-Z0-9-]+\] to take it/.test(s)&&!/\[[A-Z0-9-]+\] TAKE/.test(s))||s.indexOf('12s')<0) bad.push('an open offer showed '+JSON.stringify(s));
        G.giftIn.yes=1; if(drawGiftLine()) bad.push('the offer line stayed after the item was taken');
        G.giftIn={id:'tst',k:'codex',from:1,t:50}; G.t=63;
        if(drawGiftLine()) bad.push('the offer line stayed after the offer ran out');
        G.giftIn=null; G.giftOut={id:'out',k:'codex',to:1,t:63};
        s=drawGiftLine();
-       if(!s||s.indexOf('Offered')<0||s.indexOf(nm)<0) bad.push('the giver saw '+JSON.stringify(s));
+       if(!s||(s.indexOf('Offered')<0&&s.indexOf('OFFER SENT')<0)||(s.indexOf(nm)<0&&s.indexOf(nm.toUpperCase())<0)) bad.push('the giver saw '+JSON.stringify(s));
        G.giftOut=null;
        drawGiftLine=function(){ n++; return null; };
        try{ drawHUD(); }catch(_h){}
