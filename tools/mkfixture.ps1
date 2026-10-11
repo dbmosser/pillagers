@@ -6119,7 +6119,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__frame&&window.__keysRef)) return 'SKIP: this fixture cannot deploy, step or draw';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the frame loop cannot draw';
-     var bad=[], g, p, z=null, bd=1e9, d, i, j, t0, f=0, realSay=say, oFT=ctx.fillText, said=[], drawn={}, K, XC=['EXTRACTION','CALLED'].join(' '), SG=['THE','SIEGE'].join(' '), long=[], n=null, n0=0;
+     var bad=[], g, p, z=null, bd=1e9, d, i, j, t0, f=0, realSay=say, oFT=ctx.fillText, said=[], drawn={}, K, XC=['EXTRACTION','CALLED'].join(' '), SG=['THE','SIEGE'].join(' '), SG2=['SIEGE','INCOMING'].join(' '), long=[], n=null, n0=0;
      function unspy(){ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -6146,14 +6146,14 @@ window.__REGRESS=[
          }
        }
        if(!drawn[XC]) bad.push('the call never drew '+XC+' as a headline in 4 s');
-       if(!drawn[SG]) bad.push('the call never drew '+SG+' as a headline in 4 s');
+       if(!drawn[SG]&&!drawn[SG2]) bad.push('the call never drew '+SG+' as a headline in 4 s');
        for(j=0;j<said.length;j++){
          if(said[j].m.length>56) long.push(said[j].m.length+': '+said[j].m.slice(0,70));
          if(said[j].sub.length>56) long.push(said[j].sub.length+': '+said[j].sub.slice(0,70));
-         if(said[j].m===SG) n=(/(\d+) machine/.exec(said[j].sub)||[])[1]||null;
+         if(said[j].m===SG||said[j].m===SG2) n=(/(\d+) machine/.exec(said[j].sub)||[])[1]||null;
        }
        if(long.length) bad.push('lines longer than 56 characters were said: '+long.slice(0,3).join(' | '));
-       if(drawn[SG]&&n===null) bad.push('the siege detail does not say how many are coming');
+       if((drawn[SG]||drawn[SG2])&&n===null) bad.push('the siege detail does not say how many are coming');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        unspy(); say=realSay;
@@ -38728,7 +38728,7 @@ window.__REGRESS=[
        // NOTHING CALLED. Both original sentences, word for word.
        p.x=mine.x; p.y=mine.y;
        var inNone=outHint(1);
-       if(inNone!=='You are standing in the way out. Hold E to call it.'&&!/^Hold \[E\] here to call for extraction\.$/.test(inNone))   /* retargeted for the raid text R10: the hint in its short words */
+       if(inNone!=='You are standing in the way out. Hold E to call it.'&&!/^Hold \[E\] here to call for extraction\.$/.test(inNone)&&!/^Hold \[E\] to call extraction$/.test(inNone))   /* retargeted for the raid text R10: the hint in its short words; and tr3fixc: its shooter detail */
          bad.push('control: with nothing called, standing in a ring no longer says the line it has always said; it says ['+inNone+']');
        p.x=mine.x+mine.r+900; p.y=mine.y;
        var outNone=outHint(1);
