@@ -1,0 +1,7 @@
+v22.76: notoriety is said once
+
+A notoriety point is shown by the stamp and the label only, and helping a Survivor says NOTORIETY DOWN TO and the number.
+
+Check 22.76. Fails on v22.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

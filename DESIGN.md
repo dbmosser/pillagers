@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.76 - NOTORIETY IS SAID ONCE
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. A notoriety point said a sentence with the new total in the feed while his notoriety stamp and the NOTORIETY +1 label over the body already said it. The sentence is gone for a peaceful pillager, the unarmed Survivor and the Peddler. Helping a Survivor now says NOTORIETY DOWN TO and the new number.
+
+MEASURED. Check 22.76 passes, and fails on v22.75.
 ## v22.75 - AN OFFER IS SHOWN ONCE
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. A trade offer said Offered or offers you in the feed while the offer line under the boss bar already named who, what, the key and the seconds, so those two lines are gone. The lines that say an offer ran out or was not taken were said from the drawing code; they now come from the update as one feed row each, OFFER FROM NAME EXPIRED and NAME DID NOT TAKE THE ITEM.

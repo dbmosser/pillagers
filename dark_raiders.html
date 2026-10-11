@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.75';
+var VER='22.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10019,7 +10019,9 @@ function notoAggress(e){
   e.notoCharged=1;
   P.notoriety=(P.notoriety||0)+1; saveProfile();
   if(G.tel) G.tel.peaceShot=(G.tel.peaceShot||0)+1;
-  say('He was not fighting you. Notoriety '+P.notoriety+'.');
+  // v22.76, the raid text rewrite (R31): NOTORIETY IS SAID ONCE. Each point said a sentence with the new total in the feed while
+  // his v8.27 stamp (YOU STARTED THAT FIGHT, the total and its word) and the NOTORIETY +1 label over the body already said it,
+  // three times for one fact. The sentence is gone here, for the unarmed Survivor and for the Peddler; the stamp and label stay.
   label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
   notoStamp('YOU STARTED THAT FIGHT');
   return true;
@@ -10160,7 +10162,7 @@ function strayGive(e){
   if((P.notoriety||0)>0){
     P.notoriety--;
     if(P.notoriety<=0) P.notExt=0;   // v13.95, contracts audit: the fade count goes with the last point
-    sayWhenFree('Word of that will travel too. Notoriety '+P.notoriety+'.');   // v13.39: waits for the cache and pay line above instead of writing over it
+    sayWhenFree('NOTORIETY DOWN TO '+P.notoriety,'info');   // v13.39: waits for the cache and pay line above; v22.76 (R31): the HUD voice
   }
   saveProfile();
   emoteBubble(e.x,e.y,'nod','#7fc4a0',2.0);
@@ -20128,7 +20130,7 @@ if(e.state==='possum'){
         if(!G.sim&&e.byPlayer&&!(G.player&&G.player.specOut)){
           P.notoriety=(P.notoriety||0)+1; saveProfile();
           if(G.tel) G.tel.strayKilled=1;
-          say('He was not armed. Notoriety '+P.notoriety+'.');
+          // v22.76 (R31): no Notoriety sentence; the stamp and the NOTORIETY +1 label carry it
           // v8.27: "+1", because one is what he gained. The old line printed the
           // new TOTAL after a plus sign, so a second killing read as "+2".
           label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
@@ -20151,7 +20153,7 @@ if(e.state==='possum'){
         if(!G.sim&&e.byPlayer&&!(G.player&&G.player.specOut)){
           P.notoriety=(P.notoriety||0)+1; saveProfile();
           if(G.tel) G.tel.pedKilled=1;
-          say('The Peddler is dead. Word gets around. Notoriety '+P.notoriety+'.');
+          // v22.76 (R31): no Notoriety sentence; the stamp and the NOTORIETY +1 label carry it
           label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
           notoStamp('YOU KILLED THE PEDDLER');
         } else if(!G.sim){
@@ -35769,7 +35771,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.75: A trade offer is shown once, on the offer line, and its end is one short feed row. Check 22.75 fails on v22.74',
+  now:'v22.76: A notoriety point is shown by the stamp and the label only, and helping a Survivor says NOTORIETY DOWN TO and the number. Check 22.76 fails on v22.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
