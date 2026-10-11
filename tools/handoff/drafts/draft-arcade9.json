@@ -1,0 +1,64 @@
+{
+    "title":  "ARCADE: SPAWN SHIELD",
+    "why":  "His order for the Halloween party mode, build 9 of 20. In the arcade a player is put down shielded at every drop, respawn and re-drop: nothing hurts him and a hit only sparks teal on the bubble, so a newcomer who picks up the pad is never killed before he has found the stick. A pulsing teal bubble and SHIELD . MOVE TO START sit on him. The shield drops the moment he moves, rolls, shoots or throws; aiming and searching keep it. The other window draws the same bubble on him. Normal raids are untouched.",
+    "now":  "In the arcade every drop, respawn and re-drop is shielded until the player moves, rolls, shoots or throws.",
+    "edits":  [
+                  {
+                      "anchor":  "// Run from startRaid right after the build, in every window that builds the arcade raid, so both builds stay identical.\nfunction arcadePostBuild(g){",
+                      "replacement":  "// v23.30, HIS ORDER (2026-10-11), build 9 of 20 (arcade9): SPAWN SHIELD. A walk-up player is put down at every arcade drop, respawn and\n// re-drop with a shield (p.arcSh): damagePlayer takes nothing while it is up, above every hit stamp (no grunt, no hit ring, no log\n// line), and the hit sparks teal on the bubble instead. It stays until he does something: movement input over 0.25 (keys, arrows or\n// the left stick), a roll, a shot or a throw. Aiming alone and searching keep it, so a newcomer can try the stick while he reads.\n// While it is up a pulsing teal bubble and the tag SHIELD . MOVE TO START sit on him, and his st word carries sh 1, so the other\n// window draws the same bubble on him. Only arcade raids ever set it, so a normal raid is unchanged.\nfunction arcadeShieldOff(){\n  if(!G||!G.player||!G.player.arcSh) return false;\n  G.player.arcSh=0;\n  return true;\n}\n// The bubble on a shielded player (own: this window, which also gets the tag under him). Drawn on the world canvas.\nfunction arcadeShieldRing(x,y,own){\n  if(!G||!G.arcade||!wc||!isFinite(x)||!isFinite(y)) return;\n  var pu=0.5+0.5*Math.sin((G.t||0)*5), rx=21+pu*2.5, ry=rx*1.3, cy=y-18, tg, tw;\n  wc.save();\n  wc.globalAlpha=0.12+0.10*pu; wc.fillStyle=\u0027#3fe0d0\u0027;\n  wc.beginPath(); wc.ellipse(x,cy,rx,ry,0,0,6.2832); wc.fill();\n  wc.globalAlpha=0.55+0.35*pu; wc.strokeStyle=\u0027#5ff5e4\u0027; wc.lineWidth=2;\n  wc.beginPath(); wc.ellipse(x,cy,rx,ry,0,0,6.2832); wc.stroke();\n  if(own){\n    tg=\u0027SHIELD \\u00b7 MOVE TO START\u0027;\n    wc.globalAlpha=1; wc.font=FS(TYPE.micro); tw=wc.measureText(tg).width;\n    wc.fillStyle=\u0027rgba(6,9,13,.86)\u0027; wc.fillRect(x-tw/2-4,y+14,tw+8,13);\n    wc.fillStyle=\u0027#5ff5e4\u0027; wc.fillText(tg,x-tw/2,y+24);\n  }\n  wc.restore();\n}\n// Run from startRaid right after the build, in every window that builds the arcade raid, so both builds stay identical.\nfunction arcadePostBuild(g){"
+                  },
+                  {
+                      "anchor":  "  arcadeKitApply(g.player,g,\u0027drop\u0027);",
+                      "replacement":  "  arcadeKitApply(g.player,g,\u0027drop\u0027);\n  g.player.arcSh=1;   // v23.30 (arcade9): the spawn shield"
+                  },
+                  {
+                      "anchor":  "  arcadeKitApply(p,G,why||\u0027dead\u0027);",
+                      "replacement":  "  arcadeKitApply(p,G,why||\u0027dead\u0027);\n  p.arcSh=1;   // v23.30 (arcade9): the spawn shield"
+                  },
+                  {
+                      "anchor":  "  arcadeKitApply(p,G,\u0027redrop\u0027);",
+                      "replacement":  "  arcadeKitApply(p,G,\u0027redrop\u0027);\n  p.arcSh=1;   // v23.30 (arcade9): the spawn shield"
+                  },
+                  {
+                      "anchor":  "  if(G\u0026\u0026G.player\u0026\u0026G.player.specOut) return;\n  // v4.28: the direction of the hit, stamped for the ring around the body.",
+                      "replacement":  "  if(G\u0026\u0026G.player\u0026\u0026G.player.specOut) return;\n  // v23.30 (arcade9): the arcade spawn shield takes the hit, above every stamp, and sparks teal on the bubble\n  if(G\u0026\u0026G.arcade\u0026\u0026G.player\u0026\u0026G.player.arcSh){ if(!G.sim){ var _sa=(sx!==undefined\u0026\u0026isFinite(sx)\u0026\u0026isFinite(sy))?Math.atan2(sy-G.player.y,sx-G.player.x):-1.5708; try{ spark(G.player.x+Math.cos(_sa)*22,G.player.y-18+Math.sin(_sa)*28,\u0027#5ff5e4\u0027,8,160); }catch(_ss){} } return; }\n  // v4.28: the direction of the hit, stamped for the ring around the body."
+                  },
+                  {
+                      "anchor":  "    ana=Math.min(1,Math.sqrt(mx*mx+my*my));\n  }\nvar mg=Math.sqrt(mx*mx+my*my);",
+                      "replacement":  "    ana=Math.min(1,Math.sqrt(mx*mx+my*my));\n  }\nvar mg=Math.sqrt(mx*mx+my*my);\n  if(G.arcade\u0026\u0026p.arcSh\u0026\u0026mg\u003e0.25) arcadeShieldOff();   // v23.30 (arcade9): moving drops the spawn shield"
+                  },
+                  {
+                      "anchor":  "  p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=ROLLSTAM;",
+                      "replacement":  "  p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=ROLLSTAM;\n  if(G.arcade\u0026\u0026p.arcSh) arcadeShieldOff();   // v23.30 (arcade9)"
+                  },
+                  {
+                      "anchor":  "function fireWeapon(sh,wep,tx,ty,fromPlayer){",
+                      "replacement":  "function fireWeapon(sh,wep,tx,ty,fromPlayer){\n  if(fromPlayer\u0026\u0026G\u0026\u0026G.arcade\u0026\u0026G.player\u0026\u0026G.player.arcSh) arcadeShieldOff();   // v23.30 (arcade9): a shot drops the spawn shield"
+                  },
+                  {
+                      "anchor":  "function throwFrom(tk,cookT){\n  var p=G.player;",
+                      "replacement":  "function throwFrom(tk,cookT){\n  var p=G.player;\n  if(G.arcade\u0026\u0026p.arcSh) arcadeShieldOff();   // v23.30 (arcade9)"
+                  },
+                  {
+                      "anchor":  "  p.cooking=1; p.cookT=0; p.cookKind=tk;",
+                      "replacement":  "  p.cooking=1; p.cookT=0; p.cookKind=tk;\n  if(G.arcade\u0026\u0026p.arcSh) arcadeShieldOff();   // v23.30 (arcade9)"
+                  },
+                  {
+                      "anchor":  "      if(pLift\u003e0){ wc.restore(); _svd--; }\n    } else {\n      var e2=it.e;",
+                      "replacement":  "      if(G.arcade\u0026\u0026p.arcSh) arcadeShieldRing(p.x,p.y,1);   // v23.30 (arcade9): the spawn shield\n      if(pLift\u003e0){ wc.restore(); _svd--; }\n    } else {\n      var e2=it.e;"
+                  },
+                  {
+                      "anchor":  "  if(NET.role===\u0027host\u0027) msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link\n  lk=netLook(); ls=JSON.stringify(lk);\n  if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }",
+                      "replacement":  "  if(NET.role===\u0027host\u0027) msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link\n  lk=netLook(); ls=JSON.stringify(lk);\n  if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }\n  if(G.arcade\u0026\u0026p.arcSh) msg.sh=1;   // v23.30 (arcade9): only while shielded"
+                  },
+                  {
+                      "anchor":  "  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)\u003e\u003e\u003e0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour",
+                      "replacement":  "  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)\u003e\u003e\u003e0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour\n  if(up\u0026\u0026(m.sh||g.sh)) g.sh=m.sh?1:0;   // v23.30 (arcade9): the teammate spawn shield"
+                  },
+                  {
+                      "anchor":  "       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build});\n  }catch(e){}",
+                      "replacement":  "       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build});\n    if(g.sh\u0026\u0026G\u0026\u0026G.arcade) arcadeShieldRing(g.x,g.y,0);   // v23.30 (arcade9)\n  }catch(e){}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027arcade9, his order 2026-10-11: an arcade drop is shielded, a shielded hit takes nothing, the shield tag shows, moving drops the shield and the next hit lands\u0027,\n   run:function(){\n     var bad=[], g, p, h0, h1, f, ft=null, own=false, seen=[], i, tagged=false, nS=\u0027SHI\u0027+\u0027ELD\u0027;\n     try{\n       __topClear(); __runPrep();\n       if(typeof arcadeDeploy!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027) return \u0027no arcadeDeploy in this build\u0027;\n       if(ARCADE.on) return \u0027SKIP: the arcade is on after __topClear\u0027;\n       if(!arcadeDeploy({mapIx:0,seed:4242})) return \u0027SKIP: arcadeDeploy built no arcade raid\u0027;\n       g=__state(); p=g.player;\n       if(p.arcSh!==1) bad.push(\u0027a fresh arcade drop is not shielded (arcSh \u0027+p.arcSh+\u0027)\u0027);\n       p.iv=0; p.armor=0; h0=p.hp;\n       damagePlayer(40,\u0027sentry\u0027,\u0027T\u0027);\n       if(p.hp!==h0) bad.push(\u0027a shielded player took a hit: hp \u0027+h0+\u0027 to \u0027+p.hp);\n       keys={};\n       ft=wc.fillText; own=true;\n       wc.fillText=function(s){ seen.push(String(s)); return ft.apply(this,arguments); };\n       for(f=0;f\u003c3;f++) __loop(performance.now()+f*16.7);\n       delete wc.fillText; own=false;\n       if(seen.length){ for(i=0;i\u003cseen.length;i++) if(seen[i].indexOf(nS)===0) tagged=true; if(!tagged) bad.push(\u0027no SHIELD tag drawn on the shielded player\u0027); }\n       if(__state()!==g||g.over) bad.push(\u0027the arcade raid ended\u0027);\n       else {\n         if(p.arcSh!==1) bad.push(\u0027standing still dropped the shield\u0027);\n         keys={}; keys.KeyD=true; __sim(0.1); keys.KeyD=false; keys={};\n         if(p.arcSh!==0) bad.push(\u0027moving did not drop the shield (arcSh \u0027+p.arcSh+\u0027)\u0027);\n         p.iv=0; p.armor=0; p.hp=p.maxhp||100; h1=p.hp;\n         damagePlayer(40,\u0027sentry\u0027,\u0027T\u0027);\n         if(!(p.hp\u003ch1)) bad.push(\u0027after moving a hit still took nothing (hp \u0027+p.hp+\u0027)\u0027);\n       }\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       if(own){ try{ delete wc.fillText; }catch(_df){} }\n       keys={};\n       try{ if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE.on) arcadeLeave(); }catch(_l){}\n       try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

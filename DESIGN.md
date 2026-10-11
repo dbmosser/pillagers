@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.30 - ARCADE: SPAWN SHIELD
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 9 of 20. In the arcade a player is put down shielded at every drop, respawn and re-drop: nothing hurts him and a hit only sparks teal on the bubble, so a newcomer who picks up the pad is never killed before he has found the stick. A pulsing teal bubble and SHIELD . MOVE TO START sit on him. The shield drops the moment he moves, rolls, shoots or throws; aiming and searching keep it. The other window draws the same bubble on him. Normal raids are untouched.
+
+MEASURED. Check 23.30 passes, and fails on v23.29.
 ## v23.29 - ARCADE: COMBINED TEAM SCORE
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 8 of 20. In the arcade every kill scores for the player who made it, by kind: a crawler 50, a snitch 75, a sentry 100, a raider 150, a listener or howler 200, a bulwark 300, a warden 400, the Pillbox 500 and the Overseer 2,000, with an elite worth double. The two windows tell each other their scores, so both show one TEAM SCORE in the place of the raid clock, with YOU and the other player beside it, and an extraction tells the teammate PLAYER 1 EXTRACTED with the points. Scores belong to one arcade run, so a stale word from an old run never counts. Nothing is saved, and normal raids are untouched.

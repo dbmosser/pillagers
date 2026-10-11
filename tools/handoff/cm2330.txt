@@ -1,0 +1,7 @@
+v23.30: arcade: spawn shield
+
+In the arcade every drop, respawn and re-drop is shielded until the player moves, rolls, shoots or throws.
+
+Check 23.30. Fails on v23.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
