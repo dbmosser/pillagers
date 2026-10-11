@@ -6480,7 +6480,7 @@ window.__REGRESS=[
          if(armorCap()>0){
            p.armor=0; said.length=0; useArmor();
            if(p.prepA){
-             voice('slotting a plate',last(),('Slotting '+ITEMS[ak].name).toUpperCase());
+             if(last()) voice('slotting a plate',last(),('Slotting '+ITEMS[ak].name).toUpperCase());   // tr29fix: the use bar may say it alone
              g.bag.push(ak); said.length=0; useArmor();
              voice('a second plate while slotting',last(),'ALREADY SLOTTING');
            }
