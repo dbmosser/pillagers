@@ -7774,11 +7774,11 @@ window.__REGRESS=[
        // ONE: a Medkit from the backpack dropped on key 9.
        said.length=0; g.drag={key:'medkit',bagIx:0,px:0,py:0}; up(K9); g.drag=null;
        if(g.hotAssign[8]!=='medkit') return 'SKIP: staging: the Medkit did not go on key 9 ('+JSON.stringify(g.hotAssign)+')';
-       voice('a Medkit dropped on key 9',last(),MK+' ON KEY 9');
+       voice('a Medkit dropped on key 9',last(),new RegExp('^'+MK+' (ON KEY|TO SLOT) 9$'));   // tr52fix: ON KEY 9 or TO SLOT 9 (the slot word)
        // TWO: key 9 dragged off the belt.
        said.length=0; g.drag={key:'medkit',fromHot:8,px:K9.x+20,py:K9.y+20}; up(null); g.drag=null;
        if(g.hotAssign[8]!==undefined) return bad.length?bad.join('; '):'SKIP: staging: dragging key 9 off the belt did not take the Medkit off';
-       voice('key 9 dragged off the belt',last(),MK+' OFF KEY 9');
+       voice('key 9 dragged off the belt',last(),new RegExp('^'+MK+' OFF (KEY|SLOT) 9$'));   // tr52fix
        // THREE: a gun he no longer carries dropped on gun key 3.
        said.length=0; g.drag={key:'gun_'+e,bagIx:0,px:0,py:0}; up(K3); g.drag=null;
        voice('a gun no longer in the backpack',last(),'NOT IN BACKPACK');
@@ -7789,7 +7789,7 @@ window.__REGRESS=[
        // FIVE: the same drop standing: the gun comes up and the last line names key 3.
        said.length=0; g.drag={key:'gun_'+c,bagIx:g.bag.indexOf('gun_'+c),px:0,py:0}; up(K3); g.drag=null;
        if(!((p.wep&&p.wep.id===c)||(p.sec&&p.sec.id===c))) return bad.length?bad.join('; '):'SKIP: staging: the backpack gun dropped on key 3 did not come up';
-       voice('a backpack gun dropped on gun key 3',last(),/ ON KEY 3$/);
+       voice('a backpack gun dropped on gun key 3',last(),/ (ON KEY|TO SLOT) 3$/);   // tr52fix
        // SIX: the gun swap.
        said.length=0; p.roll=0; g.paused=false;
        if(swapGuns()&&last()) voice('the gun swap',last(),(p.wep.name+' up').toUpperCase());   // tr28fix: the swap may say nothing, the gun card shows the gun
@@ -8070,7 +8070,7 @@ window.__REGRESS=[
        if(!sl[0]||sl[0].kind!=='gun'||sl[0].assigned) bad.push('key 1, which gun 1 left, shows '+desc(sl[0])+', not the fill of a gun key');
        if(g.hotAssign[0]!==undefined) bad.push('gun 1 still holds a pin on key 1 ('+g.hotAssign[0]+')');
        var l1=said.join(' / ');
-       if(said.length&&!/ON KEY 6/.test(l1)) bad.push('the line for that drag names no key 6 in the shooter voice: '+l1);
+       if(said.length&&!/ON KEY 6|TO SLOT 6/.test(l1)) bad.push('the line for that drag names no key 6 in the shooter voice: '+l1);
        // TWO: a Medkit from the backpack onto the vacant gun key 3 (decision D2).
        said.length=0; sl=hotbarSlots();
        if(!(sl[2]&&sl[2].vacant)) return bad.length?bad.join('; '):'SKIP: staging: key 3 is not vacant before the Medkit drop ('+desc(sl[2])+')';
@@ -8518,7 +8518,7 @@ window.__REGRESS=[
        else if(!/^(PRESS \S+ FOR YOUR GUN|.+ TO YOUR GUN)$/.test(h.sub)) bad.push('EMPTY SLOT has '+JSON.stringify(h.sub)+' under it, not the key of the gun in capitals');
        g.hot=0;
        heard=[]; g.bag.push('gun_shotgun'); r=autoBelt('gun_shotgun');
-       if(!/^[^a-z]+ ON KEY 2$/.test(String(r||''))||!said(/ ON KEY 2$/)) bad.push('a shotgun found onto key 2 says '+JSON.stringify(r)+', not SHOTGUN ON KEY 2');
+       if(!/^[^a-z]+ (ON KEY|TO SLOT) 2$/.test(String(r||''))||!said(/ (ON KEY|TO SLOT) 2$/)) bad.push('a shotgun found onto key 2 says '+JSON.stringify(r)+', not SHOTGUN ON KEY 2');
        heard=[]; g.bag.push('gun_dmr'); autoBelt('gun_dmr'); g.bag.push('gun_smg'); autoBelt('gun_smg');
        heard=[]; g.bag.push('gun_carbine'); r=autoBelt('gun_carbine');
        h=said(/^GUN SLOTS FULL$/);
@@ -39121,7 +39121,7 @@ window.__REGRESS=[
      // ON KEY 5, and since the raid text rewrite (R17) where it went is the tag on the item's pickup row (SLOT 2, read below as
      // PICKUP name SLOT 2). Any of them tells him where it went; the rule (it reaches the screen and stays up) holds before and after.
      var slotNeedle=new RegExp([['to','your','empty','slot'].join(' '),['to','swap'].join(' '),'^pickup .+ slot \\d+$'].join('|'),'i');
-     var beltNeedle=new RegExp([['to','belt','slot'].join(' '),' on key \\d+','^pickup .+ slot \\d+$'].join('|'),'i');
+     var beltNeedle=new RegExp([['to','belt','slot'].join(' '),' on key \\d+',' to slot \\d+','^pickup .+ slot \\d+$'].join('|'),'i');
      var T0=performance.now();
      function frames(k){ for(var f=0;f<(k||6);f++){ T0+=16.7; var st=__state(); if(!st||st.over) return; __loop(T0); } }
      function keysOff(){ var K=__keysRef(); for(var kk in K) K[kk]=false; }
