@@ -1,0 +1,5 @@
+## v22.80 - BACKPACK AND OFFER LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the sixth batch of raid text found the backpack and offer lines still written as sentences, and the offer ends running past 34 characters with a long name or item (YOUR TEAMMATE DID NOT TAKE THE SCAV PISTOL is 42). A gun key whose gun has left the backpack now says NOT IN BACKPACK with the gun as the detail, as the drag already does. An offer that ran out says OFFER EXPIRED with the name as the detail, and one nobody took says MOTH DID NOT TAKE IT with the item as the detail. The offer key with nobody near says NO TEAMMATE IN RANGE, and with the highlight on the belt MOVE IT TO THE BACKPACK FIRST with TO OFFER IT, TO DROP IT or TO PICK A GUN as the detail. The offer line under the boss bar is not changed: it is drawn exactly as the raid text plan designs it.
+
+MEASURED. Check 22.80 passes, and fails on v22.79.

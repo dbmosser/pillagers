@@ -1,0 +1,7 @@
+v22.80: backpack and offer lines in caps
+
+The backpack and offer lines read as short caps callouts, such as NOT IN BACKPACK, OFFER EXPIRED and NO TEAMMATE IN RANGE.
+
+Check 22.80. Fails on v22.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

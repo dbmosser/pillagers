@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.80 - BACKPACK AND OFFER LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the sixth batch of raid text found the backpack and offer lines still written as sentences, and the offer ends running past 34 characters with a long name or item (YOUR TEAMMATE DID NOT TAKE THE SCAV PISTOL is 42). A gun key whose gun has left the backpack now says NOT IN BACKPACK with the gun as the detail, as the drag already does. An offer that ran out says OFFER EXPIRED with the name as the detail, and one nobody took says MOTH DID NOT TAKE IT with the item as the detail. The offer key with nobody near says NO TEAMMATE IN RANGE, and with the highlight on the belt MOVE IT TO THE BACKPACK FIRST with TO OFFER IT, TO DROP IT or TO PICK A GUN as the detail. The offer line under the boss bar is not changed: it is drawn exactly as the raid text plan designs it.
+
+MEASURED. Check 22.80 passes, and fails on v22.79.
 ## v22.79 - HEAL AND PLATE LINES IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout, never a sentence. The review of the sixth batch of raid text found the heal and plate lines still written as sentences. At full health the heal verb said Already at full, with only Bandages above their reach it said a whole sentence about 85 and a Medkit, and a plate landing said Armour Plate slotted. Armour 60. They now read HEALTH FULL, ALREADY HEALING, BANDAGES STOP AT 85 (the number read from the Bandage ceiling) with You need a Medkit. as the detail, NO MEDICAL SUPPLIES, ALREADY APPLYING and ARMOUR PLATE SLOTTED with the armour as the detail. Patching up a teammate says SELECT A HEAL, MOTH ARMOUR FULL, MOTH DOES NOT NEED IT, ALREADY SLOTTING and NO BANDAGE LEFT. No rule moved: the same refusals fire at the same moments.
