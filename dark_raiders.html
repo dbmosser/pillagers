@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.56';
+var VER='22.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16566,10 +16566,21 @@ function autoBelt(key,quiet){
   // gun slot or stowed Bare Hands (never the cell in his hands), and never an item key past the gun keys. With four guns on the keys it goes into the backpack only.
   if(it.use==='gun'){
     if(G.hubFloor) return;
+    // v22.57, from the review of the four-gun belt (build 5): A GUN KEY THAT ONLY REPEATS A GUN HE PUT ON A LATER KEY IS FREE. A gun
+    // in his hands always shows on a gun key too (v15.25, his note), so after he dragged the rifle from key 1 to key 6 to make room,
+    // key 1 still showed the rifle and the next gun he picked up found no free gun key (GUN SLOTS FULL). A truly free gun key still
+    // comes first; then a gun key whose gun one of his keys also shows takes it, and that gun stays on his key.
+    var _abDup=function(ix,c){
+      if(!(c&&(c.k==='gunA'||c.k==='gunB')&&!c.vacant&&c.icon&&c.icon!=='fists')) return false;
+      for(var _aj=0;_aj<slots.length;_aj++) if(_aj!==ix&&slots[_aj]&&slots[_aj].assigned&&slots[_aj].equipped&&slots[_aj].icon===c.icon&&!!slots[_aj].inHand===!!c.inHand) return true;
+      return false;
+    };
+    for(var _abP=0;_abP<2;_abP++)
     for(var gi=0;gi<GUNKEYS&&gi<slots.length;gi++){
       var gs=slots[gi];
-      if(G.hotAssign[gi]===undefined&&gs&&gs.kind==='gun'&&!gs.assigned&&(gs.vacant||(gs.icon==='fists'&&!gs.inHand))){
+      if(G.hotAssign[gi]===undefined&&gs&&gs.kind==='gun'&&!gs.assigned&&(_abP?_abDup(gi,gs):(gs.vacant||(gs.icon==='fists'&&!gs.inHand)))){
         G.hotAssign[gi]=key; G.hotAuto=G.hotAuto||{}; G.hotAuto[gi]=1;
+        if(_abP&&G.hot===gi) G.hot=gunCell();   // v22.57: the highlight never stays on a key that now shows a backpack gun
         var _gbTxt=(it.name+' on key '+(gi+1)).toUpperCase();   // v22.43: the shooter voice
         BELTAT=gi; if(!quiet) say(_gbTxt);
         return _gbTxt;
@@ -35640,7 +35651,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.56: Buying, selling, the Survivor pay and gifts show as rows in the pickup stack, with plus and minus money rows. Check 22.56 fails on v22.55',
+  now:'v22.57: A gun key that only repeats a gun on a later key takes the next gun picked up. Check 22.57 fails on v22.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

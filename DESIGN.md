@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.57 - ROOM ON THE GUN KEYS
+
+Co-op hunt while he was away. From the review of the four-gun belt, build 5. A gun in his hands always shows on a gun key as well (his v15.25 note), so when he dragged the rifle from key 1 to key 6 to make room, key 1 still showed the rifle, and the next gun he picked up found no free gun key and went to the backpack (GUN SLOTS FULL). A gun key that only repeats a gun one of his own keys shows now counts as free, after any truly empty gun key: the new gun takes it and the rifle stays on key 6.
+
+MEASURED. Check 22.57 passes, and fails on v22.56.
 ## v22.56 - TRADE IN THE PICKUP STACK
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, short callouts and never an explaining sentence. A sale at the stall said one sentence of up to 135 characters, a purchase said what it cost and where it went in a sentence, the Survivor paying said up to 110 characters, and a gift said Took or Gave in a sentence. They are now rows in the pickup stack: the item tagged where it went, a dim minus row for the price, a green plus row for the sale tagged CARRIED, the Survivor pay and salvage tagged FROM THE SURVIVOR, and a gift tagged FROM or GIVEN TO the teammate. The sale keeps one short line, SOLD 3 ITEMS with what the backpack is worth carried home; the refusal is NOT ENOUGH BANKED CREDITS with the price; a cache he marks is CACHE MARKED. The Credits maths is untouched.

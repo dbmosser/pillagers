@@ -1,0 +1,7 @@
+v22.57: room on the gun keys
+
+A gun key that only repeats a gun on a later key takes the next gun picked up.
+
+Check 22.57. Fails on v22.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
