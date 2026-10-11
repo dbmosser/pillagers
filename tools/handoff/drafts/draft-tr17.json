@@ -1,0 +1,64 @@
+{
+    "title":  "PICKUP ROWS SAY WHERE IT WENT",
+    "why":  "His order of 2026-10-09: the raid text reads like a shooter HUD, one short callout per thing. A gun into the free slot said SHOTGUN STOWED with PRESS 2 TO SWAP under it, a gun into his hands said its name equipped with a damage figure, a gun or a Stim on a belt key said SHOTGUN ON KEY 3, and a full belt said GUN SLOTS FULL: each a second line about an item already in the pickup stack, waiting behind the first and pushing other lines off. Where it went is now the dim caps tag on the item row in the pickup stack: SLOT 2 (the slot is the key that swaps to it), IN HAND, or BACKPACK when no key was free. Nothing else is said for it.",
+    "now":  "A pickup row says where the item went: SLOT 2, IN HAND or BACKPACK.",
+    "edits":  [
+                  {
+                      "anchor":  "function autoBelt(key){",
+                      "replacement":  "// v16.xx, the raid text rewrite (R17): WHERE IT WENT IS THE PICKUP ROW\u0027S TAG. BELTAT is where the last autoBelt call put the item:\n// the belt key index, -2 for the backpack (no free key), -1 for nowhere new. A quiet call (the loot grant) says nothing; the grant\n// writes beltTag() on the item\u0027s row in the pickup stack instead.\nvar BELTAT=-1;\nfunction beltTag(){ return (BELTAT\u003e=0)?(\u0027SLOT \u0027+(BELTAT+1)):(BELTAT===-2?\u0027BACKPACK\u0027:\u0027\u0027); }\nfunction autoBelt(key,quiet){\n  BELTAT=-1;"
+                  },
+                  {
+                      "anchor":  "        say(_gbTxt);",
+                      "replacement":  "        BELTAT=gi; if(!quiet) say(_gbTxt);"
+                  },
+                  {
+                      "anchor":  "    say(_gfTxt,\u0027info\u0027,{sub:(it.name+\u0027 in backpack\u0027).toUpperCase()});",
+                      "replacement":  "    BELTAT=-2; if(!quiet) say(_gfTxt,\u0027info\u0027,{sub:(it.name+\u0027 in backpack\u0027).toUpperCase()});"
+                  },
+                  {
+                      "anchor":  "      say(_beltTxt);",
+                      "replacement":  "      BELTAT=bi; if(!quiet) say(_beltTxt);"
+                  },
+                  {
+                      "anchor":  "        say(_svTxt);",
+                      "replacement":  "        BELTAT=_svi; if(!quiet) say(_svTxt);"
+                  },
+                  {
+                      "anchor":  "    say(\u0027NO FREE KEY\u0027,\u0027info\u0027,{sub:String(it.name).toUpperCase()});",
+                      "replacement":  "    BELTAT=-2; if(!quiet) say(\u0027NO FREE KEY\u0027,\u0027info\u0027,{sub:String(it.name).toUpperCase()});"
+                  },
+                  {
+                      "anchor":  "  var _gunLine=\u0027\u0027, _beltKeep=[], _beltGot; _lootSub=\u0027\u0027;",
+                      "replacement":  "  var _gunLine=\u0027\u0027, _beltKeep=[], _beltGot, _ptags=[]; _lootSub=\u0027\u0027;   // v16.xx (R17): _ptags, where each item went, for its pickup row"
+                  },
+                  {
+                      "anchor":  "          _lootSub=(padOn()?padB(\u0027LB or RB to swap\u0027):(\u0027Press \u0027+keyLabel(\u0027Digit\u0027+(_swk+1),String(_swk+1))+\u0027 to swap\u0027)).toUpperCase();",
+                      "replacement":  "          _lootSub=(padOn()?padB(\u0027LB or RB to swap\u0027):(\u0027Press \u0027+keyLabel(\u0027Digit\u0027+(_swk+1),String(_swk+1))+\u0027 to swap\u0027)).toUpperCase();\n          _ptags[l]=\u0027SLOT \u0027+(_swk+1);   // v16.xx (R17): the row says the slot it took, and that slot is the key that swaps to it"
+                  },
+                  {
+                      "anchor":  "          _gunLine=found.name+\u0027 equipped\u0027+(cmp\u003e0?\u0027, +\u0027+cmp+\u0027% damage\u0027:\u0027\u0027)+\u0027.\u0027;",
+                      "replacement":  "          _gunLine=found.name+\u0027 equipped\u0027+(cmp\u003e0?\u0027, +\u0027+cmp+\u0027% damage\u0027:\u0027\u0027)+\u0027.\u0027;\n          _ptags[l]=\u0027IN HAND\u0027;   // v16.xx (R17)"
+                  },
+                  {
+                      "anchor":  "        _beltGot=autoBelt(key); if(_beltGot) _beltKeep.push(_beltGot);\n      }\n    }\n    else { G.bag.push(key); _beltGot=autoBelt(key); if(_beltGot) _beltKeep.push(_beltGot); }",
+                      "replacement":  "        _beltGot=autoBelt(key,1); if(_beltGot) _beltKeep.push(_beltGot); if(beltTag()) _ptags[l]=beltTag();   // v16.xx (R17): said on its row, not as a line\n      }\n    }\n    else { G.bag.push(key); _beltGot=autoBelt(key,1); if(_beltGot) _beltKeep.push(_beltGot); if(beltTag()) _ptags[l]=beltTag(); }"
+                  },
+                  {
+                      "anchor":  "      for(var _pk=0;_pk\u003ckeys.length;_pk++) if(ITEMS[keys[_pk]]) say(ITEMS[keys[_pk]].name,\u0027pick\u0027,{item:keys[_pk]});\n      if(_gunLine) say(_gunLine,\u0027info\u0027,_lootSub?{sub:_lootSub}:null);   // v22.43: the stowed gun and its swap key",
+                      "replacement":  "      // v16.xx, the raid text rewrite (R17): PICKUP ROWS SAY WHERE IT WENT. A gun into the free slot said SHOTGUN STOWED with PRESS 2\n      // TO SWAP under it, a gun into his hands said its name equipped with a damage figure, a gun or a Stim on a belt key said\n      // SHOTGUN ON KEY 3, and a full belt said GUN SLOTS FULL, each a second line about the same item in the middle of the screen,\n      // queued behind the first and pushing other lines off. Where it went is now the dim caps tag on the item\u0027s own row in the\n      // pickup stack: SLOT 2 (the slot is the key that swaps to it), IN HAND, or BACKPACK when no key was free. Nothing else is said.\n      for(var _pk=0;_pk\u003ckeys.length;_pk++) if(ITEMS[keys[_pk]]) say(ITEMS[keys[_pk]].name,\u0027pick\u0027,{item:keys[_pk],tag:_ptags[_pk]||\u0027\u0027});"
+                  },
+                  {
+                      "anchor":  "            if(_where) sayWhenFree(_where,\u0027info\u0027,_lootSub?{sub:_lootSub}:null);   // v22.43: with the swap key under a stowed gun",
+                      "replacement":  "            // v16.xx (R17): where it went is the tag on its pickup row, so no second line follows."
+                  },
+                  {
+                      "anchor":  "    say(\u0027Took \u0027+it.name+\u0027 from \u0027+nm+\u0027.\u0027); if(where) sayWhenFree(where);",
+                      "replacement":  "    say(\u0027Took \u0027+it.name+\u0027 from \u0027+nm+\u0027.\u0027);   // v16.xx (R17): where it went is the tag on its pickup row"
+                  },
+                  {
+                      "anchor":  "      // v22.50 (R16): no Took line; openContainer above has put each item in the pickup stack.\n      if(where) sayWhenFree(where);",
+                      "replacement":  "      // v22.50 (R16): no Took line; openContainer above has put each item in the pickup stack.\n      // v16.xx (R17): and where each went is the tag on its row, so no where line follows."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027pickup rows say where it went: the best gun searched out of a crate with X held and the second gun slot empty shows as a pickup row tagged SLOT 2, and no feed row or waiting line names the gun or says STOWED or SWAP\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__loop)) return \u0027SKIP: this fixture cannot deploy or step the loop\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing is drawn\u0027;\n     if(typeof ITEMS===\u0027undefined\u0027||typeof WEAPONS===\u0027undefined\u0027||typeof WTIER===\u0027undefined\u0027) return \u0027SKIP: no gun tables here\u0027;\n     var bad=[], g=null, p, ct=null, kp=null, i, c, k, it, best=null, bt=-1, t0, f=0, nm=\u0027\u0027, row=null, said=[], rx;\n     function look(){\n       var gg=__state(), q, r1, j;\n       if(!gg) return;\n       if(gg.msg\u0026\u0026gg.msgT\u003e0) said.push(\u0027feed: \u0027+gg.msg+\u0027 \u0027+(gg.msgSub||\u0027\u0027));\n       r1=gg.feed\u0026\u0026gg.feed[1]; if(r1\u0026\u0026r1.T\u003e0\u0026\u0026r1.m) said.push(\u0027feed: \u0027+r1.m+\u0027 \u0027+(r1.sub||\u0027\u0027));\n       q=gg.msgQ||[]; for(j=0;j\u003cq.length;j++) said.push(\u0027queued: \u0027+q[j]);\n     }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       keys={};\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||g.sim||!g.player) return \u0027SKIP: staging: no live raid\u0027;\n       p=g.player; g.ents.length=0; g.waveT=-1e9; g.mapOpen=false; g.bagOpen=false; p.iv=99; p.downed=false;\n       if(CFG.raidSec\u003e0\u0026\u0026g.timeLeft\u003c600) g.timeLeft=600;\n       for(k in ITEMS){ it=ITEMS[k]; if(it\u0026\u0026it.use===\u0027gun\u0027\u0026\u0026it.gk\u0026\u0026WEAPONS[it.gk]\u0026\u0026(WTIER[it.gk]||0)\u003ebt){ bt=WTIER[it.gk]||0; best=k; } }\n       if(!best||!(bt\u003e(WTIER[p.wep.id]||0))) return \u0027SKIP: nothing in the gun table outranks the gun in hand\u0027;\n       nm=ITEMS[best].name;\n       p.sec=null;   // the second gun slot is empty: the branch under test\n       for(i=0;i\u003cg.containers.length;i++){ c=g.containers[i]; if(c\u0026\u0026!c.opened\u0026\u0026!c.strong\u0026\u0026!c.cache\u0026\u0026!c.dropped\u0026\u0026!c.auto\u0026\u0026!c.mercSrc\u0026\u0026c.loot\u0026\u0026(c.type===\u0027crate\u0027||c.type===\u0027locker\u0027)){ ct=c; break; } }\n       if(!ct) return \u0027SKIP: no plain crate on this seed\u0027;\n       kp={x:ct.x,y:ct.y};\n       ct.x=p.x+14; ct.y=p.y; ct.loot=[best]; ct.opened=false; ct.prog=0; ct.pulled=0; ct.time=1.5; ct.hotPaid=1;\n       g.msgT=0; g.msg=\u0027\u0027; g.msgQ=[]; g.msgQM=[]; g.feed=[]; g.alert=null; g.alertQ=[]; g.pick=[];\n       t0=Math.max(performance.now(),(typeof lastTs===\u0027number\u0027\u0026\u0026isFinite(lastTs))?lastTs:0);\n       keys[\u0027KeyX\u0027]=true;\n       for(i=0;i\u003c600\u0026\u0026!ct.opened;i++){ __loop(t0+(++f)*16.7); look(); if(__state()!==g||g.over) break; }\n       keys={};\n       if(!ct.opened) return \u0027SKIP: staging: holding X beside the crate for 10 s never finished the search\u0027;\n       for(i=0;i\u003c30;i++){ __loop(t0+(++f)*16.7); look(); }\n       if(!(p.sec\u0026\u0026p.sec.id===ITEMS[best].gk)) return \u0027SKIP: staging: the \u0027+nm+\u0027 did not go into the empty second slot (second slot \u0027+(p.sec\u0026\u0026p.sec.id)+\u0027)\u0027;\n       for(i=0;i\u003c(g.pick||[]).length;i++) if(g.pick[i].item===best) row=g.pick[i];\n       if(!row) bad.push(\u0027no pickup row for the \u0027+nm);\n       else if(row.tag!==\u0027SLOT 2\u0027) bad.push(\u0027the \u0027+nm+\u0027 row is tagged \u0027+JSON.stringify(row.tag||\u0027\u0027)+\u0027, not SLOT 2\u0027);\n       rx=new RegExp(nm.replace(/[.*+?^${}()|[\\]\\\\]/g,\u0027\\\\$\u0026\u0027)+\u0027|STOWED|SWAP\u0027,\u0027i\u0027);\n       for(i=0;i\u003csaid.length;i++) if(rx.test(said[i])){ bad.push(\u0027a second line about the gun was shown or queued: \u0027+said[i]); break; }\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       keys={};\n       try{ if(ct\u0026\u0026kp){ ct.x=kp.x; ct.y=kp.y; } }catch(_k){}\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; g2.player.iv=0; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}

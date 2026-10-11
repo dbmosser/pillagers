@@ -1,0 +1,7 @@
+v22.52: any gun on any key
+
+In a raid a gun goes on any key, and an item can go on an empty gun key 3 or 4.
+
+Check 22.52. Fails on v22.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.51';
+var VER='22.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12479,7 +12479,8 @@ window.addEventListener('mouseup',function(e){
         // v21.83, the four-gun belt, build 2: dropped on another gun key, THE TWO KEYS TRADE WHAT THEY HOLD and the guns in his hands
         // stay as they are. This replaces the p.swapped flip of v18.89, which only meant something while keys 1 and 2 were the two
         // hands. A gun the belt shows there by itself (the fill, or moved down by v17.17) is pinned where it lands, and an item of
-        // his on the gun key goes to the key the gun came from, as v18.89 sent it. Onto a key past the gun keys it is refused.
+        // his on the gun key goes to the key the gun came from, as v18.89 sent it. Onto a key past the gun keys it is bound there
+        // as his key (v22.52, below).
         var _gw8s=hotbarSlots(), _gw8t=_gw8s[_onCell], _gw8g=_gw8s[d.fromHot], _gw8n=(_gw8g&&_gw8g.name)||'That gun';
         if(_onCell<GUNKEYS){
           var _gwA=(G.hotAssign=G.hotAssign||{}), _gwU=(G.hotAuto=G.hotAuto||{});
@@ -12493,7 +12494,25 @@ window.addEventListener('mouseup',function(e){
           var _gwTi=_gwT&&ITEMS[_gwT.a];
           say((_gw8n+' on key '+(_onCell+1)).toUpperCase(),'info',(_gwTi&&_gwTi.use!=='gun')?{sub:(_gwTi.name+' on key '+(d.fromHot+1)).toUpperCase()}:null);   // v22.43: the shooter voice
         }
-        else say('GUN KEYS ONLY','info',{sub:'DRAG OFF BELT TO STOW'});   // v22.43: the shooter voice
+        else {
+          // v22.52, the four-gun belt, build 5 (his order of 2026-10-09: the player can load up the belt with all guns or whatever else
+          // they want): ANY GUN ON ANY KEY. A gun in his hands dragged onto a key past the gun keys was refused in words (gun keys
+          // only). It is now bound there as his key, flushed to his plan as any drag onto the belt is (minus the automatic pins), and
+          // its gun key pin comes off, so the gun key it left shows the fill. What he had on that key goes to the key the gun came
+          // from, as the trade above sends it. The guns in his hands do not change.
+          var _gaA=(G.hotAssign=G.hotAssign||{}), _gaU=(G.hotAuto=G.hotAuto||{}), _gaP=_gaA[_onCell], _gaPu=_gaU[_onCell]?1:0, _gaK, _gaM=null, _gaI;
+          for(_gaK in _gaA) if(_gaA[_gaK]===d.key){ delete _gaA[_gaK]; delete _gaU[_gaK]; }
+          delete _gaU[_onCell];
+          _gaA[_onCell]=d.key;
+          if(_gaP!==undefined&&_gaP!==d.key&&d.fromHot!==undefined&&_gaA[d.fromHot]===undefined){
+            _gaA[d.fromHot]=_gaP; if(_gaPu) _gaU[d.fromHot]=1;
+            _gaI=ITEMS[_gaP]; if(_gaI) _gaM={sub:(_gaI.name+' on key '+(d.fromHot+1)).toUpperCase()};
+          }
+          for(_gaK in _gaU) if(_gaA[_gaK]===undefined) delete _gaU[_gaK];
+          if(!G.sim){ var _gaF={}; for(_gaK in _gaA) if(!_gaU[_gaK]) _gaF[_gaK]=_gaA[_gaK]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_gaF))); try{ saveProfile(); }catch(_gaE){} }
+          G.hot=gunCell(); blip('pick');
+          say((_gw8n+' on key '+(_onCell+1)).toUpperCase(),'info',_gaM);   // the shooter voice
+        }
       }
       d={key:null}; dropped=true;
     }
@@ -12527,7 +12546,11 @@ window.addEventListener('mouseup',function(e){
         // built, and treating it as reserved locked it for the whole raid.
         // v21.83, the four-gun belt, build 2: a gun-key cell is any cell on keys 1 to GUNKEYS that shows a gun, Bare Hands or a vacant
         // gun slot (kind gun). A gun key he covered with an item of his own stays an ordinary key (v8.14).
-        var _siDerived=!!(_si&&HC.i<GUNKEYS&&_si.kind==='gun');
+        // v22.52, the four-gun belt, build 5, decision D2: AN ITEM MAY GO ON AN EMPTY GUN KEY 3 OR 4. A vacant gun key 3 or 4 refused
+        // anything but a gun (guns only); an item dropped there now takes it as his key, like any other key (v6.61), and the fill
+        // and the gun pins skip a gun key he covered. A gun dropped there still comes up into his hands as below.
+        var _siOpen=!!(_si&&HC.i>=2&&HC.i<GUNKEYS&&_si.vacant&&!(_dit&&_dit.use==='gun'));
+        var _siDerived=!!(_si&&HC.i<GUNKEYS&&_si.kind==='gun'&&!_siOpen);
         if(_si&&_siDerived&&_dit&&_dit.use==='gun'){
           // v21.83: A GUN DROPPED ON A GUN KEY TAKES THAT KEY. What was there goes to the key the gun came from, else the lowest free
           // gun key, else it has no key and the line says so. A backpack gun then comes up into his hands (v18.88), giving up the gun
@@ -35584,7 +35607,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.51: The belt answers on the Undercroft floor and the Stash screen are short ALL CAPS callouts. Check 22.51 fails on v22.50',
+  now:'v22.52: In a raid a gun goes on any key, and an item can go on an empty gun key 3 or 4. Check 22.52 fails on v22.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

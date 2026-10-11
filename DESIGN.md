@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.52 - ANY GUN ON ANY KEY
+
+Co-op hunt while he was away. The four-gun belt, build 5 (his order of 2026-10-09: the player can load up the belt with all guns or whatever else they want). In a raid a gun in his hands dragged off a gun key onto keys 5 to 9 was refused with GUN KEYS ONLY. Now it is bound there as his own key and saved in his belt plan; what he had on that key goes to the key the gun came from, and the gun key it left shows the next gun as usual. And decision D2: an empty gun key 3 or 4 refused anything but a gun (GUNS ONLY); an item from the backpack dropped there now takes it, like any other key.
+
+MEASURED. Check 22.52 passes, and fails on v22.51.
 ## v22.51 - THE BELT ANSWERS IN THE HUD VOICE
 
 Co-op hunt while he was away. From the review of the four-gun belt, build 4, and his order of 2026-10-09 that every line the player reads sounds like a shooter HUD. Dragging a gun on the Undercroft floor belt still answered in explaining sentences beside the new ALL CAPS toast: that gun is your only gun, X traded places with Y, X to slot 1, and how to take a gun out of your hands. They are short ALL CAPS callouts now (ONLY ONE GUN, RIFLE ON KEY 2 then SWAPPED WITH SMG, UNEQUIP IN ARMOURY) and say key, not slot, like the rest of the belt. A click on an empty key of the Stash screen belt now says TACTICAL BELT then HOVER AN ITEM + PRESS 1-9, and the pad way on a controller.
