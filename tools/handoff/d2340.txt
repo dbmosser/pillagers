@@ -1,0 +1,5 @@
+## v23.40 - ARCADE: THE ATTRACT LOOP
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 17 of 20. The arcade attract was only the recorded clip, or a black screen, under PRESS ANY BUTTON. It now cycles like an arcade cabinet: the clip for 40 seconds, then TONIGHTS BEST for 10 seconds (the party board once it exists, the last run score and the best ever), then HOW TO PLAY for 10 seconds with the keyboard and controller for each action. With no clip it cycles the board and HOW TO PLAY only. After a run the RUN OVER card shows first and the loop then goes on from the board. HAPPY HALLOWEEN sits under PRESS ANY BUTTON. While a run is live and this window is out of it (a benched player 1, or player 2 still hearing the host score) a strip reads JOIN YOUR TEAM with the team score, and LINKING while player 2 waits to get in. Leaving the arcade takes all of it off the normal title attract, and normal raids are untouched.
+
+MEASURED. Check 23.40 passes, and fails on v23.39.

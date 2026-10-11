@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.40 - ARCADE: THE ATTRACT LOOP
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 17 of 20. The arcade attract was only the recorded clip, or a black screen, under PRESS ANY BUTTON. It now cycles like an arcade cabinet: the clip for 40 seconds, then TONIGHTS BEST for 10 seconds (the party board once it exists, the last run score and the best ever), then HOW TO PLAY for 10 seconds with the keyboard and controller for each action. With no clip it cycles the board and HOW TO PLAY only. After a run the RUN OVER card shows first and the loop then goes on from the board. HAPPY HALLOWEEN sits under PRESS ANY BUTTON. While a run is live and this window is out of it (a benched player 1, or player 2 still hearing the host score) a strip reads JOIN YOUR TEAM with the team score, and LINKING while player 2 waits to get in. Leaving the arcade takes all of it off the normal title attract, and normal raids are untouched.
+
+MEASURED. Check 23.40 passes, and fails on v23.39.
 ## v23.39 - ARCADE: IDLE RETURN AND END RUN
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 16 of 20. A party machine has to go back to the demo on its own when the players walk away. In the arcade each window now keeps track of when its player last touched anything. After 90 seconds with nobody playing it calls STILL PLAYING?, from 120 seconds it counts RUN ENDS IN 30 down, and at 150 seconds the run ends: the raid is torn down with nothing counted or saved, and the attract comes back with a RUN OVER card showing the team score and each player row. A player who walks off while the other keeps playing is benched instead: player 1 stands out under PLAYER 1: PRESS ANY BUTTON, and player 2 drops out to its own attract while the host hears PLAYER 2 OUT. The pause box in the arcade now offers END RUN in place of Settings and Abandon run. Normal raids are untouched.

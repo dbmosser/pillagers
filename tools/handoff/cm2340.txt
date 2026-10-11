@@ -1,0 +1,7 @@
+v23.40: arcade: the attract loop
+
+In the arcade the attract now cycles the clip, the board and HOW TO PLAY, with HAPPY HALLOWEEN and a JOIN YOUR TEAM strip while a run is live.
+
+Check 23.40. Fails on v23.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
