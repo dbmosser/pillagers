@@ -1,0 +1,5 @@
+## v22.58 - BELT LINES IN THE HUD VOICE
+
+Co-op hunt while he was away. His order of 2026-10-09 (the shooter voice), from the review of the four-gun belt, build 5. The belt drag still spoke in sentences: Medkit to slot 3, Rifle off slot 6, Cannot equip a gun while rolling, Rifle is no longer in your backpack, Dropped Medkit. Your teammate can search it, Medkit to (hire), Armour is already full, Slotting Armour Plate..., and the gun swap said Rifle up in small letters. Each is now a short capital headline (MEDKIT ON KEY 3, RIFLE OFF KEY 6, CANNOT EQUIP with ROLLING under it, NOT IN BACKPACK, DROPPED MEDKIT with TEAM CAN LOOT, GAVE MEDKIT, ARMOUR FULL, SLOTTING ARMOUR PLATE, RIFLE UP).
+
+MEASURED. Check 22.58 passes, and fails on v22.57.

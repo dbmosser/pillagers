@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.57';
+var VER='22.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12569,8 +12569,12 @@ window.addEventListener('mouseup',function(e){
           var _bx=(G.bag[d.bagIx]===d.key)?d.bagIx:G.bag.indexOf(d.key);
           var _r8on=!!_r8gk&&!!((_pp.wep&&_pp.wep.id===_r8gk)||(_pp.sec&&_pp.sec.id===_r8gk))&&(_bx<0||d.fromHot!==undefined);
           if(d.fromHot===HC.i){ setHot(HC.i); dropped=true; break; }
-          if(!_r8on&&_bx<0){ say(_dit.name+' is no longer in your backpack.'); dropped=true; break; }
-          if(!_r8on&&(_pp.roll>0||G.paused||_pp.downed||_pp.dying)){ say(_pp.roll>0?'Cannot equip a gun while rolling.':(G.paused?'Cannot equip a gun while paused.':((_pp.downed||_pp.dying)?'Cannot equip a gun while down.':'Cannot equip that right now.'))); dropped=true; break; }
+          // v22.58, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 5): THE BELT DRAG LINES
+          // READ LIKE A SHOOTER HUD. A drop on a key, a key dragged off the belt, these refusals, a drop out of the backpack, a gift to
+          // the hire, the gun swap and the plate still said whole sentences (Medkit to slot 3., Cannot equip a gun while rolling.).
+          // Each is now a short capital headline with the detail under it.
+          if(!_r8on&&_bx<0){ say('NOT IN BACKPACK','info',{sub:String(_dit.name).toUpperCase()}); dropped=true; break; }
+          if(!_r8on&&(_pp.roll>0||G.paused||_pp.downed||_pp.dying)){ say('CANNOT EQUIP','info',{sub:(_pp.roll>0?'ROLLING':(G.paused?'PAUSED':'DOWNED'))}); dropped=true; break; }
           var _gA=(G.hotAssign=G.hotAssign||{}), _gU=(G.hotAuto=G.hotAuto||{});
           var _gOld=(_gA[HC.i]!==undefined)?{a:_gA[HC.i],u:_gU[HC.i]?1:0}:(((_si.k==='gunA'||_si.k==='gunB')&&!_si.vacant&&_si.icon&&_si.icon!=='fists'&&ITEMS['gun_'+_si.icon])?{a:'gun_'+_si.icon,u:1}:null);
           var _gOldHand=(!_si.vacant&&_si.icon&&_si.icon!=='fists'&&(_si.equipped||_si.k==='gunA'||_si.k==='gunB'))?(_si.inHand?1:2):0;
@@ -12610,20 +12614,20 @@ window.addEventListener('mouseup',function(e){
             G.hot=gunCell(); blip('pick');
             var _gNow=hotbarSlots()[HC.i];
             _gLost=_gLostNow();
-            say(((_gNow&&_gNow.name)||_dit.name)+' to slot '+(HC.i+1)+'.'+_gLost);
+            say((((_gNow&&_gNow.name)||_dit.name)+' on key '+(HC.i+1)).toUpperCase(),'info',_gLost?{sub:_gLost.trim()}:null);
           } else {
             // v21.90, from the review of 21.83: THE GUN THE KEY SHOWED IS THE ONE GIVEN UP, issued kit too: a loaner is left behind
             // as v18.88 left it. Issued kit fell to the give-up rule, which put his own other gun, on a key he never touched, into
             // the backpack and kept the loaner.
             var _gSlot=_gOldHand?_gOldHand:giveUpSlot();
-            if(!equipFromBag(_bx,_gSlot)) say('Cannot equip that right now.');
+            if(!equipFromBag(_bx,_gSlot)) say('CANNOT EQUIP','info',{sub:String(_dit.name).toUpperCase()});
             else {
               if(_pp.wep.id!==_r8gk&&_pp.sec&&_pp.sec.id===_r8gk) swapGuns();
               G.hot=HC.i;
               var _gUp=hotbarSlots()[HC.i];
               if(!(_gUp&&_gUp.kind==='gun'&&_gUp.inHand)) G.hot=gunCell();
               _gLost=_gLostNow();
-              say(((_gUp&&_gUp.name)||_dit.name)+' to slot '+(HC.i+1)+'.'+_gLost+(_gunKeyHint?' '+_gunKeyHint:''));
+              var _gSub=[_gLost.trim(),_gunKeyHint].filter(function(_gs){ return !!_gs; }).join(' \u00b7 '); say((((_gUp&&_gUp.name)||_dit.name)+' on key '+(HC.i+1)).toUpperCase(),'info',_gSub?{sub:_gSub}:null);
             }
           }
           dropped=true;
@@ -12691,7 +12695,7 @@ window.addEventListener('mouseup',function(e){
         }
         G.hot=HC.i;
         blip('pick');
-        say((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to slot '+(HC.i+1));
+        say(((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' on key '+(HC.i+1)).toUpperCase());   // v22.58: the shooter voice
         dropped=true;
         break;
       }
@@ -12716,7 +12720,7 @@ window.addEventListener('mouseup',function(e){
               G.bag.splice(_gix,1);
               if(ITEMS[d.key]&&ITEMS[d.key].use==='gun'&&ITEMS[d.key].gk) dropRounds(ITEMS[d.key].gk);   // v22.26 (K37): a gun given to the hire takes its stowed rounds with it
               _gme.bag.push(d.key);
-              say((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to '+_gme.name+'.');
+              say(('Gave '+(ITEMS[d.key]?ITEMS[d.key].name:'Item')).toUpperCase(),'info',{sub:String(_gme.name).toUpperCase()});   // v22.58: the shooter voice
               blip('pick'); dropped=true;
             }
           }
@@ -12730,7 +12734,7 @@ window.addEventListener('mouseup',function(e){
     if(!dropped&&G&&!G.over&&d&&d.key&&d.bagIx!==undefined&&d.fromHot===undefined&&!_onBelt&&G.bagPanel&&
        !(mouse.x>=G.bagPanel.x&&mouse.x<=G.bagPanel.x+G.bagPanel.w&&mouse.y>=G.bagPanel.y&&mouse.y<=G.bagPanel.y+G.bagPanel.h)){
       var _dbi=(G.bag[d.bagIx]===d.key)?d.bagIx:G.bag.indexOf(d.key), _ddk;
-      if(_dbi>=0){ _ddk=dropItem(_dbi); if(_ddk){ say('Dropped '+ITEMS[_ddk].name+((typeof NET==='object'&&NET&&NET.on)?'. Your teammate can search it.':'')); blip('clank'); dropped=true; } }
+      if(_dbi>=0){ _ddk=dropItem(_dbi); if(_ddk){ say(('Dropped '+ITEMS[_ddk].name).toUpperCase(),'info',(typeof NET==='object'&&NET&&NET.on)?{sub:'TEAM CAN LOOT'}:null); blip('clank'); dropped=true; } }
     }
     // v9.31, HIS 11: LET GO ANYWHERE ELSE AND IT COMES OFF THE BELT. The other
     // half of the drag that has worked since v8.72 in one place and nowhere else.
@@ -12760,7 +12764,7 @@ window.addEventListener('mouseup',function(e){
         P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_uf)));
         try{ saveProfile(); }catch(_ue){}
         blip('pick');
-        say((ITEMS[_wasKey]?ITEMS[_wasKey].name:'Item')+' off slot '+(d.fromHot+1)+'.');
+        say(((ITEMS[_wasKey]?ITEMS[_wasKey].name:'Item')+' off key '+(d.fromHot+1)).toUpperCase());   // v22.58: the shooter voice
       }
     }
     if(!dropped) mouse.down=false;
@@ -15435,7 +15439,7 @@ function bagDropSel(){
   var S=bagStacks(), n=S.length, st=S[clamp(G.bagSel|0,0,Math.max(0,n-1))], dk;
   if(!st||!st.idxs||!st.idxs.length) return false;
   dk=dropItem(st.idxs[st.idxs.length-1]);
-  if(dk){ say('Dropped '+ITEMS[dk].name+((typeof NET==='object'&&NET&&NET.on)?'. Your teammate can search it.':'')); blip('clank'); }
+  if(dk){ say(('Dropped '+ITEMS[dk].name).toUpperCase(),'info',(typeof NET==='object'&&NET&&NET.on)?{sub:'TEAM CAN LOOT'}:null);   /* v22.58: the shooter voice */ blip('clank'); }
   n=bagStacks().length; if(G.bagSel>=n) G.bagSel=Math.max(0,n-1);
   return !!dk;
 }
@@ -16358,7 +16362,7 @@ function swapGuns(){
     }catch(_sg){}
   })();
   G.tel.weapon=pp.wep.name;
-  say(pp.wep.name+' up');
+  say((pp.wep.name+' up').toUpperCase());   // v22.58: the shooter voice, as drawGun says it
   blip('pick');
   return true;
 }
@@ -16888,12 +16892,12 @@ function useArmor(){
   if(ix<0) return;
   var cap=armorCap();
 
-  if(p.armor>=cap){ say('Armour is already full.'); return; }
+  if(p.armor>=cap){ say('ARMOUR FULL');   /* v22.58: the shooter voice */ return; }
   // v11.82: only another plate blocks a plate; a bandage being applied does not.
-  if(p.prepA){ say('Already slotting '+(ITEMS[p.prepA.key]?ITEMS[p.prepA.key].name:'a plate')+'.'); return; }
+  if(p.prepA){ say('ALREADY SLOTTING','info',{sub:String(ITEMS[p.prepA.key]?ITEMS[p.prepA.key].name:'Plate').toUpperCase()}); return; }
   var it=ITEMS[G.bag[ix]],k4=G.bag[ix];
   G.bag.splice(ix,1); startPrep('armor',k4);
-  say('Slotting '+it.name+'...');
+  say(('Slotting '+it.name).toUpperCase());   // v22.58: the shooter voice
   blip('pick');
 }
 function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
@@ -35651,7 +35655,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.57: A gun key that only repeats a gun on a later key takes the next gun picked up. Check 22.57 fails on v22.56',
+  now:'v22.58: The belt, drop, gift, swap and plate lines read like a shooter HUD. Check 22.58 fails on v22.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v22.58: belt lines in the hud voice
+
+The belt, drop, gift, swap and plate lines read like a shooter HUD.
+
+Check 22.58. Fails on v22.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

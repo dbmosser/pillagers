@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.58 - BELT LINES IN THE HUD VOICE
+
+Co-op hunt while he was away. His order of 2026-10-09 (the shooter voice), from the review of the four-gun belt, build 5. The belt drag still spoke in sentences: Medkit to slot 3, Rifle off slot 6, Cannot equip a gun while rolling, Rifle is no longer in your backpack, Dropped Medkit. Your teammate can search it, Medkit to (hire), Armour is already full, Slotting Armour Plate..., and the gun swap said Rifle up in small letters. Each is now a short capital headline (MEDKIT ON KEY 3, RIFLE OFF KEY 6, CANNOT EQUIP with ROLLING under it, NOT IN BACKPACK, DROPPED MEDKIT with TEAM CAN LOOT, GAVE MEDKIT, ARMOUR FULL, SLOTTING ARMOUR PLATE, RIFLE UP).
+
+MEASURED. Check 22.58 passes, and fails on v22.57.
 ## v22.57 - ROOM ON THE GUN KEYS
 
 Co-op hunt while he was away. From the review of the four-gun belt, build 5. A gun in his hands always shows on a gun key as well (his v15.25 note), so when he dragged the rifle from key 1 to key 6 to make room, key 1 still showed the rifle, and the next gun he picked up found no free gun key and went to the backpack (GUN SLOTS FULL). A gun key that only repeats a gun one of his own keys shows now counts as free, after any truly empty gun key: the new gun takes it and the rifle stays on key 6.
