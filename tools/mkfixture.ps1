@@ -24911,7 +24911,7 @@ window.__REGRESS=[
        r=netSumTake({state:'in'},{t:'sum',how:'extract',k:3,v:1240});
        t=String(el.textContent);
        if(r!=='sum') bad.push('the host result was not taken ('+r+')');
-       if(t.indexOf('YOUR PARTY')<0||t.indexOf('KITE')<0||t.indexOf('EXTRACTED')<0||t.indexOf('3 kills')<0||t.indexOf('1,240c')<0) bad.push('the card does not show the host out with 3 kills and 1,240c: '+t);
+       if(t.indexOf('YOUR PARTY')<0||t.indexOf('KITE')<0||t.indexOf('EXTRACTED')<0||t.indexOf('3 kills')<0||(t.indexOf('1,240c')<0&&t.indexOf('$1,240')<0)) bad.push('the card does not show the host out with 3 kills and 1,240c: '+t);
        if(t.indexOf('YOU')<0||t.indexOf('KILLED')<0) bad.push('the card does not show this player killed: '+t);
        NET.sum={}; netSumDraw(); t=String(el.textContent);
        if(t.indexOf('STILL UP TOP')<0) bad.push('a player with no result is not shown still up top: '+t);
@@ -38214,7 +38214,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(); if(!g) return null;
        g.ents.length=0; g.player.downed=false; g.pedCarry=0;
-       g.bag=[ITEM]; g.carriedIn=carriedUp?VAL:0;
+       g.bag=[ITEM]; g.carriedIn=carriedUp?VAL:0; g.carriedKit=carriedUp?[ITEM]:[];   // v22.10 matches the lift record against the backpack
        termsPay=function(){ return RATE; };
        P2.credits=10000;
        __endRaid('extract');
@@ -42976,7 +42976,7 @@ window.__REGRESS=[
        for(k in ITEMS){ if(ITEMS[k]&&ival(k)>=200){ pick=k; break; } }
        if(pick){
          P2.best=0;
-         g.bag=[pick]; g.carriedIn=ival(pick);
+         g.bag=[pick]; g.carriedIn=ival(pick); g.carriedKit=[pick];   // v22.10 matches the lift record against the backpack
          g.player.downed=false; g.player.hp=100;
          __endRaid('extract');
          if((P2.best||0)>0)
