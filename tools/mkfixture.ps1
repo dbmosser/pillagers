@@ -12721,13 +12721,13 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __cleanProfile(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.wx||!g.player) return 'SKIP: no live raid';
        cur=g.wx.id;
-       for(i=0;i<WEATHER.length;i++){ q=WEATHER[i]; if(q.id===cur||q.id==='partly'||!q.line) continue; if(!W2) W2=q; else if(!W3){ W3=q; break; } }
+       for(i=0;i<WEATHER.length;i++){ q=WEATHER[i]; if(q.id===cur||q.id==='partly'||!(q.line||q.turn)) continue; if(!W2) W2=q; else if(!W3){ W3=q; break; } }
        if(!W2||!W3) return 'SKIP: staging: no two other skies';
        say=function(s){ lines.push(String(s)); };
        sfx=function(t){ heard.push({t:t,fx:!!NET.fxIn}); };
        NET.on=true; NET.role='join'; NET.seat=1; NET.max=4; NET.peers=[peer]; NET.upSeed=g.seed>>>0; NET.fxIn=false;
        g.wxNext=null; g.wxT=0;
-       want='The weather is turning. '+W2.line;
+       want=W2.turn?String(W2.turn):'The weather is turning. '+W2.line;   /* retargeted for tr7fixb: a turn says its caps callout (STORM INCOMING) with the sky as the detail */
        netWorldTake(peer,{t:'wd',sd:g.seed>>>0,wx:cur,wn:W2.id,wt:0});
        if(!g.wxNext||g.wxNext.id!==W2.id) return 'SKIP: staging: the host turn did not reach the linked window';
        n1=lines.filter(function(s){ return s===want; }).length;
