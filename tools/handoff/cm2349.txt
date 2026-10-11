@@ -1,0 +1,7 @@
+v23.49: arcade: valuables ignore a full backpack
+
+In the arcade a full backpack no longer stops you looting a box of valuables, ammo or throwables, because none of it goes into the backpack.
+
+Check 23.49. Fails on v23.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

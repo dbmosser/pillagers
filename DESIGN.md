@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.49 - ARCADE: VALUABLES IGNORE A FULL BACKPACK
+
+Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade25, a low finding of the arcade review. In an arcade raid a valuable never goes into the backpack: it turns into team score and pot, ammo goes to the reserve and a throwable to the pouch. But the search still refused any box with BACKPACK FULL once the backpack was at its cap, and with autoloot on it threw out the worst of the backpack to make room nobody needed. Now in the arcade a box holding only those things is searched by walking over it even with a full backpack, and nothing is thrown out for it. A box with a heal, a plate or a gun in it is refused as before. The backpack has no cap today on his order, so this only matters if a cap ever comes back. Normal raids are untouched.
+
+MEASURED. Check 23.49 passes, and fails on v23.48.
 ## v23.48 - THE WHAT IS NEW CARD NAMES THE ARCADE PARTY
 
 Co-op hunt while he was away. The card was stamped v23.32 and the stamp may not trail the build by more than 0.15. Its new second line names the arcade party builds of 2026-10-11: waves that come to you, kill streaks with popups, and a party scoreboard with initials.
