@@ -1,0 +1,7 @@
+v22.41: the in-ring inbound prompt steps aside
+
+Standing in the ring you called, INBOUND shows once, in the band above the belt.
+
+Check 22.41. Fails on v22.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

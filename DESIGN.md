@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.41 - THE IN-RING INBOUND PROMPT STEPS ASIDE
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text never repeats what is already on screen. Standing in the ring he called, INBOUND and its seconds were printed over his own character while the band above the belt said EXTRACT A INBOUND with the same seconds. The prompt now steps aside while that ring is the one the band counts in, as the call and extract prompts already did. A ring that is not the active one keeps its prompt.
+
+MEASURED. Check 22.41 passes, and fails on v22.40.
 ## v22.40 - NO REPEATING CALLED LINE
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. Holding E in a ring already called and still inbound said Called, Inbound and Stay alive again every two and a half seconds. The band above the belt already counts the extraction in, and the EXTRACTION CALLED alert already answers the press, so the repeating line is gone.
