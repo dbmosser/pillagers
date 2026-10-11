@@ -1,0 +1,7 @@
+v23.29: arcade: combined team score
+
+In the arcade every kill scores by kind, both windows share the score, and TEAM SCORE replaces the raid clock.
+
+Check 23.29. Fails on v23.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

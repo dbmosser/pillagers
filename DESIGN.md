@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.29 - ARCADE: COMBINED TEAM SCORE
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 8 of 20. In the arcade every kill scores for the player who made it, by kind: a crawler 50, a snitch 75, a sentry 100, a raider 150, a listener or howler 200, a bulwark 300, a warden 400, the Pillbox 500 and the Overseer 2,000, with an elite worth double. The two windows tell each other their scores, so both show one TEAM SCORE in the place of the raid clock, with YOU and the other player beside it, and an extraction tells the teammate PLAYER 1 EXTRACTED with the points. Scores belong to one arcade run, so a stale word from an old run never counts. Nothing is saved, and normal raids are untouched.
+
+MEASURED. Check 23.29 passes, and fails on v23.28.
 ## v23.28 - ARCADE: BOTH PLAYERS ON PADS
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 7 of 20. In the arcade, controller 1 is player 1 and controller 2 is player 2, so two people can walk up and play with no setup. Entering the arcade puts each window on its controller for the session only and tells the other window, and the keyboard and mouse still drive player 1. The controller picks he keeps from the PARTY window are never written while the arcade is on, and leaving the arcade puts his kept picks back. Normal co-op is untouched.
