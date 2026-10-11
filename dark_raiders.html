@@ -1694,7 +1694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.44';
+var VER='23.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13335,6 +13335,15 @@ function pollPad(){
     if(_atb) attPoke();
     for(_ati=0;_ati<bt.length;_ati++) PAD.prev[_ati]=pressed(_ati);
     padRelease(); return;
+  }
+  // v23.45 (arcade22): the initials card at an arcade extraction takes this window pad, with its own latch, so a press does nothing else
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&arcadeIniRaid()){
+    var _irw=[], _iri;
+    for(_iri=0;_iri<bt.length;_iri++) if(pressed(_iri)&&!PAD.prev[_iri]) _irw.push(_iri);
+    for(_iri=0;_iri<bt.length;_iri++) PAD.prev[_iri]=pressed(_iri);
+    padRelease();
+    try{ arcadePadIni(_irw,ax); }catch(_api){}
+    return;
   }
   if(padMenu(pressed)){ padRelease(); return; }
   if(state==='hub'){
@@ -35634,7 +35643,7 @@ function loop(ts){
       tickNuke(dt);
     } else {
       refreshVseg();
-      if(G.arcade&&((+ARCADE.holdT||0)>0||(G.player&&G.player.specOut))){ ARCADE.holdT=Math.max(0,(+ARCADE.holdT||0)-dt); netPausedStep(dt); }   // v23.22 (arcade3): the drop-in hold after an arcade respawn, he stands still while the world runs on. v23.25 (arcade6): and a benched player 1
+      if(G.arcade&&((+ARCADE.holdT||0)>0||(G.player&&G.player.specOut))){ ARCADE.holdT=Math.max(arcadeIniRaid()?3:0,(+ARCADE.holdT||0)-dt); netPausedStep(dt); }   /* v23.45 (arcade22): the initials card holds the drop at 3 */   // v23.22 (arcade3): the drop-in hold after an arcade respawn, he stands still while the world runs on. v23.25 (arcade6): and a benched player 1
       else if(G.paused&&netPauseLive()) netPausedStep(dt);   // v16.04: paused in a shared co-op raid, he stands still while the world runs on
       else updatePlayer(dt);
       if(G&&G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; }   // v16.11: E given back after the step a pick-up took it (netRevHold)
@@ -36119,7 +36128,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.44: In the arcade only Ctrl+Shift+F10 leaves the mode, the pause box shows only RESUME and END RUN, and the demo screen opens no pause box. Check 23.44 fails on v23.43',
+  now:'v23.45: In the arcade the first extraction that makes tonights top 10 opens the 3 letter initials card and holds the drop until it is done, and the board row keeps those initials. Check 23.45 fails on v23.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44775,6 +44784,7 @@ function arcadeExtracted(){
   ARCADE.banner={t0:G.t,bonus:ARCADE_XBONUS,haul:pot,team:(ARCADE.mine|0)+(ARCADE.mate|0)};
   arcadeScSend('x',ARCADE_XBONUS+pot);   // v23.29 (arcade8): the teammate sees PLAYER 1 EXTRACTED
   try{ arcadeBoardPut(); }catch(_bp){}   // v23.41 (arcade18): the board row is written at every extraction
+  try{ arcadeIniExtract(); }catch(_ie){}   // v23.45 (arcade22): the first extraction into tonights top 10 offers the initials card
   G.deathBeat=null; p.dying=false; p.downed=false; p.downT=0; p.pendKiller=null; p.prep=null; p.prepA=null;
   p.cooking=0; p.cookT=0; p.cookKind=null;
   arcadeRedropSpot(p,G,ARCADE_REDROP_R);
@@ -45082,6 +45092,7 @@ var ARCADE_ARW=2;   // the arcade compass arrow, times its normal size
 function arcadeDropHud(){
   var t=+ARCADE.holdT||0, n, y, cx=Math.round(W/2), s;
   if(!(t>0)) return;
+  if(arcadeIniRaid()) return;   // v23.45 (arcade22): the initials card holds the drop, so no count yet
   n=Math.max(1,Math.ceil(t)); s='DROPPING IN '+n;
   y=Math.round(H*(ARCADE.banner?0.66:0.36));
   ctx.save(); ctx.textAlign='center'; ctx.textBaseline='alphabetic';
@@ -45094,6 +45105,7 @@ function arcadeHud(){
   if(!G||!G.arcade||!ctx) return;
   try{ arcadeDropHud(); }catch(_adh){}   // v23.35 (arcade13)
   try{ arcadeCardHud(); }catch(_ach){}   // v23.42 (arcade19): the controls card while shielded and 4 s after
+  try{ arcadeIniHud(); }catch(_aih){}   // v23.45 (arcade22): the initials card at a top 10 extraction
   var b=ARCADE.banner, k, a, y, cx=Math.round(W/2), bw, bh;
   if(!b) return;
   k=G.t-b.t0;
@@ -45360,6 +45372,7 @@ function arcadeOpChord(e){
 function arcadeKeyAtt(e){
   if(!ARCADE.on||!e) return false;
   if(arcadeOpChord(e)) return true;   // v23.44 (arcade21): Ctrl+Shift+F10, the only way out
+  if(arcadeIniRaid()) return arcadeIniKey(e);   // v23.45 (arcade22): the initials card at an extraction takes the keys (ESC still pauses)
   if(G&&G.arcade&&!arcadeBenched()) return false;            // a raid is on here: the key plays (v23.25, arcade6: unless player 1 is benched)
   if(ARCADE.role==='host'&&arcadeIniLive()) return arcadeIniKey(e);   // v23.41 (arcade18): the initials card takes the keys, and a click drops nobody in
   if(ARCADE.role!=='host') return false;   // player 2 joins with A on its own pad; its keys go on to player 1 (netKeyFwd)
@@ -45643,6 +45656,7 @@ function arcadeIniLive(){ return !!(ARCADE.on&&ARCADE.ini); }
 function arcadeIniStart(run){
   run=(typeof run==='string'&&run)?run:((ARCADE.run&&ARCADE.run.id)||'');
   if(!ARCADE.on||!run) return false;
+  if(ARCADE.ini&&!ARCADE.ini.mirror&&ARCADE.ini.run===run) return true;   // v23.45 (arcade22): the card from the extraction stays, letters and all
   ARCADE.ini={run:run,l:['A','A','A'],pos:0,at:Date.now(),touched:0,mirror:0};
   ARCADE.iniAy=1;   // a stick already held does not move the first letter
   arcadeIniPost();
@@ -45750,6 +45764,43 @@ function arcadeIniDraw(c,n){
   for(i=0;i<3;i++){ sp=document.createElement('span'); sp.textContent=n.l[i]||'A'; if(i===n.pos) sp.className='cur'; el.appendChild(sp); }
   c.appendChild(el);
   el=document.createElement('div'); el.className='aoq'; el.textContent=padB('TYPE OR \u25b2\u25bc  \u00b7  A NEXT  \u00b7  B BACK  \u00b7  ENTER / MENU DONE'); c.appendChild(el);
+}
+// v23.45, HIS YES (2026-10-11), arcade22: INITIALS AT THE FIRST QUALIFYING EXTRACTION. His words: a team that walks away still gets its
+// name on the board. The initials card came only at the run end, so a party that walked off mid-run left ??? or nothing. Now the
+// first extraction that puts the run into tonights top 10 (no initials yet) opens the 3 letter card on the EXTRACTED banner, on the
+// run authority. It holds the drop (DROPPING IN waits at 3) while it is up, takes the keyboard (letters, Backspace, Enter, the
+// arrows; ESC still pauses) and this window pad (up and down change the letter, right or A next, left or B back, MENU done), and
+// closes as at the run end: 20 s with no input keeps what is there, or ??? if never touched. The row keeps the initials, so the
+// run end asks no more. Only an arcade raid reaches any of it.
+function arcadeIniRaid(){
+  var n=ARCADE.ini;
+  return !!(ARCADE.on&&n&&n.raid&&!n.mirror&&G&&G.arcade&&!G.over&&!G.sim&&!arcadeBenched());
+}
+function arcadeIniExtract(){
+  if(!G||!G.arcade||G.sim||!arcadeBoardAuth()||!ARCADE.run||!ARCADE.run.id) return false;
+  var id=ARCADE.run.id;
+  if(arcadeIniLive()||ARCADE.iniX===id||!arcadeBoardQual(id)) return false;
+  if(!arcadeIniStart(id)||!ARCADE.ini) return false;
+  ARCADE.iniX=id; ARCADE.ini.raid=1;
+  return true;
+}
+function arcadeIniHud(){
+  var n=ARCADE.ini, cx, y, bw, bh, i, gx, lx, left;
+  if(!arcadeIniRaid()||!ctx) return;
+  cx=Math.round(W/2); y=Math.round(H*0.56); bw=LH(500); bh=LH(156); gx=LH(56);
+  left=Math.max(0,Math.ceil((ARCADE_BOARD.iniMs-(Date.now()-(+n.at||0)))/1000));
+  ctx.save(); ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  ctx.fillStyle='rgba(6,9,13,.86)'; ctx.fillRect(cx-bw/2,y-LH(46),bw,bh);
+  ctx.strokeStyle='rgba(127,227,212,.75)'; ctx.lineWidth=2; ctx.strokeRect(cx-bw/2+1,y-LH(46)+1,bw-2,bh-2);
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#7fe3d4'; hudText('TOP 10 TONIGHT \u00b7 ENTER INITIALS',cx,y-LH(18));
+  for(i=0;i<3;i++){
+    lx=Math.round(cx+(i-1)*gx);
+    ctx.font=FSz(TYPE.huge,1.3); ctx.fillStyle=(i===n.pos)?'#ffc04a':'#f2e6c8'; hudText(n.l[i]||'A',lx,y+LH(36));
+    ctx.fillRect(lx-LH(19),y+LH(44),LH(38),(i===n.pos)?3:2);
+  }
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(242,230,200,.82)';
+  hudText(padB('TYPE OR \u25b2\u25bc  \u00b7  A NEXT  \u00b7  B BACK  \u00b7  ENTER / MENU DONE')+'  \u00b7  '+left,cx,y+LH(80));
+  ctx.restore();
 }
 // NEW HIGH SCORE: the run authority, every half second in an arcade raid. The bar is tonights best of the other runs, read once per run.
 function arcadeHiTick(){

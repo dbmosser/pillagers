@@ -1,0 +1,7 @@
+v23.45: arcade: initials at the first top 10 extraction
+
+In the arcade the first extraction that makes tonights top 10 opens the 3 letter initials card and holds the drop until it is done, and the board row keeps those initials.
+
+Check 23.45. Fails on v23.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

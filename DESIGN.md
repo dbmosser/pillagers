@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.45 - ARCADE: INITIALS AT THE FIRST TOP 10 EXTRACTION
+
+Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade22. The 3 letter initials card came only at the run end, so a team that walked away mid-run left ??? or nothing on the board. Now the first extraction that puts the run into tonights top 10 opens the initials card on the EXTRACTED banner. It holds the drop while it is up, takes the keyboard (letters, Backspace, Enter) and the pad (up and down change the letter, A next, B back, MENU done), and 20 s with no input keeps what is there. The run row keeps the initials, so the board shows the team name even if they walk off. Normal raids are untouched.
+
+MEASURED. Check 23.45 passes, and fails on v23.44.
 ## v23.44 - ARCADE: OPERATOR LOCK
 
 Co-op hunt while he was away. His yes to recommendation 1 for the Halloween party mode. Guests play the party machine, so they must not be able to leave the arcade or wander into Settings, character select, the stash or the Mainframe. The only way out of the arcade is now a keyboard chord for the operator: Ctrl+Shift+F10, from a raid, the bench, the demo screen or the initials card. In an arcade raid the pause box shows only RESUME and END RUN, and on the demo screen MENU, ESC or P opens no pause box at all. Normal raids are untouched.
