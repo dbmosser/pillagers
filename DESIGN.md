@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.99 - OFFER AND RING LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout, never a sentence. The review of the eighth batch of raid text found three lines still in the old voice. The offer line read Kite offers you Bandage, [T] to take it, 12s, and the giver saw Offered Bandage to Kite, Waiting, 12s; they now read KITE OFFERS BANDAGE, [T] TAKE, 12s and OFFER SENT, BANDAGE TO KITE, 12s. The count under EXTRACT A INBOUND read 3 converging on the ring and now reads 3 HOSTILES CLOSING IN, red past four as before (INBOUND stays his word for the craft). A teammate mark read KITE MARKER 120m; his word is Waypoint (his Marked Waypoint note), so it reads KITE WAYPOINT 120m. The keys, the seconds, the counting and where each line sits did not move.
+
+MEASURED. Check 22.99 passes, and fails on v22.98.
 ## v22.98 - LABEL PLATES FIT THEIR TEXT
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where every word sits on a plate that fits it. The floating loot names, target callouts and WEAK SPOT sat on a plate a fixed 13 units tall, shorter than the letters, so the caps stuck out of the top of it. The plate is now as tall as the letters with a padding grown with the font, the item icon grows to the plate, and labels stacked over one crate step by the plate height so they no longer overlap. A stacked column of loot names is a little taller.

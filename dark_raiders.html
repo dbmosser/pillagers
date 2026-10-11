@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.98';
+var VER='22.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28301,8 +28301,12 @@ function drawGiftLine(){
   // v22.64, the raid text rewrite (R21): THE OFFER LINE NAMES ONE KEY. It said T or Y to take it whatever was in his hands. It now
   // names the one key of the device in hand, in brackets: Y on a controller (the take button pollPad gives netGiftKey; PADLABEL puts
   // KeyT on RB, so it is never read from there), and the key T is bound to on a keyboard. The parts are split by the middle dot.
-  if(gi&&!gi.yes&&(t=GIFT_T-((G.t||0)-gi.t))>0){ it=ITEMS[gi.k]; s=(netSeatName(gi.from)||'Your teammate')+' offers you '+(it?it.name:gi.k)+'  \u00b7  ['+(padOn()?padB('Y'):keyLabel('KeyT','T'))+'] to take it  \u00b7  '+Math.ceil(t)+'s'; }
-  else if(go&&(t=GIFT_T-((G.t||0)-go.t))>0){ it=ITEMS[go.k]; s='Offered '+(it?it.name:go.k)+' to '+(netSeatName(go.to)||'your teammate')+'  \u00b7  Waiting  \u00b7  '+Math.ceil(t)+'s'; }
+  // v22.xx (tr8fixa), the review of raid text batch 8: THE OFFER LINE IS A CAPS CALLOUT. HIS ORDER (2026-10-09): a raid line is a short
+  // caps headline, never a sentence. The offer read Kite offers you Bandage, [T] to take it, 12s, and his own offer Offered Bandage to
+  // Kite, Waiting, 12s. It now reads KITE OFFERS BANDAGE, [T] TAKE, 12s and OFFER SENT, BANDAGE TO KITE, 12s. The one key (v22.64),
+  // the seconds and the plate are as they were.
+  if(gi&&!gi.yes&&(t=GIFT_T-((G.t||0)-gi.t))>0){ it=ITEMS[gi.k]; s=String(netSeatName(gi.from)||'Your teammate').toUpperCase()+' OFFERS '+String(it?it.name:gi.k).toUpperCase()+'  \u00b7  ['+(padOn()?padB('Y'):keyLabel('KeyT','T'))+'] TAKE  \u00b7  '+Math.ceil(t)+'s'; }
+  else if(go&&(t=GIFT_T-((G.t||0)-go.t))>0){ it=ITEMS[go.k]; s='OFFER SENT  \u00b7  '+String(it?it.name:go.k).toUpperCase()+' TO '+String(netSeatName(go.to)||'your teammate').toUpperCase()+'  \u00b7  '+Math.ceil(t)+'s'; }
   if(!s) return null;
   y=Math.round(LH(132)*hudRes());   // v18.49: below the boss bar and above the message plate (was LH(104), on the toast)
   if(HUDBOSSB>0) y=Math.max(y,HUDBOSSB+LH(4)+LH(15));   // v20.55 (H38): its plate starts under the boss bar when the bar is up
@@ -30127,7 +30131,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       if(inbound){
         ctx.font=hudFS(TYPE.label);
         ctx.fillStyle=inbound>4?'#ff5a4a':'#ffc04a';
-        hudText(inbound+' converging on the ring',W/2,_exRow);
+        hudText(inbound+(inbound===1?' HOSTILE':' HOSTILES')+' CLOSING IN',W/2,_exRow);   // v22.xx (tr8fixa): a caps callout under EXTRACT A INBOUND (INBOUND stays his word for the craft)
       }
     }
     ctx.textAlign='left';
@@ -35996,7 +36000,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.98: Loot names and callouts over the world now sit on a dark plate that fits the whole word. Check 22.98 fails on v22.97',
+  now:'v22.99: The offer line, the hostile count on a called ring and a teammate mark read as caps callouts, such as KITE OFFERS BANDAGE and 3 HOSTILES CLOSING IN. Check 22.99 fails on v22.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42230,7 +42234,7 @@ function netWpDraw(){
     ctx.beginPath(); ctx.moveTo(x-LH(14)*r,y); ctx.lineTo(x-LH(4)*r,y); ctx.moveTo(x+LH(4)*r,y); ctx.lineTo(x+LH(14)*r,y); ctx.moveTo(x,y-LH(14)*r); ctx.lineTo(x,y-LH(4)*r); ctx.moveTo(x,y+LH(4)*r); ctx.lineTo(x,y+LH(14)*r); ctx.stroke();
     nm=netSeatName(+s)||'PILLAGER';
     ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle='#bfe0ff';
-    hudText(nm+' MARKER  '+((G&&G.player)?metres(dist(G.player,w)):0)+'m',clamp(x,LH(70)*r,W-LH(70)*r),y-LH(18)*r); ctx.textAlign='left';
+    hudText(String(nm).toUpperCase()+' WAYPOINT  '+((G&&G.player)?metres(dist(G.player,w)):0)+'m',clamp(x,LH(70)*r,W-LH(70)*r),y-LH(18)*r); ctx.textAlign='left';   // v22.xx (tr8fixa): his word is Waypoint (Marked Waypoint), never Marker
     n++;
   }
   return n;

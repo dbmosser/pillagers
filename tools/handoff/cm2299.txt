@@ -1,0 +1,7 @@
+v22.99: offer and ring lines in caps
+
+The offer line, the hostile count on a called ring and a teammate mark read as caps callouts, such as KITE OFFERS BANDAGE and 3 HOSTILES CLOSING IN.
+
+Check 22.99. Fails on v22.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
