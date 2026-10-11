@@ -1691,7 +1691,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.19';
+var VER='23.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2625,6 +2625,7 @@ if(NETSLOT) SKEY=netSlotKey(NETSLOT);
 else if(NETP2){ SLOT=p2SlotPick(); SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT); }   // v17.93: player 2 plays a numbered save of its own
 var RESTORE_BACKUP_KEY=SKEY+':prerestore';   // v14.06, save audit: each slot keeps its own UNDO backup; save 1 keeps the old key name
 function storeSet(v){
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   // v23.20 (arcade1): an arcade session never writes his save, by any path
   try{
     if(window.storage&&window.storage.set){ window.storage.set(SKEY,v).catch(function(){ storeWarn(); }); return; }
   }catch(e){}
@@ -3038,6 +3039,7 @@ try{ window.addEventListener('storage',function(ev){ if(!ev||ev.key!==SKEY||SAVE
 // ESC or ENTER on the card reloads too; nothing else closes it.
 try{ window.addEventListener('keydown',function(ev){ if(!SAVE_STALE||!document.getElementById('stalesave')) return; if(ev.code==='Escape'||ev.code==='Enter'||ev.code==='NumpadEnter'){ ev.preventDefault(); ev.stopPropagation(); try{ location.reload(); }catch(e){} } },true); }catch(_ssk){}
 function saveProfile(){ if(typeof NET==='object'&&NET&&NET.upHold) return;   // v15.79: nothing is written while a party build has the host world dials in; the build is saved once they are out
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   // v23.20 (arcade1): the arcade plays on a sandbox copy of the profile; nothing of it is saved
   if(SAVE_STALE) return;   // v17.24: another tab has written this save since this tab read it; writing now would wipe that
   P.cfg=CFG; P.cfgv=18; storeSet(JSON.stringify(P));
   try{ syncTopRight(); }catch(_tr){}   // v11.52: every path that moves credits or XP saves
@@ -36059,7 +36061,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.19: At a large text size the ARMOUR number now fits inside its bar. Check 23.19 fails on v23.18',
+  now:'v23.20: Groundwork for the 2 PLAYER ARCADE DEMO: an arcade session plays on a copy of your profile and never writes your save. Check 23.20 fails on v23.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44267,6 +44269,56 @@ function netHostGone(why){
   NET.status=(why==='out')?'Your host is out of the raid. You are running it now.':'Connection to your host was lost. You are running the raid now.';
   try{ say((why==='out')?'HOST IS OUT':'HOST DISCONNECTED','crit',{sub:'You are hosting now',icon:'party'}); }catch(_hs){}   // v22.35 (R11): an alert at once   // v22.xx (tr3fixc): the shooter voice
   return true;
+}
+// ===================== 2 PLAYER ARCADE DEMO =====================
+// v23.20, HIS ORDER (2026-10-11): a walk-up party mode for Halloween, the 2 PLAYER ARCADE DEMO. Build 1 of 20 (arcade1): THE SANDBOX.
+// Everything the arcade adds is gated on ARCADE.on or G.arcade, so a normal raid is byte for byte unchanged, and an arcade session
+// never writes his save. While ARCADE.on the P in memory is a sandbox copy of his profile, put in place (every closure holds P):
+// one rifle, no stash, no kit, no merc, no contracts, no intel, no notoriety, default keys, autoloot on, and the name PLAYER 1 or
+// PLAYER 2. His HUD layout and the kid settings of a player 2 save are kept. saveProfile and storeSet both refuse while it is on.
+// Leaving puts his own profile back exactly as it was, keeps any crash entries the sandbox logged, and saves once. A tab closed
+// mid-arcade therefore leaves the save as it was before the arcade began. Later builds add the raid, the pads and the attract.
+var ARCADE={on:0,role:'',realJs:null,cfg0:null,mapIx:0};
+var ARCADE_SBX={weapons:['rifle'],equipped:'rifle',equippedSec:'none',kitChosen:1,dropKit:[],stash:[],kit:[],hotAssign:null,
+  merc:null,mercOut:null,intel:0,terms:[],contracts:[],gunPiled:[],raidSpliced:[],notoriety:0,runs:0,autoloot:1,keymap:{},crashes:[]};
+function arcadeSandboxIn(role){
+  if(ARCADE.on) return false;
+  try{ saveProfile(); }catch(_sf){}   // flush once: the save on disk is his profile as it stands now
+  var js=netUpSnapP(), sb=null, k;
+  if(!js) return false;
+  try{ sb=JSON.parse(js); }catch(_sp){ sb=null; }
+  if(!sb||typeof sb!=='object') return false;
+  for(k in ARCADE_SBX) if(Object.prototype.hasOwnProperty.call(ARCADE_SBX,k)) sb[k]=JSON.parse(JSON.stringify(ARCADE_SBX[k]));
+  ARCADE.role=(role==='p2')?'p2':'host';
+  sb.pname=(ARCADE.role==='p2')?'PLAYER 2':'PLAYER 1';
+  ARCADE.realJs=js; ARCADE.on=1;
+  netUpPutP(JSON.stringify(sb));
+  try{ KEYS.inv=null; keysInv(); }catch(_ki){}
+  return true;
+}
+function arcadeSandboxOut(){
+  if(!ARCADE.on) return false;
+  var cr=Array.isArray(P.crashes)?P.crashes.slice():[], k;
+  if(ARCADE.cfg0){
+    for(k in ARCADE.cfg0) if(Object.prototype.hasOwnProperty.call(ARCADE.cfg0,k)){ if(ARCADE.cfg0[k]===undefined) delete CFG[k]; else CFG[k]=ARCADE.cfg0[k]; }
+    ARCADE.cfg0=null;
+  }
+  ARCADE.on=0;
+  if(ARCADE.realJs) netUpPutP(ARCADE.realJs);
+  ARCADE.realJs=null; ARCADE.role='';
+  if(cr.length){
+    if(!Array.isArray(P.crashes)) P.crashes=[];
+    for(k=0;k<cr.length;k++) P.crashes.push(cr[k]);
+    try{ while(P.crashes.length>CRASH_KEEP) P.crashes.shift(); }catch(_ck){}
+  }
+  try{ KEYS.inv=null; keysInv(); }catch(_ko){}
+  try{ saveProfile(); }catch(_so){}
+  return true;
+}
+// Leaving the arcade. For now it is the sandbox out; later builds stop the arcade raid and put the pad picks back first.
+function arcadeLeave(){
+  if(!ARCADE.on) return false;
+  return arcadeSandboxOut();
 }
 // The containers as this window holds them, for the test page handle.
 function netContView(){

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.20 - ARCADE SANDBOX: YOUR SAVE IS NEVER TOUCHED
+
+Co-op hunt while he was away. His order of 2026-10-11: a 2 PLAYER ARCADE DEMO, a walk-up party mode for Halloween. This is build 1 of 20, the groundwork. While an arcade session is on, the game plays on a copy of the profile with one rifle, no stash, no kit, no contracts and default keys, and nothing is written to the save at all. Leaving the arcade puts his own profile back exactly as it was. Nothing in a normal raid changes, and nothing yet opens the arcade.
+
+MEASURED. Check 23.20 passes, and fails on v23.19.
 ## v23.19 - THE ARMOUR NUMBER FITS ITS BAR
 
 Co-op hunt while he was away. Parked by the raid text audit of 2026-10-09. With a larger text size in Settings, the ARMOUR number in the lower left grew taller than its bar and stuck out over the top edge, into the posture chip above it. It now never grows taller than the bar and sits centred in it, the way the HP number has since its own fix. At the usual text size nothing moves.

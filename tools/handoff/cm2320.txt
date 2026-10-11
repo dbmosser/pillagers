@@ -1,0 +1,7 @@
+v23.20: arcade sandbox: your save is never touched
+
+Groundwork for the 2 PLAYER ARCADE DEMO: an arcade session plays on a copy of your profile and never writes your save.
+
+Check 23.20. Fails on v23.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
