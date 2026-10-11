@@ -1,0 +1,7 @@
+v22.67: one prompt at a time
+
+Only one E prompt is drawn at a time, the one a held E acts on.
+
+Check 22.67. Fails on v22.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

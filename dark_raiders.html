@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.66';
+var VER='22.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7731,6 +7731,33 @@ function hudPrompt(s,x,y,o){
   if(i1>i0){ ctx.textAlign='left'; ctx.fillStyle=HUDC.warn; ctx.fillText(t.slice(i0,i1+1),x-w/2+ctx.measureText(t.slice(0,i0)).width,y); ctx.textAlign='center'; }
   if(sub){ ctx.font=FS(TYPE.label); ctx.fillStyle=(o&&o.subCol)||HUDC.text; ctx.fillText(sub,x,y+d+LH(14)); ctx.font=FS(TYPE.head); }
   return {w:w,by:y-a-LH(4)+h};
+}
+// v22.67, the raid text rewrite (R25): ONE PROMPT AT A TIME. With a door he holds the key for and a crate both in reach, both
+// prompts said [E], and E did the door first; beside a downed pillager, a survivor and a crate it was three [E] prompts at once.
+// promptPick names the one target a held E acts on this frame, read from the order updatePlayer takes E in: a door he has the
+// key for (opened first, before anything else looks at E), the seal (cutting returns and owns the key), a downed teammate (his
+// revive eats E), a downed pillager, the survivor who wants an item, the Peddler (unless a crate underfoot comes first), the ring
+// he stands in (E there calls or extracts instead of searching), then the crate. Only that E prompt is drawn. A locked door with
+// no key in the backpack is not an E target (E does nothing there), so its LOCKED label still shows, and so does the search
+// prompt inside a ring, which names X, the key that searches there.
+function doorKeyIx(door){
+  var i, it;
+  if(!door||!G||!G.bag) return -1;
+  for(i=0;i<G.bag.length;i++){ it=ITEMS[G.bag[i]]; if(it&&it.use==='key'&&it.door===door.id) return i; }
+  return -1;
+}
+function promptPick(p){
+  var st;
+  if(!G||!p||p.downed||G.over) return '';
+  if(G.nearDoor&&doorKeyIx(G.nearDoor)>=0) return 'door';
+  if(G.seal&&!G.seal.done&&G.nearSeal) return 'seal';
+  try{ if(typeof NET!=='undefined'&&NET&&NET.on&&typeof netMateDown==='function'&&netMateDown(p)>=0) return 'mate'; }catch(_m){}
+  if(G.nearDown) return 'down';
+  st=G.nearStray; if(st&&st.kind==='stray'&&st.found&&!st.helped&&!st.hostile&&dist(st,p)<=70) return 'give';
+  if(G.nearPed&&!G.pedBlocked&&typeof pedOpen==='function'&&pedOpen()) return 'deal';
+  if(G.nearPad) return 'ring';
+  if(G.nearContainer&&!G.searching) return 'search';
+  return '';
 }
 // v19.55, seen on the 4K ring screenshot (2026-10-08): the prompts drawn at a place in the world ([E] CALL FOR EXTRACTION, [E] SEARCH,
 // UNLOCK, REVIVE) kept their 1080p size at 4K, small beside a world drawn twice as big. hudAtIn scales whatever follows about that
@@ -26956,7 +26983,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
     else ne._plateTag='';
     var plate=ne.kind==='peddler'
-      ? (pedOpen()?(G.nearPed===ne?(G.pedBlocked?'THE PEDDLER  (search the crate first)':'THE PEDDLER  ['+keyLabel('KeyE','E')+'] DEAL'):'THE PEDDLER'):'THE PEDDLER  [CLOSED]')
+      ? (pedOpen()?(G.nearPed===ne?(G.pedBlocked?'THE PEDDLER  (search the crate first)':(promptPick(G.player)==='deal'?('THE PEDDLER  ['+keyLabel('KeyE','E')+'] DEAL'):'THE PEDDLER')):'THE PEDDLER'):'THE PEDDLER  [CLOSED]')   // v22.67 (R25): DEAL only when E deals
       : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''));
     // CREWS ARE VISIBLE, v2.57. v2.49 gave every raider a crew and rival crews
     // shoot each other, and then nothing on screen said who was with whom, so a
@@ -29124,7 +29151,8 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
   }
   ctx.textAlign='left';
   // projected world labels
-  if(G.nearDoor&&!(G.player&&G.player.downed)){   // v14.08: not while down
+  var _pk=promptPick(p);   // v22.67 (R25): the one target a held E acts on; only its E prompt is drawn
+  if(G.nearDoor&&!(G.player&&G.player.downed)&&(_pk==='door'||doorKeyIx(G.nearDoor)<0)){   // v14.08: not while down; v22.67 (R25): an UNLOCK prompt only when E acts on it
     var dsc=w2s(G.nearDoor.doorX,26,G.nearDoor.doorY);
     if(dsc){
       var haveKey=false;
@@ -29152,7 +29180,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
   }
   // A man on the floor is an interaction, so he gets the same kind of prompt a
   // container does, and the timer says how long the offer stands.
-  if(G.nearDown&&!p.downed){
+  if(G.nearDown&&!p.downed&&_pk==='down'){   // v22.67 (R25): one prompt at a time
     var ds3=w2s(G.nearDown.x,26,G.nearDown.y);
     if(ds3){
       var _hsR=hudAtIn(ds3.x,ds3.y);   // v19.55: grows with the screen
@@ -29168,7 +29196,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     }
   }
   var nc2=G.nearContainer;
-  if(nc2&&!G.searching&&!p.downed){
+  if(nc2&&!G.searching&&!p.downed&&(_pk==='search'||G.nearPad)){   // v22.67 (R25): one prompt at a time; in a ring it names X, its own key
     var s=w2s(nc2.x,26,nc2.y);
     if(s){
       var _hsC=hudAtIn(s.x,s.y);   // v19.55: grows with the screen
@@ -29237,7 +29265,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     if(_hsZ) ctx.restore();
   }
-  if(padZ&&!p.downed){
+  if(padZ&&!p.downed&&!(_pk&&_pk!=='ring'&&_pk!=='search')){   // v22.67 (R25): one prompt at a time
     var ps=w2s(padZ.x,26,padZ.y);
     if(ps){
       var _hsP=hudAtIn(ps.x,ps.y);   // v19.55: grows with the screen
@@ -29870,7 +29898,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
   // to hold E". Same disease as the beacon call: the interaction existed, the
   // instruction lived nowhere.
 (function(){
-    if(G.over||p.downed) return;
+    if(G.over||p.downed||_pk!=='give') return;   // v22.67 (R25): one prompt at a time
     for(var _si=0;_si<G.ents.length;_si++){
       var _se=G.ents[_si];
       if(_se.kind!=='stray'||!_se.found||_se.helped||_se.hostile) continue;
@@ -29882,7 +29910,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       break;
     }
   })();
-  if(!G.over&&G.seal&&!G.seal.done&&G.nearSeal&&!p.downed){
+  if(!G.over&&G.seal&&!G.seal.done&&G.nearSeal&&!p.downed&&_pk==='seal'){   // v22.67 (R25): one prompt at a time
     var _SRh=sealHere();
     // v21.74 (K14): the button in hand, as every other prompt. v22.66 (R24): one prompt style, grown with the screen, the key in
     // brackets (HOLD [E] TO CUT THE SEAL), and the hold bar under its plate.
@@ -35706,7 +35734,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.66: Every world prompt is drawn at the SEARCH size on a plate, with the key in amber brackets. Check 22.66 fails on v22.65',
+  now:'v22.67: Only one E prompt is drawn at a time, the one a held E acts on. Check 22.67 fails on v22.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.67 - ONE PROMPT AT A TIME
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid reads like a shooter HUD. With a door he held the key for and a crate both in reach, both prompts said [E] and E did the door first; beside a downed pillager, a survivor and a crate it was three [E] prompts at once. Only the prompt for the target a held E acts on is drawn now, in the order the game itself takes E: a door he has the key for, the seal, a downed teammate, a downed pillager, the survivor, the Peddler, the ring he stands in, then the crate. A locked door with no key still shows LOCKED, and inside a ring the search prompt still names X, its own key.
+
+MEASURED. Check 22.67 passes, and fails on v22.66.
 ## v22.66 - ONE PROMPT STYLE AT THE SEARCH SIZE
 
 Co-op hunt while he was away. His note of v10.52 said the SEARCH prompt was too small, so it went up to the callout size; every other prompt at a place in the world stayed small, each in its own colour and with no plate, so a locked door read smaller than a crate and a prompt over a busy floor was hard to read. Every world prompt (doors, a downed pillager, the rings, the survivor, the seal and the crates) is now drawn one way: at the SEARCH size, on a plate measured to the words, the key in amber brackets, and a short second line where one is needed (Needs the key name under a locked door). Hold prompts read HOLD [E] TO, as the seal, the in-ring call row and the extract verb now do. Words other than the key brackets are unchanged, except LOCKED and the seconds, which lose their spaced hyphen.
