@@ -1,0 +1,7 @@
+v23.42: arcade: the controls card
+
+In the arcade a big controls card with keyboard and controller buttons sits at the left at every drop while the shield is up and for 4 seconds after, and the HOW TO PLAY page shows the same 8 rows.
+
+Check 23.42. Fails on v23.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

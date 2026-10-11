@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.42 - ARCADE: THE CONTROLS CARD
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 19 of 20. A walk-up player has never seen the game. Every arcade drop now puts a big controls card at the left of the screen while the spawn shield is up and for 4 seconds after it drops: MOVE, AIM, FIRE, ROLL, RELOAD, SWITCH GUN, HEAL and EXTRACT, each with its keyboard key and its controller button. The keys follow CHANGE KEYS and a PlayStation pad reads its own buttons. The HOW TO PLAY page of the demo loop shows the same 8 rows. Normal raids are untouched.
+
+MEASURED. Check 23.42 passes, and fails on v23.41.
 ## v23.41 - ARCADE: PARTY SCOREBOARD AND INITIALS
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 18 of 20. The party night needs a board to beat. The arcade now keeps its own scoreboard under its own storage key, never his save: one row per run, written at every extraction and again at the run end, so a crash or a reload keeps the score. TONIGHTS BEST on the attract shows the top 10 of the last 12 hours with initials, plus BEST EVER. A run that makes tonights top 10 gets a 3 letter initials card on the RUN OVER card, on both windows: on the pad up and down change the letter, right or A goes on, left or B goes back and MENU finishes, and player 2 works it from its own pad; on the keyboard type the letters, Backspace and Enter. 20 seconds with no input keeps what is there, or ??? if nobody touched it, and while the card is up nobody drops in by accident. NEW HIGH SCORE is called once per run on both windows when the team passes tonights best. Normal raids write and draw nothing new.
