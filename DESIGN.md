@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.71 - AUTO-JOG AND TEAMMATE DOWN IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout and only a short caps detail, never an explaining sentence. The review of the fifth batch of raid text found four lines still written as sentences. The auto-jog details read Then tap [CAPS] to auto-jog. and Tap [CAPS] or move to stop. and now read [CAPS] AUTO-JOG and [CAPS] OR MOVE TO CANCEL. The TEAMMATE DOWN detail read Moth needs a revive. and now reads REVIVE MOTH, the verb the revive prompt at his body uses. The Peddler plate beside a crate not yet searched read THE PEDDLER (search the crate first) and now reads THE PEDDLER, a middle dot, SEARCH CRATE FIRST, like every other nameplate. The locked door second line Needs the Archive Key stays: the raid text design names it as the sentence case second line of a prompt.
+
+MEASURED. Check 22.71 passes, and fails on v22.70.
 ## v22.70 - ONE TEAMMATE COLOUR
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid reads like a shooter HUD, where a teammate has one colour. His name over his head was amber, the colour of keys and of your own Waypoint, while his row on the left, his map mark and his Waypoint were blue; his edge arrow was amber and his ping cyan, close to the extraction colour. A teammate is now the one ally blue wherever he is named or marked, and danger red while he is down. Your own ping is amber, like your Waypoint.

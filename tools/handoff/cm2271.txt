@@ -1,0 +1,7 @@
+v22.71: auto-jog and teammate down in caps
+
+The auto-jog lines, the TEAMMATE DOWN detail and the Peddler plate now read as short caps callouts.
+
+Check 22.71. Fails on v22.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

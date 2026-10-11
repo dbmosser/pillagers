@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.70';
+var VER='22.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18192,8 +18192,11 @@ var mg=Math.sqrt(mx*mx+my*my);
     // for a jog that was never on. Arming now asks for a standstill instead.
     // v22.63, the raid text rewrite (R20): HIS ORDER (2026-10-09), a raid line is a short caps headline with, only when needed, a
     // short detail. The auto-jog lines are STOP FIRST and AUTO-JOG ON or OFF, and the detail names the key auto-jog is bound to.
-    if(!p.autoJog&&mg>0){ if(!G.sim) say('STOP FIRST','info',{sub:'Then tap ['+keyLabel('CapsLock','CAPS')+'] to auto-jog.'}); }
-    else { p.autoJog=!p.autoJog; if(!G.sim){ if(p.autoJog) say('AUTO-JOG ON','sys',{sub:'Tap ['+keyLabel('CapsLock','CAPS')+'] or move to stop.'}); else say('AUTO-JOG OFF','sys'); } }
+    // v22.71 (tr5fixb), the review of raid text batch 5: HIS ORDER (2026-10-09), a raid line is a caps headline and only a short
+    // caps detail. The two auto-jog details were still sentences, an instruction ending in a full stop. They now read [CAPS] AUTO-JOG
+    // and [CAPS] OR MOVE TO CANCEL, the key in brackets from keyLabel as before. AUTO-JOG ON is a sys row, and sys rows are caps only.
+    if(!p.autoJog&&mg>0){ if(!G.sim) say('STOP FIRST','info',{sub:'['+keyLabel('CapsLock','CAPS')+'] AUTO-JOG'}); }
+    else { p.autoJog=!p.autoJog; if(!G.sim){ if(p.autoJog) say('AUTO-JOG ON','sys',{sub:'['+keyLabel('CapsLock','CAPS')+'] OR MOVE TO CANCEL'}); else say('AUTO-JOG OFF','sys'); } }   // v22.71 (tr5fixb), caps details
   }
   p._cpPrev=_cpNow;
   // v7.94, his bug report: auto-jog used to RESUME after you released the
@@ -26984,7 +26987,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
     else ne._plateTag='';
     var plate=ne.kind==='peddler'
-      ? (pedOpen()?(G.nearPed===ne?(G.pedBlocked?'THE PEDDLER  (search the crate first)':(promptPick(G.player)==='deal'?('THE PEDDLER  ['+keyLabel('KeyE','E')+'] DEAL'):'THE PEDDLER')):'THE PEDDLER'):'THE PEDDLER  [CLOSED]')   // v22.67 (R25): DEAL only when E deals
+      ? (pedOpen()?(G.nearPed===ne?(G.pedBlocked?'THE PEDDLER  \u00b7  SEARCH CRATE FIRST':(promptPick(G.player)==='deal'?('THE PEDDLER  ['+keyLabel('KeyE','E')+'] DEAL'):'THE PEDDLER')):'THE PEDDLER'):'THE PEDDLER  [CLOSED]')   // v22.67 (R25): DEAL only when E deals
       : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''));
     // CREWS ARE VISIBLE, v2.57. v2.49 gave every raider a crew and rival crews
     // shoot each other, and then nothing on screen said who was with whom, so a
@@ -35752,7 +35755,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.70: A teammate is one ally blue wherever he is named or marked, and red while he is down. Check 22.70 fails on v22.69',
+  now:'v22.71: The auto-jog lines, the TEAMMATE DOWN detail and the Peddler plate now read as short caps callouts. Check 22.71 fails on v22.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40081,7 +40084,10 @@ function netOnState(peer,m){
   // detail (NAME needs a revive.), held while his downed flag is up (to the 8 s cap of the alert lane), on every window but his:
   // his own downed screen owns his. HOST IS OUT and YOU ARE RUNNING THE RAID are critical alerts too. The rumble stays; no sound
   // is added. The raid seed test on the word is unchanged.
-  if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:(netSeatName(s)||'Your teammate')+' needs a revive.',key:'tmdown'+s,icon:'party',hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); }catch(_md){} }
+  // v22.71 (tr5fixb), the review of raid text batch 5: the TEAMMATE DOWN detail was a sentence (his name, then needs a revive, with a
+  // full stop). It now reads REVIVE and his name in caps, the verb his [E] REVIVE prompt uses at his body. The Peddler plate beside a
+  // crate not yet searched reads THE PEDDLER, a middle dot, SEARCH CRATE FIRST, in the caps of every other nameplate.
+  if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:'REVIVE '+String(netSeatName(s)||'your teammate').toUpperCase(),key:'tmdown'+s,icon:'party',hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); }catch(_md){} }
   if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
   if(lk) g.lk=lk;
   if(NET.role==='host'){
