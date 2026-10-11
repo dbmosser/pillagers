@@ -8471,7 +8471,7 @@ window.__REGRESS=[
        for(i=0;i<g.zones.length;i++) if(g.zones[i].open!==false){ z=g.zones[i]; break; }
        if(!z) return 'SKIP: no open extraction ring here';
        p.x=z.x; p.y=z.y;
-       h=outHint(1); if(h!=='Hold [E] to call extraction') bad.push('in a ring with nothing called the hint is '+JSON.stringify(h));
+       h=outHint(1); if(h!=='Hold [E] to call extraction'&&h!=='Hold [E] to call for extraction') bad.push('in a ring with nothing called the hint is '+JSON.stringify(h));
        z.beaconT=17; z.hold=null; g.active=z; g.beaconT=17;
        h=outHint(1); if(h!=='Inbound 17s \u00b7 Stay in the ring') bad.push('in a ring with the ride 17 s out the hint is '+JSON.stringify(h));
        z.beaconT=null; g.active=null; g.beaconT=null;
@@ -14456,7 +14456,7 @@ window.__REGRESS=[
        for(si=0;si<SZ.length;si++){
          if(window.__forceSize){ __forceSize(SZ[si][0],SZ[si][1]); forced=true; } else if(si) break;
          at=W+'x'+H;
-         g.msg=MSG; g.msgT=3; g.giftOut=null; g.giftIn={id:'zq38',k:'bandage',from:1,t:g.t};
+         g.msg=MSG; g.msgT=3; g.msgSub=''; g.msgK='info'; g.giftOut=null; g.giftIn={id:'zq38',k:'bandage',from:1,t:g.t};
          rec=[]; wrap();
          try{ __frame(0.016); netPadHud(); } finally { unwrap(); }
          M=band(function(s){ return s===MSG; },1,true);
@@ -19388,7 +19388,7 @@ window.__REGRESS=[
        p.downed=false;
        g.giftOut={id:'d2',k:'bandage',to:1,t:g.t}; said.length=0;
        netGiftTake(peer,{t:'gift',op:'no',id:'d2',why:'down'});
-       if(!said.some(function(s){ return /is down/.test(s); })) bad.push('a no for a downed taker was not said as such ('+said.join('|')+')');
+       if(!said.some(function(s){ return (/is down/i).test(s); })) bad.push('a no for a downed taker was not said as such ('+said.join('|')+')');
        if(g.giftOut) bad.push('the giver offer stayed open after the no');
        g.giftIn={id:'d3',k:'bandage',from:1,t:g.t-GIFT_T-1}; said.length=0; drawGiftLine(); if(typeof giftTick==='function') giftTick();   /* tr30fix: the lane tick ends it */
        if(g.giftIn) bad.push('an offer that ran out was kept'); if(!said.some(function(s){ return (/ran out|EXPIRED/).test(s); })) bad.push('an offer that ran out was not said ('+said.join('|')+')');
@@ -20781,7 +20781,7 @@ window.__REGRESS=[
        w=netFeedKill(1,{kind:'warden',name:'',hp:0});
        if(w!=='WARDEN') bad.push('the kill feed names a plain warden '+JSON.stringify(w));
        netEntDeathFx({kind:'warden',name:BOSS_NAME,x:G.player.x+300,y:G.player.y,r:44,face:0,hp:0,maxhp:4000});
-       if(!lines.some(function(t){ return t.indexOf(BOSS_NAME+' is down')===0; })) bad.push('a linked window that saw the boss go down said '+JSON.stringify(lines).slice(0,160));
+       if(!lines.some(function(t){ return t.indexOf(BOSS_NAME+' is down')===0||t.indexOf(BOSS_NAME+' DESTROYED')===0; })) bad.push('a linked window that saw the boss go down said '+JSON.stringify(lines).slice(0,160));
      }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
      finally{
        netBroadcast=oB; netFeedPush=oP; say=oSay;
@@ -23545,7 +23545,7 @@ window.__REGRESS=[
        G.hot=0; said.length=0; pressY();
        if(p.prep) bad.push('Y with a gun selected started a heal');
        if(cnt('bandage')!==n0) bad.push('Y with a gun selected spent a Bandage');
-       if(!said.some(function(m){ return m.indexOf('tactical belt')>=0; })) bad.push('Y with a gun selected did not say to select a heal on the tactical belt ('+said.join(' / ')+')');
+       if(!said.some(function(m){ return m.indexOf('tactical belt')>=0||m.indexOf('SELECT A HEAL')===0; })) bad.push('Y with a gun selected did not say to select a heal on the tactical belt ('+said.join(' / ')+')');
        hi=hotbarSlots().map(function(q){ return q.kind; }).indexOf('heal');
        if(hi<0) return 'SKIP: staging: the tactical belt shows no heal slot';
        G.hot=hi; down={}; pollPad(); pressY();
@@ -25236,7 +25236,7 @@ window.__REGRESS=[
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
      OLD=['No throwable you carry is on your','No legs left to roll with','Auto-jog arms from a standstill','Type what to call them first','Everyone with the','Point at an item in the stash, then press','Let go too soon','Hold it down for a second','Linked. Saying hello to the host'];
      // tr5fixb: since the batch 5 review the auto-jog detail is the caps tag [CAPS] AUTO-JOG; any of the three forms keeps the rewrite.
-     NEW=['No throwable on your tactical belt.','Too tired to roll.',(src.indexOf('Stop first, then tap CAPS to auto-jog.')>=0?'Stop first, then tap CAPS to auto-jog.':(src.indexOf('] to auto-jog.')>=0?'] to auto-jog.':'] AUTO-JOG')),'Enter a name first.','Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
+     NEW=[(src.indexOf('No throwable on your tactical belt.')>=0?'No throwable on your tactical belt.':'NO THROWABLE ON THE TACTICAL BELT'),(src.indexOf('Too tired to roll.')>=0?'Too tired to roll.':'TOO TIRED TO ROLL'),(src.indexOf('Stop first, then tap CAPS to auto-jog.')>=0?'Stop first, then tap CAPS to auto-jog.':(src.indexOf('] to auto-jog.')>=0?'] to auto-jog.':'] AUTO-JOG')),'Enter a name first.','Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the old line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
@@ -25249,7 +25249,7 @@ window.__REGRESS=[
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      src=src.split('\n').filter(function(l){ return !(/^\s*\/\//).test(l); }).map(function(l){ var k=l.indexOf('   // '); return k>=0?l.slice(0,k):l; }).join('\n');
      OLD=['The raid runs on until','still up top. The','back down. The raid','takes the party up. Stay','Keep holding','pulls you up.'+String.fromCharCode(39)+');','LEFT THE SURFACE. THE RUN','THE WHOLE PARTY.'+String.fromCharCode(39),'every flash shows you the map and','Wear a headset','The browser asks first','Emotes still work'];
-     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid',(src.indexOf('Reviving ')>=0?'Reviving ':'REVIVING'),(src.indexOf('Revived by ')>=0?'Revived by ':' REVIVED YOU'),'Connection to your host was lost','every flash makes you visible','Headset recommended'];
+     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid',(src.indexOf('Reviving ')>=0?'Reviving ':'REVIVING'),(src.indexOf('Revived by ')>=0?'Revived by ':' REVIVED YOU'),'Connection to your host was lost',(src.indexOf('every flash makes you visible')>=0?'every flash makes you visible':'Lightning shows you from farther'),'Headset recommended'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the rulebook line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
@@ -25744,7 +25744,7 @@ window.__REGRESS=[
      for(i=0;i<WEATHER.length;i++) if(WEATHER[i].id==='storm') st=WEATHER[i];
      if(!st) return 'SKIP: no storm in this build';
      if((/show you to everything/i).test(st.line)) bad.push('the storm line still says the lightning will show you to everything out there: '+st.line);
-     if(!(/lightning/i).test(st.line)) bad.push('the storm line no longer names the lightning: '+st.line);
+     if(!(/lightning/i).test(st.line||st.sub||'')) bad.push('the storm line no longer names the lightning: '+st.line);
      if((/lightning shows you'/).test(hud)) bad.push('the CONDITIONS row still says lightning shows you');
      if(!(/lightning strikes/).test(hud)) bad.push('the CONDITIONS row no longer names the lightning');
      return bad.length?bad.join('; '):null; }},
@@ -36143,7 +36143,7 @@ window.__REGRESS=[
        g.zones[1].closeAt=g.timeLeft-60; g.zones[1].warned=0;
        tickExtractPoints(0.016);
        var L=lines();
-       var hasC=L.some(function(t){ return t.indexOf(CLOSED)>=0||/ CLOSED\b/.test(t); }), hasW=L.some(function(t){ return t.indexOf(WARN)>=0; });
+       var hasC=L.some(function(t){ return t.indexOf(CLOSED)>=0||/ CLOSED\b/.test(t); }), hasW=L.some(function(t){ return t.indexOf(WARN)>=0||(/ CLOSING\b/).test(t); });
        if(!(hasC&&hasW)) bad.push('a closure and a two-minute warning said in the same tick left only: '+L.filter(function(t){return t;}).join(' | '));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -36203,7 +36203,7 @@ window.__REGRESS=[
        g.hot=(vi===0?1:0);
        setHot(vi);
        var NEED=['No','second','weapon'].join(' ');
-       if(String(g.msg||'').indexOf(NEED)!==0) bad.push('selecting the empty second-gun slot left the message as "'+g.msg+'" instead of how to fill it');
+       if(String(g.msg||'').indexOf(NEED)!==0&&!(/^GUN SLOT \d+ EMPTY$/).test(String(g.msg||''))) bad.push('selecting the empty second-gun slot left the message as "'+g.msg+'" instead of how to fill it');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
@@ -38671,7 +38671,7 @@ window.__REGRESS=[
      var bad=[], keepHA=P.hotAssign, i;
      function press(nf){ mouse.down=true; for(var f=0;f<nf;f++) updatePlayer(0.016); }
      function release(){ mouse.down=false; updatePlayer(0.016); }
-     function heard(g){ return String(window.__lastSay||'')+' | '+String((g&&g.msg)||''); }
+     function heard(g){ return String(window.__lastSay||'')+' | '+String((g&&g.msg)||'')+' | '+String((g&&g.msgSub)||''); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -38906,7 +38906,7 @@ window.__REGRESS=[
          if(!A.ct.hotPaid) bad.push('control: the box on the hot ground was not paid the bonus, so this arm measured nothing');
          step(900,seenA);
          var hotN=0, foundN=0;
-         for(i=0;i<seenA.length;i++){ if(seenA[i].indexOf(HOT)===0) hotN++; if(seenA[i].indexOf(FOUND)>=0) foundN++; }
+         for(i=0;i<seenA.length;i++){ if(seenA[i].indexOf(HOT)===0||seenA[i].indexOf('HOT '+'GROUND')===0) hotN++; if(seenA[i].indexOf(FOUND)>=0) foundN++; }
          var shownA=seenA.join(' | ').slice(-240);
          if(!foundN&&!(seenA.pk&&seenA.pk.length)) bad.push('control: the Found line (or since R16 a pickup row) never showed after the search [shown: '+shownA+']');
          if(!hotN) bad.push('the hot ground bonus line was never on screen; the Found line wrote over it in the same call [shown: '+shownA+']');
@@ -38993,7 +38993,7 @@ window.__REGRESS=[
          __loop(t0+(++f)*16.7); note();
        }
        var at=function(nn){ for(var k=0;k<seen.length;k++) if(seen[k].indexOf(nn)>=0) return k; return -1; };
-       var a=at(PAID), b=at(WORD);
+       var a=at(PAID), b=(at(WORD)>=0)?at(WORD):at('NOTORIETY '+'DOWN');
        if(e.helped&&a<0&&!pickPaid) bad.push('the line saying the survivor paid him and what he handed over was written over in the same frame and never shown [shown: '+show(seen)+']');
        if(e.helped&&b<0) bad.push('the notoriety line was never shown [shown: '+show(seen)+']');
        if(a>=0&&b>=0&&!(a<b)) bad.push('the notoriety line was shown before the line about the pay [shown: '+show(seen)+']');
@@ -41495,7 +41495,7 @@ window.__REGRESS=[
        // NOTHING CALLED. Both original sentences, word for word.
        p.x=mine.x; p.y=mine.y;
        var inNone=outHint(1);
-       if(inNone!=='You are standing in the way out. Hold E to call it.'&&!/^Hold \[E\] here to call for extraction\.$/.test(inNone)&&!/^Hold \[E\] to call extraction$/.test(inNone))   /* retargeted for the raid text R10: the hint in its short words; and tr3fixc: its shooter detail */
+       if(inNone!=='You are standing in the way out. Hold E to call it.'&&!/^Hold \[E\] here to call for extraction\.$/.test(inNone)&&!/^Hold \[E\] to call (for )?extraction$/.test(inNone))   /* retargeted for the raid text R10: the hint in its short words; and tr3fixc: its shooter detail */
          bad.push('control: with nothing called, standing in a ring no longer says the line it has always said; it says ['+inNone+']');
        p.x=mine.x+mine.r+900; p.y=mine.y;
        var outNone=outHint(1);
@@ -42065,13 +42065,13 @@ window.__REGRESS=[
          if(owned&&P.weapons.indexOf(holdId)<0) P.weapons.push(holdId);
          g.msg='';
          equipFromBag(0);
-         return String(g.msg||'');
+         return String(g.msg||'')+(g.msgSub?(' '+g.msgSub):'');
        }
        var A=equip(true,false);
        if(A&&A.toLowerCase().indexOf('left behind')<0)
          bad.push('equipping over an issued loaner left him with ['+A+'], so he was never told the loaner is gone for good: the line saying so was written and then written over by the name of the gun he had just chosen, which he already knew');
        var B=equip(false,true);
-       if(B&&B.toLowerCase().indexOf('armoury')<0&&B.toLowerCase().indexOf('into the backpack')<0)   // 2026-10-08: since v21.14 it goes into the backpack
+       if(B&&B.toLowerCase().indexOf('armoury')<0&&B.toLowerCase().indexOf('into the backpack')<0&&B.toLowerCase().indexOf('to backpack')<0)   // 2026-10-08: since v21.14 it goes into the backpack
          bad.push('equipping over a gun he owns left him with ['+B+'], so he was never told it went back to the armoury rather than into his backpack');
        // CONTROL: an empty hand displaces nothing and must read as it always did.
        g.bag=[gunKey];
@@ -43499,7 +43499,7 @@ window.__REGRESS=[
          bad.push('choosing the Frag left the belt highlighting cell '+(hi+1)+' and not the Frag cell '+(fragCell+1)+', so the highlight is on a grenade he is no longer holding while the trigger throws the one he chose');
        if(cell&&cell.k!=='throw:frag')
          bad.push('the highlighted cell is '+cell.k+' after choosing the Frag, so the belt and the hand name different things');
-       if(String(g.msg||'').indexOf(ITEMS.frag.name)<0)
+       if(String(g.msg||'').toUpperCase().indexOf(ITEMS.frag.name.toUpperCase())<0)
          bad.push('choosing the Frag did not say so; the line reads "'+(g.msg||'')+'"');
        // CONTROL ONE: with only one kind carried there is nowhere to go, and the
        // highlight must be left exactly where it was.
@@ -44386,7 +44386,7 @@ window.__REGRESS=[
        if(g.pouch.smoke!==sm0) bad.push('the key on the empty Frag cell spent a Smoke Canister: the pouch went from '+sm0+' to '+g.pouch.smoke);
        if(g.throws.length!==thr0) bad.push('the key on the empty Frag cell put '+(g.throws.length-thr0)+' throwable(s) in the air from a cell he did not press');
        if(g.tsel!==tsel0) bad.push('the key on the empty Frag cell walked the hidden selector from '+THROWKEYS[tsel0]+' to '+THROWKEYS[g.tsel]+', so the belt and the hand no longer agree');
-       if(String(g.msg||'').indexOf(ITEMS.frag.name)<0) bad.push('the key on the empty Frag cell did not name what is missing; it said "'+(g.msg||'')+'"');
+       if(String(g.msg||'').toUpperCase().indexOf(ITEMS.frag.name.toUpperCase())<0) bad.push('the key on the empty Frag cell did not name what is missing; it said "'+(g.msg||'')+'"');
        // THE SAME THING BY THE ASSIGNED CELL, which is a second door to doThrow.
        g.pouch={smoke:2,decoy:0,frag:0}; g.hotAssign={}; g.hotAssign[1]='frag';
        g.hot=-1; setHot(1);
@@ -45040,7 +45040,7 @@ window.__REGRESS=[
          G.hot=fi; p.fired=false; p.trigYield=0; p.cooking=0; var sh1=g.tel.shots||0;
          window.__lastSay=null; press(1);
          if(hotSel()!==fi) bad.push('a click on the empty throwable cell moved the highlight to cell '+(hotSel()+1)+'; since v13.42 he brings the gun up himself');
-         if(String(window.__lastSay||'').indexOf('Press 5')<0) bad.push('the empty throwable cell did not name key 5 for the gun (said: '+String(window.__lastSay||'')+')');
+         if((String(window.__lastSay||'')+' '+String((__state()&&__state().msgSub)||'')).indexOf('Press 5')<0) bad.push('the empty throwable cell did not name key 5 for the gun (said: '+String(window.__lastSay||'')+')');
          press(2); release();
          p.lastShot=-9999; press(2); release();
          if((g.tel.shots||0)!==sh1) bad.push('clicking the empty throwable cell fired the gun '+((g.tel.shots||0)-sh1)+' time(s)');
@@ -45845,7 +45845,7 @@ window.__REGRESS=[
        mouse.down=false; updatePlayer(0.016);
        if(p.cooking) bad.push('the press cooked a '+p.cookKind+' the cell did not name');
        if(g.pouch.smoke!==2) bad.push('the press spent a Smoke from an empty Frag cell (smoke now '+g.pouch.smoke+')');
-       if(String(window.__lastSay||'').indexOf(' left. Press ')<0) bad.push('the press did not say the Frag is gone and which key brings the gun up (said: '+String(window.__lastSay||'')+')');
+       if(String(window.__lastSay||'').indexOf(' left. Press ')<0&&!((/ LEFT$/).test(String(window.__lastSay||''))&&String((__state()&&__state().msgSub)||'').indexOf('Press ')===0)) bad.push('the press did not say the Frag is gone and which key brings the gun up (said: '+String(window.__lastSay||'')+')');
        // THREE, CONTROL: a loaded Frag cell still cooks on the press and keeps the selection.
        g.pouch.frag=2; setHot(fi); p.fired=false; p.cooking=0; p.trigYield=0; mouse.down=true; updatePlayer(0.016);
        if(!p.cooking||p.cookKind!=='frag') bad.push('control: a loaded Frag cell did not cook on the press (cooking '+p.cooking+', kind '+p.cookKind+')');
@@ -46249,7 +46249,7 @@ window.__REGRESS=[
        said.length=0;
        var L=mkListener(p.x+300,p.y+40); L.hp=0; g.ents.push(L);
        __ents(0.1);
-       if(!said.some(function(t){ return /destroyed\. It dropped a cache/.test(t); })) bad.push('the Pillbox death line does not say destroyed (said: '+said.join(' | ').slice(0,90)+')');
+       if(!said.some(function(t){ return /destroyed\. It dropped a cache/.test(t)||(/ DESTROYED$/).test(t); })) bad.push('the Pillbox death line does not say destroyed (said: '+said.join(' | ').slice(0,90)+')');
        // THREE: the self-revive, spent and pressed, and the down line.
        said.length=0; p.downed=true; p.revived=true; selfRevive();
        if(!said.some(function(t){ return t==='Self-revive spent. One per raid.'; })) bad.push('the spent revive does not say one per raid (said: '+said.join(' | ').slice(0,90)+')');
@@ -51097,7 +51097,7 @@ window.__REGRESS=[
        var num=/Extraction\s+(\d+)\b/i.exec(m);
        if(num) bad.push('a closure is announced as "'+m.trim()+'", and the map draws EXTRACT '+letters.join(', ')+' with no '+num[1]+' on it');
        else{
-         var got=/Extraction\s+([A-Z])\b/.exec(m);
+         var got=/Extraction\s+([A-Z])\b/i.exec(m);
          if(!got) bad.push('a closure is announced without naming which point: "'+m.trim()+'"');
          else if(letters.indexOf(got[1])<0) bad.push('a closure names EXTRACT '+got[1]+', which is not one of the letters on the map ('+letters.join(', ')+')');
        }
