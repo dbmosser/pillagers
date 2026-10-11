@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.77 - LINES NOBODY CAN SEE GO
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never says what nobody can read. Going down said a long sentence in the feed under the downed screen, which already shows DOWN, the bleed bar and his words SELF-REVIVE, one per raid. Being hauled aboard and abandoning said a line in the same frame the outcome card covers the raid, and the card already shows the XP fee. An emote narrated itself (You raise a hand) while the bubble over you showed it. Those lines are gone.
+
+MEASURED. Check 22.77 passes, and fails on v22.76.
 ## v22.76 - NOTORIETY IS SAID ONCE
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. A notoriety point said a sentence with the new total in the feed while his notoriety stamp and the NOTORIETY +1 label over the body already said it. The sentence is gone for a peaceful pillager, the unarmed Survivor and the Peddler. Helping a Survivor now says NOTORIETY DOWN TO and the new number.

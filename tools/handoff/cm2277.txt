@@ -1,0 +1,7 @@
+v22.77: lines nobody can see go
+
+Going down, being hauled out, abandoning and emotes no longer say lines that the downed screen, the outcome card or the bubble already show.
+
+Check 22.77. Fails on v22.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.76';
+var VER='22.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8645,8 +8645,7 @@ function doEmote(ix){
   if((G.emoteCd||0)>0) return;
   G.emoteCd=0.9;
   G.emoteBar=false;
-  emoteBubble(p.x,p.y,E.glyph,'#FFF6DC',1.6);
-  say(E.say);
+  emoteBubble(p.x,p.y,E.glyph,'#FFF6DC',1.6);   // v22.77 (R32): the bubble over him is the emote; no narration line, the result follows below
   // A hail is a shout. It carries, and it carries to things that are not people.
   ping(p.x,p.y,E.k==='hail'?300:150,false,false,'player','move');
   blip('pick',260);
@@ -15201,8 +15200,9 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // F answers Self-revive spent, so a toast that sent him to F was a lie the
     // HUD contradicted in the same frame. He can still crawl for an extraction,
     // or hold SPACE to give up where that is switched on.
-    say(p.revived?('DOWN. Your one self-revive is spent. Crawl for an extraction'+(CFG.giveUp===0?'.':', or hold '+keyLabel('Space','SPACE')+' to give up.'))
-                 :'DOWN. '+keyLabel('KeyF','F')+' to get back up. You get one per raid.');   // v11.94, HIS NOTE: per raid
+    // v22.77, the raid text rewrite (R32): LINES NOBODY CAN SEE GO. The going-down sentence was drawn in the feed under the downed
+    // screen, which says the same thing larger in the same frame: DOWN, the bleed bar, and his v11.94 words '[F] SELF-REVIVE, one
+    // per raid' (or, with the revive spent, the crawl row and HOLD [SPACE] TO SURRENDER). The sentence is gone; T.downs still counts.
   }
 }
 // DESTRUCTIBLE ENVIRONMENT, v2.83. His note: "environment should be
@@ -17229,8 +17229,7 @@ function tryExtractTick(dt,wantCall){
     }
     if(p.downed&&CFG.hauledAboard!==0){
       T.holdExtract=1; T.hauled=1;
-      say('They have you. Pulling you out.');
-      endRaid('extract'); return;
+      endRaid('extract'); return;   // v22.77 (R32): no line; the outcome card covers the raid in this same frame
     }
     if(wantCall){
       if(z.pullT===undefined||z.pullT===null){
@@ -35771,7 +35770,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.76: A notoriety point is shown by the stamp and the label only, and helping a Survivor says NOTORIETY DOWN TO and the number. Check 22.76 fails on v22.75',
+  now:'v22.77: Going down, being hauled out, abandoning and emotes no longer say lines that the downed screen, the outcome card or the bubble already show. Check 22.77 fails on v22.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44500,7 +44499,7 @@ document.getElementById('confirmabandon').onclick=function(){
     // screen, and endRaid covers that screen with the outcome card in this same click, so the fee was never read and the card's
     // XP total came out lower than the XP it printed with nothing to explain it. The raid keeps the fee for the card and the report.
     G.abandonFee=_rc;
-    say(_rc>0?('Walked out on the job. XP -'+_rc+'.'):'Walked out on the job. No XP to lose.');
+    // v22.77 (R32): no line here; endRaid covers the raid screen in this same click, and the outcome card says the fee (G.abandonFee).
   }
   togglePauseBox(false);   // v12.02: the close banks the note
 this.style.display='none';
