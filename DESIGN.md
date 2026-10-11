@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.49 - THE KIT PISTOL STAYS OFF GUN 1
+
+Co-op hunt while he was away. From the review of the four-gun belt, build 4. On the freebie kit the Scav Pistol is in hand and on key 1. Drawing another gun from the backpack while holding it puts the pistol in the backpack, still on key 1, and decision D3 (the guns on keys 1 and 2 go home as gun 1 and gun 2) then made the kit pistol gun 1 at home. The rule of v15.58 is that the kit pistol is kept but never equipped, so taking the kit never changes the gun he goes up with. D3 left it out only while it was in his hands; it now leaves it out in the backpack too.
+
+MEASURED. Check 22.49 passes, and fails on v22.48.
 ## v22.48 - A GUN CARRIED OUT KEEPS ITS SLOT
 
 Co-op hunt while he was away. From the review of the four-gun belt, build 4. Decision D3 makes the guns on keys 1 and 2 gun 1 and gun 2 at home. When key 2 showed no gun (he had moved gun 2 to key 3, or put a Medkit on key 2) and the better gun was gun 2, D3 put the gun from key 1 back in gun 1 and left gun 2 empty: he came home with one gun and Bare Hands, the other gun he carried out sat in the armoury in no slot, the extraction deleted his key for it, and his next raid went up without it. The gun D3 moves out of gun 1 now takes gun 2 when gun 2 is empty, as long as he carried it out.

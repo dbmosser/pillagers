@@ -1,0 +1,7 @@
+v22.49: the kit pistol stays off gun 1
+
+The freebie kit pistol carried out in the backpack is kept but never becomes gun 1 or gun 2.
+
+Check 22.49. Fails on v22.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
