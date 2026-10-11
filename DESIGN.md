@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.24 - ARCADE: THE MODE ROW AND BOTH WINDOWS
+
+Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 5 of 20. The title has a new row, 2 PLAYER ARCADE DEMO, under the co-op row. It opens the player 2 window the way co-op does and puts both windows into the arcade: his save is set aside, the what is new card is skipped, and the arcade attract covers the screen. The player 1 window drops straight into an endless arcade raid on any key, click, touch or controller button (F1 to F12, Shift, Ctrl and Alt do not, and moving the mouse never does). The player 2 window says PLAYER 2: PRESS A and joins with A on its own controller (the join itself is the next build). A rebooted player 2 window is put back into the arcade, and leaving the arcade takes player 2 out too. Normal play and normal co-op are exactly as they were.
+
+MEASURED. Check 23.24 passes, and fails on v23.23.
 ## v23.23 - ARCADE: EXTRACTION BONUS AND RE-DROP
 
 Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 4 of 20. In an arcade raid an extraction no longer ends the raid: it pays EXTRACTION BONUS +2,500 and pays the haul pot a second time, shows a 3 second EXTRACTED! banner with the new TEAM SCORE, and drops him straight back into the same raid with a fresh random loadout and full health, at least 900 from every extraction ring, after a 6 second drop-in hold. The ring he left on can be called again. The world is not rebuilt, so a teammate fight goes on, and no run is counted. A normal raid is exactly as it was.

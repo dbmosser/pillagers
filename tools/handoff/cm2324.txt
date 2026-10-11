@@ -1,0 +1,7 @@
+v23.24: arcade: the mode row and both windows
+
+The title has a 2 PLAYER ARCADE DEMO row: any key or button drops you straight into an arcade raid.
+
+Check 23.24. Fails on v23.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
