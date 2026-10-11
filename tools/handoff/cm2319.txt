@@ -1,0 +1,7 @@
+v23.19: the armour number fits its bar
+
+At a large text size the ARMOUR number now fits inside its bar.
+
+Check 23.19. Fails on v23.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

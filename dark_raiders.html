@@ -1691,7 +1691,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.18';
+var VER='23.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29984,8 +29984,13 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   }
 if(p.armor>0){
     bar(16,by-46,280,16,p.armor/armorCap(),'#5aa9e6');
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#FFF6DC';
-    ctx.fillText('ARMOUR  '+Math.round(p.armor),24,by-33);
+    // v23.19, parked by the raid text audit of 2026-10-09: THE ARMOUR NUMBER FITS ITS BAR, as the HP number does. At a larger text size
+    // the label face grew past the 16 unit bar and stuck out over its top edge into the posture chip. It is never taller than the
+    // bar holds now, and then centred in it; at the usual text size nothing changes.
+    var _apf=FS(TYPE.label), _apx=parseFloat((/([\d.]+)px/.exec(_apf)||[0,13])[1]), _apm=16*1.08;
+    if(_apx>_apm) _apf=_apf.replace(/[\d.]+px/,(Math.round(_apm*10)/10)+'px');
+    ctx.font=_apf; ctx.fillStyle='#FFF6DC';
+    ctx.fillText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-46+8+_apm*0.36):by-33);
   }
   var _stc=p.stamLock?'#ff5a4a':(p.stam<35?'#ffc04a':'#8fb5c8');
   bar(16,by-25,280,12,p.stam/100,_stc);
@@ -36054,7 +36059,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.18: In co-op, the second player killing shot now shows the larger kill number, as the host already did. Check 23.18 fails on v23.17',
+  now:'v23.19: At a large text size the ARMOUR number now fits inside its bar. Check 23.19 fails on v23.18',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

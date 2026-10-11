@@ -1,0 +1,5 @@
+## v23.19 - THE ARMOUR NUMBER FITS ITS BAR
+
+Co-op hunt while he was away. Parked by the raid text audit of 2026-10-09. With a larger text size in Settings, the ARMOUR number in the lower left grew taller than its bar and stuck out over the top edge, into the posture chip above it. It now never grows taller than the bar and sits centred in it, the way the HP number has since its own fix. At the usual text size nothing moves.
+
+MEASURED. Check 23.19 passes, and fails on v23.18.

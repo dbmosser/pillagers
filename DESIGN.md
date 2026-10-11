@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.19 - THE ARMOUR NUMBER FITS ITS BAR
+
+Co-op hunt while he was away. Parked by the raid text audit of 2026-10-09. With a larger text size in Settings, the ARMOUR number in the lower left grew taller than its bar and stuck out over the top edge, into the posture chip above it. It now never grows taller than the bar and sits centred in it, the way the HP number has since its own fix. At the usual text size nothing moves.
+
+MEASURED. Check 23.19 passes, and fails on v23.18.
 ## v23.18 - PLAYER 2 SEES HIS KILLING SHOT
 
 Co-op hunt while he was away. Parked by the raid text audit of 2026-10-09. In co-op the host runs every enemy, so on the second player window a round only asks the host for its damage, and the health shown there has not dropped yet when the damage number is drawn. The shot that killed always showed as a plain number, never the larger kill number. On the second window the kill is now worked out from the damage the round sends, which is exactly what the host takes off. Solo and the host are unchanged.

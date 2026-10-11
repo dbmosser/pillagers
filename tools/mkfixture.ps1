@@ -5744,6 +5744,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.19',what:'the ARMOUR number never stands taller than its bar at a large text size',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof drawHUD!=='function') return 'SKIP: no HUD here';
+     var bad=[], g, p, seen=[], own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), of=ctx.fillText, us0=P.uiScale;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); p=g.player; if(!g||g.over) return 'SKIP: no live raid';
+       P.uiScale=1.6; p.armor=40; G.bagOpen=false;
+       ctx.fillText=function(t){ if(String(t).indexOf('ARMOUR')===0) seen.push(ctx.font); return of.apply(this,arguments); };
+       drawHUD();
+       if(!seen.length) return 'SKIP: the armour line was not drawn';
+       var px=parseFloat((/([\d.]+)px/.exec(seen[0])||[0,0])[1]);
+       if(!(px<=16*1.08+0.06)) bad.push('at text size 1.6 the ARMOUR number is '+px+' units tall over a 16 unit bar');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(own) ctx.fillText=of; else delete ctx.fillText; if(us0===undefined) delete P.uiScale; else P.uiScale=us0; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'23.18',what:'player 2 sees the kill number on his killing shot: on a linked window the kill is worked out from the damage sent, solo and the host read the health as before',
    run:function(){
      if(typeof hitKills!=='function') return 'control: no hitKills, the linked window reads health the host has not taken off yet';
