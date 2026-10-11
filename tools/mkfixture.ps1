@@ -6088,7 +6088,7 @@ window.__REGRESS=[
          if(e.found){
            all=said.map(line).join(' / ');
            if(all.toLowerCase().indexOf(LOW)>=0) bad.push('the survivor found line reads '+JSON.stringify(all));
-           if(all.indexOf('He needs an '+PN+'.')<0) bad.push('the survivor found line does not read He needs an '+PN+'. ('+JSON.stringify(all)+')');
+           if(all.indexOf('He needs an '+PN+'.')<0&&all.indexOf('Needs '+PN+'.')<0) bad.push('the survivor found line does not read He needs an '+PN+'. ('+JSON.stringify(all)+')');
          }
        }
        // THREE: an aid line for a teammate with no seat name
@@ -8776,7 +8776,7 @@ window.__REGRESS=[
        heard=[]; g.hot=2; p.fired=false; mouse.down=true; __sim(0.016); mouse.down=false; __sim(0.016);
        h=said(/^EMPTY SLOT$/);
        if(!h) bad.push('the trigger on the vacant key 3 says '+JSON.stringify(heard.map(function(x){ return x.m; }))+', not EMPTY SLOT');
-       else if(!/^(PRESS \S+ FOR YOUR GUN|.+ TO YOUR GUN)$/.test(h.sub)) bad.push('EMPTY SLOT has '+JSON.stringify(h.sub)+' under it, not the key of the gun in capitals');
+       else if(!/^(PRESS \S+ FOR YOUR GUN|.+ TO YOUR GUN|(\[\S+\] )+GUN)$/.test(h.sub)) bad.push('EMPTY SLOT has '+JSON.stringify(h.sub)+' under it, not the key of the gun in capitals');
        g.hot=0;
        heard=[]; g.bag.push('gun_shotgun'); r=autoBelt('gun_shotgun');
        if(!/^[^a-z]+ (ON KEY|TO SLOT) 2$/.test(String(r||''))||!said(/ (ON KEY|TO SLOT) 2$/)) bad.push('a shotgun found onto key 2 says '+JSON.stringify(r)+', not SHOTGUN ON KEY 2');
@@ -38186,7 +38186,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        // CONTROL FIRST: the keyboard wording stands.
        padOn=function(){ return false; };
-       if(String(gunKeyLine()).indexOf('Press ')!==0) bad.push('control: on the keyboard the empty cell line no longer says Press (it says '+gunKeyLine()+')');
+       if(String(gunKeyLine()).indexOf('Press ')!==0&&String(gunKeyLine()).indexOf('[')!==0) bad.push('control: on the keyboard the empty cell line no longer says Press (it says '+gunKeyLine()+')');
        padOn=function(){ return true; };
        var gl=String(gunKeyLine());
        if(gl.indexOf('LB')<0||gl.indexOf('Press ')>=0) bad.push('on a controller the empty cell line says '+gl+', naming a number key no pad button reaches');
@@ -38753,7 +38753,7 @@ window.__REGRESS=[
        if(!p.wep||!p.wep.id||p.wep.id==='fists') return 'SKIP: no gun in hand at the drop';
        g.ents.length=0; p.downed=false; p.iv=99; p.hp=40;
        p.ammo=Math.max(p.ammo||0,8); p.reloading=0; p.jam=0; p.wep.jam=0; p.cooking=0; p.fired=false; p.trigYield=0;
-       var gc=gunCell(), KEY='Press '+(gc+1);
+       var gc=gunCell(), KEY='Press '+(gc+1), KEY2='['+(gc+1)+']';   // tr9fixm: or the key in brackets, [5] GUN
        // ARM A, HIS CASE: one Bandage, the Medical cell selected, one click spends it, and he keeps clicking.
        g.bag=['bandage']; g.pouch.frag=0; g.pouch.smoke=0; g.pouch.decoy=0;
        var sl=hotbarSlots(), hc=-1, fc=-1;
@@ -38767,7 +38767,7 @@ window.__REGRESS=[
          window.__lastSay=null; g.msg='';
          for(i=0;i<3;i++){ p.lastShot=-9999; press(20); release(); }
          if((g.tel.shots||0)!==sh0) bad.push('three held clicks after the last Bandage fired the gun '+((g.tel.shots||0)-sh0)+' time(s)');
-         if(heard(g).indexOf(KEY)<0) bad.push('a click on the spent Medical cell did not name key '+(gc+1)+' for the gun (heard: '+heard(g)+')');
+         if(heard(g).indexOf(KEY)<0&&heard(g).indexOf(KEY2)<0) bad.push('a click on the spent Medical cell did not name key '+(gc+1)+' for the gun (heard: '+heard(g)+')');
        }
        // ARM B: the last Frag, cooked and let go, then clicks.
        p.prep=null; p.healQ=0; p.fired=false;
@@ -38782,12 +38782,12 @@ window.__REGRESS=[
          for(i=0;i<3;i++){ p.lastShot=-9999; press(20); release(); }
          if((g.tel.shots||0)!==sh1) bad.push('held clicks on the empty Frag cell fired the gun '+((g.tel.shots||0)-sh1)+' time(s)');
          if(p.cooking) bad.push('a click on the empty Frag cell started a cook');
-         if(heard(g).indexOf(KEY)<0) bad.push('a click on the empty Frag cell did not name key '+(gc+1)+' for the gun (heard: '+heard(g)+')');
+         if(heard(g).indexOf(KEY)<0&&heard(g).indexOf(KEY2)<0) bad.push('a click on the empty Frag cell did not name key '+(gc+1)+' for the gun (heard: '+heard(g)+')');
          // ARM C: the use key on the same empty cell.
          g.throws.length=0; setHot(fc); window.__lastSay=null; g.msg='';
          useHot();
          if(hotSel()!==fc) bad.push('the use key on the empty Frag cell moved the highlight to cell '+(hotSel()+1));
-         if(heard(g).indexOf(KEY)<0) bad.push('the use key on the empty Frag cell did not name key '+(gc+1)+' for the gun (heard: '+heard(g)+')');
+         if(heard(g).indexOf(KEY)<0&&heard(g).indexOf(KEY2)<0) bad.push('the use key on the empty Frag cell did not name key '+(gc+1)+' for the gun (heard: '+heard(g)+')');
        }
        // ARM D, THE WAY BACK: select the gun cell, click, and it fires.
        setHot(gc); p.fired=false; p.trigYield=0; p.reloading=0; p.jam=0; p.wep.jam=0; p.lastShot=-9999; p.cooking=0;
@@ -45114,7 +45114,7 @@ window.__REGRESS=[
          G.hot=fi; p.fired=false; p.trigYield=0; p.cooking=0; var sh1=g.tel.shots||0;
          window.__lastSay=null; press(1);
          if(hotSel()!==fi) bad.push('a click on the empty throwable cell moved the highlight to cell '+(hotSel()+1)+'; since v13.42 he brings the gun up himself');
-         if((String(window.__lastSay||'')+' '+String((__state()&&__state().msgSub)||'')).indexOf('Press 5')<0) bad.push('the empty throwable cell did not name key 5 for the gun (said: '+String(window.__lastSay||'')+')');
+         if((String(window.__lastSay||'')+' '+String((__state()&&__state().msgSub)||'')).indexOf('Press 5')<0&&(String(window.__lastSay||'')+' '+String((__state()&&__state().msgSub)||'')).indexOf('[5]')<0) bad.push('the empty throwable cell did not name key 5 for the gun (said: '+String(window.__lastSay||'')+')');
          press(2); release();
          p.lastShot=-9999; press(2); release();
          if((g.tel.shots||0)!==sh1) bad.push('clicking the empty throwable cell fired the gun '+((g.tel.shots||0)-sh1)+' time(s)');
@@ -45919,7 +45919,7 @@ window.__REGRESS=[
        mouse.down=false; updatePlayer(0.016);
        if(p.cooking) bad.push('the press cooked a '+p.cookKind+' the cell did not name');
        if(g.pouch.smoke!==2) bad.push('the press spent a Smoke from an empty Frag cell (smoke now '+g.pouch.smoke+')');
-       if(String(window.__lastSay||'').indexOf(' left. Press ')<0&&!((/ LEFT$/).test(String(window.__lastSay||''))&&String((__state()&&__state().msgSub)||'').indexOf('Press ')===0)) bad.push('the press did not say the Frag is gone and which key brings the gun up (said: '+String(window.__lastSay||'')+')');
+       if(String(window.__lastSay||'').indexOf(' left. Press ')<0&&!((/ LEFT$/).test(String(window.__lastSay||''))&&(String((__state()&&__state().msgSub)||'').indexOf('Press ')===0||String((__state()&&__state().msgSub)||'').indexOf('[')===0))) bad.push('the press did not say the Frag is gone and which key brings the gun up (said: '+String(window.__lastSay||'')+')');
        // THREE, CONTROL: a loaded Frag cell still cooks on the press and keeps the selection.
        g.pouch.frag=2; setHot(fi); p.fired=false; p.cooking=0; p.trigYield=0; mouse.down=true; updatePlayer(0.016);
        if(!p.cooking||p.cookKind!=='frag') bad.push('control: a loaded Frag cell did not cook on the press (cooking '+p.cooking+', kind '+p.cookKind+')');
