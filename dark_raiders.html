@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.88';
+var VER='22.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20252,7 +20252,7 @@ if(e.state==='possum'){
           label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
           notoStamp('YOU SHOT AN UNARMED SURVIVOR');
         } else if(!G.sim){
-          if(chatNear(e.x,e.y)) say('SOMEONE SHOT THE SURVIVOR','chat',{sub:'Not on you.'});   // v22.81 (tr6fixc): the caps callout, a chat row as the raid text plan has it; v22.xx (R35): only near or in sight
+          if(chatNear(e.x,e.y)) say('SOMEONE SHOT THE SURVIVOR','chat',{sub:'Not your kill'});   // v22.81 (tr6fixc): the caps callout, a chat row as the raid text plan has it; v22.xx (R35): only near or in sight   // v22.89 (tr7fixa): a short detail, not a sentence
         }
         decal(e.x,e.y,'#6e1c15',rnd(16,26));
         G.ents.splice(i,1); continue;
@@ -20274,7 +20274,7 @@ if(e.state==='possum'){
           notoStamp('YOU KILLED THE PEDDLER');
         } else if(!G.sim){
           if(G.tel) G.tel.pedKilled=2;      // 2: died, but not by his hand
-          if(chatNear(e.x,e.y)) say('THE PEDDLER IS DEAD','chat',{sub:'Someone else did that.'});   // v22.81 (tr6fixc): the caps callout, a chat row; v22.xx (R35): only near or in sight
+          if(chatNear(e.x,e.y)) say('THE PEDDLER IS DEAD','chat',{sub:'Not your kill'});   // v22.81 (tr6fixc): the caps callout, a chat row; v22.xx (R35): only near or in sight   // v22.89 (tr7fixa): a short detail, not a sentence
         }
         decal(e.x,e.y,'#6e1c15',rnd(18,28));
         spark(e.x,e.y,'#d8a13a',24,300);
@@ -20495,7 +20495,7 @@ if(e.kind==='stray'){
         }
         else if(_sz){
           e.moving=false; e.gone=1; e.x=-9000; e.y=-9000;
-          if(chatNear(_sz.x,_sz.y)) say('The survivor made it to Extraction '+extLetter(_sz)+'.');   // v22.xx (R35): only near or in sight
+          if(chatNear(_sz.x,_sz.y)) say('SURVIVOR EXTRACTED','info',{sub:'Extraction '+extLetter(_sz)});   // v22.xx (R35): only near or in sight   // v22.89 (tr7fixa): the caps callout, the ring as the detail
           if(G.tel) G.tel.strayOut=(G.tel.strayOut||0)+1;
           continue;
         }
@@ -20572,7 +20572,7 @@ if(e.kind==='stray'){
           else e._stuckT=0;
           if(e._stuckT>3){
             e._stuckT=0; e._back=0; e.tx=e.x; e.ty=e.y; e.face=1.57;
-            if(!G.sim&&chatNear(e.x,e.y)) say('The Peddler has set up shop here.','chat');   // v22.xx (R35): only near or in sight
+            if(!G.sim&&chatNear(e.x,e.y)) say('THE PEDDLER SET UP SHOP','chat');   // v22.xx (R35): only near or in sight   // v22.89 (tr7fixa): the caps callout
           } else {
             e.face=Math.atan2(e.ty-e.y,e.tx-e.x);
             e.step=(e.step||0)+dt*5;
@@ -20580,7 +20580,7 @@ if(e.kind==='stray'){
           }
         } else {
           e._back=0; e.face=1.57;
-          if(!G.sim&&chatNear(e.x,e.y)) say('The Peddler is back at his pitch.','chat');   // v22.xx (R35): only near or in sight
+          if(!G.sim&&chatNear(e.x,e.y)) say('THE PEDDLER IS BACK','chat');   // v22.xx (R35): only near or in sight   // v22.89 (tr7fixa): the caps callout
         }
       }
       if(pdd<440) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.4*dt,2.4*dt);
@@ -21158,7 +21158,7 @@ var _rdS=G.shells[_rdi];
         } else {
           if(!e.metSaid&&!G.sim){
             e.metSaid=1;
-            say(e.name+(e.standing>0?' nods at you.':' is watching you.'),'chat');   // v22.xx (R35): chat
+            say(String(e.name).toUpperCase()+(e.standing>0?' IS FRIENDLY':' IS WATCHING'),'chat');   // v22.xx (R35): chat   // v22.89 (tr7fixa): the caps callout, within 34 with the longest tag
           }
           e.alert=Math.max(e.alert,1.2);
           e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-3*dt,3*dt);
@@ -21852,7 +21852,10 @@ e.lootT=(e.lootT||0)+dt;
             z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null; z.pullN=0; z.pinged=0;
             if(z===G.active){ G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }
             ping(z.x,z.y,700,true,false,'raider','fire');
-            if(!G.sim&&chatNear(z.x,z.y)) say(e.name+' called extraction.');   // v22.xx (R35): only near or in sight
+            // v22.89 (tr7fixa), the review of raid text batch 7: HIS ORDER (2026-10-09), a raid line is a short caps callout of at most 34
+            // characters. A pillager calling near you said NAME called extraction. as a sentence; it is PILLAGER CALLED EXTRACTION with
+            // his name and the ring as the detail (the name stays out of the headline: the longest tag, 20 letters, would take it past 34).
+            if(!G.sim&&chatNear(z.x,z.y)) say('PILLAGER CALLED EXTRACTION','info',{sub:String(e.name)+', Extraction '+extLetter(z)});   // v22.83 (R35): only near or in sight
           }
         }
         // v8.25, audit: only through a door that opens. The guard above gates
@@ -22307,7 +22310,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
                   G.hitMark={t:0,life:.44,kill:true};
                   spark(CW.x,CW.y,'#8e2b1c',16,240);
                   decal(CW.x,CW.y,'#4a1810',fxn(7,12));   // v8.35
-                  say(CW.k==='deer'?'The deer goes down.':'You shot a bird.','chat');   // v22.xx (R35): chat
+                  say(CW.k==='deer'?'DEER DOWN':'BIRD DOWN','chat');   // v22.xx (R35): chat   // v22.89 (tr7fixa): the caps callout
                 }
                 // A carcass is worth carrying, but only just: this is texture and
                 // a small mercy on a bad run, not a living. The noise of the shot
@@ -23968,7 +23971,7 @@ function drsTick(gapMs,now){
     DRS.scale=Math.max(DRS.min,Math.round((DRS.scale-DRS.step)*100)/100); DRS.slowT=0; DRS.moves++;
     if(DRS.upAt&&now-DRS.upAt<20000) DRS.bounce=Math.min(4,DRS.bounce+1);
     DRS.last=now;
-    if(!DRS.said){ DRS.said=1; try{ sayWhenFree('RESOLUTION STEPPED DOWN','sys',{sub:'Running slowly. Auto resolution in Settings.'}); }catch(_ds){} }   // v22.xx (R36): a system row in caps
+    if(!DRS.said){ DRS.said=1; try{ sayWhenFree('RESOLUTION STEPPED DOWN','sys',{sub:'Settings: Auto resolution'}); }catch(_ds){} }   // v22.xx (R36): a system row in caps   // v22.89 (tr7fixa): a short detail, not a sentence
     return true;
   }
   if(DRS.fastT>8000*(1+DRS.bounce)&&DRS.scale<1-1e-6&&now-DRS.last>8000){
@@ -35285,7 +35288,7 @@ function perfNote(gapMs){
   while(PERF.win.length&&now-PERF.win[0][0]>10000) PERF.win.shift();
   if(PERF.said||PERF.win.length<60) return false;
   for(i=0;i<PERF.win.length;i++) if(PERF.win[i][1]>25) slow++;
-  if(slow*2>PERF.win.length){ PERF.said=1; try{ sayWhenFree('RUNNING SLOWLY','sys',{sub:'Lower Render resolution or Effects in Settings.'}); }catch(_ps){} return true; }   // v22.xx (R36): a system row in caps
+  if(slow*2>PERF.win.length){ PERF.said=1; try{ sayWhenFree('RUNNING SLOWLY','sys',{sub:'Settings: Render resolution, Effects'}); }catch(_ps){} return true; }   // v22.xx (R36): a system row in caps   // v22.89 (tr7fixa): a short detail, not a sentence
   return false;
 }
 var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
@@ -35914,7 +35917,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.88: The story you find on each map now opens as a readable card instead of a cut-off message line. Check 22.88 fails on v22.87',
+  now:'v22.89: The chatter lines read as short caps callouts, such as THE PEDDLER IS BACK and LIQUOR WORE OFF. Check 22.89 fails on v22.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36572,7 +36575,7 @@ function tickBuzz(dt){
     if(B[i].t<=0){
       var _tg=B[i].tag;
       B.splice(i,1); changed=true;
-      if(!buzzDoses(_tg)) sayAny(_tg==='drunk'?'The liquor wears off.':'The colours drain away.','chat');   // v22.xx (R35): chat
+      if(!buzzDoses(_tg)) sayAny(_tg==='drunk'?'LIQUOR WORE OFF':'BLOTTER WORE OFF','chat');   // v22.xx (R35): chat   // v22.89 (tr7fixa): the caps callout, by the item name
     }
   }
   if(changed) saveProfile();

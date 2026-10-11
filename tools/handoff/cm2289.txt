@@ -1,0 +1,7 @@
+v22.89: chatter lines in caps
+
+The chatter lines read as short caps callouts, such as THE PEDDLER IS BACK and LIQUOR WORE OFF.
+
+Check 22.89. Fails on v22.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

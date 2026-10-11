@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.89 - CHATTER LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the seventh batch of raid text found the chatter still written as sentences. A pillager calling extraction near you is PILLAGER CALLED EXTRACTION with his name and the ring as the detail (his name stays out of the headline because the longest tag would take it past 34), the Survivor getting out is SURVIVOR EXTRACTED with the ring, the Peddler is THE PEDDLER SET UP SHOP or THE PEDDLER IS BACK, a pillager seen first is NAME IS FRIENDLY or NAME IS WATCHING, a shot animal is DEER DOWN or BIRD DOWN, and a drink wearing off is LIQUOR WORE OFF or BLOTTER WORE OFF by the item name. The details that were sentences are short: Settings: Auto resolution, Settings: Render resolution, Effects, and Not your kill under a survivor or the Peddler killed by someone else. No rule moved.
+
+MEASURED. Check 22.89 passes, and fails on v22.88.
 ## v22.88 - THE MAP STORY ON A LORE CARD
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and a found document opens as a card you can read. The map story was said as one message row of about 250 characters, which the row cut at two lines, so most of it was never read. It now shows on a card left of centre above the tactical belt: its name as an amber caps title and the whole text wrapped under it, for 14 seconds or until you walk 300 away. It hides under an alert or the use bar and never goes into the message feed.

@@ -1,0 +1,5 @@
+## v22.89 - CHATTER LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the seventh batch of raid text found the chatter still written as sentences. A pillager calling extraction near you is PILLAGER CALLED EXTRACTION with his name and the ring as the detail (his name stays out of the headline because the longest tag would take it past 34), the Survivor getting out is SURVIVOR EXTRACTED with the ring, the Peddler is THE PEDDLER SET UP SHOP or THE PEDDLER IS BACK, a pillager seen first is NAME IS FRIENDLY or NAME IS WATCHING, a shot animal is DEER DOWN or BIRD DOWN, and a drink wearing off is LIQUOR WORE OFF or BLOTTER WORE OFF by the item name. The details that were sentences are short: Settings: Auto resolution, Settings: Render resolution, Effects, and Not your kill under a survivor or the Peddler killed by someone else. No rule moved.
+
+MEASURED. Check 22.89 passes, and fails on v22.88.
