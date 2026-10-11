@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.23 - ARCADE: EXTRACTION BONUS AND RE-DROP
+
+Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 4 of 20. In an arcade raid an extraction no longer ends the raid: it pays EXTRACTION BONUS +2,500 and pays the haul pot a second time, shows a 3 second EXTRACTED! banner with the new TEAM SCORE, and drops him straight back into the same raid with a fresh random loadout and full health, at least 900 from every extraction ring, after a 6 second drop-in hold. The ring he left on can be called again. The world is not rebuilt, so a teammate fight goes on, and no run is counted. A normal raid is exactly as it was.
+
+MEASURED. Check 23.23 passes, and fails on v23.22.
 ## v23.22 - ARCADE: DEATH RESPAWNS
 
 Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 3 of 20. In an arcade raid a death no longer ends the raid: going down and the death beat play out as always, then he drops back into the same raid with a fresh random loadout and full health, near a teammate who is up or else at the spawn farthest from every enemy, and stands still for a 3 second drop-in hold while the world runs on. Nothing is settled, no run is counted and no card comes up. Abandoning an arcade raid now just stops it, with no XP fee. A normal raid is exactly as it was.

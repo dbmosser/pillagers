@@ -1,0 +1,7 @@
+v23.23: arcade: extraction bonus and re-drop
+
+In the arcade demo an extraction pays a 2,500 bonus plus your haul again and drops you back in.
+
+Check 23.23. Fails on v23.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

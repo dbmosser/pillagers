@@ -1,0 +1,5 @@
+## v23.23 - ARCADE: EXTRACTION BONUS AND RE-DROP
+
+Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 4 of 20. In an arcade raid an extraction no longer ends the raid: it pays EXTRACTION BONUS +2,500 and pays the haul pot a second time, shows a 3 second EXTRACTED! banner with the new TEAM SCORE, and drops him straight back into the same raid with a fresh random loadout and full health, at least 900 from every extraction ring, after a 6 second drop-in hold. The ring he left on can be called again. The world is not rebuilt, so a teammate fight goes on, and no run is counted. A normal raid is exactly as it was.
+
+MEASURED. Check 23.23 passes, and fails on v23.22.
