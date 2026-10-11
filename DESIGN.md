@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.31 - ARCADE: EASIER FOR NEWCOMERS
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 10 of 20. In the arcade every hit on a player takes half, in both windows (on player 2 it stacks with kid mode). Every kill refunds half a magazine of the gun in hand, and every third kill of the run drops a Bandage into the backpack while the player carries fewer than 5 heals, shown on the pickup stack as KILL BONUS. The drop already gives 6 magazines and full armour. Normal raids are untouched.
+
+MEASURED. Check 23.31 passes, and fails on v23.30.
 ## v23.30 - ARCADE: SPAWN SHIELD
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 9 of 20. In the arcade a player is put down shielded at every drop, respawn and re-drop: nothing hurts him and a hit only sparks teal on the bubble, so a newcomer who picks up the pad is never killed before he has found the stick. A pulsing teal bubble and SHIELD . MOVE TO START sit on him. The shield drops the moment he moves, rolls, shoots or throws; aiming and searching keep it. The other window draws the same bubble on him. Normal raids are untouched.

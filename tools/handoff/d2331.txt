@@ -1,0 +1,5 @@
+## v23.31 - ARCADE: EASIER FOR NEWCOMERS
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 10 of 20. In the arcade every hit on a player takes half, in both windows (on player 2 it stacks with kid mode). Every kill refunds half a magazine of the gun in hand, and every third kill of the run drops a Bandage into the backpack while the player carries fewer than 5 heals, shown on the pickup stack as KILL BONUS. The drop already gives 6 magazines and full armour. Normal raids are untouched.
+
+MEASURED. Check 23.31 passes, and fails on v23.30.

@@ -1,0 +1,7 @@
+v23.31: arcade: easier for newcomers
+
+In the arcade hits take half, every kill refunds half a magazine and every third kill adds a Bandage up to 5 heals.
+
+Check 23.31. Fails on v23.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
