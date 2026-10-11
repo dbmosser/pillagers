@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.77';
+var VER='22.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17275,10 +17275,13 @@ function tryExtractTick(dt,wantCall){
     G.active=_aOpen||z||G.active;
   }
   // A refusal has to say what it is refusing, or it reads as a dead button.
+  // v22.78, the raid text rewrite (R33): HOLDING A KEY NEVER REPEATS A LINE. E held in a closed ring said the closed line and
+  // played its clank again every 2.5 s, three lines and three clanks in six seconds for one fact the ring badge already shows.
+  // It is said once per visit now: G.closedSaid remembers the ring until he stands outside it (z is the ring he stands in).
+  if(G.closedSaid&&G.closedSaid!==z) G.closedSaid=null;
   if(z&&wantCall&&!z.open){
-    G.extSay=(G.extSay||0)-dt;
-    if(G.extSay<=0){
-      G.extSay=2.5;
+    if(G.closedSaid!==z){
+      G.closedSaid=z;
       var openZ=null,openD=1e9;
       for(var oz=0;oz<G.zones.length;oz++){
         var OZ=G.zones[oz];
@@ -35770,7 +35773,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.77: Going down, being hauled out, abandoning and emotes no longer say lines that the downed screen, the outcome card or the bubble already show. Check 22.77 fails on v22.76',
+  now:'v22.78: Holding E in a closed extraction ring says it is closed once per visit instead of every few seconds. Check 22.78 fails on v22.77',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

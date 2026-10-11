@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.78 - HOLDING A KEY NEVER REPEATS
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats itself. Holding E in a closed extraction ring said This point is CLOSED and played a clank again every two and a half seconds, three lines and three clanks in six seconds for one fact the ring badge already shows. It is said once per visit now, and again only after you step out of the ring and back in.
+
+MEASURED. Check 22.78 passes, and fails on v22.77.
 ## v22.77 - LINES NOBODY CAN SEE GO
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never says what nobody can read. Going down said a long sentence in the feed under the downed screen, which already shows DOWN, the bleed bar and his words SELF-REVIVE, one per raid. Being hauled aboard and abandoning said a line in the same frame the outcome card covers the raid, and the card already shows the XP fee. An emote narrated itself (You raise a hand) while the bubble over you showed it. Those lines are gone.

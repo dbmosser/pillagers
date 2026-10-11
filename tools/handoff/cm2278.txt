@@ -1,0 +1,7 @@
+v22.78: holding a key never repeats
+
+Holding E in a closed extraction ring says it is closed once per visit instead of every few seconds.
+
+Check 22.78. Fails on v22.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
