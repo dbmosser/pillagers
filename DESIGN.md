@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.39 - ARCADE: IDLE RETURN AND END RUN
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 16 of 20. A party machine has to go back to the demo on its own when the players walk away. In the arcade each window now keeps track of when its player last touched anything. After 90 seconds with nobody playing it calls STILL PLAYING?, from 120 seconds it counts RUN ENDS IN 30 down, and at 150 seconds the run ends: the raid is torn down with nothing counted or saved, and the attract comes back with a RUN OVER card showing the team score and each player row. A player who walks off while the other keeps playing is benched instead: player 1 stands out under PLAYER 1: PRESS ANY BUTTON, and player 2 drops out to its own attract while the host hears PLAYER 2 OUT. The pause box in the arcade now offers END RUN in place of Settings and Abandon run. Normal raids are untouched.
+
+MEASURED. Check 23.39 passes, and fails on v23.38.
 ## v23.38 - ARCADE: POPUPS AND STREAKS
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 15 of 20. A walk-up player should see every kill pay off. In the arcade each kill now pops its points up over the body, and kills less than 4 seconds apart chain into a streak that multiplies the score: two in a row is x2 with DOUBLE KILL called out, then TRIPLE KILL and MULTI KILL at x3, RAMPAGE at x4 from five, and UNSTOPPABLE at x5 from eight. While a streak is live its multiplier shows beside the team score. Normal raids are untouched.

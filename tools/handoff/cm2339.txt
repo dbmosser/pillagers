@@ -1,0 +1,7 @@
+v23.39: arcade: idle return and end run
+
+In the arcade nobody playing for 150 seconds ends the run back to the demo with a RUN OVER card, a player who walks off is benched, and the pause box offers END RUN.
+
+Check 23.39. Fails on v23.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
