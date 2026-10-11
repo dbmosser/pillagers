@@ -1,0 +1,7 @@
+v23.46: arcade: one-button quick heal
+
+In the arcade G on the keyboard and D-DOWN on the controller heal at once with what you carry, and the controls card shows it.
+
+Check 23.46. Fails on v23.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

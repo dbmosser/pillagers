@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.46 - ARCADE: ONE-BUTTON QUICK HEAL
+
+Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade23. Healing meant putting the heal on the belt and then firing, which a walk-up player never finds. In an arcade raid G on the keyboard and D-DOWN on the controller now heal at once with what you carry, by the same rules as every heal: the cheapest heal that still helps, the same wind-up bar, and his ruling that a Bandage stops at 85 and only a Medkit reaches 100. The controls card at every drop shows it on the HEAL row. Down, the buttons keep their old jobs. Normal raids are untouched: G still uses the selected belt item.
+
+MEASURED. Check 23.46 passes, and fails on v23.45.
 ## v23.45 - ARCADE: INITIALS AT THE FIRST TOP 10 EXTRACTION
 
 Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade22. The 3 letter initials card came only at the run end, so a team that walked away mid-run left ??? or nothing on the board. Now the first extraction that puts the run into tonights top 10 opens the initials card on the EXTRACTED banner. It holds the drop while it is up, takes the keyboard (letters, Backspace, Enter) and the pad (up and down change the letter, A next, B back, MENU done), and 20 s with no input keeps what is there. The run row keeps the initials, so the board shows the team name even if they walk off. Normal raids are untouched.

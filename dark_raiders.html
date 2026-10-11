@@ -1694,7 +1694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.45';
+var VER='23.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12117,7 +12117,7 @@ function raidKey(code,repeat,ev){
   if(code==='KeyT'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat&&NET.on&&typeof netGiftKey==='function'&&netGiftKey()){}   // v17.44: his pick 4, T offers the selected backpack item or takes an offer; v18.22: not behind the stall
   else if(code==='KeyT'&&G&&!G.over&&!G.paused&&!G.trade&&!G.bagOpen&&!repeat&&NET.on&&typeof netAidHold==='function') netAidHold();   // v16.84, his ask: T patches up a teammate in reach with your Bandage or Medkit, the pad Y; v18.22: never with the backpack open (that T is the trade key) and never behind the stall
   if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();   // v16.43: ping for the party
-  if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) useHot();
+  if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat&&!(G.arcade&&typeof arcadeQuickHeal==='function'&&arcadeQuickHeal())) useHot();   // v23.46 (arcade23): in the arcade G is the quick heal
   // ORDERS, v3.73, partner-merc line two. One key, three states, and the words
   // are the feedback: LOOT is the freelancer he has always been, FOLLOW keeps
   // him at your shoulder, HOLD nails him to the spot he is standing on when
@@ -13580,6 +13580,7 @@ function pollPad(){
   if(!_rbN) PAD.rbAt=null;
   // v16.46: the ping moved to D-UP on his order; both bumpers no longer ping.
   PAD.prev[4]=_lbN; PAD.prev[5]=_rbN;
+  if(G&&G.arcade&&!bagNav&&pressed(13)&&!PAD.prev[13]&&typeof arcadeQuickHeal==='function'){ try{ arcadeQuickHeal(); }catch(_aqh){} }   // v23.46 (arcade23): D-DOWN is the quick heal in the arcade
   if(bagNav){
     var dU=pressed(12),dD=pressed(13);
     if(dU&&!PAD.prev[12]){ raidKey('ArrowUp',false,null); keys['ArrowUp']=false; }
@@ -36128,7 +36129,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.45: In the arcade the first extraction that makes tonights top 10 opens the 3 letter initials card and holds the drop until it is done, and the board row keeps those initials. Check 23.45 fails on v23.44',
+  now:'v23.46: In the arcade G on the keyboard and D-DOWN on the controller heal at once with what you carry, and the controls card shows it. Check 23.46 fails on v23.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44508,12 +44509,23 @@ function arcadeShieldOff(){
 // AIM, FIRE, ROLL, RELOAD, SWITCH GUN, HEAL and EXTRACT. The keyboard names follow CHANGE KEYS (keysOf, keyName) and the pad names
 // go through padB, so a PlayStation pad reads its own buttons (only the button word, so the A of IN A TEAL RING stays a word). The
 // HOW TO PLAY attract page now draws the same rows. Only an arcade raid draws the card, so a normal raid is unchanged.
+// v23.46, HIS YES (2026-10-11) to the five recommendations, arcade23: ONE-BUTTON QUICK HEAL. Belt-then-fire is the heal control a
+// walk-up player never finds, so in an arcade raid G on the keyboard (the key as set in CHANGE KEYS) and D-DOWN on the pad heal at
+// once through useMedical: the same picker (findHeal), the same wind-up (startPrep), the same refusals and his ruling that a
+// Bandage stops at 85 (healCeil) and only a Medkit reaches 100. Only a standing player heals this way; down, G and D-DOWN keep
+// their old jobs (the belt words and the self-revive). Outside the arcade G still uses the selected belt item and D-DOWN is unchanged.
+function arcadeQuickHeal(){
+  var p=G&&G.player;
+  if(!G||!G.arcade||G.sim||G.over||G.paused||!p||p.downed||p.dying||p.specOut) return false;
+  try{ useMedical(); }catch(_qh){}
+  return true;
+}
 var ARCADE_CARD_T=4;   // seconds the card stays after the shield drops
 function arcadeCardRows(){
   function kn(c){ try{ return keyName(keysOf(c)); }catch(_k){ return keyName(c); } }
   var mv=[kn('KeyW'),kn('KeyA'),kn('KeyS'),kn('KeyD')], m=(mv.join('').length===4)?mv.join(''):mv.join(' ');
   return [['MOVE',m,padB('L STICK')],['AIM','MOUSE',padB('R STICK')],['FIRE','LEFT CLICK',padB('RT')],['ROLL',kn('Space'),padB('A')],
-    ['RELOAD',kn('KeyR'),padB('X')],['SWITCH GUN','1-4',padB('LB')+' / '+padB('RB')],['HEAL','+ ON THE BELT, THEN FIRE','+ ON THE BELT, THEN FIRE'],
+    ['RELOAD',kn('KeyR'),padB('X')],['SWITCH GUN','1-4',padB('LB')+' / '+padB('RB')],['HEAL',kn('KeyG'),padB('D-DOWN')],   // v23.46 (arcade23): the quick heal
     ['EXTRACT','HOLD '+kn('KeyE')+' IN A TEAL RING','HOLD '+padB('X')+' IN A TEAL RING']];
 }
 // how much of the card shows now, 0 to 1: full while shielded, then 4 s, fading over the last 0.6 s
