@@ -1,0 +1,7 @@
+v22.90: weather in caps
+
+The weather reads as a short caps callout, such as RAIN at the drop and STORM INCOMING when the sky turns.
+
+Check 22.90. Fails on v22.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

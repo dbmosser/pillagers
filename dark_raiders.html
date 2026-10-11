@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.89';
+var VER='22.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5984,19 +5984,23 @@ function navReachable(map,x,y){
 // heard, so weather is a tactical condition rather than a filter over the top.
 // Rain cuts noise BOTH ways, which is the interesting trade: it hides your steps
 // and it hides theirs.
+// v22.90 (tr7fixb), the review of raid text batch 7: HIS ORDER (2026-10-09), a raid line is a short caps callout of at most 34
+// characters. The weather said sentences (Rain. It covers your noise, and theirs. and The weather is turning. Storm. Lightning lights
+// up the map...). Each sky now carries cap, said at the drop (a clear sky still says nothing, his v6.68 note), turn, said when the
+// sky starts turning to it, and sub, the short detail under either. The fog detail is his own v7.43 line, byte for byte.
 var WEATHER=[
   {id:'clear',name:'Clear',view:1,noise:1,lights:1,rain:0,
-   line:'Still air. Nothing out here is covering you.'},
+   cap:null,turn:'SKIES CLEARING',sub:'Nothing is covering you'},
   {id:'partly',name:'Partly Cloudy',view:1,noise:1,lights:1,rain:0,turns:1,
-   line:'Partly cloudy. This will not hold.'},
+   cap:'PARTLY CLOUDY',turn:'CLOUDS ROLLING IN',sub:'The weather will turn'},
   {id:'rain',name:'Rainy',view:0.90,noise:0.60,lights:1,rain:1,
-   line:'Rain. It covers your noise, and theirs.'},
+   cap:'RAIN',turn:'RAIN INCOMING',sub:'Covers your noise and theirs'},
   {id:'fog',name:'Foggy',view:0.60,noise:1,lights:1,fog:1,rain:0,
-   line:'Limited visibility due to fog.'},
+   cap:'FOG',turn:'FOG ROLLING IN',sub:'Limited visibility due to fog.'},   // his v7.43 words, kept whole as the detail
   {id:'blackout',name:'Blackout',view:1,noise:1,lights:0.18,rain:0,
-   line:'Grid is down. Every lamp on the map is dead.'},
+   cap:'BLACKOUT',turn:'GRID GOING DOWN',sub:'Every lamp on the map is dead'},
   {id:'storm',name:'Storming',view:0.80,noise:0.48,lights:0.55,rain:2,lightning:true,
-   line:'Storm. Lightning lights up the map, and every flash makes you visible from farther away.'}   // v16.03, his order: the flash shows you to them, farther, not across the whole map
+   cap:'STORM',turn:'STORM INCOMING',sub:'Lightning shows you from farther off'}   // v16.03, his order: the flash shows you to them, farther, not across the whole map
 ];
 // WEATHER THAT TURNS. It was rolled once at the drop and then it was a fact
 // about the raid, which meant it was a difficulty modifier you read on the
@@ -6006,7 +6010,7 @@ var WEATHER=[
 // wx() therefore has to be able to return a state that is halfway between two
 // entries, because every vision, noise and lighting query in the game reads it
 // live and a snap would be a jump cut.
-var WXBLEND={id:'turning',name:'TURNING',view:1,noise:1,lights:1,rain:0,fog:0,line:null};
+var WXBLEND={id:'turning',name:'TURNING',view:1,noise:1,lights:1,rain:0,fog:0,cap:null,turn:null,sub:null};   // v22.90 (tr7fixb): the callout fields
 function extLetter(z){
   var ix=(G&&G.zones)?G.zones.indexOf(z):-1;
   return ix<0?'?':String.fromCharCode(65+ix);
@@ -6081,7 +6085,7 @@ function wxTick(dt){
   // Next turn, if there is one, lands somewhere in the back half.
   G.wxAt=rnd(120,220);
   if(!G.sim){
-    say('The weather is turning. '+nw.line,'chat');   // v22.xx (R35): chat
+    say(nw.turn||'WEATHER TURNING','chat',{sub:nw.sub||''});   // v22.xx (R35): chat; v22.90 (tr7fixb): the caps callout, the sky as the detail
     sfxHere('charge',G.player.x,G.player.y);   // v20.83 (H62): played here only; player 2 now hears the turn in his own window, not a second time from where the host stands
   }
 }
@@ -11756,7 +11760,7 @@ function startRaid(){
   // than decoration, and the controls line is the same every single raid.
 // v6.68, his note: no surface contact line. Weather still announces itself; a clear sky
 // now says nothing at all, which is the correct amount to say about a clear sky.
-if(G.wx.id!=='clear'&&G.wx.line) say(G.wx.line,'chat');   // v22.xx (R35): chat
+if(G.wx.id!=='clear'&&G.wx.cap) say(G.wx.cap,'chat',{sub:G.wx.sub||''});   // v22.xx (R35): chat; v22.90 (tr7fixb): the caps callout, the sky as the detail
   // v13.32: a loaner in his hands while a gun of his own waits in the stash. Said
   // after the weather line, never over it.
   try{
@@ -35917,7 +35921,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.89: The chatter lines read as short caps callouts, such as THE PEDDLER IS BACK and LIQUOR WORE OFF. Check 22.89 fails on v22.88',
+  now:'v22.90: The weather reads as a short caps callout, such as RAIN at the drop and STORM INCOMING when the sky turns. Check 22.90 fails on v22.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42640,7 +42644,7 @@ function netWorldTake(peer,m){
   // sky without a word. A host word that starts a new turn now says it here too, once, with the charge sound played here only.
   var _wo=G.wxNext;
   G.wxNext=netWxOf(m.wn); G.wxT=(typeof m.wt==='number'&&isFinite(m.wt))?clamp(m.wt,0,1):0;
-  if(G.wxNext&&(!_wo||_wo.id!==G.wxNext.id)&&!(G.wx&&G.wx.id===G.wxNext.id)&&G.player){ say('The weather is turning. '+G.wxNext.line,'chat'); sfxHere('charge',G.player.x,G.player.y); }
+  if(G.wxNext&&(!_wo||_wo.id!==G.wxNext.id)&&!(G.wx&&G.wx.id===G.wxNext.id)&&G.player){ say(G.wxNext.turn||'WEATHER TURNING','chat',{sub:G.wxNext.sub||''}); sfxHere('charge',G.player.x,G.player.y); }   // v22.90 (tr7fixb): the caps callout on the linked window too
   if(m.bd&&typeof m.bd.length==='number') netBoardTake(m.bd);   // v16.34: the host board
   if(typeof m.kd==='number'&&isFinite(m.kd)) NET.kidHost=clamp(m.kd,KID_MIN,1);   // v16.44: kid mode as the host has it; v17.02, co-op hunt 2026-09-28: down to 1/20, not 1/10
   NET.kbHost=(m.kb===1)?1:((m.kb===0)?0:null);   // v17.71: player 2 comes back after death, as the host has it

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.90 - WEATHER IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the seventh batch of raid text found the weather still said as sentences, such as Rain. It covers your noise, and theirs. at the drop and The weather is turning. Storm. Lightning lights up the map... when the sky starts to turn. Each sky now has a caps headline for the drop (RAIN, FOG, STORM, BLACKOUT, PARTLY CLOUDY; a clear sky still says nothing, his v6.68 note) and one for the turn (STORM INCOMING, RAIN INCOMING, FOG ROLLING IN, GRID GOING DOWN, CLOUDS ROLLING IN, SKIES CLEARING), with a short detail under it such as Covers your noise and theirs or Lightning shows you from farther off (his v16.03 order: farther, not across the whole map). The fog detail is his own v7.43 line, kept whole. Player 2 is told the turn the same way. The skies, their odds and their effects did not move.
+
+MEASURED. Check 22.90 passes, and fails on v22.89.
 ## v22.89 - CHATTER LINES IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the seventh batch of raid text found the chatter still written as sentences. A pillager calling extraction near you is PILLAGER CALLED EXTRACTION with his name and the ring as the detail (his name stays out of the headline because the longest tag would take it past 34), the Survivor getting out is SURVIVOR EXTRACTED with the ring, the Peddler is THE PEDDLER SET UP SHOP or THE PEDDLER IS BACK, a pillager seen first is NAME IS FRIENDLY or NAME IS WATCHING, a shot animal is DEER DOWN or BIRD DOWN, and a drink wearing off is LIQUOR WORE OFF or BLOTTER WORE OFF by the item name. The details that were sentences are short: Settings: Auto resolution, Settings: Render resolution, Effects, and Not your kill under a survivor or the Peddler killed by someone else. No rule moved.
