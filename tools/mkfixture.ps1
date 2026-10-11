@@ -9113,7 +9113,7 @@ window.__REGRESS=[
        for(i=0;i<240&&seen<0;i++){
          rows=feedRows();
          for(j=0;j<rows.length;j++) if(String(rows[j].m).indexOf('MOTH')===0){ seen=i; break; }
-         if(seen<0&&g.alert&&g.alert.T>0&&(String(g.alert.m).indexOf('MOTH')===0||String(g.alert.sub||'').indexOf('MOTH')===0)) seen=i;   /* retargeted for the alert lane (R08): a crit line shows in the alert slot */
+         if(seen<0&&g.alert&&g.alert.T>0&&(String(g.alert.m).indexOf('MOTH')===0||String(g.alert.sub||'').indexOf('MOTH')>=0)) seen=i;   /* tr5fixb: the detail may read REVIVE MOTH */   /* retargeted for the alert lane (R08): a crit line shows in the alert slot */
          if(seen>=0) break;
          step(); if(g.over) break;
        }
