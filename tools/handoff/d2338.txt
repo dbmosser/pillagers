@@ -1,0 +1,5 @@
+## v23.38 - ARCADE: POPUPS AND STREAKS
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 15 of 20. A walk-up player should see every kill pay off. In the arcade each kill now pops its points up over the body, and kills less than 4 seconds apart chain into a streak that multiplies the score: two in a row is x2 with DOUBLE KILL called out, then TRIPLE KILL and MULTI KILL at x3, RAMPAGE at x4 from five, and UNSTOPPABLE at x5 from eight. While a streak is live its multiplier shows beside the team score. Normal raids are untouched.
+
+MEASURED. Check 23.38 passes, and fails on v23.37.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.38 - ARCADE: POPUPS AND STREAKS
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 15 of 20. A walk-up player should see every kill pay off. In the arcade each kill now pops its points up over the body, and kills less than 4 seconds apart chain into a streak that multiplies the score: two in a row is x2 with DOUBLE KILL called out, then TRIPLE KILL and MULTI KILL at x3, RAMPAGE at x4 from five, and UNSTOPPABLE at x5 from eight. While a streak is live its multiplier shows beside the team score. Normal raids are untouched.
+
+MEASURED. Check 23.38 passes, and fails on v23.37.
 ## v23.37 - ARCADE: ACTION COMES TO YOU
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 14 of 20. A walk-up player should never wander a quiet map looking for a fight, so in the arcade the fight comes to him. Every 22 seconds at the start, and faster as the team score climbs (down to every 10 seconds), a pack of two to six hunters drops in about 800 to 1,000 away and heads straight for one of the players, with WAVE 1, WAVE 2 and so on called out. Crawlers at first, sentries once the team passes 4,000, hostile pillagers from 8,000 and an elite leading every pack from 16,000. It holds off while the players already have enough on them nearby, so it never buries them. Normal raids are untouched.

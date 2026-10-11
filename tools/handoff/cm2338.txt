@@ -1,0 +1,7 @@
+v23.38: arcade: popups and streaks
+
+In the arcade every kill pops its points over the body, and kills less than 4 seconds apart chain into a streak from DOUBLE KILL at x2 up to UNSTOPPABLE at x5, shown beside the team score.
+
+Check 23.38. Fails on v23.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
