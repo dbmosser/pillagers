@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.21 - ARCADE RAID: ENDLESS, RANDOM KIT
+
+Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 2 of 20. An arcade raid is now possible (nothing on the title opens it yet): it is a normal raid built the normal way, then made endless. There is no raid clock, no extraction point ever closes, the extraction call takes 15 seconds, the peddler and the stray are left out, and every drop comes with a random loadout: a strong gun in hand and a different one on the back, a full magazine each and six more for the gun in hand, 3 Bandages, a Medkit, a Frag, a Smoke and full armour. It all plays on the sandbox profile, so nothing is saved and no run is counted, and leaving the arcade puts his profile and his settings back. A normal raid is exactly as it was.
+
+MEASURED. Check 23.21 passes, and fails on v23.20.
 ## v23.20 - ARCADE SANDBOX: YOUR SAVE IS NEVER TOUCHED
 
 Co-op hunt while he was away. His order of 2026-10-11: a 2 PLAYER ARCADE DEMO, a walk-up party mode for Halloween. This is build 1 of 20, the groundwork. While an arcade session is on, the game plays on a copy of the profile with one rifle, no stash, no kit, no contracts and default keys, and nothing is written to the save at all. Leaving the arcade puts his own profile back exactly as it was. Nothing in a normal raid changes, and nothing yet opens the arcade.

@@ -1,0 +1,7 @@
+v23.21: arcade raid: endless, random kit
+
+Groundwork for the 2 PLAYER ARCADE DEMO: an arcade raid has no clock, every extraction stays open, and every drop comes with a random loadout.
+
+Check 23.21. Fails on v23.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
