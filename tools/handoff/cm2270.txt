@@ -1,0 +1,7 @@
+v22.70: one teammate colour
+
+A teammate is one ally blue wherever he is named or marked, and red while he is down.
+
+Check 22.70. Fails on v22.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

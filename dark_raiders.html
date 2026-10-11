@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.69';
+var VER='22.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35752,7 +35752,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.69: The what is new card names the prompt builds. Check 22.69 fails on v22.68',
+  now:'v22.70: A teammate is one ally blue wherever he is named or marked, and red while he is down. Check 22.70 fails on v22.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41260,7 +41260,10 @@ function netUpTags(){
       nm=netSeatName(g.seat)||'PILLAGER';
       tw=wc.measureText(nm).width;
       wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);
-      wc.fillStyle='#ffc04a'; wc.fillText(nm,g.x-tw/2,g.y-52);
+      // v22.70, the raid text rewrite (R27): ONE TEAMMATE COLOUR. His name over his head was amber, the colour of keys and of your own
+      // Waypoint, while his row on the left, his map mark and his Waypoint were ally blue; his edge arrow was amber too and his ping
+      // cyan, close to the extraction colour. A teammate is now HUDC.ally wherever he is named or marked, and danger red while he is down.
+      wc.fillStyle=g.dn?HUDC.danger:HUDC.ally; wc.fillText(nm,g.x-tw/2,g.y-52);
       // v22.68, the raid text rewrite (R26): a teammate who is down says so over his head, DOWN and the seconds his word says he
       // has left, in danger red on a danger plate above his name, seen from anywhere on screen. Read from his word, never written.
       if(g.dn){
@@ -41885,7 +41888,7 @@ function netMateArrow(g){
   dx=s.x-cx; dy=s.y-cy; if(!dx&&!dy) return null;
   k=Math.min((W/2-M)/Math.max(1e-6,Math.abs(dx)),(H/2-M)/Math.max(1e-6,Math.abs(dy)));
   ax=cx+dx*k; ay=cy+dy*k; a=Math.atan2(dy,dx);
-  c=g.dn?'#ff5a4a':'#ffc04a';
+  c=g.dn?HUDC.danger:HUDC.ally;   // v22.70 (R27): one teammate colour
   ctx.save(); ctx.translate(ax,ay); ctx.rotate(a);
   ctx.fillStyle=c; ctx.strokeStyle='rgba(6,9,13,.9)'; ctx.lineWidth=2;
   ctx.beginPath(); ctx.moveTo(LH(14),0); ctx.lineTo(-LH(8),-LH(9)); ctx.lineTo(-LH(4),0); ctx.lineTo(-LH(8),LH(9)); ctx.closePath(); ctx.stroke(); ctx.fill();
@@ -41919,7 +41922,7 @@ function netTeamHud(by){
     NETTEAMBOX={n:n,x:Math.round(12*_thr),y:_tt,w:Math.round(158*_thr),h:Math.round(n*44*_thr)};
     ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(x-4,y-15,w+8,36);
     ctx.font=FS(TYPE.label); ctx.textAlign='left';
-    ctx.fillStyle=g.dn?'#ff8a80':'#bfe0ff'; ctx.fillText(netSeatName(g.seat)||'PILLAGER',x,y);
+    ctx.fillStyle=g.dn?HUDC.danger:HUDC.ally; ctx.fillText(netSeatName(g.seat)||'PILLAGER',x,y);   // v22.70 (R27): one teammate colour
     if(g.dn){ t=(g.dt>0)?(' '+g.dt+'s'):''; ctx.fillStyle='#ff5a4a'; ctx.textAlign='right'; ctx.fillText('DOWN'+t,x+w,y); ctx.textAlign='left'; }
     f=(g.mh>0)?clamp((g.hp||0)/g.mh,0,1):0;
     ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y+5,w,7);
@@ -42215,7 +42218,7 @@ function netPingDraw(){
     if(e&&e.hp>0){ p.x=e.x; p.y=e.y; }   // a pinged enemy is followed while it lives
     s=w2s(p.x,0,p.y); if(!s) continue;
     x=clamp(s.x,M,W-M); y=clamp(s.y,M,H-M);
-    c=p.dg?'#ff4a3a':(p.w?'#ff8a3c':'#6fe0ff');
+    c=p.dg?'#ff4a3a':(p.w?'#ff8a3c':((p.s===NET.seat)?HUDC.warn:HUDC.ally));   // v22.70 (R27): a teammate ping in the teammate colour, your own in amber like your Waypoint
     ctx.save(); ctx.globalAlpha=0.55+0.45*Math.abs(Math.sin(now/180));
     ctx.strokeStyle=c; ctx.lineWidth=2.5;
     ctx.beginPath(); ctx.moveTo(x,y-LH(12)); ctx.lineTo(x+LH(9),y); ctx.lineTo(x,y+LH(12)); ctx.lineTo(x-LH(9),y); ctx.closePath(); ctx.stroke();
@@ -42542,10 +42545,10 @@ function netMapDots(ox,oy,sc,z){
     g=NET.up[i]; if(!netUpShown(g)) continue;
     x=ox+g.x*sc; y=oy+g.y*sc; nm=netSeatName(g.seat)||'PILLAGER';
     ctx.fillStyle='#120e0c'; ctx.beginPath(); ctx.arc(x,y,9*z,0,6.2832); ctx.fill();
-    ctx.fillStyle=g.dn?'#e2564a':'#6fb8ff'; ctx.beginPath(); ctx.arc(x,y,6*z,0,6.2832); ctx.fill();
-    if(!g.dn){ ctx.strokeStyle='rgba(111,184,255,.85)'; ctx.lineWidth=2*z; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(g.f)*18*z,y+Math.sin(g.f)*18*z); ctx.stroke(); ctx.lineWidth=1; }
+    ctx.fillStyle=g.dn?HUDC.danger:HUDC.ally; ctx.beginPath(); ctx.arc(x,y,6*z,0,6.2832); ctx.fill();   // v22.70 (R27): one teammate colour
+    if(!g.dn){ ctx.strokeStyle='rgba(191,224,255,.85)'; ctx.lineWidth=2*z; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(g.f)*18*z,y+Math.sin(g.f)*18*z); ctx.stroke(); ctx.lineWidth=1; }
     ctx.font=FS(TYPE.micro); ctx.textAlign='center';
-    ctx.fillStyle=g.dn?'#ff8a80':'#bfe0ff'; ctx.fillText(nm,x,y-13*z);
+    ctx.fillStyle=g.dn?HUDC.danger:HUDC.ally; ctx.fillText(nm,x,y-13*z);   // v22.70 (R27): one teammate colour
     if(g.dn) ctx.fillText('DOWN',x,y+20*z);
     ctx.textAlign='left'; n++;
   }

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.70 - ONE TEAMMATE COLOUR
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid reads like a shooter HUD, where a teammate has one colour. His name over his head was amber, the colour of keys and of your own Waypoint, while his row on the left, his map mark and his Waypoint were blue; his edge arrow was amber and his ping cyan, close to the extraction colour. A teammate is now the one ally blue wherever he is named or marked, and danger red while he is down. Your own ping is amber, like your Waypoint.
+
+MEASURED. Check 22.70 passes, and fails on v22.69.
 ## v22.69 - THE WHAT IS NEW CARD NAMES THE PROMPTS
 
 Co-op hunt while he was away. The card was stamped v22.53 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text prompt builds shipped on the evening of 2026-10-10: every world prompt is drawn at the SEARCH size on a plate, one at a time, with the key of the device in hand, and a downed teammate shows DOWN and [E] REVIVE; the rest are in the change list.
