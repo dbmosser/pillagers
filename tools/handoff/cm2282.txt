@@ -1,0 +1,7 @@
+v22.82: the location tag
+
+Walking into a new zone shows its name in caps at the top of the screen instead of a Crossing into sentence.
+
+Check 22.82. Fails on v22.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

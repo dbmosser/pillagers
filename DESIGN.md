@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.82 - THE LOCATION TAG
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD. Walking into a zone or a landmark said Crossing into the receiving apron. or Entering the manifest. as a message row, with his caps names lowercased. Now the authored name shows in caps in the alert slot when it is free, dim and letter spaced, for two and a half seconds, at most once per name every twenty seconds, and never while an alert holds or a hostile is chasing you within 700.
+
+MEASURED. Check 22.82 passes, and fails on v22.81.
 ## v22.81 - EMOTE AND CLOSED RING LINES IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the sixth batch of raid text found the emote, closed ring and bystander lines still written as sentences. The hail now says NOT WHILE DOWN, NOT WHILE ROLLING, LOWER YOUR GUN TO TALK and NOBODY IN EARSHOT, and a pillager answers by name in caps: NAME WILL NOT TALK, NAME STANDS DOWN or NAME WAVES BACK (the longest tag keeps each within 34), and NOTHING TO SPARE with his name as the detail. E in a closed ring says EXTRACTION A IS CLOSED with the nearest open one, its distance and its direction as the detail, still once per visit. A survivor or the Peddler killed by someone else is SOMEONE SHOT THE SURVIVOR or THE PEDDLER IS DEAD, with Not on you. or Someone else did that. as the detail. No rule moved.

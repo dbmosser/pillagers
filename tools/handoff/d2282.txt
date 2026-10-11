@@ -1,0 +1,5 @@
+## v22.82 - THE LOCATION TAG
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD. Walking into a zone or a landmark said Crossing into the receiving apron. or Entering the manifest. as a message row, with his caps names lowercased. Now the authored name shows in caps in the alert slot when it is free, dim and letter spaced, for two and a half seconds, at most once per name every twenty seconds, and never while an alert holds or a hostile is chasing you within 700.
+
+MEASURED. Check 22.82 passes, and fails on v22.81.
