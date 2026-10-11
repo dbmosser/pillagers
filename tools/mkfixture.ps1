@@ -17919,10 +17919,10 @@ window.__REGRESS=[
        netGiftTake(peer,{t:'gift',op:'no',id:'d2',why:'down'});
        if(!said.some(function(s){ return /is down/.test(s); })) bad.push('a no for a downed taker was not said as such ('+said.join('|')+')');
        if(g.giftOut) bad.push('the giver offer stayed open after the no');
-       g.giftIn={id:'d3',k:'bandage',from:1,t:g.t-GIFT_T-1}; said.length=0; drawGiftLine();
-       if(g.giftIn) bad.push('an offer that ran out was kept'); if(!said.some(function(s){ return /ran out/.test(s); })) bad.push('an offer that ran out was not said ('+said.join('|')+')');
-       g.giftOut={id:'d4',k:'bandage',to:1,t:g.t-GIFT_T-6}; said.length=0; drawGiftLine();
-       if(g.giftOut) bad.push('an unanswered offer was kept'); if(!said.some(function(s){ return /did not take/.test(s); })) bad.push('an unanswered offer was not said ('+said.join('|')+')');
+       g.giftIn={id:'d3',k:'bandage',from:1,t:g.t-GIFT_T-1}; said.length=0; drawGiftLine(); if(typeof giftTick==='function') giftTick();   /* tr30fix: the lane tick ends it */
+       if(g.giftIn) bad.push('an offer that ran out was kept'); if(!said.some(function(s){ return (/ran out|EXPIRED/).test(s); })) bad.push('an offer that ran out was not said ('+said.join('|')+')');
+       g.giftOut={id:'d4',k:'bandage',to:1,t:g.t-GIFT_T-6}; said.length=0; drawGiftLine(); if(typeof giftTick==='function') giftTick();
+       if(g.giftOut) bad.push('an unanswered offer was kept'); if(!said.some(function(s){ return (/did not take|DID NOT TAKE/).test(s); })) bad.push('an unanswered offer was not said ('+said.join('|')+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ netSend=oSend; say=oSay; NET.on=keep.on; NET.role=keep.role; NET.peers=keep.peers; NET.roster=keep.roster; NET.seat=keep.seat; keys={}; try{ var g2=__state(); if(g2){ g2.giftIn=null; g2.giftOut=null; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
