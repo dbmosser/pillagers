@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.78';
+var VER='22.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15772,19 +15772,21 @@ function useMedical(){
   // v15.26: and a Bandage over a Medkit stops at 85 plus what the Medkit had left, so the reach is the drain's own, healReach.
   var _reach=healReach(p);
   if(_reach>=p.maxhp){
-    say((p.healQ>0)?'Already healing.':'Already at full');
+    // v22.79 (tr6fixa), the review of raid text batch 6: HIS ORDER (2026-10-09), a raid line is a short caps callout. The heal and
+    // plate refusals and the plate landing were sentences; they are ALREADY HEALING, HEALTH FULL, BANDAGES STOP AT 85 (read from
+    // healCeil, with You need a Medkit. as the detail), NO MEDICAL SUPPLIES, ALREADY APPLYING and ARMOUR PLATE SLOTTED.
+    say((p.healQ>0)?'ALREADY HEALING':'HEALTH FULL');
     return false;
   }
   var idx=findHeal();   // skips anything that cannot raise him past what is inbound
   if(idx<0){
     var _anyHeal=false;
     for(var _h=0;_h<G.bag.length;_h++){ var _hi=ITEMS[G.bag[_h]]; if(_hi&&_hi.use==='heal'){ _anyHeal=true; break; } }
-    say(_anyHeal?'Only bandages left, and they will not take you past '+
-                 Math.round(healCeil(ITEMS.bandage))+'. You need a Medkit.'
-               :'No medical supplies');
+    if(_anyHeal) say('BANDAGES STOP AT '+Math.round(healCeil(ITEMS.bandage)),'info',{sub:'You need a Medkit.'});
+    else say('NO MEDICAL SUPPLIES');
     return false;
   }
-  if(p.prep){ say('Already applying '+(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'something')+'.'); return false; }
+  if(p.prep){ say('ALREADY APPLYING','info',{sub:String(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'Medical').toUpperCase()}); return false; }
   var k=G.bag[idx], it=ITEMS[k];
   G.bag.splice(idx,1); startPrep('heal',k); blip('pick');
   // v22.74, the raid text rewrite (R29): WIND-UPS SHOW ON THE USE BAR ONLY. Applying a Bandage or a Medkit, slotting a plate, and
@@ -15831,7 +15833,7 @@ function tickPrepSlot(p,slot,dt){
   if(PR.kind==='armor'){
     var cap=armorCap();
     p.armor=Math.min(cap,p.armor+(it&&it.amt||0));
-    say(it.name+' slotted. Armour '+Math.round(p.armor)+'.');
+    say((it.name+' slotted').toUpperCase(),'info',{sub:'Armour '+Math.round(p.armor)+'.'});   // v22.79 (tr6fixa): ARMOUR PLATE SLOTTED  .  Armour 60.
   } else {
     applyHeal(PR.key);
     // v15.40, hud audit finding: THE INCOMING HEAL SHOWS ONLY THE HEALTH THAT WILL ARRIVE. The seconds in this line were the
@@ -17124,7 +17126,7 @@ function useHot(){
     // for a gun you are holding do nothing. Everything else still needs the bag.
     // v12.27, HIS NOTE: the dark cell v9.03 keeps for a spent item answered its
     // key with silence, which read as a dead key. It says what is missing.
-    if(ix<0&&!(ait.use==='gun')){ say('No '+ait.name+' left.'); return; }
+    if(ix<0&&!(ait.use==='gun')){ say(('No '+ait.name+' left').toUpperCase()); return; }   // v22.79 (tr6fixa): NO BANDAGE LEFT
     if((ait.use==='heal'||ait.use==='armor')&&NET.on){ var _aidS=netAidTarget(G.player); if(_aidS>=0){ netAidStart(_aidS,s2.itemKey); return; } }   // v16.23: facing a teammate beside you, it goes to him
     if(ait.use==='heal'){
       // Same inbound-aware guard as useMedical; this path names ONE item so it
@@ -17137,13 +17139,13 @@ function useHot(){
       // Bandage's 85 does not make a Medkit on its own key Already healing.
       // v15.26: nor does a Bandage over a Medkit, which stops at 85 plus what the Medkit had left: the drain's own reach.
       if(healReach(_pp)>=_pp.maxhp){
-        say((_pp.healQ>0)?'Already healing.':'Already at full'); return;
+        say((_pp.healQ>0)?'ALREADY HEALING':'HEALTH FULL'); return;   // v22.79 (tr6fixa): the caps callouts
       }
       // v12.04: and the item's own ceiling, counting what is inbound. The
       // generic verb has had this since v9.62; a named Bandage above 85 was
       // spent for nothing while the toast said it was healing you.
-      if(healReach(_pp)>=healCeil(ait)){ say(ait.name+' will not take you past '+Math.round(healCeil(ait))+'.'); return; }
-      if(_pp.prep){ say('Already applying '+(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'something')+'.'); return; }
+      if(healReach(_pp)>=healCeil(ait)){ say((ait.name+' stops at '+Math.round(healCeil(ait))).toUpperCase()); return; }
+      if(_pp.prep){ say('ALREADY APPLYING','info',{sub:String(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'Medical').toUpperCase()}); return; }
       G.bag.splice(ix,1); startPrep('heal',s2.itemKey); blip('pick');   // v22.74 (R29): the use bar says APPLYING
       G.tel.heals++;
       return;
@@ -35773,7 +35775,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.78: Holding E in a closed extraction ring says it is closed once per visit instead of every few seconds. Check 22.78 fails on v22.77',
+  now:'v22.79: The heal and plate refusals read as short caps callouts, such as HEALTH FULL and BANDAGES STOP AT 85. Check 22.79 fails on v22.78',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41512,15 +41514,18 @@ function netAidHold(quiet){
   try{ hs=hotbarSlots()[hotSel()]; }catch(_hs){ hs=null; }
   if(hs&&hs.kind==='heal') key=hs.icon;
   else if(hs&&hs.kind==='armor') key='plate';
-  if(!key||!ITEMS[key]){ if(!quiet) say('Select a Bandage, a Medkit or a plate on your tactical belt to patch up '+nm+'.'); return false; }
+  // v22.79 (tr6fixa): the caps callouts. SELECT A HEAL with the three items as the detail; the teammate refusals name him in caps
+  // (MOTH ARMOUR FULL, MOTH DOES NOT NEED IT, at most 33 characters with a 16 letter name), and ALREADY SLOTTING or ALREADY APPLYING
+  // with the item as the detail, as the plate verb already says it.
+  if(!key||!ITEMS[key]){ if(!quiet) say('SELECT A HEAL','info',{sub:'Bandage, Medkit or Armour Plate.'}); return false; }
   return !!netAidStart(s,key);   // its own lines refuse a teammate who needs nothing, or an item you have none of
 }function netAidStart(s,key){
   var p=G.player, it=ITEMS[key], g=NET.up[s], nm=netSeatName(s)||'your teammate', bi, arm, ceil;
   if(!it||!g) return false;
   arm=(it.use==='armor');
-  if(arm){ if(g.ac>0&&g.ar>=g.ac){ say('Armour on '+nm+' is full.'); return false; } if(p.prepA){ say('Already slotting a plate.'); return false; } }
-  else { ceil=it.capHp?Math.min(g.mh||100,it.capHp):(g.mh||100); if(g.hp>=ceil){ say(nm+' does not need a '+it.name+'.'); return false; } if(p.prep){ say('Already applying '+(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'something')+'.'); return false; } }
-  bi=G.bag.indexOf(key); if(bi<0){ say('No '+it.name+' left.'); return false; }
+  if(arm){ if(g.ac>0&&g.ar>=g.ac){ say(String(nm).toUpperCase()+' ARMOUR FULL'); return false; } if(p.prepA){ say('ALREADY SLOTTING','info',{sub:String(ITEMS[p.prepA.key]?ITEMS[p.prepA.key].name:'Plate').toUpperCase()}); return false; } }
+  else { ceil=it.capHp?Math.min(g.mh||100,it.capHp):(g.mh||100); if(g.hp>=ceil){ say(String(nm).toUpperCase()+' DOES NOT NEED IT'); return false; } if(p.prep){ say('ALREADY APPLYING','info',{sub:String(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'Medical').toUpperCase()}); return false; } }
+  bi=G.bag.indexOf(key); if(bi<0){ say(('No '+it.name+' left').toUpperCase()); return false; }
   G.bag.splice(bi,1);
   startPrep(arm?'armor':'heal',key);
   p[arm?'prepA':'prep'].aid=s;

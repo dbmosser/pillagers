@@ -1,0 +1,7 @@
+v22.79: heal and plate lines in caps
+
+The heal and plate refusals read as short caps callouts, such as HEALTH FULL and BANDAGES STOP AT 85.
+
+Check 22.79. Fails on v22.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

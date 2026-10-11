@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.79 - HEAL AND PLATE LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout, never a sentence. The review of the sixth batch of raid text found the heal and plate lines still written as sentences. At full health the heal verb said Already at full, with only Bandages above their reach it said a whole sentence about 85 and a Medkit, and a plate landing said Armour Plate slotted. Armour 60. They now read HEALTH FULL, ALREADY HEALING, BANDAGES STOP AT 85 (the number read from the Bandage ceiling) with You need a Medkit. as the detail, NO MEDICAL SUPPLIES, ALREADY APPLYING and ARMOUR PLATE SLOTTED with the armour as the detail. Patching up a teammate says SELECT A HEAL, MOTH ARMOUR FULL, MOTH DOES NOT NEED IT, ALREADY SLOTTING and NO BANDAGE LEFT. No rule moved: the same refusals fire at the same moments.
+
+MEASURED. Check 22.79 passes, and fails on v22.78.
 ## v22.78 - HOLDING A KEY NEVER REPEATS
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats itself. Holding E in a closed extraction ring said This point is CLOSED and played a clank again every two and a half seconds, three lines and three clanks in six seconds for one fact the ring badge already shows. It is said once per visit now, and again only after you step out of the ring and back in.
