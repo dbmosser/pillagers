@@ -1694,7 +1694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.50';
+var VER='23.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36133,7 +36133,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.50: In the arcade, ending the run on player 1 always sends player 2 back to its attract. Check 23.50 fails on v23.49',
+  now:'v23.51: In the arcade the initials card from a top 10 extraction stays on the host window, so player 2 can still drop in with A, and player 2 sees the card only at RUN OVER. Check 23.51 fails on v23.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -45769,16 +45769,22 @@ function arcadeIniLive(){ return !!(ARCADE.on&&ARCADE.ini); }
 function arcadeIniStart(run){
   run=(typeof run==='string'&&run)?run:((ARCADE.run&&ARCADE.run.id)||'');
   if(!ARCADE.on||!run) return false;
-  if(ARCADE.ini&&!ARCADE.ini.mirror&&ARCADE.ini.run===run) return true;   // v23.45 (arcade22): the card from the extraction stays, letters and all
+  if(ARCADE.ini&&!ARCADE.ini.mirror&&ARCADE.ini.run===run){ arcadeIniPost(); return true; }   // v23.45 (arcade22): the card from the extraction stays, letters and all (v23.51, arcade27: and player 2 sees it now, at RUN OVER)
   ARCADE.ini={run:run,l:['A','A','A'],pos:0,at:Date.now(),touched:0,mirror:0};
   ARCADE.iniAy=1;   // a stick already held does not move the first letter
   arcadeIniPost();
   try{ if(ARCADE.att) ARCADE.att.ph=''; arcadeOverSync(); }catch(_io){}
   return true;
 }
+// v23.51, HIS YES (2026-10-11) to the five recommendations, arcade27 (a low finding of the arcade 14-25 review): THE HOST INITIALS CARD
+// STAYS ON THE HOST. The initials card the host opens at a top 10 extraction (arcade22) was sent to player 2 as arcinis like the
+// RUN OVER card, so the player 2 window on its attract showed it and its pad went to the card (A sent arcini), and player 2 could
+// not drop in while the host typed. Now the card is sent to player 2 only when no arcade raid is up here, that is at RUN OVER
+// (arcade18); a card kept from the extraction is sent then. Only an arcade run reaches any of it.
 function arcadeIniPost(){
   var n=ARCADE.ini;
   if(!n||n.mirror||ARCADE.role!=='host') return false;
+  if(G&&G.arcade) return false;   // v23.51 (arcade27): an arcade raid is up, so the card stays on the host
   return netSamePost({t:'arcinis',pair:NET.pair,run:n.run,l:n.l.join(''),pos:n.pos,on:1});
 }
 // One op on the card: up, down, next, back, done, or a letter. Returns the letters (the initials once it is done).

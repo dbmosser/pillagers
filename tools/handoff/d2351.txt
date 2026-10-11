@@ -1,0 +1,5 @@
+## v23.51 - ARCADE: THE HOST INITIALS CARD STAYS ON THE HOST
+
+Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade27 (a low finding of the arcade 14-25 review). The initials card the host gets at a top 10 extraction was also sent to the player 2 window on its attract, and it took over that pad, so player 2 pressing A typed on the host card instead of dropping in. Now the card is shown to player 2 only at RUN OVER, never during a live raid, and a card kept from the extraction is shown to player 2 when the run ends. Normal raids are untouched.
+
+MEASURED. Check 23.51 passes, and fails on v23.50.

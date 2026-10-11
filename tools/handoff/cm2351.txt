@@ -1,0 +1,7 @@
+v23.51: arcade: the host initials card stays on the host
+
+In the arcade the initials card from a top 10 extraction stays on the host window, so player 2 can still drop in with A, and player 2 sees the card only at RUN OVER.
+
+Check 23.51. Fails on v23.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

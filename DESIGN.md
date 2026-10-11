@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.51 - ARCADE: THE HOST INITIALS CARD STAYS ON THE HOST
+
+Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade27 (a low finding of the arcade 14-25 review). The initials card the host gets at a top 10 extraction was also sent to the player 2 window on its attract, and it took over that pad, so player 2 pressing A typed on the host card instead of dropping in. Now the card is shown to player 2 only at RUN OVER, never during a live raid, and a card kept from the extraction is shown to player 2 when the run ends. Normal raids are untouched.
+
+MEASURED. Check 23.51 passes, and fails on v23.50.
 ## v23.50 - ARCADE: RUN END ALWAYS REACHES PLAYER 2
 
 Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade26, a low finding of the arcade review. When the run ended on player 1, player 2 was told twice: once on the link between the two windows and once on the co-op link. If the co-op word came first, player 2 thought player 1 had left and picked the raid up as its own, so the run end after it was ignored and player 2 kept playing alone. Now player 1 marks that co-op word as a run end, and player 2 stops on whichever word comes first and goes back to its attract. Player 1 also says it again every half second until player 2 answers or 3 seconds pass. If player 1 window really goes away, player 2 still picks the raid up, as he ruled. Normal raids are untouched.
