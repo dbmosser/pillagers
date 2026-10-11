@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.65 - THE BACKPACK CUE FOLLOWS KEY CHANGES
+
+Co-op hunt while he was away. His order of 2026-10-09: a raid line names the key the action is really on. The cue under the gun card always said B / I BACKPACK, even after CHANGE KEYS moved the backpack to another key. It now names the keys as set; unmoved keys read B / I as before, and the controller cue is unchanged.
+
+MEASURED. Check 22.65 passes, and fails on v22.64.
 ## v22.64 - THE OFFER LINE NAMES ONE KEY
 
 Co-op hunt while he was away. His order of 2026-10-09: a raid line names the key of the device in hand. The trade offer line said T or Y to take it whatever he was holding. It now names one key in brackets: Y on a controller, and the key T is bound to on a keyboard. The parts are split by a middle dot, and the giver sees the item, Waiting and the seconds left.

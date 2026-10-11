@@ -1,0 +1,7 @@
+v22.65: the backpack cue follows key changes
+
+The backpack cue under the gun card names the keys as set in CHANGE KEYS.
+
+Check 22.65. Fails on v22.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
