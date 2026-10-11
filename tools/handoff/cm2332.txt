@@ -1,0 +1,7 @@
+v23.32: the what is new card names the arcade
+
+The what is new card names the 2 player arcade demo.
+
+Check 23.32. Fails on v23.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.32 - THE WHAT IS NEW CARD NAMES THE ARCADE
+
+Co-op hunt while he was away. The card was stamped v23.16 and the stamp may not trail the build by more than 0.15. Its new second line names the 2 player arcade demo builds of 2026-10-11: drop-in play from the title menu, a combined team score, a spawn shield and easier fights for newcomers.
+
+MEASURED. Check 23.32 passes, and fails on v23.31.
 ## v23.31 - ARCADE: EASIER FOR NEWCOMERS
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 10 of 20. In the arcade every hit on a player takes half, in both windows (on player 2 it stacks with kid mode). Every kill refunds half a magazine of the gun in hand, and every third kill of the run drops a Bandage into the backpack while the player carries fewer than 5 heals, shown on the pickup stack as KILL BONUS. The drop already gives 6 magazines and full armour. Normal raids are untouched.
