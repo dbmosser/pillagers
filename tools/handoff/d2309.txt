@@ -1,0 +1,5 @@
+## v23.09 - YOU CALL FOR EXTRACTION
+
+Co-op hunt while he was away. His v9.59 note: the game says call FOR extraction. Since v22.47 the hint under the last-seconds alert, standing in a ring with nothing called, dropped the word for again, the shorter verb phrase he had asked to be gone, and two old checks of that rule were red. It now reads Hold [E] to call for extraction.
+
+MEASURED. Check 23.09 passes, and fails on v23.08.

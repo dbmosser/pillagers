@@ -1,0 +1,7 @@
+v23.09: you call for extraction
+
+Standing in a ring, the hint reads Hold E to call for extraction again.
+
+Check 23.09. Fails on v23.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.09 - YOU CALL FOR EXTRACTION
+
+Co-op hunt while he was away. His v9.59 note: the game says call FOR extraction. Since v22.47 the hint under the last-seconds alert, standing in a ring with nothing called, dropped the word for again, the shorter verb phrase he had asked to be gone, and two old checks of that rule were red. It now reads Hold [E] to call for extraction.
+
+MEASURED. Check 23.09 passes, and fails on v23.08.
 ## v23.08 - SYSTEM LABELS IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, with Waypoint as the one marker word (his Marked Waypoint) and up top, never the map, as the place. The system lines were sentences: Zoom 115%, HUD size 100%, Waypoint marked, Marker placed. Your party can see it., Controller connected. Left stick moves, right stick aims., Cursor reset., the recorder lines and the loaner reminder. They now read ZOOM 115%, HUD SIZE 100%, WAYPOINT SET (with Your party can see it. in a party), WAYPOINT CLEARED, CONTROLLER CONNECTED, CONTROLLER DISCONNECTED with Plug it in, then resume., CURSOR RESET, RECORDING with [F9] stops it, or it stops at 3:00., RECORDING KEPT, SUPERHOT FOLLOWS THE HOST and YOU CARRY A LOANER with Equip your own gun at The Stash. The blackout detail reads Every lamp up top is dead. The Undercroft lines are unchanged.
