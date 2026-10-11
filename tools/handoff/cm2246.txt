@@ -1,0 +1,7 @@
+v22.46: an alert is up long enough to read
+
+An alert now stays up at least 2 seconds before another one replaces it, unless the new one is critical.
+
+Check 22.46. Fails on v22.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v22.46 - AN ALERT IS UP LONG ENOUGH TO READ
+
+Co-op hunt while he was away. The review of the raid text alert lane found that an alert gave way to any line of equal or higher rank after only 0.6 s, about half a second of reading once it had faded in. EXTRACTION CALLED and its detail flashed before THE SIEGE took the slot, and when two rings closed in the same second each one flashed in turn. An alert now holds the slot for 2 seconds, the same time a message row of an objective or a critical line is protected, before anything but a critical line can take it; a line waiting behind it waits its turn instead of dropping into the feed.
+
+MEASURED. Check 22.46 passes, and fails on v22.45.

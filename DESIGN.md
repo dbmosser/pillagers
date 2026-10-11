@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.46 - AN ALERT IS UP LONG ENOUGH TO READ
+
+Co-op hunt while he was away. The review of the raid text alert lane found that an alert gave way to any line of equal or higher rank after only 0.6 s, about half a second of reading once it had faded in. EXTRACTION CALLED and its detail flashed before THE SIEGE took the slot, and when two rings closed in the same second each one flashed in turn. An alert now holds the slot for 2 seconds, the same time a message row of an objective or a critical line is protected, before anything but a critical line can take it; a line waiting behind it waits its turn instead of dropping into the feed.
+
+MEASURED. Check 22.46 passes, and fails on v22.45.
 ## v22.45 - THE UNDERCROFT BELT EDITS ALL FOUR GUN KEYS
 
 Co-op hunt while he was away. The four-gun belt, build 4 (his order of 2026-10-09: guns on keys 1 to 4, and the player can load up the belt with any gun he wants). On the Undercroft floor a gun in his hands could only trade places with the other gun: dropped on any other key it was refused with words saying keys 1 and 2 were his two guns. Now it binds the gun to that key in his plan, the way the Stash screen belt does, and what he had on that key goes to the key the gun came from; on key 3 or 4 the key it left fills as the raid start does, so the floor still shows exactly the keys the raid starts on. The Stash screen belt showed a bare number on keys 1 to 4 he had not bound; it now shows the gun the floor belt has there, dimmed. And decision D3: after an extraction the guns on keys 1 and 2 (in his hands or in the backpack) are gun 1 and gun 2 at home, instead of the best gun in his hands by tier; every other gun goes home as before.
