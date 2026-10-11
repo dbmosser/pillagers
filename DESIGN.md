@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.93 - ALERT MARKS SIT ABOVE THE NAMEPLATE
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where the alert mark sits clear over the name of what is on you. The ? and ! were lifted a fixed number of screen pixels while the nameplate under them grows with the zoom, so at 1080p the mark sat inside the plate and at 4K, zoomed in or down the sights it sat on the body. The mark now sits just above the plate at every size, outlined and grown with the screen, and a Crier winding up shows only its own countdown, with no ! over it.
+
+MEASURED. Check 22.93 passes, and fails on v22.92.
 ## v22.92 - RETICLE WORDS GROW AT 4K
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, the same size on every screen. The crosshair grew with the screen at v9.53, but the words under it (NO AMMO, JAMMED, [R] RELOAD), the reload seconds beside it and the widths of the magazine and reload rings kept their 1080p size, so on a 4K screen they were small print beside a big cross. They now grow by the same screen factor. At 1080p nothing moves.

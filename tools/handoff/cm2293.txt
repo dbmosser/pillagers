@@ -1,0 +1,7 @@
+v22.93: alert marks sit above the nameplate
+
+The ? and ! over a machine now sit just above its name at every screen size and zoom.
+
+Check 22.93. Fails on v22.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
