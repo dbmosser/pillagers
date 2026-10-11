@@ -1,0 +1,7 @@
+v23.52: arcade: waves follow the raid owner
+
+In the arcade the enemy waves keep coming after player 2 takes over a raid the host left.
+
+Check 23.52. Fails on v23.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

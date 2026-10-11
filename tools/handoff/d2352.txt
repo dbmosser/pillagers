@@ -1,0 +1,5 @@
+## v23.52 - ARCADE: WAVES FOLLOW THE RAID OWNER
+
+Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade28 (a low finding of the arcade 14-25 review). When the host window left mid-run, player 2 took the raid over as his 2026-10-02 ruling says, but the enemy waves never came again, because only the host ran them. Now whoever owns the run runs the waves: the host, or the player 2 that took the raid over. A player 2 still sharing the host world never spawns its own. Normal raids are untouched.
+
+MEASURED. Check 23.52 passes, and fails on v23.51.

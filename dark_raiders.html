@@ -1694,7 +1694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.51';
+var VER='23.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36133,7 +36133,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.51: In the arcade the initials card from a top 10 extraction stays on the host window, so player 2 can still drop in with A, and player 2 sees the card only at RUN OVER. Check 23.51 fails on v23.50',
+  now:'v23.52: In the arcade the enemy waves keep coming after player 2 takes over a raid the host left. Check 23.52 fails on v23.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44898,9 +44898,14 @@ function arcadeWaveElite(e){
   e.elite=1; e.hp=Math.round(e.hp*hm); e.maxhp=Math.round(e.maxhp*hm); e.r=Math.round(e.r*1.12);
   return e;
 }
+// v23.52, HIS YES (2026-10-11) to the five recommendations, arcade28 (a low finding of the arcade 14-25 review): WAVES FOLLOW THE RAID
+// OWNER. When the host window leaves mid-run, player 2 takes the raid over (G.netWasJoin, his 2026-10-02 ruling), but the waves
+// stopped for good, because this tick returned on the p2 role. Now the run authority runs them: the host, or the player 2 that took
+// the raid over (the same rule as arcadeBoardAuth). A player 2 still sharing the host world never spawns waves. Only an arcade run
+// reaches any of it.
 function arcadeWaveTick(dt){
   if(!G||!G.arcade||G.over||G.sim||!G.map||!Array.isArray(G.ents)) return 0;
-  if(ARCADE.role==='p2'||netEntsPeer()) return 0;
+  if((ARCADE.role==='p2'&&!G.netWasJoin)||netEntsPeer()) return 0;   // v23.52 (arcade28): a player 2 that took the raid over runs the waves
   var tier=Math.max(0,Math.min(8,Math.floor(arcadeTeam()/4000))), iv=Math.max(10,22-2*tier), cap=Math.min(24,6+2*tier),
       pack=Math.min(6,2+Math.floor(tier/2)), men, live, q, c, n, i, e, s, kd, kinds, made=0;
   ARCADE.waveT=(+ARCADE.waveT||0)+((dt>0)?dt:0);
