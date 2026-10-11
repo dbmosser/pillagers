@@ -1,0 +1,7 @@
+v22.73: no repeats of the gun card
+
+Reloading, swapping guns and picking a belt key no longer put lines in the feed; the gun card and the crosshair show it.
+
+Check 22.73. Fails on v22.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.73 - NO REPEATS OF THE GUN CARD
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD and never repeats what is already on screen. A reload said Reloading and then Reloaded, an empty gun said Out of ammo, a swap said the gun name, and a belt key said the item and its count. The gun card already shows RELOADING and the gun in hand, the crosshair shows R RELOAD and NO AMMO, and the belt shows the key and its count, so those lines are gone. Every sound stays.
+
+MEASURED. Check 22.73 passes, and fails on v22.72.
 ## v22.72 - PICK-UPS AND GIFTS IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout, never a sentence. The review of the fifth batch of raid text found three co-op lines still written as sentences. A pick-up said Reviving Moth. Hold E. as it started, which the [E] REVIVE prompt at his body (v22.68) had just said and the REVIVING bar over him keeps showing, so the line is gone, as the raid text plan marks it. A teammate brought back up said Moth revived. and now says MOTH IS BACK UP as an ally row, and taking an offer said Taking it. and now says TAKING IT, both the wording of the raid text plan.
