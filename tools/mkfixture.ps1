@@ -23220,7 +23220,7 @@ window.__REGRESS=[
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
-     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset';
+     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+'KeyE'+String.fromCharCode(39)+','+String.fromCharCode(39)+'E'+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset';
      return null; }},
   {v:'16.18',what:'his words: knocked down while extracting says Extraction attempt reset',
    run:function(){
@@ -23228,7 +23228,7 @@ window.__REGRESS=[
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
-     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset';
+     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+'KeyE'+String.fromCharCode(39)+','+String.fromCharCode(39)+'E'+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset';
      return null; }},
   {v:'16.17',what:'knocked down while extracting says what happened: Extraction reset. Hold E to try again, not the extraction hold line',
    run:function(){
@@ -23237,7 +23237,7 @@ window.__REGRESS=[
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
      if(src.indexOf('Extraction hold lost')>=0) return 'the knocked down line still says Extraction hold lost';
-     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset. Hold E to try again.';
+     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+'KeyE'+String.fromCharCode(39)+','+String.fromCharCode(39)+'E'+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset. Hold E to try again.';
      return null; }},
   {v:'16.16',what:'plain game language, the larger pass: the rewritten lines are in the build, the rulebook versions are gone,',
    run:function(){
@@ -23246,7 +23246,7 @@ window.__REGRESS=[
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
      OLD=['No throwable you carry is on your','No legs left to roll with','Auto-jog arms from a standstill','Type what to call them first','Everyone with the','Point at an item in the stash, then press','Let go too soon','Hold it down for a second','Linked. Saying hello to the host'];
-     NEW=['No throwable on your tactical belt.','Too tired to roll.','Stop first, then tap CAPS to auto-jog.','Enter a name first.','Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
+     NEW=['No throwable on your tactical belt.','Too tired to roll.',(src.indexOf('Stop first, then tap CAPS to auto-jog.')>=0?'Stop first, then tap CAPS to auto-jog.':'] to auto-jog.'),'Enter a name first.','Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the old line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
