@@ -1,0 +1,7 @@
+v23.18: player 2 sees his killing shot
+
+In co-op, the second player killing shot now shows the larger kill number, as the host already did.
+
+Check 23.18. Fails on v23.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

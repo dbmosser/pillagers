@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.18 - PLAYER 2 SEES HIS KILLING SHOT
+
+Co-op hunt while he was away. Parked by the raid text audit of 2026-10-09. In co-op the host runs every enemy, so on the second player window a round only asks the host for its damage, and the health shown there has not dropped yet when the damage number is drawn. The shot that killed always showed as a plain number, never the larger kill number. On the second window the kill is now worked out from the damage the round sends, which is exactly what the host takes off. Solo and the host are unchanged.
+
+MEASURED. Check 23.18 passes, and fails on v23.17.
 ## v23.17 - NO DOWNED LABEL THROUGH THE WALLS
 
 Co-op hunt while he was away. Parked by the raid text audit of 2026-10-09. Machines fight pillagers anywhere on the surface, and when one went down the NAME DOWNED label printed over him wherever he was, readable through walls, telling you where a man lay. The PICKED UP label for a crew revive did the same. Both now show only when you could actually see him, as the ELIMINATED label always has.

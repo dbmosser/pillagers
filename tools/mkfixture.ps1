@@ -5744,6 +5744,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.18',what:'player 2 sees the kill number on his killing shot: on a linked window the kill is worked out from the damage sent, solo and the host read the health as before',
+   run:function(){
+     if(typeof hitKills!=='function') return 'control: no hitKills, the linked window reads health the host has not taken off yet';
+     var bad=[], on0=NET.on, pe0=netEntsPeer;
+     try{
+       NET.on=false;
+       if(hitKills({hp:5},23)) bad.push('solo: a body still on 5 health counts as killed');
+       if(!hitKills({hp:0},23)) bad.push('solo: a body on 0 health does not count as killed');
+       NET.on=true; netEntsPeer=function(){ return true; };
+       if(!hitKills({hp:10},23)) bad.push('linked window: a 23 damage round into 10 health is not a kill');
+       if(hitKills({hp:50},23)) bad.push('linked window: a 23 damage round into 50 health counts as a kill');
+       var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd='_dn,_dc,hitKills'+'(en,edmg));';
+       if(src.split(nd).length-1<2) bad.push('the damage number and the party copy do not both ask hitKills');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ NET.on=on0; netEntsPeer=pe0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'23.17',what:'a pillager going down out of sight prints no DOWNED label through the walls, while one he can see still does',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__ents)||typeof canSee!=='function') return 'SKIP: this fixture cannot deploy and step';

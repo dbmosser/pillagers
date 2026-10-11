@@ -1691,7 +1691,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.17';
+var VER='23.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14996,6 +14996,15 @@ function flash(x,y,r,col,life){
 // clashing text apart so a container's three loot lines stay readable, and a
 // firefight produces twenty numbers a second which would shove each other all
 // over the screen. These just rise and fade where they were earned.
+// v23.18, parked by the raid text audit of 2026-10-09: PLAYER 2 SEES HIS KILLING SHOT. On a linked window the host runs the body, so the
+// round only asks the host for the damage and the mirrored health has not dropped yet when the number is drawn: the shot that killed
+// showed as a plain number, never the larger kill number with its mark. There it is worked out from the damage the round sends (the
+// host takes off exactly that); on the host and solo the health has already been taken off, as before.
+function hitKills(en,dmg){
+  if(!en) return false;
+  if(typeof NET==='object'&&NET&&NET.on&&typeof netEntsPeer==='function'&&netEntsPeer()) return ((+en.hp||0)-(+dmg||0))<=0;
+  return en.hp<=0;
+}
 function dmgNum(x,y,amount,col,kill){
   if(!G||G.sim) return;
   G.dmgN=G.dmgN||[];
@@ -22270,8 +22279,8 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               if(!G.sim&&CFG.dmgNumbers!==0){
                 var _dn=Math.max(1,Math.round(edmg));
                 var _dc=WK?'#ff8a3c':(edmg>0&&_backShot?'#ffc04a':'#FFF6DC');
-                dmgNum(en.x+fxn(-5,5),en.y-Math.round(en.r*1.1),_dn,_dc,en.hp<=0);   // v8.35
-                if(NET.on) netFxDmg(en.x,en.y-Math.round(en.r*1.1),_dn,_dc,en.hp<=0);   // v16.22: the party sees your numbers
+                dmgNum(en.x+fxn(-5,5),en.y-Math.round(en.r*1.1),_dn,_dc,hitKills(en,edmg));   // v8.35; v23.18: the kill style on player 2 too
+                if(NET.on) netFxDmg(en.x,en.y-Math.round(en.r*1.1),_dn,_dc,hitKills(en,edmg));   // v16.22: the party sees your numbers
               }
               // v3.94: he has just been shot at by YOU, and a person answers
               // that by getting off the line. Perpendicular to the incoming
@@ -36045,7 +36054,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.17: The DOWNED and PICKED UP labels over pillagers show only when you can see him, not through walls. Check 23.17 fails on v23.16',
+  now:'v23.18: In co-op, the second player killing shot now shows the larger kill number, as the host already did. Check 23.18 fails on v23.17',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
