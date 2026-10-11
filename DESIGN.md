@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.44 - ARCADE: OPERATOR LOCK
+
+Co-op hunt while he was away. His yes to recommendation 1 for the Halloween party mode. Guests play the party machine, so they must not be able to leave the arcade or wander into Settings, character select, the stash or the Mainframe. The only way out of the arcade is now a keyboard chord for the operator: Ctrl+Shift+F10, from a raid, the bench, the demo screen or the initials card. In an arcade raid the pause box shows only RESUME and END RUN, and on the demo screen MENU, ESC or P opens no pause box at all. Normal raids are untouched.
+
+MEASURED. Check 23.44 passes, and fails on v23.43.
 ## v23.43 - ARCADE: HALLOWEEN DRESSING
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 20 of 20. An arcade raid now looks like Halloween night: every lamp burns orange and a little brighter, carved pumpkins sit by the lamps and doors (most of them lit, with a warm glow at night), and a slow violet haze drifts over the screen. It is all decoration drawn from the cosmetic dice, never the raid dice, so the map, the loot and the enemies are exactly the same and what you can see is unchanged. Normal raids are untouched.

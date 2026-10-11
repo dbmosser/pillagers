@@ -1694,7 +1694,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.43';
+var VER='23.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13762,6 +13762,7 @@ function togglePauseBox(on){
   // it to shut and this line refused, leaving the box over the outcome card, and a controller drove the box, not the card.
   if(on&&G&&G.over) return;
   if(!G&&state!=='hub') return;
+  if(on&&!G&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   // v23.44 (arcade21): the arcade attract has no pause box (no Settings, no character select)
   pauseOpen=on;
   if(on){ try{ keysLegendApply(); }catch(_pk){} }   // v19.71: the key line matches the device in hand when the box opens
   // v11.72: a note typed on the floor has no raid to attach to. It used to sit
@@ -13836,8 +13837,10 @@ function togglePauseBox(on){
     // separate button that only closed the box would be two controls for one act.
     var _rb=document.getElementById('resumebtn');
     if(_rb) _rb.textContent=_inRaid?'Resume run':'RETURN TO THE UNDERCROFT';
+    if(_rb&&_arcP) _rb.textContent='RESUME';   // v23.44 (arcade21): the arcade box is RESUME and END RUN only
     var _cs=document.getElementById('charselbtn');
     if(_cs) _cs.style.display=(_inRaid||_bleed)?'none':'';
+    if(_cs&&_arcP) _cs.style.display='none';
   })();
   syncPause();
   if(on){ try{ pauseFrameFit(); }catch(_pf){} }   // v19.90: the frame fits what is showing
@@ -36116,7 +36119,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.43: In the arcade the lamps burn orange, carved pumpkins sit by lamps and doors, and a slow violet haze drifts over the screen, all purely decoration. Check 23.43 fails on v23.42',
+  now:'v23.44: In the arcade only Ctrl+Shift+F10 leaves the mode, the pause box shows only RESUME and END RUN, and the demo screen opens no pause box. Check 23.44 fails on v23.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -45341,8 +45344,22 @@ function arcadeAttTick(){
   arcadeAttShow();
 }
 // A key, click, touch or wheel in this window while the arcade is on. Returns whether it was taken.
+// v23.44, HIS YES (2026-10-11), recommendation 1, build 21 (arcade21): THE OPERATOR LOCK. A party machine is played by guests, so the
+// only way out of the arcade is a keyboard chord only the operator knows: Ctrl+Shift+F10 runs arcadeLeave, from a raid, the bench,
+// the attract or the initials card. In the arcade the pause box offers only RESUME and END RUN (arcade16 already hid Settings and
+// Abandon run), and with no arcade raid up there is no pause box at all, so a guest pressing MENU, ESC or P on the attract never
+// reaches Settings, character select, the stash or the Mainframe behind it. Only the arcade reaches any of it.
+function arcadeOpChord(e){
+  if(!e||String(e.type||'')!=='keydown'||String(e.code||'')!=='F10'||!e.ctrlKey||!e.shiftKey||e.altKey||e.metaKey) return false;
+  try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){}
+  if(e.repeat) return true;
+  try{ if(typeof pauseOpen!=='undefined'&&pauseOpen) togglePauseBox(false); }catch(_tp){}
+  arcadeLeave();
+  return true;
+}
 function arcadeKeyAtt(e){
   if(!ARCADE.on||!e) return false;
+  if(arcadeOpChord(e)) return true;   // v23.44 (arcade21): Ctrl+Shift+F10, the only way out
   if(G&&G.arcade&&!arcadeBenched()) return false;            // a raid is on here: the key plays (v23.25, arcade6: unless player 1 is benched)
   if(ARCADE.role==='host'&&arcadeIniLive()) return arcadeIniKey(e);   // v23.41 (arcade18): the initials card takes the keys, and a click drops nobody in
   if(ARCADE.role!=='host') return false;   // player 2 joins with A on its own pad; its keys go on to player 1 (netKeyFwd)

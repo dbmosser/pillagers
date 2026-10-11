@@ -1,0 +1,7 @@
+v23.44: arcade: operator lock
+
+In the arcade only Ctrl+Shift+F10 leaves the mode, the pause box shows only RESUME and END RUN, and the demo screen opens no pause box.
+
+Check 23.44. Fails on v23.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
