@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.96 - WORLD TEXT DRAWS OVER THE DARK AND FOG
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where a name or a number over the world is always readable. Teammate tags, nameplates, damage numbers and the floating labels (loot found, targets down, WEAK SPOT) were drawn under the darkness and the fog of war, so by night they were dimmed twice and a loot name at the edge of the light was a smudge. They are now drawn after both, in the same place and size. Only the draw order changes, and nameplates still show only on what you can see.
+
+MEASURED. Check 22.96 passes, and fails on v22.95.
 ## v22.95 - BARE HUD TEXT GETS THE OUTLINE
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, where every word reads on any ground. The raid clock, the compass, the extraction lines above the belt, REVIVING, the Crier countdown and the party ping, Waypoint and arrow labels were filled with no outline and no plate, so over snow, a lit street or a fire they washed out. They now carry a thin dark ink outline, as the message rows have since v21.82, and the world prompts carry it on their plates too. The words, colours and places are unchanged, and no glow is used, for frame cost.

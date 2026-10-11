@@ -1,0 +1,7 @@
+v22.96: world text draws over the dark and fog
+
+Loot names, damage numbers and nameplates now draw over the night darkness and the fog, so they stay readable.
+
+Check 22.96. Fails on v22.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
