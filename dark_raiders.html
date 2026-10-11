@@ -1692,7 +1692,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.25';
+var VER='23.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36082,7 +36082,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.25: Player 2 joins the arcade with A: player 1 waits on the bench until he presses a button. Check 23.25 fails on v23.24',
+  now:'v23.26: Player 2 coming back from a normal raid is asked into the arcade again and joins with A. Check 23.26 fails on v23.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41357,6 +41357,16 @@ function netLateBtn(){
   // v23.25 (arcade6): an arcade window takes only arcade words, and only once its player pressed A (wantIn) or while it is in an
   // arcade raid already. The same raid in hand is kept; an older arcade raid is stopped first, so the new word is never refused
   // as up top already.
+  // v23.26 (arcfixa), from the review of the arcade core: A WINDOW OUTSIDE THE ARCADE NEVER TAKES AN ARCADE RAID WORD. A linked player 2
+  // still in a normal raid answers the arcade offer busy, and it was never offered again. When the host then dropped into an arcade
+  // raid, its raid word reached that window back in the Undercroft, which built the raid as a normal one (no sandbox, no arcade
+  // post-build) and was only turned away because the surfaces did not match, with a went up without you line. Now the word is
+  // refused, and a player 2 window takes it as the arcade offer instead: it enters the arcade attract (or says busy again from the
+  // middle of a raid) and joins with A as ever.
+  if(m.arc&&!(typeof ARCADE==='object'&&ARCADE&&ARCADE.on)){
+    if(NET.same==='p2'){ try{ arcadeOnMsg({t:'arcon',pair:NET.pair}); }catch(_ao){} }
+    return 'arc:out';
+  }
   if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on){
     if(!m.arc) return 'arc:plain';
     NET.hostSeed=m.seed>>>0;
@@ -44585,7 +44595,7 @@ function arcadeEnter(role){
     ARCADE.mapIx=clamp(mi|0,0,FIXED_MAPS.length-1);   // his last sector
   }
   arcadeCfgIn();
-  ARCADE.wantIn=0;
+  ARCADE.wantIn=0; ARCADE.p2Busy=0;   // v23.26 (arcfixa)
   if(ARCADE.role==='host') netSamePost({t:'arcon',pair:NET.pair});
   arcadeAttShow();
   return true;
@@ -44595,8 +44605,13 @@ function arcadeOnMsg(m){
   if(!m||typeof m.t!=='string') return 'bad';
   if(NET.same==='p2'){
     if(m.t==='arcon'){
+      // v23.26 (arcfixa): player 2 tells the host it is in (arcin), so the host stops offering; an offer that comes again while it is
+      // in already changes nothing (a press of A stays pressed).
+      if(ARCADE.on){ netSamePost({t:'arcin',pair:NET.pair}); return 'arcon'; }
       if(G&&!G.arcade&&!G.over&&!G.sim){ netSamePost({t:'arcbusy',pair:NET.pair}); return 'busy'; }
-      return arcadeEnter('p2')?'arcon':'fail';
+      if(!arcadeEnter('p2')) return 'fail';
+      netSamePost({t:'arcin',pair:NET.pair});
+      return 'arcon';
     }
     if(m.t==='arcoff') return arcadeLeave()?'arcoff':'ignored';
     // v23.25 (arcade6): the answers to arcjoin. fresh 1: wait for the raid word. fresh 0: ask to join the raid in progress (again every
@@ -44606,8 +44621,9 @@ function arcadeOnMsg(m){
     return 'ignored';
   }
   if(NET.same==='host'){
-    if(m.t==='arcbusy'){ try{ say('PLAYER 2 IS IN A RAID','warn'); }catch(_sb){} return 'busy'; }
-    if(m.t==='arcjoin') return arcadeJoinAsk();   // v23.25 (arcade6): player 2 pressed A
+    if(m.t==='arcbusy'){ if(!ARCADE.p2Busy){ try{ say('PLAYER 2 IS IN A RAID','warn'); }catch(_sb){} } ARCADE.p2Busy=1; ARCADE.offerAt=Date.now(); return 'busy'; }   // v23.26 (arcfixa): offered again from arcadeAttTick, said once
+    if(m.t==='arcin'){ ARCADE.p2Busy=0; return 'arcin'; }   // v23.26 (arcfixa): player 2 is in the arcade
+    if(m.t==='arcjoin'){ ARCADE.p2Busy=0; return arcadeJoinAsk(); }   // v23.25 (arcade6): player 2 pressed A
     return 'ignored';
   }
   return 'off';
@@ -44626,6 +44642,8 @@ function arcadeAttShow(){
 }
 function arcadeAttTick(){
   if(!ARCADE.on) return;
+  // v23.26 (arcfixa): a player 2 that answered busy is offered the arcade again every 3 s, so it comes in once its raid is over.
+  if(ARCADE.role==='host'&&ARCADE.p2Busy&&Date.now()-(+ARCADE.offerAt||0)>=3000){ ARCADE.offerAt=Date.now(); netSamePost({t:'arcon',pair:NET.pair}); }
   if(G&&G.arcade&&!arcadeBenched()){ if(ATT.on) attStop(); return; }   // v23.25 (arcade6): a benched player 1 keeps the attract
   // v23.25 (arcade6): player 2 asked to join and is not in yet: ask again (arcjoin every 3 s, or the raid in progress every 1.5 s after arcgo fresh 0)
   if(ARCADE.role==='p2'&&ARCADE.wantIn&&!(G&&G.arcade)){

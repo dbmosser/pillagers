@@ -1,0 +1,7 @@
+v23.26: arcade: player 2 back from a raid joins
+
+Player 2 coming back from a normal raid is asked into the arcade again and joins with A.
+
+Check 23.26. Fails on v23.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

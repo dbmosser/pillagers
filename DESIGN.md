@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.26 - ARCADE: PLAYER 2 BACK FROM A RAID JOINS
+
+Co-op hunt while he was away. From the review of the arcade core. If player 2 was still in a normal co-op raid when player 1 picked the arcade, player 2 said busy and was never asked again, so it could not join the arcade without a reload. Worse, when player 1 then dropped into an arcade raid, the player 2 window back in the Undercroft tried to build that raid as a normal one and only stopped because the two surfaces did not match, with a went up without you message. Now a window outside the arcade never takes an arcade raid; the player 2 window takes it as the invitation instead and shows PLAYER 2: PRESS A. Player 1 also asks a busy player 2 again every 3 seconds until it says it is in, and an invitation that comes twice never undoes a press of A. Normal co-op is exactly as it was.
+
+MEASURED. Check 23.26 passes, and fails on v23.25.
 ## v23.25 - ARCADE: PLAYER 2 DROPS IN WITH A
 
 Co-op hunt while he was away. His order of 2026-10-11, the 2 PLAYER ARCADE DEMO, build 6 of 20. Player 2 now joins with A on its own controller. If nobody is playing yet, player 1 window builds an arcade raid with player 1 benched (frozen, never hit, never a target) under the attract, which now reads PLAYER 1: PRESS ANY BUTTON, and player 2 drops in at a map spawn. Any press from player 1 brings him off the bench beside player 2. If player 1 is already playing, player 2 joins his raid in progress beside him, and the host hears PLAYER 2 JOINED. If player 1 raid was built before the link between the windows was up, player 1 gets a fresh raid on the same sector and keeps his score (PLAYER 2 JOINING). Player 2 never goes up without pressing A, never commits a packed kit, and keeps asking every few seconds until it is in. Normal co-op is exactly as it was.
