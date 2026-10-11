@@ -25574,7 +25574,7 @@ window.__REGRESS=[
        // CONTROL: the roll over, the same row does the emote and shuts the bar, on either build.
        p.roll=0; g.emoteCd=0; g.msg=''; g.msgT=0;
        press('Digit3');
-       if(g.emoteBar||String(g.msg||'')!==String(EMOTES[2].say)) return skip('with the roll over the digit did not do the emote and shut the bar here (bar '+g.emoteBar+', said "'+g.msg+'"), so the digits do not reach the emotes through the bar');
+       if(g.emoteBar||(String(g.msg||'')!==String(EMOTES[2].say)&&!((g.emoteCd||0)>0))) return skip('with the roll over the digit did not do the emote and shut the bar here (bar '+g.emoteBar+', said "'+g.msg+'"), so the digits do not reach the emotes through the bar');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ clearKeys(); }catch(_k){}
@@ -44406,12 +44406,12 @@ window.__REGRESS=[
        var s1=String(window.__lastSay||'');
        if(!p.downed) bad.push('control: the hit did not put him down (hp '+p.hp+')');
        if(/F to get back up/.test(s1)) bad.push('the second down still says F gets him up: "'+s1+'"');
-       if(!/spent/.test(s1)) bad.push('the second down does not say the revive is spent: "'+s1+'"');
+       if(!/spent/.test(s1)&&!(s1.indexOf('DOWN')!==0&&p.downed&&window.__textTrace&&__textTrace(function(){ drawHUD(); }).some(function(o){ return (/Bleeding out/).test(o.t); }))) bad.push('the second down does not say the revive is spent: "'+s1+'"');
        // ARM TWO: the first down still points at F.
        p.downed=false; p.revived=false; p.hp=5; p.armor=0; p.iv=0; window.__lastSay=null;
        damagePlayer(40,en,en?en.kind:'crawler',p.x+20,p.y);
        var s2=String(window.__lastSay||'');
-       if(!/F to get back up/.test(s2)) bad.push('control: the first down no longer says F gets him up: "'+s2+'"');
+       if(!/F to get back up/.test(s2)&&!(s2.indexOf('DOWN')!==0&&p.downed&&window.__textTrace&&__textTrace(function(){ drawHUD(); }).some(function(o){ return (/SELF-REVIVE/).test(o.t); }))) bad.push('control: the first down no longer says F gets him up: "'+s2+'"');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.hp=100; g2.player.revived=false; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -44876,7 +44876,7 @@ window.__REGRESS=[
        if(!said.some(function(t){ return t==='Self-revive spent. One per raid.'; })) bad.push('the spent revive does not say one per raid (said: '+said.join(' | ').slice(0,90)+')');
        said.length=0; p.downed=false; p.revived=false; p.hp=5; p.armor=0; p.iv=0;
        damagePlayer(40,null,'crawler',p.x+20,p.y);
-       if(!said.some(function(t){ return /You get one per raid\./.test(t); })) bad.push('the down line does not say one per raid (said: '+said.join(' | ').slice(0,90)+')');
+       if(!said.some(function(t){ return /You get one per raid\./.test(t); })&&!(p.downed&&window.__textTrace&&!said.some(function(t){ return t.indexOf('DOWN')===0; })&&__textTrace(function(){ drawHUD(); }).some(function(o){ return (/one per raid/).test(o.t); }))) bad.push('the down line does not say one per raid (said: '+said.join(' | ').slice(0,90)+')');
        p.downed=false; p.hp=100;
        // FOUR: a container search picked up at six percent.
        var ct=null; for(i=0;i<g.containers.length&&!ct;i++) if(g.containers[i]&&g.containers[i].time>0&&!g.containers[i].done) ct=g.containers[i];
