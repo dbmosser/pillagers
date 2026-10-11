@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.80';
+var VER='22.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8640,8 +8640,12 @@ function doEmote(ix){
   // report on the silent roll). Down, it says the line the belt uses from the floor; in a roll, the same shape. The bar
   // stays up for the press after the roll. The cooldown below stays silent: it is under a second after an emote he just
   // watched. No number and no seeded draw moved.
-  if(p.downed){ say('Not while you are down.'); return; }
-  if(p.roll>0){ say('Not while you are rolling.'); return; }
+  // v22.81 (tr6fixc), the review of raid text batch 6: HIS ORDER (2026-10-09), a raid line is a short caps callout of at most 34
+  // characters. The emote refusals and results were sentences; they are NOT WHILE DOWN, NOT WHILE ROLLING, LOWER YOUR GUN TO TALK,
+  // NOBODY IN EARSHOT, and the pillager by name in caps: NAME WILL NOT TALK, NAME STANDS DOWN, NAME WAVES BACK (the longest tag,
+  // 20 letters, keeps each within 34), and NOTHING TO SPARE with his name as the detail.
+  if(p.downed){ say('NOT WHILE DOWN'); return; }
+  if(p.roll>0){ say('NOT WHILE ROLLING'); return; }
   if((G.emoteCd||0)>0) return;
   G.emoteCd=0.9;
   G.emoteBar=false;
@@ -8652,7 +8656,7 @@ function doEmote(ix){
   if(E.k!=='hail'&&E.k!=='stand') return;
   var down=weaponDown();
   if(!down){
-    if(E.k==='hail') say('Lower your weapon to talk.');
+    if(E.k==='hail') say('LOWER YOUR GUN TO TALK');
     return;
   }
   var reached=0;
@@ -8664,7 +8668,7 @@ function doEmote(ix){
     if(!losClear(p.x,p.y,e.x,e.y,G.map.segs)) continue;
     reached++;
     if(e.grudge){
-      if(!e.grudgeSaid){ e.grudgeSaid=1; say(e.name+' has not forgotten. He is not listening.'); }
+      if(!e.grudgeSaid){ e.grudgeSaid=1; say(String(e.name).toUpperCase()+' WILL NOT TALK','ally'); }
       emoteBubble(e.x,e.y,'no','#ff3b30',1.6);
       continue;
     }
@@ -8680,7 +8684,7 @@ function doEmote(ix){
       if(e.parley>=need){
         e.hostile=false; e.parley=0;
         e.state='loot'; e.alert=0;
-        say(e.name+' lowers his gun.');
+        say(String(e.name).toUpperCase()+' STANDS DOWN','ally');
         emoteBubble(e.x,e.y,'wave','#7fc4a0',2.0);
       }
       continue;
@@ -8691,7 +8695,7 @@ function doEmote(ix){
     if(e.trust>=2&&!e.friendlyPC){
       e.friendlyPC=1;
       e.hostile=false;
-      say(e.name+' waves back.');
+      say(String(e.name).toUpperCase()+' WAVES BACK','ally');
       // He gives you something out of his own bag. It is not much and it is not
       // nothing, and it is the first time in this game that a stranger has been
       // worth more alive.
@@ -8716,7 +8720,7 @@ function doEmote(ix){
         } else {
           // He has nothing but his gun, and he is not handing that over. Say so,
           // rather than leaving the player to wonder whether the system works.
-          say(e.name+' has nothing to spare but his gun.');
+          say('NOTHING TO SPARE','ally',{sub:String(e.name).toUpperCase()});
         }
       }
       if(!G.sim){
@@ -8727,7 +8731,7 @@ function doEmote(ix){
       }
     }
   }
-  if(E.k==='hail'&&!reached) say('Nobody in earshot.');
+  if(E.k==='hail'&&!reached) say('NOBODY IN EARSHOT');
 }
 // ====================================================== WEAK POINTS
 // SPEC 8.7. A Sentry was 150 health and a Warden was 620, and the only tactic
@@ -11999,7 +12003,7 @@ function raidKey(code,repeat,ev){
     G.emoteBar=!G.emoteBar;
     return;
   }
-  if(code==='KeyV'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat&&G.player&&G.player.downed&&!G.player.dying){ if(ev) ev.preventDefault(); say('Not while you are down.'); return; }
+  if(code==='KeyV'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat&&G.player&&G.player.downed&&!G.player.dying){ if(ev) ev.preventDefault(); say('NOT WHILE DOWN'); return; }   // v22.81 (tr6fixc): the caps callout
   // The open stall owns the number row, so buying never also swaps your hotbar
   // slot out from under you.
   if(G&&!G.over&&G.trade){
@@ -17104,7 +17108,7 @@ function useStim(ix){
 function useHot(){
   // v13.63, in-raid audit: nothing on the belt is used from the floor. The heal never ticks
   // while he is down, so the item was spent for nothing.
-  if(G&&G.player&&G.player.downed){ if(!G.sim) say('Not while you are down.'); return; }
+  if(G&&G.player&&G.player.downed){ if(!G.sim) say('NOT WHILE DOWN'); return; }   // v22.81 (tr6fixc): the caps callout
   if(G&&G.player&&G.player.dying) return;   // v13.80, combat audit: nor in the death fade
   var sl=hotbarSlots(),s2=sl[hotSel()];
   if(!s2) return;
@@ -17296,8 +17300,9 @@ function tryExtractTick(dt,wantCall){
       // v6.10: metres. This printed raw world units, so the open point was
       // announced as ten times further away than it is, while he was deciding
       // whether to run for it.
-      say(openZ ? ('This point is CLOSED. The open one is '+metres(openD)+'m away, marked on your map.')
-                : 'This point is CLOSED.');
+      // v22.81 (tr6fixc), the review of raid text batch 6: the caps callout. It said This point is CLOSED. and a sentence; it is
+      // EXTRACTION A IS CLOSED, with the nearest open one, its distance and its direction as the detail, as the raid text plan has it.
+      say('EXTRACTION '+extLetter(z)+' IS CLOSED','info',openZ?{sub:'Extraction '+extLetter(openZ)+' is open, '+metres(openD)+'m '+compass8(openZ.x-p.x,openZ.y-p.y)+'.'}:null);
       blip('clank');
     }
   }
@@ -20142,7 +20147,7 @@ if(e.state==='possum'){
           label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
           notoStamp('YOU SHOT AN UNARMED SURVIVOR');
         } else if(!G.sim){
-          say('Someone shot the survivor. Not on you.');
+          say('SOMEONE SHOT THE SURVIVOR','chat',{sub:'Not on you.'});   // v22.81 (tr6fixc): the caps callout, a chat row as the raid text plan has it
         }
         decal(e.x,e.y,'#6e1c15',rnd(16,26));
         G.ents.splice(i,1); continue;
@@ -20164,7 +20169,7 @@ if(e.state==='possum'){
           notoStamp('YOU KILLED THE PEDDLER');
         } else if(!G.sim){
           if(G.tel) G.tel.pedKilled=2;      // 2: died, but not by his hand
-          say('The Peddler is dead. Someone else did that.');
+          say('THE PEDDLER IS DEAD','chat',{sub:'Someone else did that.'});   // v22.81 (tr6fixc): the caps callout, a chat row
         }
         decal(e.x,e.y,'#6e1c15',rnd(18,28));
         spark(e.x,e.y,'#d8a13a',24,300);
@@ -35780,7 +35785,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.80: The backpack and offer lines read as short caps callouts, such as NOT IN BACKPACK, OFFER EXPIRED and NO TEAMMATE IN RANGE. Check 22.80 fails on v22.79',
+  now:'v22.81: The emote, closed ring and bystander lines read as short caps callouts, such as NOBODY IN EARSHOT and EXTRACTION A IS CLOSED. Check 22.81 fails on v22.80',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

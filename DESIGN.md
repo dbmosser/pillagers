@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.81 - EMOTE AND CLOSED RING LINES IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the sixth batch of raid text found the emote, closed ring and bystander lines still written as sentences. The hail now says NOT WHILE DOWN, NOT WHILE ROLLING, LOWER YOUR GUN TO TALK and NOBODY IN EARSHOT, and a pillager answers by name in caps: NAME WILL NOT TALK, NAME STANDS DOWN or NAME WAVES BACK (the longest tag keeps each within 34), and NOTHING TO SPARE with his name as the detail. E in a closed ring says EXTRACTION A IS CLOSED with the nearest open one, its distance and its direction as the detail, still once per visit. A survivor or the Peddler killed by someone else is SOMEONE SHOT THE SURVIVOR or THE PEDDLER IS DEAD, with Not on you. or Someone else did that. as the detail. No rule moved.
+
+MEASURED. Check 22.81 passes, and fails on v22.80.
 ## v22.80 - BACKPACK AND OFFER LINES IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout of at most 34 characters, never a sentence. The review of the sixth batch of raid text found the backpack and offer lines still written as sentences, and the offer ends running past 34 characters with a long name or item (YOUR TEAMMATE DID NOT TAKE THE SCAV PISTOL is 42). A gun key whose gun has left the backpack now says NOT IN BACKPACK with the gun as the detail, as the drag already does. An offer that ran out says OFFER EXPIRED with the name as the detail, and one nobody took says MOTH DID NOT TAKE IT with the item as the detail. The offer key with nobody near says NO TEAMMATE IN RANGE, and with the highlight on the belt MOVE IT TO THE BACKPACK FIRST with TO OFFER IT, TO DROP IT or TO PICK A GUN as the detail. The offer line under the boss bar is not changed: it is drawn exactly as the raid text plan designs it.

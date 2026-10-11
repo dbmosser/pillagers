@@ -1,0 +1,7 @@
+v22.81: emote and closed ring lines in caps
+
+The emote, closed ring and bystander lines read as short caps callouts, such as NOBODY IN EARSHOT and EXTRACTION A IS CLOSED.
+
+Check 22.81. Fails on v22.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
