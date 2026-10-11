@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.48 - THE WHAT IS NEW CARD NAMES THE ARCADE PARTY
+
+Co-op hunt while he was away. The card was stamped v23.32 and the stamp may not trail the build by more than 0.15. Its new second line names the arcade party builds of 2026-10-11: waves that come to you, kill streaks with popups, and a party scoreboard with initials.
+
+MEASURED. Check 23.48 passes, and fails on v23.47.
 ## v23.47 - ARCADE: SCREEN WAKE LOCK
 
 Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade24. The party machine sits on the attract loop for hours with nobody touching it, and a monitor that goes to sleep looks like a broken game. While the arcade is on, each window now asks the browser to keep its screen awake. The browser lets go of that whenever the tab is hidden, so it is asked for again when the tab comes back, and it is let go when the arcade is left. Browsers that do not offer it, or refuse it, play exactly as before. Normal play never asks for it.

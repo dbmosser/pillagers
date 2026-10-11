@@ -1,0 +1,5 @@
+## v23.48 - THE WHAT IS NEW CARD NAMES THE ARCADE PARTY
+
+Co-op hunt while he was away. The card was stamped v23.32 and the stamp may not trail the build by more than 0.15. Its new second line names the arcade party builds of 2026-10-11: waves that come to you, kill streaks with popups, and a party scoreboard with initials.
+
+MEASURED. Check 23.48 passes, and fails on v23.47.
