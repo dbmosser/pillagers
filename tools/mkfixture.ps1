@@ -31388,7 +31388,8 @@ window.__REGRESS=[
        var b50=block();
        if(b50===null) return 'SKIP: the drawn HUD painted no incoming heal block from 50 here, so the block cannot be read';
        if(Math.abs(b50-360*aB/top)>0.05) return 'SKIP: from 50 the incoming heal block is '+b50+' wide, not '+(360*aB/top)+', so the bar cannot be read here';
-       if(s50!==nm+' is healing you, '+fmtMS(sec50)) return 'SKIP: a Bandage landing at 50 said ['+s50+'], so the line cannot be read here';
+       // v23.xx (tr51): the hot heal line is gone (the status icon shows HEALING and its seconds); a silent landing reads as null
+       if(s50!==null&&s50!==nm+' is healing you, '+fmtMS(sec50)) return 'SKIP: a Bandage landing at 50 said ['+s50+'], so the line cannot be read here';
        var w50=world();
        if(w50===null) return 'SKIP: drawing a world frame threw here';
        if(w50.t.indexOf(Math.ceil(sec50)+'s')<0||!w50.a.length||Math.abs(w50.a[0])>0.01) return 'SKIP: a Bandage landing at 50 wrote ['+w50.t.join(',')+'] over his head with the ring ['+w50.a.join(',')+'] full, so the ring cannot be read here';
@@ -31402,7 +31403,7 @@ window.__REGRESS=[
        if(b80===null) return skip('the drawn HUD painted no incoming heal block from 80 here');
        if(Math.abs(b80-360*(r80-80)/top)>0.05) bad.push('a Bandage landing at 80 drew the green incoming heal block out to '+(80+b80*top/360).toFixed(1)+' health, while the heal stops at '+r80);
        var lineWant=nm+' is healing you, '+fmtMS(sec80);
-       if(s80!==lineWant) bad.push('a Bandage landing at 80 said ['+s80+'] and not ['+lineWant+'], though the heal stops at '+r80+' in '+sec80.toFixed(2)+' seconds');
+       if(s80!==null&&s80!==lineWant) bad.push('a Bandage landing at 80 said ['+s80+'] and not ['+lineWant+'], though the heal stops at '+r80+' in '+sec80.toFixed(2)+' seconds');
        var w80=world();
        if(w80===null) return skip('drawing a world frame from 80 threw here');
        if(!w80.t.length) return skip('no seconds were written over his head for a Bandage landing at 80 here');
