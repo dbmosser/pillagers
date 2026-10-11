@@ -1,0 +1,7 @@
+v22.86: lines under the pause box show on it
+
+A line said while the solo pause box is open now shows over the box instead of behind it.
+
+Check 22.86. Fails on v22.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

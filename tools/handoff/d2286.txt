@@ -1,0 +1,5 @@
+## v22.86 - LINES UNDER THE PAUSE BOX SHOW ON IT
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and a menu answers on the menu. With the pause box open in a solo raid, a key or a Settings change said its line into the raid feed behind the box, where nobody could read it, and it only showed after the box shut. A system or info line said while the solo pause holds now shows on the answer line over the box. In a shared raid, where the pause is an overlay and the world runs on, lines stay in the raid feed.
+
+MEASURED. Check 22.86 passes, and fails on v22.85.

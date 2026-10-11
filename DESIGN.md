@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.86 - LINES UNDER THE PAUSE BOX SHOW ON IT
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, and a menu answers on the menu. With the pause box open in a solo raid, a key or a Settings change said its line into the raid feed behind the box, where nobody could read it, and it only showed after the box shut. A system or info line said while the solo pause holds now shows on the answer line over the box. In a shared raid, where the pause is an overlay and the world runs on, lines stay in the raid feed.
+
+MEASURED. Check 22.86 passes, and fails on v22.85.
 ## v22.85 - THE WHAT IS NEW CARD NAMES THE QUIETER SCREEN
 
 Co-op hunt while he was away. The card was stamped v22.69 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text builds shipped late on 2026-10-10: a zone or landmark you walk into shows its name as a caps tag at the top, lines about things far across the map are no longer said, and a game error no longer prints its raw text on the screen; the rest are in the change list.
