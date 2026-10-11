@@ -1,0 +1,5 @@
+## v22.83 - FAR-OFF CHATTER STAYS OFF YOUR SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, which tells you what is happening to you. A pillager calling or riding out a ring across the map, the Survivor reaching a ring, the Peddler setting up shop, or someone else killing the Survivor or the Peddler all said a line wherever you were. Now those lines show only when it happens within 900 of you or in sight. A pillager riding out says nothing, because the Current Pillagers board already marks him EXTRACTED, and the run report still counts him. Weather, deer and birds, the Peddler, a nod and a drink wearing off are now the lowest kind of line, so they never push one that matters off the screen.
+
+MEASURED. Check 22.83 passes, and fails on v22.82.

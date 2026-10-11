@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.82';
+var VER='22.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6080,7 +6080,7 @@ function wxTick(dt){
   // Next turn, if there is one, lands somewhere in the back half.
   G.wxAt=rnd(120,220);
   if(!G.sim){
-    say('The weather is turning. '+nw.line);
+    say('The weather is turning. '+nw.line,'chat');   // v22.xx (R35): chat
     sfxHere('charge',G.player.x,G.player.y);   // v20.83 (H62): played here only; player 2 now hears the turn in his own window, not a second time from where the host stands
   }
 }
@@ -11755,7 +11755,7 @@ function startRaid(){
   // than decoration, and the controls line is the same every single raid.
 // v6.68, his note: no surface contact line. Weather still announces itself; a clear sky
 // now says nothing at all, which is the correct amount to say about a clear sky.
-if(G.wx.id!=='clear'&&G.wx.line) say(G.wx.line);
+if(G.wx.id!=='clear'&&G.wx.line) say(G.wx.line,'chat');   // v22.xx (R35): chat
   // v13.32: a loaner in his hands while a gun of his own waits in the stash. Said
   // after the weather line, never over it.
   try{
@@ -19981,6 +19981,19 @@ function bodyBonus(e){
   for(i=0;i<n;i++){ k=rollLoot(LOOT.safe); if(k) out.push(k); }
   return out;
 }
+// v22.xx, the raid text rewrite (R35): FAR-OFF CHATTER STAYS OFF YOUR SCREEN. HIS ORDER (2026-10-09): the raid text reads like
+// Call of Duty, Fortnite or ARC Raiders, and in those the screen tells you what is happening to you, not a running commentary on
+// the far side of the map. A pillager calling or riding out a ring across the map, the Survivor reaching a ring, the Peddler
+// setting up or someone else killing the Survivor or the Peddler all said a line wherever you were. Those lines now show only
+// when it happens within 900 of you or where you can see it (chatNear). A pillager riding out says nothing at all: the Current
+// Pillagers board marks him EXTRACTED and the run report still counts him (T.raidersExtracted). Flavour lines (weather, the deer and
+// birds, The Peddler, a nod, a drink wearing off) are said as kind chat, the lowest rank, so they never push a line that matters.
+function chatNear(x,y){
+  var p=G&&G.player;
+  if(!p||!(isFinite(x)&&isFinite(y))) return false;
+  if(Math.hypot(x-p.x,y-p.y)<900) return true;
+  try{ return !!canSee(p.x,p.y,p.face,x,y,G.vseg); }catch(_c){ return false; }
+}
 function updateEnts(dt){
   try{ bossTick(); }catch(_bt){}   // v17.45: his pick 21, THE OVERSEER comes up two seconds in
   if(NET.on&&netEntsPeer()){ netEntsEase(dt); return; }   // v15.80: a linked window up top runs no pillager or machine of its own: the host does, and this slides each body to where the host put it
@@ -20184,7 +20197,7 @@ if(e.state==='possum'){
           label(e.x,e.y-18,'NOTORIETY +1','#ff6b5a',0,true);
           notoStamp('YOU SHOT AN UNARMED SURVIVOR');
         } else if(!G.sim){
-          say('SOMEONE SHOT THE SURVIVOR','chat',{sub:'Not on you.'});   // v22.81 (tr6fixc): the caps callout, a chat row as the raid text plan has it
+          if(chatNear(e.x,e.y)) say('SOMEONE SHOT THE SURVIVOR','chat',{sub:'Not on you.'});   // v22.81 (tr6fixc): the caps callout, a chat row as the raid text plan has it; v22.xx (R35): only near or in sight
         }
         decal(e.x,e.y,'#6e1c15',rnd(16,26));
         G.ents.splice(i,1); continue;
@@ -20206,7 +20219,7 @@ if(e.state==='possum'){
           notoStamp('YOU KILLED THE PEDDLER');
         } else if(!G.sim){
           if(G.tel) G.tel.pedKilled=2;      // 2: died, but not by his hand
-          say('THE PEDDLER IS DEAD','chat',{sub:'Someone else did that.'});   // v22.81 (tr6fixc): the caps callout, a chat row
+          if(chatNear(e.x,e.y)) say('THE PEDDLER IS DEAD','chat',{sub:'Someone else did that.'});   // v22.81 (tr6fixc): the caps callout, a chat row; v22.xx (R35): only near or in sight
         }
         decal(e.x,e.y,'#6e1c15',rnd(18,28));
         spark(e.x,e.y,'#d8a13a',24,300);
@@ -20427,7 +20440,7 @@ if(e.kind==='stray'){
         }
         else if(_sz){
           e.moving=false; e.gone=1; e.x=-9000; e.y=-9000;
-          say('The survivor made it to Extraction '+extLetter(_sz)+'.');
+          if(chatNear(_sz.x,_sz.y)) say('The survivor made it to Extraction '+extLetter(_sz)+'.');   // v22.xx (R35): only near or in sight
           if(G.tel) G.tel.strayOut=(G.tel.strayOut||0)+1;
           continue;
         }
@@ -20504,7 +20517,7 @@ if(e.kind==='stray'){
           else e._stuckT=0;
           if(e._stuckT>3){
             e._stuckT=0; e._back=0; e.tx=e.x; e.ty=e.y; e.face=1.57;
-            if(!G.sim) say('The Peddler has set up shop here.');
+            if(!G.sim&&chatNear(e.x,e.y)) say('The Peddler has set up shop here.','chat');   // v22.xx (R35): only near or in sight
           } else {
             e.face=Math.atan2(e.ty-e.y,e.tx-e.x);
             e.step=(e.step||0)+dt*5;
@@ -20512,7 +20525,7 @@ if(e.kind==='stray'){
           }
         } else {
           e._back=0; e.face=1.57;
-          if(!G.sim) say('The Peddler is back at his pitch.');
+          if(!G.sim&&chatNear(e.x,e.y)) say('The Peddler is back at his pitch.','chat');   // v22.xx (R35): only near or in sight
         }
       }
       if(pdd<440) e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-2.4*dt,2.4*dt);
@@ -21090,7 +21103,7 @@ var _rdS=G.shells[_rdi];
         } else {
           if(!e.metSaid&&!G.sim){
             e.metSaid=1;
-            say(e.name+(e.standing>0?' nods at you.':' is watching you.'));
+            say(e.name+(e.standing>0?' nods at you.':' is watching you.'),'chat');   // v22.xx (R35): chat
           }
           e.alert=Math.max(e.alert,1.2);
           e.face+=clamp(angDiff(Math.atan2(p.y-e.y,p.x-e.x),e.face),-3*dt,3*dt);
@@ -21784,7 +21797,7 @@ e.lootT=(e.lootT||0)+dt;
             z.beaconT=CFG.extractWait; z.hold=null; z.siegeSpawned=0; z.siegeSpawnT=0; z.siegeGreed=null; z.pullN=0; z.pinged=0;
             if(z===G.active){ G.beaconT=z.beaconT; G.shipHold=null; G.siegeSpawned=0; G.siegeSpawnT=0; }
             ping(z.x,z.y,700,true,false,'raider','fire');
-            if(!G.sim) say(e.name+' called extraction.');
+            if(!G.sim&&chatNear(z.x,z.y)) say(e.name+' called extraction.');   // v22.xx (R35): only near or in sight
           }
         }
         // v8.25, audit: only through a door that opens. The guard above gates
@@ -21844,7 +21857,7 @@ e.lootT=(e.lootT||0)+dt;
           e.face=Math.atan2(p.y-e.y,p.x-e.x);
         }
         if(e.extracting>rdw){
-          say(e.name+' extracted with the goods.'); T.raidersExtracted++;
+          T.raidersExtracted++;   // v22.xx (R35): no line; the Current Pillagers board marks him EXTRACTED
           if(G.roster){ for(var _rq=0;_rq<G.roster.length;_rq++){
             if(G.roster[_rq].ref===e){
               G.roster[_rq].out=true; G.roster[_rq].outAt=elapsed();
@@ -22239,7 +22252,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
                   G.hitMark={t:0,life:.44,kill:true};
                   spark(CW.x,CW.y,'#8e2b1c',16,240);
                   decal(CW.x,CW.y,'#4a1810',fxn(7,12));   // v8.35
-                  say(CW.k==='deer'?'The deer goes down.':'You shot a bird.');
+                  say(CW.k==='deer'?'The deer goes down.':'You shot a bird.','chat');   // v22.xx (R35): chat
                 }
                 // A carcass is worth carrying, but only just: this is texture and
                 // a small mercy on a bad run, not a living. The noise of the shot
@@ -35824,7 +35837,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.82: Walking into a new zone shows its name in caps at the top of the screen instead of a Crossing into sentence. Check 22.82 fails on v22.81',
+  now:'v22.83: Pillager, Survivor and Peddler lines from across the map no longer show unless it happens near you or in sight. Check 22.83 fails on v22.82',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -36446,8 +36459,8 @@ function buzzSlow(){
   if(G&&G.sim) return 1;
   return 1+Math.min((buzzLevel('drunk')+buzzLevel('lsd'))*1.8,10)*0.09;
 }
-function sayAny(m){
-  if(typeof state!=='undefined'&&state==='raid'&&G&&!G.sim) say(m);
+function sayAny(m,k){
+  if(typeof state!=='undefined'&&state==='raid'&&G&&!G.sim) say(m,k);   // v22.xx (R35): with its kind
   else if(typeof say2==='function') say2(m);
 }
 // v9.96, HIS NOTE: "using Liquor or Blotter should give a small XP boost per
@@ -36482,7 +36495,7 @@ function tickBuzz(dt){
     if(B[i].t<=0){
       var _tg=B[i].tag;
       B.splice(i,1); changed=true;
-      if(!buzzDoses(_tg)) sayAny(_tg==='drunk'?'The liquor wears off.':'The colours drain away.');
+      if(!buzzDoses(_tg)) sayAny(_tg==='drunk'?'The liquor wears off.':'The colours drain away.','chat');   // v22.xx (R35): chat
     }
   }
   if(changed) saveProfile();
@@ -42547,7 +42560,7 @@ function netWorldTake(peer,m){
   // sky without a word. A host word that starts a new turn now says it here too, once, with the charge sound played here only.
   var _wo=G.wxNext;
   G.wxNext=netWxOf(m.wn); G.wxT=(typeof m.wt==='number'&&isFinite(m.wt))?clamp(m.wt,0,1):0;
-  if(G.wxNext&&(!_wo||_wo.id!==G.wxNext.id)&&!(G.wx&&G.wx.id===G.wxNext.id)&&G.player){ say('The weather is turning. '+G.wxNext.line); sfxHere('charge',G.player.x,G.player.y); }
+  if(G.wxNext&&(!_wo||_wo.id!==G.wxNext.id)&&!(G.wx&&G.wx.id===G.wxNext.id)&&G.player){ say('The weather is turning. '+G.wxNext.line,'chat'); sfxHere('charge',G.player.x,G.player.y); }
   if(m.bd&&typeof m.bd.length==='number') netBoardTake(m.bd);   // v16.34: the host board
   if(typeof m.kd==='number'&&isFinite(m.kd)) NET.kidHost=clamp(m.kd,KID_MIN,1);   // v16.44: kid mode as the host has it; v17.02, co-op hunt 2026-09-28: down to 1/20, not 1/10
   NET.kbHost=(m.kb===1)?1:((m.kb===0)?0:null);   // v17.71: player 2 comes back after death, as the host has it

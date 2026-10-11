@@ -1,0 +1,7 @@
+v22.83: far-off chatter stays off your screen
+
+Pillager, Survivor and Peddler lines from across the map no longer show unless it happens near you or in sight.
+
+Check 22.83. Fails on v22.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

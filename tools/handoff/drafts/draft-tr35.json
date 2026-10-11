@@ -1,0 +1,68 @@
+{
+    "title":  "FAR-OFF CHATTER STAYS OFF YOUR SCREEN",
+    "why":  "His order of 2026-10-09: the raid text reads like a shooter HUD, which tells you what is happening to you. A pillager calling or riding out a ring across the map, the Survivor reaching a ring, the Peddler setting up shop, or someone else killing the Survivor or the Peddler all said a line wherever you were. Now those lines show only when it happens within 900 of you or in sight. A pillager riding out says nothing, because the Current Pillagers board already marks him EXTRACTED, and the run report still counts him. Weather, deer and birds, the Peddler, a nod and a drink wearing off are now the lowest kind of line, so they never push one that matters off the screen.",
+    "now":  "Pillager, Survivor and Peddler lines from across the map no longer show unless it happens near you or in sight.",
+    "edits":  [
+                  {
+                      "anchor":  "function updateEnts(dt){",
+                      "replacement":  "// v22.xx, the raid text rewrite (R35): FAR-OFF CHATTER STAYS OFF YOUR SCREEN. HIS ORDER (2026-10-09): the raid text reads like\n// Call of Duty, Fortnite or ARC Raiders, and in those the screen tells you what is happening to you, not a running commentary on\n// the far side of the map. A pillager calling or riding out a ring across the map, the Survivor reaching a ring, the Peddler\n// setting up or someone else killing the Survivor or the Peddler all said a line wherever you were. Those lines now show only\n// when it happens within 900 of you or where you can see it (chatNear). A pillager riding out says nothing at all: the Current\n// Pillagers board marks him EXTRACTED and the run report still counts him (T.raidersExtracted). Flavour lines (weather, the deer and\n// birds, The Peddler, a nod, a drink wearing off) are said as kind chat, the lowest rank, so they never push a line that matters.\nfunction chatNear(x,y){\n  var p=G\u0026\u0026G.player;\n  if(!p||!(isFinite(x)\u0026\u0026isFinite(y))) return false;\n  if(Math.hypot(x-p.x,y-p.y)\u003c900) return true;\n  try{ return !!canSee(p.x,p.y,p.face,x,y,G.vseg); }catch(_c){ return false; }\n}\nfunction updateEnts(dt){"
+                  },
+                  {
+                      "anchor":  "          say(\u0027SOMEONE SHOT THE SURVIVOR\u0027,\u0027chat\u0027,{sub:\u0027Not on you.\u0027});   // v22.81 (tr6fixc): the caps callout, a chat row as the raid text plan has it",
+                      "replacement":  "          if(chatNear(e.x,e.y)) say(\u0027SOMEONE SHOT THE SURVIVOR\u0027,\u0027chat\u0027,{sub:\u0027Not on you.\u0027});   // v22.81 (tr6fixc): the caps callout, a chat row as the raid text plan has it; v22.xx (R35): only near or in sight"
+                  },
+                  {
+                      "anchor":  "          say(\u0027THE PEDDLER IS DEAD\u0027,\u0027chat\u0027,{sub:\u0027Someone else did that.\u0027});   // v22.81 (tr6fixc): the caps callout, a chat row",
+                      "replacement":  "          if(chatNear(e.x,e.y)) say(\u0027THE PEDDLER IS DEAD\u0027,\u0027chat\u0027,{sub:\u0027Someone else did that.\u0027});   // v22.81 (tr6fixc): the caps callout, a chat row; v22.xx (R35): only near or in sight"
+                  },
+                  {
+                      "anchor":  "          say(\u0027The survivor made it to Extraction \u0027+extLetter(_sz)+\u0027.\u0027);",
+                      "replacement":  "          if(chatNear(_sz.x,_sz.y)) say(\u0027The survivor made it to Extraction \u0027+extLetter(_sz)+\u0027.\u0027);   // v22.xx (R35): only near or in sight"
+                  },
+                  {
+                      "anchor":  "            if(!G.sim) say(\u0027The Peddler has set up shop here.\u0027);",
+                      "replacement":  "            if(!G.sim\u0026\u0026chatNear(e.x,e.y)) say(\u0027The Peddler has set up shop here.\u0027,\u0027chat\u0027);   // v22.xx (R35): only near or in sight"
+                  },
+                  {
+                      "anchor":  "          if(!G.sim) say(\u0027The Peddler is back at his pitch.\u0027);",
+                      "replacement":  "          if(!G.sim\u0026\u0026chatNear(e.x,e.y)) say(\u0027The Peddler is back at his pitch.\u0027,\u0027chat\u0027);   // v22.xx (R35): only near or in sight"
+                  },
+                  {
+                      "anchor":  "            if(!G.sim) say(e.name+\u0027 called extraction.\u0027);",
+                      "replacement":  "            if(!G.sim\u0026\u0026chatNear(z.x,z.y)) say(e.name+\u0027 called extraction.\u0027);   // v22.xx (R35): only near or in sight"
+                  },
+                  {
+                      "anchor":  "          say(e.name+\u0027 extracted with the goods.\u0027); T.raidersExtracted++;",
+                      "replacement":  "          T.raidersExtracted++;   // v22.xx (R35): no line; the Current Pillagers board marks him EXTRACTED"
+                  },
+                  {
+                      "anchor":  "            say(e.name+(e.standing\u003e0?\u0027 nods at you.\u0027:\u0027 is watching you.\u0027));",
+                      "replacement":  "            say(e.name+(e.standing\u003e0?\u0027 nods at you.\u0027:\u0027 is watching you.\u0027),\u0027chat\u0027);   // v22.xx (R35): chat"
+                  },
+                  {
+                      "anchor":  "                  say(CW.k===\u0027deer\u0027?\u0027The deer goes down.\u0027:\u0027You shot a bird.\u0027);",
+                      "replacement":  "                  say(CW.k===\u0027deer\u0027?\u0027The deer goes down.\u0027:\u0027You shot a bird.\u0027,\u0027chat\u0027);   // v22.xx (R35): chat"
+                  },
+                  {
+                      "anchor":  "function sayAny(m){\n  if(typeof state!==\u0027undefined\u0027\u0026\u0026state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.sim) say(m);",
+                      "replacement":  "function sayAny(m,k){\n  if(typeof state!==\u0027undefined\u0027\u0026\u0026state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.sim) say(m,k);   // v22.xx (R35): with its kind"
+                  },
+                  {
+                      "anchor":  "      if(!buzzDoses(_tg)) sayAny(_tg===\u0027drunk\u0027?\u0027The liquor wears off.\u0027:\u0027The colours drain away.\u0027);",
+                      "replacement":  "      if(!buzzDoses(_tg)) sayAny(_tg===\u0027drunk\u0027?\u0027The liquor wears off.\u0027:\u0027The colours drain away.\u0027,\u0027chat\u0027);   // v22.xx (R35): chat"
+                  },
+                  {
+                      "anchor":  "    say(\u0027The weather is turning. \u0027+nw.line);",
+                      "replacement":  "    say(\u0027The weather is turning. \u0027+nw.line,\u0027chat\u0027);   // v22.xx (R35): chat"
+                  },
+                  {
+                      "anchor":  "say(\u0027The weather is turning. \u0027+G.wxNext.line); sfxHere",
+                      "replacement":  "say(\u0027The weather is turning. \u0027+G.wxNext.line,\u0027chat\u0027); sfxHere"
+                  },
+                  {
+                      "anchor":  "if(G.wx.id!==\u0027clear\u0027\u0026\u0026G.wx.line) say(G.wx.line);",
+                      "replacement":  "if(G.wx.id!==\u0027clear\u0027\u0026\u0026G.wx.line) say(G.wx.line,\u0027chat\u0027);   // v22.xx (R35): chat"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027far-off chatter stays off the screen: a pillager riding out of a ring 4000 away says no line and is still counted in the run report, his call for extraction 4000 away says nothing, and the same call 200 away still says his name\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__ents)) return \u0027SKIP: this fixture cannot deploy or step\u0027;\n     var bad=[], g, p, e=null, z, i, realSay=say, said=[], keep=null, kz=null, n0, cnt, ents0=null;\n     function named(){ var c=0; for(var j=0;j\u003csaid.length;j++) if(said[j].indexOf(e.name)\u003e=0) c++; return c; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player||!g.tel) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player; p.iv=99; p.maxhp=100000; p.hp=100000; g.waveT=-1e9;\n       z=g.active; if(!z) return \u0027SKIP: no active extraction ring\u0027;\n       for(i=0;i\u003cg.ents.length;i++) if(g.ents[i]\u0026\u0026g.ents[i].kind===\u0027raider\u0027\u0026\u0026g.ents[i].hp\u003e0\u0026\u0026g.ents[i].name){ e=g.ents[i]; break; }\n       if(!e) return \u0027SKIP: no pillager in this raid\u0027;\n       ents0=g.ents.slice(); g.ents.length=0; g.ents.push(e);\n       kz={o:z.open,b:z.beaconT,h:z.hold,gb:g.beaconT,gs:g.shipHold};\n       keep={x:p.x,y:p.y};\n       say=function(m){ said.push(String(m)); return realSay.apply(this,arguments); };\n       // FAR: he rides out of the ring 4000 away. No line, and the run report still counts him.\n       p.x=z.x+4000; p.y=z.y; if(p.x\u003eWORLD_W-50) p.x=z.x-4000;\n       e.state=\u0027extract\u0027; e.x=z.x; e.y=z.y; e.extracting=99; e.hitT=0; e.goal=null; e.hostile=false; z.open=true; z.beaconT=null; z.hold=5;\n       n0=g.tel.raidersExtracted||0;\n       for(i=0;i\u003c6\u0026\u0026g.ents.indexOf(e)\u003e=0;i++){ e.state=\u0027extract\u0027; e.x=z.x; e.y=z.y; __ents(0.05); }\n       if(g.ents.indexOf(e)\u003e=0) return \u0027SKIP: staging: the pillager in the ring did not ride out\u0027;\n       cnt=named();\n       if(cnt) bad.push(\u0027a pillager riding out 4000 away said \u0027+cnt+\u0027 line(s): \u0027+said.join(\u0027 | \u0027));\n       if((g.tel.raidersExtracted||0)!==n0+1) bad.push(\u0027the run report counted \u0027+((g.tel.raidersExtracted||0)-n0)+\u0027 pillagers out, not 1\u0027);\n       // HIS CALL: far says nothing, near says his name.\n       if(typeof chatNear===\u0027function\u0027){\n         said.length=0; g.ents.length=0; g.ents.push(e);\n         z.hold=null; z.beaconT=null; z.open=true; if(z===g.active){ g.beaconT=null; g.shipHold=null; }\n         e.state=\u0027extract\u0027; e.x=z.x; e.y=z.y; e.extracting=0; e.rcallT=1.59; e.hp=Math.max(e.hp||0,50);\n         __ents(0.05);\n         if(z.beaconT===null||z.beaconT===undefined) bad.push(\u0027SKIP: staging: the pillager in the ring did not call extraction\u0027);\n         else if(named()) bad.push(\u0027a pillager calling extraction 4000 away said a line: \u0027+said.join(\u0027 | \u0027));\n         said.length=0;\n         z.hold=null; z.beaconT=null; z.open=true; if(z===g.active){ g.beaconT=null; g.shipHold=null; }\n         p.x=z.x+200; p.y=z.y; e.state=\u0027extract\u0027; e.x=z.x; e.y=z.y; e.extracting=0; e.rcallT=1.59;\n         if(g.ents.indexOf(e)\u003c0) g.ents.push(e);\n         __ents(0.05);\n         if(z.beaconT!==null\u0026\u0026z.beaconT!==undefined\u0026\u0026!named()) bad.push(\u0027a pillager calling extraction 200 away said no line naming him\u0027);\n       }\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       say=realSay;\n       try{ if(z\u0026\u0026kz){ z.open=kz.o; z.beaconT=kz.b; z.hold=kz.h; g.beaconT=kz.gb; g.shipHold=kz.gs; } }catch(_z){}\n       try{ if(keep\u0026\u0026p){ p.x=keep.x; p.y=keep.y; } }catch(_p){}\n       try{ var g2=__state(); if(g2){ g2.msgT=0; g2.msg=\u0027\u0027; g2.feed=[]; g2.msgQ=[]; g2.msgQM=[]; g2.alert=null; g2.alertQ=[]; g2.pick=[]; } if(g2\u0026\u0026!g2.over){ g2.player.downed=false; g2.player.iv=0; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear();\n     }\n     if(bad.length===1\u0026\u0026bad[0].indexOf(\u0027SKIP: \u0027)===0) return bad[0];\n     return bad.length?bad.join(\u0027; \u0027):null; }},\n"
+}
