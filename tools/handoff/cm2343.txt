@@ -1,0 +1,7 @@
+v23.43: arcade: halloween dressing
+
+In the arcade the lamps burn orange, carved pumpkins sit by lamps and doors, and a slow violet haze drifts over the screen, all purely decoration.
+
+Check 23.43. Fails on v23.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

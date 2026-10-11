@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.43 - ARCADE: HALLOWEEN DRESSING
+
+Co-op hunt while he was away. His order for the Halloween party mode, build 20 of 20. An arcade raid now looks like Halloween night: every lamp burns orange and a little brighter, carved pumpkins sit by the lamps and doors (most of them lit, with a warm glow at night), and a slow violet haze drifts over the screen. It is all decoration drawn from the cosmetic dice, never the raid dice, so the map, the loot and the enemies are exactly the same and what you can see is unchanged. Normal raids are untouched.
+
+MEASURED. Check 23.43 passes, and fails on v23.42.
 ## v23.42 - ARCADE: THE CONTROLS CARD
 
 Co-op hunt while he was away. His order for the Halloween party mode, build 19 of 20. A walk-up player has never seen the game. Every arcade drop now puts a big controls card at the left of the screen while the spawn shield is up and for 4 seconds after it drops: MOVE, AIM, FIRE, ROLL, RELOAD, SWITCH GUN, HEAL and EXTRACT, each with its keyboard key and its controller button. The keys follow CHANGE KEYS and a PlayStation pad reads its own buttons. The HOW TO PLAY page of the demo loop shows the same 8 rows. Normal raids are untouched.
