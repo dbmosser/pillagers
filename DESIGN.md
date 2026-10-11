@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.13 - PARTY SUMMARY WRITES MONEY AS DOLLARS
+
+Co-op hunt while he was away. R48 made one way to write money, Credits shown as $1,234, but the party summary on the run card (how each teammate ended, kills and value) still wrote the value as 1,234c. It now writes $1,234 like every other money figure.
+
+MEASURED. Check 23.13 passes, and fails on v23.12.
 ## v23.12 - RAID DETAILS ARE SHORT
 
 Co-op hunt while he was away. His order of 2026-10-09: a raid line is a short caps headline with a short detail only when needed, never an explaining sentence, and a key is always named in brackets. The detail under NO FRAG CHARGE LEFT and EMPTY SLOT read Press 5 for your gun. (LB or RB to your gun. on a pad); it now reads [5] GUN or [LB] [RB] GUN. The Survivor says Needs Armour Plate., and with too few rounds NOT ENOUGH AMMUNITION with Needs 40 rounds. Hot ground says Bonus loot., the seal Seal payout dropped., and a dead hire names the real amount, Death benefit $3,400 owed., instead of You owe his family. System lines are caps only: CONTROLLER DISCONNECTED with RECONNECT TO RESUME, RECORDING with [F9] STOP and 3:00 MAX, and SAVED TO DOWNLOADS. CANNOT STOW THAT GUN stands alone and the loaner headline is LOANER GUN.

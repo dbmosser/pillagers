@@ -1,0 +1,5 @@
+## v23.13 - PARTY SUMMARY WRITES MONEY AS DOLLARS
+
+Co-op hunt while he was away. R48 made one way to write money, Credits shown as $1,234, but the party summary on the run card (how each teammate ended, kills and value) still wrote the value as 1,234c. It now writes $1,234 like every other money figure.
+
+MEASURED. Check 23.13 passes, and fails on v23.12.

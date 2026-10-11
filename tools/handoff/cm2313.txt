@@ -1,0 +1,7 @@
+v23.13: party summary writes money as dollars
+
+The party summary on the run card writes each value as dollars.
+
+Check 23.13. Fails on v23.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

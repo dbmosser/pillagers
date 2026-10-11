@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.12';
+var VER='23.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36034,7 +36034,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.12: Raid details are short callouts, and the gun key reads [5] GUN. Check 23.12 fails on v23.11',
+  now:'v23.13: The party summary on the run card writes each value as dollars. Check 23.13 fails on v23.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43620,7 +43620,7 @@ function netSumDraw(){
        '<span style="width:150px;text-align:right">'+escHtml(r[i].seat===NET.seat?'YOU':r[i].name)+'</span>'+
        '<span style="width:110px;color:'+c+'">'+st+'</span>'+
        '<span style="width:80px">'+(e?(e.k+(e.k===1?' kill':' kills')):'')+'</span>'+
-       '<span style="width:90px;text-align:right">'+(e?(e.v.toLocaleString()+'c'):'')+'</span></div>';
+       '<span style="width:90px;text-align:right">'+(e?('$'+e.v.toLocaleString()):'')+'</span></div>';   // v23.xx (tr9fixn): money is Credits, written $1,234 (R48)
   }
   el.innerHTML=h; el.style.display='';
   return true;
