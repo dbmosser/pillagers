@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.54';
+var VER='22.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12566,6 +12566,12 @@ window.addEventListener('mouseup',function(e){
           var _gA=(G.hotAssign=G.hotAssign||{}), _gU=(G.hotAuto=G.hotAuto||{});
           var _gOld=(_gA[HC.i]!==undefined)?{a:_gA[HC.i],u:_gU[HC.i]?1:0}:(((_si.k==='gunA'||_si.k==='gunB')&&!_si.vacant&&_si.icon&&_si.icon!=='fists'&&ITEMS['gun_'+_si.icon])?{a:'gun_'+_si.icon,u:1}:null);
           var _gOldHand=(!_si.vacant&&_si.icon&&_si.icon!=='fists'&&(_si.equipped||_si.k==='gunA'||_si.k==='gunB'))?(_si.inHand?1:2):0;
+          // v22.55, from the review of the four-gun belt (build 5): A GUN HE PUT ON A KEY PAST THE GUN KEYS DRAGS BACK ONTO THE GUN KEY
+          // THAT SHOWS IT. A gun in his hands always shows on a gun key too (v15.25, his note: key 1 never goes black while he holds a
+          // gun), so after the rifle went from key 1 to key 6 key 1 still showed it, and dragging it from key 6 back onto key 1 was
+          // read as a drop on its own key: nothing changed, nothing was said, and key 6 kept it. Now his key for it comes off and the
+          // gun is pinned on the gun key, as any gun dropped on a gun key is, and the line names the key.
+          if(_gOld&&_gOld.a===d.key&&_gA[HC.i]===undefined&&d.fromHot!==undefined&&d.fromHot!==HC.i&&_gA[d.fromHot]===d.key) _gOld=null;
           if(_gOld&&_gOld.a===d.key){ G.hot=gunCell(); dropped=true; break; }
           var _gHis=!!(_gOld&&!_gOld.u);
           for(_gq in _gA) if(_gA[_gq]===d.key){ if(!_gU[_gq]) _gHis=true; delete _gA[_gq]; delete _gU[_gq]; }
@@ -35620,7 +35626,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.54: A pickup row says where the item went: SLOT 2, IN HAND or BACKPACK. Check 22.54 fails on v22.53',
+  now:'v22.55: A gun put on a later key drags back onto the gun key that shows it. Check 22.55 fails on v22.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

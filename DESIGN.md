@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.55 - A GUN DRAGS BACK TO ITS KEY
+
+Co-op hunt while he was away. From the review of the four-gun belt, build 5. A gun in his hands always shows on a gun key as well (his v15.25 note: key 1 never goes black while he holds a gun), so after he dragged the rifle from key 1 to key 6, key 1 still showed it. Dragging it from key 6 back onto key 1 was taken as a drop on its own key: nothing changed, nothing was said, and key 6 and his belt plan kept the rifle. Now the drag back takes it off key 6, pins it on key 1 like any gun dropped on a gun key, and the line names the key.
+
+MEASURED. Check 22.55 passes, and fails on v22.54.
 ## v22.54 - PICKUP ROWS SAY WHERE IT WENT
 
 Co-op hunt while he was away. His order of 2026-10-09: the raid text reads like a shooter HUD, one short callout per thing. A gun into the free slot said SHOTGUN STOWED with PRESS 2 TO SWAP under it, a gun into his hands said its name equipped with a damage figure, a gun or a Stim on a belt key said SHOTGUN ON KEY 3, and a full belt said GUN SLOTS FULL: each a second line about an item already in the pickup stack, waiting behind the first and pushing other lines off. Where it went is now the dim caps tag on the item row in the pickup stack: SLOT 2 (the slot is the key that swaps to it), IN HAND, or BACKPACK when no key was free. Nothing else is said for it.

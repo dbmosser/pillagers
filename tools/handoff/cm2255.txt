@@ -1,0 +1,7 @@
+v22.55: a gun drags back to its key
+
+A gun put on a later key drags back onto the gun key that shows it.
+
+Check 22.55. Fails on v22.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
