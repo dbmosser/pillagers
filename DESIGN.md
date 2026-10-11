@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.53 - THE WHAT IS NEW CARD NAMES THE PICKUP STACK
+
+Co-op hunt while he was away. The card was stamped v22.37 and the stamp may not trail the build by more than 0.15. Its new second line names the raid text pickup stack shipped on the evening of 2026-10-10: items picked up are short rows on the right edge with their icon, a count and where they went; the rest are in the change list.
+
+MEASURED. Check 22.53 passes, and fails on v22.52.
 ## v22.52 - ANY GUN ON ANY KEY
 
 Co-op hunt while he was away. The four-gun belt, build 5 (his order of 2026-10-09: the player can load up the belt with all guns or whatever else they want). In a raid a gun in his hands dragged off a gun key onto keys 5 to 9 was refused with GUN KEYS ONLY. Now it is bound there as his own key and saved in his belt plan; what he had on that key goes to the key the gun came from, and the gun key it left shows the next gun as usual. And decision D2: an empty gun key 3 or 4 refused anything but a gun (GUNS ONLY); an item from the backpack dropped there now takes it, like any other key.
