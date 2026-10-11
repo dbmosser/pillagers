@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.71';
+var VER='22.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35755,7 +35755,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.71: The auto-jog lines, the TEAMMATE DOWN detail and the Peddler plate now read as short caps callouts. Check 22.71 fails on v22.70',
+  now:'v22.72: A teammate pick-up no longer repeats the revive prompt, and a teammate back up and a gift taken read MOTH IS BACK UP and TAKING IT. Check 22.72 fails on v22.71',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41559,7 +41559,7 @@ function netGiftKey(){
   // the receiver's T (or Y) started an offer of his own and the one waiting for him ran out; the prompt had told him to press T.
   // An open offer to this player is answered before anything else; with none waiting the key offers as before.
   gi=G.giftIn;
-  if(gi&&!gi.yes&&G.t-gi.t<=GIFT_T){ gi.yes=1; netGiftSend(gi.from,{op:'yes',id:gi.id}); say('Taking it.'); return true; }
+  if(gi&&!gi.yes&&G.t-gi.t<=GIFT_T){ gi.yes=1; netGiftSend(gi.from,{op:'yes',id:gi.id}); say('TAKING IT','ally'); return true; }   // v22.72 (tr5fixc): the caps callout
   if(G.bagOpen){
     if(bagBeltNo('Move the item into the backpack to offer it.')) return true;   // v20.53 (H17): never the unmarked stack the highlight left
     S=bagStacks(); st=S[clamp(G.bagSel|0,0,Math.max(0,S.length-1))];
@@ -41573,7 +41573,7 @@ function netGiftKey(){
     say('Offered '+it.name+' to '+nm+'.'); return true;
   }
   gi=G.giftIn;
-  if(gi&&!gi.yes&&G.t-gi.t<=GIFT_T){ gi.yes=1; netGiftSend(gi.from,{op:'yes',id:gi.id}); say('Taking it.'); return true; }
+  if(gi&&!gi.yes&&G.t-gi.t<=GIFT_T){ gi.yes=1; netGiftSend(gi.from,{op:'yes',id:gi.id}); say('TAKING IT','ally'); return true; }   // v22.72 (tr5fixc): the caps callout
   return false;
 }
 // v18.05, HIS ORDER (2026-10-03): TRADING WITH THE OTHER PLAYER WORKS IN THE UNDERCROFT. The raid trade of v17.44 needed two
@@ -43215,7 +43215,9 @@ function netRevHold(p,dt){
     rose=!!(netUpShown(g)&&!g.dn&&g.hp>0);
     if(rose||!netUpShown(g)||G.netRevW>=NET_HUB_STALE){
       G.netRevWait=-1; if(G.netRevDone===w) G.netRevDone=-1;
-      if(rose){ say((netSeatName(w)||'PILLAGER')+' revived.'); blip('pick'); }
+      // v22.72 (tr5fixc), the review of raid text batch 5: HIS ORDER (2026-10-09), a raid line is a short caps callout. The line for a
+      // teammate brought back up was his name and revived with a full stop; it is now his name in caps and IS BACK UP, an ally row.
+      if(rose){ say(String(netSeatName(w)||'your teammate').toUpperCase()+' IS BACK UP','ally'); blip('pick'); }
     }
   }
   if(!keys['KeyE']) G.netRevDone=-1;
@@ -43223,7 +43225,8 @@ function netRevHold(p,dt){
   if(s<0||!keys['KeyE']||p.roll>0){ if(G.netRevT){ G.netRevT=0; G.netRevS=-1; } return false; }
   if(G.netRevS!==s){ G.netRevS=s; G.netRevT=0; }
   nm=netSeatName(s)||'PILLAGER';
-  if(!G.netRevT) say('Reviving '+nm+'. Hold '+keyLabel('KeyE','E')+'.');
+  // v22.72 (tr5fixc), the review of raid text batch 5: a pick-up no longer says a line as it starts. The line named him and the key
+  // to hold, which the [E] REVIVE prompt at his body (v22.68) had just said, and the REVIVING bar over him shows it while it runs.
   G.netRevT=(G.netRevT||0)+dt;
   if(G.netRevT<NET_REV_T) return true;
   G.netRevT=0; G.netRevS=-1; G.netRevDone=s; G.netRevWait=s; G.netRevW=0;   // v16.68, stability: he is called revived when his word says he is up (above), not here

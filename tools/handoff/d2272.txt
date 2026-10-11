@@ -1,0 +1,5 @@
+## v22.72 - PICK-UPS AND GIFTS IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout, never a sentence. The review of the fifth batch of raid text found three co-op lines still written as sentences. A pick-up said Reviving Moth. Hold E. as it started, which the [E] REVIVE prompt at his body (v22.68) had just said and the REVIVING bar over him keeps showing, so the line is gone, as the raid text plan marks it. A teammate brought back up said Moth revived. and now says MOTH IS BACK UP as an ally row, and taking an offer said Taking it. and now says TAKING IT, both the wording of the raid text plan.
+
+MEASURED. Check 22.72 passes, and fails on v22.71.

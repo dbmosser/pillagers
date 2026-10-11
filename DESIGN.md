@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.72 - PICK-UPS AND GIFTS IN CAPS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout, never a sentence. The review of the fifth batch of raid text found three co-op lines still written as sentences. A pick-up said Reviving Moth. Hold E. as it started, which the [E] REVIVE prompt at his body (v22.68) had just said and the REVIVING bar over him keeps showing, so the line is gone, as the raid text plan marks it. A teammate brought back up said Moth revived. and now says MOTH IS BACK UP as an ally row, and taking an offer said Taking it. and now says TAKING IT, both the wording of the raid text plan.
+
+MEASURED. Check 22.72 passes, and fails on v22.71.
 ## v22.71 - AUTO-JOG AND TEAMMATE DOWN IN CAPS
 
 Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, a short caps callout and only a short caps detail, never an explaining sentence. The review of the fifth batch of raid text found four lines still written as sentences. The auto-jog details read Then tap [CAPS] to auto-jog. and Tap [CAPS] or move to stop. and now read [CAPS] AUTO-JOG and [CAPS] OR MOVE TO CANCEL. The TEAMMATE DOWN detail read Moth needs a revive. and now reads REVIVE MOTH, the verb the revive prompt at his body uses. The Peddler plate beside a crate not yet searched read THE PEDDLER (search the crate first) and now reads THE PEDDLER, a middle dot, SEARCH CRATE FIRST, like every other nameplate. The locked door second line Needs the Archive Key stays: the raid text design names it as the sentence case second line of a prompt.

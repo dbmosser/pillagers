@@ -1,0 +1,7 @@
+v22.72: pick-ups and gifts in caps
+
+A teammate pick-up no longer repeats the revive prompt, and a teammate back up and a gift taken read MOTH IS BACK UP and TAKING IT.
+
+Check 22.72. Fails on v22.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
