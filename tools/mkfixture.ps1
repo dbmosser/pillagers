@@ -3996,9 +3996,12 @@ window.__REGRESS=[
      // DISTINCTIVE ON PURPOSE: three elites nothing else would produce, so a
      // message naming the wrong ones cannot be mistaken for a coincidence.
      ct.loot=['blackbox','reactor','codex']; ct.opened=false;
-     g.msg=''; g.bag=[];
+     g.msg=''; g.bag=[]; g.pick=[];
      __grant(ct,['blackbox']);
-     var said=String(g.msg||'');
+     // tr16fix: since the raid text rewrite (R16) an item taken is a row in the pickup stack (G.pick), not a Found line,
+     // so what the pull says is the message line and the pickup rows together, on the build before and after.
+     function saidNow(){ return String(g.msg||'')+((g.pick||[]).map(function(r){ return ' | '+r.m; }).join('')); }
+     var said=saidNow();
      // Measured before v9.22: pulling the Black Box alone printed
      // "Found: Meridian Black Box, Meridian Reactor Core, Sealed Codex".
      if(/Reactor Core/.test(said)) bad.push('a single pull still names the Reactor Core left in the box: "'+said+'"');
@@ -4013,9 +4016,9 @@ window.__REGRESS=[
      var ct2=box();
      if(ct2){
        ct2.loot=['servo','scrap']; ct2.opened=false;
-       g.msg=''; g.bag=[];
+       g.msg=''; g.bag=[]; g.pick=[];
        __grant(ct2,ct2.loot);
-       var said2=String(g.msg||'');
+       var said2=saidNow();
        if(!/Servo/.test(said2)||!/Scrap/.test(said2))
          bad.push('control: a full open no longer lists everything it gave: "'+said2+'"');
      }
@@ -36193,7 +36196,10 @@ window.__REGRESS=[
      var HOT=['Hot','ground.'].join(' '), FOUND=['Found',' '].join(':');
      function endAny(){ try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; g0.searching=null; __endRaid('abandon'); } }catch(_0){} }
      // What the HUD draws: G.msg while G.msgT is above zero, read after each whole frame.
-     function note(seen){ var gg=__state(); if(seen&&gg&&gg.msg&&gg.msgT>0&&(seen.length===0||seen[seen.length-1]!==String(gg.msg))) seen.push(String(gg.msg)); }
+     function note(seen){ var gg=__state(); if(seen&&gg&&gg.msg&&gg.msgT>0&&(seen.length===0||seen[seen.length-1]!==String(gg.msg))) seen.push(String(gg.msg));
+       // tr16fix: since the raid text rewrite (R16) the items taken are rows in the pickup stack (G.pick), not a Found line; they are
+       // kept apart in seen.pk so the hot ground line is still read from the message line, on the build before and after.
+       if(seen&&gg&&gg.pick&&gg.pick.length){ seen.pk=seen.pk||[]; for(var q=0;q<gg.pick.length;q++) if(seen.pk.indexOf(String(gg.pick[q].m))<0) seen.pk.push(String(gg.pick[q].m)); } }
      function step(nn,seen){ for(var s=0;s<nn;s++){ __loop(t0+(++f)*16.7); note(seen); if(__state()!==g||g.over) return false; } return true; }
      // An ordinary box, shortest search first, with a spot beside it that is clear of every
      // wall, in clear sight of the box, and nearer to it than to any other unopened box.
@@ -36261,7 +36267,7 @@ window.__REGRESS=[
          var hotN=0, foundN=0;
          for(i=0;i<seenA.length;i++){ if(seenA[i].indexOf(HOT)===0) hotN++; if(seenA[i].indexOf(FOUND)>=0) foundN++; }
          var shownA=seenA.join(' | ').slice(-240);
-         if(!foundN) bad.push('control: the Found line never showed after the search [shown: '+shownA+']');
+         if(!foundN&&!(seenA.pk&&seenA.pk.length)) bad.push('control: the Found line (or since R16 a pickup row) never showed after the search [shown: '+shownA+']');
          if(!hotN) bad.push('the hot ground bonus line was never on screen; the Found line wrote over it in the same call [shown: '+shownA+']');
          if(hotN>1) bad.push('the hot ground bonus line was shown '+hotN+' times for one box [shown: '+shownA+']');
        }
@@ -36280,7 +36286,7 @@ window.__REGRESS=[
              var shownB=seenB.join(' | ').slice(-240);
              if(B.ct.hotPaid) bad.push('a box off the hot ground was paid the hot ground bonus');
              if(seenB.some(function(t){ return t.indexOf(HOT)===0; })) bad.push('a box off the hot ground said the hot ground line [shown: '+shownB+']');
-             if(!seenB.length) bad.push('control: nothing showed on the message line during the off-ground search, so it was not being read');
+             if(!seenB.length&&!(seenB.pk&&seenB.pk.length)) bad.push('control: nothing showed on the message line or (since R16) in the pickup stack during the off-ground search, so it was not being read');
            }
          }
        }
@@ -39959,28 +39965,36 @@ window.__REGRESS=[
          if(!it.gk&&plainK===null&&it.use!=='gun') plainK=k;
        }
        if(!gunK||!plainK) return 'SKIP: this build has no better gun or no plain item to pull';
+       // tr16fix: what is on screen after the pull is both message rows, each with its detail (v21.86 two rows, v22.43 the swap
+       // key moved into the detail under STOWED, as PRESS 2 TO SWAP), and since the raid text rewrite (R16) the items taken are rows
+       // in the pickup stack (pk, G.pick) instead of a Found line. Read that way it holds on the build before and after.
+       var pk=[];
        function pull(list){
          // The second slot is empty, which is what a new profile deploys with.
          p.sec=WEAPONS.fists; p.secAmmo=0; p.downed=false;
-         g.msg=''; g.msgT=0;
+         g.msg=''; g.msgT=0; g.msgSub=''; g.feed=[]; g.pick=[];
          grantLoot({x:p.x+20,y:p.y+20,c:'#ffffff',loot:list.slice()},list.slice());
-         return String(g.msg||'');
+         var s=[], f1=g.feed&&g.feed[1];
+         if(g.msg) s.push(String(g.msg)+(g.msgSub?' '+g.msgSub:''));
+         if(f1&&f1.m&&f1.m!==g.msg) s.push(String(f1.m)+(f1.sub?' '+f1.sub:''));
+         pk=(g.pick||[]).map(function(r){ return String(r.m); });
+         return s.join(' | ');
        }
        // THE FINDING: one gun, into the empty slot.
        var m1=pull([gunK]);
        if(!m1) return 'SKIP: the grant said nothing at all, so there is no line to read';
-       if(!/\bswaps?\b/.test(m1))   // r1324: the line ends "to swap." since v13.24 corrected "X swaps"
+       if(!/\bswaps?\b/i.test(m1))   // r1324: the line ends "to swap." since v13.24 corrected "X swaps"; v22.43: PRESS 2 TO SWAP, in capitals
          bad.push('after pulling a gun into his empty second slot the only line left on screen was ['+m1+']: the line telling him the slot is armed and which key swaps to it was written and then written over in the same frame, so a number key went live under his finger and nothing ever said so');
        // AND WITH COMPANY: both facts have to survive, the gun and the list.
        var m2=pull([gunK,plainK]);
-       if(!/\bswaps?\b/.test(m2))   // r1324: the same needle, either form of the verb
+       if(!/\bswaps?\b/i.test(m2))   // r1324: the same needle, either form of the verb
          bad.push('pulling that gun alongside another item lost the gun line again ['+m2+']');
-       if(m2.indexOf(ITEMS[plainK].name)<0)
-         bad.push('pulling that gun alongside another item lost the list of what he took ['+m2+']');
-       // CONTROL: a pull with no gun in it must be untouched.
+       if(m2.indexOf(ITEMS[plainK].name)<0&&pk.indexOf(ITEMS[plainK].name)<0)
+         bad.push('pulling that gun alongside another item lost the list of what he took ['+m2+'] (pickup rows: '+pk.join(', ')+')');
+       // CONTROL: a pull with no gun in it must be untouched: the plain found line, or (R16) one pickup row naming it and no line.
        var m3=pull([plainK]);
-       if(m3!=='Found: '+ITEMS[plainK].name)
-         bad.push('control: a pull with no gun in it no longer says what it always said, it says ['+m3+'] instead of the plain found line');
+       if(m3!=='Found: '+ITEMS[plainK].name&&!(m3===''&&pk.length===1&&pk[0]===ITEMS[plainK].name))
+         bad.push('control: a pull with no gun in it no longer says what it always said, it says ['+m3+'] (pickup rows: '+pk.join(', ')+') instead of the plain found line');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
