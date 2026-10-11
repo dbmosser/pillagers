@@ -1690,7 +1690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='22.61';
+var VER='22.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10208,7 +10208,7 @@ function pedBuy(ix){
   // money is told it is not banked yet rather than that he has nothing.
   // v22.56 (R18): a caps headline and a short detail, not a sentence of up to 110 characters. It still says the money is banked
   // money, and names the stall money on him that is not banked yet (v12.74).
-  if((P.credits||0)<st.price){ say('NOT ENOUGH BANKED CREDITS','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'.'+((G.pedCarry||0)>0?(' '+'$'+(G.pedCarry||0).toLocaleString()+' carried is not banked.'):'')}); return; }
+  if((P.credits||0)<st.price){ say('NOT ENOUGH BANKED CREDITS','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'.'+((G.pedCarry||0)>0?(' Carrying '+'$'+(G.pedCarry||0).toLocaleString()+'.'):'')}); return; }   // v22.xx (tr4fixc): the shooter voice, the headline says banked
 
   var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
   // v12.60, 2026-09-08 audit: AMMUNITION GOES WHERE AMMUNITION GOES. Every other
@@ -14534,7 +14534,13 @@ function pickSay(m,o){
 // v22.59 (R19): the detail under BACKPACK FULL names the button that drops the selected item on the device in hand: the key Z is
 // bound to on the keyboard (keyLabel, so an unmoved keyboard reads [Z]), and Y on a controller, the button pollPad gives
 // bagDropSel with the backpack open (padB names it for a PlayStation pad).
-function bagDropHint(){ return padOn()?padB('[Y] drops the selected item.'):('['+keyLabel('KeyZ','Z')+'] drops the selected item.'); }
+// v22.xx (tr4fixc): THE BACKPACK FULL DETAIL NAMES BOTH STEPS, AS A CAPS TAG. The detail read [Z] drops the selected item., a
+// sentence on a row whose other tags are short caps, and it was not true where it was read: Z (and Y on a controller) drops only
+// with the backpack open, and the pickup stack shows only with it shut. It now reads [B] BACKPACK, a middle dot, [Z] DROP on the
+// keyboard (keyLabel, so a moved key reads as moved) and [VIEW] BACKPACK, a middle dot, [Y] DROP on a controller (VIEW opens the
+// backpack in pollPad; padB names both for a PlayStation pad). With autoloot on it reads the same: autoloot never sheds rare or
+// elite, and those can still be dropped by hand.
+function bagDropHint(){ return padOn()?padB('[VIEW] BACKPACK  \u00b7  [Y] DROP'):('['+keyLabel('KeyB','B')+'] BACKPACK  \u00b7  ['+keyLabel('KeyZ','Z')+'] DROP'); }
 function pickTag(item,tag){
   var q=G&&G.pick, i;
   if(!q) return;
@@ -18888,7 +18894,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
       // the selected item, in the middle of the screen, naming Z even with a controller in hand. It is now one keyed red row in the
       // pickup stack, BACKPACK FULL, refreshed every frame E is held (v21.91: never a second row), with the button that drops the
       // selected item on the device in hand as its detail, or that nothing is left worth dropping when autoloot is on.
-      say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:P.autoloot?'Nothing left worth dropping.':bagDropHint()});
+      say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:bagDropHint()});   // v22.xx (tr4fixc): the shooter voice, autoloot too
       G.searching=null; G.searchT=0;
     }
     else {
@@ -35679,7 +35685,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v22.61: A pickup row said while the backpack or map is open, such as GIVEN TO a teammate, now waits and shows when it closes. Check 22.61 fails on v22.60',
+  now:'v22.62: BACKPACK FULL now says which key opens the backpack and which drops an item, and the stall refusal shows the price and the money you carry. Check 22.62 fails on v22.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

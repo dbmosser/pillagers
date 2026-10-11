@@ -1,0 +1,7 @@
+v22.62: backpack full says what to press
+
+BACKPACK FULL now says which key opens the backpack and which drops an item, and the stall refusal shows the price and the money you carry.
+
+Check 22.62. Fails on v22.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

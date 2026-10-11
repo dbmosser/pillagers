@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v22.62 - BACKPACK FULL SAYS WHAT TO PRESS
+
+Co-op hunt while he was away. His order of 2026-10-09: raid text reads like a shooter HUD, short caps callouts, never an explaining sentence. The review of the fourth batch of raid text found the BACKPACK FULL detail still a sentence, [Z] drops the selected item., and not even true where it was read: Z drops only with the backpack open, and the pickup stack shows only with it shut. It now reads [B] BACKPACK then [Z] DROP (on a controller [VIEW] BACKPACK then [Y] DROP), and the same with autoloot on, where it used to say nothing was left worth dropping while rare items could still be dropped by hand. The stall refusal NOT ENOUGH BANKED CREDITS now reads Costs and the price, then Carrying and the stall money on him, instead of a sentence repeating that it is not banked. The SOLD line keeps Worth and the carried home figure: it is a short detail with the number he needs, as the raid text design allows.
+
+MEASURED. Check 22.62 passes, and fails on v22.61.
 ## v22.61 - A GIFT TAKEN IS ALWAYS SHOWN
 
 Co-op hunt while he was away. The review of the fourth batch of raid text found that in co-op the giver could lose an item without ever being told. A gift is offered from the open backpack, and the pickup stack is hidden while the backpack is open, but its rows still ran out. When the teammate took the item, the GIVEN TO row lived four seconds unseen, so if he shut the backpack later the item was gone and nothing had said so; the old Gave line went to the message rows, which show with the backpack open. Pickup rows now keep their time while the backpack or the map is open and show when it closes.
