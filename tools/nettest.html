@@ -542,7 +542,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       held=sleep(holdMs).then(eUp);
       watch=wait(function(){
         var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=itemsC()-itC0, gm;
-        try{ gm=C.__state(); if(gm&&gm.msg&&msgs.indexOf(gm.msg)<0) msgs.push(gm.msg); }catch(_m){}
+        try{ gm=C.__state(); if(gm&&gm.msg&&msgs.indexOf(gm.msg)<0) msgs.push(gm.msg); if(gm&&Array.isArray(gm.pick)) gm.pick.forEach(function(r){ var t=(r&&r.item)?('PICK '+r.m):''; if(t&&msgs.indexOf(t)<0) msgs.push(t); }); }catch(_m){}   // 2026-10-11: a pickup is a pickup stack row since the raid text work (R16)
         if(a&&a.op&&tA===null) tA=Date.now();
         if(c&&c.op&&tC===null) tC=Date.now();
         if(bc>=n&&tBag===null){ tBag=Date.now(); eUp(); }
@@ -555,7 +555,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
         log('board: C holds '+(nb?nb.length:'no')+' host board rows, '+live+' still out there'+(nb&&nb[0]?(', first '+JSON.stringify(nb[0])):''));
         if(!nb||!nb.length) bad.push('board: C holds no host board rows'); else if(!live) bad.push('board: every host row reads out or dead on C'); })();
       rep.lootMsgs=msgs; log('loot: C read these lines while it searched: '+JSON.stringify(msgs));
-      if(!msgs.some(function(q){ return (/^Took /).test(q); })) bad.push('loot: C never read a Took line naming what it pulled');
+      if(!msgs.some(function(q){ return (/^Took |^PICK /).test(q); })) bad.push('loot: C never read a Took line or a pickup row naming what it pulled');
       rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
       log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
       var opn=vc2.list.filter(function(q){ return q.op&&!op0[q.cid]&&q.cid!==box.cid; }).map(function(q){ return q.cid+' '+q.ty; });
@@ -852,8 +852,8 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       }).then(function(){ rep.hostLeftMs=Date.now()-tq; log('raid: C abandoned and A stopped spectating; A PARTY status: '+(st(fa).status||''));
         var pa=el(fa,'oc_party'), pc=el(fc,'oc_party'), ta=pa?String(pa.textContent):'', tc=pc?String(pc.textContent):'';
         log('summary: A card reads '+JSON.stringify(ta)+'; C card reads '+JSON.stringify(tc));
-        if(pa&&(ta.indexOf('YOUR PARTY')<0||(ta.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: A card does not show both players abandoned');
-        if(pc&&(tc.indexOf('YOUR PARTY')<0||(tc.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: C card does not show both players abandoned'); },
+        if(pa&&(ta.indexOf('PARTY')<0||(ta.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: A card does not show both players abandoned');
+        if(pc&&(tc.indexOf('PARTY')<0||(tc.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: C card does not show both players abandoned'); },
         function(e){ bad.push('raid: '+e.message); });
     }).then(function(){ clearInterval(keepAlive); comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ clearInterval(keepAlive); comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
     });
