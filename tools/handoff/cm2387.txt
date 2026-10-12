@@ -1,0 +1,7 @@
+v23.87: death recap on the kia and extracted cards
+
+The KIA card now says what killed you and with what, and both end cards list the damage you took by source.
+
+Check 23.87. Fails on v23.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

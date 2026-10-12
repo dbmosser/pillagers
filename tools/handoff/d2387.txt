@@ -1,0 +1,5 @@
+## v23.87 - DEATH RECAP ON THE KIA AND EXTRACTED CARDS
+
+Co-op hunt while he was away. His feature 29 of 2026-10-12, the death recap, and his answer 33: it goes on the KIA and EXTRACTED screen. Every hit you take now remembers what it was fired from: a pillager by the gun he carries, a machine by its weapon (a Sentry by its autocannon, a Crawler by its claws), your own charge, the storm. The KILLED IN ACTION card now reads KILLED BY who WITH what, and both the KIA and the EXTRACTED card list DAMAGE TAKEN: the four things that hurt you most, with the damage and the number of hits. HOW IT WENT stays as it was.
+
+MEASURED. Check 23.87 passes, and fails on v23.86.

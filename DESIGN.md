@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.87 - DEATH RECAP ON THE KIA AND EXTRACTED CARDS
+
+Co-op hunt while he was away. His feature 29 of 2026-10-12, the death recap, and his answer 33: it goes on the KIA and EXTRACTED screen. Every hit you take now remembers what it was fired from: a pillager by the gun he carries, a machine by its weapon (a Sentry by its autocannon, a Crawler by its claws), your own charge, the storm. The KILLED IN ACTION card now reads KILLED BY who WITH what, and both the KIA and the EXTRACTED card list DAMAGE TAKEN: the four things that hurt you most, with the damage and the number of hits. HOW IT WENT stays as it was.
+
+MEASURED. Check 23.87 passes, and fails on v23.86.
 ## v23.86 - THE WHAT IS NEW CARD NAMES THE NEW MODES WORK
 
 Co-op hunt while he was away. The card was stamped v23.70 and the stamp may not trail the build by more than 0.15. Its new second line names the builds of 2026-10-12: ten minute raids where extracting doubles the score, the tripwire mine on the belt, the first sound mix builds, and the first builds of the AAA menu and HUD redesign.
