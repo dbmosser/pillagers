@@ -532,3 +532,11 @@ A two-player arcade raid is playable after **arcade6**.
    - opened or empty body, wreck and dropped containers more than 1500 from every player and older than 5 minutes.
 
    A culled body must disappear on the player 2 window too: use the existing net path for bodies that leave the host world, or add an arcade-only removal word. Normal raids are untouched. *Check:* in an arcade raid, stage 10 arcWave bodies 3000 away idle for 61 s and 10 old empty wreck containers 2000 away; one cull pass removes them, keeps a near or chasing one, and a plain raid removes nothing.
+30. **arcade30, 1 PLAYER ARCADE DEMO** (his order of 2026-10-11 evening: "arcade mode also needs a single player option").
+   - **Title:** a new title row, 1 PLAYER ARCADE DEMO, next to 2 PLAYER ARCADE DEMO. It enters arcade in ONE window: arcadeEnter('host') with ARCADE.solo=1 and NO netSamePick (no player 2 window, no pairing, NET stays off).
+   - **Same as the 2-player mode:** endless, spawn shield, random loadout, extraction bonus and re-drop, waves (host and solo already run them), streaks, newcomer settings, walk-over loot, arcade HUD, idle return, attract loop, controls card, Halloween dressing, operator lock, quick heal, wake lock, culling.
+   - **Score:** the HUD says SCORE instead of TEAM SCORE and drops the YOU / P2 split. The RUN OVER card shows one row.
+   - **Scoreboard:** solo runs go on their own list, so they are never ranked against 2-player team scores. Rows carry a mode tag (m:1 or m:2); old untagged rows count as 2-player. TONIGHT'S BEST and BEST EVER show the list for the mode in use. NEW HIGH SCORE compares within the mode.
+   - **Attract:** no PLAYER 2: PRESS A anywhere. The attract still cycles VIDEO, BOARD (the 1P list) and HOW TO PLAY, and any button drops in.
+   - **Unchanged:** the 2-player arcade flow, and normal raids, are byte for byte the same.
+   - *Check:* the 1P row exists. Entering 1P arcade opens no pair channel (NET.bc stays null and no window.open is called; stub it). arcadeDeploy gives G.arcade with ARCADE.solo, the HUD trace shows SCORE and not TEAM SCORE, and a board write tags m:1 and stays out of the 2-player list.

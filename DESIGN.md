@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.54 - 1 PLAYER ARCADE DEMO
+
+Co-op hunt while he was away. His order of 2026-10-11 evening: arcade mode also needs a single player option. The title now has a 1 PLAYER ARCADE DEMO row next to the 2 player one. It starts the arcade in this one window, with no player 2 window and no pairing. It plays exactly like the 2 player arcade: endless, the spawn shield, the random loadout, the extraction bonus and re-drop, waves, streaks, idle return, the attract loop, the controls card and the Halloween dressing. The score at the top says SCORE instead of TEAM SCORE, with no YOU and P2 split, and the run over card shows one row. Solo runs go on their own list on the party board, so a solo score is never ranked against two player team scores. The 2 player arcade and normal raids are unchanged.
+
+MEASURED. Check 23.54 passes, and fails on v23.53.
 ## v23.53 - ARCADE: THE WORLD STAYS LIGHT
 
 Co-op hunt while he was away. His yes to the five recommendations for the Halloween party mode, arcade29, found by the 3-hour arcade soak. Over 3 hours of nonstop play the enemies on the map grew from 41 to 217 and the containers from 154 to 598, because the waves land near the players and the old ones stay where they were left, and every kill leaves a body or a wreck. Now, in the arcade only, the run owner takes off a wave enemy that has been far from every player for a minute while not chasing, and a searched or empty body, wreck or dropped pile that is far from everyone and over five minutes old. Player 2 sees them go too. Normal raids are untouched.

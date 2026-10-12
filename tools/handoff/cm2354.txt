@@ -1,0 +1,7 @@
+v23.54: 1 player arcade demo
+
+The title has a 1 PLAYER ARCADE DEMO row: the arcade party mode for one player in one window, with its own scoreboard.
+
+Check 23.54. Fails on v23.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1280,6 +1280,7 @@
         style="padding:13px 46px;font-size:15px;letter-spacing:.2em">1 PLAYER</button>
       <button class="deploy ghost moderow" id="modecoop" data-mode="coop">2 PLAYER CO-OP (SAME MACHINE)</button>
       <button class="deploy ghost moderow" id="modearcade" data-mode="arcade">2 PLAYER ARCADE DEMO</button>
+      <button class="deploy ghost moderow" id="modearcade1" data-mode="arcade1">1 PLAYER ARCADE DEMO</button>
       <div class="modelater"><button class="deploy ghost moderow" id="modecoopsrv" data-mode="coopsrv" disabled>2 PLAYER CO-OP (SERVER)</button><span>coming later</span></div>
       <button class="deploy ghost moderow" id="modepvp" data-mode="pvp">2 PLAYER PVP (SAME MACHINE)</button>
       <div class="modelater"><button class="deploy ghost moderow" id="modepvpsrv" data-mode="pvpsrv" disabled>PVP (SERVER)</button><span>coming later</span></div>
@@ -1694,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.53';
+var VER='23.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36134,7 +36135,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.53: In the arcade, far idle wave enemies and old searched bodies and wrecks are cleared away, so a long party night stays smooth. Check 23.53 fails on v23.52',
+  now:'v23.54: The title has a 1 PLAYER ARCADE DEMO row: the arcade party mode for one player in one window, with its own scoreboard. Check 23.54 fails on v23.53',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40736,7 +40737,7 @@ function netSameOnMsg(m){
     if(m.t==='ready'){
       netPadPost();   // v15.77: a player 2 window that just booted, or reloaded, is told this window's controller pick
       netSndPost();   // v15.78: and whether this window's sound is on
-      if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&ARCADE.role==='host') netSamePost({t:'arcon',pair:NET.pair});   // v23.24 (arcade5): so a rebooted player 2 window always rejoins the arcade
+      if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&ARCADE.role==='host'&&!ARCADE.solo) netSamePost({t:'arcon',pair:NET.pair});   // v23.24 (arcade5): so a rebooted player 2 window always rejoins the arcade (v23.54, arcade30: not the 1 player arcade)
       if(NET.pend&&NET.pend.state==='offer'){ if(NET.code){ netSamePost({t:'offer',pair:NET.pair,mode:NET.mode,code:NET.code}); return 'offer'; } return 'wait'; }
       netSameHostLink();
       return 'wait';
@@ -40782,11 +40783,13 @@ function netSameBootP2(pair,mode){
 function netTitleInit(startFn){
   var g=function(id){ return document.getElementById(id); };
   // v23.24 (arcade5): the 2 PLAYER ARCADE DEMO row (arcadePick), its RETRY, and hidden in the player 2 window like the other rows.
-  var co=g('modecoop'), pv=g('modepvp'), ar=g('modearcade'), rt=g('moderetry'), st=g('titlestart'), pl=g('p2line'), hide=['modecoop','modecoopsrv','modepvp','modepvpsrv','modearcade'], i, el, r;
+  // v23.54 (arcade30): and the 1 PLAYER ARCADE DEMO row (arcadeSoloPick), hidden in the player 2 window too.
+  var co=g('modecoop'), pv=g('modepvp'), ar=g('modearcade'), ar1=g('modearcade1'), rt=g('moderetry'), st=g('titlestart'), pl=g('p2line'), hide=['modecoop','modecoopsrv','modepvp','modepvpsrv','modearcade','modearcade1'], i, el, r;
   NET.start=(typeof startFn==='function')?startFn:null;
   if(co) co.onclick=function(){ NET.arcPick=0; netSamePick('coop'); };
   if(pv) pv.onclick=function(){ NET.arcPick=0; netSamePick('pvp'); };
   if(ar) ar.onclick=function(){ arcadePick(); };
+  if(ar1) ar1.onclick=function(){ arcadeSoloPick(); };   // v23.54 (arcade30)
   if(rt) rt.onclick=function(){ if(NET.arcPick) arcadePick(); else netSamePick(NET.pick||'coop'); };
   if(!(typeof NETP2!=='undefined'&&NETP2)) return 'host';
   for(i=0;i<hide.length;i++){ el=g(hide[i]); if(!el) continue; if(el.parentNode&&el.parentNode.className==='modelater') el=el.parentNode; el.style.display='none'; }
@@ -45184,12 +45187,14 @@ function arcadeScoreHud(y,z){
   var cx=Math.round(W/2), mine=Math.max(0,ARCADE.mine|0), mate=Math.max(0,ARCADE.mate|0), nm=arcadeN(mine+mate);
   var fb=FSz(TYPE.title,z), fs=FSz(TYPE.micro,z), mh=/([\d.]+)px/.exec(fb), h=mh?+mh[1]:20, w, gx;
   ctx.save(); ctx.textAlign='center';
-  ctx.font=fs; ctx.fillStyle='#ffc04a'; hudText('TEAM SCORE',cx,Math.round(y-h*0.80));
+  ctx.font=fs; ctx.fillStyle='#ffc04a'; hudText(ARCADE.solo?'SCORE':'TEAM SCORE',cx,Math.round(y-h*0.80));   // v23.54 (arcade30): SCORE in the 1 player arcade
   ctx.font=fb; ctx.fillStyle='#e8eef2'; hudText(nm,cx,y); w=ctx.measureText(nm).width;
   gx=Math.round(cx+w/2+10*z);
   ctx.font=fs; ctx.textAlign='left'; ctx.fillStyle='#cdd6dd';
-  hudText('YOU '+arcadeN(mine),gx,Math.round(y-h*0.40));
-  hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeN(mate),gx,Math.round(y+h*0.15));
+  if(!ARCADE.solo){   // v23.54 (arcade30): no YOU and P2 split in the 1 player arcade
+    hudText('YOU '+arcadeN(mine),gx,Math.round(y-h*0.40));
+    hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeN(mate),gx,Math.round(y+h*0.15));
+  }
   var _sx=arcadeStreakLive();   // v23.38 (arcade15): the live streak multiplier, left of the score
   if(_sx>1){ ctx.font=fb; ctx.textAlign='right'; ctx.fillStyle='#ffc04a'; hudText('x'+_sx,Math.round(cx-w/2-10*z),y); }
   ctx.restore();
@@ -45232,7 +45237,7 @@ function arcadeHud(){
   ctx.fillText('EXTRACTION BONUS +'+arcadeN(b.bonus),cx,y+LH(30));
   if(b.haul>0) ctx.fillText('HAUL x2 +'+arcadeN(b.haul),cx,y+LH(52));
   ctx.font=FS(TYPE.title); ctx.fillStyle='#e8eef2';
-  ctx.fillText('TEAM SCORE '+arcadeN(b.team),cx,y+LH(86));
+  ctx.fillText((ARCADE.solo?'SCORE ':'TEAM SCORE ')+arcadeN(b.team),cx,y+LH(86));   // v23.54 (arcade30)
   ctx.restore();
 }
 // v23.24, HIS ORDER (2026-10-11), build 5 of 20 (arcade5): THE MODE ROW AND BOTH WINDOWS IN ARCADE. The title has a 2 PLAYER ARCADE
@@ -45248,6 +45253,28 @@ function arcadePick(){
   var r=netSamePick('coop',function(){ WNSEEN=1; try{ if(typeof NET.start==='function') NET.start(); }catch(_ns){} arcadeEnter('host'); });
   if(r==='p2'||r==='unsupported') NET.arcPick=0;
   return r;
+}
+// v23.54, HIS ORDER (2026-10-11 evening), arcade30: 1 PLAYER ARCADE DEMO. His words: "arcade mode also needs a single player option".
+// The title has a 1 PLAYER ARCADE DEMO row next to the 2 player one. It enters the arcade in this one window: the same start the
+// 2 player row runs and arcadeEnter as the host, with ARCADE.solo set, and no netSamePick, so no player 2 window opens, no pair
+// channel is made and the net section stays off (a pair channel left from an earlier co-op pick with nobody linked is closed; a
+// linked player 2 window has to be closed first). Everything else is the 2 player arcade as it is: endless, the shield, the random
+// kit, extraction bonus and re-drop, waves, streaks, the arcade HUD, idle return, the attract loop, the controls card, Halloween,
+// the operator lock, quick heal, the wake lock and the cull. The HUD says SCORE where it said TEAM SCORE, with no YOU and P2 split,
+// and the RUN OVER card has one row. Solo runs go on their own list on the party board: every row carries its mode (m 1 or 2, an
+// old row with none is a 2 player row), and TONIGHTS BEST, BEST EVER, NEW HIGH SCORE and the initials card read the list of the
+// mode in play. Leaving the arcade clears ARCADE.solo, so the 2 player arcade and normal raids are exactly what they were.
+function arcadeSoloPick(){
+  if(ARCADE.on) return 'on';
+  if((typeof NETP2!=='undefined'&&NETP2)||NET.same==='p2'||NET.role==='join'){ netModeMsg('THIS WINDOW IS PLAYER 2'); return 'p2'; }
+  if(NET.on||(Array.isArray(NET.peers)&&netInCount()>0)){ netModeMsg('CLOSE THE PLAYER 2 WINDOW FIRST'); return 'linked'; }
+  if(NET.bc||NET.same) netSameStop();   // a pair left from an earlier pick, with nobody linked
+  NET.arcPick=0; netModeMsg('');
+  WNSEEN=1;
+  try{ if(typeof NET.start==='function') NET.start(); }catch(_ns){}
+  ARCADE.solo=1;
+  if(!arcadeEnter('host')){ ARCADE.solo=0; return 'fail'; }
+  return 'solo';
 }
 // v23.28, HIS ORDER (2026-10-11), build 7 of 20 (arcade7): BOTH PLAYERS ON PADS. His design: controller 1 is player 1, controller 2 is
 // player 2. Entering the arcade puts this window on its arcade pad IN MEMORY (the host on the first controller, player 2 on the
@@ -45320,7 +45347,7 @@ function arcadeEnter(role){
   arcadeCfgIn();
   ARCADE.wantIn=0; ARCADE.p2Busy=0;   // v23.26 (arcfixa)
   arcadePadsIn(ARCADE.role);   // v23.28 (arcade7): controller 1 is player 1, controller 2 is player 2, in memory only
-  if(ARCADE.role==='host') netSamePost({t:'arcon',pair:NET.pair});
+  if(ARCADE.role==='host'&&!ARCADE.solo) netSamePost({t:'arcon',pair:NET.pair});   // v23.54 (arcade30): the 1 player arcade tells nobody
   arcadeAttStart();   // v23.40 (arcade17): the attract loop from the top
   try{ arcadeWakeOn(); }catch(_aw){}   // v23.47 (arcade24): the screens stay awake while the arcade is on
   return true;
@@ -45619,6 +45646,7 @@ function arcadeLeave(){
   try{ if(ATT.on) attStop(); ATT.last=Date.now(); }catch(_at){}
   try{ arcadeAttUndress(); }catch(_au){}   // v23.40 (arcade17): the title attract has none of the arcade pages
   NET.arcPick=0; NET.arcBoot=0; ARCADE.wantIn=0;
+  ARCADE.solo=0;   // v23.54 (arcade30)
   arcadePadsOut();   // v23.28 (arcade7): his kept controller pick back
   if(hadRaid){ try{ showScreen('hub'); }catch(_sh2){} }
   return r;
@@ -45764,7 +45792,8 @@ function arcadeOverSync(){
   sig=(oc?String(o.at):'-')+'|'+(ini?(ini.l.join('')+ini.pos):'');
   if(on&&c.getAttribute('data-at')!==sig){
     c.textContent=''; c.setAttribute('data-at',sig);
-    ln=oc?[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeN(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]:[];
+    ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeN(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row
+      :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeN(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1]; c.appendChild(el); }
     if(ini) arcadeIniDraw(c,ini);
   }
@@ -45790,7 +45819,7 @@ function arcadeBoardLoad(){
   r=(o&&Array.isArray(o.rows))?o.rows:[];
   for(i=0;i<r.length;i++){
     x=r[i]; if(!x||typeof x.run!=='string'||!x.run) continue;
-    out.push({run:x.run.slice(0,40),i:(typeof x.i==='string')?x.i.slice(0,3).toUpperCase():'',s:Math.max(0,Math.round(+x.s||0)),x:Math.max(0,x.x|0),k:Math.max(0,x.k|0),t:+x.t||0});
+    out.push({run:x.run.slice(0,40),i:(typeof x.i==='string')?x.i.slice(0,3).toUpperCase():'',s:Math.max(0,Math.round(+x.s||0)),x:Math.max(0,x.x|0),k:Math.max(0,x.k|0),t:+x.t||0,m:(x.m===1)?1:2});   // v23.54 (arcade30): the mode, an old row is 2 player
   }
   return out;
 }
@@ -45799,27 +45828,34 @@ function arcadeBoardDedupe(r){
   var m={}, out=[], i, x, o;
   for(i=0;i<r.length;i++){
     x=r[i]; o=Object.prototype.hasOwnProperty.call(m,x.run)?m[x.run]:null;
-    if(!o){ o=m[x.run]={run:x.run,i:x.i||'',s:x.s,x:x.x,k:x.k,t:x.t}; out.push(o); continue; }
+    if(!o){ o=m[x.run]={run:x.run,i:x.i||'',s:x.s,x:x.x,k:x.k,t:x.t,m:(x.m===1)?1:2}; out.push(o); continue; }
     if(!o.i&&x.i) o.i=x.i;
     if(x.s>o.s||(x.s===o.s&&x.t>o.t)){ o.s=x.s; o.x=x.x; o.k=x.k; o.t=x.t; }
   }
   return out;
 }
+// v23.54 (arcade30): the mode of the arcade in play, 1 or 2, and whether a row is on that list (a row with no mode is 2 player)
+function arcadeBoardMode(){ return ARCADE.solo?1:2; }
+function arcadeBoardIn(x,md){ return ((x&&x.m===1)?1:2)===md; }
 function arcadeBoardSave(rows){
-  var r=arcadeBoardDedupe(rows), h=Math.floor(ARCADE_BOARD.keep/2), all, out=[], seen={}, i, x;
-  all=r.slice().sort(function(p,q){ return q.s-p.s; }).slice(0,h).concat(r.slice().sort(function(p,q){ return q.t-p.t; }).slice(0,h));
+  var r=arcadeBoardDedupe(rows), h=Math.floor(ARCADE_BOARD.keep/2), all=[], out=[], seen={}, i, x, md, rm;
+  for(md=1;md<=2;md++){   // v23.54 (arcade30): each list keeps its own best and newest, so one mode never pushes the other off
+    rm=[]; for(i=0;i<r.length;i++) if(arcadeBoardIn(r[i],md)) rm.push(r[i]);
+    all=all.concat(rm.slice().sort(function(p,q){ return q.s-p.s; }).slice(0,h),rm.slice().sort(function(p,q){ return q.t-p.t; }).slice(0,h));
+  }
   for(i=0;i<all.length;i++){ x=all[i]; if(seen[x.run]) continue; seen[x.run]=1; out.push(x); }
   try{ localStorage.setItem(ARCADE_BOARD_KEY,JSON.stringify({v:1,rows:out})); return true; }catch(_bs){ return false; }
 }
 // tonights best: the last 12 hours, one row per run, best first, the top 10
-function arcadeBoardTonight(now){
+function arcadeBoardTonight(now,md){
   now=+now||Date.now();
+  md=(md===1||md===2)?md:arcadeBoardMode();   // v23.54 (arcade30): the list of the mode in play
   var r=arcadeBoardDedupe(arcadeBoardLoad()), out=[], i;
-  for(i=0;i<r.length;i++) if(r[i].t>=now-ARCADE_BOARD.night&&r[i].t<=now+60000) out.push(r[i]);
+  for(i=0;i<r.length;i++) if(arcadeBoardIn(r[i],md)&&r[i].t>=now-ARCADE_BOARD.night&&r[i].t<=now+60000) out.push(r[i]);
   out.sort(function(p,q){ return (q.s-p.s)||(p.t-q.t); });
   return out.slice(0,ARCADE_BOARD.top);
 }
-function arcadeBoardBest(){ var r=arcadeBoardLoad(), b=0, i; for(i=0;i<r.length;i++) if(r[i].s>b) b=r[i].s; return b; }
+function arcadeBoardBest(md){ md=(md===1||md===2)?md:arcadeBoardMode(); var r=arcadeBoardLoad(), b=0, i; for(i=0;i<r.length;i++) if(arcadeBoardIn(r[i],md)&&r[i].s>b) b=r[i].s; return b; }   // v23.54 (arcade30): the best of the mode in play
 function arcadeBoardAuth(){ return !!(ARCADE.on&&(ARCADE.role==='host'||(G&&G.netWasJoin))); }
 // the run row, written in place under the run id. Returns whether it was written.
 function arcadeBoardPut(){
@@ -45828,7 +45864,7 @@ function arcadeBoardPut(){
   if(!(s>0)) return false;
   r=arcadeBoardLoad();
   for(i=r.length-1;i>=0;i--) if(r[i].run===id){ if(!ini&&r[i].i) ini=r[i].i; if(r[i].s>s) s=r[i].s; r.splice(i,1); }
-  r.push({run:id,i:ini,s:s,x:Math.max(0,(ARCADE.ext|0)+(ARCADE.mateX|0)),k:Math.max(0,(ARCADE.kills|0)+(ARCADE.mateK|0)),t:Date.now()});
+  r.push({run:id,i:ini,s:s,x:Math.max(0,(ARCADE.ext|0)+(ARCADE.mateX|0)),k:Math.max(0,(ARCADE.kills|0)+(ARCADE.mateK|0)),t:Date.now(),m:arcadeBoardMode()});   // v23.54 (arcade30): tagged with its mode
   return arcadeBoardSave(r);
 }
 // the run is in tonights top 10 and has no initials yet
@@ -46014,7 +46050,7 @@ function arcadeHiTick(){
   netSamePost({t:'archi',pair:NET.pair,run:id,s:t});
   return true;
 }
-function arcadeHiSay(t){ try{ say('NEW HIGH SCORE','ext',{sub:'TEAM SCORE '+arcadeN(t)}); }catch(_hs){} }
+function arcadeHiSay(t){ try{ say('NEW HIGH SCORE','ext',{sub:(ARCADE.solo?'SCORE ':'TEAM SCORE ')+arcadeN(t)}); }catch(_hs){} }   // v23.54 (arcade30)
 // The containers as this window holds them, for the test page handle.
 function netContView(){
   var out=[], i, ct, n=0, op=0, held=[], s, up=!!(typeof G!=='undefined'&&G);
