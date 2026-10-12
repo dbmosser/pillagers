@@ -1,0 +1,32 @@
+{
+    "title":  "THE VERSION RESTARTS AT V0.0001",
+    "why":  "His answer of 2026-10-12: the version players see restarts at v0.0001. The title and the corner label now count from this build as v0.0001, one step per build after it. The internal build number (used by the tools, the party link and the crash records) is unchanged, so nothing that compares versions breaks; the run report shows both numbers, and a copy too old to link is still told its own number.",
+    "now":  "The version shown to players restarts at v0.0001.",
+    "edits":  [
+                  {
+                      "anchor":  "function buildExport(){\n  var L=[],i;\n  L.push(\u0027=== PILLAGERS v\u0027+VER+\u0027 FLIGHT RECORDER ===\u0027);",
+                      "replacement":  "// v23.6x (feat0c), HIS ANSWER (2026-10-12): the version players see restarts at v0.0001. VER stays the internal ship number the tools,\n// the party handshake and the crash records use; verShown turns it into the player number, counting one per build from PVER_RESET\n// (the build that made the change shows v0.0001, the next v0.0002). A number from before the reset (an old copy trying to join) is\n// shown as it was; floor:1 shows it as v0.0001 instead (the NEW IN card, whose list may predate the reset).\nvar PVER_RESET=\u002723.69\u0027;\nfunction verShown(v,floor){\n  var a=String(v===undefined||v===null?\u0027\u0027:v).split(\u0027.\u0027), b=PVER_RESET.split(\u0027.\u0027), n, s;\n  n=(parseInt(a[0],10)*100+parseInt(a[1],10))-(parseInt(b[0],10)*100+parseInt(b[1],10))+1;\n  if(!(n\u003e=1)){ if(!floor) return \u0027v\u0027+v; n=1; }\n  s=String(n); while(s.length\u003c4) s=\u00270\u0027+s;\n  return \u0027v0.\u0027+s;\n}\nfunction buildExport(){\n  var L=[],i;\n  L.push(\u0027=== PILLAGERS \u0027+verShown(VER)+\u0027 (build \u0027+VER+\u0027) FLIGHT RECORDER ===\u0027);"
+                  },
+                  {
+                      "anchor":  "(\u0027A copy on v\u0027+netClean(m.ver,12)+\u0027 tried to join. Both copies need to be on the same version, v\u0027+VER+\u0027.\u0027)",
+                      "replacement":  "(\u0027A copy on \u0027+verShown(netClean(m.ver,12))+\u0027 tried to join. Both copies need to be on the same version, \u0027+verShown(VER)+\u0027.\u0027)"
+                  },
+                  {
+                      "anchor":  "(\u0027The host is on v\u0027+netClean(m.ver,12)+\u0027 and you are on v\u0027+VER+\u0027. Both",
+                      "replacement":  "(\u0027The host is on \u0027+verShown(netClean(m.ver,12))+\u0027 and you are on \u0027+verShown(VER)+\u0027. Both"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(\u0027NEW IN v\u0027+WHATSNEW_VER,",
+                      "replacement":  "ctx.fillText(\u0027NEW IN \u0027+verShown(WHATSNEW_VER,1),"
+                  },
+                  {
+                      "anchor":  "document.getElementById(\u0027titlever\u0027).textContent=\u0027v\u0027+VER;",
+                      "replacement":  "document.getElementById(\u0027titlever\u0027).textContent=verShown(VER);   // v23.6x (feat0c): the player number"
+                  },
+                  {
+                      "anchor":  "if(_vl) _vl.textContent=\u0027v\u0027+VER;",
+                      "replacement":  "if(_vl) _vl.textContent=verShown(VER);   // v23.6x (feat0c): the player number"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his answer (2026-10-12): the version players see restarts at v0.0001, counted one per build from the build that made the change, on the title and the corner label, while the run report carries both numbers and the internal VER is unchanged\u0027,\n   run:function(){\n     if(typeof verShown!==\u0027function\u0027||typeof PVER_RESET!==\u0027string\u0027) return \u0027no player version in this build: the title still shows the build number\u0027;\n     var bad=[], a=PVER_RESET.split(\u0027.\u0027), r=parseInt(a[0],10)*100+parseInt(a[1],10), b=String(VER).split(\u0027.\u0027), v=parseInt(b[0],10)*100+parseInt(b[1],10), n=v-r+1, want, s, t, el, rep=\u0027\u0027;\n     function num(k){ return Math.floor(k/100)+\u0027.\u0027+(k%100\u003c10?\u00270\u0027:\u0027\u0027)+(k%100); }\n     if(verShown(PVER_RESET)!==\u0027v0.0001\u0027) bad.push(\u0027the reset build shows \u0027+verShown(PVER_RESET)+\u0027, not v0.0001\u0027);\n     if(verShown(num(r+1))!==\u0027v0.0002\u0027) bad.push(\u0027the build after the reset shows \u0027+verShown(num(r+1))+\u0027, not v0.0002\u0027);\n     if(verShown(num(r+12))!==\u0027v0.0013\u0027) bad.push(\u0027twelve builds on shows \u0027+verShown(num(r+12))+\u0027, not v0.0013\u0027);\n     if(verShown(num(r-5))!==\u0027v\u0027+num(r-5)) bad.push(\u0027a copy from before the reset is shown as \u0027+verShown(num(r-5)));\n     if(verShown(num(r-5),1)!==\u0027v0.0001\u0027) bad.push(\u0027the floored form of an older number is \u0027+verShown(num(r-5),1));\n     if(!(n\u003e=1)) bad.push(\u0027this build \u0027+VER+\u0027 is older than its own reset \u0027+PVER_RESET);\n     s=String(n); while(s.length\u003c4) s=\u00270\u0027+s; want=\u0027v0.\u0027+s;\n     if(verShown(VER)!==want) bad.push(\u0027this build shows \u0027+verShown(VER)+\u0027, not \u0027+want);\n     if(!/^\\d+\\.\\d\\d$/.test(String(VER))) bad.push(\u0027the internal VER is no longer a build number: \u0027+VER);\n     el=document.getElementById(\u0027titlever\u0027); t=el?String(el.textContent||\u0027\u0027):\u0027\u0027;\n     if(el\u0026\u0026t!==want) bad.push(\u0027the title shows \u0027+t+\u0027, not \u0027+want);\n     el=document.getElementById(\u0027verlabel\u0027); t=el?String(el.textContent||\u0027\u0027):\u0027\u0027;\n     if(el\u0026\u0026t!==\u0027\u0027\u0026\u0026t!==want) bad.push(\u0027the corner label shows \u0027+t+\u0027, not \u0027+want);\n     try{ rep=String(buildExport()); }catch(x){ bad.push(\u0027the run report threw: \u0027+(x\u0026\u0026x.message||x)); }\n     if(rep\u0026\u0026(rep.indexOf(want)\u003c0||rep.indexOf(\u0027build \u0027+VER)\u003c0)) bad.push(\u0027the run report header does not carry both \u0027+want+\u0027 and build \u0027+VER+\u0027: \u0027+rep.split(\u0027\\n\u0027)[0]);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

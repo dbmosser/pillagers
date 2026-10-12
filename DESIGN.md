@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.68 - NO HALLOWEEN DRESSING
+
+Co-op hunt while he was away. His answer 22 of 2026-10-12: no halloween dressing, forget and remove this concept. The arcade raid no longer burns every lamp orange, puts carved pumpkins by the lamps and doors or washes the screen in violet haze, and the arcade attract no longer reads HAPPY HALLOWEEN. An arcade raid now keeps the lamp colours its map gives it, the same as a normal raid. The code for the dressing is removed, not switched off.
+
+MEASURED. Check 23.68 passes, and fails on v23.67.
 ## v23.67 - PRO SOUND MIX: BUSES, COMPRESSOR, LIMITER
 
 Co-op hunt while he was away. His order of 2026-10-12, his number 45: pro sound mix, improve all sound as much as possible, punchy arcade like CoD and Fortnite. Every sound went raw into one output at whatever level its own generator chose, so a grenade, a footstep and a pickup fought each other and a big fight turned to mush or clipped. Now each kind of sound rides its own bus (guns, impacts, machines, footsteps, the ambient bed, voices, the HUD and the stings), and everything in the world runs through one compressor and then a limiter: quiet sounds come up a little, a blast cannot clip, and the whole mix hits harder. Pickups and the clock warnings skip the compressor so they are never squashed under a fight. The volume rows and split speakers (player 1 left, player 2 right) are untouched. This is the base the next sound builds (ducking, walls, punchier guns, impacts and footsteps) sit on.

@@ -1,0 +1,7 @@
+v23.68: no halloween dressing
+
+The Halloween dressing is gone from the arcade: no pumpkins, no orange lamps, no haze, no banner.
+
+Check 23.68. Fails on v23.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
