@@ -1,0 +1,7 @@
+v24.24: the bulwark redesign
+
+The Bulwark is redrawn: a squat walker behind a dark chevron-striped shield with a glowing viewing slit.
+
+Check 24.24. Fails on v24.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

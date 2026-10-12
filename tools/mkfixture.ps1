@@ -6061,6 +6061,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.24',what:'sprite program spr11 (the Bulwark redesign): its slab is dark gunmetal, darker than the human armour steel (#55606b), and the slab stands on the ground inside its shadow instead of hanging below it',
+   run:function(){
+     if(typeof drawBulwarkS!=='function') return 'SKIP: no bulwark painter';
+     if(!window.__deploy||!window.__endRaid) return 'SKIP: no raid in this fixture';
+     var w0=wc, cv=document.createElement('canvas'), x2, bad=[], W=260, H=340, OX=110, OY=230, Z=4;
+     cv.width=W; cv.height=H; x2=cv.getContext('2d'); if(!x2) return 'SKIP: no canvas';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over) return 'SKIP: staging: no raid';
+       x2.setTransform(Z,0,0,Z,OX,OY); wc=x2;
+       try{ drawBulwarkS({kind:'bulwark',x:0,y:0,r:24,hp:260,maxhp:260,face:0,state:'patrol',step:0,hitT:0,muzzle:0,seenYou:false,overheat:0}); }
+       finally{ wc=w0; x2.setTransform(1,0,0,1,0,0); }
+       var d=x2.getImageData(0,0,W,H).data, q, i, px, py, wx, wy, n=0, sl=0, low=-1e9, mx, mn;
+       for(q=0;q<d.length;q+=4){ if(d[q+3]<200) continue; i=q/4; px=i%W; py=(i-px)/W; wx=(px-OX)/Z; wy=(py-OY)/Z;
+         if(wx>=12&&wx<=21){ if(wy>low) low=wy;
+           if(wy>=-36&&wy<=2){ mx=Math.max(d[q],d[q+1],d[q+2]); mn=Math.min(d[q],d[q+1],d[q+2]); sl+=(mx+mn)/510; n++; } } }
+       var steel=(0x6b+0x55)/510;
+       if(n<300) bad.push('no slab drawn where it stands ('+n+' pixels)');
+       else if(sl/n>=steel) bad.push('the slab mean lightness '+(sl/n).toFixed(3)+' is not below the human armour steel '+steel.toFixed(3));
+       if(low>5.8) bad.push('the slab reaches '+low.toFixed(1)+' below its feet, past the bottom of its shadow (6)');
+     }catch(er){ bad.push('threw: '+(er&&er.message||er)); }
+     finally{ wc=w0; try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.23',what:'sprite program spr10 (THE OVERSEER): the boss is no longer a Warden drawn bigger: a crown of sensor masts rises above its head line, a second cannon sits above the first, and it wears brass',
    run:function(){
      if(typeof drawWardenAt!=='function') return 'SKIP: no warden painter';

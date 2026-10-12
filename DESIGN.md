@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.24 - THE BULWARK REDESIGN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines, silhouettes first. The Bulwark shield was light blue-grey, the same steel as human armour, the body behind it a dark lozenge on two pebbles, and the shield hung below its own shadow. Now it is a squat walker on two stompy feet that step as it moves, a hunched body set back behind the shield with one sensor eye on top that shows its mood, and a dark gunmetal shield with rust edges, a yellow and black chevron band along the top, rivets and a viewing slit that glows with the eye. The shield stands on the ground and keeps its chevrons up whichever way it turns. Elite Bulwarks have a brass shield edge. Drawn only: its size, its shield and its weak back are unchanged.
+
+MEASURED. Check 24.24 passes, and fails on v24.23.
 ## v24.23 - THE OVERSEER REDRAWN
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines. The boss was a Warden drawn at 147 percent and nothing about it said boss. THE OVERSEER is now black gunmetal and brass, with a second cannon on its far shoulder, a crown of three sensor masts with red tip lights, one big round lens for an eye that burns deep red when it hunts you, and cable bundles hanging off its back. It still stands where it stood and fights as it fought: drawn only.
