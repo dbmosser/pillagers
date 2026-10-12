@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.98 - EXPLOSIONS BURST
+
+Co-op hunt while he was away. His order of 2026-10-12, the graphics program (item 13, bigger explosions), in the gritty grounded look he picked (answer 20). A charge or a Howler shell going off was a spray of orange sparks, one puff and a flash of light: no fire, nothing in the air afterwards. Now every burst has a fireball that swells and dies in a third of a second, a shockwave ring, a column of smoke that rises and drifts for three or four seconds, and chunks of debris thrown out on arcs that land and lie there before they fade. It is all drawing: the damage, the blast radius, the light flash and the sound are exactly as they were, nothing here touches the raid dice, and bot raids skip it. Effects set to low throws fewer pieces.
+
+MEASURED. Check 23.98 passes, and fails on v23.97.
 ## v23.97 - TRAUMA SHAKE MOVES THE WORLD ONLY
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it, item 5. The screen shake was a fresh random jump every drawn frame, so it buzzed rather than shook, and it moved the camera itself, so the HUD prompts and markers pinned to the world jittered along with it. Now each hit, shot or blast adds trauma that fades over about half a second and the world rocks along a smooth wave, strongest for the big blasts and barely there for a rifle shot, while the HUD, the prompts and the aim stay steady. The EFFECT INTENSITY setting scales it, and OFF removes it. Nothing about play changes.

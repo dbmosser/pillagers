@@ -1,0 +1,7 @@
+v23.98: explosions burst
+
+Explosions burst: fireball, shockwave, smoke column and flying debris.
+
+Check 23.98. Fails on v23.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

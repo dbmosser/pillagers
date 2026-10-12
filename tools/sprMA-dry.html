@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.96';
+var VER='23.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26157,49 +26157,97 @@ function drawWindupGlow(e,gx,gy){
   wc.beginPath(); wc.arc(gx,gy,12+22*wf,0,6.2832); wc.fill();
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
 }
+// v23.xx (spr2), HIS ORDER (2026-10-12): "improve the sprites of all characters, bots, etc -- spend time on that -- make them
+// all look better", gritty and grounded like ARC Raiders (his answer 20 "a"), silhouettes first (answer 24 "b"). The sprite
+// program (tools/handoff/research/sprites-design-2026-10-12.md), MACHINES A, build 1: THE SENTRY. It was a grey filing cabinet
+// on a skateboard: no ink contour (it melted into a dark floor), one flat grey, a thin single barrel, an amber eye even when it
+// had seen nothing. It is redrawn in the machine style: an INK contour round the tread, hull, head and gun; tread teeth that
+// run as it rolls; a lit top plate, lit left rim and shaded right face (one light, from the top left); a sloped glacis on the
+// side it faces; two ochre hazard chevrons; rivets, seams and a few chips of bare metal at fixed spots; a camera head on a mast
+// with a round lens that speaks the sensor language (dim cool white idle, amber suspicious, red hunting, orange venting); a
+// whip antenna; a twin-barrel gun under a perforated cooling shroud. The whole body turns with its facing. An elite wears a
+// brass edge and a second antenna. Drawn only: no random numbers, nothing written on the machine, its size and shadow as before.
+// sprMR and sprMP draw a rect or a closed path in the machine own frame: lx forward of its centre (mirrored by fl), feet at ox,oy.
+function sprMR(ox,oy,fl,S,lx,ly,w,h){ wc.fillRect(fl>0?ox+lx*S:ox-(lx+w)*S,oy+ly*S,w*S,h*S); }
+function sprMP(ox,oy,fl,S,p){ wc.beginPath(); wc.moveTo(ox+fl*p[0]*S,oy+p[1]*S); for(var i=2;i<p.length;i+=2) wc.lineTo(ox+fl*p[i]*S,oy+p[i+1]*S); wc.closePath(); }
+// THE SENSOR LANGUAGE, one face for every machine: idle a dim cool white with no halo, suspicious amber, hunting red and
+// pulsing (its halo at most 1.6 times the lens), venting an orange flicker, dead black. c colour, a alpha, h halo factor.
+function sprEyeOf(e){
+  var t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  if(!e||e.hp<=0) return {c:'#000000',a:1,h:0};
+  if((e.overheat||0)>0) return {c:'#ff8a3c',a:0.65+0.35*Math.sin(t*22),h:1.3};
+  if(e.state==='chase'||e.state==='alarm'||e.seenYou) return {c:'#ff3b30',a:0.85+0.15*Math.sin(t*9),h:1.6};
+  if(e.state==='investigate'||e.state==='search') return {c:'#ffc04a',a:0.9,h:1.3};
+  return {c:'#dfe9f0',a:0.5,h:0};
+}
 function drawSentryS(e){
-  var S=e.r/SENTRY_R0,fl=Math.cos(e.face)<0?-1:1;
-  var hunting=e.state==='chase',alerted=hunting||e.state==='investigate';
-  var churn=Math.sin((e.step||0)*3)*1.4*S;
-  shadowE(e.x,e.y+2,20*S,7*S,.46);
-  // tread base
-  wc.fillStyle='#1b2027';
-  wc.fillRect(e.x-18*S,e.y-11*S,36*S,11*S);
-  wc.fillStyle='#2b333c';
-  for(var t=0;t<5;t++) wc.fillRect(e.x-17*S+t*7*S+churn,e.y-10*S,4*S,9*S);
-  wc.fillStyle='#39424d'; wc.fillRect(e.x-18*S,e.y-13*S,36*S,3*S);
-  // hull
-  wc.fillStyle='#4b535d'; wc.fillRect(e.x-15*S,e.y-33*S,30*S,21*S);
-  wc.fillStyle='#3a424b'; wc.fillRect(e.x-15*S,e.y-33*S,30*S,5*S);
-  wc.fillStyle='#5d6773'; wc.fillRect(e.x-15*S,e.y-35*S,30*S,3*S);
-  // hazard stripe so it reads as industrial even in the dark
-  wc.fillStyle=alerted?'#8a3a22':'#6a5a28';
-  wc.fillRect(e.x-15*S,e.y-22*S,30*S,3*S);
-  // shoulder armour on the gun side
-  wc.fillStyle='#39414b'; wc.fillRect(e.x+fl*9*S-7*S,e.y-31*S,14*S,10*S);
-  // sensor head
-  wc.fillStyle='#333b45'; wc.fillRect(e.x+fl*7*S-8*S,e.y-46*S,16*S,12*S);
-  wc.fillStyle='#4a535e'; wc.fillRect(e.x+fl*7*S-8*S,e.y-46*S,16*S,2.5*S);
-  var ec=hunting?'#ff3a2a':(e.state==='investigate'?'#ffc04a':'#ffc04a');
+  var S=e.r/SENTRY_R0, fl=Math.cos(e.face)<0?-1:1, x=e.x, y=e.y, st=e.step||0, i, tx, off, EY=sprEyeOf(e);
+  var lean=Math.sin(st*3)*1.3, brass=!!e.elite, t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  shadowE(x,y+2,20*S,7*S,.46);
+  // THE TREAD: an ink block, dark rubber, teeth top and bottom that run with the step, three road wheels in the gap
+  wc.fillStyle=INK; rrF(x-19.2*S,y-13.2*S,38.4*S,14.4*S,4*S);
+  wc.fillStyle='#1b1f24'; rrF(x-18*S,y-12*S,36*S,12*S,3*S);
+  off=((st*6)%7+7)%7;
+  wc.fillStyle='#363d45';
+  for(i=-1;i<6;i++){ tx=-18+i*7+off*fl; if(tx<-18||tx>15) continue; wc.fillRect(x+tx*S,y-2.2*S,3*S,2*S); wc.fillRect(x+tx*S,y-12*S,3*S,1.6*S); }
+  wc.fillStyle='#2a2f35'; wc.fillRect(x-16*S,y-9.5*S,32*S,6*S);
+  for(i=-1;i<=1;i++){
+    wc.fillStyle='#4a525b'; wc.beginPath(); wc.arc(x+i*11*S,y-6.5*S,3.3*S,0,6.2832); wc.fill();
+    wc.fillStyle='#7c868f'; wc.beginPath(); wc.arc(x+i*11*S-0.7*S,y-7.2*S,1.2*S,0,6.2832); wc.fill();
+  }
+  // THE HULL: inked, a sloped glacis on the side it faces, the lit top plate and left rim, the shaded right face, grime low down
+  sprMP(x,y,fl,S,[-15,-13,-15,-33,8.5,-33,15,-26.5,15,-13]); wc.strokeStyle=INK; wc.lineWidth=2.4*S; wc.lineJoin='round'; wc.stroke();
+  wc.fillStyle='#59626b'; wc.fill();
+  wc.fillStyle='#3e454c'; wc.fillRect(x+12*S,y-(fl>0?26.5:33)*S,3*S,(fl>0?13.5:20)*S);
+  wc.fillStyle='#7c868f'; wc.fillRect(x-15*S,y-(fl>0?33:26.5)*S,1.1*S,(fl>0?20:13.5)*S);
+  sprMR(x,y,fl,S,-15,-33,23.5,3.4);
+  wc.fillStyle='#9aa4ad'; sprMP(x,y,fl,S,[8.5,-33,15,-26.5,15,-23,8.5,-29.6]); wc.fill();
+  if(brass){ wc.fillStyle='#c9a24a'; sprMR(x,y,fl,S,-15,-33,23.5,1.1); }
+  wc.fillStyle='rgba(58,44,30,.42)'; wc.fillRect(x-15*S,y-17.2*S,30*S,4.2*S);
+  wc.fillStyle='#3e454c'; sprMR(x,y,fl,S,-15,-22.2,30,0.9); sprMR(x,y,fl,S,-2.5,-29.6,0.9,7.4);
+  wc.fillStyle='#c8962e';
+  for(i=0;i<2;i++){ tx=-9+i*6; sprMP(x,y,fl,S,[tx,-21,tx+2.6,-21,tx+5,-18.6,tx+2.6,-16.2,tx,-16.2,tx+2.4,-18.6]); wc.fill(); }
+  wc.fillStyle='#2a2f35'; sprMR(x,y,fl,S,-12.5,-28,1.1,1.1); sprMR(x,y,fl,S,3,-28,1.1,1.1); sprMR(x,y,fl,S,-12.5,-15.6,1.1,1.1); sprMR(x,y,fl,S,10.5,-15.6,1.1,1.1);
+  wc.fillStyle='#a9b2ba'; sprMR(x,y,fl,S,-12.5,-28.8,1.1,0.6); sprMR(x,y,fl,S,3,-28.8,1.1,0.6); sprMR(x,y,fl,S,-6,-13.9,2.2,0.7); sprMR(x,y,fl,S,13.4,-21,0.8,1.6);
+  // THE MAST, the whip antenna leaning with the roll (two on an elite), and the camera head
+  wc.fillStyle=INK; sprMR(x,y,fl,S,0.2,-39,4.6,6.5);
+  wc.fillStyle='#3e454c'; sprMR(x,y,fl,S,1,-38.5,3,5.6);
+  wc.strokeStyle=INK; wc.lineWidth=1.1*S; wc.beginPath();
+  wc.moveTo(x-fl*2.5*S,y-46*S); wc.lineTo(x-fl*(3.5+lean*0.6)*S,y-53*S);
+  if(brass){ wc.moveTo(x-fl*0.5*S,y-46*S); wc.lineTo(x-fl*(1+lean*0.6)*S,y-51.5*S); }
+  wc.stroke();
+  wc.fillStyle=(EY.h>0)?EY.c:'#8a949c'; wc.fillRect(x-fl*(3.5+lean*0.6)*S-0.7*S,y-53.8*S,1.4*S,1.4*S);
+  sprMP(x,y,fl,S,[-4.5,-38.2,-4.5,-46,8,-46,10.5,-43.5,10.5,-38.2]); wc.strokeStyle=INK; wc.lineWidth=2.4*S; wc.stroke();
+  wc.fillStyle='#59626b'; wc.fill();
+  wc.fillStyle='#7c868f'; sprMR(x,y,fl,S,-4.5,-46,12.5,1.8);
+  wc.fillStyle='#3e454c'; sprMR(x,y,fl,S,-4.5,-40.2,15,2);
+  if(brass){ wc.fillStyle='#c9a24a'; sprMR(x,y,fl,S,-4.5,-46,12.5,0.8); }
+  // THE LENS: an ink socket proud of the face, the core in the sensor language, a white glint top left
+  var lx=x+fl*8.6*S, ly=y-42*S;
+  wc.fillStyle=INK; wc.beginPath(); wc.arc(lx,ly,3.3*S,0,6.2832); wc.fill();
+  wc.fillStyle='#2a2f35'; wc.beginPath(); wc.arc(lx,ly,2.5*S,0,6.2832); wc.fill();
   wc.globalCompositeOperation='lighter';
-  wc.fillStyle=ec;
-  // eye plus a halo that swells while hunting
-  var pulse=hunting?(1+Math.sin(G.t*9)*.25):1;
-  wc.globalAlpha=.30;
-  wc.beginPath(); wc.arc(e.x+fl*12*S,e.y-40*S,7*S*pulse,0,6.2832); wc.fill();
-  drawWindupGlow(e,e.x+fl*12*S,e.y-40*S);
-  wc.globalAlpha=1;
-  wc.beginPath(); wc.arc(e.x+fl*12*S,e.y-40*S,3.4*S,0,6.2832); wc.fill();
-  wc.globalCompositeOperation='source-over';
-  // gun
-  wc.save(); wc.translate(e.x,e.y-25*S); wc.rotate(e.face);
-  wc.fillStyle='#2b323b'; wc.fillRect(2*S,-4*S,10*S,8*S);
-  wc.fillStyle='#333b45'; wc.fillRect(10*S,-2.6*S,18*S,5.2*S);
-  wc.fillStyle='#242a31'; wc.fillRect(26*S,-3.4*S,4*S,6.8*S);
+  wc.fillStyle=EY.c;
+  if(EY.h>0){ wc.globalAlpha=0.30*EY.a; wc.beginPath(); wc.arc(lx,ly,2.6*EY.h*S*(EY.c==='#ff3b30'?(1+Math.sin(t*9)*0.12):1),0,6.2832); wc.fill(); }
+  wc.globalAlpha=EY.a; wc.beginPath(); wc.arc(lx,ly,1.7*S,0,6.2832); wc.fill();
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.fillStyle='rgba(255,255,255,.85)'; wc.fillRect(lx-1.3*S,ly-1.4*S,0.9*S,0.9*S);
+  drawWindupGlow(e,lx,ly);
+  // THE GUN turns to the aim: a mount, a perforated cooling shroud, twin barrels with a lit top line, a muzzle brake
+  wc.save(); wc.translate(x,y-25*S); wc.rotate(e.face);
+  wc.fillStyle=INK; wc.fillRect(1*S,-5*S,10.6*S,10*S); wc.fillRect(9.4*S,-4.2*S,13.4*S,8.4*S); wc.fillRect(21.6*S,-3.6*S,7.4*S,7.2*S); wc.fillRect(27.6*S,-4.4*S,4.6*S,8.8*S);
+  wc.fillStyle='#3e454c'; wc.fillRect(2*S,-4*S,8.6*S,8*S);
+  wc.fillStyle='#59626b'; wc.fillRect(2*S,-4*S,8.6*S,1.6*S);
+  wc.fillStyle='#2a2f35'; wc.fillRect(10.4*S,-3.2*S,11.4*S,6.4*S);
+  wc.fillStyle='#0e1114'; wc.fillRect(12.4*S,-0.9*S,1.6*S,1.8*S); wc.fillRect(15.6*S,-0.9*S,1.6*S,1.8*S); wc.fillRect(18.8*S,-0.9*S,1.6*S,1.8*S);
+  wc.fillStyle='#4a525b'; wc.fillRect(21.8*S,-2.6*S,6.2*S,2*S); wc.fillRect(21.8*S,0.6*S,6.2*S,2*S);
+  wc.fillStyle='#8d98a3'; wc.fillRect(21.8*S,-2.6*S,6.2*S,0.6*S); wc.fillRect(10.4*S,-3.2*S,11.4*S,0.6*S);
+  wc.fillStyle='#2a2f35'; wc.fillRect(28.4*S,-3.6*S,3*S,7.2*S);
   if(e.muzzle>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,194,122,.95)';
-    wc.beginPath(); wc.arc(31*S,0,7*S,0,6.2832); wc.fill();
+    wc.beginPath(); wc.arc(32*S,-1.6*S,4.2*S,0,6.2832); wc.fill();
+    wc.beginPath(); wc.arc(32*S,1.6*S,4.2*S,0,6.2832); wc.fill();
     wc.globalCompositeOperation='source-over';
   }
   wc.restore();
@@ -26817,7 +26865,7 @@ function render2D(dt){
   // changes the scale and nothing else.
   var lean=p.ads?(opticMag()>1?.46:.30):.13;
   var leanSX=(mouse.x-W/2)*lean, leanSY=(mouse.y-H/2)*lean;
-  if(G.anchX===undefined){ G.anchX=p.x; G.anchY=p.y; G.leanSX=leanSX; G.leanSY=leanSY; }
+  if(G.anchX===undefined){ G.anchX=p.x; G.anchY=p.y; G.leanSX=leanSX; G.leanSY=leanSY; GFX.tr=0; GFX.shL=+G.shake||0; }   // v23.xx (gfx38): a snapped camera (raid start, respawn, redrop) starts with no trauma
   var ke=Math.min(1,dt*9);
   G.anchX+=(p.x-G.anchX)*ke;       G.anchY+=(p.y-G.anchY)*ke;
   G.leanSX+=(leanSX-G.leanSX)*ke;  G.leanSY+=(leanSY-G.leanSY)*ke;
@@ -26835,10 +26883,14 @@ function render2D(dt){
   // wrong, because __pairedBg draws no frames at all in either arm, but a
   // comparison that drew one arm and not the other would have been silently
   // meaningless. Shake is cosmetic, so it draws from the cosmetic PRNG.
-  var sk=G.shake>0?G.shake*.7:0;
-  var ox=Math.round(camX+(sk?fxn(-sk,sk):0)),oy=Math.round(camY+(sk?fxn(-sk,sk):0));
-  VX=ox; VY=oy;
-  try{ gfxCam(dt); }catch(_gcm){}   // v23.xx (gfx2): camera hook
+  // v23.xx (gfx38), HIS ORDER 2026-10-12 (the graphics program, item 5): TRAUMA SHAKE, WORLD ONLY. The shake was a fresh random
+  // jump of up to 0.7 x G.shake world units every drawn frame, applied to the camera itself, so it buzzed rather than shook and it
+  // moved everything that reads the camera: the HUD prompts and markers placed with w2s jittered with the world. Now VX/VY are the
+  // steady rounded camera (w2s, the HUD and aim never shake) and gfxCam turns each rise of G.shake into trauma that decays, read as a
+  // smooth wave in whole screen pixels; ox/oy carry it for every world layer, so the ground, the light and the fog stay aligned.
+  VX=Math.round(camX); VY=Math.round(camY);
+  try{ gfxCam(dt); }catch(_gcm){}   // v23.xx (gfx2): camera hook; (gfx38) it sets the trauma shake GFX.sx/GFX.sy in screen pixels
+  var ox=VX+(+GFX.sx||0)/Z, oy=VY+(+GFX.sy||0)/Z;
   // Who the player can actually see this frame. Everything about an entity,
   // sprite included, keys off this: the fog is only 93% opaque, so anything
   // drawn unconditionally shows faintly through walls.
@@ -36368,7 +36420,32 @@ function gfxStoresDrop(){
   return c;
 }
 // render hooks (one call each per drawn raid frame)
-function gfxCam(dt){ if(!gfxHook('cam')) return false; GFX.emit.length=0; return true; }   // F1: trauma shake
+// v23.xx (gfx38): THE TRAUMA SHAKE. Each rise of G.shake (the sim keeps writing it exactly as before) adds rise/14 trauma, capped at
+// 1, and trauma drains at 1.4 a second of drawn time. The offset is 18 screen pixels (grown with the screen, hudRes) x trauma squared
+// x EFFECT INTENSITY (CFG.fxInt: FULL 1, HALF 0.5, OFF 0), along a smooth wave of three sines per axis at fixed phases, so a rifle
+// shot barely moves the picture, a frag shakes it and a Warden shell rocks it, and no frame jumps more than about a third of the
+// amplitude from the last. Nothing here draws from any stream (no rnd, no fxr) and nothing feeds the sim. A new raid starts at 0.
+function gfxTrauma(dt){
+  var g=(typeof G!=='undefined')?G:null, d=Math.max(0,Math.min(0.1,+dt||0)), s, k, hr, A, t;
+  GFX.sx=0; GFX.sy=0; GFX.shA=0;
+  if(!g||g.sim) return 0;
+  if(GFX.shG!==g){ GFX.shG=g; GFX.tr=0; GFX.shL=+g.shake||0; GFX.shT=0; }
+  s=+g.shake||0;
+  if(s>(+GFX.shL||0)+0.01) GFX.tr=Math.min(1,(+GFX.tr||0)+(s-(+GFX.shL||0))/14);
+  GFX.shL=s;
+  GFX.tr=Math.max(0,(+GFX.tr||0)-d*1.4);
+  GFX.shT=(+GFX.shT||0)+d;
+  k=(CFG.fxInt===undefined)?1:Math.max(0,Math.min(1,+CFG.fxInt||0));
+  hr=(typeof hudRes==='function')?Math.max(1,+hudRes()||1):1;
+  A=18*hr*GFX.tr*GFX.tr*k;
+  if(!(A>0.05)) return 0;
+  t=GFX.shT;
+  GFX.sx=Math.round(A*(Math.sin(t*15)+0.5*Math.sin(t*23+1.7)+0.25*Math.sin(t*35+4.1))/1.75);
+  GFX.sy=Math.round(A*(Math.sin(t*16+2.3)+0.5*Math.sin(t*24+0.6)+0.25*Math.sin(t*33+5.2))/1.75);
+  GFX.shA=A;
+  return A;
+}
+function gfxCam(dt){ try{ gfxTrauma(dt); }catch(_gt){ GFX.sx=0; GFX.sy=0; } if(!gfxHook('cam')) return false; GFX.emit.length=0; return true; }   // F1: trauma shake (gfx38)
 function gfxGround(dt){ return gfxHook('ground'); }   // D: ground stamps, puddles, casings
 function gfxShadowPass(dt){ return gfxHook('shadow'); }   // B: body shadows that follow the lamps
 function gfxBodyFx(dt){ return gfxHook('body'); }   // C, E: damage smoke and fire, explosions, atmosphere
@@ -37049,7 +37126,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.96: Nameplates, damage numbers and loot labels now draw on the sharp HUD layer and stay crisp at any Render resolution. Check 23.96 fails on v23.95',
+  now:'v23.97: Screen shake is now a smooth rock of the world that fades, the HUD stays steady, and EFFECT INTENSITY scales it. Check 23.97 fails on v23.96',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55890,6 +55967,60 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'23.97',what:'graphics program gfx38: trauma shake moves the world only: with G.shake raised to 9 the ground is drawn offset from the steady camera on 12 drawn frames while w2s of the player does not move at all, no frame jumps more than 40 percent of the amplitude from the last, a second hit raises the trauma, and EFFECT INTENSITY OFF draws no offset',
+   run:function(){
+     if(!(window.__gfxStage&&window.__state&&window.__endRaid)||typeof render2D!=='function'||typeof w2s!=='function'||typeof ZOOM!=='function') return 'SKIP: this fixture cannot draw a raid frame';
+     var bad=[], g=null, p=null, OWN=Object.prototype.hasOwnProperty, sv=[], rec=[], fi0=CFG.fxInt, i, f, prev=null, s0=null, big=0, tr1, tr2, nz=0, mx0, my0;
+     function spy(){
+       var c=wc, own=OWN.call(c,'drawImage'), of=c.drawImage; sv.push({c:c,own:own,f:of});
+       c.drawImage=function(img){ if(img===G.ground&&!rec.length){ var T=this.getTransform(); rec.push({x:-T.e/T.a,y:-T.f/T.d}); } return of.apply(this,arguments); };
+     }
+     function unspy(){ while(sv.length){ var s=sv.pop(); try{ if(s.own) s.c.drawImage=s.f; else delete s.c.drawImage; }catch(_u){} } }
+     function frame(){
+       var q, z; rec=[]; spy(); try{ render2D(1/60); } finally { unspy(); }
+       q=w2s(p.x,0,p.y); z=ZOOM();
+       return {s:{x:q.x,y:q.y}, o:rec.length?{x:(rec[0].x-VX)*z,y:(rec[0].y-VY)*z}:null, a:(typeof GFX!=='undefined'&&+GFX.shA)||0};
+     }
+     try{
+       g=__gfxStage({frames:2});
+       if(!g) return 'SKIP: __gfxStage built no raid';
+       p=g.player; keys={}; g.bagOpen=false; g.mapOpen=false; p.iv=99;
+       mx0=mouse.x; my0=mouse.y; mouse.x=W/2; mouse.y=H/2;
+       CFG.fxInt=1; G.shake=0;
+       for(i=0;i<90;i++) frame();
+       f=frame(); if(!f.o) return 'SKIP: staging: the ground was not drawn';
+       if(Math.abs(f.o.x)>0.01||Math.abs(f.o.y)>0.01) bad.push('with no shake the ground is drawn '+f.o.x.toFixed(2)+','+f.o.y.toFixed(2)+' px off the camera');
+       s0=f.s;
+       G.shake=9;
+       for(i=0;i<12;i++){
+         f=frame();
+         if(!f.o){ bad.push('frame '+i+' drew no ground'); break; }
+         if(Math.abs(f.s.x-s0.x)>0.01||Math.abs(f.s.y-s0.y)>0.01) bad.push('frame '+i+': w2s of the player moved from '+s0.x.toFixed(1)+','+s0.y.toFixed(1)+' to '+f.s.x.toFixed(1)+','+f.s.y.toFixed(1));
+         big=Math.max(big,Math.abs(f.o.x),Math.abs(f.o.y));
+         if(Math.abs(f.o.x)>=0.5||Math.abs(f.o.y)>=0.5) nz++;
+         if(prev&&prev.o){
+           var lim=0.4*Math.max(prev.a,f.a)+1.01, dx=Math.abs(f.o.x-prev.o.x), dy=Math.abs(f.o.y-prev.o.y);
+           if(dx>lim||dy>lim) bad.push('frame '+i+' jumped '+dx.toFixed(1)+','+dy.toFixed(1)+' px against an amplitude of '+Math.max(prev.a,f.a).toFixed(1));
+         }
+         prev=f;
+       }
+       if(big<1) bad.push('under G.shake 9 the ground was never drawn a whole pixel off the camera (largest '+big.toFixed(2)+')');
+       if(nz<3) bad.push('only '+nz+' of 12 shaken frames moved the ground');
+       if(bad.length>6) bad.length=6;
+       tr1=+GFX.tr||0;
+       G.shake=3; frame(); G.shake=9; frame(); tr2=+GFX.tr||0;
+       if(!(tr2>tr1)) bad.push('a second hit did not raise the trauma ('+tr1.toFixed(3)+' then '+tr2.toFixed(3)+')');
+       CFG.fxInt=0; G.shake=0; frame(); G.shake=12; big=0;
+       for(i=0;i<6;i++){ f=frame(); if(f.o) big=Math.max(big,Math.abs(f.o.x),Math.abs(f.o.y)); }
+       if(big>0) bad.push('with EFFECT INTENSITY OFF the ground was still drawn '+big.toFixed(1)+' px off the camera');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       unspy(); keys={}; CFG.fxInt=fi0;
+       try{ if(mx0!==undefined){ mouse.x=mx0; mouse.y=my0; } }catch(_m){}
+       try{ var g2=__state(); if(g2){ G.shake=0; if(typeof GFX!=='undefined'){ GFX.tr=0; GFX.shL=0; } if(!g2.over){ g2.player.iv=0; g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){}
+       __topClear();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'23.96',what:'graphics program gfx5: world text draws on the HUD canvas: in a drawn raid frame at 1920x1080 a loot label beside him is filled on the HUD canvas and never on the world canvas, at the screen height the world puts it, at the same device font size at Render resolution Low as at Full, the world canvas is handed back after the frame, and a HUD drawn on its own fills no world text',
    run:function(){
