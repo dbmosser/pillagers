@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.64 - THE WHAT IS NEW CARD NAMES THE TRIPWIRE MINE
+
+Co-op hunt while he was away. The card was stamped v23.48 and the stamp may not trail the build by more than 0.15. Its new second line names the Tripwire Mine of 2026-10-12, his feature 6: on the belt like a grenade, a wire across a doorway, and it blows when a machine or a pillager walks through.
+
+MEASURED. Check 23.64 passes, and fails on v23.63.
 ## v23.63 - TRIPWIRE MINE ON THE BELT
 
 Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine (good idea), and his answer 32: it goes on the belt like a grenade. The Tripwire Mine is a new throw. While you carry one it has a belt cell after Medical (key 9 on the usual belt), so no key you already know moves, and Q cycles to it with the grenades. Throw it like a grenade (its key or Q, then the trigger or G). Where it lands it strings a wire across the throw, out to the walls on each side or 80 each way in the open, so it spans a doorway or a corridor by itself. It arms after a moment and you can have three strung; a fourth takes the oldest down. What sets it off comes in the next build.
