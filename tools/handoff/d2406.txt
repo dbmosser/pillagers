@@ -1,0 +1,5 @@
+## v24.06 - MUSIC ON THE TITLE ONLY
+
+Co-op hunt while he was away. His answer 27 b: music on the title and the demo video only, never in raids. The Undercroft floor is now silent, a raid stays silent, and the title screen and the demo attract play a new piece, THE ASCENT: dark and low in D minor like the old Undercroft pieces (the tune down an octave, the dark filter, slow), with a drum kit under it that hits, a deep kick, a low snare on the backbeat and the bass pulsing, so the title lands like a trailer. The MUSIC and MASTER volume rows still set its level, and two windows on one machine still play one song.
+
+MEASURED. Check 24.06 passes, and fails on v24.05.

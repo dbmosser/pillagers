@@ -1,0 +1,7 @@
+v24.06: music on the title only
+
+Music now plays on the title and the demo attract only, with a new dark track; the Undercroft is silent.
+
+Check 24.06. Fails on v24.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

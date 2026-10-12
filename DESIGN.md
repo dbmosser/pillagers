@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.06 - MUSIC ON THE TITLE ONLY
+
+Co-op hunt while he was away. His answer 27 b: music on the title and the demo video only, never in raids. The Undercroft floor is now silent, a raid stays silent, and the title screen and the demo attract play a new piece, THE ASCENT: dark and low in D minor like the old Undercroft pieces (the tune down an octave, the dark filter, slow), with a drum kit under it that hits, a deep kick, a low snare on the backbeat and the bass pulsing, so the title lands like a trailer. The MUSIC and MASTER volume rows still set its level, and two windows on one machine still play one song.
+
+MEASURED. Check 24.06 passes, and fails on v24.05.
 ## v24.05 - THE HIT MARKER IS THE INSIDE OF THE CROSSHAIR
 
 Co-op hunt while he was away. His order of 2026-10-12 on hit markers in 2.5D: maybe just on the inside of the crosshair. A round of yours that lands now flashes the centre of your crosshair: the dot swells into a small diamond and a thin ring pulses out to the arms, white for a hit, orange for a weak spot, and bigger and red for a kill, for about a sixth of a second, with the tick you already hear. The four faint diagonal ticks are gone; the arms and the ammo and reload rings are unchanged. Player 2 sees his own markers in his own window, now with his kills, which his window never marked before. A weak spot hit also lost its mark to the plain one, so it never showed or sounded as a weak spot; it does now. A round that lands on an animal marks a hit too.
