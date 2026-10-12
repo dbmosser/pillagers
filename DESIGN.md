@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.72 - TRIPWIRE MINES GO OFF
+
+Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine. A strung wire now arms after a moment and goes off when a machine or a pillager steps across it. The hovering Snitch flies over it, and the Peddler, the Stray and your hire never set it off. You and your teammates never set it off and its blast never hurts a player, so there is no team damage and no self damage. The blast hits bodies within 150 that it can see, hard at the centre and lighter at the edge, and leaves walls alone. The kill is yours, a neutral pillager it hits counts against you like any shot, and the survivors run at the blast.
+
+MEASURED. Check 23.72 passes, and fails on v23.71.
 ## v23.71 - THE VERSION RESTARTS AT V0.0001
 
 Co-op hunt while he was away. His answer of 2026-10-12: the version players see restarts at v0.0001. The title and the corner label now count from this build as v0.0001, one step per build after it. The internal build number (used by the tools, the party link and the crash records) is unchanged, so nothing that compares versions breaks; the run report shows both numbers, and a copy too old to link is still told its own number.

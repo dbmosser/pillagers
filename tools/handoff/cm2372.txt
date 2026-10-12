@@ -1,0 +1,7 @@
+v23.72: tripwire mines go off
+
+A Tripwire Mine now goes off when a machine or a pillager steps across it, and never hurts a player.
+
+Check 23.72. Fails on v23.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
