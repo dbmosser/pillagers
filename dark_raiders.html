@@ -1906,7 +1906,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.25';
+var VER='24.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14659,6 +14659,7 @@ function togglePauseBox(on){
     var _arcP=!!(_inRaid&&G.arcade&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on), _aeb=document.getElementById('arcendbtn'), _psb=document.getElementById('pausesetbtn');
     if(_arcP&&_ab) _ab.style.display='none';
     if(_aeb) _aeb.style.display=_arcP?'':'none';
+    if(_aeb&&typeof arcEndDisarm==='function') arcEndDisarm();   // v24.26 (his #39): END RUN opens safe, unarmed
     if(_psb) _psb.style.display=_arcP?'none':'';
     if(_ca&&(!_inRaid||_bleed)) _ca.style.display='none';
     var _bl=document.getElementById('pausebleed');
@@ -38186,7 +38187,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.25: The title fits a 4K screen with nothing cut off, and it no longer says ERROR SAVED TO YOUR RUN REPORT when it opens. Check 24.25 fails on v24.24',
+  now:'v24.26: END RUN in the demo asks for a second press before it ends the run. Check 24.26 fails on v24.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48621,7 +48622,18 @@ function runElapsed(){ return Math.max(0,elapsed()-((typeof G!=='undefined'&&G&&
 // length moves the clock now, keeping the time already played (on a teammate window the host clock rules); the pillager and
 // machine counts are the map as it was built and say they take effect from the next raid.
 document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
-document.getElementById('arcendbtn').onclick=function(){ togglePauseBox(false); try{ arcadeRunEnd('menu'); }catch(_are){} };   // v23.39 (arcade16)
+// v24.26, HIS ORDER 2026-10-12 (his #39, full controller navigation): END RUN ARMS FIRST. END RUN ended the whole demo run on one press,
+// with no confirm, and on a pad the highlight opens on RESUME, so one D-pad step and A threw a party run away. The first press now
+// arms it and reads END RUN? PRESS AGAIN; a second press within 3 seconds ends the run; after 3 seconds, or when the box is opened
+// again, it reads END RUN and is safe once more. The mouse, ENTER and the pad A all press the same button, so all three get it.
+var ARC_END_ARM=0;
+function arcEndDisarm(){ ARC_END_ARM=0; var b=document.getElementById('arcendbtn'); if(b) b.textContent='END RUN'; }
+document.getElementById('arcendbtn').onclick=function(){
+  var now=Date.now();
+  if(!(ARC_END_ARM>0&&now-ARC_END_ARM<3000)){ ARC_END_ARM=now; this.textContent='END RUN? PRESS AGAIN'; setTimeout(function(){ if(ARC_END_ARM===now) arcEndDisarm(); },3000); return; }
+  arcEndDisarm();
+  togglePauseBox(false); try{ arcadeRunEnd('menu'); }catch(_are){}
+};   // v23.39 (arcade16)
 function gameOptRaidNow(rs0){
   var el, nl;
   if(typeof G==='undefined'||!G||G.over||G.sim||!(G.raidLen>0)||!(rs0>0)||CFG.raidSec===rs0||!(CFG.raidSec>0)) return false;

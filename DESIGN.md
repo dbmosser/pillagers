@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.26 - END RUN ASKS TWICE
+
+Co-op hunt while he was away. His number 39, full controller navigation. END RUN in the demo pause box ended the whole run on one press with no confirm, and on a controller the highlight opens on RESUME, so one step and A threw a party run away. The first press now arms it and the button reads END RUN? PRESS AGAIN; a second press within 3 seconds ends the run. After 3 seconds, or when the box is opened again, it is back to END RUN and safe. Mouse, keyboard and pad all press the same button.
+
+MEASURED. Check 24.26 passes, and fails on v24.25.
 ## v24.25 - THE TITLE FITS A 4K SCREEN, NO FALSE ERROR
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50), and today: take pictures and make sure the menus actually look good. The 4K picture of the title showed two faults. The bottom of the title ran off the screen, so CREATE A NEW SAVE was cut in half: the title is shrunk to fit a big screen, and the fit left out the margin round it. It counts the margin now. And every 4K title said ERROR SAVED TO YOUR RUN REPORT: the browser posts a harmless notice when the title resizes itself inside its own resize watcher, and the crash catcher logged it as a crash. The resize now waits a frame, and that notice is no longer a crash.

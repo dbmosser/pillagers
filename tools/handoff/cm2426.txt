@@ -1,0 +1,7 @@
+v24.26: end run asks twice
+
+END RUN in the demo asks for a second press before it ends the run.
+
+Check 24.26. Fails on v24.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

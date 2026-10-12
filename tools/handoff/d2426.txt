@@ -1,0 +1,5 @@
+## v24.26 - END RUN ASKS TWICE
+
+Co-op hunt while he was away. His number 39, full controller navigation. END RUN in the demo pause box ended the whole run on one press with no confirm, and on a controller the highlight opens on RESUME, so one step and A threw a party run away. The first press now arms it and the button reads END RUN? PRESS AGAIN; a second press within 3 seconds ends the run. After 3 seconds, or when the box is opened again, it is back to END RUN and safe. Mouse, keyboard and pad all press the same button.
+
+MEASURED. Check 24.26 passes, and fails on v24.25.
