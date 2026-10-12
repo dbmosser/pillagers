@@ -1,0 +1,7 @@
+v24.00: ground stamps that stay
+
+Marks on the ground can now be painted into the floor itself and stay for the whole raid.
+
+Check 24.00. Fails on v23.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

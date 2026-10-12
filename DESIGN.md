@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.00 - GROUND STAMPS THAT STAY
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 12, richer ground). Marks on the floor used to be a short list that faded after 45 seconds and was redrawn every frame. A new ground stamp paints a scorch, a crack, debris or a spent casing straight into the floor itself, so it stays for the whole raid and costs nothing to draw however many there are. Every stamp is remembered, so if the graphics card drops the picture and the floor has to be rebuilt, the marks go back on it. This build is the stamp itself; the next builds use it for casings and explosions. Nothing about play changes.
+
+MEASURED. Check 24.00 passes, and fails on v23.99.
 ## v23.99 - RETRY IS A ROW
 
 Co-op hunt while he was away. His number 39, full controller navigation, keyboard and mouse first. When the browser blocks the player 2 window the title shows RETRY under the mode rows, but the arrow keys only walked the mode rows, so the keyboard could never reach RETRY and ENTER started a 1 player game instead. RETRY is now the last row the arrows land on while it shows, and ENTER on it presses it.
