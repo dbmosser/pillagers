@@ -1,0 +1,7 @@
+v23.96: world text stays sharp
+
+Nameplates, damage numbers and loot labels now draw on the sharp HUD layer and stay crisp at any Render resolution.
+
+Check 23.96. Fails on v23.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

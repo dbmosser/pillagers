@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.96 - WORLD TEXT STAYS SHARP
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it. The words over the world (nameplates, party names, damage numbers and the floating loot and kill labels) were drawn on the world layer, so a lower Render resolution or an Auto resolution step blurred them along with the world even though the HUD beside them stayed sharp. They are now drawn on the HUD layer, in exactly the same place and size, so they stay crisp at any resolution, and they now also sit above the rain and the weather fog. Nothing about play changes.
+
+MEASURED. Check 23.96 passes, and fails on v23.95.
 ## v23.95 - THE TRIPWIRE MINE KEEPS A KEY WITH A PLATE
 
 Co-op hunt while he was away. From the review of the Tripwire Mine build, his answer 32 (on the belt like a grenade). Carrying an armour plate filled all nine belt keys (four gun keys, three grenades, Medical and the plate), so a Tripwire Mine got no cell at all: Q skipped it and a controller player, who can only throw from a belt cell, could not throw it until the plate was used. Now a mine with no cell takes the highest empty gun key (key 4, then key 3), the way a Stim already does, and it stays on that key for the rest of the raid, so using the plate later does not move it.

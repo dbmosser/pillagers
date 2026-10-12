@@ -1,0 +1,5 @@
+## v23.96 - WORLD TEXT STAYS SHARP
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it. The words over the world (nameplates, party names, damage numbers and the floating loot and kill labels) were drawn on the world layer, so a lower Render resolution or an Auto resolution step blurred them along with the world even though the HUD beside them stayed sharp. They are now drawn on the HUD layer, in exactly the same place and size, so they stay crisp at any resolution, and they now also sit above the rain and the weather fog. Nothing about play changes.
+
+MEASURED. Check 23.96 passes, and fails on v23.95.
