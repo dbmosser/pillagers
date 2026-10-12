@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.79 - GUN STAT CARD ON PICKUP
+
+Co-op hunt while he was away. His feature 17 of 2026-10-12, better gun stat cards, and his answer 34: the card shows on pickup and in the backpack. This is the pickup half. Every gun you pick up now puts up a card for four seconds at the right edge: the gun name in its rarity colour, UPGRADE, DOWNGRADE or SIDEGRADE against the gun in your hands, then damage, rate, magazine, range and handling, each with the difference (green better, red worse), and where the gun went (in hand, a key, the backpack). It is twice the size at 4K so it reads on a TV, and it hides while the backpack or the map is open. In the arcade a gun scrapped for points shows no card.
+
+MEASURED. Check 23.79 passes, and fails on v23.78.
 ## v23.78 - GUN STAT CARD MODEL
 
 Co-op hunt while he was away. His feature 17 of 2026-10-12, better gun stat cards. This is the part underneath the cards: every gun is now read as five numbers, all higher-is-better: damage a pull (every pellet of a scattergun and every round of a burst), rate of fire, magazine, range in metres, and handling (a tight spread and a quick reload). Against the gun in your hands a found gun is an UPGRADE, a DOWNGRADE or a SIDEGRADE: the gun rank decides first, the same rank the auto-equip uses, and at the same rank the damage it does over a whole magazine with the reload decides. Any gun beats bare hands. Nothing shows yet; the pickup card and the backpack card come next.

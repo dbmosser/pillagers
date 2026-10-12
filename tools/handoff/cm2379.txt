@@ -1,0 +1,7 @@
+v23.79: gun stat card on pickup
+
+Picking up a gun now shows a stat card that says if it is an upgrade, with damage, rate, magazine, range and handling.
+
+Check 23.79. Fails on v23.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
