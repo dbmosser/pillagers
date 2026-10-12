@@ -21,8 +21,9 @@
 #   -LintJs    a .js file evaluated in the page before the lint (try a new __uiLint without rebuilding the fixture)
 #   -LintOpts  a JS object literal passed to __uiLint, e.g. "{minPx:14}"
 #   -NoLint    shots only
+#   -Merge     keep the other screens already in <Out>\report.json and replace only the ones run now (rerun one screen of a baseline)
 param([string]$Screens='all',[string]$Out='',[string]$Res='1080,4k',[int]$Port=9339,
-      [string]$Url='http://localhost:8808/fixture.html',[int]$Boot=3500,[int]$Quality=85,[switch]$NoLint,
+      [string]$Url='http://localhost:8808/fixture.html',[int]$Boot=3500,[int]$Quality=85,[switch]$NoLint,[switch]$Merge,
       [string]$Recipes='',[string]$LintJs='',[string]$LintOpts='{}')
 $ErrorActionPreference='Stop'
 $Root=Split-Path $PSScriptRoot -Parent
@@ -133,8 +134,9 @@ function FreshPage([string]$url){
   WsOpen $t.webSocketDebuggerUrl
   Cdp 'Storage.clearDataForOrigin' @{origin=$origin;storageTypes='all'} 30 | Out-Null
   # a headless tab is never the focused window, and :focus does not match in an unfocused page, so the lint's focus pass needs this
-  Cdp 'Emulation.setFocusEmulationEnabled' @{enabled=$true} 10 | Out-Null
-  Cdp 'Page.bringToFront' @{} 10 | Out-Null
+  # it sometimes never answers on a fresh tab (4 times in 120 loads): not fatal, a late answer is skipped by its id
+  try{ Cdp 'Emulation.setFocusEmulationEnabled' @{enabled=$true} 8 | Out-Null }catch{ Write-Host '  WARN: focus emulation did not answer' }
+  try{ Cdp 'Page.bringToFront' @{} 8 | Out-Null }catch{}
   # a raid page asks "leave site?" on close, and a headless tab then never closes (it kept running the game behind the next
   # screen), so this tab never registers a beforeunload handler
   $nbu='(function(){ var a=EventTarget.prototype.addEventListener; EventTarget.prototype.addEventListener=function(t){ if(t==="beforeunload") return; return a.apply(this,arguments); }; try{ Object.defineProperty(window,"onbeforeunload",{configurable:true,get:function(){ return null; },set:function(){}}); }catch(e){} })();'
@@ -222,22 +224,39 @@ try{
 }
 finally{
   ChromeStop
-  # report.json: written by hand so each lint result goes in exactly as the page returned it
-  $sb=New-Object Text.StringBuilder
-  [void]$sb.Append('{"generated":'+(ConvertTo-Json (Get-Date -Format 's'))+',"url":'+(ConvertTo-Json $Url)+',"recipes":'+(ConvertTo-Json $Recipes)+',"seconds":'+[int]((Get-Date)-$started).TotalSeconds+',"screens":[')
-  $first=$true
+  # report.json: written by hand so each lint result goes in exactly as the page returned it; -Merge keeps the screens and
+  # resolutions of the old report that this run did not redo
+  $frag=@{}; $scr=@{}
+  $rp=Join-Path $Out 'report.json'
+  if($Merge -and (Test-Path $rp)){
+    try{
+      $old=[IO.File]::ReadAllText($rp) | ConvertFrom-Json
+      foreach($s in @($old.screens)){
+        $frag[$s.name]=@{}; $scr[$s.name]=[string]$s.screen
+        foreach($res in '1080','4k'){ if($s.$res){ $frag[$s.name][$res]=($s.$res | ConvertTo-Json -Depth 30 -Compress) } }
+      }
+    }catch{ Write-Output ('WARN: could not merge the old report: '+$_.Exception.Message) }
+  }
   foreach($p in $pick){
-    if(-not $first){ [void]$sb.Append(',') }; $first=$false
-    [void]$sb.Append("`n"+'{"name":'+(ConvertTo-Json $p.name)+',"screen":'+(ConvertTo-Json ([string]$p.screen)))
+    if(-not $frag.ContainsKey($p.name)){ $frag[$p.name]=@{} }; $scr[$p.name]=[string]$p.screen
     foreach($res in $resList){
       $e=$rows[$p.name][$res]; if(-not $e){ continue }
       $lint=if($e.lint -and ([string]$e.lint).StartsWith('{')){ [string]$e.lint }else{ ConvertTo-Json ([string]$e.lint) }
-      [void]$sb.Append(',"'+$res+'":{"staged":'+$(if($e.staged){'true'}else{'false'})+',"note":'+(ConvertTo-Json ([string]$e.note))+',"viewport":'+(ConvertTo-Json ([string]$e.viewport))+',"shot":'+(ConvertTo-Json ([string]$e.shot))+',"lint":'+$lint+'}')
+      $frag[$p.name][$res]='{"staged":'+$(if($e.staged){'true'}else{'false'})+',"note":'+(ConvertTo-Json ([string]$e.note))+',"viewport":'+(ConvertTo-Json ([string]$e.viewport))+',"shot":'+(ConvertTo-Json ([string]$e.shot))+',"lint":'+$lint+'}'
     }
+  }
+  $sb=New-Object Text.StringBuilder
+  [void]$sb.Append('{"generated":'+(ConvertTo-Json (Get-Date -Format 's'))+',"url":'+(ConvertTo-Json $Url)+',"recipes":'+(ConvertTo-Json $Recipes)+',"seconds":'+[int]((Get-Date)-$started).TotalSeconds+',"screens":[')
+  $first=$true
+  foreach($p in $all){
+    if(-not $frag.ContainsKey($p.name) -or $frag[$p.name].Count -eq 0){ continue }
+    if(-not $first){ [void]$sb.Append(',') }; $first=$false
+    [void]$sb.Append("`n"+'{"name":'+(ConvertTo-Json $p.name)+',"screen":'+(ConvertTo-Json $scr[$p.name]))
+    foreach($res in '1080','4k'){ if($frag[$p.name].ContainsKey($res)){ [void]$sb.Append(',"'+$res+'":'+$frag[$p.name][$res]) } }
     [void]$sb.Append('}')
   }
   [void]$sb.Append("`n]}")
-  [IO.File]::WriteAllText((Join-Path $Out 'report.json'),$sb.ToString())
-  [IO.File]::WriteAllLines((Join-Path $Out 'summary.txt'),$summary)
+  [IO.File]::WriteAllText($rp,$sb.ToString())
+  if($Merge){ [IO.File]::AppendAllLines((Join-Path $Out 'summary.txt'),$summary) }else{ [IO.File]::WriteAllLines((Join-Path $Out 'summary.txt'),$summary) }
   Write-Output ('report: '+(Join-Path $Out 'report.json'))
 }

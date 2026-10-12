@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.02 - THE WHAT IS NEW CARD NAMES THE NEW LOOKS
+
+Co-op hunt while he was away. The card was stamped v23.86 and the stamp may not trail the build by more than 0.15. The card was stamped v23.86 and had fallen 0.16 behind the build, which every build checks. Its new second line names the graphics builds of 2026-10-12: explosions that burst, ground stamps that stay, and the first redrawn machines of the sprite program.
+
+MEASURED. Check 24.02 passes, and fails on v24.01.
 ## v24.01 - PLAYER 2S BEST SHOT LANDS
 
 Co-op hunt while he was away. Found while designing the Forge. In two player co-op, player 2 works out the damage of each round and the host applies it, but the host threw away any hit over 600 as junk. The Longshot does 170 since v21.66, so a Longshot round into a Choir DORSAL SPINE is 612: player 2 saw the number and the Choir took nothing. The limit is now 1500, above every real hit (including the upgraded guns the Forge brings), and still far below a broken number.

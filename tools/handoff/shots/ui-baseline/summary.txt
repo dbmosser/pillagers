@@ -1,0 +1,124 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     NOT STAGED  20.8s    | ERROR CDP TIMEOUT on Emulation.setFocusEmulationEnabled
+  02-welcome-pack                        staged      24.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  03-hub-floor                           staged      12.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  04-stash-terminal                      staged      18.4s  total  33: clip 0 off 0 small 30 contrast 2 font 1 overlap 0 focus 0
+  05-sector-page                         staged      14.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  06-terms                               staged      20.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | termsmodal
+  07-party-coop                          staged      17.5s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | partymodal
+  08-shop                                staged      23.8s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | tradermodal
+  09-craft                               staged      11.9s  total   3: clip 0 off 0 small 0 contrast 3 font 0 overlap 0 focus 0  | tradermodal
+  10-hire                                staged       9.7s  total   3: clip 0 off 0 small 0 contrast 3 font 0 overlap 0 focus 0  | tradermodal
+  11-wirt-gambler                        staged       8.5s  total   3: clip 0 off 0 small 0 contrast 3 font 0 overlap 0 focus 0  | gamblemodal
+  12-mainframe-contracts                 staged      10.5s  total   3: clip 0 off 0 small 1 contrast 2 font 0 overlap 0 focus 0  | opmodal
+  13-mainframe-rewards                   staged       8.2s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0  | opmodal
+  14-mainframe-racks                     staged      11.5s  total   4: clip 0 off 0 small 0 contrast 4 font 0 overlap 0 focus 0  | opmodal
+  15-mainframe-stats                     staged       9.0s  total   2: clip 0 off 1 small 0 contrast 1 font 0 overlap 0 focus 0  | opmodal
+  16-bar-last-pour                       staged      11.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal
+  17-fashion-mirror                      staged       9.8s  total   3: clip 0 off 0 small 1 contrast 2 font 0 overlap 0 focus 0  | appearmodal
+  18-settings-hub                        staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  19-raid-hud-drop-first-raid            staged       9.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  20-raid-hud-drop                       staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  21-raid-hud-calm                       staged      15.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  22-raid-map-open                       staged      10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  23-raid-backpack-open                  staged      10.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  24-raid-controls-full-H                staged       9.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | legendOn 2
+  25-raid-pause-box                      staged       9.5s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  26-settings-from-pause-top             staged      10.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  27-settings-scroll-600                 staged      10.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  28-settings-scroll-1200                staged      10.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  29-settings-scroll-1800                staged      10.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  30-settings-scroll-2400                staged      10.1s  total   3: clip 0 off 0 small 0 contrast 3 font 0 overlap 0 focus 0  | scrollTop 2262.189208984375 of 2262
+  31-settings-send-play-data             staged      10.5s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  32-keys-window                         staged      11.0s  total   1: clip 0 off 1 small 0 contrast 0 font 0 overlap 0 focus 0
+  33-raid-fight-alerts                   staged       9.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 83
+  34-raid-downed-pickups                 staged       8.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | downed true hp 0
+  35-kia-card                            staged       9.9s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0
+  36-raid-low-health                     staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  37-raid-extracting-countdown           staged      10.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  38-extracted-card                      staged       9.3s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  39-hub-after-raid                      staged      10.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  40-whats-new-card                      staged      11.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | runs 1 wnseen 0
+  41-hub-backpack                        staged      12.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"snap":true}
+  42-hub-pause-box                       staged      12.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  43-stash-after-raid                    staged      11.5s  total  33: clip 0 off 0 small 30 contrast 2 font 1 overlap 0 focus 0
+  44-title-from-character-select         staged      12.4s  total   4: clip 0 off 0 small 0 contrast 3 font 1 overlap 0 focus 0
+  45-arcade-attract-board                staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  46-arcade-attract-how-to-play          staged      15.4s  total   2: clip 0 off 0 small 1 contrast 1 font 0 overlap 0 focus 0
+  47-arcade-drop-controls-card           staged       9.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  48-arcade-hud-move-to-start            staged      22.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  49-arcade-pause-box                    staged      12.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  50-arcade-hud-live                     staged      21.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  51-arcade-alert-reinforcements         staged      23.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved
+  52-arcade-run-over                     staged      14.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | welcomemodal
+  53-arcade-extracted-bonus-initials     staged      16.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  54-arcade-initials-redrop              staged      19.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  55-arcade-run-over-scored              staged      23.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | welcomemodal
+  56-arcade-attract-board-scored         staged      33.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  57-title-2p-coop-picked                staged       8.3s  total   4: clip 0 off 0 small 0 contrast 3 font 1 overlap 0 focus 0
+  58-coop-player2-window-title           staged       6.8s  total   2: clip 0 off 0 small 0 contrast 1 font 1 overlap 0 focus 0  |  title:true
+  59-raid-abandon-confirm                staged      12.3s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  60-abandoned-card                      staged      15.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+== 4k : window 3872x2263, viewport 3840x2160
+  01-title-mode-menu                     staged       4.9s  total   5: clip 0 off 1 small 0 contrast 3 font 1 overlap 0 focus 0
+  02-welcome-pack                        staged       6.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  03-hub-floor                           staged       5.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  04-stash-terminal                      staged       7.0s  total   3: clip 0 off 0 small 0 contrast 2 font 1 overlap 0 focus 0
+  05-sector-page                         staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  06-terms                               staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | termsmodal
+  07-party-coop                          staged       6.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | partymodal
+  08-shop                                staged       7.1s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | tradermodal
+  09-craft                               staged       7.1s  total   3: clip 0 off 0 small 0 contrast 3 font 0 overlap 0 focus 0  | tradermodal
+  10-hire                                staged       7.1s  total   3: clip 0 off 0 small 0 contrast 3 font 0 overlap 0 focus 0  | tradermodal
+  11-wirt-gambler                        staged       7.0s  total   3: clip 0 off 0 small 0 contrast 3 font 0 overlap 0 focus 0  | gamblemodal
+  12-mainframe-contracts                 staged       6.9s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0  | opmodal
+  13-mainframe-rewards                   staged       7.0s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0  | opmodal
+  14-mainframe-racks                     staged       6.9s  total   4: clip 0 off 0 small 0 contrast 4 font 0 overlap 0 focus 0  | opmodal
+  15-mainframe-stats                     staged       6.9s  total   1: clip 0 off 1 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  16-bar-last-pour                       staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal
+  17-fashion-mirror                      staged       7.0s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0  | appearmodal
+  18-settings-hub                        staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  19-raid-hud-drop-first-raid            staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  20-raid-hud-drop                       staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  21-raid-hud-calm                       staged      14.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  22-raid-map-open                       staged       8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  23-raid-backpack-open                  staged       8.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  24-raid-controls-full-H                staged       9.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | legendOn 2
+  25-raid-pause-box                      staged       9.1s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  26-settings-from-pause-top             staged       9.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  27-settings-scroll-600                 staged       9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  28-settings-scroll-1200                staged       9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  29-settings-scroll-1800                staged       9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  30-settings-scroll-2400                staged       9.7s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0  | scrollTop 2400 of 2470
+  31-settings-send-play-data             staged      10.1s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  32-keys-window                         staged      10.6s  total   7: clip 0 off 1 small 6 contrast 0 font 0 overlap 0 focus 0
+  33-raid-fight-alerts                   staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 49
+  34-raid-downed-pickups                 staged       8.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | downed true hp 0
+  35-kia-card                            staged       9.8s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0
+  36-raid-low-health                     staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  37-raid-extracting-countdown           staged      10.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  38-extracted-card                      staged       9.4s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  39-hub-after-raid                      staged      11.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  40-whats-new-card                      staged      11.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | runs 1 wnseen 0
+  41-hub-backpack                        staged      11.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"snap":true}
+  42-hub-pause-box                       staged      11.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  43-stash-after-raid                    staged      11.5s  total   3: clip 0 off 0 small 0 contrast 2 font 1 overlap 0 focus 0
+  44-title-from-character-select         staged      12.4s  total   5: clip 0 off 1 small 0 contrast 3 font 1 overlap 0 focus 0
+  45-arcade-attract-board                staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  46-arcade-attract-how-to-play          staged      15.3s  total   4: clip 0 off 0 small 3 contrast 1 font 0 overlap 0 focus 0
+  47-arcade-drop-controls-card           staged       9.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  48-arcade-hud-move-to-start            staged      21.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  49-arcade-pause-box                    staged      13.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  50-arcade-hud-live                     staged      21.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  51-arcade-alert-reinforcements         staged      23.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved
+  52-arcade-run-over                     staged      14.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | welcomemodal
+  53-arcade-extracted-bonus-initials     staged      16.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  54-arcade-initials-redrop              staged      19.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  55-arcade-run-over-scored              staged      23.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | welcomemodal
+  56-arcade-attract-board-scored         staged      33.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  57-title-2p-coop-picked                staged       8.4s  total   5: clip 0 off 1 small 0 contrast 3 font 1 overlap 0 focus 0
+  58-coop-player2-window-title           staged       6.8s  total   2: clip 0 off 0 small 0 contrast 1 font 1 overlap 0 focus 0  |  title:true
+  59-raid-abandon-confirm                staged      12.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  60-abandoned-card                      staged      14.7s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       4.8s  total   4: clip 0 off 0 small 0 contrast 3 font 1 overlap 0 focus 0
