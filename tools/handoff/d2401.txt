@@ -1,0 +1,5 @@
+## v24.01 - PLAYER 2S BEST SHOT LANDS
+
+Co-op hunt while he was away. Found while designing the Forge. In two player co-op, player 2 works out the damage of each round and the host applies it, but the host threw away any hit over 600 as junk. The Longshot does 170 since v21.66, so a Longshot round into a Choir DORSAL SPINE is 612: player 2 saw the number and the Choir took nothing. The limit is now 1500, above every real hit (including the upgraded guns the Forge brings), and still far below a broken number.
+
+MEASURED. Check 24.01 passes, and fails on v24.00.

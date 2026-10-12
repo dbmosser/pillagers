@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.00';
+var VER='24.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -37254,7 +37254,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.00: Marks on the ground can now be painted into the floor itself and stay for the whole raid. Check 24.00 fails on v23.99',
+  now:'v24.01: Player 2 Longshot rounds into a Choir weak point land on the host again. Check 24.01 fails on v24.00',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44726,7 +44726,10 @@ function netShotTake(peer,m){
   // 400 was thrown away as junk, but a Longshot round into a Choir's DORSAL SPINE is 115 x 3.6 = 414, so the host dropped it while
   // player 2's screen showed the 414. The cap is 600 now: above every real hit (the next best is a Sentry vent at 391), still far
   // below a broken number.
-  d=+m.dmg; if(!isFinite(d)||d<=0||d>600) return 'bad';
+  // v23.xx, THE FORGE design (2026-10-12), forge1: the Longshot does 170 since v21.66, so player 2's round into a Choir's DORSAL
+  // SPINE is 170 x 3.6 = 612 and the 600 cap threw it away while his screen showed it. A forged MK II Longshot (221 x 3.6 = 796,
+  // 995 with the acid machine bonus) would be lost every time. The cap is 1500: above every real hit, still far below a broken number.
+  d=+m.dmg; if(!isFinite(d)||d<=0||d>1500) return 'bad';
   s=peer.seat;
   sx=(typeof m.x==='number'&&isFinite(m.x))?m.x:e.x; sy=(typeof m.y==='number'&&isFinite(m.y))?m.y:e.y;
   if(typeof m.wk==='string'&&m.wk){ L=weakOf(e); if(L) for(i=0;i<L.length;i++) if(L[i].name===m.wk){ applyWeak(e,L[i]); break; } }

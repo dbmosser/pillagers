@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.01 - PLAYER 2S BEST SHOT LANDS
+
+Co-op hunt while he was away. Found while designing the Forge. In two player co-op, player 2 works out the damage of each round and the host applies it, but the host threw away any hit over 600 as junk. The Longshot does 170 since v21.66, so a Longshot round into a Choir DORSAL SPINE is 612: player 2 saw the number and the Choir took nothing. The limit is now 1500, above every real hit (including the upgraded guns the Forge brings), and still far below a broken number.
+
+MEASURED. Check 24.01 passes, and fails on v24.00.
 ## v24.00 - GROUND STAMPS THAT STAY
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 12, richer ground). Marks on the floor used to be a short list that faded after 45 seconds and was redrawn every frame. A new ground stamp paints a scorch, a crack, debris or a spent casing straight into the floor itself, so it stays for the whole raid and costs nothing to draw however many there are. Every stamp is remembered, so if the graphics card drops the picture and the floor has to be rebuilt, the marks go back on it. This build is the stamp itself; the next builds use it for casings and explosions. Nothing about play changes.

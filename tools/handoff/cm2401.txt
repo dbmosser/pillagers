@@ -1,0 +1,7 @@
+v24.01: player 2s best shot lands
+
+Player 2 Longshot rounds into a Choir weak point land on the host again.
+
+Check 24.01. Fails on v24.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

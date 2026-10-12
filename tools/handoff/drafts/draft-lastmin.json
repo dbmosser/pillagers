@@ -8,8 +8,8 @@
                       "replacement":  "// v23.xx, HIS ANSWERS (2026-10-12), answer 19: \"final 60 s: sting plus red clock\". THE FINAL MINUTE. The one minute mark plays a sting\n// of its own (a low brass hit with a bright ring on the sting bus, never ducked) in place of the rising clock siren, and from 1:00 the\n// clock is red and pops on every second it turns, then settles before the next one. It was red only from 0:44 and never moved. The\n// same in the CAREER clock and the DEMO clock under the score (\"exactly the same in demo and career\"); the DEMO figure also steps up\n// to the callout size for the last minute, so it reads across the room. The words of every warning are unchanged.\nvar CLOCK_RED=60;\nfunction clockPopIn(x,y,left){\n  left=+left||0; if(!(left\u003e0)) return false;\n  var f=left-Math.floor(left), k=1+0.22*f*f*f;   // big the moment the figure turns, back to its size before the next\n  ctx.save(); ctx.translate(x,y); ctx.scale(k,k); ctx.translate(-x,-y);\n  return true;\n}\nfunction tickClockWarn(prev,now){\n"
                   },
                   {
-                      "anchor":  "    say((tlNow/60)+\u0027 MINUTE\u0027+(tlNow===60?\u0027\u0027:\u0027S\u0027)+\u0027 LEFT\u0027,\u0027obj\u0027,(tlNow\u003c=180)?{sub:outHint(0)}:null);\n    blip(\u0027clockwarn\u0027);\n",
-                      "replacement":  "    say((tlNow/60)+\u0027 MINUTE\u0027+(tlNow===60?\u0027\u0027:\u0027S\u0027)+\u0027 LEFT\u0027,\u0027obj\u0027,(tlNow\u003c=180)?{sub:outHint(0)}:null);\n    blip(tlNow===60?\u0027lastmin\u0027:\u0027clockwarn\u0027);   // v23.xx (his answer 19): the final minute has a sting of its own\n"
+                      "anchor":  "    blip(\u0027clockwarn\u0027);\n  }\n  var tick=0;\n",
+                      "replacement":  "    blip(tlNow===60?\u0027lastmin\u0027:\u0027clockwarn\u0027);   // v23.xx (his answer 19): the final minute has a sting of its own\n  }\n  var tick=0;\n"
                   },
                   {
                       "anchor":  "  ctx.fillStyle=(!_noClk\u0026\u0026_tSrc\u003c45)?\u0027#ff5a4a\u0027:\u0027#cdd6dd\u0027;\n",
