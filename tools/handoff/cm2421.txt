@@ -1,0 +1,7 @@
+v24.21: one window frame, close in one place
+
+Every window sits on one cut corner plate with an amber tick, and CLOSE is in a footer at the bottom right of every station window and the stash.
+
+Check 24.21. Fails on v24.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

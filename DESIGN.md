@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.21 - ONE WINDOW FRAME, CLOSE IN ONE PLACE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, make them look like a triple-A game. UI redesign build ui6, the window frame. Every window and the pause box now sit on one plate: dark graphite with a faint grain, a thin edge, the top left corner cut off and a short amber tick on the top edge, instead of the old double frame. The window name is a header over a thin line. CLOSE was in four different places (top middle of the stash, bottom left of the Mainframe, Settings and Fashion, bottom right of the shop); it now sits at the right end of a footer bar at the foot of every station window and the stash, at one height, and at the foot of the card in the smaller windows. Nothing moved in the page order, so the controller walks every window the same way and B still closes it.
+
+MEASURED. Check 24.21 passes, and fails on v24.20.
 ## v24.20 - NO ROLL IN THE DROP-IN HOLD
 
 Co-op hunt while he was away. His number 39, full controller navigation. After a demo respawn you stand frozen for three seconds (DROPPING IN 3 2 1) inside your spawn shield, but SPACE, and the A button that sends the same press, still started a roll, and the roll took the shield down while you could not move. The press meant to be ready threw your cover away before you were in. During the hold the roll now does nothing; it works the moment you drop in.
