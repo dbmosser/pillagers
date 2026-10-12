@@ -1,0 +1,5 @@
+## v23.69 - SOUND DUCKING: BLASTS HIT HARDER
+
+Co-op hunt while he was away. His number 45, punchy arcade sound. A grenade going off beside you landed on top of the ambient bed, the machine voices and your own footsteps at full level, so the one sound that mattered was buried in the rest. Now a blast within 700 pulls the bed, the machines and the footsteps down for half a second and lets them come back up over about a second, the way CoD and Fortnite make an explosion hit. A hit on you pulls the bed down a little. Pickups, the clock warnings and the stings are never ducked. Volume settings and split speakers are untouched.
+
+MEASURED. Check 23.69 passes, and fails on v23.68.

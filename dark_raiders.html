@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.68';
+var VER='23.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3952,6 +3952,33 @@ function sndBus(cat){
   }
   return SND.bus[cat]||SND.bus.world||B;
 }
+// v23.69, HIS ORDER 2026-10-12 (his #45, punchy arcade sound): DUCKING. A grenade going off beside you landed on top of the
+// ambient bed, the machine voices and your own feet at full level, so the one sound that mattered was buried in the rest. The
+// way CoD and Fortnite make a blast hit is to pull everything else down for a moment: a blast within 700 drops the bed to 0.35,
+// the machines to 0.6 and the footsteps to 0.7, holds half a second and lets them back up over about a second. A hit on you
+// pulls the bed down to 0.7. The HUD bus and the stings are never ducked. The levels move only the mix buses of v23.69, so the
+// volume rows and the split speakers are untouched; the recovery runs from tickVerb, which runs on the floor and in a raid.
+var SND_DUCK={};
+function sndDuckApply(cat,tc){
+  if(!SND||!SND.bus||!SND.bus[cat]||!AC) return;
+  var D=SND_DUCK[cat], v=D?D.lvl:1, gp=SND.bus[cat].gain, t=AC.currentTime;
+  try{ gp.cancelScheduledValues(t); gp.setTargetAtTime(v,t,tc); }catch(e){ try{ gp.value=v; }catch(_e){} }
+}
+function sndDuck(cat,depth,hold){
+  if(cat==='ui'||cat==='sting') return;
+  var D=SND_DUCK[cat]||(SND_DUCK[cat]={lvl:1,hold:0,rate:0.4});
+  if(depth<D.lvl){ D.lvl=depth; D.rate=(1-depth)/1.1; }
+  if(hold>D.hold) D.hold=hold;
+  sndDuckApply(cat,0.012);
+}
+function sndMixTick(dt){
+  if(!isFinite(dt)||dt<=0) return;
+  for(var k in SND_DUCK){
+    var D=SND_DUCK[k], r=dt, u;
+    if(D.hold>0){ u=Math.min(D.hold,r); D.hold-=u; r-=u; }
+    if(r>0&&D.lvl<1){ D.lvl=Math.min(1,D.lvl+r*D.rate); sndDuckApply(k,0.06); }
+  }
+}
 // ---------------------------------------------------------------- the room
 // His top complaint about the world was that it feels SAMEY, and the answer to
 // that is not only more geometry, it is that the geometry should be audible. A
@@ -4339,6 +4366,7 @@ function spaceAt(x,y){
 }
 var SPACE_N='open';
 function tickVerb(dt){
+  try{ sndMixTick(dt); }catch(_mx){}   // v23.69 (his #45): the ducked buses come back up
   var R=verb(); if(!R) return;
   var a=ac(); if(!a) return;
   var pp=(G&&G.player)?G.player:null;
@@ -4497,6 +4525,7 @@ function sfx(type,wx,wy,wid){
 function voxGrunt(hard){
   if(G&&G.sim) return;
   var a=ac(); if(!a) return; var out=sndBus('vox'); if(!out) return;
+  sndDuck('amb',0.7,0.25);   // v23.69 (his #45): a hit on you pulls the bed down
   var o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
   f.type='lowpass'; f.frequency.value=900;
   o.type='sawtooth';
@@ -4743,6 +4772,7 @@ function blip(type,d,pan){
   // a pan node here places all of them at once. Callers that pass no pan keep
   // exactly the centred behaviour they had.
   var OUT=sndBus(SND_CAT[type]||'world')||bus()||a.destination;   // v23.67 (his #45): onto the bus for its kind of sound
+  if(type==='boom'&&(d===undefined||d<700)){ sndDuck('amb',0.35,0.5); sndDuck('mach',0.6,0.5); sndDuck('foley',0.7,0.5); }   // v23.69 (his #45): a blast near you pulls the rest down
   if(pan!==undefined&&PAN_OK){
     var pn=a.createStereoPanner();
     pn.pan.value=clamp(pan,-1,1);
@@ -36300,7 +36330,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.68: The Halloween dressing is gone from the arcade: no pumpkins, no orange lamps, no haze, no banner. Check 23.68 fails on v23.67',
+  now:'v23.69: A blast near you pulls the rest of the sound down for a moment, so it hits like a blast. Check 23.69 fails on v23.68',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

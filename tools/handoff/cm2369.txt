@@ -1,0 +1,7 @@
+v23.69: sound ducking: blasts hit harder
+
+A blast near you pulls the rest of the sound down for a moment, so it hits like a blast.
+
+Check 23.69. Fails on v23.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
