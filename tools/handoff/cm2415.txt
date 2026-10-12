@@ -1,0 +1,7 @@
+v24.15: arrows and enter in the pause box
+
+The arrow keys and ENTER work the pause box buttons.
+
+Check 24.15. Fails on v24.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

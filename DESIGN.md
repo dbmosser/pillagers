@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.15 - ARROWS AND ENTER IN THE PAUSE BOX
+
+Co-op hunt while he was away. His number 39, full controller navigation, keyboard and mouse first. The pause box (ESC or TAB) answered only P, ESC and TAB from the keyboard, so its buttons could only be pressed with the mouse or a pad, while the title already took the arrows and ENTER. Now with the box up the arrow keys move a highlight across its buttons and ENTER or SPACE presses the highlighted one, the same press a click makes, so Abandon still asks and END RUN still asks twice.
+
+MEASURED. Check 24.15 passes, and fails on v24.14.
 ## v24.14 - SCREEN SHAKE FOLLOWS THE FIGHT
 
 Co-op hunt while he was away. His answer 38 (2026-10-12): screen shake from light to strong depending on damage taken and how often it comes in. The size of a hit already set the shake, but how often hits came in did not, so the fifth round of a burst shook the screen no more than one stray round. Now the damage of the last second or so builds up: a lone graze is a nudge, a heavy hit is strong, and a burst of hits shakes harder with each one, up to a cap. It settles again within a second or two of the last hit.

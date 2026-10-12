@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.14';
+var VER='24.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12472,7 +12472,7 @@ window.addEventListener('keydown',function(e){
     // to be updated every time a key is added and has been missed once already. And
     // ESC and P must still reach the toggle that closes the box, which is exactly
     // what the busy list would stop.
-    if(pauseOpen&&e.code!=='KeyP'&&e.code!=='Escape'&&e.code!=='Tab'){ e.preventDefault(); return; }
+    if(pauseOpen&&e.code!=='KeyP'&&e.code!=='Escape'&&e.code!=='Tab'){ e.preventDefault(); if(!e.repeat){ keys[e.code]=false; pauseKeyNav(e.code); } return; }   // v24.15 (his #39): arrows and ENTER work the box
     // v11.45: the title screen sits over the floor with state still 'hub', so the
     // floor keys below must not answer while it is up. ENTER there belongs to the
     // title's own start listener; P and ESC must not raise the pause box over it.
@@ -12589,6 +12589,26 @@ function floorPadTap(code){
     hubBagOpenSet(!hubBagOpen);
   }
 }
+// v24.15, HIS ORDER 2026-10-12 (his #39, full controller navigation, keyboard and mouse first): THE ARROWS AND ENTER WORK THE PAUSE BOX.
+// The ESC / TAB box answered only P, ESC and TAB from the keyboard, so RESUME, SETTINGS, ABANDON and END RUN were mouse or pad only:
+// the title had arrows and ENTER (v15.76) and the box that comes up mid-raid had none. Now, with the box up, the first arrow press
+// highlights its first button, LEFT and UP step back, RIGHT and DOWN step on (wrapping), and ENTER or SPACE presses the highlighted
+// button, the same click a mouse or the pad A makes, so ABANDON still asks YES and END RUN still arms first. The note field keeps its
+// own typing, since a key aimed at a text field never reaches here. Returns whether the key was taken.
+function pauseKeyNav(code){
+  var pb=document.getElementById('pausebox'), list, cur, ix, d;
+  if(!pauseOpen||!pb||!pb.classList.contains('on')||typeof padFocusables!=='function') return false;
+  list=padFocusables(pb).filter(function(el){ return el.tagName==='BUTTON'; });
+  if(!list.length) return false;
+  cur=(PAD.focus&&list.indexOf(PAD.focus)>=0)?PAD.focus:null;
+  if(code==='Enter'||code==='NumpadEnter'||code==='Space'){ if(!cur) return false; cur.click(); return true; }
+  d=(code==='ArrowLeft'||code==='ArrowUp')?-1:((code==='ArrowRight'||code==='ArrowDown')?1:0);
+  if(!d) return false;
+  if(!cur){ padSetFocus(list[0]); return true; }
+  ix=(list.indexOf(cur)+d+list.length)%list.length;
+  padSetFocus(list[ix]);
+  return true;
+}
 function raidKey(code,repeat,ev){
   keys[code]=true;
   // v12.22: NOTHING IN THE RAID ANSWERS A KEY WHILE THE PAUSE BOX IS UP, except
@@ -12596,7 +12616,7 @@ function raidKey(code,repeat,ev){
   // its note on open, so no key reached here; now that it does not, M, Q, C and
   // the digits would act on a paused raid, and a note typed without clicking
   // the box first would open the map and swap the belt. The floor rule (v8.16).
-  if(pauseOpen&&code!=='KeyP'&&code!=='Escape'&&code!=='Tab'){ if(ev) ev.preventDefault(); return; }
+  if(pauseOpen&&code!=='KeyP'&&code!=='Escape'&&code!=='Tab'){ if(ev) ev.preventDefault(); if(!repeat){ keys[code]=false; pauseKeyNav(code); } return; }   // v24.15 (his #39): arrows and ENTER work the box
   // The emote bar owns the number row while it is up, same rule as the stall.
   if(G&&!G.over&&!G.trade&&G.emoteBar){
     if(code==='KeyV'||code==='Escape'||code==='Tab'){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }
@@ -37873,7 +37893,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.14: Screen shake now grows with the size of each hit and how fast the hits are coming. Check 24.14 fails on v24.13',
+  now:'v24.15: The arrow keys and ENTER work the pause box buttons. Check 24.15 fails on v24.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
