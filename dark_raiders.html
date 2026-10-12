@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.77';
+var VER='23.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2160,6 +2160,30 @@ var STARTERS=['tacker','sputter','chatter','scuttle'];
 // Whisper 24 and a shot every 0.40 s. The single shots land about 70 to 110 a second sustained; they still trade the magazine for reach and
 // the hit that ends a fight. The Burst Carbine (three a pull, about 85) is unchanged.
 var WTIER={fists:0,tacker:1,pistol:1,sputter:2,scuttle:2,smg:2,chatter:2,magnum:3,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4,whisper:4,sniper:5,lance:5};
+// v23.xx (feat2a), HIS #17 (2026-10-12): "better gun stat cards - yes", and his answer 34: the card shows on pickup and in the
+// backpack. THE MODEL, pure and drawn by nobody yet (the pickup card and the backpack card are the next two builds, and the UI
+// redesign can restyle both without touching this). Five numbers, all higher-is-better: DMG a pull (a pellet gun counts every
+// pellet, a burst gun every round of the burst), RATE in pulls a minute, MAG, RANGE in metres (10 units a metre) and HANDLING (0 to
+// 100: 60 parts tight spread, 40 parts quick reload). The verdict against the gun in your hands: a higher tier (WTIER, the rank the
+// arcade routing and the raid auto-equip already use) is an UPGRADE and a lower one a DOWNGRADE; at the same tier the sustained damage
+// with reloads decides (8 percent either way, else a SIDEGRADE). Against bare hands any gun is an UPGRADE. No draw on any stream.
+function gunStats(w){
+  w=w||WEAPONS.fists;
+  var pel=w.pellets||1, bu=w.burst||1, per=(w.dmg||0)*pel*bu, rof=Math.max(1,w.rof||1), mag=w.mag||0, rl=w.reload||0, pulls=mag>0?mag/bu:0;
+  var sus=mag>0?per*pulls/(pulls*rof/1000+rl/1000):per*1000/rof;
+  var hand=Math.round(100*(0.6*clamp(1-(w.spread||0)/0.2,0,1)+0.4*clamp(1-(rl-1200)/3000,0,1)));
+  return {id:w.id||'fists',name:w.name||'Bare Hands',tier:WTIER[w.id]||0,dmg:Math.round(per),rpm:Math.round(60000/rof),mag:mag,
+          rng:Math.round((w.rng||0)/10),hand:hand,dps:Math.round(sus)};
+}
+var GUNSTAT_ROWS=[['dmg','DMG'],['rpm','RATE'],['mag','MAG'],['rng','RANGE'],['hand','HANDLING']];
+function gunCompare(f,h){
+  var F=gunStats(f), H=(h&&h.id&&h.id!=='fists'&&h.mag!==0)?gunStats(h):null, v, r, d={}, k, KS=['dmg','rpm','mag','rng','hand','dps'];
+  if(!H) v='UPGRADE';
+  else if(F.tier!==H.tier) v=(F.tier>H.tier)?'UPGRADE':'DOWNGRADE';
+  else { r=H.dps>0?F.dps/H.dps:2; v=(r>=1.08)?'UPGRADE':((r<=0.92)?'DOWNGRADE':'SIDEGRADE'); }
+  for(k=0;k<KS.length;k++) d[KS[k]]=H?(F[KS[k]]-H[KS[k]]):F[KS[k]];
+  return {verdict:v,f:F,h:H,d:d};
+}
 // Field gun quality. Every gun found in the world rolls a condition, so a gun
 // find is a slot machine and not a table lookup: his answer on gear versus
 // valuables was "not even close", and this is what makes two Auto Rifles found
@@ -36656,7 +36680,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.77: Guns snap close up and thump far off, and the room or the street answers each shot. Check 23.77 fails on v23.76',
+  now:'v23.78: Every gun can now be compared on damage, rate, magazine, range and handling, as an upgrade, a downgrade or a sidegrade. Check 23.78 fails on v23.77',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

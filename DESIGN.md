@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.78 - GUN STAT CARD MODEL
+
+Co-op hunt while he was away. His feature 17 of 2026-10-12, better gun stat cards. This is the part underneath the cards: every gun is now read as five numbers, all higher-is-better: damage a pull (every pellet of a scattergun and every round of a burst), rate of fire, magazine, range in metres, and handling (a tight spread and a quick reload). Against the gun in your hands a found gun is an UPGRADE, a DOWNGRADE or a SIDEGRADE: the gun rank decides first, the same rank the auto-equip uses, and at the same rank the damage it does over a whole magazine with the reload decides. Any gun beats bare hands. Nothing shows yet; the pickup card and the backpack card come next.
+
+MEASURED. Check 23.78 passes, and fails on v23.77.
 ## v23.77 - PUNCHY GUNS: SNAP CLOSE, THUMP FAR
 
 Co-op hunt while he was away. His number 45, punchy arcade sound like CoD and Fortnite. A gun sounded the same at 50 and at 800, only quieter, and the same in a shed as in the open street. Now close shots (yours included) get a bright snap on top of the crack, the thing that makes a gun feel like it kicks. Far shots lose their bright edge and arrive as a low thump, the way distant gunfire really sounds, so you can tell how far a fight is by ear. And the place answers: two quick slaps off the walls inside a building, a short low roll in the open, a soft wash in the woods, a ring in a vault, a hiss over water. His v10.58 note still holds: the answer is a tenth of the crack or less and short, never the long wash he could hear way later.

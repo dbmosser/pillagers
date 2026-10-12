@@ -1,0 +1,7 @@
+v23.78: gun stat card model
+
+Every gun can now be compared on damage, rate, magazine, range and handling, as an upgrade, a downgrade or a sidegrade.
+
+Check 23.78. Fails on v23.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
