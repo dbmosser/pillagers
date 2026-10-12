@@ -8555,8 +8555,9 @@ window.__REGRESS=[
        else {
          p=g.player;
          if(g.arcade!==1) bad.push('G.arcade is '+g.arcade);
-         if(g.raidLen!==0) bad.push('raidLen is '+g.raidLen);
-         if(raidClockOn()) bad.push('the raid clock is on');
+         // retargeted 2026-10-12 (feat0e): his mode design gives the DEMO raid a 10 minute clock (ARCADE_RAID_SEC); a build without it is still endless
+         if(typeof ARCADE_RAID_SEC==='number'){ if(g.raidLen!==ARCADE_RAID_SEC) bad.push('raidLen is '+g.raidLen+', not the DEMO clock '+ARCADE_RAID_SEC); if(!raidClockOn()) bad.push('the DEMO raid clock is off'); }
+         else { if(g.raidLen!==0) bad.push('raidLen is '+g.raidLen); if(raidClockOn()) bad.push('the raid clock is on'); }
          if(CFG.raidSec!==0||CFG.extractWait!==15) bad.push('the arcade dials are raidSec '+CFG.raidSec+', extractWait '+CFG.extractWait);
          for(i=0;i<g.zones.length;i++) if(g.zones[i].closeAt!==undefined) bad.push('ring '+i+' closes at '+g.zones[i].closeAt);
          if(!p.wep||ARCADE_GUNS1.indexOf(p.wep.id)<0) bad.push('the gun in hand is '+(p.wep&&p.wep.id));
