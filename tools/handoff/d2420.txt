@@ -1,0 +1,5 @@
+## v24.20 - NO ROLL IN THE DROP-IN HOLD
+
+Co-op hunt while he was away. His number 39, full controller navigation. After a demo respawn you stand frozen for three seconds (DROPPING IN 3 2 1) inside your spawn shield, but SPACE, and the A button that sends the same press, still started a roll, and the roll took the shield down while you could not move. The press meant to be ready threw your cover away before you were in. During the hold the roll now does nothing; it works the moment you drop in.
+
+MEASURED. Check 24.20 passes, and fails on v24.19.

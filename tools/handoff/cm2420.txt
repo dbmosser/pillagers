@@ -1,0 +1,7 @@
+v24.20: no roll in the drop-in hold
+
+Rolling during the drop-in countdown no longer drops your spawn shield.
+
+Check 24.20. Fails on v24.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

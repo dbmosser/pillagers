@@ -1,0 +1,8 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  08-shop                                staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal
+  25-raid-pause-box                      staged       8.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3872x2263, viewport 3840x2160
+  01-title-mode-menu                     staged       4.8s  total   1: clip 0 off 1 small 0 contrast 0 font 0 overlap 0 focus 0
+  08-shop                                staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal
+  25-raid-pause-box                      staged       8.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

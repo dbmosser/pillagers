@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.20 - NO ROLL IN THE DROP-IN HOLD
+
+Co-op hunt while he was away. His number 39, full controller navigation. After a demo respawn you stand frozen for three seconds (DROPPING IN 3 2 1) inside your spawn shield, but SPACE, and the A button that sends the same press, still started a roll, and the roll took the shield down while you could not move. The press meant to be ready threw your cover away before you were in. During the hold the roll now does nothing; it works the moment you drop in.
+
+MEASURED. Check 24.20 passes, and fails on v24.19.
 ## v24.19 - ONE SET OF MENU PARTS
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, make them look like a triple-A game. UI redesign build ui5, the shared components. Every window now draws its parts one way: square cut corners instead of the rounded glass of the old styling pass, one flat amber primary button with dark letters (no gradient, no glow), secondary buttons with a thin frame, tabs with an amber bar under the chosen one, item cells in flat graphite with a bar of the rarity colour along the foot and a faint tint behind the picture (the rarity frame stays), a cream card in the new paper colour, and a disabled button that greys its words instead of turning see-through. The keyboard focus and the controller focus are one look: an amber outline with a light bar down the left edge. The title name is set in the new display face. New pieces for the screens still to come (rows, chips, keycaps, steppers, sliders, toggles) and one set of line icons for the menus and the HUD are added. Nothing a screen says changed.
