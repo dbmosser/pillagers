@@ -1,0 +1,7 @@
+v24.23: the overseer redrawn
+
+THE OVERSEER is redrawn: black and brass, twin cannons, a crown of sensor masts and one big red eye.
+
+Check 24.23. Fails on v24.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

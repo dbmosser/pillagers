@@ -1,0 +1,5 @@
+## v24.23 - THE OVERSEER REDRAWN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines. The boss was a Warden drawn at 147 percent and nothing about it said boss. THE OVERSEER is now black gunmetal and brass, with a second cannon on its far shoulder, a crown of three sensor masts with red tip lights, one big round lens for an eye that burns deep red when it hunts you, and cable bundles hanging off its back. It still stands where it stood and fights as it fought: drawn only.
+
+MEASURED. Check 24.23 passes, and fails on v24.22.

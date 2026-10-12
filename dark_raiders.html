@@ -1906,7 +1906,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.22';
+var VER='24.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26561,6 +26561,12 @@ function drawDeathAnims(){
 // (weakPos) are unchanged.
 var MBPAL={ink:'#120e0c',gm:['#2a2f35','#3e454c','#59626b','#7c868f'],ox:['#4e2419','#7a3a2a','#9c5038'],och:'#c8962e',
   brass:['#8a6a2a','#c9a24a'],rub:'#1b1f24',tooth:'#353d46',steel:'#a3aeb8',grime:'rgba(46,30,18,.38)'};
+// v23.xx (spr10), HIS ORDER (2026-10-12) on the sprite program: THE OVERSEER (MACHINES B 2). The boss was a Warden at 147
+// percent, nothing about it said boss. Now, drawn from the Warden at its scale: black gunmetal with brass in place of grey and
+// rust (MBPAL_OV), a second cannon on its far shoulder, a crown of three sensor masts with red tip lights above its head, one
+// big round lens for an eye (deep red when it hunts), and cable bundles hanging off its back where a Warden carries its pod.
+var MBPAL_OV={ink:'#0b0a09',gm:['#121417','#1f2328','#32383f','#4d565f'],ox:['#3a2c12','#6e5524','#9c7a34'],och:'#c9a24a',
+  brass:['#8a6a2a','#e0bc62'],rub:'#141619',tooth:'#2a2f35',steel:'#c9a24a',grime:'rgba(30,22,10,.4)'};
 function mbEye(e,T){
   if((e.overheat||0)>0) return ['#ff8a3c',.55+.35*Math.sin(T*14),1];
   if(e.seenYou||e.state==='chase'||e.state==='hunt') return ['#ff3b30',.75+.25*Math.sin(T*9),2];
@@ -26578,7 +26584,7 @@ function drawWardenAt(e){
   try{ drawWardenS(e); } finally { wc.restore(); }
   return s;
 }function drawWardenS(e){
-  var x=e.x,y=e.y,P=MBPAL,fl=Math.cos(e.face)>=0?1:-1,st=(e.step||0),el=!!e.elite,i,a,tx;
+  var x=e.x,y=e.y,B=!!(e.boss||e.name===BOSS_NAME),P=B?MBPAL_OV:MBPAL,fl=Math.cos(e.face)>=0?1:-1,st=(e.step||0),el=!!e.elite,i,a,tx;
   shadowE(x,y+2,26,8,.45);
   wc.save(); wc.translate(x,y); wc.scale(fl,1);
   // TRACKS: rubber, links running with travel (top run forward, bottom back), four road wheels that turn
@@ -26602,6 +26608,10 @@ function drawWardenAt(e){
   wc.fillStyle=P.ink; rrF(-11.4,-50,4.4,12,1.4); rrF(-6.6,-48,4.4,10,1.4);
   wc.fillStyle=P.gm[0]; wc.fillRect(-10.6,-49.2,2.8,10.5); wc.fillRect(-5.8,-47.2,2.8,8.5);
   wc.fillStyle=P.gm[2]; wc.fillRect(-10.6,-49.2,2.8,1.2); wc.fillRect(-5.8,-47.2,2.8,1.2);
+  // THE OVERSEER: its second cannon, on the far shoulder, behind the hull
+  if(B){ wc.fillStyle=P.ink; rrF(4,-43.6,28.6,7,2); rrF(27,-45,6.4,9.8,1.6);
+    wc.fillStyle=P.gm[1]; wc.fillRect(5,-42.4,22.4,4.6); wc.fillStyle=P.steel; wc.fillRect(5,-42.4,22.4,1);
+    wc.fillStyle=P.gm[0]; wc.fillRect(28,-44,4.4,7.8); wc.fillStyle=P.och; wc.fillRect(28,-44,4.4,1.2); }
   // TORSO: hunched forward, lit on top, shaded on the front face, grime low
   wc.fillStyle=P.ink; mbPoly([-17,-18,-17,-36,-11.5,-45.2,3,-47.2,14.6,-42,19,-30,17,-18]);
   wc.fillStyle=P.gm[2]; mbPoly([-15.8,-19.2,-15.8,-35.6,-10.8,-44,3,-46,13.6,-41.2,17.6,-30,15.8,-19.2]);
@@ -26609,28 +26619,55 @@ function drawWardenAt(e){
   wc.fillStyle=P.gm[1]; mbPoly([13.6,-41.2,17.6,-30,15.8,-19.2,11.6,-19.2,13.4,-30.5,11,-39]);
   wc.fillStyle=P.grime; wc.fillRect(-15.8,-23.4,29,4.2);
   wc.fillStyle=P.gm[0]; wc.fillRect(-15.8,-31.2,27.2,0.9);
-  // LAUNCHER POD on the off shoulder: a 2x2 rack of tube mouths
+  // LAUNCHER POD on the off shoulder: a 2x2 rack of tube mouths (the Overseer trails cable bundles there instead)
+  if(!B){
   wc.fillStyle=P.ink; rrF(-23,-43,12.4,12.6,2.4);
   wc.fillStyle=P.gm[1]; rrF(-21.8,-41.8,10,10.2,1.8);
   wc.fillStyle=P.gm[2]; wc.fillRect(-21.8,-41.8,10,1.6);
   wc.fillStyle=P.ink; wc.beginPath();
   for(i=0;i<4;i++){ wc.moveTo(-19.2+(i%2)*4.8+1.7,-37.6+((i>>1)*4.6)); wc.arc(-19.2+(i%2)*4.8,-37.6+((i>>1)*4.6),1.7,0,6.2832); } wc.fill();
   wc.fillStyle=P.och; wc.fillRect(-21.8,-33.2,10,1.0);
+  } else {
+    wc.lineCap='round'; wc.strokeStyle=P.ink; wc.lineWidth=3.2; wc.beginPath();
+    wc.moveTo(-14,-40); wc.bezierCurveTo(-24,-38,-22,-26,-20,-17); wc.moveTo(-12,-36); wc.bezierCurveTo(-20,-30,-17,-22,-16.4,-15.6); wc.moveTo(-15.6,-31); wc.bezierCurveTo(-24,-28,-25,-20,-23.4,-14.8); wc.stroke();
+    wc.strokeStyle=P.gm[2]; wc.lineWidth=1.3; wc.stroke(); wc.lineCap='butt';
+    wc.fillStyle=P.och; wc.beginPath(); wc.rect(-21.6,-25,3,1.4); wc.rect(-18.6,-23.6,2.8,1.4); wc.rect(-24.6,-22,2.8,1.4); wc.fill();
+  }
   // BELLY PLATE: oxide, hazard stencils
   wc.fillStyle=P.ink; rrF(-13.4,-29.4,17.4,9.4,2);
   wc.fillStyle=P.ox[1]; rrF(-12.4,-28.4,15.4,7.4,1.5);
   wc.fillStyle=P.ox[2]; wc.fillRect(-12.4,-28.4,15.4,1.2);
   wc.fillStyle=P.och; mbPoly([-10.4,-26.6,-7.6,-26.6,-9.8,-22.6,-12.4,-22.6]); mbPoly([-5.6,-26.6,-2.8,-26.6,-5,-22.6,-7.8,-22.6]);
-  // THE HEAD: set low between the shoulders, a visor slit in the sensor language
+  // THE HEAD: set low between the shoulders, a visor slit in the sensor language (the Overseer: a crown of three sensor masts and one big lens)
+  var E=mbEye(e,G.t);
+  if(B){
+    wc.lineCap='round'; wc.strokeStyle=P.ink; wc.lineWidth=2.6; wc.beginPath();
+    wc.moveTo(4.6,-44); wc.lineTo(3.4,-55.4); wc.moveTo(9.4,-45); wc.lineTo(9.4,-58.4); wc.moveTo(14.2,-43); wc.lineTo(15.6,-54.6); wc.stroke();
+    wc.strokeStyle=P.och; wc.lineWidth=1.1; wc.stroke(); wc.lineCap='butt';
+    wc.globalCompositeOperation='lighter'; wc.fillStyle='#ff3b30'; wc.globalAlpha=.55+.35*Math.sin(G.t*4);
+    wc.beginPath(); wc.arc(3.4,-55.8,1.5,0,6.2832); wc.moveTo(10.9,-58.8); wc.arc(9.4,-58.8,1.5,0,6.2832); wc.moveTo(17.1,-55); wc.arc(15.6,-55,1.5,0,6.2832); wc.fill();
+    wc.globalAlpha=.18; wc.beginPath(); wc.arc(3.4,-55.8,3,0,6.2832); wc.moveTo(12.4,-58.8); wc.arc(9.4,-58.8,3,0,6.2832); wc.moveTo(18.6,-55); wc.arc(15.6,-55,3,0,6.2832); wc.fill();
+    wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  }
   wc.fillStyle=P.ink; rrF(1.4,-45,16,11.6,3);
   wc.fillStyle=P.gm[1]; rrF(2.6,-43.8,13.6,9.2,2.2);
   wc.fillStyle=P.gm[3]; wc.fillRect(3.4,-43.8,12,1.5);
+  if(B){
+    if(E[2]===2) E[0]='#d0202a';
+    wc.fillStyle=P.ink; wc.beginPath(); wc.arc(9.4,-39.2,5.2,0,6.2832); wc.fill();
+    wc.strokeStyle=P.och; wc.lineWidth=0.9; wc.beginPath(); wc.arc(9.4,-39.2,4.4,0,6.2832); wc.stroke();
+    wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=Math.min(1,E[1]+.15);
+    wc.beginPath(); wc.arc(9.4,-39.2,3.3,0,6.2832); wc.fill();
+    if(E[2]){ wc.globalAlpha=E[2]>1?.24:.16; wc.beginPath(); wc.arc(9.4,-39.2,5.3,0,6.2832); wc.fill(); }
+    wc.globalAlpha=.85; wc.fillStyle='#ffffff'; wc.beginPath(); wc.arc(8.2,-40.4,.8,0,6.2832); wc.fill();
+    wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  } else {
   wc.fillStyle=P.ink; rrF(4.2,-40.6,12.4,4.8,1.8);
-  var E=mbEye(e,G.t);
   wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1];
   wc.fillRect(5.2,-39.6,10.4,2.6);
   if(E[2]){ wc.globalAlpha=E[2]>1?.22:.16; wc.beginPath(); wc.arc(10.4,-38.3,E[2]>1?7:5,0,6.2832); wc.fill(); }
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  }
   // CANNON ARM: a piston from the chassis, the barrel, the muzzle block
   wc.strokeStyle=P.ink; wc.lineWidth=4.4; wc.beginPath(); wc.moveTo(8.4,-17.6); wc.lineTo(20.6,-25); wc.stroke();
   wc.strokeStyle=P.gm[0]; wc.lineWidth=2.6; wc.beginPath(); wc.moveTo(8.4,-17.6); wc.lineTo(14.6,-21.3); wc.stroke();
@@ -38113,7 +38150,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.22: Words in the station windows are never faint: locked Fashion tiles dim only their picture, and every label is at least 13 pixels. Check 24.22 fails on v24.21',
+  now:'v24.23: THE OVERSEER is redrawn: black and brass, twin cannons, a crown of sensor masts and one big red eye. Check 24.23 fails on v24.22',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
