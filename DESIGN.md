@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.05 - THE HIT MARKER IS THE INSIDE OF THE CROSSHAIR
+
+Co-op hunt while he was away. His order of 2026-10-12 on hit markers in 2.5D: maybe just on the inside of the crosshair. A round of yours that lands now flashes the centre of your crosshair: the dot swells into a small diamond and a thin ring pulses out to the arms, white for a hit, orange for a weak spot, and bigger and red for a kill, for about a sixth of a second, with the tick you already hear. The four faint diagonal ticks are gone; the arms and the ammo and reload rings are unchanged. Player 2 sees his own markers in his own window, now with his kills, which his window never marked before. A weak spot hit also lost its mark to the plain one, so it never showed or sounded as a weak spot; it does now. A round that lands on an animal marks a hit too.
+
+MEASURED. Check 24.05 passes, and fails on v24.04.
 ## v24.04 - THE ANNOUNCER
 
 Co-op hunt while he was away. His number 45 and his answer 26 b, short voice barks, punchy arcade like CoD and Fortnite. The big moments were only written on the screen. Now an announcer calls them out loud: DOUBLE KILL, TRIPLE KILL, MULTI KILL, RAMPAGE and UNSTOPPABLE for a demo kill streak, NEW HIGH SCORE, TWO MINUTES and ONE MINUTE as the clock runs down, WAVE INCOMING when a demo wave arrives, and EXTRACTED when you get out. The voice is a shade deeper than your operator, the room dips under it for a moment, and it is never squashed by the fight. These are calls, not music.
