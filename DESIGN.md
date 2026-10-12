@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.37 - READABLE SILHOUETTES
+
+Co-op hunt while he was away. His answer 24 (2026-10-12): redesign the character silhouettes for readability first, before any animation. At raid size a body was a big head over a box no wider than the head, so you could not tell the shoulders, the gun or the side at a glance. Every body now has two inked shoulder caps that stand out past the torso, so the head and shoulders read as one clear shape: wide and square on Broad, middling on Lean, and small and narrow on Curved, who keeps her narrow shoulders, her chest, her hips and her jiggle. In a raid the shoulders wear the team colour: you and your team in ally blue, pillagers and the other player in PvP in danger red, the same in every window. In the Undercroft the shoulders are the coat in shadow. Armour 2 and up and the Trooper suit keep their steel shoulders with a team stripe on top, so the armour tier still reads. The gun now has an ink rim and a lit top edge, so what a body holds reads off a dark coat and dark ground. Nothing about play changes.
+
+MEASURED. Check 24.37 passes, and fails on v24.36.
 ## v24.36 - MUZZLE FLASH ON THE FIRST FRAME
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 7, shot detail). The muzzle flash only showed if a frame happened to be drawn in the 60 thousandths of a second after the shot, so on a slow or uneven frame a shot had no flash at all, and a teammate shot never had one in the other window. Every shot now paints its flash on the very next frame at full strength, a sharp star per gun family (short for pistols and rifles, long for the heavy guns, wide for shotguns) in the gun colour, gone a moment later. A teammate shot gets one too. Someone you cannot see shows no flash. Nothing about play changes.

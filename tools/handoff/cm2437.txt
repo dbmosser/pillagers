@@ -1,0 +1,7 @@
+v24.37: readable silhouettes
+
+Bodies read at a glance: shoulders in the team colour, blue for your side and red for pillagers, and an inked gun.
+
+Check 24.37. Fails on v24.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
