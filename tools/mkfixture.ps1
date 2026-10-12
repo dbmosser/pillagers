@@ -530,6 +530,102 @@ window.__hb=function(){ return HB; };
 // fires its rAF. Each call arms one more rAF, which is exactly the loop
 // resuming normally if the pane ever becomes visible, so this is safe to drive.
 window.__loop=function(ts){ loop(ts); };
+// 2026-10-12 (gfx1), the graphics program helpers (tools/handoff/research/graphics-design-2026-10-12.md, section 3).
+// __gfxCount(ctxs,names,fn): counts canvas calls while fn runs, with OWN-PROPERTY stubs on each context (never the prototype, which
+// older checks capture), all deleted in finally. Also counts full-screen passes (a fillRect or drawImage covering 90 percent or more
+// of its canvas in device pixels) and gradients. ctxs defaults to the four sheets (wc, ctx, lx2, fx2); names to the common draw calls.
+window.__gfxCount=function(ctxs,names,fn){
+  var C=ctxs||[wc,ctx,lx2,fx2], N=names||['fillRect','strokeRect','clearRect','fill','stroke','arc','ellipse','drawImage','fillText','strokeText','save','restore','setTransform','rotate','createRadialGradient','createLinearGradient','getImageData','putImageData'],
+      res={calls:{},per:[],total:0,full:0,grads:0,ret:undefined}, own=[], i, j;
+  function fullOf(c2,nm,a){
+    var cw=(c2.canvas&&c2.canvas.width)||0, ch=(c2.canvas&&c2.canvas.height)||0, x=0, y=0, w=0, h=0, m, ax, ay, bx, by;
+    if(!(cw>0&&ch>0)) return false;
+    if(nm==='fillRect'){ x=a[0]; y=a[1]; w=a[2]; h=a[3]; }
+    else if(nm==='drawImage'){
+      if(a.length>=9){ x=a[5]; y=a[6]; w=a[7]; h=a[8]; }
+      else if(a.length>=5){ x=a[1]; y=a[2]; w=a[3]; h=a[4]; }
+      else { x=a[1]; y=a[2]; w=(a[0]&&a[0].width)||0; h=(a[0]&&a[0].height)||0; }
+    } else return false;
+    try{ m=c2.getTransform(); }catch(_gt){ m={a:1,b:0,c:0,d:1,e:0,f:0}; }
+    ax=m.a*x+m.c*y+m.e; ay=m.b*x+m.d*y+m.f; bx=m.a*(x+w)+m.c*(y+h)+m.e; by=m.b*(x+w)+m.d*(y+h)+m.f;
+    var x0=Math.max(0,Math.min(ax,bx)), x1=Math.min(cw,Math.max(ax,bx)), y0=Math.max(0,Math.min(ay,by)), y1=Math.min(ch,Math.max(ay,by));
+    return (x1>x0&&y1>y0&&(x1-x0)*(y1-y0)>=0.9*cw*ch);
+  }
+  try{
+    for(i=0;i<C.length;i++){
+      var c1=C[i], rec={calls:{},total:0,full:0,grads:0}; if(!c1) { res.per.push(rec); continue; }
+      res.per.push(rec);
+      for(j=0;j<N.length;j++){
+        (function(c2,nm,r){
+          var orig=c2[nm]; if(typeof orig!=='function'||Object.prototype.hasOwnProperty.call(c2,nm)) return;
+          own.push([c2,nm]);
+          c2[nm]=function(){
+            r.calls[nm]=(r.calls[nm]||0)+1; r.total++; res.calls[nm]=(res.calls[nm]||0)+1; res.total++;
+            if(nm==='createRadialGradient'||nm==='createLinearGradient'){ r.grads++; res.grads++; }
+            if((nm==='fillRect'||nm==='drawImage')&&fullOf(c2,nm,arguments)){ r.full++; res.full++; }
+            return orig.apply(c2,arguments);
+          };
+        })(c1,N[j],rec);
+      }
+    }
+    res.ret=fn?fn():undefined;
+  } finally {
+    for(i=0;i<own.length;i++){ try{ delete own[i][0][own[i][1]]; }catch(_d){} }
+  }
+  return res;
+};
+// __gfxStage(o): a raid on COLD STORAGE set up for a graphics look. o: {arcade, mapIx (0), seed (4242), cond ('night'), wx (a WEATHER
+// id), tod (a TODS id), w, h (__forceSize), dpr (1), x, y (the player), frames (N __loop frames at 16.7 ms)}. Returns G, or null when
+// no raid was built. The caller ends the raid (__endRaid('abandon')) and calls __topClear in its finally.
+window.__gfxStage=function(o){
+  o=o||{}; var g, f, t0, k, mi=(o.mapIx===undefined?0:o.mapIx), sd=(o.seed===undefined?4242:o.seed);
+  __topClear(); __runPrep();
+  try{ if(o.w&&o.h) __forceSize(o.w,o.h); }catch(_fs){}
+  try{ __pinDPR(o.dpr===undefined?1:o.dpr); }catch(_pd){}
+  keys={};
+  if(o.arcade){
+    if(typeof arcadeDeploy!=='function') return null;
+    if(!arcadeDeploy({mapIx:mi,seed:sd,cond:o.cond})) return null;
+  } else {
+    if(o.cond) P.cond=o.cond;
+    __deploy({kit:o.kit||[],safe:null,mapIx:mi,seed:sd});
+  }
+  g=__state(); if(!g||g.over) return null;
+  if(o.wx&&typeof WEATHER!=='undefined'){ for(k=0;k<WEATHER.length;k++) if(WEATHER[k].id===o.wx){ g.wx=WEATHER[k]; g.wxNext=null; break; } }
+  if(o.tod&&typeof TODS!=='undefined'){ for(k=0;k<TODS.length;k++) if(TODS[k].id===o.tod){ g.tod=TODS[k]; break; } }
+  if(o.x!==undefined&&o.y!==undefined){ g.player.x=o.x; g.player.y=o.y; g.player.vx=0; g.player.vy=0; G.anchX=undefined; }
+  try{ if(g.arcade&&g.player.arcSh&&typeof arcadeShieldOff==='function') arcadeShieldOff(); }catch(_as){}
+  t0=performance.now();
+  for(f=0;f<(o.frames|0);f++) __loop(t0+(f+1)*16.7);
+  return g;
+};
+// __gfxProbe(o): the M2 measure. Stages (unless o.stage===false), then times render2D (__frame) over o.frames (60) frames and counts
+// one frame's calls with __gfxCount. Returns {ms50 (median script ms), ms95, calls, full, grads, total} or null when nothing was staged.
+window.__gfxProbe=function(o){
+  o=o||{}; var g, i, t, ms=[], c;
+  g=(o.stage===false)?__state():__gfxStage(o);
+  if(!g||g.over) return null;
+  for(i=0;i<(o.frames||60);i++){ t=performance.now(); __frame(0.016); ms.push(performance.now()-t); }
+  ms.sort(function(a,b){ return a-b; });
+  c=__gfxCount(o.ctxs||null,o.names||null,function(){ __frame(0.016); try{ drawHUD(); }catch(_dh){} });
+  return {ms50:ms[Math.floor(ms.length*0.5)], ms95:ms[Math.min(ms.length-1,Math.floor(ms.length*0.95))], calls:c.calls, full:c.full, grads:c.grads, total:c.total};
+};
+// __shot4k(name): forces 3840x2160 at DPR 1, draws one loop frame, composites the world (cv) and the HUD (hcv) and POSTs the PNG to
+// the capture sink on 8779 (tools/capture.ps1), which writes tools/shots/<name>.png. The canvas size is put back after. A promise.
+window.__shot4k=function(name){
+  var sw=[cv.style.width,cv.style.height,hcv.style.width,hcv.style.height], c, x, url;
+  try{
+    __forceSize(3840,2160); __pinDPR(1);
+    try{ __loop(performance.now()+16.7); }catch(_lp){}
+    c=document.createElement('canvas'); c.width=cv.width; c.height=cv.height; x=c.getContext('2d');
+    x.drawImage(cv,0,0); x.drawImage(hcv,0,0,c.width,c.height);
+    url=c.toDataURL('image/png');
+  } finally {
+    cv.style.width=sw[0]; cv.style.height=sw[1]; hcv.style.width=sw[2]; hcv.style.height=sw[3]; try{ resize(); }catch(_rz){}
+  }
+  name=String(name||'gfx_shot').replace(/[^A-Za-z0-9_.-]/g,'_'); if(!/\.png$/.test(name)) name+='.png';
+  return fetch('http://localhost:8779/'+encodeURIComponent(name),{method:'POST',body:url.slice(url.indexOf(',')+1)}).then(function(r){ return r.text(); }, function(e){ return 'sink not reached: '+e; });
+};
 // Placement sanity audit, v2.86: counts of props sitting on ground they should
 // not, plus the culls makeMap already performed this raid.
 window.__placeAudit=function(){
