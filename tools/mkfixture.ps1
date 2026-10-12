@@ -6042,7 +6042,7 @@ window.__REGRESS=[
          if(gg.nearContainer===c) return c; }
        return null; }
      function arm(c,loot){ c.loot=loot.slice(); c.opened=false; c.prog=0; c.pulled=0; c.time=0.3; G.searching=null; G.searchT=0; said.length=0; }
-     function run(gg,c,n){ var f; for(f=0;f<n&&!c.opened;f++){ gg.player.x=c.x; gg.player.y=c.y; __sim(0.05); } }
+     function run(gg,c,n){ var f; for(f=0;f<n&&!c.opened;f++){ gg.player.x=c.x; gg.player.y=c.y; keys.KeyE=true; __sim(0.05); } keys={}; }   // v23.xx: hold E to loot
      function saidFull(){ return said.indexOf(BF)>=0; }
      try{
        __topClear(); __runPrep();
@@ -6548,9 +6548,9 @@ window.__REGRESS=[
        if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'no arcadeDeploy in this build';
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        rows=arcadeCardRows();
-       if(!rows||rows.length!==8) bad.push('arcadeCardRows gives '+(rows?rows.length:'no')+' rows, not 8');
+       if(!rows||(rows.length!==8&&rows.length!==9)) bad.push('arcadeCardRows gives '+(rows?rows.length:'no')+' rows, not 8 or 9');   // v23.xx: a LOOT row may close the card
        nm=(rows||[]).map(function(r){ return r&&r[0]; }).join(',');
-       if(nm!=='MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,HEAL,EXTRACT') bad.push('the card rows are '+nm);
+       if(nm!=='MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,HEAL,EXTRACT'&&nm!=='MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,HEAL,EXTRACT,LOOT') bad.push('the card rows are '+nm);
        for(i=0;i<(rows||[]).length;i++){ if(!rows[i]||typeof rows[i][1]!=='string'||!rows[i][1]||typeof rows[i][2]!=='string'||!rows[i][2]) bad.push('row '+i+' lacks a keyboard or a pad label'); }
        if(rows&&rows[7]&&rows[7][1].indexOf('HOLD ')!==0) bad.push('the EXTRACT keyboard label is '+rows[7][1]);
        if(typeof PAD==='object'&&PAD){ br=PAD.brand; ownB=true; PAD.brand='ps'; pr=arcadeCardRows(); PAD.brand=br; ownB=false;
@@ -7166,7 +7166,9 @@ window.__REGRESS=[
        realSay=say; own=true;
        say=function(m,l,o){ rows.push({m:String(m),l:l,tag:(o&&o.tag)||''}); };
        t0=performance.now();
-       for(f=0;f<40;f++) __loop(t0+f*16.7);
+       keys={KeyE:true};   // v23.xx: his order, hold E to loot in the arcade (walk-over loot taken out); either build searches with E held
+       for(f=0;f<600&&!ct.opened;f++) __loop(t0+f*16.7);
+       keys={};
        say=realSay; own=false;
        if(__state()!==g||g.over) return 'the arcade raid ended during the 40 frames';
        if(!ct.opened) bad.push('a crate 20 units away was not searched with no key in 40 frames (prog '+(+ct.prog||0).toFixed(3)+' of '+ct.time+', loot left '+ct.loot.length+')');
