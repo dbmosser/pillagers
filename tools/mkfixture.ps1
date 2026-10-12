@@ -24233,9 +24233,10 @@ window.__REGRESS=[
      d.innerHTML='<div class="invgrid"><div class="cell c-common">x</div></div><div class="vendgrid"><div class="vcell">y</div></div><div class="invtab">z</div>';
      root.appendChild(d); c=d.querySelector('.cell'); v=d.querySelector('.vcell'); t=d.querySelector('.invtab');
      try{
-       s=getComputedStyle(c); if(parseFloat(s.borderTopLeftRadius)<6) bad.push('stash cells are square ('+s.borderTopLeftRadius+')'); if(!/gradient/.test(s.backgroundImage)) bad.push('stash cells are flat');
-       s=getComputedStyle(v); if(parseFloat(s.borderTopLeftRadius)<6) bad.push('shop cells are square ('+s.borderTopLeftRadius+')');
-       s=getComputedStyle(t); if(parseFloat(s.borderTopLeftRadius)<6) bad.push('the tabs are square ('+s.borderTopLeftRadius+')');
+       var ui5=(typeof UIICON==='object'&&!!UIICON); // ui5 (his #50): square cut graphite tiles with a rarity bar replace the rounded glass
+       s=getComputedStyle(c); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<6) bad.push('stash cells are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')'); if(!/gradient/.test(s.backgroundImage)) bad.push('stash cells are flat'); if(ui5&&!/inset/.test(s.boxShadow)) bad.push('stash cells have no rarity bar');
+       s=getComputedStyle(v); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<6) bad.push('shop cells are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')');
+       s=getComputedStyle(t); if(ui5?!(parseFloat(s.borderBottomWidth)>=3&&parseFloat(s.borderTopLeftRadius)<=3):parseFloat(s.borderTopLeftRadius)<6) bad.push(ui5?'the tabs are not underline tabs ('+s.borderBottomWidth+', '+s.borderTopLeftRadius+')':'the tabs are square ('+s.borderTopLeftRadius+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ root.removeChild(d); }catch(_r){} }
      return bad.length?bad.join('; '):null; }},
@@ -24248,8 +24249,9 @@ window.__REGRESS=[
        if(o&&!was) o.classList.add('on');
        s=getComputedStyle(w); if(parseFloat(s.borderTopLeftRadius)<10) bad.push('the card corners are '+s.borderTopLeftRadius); if(!/rgba\(0, 0, 0/.test(s.boxShadow)) bad.push('the card has no drop shadow');
        s=getComputedStyle(h); if(!s.textShadow||s.textShadow==='none') bad.push('the outcome word has no glow');
-       s=getComputedStyle(t); if(parseFloat(s.borderTopLeftRadius)<12) bad.push('the feel tags are square ('+s.borderTopLeftRadius+')');
-       s=getComputedStyle(b); if(!/gradient/.test(s.backgroundImage)) bad.push('LOG RUN AND RETURN is flat');
+       var ui5=(typeof UIICON==='object'&&!!UIICON); // ui5 (his #50): square cut chips and a flat amber primary replace the pills and the gradient
+       s=getComputedStyle(t); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<12) bad.push('the feel tags are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')');
+       s=getComputedStyle(b); if(ui5?(s.backgroundColor!=='rgb(245, 183, 59)'):!/gradient/.test(s.backgroundImage)) bad.push(ui5?'LOG RUN AND RETURN is not the amber primary ('+s.backgroundColor+')':'LOG RUN AND RETURN is flat');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ tw.removeChild(t); }catch(_r){} if(o&&!was) o.classList.remove('on'); }
      return bad.length?bad.join('; '):null; }},
@@ -25030,10 +25032,11 @@ window.__REGRESS=[
      tmp.innerHTML='<button>x</button><button class="deploy">y</button><input type="text" value="z">';
      m.appendChild(tmp); b=tmp.children[0]; d=tmp.children[1]; i=tmp.children[2]; h=m.querySelector('h3');
      try{
-       if(b){ s=getComputedStyle(b); if(parseFloat(s.borderTopLeftRadius)<5) bad.push('menu buttons are square ('+s.borderTopLeftRadius+')'); if(parseFloat(s.minHeight)<36) bad.push('menu buttons have no minimum height ('+s.minHeight+')'); } else bad.push('no menu button to measure');
-       if(d){ s=getComputedStyle(d); if(!/gradient/.test(s.backgroundImage)) bad.push('the primary button is flat ('+s.backgroundImage.slice(0,40)+')'); }
+       var ui5=(typeof UIICON==='object'&&!!UIICON); // ui5 (his #50): square cut buttons, one flat amber primary
+       if(b){ s=getComputedStyle(b); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<5) bad.push('menu buttons are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')'); if(parseFloat(s.minHeight)<36) bad.push('menu buttons have no minimum height ('+s.minHeight+')'); } else bad.push('no menu button to measure');
+       if(d){ s=getComputedStyle(d); if(ui5?(s.backgroundColor!=='rgb(245, 183, 59)'):!/gradient/.test(s.backgroundImage)) bad.push(ui5?'the primary button is not the amber fill ('+s.backgroundColor+')':'the primary button is flat ('+s.backgroundImage.slice(0,40)+')'); }
        if(h){ s=getComputedStyle(h); if(s.textTransform!=='uppercase') bad.push('modal headers are not uppercase'); if(parseFloat(s.borderBottomWidth)<1) bad.push('modal headers have no rule under them'); }
-       if(i){ s=getComputedStyle(i); if(parseFloat(s.borderTopLeftRadius)<5) bad.push('inputs are square ('+s.borderTopLeftRadius+')'); }
+       if(i){ s=getComputedStyle(i); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<5) bad.push('inputs are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')'); }
        m=document.getElementById('partymodal'); if(m){ s=getComputedStyle(m); if(!/gradient/.test(s.backgroundImage)) bad.push('modals have no light from the top'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ m.removeChild(tmp); }catch(_t){} }
