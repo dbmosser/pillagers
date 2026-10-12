@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.89 - THE AAA FONTS ARE IN THE GAME
+
+Co-op hunt while he was away. His order of 2026-10-12: the menus and text must look like a triple-A game. The redesign is built on three free fonts under the SIL Open Font License: Barlow Condensed for titles, labels, buttons and the HUD, Barlow for body text, and IBM Plex Mono for codes. They are now embedded in the game so it looks right offline, with their licence files kept beside the itch zip. Screens switch to them as the redesign builds land.
+
+MEASURED. Check 23.89 passes, and fails on v23.88.
 ## v23.88 - SHARP HUD AT ANY RESOLUTION
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it. Lowering Render resolution, or Auto resolution stepping down on a slow stretch, used to shrink the HUD along with the world, so every word, number and icon on the screen went soft. Now only the world is drawn at the lower resolution; the HUD always draws at the screen own pixels, so text stays sharp and the world alone pays for the speed. The Render resolution hint now says so. Nothing about play changes.

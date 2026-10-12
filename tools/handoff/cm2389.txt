@@ -1,0 +1,7 @@
+v23.89: the aaa fonts are in the game
+
+The new AAA fonts (Barlow Condensed, Barlow, IBM Plex Mono) are now built into the game.
+
+Check 23.89. Fails on v23.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5840,6 +5840,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.89',what:'his order #50: the AAA fonts (Barlow Condensed, Barlow, IBM Plex Mono) are embedded and loaded',
+   run:function(){
+     var fams={}, i, j, r, sh, rules, bad=[];
+     for(i=0;i<document.styleSheets.length;i++){
+       sh=document.styleSheets[i]; try{ rules=sh.cssRules||[]; }catch(_x){ continue; }
+       for(j=0;j<rules.length;j++){ r=rules[j];
+         if(r.type===5){ var fam=String(r.style.getPropertyValue('font-family')).replace(/["']/g,'').trim(), src=String(r.style.getPropertyValue('src'));
+           if(/^(Barlow|Barlow Condensed|IBM Plex Mono)$/.test(fam)&&src.indexOf('data:font/woff2')>=0) fams[fam+' '+r.style.getPropertyValue('font-weight')]=1; } } }
+     ['Barlow Condensed 500','Barlow Condensed 600','Barlow Condensed 700','Barlow Condensed 800','Barlow 400','Barlow 500','Barlow 600','IBM Plex Mono 500'].forEach(function(k){ if(!fams[k]) bad.push('no embedded face '+k); });
+     if(typeof UIFONTS!=='object') bad.push('no UIFONTS loader');
+     else if(!UIFONTS.ready) bad.push('the embedded faces are not loaded yet');
+     return bad.length?bad.join('; '):null; }},
   {v:'23.88',what:'graphics program gfx4: a lower Render resolution shrinks only the world canvas; the HUD canvas stays at the screen own pixels (1920 across at 1920x1080 with Low, 1600 at DPR 2 on an 800 wide window), its transform stays at the device ratio, and the Render resolution hint says the world only',
    run:function(){
      if(typeof resize!=='function'||typeof gfxScaleNow!=='function'||!window.__forceSize||!window.__pinDPR) return 'SKIP: this fixture cannot size the canvases';

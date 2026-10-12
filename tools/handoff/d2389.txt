@@ -1,0 +1,5 @@
+## v23.89 - THE AAA FONTS ARE IN THE GAME
+
+Co-op hunt while he was away. His order of 2026-10-12: the menus and text must look like a triple-A game. The redesign is built on three free fonts under the SIL Open Font License: Barlow Condensed for titles, labels, buttons and the HUD, Barlow for body text, and IBM Plex Mono for codes. They are now embedded in the game so it looks right offline, with their licence files kept beside the itch zip. Screens switch to them as the redesign builds land.
+
+MEASURED. Check 23.89 passes, and fails on v23.88.
