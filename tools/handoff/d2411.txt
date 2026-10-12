@@ -1,0 +1,5 @@
+## v24.11 - THE CRAWLER, REDRAWN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of every character and machine, gritty and grounded like ARC Raiders, silhouettes first. The Crawler was a red bench: six legs hanging straight down under a flat red box, no knees, nothing insect about it, its body the same red as the enemy team colour, and its three eyes lost in one glow. It is redrawn: a low shell of three overlapping rust-brown segments, each lit on top with a dark seam behind it; a gunmetal sensor head with two mandible blades; three separate eyes that show its mood (dim white idle, amber suspicious, red hunting); and six jointed legs splayed out front and back with the knees above the shell, stepping three at a time like an insect, so a walking Crawler visibly scuttles. On a rush the shell drops low and the front legs reach for you. An elite wears brass shell edges and a fourth eye. Nothing about play changes: same size, same shadow.
+
+MEASURED. Check 24.11 passes, and fails on v24.10.

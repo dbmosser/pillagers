@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.11 - THE CRAWLER, REDRAWN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of every character and machine, gritty and grounded like ARC Raiders, silhouettes first. The Crawler was a red bench: six legs hanging straight down under a flat red box, no knees, nothing insect about it, its body the same red as the enemy team colour, and its three eyes lost in one glow. It is redrawn: a low shell of three overlapping rust-brown segments, each lit on top with a dark seam behind it; a gunmetal sensor head with two mandible blades; three separate eyes that show its mood (dim white idle, amber suspicious, red hunting); and six jointed legs splayed out front and back with the knees above the shell, stepping three at a time like an insect, so a walking Crawler visibly scuttles. On a rush the shell drops low and the front legs reach for you. An elite wears brass shell edges and a fourth eye. Nothing about play changes: same size, same shadow.
+
+MEASURED. Check 24.11 passes, and fails on v24.10.
 ## v24.10 - THE SENTRY, REDRAWN
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of every character and machine, gritty and grounded like ARC Raiders, silhouettes first. The Sentry was a grey filing cabinet on a skateboard: no dark outline, so on a dark floor it melted away and only its glows showed; one flat grey; a thin single barrel; and an amber eye even when it had seen nothing. It is redrawn: a dark outline round the tread, hull, head and gun; tread teeth that run as it rolls; a lit top and left edge with the right side in shade, so it has volume; a sloped front plate on the side it faces; two yellow hazard chevrons; rivets, seams and chipped paint; a camera head on a mast with a round lens that tells you its mood (dim white idle, amber suspicious, red hunting, orange when its vent is overheated); a whip antenna; and a twin-barrel gun under a cooling shroud. The whole body turns to face where it is going. An elite wears a brass edge and a second antenna. Nothing about play changes: same size, same shadow, same weak points.
