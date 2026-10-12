@@ -1,0 +1,7 @@
+v23.65: the what is new card names the latest arcade work
+
+The what is new card names the latest arcade work.
+
+Check 23.65. Fails on v23.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

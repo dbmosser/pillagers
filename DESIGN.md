@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.65 - THE WHAT IS NEW CARD NAMES THE LATEST ARCADE WORK
+
+Co-op hunt while he was away. The card was stamped v23.64 and the stamp may not trail the build by more than 0.15. Its new second line names the builds of 2026-10-11 and 12: the 1 player arcade, hold E to loot again, credits and score as one, the title fitting any zoom, and fleeing pillagers turning on whoever shoots them.
+
+MEASURED. Check 23.65 passes, and fails on v23.64.
 ## v23.64 - THE WHAT IS NEW CARD NAMES THE TRIPWIRE MINE
 
 Co-op hunt while he was away. The card was stamped v23.48 and the stamp may not trail the build by more than 0.15. Its new second line names the Tripwire Mine of 2026-10-12, his feature 6: on the belt like a grenade, a wire across a doorway, and it blows when a machine or a pillager walks through.

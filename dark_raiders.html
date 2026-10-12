@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.64';
+var VER='23.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -1706,7 +1706,7 @@ var VER='23.64';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='23.64';
+var WHATSNEW_VER='23.65';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -1726,6 +1726,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'ARCADE AND RUNNERS. One player arcade, hold E to loot, credits as score, a title that always fits, and pillagers who run now fight back when shot.',
   'TRIPWIRE MINE. It goes on the belt like a grenade and strings a wire across a doorway that blows when a machine or a pillager walks through.',
   'ARCADE PARTY. Waves come to you, kills chain into streaks, and the best runs go on the board with your initials.',
   'ARCADE MODE. The title menu has a 2 player arcade demo: drop in, share a team score, start shielded, and take half damage.',
@@ -36252,7 +36253,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.64: The what is new card names the Tripwire Mine. Check 23.64 fails on v23.63',
+  now:'v23.65: The what is new card names the latest arcade work. Check 23.65 fails on v23.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
