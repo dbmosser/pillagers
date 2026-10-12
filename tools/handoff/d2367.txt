@@ -1,0 +1,5 @@
+## v23.67 - PRO SOUND MIX: BUSES, COMPRESSOR, LIMITER
+
+Co-op hunt while he was away. His order of 2026-10-12, his number 45: pro sound mix, improve all sound as much as possible, punchy arcade like CoD and Fortnite. Every sound went raw into one output at whatever level its own generator chose, so a grenade, a footstep and a pickup fought each other and a big fight turned to mush or clipped. Now each kind of sound rides its own bus (guns, impacts, machines, footsteps, the ambient bed, voices, the HUD and the stings), and everything in the world runs through one compressor and then a limiter: quiet sounds come up a little, a blast cannot clip, and the whole mix hits harder. Pickups and the clock warnings skip the compressor so they are never squashed under a fight. The volume rows and split speakers (player 1 left, player 2 right) are untouched. This is the base the next sound builds (ducking, walls, punchier guns, impacts and footsteps) sit on.
+
+MEASURED. Check 23.67 passes, and fails on v23.66.

@@ -1,0 +1,7 @@
+v23.67: pro sound mix: buses, compressor, limiter
+
+Every sound rides its own mix bus and the world runs through a compressor and a limiter, so the mix hits harder and never clips.
+
+Check 23.67. Fails on v23.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

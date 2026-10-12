@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.66';
+var VER='23.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3908,6 +3908,50 @@ function bus(){
   }
   return BUS;
 }
+// v23.67, HIS ORDER 2026-10-12 (his #45): "pro sound mix -- improve all sound as much as possible", punchy arcade like CoD and
+// Fortnite (his answer 25 b). THE MIX BUSES. Every sound went raw into BUS at whatever level its own generator chose, so a grenade,
+// a footstep and a pickup fought each other and a big fight turned to mush or clipped. Now each kind of sound rides its own bus
+// (guns, impacts, machines, foley, the bed, voices, the HUD and the stings), and everything in the world runs through one
+// compressor and then a limiter before BUS: quiet sounds come up, a blast cannot clip, and the mix hits harder. The HUD and the
+// stings skip the compressor, so a pickup is never squashed under a fight. BUS stays the master, so the volume rows and SPLIT
+// SPEAKERS (player 1 left, player 2 right) are untouched, and bus() itself makes the same nodes it always did. The buses are made
+// the first time a sound asks for one, once for each BUS. The compressor adds its own make up gain (about 7 dB at this setting,
+// the limiter about 2), so the trim after them brings a quiet sound back to about 4 dB over what it was.
+var SND=null;
+var SND_CAT={shot:'gun',reload:'gun',reloadin:'gun',dry:'gun',
+  boom:'imp',hit:'imp',clank:'imp',
+  servo:'mach',skitter:'mach',drone:'mach',hydraul:'mach',dish:'mach',stepHeavy:'mach',seen:'mach',alarm:'mach',
+  foot:'foley',step:'foley',
+  pick:'ui',pickRare:'ui',pickElite:'ui',pickGun:'ui',clockwarn:'ui',clocktick:'ui',
+  heart:'vox',flap:'amb'};
+var SND_CATS=['gun','imp','mach','foley','amb','vox','ui','sting','world'];
+function sndBuild(a,B){
+  var S={out:B,bus:{},world:null,comp:null,lim:null,trim:null}, i, c, gn;
+  try{
+    S.world=a.createGain(); S.world.gain.value=1.15;
+    if(a.createDynamicsCompressor){
+      S.comp=a.createDynamicsCompressor();
+      S.comp.threshold.value=-16; S.comp.knee.value=10; S.comp.ratio.value=3.5; S.comp.attack.value=0.004; S.comp.release.value=0.22;
+      S.lim=a.createDynamicsCompressor();
+      S.lim.threshold.value=-3; S.lim.knee.value=0; S.lim.ratio.value=20; S.lim.attack.value=0.001; S.lim.release.value=0.1;
+      S.trim=a.createGain(); S.trim.gain.value=0.5;
+      S.world.connect(S.comp); S.comp.connect(S.lim); S.lim.connect(S.trim); S.trim.connect(B);
+    } else S.world.connect(B);
+    for(i=0;i<SND_CATS.length;i++){ c=SND_CATS[i]; gn=a.createGain(); gn.gain.value=1; gn.connect((c==='ui'||c==='sting')?B:S.world); S.bus[c]=gn; }
+  }catch(e){ return null; }
+  return S;
+}
+function sndBus(cat){
+  var B=bus(), a=AC, S;
+  if(!B||!a) return null;
+  if(!SND||SND.out!==B){
+    S=(B.__snd&&B.__snd.out===B)?B.__snd:sndBuild(a,B);
+    if(!S) return B;
+    try{ B.__snd=S; }catch(e){}
+    SND=S;
+  }
+  return SND.bus[cat]||SND.bus.world||B;
+}
 // ---------------------------------------------------------------- the room
 // His top complaint about the world was that it feels SAMEY, and the answer to
 // that is not only more geometry, it is that the geometry should be audible. A
@@ -4452,7 +4496,7 @@ function sfx(type,wx,wy,wid){
 // is hunting before you can see it.
 function voxGrunt(hard){
   if(G&&G.sim) return;
-  var a=ac(); if(!a) return; var out=bus(); if(!out) return;
+  var a=ac(); if(!a) return; var out=sndBus('vox'); if(!out) return;
   var o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
   f.type='lowpass'; f.frequency.value=900;
   o.type='sawtooth';
@@ -4467,7 +4511,7 @@ function voxGrunt(hard){
 }
 function voxBreath(){
   if(G&&G.sim) return;
-  var a=ac(); if(!a) return; var out=bus(); if(!out) return;
+  var a=ac(); if(!a) return; var out=sndBus('vox'); if(!out) return;
   var n=a.createBuffer(1,Math.floor(a.sampleRate*0.18),a.sampleRate),d=n.getChannelData(0);
   for(var i=0;i<d.length;i++){ var env=Math.sin(Math.PI*i/d.length); d[i]=(Math.random()*2-1)*env*0.5; }
   var sb=a.createBufferSource(); sb.buffer=n;
@@ -4479,7 +4523,7 @@ function voxBreath(){
 var AMB=null;
 function ambience(){
   var a=ac(); if(!a||AMB) return AMB;
-  var out=bus(); if(!out) return null;
+  var out=sndBus('amb'); if(!out) return null;
   var g=a.createGain(); g.gain.value=0; g.connect(out);
   var lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=220; lp.Q.value=.7;
   lp.connect(g);
@@ -4698,7 +4742,7 @@ function blip(type,d,pan){
   // Every generator below connects to OUT instead of the destination, so adding
   // a pan node here places all of them at once. Callers that pass no pan keep
   // exactly the centred behaviour they had.
-  var OUT=bus()||a.destination;
+  var OUT=sndBus(SND_CAT[type]||'world')||bus()||a.destination;   // v23.67 (his #45): onto the bus for its kind of sound
   if(pan!==undefined&&PAN_OK){
     var pn=a.createStereoPanner();
     pn.pan.value=clamp(pan,-1,1);
@@ -36258,7 +36302,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.66: A fleeing pillager hit by your frag now turns and fights instead of running again. Check 23.66 fails on v23.65',
+  now:'v23.67: Every sound rides its own mix bus and the world runs through a compressor and a limiter, so the mix hits harder and never clips. Check 23.67 fails on v23.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
