@@ -1,0 +1,5 @@
+## v24.31 - ARMOUR IN DARK STEEL
+
+Co-op hunt while he was away. His order of 2026-10-12, make them all look better, gritty and grounded like ARC Raiders. Body armour was a pale ice blue, the lightest thing on a pillager, so heavy armour read as a pale barrel with a head on it. It is dark steel now, heavier and darker than the cloth, held on by olive straps with buckles, and armour 3 adds a steel helmet over the crown with chin straps (a hat that covers the crown is drawn instead). The three shapes that tell the tiers apart, a plate, then shoulder pieces, then a collar and a ridge, are the same.
+
+MEASURED. Check 24.31 passes, and fails on v24.30.

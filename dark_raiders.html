@@ -1915,7 +1915,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.30';
+var VER='24.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26075,7 +26075,11 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // This is how you decide whether to shoot the man in the road.
   if(st.bulk>0){
     var bk=st.bulk,bw2=13+bk*3.2,bx2=x+leanX-bw2/2;
-    var aHi='#a6bacb',aMid='#71879a',aLo='#3f505d';
+    // v23.xx (spr18), HIS ORDER (2026-10-12) "make them all look better", answer 20 "a" (gritty and grounded): ARMOUR IN DARK STEEL.
+    // The plate was a pale ice blue, the lightest thing on the body, so armour 3 read as a pale barrel with a head on it. It is
+    // dark steel now, heavier and darker than the cloth, with olive straps holding it on, and armour 3 wears a steel helmet shell
+    // over the crown (a hat still goes on over it). The three tier silhouettes (plate, pauldrons, collar and ridge) are unchanged.
+    var aHi='#75818c',aMid='#55606b',aLo='#3a434c';
     if(_BLD==='curved'){
       // v20.11, from the build design review (2026-10-08): the plate was a box that hid a Curved waist and chest. On Curved it is cut
       // to her outline, and the chest is moulded into the steel, riding the same spring as the cloth one (v20.02).
@@ -26095,6 +26099,10 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillStyle=aHi; wc.fillRect(bx2+1,ty-19.6,bw2-2,2);
     wc.fillStyle=aLo; wc.fillRect(bx2+1,ty-13.2,bw2-2,1.8);
     }
+    // v23.xx (spr18): the olive straps that hold the plate on, over each shoulder
+    wc.fillStyle=RIG_OLIVE[1]; wc.fillRect(x+leanX-4.6,ty-20.6,1.6,3.2); wc.fillRect(x+leanX+3.0,ty-20.6,1.6,3.2);
+    wc.fillStyle=RIG_OLIVE[2]; wc.fillRect(x+leanX-4.6,ty-20.6,1.6,0.7); wc.fillRect(x+leanX+3.0,ty-20.6,1.6,0.7);
+    wc.fillStyle=RIG_BUCKLE; wc.fillRect(x+leanX-4.4,ty-18.4,1.2,0.9); wc.fillRect(x+leanX+3.2,ty-18.4,1.2,0.9);
     if(bk>=2){
       wc.fillStyle=INK;
       rrF(bx2-3.6,ty-22.6,6,6.4,2.2); rrF(bx2+bw2-2.4,ty-22.6,6,6.4,2.2);
@@ -26227,6 +26235,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
         rrF(hx2-9.3,ty-35.6,2.6,11.5,1.3); rrF(hx2+6.7,ty-35.6,2.6,11.5,1.3);
       }
     }
+  }
+  // v23.xx (spr18): armour 3 wears a dark steel helmet shell over the crown, with a rim over the brow and olive chin straps. A
+  // hat that covers the crown draws instead of it; a suit keeps its own head.
+  if((st.bulk||0)>=3&&!OUTF&&(HAT==='none'||HAT==='phones'||HAT==='mask')){
+    wc.fillStyle=INK; rrF(hx2-8.7,ty-40.6,17.4,7.6,4);
+    wc.fillStyle='#55606b'; rrF(hx2-8.1,ty-40.0,16.2,6.5,3.4);
+    wc.fillStyle='#75818c'; rrF(hx2-6.8,ty-39.6,8.6,1.6,0.8);
+    wc.fillStyle='#3a434c'; wc.fillRect(hx2-8.1,ty-34.7,16.2,1.2);
+    wc.fillStyle=RIG_OLIVE[1]; wc.fillRect(hx2-8.5,ty-33.6,1.3,4.4); wc.fillRect(hx2+7.2,ty-33.6,1.3,4.4);
   }
   // v10.94, HIS NOTE: THE FACE MARKS GO ON FIRST. They used to be painted after
   // the eyes, so war paint cut both eyeballs in half and a shiner washed one of
@@ -38240,7 +38257,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.30: The RUN OVER score counts up from  to the final score. Check 24.30 fails on v24.29',
+  now:'v24.31: Body armour is dark steel with olive straps, and the heaviest armour adds a steel helmet. Check 24.31 fails on v24.30',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

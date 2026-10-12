@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.31 - ARMOUR IN DARK STEEL
+
+Co-op hunt while he was away. His order of 2026-10-12, make them all look better, gritty and grounded like ARC Raiders. Body armour was a pale ice blue, the lightest thing on a pillager, so heavy armour read as a pale barrel with a head on it. It is dark steel now, heavier and darker than the cloth, held on by olive straps with buckles, and armour 3 adds a steel helmet over the crown with chin straps (a hat that covers the crown is drawn instead). The three shapes that tell the tiers apart, a plate, then shoulder pieces, then a collar and a ridge, are the same.
+
+MEASURED. Check 24.31 passes, and fails on v24.30.
 ## v24.30 - RUN OVER: THE SCORE COUNTS UP
 
 Co-op hunt while he was away. His answer 20 (2026-10-12): RUN OVER with a score count-up. The RUN OVER card showed the final score at once. Now the score rolls up from $0 to the final figure over a second and a half, quick at first and settling at the end, the way an arcade cabinet lands it. Typing your initials does not start the count again.

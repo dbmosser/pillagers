@@ -1,0 +1,7 @@
+v24.31: armour in dark steel
+
+Body armour is dark steel with olive straps, and the heaviest armour adds a steel helmet.
+
+Check 24.31. Fails on v24.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
