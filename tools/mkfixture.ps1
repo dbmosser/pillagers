@@ -1162,6 +1162,9 @@ try{ var _osp=saveProfile; saveProfile=function(){ var t0=performance.now(); var
 // in exports/ as real-looking runs with 0 duration and 0 movement, which is
 // exactly the artefact class the tick rules warn about. Killed at source.
 window.__isFixture=1;
+// v23.xx (present: his answer 18): every live raid opens on 3, 2, 1, GO! with the world held (GO_SEC). The checks start their raids
+// at once, as before; the countdown check sets GO_SEC back to 3 for itself. On a build with no count this only makes a global.
+try{ GO_SEC=0; }catch(e){}
 // THE FIXTURE IS SILENT. Verification drives real frames, and real frames fire real
 // gunshots, alarms and machine voices through WebAudio. On 2026-08-24 a 40 raid batch
 // played all of it out loud on Daniel's PC while he was trying to work. He should never
@@ -8449,7 +8452,7 @@ window.__REGRESS=[
        role0=ARCADE.role; ownRole=true; ARCADE.role='p2'; ARCADE.wantIn=0; ARCADE.mine=0;
        arcadeScTake({t:'arcsc',pair:'tp',run:'tstrun',s:2500,k:2,x:0});
        arcadeAttShow(); sp=q('arcstrip'); ap=q('attpress');
-       if(!ap||ap.textContent!=='PLAYER 2: PRESS'+' A') bad.push('the player 2 attract reads '+(ap?ap.textContent:'nothing'));
+       if(!ap||ap.textContent.indexOf('PLAYER 2: PRESS'+' A')!==0) bad.push('the player 2 attract reads '+(ap?ap.textContent:'nothing'));   /* retargeted (present: his answer 17): PRESS A TO JOIN as well */
        if(!on(sp)||sp.textContent.indexOf('JOIN YOUR '+'TEAM')<0||sp.textContent.indexOf('2,500')<0) bad.push('player 2 out of a live run has no JOIN YOUR TEAM strip ('+(sp?sp.textContent:'')+')');
        ARCADE.wantIn=1; arcadeAttShow();
        if(!on(sp)||sp.textContent.indexOf('LINKING')<0) bad.push('player 2 waiting to get in does not read LINKING ('+(sp?sp.textContent:'')+')');
@@ -9305,7 +9308,7 @@ window.__REGRESS=[
        else {
          if(P.pname!=='PLAYER 2') bad.push('player 2 is named '+P.pname);
          ap=ATT.el&&ATT.el.querySelector('.attpress');
-         if(!ATT.on||!ap||ap.textContent!=='PLAYER 2: PRESS'+' A') bad.push('the player 2 attract reads '+(ap&&ap.textContent));
+         if(!ATT.on||!ap||ap.textContent.indexOf('PLAYER 2: PRESS'+' A')!==0) bad.push('the player 2 attract reads '+(ap&&ap.textContent));   /* retargeted (present: his answer 17): PRESS A TO JOIN as well */
          kd('KeyJ','j');
          if(__state()) bad.push('a key in the player 2 window started a raid there');
          if(has('arcon')) bad.push('player 2 sent arcon');
@@ -35400,10 +35403,11 @@ window.__REGRESS=[
        blip=function(k){ heard.push(String(k)); };
        // CONTROL: on whole seconds the figure is the same on either build, 0:10, 0:45 in its plain colour and 0:44 in red, so the
        // trace reads the clock and its colour.
-       var w10=clock(10), w45=clock(45), w44=clock(44);
+       var RT=(typeof CLOCK_RED==='number')?CLOCK_RED:44, fmtT=function(s){ return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60); };   // retargeted (present: his answer 19): red from the final minute where the build has CLOCK_RED
+       var w10=clock(10), w45=clock(RT+1), w44=clock(RT);
        if(!w10||w10.t!=='0:10') return 'SKIP: with exactly 10 seconds left the drawn HUD showed '+show(w10)+', not 0:10, so the clock cannot be read here';
-       if(!w45||w45.t!=='0:45'||w45.c===RED) return 'SKIP: with exactly 45 seconds left the drawn HUD showed '+show(w45)+', not 0:45 in its plain colour, so the colour cannot be read here';
-       if(!w44||w44.t!=='0:44'||w44.c!==RED) return 'SKIP: with exactly 44 seconds left the drawn HUD showed '+show(w44)+', not 0:44 in red, so the colour cannot be read here';
+       if(!w45||w45.t!==fmtT(RT+1)||w45.c===RED) return 'SKIP: with exactly '+(RT+1)+' seconds left the drawn HUD showed '+show(w45)+', not '+fmtT(RT+1)+' in its plain colour, so the colour cannot be read here';
+       if(!w44||w44.t!==fmtT(RT)||w44.c!==RED) return 'SKIP: with exactly '+RT+' seconds left the drawn HUD showed '+show(w44)+', not '+fmtT(RT)+' in red, so the colour cannot be read here';
        // THE FINDING: each warning mark crossed in one frame. The figure must turn to the mark on the frame its warning fires.
        var M=[[60.02,59.98,'1:01','1:00','1 minute left.','clockwarn','one minute'],
               [30.02,29.98,'0:31','0:30','THIRTY SECONDS.','clockwarn','thirty seconds'],
@@ -35413,7 +35417,7 @@ window.__REGRESS=[
          var m=M[i];
          cross(m[0],m[1]);
          // CONTROL: the v15.24 warning fires on this frame on either build, its line and its siren or tick, so the moment is unchanged.
-         if(heard.indexOf(m[5])<0||(m[4]&&!said(m[4]))) return skip('the clock crossing '+m[6]+' from '+m[0]+' to '+m[1]+' did not '+(m[4]?('say '+m[4]+' and '):'')+'play '+m[5]+' here ('+(heard.join(',')||'no sound')+')');
+         if((heard.indexOf(m[5])<0&&!(m[6]==='one minute'&&heard.indexOf('lastmin')>=0))||(m[4]&&!said(m[4]))) return skip('the clock crossing '+m[6]+' from '+m[0]+' to '+m[1]+' did not '+(m[4]?('say '+m[4]+' and '):'')+'play '+m[5]+' here ('+(heard.join(',')||'no sound')+')');
          var b=clock(m[0]), a=clock(m[1]);
          if(!b||!a) return skip('no clock was drawn with '+m[0]+' or '+m[1]+' seconds left here');
          if(b.t!==m[2]||a.t!==m[3]) bad.push('on the frame that crosses '+m[6]+', which '+(m[4]?('says '+m[4]+' and '):'')+'plays '+m[5]+', the drawn clock went from '+b.t+' to '+a.t+' where it should turn from '+m[2]+' to '+m[3]);
@@ -35423,9 +35427,9 @@ window.__REGRESS=[
        if(!l02) return skip('no clock was drawn with 0.02 seconds left here');
        if(l02.t!=='0:01') bad.push('with 0.02 seconds left and the site not yet burning, the drawn clock read '+l02.t+' rather than 0:01');
        // THE COLOUR: at 44.5 seconds the figure is 0:45, and red waits for 0:44 as it always has.
-       var h45=clock(44.5);
+       var h45=clock(RT+0.5);
        if(!h45) return skip('no clock was drawn with 44.5 seconds left here');
-       if(h45.t!=='0:45'||h45.c===RED) bad.push('with 44.5 seconds left the drawn clock read '+show(h45)+' rather than 0:45 in its plain colour');
+       if(h45.t!==fmtT(RT+1)||h45.c===RED) bad.push('with '+(RT+0.5)+' seconds left the drawn clock read '+show(h45)+' rather than '+fmtT(RT+1)+' in its plain colour');
        // CONTROL: the clock out, as the frame that starts the burn leaves it, reads 0:00 on either build.
        var z0=clock(0);
        if(!z0||z0.t!=='0:00') return skip('with the clock at exactly 0 the drawn HUD showed '+show(z0)+', not 0:00');
