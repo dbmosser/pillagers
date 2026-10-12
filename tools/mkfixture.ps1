@@ -6670,7 +6670,10 @@ window.__REGRESS=[
        __frame(0);
        for(i=0;i<hk.length;i++){ d=(GFX.n[hk[i]]||0)-(n0[hk[i]]||0); if(d!==1) bad.push('render hook '+hk[i]+' ran '+d+' times in one frame'); }
        // 2. the bypass leaves the world frame pixel for pixel (only judged when two plain frames agree)
-       __frame(0); A=hash(); GFX.bypass=1; __frame(0); B=hash(); GFX.bypass=0; __frame(0); C=hash();
+       // gfx7: LIGHTING HIGH (the default) draws the coloured light map, so the bypass, which is the CLASSIC rollback, is judged
+       // against LIGHTING CLASSIC: the two must give the same frame. On builds before gfx7 the setting is read by nothing.
+       var gl74=CFG.gfxLight; CFG.gfxLight=0;
+       try{ __frame(0); A=hash(); GFX.bypass=1; __frame(0); B=hash(); GFX.bypass=0; __frame(0); C=hash(); } finally { CFG.gfxLight=gl74; }
        if(A===C&&A!==B) bad.push('the frame drawn with GFX.bypass differs from the one without');
        // 3. the sim-side hooks are wired where the design puts them
        nm='gfx'+'Shot('; if(String(fireWeapon).indexOf(nm)<0) bad.push('fireWeapon calls no gfxShot');
