@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.34 - THE WHAT IS NEW CARD NAMES THE HIT MARKERS
+
+Co-op hunt while he was away. The card was stamped v24.18 and the stamp may not trail the build by more than 0.15. The card was stamped v24.18 and every ship stops when it falls 0.16 behind; about 20 queued builds are waiting. Its new line names the hit marker on the inner crosshair (his answer 30), the darker nights, SELL ALL and the counting RUN OVER score.
+
+MEASURED. Check 24.34 passes, and fails on v24.33.
 ## v24.33 - THE SURVIVOR
 
 Co-op hunt while he was away. His order of 2026-10-12, make them all look better. The Survivor was a pillager in green with a faint green glow, and without the glow (once helped, or at night) he looked like any hostile pillager, which is how survivors get shot. Now he wears his own washed out civilian jacket, torn at the hem and patched, with a bandage round his head, and carries no pack and no gun. When you come near while he still needs help he raises an open hand, and once you have helped him he stands up. His clothes are his own and are never sold.

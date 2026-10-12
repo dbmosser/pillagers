@@ -1,3 +1,13 @@
 == 1080 : window 1956x1185, viewport 1920x1080
   01-title-mode-menu                     staged       4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
   57-title-2p-coop-picked                staged       8.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 1080 : window 1956x1185, viewport 1920x1080
+  04-stash-terminal                      staged       7.1s  total  28: clip 0 off 0 small 28 contrast 0 font 0 overlap 0 focus 0
+  08-shop                                staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal
+  12-mainframe-contracts                 staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  17-fashion-mirror                      staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | appearmodal
+  18-settings-hub                        staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  25-raid-pause-box                      staged       8.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 1080 : window 1956x1185, viewport 1920x1080
+  21-raid-hud-calm                       staged      14.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  33-raid-fight-alerts                   staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 49
