@@ -30612,7 +30612,10 @@ window.__REGRESS=[
        // hidden until the finally), so the five rows, the arrows and the pad steps are tested as before; the arcade5 check covers it.
        var arcRow=g('modearcade'), arcDisp=arcRow?arcRow.style.display:'';
        if(arcRow){ if(txt(arcRow)!=='2 PLAYER ARCADE DEMO'||arcRow.getAttribute('data-mode')!=='arcade') bad.push('the arcade row reads '+txt(arcRow)); arcRow.style.display='none'; }
-       var rows=[].filter.call(mm.querySelectorAll('button[data-mode]'),function(b){ return b.id!=='modearcade'; }), want=['1 PLAYER','2 PLAYER CO-OP (SAME MACHINE)','2 PLAYER CO-OP (SERVER)','2 PLAYER PVP (SAME MACHINE)','PVP (SERVER)'];
+       // arcade30 (his order of 2026-10-11 evening): the 1 PLAYER ARCADE DEMO row is set aside the same way; the arcade30 check covers it.
+       var arc1Row=g('modearcade1'), arc1Disp=arc1Row?arc1Row.style.display:'';
+       if(arc1Row){ if(txt(arc1Row)!=='1 PLAYER ARCADE DEMO'||arc1Row.getAttribute('data-mode')!=='arcade1') bad.push('the 1 player arcade row reads '+txt(arc1Row)); arc1Row.style.display='none'; }
+       var rows=[].filter.call(mm.querySelectorAll('button[data-mode]'),function(b){ return b.id!=='modearcade'&&b.id!=='modearcade1'; }), want=['1 PLAYER','2 PLAYER CO-OP (SAME MACHINE)','2 PLAYER CO-OP (SERVER)','2 PLAYER PVP (SAME MACHINE)','PVP (SERVER)'];
        if(rows.length!==5) bad.push('the mode menu has '+rows.length+' rows, not five');
        for(i=0;i<Math.min(rows.length,5);i++) if(txt(rows[i])!==want[i]) bad.push('row '+(i+1)+' reads '+txt(rows[i])+', not '+want[i]);
        if(rows.length===5){
@@ -30822,6 +30825,7 @@ window.__REGRESS=[
        try{ if(keepP&&HB&&HB.player){ HB.player.x=keepP.x; HB.player.y=keepP.y; HB.player.face=keepP.face; HB.eLock=true; } }catch(_hp){}
        try{ if(wasOn) t.classList.add('on'); else t.classList.remove('on'); }catch(_t){}
        try{ if(arcRow) arcRow.style.display=arcDisp; }catch(_arr){}
+       try{ if(arc1Row) arc1Row.style.display=arc1Disp; }catch(_ar1){}
        try{ say2=_s2; }catch(_s2e){}
        try{ __topClear(); }catch(_c){}
      }
@@ -51909,7 +51913,7 @@ window.__REGRESS=[
        //        the active slot pointer and RELOADS THE TAB.
        // v15.76: the mode rows open the player 2 window (window.open) and RETRY re-runs the pick, so a corpus must not press them;
        // in the Browser pane the popup opens in the same tab and ends the run. Check 15.76 covers them with window.open stubbed.
-       var SKIP={titlestart:1,titlefs:1,delgo:1,newgame:1,modecoop:1,modepvp:1,modecoopsrv:1,modepvpsrv:1,moderetry:1,modearcade:1};   // arcade5: the arcade row opens the player 2 window too
+       var SKIP={titlestart:1,titlefs:1,delgo:1,newgame:1,modecoop:1,modepvp:1,modecoopsrv:1,modepvpsrv:1,moderetry:1,modearcade:1,modearcade1:1};   // arcade5: the arcade row opens the player 2 window too; arcade30: the 1 player arcade row enters the arcade
        var btns=ti.querySelectorAll('button'), pressed=0, found={};
        for(var i=0;i<btns.length;i++){
          var b=btns[i], id=b.id||'';
