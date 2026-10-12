@@ -7516,7 +7516,7 @@ window.__REGRESS=[
      function tick(role,join){
        var t, m=0;
        ARCADE.role=role; if(join) g.netWasJoin=1; else delete g.netWasJoin;
-       for(t=0;t<12&&!m;t++){ ARCADE.waveT=999; arcadeWaveTick(0.05); m=waves(); }
+       for(t=0;t<12&&!m;t++){ ARCADE.waveT=999; arcadeWaveTick(0.05); if(g.wtell){ g.wtell.t=0; arcadeWaveTick(0.05); } m=waves(); }
        return m;
      }
      try{
@@ -8661,7 +8661,7 @@ window.__REGRESS=[
        if(ARCADE.waveT!==0) bad.push('arcadeDeploy does not start the wave clock at 0 ('+ARCADE.waveT+')');
        ARCADE.mine=8000; ARCADE.mate=0; ARCADE.waveT=999; ARCADE.holdT=0;
        nearCut(g); n0=g.ents.length;
-       arcadeWaveTick(0.05);
+       arcadeWaveTick(0.05); if(g.wtell){ g.wtell.t=0; arcadeWaveTick(0.05); }   // wavetell (2026-10-12): a flare first on a build that has it, burned down here
        if(g.ents.length-n0<2) bad.push('a tier 2 wave added '+(g.ents.length-n0)+' bodies, not at least 2');
        for(i=n0;i<g.ents.length;i++){
          e=g.ents[i];
@@ -8681,7 +8681,7 @@ window.__REGRESS=[
        // the main loop runs it
        ARCADE.waveT=999; k=waves(g); t0=g.t;
        for(f=1;f<=6;f++) __loop(performance.now()+f*20);
-       if(__state()===g&&!g.over&&g.t>t0&&waves(g)<=k) bad.push('the main loop never ran the wave director ('+k+' wave bodies before and after)');
+       if(__state()===g&&!g.over&&g.t>t0&&waves(g)<=k&&!g.wtell) bad.push('the main loop never ran the wave director ('+k+' wave bodies before and after)');
        say=rs; own=false;
        try{ if(ARCADE.on) arcadeLeave(); }catch(_l1){}
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e1){}
@@ -8893,14 +8893,14 @@ window.__REGRESS=[
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); p=g.player;
        if(typeof arcadeShieldOff==='function') arcadeShieldOff();
-       p.iv=0; p.armor=0; p.downed=false; p.hp=p.maxhp||100; h0=p.hp; want=20*CFG.eDmg*0.5;
+       p.iv=0; p.armor=0; p.downed=false; p.hp=p.maxhp||100; h0=p.hp; want=20*CFG.eDmg*((typeof ARCADE_DMG==='number')?ARCADE_DMG:0.5);   // unify1 (2026-10-12): the DEMO hit dial, half before it, 1 after
        damagePlayer(20,'sentry','T');
        got=h0-p.hp;
        if(Math.abs(got-want)>1e-6) bad.push('an arcade hit of 20 took '+got+', not '+want+' (20 x eDmg '+CFG.eDmg+' x 0.5)');
        p.iv=0; p.downed=false; p.hp=p.maxhp||100;
        m=(p.wep&&p.wep.mag)|0;
        if(!(m>0)) return 'SKIP: the arcade gun in hand has no magazine';
-       half=Math.ceil(m/2);
+       var perks=!(typeof ARCADE_KILLPERKS==='number'&&!ARCADE_KILLPERKS); half=perks?Math.ceil(m/2):0;   // unify2 (2026-10-12): kill perks off on a build that turned them off
        ARCADE.kills=0; nh=heals();
        for(i=1;i<=6;i++){
          r0=+p.reserve||0;
@@ -8909,11 +8909,11 @@ window.__REGRESS=[
          if(g.ents.indexOf(e)>=0){ bad.push('crawler '+i+' did not die'); break; }
          if((+p.reserve||0)!==r0+half) bad.push('kill '+i+' moved reserve '+r0+' to '+p.reserve+', not +'+half);
          if(i===2&&heals()!==nh) bad.push('two kills changed the heals from '+nh+' to '+heals());
-         if(i===3&&heals()!==Math.min(5,nh+1)) bad.push('the third kill left '+heals()+' heals, not '+Math.min(5,nh+1));
+         if(i===3&&heals()!==Math.min(5,nh+(perks?1:0))) bad.push('the third kill left '+heals()+' heals, not '+Math.min(5,nh+(perks?1:0)));
        }
        if(i>6){
          if(heals()>5) bad.push('kill bandages went past 5 heals ('+heals()+')');
-         if(heals()!==Math.min(5,nh+2)) bad.push('after six kills '+heals()+' heals, not '+Math.min(5,nh+2));
+         if(heals()!==Math.min(5,nh+(perks?2:0))) bad.push('after six kills '+heals()+' heals, not '+Math.min(5,nh+(perks?2:0)));
        }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
