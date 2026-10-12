@@ -1,0 +1,5 @@
+## v24.29 - DARKER, MOODIER NIGHTS
+
+Co-op hunt while he was away. His answer 39 (2026-10-12): darker, moodier nights. The dark goes where you are not and the light stays where you are: at night the whole frame is about 11 percent darker and the dark streets away from you and the lamps more, the lamps cut through the dark harder so they read as pools of light, and your own light opens a little wider so the ground at your feet is as readable as before. The brightness setting still lifts it for anyone who wants it lighter. Day is unchanged.
+
+MEASURED. Check 24.29 passes, and fails on v24.28.

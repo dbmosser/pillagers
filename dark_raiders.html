@@ -1915,7 +1915,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.28';
+var VER='24.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25795,7 +25795,13 @@ function cosWorn(kind){
 // How heavy the darkness sheet is, day and night, before the brightness dial
 // divides it. Named because night being unreadable is a complaint he has made
 // twice and both previous attempts adjusted the wrong number.
-var DAY_SHEET=0.13, NIGHT_SHEET=0.30;
+// v23.xx, HIS ANSWERS (2026-10-12), answer 39: "darker moodier nights". He asks for it now, after the earlier notes (v4.35, v5.54)
+// that night was too dark to play: so the dark goes where he is not looking and the light stays where he is. The night sheet goes
+// from 0.30 to 0.55 (the brightness dial divides it, and at its 1.7 default the sheet goes from .18 to .32), so the frame falls about
+// 11% darker and the streets away from him and the lamps more; the lamps cut through the dark harder at night (0.95 of their
+// strength, was 0.85), so they read as pools of light in a darker city; and his own lamp is a little stronger at night (0.62, was 0.5), so
+// the ground at his feet stays readable. NIGHT_MOOD 0 is the old night. The brightness dial still lifts it for anyone who wants it lighter. Day is untouched.
+var DAY_SHEET=0.13, NIGHT_SHEET=0.55, NIGHT_MOOD=1;
 var DRAW_LIFT_MAX=30;
 function drawLift(v){ return (isFinite(v)&&v>0)?Math.min(v,DRAW_LIFT_MAX):0; }
 // v20.01, HIS ORDER (2026-10-08): "build should change your charcter -- curved should be clearly female with larger breasts/buttocks".
@@ -29069,14 +29075,14 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
     fk*=wx().lights*(isDay()?tod().lights:1);
     if(fk<=0.02) continue;
     var gr=lx2.createRadialGradient(lsx,lsy,0,lsx,lsy,L.r*fk);
-    gr.addColorStop(0,'rgba(0,0,0,'+(.85*L.i)+')');
+    gr.addColorStop(0,'rgba(0,0,0,'+((NIGHT_MOOD&&!isDay())?Math.min(1,.95*L.i):(.85*L.i))+')');   // v23.xx (his answer 39): lamps cut harder at night
     gr.addColorStop(1,'rgba(0,0,0,0)');
     lx2.fillStyle=gr;
     lx2.beginPath(); lx2.arc(lsx,lsy,L.r*fk,0,6.2832); lx2.fill();
   }
   var plr=100*Math.min(1.5,BR);
   var pgr=lx2.createRadialGradient(p.x,p.y,0,p.x,p.y,plr);
-  pgr.addColorStop(0,'rgba(0,0,0,'+clamp(.5*BR,.3,.9)+')'); pgr.addColorStop(1,'rgba(0,0,0,0)');
+  pgr.addColorStop(0,'rgba(0,0,0,'+clamp(((NIGHT_MOOD&&!isDay())?.62:.5)*BR,.3,.9)+')'); pgr.addColorStop(1,'rgba(0,0,0,0)');   // v23.xx (his answer 39): his own lamp keeps his feet readable
   lx2.fillStyle=pgr;
   lx2.beginPath(); lx2.arc(p.x,p.y,plr,0,6.2832); lx2.fill();
   if(CFG.sharedSight!==0&&NET.on){ try{ netMateLamp(lx2,plr); }catch(_ml){} }   // v18.07: shared sight, his ground is lit for you
@@ -38234,7 +38240,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.28: Right-click a stack in the stash and choose Sell all to sell the whole stack at once. Check 24.28 fails on v24.27',
+  now:'v24.29: Nights are darker away from you and the lamps, with brighter pools of lamplight; your own light is unchanged. Check 24.29 fails on v24.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

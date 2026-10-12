@@ -1,0 +1,7 @@
+v24.29: darker, moodier nights
+
+Nights are darker away from you and the lamps, with brighter pools of lamplight; your own light is unchanged.
+
+Check 24.29. Fails on v24.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

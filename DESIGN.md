@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.29 - DARKER, MOODIER NIGHTS
+
+Co-op hunt while he was away. His answer 39 (2026-10-12): darker, moodier nights. The dark goes where you are not and the light stays where you are: at night the whole frame is about 11 percent darker and the dark streets away from you and the lamps more, the lamps cut through the dark harder so they read as pools of light, and your own light opens a little wider so the ground at your feet is as readable as before. The brightness setting still lifts it for anyone who wants it lighter. Day is unchanged.
+
+MEASURED. Check 24.29 passes, and fails on v24.28.
 ## v24.28 - SELL ALL FROM THE ITEM MENU
 
 Co-op hunt while he was away. His answer 24 (2026-10-12): selling is right-click and choose SELL. Right-clicking an item on the Stash screen (Y on a controller) already offered Sell one; a stack now also offers Sell all with the total price on the row, so a pile of salvage goes in one choice instead of one click per copy. It pays the same as selling them one at a time, in credits and in XP. Copies packed in your backpack stay packed.

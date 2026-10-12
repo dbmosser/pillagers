@@ -8,3 +8,7 @@
   33-raid-fight-alerts                   staged       9.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 49
   01-title-mode-menu                     staged       4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
   04-stash-terminal                      staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 1080 : window 1952x1183, viewport 1920x1080
+  61-raid-search-prompt                  staged       9.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  61-raid-search-prompt                  staged       9.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
