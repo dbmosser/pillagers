@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.28 - SELL ALL FROM THE ITEM MENU
+
+Co-op hunt while he was away. His answer 24 (2026-10-12): selling is right-click and choose SELL. Right-clicking an item on the Stash screen (Y on a controller) already offered Sell one; a stack now also offers Sell all with the total price on the row, so a pile of salvage goes in one choice instead of one click per copy. It pays the same as selling them one at a time, in credits and in XP. Copies packed in your backpack stay packed.
+
+MEASURED. Check 24.28 passes, and fails on v24.27.
 ## v24.27 - KEYS ARE KEYCAPS
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus and text still look bad, make it look like a triple-A game. UI redesign build ui7, keycaps. A prompt in the world printed its key as text in brackets ([E] SEARCH) with the brackets coloured amber. The key is now drawn as a keycap, an amber key with a dark letter, and on a controller the button in its own colour (A green, B red, X blue, Y yellow), the way the big games show a key. The keys in the title key row and the stash key bar are keycaps too. The line is still drawn whole underneath, so his own wording of a prompt and the word editor work as before.

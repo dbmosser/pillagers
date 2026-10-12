@@ -1,0 +1,7 @@
+v24.28: sell all from the item menu
+
+Right-click a stack in the stash and choose Sell all to sell the whole stack at once.
+
+Check 24.28. Fails on v24.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
