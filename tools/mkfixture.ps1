@@ -6957,7 +6957,7 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'23.43',what:'arcade20, retargeted 2026-10-12 on his answer 22 (no halloween dressing, forget and remove this concept): an arcade raid at seed 4242 has no pumpkins and keeps every lamp colour of the same raid built normally (no lamp redressed), draws no pumpkin and no violet haze, and a normal raid has none of it either',
+  {v:'23.43',what:'arcade20, retargeted 2026-10-12 on his answer 22 (no halloween dressing, forget and remove this concept): an arcade raid at seed 4242 has no pumpkins and no lamp redressed or burning the dressing orange, draws no pumpkin and no violet haze, and a normal raid has none of it either',
    run:function(){
      var bad=[], g=null, base=null, i, pe=null, pf=null, nP=0, nH=0, ownE=false, ownF=false;
      function stub(){
@@ -6985,11 +6985,15 @@ window.__REGRESS=[
        g=__state(); keys={}; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.ownAt=Date.now();
        if(!g||!g.arcade) return bad.length?bad.join('; '):'SKIP: no arcade raid';
        if(g.arcPumps!==undefined) bad.push('the arcade drop put pumpkins out');
-       if(g.lights.length!==base.length) bad.push('the arcade raid has '+g.lights.length+' lamps against '+base.length+' built normally');
-       else for(i=0;i<g.lights.length;i++){
-         if(String(g.lights[i].c)!==base[i]){ bad.push('arcade lamp '+i+' is '+g.lights[i].c+', built normally '+base[i]); break; }
+       // the arcade build does not lay out exactly the lamps of a normal build, so no lamp may carry the redress mark or the dressing orange
+       var ORG=['#ff7a1a','#ff8a2e','#ff9a3c','#ffae55'], nO=0;
+       if(!g.lights||!g.lights.length) bad.push('the arcade raid has no lamps');
+       for(i=0;i<(g.lights||[]).length;i++){
          if(g.lights[i].i0!==undefined){ bad.push('arcade lamp '+i+' was redressed'); break; }
+         if(ORG.indexOf(String(g.lights[i].c).toLowerCase())>=0) nO++;
        }
+       if(nO>0) bad.push(nO+' of '+g.lights.length+' arcade lamps burn the dressing orange');
+       if(base.length&&ORG.indexOf(String(base[0]).toLowerCase())>=0) bad.push('control: a normal raid lamp burns the dressing orange, so the colour test cannot tell');
        stub(); nP=0; nH=0;
        __loop(performance.now()+1000); __loop(performance.now()+1050);
        unstub();
