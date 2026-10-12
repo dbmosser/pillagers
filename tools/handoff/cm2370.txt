@@ -1,0 +1,7 @@
+v23.70: the what is new card names the tripwire mine
+
+The what is new card names the Tripwire Mine.
+
+Check 23.70. Fails on v23.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

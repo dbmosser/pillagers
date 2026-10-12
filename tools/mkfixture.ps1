@@ -5840,6 +5840,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.70',what:'the what is new card is stamped within 0.15 of the build and leads with the tripwire mine news, shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>23.70+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('TRIPWI'+'RE MINE')!==0) bad.push('the card does not lead with the tripwire mine news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'23.69',what:'his #45, ducking: a blast 100 away pulls the bed to 0.35 or less, the machines and the footsteps down, never the HUD; the bed holds, then comes back up through the frame tick; a blast 800 away ducks nothing; a hit on you pulls the bed down',
    run:function(){
      if(typeof _realBlip!=='function'||typeof AC==='undefined'||typeof BUS==='undefined'||typeof REV==='undefined'||typeof AMB==='undefined'||typeof sndBus!=='function') return 'SKIP: this fixture has no real blip or sound buses to stand in for';

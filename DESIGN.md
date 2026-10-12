@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.70 - THE WHAT IS NEW CARD NAMES THE TRIPWIRE MINE
+
+Co-op hunt while he was away. The card was stamped v23.65 and the stamp may not trail the build by more than 0.15. Its new second line names the Tripwire Mine of 2026-10-12, his feature 6: on the belt like a grenade, a wire across a doorway, and it blows when a machine or a pillager walks through.
+
+MEASURED. Check 23.70 passes, and fails on v23.69.
 ## v23.69 - SOUND DUCKING: BLASTS HIT HARDER
 
 Co-op hunt while he was away. His number 45, punchy arcade sound. A grenade going off beside you landed on top of the ambient bed, the machine voices and your own footsteps at full level, so the one sound that mattered was buried in the rest. Now a blast within 700 pulls the bed, the machines and the footsteps down for half a second and lets them come back up over about a second, the way CoD and Fortnite make an explosion hit. A hit on you pulls the bed down a little. Pickups, the clock warnings and the stings are never ducked. Volume settings and split speakers are untouched.
