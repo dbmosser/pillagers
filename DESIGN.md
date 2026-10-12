@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.18 - THE WHAT IS NEW CARD NAMES THE NEW MENUS
+
+Co-op hunt while he was away. The card was stamped v24.02 and the stamp may not trail the build by more than 0.15. Its new second line names the first UI redesign builds of 2026-10-12 (his #50): one set of menu parts across every window.
+
+MEASURED. Check 24.18 passes, and fails on v24.17.
 ## v24.17 - CASINGS PILE UP
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 7, shot detail). Spent casings were redrawn one by one every frame, all of them, even off the screen, and only the last 300 were kept, so a long fight lost its oldest brass. A casing that lands is now pressed into the floor itself at the same colour and angle, so every one of them stays for the whole raid and they cost nothing to draw. Only brass still in the air is drawn each frame, and only on the screen. Nothing about play changes.

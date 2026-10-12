@@ -1,0 +1,7 @@
+v24.18: the what is new card names the new menus
+
+The what is new card names the new menu parts.
+
+Check 24.18. Fails on v24.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
