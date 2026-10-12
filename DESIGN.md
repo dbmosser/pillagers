@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.08 - A PLATE CARRIER, NOT STRIPES
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters, make them all look better, gritty and grounded like ARC Raiders. Every body wore its rig as two dark bands across the coat with a light band over the shoulders, so every coat read as a striped shirt. Now the coat is cloth lit from the top left, the light every sprite shares: the shoulders and the left side catch it and the right side is in shade, the trousers and sleeves too, and each boot has a lit toe. Over the coat sits a real plate carrier: a chest plate in a darker cut of the coat, two shoulder straps, three olive magazine pouches and a belt with a buckle. Curved wears it cut to her outline, the plate moulded over her chest with her pouches on the hips, and her jiggle is kept. Suits and the number 23 jersey keep their own paint.
+
+MEASURED. Check 24.08 passes, and fails on v24.07.
 ## v24.07 - LAMPS THROW COLOURED LIGHT
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it, gritty and grounded like ARC Raiders. A lamp used to cut a grey hole in the darkness, and its colour showed only as two faint flat discs. Now every lamp lights the ground in its own colour: sodium posts throw amber, the FOUNDRY lamps throw cold blue, and each lamp is one smooth pool instead of two flat rings. Ground away from the lamps is exactly as dark as before, so night is no brighter and nothing about stealth or sight changes. Settings, LIGHTING: HIGH and STANDARD draw the coloured light, CLASSIC draws the old darkness exactly as it was.

@@ -1,0 +1,7 @@
+v24.08: a plate carrier, not stripes
+
+Every pillager, hire, teammate and you now wear a plate carrier with pouches and a belt, and the cloth is lit from one side.
+
+Check 24.08. Fails on v24.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

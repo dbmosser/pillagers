@@ -6061,6 +6061,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.08',what:'spr15: a plate carrier, not stripes: olive pouches on every build and the cloth lit from the left',
+   run:function(){
+     if(typeof drawOp!=='function'||typeof wc==='undefined') return 'SKIP: no drawOp here';
+     var c=document.createElement('canvas'); c.width=240; c.height=300; var x=c.getContext('2d'), w0=wc, bad=[], B=['lean','broad','curved'], i;
+     function body(b){
+       x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,240,300); x.setTransform(6,0,0,6,120,270); wc=x;
+       try{ drawOp(0,0,Math.PI/2,0,'#4a5b7d',0,0,'none',0,{moving:false,sprint:false,ads:false,hurt:0,rl:0,bulk:0,build:b,hair:'dark',cut:'crop',skin:'skinfair',pack:'packbrown',boots:'bootblack'}); }
+       finally{ wc=w0; }
+       return x.getImageData(0,0,240,300).data;
+     }
+     function lum(d,px,py){ var k=(py*240+px)*4; return d[k+3]<200?-1:(d[k]*0.3+d[k+1]*0.59+d[k+2]*0.11); }
+     function box(d,u0,u1,y0,y1){ var s=0,n=0,v,yy,px; for(yy=y0;yy<=y1;yy++) for(px=Math.round(120+6*u0);px<=Math.round(120+6*u1);px++){ v=lum(d,px,yy); if(v>30){ s+=v; n++; } } return n>=6?s/n:-1; }   // cloth only: ink and the old dark band are left out
+     try{
+       for(i=0;i<B.length;i++){
+         var d=body(B[i]), ol=0, k, r, g, bl;
+         for(k=0;k<d.length;k+=4){ if(d[k+3]<200) continue; r=d[k]; g=d[k+1]; bl=d[k+2];
+           if(Math.abs(r-g)<7&&r-bl>16&&r>=50&&r<=120) ol++; }
+         if(ol<150) bad.push(B[i]+': '+ol+' olive pouch pixels (want 150+)');
+         // the torso edges, below the shoulder caps and above the belt: the left column lit, the right in shade (Curved wears her plate there)
+         if(B[i]==='curved') continue;
+         var hw=(B[i]==='broad')?[6.6,8.6]:[4.6,6.4], y0=Math.round(270-6*17.4), y1=Math.round(270-6*((B[i]==='broad')?16.0:15.4));
+         var L2=box(d,-hw[1],-hw[0],y0,y1), R2=box(d,hw[0],hw[1],y0,y1);
+         if(L2<0||R2<0) bad.push(B[i]+': the torso edge columns are empty');
+         else if(L2-R2<25) bad.push(B[i]+': the left edge ('+Math.round(L2)+') is not clearly lighter than the right ('+Math.round(R2)+')');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ wc=w0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.07',what:'graphics program gfx7: the coloured light map: at night under LIGHTING HIGH a warm sodium lamp tints its pool (red over blue at least 6 above CLASSIC) and STANDARD does too, the pool holds the CLASSIC brightness within 20 percent, and ground 410 units from the lamp keeps the CLASSIC luminance within 4 percent; read from the world canvas just before the fog of war sheet',
    run:function(){
      if(!(window.__gfxStage&&window.__frame&&window.__state&&window.__endRaid)||typeof gfxPreFog!=='function'||typeof render2D!=='function'||typeof ZOOM!=='function') return 'SKIP: this fixture cannot stage and draw a raid frame';
