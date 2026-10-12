@@ -10013,8 +10013,13 @@ window.__REGRESS=[
   {v:'22.98',what:'label plates fit their text: a big loot label is drawn on a plate at least 1.15 times its font size tall that covers its letters, and a second label pushed at the same spot stacks at least that far above it',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof render2D!=='function'||typeof label!=='function') return 'SKIP: no world labels here';
-     var bad=[], g=null, p=null, OWN=Object.prototype.hasOwnProperty, ownR=OWN.call(wc,'fillRect'), ownF=OWN.call(wc,'fillText'), oR=wc.fillRect, oF=wc.fillText, last=null, got=null, LB='ZQX '+'BIG LOOT', a, b, fp;
-     function unspy(){ if(ownR) wc.fillRect=oR; else delete wc.fillRect; if(ownF) wc.fillText=oF; else delete wc.fillText; }
+     var bad=[], g=null, p=null, OWN=Object.prototype.hasOwnProperty, ownR=OWN.call(wc,'fillRect'), ownF=OWN.call(wc,'fillText'), oR=wc.fillRect, oF=wc.fillText, last=null, got=null, LB='ZQX '+'BIG LOOT', a, b, fp,
+         HC=ctx, ownHR=OWN.call(ctx,'fillRect'), ownHF=OWN.call(ctx,'fillText'), hR=ctx.fillRect, hF=ctx.fillText;
+     // v23.xx (gfx5): the world text may be filled on the HUD canvas (wc pointed at ctx for the two world text passes), so the plate and
+     // the label are watched on both canvases; on ctx only while wc is ctx, so HUD text is never taken for world text.
+     function unspy(){ if(ownR) wc.fillRect=oR; else delete wc.fillRect; if(ownF) wc.fillText=oF; else delete wc.fillText; if(ownHR) HC.fillRect=hR; else delete HC.fillRect; if(ownHF) HC.fillText=hF; else delete HC.fillText; }
+     function plateR(c,x,y,w,h){ var s=String(c.fillStyle).replace(/\s/g,''); if(s==='rgba(6,9,13,0.55)'||s==='rgba(6,9,13,.55)') last={y:y,h:h}; }
+     function labT(c,t,x,y){ if(String(t)===LB&&!got&&last) got={y:y,px:px(c.font),plate:last}; }
      function px(f){ var m=(/([\d.]+)px/).exec(String(f)); return m?parseFloat(m[1]):0; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -10024,8 +10029,10 @@ window.__REGRESS=[
        g.labels.length=0;
        label(p.x,p.y-30,LB,'#ffc04a',0,true,'bandage');
        a=g.labels[g.labels.length-1];
-       wc.fillRect=function(x,y,w,h){ var s=String(wc.fillStyle).replace(/\s/g,''); if(s==='rgba(6,9,13,0.55)'||s==='rgba(6,9,13,.55)') last={y:y,h:h}; return oR.apply(this,arguments); };
-       wc.fillText=function(t,x,y){ if(String(t)===LB&&!got&&last) got={y:y,px:px(wc.font),plate:last}; return oF.apply(this,arguments); };
+       wc.fillRect=function(x,y,w,h){ plateR(this,x,y,w,h); return oR.apply(this,arguments); };
+       wc.fillText=function(t,x,y){ labT(this,t,x,y); return oF.apply(this,arguments); };
+       HC.fillRect=function(x,y,w,h){ if(wc===HC) plateR(this,x,y,w,h); return hR.apply(this,arguments); };
+       HC.fillText=function(t,x,y){ if(wc===HC) labT(this,t,x,y); return hF.apply(this,arguments); };
        try{ render2D(0); } finally { unspy(); }
        if(!got) return 'SKIP: staging: the loot label was not drawn on a plate';
        fp=got.px;
@@ -10090,8 +10097,12 @@ window.__REGRESS=[
   {v:'22.96',what:'world text draws over the dark and the fog: on a night raid, in one drawn frame, a loot label beside him and the nameplate of a Sentry in view are filled after the fog of war sheet is laid over the world',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof render2D!=='function'||typeof label!=='function'||typeof fogC==='undefined'||!fogC||typeof mkSentry!=='function'||typeof canSee!=='function') return 'SKIP: no world draw, labels or fog of war sheet here';
-     var bad=[], g=null, p=null, OWN=Object.prototype.hasOwnProperty, ownD=OWN.call(wc,'drawImage'), ownF=OWN.call(wc,'fillText'), oD=wc.drawImage, oF=wc.fillText, n=0, LB='ZQX '+'LOOT LABEL', s=null, k, ok=false, fog=-1, lab=-1, nmI=-1, nm='';
-     function unspy(){ if(ownD) wc.drawImage=oD; else delete wc.drawImage; if(ownF) wc.fillText=oF; else delete wc.fillText; }
+     var bad=[], g=null, p=null, OWN=Object.prototype.hasOwnProperty, ownD=OWN.call(wc,'drawImage'), ownF=OWN.call(wc,'fillText'), oD=wc.drawImage, oF=wc.fillText, n=0, LB='ZQX '+'LOOT LABEL', s=null, k, ok=false, fog=-1, lab=-1, nmI=-1, nm='',
+         HC=ctx, ownHF=OWN.call(ctx,'fillText'), hF=ctx.fillText;
+     // v23.xx (gfx5): the world text may be filled on the HUD canvas (wc pointed at ctx for the two world text passes, after the world
+     // canvas is done), so it is counted on ctx too, only while wc is ctx; the order against the fog of war sheet is read the same way.
+     function unspy(){ if(ownD) wc.drawImage=oD; else delete wc.drawImage; if(ownF) wc.fillText=oF; else delete wc.fillText; if(ownHF) HC.fillText=hF; else delete HC.fillText; }
+     function seenT(t){ var q=String(t); if(q===LB&&lab<0) lab=n; if(nm&&q.indexOf(nm)===0&&nmI<0) nmI=n; n++; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -10106,7 +10117,8 @@ window.__REGRESS=[
        g.labels.length=0; label(p.x,p.y-20,LB,'#ffc04a',0,true);
        render2D(0);
        wc.drawImage=function(img){ if(img===fogC&&fog<0) fog=n; n++; return oD.apply(this,arguments); };
-       wc.fillText=function(t){ var q=String(t); if(q===LB&&lab<0) lab=n; if(nm&&q.indexOf(nm)===0&&nmI<0) nmI=n; n++; return oF.apply(this,arguments); };
+       wc.fillText=function(t){ seenT(t); return oF.apply(this,arguments); };
+       HC.fillText=function(t){ if(wc===HC) seenT(t); return hF.apply(this,arguments); };
        try{ render2D(0); } finally { unspy(); }
        if(fog<0) return 'SKIP: the drawn frame laid no fog of war sheet here';
        if(lab<0) return 'SKIP: staging: the loot label was not drawn';
@@ -31298,8 +31310,14 @@ window.__REGRESS=[
      // THE SPIES: every operator drawn in a raid frame, and every string painted on the world canvas.
      function spy(){ if(spied) return; spied=true; fillOwn=Object.prototype.hasOwnProperty.call(wc,'fillText'); oFill=wc.fillText;
        drawOp=function(x,y,face,ph,coat,pk,mz,mode,iv,st){ ops.push({x:x,y:y,mode:String(mode),hero:!!(st&&st.hero),wep:(st&&st.own&&st.own.wep&&st.own.wep.id)||''}); return oOp.apply(null,arguments); };
-       wc.fillText=function(t){ texts.push(String(t)); return oFill.apply(wc,arguments); }; }
-     function unspy(){ if(!spied) return; spied=false; drawOp=oOp; if(fillOwn) wc.fillText=oFill; else { try{ delete wc.fillText; }catch(_d){ wc.fillText=oFill; } } }
+       wc.fillText=function(t){ texts.push(String(t)); return oFill.apply(wc,arguments); };
+       // v23.xx (gfx5): the world text (the party names over their heads among it) may be filled on the HUD canvas, with wc pointed at
+       // ctx for the two world text passes; it is read there too, only while wc is ctx, so a HUD row is never taken for a world string.
+       hcSpy=ctx; hcOwn=Object.prototype.hasOwnProperty.call(hcSpy,'fillText'); hcFill=hcSpy.fillText;
+       hcSpy.fillText=function(t){ if(wc===hcSpy) texts.push(String(t)); return hcFill.apply(this,arguments); }; }
+     var hcSpy=null, hcOwn=false, hcFill=null;
+     function unspy(){ if(!spied) return; spied=false; drawOp=oOp; if(fillOwn) wc.fillText=oFill; else { try{ delete wc.fillText; }catch(_d){ wc.fillText=oFill; } }
+       if(hcSpy){ if(hcOwn) hcSpy.fillText=hcFill; else { try{ delete hcSpy.fillText; }catch(_h){ hcSpy.fillText=hcFill; } } hcSpy=null; } }
      function frame(){ ops=[]; texts=[]; render2D(0); return ops.length; }
      function at(x,y){ var q, c=0; for(q=0;q<ops.length;q++) if(!ops[q].hero&&Math.abs(ops[q].x-x)<0.01&&Math.abs(ops[q].y-y)<0.01) c++; return c; }
      function opAt(x,y){ var q; for(q=0;q<ops.length;q++) if(!ops[q].hero&&Math.abs(ops[q].x-x)<0.01&&Math.abs(ops[q].y-y)<0.01) return ops[q]; return null; }
