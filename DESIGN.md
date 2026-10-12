@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.62 - THE COLD MILE IS FROZEN
+
+Co-op hunt while he was away. His order of 2026-10-12: freeze the bigger map and disable it in the game for now, so the work goes into the smaller one. THE COLD MILE is no longer offered anywhere: the sector page shows COLD STORAGE only (with no size tag), the lift and the arcade send you to COLD STORAGE, and the Undercroft no longer lists a seal on the mile. A save that pointed at the mile is moved to COLD STORAGE when it loads. The mile itself is kept in the code and still builds for the tests and the robot.
+
+MEASURED. Check 23.62 passes, and fails on v23.61.
 ## v23.61 - FRAME TELEMETRY
 
 Co-op hunt while he was away. His order of 2026-10-12, the graphics program: add all of it. Nobody had measured how fast a frame draws at 4K on his PC; this environment can time the script but not the drawing, so the graphics builds after this one would have been judged blind. Every raid frame now records the real gap between frames (half-millisecond steps), and one frame in fifteen also times each part of the drawing: the world, the light, the fog of war, the weather and the HUD. The run report keeps the median and the slow end (p50 and p95), the count of frames over 25 ms and the render scale, and the flight recorder export prints them on the run line. Bot raids keep none. Nothing on screen changes and nothing a raid plays by moves.

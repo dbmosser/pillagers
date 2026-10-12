@@ -1,0 +1,56 @@
+{
+    "title":  "TRIPWIRE MINE ON THE BELT",
+    "why":  "His feature 6 of 2026-10-12, the tripwire mine (good idea), and his answer 32: it goes on the belt like a grenade. The Tripwire Mine is a new throw. While you carry one it has a belt cell after Medical (key 9 on the usual belt), so no key you already know moves, and Q cycles to it with the grenades. Throw it like a grenade (its key or Q, then the trigger or G). Where it lands it strings a wire across the throw, out to the walls on each side or 80 each way in the open, so it spans a doorway or a corridor by itself. It arms after a moment and you can have three strung; a fourth takes the oldest down. What sets it off comes in the next build.",
+    "now":  "A Tripwire Mine now goes on the belt like a grenade and strings a wire across a doorway where it lands.",
+    "edits":  [
+                  {
+                      "anchor":  "  frag:{name:\u0027Frag Charge\u0027,val:180,wt:1,r:\u0027uncommon\u0027,c:\u0027#e07040\u0027,use:\u0027throw\u0027,tk:\u0027frag\u0027}\n};",
+                      "replacement":  "  frag:{name:\u0027Frag Charge\u0027,val:180,wt:1,r:\u0027uncommon\u0027,c:\u0027#e07040\u0027,use:\u0027throw\u0027,tk:\u0027frag\u0027},\n  // v23.xx (feat1a), HIS #6 (2026-10-12): \"tripwire mine -- good idea\", and his answer 32: on the belt like a grenade.\n  trip:{name:\u0027Tripwire Mine\u0027,val:160,wt:1,r:\u0027uncommon\u0027,c:\u0027#ff4a4a\u0027,use:\u0027throw\u0027,tk:\u0027trip\u0027}\n};"
+                  },
+                  {
+                      "anchor":  "var THROWKEYS=[\u0027smoke\u0027,\u0027decoy\u0027,\u0027frag\u0027];",
+                      "replacement":  "var THROWKEYS=[\u0027smoke\u0027,\u0027decoy\u0027,\u0027frag\u0027,\u0027trip\u0027];   // v23.xx (feat1a): the Tripwire Mine is a throw like the other three"
+                  },
+                  {
+                      "anchor":  "bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,",
+                      "replacement":  "bag:[],pouch:{smoke:0,decoy:0,frag:0,trip:0},tsel:0,"
+                  },
+                  {
+                      "anchor":  "throws:[],smokes:[],decoys:[],frags:[],labels:[]",
+                      "replacement":  "throws:[],smokes:[],decoys:[],frags:[],trips:[],labels:[]"
+                  },
+                  {
+                      "anchor":  "notes:[],thr:{smoke:0,decoy:0,frag:0}}};",
+                      "replacement":  "notes:[],thr:{smoke:0,decoy:0,frag:0,trip:0}}};"
+                  },
+                  {
+                      "anchor":  "  for(var i=1;i\u003c=3;i++){\n    var n=(G.tsel+i)%3;",
+                      "replacement":  "  for(var i=1;i\u003c=THROWKEYS.length;i++){\n    var n=(G.tsel+i)%THROWKEYS.length;   // v23.xx (feat1a): four throws now, the Tripwire Mine is the fourth"
+                  },
+                  {
+                      "anchor":  "    var tk=THROWKEYS[i];\n    out.push({k:\u0027throw:\u0027+tk,name:ITEMS[tk].name,kind:\u0027throw\u0027,icon:tk,",
+                      "replacement":  "    var tk=THROWKEYS[i];\n    if(tk===\u0027trip\u0027) continue;   // v23.xx (feat1a): the Tripwire Mine cell is added after Medical, below, and only while carried\n    out.push({k:\u0027throw:\u0027+tk,name:ITEMS[tk].name,kind:\u0027throw\u0027,icon:tk,"
+                  },
+                  {
+                      "anchor":  "    count:countArmor(),c:\u0027#5aa9e6\u0027});",
+                      "replacement":  "    count:countArmor(),c:\u0027#5aa9e6\u0027});\n  // v23.xx (feat1a), HIS #6 and his answer 32 (2026-10-12): THE TRIPWIRE MINE GOES ON THE BELT LIKE A GRENADE. Its cell is added\n  // only while one is carried, and after Medical and the plate, so no key anyone has learned moves: the belt of anyone without a\n  // mine is the belt of before, and with one it takes the first free key (key 9 on the usual belt). A pin on that key yields as it\n  // does for the plate (v8.04).\n  if(G.pouch\u0026\u0026G.pouch.trip\u003e0\u0026\u0026ITEMS.trip\u0026\u0026out.length\u003cHOTBAR_N) out.push({k:\u0027throw:trip\u0027,name:ITEMS.trip.name,kind:\u0027throw\u0027,icon:\u0027trip\u0027,\n    count:G.pouch.trip,c:ITEMS.trip.c});"
+                  },
+                  {
+                      "anchor":  "pq={smoke:0,decoy:0,frag:0};",
+                      "replacement":  "pq={smoke:0,decoy:0,frag:0,trip:0};"
+                  },
+                  {
+                      "anchor":  "tc={smoke:0,decoy:0,frag:0}, i;",
+                      "replacement":  "tc={smoke:0,decoy:0,frag:0,trip:0}, i;"
+                  },
+                  {
+                      "anchor":  "    G.frags.push({x:th.tx,y:th.ty,t:0,fuse:Math.max(0.08,FRAG_FUSE-(th.cook||0)),mine:1});\n  }\n}",
+                      "replacement":  "    G.frags.push({x:th.tx,y:th.ty,t:0,fuse:Math.max(0.08,FRAG_FUSE-(th.cook||0)),mine:1});\n  }\n  else if(th.kind===\u0027trip\u0027){ sfx(\"clank\",th.tx,th.ty); tripArm(th); }   // v23.xx (feat1a): a Tripwire Mine strings its wire where it lands\n}"
+                  },
+                  {
+                      "anchor":  "function explodeFrag(f){",
+                      "replacement":  "// v23.xx (feat1a), HIS #6 (2026-10-12): \"tripwire mine -- good idea\", and his answer 32: on the belt like a grenade. A Tripwire Mine\n// is thrown as any grenade is (its belt key or Q, then the trigger or G; the pad walks the belt and holds RT), through throwFrom, so\n// it stops at the first wall like every throw. Where it lands it strings a wire ACROSS the throw: each half runs out sideways until a\n// wall stops it (4 short of the face) or 80 in the open, so it spans a doorway or a corridor by itself. It arms after 0.6 s and lasts\n// 240 s; an owner has at most 3 strung and the oldest goes. What sets it off and what it does is the next build. No draw on any\n// stream: the wire is pure geometry.\nvar TRIP_LIFE=240, TRIP_ARM=0.6, TRIP_MAX=3, TRIP_HALF=80, TRIP_REACH=120;\nfunction tripArm(th){\n  if(!G) return null;\n  if(!G.trips) G.trips=[];\n  var dx=th.tx-th.sx, dy=th.ty-th.sy, d=Math.sqrt(dx*dx+dy*dy);\n  var ux=d\u003e1?dx/d:1, uy=d\u003e1?dy/d:0, nx=-uy, ny=ux;\n  var half=function(sx,sy){ var h=rayHitG(th.tx,th.ty,sx,sy,TRIP_REACH); return h\u003cTRIP_REACH?Math.max(2,h-4):TRIP_HALF; };\n  var a=half(nx,ny), b=half(-nx,-ny), seat=th.seat||0, i, own=[];\n  var tr={id:(seat?\u0027s\u0027+seat:\u0027p\u0027)+\u0027-\u0027+(G.tripN=(G.tripN||0)+1), x:th.tx, y:th.ty, ax:th.tx+nx*a, ay:th.ty+ny*a, bx:th.tx-nx*b, by:th.ty-ny*b,\n          arm:TRIP_ARM, life:TRIP_LIFE, seat:seat};\n  for(i=0;i\u003cG.trips.length;i++) if((G.trips[i].seat||0)===seat\u0026\u0026!G.trips[i].fx) own.push(i);\n  while(own.length\u003e=TRIP_MAX){ G.trips.splice(own.shift(),1); for(i=0;i\u003cown.length;i++) own[i]--; }\n  G.trips.push(tr);\n  if(!G.sim\u0026\u0026!seat) say(\u0027TRIPWIRE SET\u0027,\u0027info\u0027);\n  return tr;\n}\nfunction explodeFrag(f){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #6 and answer 32: a Tripwire Mine goes on the belt like a grenade and strings a wire across the throw where it lands\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||typeof hotbarSlots!==\u0027function\u0027||typeof rayHitG!==\u0027function\u0027) return \u0027SKIP: no raid here\u0027;\n     if(!ITEMS.trip||THROWKEYS.indexOf(\u0027trip\u0027)\u003c0||typeof tripArm!==\u0027function\u0027) return \u0027no Tripwire Mine: ITEMS.trip, the trip throw key or tripArm is missing\u0027;\n     var bad=[], g, p, oMW=mouseWorld, i, a, s0, s1, ti=-1, best=null, n0, T, Ln, dot;\n     try{\n       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: no live raid\u0027;\n       p=g.player; p.cooking=0; p.roll=0; p.downed=false;\n       g.pouch.trip=0;\n       s0=hotbarSlots();\n       for(i=0;i\u003cs0.length;i++) if(s0[i]\u0026\u0026s0[i].k===\u0027throw:trip\u0027) bad.push(\u0027a Tripwire Mine cell shows on key \u0027+(i+1)+\u0027 with none carried\u0027);\n       g.pouch.trip=1;\n       s1=hotbarSlots();\n       for(i=0;i\u003cs1.length;i++) if(s1[i]\u0026\u0026s1[i].k===\u0027throw:trip\u0027) ti=i;\n       if(ti\u003c0) bad.push(\u0027no Tripwire Mine cell on the belt with one carried\u0027);\n       if(s1.length!==s0.length) bad.push(\u0027the belt changed length: \u0027+s0.length+\u0027 to \u0027+s1.length);\n       for(i=0;i\u003cs0.length;i++) if(s0[i]\u0026\u0026s0[i].kind!==\u0027empty\u0027\u0026\u0026(!s1[i]||s1[i].k!==s0[i].k)) bad.push(\u0027key \u0027+(i+1)+\u0027 moved from \u0027+s0[i].k+\u0027 to \u0027+(s1[i]\u0026\u0026s1[i].k));\n       for(a=0;a\u003c16\u0026\u0026!best;a++){\n         var an=a*Math.PI/8, ux=Math.cos(an), uy=Math.sin(an), lx=p.x+ux*200, ly=p.y+uy*200;\n         if(rayHitG(p.x,p.y,ux,uy,260)\u003e=259\u0026\u0026rayHitG(lx,ly,-uy,ux,130)\u003e=129\u0026\u0026rayHitG(lx,ly,uy,-ux,130)\u003e=129) best={ux:ux,uy:uy};\n       }\n       if(!best) return \u0027SKIP: staging: no clear throw lane at the spawn\u0027;\n       mouseWorld=function(){ return {x:p.x+best.ux*200,y:p.y+best.uy*200}; };\n       g.tsel=THROWKEYS.indexOf(\u0027trip\u0027);\n       n0=(g.trips||[]).length;\n       doThrow();\n       for(i=0;i\u003c30;i++) updateThrowables(0.05);\n       if(!g.trips||g.trips.length!==n0+1) bad.push(\u0027the throw strung \u0027+((g.trips||[]).length-n0)+\u0027 wires, not 1\u0027);\n       else {\n         T=g.trips[g.trips.length-1]; Ln=Math.sqrt((T.bx-T.ax)*(T.bx-T.ax)+(T.by-T.ay)*(T.by-T.ay));\n         if(!(Ln\u003e=150\u0026\u0026Ln\u003c=170)) bad.push(\u0027the wire in the open is \u0027+Math.round(Ln)+\u0027 long, not 160 (80 each side)\u0027);\n         dot=((T.bx-T.ax)*best.ux+(T.by-T.ay)*best.uy)/Math.max(1,Ln);\n         if(Math.abs(dot)\u003e0.05) bad.push(\u0027the wire does not run across the throw (cos \u0027+dot.toFixed(2)+\u0027)\u0027);\n         if(!(T.arm\u003e0)) bad.push(\u0027the wire is live the moment it lands (no arming time)\u0027);\n       }\n       if(g.pouch.trip!==0) bad.push(\u0027the throw did not spend the mine (pouch \u0027+g.pouch.trip+\u0027)\u0027);\n       if(!(g.tel.thr.trip===1)) bad.push(\u0027the run log did not count the mine thrown (\u0027+g.tel.thr.trip+\u0027)\u0027);\n       g.trips.length=0;\n       for(i=0;i\u003c4;i++) tripArm({sx:p.x,sy:p.y,tx:p.x+best.ux*200,ty:p.y+best.uy*200});\n       if(g.trips.length!==3) bad.push(\u0027an owner keeps \u0027+g.trips.length+\u0027 wires, not 3\u0027);\n       g.pouch.smoke=0; g.pouch.decoy=0; g.pouch.frag=0; g.pouch.trip=1; g.tsel=0;\n       cycleThrow();\n       if(THROWKEYS[g.tsel]!==\u0027trip\u0027) bad.push(\u0027Q never reaches the Tripwire Mine (it chose \u0027+THROWKEYS[g.tsel]+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ mouseWorld=oMW; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ if(g2.trips) g2.trips.length=0; g2.player.cooking=0; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

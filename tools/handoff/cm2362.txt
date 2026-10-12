@@ -1,0 +1,7 @@
+v23.62: the cold mile is frozen
+
+The bigger map is frozen: every raid goes to COLD STORAGE.
+
+Check 23.62. Fails on v23.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

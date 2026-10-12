@@ -1,0 +1,5 @@
+## v23.62 - THE COLD MILE IS FROZEN
+
+Co-op hunt while he was away. His order of 2026-10-12: freeze the bigger map and disable it in the game for now, so the work goes into the smaller one. THE COLD MILE is no longer offered anywhere: the sector page shows COLD STORAGE only (with no size tag), the lift and the arcade send you to COLD STORAGE, and the Undercroft no longer lists a seal on the mile. A save that pointed at the mile is moved to COLD STORAGE when it loads. The mile itself is kept in the code and still builds for the tests and the robot.
+
+MEASURED. Check 23.62 passes, and fails on v23.61.
