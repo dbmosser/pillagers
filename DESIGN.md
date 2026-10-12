@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.09 - 3, 2, 1, GO!
+
+Co-op hunt while he was away. His answer 18 (2026-10-12): a 3-2-1 GO countdown, and gameplay exactly the same in demo and career. Every raid and every demo run now opens on a count: 3, 2, 1 big in the centre over a light shade, a short low beep on each, then GO! in amber with a high beep. Nothing moves until GO: the clock, the machines and you are held, so nothing can shoot you before you have your bearings. A teammate who joins a raid already running comes straight in with no count, and the demo re-drop after a death keeps its own DROPPING IN hold.
+
+MEASURED. Check 24.09 passes, and fails on v24.08.
 ## v24.08 - A PLATE CARRIER, NOT STRIPES
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters, make them all look better, gritty and grounded like ARC Raiders. Every body wore its rig as two dark bands across the coat with a light band over the shoulders, so every coat read as a striped shirt. Now the coat is cloth lit from the top left, the light every sprite shares: the shoulders and the left side catch it and the right side is in shade, the trousers and sleeves too, and each boot has a lit toe. Over the coat sits a real plate carrier: a chest plate in a darker cut of the coat, two shoulder straps, three olive magazine pouches and a belt with a buckle. Curved wears it cut to her outline, the plate moulded over her chest with her pouches on the hips, and her jiggle is kept. Suits and the number 23 jersey keep their own paint.

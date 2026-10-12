@@ -1,0 +1,5 @@
+## v24.09 - 3, 2, 1, GO!
+
+Co-op hunt while he was away. His answer 18 (2026-10-12): a 3-2-1 GO countdown, and gameplay exactly the same in demo and career. Every raid and every demo run now opens on a count: 3, 2, 1 big in the centre over a light shade, a short low beep on each, then GO! in amber with a high beep. Nothing moves until GO: the clock, the machines and you are held, so nothing can shoot you before you have your bearings. A teammate who joins a raid already running comes straight in with no count, and the demo re-drop after a death keeps its own DROPPING IN hold.
+
+MEASURED. Check 24.09 passes, and fails on v24.08.

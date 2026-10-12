@@ -1,0 +1,7 @@
+v24.09: 3, 2, 1, go!
+
+Every raid and demo run opens on 3, 2, 1, GO with the world held until GO.
+
+Check 24.09. Fails on v24.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
