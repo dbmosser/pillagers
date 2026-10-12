@@ -1,0 +1,320 @@
+{
+    "title":  "ONE TYPE SYSTEM FOR THE MENUS",
+    "why":  "His order of 2026-10-12 (#50): the menus and text still look bad, make it look like a triple-A game. Second step of the UI redesign (ui3). The loudest amateur tell on the screenshots was caps spaced far apart (up to .42em), in a mix of families and in sizes down to 10.5px. The menus now have one type system: condensed industrial caps for titles, tabs, buttons, labels and chips, and a plain grotesque for anything you read. Letter spacing never goes past .12em and shrinks as the size grows, and nothing in a menu is smaller than 13px (before the screen scale). The new faces (Barlow Condensed and Barlow) are added once he says yes to downloading them; until then the menus use Bahnschrift, the condensed DIN-like face built into Windows. 100 stylesheet lines changed. His own words are untouched.",
+    "now":  "Menu text now uses one condensed caps face for titles and buttons and a plain face for reading, with tight letter spacing and nothing under 13px.",
+    "edits":  [
+                  {
+                      "anchor":  "    --hazard:var(--danger); --gain:var(--ok); --win-top:var(--ui-panel); --win-bot:var(--ui-bg);",
+                      "replacement":  "    --hazard:var(--danger); --gain:var(--ok); --win-top:var(--ui-panel); --win-bot:var(--ui-bg);\n    /* v16.xx, UI REDESIGN ui3 (his #50): the menu type system. Condensed industrial caps for anything you scan (titles, tabs,\n       buttons, labels, chips), a plain grotesque for anything you read. Barlow Condensed and Barlow are embedded by ui1 once he\n       says yes to the download; until then the stacks land on Bahnschrift SemiCondensed and Bahnschrift, both local Windows fonts.\n       The sizes are 1080p CSS px (applyMenuZoom grows them with the screen). Tracking never passes .12em; nothing is under 13px. */\n    --f-cond:\"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",\"Roboto Condensed\",sans-serif;\n    --f-body:\"Barlow\",\"Bahnschrift\",\"Segoe UI\",system-ui,sans-serif;\n    --f-mono:\"IBM Plex Mono\",Consolas,ui-monospace,monospace;\n    --t-display:800 72px/.9 var(--f-cond); --t-h1:700 40px/1 var(--f-cond); --t-h2:700 24px/1.1 var(--f-cond); --t-h3:600 18px/1.2 var(--f-cond);\n    --t-label:600 13px/1.2 var(--f-cond); --t-button:700 16px/1 var(--f-cond); --t-lead:400 17px/1.45 var(--f-body); --t-body:400 15px/1.45 var(--f-body);\n    --t-small:500 13px/1.4 var(--f-body); --t-num-xl:700 48px/1 var(--f-cond); --t-num:600 18px/1 var(--f-cond);"
+                  },
+                  {
+                      "anchor":  "    background:var(--void); color:var(--bone); font-family:\u0027Rubik\u0027,system-ui,sans-serif;",
+                      "replacement":  "    background:var(--void); color:var(--bone); font-family:var(--f-body);"
+                  },
+                  {
+                      "anchor":  "   #title .wordmark{ font-family:\u0027Titan One\u0027,\u0027Rubik\u0027,sans-serif; font-size:64px; letter-spacing:.16em; line-height:1;",
+                      "replacement":  "   #title .wordmark{ font-family:\u0027Titan One\u0027,\u0027Rubik\u0027,sans-serif; font-size:64px; letter-spacing:.02em; line-height:1;"
+                  },
+                  {
+                      "anchor":  "   #title .tstep{ font-size:11px; letter-spacing:.22em; color:var(--amber); font-weight:700; }\n   #title .tcard .tbody{ font-size:12px; color:var(--ash); margin-top:6px; line-height:1.5; }",
+                      "replacement":  "   #title .tstep{ font-size:13px; letter-spacing:.12em; color:var(--amber); font-weight:700; }\n   #title .tcard .tbody{ font-size:13px; color:var(--ash); margin-top:6px; line-height:1.5; }"
+                  },
+                  {
+                      "anchor":  "    letter-spacing:.42em; color:var(--amber); text-transform:uppercase; }",
+                      "replacement":  "    letter-spacing:.12em; color:var(--amber); text-transform:uppercase; }"
+                  },
+                  {
+                      "anchor":  "  #verlabel { font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:700; letter-spacing:.18em; }",
+                      "replacement":  "  #verlabel { font-family:var(--f-body); font-weight:700; letter-spacing:.12em; }"
+                  },
+                  {
+                      "anchor":  "  input, textarea, select, option { font-family:\u0027Rubik\u0027,system-ui,sans-serif; }",
+                      "replacement":  "  input, textarea, select, option { font-family:var(--f-body); }"
+                  },
+                  {
+                      "anchor":  "  .gx{ color:var(--ash); font-size:11px; }",
+                      "replacement":  "  .gx{ color:var(--ash); font-size:13px; }"
+                  },
+                  {
+                      "anchor":  "  .glab{ font-size:10.5px; letter-spacing:.18em; color:var(--ash); }\n  .gnm{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:700; font-size:13.5px; color:var(--coolant);",
+                      "replacement":  "  .glab{ font-size:13px; letter-spacing:.12em; color:var(--ash); }\n  .gnm{ font-family:var(--f-body); font-weight:700; font-size:13.5px; color:var(--coolant);"
+                  },
+                  {
+                      "anchor":  "  .gsub{ font-size:10.5px; color:var(--ash); letter-spacing:.04em; }\n  .gtag{ font-size:10.5px; letter-spacing:.14em; color:var(--coolant); flex:none; }",
+                      "replacement":  "  .gsub{ font-size:13px; color:var(--ash); letter-spacing:.04em; }\n  .gtag{ font-size:13px; letter-spacing:.14em; color:var(--coolant); flex:none; }"
+                  },
+                  {
+                      "anchor":  "  .itag{ font-size:12.5px; letter-spacing:.12em; padding:2px 6px; border:1px solid;",
+                      "replacement":  "  .itag{ font-size:13px; letter-spacing:.12em; padding:2px 6px; border:1px solid;"
+                  },
+                  {
+                      "anchor":  "  .panel h2 { font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-size:11px; font-weight:700;\n    letter-spacing:.28em; text-transform:uppercase; color:var(--ash);",
+                      "replacement":  "  .panel h2 { font-family:var(--f-body); font-size:13px; font-weight:700;\n    letter-spacing:.12em; text-transform:uppercase; color:var(--ash);"
+                  },
+                  {
+                      "anchor":  "  display:flex; align-items:center; justify-content:center; font-size:11px; color:#111315; }",
+                      "replacement":  "  display:flex; align-items:center; justify-content:center; font-size:13px; color:#111315; }"
+                  },
+                  {
+                      "anchor":  "  display:flex; align-items:center; justify-content:center; font-size:12px;",
+                      "replacement":  "  display:flex; align-items:center; justify-content:center; font-size:13px;"
+                  },
+                  {
+                      "anchor":  ".avslab{ font-size:12.5px; letter-spacing:.16em; color:var(--ash); }",
+                      "replacement":  ".avslab{ font-size:13px; letter-spacing:.12em; color:var(--ash); }"
+                  },
+                  {
+                      "anchor":  ".cosname{margin-top:6px;font-size:12px;letter-spacing:1px}\n.cosreq{margin-top:2px;font-size:11px;opacity:.65;letter-spacing:1px;text-transform:uppercase}",
+                      "replacement":  ".cosname{margin-top:6px;font-size:13px;letter-spacing:1px}\n.cosreq{margin-top:2px;font-size:13px;opacity:.65;letter-spacing:1px;text-transform:uppercase}"
+                  },
+                  {
+                      "anchor":  "    font-size:11px; color:var(--bone); user-select:none; }",
+                      "replacement":  "    font-size:13px; color:var(--bone); user-select:none; }"
+                  },
+                  {
+                      "anchor":  "  .imenuhead b{ font-size:11.5px; letter-spacing:.02em; }\n  .imenuhead em{ font-style:normal; color:var(--ash); font-size:11px; }",
+                      "replacement":  "  .imenuhead b{ font-size:13px; letter-spacing:.02em; }\n  .imenuhead em{ font-style:normal; color:var(--ash); font-size:13px; }"
+                  },
+                  {
+                      "anchor":  "  .imenurow em{ font-style:normal; color:var(--ash); font-size:11px; letter-spacing:.06em; }",
+                      "replacement":  "  .imenurow em{ font-style:normal; color:var(--ash); font-size:13px; letter-spacing:.06em; }"
+                  },
+                  {
+                      "anchor":  "  .imenukeys button{ padding:2px 0; width:20px; font-size:11px; min-width:0; }",
+                      "replacement":  "  .imenukeys button{ padding:2px 0; width:20px; font-size:13px; min-width:0; }"
+                  },
+                  {
+                      "anchor":  "    align-items:baseline; gap:8px; font-size:12.5px; font-weight:700;\n    letter-spacing:.15em; color:var(--bone); }",
+                      "replacement":  "    align-items:baseline; gap:8px; font-size:13px; font-weight:700;\n    letter-spacing:.12em; color:var(--bone); }"
+                  },
+                  {
+                      "anchor":  "    font-size:13px; letter-spacing:.17em; color:var(--ash); text-transform:uppercase; }",
+                      "replacement":  "    font-size:13px; letter-spacing:.12em; color:var(--ash); text-transform:uppercase; }"
+                  },
+                  {
+                      "anchor":  "    text-align:center; font-size:13px; letter-spacing:.16em; color:var(--gain);",
+                      "replacement":  "    text-align:center; font-size:13px; letter-spacing:.12em; color:var(--gain);"
+                  },
+                  {
+                      "anchor":  "  .crlab{ font-size:12.5px; letter-spacing:.16em; color:#6a655a; margin:4px 0 7px; }   /* v19.80, seen on the 4K Mainframe screenshot (2026-10-08): PROGRESS, REWARDS and REQUIRED RESOURCES were 10.5px captions */",
+                      "replacement":  "  .crlab{ font-size:13px; letter-spacing:.12em; color:#6a655a; margin:4px 0 7px; }   /* v19.80, seen on the 4K Mainframe screenshot (2026-10-08): PROGRESS, REWARDS and REQUIRED RESOURCES were 10.5px captions */"
+                  },
+                  {
+                      "anchor":  "  .crewcell .cnt{ position:absolute; right:2px; bottom:0; font-size:11px;",
+                      "replacement":  "  .crewcell .cnt{ position:absolute; right:2px; bottom:0; font-size:13px;"
+                  },
+                  {
+                      "anchor":  "    font-size:12.5px; letter-spacing:.13em; color:var(--ash); text-transform:uppercase; }   /* v19.77, seen on a 4K menu text scan (2026-10-08): 10.5px, the smallest print in any menu, on a row half empty */",
+                      "replacement":  "    font-size:13px; letter-spacing:.13em; color:var(--ash); text-transform:uppercase; }   /* v19.77, seen on a 4K menu text scan (2026-10-08): 10.5px, the smallest print in any menu, on a row half empty */"
+                  },
+                  {
+                      "anchor":  "    background:var(--bone); color:#11161d; font-size:12.5px; font-weight:700;",
+                      "replacement":  "    background:var(--bone); color:#11161d; font-size:13px; font-weight:700;"
+                  },
+                  {
+                      "anchor":  "  button { font-family:\u0027Rubik\u0027,system-ui,sans-serif; background:transparent;",
+                      "replacement":  "  button { font-family:var(--f-body); background:transparent;"
+                  },
+                  {
+                      "anchor":  "  .deploy { padding:12px; font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:800;\n    font-size:13px; letter-spacing:.3em; border:2px solid #ffe9b0; border-radius:4px;",
+                      "replacement":  "  .deploy { padding:12px; font-family:var(--f-body); font-weight:800;\n    font-size:13px; letter-spacing:.12em; border:2px solid #ffe9b0; border-radius:4px;"
+                  },
+                  {
+                      "anchor":  "  .equipped .wn{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:700; font-size:15px; color:var(--coolant); }",
+                      "replacement":  "  .equipped .wn{ font-family:var(--f-body); font-weight:700; font-size:15px; color:var(--coolant); }"
+                  },
+                  {
+                      "anchor":  "  .credits{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:800; font-size:22px; color:var(--amber); text-align:right; }\n  .credits small{ font-size:10.5px; color:var(--ash); letter-spacing:.28em; display:block; font-weight:400; }",
+                      "replacement":  "  .credits{ font-family:var(--f-body); font-weight:800; font-size:22px; color:var(--amber); text-align:right; }\n  .credits small{ font-size:13px; color:var(--ash); letter-spacing:.12em; display:block; font-weight:400; }"
+                  },
+                  {
+                      "anchor":  "    font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }",
+                      "replacement":  "    font-family:var(--f-body); font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }"
+                  },
+                  {
+                      "anchor":  "  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }",
+                      "replacement":  "  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.12em; font-weight:400; margin-left:7px; margin-right:20px; }"
+                  },
+                  {
+                      "anchor":  "  .outcome h1{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:800; font-size:30px;\n    letter-spacing:.2em; margin:0; text-transform:uppercase; }\n  .outcome .sub{ color:var(--ash); font-size:14px; letter-spacing:.18em; margin-bottom:12px; }",
+                      "replacement":  "  .outcome h1{ font-family:var(--f-body); font-weight:800; font-size:30px;\n    letter-spacing:.02em; margin:0; text-transform:uppercase; }\n  .outcome .sub{ color:var(--ash); font-size:14px; letter-spacing:.12em; margin-bottom:12px; }"
+                  },
+                  {
+                      "anchor":  "  textarea{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-size:14px; background:rgba(17,19,21,.92);",
+                      "replacement":  "  textarea{ font-family:var(--f-body); font-size:14px; background:rgba(17,19,21,.92);"
+                  },
+                  {
+                      "anchor":  ".pausebox h3{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:800; font-size:25px;\n    letter-spacing:.24em; margin:0; color:var(--amber); text-transform:uppercase; }",
+                      "replacement":  ".pausebox h3{ font-family:var(--f-body); font-weight:800; font-size:25px;\n    letter-spacing:.04em; margin:0; color:var(--amber); text-transform:uppercase; }"
+                  },
+                  {
+                      "anchor":  ".modal h3{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:800; font-size:30px;\n    letter-spacing:.24em; margin:0 0 10px; color:var(--amber); text-transform:uppercase; }\n  .modal h2{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-weight:800; font-size:19px;\n    letter-spacing:.24em; margin:12px 0 6px; color:var(--amber); text-transform:uppercase; }",
+                      "replacement":  ".modal h3{ font-family:var(--f-body); font-weight:800; font-size:30px;\n    letter-spacing:.02em; margin:0 0 10px; color:var(--amber); text-transform:uppercase; }\n  .modal h2{ font-family:var(--f-body); font-weight:800; font-size:19px;\n    letter-spacing:.06em; margin:12px 0 6px; color:var(--amber); text-transform:uppercase; }"
+                  },
+                  {
+                      "anchor":  "  #partymodal textarea{ font-size:12px; word-break:break-all; }   /* v16.91: the game font, as every text box (his v11.09 rule) */",
+                      "replacement":  "  #partymodal textarea{ font-size:13px; word-break:break-all; }   /* v16.91: the game font, as every text box (his v11.09 rule) */"
+                  },
+                  {
+                      "anchor":  "  #modemenu button.moderow{ min-width:440px; padding:9px 28px; font-size:12px; letter-spacing:.22em; }",
+                      "replacement":  "  #modemenu button.moderow{ min-width:440px; padding:9px 28px; font-size:13px; letter-spacing:.12em; }"
+                  },
+                  {
+                      "anchor":  "    font-size:10.5px; letter-spacing:.18em; color:var(--ash); text-transform:uppercase; }\n  #modemsg{ font-size:12.5px; line-height:1.5; color:var(--hazard); max-width:640px; }\n  #p2line{ font-size:12.5px; line-height:1.5; color:var(--amber); max-width:640px; }",
+                      "replacement":  "    font-size:13px; letter-spacing:.12em; color:var(--ash); text-transform:uppercase; }\n  #modemsg{ font-size:13px; line-height:1.5; color:var(--hazard); max-width:640px; }\n  #p2line{ font-size:13px; line-height:1.5; color:var(--amber); max-width:640px; }"
+                  },
+                  {
+                      "anchor":  "    padding:4px 0; font-size:11px; }",
+                      "replacement":  "    padding:4px 0; font-size:13px; }"
+                  },
+                  {
+                      "anchor":  "  pre.simpre{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-size:11px; color:var(--bone);",
+                      "replacement":  "  pre.simpre{ font-family:var(--f-body); font-size:13px; color:var(--bone);"
+                  },
+                  {
+                      "anchor":  "  .scard .sk{ font-size:11px; letter-spacing:.10em; text-transform:uppercase;",
+                      "replacement":  "  .scard .sk{ font-size:13px; letter-spacing:.10em; text-transform:uppercase;"
+                  },
+                  {
+                      "anchor":  "  .scard .ss{ font-size:12px; color:var(--ash); margin-top:2px; }",
+                      "replacement":  "  .scard .ss{ font-size:13px; color:var(--ash); margin-top:2px; }"
+                  },
+                  {
+                      "anchor":  "  #root .modal h3{ font-size:22px; letter-spacing:.22em; text-transform:uppercase; color:var(--amber); margin:0 0 14px;",
+                      "replacement":  "  #root .modal h3{ font-size:22px; letter-spacing:.04em; text-transform:uppercase; color:var(--amber); margin:0 0 14px;"
+                  },
+                  {
+                      "anchor":  "    box-shadow:0 8px 22px rgba(255,180,50,.22), 0 1px 0 rgba(255,255,255,.35) inset; letter-spacing:.24em; font-weight:800; }",
+                      "replacement":  "    box-shadow:0 8px 22px rgba(255,180,50,.22), 0 1px 0 rgba(255,255,255,.35) inset; letter-spacing:.12em; font-weight:800; }"
+                  },
+                  {
+                      "anchor":  "    font-weight:800; letter-spacing:.16em; box-shadow:0 8px 22px rgba(255,180,50,.22); }",
+                      "replacement":  "    font-weight:800; letter-spacing:.12em; box-shadow:0 8px 22px rgba(255,180,50,.22); }"
+                  },
+                  {
+                      "anchor":  "\u003c/style\u003e",
+                      "replacement":  "  /* v16.xx, UI REDESIGN ui3: the type roles as classes (new markup uses these), and the scanned caps of every existing window in the\n     condensed family: buttons, tabs, chips, window and panel titles, the run card headline, the loadout heads and the key bar. */\n  .t-display{ font:var(--t-display); letter-spacing:.01em; text-transform:uppercase; }\n  .t-h1{ font:var(--t-h1); letter-spacing:.02em; text-transform:uppercase; }\n  .t-h2{ font:var(--t-h2); letter-spacing:.04em; text-transform:uppercase; }\n  .t-h3{ font:var(--t-h3); letter-spacing:.06em; text-transform:uppercase; }\n  .t-label{ font:var(--t-label); letter-spacing:.12em; text-transform:uppercase; }\n  .t-button{ font:var(--t-button); letter-spacing:.08em; text-transform:uppercase; }\n  .t-lead{ font:var(--t-lead); } .t-body{ font:var(--t-body); } .t-small{ font:var(--t-small); letter-spacing:.01em; }\n  .t-num-xl{ font:var(--t-num-xl); font-variant-numeric:tabular-nums; } .t-num{ font:var(--t-num); font-variant-numeric:tabular-nums; }\n  button, .deploy, .invtab, .tag, .modal h2, .modal h3, .pausebox h3, .outcome h1, .panel h2, .loslab, .lohead, .keybar, .credits, #topright{ font-family:var(--f-cond); }\n  .credits, #topright, .vprice, .cnt{ font-variant-numeric:tabular-nums; }\n\u003c/style\u003e"
+                  },
+                  {
+                      "anchor":  "  \u003cdiv style=\"font-size:12.5px;color:var(--ash);letter-spacing:.2em;margin-top:16px\"\u003eHOW DID THAT RUN FEEL\u003c/div\u003e",
+                      "replacement":  "  \u003cdiv style=\"font-size:13px;color:var(--ash);letter-spacing:.12em;margin-top:16px\"\u003eHOW DID THAT RUN FEEL\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "  \u003cdiv style=\"font-size:11px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px\"\u003eCopy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.\u003c/div\u003e",
+                      "replacement":  "  \u003cdiv style=\"font-size:13px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px\"\u003eCopy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv style=\"font-size:12px;letter-spacing:.14em;color:var(--steel-hi);font-weight:700;margin-bottom:6px\"\u003eTHE GAMBLE\u003c/div\u003e",
+                      "replacement":  "    \u003cdiv style=\"font-size:13px;letter-spacing:.14em;color:var(--steel-hi);font-weight:700;margin-bottom:6px\"\u003eTHE GAMBLE\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv style=\"font-size:12px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px\"\u003eLIMITED TIME OFFER\u003c/div\u003e",
+                      "replacement":  "    \u003cdiv style=\"font-size:13px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px\"\u003eLIMITED TIME OFFER\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv id=\"partylen\" style=\"font-size:12px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px\"\u003e\u003c/div\u003e",
+                      "replacement":  "    \u003cdiv id=\"partylen\" style=\"font-size:13px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "  \u003cdiv style=\"padding:0 0 7px\"\u003e\u003cbutton id=\"mapbtn\" style=\"width:100%;font-size:11px\"\u003eMap: GREYWATER DAM\u003c/button\u003e\u003c/div\u003e\n  \u003cdiv style=\"padding:0 0 7px\"\u003e\u003cbutton id=\"tunebtn2\" style=\"width:100%;font-size:11px\"\u003eTuning console (all the dials)\u003c/button\u003e\u003c/div\u003e\n  \u003cdiv id=\"simprog\" style=\"font-size:11px;color:var(--ash);padding:0 0 7px;display:none\"\u003e\u003c/div\u003e",
+                      "replacement":  "  \u003cdiv style=\"padding:0 0 7px\"\u003e\u003cbutton id=\"mapbtn\" style=\"width:100%;font-size:13px\"\u003eMap: GREYWATER DAM\u003c/button\u003e\u003c/div\u003e\n  \u003cdiv style=\"padding:0 0 7px\"\u003e\u003cbutton id=\"tunebtn2\" style=\"width:100%;font-size:13px\"\u003eTuning console (all the dials)\u003c/button\u003e\u003c/div\u003e\n  \u003cdiv id=\"simprog\" style=\"font-size:13px;color:var(--ash);padding:0 0 7px;display:none\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cselect id=\"buildsel\" style=\"flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:\u0027Rubik\u0027,system-ui,sans-serif;font-size:12px;padding:6px\"\u003e\u003c/select\u003e",
+                      "replacement":  "    \u003cselect id=\"buildsel\" style=\"flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:var(--f-body);font-size:13px;padding:6px\"\u003e\u003c/select\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv id=\"seasonhead\" style=\"font-size:12px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px\"\u003e\u003c/div\u003e",
+                      "replacement":  "    \u003cdiv id=\"seasonhead\" style=\"font-size:13px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "        style=\"flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:\u0027Rubik\u0027,system-ui,sans-serif;font-size:14px;padding:7px\"\u003e",
+                      "replacement":  "        style=\"flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:var(--f-body);font-size:14px;padding:7px\"\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv style=\"margin-top:9px;font-size:11px;letter-spacing:.34em;color:var(--ash)\"\u003e",
+                      "replacement":  "    \u003cdiv style=\"margin-top:9px;font-size:13px;letter-spacing:.12em;color:var(--ash)\"\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv id=\"titleres\" style=\"margin-top:7px;font-size:10.5px;letter-spacing:.18em;color:var(--steel-hi);",
+                      "replacement":  "    \u003cdiv id=\"titleres\" style=\"margin-top:7px;font-size:13px;letter-spacing:.12em;color:var(--steel-hi);"
+                  },
+                  {
+                      "anchor":  "      \u003cbutton id=\"titlefs\" style=\"padding:5px 14px;font-size:10.5px;letter-spacing:.18em\"\u003eGO FULLSCREEN\u003c/button\u003e\u003c/div\u003e",
+                      "replacement":  "      \u003cbutton id=\"titlefs\" style=\"padding:5px 14px;font-size:13px;letter-spacing:.12em\"\u003eGO FULLSCREEN\u003c/button\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv class=\"kbrow\" style=\"margin-top:22px;font-size:11.5px;color:var(--ash);letter-spacing:.05em;line-height:2\"\u003e",
+                      "replacement":  "    \u003cdiv class=\"kbrow\" style=\"margin-top:22px;font-size:13px;color:var(--ash);letter-spacing:.05em;line-height:2\"\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv class=\"padrow\" style=\"margin-top:22px;font-size:11.5px;color:var(--ash);letter-spacing:.05em;line-height:2\"\u003e",
+                      "replacement":  "    \u003cdiv class=\"padrow\" style=\"margin-top:22px;font-size:13px;color:var(--ash);letter-spacing:.05em;line-height:2\"\u003e"
+                  },
+                  {
+                      "anchor":  "        style=\"padding:13px 46px;font-size:15px;letter-spacing:.2em\"\u003e1 PLAYER\u003c/button\u003e",
+                      "replacement":  "        style=\"padding:13px 46px;font-size:15px;letter-spacing:.12em\"\u003e1 PLAYER\u003c/button\u003e"
+                  },
+                  {
+                      "anchor":  "      \u003cdiv style=\"font-size:10.5px;letter-spacing:.2em;color:var(--amber)\"\u003eSAVES\u003c/div\u003e",
+                      "replacement":  "      \u003cdiv style=\"font-size:13px;letter-spacing:.12em;color:var(--amber)\"\u003eSAVES\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "      \u003cdiv id=\"slotnote\" style=\"margin-top:6px;font-size:10.5px;color:var(--ash);letter-spacing:.06em\"\u003eChanging save reloads the game, which is why it leaves fullscreen.\u003c/div\u003e\n      \u003cdiv id=\"fsback\" style=\"display:none;margin-top:6px;font-size:11px;color:var(--amber);letter-spacing:.06em\"\u003eYou were in fullscreen. The reload dropped it, as it always does. GO FULLSCREEN is above.\u003c/div\u003e",
+                      "replacement":  "      \u003cdiv id=\"slotnote\" style=\"margin-top:6px;font-size:13px;color:var(--ash);letter-spacing:.06em\"\u003eChanging save reloads the game, which is why it leaves fullscreen.\u003c/div\u003e\n      \u003cdiv id=\"fsback\" style=\"display:none;margin-top:6px;font-size:13px;color:var(--amber);letter-spacing:.06em\"\u003eYou were in fullscreen. The reload dropped it, as it always does. GO FULLSCREEN is above.\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "          style=\"flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:12px;letter-spacing:.08em\"",
+                      "replacement":  "          style=\"flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:13px;letter-spacing:.08em\""
+                  },
+                  {
+                      "anchor":  "      \u003cdiv style=\"font-size:10.5px;letter-spacing:.2em;color:var(--amber)\"\u003eRESTORE A CHARACTER\u003c/div\u003e",
+                      "replacement":  "      \u003cdiv style=\"font-size:13px;letter-spacing:.12em;color:var(--amber)\"\u003eRESTORE A CHARACTER\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "        \u003cspan id=\"reswhat\" style=\"font-size:11px;color:var(--ash)\"\u003e\u003c/span\u003e",
+                      "replacement":  "        \u003cspan id=\"reswhat\" style=\"font-size:13px;color:var(--ash)\"\u003e\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "        \u003cspan style=\"color:var(--hazard);font-size:11px\"\u003eType the word restore to replace the save you are playing with \u003cb id=\"reswho\"\u003e\u003c/b\u003e.\u003c/span\u003e",
+                      "replacement":  "        \u003cspan style=\"color:var(--hazard);font-size:13px\"\u003eType the word restore to replace the save you are playing with \u003cb id=\"reswho\"\u003e\u003c/b\u003e.\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "          \u003cinput id=\"resword\" autocomplete=\"off\" spellcheck=\"false\" style=\"flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:12px\"\u003e",
+                      "replacement":  "          \u003cinput id=\"resword\" autocomplete=\"off\" spellcheck=\"false\" style=\"flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:13px\"\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cspan id=\"cfgcopied\" style=\"font-size:11px;color:var(--coolant);display:none\"\u003eCopied\u003c/span\u003e",
+                      "replacement":  "    \u003cspan id=\"cfgcopied\" style=\"font-size:13px;color:var(--coolant);display:none\"\u003eCopied\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "      \u003cdiv id=\"floordrop\" data-drop=\"floor\" style=\"display:none;margin:6px 12px 0;padding:8px 12px;border:1px dashed var(--amber);border-radius:6px;font-size:11px;color:var(--ash);align-items:center;gap:10px\"\u003e\n        \u003cbutton id=\"floordropbtn\" style=\"padding:5px 12px;font-size:11px;letter-spacing:.14em\"\u003eDROP HERE\u003c/button\u003e",
+                      "replacement":  "      \u003cdiv id=\"floordrop\" data-drop=\"floor\" style=\"display:none;margin:6px 12px 0;padding:8px 12px;border:1px dashed var(--amber);border-radius:6px;font-size:13px;color:var(--ash);align-items:center;gap:10px\"\u003e\n        \u003cbutton id=\"floordropbtn\" style=\"padding:5px 12px;font-size:13px;letter-spacing:.14em\"\u003eDROP HERE\u003c/button\u003e"
+                  },
+                  {
+                      "anchor":  "  \u003cdiv id=\"reportline\" style=\"margin-top:8px;font-size:11px;padding:7px 10px;display:none;",
+                      "replacement":  "  \u003cdiv id=\"reportline\" style=\"margin-top:8px;font-size:13px;padding:7px 10px;display:none;"
+                  },
+                  {
+                      "anchor":  "        _p2l.style.cssText=\u0027font-size:11px;color:var(--ash);letter-spacing:.06em\u0027;",
+                      "replacement":  "        _p2l.style.cssText=\u0027font-size:13px;color:var(--ash);letter-spacing:.06em\u0027;"
+                  },
+                  {
+                      "anchor":  "           (me?\u0027 \u003cspan style=\"font-size:10px;letter-spacing:.14em\"\u003e\u0027+((inf\u0026\u0026inf.runs\u003e0)?\u0027CONTINUING\u0027:\u0027NEW\u0027)+\u0027\u003c/span\u003e\u0027:(blk?\u0027 \u003cspan style=\"font-size:10px;letter-spacing:.14em;color:var(--ash)\"\u003eIN USE BY PLAYER \u0027+((typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2)?\u00271\u0027:\u00272\u0027)+\u0027\u003c/span\u003e\u0027:\u0027\u0027))+\u0027\u003c/b\u003e\u0027+\n           \u0027\u003cspan style=\"color:var(--ash);font-size:11px\"\u003e\u0027+",
+                      "replacement":  "           (me?\u0027 \u003cspan style=\"font-size:13px;letter-spacing:.12em\"\u003e\u0027+((inf\u0026\u0026inf.runs\u003e0)?\u0027CONTINUING\u0027:\u0027NEW\u0027)+\u0027\u003c/span\u003e\u0027:(blk?\u0027 \u003cspan style=\"font-size:13px;letter-spacing:.12em;color:var(--ash)\"\u003eIN USE BY PLAYER \u0027+((typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2)?\u00271\u0027:\u00272\u0027)+\u0027\u003c/span\u003e\u0027:\u0027\u0027))+\u0027\u003c/b\u003e\u0027+\n           \u0027\u003cspan style=\"color:var(--ash);font-size:13px\"\u003e\u0027+"
+                  },
+                  {
+                      "anchor":  "           ((me||blk)?\u0027\u0027:\u0027 \u003cbutton data-del=\"\u0027+key+\u0027\" class=\"deploy ghost\" style=\"margin-left:8px;padding:2px 8px;font-size:10px\"\u003eDELETE\u003c/button\u003e\u0027)+",
+                      "replacement":  "           ((me||blk)?\u0027\u0027:\u0027 \u003cbutton data-del=\"\u0027+key+\u0027\" class=\"deploy ghost\" style=\"margin-left:8px;padding:2px 8px;font-size:13px\"\u003eDELETE\u003c/button\u003e\u0027)+"
+                  },
+                  {
+                      "anchor":  "         \u0027\u003cspan style=\"color:var(--hazard);font-size:11px\"\u003eType the word delete to erase \u003cb id=\"delwho\"\u003e\u003c/b\u003e forever.\u003c/span\u003e\u0027+",
+                      "replacement":  "         \u0027\u003cspan style=\"color:var(--hazard);font-size:13px\"\u003eType the word delete to erase \u003cb id=\"delwho\"\u003e\u003c/b\u003e forever.\u003c/span\u003e\u0027+"
+                  },
+                  {
+                      "anchor":  "         \u0027\u003cinput id=\"delword\" autocomplete=\"off\" spellcheck=\"false\" style=\"flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:12px\"\u003e\u0027+",
+                      "replacement":  "         \u0027\u003cinput id=\"delword\" autocomplete=\"off\" spellcheck=\"false\" style=\"flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:13px\"\u003e\u0027+"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui3): the menu type scale: window titles in the condensed family, and in Settings, the pause box and the title no text tracked past .145em or set under 13px\u0027,\n   run:function(){\n     var bad=[], T=document.getElementById(\u0027title\u0027), titleWas=null, g=null, P0=document.getElementById(\u0027pausebox\u0027), h3, f, n=0;\n     function scan(root,tag){\n       if(!root){ bad.push(\u0027no \u0027+tag); return; }\n       var all=[root].concat([].slice.call(root.querySelectorAll(\u0027*\u0027))), worst=[];\n       all.forEach(function(el){\n         var has=false, c, s, fs, ls;\n         for(c=el.firstChild;c;c=c.nextSibling) if(c.nodeType===3\u0026\u0026c.nodeValue.trim()){ has=true; break; }\n         if(!has||!el.getClientRects().length) return;\n         s=getComputedStyle(el); if(s.visibility===\u0027hidden\u0027||s.display===\u0027none\u0027) return;\n         fs=parseFloat(s.fontSize); ls=parseFloat(s.letterSpacing)||0; n++;\n         if(ls/fs\u003e0.145||fs\u003c12.9) worst.push((el.id?\u0027#\u0027+el.id:el.tagName.toLowerCase())+\u0027 \"\u0027+el.textContent.trim().slice(0,18)+\u0027\" \u0027+fs+\u0027px tracked \u0027+(ls/fs).toFixed(2)+\u0027em\u0027);\n       });\n       if(worst.length) bad.push(tag+\u0027: \u0027+worst.slice(0,4).join(\u0027, \u0027)+(worst.length\u003e4?\u0027 and \u0027+(worst.length-4)+\u0027 more\u0027:\u0027\u0027));\n     }\n     try{\n       __topClear();\n       if(typeof __hubEnter===\u0027function\u0027) __hubEnter();\n       var r=__station(\u0027dev\u0027,\u0027KeyE\u0027); if(r\u0026\u0026r.err) return \u0027SKIP: no settings station (\u0027+r.err+\u0027)\u0027;\n       h3=document.querySelector(\u0027#settingsmodal h3\u0027);\n       if(!h3) bad.push(\u0027Settings has no title\u0027);\n       else { f=getComputedStyle(h3).fontFamily||\u0027\u0027; if(!(/^\"?Barlow Condensed/).test(f)) bad.push(\u0027the Settings title is set in \u0027+f.slice(0,40)+\u0027, not Barlow Condensed\u0027); }\n       scan(document.getElementById(\u0027settingsmodal\u0027),\u0027Settings\u0027);\n       __topClear();\n       if(T){ titleWas=T.classList.contains(\u0027on\u0027); T.classList.add(\u0027on\u0027); scan(T,\u0027the title\u0027); if(!titleWas) T.classList.remove(\u0027on\u0027); titleWas=null; }\n       else bad.push(\u0027no title screen\u0027);\n       if(window.__deploy\u0026\u0026typeof togglePauseBox===\u0027function\u0027\u0026\u0026P0){\n         __topClear(); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();\n         if(g\u0026\u0026!g.over){ togglePauseBox(true); scan(P0,\u0027the pause box\u0027); togglePauseBox(false); }\n       }\n       if(n\u003c40) bad.push(\u0027only \u0027+n+\u0027 text elements were measured\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ if(T\u0026\u0026titleWas===false) T.classList.remove(\u0027on\u0027); }catch(_t){}\n       try{ if(typeof togglePauseBox===\u0027function\u0027) togglePauseBox(false); }catch(_p){}\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ __topClear(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

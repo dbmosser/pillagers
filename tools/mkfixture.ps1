@@ -5840,6 +5840,46 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.85',what:'his #50 (UI redesign ui3): the menu type scale: window titles in the condensed family, and in Settings, the pause box and the title no text tracked past .145em or set under 13px',
+   run:function(){
+     var bad=[], T=document.getElementById('title'), titleWas=null, g=null, P0=document.getElementById('pausebox'), h3, f, n=0;
+     function scan(root,tag){
+       if(!root){ bad.push('no '+tag); return; }
+       var all=[root].concat([].slice.call(root.querySelectorAll('*'))), worst=[];
+       all.forEach(function(el){
+         var has=false, c, s, fs, ls;
+         for(c=el.firstChild;c;c=c.nextSibling) if(c.nodeType===3&&c.nodeValue.trim()){ has=true; break; }
+         if(!has||!el.getClientRects().length) return;
+         s=getComputedStyle(el); if(s.visibility==='hidden'||s.display==='none') return;
+         fs=parseFloat(s.fontSize); ls=parseFloat(s.letterSpacing)||0; n++;
+         if(ls/fs>0.145||fs<12.9) worst.push((el.id?'#'+el.id:el.tagName.toLowerCase())+' "'+el.textContent.trim().slice(0,18)+'" '+fs+'px tracked '+(ls/fs).toFixed(2)+'em');
+       });
+       if(worst.length) bad.push(tag+': '+worst.slice(0,4).join(', ')+(worst.length>4?' and '+(worst.length-4)+' more':''));
+     }
+     try{
+       __topClear();
+       if(typeof __hubEnter==='function') __hubEnter();
+       var r=__station('dev','KeyE'); if(r&&r.err) return 'SKIP: no settings station ('+r.err+')';
+       h3=document.querySelector('#settingsmodal h3');
+       if(!h3) bad.push('Settings has no title');
+       else { f=getComputedStyle(h3).fontFamily||''; if(!(/^"?Barlow Condensed/).test(f)) bad.push('the Settings title is set in '+f.slice(0,40)+', not Barlow Condensed'); }
+       scan(document.getElementById('settingsmodal'),'Settings');
+       __topClear();
+       if(T){ titleWas=T.classList.contains('on'); T.classList.add('on'); scan(T,'the title'); if(!titleWas) T.classList.remove('on'); titleWas=null; }
+       else bad.push('no title screen');
+       if(window.__deploy&&typeof togglePauseBox==='function'&&P0){
+         __topClear(); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+         if(g&&!g.over){ togglePauseBox(true); scan(P0,'the pause box'); togglePauseBox(false); }
+       }
+       if(n<40) bad.push('only '+n+' text elements were measured');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(T&&titleWas===false) T.classList.remove('on'); }catch(_t){}
+       try{ if(typeof togglePauseBox==='function') togglePauseBox(false); }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'23.84',what:'his #45, impacts by material: matOf and entMat name what was hit, a round on a wall passes the wall material, a hit on a body passes the body material, glass shatters and flesh thuds on the stand-in context, and a clank with no material plays exactly the old single tick',
    run:function(){
      if(typeof _realBlip!=='function'||typeof sndBus!=='function') return 'SKIP: this fixture has no real blip or sound buses to stand in for';

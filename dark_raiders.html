@@ -32,6 +32,16 @@
     --void:var(--ui-void); --steel:var(--ui-line); --steel-hi:var(--ui-line-hi); --ash:var(--tx-2);
     --bone:var(--tx-1); --amber:var(--acc); --rust:var(--danger); --coolant:var(--extract);
     --hazard:var(--danger); --gain:var(--ok); --win-top:var(--ui-panel); --win-bot:var(--ui-bg);
+    /* v23.85, UI REDESIGN ui3 (his #50): the menu type system. Condensed industrial caps for anything you scan (titles, tabs,
+       buttons, labels, chips), a plain grotesque for anything you read. Barlow Condensed and Barlow are embedded by ui1 once he
+       says yes to the download; until then the stacks land on Bahnschrift SemiCondensed and Bahnschrift, both local Windows fonts.
+       The sizes are 1080p CSS px (applyMenuZoom grows them with the screen). Tracking never passes .12em; nothing is under 13px. */
+    --f-cond:"Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow","Roboto Condensed",sans-serif;
+    --f-body:"Barlow","Bahnschrift","Segoe UI",system-ui,sans-serif;
+    --f-mono:"IBM Plex Mono",Consolas,ui-monospace,monospace;
+    --t-display:800 72px/.9 var(--f-cond); --t-h1:700 40px/1 var(--f-cond); --t-h2:700 24px/1.1 var(--f-cond); --t-h3:600 18px/1.2 var(--f-cond);
+    --t-label:600 13px/1.2 var(--f-cond); --t-button:700 16px/1 var(--f-cond); --t-lead:400 17px/1.45 var(--f-body); --t-body:400 15px/1.45 var(--f-body);
+    --t-small:500 13px/1.4 var(--f-body); --t-num-xl:700 48px/1 var(--f-cond); --t-num:600 18px/1 var(--f-cond);
   }
   #root {
     /* Chrono Trigger window palette. --steel was defined and referenced nowhere
@@ -43,7 +53,7 @@
     --void:var(--ui-void); --steel:var(--ui-line); --steel-hi:var(--ui-line-hi); --ash:var(--tx-2);
     --bone:var(--tx-1); --amber:var(--acc); --rust:var(--danger); --coolant:var(--extract); --hazard:var(--danger); --gain:var(--ok);
     --win-top:var(--ui-panel); --win-bot:var(--ui-bg);
-    background:var(--void); color:var(--bone); font-family:'Rubik',system-ui,sans-serif;
+    background:var(--void); color:var(--bone); font-family:var(--f-body);
     /* Fit the browser window instead of a fixed 720. Opened in Chrome at a 551
        tall viewport the game ran off the bottom of the page and put the health
        bar, the meters and the whole button row below the fold, behind a
@@ -88,13 +98,13 @@
    /* v18.11, THE STYLING PASS, STAGE B: THE TITLE. A vignette instead of a flat wash, so the Undercroft still shows through
       (v17.83) and the column reads; a wordmark with a gold gradient and a glow; the three step cards as glass cards. */
    #title.on { background:radial-gradient(ellipse 70% 62% at 50% 42%, rgba(17,19,21,.60) 0%, rgba(17,19,21,.84) 70%, rgba(17,19,21,.96) 100%); }
-   #title .wordmark{ font-family:'Titan One','Rubik',sans-serif; font-size:64px; letter-spacing:.16em; line-height:1;
+   #title .wordmark{ font-family:'Titan One','Rubik',sans-serif; font-size:64px; letter-spacing:.02em; line-height:1;
      background:linear-gradient(180deg,#ffe9a8 0%,#f5b73b 55%,#e08a1a 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
      filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(245,183,59,.28)); }
    #title .tcard{ border:1px solid rgba(170,164,152,.35); border-radius:10px; padding:14px 16px;
      background:linear-gradient(180deg,rgba(30,34,37,.92),rgba(17,19,21,.92)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }   /* v18.73, seen on the 4K title screenshot (2026-10-07): the Undercroft behind the title showed through the three step cards, a head inside 2 PILLAGE; solid like the mode rows (v18.67) */
-   #title .tstep{ font-size:11px; letter-spacing:.22em; color:var(--amber); font-weight:700; }
-   #title .tcard .tbody{ font-size:12px; color:var(--ash); margin-top:6px; line-height:1.5; }
+   #title .tstep{ font-size:13px; letter-spacing:.12em; color:var(--amber); font-weight:700; }
+   #title .tcard .tbody{ font-size:13px; color:var(--ash); margin-top:6px; line-height:1.5; }
   /* v8.88: the title screen scales now, so it must be able to scroll rather
      than clip. .screen is overflow:hidden, and the saves list and the CREATE A
      NEW SAVE button are the last things on it. Same rule as the v5.31 note
@@ -133,15 +143,15 @@
   /* the CRT scanline overlay is gone: it is the loudest terminal signal in the
      file and has no equivalent in the look being aimed at */
   .brand { font-family:'Titan One','Rubik',sans-serif; font-weight:800; font-size:13px;
-    letter-spacing:.42em; color:var(--amber); text-transform:uppercase; }
+    letter-spacing:.12em; color:var(--amber); text-transform:uppercase; }
   .brand span { color:var(--ash); }
   /* v11.09, HIS NOTE 18: the version is a readout, not the wordmark, so it is in
      the game font. The name beside it keeps the display face on purpose. */
-  #verlabel { font-family:'Rubik',system-ui,sans-serif; font-weight:700; letter-spacing:.18em; }
+  #verlabel { font-family:var(--f-body); font-weight:700; letter-spacing:.12em; }
   /* v11.09: AN INPUT DOES NOT INHERIT ITS FONT. Three boxes he types into, his
      pillager's name among them, were in the browser default. A grep for a wrong
      family finds nothing when the rule is simply absent. */
-  input, textarea, select, option { font-family:'Rubik',system-ui,sans-serif; }
+  input, textarea, select, option { font-family:var(--f-body); }
   .hubgrid { display:grid; grid-template-columns:1fr 1fr; gap:14px; flex:1; min-height:0; margin-top:12px; }
   /* THE EQUIPMENT SLOTS, v3.50. His note: "stuff you buy in requisition, its not
      clear when you are wearing your vest, etc. NEEDS TO BE MORE LIKE
@@ -154,17 +164,17 @@
   .gic{ width:38px; height:38px; flex:none; display:flex; align-items:center; justify-content:center;
     border:1px solid var(--steel-hi); border-radius:3px; background:rgba(0,0,0,.30); }
   .gslot.empty .gic{ border-style:dashed; }
-  .gx{ color:var(--ash); font-size:11px; }
+  .gx{ color:var(--ash); font-size:13px; }
   .gtx{ flex:1; min-width:0; }
-  .glab{ font-size:10.5px; letter-spacing:.18em; color:var(--ash); }
-  .gnm{ font-family:'Rubik',system-ui,sans-serif; font-weight:700; font-size:13.5px; color:var(--coolant);
+  .glab{ font-size:13px; letter-spacing:.12em; color:var(--ash); }
+  .gnm{ font-family:var(--f-body); font-weight:700; font-size:13.5px; color:var(--coolant);
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .gslot.empty .gnm{ color:var(--ash); }
-  .gsub{ font-size:10.5px; color:var(--ash); letter-spacing:.04em; }
-  .gtag{ font-size:10.5px; letter-spacing:.14em; color:var(--coolant); flex:none; }
+  .gsub{ font-size:13px; color:var(--ash); letter-spacing:.04em; }
+  .gtag{ font-size:13px; letter-spacing:.14em; color:var(--coolant); flex:none; }
   .gslot.empty .gtag{ color:var(--rust); }
   /* Small, outlined, and never louder than the item name it qualifies. */
-  .itag{ font-size:12.5px; letter-spacing:.12em; padding:2px 6px; border:1px solid;
+  .itag{ font-size:13px; letter-spacing:.12em; padding:2px 6px; border:1px solid;
     border-radius:2px; opacity:.85; flex:none; }
   .panel { border:2px solid var(--steel-hi); border-radius:5px;
     background:linear-gradient(180deg,var(--win-top),var(--win-bot));
@@ -173,8 +183,8 @@
   /* the inner hairline of the double frame, replacing the amber corner tick */
   .panel::after { content:''; position:absolute; inset:3px; pointer-events:none;
     border:1px solid rgba(170,164,152,.22); border-radius:3px; }
-  .panel h2 { font-family:'Rubik',system-ui,sans-serif; font-size:11px; font-weight:700;
-    letter-spacing:.28em; text-transform:uppercase; color:var(--ash);
+  .panel h2 { font-family:var(--f-body); font-size:13px; font-weight:700;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--ash);
     margin:0; padding:10px 12px; border-bottom:1px solid var(--steel-hi);
     display:flex; justify-content:space-between; align-items:center; }
   .panel h2 em { font-style:normal; color:var(--amber); letter-spacing:.1em; }
@@ -211,7 +221,7 @@
   border:2px solid #14161b; display:flex; align-items:flex-start; justify-content:center; }
 .avhair{ position:absolute; left:-5px; right:-5px; top:-4px; height:17px; border-radius:8px 8px 3px 3px; }
 .avhat{ position:absolute; left:-7px; right:-7px; top:-13px; height:15px; border-radius:4px;
-  display:flex; align-items:center; justify-content:center; font-size:11px; color:#111315; }
+  display:flex; align-items:center; justify-content:center; font-size:13px; color:#111315; }
 .aveyes{ position:absolute; top:17px; width:100%; display:flex; justify-content:center; gap:9px; }
 .aveye{ width:6px; height:7px; border-radius:3px; background:#efe9dc; }
 .avbeard{ position:absolute; bottom:-1px; border-radius:2px 2px 8px 8px; }   /* v10.17 */
@@ -229,9 +239,9 @@
 .avslot:hover{ background:rgba(245,183,59,.10); }
 .avslot.on{ background:rgba(245,183,59,.16); }
 .avsic{ width:26px; height:26px; border-radius:3px; border:1px solid var(--steel-hi);
-  display:flex; align-items:center; justify-content:center; font-size:12px;
+  display:flex; align-items:center; justify-content:center; font-size:13px;
   background:rgba(0,0,0,.3); flex:none; }
-.avslab{ font-size:12.5px; letter-spacing:.16em; color:var(--ash); }
+.avslab{ font-size:13px; letter-spacing:.12em; color:var(--ash); }
 .avsval{ font-size:13px; color:var(--bone); }
 .costile{width:96px;padding:8px 6px;border:1px solid var(--steel-hi);border-radius:3px;background:rgba(0,0,0,.32);
   text-align:center;cursor:pointer;transition:border-color .1s,background .1s}
@@ -239,8 +249,8 @@
 .costile.on{border-color:var(--amber);background:rgba(214,158,46,.14)}
 .costile.lock{opacity:.42;cursor:not-allowed}
 .costile.lock:hover{border-color:var(--steel-hi);background:rgba(0,0,0,.32)}
-.cosname{margin-top:6px;font-size:12px;letter-spacing:1px}
-.cosreq{margin-top:2px;font-size:11px;opacity:.65;letter-spacing:1px;text-transform:uppercase}
+.cosname{margin-top:6px;font-size:13px;letter-spacing:1px}
+.cosreq{margin-top:2px;font-size:13px;opacity:.65;letter-spacing:1px;text-transform:uppercase}
 /* v21.29, from the whole-game bug hunt of 2026-10-08 (W-A1): THE OWNED LINE SITS LEVEL ACROSS A RACK. A rack tile was a plain box, so a
    name that broke over two lines (The Skeleton, The Tomb Explorer, The Street Poet on the 4K FASHION picture) pushed its OWNED or WORN
    line a whole line lower than the tiles beside it, and the OUTFIT rack read as a ragged row. A tile is a column now and its status
@@ -359,15 +369,15 @@
   .imenu{ position:fixed; z-index:12000; min-width:186px; max-width:260px;
     background:rgba(9,13,19,.97); border:1px solid var(--steel-hi); border-radius:4px;
     box-shadow:0 10px 34px rgba(0,0,0,.66); padding:4px 0;
-    font-size:11px; color:var(--bone); user-select:none; }
+    font-size:13px; color:var(--bone); user-select:none; }
   .imenuhead{ padding:7px 11px 6px; border-bottom:1px solid var(--steel-hi);
     display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
-  .imenuhead b{ font-size:11.5px; letter-spacing:.02em; }
-  .imenuhead em{ font-style:normal; color:var(--ash); font-size:11px; }
+  .imenuhead b{ font-size:13px; letter-spacing:.02em; }
+  .imenuhead em{ font-style:normal; color:var(--ash); font-size:13px; }
   .imenurow{ padding:6px 11px; cursor:pointer; display:flex; gap:10px;
     justify-content:space-between; align-items:center; }
   .imenurow:hover{ background:rgba(245,183,59,.14); color:#fff; }
-  .imenurow em{ font-style:normal; color:var(--ash); font-size:11px; letter-spacing:.06em; }
+  .imenurow em{ font-style:normal; color:var(--ash); font-size:13px; letter-spacing:.06em; }
   .imenurow.dim{ opacity:.38; cursor:default; }
   .imenurow.dim:hover{ background:none; color:var(--bone); }
   .imenusep{ height:1px; background:var(--steel-hi); margin:4px 0; }
@@ -385,7 +395,7 @@
   .fkbox button{ min-width:132px; }
   .imenukeys{ padding:6px 11px 8px; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
   .imenukeys span{ color:var(--ash); margin-right:2px; }
-  .imenukeys button{ padding:2px 0; width:20px; font-size:11px; min-width:0; }
+  .imenukeys button{ padding:2px 0; width:20px; font-size:13px; min-width:0; }
   .imenukeys button.mine{ color:#111315; background:var(--amber); border-color:var(--amber); }
 
   /* ---- THE KEY BAR. Straight off his Arc Raiders screenshot, which prints
@@ -396,8 +406,8 @@
   /* ---- THE LOADOUT COLUMN, v6.01, off his Arc Raiders screenshot. */
   .invside{ min-width:0; display:flex; flex-direction:column; }
   .lohead{ padding:9px 12px 7px; display:flex; justify-content:space-between;
-    align-items:baseline; gap:8px; font-size:12.5px; font-weight:700;
-    letter-spacing:.15em; color:var(--bone); }
+    align-items:baseline; gap:8px; font-size:13px; font-weight:700;
+    letter-spacing:.12em; color:var(--bone); }
   .lohead em{ font-style:normal; font-weight:400; font-size:13px;
     letter-spacing:.08em; color:var(--ash); }
   /* flex:none on the two fixed sections, so BACKPACK is the only one that grows
@@ -405,7 +415,7 @@
   .losec{ border-top:1px solid var(--steel-hi); display:flex; flex-direction:column;
     min-height:0; flex:none; }
   .loslab{ padding:7px 12px 1px; display:flex; justify-content:space-between; gap:8px;
-    font-size:13px; letter-spacing:.17em; color:var(--ash); text-transform:uppercase; }
+    font-size:13px; letter-spacing:.12em; color:var(--ash); text-transform:uppercase; }
   .loslab b{ color:var(--bone); font-weight:600; }
 
   /* ---- THE VENDOR, v6.04, off his Arc Raiders screenshots. */
@@ -436,7 +446,7 @@
      lights and stamps itself, because that is where the eye already is. */
   .vcell.took{ border-color:var(--gain); background:rgba(111,224,160,.22); }
   .vcell.took:after{ content:'TAKEN'; position:absolute; left:0; right:0; top:38%;
-    text-align:center; font-size:13px; letter-spacing:.16em; color:var(--gain);
+    text-align:center; font-size:13px; letter-spacing:.12em; color:var(--gain);
     text-shadow:0 1px 3px rgba(6,9,13,.9); }
   /* v21.46, from the 4K visual pass (2026-10-09): a price you cannot pay reads grey, so the shop says at a glance what you can buy */
   .vcell.poor .vp{ color:#7d8894 !important; opacity:.8; }
@@ -459,7 +469,7 @@
     letter-spacing:.04em; margin-bottom:3px; }
   .vbar{ height:6px; background:#d8d1c1; border-radius:2px; margin-bottom:12px; overflow:hidden; }
   .vbar i{ display:block; height:100%; background:#201e19; }
-  .crlab{ font-size:12.5px; letter-spacing:.16em; color:#6a655a; margin:4px 0 7px; }   /* v19.80, seen on the 4K Mainframe screenshot (2026-10-08): PROGRESS, REWARDS and REQUIRED RESOURCES were 10.5px captions */
+  .crlab{ font-size:13px; letter-spacing:.12em; color:#6a655a; margin:4px 0 7px; }   /* v19.80, seen on the 4K Mainframe screenshot (2026-10-08): PROGRESS, REWARDS and REQUIRED RESOURCES were 10.5px captions */
   .crew{ margin-top:auto; padding-top:12px; border-top:1px solid #d8d1c1; }
   .crewline{ display:flex; align-items:center; gap:10px; }
   .crewc{ font-size:17px; font-weight:700; color:#14130f; letter-spacing:0; }
@@ -468,7 +478,7 @@
   .crewcell{ position:relative; width:40px; height:40px; flex:none;
     border:1px solid #cdc4b0; border-radius:3px; background:#e6dfcf;
     display:flex; align-items:center; justify-content:center; }
-  .crewcell .cnt{ position:absolute; right:2px; bottom:0; font-size:11px;
+  .crewcell .cnt{ position:absolute; right:2px; bottom:0; font-size:13px;
     font-weight:700; color:#14130f; text-shadow:0 0 3px #e6dfcf; }
   /* v20.25, seen on the 4K CRAFT screenshot (2026-10-08): the REQUIRED RESOURCES rows were 13px with 22px pictures, the smallest
      thing on the recipe card, and they are what you read to know whether you can craft. 16 and 17 now, with 30px pictures. */
@@ -500,9 +510,9 @@
   body.padon #invkeybar{ display:none !important; }
   body.padon #invkeybarpad{ display:flex; }
   .keybar div{ display:flex; align-items:center; gap:6px;
-    font-size:12.5px; letter-spacing:.13em; color:var(--ash); text-transform:uppercase; }   /* v19.77, seen on a 4K menu text scan (2026-10-08): 10.5px, the smallest print in any menu, on a row half empty */
+    font-size:13px; letter-spacing:.13em; color:var(--ash); text-transform:uppercase; }   /* v19.77, seen on a 4K menu text scan (2026-10-08): 10.5px, the smallest print in any menu, on a row half empty */
   .keybar kbd{ display:inline-block; padding:2px 7px; border-radius:9px;
-    background:var(--bone); color:#11161d; font-size:12.5px; font-weight:700;
+    background:var(--bone); color:#11161d; font-size:13px; font-weight:700;
     letter-spacing:.1em; font-family:inherit; }
   .cell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
     border-radius:3px; background:rgba(0,0,0,.32); display:flex;
@@ -526,14 +536,14 @@
   .cell.junk::after{ content:''; position:absolute; inset:0;
     background:linear-gradient(135deg,transparent 46%,var(--rust) 46%,var(--rust) 54%,transparent 54%); }
   .cellempty{ color:var(--ash); font-size:13px; }
-  button { font-family:'Rubik',system-ui,sans-serif; background:transparent;
+  button { font-family:var(--f-body); background:transparent;
     border:1px solid var(--steel-hi); color:var(--bone); padding:10px 18px; font-size:14px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
   button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(245,183,59,.08); }
   button:disabled{ opacity:.3; cursor:not-allowed; }
   button:focus-visible{ outline:2px solid var(--coolant); outline-offset:1px; }
-  .deploy { padding:12px; font-family:'Rubik',system-ui,sans-serif; font-weight:800;
-    font-size:13px; letter-spacing:.3em; border:2px solid #ffe9b0; border-radius:4px;
+  .deploy { padding:12px; font-family:var(--f-body); font-weight:800;
+    font-size:13px; letter-spacing:.12em; border:2px solid #ffe9b0; border-radius:4px;
     color:#2a1a06; background:linear-gradient(180deg,#ffd980,#f0a02a); }
   .deploy:hover{ background:linear-gradient(180deg,#ffe4a0,#ffbe52); border-color:#fff0c8; color:#2a1a06; }
   .ghost { background:transparent; color:var(--amber); }
@@ -541,11 +551,11 @@
   .stat { display:flex; justify-content:space-between; padding:6px 12px; font-size:14px; }
   .stat b{ color:var(--bone); font-weight:500; } .stat span{ color:var(--ash); }
   .equipped{ padding:10px 12px; border-bottom:1px solid var(--steel-hi); background:rgba(53,214,200,.04); }
-  .equipped .wn{ font-family:'Rubik',system-ui,sans-serif; font-weight:700; font-size:15px; color:var(--coolant); }
+  .equipped .wn{ font-family:var(--f-body); font-weight:700; font-size:15px; color:var(--coolant); }
   .equipped .ws{ font-size:13px; color:var(--ash); margin-top:3px; letter-spacing:.05em; }
   .toprow{ display:flex; justify-content:space-between; align-items:flex-end; }
-  .credits{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:22px; color:var(--amber); text-align:right; }
-  .credits small{ font-size:10.5px; color:var(--ash); letter-spacing:.28em; display:block; font-weight:400; }
+  .credits{ font-family:var(--f-body); font-weight:800; font-size:22px; color:var(--amber); text-align:right; }
+  .credits small{ font-size:13px; color:var(--ash); letter-spacing:.12em; display:block; font-weight:400; }
   /* v11.52, HIS NOTE: credits and XP in the upper right, at all times. z 9000 puts
      it above every screen (10), pause box (35), card (40) and window (60), and
      below the item menu (12000) and the drag ghost (9999).
@@ -555,7 +565,7 @@
      the readout's real bottom (drawHUD reads it) rather than the readout
      fitting the band above the box. */
   #topright{ position:fixed; top:6px; right:20px; height:44px; line-height:44px; z-index:9000; pointer-events:none;
-    font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
+    font-family:var(--f-body); font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
   #topright{ text-shadow:0 0 3px rgba(4,6,9,.95),0 0 8px rgba(4,6,9,.8); }   /* v18.62: the corner readout reads over a light wall (CREDITS vanished on the Undercroft side wall) */
   /* v19.73, seen on the 4K shop and settings screenshots (2026-10-08): with a window open the corner readout sits in its heading row
      (v11.52, v12.19), but 18 pixels above the heading, so at every size its figures sat on the window's frame. While a window is
@@ -563,7 +573,7 @@
   /* v19.89, from the code review of 2026-10-08: the centred card windows (PARTY, TERMS, the gambler, the bar, the one question card)
      have no heading row in the corner, and at 4K the move put the figures on the PARTY frame's top line. They keep the corner. */
   body:has(.modal.on:not(#partymodal):not(#termsmodal):not(#gamblemodal):not(#barmodal):not(#askmodal)) #topright{ top:24px; right:33px; }   /* v19.74: and its right edge ends where the heading line ends, inside the frame */
-  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.24em; font-weight:400; margin-left:7px; margin-right:20px; }
+  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.12em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:last-child{ margin-right:0; }
   .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
@@ -608,9 +618,9 @@
   .ocwin > *{ flex-shrink:0; }   /* v18.97, seen on the 4K run card screenshot (2026-10-07): with three achievement lines the card ran past the screen and, a flex column, squeezed the note box to a sliver; nothing shrinks now, the card scrolls (the buttons stay pinned) */
   .ocwin{ max-height:min(86vh,calc(100% - 32px)); }   /* v18.97: and the card always fits inside the screen, at any menu zoom */
   .ocwin::-webkit-scrollbar-track{ margin:16px 0; }   /* v21.57, from the 4K visual pass (V-E4): on a run card that scrolls, the scrollbar stays inside the rounded corners */
-  .outcome h1{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:30px;
-    letter-spacing:.2em; margin:0; text-transform:uppercase; }
-  .outcome .sub{ color:var(--ash); font-size:14px; letter-spacing:.18em; margin-bottom:12px; }
+  .outcome h1{ font-family:var(--f-body); font-weight:800; font-size:30px;
+    letter-spacing:.02em; margin:0; text-transform:uppercase; }
+  .outcome .sub{ color:var(--ash); font-size:14px; letter-spacing:.12em; margin-bottom:12px; }
   .manifest{ font-size:14.5px; color:var(--bone); text-align:center; line-height:1.7; max-width:560px; }
   .hint{ font-size:14px; color:var(--ash); line-height:1.65; padding:9px 12px; }
   .hint b{ color:var(--bone); font-weight:500; }
@@ -627,7 +637,7 @@
   /* Text fields kept the old near-black while everything around them moved to
      navy, so a note box read as a hole punched in the window rather than a
      recessed field in it. Darker than the window, same family as the window. */
-  textarea{ font-family:'Rubik',system-ui,sans-serif; font-size:14px; background:rgba(17,19,21,.92);
+  textarea{ font-family:var(--f-body); font-size:14px; background:rgba(17,19,21,.92);
     border:1px solid var(--steel-hi); border-radius:3px;
     box-shadow:inset 0 1px 3px rgba(0,0,0,.45);
     color:var(--bone); padding:8px; width:100%; resize:none;
@@ -637,8 +647,8 @@
     display:none; flex-direction:column; align-items:center; justify-content:center; gap:11px; }
   .pausebox::before{ inset:50% auto auto 50%; width:min(var(--pbw,780px),calc(100% - 28px)); height:min(var(--pbh,400px),calc(100% - 28px)); transform:translate(-50%,-50%); }   /* v19.90: --pbh from pauseFrameFit() */
   .pausebox.on{ display:flex; }
-.pausebox h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:25px;
-    letter-spacing:.24em; margin:0; color:var(--amber); text-transform:uppercase; }
+.pausebox h3{ font-family:var(--f-body); font-weight:800; font-size:25px;
+    letter-spacing:.04em; margin:0; color:var(--amber); text-transform:uppercase; }
   .modal{ position:absolute; inset:0; background:rgba(17,19,21,.92); z-index:60;
     display:none; flex-direction:column; padding:22px; }
   .modal::before{ inset:14px; }
@@ -704,10 +714,10 @@
      box. So this centres the shop and does nothing at all to the stash. */
   #tradermodal .vdet, #opmodal .vdet{ max-width:470px; }
   .modal > .plist{ min-height:0; overflow-y:auto; }
-.modal h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:30px;
-    letter-spacing:.24em; margin:0 0 10px; color:var(--amber); text-transform:uppercase; }
-  .modal h2{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:19px;
-    letter-spacing:.24em; margin:12px 0 6px; color:var(--amber); text-transform:uppercase; }
+.modal h3{ font-family:var(--f-body); font-weight:800; font-size:30px;
+    letter-spacing:.02em; margin:0 0 10px; color:var(--amber); text-transform:uppercase; }
+  .modal h2{ font-family:var(--f-body); font-weight:800; font-size:19px;
+    letter-spacing:.06em; margin:12px 0 6px; color:var(--amber); text-transform:uppercase; }
   .msub{ font-size:15px; color:var(--ash); margin-bottom:12px; }
   #settingsmodal .tpane{ max-width:1080px; width:100%; margin:0 auto; }
   #opane_mf{ max-width:1080px; width:100%; margin:0 auto; }
@@ -734,18 +744,18 @@
   #partymodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,760px),calc(100% - 150px)); transform:translate(-50%,-50%); }
   #partymodal .msub, #partymodal .plist, #partymodal .pbox, #partymodal .hint{ max-width:1060px; width:100%; }   /* v19.42, seen on the 4K PARTY screenshot (2026-10-08): the TRADING line is a .hint and ran out past both sides of the window */
   #partymodal .plist{ flex:0 0 auto; }
-  #partymodal textarea{ font-size:12px; word-break:break-all; }   /* v16.91: the game font, as every text box (his v11.09 rule) */
+  #partymodal textarea{ font-size:13px; word-break:break-all; }   /* v16.91: the game font, as every text box (his v11.09 rule) */
   /* v15.76, HIS ORDER OF 2026-09-25 (multiplayer, build 3): THE MODE MENU ON THE TITLE. Five rows, one under the other and all
      centred, so a controller stepping down the column lands on the next row and not on a control off to one side. A greyed
      row keeps its note beside it, out of the flow, so the row itself stays centred with the others. */
   #modemenu{ display:flex; flex-direction:column; align-items:center; gap:6px; }
-  #modemenu button.moderow{ min-width:440px; padding:9px 28px; font-size:12px; letter-spacing:.22em; }
+  #modemenu button.moderow{ min-width:440px; padding:9px 28px; font-size:13px; letter-spacing:.12em; }
   #modemenu button.moderow.ghost{ background:rgba(17,19,21,.88); }   /* v18.67, seen on the title screenshot (2026-10-07): the mode rows were see-through, so the Undercroft behind the title showed inside them, a head in 2 PLAYER CO-OP; solid now, the gold outline kept */
   #modemenu .modelater{ position:relative; display:inline-block; }
   #modemenu .modelater span{ position:absolute; left:100%; top:50%; transform:translateY(-50%); margin-left:12px; white-space:nowrap;
-    font-size:10.5px; letter-spacing:.18em; color:var(--ash); text-transform:uppercase; }
-  #modemsg{ font-size:12.5px; line-height:1.5; color:var(--hazard); max-width:640px; }
-  #p2line{ font-size:12.5px; line-height:1.5; color:var(--amber); max-width:640px; }
+    font-size:13px; letter-spacing:.12em; color:var(--ash); text-transform:uppercase; }
+  #modemsg{ font-size:13px; line-height:1.5; color:var(--hazard); max-width:640px; }
+  #p2line{ font-size:13px; line-height:1.5; color:var(--amber); max-width:640px; }
   #gamblemodal{ align-items:center; justify-content:center; }
   #gamblemodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,620px),calc(100% - 28px)); transform:translate(-50%,-50%); }
   #gamblemodal .msub, #gamblemodal .plist{ max-width:1060px; width:100%; }
@@ -764,7 +774,7 @@
   .runline .o{ width:44px; flex:none; font-weight:700; }
   .o-ext{ color:var(--coolant); } .o-dead{ color:var(--hazard); } .o-aban{ color:var(--ash); }
   .trow{ display:grid; grid-template-columns:180px 1fr 92px; gap:10px; align-items:center;
-    padding:4px 0; font-size:11px; }
+    padding:4px 0; font-size:13px; }
   .trow label{ color:var(--ash); }
   .trow .tv{ color:var(--amber); text-align:right; }
   .trow .nx{ color:var(--steel-hi); font-size:13px; margin-left:6px; }
@@ -777,7 +787,7 @@
      size button sitting in the small progress line, so that one row stood about a third taller than the others and the list lost
      its rhythm. Here the button is slimmer and overhangs its line a little into the row padding, so every row is the same height. */
   #root .crow .cp button{ min-height:0; padding:5px 16px; margin:-6px 0; }
-  pre.simpre{ font-family:'Rubik',system-ui,sans-serif; font-size:11px; color:var(--bone);
+  pre.simpre{ font-family:var(--f-body); font-size:13px; color:var(--bone);
     background:rgba(17,19,21,.92); border:1px solid var(--steel-hi); border-radius:3px;
     box-shadow:inset 0 1px 3px rgba(0,0,0,.45); padding:10px;
     overflow:auto; flex:1; line-height:1.55; white-space:pre-wrap; margin:0; }
@@ -792,7 +802,7 @@
           padding:8px 10px; border-radius:3px; min-width:0; }
   /* v19.38, seen on the 4K YOUR STATS screenshot (2026-10-08): NET LIFETIME EARNI..., TYPICAL RAID LENG..., AVERAGE CONTAINE...
      and AVERAGE KILLS PER ... were cut off. A title wraps now, and every title keeps two lines so the numbers in a row stay level. */
-  .scard .sk{ font-size:11px; letter-spacing:.10em; text-transform:uppercase;
+  .scard .sk{ font-size:13px; letter-spacing:.10em; text-transform:uppercase;
               color:var(--ash); white-space:normal; line-height:1.25; min-height:2.5em; overflow-wrap:anywhere; }
   .scard .sv{ font-size:23px; line-height:1.15; font-weight:700; color:var(--bone);
               font-variant-numeric:tabular-nums; margin-top:2px;
@@ -800,7 +810,7 @@
   /* v6.80: a card holding a NAME rather than a number. The grid is sized for figures, so
      a long word gets a step down and is allowed to wrap onto a second line. */
   .scard .sv.word{ font-size:16px; line-height:1.2; letter-spacing:.01em; }
-  .scard .ss{ font-size:12px; color:var(--ash); margin-top:2px; }
+  .scard .ss{ font-size:13px; color:var(--ash); margin-top:2px; }
   .scard .ss b{ color:var(--amber); font-weight:600; }
   /* v20.26, seen on the 4K YOUR STATS screenshot (2026-10-08): the card titles were 11px and the lines under them 12px, and the
      150px cards stood seven to a row with empty space beside them. Bigger print and wider cards that fill the row. */
@@ -821,7 +831,7 @@
      real primary, quiet rows that light on hover, dark inputs with a focus ring, thin scrollbars. Ids and classes are unchanged. */
   #root .modal{ background:radial-gradient(1200px 700px at 50% -10%, rgba(170,164,152,.12), transparent 60%), rgba(17,19,21,.95);
     padding:26px 32px; }
-  #root .modal h3{ font-size:22px; letter-spacing:.22em; text-transform:uppercase; color:var(--amber); margin:0 0 14px;
+  #root .modal h3{ font-size:22px; letter-spacing:.04em; text-transform:uppercase; color:var(--amber); margin:0 0 14px;
     padding-bottom:12px; border-bottom:1px solid rgba(170,164,152,.22); }
   #root .msub{ font-size:15px; line-height:1.5; color:var(--ash); max-width:1180px; }
   #root #termsmodal .msub, #root #partymodal .msub, #root #gamblemodal .msub, #root #barmodal .msub{ max-width:1060px; }   /* v18.78, seen on the 4K screenshots (2026-10-07): the general 1180 cap above came later and beat the 1060 these framed windows set, so on a big screen their text lines ran out to the frame's edge (THE LAST POUR, WIRT THE GAMBLER, the Terms, the Party); inside the frame again */
@@ -833,7 +843,7 @@
   #root button:hover:not(:disabled){ background:rgba(245,183,59,.10); box-shadow:0 0 0 1px rgba(245,183,59,.25) inset; }
   #root button:active:not(:disabled){ transform:translateY(1px); }
   #root .deploy{ background:linear-gradient(180deg,#ffd97f 0%,#ffb634 100%); color:#1a1408; border:1px solid #ffe9b0; border-radius:8px;
-    box-shadow:0 8px 22px rgba(255,180,50,.22), 0 1px 0 rgba(255,255,255,.35) inset; letter-spacing:.24em; font-weight:800; }
+    box-shadow:0 8px 22px rgba(255,180,50,.22), 0 1px 0 rgba(255,255,255,.35) inset; letter-spacing:.12em; font-weight:800; }
   #root .deploy:hover:not(:disabled){ filter:brightness(1.06); color:#1a1408; background:linear-gradient(180deg,#ffe08f 0%,#ffbd40 100%); box-shadow:0 10px 26px rgba(255,180,50,.3); }
   #root .deploy.ghost{ background:transparent; color:var(--amber); border-color:rgba(245,183,59,.55); box-shadow:none; }
   #root .deploy.ghost:hover:not(:disabled){ background:rgba(245,183,59,.10); color:var(--amber); }
@@ -854,7 +864,7 @@
   #root .tag{ border-radius:999px; padding:6px 14px; transition:background .12s, border-color .12s, color .12s; }
   #root .tag:hover{ background:rgba(170,164,152,.10); }
   #root #oc_btn{ background:linear-gradient(180deg,#ffd97f 0%,#ffb634 100%); color:#1a1408; border:1px solid #ffe9b0; border-radius:8px;
-    font-weight:800; letter-spacing:.16em; box-shadow:0 8px 22px rgba(255,180,50,.22); }
+    font-weight:800; letter-spacing:.12em; box-shadow:0 8px 22px rgba(255,180,50,.22); }
   #root #oc_btn:hover{ filter:brightness(1.06); }
   /* v18.32, THE STYLING PASS, STAGE E: THE STASH AND THE SHOP. Item cells and shop cells as rounded tiles with a light from the
      top and a lift on hover; the tabs as rounded chips. The rarity border colours, sizes and every id are unchanged. */
@@ -866,6 +876,18 @@
   #root .invtab{ border-radius:8px; }
   #root .vendgrid{ border-radius:10px; }
   #root .vdet{ border-radius:12px; box-shadow:0 16px 40px rgba(0,0,0,.40); }
+  /* v23.85, UI REDESIGN ui3: the type roles as classes (new markup uses these), and the scanned caps of every existing window in the
+     condensed family: buttons, tabs, chips, window and panel titles, the run card headline, the loadout heads and the key bar. */
+  .t-display{ font:var(--t-display); letter-spacing:.01em; text-transform:uppercase; }
+  .t-h1{ font:var(--t-h1); letter-spacing:.02em; text-transform:uppercase; }
+  .t-h2{ font:var(--t-h2); letter-spacing:.04em; text-transform:uppercase; }
+  .t-h3{ font:var(--t-h3); letter-spacing:.06em; text-transform:uppercase; }
+  .t-label{ font:var(--t-label); letter-spacing:.12em; text-transform:uppercase; }
+  .t-button{ font:var(--t-button); letter-spacing:.08em; text-transform:uppercase; }
+  .t-lead{ font:var(--t-lead); } .t-body{ font:var(--t-body); } .t-small{ font:var(--t-small); letter-spacing:.01em; }
+  .t-num-xl{ font:var(--t-num-xl); font-variant-numeric:tabular-nums; } .t-num{ font:var(--t-num); font-variant-numeric:tabular-nums; }
+  button, .deploy, .invtab, .tag, .modal h2, .modal h3, .pausebox h3, .outcome h1, .panel h2, .loslab, .lohead, .keybar, .credits, #topright{ font-family:var(--f-cond); }
+  .credits, #topright, .vprice, .cnt{ font-variant-numeric:tabular-nums; }
 </style>
 
 <canvas id="cv"></canvas>
@@ -902,14 +924,14 @@
        READABLE. HOW DID THAT RUN FEEL was 10.5 px, the smallest text on the card and smaller than the tags it heads, so from the
        couch it was hard to read. It is 12.5 px now, a touch under the tags so it still reads as their heading, and HOW IT WENT
        on a death card matches it. -->
-  <div style="font-size:12.5px;color:var(--ash);letter-spacing:.2em;margin-top:16px">HOW DID THAT RUN FEEL</div>
+  <div style="font-size:13px;color:var(--ash);letter-spacing:.12em;margin-top:16px">HOW DID THAT RUN FEEL</div>
   <div class="tagwrap" id="tagwrap"></div>
   <textarea id="oc_note" rows="2" style="max-width:774px" placeholder="Anything else? (optional)"></textarea>
   <div class="ocacts">
     <button style="padding:8px 22px" id="oc_btn">Log run and return</button>
     <button style="padding:8px 22px" id="oc_copy">Copy report</button>
   </div>
-  <div style="font-size:11px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px">Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.</div>
+  <div style="font-size:13px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px">Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.</div>
 </div>
 </div>
 
@@ -958,14 +980,14 @@
   <div class="msub" id="wallet_gamble" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="gamble_line">Gamble with Wirt. No refunds, no complaints.</div>
   <div id="wirtsec_gamble" style="border:1px solid var(--steel-hi);padding:10px 12px;margin:6px 0 0">
-    <div style="font-size:12px;letter-spacing:.14em;color:var(--steel-hi);font-weight:700;margin-bottom:6px">THE GAMBLE</div>
+    <div style="font-size:13px;letter-spacing:.14em;color:var(--steel-hi);font-weight:700;margin-bottom:6px">THE GAMBLE</div>
     <div class="plist" id="gamblelist" style="border:1px solid var(--steel);max-height:220px"></div>
     <div style="display:flex;gap:8px;margin-top:10px">
       <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 2500c</button>
     </div>
   </div>
   <div id="wirtsec_offer" style="border:1px solid var(--amber);padding:10px 12px;margin:14px 0 0;background:rgba(245,183,59,.05)">
-    <div style="font-size:12px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px">LIMITED TIME OFFER</div>
+    <div style="font-size:13px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px">LIMITED TIME OFFER</div>
     <div id="wirtlot" style="display:flex;align-items:center;gap:12px"></div>
   </div>
   <div style="display:flex;gap:8px;margin-top:14px">
@@ -1064,7 +1086,7 @@
     </div>
   </div>
   <div class="pbox" id="partycodebox" style="display:none;margin-top:10px">
-    <div id="partylen" style="font-size:12px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px"></div>
+    <div id="partylen" style="font-size:13px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px"></div>
     <textarea id="partycode" rows="3" spellcheck="false" readonly></textarea>
     <button id="partycopy" style="padding:8px 22px;margin-top:6px">COPY CODE</button>
   </div>
@@ -1092,14 +1114,14 @@
     <button id="exportbtn" style="flex:1">Export for Claude</button>
     <button id="simbtn" style="flex:1">Run bot sim</button>
   </div>
-  <div style="padding:0 0 7px"><button id="mapbtn" style="width:100%;font-size:11px">Map: GREYWATER DAM</button></div>
-  <div style="padding:0 0 7px"><button id="tunebtn2" style="width:100%;font-size:11px">Tuning console (all the dials)</button></div>
-  <div id="simprog" style="font-size:11px;color:var(--ash);padding:0 0 7px;display:none"></div>
+  <div style="padding:0 0 7px"><button id="mapbtn" style="width:100%;font-size:13px">Map: GREYWATER DAM</button></div>
+  <div style="padding:0 0 7px"><button id="tunebtn2" style="width:100%;font-size:13px">Tuning console (all the dials)</button></div>
+  <div id="simprog" style="font-size:13px;color:var(--ash);padding:0 0 7px;display:none"></div>
   <h2 style="border-top:1px solid var(--steel-hi)">Roadmap</h2>
   <div class="plist" id="roadmap" style="max-height:190px"></div>
   <h2 style="border-top:1px solid var(--steel-hi)">Play an older build</h2>
   <div style="display:flex;gap:6px;padding:0 0 10px">
-    <select id="buildsel" style="flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:12px;padding:6px"></select>
+    <select id="buildsel" style="flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:var(--f-body);font-size:13px;padding:6px"></select>
     <button id="buildgo" style="padding:6px 14px">OPEN</button>
   </div>
   <div style="display:flex;gap:8px;margin-top:4px">
@@ -1129,7 +1151,7 @@
     </div>
   </div>
   <div class="tpane" id="opane_rew" style="display:none;flex-direction:column;flex:1;min-height:0">
-    <div id="seasonhead" style="font-size:12px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
+    <div id="seasonhead" style="font-size:13px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
     <div class="msub">Kills, loot, doors, selling and extracting all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.</div>
     <!-- v19.40, seen on the 4K REWARDS screenshot (2026-10-08): the count was dark text meant for the amber fill, but with the fill near empty
          (XP out of 1,200,000) it sat on the dark track and could not be read. Light text with a dark edge reads on both; the bar is a little taller. -->
@@ -1154,7 +1176,7 @@
     <div id="mfslothint" class="hint" style="margin-top:5px;font-size:14px;line-height:1.4"></div>
     <div style="display:flex;gap:6px;margin-top:7px">
       <input id="mfghostname" placeholder="friend&#39;s name" maxlength="18"
-        style="flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:14px;padding:7px">
+        style="flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:var(--f-body);font-size:14px;padding:7px">
       <button id="mfghost" style="flex:1">IMPORT A FRIEND</button>
     </div>
     <div id="mfghosthint" class="hint" style="margin-top:5px;font-size:14px;line-height:1.4"></div>
@@ -1231,12 +1253,12 @@
 <div class="screen on" id="title">
   <div class="titlecol" style="margin:auto;width:100%;text-align:center;padding:0 20px">
     <div class="wordmark">PILLAGERS</div>
-    <div style="margin-top:9px;font-size:11px;letter-spacing:.34em;color:var(--ash)">
+    <div style="margin-top:9px;font-size:13px;letter-spacing:.12em;color:var(--ash)">
       A 2.5D EXTRACTION RAID  &middot;  <span id="titlever"></span></div>
-    <div id="titleres" style="margin-top:7px;font-size:10.5px;letter-spacing:.18em;color:var(--steel-hi);
+    <div id="titleres" style="margin-top:7px;font-size:13px;letter-spacing:.12em;color:var(--steel-hi);
          display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
       <span>BEST IN FULLSCREEN AT 1080p, 1440p OR 4K</span>
-      <button id="titlefs" style="padding:5px 14px;font-size:10.5px;letter-spacing:.18em">GO FULLSCREEN</button></div>
+      <button id="titlefs" style="padding:5px 14px;font-size:13px;letter-spacing:.12em">GO FULLSCREEN</button></div>
 
     <div style="margin-top:26px;font-size:13.5px;line-height:1.65;color:var(--bone);max-width:760px;margin-left:auto;margin-right:auto">
       The elites left the surface to the machines and went somewhere better.
@@ -1261,7 +1283,7 @@
       </div>
     </div>
 
-    <div class="kbrow" style="margin-top:22px;font-size:11.5px;color:var(--ash);letter-spacing:.05em;line-height:2">
+    <div class="kbrow" style="margin-top:22px;font-size:13px;color:var(--ash);letter-spacing:.05em;line-height:2">
       <b style="color:var(--bone)">WASD</b> move &nbsp;
       <b style="color:var(--bone)">MOUSE</b> aim &nbsp;
       <b style="color:var(--bone)">LMB</b> fire &nbsp;
@@ -1273,7 +1295,7 @@
     </div>
     <!-- v19.95, seen on the controller pass (2026-10-08): with a pad on, the title's key row named WASD, MOUSE and LMB. The pad row
          (his layout, LEGEND_PAD) shows instead, through padB on a PlayStation pad. -->
-    <div class="padrow" style="margin-top:22px;font-size:11.5px;color:var(--ash);letter-spacing:.05em;line-height:2">
+    <div class="padrow" style="margin-top:22px;font-size:13px;color:var(--ash);letter-spacing:.05em;line-height:2">
       <b style="color:var(--bone)">L STICK</b> move &nbsp;
       <b style="color:var(--bone)">R STICK</b> aim &nbsp;
       <b style="color:var(--bone)">RT</b> fire &nbsp;
@@ -1290,7 +1312,7 @@
          later. A same machine row opens the player 2 window; if the browser blocks it the sentence and RETRY below say so. -->
     <div id="modemenu" style="margin-top:22px">
       <button class="deploy moderow" id="titlestart" data-mode="solo"
-        style="padding:13px 46px;font-size:15px;letter-spacing:.2em">1 PLAYER</button>
+        style="padding:13px 46px;font-size:15px;letter-spacing:.12em">1 PLAYER</button>
       <button class="deploy ghost moderow" id="modecoop" data-mode="coop">2 PLAYER CO-OP (SAME MACHINE)</button>
       <button class="deploy ghost moderow" id="modearcade" data-mode="arcade">2 PLAYER ARCADE DEMO</button>
       <button class="deploy ghost moderow" id="modearcade1" data-mode="arcade1">1 PLAYER ARCADE DEMO</button>
@@ -1303,16 +1325,16 @@
     </div>
     <div id="titlesub" style="margin-top:12px;font-size:14px;color:var(--ash)"></div>
     <div id="slotpanel" style="margin-top:20px;text-align:left">
-      <div style="font-size:10.5px;letter-spacing:.2em;color:var(--amber)">SAVES</div>
+      <div style="font-size:13px;letter-spacing:.12em;color:var(--amber)">SAVES</div>
       <div id="slotlist" style="margin-top:8px;display:grid;gap:6px"></div>
       <!-- v11.02, HIS NOTE 8: he asked why changing save leaves fullscreen. It
            reloads the game, and a browser always drops fullscreen on a reload.
            Said here, where the click is. -->
-      <div id="slotnote" style="margin-top:6px;font-size:10.5px;color:var(--ash);letter-spacing:.06em">Changing save reloads the game, which is why it leaves fullscreen.</div>
-      <div id="fsback" style="display:none;margin-top:6px;font-size:11px;color:var(--amber);letter-spacing:.06em">You were in fullscreen. The reload dropped it, as it always does. GO FULLSCREEN is above.</div>
+      <div id="slotnote" style="margin-top:6px;font-size:13px;color:var(--ash);letter-spacing:.06em">Changing save reloads the game, which is why it leaves fullscreen.</div>
+      <div id="fsback" style="display:none;margin-top:6px;font-size:13px;color:var(--amber);letter-spacing:.06em">You were in fullscreen. The reload dropped it, as it always does. GO FULLSCREEN is above.</div>
       <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
         <input id="pnamein" maxlength="16" autocomplete="off" spellcheck="false"
-          style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:12px;letter-spacing:.08em"
+          style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:13px;letter-spacing:.08em"
           placeholder="NAME YOUR PILLAGER">
         <button class="deploy ghost" id="pnamesave" style="padding:7px 16px">CHANGE NAME</button>
       </div>
@@ -1420,17 +1442,17 @@
     <!-- v11.04, HIS NOTE 14: the other end of the restore code, beside the report
          it comes out of. Destructive, so it is a three step door. -->
     <div style="margin-top:12px;border-top:1px solid var(--steel-hi);padding-top:10px">
-      <div style="font-size:10.5px;letter-spacing:.2em;color:var(--amber)">RESTORE A CHARACTER</div>
+      <div style="font-size:13px;letter-spacing:.12em;color:var(--amber)">RESTORE A CHARACTER</div>
       <div class="msub">Paste a RESTORE CODE from the end of a run report. It REPLACES the save you are playing. Read it first: the game will tell you whose character it is before anything is written.</div>
       <textarea id="rescode" rows="2" spellcheck="false" placeholder="PIL1..." style="width:100%"></textarea>
       <div style="display:flex;gap:8px;margin-top:6px;align-items:center;flex-wrap:wrap">
         <button id="resread" style="padding:7px 16px">READ CODE</button>
-        <span id="reswhat" style="font-size:11px;color:var(--ash)"></span>
+        <span id="reswhat" style="font-size:13px;color:var(--ash)"></span>
       </div>
       <div id="resconfirm" style="display:none;margin-top:8px;border:1px solid var(--hazard);border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28)">
-        <span style="color:var(--hazard);font-size:11px">Type the word restore to replace the save you are playing with <b id="reswho"></b>.</span>
+        <span style="color:var(--hazard);font-size:13px">Type the word restore to replace the save you are playing with <b id="reswho"></b>.</span>
         <div style="display:flex;gap:8px;margin-top:6px">
-          <input id="resword" autocomplete="off" spellcheck="false" style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:12px">
+          <input id="resword" autocomplete="off" spellcheck="false" style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:13px">
           <button id="resgo" class="deploy ghost" style="padding:5px 12px;border-color:var(--hazard);color:var(--hazard)">REPLACE</button>
           <button id="resno" class="deploy ghost" style="padding:5px 12px">KEEP MINE</button>
         </div>
@@ -1478,7 +1500,7 @@
   <div class="plist" id="tunelist" style="border:1px solid var(--steel-hi);padding:6px 12px"></div>
   <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
     <button id="cfgcopy" style="padding:8px 22px">Copy config</button>
-    <span id="cfgcopied" style="font-size:11px;color:var(--coolant);display:none">Copied</span>
+    <span id="cfgcopied" style="font-size:13px;color:var(--coolant);display:none">Copied</span>
     <button id="closetune" style="padding:8px 22px;margin-left:auto">CLOSE</button>
   </div>
 </div>
@@ -1543,8 +1565,8 @@
         <div><kbd>B</kbd> back</div>
       </div>
       <!-- v18.30, HIS ORDER (2026-10-03): DRAG TO DROP. A target for the floor, shown while the windows are linked. -->
-      <div id="floordrop" data-drop="floor" style="display:none;margin:6px 12px 0;padding:8px 12px;border:1px dashed var(--amber);border-radius:6px;font-size:11px;color:var(--ash);align-items:center;gap:10px">
-        <button id="floordropbtn" style="padding:5px 12px;font-size:11px;letter-spacing:.14em">DROP HERE</button>
+      <div id="floordrop" data-drop="floor" style="display:none;margin:6px 12px 0;padding:8px 12px;border:1px dashed var(--amber);border-radius:6px;font-size:13px;color:var(--ash);align-items:center;gap:10px">
+        <button id="floordropbtn" style="padding:5px 12px;font-size:13px;letter-spacing:.14em">DROP HERE</button>
         <span>Drag an item here (on a controller, pick it up with A and press A here) to drop it on the floor for <b id="floordropwho" style="color:var(--bone)">your teammate</b>.</span>
       </div>
       <div id="stashdetail" style="padding:8px 12px;border-top:1px solid var(--steel-hi);
@@ -1573,7 +1595,7 @@
   <!-- v9.98, HIS NOTE: the armour line and the button row he struck out are
        gone. The shop, craft, contracts and settings stand on the floor as
        stations; day or night moved to the sector page at v9.97. -->
-  <div id="reportline" style="margin-top:8px;font-size:11px;padding:7px 10px;display:none;
+  <div id="reportline" style="margin-top:8px;font-size:13px;padding:7px 10px;display:none;
        border:1px solid var(--hazard);border-radius:3px;color:var(--hazard)"></div>
 </div>
 <script>
@@ -1708,7 +1730,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.84';
+var VER='23.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36813,7 +36835,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.84: Bullet impacts sound like what they hit: concrete, wood, glass, metal, armour or flesh. Check 23.84 fails on v23.83',
+  now:'v23.85: Menu text now uses one condensed caps face for titles and buttons and a plain face for reading, with tight letter spacing and nothing under 13px. Check 23.85 fails on v23.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -49692,7 +49714,7 @@ loadProfile().then(function(){
       if(false){   // v17.93: player 2 picks a character from the same list; the one-save note is gone
         host.innerHTML='';
         var _p2l=document.createElement('div');
-        _p2l.style.cssText='font-size:11px;color:var(--ash);letter-spacing:.06em';
+        _p2l.style.cssText='font-size:13px;color:var(--ash);letter-spacing:.06em';
         _p2l.textContent='Player 2 plays its own save on this machine.';
         host.appendChild(_p2l);
         return;
@@ -49707,20 +49729,20 @@ loadProfile().then(function(){
            '<b style="color:'+(me?'var(--amber)':'var(--bone)')+'">'+escHtml(inf?inf.name:'PILLAGER')+
            // v13.28: the current save said CONTINUING even with no raids on it, beside
            // the line reading 0 raids. The tag now reads the same run count.
-           (me?' <span style="font-size:10px;letter-spacing:.14em">'+((inf&&inf.runs>0)?'CONTINUING':'NEW')+'</span>':(blk?' <span style="font-size:10px;letter-spacing:.14em;color:var(--ash)">IN USE BY PLAYER '+((typeof NETP2!=='undefined'&&NETP2)?'1':'2')+'</span>':''))+'</b>'+
-           '<span style="color:var(--ash);font-size:11px">'+
+           (me?' <span style="font-size:13px;letter-spacing:.12em">'+((inf&&inf.runs>0)?'CONTINUING':'NEW')+'</span>':(blk?' <span style="font-size:13px;letter-spacing:.12em;color:var(--ash)">IN USE BY PLAYER '+((typeof NETP2!=='undefined'&&NETP2)?'1':'2')+'</span>':''))+'</b>'+
+           '<span style="color:var(--ash);font-size:13px">'+
            // v8.56, audit: "1 runs" on the first screen of the game, on the slot
            // of anyone who has played exactly once.
            (inf?(inf.runs+' raid'+(inf.runs===1?'':'s')+' \u00b7 $'+inf.credits.toLocaleString()+' \u00b7 '+inf.xp.toLocaleString()+' XP'):'new')+
-           ((me||blk)?'':' <button data-del="'+key+'" class="deploy ghost" style="margin-left:8px;padding:2px 8px;font-size:10px">DELETE</button>')+
+           ((me||blk)?'':' <button data-del="'+key+'" class="deploy ghost" style="margin-left:8px;padding:2px 8px;font-size:13px">DELETE</button>')+
            '</span></div>';
       }
       // v7.65, his order: delete exists, behind a typed word. The confirm row
       // appears under the list when a DELETE button arms it.
       h+='<div id="delconfirm" style="display:none;border:1px solid var(--hazard);border-radius:3px;padding:8px 11px;background:rgba(0,0,0,.28)">'+
-         '<span style="color:var(--hazard);font-size:11px">Type the word delete to erase <b id="delwho"></b> forever.</span>'+
+         '<span style="color:var(--hazard);font-size:13px">Type the word delete to erase <b id="delwho"></b> forever.</span>'+
          '<div style="display:flex;gap:8px;margin-top:6px">'+
-         '<input id="delword" autocomplete="off" spellcheck="false" style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:12px">'+
+         '<input id="delword" autocomplete="off" spellcheck="false" style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--hazard);border-radius:3px;color:var(--bone);padding:5px 9px;font-size:13px">'+
          '<button id="delgo" class="deploy ghost" style="padding:5px 12px;border-color:var(--hazard);color:var(--hazard)">ERASE</button>'+
          '<button id="delno" class="deploy ghost" style="padding:5px 12px">KEEP</button></div></div>';
       host.innerHTML=h;

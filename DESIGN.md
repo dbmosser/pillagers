@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.85 - ONE TYPE SYSTEM FOR THE MENUS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus and text still look bad, make it look like a triple-A game. Second step of the UI redesign (ui3). The loudest amateur tell on the screenshots was caps spaced far apart (up to .42em), in a mix of families and in sizes down to 10.5px. The menus now have one type system: condensed industrial caps for titles, tabs, buttons, labels and chips, and a plain grotesque for anything you read. Letter spacing never goes past .12em and shrinks as the size grows, and nothing in a menu is smaller than 13px (before the screen scale). The new faces (Barlow Condensed and Barlow) are added once he says yes to downloading them; until then the menus use Bahnschrift, the condensed DIN-like face built into Windows. 100 stylesheet lines changed. His own words are untouched.
+
+MEASURED. Check 23.85 passes, and fails on v23.84.
 ## v23.84 - IMPACTS SOUND LIKE WHAT THEY HIT
 
 Co-op hunt while he was away. His number 45, improve all sound as much as possible. Every round that hit a wall made the same faint tick, a tree the same as a car door or a window, and every round that hit a body made the same blip, a pillager the same as a Warden. Now what you hit is heard: concrete chips, wood thocks, glass shatters, metal and armour ring, flesh thuds. The other window in co-op hears the same material. The menu clank that says no is unchanged, and nothing about where rounds go or what the map rolls moves.

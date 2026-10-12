@@ -1,0 +1,7 @@
+v23.85: one type system for the menus
+
+Menu text now uses one condensed caps face for titles and buttons and a plain face for reading, with tight letter spacing and nothing under 13px.
+
+Check 23.85. Fails on v23.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
