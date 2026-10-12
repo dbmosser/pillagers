@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.74 - GRAPHICS HOOKS
+
+Co-op hunt while he was away. His order of 2026-10-12, the graphics program: add all of it. This is the frame the rest hangs on. The drawing code gets named hooks where the new work goes: after the camera, on the ground, under the bodies (shadows), in the air (smoke, fire, explosions), a switch around the lighting (off keeps the light exactly as it is now), before the fog of war (bloom, so nothing glows through fog), after it (the colour grade) and before the HUD (grain). The game side gets quiet hooks where a shot is fired, a round hits a wall, a charge or a Howler shell bursts and a machine dies (which now remembers what kind it was), each skipped in a bot raid and drawing nothing from the raid dice. Every picture a graphics build bakes is listed in one place and thrown away if the graphics card resets. A bypass switch turns all of it off for comparing. Nothing on screen changes yet.
+
+MEASURED. Check 23.74 passes, and fails on v23.73.
 ## v23.73 - SOUND THROUGH WALLS IS MUFFLED
 
 Co-op hunt while he was away. His number 45, improve all sound as much as possible. A shot in the next room sounded exactly like a shot in the open at the same range, only quieter, so you could not tell a fight behind a wall from one across the street. Now every sound in the world checks whether a wall stands between it and you, using the same line of sight the game uses for seeing: behind a wall it plays muffled, more so the further it is. A sound right beside you is also placed wider left or right, and a far one narrower, so close things sound close. Your own gun and feet are untouched.

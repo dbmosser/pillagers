@@ -1,0 +1,7 @@
+v23.74: graphics hooks
+
+The drawing code now has hooks for the graphics program; nothing looks different yet.
+
+Check 23.74. Fails on v23.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

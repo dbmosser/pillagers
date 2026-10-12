@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.73';
+var VER='23.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14388,6 +14388,7 @@ function explodeFrag(f){
     G.puffs.push({x:f.x,y:f.y,t:0,life:.6,c:'#ffb267',r:52}); }
   G.shake=Math.max(G.shake,9);
   flash(f.x,f.y,310,'#ffb267',.45);
+  if(!G.sim){ try{ boomFx(f.x,f.y,1,'frag'); }catch(_gbx){} }   // v23.xx (gfx2): explosion hook
   ping(f.x,f.y,560,false,false,'env','fire');
   if(!f.by) netThrSend('nz',f.x,f.y);   // v17.29, co-op hunt 2026-09-28: the blast of player 2 own charge is heard by the enemies the host runs
   var dp=dist(p,f);
@@ -14507,6 +14508,7 @@ function howlerImpact(SH){
     G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); }
   G.shake=Math.max(G.shake,6);
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
+  if(!G.sim){ try{ boomFx(SH.tx,SH.ty,0.8,'howler'); }catch(_gbx){} }   // v23.xx (gfx2): explosion hook
   // v12.51, 2026-09-07 audit: A HOWLER IS DEAF TO ITS OWN GUN. Everything it
   // does is a noise every listening machine hears, which is right and is what
   // pulls a room to a burst; but the machine that made the noise heard it too.
@@ -14565,7 +14567,7 @@ var SH=G.shells[shI];
     if(!SH.fx&&!SH.nsent){ SH.nsent=1; netThrSend('sh',SH.tx,SH.ty,{x0:Math.round(SH.x0),y0:Math.round(SH.y0),air:+Math.max(0.2,SH.air-SH.t).toFixed(2)}); }
     if(SH.t>=SH.air){
       G.shells.splice(shI,1);
-      if(SH.fx){ if(!G.sim){ spark(SH.tx,SH.ty,'#ff9a5c',22,300); decal(SH.tx,SH.ty,'#181310',fxn(14,20)); G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); } G.shake=Math.max(G.shake,6); flash(SH.tx,SH.ty,220,'#ff9a5c',.4); }   // a copy only shows the burst
+      if(SH.fx){ if(!G.sim){ spark(SH.tx,SH.ty,'#ff9a5c',22,300); decal(SH.tx,SH.ty,'#181310',fxn(14,20)); G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); } G.shake=Math.max(G.shake,6); flash(SH.tx,SH.ty,220,'#ff9a5c',.4); if(!G.sim){ try{ boomFx(SH.tx,SH.ty,0.8,'howler'); }catch(_gbx){} } }   // a copy only shows the burst (v23.xx gfx2: and its explosion hook)
       else howlerImpact(SH);
     }
   }
@@ -14621,7 +14623,7 @@ var SH=G.shells[shI];
     var fr=G.frags[i]; fr.t+=dt;
     if(!fr.fx&&!fr.nsent){ fr.nsent=1; netThrSend('frag',fr.x,fr.y,{f:+Math.max(0.05,fr.fuse-fr.t).toFixed(2)}); }   // v21.98 (K8, K15): the party sees it lie there
     if(fr.t>=fr.fuse){
-      if(fr.fx){ if(!G.sim){ spark(fr.x,fr.y,'#ffcf7a',34,340); decal(fr.x,fr.y,'#141210',fxn(20,30)); G.puffs.push({x:fr.x,y:fr.y,t:0,life:.6,c:'#ffb267',r:52}); } G.shake=Math.max(G.shake,9); flash(fr.x,fr.y,310,'#ffb267',.45); }   // a copy only shows the blast
+      if(fr.fx){ if(!G.sim){ spark(fr.x,fr.y,'#ffcf7a',34,340); decal(fr.x,fr.y,'#141210',fxn(20,30)); G.puffs.push({x:fr.x,y:fr.y,t:0,life:.6,c:'#ffb267',r:52}); } G.shake=Math.max(G.shake,9); flash(fr.x,fr.y,310,'#ffb267',.45); if(!G.sim){ try{ boomFx(fr.x,fr.y,1,'frag'); }catch(_gbx){} } }   // a copy only shows the blast (v23.xx gfx2: and its explosion hook)
       else explodeFrag(fr);
       G.frags.splice(i,1);
     }
@@ -15842,6 +15844,7 @@ if(wep.mag===0){
   if(!melee){
     sh.muzzle=.06;
     flash(sh.x+Math.cos(ang)*20,sh.y+Math.sin(ang)*20,wep.dmg>40?155:108,wep.tint||'#ffc27a',.11);
+    if(!G.sim){ try{ gfxShot(sh,wep,ang,fromPlayer); }catch(_gsf){} }   // v23.xx (gfx2): shot hook, no seeded draw
   }
   // count every pellet as a shot, or a shotgun blast reads as one shot with five
   // hits and accuracy climbs past 100 percent
@@ -22755,6 +22758,7 @@ G.hitMark={t:0,life:en.hp<=0?.44:.26,kill:en.hp<=0};
         // stream from the first bullet impact onward and the two arms stop being
         // the same raid, which is precisely what makes such a measurement lie.
         var _decR=rnd(3,6);
+        if(_struck&&!G.sim){ try{ wallMark(_struck,b.x,b.y,ux,uy); }catch(_gwm){} }   // v23.xx (gfx2): wall mark hook, AFTER the roll and drawing nothing from the stream
         var _pf=penFactor(_struck);
         if(_pf&&(b._pen||0)<PEN_MAX&&b.dmg*_pf.dmg>=PEN_FLOOR){
           b._pen=(b._pen||0)+1;
@@ -25516,7 +25520,9 @@ function deathAnimAdd(e){
   if(!e||typeof G==='undefined'||!G||G.sim) return 0;
   if(!G.deathAnims) G.deathAnims=[];
   if(G.deathAnims.length>40) G.deathAnims.shift();
-  G.deathAnims.push({x:e.x,y:e.y,r:Math.max(8,Math.min(48,e.r||14)),face:+e.face||0,c:DEATH_COL[e.kind]||'#555c64',t0:G.t||0});
+  // v23.xx (gfx2): the kind is kept, so a machine death burst can be sized by what died, in every window
+  G.deathAnims.push({x:e.x,y:e.y,r:Math.max(8,Math.min(48,e.r||14)),face:+e.face||0,c:DEATH_COL[e.kind]||'#555c64',t0:G.t||0,kind:e.kind||''});
+  try{ gfxOnDeath(G.deathAnims[G.deathAnims.length-1]); }catch(_god){}
   return G.deathAnims.length;
 }
 function drawDeathAnims(){
@@ -26339,6 +26345,7 @@ function render2D(dt){
   var sk=G.shake>0?G.shake*.7:0;
   var ox=Math.round(camX+(sk?fxn(-sk,sk):0)),oy=Math.round(camY+(sk?fxn(-sk,sk):0));
   VX=ox; VY=oy;
+  try{ gfxCam(dt); }catch(_gcm){}   // v23.xx (gfx2): camera hook
   // Who the player can actually see this frame. Everything about an entity,
   // sprite included, keys off this: the fog is only 93% opaque, so anything
   // drawn unconditionally shows faintly through walls.
@@ -26597,6 +26604,7 @@ var SHD=G.shells[i];
     shadowE(_sx3,_sy3+1,4,2,.25);
     wc.fillStyle='#20242c'; wc.beginPath(); wc.arc(_sx3,_sy3-_hgt,3.2,0,6.2832); wc.fill();
   }
+  try{ gfxGround(dt); }catch(_ggr){}   // v23.xx (gfx2): ground hook, in the world transform, under every body
   // v7.68: landed decoys and armed frags moved INTO the y-sort (they drew
   // before it and everything overpainted them). Closures, dispatched first.
   var DR=[];
@@ -26714,6 +26722,7 @@ var SHD=G.shells[i];
   if(NET.on) netUpDraw(DR);   // v15.79: the others in the party, sorted into the same list at the depth of where they stand
   DR.sort(function(a,b){return a.k-b.k;});
   var crouchP=crouchHeld();
+  try{ gfxShadowPass(dt); }catch(_gsh){}   // v23.xx (gfx2): shadow hook, under the y-sorted bodies
   // His run #3, v1.01: "character not rendering". He was moving and shooting
   // with no operator on screen, which is the signature of an entity EARLIER in
   // the y-sort throwing mid-draw and killing everything after it in the list,
@@ -27669,6 +27678,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   }
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   try{ drawDeathAnims(); }catch(_dda){}   // v17.47: his pick 29
+  try{ gfxBodyFx(dt); }catch(_gbf){}   // v23.xx (gfx2): body and air effects hook
   for(i=0;i<G.puffs.length;i++){
     var q=G.puffs[i],a2=1-q.t/q.life;
     wc.globalAlpha=a2*.55; wc.fillStyle=q.c;
@@ -27739,6 +27749,10 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   lx2.setTransform(1,0,0,1,0,0); lx2.clearRect(0,0,litC.width,litC.height); lx2.setTransform(SOFTR,0,0,SOFTR,0,0);   // v18.03: the sheet is SOFTR of the screen; everything below draws in screen units through this
   // CFG.bright lifts everything you can actually see. 1.0 is the old v0.19 look.
   var BR=CFG.bright||1;
+  // v23.xx (gfx2): THE LIGHT WRAP. gfxLightOn() true hands the light to gfxLightPass; false (always, in this build) runs the
+  // CLASSIC darkness sheet and warm glows below exactly as v23.58 drew them. BR stays above the wrap: the fog pass reads it.
+  var _gfxL=false; try{ _gfxL=gfxLightOn(); }catch(_glo){ _gfxL=false; }
+  if(_gfxL){ try{ gfxLightPass(dt,BR); }catch(_glp){} } else {
   // at noon there is barely a shadow layer to punch lamps through
   // Chrono Trigger recolour, v0.84. The rule everywhere in this pass is HOLD
   // LUMINANCE, MOVE HUE: darkness becomes deep indigo rather than neutral black,
@@ -27888,6 +27902,8 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   }
   wc.restore();
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  }   // v23.xx (gfx2): end of the CLASSIC light
+  try{ gfxPreFog(dt); }catch(_gpf){}   // v23.xx (gfx2): before the fog sheet, so nothing glows through fog
   gfxpMark('light');   // v23.xx (gfx1): the darkness sheet and the warm glows
   // vision fog
   fx2.globalCompositeOperation='source-over';
@@ -27959,6 +27975,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   fx2.beginPath(); fx2.arc(psx,psy,AMBR(),0,6.2832); fx2.fill();
   if(CFG.sharedSight!==0&&NET.on){ try{ netMateFog(fx2); }catch(_mf){} }   // v18.07: shared sight, the teammate's cone is open in your fog too
 wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
+  try{ gfxPostFog(dt); }catch(_gpo){}   // v23.xx (gfx2): after the fog, before pings, rings and world text
   if(G.map.locked&&G.map.locked.length){
     wc.save(); wc.scale(Z,Z); wc.translate(-ox,-oy);
     for(var _lk=0;_lk<G.map.locked.length;_lk++){
@@ -28184,6 +28201,7 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
       wc.globalCompositeOperation='source-over';
     }
   }
+  try{ gfxScreen(dt); }catch(_gsc){}   // v23.xx (gfx2): screen effects hook, before the HUD
   gfxpMark('wx');   // v23.xx (gfx1): rain, weather fog and the overlays
   drawHUD();
   drawBuzzFx();
@@ -35608,6 +35626,7 @@ function onCtxLost(e){
 function onCtxRestored(){
   ctxLost=false;
   try{ WALLSPR.m={}; WALLSPR.n=0; WALLSPR.key=''; VEGSPR.m={}; VEGSPR.key=''; SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0; ICONSPR.m={}; ICONSPR.n=0; }catch(_sc){}   // v18.48: sprites painted before the loss are blank now
+  try{ gfxStoresDrop(); }catch(_gsd){}   // v23.xx (gfx2): every registered graphics store is blank now too
   hubGround=null;
   // hubGround rebuilds lazily on its next use, but G.ground is drawn unguarded, so
   // nulling it would trade a blank canvas for a throw. Rebuilt here instead.
@@ -35789,6 +35808,63 @@ function gfxpEnd(){
   ps.n=T.pn; row.pass=ps;
   return true;
 }
+// v23.xx (gfx2), HIS ORDER 2026-10-12 ("add ALL of this stuff", the graphics program): THE HOOK SCAFFOLD AND THE STORE REGISTRY.
+// Every later graphics build hangs off a named hook here instead of cutting new lines into render2D and the sim, so the frame keeps
+// one shape and each build owns only its own hook body. Nothing on screen changes in this build: every hook is an empty stub.
+// - Render hooks, each called once a raid frame: gfxCam (after the camera), gfxGround (ground layer, before the y-sort), gfxShadowPass
+//   (under the y-sorted bodies), gfxBodyFx (the air pass), gfxLightOn/gfxLightPass (the light wrap: false keeps the CLASSIC v23.58
+//   darkness sheet and warm glows verbatim), gfxPreFog (bloom and beams, BEFORE the fog sheet so nothing glows through fog), gfxPostFog
+//   (the grade, before pings, rings and world text), gfxScreen (screen effects, before the HUD).
+// - Sim-side stubs, called only when not a bot raid and never drawing from the raid stream: gfxShot (fireWeapon), wallMark (a round
+//   that stops on or punches a wall), boomFx (frag and Howler bursts, and their linked-window copies), gfxOnDeath (deathAnimAdd, which
+//   now keeps the kind). scarStamp, gfxEmit and gfxWet wait for their builds.
+// - GFX.bypass=1 turns every hook off (counted, nothing done): the A/B arm and the rollback. GFX.n counts calls per hook.
+// - GFXSTORES: every sprite store a graphics build makes is registered by name with gfxStore and emptied by onCtxRestored, since a lost
+//   context leaves anything painted before it blank.
+var GFX={bypass:0,n:{},drops:0,emit:[],WET:0};
+var GFXSTORES={};
+function gfxHook(nm){
+  GFX.n[nm]=(GFX.n[nm]||0)+1;
+  return !GFX.bypass&&typeof G!=='undefined'&&!!G&&!G.sim;
+}
+function gfxStore(nm,dropFn){
+  var s=GFXSTORES[nm];
+  if(!s) s=GFXSTORES[nm]={m:{},n:0,drop:dropFn||null};
+  return s;
+}
+function gfxStoresDrop(){
+  var nm, s, c=0;
+  for(nm in GFXSTORES){
+    if(!Object.prototype.hasOwnProperty.call(GFXSTORES,nm)) continue;
+    s=GFXSTORES[nm]; s.m={}; s.n=0;
+    if(s.drop){ try{ s.drop(s); }catch(_sd){} }
+    c++;
+  }
+  GFX.drops++;
+  return c;
+}
+// render hooks (one call each per drawn raid frame)
+function gfxCam(dt){ if(!gfxHook('cam')) return false; GFX.emit.length=0; return true; }   // F1: trauma shake
+function gfxGround(dt){ return gfxHook('ground'); }   // D: ground stamps, puddles, casings
+function gfxShadowPass(dt){ return gfxHook('shadow'); }   // B: body shadows that follow the lamps
+function gfxBodyFx(dt){ return gfxHook('body'); }   // C, E: damage smoke and fire, explosions, atmosphere
+function gfxLightOn(){ gfxHook('light'); return false; }   // B: true hands the light to gfxLightPass; false is the CLASSIC sheet
+function gfxLightPass(dt,BR){ return false; }   // B: the coloured light map
+function gfxPreFog(dt){ return gfxHook('prefog'); }   // F2: bloom; loot beams
+function gfxPostFog(dt){ return gfxHook('postfog'); }   // F2: the grade
+function gfxScreen(dt){ return gfxHook('screen'); }   // F1: grain and screen effects
+// sim-side stubs (callers guard with !G.sim; no seeded draw, ever)
+function gfxShot(sh,wep,ang,fromPlayer){ return gfxHook('shot'); }   // D: the first-frame muzzle flash
+function wallMark(w,x,y,ux,uy){ return gfxHook('wall'); }   // D: bullet marks painted into the wall sprite
+function boomFx(x,y,size,kind){ return gfxHook('boom'); }   // C: fireball, shockwave, smoke column, debris
+function gfxOnDeath(a){ return gfxHook('death'); }   // C: machine death bursts, from the kept kind
+function scarStamp(kind,x,y,o){ return gfxHook('scar'); }   // D: scorch, cracks and debris into G.ground
+function gfxEmit(x,y,r,col,a){
+  if(!gfxHook('emit')) return false;
+  if(GFX.emit.length<256) GFX.emit.push({x:x,y:y,r:r,c:col,a:a});
+  return true;
+}   // F2: bloom sources, registered during the frame
+function gfxWet(){ return GFX.bypass?0:(+GFX.WET||0); }   // D: how wet the ground is, 0 to 1
 var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
 function hidWant(){ return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&(NET.specG||(typeof netEntsHost==='function'&&netEntsHost()))); }   // v18.51, from the code comb (2026-10-07): and while the host spectates the raid it kept for the party, back on the floor with its window covered
 function hidTick(){
@@ -36419,7 +36495,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.73: Sounds behind a wall are muffled, and sounds beside you are placed wider left and right. Check 23.73 fails on v23.72',
+  now:'v23.74: The drawing code now has hooks for the graphics program; nothing looks different yet. Check 23.74 fails on v23.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
