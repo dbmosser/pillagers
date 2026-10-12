@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.13';
+var VER='24.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16143,7 +16143,15 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // sentry burst should not feel the same.
   var _sev=clamp(amt/26,0.35,1.9);
   p.hitFlash=Math.max(p.hitFlash||0,.20+.30*_sev);
-  G.shake=Math.max(G.shake,4+7*_sev);
+  // v23.xx, HIS ANSWERS (2026-10-12), answer 38: screen shake "light to strong depending on damage taken and frequency of incoming
+  // damage". The size of the hit already set it; how often hits come in did not, so the fifth round of a burst shook the screen no
+  // more than one stray round. hurtHeat is the damage still coming in: every hit adds its amount, and it fades by e every 0.9 s
+  // (worked out from the time of the last hit, so nothing runs per frame). The shake is the hit's own size, a little lighter than
+  // before at the bottom so a graze is a nudge, times up to 1.7 when 45 or more damage landed in the last second or so; capped at 24.
+  // Cosmetic only: the shake draws from the cosmetic stream in render2D, so no seeded draw moves.
+  var _hh=(typeof p.hurtHeat==='number'&&typeof p.hurtHeatAt==='number')?p.hurtHeat*Math.exp(-Math.max(0,(G.t||0)-p.hurtHeatAt)/0.9):0;
+  p.hurtHeat=_hh+amt; p.hurtHeatAt=G.t||0;
+  G.shake=Math.max(G.shake,Math.min(24,(2.5+7*_sev)*(1+0.7*clamp(_hh/45,0,1))));
   blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
   if(p.hp<=0){
     // v12.23: A MAN GOING DOWN LETS GO OF WHAT IS IN HIS HAND. The cook clock and
@@ -37865,7 +37873,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.13: The final minute plays a sting and the clock turns red and pops each second, in career and demo. Check 24.13 fails on v24.12',
+  now:'v24.14: Screen shake now grows with the size of each hit and how fast the hits are coming. Check 24.14 fails on v24.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

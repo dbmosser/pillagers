@@ -1,0 +1,7 @@
+v24.14: screen shake follows the fight
+
+Screen shake now grows with the size of each hit and how fast the hits are coming.
+
+Check 24.14. Fails on v24.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

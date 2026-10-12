@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.14 - SCREEN SHAKE FOLLOWS THE FIGHT
+
+Co-op hunt while he was away. His answer 38 (2026-10-12): screen shake from light to strong depending on damage taken and how often it comes in. The size of a hit already set the shake, but how often hits came in did not, so the fifth round of a burst shook the screen no more than one stray round. Now the damage of the last second or so builds up: a lone graze is a nudge, a heavy hit is strong, and a burst of hits shakes harder with each one, up to a cap. It settles again within a second or two of the last hit.
+
+MEASURED. Check 24.14 passes, and fails on v24.13.
 ## v24.13 - THE FINAL MINUTE
 
 Co-op hunt while he was away. His answer 19 (2026-10-12): the final 60 seconds get a sting and a red clock. The one minute mark now plays a sting of its own, a low brass hit with a bright ring, in place of the rising clock siren, and from 1:00 the clock is red and pops on every second as it turns. It turned red only at 0:44 and never moved. It is the same in the demo, where the clock under the score also steps up in size for the last minute. The words of every warning are unchanged.
