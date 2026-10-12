@@ -1,0 +1,7 @@
+v23.63: tripwire mine on the belt
+
+A Tripwire Mine now goes on the belt like a grenade and strings a wire across a doorway where it lands.
+
+Check 23.63. Fails on v23.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

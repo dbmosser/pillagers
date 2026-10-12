@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.62';
+var VER='23.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2376,7 +2376,9 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
   gun_sniper:{name:'Longshot (field)',val:2900,wt:6,r:'rare',c:'#e8f0ff',use:'gun',gk:'sniper'},
   smoke:{name:'Smoke Canister',val:110,wt:1,r:'common',c:'#9aa5ad',use:'throw',tk:'smoke'},
   decoy:{name:'Decoy Beacon',val:80,wt:1,r:'common',c:'#e0c060',use:'throw',tk:'decoy'},
-  frag:{name:'Frag Charge',val:180,wt:1,r:'uncommon',c:'#e07040',use:'throw',tk:'frag'}
+  frag:{name:'Frag Charge',val:180,wt:1,r:'uncommon',c:'#e07040',use:'throw',tk:'frag'},
+  // v23.xx (feat1a), HIS #6 (2026-10-12): "tripwire mine -- good idea", and his answer 32: on the belt like a grenade.
+  trip:{name:'Tripwire Mine',val:160,wt:1,r:'uncommon',c:'#ff4a4a',use:'throw',tk:'trip'}
 };
 // Mirrored by the .r-* CSS rules; the two have nothing keeping them in sync, so
 // they must always be edited together. Rare moved because #5aa9e6 on a navy
@@ -2556,7 +2558,7 @@ var RECIPES=[
   {name:'Auto Rifle',out:{gun_rifle:1},need:{comp:5,servo:2,board:3,optic:1}},
   {name:'Riot Scattergun',out:{gun_shotgun:1},need:{comp:5,cell:4,board:2,servo:2}}
 ];
-var THROWKEYS=['smoke','decoy','frag'];
+var THROWKEYS=['smoke','decoy','frag','trip'];   // v23.xx (feat1a): the Tripwire Mine is a throw like the other three
 // v10.97, HIS NOTE 12: THE CONTRACT BOARD'S SHOPPING LIST. It used to be a
 // literal inside the contract generator, which is how three of these ended up
 // classified as salvage: nothing else in the file could see what the board asks
@@ -11564,7 +11566,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     // copy of it, so the bar comes up arranged the way you left it. The sim
     // never reads a plan, because the bot must be the same bot in every arm.
     hotAssign:(sim||!P.hotAssign)?null:JSON.parse(JSON.stringify(P.hotAssign)),
-      bag:[],pouch:{smoke:0,decoy:0,frag:0},tsel:0,
+      bag:[],pouch:{smoke:0,decoy:0,frag:0,trip:0},tsel:0,
     // FOG OF WAR. One byte per 96 units of world, set as you walk, never cleared
     // until the next raid. His Q22.
     seen:(function(){
@@ -11576,7 +11578,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     })(),
     containers:(clearOfPads(containers),containers),ents:ents,bullets:[],pings:[],puffs:[],noiseRings:[],
     wild:(sim?[]:spawnWild(map)),
-    decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],labels:[],dmgN:[],flashes:[],hitMark:null,
+    decals:[],shells:[],sparks:[],throws:[],smokes:[],decoys:[],frags:[],trips:[],labels:[],dmgN:[],flashes:[],hitMark:null,
     zones:zones,active:active,camps:camps,beaconT:null,nuking:0,nukeT:0,hotZone:hotZone,searching:null,searchT:0,waypoint:null,dmgWalls:[],roster:roster,
     // Weather is rolled once per raid. Clear is weighted heaviest so the unusual
     // conditions stay unusual and keep their impact.
@@ -11605,7 +11607,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       firstContact:null,firstLoot:null,distance:0,
       tCrouch:0,tSprint:0,tStill:0,tLit:0,
       closestExtract:1e9,deathKiller:null,deathDistExtract:null,diedWithMed:0,
-      raidersExtracted:0,beaconCalls:0,beaconMissed:0,notes:[],thr:{smoke:0,decoy:0,frag:0}}};
+      raidersExtracted:0,beaconCalls:0,beaconMissed:0,notes:[],thr:{smoke:0,decoy:0,frag:0,trip:0}}};
   // THE SPAWN CENSUS, v3.70. Every sweep from roughly v3.48 to v3.61 ran
   // against fixture-tab state that inflated entity counts about forty percent,
   // and it was only NOTICED when the state died, because nothing anywhere
@@ -13900,8 +13902,8 @@ window.addEventListener('keydown',function(ev){
 function cycleThrow(){
   // v15.06, throwables audit finding 4: the hand is no longer moved here, before a key is found. See the cell search below.
   var _unkeyed=0;
-  for(var i=1;i<=3;i++){
-    var n=(G.tsel+i)%3;
+  for(var i=1;i<=THROWKEYS.length;i++){
+    var n=(G.tsel+i)%THROWKEYS.length;   // v23.xx (feat1a): four throws now, the Tripwire Mine is the fourth
     if(G.pouch[THROWKEYS[n]]>0){
       // v12.56, 2026-09-06 in-raid audit: AND THE BELT FOLLOWS THE HAND. Which
       // grenade is in your hand and which cell the belt highlights are two
@@ -14185,6 +14187,29 @@ function activateThrow(th){
     // as YOUR OWN CHARGE and credits you with whatever it kills.
     G.frags.push({x:th.tx,y:th.ty,t:0,fuse:Math.max(0.08,FRAG_FUSE-(th.cook||0)),mine:1});
   }
+  else if(th.kind==='trip'){ sfx("clank",th.tx,th.ty); tripArm(th); }   // v23.xx (feat1a): a Tripwire Mine strings its wire where it lands
+}
+// v23.xx (feat1a), HIS #6 (2026-10-12): "tripwire mine -- good idea", and his answer 32: on the belt like a grenade. A Tripwire Mine
+// is thrown as any grenade is (its belt key or Q, then the trigger or G; the pad walks the belt and holds RT), through throwFrom, so
+// it stops at the first wall like every throw. Where it lands it strings a wire ACROSS the throw: each half runs out sideways until a
+// wall stops it (4 short of the face) or 80 in the open, so it spans a doorway or a corridor by itself. It arms after 0.6 s and lasts
+// 240 s; an owner has at most 3 strung and the oldest goes. What sets it off and what it does is the next build. No draw on any
+// stream: the wire is pure geometry.
+var TRIP_LIFE=240, TRIP_ARM=0.6, TRIP_MAX=3, TRIP_HALF=80, TRIP_REACH=120;
+function tripArm(th){
+  if(!G) return null;
+  if(!G.trips) G.trips=[];
+  var dx=th.tx-th.sx, dy=th.ty-th.sy, d=Math.sqrt(dx*dx+dy*dy);
+  var ux=d>1?dx/d:1, uy=d>1?dy/d:0, nx=-uy, ny=ux;
+  var half=function(sx,sy){ var h=rayHitG(th.tx,th.ty,sx,sy,TRIP_REACH); return h<TRIP_REACH?Math.max(2,h-4):TRIP_HALF; };
+  var a=half(nx,ny), b=half(-nx,-ny), seat=th.seat||0, i, own=[];
+  var tr={id:(seat?'s'+seat:'p')+'-'+(G.tripN=(G.tripN||0)+1), x:th.tx, y:th.ty, ax:th.tx+nx*a, ay:th.ty+ny*a, bx:th.tx-nx*b, by:th.ty-ny*b,
+          arm:TRIP_ARM, life:TRIP_LIFE, seat:seat};
+  for(i=0;i<G.trips.length;i++) if((G.trips[i].seat||0)===seat&&!G.trips[i].fx) own.push(i);
+  while(own.length>=TRIP_MAX){ G.trips.splice(own.shift(),1); for(i=0;i<own.length;i++) own[i]--; }
+  G.trips.push(tr);
+  if(!G.sim&&!seat) say('TRIPWIRE SET','info');
+  return tr;
 }
 function explodeFrag(f){
   // The blast was 95 units, a little over four player widths, so a charge landing
@@ -16961,6 +16986,7 @@ function hotbarSlots(){
   for(var _gk0=0;_gk0<GUNKEYS;_gk0++) out.push({k:'gunkey:'+_gk0,name:'Second weapon',kind:'gun',inHand:false,icon:null,count:0,c:'#4d5762',vacant:1,gunFill:1});
   for(var i=0;i<THROWKEYS.length;i++){
     var tk=THROWKEYS[i];
+    if(tk==='trip') continue;   // v23.xx (feat1a): the Tripwire Mine cell is added after Medical, below, and only while carried
     out.push({k:'throw:'+tk,name:ITEMS[tk].name,kind:'throw',icon:tk,
       count:G.pouch[tk]||0,c:ITEMS[tk].c});
   }
@@ -16976,6 +17002,12 @@ function hotbarSlots(){
   // move for anyone who is not.
   if(countArmor()>0) out.push({k:'plate',name:'Armour Plate',kind:'armor',icon:'plate',
     count:countArmor(),c:'#5aa9e6'});
+  // v23.xx (feat1a), HIS #6 and his answer 32 (2026-10-12): THE TRIPWIRE MINE GOES ON THE BELT LIKE A GRENADE. Its cell is added
+  // only while one is carried, and after Medical and the plate, so no key anyone has learned moves: the belt of anyone without a
+  // mine is the belt of before, and with one it takes the first free key (key 9 on the usual belt). A pin on that key yields as it
+  // does for the plate (v8.04).
+  if(G.pouch&&G.pouch.trip>0&&ITEMS.trip&&out.length<HOTBAR_N) out.push({k:'throw:trip',name:ITEMS.trip.name,kind:'throw',icon:'trip',
+    count:G.pouch.trip,c:ITEMS.trip.c});
 
   // HIS REQUEST, 2026-08-25: "I want the inventory to be physical like minecraft
   // so you can drag icons down to the quick bars". The bar above is DERIVED: it
@@ -32714,7 +32746,7 @@ function hubBagState(){
   // v14.87, belt audit finding 4: THE UNDERCROFT BELT COUNTS WHAT GOES UP. Its pouch was empty, so a Frag key over three packed
   // Frags drew greyed with 0 while the stash row said x3 and the raid carried three, and with no second gun a key on gun 2 was
   // skipped and slot 2 read Second weapon. The pouch counts the packed grenades and gun 2 is the equipped second gun.
-  var wep=WEAPONS[P.equipped]||WEAPONS.fists, sec=(P.equippedSec&&P.equippedSec!==P.equipped&&WEAPONS[P.equippedSec])||WEAPONS.fists, pq={smoke:0,decoy:0,frag:0};
+  var wep=WEAPONS[P.equipped]||WEAPONS.fists, sec=(P.equippedSec&&P.equippedSec!==P.equipped&&WEAPONS[P.equippedSec])||WEAPONS.fists, pq={smoke:0,decoy:0,frag:0,trip:0};
   (P.kit||[]).forEach(function(k){ if(pq[k]!==undefined) pq[k]++; });
   return {
     bag:(P.kit||[]).slice(),
@@ -36219,7 +36251,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.62: The bigger map is frozen: every raid goes to COLD STORAGE. Check 23.62 fails on v23.61',
+  now:'v23.63: A Tripwire Mine now goes on the belt like a grenade and strings a wire across a doorway where it lands. Check 23.63 fails on v23.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47258,7 +47290,7 @@ function stageKit(){ if(!Array.isArray(P.kit)) P.kit=[]; return P.kit; }
 // moves. This is the drop check's default, which is what keeps "press DROP and
 // change nothing" identical to every raid before this screen existed.
 function standardKit(){
-  var pool=P.stash.slice(), out=[], tc={smoke:0,decoy:0,frag:0}, i;
+  var pool=P.stash.slice(), out=[], tc={smoke:0,decoy:0,frag:0,trip:0}, i;
   for(i=pool.length-1;i>=0;i--){
     var it=ITEMS[pool[i]];
     if(it&&it.use==='throw'&&tc[pool[i]]!==undefined&&tc[pool[i]]<2){

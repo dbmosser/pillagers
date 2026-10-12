@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.63 - TRIPWIRE MINE ON THE BELT
+
+Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine (good idea), and his answer 32: it goes on the belt like a grenade. The Tripwire Mine is a new throw. While you carry one it has a belt cell after Medical (key 9 on the usual belt), so no key you already know moves, and Q cycles to it with the grenades. Throw it like a grenade (its key or Q, then the trigger or G). Where it lands it strings a wire across the throw, out to the walls on each side or 80 each way in the open, so it spans a doorway or a corridor by itself. It arms after a moment and you can have three strung; a fourth takes the oldest down. What sets it off comes in the next build.
+
+MEASURED. Check 23.63 passes, and fails on v23.62.
 ## v23.62 - THE COLD MILE IS FROZEN
 
 Co-op hunt while he was away. His order of 2026-10-12: freeze the bigger map and disable it in the game for now, so the work goes into the smaller one. THE COLD MILE is no longer offered anywhere: the sector page shows COLD STORAGE only (with no size tag), the lift and the arcade send you to COLD STORAGE, and the Undercroft no longer lists a seal on the mile. A save that pointed at the mile is moved to COLD STORAGE when it loads. The mile itself is kept in the code and still builds for the tests and the robot.
