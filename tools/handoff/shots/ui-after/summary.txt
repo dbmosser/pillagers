@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  11-wirt-gambler                        staged       7.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gamblemodal
+  16-bar-last-pour                       staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal
+== 4k : window 3876x2265, viewport 3840x2160
+  11-wirt-gambler                        staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gamblemodal
+  16-bar-last-pour                       staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal

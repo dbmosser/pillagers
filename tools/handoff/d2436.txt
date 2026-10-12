@@ -1,0 +1,5 @@
+## v24.36 - MUZZLE FLASH ON THE FIRST FRAME
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 7, shot detail). The muzzle flash only showed if a frame happened to be drawn in the 60 thousandths of a second after the shot, so on a slow or uneven frame a shot had no flash at all, and a teammate shot never had one in the other window. Every shot now paints its flash on the very next frame at full strength, a sharp star per gun family (short for pistols and rifles, long for the heavy guns, wide for shotguns) in the gun colour, gone a moment later. A teammate shot gets one too. Someone you cannot see shows no flash. Nothing about play changes.
+
+MEASURED. Check 24.36 passes, and fails on v24.35.

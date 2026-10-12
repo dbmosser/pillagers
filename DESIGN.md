@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.36 - MUZZLE FLASH ON THE FIRST FRAME
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 7, shot detail). The muzzle flash only showed if a frame happened to be drawn in the 60 thousandths of a second after the shot, so on a slow or uneven frame a shot had no flash at all, and a teammate shot never had one in the other window. Every shot now paints its flash on the very next frame at full strength, a sharp star per gun family (short for pistols and rifles, long for the heavy guns, wide for shotguns) in the gun colour, gone a moment later. A teammate shot gets one too. Someone you cannot see shows no flash. Nothing about play changes.
+
+MEASURED. Check 24.36 passes, and fails on v24.35.
 ## v24.35 - A WINDOW SITS IN A DARK ROOM
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Wirt and the Last Pour found the big station signs of the Undercroft reading round the edges of the card as cut off words (SHOP, CR and POUR and MAY GLITCH), like a second menu under the first, and the grey money line still painted in the top left corner behind the window. The room behind any window is darker now, so the floor is a shape and not words, and the money line goes away while a window is open, as the floor heading already did. Nothing else changed.

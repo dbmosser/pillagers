@@ -1,0 +1,7 @@
+v24.36: muzzle flash on the first frame
+
+Every shot now shows a sharp muzzle flash on the very next frame, teammate shots included.
+
+Check 24.36. Fails on v24.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
