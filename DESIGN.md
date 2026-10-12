@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.38 - BULLETS MARK THE WALLS
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 7, shot detail). A round that hit a wall made a spark and left nothing, so a wall you had been trading fire across looked untouched. A round that stops on the face of a wall you can see now leaves a chipped bullet hole in it at about gun height, and the marks stay for the whole raid. They are painted into the wall picture itself, so they cost nothing to draw. Doors, windows, trees, cars and furniture take no marks. Nothing about play changes.
+
+MEASURED. Check 24.38 passes, and fails on v24.37.
 ## v24.37 - READABLE SILHOUETTES
 
 Co-op hunt while he was away. His answer 24 (2026-10-12): redesign the character silhouettes for readability first, before any animation. At raid size a body was a big head over a box no wider than the head, so you could not tell the shoulders, the gun or the side at a glance. Every body now has two inked shoulder caps that stand out past the torso, so the head and shoulders read as one clear shape: wide and square on Broad, middling on Lean, and small and narrow on Curved, who keeps her narrow shoulders, her chest, her hips and her jiggle. In a raid the shoulders wear the team colour: you and your team in ally blue, pillagers and the other player in PvP in danger red, the same in every window. In the Undercroft the shoulders are the coat in shadow. Armour 2 and up and the Trooper suit keep their steel shoulders with a team stripe on top, so the armour tier still reads. The gun now has an ink rim and a lit top edge, so what a body holds reads off a dark coat and dark ground. Nothing about play changes.

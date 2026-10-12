@@ -1,0 +1,5 @@
+## v24.38 - BULLETS MARK THE WALLS
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 7, shot detail). A round that hit a wall made a spark and left nothing, so a wall you had been trading fire across looked untouched. A round that stops on the face of a wall you can see now leaves a chipped bullet hole in it at about gun height, and the marks stay for the whole raid. They are painted into the wall picture itself, so they cost nothing to draw. Doors, windows, trees, cars and furniture take no marks. Nothing about play changes.
+
+MEASURED. Check 24.38 passes, and fails on v24.37.

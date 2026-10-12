@@ -1,0 +1,7 @@
+v24.38: bullets mark the walls
+
+Rounds that hit a wall now leave bullet holes in it for the rest of the raid.
+
+Check 24.38. Fails on v24.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
