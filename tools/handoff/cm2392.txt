@@ -1,0 +1,7 @@
+v23.92: the demo raid has a 10 minute clock
+
+A DEMO raid lasts 10 minutes; at 0 the site burns and the run ends.
+
+Check 23.92. Fails on v23.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

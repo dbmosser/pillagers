@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.92 - THE DEMO RAID HAS A 10 MINUTE CLOCK
+
+Co-op hunt while he was away. His mode design of 2026-10-12 (DEMO: 10 minute raids) and his answer 7 (when the DEMO clock reaches 0 the site burns like a normal raid). A DEMO raid was endless. It now carries a 10 minute clock, shown under the score, with the normal raid warnings, and at 0 the site burns exactly as a normal raid does. A death in the burn ends the run (RUN OVER, with the score as it stood) rather than dropping the player back into the fire. The rings still never close, and a fresh raid built for a late player 2 keeps the time the run had left.
+
+MEASURED. Check 23.92 passes, and fails on v23.91.
 ## v23.91 - HIT MARKERS AND KILLS ARE HEARD
 
 Co-op hunt while he was away. His number 45, punchy arcade sound like CoD and Fortnite. A round of yours that landed drew the X at the reticle in silence, and the hit sound itself plays out at the target, often far away and muffled, so in a fight you could not tell by ear whether you were landing. Now every landed round gives a crisp tick in your own ears (a weak spot a higher one), and a kill gives the tick, a low thunk and a two note ding. They play on the HUD bus, so they are never squashed, ducked or muffled by walls.

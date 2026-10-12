@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.91';
+var VER='23.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23677,6 +23677,11 @@ function endRaid(how){
   // v23.22, HIS ORDER (2026-10-11), arcade3: an arcade raid is never settled here. A death drops him back in (arcadeRespawn) and an
   // abandon stops the arcade raid (arcadeRaidStop): no run counted, no card, no score word, no out word, nothing banked.
   // v23.23 (arcade4): and an extraction pays the bonus and drops him back in (arcadeExtracted), the world untouched.
+  // v23.6x (feat0e): a death in the burn (or with the DEMO clock out) ends the run instead of respawning into the fire. The end is
+  // marked (G.arcEnd) and made at the top of the next frame, because the run end lets the raid go (G is null after it) and this is
+  // reached from inside the frame (the burn, the death beat), whose remaining lines still read G.
+  if(G&&G.arcade&&!G.sim&&G.arcEnd) return;
+  if(G&&G.arcade&&!G.sim&&how==='dead'&&raidClockOn()&&(G.nuking||G.timeLeft<=0)){ G.arcEnd='burn'; return; }
   if(G&&G.arcade&&!G.sim){ if(how==='dead') return arcadeRespawn('dead'); if(how==='extract') return arcadeExtracted(); if(how==='abandon') return arcadeRaidStop('quit'); }
   G.over=how;
   if(NET.on&&!G.sim){ try{ netScoreSend(how); }catch(_nss){} }   // v17.39: his pick 5, the score word goes before the out word
@@ -36427,6 +36432,7 @@ function loop(ts){
     return;
   }
   if(state!=='raid'||!G||G.sim) return;
+  if(G.arcade&&G.arcEnd){ var _ae=G.arcEnd; G.arcEnd=0; try{ if(!arcadeRunEnd(_ae)) arcadeRaidStop('end'); }catch(_are){} return; }   // v23.6x (feat0e): a run end marked inside the last frame
   if(NET.on) netUpTick(dt);   // v15.79: where the party stands up top, eased in and sent out, whatever the frame does below
   if(NET.on) netFxStep(dt);   // v16.21: the party's tracers fly, and this window's sounds go out
   // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
@@ -36986,7 +36992,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.91: Landing a hit ticks in your ears and a kill rings, like CoD and Fortnite. Check 23.91 fails on v23.90',
+  now:'v23.92: A DEMO raid lasts 10 minutes; at 0 the site burns and the run ends. Check 23.92 fails on v23.91',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -45481,11 +45487,17 @@ function arcadeShieldRing(x,y,own){
   }
   wc.restore();
 }
+// v23.6x (feat0e), HIS MODE DESIGN (2026-10-12): "DEMO ... 10 minute raids", and HIS ANSWER 7: when the DEMO clock reaches 0 the site
+// BURNS like a normal raid. A DEMO raid now carries a 600 s clock (raidLen), so the countdown, the clock warnings and the burn at 0 are
+// the normal raid ones, unchanged; the rings still never close (closeAt stays off) and the build is the same (raidSec 0 at build time).
+// The clock reads under the score. A death in the burn does not drop him back into the fire: the run ends (RUN OVER, the score as it
+// stood). A rebuild for a late player 2 keeps the clock the run had.
+var ARCADE_RAID_SEC=600;
 // Run from startRaid right after the build, in every window that builds the arcade raid, so both builds stay identical.
 function arcadePostBuild(g){
   if(!g||g.sim) return false;
   var i, e;
-  g.arcade=1; g.raidLen=0; g.timeLeft=0;
+  g.arcade=1; g.raidLen=g.timeLeft=ARCADE_RAID_SEC;   // v23.6x (feat0e): the 10 minute DEMO clock
   for(i=0;i<(g.zones||[]).length;i++) g.zones[i].closeAt=undefined;
   for(i=g.ents.length-1;i>=0;i--){ e=g.ents[i]; if(e&&(e.kind==='peddler'||e.kind==='stray')) g.ents.splice(i,1); }
   g.legendOn=0; g.hotAssign=null;
@@ -45986,6 +45998,10 @@ function arcadeScoreHud(y,z){
   ctx.save(); ctx.textAlign='center';
   ctx.font=fs; ctx.fillStyle='#ffc04a'; hudText(ARCADE.solo?'SCORE':'TEAM SCORE',cx,Math.round(y-h*0.80));   // v23.54 (arcade30): SCORE in the 1 player arcade
   ctx.font=fb; ctx.fillStyle='#e8eef2'; hudText(nm,cx,y); w=ctx.measureText(nm).width;
+  if(raidClockOn()){   // v23.6x (feat0e): the DEMO clock under the score, red under 45 s like the raid clock
+    var _ct=Math.ceil(Math.max(0,+G.timeLeft||0)), _cm=Math.floor(_ct/60), _cs=_ct%60;
+    ctx.font=fs; ctx.fillStyle=(_ct<45)?'#ff5a4a':'#cdd6dd'; hudText(_cm+':'+(_cs<10?'0':'')+_cs,cx,Math.round(y+h*0.62));
+  }
   gx=Math.round(cx+w/2+10*z);
   ctx.font=fs; ctx.textAlign='left'; ctx.fillStyle='#cdd6dd';
   if(!ARCADE.solo){   // v23.54 (arcade30): no YOU and P2 split in the 1 player arcade
@@ -46423,7 +46439,9 @@ function arcadeRebuild(){
   var s={mine:ARCADE.mine|0,mate:ARCADE.mate|0,ext:ARCADE.ext|0,deaths:ARCADE.deaths|0}, bench=!!(G.player&&G.player.specOut), ok;
   netSamePost({t:'arcnew',pair:NET.pair});
   var run0=ARCADE.run, k0=ARCADE.kills|0;   // v23.29 (arcade8): the same run, so the team score carries on
+  var tl0=(typeof G.timeLeft==='number')?G.timeLeft:0;   // v23.6x (feat0e): the run keeps its clock
   ok=arcadeDeploy({role:'host',mapIx:P.mapIx});
+  if(ok&&G&&G.arcade&&tl0>0&&G.timeLeft>tl0) G.timeLeft=tl0;
   ARCADE.mine=s.mine; ARCADE.mate=s.mate; ARCADE.ext=s.ext; ARCADE.deaths=s.deaths;
   if(run0) ARCADE.run=run0; ARCADE.kills=k0;
   if(!ok||!G||!G.player){ try{ arcadeAttShow(); }catch(_aa){} return false; }
