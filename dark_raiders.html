@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.90';
+var VER='23.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4002,7 +4002,7 @@ var SND_CAT={shot:'gun',reload:'gun',reloadin:'gun',dry:'gun',
   servo:'mach',skitter:'mach',drone:'mach',hydraul:'mach',dish:'mach',stepHeavy:'mach',seen:'mach',alarm:'mach',
   foot:'foley',step:'foley',
   pick:'ui',pickRare:'ui',pickElite:'ui',pickGun:'ui',clockwarn:'ui',clocktick:'ui',
-  heart:'vox',flap:'amb'};
+  heart:'vox',flap:'amb',hitmark:'ui',killconf:'ui'};
 var SND_CATS=['gun','imp','mach','foley','amb','vox','ui','sting','world'];
 function sndBuild(a,B){
   var S={out:B,bus:{},world:null,comp:null,lim:null,trim:null}, i, c, gn;
@@ -5169,6 +5169,32 @@ function blip(type,d,pan){
     o.type='square'; o.frequency.setValueAtTime(240,t); o.frequency.exponentialRampToValueAtTime(70,t+.09);
     g3.gain.setValueAtTime(.1*vol,t); g3.gain.exponentialRampToValueAtTime(.001,t+.1);
     o.connect(g3); g3.connect(OUT); o.start(t); o.stop(t+.11);
+  } else if(type==='hitmark'||type==='killconf'){
+    // v23.91, HIS ORDER 2026-10-12 (his #45, punchy arcade sound like CoD and Fortnite): THE HIT MARKER IS HEARD. A round of yours
+    // that landed drew the X at the reticle in silence, and the hit sound itself plays out at the target, often far and muffled,
+    // so in a fight you could not tell by ear whether you were landing. Now a landed round gives a crisp tick in your own ears (a
+    // weak spot a higher one) and a kill gives the tick, a low thunk and a two note ding. On the HUD bus, so never compressed,
+    // ducked or muffled. Played once per marker by the frame tick that ages it.
+    var hkW=arguments[3]==='weak', hkb=a.createBuffer(1,90,a.sampleRate), hkc=hkb.getChannelData(0);
+    for(var hki=0;hki<90;hki++) hkc[hki]=(Math.random()*2-1)*Math.pow(1-hki/90,2);
+    var hks=a.createBufferSource(); hks.buffer=hkb;
+    var hkf=a.createBiquadFilter(); hkf.type='highpass'; hkf.frequency.value=3000;
+    var hkg=a.createGain(); hkg.gain.value=.05;
+    hks.connect(hkf); hkf.connect(hkg); hkg.connect(OUT); hks.start(t);
+    var hko=a.createOscillator(),hkog=a.createGain();
+    hko.type='triangle'; hko.frequency.setValueAtTime(hkW?3200:2400,t); hko.frequency.exponentialRampToValueAtTime(hkW?2600:1900,t+.03);
+    hkog.gain.setValueAtTime(.045,t); hkog.gain.exponentialRampToValueAtTime(.0005,t+.045);
+    hko.connect(hkog); hkog.connect(OUT); hko.start(t); hko.stop(t+.05);
+    if(type==='killconf'){
+      var kco=a.createOscillator(),kcg=a.createGain();
+      kco.type='sine'; kco.frequency.setValueAtTime(180,t); kco.frequency.exponentialRampToValueAtTime(85,t+.1);
+      kcg.gain.setValueAtTime(.09,t); kcg.gain.exponentialRampToValueAtTime(.0005,t+.12);
+      kco.connect(kcg); kcg.connect(OUT); kco.start(t); kco.stop(t+.13);
+      var kdo=a.createOscillator(),kdg=a.createGain();
+      kdo.type='triangle'; kdo.frequency.setValueAtTime(1320,t+.04); kdo.frequency.setValueAtTime(1760,t+.09);
+      kdg.gain.setValueAtTime(.0001,t); kdg.gain.setValueAtTime(.04,t+.04); kdg.gain.exponentialRampToValueAtTime(.0005,t+.26);
+      kdo.connect(kdg); kdg.connect(OUT); kdo.start(t+.04); kdo.stop(t+.27);
+    }
   } else if(type==='pick'){
     var o2=a.createOscillator(),g4=a.createGain();
     o2.type='sine'; o2.frequency.setValueAtTime(660,t); o2.frequency.exponentialRampToValueAtTime(1180,t+.09);
@@ -36602,6 +36628,7 @@ function loop(ts){
       for(i=G.labels.length-1;i>=0;i--){ G.labels[i].t+=dt; if(G.labels[i].t>G.labels[i].life) G.labels.splice(i,1); }
       tickDmgNums(dt);
       for(i=G.flashes.length-1;i>=0;i--){ G.flashes[i].t+=dt; if(G.flashes[i].t>G.flashes[i].life) G.flashes.splice(i,1); }
+      if(G.hitMark&&!G.hitMark.snd){ G.hitMark.snd=1; if(!G.sim) blip(G.hitMark.kill?'killconf':'hitmark',undefined,undefined,G.hitMark.weak?'weak':''); }   // v23.91 (his #45): the marker is heard once
       if(G.hitMark){ G.hitMark.t+=dt; if(G.hitMark.t>G.hitMark.life) G.hitMark=null; }
       for(i=G.sparks.length-1;i>=0;i--){
         var sp=G.sparks[i]; sp.t+=dt; sp.x+=sp.vx*dt; sp.y+=sp.vy*dt;
@@ -36959,7 +36986,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.90: Footsteps tell wet stone, grit, concrete, tile, boards and grates apart. Check 23.90 fails on v23.89',
+  now:'v23.91: Landing a hit ticks in your ears and a kill rings, like CoD and Fortnite. Check 23.91 fails on v23.90',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

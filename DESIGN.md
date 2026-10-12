@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.91 - HIT MARKERS AND KILLS ARE HEARD
+
+Co-op hunt while he was away. His number 45, punchy arcade sound like CoD and Fortnite. A round of yours that landed drew the X at the reticle in silence, and the hit sound itself plays out at the target, often far away and muffled, so in a fight you could not tell by ear whether you were landing. Now every landed round gives a crisp tick in your own ears (a weak spot a higher one), and a kill gives the tick, a low thunk and a two note ding. They play on the HUD bus, so they are never squashed, ducked or muffled by walls.
+
+MEASURED. Check 23.91 passes, and fails on v23.90.
 ## v23.90 - FOOTSTEPS: WET, GRIT, TILE, GRATE
 
 Co-op hunt while he was away. His number 45, improve all sound as much as possible. Five surfaces gave every street, yard and puddle the same gravel and every floor the same boards. Now your feet, and the feet of everything walking near you, tell the finer ground: wet stone in the rain, grit in a landmark yard, plain concrete on the street, tile in a locked room, boards elsewhere indoors, a rattling grate on metal. Each step also rolls one of three small pitch variants so no two match. How far your steps are heard in the world, and what the Listener hears, is exactly as before.

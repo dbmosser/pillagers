@@ -1,0 +1,7 @@
+v23.91: hit markers and kills are heard
+
+Landing a hit ticks in your ears and a kill rings, like CoD and Fortnite.
+
+Check 23.91. Fails on v23.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

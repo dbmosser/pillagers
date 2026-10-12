@@ -1,0 +1,5 @@
+## v23.91 - HIT MARKERS AND KILLS ARE HEARD
+
+Co-op hunt while he was away. His number 45, punchy arcade sound like CoD and Fortnite. A round of yours that landed drew the X at the reticle in silence, and the hit sound itself plays out at the target, often far away and muffled, so in a fight you could not tell by ear whether you were landing. Now every landed round gives a crisp tick in your own ears (a weak spot a higher one), and a kill gives the tick, a low thunk and a two note ding. They play on the HUD bus, so they are never squashed, ducked or muffled by walls.
+
+MEASURED. Check 23.91 passes, and fails on v23.90.
