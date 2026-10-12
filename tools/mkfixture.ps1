@@ -63288,6 +63288,307 @@ window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:ear
   }};
 window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,
   cap:function(){ return PACKCAP[P.pack]; },ival:ival,items:function(){ return ITEMS; }};
+// 2026-10-12 THE UI LINT (his order: "make damn sure that the revisions to the menus actually look good"). Fixture only:
+// tools\uishots.ps1 runs it on every staged screen. window.__uiLint(opts) looks at the DOM on screen RIGHT NOW and returns
+// {issues:[{kind,el,detail}],stats}. Kinds:
+//   clip      text cut by a box with overflow hidden/clip (or an ellipsis), or text spilling out of the painted box it sits in
+//   offscreen visible text or controls beyond the viewport, or a scrollbar where a menu should not scroll (the document, a modal root)
+//   small     text whose rendered size, scaled to a 1080p-equivalent screen (innerHeight/1080), is under opts.minPx (13)
+//   contrast  WCAG contrast under 4.5:1 (3:1 at 24px+ in 1080p terms) against the background actually under it: the DOM layers
+//             composited down to the first opaque one, or the game canvas pixels when the text floats over the world
+//   font      visible text whose first family is not in the design system (Barlow Condensed, Barlow, IBM Plex Mono, fallbacks)
+//   overlap   interactive elements (buttons, rows, tabs, inputs) whose boxes intersect
+//   focus     the focused element (keyboard focus or the pad .padfocus) looks identical to unfocused; with nothing focused, up to
+//             opts.focusProbe controls of distinct kinds are focused in turn and compared, then focus is put back
+// Text and controls covered by another menu layer (the pause box under the settings window) are skipped, and so is text scrolled
+// out of a list. A disabled control needs 3:1, not 4.5:1. A list inside a modal that is MEANT to scroll (a run history) is exempt
+// from the frame-scroll rule when it carries data-lint-scroll.
+// Canvas text (the raid HUD, world tags) is out of scope: stats.canvasText says so. opts: {minPx:13, focusProbe:4, max:400,
+// sel:'#outcome' (limit to a subtree)}. Every issue carries el (a short selector) and detail (the numbers).
+window.__uiLint=function(opts){
+  opts=opts||{};
+  var MINPX=opts.minPx||13, MAXI=opts.max||400, VW=innerWidth, VH=innerHeight, K=1080/VH;
+  var root=opts.sel?document.querySelector(opts.sel):document.body;
+  var issues=[], counts={clip:0,offscreen:0,small:0,contrast:0,font:0,overlap:0,focus:0,total:0}, seen={};
+  var stats={viewport:VW+'x'+VH,scaleTo1080:+K.toFixed(4),texts:0,controls:0,focusProbed:0,
+    canvasText:'out of scope: canvas-drawn text (raid HUD, world tags, map labels) is not in the DOM; judge it from the shot',
+    counts:counts};
+  if(!root){ stats.error='no element '+opts.sel; return {issues:issues,stats:stats}; }
+  function name(e){
+    if(!e||e.nodeType!==1) return '?';
+    var s=e.tagName.toLowerCase();
+    if(e.id) return s+'#'+e.id;
+    var c=(typeof e.className==='string'?e.className:'').trim().split(/\s+/).filter(function(x){ return x&&x!=='padfocus'; }).slice(0,2);
+    if(c.length) s+='.'+c.join('.');
+    var p=e.parentElement, hop=0;
+    while(p&&hop<4&&!p.id){ p=p.parentElement; hop++; }
+    return (p&&p.id?'#'+p.id+' ':'')+s;
+  }
+  function add(kind,e,detail,text){
+    var k=kind+'|'+name(e)+'|'+detail;
+    if(seen[k]) return; seen[k]=1;
+    counts[kind]++; counts.total++;
+    if(issues.length<MAXI){ var o={kind:kind,el:name(e),detail:detail}; if(text) o.text=String(text).replace(/\s+/g,' ').trim().slice(0,60); issues.push(o); }
+  }
+  // ------------------------------------------------ geometry and visibility
+  var csCache=new Map();
+  function cs(e){ var c=csCache.get(e); if(!c){ c=getComputedStyle(e); csCache.set(e,c); } return c; }
+  // the menu layer an element belongs to (a modal, the pause box, a run card, the title, the attract screen, the floor panel)
+  var LAYER='.modal,.pausebox,.outcome,#title,#attract,#hub,#confirmabandon';
+  function layerOf(e){ return (e&&e.closest&&e.closest(LAYER))||null; }
+  // covered: every sample point of box v is topped by an element of ANOTHER layer (the pause box under the settings window)
+  function covered(e,v){
+    var L=layerOf(e), pts=[[0.5,0.5],[0.1,0.5],[0.9,0.5],[0.5,0.15],[0.5,0.85]];
+    for(var i=0;i<pts.length;i++){
+      var x=v.l+v.w*pts[i][0], y=v.t+v.h*pts[i][1]; if(x<0||y<0||x>=VW||y>=VH) continue;
+      var t=document.elementFromPoint(x,y);
+      if(!t||e.contains(t)||t.contains(e)||layerOf(t)===L) return false;
+    }
+    return true;
+  }
+  function shown(e){
+    if(!e||!e.getClientRects().length) return false;
+    if(e.checkVisibility) return e.checkVisibility({opacityProperty:true,visibilityProperty:true,contentVisibilityAuto:true});
+    var c=cs(e); return c.visibility!=='hidden'&&c.display!=='none'&&+c.opacity>0;
+  }
+  function clipsX(c){ return c.overflowX!=='visible'; }
+  function clipsY(c){ return c.overflowY!=='visible'; }
+  function isScroller(c){ return /auto|scroll/.test(c.overflowX+' '+c.overflowY); }
+  // the part of rect r left visible by every clipping ancestor of e; reports who cut it
+  function visiblePart(e,r){
+    var v={l:r.left,t:r.top,r:r.right,b:r.bottom}, cutBy=null, scrolled=false;
+    for(var a=e; a&&a!==document.documentElement; a=a.parentElement){
+      var c=cs(a); if(a===e&&a.nodeType!==1) continue;
+      if(c.position==='fixed'&&a!==e){ /* clipping above a fixed box does not apply */ }
+      var cx=clipsX(c), cy=clipsY(c);
+      if(cx||cy||c.contain.indexOf('paint')>=0){
+        var b=a.getBoundingClientRect();
+        var bl=b.left+a.clientLeft*(b.width/(a.offsetWidth||b.width||1)), bt=b.top+a.clientTop*(b.height/(a.offsetHeight||b.height||1));
+        var br=bl+a.clientWidth*(b.width/(a.offsetWidth||b.width||1)), bb=bt+a.clientHeight*(b.height/(a.offsetHeight||b.height||1));
+        if(!a.clientWidth&&!a.clientHeight){ br=b.right; bb=b.bottom; }
+        var nv={l:cx?Math.max(v.l,bl):v.l,t:cy?Math.max(v.t,bt):v.t,r:cx?Math.min(v.r,br):v.r,b:cy?Math.min(v.b,bb):v.b};
+        if(nv.l>v.l+1.5||nv.t>v.t+1.5||nv.r<v.r-1.5||nv.b<v.b-1.5){
+          if(isScroller(c)) scrolled=true; else if(!cutBy) cutBy=a;
+        }
+        v=nv;
+      }
+      if(c.position==='fixed') break;
+    }
+    v.w=v.r-v.l; v.h=v.b-v.t; v.cutBy=cutBy; v.scrolled=scrolled;
+    return v;
+  }
+  // rendered scale of an element: CSS zoom and transforms of it and every ancestor
+  function scaleOf(e){
+    var z=1;
+    for(var a=e; a&&a.nodeType===1; a=a.parentElement){
+      var c=cs(a), zz=parseFloat(c.zoom); if(zz>0&&zz!==1) z*=zz;
+      if(c.transform&&c.transform!=='none'){ try{ var m=new DOMMatrixReadOnly(c.transform); var s=Math.sqrt(m.a*m.a+m.b*m.b); if(s>0) z*=s; }catch(x){} }
+    }
+    return z;
+  }
+  // ------------------------------------------------ colour
+  function parseCol(s){
+    if(!s) return null; var m=s.match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:\s*[,\/]\s*([\d.]+%?))?\s*\)/);
+    if(!m){ if(s==='transparent') return [0,0,0,0]; return null; }
+    var al=m[4]===undefined?1:(m[4].slice(-1)==='%'?parseFloat(m[4])/100:parseFloat(m[4]));
+    return [+m[1],+m[2],+m[3],al];
+  }
+  function over(top,bot){ var a=top[3]; return [top[0]*a+bot[0]*(1-a),top[1]*a+bot[1]*(1-a),top[2]*a+bot[2]*(1-a),1]; }
+  function lum(c){ function ch(v){ v/=255; return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4); } return 0.2126*ch(c[0])+0.7152*ch(c[1])+0.0722*ch(c[2]); }
+  function ratio(a,b){ var x=lum(a), y=lum(b); return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05); }
+  function gradCol(img){
+    // a gradient layer: the mean of its colour stops (alpha kept), so a panel painted with a gradient still counts
+    var ms=img.match(/rgba?\([^)]*\)/g); if(!ms) return null;
+    var s=[0,0,0,0]; ms.forEach(function(x){ var c=parseCol(x)||[0,0,0,0]; s[0]+=c[0]; s[1]+=c[1]; s[2]+=c[2]; s[3]+=c[3]; });
+    return [s[0]/ms.length,s[1]/ms.length,s[2]/ms.length,s[3]/ms.length];
+  }
+  var canv=[].slice.call(document.querySelectorAll('canvas')).filter(function(c){ return shown(c); });
+  function canvasAt(x,y){
+    // what the game canvases show at a point: every visible 2D canvas under it, bottom first
+    var col=null;
+    var list=canv.filter(function(c){ var b=c.getBoundingClientRect(); return x>=b.left&&x<b.right&&y>=b.top&&y<b.bottom; });
+    list.sort(function(a,b){ var za=parseInt(cs(a).zIndex)||0, zb=parseInt(cs(b).zIndex)||0; if(za!==zb) return za-zb; return (a.compareDocumentPosition(b)&4)?-1:1; });
+    list.forEach(function(c){
+      try{
+        var g=c.getContext('2d'); if(!g) return; var b=c.getBoundingClientRect();
+        var px=Math.floor((x-b.left)*c.width/b.width), py=Math.floor((y-b.top)*c.height/b.height);
+        var d=g.getImageData(px,py,1,1).data; var p=[d[0],d[1],d[2],d[3]/255];
+        col=col?over(p,col):(p[3]>0?over(p,[0,0,0,1]):null);
+      }catch(x){}
+    });
+    return col;
+  }
+  // the colour under a text box: its own ancestors' backgrounds down to the first opaque one; if none is opaque, whatever paints
+  // under it (another DOM layer found by hit-testing, or the canvases), sampled at five points and averaged
+  function bgUnder(e,v){
+    var layers=[], opaque=null, viaGrad=false;
+    for(var a=e; a&&a.nodeType===1; a=a.parentElement){
+      var c=cs(a), bc=parseCol(c.backgroundColor), op=+c.opacity;
+      if(c.backgroundImage&&c.backgroundImage!=='none'){
+        var gc=gradCol(c.backgroundImage);
+        if(gc&&gc[3]>0){ viaGrad=true; if(gc[3]>=0.99){ opaque=gc; break; } layers.push(gc); }
+      }
+      if(bc&&bc[3]>0){ if(bc[3]>=0.99&&op>=0.99){ opaque=bc; break; } bc[3]*=op; layers.push(bc); }
+    }
+    var base=opaque;
+    if(!base){
+      var pts=[[0.5,0.5],[0.15,0.3],[0.85,0.3],[0.15,0.7],[0.85,0.7]], acc=[0,0,0], n=0;
+      pts.forEach(function(q){
+        var x=v.l+v.w*q[0], y=v.t+v.h*q[1];
+        if(x<0||y<0||x>=VW||y>=VH) return;
+        var under=null, stack=document.elementsFromPoint(x,y), hit=false;
+        // layers painted under this text that are not its ancestors (a panel behind an absolutely placed label)
+        for(var i=0;i<stack.length;i++){
+          var s=stack[i]; if(s===e||s.contains(e)||e.contains(s)){ hit=true; continue; }
+          if(!hit&&!(s.compareDocumentPosition(e)&2)) continue;
+          if(s.tagName==='CANVAS'){ under=canvasAt(x,y); break; }
+          var sc=cs(s), sb=parseCol(sc.backgroundColor);
+          if(sb&&sb[3]>=0.99){ under=sb; break; }
+        }
+        if(!under) under=canvasAt(x,y)||parseCol(cs(document.body).backgroundColor)||[0,0,0,1];
+        if(under[3]<1) under=over(under,[0,0,0,1]);
+        acc[0]+=under[0]; acc[1]+=under[1]; acc[2]+=under[2]; n++;
+      });
+      base=n?[acc[0]/n,acc[1]/n,acc[2]/n,1]:[0,0,0,1];
+    }
+    for(var j=layers.length-1;j>=0;j--) base=over(layers[j],base);
+    return {c:base,grad:viaGrad,canvas:!opaque};
+  }
+  // ------------------------------------------------ fonts
+  var FAMS=['barlow condensed','barlow','ibm plex mono','bahnschrift semicondensed','bahnschrift','arial narrow','roboto condensed',
+    'segoe ui','system-ui','sans-serif','consolas','ui-monospace','monospace'];
+  function firstFam(c){ return (c.fontFamily.split(',')[0]||'').replace(/["']/g,'').trim().toLowerCase(); }
+  // ------------------------------------------------ text pass
+  var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+    if(!/\S/.test(n.nodeValue)) return NodeFilter.FILTER_REJECT;
+    var p=n.parentElement; if(!p) return NodeFilter.FILTER_REJECT;
+    if(/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|TITLE|OPTION)$/.test(p.tagName)) return NodeFilter.FILTER_REJECT;
+    return NodeFilter.FILTER_ACCEPT; }});
+  var perEl=new Map(), n0;
+  while((n0=walker.nextNode())){
+    var p=n0.parentElement; if(!shown(p)) continue;
+    var rg=document.createRange(); rg.selectNodeContents(n0);
+    var rects=[].slice.call(rg.getClientRects()).filter(function(r){ return r.width>0.5&&r.height>0.5; });
+    if(!rects.length) continue;
+    var u={l:1e9,t:1e9,r:-1e9,b:-1e9}; rects.forEach(function(r){ u.l=Math.min(u.l,r.left); u.t=Math.min(u.t,r.top); u.r=Math.max(u.r,r.right); u.b=Math.max(u.b,r.bottom); });
+    var ent=perEl.get(p); if(!ent){ ent={txt:'',rects:[],u:null}; perEl.set(p,ent); }
+    ent.txt+=n0.nodeValue; ent.rects=ent.rects.concat(rects);
+    ent.u=ent.u?{l:Math.min(ent.u.l,u.l),t:Math.min(ent.u.t,u.t),r:Math.max(ent.u.r,u.r),b:Math.max(ent.u.b,u.b)}:u;
+  }
+  // inputs and buttons with a value show text too
+  [].slice.call(root.querySelectorAll('input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=hidden]),textarea,select')).forEach(function(e){
+    if(!shown(e)||perEl.has(e)) return; var ph=!e.value&&!!e.placeholder, t=e.value||e.placeholder||''; if(!/\S/.test(t)) return;
+    var b=e.getBoundingClientRect(); perEl.set(e,{txt:t,rects:[b],u:{l:b.left,t:b.top,r:b.right,b:b.bottom},input:true,ph:ph});
+  });
+  perEl.forEach(function(ent,e){
+    var c=cs(e), u=ent.u; u.w=u.r-u.l; u.h=u.b-u.t;
+    var v=visiblePart(ent.input&&e.parentElement?e.parentElement:e,{left:u.l,top:u.t,right:u.r,bottom:u.b});   // an input clips its own text by design
+    if(v.w<1||v.h<1) return;                       // scrolled away or fully hidden: not on screen
+    if(covered(e,v)){ stats.covered=(stats.covered||0)+1; return; }   // under another menu layer: not on screen
+    stats.texts++;
+    var txt=ent.txt;
+    // clip: cut by an overflow:hidden box, or an ellipsis
+    if(v.cutBy) add('clip',e,'text cut by '+name(v.cutBy)+' (overflow '+cs(v.cutBy).overflow+'): '+Math.round(u.w)+'x'+Math.round(u.h)+' shown '+Math.round(v.w)+'x'+Math.round(v.h),txt);
+    else if(!ent.input&&c.textOverflow==='ellipsis'&&e.scrollWidth>e.clientWidth+1&&clipsX(c)) add('clip',e,'ellipsis: '+e.scrollWidth+' wide in '+e.clientWidth,txt);
+    else{
+      // spill: text past the edge of a painted box it sits in (a button, a frame), which no overflow rule hides
+      for(var a=e; a&&a!==document.body&&a.nodeType===1; a=a.parentElement){
+        var ac=cs(a); if(ac.position==='fixed'&&a.getBoundingClientRect().width>=VW*0.98) break;
+        var painted=(parseCol(ac.backgroundColor)||[0,0,0,0])[3]>0.25||parseFloat(ac.borderLeftWidth)>0||parseFloat(ac.borderTopWidth)>0||(ac.backgroundImage&&ac.backgroundImage!=="none");
+        if(/text/.test(ac.backgroundClip||ac.webkitBackgroundClip||"")) painted=false;
+        if(!painted) continue;
+        var ab=a.getBoundingClientRect(), sl=ab.left-v.l, sr=v.r-ab.right, st=ab.top-v.t, sb=v.b-ab.bottom, sp=Math.max(sl,sr,st,sb);
+        if(sp>2){ add('clip',e,'text spills '+Math.round(sp)+'px out of '+name(a),txt); break; }
+      }
+    }
+    // offscreen
+    var oL=-v.l, oT=-v.t, oR=v.r-VW, oB=v.b-VH, oo=Math.max(oL,oT,oR,oB);
+    if(oo>1) add('offscreen',e,'text '+Math.round(oo)+'px past the '+(oo===oL?'left':oo===oT?'top':oo===oR?'right':'bottom')+' edge',txt);
+    // small
+    var sc=scaleOf(e), fs=parseFloat(c.fontSize)*sc, fs1080=fs*K;
+    if(fs1080<MINPX-0.05) add('small',e,(Math.round(fs1080*10)/10)+'px at 1080p (font '+c.fontSize+' x scale '+(Math.round(sc*100)/100)+')',txt);
+    // font
+    var ff=firstFam(c); if(FAMS.indexOf(ff)<0) add('font',e,'family '+c.fontFamily.slice(0,60),txt);
+    // contrast
+    var fg=parseCol(ent.ph?getComputedStyle(e,'::placeholder').color:c.color)||[255,255,255,1], op=1;
+    for(var q=e; q&&q.nodeType===1; q=q.parentElement){ op*=(+cs(q).opacity); }
+    var fill=c.webkitTextFillColor&&parseCol(c.webkitTextFillColor); if(fill&&fill[3]>0&&c.webkitTextFillColor!==c.color) fg=fill;
+    if(fill&&fill[3]===0) return;                  // gradient-clipped text (background-clip:text): colour is not measurable here
+    var bg=bgUnder(e,v), f2=[fg[0],fg[1],fg[2],fg[3]*op], fc=over(f2,bg.c), cr=ratio(fc,bg.c);
+    var need=(fs1080>=24||(fs1080>=18.66&&parseInt(c.fontWeight)>=700))?3:4.5;
+    // a disabled control (WCAG exempts it) still has to be legible: 3:1
+    var dis=e.closest&&e.closest('button:disabled,input:disabled,select:disabled,textarea:disabled,[aria-disabled=true]'); if(dis) need=3;
+    if(cr<need-0.005) add('contrast',e,(Math.round(cr*100)/100)+':1 (needs '+need+(dis?', disabled':'')+') text rgb('+fc.slice(0,3).map(Math.round)+') on rgb('+bg.c.slice(0,3).map(Math.round)+')'+(bg.canvas?' over the canvas':'')+(bg.grad?' gradient':''),txt);
+  });
+  // ------------------------------------------------ controls: offscreen and overlap
+  var CSEL='button,a[href],input:not([type=hidden]),select,textarea,[role=button],[role=tab],[onclick],.invtab,.vcell,[tabindex]:not([tabindex="-1"])';
+  var ctl=[].slice.call(root.querySelectorAll(CSEL)).filter(function(e){ return shown(e); }).map(function(e){
+    var b=e.getBoundingClientRect(); var v=visiblePart(e,b); return {e:e,b:b,v:v};
+  }).filter(function(o){ return o.v.w>=2&&o.v.h>=2&&!covered(o.e,o.v); });
+  stats.controls=ctl.length;
+  ctl.forEach(function(o){
+    var oo=Math.max(-o.v.l,-o.v.t,o.v.r-VW,o.v.b-VH);
+    if(oo>1) add('offscreen',o.e,'control '+Math.round(oo)+'px past the viewport',o.e.textContent);
+  });
+  for(var i=0;i<ctl.length;i++) for(var j=i+1;j<ctl.length;j++){
+    var A=ctl[i], B=ctl[j];
+    if(A.e.contains(B.e)||B.e.contains(A.e)||layerOf(A.e)!==layerOf(B.e)) continue;
+    var w=Math.min(A.v.r,B.v.r)-Math.max(A.v.l,B.v.l), h=Math.min(A.v.b,B.v.b)-Math.max(A.v.t,B.v.t);
+    if(w>2&&h>2){
+      // only when both are really on top there (one hidden under a modal is not an overlap the player sees)
+      var x=Math.max(A.v.l,B.v.l)+w/2, y=Math.max(A.v.t,B.v.t)+h/2, top=document.elementFromPoint(x,y);
+      if(top&&(A.e.contains(top)||B.e.contains(top)||top.contains(A.e)||top.contains(B.e))) add('overlap',A.e,'overlaps '+name(B.e)+' by '+Math.round(w)+'x'+Math.round(h),A.e.textContent);
+    }
+  }
+  // ------------------------------------------------ scrollbars where a menu should not scroll
+  var de=document.documentElement, dc=cs(de), bc=cs(document.body);
+  if((de.scrollHeight>de.clientHeight+1&&dc.overflowY!=='hidden'&&bc.overflowY!=='hidden')||(de.scrollWidth>de.clientWidth+1&&dc.overflowX!=='hidden'&&bc.overflowX!=='hidden'))
+    add('offscreen',de,'the document scrolls: '+de.scrollWidth+'x'+de.scrollHeight+' in '+de.clientWidth+'x'+de.clientHeight);
+  [].slice.call(root.querySelectorAll('.modal,.pausebox,.outcome,#title,#attract,.modal > div')).forEach(function(m){
+    if(!shown(m)||m.hasAttribute('data-lint-scroll')) return; var c=cs(m);
+    if((/auto|scroll/.test(c.overflowY)&&m.scrollHeight>m.clientHeight+1)||(/auto|scroll/.test(c.overflowX)&&m.scrollWidth>m.clientWidth+1))
+      add('offscreen',m,'menu frame scrolls: content '+m.scrollWidth+'x'+m.scrollHeight+' in '+m.clientWidth+'x'+m.clientHeight);
+  });
+  // ------------------------------------------------ focus
+  var PROPS=['outlineStyle','outlineWidth','outlineColor','boxShadow','backgroundColor','backgroundImage','borderTopColor','borderLeftColor','color','transform','filter','opacity','textDecorationLine'];
+  function snap(e){ var c=getComputedStyle(e), o={}; PROPS.forEach(function(k){ o[k]=c[k]; }); if(o.outlineStyle==='none'||o.outlineWidth==='0px'){ o.outlineStyle='none'; o.outlineWidth=''; o.outlineColor=''; } return o; }
+  function differs(a,b){ return PROPS.filter(function(k){ return a[k]!==b[k]; }); }
+  function focusRuleFor(e){
+    // a :focus-visible / :focus rule that matches this element and paints something (the probe cannot always trigger :focus-visible)
+    var hit=null;
+    [].slice.call(document.styleSheets).forEach(function(sh){ var rs; try{ rs=sh.cssRules; }catch(x){ return; }
+      [].slice.call(rs||[]).forEach(function(r){ if(hit||!r.selectorText||r.selectorText.indexOf(':focus')<0) return;
+        r.selectorText.split(',').forEach(function(s){ if(hit||s.indexOf(':focus')<0) return; var base=s.replace(/:focus(-visible|-within)?/g,'').trim()||'*';
+          try{ if(e.matches(base)&&/outline|box-shadow|background|border|color/.test(r.style.cssText)&&!/outline:\s*none/.test(r.style.cssText.replace(/border[^;]*;|box-shadow[^;]*;/g,'')+'')) hit=s.trim(); }catch(x){} }); }); });
+    return hit;
+  }
+  var act=document.activeElement, pad=document.querySelector('.padfocus');
+  function checkFocused(e,how,undo,redo){
+    var on=snap(e); undo(); var off=snap(e); redo();
+    stats.focusProbed++;
+    var d=differs(on,off);
+    if(!d.length){ var fr=focusRuleFor(e); if(!fr) add('focus',e,how+': focused looks identical to unfocused',e.textContent); }
+  }
+  if(pad&&shown(pad)) checkFocused(pad,'pad focus (.padfocus)',function(){ pad.classList.remove('padfocus'); },function(){ pad.classList.add('padfocus'); });
+  if(act&&act!==document.body&&act!==de&&shown(act)&&root.contains(act)) checkFocused(act,'keyboard focus',function(){ act.blur(); },function(){ act.focus({preventScroll:true}); });
+  else if((opts.focusProbe===undefined?4:opts.focusProbe)>0){
+    // nothing has focus: probe controls of distinct kinds in the topmost layer, then give focus back to nothing
+    var kinds={}, probed=0, lim=opts.focusProbe===undefined?4:opts.focusProbe;
+    ctl.forEach(function(o){
+      if(probed>=lim) return; var e=o.e; if(e.disabled) return;
+      var cx=o.v.l+o.v.w/2, cy=o.v.t+o.v.h/2, t=document.elementFromPoint(cx,cy); if(!t||!(e===t||e.contains(t))) return;
+      var kk=e.tagName+'.'+(typeof e.className==='string'?e.className.replace('padfocus','').trim().split(/\s+/)[0]:''); if(kinds[kk]) return; kinds[kk]=1;
+      if(e.tabIndex<0&&!/^(BUTTON|A|INPUT|SELECT|TEXTAREA)$/.test(e.tagName)) return;
+      var off=snap(e);
+      try{ e.focus({preventScroll:true,focusVisible:true}); }catch(x){ e.focus(); }
+      if(document.activeElement!==e) return;
+      var on=snap(e); e.blur(); probed++; stats.focusProbed++;
+      if(!differs(on,off).length&&!focusRuleFor(e)) add('focus',e,'probe: focused '+kk.toLowerCase()+' looks identical to unfocused',e.textContent);
+    });
+    try{ if(act&&act.focus&&act!==document.body) act.focus({preventScroll:true}); else if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); }catch(x){}
+  }
+  return {issues:issues,stats:stats};
+};
 // ================================================================ boot
 '@
 # Windows PowerShell 5.1 Get-Content -Raw decodes with the ANSI codepage, so UTF-8
