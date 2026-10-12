@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.60 - A MISS TURNS A RUNNING PILLAGER TOO
+
+Co-op hunt while he was away. His note of 2026-10-12: a running pillager bot should turn hostile when fired on. v23.59 turned a pillager running for a ring on the round that hits him. A round that only goes past him is still being fired on, and he kept running through a whole magazine of misses. A round that passes close to him now turns him the same way: hostile, coming for you and firing back, and he stays in the fight. Your hires and pillagers who joined you are unchanged.
+
+MEASURED. Check 23.60 passes, and fails on v23.59.
 ## v23.59 - A RUNNING PILLAGER FIRED ON FIGHTS BACK
 
 Co-op hunt while he was away. His note of 2026-10-12: a running pillager bot should turn hostile when fired on. A pillager under 30 percent health runs for a ring, and since v2.93 a round into him only made him more alert, so he kept running while you shot him. Fired on by you or your teammate, he now turns hostile, comes for the shooter and fires back, and he stays in the fight instead of bolting again on the next hit. Your own hires and pillagers who joined you are unchanged.

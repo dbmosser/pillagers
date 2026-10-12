@@ -1,0 +1,7 @@
+v23.60: a miss turns a running pillager too
+
+A fleeing pillager you shoot at now turns and fights back even when you miss.
+
+Check 23.60. Fails on v23.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

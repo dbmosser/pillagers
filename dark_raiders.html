@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.59';
+var VER='23.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22268,10 +22268,16 @@ function updateBullets(dt){
               notoAggress(en);
               en.hostile=true;
               en.alert=Math.max(en.alert||0,2.6);
-              // A man running for the ring keeps running, v2.93, exactly as he
-              // does when the round actually lands on him.
+              // A man running for the ring is turned by the line below this block (v23.xx), as a round that lands turns him (v23.59).
               if(en.state!=='extract'){ en.state='chase'; en.tx=p.x; en.ty=p.y; }
             }
+            // v23.xx, HIS NOTE (2026-10-12): "a 'running' pillager bot should turn hostile when fired on". v23.59 turned a running
+            // pillager (state extract) on the round that LANDS. A round that goes past him inside missWake, the same ear the peaceful
+            // test above uses, is still being fired on, and he kept running for the ring through a whole magazine of misses; a man
+            // already hostile was not even made alert by it. It now turns him the same way (runnerTurns: hostile, coming for you,
+            // firing back, cornered). Hires never reach this line and pillagers who joined you are refused by runnerTurns.
+            if(CFG.missWake>0&&en.kind==='raider'&&en.state==='extract'&&!en.downed&&!en.finished&&
+               dist(b,en)<en.r+CFG.missWake) runnerTurns(en,p.x,p.y);
             // v3.94: the first 0.30s of a 0.38s roll is invulnerable, the same
             // window the player gets, so a raider who times it eats nothing.
             if(en.roll>0.08) continue;
@@ -36147,7 +36153,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.59: A fleeing pillager you shoot now turns and fights back instead of running. Check 23.59 fails on v23.58',
+  now:'v23.60: A fleeing pillager you shoot at now turns and fights back even when you miss. Check 23.60 fails on v23.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
