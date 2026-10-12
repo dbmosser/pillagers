@@ -1,0 +1,7 @@
+v24.04: the announcer
+
+An announcer calls kill streaks, NEW HIGH SCORE, the last two minutes, waves and EXTRACTED.
+
+Check 24.04. Fails on v24.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

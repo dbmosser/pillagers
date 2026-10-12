@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.04 - THE ANNOUNCER
+
+Co-op hunt while he was away. His number 45 and his answer 26 b, short voice barks, punchy arcade like CoD and Fortnite. The big moments were only written on the screen. Now an announcer calls them out loud: DOUBLE KILL, TRIPLE KILL, MULTI KILL, RAMPAGE and UNSTOPPABLE for a demo kill streak, NEW HIGH SCORE, TWO MINUTES and ONE MINUTE as the clock runs down, WAVE INCOMING when a demo wave arrives, and EXTRACTED when you get out. The voice is a shade deeper than your operator, the room dips under it for a moment, and it is never squashed by the fight. These are calls, not music.
+
+MEASURED. Check 24.04 passes, and fails on v24.03.
 ## v24.03 - THE FORGE: THE UPGRADE MODEL
 
 Co-op hunt while he was away. His idea of 2026-10-12: a pack-a-punch to upgrade guns and add elemental damage, in raid only, and you keep an upgraded gun you extract with. This build is the model only, so nothing in play changes yet. A MK II gun does about 30 percent more damage a round, holds a quarter more rounds and reloads a fifth faster; a MK III gun adds one of four elements (FIRE, SHOCK, CRYO, ACID). Fire rate, spread, range and noise never change. Upgrading twice never stacks, and a found gun keeps its rolled quality. A forged gun ranks one or two steps higher, so the gun card and the DEMO gun routing never call a MK III rifle a downgrade against a plain Support MG.

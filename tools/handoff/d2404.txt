@@ -1,0 +1,5 @@
+## v24.04 - THE ANNOUNCER
+
+Co-op hunt while he was away. His number 45 and his answer 26 b, short voice barks, punchy arcade like CoD and Fortnite. The big moments were only written on the screen. Now an announcer calls them out loud: DOUBLE KILL, TRIPLE KILL, MULTI KILL, RAMPAGE and UNSTOPPABLE for a demo kill streak, NEW HIGH SCORE, TWO MINUTES and ONE MINUTE as the clock runs down, WAVE INCOMING when a demo wave arrives, and EXTRACTED when you get out. The voice is a shade deeper than your operator, the room dips under it for a moment, and it is never squashed by the fight. These are calls, not music.
+
+MEASURED. Check 24.04 passes, and fails on v24.03.
