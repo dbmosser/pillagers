@@ -1,0 +1,5 @@
+## v23.76 - TRIPWIRE MINES ARE DRAWN
+
+Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine. You can now see your wires: a faint red line with a slow pulse and a small emitter at each end, dashed with a blinking amber light while it arms and a red light once it is live. They show above the darkness, so you and your teammate always see where your wires are. While you hold a mine on the trigger a dashed preview shows where the wire will go, and the label over your head reads RELEASE TO SET. The mine has its own belt icon.
+
+MEASURED. Check 23.76 passes, and fails on v23.75.

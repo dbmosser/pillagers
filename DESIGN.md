@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.76 - TRIPWIRE MINES ARE DRAWN
+
+Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine. You can now see your wires: a faint red line with a slow pulse and a small emitter at each end, dashed with a blinking amber light while it arms and a red light once it is live. They show above the darkness, so you and your teammate always see where your wires are. While you hold a mine on the trigger a dashed preview shows where the wire will go, and the label over your head reads RELEASE TO SET. The mine has its own belt icon.
+
+MEASURED. Check 23.76 passes, and fails on v23.75.
 ## v23.75 - TRIPWIRE MINES IN CO-OP
 
 Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine, in two-player play. The wire is now shared. A wire player 2 strings is strung for real in the host window, which runs the machines and the pillagers, under his seat, so what it kills is his kill. Both windows see every wire, and when a wire goes off, runs out, or is the oldest of four, the host tells the other window, which takes its copy down and shows the blast. A wire still never hurts a player.

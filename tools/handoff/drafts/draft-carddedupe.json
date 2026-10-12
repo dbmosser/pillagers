@@ -1,0 +1,12 @@
+{
+    "title":  "THE WHAT IS NEW CARD LISTS THE TRIPWIRE MINE ONCE",
+    "why":  "Two card refreshes ran one after the other and the Tripwire Mine line went onto the what is new card twice, so the card showed it at the top and again two lines down. The second copy is gone; the card leads with it once.",
+    "now":  "The what is new card lists the Tripwire Mine once.",
+    "edits":  [
+                  {
+                      "anchor":  "  \u0027ARCADE AND RUNNERS. One player arcade, hold E to loot, credits as score, a title that always fits, and pillagers who run now fight back when shot.\u0027,\n  \u0027TRIPWIRE MINE. It goes on the belt like a grenade and strings a wire across a doorway that blows when a machine or a pillager walks through.\u0027,",
+                      "replacement":  "  \u0027ARCADE AND RUNNERS. One player arcade, hold E to loot, credits as score, a title that always fits, and pillagers who run now fight back when shot.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card never lists the same line twice (the Tripwire Mine line went in twice)\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     var seen={}, bad=[], i, s;\n     for(i=0;i\u003cWHATSNEW.length;i++){ s=String(WHATSNEW[i]); if(seen[s]) bad.push(\u0027line \u0027+i+\u0027 repeats line \u0027+seen[s].i+\u0027: \u0027+s.slice(0,40)); else seen[s]={i:i}; }\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,7 @@
+v23.76: tripwire mines are drawn
+
+Tripwire Mines are now drawn as a faint red wire with a preview while you hold one, and the mine has its own icon.
+
+Check 23.76. Fails on v23.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
