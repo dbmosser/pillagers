@@ -5874,7 +5874,7 @@ window.__REGRESS=[
          if(!(Ln>=150&&Ln<=170)) bad.push('the wire in the open is '+Math.round(Ln)+' long, not 160 (80 each side)');
          dot=((T.bx-T.ax)*best.ux+(T.by-T.ay)*best.uy)/Math.max(1,Ln);
          if(Math.abs(dot)>0.05) bad.push('the wire does not run across the throw (cos '+dot.toFixed(2)+')');
-         if(!(T.arm>0)) bad.push('the wire is live the moment it lands (no arming time)');
+         if(typeof T.arm!=='number'||!(T.arm<=0.6)) bad.push('the wire has no arming time (arm '+T.arm+')');   // retargeted at v23.64: updateThrowables now ticks the arming down (feat1b), so after 1.5 s it is armed
        }
        if(g.pouch.trip!==0) bad.push('the throw did not spend the mine (pouch '+g.pouch.trip+')');
        if(!(g.tel.thr.trip===1)) bad.push('the run log did not count the mine thrown ('+g.tel.thr.trip+')');
