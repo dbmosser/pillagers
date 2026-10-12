@@ -1920,7 +1920,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.38';
+var VER='24.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15171,6 +15171,7 @@ function tripBlast(T,x,y){
   try{ if(sd<R*2) padRumble(Math.max(0.3,1-sd/(R*2)),200); }catch(_rb){}
   sfx("boom",x,y);
   if(!G.sim){ spark(x,y,'#ff6a4a',28,320); decal(x,y,'#141210',fxn(16,24)); G.puffs.push({x:x,y:y,t:0,life:.5,c:'#ff8a5a',r:44}); }
+  if(!G.sim){ try{ gfxBlastScar(x,y,0.9,false); }catch(_gbs){} }   // v23.xx (gfx26): the mine scars the floor too
   G.shake=Math.max(G.shake,sd<300?8:(sd<700?4:1.5));
   flash(x,y,260,'#ff7a4a',.42);
   ping(x,y,520,false,false,'env','fire');
@@ -15227,6 +15228,20 @@ function tripDraw(Z,ox,oy){
   }
   wc.restore();
 }
+// v23.xx (gfx26), HIS ORDER (2026-10-12) on the graphics program: "add ALL of this stuff", item 12, richer ground. A BLAST LEAVES
+// ITS SCAR. A frag, a Howler shell or a tripwire mine left one decal, a flat dark oval that faded after 45 seconds and that a busy
+// fight pushed off the 420-decal list even sooner. Every blast on open ground now stamps the floor itself (scarStamp, gfx22): a
+// scorch sized to the blast, 4 to 7 cracks running out of it and a scatter of debris, all shaped by a hash of where it went off.
+// They stay for the whole raid and cost nothing a frame. A shell that bursts on a roof leaves nothing on the ground under it. The
+// copies of a blast the other windows draw stamp their own floor the same way. Render only: no seeded draw.
+function gfxBlastScar(x,y,size,onRoof){
+  var k=(size>0)?size:1, n=0;
+  if(onRoof||G.sim||!G.ground) return 0;
+  if(scarStamp('scorch',x,y,{r:26*k})) n++;
+  if(scarStamp('crack',x,y,{r:34*k})) n++;
+  if(scarStamp('debris',x,y,{r:30*k})) n++;
+  return n;
+}
 function explodeFrag(f){
   // The blast was 95 units, a little over four player widths, so a charge landing
   // a stride away from a crawler often did nothing to it. 150 makes the throw
@@ -15241,6 +15256,7 @@ function explodeFrag(f){
   G.shake=Math.max(G.shake,9);
   flash(f.x,f.y,310,'#ffb267',.45);
   if(!G.sim){ try{ boomFx(f.x,f.y,1,'frag'); }catch(_gbx){} }   // v23.xx (gfx2): explosion hook
+  if(!G.sim){ try{ gfxBlastScar(f.x,f.y,1,false); }catch(_gbs){} }   // v23.xx (gfx26): and its scar on the floor
   ping(f.x,f.y,560,false,false,'env','fire');
   if(!f.by) netThrSend('nz',f.x,f.y);   // v17.29, co-op hunt 2026-09-28: the blast of player 2 own charge is heard by the enemies the host runs
   var dp=dist(p,f);
@@ -15361,6 +15377,7 @@ function howlerImpact(SH){
   G.shake=Math.max(G.shake,6);
   flash(SH.tx,SH.ty,220,'#ff9a5c',.4);
   if(!G.sim){ try{ boomFx(SH.tx,SH.ty,0.8,'howler'); }catch(_gbx){} }   // v23.xx (gfx2): explosion hook
+  if(!G.sim){ try{ gfxBlastScar(SH.tx,SH.ty,0.8,_onRoof); }catch(_gbs){} }   // v23.xx (gfx26): and its scar, unless it burst on a roof
   // v12.51, 2026-09-07 audit: A HOWLER IS DEAF TO ITS OWN GUN. Everything it
   // does is a noise every listening machine hears, which is right and is what
   // pulls a room to a burst; but the machine that made the noise heard it too.
@@ -15419,7 +15436,7 @@ var SH=G.shells[shI];
     if(!SH.fx&&!SH.nsent){ SH.nsent=1; netThrSend('sh',SH.tx,SH.ty,{x0:Math.round(SH.x0),y0:Math.round(SH.y0),air:+Math.max(0.2,SH.air-SH.t).toFixed(2)}); }
     if(SH.t>=SH.air){
       G.shells.splice(shI,1);
-      if(SH.fx){ if(!G.sim){ spark(SH.tx,SH.ty,'#ff9a5c',22,300); decal(SH.tx,SH.ty,'#181310',fxn(14,20)); G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); } G.shake=Math.max(G.shake,6); flash(SH.tx,SH.ty,220,'#ff9a5c',.4); if(!G.sim){ try{ boomFx(SH.tx,SH.ty,0.8,'howler'); }catch(_gbx){} } }   // a copy only shows the burst (v23.xx gfx2: and its explosion hook)
+      if(SH.fx){ if(!G.sim){ spark(SH.tx,SH.ty,'#ff9a5c',22,300); decal(SH.tx,SH.ty,'#181310',fxn(14,20)); G.puffs.push({x:SH.tx,y:SH.ty,t:0,life:.5,c:'#ff9a5c',r:40}); } G.shake=Math.max(G.shake,6); flash(SH.tx,SH.ty,220,'#ff9a5c',.4); if(!G.sim){ try{ boomFx(SH.tx,SH.ty,0.8,'howler'); }catch(_gbx){} try{ gfxBlastScar(SH.tx,SH.ty,0.8,!!roofAt(SH.tx,SH.ty)); }catch(_gbs){} } }   // a copy only shows the burst (v23.xx gfx2: and its explosion hook)
       else howlerImpact(SH);
     }
   }
@@ -15475,7 +15492,7 @@ var SH=G.shells[shI];
     var fr=G.frags[i]; fr.t+=dt;
     if(!fr.fx&&!fr.nsent){ fr.nsent=1; netThrSend('frag',fr.x,fr.y,{f:+Math.max(0.05,fr.fuse-fr.t).toFixed(2)}); }   // v21.98 (K8, K15): the party sees it lie there
     if(fr.t>=fr.fuse){
-      if(fr.fx){ if(!G.sim){ spark(fr.x,fr.y,'#ffcf7a',34,340); decal(fr.x,fr.y,'#141210',fxn(20,30)); G.puffs.push({x:fr.x,y:fr.y,t:0,life:.6,c:'#ffb267',r:52}); } G.shake=Math.max(G.shake,9); flash(fr.x,fr.y,310,'#ffb267',.45); if(!G.sim){ try{ boomFx(fr.x,fr.y,1,'frag'); }catch(_gbx){} } }   // a copy only shows the blast (v23.xx gfx2: and its explosion hook)
+      if(fr.fx){ if(!G.sim){ spark(fr.x,fr.y,'#ffcf7a',34,340); decal(fr.x,fr.y,'#141210',fxn(20,30)); G.puffs.push({x:fr.x,y:fr.y,t:0,life:.6,c:'#ffb267',r:52}); } G.shake=Math.max(G.shake,9); flash(fr.x,fr.y,310,'#ffb267',.45); if(!G.sim){ try{ boomFx(fr.x,fr.y,1,'frag'); }catch(_gbx){} try{ gfxBlastScar(fr.x,fr.y,1,false); }catch(_gbs){} } }   // a copy only shows the blast (v23.xx gfx2: and its explosion hook)
       else explodeFrag(fr);
       G.frags.splice(i,1);
     }
@@ -38511,7 +38528,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.38: Rounds that hit a wall now leave bullet holes in it for the rest of the raid. Check 24.38 fails on v24.37',
+  now:'v24.39: Frags, Howler shells and mines now burn a scorch with cracks and debris into the floor that stays all raid. Check 24.39 fails on v24.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

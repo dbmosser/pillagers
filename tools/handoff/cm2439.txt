@@ -1,0 +1,7 @@
+v24.39: a blast leaves its scar
+
+Frags, Howler shells and mines now burn a scorch with cracks and debris into the floor that stays all raid.
+
+Check 24.39. Fails on v24.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

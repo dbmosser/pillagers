@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.39 - A BLAST LEAVES ITS SCAR
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 12, richer ground). A frag, a Howler shell or a tripwire mine left one flat dark oval that faded after 45 seconds, and a busy fight pushed it off the list even sooner. Every blast on open ground now burns a scorch into the floor with cracks running out of it and a scatter of debris, and it stays for the whole raid at no cost to draw. A shell that bursts on a roof leaves nothing on the ground under it. Nothing about play changes.
+
+MEASURED. Check 24.39 passes, and fails on v24.38.
 ## v24.38 - BULLETS MARK THE WALLS
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 7, shot detail). A round that hit a wall made a spark and left nothing, so a wall you had been trading fire across looked untouched. A round that stops on the face of a wall you can see now leaves a chipped bullet hole in it at about gun height, and the marks stay for the whole raid. They are painted into the wall picture itself, so they cost nothing to draw. Doors, windows, trees, cars and furniture take no marks. Nothing about play changes.
