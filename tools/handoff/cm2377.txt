@@ -1,0 +1,7 @@
+v23.77: punchy guns: snap close, thump far
+
+Guns snap close up and thump far off, and the room or the street answers each shot.
+
+Check 23.77. Fails on v23.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

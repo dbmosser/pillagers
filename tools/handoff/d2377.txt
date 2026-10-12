@@ -1,0 +1,5 @@
+## v23.77 - PUNCHY GUNS: SNAP CLOSE, THUMP FAR
+
+Co-op hunt while he was away. His number 45, punchy arcade sound like CoD and Fortnite. A gun sounded the same at 50 and at 800, only quieter, and the same in a shed as in the open street. Now close shots (yours included) get a bright snap on top of the crack, the thing that makes a gun feel like it kicks. Far shots lose their bright edge and arrive as a low thump, the way distant gunfire really sounds, so you can tell how far a fight is by ear. And the place answers: two quick slaps off the walls inside a building, a short low roll in the open, a soft wash in the woods, a ring in a vault, a hiss over water. His v10.58 note still holds: the answer is a tenth of the crack or less and short, never the long wash he could hear way later.
+
+MEASURED. Check 23.77 passes, and fails on v23.76.

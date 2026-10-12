@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.77 - PUNCHY GUNS: SNAP CLOSE, THUMP FAR
+
+Co-op hunt while he was away. His number 45, punchy arcade sound like CoD and Fortnite. A gun sounded the same at 50 and at 800, only quieter, and the same in a shed as in the open street. Now close shots (yours included) get a bright snap on top of the crack, the thing that makes a gun feel like it kicks. Far shots lose their bright edge and arrive as a low thump, the way distant gunfire really sounds, so you can tell how far a fight is by ear. And the place answers: two quick slaps off the walls inside a building, a short low roll in the open, a soft wash in the woods, a ring in a vault, a hiss over water. His v10.58 note still holds: the answer is a tenth of the crack or less and short, never the long wash he could hear way later.
+
+MEASURED. Check 23.77 passes, and fails on v23.76.
 ## v23.76 - TRIPWIRE MINES ARE DRAWN
 
 Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine. You can now see your wires: a faint red line with a slow pulse and a small emitter at each end, dashed with a blinking amber light while it arms and a red light once it is live. They show above the darkness, so you and your teammate always see where your wires are. While you hold a mine on the trigger a dashed preview shows where the wire will go, and the label over your head reads RELEASE TO SET. The mine has its own belt icon.
