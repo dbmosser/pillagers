@@ -1,0 +1,7 @@
+v23.83: graphics settings rows
+
+Settings has four new graphics rows: LIGHTING, POST FX, EFFECT INTENSITY and HUD SIZE.
+
+Check 23.83. Fails on v23.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

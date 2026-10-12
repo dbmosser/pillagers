@@ -1708,7 +1708,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.82';
+var VER='23.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36763,7 +36763,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.82: Every menu now uses the new graphite palette with one amber accent instead of the old navy and periwinkle. Check 23.82 fails on v23.81',
+  now:'v23.83: Settings has four new graphics rows: LIGHTING, POST FX, EFFECT INTENSITY and HUD SIZE. Check 23.83 fails on v23.82',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48475,6 +48475,36 @@ var GAMEOPTS=[
    opts:[
      {n:'Full',    cfg:{fxLevel:1}},
      {n:'Reduced', cfg:{fxLevel:0}}
+   ], def:0},
+  // v23.xx (gfx3), HIS ORDER (2026-10-12) on the graphics program: "add ALL of this stuff". The four graphics rows the upgrade
+  // reads, placed beside Effects. New words are short caps, as he asked for game text. Undefined means the default, as for
+  // wallBake and fxLevel: readers test CFG.gfxLight!==0 and so on. Each row starts to change the picture as its own build lands;
+  // CLASSIC with POST FX OFF is the look of v23.58 exactly, the rollback and the A/B arm.
+  {k:'gfxLight', label:'LIGHTING',
+   hint:'HIGH: LAMPS CAST SHADOWS. STANDARD: LAMPS, NO SHADOWS. CLASSIC: THE ORIGINAL LOOK.',
+   opts:[
+     {n:'HIGH',     cfg:{gfxLight:2}},
+     {n:'STANDARD', cfg:{gfxLight:1}},
+     {n:'CLASSIC',  cfg:{gfxLight:0}}
+   ], def:0},
+  {k:'gfxPost', label:'POST FX',
+   hint:'BLOOM AND COLOUR GRADE. OFF RUNS FASTER.',
+   opts:[
+     {n:'ON',  cfg:{gfxPost:1}},
+     {n:'OFF', cfg:{gfxPost:0}}
+   ], def:0},
+  {k:'fxInt', label:'EFFECT INTENSITY',
+   hint:'SHAKE, HIT PAUSE, HIT FLASH, BLOOM AND GRAIN.',
+   opts:[
+     {n:'FULL', cfg:{fxInt:1}},
+     {n:'HALF', cfg:{fxInt:0.5}},
+     {n:'OFF',  cfg:{fxInt:0}}
+   ], def:0},
+  {k:'hudTv', label:'HUD SIZE',
+   hint:'LARGE FOR TV: BIGGER RAID TEXT FOR A SCREEN ACROSS THE ROOM.',
+   opts:[
+     {n:'STANDARD',     cfg:{hudTv:0}},
+     {n:'LARGE FOR TV', cfg:{hudTv:1}}
    ], def:0},
   {k:'volMaster', label:'Master volume',
    hint:'Everything the game plays.',

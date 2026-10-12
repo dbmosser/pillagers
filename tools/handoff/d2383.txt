@@ -1,0 +1,5 @@
+## v23.83 - GRAPHICS SETTINGS ROWS
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it. Settings gets the four rows the graphics upgrade is built on, right after Effects: LIGHTING (HIGH, STANDARD, CLASSIC), POST FX (ON, OFF), EFFECT INTENSITY (FULL, HALF, OFF) and HUD SIZE (STANDARD, LARGE FOR TV). They start on HIGH, ON, FULL and STANDARD. Each row begins to change the picture as its own graphics build lands; CLASSIC lighting with POST FX off will always be the look the game has today. Nothing about play changes.
+
+MEASURED. Check 23.83 passes, and fails on v23.82.

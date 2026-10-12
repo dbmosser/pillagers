@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.83 - GRAPHICS SETTINGS ROWS
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it. Settings gets the four rows the graphics upgrade is built on, right after Effects: LIGHTING (HIGH, STANDARD, CLASSIC), POST FX (ON, OFF), EFFECT INTENSITY (FULL, HALF, OFF) and HUD SIZE (STANDARD, LARGE FOR TV). They start on HIGH, ON, FULL and STANDARD. Each row begins to change the picture as its own graphics build lands; CLASSIC lighting with POST FX off will always be the look the game has today. Nothing about play changes.
+
+MEASURED. Check 23.83 passes, and fails on v23.82.
 ## v23.82 - GRAPHITE MENUS: THE NEW COLOURS
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus and text still look bad, make it look like a triple-A game; and #20: gritty and grounded, like ARC Raiders. First step of the UI redesign (ui2). Every window was painted in a 16-bit role-playing palette: royal navy with light periwinkle double frames. The whole game now takes one palette: near-black graphite surfaces, thin grey frames, one signal-amber accent, a cream card colour, and clear rarity colours (grey, green, blue, purple, orange). The old colour names are pointed at the new ones, so every window changes at once, and 70 lines of the stylesheet that named the navy and periwinkle directly were moved to the matching graphite. The HUD reads its colours (text, danger red, extraction, teammates) from the same table, so the raid screen and the menus can never drift apart. Nothing about play changes.
