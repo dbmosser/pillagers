@@ -1,0 +1,7 @@
+v24.17: casings pile up
+
+Spent casings now stay on the floor for the whole raid, and cost nothing to draw.
+
+Check 24.17. Fails on v24.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

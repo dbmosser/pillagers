@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.17 - CASINGS PILE UP
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 7, shot detail). Spent casings were redrawn one by one every frame, all of them, even off the screen, and only the last 300 were kept, so a long fight lost its oldest brass. A casing that lands is now pressed into the floor itself at the same colour and angle, so every one of them stays for the whole raid and they cost nothing to draw. Only brass still in the air is drawn each frame, and only on the screen. Nothing about play changes.
+
+MEASURED. Check 24.17 passes, and fails on v24.16.
 ## v24.16 - THREE BODIES THAT READ
 
 Co-op hunt while he was away. His order of 2026-10-12, make them all look better, and his answer 24: redesign the silhouettes for readability first. At raid size Lean and Broad were the same person. Broad now stands on wider legs and bigger boots, one fifth wider, with a thicker arm on the gun, so a Broad body reads heavy from across the room. Lean wears the plate carrier on a slimmer torso, 11 wide where it was 13, with a slimmer arm. Curved keeps her outline, her rig cut to it and her jiggle. Suits keep their own figure.

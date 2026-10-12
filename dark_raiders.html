@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.16';
+var VER='24.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27438,6 +27438,7 @@ if(G.map.story){
   for(i=0;i<G.shells.length;i++){
 var sl=G.shells[i];
     if(sl.mortar) continue;
+    if(sl.x<ox-20||sl.x>ox+VW+20||sl.y<oy-20||sl.y>oy+VH+20) continue;   // v23.xx (gfx23): brass off the screen is not drawn
     wc.globalAlpha=clamp(1-(sl.t-sl.life)/2.5,0,.9);
     wc.save(); wc.translate(sl.x,sl.y); wc.rotate(sl.rot);
     wc.fillRect(-1.6,-.7,3.2,1.4); wc.restore();
@@ -37557,12 +37558,21 @@ function loop(ts){
       // brass on the ground for the rest of the raid: walk back through and the
       // floor tells you something happened here. Settled shells stop simulating
       // entirely, so three hundred of them cost the same as none.
+      // v23.xx (gfx23), HIS ORDER (2026-10-12) on the graphics program: "add ALL of this stuff", item 7, shot detail. CASINGS PILE UP.
+      // The settled casings were still drawn one by one every frame, all of them and off the screen too (five canvas calls each), and
+      // the list kept only the last 300, so a long fight quietly lost its oldest brass. A casing that settles is now stamped into the
+      // floor itself (scarStamp, gfx22) at the same colour, size and turn, and leaves the list: it stays for the whole raid, survives a
+      // floor rebake, and costs nothing a frame however many there are. Only brass still in the air is drawn, and only on screen. If the
+      // stamp is refused (graphics hooks bypassed, off the floor) the casing settles in the list exactly as before.
       for(i=G.shells.length-1;i>=0;i--){
 var sl=G.shells[i];
         if(sl.mortar||sl.settled) continue;
         sl.t+=dt; sl.x+=sl.vx*dt; sl.y+=sl.vy*dt;
         var _dms=Math.pow(.88,dt*60); sl.vx*=_dms; sl.vy*=_dms;
-        if(sl.t>sl.life) sl.settled=true;
+        if(sl.t>sl.life){
+          sl.settled=true;
+          if(!G.sim&&sl.brass){ var _sbs=false; try{ _sbs=scarStamp('brass',sl.x,sl.y,{rot:sl.rot}); }catch(_gbs){} if(_sbs) G.shells.splice(i,1); }
+        }
       }
       if(G.shells.length>300) G.shells.splice(0,G.shells.length-300);
 wildTick(dt);
@@ -37904,7 +37914,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.16: Lean, Broad and Curved now look like three different bodies at raid size. Check 24.16 fails on v24.15',
+  now:'v24.17: Spent casings now stay on the floor for the whole raid, and cost nothing to draw. Check 24.17 fails on v24.16',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
