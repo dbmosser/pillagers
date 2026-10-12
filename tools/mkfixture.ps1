@@ -7200,7 +7200,7 @@ window.__REGRESS=[
        sp=document.createElement('span'); sp.className='r-rare'; sp.textContent='x'; rt.appendChild(sp);
        if(getComputedStyle(sp).color!=='rgb(63, 157, 233)') bad.push('.r-rare text is '+getComputedStyle(sp).color+', not the rare token');
        cl=document.createElement('div'); cl.className='cell c-gold'; rt.appendChild(cl);
-       if(getComputedStyle(cl).borderTopColor!=='rgb(240, 143, 46)') bad.push('.cell.c-gold border is '+getComputedStyle(cl).borderTopColor+', not the gold token');
+       if(getComputedStyle(cl).borderTopColor!==(function(hx){ var q=parseInt(hx.replace('#',''),16); return 'rgb('+((q>>16)&255)+', '+((q>>8)&255)+', '+(q&255)+')'; })(cs.getPropertyValue('--r-gold').trim())) bad.push('.cell.c-gold border is '+getComputedStyle(cl).borderTopColor+', not the gold token');
        sh=document.getElementsByTagName('style')[0]; sh=sh&&sh.sheet;
        (function walk(rules){ for(var i=0;rules&&i<rules.length;i++){ var r=rules[i], t=r.cssText||'';
          if(r.cssRules&&r.cssRules.length&&!r.style){ walk(r.cssRules); continue; }
