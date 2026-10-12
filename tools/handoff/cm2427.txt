@@ -1,0 +1,7 @@
+v24.27: keys are keycaps
+
+Prompts in the world and the key rows on the title and in the stash show each key as a keycap instead of a letter in brackets.
+
+Check 24.27. Fails on v24.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

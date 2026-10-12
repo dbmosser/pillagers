@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.27 - KEYS ARE KEYCAPS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus and text still look bad, make it look like a triple-A game. UI redesign build ui7, keycaps. A prompt in the world printed its key as text in brackets ([E] SEARCH) with the brackets coloured amber. The key is now drawn as a keycap, an amber key with a dark letter, and on a controller the button in its own colour (A green, B red, X blue, Y yellow), the way the big games show a key. The keys in the title key row and the stash key bar are keycaps too. The line is still drawn whole underneath, so his own wording of a prompt and the word editor work as before.
+
+MEASURED. Check 24.27 passes, and fails on v24.26.
 ## v24.26 - END RUN ASKS TWICE
 
 Co-op hunt while he was away. His number 39, full controller navigation. END RUN in the demo pause box ended the whole run on one press with no confirm, and on a controller the highlight opens on RESUME, so one step and A threw a party run away. The first press now arms it and the button reads END RUN? PRESS AGAIN; a second press within 3 seconds ends the run. After 3 seconds, or when the box is opened again, it is back to END RUN and safe. Mouse, keyboard and pad all press the same button.
