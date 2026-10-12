@@ -1,0 +1,7 @@
+v24.16: three bodies that read
+
+Lean, Broad and Curved now look like three different bodies at raid size.
+
+Check 24.16. Fails on v24.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.16 - THREE BODIES THAT READ
+
+Co-op hunt while he was away. His order of 2026-10-12, make them all look better, and his answer 24: redesign the silhouettes for readability first. At raid size Lean and Broad were the same person. Broad now stands on wider legs and bigger boots, one fifth wider, with a thicker arm on the gun, so a Broad body reads heavy from across the room. Lean wears the plate carrier on a slimmer torso, 11 wide where it was 13, with a slimmer arm. Curved keeps her outline, her rig cut to it and her jiggle. Suits keep their own figure.
+
+MEASURED. Check 24.16 passes, and fails on v24.15.
 ## v24.15 - ARROWS AND ENTER IN THE PAUSE BOX
 
 Co-op hunt while he was away. His number 39, full controller navigation, keyboard and mouse first. The pause box (ESC or TAB) answered only P, ESC and TAB from the keyboard, so its buttons could only be pressed with the mouse or a pad, while the title already took the arrows and ENTER. Now with the box up the arrow keys move a highlight across its buttons and ENTER or SPACE presses the highlighted one, the same press a click makes, so Abandon still asks and END RUN still asks twice.
