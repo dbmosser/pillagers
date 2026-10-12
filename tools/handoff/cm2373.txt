@@ -1,0 +1,7 @@
+v23.73: sound through walls is muffled
+
+Sounds behind a wall are muffled, and sounds beside you are placed wider left and right.
+
+Check 23.73. Fails on v23.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v23.73 - SOUND THROUGH WALLS IS MUFFLED
+
+Co-op hunt while he was away. His number 45, improve all sound as much as possible. A shot in the next room sounded exactly like a shot in the open at the same range, only quieter, so you could not tell a fight behind a wall from one across the street. Now every sound in the world checks whether a wall stands between it and you, using the same line of sight the game uses for seeing: behind a wall it plays muffled, more so the further it is. A sound right beside you is also placed wider left or right, and a far one narrower, so close things sound close. Your own gun and feet are untouched.
+
+MEASURED. Check 23.73 passes, and fails on v23.72.

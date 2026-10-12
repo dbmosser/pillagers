@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.73 - SOUND THROUGH WALLS IS MUFFLED
+
+Co-op hunt while he was away. His number 45, improve all sound as much as possible. A shot in the next room sounded exactly like a shot in the open at the same range, only quieter, so you could not tell a fight behind a wall from one across the street. Now every sound in the world checks whether a wall stands between it and you, using the same line of sight the game uses for seeing: behind a wall it plays muffled, more so the further it is. A sound right beside you is also placed wider left or right, and a far one narrower, so close things sound close. Your own gun and feet are untouched.
+
+MEASURED. Check 23.73 passes, and fails on v23.72.
 ## v23.72 - TRIPWIRE MINES GO OFF
 
 Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine. A strung wire now arms after a moment and goes off when a machine or a pillager steps across it. The hovering Snitch flies over it, and the Peddler, the Stray and your hire never set it off. You and your teammates never set it off and its blast never hurts a player, so there is no team damage and no self damage. The blast hits bodies within 150 that it can see, hard at the centre and lighter at the edge, and leaves walls alone. The kill is yours, a neutral pillager it hits counts against you like any shot, and the survivors run at the blast.
