@@ -1,0 +1,7 @@
+v23.55: arcade loot is hold e again
+
+Arcade looting is hold E again, like every other raid, and the controls card shows it.
+
+Check 23.55. Fails on v23.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.55 - ARCADE LOOT IS HOLD E AGAIN
+
+Co-op hunt while he was away. His order of 2026-10-11 evening: he does not like the walk-over loot in the arcade and wants hold E to loot back. In the arcade a box is searched again only while E (or X, or the pad search button) is held, at the usual speed, like every other raid. The controls card on the demo video and at each spawn gains a LOOT row, so a walk-up player knows to hold it. Valuables still turn into points.
+
+MEASURED. Check 23.55 passes, and fails on v23.54.
 ## v23.54 - 1 PLAYER ARCADE DEMO
 
 Co-op hunt while he was away. His order of 2026-10-11 evening: arcade mode also needs a single player option. The title now has a 1 PLAYER ARCADE DEMO row next to the 2 player one. It starts the arcade in this one window, with no player 2 window and no pairing. It plays exactly like the 2 player arcade: endless, the spawn shield, the random loadout, the extraction bonus and re-drop, waves, streaks, idle return, the attract loop, the controls card and the Halloween dressing. The score at the top says SCORE instead of TEAM SCORE, with no YOU and P2 split, and the run over card shows one row. Solo runs go on their own list on the party board, so a solo score is never ranked against two player team scores. The 2 player arcade and normal raids are unchanged.
