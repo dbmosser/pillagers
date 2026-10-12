@@ -1,0 +1,7 @@
+v24.13: the final minute
+
+The final minute plays a sting and the clock turns red and pops each second, in career and demo.
+
+Check 24.13. Fails on v24.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

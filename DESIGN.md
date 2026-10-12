@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.13 - THE FINAL MINUTE
+
+Co-op hunt while he was away. His answer 19 (2026-10-12): the final 60 seconds get a sting and a red clock. The one minute mark now plays a sting of its own, a low brass hit with a bright ring, in place of the rising clock siren, and from 1:00 the clock is red and pops on every second as it turns. It turned red only at 0:44 and never moved. It is the same in the demo, where the clock under the score also steps up in size for the last minute. The words of every warning are unchanged.
+
+MEASURED. Check 24.13 passes, and fails on v24.12.
 ## v24.12 - THE WARDEN REDESIGN
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines, gritty and grounded like ARC Raiders, silhouettes first. The Warden was a purple dustbin on treads with a yellow letterbox, purple is the elite colour, its hull never turned and its tread hardly moved. It is now a hunched walker-tank in gunmetal with rust-red armour plates: tracks whose links run as it moves, a low visor slit that glows dim white at rest, amber when it investigates, red when it hunts and orange when it vents, a cannon arm on a hydraulic piston, a launcher pod and exhaust stacks on its back, and the whole hull turns to face you. Elite Wardens wear brass trim and a brass antenna. Drawn only: its size, its weak points and the fight are unchanged.

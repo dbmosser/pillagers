@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.12';
+var VER='24.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5521,6 +5521,24 @@ function blip(type,d,pan){
     cgG.gain.setValueAtTime(.0001,t); cgG.gain.linearRampToValueAtTime(.05*vol,t+.01);
     cgG.gain.setValueAtTime(.05*vol,t+cgL-.06); cgG.gain.exponentialRampToValueAtTime(.001,t+cgL);
     cgO.connect(cgF); cgF.connect(cgG); cgG.connect(cgOut); cgO.start(t); cgO.stop(t+cgL+.02);
+  } else if(type==='lastmin'){
+    // v23.xx (his answer 19): THE FINAL MINUTE STING. A low brass hit (two detuned saws and a sub, the filter opening and closing)
+    // under a bright two-note ring, 1.2 s, on the sting bus so nothing ducks or compresses it.
+    var lmO=sndBus('sting')||OUT, lmF=a.createBiquadFilter(), lmG=a.createGain(), lmi, lmo;
+    lmF.type='lowpass'; lmF.Q.value=2.2; lmF.frequency.setValueAtTime(380,t); lmF.frequency.exponentialRampToValueAtTime(1900,t+.07); lmF.frequency.exponentialRampToValueAtTime(420,t+1.1);
+    lmG.gain.setValueAtTime(.0001,t); lmG.gain.linearRampToValueAtTime(.075*vol,t+.02); lmG.gain.exponentialRampToValueAtTime(.001,t+1.15);
+    lmF.connect(lmG); lmG.connect(lmO);
+    for(lmi=0;lmi<3;lmi++){
+      lmo=a.createOscillator(); lmo.type=lmi<2?'sawtooth':'sine';
+      lmo.frequency.setValueAtTime(lmi===0?110:(lmi===1?110.9:55),t);
+      lmo.connect(lmF); lmo.start(t); lmo.stop(t+1.2);
+    }
+    for(lmi=0;lmi<2;lmi++){
+      var lrO=a.createOscillator(), lrG=a.createGain(), lrt=t+lmi*.16;
+      lrO.type='triangle'; lrO.frequency.setValueAtTime(lmi?1320:1760,lrt);
+      lrG.gain.setValueAtTime(.0001,lrt); lrG.gain.linearRampToValueAtTime(.022*vol,lrt+.01); lrG.gain.exponentialRampToValueAtTime(.001,lrt+.55);
+      lrO.connect(lrG); lrG.connect(lmO); lrO.start(lrt); lrO.stop(lrt+.6);
+    }
   } else if(type==='clocktick'){
     // v15.24, HIS NOTE: each of the last ten seconds on the raid clock. One short high square knock, so the count down is
     // heard without looking at the clock.
@@ -30272,13 +30290,13 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
   // and every number are unchanged.
   var _tSrc=_noClk?(G.t||0):Math.ceil(Math.max(0,G.timeLeft));
   var mm=Math.floor(_tSrc/60),ss=Math.floor(_tSrc%60);
-  ctx.fillStyle=(!_noClk&&_tSrc<45)?'#ff5a4a':'#cdd6dd';
+  ctx.fillStyle=(!_noClk&&_tSrc<=CLOCK_RED)?'#ff5a4a':'#cdd6dd';   // v23.xx (his answer 19): red for the final minute
   // v22.xx, the raid text rewrite (R44): BARE HUD TEXT GETS THE OUTLINE. HIS ORDER (2026-10-09): the raid text reads like a shooter HUD,
   // where every word reads on any ground. The clock, the compass, the extraction band lines, the REVIVING word, the Crier countdown
   // and the party ping, Waypoint and arrow labels were filled with no outline and no plate, so over snow, a lit street or a fire they
   // washed out. Each now goes through hudText: a 2 x hudRes ink stroke with round joins, then the same fill. No shadowBlur (frame
   // cost); about twenty strokes a frame at most. The words, colours and places are unchanged.
-  if(G.arcade) arcadeScoreHud(_yClk,_tz); else hudText(mm+':'+(ss<10?'0':'')+ss,W/2,_yClk);   // v23.29 (arcade8): in the arcade, TEAM SCORE in place of the clock
+  if(G.arcade) arcadeScoreHud(_yClk,_tz); else { var _cpo=(!_noClk&&_tSrc<=CLOCK_RED&&_tSrc>0)?clockPopIn(W/2,_yClk-_hClk*0.35,G.timeLeft):false; hudText(mm+':'+(ss<10?'0':'')+ss,W/2,_yClk); if(_cpo) ctx.restore(); }   /* v23.xx (his answer 19): it pops on every second of the final minute */   // v23.29 (arcade8): in the arcade, TEAM SCORE in place of the clock
   // HIS NOTE, 2026-08-26: "can you make it point to the NEAREST extraction instead,
   // and make it switch any time the player finds a nearer extraction -- also ...
   // the beacon indicator should change to like 'Marked Waypoint' and point to that
@@ -35692,6 +35710,18 @@ function compass8(dx,dy){
 // prev is the clock at the end of the last raid frame, now is the clock after this one. On the first frame of a raid there is
 // no prev, and it is taken as one whole second above now, which keeps the old rule of warning when a raid starts on a mark.
 // The words are the lines the loop said before, unchanged. Called once per raid frame from loop; the bot sim never calls it.
+// v23.xx, HIS ANSWERS (2026-10-12), answer 19: "final 60 s: sting plus red clock". THE FINAL MINUTE. The one minute mark plays a sting
+// of its own (a low brass hit with a bright ring on the sting bus, never ducked) in place of the rising clock siren, and from 1:00 the
+// clock is red and pops on every second it turns, then settles before the next one. It was red only from 0:44 and never moved. The
+// same in the CAREER clock and the DEMO clock under the score ("exactly the same in demo and career"); the DEMO figure also steps up
+// to the callout size for the last minute, so it reads across the room. The words of every warning are unchanged.
+var CLOCK_RED=60;
+function clockPopIn(x,y,left){
+  left=+left||0; if(!(left>0)) return false;
+  var f=left-Math.floor(left), k=1+0.22*f*f*f;   // big the moment the figure turns, back to its size before the next
+  ctx.save(); ctx.translate(x,y); ctx.scale(k,k); ctx.translate(-x,-y);
+  return true;
+}
 function tickClockWarn(prev,now){
   if(!G) return;
   if(typeof prev!=='number') prev=Math.ceil(now)+1;
@@ -35710,7 +35740,7 @@ function tickClockWarn(prev,now){
   else if(tlNow>0){
     say((tlNow/60)+' MINUTE'+(tlNow===60?'':'S')+' LEFT','obj',(tlNow<=180)?{sub:outHint(0)}:null);
     if(tlNow===120){ try{ voxCall('TWOMIN'); }catch(_vc){} } else if(tlNow===60){ try{ voxCall('ONEMIN'); }catch(_vc){} }   // v24.04 (his #45)
-    blip('clockwarn');
+    blip(tlNow===60?'lastmin':'clockwarn');   // v23.xx (his answer 19): the final minute has a sting of its own
   }
   var tick=0;
   for(i=10;i>=1;i--) if(prev>i&&i>=now) tick=i;
@@ -37835,7 +37865,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.12: The Warden is redrawn: a hunched gunmetal walker-tank with rust plates, a cannon arm and a visor that shows its mood. Check 24.12 fails on v24.11',
+  now:'v24.13: The final minute plays a sting and the clock turns red and pops each second, in career and demo. Check 24.13 fails on v24.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -46864,7 +46894,8 @@ function arcadeScoreHud(y,z){
   ctx.font=fb; ctx.fillStyle='#e8eef2'; hudText(nm,cx,y); w=ctx.measureText(nm).width;
   if(raidClockOn()){   // v23.6x (feat0e): the DEMO clock under the score, red under 45 s like the raid clock
     var _ct=Math.ceil(Math.max(0,+G.timeLeft||0)), _cm=Math.floor(_ct/60), _cs=_ct%60;
-    ctx.font=fs; ctx.fillStyle=(_ct<45)?'#ff5a4a':'#cdd6dd'; hudText(_cm+':'+(_cs<10?'0':'')+_cs,cx,Math.round(y+h*0.62));
+    var _cfin=(_ct<=CLOCK_RED), _cy=Math.round(y+h*(_cfin?0.88:0.62)), _apo=(_cfin&&_ct>0)?clockPopIn(cx,_cy-h*0.3,G.timeLeft):false;   // v23.xx (his answer 19): the final minute, red, bigger and popping
+    ctx.font=_cfin?FSz(TYPE.head,z):fs; ctx.fillStyle=_cfin?'#ff5a4a':'#cdd6dd'; hudText(_cm+':'+(_cs<10?'0':'')+_cs,cx,_cy); if(_apo) ctx.restore();
   }
   gx=Math.round(cx+w/2+10*z);
   ctx.font=fs; ctx.textAlign='left'; ctx.fillStyle='#cdd6dd';
