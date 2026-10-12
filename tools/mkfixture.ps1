@@ -5840,6 +5840,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.81',what:'the what is new card never lists the same line twice (the Tripwire Mine line went in twice)',
+   run:function(){
+     if(typeof WHATSNEW==='undefined') return 'SKIP: this build has no what is new card';
+     var seen={}, bad=[], i, s;
+     for(i=0;i<WHATSNEW.length;i++){ s=String(WHATSNEW[i]); if(seen[s]) bad.push('line '+i+' repeats line '+seen[s].i+': '+s.slice(0,40)); else seen[s]={i:i}; }
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'23.80',what:'his #17 and answer 34: the backpack shows the gun stat card for the gun under the mouse, or the selected gun, against the gun in hand',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__textTrace)||typeof drawHUD!=='function') return 'SKIP: no raid or HUD here';

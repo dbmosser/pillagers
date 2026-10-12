@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.81 - THE WHAT IS NEW CARD LISTS THE TRIPWIRE MINE ONCE
+
+Co-op hunt while he was away. Two card refreshes ran one after the other and the Tripwire Mine line went onto the what is new card twice, so the card showed it at the top and again two lines down. The second copy is gone; the card leads with it once.
+
+MEASURED. Check 23.81 passes, and fails on v23.80.
 ## v23.80 - GUN STAT CARD IN THE BACKPACK
 
 Co-op hunt while he was away. His feature 17 of 2026-10-12, better gun stat cards, and his answer 34: the card shows on pickup and in the backpack. This is the backpack half. Point the mouse at a gun in the backpack, or select one with the arrows or the D-pad, and the same card as the pickup shows beside the backpack: UPGRADE, DOWNGRADE or SIDEGRADE against the gun in your hands, then damage, rate, magazine, range and handling with the differences. The item lines under the grid are unchanged, and the Undercroft backpack shows the card too.

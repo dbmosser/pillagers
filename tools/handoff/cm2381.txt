@@ -1,0 +1,7 @@
+v23.81: the what is new card lists the tripwire mine once
+
+The what is new card lists the Tripwire Mine once.
+
+Check 23.81. Fails on v23.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v23.81 - THE WHAT IS NEW CARD LISTS THE TRIPWIRE MINE ONCE
+
+Co-op hunt while he was away. Two card refreshes ran one after the other and the Tripwire Mine line went onto the what is new card twice, so the card showed it at the top and again two lines down. The second copy is gone; the card leads with it once.
+
+MEASURED. Check 23.81 passes, and fails on v23.80.
