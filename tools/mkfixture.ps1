@@ -5816,8 +5816,8 @@ window.__REGRESS=[
          delete cx.fillText; own=false;
          if(seen.indexOf('SC'+'ORE')<0) bad.push('the 1 player arcade HUD shows no SCORE label');
          if(seen.indexOf(nT)>=0) bad.push('the 1 player arcade HUD still shows TEAM SCORE');
-         if(seen.indexOf('1,2'+'34')<0) bad.push('the 1 player arcade HUD shows no score of 1,234');
-         for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) [\d,]+$/.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split: '+seen[i]); break; }
+         if(seen.indexOf('1,2'+'34')<0&&seen.indexOf('$1,2'+'34')<0) bad.push('the 1 player arcade HUD shows no score of 1,234');
+         for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) \$?[\d,]+$/.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split:'+seen[i]); break; }
        } else bad.push('the arcade raid ended');
        id=ARCADE.run&&ARCADE.run.id;
        if(!id) bad.push('the 1 player arcade raid has no run id');
@@ -7006,7 +7006,7 @@ window.__REGRESS=[
    run:function(){
      var bad=[], g=null, g2=null, m0, d, rs=say, own=false, lines=[], cx=null, ft=null, ownF=false, seen=[], f, i, hasL=false, nD='DOUBLE '+'KILL';
      function kill(gg,dx){ var q=mkCrawler(gg.player.x+dx,gg.player.y); q.byPlayer=1; q.elite=0; q.hp=0; gg.ents.push(q); __ents(0.016); return gg.ents.indexOf(q)<0; }
-     function hasLbl(gg,s){ var j; for(j=0;j<(gg.labels||[]).length;j++) if(gg.labels[j]&&gg.labels[j].txt===s) return true; return false; }
+     function hasLbl(gg,s){ var j, s2=(s.charAt(0)==='+')?'+$'+s.slice(1):s; for(j=0;j<(gg.labels||[]).length;j++) if(gg.labels[j]&&(gg.labels[j].txt===s||gg.labels[j].txt===s2)) return true; return false; }
      try{
        __topClear(); __runPrep();
        if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'no arcadeDeploy in this build';
@@ -7415,7 +7415,7 @@ window.__REGRESS=[
          if(!seen.length){ try{ drawHUD(); }catch(_dh){} }
          delete cx.fillText; own=false;
          if(seen.indexOf(nT)<0) bad.push('the HUD shows no TEAM SCORE label');
-         if(seen.indexOf('4'+'50')<0) bad.push('the HUD shows no team score of 450');
+         if(seen.indexOf('4'+'50')<0&&seen.indexOf('$4'+'50')<0) bad.push('the HUD shows no team score of 450');
        } else bad.push('the arcade raid ended');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
@@ -7779,7 +7779,7 @@ window.__REGRESS=[
          delete cx.fillText; own=false;
          txt=seen.join('|');
          if(txt.indexOf('EXTRAC'+'TED!')<0) bad.push('the banner was not drawn');
-         if(txt.indexOf('TEAM SCORE 2,8'+'00')<0) bad.push('the banner shows no TEAM SCORE 2,800');
+         if(txt.indexOf('TEAM SCORE 2,8'+'00')<0&&txt.indexOf('TEAM SCORE $2,8'+'00')<0) bad.push('the banner shows no TEAM SCORE 2,800');
          for(f=0;f<320&&ARCADE.banner&&__state()===g;f++) __loop(performance.now()+(20+f)*16.7);
          if(ARCADE.banner) bad.push('the banner was still up after 320 frames');
          if(__state()!==g||g.over) bad.push('the raid did not go on after the re-drop');
