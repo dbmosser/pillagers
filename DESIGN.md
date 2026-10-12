@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.59 - A RUNNING PILLAGER FIRED ON FIGHTS BACK
+
+Co-op hunt while he was away. His note of 2026-10-12: a running pillager bot should turn hostile when fired on. A pillager under 30 percent health runs for a ring, and since v2.93 a round into him only made him more alert, so he kept running while you shot him. Fired on by you or your teammate, he now turns hostile, comes for the shooter and fires back, and he stays in the fight instead of bolting again on the next hit. Your own hires and pillagers who joined you are unchanged.
+
+MEASURED. Check 23.59 passes, and fails on v23.58.
 ## v23.58 - THE TITLE ALWAYS FITS THE SCREEN
 
 Co-op hunt while he was away. Found by the full test runs of 2026-10-11 and 12. The title screen shrinks itself to fit (his v9.53 note), but it measured only when the menu zoom changed: if the title was hidden at that moment it measured nothing and kept the full zoom, and it never measured again when it came up or when its content grew, such as the new arcade rows. At a large menu zoom the bottom rows ran up to 98 pixels off a 1080p screen. It now measures every time the title comes up and every time its content changes size, also while hidden, and may shrink further, so the whole title always fits.

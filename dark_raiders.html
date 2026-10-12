@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.58';
+var VER='23.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20152,6 +20152,16 @@ function hireOrdered(e){
   e.state='loot';
   return true;
 }
+// v23.xx, HIS NOTE (2026-10-12): "a 'running' pillager bot should turn hostile when fired on". Since v2.93 a pillager running for a
+// ring (state extract, under 30 percent health) was only made more alert by a round and kept running. Fired on by the player or one of
+// the party, he now turns: hostile, chasing the shooter, firing back (returnFire), and cornered, so the low-health rule does not send
+// him running again on the next frame. Hires and pillagers who threw in with you keep the old rule. No draw on any stream.
+function runnerTurns(e,sx,sy){
+  if(!e||e.kind!=='raider'||e.merc||e.friendlyPC||e.downed||e.hp<=0) return false;
+  e.cornered=1; e.hostile=true; e.state='chase'; e.alert=2.6; e.tx=sx; e.ty=sy;
+  returnFire(e,sx,sy);
+  return true;
+}
 // v21.62, his note: a hostile pillager hit by a round turns to the shooter and opens a return fire window (see the chase fire test)
 function returnFire(e,sx,sy){
   if(!e||e.kind!=='raider'||e.merc||e.friendlyPC||e.downed||e.hp<=0) return false;
@@ -21209,7 +21219,7 @@ if(eb===e||eb.kind==='snitch'||eb.neutral||eb.kind==='peddler'||eb.kind==='stray
     // gunfire should not be talked out of it BY your gunfire. That was never
     // just a message bug: he was flip-flopping between fleeing and charging on
     // every hit, which is also why the movement looked wrong.
-if(e.kind==='raider'&&e.state!=='extract'&&e.hp<e.maxhp*0.3){
+if(e.kind==='raider'&&e.state!=='extract'&&!e.cornered&&e.hp<e.maxhp*0.3){   // v23.xx: a man who turned on the one shooting him (runnerTurns) does not bolt again
       e.state='extract';
       if(!e.fled){
         e.fled=1;
@@ -22390,7 +22400,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // Same rule for YOUR rounds: shooting a fleeing raider does not
               // talk him back into the fight, v2.93. This is the path his report
               // actually came through, since he was the one shooting.
-              if(en.kind==='raider'&&en.state==='extract'){ en.alert=2.6; }
+              if(en.kind==='raider'&&en.state==='extract'){ if(!runnerTurns(en,p.x,p.y)) en.alert=2.6; }   // v23.xx, his note: a running pillager fired on turns and fights
               // v20.42, from the whole-game bug hunt of 2026-10-08 (H2): A ROUND INTO THE PEDDLER DOES NOT MOVE HIS STALL. His tx/ty
               // are his pitch, not a target, so this line set his table, stock and lantern down where you fired from, and left him
               // in 'chase' for the rest of the raid: the red mark, a place in the count coming for the ring, the threat music and the
@@ -36137,7 +36147,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.58: The title screen now always fits the screen, whatever the menu zoom. Check 23.58 fails on v23.57',
+  now:'v23.59: A fleeing pillager you shoot now turns and fights back instead of running. Check 23.59 fails on v23.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43602,7 +43612,7 @@ function netShotTake(peer,m){
   if(e.hp<=0){ e.byPlayer=false; e.bySeat=s; } else if(!e.downed){ e.byPlayer=false; e.bySeat=0; }
   if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC) e.hostile=true;
   if(e.kind==='stray'&&!e.hostile){ e.hostile=1; e.helped=0; e.foeSeat=s; }   // v22.07 (K18): a round from one of the party turns the Survivor, as the host own round does, and he fires back at that seat
-  if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.6; }
+  if(e.kind==='raider'&&e.state==='extract'){ if(!runnerTurns(e,sx,sy)) e.alert=2.6; }   // v23.xx: the same for a round from one of the party
   else if(e.kind!=='snitch'){ if(e.kind!=='peddler'&&e.kind!=='stray'){ e.alert=2.6; e.state='chase'; e.tx=sx; e.ty=sy; returnFire(e,sx,sy); } }   // v20.42 (H2): a party round into the Peddler or the Survivor moves no stall and sets no chase, as your own round
   else if(e.state!=='alarm'){ e.state='alarm'; e.lost=0; e.wind=3.5; e.markX=sx; e.markY=sy; e.markSeat=s; }   /* v21.23 (R3): a round from one of the party marks him */
   if(!G.sim){ spark(e.x,e.y,e.kind==='raider'?'#ff5a4a':'#ffc25c',9,220); sfxHere('hit',e.x,e.y); }   // v20.40 (H52): the window that fired plays its own

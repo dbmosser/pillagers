@@ -1,0 +1,7 @@
+v23.59: a running pillager fired on fights back
+
+A fleeing pillager you shoot now turns and fights back instead of running.
+
+Check 23.59. Fails on v23.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

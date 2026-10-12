@@ -1,0 +1,5 @@
+## v23.59 - A RUNNING PILLAGER FIRED ON FIGHTS BACK
+
+Co-op hunt while he was away. His note of 2026-10-12: a running pillager bot should turn hostile when fired on. A pillager under 30 percent health runs for a ring, and since v2.93 a round into him only made him more alert, so he kept running while you shot him. Fired on by you or your teammate, he now turns hostile, comes for the shooter and fires back, and he stays in the fight instead of bolting again on the next hit. Your own hires and pillagers who joined you are unchanged.
+
+MEASURED. Check 23.59 passes, and fails on v23.58.
