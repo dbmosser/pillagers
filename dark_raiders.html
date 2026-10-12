@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.57';
+var VER='23.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36137,7 +36137,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.57: The arcade party board starts fresh in credits: old scale rows are dropped once, so every score on it is on one scale. Check 23.57 fails on v23.56',
+  now:'v23.58: The title screen now always fits the screen, whatever the menu zoom. Check 23.58 fails on v23.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -46424,23 +46424,38 @@ function applyMenuZoom(){
   // 4K and 10 past it at 1440p, and his screenshot has a saves list under the
   // fold, so the height is not even a constant. The zoom is asked for, then
   // measured against the room there is, and reduced until it fits.
-  var _ti=document.getElementById('title');
-  if(_ti){
-    var _want=menuScale(), _col=_ti.querySelector('.titlecol');
-    if(_col){
-      _ti.style.zoom=1;
-      var _nat=_col.scrollHeight, _room=(window.innerHeight||1080)*0.985;
-      if(_nat>0&&_nat*_want>_room) _want=Math.max(0.7,_room/_nat);
-    }
-    // v10.77, his note that it has to be playable at 1080p, 1440p and 4K. The
-    // css cap cannot know the zoom, and the zoom is what decides how much of the
-    // monitor a css width paints, so the cap is computed from the zoom this
-    // function has just settled on: 80 percent of the screen, whatever the
-    // screen is. The 820 floor is the same one the stylesheet carries.
-    if(_col) _col.style.maxWidth=Math.max(820,Math.round((window.innerWidth||1920)*0.80/_want))+'px';
-    _ti.style.zoom=_want;
-  }
+  titleFit();   // v23.xx: the measuring moved into titleFit, which also runs when the title shows and when its content grows
 }
+// v9.53, his report: "when I enter the title screen, I don't want to have to scroll down to see the bottom. I am testing in 4k."
+// The zoom is asked for, measured against the room there is, and reduced until it fits.
+// v23.xx (2026-10-12): IT FITS EVERY TIME, NOT ONLY WHEN THE ZOOM CHANGES. It was measured only inside applyMenuZoom: if the title was
+// hidden then, its column measured 0 and kept the full zoom, and nothing measured again when the title came up or when its content grew
+// (the arcade rows, a longer saves list), so at a large menu zoom the bottom rows ran off the screen (98 px at 1080p in the corpus).
+// It is now measured while hidden too (shown for the one synchronous measure, invisible, so nothing paints), again whenever the title
+// comes on and whenever its column changes size, and the floor is 0.45 instead of 0.7 so even a very large menu zoom fits.
+function titleFit(){
+  var ti=document.getElementById('title'), col=ti&&ti.querySelector('.titlecol'), want, hid, vis0, nat, room;
+  if(!ti||!col||titleFit.busy) return;
+  titleFit.busy=1;
+  try{
+    want=menuScale(); hid=!ti.classList.contains('on');
+    if(hid){ vis0=ti.style.visibility; ti.style.visibility='hidden'; ti.classList.add('on'); }
+    ti.style.zoom=1;
+    nat=col.scrollHeight; room=(window.innerHeight||1080)*0.985;
+    if(nat>0&&nat*want>room) want=Math.max(0.45,room/nat);
+    // v10.77: the width cap is computed from the zoom just settled on, 80 percent of the screen; the 820 floor is the stylesheet one.
+    col.style.maxWidth=Math.max(820,Math.round((window.innerWidth||1920)*0.80/want))+'px';
+    ti.style.zoom=want;
+    if(hid){ ti.classList.remove('on'); ti.style.visibility=vis0||''; }
+  }catch(_tf){}
+  titleFit.busy=0;
+}
+(function(){
+  var ti=document.getElementById('title'), col=ti&&ti.querySelector('.titlecol');
+  if(!ti) return;
+  try{ new MutationObserver(function(){ if(ti.classList.contains('on')) titleFit(); }).observe(ti,{attributes:true,attributeFilter:['class']}); }catch(_mo){}
+  try{ if(col&&typeof ResizeObserver==='function') new ResizeObserver(function(){ if(ti.classList.contains('on')) titleFit(); }).observe(col); }catch(_ro){}
+})();
 document.addEventListener('wheel',function(e){
   // ANY menu surface, which is the fix: a modal on its own is enough, and the
   // title screen counts. The only thing that keeps the wheel is a live raid

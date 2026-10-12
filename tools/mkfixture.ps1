@@ -5744,6 +5744,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.58',what:'the title always fits the screen: measured even while hidden, at a large menu zoom, with every mode row in it',
+   run:function(){
+     if(!__vpAlive()) return 'SKIP: the pane has no layout';
+     var ti=document.getElementById('title'), col=ti&&ti.querySelector('.titlecol'), bad=[], z0=P.menuZoom, wasOn, over, z;
+     if(!col) return 'SKIP: no title column';
+     wasOn=ti.classList.contains('on');
+     try{
+       ti.classList.remove('on');
+       P.menuZoom=2.4; applyMenuZoom();
+       ti.classList.add('on');
+       z=+getComputedStyle(ti).zoom||1; over=Math.round(col.scrollHeight*z-(window.innerHeight||1080));
+       if(over>0) bad.push('at menu zoom 2.4 the title runs '+over+' px past the bottom when it comes up');
+       if(typeof titleFit!=='function') bad.push('there is no titleFit to measure the title when it shows');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(z0===undefined) delete P.menuZoom; else P.menuZoom=z0; try{ applyMenuZoom(); }catch(_z){} if(!wasOn) ti.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'23.57',what:'arcade32, a low finding of the arcade31 review (the board starts fresh in credits): with the board key holding one untagged old scale row (s 99999) and one row tagged u cr (s 500), TONIGHTS BEST and BEST EVER see only the tagged row, the saved key no longer holds the untagged row, and a new board row is written with u cr',
    run:function(){
      var bad=[], hadBk=false, bk=null, now=Date.now(), sv=null, rows, i, o, raw, hit, b;
