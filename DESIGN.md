@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.61 - FRAME TELEMETRY
+
+Co-op hunt while he was away. His order of 2026-10-12, the graphics program: add all of it. Nobody had measured how fast a frame draws at 4K on his PC; this environment can time the script but not the drawing, so the graphics builds after this one would have been judged blind. Every raid frame now records the real gap between frames (half-millisecond steps), and one frame in fifteen also times each part of the drawing: the world, the light, the fog of war, the weather and the HUD. The run report keeps the median and the slow end (p50 and p95), the count of frames over 25 ms and the render scale, and the flight recorder export prints them on the run line. Bot raids keep none. Nothing on screen changes and nothing a raid plays by moves.
+
+MEASURED. Check 23.61 passes, and fails on v23.60.
 ## v23.60 - A MISS TURNS A RUNNING PILLAGER TOO
 
 Co-op hunt while he was away. His note of 2026-10-12: a running pillager bot should turn hostile when fired on. v23.59 turned a pillager running for a ring on the round that hits him. A round that only goes past him is still being fired on, and he kept running through a whole magazine of misses. A round that passes close to him now turns him the same way: hostile, coming for you and firing back, and he stays in the fight. Your hires and pillagers who joined you are unchanged.

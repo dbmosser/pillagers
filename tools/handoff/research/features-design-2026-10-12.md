@@ -1,607 +1,909 @@
-# PILLAGERS: the next features, arcade first. A design (read only, nothing was edited)
+## PILLAGERS: DEMO and CAREER modes plus features 1 to 6, design document (read-only, nothing edited)
 
-**File:** `C:\claudecode\dark raiders\dark_raiders.html` (HEAD v23.58). All line numbers are at HEAD.
-**Fixture:** `C:\claudecode\dark raiders\tools\mkfixture.ps1`. Note two things in it:
-- `tickAmbience` is replaced with a no-op at line 1117, so no new sound logic may live inside `tickAmbience`.
-- `__startRaid` (line 242) sets `P.mapIx` directly, so the mile fingerprint still builds after the map is hidden from the pickers.
-- The fixture's `AudioContext` throws, so `ac()` returns null. The sound checks below install a fake context in `AC`.
+**File:** `C:\claudecode\dark raiders\dark_raiders.html`, HEAD v23.58. Line numbers are from today's read.
+**Fixture:** `C:\claudecode\dark raiders\tools\mkfixture.ps1`.
 
-The coordinator's mode design of 2026-10-12 is folded in. It replaces item 0 and changes how items 1 to 6 land.
+**What this design follows:**
+- His mode design of 2026-10-12.
+- His binding answers.
+- The binding rules in the brief. Where his new answers change a normal raid, it is because he ordered it (CAREER).
+
+**Three findings that shaped it:**
+1. **Interiors already exist.** Every building has a forced interior plan (`makeBuilding` 5677-5934). Map-authored locked rooms with keys and guaranteed key placement also exist (6757-6773, 10839-10916).
+2. **The seed fingerprint is only the build.** It is the ents and containers counts after `__startRaid` (mkfixture 1231-1243). A post-build pass that adds no ents or containers cannot move it. A pass that adds containers on a normal raid would move the 165.
+3. **The audio is one graph.** Every generator goes `blip` → (panner) → `BUS` → `netSndOut` (sndG → sndP pan ±1) → destination. Buses can therefore be inserted in front of BUS and the player 1 left / player 2 right split survives untouched (3894-3905, 41104-41116).
 
 ---
 
-## PART 0. The frame: his mode design, and the open questions
+## PART 1. THE MODEL, CODE SITES AND RISKS PER FEATURE
 
-**DEMO** is the current arcade (1P and 2P), changed in three ways:
-- Raids last 10 minutes.
-- Extraction doubles the score and takes that player out of the raid.
-- The run ends when nobody is left in the raid or the clock runs out.
+### 0. MODES: DEMO and CAREER (replaces the old item 0), the map, the version, NO HALLOWEEN, FEEDBACK
 
-Everything else stays: the sandbox (his save is never written), the party board, the attract loop, initials, idle return and the operator lock.
+#### 0.1 Title (DEMO highlighted first)
 
-**CAREER** replaces the old extraction modes. It is the normal raid: from the Undercroft, with his real save, his stash and his kit. On top of that it adds:
-- the arcade score layer (kill points, streaks, popups, a SCORE readout)
-- a 10-minute clock
-- the score doubled on extraction
-- the score turned into credits at the settle
+**New row order** in `#modemenu`. HTML 1278-1290 is replaced; every id is kept, so all wiring and every check that finds a row still works:
+- small label `DEMO`, then:
+  - `#modearcade1` "1 PLAYER DEMO". This is now the primary style (non-ghost, big padding, the old `#titlestart` look).
+  - `#modearcade` "2 PLAYER DEMO".
+- small label `CAREER`, then:
+  - `#titlestart` "1 PLAYER CAREER" (data-mode solo, still runs `go`, so the Undercroft is entered).
+  - `#modecoop` "2 PLAYER CAREER (SAME MACHINE)".
+  - the greyed CO-OP (SERVER) row.
+  - `#modepvp` "2 PLAYER PVP (SAME MACHINE)". This is the old PvP rules, untouched.
+  - the greyed PVP (SERVER) row.
 
-The Undercroft itself stays frozen. CAREER only adds lines to the outcome card.
+**Labels.** They are `<div class="modehead" id="mhdemo">` and `id="mhcareer"`, not buttons. So `netTitleRows` (40805), which takes only `button[data-mode]`, ignores them.
 
-**The bigger map is THE COLD MILE** (9000×7600, against COLD STORAGE at 4200×3400; `cols*cw` = `w`, line 7398). It is hidden from every picker but kept in code.
+**CSS.**
+- Add `.modehead`, small amber caps at .3em.
+- The `max-height:820px` rule at 118 targets `#titlestart`. It also gets `#modearcade1`.
 
-### Open questions for him (each has the default I recommend)
+**Default focus and ENTER.**
+- `padMenu` 13089 focuses `#modearcade1` when it is in the focusables list, else `#titlestart`. The player 2 window hides the arcade rows, so it keeps titlestart.
+- `netTitleEnter` 40827-40832: with no row highlighted, it clicks `#modearcade1` if it is shown, else `startFn`. A highlighted titlestart still runs startFn.
+- Keyboard handler at 49176: unchanged, because it calls `netTitleEnter`.
 
-| # | Question | Recommended default |
+**Other wiring.**
+- `netTitleInit` 40789: add `mhdemo` and `mhcareer` to the player 2 hide list.
+- `netModeName` 40593: arcade becomes `2 PLAYER DEMO`; coop becomes `2 PLAYER CAREER (SAME MACHINE)`.
+- `titleFit` (46436-46452, with observers at 46456-46457) refits the taller column by itself.
+
+**Risks.** Checks that expect `#titlestart` to be the default focus (v14.26), that expect `netTitleEnter` to return `'start'` with no focus (v15.76), or that match the old row texts must be re-baselined (Part 4).
+
+#### 0.2 THE COLD MILE disabled, kept in code
+
+The bigger map is FIXED_MAPS[1]: 9000×7600 (cols×cw = w), against COLD STORAGE at 4200×3400.
+
+**The switch.** Add a `frozen:1` flag to the mile at 6637. `mapOffered` (6491) becomes `return !m.frozen&&(!BETA_ONE_MAP||m.beta===1);`. Both maps carry beta:1 today, so the flag is needed.
+
+**What the existing machinery then does by itself:**
+- **Profile load** (3219-3222) moves `P.mapIx` 1 to 0, once. It is written to his save at the next `saveProfile`.
+- **The lift** (34093) is corrected the same way.
+- **`offeredCount`** (47224) becomes 1. Only `stageback` (47608) reads it, so Back returns to the floor.
+  - The lift itself (34089-34096) still opens the sector page on every ascent (v9.97: it carries day/night). This is his "keep the current weather and time-of-day system": the page stays, only the mile card leaves it.
+
+**New guards:**
+- **`renderSector`** 47004: `if(!mapOffered(M)) continue;`.
+- **`sizeTag`** 46917: measure offered maps only, so no "(SMALLER MAP)" tag remains.
+- **`arcadeEnter`** 45353: use `firstOfferedMap()` when `!mapOffered`. **`arcadeDeploy`** 44716 keeps honouring an explicit `o.mapIx`, because checks use it; its default comes from `ARCADE.mapIx`.
+- **Profile import** 38826: the same guard.
+- **`netUpStart`** 41303 needs nothing: player 2 follows the host word, and the host cannot pick the mile.
+
+**Bots.** `runSim` (23885) builds from `P.mapIx` after the load migration, so no change. The `SECTOR_MEAS` row stays.
+
+**Do NOT put `mapOffered` inside `buildRaid` or `startRaid`.** `__startRaid({mapIx:1})` (mkfixture 242-247) must still build 374/593 for `__verify`.
+
+**Risk.** Checks that expect two sector cards on the sector page must be re-baselined.
+
+#### 0.3 Player-facing version restarts at v0.0001
+
+- `VER` (1698) stays the internal ship number used by tooling, net handshakes (40274, 40329 comparisons) and crash records.
+- New constants: `var PVER_RESET='23.59';` and `function verShown(v){ … }`. It returns `'v0.'+pad4(n)` with `n = maj*100+min − (23*100+59) + 1`. So 23.59 shows as v0.0001 and 23.60 as v0.0002, with no tooling change.
+- Use `verShown(VER)` at:
+  - the title `#titlever` (48989)
+  - `#verlabel` (49185)
+  - the player-facing version sentences at 40277 and 40329 (the comparison stays on VER)
+  - the WHATSNEW header
+- The flight recorder header (38927) prints both: `PILLAGERS v0.0001 (build 23.59)`.
+
+#### 0.4 NO HALLOWEEN (removed entirely)
+
+Delete:
+- `ARCADE_HALLOW`, `arcadeHallow`, `arcadePumpDraw`, `arcadeHazeDraw` (44602-44677).
+- The call in `arcadePostBuild` (44705).
+- The render2D calls at **26238** (pumpkins) and **27900** (haze). These two lines are in render2D, so coordinate with the graphics program.
+- The `HAPPY HALLOWEEN` banner (45500-45501), its CSS `.arcboo` (45439) and `'arcboo'` in `arcadeAttUndress` (45509).
+
+Lamps keep their seeded colours, and weather and time of day are untouched (arcadeDeploy never forced night).
+
+#### 0.5 DEMO rules (the sandboxed 1P/2P arcade with the party board)
+
+**Clock.**
+- `ARCADE_CFG` (44481) keeps `raidSec:0` for the build, so the rings get no `closeAt` and the arcade build stays as today.
+- `arcadePostBuild` (44699) then sets `g.raidLen=g.timeLeft=ARCADE_RAID_SEC` (600). `raidClockOn()` turns true: the countdown (35628), the warnings (`tickClockWarn` 35632) and the HUD clock all run.
+- **At 0 the site BURNS as in a normal raid.** That is the existing branch (35641-35651) and `tickNuke` (31006), unchanged.
+- The player 2 clock follows the host through the `wd` word (42891 / 42905) and the late word (41352 / 41383).
+- `arcadeRebuild` (45635-45647) must carry `timeLeft` into the rebuilt raid.
+
+**Death.** One self-revive (the existing downed and self-revive rules), then death. The guard in `endRaid` (23002) becomes:
+- **1 PLAYER DEMO** (`ARCADE.solo`): `arcadeRunEnd('dead')`. RUN OVER, the score kept at ×1, then initials if it qualifies.
+- **2 PLAYER DEMO:** `arcadeRespawn('dead')` as today, plus `ARCADE.mine=0; ARCADE.kills=0;` ("should lose all score"). It says `SCORE LOST` in the warn lane and sends `arcsc` at once.
+  - Exception: while `G.nuking` there is no respawn. That player is out (benched as `specOut` on the host; `arcadeP2Out('burn')` on player 2), and the run ends when nobody is left playing. Burn deaths keep the score (my reading; he can say otherwise).
+- `arcadeRespawn` 44752-44783 also gets `!shutRoomAt(G.map,x,y)` on the spot beside a teammate, because of the vaults (4).
+
+**Extraction ×2 ends the run.** `arcadeExtracted` (44824-44847) is rewritten:
+- No `ARCADE_XBONUS` (44790), no pot, no re-drop (`arcadeRedropSpot` becomes dead code and goes).
+- **Solo:** `ARCADE.mine*=2`, `ARCADE.ext=1`, then `arcadeRunEnd('extract')`.
+- **2P host:** `mine*=2; mate*=2` (the host is the run authority), then `arcadeRunEnd('extract')`. `arcend` carries `x2:1` and the final rows, and player 2 doubles its own `mine` for display on `arcadeEndTake`.
+- **2P player 2 extracting:** posts `{t:'arcx'}`. The host doubles and ends the run.
+- RUN OVER, then initials (arcade18, 45898-45999) as today.
+
+**Dead code after this.**
+- The in-raid initials at extraction (arcade22: `arcadeIniExtract` 46027, `arcadeIniRaid` 46023, the hold-at-3 in the loop at 35654). Remove them, keeping `arcadeIniRaid()` returning false or deleting its callers.
+- The `HAUL x2` banner line (45247) and `ARCADE.pot` writes in `arcadeLoot` (45074). Valuables still score their full value in DEMO (arcade31).
+
+**Unchanged in DEMO:** the spawn shield, half damage (`ARCADE_DMG` 15198), waves, streaks, the cull, idle return, the attract, the board, the operator lock, quick heal, the wake lock.
+
+#### 0.6 CAREER (his real save, the Undercroft, arcade scoring, 10-minute raids)
+
+**What a CAREER raid is.** It is every non-arcade, non-sim raid started from the Undercroft. CAREER replaces the old extraction mode, gated by a dial `CFG.career` (DEF 1, so the corpus can pin 0).
+
+**Hook.** In `startRaid` after 11759: `else if(G&&!G.sim&&CFG.career!==0) careerPostBuild(G);`. It runs before `netUpAnnounce` (11764), so a CAREER co-op partner builds the same raid. It:
+- sets `G.career=1` and `G.raidLen=G.timeLeft=600`
+- sets every zone `closeAt=undefined` (arcade rule: rings stay open, the clock and the burn are the pressure)
+- sets `G.cs={s:0,k:0,streak:null}`
+- draws nothing (no rr), so the fingerprint stays at 85/165.
+
+**Scoring.**
+- Refactor `arcadeKill` (45141-45155) into a shared `scoreKill(st,k,el,boss,x,y)` that holds the points table, the streak, the popup and the callout. `ARCADE` (DEMO) and `G.cs` (CAREER) each call it.
+- Call sites: the host credit at **20431** gets `else if(G.career) careerKill(...)`; the player 2 kill word at **43834** gets the same.
+- A revive of a teammate scores +250.
+- **Loot never scores in CAREER.** Extracted loot goes to the stash as items only, through the existing settle.
+
+**Waves as in DEMO.** `arcadeWaveTick` (44937) and the call at 35659 accept `G.career`.
+- Run them only where `!netEntsPeer()` (host or solo), with the tier taken from the career score.
+- At the grudge ledger (20437) add `&&!e.arcWave`, so synthetic wave identities never write `P` idents or REVENGE lines into his save.
+- Wave kills do count toward contracts (my reading; he can say otherwise).
+
+**Damage and kit.** Full enemy damage (no `ARCADE_DMG`) and no spawn shield. His own kit from the stash, as today. Coming back empty on death is unchanged.
+
+**Settle.** In `endRaid`, beside hazard pay (23293-23305): `careerSettle(how,lines)`.
+- `extract`: `final=G.cs.s*2`, `P.credits+=final`, `G.careerPaid=final`. It pushes onto the board `P.careerBoard` (top 10 `{s,k,t,cond}`, in his save) and `P.careerBest`. The card lines read `CAREER SCORE $N x2 · +$N CREDITS` and `NEW PERSONAL BEST` when it is one.
+- `dead` / `abandon`: banks nothing (`SCORE LOST $N`), and the board is not touched (banked-only board).
+- 2P CAREER: each window settles its own player into its own save, as co-op already does per player.
+
+**HUD (minimal).**
+- At 29113 the clock stays.
+- One new `careerScoreHud()` draws `SCORE $N` (and `xN` while a streak lives) under the clock.
+- DEMO: `arcadeScoreHud` draws `mm:ss` under the score.
+
+**Risks.** These change every normal raid by his order:
+- raidLen 600 against the 540 default
+- rings never close
+- waves
+- credits at extract.
+
+Corpus checks that assert raidLen 540, ring closing or exact settle credits must pin `CFG.career=0` or be re-baselined. Bots never pass through `startRaid`, so `SECTOR_MEAS` and the bot balance are untouched.
+
+#### 0.7 FEEDBACK (ESC / TAB menu)
+
+**Button.** A `FEEDBACK` button in `#pausebox` (HTML 867-877), shown in every pause box, the arcade box included. The operator lock is not weakened: nothing leaves the arcade. The old `#pausenote` textarea (866) and its floor-note save (13802-13810) are hidden; the old notes keep their place in the report.
+
+**Click:**
+1. Snapshot the frame first: `cv` plus `hcv` composited onto an offscreen canvas at native size, `toDataURL('image/png')`. The pause box is DOM, so the shot shows the game.
+2. Open a small `#fbmodal`: a textarea, SAVE, CANCEL.
+
+**SAVE runs `fbSave(note,png)`:**
+- If `LOCAL_DROP` exists (46646-46647), POST JSON `{note,png,ver,pver,run,t}` to `http://localhost:8799/feedback`. `tools/collector.ps1` gets a `/feedback` route beside `/telemetry` (lines 21-35) that writes `exports/feedback-<stamp>.txt` and `.png`.
+- Otherwise, or on failure, download both files with the `downloadExport` pattern (46721-46729) as `pillagers_feedback_<stamp>.txt/.png`, honouring `reportEmbedded()` (46707).
+- It shows `FEEDBACK SAVED` (hubToast) and never writes `P`, so it is safe in the DEMO sandbox.
+
+**Controls.**
+- Keyboard: type; Ctrl+Enter saves; ESC cancels.
+- Pad: A on SAVE, B cancels. A pad-only player can still send a screenshot with an empty note; there is no on-screen keyboard (open below).
+
+---
+
+### 1. TRIPWIRE MINE (his #6)
+
+**Item and pouch.**
+- `ITEMS.trip={name:'Tripwire Mine',val:160,wt:1,r:'uncommon',c:'#ff4a4a',use:'throw',tk:'trip'}`, appended after 2379.
+- `THROWKEYS` (2559) becomes `['smoke','decoy','frag','trip']`.
+- Pouch init (11563) adds `trip:0`; `tel.thr` (11604) adds `trip:0`.
+- `cycleThrow` 13900: `%3` becomes `%THROWKEYS.length`.
+
+**Belt.**
+- `hotbarSlots` 16958-16962: skip the derived `throw:trip` cell while `!(G.pouch.trip>0)`. The belt of anyone not carrying one is identical to today (key 9 stays free).
+- When it is carried, it is a throw cell "like a grenade". The automatic-pin yield (16998-17017) already handles a growing belt.
+
+**Generic paths that need no change:**
+- the belt selection (17302, 17345, 17398)
+- the trigger cook (18727)
+- grant (16337), refund (18970)
+- stash on extract (23434-23437)
+- kit packing (11651, 11667)
+
+**Placement (keyboard and mouse first; pad unchanged).**
+- Keyboard and mouse: the belt digit or Q, then LMB or G.
+- Pad: LB/RB to the cell, then hold and release RT.
+- Release throws through the existing `throwFrom` (14063): wall stop, ping, shield off.
+- Only a frag cooks off (18692, 18730), so a trip is never "held too long".
+- `activateThrow` (14162) gets `else if(th.kind==='trip') tripArm(th)`.
+
+**`tripArm` geometry:**
+- n is the perpendicular to the throw.
+- Each half is cast with `rayHitG` up to 120, stopping 4 short of a wall.
+- With no walls the wire is 80 + 80.
+- Total length is clamped to 60-240, so it spans a doorway or corridor by itself.
+- `G.trips.push({id,ax,ay,bx,by,arm:0.6,life:TRIP_LIFE 240s,seat})`, at most 3 live per owner (the oldest goes).
+- It says `TRIPWIRE SET` (info).
+
+**Trigger.** `tickTrips(dt)` is called at the end of `updateThrowables` (14431). It is cheap and does nothing with no trips, so the sim never pays.
+- Only where bodies are authoritative: `!netEntsPeer()`.
+- **Who trips it:**
+  - every ent with hp>0 that is not merc, friendly, finished, peddler or stray
+  - all machines except the hovering snitch
+  - pillagers, neutral or hostile
+- **Never players, never the hire.**
+- **Detection.** Segment-segment intersection of the body's step (the previous `e.tpx,tpy` against now) with the wire, after a bounding-box cull. A body standing on the wire when it arms does not fire it until it moves.
+
+**Blast: a new `tripBlast(m,x,y)`.** `explodeFrag` (14185-14274) stays byte-identical for normal frags.
+- R 150. Damage `110*(1-d/R)+30` to ents with line of sight; no player damage path at all (no team damage, no self damage); no wall damage.
+- Effects: `sfx('boom')`, spark, flash, shake by distance, `ping(…,520)`.
+- **Credit:**
+  - owner seat 0: `e.byPlayer=true`, then `notoAggress`
+  - seat >0: `e.byPlayer=false; e.bySeat=seat` (the 43345 path sends the kill word)
+- Survivors chase toward the blast point.
+
+**Co-op.**
+- `netThrTake` whitelist (41837) adds `'trip'` and `'tgo'`.
+- Player 2: at landing, `netThrSend('trip',x,y,{ax,ay,bx,by,id,s:NET.seat})` and keep a local fx copy.
+- The host creates the real one (seat s) and relays fx copies.
+- When it fires or expires, the host broadcasts `{k:'tgo',id}` and every window removes it.
+
+**Draw.**
+- `tripDraw()` hooks into **render2D after 27751** (after the locked-room lamps, above fog), so the owner and teammates always see their wires:
+  - a faint red line, alpha .14-.22 with a pulse
+  - emitter nubs with an LED
+  - dashed while arming
+- While a trip is in hand, a dashed preview at the predicted spot (`tripPreview()` shares the `throwFrom` math).
+- Cook label 29702: `TRIPWIRE · RELEASE TO SET`.
+- `drawItemIcon` (32138): an icon branch.
+
+**Sources.**
+- **DEMO kit:** `arcadeKitApply` 44519 adds `g.pouch.trip=(Math.random()<ARCADE_TRIP_P 0.35)?1:0`.
+- **DEMO loot:** `arcadePostBuild` adds a `sideStream(g.seed,TAG_TRIP)` sprinkle of `trip` into 8 ordinary non-cache boxes (sideStream 5303 restores RNGS).
+- **CAREER and normal loot ("only if cheap"):** an optional build. The same sideStream sprinkle into 4 boxes from `careerPostBuild`. It changes loot contents only: no counts, no positions, so 85/165 and the live/sim parity hold.
+  - Risk: checks that inspect specific box contents at seed 4242. My recommendation is to ship it.
+
+**Risks.**
+- The `%3` cycle bug if missed.
+- `G.pouch.trip` undefined becoming NaN in old saves' kit paths: guarded with `!==undefined` as at 11651.
+- The tripwire hook line is in render2D.
+
+---
+
+### 2. GUN STAT CARDS (his #17): on pickup and in the backpack
+
+**Model (pure, `gunStats(w)` and `gunCompare(f,h)`):**
+- Damage per pull: `dmg×(pellets||1)×(burst||1)`
+- Rate: `60000/rof` rpm
+- Magazine
+- Range: `rng/10` m
+- Handling: `round(100×(0.6×clamp(1−spread/0.2,0,1)+0.4×clamp(1−(reload−1200)/3000,0,1)))`
+- Sustained damage per second: `perPull×pulls/(pulls×rof/1000+reload/1000)`, with `pulls=mag/(burst||1)`
+
+**Verdict:**
+1. The `WTIER` difference (2159) first: higher tier is UPGRADE, lower is DOWNGRADE. This agrees with the arcade routing in 45089-45117.
+2. At equal tier, the sustained ratio: ≥1.08 is UPGRADE, ≤0.92 is DOWNGRADE, otherwise SIDEGRADE.
+3. Against bare hands it is always UPGRADE.
+
+Deltas are green when better, red when worse, dim when equal. All five stats are higher-is-better.
+
+**Pickup.**
+- In `grantLoot`'s gun branch (16338-16474), after the route is known, set `G.gunCard={gk,vs:snapshot of p.wep,route:tag,t0:G.t}`.
+  - Arcade: only when `arcadeGunLoot` returns STOWED or `KEY n` (45084-45122).
+  - CAREER: on every gun pickup (IN HAND / SLOT n / BACKPACK / KEY n).
+- `gunCardHud()` is called once from drawHUD next to `drawPickups` (30632). It draws above the pickup stack at the right edge:
+  - 4 s life, hidden with the backpack or map open
+  - name in rarity colour, verdict chip, `VS <HAND GUN>`, five rows, route tag
+- Fonts `hudFS`, sizes ×`hudRes()`, so at 4K it is about twice the 1080p size: readable on a TV.
+
+**Backpack.** In `drawBag`'s selected-stack block (32907-32949), for `it.use==='gun'`, draw the compare card in the right half. `itemRows` stays on the left for everything else.
+- The card follows the mouse hover first (keyboard and mouse first), else `G.bagSel`. The pad D-pad already moves `G.bagSel`.
+
+**HUD-minimal note.** Both are one self-contained draw function each, fed by `gunCompare`, so the UI redesign can restyle them without touching the model.
+
+---
+
+### 3. DEATH RECAP (his #29): on the KIA / EXTRACTED card
+
+**Data.**
+- `_logHit` (15266-15278) adds `k:src` and `w:weaponOf(src,srcName)`.
+  - It is cosmetic and only reached when `!G.sim` (the sim returns before the push).
+  - `weaponOf` finds a living or dying raider named `srcName` in `G.ents` and uses `e.wep.name`. Otherwise a table: crawler CLAWS, sentry AUTOCANNON, howler SHELLS, warden HEAVY CANNON, bulwark SHIELD GUN, choir PILLBOX, listener PULSE, yourself YOUR OWN CHARGE, lightning THE STORM.
+  - No signature changes. The player 2 window gets the same lookup on its own world copies.
+- `deathRecap(T)` returns `{killer, weapon, hits:last 6 grouped as at 23806-23811, bySrc: totals sorted}`.
+
+**CAREER (the outcome card).**
+- KIA, 23772-23833: the sub line becomes `KILLED BY <N> · WITH <W>`. Add a `DAMAGE TAKEN` block (top 4 sources, `-N (x HITS)`) under `HOW IT WENT`.
+- EXTRACTED, 23764-23771: the same `DAMAGE TAKEN` block when there were hits.
+
+**DEMO.**
+- The RUN OVER card (`arcadeOverSync` 45796-45811) gets the recap lines of this window's last life. A 1P death shows KILLED BY and WITH; an extraction shows `EXTRACTED x2`.
+- 2P only, during the 3 s respawn hold: `arcadeRespawn` snapshots `ARCADE.recap` from `G.tel.hitLog`, then clears hitLog (the arcade never settles it). A minimal text block (`KILLED BY …`, 3 hits, top source) is drawn from `arcadeHud` (45230) while `holdT>0`.
+
+Each window shows its own.
+
+---
+
+### 4. INTERIORS (his #32): COLD STORAGE, an arcade-only post-build pass
+
+**Cheapest route.** Do not touch the build. COLD STORAGE already has four `'core'` buildings: strongrooms with exactly one interior door (5720-5734, recorded in `map.idoors` at 7401). Sealing that one doorway turns a strongroom into a keycard vault.
+
+**4a Keycard.**
+- `ITEMS.keycard={name:'Vault Keycard',val:250,r:'rare',c:'#7fe3d4',use:'key',door:'arc'}`.
+- `keyFits(it,door)`: `it.use==='key'&&(it.door===door.id||(it.door==='arc'&&(door.arc||(G&&G.arcade))))`. It is used at:
+  - `doorKeyIx` 7780
+  - the door use at 18826
+  - the HUD prompt at 29508 and 29515
+- In DEMO a keycard opens any locked room, the authored `cs_freezer` and `cs_office` included.
+- In a raid that is not DEMO it opens only arc vault doors (none exist unless 4d ships), so nothing changes there.
+- The Peddler's ITEMS scan (10083) only matches map door ids, so the stream does not move.
+
+**4b DEMO vaults: `arcadeVaults(g)` in `arcadePostBuild`, inside `sideStream(g.seed,TAG_VAULT)`.**
+- **Candidates:** core buildings whose non-furniture interior walls (`ib===bi && !furn`, ≥4 of them) give a strongroom box, that have one `idoors` entry inside the box, that have no ent and no spawn inside, and that do not overlap a locked room.
+- Pick `ARCADE_VAULTS=2` with `ri` on the side stream.
+- **Per vault:**
+  - push the door wall `{…door rect, d:3, door:'arcvN', wid:walls.length}` (unique `wid`s for the late-join wall list at 41380)
+  - push `{id:'arcvN', name:'VAULT A/B', box, doorX, doorY, open:false, arc:1}` onto `g.map.locked`
+  - two `'cache'` boxes inside via `spotWall` / `mkContainer` (side stream), one guaranteed tier-4 gun
+- Then `rebuildGeometry()` (15448). It rebuilds segs, nav, navD, the free-spot grid and the reach flood.
+- **What comes for free:**
+  - the lamp at the door (27736-27751)
+  - the map outline and label (33298-33310)
+  - `shutRoomAt` for waves (44891)
+  - the door word for co-op (42840-42861)
+- **Both windows run the identical pass,** so the arcade `netUpFp` (41221-41229) matches.
+- **No main-stream draw:** RNGS is the same before and after. A plain `__deploy` is unchanged (85/165).
+
+**4c Keycards in the world.**
+- **Post-build** (side stream): one keycard per vault in an ordinary box outside every locked room, mirroring the rules at 10848-10896.
+- **On the run authority, at the death site** (beside 20431, after the drop branches): an elite, or every 12th kill while a vault is shut and no keycard lies on the map, drops a keycard pile built under `fxBorrow` (5309), so it uses no main stream. It reaches player 2 through `netContNumber` (44189-44207).
+- **Opening a vault in DEMO** pays `VAULT OPEN +$500` to the opener's score.
+
+**4d CAREER vaults (later, after 4b proves out).**
+- Seal plus loot only: seal the door, and upgrade the loot of boxes already inside. No new containers, so the 165 holds.
+- Keycards come only from kills in CAREER.
+
+**Optional 4e.** Door frames and thresholds drawn at `map.doors` / `map.idoors`. This is render2D, so leave it to the graphics program.
+
+**Risks.**
+- **A sealed room with a body inside.** It is skipped at selection, and later spawns honour `shutRoomAt`.
+- **Respawn or re-drop beside a vault wall.** Add `!shutRoomAt` in `arcadeRespawn` 44764.
+- **The interior repair pass.** `repairInteriors` can strip a core interior: the "≥4 walls" test skips those buildings.
+- **Changing the map build itself is not needed.** If it ever is, the 85/165 gate and `__verify` must be re-measured and the new numbers passed in `opt.ents`.
+
+---
+
+### 5. CONTROLLER AND KEYBOARD NAVIGATION (keyboard and mouse first; his 2026-09-27 pad layout kept; no aim assist exists and none is added)
+
+#### Audit of what exists
+
+| Screen | Keyboard and mouse | Pad |
 |---|---|---|
-| O1 | Does CAREER respawn you? | **No.** A death ends the raid as today: coming back empty, your kit is lost. |
-| O2 | CAREER loadout | **His own packed kit**, as today. No random kit. |
-| O3 | How the CAREER score becomes credits | **Credits = combat score × 2 on extraction, at a rate of 1.** Loot is still paid through the stash, as today, so nothing is paid twice. A death or an abandon converts **0**. |
-| O4 | Does loot count in the CAREER score? | **Yes, at its found value, for the high score only.** It is not converted to credits (O3). |
-| O5 | CAREER clock reaches 0 | **The burn, as today** (death unless you are boarding). |
-| O6 | Arcade extras in CAREER (waves, spawn shield, half damage, quick heal) | **Off.** Waves draw the seeded stream mid-raid. Rings never close in either mode. |
-| O7 | DEMO clock reaches 0 | **The run ends, TIME UP.** The score is kept at ×1 and there is no death. |
-| O8 | DEMO 2P extraction | **Per player.** That player's own score ×2 and he is out. The run ends when both are out or at TIME. |
-| O9 | DEMO death penalty on the score | **None.** He respawns as today; the clock is the cost. |
-| O10 | PvP row | **Under CAREER, rules unchanged** (no score layer). |
-| O11 | DEMO board rows from the endless era | **Dropped once with a new scale tag** `u:'t10'`, as arcade32 did. |
-| O12 | Row words | **1 PLAYER DEMO, 2 PLAYER DEMO, 1 PLAYER CAREER, 2 PLAYER CAREER (SAME MACHINE), 2 PLAYER PVP (SAME MACHINE).** |
-| O13 | Arcade stings (extract, streak, NEW HIGH SCORE, wave) | **Kept as cues of 1.2 s or less**, at most 4 notes, never looped, so they read as sound effects, not music. He should confirm they do not break his "no raid music" ruling. |
+| Title | arrows / W / S cycle the data-mode rows; ENTER / Space (49176) | `padMenu` focus, D-pad / stick, A, B ignored (13151) |
+| Attract (DEMO) | any key drops in, F-keys and modifiers excluded (45564-45582) | any button (host), A only (player 2) (13327-13334) |
+| Initials | letters, Backspace, Enter (45972) | the pad handler (45989-45999) |
+| Pause (RESUME / END RUN in DEMO) | handled | `padMenu`; B / MENU resume (13152-13159) |
+| Backpack | arrows, Enter equip (12192), drag | D-pad, A pick and place onto a gun cell = equip, Y drop, B close (13586-13603) |
+| Belt | digits, Q | LB/RB taps (13568-13584) |
+| Map | — | D-UP |
+| Pad unplug | — | pause (13615-13626) |
+
+#### Gaps found
+
+1. **The title default is START** (fixed by 0.1).
+2. **RETRY** (`#moderetry`) is not in `netTitleRows`, so the keyboard arrows cannot reach it.
+3. **END RUN ends the run on one press** (46589), with no confirm. Pad focus starts on RESUME, so one D-pad step and A ends a party run.
+4. **RUN OVER:** any key, click or button drops a new run in at once (`arcadeKeyAtt` / `arcadePadAtt`), so mashing at the end restarts the run.
+5. **During the 2P respawn hold** (`holdT`), `raidKey('Space')` (12142) still calls `tryRoll`. That drops the shield while the player is frozen, and the pad A does the same.
+6. **FEEDBACK modal navigation** (new in 0.7).
+7. **No pad text entry.** OPEN, with the default "not built".
+
+There is no pad gap in equipping from the backpack: A picks up and A on gun cell 1 or 2 places it. **No new pad bindings are added.**
 
 ---
 
-## PART 1. The features: model, code sites and risks
+### 6. PRO SOUND (his #45): punchy arcade style, all cosmetic
 
-### Feature 0. The title (DEMO and CAREER), the clock and x2, CAREER, the hidden map
+Sound uses Math.random or fxr only; nothing runs under `G.sim`.
 
-**0.1 The title** (HTML 1278-1290; CSS 728-735 and 114-119)
+**6a Buses and dynamics.**
+- `SND={bus:{gun,imp,mach,foley,amb,vox,ui,sting,world},world,comp,lim}` is built in `bus()` (3894-3905):
+  - every category gain → WORLD (gain 1.15) → DynamicsCompressor (−16 dB, knee 10, ratio 3.5, attack 4 ms, release 220 ms) → limiter (−3 dB, ratio 20, attack 1 ms) → BUS
+  - **ui and sting go → BUS directly**, so they are not compressed, ducked or reverberated
+- The reverb send moves from `BUS.connect(R.send)` (3902) to `WORLD.connect(R.send)`.
+- **BUS stays the master:** `volApply` (3885) and `netSndRoute` (41137) are unchanged, so **player 1 left / player 2 right is kept**.
+- `blip` 4696: `var OUT=sndBus(SND_CAT[type]||'world')||bus()||a.destination;` with:
+  - gun: shot, reload, reloadin, dry
+  - imp: boom, hit, clank
+  - mach: servo, skitter, drone, hydraul, dish, stepHeavy, seen, alarm
+  - foley: foot, step
+  - ui: pick, pickRare, pickElite, pickGun, clockwarn, clocktick
+  - vox: heart
+  - amb: flap
+  - world: the rest
+- `ambience` 4477 → amb; `voxGrunt` / `voxBreath` 4450 / 4465 → vox.
 
-New row order inside `#modemenu`:
-```
-<div class="modehead" id="mhdemo">DEMO <span>PARTY · HIGH SCORE · 10 MIN</span></div>
-  #modearcade1 "1 PLAYER DEMO"   (primary style: today's #titlestart look, padding 13px 46px, 15px)
-  #modearcade  "2 PLAYER DEMO"   (ghost)
-<div class="modehead" id="mhcareer">CAREER <span>YOUR SAVE · THE UNDERCROFT</span></div>
-  #titlestart  "1 PLAYER CAREER" (ghost; data-mode solo; still runs go(), the Undercroft)
-  #modecoop    "2 PLAYER CAREER (SAME MACHINE)"
-  modelater #modecoopsrv (greyed), #modepvp, modelater #modepvpsrv (greyed)
-```
-- **Every id stays**, so `netTitleInit` (40785-40803) and `netTitleRows` (40805) still find every row.
-- **New CSS:** `.modehead` (10.5px, letter-spacing .3em, amber, margin-top 10px). The max-height rule at line 118 moves from `#titlestart` to `#modearcade1`.
-- **P2 window:** add `mhdemo` and `mhcareer` to the P2 hide list at line 40789. In that window only `#titlestart` ("ENTER THE UNDERCROFT", 40798) is left.
-- **Default focus:** the padMenu title line (13089) becomes: focus `#modearcade1` when it is in the list, else `#titlestart` (the P2 window).
-- **ENTER on the title:** `netTitleEnter` (40827) with no focused row clicks `#modearcade1` when it is shown, else `startFn`. A focused `#titlestart` still runs `startFn`.
-- **Names:** `netModeName` (40502 area) returns `2 PLAYER DEMO` while `ARCADE.on`.
-- **Fit:** `titleFit` (46436) re-measures on its own (ResizeObserver, 46457). The two labels add about 40 px.
+**6b Ducking.**
+- `sndDuck(cat,depth,hold)` and `sndMixTick(dt)` are called in the loop beside `tickVerb` (35696). They are NOT inside `tickAmbience`, which the fixture stubs (mkfixture 1117).
+- A boom within 700 ducks amb to 0.35, mach to 0.6 and foley to 0.7 for 0.5 s, then recovers over 1.6 s.
+- A player hit ducks amb to 0.7. Stings duck amb to 0.6.
+- **UI and sting are never ducked.**
 
-**0.2 The DEMO 10-minute clock** (arcade section)
-- Keep `ARCADE_CFG.raidSec:0` (44481) for the **build**. The build then stays exactly as today's arcade build (no ring schedule, `closeAt` undefined, line 44700).
-- In `arcadePostBuild` (44699), replace `g.raidLen=0; g.timeLeft=0` with `g.raidLen=g.timeLeft=ARCADE_RAID_SEC (600)`. `raidClockOn()` (6259) is then true: the clock counts down (35628) and the warnings fire (`tickClockWarn`, 35632).
-- Player 2 builds the same way. The host's clock reaches player 2 through `wd` `tl` (42891/42905) and the late word (41352/41383).
-- **Clock at 0 in an arcade raid.** At 35641, before both burn branches, add:
-  `if(G.arcade&&raidClockOn()&&G.timeLeft<=0&&!_boarding){ G.timeLeft=0; arcadeTimeUp(); }`
-  - A pull that is boarding finishes as today.
-- **`arcadeTimeUp()`:**
-  - On the run authority (`arcadeBoardAuth`, 45874): `arcadeRunEnd('time')` (45721), which shows RUN OVER with a `TIME UP` header.
-  - On player 2: freeze (`holdT`), show `TIME`, and wait for `arcend` (`arcadeEndTake`, 45762).
-  - The site never burns in DEMO.
-- **HUD:** `arcadeScoreHud` (45194, called at 29113) also draws the clock in m:ss under SCORE, red under 0:45, matching the 29107 rule.
-- **Rebuild:** `arcadeRebuild` (45635) carries `G.timeLeft` into the rebuilt raid, so player 2 joining late never resets the clock.
+**6c Distance and occlusion.**
+- `sfx` (4431) sets `SND_CTX={x,y,occ}` with `occ=!losClear(player→source)` (cached per frame per rounded spot).
+- `blip` inserts a lowpass at 900-1500 Hz when occluded, and widens the pan ×1.4 under 150 / narrows it ×0.7 past 700.
+- Own sounds (`blipMine` 4422) take the player's position.
 
-**0.3 DEMO extraction ×2** (`arcadeExtracted`, 44824-44847)
-- Replace `mine += ARCADE_XBONUS + pot` with `ARCADE.mine = (ARCADE.mine|0) * 2`.
-- Remove the pot entirely: 44724, 45074 (`arcadeLoot` keeps only `mine += n`), the HAUL line at 45247, and the haul line in the HUD.
-- The banner becomes `EXTRACTED!` / `SCORE x2` / `SCORE $N` (45244-45249).
-- **No re-drop.** Remove `arcadeRedropSpot` and the kit call. Instead set `ARCADE.xOut=1`, `p.specOut=1` and freeze him.
-- When the banner ends (3 s) and nobody is still in, the authority runs `arcadeRunEnd('extract')`.
-- **2P:**
-  - Player 2 extracting runs `arcadeP2Out('extract')` (45770), and its `arcleft` carries `x:1`.
-  - The host extracting puts the host's attract up with `EXTRACTED · WAITING FOR PLAYER 2` (`arcadeAttStrip`, 45479).
-  - `arcadeBenched()` (45609) must return **false** when `ARCADE.xOut`, so a press never un-benches an extracted player 1.
-  - `arcadeIdleTick` (45697) and `arcleft` (45408) end the run when the host is out and the mate is gone.
-- `arcadeScSend('x', …)` keeps telling the mate. The callout becomes `PLAYER 1 EXTRACTED x2`.
-- **Board:** `arcadeBoardPut` (45876) tags rows `u:'t10'`, and `arcadeBoardLoad` (45835) drops the old tags once (O11).
+**6d Punchy guns.** `gunLayers(d,space)` in the shot branch (4737-4813):
+- **Near crack** (d<250): a 4 kHz high-passed click plus the existing crack and body.
+- **Mid:** as now.
+- **Far** (>650): crack lowpass 800 at ×0.6, a distant thump, and an environment tail from `spaceAt` (4279) at the source:
+  - inside: slap (two 45/90 ms echoes)
+  - open: roll (0.9 s lowpassed decay)
+  - woods: soft
+  - vault: ring
+  - water: hiss
+- Own shots get the tail at 0.5.
+- **Feedback sounds:** a hit-marker tick on the ui bus when the player's round lands (22415 path), a kill confirm, an armour-break crack and a shield pop.
 
-**0.4 CAREER raids** (normal raids, his save)
-- `CFG.career` (in DEF at 2073, default 1, so a dial can switch it off for A/B and for old checks).
-- **Post-build hook** in `startRaid` right after 11759:
-  `else if(G&&!G.sim&&CFG.career!==0&&!ARCADE.on) careerPostBuild(G);`
-  It sets:
-  - `G.career=1`
-  - `G.raidLen=G.timeLeft=CAREER_SEC (600)`, done after the build so the ring schedule and the seeded draws do not move
-  - `closeAt=undefined` on every zone (O6)
-  - `G.cs={s:0,k:0,streak:null,loot:0,paid:0}`
+**6e Machine state loops (off-screen warning).** `tickMachLoops(dt)` sits beside `tickMachineVoices` (35695).
+- Three pooled persistent voices are re-assigned every 0.25 s to the nearest searching or fighting machines within 900 that `canSee` says are not visible.
+- Per-kind patches:
+  - sentry: saw 140 Hz → bandpass 900, LFO 3 / 7 Hz
+  - crawler: noise gated at 9 / 16 Hz
+  - warden: 48 Hz plus saw 96, LFO 0.6 / 1.4
+  - snitch: triangle 420 with vibrato
+  - listener: sweep 700-1100
+  - howler: low saw plus bursts
+  - bulwark: square 55 treads
+- Searching is slow and quiet; fighting is faster and louder.
+- Occlusion lowpass; 0.3 s fades. `sndLoopsOff()` in `ambienceOff` (4532) and the arcade teardown.
 
-  `runSim` (23885) calls `buildRaid(true)` directly, so the bots never become CAREER.
-- **Scoring.** Split `arcadeKill` (45141) into a shared core `scoreKill(st,k,el,boss,x,y)` that holds the streak, popup and callout logic, with state passed in.
-  - `arcadeKill` passes `ARCADE`; the new `careerKill` passes `G.cs`.
-  - Call sites: 20431 (host credit) and 43834 (player 2 kill word): `else if(G.career) careerKill(...)`.
-  - CAREER loot counts into `G.cs.loot` at its value in `grantLoot` (16475/16476). The items still go to the backpack (O4).
-- **HUD:** at 29113, CAREER draws the normal clock and then a small `SCORE $N` line under it (`careerScoreHud`).
-- **Clock at 0:** the burn, unchanged (O5).
+**6f Impacts by material.** `matOf(wall)`:
+- tree / furn → wood
+- win → glass
+- wreck / car → metal
+- lockWall / door → metal
+- else concrete
 
-**0.5 CAREER settle** (`endRaid`, beside hazard pay at 23293-23305)
-- Add `if(G.career&&!G.sim) careerSettle(how,lines,haul);`:
-  - **extract:** board score = (`cs.s` + `cs.loot`) × 2, and `P.credits += cs.s*2*CAREER_CR` (O3). Card line: `CAREER SCORE $N x2 · +$M CREDITS`.
-  - **dead or abandon:** board score ×1, 0 credits. Card line: `CAREER SCORE $N · NO PAY`.
-  - Keep `P.careerBest` and a top 10 `P.careerBoard` in his save. Add `NEW CAREER BEST` when it beats the best.
-- The coming-back-empty rule stays the existing death settle, so the kit is still lost.
-- In co-op, each window converts its own score into its own save. Both windows run `endRaid` on their own.
+Ents: raider → flesh; bulwark / warden → armor; others → metal.
 
-**0.6 Hide THE COLD MILE** (kept in code)
-- `mapOffered` (6491) becomes `!m.frozen&&(!BETA_ONE_MAP||m.beta===1)`, with `frozen:1` on the mile entry (6637).
-- **What hiding it reaches:**
-  - the profile-load migration (3220) moves `P.mapIx` from 1 to 0 once
-  - the lift (34093/34190)
-  - the sector-card click (47055)
-  - `offeredCount` (47224)
-- **Code to add:**
-  - `renderSector` (47004) skips maps that are not offered.
-  - `sizeTag` (46919) measures offered maps only, so there is no tag.
-  - The profile import at 38826 gets the same guard.
-  - `arcadeEnter` (45353) sets `ARCADE.mapIx` to `firstOfferedMap()` when the saved index is not offered.
-  - `arcadeDeploy` (44716) still honours an explicit `o.mapIx`, for the fixture.
-- **What stays:** `netUpStart` (41303) follows the host word. Do **not** guard `buildRaid` (10496) or `startRaid`: the fixture's 374/593 mile fingerprint builds through `__startRaid`.
+Pass the material as the 4th argument:
+- `sfx("clank",x,y,mat)` at 22556 and 22561
+- `sfx("hit",…,mat)` at 22415, 22465 and 43608
+- the weak spot at 22285 and the bulwark at 22304
 
-**Risks**
-- Checks that will need new baselines:
-  - the title default focus and ENTER = start checks (v14.26, v15.76)
-  - checks matching the row texts `1 PLAYER`, `…ARCADE DEMO` (v23.24 arcade5, v23.54)
-  - arcade2's `raidLen===0` / `!raidClockOn()`, and its tail check of `raidLen` 540 on a plain `__deploy`
-  - arcade4's +2,500 and re-drop
-  - sector-page checks that click the mile card (v15.86), and the sizeTag check (v7.54)
-  - every check that asserts normal-raid settle credits. Those pin `CFG.career=0` in `__pinDefaults`.
-- With a clock, AI that keys off `timeLeft` now runs in DEMO (for example the raider extraction timing). This is low risk; soak it.
-- The migration rewrites his saved `P.mapIx` once, on load. That is the same mechanism BETA already uses.
+The clank and hit branches (5265, 4821) get one patch per material. **The `rnd(3,6)` decal draw at 22535 is untouched**, so the stream does not move.
 
-### Feature 1. The tripwire mine
+**6g Footsteps.**
+- `surfAt` (4310) is unchanged, so the ping radii in `tickPlayerSteps` (4353-4357) are unchanged.
+- A new cosmetic `surfFine(x,y,base)`:
+  - stone: wet (rain >0.3) / grit (yard landmarks) / concrete
+  - wood: tile (cells and core rooms) / boards
+  - metal: grate
+  - leaf, water
+- Passed as a **6th** argument (`blip('foot',d,pan,surf,stance,fine)`), so checks reading argument 4 still pass.
+- Three micro-variants per surface (Math.random). Enemy steps (4595-4596) get the fine surface too.
 
-**The model**
-- **Item:** `ITEMS.trip={name:'Tripwire Mine',val:160,wt:1,r:'uncommon',c:'#ff4a4a',use:'throw',tk:'trip'}`, appended after `frag` (2379). It is appended last, so the peddler's ITEMS walk (10083) and every other walk are unaffected.
-- **Belt:**
-  - `THROWKEYS=['smoke','decoy','frag','trip']` (2559).
-  - `cycleThrow` uses `%THROWKEYS.length` instead of `%3` (13900).
-  - `hotbarSlots` (16958) derives the trip cell **only while `G.pouch.trip>0`**, so a raid without one keeps today's belt.
-  - If the derived list is already 9 long (a plate is carried), the trip takes the highest free gun key, 3 or 4, as an automatic pin (the v22.42 rule, 17011). This stops `out.length=HOTBAR_N` (16991) from cutting the plate off.
-- **Placing it:**
-  - Pad: LB/RB to the trip cell, then hold and release RT (the frag cook path, 18727). Keyboard: its digit key or Q, then a click or G.
-  - Only a frag ever cooks off (18692/18730), so a held trip is safe.
-  - `throwFrom` (14063) is unchanged: it lands at the aim point, stopped by walls.
-  - `activateThrow` (14162) gets `else if(th.kind==='trip') tripArm(th)`.
-- **`tripArm`:**
-  - u = the throw direction, n = its perpendicular.
-  - `a = rayHitG(tx,ty, n, 120)`, `b = rayHitG(tx,ty, -n, 120)`. Each end stops 4 short of a hit wall.
-  - With no walls the wire is 80 each side. The total is clamped to 60-240, so a wire thrown into a doorway or corridor spans it.
-  - The record `{id, ax,ay,bx,by, armT:0.6, life:TRIP_LIFE(240 s), seat, fx}` goes into `G.trips`.
-  - At most 3 live per owner; the oldest goes.
-  - Say `TRIPWIRE SET`.
-- **Tick:** `tickTrips(dt)` is called at the end of `updateThrowables` (after 14430), gated `G.trips&&G.trips.length` (the sim never has any). It runs only where bodies are authoritative: solo, or the host (`!netEntsPeer()`, 41757).
-  - **Who trips it:** a body trips it if its move this frame (`e.tpx,tpy` to `e.x,y`) crosses the wire segment, or it is within `0.6×e.r` while moving.
-  - **Who counts:** `hp>0`, not `finished`, not `merc`, not friendly, not neutral peddler or stray, and **not a snitch** (it hovers).
-  - **Never:** a player or a hire.
-- **`tripBlast`** is a new function, kept separate so `explodeFrag` (14185) stays the same, byte for byte:
-  - `sfx('boom')`; spark, flash and decal on the cosmetic stream; shake by distance; `ping(…,520,'env','fire')`.
-  - Bodies within `TRIP_R` 150 with line of sight take `110×(1−d/R)+30`.
-  - **No `damagePlayer` and no `netAreaHitPeers`**: no team damage and no self damage.
-  - **Kill credit:** the host's own wire sets `e.byPlayer=true; bySeat=0` (plus `notoAggress`, as the frag does at 14252). A player 2 wire sets `byPlayer=false; bySeat=seat`, which reaches player 2 through the kill word (43345).
-  - Survivors chase the blast point.
-  - No wall damage.
-- **Co-op:**
-  - Player 2's `tripArm` sends `netThrSend('trip', x, y, {ax,ay,bx,by,id,s:seat})` (41824) and keeps a local copy (`fx:1`) to draw.
-  - The host's `netThrTake` (41833; add `trip` and `tgo` to the whitelist at 41837) builds the real wire and passes the copy on.
-  - On a blast or expiry the host sends `{k:'tgo',id}`, and every window drops its copy.
-- **Drawing:** `tripDraw()`, hooked into **render2D** after the locked-door lamp block (27751, above the fog, so the owner and his teammate always see their own wires).
-  - A faint red line (`rgba(255,60,60,.16+.08·pulse)`, 1.2 px in world space), dashed until armed, with two emitter nubs.
-  - While a trip is held, a dashed preview of `tripPlan()` (the landing and span maths shared with `tripArm`).
-  - The cook label (29702) reads `TRIPWIRE · RELEASE TO SET`.
-  - `drawItemIcon` (32138) gets a `trip` branch.
-- **Setup:** `pouch:{…,trip:0}` (11563); `tel.thr.trip:0` (11604). `grantLoot`'s `G.pouch[itm.tk]++` (16337) and the extraction stash loop (23434) are generic.
-- **Where trips come from:**
-  - **Arcade kit:** `arcadeKitApply` (44519) sets `g.pouch.trip=(Math.random()<ARCADE_TRIP_P 0.35)?1:0`.
-  - **Arcade crates:** `arcadePostBuild` puts `'trip'` into `ARCADE_TRIP_BOX` (8) ordinary containers through `sideStream(g.seed,TAG_TRIP)` (5303). That is deterministic, both windows match, and the main stream does not move.
-  - **Normal raids:** the mechanic works whenever one is carried. A cheap optional source (feat1f) is the same sideStream sprinkle (4 boxes) after 11759 for live non-arcade raids. It changes loot contents only, not counts or positions, so the fingerprint and the live-versus-sim parity hold. That is **OPEN**; my default is to ship it.
+**6h UI sounds.** `sndUi(kind)` on the ui bus:
+- move (2.2 kHz tick)
+- ok (660→990)
+- back
+- deny
+- open / close
 
-**Risks**
-- The belt length (handled above).
-- The `netThrTake` whitelist.
-- render2D is shared with the graphics program (one hook line plus a new function).
-- Undercroft: a trip carried home lands in the stash through the generic loop. Nothing new is built there.
+Hooks:
+- `padSetFocus` 13053 (when the element changes)
+- a document capture `click` on buttons, `.sectorpick`, `.cell` and `[data-slot]` (ok, or deny when disabled)
+- `padMenu` B 13160
+- `togglePauseBox` 13768
+- backpack open and close
+- initials letter changes
 
-### Feature 2. Gun stat cards
+**6i Voice barks, word by word, through Web Audio** (so the split speakers are kept).
+- Short clips rendered once at build time by Windows SAPI (System.Speech) and embedded as base64 WAV in a `VOX_BARKS` table. They are decoded once at the first `ac()`.
+- Played through the vox bus with a radio band-pass and a light WaveShaper, which makes them punchy and hides the TTS flatness.
+- Barks: RELOADING, FRAG OUT, TRIPWIRE SET, I'M DOWN, REVIVING, HEALING, OUT OF AMMO, EXTRACTING, SCORE LOST.
+- Announcer on the sting bus: DOUBLE KILL, TRIPLE KILL, RAMPAGE, UNSTOPPABLE, NEW HIGH SCORE, EXTRACTED, TWO MINUTES, ONE MINUTE, WAVE INCOMING.
+- One at a time, a 1.2 s gap, by priority.
+- Fallback: `speechSynthesis` only when decode fails AND `!NET.same`, because it cannot be panned.
 
-**The model**
-- **`gunStats(w)`:**
-  - `perPull = dmg×(pellets||1)×(burst||1)`
-  - `rpm = round(60000/rof)`
-  - `mag`
-  - `rangeM = round(rng/10)`
-  - `handling = round(100×(0.6×clamp(1−spread/0.2,0,1) + 0.4×clamp(1−(reload−1200)/3000,0,1)))`
-  - `sustained = perPull×pulls / (pulls×rof/1000 + reload/1000)`, where `pulls = mag/(burst||1)` and melee counts as 0
-- **`gunCompare(found, hand)`** returns `{rows:[DMG,RATE,MAG,RANGE,HANDLING] with value and delta, verdict}`.
-  - The tier decides first (`WTIER`, 2159): higher is **UPGRADE**, lower is **DOWNGRADE**.
-  - At equal tier, the sustained ratio decides: 1.08 or more is UPGRADE, 0.92 or less is DOWNGRADE, anything else is **SIDEGRADE**.
-  - Against fists it is always UPGRADE.
-  - The tier rule agrees with the routing in `arcadeGunLoot` and `grantLoot`.
-- **The pickup card.** `grantLoot`'s gun branch (16338-16473) sets `G.gunCard={gk,name,cmp,tag,t0}`:
-  - **Arcade:** only when `_agl.tag` is STOWED or KEY n (16379), never SCRAPPED.
-  - **CAREER:** for every gun (to the stowed slot, the hand or the backpack, tags at 16414/16463/16472).
-  - `drawGunCard()` is called in drawHUD right after `drawPickups()` (30632). It sits at the right edge just above the pickup stack (`drawPickups` returns its top y; the card is clamped at 0.30H or lower), lives 4 s, and hides with the backpack or the map.
-  - Contents: the name in its rarity colour, a verdict chip (UPGRADE `#7fc4a0` / SIDEGRADE `#ffc04a` / DOWNGRADE `#ff5a4a`), `VS <HAND GUN>`, 5 rows with green or red deltas, and the route tag (`STOWED · LB/RB SWAP`, `KEY 3`).
-  - Fonts go through `hudFS`, and every size is multiplied by `hudRes()` (about 2 at 4K), so it reads on a TV.
-- **The backpack card.** In `drawBag` (32907-32933), when the selected stack is a gun, the right half of the hint area draws the same card against `p.wep`. `itemRows` stays on the left. The D-pad already moves `G.bagSel`.
-- In "look at", the scope is the backpack plus the pickup. The frozen Undercroft stash is not touched.
+**6j Arcade stings.** `arcSting(kind)`, each ≤1.2 s and tonal: extract, streak, hi, wave, vault, and the drop ticks 3-2-1.
 
-**Risks:** small. Display only, and nothing is drawn under `G.sim`. The card can overlap the co-op kill feed for 4 s; it is capped at 0.30H or lower.
+Called from:
+- `arcadeExtracted`
+- the streak callout in `scoreKill`
+- `arcadeHiSay` 46068
+- `arcadeWaveTick` 44962
+- the 2P respawn countdown
 
-### Feature 3. The death recap
+These are cues, not music (his no-raid-music rule).
 
-**The model**
-- **The weapon on each hit.** `_logHit` (15266-15278) adds `w` (what hit him) and `k` (the source kind) to each `hitLog` entry. This is cosmetic: the entry is already written only when `!G.sim`.
-  - `w` comes from `deathWeaponOf(src, srcName)`: for a raider, find the body named `srcName` in `G.ents` and use its `wep.name` in caps.
-  - Otherwise use `MACH_ARMS`: `{crawler:'CLAWS', sentry:'AUTOCANNON', howler:'SHELLS', warden:'HEAVY CANNON', bulwark:'SHIELD GUN', choir:'PILLBOX', listener:'PULSE', yourself:'YOUR OWN CHARGE', lightning:'THE STORM'}` (the words are his to check).
-  - **No signature change** to `damagePlayer` (15195), `netHitPlayer` (43281) or `netHitTake` (43553).
-- **`deathRecap(log)`** returns `{killer, weapon, hits: the last 5 grouped rows, bySrc: the top 3 totals}`.
-- **CAREER KIA card** (23772-23833):
-  - The sub line (23792) becomes `KILLED BY X · WITH Y`.
-  - A `DAMAGE TAKEN` block (per source: `-64 · 3 HITS`) is added after HOW IT WENT.
-- **DEMO recap:**
-  - `arcadeRespawn('dead')` (44752) snapshots `ARCADE.recap=deathRecap(G.tel.hitLog)` with `t0`, then clears `G.tel.hitLog=[]`. The arcade never settles, so nothing reads the log later.
-  - `arcadeHud` (45230) draws `arcadeRecapHud()` while `ARCADE.holdT>0 && ARCADE.recap`. It is anchored right of centre (left edge at W×0.52, top at H×0.42), clear of the controls card at the left and of `DROPPING IN` at H×0.36.
-  - Lines: `KILLED BY SENTRY` / `WITH AUTOCANNON` / up to 4 hit rows / `DAMAGE TAKEN` with the top 3.
-  - Each window shows its own: the hits reach player 2 through its own `damagePlayer` (43559).
+**6k Music only on the title and the DEMO attract, never in raids.**
+- `musicWanted` (4136-4158): keep `if(G) return false`.
+- Then `return titleOn()||(ARCADE.on&&ATT.on);`. The Undercroft goes silent, by his words. The attract video is muted (35152), so the music plays over it.
+- The player 2 rule at 4157 and `netMusPan` (41082) still keep one song, and keep it off a player who is in a raid.
 
-**Risks:** none to the sim. The recap must give way to the initials card (`arcadeIniRaid`, 46023) when that is up.
+**Risks.**
+- **The fixture has no AudioContext** (the comment at 3949), so every sound check must install a fake context (Part 3).
+- **Node count per shot rises by about 2.** Fine on the audio thread at 60 fps and 4K.
 
-### Feature 4. More interiors (COLD STORAGE only, since the mile is hidden)
+---
 
-**What already exists**
-- Every building has a forced interior plan: spine, core, cells, lsplit, pinwheel or open (`makeBuilding` 5677-5934, plans per building at 6551-6576). The partitions' doorways are kept in `map.idoors` (7401).
-- Authored locked rooms (`def.locked`; built at 6757-6773 as 5 `lockWall` walls plus one `door` wall). They are opened by `lockedOpen` (42833) through `rebuildGeometry` (15448).
-- A promised key per room (10839-10897), caches inside (10907-10916), the door prompt (29503-29527), the sector-map marks (33298-33310), the door lamp (27736-27751) and the net door word (`netDoorSend`/`netDoorTake`, 42840-42861).
+## PART 2. SHIPPABLE BUILDS (one behaviour each), BATCHES, PARALLELISM
 
-Cheapest plan: reuse all of it. **The seeded build is not touched, so the fingerprint does not move.**
+### Batch M1, the shell (one agent)
 
-**feat4a. The keycard**
-- `ITEMS.keycard={name:'Vault Keycard',val:250,r:'rare',c:'#7fe3d4',use:'key',door:'arc'}`, appended last. It is never in a map table and never in the peddler's `kcand`.
-- One helper, `keyFits(it,door)`: `it.use==='key'&&(it.door===door.id||(it.door==='arc'&&(door.arc||(G&&G.arcade))))`. It replaces the 4 inline tests: `doorKeyIx` (7780), the door branch of `updatePlayer` (18826), the HUD prompt (29508) and the key name (29515, which reads "Needs the Vault Keycard" in the arcade).
-- In the arcade a keycard opens **any** locked room. In CAREER it opens only arcade vaults, and there are none there, so normal raids are unchanged.
+| Build | Behaviour | Main sites |
+|---|---|---|
+| feat0a | DEMO / CAREER title, DEMO focused first, ENTER / A gives 1 PLAYER DEMO | 1278-1290, CSS, 13089, 40789, 40593, 40827 |
+| feat0b | THE COLD MILE frozen | 6491, 6637, 47004, 46917, 45353, 38826 |
+| feat0c | player version v0.0001 | 1698, 48989, 49185, 40277, 40329, 38927 |
+| feat0d | NO HALLOWEEN | 44602-44677, 44705, **render2D 26238 and 27900**, 45439, 45500, 45509 |
 
-**feat4b. Arcade vaults**
-- `arcadeVaults(g)`, run from `arcadePostBuild`, inside `sideStream(g.seed, TAG_VAULT)`.
-- **Candidates:** buildings with plan `core` (COLD STORAGE has 4: 1912/230, 2980/900, 3440/1330, 2520/1760). For each:
-  - the strongroom box = the bounding box of the walls with `ib===bi && !furn`; skip if there are fewer than 4
-  - its single doorway = the `map.idoors` entry inside the box
-  - skip it if any body is inside the box, or if it overlaps a locked room
-- `ARCADE_VAULT_N` (2) are chosen with `ri` on the side stream. For each:
-  - push the door wall `{x,y,w,h of that doorway, d:3, door:'arcvN', wid: the next index}`
-  - push `{id:'arcvN', name:'VAULT A', x,y,w,h, doorX,doorY: the doorway centre, open:false, arc:1}` into `g.map.locked`
-  - place 2 caches inside (`spotWall` + `mkContainer('cache',3)`, `inLocked`, one guaranteed tier-4 gun via `ri`)
-  - put one keycard in an ordinary box outside every locked room (the 10848 rules)
-- Then `rebuildGeometry()`, which rebuilds the nav, grids, reach and fog segments.
-- Both windows run the same pass, so `netUpFp` agrees. Late joiners get the door state through the 41380 path (the door walls have `wid`).
-- `shutRoomAt` (5989) then keeps waves out on its own. Also add `!shutRoomAt` to the teammate spot in `arcadeRespawn` (44764) and to the random pass in `arcadeRedropSpot` (44811).
+### Batch M2, DEMO rules (one agent, after M1)
 
-**feat4c. Keycards from fights, and a vault bonus**
-- `arcadeKeyDrop(e)` is called at the death site in `updateEnts` (after 20526), and only on the authority: `G.arcade`, not `netEntsPeer`.
-- While a vault is shut and no keycard lies on the map, an elite or every 12th kill drops a pile `['keycard']`. It is built under `fxBorrow` (5309), so the main stream stays where it is. It reaches player 2 as a new container word (`netContNumber`, 44189).
-- Opening an arcade vault pays `VAULT OPEN +$500` into `ARCADE.mine` (DEMO) and says `VAULT OPEN`.
+| Build | Behaviour | Main sites |
+|---|---|---|
+| feat0e | 10-minute DEMO clock, burns at 0 | 44699, 35628-35651, 45635 |
+| feat0f | DEMO death: one self-revive; 1P ends the run; 2P respawns with the score reset to 0; no respawn in the burn | 23002, 44752 |
+| feat0g | extraction ×2 ends the run, then RUN OVER and initials; bonus, pot, re-drop and in-raid initials removed | 44790-44847, 45074, 45247, 46023-46051, 35654, 45177, 45721 |
 
-**feat4d (OPTIONAL). Door frames**
-- Cosmetic thresholds and frames at `map.doors` and `map.idoors` in arcade raids. This is render2D work in the wall pass; offer it to the graphics program.
-- **Not recommended:** an extra partition pass. It risks sealed rooms (the v1.62 history at 5795-5818).
+### Batch M3, CAREER (one agent, after M2)
 
-### Feature 5. Full controller navigation: audit and gaps
+| Build | Behaviour | Main sites |
+|---|---|---|
+| feat0h | `careerPostBuild`, the `scoreKill` refactor, career kills, waves in CAREER, the minimal score line | 11759, 20431, 20437, 43834, 45141, 44937, 35659, 29113 |
+| feat0i | `careerSettle`: ×2, 1 score = 1 credit on extract only, the personal-best board | 23293-23305, card lines |
 
-**Works today**
-- **Attract:** any button drops in; player 2 joins with A (13327-13334, `arcadePadAtt` 45584).
-- **Initials:** `arcadePadIni` (45989). It also covers the extraction card (13342).
-- **Pause box:** a panel with focus. B and MENU resume (13152-13158). Settings and Abandon are hidden in arcade (13838-13855).
-- **In the raid:** the backpack (VIEW, D-pad, A pick and place, B close, Y drop: 13586-13603), belt LB/RB (13568-13584), the map on D-UP, quick heal on D-DOWN (13585), and a disconnect pauses (13615).
-- **Focus is visible:** `.padfocus` (CSS 663). Canvas lists use the gold ring.
+### Batch FB, FEEDBACK
 
-**Gaps and their builds**
+| Build | Behaviour | Main sites |
+|---|---|---|
+| feat0j | FEEDBACK button and modal, screenshot, collector `/feedback`, download fallback | 862-880, 13768-13864, 46588, `tools/collector.ps1` |
 
-| Gap | Build |
+### Batch T, TRIPWIRE
+
+| Build | Behaviour |
 |---|---|
-| The title opens on `#titlestart`; ENTER starts the Undercroft | feat0a |
-| Keyboard arrows cannot reach RETRY: `netTitleRows` takes `[data-mode]` only (40808) | feat5a: add `#moderetry` while it shows |
-| END RUN is one press with no confirm (46589) | feat5b: the first A arms `END RUN? PRESS AGAIN` for 3 s; the feedback textarea `#pausenote` is hidden in the arcade box |
-| A press on RUN OVER drops straight back in (`arcadeKeyAtt` 45580, `arcadePadAtt` 45588) | feat5c: a 1.5 s guard after `ARCADE.over.at` |
-| No pad way to equip a gun from the backpack (keyboard ENTER at 12192) | feat5d: in arcade and CAREER with the backpack open, X sends `raidKey('Enter')` (13490-13507 branch) and holds nothing else |
-| A roll (`raidKey` Space → `tryRoll`, 12142), a throw or the belt during the arcade drop hold drops the shield before he is in | feat5e: during `ARCADE.holdT>0`, `raidKey` ignores Space, G, Q and the digits, and the pad gives no taps |
-| The death recap and the stat cards are display only, so no input is needed | none |
-| The arcade allows no Settings (operator lock, arcade21) | by design |
-| The operator chord is keyboard only | by design |
+| feat1a | item, pouch, belt cell, throw and arm |
+| feat1b | trip, blast, credit, never players |
+| feat1c | co-op words (41824-41854) |
+| feat1d | draw: **render2D hook after 27751**, preview, icon, cook label |
+| feat1e | DEMO kit and loot (44519, sideStream sprinkle) |
+| feat1f | CAREER loot sprinkle, cheap and optional |
 
-### Feature 6. The pro sound mix (cosmetic only)
+### Batch S, STAT CARDS
 
-**feat6a. Buses**
-- In `bus()` (3894), keep BUS as the master: gain = master × fx (`volApply`, 3887), connected to `netSndOut`. Add:
-  - **`SND.world`:** gain 1.15 → `DynamicsCompressor` (−16 dB, knee 10, ratio 3.5, attack 4 ms, release 220 ms) → limiter (−3 dB, ratio 20, attack 1 ms, release 80 ms) → BUS. **The reverb send moves from BUS to `SND.world`** (3902).
-  - **Category gains into `SND.world`:** `gun` .95, `imp` .9, `mach` .85, `foley` .8, `amb` .9, `vox` 1, `world` .9.
-  - **`ui` and `sting`:** straight into BUS. No compressor, no reverb, never ducked.
-- **Routing:**
-  - `blip` (4696) becomes `OUT=sndBus(SND_CAT[type]||'world')||bus()||a.destination`.
-  - `SND_CAT`: shot, reload, reloadin and dry → gun; boom, hit and clank → imp; servo, skitter, drone, hydraul, dish, stepHeavy, seen and alarm → mach; foot and step → foley; flap → amb; the pick sounds, clockwarn and clocktick → ui; heart → vox; the ring sounds → world.
-  - `ambience` (4477) → `amb`; `voxGrunt` and `voxBreath` (4450/4465) → `vox`.
-- The music stays off BUS as it is (no raid music). **Split speakers are kept:** every bus ends in BUS → `sndG` → `sndP` (41104-41116, 41127).
-
-**feat6b. Ducking**
-- `sndDuck(cat,depth,hold)` and `sndMixTick(dt)` (setTargetAtTime). It is called in the raid loop beside `tickVerb` (35696), **not** in `tickAmbience`.
-- `boom` closer than 700: amb 0.35, mach 0.6, foley 0.7, held 0.5 s, back over about 1.6 s.
-- Player hit: amb 0.75. A sting: amb 0.6.
-- **`ui` is never ducked.**
-
-**feat6c. Distance and occlusion**
-- `sfx` (4431) sets `SND_CTX=sndPlace(wx,wy)`: `{occ: !losClear(player→source) within 1500, lp: 900+600·(1−d/1500) if occluded else 18000, pan: clamp(pan×(d<150?1.4:d>700?0.7:1))}`.
-- `blip` puts one lowpass in front of the panner and clears `SND_CTX` when it ends.
-- `tickMachineVoices` already scales by occlusion (4671). It is left alone.
-
-**feat6d. Gun layers**
-- `gunLayers(d, space)` is a pure function returning `{crack, body, far, tail, tailKind}`:
-  - closer than 250: a 4 kHz click
-  - farther than 650: no crack, a lowpass at 800, plus a distant thump
-  - **the tail by `spaceAt(SND_CTX)`** (4279): inside = `slap` (echoes at 45 and 90 ms), open = `roll` (0.9 s lowpass), woods = `soft`, vault = `ring`, water = `hiss`
-- It is used in the shot branch (4737-4813). The player's own shot uses his own spot, with the tail at 0.5.
-
-**feat6e. Machine state loops** (the off-screen warning)
-- `tickMachLoops(dt)` keeps 3 persistent slots, reassigned every 0.25 s. They go to the machines with the highest score, where score = (fight 2, search 1) × (1−d/900), and only machines the player **cannot see** (`canSee`, 8611).
-- **A sound per kind** (searching is slower and quieter, fighting is faster and louder; each fades in and out over 0.3 s):
-
-| Kind | Sound |
+| Build | Behaviour |
 |---|---|
-| sentry | saw 140 Hz through a bandpass, LFO 3 / 7 Hz |
-| crawler | gated noise, 9 / 16 Hz |
-| warden | 48 Hz plus 96 Hz, LFO 0.6 / 1.4 |
-| snitch | triangle 420 Hz, vibrato |
-| listener | a sweep |
-| howler | a low saw plus bursts |
-| bulwark | square-wave treads |
+| feat2a | `gunStats` / `gunCompare` model |
+| feat2b | pickup card (grantLoot 16338-16474, one drawHUD line beside 30632) |
+| feat2c | backpack card (drawBag 32907-32949) |
 
-- It is stopped in `ambienceOff` (4532) and `arcadeRaidStop`. It never runs under `G.sim`. It uses `fxr` and `Math.random` only.
+### Batch R, RECAP (after M2 and M3)
 
-**feat6f. Impacts by material**
-- `matOf(wall)`: tree or furniture → wood, window → glass, wreck or lock wall → metal, otherwise concrete. `hitMat(e)`: raider → flesh, otherwise metal.
-- Passed as the `wid` argument at 22556 and 22561 (`sfx("clank",b.x,b.y,matOf(_struck))`), 22415, 43608 and 22465 (flesh); `metal` at 22285 and 22304.
-- The `clank` and `hit` branches (5265, 4821) pick their voice by material.
-- The `rnd(3,6)` decal draw (22535) is unchanged, so the stream does not move.
+| Build | Behaviour |
+|---|---|
+| feat3a | hitLog weapon, `deathRecap`, CAREER KIA / EXTRACTED card (15266-15278, 23764-23833) |
+| feat3b | DEMO RUN OVER recap plus the 2P respawn-hold recap (45796-45811, 44752, 45230) |
 
-**feat6g. Footsteps**
-- `surfFine(x,y,base)` is cosmetic:
-  - stone → wet (rain over 0.3) / grit (a yard landmark) / concrete
-  - wood → tile (cells and core plans) / boards
-  - metal → grate
-- It is passed as a **6th** argument to `blip('foot',…)` (4343, 4596). `surfAt` and the step ping radius (4353-4357) are unchanged.
-- Each surface gets 3 micro-variants (`Math.random`).
+### Batch I, INTERIORS (after M2)
 
-**feat6h. UI sounds**
-- `sndUi(kind)` on the `ui` bus: move, ok, back, deny, open and close.
-- **Where they fire:**
-  - move: `padSetFocus` (13053), when the target changes
-  - ok, or deny when disabled: a capture `click` listener on buttons inside `.modal`, `.pausebox`, `#title`, `#hub` and `.outcome`
-  - back: padMenu B (13160)
-  - open and close: `togglePauseBox`
+| Build | Behaviour |
+|---|---|
+| feat4a | keycard plus `keyFits` (7777, 18826, 29508, 29515) |
+| feat4b | DEMO vaults (`arcadePostBuild`, sideStream, rebuildGeometry) |
+| feat4c | keycards in the world, kill drops (beside 20431), VAULT OPEN pay |
+| feat4d | CAREER seal-only vaults, optional and later |
 
-**feat6i. Arcade stings**
-- `arcSting(kind)` on the `sting` bus, called from:
-  - `extract`: `arcadeExtracted`
-  - `streak`: the streak call in `arcadeKill` (45150)
-  - `hi`: `arcadeHiSay` (46068)
-  - `wave`: `arcadeWaveTick` when a pack is made (44962)
-  - `drop`: each integer of `arcadeDropHud` (45222)
-  - `vault`: an arcade vault opening
-- Each is 1.2 s or less (O13).
+### Batch C, CONTROLS (after M1 and M2)
 
-**Risks**
-- Node count per sound grows by 1 or 2. That is the audio thread, not the frame time.
-- Changing BUS→REV to WORLD→REV changes the reverb on the pickup chimes, which is intended.
-- Checks that stub `blip` and compare arguments: the 4th argument is unchanged, and the material and the fine surface go in the 4th (wid) or 6th slot only.
+| Build | Behaviour |
+|---|---|
+| feat5a | RETRY in `netTitleRows` (40805) |
+| feat5b | END RUN arms first: `END RUN?  PRESS AGAIN`, 3 s (46589, 13838) |
+| feat5c | RUN OVER input guard, 1.5 s (45564, 45584) |
+| feat5d | input guard during the DEMO respawn hold (raidKey 11993; `tryRoll` 13940) |
 
----
+### Batch A1, SOUND CORE
 
-## PART 2. Shippable builds, batches and what can run in parallel
+| Build | Behaviour |
+|---|---|
+| feat6a | buses, compressor, limiter |
+| feat6b | ducking |
+| feat6c | distance and occlusion |
+| feat6d | punchy guns, environment tails, hit / kill confirm |
+| feat6f | impacts by material |
+| feat6g | footsteps |
 
-**Wave 1** (4 agents in parallel; the regions do not overlap)
-- **Batch A, title and map:** feat0a, feat0b (HTML 700-735, 114-119, 1278-1290; 13089; 40785-40832; 6491/6637; 46919; 47004; 3220; 38826).
-- **Batch F, gun cards:** feat2a, feat2b, feat2c (a new section; 16338-16473; 30632 plus one call; 32907-32933).
-- **Batch G1, the CAREER death card:** feat3a (15266-15278; 23772-23833).
-- **Batch S1, sound core:** feat6a, feat6b, feat6c, feat6d, feat6f, feat6g (3860-5290; 4330-4362; 4565-4598; 22285/22304/22415/22465/22556/22561/43608; one line at 35696).
+### Batch A2, SOUND FEATURES (after A1; stings after M2 and M3)
 
-**Wave 2**
-- **Batch M, modes (one agent, in order, because these share 29113, 23002 and arcadeKill):**
-  - feat0c (DEMO clock): 44481-44708, 35641, 29113, 45194, 45635
-  - feat0d (DEMO ×2): 44790-44847, 45072-45077, 45218-45251, 45408, 45479, 45609, 45697-45777, 45829-45884
-  - feat0e (CAREER raid): 2073 DEF, 11759, 20431, 43834, 45141 refactor, 29113
-  - feat0f (CAREER settle): 23293-23305
-- **Batch D, the tripwire (parallel with M):**
-  - feat1a: 2379, 2559, 11563, 11604, 13900, 14162-14184, 16958-16991
-  - feat1b: after 14430, new `tickTrips` and `tripBlast`
-  - feat1c: 41824-41854
-  - feat1d: **render2D** after 27751, 29702, 32138
+| Build | Behaviour |
+|---|---|
+| feat6e | machine state loops |
+| feat6h | UI sounds |
+| feat6i | voice barks |
+| feat6j | stings |
+| feat6k | music on the title and the attract only |
 
-**Wave 3** (after M and D)
-- **Batch E, interiors plus the arcade trip sources (one agent; they share `arcadePostBuild` and `arcadeKitApply`):**
-  - feat1e: 44519, `arcadePostBuild`
-  - feat4a: 7777-7781, 18815-18835, 29503-29518
-  - feat4b: `arcadePostBuild`, 44764, 44811
-  - feat4c: after 20526, `lockedOpen` caller at 18830
-  - feat1f, OPTIONAL: 11759
-  - feat4d, OPTIONAL, **render2D**
-- **Batch G2:** feat3b (44752, 45230). Parallel with E only if E leaves `arcadeRespawn` alone, apart from 44764, which is a different line.
-- **Batch H, controller:** feat5a (40805), feat5b (46589, 13838-13856), feat5c (45564-45589), feat5d (13490-13507 bag branch), feat5e (`raidKey` 12142 plus the pad tap loop 13544-13552). Parallel with E and G2.
-- **Batch S2, last:** feat6e (new section plus the loop line), feat6h (13053, 13160, `togglePauseBox`, one listener), feat6i (calls inside arcade functions, so it goes after M, E and G2).
+### Parallel waves
 
-**Overlap with the graphics program** (render2D, drawOp and the entity draws)
-- **render2D:** only feat1d (one hook line after 27751 plus `tripDraw`, a preview drawn in the same hook) and feat4d (optional, the wall pass).
-- **Unchanged and reused by feat4b:** the locked-room lamp (27736-27751) and the map marks.
-- **Not touched:** drawOp and the entity draw functions.
-- **drawHUD and drawBag**, which they did not list, are touched by F, G, M and 1d (the cook label).
-- **Hit pause:** if it freezes `G.t`, the 4 s cards and the recap simply wait. Ducking is independent of it.
+- **Wave 1, parallel:** M1, A1, S, and T (feat1a-1c). Regions: title / HTML / map tables / the arcade Halloween block, the audio section 3860-5290 plus the 6 sfx call sites, grantLoot / drawBag, and the throwables section plus the net thr block. They are disjoint.
+- **Wave 2:** M2 first. Then M3, I and T (feat1d-1f) in parallel; FB alongside.
+  - M3 and I both touch the kill site near 20431, on different lines: merge M3 first.
+  - feat1e touches `arcadeKitApply` and `arcadePostBuild`, which I also touches: merge feat1e before feat4b.
+- **Wave 3, parallel:** R, C and A2.
+  - A2's stings and the 6h `padSetFocus` hook touch functions C may touch (`padMenu`); C first.
+
+### Graphics and UI program overlap
+
+- **render2D:**
+  - feat0d removes the hooks at 26238 and 27900
+  - feat1d adds one hook after 27751
+  - feat4e (optional) would be in the wall pass
+- **drawOp and the entity draws:** none.
+- **drawHUD and drawBag** (the HUD the UI redesign will redo):
+  - feat0h, the score line at 29113
+  - feat2b, one call beside 30632
+  - feat2c, inside drawBag
+  - feat1d, the cook label at 29702
+  - feat3b, inside `arcadeHud`
+
+  Each is one self-contained draw function over a pure model, so the UI program can restyle or replace it.
 
 ---
 
-## PART 3. A check for each build
+## PART 3. ONE CHECK PER BUILD (game scope, the fixture style of mkfixture 5747-5895)
 
-Every check runs in game scope with `__topClear(); __runPrep();`. Each one restores what it changed in `finally` (`arcadeLeave()` when `ARCADE.on`, `__endRaid('abandon')`, `delete` on any ctx or navigator stub, and the `AC`/`BUS`/`REV`/`SND` stubs put back). Each check **fails on the previous build** because the function, field or behaviour it reads is new.
+Each passes on the new build and fails on the previous one.
 
-**feat0a**
-- Title `on`, `PAD.focus=null`, `padMenu(function(){return false;})`. Then `PAD.focus.id==='modearcade1'`.
-- `netTitleRows()` ids start `modearcade1, modearcade, titlestart, modecoop`. `#mhdemo` and `#mhcareer` read DEMO and CAREER.
-- Stub `arcadeSoloPick` to record. `netTitleEnter(go)` with no focus records one call and `go` is not called.
-- The 23.58 fit measure at menu zoom 2.4 is not over.
-- On the old build: focus is on titlestart and the result is `'start'`.
+**Common rules:**
+- Wrap every check in `try / finally`, with `arcadeLeave()` when `ARCADE.on`, `__endRaid('abandon')` when a raid is live, and `__topClear()`.
+- Canvas stubs go on `hcv.getContext('2d')` as own properties and are deleted after.
+- **Fake audio for the feat6 checks.** Save `AC, BUS, REV, AMB, SND`, set `AC=fake; BUS=REV=AMB=SND=null`, and restore all of them in `finally`.
+  - `fake` = `{currentTime:1, sampleRate:48000, state:'running', destination:N('dest'), createGain, createBiquadFilter, createStereoPanner, createDynamicsCompressor, createOscillator, createDelay, createBufferSource, createWaveShaper` (each returning `N(kind)`), `createBuffer:(c,l)=>({getChannelData:()=>new Float32Array(l)}), decodeAudioData:()=>Promise.resolve({}), resume(){}}`.
+  - `N(k)` = `{kind:k, outs:[], connect(t){this.outs.push(t);return t}, disconnect(){this.outs=[]}, start(){}, stop(){}}` plus AudioParams (`value` and `setValueAtTime` / `setTargetAtTime(v){this.value=v}` / ramps / `cancelScheduledValues`) for gain, frequency, Q, pan, threshold, knee, ratio, attack, release, delayTime, playbackRate.
+- **Pad stubs.** `navigator.getGamepads=()=>[{connected:true,index:0,id:'x',buttons:Array(17).fill(0).map(()=>({pressed:false,value:0})),axes:[0,0,0,0]}]`, restored after.
 
-**feat0b**
-- The index of the largest `w*h` is 1. `mapOffered(FIXED_MAPS[1])===false`; `offeredCount()===1`.
-- `renderSector()` gives no `.sectorpick[data-map="1"]`.
-- `P.mapIx=1; arcadeEnter('host')` gives `ARCADE.mapIx===0` (then `arcadeLeave`).
-- `__startRaid({mapIx:1,seed:4242})` still gives 374 bodies.
+### Modes (feat0)
 
-**feat0c**
-- `arcadeDeploy({mapIx:0,seed:4242})`: `G.raidLen===600`, `raidClockOn()`, every zone `closeAt===undefined`.
-- A fillText stub on hcv during drawHUD shows `SCORE` and a string matching `/^\d+:\d\d$/`.
-- `arcadeShieldOff(); G.timeLeft=0.05;` then 30 `__loop` frames: G is null or stopped, `ARCADE.over.why==='time'`, never `nuking`, `P.runs` unchanged, `ARCADE.on` still set.
+**feat0a, the title.**
+1. Show `#title`; `PAD.focus=null`; call `padMenu(()=>false)`. `PAD.focus.id==='modearcade1'`.
+2. The `netTitleRows()` ids start with `modearcade1, modearcade, titlestart, modecoop, modepvp`.
+3. `#mhdemo` and `#mhcareer` exist and read DEMO and CAREER.
+4. Stub `arcadeSoloPick` (record); `netTitleEnter(go_stub)` with no focus calls it and not `go`.
+5. At menu zoom 2.4 the title still fits (the 23.58 measure).
 
-**feat0d**
-- `arcadeDeploy; ARCADE.mine=1500; ARCADE.pot=300; __endRaid('extract')`.
-- Then `ARCADE.mine===3000` and `ARCADE.banner.mul===2`. Run 220 frames.
-- Solo: `ARCADE.over.why==='extract'`.
-- With `ARCADE.xOut=1` and `specOut`, `arcadeBenched()===false`.
-- On the old build: 4300.
+The previous build focuses titlestart and calls `go`.
 
-**feat0e**
-- `__deploy({kit:[],safe:null,mapIx:0,seed:4242})`: bodies 85, containers 165, `G.career===1`, `raidLen===600`.
-- A crawler at +300 with `hp 0, byPlayer` after `__ents(0.016)` gives `G.cs.s===50`. The HUD trace shows `$50`.
-- With `CFG.career=0` and a re-deploy: no `G.career`, `raidLen===540`.
+**feat0b, the mile frozen.**
+1. The largest map by `w*h` is index 1; `mapOffered(FIXED_MAPS[1])===false`; `offeredCount()===1`.
+2. `renderSector()` leaves no `.sectorpick[data-map="1"]`.
+3. With `P.mapIx=1`, `arcadeEnter('host')` gives `ARCADE.mapIx===0` (then `arcadeLeave`).
+4. `__startRaid({mapIx:1,seed:4242})` still gives 374 ents.
 
-**feat0f**
-- `__deploy; G.cs.s=400; __endRaid('extract')`: `G.cs.paid===800`, `#oc_manifest` contains `CAREER SCORE` and `+$800`, `P.careerBest>=800`.
-- Deploy again, `G.cs.s=400; __endRaid('dead')`: `paid===0`.
+The previous build offers both maps.
 
-**feat1a**
-- `__deploy`: with no trip there is no `throw:trip` cell.
-- `G.pouch.trip=1`: the cell appears. `G.tsel=THROWKEYS.indexOf('trip')`, aim the mouse, `doThrow()`, 20 × `__sim(0.05)`.
-- Then `G.trips.length===1`, the span is between 60 and 240, and `pouch.trip===0`.
+**feat0c, the version.**
+1. `verShown('23.59')==='v0.0001'` and `verShown('23.60')==='v0.0002'`.
+2. `#titlever` and `#verlabel` text equals `verShown(VER)`.
+3. `buildExport()` contains `'v'+VER`.
 
-**feat1b**
-- `tripArm` at a clear spot 300 away. Run `tickTrips` past `armT`.
-- A crawler on side A, a tick, then moved to side B, a tick: the crawler is hurt or dead and `G.trips` is empty.
-- Player hp is unchanged (he stands 60 away).
-- Walking `G.player` across a second wire leaves it standing.
+The previous build shows `v23.58`.
 
-**feat1c**
-- A stand-in host with peer seat 1: `netThrTake(peer,{t:'thr',k:'trip',…,id:'s1-1',s:1})` gives a wire with seat 1. Tripping it kills with `bySeat===1` and `!byPlayer`.
-- As the join role, `{k:'tgo',id}` removes the copy.
-- On the old build: `'bad'`.
+**feat0d, no Halloween.**
+1. `arcadeDeploy({mapIx:0,seed:4242})`: `G.arcPumps===undefined`, and every `G.lights[i].c` equals the light colour of a plain `__deploy` at the same seed.
+2. `typeof arcadeHallow==='undefined'`.
+3. `arcadeAttStart()`: the overlay text has no `HALLOWEEN`.
 
-**feat1d**
-- A wc `moveTo`/`lineTo`/`strokeStyle` stub over one render2D frame records a red stroke between the two ends of the wire.
-- While a trip is held, the cook label trace has `RELEASE TO SET`.
+The previous build has pumpkins.
 
-**feat1e**
-- Stub `Math.random` to 0, then `arcadeKitApply`: `pouch.trip===1`. Stub it to 0.99: 0.
-- Two arcade deploys at seed 4242 give the same set of crates holding `trip`.
-- Wrapping the sprinkle shows `RNGS` unchanged across it.
+**feat0e, the DEMO clock.**
+1. `arcadeDeploy`: `G.raidLen===600` and `raidClockOn()`.
+2. Set `G.timeLeft=0.02`; 5 `__loop` frames. `G.nuking===1`, `__state()===g`, `P.runs` unchanged.
 
-**feat2a**
-- `gunCompare(WEAPONS.lmg,WEAPONS.rifle).verdict==='UPGRADE'`; `(pistol, rifle)` gives `'DOWNGRADE'`; `(rifle, rifle)` gives `'SIDEGRADE'` with all deltas 0. There are 5 rows.
+The previous build has `raidLen 0`.
 
-**feat2b**
-- Arcade, `p.wep=arcadeGun('chatter'), p.sec=arcadeGun('smg')`, then `grantLoot({x:p.x,y:p.y,loot:[]},['gun_lance'])`.
-- `G.gunCard.gk==='lance'`, `cmp.verdict==='UPGRADE'`, `tag==='STOWED'`. The HUD trace shows `UPGRADE`.
-- At `__forceSize(3840,2160)` the verdict font px is at least 1.8× the 1080p size.
-- A scrapped gun leaves the card unchanged.
+**feat0f, DEMO death.**
+1. Solo: `ARCADE.solo=1`, `arcadeShieldOff`, `killPlayer('sentry')`, 120 frames. `!G`, `ARCADE.over.why==='dead'`, `#outcome` not on, `P.runs` unchanged.
+2. Two-player: `ARCADE.solo=0`, `ARCADE.mine=900`, `killPlayer`, 120 frames. `G.arcade`, `ARCADE.mine===0`, `ARCADE.holdT>0`.
+3. With `G.nuking=1`, a death does not respawn: `specOut` is set.
 
-**feat2c**
-- `__deploy; G.bag=['gun_dmr']; G.bagOpen=true; G.bagSel=0`. The drawHUD trace shows a verdict word and `HANDLING`.
+The previous build respawns the solo player and keeps the score.
 
-**feat3a**
-- `__deploy`. Push a raider R. `damagePlayer(25,'sentry','SENTRY',…)`, then `damagePlayer(30,'raider',R.name,…)`.
-- The last `hitLog.w===R.wep.name.toUpperCase()`.
-- `__endRaid('dead')`: `#oc_sub` contains `WITH`, `#oc_manifest` contains `DAMAGE TAKEN`.
+**feat0g, extraction.**
+1. Solo: `ARCADE.mine=1500`; `__endRaid('extract')`. `ARCADE.over.team===3000`, `ARCADE.over.why==='extract'`, `!G`.
+2. Two-player host with `ARCADE.mate=400` and a stubbed `netSamePost`: `team===3800`, and the `arcend` word has `x2`.
+3. Stage a board where 3000 makes the top 10: `ARCADE.ini` is set (initials at RUN OVER).
 
-**feat3b**
-- `arcadeDeploy`, shield off, two SENTRY hits, `killPlayer('sentry')`, 120 frames.
-- `ARCADE.recap.killer==='SENTRY'` and `G.tel.hitLog.length===0`.
-- The HUD trace during the hold shows `KILLED BY` and `DAMAGE TAKEN`. After the hold it does not.
+The previous build gives `mine=4000` and a re-drop.
 
-**feat4a**
-- `arcadeDeploy`. Stand at the `cs_freezer` door, `G.bag.push('keycard')`, `keys.KeyE=true`, `__sim(0.02)`. The room is open and the keycard is spent.
-- `__deploy` (CAREER): a keycard does nothing; `key_cs_freezer` still opens it.
+**feat0h, CAREER raids.**
+1. `__deploy({kit:[],safe:null,mapIx:0,seed:4242})`: `G.career===1`, `G.raidLen===600`, `G.ents.length===85`, `G.containers.length===165`, every `closeAt===undefined`.
+2. Push a crawler with `hp=0, byPlayer=1`; `__ents(.016)`. `G.cs.s===50`.
+3. `p.armor=0`; `damagePlayer(20,…)` takes `20*CFG.eDmg` (full damage).
+4. `G.cs.s=9000; ARCADE.waveT=999` (or the career wave clock); one wave tick adds `arcWave` bodies.
+5. `CFG.career=0` with `__deploy` gives `!G.career` and `raidLen 540`.
 
-**feat4b**
-- Wrap `arcadeVaults` to compare `RNGS` before and after (equal).
-- `arcadeDeploy` seed 4242: 2 rooms with `arc`, each with a `door` wall, `shutRoomAt` true at the centre, 2 or more caches inside.
-- The `netUpFp(G).h` and vault rects of a second deploy are identical.
-- A plain `__deploy`: no `arc` rooms, 85/165.
+The previous build has no `G.career`.
 
-**feat4c**
-- Boxes holding `keycard` number at least the vault count, and none lies inside a locked rect.
-- Opening a vault with a keycard raises `ARCADE.mine` by 500.
-- `ARCADE.kcN=11; arcadeKeyDrop(e)` makes a `['keycard']` pile, with `RNGS` unchanged.
+**feat0i, CAREER settle.**
+1. `__deploy`; `G.cs.s=700`; `__endRaid('extract')`. `G.careerPaid===1400`, `#oc_manifest` contains `CAREER SCORE`, `P.careerBoard[0].s===1400`.
+2. New deploy; `G.cs.s=700`; `__endRaid('dead')`. `G.careerPaid===0` and the board unchanged.
+3. Restore the board and credits.
 
-**feat5a**
-- `#moderetry` shown: it is in `netTitleRows()`.
+The previous build has no `G.careerPaid`.
 
-**feat5b**
-- `arcadeDeploy; togglePauseBox(true)`. The first `#arcendbtn` click leaves `G.arcade` and no `ARCADE.over`. The second click gives `over.why==='menu'`.
-- `#pausenote` is hidden.
+**feat0j, FEEDBACK.**
+1. Stub `fetch` (capture), `URL.createObjectURL` and the anchor `click`. `togglePauseBox(true)`: `#fbbtn` is visible, in the arcade box too (with `arcadeDeploy`).
+2. Click it: `#fbmodal.on`. Type a note and click SAVE. The captured payload has the note and a PNG data URL (or two blobs, one `image/png`).
+3. In arcade, `localStorage.getItem(SKEY)` is unchanged.
 
-**feat5c**
-- `arcadeRunEnd('menu')`. A synthetic keydown leaves `G` null.
-- `ARCADE.over.at-=2000`, then a keydown gives `G.arcade===1`.
+The previous build has no button.
 
-**feat5d**
-- Stub `navigator.getGamepads` with an own property: a connected pad with 17 buttons.
-- Arcade, backpack open, `G.bag=['gun_dmr']`. Press X and `pollPad()`: `p.wep.id==='dmr'`.
+### Tripwire (feat1)
 
-**feat5e**
-- `arcadeDeploy; arcadeRespawn('dead'); raidKey('Space',false,null)`. Then `!(p.roll>0)` and `p.arcSh===1`.
+**feat1a, throw and arm.**
+1. `__deploy`. `hotbarSlots()` has no `throw:trip` cell and the same length as before.
+2. Set `G.pouch.trip=1`. A `throw:trip` cell appears.
+3. `G.tsel=THROWKEYS.indexOf('trip')`; put `mouse` 200 px right; `doThrow()`; `__sim(.05)` ×20. `G.trips.length===1`, length in 60-240, `G.pouch.trip===0`.
+4. `cycleThrow` reaches `trip`.
 
-**feat6a**
-- **The fake context:** `AC` = a fake whose nodes record `connect`, with `createGain`, `createBiquadFilter`, `createStereoPanner`, `createDynamicsCompressor`, `createOscillator`, `createDelay`, `createBufferSource`, `createBuffer`, `destination`, `currentTime` and `sampleRate`. Set `BUS=REV=SND=null` first.
-- After `bus()`: `sndBus('gun')` connects to `SND.world`; `SND.world` → comp → lim → BUS; `sndBus('ui')` → BUS; `REV.send` is fed by `SND.world`, not BUS.
-- `blip('shot',100,0,'rifle')` reaches the gun bus.
-- With `NET.same='host'` and split on, the `ui` path still reaches `NET.sndP` at pan −1.
+The previous build has no `ITEMS.trip`.
 
-**feat6b**
-- Fake `AC`. `sfx('boom',p.x+100,p.y)`: the amb gain target is under 0.5 and ui is 1.
-- `sndMixTick(2.5)`: amb is back at 0.95 or more.
+**feat1b, the trip.**
+1. `tripArm` at a clear spot 300 from the player, with arm 0.
+2. A crawler on side A; `tickTrips(.016)`; move it to side B; `tickTrips`. The crawler is damaged, `G.trips` is empty and the player's hp is unchanged (the player stands 60 from the wire).
+3. A second wire: walk `G.player` across it. It stays.
 
-**feat6c**
-- `sndPlace` behind a building wall gives `occ` and `lp<=1200`. With a clear line, `lp>=16000`. Near widens the pan, far narrows it.
+The previous build has no `tickTrips`.
 
-**feat6d**
-- `gunLayers(100,'open').crack>0`; `gunLayers(800,'open')` gives `crack===0` and `tailKind==='roll'`; `'inside'` gives `'slap'`; `'vault'` gives `'ring'`.
+**feat1c, co-op.**
+1. `NET.role='host'` with a stand-in peer `{state:'in',seat:1}`. `netThrTake(peer,{t:'thr',k:'trip',x,y,ax,ay,bx,by,id:'s1-1',s:1})` returns `'thr:trip'` and the trip has seat 1.
+2. A body tripping it ends with `bySeat===1` and `byPlayer===false`.
+3. As `role='join'`, `k:'tgo'` removes the fx copy.
 
-**feat6e**
-- Fake `AC`. Stage a chasing sentry behind a wall at 400 and a searching crawler unseen at 600. `tickMachLoops(0.3)`: the slot kinds include both, with states `fight` and `search`.
-- `RNGS` unchanged. Under `G.sim` nothing is assigned.
+The previous build returns `'bad'`.
 
-**feat6f**
+**feat1d, the draw.** Stub `wc.stroke` and `wc.lineTo` (own properties) and run one `render2D` frame with a trip. The calls include the wire endpoints with a red `strokeStyle`. The HUD trace while holding a trip has `RELEASE TO SET`.
+
+**feat1e, DEMO sources.**
+1. `Math.random` stubbed to 0: `arcadeKitApply` gives `pouch.trip===1`. Stubbed to .99: 0.
+2. Two `arcadeDeploy({seed:4242})` give the same box ids holding `trip`, and RNGS is equal right before and right after the sprinkle.
+
+**feat1f, CAREER sprinkle.** `__deploy`: 4 boxes hold `trip`, the counts are 85/165, and the `__verify` parity reads identical.
+
+### Stat cards (feat2)
+
+**feat2a, the model.**
+- `gunCompare(WEAPONS.lmg,WEAPONS.rifle).verdict==='UPGRADE'`
+- `gunCompare(WEAPONS.pistol,WEAPONS.rifle)` is DOWNGRADE
+- `gunCompare(WEAPONS.rifle,WEAPONS.rifle)` is SIDEGRADE with all deltas 0
+- `gunStats(WEAPONS.shotgun).dmg===96`
+
+**feat2b, the pickup card.**
+1. `arcadeDeploy`; `p.wep=arcadeGun('chatter')`, `p.sec=arcadeGun('smg')`; `grantLoot({x:p.x,y:p.y,loot:[]},['gun_lance'])`. `G.gunCard.gk==='lance'`.
+2. An `hcv` fillText trace of `drawHUD` contains `UPGRADE` and `DMG`.
+3. At `__forceSize(3840,2160)` the card font px is at least 1.8× the 1080p size.
+
+**feat2c, the backpack card.** `__deploy`; `G.bag=['gun_dmr']`; `G.bagOpen=true`; `G.bagSel=0`. The `drawHUD` trace contains a verdict word and `HANDLING`.
+
+### Recap (feat3)
+
+**feat3a, the CAREER card.**
+1. `__deploy`. `damagePlayer(30,'sentry','SENTRY',…)` twice, then a raider-sourced hit.
+2. `G.tel.hitLog.at(-1).w` is set.
+3. `__endRaid('dead')`: `#oc_sub` has `WITH`, and `#oc_manifest` has `DAMAGE TAKEN` and `SENTRY`.
+
+The previous build has no `w` and no block.
+
+**feat3b, the DEMO recap.**
+1. Solo DEMO: hits, then death. The RUN OVER element text has `KILLED BY` and `SENTRY`.
+2. Two-player: after the respawn, `ARCADE.recap.killer==='SENTRY'` and `G.tel.hitLog.length===0`; the HUD trace during `holdT` has `KILLED BY`, and after the hold it does not.
+
+### Interiors (feat4)
+
+**feat4a, the keycard.**
+1. `arcadeDeploy`; `G.bag.push('keycard')`; stand at the `cs_freezer` door; `keys.KeyE=true`; `__sim(.05)`. The room is open and the keycard is spent.
+2. A plain `__deploy`: the keycard at the same door does nothing, and `key_cs_freezer` still opens it.
+
+**feat4b, the vaults.**
+1. `arcadeDeploy` twice at seed 4242: two `arc` locked rooms with identical rectangles, identical `netUpFp(G).h` both times, and RNGS restored around `arcadeVaults`.
+2. No ent sits inside a vault; each vault holds ≥2 caches; `shutRoomAt` is true inside.
+3. A plain `__deploy` gives 85/165 and no `arc` rooms.
+
+**feat4c, keycard sources.**
+1. At least one box per vault holds a keycard, and none of them is inside a locked rect.
+2. An elite crawler kill on the host leaves a new keycard container.
+3. Opening a vault raises `ARCADE.mine` by 500.
+
+### Controls (feat5)
+
+**feat5a.** Show `#moderetry`. It is in `netTitleRows()`, and `netTitleMove` reaches it.
+
+**feat5b.** `arcadeDeploy`; `togglePauseBox(true)`; one `#arcendbtn` click leaves `G.arcade` and `!ARCADE.over`, and the text reads `END RUN?`. A second click ends the run.
+
+**feat5c.** `arcadeRunEnd('menu')`, then `arcadeKeyAtt(synthetic keydown)` right away: `!G`. With `ARCADE.over.at-=2000`, the same key drops in.
+
+**feat5d.** Two-player DEMO respawn (`holdT=3`): `raidKey('Space')` leaves `p.roll===0` and `p.arcSh===1`. The pad A (stub pad, `pollPad()`) does the same.
+
+### Sound (feat6)
+
+**feat6a, buses.** Fake audio; `bus()`.
+- `sndBus('gun').outs[0]===SND.world`; WORLD reaches comp, comp reaches lim, lim reaches BUS.
+- `sndBus('ui').outs[0]===BUS`.
+- `REV.send` is in `SND.world.outs` and not in `BUS.outs`.
+- `blip('shot',100,0,'rifle')` creates nodes whose chain reaches `sndBus('gun')`.
+- With `NET.same='host'` and split on, `BUS.outs` reaches `NET.sndP` with pan −1.
+
+The previous build has no `sndBus`.
+
+**feat6b, ducking.** `sfx('boom',p.x+100,p.y)`: `SND.bus.amb.gain.value≤0.4`. `sndMixTick(2.5)`: ≥0.95. `SND.bus.ui.gain.value===1` throughout.
+
+**feat6c, occlusion.** `sndPlace(x,y)` for a point behind a building wall gives `occ:1` and `lp≤1500`; for a point in the open with a clear line, no lowpass.
+
+**feat6d, guns.**
+- `gunLayers(100,'open').crack>0`
+- `gunLayers(800,'open')` has crack 0, a tail and `tailKind==='roll'`
+- `gunLayers(800,'inside').tailKind==='slap'`
+
+**feat6e, machine loops.** Fake audio; a sentry chasing 500 away behind a wall; `tickMachLoops(0.3)`. `SND.loops` has the sentry in `'fight'`. With it in sight, no slot. With `G.sim`, nothing. RNGS is unchanged.
+
+**feat6f, impacts.**
 - `matOf({tree:1})==='wood'`, `matOf({win:1})==='glass'`, a building wall gives `'concrete'`.
-- A bullet into a building wall with `sfx` stubbed records 4th argument `'concrete'`.
+- Capture `sfx` while a staged player bullet hits a building wall: the 4th argument is `'concrete'`, and RNGS advanced by exactly the old amount (one decal `rnd`).
 
-**feat6g**
-- With `blip` and `ping` stubbed, `tickPlayerSteps`: the 4th `blip` argument is still in {stone, wood, metal, leaf, water}, a 6th argument is present, and the ping radius equals the old formula.
+**feat6g, footsteps.** Stub `blip` (capture) and `ping` (capture); run `tickPlayerSteps` while moving. The 4th argument is in the legacy set, the 6th is set, and the ping radius equals the formula at 4353-4356.
 
-**feat6h**
-- Fake `AC`. `padSetFocus(a); padSetFocus(b)`: `SND.uiLast==='move'`. A click on a title row gives `'ok'`.
+**feat6h, UI sounds.** Fake audio. `padSetFocus(a); padSetFocus(b)` gives `SND.uiLast==='move'`. Clicking a title row gives `'ok'`.
 
-**feat6i**
-- Stub `arcSting` to record. `__endRaid('extract')` in arcade, a streak of 2, `arcadeHiSay`, and a wave tick that makes a pack: the recorder holds extract, streak, hi and wave.
+**feat6i, barks.** Fake audio: `VOX_BARKS.RELOADING` exists. Stub `voxBark`; starting a reload calls `'RELOADING'`. Two barks within 1.2 s play only one.
+
+**feat6j, stings.** Stub `arcSting`, then trigger each: an extract, a double kill, the high score and a wave. The recorded kinds are `['extract','streak','hi','wave']`.
+
+**feat6k, music.**
+- Title on: `musicWanted()` is true.
+- With `G` set: false.
+- On the floor (hub, no title): false.
+- `ARCADE.on` with `ATT.on`: true.
+
+The previous build returns true on the floor.
 
 ---
+
+## PART 4. EXISTING CHECKS TO RE-BASELINE (they encode the old rules)
+
+- **The arcade checks:**
+  - v23.21 arcade2: `raidLen 0`, endless
+  - v23.22 arcade3: solo death respawns
+  - v23.23 arcade4: +2,500 and the re-drop
+  - v23.24 arcade5: row texts
+  - v23.40 arcade17: HAPPY HALLOWEEN
+  - v23.43 arcade20: Halloween
+  - v23.45 arcade22: in-raid initials
+  - v23.54 arcade30: row text "1 PLAYER ARCADE DEMO"
+  - v23.56: any banner text
+- **The title checks:** v14.26 / v15.76 (titlestart focus, ENTER returns `'start'`) and v23.58 (rows).
+- **The sector page checks** that expect two cards, and any check that sets `P.mapIx=1` through the pickers.
+- **Normal-raid checks** that assert raidLen 540, rings closing, or exact credits after extraction: pin `CFG.career=0`.
+- **Pause box button counts** (the FEEDBACK button) and the `#pausenote` floor-note checks.
+- **`verlabel` / `titlever` text checks.**
+
+---
+
+## OPEN for him (my recommended default in brackets)
+
+1. Burn deaths in 2-player DEMO keep the team score at ×1 [yes].
+2. In 2-player DEMO, either player's extraction doubles the team score and ends the run for both [yes].
+3. The CAREER board takes banked (extracted) runs only [yes].
+4. CAREER rings never close during the 10 minutes, the arcade rule [yes; the alternative is the normal schedule stretched to 600].
+5. The CAREER waves count toward contracts [yes]. Wave pillagers never enter his grudge ledger [never].
+6. The FEEDBACK button also shows in the DEMO pause box [yes]. Pad text entry [not built].
+7. The bark voice: the Windows SAPI voice and the word list [David, the list above].
+8. CAREER vaults, seal-only [after the DEMO vaults ship].
+9. The cheap tripwire sprinkle in CAREER loot [ship it].
+10. The Undercroft goes silent because music plays only on the title and the attract [as he said].
 
 ### Critical Files for Implementation
-- `C:\claudecode\dark raiders\dark_raiders.html`:
-  - title HTML 1278-1290; CSS 114-119 and 728-735; `netTitleInit`/`Rows`/`Enter` 40785-40832; padMenu 13066-13171; pollPad 13234-13610
-  - audio 3860-5290; throwables 13896-14431
-  - `startRaid` 11724-11808; `endRaid` 22997, settle at 23293 and the KIA card at 23772-23833
-  - `updateBullets` 22201-22569; drawHUD 28827-30641; `drawBag` 32742-32954
-  - `FIXED_MAPS`/`mapOffered` 6477-6660; `renderSector` 47001
-  - the arcade section 44414-46068
-- `C:\claudecode\dark raiders\tools\mkfixture.ps1`: `__startRaid` 242, `__verify` fingerprint 1221-1243, `tickAmbience` stub 1117, `__topClear` 60795, `__deploy` 60922, the arcade check style at 5747-5895
-- `C:\claudecode\dark raiders\tools\handoff\research\arcade-design-2026-10-11.md`: the shipped arcade model, sections 1, 3 and 6
+- C:\claudecode\dark raiders\dark_raiders.html (title 1278-1290; audio 3860-5290; throwables 13895-14431; damagePlayer 15195; grantLoot 16293; startRaid 11724-11808; endRaid 22997-23850; loop 35600-35700; net thr 41824-41854; arcade section 44414-46068; drawBag 32742; render2D hooks 26238/27751/27900)
+- C:\claudecode\dark raiders\tools\mkfixture.ps1 (__startRaid 242, __verify 1221-1260, the tickAmbience stub 1117, __topClear 60795, __deploy 60922, check style 5747-5895)
+- C:\claudecode\dark raiders\tools\collector.ps1 (the new /feedback route beside /telemetry, lines 21-35)
+- C:\claudecode\dark raiders\tools\handoff\research\arcade-design-2026-10-11.md (the arcade model this design amends)
+
 ---
 ## HIS ANSWERS OVERRIDE THE OPEN QUESTIONS ABOVE (2026-10-12, binding; memory pillagers-fifty-answers-2026-10-12)
 - O1/O5: in BOTH DEMO and CAREER a player gets ONE self-revive, then death ends the raid. Exception: 2-player DEMO only, a dead player respawns but loses ALL their score (his words "should lose all score"). 1-player DEMO: death ends the run.

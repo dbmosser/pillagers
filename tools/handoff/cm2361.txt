@@ -1,0 +1,7 @@
+v23.61: frame telemetry
+
+The flight recorder now notes how fast each raid drew on this PC, to steer the graphics work.
+
+Check 23.61. Fails on v23.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

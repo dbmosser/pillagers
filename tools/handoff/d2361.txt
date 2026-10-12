@@ -1,0 +1,5 @@
+## v23.61 - FRAME TELEMETRY
+
+Co-op hunt while he was away. His order of 2026-10-12, the graphics program: add all of it. Nobody had measured how fast a frame draws at 4K on his PC; this environment can time the script but not the drawing, so the graphics builds after this one would have been judged blind. Every raid frame now records the real gap between frames (half-millisecond steps), and one frame in fifteen also times each part of the drawing: the world, the light, the fog of war, the weather and the HUD. The run report keeps the median and the slow end (p50 and p95), the count of frames over 25 ms and the render scale, and the flight recorder export prints them on the run line. Bot raids keep none. Nothing on screen changes and nothing a raid plays by moves.
+
+MEASURED. Check 23.61 passes, and fails on v23.60.

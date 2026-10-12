@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.60';
+var VER='23.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23710,6 +23710,8 @@ var _cdone=contractExtract(G.bag,haul);
       return wearable(W.id)?'owned':'field'; })(),
     n:P.runs,ver:VER,seed:G.seed,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOf().slice(),
     drawErr:T.drawErr||null,
+    // v23.xx (gfx1): frame telemetry, a copy, so the frames after the raid ends do not move it
+    gfx:(T.gfx&&T.gfx.n)?{n:T.gfx.n,p50:T.gfx.p50,p95:T.gfx.p95,slow:T.gfx.slow,q:T.gfx.q,pass:T.gfx.pass||null}:null,
     // WHICH SECTOR THIS RUN WAS ON, added v2.96, and it is overdue by exactly one
     // build. The record has carried the version since v1.90 and the weather since
     // v1.17, but never the map, because until v2.95 the map was effectively a
@@ -26084,6 +26086,7 @@ function wallSprite(wl2,d3,LIFT){
 }
 function render2D(dt){
   var p=G.player,i,j;
+  gfxpBegin();   // v23.xx (gfx1): one frame in 15 times its passes
   // Zoom. Z is a scale on the world, so the amount of WORLD visible is W/Z by
   // H/Z, and every cull test, the camera centring and the two offscreen light
   // and fog layers all have to work in those world units instead of pixels or
@@ -27525,6 +27528,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // the world transform leaks into the light composite and COMPOUNDS on
   // every later frame until a resize. Same call canvas creation uses.
   wc.setTransform(DPR,0,0,DPR,0,0);
+  gfxpMark('world');   // v23.xx (gfx1): ground, bodies, props and the air pass
   // lighting overlay
   lx2.globalCompositeOperation='source-over';
   lx2.setTransform(1,0,0,1,0,0); lx2.clearRect(0,0,litC.width,litC.height); lx2.setTransform(SOFTR,0,0,SOFTR,0,0);   // v18.03: the sheet is SOFTR of the screen; everything below draws in screen units through this
@@ -27679,6 +27683,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   }
   wc.restore();
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  gfxpMark('light');   // v23.xx (gfx1): the darkness sheet and the warm glows
   // vision fog
   fx2.globalCompositeOperation='source-over';
   fx2.setTransform(1,0,0,1,0,0);
@@ -27844,6 +27849,7 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
   // Weather sits ON TOP of the fog, because rain falls between you and the world
   // rather than behind the darkness. Drawn in screen space at a fixed count, so
   // it costs the same regardless of zoom or map size.
+  gfxpMark('fog');   // v23.xx (gfx1): fog of war, door glows, pings, rings and world text
   var WX=wx();
   if(WX.rain>0){
     // HIS IN-RUN NOTE at 39s: "it says its raining but i don't see the rain
@@ -27974,8 +27980,10 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
       wc.globalCompositeOperation='source-over';
     }
   }
+  gfxpMark('wx');   // v23.xx (gfx1): rain, weather fog and the overlays
   drawHUD();
   drawBuzzFx();
+  gfxpMark('hud'); gfxpEnd();   // v23.xx (gfx1)
 }
 
 // ================================================================ HUD (2D overlay)
@@ -35524,6 +35532,59 @@ function perfNote(gapMs){
   if(slow*2>PERF.win.length){ PERF.said=1; try{ sayWhenFree('RUNNING SLOWLY','sys',{sub:'Settings: Render resolution, Effects'}); }catch(_ps){} return true; }   // v22.xx (R36): a system row in caps   // v22.89 (tr7fixa): a short detail, not a sentence
   return false;
 }
+// v23.xx (gfx1), HIS ORDER 2026-10-12 ("add ALL of this stuff", the graphics program): FRAME TELEMETRY. Nobody had measured a frame at
+// 4K on his PC, and this environment can time the script but not the drawing, so every graphics build after this one was going to be
+// judged blind. The loop now keeps the real frame gap of every live raid frame (a raid window drawing on its own frames: not the worker
+// clock, not a bot raid) in a half-millisecond histogram, and G.tel.gfx carries n (frames counted), p50 and p95 (the median and the
+// 95th percentile gap in ms), slow (frames over 25 ms, the perfNote line) and q (the render scale in use). One frame in 15 also times
+// the render passes (GFXP marks in render2D: world, light, fog, weather, HUD), averaged into G.tel.gfx.pass. The run record and the
+// flight recorder export carry it, so his own PC gives the real number. Clocks only: no seeded draw, nothing a raid plays by.
+var GFXP={on:0,k:0,last:0,cur:{}};
+var GFXT={g:null,h:null,n:0,slow:0,ps:null,pn:0};
+var GFXPASS=['world','light','fog','wx','hud'];
+function gfxNow(){ return (typeof performance!=='undefined')?performance.now():Date.now(); }
+function gfxTelFor(){
+  if(GFXT.g===G&&GFXT.h) return GFXT;
+  var i; GFXT.g=G; GFXT.h=[]; for(i=0;i<=200;i++) GFXT.h.push(0);
+  GFXT.n=0; GFXT.slow=0; GFXT.ps={}; GFXT.pn=0;
+  return GFXT;
+}
+function gfxPct(f){
+  var want=Math.max(1,Math.ceil(GFXT.n*f)), c=0, i;
+  for(i=0;i<=200;i++){ c+=GFXT.h[i]; if(c>=want) return (i>=200)?100:(i+0.5)/2; }
+  return 0;
+}
+function gfxTelRow(){
+  if(!G||G.sim||!G.tel) return null;
+  return G.tel.gfx||(G.tel.gfx={n:0,p50:0,p95:0,slow:0,q:1,pass:null});
+}
+function gfxTel(gapMs){
+  if(!G||G.sim||!G.tel||!(gapMs>0)||gapMs>1000) return false;
+  var T=gfxTelFor(), row=gfxTelRow();
+  T.h[Math.min(200,Math.floor(gapMs*2))]++; T.n++; if(gapMs>25) T.slow++;
+  row.n=T.n; row.slow=T.slow; row.p50=gfxPct(0.5); row.p95=gfxPct(0.95);
+  row.q=Math.round(gfxScaleNow()*100)/100;
+  return true;
+}
+function gfxpBegin(){
+  GFXP.k=(GFXP.k+1)%15;
+  GFXP.on=(GFXP.k===0&&G&&!G.sim)?1:0;
+  if(GFXP.on){ GFXP.cur={}; GFXP.last=gfxNow(); }
+}
+function gfxpMark(nm){
+  if(!GFXP.on) return;
+  var t=gfxNow(); GFXP.cur[nm]=(GFXP.cur[nm]||0)+(t-GFXP.last); GFXP.last=t;
+}
+function gfxpEnd(){
+  if(!GFXP.on) return false;
+  GFXP.on=0;
+  var T=gfxTelFor(), row=gfxTelRow(), i, k, ps={};
+  if(!row) return false;
+  T.pn++;
+  for(i=0;i<GFXPASS.length;i++){ k=GFXPASS[i]; T.ps[k]=(T.ps[k]||0)+(GFXP.cur[k]||0); ps[k]=Math.round(T.ps[k]/T.pn*100)/100; }
+  ps.n=T.pn; row.pass=ps;
+  return true;
+}
 var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
 function hidWant(){ return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&(NET.specG||(typeof netEntsHost==='function'&&netEntsHost()))); }   // v18.51, from the code comb (2026-10-07): and while the host spectates the raid it kept for the party, back on the floor with its window covered
 function hidTick(){
@@ -35565,6 +35626,7 @@ function loop(ts){
   var gap0=ts-lastTs; var dt=clamp(gap0/1000,0,.05); lastTs=ts;   // v17.87: gap0 is the raw frame gap, for perfNote
   if(state==='raid'&&G&&!G.over&&!G.sim&&!(CFG.fpsCap>0)) perfNote(gap0);   // v17.87: a slow PC is told where the levers are
   if(state==='raid'&&G&&!G.over&&!G.sim&&!HID.fromWorker&&!(typeof document!=='undefined'&&document.hidden)){ try{ drsTick(gap0); }catch(_dt){} }   // v18.01: auto resolution, on real frames of a visible window
+  if(state==='raid'&&G&&!G.over&&!G.sim&&!HID.fromWorker){ try{ gfxTel(gap0); }catch(_gt){} }   // v23.xx (gfx1): frame telemetry, the raw gap of real live raid frames
   tickMusic();
   // Ahead of every early return below, so zoom keeps easing in the hub, while
   // paused and on the death screen instead of freezing part way through a step.
@@ -36153,7 +36215,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.60: A fleeing pillager you shoot at now turns and fights back even when you miss. Check 23.60 fails on v23.59',
+  now:'v23.61: The flight recorder now notes how fast each raid drew on this PC, to steer the graphics work. Check 23.61 fails on v23.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39028,6 +39090,11 @@ function buildExport(){
     if(r.abandonFee) line+=' abandonFee:'+r.abandonFee;
     if(r.raidersExtracted) line+=' aiExtracted:'+r.raidersExtracted;
     if(r.drawErr) line+=' DRAWERR:'+r.drawErr;
+    // v23.xx (gfx1): the frame gap this raid ran at on his PC, and what the sampled passes cost (ms of script)
+    if(r.gfx&&r.gfx.n){
+      line+=' gfx:'+r.gfx.p50+'/'+r.gfx.p95+'ms n:'+r.gfx.n+' slow:'+r.gfx.slow+' scale:'+r.gfx.q;
+      if(r.gfx.pass&&r.gfx.pass.n) line+=' passes:world '+r.gfx.pass.world+' light '+r.gfx.pass.light+' fog '+r.gfx.pass.fog+' wx '+r.gfx.pass.wx+' hud '+r.gfx.pass.hud;
+    }
     // Older rows have no map because they predate v2.96, and they are NOT
     // backfilled to index 0 even though that is almost certainly where they were
     // played. A guess written into the record is indistinguishable from data, and
