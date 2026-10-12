@@ -1,0 +1,7 @@
+v23.84: impacts sound like what they hit
+
+Bullet impacts sound like what they hit: concrete, wood, glass, metal, armour or flesh.
+
+Check 23.84. Fails on v23.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

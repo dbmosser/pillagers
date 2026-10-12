@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.84 - IMPACTS SOUND LIKE WHAT THEY HIT
+
+Co-op hunt while he was away. His number 45, improve all sound as much as possible. Every round that hit a wall made the same faint tick, a tree the same as a car door or a window, and every round that hit a body made the same blip, a pillager the same as a Warden. Now what you hit is heard: concrete chips, wood thocks, glass shatters, metal and armour ring, flesh thuds. The other window in co-op hears the same material. The menu clank that says no is unchanged, and nothing about where rounds go or what the map rolls moves.
+
+MEASURED. Check 23.84 passes, and fails on v23.83.
 ## v23.83 - GRAPHICS SETTINGS ROWS
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it. Settings gets the four rows the graphics upgrade is built on, right after Effects: LIGHTING (HIGH, STANDARD, CLASSIC), POST FX (ON, OFF), EFFECT INTENSITY (FULL, HALF, OFF) and HUD SIZE (STANDARD, LARGE FOR TV). They start on HIGH, ON, FULL and STANDARD. Each row begins to change the picture as its own graphics build lands; CLASSIC lighting with POST FX off will always be the look the game has today. Nothing about play changes.
