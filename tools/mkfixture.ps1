@@ -6634,7 +6634,7 @@ window.__REGRESS=[
        if(typeof PAD==='object'&&PAD){ br=PAD.brand; ownB=true; PAD.brand='ps'; pr=arcadeCardRows(); PAD.brand=br; ownB=false;
          if(!pr[7]||pr[7][2].indexOf(' IN A TEAL RING')<0) bad.push('on a PlayStation pad the EXTRACT pad label reads '+(pr[7]&&pr[7][2])); }
        pg=document.createElement('div'); arcadeAttHow(pg); txt=pg.textContent||'';
-       if(pg.querySelectorAll('tr').length!==9) bad.push('the HOW TO PLAY page has '+pg.querySelectorAll('tr').length+' table rows, not 9 (a head and 8)');
+       var _trn=pg.querySelectorAll('tr').length; if(_trn!==9&&_trn!==10) bad.push('the HOW TO PLAY page has '+_trn+' table rows, not 9 or 10 (a head and 8, or 9 with LOOT)');   // v23.xx: hold E to loot adds a LOOT row
        if(txt.indexOf(nSw)<0||txt.indexOf('HEAL')<0) bad.push('the HOW TO PLAY page lacks SWITCH GUN or HEAL');
        if(!arcadeDeploy({mapIx:0,seed:4242})) return bad.length?bad.join('; '):'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); keys={}; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.ownAt=Date.now();
