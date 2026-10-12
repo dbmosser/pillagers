@@ -62,3 +62,6 @@ Settings has a Back up your progress button that saves it to a file.
 
 Known: some rooms have a sliver of floor behind furniture you cannot reach.
 That is cosmetic. Tell us about anything else.
+
+## Fonts (2026-10-12)
+The game embeds Barlow Condensed, Barlow and IBM Plex Mono (SIL Open Font License 1.1). The itch zip must carry tools/fonts/OFL-Barlow.txt, OFL-BarlowCondensed.txt and OFL-IBMPlexMono.txt beside the game.
