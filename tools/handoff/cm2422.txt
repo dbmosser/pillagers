@@ -1,0 +1,7 @@
+v24.22: no faint words in the station windows
+
+Words in the station windows are never faint: locked Fashion tiles dim only their picture, and every label is at least 13 pixels.
+
+Check 24.22. Fails on v24.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

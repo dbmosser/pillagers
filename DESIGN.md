@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.22 - NO FAINT WORDS IN THE STATION WINDOWS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50), and today: take pictures and make sure the menus actually look good. The picture check of the new window frame found five places where words were too faint or too small to read: THE GAMBLE in the colour of a frame line, the contract tier tag at 12.5 pixels, the Fashion rack heads at 12 pixels and see-through, the locked Fashion tiles fading their name and what unlocks them along with the picture, and the stash hint line faded to half. All of them now read at full strength and at least 13 pixels; a locked tile still dims its picture. No word changed.
+
+MEASURED. Check 24.22 passes, and fails on v24.21.
 ## v24.21 - ONE WINDOW FRAME, CLOSE IN ONE PLACE
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, make them look like a triple-A game. UI redesign build ui6, the window frame. Every window and the pause box now sit on one plate: dark graphite with a faint grain, a thin edge, the top left corner cut off and a short amber tick on the top edge, instead of the old double frame. The window name is a header over a thin line. CLOSE was in four different places (top middle of the stash, bottom left of the Mainframe, Settings and Fashion, bottom right of the shop); it now sits at the right end of a footer bar at the foot of every station window and the stash, at one height, and at the foot of the card in the smaller windows. Nothing moved in the page order, so the controller walks every window the same way and B still closes it.

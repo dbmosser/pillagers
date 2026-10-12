@@ -266,10 +266,13 @@
   text-align:center;cursor:pointer;transition:border-color .1s,background .1s}
 .costile:hover{border-color:var(--amber);background:rgba(0,0,0,.5)}
 .costile.on{border-color:var(--amber);background:rgba(214,158,46,.14)}
-.costile.lock{opacity:.42;cursor:not-allowed}
+/* v24.22, UI REDESIGN ui6b (his #50): a locked tile dims its picture, never its words, so its name and what unlocks it can be read */
+.costile.lock{cursor:not-allowed}
+.costile.lock > *{opacity:.42}
+.costile.lock .cosname, .costile.lock .cosreq{opacity:1;color:var(--tx-2)}
 .costile.lock:hover{border-color:var(--steel-hi);background:rgba(0,0,0,.32)}
 .cosname{margin-top:6px;font-size:13px;letter-spacing:1px}
-.cosreq{margin-top:2px;font-size:13px;opacity:.65;letter-spacing:1px;text-transform:uppercase}
+.cosreq{margin-top:2px;font-size:13px;color:var(--tx-2);letter-spacing:.08em;text-transform:uppercase}
 /* v21.29, from the whole-game bug hunt of 2026-10-08 (W-A1): THE OWNED LINE SITS LEVEL ACROSS A RACK. A rack tile was a plain box, so a
    name that broke over two lines (The Skeleton, The Tomb Explorer, The Street Poet on the 4K FASHION picture) pushed its OWNED or WORN
    line a whole line lower than the tiles beside it, and the OUTFIT rack read as a ragged row. A tile is a column now and its status
@@ -1153,7 +1156,7 @@
   <div class="msub" id="wallet_gamble" style="color:var(--amber);font-weight:700"></div>
   <div class="msub" id="gamble_line">Gamble with Wirt. No refunds, no complaints.</div>
   <div id="wirtsec_gamble" style="border:1px solid var(--steel-hi);padding:10px 12px;margin:6px 0 0">
-    <div style="font-size:13px;letter-spacing:.14em;color:var(--steel-hi);font-weight:700;margin-bottom:6px">THE GAMBLE</div>
+    <div style="font-size:13px;letter-spacing:.14em;color:var(--tx-2);font-weight:700;margin-bottom:6px">THE GAMBLE</div>
     <div class="plist" id="gamblelist" style="border:1px solid var(--steel);max-height:220px"></div>
     <div style="display:flex;gap:8px;margin-top:10px">
       <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 2500c</button>
@@ -1903,7 +1906,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.21';
+var VER='24.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38110,7 +38113,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.21: Every window sits on one cut corner plate with an amber tick, and CLOSE is in a footer at the bottom right of every station window and the stash. Check 24.21 fails on v24.20',
+  now:'v24.22: Words in the station windows are never faint: locked Fashion tiles dim only their picture, and every label is at least 13 pixels. Check 24.22 fails on v24.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39998,7 +40001,7 @@ try{ renderFreeKit(); }catch(_fk){}
   });
   var detail=document.getElementById('stashdetail');
   function detailIdle(){
-    if(detail) detail.innerHTML='<span style="opacity:.55">'+((typeof netHubSeat==='function'&&netHubSeat()>=0)?('Right-click an item (Y on a controller) and pick Drop on the floor to hand it to '+(netSeatName(netHubSeat())||'your teammate')+'; they walk to it and press E. '):'')+'Hover an item and press J to tag it JUNK. '+
+    if(detail) detail.innerHTML='<span style="color:var(--tx-2)">'+((typeof netHubSeat==='function'&&netHubSeat()>=0)?('Right-click an item (Y on a controller) and pick Drop on the floor to hand it to '+(netSeatName(netHubSeat())||'your teammate')+'; they walk to it and press E. '):'')+'Hover an item and press J to tag it JUNK. '+
       'PARTS are eaten by recipes and racks; SALVAGE is safe to sell. '+
       'The sell button clears junk and loose salvage.</span>';
   }
@@ -40355,7 +40358,7 @@ P.contracts.forEach(function(c,ci){
     var TT=CTIER[c.tier]||CTIER.std;
     var tb=document.createElement('span');
     tb.textContent=TT.name;
-    tb.style.cssText='color:'+TT.c+';font-weight:700;font-size:12.5px;letter-spacing:.06em;margin-right:8px';
+    tb.style.cssText='color:'+TT.c+';font-weight:700;font-size:13px;letter-spacing:.06em;margin-right:8px';   // v24.22 (ui6b): the menu floor is 13px
     cd.insertBefore(tb,cd.firstChild);
     var gl=gearLabel(c.gear);
     if(gl){
@@ -50774,7 +50777,7 @@ function renderCosmetics(target,kindOnly,hid,pid){
   var GROUPS=[['outfit','OUTFIT'],['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
-    H+='<div style="margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px">'+g[1]+'</div>';
+    H+='<div style="margin:10px 0 4px 0;letter-spacing:.12em;font-size:13px;color:var(--tx-2)">'+g[1]+'</div>';   // v24.22 (ui6b): readable rack heads
     H+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
     COSMETICS.filter(function(c){ return c.kind===g[0]; }).forEach(function(c){
       var own=cosOwned(c), on=(cosWorn(g[0])===c.id);
