@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.93 - DEMO DEATH: RUN OVER, OR SCORE LOST
+
+Co-op hunt while he was away. His answers 1 and 4 of 2026-10-12: one self-revive, then death ends the raid, and only the 2 player demo respawns, losing all of that player score. Going down and the one self-revive are unchanged. After that, a death in the 1 PLAYER DEMO now ends the run: RUN OVER with the score he had, then initials if it makes the board. In the 2 PLAYER DEMO the dead player still drops back in, but his own score and kills go to zero (SCORE LOST) and the other window is told at once; the teammate keeps his score.
+
+MEASURED. Check 23.93 passes, and fails on v23.92.
 ## v23.92 - THE DEMO RAID HAS A 10 MINUTE CLOCK
 
 Co-op hunt while he was away. His mode design of 2026-10-12 (DEMO: 10 minute raids) and his answer 7 (when the DEMO clock reaches 0 the site burns like a normal raid). A DEMO raid was endless. It now carries a 10 minute clock, shown under the score, with the normal raid warnings, and at 0 the site burns exactly as a normal raid does. A death in the burn ends the run (RUN OVER, with the score as it stood) rather than dropping the player back into the fire. The rings still never close, and a fresh raid built for a late player 2 keeps the time the run had left.

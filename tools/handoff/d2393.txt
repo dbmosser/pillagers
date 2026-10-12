@@ -1,0 +1,5 @@
+## v23.93 - DEMO DEATH: RUN OVER, OR SCORE LOST
+
+Co-op hunt while he was away. His answers 1 and 4 of 2026-10-12: one self-revive, then death ends the raid, and only the 2 player demo respawns, losing all of that player score. Going down and the one self-revive are unchanged. After that, a death in the 1 PLAYER DEMO now ends the run: RUN OVER with the score he had, then initials if it makes the board. In the 2 PLAYER DEMO the dead player still drops back in, but his own score and kills go to zero (SCORE LOST) and the other window is told at once; the teammate keeps his score.
+
+MEASURED. Check 23.93 passes, and fails on v23.92.

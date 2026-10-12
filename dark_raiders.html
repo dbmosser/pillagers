@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.92';
+var VER='23.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23682,7 +23682,7 @@ function endRaid(how){
   // reached from inside the frame (the burn, the death beat), whose remaining lines still read G.
   if(G&&G.arcade&&!G.sim&&G.arcEnd) return;
   if(G&&G.arcade&&!G.sim&&how==='dead'&&raidClockOn()&&(G.nuking||G.timeLeft<=0)){ G.arcEnd='burn'; return; }
-  if(G&&G.arcade&&!G.sim){ if(how==='dead') return arcadeRespawn('dead'); if(how==='extract') return arcadeExtracted(); if(how==='abandon') return arcadeRaidStop('quit'); }
+  if(G&&G.arcade&&!G.sim){ if(how==='dead') return arcadeDied(); if(how==='extract') return arcadeExtracted(); if(how==='abandon') return arcadeRaidStop('quit'); }
   G.over=how;
   if(NET.on&&!G.sim){ try{ netScoreSend(how); }catch(_nss){} }   // v17.39: his pick 5, the score word goes before the out word
   if(NET.on&&!G.sim){ try{ if(!netSpecStart(how)) netUpEnd(how); }catch(_ue){} }   // v15.79: the party is told this raid ended; v16.14: unless the host spectates for the party still up top
@@ -36992,7 +36992,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.92: A DEMO raid lasts 10 minutes; at 0 the site burns and the run ends. Check 23.92 fails on v23.91',
+  now:'v23.93: A death in the 1 player demo ends the run; in the 2 player demo you respawn with your score lost. Check 23.93 fails on v23.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -45549,6 +45549,20 @@ function arcadeRaidStop(why){
 // fresh random kit (arcadeKitApply), full health, and he is put down within 60 to 140 of a teammate who is up, or else on the map
 // spawn farthest from every live hostile (Math.random for the tie-break and the offsets, never the seeded stream). Then a 3 second
 // drop-in hold (ARCADE.holdT): the loop steps him through netPausedStep, so he stands still while the world runs on.
+// v23.6x (feat0f), HIS ANSWERS 1 and 4 (2026-10-12): "player should only be able to respawn in 2 player demo, should lose all score",
+// and one self-revive, then death ends the raid. Going down and the one self-revive are the raid rules, unchanged. A death after it:
+// in the 1 PLAYER DEMO ends the run (RUN OVER with the score he had, then initials when it makes the board); in the 2 PLAYER DEMO he
+// drops back in as before but his own score and kill count go to 0 (SCORE LOST), and the other window hears the new score at once.
+// A death in the burn already ends the run (feat0e).
+function arcadeDied(){
+  if(ARCADE.solo){ G.arcEnd='dead'; return true; }   // made at the top of the next frame (feat0e), as a burn death is
+  var lost=Math.max(0,ARCADE.mine|0), r;
+  ARCADE.mine=0; ARCADE.kills=0; ARCADE.streak=null;
+  r=arcadeRespawn('dead');
+  try{ say('SCORE LOST','warn',lost>0?{sub:'-'+arcadeCr(lost)}:undefined); }catch(_sl){}
+  try{ ARCADE.scAt=0; arcadeScSend(); }catch(_ss){}
+  return r;
+}
 function arcadeRespawn(why){
   if(!G||!G.arcade||!G.player) return false;
   var p=G.player, m=G.map, i, j, s, e, d, best=null, bs=-1, sc, a, r, x, y, ok=false, mates=[], u;

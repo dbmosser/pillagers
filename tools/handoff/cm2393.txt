@@ -1,0 +1,7 @@
+v23.93: demo death: run over, or score lost
+
+A death in the 1 player demo ends the run; in the 2 player demo you respawn with your score lost.
+
+Check 23.93. Fails on v23.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
