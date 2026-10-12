@@ -1,0 +1,7 @@
+v23.86: the what is new card names the new modes work
+
+The what is new card names the new modes work.
+
+Check 23.86. Fails on v23.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

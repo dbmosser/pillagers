@@ -1,0 +1,5 @@
+## v23.86 - THE WHAT IS NEW CARD NAMES THE NEW MODES WORK
+
+Co-op hunt while he was away. The card was stamped v23.70 and the stamp may not trail the build by more than 0.15. Its new second line names the builds of 2026-10-12: ten minute raids where extracting doubles the score, the tripwire mine on the belt, the first sound mix builds, and the first builds of the AAA menu and HUD redesign.
+
+MEASURED. Check 23.86 passes, and fails on v23.85.

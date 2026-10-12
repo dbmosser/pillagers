@@ -1,0 +1,64 @@
+{
+    "title":  "THE HUD SPEAKS IN THE MENU TYPEFACE",
+    "why":  "His orders of 2026-10-12: #35 redo the HUD entirely as part of the graphical improvement, and #50 make it look like a triple-A game. Third step of the UI redesign (ui4). Every line of raid text (callouts, prompts, labels, the clock, the ammo, the belt numbers) now uses the same condensed industrial face as the menus, instead of the rounded Rubik. It is narrower, so the same plates hold more words, and it reads like the shooter HUDs he named. Two new text sizes are ready for the HUD rebuild: a big ammo figure and a plain sentence line. The last few places that still named Rubik or Impact (the map zone labels, the empty belt cell, the arcade pages, the shirt number) move too. The face itself is embedded later (ui1, after his OK); until then the built-in Windows condensed face stands in.",
+    "now":  "HUD and raid text now use the same condensed caps face as the menus.",
+    "edits":  [
+                  {
+                      "anchor":  ".avnum{ position:absolute; left:0; right:0; top:11px; text-align:center; font:900 20px/1 Impact,\u0027Arial Black\u0027,sans-serif; color:#f4f2ec; letter-spacing:1px; pointer-events:none; }   /* v10.46 */",
+                      "replacement":  ".avnum{ position:absolute; left:0; right:0; top:11px; text-align:center; font:800 20px/1 var(--f-cond); color:#f4f2ec; letter-spacing:1px; pointer-events:none; }   /* v10.46 */"
+                  },
+                  {
+                      "anchor":  "var TYPE={\n  micro:\u0027600 10px \"Rubik\",system-ui,sans-serif\u0027,  // 13.0 rendered: pips, counters, tags\n  label:\u0027600 12px \"Rubik\",system-ui,sans-serif\u0027,  // 15.6 rendered: world labels, prompts\n  head: \u0027700 15px \"Rubik\",system-ui,sans-serif\u0027,  // 19.5 rendered: callouts\n  title:\u0027800 20px \"Rubik\",system-ui,sans-serif\u0027,  // 26.0 rendered: screen titles\n  huge: \u0027800 30px \"Rubik\",system-ui,sans-serif\u0027   // 39.0 rendered: the one big number",
+                      "replacement":  "// v16.xx, UI REDESIGN ui4 (his #35 and #50, 2026-10-12): the HUD speaks in the same voice as the menus. Every role is Barlow Condensed,\n// a DIN-like industrial condensed face (the genre look: about 20% more characters per plate than Rubik), with the menu fallbacks\n// until ui1 embeds it (Bahnschrift SemiCondensed is built into Windows). Two roles join the five: num, the big tabular ammo figure,\n// and body, sentence-case sub-lines in plain Barlow. Plates measured with measureText shrink with the narrower face by themselves.\nvar HUDF=\u0027\"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",\"Roboto Condensed\",sans-serif\u0027;\nvar HUDFB=\u0027\"Barlow\",\"Bahnschrift\",\"Segoe UI\",system-ui,sans-serif\u0027;\nvar TYPE={\n  micro:\u0027600 10px \u0027+HUDF,  // 13.0 rendered: pips, counters, tags\n  label:\u0027600 12px \u0027+HUDF,  // 15.6 rendered: world labels, prompts\n  head: \u0027700 15px \u0027+HUDF,  // 19.5 rendered: callouts\n  title:\u0027800 20px \u0027+HUDF,  // 26.0 rendered: screen titles\n  huge: \u0027800 30px \u0027+HUDF,  // 39.0 rendered: the one big number\n  num:  \u0027700 34px \u0027+HUDF,  // 44.2 rendered: the ammo figure (v16.xx, ui4)\n  body: \u0027500 12px \u0027+HUDFB  // 15.6 rendered: sentence-case sub-lines (v16.xx, ui4)"
+                  },
+                  {
+                      "anchor":  "    c.font=\u0027700 \u0027+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+\u0027px \"Rubik\",system-ui,sans-serif\u0027;   // v10.95, his note: one family",
+                      "replacement":  "    c.font=\u0027700 \u0027+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+\u0027px \u0027+HUDF;   // v10.95, his note: one family"
+                  },
+                  {
+                      "anchor":  "    wc.font=\u0027700 9px \"Rubik\",system-ui,sans-serif\u0027; wc.textAlign=\u0027center\u0027;",
+                      "replacement":  "    wc.font=\u0027700 9px \u0027+HUDF; wc.textAlign=\u0027center\u0027;"
+                  },
+                  {
+                      "anchor":  "    \u0027#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,84px) \"Rubik\",system-ui,sans-serif;\u0027+",
+                      "replacement":  "    \u0027#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,84px) var(--f-cond);\u0027+"
+                  },
+                  {
+                      "anchor":  "    \u0027#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,120px) \"Rubik\",system-ui,sans-serif;\u0027+",
+                      "replacement":  "    \u0027#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,120px) var(--f-cond);\u0027+"
+                  },
+                  {
+                      "anchor":  "      \u0027color:#ff5a4a;font:800 15px \"Rubik\",system-ui,sans-serif;letter-spacing:.1em;pointer-events:none\u0027;",
+                      "replacement":  "      \u0027color:#ff5a4a;font:800 15px var(--f-cond);letter-spacing:.1em;pointer-events:none\u0027;"
+                  },
+                  {
+                      "anchor":  "      \u0027font:800 clamp(12px,1.15vw,30px) \"Rubik\",system-ui,sans-serif;letter-spacing:.08em;color:#f2e6c8;text-shadow:0 2px 0 #000;text-align:center}\u0027+",
+                      "replacement":  "      \u0027font:800 clamp(12px,1.15vw,30px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 2px 0 #000;text-align:center}\u0027+"
+                  },
+                  {
+                      "anchor":  "      \u0027font:800 clamp(15px,1.6vw,38px) \"Rubik\",system-ui,sans-serif;letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}\u0027;",
+                      "replacement":  "      \u0027font:800 clamp(15px,1.6vw,38px) var(--f-cond);letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}\u0027;"
+                  },
+                  {
+                      "anchor":  "    \u0027font:800 clamp(16px,1.9vw,46px) \"Rubik\",system-ui,sans-serif;letter-spacing:.08em;color:#f2e6c8;text-shadow:0 3px 0 #000,0 0 18px rgba(0,0,0,.9)}\u0027+",
+                      "replacement":  "    \u0027font:800 clamp(16px,1.9vw,46px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 3px 0 #000,0 0 18px rgba(0,0,0,.9)}\u0027+"
+                  },
+                  {
+                      "anchor":  "      c.font=\u0027bold \u0027+fs+\u0027px Rubik, system-ui, sans-serif\u0027;\n      while(fs\u003e8\u0026\u0026c.measureText(nm).width\u003ezw){ fs--; c.font=\u0027bold \u0027+fs+\u0027px Rubik, system-ui, sans-serif\u0027; }",
+                      "replacement":  "      c.font=\u0027bold \u0027+fs+\u0027px \u0027+HUDF;\n      while(fs\u003e8\u0026\u0026c.measureText(nm).width\u003ezw){ fs--; c.font=\u0027bold \u0027+fs+\u0027px \u0027+HUDF; }"
+                  },
+                  {
+                      "anchor":  "      \u0027color:var(--bone);font-size:11px;font-family:Rubik,system-ui,sans-serif;white-space:nowrap\u0027;",
+                      "replacement":  "      \u0027color:var(--bone);font-size:11px;font-family:var(--f-body);white-space:nowrap\u0027;"
+                  },
+                  {
+                      "anchor":  "    else { pcx.fillStyle=\u0027#8a96a1\u0027; pcx.font=\u0027600 14px \"Rubik\",system-ui,sans-serif\u0027; pcx.textAlign=\u0027center\u0027; pcx.fillText(\u0027--\u0027,17,22); }   // v10.95, his note: one family",
+                      "replacement":  "    else { pcx.fillStyle=\u0027#8a96a1\u0027; pcx.font=\u0027600 14px \u0027+HUDF; pcx.textAlign=\u0027center\u0027; pcx.fillText(\u0027--\u0027,17,22); }   // v10.95, his note: one family"
+                  },
+                  {
+                      "anchor":  "           \u0027\u003cspan style=\"position:absolute;left:0;right:0;top:8px;text-align:center;font:900 15px/1 Impact,sans-serif;color:#f4f2ec\"\u003e23\u003c/span\u003e\u003c/span\u003e\u0027;",
+                      "replacement":  "           \u0027\u003cspan style=\"position:absolute;left:0;right:0;top:8px;text-align:center;font:800 15px/1 var(--f-cond);color:#f4f2ec\"\u003e23\u003c/span\u003e\u003c/span\u003e\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #35 and #50 (UI redesign ui4): every HUD text call of a drawn raid HUD is set in Barlow (the condensed roles plus num and body), none in Rubik, Titan One or Impact\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)||typeof drawHUD!==\u0027function\u0027||typeof ctx===\u0027undefined\u0027) return \u0027SKIP: no raid HUD here\u0027;\n     var bad=[], fonts=[], OWN=Object.prototype.hasOwnProperty, own={}, real={}, g, sp=null, odd=[];\n     function wrap(n){ own[n]=OWN.call(ctx,n); real[n]=ctx[n]; ctx[n]=function(){ fonts.push(String(ctx.font)); return real[n].apply(this,arguments); }; }\n     function unwrap(){ [\u0027fillText\u0027,\u0027strokeText\u0027].forEach(function(n){ if(!(n in real)) return; if(own[n]) ctx[n]=real[n]; else delete ctx[n]; }); }\n     try{\n       if(typeof TYPE!==\u0027object\u0027||!TYPE.num||!TYPE.body) bad.push(\u0027TYPE has no num or body role\u0027);\n       [\u0027micro\u0027,\u0027label\u0027,\u0027head\u0027,\u0027title\u0027,\u0027huge\u0027,\u0027num\u0027,\u0027body\u0027].forEach(function(k){ if(TYPE\u0026\u0026TYPE[k]\u0026\u0026!(/Barlow/).test(TYPE[k])) bad.push(\u0027TYPE.\u0027+k+\u0027 is \u0027+TYPE[k]); });\n       __topClear(); __runPrep(); __deploy({kit:[\u0027gun_carbine\u0027,\u0027bandage\u0027],seed:4242,mapIx:0});\n       g=__state(); if(!g||g.over) return \u0027SKIP: no live raid\u0027;\n       wrap(\u0027fillText\u0027); wrap(\u0027strokeText\u0027);\n       try{ drawHUD(); } finally { unwrap(); }\n       if(fonts.length\u003c10) bad.push(\u0027the drawn HUD made only \u0027+fonts.length+\u0027 text calls\u0027);\n       fonts.forEach(function(f){ if((!(/Barlow/).test(f)||(/Rubik|Titan|Impact/).test(f))\u0026\u0026odd.indexOf(f)\u003c0) odd.push(f); });\n       if(odd.length) bad.push(\u0027HUD text not in Barlow: \u0027+odd.slice(0,4).join(\u0027 | \u0027));\n       sp=document.createElement(\u0027span\u0027); sp.className=\u0027avnum\u0027; sp.textContent=\u002723\u0027; (document.getElementById(\u0027root\u0027)||document.body).appendChild(sp);\n       if(!(/Barlow/).test(getComputedStyle(sp).fontFamily)) bad.push(\u0027the shirt number is set in \u0027+getComputedStyle(sp).fontFamily);\n       var src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027), nd=\u0027px \"Ru\u0027+\u0027bik\",system-ui\u0027, ni=\u0027Imp\u0027+\u0027act,sans-serif\u0027;\n       if(src.indexOf(nd)\u003e=0) bad.push(\u0027a canvas or page string still names Rubik\u0027);\n       if(src.indexOf(ni)\u003e=0) bad.push(\u0027a page string still names Impact\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ unwrap(); }catch(_u){} try{ if(sp\u0026\u0026sp.parentNode) sp.parentNode.removeChild(sp); }catch(_s){} try{ var g2=__state(); if(g2\u0026\u0026!g2.over) __endRaid(\u0027abandon\u0027); }catch(_e){} try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
