@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.82 - GRAPHITE MENUS: THE NEW COLOURS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus and text still look bad, make it look like a triple-A game; and #20: gritty and grounded, like ARC Raiders. First step of the UI redesign (ui2). Every window was painted in a 16-bit role-playing palette: royal navy with light periwinkle double frames. The whole game now takes one palette: near-black graphite surfaces, thin grey frames, one signal-amber accent, a cream card colour, and clear rarity colours (grey, green, blue, purple, orange). The old colour names are pointed at the new ones, so every window changes at once, and 70 lines of the stylesheet that named the navy and periwinkle directly were moved to the matching graphite. The HUD reads its colours (text, danger red, extraction, teammates) from the same table, so the raid screen and the menus can never drift apart. Nothing about play changes.
+
+MEASURED. Check 23.82 passes, and fails on v23.81.
 ## v23.81 - THE WHAT IS NEW CARD LISTS THE TRIPWIRE MINE ONCE
 
 Co-op hunt while he was away. Two card refreshes ran one after the other and the Tripwire Mine line went onto the what is new card twice, so the card showed it at the top and again two lines down. The second copy is gone; the card leads with it once.

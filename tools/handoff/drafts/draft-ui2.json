@@ -1,0 +1,216 @@
+{
+    "title":  "GRAPHITE MENUS: THE NEW COLOURS",
+    "why":  "His order of 2026-10-12 (#50): the menus and text still look bad, make it look like a triple-A game; and #20: gritty and grounded, like ARC Raiders. First step of the UI redesign (ui2). Every window was painted in a 16-bit role-playing palette: royal navy with light periwinkle double frames. The whole game now takes one palette: near-black graphite surfaces, thin grey frames, one signal-amber accent, a cream card colour, and clear rarity colours (grey, green, blue, purple, orange). The old colour names are pointed at the new ones, so every window changes at once, and 70 lines of the stylesheet that named the navy and periwinkle directly were moved to the matching graphite. The HUD reads its colours (text, danger red, extraction, teammates) from the same table, so the raid screen and the menus can never drift apart. Nothing about play changes.",
+    "now":  "Every menu now uses the new graphite palette with one amber accent instead of the old navy and periwinkle.",
+    "edits":  [
+                  {
+                      "anchor":  "  :root {\n    --void:#0a0d1c; --steel:#2f4394; --steel-hi:#7f92d8; --ash:#9aa4b0;\n    --bone:#FFF6DC; --amber:#ffc04a; --rust:#d8543a; --coolant:#4de3d0;\n    --hazard:#ff5a4a; --gain:#7fc4a0; --win-top:#1c2a63; --win-bot:#101a42;\n  }",
+                      "replacement":  "  :root {\n    /* v16.xx, UI REDESIGN ui2 (his #50 2026-10-12: \"MAKE IT LOOK LIKE A TRIPLE-A GAME\"; #20: gritty and grounded, like ARC Raiders).\n       The Chrono Trigger navy and periwinkle are gone: near-black graphite surfaces, hairline frames, one hot accent (signal amber),\n       a cream paper card for decisions, and the rarity colours. The old names are re-pointed here so every existing rule recolours\n       at once; new code uses the new names. UIC in the script is the same table for the canvas, so the HUD and the menus match. */\n    --ui-void:#0b0c0d; --ui-bg:#111315; --ui-panel:#16191b; --ui-raised:#1e2225; --ui-hover:#272c30;\n    --ui-line:#2e3337; --ui-line-hi:#4a5257; --ui-scrim:rgba(6,7,8,.82);\n    --ui-paper:#ebe5d6; --ui-paper-2:#ddd5c3; --ui-paper-ink:#17150f; --ui-paper-ink-2:#5a554a;\n    --tx-1:#efe9dc; --tx-2:#aaa498; --tx-3:#7a766e; --tx-off:#55524c;\n    --acc:#f5b73b; --acc-ink:#1a1205; --acc-dim:rgba(245,183,59,.16);\n    --danger:#e5482f; --danger-bg:rgba(60,12,8,.86); --warn:#f5b73b; --ok:#76b97c;\n    --extract:#47d8c6; --ally:#9cc7ff; --armour:#7fa6c9;\n    --r-common:#9da3a8; --r-uncommon:#5fbf6a; --r-rare:#3f9de9; --r-elite:#a866e0; --r-gold:#f08f2e;\n    --void:var(--ui-void); --steel:var(--ui-line); --steel-hi:var(--ui-line-hi); --ash:var(--tx-2);\n    --bone:var(--tx-1); --amber:var(--acc); --rust:var(--danger); --coolant:var(--extract);\n    --hazard:var(--danger); --gain:var(--ok); --win-top:var(--ui-panel); --win-bot:var(--ui-bg);\n  }"
+                  },
+                  {
+                      "anchor":  "    --void:#0a0d1c; --steel:#2f4394; --steel-hi:#7f92d8; --ash:#9aa4b0;\n--bone:#FFF6DC; --amber:#ffc04a; --rust:#d8543a; --coolant:#4de3d0; --hazard:#ff5a4a; --gain:#7fc4a0;\n    --win-top:#1c2a63; --win-bot:#101a42;",
+                      "replacement":  "    /* v16.xx, ui2: re-pointed to the graphite tokens declared at :root. */\n    --void:var(--ui-void); --steel:var(--ui-line); --steel-hi:var(--ui-line-hi); --ash:var(--tx-2);\n    --bone:var(--tx-1); --amber:var(--acc); --rust:var(--danger); --coolant:var(--extract); --hazard:var(--danger); --gain:var(--ok);\n    --win-top:var(--ui-panel); --win-bot:var(--ui-bg);"
+                  },
+                  {
+                      "anchor":  "      radial-gradient(1100px 500px at 20% -10%, rgba(255,192,74,.09), transparent 60%),\n      radial-gradient(900px 600px at 90% 110%, rgba(77,227,208,.05), transparent 60%),\n      linear-gradient(165deg,#131c46 0%,#0d1435 55%,#090f28 100%);",
+                      "replacement":  "      radial-gradient(1100px 500px at 20% -10%, rgba(245,183,59,.09), transparent 60%),\n      radial-gradient(900px 600px at 90% 110%, rgba(71,216,198,.05), transparent 60%),\n      linear-gradient(165deg,#16191b 0%,#111315 55%,#0b0c0d 100%);"
+                  },
+                  {
+                      "anchor":  "   #title.on { background:radial-gradient(ellipse 70% 62% at 50% 42%, rgba(9,15,40,.60) 0%, rgba(9,15,40,.84) 70%, rgba(5,8,22,.96) 100%); }",
+                      "replacement":  "   #title.on { background:radial-gradient(ellipse 70% 62% at 50% 42%, rgba(17,19,21,.60) 0%, rgba(17,19,21,.84) 70%, rgba(17,19,21,.96) 100%); }"
+                  },
+                  {
+                      "anchor":  "     background:linear-gradient(180deg,#ffe9a8 0%,#ffc04a 55%,#e08a1a 100%); -webkit-background-clip:text; background-clip:text; color:transparent;\n     filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(255,192,74,.28)); }\n   #title .tcard{ border:1px solid rgba(127,146,216,.35); border-radius:10px; padding:14px 16px;\n     background:linear-gradient(180deg,rgba(30,38,72,.92),rgba(9,13,28,.92)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }   /* v18.73, seen on the 4K title screenshot (2026-10-07): the Undercroft behind the title showed through the three step cards, a head inside 2 PILLAGE; solid like the mode rows (v18.67) */",
+                      "replacement":  "     background:linear-gradient(180deg,#ffe9a8 0%,#f5b73b 55%,#e08a1a 100%); -webkit-background-clip:text; background-clip:text; color:transparent;\n     filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(245,183,59,.28)); }\n   #title .tcard{ border:1px solid rgba(170,164,152,.35); border-radius:10px; padding:14px 16px;\n     background:linear-gradient(180deg,rgba(30,34,37,.92),rgba(17,19,21,.92)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }   /* v18.73, seen on the 4K title screenshot (2026-10-07): the Undercroft behind the title showed through the three step cards, a head inside 2 PILLAGE; solid like the mode rows (v18.67) */"
+                  },
+                  {
+                      "anchor":  "    border:1px solid rgba(127,146,216,.22); border-radius:3px; }",
+                      "replacement":  "    border:1px solid rgba(170,164,152,.22); border-radius:3px; }"
+                  },
+                  {
+                      "anchor":  "  .pmore:hover { background:rgba(255,192,74,.08); }",
+                      "replacement":  "  .pmore:hover { background:rgba(245,183,59,.08); }"
+                  },
+                  {
+                      "anchor":  "    border-bottom:1px solid rgba(42,50,61,.35); }\n  .row:hover { background:rgba(255,192,74,.06); }",
+                      "replacement":  "    border-bottom:1px solid rgba(46,51,55,.35); }\n  .row:hover { background:rgba(245,183,59,.06); }"
+                  },
+                  {
+                      "anchor":  "  .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;} .r-gold{color:#ffc72e;}",
+                      "replacement":  "  .r-common{color:var(--r-common);} .r-uncommon{color:var(--r-uncommon);} .r-rare{color:var(--r-rare);} .r-elite{color:var(--r-elite);} .r-gold{color:var(--r-gold);}"
+                  },
+                  {
+                      "anchor":  "  background:radial-gradient(ellipse at 50% 70%, rgba(255,192,74,.10), rgba(0,0,0,0) 70%); }   /* v10.25: the painter\u0027s canvas */",
+                      "replacement":  "  background:radial-gradient(ellipse at 50% 70%, rgba(245,183,59,.10), rgba(0,0,0,0) 70%); }   /* v10.25: the painter\u0027s canvas */"
+                  },
+                  {
+                      "anchor":  "  display:flex; align-items:center; justify-content:center; font-size:11px; color:#0d1435; }",
+                      "replacement":  "  display:flex; align-items:center; justify-content:center; font-size:11px; color:#111315; }"
+                  },
+                  {
+                      "anchor":  ".aveye{ width:6px; height:7px; border-radius:3px; background:#FFF6DC; }",
+                      "replacement":  ".aveye{ width:6px; height:7px; border-radius:3px; background:#efe9dc; }"
+                  },
+                  {
+                      "anchor":  "  border-top:1px solid rgba(42,50,61,.55); }\n.avslot:hover{ background:rgba(255,192,74,.10); }\n.avslot.on{ background:rgba(255,192,74,.16); }",
+                      "replacement":  "  border-top:1px solid rgba(46,51,55,.55); }\n.avslot:hover{ background:rgba(245,183,59,.10); }\n.avslot.on{ background:rgba(245,183,59,.16); }"
+                  },
+                  {
+                      "anchor":  "  .invtab.on{ color:#0d1435; background:var(--amber); border-color:var(--amber); font-weight:700; }",
+                      "replacement":  "  .invtab.on{ color:#111315; background:var(--amber); border-color:var(--amber); font-weight:700; }"
+                  },
+                  {
+                      "anchor":  "  .imenurow:hover{ background:rgba(255,192,74,.14); color:#fff; }",
+                      "replacement":  "  .imenurow:hover{ background:rgba(245,183,59,.14); color:#fff; }"
+                  },
+                  {
+                      "anchor":  "    background:rgba(255,192,74,.08); display:flex; align-items:center; gap:12px; }",
+                      "replacement":  "    background:rgba(245,183,59,.08); display:flex; align-items:center; gap:12px; }"
+                  },
+                  {
+                      "anchor":  "  .imenukeys button.mine{ color:#0d1435; background:var(--amber); border-color:var(--amber); }",
+                      "replacement":  "  .imenukeys button.mine{ color:#111315; background:var(--amber); border-color:var(--amber); }"
+                  },
+                  {
+                      "anchor":  "  .vcell:hover{ background:rgba(255,192,74,.10); }\n  .vcell.on{ border-color:var(--amber); background:rgba(255,192,74,.15);",
+                      "replacement":  "  .vcell:hover{ background:rgba(245,183,59,.10); }\n  .vcell.on{ border-color:var(--amber); background:rgba(245,183,59,.15);"
+                  },
+                  {
+                      "anchor":  "  .cell:hover{ background:rgba(255,192,74,.10); transform:translateY(-1px); }\n  .cell.c-common{ border-color:#5a6478; }\n  .cell.c-uncommon{ border-color:#7fc4a0; box-shadow:inset 0 0 8px rgba(127,196,160,.16); }\n  .cell.c-rare{ border-color:#7cc4ff; box-shadow:inset 0 0 8px rgba(124,196,255,.20); }\n  .cell.c-elite{ border-color:#d08ce8; box-shadow:inset 0 0 10px rgba(208,140,232,.26); }\n  .cell.c-gold{ border-color:#ffc72e; box-shadow:inset 0 0 10px rgba(255,199,46,.30); }",
+                      "replacement":  "  .cell:hover{ background:rgba(245,183,59,.10); transform:translateY(-1px); }\n  .cell.c-common{ border-color:var(--r-common); }\n  .cell.c-uncommon{ border-color:var(--r-uncommon); box-shadow:inset 0 0 8px rgba(95,191,106,.16); }\n  .cell.c-rare{ border-color:var(--r-rare); box-shadow:inset 0 0 8px rgba(63,157,233,.20); }\n  .cell.c-elite{ border-color:var(--r-elite); box-shadow:inset 0 0 10px rgba(168,102,224,.26); }\n  .cell.c-gold{ border-color:var(--r-gold); box-shadow:inset 0 0 10px rgba(240,143,46,.30); }"
+                  },
+                  {
+                      "anchor":  "  .cell .cnt{ right:6px; bottom:5px; padding:0 6px; border-radius:7px; background:rgba(8,12,24,.72); line-height:1.35; text-shadow:none; }",
+                      "replacement":  "  .cell .cnt{ right:6px; bottom:5px; padding:0 6px; border-radius:7px; background:rgba(17,19,21,.72); line-height:1.35; text-shadow:none; }"
+                  },
+                  {
+                      "anchor":  "  button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(255,192,74,.08); }",
+                      "replacement":  "  button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(245,183,59,.08); }"
+                  },
+                  {
+                      "anchor":  "  .ghost:hover{ background:rgba(255,192,74,.09); }",
+                      "replacement":  "  .ghost:hover{ background:rgba(245,183,59,.09); }"
+                  },
+                  {
+                      "anchor":  "  .outcome{ position:absolute; inset:0; background:rgba(8,12,32,.92);",
+                      "replacement":  "  .outcome{ position:absolute; inset:0; background:rgba(17,19,21,.92);"
+                  },
+                  {
+                      "anchor":  "  textarea{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-size:14px; background:rgba(9,14,40,.92);",
+                      "replacement":  "  textarea{ font-family:\u0027Rubik\u0027,system-ui,sans-serif; font-size:14px; background:rgba(17,19,21,.92);"
+                  },
+                  {
+                      "anchor":  "  .pausebox{ position:absolute; inset:0; background:rgba(8,12,32,.9); z-index:35;",
+                      "replacement":  "  .pausebox{ position:absolute; inset:0; background:rgba(17,19,21,.9); z-index:35;"
+                  },
+                  {
+                      "anchor":  "  .modal{ position:absolute; inset:0; background:rgba(8,12,32,.92); z-index:60;",
+                      "replacement":  "  .modal{ position:absolute; inset:0; background:rgba(17,19,21,.92); z-index:60;"
+                  },
+                  {
+                      "anchor":  "    box-shadow:0 0 0 6px rgba(255,192,74,.35), 0 0 22px 4px rgba(255,192,74,.45) !important; }",
+                      "replacement":  "    box-shadow:0 0 0 6px rgba(245,183,59,.35), 0 0 22px 4px rgba(245,183,59,.45) !important; }"
+                  },
+                  {
+                      "anchor":  "    background:linear-gradient(180deg,#141a33,#0f1428);",
+                      "replacement":  "    background:linear-gradient(180deg,#16191b,#111315);"
+                  },
+                  {
+                      "anchor":  "  #modemenu button.moderow.ghost{ background:rgba(9,13,28,.88); }   /* v18.67, seen on the title screenshot (2026-10-07): the mode rows were see-through, so the Undercroft behind the title showed inside them, a head in 2 PLAYER CO-OP; solid now, the gold outline kept */",
+                      "replacement":  "  #modemenu button.moderow.ghost{ background:rgba(17,19,21,.88); }   /* v18.67, seen on the title screenshot (2026-10-07): the mode rows were see-through, so the Undercroft behind the title showed inside them, a head in 2 PLAYER CO-OP; solid now, the gold outline kept */"
+                  },
+                  {
+                      "anchor":  "  .runline{ display:flex; gap:8px; padding:6px 12px; font-size:13px; border-bottom:1px solid rgba(42,50,61,.3); }",
+                      "replacement":  "  .runline{ display:flex; gap:8px; padding:6px 12px; font-size:13px; border-bottom:1px solid rgba(46,51,55,.3); }"
+                  },
+                  {
+                      "anchor":  "  .crow{ padding:13px 16px; border-bottom:1px solid rgba(42,50,61,.35); font-size:18px; }   /* v18.66, seen on the Mainframe screenshot (2026-10-07): the contract list read in 15, 13.5, 11 and 10.5 pixel lines across a wide panel; each a few sizes up */",
+                      "replacement":  "  .crow{ padding:13px 16px; border-bottom:1px solid rgba(46,51,55,.35); font-size:18px; }   /* v18.66, seen on the Mainframe screenshot (2026-10-07): the contract list read in 15, 13.5, 11 and 10.5 pixel lines across a wide panel; each a few sizes up */"
+                  },
+                  {
+                      "anchor":  "    background:rgba(9,14,40,.92); border:1px solid var(--steel-hi); border-radius:3px;",
+                      "replacement":  "    background:rgba(17,19,21,.92); border:1px solid var(--steel-hi); border-radius:3px;"
+                  },
+                  {
+                      "anchor":  "  #root .modal{ background:radial-gradient(1200px 700px at 50% -10%, rgba(127,146,216,.12), transparent 60%), rgba(8,12,28,.95);",
+                      "replacement":  "  #root .modal{ background:radial-gradient(1200px 700px at 50% -10%, rgba(170,164,152,.12), transparent 60%), rgba(17,19,21,.95);"
+                  },
+                  {
+                      "anchor":  "    padding-bottom:12px; border-bottom:1px solid rgba(127,146,216,.22); }",
+                      "replacement":  "    padding-bottom:12px; border-bottom:1px solid rgba(170,164,152,.22); }"
+                  },
+                  {
+                      "anchor":  "  #root .row:hover{ background:rgba(127,146,216,.07); }\n  #root .plist .row + .row{ border-top-color:rgba(127,146,216,.10); border-radius:0; }\n  #root button{ border-radius:6px; border-color:rgba(127,146,216,.45); padding:9px 18px; min-height:38px; font-weight:600; letter-spacing:.08em; }\n  #root button:hover:not(:disabled){ background:rgba(255,192,74,.10); box-shadow:0 0 0 1px rgba(255,192,74,.25) inset; }",
+                      "replacement":  "  #root .row:hover{ background:rgba(170,164,152,.07); }\n  #root .plist .row + .row{ border-top-color:rgba(170,164,152,.10); border-radius:0; }\n  #root button{ border-radius:6px; border-color:rgba(170,164,152,.45); padding:9px 18px; min-height:38px; font-weight:600; letter-spacing:.08em; }\n  #root button:hover:not(:disabled){ background:rgba(245,183,59,.10); box-shadow:0 0 0 1px rgba(245,183,59,.25) inset; }"
+                  },
+                  {
+                      "anchor":  "  #root .deploy.ghost{ background:transparent; color:var(--amber); border-color:rgba(255,192,74,.55); box-shadow:none; }\n  #root .deploy.ghost:hover:not(:disabled){ background:rgba(255,192,74,.10); color:var(--amber); }\n  #root input:not([type=range]):not([type=checkbox]), #root textarea{ background:rgba(0,0,0,.35); border:1px solid rgba(127,146,216,.35); border-radius:6px;",
+                      "replacement":  "  #root .deploy.ghost{ background:transparent; color:var(--amber); border-color:rgba(245,183,59,.55); box-shadow:none; }\n  #root .deploy.ghost:hover:not(:disabled){ background:rgba(245,183,59,.10); color:var(--amber); }\n  #root input:not([type=range]):not([type=checkbox]), #root textarea{ background:rgba(0,0,0,.35); border:1px solid rgba(170,164,152,.35); border-radius:6px;"
+                  },
+                  {
+                      "anchor":  "  #root input:not([type=range]):focus, #root textarea:focus{ border-color:var(--amber); outline:none; box-shadow:0 0 0 2px rgba(255,192,74,.22); }",
+                      "replacement":  "  #root input:not([type=range]):focus, #root textarea:focus{ border-color:var(--amber); outline:none; box-shadow:0 0 0 2px rgba(245,183,59,.22); }"
+                  },
+                  {
+                      "anchor":  "  *::-webkit-scrollbar-thumb{ background:rgba(127,146,216,.35); border-radius:8px; }\n  *::-webkit-scrollbar-thumb:hover{ background:rgba(127,146,216,.55); }",
+                      "replacement":  "  *::-webkit-scrollbar-thumb{ background:rgba(170,164,152,.35); border-radius:8px; }\n  *::-webkit-scrollbar-thumb:hover{ background:rgba(170,164,152,.55); }"
+                  },
+                  {
+                      "anchor":  "  #root .ocwin{ border-radius:14px; border:1px solid rgba(127,146,216,.45);\n    background:radial-gradient(900px 420px at 50% -12%, rgba(127,146,216,.16), transparent 62%), linear-gradient(180deg,var(--win-top),var(--win-bot));",
+                      "replacement":  "  #root .ocwin{ border-radius:14px; border:1px solid rgba(170,164,152,.45);\n    background:radial-gradient(900px 420px at 50% -12%, rgba(170,164,152,.16), transparent 62%), linear-gradient(180deg,var(--win-top),var(--win-bot));"
+                  },
+                  {
+                      "anchor":  "  #root .tag:hover{ background:rgba(127,146,216,.10); }",
+                      "replacement":  "  #root .tag:hover{ background:rgba(170,164,152,.10); }"
+                  },
+                  {
+                      "anchor":  "  #root .cell, #root .vcell{ border-radius:8px; background:linear-gradient(180deg,rgba(127,146,216,.07) 0%,rgba(0,0,0,.34) 100%);",
+                      "replacement":  "  #root .cell, #root .vcell{ border-radius:8px; background:linear-gradient(180deg,rgba(170,164,152,.07) 0%,rgba(0,0,0,.34) 100%);"
+                  },
+                  {
+                      "anchor":  "  #root .cell:hover, #root .vcell:hover{ background:linear-gradient(180deg,rgba(255,192,74,.14) 0%,rgba(0,0,0,.30) 100%); transform:translateY(-2px);",
+                      "replacement":  "  #root .cell:hover, #root .vcell:hover{ background:linear-gradient(180deg,rgba(245,183,59,.14) 0%,rgba(0,0,0,.30) 100%); transform:translateY(-2px);"
+                  },
+                  {
+                      "anchor":  "  #root .vcell.on{ background:linear-gradient(180deg,rgba(255,192,74,.22) 0%,rgba(255,192,74,.08) 100%); }",
+                      "replacement":  "  #root .vcell.on{ background:linear-gradient(180deg,rgba(245,183,59,.22) 0%,rgba(245,183,59,.08) 100%); }"
+                  },
+                  {
+                      "anchor":  "    \u003cdiv style=\"color:#ff5a4a;font-weight:800;letter-spacing:.14em;font-size:26px;text-align:center;margin:4px 0 8px\"\u003e***EXPERIMENTAL***\u003c/div\u003e",
+                      "replacement":  "    \u003cdiv style=\"color:#e5482f;font-weight:800;letter-spacing:.14em;font-size:26px;text-align:center;margin:4px 0 8px\"\u003e***EXPERIMENTAL***\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "  \u003cdiv id=\"wirtsec_offer\" style=\"border:1px solid var(--amber);padding:10px 12px;margin:14px 0 0;background:rgba(255,192,74,.05)\"\u003e",
+                      "replacement":  "  \u003cdiv id=\"wirtsec_offer\" style=\"border:1px solid var(--amber);padding:10px 12px;margin:14px 0 0;background:rgba(245,183,59,.05)\"\u003e"
+                  },
+                  {
+                      "anchor":  "    \u003cselect id=\"buildsel\" style=\"flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:\u0027Rubik\u0027,system-ui,sans-serif;font-size:12px;padding:6px\"\u003e\u003c/select\u003e",
+                      "replacement":  "    \u003cselect id=\"buildsel\" style=\"flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:\u0027Rubik\u0027,system-ui,sans-serif;font-size:12px;padding:6px\"\u003e\u003c/select\u003e"
+                  },
+                  {
+                      "anchor":  "      \u003cdiv id=\"seasonfill\" style=\"height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)\"\u003e\u003c/div\u003e",
+                      "replacement":  "      \u003cdiv id=\"seasonfill\" style=\"height:100%;width:0%;background:linear-gradient(90deg,#f5b73b,#f5b73b)\"\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "        style=\"flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:\u0027Rubik\u0027,system-ui,sans-serif;font-size:14px;padding:7px\"\u003e",
+                      "replacement":  "        style=\"flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:\u0027Rubik\u0027,system-ui,sans-serif;font-size:14px;padding:7px\"\u003e"
+                  },
+                  {
+                      "anchor":  "            \u0027color:var(--ash);opacity:.75;padding:0 0 3px 0;border-bottom:1px solid rgba(127,146,216,.28);margin-bottom:3px\"\u003e\u0027+",
+                      "replacement":  "            \u0027color:var(--ash);opacity:.75;padding:0 0 3px 0;border-bottom:1px solid rgba(170,164,152,.28);margin-bottom:3px\"\u003e\u0027+"
+                  },
+                  {
+                      "anchor":  "             \u0027width:\u0027+Math.round(15*bb.sh)+\u0027px;height:9px;background:#7f92d8;border-radius:2px\"\u003e\u003c/span\u003e\u0027+",
+                      "replacement":  "             \u0027width:\u0027+Math.round(15*bb.sh)+\u0027px;height:9px;background:#4a5257;border-radius:2px\"\u003e\u003c/span\u003e\u0027+"
+                  },
+                  {
+                      "anchor":  "           \u0027;border-radius:3px;padding:8px 11px;background:rgba(9,13,28,.82);display:flex;justify-content:space-between;gap:10px;align-items:center\"\u003e\u0027+",
+                      "replacement":  "           \u0027;border-radius:3px;padding:8px 11px;background:rgba(17,19,21,.82);display:flex;justify-content:space-between;gap:10px;align-items:center\"\u003e\u0027+"
+                  },
+                  {
+                      "anchor":  "var HUDC={text:\u0027#e8f0f6\u0027, dim:\u0027#8a96a1\u0027, danger:\u0027#ff5a4a\u0027, warn:\u0027#ffc04a\u0027, extract:\u0027#4de3d0\u0027, gain:\u0027#7fc4a0\u0027, ally:\u0027#bfe0ff\u0027,\n  special:\u0027#d08ce8\u0027, plate:\u0027rgba(6,9,13,.78)\u0027, dangerPlate:\u0027rgba(40,8,6,.84)\u0027, ink:INK};",
+                      "replacement":  "// v16.xx, UI REDESIGN ui2 (his #50 and #20, 2026-10-12): UIC is the graphite palette of the stylesheet (:root) as one JS table,\n// key for key (--ui-panel is UIC.ui_panel, --r-rare is UIC.r_rare), so the canvas HUD and the DOM menus can never drift apart.\n// HUDC keeps its names and its plates; its colours now come from UIC.\nvar UIC={ui_void:\u0027#0b0c0d\u0027, ui_bg:\u0027#111315\u0027, ui_panel:\u0027#16191b\u0027, ui_raised:\u0027#1e2225\u0027, ui_hover:\u0027#272c30\u0027, ui_line:\u0027#2e3337\u0027,\n  ui_line_hi:\u0027#4a5257\u0027, ui_scrim:\u0027rgba(6,7,8,.82)\u0027, ui_paper:\u0027#ebe5d6\u0027, ui_paper_2:\u0027#ddd5c3\u0027, ui_paper_ink:\u0027#17150f\u0027, ui_paper_ink_2:\u0027#5a554a\u0027,\n  tx_1:\u0027#efe9dc\u0027, tx_2:\u0027#aaa498\u0027, tx_3:\u0027#7a766e\u0027, tx_off:\u0027#55524c\u0027, acc:\u0027#f5b73b\u0027, acc_ink:\u0027#1a1205\u0027, acc_dim:\u0027rgba(245,183,59,.16)\u0027,\n  danger:\u0027#e5482f\u0027, danger_bg:\u0027rgba(60,12,8,.86)\u0027, warn:\u0027#f5b73b\u0027, ok:\u0027#76b97c\u0027, extract:\u0027#47d8c6\u0027, ally:\u0027#9cc7ff\u0027, armour:\u0027#7fa6c9\u0027,\n  r_common:\u0027#9da3a8\u0027, r_uncommon:\u0027#5fbf6a\u0027, r_rare:\u0027#3f9de9\u0027, r_elite:\u0027#a866e0\u0027, r_gold:\u0027#f08f2e\u0027};\nvar HUDC={text:UIC.tx_1, dim:UIC.tx_2, danger:UIC.danger, warn:UIC.warn, extract:UIC.extract, gain:UIC.ok, ally:UIC.ally,\n  special:UIC.r_elite, plate:\u0027rgba(6,9,13,.78)\u0027, dangerPlate:\u0027rgba(40,8,6,.84)\u0027, ink:INK};"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 and #20 (UI redesign ui2): the graphite colour tokens, the old navy names re-pointed, no navy or periwinkle left in the stylesheet, rarity classes on the rarity tokens, and the HUD colours read from the UIC mirror\u0027,\n   run:function(){\n     var bad=[], root=document.documentElement, rt=document.getElementById(\u0027root\u0027)||root, cs, rs, k, v, n=0, sp=null, cl=null, sh, hits=[];\n     try{\n       if(typeof UIC!==\u0027object\u0027||!UIC) return \u0027there is no UIC colour mirror\u0027;\n       cs=getComputedStyle(root); rs=getComputedStyle(rt);\n       if(cs.getPropertyValue(\u0027--ui-panel\u0027).trim()!==\u0027#16191b\u0027) bad.push(\u0027--ui-panel at the root is \u0027+JSON.stringify(cs.getPropertyValue(\u0027--ui-panel\u0027).trim())+\u0027, not #16191b\u0027);\n       for(k in UIC){ if(!Object.prototype.hasOwnProperty.call(UIC,k)) continue; n++;\n         v=cs.getPropertyValue(\u0027--\u0027+k.replace(/_/g,\u0027-\u0027)).trim();\n         if(v!==UIC[k]) bad.push(\u0027--\u0027+k.replace(/_/g,\u0027-\u0027)+\u0027 is \u0027+JSON.stringify(v)+\u0027 in the stylesheet but \u0027+UIC[k]+\u0027 in UIC\u0027); }\n       if(n\u003c31) bad.push(\u0027UIC holds \u0027+n+\u0027 colours, not the 31 tokens\u0027);\n       if(rs.getPropertyValue(\u0027--win-top\u0027).trim()===\u0027#1c2a63\u0027) bad.push(\u0027#root still paints windows in the Chrono navy #1c2a63\u0027);\n       [[\u0027--void\u0027,\u0027ui_void\u0027],[\u0027--steel\u0027,\u0027ui_line\u0027],[\u0027--steel-hi\u0027,\u0027ui_line_hi\u0027],[\u0027--win-top\u0027,\u0027ui_panel\u0027],[\u0027--win-bot\u0027,\u0027ui_bg\u0027],[\u0027--ash\u0027,\u0027tx_2\u0027],[\u0027--bone\u0027,\u0027tx_1\u0027],\n        [\u0027--amber\u0027,\u0027acc\u0027],[\u0027--coolant\u0027,\u0027extract\u0027],[\u0027--hazard\u0027,\u0027danger\u0027],[\u0027--gain\u0027,\u0027ok\u0027],[\u0027--rust\u0027,\u0027danger\u0027]].forEach(function(q){\n         [cs,rs].forEach(function(st,ix){ var w=st.getPropertyValue(q[0]).trim(); if(w!==UIC[q[1]]) bad.push(q[0]+(ix?\u0027 on #root\u0027:\u0027 at the root\u0027)+\u0027 is \u0027+JSON.stringify(w)+\u0027, not re-pointed to \u0027+UIC[q[1]]); }); });\n       if(typeof HUDC!==\u0027object\u0027||!HUDC) bad.push(\u0027no HUDC\u0027);\n       else { if(HUDC.danger!==UIC.danger) bad.push(\u0027HUDC.danger is not UIC.danger\u0027); if(HUDC.extract!==UIC.extract) bad.push(\u0027HUDC.extract is not UIC.extract\u0027);\n         if(HUDC.text!==UIC.tx_1) bad.push(\u0027HUDC.text is not UIC.tx_1\u0027); if(HUDC.ally!==UIC.ally) bad.push(\u0027HUDC.ally is not UIC.ally\u0027); }\n       sp=document.createElement(\u0027span\u0027); sp.className=\u0027r-rare\u0027; sp.textContent=\u0027x\u0027; rt.appendChild(sp);\n       if(getComputedStyle(sp).color!==\u0027rgb(63, 157, 233)\u0027) bad.push(\u0027.r-rare text is \u0027+getComputedStyle(sp).color+\u0027, not the rare token\u0027);\n       cl=document.createElement(\u0027div\u0027); cl.className=\u0027cell c-gold\u0027; rt.appendChild(cl);\n       if(getComputedStyle(cl).borderTopColor!==\u0027rgb(240, 143, 46)\u0027) bad.push(\u0027.cell.c-gold border is \u0027+getComputedStyle(cl).borderTopColor+\u0027, not the gold token\u0027);\n       sh=document.getElementsByTagName(\u0027style\u0027)[0]; sh=sh\u0026\u0026sh.sheet;\n       (function walk(rules){ for(var i=0;rules\u0026\u0026i\u003crules.length;i++){ var r=rules[i], t=r.cssText||\u0027\u0027;\n         if(r.cssRules\u0026\u0026r.cssRules.length\u0026\u0026!r.style){ walk(r.cssRules); continue; }\n         if((/rgba?\\((127, 146, 216|28, 42, 99|13, 20, 53|9, 14, 40|16, 26, 66|8, 12, 32)[,)]/).test(t)\u0026\u0026hits.length\u003c4) hits.push(t.slice(0,90)); } })(sh?sh.cssRules:null);\n       if(!sh) bad.push(\u0027no stylesheet to read\u0027);\n       if(hits.length) bad.push(\u0027navy or periwinkle left in the stylesheet: \u0027+hits.join(\u0027 | \u0027));\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(sp\u0026\u0026sp.parentNode) sp.parentNode.removeChild(sp); if(cl\u0026\u0026cl.parentNode) cl.parentNode.removeChild(cl); }catch(_r){} try{ __topClear(); }catch(_t){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

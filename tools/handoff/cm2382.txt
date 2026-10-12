@@ -1,0 +1,7 @@
+v23.82: graphite menus: the new colours
+
+Every menu now uses the new graphite palette with one amber accent instead of the old navy and periwinkle.
+
+Check 23.82. Fails on v23.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

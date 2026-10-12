@@ -17,9 +17,21 @@
      Identical values, so nothing inside #root moves; declared here only so the
      things mounted beside #root can see them. Layout stays on #root alone. */
   :root {
-    --void:#0a0d1c; --steel:#2f4394; --steel-hi:#7f92d8; --ash:#9aa4b0;
-    --bone:#FFF6DC; --amber:#ffc04a; --rust:#d8543a; --coolant:#4de3d0;
-    --hazard:#ff5a4a; --gain:#7fc4a0; --win-top:#1c2a63; --win-bot:#101a42;
+    /* v23.82, UI REDESIGN ui2 (his #50 2026-10-12: "MAKE IT LOOK LIKE A TRIPLE-A GAME"; #20: gritty and grounded, like ARC Raiders).
+       The Chrono Trigger navy and periwinkle are gone: near-black graphite surfaces, hairline frames, one hot accent (signal amber),
+       a cream paper card for decisions, and the rarity colours. The old names are re-pointed here so every existing rule recolours
+       at once; new code uses the new names. UIC in the script is the same table for the canvas, so the HUD and the menus match. */
+    --ui-void:#0b0c0d; --ui-bg:#111315; --ui-panel:#16191b; --ui-raised:#1e2225; --ui-hover:#272c30;
+    --ui-line:#2e3337; --ui-line-hi:#4a5257; --ui-scrim:rgba(6,7,8,.82);
+    --ui-paper:#ebe5d6; --ui-paper-2:#ddd5c3; --ui-paper-ink:#17150f; --ui-paper-ink-2:#5a554a;
+    --tx-1:#efe9dc; --tx-2:#aaa498; --tx-3:#7a766e; --tx-off:#55524c;
+    --acc:#f5b73b; --acc-ink:#1a1205; --acc-dim:rgba(245,183,59,.16);
+    --danger:#e5482f; --danger-bg:rgba(60,12,8,.86); --warn:#f5b73b; --ok:#76b97c;
+    --extract:#47d8c6; --ally:#9cc7ff; --armour:#7fa6c9;
+    --r-common:#9da3a8; --r-uncommon:#5fbf6a; --r-rare:#3f9de9; --r-elite:#a866e0; --r-gold:#f08f2e;
+    --void:var(--ui-void); --steel:var(--ui-line); --steel-hi:var(--ui-line-hi); --ash:var(--tx-2);
+    --bone:var(--tx-1); --amber:var(--acc); --rust:var(--danger); --coolant:var(--extract);
+    --hazard:var(--danger); --gain:var(--ok); --win-top:var(--ui-panel); --win-bot:var(--ui-bg);
   }
   #root {
     /* Chrono Trigger window palette. --steel was defined and referenced nowhere
@@ -27,9 +39,10 @@
        border of the classic double-framed window. --steel-hi flipping from dark
        grey to light periwinkle is the loudest single change here: every panel
        edge goes from invisible to a proper frame. */
-    --void:#0a0d1c; --steel:#2f4394; --steel-hi:#7f92d8; --ash:#9aa4b0;
---bone:#FFF6DC; --amber:#ffc04a; --rust:#d8543a; --coolant:#4de3d0; --hazard:#ff5a4a; --gain:#7fc4a0;
-    --win-top:#1c2a63; --win-bot:#101a42;
+    /* v23.82, ui2: re-pointed to the graphite tokens declared at :root. */
+    --void:var(--ui-void); --steel:var(--ui-line); --steel-hi:var(--ui-line-hi); --ash:var(--tx-2);
+    --bone:var(--tx-1); --amber:var(--acc); --rust:var(--danger); --coolant:var(--extract); --hazard:var(--danger); --gain:var(--ok);
+    --win-top:var(--ui-panel); --win-bot:var(--ui-bg);
     background:var(--void); color:var(--bone); font-family:'Rubik',system-ui,sans-serif;
     /* Fit the browser window instead of a fixed 720. Opened in Chrome at a 551
        tall viewport the game ran off the bottom of the page and put the health
@@ -67,19 +80,19 @@
   body:has(#opmodal.on) #hubtoast, body:has(#settingsmodal.on) #hubtoast{ bottom:26px; }
   .screen { position:absolute; inset:0; z-index:10;
     background:
-      radial-gradient(1100px 500px at 20% -10%, rgba(255,192,74,.09), transparent 60%),
-      radial-gradient(900px 600px at 90% 110%, rgba(77,227,208,.05), transparent 60%),
-      linear-gradient(165deg,#131c46 0%,#0d1435 55%,#090f28 100%);
+      radial-gradient(1100px 500px at 20% -10%, rgba(245,183,59,.09), transparent 60%),
+      radial-gradient(900px 600px at 90% 110%, rgba(71,216,198,.05), transparent 60%),
+      linear-gradient(165deg,#16191b 0%,#111315 55%,#0b0c0d 100%);
     display:none; flex-direction:column; padding:18px 22px; overflow:hidden; }
   .screen.on { display:flex; }
    /* v18.11, THE STYLING PASS, STAGE B: THE TITLE. A vignette instead of a flat wash, so the Undercroft still shows through
       (v17.83) and the column reads; a wordmark with a gold gradient and a glow; the three step cards as glass cards. */
-   #title.on { background:radial-gradient(ellipse 70% 62% at 50% 42%, rgba(9,15,40,.60) 0%, rgba(9,15,40,.84) 70%, rgba(5,8,22,.96) 100%); }
+   #title.on { background:radial-gradient(ellipse 70% 62% at 50% 42%, rgba(17,19,21,.60) 0%, rgba(17,19,21,.84) 70%, rgba(17,19,21,.96) 100%); }
    #title .wordmark{ font-family:'Titan One','Rubik',sans-serif; font-size:64px; letter-spacing:.16em; line-height:1;
-     background:linear-gradient(180deg,#ffe9a8 0%,#ffc04a 55%,#e08a1a 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
-     filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(255,192,74,.28)); }
-   #title .tcard{ border:1px solid rgba(127,146,216,.35); border-radius:10px; padding:14px 16px;
-     background:linear-gradient(180deg,rgba(30,38,72,.92),rgba(9,13,28,.92)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }   /* v18.73, seen on the 4K title screenshot (2026-10-07): the Undercroft behind the title showed through the three step cards, a head inside 2 PILLAGE; solid like the mode rows (v18.67) */
+     background:linear-gradient(180deg,#ffe9a8 0%,#f5b73b 55%,#e08a1a 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
+     filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(245,183,59,.28)); }
+   #title .tcard{ border:1px solid rgba(170,164,152,.35); border-radius:10px; padding:14px 16px;
+     background:linear-gradient(180deg,rgba(30,34,37,.92),rgba(17,19,21,.92)); box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06); }   /* v18.73, seen on the 4K title screenshot (2026-10-07): the Undercroft behind the title showed through the three step cards, a head inside 2 PILLAGE; solid like the mode rows (v18.67) */
    #title .tstep{ font-size:11px; letter-spacing:.22em; color:var(--amber); font-weight:700; }
    #title .tcard .tbody{ font-size:12px; color:var(--ash); margin-top:6px; line-height:1.5; }
   /* v8.88: the title screen scales now, so it must be able to scroll rather
@@ -159,7 +172,7 @@
     display:flex; flex-direction:column; min-height:0; position:relative; }
   /* the inner hairline of the double frame, replacing the amber corner tick */
   .panel::after { content:''; position:absolute; inset:3px; pointer-events:none;
-    border:1px solid rgba(127,146,216,.22); border-radius:3px; }
+    border:1px solid rgba(170,164,152,.22); border-radius:3px; }
   .panel h2 { font-family:'Rubik',system-ui,sans-serif; font-size:11px; font-weight:700;
     letter-spacing:.28em; text-transform:uppercase; color:var(--ash);
     margin:0; padding:10px 12px; border-bottom:1px solid var(--steel-hi);
@@ -174,16 +187,16 @@
   .pmoreGONE { display:none; margin-top:6px; padding:6px 10px; cursor:pointer;
     font-size:14px; color:var(--amber); border:1px solid var(--steel-hi);
     border-radius:3px; text-align:center; }
-  .pmore:hover { background:rgba(255,192,74,.08); }
+  .pmore:hover { background:rgba(245,183,59,.08); }
   .pmore.show { display:block; }
   .row { display:flex; align-items:center; gap:10px; padding:10px 14px; font-size:16px;
-    border-bottom:1px solid rgba(42,50,61,.35); }
-  .row:hover { background:rgba(255,192,74,.06); }
+    border-bottom:1px solid rgba(46,51,55,.35); }
+  .row:hover { background:rgba(245,183,59,.06); }
   .row .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .row .vl { color:var(--amber); font-size:15px; }
   .swatch { width:3px; height:13px; border-radius:1px; flex:none; }
   .ic { flex:none; image-rendering:auto; vertical-align:middle; margin-right:2px; }
-  .r-common{color:#cfd8ef;} .r-uncommon{color:#7fc4a0;} .r-rare{color:#7cc4ff;} .r-elite{color:#d08ce8;} .r-gold{color:#ffc72e;}
+  .r-common{color:var(--r-common);} .r-uncommon{color:var(--r-uncommon);} .r-rare{color:var(--r-rare);} .r-elite{color:var(--r-elite);} .r-gold{color:var(--r-gold);}
   /* THE GRID. Uniform cells, Minecraft rules: every item is one square whatever
      it is, stacks carry a count, and rarity lives on the border so you read the
      value of a whole screen without reading a word of it. */
@@ -193,14 +206,14 @@
    with the menu zoom, and cannot throw the way a canvas figure can. */
 .avfig{ display:flex; flex-direction:column; align-items:center; padding:14px 0 10px; }
 .avcv{ display:block; margin:6px auto 2px auto; border-radius:8px;
-  background:radial-gradient(ellipse at 50% 70%, rgba(255,192,74,.10), rgba(0,0,0,0) 70%); }   /* v10.25: the painter's canvas */
+  background:radial-gradient(ellipse at 50% 70%, rgba(245,183,59,.10), rgba(0,0,0,0) 70%); }   /* v10.25: the painter's canvas */
 .avhead{ width:46px; height:40px; border-radius:7px; position:relative;
   border:2px solid #14161b; display:flex; align-items:flex-start; justify-content:center; }
 .avhair{ position:absolute; left:-5px; right:-5px; top:-4px; height:17px; border-radius:8px 8px 3px 3px; }
 .avhat{ position:absolute; left:-7px; right:-7px; top:-13px; height:15px; border-radius:4px;
-  display:flex; align-items:center; justify-content:center; font-size:11px; color:#0d1435; }
+  display:flex; align-items:center; justify-content:center; font-size:11px; color:#111315; }
 .aveyes{ position:absolute; top:17px; width:100%; display:flex; justify-content:center; gap:9px; }
-.aveye{ width:6px; height:7px; border-radius:3px; background:#FFF6DC; }
+.aveye{ width:6px; height:7px; border-radius:3px; background:#efe9dc; }
 .avbeard{ position:absolute; bottom:-1px; border-radius:2px 2px 8px 8px; }   /* v10.17 */
 .avtorso{ width:54px; height:46px; margin-top:-4px; border-radius:6px 6px 4px 4px;
   border:2px solid #14161b; position:relative; }
@@ -212,9 +225,9 @@
 .avnum{ position:absolute; left:0; right:0; top:11px; text-align:center; font:900 20px/1 Impact,'Arial Black',sans-serif; color:#f4f2ec; letter-spacing:1px; pointer-events:none; }   /* v10.46 */
 .avboots{ width:42px; height:8px; border-radius:0 0 4px 4px; border:2px solid #14161b; border-top:0; margin-top:-1px; }   /* v10.32 */
 .avslot{ display:flex; align-items:center; gap:8px; padding:5px 10px; cursor:pointer;
-  border-top:1px solid rgba(42,50,61,.55); }
-.avslot:hover{ background:rgba(255,192,74,.10); }
-.avslot.on{ background:rgba(255,192,74,.16); }
+  border-top:1px solid rgba(46,51,55,.55); }
+.avslot:hover{ background:rgba(245,183,59,.10); }
+.avslot.on{ background:rgba(245,183,59,.16); }
 .avsic{ width:26px; height:26px; border-radius:3px; border:1px solid var(--steel-hi);
   display:flex; align-items:center; justify-content:center; font-size:12px;
   background:rgba(0,0,0,.3); flex:none; }
@@ -239,7 +252,7 @@
     padding:10px 22px; border:1px solid var(--steel-hi); border-radius:3px;
     color:var(--ash); cursor:pointer; background:rgba(0,0,0,.25); }
   .invtab:hover{ color:var(--bone); border-color:var(--amber); }
-  .invtab.on{ color:#0d1435; background:var(--amber); border-color:var(--amber); font-weight:700; }
+  .invtab.on{ color:#111315; background:var(--amber); border-color:var(--amber); font-weight:700; }
   /* v20.91, from the whole-game bug hunt of 2026-10-08 (V-A5): THE TABS IN A WINDOW HOLD STILL. The chosen tab was drawn at 700 and
      the rest at 400, and heavier letters are wider, so every switch between BUY, CRAFT and HIRE (and the Mainframe and Settings tabs)
      slid the tabs sideways by a few pixels. Every tab in a window is 600 now, the weight of the buttons; the chosen one is still the
@@ -353,7 +366,7 @@
   .imenuhead em{ font-style:normal; color:var(--ash); font-size:11px; }
   .imenurow{ padding:6px 11px; cursor:pointer; display:flex; gap:10px;
     justify-content:space-between; align-items:center; }
-  .imenurow:hover{ background:rgba(255,192,74,.14); color:#fff; }
+  .imenurow:hover{ background:rgba(245,183,59,.14); color:#fff; }
   .imenurow em{ font-style:normal; color:var(--ash); font-size:11px; letter-spacing:.06em; }
   .imenurow.dim{ opacity:.38; cursor:default; }
   .imenurow.dim:hover{ background:none; color:var(--bone); }
@@ -364,7 +377,7 @@
   #stagemodal.freekit .hubgrid, #hub.freekit .hubgrid{ opacity:.28; pointer-events:none; filter:saturate(.35); }
   #stagemodal.freekit #stagebuy, #hub.freekit #stagebuy{ opacity:.28; pointer-events:none; }
   .fkbox{ margin:10px 0; padding:9px 12px; border:1px solid var(--amber); border-radius:3px;
-    background:rgba(255,192,74,.08); display:flex; align-items:center; gap:12px; }
+    background:rgba(245,183,59,.08); display:flex; align-items:center; gap:12px; }
   /* v19.78, seen on a 4K menu text scan (2026-10-08): the stash help line, the sell notes and this bar were 11px, the smallest
      print left in any menu once the filter tabs and key row grew (v19.76, v19.77). 13px, with room on every line. */
   .fkbox b{ color:var(--amber); letter-spacing:.1em; font-size:13px; }
@@ -373,7 +386,7 @@
   .imenukeys{ padding:6px 11px 8px; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
   .imenukeys span{ color:var(--ash); margin-right:2px; }
   .imenukeys button{ padding:2px 0; width:20px; font-size:11px; min-width:0; }
-  .imenukeys button.mine{ color:#0d1435; background:var(--amber); border-color:var(--amber); }
+  .imenukeys button.mine{ color:#111315; background:var(--amber); border-color:var(--amber); }
 
   /* ---- THE KEY BAR. Straight off his Arc Raiders screenshot, which prints
      ESC BACK / TAB INVENTORY / CTRL MULTI SELECT / SHIFT QUICK MOVE / ALT SPLIT
@@ -415,8 +428,8 @@
     width:100%; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2;
     -webkit-box-orient:vertical; letter-spacing:.02em; }
   .vcell.on .vlbl{ color:var(--bone); }
-  .vcell:hover{ background:rgba(255,192,74,.10); }
-  .vcell.on{ border-color:var(--amber); background:rgba(255,192,74,.15);
+  .vcell:hover{ background:rgba(245,183,59,.10); }
+  .vcell.on{ border-color:var(--amber); background:rgba(245,183,59,.15);
     box-shadow:0 0 0 1px var(--amber) inset; }
   .vcell.locked{ opacity:.42; }
   /* v8.09, his order: a clear indication that you took it. The cell you clicked
@@ -494,19 +507,19 @@
   .cell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
     border-radius:3px; background:rgba(0,0,0,.32); display:flex;
     align-items:center; justify-content:center; cursor:pointer; transition:all .1s; }
-  .cell:hover{ background:rgba(255,192,74,.10); transform:translateY(-1px); }
-  .cell.c-common{ border-color:#5a6478; }
-  .cell.c-uncommon{ border-color:#7fc4a0; box-shadow:inset 0 0 8px rgba(127,196,160,.16); }
-  .cell.c-rare{ border-color:#7cc4ff; box-shadow:inset 0 0 8px rgba(124,196,255,.20); }
-  .cell.c-elite{ border-color:#d08ce8; box-shadow:inset 0 0 10px rgba(208,140,232,.26); }
-  .cell.c-gold{ border-color:#ffc72e; box-shadow:inset 0 0 10px rgba(255,199,46,.30); }
+  .cell:hover{ background:rgba(245,183,59,.10); transform:translateY(-1px); }
+  .cell.c-common{ border-color:var(--r-common); }
+  .cell.c-uncommon{ border-color:var(--r-uncommon); box-shadow:inset 0 0 8px rgba(95,191,106,.16); }
+  .cell.c-rare{ border-color:var(--r-rare); box-shadow:inset 0 0 8px rgba(63,157,233,.20); }
+  .cell.c-elite{ border-color:var(--r-elite); box-shadow:inset 0 0 10px rgba(168,102,224,.26); }
+  .cell.c-gold{ border-color:var(--r-gold); box-shadow:inset 0 0 10px rgba(240,143,46,.30); }
   /* v10.14: an empty backpack slot, drawn so the grid reads as a grid */
   .cell.slotempty{ border:1px dashed var(--steel-hi); opacity:.45; box-shadow:none; cursor:default; }
   .cell .cnt{ position:absolute; right:3px; bottom:1px; font-size:13px; font-weight:700;
     color:var(--bone); text-shadow:0 1px 2px #000; pointer-events:none; }
   /* v20.17, seen on the 4K stash screenshots (2026-10-08): the stack count was a bare digit tucked into the tile's rounded corner,
      where the slot badge was until v19.96. It sits in a small dark pill now, set in from the corner, readable on any picture. */
-  .cell .cnt{ right:6px; bottom:5px; padding:0 6px; border-radius:7px; background:rgba(8,12,24,.72); line-height:1.35; text-shadow:none; }
+  .cell .cnt{ right:6px; bottom:5px; padding:0 6px; border-radius:7px; background:rgba(17,19,21,.72); line-height:1.35; text-shadow:none; }
   /* JUNK, his Q11: tag it once and sell-all obeys. A tagged cell is dimmed and
      crossed, so a screen of junk is obvious before you press anything. */
   .cell.junk{ opacity:.42; border-style:dashed; }
@@ -516,7 +529,7 @@
   button { font-family:'Rubik',system-ui,sans-serif; background:transparent;
     border:1px solid var(--steel-hi); color:var(--bone); padding:10px 18px; font-size:14px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
-  button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(255,192,74,.08); }
+  button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(245,183,59,.08); }
   button:disabled{ opacity:.3; cursor:not-allowed; }
   button:focus-visible{ outline:2px solid var(--coolant); outline-offset:1px; }
   .deploy { padding:12px; font-family:'Rubik',system-ui,sans-serif; font-weight:800;
@@ -524,7 +537,7 @@
     color:#2a1a06; background:linear-gradient(180deg,#ffd980,#f0a02a); }
   .deploy:hover{ background:linear-gradient(180deg,#ffe4a0,#ffbe52); border-color:#fff0c8; color:#2a1a06; }
   .ghost { background:transparent; color:var(--amber); }
-  .ghost:hover{ background:rgba(255,192,74,.09); }
+  .ghost:hover{ background:rgba(245,183,59,.09); }
   .stat { display:flex; justify-content:space-between; padding:6px 12px; font-size:14px; }
   .stat b{ color:var(--bone); font-weight:500; } .stat span{ color:var(--ash); }
   .equipped{ padding:10px 12px; border-bottom:1px solid var(--steel-hi); background:rgba(53,214,200,.04); }
@@ -561,7 +574,7 @@
     content:''; position:absolute; z-index:-1; border-radius:6px;
     background:linear-gradient(180deg,var(--win-top),var(--win-bot));
     border:2px solid var(--steel-hi); box-shadow:inset 0 0 0 2px var(--steel); }
-  .outcome{ position:absolute; inset:0; background:rgba(8,12,32,.92);
+  .outcome{ position:absolute; inset:0; background:rgba(17,19,21,.92);
     display:none; flex-direction:column; align-items:center; justify-content:center; z-index:40; }
 
   .ocwin{ display:flex; flex-direction:column; align-items:center; position:relative;
@@ -614,19 +627,19 @@
   /* Text fields kept the old near-black while everything around them moved to
      navy, so a note box read as a hole punched in the window rather than a
      recessed field in it. Darker than the window, same family as the window. */
-  textarea{ font-family:'Rubik',system-ui,sans-serif; font-size:14px; background:rgba(9,14,40,.92);
+  textarea{ font-family:'Rubik',system-ui,sans-serif; font-size:14px; background:rgba(17,19,21,.92);
     border:1px solid var(--steel-hi); border-radius:3px;
     box-shadow:inset 0 1px 3px rgba(0,0,0,.45);
     color:var(--bone); padding:8px; width:100%; resize:none;
     outline:none; line-height:1.5; }
   textarea:focus{ border-color:var(--amber); }
-  .pausebox{ position:absolute; inset:0; background:rgba(8,12,32,.9); z-index:35;
+  .pausebox{ position:absolute; inset:0; background:rgba(17,19,21,.9); z-index:35;
     display:none; flex-direction:column; align-items:center; justify-content:center; gap:11px; }
   .pausebox::before{ inset:50% auto auto 50%; width:min(var(--pbw,780px),calc(100% - 28px)); height:min(var(--pbh,400px),calc(100% - 28px)); transform:translate(-50%,-50%); }   /* v19.90: --pbh from pauseFrameFit() */
   .pausebox.on{ display:flex; }
 .pausebox h3{ font-family:'Rubik',system-ui,sans-serif; font-weight:800; font-size:25px;
     letter-spacing:.24em; margin:0; color:var(--amber); text-transform:uppercase; }
-  .modal{ position:absolute; inset:0; background:rgba(8,12,32,.92); z-index:60;
+  .modal{ position:absolute; inset:0; background:rgba(17,19,21,.92); z-index:60;
     display:none; flex-direction:column; padding:22px; }
   .modal::before{ inset:14px; }
   .modal.on{ display:flex; }
@@ -657,7 +670,7 @@
      is drawn faded, it came out a dim brown. Thicker, with a brighter ring and a soft glow, and the focused thing always at full
      strength, so player 2 finds it from the couch. */
   .padfocus{ outline:3px solid var(--amber) !important; outline-offset:2px; opacity:1 !important;
-    box-shadow:0 0 0 6px rgba(255,192,74,.35), 0 0 22px 4px rgba(255,192,74,.45) !important; }
+    box-shadow:0 0 0 6px rgba(245,183,59,.35), 0 0 22px 4px rgba(245,183,59,.45) !important; }
   /* v19.92, from the code review of 2026-10-08: the full strength above made a button that went dead under the highlight (the last
      affordable rack just built, v15.52 keeps the highlight there on purpose) or a locked shop cell look live. They stay dimmed. */
   button:disabled.padfocus, .vcell.locked.padfocus{ opacity:.55 !important; }
@@ -665,7 +678,7 @@
   #askmodal{ align-items:center; justify-content:center; padding:24px; }
   #askmodal::before{ content:none; }
   #askmodal .askcard{ width:min(560px,90vw); box-sizing:border-box;
-    background:linear-gradient(180deg,#141a33,#0f1428);
+    background:linear-gradient(180deg,#16191b,#111315);
     border:1px solid var(--steel-hi); border-radius:5px;
     padding:26px 30px 22px; box-shadow:0 20px 64px rgba(0,0,0,.6); }
   #askmodal h3{ font-size:22px; line-height:1.25; letter-spacing:.02em;
@@ -727,7 +740,7 @@
      row keeps its note beside it, out of the flow, so the row itself stays centred with the others. */
   #modemenu{ display:flex; flex-direction:column; align-items:center; gap:6px; }
   #modemenu button.moderow{ min-width:440px; padding:9px 28px; font-size:12px; letter-spacing:.22em; }
-  #modemenu button.moderow.ghost{ background:rgba(9,13,28,.88); }   /* v18.67, seen on the title screenshot (2026-10-07): the mode rows were see-through, so the Undercroft behind the title showed inside them, a head in 2 PLAYER CO-OP; solid now, the gold outline kept */
+  #modemenu button.moderow.ghost{ background:rgba(17,19,21,.88); }   /* v18.67, seen on the title screenshot (2026-10-07): the mode rows were see-through, so the Undercroft behind the title showed inside them, a head in 2 PLAYER CO-OP; solid now, the gold outline kept */
   #modemenu .modelater{ position:relative; display:inline-block; }
   #modemenu .modelater span{ position:absolute; left:100%; top:50%; transform:translateY(-50%); margin-left:12px; white-space:nowrap;
     font-size:10.5px; letter-spacing:.18em; color:var(--ash); text-transform:uppercase; }
@@ -747,7 +760,7 @@
   #barmodal .msub, #barmodal .plist{ max-width:1060px; width:100%; }
   #barmodal .plist{ flex:0 1 auto; }
   #settingsmodal .msub{ font-size:15px; line-height:1.6; }
-  .runline{ display:flex; gap:8px; padding:6px 12px; font-size:13px; border-bottom:1px solid rgba(42,50,61,.3); }
+  .runline{ display:flex; gap:8px; padding:6px 12px; font-size:13px; border-bottom:1px solid rgba(46,51,55,.3); }
   .runline .o{ width:44px; flex:none; font-weight:700; }
   .o-ext{ color:var(--coolant); } .o-dead{ color:var(--hazard); } .o-aban{ color:var(--ash); }
   .trow{ display:grid; grid-template-columns:180px 1fr 92px; gap:10px; align-items:center;
@@ -756,7 +769,7 @@
   .trow .tv{ color:var(--amber); text-align:right; }
   .trow .nx{ color:var(--steel-hi); font-size:13px; margin-left:6px; }
   input[type=range]{ width:100%; accent-color:var(--amber); background:transparent; }
-  .crow{ padding:13px 16px; border-bottom:1px solid rgba(42,50,61,.35); font-size:18px; }   /* v18.66, seen on the Mainframe screenshot (2026-10-07): the contract list read in 15, 13.5, 11 and 10.5 pixel lines across a wide panel; each a few sizes up */
+  .crow{ padding:13px 16px; border-bottom:1px solid rgba(46,51,55,.35); font-size:18px; }   /* v18.66, seen on the Mainframe screenshot (2026-10-07): the contract list read in 15, 13.5, 11 and 10.5 pixel lines across a wide panel; each a few sizes up */
   .crow .cd{ color:var(--bone); }
   .crow .cp{ color:var(--ash); font-size:15.5px; margin-top:5px; display:flex; justify-content:space-between; align-items:center; }
   .crow .cp b{ color:var(--amber); font-weight:500; }
@@ -765,7 +778,7 @@
      its rhythm. Here the button is slimmer and overhangs its line a little into the row padding, so every row is the same height. */
   #root .crow .cp button{ min-height:0; padding:5px 16px; margin:-6px 0; }
   pre.simpre{ font-family:'Rubik',system-ui,sans-serif; font-size:11px; color:var(--bone);
-    background:rgba(9,14,40,.92); border:1px solid var(--steel-hi); border-radius:3px;
+    background:rgba(17,19,21,.92); border:1px solid var(--steel-hi); border-radius:3px;
     box-shadow:inset 0 1px 3px rgba(0,0,0,.45); padding:10px;
     overflow:auto; flex:1; line-height:1.55; white-space:pre-wrap; margin:0; }
   /* REDO slice five: the lists that never got the family border. */
@@ -806,50 +819,50 @@
   /* v17.94, THE STYLING PASS, STAGE A (his order 2026-10-03: styling across all menus and HUDs). One look for every HTML menu, laid
      over the rules above: glass panes with a soft light from the top, one header style, rounded buttons of one height with a
      real primary, quiet rows that light on hover, dark inputs with a focus ring, thin scrollbars. Ids and classes are unchanged. */
-  #root .modal{ background:radial-gradient(1200px 700px at 50% -10%, rgba(127,146,216,.12), transparent 60%), rgba(8,12,28,.95);
+  #root .modal{ background:radial-gradient(1200px 700px at 50% -10%, rgba(170,164,152,.12), transparent 60%), rgba(17,19,21,.95);
     padding:26px 32px; }
   #root .modal h3{ font-size:22px; letter-spacing:.22em; text-transform:uppercase; color:var(--amber); margin:0 0 14px;
-    padding-bottom:12px; border-bottom:1px solid rgba(127,146,216,.22); }
+    padding-bottom:12px; border-bottom:1px solid rgba(170,164,152,.22); }
   #root .msub{ font-size:15px; line-height:1.5; color:var(--ash); max-width:1180px; }
   #root #termsmodal .msub, #root #partymodal .msub, #root #gamblemodal .msub, #root #barmodal .msub{ max-width:1060px; }   /* v18.78, seen on the 4K screenshots (2026-10-07): the general 1180 cap above came later and beat the 1060 these framed windows set, so on a big screen their text lines ran out to the frame's edge (THE LAST POUR, WIRT THE GAMBLER, the Terms, the Party); inside the frame again */
   #root .hint{ font-size:13.5px; line-height:1.55; }
   #root .row{ border-radius:6px; border:1px solid transparent; transition:background .12s, border-color .12s; }
-  #root .row:hover{ background:rgba(127,146,216,.07); }
-  #root .plist .row + .row{ border-top-color:rgba(127,146,216,.10); border-radius:0; }
-  #root button{ border-radius:6px; border-color:rgba(127,146,216,.45); padding:9px 18px; min-height:38px; font-weight:600; letter-spacing:.08em; }
-  #root button:hover:not(:disabled){ background:rgba(255,192,74,.10); box-shadow:0 0 0 1px rgba(255,192,74,.25) inset; }
+  #root .row:hover{ background:rgba(170,164,152,.07); }
+  #root .plist .row + .row{ border-top-color:rgba(170,164,152,.10); border-radius:0; }
+  #root button{ border-radius:6px; border-color:rgba(170,164,152,.45); padding:9px 18px; min-height:38px; font-weight:600; letter-spacing:.08em; }
+  #root button:hover:not(:disabled){ background:rgba(245,183,59,.10); box-shadow:0 0 0 1px rgba(245,183,59,.25) inset; }
   #root button:active:not(:disabled){ transform:translateY(1px); }
   #root .deploy{ background:linear-gradient(180deg,#ffd97f 0%,#ffb634 100%); color:#1a1408; border:1px solid #ffe9b0; border-radius:8px;
     box-shadow:0 8px 22px rgba(255,180,50,.22), 0 1px 0 rgba(255,255,255,.35) inset; letter-spacing:.24em; font-weight:800; }
   #root .deploy:hover:not(:disabled){ filter:brightness(1.06); color:#1a1408; background:linear-gradient(180deg,#ffe08f 0%,#ffbd40 100%); box-shadow:0 10px 26px rgba(255,180,50,.3); }
-  #root .deploy.ghost{ background:transparent; color:var(--amber); border-color:rgba(255,192,74,.55); box-shadow:none; }
-  #root .deploy.ghost:hover:not(:disabled){ background:rgba(255,192,74,.10); color:var(--amber); }
-  #root input:not([type=range]):not([type=checkbox]), #root textarea{ background:rgba(0,0,0,.35); border:1px solid rgba(127,146,216,.35); border-radius:6px;
+  #root .deploy.ghost{ background:transparent; color:var(--amber); border-color:rgba(245,183,59,.55); box-shadow:none; }
+  #root .deploy.ghost:hover:not(:disabled){ background:rgba(245,183,59,.10); color:var(--amber); }
+  #root input:not([type=range]):not([type=checkbox]), #root textarea{ background:rgba(0,0,0,.35); border:1px solid rgba(170,164,152,.35); border-radius:6px;
     color:var(--bone); padding:9px 12px; }
-  #root input:not([type=range]):focus, #root textarea:focus{ border-color:var(--amber); outline:none; box-shadow:0 0 0 2px rgba(255,192,74,.22); }
+  #root input:not([type=range]):focus, #root textarea:focus{ border-color:var(--amber); outline:none; box-shadow:0 0 0 2px rgba(245,183,59,.22); }
   *::-webkit-scrollbar{ width:8px; height:8px; }
-  *::-webkit-scrollbar-thumb{ background:rgba(127,146,216,.35); border-radius:8px; }
-  *::-webkit-scrollbar-thumb:hover{ background:rgba(127,146,216,.55); }
+  *::-webkit-scrollbar-thumb{ background:rgba(170,164,152,.35); border-radius:8px; }
+  *::-webkit-scrollbar-thumb:hover{ background:rgba(170,164,152,.55); }
   *::-webkit-scrollbar-track{ background:transparent; }
   /* v18.31, THE STYLING PASS, STAGE D: THE RUN CARD. A glass card with a soft drop shadow and a light from the top, the outcome
      word with a glow in its own colour, the feel tags as rounded pills, and LOG RUN AND RETURN as the one primary button.
      Positions, ids and every word are unchanged. */
-  #root .ocwin{ border-radius:14px; border:1px solid rgba(127,146,216,.45);
-    background:radial-gradient(900px 420px at 50% -12%, rgba(127,146,216,.16), transparent 62%), linear-gradient(180deg,var(--win-top),var(--win-bot));
+  #root .ocwin{ border-radius:14px; border:1px solid rgba(170,164,152,.45);
+    background:radial-gradient(900px 420px at 50% -12%, rgba(170,164,152,.16), transparent 62%), linear-gradient(180deg,var(--win-top),var(--win-bot));
     box-shadow:0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.07); }
   #root .outcome h1{ font-size:34px; text-shadow:0 0 22px currentColor, 0 3px 0 rgba(0,0,0,.5); }
   #root .tag{ border-radius:999px; padding:6px 14px; transition:background .12s, border-color .12s, color .12s; }
-  #root .tag:hover{ background:rgba(127,146,216,.10); }
+  #root .tag:hover{ background:rgba(170,164,152,.10); }
   #root #oc_btn{ background:linear-gradient(180deg,#ffd97f 0%,#ffb634 100%); color:#1a1408; border:1px solid #ffe9b0; border-radius:8px;
     font-weight:800; letter-spacing:.16em; box-shadow:0 8px 22px rgba(255,180,50,.22); }
   #root #oc_btn:hover{ filter:brightness(1.06); }
   /* v18.32, THE STYLING PASS, STAGE E: THE STASH AND THE SHOP. Item cells and shop cells as rounded tiles with a light from the
      top and a lift on hover; the tabs as rounded chips. The rarity border colours, sizes and every id are unchanged. */
-  #root .cell, #root .vcell{ border-radius:8px; background:linear-gradient(180deg,rgba(127,146,216,.07) 0%,rgba(0,0,0,.34) 100%);
+  #root .cell, #root .vcell{ border-radius:8px; background:linear-gradient(180deg,rgba(170,164,152,.07) 0%,rgba(0,0,0,.34) 100%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.05); }
-  #root .cell:hover, #root .vcell:hover{ background:linear-gradient(180deg,rgba(255,192,74,.14) 0%,rgba(0,0,0,.30) 100%); transform:translateY(-2px);
+  #root .cell:hover, #root .vcell:hover{ background:linear-gradient(180deg,rgba(245,183,59,.14) 0%,rgba(0,0,0,.30) 100%); transform:translateY(-2px);
     box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.07); }
-  #root .vcell.on{ background:linear-gradient(180deg,rgba(255,192,74,.22) 0%,rgba(255,192,74,.08) 100%); }
+  #root .vcell.on{ background:linear-gradient(180deg,rgba(245,183,59,.22) 0%,rgba(245,183,59,.08) 100%); }
   #root .invtab{ border-radius:8px; }
   #root .vendgrid{ border-radius:10px; }
   #root .vdet{ border-radius:12px; box-shadow:0 16px 40px rgba(0,0,0,.40); }
@@ -925,7 +938,7 @@
   </div>
 
   <div class="tpane" id="tpane_hire" style="display:none">
-    <div style="color:#ff5a4a;font-weight:800;letter-spacing:.14em;font-size:26px;text-align:center;margin:4px 0 8px">***EXPERIMENTAL***</div>
+    <div style="color:#e5482f;font-weight:800;letter-spacing:.14em;font-size:26px;text-align:center;margin:4px 0 8px">***EXPERIMENTAL***</div>
     <div class="msub" id="wallet_merc" style="color:var(--amber);font-weight:700"></div>
     <div class="vend">
       <div class="vendgrid" id="mercgrid"></div>
@@ -951,7 +964,7 @@
       <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 2500c</button>
     </div>
   </div>
-  <div id="wirtsec_offer" style="border:1px solid var(--amber);padding:10px 12px;margin:14px 0 0;background:rgba(255,192,74,.05)">
+  <div id="wirtsec_offer" style="border:1px solid var(--amber);padding:10px 12px;margin:14px 0 0;background:rgba(245,183,59,.05)">
     <div style="font-size:12px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px">LIMITED TIME OFFER</div>
     <div id="wirtlot" style="display:flex;align-items:center;gap:12px"></div>
   </div>
@@ -1086,7 +1099,7 @@
   <div class="plist" id="roadmap" style="max-height:190px"></div>
   <h2 style="border-top:1px solid var(--steel-hi)">Play an older build</h2>
   <div style="display:flex;gap:6px;padding:0 0 10px">
-    <select id="buildsel" style="flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:12px;padding:6px"></select>
+    <select id="buildsel" style="flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:12px;padding:6px"></select>
     <button id="buildgo" style="padding:6px 14px">OPEN</button>
   </div>
   <div style="display:flex;gap:8px;margin-top:4px">
@@ -1121,7 +1134,7 @@
     <!-- v19.40, seen on the 4K REWARDS screenshot (2026-10-08): the count was dark text meant for the amber fill, but with the fill near empty
          (XP out of 1,200,000) it sat on the dark track and could not be read. Light text with a dark edge reads on both; the bar is a little taller. -->
     <div id="seasonbar" style="height:20px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
-      <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffc04a,#ffc04a)"></div>
+      <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#f5b73b,#f5b73b)"></div>
       <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:13px;line-height:20px;color:#f3ead8;font-weight:700;text-shadow:0 0 3px #000,0 1px 2px #000"></div>
     </div>
     <button class="deploy ghost" id="seasonclaimall" style="margin:0 0 8px;padding:8px 18px;width:100%">CLAIM ALL</button>
@@ -1141,7 +1154,7 @@
     <div id="mfslothint" class="hint" style="margin-top:5px;font-size:14px;line-height:1.4"></div>
     <div style="display:flex;gap:6px;margin-top:7px">
       <input id="mfghostname" placeholder="friend&#39;s name" maxlength="18"
-        style="flex:1;background:rgba(9,14,40,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:14px;padding:7px">
+        style="flex:1;background:rgba(17,19,21,.92);color:var(--bone);border:1px solid var(--steel-hi);font-family:'Rubik',system-ui,sans-serif;font-size:14px;padding:7px">
       <button id="mfghost" style="flex:1">IMPORT A FRIEND</button>
     </div>
     <div id="mfghosthint" class="hint" style="margin-top:5px;font-size:14px;line-height:1.4"></div>
@@ -1695,7 +1708,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.81';
+var VER='23.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7920,8 +7933,16 @@ function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes==='function')?
 // with an optional accent bar down its left edge in a kind colour. hudText outlines a line in ink (round joins, 2 x hudRes px
 // unless the caller is already under a screen scale and passes its own width) and fills it on top. strokeText does not come
 // through the TX door, so it is handed TX(s) here; the fill goes through the door as every line does. No shadowBlur: frame cost.
-var HUDC={text:'#e8f0f6', dim:'#8a96a1', danger:'#ff5a4a', warn:'#ffc04a', extract:'#4de3d0', gain:'#7fc4a0', ally:'#bfe0ff',
-  special:'#d08ce8', plate:'rgba(6,9,13,.78)', dangerPlate:'rgba(40,8,6,.84)', ink:INK};
+// v23.82, UI REDESIGN ui2 (his #50 and #20, 2026-10-12): UIC is the graphite palette of the stylesheet (:root) as one JS table,
+// key for key (--ui-panel is UIC.ui_panel, --r-rare is UIC.r_rare), so the canvas HUD and the DOM menus can never drift apart.
+// HUDC keeps its names and its plates; its colours now come from UIC.
+var UIC={ui_void:'#0b0c0d', ui_bg:'#111315', ui_panel:'#16191b', ui_raised:'#1e2225', ui_hover:'#272c30', ui_line:'#2e3337',
+  ui_line_hi:'#4a5257', ui_scrim:'rgba(6,7,8,.82)', ui_paper:'#ebe5d6', ui_paper_2:'#ddd5c3', ui_paper_ink:'#17150f', ui_paper_ink_2:'#5a554a',
+  tx_1:'#efe9dc', tx_2:'#aaa498', tx_3:'#7a766e', tx_off:'#55524c', acc:'#f5b73b', acc_ink:'#1a1205', acc_dim:'rgba(245,183,59,.16)',
+  danger:'#e5482f', danger_bg:'rgba(60,12,8,.86)', warn:'#f5b73b', ok:'#76b97c', extract:'#47d8c6', ally:'#9cc7ff', armour:'#7fa6c9',
+  r_common:'#9da3a8', r_uncommon:'#5fbf6a', r_rare:'#3f9de9', r_elite:'#a866e0', r_gold:'#f08f2e'};
+var HUDC={text:UIC.tx_1, dim:UIC.tx_2, danger:UIC.danger, warn:UIC.warn, extract:UIC.extract, gain:UIC.ok, ally:UIC.ally,
+  special:UIC.r_elite, plate:'rgba(6,9,13,.78)', dangerPlate:'rgba(40,8,6,.84)', ink:INK};
 function hudPlate(x,y,w,h,accent,fill){
   if(!(w>0&&h>0)) return;
   var r=Math.max(0,Math.min(LH(4),h/2,w/2));
@@ -24260,7 +24281,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
       var h='<div style="margin-top:12px;border-top:1px solid var(--steel-hi);padding-top:9px">'+
             '<div style="font-size:12.5px;letter-spacing:.2em;color:var(--ash);margin-bottom:6px">HOW IT WENT</div>'+   // v21.37 (W-E2): the same size as HOW DID THAT RUN FEEL
             '<div style="display:flex;gap:10px;font-size:10.5px;letter-spacing:.14em;'+
-            'color:var(--ash);opacity:.75;padding:0 0 3px 0;border-bottom:1px solid rgba(127,146,216,.28);margin-bottom:3px">'+
+            'color:var(--ash);opacity:.75;padding:0 0 3px 0;border-bottom:1px solid rgba(170,164,152,.28);margin-bottom:3px">'+
             '<span style="width:92px;text-align:right">TIME</span>'+
             '<span style="flex:1">WHAT HIT YOU</span>'+
             '<span style="width:52px;text-align:right">DAMAGE</span>'+
@@ -36742,7 +36763,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.81: The what is new card lists the Tripwire Mine once. Check 23.81 fails on v23.80',
+  now:'v23.82: Every menu now uses the new graphite palette with one amber accent instead of the old navy and periwinkle. Check 23.82 fails on v23.81',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -49069,7 +49090,7 @@ function cosSwatch(c){
     return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;'+
            'background:#1b1f26;border:2px solid #14161b;position:relative">'+
            '<span style="position:absolute;left:50%;top:7px;transform:translateX(-50%);'+
-             'width:'+Math.round(15*bb.sh)+'px;height:9px;background:#7f92d8;border-radius:2px"></span>'+
+             'width:'+Math.round(15*bb.sh)+'px;height:9px;background:#4a5257;border-radius:2px"></span>'+
            '<span style="position:absolute;left:50%;top:17px;transform:translateX(-50%);'+
              'width:'+Math.round(13*bb.hip)+'px;height:9px;background:#59626f;border-radius:2px"></span>'+
            '</span>';
@@ -49602,7 +49623,7 @@ loadProfile().then(function(){
         if(!inf&&key!==SLOT) continue;
         var me=(key===SLOT), blk=slotBlocked(key);   // v17.93: blk, the save the other window has open
         h+='<div data-slot="'+key+'" style="cursor:'+(blk?'default':'pointer')+';opacity:'+(blk?'.55':'1')+';border:1px solid '+(me?'var(--amber)':'var(--steel-hi)')+
-           ';border-radius:3px;padding:8px 11px;background:rgba(9,13,28,.82);display:flex;justify-content:space-between;gap:10px;align-items:center">'+
+           ';border-radius:3px;padding:8px 11px;background:rgba(17,19,21,.82);display:flex;justify-content:space-between;gap:10px;align-items:center">'+
            '<b style="color:'+(me?'var(--amber)':'var(--bone)')+'">'+escHtml(inf?inf.name:'PILLAGER')+
            // v13.28: the current save said CONTINUING even with no raids on it, beside
            // the line reading 0 raids. The tag now reads the same run count.
