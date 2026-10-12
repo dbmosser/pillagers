@@ -1,0 +1,7 @@
+v24.32: the peddler
+
+The Peddler is a travelling trader now: a pack frame hung with goods, a duster, a wide hat and a dressed stall.
+
+Check 24.32. Fails on v24.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

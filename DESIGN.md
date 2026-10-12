@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.32 - THE PEDDLER
+
+Co-op hunt while he was away. His order of 2026-10-12, make them all look better. The Peddler was a pillager in an amber coat with the rig stripes across it, behind a table with three coloured squares on it. Now he is a travelling trader: a tall pack frame on his back with a bedroll on top and a pot, a coil of rope and a bottle hanging off it, a long leather duster and a wide brimmed hat that nobody else wears, so you know him from across the map. His table has a cloth over it and his stock sits on it as a roll, a box and a can. The lantern and its warm pool stay, the glow now painted once and reused, which is cheaper every frame. His clothes are his own and are never sold.
+
+MEASURED. Check 24.32 passes, and fails on v24.31.
 ## v24.31 - ARMOUR IN DARK STEEL
 
 Co-op hunt while he was away. His order of 2026-10-12, make them all look better, gritty and grounded like ARC Raiders. Body armour was a pale ice blue, the lightest thing on a pillager, so heavy armour read as a pale barrel with a head on it. It is dark steel now, heavier and darker than the cloth, held on by olive straps with buckles, and armour 3 adds a steel helmet over the crown with chin straps (a hat that covers the crown is drawn instead). The three shapes that tell the tiers apart, a plate, then shoulder pieces, then a collar and a ridge, are the same.

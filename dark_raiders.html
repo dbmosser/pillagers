@@ -1915,7 +1915,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.31';
+var VER='24.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25751,7 +25751,9 @@ var OUTFITS={
   outandroid: {coat:'#101216',trs:'#101216',boots:['#0c0d10','#14161b'],skin:'#f7ddc2',hands:'#f7ddc2',cut:'bob',hair:'white',hat:'none',beard:'clean',mark:'android'},
   outexplorer:{coat:'#2f8a86',trs:null,boots:['#5a3a1e','#7a5030'],skin:null,hands:null,cut:'tail',hair:'dark',hat:'none',beard:'clean',mark:'explorer'},
   outballer:  {coat:'#c41e1e',trs:null,boots:['#a81a1a','#cc2424','#f2f0ea','#14161b'],skin:null,hands:null,cut:'shaved',hat:'none',beard:'clean',mark:'baller',jersey:1},
-  outpoet:    {coat:'#14161b',trs:'#2a3a5a',boots:['#14161b','#1f2227','#f2f0ea','#e6e3da'],skin:null,hands:null,cut:'shaved',hat:'bandana',beard:'goatee',mark:'poet'}
+  outpoet:    {coat:'#14161b',trs:'#2a3a5a',boots:['#14161b','#1f2227','#f2f0ea','#e6e3da'],skin:null,hands:null,cut:'shaved',hat:'bandana',beard:'goatee',mark:'poet'},
+  // v23.xx (spr20): the Peddler's own clothes, never sold (not in COSMETICS). cloth: lit like the plate carrier bodies; norig: no rig.
+  outpeddler: {coat:'#7a5a3a',trs:'#3a3026',boots:['#2a2018','#3a2c20'],skin:null,hands:'#6a4a2e',cut:'crop',hair:'dark',hat:'none',beard:'stubble',mark:'peddler',cloth:1,norig:1}
 };
 function outfitOf(st){
   var id=st&&st.hero?cosWorn('outfit'):((st&&st.outfit)||'outnone');
@@ -25895,7 +25897,7 @@ function rigPouch(px,py,pw,ph){
   wc.fillStyle=RIG_OLIVE[1]; wc.fillRect(px,py,pw-0.5,ph-0.5);
   wc.fillStyle=RIG_OLIVE[2]; wc.fillRect(px,py,pw-0.5,0.7);
 }
-function drawRigPC(b,cx,ty,cc,jc,jh){
+function drawRigPC(b,cx,ty,cc,jc,jh,norig){   // v23.xx (spr20): norig, the cloth lit with no rig on it (a suit with cloth:1)
   var cHi=litHex(cc,.24,true), cLo=darkHex(cc,.40), rg=darkHex(cc,.30), rgHi=litHex(rg,.14), rgLo=darkHex(cc,.56),
       top=(b==='broad')?-23.8:(b==='curved'?-23.4:-22), low=(b==='curved')?-14.6:-12, i, x0, R;
   wc.save(); torsoPathPC(b,cx,ty,jh); wc.clip();
@@ -25903,7 +25905,8 @@ function drawRigPC(b,cx,ty,cc,jc,jh){
   wc.fillStyle=cHi; wc.fillRect(cx-12,ty+top-2,24,3.3);
   wc.save(); wc.beginPath(); wc.rect(cx-14,ty-28,13.6,28+low); wc.clip(); torsoPathPC(b,cx,ty,jh); wc.lineWidth=3; wc.strokeStyle=cHi; wc.stroke(); wc.restore();
   wc.save(); wc.beginPath(); wc.rect(cx+0.6,ty+top+1.4,14,low-top-1.4); wc.clip(); torsoPathPC(b,cx,ty,jh); wc.lineWidth=4; wc.strokeStyle=cLo; wc.stroke(); wc.restore();
-  if(b==='curved'){
+  if(norig){ /* v23.xx (spr20): cloth only */ }
+  else if(b==='curved'){
     var by=ty-18.0+(jc||0);
     wc.fillStyle=rg; wc.fillRect(cx-4.9,ty-26,1.5,6); wc.fillRect(cx+3.4,ty-26,1.5,6);   // the straps
     wc.fillStyle=rgLo; wc.fillRect(cx-6.5,ty-21.1,13,6.0);                               // the plate, moulded over her chest
@@ -26003,7 +26006,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=_TRS;
   rrF(x-6.3+swing2*.5,ty-11,4.6,7.5-liftB*.5,1);
   rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
-  var _PC=!OUTF&&!(st.hero&&cosWorn('fit')==='jersey');   // v23.xx (spr15): the plate carrier and the lit cloth; suits and the jersey keep their own paint
+  var _PC=(!OUTF&&!(st.hero&&cosWorn('fit')==='jersey'))||!!(OUTF&&OUTF.cloth);   // v23.xx (spr20): a suit with cloth:1 is lit the same way   // v23.xx (spr15): the plate carrier and the lit cloth; suits and the jersey keep their own paint
   if(_PC&&/^#[0-9a-fA-F]{6}$/.test(_TRS)){
     wc.fillStyle=litHex(_TRS,.16); wc.fillRect(x-6.3+swing2*.5,ty-10.6,0.9,4.4-liftB*.5); wc.fillRect(x+1.7+swing*.5,ty-10.6,0.9,4.4-liftA*.5);
     wc.fillStyle=darkHex(_TRS,.32); wc.fillRect(x-2.7+swing2*.5,ty-10.6,1.0,4.4-liftB*.5); wc.fillRect(x+5.3+swing*.5,ty-10.6,1.0,4.4-liftA*.5);
@@ -26046,7 +26049,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // rig, so the rig's near-black band was laid across the lower half of the
   // numeral. It goes on after the rig now, a dozen lines down.
   // chest rig, and a hit shimmer when recently hurt
-  if(_PC) drawRigPC(_BLD||'lean',x+leanX,ty,cc,_JG.c,_JG.h);   // v23.xx (spr15): the plate carrier, not stripes
+  if(_PC) drawRigPC(_BLD||'lean',x+leanX,ty,cc,_JG.c,_JG.h,!!(OUTF&&OUTF.norig));   // v23.xx (spr15): the plate carrier, not stripes
   else {
   wc.fillStyle='rgba(16,21,27,.85)';
   if(_BLD==='broad') wc.fillRect(x-8.2+leanX,ty-18,16.4,2.4); else if(!_BLD) wc.fillRect(x-6.5+leanX,ty-18,13,2.4);   // v20.01: wider on Broad; Curved wears a belt instead
@@ -26450,6 +26453,25 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillRect(x-6.3+swing2*.5,ty-11,4.6,3.2); wc.fillRect(x+1.7+swing*.5,ty-11,4.6,3.2);
       wc.fillStyle='#f4f2ec';
       wc.fillRect(x-6.3+swing2*.5,ty-8,4.6,0.8); wc.fillRect(x+1.7+swing*.5,ty-8,4.6,0.8);
+    } else if(_om==='peddler'){
+      // v23.xx (spr20): THE PEDDLER. A long leather duster from the waist to the boots, open at the front, lapels and a satchel strap
+      // on the chest, and a wide brimmed hat, a shape nobody else in the game has.
+      var _dLo=darkHex(cc,.45), _dHi=litHex(cc,.20,true);
+      wc.fillStyle=INK; wc.beginPath(); wc.moveTo(_ox-7.4,ty-13.4); wc.lineTo(_ox+7.4,ty-13.4); wc.lineTo(_ox+9.4,ty-2.4); wc.lineTo(_ox-9.4,ty-2.4); wc.closePath(); wc.fill();
+      wc.fillStyle=cc; wc.beginPath(); wc.moveTo(_ox-6.4,ty-12.6); wc.lineTo(_ox+6.4,ty-12.6); wc.lineTo(_ox+8.3,ty-3.4); wc.lineTo(_ox-8.3,ty-3.4); wc.closePath(); wc.fill();
+      wc.fillStyle=_dHi; wc.beginPath(); wc.moveTo(_ox-6.4,ty-12.6); wc.lineTo(_ox-5.0,ty-12.6); wc.lineTo(_ox-6.6,ty-3.4); wc.lineTo(_ox-8.3,ty-3.4); wc.closePath(); wc.fill();
+      wc.fillStyle=_dLo; wc.beginPath(); wc.moveTo(_ox+4.6,ty-12.6); wc.lineTo(_ox+6.4,ty-12.6); wc.lineTo(_ox+8.3,ty-3.4); wc.lineTo(_ox+6.0,ty-3.4); wc.closePath(); wc.fill();
+      wc.fillStyle=INK; wc.beginPath(); wc.moveTo(_ox-0.5,ty-12.6); wc.lineTo(_ox+0.5,ty-12.6); wc.lineTo(_ox+1.2,ty-3.4); wc.lineTo(_ox-1.2,ty-3.4); wc.closePath(); wc.fill();
+      wc.fillStyle=_dHi; wc.beginPath(); wc.moveTo(_ox-4.0,ty-21.6); wc.lineTo(_ox-1.6,ty-21.6); wc.lineTo(_ox-0.6,ty-14.2); wc.closePath(); wc.fill();
+      wc.fillStyle=_dLo; wc.beginPath(); wc.moveTo(_ox+1.6,ty-21.6); wc.lineTo(_ox+4.0,ty-21.6); wc.lineTo(_ox+0.6,ty-14.2); wc.closePath(); wc.fill();
+      wc.strokeStyle='#2e2016'; wc.lineWidth=1.3; wc.beginPath(); wc.moveTo(_ox-4.6,ty-21.4); wc.lineTo(_ox+4.8,ty-13.6); wc.stroke();
+      wc.fillStyle='#2a1e14'; wc.fillRect(_ox-6.4,ty-13.6,12.8,1.2); wc.fillStyle='#a8996a'; wc.fillRect(_ox-0.7,ty-13.6,1.4,1.2);
+      wc.fillStyle=INK;       rrF(hx2-12.6,ty-38.8,25.2,3.8,1.9);
+      rrF(hx2-7.6,ty-43.6,15.2,7.4,3);
+      wc.fillStyle='#4a3524'; rrF(hx2-12.0,ty-38.2,24.0,2.6,1.3);
+      wc.fillStyle='#5e4430'; rrF(hx2-7.0,ty-43.0,14.0,6.4,2.6);
+      wc.fillStyle='#2a1e14'; wc.fillRect(hx2-7.0,ty-39.2,14.0,1.3);
+      wc.fillStyle='#7c5c40'; wc.fillRect(hx2-6.0,ty-42.6,6.4,1.0); wc.fillRect(hx2-11.2,ty-38.2,8,0.8);
     } else if(_om==='poet'){
       // a gold chain at the collar and a white vest under the black.
       wc.fillStyle='#f4f2ec'; wc.fillRect(_ox-2.4,ty-21.4,4.8,7.4);
@@ -27025,6 +27047,16 @@ function drawCrawlerS(e){
   }
   wc.lineCap='butt'; wc.lineJoin='miter';
 }
+// v23.xx (spr20): the Peddler's lantern pool, painted once on its own canvas (the same gradient as before at full strength) and
+// drawn with the flicker as its alpha, instead of a new radial gradient every frame.
+var PEDGLOW=null;
+function pedGlow(){
+  if(PEDGLOW) return PEDGLOW;
+  var c=document.createElement('canvas'); c.width=132; c.height=132; var x=c.getContext('2d');
+  if(x){ var gr=x.createRadialGradient(66,66,2,66,66,66); gr.addColorStop(0,'rgba(255,196,90,0.40)'); gr.addColorStop(1,'rgba(255,196,90,0)');
+    x.fillStyle=gr; x.beginPath(); x.arc(66,66,66,0,6.2832); x.fill(); }
+  return PEDGLOW=c;
+}
 function drawPeddlerS(e){
   // A stall, not a man standing in a field: table, stock on the table, and the
   // lantern that makes him the one warm thing in the sector.
@@ -27038,23 +27070,56 @@ function drawPeddlerS(e){
   // v8.49, audit: 'none', not ''. An empty string falls through drawOp's mode
   // chain into the WEAPON branch, which defaults to a rifle when the actor has no
   // wep - so the merchant behind his stall was drawn holding one.
+  // v23.xx (spr20), HIS ORDER (2026-10-12) "make them all look better": THE PEDDLER. He was a pillager in an amber coat with the rig
+  // stripes across it (a bumblebee) behind three coloured squares. Now he is a travelling trader: a tall pack frame on his back with
+  // a bedroll on top and a pot, a coil of rope and a bottle hanging off it, a leather duster and a wide brimmed hat (his own outfit,
+  // outpeddler, never sold), a cloth over his table and his stock as a roll, a box and a can. The lantern and its warm pool stay, the
+  // glow now a disc painted once and reused instead of a new gradient every frame. Cosmetic only: no random numbers.
+  (function(){
+    var fx=e.x, fy=e.y-15;
+    wc.fillStyle=INK; wc.fillRect(fx-8.6,fy-49.6,3.4,31); wc.fillRect(fx+5.2,fy-49.6,3.4,31); wc.fillRect(fx-8.6,fy-50.2,17.2,3.4);
+    wc.fillStyle='#6a4e32'; wc.fillRect(fx-8.0,fy-49.0,2.2,30); wc.fillRect(fx+5.8,fy-49.0,2.2,30); wc.fillRect(fx-8.0,fy-49.6,16,2.2);
+    wc.fillStyle='#8a6a46'; wc.fillRect(fx-8.0,fy-49.6,16,0.8); wc.fillRect(fx-8.0,fy-49.0,0.8,30);
+    wc.fillStyle=INK; rrF(fx-9.4,fy-55.4,18.8,6.0,3);
+    wc.fillStyle='#55654a'; rrF(fx-8.8,fy-54.8,17.6,4.8,2.4);
+    wc.fillStyle='#71836a'; wc.fillRect(fx-7.6,fy-54.6,15,1);
+    wc.fillStyle='#3a2a1c'; wc.fillRect(fx-4.4,fy-55.0,1.3,5.4); wc.fillRect(fx+3.0,fy-55.0,1.3,5.4);
+    wc.fillStyle=INK; wc.beginPath(); wc.arc(fx-11.8,fy-37.6,4.1,0,6.2832); wc.fill();
+    wc.fillStyle='#3e454c'; wc.beginPath(); wc.arc(fx-11.8,fy-37.6,3.3,0,6.2832); wc.fill();
+    wc.fillStyle='#7c868f'; wc.fillRect(fx-14.0,fy-40.0,3.2,1.0);
+    wc.strokeStyle=INK; wc.lineWidth=1; wc.beginPath(); wc.moveTo(fx-11.8,fy-41.6); wc.lineTo(fx-8.6,fy-44); wc.stroke();
+    wc.strokeStyle=INK; wc.lineWidth=2.8; wc.beginPath(); wc.arc(fx+11.6,fy-41.0,2.8,0,6.2832); wc.stroke();
+    wc.strokeStyle='#b08a52'; wc.lineWidth=1.4; wc.beginPath(); wc.arc(fx+11.6,fy-41.0,2.8,0,6.2832); wc.stroke();
+    wc.fillStyle=INK; rrF(fx+9.6,fy-35.4,4.2,8.4,1.4);
+    wc.fillStyle='#3e6a52'; rrF(fx+10.2,fy-34.8,3.0,7.2,1);
+    wc.fillStyle='#8ec0a4'; wc.fillRect(fx+10.6,fy-34.0,0.8,4.2);
+  })();
   drawOp(e.x,e.y-15,e.face,(e.step||0)*3,e.coat,0.3,0,'none',0,
-    {moving:!!(e.fleeT||e._back),sprint:!!e.fleeT,ads:false,hurt:e.hitT});
+    {moving:!!(e.fleeT||e._back),sprint:!!e.fleeT,ads:false,hurt:e.hitT,outfit:'outpeddler'});   // v23.xx (spr20): in his own clothes
   wc.fillStyle='#7a5f40'; wc.fillRect(hx-25,hy-7,50,6);
   wc.fillStyle='#5a4530'; wc.fillRect(hx-25,hy-1,50,6);
   wc.fillStyle='#3a2c1e'; wc.fillRect(hx-23,hy+5,4,9); wc.fillRect(hx+19,hy+5,4,9);
+  // v23.xx (spr20): a lit edge on the table, a cloth hanging off its front, and the stock as a roll, a box and a can
+  wc.fillStyle='#9a7a52'; wc.fillRect(hx-25,hy-7,50,1);
+  wc.fillStyle='#24363a'; wc.fillRect(hx-20,hy-2,40,8.6);
+  wc.fillStyle='#3e5a58'; wc.fillRect(hx-20,hy-2,40,7.8);
+  wc.fillStyle='#5c7c78'; wc.fillRect(hx-20,hy-2,40,1);
+  for(var _cf=0;_cf<7;_cf++) wc.fillRect(hx-18.6+_cf*6,hy+5.8,2.2,1.6);
   for(var q=0;q<3;q++){
     var S=e.stock&&e.stock[q]; if(!S) continue;
-    wc.fillStyle=S.sold?'#3a3630':((ITEMS[S.k]&&ITEMS[S.k].c)||'#c9b458');
-    wc.fillRect(hx-19+q*13,hy-15,9,8);
-    wc.fillStyle='rgba(18,14,12,.5)'; wc.fillRect(hx-19+q*13,hy-8,9,1);
+    var _sc=S.sold?'#3a3630':((ITEMS[S.k]&&ITEMS[S.k].c)||'#c9b458'), _bx=hx-19+q*13, _by=hy-7;
+    wc.fillStyle='rgba(18,14,12,.5)'; wc.fillRect(_bx-0.5,_by-1,10,1);
+    if(q===0){ wc.fillStyle=INK; rrF(_bx-0.6,_by-7.2,10.2,7.2,3.4); wc.fillStyle=_sc; rrF(_bx,_by-6.6,9,6,2.8);
+      wc.fillStyle='rgba(255,255,255,.28)'; wc.fillRect(_bx+1.4,_by-6.2,6.2,1); wc.fillStyle='rgba(0,0,0,.28)'; wc.fillRect(_bx+3.2,_by-6.6,1.2,6); }
+    else if(q===1){ wc.fillStyle=INK; wc.fillRect(_bx-0.6,_by-9,10.2,9); wc.fillStyle=_sc; wc.fillRect(_bx,_by-8.4,9,8.4);
+      wc.fillStyle='rgba(255,255,255,.28)'; wc.fillRect(_bx,_by-8.4,9,1); wc.fillStyle='rgba(0,0,0,.30)'; wc.fillRect(_bx,_by-6.4,9,0.8); wc.fillRect(_bx+3.9,_by-5.6,1.2,4); }
+    else { wc.fillStyle=INK; rrF(_bx+0.2,_by-10,8.6,10,1.6); wc.fillStyle=_sc; wc.fillRect(_bx+0.8,_by-9.4,7.4,9.4);
+      wc.fillStyle='rgba(255,255,255,.30)'; wc.beginPath(); wc.ellipse(_bx+4.5,_by-9.2,3.6,1.1,0,0,6.2832); wc.fill();
+      wc.fillStyle='rgba(0,0,0,.30)'; wc.fillRect(_bx+0.8,_by-4.6,7.4,1); wc.fillRect(_bx+6.6,_by-9.4,1.6,9.4); }
   }
   var lp=0.74+0.26*Math.sin((G?G.t:0)*2.2);
-  wc.save(); wc.globalCompositeOperation='lighter';
-  var gr=wc.createRadialGradient(hx+28,hy-30,2,hx+28,hy-30,66);
-  gr.addColorStop(0,'rgba(255,196,90,'+(0.40*lp).toFixed(3)+')');
-  gr.addColorStop(1,'rgba(255,196,90,0)');
-  wc.fillStyle=gr; wc.beginPath(); wc.arc(hx+28,hy-30,66,0,6.2832); wc.fill();
+  wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=lp;   // v23.xx (spr20): the warm pool, a baked disc (pedGlow)
+  wc.drawImage(pedGlow(),hx+28-66,hy-30-66,132,132);
   wc.restore();
   wc.fillStyle='#3a2c1e'; wc.fillRect(hx+27,hy-24,2,24);
   wc.fillStyle='#ffc04a'; wc.fillRect(hx+25,hy-34,6,8);
@@ -38257,7 +38322,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.31: Body armour is dark steel with olive straps, and the heaviest armour adds a steel helmet. Check 24.31 fails on v24.30',
+  now:'v24.32: The Peddler is a travelling trader now: a pack frame hung with goods, a duster, a wide hat and a dressed stall. Check 24.32 fails on v24.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
