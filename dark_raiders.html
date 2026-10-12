@@ -1915,7 +1915,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.29';
+var VER='24.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38240,7 +38240,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.29: Nights are darker away from you and the lamps, with brighter pools of lamplight; your own light is unchanged. Check 24.29 fails on v24.28',
+  now:'v24.30: The RUN OVER score counts up from  to the final score. Check 24.30 fails on v24.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47889,6 +47889,26 @@ function arcadeOverRow(nm,r){
   if(r.d>=0) t+='  \u00b7  '+(r.d|0)+' DEATHS';
   return t;
 }
+// v23.xx, HIS ANSWERS (2026-10-12), answer 20: "RUN OVER: score count-up plus best moments". THE SCORE COUNTS UP. The RUN OVER card
+// showed the final score at once. Now the score rolls up from $0 to the final figure over 1.4 s (fast first, settling at the end),
+// timed from the run end (ARCADE.over.at), so a rebuild of the card (a letter of the initials) carries on where it was and never
+// starts the count again. Only the number moves; the line around it (SCORE, TEAM SCORE) is the card's own. A rAF step keeps it
+// smooth and the half second attract tick sets it too, so a window with no frames still lands on the final score.
+var ARCADE_OVER_CU=1400;
+function arcadeOverCount(c,o){
+  var el=c&&c.querySelector('.aos'), full, fin, k, v, t;
+  if(!el||!o) return false;
+  full=el.getAttribute('data-full'); if(full===null){ full=el.textContent; el.setAttribute('data-full',full); }
+  fin=arcadeCr(+o.team||0);
+  if(full.indexOf(fin)<0) return false;
+  k=clamp((Date.now()-(+o.at||0))/ARCADE_OVER_CU,0,1);
+  v=Math.round((+o.team||0)*(1-Math.pow(1-k,3)));
+  t=full.replace(fin,function(){ return arcadeCr(v); });
+  if(el.textContent!==t) el.textContent=t;
+  c.setAttribute('data-cu',k<1?'1':'0');
+  if(k<1&&!o.cuRaf&&typeof requestAnimationFrame==='function'){ o.cuRaf=1; requestAnimationFrame(function(){ o.cuRaf=0; try{ if(ARCADE.over===o&&c.style.display!=='none') arcadeOverCount(c,o); }catch(_cu){} }); }
+  return k<1;
+}
 function arcadeOverSync(){
   var o=ARCADE.over, oc=!!(o&&Date.now()-(+o.at||0)<ARCADE_IDLE.overMs), ini=arcadeIniLive()?ARCADE.ini:null,
       on=!!(ARCADE.on&&(oc||ini)&&!(G&&G.arcade&&!arcadeBenched())), c, i, ln, el, sig;   // v23.41 (arcade18): the initials card keeps it up
@@ -47902,6 +47922,7 @@ function arcadeOverSync(){
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1]; c.appendChild(el); }
     if(ini) arcadeIniDraw(c,ini);
   }
+  if(on&&oc){ try{ arcadeOverCount(c,o); }catch(_cu){} }   // v23.xx (his answer 20): the score counts up
   c.style.display=on?'block':'none';
   return on;
 }

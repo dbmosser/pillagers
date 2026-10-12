@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.30 - RUN OVER: THE SCORE COUNTS UP
+
+Co-op hunt while he was away. His answer 20 (2026-10-12): RUN OVER with a score count-up. The RUN OVER card showed the final score at once. Now the score rolls up from $0 to the final figure over a second and a half, quick at first and settling at the end, the way an arcade cabinet lands it. Typing your initials does not start the count again.
+
+MEASURED. Check 24.30 passes, and fails on v24.29.
 ## v24.29 - DARKER, MOODIER NIGHTS
 
 Co-op hunt while he was away. His answer 39 (2026-10-12): darker, moodier nights. The dark goes where you are not and the light stays where you are: at night the whole frame is about 11 percent darker and the dark streets away from you and the lamps more, the lamps cut through the dark harder so they read as pools of light, and your own light opens a little wider so the ground at your feet is as readable as before. The brightness setting still lifts it for anyone who wants it lighter. Day is unchanged.

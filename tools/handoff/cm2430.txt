@@ -1,0 +1,7 @@
+v24.30: run over: the score counts up
+
+The RUN OVER score counts up from $0 to the final score.
+
+Check 24.30. Fails on v24.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

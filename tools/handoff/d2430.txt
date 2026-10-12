@@ -1,0 +1,5 @@
+## v24.30 - RUN OVER: THE SCORE COUNTS UP
+
+Co-op hunt while he was away. His answer 20 (2026-10-12): RUN OVER with a score count-up. The RUN OVER card showed the final score at once. Now the score rolls up from $0 to the final figure over a second and a half, quick at first and settling at the end, the way an arcade cabinet lands it. Typing your initials does not start the count again.
+
+MEASURED. Check 24.30 passes, and fails on v24.29.
