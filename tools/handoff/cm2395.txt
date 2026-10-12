@@ -1,0 +1,7 @@
+v23.95: the tripwire mine keeps a key with a plate
+
+A Tripwire Mine always has a belt key, on key 4 or 3 when an armour plate fills key 9, and the controller can select and throw it.
+
+Check 23.95. Fails on v23.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

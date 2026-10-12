@@ -1,0 +1,5 @@
+## v23.95 - THE TRIPWIRE MINE KEEPS A KEY WITH A PLATE
+
+Co-op hunt while he was away. From the review of the Tripwire Mine build, his answer 32 (on the belt like a grenade). Carrying an armour plate filled all nine belt keys (four gun keys, three grenades, Medical and the plate), so a Tripwire Mine got no cell at all: Q skipped it and a controller player, who can only throw from a belt cell, could not throw it until the plate was used. Now a mine with no cell takes the highest empty gun key (key 4, then key 3), the way a Stim already does, and it stays on that key for the rest of the raid, so using the plate later does not move it.
+
+MEASURED. Check 23.95 passes, and fails on v23.94.

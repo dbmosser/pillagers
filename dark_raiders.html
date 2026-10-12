@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.94';
+var VER='23.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17802,6 +17802,25 @@ function hotbarSlots(){
       if(dupe) break;
     }
     if(dupe) out[di]={k:'empty:'+di,name:'Empty slot',kind:'empty',count:0,c:'#4d5762'};
+  }
+  // v23.xx (gameplayfixa), from the review of feat1a, his #6 and answer 32 ("on the belt like a grenade"): THE TRIPWIRE MINE HAS
+  // A KEY WHILE A PLATE IS CARRIED. Four gun keys, three throws, Medical and the plate fill all nine keys, so the mine cell was never
+  // pushed: Q passed it over (no cell, v15.06) and the pad, which throws only from a belt cell, could not throw it at all until the
+  // plate was spent. A carried mine that no cell shows now takes the highest vacant gun key (4, then 3), as a Stim does (v22.42),
+  // as an automatic pin, so it stays on that key for the raid: spending the plate later does not move it to key 9.
+  if(G.pouch&&G.pouch.trip>0&&ITEMS.trip&&!G.sim&&!G.hubFloor&&!G.over){
+    var _tpS=false, _tpI;
+    for(_tpI=0;_tpI<out.length;_tpI++) if(out[_tpI]&&(out[_tpI].k==='throw:trip'||out[_tpI].itemKey==='trip')) _tpS=true;
+    if(!_tpS){
+      G.hotAssign=G.hotAssign||{};
+      for(_tpI=GUNKEYS-1;_tpI>=2;_tpI--){
+        if(_tpI<out.length&&out[_tpI]&&out[_tpI].vacant&&out[_tpI].k==='gunkey:'+_tpI&&G.hotAssign[_tpI]===undefined){
+          G.hotAssign[_tpI]='trip'; G.hotAuto=G.hotAuto||{}; G.hotAuto[_tpI]=1;
+          out[_tpI]={k:'throw:trip',name:ITEMS.trip.name,icon:'trip',kind:'throw',count:G.pouch.trip,c:ITEMS.trip.c||'#cdd6dd',assigned:1,itemKey:'trip',empty:0};
+          break;
+        }
+      }
+    }
   }
   return out;
 }
@@ -37000,7 +37019,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.94: HUD and raid text now use the same condensed caps face as the menus. Check 23.94 fails on v23.93',
+  now:'v23.95: A Tripwire Mine always has a belt key, on key 4 or 3 when an armour plate fills key 9, and the controller can select and throw it. Check 23.95 fails on v23.94',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,302 @@
+[
+    {
+        "name":  "01-title-mode-menu",
+        "screen":  "Title / mode menu: logo, 3 step cards, controls line, mode rows, SAVES",
+        "staging":  "Fresh profile. Open http://localhost:8808/fixture.html in headless Chrome launched with --window-size=3872,2263 (gives a 3840x2160 viewport), wait 4 s, shoot"
+    },
+    {
+        "name":  "02-welcome-pack",
+        "screen":  "WELCOME PACK modal (first run)",
+        "staging":  "__pinDPR(1); click #titlestart (1 PLAYER), wait 1.5 s"
+    },
+    {
+        "name":  "03-hub-floor",
+        "screen":  "Undercroft hub floor with station labels, belt and toast",
+        "staging":  "click #welcometake, wait 1.5 s"
+    },
+    {
+        "name":  "04-stash-terminal",
+        "screen":  "THE STASH: stash grid, loadout backpack, tactical belt, sell row, freebie kit",
+        "staging":  "__hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "05-sector-page",
+        "screen":  "Sector page WHERE ARE YOU GOING? (maps, surface, weather, going-up summary)",
+        "staging":  "__hubEnter(); __station(\u0027lift\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "06-terms",
+        "screen":  "Terms modal (lift T)",
+        "staging":  "__hubEnter(); __station(\u0027lift\u0027,\u0027KeyT\u0027)"
+    },
+    {
+        "name":  "07-party-coop",
+        "screen":  "PARTY / co-op window (lift F)",
+        "staging":  "__hubEnter(); __station(\u0027lift\u0027,\u0027KeyF\u0027)"
+    },
+    {
+        "name":  "08-shop",
+        "screen":  "Trader: SHOP tab",
+        "staging":  "__hubEnter(); __station(\u0027trader\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "09-craft",
+        "screen":  "Trader: CRAFT tab",
+        "staging":  "__hubEnter(); __station(\u0027trader\u0027,\u0027KeyR\u0027)"
+    },
+    {
+        "name":  "10-hire",
+        "screen":  "Trader: HIRE tab",
+        "staging":  "__hubEnter(); __station(\u0027trader\u0027,\u0027KeyF\u0027)"
+    },
+    {
+        "name":  "11-wirt-gambler",
+        "screen":  "Wirt the Gambler modal",
+        "staging":  "__hubEnter(); __station(\u0027gamble\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "12-mainframe-contracts",
+        "screen":  "Mainframe: contracts",
+        "staging":  "__hubEnter(); __station(\u0027mf\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "13-mainframe-rewards",
+        "screen":  "Mainframe: rewards",
+        "staging":  "__hubEnter(); __station(\u0027mf\u0027,\u0027KeyR\u0027)"
+    },
+    {
+        "name":  "14-mainframe-racks",
+        "screen":  "Mainframe: racks",
+        "staging":  "__hubEnter(); __station(\u0027mf\u0027,\u0027KeyF\u0027)"
+    },
+    {
+        "name":  "15-mainframe-stats",
+        "screen":  "Mainframe: your stats",
+        "staging":  "__hubEnter(); __station(\u0027mf\u0027,\u0027KeyT\u0027)"
+    },
+    {
+        "name":  "16-bar-last-pour",
+        "screen":  "The Last Pour bar modal",
+        "staging":  "__hubEnter(); __station(\u0027bar\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "17-fashion-mirror",
+        "screen":  "FASHION / appearance (BUILD/character look) modal",
+        "staging":  "__hubEnter(); __station(\u0027mirror\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "18-settings-hub",
+        "screen":  "Settings from the hub station, top of DISPLAY tab",
+        "staging":  "__hubEnter(); __station(\u0027dev\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "19-raid-hud-drop-first-raid",
+        "screen":  "In-raid HUD at drop on the first raid (LOANER GUN + RAIN callouts, legend, pillager list, conditions/contracts, belt, HP)",
+        "staging":  "__hubEnter(); __station(\u0027lift\u0027,\u0027KeyR\u0027) (quick ascent), wait 1.2 s"
+    },
+    {
+        "name":  "20-raid-hud-drop",
+        "screen":  "In-raid HUD 2.5 s after a kitted drop",
+        "staging":  "close settings (#closesettings); __topClear(); __deploy({kit:[\u0027gun_carbine\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027smoke\u0027],seed:4242,mapIx:0}), wait 2.5 s"
+    },
+    {
+        "name":  "21-raid-hud-calm",
+        "screen":  "In-raid HUD calm, extraction-point banner, CONCEALED IN COVER",
+        "staging":  "same raid, wait 7 s more"
+    },
+    {
+        "name":  "22-raid-map-open",
+        "screen":  "Sector map overlay (M)",
+        "staging":  "keydown+keyup KeyM dispatched on window, wait 1.2 s"
+    },
+    {
+        "name":  "23-raid-backpack-open",
+        "screen":  "In-raid BACKPACK panel (B)",
+        "staging":  "KeyM again to close, then KeyB, wait 1.5 s"
+    },
+    {
+        "name":  "24-raid-controls-full-H",
+        "screen":  "Full controls list (H)",
+        "staging":  "KeyB to close, then KeyH, wait 1.5 s"
+    },
+    {
+        "name":  "25-raid-pause-box",
+        "screen":  "RAID PAUSED box (normal mode) with feedback box and buttons",
+        "staging":  "KeyH to close, then KeyP, wait 1.5 s"
+    },
+    {
+        "name":  "26-settings-from-pause-top",
+        "screen":  "Settings opened from pause, top (THE RAID section)",
+        "staging":  "click #pausesetbtn"
+    },
+    {
+        "name":  "27-settings-scroll-600",
+        "screen":  "Settings list scrolled (graphics/sound rows)",
+        "staging":  "document.getElementById(\u0027setlist\u0027).scrollTop=600"
+    },
+    {
+        "name":  "28-settings-scroll-1200",
+        "screen":  "Settings list scrolled (difficulty rows)",
+        "staging":  "#setlist scrollTop=1200"
+    },
+    {
+        "name":  "29-settings-scroll-1800",
+        "screen":  "Settings list scrolled (keys, kid mode, text size, layout, music)",
+        "staging":  "#setlist scrollTop=1800"
+    },
+    {
+        "name":  "30-settings-scroll-2400",
+        "screen":  "Settings list bottom (save file, restore, tuning, dev box)",
+        "staging":  "#setlist scrollTop=2400 (clamps to ~2178)"
+    },
+    {
+        "name":  "31-settings-send-play-data",
+        "screen":  "Settings SEND PLAY DATA tab",
+        "staging":  "document.querySelectorAll(\u0027#settabs .invtab\u0027)[1].click()"
+    },
+    {
+        "name":  "32-keys-window",
+        "screen":  "CHANGE KEYS window (keysmodal)",
+        "staging":  "click tab [0] then #set_keys"
+    },
+    {
+        "name":  "33-raid-fight-alerts",
+        "screen":  "In-raid fight: THE PILLBOX HAS SEEN YOU alert, LOCATION REVEALED, enemy name tags, HP 83",
+        "staging":  "remove .on from open modals, click #resumebtn; move the 3 nearest live G.ents to player+(220..340, -80..100), set alert=1,state=\u0027chase\u0027,seen=1; __say(\u0027LOCATION REVEALED\u0027); wait 1.8 s"
+    },
+    {
+        "name":  "34-raid-downed-pickups",
+        "screen":  "DOWN state (self-revive timer, HP 0, damage number) plus the pickup stack and world loot labels",
+        "staging":  "same raid: __openFull() on the 3 nearest G.containers (throws after granting, harmless); the pillbox downed the player meanwhile; wait 1.5 s"
+    },
+    {
+        "name":  "35-kia-card",
+        "screen":  "KILLED IN ACTION card with feedback tags",
+        "staging":  "wait ~16 s for the down timer to expire"
+    },
+    {
+        "name":  "36-raid-low-health",
+        "screen":  "In-raid HUD at low health (HP 18)",
+        "staging":  "__topClear(); __deploy({kit:[\u0027gun_rifle\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027],seed:777,mapIx:0}); __state().player.hp=18; wait 2.5 s"
+    },
+    {
+        "name":  "37-raid-extracting-countdown",
+        "screen":  "Extraction countdown: ring, EXTRACT B INBOUND 15s, 9 HOSTILES CLOSING IN, pickup stack",
+        "staging":  "same raid: hp=100; player to G.active x+10,y+10; __openFull(nearest container); z=G.active: z.beaconT=__cfg().extractWait*0.6, hold=null, siege fields reset, G.beaconT=z.beaconT; wait 3 s"
+    },
+    {
+        "name":  "38-extracted-card",
+        "screen":  "EXTRACTED card",
+        "staging":  "__endRaid(\u0027extract\u0027), wait 2.5 s"
+    },
+    {
+        "name":  "39-hub-after-raid",
+        "screen":  "Hub on return after a raid",
+        "staging":  "click #oc_btn (LOG RUN AND RETURN), wait 2 s"
+    },
+    {
+        "name":  "40-whats-new-card",
+        "screen":  "What\u0027s New card (NEW IN v23.48) over the hub",
+        "staging":  "remove .on from modals; __wnseen(0) (needs P.runs\u003e0); wait 1.5 s"
+    },
+    {
+        "name":  "41-hub-backpack",
+        "screen":  "Backpack opened on the hub floor",
+        "staging":  "__wnseen(1); __hubBagSet(true); wait 1.5 s"
+    },
+    {
+        "name":  "42-hub-pause-box",
+        "screen":  "Pause box on the hub (RETURN TO THE UNDERCROFT / CHARACTER SELECTION)",
+        "staging":  "__hubBagSet(false); KeyP; wait 1.5 s"
+    },
+    {
+        "name":  "43-stash-after-raid",
+        "screen":  "THE STASH after raids (loot in it)",
+        "staging":  "KeyP to close; __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027)"
+    },
+    {
+        "name":  "44-title-from-character-select",
+        "screen":  "Title reached through RETURN TO CHARACTER SELECTION (returning player)",
+        "staging":  "__hubEnter(); KeyP; after 0.5 s click #charselbtn; wait 1.5 s"
+    },
+    {
+        "name":  "45-arcade-attract-board",
+        "screen":  "Arcade attract: PRESS ANY BUTTON + TONIGHT\u0027S BEST (no scores) + HAPPY HALLOWEEN",
+        "staging":  "title up; click #modearcade1 (1 PLAYER ARCADE DEMO); wait 2.5 s"
+    },
+    {
+        "name":  "46-arcade-attract-how-to-play",
+        "screen":  "Arcade attract: HOW TO PLAY page (keyboard + controller table)",
+        "staging":  "wait ~10 s more (board 10 s then howto 10 s; no clip on this machine)"
+    },
+    {
+        "name":  "47-arcade-drop-controls-card",
+        "screen":  "Arcade drop with the controls card",
+        "staging":  "dispatch KeyK on window (any key), wait 2.5 s"
+    },
+    {
+        "name":  "48-arcade-hud-move-to-start",
+        "screen":  "Arcade HUD before start: SCORE, shield ring, MOVE TO START, armour bar",
+        "staging":  "wait 12 s without input"
+    },
+    {
+        "name":  "49-arcade-pause-box",
+        "screen":  "Arcade pause box (RESUME / END RUN)",
+        "staging":  "KeyP, wait 1.5 s"
+    },
+    {
+        "name":  "50-arcade-hud-live",
+        "screen":  "Arcade HUD after the run starts",
+        "staging":  "click #resumebtn; hold KeyW 1.5 s (keydown, keyup later); wait 9 s"
+    },
+    {
+        "name":  "51-arcade-alert-reinforcements",
+        "screen":  "Arcade alert PILLAGER REINFORCEMENTS with sentries near the player",
+        "staging":  "move 3 crawlers/sentries to player+160, hp=1, synthetic mousemove/mousedown/mouseup at __w2s point (did not kill); wait 1.2 s"
+    },
+    {
+        "name":  "52-arcade-run-over",
+        "screen":  "Arcade RUN OVER card, score $0",
+        "staging":  "KeyP, then after 0.5 s click #arcendbtn; wait 2.5 s"
+    },
+    {
+        "name":  "53-arcade-extracted-bonus-initials",
+        "screen":  "Arcade EXTRACTED! bonus card + EXTRACT IN PROGRESS callout + TOP 10 initials card",
+        "staging":  "KeyK to drop again; hold KeyW 1.2 s; player to G.active; z.beaconT=2, G.beaconT=2; keydown KeyE (held); wait 4 s"
+    },
+    {
+        "name":  "54-arcade-initials-redrop",
+        "screen":  "Arcade initials card after re-drop (SHIELD MOVE TO START)",
+        "staging":  "wait 3 s more"
+    },
+    {
+        "name":  "55-arcade-run-over-scored",
+        "screen":  "Arcade RUN OVER card with $2,500",
+        "staging":  "keyup KeyE, Enter; then KeyP and click #arcendbtn; wait 2.5 s"
+    },
+    {
+        "name":  "56-arcade-attract-board-scored",
+        "screen":  "Arcade attract TONIGHT\u0027S BEST with one row (???), LAST RUN, BEST EVER",
+        "staging":  "poll until #attract .arcpage data-ph==\u0027board\u0027 (about 2 s)"
+    },
+    {
+        "name":  "57-title-2p-coop-picked",
+        "screen":  "Title after picking 2 PLAYER CO-OP: blocked-popup message + RETRY",
+        "staging":  "__topClear() (leaves arcade, lands on hub); KeyP; click #charselbtn; click #modecoop (headless blocks the popup); wait 4 s"
+    },
+    {
+        "name":  "58-coop-player2-window-title",
+        "screen":  "Player 2 window title (PLAYER 2 explainer, ENTER THE UNDERCROFT)",
+        "staging":  "open a new tab at fixture.html?p2=1\u0026mode=coop\u0026pair=zzshot via /json/new, wait 6 s, __pinDPR(1), shoot with -Match \u0027p2=1\u0027, close the tab"
+    },
+    {
+        "name":  "59-raid-abandon-confirm",
+        "screen":  "Pause box with YES, ABANDON THIS RUN confirm",
+        "staging":  "__runPrep(); __topClear(); __deploy({kit:[\u0027gun_smg\u0027,\u0027bandage\u0027,\u0027medkit\u0027],seed:4242,mapIx:1}); after 2.5 s KeyP; after 0.6 s click #abandonbtn"
+    },
+    {
+        "name":  "60-abandoned-card",
+        "screen":  "ABANDONED outcome card",
+        "staging":  "click #confirmabandon, wait 2.5 s"
+    }
+]
