@@ -1,0 +1,7 @@
+v23.71: the version restarts at v0.0001
+
+The version shown to players restarts at v0.0001.
+
+Check 23.71. Fails on v23.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

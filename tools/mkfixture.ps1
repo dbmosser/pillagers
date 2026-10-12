@@ -5840,6 +5840,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.71',what:'his answer (2026-10-12): the version players see restarts at v0.0001, counted one per build from the build that made the change, on the title and the corner label, while the run report carries both numbers and the internal VER is unchanged',
+   run:function(){
+     if(typeof verShown!=='function'||typeof PVER_RESET!=='string') return 'no player version in this build: the title still shows the build number';
+     var bad=[], a=PVER_RESET.split('.'), r=parseInt(a[0],10)*100+parseInt(a[1],10), b=String(VER).split('.'), v=parseInt(b[0],10)*100+parseInt(b[1],10), n=v-r+1, want, s, t, el, rep='';
+     function num(k){ return Math.floor(k/100)+'.'+(k%100<10?'0':'')+(k%100); }
+     if(verShown(PVER_RESET)!=='v0.0001') bad.push('the reset build shows '+verShown(PVER_RESET)+', not v0.0001');
+     if(verShown(num(r+1))!=='v0.0002') bad.push('the build after the reset shows '+verShown(num(r+1))+', not v0.0002');
+     if(verShown(num(r+12))!=='v0.0013') bad.push('twelve builds on shows '+verShown(num(r+12))+', not v0.0013');
+     if(verShown(num(r-5))!=='v'+num(r-5)) bad.push('a copy from before the reset is shown as '+verShown(num(r-5)));
+     if(verShown(num(r-5),1)!=='v0.0001') bad.push('the floored form of an older number is '+verShown(num(r-5),1));
+     if(!(n>=1)) bad.push('this build '+VER+' is older than its own reset '+PVER_RESET);
+     s=String(n); while(s.length<4) s='0'+s; want='v0.'+s;
+     if(verShown(VER)!==want) bad.push('this build shows '+verShown(VER)+', not '+want);
+     if(!/^\d+\.\d\d$/.test(String(VER))) bad.push('the internal VER is no longer a build number: '+VER);
+     el=document.getElementById('titlever'); t=el?String(el.textContent||''):'';
+     if(el&&t!==want) bad.push('the title shows '+t+', not '+want);
+     el=document.getElementById('verlabel'); t=el?String(el.textContent||''):'';
+     if(el&&t!==''&&t!==want) bad.push('the corner label shows '+t+', not '+want);
+     try{ rep=String(buildExport()); }catch(x){ bad.push('the run report threw: '+(x&&x.message||x)); }
+     if(rep&&(rep.indexOf(want)<0||rep.indexOf('build '+VER)<0)) bad.push('the run report header does not carry both '+want+' and build '+VER+': '+rep.split('\n')[0]);
+     return bad.length?bad.join('; '):null; }},
   {v:'23.70',what:'the what is new card is stamped within 0.15 of the build and leads with the tripwire mine news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

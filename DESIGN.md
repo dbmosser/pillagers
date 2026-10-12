@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.71 - THE VERSION RESTARTS AT V0.0001
+
+Co-op hunt while he was away. His answer of 2026-10-12: the version players see restarts at v0.0001. The title and the corner label now count from this build as v0.0001, one step per build after it. The internal build number (used by the tools, the party link and the crash records) is unchanged, so nothing that compares versions breaks; the run report shows both numbers, and a copy too old to link is still told its own number.
+
+MEASURED. Check 23.71 passes, and fails on v23.70.
 ## v23.70 - THE WHAT IS NEW CARD NAMES THE TRIPWIRE MINE
 
 Co-op hunt while he was away. The card was stamped v23.65 and the stamp may not trail the build by more than 0.15. Its new second line names the Tripwire Mine of 2026-10-12, his feature 6: on the belt like a grenade, a wire across a doorway, and it blows when a machine or a pillager walks through.

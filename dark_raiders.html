@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.70';
+var VER='23.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35167,7 +35167,7 @@ function drawHubHUD(ox,oy){
     // "UPDATED TO v6.26" was read by a v6.34 player as a claim about THEIR build,
     // and it was false. "NEW IN" says the same thing about the list instead, which
     // is what the number actually describes, and cannot go stale.
-    ctx.fillText('NEW IN v'+WHATSNEW_VER,_wnWW/2,wnY+LH(32));
+    ctx.fillText('NEW IN '+verShown(WHATSNEW_VER,1),_wnWW/2,wnY+LH(32));
     ctx.textAlign='left';
     ctx.font=FS(TYPE[wnRole]); ctx.fillStyle='#cdd6dd';
     var wnCy=wnY+LH(52);
@@ -36331,7 +36331,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.70: The what is new card names the Tripwire Mine. Check 23.70 fails on v23.69',
+  now:'v23.71: The version shown to players restarts at v0.0001. Check 23.71 fails on v23.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -39116,9 +39116,21 @@ function restoreSay(o){
          ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash'+
          (o.g?', '+ng+' gun'+(ng===1?'':'s'):'')+'.';
 }
+// v23.6x (feat0c), HIS ANSWER (2026-10-12): the version players see restarts at v0.0001. VER stays the internal ship number the tools,
+// the party handshake and the crash records use; verShown turns it into the player number, counting one per build from PVER_RESET
+// (the build that made the change shows v0.0001, the next v0.0002). A number from before the reset (an old copy trying to join) is
+// shown as it was; floor:1 shows it as v0.0001 instead (the NEW IN card, whose list may predate the reset).
+var PVER_RESET='23.71';
+function verShown(v,floor){
+  var a=String(v===undefined||v===null?'':v).split('.'), b=PVER_RESET.split('.'), n, s;
+  n=(parseInt(a[0],10)*100+parseInt(a[1],10))-(parseInt(b[0],10)*100+parseInt(b[1],10))+1;
+  if(!(n>=1)){ if(!floor) return 'v'+v; n=1; }
+  s=String(n); while(s.length<4) s='0'+s;
+  return 'v0.'+s;
+}
 function buildExport(){
   var L=[],i;
-  L.push('=== PILLAGERS v'+VER+' FLIGHT RECORDER ===');
+  L.push('=== PILLAGERS '+verShown(VER)+' (build '+VER+') FLIGHT RECORDER ===');
   L.push('Profile: '+P.runs+' runs, '+P.ext+' extracted, '+P.died+' died, best haul '+P.best+'c, credits '+P.credits+', XP '+(P.xp||0)+', racks '+(P.racks||0)+', pack T'+(P.pack+1)+
     ', notoriety '+(P.notoriety||0)+', stash '+P.stash.length);
   // Who and where this came from, so a run pulled off the public endpoint can be
@@ -40473,7 +40485,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
       if(m.proto!==NET.proto||m.ver!==VER){
         netSend(peer,{t:'reject',why:'version',ver:VER,proto:NET.proto});
         peer.state='rejected';
-        NET.err=(m.ver!==VER)?('A copy on v'+netClean(m.ver,12)+' tried to join. Both copies need to be on the same version, v'+VER+'.')
+        NET.err=(m.ver!==VER)?('A copy on '+verShown(netClean(m.ver,12))+' tried to join. Both copies need to be on the same version, '+verShown(VER)+'.')
                :'A player on a different build tried to join. Both players need the same build.';
         netLater(peer,1500,function(){ netDrop(peer,'rejected'); });
         netRefresh();
@@ -40525,7 +40537,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
       return 'roster';
     }
     if(m.t==='reject'){
-      NET.err=(m.why==='version')?((m.ver!==VER)?('The host is on v'+netClean(m.ver,12)+' and you are on v'+VER+'. Both copies need to be on the same version.')
+      NET.err=(m.why==='version')?((m.ver!==VER)?('The host is on '+verShown(netClean(m.ver,12))+' and you are on '+verShown(VER)+'. Both copies need to be on the same version.')
                                                   :'The host is on a different build. Both players need the same build.')
              :((m.why==='full')?'That party is full. Four is the most.':'The host declined.');
       netReset(true);
@@ -49105,7 +49117,7 @@ loadProfile().then(function(){
   // did; it simply happens when he presses the button instead of at boot.
   (function(){
     var t=document.getElementById('title');
-    document.getElementById('titlever').textContent='v'+VER;
+    document.getElementById('titlever').textContent=verShown(VER);   // v23.6x (feat0c): the player number
     (function(){
       var fb=document.getElementById('titlefs');
       if(fb) fb.onclick=function(ev){ if(ev) ev.stopPropagation(); fsToggle(); };
@@ -49301,7 +49313,7 @@ loadProfile().then(function(){
 requestAnimationFrame(function(ts){
   lastTs=ts;
   // v7.70: the label is proof of life now - it stamps only once a frame runs.
-  var _vl=document.getElementById('verlabel'); if(_vl) _vl.textContent='v'+VER;
+  var _vl=document.getElementById('verlabel'); if(_vl) _vl.textContent=verShown(VER);   // v23.6x (feat0c): the player number
   requestAnimationFrame(loop);
 });
 })();
