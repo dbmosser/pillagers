@@ -1,0 +1,7 @@
+v24.33: the survivor
+
+The Survivor looks like a wounded civilian now, raises a hand when you come near, and stands once helped.
+
+Check 24.33. Fails on v24.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

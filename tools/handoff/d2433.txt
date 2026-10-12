@@ -1,0 +1,5 @@
+## v24.33 - THE SURVIVOR
+
+Co-op hunt while he was away. His order of 2026-10-12, make them all look better. The Survivor was a pillager in green with a faint green glow, and without the glow (once helped, or at night) he looked like any hostile pillager, which is how survivors get shot. Now he wears his own washed out civilian jacket, torn at the hem and patched, with a bandage round his head, and carries no pack and no gun. When you come near while he still needs help he raises an open hand, and once you have helped him he stands up. His clothes are his own and are never sold.
+
+MEASURED. Check 24.33 passes, and fails on v24.32.
