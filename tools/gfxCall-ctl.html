@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.96';
+var VER='23.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27061,7 +27061,7 @@ function render2D(dt){
   // changes the scale and nothing else.
   var lean=p.ads?(opticMag()>1?.46:.30):.13;
   var leanSX=(mouse.x-W/2)*lean, leanSY=(mouse.y-H/2)*lean;
-  if(G.anchX===undefined){ G.anchX=p.x; G.anchY=p.y; G.leanSX=leanSX; G.leanSY=leanSY; }
+  if(G.anchX===undefined){ G.anchX=p.x; G.anchY=p.y; G.leanSX=leanSX; G.leanSY=leanSY; GFX.tr=0; GFX.shL=+G.shake||0; }   // v23.xx (gfx38): a snapped camera (raid start, respawn, redrop) starts with no trauma
   var ke=Math.min(1,dt*9);
   G.anchX+=(p.x-G.anchX)*ke;       G.anchY+=(p.y-G.anchY)*ke;
   G.leanSX+=(leanSX-G.leanSX)*ke;  G.leanSY+=(leanSY-G.leanSY)*ke;
@@ -27079,10 +27079,14 @@ function render2D(dt){
   // wrong, because __pairedBg draws no frames at all in either arm, but a
   // comparison that drew one arm and not the other would have been silently
   // meaningless. Shake is cosmetic, so it draws from the cosmetic PRNG.
-  var sk=G.shake>0?G.shake*.7:0;
-  var ox=Math.round(camX+(sk?fxn(-sk,sk):0)),oy=Math.round(camY+(sk?fxn(-sk,sk):0));
-  VX=ox; VY=oy;
-  try{ gfxCam(dt); }catch(_gcm){}   // v23.xx (gfx2): camera hook
+  // v23.xx (gfx38), HIS ORDER 2026-10-12 (the graphics program, item 5): TRAUMA SHAKE, WORLD ONLY. The shake was a fresh random
+  // jump of up to 0.7 x G.shake world units every drawn frame, applied to the camera itself, so it buzzed rather than shook and it
+  // moved everything that reads the camera: the HUD prompts and markers placed with w2s jittered with the world. Now VX/VY are the
+  // steady rounded camera (w2s, the HUD and aim never shake) and gfxCam turns each rise of G.shake into trauma that decays, read as a
+  // smooth wave in whole screen pixels; ox/oy carry it for every world layer, so the ground, the light and the fog stay aligned.
+  VX=Math.round(camX); VY=Math.round(camY);
+  try{ gfxCam(dt); }catch(_gcm){}   // v23.xx (gfx2): camera hook; (gfx38) it sets the trauma shake GFX.sx/GFX.sy in screen pixels
+  var ox=VX+(+GFX.sx||0)/Z, oy=VY+(+GFX.sy||0)/Z;
   // Who the player can actually see this frame. Everything about an entity,
   // sprite included, keys off this: the fog is only 93% opaque, so anything
   // drawn unconditionally shows faintly through walls.
@@ -28419,6 +28423,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   try{ drawDeathAnims(); }catch(_dda){}   // v17.47: his pick 29
   try{ gfxDebrisDraw(); }catch(_gdd){}   // v23.xx (gfx20): shed plates tumbling and lying where they fell
   try{ gfxBodyFx(dt); }catch(_gbf){}   // v23.xx (gfx2): body and air effects hook
+  try{ gfxAir(dt); }catch(_gae){}   // v23.xx (gfx30): batch E air pass (explosions)
   for(i=0;i<G.puffs.length;i++){
     var q=G.puffs[i],a2=1-q.t/q.life;
     wc.globalAlpha=a2*.55; wc.fillStyle=q.c;
@@ -36615,7 +36620,32 @@ function gfxStoresDrop(){
   return c;
 }
 // render hooks (one call each per drawn raid frame)
-function gfxCam(dt){ if(!gfxHook('cam')) return false; GFX.emit.length=0; return true; }   // F1: trauma shake
+// v23.xx (gfx38): THE TRAUMA SHAKE. Each rise of G.shake (the sim keeps writing it exactly as before) adds rise/14 trauma, capped at
+// 1, and trauma drains at 1.4 a second of drawn time. The offset is 18 screen pixels (grown with the screen, hudRes) x trauma squared
+// x EFFECT INTENSITY (CFG.fxInt: FULL 1, HALF 0.5, OFF 0), along a smooth wave of three sines per axis at fixed phases, so a rifle
+// shot barely moves the picture, a frag shakes it and a Warden shell rocks it, and no frame jumps more than about a third of the
+// amplitude from the last. Nothing here draws from any stream (no rnd, no fxr) and nothing feeds the sim. A new raid starts at 0.
+function gfxTrauma(dt){
+  var g=(typeof G!=='undefined')?G:null, d=Math.max(0,Math.min(0.1,+dt||0)), s, k, hr, A, t;
+  GFX.sx=0; GFX.sy=0; GFX.shA=0;
+  if(!g||g.sim) return 0;
+  if(GFX.shG!==g){ GFX.shG=g; GFX.tr=0; GFX.shL=+g.shake||0; GFX.shT=0; }
+  s=+g.shake||0;
+  if(s>(+GFX.shL||0)+0.01) GFX.tr=Math.min(1,(+GFX.tr||0)+(s-(+GFX.shL||0))/14);
+  GFX.shL=s;
+  GFX.tr=Math.max(0,(+GFX.tr||0)-d*1.4);
+  GFX.shT=(+GFX.shT||0)+d;
+  k=(CFG.fxInt===undefined)?1:Math.max(0,Math.min(1,+CFG.fxInt||0));
+  hr=(typeof hudRes==='function')?Math.max(1,+hudRes()||1):1;
+  A=18*hr*GFX.tr*GFX.tr*k;
+  if(!(A>0.05)) return 0;
+  t=GFX.shT;
+  GFX.sx=Math.round(A*(Math.sin(t*15)+0.5*Math.sin(t*23+1.7)+0.25*Math.sin(t*35+4.1))/1.75);
+  GFX.sy=Math.round(A*(Math.sin(t*16+2.3)+0.5*Math.sin(t*24+0.6)+0.25*Math.sin(t*33+5.2))/1.75);
+  GFX.shA=A;
+  return A;
+}
+function gfxCam(dt){ try{ gfxTrauma(dt); }catch(_gt){ GFX.sx=0; GFX.sy=0; } if(!gfxHook('cam')) return false; GFX.emit.length=0; return true; }   // F1: trauma shake (gfx38)
 function gfxGround(dt){ return gfxHook('ground'); }   // D: ground stamps, puddles, casings
 function gfxShadowPass(dt){ return gfxHook('shadow'); }   // B: body shadows that follow the lamps
 function gfxBodyFx(dt){ return gfxHook('body'); }   // C, E: damage smoke and fire, explosions, atmosphere
@@ -36627,7 +36657,7 @@ function gfxScreen(dt){ return gfxHook('screen'); }   // F1: grain and screen ef
 // sim-side stubs (callers guard with !G.sim; no seeded draw, ever)
 function gfxShot(sh,wep,ang,fromPlayer){ return gfxHook('shot'); }   // D: the first-frame muzzle flash
 function wallMark(w,x,y,ux,uy){ return gfxHook('wall'); }   // D: bullet marks painted into the wall sprite
-function boomFx(x,y,size,kind){ return gfxHook('boom'); }   // C: fireball, shockwave, smoke column, debris
+// boomFx: the explosion module, in GFX-E (gfx30)
 function gfxOnDeath(a){ return gfxHook('death'); }   // C: machine death bursts, from the kept kind
 function scarStamp(kind,x,y,o){ return gfxHook('scar'); }   // D: scorch, cracks and debris into G.ground
 function gfxEmit(x,y,r,col,a){
@@ -36664,6 +36694,112 @@ function gfxWorldText(){
   } finally { wc=keep; ctx.restore(); }
   return true;
 }
+// ===== GFX-E: effects and atmosphere (the graphics program, batch E: gfx30 to gfx37) =====
+// v23.xx (gfx30), HIS ORDER 2026-10-12 ("add ALL of this stuff", item 13, bigger explosions; his answer 20: gritty and grounded, like
+// ARC Raiders): THE EXPLOSION MODULE. A frag charge or a Howler shell going off was an orange spark spray, one puff disc and the light
+// flash: no fire, no body, nothing that hung in the air after. boomFx (the gfx2 hook, called on every window that shows the burst and
+// never in a bot raid) now records one explosion in BOOMS, a render list of at most 6, and the air pass (gfxAir, after the death
+// animations) draws it from its age in raid time:
+// - a fireball: three baked radial sprites (gfxESprites, made once, kept in the store registry), swelling over 0.35 s, additive;
+// - a shockwave: one stroked ellipse growing out in 0.22 s;
+// - a smoke column: 8 to 14 baked puffs that rise, drift and spread for 2.5 to 4 s;
+// - flying debris: 8 to 16 chunks thrown on arcs that land, lie and fade by 3.5 s, with a ground dot under each one in the air.
+// Every random number is from the cosmetic stream (fxn), never the raid dice; nothing here is read by the sim; the light flash, the
+// decal and the damage are untouched. Effects LOW (fxLevel 0) throws fewer pieces. GFX.bypass draws none of it.
+var BOOMS=[];
+function gfxESprites(){
+  var st=gfxStore('gfxE'), m=st.m, c, x, gr;
+  if(m.fire) return m;
+  c=document.createElement('canvas'); c.width=c.height=128; x=c.getContext('2d');
+  gr=x.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,'rgba(255,214,140,1)'); gr.addColorStop(0.3,'rgba(255,150,60,.85)'); gr.addColorStop(0.6,'rgba(200,70,20,.45)');
+  gr.addColorStop(0.85,'rgba(110,30,10,.15)'); gr.addColorStop(1,'rgba(60,15,5,0)');
+  x.fillStyle=gr; x.fillRect(0,0,128,128); m.fire=c;
+  c=document.createElement('canvas'); c.width=c.height=64; x=c.getContext('2d');
+  gr=x.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba(255,252,236,1)'); gr.addColorStop(0.45,'rgba(255,226,150,.8)'); gr.addColorStop(1,'rgba(255,170,80,0)');
+  x.fillStyle=gr; x.fillRect(0,0,64,64); m.core=c;
+  c=document.createElement('canvas'); c.width=c.height=64; x=c.getContext('2d');
+  gr=x.createRadialGradient(30,28,0,32,32,32);
+  gr.addColorStop(0,'rgba(150,142,132,.95)'); gr.addColorStop(0.5,'rgba(118,112,104,.7)'); gr.addColorStop(0.8,'rgba(92,88,84,.3)'); gr.addColorStop(1,'rgba(80,78,76,0)');
+  x.fillStyle=gr; x.fillRect(0,0,64,64); m.smoke=c;
+  return m;
+}
+function boomFx(x,y,size,kind){
+  if(!gfxHook('boom')) return false;
+  x=+x; y=+y; if(!isFinite(x)||!isFinite(y)) return false;
+  var s=clamp(+size||1,0.3,2.5), thin=(CFG.fxLevel===0), i, n, a, vz, cs=['#2b2723','#38322b','#4a4036','#221f1c','#57504a'];
+  var b={g:G,x:x,y:y,s:s,kind:String(kind||''),t0:G.t||0,deb:[],smoke:[]};
+  n=thin?5:clamp(Math.round(8+4*s),8,16);
+  for(i=0;i<n;i++){
+    a=fxn(0,6.2832); vz=fxn(80,200);
+    b.deb.push({ux:Math.cos(a),uy:Math.sin(a),sp:fxn(50,170)*Math.sqrt(s),vz:vz,tl:vz/260,r:fxn(2.6,5.2)*Math.min(1.4,0.7+0.3*s),c:cs[i%cs.length]});
+  }
+  n=thin?5:clamp(Math.round(7+4*s),8,14);
+  for(i=0;i<n;i++){
+    a=fxn(0,6.2832);
+    b.smoke.push({ox:Math.cos(a)*fxn(3,20)*s,oy:Math.sin(a)*fxn(2,11)*s,vx:fxn(-6,10),vz:fxn(26,50)*(0.7+0.3*s),r:fxn(15,26)*s,d:fxn(0.06,0.4),life:fxn(2.5,4)});
+  }
+  if(BOOMS.length>=6) BOOMS.shift();
+  BOOMS.push(b);
+  return true;
+}
+function gfxBoomDraw(){
+  if(!BOOMS.length) return 0;
+  var i, j, b, t, k, R, sp, d, q, f, x0, y0, z, a, al, n=0, Z=ZOOM(), m=gfxESprites();
+  var vx0=VX-240, vy0=VY-120, vx1=VX+W/Z+240, vy1=VY+H/Z+300;
+  for(i=BOOMS.length-1;i>=0;i--){
+    b=BOOMS[i]; t=(G.t||0)-b.t0;
+    if(b.g!==G||t>4.6||t<-2){ BOOMS.splice(i,1); continue; }
+    if(t<0||b.x<vx0||b.x>vx1||b.y<vy0||b.y>vy1) continue;
+    wc.save();
+    try{
+      wc.globalCompositeOperation='source-over';
+      for(j=0;j<b.deb.length;j++){
+        d=b.deb[j]; q=Math.min(t,d.tl);
+        x0=b.x+d.ux*d.sp*q; y0=b.y+d.uy*d.sp*q*0.62;
+        z=(t<d.tl)?(d.vz*t-260*t*t):0;
+        al=(t<2.4)?1:Math.max(0,1-(t-2.4)/1.1);
+        if(al<=0) continue;
+        wc.globalAlpha=al;
+        if(z>1){ wc.fillStyle='rgba(0,0,0,.35)'; wc.fillRect(x0-d.r*0.6,y0-0.8,d.r*1.2,1.6); }
+        wc.fillStyle=(t<0.5)?'#ffa04e':d.c; wc.fillRect(x0-d.r*0.5,y0-z-d.r*0.4,d.r,d.r*0.8);
+        wc.fillStyle=(t<0.5)?'#ffe0a8':'rgba(170,160,146,.55)'; wc.fillRect(x0-d.r*0.5,y0-z-d.r*0.4,d.r,Math.max(0.8,d.r*0.22));
+        n++;
+      }
+      if(t<0.42){
+        k=Math.min(1,t/0.35); R=b.s*(24+44*Math.sqrt(k)); a=(t<0.06)?1:Math.max(0,1-Math.pow((t-0.06)/0.36,1.3));
+        wc.globalCompositeOperation='lighter';
+        wc.globalAlpha=0.5*a; wc.drawImage(m.fire,b.x-R*1.5,b.y-10-R*1.2,R*3,R*2.4);
+        wc.globalAlpha=0.9*a; wc.drawImage(m.fire,b.x-R,b.y-14-R*0.85,R*2,R*1.7);
+        wc.globalAlpha=a; wc.drawImage(m.core,b.x-R*0.5,b.y-18-R*0.45,R,R*0.9);
+        n+=3;
+      }
+      if(t<0.22){
+        k=t/0.22; R=b.s*(20+100*k);
+        wc.globalCompositeOperation='source-over'; wc.globalAlpha=0.5*(1-k); wc.strokeStyle='#ffe2b8'; wc.lineWidth=1+3*(1-k);
+        wc.beginPath(); wc.ellipse(b.x,b.y,R,R*0.58,0,0,6.2832); wc.stroke(); n++;
+      }
+      wc.globalCompositeOperation='source-over';
+      for(j=0;j<b.smoke.length;j++){
+        sp=b.smoke[j]; q=t-sp.d; f=q/sp.life; if(f<=0||f>=1) continue;
+        R=sp.r*(0.55+0.95*f);
+        wc.globalAlpha=0.8*Math.pow(1-f,1.15)*Math.min(1,q*5);
+        wc.drawImage(m.smoke,b.x+sp.ox+sp.vx*q-R,b.y+sp.oy-(8+sp.vz*q*(1-0.3*f))-R,R*2,R*2);
+        n++;
+      }
+    } finally { wc.restore(); }
+  }
+  return n;
+}
+// The air pass of batch E: one call a drawn raid frame, in the world transform, after the bodies and the death animations.
+function gfxAir(dt){
+  if(!gfxHook('air')) return 0;
+  var n=0;
+  try{ n+=gfxBoomDraw(); }catch(_gbd){}
+  return n;
+}
+// ===== GFX-E end =====
 var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
 function hidWant(){ return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&(NET.specG||(typeof netEntsHost==='function'&&netEntsHost()))); }   // v18.51, from the code comb (2026-10-07): and while the host spectates the raid it kept for the party, back on the floor with its window covered
 function hidTick(){
@@ -37296,7 +37432,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.96: Nameplates, damage numbers and loot labels now draw on the sharp HUD layer and stay crisp at any Render resolution. Check 23.96 fails on v23.95',
+  now:'v23.98: Explosions burst: fireball, shockwave, smoke column and flying debris. Check 23.98 fails on v23.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50702,6 +50838,224 @@ window.__shot4k=function(name){
   name=String(name||'gfx_shot').replace(/[^A-Za-z0-9_.-]/g,'_'); if(!/\.png$/.test(name)) name+='.png';
   return fetch('http://localhost:8779/'+encodeURIComponent(name),{method:'POST',body:url.slice(url.indexOf(',')+1)}).then(function(r){ return r.text(); }, function(e){ return 'sink not reached: '+e; });
 };
+// 2026-10-12 (spr0), the sprite program (tools/handoff/research/sprites-design-2026-10-12.md). __spriteSheet(o): every character and
+// machine kind drawn large in a labelled grid on a plain mid-grey ground, through the game's OWN draw functions, with wc swapped to an
+// offscreen canvas in try/finally (G.t, G.deathAnims and wc are put back). o: {page: 'humans' | 'people' | 'machinesA' | 'machinesB' |
+// 'boss' | 'playsize' (default 'humans'), w (3840), h (2160), z (6, world units to pixels), bg ('#7a7d80'), fmt ('jpeg' or 'png'),
+// q (0.92)}. Stages a COLD STORAGE raid when none is live (and ends it after). Returns a data URL, or a string starting 'ERR'.
+// Each cell that throws is drawn as a red cross with the message, and the list of throws is on window.__spriteSheetErr.
+// Cosmetic tooling only: no rnd, rr, ri or pick; G.t is set per cell for fixed pulse phases and put back.
+window.__spriteSheet=function(o){
+  o=o||{};
+  var page=o.page||'humans', Wd=o.w||3840, Hd=o.h||2160, Z=o.z||6, bg=o.bg||'#7a7d80', fmt=o.fmt||'jpeg';
+  var c=document.createElement('canvas'); c.width=Wd; c.height=Hd; var x=c.getContext('2d'); if(!x) return 'ERR no canvas';
+  var w0=wc, staged=false, t0, da0, errs=[], url;
+  if(typeof G==='undefined'||!G||G.over||!G.map){ try{ __gfxStage({}); staged=true; }catch(_st){} }
+  if(typeof G==='undefined'||!G) return 'ERR no raid could be staged';
+  t0=G.t; da0=G.deathAnims;
+  x.fillStyle=bg; x.fillRect(0,0,Wd,Hd);
+  var LBL=Math.max(14,Math.round(Hd/84));
+  function wep(id){ return (WEAPONS&&WEAPONS[id])?WEAPONS[id]:null; }
+  function look(base,over){ var r={}, k; for(k in base) r[k]=base[k]; if(over) for(k in over) r[k]=over[k]; return r; }
+  // one cell: (ix,iy) of an nx by ny grid in the rect R; feet at fy (0..1 of the cell height); fn draws at world (0,0)
+  function cell(R,nx,ny,ix,iy,label,fn,o2){
+    o2=o2||{};
+    var cw=R.w/nx, ch=R.h/ny, cx=R.x+(ix+0.5)*cw+(o2.dx||0)*(o2.z||Z), fy=R.y+iy*ch+ch*(o2.fy||0.80), z2=o2.z||Z;
+    x.save();
+    x.setTransform(1,0,0,1,0,0);
+    x.strokeStyle='rgba(0,0,0,.18)'; x.lineWidth=1; x.strokeRect(R.x+ix*cw+0.5,R.y+iy*ch+0.5,cw-1,ch-1);
+    x.beginPath(); x.rect(R.x+ix*cw,R.y+iy*ch,cw,ch); x.clip();
+    x.setTransform(z2,0,0,z2,cx,fy);
+    wc=x; G.t=(o2.t===undefined)?10:o2.t;
+    try{ fn(); }
+    catch(e){
+      errs.push(label+': '+String(e&&e.message||e));
+      x.setTransform(1,0,0,1,0,0); x.strokeStyle='#d02020'; x.lineWidth=4;
+      x.beginPath(); x.moveTo(cx-40,fy-80); x.lineTo(cx+40,fy); x.moveTo(cx+40,fy-80); x.lineTo(cx-40,fy); x.stroke();
+      x.fillStyle='#d02020'; x.font=Math.round(LBL*0.7)+'px monospace'; x.fillText(String(e&&e.message||e).slice(0,60),R.x+ix*cw+8,fy+30);
+    }
+    finally{ wc=w0; G.t=t0; G.deathAnims=da0; }
+    x.restore();
+    x.save(); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1; x.globalCompositeOperation='source-over';
+    x.font='600 '+LBL+'px "Barlow Condensed","Arial Narrow",sans-serif'; x.textAlign='left'; x.textBaseline='top';
+    x.fillStyle='#101214'; x.fillText(label,R.x+ix*cw+10,R.y+iy*ch+8);
+    x.restore();
+  }
+  function rowHead(R,ny,iy,label){
+    var ch=R.h/ny; x.save(); x.setTransform(1,0,0,1,0,0);
+    x.font='700 '+Math.round(LBL*1.15)+'px "Barlow Condensed","Arial Narrow",sans-serif'; x.fillStyle='#0b0c0d'; x.textBaseline='middle';
+    x.translate(R.x-LBL*0.9,R.y+iy*ch+ch/2); x.rotate(-Math.PI/2); x.textAlign='center'; x.fillText(label,0,0); x.restore();
+  }
+  function title(s){ x.save(); x.setTransform(1,0,0,1,0,0); x.font='700 '+Math.round(LBL*1.3)+'px "Barlow Condensed","Arial Narrow",sans-serif';
+    x.fillStyle='#0b0c0d'; x.textBaseline='top'; x.fillText(s,LBL*2.2,10); x.restore(); }
+  // the dispatch in render2D for one machine: the elite ring, the kind's own draw, the weak points (copied, so the sheet shows what play shows)
+  function drawKind(e){
+    if(e.elite){
+      var _ep=0.55+0.45*Math.sin(G.t*3.1+e.x*0.02);
+      wc.save(); wc.globalCompositeOperation='lighter';
+      wc.strokeStyle='rgba(208,140,232,'+(0.28+0.24*_ep).toFixed(3)+')'; wc.lineWidth=2;
+      wc.beginPath(); wc.ellipse(e.x,e.y+2,e.r*1.2,Math.max(3,e.r*0.5),0,0,6.2832); wc.stroke(); wc.restore();
+    }
+    if(e.kind==='choir') drawChoirS(e);
+    else if(e.kind==='warden') drawWardenAt(e);
+    else if(e.kind==='sentry') drawSentryS(e);
+    else if(e.kind==='crawler') drawCrawlerS(e);
+    else if(e.kind==='snitch') drawSnitchS(e);
+    else if(e.kind==='listener') drawListenerS(e);
+    else if(e.kind==='howler') drawHowlerS(e);
+    else if(e.kind==='bulwark') drawBulwarkS(e);
+    else if(e.kind==='peddler') drawPeddlerS(e);
+    else if(e.kind==='stray'){
+      drawOp(e.x,e.y,e.face,0,e.coat,0,0,'crouchnone',0,{moving:false,sprint:false,ads:false,hurt:e.hitT,bulk:0});
+      if(!e.helped){
+        var sp2=0.6+0.4*Math.sin(G.t*2.4+e.x*0.01);
+        wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.30*sp2;
+        var sgr=wc.createRadialGradient(e.x,e.y-14,2,e.x,e.y-14,40); sgr.addColorStop(0,'#7fc4a0'); sgr.addColorStop(1,'rgba(0,0,0,0)');
+        wc.fillStyle=sgr; wc.beginPath(); wc.arc(e.x,e.y-14,40,0,6.2832); wc.fill(); wc.restore();
+      }
+    }
+    var WL=(typeof weakOf==='function')?weakOf(e):null, wk;
+    if(WL) for(wk=0;wk<WL.length;wk++){
+      var WW=WL[wk], wpt=weakPos(e,WW), hot=(WW.eff==='overheat'&&e.overheat>0), pls=hot?1:(0.62+0.38*Math.sin(G.t*3.1+wk*2.1+e.x*0.01));
+      wc.save(); wc.globalCompositeOperation='lighter';
+      var wg=wc.createRadialGradient(wpt.x,wpt.y,1,wpt.x,wpt.y,WW.rad*2.4); wg.addColorStop(0,WW.c); wg.addColorStop(1,'rgba(0,0,0,0)');
+      wc.globalAlpha=(hot?0.85:0.42)*pls; wc.fillStyle=wg; wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*2.4,0,6.2832); wc.fill(); wc.restore();
+      wc.fillStyle='rgba(10,8,12,.75)'; wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.62,0,6.2832); wc.fill();
+      wc.fillStyle=WW.c; wc.globalAlpha=hot?1:0.80; wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.40,0,6.2832); wc.fill(); wc.globalAlpha=1;
+    }
+  }
+  var R0={sentry:22,crawler:15,snitch:11,listener:14,warden:30,choir:26,bulwark:24,howler:20,peddler:12,stray:11};
+  var HP0={sentry:150,crawler:52,snitch:38,listener:120,warden:900,choir:400,bulwark:260,howler:120,peddler:150,stray:70};
+  function mach(kind,over){
+    var e={kind:kind,x:0,y:0,r:R0[kind]||20,hp:HP0[kind]||100,maxhp:HP0[kind]||100,face:0,state:'patrol',step:0,legs:0,hitT:0,muzzle:0,
+           seenYou:false,overheat:0,wind:null,windup:null,cd:0,alert:0,tx:0,ty:0,name:kind.toUpperCase()};
+    if(kind==='listener') e.state='dormant';
+    if(kind==='peddler'){ e.coat='#d8a13a'; e.face=1.57; e.neutral=1;
+      e.stock=[{k:'bandage',sold:false},{k:'medkit',sold:false},{k:'ammobox',sold:false}]; }
+    if(kind==='stray'){ e.coat='#7a8a6a'; e.neutral=1; e.helped=0; e.face=0; }
+    if(over) for(var k in over) e[k]=over[k];
+    return e;
+  }
+  function death(kind,r,f){   // one frame of the death animation, f of the way through its 0.8 s
+    G.deathAnims=[{x:0,y:0,r:Math.max(8,Math.min(48,r||14)),face:0,c:(DEATH_COL&&DEATH_COL[kind])||'#555c64',t0:G.t-0.8*f,kind:kind}];
+    drawDeathAnims();
+  }
+  var BASE={hero:0,moving:false,sprint:false,ads:false,hurt:0,rl:0,bulk:0,own:{wep:wep('carbine')||wep('rifle')},
+            hair:'dark',cut:'crop',skin:'skinfair',eyes:'eyebrown',boots:'bootblack',pack:'packbrown'};
+  function op(st,mode,ph,face,muzzle,coat,pk){
+    var s=look(BASE,st);
+    if(s.own===BASE.own) s.own={wep:BASE.own.wep};
+    drawOp(0,0,face||0,ph||0,coat||'#4a5b7d',pk||0,muzzle||0,mode||'',0,s);
+  }
+  var M={x:LBL*2.2,y:LBL*3.2}, R={x:M.x,y:M.y,w:Wd-M.x-10,h:Hd-M.y-10}, i, j;
+  try{
+    if(page==='humans'){
+      title('HUMANS: drawOp by BUILD (pillager look, coat #4a5b7d, carbine) at '+Z+'x world scale');
+      var B=['lean','broad','curved'], COLS=[
+        ['IDLE',function(b){ op({build:b},'',0); }],
+        ['WALK A',function(b){ op({build:b,moving:true},'',0.9); }],
+        ['WALK B',function(b){ op({build:b,moving:true},'',2.6); }],
+        ['SPRINT',function(b){ op({build:b,moving:true,sprint:true},'',1.2); }],
+        ['AIM + FIRE',function(b){ op({build:b,ads:true,recoil:1},'',0,0,0.05); }],
+        ['RELOAD',function(b){ op({build:b,rl:0.55},'',0); }],
+        ['HURT',function(b){ op({build:b,hurt:0.16,hitDir:Math.PI},'',0); }],
+        ['CROUCH',function(b){ op({build:b},'crouch',0); }],
+        ['DOWNED',function(b){ op({build:b},'down',0); }],
+        ['FACING LEFT',function(b){ op({build:b,cut:(b==='curved'?'long':'crop')},'',0,Math.PI); }]];
+      for(i=0;i<B.length;i++){ rowHead(R,B.length,i,B[i].toUpperCase()); for(j=0;j<COLS.length;j++) (function(b,cdef){ cell(R,COLS.length,B.length,j,i,cdef[0],function(){ cdef[1](b); }); })(B[i],COLS[j]); }
+    } else if(page==='people'){
+      title('PEOPLE: the player, pillagers, hires, teammates, the Undercroft, the Peddler, the Survivor at '+Z+'x');
+      var PC=[
+        ['PLAYER (hero)',function(){ drawOp(0,0,0,0,'#242832',0,0,'',0,{hero:1,own:G.player,team:'ally',moving:false,sprint:false,ads:false,hurt:0,bulk:0,rl:0}); }],
+        ['PLAYER ADS FIRE',function(){ drawOp(0,0,-0.35,0,'#242832',0,0.05,'',0,{hero:1,own:G.player,team:'ally',moving:false,sprint:false,ads:true,recoil:1,hurt:0,bulk:0,rl:0}); }],
+        ['PILLAGER SMG',function(){ op({team:'foe',own:{wep:wep('smg')},hat:'beanie'},'',0,0,0,'#a8443a'); }],
+        ['PILLAGER ARMOUR 1',function(){ op({team:'foe',bulk:1,own:{wep:wep('shotgun')}},'',0,0,0,'#3f6b5e'); }],
+        ['PILLAGER ARMOUR 2',function(){ op({team:'foe',bulk:2,own:{wep:wep('lmg')},hat:'cap'},'',0,0,0,'#6a4c7a'); }],
+        ['PILLAGER ARMOUR 3',function(){ op({team:'foe',bulk:3,own:{wep:wep('dmr')},hat:'visor'},'',0,0,0,'#8a5a2e'); }],
+        ['ELITE PILLAGER',function(){
+           wc.save(); wc.globalCompositeOperation='lighter'; wc.strokeStyle='rgba(208,140,232,.52)'; wc.lineWidth=2;
+           wc.beginPath(); wc.ellipse(0,2,11*1.12*1.2,Math.max(3,11*1.12*0.5),0,0,6.2832); wc.stroke(); wc.restore();
+           op({team:'foe',bulk:2,own:{wep:wep('sniper')||wep('dmr')},hat:'hood'},'',0,0,0,'#4a6a8a'); }],
+        ['HIRE (merc)',function(){ op({team:'foe',own:{wep:wep('rifle')||wep('carbine')},hat:'band',merc:1},'',0,0,0,'#8a6a4a'); }],
+        ['PILLAGER, BAG FULL',function(){ op({team:'foe',own:{wep:wep('carbine')}},'',0,0,0,'#5a7a6a',1); }]];
+      var PC2=[
+        ['TEAMMATE (net)',function(){ var g={x:0,y:0,f:0,bob:0,mv:0,sp:0,lk:{fit:'moss',build:'broad',hair:'dark',cut:'crop',skin:'skintan'},w:(WEAPONS.carbine?'carbine':'pistol')}; netUpDrawOne(g); }],
+        ['UNDERCROFT A',function(){ op({hat:'cap',build:'lean',own:{wep:null}},'none',0,0,0,'#5e3326'); }],
+        ['UNDERCROFT B',function(){ op({cut:'long',build:'curved',hair:'blonde',own:{wep:null}},'none',0,0,0,'#3f5136'); }],
+        ['UNDERCROFT C',function(){ op({hat:'phones',build:'broad',beard:'fullbeard',own:{wep:null}},'none',0,0,0,'#3d4450'); }],
+        ['PEDDLER',function(){ drawKind(mach('peddler')); },{fy:0.72}],
+        ['PEDDLER FLEEING',function(){ drawKind(mach('peddler',{fleeT:1,step:0.4,tx:-30,ty:0,x:20})); },{fy:0.72}],
+        ['SURVIVOR',function(){ drawKind(mach('stray')); }],
+        ['SURVIVOR HELPED',function(){ drawKind(mach('stray',{helped:1})); }],
+        ['PILLAGER DEATH .3s',function(){ death('raider',11,0.3); }]];
+      for(j=0;j<PC.length;j++) (function(d){ cell(R,PC.length,2,j,0,d[0],d[1],d[2]); })(PC[j]);
+      for(j=0;j<PC2.length;j++) (function(d){ cell(R,PC2.length,2,j,1,d[0],d[1],d[2]); })(PC2[j]);
+    } else if(page==='machinesA'||page==='machinesB'){
+      var K=(page==='machinesA')?['sentry','crawler','snitch','listener']:['warden','bulwark','howler','choir'];
+      var NM={sentry:'SENTRY',crawler:'CRAWLER',snitch:'CRIER',listener:'LISTENER',warden:'WARDEN',bulwark:'BULWARK',howler:'HOWLER',choir:'PILLBOX'};
+      title((page==='machinesA'?'MACHINES A':'MACHINES B')+' at '+Z+'x world scale (facing right)');
+      var MC=[
+        ['IDLE',function(k){ return mach(k); },10],
+        ['MOVE A',function(k){ return mach(k,{step:0.3,legs:0.6,state:(k==='listener'?'chase':'patrol')}); },10.21],
+        ['MOVE B',function(k){ return mach(k,{step:0.8,legs:2.2,state:(k==='listener'?'chase':'patrol')}); },10.47],
+        ['ALERT / HUNT',function(k){ return mach(k,{state:(k==='snitch'?'alarm':'chase'),seenYou:true,wind:(k==='snitch'?2:null)}); },10.05],
+        ['FIRING',function(k){ return mach(k,{state:'chase',seenYou:true,muzzle:0.08,windup:(k==='warden'?0.2:(k==='sentry'?0.1:null))}); },10.05],
+        ['HURT',function(k){ return mach(k,{hitT:0.14,state:'chase',seenYou:true}); },10],
+        ['ELITE',function(k){ var e=mach(k,{elite:1}); e.r=Math.round(e.r*1.12); e.hp=e.maxhp=Math.round(e.maxhp*2.2); return e; },10],
+        ['DAMAGED 30%',function(k){ var e=mach(k,{state:'chase',seenYou:true}); e.hp=Math.round(e.maxhp*0.3); return e; },10],
+        ['VENTING / OVERHEAT',function(k){ return mach(k,{overheat:2,state:'chase'}); },10],
+        ['DEATH .3s',null,10]];
+      for(i=0;i<K.length;i++){ rowHead(R,K.length,i,NM[K[i]]);
+        for(j=0;j<MC.length;j++) (function(k,d){
+          cell(R,MC.length,K.length,j,i,d[0],function(){ if(!d[1]) death(k,R0[k],0.3); else drawKind(d[1](k)); },{t:d[2],fy:(k==='snitch'?0.86:(k==='bulwark'?0.70:0.82)),dx:(k==='sentry'||k==='warden'?-5:0)});
+        })(K[i],MC[j]);
+      }
+    } else if(page==='boss'){
+      title('THE OVERSEER (warden r 44, drawn '+(44/30).toFixed(2)+'x) and the Warden beside it, at '+Z+'x');
+      var OC=[
+        ['OVERSEER IDLE',function(){ drawKind(mach('warden',{r:44,boss:1})); }],
+        ['OVERSEER HUNTING',function(){ drawKind(mach('warden',{r:44,boss:1,seenYou:true,state:'chase'})); },10.05],
+        ['OVERSEER FIRING',function(){ drawKind(mach('warden',{r:44,boss:1,seenYou:true,state:'chase',muzzle:0.08,windup:0.2})); },10.05],
+        ['OVERSEER HURT',function(){ drawKind(mach('warden',{r:44,boss:1,hitT:0.14,seenYou:true})); }],
+        ['OVERSEER 30%',function(){ var e=mach('warden',{r:44,boss:1,seenYou:true}); e.hp=Math.round(e.maxhp*0.3); drawKind(e); }],
+        ['WARDEN (r 30)',function(){ drawKind(mach('warden',{seenYou:true})); }]];
+      for(j=0;j<OC.length;j++) (function(d){ cell({x:R.x,y:R.y,w:R.w,h:R.h*0.62},OC.length,1,j,0,d[0],d[1],{t:d[2]===undefined?10:d[2],z:Z*0.72,dx:-8,fy:0.86}); })(OC[j]);
+      var HC=[['OVERSEER DEATH .2s',function(){ death('warden',44,0.2); }],['OVERSEER DEATH .5s',function(){ death('warden',44,0.5); }],
+              ['SENTRY DEATH .5s',function(){ death('sentry',22,0.5); }],['CRAWLER DEATH .5s',function(){ death('crawler',15,0.5); }]];
+      for(j=0;j<HC.length;j++) (function(d){ cell({x:R.x,y:R.y+R.h*0.62,w:R.w,h:R.h*0.38},HC.length,1,j,0,d[0],d[1],{z:Z*0.6,fy:0.7}); })(HC[j]);
+    } else if(page==='playsize'){
+      // the whole cast at play size: z=2 is a 4K TV at zoom 1, z=1 a 1080p laptop at zoom 1. Left half the plain grey, right half a
+      // dark floor tone close to COLD STORAGE at night, since that is where they are actually seen.
+      x.fillStyle='#24282b'; x.fillRect(Wd/2,0,Wd/2,Hd);
+      title('PLAY SIZE: top z=2 (4K TV, zoom 1), bottom z=1 (1080p, zoom 1); left grey, right dark floor');
+      var CAST=[
+        ['player',function(){ drawOp(0,0,0,0,'#242832',0,0,'',0,{hero:1,own:G.player,team:'ally',moving:false,sprint:false,ads:false,hurt:0,bulk:0,rl:0}); }],
+        ['pillager',function(){ op({team:'foe',own:{wep:wep('smg')}},'',0,Math.PI,0,'#a8443a'); }],
+        ['armour 3',function(){ op({team:'foe',bulk:3,own:{wep:wep('dmr')}},'',0,Math.PI,0,'#8a5a2e'); }],
+        ['curved',function(){ op({team:'foe',build:'curved',cut:'long',own:{wep:wep('rifle')}},'',0,Math.PI,0,'#3f6b5e'); }],
+        ['sentry',function(){ drawKind(mach('sentry',{face:Math.PI})); }],
+        ['crawler',function(){ drawKind(mach('crawler',{face:Math.PI})); }],
+        ['crier',function(){ drawKind(mach('snitch')); }],
+        ['listener',function(){ drawKind(mach('listener',{state:'chase'})); }],
+        ['warden',function(){ drawKind(mach('warden',{face:Math.PI})); }],
+        ['bulwark',function(){ drawKind(mach('bulwark',{face:Math.PI})); }],
+        ['howler',function(){ drawKind(mach('howler')); }],
+        ['pillbox',function(){ drawKind(mach('choir',{face:Math.PI})); }],
+        ['peddler',function(){ drawKind(mach('peddler')); }],
+        ['survivor',function(){ drawKind(mach('stray')); }]];
+      var halves=[{x:R.x,w:Wd/2-R.x-10},{x:Wd/2+10,w:Wd/2-20}], hz, hh;
+      for(hh=0;hh<2;hh++) for(hz=0;hz<2;hz++) for(j=0;j<CAST.length;j++) (function(d,H2,zz,row){
+        cell({x:H2.x,y:R.y+row*(R.h/2),w:H2.w,h:R.h/2},7,2,j%7,Math.floor(j/7),d[0],d[1],{z:zz,fy:0.85});
+      })(CAST[j],halves[hh],hz?1:2,hz);
+    } else return 'ERR unknown page '+page;
+    url=c.toDataURL(fmt==='png'?'image/png':'image/jpeg',o.q||0.92);
+  } finally {
+    wc=w0; G.t=t0; G.deathAnims=da0;
+    window.__spriteSheetErr=errs;
+    if(staged){ try{ __endRaid('abandon'); }catch(_er){} try{ __topClear(); }catch(_tc){} }
+  }
+  return url;
+};
 // Placement sanity audit, v2.86: counts of props sitting on ground they should
 // not, plus the culls makeMap already performed this raid.
 window.__placeAudit=function(){
@@ -56285,6 +56639,100 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'23.98',what:'gfx30, his order 2026-10-12 (the graphics program, item 13, bigger explosions): a frag burst records one explosion with 8 or more pieces of debris, its baked fireball is drawn at +0.1 s and its baked smoke at +1.5 s, it is gone by +5 s, and a bot raid records none',
+   run:function(){
+     var bad=[], g=null, p, hp0, t0=null, b, m, nF, nS, n0, sim0=false, simSet=false;
+     var cnt=function(img){ var c=0, orig=wc.drawImage; wc.drawImage=function(im){ if(im===img) c++; return orig.apply(wc,arguments); }; try{ __frame(0.016); } finally { delete wc.drawImage; } return c; };
+     try{
+       if(!(window.__gfxStage&&window.__frame&&window.__state&&window.__endRaid)) return 'SKIP: this fixture has no gfx stage';
+       g=__gfxStage({frames:2});
+       if(!g) return 'SKIP: __gfxStage built no raid';
+       if(g.sim) return 'SKIP: the staged raid is a sim raid';
+       if(typeof BOOMS==='undefined'||typeof gfxESprites!=='function') return 'no explosion module: no BOOMS list';
+       GFX.bypass=0; G.shake=0; p=g.player; hp0=p.hp; t0=G.t;
+       BOOMS.length=0;
+       explodeFrag({x:p.x+260,y:p.y+30,by:{name:'ZQX',kind:'raider'}});
+       p.hp=hp0;
+       if(BOOMS.length!==1) bad.push('one frag burst recorded '+BOOMS.length+' explosions');
+       b=BOOMS[BOOMS.length-1];
+       if(b&&!(b.deb&&b.deb.length>=8)) bad.push('the burst threw '+(b.deb?b.deb.length:0)+' pieces of debris');
+       m=gfxESprites();
+       G.t=t0+0.1; nF=cnt(m.fire);
+       if(!(nF>=1)) bad.push('the fireball sprite was drawn '+nF+' times at +0.1 s');
+       G.t=t0+1.5; nS=cnt(m.smoke);
+       if(!(nS>=1)) bad.push('the smoke sprite was drawn '+nS+' times at +1.5 s');
+       if(cnt(m.fire)!==0) bad.push('the fireball still burns at +1.5 s');
+       G.t=t0+5; cnt(m.smoke);
+       if(BOOMS.length!==0) bad.push(BOOMS.length+' explosions left at +5 s');
+       G.t=t0;
+       n0=BOOMS.length; sim0=G.sim; G.sim=true; simSet=true;
+       boomFx(p.x,p.y,1,'frag');
+       G.sim=sim0; simSet=false;
+       if(BOOMS.length!==n0) bad.push('a bot raid recorded an explosion');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(simSet) G.sim=sim0; }catch(_ss){}
+       try{ if(t0!==null&&G) G.t=t0; }catch(_tt){}
+       try{ if(typeof BOOMS!=='undefined') BOOMS.length=0; }catch(_bl){}
+       keys={};
+       try{ var g2=__state(); if(g2&&!g2.over&&!g2.sim) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'23.97',what:'graphics program gfx38: trauma shake moves the world only: with G.shake raised to 9 the ground is drawn offset from the steady camera on 12 drawn frames while w2s of the player does not move at all, no frame jumps more than 40 percent of the amplitude from the last, a second hit raises the trauma, and EFFECT INTENSITY OFF draws no offset',
+   run:function(){
+     if(!(window.__gfxStage&&window.__state&&window.__endRaid)||typeof render2D!=='function'||typeof w2s!=='function'||typeof ZOOM!=='function') return 'SKIP: this fixture cannot draw a raid frame';
+     var bad=[], g=null, p=null, OWN=Object.prototype.hasOwnProperty, sv=[], rec=[], fi0=CFG.fxInt, i, f, prev=null, s0=null, big=0, tr1, tr2, nz=0, mx0, my0;
+     function spy(){
+       var c=wc, own=OWN.call(c,'drawImage'), of=c.drawImage; sv.push({c:c,own:own,f:of});
+       c.drawImage=function(img){ if(img===G.ground&&!rec.length){ var T=this.getTransform(); rec.push({x:-T.e/T.a,y:-T.f/T.d}); } return of.apply(this,arguments); };
+     }
+     function unspy(){ while(sv.length){ var s=sv.pop(); try{ if(s.own) s.c.drawImage=s.f; else delete s.c.drawImage; }catch(_u){} } }
+     function frame(){
+       var q, z; rec=[]; spy(); try{ render2D(1/60); } finally { unspy(); }
+       q=w2s(p.x,0,p.y); z=ZOOM();
+       return {s:{x:q.x,y:q.y}, o:rec.length?{x:(rec[0].x-VX)*z,y:(rec[0].y-VY)*z}:null, a:(typeof GFX!=='undefined'&&+GFX.shA)||0};
+     }
+     try{
+       g=__gfxStage({frames:2});
+       if(!g) return 'SKIP: __gfxStage built no raid';
+       p=g.player; keys={}; g.bagOpen=false; g.mapOpen=false; p.iv=99;
+       mx0=mouse.x; my0=mouse.y; mouse.x=W/2; mouse.y=H/2;
+       CFG.fxInt=1; G.shake=0;
+       for(i=0;i<90;i++) frame();
+       f=frame(); if(!f.o) return 'SKIP: staging: the ground was not drawn';
+       if(Math.abs(f.o.x)>0.01||Math.abs(f.o.y)>0.01) bad.push('with no shake the ground is drawn '+f.o.x.toFixed(2)+','+f.o.y.toFixed(2)+' px off the camera');
+       s0=f.s;
+       G.shake=9;
+       for(i=0;i<12;i++){
+         f=frame();
+         if(!f.o){ bad.push('frame '+i+' drew no ground'); break; }
+         if(Math.abs(f.s.x-s0.x)>0.01||Math.abs(f.s.y-s0.y)>0.01) bad.push('frame '+i+': w2s of the player moved from '+s0.x.toFixed(1)+','+s0.y.toFixed(1)+' to '+f.s.x.toFixed(1)+','+f.s.y.toFixed(1));
+         big=Math.max(big,Math.abs(f.o.x),Math.abs(f.o.y));
+         if(Math.abs(f.o.x)>=0.5||Math.abs(f.o.y)>=0.5) nz++;
+         if(prev&&prev.o){
+           var lim=0.4*Math.max(prev.a,f.a)+1.01, dx=Math.abs(f.o.x-prev.o.x), dy=Math.abs(f.o.y-prev.o.y);
+           if(dx>lim||dy>lim) bad.push('frame '+i+' jumped '+dx.toFixed(1)+','+dy.toFixed(1)+' px against an amplitude of '+Math.max(prev.a,f.a).toFixed(1));
+         }
+         prev=f;
+       }
+       if(big<1) bad.push('under G.shake 9 the ground was never drawn a whole pixel off the camera (largest '+big.toFixed(2)+')');
+       if(nz<3) bad.push('only '+nz+' of 12 shaken frames moved the ground');
+       if(bad.length>6) bad.length=6;
+       tr1=+GFX.tr||0;
+       G.shake=3; frame(); G.shake=9; frame(); tr2=+GFX.tr||0;
+       if(!(tr2>tr1)) bad.push('a second hit did not raise the trauma ('+tr1.toFixed(3)+' then '+tr2.toFixed(3)+')');
+       CFG.fxInt=0; G.shake=0; frame(); G.shake=12; big=0;
+       for(i=0;i<6;i++){ f=frame(); if(f.o) big=Math.max(big,Math.abs(f.o.x),Math.abs(f.o.y)); }
+       if(big>0) bad.push('with EFFECT INTENSITY OFF the ground was still drawn '+big.toFixed(1)+' px off the camera');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       unspy(); keys={}; CFG.fxInt=fi0;
+       try{ if(mx0!==undefined){ mouse.x=mx0; mouse.y=my0; } }catch(_m){}
+       try{ var g2=__state(); if(g2){ G.shake=0; if(typeof GFX!=='undefined'){ GFX.tr=0; GFX.shL=0; } if(!g2.over){ g2.player.iv=0; g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){}
+       __topClear();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'23.96',what:'graphics program gfx5: world text draws on the HUD canvas: in a drawn raid frame at 1920x1080 a loot label beside him is filled on the HUD canvas and never on the world canvas, at the screen height the world puts it, at the same device font size at Render resolution Low as at Full, the world canvas is handed back after the frame, and a HUD drawn on its own fills no world text',
    run:function(){

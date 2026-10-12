@@ -1,0 +1,40 @@
+{
+    "title":  "THREE BODIES THAT READ",
+    "why":  "His order of 2026-10-12, make them all look better, and his answer 24: redesign the silhouettes for readability first. At raid size Lean and Broad were the same person. Broad now stands on wider legs and bigger boots, one fifth wider, with a thicker arm on the gun, so a Broad body reads heavy from across the room. Lean wears the plate carrier on a slimmer torso, 11 wide where it was 13, with a slimmer arm. Curved keeps her outline, her rig cut to it and her jiggle. Suits keep their own figure.",
+    "now":  "Lean, Broad and Curved now look like three different bodies at raid size.",
+    "edits":  [
+                  {
+                      "anchor":  "function torsoPathPC(b,cx,ty,jh){\n  if(b===\u0027broad\u0027) buildPath(cx,ty,BUILD_BROAD,0);\n  else if(b===\u0027curved\u0027) buildPath(cx,ty,jh?BUILD_CPT:BUILD_CURVED,0);\n  else { wc.beginPath(); if(HAS_RR) wc.roundRect(cx-6.5,ty-22,13,11,3); else wc.rect(cx-6.5,ty-22,13,11); }\n}",
+                      "replacement":  "function torsoPathPC(b,cx,ty,jh){\n  if(b===\u0027broad\u0027) buildPath(cx,ty,BUILD_BROAD,0);\n  else if(b===\u0027curved\u0027) buildPath(cx,ty,jh?BUILD_CPT:BUILD_CURVED,0);\n  else { wc.beginPath(); if(HAS_RR) wc.roundRect(cx-5.6,ty-22,11.2,11,3); else wc.rect(cx-5.6,ty-22,11.2,11);   /* v23.xx (spr16): Lean is slimmer */ }\n}"
+                  },
+                  {
+                      "anchor":  "                   :{w:9.4,y:-20.2,h:6.8,sx:-4.4,sx2:2.8,sw:1.6,pw:2.6,py:-16.6,ph:3,by:-13.0,bh:1.4};",
+                      "replacement":  "                   :{w:8.2,y:-20.2,h:6.8,sx:-3.9,sx2:2.5,sw:1.4,pw:2.3,py:-16.6,ph:3,by:-13.0,bh:1.4};   // v23.xx (spr16): cut to the slimmer Lean torso"
+                  },
+                  {
+                      "anchor":  "  wc.fillStyle=INK;\n  rrF(x-6.9+swing2*.5,ty-11.6,5.8,7.9-liftB*.5,1.5);",
+                      "replacement":  "  // v23.xx (spr16), HIS ORDER (2026-10-12) \"make them all look better\" and answer 24 \"b\" (silhouettes for readability first):\n  // THREE BODIES THAT READ. At raid size Lean and Broad were the same person. Broad now stands on wider legs and bigger boots (the\n  // whole leg block, trousers, boots, soles and toe caps, is drawn 1.2 times as wide about the body\u0027s centre, so the feet still land\n  // on the same line) with a thicker arm on the gun; Lean wears the plate carrier on a slimmer torso (11 wide, was 13) with a\n  // slimmer arm. Curved keeps her outline, her rig cut to it (v23.xx spr15) and her jiggle. Cosmetic only: nothing a fight reads.\n  var _LSX=(_BLD===\u0027broad\u0027)?1.2:1;\n  if(_LSX!==1){ wc.save(); wc.translate(x,0); wc.scale(_LSX,1); wc.translate(-x,0); }\n  wc.fillStyle=INK;\n  rrF(x-6.9+swing2*.5,ty-11.6,5.8,7.9-liftB*.5,1.5);"
+                  },
+                  {
+                      "anchor":  "    wc.fillStyle=litHex(_BT[1],.30); wc.fillRect(x+1.1+swing+_toe,ty-4.2-liftA,2.2,1.0);\n  }",
+                      "replacement":  "    wc.fillStyle=litHex(_BT[1],.30); wc.fillRect(x+1.1+swing+_toe,ty-4.2-liftA,2.2,1.0);\n  }\n  if(_LSX!==1) wc.restore();   // v23.xx (spr16): end of the Broad legs"
+                  },
+                  {
+                      "anchor":  "  wc.fillStyle=INK; rrF(x-7.5+leanX,ty-23,15,13,4);\n  wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);",
+                      "replacement":  "  if(_PC){ wc.fillStyle=INK; rrF(x-6.6+leanX,ty-23,13.2,13,4); wc.fillStyle=cc; rrF(x-5.6+leanX,ty-22,11.2,11,3); }   // v23.xx (spr16): Lean is slimmer\n  else {\n  wc.fillStyle=INK; rrF(x-7.5+leanX,ty-23,15,13,4);\n  wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);\n  }"
+                  },
+                  {
+                      "anchor":  "    if(_BLD){ buildPath(x+leanX,ty,(_BLD===\u0027broad\u0027)?BUILD_BROAD:BUILD_CURVED,0); wc.fill(); } else wc.fillRect(x-6.5+leanX,ty-22,13,11);",
+                      "replacement":  "    if(_BLD){ buildPath(x+leanX,ty,(_BLD===\u0027broad\u0027)?BUILD_BROAD:BUILD_CURVED,0); wc.fill(); } else if(_PC) wc.fillRect(x-5.6+leanX,ty-22,11.2,11); else wc.fillRect(x-6.5+leanX,ty-22,13,11);"
+                  },
+                  {
+                      "anchor":  "  wc.fillStyle=coat; if(_BLD===\u0027broad\u0027) wc.fillRect(1+ext,-2.9,6,5.8); else if(_BLD===\u0027curved\u0027) wc.fillRect(1+ext,-2.0,6,4.0); else wc.fillRect(1+ext,-2.4,6,4.8);",
+                      "replacement":  "  wc.fillStyle=coat; if(_BLD===\u0027broad\u0027) wc.fillRect(1+ext,-3.3,6,6.6); else if(_BLD===\u0027curved\u0027) wc.fillRect(1+ext,-2.0,6,4.0); else if(_PC) wc.fillRect(1+ext,-2.1,6,4.2); else wc.fillRect(1+ext,-2.4,6,4.8);   /* v23.xx (spr16): Broad thicker, Lean slimmer */"
+                  },
+                  {
+                      "anchor":  "var _ah=(_BLD===\u0027broad\u0027)?2.9:(_BLD===\u0027curved\u0027?2.0:2.4);",
+                      "replacement":  "var _ah=(_BLD===\u0027broad\u0027)?3.3:(_BLD===\u0027curved\u0027?2.0:2.1);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027spr16: three bodies that read: Lean slimmer, Broad on wider legs and boots\u0027,\n   run:function(){\n     if(typeof drawOp!==\u0027function\u0027||typeof wc===\u0027undefined\u0027) return \u0027SKIP: no drawOp here\u0027;\n     var c=document.createElement(\u0027canvas\u0027); c.width=240; c.height=300; var x=c.getContext(\u00272d\u0027), w0=wc, bad=[];\n     function body(b){\n       x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,240,300); x.setTransform(6,0,0,6,120,270); wc=x;\n       try{ drawOp(0,0,Math.PI/2,0,\u0027#4a5b7d\u0027,0,0,\u0027none\u0027,0,{moving:false,sprint:false,ads:false,hurt:0,rl:0,bulk:0,build:b,hair:\u0027dark\u0027,cut:\u0027crop\u0027,skin:\u0027skinfair\u0027,pack:\u0027packbrown\u0027,boots:\u0027bootblack\u0027}); }\n       finally{ wc=w0; }\n       return x.getImageData(0,0,240,300).data;\n     }\n     // the half width of one row on the side away from the pack: the body centre to its rightmost solid pixel, in world units\n     function wid(d,u){ var py=Math.round(270-6*u), b2=-1, px; for(px=120;px\u003c240;px++){ if(d[(py*240+px)*4+3]\u003e200) b2=px; } return b2\u003c0?0:(b2-120+1)/6; }\n     try{\n       var L0=body(\u0027lean\u0027), B0=body(\u0027broad\u0027);\n       var lt=wid(L0,14.5), bt=wid(B0,14.5), lb=wid(L0,1.5), bb=wid(B0,1.5);\n       if(lt\u003e7.1) bad.push(\u0027the Lean torso half width is \u0027+lt.toFixed(1)+\u0027 (want 7.1 or less: slimmer than the old 7.5)\u0027);\n       if(bt-lt\u003c1.5) bad.push(\u0027Broad (\u0027+bt.toFixed(1)+\u0027) is not 1.5 wider than Lean (\u0027+lt.toFixed(1)+\u0027) at the waist\u0027);\n       if(bb-lb\u003c1.0) bad.push(\u0027the Broad boots (\u0027+bb.toFixed(1)+\u0027) are not 1.0 wider than the Lean boots (\u0027+lb.toFixed(1)+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ wc=w0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

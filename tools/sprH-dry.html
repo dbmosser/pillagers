@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.96';
+var VER='23.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25368,15 +25368,15 @@ function buildPath(cx,ty,P,grow){
   for(i=0;i<n;i++){ a=Q[i]; b2=Q[(i+1)%n]; wc.quadraticCurveTo(a[0],a[1],(a[0]+b2[0])/2,(a[1]+b2[1])/2); }
   wc.closePath();
 }
-function drawBuildTorso(b,cx,ty,cc,cHi,cLo,trs,jc,jh,lx,lA,lB,legc){   // v20.06: trs fills the hips, legc the legs below them
+function drawBuildTorso(b,cx,ty,cc,cHi,cLo,trs,jc,jh,lx,lA,lB,legc,pc){   // v20.06: trs fills the hips, legc the legs below them
   var P=(b==='broad')?BUILD_BROAD:BUILD_CURVED, by, sh, bl;
   if(b==='curved'&&jh){ BUILD_CPT[4][1]=BUILD_CURVED[4][1]+jh*.6; BUILD_CPT[5][1]=BUILD_CURVED[5][1]+jh*.4; P=BUILD_CPT; }   // v20.02: the hips ride the spring
   buildPath(cx,ty,P,1); wc.fillStyle=INK; wc.fill();
   buildPath(cx,ty,P,0); wc.save(); wc.clip();
   wc.fillStyle=cc; wc.fillRect(cx-11,ty-25,22,17);
-  wc.fillStyle=cHi; wc.fillRect(cx-11,ty-24,22,(b==='broad')?3.4:2.6);
+  if(!pc){ wc.fillStyle=cHi; wc.fillRect(cx-11,ty-24,22,(b==='broad')?3.4:2.6); }   // v23.xx (spr15): a plate carrier body is lit by drawRigPC
   if(b==='broad'){
-    wc.fillStyle=cLo; wc.fillRect(cx-11,ty-13.2,22,3.4);
+    if(!pc){ wc.fillStyle=cLo; wc.fillRect(cx-11,ty-13.2,22,3.4); }
   } else {
     wc.fillStyle=trs; wc.fillRect(cx-11,ty-14.4,22,7);                       // trousers from the waist down
     by=ty-18.0+(jc||0); sh=darkHex(cc,.40); bl=litHex(cc,.28,true);
@@ -25385,7 +25385,7 @@ function drawBuildTorso(b,cx,ty,cc,cHi,cLo,trs,jc,jh,lx,lA,lB,legc){   // v20.06
     wc.fillStyle=bl;                                                         // and the chest, lit from above
     wc.beginPath(); wc.ellipse(cx-2.8,by,2.8,2.25,0,0,6.2832); wc.ellipse(cx+2.8,by,2.8,2.25,0,0,6.2832); wc.fill();
     wc.fillStyle=cHi; wc.fillRect(cx-4.3,by-1.6,1.5,.9); wc.fillRect(cx+1.4,by-1.6,1.5,.9);
-    wc.fillStyle=cLo; wc.fillRect(cx-11,ty-15.2,22,1.0);                    // a belt at the waist
+    if(!pc){ wc.fillStyle=cLo; wc.fillRect(cx-11,ty-15.2,22,1.0); }                    // a belt at the waist
   }
   wc.restore();
   if(b==='curved'){ wc.fillStyle=legc||trs; wc.fillRect(lx-6.3+lB,ty-10.9,4.6,2.2); wc.fillRect(lx+1.7+lA,ty-10.9,4.6,2.2); }   // the legs run up into the hips
@@ -25401,6 +25401,58 @@ function animDir(o,fl){
   if(Math.abs(dx)>0.02&&Math.abs(dx)>0.35*Math.abs(dy)) o._ad=(dx>0)?1:-1;
   else if(Math.abs(dy)>0.02) o._ad=fl;
   return o._ad||fl;
+}
+// v23.xx (spr15), HIS ORDER (2026-10-12): "improve the sprites of all characters, bots, etc -- spend time on that -- make them all
+// look better", answer 20 "a" (gritty and grounded like ARC Raiders). THE PLATE CARRIER, NOT STRIPES. A body wore its rig as two
+// horizontal dark bands across the coat, a lit band over the shoulders and a dark one at the waist, so every coat read as a striped
+// jersey (and the Peddler's amber as a bumblebee). Now the coat is cloth lit from the top left (the light every sprite shares): the
+// tops of the shoulders and the left side catch it, the right side is in shade. Over it sits a plate carrier: a chest plate in a
+// darker cut of the coat, two shoulder straps, three magazine pouches in olive webbing, and a belt with a buckle. Curved wears it cut
+// to her outline: the plate is moulded over her chest (riding the same spring, v20.02) and her pouches ride on the hips. Suits
+// (OUTFITS) and the number 23 jersey keep their own paint exactly as before. Cosmetic only: no random numbers, nothing a fight reads.
+var RIG_OLIVE=['#33331f','#4a4a32','#6e6e4e'], RIG_BELT='#24201a', RIG_BUCKLE='#a8996a';
+function torsoPathPC(b,cx,ty,jh){
+  if(b==='broad') buildPath(cx,ty,BUILD_BROAD,0);
+  else if(b==='curved') buildPath(cx,ty,jh?BUILD_CPT:BUILD_CURVED,0);
+  else { wc.beginPath(); if(HAS_RR) wc.roundRect(cx-5.6,ty-22,11.2,11,3); else wc.rect(cx-5.6,ty-22,11.2,11);   /* v23.xx (spr16): Lean is slimmer */ }
+}
+function rigPouch(px,py,pw,ph){
+  wc.fillStyle=RIG_OLIVE[0]; wc.fillRect(px,py,pw,ph);
+  wc.fillStyle=RIG_OLIVE[1]; wc.fillRect(px,py,pw-0.5,ph-0.5);
+  wc.fillStyle=RIG_OLIVE[2]; wc.fillRect(px,py,pw-0.5,0.7);
+}
+function drawRigPC(b,cx,ty,cc,jc,jh){
+  var cHi=litHex(cc,.24,true), cLo=darkHex(cc,.40), rg=darkHex(cc,.30), rgHi=litHex(rg,.14), rgLo=darkHex(cc,.56),
+      top=(b==='broad')?-23.8:(b==='curved'?-23.4:-22), low=(b==='curved')?-14.6:-12, i, x0, R;
+  wc.save(); torsoPathPC(b,cx,ty,jh); wc.clip();
+  // the cloth: lit across the tops of the shoulders and down the left side, in shade down the right
+  wc.fillStyle=cHi; wc.fillRect(cx-12,ty+top-2,24,3.3);
+  wc.save(); wc.beginPath(); wc.rect(cx-14,ty-28,13.6,28+low); wc.clip(); torsoPathPC(b,cx,ty,jh); wc.lineWidth=3; wc.strokeStyle=cHi; wc.stroke(); wc.restore();
+  wc.save(); wc.beginPath(); wc.rect(cx+0.6,ty+top+1.4,14,low-top-1.4); wc.clip(); torsoPathPC(b,cx,ty,jh); wc.lineWidth=4; wc.strokeStyle=cLo; wc.stroke(); wc.restore();
+  if(b==='curved'){
+    var by=ty-18.0+(jc||0);
+    wc.fillStyle=rg; wc.fillRect(cx-4.9,ty-26,1.5,6); wc.fillRect(cx+3.4,ty-26,1.5,6);   // the straps
+    wc.fillStyle=rgLo; wc.fillRect(cx-6.5,ty-21.1,13,6.0);                               // the plate, moulded over her chest
+    wc.fillStyle=rg; wc.fillRect(cx-6.0,ty-20.6,11.4,4.9);
+    wc.fillStyle=rgLo; wc.beginPath(); wc.ellipse(cx-2.8,by+1.0,2.95,2.4,0,0,6.2832); wc.ellipse(cx+2.8,by+1.0,2.95,2.4,0,0,6.2832); wc.fill();
+    wc.fillStyle=litHex(rg,.22); wc.beginPath(); wc.ellipse(cx-2.8,by,2.8,2.25,0,0,6.2832); wc.ellipse(cx+2.8,by,2.8,2.25,0,0,6.2832); wc.fill();
+    wc.fillStyle=litHex(rg,.42); wc.fillRect(cx-4.3,by-1.6,1.5,.9); wc.fillRect(cx+1.4,by-1.6,1.5,.9);
+    wc.fillStyle=RIG_BELT; wc.fillRect(cx-12,ty-15.5,24,1.3);                            // the belt at her waist
+    wc.fillStyle=RIG_BUCKLE; wc.fillRect(cx-0.8,ty-15.5,1.6,1.3);
+    rigPouch(cx-6.0,ty-14.2,2.6,2.8); rigPouch(cx+3.4,ty-14.2,2.6,2.8);                 // and the pouches on her hips
+  } else {
+    R=(b==='broad')?{w:12.4,y:-20.6,h:7.4,sx:-5.6,sx2:3.6,sw:2,pw:3.2,py:-16.8,ph:3.2,by:-12.6,bh:1.6}
+                   :{w:8.2,y:-20.2,h:6.8,sx:-3.9,sx2:2.5,sw:1.4,pw:2.3,py:-16.6,ph:3,by:-13.0,bh:1.4};   // v23.xx (spr16): cut to the slimmer Lean torso
+    wc.fillStyle=rg; wc.fillRect(cx+R.sx,ty-26,R.sw,26+R.y); wc.fillRect(cx+R.sx2,ty-26,R.sw,26+R.y);   // the straps
+    wc.fillStyle=rgLo; wc.fillRect(cx-R.w/2-0.5,ty+R.y-0.5,R.w+1,R.h+1);                                          // the plate
+    wc.fillStyle=rg; wc.fillRect(cx-R.w/2,ty+R.y,R.w-0.6,R.h-0.6);
+    wc.fillStyle=rgHi; wc.fillRect(cx-R.w/2,ty+R.y,R.w-0.6,0.7); wc.fillRect(cx-R.w/2,ty+R.y,0.6,R.h-0.6);
+    x0=cx-(3*R.pw+0.8)/2;
+    for(i=0;i<3;i++) rigPouch(x0+i*(R.pw+0.4),ty+R.py,R.pw,R.ph);                                    // three magazine pouches
+    wc.fillStyle=RIG_BELT; wc.fillRect(cx-12,ty+R.by,24,R.bh);                                         // the belt
+    wc.fillStyle=RIG_BUCKLE; wc.fillRect(cx-0.8,ty+R.by,1.6,R.bh);
+  }
+  wc.restore();
 }
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var _HPZ=(st&&st.own&&st.own.kind==='raider'&&!st.hero)?hitPauseOf(st.own,ph,face,!!st.moving):null;   // v23.xx (gfx18): the hit pause
@@ -25495,6 +25547,13 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // Each leg gets its own ink plate, and the boots keep a real gap between them.
   // Drawn as one flush block they read as a single slab, which is the one place
   // the contour treatment fell down. Boot soles still land exactly on ty.
+  // v23.xx (spr16), HIS ORDER (2026-10-12) "make them all look better" and answer 24 "b" (silhouettes for readability first):
+  // THREE BODIES THAT READ. At raid size Lean and Broad were the same person. Broad now stands on wider legs and bigger boots (the
+  // whole leg block, trousers, boots, soles and toe caps, is drawn 1.2 times as wide about the body's centre, so the feet still land
+  // on the same line) with a thicker arm on the gun; Lean wears the plate carrier on a slimmer torso (11 wide, was 13) with a
+  // slimmer arm. Curved keeps her outline, her rig cut to it (v23.xx spr15) and her jiggle. Cosmetic only: nothing a fight reads.
+  var _LSX=(_BLD==='broad')?1.2:1;
+  if(_LSX!==1){ wc.save(); wc.translate(x,0); wc.scale(_LSX,1); wc.translate(-x,0); }
   wc.fillStyle=INK;
   rrF(x-6.9+swing2*.5,ty-11.6,5.8,7.9-liftB*.5,1.5);
   rrF(x-7.1+swing2,ty-5.1-liftB,6.6,5.1,1.5);
@@ -25511,6 +25570,11 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=_TRS;
   rrF(x-6.3+swing2*.5,ty-11,4.6,7.5-liftB*.5,1);
   rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
+  var _PC=!OUTF&&!(st.hero&&cosWorn('fit')==='jersey');   // v23.xx (spr15): the plate carrier and the lit cloth; suits and the jersey keep their own paint
+  if(_PC&&/^#[0-9a-fA-F]{6}$/.test(_TRS)){
+    wc.fillStyle=litHex(_TRS,.16); wc.fillRect(x-6.3+swing2*.5,ty-10.6,0.9,4.4-liftB*.5); wc.fillRect(x+1.7+swing*.5,ty-10.6,0.9,4.4-liftA*.5);
+    wc.fillStyle=darkHex(_TRS,.32); wc.fillRect(x-2.7+swing2*.5,ty-10.6,1.0,4.4-liftB*.5); wc.fillRect(x+5.3+swing*.5,ty-10.6,1.0,4.4-liftA*.5);
+  }
   wc.fillStyle=_BT[0];
   rrF(x-6.4+swing2*.5,ty-6.6-liftB,4.8,2.4,.8);
   rrF(x-6.5+swing2,ty-4.5-liftB,5.4,4.5,1);
@@ -25523,6 +25587,12 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillStyle=_BT[2];
     rrF(x-6.7+swing2,ty-1.7-liftB,5.8,1.7,.6); rrF(x+.9+swing,ty-1.7-liftA,5.8,1.7,.6);
   }
+  else if(_PC){   // v23.xx (spr15): a lit toe cap on each boot, toward the facing
+    var _toe=(fl>0)?3.0:0.2;
+    wc.fillStyle=litHex(_BT[0],.30); wc.fillRect(x-6.5+swing2+_toe,ty-4.2-liftB,2.2,1.0);
+    wc.fillStyle=litHex(_BT[1],.30); wc.fillRect(x+1.1+swing+_toe,ty-4.2-liftA,2.2,1.0);
+  }
+  if(_LSX!==1) wc.restore();   // v23.xx (spr16): end of the Broad legs
 
   if(_tilt){ wc.save(); wc.translate(x,ty-11); wc.rotate(_tilt); wc.translate(-x,-(ty-11)); }   // v23.xx (gfx13): the sprint lean, undone after the gun
   // v23.xx (gfx15), HIS ORDER (2026-10-12) on the graphics program, item 3, the animation pass: HIT FLINCH. A hit used to show
@@ -25544,17 +25614,25 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=PACKCOL[st.hero?cosWorn('pack'):(st.pack||'packbrown')]||PACKCOL.packbrown;   // v10.34
   rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
   if(!_BLD){
+  if(_PC){ wc.fillStyle=INK; rrF(x-6.6+leanX,ty-23,13.2,13,4); wc.fillStyle=cc; rrF(x-5.6+leanX,ty-22,11.2,11,3); }   // v23.xx (spr16): Lean is slimmer
+  else {
   wc.fillStyle=INK; rrF(x-7.5+leanX,ty-23,15,13,4);
   wc.fillStyle=cc; rrF(x-6.5+leanX,ty-22,13,11,3);
+  }
+  if(!_PC){   // v23.xx (spr15): a plate carrier body is lit by drawRigPC instead of these bands
   wc.fillStyle=cHi; wc.fillRect(x-5.7+leanX,ty-22,11.4,3);
   wc.fillStyle=cLo; wc.fillRect(x-5.7+leanX,ty-13.4,11.4,2.4);
-  } else drawBuildTorso(_BLD,x+leanX,ty,cc,cHi,cLo,(OUTF&&!OUTF.trs)?darkHex(cc,.62):_TRS,_JG.c,_JG.h,x,swing*.5,swing2*.5,_TRS);   /* v20.06: a bare-legged suit wears shorts on the hips */   // v20.01: Broad and Curved draw their own body
+  }
+  } else drawBuildTorso(_BLD,x+leanX,ty,cc,cHi,cLo,(OUTF&&!OUTF.trs)?darkHex(cc,.62):_TRS,_JG.c,_JG.h,x,swing*.5,swing2*.5,_TRS,_PC);   /* v20.06: a bare-legged suit wears shorts on the hips */   // v20.01: Broad and Curved draw their own body
   // v11.06, HIS NOTE 20: the jersey used to be painted HERE, before the chest
   // rig, so the rig's near-black band was laid across the lower half of the
   // numeral. It goes on after the rig now, a dozen lines down.
   // chest rig, and a hit shimmer when recently hurt
+  if(_PC) drawRigPC(_BLD||'lean',x+leanX,ty,cc,_JG.c,_JG.h);   // v23.xx (spr15): the plate carrier, not stripes
+  else {
   wc.fillStyle='rgba(16,21,27,.85)';
   if(_BLD==='broad') wc.fillRect(x-8.2+leanX,ty-18,16.4,2.4); else if(!_BLD) wc.fillRect(x-6.5+leanX,ty-18,13,2.4);   // v20.01: wider on Broad; Curved wears a belt instead
+  }
   if(iv<=0&&(OUTF?!!OUTF.jersey:(st.hero&&cosWorn('fit')==='jersey'))){   // v10.54: the baller wears it
     // v10.46: the number 23 jersey. Black side panels, and a pale 2 and 3 in
     // one-pixel strokes across the chest, five tall.
@@ -25579,7 +25657,11 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // This is how you decide whether to shoot the man in the road.
   if(st.bulk>0){
     var bk=st.bulk,bw2=13+bk*3.2,bx2=x+leanX-bw2/2;
-    var aHi='#a6bacb',aMid='#71879a',aLo='#3f505d';
+    // v23.xx (spr18), HIS ORDER (2026-10-12) "make them all look better", answer 20 "a" (gritty and grounded): ARMOUR IN DARK STEEL.
+    // The plate was a pale ice blue, the lightest thing on the body, so armour 3 read as a pale barrel with a head on it. It is
+    // dark steel now, heavier and darker than the cloth, with olive straps holding it on, and armour 3 wears a steel helmet shell
+    // over the crown (a hat still goes on over it). The three tier silhouettes (plate, pauldrons, collar and ridge) are unchanged.
+    var aHi='#75818c',aMid='#55606b',aLo='#3a434c';
     if(_BLD==='curved'){
       // v20.11, from the build design review (2026-10-08): the plate was a box that hid a Curved waist and chest. On Curved it is cut
       // to her outline, and the chest is moulded into the steel, riding the same spring as the cloth one (v20.02).
@@ -25599,6 +25681,10 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillStyle=aHi; wc.fillRect(bx2+1,ty-19.6,bw2-2,2);
     wc.fillStyle=aLo; wc.fillRect(bx2+1,ty-13.2,bw2-2,1.8);
     }
+    // v23.xx (spr18): the olive straps that hold the plate on, over each shoulder
+    wc.fillStyle=RIG_OLIVE[1]; wc.fillRect(x+leanX-4.6,ty-20.6,1.6,3.2); wc.fillRect(x+leanX+3.0,ty-20.6,1.6,3.2);
+    wc.fillStyle=RIG_OLIVE[2]; wc.fillRect(x+leanX-4.6,ty-20.6,1.6,0.7); wc.fillRect(x+leanX+3.0,ty-20.6,1.6,0.7);
+    wc.fillStyle=RIG_BUCKLE; wc.fillRect(x+leanX-4.4,ty-18.4,1.2,0.9); wc.fillRect(x+leanX+3.2,ty-18.4,1.2,0.9);
     if(bk>=2){
       wc.fillStyle=INK;
       rrF(bx2-3.6,ty-22.6,6,6.4,2.2); rrF(bx2+bw2-2.4,ty-22.6,6,6.4,2.2);
@@ -25622,7 +25708,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(st.hurt*2,0,.8)+')';
     // must match the NEW torso box, or a hit paints a bright rectangle in the air
-    if(_BLD){ buildPath(x+leanX,ty,(_BLD==='broad')?BUILD_BROAD:BUILD_CURVED,0); wc.fill(); } else wc.fillRect(x-6.5+leanX,ty-22,13,11);   // v20.01: the flash fits the build's body
+    if(_BLD){ buildPath(x+leanX,ty,(_BLD==='broad')?BUILD_BROAD:BUILD_CURVED,0); wc.fill(); } else if(_PC) wc.fillRect(x-5.6+leanX,ty-22,11.2,11); else wc.fillRect(x-6.5+leanX,ty-22,13,11);   // v20.01: the flash fits the build's body
     wc.globalCompositeOperation='source-over';
   }
   // The head, pushed further toward Toriyama per his answer and given an actual
@@ -25732,7 +25818,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       }
     }
   }
-  // v10.94, HIS NOTE: THE FACE MARKS GO ON FIRST. They used to be painted after
+  // v23.xx (spr18): armour 3 wears a dark steel helmet shell over the crown, with a rim over the brow and olive chin straps. A
+  // hat that covers the crown draws instead of it; a suit keeps its own head.
+  if((st.bulk||0)>=3&&!OUTF&&(HAT==='none'||HAT==='phones'||HAT==='mask')){
+    wc.fillStyle=INK; rrF(hx2-8.7,ty-40.6,17.4,7.6,4);
+    wc.fillStyle='#55606b'; rrF(hx2-8.1,ty-40.0,16.2,6.5,3.4);
+    wc.fillStyle='#75818c'; rrF(hx2-6.8,ty-39.6,8.6,1.6,0.8);
+    wc.fillStyle='#3a434c'; wc.fillRect(hx2-8.1,ty-34.7,16.2,1.2);
+    wc.fillStyle=RIG_OLIVE[1]; wc.fillRect(hx2-8.5,ty-33.6,1.3,4.4); wc.fillRect(hx2+7.2,ty-33.6,1.3,4.4);
+  }  // v10.94, HIS NOTE: THE FACE MARKS GO ON FIRST. They used to be painted after
   // the eyes, so war paint cut both eyeballs in half and a shiner washed one of
   // them purple. A mark is on the skin; an eye is not skin.
   // v10.21: the FACE rack. The hero face comes from the racks; a pillager one
@@ -26061,7 +26155,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(_drum){ wc.fillStyle='#3c4650'; wc.beginPath(); wc.arc(7+ext,2.6,3,0,6.2832); wc.fill(); }
   if(_pump){ wc.fillStyle='#5c4a34'; wc.fillRect(7+ext,0.6,4.5,2.4); }
   if(_sc){ wc.fillStyle='#232a31'; wc.fillRect(5+ext,-3.6,5.5,2); wc.fillStyle=_rc||'#5c6773'; wc.fillRect(9.5+ext,-3.4,1.5,1.6); }
-  wc.fillStyle=coat; if(_BLD==='broad') wc.fillRect(1+ext,-2.9,6,5.8); else if(_BLD==='curved') wc.fillRect(1+ext,-2.0,6,4.0); else wc.fillRect(1+ext,-2.4,6,4.8);   // v20.10: a thicker arm on Broad, a slimmer one on Curved
+  wc.fillStyle=coat; if(_BLD==='broad') wc.fillRect(1+ext,-3.3,6,6.6); else if(_BLD==='curved') wc.fillRect(1+ext,-2.0,6,4.0); else if(_PC) wc.fillRect(1+ext,-2.1,6,4.2); else wc.fillRect(1+ext,-2.4,6,4.8);   /* v23.xx (spr16): Broad thicker, Lean slimmer */   // v20.10: a thicker arm on Broad, a slimmer one on Curved
+  if(_PC&&/^#[0-9a-fA-F]{6}$/.test(coat)){ var _ah=(_BLD==='broad')?3.3:(_BLD==='curved'?2.0:2.1); wc.fillStyle=litHex(coat,.22,true); wc.fillRect(1+ext,(Math.cos(face)>=0)?-_ah:_ah-0.9,6,0.9); }   // v23.xx (spr15): the sleeve, lit on its upper edge
   if(_rc){ wc.fillStyle=_rc; wc.fillRect(7+ext,-2.3,Math.max(3,_L-5),0.9); }
   // support hand: rides the handguard, or feeds a magazine mid-reload
   if(rl>0&&reach>0){
@@ -27006,7 +27101,7 @@ function render2D(dt){
   // changes the scale and nothing else.
   var lean=p.ads?(opticMag()>1?.46:.30):.13;
   var leanSX=(mouse.x-W/2)*lean, leanSY=(mouse.y-H/2)*lean;
-  if(G.anchX===undefined){ G.anchX=p.x; G.anchY=p.y; G.leanSX=leanSX; G.leanSY=leanSY; }
+  if(G.anchX===undefined){ G.anchX=p.x; G.anchY=p.y; G.leanSX=leanSX; G.leanSY=leanSY; GFX.tr=0; GFX.shL=+G.shake||0; }   // v23.xx (gfx38): a snapped camera (raid start, respawn, redrop) starts with no trauma
   var ke=Math.min(1,dt*9);
   G.anchX+=(p.x-G.anchX)*ke;       G.anchY+=(p.y-G.anchY)*ke;
   G.leanSX+=(leanSX-G.leanSX)*ke;  G.leanSY+=(leanSY-G.leanSY)*ke;
@@ -27024,10 +27119,14 @@ function render2D(dt){
   // wrong, because __pairedBg draws no frames at all in either arm, but a
   // comparison that drew one arm and not the other would have been silently
   // meaningless. Shake is cosmetic, so it draws from the cosmetic PRNG.
-  var sk=G.shake>0?G.shake*.7:0;
-  var ox=Math.round(camX+(sk?fxn(-sk,sk):0)),oy=Math.round(camY+(sk?fxn(-sk,sk):0));
-  VX=ox; VY=oy;
-  try{ gfxCam(dt); }catch(_gcm){}   // v23.xx (gfx2): camera hook
+  // v23.xx (gfx38), HIS ORDER 2026-10-12 (the graphics program, item 5): TRAUMA SHAKE, WORLD ONLY. The shake was a fresh random
+  // jump of up to 0.7 x G.shake world units every drawn frame, applied to the camera itself, so it buzzed rather than shook and it
+  // moved everything that reads the camera: the HUD prompts and markers placed with w2s jittered with the world. Now VX/VY are the
+  // steady rounded camera (w2s, the HUD and aim never shake) and gfxCam turns each rise of G.shake into trauma that decays, read as a
+  // smooth wave in whole screen pixels; ox/oy carry it for every world layer, so the ground, the light and the fog stay aligned.
+  VX=Math.round(camX); VY=Math.round(camY);
+  try{ gfxCam(dt); }catch(_gcm){}   // v23.xx (gfx2): camera hook; (gfx38) it sets the trauma shake GFX.sx/GFX.sy in screen pixels
+  var ox=VX+(+GFX.sx||0)/Z, oy=VY+(+GFX.sy||0)/Z;
   // Who the player can actually see this frame. Everything about an entity,
   // sprite included, keys off this: the fog is only 93% opaque, so anything
   // drawn unconditionally shows faintly through walls.
@@ -28362,6 +28461,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   try{ drawDeathAnims(); }catch(_dda){}   // v17.47: his pick 29
   try{ gfxBodyFx(dt); }catch(_gbf){}   // v23.xx (gfx2): body and air effects hook
+  try{ gfxAir(dt); }catch(_gae){}   // v23.xx (gfx30): batch E air pass (explosions)
   for(i=0;i<G.puffs.length;i++){
     var q=G.puffs[i],a2=1-q.t/q.life;
     wc.globalAlpha=a2*.55; wc.fillStyle=q.c;
@@ -36558,7 +36658,32 @@ function gfxStoresDrop(){
   return c;
 }
 // render hooks (one call each per drawn raid frame)
-function gfxCam(dt){ if(!gfxHook('cam')) return false; GFX.emit.length=0; return true; }   // F1: trauma shake
+// v23.xx (gfx38): THE TRAUMA SHAKE. Each rise of G.shake (the sim keeps writing it exactly as before) adds rise/14 trauma, capped at
+// 1, and trauma drains at 1.4 a second of drawn time. The offset is 18 screen pixels (grown with the screen, hudRes) x trauma squared
+// x EFFECT INTENSITY (CFG.fxInt: FULL 1, HALF 0.5, OFF 0), along a smooth wave of three sines per axis at fixed phases, so a rifle
+// shot barely moves the picture, a frag shakes it and a Warden shell rocks it, and no frame jumps more than about a third of the
+// amplitude from the last. Nothing here draws from any stream (no rnd, no fxr) and nothing feeds the sim. A new raid starts at 0.
+function gfxTrauma(dt){
+  var g=(typeof G!=='undefined')?G:null, d=Math.max(0,Math.min(0.1,+dt||0)), s, k, hr, A, t;
+  GFX.sx=0; GFX.sy=0; GFX.shA=0;
+  if(!g||g.sim) return 0;
+  if(GFX.shG!==g){ GFX.shG=g; GFX.tr=0; GFX.shL=+g.shake||0; GFX.shT=0; }
+  s=+g.shake||0;
+  if(s>(+GFX.shL||0)+0.01) GFX.tr=Math.min(1,(+GFX.tr||0)+(s-(+GFX.shL||0))/14);
+  GFX.shL=s;
+  GFX.tr=Math.max(0,(+GFX.tr||0)-d*1.4);
+  GFX.shT=(+GFX.shT||0)+d;
+  k=(CFG.fxInt===undefined)?1:Math.max(0,Math.min(1,+CFG.fxInt||0));
+  hr=(typeof hudRes==='function')?Math.max(1,+hudRes()||1):1;
+  A=18*hr*GFX.tr*GFX.tr*k;
+  if(!(A>0.05)) return 0;
+  t=GFX.shT;
+  GFX.sx=Math.round(A*(Math.sin(t*15)+0.5*Math.sin(t*23+1.7)+0.25*Math.sin(t*35+4.1))/1.75);
+  GFX.sy=Math.round(A*(Math.sin(t*16+2.3)+0.5*Math.sin(t*24+0.6)+0.25*Math.sin(t*33+5.2))/1.75);
+  GFX.shA=A;
+  return A;
+}
+function gfxCam(dt){ try{ gfxTrauma(dt); }catch(_gt){ GFX.sx=0; GFX.sy=0; } if(!gfxHook('cam')) return false; GFX.emit.length=0; return true; }   // F1: trauma shake (gfx38)
 function gfxGround(dt){ return gfxHook('ground'); }   // D: ground stamps, puddles, casings
 function gfxShadowPass(dt){ return gfxHook('shadow'); }   // B: body shadows that follow the lamps
 function gfxBodyFx(dt){ return gfxHook('body'); }   // C, E: damage smoke and fire, explosions, atmosphere
@@ -36570,7 +36695,7 @@ function gfxScreen(dt){ return gfxHook('screen'); }   // F1: grain and screen ef
 // sim-side stubs (callers guard with !G.sim; no seeded draw, ever)
 function gfxShot(sh,wep,ang,fromPlayer){ return gfxHook('shot'); }   // D: the first-frame muzzle flash
 function wallMark(w,x,y,ux,uy){ return gfxHook('wall'); }   // D: bullet marks painted into the wall sprite
-function boomFx(x,y,size,kind){ return gfxHook('boom'); }   // C: fireball, shockwave, smoke column, debris
+// boomFx: the explosion module, in GFX-E (gfx30)
 function gfxOnDeath(a){ return gfxHook('death'); }   // C: machine death bursts, from the kept kind
 function scarStamp(kind,x,y,o){ return gfxHook('scar'); }   // D: scorch, cracks and debris into G.ground
 function gfxEmit(x,y,r,col,a){
@@ -36607,6 +36732,112 @@ function gfxWorldText(){
   } finally { wc=keep; ctx.restore(); }
   return true;
 }
+// ===== GFX-E: effects and atmosphere (the graphics program, batch E: gfx30 to gfx37) =====
+// v23.xx (gfx30), HIS ORDER 2026-10-12 ("add ALL of this stuff", item 13, bigger explosions; his answer 20: gritty and grounded, like
+// ARC Raiders): THE EXPLOSION MODULE. A frag charge or a Howler shell going off was an orange spark spray, one puff disc and the light
+// flash: no fire, no body, nothing that hung in the air after. boomFx (the gfx2 hook, called on every window that shows the burst and
+// never in a bot raid) now records one explosion in BOOMS, a render list of at most 6, and the air pass (gfxAir, after the death
+// animations) draws it from its age in raid time:
+// - a fireball: three baked radial sprites (gfxESprites, made once, kept in the store registry), swelling over 0.35 s, additive;
+// - a shockwave: one stroked ellipse growing out in 0.22 s;
+// - a smoke column: 8 to 14 baked puffs that rise, drift and spread for 2.5 to 4 s;
+// - flying debris: 8 to 16 chunks thrown on arcs that land, lie and fade by 3.5 s, with a ground dot under each one in the air.
+// Every random number is from the cosmetic stream (fxn), never the raid dice; nothing here is read by the sim; the light flash, the
+// decal and the damage are untouched. Effects LOW (fxLevel 0) throws fewer pieces. GFX.bypass draws none of it.
+var BOOMS=[];
+function gfxESprites(){
+  var st=gfxStore('gfxE'), m=st.m, c, x, gr;
+  if(m.fire) return m;
+  c=document.createElement('canvas'); c.width=c.height=128; x=c.getContext('2d');
+  gr=x.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,'rgba(255,214,140,1)'); gr.addColorStop(0.3,'rgba(255,150,60,.85)'); gr.addColorStop(0.6,'rgba(200,70,20,.45)');
+  gr.addColorStop(0.85,'rgba(110,30,10,.15)'); gr.addColorStop(1,'rgba(60,15,5,0)');
+  x.fillStyle=gr; x.fillRect(0,0,128,128); m.fire=c;
+  c=document.createElement('canvas'); c.width=c.height=64; x=c.getContext('2d');
+  gr=x.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba(255,252,236,1)'); gr.addColorStop(0.45,'rgba(255,226,150,.8)'); gr.addColorStop(1,'rgba(255,170,80,0)');
+  x.fillStyle=gr; x.fillRect(0,0,64,64); m.core=c;
+  c=document.createElement('canvas'); c.width=c.height=64; x=c.getContext('2d');
+  gr=x.createRadialGradient(30,28,0,32,32,32);
+  gr.addColorStop(0,'rgba(150,142,132,.95)'); gr.addColorStop(0.5,'rgba(118,112,104,.7)'); gr.addColorStop(0.8,'rgba(92,88,84,.3)'); gr.addColorStop(1,'rgba(80,78,76,0)');
+  x.fillStyle=gr; x.fillRect(0,0,64,64); m.smoke=c;
+  return m;
+}
+function boomFx(x,y,size,kind){
+  if(!gfxHook('boom')) return false;
+  x=+x; y=+y; if(!isFinite(x)||!isFinite(y)) return false;
+  var s=clamp(+size||1,0.3,2.5), thin=(CFG.fxLevel===0), i, n, a, vz, cs=['#2b2723','#38322b','#4a4036','#221f1c','#57504a'];
+  var b={g:G,x:x,y:y,s:s,kind:String(kind||''),t0:G.t||0,deb:[],smoke:[]};
+  n=thin?5:clamp(Math.round(8+4*s),8,16);
+  for(i=0;i<n;i++){
+    a=fxn(0,6.2832); vz=fxn(80,200);
+    b.deb.push({ux:Math.cos(a),uy:Math.sin(a),sp:fxn(50,170)*Math.sqrt(s),vz:vz,tl:vz/260,r:fxn(2.6,5.2)*Math.min(1.4,0.7+0.3*s),c:cs[i%cs.length]});
+  }
+  n=thin?5:clamp(Math.round(7+4*s),8,14);
+  for(i=0;i<n;i++){
+    a=fxn(0,6.2832);
+    b.smoke.push({ox:Math.cos(a)*fxn(3,20)*s,oy:Math.sin(a)*fxn(2,11)*s,vx:fxn(-6,10),vz:fxn(26,50)*(0.7+0.3*s),r:fxn(15,26)*s,d:fxn(0.06,0.4),life:fxn(2.5,4)});
+  }
+  if(BOOMS.length>=6) BOOMS.shift();
+  BOOMS.push(b);
+  return true;
+}
+function gfxBoomDraw(){
+  if(!BOOMS.length) return 0;
+  var i, j, b, t, k, R, sp, d, q, f, x0, y0, z, a, al, n=0, Z=ZOOM(), m=gfxESprites();
+  var vx0=VX-240, vy0=VY-120, vx1=VX+W/Z+240, vy1=VY+H/Z+300;
+  for(i=BOOMS.length-1;i>=0;i--){
+    b=BOOMS[i]; t=(G.t||0)-b.t0;
+    if(b.g!==G||t>4.6||t<-2){ BOOMS.splice(i,1); continue; }
+    if(t<0||b.x<vx0||b.x>vx1||b.y<vy0||b.y>vy1) continue;
+    wc.save();
+    try{
+      wc.globalCompositeOperation='source-over';
+      for(j=0;j<b.deb.length;j++){
+        d=b.deb[j]; q=Math.min(t,d.tl);
+        x0=b.x+d.ux*d.sp*q; y0=b.y+d.uy*d.sp*q*0.62;
+        z=(t<d.tl)?(d.vz*t-260*t*t):0;
+        al=(t<2.4)?1:Math.max(0,1-(t-2.4)/1.1);
+        if(al<=0) continue;
+        wc.globalAlpha=al;
+        if(z>1){ wc.fillStyle='rgba(0,0,0,.35)'; wc.fillRect(x0-d.r*0.6,y0-0.8,d.r*1.2,1.6); }
+        wc.fillStyle=(t<0.5)?'#ffa04e':d.c; wc.fillRect(x0-d.r*0.5,y0-z-d.r*0.4,d.r,d.r*0.8);
+        wc.fillStyle=(t<0.5)?'#ffe0a8':'rgba(170,160,146,.55)'; wc.fillRect(x0-d.r*0.5,y0-z-d.r*0.4,d.r,Math.max(0.8,d.r*0.22));
+        n++;
+      }
+      if(t<0.42){
+        k=Math.min(1,t/0.35); R=b.s*(24+44*Math.sqrt(k)); a=(t<0.06)?1:Math.max(0,1-Math.pow((t-0.06)/0.36,1.3));
+        wc.globalCompositeOperation='lighter';
+        wc.globalAlpha=0.5*a; wc.drawImage(m.fire,b.x-R*1.5,b.y-10-R*1.2,R*3,R*2.4);
+        wc.globalAlpha=0.9*a; wc.drawImage(m.fire,b.x-R,b.y-14-R*0.85,R*2,R*1.7);
+        wc.globalAlpha=a; wc.drawImage(m.core,b.x-R*0.5,b.y-18-R*0.45,R,R*0.9);
+        n+=3;
+      }
+      if(t<0.22){
+        k=t/0.22; R=b.s*(20+100*k);
+        wc.globalCompositeOperation='source-over'; wc.globalAlpha=0.5*(1-k); wc.strokeStyle='#ffe2b8'; wc.lineWidth=1+3*(1-k);
+        wc.beginPath(); wc.ellipse(b.x,b.y,R,R*0.58,0,0,6.2832); wc.stroke(); n++;
+      }
+      wc.globalCompositeOperation='source-over';
+      for(j=0;j<b.smoke.length;j++){
+        sp=b.smoke[j]; q=t-sp.d; f=q/sp.life; if(f<=0||f>=1) continue;
+        R=sp.r*(0.55+0.95*f);
+        wc.globalAlpha=0.8*Math.pow(1-f,1.15)*Math.min(1,q*5);
+        wc.drawImage(m.smoke,b.x+sp.ox+sp.vx*q-R,b.y+sp.oy-(8+sp.vz*q*(1-0.3*f))-R,R*2,R*2);
+        n++;
+      }
+    } finally { wc.restore(); }
+  }
+  return n;
+}
+// The air pass of batch E: one call a drawn raid frame, in the world transform, after the bodies and the death animations.
+function gfxAir(dt){
+  if(!gfxHook('air')) return 0;
+  var n=0;
+  try{ n+=gfxBoomDraw(); }catch(_gbd){}
+  return n;
+}
+// ===== GFX-E end =====
 var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
 function hidWant(){ return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&(NET.specG||(typeof netEntsHost==='function'&&netEntsHost()))); }   // v18.51, from the code comb (2026-10-07): and while the host spectates the raid it kept for the party, back on the floor with its window covered
 function hidTick(){
@@ -37239,7 +37470,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.96: Nameplates, damage numbers and loot labels now draw on the sharp HUD layer and stay crisp at any Render resolution. Check 23.96 fails on v23.95',
+  now:'v23.98: Explosions burst: fireball, shockwave, smoke column and flying debris. Check 23.98 fails on v23.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

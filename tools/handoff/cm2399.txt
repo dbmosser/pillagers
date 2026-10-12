@@ -1,0 +1,7 @@
+v23.99: retry is a row
+
+The arrow keys reach RETRY on the title, and ENTER presses it.
+
+Check 23.99. Fails on v23.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

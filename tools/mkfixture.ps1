@@ -6061,6 +6061,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.99',what:'his #39 (keyboard first): RETRY on the title, while it shows, is one of the rows the arrows walk, and ENTER on it presses RETRY and not the 1 PLAYER start',
+   run:function(){
+     if(typeof netTitleRows!=='function'||typeof netTitleMove!=='function'||typeof netTitleEnter!=='function'||typeof padSetFocus!=='function') return 'SKIP: no title rows here';
+     var rt=document.getElementById('moderetry'), bad=[], d0, oc, f0=(typeof PAD!=='undefined'&&PAD)?PAD.focus:null, hits=0, starts=0, rows, i, seen=false, r;
+     if(!rt) return 'SKIP: no RETRY on this title';
+     d0=rt.style.display; oc=rt.onclick;
+     try{
+       rt.style.display='';
+       rows=netTitleRows();
+       if(rows.indexOf(rt)<0) bad.push('RETRY shows but is not one of the rows the arrows walk ('+rows.length+' rows)');
+       padSetFocus(null); PAD.focus=null;
+       for(i=0;i<rows.length+2;i++){ netTitleMove(1); if(PAD.focus===rt) seen=true; }
+       if(!seen) bad.push('the down arrow never lands on RETRY');
+       rt.onclick=function(){ hits++; };
+       padSetFocus(rt);
+       r=netTitleEnter(function(){ starts++; });
+       if(hits!==1) bad.push('ENTER on RETRY did not press it ('+hits+' presses, returned '+r+')');
+       if(starts) bad.push('ENTER on RETRY ran the 1 PLAYER start');
+       rt.style.display='none';
+       if(netTitleRows().indexOf(rt)>=0) bad.push('a hidden RETRY is still a row');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       rt.style.display=d0; rt.onclick=oc;
+       try{ padSetFocus(null); PAD.focus=null; if(f0) padSetFocus(f0); }catch(_f){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'23.98',what:'gfx30, his order 2026-10-12 (the graphics program, item 13, bigger explosions): a frag burst records one explosion with 8 or more pieces of debris, its baked fireball is drawn at +0.1 s and its baked smoke at +1.5 s, it is gone by +5 s, and a bot raid records none',
    run:function(){
      var bad=[], g=null, p, hp0, t0=null, b, m, nF, nS, n0, sim0=false, simSet=false;

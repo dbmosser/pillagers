@@ -1,0 +1,5 @@
+## v23.99 - RETRY IS A ROW
+
+Co-op hunt while he was away. His number 39, full controller navigation, keyboard and mouse first. When the browser blocks the player 2 window the title shows RETRY under the mode rows, but the arrow keys only walked the mode rows, so the keyboard could never reach RETRY and ENTER started a 1 player game instead. RETRY is now the last row the arrows land on while it shows, and ENTER on it presses it.
+
+MEASURED. Check 23.99 passes, and fails on v23.98.

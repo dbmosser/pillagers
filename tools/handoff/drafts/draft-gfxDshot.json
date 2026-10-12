@@ -1,9 +1,0 @@
-{
-    "title":  "DEV",
-    "why":  "dev",
-    "now":  "dev",
-    "edits":  [
-
-              ],
-    "check":  "  {v:\u0027VER\u0027,what:\u0027dev shot (never shipped)\u0027,\n   run:function(){\n    var out=[], pass, g, px, py, i;\n    function one(pass){\n      g=__gfxStage({mapIx:0,seed:4242,cond:\u0027night\u0027,wx:\u0027rain\u0027,frames:4,x:1100,y:1500});\n      if(!g) return Promise.resolve(\u0027no stage\u0027);\n      g.player.iv=999; px=g.player.x; py=g.player.y;\n      scarStamp(\u0027scorch\u0027,px+160,py+60,{r:34}); scarStamp(\u0027crack\u0027,px+160,py+60,{r:40}); scarStamp(\u0027debris\u0027,px+160,py+60,{r:46,c:\u0027#6a6560\u0027});\n      scarStamp(\u0027scorch\u0027,px-220,py-90,{r:22}); scarStamp(\u0027crack\u0027,px-220,py-90,{r:26});\n      for(i=0;i\u003c24;i++) scarStamp(\u0027brass\u0027,px+30+((i*37)%70),py+20+((i*53)%40),{rot:i*0.7});\n      GFX.wetG=g; GFX.WET=pass?1:0;\n      for(i=0;i\u003c4;i++){ GFX.WET=pass?1:0; __loop(performance.now()+16.7*(i+1)); }\n      return __shot4k(\u0027gfxD_\u0027+(pass?\u0027wet\u0027:\u0027dry\u0027)).then(function(r){ out.push(r+\u0027 WET=\u0027+GFX.WET+\u0027 pud=\u0027+GFX.pudN+\u0027 p=\u0027+Math.round(px)+\u0027,\u0027+Math.round(py)); try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear(); });\n    }\n    return one(0).then(function(){ return one(1); }).then(function(){ return out.join(\u0027 | \u0027); });\n   }},"
-}

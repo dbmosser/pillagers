@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.99 - RETRY IS A ROW
+
+Co-op hunt while he was away. His number 39, full controller navigation, keyboard and mouse first. When the browser blocks the player 2 window the title shows RETRY under the mode rows, but the arrow keys only walked the mode rows, so the keyboard could never reach RETRY and ENTER started a 1 player game instead. RETRY is now the last row the arrows land on while it shows, and ENTER on it presses it.
+
+MEASURED. Check 23.99 passes, and fails on v23.98.
 ## v23.98 - EXPLOSIONS BURST
 
 Co-op hunt while he was away. His order of 2026-10-12, the graphics program (item 13, bigger explosions), in the gritty grounded look he picked (answer 20). A charge or a Howler shell going off was a spray of orange sparks, one puff and a flash of light: no fire, nothing in the air afterwards. Now every burst has a fireball that swells and dies in a third of a second, a shockwave ring, a column of smoke that rises and drifts for three or four seconds, and chunks of debris thrown out on arcs that land and lie there before they fade. It is all drawing: the damage, the blast radius, the light flash and the sound are exactly as they were, nothing here touches the raid dice, and bot raids skip it. Effects set to low throws fewer pieces.

@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.97';
+var VER='23.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26180,6 +26180,37 @@ function sprEyeOf(e){
   if(e.state==='investigate'||e.state==='search') return {c:'#ffc04a',a:0.9,h:1.3};
   return {c:'#dfe9f0',a:0.5,h:0};
 }
+// v23.xx (spr6), HIS ORDER (2026-10-12): "improve the sprites of all characters, bots, etc", gritty and grounded like ARC
+// Raiders. The sprite program, MACHINES A, build 5: WEAK POINTS ARE SOCKETS. A weak point was a bright coloured disc with a
+// glow two and a half times its size, so the brightest thing on a Sentry, a Warden or a Pillbox was its weak point and at play
+// size a Warden read as two coloured wheels. The eye is the face and must win. Each opening is now a recessed socket: a dark
+// ring, a thin ring in its own colour (orange vent, blue optic, as before) and a small core, held at about a third of full
+// strength and below the eye, gently pulsing. When it is hot (the overheat its hit buys) it glows full, with a baked glow
+// disc round it, so the window to punish is unmistakable. Where the openings are, which way they turn, and what a hit on one
+// does are unchanged; only how they are drawn.
+function sprWeakPts(e){
+  var WL=weakOf(e), wk, WW, p, hot, pls, a, gd, t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  if(!WL) return 0;
+  for(wk=0;wk<WL.length;wk++){
+    WW=WL[wk]; p=weakPos(e,WW);
+    hot=(WW.eff==='overheat'&&e.overheat>0);
+    pls=0.62+0.38*Math.sin(t*3.1+wk*2.1+e.x*0.01);
+    if(hot){
+      gd=sprGlow(WW.c);
+      if(gd){ wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=1; wc.drawImage(gd,p.x-WW.rad*2.6,p.y-WW.rad*2.6,WW.rad*5.2,WW.rad*5.2); wc.restore(); }
+    }
+    // the socket: a dark recess, the coloured ring, a small core
+    wc.fillStyle='rgba(10,8,12,.85)';
+    wc.beginPath(); wc.arc(p.x,p.y,WW.rad*0.62,0,6.2832); wc.fill();
+    a=hot?1:(0.24+0.11*pls);
+    wc.globalAlpha=a; wc.strokeStyle=WW.c; wc.lineWidth=Math.max(1,WW.rad*0.16);
+    wc.beginPath(); wc.arc(p.x,p.y,WW.rad*0.46,0,6.2832); wc.stroke();
+    wc.globalAlpha=hot?1:0.38; wc.fillStyle=WW.c;
+    wc.beginPath(); wc.arc(p.x,p.y,WW.rad*(hot?0.30:0.14),0,6.2832); wc.fill();
+    wc.globalAlpha=1;
+  }
+  return WL.length;
+}
 function drawSentryS(e){
   var S=e.r/SENTRY_R0, fl=Math.cos(e.face)<0?-1:1, x=e.x, y=e.y, st=e.step||0, i, tx, off, EY=sprEyeOf(e);
   var lean=Math.sin(st*3)*1.3, brass=!!e.elite, t=(typeof G!=='undefined'&&G)?(G.t||0):0;
@@ -26252,49 +26283,86 @@ function drawSentryS(e){
   }
   wc.restore();
 }
+// v23.xx (spr3), HIS ORDER (2026-10-12): "improve the sprites of all characters, bots, etc", gritty and grounded like ARC
+// Raiders, silhouettes first. The sprite program, MACHINES A, build 2: THE CRAWLER. It was a red bench: six legs hanging
+// straight down under a flat red box, no knees, nothing insect, the body the same red as the foe team colour and its three
+// eyes lost in one glow disc. It is redrawn: a low shell of three overlapping oxide segments (rust brown, not team red), each
+// lit on top with a dark seam behind it; a gunmetal sensor head with two mandible blades; three separate eye sockets in the
+// sensor language (dim white idle, amber suspicious, red hunting); and six jointed legs splayed out front and back, knees
+// above the shell line, feet planted wide, stepping on a tripod gait (three feet down while three swing). On a rush the shell
+// drops and the front legs reach. An elite wears brass shell edges and a fourth eye. Drawn only: no random numbers, nothing
+// written on the machine, its size and shadow as before.
+// One leg: hip, knee, foot in the machine frame (feet at ox,oy, lx mirrored by fl), inked then metal.
+function sprCrawlLeg(ox,oy,fl,S,hx,hy,kx,ky,fx,fy){
+  wc.moveTo(ox+fl*hx*S,oy+hy*S); wc.lineTo(ox+fl*kx*S,oy+ky*S); wc.lineTo(ox+fl*fx*S,oy+fy*S);
+}
 function drawCrawlerS(e){
-  var S=e.r/CRAWLER_R0,fl=Math.cos(e.face)<0?-1:1;
-  var hunting=e.state==='chase';
-  // it hunkers and stretches forward when it commits to a rush
-  var lunge=hunting?1.18:1;
-  shadowE(e.x,e.y+1,15*S,5*S,.44);
-  wc.fillStyle='#5a1c11';
-  for(var j=0;j<6;j++){
-    var side=j%2?1:-1,rank=Math.floor(j/2);
-    var lx=e.x+side*(9*S+rank*1.5*S);
-    var sw=Math.sin(e.legs+j*1.05)*4.5*S*lunge;
-    // lower joint planted, upper joint scuttling
-    wc.fillRect(lx-1.6*S,e.y-3*S-rank*1.5*S,3.2*S,8*S);
-    wc.fillRect(lx-1.6*S+sw,e.y-11*S-rank*1.5*S,3.2*S,8*S);
+  var S=e.r/CRAWLER_R0, fl=Math.cos(e.face)<0?-1:1, x=e.x, y=e.y, i, k, side, EY=sprEyeOf(e), t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  var hunting=e.state==='chase', drop=hunting?2:0, brass=!!e.elite, lg=e.legs||0;
+  // the legs per side (far, near): hip, knee, foot for the rear, middle and front leg; the rear and front knees stand out past
+  // the shell ends, the middle knees bend low under it
+  var LG=[[[-6,-11.5,-13.5,-16.5,-14.5,-2.5],[-1,-10.5,-4,-6,-4.5,-2.5],[6,-11.5,12,-19.5,13.5,-2.5]],
+          [[-7,-11,-15.5,-15.5,-17.5,0],[1,-10,5,-5.5,4.5,0],[7,-11,13.8,-18.8,16.5,0]]];
+  shadowE(x,y+1,15*S,5*S,.44);
+  // THE LEGS, far side first (darker, set back), then the near side, then the shell over their hips. A tripod gait: near rear, far middle and
+  // near front swing together while the other three stand, each swinging foot lifted and carried forward.
+  for(side=0;side<2;side++){
+    var far=side===0, pts=[], L;
+    for(i=0;i<3;i++){
+      L=LG[side][i];
+      var ph=lg+((((i+side)%2)===0)?0:Math.PI), sw=Math.cos(ph)*2.2, lift=Math.max(0,Math.sin(ph))*2.4;
+      var reach=(hunting&&i===2)?3:0;
+      pts.push([L[0],L[1]+drop, L[2]+sw*0.5+reach*0.6,L[3]+drop*0.5-lift*0.6, L[4]+sw+reach,L[5]-lift]);
+    }
+    wc.lineCap='round'; wc.lineJoin='round';
+    wc.strokeStyle=INK; wc.lineWidth=3.8*S; wc.beginPath();
+    for(i=0;i<3;i++) sprCrawlLeg(x,y,fl,S,pts[i][0],pts[i][1],pts[i][2],pts[i][3],pts[i][4],pts[i][5]);
+    wc.stroke();
+    wc.strokeStyle=far?'#2f353c':'#4a525b'; wc.lineWidth=2.1*S; wc.beginPath();
+    for(i=0;i<3;i++) sprCrawlLeg(x,y,fl,S,pts[i][0],pts[i][1],pts[i][2],pts[i][3],pts[i][4],pts[i][5]);
+    wc.stroke();
+    // knee joints catch the light; the near feet are planted claws
+    wc.fillStyle=far?'#4a525b':'#8d98a3';
+    for(i=0;i<3;i++){ wc.fillRect(x+fl*pts[i][2]*S-0.8*S,y+pts[i][3]*S-0.8*S,1.6*S,1.6*S); }
+    if(side===1){
+      // THE SHELL over the hips of both rows of legs: three overlapping oxide segments, rear to front, each a dark rim, the paint,
+      // a lit crown offset to the light, a dark seam at its back edge
+      var SG=[[-8.5,9,8],[-0.5,10.5,9.5],[7.5,9.5,8.5]];
+      for(k=0;k<3;k++){
+        var cx=x+fl*SG[k][0]*S, cy=y+(-13.5+drop)*S, rw=SG[k][1]/2*S, rh=SG[k][2]/2*S;
+        wc.fillStyle=INK; wc.beginPath(); wc.ellipse(cx,cy,rw+1.2*S,rh+1.2*S,0,0,6.2832); wc.fill();
+        wc.fillStyle='#4e2419'; wc.beginPath(); wc.ellipse(cx,cy,rw,rh,0,0,6.2832); wc.fill();
+        wc.fillStyle='#7a3a2a'; wc.beginPath(); wc.ellipse(cx-0.3*S,cy-0.9*S,rw-0.6*S,rh-1.1*S,0,0,6.2832); wc.fill();
+        wc.fillStyle='#9c5038'; wc.beginPath(); wc.ellipse(cx-1.0*S,cy-rh*0.5,rw*0.62,rh*0.3,0,0,6.2832); wc.fill();
+        if(brass){ wc.strokeStyle='#c9a24a'; wc.lineWidth=0.9*S; wc.beginPath(); wc.ellipse(cx,cy,rw-0.2*S,rh-0.2*S,0,3.5,5.95); wc.stroke(); }
+      }
+      wc.fillStyle='#2a1610';
+      sprMR(x,y,fl,S,-4.6,-17.5+drop,0.9,7.5); sprMR(x,y,fl,S,3.6,-17.5+drop,0.9,7.5);
+      wc.fillStyle='#b99a86'; sprMR(x,y,fl,S,-10,-17.4+drop,1.6,0.6); sprMR(x,y,fl,S,2,-18.1+drop,1.2,0.6); sprMR(x,y,fl,S,9.5,-11+drop,0.8,1.2);
+      // THE HEAD: a gunmetal sensor block forward of the shell, two mandible blades under it
+      var hy=-13.5+drop;
+      wc.fillStyle=INK; sprMP(x,y,fl,S,[11,hy-5.6,17.5,hy-5.6,20.4,hy-2.2,20.4,hy+3.2,11,hy+3.6]); wc.fill();
+      wc.fillStyle='#3e454c'; sprMP(x,y,fl,S,[12,hy-4.6,17,hy-4.6,19.4,hy-1.8,19.4,hy+2.4,12,hy+2.6]); wc.fill();
+      wc.fillStyle='#59626b'; sprMR(x,y,fl,S,12,hy-4.6,5,1.3);
+      wc.fillStyle=INK;
+      sprMP(x,y,fl,S,[16.5,hy+1.2,23.2,hy+1.6,24.2,hy+3.8,21.2,hy+3.2,16.5,hy+3.6]); wc.fill();
+      sprMP(x,y,fl,S,[15.5,hy+3,21.6,hy+4.6,22,hy+6.8,19,hy+5.6,15.5,hy+5.4]); wc.fill();
+      wc.fillStyle='#8d98a3'; sprMR(x,y,fl,S,17,hy+1.6,5.6,0.7); sprMR(x,y,fl,S,16.2,hy+3.4,4.6,0.7);
+      // THREE EYES (four on an elite), each its own socket, the main one largest
+      var EYES=brass?[[17,-1.3,2.1,1.5],[13.9,-2.4,1.5,1.0],[14.6,0.9,1.5,1.0],[18.2,1.3,1.2,0.8]]:[[17,-1.3,2.1,1.5],[13.9,-2.4,1.5,1.0],[14.6,0.9,1.5,1.0]];
+      for(k=0;k<EYES.length;k++){
+        var ex=x+fl*EYES[k][0]*S, ey=y+(hy+EYES[k][1])*S;
+        wc.fillStyle=INK; wc.beginPath(); wc.arc(ex,ey,EYES[k][2]*S,0,6.2832); wc.fill();
+      }
+      wc.globalCompositeOperation='lighter'; wc.fillStyle=EY.c;
+      if(EY.h>0){ wc.globalAlpha=0.30*EY.a; wc.beginPath(); wc.arc(x+fl*17*S,y+(hy-1.3)*S,1.5*EY.h*S*(hunting?(1+Math.sin(t*14)*0.15):1),0,6.2832); wc.fill(); }
+      wc.globalAlpha=EY.a;
+      for(k=0;k<EYES.length;k++){ wc.beginPath(); wc.arc(x+fl*EYES[k][0]*S,y+(hy+EYES[k][1])*S,EYES[k][3]*S,0,6.2832); wc.fill(); }
+      wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+      wc.fillStyle='rgba(255,255,255,.8)'; wc.fillRect(x+fl*17*S-1.1*S,y+(hy-2.5)*S,0.7*S,0.7*S);
+    }
   }
-  // carapace
-  wc.fillStyle='#a83c24'; wc.fillRect(e.x-13*S,e.y-19*S,26*S,11*S);
-  wc.fillStyle='#c04a2e'; wc.fillRect(e.x-13*S,e.y-19*S,26*S,4*S);
-  wc.fillStyle='#7d2a18'; wc.fillRect(e.x-13*S,e.y-9.5*S,26*S,2*S);
-  // head and mandibles
-  wc.fillStyle='#8e3220';
-  wc.fillRect(e.x+fl*12*S-6*S,e.y-21*S*lunge,12*S,9*S);
-  wc.fillStyle='#5a1c11';
-  wc.fillRect(e.x+fl*17*S-2*S,e.y-20*S*lunge,5*S,2.4*S);
-  wc.fillRect(e.x+fl*17*S-2*S,e.y-15*S*lunge,5*S,2.4*S);
-  // eye cluster: three unblinking points, brighter and pulsing on the rush.
-  // Scary is specificity: a thing with six legs and three eyes that all look AT
-  // you reads as predatory in a way a colour swap never will.
-  wc.globalCompositeOperation='lighter';
-  wc.fillStyle=hunting?'#ff3b30':'#ffc04a';
-  var eyA=hunting?(.85+.15*Math.sin(G.t*16)):.5;
-  wc.globalAlpha=eyA;
-  var ehx=e.x+fl*13*S,ehy=e.y-18*S*lunge;
-  wc.beginPath(); wc.arc(ehx,ehy,1.6*S,0,6.2832); wc.fill();
-  wc.beginPath(); wc.arc(ehx+fl*3*S,ehy+2.2*S,1.2*S,0,6.2832); wc.fill();
-  wc.beginPath(); wc.arc(ehx-fl*2.5*S,ehy+2.6*S,1.1*S,0,6.2832); wc.fill();
-  wc.fillStyle=hunting?'#ff5a3a':'#ffe08a';
-  var cp=hunting?(1+Math.sin(G.t*14)*.3):1;
-  wc.globalAlpha=.28;
-  wc.beginPath(); wc.arc(e.x+fl*15*S,e.y-17*S*lunge,6*S*cp,0,6.2832); wc.fill();
-  wc.globalAlpha=1;
-  wc.beginPath(); wc.arc(e.x+fl*15*S,e.y-17*S*lunge,2.4*S,0,6.2832); wc.fill();
-  wc.globalCompositeOperation='source-over';
+  wc.lineCap='butt'; wc.lineJoin='miter';
 }
 function drawPeddlerS(e){
   // A stall, not a man standing in a field: table, stock on the table, and the
@@ -26331,51 +26399,87 @@ function drawPeddlerS(e){
   wc.fillStyle='#ffc04a'; wc.fillRect(hx+25,hy-34,6,8);
   wc.fillStyle='#fff3c8'; wc.fillRect(hx+27,hy-32,2,4);
 }
+// v23.xx (spr5): a soft glow disc baked once per colour (a radial gradient on a small canvas), stamped with drawImage, so a
+// glow costs one image draw instead of building a gradient every frame.
+var SPRGLOW={};
+function sprGlow(c){
+  var k=c, cv2, g2, gr;
+  if(SPRGLOW[k]) return SPRGLOW[k];
+  if(typeof document==='undefined') return null;
+  cv2=document.createElement('canvas'); cv2.width=64; cv2.height=64; g2=cv2.getContext('2d'); if(!g2) return null;
+  gr=g2.createRadialGradient(32,32,1,32,32,32); gr.addColorStop(0,c); gr.addColorStop(1,'rgba(0,0,0,0)');
+  g2.fillStyle=gr; g2.fillRect(0,0,64,64);
+  SPRGLOW[k]=cv2; return cv2;
+}
 function drawListenerS(e){
   // Nothing else on this map is this shape. Tall, thin, no face, arms too long,
   // and a wide dish where a head should be. Dormant it is nearly black and
   // hunched, so at a glance it is a bit of standing scrap; awake it straightens
   // up, which is the moment you are meant to feel.
-  var dorm=(e.state==='dormant'),wk=dorm?0:1;
-  var h=dorm?26:40, sway=Math.sin(e.legs*0.6)*(dorm?0.6:2.2);
-  shadowE(e.x,e.y+1,10,4,.40);
-  var body=dorm?'#1d2028':'#3b4250', edge=dorm?'#2a2f38':'#5d6878';
-  // legs
-  wc.fillStyle=INK;
-  rrF(e.x-5.5,e.y-h*0.46,4.6,h*0.46,1.6);
-  rrF(e.x+1.1,e.y-h*0.46,4.6,h*0.46,1.6);
-  wc.fillStyle=body;
-  rrF(e.x-4.9,e.y-h*0.44,3.4,h*0.43,1.2);
-  rrF(e.x+1.6,e.y-h*0.44,3.4,h*0.43,1.2);
-  // torso, narrow
-  wc.fillStyle=INK; rrF(e.x-5.6+sway*.3,e.y-h,11.2,h*0.58,3);
-  wc.fillStyle=body; rrF(e.x-4.8+sway*.3,e.y-h+0.8,9.6,h*0.56,2.6);
-  wc.fillStyle=edge; wc.fillRect(e.x-4.4+sway*.3,e.y-h+1,8.8,1.8);
-  // long arms
-  wc.fillStyle=INK;
-  rrF(e.x-8.6+sway,e.y-h+2,3.4,h*0.62,1.4);
-  rrF(e.x+5.2+sway,e.y-h+2,3.4,h*0.62,1.4);
-  wc.fillStyle=body;
-  rrF(e.x-8.1+sway,e.y-h+2.6,2.4,h*0.58,1.1);
-  rrF(e.x+5.7+sway,e.y-h+2.6,2.4,h*0.58,1.1);
-  // the dish. No eyes: it is not looking at you.
-  var hy=e.y-h-(dorm?2:7);
-  wc.fillStyle=INK;
-  wc.beginPath(); wc.ellipse(e.x+sway*1.2,hy,9.4,6.2,0,0,6.2832); wc.fill();
-  wc.fillStyle=dorm?'#242833':'#4a5364';
-  wc.beginPath(); wc.ellipse(e.x+sway*1.2,hy,8.2,5.2,0,0,6.2832); wc.fill();
-  wc.fillStyle=dorm?'#1a1d25':'#2b3240';
-  wc.beginPath(); wc.ellipse(e.x+sway*1.2,hy+0.6,5.2,3.2,0,0,6.2832); wc.fill();
-  if(!dorm){
-    var pl=0.55+0.45*Math.sin((G?G.t:0)*7);
-    wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.5*pl;
-    var lg=wc.createRadialGradient(e.x+sway*1.2,hy,1,e.x+sway*1.2,hy,26);
-    lg.addColorStop(0,'#ff5a4a'); lg.addColorStop(1,'rgba(0,0,0,0)');
-    wc.fillStyle=lg; wc.beginPath(); wc.arc(e.x+sway*1.2,hy,26,0,6.2832); wc.fill();
-    wc.restore();
-    wc.fillStyle='#ff5a4a';
-    wc.fillRect(e.x-1.4+sway*1.2,hy-1.2,2.8,2.4);
+  // v23.xx (spr5), HIS ORDER (2026-10-12): "improve the sprites of all characters, bots, etc", gritty and grounded like ARC
+  // Raiders, silhouettes first. The sprite program, MACHINES A, build 4: THE LISTENER. The strongest idea and the weakest draw:
+  // a stick man with a satellite dish, limbs two or three pixels wide on a laptop. Kept tall, thin and faceless, it is redrawn:
+  // digitigrade stilt legs (thigh forward, shin back, a hoof), long arms to the knee ending in three hooked fingers, a narrow
+  // ribbed spine, and a big dish with a raised rim lit from the top left, a ring of five sensor pits and two swept fins behind it
+  // ears. Dormant it hunches near black with only the rim catching light; awake it straightens, the pits light red one after
+  // another round the ring and the dish centre is its red eye. The glow is a disc baked once (sprGlow), not a gradient built
+  // every frame. An elite has a brass rim and a third fin. Drawn only: no random numbers, its size and shadow as before.
+  var dorm=(e.state==='dormant'), fl=Math.cos(e.face)<0?-1:1, t=(typeof G!=='undefined'&&G)?(G.t||0):0, i, k, s;
+  var h=dorm?26:40, lg=e.legs||0, sway=Math.sin(lg*0.6)*(dorm?0.6:2.2), brass=!!e.elite, x=e.x, y=e.y;
+  var body=dorm?'#1d2028':'#3e454c', lit=dorm?'#2c313a':'#59626b', shade=dorm?'#15171c':'#2a2f35';
+  shadowE(x,y+1,10,4,.40);
+  wc.lineCap='round'; wc.lineJoin='round';
+  // THE LEGS: digitigrade stilts, the far one first; thigh forward to the knee, shin back to a high heel, a hoof planted
+  for(s=1;s>=-1;s-=2){
+    var hx=x+s*2.4, st=Math.sin(lg+(s>0?0:Math.PI))*1.6*(dorm?0.3:1);
+    var P=[hx,y-h*0.46, hx+fl*(3.4+st*0.5),y-h*0.29, hx-fl*(1.8-st*0.6),y-h*0.12, hx+fl*(0.8+st),y];
+    wc.strokeStyle=INK; wc.lineWidth=4.6; wc.beginPath(); wc.moveTo(P[0],P[1]); wc.lineTo(P[2],P[3]); wc.lineTo(P[4],P[5]); wc.lineTo(P[6],P[7]); wc.stroke();
+    wc.strokeStyle=(s>0)?shade:body; wc.lineWidth=2.8; wc.stroke();
+    wc.fillStyle=INK; wc.fillRect(P[6]-2.4,y-1.8,4.8,2.2);
+    wc.fillStyle=lit; wc.fillRect(P[2]-0.7,P[3]-0.7,1.4,1.4);
   }
+  // THE SPINE: a narrow inked torso, lit down its left edge, three rib seams
+  var tx=x+sway*0.3, ty=y-h;
+  wc.fillStyle=INK; rrF(tx-5.2,ty,10.4,h*0.58,3);
+  wc.fillStyle=body; rrF(tx-4.2,ty+1,8.4,h*0.56,2.4);
+  wc.fillStyle=lit; wc.fillRect(tx-4.2,ty+2,1.4,h*0.5);
+  wc.fillStyle=shade; wc.fillRect(tx+2.6,ty+2,1.6,h*0.5);
+  for(k=0;k<3;k++) wc.fillRect(tx-3,ty+h*(0.16+k*0.12),6,1.1);
+  // THE ARMS: long, to the knee, three hooked fingers at each hand
+  for(s=-1;s<=1;s+=2){
+    var ax=x+s*6.6+sway, ay=y-h+3, ex2=ax+s*0.6, ey2=y-h*0.33;
+    wc.strokeStyle=INK; wc.lineWidth=4.2; wc.beginPath(); wc.moveTo(ax,ay); wc.lineTo(ax+s*1.2,ay+h*0.3); wc.lineTo(ex2,ey2); wc.stroke();
+    wc.strokeStyle=(s>0)?shade:body; wc.lineWidth=2.4; wc.stroke();
+    wc.strokeStyle=INK; wc.lineWidth=1.2; wc.beginPath();
+    for(k=-1;k<=1;k++){ wc.moveTo(ex2+k*1.1,ey2); wc.quadraticCurveTo(ex2+k*1.5,ey2+2.6,ex2+k*1.1+fl*1.2,ey2+3.2); }
+    wc.stroke();
+  }
+  // THE DISH where a face should be: fins behind it, an inked rim lit at the top left, five sensor pits round an inner ring
+  var dx=x+sway*1.2, dy=y-h-(dorm?2:7);
+  wc.fillStyle=INK;
+  for(s=-1;s<=1;s+=2){ wc.beginPath(); wc.moveTo(dx+s*5,dy-1.5); wc.lineTo(dx+s*13.6,dy-4.8); wc.lineTo(dx+s*8.8,dy+2.0); wc.closePath(); wc.fill(); }
+  if(brass){ wc.beginPath(); wc.moveTo(dx-2.4,dy-4); wc.lineTo(dx,dy-11.5); wc.lineTo(dx+2.4,dy-4); wc.closePath(); wc.fill(); }
+  wc.fillStyle=dorm?'#2a2f38':'#4a525b';
+  for(s=-1;s<=1;s+=2){ wc.beginPath(); wc.moveTo(dx+s*6,dy-1.4); wc.lineTo(dx+s*12.2,dy-4.0); wc.lineTo(dx+s*8.4,dy+1.0); wc.closePath(); wc.fill(); }
+  wc.fillStyle=INK; wc.beginPath(); wc.ellipse(dx,dy,9.6,6.4,0,0,6.2832); wc.fill();
+  wc.fillStyle=dorm?'#242833':'#59626b'; wc.beginPath(); wc.ellipse(dx,dy,8.4,5.4,0,0,6.2832); wc.fill();
+  wc.strokeStyle=brass?'#c9a24a':(dorm?'#4a525b':'#9aa4ad'); wc.lineWidth=1.2;
+  wc.beginPath(); wc.ellipse(dx,dy,7.8,4.9,0,3.3,5.3); wc.stroke();
+  wc.fillStyle=dorm?'#15171c':'#2a2f35'; wc.beginPath(); wc.ellipse(dx,dy+0.4,6.2,3.8,0,0,6.2832); wc.fill();
+  var lit5=dorm?-1:Math.floor((t*4)%6);
+  for(k=0;k<5;k++){
+    var pa=-1.5708+k*1.2566, ppx=dx+Math.cos(pa)*4.4, ppy=dy+0.4+Math.sin(pa)*2.6;
+    wc.fillStyle=INK; wc.beginPath(); wc.arc(ppx,ppy,1.05,0,6.2832); wc.fill();
+    if(!dorm&&k<=lit5){ wc.fillStyle='#ff5a4a'; wc.beginPath(); wc.arc(ppx,ppy,0.6,0,6.2832); wc.fill(); }
+  }
+  if(!dorm){
+    var pl=0.55+0.45*Math.sin(t*7), gd=sprGlow('#ff5a4a');
+    if(gd){ wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.45*pl; wc.drawImage(gd,dx-12,dy+0.4-12,24,24); wc.restore(); }
+    wc.fillStyle=INK; wc.beginPath(); wc.arc(dx,dy+0.4,1.9,0,6.2832); wc.fill();
+    wc.fillStyle='#ff5a4a'; wc.beginPath(); wc.arc(dx,dy+0.4,1.3,0,6.2832); wc.fill();
+    wc.fillStyle='rgba(255,255,255,.8)'; wc.fillRect(dx-0.9,dy-0.6,0.6,0.6);
+  }
+  wc.lineCap='butt'; wc.lineJoin='miter';
 }
 function drawBulwarkS(e){
   shadowE(e.x,e.y+2,e.r*.95,4,.36);
@@ -26422,55 +26526,87 @@ function drawHowlerS(e){
   wc.beginPath(); wc.arc(e.x+9,e.y-9,2.2,0,6.2832); wc.fill();
 }
 function drawSnitchS(e){
-  var S=e.r/SNITCH_R0;
-  var al=e.state==='alarm';
-  var hov=(17+Math.sin(G.t*6+e.x*.1)*4)*S;
+  // v23.xx (spr4), HIS ORDER (2026-10-12): "improve the sprites of all characters, bots, etc", gritty and grounded like ARC
+  // Raiders, silhouettes first. The sprite program, MACHINES A, build 3: THE CRIER. It was a grey square tilted on its corner
+  // and spinning like a sticker, with a bulb on top: it read as a picture frame or a die, nothing said drone and nothing said it
+  // was about to shout. It is redrawn as a loudspeaker drone: an inked pod on an X frame with four rotor hubs, each rotor a pale
+  // spinning blur (the blur spins, the body does not), a loudspeaker horn under the pod pointing where it faces with an ochre
+  // ring at its mouth, and a lamp on top in the sensor language (dim white idle, red when it calls). The body tilts a little
+  // into its facing instead of spinning. When it calls the ALARM the horn mouth glows red and the expanding ring and the
+  // countdown arc come out of the horn; the ALARM word stays. An elite has a brass frame and a second lamp. Drawn only: no
+  // random numbers, nothing written on the machine, the hover, its size and its shadow as before.
+  var S=e.r/SNITCH_R0, fl=Math.cos(e.face)<0?-1:1, t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  var al=e.state==='alarm', brass=!!e.elite, EY=sprEyeOf(e), i, k, a=fl*0.1;
+  var hov=(17+Math.sin(t*6+e.x*.1)*4)*S;
   shadowE(e.x,e.y+1,8*S,3*S,.32);
-  var cy=e.y-hov;
-  // SPEC 8.3: visually distinctive at a distance so it can be identified and
-  // prioritised. A winding snitch throws an expanding red alarm ring and a
-  // filling countdown arc, so from across the map you can see one is calling
-  // and how long you have left to stop it.
+  var cy=e.y-hov, ox=e.x, oy=cy-7*S;
+  // where the horn mouth is in the world, for the alarm ring
+  var hmx=ox+(fl*9.6*S)*Math.cos(a)-(4.6*S)*Math.sin(a), hmy=oy+(fl*9.6*S)*Math.sin(a)+(4.6*S)*Math.cos(a);
+  // SPEC 8.3: visually distinctive at a distance so it can be identified and prioritised. A winding Crier throws an expanding
+  // red alarm ring and a filling countdown arc from its horn, so from across the map you can see one is calling and how long
+  // you have left to stop it.
   if(al&&e.wind!==undefined&&e.wind!==null){
     var wf=1-clamp(e.wind/4,0,1);
     wc.globalCompositeOperation='lighter';
-    var pulse=(G.t*2)%1;
+    var pulse=(t*2)%1;
     wc.strokeStyle='rgba(255,59,48,'+(0.5*(1-pulse))+')'; wc.lineWidth=2.5*S;
-    wc.beginPath(); wc.arc(e.x,cy,(16+44*pulse)*S,0,6.2832); wc.stroke();
+    wc.beginPath(); wc.arc(hmx,hmy,(16+44*pulse)*S,0,6.2832); wc.stroke();
     wc.strokeStyle='#ff3b30'; wc.lineWidth=3*S;
-    wc.beginPath(); wc.arc(e.x,cy,22*S,-1.5708,-1.5708+6.2832*wf); wc.stroke();
+    wc.beginPath(); wc.arc(hmx,hmy,22*S,-1.5708,-1.5708+6.2832*wf); wc.stroke();
     wc.globalCompositeOperation='source-over';
     wc.font=FS(TYPE.label); wc.textAlign='center';
     wc.fillStyle=INK; wc.fillText('ALARM',e.x+1,cy-30*S+1);
     wc.fillStyle='#ff5040'; wc.fillText('ALARM',e.x,cy-30*S);
     wc.textAlign='left';
   }
-  // rotor blur, faster when it is running its mouth
-  wc.globalCompositeOperation='lighter';
-  wc.strokeStyle=al?'rgba(255,120,90,.30)':'rgba(150,175,200,.22)';
-  wc.lineWidth=1.4*S;
-  var rr=13*S+Math.sin(G.t*(al?26:15))*1.5*S;
-  wc.beginPath(); wc.ellipse(e.x,cy-9*S,rr,4*S,0,0,6.2832); wc.stroke();
-  wc.globalCompositeOperation='source-over';
-  wc.save(); wc.translate(e.x,cy-7*S); wc.rotate(.785+G.t*1.2);
-  // Ink plate, body, shade band, light top lip. The light outline this used to
-  // carry is what made it visible at night at all, so it keeps a bright lip
-  // rather than going to pure contour like everything else.
-  wc.fillStyle=INK; wc.fillRect(-9.4*S,-9.4*S,18.8*S,18.8*S);
-  wc.fillStyle='#6b7684'; wc.fillRect(-8*S,-8*S,16*S,16*S);
-  wc.fillStyle='#4d5765'; wc.fillRect(-8*S,-8*S,16*S,5*S);
-  wc.fillStyle='#9fb0c2'; wc.fillRect(-8*S,-8*S,16*S,1.4*S);
-  wc.restore();
-  var on=al?(Math.sin(G.t*16)>0):(Math.sin(G.t*4)>-.4);
-  if(on){
+  wc.save(); wc.translate(ox,oy); wc.rotate(a); wc.scale(fl*S,S);
+  var frame=brass?'#8a6a2a':'#2a2f35', frameHi=brass?'#c9a24a':'#59626b';
+  // rotors: a hub and a spinning blur at each end of the X; the two at the back first
+  var RH=[[-7.5,-4.6],[7.5,-4.6],[-10.5,0.6],[10.5,0.6]], spin=t*(al?38:24);
+  function rotor(hx,hy,k2){
+    var ph=spin+k2*1.7, bx=Math.cos(ph)*6, by=Math.sin(ph)*1.6;
     wc.globalCompositeOperation='lighter';
-    wc.fillStyle=al?'#ff3a2a':'#ffc04a';
-    wc.globalAlpha=.32;
-    wc.beginPath(); wc.arc(e.x,cy-19*S,7*S,0,6.2832); wc.fill();
-    wc.globalAlpha=1;
-    wc.beginPath(); wc.arc(e.x,cy-19*S,3*S,0,6.2832); wc.fill();
+    wc.fillStyle=al?'rgba(255,140,110,.22)':'rgba(190,210,225,.25)';
+    wc.beginPath(); wc.ellipse(hx,hy-2.2,6.4,1.9,0,0,6.2832); wc.fill();
+    wc.strokeStyle=al?'rgba(255,170,150,.45)':'rgba(220,232,240,.45)'; wc.lineWidth=0.9;
+    wc.beginPath(); wc.moveTo(hx-bx,hy-2.2-by); wc.lineTo(hx+bx,hy-2.2+by); wc.stroke();
     wc.globalCompositeOperation='source-over';
+    wc.fillStyle=INK; wc.fillRect(hx-1.2,hy-2.6,2.4,2.8);
+    wc.fillStyle=frameHi; wc.fillRect(hx-0.6,hy-2.6,1.2,0.9);
   }
+  function arm(hx,hy){
+    wc.strokeStyle=INK; wc.lineWidth=2.8; wc.beginPath(); wc.moveTo(0,0); wc.lineTo(hx,hy); wc.stroke();
+    wc.strokeStyle=frame; wc.lineWidth=1.4; wc.beginPath(); wc.moveTo(0,0); wc.lineTo(hx,hy); wc.stroke();
+  }
+  wc.lineCap='round';
+  for(k=0;k<2;k++){ arm(RH[k][0],RH[k][1]); rotor(RH[k][0],RH[k][1],k); }
+  // THE HORN under the pod, flaring forward, an ochre ring at the mouth (red hot while it calls)
+  wc.fillStyle=INK; wc.beginPath(); wc.moveTo(1.4,0.6); wc.lineTo(5.6,1.2); wc.lineTo(10.6,-0.6); wc.lineTo(10.6,9.8); wc.lineTo(5.6,7.6); wc.lineTo(1.4,7.2); wc.closePath(); wc.fill();
+  wc.fillStyle='#3e454c'; wc.beginPath(); wc.moveTo(2.4,1.8); wc.lineTo(5.8,2.2); wc.lineTo(9.6,0.6); wc.lineTo(9.6,8.6); wc.lineTo(5.8,6.6); wc.lineTo(2.4,6.2); wc.closePath(); wc.fill();
+  wc.fillStyle='#59626b'; wc.beginPath(); wc.moveTo(2.4,1.8); wc.lineTo(5.8,2.2); wc.lineTo(9.6,0.6); wc.lineTo(9.6,2.0); wc.lineTo(5.8,3.3); wc.lineTo(2.4,3.0); wc.closePath(); wc.fill();
+  wc.fillStyle='#c8962e'; wc.beginPath(); wc.ellipse(9.8,4.6,1.6,5,0,0,6.2832); wc.fill();
+  wc.fillStyle=al?'#ff3b30':'#1b1f24'; wc.beginPath(); wc.ellipse(10.0,4.6,0.9,3.8,0,0,6.2832); wc.fill();
+  if(al){ wc.globalCompositeOperation='lighter'; wc.fillStyle='rgba(255,59,48,'+(0.35+0.25*Math.sin(t*16)).toFixed(3)+')';
+    wc.beginPath(); wc.ellipse(10.6,4.6,3.2,6.2,0,0,6.2832); wc.fill(); wc.globalCompositeOperation='source-over'; }
+  // THE POD: inked, machine grey, a lit top, a shaded belly, one seam and two rivets
+  wc.fillStyle=INK; rrF(-8.2,-6.2,16.4,11.6,3.6);
+  wc.fillStyle='#3e454c'; rrF(-7,-5,14,9.2,2.8);
+  wc.fillStyle='#59626b'; rrF(-7,-5,14,7,2.8);
+  wc.fillStyle='#7c868f'; rrF(-7,-5,14,2.2,1.8);
+  wc.fillStyle='#2a2f35'; wc.fillRect(-1.6,-2.4,0.8,6.6); wc.fillRect(-4.6,2.4,1,1); wc.fillRect(2.8,2.4,1,1);
+  wc.fillStyle='#c8962e'; wc.fillRect(1,-0.6,4,1.2);
+  // the front arms and rotors over the pod
+  for(k=2;k<4;k++){ arm(RH[k][0],RH[k][1]); rotor(RH[k][0],RH[k][1],k); }
+  // THE LAMP on top in the sensor language, blinking while it calls; an elite carries a second
+  var LP=brass?[[0,-6.6],[-3.8,-6.2]]:[[0,-6.6]];
+  for(k=0;k<LP.length;k++){ wc.fillStyle=INK; wc.beginPath(); wc.arc(LP[k][0],LP[k][1],2.2,0,6.2832); wc.fill(); }
+  var la=EY.a*(al?((Math.sin(t*16)>0)?1:0.35):1);
+  wc.globalCompositeOperation='lighter'; wc.fillStyle=EY.c;
+  if(EY.h>0){ wc.globalAlpha=0.30*la; wc.beginPath(); wc.arc(LP[0][0],LP[0][1],1.5*EY.h,0,6.2832); wc.fill(); }
+  wc.globalAlpha=la;
+  for(k=0;k<LP.length;k++){ wc.beginPath(); wc.arc(LP[k][0],LP[k][1],1.5,0,6.2832); wc.fill(); }
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.restore();
 }
 function drawContS(ct){
   var w,lift,d2,cF,cT;
@@ -27909,24 +28045,7 @@ var SHD=G.shells[i];
       // colour: hot orange for the vent, cold blue for the optic. They ride the
       // machine's facing, so watching one turn is watching the shot open and
       // close.
-      var WL=weakOf(e2);
-      if(WL) for(var wk=0;wk<WL.length;wk++){
-        var WW=WL[wk],wpt=weakPos(e2,WW);
-        var hot=(WW.eff==='overheat'&&e2.overheat>0);
-        var pls=hot?1:(0.62+0.38*Math.sin(G.t*3.1+wk*2.1+e2.x*0.01));
-        wc.save(); wc.globalCompositeOperation='lighter';
-        var wg=wc.createRadialGradient(wpt.x,wpt.y,1,wpt.x,wpt.y,WW.rad*2.4);
-        wg.addColorStop(0,WW.c); wg.addColorStop(1,'rgba(0,0,0,0)');
-        wc.globalAlpha=(hot?0.85:0.42)*pls;
-        wc.fillStyle=wg;
-        wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*2.4,0,6.2832); wc.fill();
-        wc.restore();
-        wc.fillStyle='rgba(10,8,12,.75)';
-        wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.62,0,6.2832); wc.fill();
-        wc.fillStyle=WW.c; wc.globalAlpha=hot?1:0.80;
-        wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.40,0,6.2832); wc.fill();
-        wc.globalAlpha=1;
-      }
+      sprWeakPts(e2);   // v23.xx (spr6): the openings are recessed sockets held below the eye, glowing full only when hot
       if(_kb){ wc.restore(); _svd--; }
       if(eLift>0) wc.restore();
     }
@@ -28224,6 +28343,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   try{ drawDeathAnims(); }catch(_dda){}   // v17.47: his pick 29
   try{ gfxBodyFx(dt); }catch(_gbf){}   // v23.xx (gfx2): body and air effects hook
+  try{ gfxAir(dt); }catch(_gae){}   // v23.xx (gfx30): batch E air pass (explosions)
   for(i=0;i<G.puffs.length;i++){
     var q=G.puffs[i],a2=1-q.t/q.life;
     wc.globalAlpha=a2*.55; wc.fillStyle=q.c;
@@ -36457,7 +36577,7 @@ function gfxScreen(dt){ return gfxHook('screen'); }   // F1: grain and screen ef
 // sim-side stubs (callers guard with !G.sim; no seeded draw, ever)
 function gfxShot(sh,wep,ang,fromPlayer){ return gfxHook('shot'); }   // D: the first-frame muzzle flash
 function wallMark(w,x,y,ux,uy){ return gfxHook('wall'); }   // D: bullet marks painted into the wall sprite
-function boomFx(x,y,size,kind){ return gfxHook('boom'); }   // C: fireball, shockwave, smoke column, debris
+// boomFx: the explosion module, in GFX-E (gfx30)
 function gfxOnDeath(a){ return gfxHook('death'); }   // C: machine death bursts, from the kept kind
 function scarStamp(kind,x,y,o){ return gfxHook('scar'); }   // D: scorch, cracks and debris into G.ground
 function gfxEmit(x,y,r,col,a){
@@ -36494,6 +36614,112 @@ function gfxWorldText(){
   } finally { wc=keep; ctx.restore(); }
   return true;
 }
+// ===== GFX-E: effects and atmosphere (the graphics program, batch E: gfx30 to gfx37) =====
+// v23.xx (gfx30), HIS ORDER 2026-10-12 ("add ALL of this stuff", item 13, bigger explosions; his answer 20: gritty and grounded, like
+// ARC Raiders): THE EXPLOSION MODULE. A frag charge or a Howler shell going off was an orange spark spray, one puff disc and the light
+// flash: no fire, no body, nothing that hung in the air after. boomFx (the gfx2 hook, called on every window that shows the burst and
+// never in a bot raid) now records one explosion in BOOMS, a render list of at most 6, and the air pass (gfxAir, after the death
+// animations) draws it from its age in raid time:
+// - a fireball: three baked radial sprites (gfxESprites, made once, kept in the store registry), swelling over 0.35 s, additive;
+// - a shockwave: one stroked ellipse growing out in 0.22 s;
+// - a smoke column: 8 to 14 baked puffs that rise, drift and spread for 2.5 to 4 s;
+// - flying debris: 8 to 16 chunks thrown on arcs that land, lie and fade by 3.5 s, with a ground dot under each one in the air.
+// Every random number is from the cosmetic stream (fxn), never the raid dice; nothing here is read by the sim; the light flash, the
+// decal and the damage are untouched. Effects LOW (fxLevel 0) throws fewer pieces. GFX.bypass draws none of it.
+var BOOMS=[];
+function gfxESprites(){
+  var st=gfxStore('gfxE'), m=st.m, c, x, gr;
+  if(m.fire) return m;
+  c=document.createElement('canvas'); c.width=c.height=128; x=c.getContext('2d');
+  gr=x.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,'rgba(255,214,140,1)'); gr.addColorStop(0.3,'rgba(255,150,60,.85)'); gr.addColorStop(0.6,'rgba(200,70,20,.45)');
+  gr.addColorStop(0.85,'rgba(110,30,10,.15)'); gr.addColorStop(1,'rgba(60,15,5,0)');
+  x.fillStyle=gr; x.fillRect(0,0,128,128); m.fire=c;
+  c=document.createElement('canvas'); c.width=c.height=64; x=c.getContext('2d');
+  gr=x.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba(255,252,236,1)'); gr.addColorStop(0.45,'rgba(255,226,150,.8)'); gr.addColorStop(1,'rgba(255,170,80,0)');
+  x.fillStyle=gr; x.fillRect(0,0,64,64); m.core=c;
+  c=document.createElement('canvas'); c.width=c.height=64; x=c.getContext('2d');
+  gr=x.createRadialGradient(30,28,0,32,32,32);
+  gr.addColorStop(0,'rgba(150,142,132,.95)'); gr.addColorStop(0.5,'rgba(118,112,104,.7)'); gr.addColorStop(0.8,'rgba(92,88,84,.3)'); gr.addColorStop(1,'rgba(80,78,76,0)');
+  x.fillStyle=gr; x.fillRect(0,0,64,64); m.smoke=c;
+  return m;
+}
+function boomFx(x,y,size,kind){
+  if(!gfxHook('boom')) return false;
+  x=+x; y=+y; if(!isFinite(x)||!isFinite(y)) return false;
+  var s=clamp(+size||1,0.3,2.5), thin=(CFG.fxLevel===0), i, n, a, vz, cs=['#2b2723','#38322b','#4a4036','#221f1c','#57504a'];
+  var b={g:G,x:x,y:y,s:s,kind:String(kind||''),t0:G.t||0,deb:[],smoke:[]};
+  n=thin?5:clamp(Math.round(8+4*s),8,16);
+  for(i=0;i<n;i++){
+    a=fxn(0,6.2832); vz=fxn(80,200);
+    b.deb.push({ux:Math.cos(a),uy:Math.sin(a),sp:fxn(50,170)*Math.sqrt(s),vz:vz,tl:vz/260,r:fxn(2.6,5.2)*Math.min(1.4,0.7+0.3*s),c:cs[i%cs.length]});
+  }
+  n=thin?5:clamp(Math.round(7+4*s),8,14);
+  for(i=0;i<n;i++){
+    a=fxn(0,6.2832);
+    b.smoke.push({ox:Math.cos(a)*fxn(3,20)*s,oy:Math.sin(a)*fxn(2,11)*s,vx:fxn(-6,10),vz:fxn(26,50)*(0.7+0.3*s),r:fxn(15,26)*s,d:fxn(0.06,0.4),life:fxn(2.5,4)});
+  }
+  if(BOOMS.length>=6) BOOMS.shift();
+  BOOMS.push(b);
+  return true;
+}
+function gfxBoomDraw(){
+  if(!BOOMS.length) return 0;
+  var i, j, b, t, k, R, sp, d, q, f, x0, y0, z, a, al, n=0, Z=ZOOM(), m=gfxESprites();
+  var vx0=VX-240, vy0=VY-120, vx1=VX+W/Z+240, vy1=VY+H/Z+300;
+  for(i=BOOMS.length-1;i>=0;i--){
+    b=BOOMS[i]; t=(G.t||0)-b.t0;
+    if(b.g!==G||t>4.6||t<-2){ BOOMS.splice(i,1); continue; }
+    if(t<0||b.x<vx0||b.x>vx1||b.y<vy0||b.y>vy1) continue;
+    wc.save();
+    try{
+      wc.globalCompositeOperation='source-over';
+      for(j=0;j<b.deb.length;j++){
+        d=b.deb[j]; q=Math.min(t,d.tl);
+        x0=b.x+d.ux*d.sp*q; y0=b.y+d.uy*d.sp*q*0.62;
+        z=(t<d.tl)?(d.vz*t-260*t*t):0;
+        al=(t<2.4)?1:Math.max(0,1-(t-2.4)/1.1);
+        if(al<=0) continue;
+        wc.globalAlpha=al;
+        if(z>1){ wc.fillStyle='rgba(0,0,0,.35)'; wc.fillRect(x0-d.r*0.6,y0-0.8,d.r*1.2,1.6); }
+        wc.fillStyle=(t<0.5)?'#ffa04e':d.c; wc.fillRect(x0-d.r*0.5,y0-z-d.r*0.4,d.r,d.r*0.8);
+        wc.fillStyle=(t<0.5)?'#ffe0a8':'rgba(170,160,146,.55)'; wc.fillRect(x0-d.r*0.5,y0-z-d.r*0.4,d.r,Math.max(0.8,d.r*0.22));
+        n++;
+      }
+      if(t<0.42){
+        k=Math.min(1,t/0.35); R=b.s*(24+44*Math.sqrt(k)); a=(t<0.06)?1:Math.max(0,1-Math.pow((t-0.06)/0.36,1.3));
+        wc.globalCompositeOperation='lighter';
+        wc.globalAlpha=0.5*a; wc.drawImage(m.fire,b.x-R*1.5,b.y-10-R*1.2,R*3,R*2.4);
+        wc.globalAlpha=0.9*a; wc.drawImage(m.fire,b.x-R,b.y-14-R*0.85,R*2,R*1.7);
+        wc.globalAlpha=a; wc.drawImage(m.core,b.x-R*0.5,b.y-18-R*0.45,R,R*0.9);
+        n+=3;
+      }
+      if(t<0.22){
+        k=t/0.22; R=b.s*(20+100*k);
+        wc.globalCompositeOperation='source-over'; wc.globalAlpha=0.5*(1-k); wc.strokeStyle='#ffe2b8'; wc.lineWidth=1+3*(1-k);
+        wc.beginPath(); wc.ellipse(b.x,b.y,R,R*0.58,0,0,6.2832); wc.stroke(); n++;
+      }
+      wc.globalCompositeOperation='source-over';
+      for(j=0;j<b.smoke.length;j++){
+        sp=b.smoke[j]; q=t-sp.d; f=q/sp.life; if(f<=0||f>=1) continue;
+        R=sp.r*(0.55+0.95*f);
+        wc.globalAlpha=0.8*Math.pow(1-f,1.15)*Math.min(1,q*5);
+        wc.drawImage(m.smoke,b.x+sp.ox+sp.vx*q-R,b.y+sp.oy-(8+sp.vz*q*(1-0.3*f))-R,R*2,R*2);
+        n++;
+      }
+    } finally { wc.restore(); }
+  }
+  return n;
+}
+// The air pass of batch E: one call a drawn raid frame, in the world transform, after the bodies and the death animations.
+function gfxAir(dt){
+  if(!gfxHook('air')) return 0;
+  var n=0;
+  try{ n+=gfxBoomDraw(); }catch(_gbd){}
+  return n;
+}
+// ===== GFX-E end =====
 var HID={w:null,lastRaf:0,fromWorker:0,ticks:0};
 function hidWant(){ return !!(typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&(NET.specG||(typeof netEntsHost==='function'&&netEntsHost()))); }   // v18.51, from the code comb (2026-10-07): and while the host spectates the raid it kept for the party, back on the floor with its window covered
 function hidTick(){
@@ -37126,7 +37352,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.97: Screen shake is now a smooth rock of the world that fades, the HUD stays steady, and EFFECT INTENSITY scales it. Check 23.97 fails on v23.96',
+  now:'v23.99: The arrow keys reach RETRY on the title, and ENTER presses it. Check 23.99 fails on v23.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -41808,10 +42034,14 @@ function netTitleInit(startFn){
   return r;
 }
 // The mode rows a keyboard or a pad can land on: shown and not greyed.
+// v23.99, HIS ORDER 2026-10-12 (his #39, full controller navigation, keyboard and mouse first): RETRY IS A ROW. When the browser
+// blocks the player 2 window the title shows RETRY under the rows, and the arrows walked only the data-mode rows, so the keyboard
+// could never reach it and ENTER pressed the 1 PLAYER start instead: a blocked same machine pick had to be finished with the mouse.
+// RETRY, while it shows, is now the last row the arrows land on, and ENTER on it presses it. The pad already reached it.
 function netTitleRows(){
   var m=document.getElementById('modemenu'), out=[], q, i, el, w;
   if(!m) return out;
-  q=m.querySelectorAll('button[data-mode]');
+  q=m.querySelectorAll('button[data-mode],#moderetry');
   for(i=0;i<q.length;i++){
     el=q[i]; w=(el.parentNode&&el.parentNode.className==='modelater')?el.parentNode:el;
     if(el.disabled||el.style.display==='none'||w.style.display==='none') continue;
@@ -41832,7 +42062,7 @@ function netTitleMove(dir){
 // ENTER or SPACE on the title: the highlighted mode row, or with none highlighted the start the old button runs.
 function netTitleEnter(startFn){
   var cur=(typeof PAD!=='undefined'&&PAD)?PAD.focus:null, m=document.getElementById('modemenu');
-  if(cur&&m&&m.contains(cur)&&cur.getAttribute&&cur.getAttribute('data-mode')&&!cur.disabled&&cur.id!=='titlestart'){ cur.click(); return 'row'; }
+  if(cur&&m&&m.contains(cur)&&cur.getAttribute&&(cur.getAttribute('data-mode')||cur.id==='moderetry')&&!cur.disabled&&cur.id!=='titlestart'){ cur.click(); return 'row'; }   // v23.99 (his #39): RETRY too
   if(typeof startFn==='function') startFn();
   return 'start';
 }
@@ -55967,6 +56197,72 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'23.99',what:'his #39 (keyboard first): RETRY on the title, while it shows, is one of the rows the arrows walk, and ENTER on it presses RETRY and not the 1 PLAYER start',
+   run:function(){
+     if(typeof netTitleRows!=='function'||typeof netTitleMove!=='function'||typeof netTitleEnter!=='function'||typeof padSetFocus!=='function') return 'SKIP: no title rows here';
+     var rt=document.getElementById('moderetry'), bad=[], d0, oc, f0=(typeof PAD!=='undefined'&&PAD)?PAD.focus:null, hits=0, starts=0, rows, i, seen=false, r;
+     if(!rt) return 'SKIP: no RETRY on this title';
+     d0=rt.style.display; oc=rt.onclick;
+     try{
+       rt.style.display='';
+       rows=netTitleRows();
+       if(rows.indexOf(rt)<0) bad.push('RETRY shows but is not one of the rows the arrows walk ('+rows.length+' rows)');
+       padSetFocus(null); PAD.focus=null;
+       for(i=0;i<rows.length+2;i++){ netTitleMove(1); if(PAD.focus===rt) seen=true; }
+       if(!seen) bad.push('the down arrow never lands on RETRY');
+       rt.onclick=function(){ hits++; };
+       padSetFocus(rt);
+       r=netTitleEnter(function(){ starts++; });
+       if(hits!==1) bad.push('ENTER on RETRY did not press it ('+hits+' presses, returned '+r+')');
+       if(starts) bad.push('ENTER on RETRY ran the 1 PLAYER start');
+       rt.style.display='none';
+       if(netTitleRows().indexOf(rt)>=0) bad.push('a hidden RETRY is still a row');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       rt.style.display=d0; rt.onclick=oc;
+       try{ padSetFocus(null); PAD.focus=null; if(f0) padSetFocus(f0); }catch(_f){}
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'23.98',what:'gfx30, his order 2026-10-12 (the graphics program, item 13, bigger explosions): a frag burst records one explosion with 8 or more pieces of debris, its baked fireball is drawn at +0.1 s and its baked smoke at +1.5 s, it is gone by +5 s, and a bot raid records none',
+   run:function(){
+     var bad=[], g=null, p, hp0, t0=null, b, m, nF, nS, n0, sim0=false, simSet=false;
+     var cnt=function(img){ var c=0, orig=wc.drawImage; wc.drawImage=function(im){ if(im===img) c++; return orig.apply(wc,arguments); }; try{ __frame(0.016); } finally { delete wc.drawImage; } return c; };
+     try{
+       if(!(window.__gfxStage&&window.__frame&&window.__state&&window.__endRaid)) return 'SKIP: this fixture has no gfx stage';
+       g=__gfxStage({frames:2});
+       if(!g) return 'SKIP: __gfxStage built no raid';
+       if(g.sim) return 'SKIP: the staged raid is a sim raid';
+       if(typeof BOOMS==='undefined'||typeof gfxESprites!=='function') return 'no explosion module: no BOOMS list';
+       GFX.bypass=0; G.shake=0; p=g.player; hp0=p.hp; t0=G.t;
+       BOOMS.length=0;
+       explodeFrag({x:p.x+260,y:p.y+30,by:{name:'ZQX',kind:'raider'}});
+       p.hp=hp0;
+       if(BOOMS.length!==1) bad.push('one frag burst recorded '+BOOMS.length+' explosions');
+       b=BOOMS[BOOMS.length-1];
+       if(b&&!(b.deb&&b.deb.length>=8)) bad.push('the burst threw '+(b.deb?b.deb.length:0)+' pieces of debris');
+       m=gfxESprites();
+       G.t=t0+0.1; nF=cnt(m.fire);
+       if(!(nF>=1)) bad.push('the fireball sprite was drawn '+nF+' times at +0.1 s');
+       G.t=t0+1.5; nS=cnt(m.smoke);
+       if(!(nS>=1)) bad.push('the smoke sprite was drawn '+nS+' times at +1.5 s');
+       if(cnt(m.fire)!==0) bad.push('the fireball still burns at +1.5 s');
+       G.t=t0+5; cnt(m.smoke);
+       if(BOOMS.length!==0) bad.push(BOOMS.length+' explosions left at +5 s');
+       G.t=t0;
+       n0=BOOMS.length; sim0=G.sim; G.sim=true; simSet=true;
+       boomFx(p.x,p.y,1,'frag');
+       G.sim=sim0; simSet=false;
+       if(BOOMS.length!==n0) bad.push('a bot raid recorded an explosion');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(simSet) G.sim=sim0; }catch(_ss){}
+       try{ if(t0!==null&&G) G.t=t0; }catch(_tt){}
+       try{ if(typeof BOOMS!=='undefined') BOOMS.length=0; }catch(_bl){}
+       keys={};
+       try{ var g2=__state(); if(g2&&!g2.over&&!g2.sim) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'23.97',what:'graphics program gfx38: trauma shake moves the world only: with G.shake raised to 9 the ground is drawn offset from the steady camera on 12 drawn frames while w2s of the player does not move at all, no frame jumps more than 40 percent of the amplitude from the last, a second hit raises the trauma, and EFFECT INTENSITY OFF draws no offset',
    run:function(){
