@@ -1,0 +1,32 @@
+{
+    "title":  "NO FAINT WORDS IN THE STATION WINDOWS",
+    "why":  "His order of 2026-10-12 (#50), and today: take pictures and make sure the menus actually look good. The picture check of the new window frame found five places where words were too faint or too small to read: THE GAMBLE in the colour of a frame line, the contract tier tag at 12.5 pixels, the Fashion rack heads at 12 pixels and see-through, the locked Fashion tiles fading their name and what unlocks them along with the picture, and the stash hint line faded to half. All of them now read at full strength and at least 13 pixels; a locked tile still dims its picture. No word changed.",
+    "now":  "Words in the station windows are never faint: locked Fashion tiles dim only their picture, and every label is at least 13 pixels.",
+    "edits":  [
+                  {
+                      "anchor":  "\u003cdiv style=\"font-size:13px;letter-spacing:.14em;color:var(--steel-hi);font-weight:700;margin-bottom:6px\"\u003eTHE GAMBLE\u003c/div\u003e",
+                      "replacement":  "\u003cdiv style=\"font-size:13px;letter-spacing:.14em;color:var(--tx-2);font-weight:700;margin-bottom:6px\"\u003eTHE GAMBLE\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "tb.style.cssText=\u0027color:\u0027+TT.c+\u0027;font-weight:700;font-size:12.5px;letter-spacing:.06em;margin-right:8px\u0027;",
+                      "replacement":  "tb.style.cssText=\u0027color:\u0027+TT.c+\u0027;font-weight:700;font-size:13px;letter-spacing:.06em;margin-right:8px\u0027;   // v16.xx (ui6b): the menu floor is 13px"
+                  },
+                  {
+                      "anchor":  "H+=\u0027\u003cdiv style=\"margin:10px 0 4px 0;letter-spacing:2px;opacity:.7;font-size:12px\"\u003e\u0027+g[1]+\u0027\u003c/div\u003e\u0027;",
+                      "replacement":  "H+=\u0027\u003cdiv style=\"margin:10px 0 4px 0;letter-spacing:.12em;font-size:13px;color:var(--tx-2)\"\u003e\u0027+g[1]+\u0027\u003c/div\u003e\u0027;   // v16.xx (ui6b): readable rack heads"
+                  },
+                  {
+                      "anchor":  "\u003cspan style=\"opacity:.55\"\u003e\u0027+((typeof netHubSeat",
+                      "replacement":  "\u003cspan style=\"color:var(--tx-2)\"\u003e\u0027+((typeof netHubSeat"
+                  },
+                  {
+                      "anchor":  ".costile.lock{opacity:.42;cursor:not-allowed}",
+                      "replacement":  "/* v16.xx, UI REDESIGN ui6b (his #50): a locked tile dims its picture, never its words, so its name and what unlocks it can be read */\n.costile.lock{cursor:not-allowed}\n.costile.lock \u003e *{opacity:.42}\n.costile.lock .cosname, .costile.lock .cosreq{opacity:1;color:var(--tx-2)}"
+                  },
+                  {
+                      "anchor":  ".cosreq{margin-top:2px;font-size:13px;opacity:.65;letter-spacing:1px;text-transform:uppercase}",
+                      "replacement":  ".cosreq{margin-top:2px;font-size:13px;color:var(--tx-2);letter-spacing:.08em;text-transform:uppercase}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui6b, from the visual QA): the station windows have no faint or undersized words: THE GAMBLE is not in the hairline colour, the contract tier tag is 13px, a locked Fashion tile keeps its name and requirement at full strength, the rack heads are 13px, and the stash hint line is not dimmed\u0027,\n   run:function(){\n     if(!(window.__station\u0026\u0026window.__hubEnter)) return \u0027SKIP: this fixture cannot walk the Undercroft\u0027;\n     var bad=[], r, el, s, op, q, n=0;\n     function opac(e){ var o=1; for(var p=e;p\u0026\u0026p.nodeType===1;p=p.parentElement){ o*=parseFloat(getComputedStyle(p).opacity); } return o; }\n     try{\n       __topClear(); __hubEnter(); r=__station(\u0027gamble\u0027,\u0027KeyE\u0027);\n       el=document.querySelector(\u0027#wirtsec_gamble \u003e div\u0027);\n       if(el){ n++; s=getComputedStyle(el).color; if(s===\u0027rgb(74, 82, 87)\u0027) bad.push(\u0027THE GAMBLE is in the hairline colour\u0027); }\n       __topClear(); __hubEnter(); r=__station(\u0027mf\u0027,\u0027KeyE\u0027);\n       el=document.querySelector(\u0027#contracts .cd \u003e span\u0027);\n       if(el){ n++; if(parseFloat(getComputedStyle(el).fontSize)\u003c13) bad.push(\u0027the contract tier tag is \u0027+getComputedStyle(el).fontSize); }\n       __topClear(); __hubEnter(); r=__station(\u0027mirror\u0027,\u0027KeyE\u0027);\n       el=document.querySelector(\u0027#appavatarpicker .costile.lock .cosname\u0027);\n       if(el){ n++; op=opac(el); if(op\u003c0.99) bad.push(\u0027a locked Fashion tile dims its name to \u0027+op.toFixed(2)); }\n       q=document.querySelector(\u0027#appavatarpicker .costile.lock .cosreq\u0027);\n       if(q\u0026\u0026opac(q)\u003c0.99) bad.push(\u0027a locked Fashion tile dims what unlocks it to \u0027+opac(q).toFixed(2));\n       el=document.querySelector(\u0027#appavatarpicker \u003e div\u0027);\n       if(el){ n++; if(parseFloat(getComputedStyle(el).fontSize)\u003c13||opac(el)\u003c0.99) bad.push(\u0027the rack head is \u0027+getComputedStyle(el).fontSize+\u0027 at opacity \u0027+opac(el).toFixed(2)); }\n       __topClear(); __hubEnter(); r=__station(\u0027term\u0027,\u0027KeyE\u0027);\n       el=document.querySelector(\u0027#stashdetail span\u0027);\n       if(el){ n++; op=opac(el); if(op\u003c0.99) bad.push(\u0027the stash hint line is dimmed to \u0027+op.toFixed(2)); }\n       if(n\u003c4) bad.push(\u0027only \u0027+n+\u0027 of the five words were found\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

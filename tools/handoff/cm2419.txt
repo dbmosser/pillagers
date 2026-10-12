@@ -1,0 +1,7 @@
+v24.19: one set of menu parts
+
+Menus share one set of parts: square cut buttons with one flat amber primary, underline tabs, flat item cells with a rarity bar, and one focus look for keys and the controller.
+
+Check 24.19. Fails on v24.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
