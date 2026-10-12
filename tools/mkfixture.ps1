@@ -6029,7 +6029,7 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(__state()&&!__state().over) __endRaid('abandon');
        K=ARCADE_BOARD_KEY; bk=localStorage.getItem(K); ownBk=true;
-       for(i=0;i<10;i++) rw.push({run:'q'+i,i:'ZZZ',s:20000+i*1000,x:1,k:1,t:t0-60000-i});
+       for(i=0;i<10;i++) rw.push({run:'q'+i,i:'ZZZ',s:20000+i*1000,x:1,k:1,t:t0-60000-i,u:'cr'});
        localStorage.setItem(K,JSON.stringify({v:1,rows:rw}));
        if(!arcadeDeploy({mapIx:0,seed:4242})||!__state()||!__state().arcade) return 'SKIP: arcadeDeploy built no arcade raid';
        try{ attStop(); }catch(_as){}
@@ -6463,7 +6463,7 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(__state()&&!__state().over) __endRaid('abandon');
        K=ARCADE_BOARD_KEY; bk=localStorage.getItem(K); ownBk=true;
-       for(i=0;i<10;i++) rw.push({run:'q'+i,i:'ZZZ',s:20000+i*1000,x:1,k:1,t:t0-60000-i});
+       for(i=0;i<10;i++) rw.push({run:'q'+i,i:'ZZZ',s:20000+i*1000,x:1,k:1,t:t0-60000-i,u:'cr'});
        localStorage.setItem(K,JSON.stringify({v:1,rows:rw}));
        if(!arcadeDeploy({mapIx:0,seed:4242})||!__state()||!__state().arcade) return 'SKIP: arcadeDeploy built no arcade raid';
        try{ attStop(); }catch(_as){}
@@ -6790,7 +6790,7 @@ window.__REGRESS=[
        rs=say; own=true; say=function(m,k){ said.push(String(m)+'|'+String(k||'')); };
        localStorage.removeItem(K);
        if(arcadeBoardTonight().length!==0||arcadeBoardBest()!==0) bad.push('an empty board is not empty');
-       localStorage.setItem(K,JSON.stringify({v:1,rows:[{run:'a',s:500,t:t0-1000},{run:'b',s:900,t:t0-2000},{run:'a',s:1200,i:'AAA',t:t0-500},{run:'old',s:99999,i:'ZZZ',t:t0-13*3600000}]}));
+       localStorage.setItem(K,JSON.stringify({v:1,rows:[{run:'a',s:500,t:t0-1000,u:'cr'},{run:'b',s:900,t:t0-2000,u:'cr'},{run:'a',s:1200,i:'AAA',t:t0-500,u:'cr'},{run:'old',s:99999,i:'ZZZ',t:t0-13*3600000,u:'cr'}]}));
        rows=arcadeBoardTonight();
        if(rows.length!==2||rows[0].run!=='a'||rows[0].s!==1200||rows[0].i!=='AAA'||rows[1].run!=='b'||rows[1].s!==900) bad.push('tonight is not one row per run from the last 12 hours, best first ('+JSON.stringify(rows)+')');
        if(arcadeBoardBest()!==99999) bad.push('BEST EVER is '+arcadeBoardBest()+', not 99999');
