@@ -8525,7 +8525,7 @@ window.__REGRESS=[
        if(!boxOn()) togglePauseBox(true);
        if(!boxOn()) bad.push('the arcade pause box does not open');
        vis=visBtns(); ids=vis.map(function(x){ return x.id; }).sort().join(',');
-       if(ids!=='arcendbtn,resumebtn') bad.push('the arcade pause box shows '+ids+', not only RESUME and END RUN');
+       if(ids!=='arcendbtn,resumebtn'&&ids!=='arcendbtn,fbbtn,resumebtn') bad.push('the arcade pause box shows '+ids+', not only RESUME and END RUN (and FEEDBACK, his answer 38)');
        nm=el('resumebtn')?el('resumebtn').textContent:'';
        if(nm!=='RESUME') bad.push('the arcade resume button reads '+nm);
        for(i=0;i<vis.length;i++){
@@ -8538,7 +8538,7 @@ window.__REGRESS=[
          if(!ARCADE.on) bad.push('ESC after '+b.id+' left the arcade');
        }
        if(__state()&&!boxOn()) togglePauseBox(true);
-       if(el('arcendbtn')) el('arcendbtn').click();
+       if(el('arcendbtn')){ el('arcendbtn').click(); if(__state()&&__state().arcade&&!__state().over&&!ARCADE.over) el('arcendbtn').click(); }   // feat5b: END RUN may ask for a second press
        if(!ARCADE.on) bad.push('END RUN left the arcade');
        if(__state()&&__state().arcade) bad.push('END RUN left the arcade raid up');
        togglePauseBox(true);
@@ -8965,6 +8965,7 @@ window.__REGRESS=[
          if(c&&c.style.display!=='none') bad.push('a fresh drop left the RUN OVER card up');
          togglePauseBox(true);
          el('arcendbtn').click();
+         if(__state()&&__state().arcade&&!__state().over&&!ARCADE.over) el('arcendbtn').click();   // feat5b: END RUN may ask for a second press
          if(__state()) bad.push('END RUN left the raid up');
          if(!ARCADE.on) bad.push('END RUN left the arcade');
          if(!ARCADE.over||ARCADE.over.why!=='menu') bad.push('END RUN did not end the run ('+(ARCADE.over?ARCADE.over.why:'no card')+')');
