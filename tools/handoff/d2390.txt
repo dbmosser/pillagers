@@ -1,0 +1,5 @@
+## v23.90 - FOOTSTEPS: WET, GRIT, TILE, GRATE
+
+Co-op hunt while he was away. His number 45, improve all sound as much as possible. Five surfaces gave every street, yard and puddle the same gravel and every floor the same boards. Now your feet, and the feet of everything walking near you, tell the finer ground: wet stone in the rain, grit in a landmark yard, plain concrete on the street, tile in a locked room, boards elsewhere indoors, a rattling grate on metal. Each step also rolls one of three small pitch variants so no two match. How far your steps are heard in the world, and what the Listener hears, is exactly as before.
+
+MEASURED. Check 23.90 passes, and fails on v23.89.

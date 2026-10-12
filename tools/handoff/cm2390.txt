@@ -1,0 +1,7 @@
+v23.90: footsteps: wet, grit, tile, grate
+
+Footsteps tell wet stone, grit, concrete, tile, boards and grates apart.
+
+Check 23.90. Fails on v23.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

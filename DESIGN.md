@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.90 - FOOTSTEPS: WET, GRIT, TILE, GRATE
+
+Co-op hunt while he was away. His number 45, improve all sound as much as possible. Five surfaces gave every street, yard and puddle the same gravel and every floor the same boards. Now your feet, and the feet of everything walking near you, tell the finer ground: wet stone in the rain, grit in a landmark yard, plain concrete on the street, tile in a locked room, boards elsewhere indoors, a rattling grate on metal. Each step also rolls one of three small pitch variants so no two match. How far your steps are heard in the world, and what the Listener hears, is exactly as before.
+
+MEASURED. Check 23.90 passes, and fails on v23.89.
 ## v23.89 - THE AAA FONTS ARE IN THE GAME
 
 Co-op hunt while he was away. His order of 2026-10-12: the menus and text must look like a triple-A game. The redesign is built on three free fonts under the SIL Open Font License: Barlow Condensed for titles, labels, buttons and the HUD, Barlow for body text, and IBM Plex Mono for codes. They are now embedded in the game so it looks right offline, with their licence files kept beside the itch zip. Screens switch to them as the redesign builds land.
