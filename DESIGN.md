@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.94 - THE HUD SPEAKS IN THE MENU TYPEFACE
+
+Co-op hunt while he was away. His orders of 2026-10-12: #35 redo the HUD entirely as part of the graphical improvement, and #50 make it look like a triple-A game. Third step of the UI redesign (ui4). Every line of raid text (callouts, prompts, labels, the clock, the ammo, the belt numbers) now uses the same condensed industrial face as the menus, instead of the rounded Rubik. It is narrower, so the same plates hold more words, and it reads like the shooter HUDs he named. Two new text sizes are ready for the HUD rebuild: a big ammo figure and a plain sentence line. The last few places that still named Rubik or Impact (the map zone labels, the empty belt cell, the arcade pages, the shirt number) move too. The face itself is embedded later (ui1, after his OK); until then the built-in Windows condensed face stands in.
+
+MEASURED. Check 23.94 passes, and fails on v23.93.
 ## v23.93 - DEMO DEATH: RUN OVER, OR SCORE LOST
 
 Co-op hunt while he was away. His answers 1 and 4 of 2026-10-12: one self-revive, then death ends the raid, and only the 2 player demo respawns, losing all of that player score. Going down and the one self-revive are unchanged. After that, a death in the 1 PLAYER DEMO now ends the run: RUN OVER with the score he had, then initials if it makes the board. In the 2 PLAYER DEMO the dead player still drops back in, but his own score and kills go to zero (SCORE LOST) and the other window is told at once; the teammate keeps his score.

@@ -13,11 +13,23 @@
                   },
                   {
                       "anchor":  "    c.font=\u0027700 \u0027+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+\u0027px \"Rubik\",system-ui,sans-serif\u0027;   // v10.95, his note: one family",
-                      "replacement":  "    c.font=\u0027700 \u0027+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+\u0027px \u0027+HUDF;   // v10.95, his note: one family"
+                      "replacement":  "    c.font=\u0027700 \u0027+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+\u0027px \"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",sans-serif\u0027;   // v10.95, his note: one family"
                   },
                   {
                       "anchor":  "    wc.font=\u0027700 9px \"Rubik\",system-ui,sans-serif\u0027; wc.textAlign=\u0027center\u0027;",
-                      "replacement":  "    wc.font=\u0027700 9px \u0027+HUDF; wc.textAlign=\u0027center\u0027;"
+                      "replacement":  "    wc.font=\u0027700 9px \"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",sans-serif\u0027; wc.textAlign=\u0027center\u0027;"
+                  },
+                  {
+                      "anchor":  "    c.fillStyle=col; c.font=\u0027bold \u0027+Math.round(8*u)+\u0027px sans-serif\u0027; c.textAlign=\u0027center\u0027; c.fillText(\u0027REC\u0027,0,3*u);",
+                      "replacement":  "    c.fillStyle=col; c.font=\u0027bold \u0027+Math.round(8*u)+\u0027px \"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",sans-serif\u0027; c.textAlign=\u0027center\u0027; c.fillText(\u0027REC\u0027,0,3*u);"
+                  },
+                  {
+                      "anchor":  "    c.fillStyle=\u0027rgba(236,226,190,.85)\u0027; c.font=\u0027bold \u0027+Math.round(11*u)+\u0027px sans-serif\u0027; c.textAlign=\u0027center\u0027; c.fillText(\u0027AMMO\u0027,-6*u,24*u);",
+                      "replacement":  "    c.fillStyle=\u0027rgba(236,226,190,.85)\u0027; c.font=\u0027bold \u0027+Math.round(11*u)+\u0027px \"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",sans-serif\u0027; c.textAlign=\u0027center\u0027; c.fillText(\u0027AMMO\u0027,-6*u,24*u);"
+                  },
+                  {
+                      "anchor":  "    c.fillStyle=\u0027rgba(240,240,240,.85)\u0027; c.font=\u0027bold \u0027+Math.round(9*u)+\u0027px sans-serif\u0027; c.textAlign=\u0027center\u0027; c.fillText(\u0027SMK\u0027,0,12*u);",
+                      "replacement":  "    c.fillStyle=\u0027rgba(240,240,240,.85)\u0027; c.font=\u0027bold \u0027+Math.round(9*u)+\u0027px \"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",sans-serif\u0027; c.textAlign=\u0027center\u0027; c.fillText(\u0027SMK\u0027,0,12*u);"
                   },
                   {
                       "anchor":  "    \u0027#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,84px) \"Rubik\",system-ui,sans-serif;\u0027+",
@@ -45,7 +57,7 @@
                   },
                   {
                       "anchor":  "      c.font=\u0027bold \u0027+fs+\u0027px Rubik, system-ui, sans-serif\u0027;\n      while(fs\u003e8\u0026\u0026c.measureText(nm).width\u003ezw){ fs--; c.font=\u0027bold \u0027+fs+\u0027px Rubik, system-ui, sans-serif\u0027; }",
-                      "replacement":  "      c.font=\u0027bold \u0027+fs+\u0027px \u0027+HUDF;\n      while(fs\u003e8\u0026\u0026c.measureText(nm).width\u003ezw){ fs--; c.font=\u0027bold \u0027+fs+\u0027px \u0027+HUDF; }"
+                      "replacement":  "      c.font=\u0027bold \u0027+fs+\u0027px \"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",sans-serif\u0027;\n      while(fs\u003e8\u0026\u0026c.measureText(nm).width\u003ezw){ fs--; c.font=\u0027bold \u0027+fs+\u0027px \"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",sans-serif\u0027; }"
                   },
                   {
                       "anchor":  "      \u0027color:var(--bone);font-size:11px;font-family:Rubik,system-ui,sans-serif;white-space:nowrap\u0027;",
@@ -53,7 +65,7 @@
                   },
                   {
                       "anchor":  "    else { pcx.fillStyle=\u0027#8a96a1\u0027; pcx.font=\u0027600 14px \"Rubik\",system-ui,sans-serif\u0027; pcx.textAlign=\u0027center\u0027; pcx.fillText(\u0027--\u0027,17,22); }   // v10.95, his note: one family",
-                      "replacement":  "    else { pcx.fillStyle=\u0027#8a96a1\u0027; pcx.font=\u0027600 14px \u0027+HUDF; pcx.textAlign=\u0027center\u0027; pcx.fillText(\u0027--\u0027,17,22); }   // v10.95, his note: one family"
+                      "replacement":  "    else { pcx.fillStyle=\u0027#8a96a1\u0027; pcx.font=\u0027600 14px \"Barlow Condensed\",\"Bahnschrift SemiCondensed\",\"Arial Narrow\",sans-serif\u0027; pcx.textAlign=\u0027center\u0027; pcx.fillText(\u0027--\u0027,17,22); }   // v10.95, his note: one family"
                   },
                   {
                       "anchor":  "           \u0027\u003cspan style=\"position:absolute;left:0;right:0;top:8px;text-align:center;font:900 15px/1 Impact,sans-serif;color:#f4f2ec\"\u003e23\u003c/span\u003e\u003c/span\u003e\u0027;",

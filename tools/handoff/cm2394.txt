@@ -1,0 +1,7 @@
+v23.94: the hud speaks in the menu typeface
+
+HUD and raid text now use the same condensed caps face as the menus.
+
+Check 23.94. Fails on v23.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

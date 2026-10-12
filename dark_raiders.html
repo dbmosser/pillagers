@@ -251,7 +251,7 @@
 .avstrap{ position:absolute; left:6px; top:-2px; width:6px; height:26px; border-radius:2px; opacity:.9; }   /* v10.34 */
 .avpatch{ position:absolute; right:7px; top:4px; width:9px; height:9px; border-radius:2px; border:1px solid #14161b; }   /* v10.35 */
 .avlegs{ width:38px; height:20px; border-radius:0 0 5px 5px; border:2px solid #14161b; border-top:0; }
-.avnum{ position:absolute; left:0; right:0; top:11px; text-align:center; font:900 20px/1 Impact,'Arial Black',sans-serif; color:#f4f2ec; letter-spacing:1px; pointer-events:none; }   /* v10.46 */
+.avnum{ position:absolute; left:0; right:0; top:11px; text-align:center; font:800 20px/1 var(--f-cond); color:#f4f2ec; letter-spacing:1px; pointer-events:none; }   /* v10.46 */
 .avboots{ width:42px; height:8px; border-radius:0 0 4px 4px; border:2px solid #14161b; border-top:0; margin-top:-1px; }   /* v10.32 */
 .avslot{ display:flex; align-items:center; gap:8px; padding:5px 10px; cursor:pointer;
   border-top:1px solid rgba(46,51,55,.55); }
@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.93';
+var VER='23.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8073,12 +8073,20 @@ try{ if(document.fonts&&document.fonts.load){
 // nothing is distorted, and the smallest text sits precisely where the old
 // small text already sat, so no HUD box overflows. The steps above it are then
 // real steps rather than seven authored sizes all arriving at the same height.
+// v23.94, UI REDESIGN ui4 (his #35 and #50, 2026-10-12): the HUD speaks in the same voice as the menus. Every role is Barlow Condensed,
+// a DIN-like industrial condensed face (the genre look: about 20% more characters per plate than Rubik), with the menu fallbacks
+// until ui1 embeds it (Bahnschrift SemiCondensed is built into Windows). Two roles join the five: num, the big tabular ammo figure,
+// and body, sentence-case sub-lines in plain Barlow. Plates measured with measureText shrink with the narrower face by themselves.
+var HUDF='"Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow","Roboto Condensed",sans-serif';
+var HUDFB='"Barlow","Bahnschrift","Segoe UI",system-ui,sans-serif';
 var TYPE={
-  micro:'600 10px "Rubik",system-ui,sans-serif',  // 13.0 rendered: pips, counters, tags
-  label:'600 12px "Rubik",system-ui,sans-serif',  // 15.6 rendered: world labels, prompts
-  head: '700 15px "Rubik",system-ui,sans-serif',  // 19.5 rendered: callouts
-  title:'800 20px "Rubik",system-ui,sans-serif',  // 26.0 rendered: screen titles
-  huge: '800 30px "Rubik",system-ui,sans-serif'   // 39.0 rendered: the one big number
+  micro:'600 10px '+HUDF,  // 13.0 rendered: pips, counters, tags
+  label:'600 12px '+HUDF,  // 15.6 rendered: world labels, prompts
+  head: '700 15px '+HUDF,  // 19.5 rendered: callouts
+  title:'800 20px '+HUDF,  // 26.0 rendered: screen titles
+  huge: '800 30px '+HUDF,  // 39.0 rendered: the one big number
+  num:  '700 34px '+HUDF,  // 44.2 rendered: the ammo figure (v23.94, ui4)
+  body: '500 12px '+HUDFB  // 15.6 rendered: sentence-case sub-lines (v23.94, ui4)
 };
 // v9.14: the same spec at a screen-scaled size. The multiplier goes into the
 // SOURCE px and the result is handed to FS as an ordinary spec, so the cache key
@@ -8729,7 +8737,7 @@ function bakeGround(map){
     // The number stays on all five: it is how he tells one shed from another on
     // the sector map, and taking it away would trade one kind of samey for another.
     c.save(); c.globalAlpha=(_bf===2?.18:.13); c.fillStyle=D3.wallTop;
-    c.font='700 '+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+'px "Rubik",system-ui,sans-serif';   // v10.95, his note: one family
+    c.font='700 '+Math.round(Math.min(b3.w,b3.h)*(_bf===2?.52:.42))+'px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif';   // v10.95, his note: one family
     c.textAlign='center'; c.textBaseline='middle';
     c.fillText(String(b3.tag),b3.x+b3.w/2,b3.y+b3.h/2);
     c.restore();
@@ -25860,7 +25868,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.strokeStyle='#7fc4a0'; wc.lineWidth=3;
     wc.beginPath(); wc.arc(hx2,_hy,9,-1.5708,-1.5708+6.2832*(1-_hf)); wc.stroke();
     wc.fillStyle='#0b0f14';
-    wc.font='700 9px "Rubik",system-ui,sans-serif'; wc.textAlign='center';
+    wc.font='700 9px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif'; wc.textAlign='center';
     wc.fillText(Math.ceil(st.healSec)+'s',hx2+0.5,_hy+3.5);
     wc.fillStyle='#dff3e8';
     wc.fillText(Math.ceil(st.healSec)+'s',hx2,_hy+3);
@@ -32727,7 +32735,7 @@ function partIcon(c,key,S,col){
     rr(-34,-22,68,52,5); c.fillStyle=lin(0,-22,0,30,[[0,'#ff9a4a'],[0.5,'#e06a1a'],[1,'#7a3008']]); c.fill(); inkS();
     c.save(); rr(-34,-22,68,52,5); c.clip(); c.strokeStyle='rgba(20,10,0,.75)'; c.lineWidth=6*u; for(i=-4;i<5;i++){ c.beginPath(); c.moveTo((i*16-10)*u,30*u); c.lineTo((i*16+20)*u,-22*u); c.stroke(); } c.restore();
     rr(-24,-12,48,22,3); c.fillStyle=lin(0,-12,0,10,[[0,'#3a3d44'],[1,'#16181c']]); c.fill(); inkS(OL*0.8);
-    c.fillStyle=col; c.font='bold '+Math.round(8*u)+'px sans-serif'; c.textAlign='center'; c.fillText('REC',0,3*u);
+    c.fillStyle=col; c.font='bold '+Math.round(8*u)+'px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif'; c.textAlign='center'; c.fillText('REC',0,3*u);
     c.beginPath(); c.arc(0,-22*u,12*u,Math.PI,0); c.lineWidth=5*u; c.strokeStyle=ink; c.stroke(); c.lineWidth=3*u; c.strokeStyle='#8a929a'; c.stroke();
   } else if(key==='reactor'){
     ground(30,40);
@@ -32809,7 +32817,7 @@ function keyIcon(c,key,S,col){
     rr(-38,-8,64,40,2); c.fillStyle=lin(0,-8,0,32,[[0,'#7d9152'],[1,'#4b5a2e']]); c.fill(); inkS();
     c.fillStyle='rgba(0,0,0,.3)'; rr(-38,-2,64,3,1); c.fill();
     c.fillStyle='#2b3020'; rr(-10,-6,12,10,2); c.fill();
-    c.fillStyle='rgba(236,226,190,.85)'; c.font='bold '+Math.round(11*u)+'px sans-serif'; c.textAlign='center'; c.fillText('AMMO',-6*u,24*u);
+    c.fillStyle='rgba(236,226,190,.85)'; c.font='bold '+Math.round(11*u)+'px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif'; c.textAlign='center'; c.fillText('AMMO',-6*u,24*u);
     for(i=0;i<4;i++){ var bx=(-22+i*12)*u, by=-34*u;
       rr(-22+i*12-4,-34,8,16,2); c.fillStyle=lin(-22+i*12-4,0,-22+i*12+4,0,[[0,'#f6d77a'],[0.5,'#d8a83a'],[1,'#8f6a1e']]); c.fill(); c.strokeStyle=ink; c.lineWidth=u*1; c.stroke();
       c.beginPath(); c.moveTo(bx-4*u,by); c.quadraticCurveTo(bx,by-12*u,bx+4*u,by); c.closePath(); c.fillStyle='#c27a3a'; c.fill(); c.stroke(); }
@@ -32818,7 +32826,7 @@ function keyIcon(c,key,S,col){
     ground(24,40);
     rr(-18,-26,36,64,6); c.fillStyle=lin(-18,0,18,0,[[0,'#6c757d'],[0.35,'#c6cfd6'],[0.7,col||'#9aa5ad'],[1,'#4c545b']]); c.fill(); inkS();
     c.fillStyle='rgba(40,45,50,.65)'; rr(-18,-8,36,5,1); c.fill(); rr(-18,22,36,5,1); c.fill();
-    c.fillStyle='rgba(240,240,240,.85)'; c.font='bold '+Math.round(9*u)+'px sans-serif'; c.textAlign='center'; c.fillText('SMK',0,12*u);
+    c.fillStyle='rgba(240,240,240,.85)'; c.font='bold '+Math.round(9*u)+'px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif'; c.textAlign='center'; c.fillText('SMK',0,12*u);
     rr(-12,-36,24,12,3); c.fillStyle=lin(0,-36,0,-24,[[0,'#8a929a'],[1,'#4a5056']]); c.fill(); inkS(OL*0.9);
     c.beginPath(); c.moveTo(10*u,-34*u); c.quadraticCurveTo(26*u,-30*u,24*u,6*u); c.lineWidth=5*u; c.strokeStyle=ink; c.stroke(); c.lineWidth=3*u; c.strokeStyle='#b7bec5'; c.stroke();
     c.beginPath(); c.arc(-16*u,-36*u,7*u,0,6.2832); c.lineWidth=3*u; c.strokeStyle=ink; c.stroke(); c.lineWidth=1.8*u; c.strokeStyle='#d8dde2'; c.stroke();
@@ -35873,9 +35881,9 @@ function attEl(){
   var st=document.createElement('style');
   st.textContent='#attract{position:fixed;left:0;top:0;right:0;bottom:0;z-index:9000;background:#000;display:none;cursor:none}'+
     '#attract video{width:100%;height:100%;object-fit:cover}'+
-    '#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,84px) "Rubik",system-ui,sans-serif;'+
+    '#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,84px) var(--f-cond);'+
     'letter-spacing:.08em;color:#ffc04a;text-shadow:0 3px 0 #000,0 0 24px rgba(0,0,0,.9);animation:attpulse 1.6s ease-in-out infinite}'+
-    '#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,120px) "Rubik",system-ui,sans-serif;'+
+    '#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,120px) var(--f-cond);'+
     'letter-spacing:.14em;color:#f2e6c8;text-shadow:0 4px 0 #000,0 0 30px rgba(0,0,0,.9);opacity:.92}'+
     '@keyframes attpulse{0%,100%{opacity:1}50%{opacity:.35}}';
   document.head.appendChild(st);
@@ -35946,7 +35954,7 @@ function recMark(on){
   if(!REC.mark){
     REC.mark=document.createElement('div'); REC.mark.id='recmark';
     REC.mark.style.cssText='position:fixed;left:14px;top:14px;z-index:9001;display:none;padding:4px 10px 4px 8px;border-radius:999px;background:rgba(0,0,0,.6);'+
-      'color:#ff5a4a;font:800 15px "Rubik",system-ui,sans-serif;letter-spacing:.1em;pointer-events:none';
+      'color:#ff5a4a;font:800 15px var(--f-cond);letter-spacing:.1em;pointer-events:none';
     REC.mark.innerHTML='&#9679; REC';
     document.body.appendChild(REC.mark);
   }
@@ -36992,7 +37000,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.93: A death in the 1 player demo ends the run; in the 2 player demo you respawn with your score lost. Check 23.93 fails on v23.92',
+  now:'v23.94: HUD and raid text now use the same condensed caps face as the menus. Check 23.94 fails on v23.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -46251,12 +46259,12 @@ function arcadeAttEl(cls){
   if(!document.getElementById('arcattcss')){
     st=document.createElement('style'); st.id='arcattcss';
     st.textContent='#attract .arcpage{position:absolute;left:50%;top:24%;transform:translateX(-50%);min-width:44%;max-width:92%;box-sizing:border-box;padding:.55em 1.6em .7em;background:rgba(0,0,0,.74);border:2px solid rgba(255,192,74,.5);border-radius:6px;'+
-      'font:800 clamp(12px,1.15vw,30px) "Rubik",system-ui,sans-serif;letter-spacing:.08em;color:#f2e6c8;text-shadow:0 2px 0 #000;text-align:center}'+
+      'font:800 clamp(12px,1.15vw,30px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 2px 0 #000;text-align:center}'+
       '#attract .arcpage .aph{font-size:1.8em;color:#ffc04a;margin-bottom:.3em}#attract .arcpage .apr{display:flex;justify-content:space-between;gap:2em;line-height:1.3}'+
       '#attract .arcpage .apr.hl{color:#7fe3d4}#attract .arcpage .apn{line-height:1.6;opacity:.8}#attract .arcpage .apb{color:#ff8a1f;margin-top:.35em}'+
       '#attract .arcpage table{margin:0 auto;border-collapse:collapse}#attract .arcpage td,#attract .arcpage th{padding:.2em .9em;text-align:left}#attract .arcpage th{color:#9a8f78;font-size:.8em}#attract .arcpage .apk{color:#ffc04a}'+
       '#attract .arcstrip{position:absolute;left:0;right:0;bottom:28.5%;padding:.2em 0;text-align:center;background:linear-gradient(90deg,transparent,rgba(0,0,0,.66) 26%,rgba(0,0,0,.66) 74%,transparent);'+
-      'font:800 clamp(15px,1.6vw,38px) "Rubik",system-ui,sans-serif;letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}';
+      'font:800 clamp(15px,1.6vw,38px) var(--f-cond);letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}';
     document.head.appendChild(st);
   }
   e=document.createElement('div'); e.className=cls; e.style.display='none'; d.appendChild(e);
@@ -46599,7 +46607,7 @@ function arcadeOverEl(){
   if(c) return c;
   st=document.createElement('style');
   st.textContent='#attract .arcover{position:absolute;left:0;right:0;top:24%;padding:.45em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.8) 18%,rgba(0,0,0,.8) 82%,transparent);text-align:center;'+
-    'font:800 clamp(16px,1.9vw,46px) "Rubik",system-ui,sans-serif;letter-spacing:.08em;color:#f2e6c8;text-shadow:0 3px 0 #000,0 0 18px rgba(0,0,0,.9)}'+
+    'font:800 clamp(16px,1.9vw,46px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 3px 0 #000,0 0 18px rgba(0,0,0,.9)}'+
     '#attract .arcover .aoh{font-size:2.4em;color:#ff5a3a}#attract .arcover .aos{font-size:1.5em;color:#ffc04a;margin:.12em 0 .4em}#attract .arcover .aor{margin:.14em 0;opacity:.94}';
   document.head.appendChild(st);
   c=document.createElement('div'); c.className='arcover'; c.style.display='none'; d.appendChild(c);
@@ -47780,8 +47788,8 @@ function sectorPreviewDraw(cv,M){
       // LINE). A name that would touch a ring moves to the nearest clear place just above or below it, inside its own zone.
       function hits(y,hh,hw){ var j,e2,rx,ry,r2,nx,ny; if(!EX) return false; for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)<r2*r2) return true; } return false; }
       function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy], j, e2, ry, r2, k, y, best=null; if(EX) for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=Math.max(4,78*sc)+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k<cand.length;k++){ y=cand[k]; if(y<top||y>bot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)<Math.abs(best-cy)) best=y; } return best===null?cy:best; }
-      c.font='bold '+fs+'px Rubik, system-ui, sans-serif';
-      while(fs>8&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px Rubik, system-ui, sans-serif'; }
+      c.font='bold '+fs+'px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif';
+      while(fs>8&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif'; }
       if(c.measureText(nm).width>zw&&nm.indexOf(' ')>0){
         ws=nm.split(' ');
         for(k=1;k<ws.length;k++){ w1=txRawW(c,ws.slice(0,k).join(' ')); w2=txRawW(c,ws.slice(k).join(' ')); if(Math.max(w1,w2)<bw){ bw=Math.max(w1,w2); best=k; } }
@@ -48076,7 +48084,7 @@ function grabGhost(text){
     g=document.createElement('div'); g.id='grabghost';
     g.style.cssText='position:fixed;z-index:9999;pointer-events:none;padding:4px 9px;'+
       'background:rgba(6,9,13,.92);border:1px solid var(--amber);border-radius:3px;'+
-      'color:var(--bone);font-size:11px;font-family:Rubik,system-ui,sans-serif;white-space:nowrap';
+      'color:var(--bone);font-size:11px;font-family:var(--f-body);white-space:nowrap';
     document.body.appendChild(g);
     // v12.25: born lazily, after applyMenuZoom has run, so it takes the factor itself.
     try{ g.style.zoom=menuScale(); }catch(_gz){}
@@ -49332,7 +49340,7 @@ function cosSwatch(c){
     var pcv=document.createElement('canvas'); pcv.width=34; pcv.height=34;
     var pcx=pcv.getContext('2d'); pcx.fillStyle='#1b1f26'; pcx.fillRect(0,0,34,34);
     if(PATCHCOL[c.id]) drawPatch(pcx,c.id,7,7,20);
-    else { pcx.fillStyle='#8a96a1'; pcx.font='600 14px "Rubik",system-ui,sans-serif'; pcx.textAlign='center'; pcx.fillText('--',17,22); }   // v10.95, his note: one family
+    else { pcx.fillStyle='#8a96a1'; pcx.font='600 14px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif'; pcx.textAlign='center'; pcx.fillText('--',17,22); }   // v10.95, his note: one family
     return '<img style="width:34px;height:34px;border-radius:6px;border:2px solid #14161b" src="'+pcv.toDataURL()+'">';
   }
   if(c.kind==='pack'){   // v10.34: a pack, in its colour
@@ -49363,7 +49371,7 @@ function cosSwatch(c){
   if(c.kind==='fit'&&c.id==='jersey'){   // v10.46: the jersey shows its number
     return '<span style="display:inline-block;width:34px;height:34px;border-radius:6px;position:relative;'+
            'background:linear-gradient(180deg,#c41e1e,#7a1414);box-shadow:inset 5px 0 0 #14161b,inset -5px 0 0 #14161b;border:2px solid #14161b">'+
-           '<span style="position:absolute;left:0;right:0;top:8px;text-align:center;font:900 15px/1 Impact,sans-serif;color:#f4f2ec">23</span></span>';
+           '<span style="position:absolute;left:0;right:0;top:8px;text-align:center;font:800 15px/1 var(--f-cond);color:#f4f2ec">23</span></span>';
   }
   if(c.kind==='fit'){
     var fc=FITCOL[c.id]||FITCOL.slate;
