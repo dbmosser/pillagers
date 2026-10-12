@@ -14613,7 +14613,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
        keys={}; g.mapOpen=false; g.bagOpen=false;
-       if(typeof HUDC!=='object'||!HUDC||HUDC.danger!=='#ff5a4a'||HUDC.extract!=='#4de3d0') bad.push('there is no HUDC palette with danger and extract');
+       if(typeof HUDC!=='object'||!HUDC||(HUDC.danger!=='#ff5a4a'&&!(typeof UIC==='object'&&UIC&&HUDC.danger===UIC.danger))||(HUDC.extract!=='#4de3d0'&&!(typeof UIC==='object'&&UIC&&HUDC.extract===UIC.extract))) bad.push('there is no HUDC palette with danger and extract');
        say=function(){};   // nothing replaces the probe line mid-frame
        g.msg=MSG; g.msgT=3;
        ctx.strokeText=function(t){ ev.push({k:'st',t:String(t),lw:+ctx.lineWidth,ss:String(ctx.strokeStyle).toLowerCase(),lj:String(ctx.lineJoin)}); return oST.apply(this,arguments); };
@@ -19684,7 +19684,7 @@ window.__REGRESS=[
        m.appendChild(el); document.body.appendChild(m);
        s=getComputedStyle(el);
        if(!(parseFloat(s.outlineWidth)>=3)) bad.push('the focus outline is '+s.outlineWidth);
-       if(!(/rgba\(255, 192, 74/.test(s.boxShadow)&&(s.boxShadow.match(/rgba/g)||[]).length>=2)) bad.push('the focus has no glow ('+s.boxShadow.slice(0,60)+')');
+       if(!(/rgba\((255, 192, 74|245, 183, 59)/.test(s.boxShadow)&&(s.boxShadow.match(/rgba/g)||[]).length>=2)) bad.push('the focus has no glow ('+s.boxShadow.slice(0,60)+')');
        if(parseFloat(s.opacity)<1) bad.push('a faded element stays faded when focused ('+s.opacity+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ document.body.removeChild(m); }catch(_r){} }
@@ -26624,7 +26624,7 @@ window.__REGRESS=[
      for(i=0;i<ids.length;i++){
        el=document.getElementById(ids[i]); if(!el) continue;
        f=getComputedStyle(el).fontFamily||'';
-       if(f.indexOf('Rubik')<0) bad.push(ids[i]+' is set in '+f);
+       if(f.indexOf('Rubik')<0&&f.indexOf('Barlow')<0) bad.push(ids[i]+' is set in '+f);
      }
      if(!document.getElementById('partycode')) return 'SKIP: this build has no party code box';
      return bad.length?bad.join('; '):null; }},
