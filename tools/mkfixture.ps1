@@ -29430,7 +29430,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof renderSector!=='function'||typeof commitRun!=='function'||typeof restoreMake!=='function'||typeof restoreApply!=='function'||typeof FIXED_MAPS==='undefined'||FIXED_MAPS.length<2||!window.__P||!window.__applyLoaded) return 'SKIP: no sector page, run commit, restore codes or profile loader in this build';
      var host=document.getElementById('sectorlist'); if(!host) return 'SKIP: there is no sector list to draw into';
-     var bad=[], snap=null, N0=String(FIXED_MAPS[0].name), N1=String(FIXED_MAPS[1].name);
+     var bad=[], snap=null, N0=String(FIXED_MAPS[0].name), N1=String(FIXED_MAPS[1].name), FZ='none';
      // The never-raided sentence is assembled from pieces so the check does not match its own source.
      var NEVER=['YOU HAVE ','NEVER RAIDED',' HERE'].join('');
      function you(n){ return 'you: '+n+' run'+(n===1?'':'s')+' here'; }
@@ -29440,6 +29440,7 @@ window.__REGRESS=[
      try{
        __topClear(); __cleanProfile();
        snap=JSON.parse(JSON.stringify(__P()));
+       FZ=FIXED_MAPS[1].frozen; FIXED_MAPS[1].frozen=0;   // retargeted 2026-10-12 (feat0b): his order froze THE COLD MILE off the sector page; both cards are still counted, with the freeze lifted for this check only
        // The stage: a sixty-record log, the two oldest on the second sector, and no tally yet, so the first commit seeds one from the log.
        var L=[], i;
        for(i=0;i<2;i++) L.push({mapName:N1,outcome:'extract',_committed:1});
@@ -29464,6 +29465,7 @@ window.__REGRESS=[
        else { var t=(P.mapRunN&&P.mapRunN[N0])|0; if(t!==61) bad.push('a restore code made with 61 runs on '+N0+', restored over a profile holding 5, left the tally at '+t); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       try{ if(FZ!=='none'){ if(FZ===undefined) delete FIXED_MAPS[1].frozen; else FIXED_MAPS[1].frozen=FZ; } }catch(_z){}
        try{ if(snap) __applyLoaded(snap); }catch(_r){}
        try{ renderSector(); }catch(_m){}
        try{ __topClear(); __cleanProfile(); }catch(_c){}
@@ -29543,12 +29545,12 @@ window.__REGRESS=[
      if(typeof renderSector!=='function'||typeof openModal!=='function'||typeof mapOffered!=='function'||typeof FIXED_MAPS==='undefined'||!window.__applyLoaded||!window.__P) return 'SKIP: no sector page, sector list or profile loader in this build';
      var sm=document.getElementById('sectormodal'), host=document.getElementById('sectorlist'), cn=document.getElementById('condnight');
      if(!sm||!host||!cn) return 'SKIP: no sector page with its sector list and NIGHT button in this document';
-     if(FIXED_MAPS.length<2||!mapOffered(FIXED_MAPS[0])||!mapOffered(FIXED_MAPS[1])) return 'SKIP: fewer than two sectors are offered here, so there is no second card to pick';
+     if(FIXED_MAPS.length<2||!mapOffered(FIXED_MAPS[0])) return 'SKIP: fewer than two sectors are offered here, so there is no second card to pick';   // retargeted 2026-10-12 (feat0b): his order froze THE COLD MILE; the freeze is lifted inside the try for this check only, so the second card is still picked by pad
      if(typeof G!=='undefined'&&G&&!G.over) return 'SKIP: a raid is running, and the sector is chosen in the Undercroft';
      if(typeof NET!=='undefined'&&NET&&NET.same) return 'SKIP: a same machine party is on, and its controller comes from the hand-over';
      var NG=navigator.getGamepads;
      if(typeof NG!=='function') return 'SKIP: this browser has no pad interface to fake';
-     var bad=[], stubbed=false, snap=null, keepPad=null, wasOn=sm.classList.contains('on'), name1=String(FIXED_MAPS[1].name||'the second sector');
+     var bad=[], stubbed=false, snap=null, keepPad=null, wasOn=sm.classList.contains('on'), name1=String(FIXED_MAPS[1].name||'the second sector'), FZ='none';
      try{ navigator.getGamepads=function(){ return []; }; stubbed=(navigator.getGamepads!==NG); }catch(_s){}
      if(!stubbed){ try{ navigator.getGamepads=NG; }catch(_r0){} return 'SKIP: this browser will not let the pad be faked'; }
      // A later control that cannot run keeps a failure already found, so the old build fails rather than skips.
@@ -29572,6 +29574,8 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __cleanProfile();
        snap=JSON.parse(JSON.stringify(__P()));
        keepPad={aSpent:PAD.aSpent,announced:PAD.announced,focusIx:PAD.focusIx,focusMd:PAD.focusMd};
+       FZ=FIXED_MAPS[1].frozen; FIXED_MAPS[1].frozen=0;
+       if(!mapOffered(FIXED_MAPS[1])) return 'SKIP: fewer than two sectors are offered here, so there is no second card to pick';
        // The first sector set and daylight chosen, then the page laid out through its own renderer and opener.
        P.mapIx=0; P.cond='day';
        renderSector(); openModal('sectormodal');
@@ -29609,6 +29613,7 @@ window.__REGRESS=[
        try{ navigator.getGamepads=NG; }catch(_p){}
        try{ if(keepPad){ PAD.aSpent=keepPad.aSpent; PAD.announced=keepPad.announced; PAD.focusIx=keepPad.focusIx; PAD.focusMd=keepPad.focusMd; } }catch(_kp){}
        try{ if(!wasOn) sm.classList.remove('on'); }catch(_o){}
+       try{ if(FZ!=='none'){ if(FZ===undefined) delete FIXED_MAPS[1].frozen; else FIXED_MAPS[1].frozen=FZ; } }catch(_z){}
        try{ if(snap) __applyLoaded(snap); }catch(_r){}
        try{ renderSector(); }catch(_m){}
        try{ if(typeof syncMapBtn==='function') syncMapBtn(); }catch(_sb){}
@@ -42425,13 +42430,16 @@ window.__REGRESS=[
            bad.push(label+': '+nm+' does not give the extract rate for that map in his words, ending "of its raids in '+title(nm)+'."');
        }
      }
+     var FZ='none';   // retargeted 2026-10-12 (feat0b): his order froze THE COLD MILE off the sector page; the wording is still judged on both cards, with the freeze lifted for this check only
      try{
+       if(FIXED_MAPS.length>1){ FZ=FIXED_MAPS[1].frozen; FIXED_MAPS[1].frozen=0; }
        P.log=[];
        judge('a player who has never raided either map');
        P.log=[]; for(var j=0;j<FIXED_MAPS.length;j++) P.log.push({mapName:FIXED_MAPS[j].name});
        judge('a player with one run on each map');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       try{ if(FZ!=='none'){ if(FZ===undefined) delete FIXED_MAPS[1].frozen; else FIXED_MAPS[1].frozen=FZ; } }catch(_z){}
        try{ P.log=keepLog; renderSector(); }catch(_r){}
        try{ __topClear(); }catch(_c){}
      }
