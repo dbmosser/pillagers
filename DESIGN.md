@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.07 - LAMPS THROW COLOURED LIGHT
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it, gritty and grounded like ARC Raiders. A lamp used to cut a grey hole in the darkness, and its colour showed only as two faint flat discs. Now every lamp lights the ground in its own colour: sodium posts throw amber, the FOUNDRY lamps throw cold blue, and each lamp is one smooth pool instead of two flat rings. Ground away from the lamps is exactly as dark as before, so night is no brighter and nothing about stealth or sight changes. Settings, LIGHTING: HIGH and STANDARD draw the coloured light, CLASSIC draws the old darkness exactly as it was.
+
+MEASURED. Check 24.07 passes, and fails on v24.06.
 ## v24.06 - MUSIC ON THE TITLE ONLY
 
 Co-op hunt while he was away. His answer 27 b: music on the title and the demo video only, never in raids. The Undercroft floor is now silent, a raid stays silent, and the title screen and the demo attract play a new piece, THE ASCENT: dark and low in D minor like the old Undercroft pieces (the tune down an octave, the dark filter, slow), with a drum kit under it that hits, a deep kick, a low snare on the backbeat and the bass pulsing, so the title lands like a trailer. The MUSIC and MASTER volume rows still set its level, and two windows on one machine still play one song.

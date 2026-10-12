@@ -1,0 +1,7 @@
+v24.07: lamps throw coloured light
+
+Lamps now light the ground in their own colour, amber posts and cold blue foundry lamps, with night exactly as dark as before.
+
+Check 24.07. Fails on v24.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
