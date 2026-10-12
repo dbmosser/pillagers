@@ -1,0 +1,7 @@
+v23.80: gun stat card in the backpack
+
+The backpack now shows a gun stat card for the gun under the mouse or the selected gun.
+
+Check 23.80. Fails on v23.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

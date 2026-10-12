@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.80 - GUN STAT CARD IN THE BACKPACK
+
+Co-op hunt while he was away. His feature 17 of 2026-10-12, better gun stat cards, and his answer 34: the card shows on pickup and in the backpack. This is the backpack half. Point the mouse at a gun in the backpack, or select one with the arrows or the D-pad, and the same card as the pickup shows beside the backpack: UPGRADE, DOWNGRADE or SIDEGRADE against the gun in your hands, then damage, rate, magazine, range and handling with the differences. The item lines under the grid are unchanged, and the Undercroft backpack shows the card too.
+
+MEASURED. Check 23.80 passes, and fails on v23.79.
 ## v23.79 - GUN STAT CARD ON PICKUP
 
 Co-op hunt while he was away. His feature 17 of 2026-10-12, better gun stat cards, and his answer 34: the card shows on pickup and in the backpack. This is the pickup half. Every gun you pick up now puts up a card for four seconds at the right edge: the gun name in its rarity colour, UPGRADE, DOWNGRADE or SIDEGRADE against the gun in your hands, then damage, rate, magazine, range and handling, each with the difference (green better, red worse), and where the gun went (in hand, a key, the backpack). It is twice the size at 4K so it reads on a TV, and it hides while the backpack or the map is open. In the arcade a gun scrapped for points shows no card.

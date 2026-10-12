@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.79';
+var VER='23.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33425,6 +33425,22 @@ function drawBag(){
       :('ARROWS move   Z drop one   drag to tactical belt'
         +(isGun?'   ENTER equip   SHIFT+ENTER to back':'')
         ),x+11,_ry+LH(3)*BZ);
+    // v23.xx (feat2c), HIS #17 and his answer 34 (2026-10-12): THE STAT CARD IN THE BACKPACK. A gun under the mouse (keyboard and
+    // mouse first), or else the selected stack when it is a gun (the arrows and the pad D-pad move it), shows the same card as the
+    // pickup (gunCardDraw) against the gun in his hands: beside the panel on the right when there is room, else inside its right edge.
+    // The rows of itemRows on the left are unchanged. The Undercroft draws this panel too, so the floor backpack has the card as well.
+    try{
+      var _gcK=null, _gcI, _gcC, _gcIt, _gcW, _gcRs=Math.max(1,hudRes()), _gcFw=Math.round(msgPx(hudFS(TYPE.label))*18), _gcX;
+      if(!(PAD&&PAD.on)&&G.bagCells) for(_gcI=0;_gcI<G.bagCells.length;_gcI++){ _gcC=G.bagCells[_gcI];
+        if(mouse.x>=_gcC.x&&mouse.x<=_gcC.x+_gcC.w&&mouse.y>=_gcC.y&&mouse.y<=_gcC.y+_gcC.h){ if(ITEMS[_gcC.key]&&ITEMS[_gcC.key].use==='gun') _gcK=_gcC.key; break; } }
+      if(!_gcK&&isGun) _gcK=sst.key;
+      _gcIt=_gcK&&ITEMS[_gcK];
+      if(_gcIt&&_gcIt.gk&&WEAPONS[_gcIt.gk]){
+        _gcW=(typeof gunQPeek==='function'&&gunQPeek(_gcIt.gk))||WEAPONS[_gcIt.gk];
+        _gcX=(W-(x+PW)>=_gcFw+LH(16)*_gcRs)?(x+PW+LH(8)*_gcRs+_gcFw):(x+PW-11);
+        gunCardDraw(gunCompare(_gcW,p.wep),_gcX,Math.round(y+LH(40)*BZ)+Math.round(msgPx(hudFS(TYPE.label))*15),1,'IN BACKPACK');
+      }
+    }catch(_gcE){}
   } else {
     ctx.font=bFS(TYPE.label); ctx.fillStyle='#6b7783';
     ctx.fillText('Backpack is empty.',x+11,hintY);
@@ -36727,7 +36743,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.79: Picking up a gun now shows a stat card that says if it is an upgrade, with damage, rate, magazine, range and handling. Check 23.79 fails on v23.78',
+  now:'v23.80: The backpack now shows a gun stat card for the gun under the mouse or the selected gun. Check 23.80 fails on v23.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

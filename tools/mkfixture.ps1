@@ -5840,6 +5840,42 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.80',what:'his #17 and answer 34: the backpack shows the gun stat card for the gun under the mouse, or the selected gun, against the gun in hand',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__textTrace)||typeof drawHUD!=='function') return 'SKIP: no raid or HUD here';
+     if(!ITEMS.gun_dmr||!ITEMS.bandage) return 'SKIP: no Marksman Rifle or Bandage item';
+     var bad=[], g=null, p=null, mx0=mouse.x, my0=mouse.y, bag0=null, padOn0=(typeof PAD==='object'&&PAD)?PAD.on:null, tr, i, c=null;
+     function has(t){ return tr.some(function(o){ return o.t===t; }); }
+     function verdict(){ return tr.some(function(o){ return o.t==='UPGRADE'||o.t==='DOWNGRADE'||o.t==='SIDEGRADE'; }); }
+     function draw(){ tr=__textTrace(function(){ try{ drawHUD(); }catch(_h){} }); }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       p=g.player; keys={}; if(padOn0!==null) PAD.on=false;
+       bag0=g.bag.slice(); g.gunCard=null;
+       mouse.x=-500; mouse.y=-500;
+       g.bag=['gun_dmr']; g.bagOpen=true; g.mapOpen=false; g.bagSel=0; g.bagBelt=false;
+       draw();
+       if(!has('HANDLING')||!verdict()) bad.push('a selected gun in the backpack shows no stat card (no HANDLING or verdict drawn)');
+       g.bag=['bandage']; g.bagSel=0;
+       draw();
+       if(has('HANDLING')) bad.push('a selected Bandage shows a gun stat card');
+       g.bag=['bandage','gun_dmr']; g.bagSel=0;
+       draw();
+       for(i=0;i<(g.bagCells||[]).length;i++) if(g.bagCells[i].key==='gun_dmr') c=g.bagCells[i];
+       if(!c) return bad.length?bad.join('; '):'SKIP: staging: the Marksman Rifle tile was not laid out';
+       if(has('HANDLING')) bad.push('a gun card shows with the Bandage selected and nothing under the mouse');
+       mouse.x=c.x+c.w/2; mouse.y=c.y+c.h/2;
+       draw();
+       if(!has('HANDLING')) bad.push('the mouse over a gun tile shows no stat card');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       mouse.x=mx0; mouse.y=my0; if(padOn0!==null) PAD.on=padOn0;
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.bagOpen=false; if(bag0) g2.bag=bag0; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'23.79',what:'his #17 and answer 34: picking up a gun raises its stat card against the gun in hand (verdict, DMG to HANDLING), twice the size at 4K, gone after 4 s',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__textTrace&&window.__forceSize)||typeof drawHUD!=='function'||typeof hudRes!=='function'||typeof grantLoot!=='function') return 'SKIP: no raid or HUD here';
