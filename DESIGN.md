@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.56 - CREDITS AND POINTS ARE ONE THING
+
+Co-op hunt while he was away. His order of 2026-10-11 evening: in arcade mode, credits and points should be synonymous. The arcade score was a points number next to a world priced in credits, and a valuable scored only a tenth of its price. Now a valuable you loot in the arcade scores its full credit value, into the score and into the haul pot. Every arcade score number reads as credits with a dollar sign: the score at the top with YOU and P2, the kill popups, the pickup tags, the EXTRACTED banner, the teammate extraction callout, the attract board, the team strip, the RUN OVER card and NEW HIGH SCORE. Kills keep their values (a crawler is 50, the Overseer 2,000), now read as credits. Your own credits are still never touched by the arcade, and normal raids are unchanged.
+
+MEASURED. Check 23.56 passes, and fails on v23.55.
 ## v23.55 - ARCADE LOOT IS HOLD E AGAIN
 
 Co-op hunt while he was away. His order of 2026-10-11 evening: he does not like the walk-over loot in the arcade and wants hold E to loot back. In the arcade a box is searched again only while E (or X, or the pad search button) is held, at the usual speed, like every other raid. The controls card on the demo video and at each spawn gains a LOOT row, so a walk-up player knows to hold it. Valuables still turn into points.

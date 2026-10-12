@@ -1,0 +1,7 @@
+v23.56: credits and points are one thing
+
+In the arcade the score is credits: loot scores its full value and every score reads in dollars.
+
+Check 23.56. Fails on v23.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

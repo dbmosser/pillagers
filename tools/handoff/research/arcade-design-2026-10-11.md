@@ -540,3 +540,18 @@ A two-player arcade raid is playable after **arcade6**.
    - **Attract:** no PLAYER 2: PRESS A anywhere. The attract still cycles VIDEO, BOARD (the 1P list) and HOW TO PLAY, and any button drops in.
    - **Unchanged:** the 2-player arcade flow, and normal raids, are byte for byte the same.
    - *Check:* the 1P row exists. Entering 1P arcade opens no pair channel (NET.bc stays null and no window.open is called; stub it). arcadeDeploy gives G.arcade with ARCADE.solo, the HUD trace shows SCORE and not TEAM SCORE, and a board write tags m:1 and stays out of the 2-player list.
+31. **arcade31, CREDITS AND POINTS ARE ONE THING** (his order of 2026-10-11 evening: "in arcade mode, credits and points should be synonymous").
+   - **Loot:** in the arcade a valuable scores its full credit value (ARCADE_LOOT_DIV 10 becomes 1, so ival(key) points go into the score and the pot).
+   - **One unit everywhere:** every arcade score number reads as credits with a $:
+     - the HUD number under SCORE / TEAM SCORE, with YOU and P2 also in $
+     - kill and loot popups (+$150)
+     - the EXTRACTED banner (EXTRACTION BONUS +$2,500, HAUL x2 +$N, SCORE $N)
+     - the haul pot line
+     - the pickup row tags
+     - the RUN OVER card
+     - TONIGHT'S BEST and BEST EVER on the attract
+     - NEW HIGH SCORE
+     - the teammate extraction callout
+   - **Values:** kill points keep their values (crawler 50 ... Overseer 2,000), now read as credits. Use one helper (arcadeCr(n) gives '$'+arcadeN(n)) so the format cannot drift.
+   - **Unchanged:** the profile credits are still never touched (the sandbox), and normal raids are byte for byte the same.
+   - *Check:* in an arcade raid, grabbing a valuable worth V raises the score by exactly V. A fillText trace of drawHUD shows the score as $N. A kill popup label reads +$50. arcadeBoardTonight rows render with $ on the attract board page.

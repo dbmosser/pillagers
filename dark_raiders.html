@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.55';
+var VER='23.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16472,7 +16472,7 @@ function grantLoot(ct,keys,delay0){
         _beltGot=autoBelt(key,1); if(_beltGot) _beltKeep.push(_beltGot); if(beltTag()) _ptags[l]=beltTag();   // v22.54 (R17): said on its row, not as a line
       }
     }
-    else if(G.arcade&&!G.sim&&itm&&!itm.use) _ptags[l]='+'+arcadeLoot(key).toLocaleString();   // v23.33 (arcade11): a valuable is points and pot, never the backpack
+    else if(G.arcade&&!G.sim&&itm&&!itm.use) _ptags[l]='+'+arcadeCr(arcadeLoot(key));   // v23.33 (arcade11): a valuable is points and pot, never the backpack; v23.56 (arcade31): in credits
     else { G.bag.push(key); _beltGot=autoBelt(key,1); if(_beltGot) _beltKeep.push(_beltGot); if(beltTag()) _ptags[l]=beltTag(); }
     spark(ct.x,ct.y,itm.c,7,120);
   }
@@ -36137,7 +36137,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.55: Arcade looting is hold E again, like every other raid, and the controls card shows it. Check 23.55 fails on v23.54',
+  now:'v23.56: In the arcade the score is credits: loot scores its full value and every score reads in dollars. Check 23.56 fails on v23.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44789,6 +44789,13 @@ function arcadeRespawn(why){
 // 6 second drop-in hold (3 + 3). The world is not rebuilt, so a teammate fight goes on. No run is counted and nothing is saved.
 var ARCADE_XBONUS=2500, ARCADE_BANNER_T=3, ARCADE_REDROP_R=900;
 function arcadeN(n){ return String(Math.round(+n||0)).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+// v23.56, HIS ORDER (2026-10-11 evening), arcade31: CREDITS AND POINTS ARE ONE THING. His words: "in arcade mode, credits and points
+// should be synonymous". The arcade score was a points number beside a world priced in credits, and a valuable scored a tenth of
+// its price. Now a valuable scores its full credit value (ARCADE_LOOT_DIV 1), and every arcade score number reads as credits with
+// a $ through this one helper, so the format cannot drift: the HUD score with YOU and P2, the kill popups, the pickup tags, the
+// EXTRACTED banner, the teammate callout, the attract board, the team strip, the RUN OVER card and NEW HIGH SCORE. Kill points
+// keep their values, read as credits. The profile credits are still never touched, and a normal raid never reaches any of it.
+function arcadeCr(n){ return '$'+arcadeN(n); }
 // The re-drop spot: at least minR from every ring. The map spawns come first (they are known to be reachable); then random open
 // ground; and if nothing clears minR, the candidate farthest from the nearest ring.
 function arcadeRedropSpot(p,g,minR){
@@ -45039,7 +45046,7 @@ function arcadeKillPerks(){
 // at once and the same into ARCADE.pot (paid again on extract), with +N as the tag on its pickup row. Ammo, heals, throws,
 // plates and keys go where they always went. A pile the player dropped, a box a teammate holds and a hired man are never
 // searched by walking over them. Everything is behind G.arcade, so a normal raid is unchanged.
-var ARCADE_SRCH=1, ARCADE_LOOT_DIV=10;   // v23.xx: his order, hold E to loot at the usual speed (was 6, walk-over loot)
+var ARCADE_SRCH=1, ARCADE_LOOT_DIV=1;   // v23.xx: his order, hold E to loot at the usual speed (was 6, walk-over loot); v23.56 (arcade31): a valuable scores its full credit value (was 10)
 function arcadeAutoSrch(ct){
   var me;
   if(!ct||typeof G==='undefined'||!G||!G.arcade||G.sim||G.over||ct.opened||ct.dropped||ct.mercSrc) return false;
@@ -45111,7 +45118,7 @@ function arcadeGunLoot(ct,key,itm,found){
   }
   if(ct&&ct.dropped) gunQTrim(gk);
   n=arcadeLoot(key);
-  return {tag:'SCRAPPED +'+n.toLocaleString(),line:''};
+  return {tag:'SCRAPPED +'+arcadeCr(n),line:''};   // v23.56 (arcade31): in credits
 }
 // v23.38, HIS ORDER (2026-10-11), build 15 of 20 (arcade15): POPUPS AND STREAKS. A walk-up player should see every kill pay. Each
 // credited kill now puts its points (+50, +100...) up as a popup over the body, and kills less than 4 s apart (game time) chain
@@ -45138,7 +45145,7 @@ function arcadeKill(k,el,boss,x,y){
   s=ARCADE.streak;   // v23.38 (arcade15): the chain, the multiplier, the popup and the callout
   if(!s||!(t-s.t<ARCADE_STREAK_GAP)||t<s.t) s=ARCADE.streak={n:0,t:t};
   s.n++; s.t=t; mx=arcadeStreakX(s.n); n*=mx;
-  if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeN(n),'#ffc04a',0,true); }catch(_alb){} }
+  if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeCr(n),'#ffc04a',0,true); }catch(_alb){} }   // v23.56 (arcade31): +$50
   c=arcadeStreakCall(s.n);
   if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} }
   ARCADE.mine=(ARCADE.mine|0)+n; ARCADE.kills=(ARCADE.kills|0)+1;
@@ -45179,14 +45186,14 @@ function arcadeScTake(m){
   } else if(!ARCADE.run||ARCADE.run.id!==id) return 'ignored';
   ARCADE.scSeen=Date.now(); ARCADE.mate=Math.max(0,Math.round(+m.s||0)); ARCADE.mateK=Math.max(0,m.k|0); ARCADE.mateX=Math.max(0,m.x|0);
   if(m.ev==='x'&&ARCADE.role==='host'){ try{ arcadeBoardPut(); }catch(_bx){} }   // v23.41 (arcade18): a player 2 extraction checkpoints the board row
-  if(m.ev==='x'&&(m.n|0)>0&&G&&G.arcade&&!G.over){ try{ say((ARCADE.role==='p2'?'PLAYER 1':'PLAYER 2')+' EXTRACTED +'+arcadeN(m.n|0),'ally'); }catch(_sx){} }
+  if(m.ev==='x'&&(m.n|0)>0&&G&&G.arcade&&!G.over){ try{ say((ARCADE.role==='p2'?'PLAYER 1':'PLAYER 2')+' EXTRACTED +'+arcadeCr(m.n|0),'ally'); }catch(_sx){} }   // v23.56 (arcade31): in credits
   if(ARCADE.role==='p2') arcadeScFlush(Date.now());
   return 'arcsc';
 }
 // The clock spot in the arcade: TEAM SCORE over the sum, YOU and the teammate score beside it. y is the clock line, z its scale.
 function arcadeScoreHud(y,z){
   if(!G||!G.arcade||!ctx) return;
-  var cx=Math.round(W/2), mine=Math.max(0,ARCADE.mine|0), mate=Math.max(0,ARCADE.mate|0), nm=arcadeN(mine+mate);
+  var cx=Math.round(W/2), mine=Math.max(0,ARCADE.mine|0), mate=Math.max(0,ARCADE.mate|0), nm=arcadeCr(mine+mate);   // v23.56 (arcade31): in credits
   var fb=FSz(TYPE.title,z), fs=FSz(TYPE.micro,z), mh=/([\d.]+)px/.exec(fb), h=mh?+mh[1]:20, w, gx;
   ctx.save(); ctx.textAlign='center';
   ctx.font=fs; ctx.fillStyle='#ffc04a'; hudText(ARCADE.solo?'SCORE':'TEAM SCORE',cx,Math.round(y-h*0.80));   // v23.54 (arcade30): SCORE in the 1 player arcade
@@ -45194,8 +45201,8 @@ function arcadeScoreHud(y,z){
   gx=Math.round(cx+w/2+10*z);
   ctx.font=fs; ctx.textAlign='left'; ctx.fillStyle='#cdd6dd';
   if(!ARCADE.solo){   // v23.54 (arcade30): no YOU and P2 split in the 1 player arcade
-    hudText('YOU '+arcadeN(mine),gx,Math.round(y-h*0.40));
-    hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeN(mate),gx,Math.round(y+h*0.15));
+    hudText('YOU '+arcadeCr(mine),gx,Math.round(y-h*0.40));
+    hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate),gx,Math.round(y+h*0.15));
   }
   var _sx=arcadeStreakLive();   // v23.38 (arcade15): the live streak multiplier, left of the score
   if(_sx>1){ ctx.font=fb; ctx.textAlign='right'; ctx.fillStyle='#ffc04a'; hudText('x'+_sx,Math.round(cx-w/2-10*z),y); }
@@ -45236,10 +45243,10 @@ function arcadeHud(){
   ctx.strokeStyle='rgba(127,196,160,.80)'; ctx.lineWidth=2; ctx.strokeRect(cx-bw/2+1,y-LH(56)+1,bw-2,bh-2);
   ctx.font=FSz(TYPE.huge,1.6); ctx.fillStyle='#7fc4a0'; ctx.fillText('EXTRACTED!',cx,y);
   ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a';
-  ctx.fillText('EXTRACTION BONUS +'+arcadeN(b.bonus),cx,y+LH(30));
-  if(b.haul>0) ctx.fillText('HAUL x2 +'+arcadeN(b.haul),cx,y+LH(52));
+  ctx.fillText('EXTRACTION BONUS +'+arcadeCr(b.bonus),cx,y+LH(30));   // v23.56 (arcade31): in credits
+  if(b.haul>0) ctx.fillText('HAUL x2 +'+arcadeCr(b.haul),cx,y+LH(52));
   ctx.font=FS(TYPE.title); ctx.fillStyle='#e8eef2';
-  ctx.fillText((ARCADE.solo?'SCORE ':'TEAM SCORE ')+arcadeN(b.team),cx,y+LH(86));   // v23.54 (arcade30)
+  ctx.fillText((ARCADE.solo?'SCORE ':'TEAM SCORE ')+arcadeCr(b.team),cx,y+LH(86));   // v23.54 (arcade30); v23.56 (arcade31): in credits
   ctx.restore();
 }
 // v23.24, HIS ORDER (2026-10-11), build 5 of 20 (arcade5): THE MODE ROW AND BOTH WINDOWS IN ARCADE. The title has a 2 PLAYER ARCADE
@@ -45450,9 +45457,9 @@ function arcadeAttBoard(pg){
   try{ if(typeof arcadeBoardBest==='function') best=+arcadeBoardBest()||0; }catch(_bb){ best=0; }
   arcadeAttLine(pg,'aph','TONIGHT\u2019S BEST');
   if(!rows.length) arcadeAttLine(pg,'apn','NO SCORES YET');
-  for(i=0;i<rows.length&&i<10;i++){ r=rows[i]||{}; arcadeAttLine(pg,'apr'+((id&&r.run===id)?' hl':''),(i+1)+'.  '+String(r.i||'???').slice(0,3).toUpperCase(),arcadeN(r.s)); }
-  if(o&&(+o.team||0)>0) arcadeAttLine(pg,'apb','LAST RUN '+arcadeN(o.team));
-  if(best>0) arcadeAttLine(pg,'apb','BEST EVER '+arcadeN(best));
+  for(i=0;i<rows.length&&i<10;i++){ r=rows[i]||{}; arcadeAttLine(pg,'apr'+((id&&r.run===id)?' hl':''),(i+1)+'.  '+String(r.i||'???').slice(0,3).toUpperCase(),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits
+  if(o&&(+o.team||0)>0) arcadeAttLine(pg,'apb','LAST RUN '+arcadeCr(o.team));
+  if(best>0) arcadeAttLine(pg,'apb','BEST EVER '+arcadeCr(best));
 }
 function arcadeAttHow(pg){
   var t=document.createElement('table'), tr, c, i, j, h=['','KEYBOARD','CONTROLLER'], rw;
@@ -45473,7 +45480,7 @@ function arcadeAttStrip(){
   var p2=(ARCADE.role==='p2'), up=!(G&&G.arcade), live=arcadeBenched()||(p2&&up&&Date.now()-(+ARCADE.scSeen||0)<ARCADE_ATT.live), s='';
   if(p2&&up&&ARCADE.wantIn) s='LINKING\u2026';
   else if(live) s='JOIN YOUR TEAM';
-  if(live) s+='  \u00b7  TEAM SCORE '+arcadeN(arcadeTeam());
+  if(live) s+='  \u00b7  TEAM SCORE '+arcadeCr(arcadeTeam());   // v23.56 (arcade31): in credits
   return s;
 }
 // One step of the loop, from arcadeAttShow. ovOn: the RUN OVER card is up, so the pages wait and the loop goes on from the board.
@@ -45782,7 +45789,7 @@ function arcadeOverEl(){
 }
 function arcadeOverRow(nm,r){
   if(!r) return '';
-  var t=nm+'  '+arcadeN(r.s)+'  \u00b7  '+(r.k|0)+' KILLS  \u00b7  '+(r.x|0)+' EXT';
+  var t=nm+'  '+arcadeCr(r.s)+'  \u00b7  '+(r.k|0)+' KILLS  \u00b7  '+(r.x|0)+' EXT';   // v23.56 (arcade31): in credits
   if(r.d>=0) t+='  \u00b7  '+(r.d|0)+' DEATHS';
   return t;
 }
@@ -45794,8 +45801,8 @@ function arcadeOverSync(){
   sig=(oc?String(o.at):'-')+'|'+(ini?(ini.l.join('')+ini.pos):'');
   if(on&&c.getAttribute('data-at')!==sig){
     c.textContent=''; c.setAttribute('data-at',sig);
-    ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeN(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row
-      :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeN(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
+    ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row; v23.56 (arcade31): in credits
+      :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1]; c.appendChild(el); }
     if(ini) arcadeIniDraw(c,ini);
   }
@@ -46052,7 +46059,7 @@ function arcadeHiTick(){
   netSamePost({t:'archi',pair:NET.pair,run:id,s:t});
   return true;
 }
-function arcadeHiSay(t){ try{ say('NEW HIGH SCORE','ext',{sub:(ARCADE.solo?'SCORE ':'TEAM SCORE ')+arcadeN(t)}); }catch(_hs){} }   // v23.54 (arcade30)
+function arcadeHiSay(t){ try{ say('NEW HIGH SCORE','ext',{sub:(ARCADE.solo?'SCORE ':'TEAM SCORE ')+arcadeCr(t)}); }catch(_hs){} }   // v23.54 (arcade30); v23.56 (arcade31): in credits
 // The containers as this window holds them, for the test page handle.
 function netContView(){
   var out=[], i, ct, n=0, op=0, held=[], s, up=!!(typeof G!=='undefined'&&G);
