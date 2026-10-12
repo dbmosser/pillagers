@@ -1,0 +1,5 @@
+## v23.66 - A FRAGGED RUNNER TURNS FOR GOOD
+
+Co-op hunt while he was away. His note of 2026-10-12: a running pillager should turn hostile when fired on. Rounds have done that since v23.59 and near misses since v23.60, but your own frag into a pillager running for a ring set him chasing for one frame, and his low health rule sent him running again on the next. Now your frag turns him for good, the same as a round: hostile, coming for you and firing back.
+
+MEASURED. Check 23.66 passes, and fails on v23.65.

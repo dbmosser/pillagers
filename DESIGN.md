@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.66 - A FRAGGED RUNNER TURNS FOR GOOD
+
+Co-op hunt while he was away. His note of 2026-10-12: a running pillager should turn hostile when fired on. Rounds have done that since v23.59 and near misses since v23.60, but your own frag into a pillager running for a ring set him chasing for one frame, and his low health rule sent him running again on the next. Now your frag turns him for good, the same as a round: hostile, coming for you and firing back.
+
+MEASURED. Check 23.66 passes, and fails on v23.65.
 ## v23.65 - THE WHAT IS NEW CARD NAMES THE LATEST ARCADE WORK
 
 Co-op hunt while he was away. The card was stamped v23.64 and the stamp may not trail the build by more than 0.15. Its new second line names the builds of 2026-10-11 and 12: the 1 player arcade, hold E to loot again, credits and score as one, the title fitting any zoom, and fleeing pillagers turning on whoever shoots them.

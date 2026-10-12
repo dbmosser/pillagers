@@ -5840,6 +5840,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'23.66',what:'his note: your own frag into a running pillager turns him for good, as a round does',
+   run:function(){
+     if(typeof runnerTurns!=='function'||typeof explodeFrag!=='function') return 'SKIP: no runnerTurns or explodeFrag here';
+     var bad=[], g, p, all, e;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); p=g.player; all=g.ents.slice();
+       e=all.filter(function(x){ return x.kind==='raider'&&!x.merc&&!x.friendlyPC&&x.hp>0; })[0];
+       if(!e) return 'SKIP: no pillager on this map';
+       g.ents=[e]; e.x=p.x+400; e.y=p.y; e.maxhp=2000; e.hp=400; e.state='extract'; e.fled=1; e.hostile=false; e.cornered=0;
+       explodeFrag({x:e.x+60,y:e.y,t:0,fuse:0});
+       if(e.hp>0&&!e.downed){
+         for(var i=0;i<10;i++) __ents(0.05);
+         if(e.state==='extract') bad.push('a pillager running for a ring went back to running after your frag (state '+e.state+', cornered '+e.cornered+')');
+         if(e.cornered!==1) bad.push('the fragged runner was not cornered');
+       } else return 'SKIP: the frag killed or downed the staged runner';
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ try{ if(all) g.ents=all; var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.hp=100; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'23.65',what:'the what is new card is stamped within 0.15 of the build and leads with the arcade and runners news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

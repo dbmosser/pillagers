@@ -1,0 +1,7 @@
+v23.66: a fragged runner turns for good
+
+A fleeing pillager hit by your frag now turns and fights instead of running again.
+
+Check 23.66. Fails on v23.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
