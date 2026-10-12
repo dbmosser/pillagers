@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.35 - A WINDOW SITS IN A DARK ROOM
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Wirt and the Last Pour found the big station signs of the Undercroft reading round the edges of the card as cut off words (SHOP, CR and POUR and MAY GLITCH), like a second menu under the first, and the grey money line still painted in the top left corner behind the window. The room behind any window is darker now, so the floor is a shape and not words, and the money line goes away while a window is open, as the floor heading already did. Nothing else changed.
+
+MEASURED. Check 24.35 passes, and fails on v24.34.
 ## v24.34 - THE WHAT IS NEW CARD NAMES THE HIT MARKERS
 
 Co-op hunt while he was away. The card was stamped v24.18 and the stamp may not trail the build by more than 0.15. The card was stamped v24.18 and every ship stops when it falls 0.16 behind; about 20 queued builds are waiting. Its new line names the hit marker on the inner crosshair (his answer 30), the darker nights, SELL ALL and the counting RUN OVER score.

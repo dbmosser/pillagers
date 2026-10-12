@@ -1,0 +1,5 @@
+## v24.35 - A WINDOW SITS IN A DARK ROOM
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Wirt and the Last Pour found the big station signs of the Undercroft reading round the edges of the card as cut off words (SHOP, CR and POUR and MAY GLITCH), like a second menu under the first, and the grey money line still painted in the top left corner behind the window. The room behind any window is darker now, so the floor is a shape and not words, and the money line goes away while a window is open, as the floor heading already did. Nothing else changed.
+
+MEASURED. Check 24.35 passes, and fails on v24.34.

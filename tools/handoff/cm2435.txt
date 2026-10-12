@@ -1,0 +1,7 @@
+v24.35: a window sits in a dark room
+
+The room behind a window is darker, and the floor money line hides while a window is open.
+
+Check 24.35. Fails on v24.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

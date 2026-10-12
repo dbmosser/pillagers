@@ -6061,6 +6061,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.35',what:'his #50 (UI redesign ui5q1b, from the AAA judge of the Wirt and Last Pour shots): the room behind a window is dimmed to at least 90 percent, and the floor money line is not painted while a window is open (and still is with none open)',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     if(typeof drawHubHUD!=='function'||typeof hubWinOn!=='function') return 'SKIP: no floor HUD here';
+     var bad=[], m, c, a, seen, own, need='in st'+'ash';
+     function draws(){ var out=[], real=CanvasRenderingContext2D.prototype.fillText; ctx.fillText=function(t){ out.push(String(t)); return real.apply(this,arguments); };
+       try{ drawHubHUD(0,0); }finally{ delete ctx.fillText; } return out.join('|'); }
+     try{
+       __topClear(); __hubEnter();
+       seen=draws();
+       if(seen.indexOf(need)<0) bad.push('control: with no window open the floor money line was not painted ('+seen.slice(0,80)+')');
+       __station('gamble','KeyE');
+       m=document.getElementById('gamblemodal');
+       if(!m||!m.classList.contains('on')) return 'SKIP: Wirt did not open';
+       c=getComputedStyle(m).backgroundColor; a=/rgba\(/.test(c)?parseFloat(c.split(',')[3]):1;
+       if(!(a>=0.9)) bad.push('the room behind a window is dimmed only to '+a+' ('+c+')');
+       seen=draws();
+       if(seen.indexOf(need)>=0) bad.push('the floor money line is painted behind Wirt');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ delete ctx.fillText; }catch(_d){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.34',what:'the what is new card is stamped within 0.15 of the build and leads with the hit markers news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
