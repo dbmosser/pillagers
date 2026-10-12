@@ -1695,7 +1695,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='23.56';
+var VER='23.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36137,7 +36137,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v23.56: In the arcade the score is credits: loot scores its full value and every score reads in dollars. Check 23.56 fails on v23.55',
+  now:'v23.57: The arcade party board starts fresh in credits: old scale rows are dropped once, so every score on it is on one scale. Check 23.57 fails on v23.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -45822,14 +45822,20 @@ function arcadeOverSync(){
 var ARCADE_BOARD_KEY='pillagers:arcade:board';
 var ARCADE_BOARD={keep:100,night:12*3600000,top:10,iniMs:20000,mirMs:25000};
 var ARCADE_INI_AB='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+// v23.57, arcade32 (a low finding of the arcade31 review): THE BOARD STARTS FRESH IN CREDITS. Rows saved before the arcade score became
+// credits (v23.56) hold scores with loot at one tenth, but read as $ next to full value rows, so BEST EVER and NEW HIGH SCORE compared
+// two scales. Every row written from v23.57 on carries the scale tag u:'cr'. On load a row without it is dropped, and the board is saved
+// back clean, so the drop happens once. Only the arcade board key changes; his save and normal raids are untouched.
 function arcadeBoardLoad(){
-  var o=null, r, out=[], i, x;
+  var o=null, r, out=[], i, x, dr=0;
   try{ o=JSON.parse(localStorage.getItem(ARCADE_BOARD_KEY)||'null'); }catch(_bl){ o=null; }
   r=(o&&Array.isArray(o.rows))?o.rows:[];
   for(i=0;i<r.length;i++){
     x=r[i]; if(!x||typeof x.run!=='string'||!x.run) continue;
-    out.push({run:x.run.slice(0,40),i:(typeof x.i==='string')?x.i.slice(0,3).toUpperCase():'',s:Math.max(0,Math.round(+x.s||0)),x:Math.max(0,x.x|0),k:Math.max(0,x.k|0),t:+x.t||0,m:(x.m===1)?1:2});   // v23.54 (arcade30): the mode, an old row is 2 player
+    if(x.u!=='cr'){ dr++; continue; }   // v23.57 (arcade32): a row from the old scale
+    out.push({run:x.run.slice(0,40),i:(typeof x.i==='string')?x.i.slice(0,3).toUpperCase():'',s:Math.max(0,Math.round(+x.s||0)),x:Math.max(0,x.x|0),k:Math.max(0,x.k|0),t:+x.t||0,m:(x.m===1)?1:2,u:'cr'});   // v23.54 (arcade30): the mode, an old row is 2 player; v23.57 (arcade32): the scale tag
   }
+  if(dr){ try{ arcadeBoardSave(out); }catch(_bc){} }   // v23.57 (arcade32): saved back clean once
   return out;
 }
 // one row per run: the best score, and the initials from any of its rows
@@ -45837,7 +45843,7 @@ function arcadeBoardDedupe(r){
   var m={}, out=[], i, x, o;
   for(i=0;i<r.length;i++){
     x=r[i]; o=Object.prototype.hasOwnProperty.call(m,x.run)?m[x.run]:null;
-    if(!o){ o=m[x.run]={run:x.run,i:x.i||'',s:x.s,x:x.x,k:x.k,t:x.t,m:(x.m===1)?1:2}; out.push(o); continue; }
+    if(!o){ o=m[x.run]={run:x.run,i:x.i||'',s:x.s,x:x.x,k:x.k,t:x.t,m:(x.m===1)?1:2,u:'cr'}; out.push(o); continue; }   // v23.57 (arcade32): every saved row carries the credits tag
     if(!o.i&&x.i) o.i=x.i;
     if(x.s>o.s||(x.s===o.s&&x.t>o.t)){ o.s=x.s; o.x=x.x; o.k=x.k; o.t=x.t; }
   }
@@ -45873,7 +45879,7 @@ function arcadeBoardPut(){
   if(!(s>0)) return false;
   r=arcadeBoardLoad();
   for(i=r.length-1;i>=0;i--) if(r[i].run===id){ if(!ini&&r[i].i) ini=r[i].i; if(r[i].s>s) s=r[i].s; r.splice(i,1); }
-  r.push({run:id,i:ini,s:s,x:Math.max(0,(ARCADE.ext|0)+(ARCADE.mateX|0)),k:Math.max(0,(ARCADE.kills|0)+(ARCADE.mateK|0)),t:Date.now(),m:arcadeBoardMode()});   // v23.54 (arcade30): tagged with its mode
+  r.push({run:id,i:ini,s:s,x:Math.max(0,(ARCADE.ext|0)+(ARCADE.mateX|0)),k:Math.max(0,(ARCADE.kills|0)+(ARCADE.mateK|0)),t:Date.now(),m:arcadeBoardMode(),u:'cr'});   // v23.54 (arcade30): tagged with its mode; v23.57 (arcade32): and the credits scale
   return arcadeBoardSave(r);
 }
 // the run is in tonights top 10 and has no initials yet

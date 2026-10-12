@@ -659,3 +659,4 @@ NOT DONE from the audit (judged later or design): pass ammo / second gun / belt-
 - 2026-10-11 19:17 ARCADE SOAK 3 h DONE: 0 errors, fps 60 (min 51), heap 22-47 MB flat; ents 41->217, containers 154->598 growing -> arcade29 'the world stays light' queued.
 - 2026-10-11 19:28 arcade29 shipped v23.53 (arcadeCullTick: far idle wave bodies + old empty far containers, P2 told), review clean. Arcade soak #2 started (arcsoak.log overwritten).
 - 2026-10-11 21:12 v23.54 arcade30 (1 PLAYER ARCADE DEMO), v23.55 archolde (his order: arcade loot is hold E again, card LOOT row). 12 h soak done: bots + 4K fine; co-op soak failed on 2 stale expectations (Took line -> pickup stack rows; YOUR PARTY -> PARTY), nettest.html retargeted, one run PASS.
+- 2026-10-11 21:19 v23.56 arcade31 (credits = points: loot full value, every arcade score in $), review: 1 low (old board rows at 1/10 scale) -> arcade32 board fresh in credits, workflow wf_541c57da-3d3.

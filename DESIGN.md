@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.57 - THE BOARD STARTS FRESH IN CREDITS
+
+Co-op hunt while he was away. A low finding of the arcade31 review. Party board rows saved before the arcade score became credits hold scores with loot worth one tenth, but they now show with a $ next to full value rows, so BEST EVER and NEW HIGH SCORE compared two different scales. Every board row is now written with a scale tag. When the board loads, old rows without the tag are dropped and the board is saved back clean, once. Only the arcade board changes; his save and normal raids are untouched.
+
+MEASURED. Check 23.57 passes, and fails on v23.56.
 ## v23.56 - CREDITS AND POINTS ARE ONE THING
 
 Co-op hunt while he was away. His order of 2026-10-11 evening: in arcade mode, credits and points should be synonymous. The arcade score was a points number next to a world priced in credits, and a valuable scored only a tenth of its price. Now a valuable you loot in the arcade scores its full credit value, into the score and into the haul pot. Every arcade score number reads as credits with a dollar sign: the score at the top with YOU and P2, the kill popups, the pickup tags, the EXTRACTED banner, the teammate extraction callout, the attract board, the team strip, the RUN OVER card and NEW HIGH SCORE. Kills keep their values (a crawler is 50, the Overseer 2,000), now read as credits. Your own credits are still never touched by the arcade, and normal raids are unchanged.

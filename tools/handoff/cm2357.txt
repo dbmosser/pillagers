@@ -1,0 +1,7 @@
+v23.57: the board starts fresh in credits
+
+The arcade party board starts fresh in credits: old scale rows are dropped once, so every score on it is on one scale.
+
+Check 23.57. Fails on v23.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
