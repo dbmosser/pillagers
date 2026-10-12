@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.75 - TRIPWIRE MINES IN CO-OP
+
+Co-op hunt while he was away. His feature 6 of 2026-10-12, the tripwire mine, in two-player play. The wire is now shared. A wire player 2 strings is strung for real in the host window, which runs the machines and the pillagers, under his seat, so what it kills is his kill. Both windows see every wire, and when a wire goes off, runs out, or is the oldest of four, the host tells the other window, which takes its copy down and shows the blast. A wire still never hurts a player.
+
+MEASURED. Check 23.75 passes, and fails on v23.74.
 ## v23.74 - GRAPHICS HOOKS
 
 Co-op hunt while he was away. His order of 2026-10-12, the graphics program: add all of it. This is the frame the rest hangs on. The drawing code gets named hooks where the new work goes: after the camera, on the ground, under the bodies (shadows), in the air (smoke, fire, explosions), a switch around the lighting (off keeps the light exactly as it is now), before the fog of war (bloom, so nothing glows through fog), after it (the colour grade) and before the HUD (grain). The game side gets quiet hooks where a shot is fired, a round hits a wall, a charge or a Howler shell bursts and a machine dies (which now remembers what kind it was), each skipped in a bot raid and drawing nothing from the raid dice. Every picture a graphics build bakes is listed in one place and thrown away if the graphics card resets. A bypass switch turns all of it off for comparing. Nothing on screen changes yet.

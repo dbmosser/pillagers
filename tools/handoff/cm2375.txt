@@ -1,0 +1,7 @@
+v23.75: tripwire mines in co-op
+
+In co-op, a Tripwire Mine from either player is shared, and its kills go to whoever strung it.
+
+Check 23.75. Fails on v23.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
