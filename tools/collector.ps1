@@ -35,6 +35,29 @@ while ($listener.IsListening) {
       $res.OutputStream.Write($out, 0, $out.Length)
       $res.Close(); continue
     }
+    # 2026-10-12, his answer 38: FEEDBACK from the ESC / TAB box. The body is the note text, then a marker line, then the
+    # screenshot as a data:image/png URL; both land in exports/ as feedback-STAMP.txt and feedback-STAMP.png.
+    if ($req.HttpMethod -eq "POST" -and $path -eq "feedback") {
+      $reader = New-Object System.IO.StreamReader($req.InputStream, [System.Text.Encoding]::UTF8)
+      $body = $reader.ReadToEnd(); $reader.Close()
+      $dir = Join-Path $Root "exports"
+      if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
+      $stamp = Get-Date -Format "yyyyMMdd-HHmmss-fff"
+      $mark = "`n----PILLAGERS-PNG----`n"
+      $ix = $body.IndexOf($mark)
+      $note = $(if ($ix -ge 0) { $body.Substring(0, $ix) } else { $body })
+      $png = $(if ($ix -ge 0) { $body.Substring($ix + $mark.Length).Trim() } else { "" })
+      $base = Join-Path $dir "feedback-$stamp"; $k = 2
+      while (Test-Path -LiteralPath "$base.txt") { $base = Join-Path $dir "feedback-$stamp-$k"; $k++ }
+      Set-Content -Path "$base.txt" -Value $note -Encoding utf8
+      if ($png -match '^data:image/png;base64,(.+)$') {
+        try { [System.IO.File]::WriteAllBytes("$base.png", [Convert]::FromBase64String($Matches[1])) } catch { }
+      }
+      $out = [System.Text.Encoding]::UTF8.GetBytes("saved")
+      $res.ContentType = "text/plain"
+      $res.OutputStream.Write($out, 0, $out.Length)
+      $res.Close(); continue
+    }
     # otherwise behave as a plain static file server for the same folder
     if ([string]::IsNullOrWhiteSpace($path)) { $path = "dark_raiders.html" }
     $full = Join-Path $Root $path

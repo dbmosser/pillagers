@@ -1,0 +1,5 @@
+## v23.97 - TRAUMA SHAKE MOVES THE WORLD ONLY
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it, item 5. The screen shake was a fresh random jump every drawn frame, so it buzzed rather than shook, and it moved the camera itself, so the HUD prompts and markers pinned to the world jittered along with it. Now each hit, shot or blast adds trauma that fades over about half a second and the world rocks along a smooth wave, strongest for the big blasts and barely there for a rifle shot, while the HUD, the prompts and the aim stay steady. The EFFECT INTENSITY setting scales it, and OFF removes it. Nothing about play changes.
+
+MEASURED. Check 23.97 passes, and fails on v23.96.

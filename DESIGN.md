@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.97 - TRAUMA SHAKE MOVES THE WORLD ONLY
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it, item 5. The screen shake was a fresh random jump every drawn frame, so it buzzed rather than shook, and it moved the camera itself, so the HUD prompts and markers pinned to the world jittered along with it. Now each hit, shot or blast adds trauma that fades over about half a second and the world rocks along a smooth wave, strongest for the big blasts and barely there for a rifle shot, while the HUD, the prompts and the aim stay steady. The EFFECT INTENSITY setting scales it, and OFF removes it. Nothing about play changes.
+
+MEASURED. Check 23.97 passes, and fails on v23.96.
 ## v23.96 - WORLD TEXT STAYS SHARP
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it. The words over the world (nameplates, party names, damage numbers and the floating loot and kill labels) were drawn on the world layer, so a lower Render resolution or an Auto resolution step blurred them along with the world even though the HUD beside them stayed sharp. They are now drawn on the HUD layer, in exactly the same place and size, so they stay crisp at any resolution, and they now also sit above the rain and the weather fog. Nothing about play changes.

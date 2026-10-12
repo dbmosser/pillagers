@@ -579,3 +579,12 @@ Owns: 26114-26116, 44779/44844, 28831-28833, `hudText` (7736-7744), FX widths at
 - `C:\claudecode\dark raiders\tools\gate.ps1`.
 - `C:\claudecode\dark raiders\tools\cdp.ps1` and `C:\claudecode\dark raiders\tools\capture.ps1`.
 - `C:\claudecode\dark raiders\DESIGN.md`: frame-cost entries v18.01-v18.48 around 42575-42820.
+
+---
+## HIS RULE (2026-10-12), binding for every build: 2.5D IS NOT FPS
+His words: "Realize that many mechanics of first or third person shooters will not 1:1 translate to 2.5d". Translate every borrowed mechanic for a top-down view; the eye is on the aim point and the character:
+- Hit feedback goes on the INNER reticle of the crosshair: it flashes white on a hit, orange on a weak spot, and red with a bigger pulse on a kill. There is no separate X.
+- Replace the compass strip with off-screen edge arrows pointing to extraction and objectives.
+- Damage direction: a short arc around the CHARACTER, not around the screen centre.
+- Prefer feedback at the aim point or on the character over first-person overlays.
+- Top-down references: Zero Sievert and Helldivers 1 (top-down; Helldivers 2 is third-person, so not a reference), plus Enter the Gungeon, The Ascent and Nuclear Throne.

@@ -1,0 +1,7 @@
+v23.97: trauma shake moves the world only
+
+Screen shake is now a smooth rock of the world that fades, the HUD stays steady, and EFFECT INTENSITY scales it.
+
+Check 23.97. Fails on v23.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

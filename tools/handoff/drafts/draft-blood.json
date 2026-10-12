@@ -1,0 +1,36 @@
+{
+    "title":  "LIGHT BLOOD: PILLAGERS AND PLAYERS",
+    "why":  "His answer 37 a: light blood, only from pillager bots and players. A pillager hit by a round and a player taking damage now bleed a little: a few dark red droplets, a short red mist and now and then a small drop on the ground that fades away. Machines never bleed: a round on a machine throws the same yellow sparks as before. It is light on purpose, a few pixels and never a pool, and it is only a picture: nothing about the fight changes.",
+    "now":  "Pillagers and players now bleed a little when hit; machines throw sparks as before.",
+    "edits":  [
+                  {
+                      "anchor":  "function spark(x,y,col,n,spread){",
+                      "replacement":  "// 2026-10-12 (blood), HIS ANSWER 37 a: light blood, \"only from pillager bots and players\". A pillager hit by any round, and a player\n// taking any damage, now bleeds a little: a few dark red droplets, a short red mist and, now and then, a small drop on the ground\n// that fades with the other ground marks. Machines never bleed: a round on a machine throws the same yellow sparks as before. Light on\n// purpose: a few pixels, never a pool. Cosmetic only, every draw from the cosmetic stream.\nvar BLOOD_SPRAY=\u0027#b3241b\u0027, BLOOD_MIST=\u0027#7a1612\u0027, BLOOD_DROP=\u0027#5c1310\u0027;\nfunction bloodFx(x,y,sx,sy,amt){\n  if(typeof G===\u0027undefined\u0027||!G||G.sim||!isFinite(x)||!isFinite(y)) return;\n  var k=Math.max(0.4,Math.min(1,(+amt||10)/30)), a=(isFinite(sx)\u0026\u0026isFinite(sy))?Math.atan2(y-sy,x-sx):fxn(0,6.283), d;\n  spark(x,y,BLOOD_SPRAY,Math.round(3+4*k),150);\n  G.puffs.push({x:x+Math.cos(a)*4,y:y+Math.sin(a)*3,t:0,life:.22,c:BLOOD_MIST,r:5+4*k});\n  if(fxr()\u003c0.55){ d=fxn(6,14); decal(x+Math.cos(a)*d,y+16+Math.sin(a)*d*0.5,BLOOD_DROP,fxn(2.2,4)*(0.7+0.5*k)); }\n}\nfunction spark(x,y,col,n,spread){"
+                  },
+                  {
+                      "anchor":  "              spark(b.x,b.y,en.kind===\u0027raider\u0027?\u0027#ff5a4a\u0027:\u0027#ffc25c\u0027,9,220);",
+                      "replacement":  "              if(en.kind===\u0027raider\u0027) bloodFx(en.x,en.y-14,b.x-b.vx*0.05,b.y-b.vy*0.05,b.dmg); else spark(b.x,b.y,\u0027#ffc25c\u0027,9,220);   // 2026-10-12 (blood): a pillager bleeds, a machine sparks"
+                  },
+                  {
+                      "anchor":  "spark(b.x,b.y,\u0027#ffc25c\u0027,8,200); hit=true; break;",
+                      "replacement":  "if(en3.kind===\u0027raider\u0027) bloodFx(en3.x,en3.y-14,b.x-b.vx*0.05,b.y-b.vy*0.05,b.dmg); else spark(b.x,b.y,\u0027#ffc25c\u0027,8,200); hit=true; break;"
+                  },
+                  {
+                      "anchor":  "if(!G.sim){ spark(e.x,e.y,e.kind===\u0027raider\u0027?\u0027#ff5a4a\u0027:\u0027#ffc25c\u0027,9,220); sfxHere(\u0027hit\u0027,e.x,e.y); }",
+                      "replacement":  "if(!G.sim){ if(e.kind===\u0027raider\u0027) bloodFx(e.x,e.y-14,sx,sy,10); else spark(e.x,e.y,\u0027#ffc25c\u0027,9,220); sfxHere(\u0027hit\u0027,e.x,e.y); }"
+                  },
+                  {
+                      "anchor":  "damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); spark(b.x,b.y,\u0027#ff5a4a\u0027,10,200); hit=true; }",
+                      "replacement":  "damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); hit=true; }   // 2026-10-12 (blood): damagePlayer bleeds"
+                  },
+                  {
+                      "anchor":  "if(!hit\u0026\u0026!_mOwn\u0026\u0026NET.on\u0026\u0026netBulletPeer(b)){ spark(b.x,b.y,\u0027#ff5a4a\u0027,10,200); hit=true; }",
+                      "replacement":  "if(!hit\u0026\u0026!_mOwn\u0026\u0026NET.on\u0026\u0026netBulletPeer(b)){ bloodFx(b.x,b.y,b.x-b.vx*0.05,b.y-b.vy*0.05,b.dmg); hit=true; }"
+                  },
+                  {
+                      "anchor":  "    p.lastDmg=Math.round(amt); p.dmgPopT=1.05;",
+                      "replacement":  "    p.lastDmg=Math.round(amt); p.dmgPopT=1.05;\n    if(!G.sim) bloodFx(p.x,p.y-16,sx,sy,amt);   // 2026-10-12 (blood): a player bleeds, a little"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his answer 37 a: light blood from pillagers and players only: a hit player and a shot pillager bleed, a shot machine sparks\u0027,\n   run:function(){\n     var bad=[], g, p, s0, d0, cw, e, r, i, k, ux=0, uy=0, a8, ca, sa, sv=null, rx, ry;\n     function bl(from){ var n=0, j; for(j=from;j\u003cg.sparks.length;j++) if(g.sparks[j].c===\u0027#b3241b\u0027) n++; return n; }\n     function shoot(t){ g.bullets.length=0; s0=g.sparks.length; t.x=p.x+ux*110; t.y=p.y+uy*110; t.hp=t.maxhp=5000; t.roll=0;\n       g.bullets.push({x:p.x+ux*30,y:p.y+uy*30,vx:1180*ux,vy:1180*uy,dmg:5,life:1,player:true,owner:p,tint:\u0027#ffd48a\u0027,thru:0});\n       for(k=0;k\u003c6;k++) updateBullets(0.016); g.bullets.length=0; return bl(s0); }\n     try{\n       __topClear(); __runPrep(); __resetCfg();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); p=g.player; if(!g||g.over) return \u0027SKIP: no live raid\u0027;\n       p.iv=0; p.armor=0; p.downed=false; p.hp=100;\n       s0=g.sparks.length; d0=g.puffs.length;\n       damagePlayer(12,\u0027sentry\u0027,\u0027T\u0027,p.x+200,p.y);\n       if(!bl(s0)) bad.push(\u0027a hit player does not bleed\u0027);\n       if(!(g.puffs.length\u003ed0)) bad.push(\u0027no blood mist on a hit player\u0027);\n       if(bl(s0)\u003e8) bad.push(\u0027a 12 point hit sprays \u0027+bl(s0)+\u0027 drops, not light\u0027);\n       p.hp=100; p.iv=0;\n       for(k=0;k\u003c8\u0026\u0026!ux\u0026\u0026!uy;k++){ a8=k*0.7854; ca=Math.cos(a8); sa=Math.sin(a8); if(losClear(p.x,p.y,p.x+ca*200,p.y+sa*200,g.map.segs)){ ux=ca; uy=sa; } }\n       if(!ux\u0026\u0026!uy) return bad.length?bad.join(\u0027; \u0027):\u0027SKIP: walls all round the drop\u0027;\n       cw=mkCrawler(0,0); g.ents.push(cw);\n       if(shoot(cw)) bad.push(\u0027a shot machine bleeds\u0027);\n       g.ents.splice(g.ents.indexOf(cw),1);\n       for(i=0;i\u003cg.ents.length;i++) if(g.ents[i].kind===\u0027raider\u0027\u0026\u0026!g.ents[i].merc){ r=g.ents[i]; break; }\n       if(!r) return bad.length?bad.join(\u0027; \u0027):\u0027SKIP: no pillager on the map\u0027;\n       sv={x:r.x,y:r.y,hp:r.hp,maxhp:r.maxhp,hostile:r.hostile,state:r.state,alert:r.alert};\n       if(!shoot(r)) bad.push(\u0027a shot pillager does not bleed\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       keys={};\n       try{ if(sv\u0026\u0026r){ for(var q in sv) r[q]=sv[q]; } }catch(_r){}\n       try{ var g2=__state(); if(g2\u0026\u0026g2.player){ g2.player.iv=0; g2.player.hp=100; g2.player.downed=false; } }catch(_p){}\n       try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,168 @@
+{
+    "title":  "THE UNDERCROFT ANSWERS IN THE HUD VOICE",
+    "why":  "His answer 48 (2026-10-12): use wording consistent with a AAA game in all instances. The answer line that pops up under the windows in the Undercroft still spoke in whole explaining sentences while the raid already speaks in short caps callouts. About thirty of those lines (the stash, the backpack, the tactical belt, the bench, contracts, rewards, hires, trades and saving) now read like the raid: BACKPACK FULL, NOTHING TO SELL, CONTRACT PAID, NOBODY IS HIRED, ALREADY EQUIPPED. Your own wording, the vendor lines and the drink lines are untouched.",
+    "now":  "The Undercroft answer line now speaks in short caps callouts, like the raid HUD.",
+    "edits":  [
+                  {
+                      "anchor":  "  try{ say2(\u0027SAVING IS FAILING on this browser. Export your profile from Settings before closing.\u0027); }catch(e){}",
+                      "replacement":  "  try{ say2(\u0027SAVE FAILED  \\u00b7  EXPORT YOUR PROFILE IN SETTINGS BEFORE YOU CLOSE\u0027); }catch(e){}"
+                  },
+                  {
+                      "anchor":  "      try{ say2(\u0027Noted. It goes out with your next run report.\u0027); }catch(_sn){}",
+                      "replacement":  "      try{ say2(\u0027NOTED  \\u00b7  SENT WITH YOUR NEXT RUN REPORT\u0027); }catch(_sn){}"
+                  },
+                  {
+                      "anchor":  "    if(_qNoted){ try{ say2(\u0027Noted. It goes out with your next run report.\u0027); }catch(_qsn){} }",
+                      "replacement":  "    if(_qNoted){ try{ say2(\u0027NOTED  \\u00b7  SENT WITH YOUR NEXT RUN REPORT\u0027); }catch(_qsn){} }"
+                  },
+                  {
+                      "anchor":  "  if(!got){ say2(\u0027Nothing ready to claim yet.\u0027); return; }",
+                      "replacement":  "  if(!got){ say2(\u0027NOTHING TO CLAIM\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "  say2(got===1?(\u0027Reward claimed: \u0027+last)",
+                      "replacement":  "  say2(got===1?(\u0027REWARD CLAIMED  \\u00b7  \u0027+last)"
+                  },
+                  {
+                      "anchor":  "              :(got+\u0027 rewards claimed. The last of them: \u0027+last));",
+                      "replacement":  "              :(got+\u0027 REWARDS CLAIMED  \\u00b7  \u0027+last));"
+                  },
+                  {
+                      "anchor":  "      if(P.merc){ say2(_cur+\u0027 is already hired. Press Hire nobody first; that fee is not refunded.\u0027); try{ sfx(\u0027clank\u0027); }catch(e){} return; }",
+                      "replacement":  "      if(P.merc){ say2(String(_cur).toUpperCase()+\u0027 IS ALREADY HIRED  \\u00b7  PRESS HIRE NOBODY FIRST\u0027); try{ sfx(\u0027clank\u0027); }catch(e){} return; }"
+                  },
+                  {
+                      "anchor":  "      if(P.credits\u003ccost){ say2(\u0027Not enough credits to hire \u0027+_mt+\u0027.\u0027); try{ sfx(\u0027clank\u0027); }catch(e){} return; }",
+                      "replacement":  "      if(P.credits\u003ccost){ say2(\u0027NOT ENOUGH CREDITS TO HIRE \u0027+String(_mt).toUpperCase()); try{ sfx(\u0027clank\u0027); }catch(e){} return; }"
+                  },
+                  {
+                      "anchor":  "  say2(\u0027Binned \u0027+ITEMS[k].name+\u0027.\u0027); blip(\u0027clank\u0027);",
+                      "replacement":  "  say2(\u0027DISCARDED \u0027+String(ITEMS[k].name).toUpperCase()); blip(\u0027clank\u0027);"
+                  },
+                  {
+                      "anchor":  "      if(P.equipped===_rg||P.equippedSec===_rg){ say2(\u0027That gun is already equipped.\u0027); return; }",
+                      "replacement":  "      if(P.equipped===_rg||P.equippedSec===_rg){ say2(\u0027ALREADY EQUIPPED\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "      if(P.equipped===_sg||P.equippedSec===_sg){ say2(\u0027That gun is already equipped.\u0027); try{ sfx(\u0027clank\u0027); }catch(e){} return; }",
+                      "replacement":  "      if(P.equipped===_sg||P.equippedSec===_sg){ say2(\u0027ALREADY EQUIPPED\u0027); try{ sfx(\u0027clank\u0027); }catch(e){} return; }"
+                  },
+                  {
+                      "anchor":  "      if(P.equipped===_rg2||P.equippedSec===_rg2){ say2(\u0027That gun is already equipped.\u0027); return; }",
+                      "replacement":  "      if(P.equipped===_rg2||P.equippedSec===_rg2){ say2(\u0027ALREADY EQUIPPED\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "      if(!P.hotAssign||P.hotAssign[_bs]!==key){ say2(\u0027That item is no longer on that key.\u0027); return; }",
+                      "replacement":  "      if(!P.hotAssign||P.hotAssign[_bs]!==key){ say2(\u0027NO LONGER ON THAT KEY\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "          say2(\u0027Backpack is full at \u0027+DEPLOY_SLOTS+\u0027.\u0027);",
+                      "replacement":  "          say2(\u0027BACKPACK FULL  \\u00b7  \u0027+DEPLOY_SLOTS+\u0027 OF \u0027+DEPLOY_SLOTS);"
+                  },
+                  {
+                      "anchor":  "    if(from!==\u0027stash\u0027) return;\n    if(!key||!ITEMS[key]) return;\n    var live=stageKitLive();\n    if(live.length\u003e=DEPLOY_SLOTS){ say2(\u0027Backpack is full at \u0027+DEPLOY_SLOTS+\u0027.\u0027); return; }",
+                      "replacement":  "    if(from!==\u0027stash\u0027) return;\n    if(!key||!ITEMS[key]) return;\n    var live=stageKitLive();\n    if(live.length\u003e=DEPLOY_SLOTS){ say2(\u0027BACKPACK FULL  \\u00b7  \u0027+DEPLOY_SLOTS+\u0027 OF \u0027+DEPLOY_SLOTS); return; }"
+                  },
+                  {
+                      "anchor":  "    var live=stageKitLive();\n    if(live.length\u003e=DEPLOY_SLOTS){ say2(\u0027Backpack is full at \u0027+DEPLOY_SLOTS+\u0027.\u0027); return; }",
+                      "replacement":  "    var live=stageKitLive();\n    if(live.length\u003e=DEPLOY_SLOTS){ say2(\u0027BACKPACK FULL  \\u00b7  \u0027+DEPLOY_SLOTS+\u0027 OF \u0027+DEPLOY_SLOTS); return; }"
+                  },
+                  {
+                      "anchor":  "        if(live.length\u003e=DEPLOY_SLOTS){ say2(\u0027Backpack is full at \u0027+DEPLOY_SLOTS+\u0027.\u0027); return; }",
+                      "replacement":  "        if(live.length\u003e=DEPLOY_SLOTS){ say2(\u0027BACKPACK FULL  \\u00b7  \u0027+DEPLOY_SLOTS+\u0027 OF \u0027+DEPLOY_SLOTS); return; }"
+                  },
+                  {
+                      "anchor":  "    if(live.length\u003e=DEPLOY_SLOTS) return \u0027Backpack is full at \u0027+DEPLOY_SLOTS+\u0027, so there is no room to carry that.\u0027;",
+                      "replacement":  "    if(live.length\u003e=DEPLOY_SLOTS) return \u0027BACKPACK FULL  \\u00b7  \u0027+DEPLOY_SLOTS+\u0027 OF \u0027+DEPLOY_SLOTS;"
+                  },
+                  {
+                      "anchor":  "    if(live.length\u003e=DEPLOY_SLOTS){ say2(\u0027BACKPACK FULL  \\u00b7  \u0027+DEPLOY_SLOTS+\u0027 OF \u0027+DEPLOY_SLOTS); return; }\n    var held=0; for(var i=0;i\u003cP.stash.length;i++) if(P.stash[i]===key) held++;\n    var picked=0; for(var j=0;j\u003clive.length;j++) if(live[j]===key) picked++;\n    if(picked\u003e=held){ say2(\u0027You only have \u0027+held+\u0027 of those.\u0027); return; }",
+                      "replacement":  "    if(live.length\u003e=DEPLOY_SLOTS){ say2(\u0027BACKPACK FULL  \\u00b7  \u0027+DEPLOY_SLOTS+\u0027 OF \u0027+DEPLOY_SLOTS); return; }\n    var held=0; for(var i=0;i\u003cP.stash.length;i++) if(P.stash[i]===key) held++;\n    var picked=0; for(var j=0;j\u003clive.length;j++) if(live[j]===key) picked++;\n    if(picked\u003e=held){ say2(\u0027NONE LEFT  \\u00b7  \u0027+held+\u0027 HELD\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "    if(picked\u003e=held){ say2(\u0027You only have \u0027+held+\u0027 of those.\u0027); return; }",
+                      "replacement":  "    if(picked\u003e=held){ say2(\u0027NONE LEFT  \\u00b7  \u0027+held+\u0027 HELD\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "        if(got\u003e=held){ say2(\u0027You only have \u0027+held+\u0027 of those.\u0027); return; }",
+                      "replacement":  "        if(got\u003e=held){ say2(\u0027NONE LEFT  \\u00b7  \u0027+held+\u0027 HELD\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "    if(got\u003e=held){ say2(\u0027You only have \u0027+held+\u0027 of those.\u0027); return; }",
+                      "replacement":  "    if(got\u003e=held){ say2(\u0027NONE LEFT  \\u00b7  \u0027+held+\u0027 HELD\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "  dropzone(document.getElementById(\u0027floordrop\u0027),function(key,from){ if(from===\u0027rack\u0027){ say2(\u0027Put the gun in the stash first.\u0027); return; } if(from===\u0027kit\u0027){ try{ unpackSome(key,1); }catch(_u){} } hubDropMake(key); });   // v18.30: drag to the floor",
+                      "replacement":  "  dropzone(document.getElementById(\u0027floordrop\u0027),function(key,from){ if(from===\u0027rack\u0027){ say2(\u0027MOVE THE GUN TO THE STASH FIRST\u0027); return; } if(from===\u0027kit\u0027){ try{ unpackSome(key,1); }catch(_u){} } hubDropMake(key); });   // v18.30: drag to the floor"
+                  },
+                  {
+                      "anchor":  "        say2(\u0027Contract paid: \u0027+\u0027$\u0027+r.pay.toLocaleString()+\u0027\u0027+(r.gear?\u0027 and \u0027+r.gear:\u0027\u0027)+\u0027.\u0027);",
+                      "replacement":  "        say2(\u0027CONTRACT PAID  \\u00b7  +\u0027+\u0027$\u0027+r.pay.toLocaleString()+(r.gear?\u0027 + \u0027+String(r.gear).toUpperCase():\u0027\u0027));"
+                  },
+                  {
+                      "anchor":  "  if(!got){ say2(\u0027Nothing finished to claim.\u0027); return; }",
+                      "replacement":  "  if(!got){ say2(\u0027NOTHING TO CLAIM\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "  say2(got+\u0027 contract\u0027+(got===1?\u0027\u0027:\u0027s\u0027)+\u0027 paid: \u0027+\u0027$\u0027+total.toLocaleString()+",
+                      "replacement":  "  say2(got+\u0027 CONTRACT\u0027+(got===1?\u0027\u0027:\u0027S\u0027)+\u0027 PAID  \\u00b7  +\u0027+\u0027$\u0027+total.toLocaleString()+"
+                  },
+                  {
+                      "anchor":  "       (gear.length?(\u0027 and \u0027+gear.join(\u0027, \u0027)):\u0027\u0027)+\u0027.\u0027);",
+                      "replacement":  "       (gear.length?(\u0027 + \u0027+gear.join(\u0027, \u0027).toUpperCase()):\u0027\u0027));"
+                  },
+                  {
+                      "anchor":  "  say2(sold?(\u0027Sold \u0027+sold+\u0027 for \u0027+\u0027$\u0027+gained.toLocaleString()+\u0027.\u0027):\u0027Nothing tagged junk, and no loose salvage.\u0027);",
+                      "replacement":  "  say2(sold?(\u0027SOLD \u0027+sold+\u0027  \\u00b7  +\u0027+\u0027$\u0027+gained.toLocaleString()):\u0027NOTHING TO SELL  \\u00b7  TAG ITEMS AS JUNK FIRST\u0027);"
+                  },
+                  {
+                      "anchor":  "        if(r===\u0027ok\u0027) say2(W.name+\u0027 serviced. Clean again.\u0027);",
+                      "replacement":  "        if(r===\u0027ok\u0027) say2(String(W.name).toUpperCase()+\u0027 SERVICED\u0027);"
+                  },
+                  {
+                      "anchor":  "        else if(r===\u0027credits\u0027) say2(\u0027Not enough credits for that.\u0027);",
+                      "replacement":  "        else if(r===\u0027credits\u0027) say2(\u0027NOT ENOUGH CREDITS\u0027);"
+                  },
+                  {
+                      "anchor":  "        else if(r===\u0027parts\u0027) say2(\u0027Merrit needs \u0027+C.parts+\u0027x \u0027+ITEMS[C.part].name+\u0027.\u0027);",
+                      "replacement":  "        else if(r===\u0027parts\u0027) say2(\u0027MERRIT NEEDS \u0027+C.parts+\u0027x \u0027+String(ITEMS[C.part].name).toUpperCase());"
+                  },
+                  {
+                      "anchor":  "  if(!P.merc){ say2(\u0027Nobody is hired.\u0027); return; }",
+                      "replacement":  "  if(!P.merc){ say2(\u0027NOBODY IS HIRED\u0027); return; }"
+                  },
+                  {
+                      "anchor":  "    say2(_mn+\u0027 is off the job. The fee is spent.\u0027);",
+                      "replacement":  "    say2(String(_mn).toUpperCase()+\u0027 DISMISSED  \\u00b7  FEE NOT REFUNDED\u0027);"
+                  },
+                  {
+                      "anchor":  "  gi.yes=1; netGiftSend(gi.from,{op:\u0027yes\u0027,id:gi.id,hub:1}); say2(\u0027Taking it.\u0027);",
+                      "replacement":  "  gi.yes=1; netGiftSend(gi.from,{op:\u0027yes\u0027,id:gi.id,hub:1}); say2(\u0027ACCEPTED\u0027);"
+                  },
+                  {
+                      "anchor":  "    say2(\u0027Gave \u0027+(ITEMS[go.k]?ITEMS[go.k].name:go.k)+\u0027 to \u0027+nm+\u0027.\u0027);",
+                      "replacement":  "    say2(\u0027GAVE \u0027+String(ITEMS[go.k]?ITEMS[go.k].name:go.k).toUpperCase()+\u0027 TO \u0027+String(nm).toUpperCase());"
+                  },
+                  {
+                      "anchor":  "  if(m.op===\u0027no\u0027){ if(H.in\u0026\u0026H.in.id===m.id) H.in=null; if(H.out\u0026\u0026H.out.id===m.id) H.out=null; say2(nm+\u0027 could not hand it over.\u0027); return \u0027no\u0027; }",
+                      "replacement":  "  if(m.op===\u0027no\u0027){ if(H.in\u0026\u0026H.in.id===m.id) H.in=null; if(H.out\u0026\u0026H.out.id===m.id) H.out=null; say2(\u0027TRADE FAILED  \\u00b7  \u0027+String(nm).toUpperCase()+\u0027 COULD NOT HAND IT OVER\u0027); return \u0027no\u0027; }"
+                  },
+                  {
+                      "anchor":  "    try{ say2(\u0027Run reports will be sent as each raid ends. Settings can turn it off.\u0027); }catch(_sy){}",
+                      "replacement":  "    try{ say2(\u0027RUN REPORTS ON  \\u00b7  SENT AS EACH RAID ENDS  \\u00b7  TURN OFF IN SETTINGS\u0027); }catch(_sy){}"
+                  },
+                  {
+                      "anchor":  "    try{ say2(\u0027The welcome pack is in your stash.\u0027); }catch(e2){}",
+                      "replacement":  "    try{ say2(\u0027WELCOME PACK ADDED TO YOUR STASH\u0027); }catch(e2){}"
+                  },
+                  {
+                      "anchor":  "  say2(\u0027Dropped \u0027+it.name+\u0027 on the floor.\u0027+((s\u003e=0)?(\u0027 \u0027+(netSeatName(s)||\u0027Your teammate\u0027)+\u0027 can pick it up.\u0027):\u0027\u0027));",
+                      "replacement":  "  say2(\u0027DROPPED \u0027+String(it.name).toUpperCase()+((s\u003e=0)?(\u0027  \\u00b7  FOR \u0027+String(netSeatName(s)||\u0027your teammate\u0027).toUpperCase()):\u0027\u0027));"
+                  },
+                  {
+                      "anchor":  "function claimAllTiers(){",
+                      "replacement":  "// v23.xx (hubvoice), HIS ANSWER 48 (2026-10-12): \"yes just try to use verbiage consistent with a AAA game in all instances\". THE UNDERCROFT ANSWERS\n// IN THE HUD VOICE. The answer line under the windows (say2, #hubtoast) spoke in whole explaining sentences with a closing period,\n// while the raid speaks in caps callouts. Its lines\n// for the stash, the backpack, the tactical belt, the bench, contracts, rewards, hires, trades and saving are now short caps\n// callouts with a detail after a dot, no closing period. Item and player names show in caps. Vendor lines, drink lines and every\n// line of his own (TXSHIP) are untouched; the words a check reads by their keys (Bought, key N, Hold) are left for another pass.\nfunction claimAllTiers(){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his answer 48 (2026-10-12): the Undercroft answer line speaks in the HUD voice: short caps callouts (NOTHING TO SELL, NOBODY IS HIRED, BACKPACK FULL), and the old explaining sentences are gone from the game\u0027,\n   run:function(){\n     var bad=[], st0=(P.stash||[]).slice(), jk0=JSON.stringify(P.junk||{}), cr0=P.credits, xp0=P.xp, mc0=P.merc, say0=(typeof HUBSAY!==\u0027undefined\u0027)?HUBSAY:null, tm=document.getElementById(\u0027tradermodal\u0027), tmOn=tm\u0026\u0026tm.classList.contains(\u0027on\u0027), b, src=\u0027\u0027, olds, i;\n     try{\n       __topClear();\n       b=document.getElementById(\u0027sellall\u0027);\n       if(!b||typeof b.onclick!==\u0027function\u0027) return \u0027SKIP: no sell button here\u0027;\n       P.stash=[]; P.junk={}; HUBSAY=\u0027\u0027;\n       b.onclick();\n       if(String(HUBSAY)!==\u0027NOTHING TO SELL  \\u00b7  TAG ITEMS AS JUNK FIRST\u0027) bad.push(\u0027selling with nothing to sell said \u0027+JSON.stringify(HUBSAY));\n       b=document.getElementById(\u0027merc\u0027+\u0027clear\u0027);\n       if(b\u0026\u0026typeof b.onclick===\u0027function\u0027){\n         P.merc=null; HUBSAY=\u0027\u0027;\n         b.onclick();\n         if(String(HUBSAY)!==\u0027NOBODY IS HIRED\u0027) bad.push(\u0027dismissing with nobody hired said \u0027+JSON.stringify(HUBSAY));\n       }\n       for(i=0;i\u003cdocument.scripts.length;i++) src+=document.scripts[i].text||\u0027\u0027;\n       olds=[\u0027Backpack is\u0027+\u0027 full at\u0027,\u0027You only\u0027+\u0027 have \u0027,\u0027That gun is\u0027+\u0027 already equipped\u0027,\u0027Nothing tagged\u0027+\u0027 junk, and\u0027,\u0027Not enough\u0027+\u0027 credits for that\u0027,\u0027Nothing ready\u0027+\u0027 to claim\u0027,\u0027Nothing finished\u0027+\u0027 to claim\u0027,\u0027is off\u0027+\u0027 the job\u0027,\u0027Taking\u0027+\u0027 it.\u0027,\u0027The welcome pack\u0027+\u0027 is in your stash\u0027,\u0027Run reports will be\u0027+\u0027 sent as each raid\u0027,\u0027SAVING IS\u0027+\u0027 FAILING on\u0027];\n       for(i=0;i\u003colds.length;i++) if(src.indexOf(olds[i])\u003e=0) bad.push(\u0027the game still says \u0027+JSON.stringify(olds[i]+\u0027...\u0027));\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       P.stash=st0; P.junk=JSON.parse(jk0); P.credits=cr0; P.xp=xp0; P.merc=mc0;\n       try{ if(say0!==null) HUBSAY=say0; }catch(_s){}\n       try{ if(tm){ if(tmOn) tm.classList.add(\u0027on\u0027); else tm.classList.remove(\u0027on\u0027); } }catch(_t){}\n       try{ var aq=document.getElementById(\u0027askcard\u0027)||document.getElementById(\u0027askmodal\u0027); if(aq\u0026\u0026aq.classList.contains(\u0027on\u0027)\u0026\u0026typeof ASKYES!==\u0027undefined\u0027) ASKYES=null; }catch(_a){}\n       try{ saveProfile(); renderHub(); }catch(_r){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
