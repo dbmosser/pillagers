@@ -1,0 +1,7 @@
+v24.12: the warden redesign
+
+The Warden is redrawn: a hunched gunmetal walker-tank with rust plates, a cannon arm and a visor that shows its mood.
+
+Check 24.12. Fails on v24.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

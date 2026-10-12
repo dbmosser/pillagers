@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.12 - THE WARDEN REDESIGN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines, gritty and grounded like ARC Raiders, silhouettes first. The Warden was a purple dustbin on treads with a yellow letterbox, purple is the elite colour, its hull never turned and its tread hardly moved. It is now a hunched walker-tank in gunmetal with rust-red armour plates: tracks whose links run as it moves, a low visor slit that glows dim white at rest, amber when it investigates, red when it hunts and orange when it vents, a cannon arm on a hydraulic piston, a launcher pod and exhaust stacks on its back, and the whole hull turns to face you. Elite Wardens wear brass trim and a brass antenna. Drawn only: its size, its weak points and the fight are unchanged.
+
+MEASURED. Check 24.12 passes, and fails on v24.11.
 ## v24.11 - THE CRAWLER, REDRAWN
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of every character and machine, gritty and grounded like ARC Raiders, silhouettes first. The Crawler was a red bench: six legs hanging straight down under a flat red box, no knees, nothing insect about it, its body the same red as the enemy team colour, and its three eyes lost in one glow. It is redrawn: a low shell of three overlapping rust-brown segments, each lit on top with a dark seam behind it; a gunmetal sensor head with two mandible blades; three separate eyes that show its mood (dim white idle, amber suspicious, red hunting); and six jointed legs splayed out front and back with the knees above the shell, stepping three at a time like an insect, so a walking Crawler visibly scuttles. On a rush the shell drops low and the front legs reach for you. An elite wears brass shell edges and a fourth eye. Nothing about play changes: same size, same shadow.
