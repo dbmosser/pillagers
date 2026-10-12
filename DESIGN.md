@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.10 - THE SENTRY, REDRAWN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of every character and machine, gritty and grounded like ARC Raiders, silhouettes first. The Sentry was a grey filing cabinet on a skateboard: no dark outline, so on a dark floor it melted away and only its glows showed; one flat grey; a thin single barrel; and an amber eye even when it had seen nothing. It is redrawn: a dark outline round the tread, hull, head and gun; tread teeth that run as it rolls; a lit top and left edge with the right side in shade, so it has volume; a sloped front plate on the side it faces; two yellow hazard chevrons; rivets, seams and chipped paint; a camera head on a mast with a round lens that tells you its mood (dim white idle, amber suspicious, red hunting, orange when its vent is overheated); a whip antenna; and a twin-barrel gun under a cooling shroud. The whole body turns to face where it is going. An elite wears a brass edge and a second antenna. Nothing about play changes: same size, same shadow, same weak points.
+
+MEASURED. Check 24.10 passes, and fails on v24.09.
 ## v24.09 - 3, 2, 1, GO!
 
 Co-op hunt while he was away. His answer 18 (2026-10-12): a 3-2-1 GO countdown, and gameplay exactly the same in demo and career. Every raid and every demo run now opens on a count: 3, 2, 1 big in the centre over a light shade, a short low beep on each, then GO! in amber with a high beep. Nothing moves until GO: the clock, the machines and you are held, so nothing can shoot you before you have your bearings. A teammate who joins a raid already running comes straight in with no count, and the demo re-drop after a death keeps its own DROPPING IN hold.

@@ -1,0 +1,7 @@
+v24.10: the sentry, redrawn
+
+The Sentry is redrawn: outlined, lit, a camera eye that shows its mood, twin barrels.
+
+Check 24.10. Fails on v24.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
