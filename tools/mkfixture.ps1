@@ -6061,6 +6061,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.25',what:'his #50 (UI redesign ui5b, from the 4K title shot): the title fits the screen with its padding (a column that only just fits without its padding is zoomed until the whole title, padding and all, needs no scrolling), and the browser ResizeObserver loop notice is not logged as a crash',
+   run:function(){
+     if(typeof titleFit!=='function') return 'SKIP: no title fit here';
+     var bad=[], ti=document.getElementById('title'), col=ti&&ti.querySelector('.titlecol'), was, f=document.createElement('div'), n0, ev;
+     if(!ti||!col) return 'SKIP: no title column here';
+     was=ti.classList.contains('on');
+     try{
+       ti.classList.add('on'); ti.style.zoom=1;
+       // a column that just fits the screen without its padding: the old fit left it alone and the padding ran off the bottom
+       f.style.cssText='height:'+Math.max(0,Math.floor((window.innerHeight||1080)*0.985/menuScale())-5-col.scrollHeight)+'px'; col.appendChild(f);
+       titleFit();
+       if(ti.scrollHeight>ti.clientHeight+1) bad.push('a tall title still scrolls: '+ti.scrollHeight+' in '+ti.clientHeight);
+       if(!Array.isArray(P.crashes)) P.crashes=[];
+       n0=JSON.stringify(P.crashes);
+       ev=new ErrorEvent('error',{message:'ResizeObserver loop completed with undelivered notifications.'});
+       window.dispatchEvent(ev);
+       if(JSON.stringify(P.crashes)!==n0) bad.push('the ResizeObserver loop notice was logged as a crash');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ col.removeChild(f); }catch(_r){} if(!was) ti.classList.remove('on'); try{ titleFit(); }catch(_t){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.24',what:'sprite program spr11 (the Bulwark redesign): its slab is dark gunmetal, darker than the human armour steel (#55606b), and the slab stands on the ground inside its shadow instead of hanging below it',
    run:function(){
      if(typeof drawBulwarkS!=='function') return 'SKIP: no bulwark painter';

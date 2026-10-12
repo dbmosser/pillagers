@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.25 - THE TITLE FITS A 4K SCREEN, NO FALSE ERROR
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50), and today: take pictures and make sure the menus actually look good. The 4K picture of the title showed two faults. The bottom of the title ran off the screen, so CREATE A NEW SAVE was cut in half: the title is shrunk to fit a big screen, and the fit left out the margin round it. It counts the margin now. And every 4K title said ERROR SAVED TO YOUR RUN REPORT: the browser posts a harmless notice when the title resizes itself inside its own resize watcher, and the crash catcher logged it as a crash. The resize now waits a frame, and that notice is no longer a crash.
+
+MEASURED. Check 24.25 passes, and fails on v24.24.
 ## v24.24 - THE BULWARK REDESIGN
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines, silhouettes first. The Bulwark shield was light blue-grey, the same steel as human armour, the body behind it a dark lozenge on two pebbles, and the shield hung below its own shadow. Now it is a squat walker on two stompy feet that step as it moves, a hunched body set back behind the shield with one sensor eye on top that shows its mood, and a dark gunmetal shield with rust edges, a yellow and black chevron band along the top, rivets and a viewing slit that glows with the eye. The shield stands on the ground and keeps its chevrons up whichever way it turns. Elite Bulwarks have a brass shield edge. Drawn only: its size, its shield and its weak back are unchanged.

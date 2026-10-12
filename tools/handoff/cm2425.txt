@@ -1,0 +1,7 @@
+v24.25: the title fits a 4k screen, no false error
+
+The title fits a 4K screen with nothing cut off, and it no longer says ERROR SAVED TO YOUR RUN REPORT when it opens.
+
+Check 24.25. Fails on v24.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
