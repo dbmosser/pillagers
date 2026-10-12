@@ -626,6 +626,224 @@ window.__shot4k=function(name){
   name=String(name||'gfx_shot').replace(/[^A-Za-z0-9_.-]/g,'_'); if(!/\.png$/.test(name)) name+='.png';
   return fetch('http://localhost:8779/'+encodeURIComponent(name),{method:'POST',body:url.slice(url.indexOf(',')+1)}).then(function(r){ return r.text(); }, function(e){ return 'sink not reached: '+e; });
 };
+// 2026-10-12 (spr0), the sprite program (tools/handoff/research/sprites-design-2026-10-12.md). __spriteSheet(o): every character and
+// machine kind drawn large in a labelled grid on a plain mid-grey ground, through the game's OWN draw functions, with wc swapped to an
+// offscreen canvas in try/finally (G.t, G.deathAnims and wc are put back). o: {page: 'humans' | 'people' | 'machinesA' | 'machinesB' |
+// 'boss' | 'playsize' (default 'humans'), w (3840), h (2160), z (6, world units to pixels), bg ('#7a7d80'), fmt ('jpeg' or 'png'),
+// q (0.92)}. Stages a COLD STORAGE raid when none is live (and ends it after). Returns a data URL, or a string starting 'ERR'.
+// Each cell that throws is drawn as a red cross with the message, and the list of throws is on window.__spriteSheetErr.
+// Cosmetic tooling only: no rnd, rr, ri or pick; G.t is set per cell for fixed pulse phases and put back.
+window.__spriteSheet=function(o){
+  o=o||{};
+  var page=o.page||'humans', Wd=o.w||3840, Hd=o.h||2160, Z=o.z||6, bg=o.bg||'#7a7d80', fmt=o.fmt||'jpeg';
+  var c=document.createElement('canvas'); c.width=Wd; c.height=Hd; var x=c.getContext('2d'); if(!x) return 'ERR no canvas';
+  var w0=wc, staged=false, t0, da0, errs=[], url;
+  if(typeof G==='undefined'||!G||G.over||!G.map){ try{ __gfxStage({}); staged=true; }catch(_st){} }
+  if(typeof G==='undefined'||!G) return 'ERR no raid could be staged';
+  t0=G.t; da0=G.deathAnims;
+  x.fillStyle=bg; x.fillRect(0,0,Wd,Hd);
+  var LBL=Math.max(14,Math.round(Hd/84));
+  function wep(id){ return (WEAPONS&&WEAPONS[id])?WEAPONS[id]:null; }
+  function look(base,over){ var r={}, k; for(k in base) r[k]=base[k]; if(over) for(k in over) r[k]=over[k]; return r; }
+  // one cell: (ix,iy) of an nx by ny grid in the rect R; feet at fy (0..1 of the cell height); fn draws at world (0,0)
+  function cell(R,nx,ny,ix,iy,label,fn,o2){
+    o2=o2||{};
+    var cw=R.w/nx, ch=R.h/ny, cx=R.x+(ix+0.5)*cw+(o2.dx||0)*(o2.z||Z), fy=R.y+iy*ch+ch*(o2.fy||0.80), z2=o2.z||Z;
+    x.save();
+    x.setTransform(1,0,0,1,0,0);
+    x.strokeStyle='rgba(0,0,0,.18)'; x.lineWidth=1; x.strokeRect(R.x+ix*cw+0.5,R.y+iy*ch+0.5,cw-1,ch-1);
+    x.beginPath(); x.rect(R.x+ix*cw,R.y+iy*ch,cw,ch); x.clip();
+    x.setTransform(z2,0,0,z2,cx,fy);
+    wc=x; G.t=(o2.t===undefined)?10:o2.t;
+    try{ fn(); }
+    catch(e){
+      errs.push(label+': '+String(e&&e.message||e));
+      x.setTransform(1,0,0,1,0,0); x.strokeStyle='#d02020'; x.lineWidth=4;
+      x.beginPath(); x.moveTo(cx-40,fy-80); x.lineTo(cx+40,fy); x.moveTo(cx+40,fy-80); x.lineTo(cx-40,fy); x.stroke();
+      x.fillStyle='#d02020'; x.font=Math.round(LBL*0.7)+'px monospace'; x.fillText(String(e&&e.message||e).slice(0,60),R.x+ix*cw+8,fy+30);
+    }
+    finally{ wc=w0; G.t=t0; G.deathAnims=da0; }
+    x.restore();
+    x.save(); x.setTransform(1,0,0,1,0,0); x.globalAlpha=1; x.globalCompositeOperation='source-over';
+    x.font='600 '+LBL+'px "Barlow Condensed","Arial Narrow",sans-serif'; x.textAlign='left'; x.textBaseline='top';
+    x.fillStyle='#101214'; x.fillText(label,R.x+ix*cw+10,R.y+iy*ch+8);
+    x.restore();
+  }
+  function rowHead(R,ny,iy,label){
+    var ch=R.h/ny; x.save(); x.setTransform(1,0,0,1,0,0);
+    x.font='700 '+Math.round(LBL*1.15)+'px "Barlow Condensed","Arial Narrow",sans-serif'; x.fillStyle='#0b0c0d'; x.textBaseline='middle';
+    x.translate(R.x-LBL*0.9,R.y+iy*ch+ch/2); x.rotate(-Math.PI/2); x.textAlign='center'; x.fillText(label,0,0); x.restore();
+  }
+  function title(s){ x.save(); x.setTransform(1,0,0,1,0,0); x.font='700 '+Math.round(LBL*1.3)+'px "Barlow Condensed","Arial Narrow",sans-serif';
+    x.fillStyle='#0b0c0d'; x.textBaseline='top'; x.fillText(s,LBL*2.2,10); x.restore(); }
+  // the dispatch in render2D for one machine: the elite ring, the kind's own draw, the weak points (copied, so the sheet shows what play shows)
+  function drawKind(e){
+    if(e.elite){
+      var _ep=0.55+0.45*Math.sin(G.t*3.1+e.x*0.02);
+      wc.save(); wc.globalCompositeOperation='lighter';
+      wc.strokeStyle='rgba(208,140,232,'+(0.28+0.24*_ep).toFixed(3)+')'; wc.lineWidth=2;
+      wc.beginPath(); wc.ellipse(e.x,e.y+2,e.r*1.2,Math.max(3,e.r*0.5),0,0,6.2832); wc.stroke(); wc.restore();
+    }
+    if(e.kind==='choir') drawChoirS(e);
+    else if(e.kind==='warden') drawWardenAt(e);
+    else if(e.kind==='sentry') drawSentryS(e);
+    else if(e.kind==='crawler') drawCrawlerS(e);
+    else if(e.kind==='snitch') drawSnitchS(e);
+    else if(e.kind==='listener') drawListenerS(e);
+    else if(e.kind==='howler') drawHowlerS(e);
+    else if(e.kind==='bulwark') drawBulwarkS(e);
+    else if(e.kind==='peddler') drawPeddlerS(e);
+    else if(e.kind==='stray'){
+      drawOp(e.x,e.y,e.face,0,e.coat,0,0,'crouchnone',0,{moving:false,sprint:false,ads:false,hurt:e.hitT,bulk:0});
+      if(!e.helped){
+        var sp2=0.6+0.4*Math.sin(G.t*2.4+e.x*0.01);
+        wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.30*sp2;
+        var sgr=wc.createRadialGradient(e.x,e.y-14,2,e.x,e.y-14,40); sgr.addColorStop(0,'#7fc4a0'); sgr.addColorStop(1,'rgba(0,0,0,0)');
+        wc.fillStyle=sgr; wc.beginPath(); wc.arc(e.x,e.y-14,40,0,6.2832); wc.fill(); wc.restore();
+      }
+    }
+    var WL=(typeof weakOf==='function')?weakOf(e):null, wk;
+    if(WL) for(wk=0;wk<WL.length;wk++){
+      var WW=WL[wk], wpt=weakPos(e,WW), hot=(WW.eff==='overheat'&&e.overheat>0), pls=hot?1:(0.62+0.38*Math.sin(G.t*3.1+wk*2.1+e.x*0.01));
+      wc.save(); wc.globalCompositeOperation='lighter';
+      var wg=wc.createRadialGradient(wpt.x,wpt.y,1,wpt.x,wpt.y,WW.rad*2.4); wg.addColorStop(0,WW.c); wg.addColorStop(1,'rgba(0,0,0,0)');
+      wc.globalAlpha=(hot?0.85:0.42)*pls; wc.fillStyle=wg; wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*2.4,0,6.2832); wc.fill(); wc.restore();
+      wc.fillStyle='rgba(10,8,12,.75)'; wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.62,0,6.2832); wc.fill();
+      wc.fillStyle=WW.c; wc.globalAlpha=hot?1:0.80; wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.40,0,6.2832); wc.fill(); wc.globalAlpha=1;
+    }
+  }
+  var R0={sentry:22,crawler:15,snitch:11,listener:14,warden:30,choir:26,bulwark:24,howler:20,peddler:12,stray:11};
+  var HP0={sentry:150,crawler:52,snitch:38,listener:120,warden:900,choir:400,bulwark:260,howler:120,peddler:150,stray:70};
+  function mach(kind,over){
+    var e={kind:kind,x:0,y:0,r:R0[kind]||20,hp:HP0[kind]||100,maxhp:HP0[kind]||100,face:0,state:'patrol',step:0,legs:0,hitT:0,muzzle:0,
+           seenYou:false,overheat:0,wind:null,windup:null,cd:0,alert:0,tx:0,ty:0,name:kind.toUpperCase()};
+    if(kind==='listener') e.state='dormant';
+    if(kind==='peddler'){ e.coat='#d8a13a'; e.face=1.57; e.neutral=1;
+      e.stock=[{k:'bandage',sold:false},{k:'medkit',sold:false},{k:'ammobox',sold:false}]; }
+    if(kind==='stray'){ e.coat='#7a8a6a'; e.neutral=1; e.helped=0; e.face=0; }
+    if(over) for(var k in over) e[k]=over[k];
+    return e;
+  }
+  function death(kind,r,f){   // one frame of the death animation, f of the way through its 0.8 s
+    G.deathAnims=[{x:0,y:0,r:Math.max(8,Math.min(48,r||14)),face:0,c:(DEATH_COL&&DEATH_COL[kind])||'#555c64',t0:G.t-0.8*f,kind:kind}];
+    drawDeathAnims();
+  }
+  var BASE={hero:0,moving:false,sprint:false,ads:false,hurt:0,rl:0,bulk:0,own:{wep:wep('carbine')||wep('rifle')},
+            hair:'dark',cut:'crop',skin:'skinfair',eyes:'eyebrown',boots:'bootblack',pack:'packbrown'};
+  function op(st,mode,ph,face,muzzle,coat,pk){
+    var s=look(BASE,st);
+    if(s.own===BASE.own) s.own={wep:BASE.own.wep};
+    drawOp(0,0,face||0,ph||0,coat||'#4a5b7d',pk||0,muzzle||0,mode||'',0,s);
+  }
+  var M={x:LBL*2.2,y:LBL*3.2}, R={x:M.x,y:M.y,w:Wd-M.x-10,h:Hd-M.y-10}, i, j;
+  try{
+    if(page==='humans'){
+      title('HUMANS: drawOp by BUILD (pillager look, coat #4a5b7d, carbine) at '+Z+'x world scale');
+      var B=['lean','broad','curved'], COLS=[
+        ['IDLE',function(b){ op({build:b},'',0); }],
+        ['WALK A',function(b){ op({build:b,moving:true},'',0.9); }],
+        ['WALK B',function(b){ op({build:b,moving:true},'',2.6); }],
+        ['SPRINT',function(b){ op({build:b,moving:true,sprint:true},'',1.2); }],
+        ['AIM + FIRE',function(b){ op({build:b,ads:true,recoil:1},'',0,0,0.05); }],
+        ['RELOAD',function(b){ op({build:b,rl:0.55},'',0); }],
+        ['HURT',function(b){ op({build:b,hurt:0.16,hitDir:Math.PI},'',0); }],
+        ['CROUCH',function(b){ op({build:b},'crouch',0); }],
+        ['DOWNED',function(b){ op({build:b},'down',0); }],
+        ['FACING LEFT',function(b){ op({build:b,cut:(b==='curved'?'long':'crop')},'',0,Math.PI); }]];
+      for(i=0;i<B.length;i++){ rowHead(R,B.length,i,B[i].toUpperCase()); for(j=0;j<COLS.length;j++) (function(b,cdef){ cell(R,COLS.length,B.length,j,i,cdef[0],function(){ cdef[1](b); }); })(B[i],COLS[j]); }
+    } else if(page==='people'){
+      title('PEOPLE: the player, pillagers, hires, teammates, the Undercroft, the Peddler, the Survivor at '+Z+'x');
+      var PC=[
+        ['PLAYER (hero)',function(){ drawOp(0,0,0,0,'#242832',0,0,'',0,{hero:1,own:G.player,team:'ally',moving:false,sprint:false,ads:false,hurt:0,bulk:0,rl:0}); }],
+        ['PLAYER ADS FIRE',function(){ drawOp(0,0,-0.35,0,'#242832',0,0.05,'',0,{hero:1,own:G.player,team:'ally',moving:false,sprint:false,ads:true,recoil:1,hurt:0,bulk:0,rl:0}); }],
+        ['PILLAGER SMG',function(){ op({team:'foe',own:{wep:wep('smg')},hat:'beanie'},'',0,0,0,'#a8443a'); }],
+        ['PILLAGER ARMOUR 1',function(){ op({team:'foe',bulk:1,own:{wep:wep('shotgun')}},'',0,0,0,'#3f6b5e'); }],
+        ['PILLAGER ARMOUR 2',function(){ op({team:'foe',bulk:2,own:{wep:wep('lmg')},hat:'cap'},'',0,0,0,'#6a4c7a'); }],
+        ['PILLAGER ARMOUR 3',function(){ op({team:'foe',bulk:3,own:{wep:wep('dmr')},hat:'visor'},'',0,0,0,'#8a5a2e'); }],
+        ['ELITE PILLAGER',function(){
+           wc.save(); wc.globalCompositeOperation='lighter'; wc.strokeStyle='rgba(208,140,232,.52)'; wc.lineWidth=2;
+           wc.beginPath(); wc.ellipse(0,2,11*1.12*1.2,Math.max(3,11*1.12*0.5),0,0,6.2832); wc.stroke(); wc.restore();
+           op({team:'foe',bulk:2,own:{wep:wep('sniper')||wep('dmr')},hat:'hood'},'',0,0,0,'#4a6a8a'); }],
+        ['HIRE (merc)',function(){ op({team:'foe',own:{wep:wep('rifle')||wep('carbine')},hat:'band',merc:1},'',0,0,0,'#8a6a4a'); }],
+        ['PILLAGER, BAG FULL',function(){ op({team:'foe',own:{wep:wep('carbine')}},'',0,0,0,'#5a7a6a',1); }]];
+      var PC2=[
+        ['TEAMMATE (net)',function(){ var g={x:0,y:0,f:0,bob:0,mv:0,sp:0,lk:{fit:'moss',build:'broad',hair:'dark',cut:'crop',skin:'skintan'},w:(WEAPONS.carbine?'carbine':'pistol')}; netUpDrawOne(g); }],
+        ['UNDERCROFT A',function(){ op({hat:'cap',build:'lean',own:{wep:null}},'none',0,0,0,'#5e3326'); }],
+        ['UNDERCROFT B',function(){ op({cut:'long',build:'curved',hair:'blonde',own:{wep:null}},'none',0,0,0,'#3f5136'); }],
+        ['UNDERCROFT C',function(){ op({hat:'phones',build:'broad',beard:'fullbeard',own:{wep:null}},'none',0,0,0,'#3d4450'); }],
+        ['PEDDLER',function(){ drawKind(mach('peddler')); },{fy:0.72}],
+        ['PEDDLER FLEEING',function(){ drawKind(mach('peddler',{fleeT:1,step:0.4,tx:-30,ty:0,x:20})); },{fy:0.72}],
+        ['SURVIVOR',function(){ drawKind(mach('stray')); }],
+        ['SURVIVOR HELPED',function(){ drawKind(mach('stray',{helped:1})); }],
+        ['PILLAGER DEATH .3s',function(){ death('raider',11,0.3); }]];
+      for(j=0;j<PC.length;j++) (function(d){ cell(R,PC.length,2,j,0,d[0],d[1],d[2]); })(PC[j]);
+      for(j=0;j<PC2.length;j++) (function(d){ cell(R,PC2.length,2,j,1,d[0],d[1],d[2]); })(PC2[j]);
+    } else if(page==='machinesA'||page==='machinesB'){
+      var K=(page==='machinesA')?['sentry','crawler','snitch','listener']:['warden','bulwark','howler','choir'];
+      var NM={sentry:'SENTRY',crawler:'CRAWLER',snitch:'CRIER',listener:'LISTENER',warden:'WARDEN',bulwark:'BULWARK',howler:'HOWLER',choir:'PILLBOX'};
+      title((page==='machinesA'?'MACHINES A':'MACHINES B')+' at '+Z+'x world scale (facing right)');
+      var MC=[
+        ['IDLE',function(k){ return mach(k); },10],
+        ['MOVE A',function(k){ return mach(k,{step:0.3,legs:0.6,state:(k==='listener'?'chase':'patrol')}); },10.21],
+        ['MOVE B',function(k){ return mach(k,{step:0.8,legs:2.2,state:(k==='listener'?'chase':'patrol')}); },10.47],
+        ['ALERT / HUNT',function(k){ return mach(k,{state:(k==='snitch'?'alarm':'chase'),seenYou:true,wind:(k==='snitch'?2:null)}); },10.05],
+        ['FIRING',function(k){ return mach(k,{state:'chase',seenYou:true,muzzle:0.08,windup:(k==='warden'?0.2:(k==='sentry'?0.1:null))}); },10.05],
+        ['HURT',function(k){ return mach(k,{hitT:0.14,state:'chase',seenYou:true}); },10],
+        ['ELITE',function(k){ var e=mach(k,{elite:1}); e.r=Math.round(e.r*1.12); e.hp=e.maxhp=Math.round(e.maxhp*2.2); return e; },10],
+        ['DAMAGED 30%',function(k){ var e=mach(k,{state:'chase',seenYou:true}); e.hp=Math.round(e.maxhp*0.3); return e; },10],
+        ['VENTING / OVERHEAT',function(k){ return mach(k,{overheat:2,state:'chase'}); },10],
+        ['DEATH .3s',null,10]];
+      for(i=0;i<K.length;i++){ rowHead(R,K.length,i,NM[K[i]]);
+        for(j=0;j<MC.length;j++) (function(k,d){
+          cell(R,MC.length,K.length,j,i,d[0],function(){ if(!d[1]) death(k,R0[k],0.3); else drawKind(d[1](k)); },{t:d[2],fy:(k==='snitch'?0.86:(k==='bulwark'?0.70:0.82)),dx:(k==='sentry'||k==='warden'?-5:0)});
+        })(K[i],MC[j]);
+      }
+    } else if(page==='boss'){
+      title('THE OVERSEER (warden r 44, drawn '+(44/30).toFixed(2)+'x) and the Warden beside it, at '+Z+'x');
+      var OC=[
+        ['OVERSEER IDLE',function(){ drawKind(mach('warden',{r:44,boss:1})); }],
+        ['OVERSEER HUNTING',function(){ drawKind(mach('warden',{r:44,boss:1,seenYou:true,state:'chase'})); },10.05],
+        ['OVERSEER FIRING',function(){ drawKind(mach('warden',{r:44,boss:1,seenYou:true,state:'chase',muzzle:0.08,windup:0.2})); },10.05],
+        ['OVERSEER HURT',function(){ drawKind(mach('warden',{r:44,boss:1,hitT:0.14,seenYou:true})); }],
+        ['OVERSEER 30%',function(){ var e=mach('warden',{r:44,boss:1,seenYou:true}); e.hp=Math.round(e.maxhp*0.3); drawKind(e); }],
+        ['WARDEN (r 30)',function(){ drawKind(mach('warden',{seenYou:true})); }]];
+      for(j=0;j<OC.length;j++) (function(d){ cell({x:R.x,y:R.y,w:R.w,h:R.h*0.62},OC.length,1,j,0,d[0],d[1],{t:d[2]===undefined?10:d[2],z:Z*0.72,dx:-8,fy:0.86}); })(OC[j]);
+      var HC=[['OVERSEER DEATH .2s',function(){ death('warden',44,0.2); }],['OVERSEER DEATH .5s',function(){ death('warden',44,0.5); }],
+              ['SENTRY DEATH .5s',function(){ death('sentry',22,0.5); }],['CRAWLER DEATH .5s',function(){ death('crawler',15,0.5); }]];
+      for(j=0;j<HC.length;j++) (function(d){ cell({x:R.x,y:R.y+R.h*0.62,w:R.w,h:R.h*0.38},HC.length,1,j,0,d[0],d[1],{z:Z*0.6,fy:0.7}); })(HC[j]);
+    } else if(page==='playsize'){
+      // the whole cast at play size: z=2 is a 4K TV at zoom 1, z=1 a 1080p laptop at zoom 1. Left half the plain grey, right half a
+      // dark floor tone close to COLD STORAGE at night, since that is where they are actually seen.
+      x.fillStyle='#24282b'; x.fillRect(Wd/2,0,Wd/2,Hd);
+      title('PLAY SIZE: top z=2 (4K TV, zoom 1), bottom z=1 (1080p, zoom 1); left grey, right dark floor');
+      var CAST=[
+        ['player',function(){ drawOp(0,0,0,0,'#242832',0,0,'',0,{hero:1,own:G.player,team:'ally',moving:false,sprint:false,ads:false,hurt:0,bulk:0,rl:0}); }],
+        ['pillager',function(){ op({team:'foe',own:{wep:wep('smg')}},'',0,Math.PI,0,'#a8443a'); }],
+        ['armour 3',function(){ op({team:'foe',bulk:3,own:{wep:wep('dmr')}},'',0,Math.PI,0,'#8a5a2e'); }],
+        ['curved',function(){ op({team:'foe',build:'curved',cut:'long',own:{wep:wep('rifle')}},'',0,Math.PI,0,'#3f6b5e'); }],
+        ['sentry',function(){ drawKind(mach('sentry',{face:Math.PI})); }],
+        ['crawler',function(){ drawKind(mach('crawler',{face:Math.PI})); }],
+        ['crier',function(){ drawKind(mach('snitch')); }],
+        ['listener',function(){ drawKind(mach('listener',{state:'chase'})); }],
+        ['warden',function(){ drawKind(mach('warden',{face:Math.PI})); }],
+        ['bulwark',function(){ drawKind(mach('bulwark',{face:Math.PI})); }],
+        ['howler',function(){ drawKind(mach('howler')); }],
+        ['pillbox',function(){ drawKind(mach('choir',{face:Math.PI})); }],
+        ['peddler',function(){ drawKind(mach('peddler')); }],
+        ['survivor',function(){ drawKind(mach('stray')); }]];
+      var halves=[{x:R.x,w:Wd/2-R.x-10},{x:Wd/2+10,w:Wd/2-20}], hz, hh;
+      for(hh=0;hh<2;hh++) for(hz=0;hz<2;hz++) for(j=0;j<CAST.length;j++) (function(d,H2,zz,row){
+        cell({x:H2.x,y:R.y+row*(R.h/2),w:H2.w,h:R.h/2},7,2,j%7,Math.floor(j/7),d[0],d[1],{z:zz,fy:0.85});
+      })(CAST[j],halves[hh],hz?1:2,hz);
+    } else return 'ERR unknown page '+page;
+    url=c.toDataURL(fmt==='png'?'image/png':'image/jpeg',o.q||0.92);
+  } finally {
+    wc=w0; G.t=t0; G.deathAnims=da0;
+    window.__spriteSheetErr=errs;
+    if(staged){ try{ __endRaid('abandon'); }catch(_er){} try{ __topClear(); }catch(_tc){} }
+  }
+  return url;
+};
 // Placement sanity audit, v2.86: counts of props sitting on ground they should
 // not, plus the culls makeMap already performed this raid.
 window.__placeAudit=function(){
