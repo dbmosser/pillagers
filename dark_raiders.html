@@ -1749,7 +1749,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.02';
+var VER='24.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2227,7 +2227,7 @@ function gunStats(w){
   var pel=w.pellets||1, bu=w.burst||1, per=(w.dmg||0)*pel*bu, rof=Math.max(1,w.rof||1), mag=w.mag||0, rl=w.reload||0, pulls=mag>0?mag/bu:0;
   var sus=mag>0?per*pulls/(pulls*rof/1000+rl/1000):per*1000/rof;
   var hand=Math.round(100*(0.6*clamp(1-(w.spread||0)/0.2,0,1)+0.4*clamp(1-(rl-1200)/3000,0,1)));
-  return {id:w.id||'fists',name:w.name||'Bare Hands',tier:WTIER[w.id]||0,dmg:Math.round(per),rpm:Math.round(60000/rof),mag:mag,
+  return {id:w.id||'fists',name:w.name||'Bare Hands',tier:gunTierOf(w),dmg:Math.round(per),rpm:Math.round(60000/rof),mag:mag,
           rng:Math.round((w.rng||0)/10),hand:hand,dps:Math.round(sus)};
 }
 var GUNSTAT_ROWS=[['dmg','DMG'],['rpm','RATE'],['mag','MAG'],['rng','RANGE'],['hand','HANDLING']];
@@ -2376,6 +2376,45 @@ function rollFieldGun(gk){
   if(Q.tint) g.tint=Q.tint;
   g.name=Q.pre+base.name;
   g.q=Q.q; g.qRank=Q.rank;
+  return g;
+}
+// v23.xx, THE FORGE (2026-10-12), forge2. HIS IDEA: "a pack-a-punch mechanism to upgrade guns and add elemental damage would be
+// cool", then "in-raid only", "yeah that sounds great" and "if you extract with an upgraded gun you get to keep it". THE MODEL, pure:
+// no caller makes a forged gun yet (the station and the wheel are later builds). MK II (fk 1) is about +30 percent damage a round (a
+// pellet gun per pellet), a quarter more magazine (at least one more round) and a fifth off the reload; MK III (fk 2) is the same plus
+// an element (ELEM). Fire rate, spread, range, noise, pellets, burst and optic never change. forgeApply returns a fresh copy (WEAPONS
+// is never touched) and always works from the gun as it was before any forge (f0), so forging twice never compounds and a rolled
+// quality is kept. Guns never wear or jam: an upgrade never decays. The rank of a forged gun is its model tier plus its MK, so the stat
+// card verdict and the DEMO routing never call a MK III rifle a downgrade against a plain Support MG. No draw on any stream.
+var FORGE_COST=[2500,6000];
+var FORGE_MUL={dmg:1.30,mag:1.25,reload:0.80};
+var FORGE_GOLD='#ffc94a';
+var ELEM={
+  fire:{id:'fire',name:'FIRE',c:'#ff4f2a',snd:'elFire',w2:'BURN \u00b7 PANIC'},
+  shock:{id:'shock',name:'SHOCK',c:'#5aa8ff',snd:'elShock',w2:'CHAIN \u00b7 STUN'},
+  cryo:{id:'cryo',name:'CRYO',c:'#c8f0ff',snd:'elCryo',w2:'SLOW \u00b7 FREEZE'},
+  acid:{id:'acid',name:'ACID',c:'#9cff4a',snd:'elAcid',w2:'SHRED \u00b7 ANTI-MACHINE'}
+};
+var ELEM_ORDER=['fire','shock','cryo','acid'];
+function forgeMk(fk){ return fk===2?' MK III':(fk===1?' MK II':''); }
+function forgeName(gk,fk){ var b=WEAPONS[gk]; return (b?b.name:String(gk||''))+forgeMk(fk|0); }
+function gunTierOf(w){ return w?((WTIER[w.id]||0)+((w.fk===1||w.fk===2)?w.fk:0)):0; }
+function forgeApply(w,fk,el){
+  var base=w&&WEAPONS[w.id], g={}, k, s;
+  if(!base||!(base.mag>0)) return w;
+  fk=(fk===2)?2:((fk===1)?1:0);
+  for(k in w) g[k]=w[k];
+  s=w.f0||{dmg:w.dmg,mag:w.mag,reload:w.reload,name:w.name,tint:w.tint};
+  g.dmg=s.dmg; g.mag=s.mag; g.reload=s.reload; g.name=s.name; g.tint=s.tint;
+  delete g.fk; delete g.el; delete g.f0;
+  if(!fk) return g;
+  g.f0={dmg:s.dmg,mag:s.mag,reload:s.reload,name:s.name,tint:s.tint};
+  g.dmg=Math.round(s.dmg*FORGE_MUL.dmg*10)/10;
+  g.mag=Math.max(Math.ceil(s.mag*FORGE_MUL.mag),s.mag+1);
+  g.reload=Math.round(s.reload*FORGE_MUL.reload);
+  g.name=s.name+forgeMk(fk);
+  g.fk=fk;
+  if(fk===2&&ELEM[el]){ g.el=el; g.tint=ELEM[el].c; } else g.tint=FORGE_GOLD;
   return g;
 }
 var ITEMS={
@@ -37255,7 +37294,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.02: The what is new card names the new looks. Check 24.02 fails on v24.01',
+  now:'v24.03: The upgrade model for the Forge is in, ready for the station. Check 24.03 fails on v24.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -46170,7 +46209,7 @@ function arcadeGunLoot(ct,key,itm,found){
   function real(w){ return !!(w&&w.id&&w.id!=='fists'&&w.mag!==0); }
   function held(id){ return !!((p.wep&&p.wep.id===id)||(p.sec&&p.sec.id===id)); }
   function keyOf(ik){ var A=G.hotAssign||{}, kk; for(kk in A) if(A[kk]===ik) return +kk; return -1; }
-  st=real(p.sec)?(WTIER[p.sec.id]||0):-1;
+  st=real(p.sec)?gunTierOf(p.sec):-1;   // v23.xx (forge2): a forged stowed gun ranks by its MK too
   if(ft>st&&!held(gk)){
     if(real(p.sec)&&!p.secIssued&&ITEMS['gun_'+p.sec.id]){
       push=p.sec.id;
@@ -46188,8 +46227,8 @@ function arcadeGunLoot(ct,key,itm,found){
     if(found.qRank>=2) blip('pickGun');
     return {tag:'STOWED',line:(found.name+' stowed').toUpperCase()};
   }
-  if(real(p.wep)) worst=Math.min(worst,WTIER[p.wep.id]||0);
-  if(real(p.sec)) worst=Math.min(worst,WTIER[p.sec.id]||0);
+  if(real(p.wep)) worst=Math.min(worst,gunTierOf(p.wep));
+  if(real(p.sec)) worst=Math.min(worst,gunTierOf(p.sec));
   for(j=0;j<G.bag.length;j++){ it2=ITEMS[G.bag[j]]; if(it2&&it2.use==='gun'&&it2.gk) worst=Math.min(worst,WTIER[it2.gk]||0); }
   if(worst===99) worst=-1;
   if(ft>worst&&!held(gk)&&G.bag.indexOf(key)<0){

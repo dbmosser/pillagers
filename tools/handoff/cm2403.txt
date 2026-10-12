@@ -1,0 +1,7 @@
+v24.03: the forge: the upgrade model
+
+The upgrade model for the Forge is in, ready for the station.
+
+Check 24.03. Fails on v24.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
