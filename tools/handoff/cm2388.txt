@@ -1,0 +1,7 @@
+v23.88: sharp hud at any resolution
+
+Render resolution now softens only the world: the HUD and its text stay sharp at every setting.
+
+Check 23.88. Fails on v23.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

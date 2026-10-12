@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v23.88 - SHARP HUD AT ANY RESOLUTION
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it. Lowering Render resolution, or Auto resolution stepping down on a slow stretch, used to shrink the HUD along with the world, so every word, number and icon on the screen went soft. Now only the world is drawn at the lower resolution; the HUD always draws at the screen own pixels, so text stays sharp and the world alone pays for the speed. The Render resolution hint now says so. Nothing about play changes.
+
+MEASURED. Check 23.88 passes, and fails on v23.87.
 ## v23.87 - DEATH RECAP ON THE KIA AND EXTRACTED CARDS
 
 Co-op hunt while he was away. His feature 29 of 2026-10-12, the death recap, and his answer 33: it goes on the KIA and EXTRACTED screen. Every hit you take now remembers what it was fired from: a pillager by the gun he carries, a machine by its weapon (a Sentry by its autocannon, a Crawler by its claws), your own charge, the storm. The KILLED IN ACTION card now reads KILLED BY who WITH what, and both the KIA and the EXTRACTED card list DAMAGE TAKEN: the four things that hurt you most, with the damage and the number of hits. HOW IT WENT stays as it was.
