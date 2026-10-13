@@ -1494,6 +1494,7 @@ window.__meleeKey=function(){ return (typeof xCallKey==='function')?'KeyQ':'KeyF
 window.__meleeKeyName=function(){ return (typeof xCallKey==='function')?'q':'f'; };
 window.__legKey=function(){ return (typeof xCallKey==='function')?'F1':'KeyH'; };   // v25.67: the controls list (F1 from the key swap; H before)
 window.__healKey=function(){ return (typeof xCallKey==='function')?'KeyH':'KeyG'; };   // v25.67: the arcade quick heal (H from the key swap; G before)
+window.__holdTick=function(){ try{ if(typeof holdHTick==='function') holdHTick(0.016); }catch(e){} };   // v25.76 (holdhplate): H heals as the key comes up, on the next frame; this is that frame, a no-op on a build without the hold
 // v9.73: the crew search picker, callable on its own. The fan can otherwise only
 // be observed through a whole raid, which is how I twice guessed at why it folds
 // instead of driving the thing that folds it.
@@ -6282,10 +6283,10 @@ window.__REGRESS=[
        if(keyName('Mouse3')!=='MOUSE 4') bad.push('the side button is named '+keyName('Mouse3'));
        if(!keysBind('KeyH','Mouse3')) bad.push('a side mouse button could not be bound');
        g.bag.length=0; g.bag.push(nB); p.hp=50; p.healQ=0; p.prep=null; clr();
-       window.dispatchEvent(new MouseEvent('mousedown',{button:3,bubbles:true,cancelable:true})); window.dispatchEvent(new MouseEvent('mouseup',{button:3,bubbles:true,cancelable:true}));
+       window.dispatchEvent(new MouseEvent('mousedown',{button:3,bubbles:true,cancelable:true})); window.dispatchEvent(new MouseEvent('mouseup',{button:3,bubbles:true,cancelable:true})); __holdTick();
        if(!p.prep||p.prep.kind!=='heal') bad.push('the side button bound to quick heal did not heal ('+JSON.stringify(p.prep)+')');
        keysReset(); g.bag.length=0; g.bag.push(nB); p.hp=50; p.healQ=0; p.prep=null; clr();
-       window.dispatchEvent(new MouseEvent('mousedown',{button:3,bubbles:true,cancelable:true})); window.dispatchEvent(new MouseEvent('mouseup',{button:3,bubbles:true,cancelable:true}));
+       window.dispatchEvent(new MouseEvent('mousedown',{button:3,bubbles:true,cancelable:true})); window.dispatchEvent(new MouseEvent('mouseup',{button:3,bubbles:true,cancelable:true})); __holdTick();
        if(p.prep) bad.push('an unbound side button healed');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -6396,19 +6397,19 @@ window.__REGRESS=[
        // F1 cycles the controls list, H does not
        v0=g.legendOn; dn('F1','F1'); upk('F1','F1');
        if(g.legendOn!==(v0+1)%3) bad.push('F1 did not cycle the controls list ('+v0+' to '+g.legendOn+')');
-       v0=g.legendOn; dn('KeyH','h'); upk('KeyH','h');
+       v0=g.legendOn; dn('KeyH','h'); upk('KeyH','h'); __holdTick();
        if(g.legendOn!==v0) bad.push('H still cycles the controls list');
        // H heals: a Bandage with health missing starts the wind-up and is spent; at 90 a Bandage is refused, a Medkit is not
        g.bag.length=0; g.bag.push(nB); p.hp=50; p.healQ=0; p.prep=null; clr();
-       dn('KeyH','h'); upk('KeyH','h');
+       dn('KeyH','h'); upk('KeyH','h'); __holdTick();
        if(!p.prep||p.prep.kind!=='heal') bad.push('H with a Bandage and 50 health did not start the heal wind-up ('+JSON.stringify(p.prep)+')');
        if(g.bag.indexOf(nB)>=0) bad.push('H did not spend the Bandage');
        fr(90);
        if(!(p.hp>50||p.healQ>0)) bad.push('the Bandage H applied never raised health ('+p.hp+')');
        g.bag.length=0; g.bag.push(nB); p.hp=90; p.healQ=0; p.prep=null; clr();
-       dn('KeyH','h'); upk('KeyH','h');
+       dn('KeyH','h'); upk('KeyH','h'); __holdTick();
        if(p.prep||g.bag.indexOf(nB)<0) bad.push('H at 90 health spent a Bandage (they stop at 85)');
-       if(ITEMS.medkit){ g.bag.length=0; g.bag.push('medkit'); p.hp=90; p.healQ=0; p.prep=null; clr(); dn('KeyH','h'); upk('KeyH','h'); if(!p.prep) bad.push('H at 90 health did not use a Medkit (it reaches 100)'); }
+       if(ITEMS.medkit){ g.bag.length=0; g.bag.push('medkit'); p.hp=90; p.healQ=0; p.prep=null; clr(); dn('KeyH','h'); upk('KeyH','h'); __holdTick(); if(!p.prep) bad.push('H at 90 health did not use a Medkit (it reaches 100)'); }
        p.prep=null; p.hp=100; p.healQ=0; g.bag.length=0;
        // G throws the selected throwable at once
        g.pouch[nF+'']=2; g.tsel=THROWKEYS.indexOf(nF); g.hot=0; n0=g.pouch[nF]; clr(); g.frags.length=0;
@@ -15031,13 +15032,13 @@ window.__REGRESS=[
          if(rows[6][2].indexOf('D-DOWN')<0) bad.push('the HEAL row pad label is '+rows[6][2]); }
        // G on the keyboard, hp 40 with a Bandage
        stage(g,40); nUH=0;
-       kd(__healKey(),'g');
+       kd(__healKey(),'g'); __holdTick();
        if(!p.prep||p.prep.kind!=='heal'||p.prep.key!==nB) bad.push('G in the arcade did not start the Bandage wind-up ('+JSON.stringify(p.prep)+')');
        if(g.bag.indexOf(nB)>=0) bad.push('G in the arcade did not spend the Bandage');
        if(nUH) bad.push('G in the arcade also used the belt');
        // the Bandage cap: above 85 it is refused
        stage(g,90); nUH=0;
-       kd(__healKey(),'g');
+       kd(__healKey(),'g'); __holdTick();
        if(p.prep) bad.push('G at hp 90 started a Bandage (they stop at 85)');
        if(g.bag.indexOf(nB)<0) bad.push('G at hp 90 spent the Bandage');
        // D-DOWN on the pad
