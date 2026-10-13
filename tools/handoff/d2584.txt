@@ -1,0 +1,5 @@
+## v25.84 - SETTINGS IN THE DEMO PAUSE BOX
+
+Co-op hunt while he was away. His order of 2026-10-13: settings should be accessible in demo mode. The demo pause box had only Resume, Feedback and End run, so the sound, text size and game options could not be reached in a demo run. It now has Settings, which opens the same Settings screen a career raid does; a change applies at once and lasts for the demo session, and everything is put back when the demo is left, so nothing reaches the career save. Close and Escape come back to the pause box.
+
+MEASURED. Check 25.84 passes, and fails on v25.83.

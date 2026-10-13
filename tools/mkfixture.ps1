@@ -6086,6 +6086,62 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.84',what:'his order: SETTINGS opens from the DEMO pause box and shows the Settings screen, a change applies in the DEMO and is put back when the demo is left, and CLOSE and ESC return to the pause box',
+   run:function(){
+     if(typeof arcadeDeploy!=='function'||typeof arcadeLeave!=='function'||typeof ARCADE!=='object'||typeof togglePauseBox!=='function'||typeof escCloseTopModal!=='function') return 'SKIP: no arcade here';
+     var bad=[], g, sb, fx0, fx1, go0, rs=say, ownS=false;
+     function el(id){ return document.getElementById(id); }
+     function shown(e){ try{ return !!e&&e.style.display!=='none'&&getComputedStyle(e).display!=='none'; }catch(_s){ return false; } }
+     function boxOn(){ var x=el('pause'+'box'); return !!x&&x.classList.contains('on'); }
+     function setOn(){ var x=el('settingsmodal'); return !!x&&x.classList.contains('on'); }
+     try{
+       __topClear(); __runPrep();
+       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
+       say=function(){}; ownS=true;
+       fx0=CFG.fxLevel; go0=P.gameOpts?P.gameOpts.fxLevel:undefined;
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); keys={}; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.ownAt=Date.now();
+       if(!g||!g.arcade) return 'SKIP: no arcade raid';
+       togglePauseBox(true);
+       if(!boxOn()) return 'SKIP: the arcade pause box does not open';
+       sb=el('pausesetbtn');
+       if(!shown(sb)) bad.push('the DEMO pause box has no SETTINGS button');
+       else {
+         sb.click();
+         if(!setOn()) bad.push('SETTINGS in the DEMO pause box did not show the Settings screen');
+         else {
+           if(!el('go_fxLevel')) bad.push('the DEMO Settings screen has no Effects row');
+           else {
+             fx1=CFG.fxLevel; el('go_fxLevel').click();
+             if(CFG.fxLevel===fx1) bad.push('a Settings change in the DEMO did not apply (Effects stayed '+fx1+')');
+           }
+           el('closesettings').click();
+           if(setOn()) bad.push('CLOSE left the Settings screen up');
+           if(!boxOn()||!ARCADE.on||__state()!==g) bad.push('CLOSE did not return to the DEMO pause box');
+           sb.click();
+           if(!setOn()) bad.push('SETTINGS did not open a second time');
+           escCloseTopModal();
+           if(setOn()) bad.push('ESC left the Settings screen up');
+           if(!boxOn()||!ARCADE.on||__state()!==g) bad.push('ESC did not return to the DEMO pause box');
+         }
+       }
+       togglePauseBox(false);
+       arcadeLeave();
+       if(CFG.fxLevel!==fx0) bad.push('the DEMO Settings change was not put back when the demo was left (Effects '+CFG.fxLevel+', was '+fx0+')');
+       if((P.gameOpts?P.gameOpts.fxLevel:undefined)!==go0) bad.push('the DEMO Settings change reached the profile (gameOpts.fxLevel '+(P.gameOpts?P.gameOpts.fxLevel:undefined)+', was '+go0+')');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       if(ownS) say=rs;
+       keys={};
+       try{ var sm=el('settingsmodal'); if(sm) sm.classList.remove('on'); }catch(_m){}
+       try{ togglePauseBox(false); }catch(_t){}
+       try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       try{ ARCADE.mine=0; ARCADE.mate=0; ARCADE.kills=0; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.over=null; }catch(_x){}
+       try{ CFG.fxLevel=fx0; }catch(_f){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'25.83',what:'his order (get rid of the emote system): no emote function, list, bubble, strip or cooldown is left; V opens nothing, is not on the keys list and a saved key map that moved it leaves no key dead; the belt caption offers no signal; the middle button, claimed in a raid, makes the ping in a party and nothing alone, and opens no strip',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof keysBind!=='function'||typeof raidKey!=='function'||typeof netPingMake!=='function'||typeof KEYS_ACTS==='undefined'||typeof NET==='undefined'||typeof drawHUD!=='function') return 'SKIP: this fixture cannot stage the middle button';

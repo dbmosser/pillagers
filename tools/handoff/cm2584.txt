@@ -1,0 +1,7 @@
+v25.84: settings in the demo pause box
+
+The demo pause box now has Settings, the same screen as in a career raid.
+
+Check 25.84. Fails on v25.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
