@@ -1,0 +1,7 @@
+v25.94: u switches what g throws, the highlight stays on the gun
+
+U now switches which of the two throwable keys G throws, and the highlight stays on the gun.
+
+Check 25.94. Fails on v25.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

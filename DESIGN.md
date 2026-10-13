@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.94 - U SWITCHES WHAT G THROWS, THE HIGHLIGHT STAYS ON THE GUN
+
+Co-op hunt while he was away. His decision of 2026-10-13: U picks which of the two throwable keys the G key throws, and the highlight stays on the gun. U used to move the highlight to the grenade cell, which took the trigger off the gun. It now switches the kind G throws between the grenades on keys 5 and 6 (and says so, SMOKE CANISTER READY), and the highlight does not move; pressing key 5 or 6 still selects that cell so the trigger cooks it. G throws the kind on the throwable key U chose, and if the hand was left on a kind that no key shows it throws a kind that is on a key. With no grenade on a key U says NO THROWABLE ON THE TACTICAL BELT or NO THROWABLES LEFT.
+
+MEASURED. Check 25.94 passes, and fails on v25.93.
 ## v25.93 - THE WHAT IS NEW CARD NAMES THE NEW BELT
 
 Co-op hunt while he was away. The card was stamped v25.81 and the stamp may not trail the build by more than 0.15. The card was stamped v25.81 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the belt redo (his order 2026-10-13: guns 1-4, throwables 5-6, medical 7-8, armour 9, the weakest gun swaps out) and the DEMO fixes (extraction and siege the same as CAREER, his rule).
