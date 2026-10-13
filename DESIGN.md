@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.43 - THE CRIER, REDRAWN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of every character and machine, gritty and grounded like ARC Raiders, silhouettes first. The Crier was a grey square tilted on its corner and spinning like a sticker, with a bulb on top: it read as a picture frame or a dice, and nothing about it said drone or that it was about to shout for help. It is redrawn as a loudspeaker drone: a pod on an X frame with four spinning rotor blurs (the rotors spin, the body does not), a loudspeaker horn under it pointing where it faces with a yellow ring at the mouth, and a lamp on top that shows its mood (dim white idle, red when it calls). It tips a little toward where it faces instead of spinning. When it calls the ALARM the horn mouth glows red and the expanding red ring and the countdown arc come out of the horn, so you can see where the shout comes from; the ALARM word stays. An elite has a brass frame and a second lamp. Nothing about play changes: same hover, same size, same shadow.
+
+MEASURED. Check 24.43 passes, and fails on v24.42.
 ## v24.42 - THE GAMBLE IS THE BUTTON
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Wirt found GAMBLE and BUY drawn as small outline buttons that grey out to ghosts when the credits fall short, so the main action of the window was its weakest part. GAMBLE is a big full width amber button now and BUY is bigger; out of reach, both read as clear greyed buttons. No word changed.

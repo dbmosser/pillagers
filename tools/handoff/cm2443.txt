@@ -1,0 +1,7 @@
+v24.43: the crier, redrawn
+
+The Crier is redrawn as a loudspeaker drone: four rotors, a horn, and the alarm comes out of the horn.
+
+Check 24.43. Fails on v24.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
