@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.12 - NO SEARCH RESUMED LINE
+
+Co-op hunt while he was away. His order of 2026-10-12: get rid of the Search resumed messaging. Picking a search back up used to print Search resumed with how far the box had got, every time you came back to it. The search bar already shows that, so the line was chatter. Picking a search back up now says nothing, and the progress carries on exactly as before. The line where a teammate is already searching a box stays, because it tells you why the box will not open.
+
+MEASURED. Check 25.12 passes, and fails on v25.11.
 ## v25.11 - NO HUM UNDER THE RAID
 
 Co-op hunt while he was away. His note of 2026-10-12: random hums as ambience do not sound good. Three tones ran under every raid: two low sine drones at 54 and 81.5 Hz in the ambient bed (their pitch rose as something closed on you) and a 36 Hz dread tone that swelled as the Warden came near. On top of them, v24.73 gave every machine hunting you out of sight its own running voice: a servo whine, a hydraulic throb, a drone tone, a dish sweep, a growl, a tread rumble. All of those tones are removed. What stays is not a tone: the room-tone noise under the raid (it still opens up and swells as a machine closes in), the rain, and every machine one-shot (servo, skitter, hydraulics, dish, footsteps, alarms, the lock-on beep). Nothing else in the file held a looping tone in a raid: every other oscillator is a one-shot with its own stop, and the Undercroft music plays only on the menus.

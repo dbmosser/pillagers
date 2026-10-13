@@ -1,0 +1,7 @@
+v25.12: no search resumed line
+
+Picking a search back up no longer prints Search resumed; the search bar shows how far it got.
+
+Check 25.12. Fails on v25.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

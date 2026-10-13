@@ -2118,7 +2118,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.11';
+var VER='25.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20925,7 +20925,9 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
       if(NET.on&&netSrchShared(near)) netSrchHold(near,dt); else {   // v15.91: on a linked window a shared box is searched through the host, and on the host a box one of the party holds is refused; the block below is the solo path, untouched
       if(G.searching!==near){
         G.searching=near;
-        if(!G.sim&&(near.prog||0)>0) say('Search resumed, '+Math.round(100*near.prog/near.time)+'% done.');   // v11.94, HIS NOTE: resuming what
+        // v24.xx (nosearchline), HIS ORDER (2026-10-12): "'Search resumed' get rid of this messaging". Picking a search back up said
+        // Search resumed, N% done (v11.94) in the raid text, every time. The search bar already shows how far the box got, so the line was
+        // chatter: picking a search back up now says nothing, and the progress carries on exactly as before.
       }
       near.prog=(near.prog||0)+dt/buzzSlow()*(G.arcade?ARCADE_SRCH:1);   // v23.33 (arcade11): six times as fast in the arcade
       // STAGED PULLS, v1.61. His note: "looting feels so uninspired, how can we make it
@@ -39409,7 +39411,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.11: The low hums under the raid are gone: no drones, no dread tone and no running machine voices, only the room noise, rain and the machine cues. Check 25.11 fails on v25.10',
+  now:'v25.12: Picking a search back up no longer prints Search resumed; the search bar shows how far it got. Check 25.12 fails on v25.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47295,7 +47297,7 @@ function netSrchHold(near,dt){
     NET.srch={cid:cid,ok:0};
     q=netPeerOfSeat(0);
     if(q) netSend(q,{t:'srch',op:'start',cid:cid,slow:+(+buzzSlow()).toFixed(3)});
-    if(!G.sim&&(near.prog||0)>0) say('Search resumed, '+Math.round(100*near.prog/(near.time||1))+'% done.');
+    // v24.xx (nosearchline), HIS ORDER (2026-10-12): no Search resumed line on a linked window either; the search bar shows the progress.
     s=NET.srch;
   }
   if(s.ok) near.prog=Math.min(near.time||1,(near.prog||0)+dt/buzzSlow());

@@ -1,0 +1,5 @@
+## v25.12 - NO SEARCH RESUMED LINE
+
+Co-op hunt while he was away. His order of 2026-10-12: get rid of the Search resumed messaging. Picking a search back up used to print Search resumed with how far the box had got, every time you came back to it. The search bar already shows that, so the line was chatter. Picking a search back up now says nothing, and the progress carries on exactly as before. The line where a teammate is already searching a box stays, because it tells you why the box will not open.
+
+MEASURED. Check 25.12 passes, and fails on v25.11.
