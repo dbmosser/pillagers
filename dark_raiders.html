@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.57';
+var VER='25.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34650,14 +34650,36 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
 // rof is MILLISECONDS between shots in WEAPONS (the trigger fires when now-lastShot>rof), spread is radians, rng is world units and
 // the HUD talks in metres at ten units to the metre, so both are converted here
 // rather than in two places that could disagree.
+// v23.xx, THE FORGE (2026-10-12), forge13: THE UNDERCROFT SHOWS IT. forgeOf(gk) is the forge of the gun of that model in play here:
+// in a live raid the gun in a hand or the next backpack copy; in the Undercroft the record kept on the armoury model (P.forged, forge12).
+// The stash and backpack hover rows lead with UPGRADE (MK II or MK III) and ELEMENT and read the upgraded numbers, the belt and the
+// sector page name the gun with its MK (Auto Rifle MK III), and a gun icon of a forged model glows gold, or in its element colour with a
+// small element pip. Display only.
+function forgeOf(gk){
+  var p, w=null;
+  if(!gk||!WEAPONS[gk]) return null;
+  if(typeof G!=='undefined'&&G&&!G.over&&!G.sim&&G.player&&!G.hubFloor){
+    p=G.player;
+    w=(p.wep&&p.wep.id===gk)?p.wep:((p.sec&&p.sec.id===gk)?p.sec:((G.stowQ&&typeof gunQPeek==='function')?gunQPeek(gk):null));
+    return (w&&(w.fk===1||w.fk===2))?{fk:w.fk,el:(w.fk===2&&ELEM[w.el])?w.el:''}:null;
+  }
+  if(P&&P.forged&&P.forged[gk]&&(P.weapons||[]).indexOf(gk)>=0&&(P.forged[gk].fk===1||P.forged[gk].fk===2)) return P.forged[gk];
+  return null;
+}
+function forgeCol(f){ return f?((f.fk===2&&ELEM[f.el])?ELEM[f.el].c:FORGE_GOLD):null; }
+function hubForged(w){
+  var f=(w&&w.id&&P&&P.forged)?P.forged[w.id]:null;
+  return (f&&(f.fk===1||f.fk===2)&&(P.weapons||[]).indexOf(w.id)>=0)?forgeApply(w,f.fk,f.el):w;
+}
 function itemRows(key){
   var it=ITEMS[key]; if(!it) return [];
   var R=[];
   if(it.use==='gun'&&it.gk&&WEAPONS[it.gk]){
-    var W2=WEAPONS[it.gk];
+    var _ff=forgeOf(it.gk), W2=_ff?forgeApply(WEAPONS[it.gk],_ff.fk,_ff.el):WEAPONS[it.gk];   // v23.xx (forge13): THE FORGE, the upgraded numbers
+    if(_ff){ R.push(['UPGRADE',_ff.fk===2?'MK III':'MK II']); if(_ff.fk===2&&ELEM[_ff.el]) R.push(['ELEMENT',ELEM[_ff.el].name+'   '+ELEM[_ff.el].w2]); }
     // Pellets are per trigger pull, so the honest headline for a scattergun is
     // the whole spread landing, with the per-pellet figure after it.
-    var perShot=W2.dmg*(W2.pellets||1);
+    var perShot=Math.round(W2.dmg*(W2.pellets||1)*10)/10;   // v23.xx (forge13): a forged pellet gun reads 124.8, not a float tail
     var dmgTxt=perShot+' a hit';
     if(W2.pellets>1) dmgTxt+='   '+W2.pellets+' pellets of '+W2.dmg;
     if(W2.burst>1)   dmgTxt+='   '+W2.burst+'-round burst';
@@ -35786,7 +35808,7 @@ function gunArt(c,fam,id,W,col,S){
 }
 function gunIcon(c,id,cx,cy,S,tint){
   var W=WEAPONS[id]||WEAPONS.pistol, fam=GUN_FAMILY[id]||'rifle';
-  var col=RCOL[gunRarity(W.id)]||tint||W.tint||'#ffd48a';
+  var _fgi=forgeOf(W.id), col=forgeCol(_fgi)||RCOL[gunRarity(W.id)]||tint||W.tint||'#ffd48a';   // v23.xx (forge13): a forged model glows gold or in its element colour
   // v18.43, his order of 2026-10-05: the guns are drawn as guns (gunArt), with the ground shadow and rarity glow below
   if(typeof gunArt==='function'&&S>0){
     var _gu=S/40;
@@ -35794,6 +35816,7 @@ function gunIcon(c,id,cx,cy,S,tint){
     c.fillStyle='rgba(0,0,0,.26)'; c.beginPath(); c.ellipse(0,14*_gu,19*_gu,3*_gu,0,0,6.2832); c.fill();
     if(_gu>=0.9){ try{ var _gl=c.createRadialGradient(0,0,2*_gu,0,0,25*_gu); _gl.addColorStop(0,hexA(col,.18)); _gl.addColorStop(1,hexA(col,0)); c.fillStyle=_gl; c.fillRect(-27*_gu,-27*_gu,54*_gu,54*_gu); }catch(_gg){} }
     var _ok=false; try{ _ok=gunArt(c,fam,id,W,col,S); }catch(_ga){ _ok=false; }
+    if(_ok&&_fgi&&_fgi.fk===2&&ELEM[_fgi.el]){ c.fillStyle=ELEM[_fgi.el].c; c.beginPath(); c.arc(17*_gu,-13*_gu,3.4*_gu,0,6.2832); c.fill(); c.strokeStyle='rgba(6,9,13,.85)'; c.lineWidth=Math.max(1,_gu); c.stroke(); }   // v23.xx (forge13): the element pip
     c.restore();
     if(_ok) return;
   }
@@ -36700,6 +36723,7 @@ function hubBagState(){
   // Frags drew greyed with 0 while the stash row said x3 and the raid carried three, and with no second gun a key on gun 2 was
   // skipped and slot 2 read Second weapon. The pouch counts the packed grenades and gun 2 is the equipped second gun.
   var wep=WEAPONS[P.equipped]||WEAPONS.fists, sec=(P.equippedSec&&P.equippedSec!==P.equipped&&WEAPONS[P.equippedSec])||WEAPONS.fists, pq={smoke:0,decoy:0,frag:0,trip:0};
+  wep=hubForged(wep); sec=hubForged(sec);   // v23.xx (forge13): the Undercroft belt names and tints a forged gun
   (P.kit||[]).forEach(function(k){ if(pq[k]!==undefined) pq[k]++; });
   return {
     bag:(P.kit||[]).slice(),
@@ -40810,7 +40834,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.57: In CAREER an upgraded gun you extract with stays upgraded in your armoury. Check 25.57 fails on v25.56',
+  now:'v25.58: The Undercroft shows your upgraded guns by name, colour and numbers. Check 25.58 fails on v25.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52341,6 +52365,7 @@ function syncSectorKit(){
   if(!el) return;
   var w=null;
   try{ w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null; }catch(_gw){ w=null; }
+  if(w) w=hubForged(w);   // v23.xx (forge13): going up with the Auto Rifle MK III
   // v12.75, 2026-09-08 first-hour audit: THIS BOX NOW SAYS WHAT ACTUALLY
   // HAPPENS. It used to say "an issued sidearm" when nothing is equipped, which
   // is what a brand new character has, and the deploy does not issue a sidearm:

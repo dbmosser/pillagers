@@ -6078,6 +6078,45 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.58',what:'forge13: in the Undercroft a kept MK III cryo rifle shows UPGRADE MK III and ELEMENT CRYO with its upgraded numbers on the hover, reads Auto Rifle MK III on the belt, and its icon takes the cryo colour',
+   run:function(){
+     if(!window.__P||!window.__applyLoaded||typeof itemRows!=='function'||typeof hubBagState!=='function'||typeof gunIcon!=='function'||typeof forgeApply!=='function') return 'SKIP: no Undercroft rows, belt or forge model here';
+     if(typeof forgeOf!=='function') return 'no forged rows in the Undercroft (forgeOf)';
+     var bad=[], snap=null, q, R, i, up=null, el=null, dmg=null, st, oGA=null, seen=null, cv2;
+     try{
+       snap=JSON.parse(JSON.stringify(__P()));
+       try{ var g0=__state(); if(g0&&!g0.over) __endRaid('abandon'); }catch(_a){}
+       q=__P(); q.weapons=['pistol','rifle']; q.equipped='rifle'; q.equippedSec='none'; q.forged={rifle:{fk:2,el:'cryo'}};
+       R=itemRows('gun_rifle');
+       for(i=0;i<R.length;i++){ if(R[i][0]==='UPGRADE') up=R[i][1]; if(R[i][0]==='ELEMENT') el=R[i][1]; if(R[i][0]==='DAMAGE') dmg=R[i][1]; }
+       if(up!=='MK III') bad.push('the rifle hover has no UPGRADE MK III row ('+up+')');
+       if(!el||String(el).indexOf('CRYO')!==0) bad.push('the rifle hover has no ELEMENT CRYO row ('+el+')');
+       if(!dmg||String(dmg).indexOf('29.9')!==0) bad.push('the rifle hover damage reads '+dmg+', not the MK III 29.9');
+       if(R.length>8) bad.push('the hover has '+R.length+' rows');
+       R=itemRows('gun_smg');
+       if(R.some(function(r){ return r[0]==='UPGRADE'||r[0]==='ELEMENT'; })) bad.push('a plain gun shows an upgrade row');
+       st=hubBagState();
+       if(!st||!st.player||st.player.wep.name!=='Auto Rifle MK III') bad.push('the Undercroft belt names the rifle '+(st&&st.player&&st.player.wep.name));
+       if(st&&st.player&&st.player.wep.tint!==ELEM.cryo.c) bad.push('the Undercroft belt rifle is not cryo tinted');
+       if(typeof gunArt==='function'){
+         oGA=gunArt; gunArt=function(c,fam,id,W,col,S){ seen=col; return true; };
+         cv2=document.createElement('canvas'); cv2.width=64; cv2.height=64;
+         gunIcon(cv2.getContext('2d'),'rifle',32,32,40);
+         if(seen!==ELEM.cryo.c) bad.push('the rifle icon is drawn in '+seen+', not the cryo colour');
+         seen=null; gunIcon(cv2.getContext('2d'),'smg',32,32,40);
+         if(seen===ELEM.cryo.c||seen===FORGE_GOLD) bad.push('a plain gun icon took a forge colour');
+         q.forged={rifle:{fk:1,el:''}}; seen=null; gunIcon(cv2.getContext('2d'),'rifle',32,32,40);
+         if(seen!==FORGE_GOLD) bad.push('a MK II rifle icon is not gold ('+seen+')');
+         q.weapons=['pistol']; seen=null; gunIcon(cv2.getContext('2d'),'rifle',32,32,40);
+         if(seen===FORGE_GOLD) bad.push('a record for a gun no longer owned still colours its icon');
+       }
+     }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
+     finally{
+       if(oGA) gunArt=oGA;
+       try{ if(snap) __applyLoaded(snap); }catch(_r){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'25.57',what:'forge12: a gun forged MK III cryo and extracted is kept on the armoury model and comes up forged on the next deploy, a forged gun carried out in the backpack is kept too, a death loses it with the armoury gun, an abandon keeps an older forge and never writes this raid, and a bad saved record is dropped on load',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__applyLoaded||!window.__P||typeof forgeApply!=='function') return 'SKIP: no raid, loader or forge model here';

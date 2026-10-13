@@ -1,0 +1,7 @@
+v25.58: the forge: the undercroft shows it
+
+The Undercroft shows your upgraded guns by name, colour and numbers.
+
+Check 25.58. Fails on v25.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
