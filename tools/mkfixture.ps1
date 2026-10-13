@@ -6061,6 +6061,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.40',what:'spr23: hostile glare: a foe pillager has brow bars over almond eyes, an ally keeps round eyes',
+   run:function(){
+     if(typeof drawOp!=='function'||typeof wc==='undefined') return 'SKIP: no drawOp here';
+     var c=document.createElement('canvas'); c.width=200; c.height=300; var x=c.getContext('2d'), w0=wc, bad=[];
+     function eyes(tm,mc){
+       x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,200,300); x.setTransform(6,0,0,6,100,280); wc=x;
+       try{ drawOp(0,0,Math.PI/2,0,'#4a5b7d',0,0,'none',0,{moving:false,sprint:false,ads:false,hurt:0,rl:0,bulk:0,build:'lean',hair:'dark',cut:'crop',skin:'fair',team:tm,merc:mc}); }
+       finally{ wc=w0; }
+       var d=x.getImageData(0,0,200,300).data, ink=0, wh=0, px, py, k, ux, uy;
+       for(py=0;py<300;py++) for(px=0;px<200;px++){ ux=(px-100)/6; uy=(280-py)/6; if(Math.abs(ux)>6.4||uy<26.8||uy>33.2) continue;
+         k=(py*200+px)*4; if(d[k+3]<200) continue;
+         if(d[k]<40&&d[k+1]<40&&d[k+2]<40) ink++;
+         if(d[k]>240&&d[k+1]>232&&d[k+2]>205) wh++; }
+       return {ink:ink,wh:wh};
+     }
+     try{
+       var f=eyes('foe',0), a=eyes('ally',0), h=eyes('foe',1);
+       if(f.ink-a.ink<60) bad.push('a foe has no brow bars ('+f.ink+' dark pixels round the eyes against '+a.ink+' on an ally)');
+       if(a.wh-f.wh<120) bad.push('the foe eyes are not cut to almonds ('+f.wh+' eye white pixels against '+a.wh+' on an ally)');
+       if(Math.abs(h.ink-a.ink)>20) bad.push('a hire glares like a foe');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ wc=w0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.39',what:'graphics program gfx26: a frag blast on open floor darkens the baked floor by 12 or more at its centre and at four points 12 units out, and after 500 more decals (the old 420 cap churning) the floor there is still dark',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__runPrep)||typeof explodeFrag!=='function'||typeof decal!=='function') return 'SKIP: this fixture cannot set off a frag';

@@ -1,0 +1,7 @@
+v24.40: hostile glare
+
+Hostile pillagers glare: brow bars over narrowed eyes. Everyone friendly keeps round eyes.
+
+Check 24.40. Fails on v24.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

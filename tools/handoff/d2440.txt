@@ -1,0 +1,5 @@
+## v24.40 - HOSTILE GLARE
+
+Co-op hunt while he was away. Your call: the sprite review found that a hostile pillager looked exactly as friendly as you, with the same big round eyes, so nothing on his face said threat. A foe pillager now has an upper lid that cuts each eye to an almond, slanting down toward the nose, with a dark brow bar along it: a glare. You, your team, hires, the Undercroft, the Peddler and the Survivor keep the round eyes, and the pupils still follow the aim under the lid. Your face ruling stands, the face and eyes are all still there. The side by side picture is in tools/handoff/shots/sprites-after/spr23-glare-side-by-side.jpg. If you do not like it, say so and it comes out.
+
+MEASURED. Check 24.40 passes, and fails on v24.39.

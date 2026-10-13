@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.40 - HOSTILE GLARE
+
+Co-op hunt while he was away. Your call: the sprite review found that a hostile pillager looked exactly as friendly as you, with the same big round eyes, so nothing on his face said threat. A foe pillager now has an upper lid that cuts each eye to an almond, slanting down toward the nose, with a dark brow bar along it: a glare. You, your team, hires, the Undercroft, the Peddler and the Survivor keep the round eyes, and the pupils still follow the aim under the lid. Your face ruling stands, the face and eyes are all still there. The side by side picture is in tools/handoff/shots/sprites-after/spr23-glare-side-by-side.jpg. If you do not like it, say so and it comes out.
+
+MEASURED. Check 24.40 passes, and fails on v24.39.
 ## v24.39 - A BLAST LEAVES ITS SCAR
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it (item 12, richer ground). A frag, a Howler shell or a tripwire mine left one flat dark oval that faded after 45 seconds, and a busy fight pushed it off the list even sooner. Every blast on open ground now burns a scorch into the floor with cracks running out of it and a scatter of debris, and it stays for the whole raid at no cost to draw. A shell that bursts on a roof leaves nothing on the ground under it. Nothing about play changes.
