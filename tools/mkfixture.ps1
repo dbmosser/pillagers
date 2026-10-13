@@ -6071,6 +6071,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.93',what:'his #50 (UI redesign ui5q2e): FEEDBACK in the raid pause row is the same size as SETTINGS (label size and button height)',
+   run:function(){
+     var f=document.getElementById('fbbtn'), s=document.getElementById('pausesetbtn');
+     if(!f||!s) return 'SKIP: no FEEDBACK or SETTINGS in the pause box';
+     var cf=getComputedStyle(f), cs=getComputedStyle(s), bad=[];
+     if(cf.fontSize!==cs.fontSize) bad.push('FEEDBACK is '+cf.fontSize+' against SETTINGS '+cs.fontSize);
+     if(cf.minHeight!==cs.minHeight) bad.push('FEEDBACK is '+cf.minHeight+' high against SETTINGS '+cs.minHeight);
+     if(cf.fontWeight!==cs.fontWeight) bad.push('FEEDBACK weight '+cf.fontWeight+' against '+cs.fontWeight);
+     return bad.length?bad.join('; '):null; }},
   {v:'24.92',what:'his note 2026-10-12: the KIA card no longer tacks on the unused medical hint, while KILLED BY, WITH, the distance and IN CONTACT still show',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__loop&&window.__keysRef&&window.__endRaid)||typeof damagePlayer!=='function')

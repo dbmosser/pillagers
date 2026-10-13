@@ -1,0 +1,20 @@
+{
+    "title":  "A LOCKED BUTTON SAYS WHY",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. At Wirt, GAMBLE and the offer BUY out of reach were dull grey buttons with nothing saying why. They now carry a small red chip with how much more they need, and the button stays readable.",
+    "now":  "At Wirt a button you cannot afford says how much more it needs.",
+    "edits":  [
+                  {
+                      "anchor":  "  b.style.opacity=P.credits\u003cGAMBLE_PRICE?0.45:1;",
+                      "replacement":  "  // vNN.xx, UI REDESIGN ui5q2f (his #50, from the AAA judge of the Wirt shot): A LOCKED BUTTON SAYS WHY. Out of reach, GAMBLE was\n  // a dull grey button and nothing said what it was waiting for. It keeps the solid greyed look (ui5q1m) at full strength, and a\n  // red chip on it says how much more it needs (NEED $1,600 MORE). The offer BUY below does the same.\n  b.style.opacity=1;\n  b.setAttribute(\u0027data-need\u0027,P.credits\u003cGAMBLE_PRICE?(\u0027NEED $\u0027+(GAMBLE_PRICE-P.credits).toLocaleString()+\u0027 MORE\u0027):\u0027\u0027);"
+                  },
+                  {
+                      "anchor":  "    lb.disabled=!afford;",
+                      "replacement":  "    lb.disabled=!afford;\n    lb.style.opacity=1; lb.setAttribute(\u0027data-need\u0027,afford?\u0027\u0027:(\u0027NEED $\u0027+(WIRT_LOT_PRICE-P.credits).toLocaleString()+\u0027 MORE\u0027));   // vNN.xx (ui5q2f): the reason chip"
+                  },
+                  {
+                      "anchor":  "  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge",
+                      "replacement":  "  /* vNN.xx, UI REDESIGN ui5q2f (his #50, from the AAA judge of the Wirt shot): A LOCKED BUTTON SAYS WHY. GAMBLE and the offer BUY\n     out of reach carry a red chip with what they still need. */\n  #root #gamblebtn[data-need]:not([data-need=\"\"])::after, #root #wirtlotbtn[data-need]:not([data-need=\"\"])::after{ content:attr(data-need);\n    display:inline-block; margin-left:12px; padding:3px 8px; border:1px solid rgba(255,110,85,.55); border-radius:2px; background:rgba(229,72,47,.12);\n    color:#ff8a75; font-family:var(--f-cond); font-size:14px; font-weight:700; letter-spacing:.1em; line-height:1.2; vertical-align:middle; }\n  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2f): out of reach, GAMBLE (and the offer BUY) carry a chip saying how much more they need, and none when they can be paid\u0027,\n   run:function(){\n     if(typeof renderGamble!==\u0027function\u0027) return \u0027SKIP: no Wirt here\u0027;\n     var c0=P.credits, bad=[], b, a, lb;\n     try{\n       P.credits=900; renderGamble();\n       b=document.getElementById(\u0027gamblebtn\u0027); a=getComputedStyle(b,\u0027::after\u0027).content||\u0027\u0027;\n       if(a.indexOf(\u0027NEED\u0027)\u003c0) bad.push(\u0027GAMBLE out of reach has no reason chip (\u0027+a+\u0027)\u0027);\n       else if(a.indexOf(\u00271,600\u0027)\u003c0) bad.push(\u0027the GAMBLE chip does not name the 1,600 still needed: \u0027+a);\n       lb=document.getElementById(\u0027wirtlotbtn\u0027);\n       if(lb\u0026\u0026lb.disabled\u0026\u0026(getComputedStyle(lb,\u0027::after\u0027).content||\u0027\u0027).indexOf(\u0027NEED\u0027)\u003c0) bad.push(\u0027the offer BUY out of reach has no reason chip\u0027);\n       P.credits=9999999; renderGamble();\n       a=getComputedStyle(document.getElementById(\u0027gamblebtn\u0027),\u0027::after\u0027).content||\u0027\u0027;\n       if(a.indexOf(\u0027NEED\u0027)\u003e=0) bad.push(\u0027GAMBLE that can be paid still shows a chip\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ P.credits=c0; try{ renderGamble(); }catch(_r){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

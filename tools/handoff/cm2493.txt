@@ -1,0 +1,7 @@
+v24.93: one button size in the pause box
+
+FEEDBACK in the pause box is the same size as the buttons beside it.
+
+Check 24.93. Fails on v24.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.93 - ONE BUTTON SIZE IN THE PAUSE BOX
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. In the raid pause box FEEDBACK was smaller than SETTINGS and ABANDON RUN beside it, so the row mixed two type sizes. It matches them now.
+
+MEASURED. Check 24.93 passes, and fails on v24.92.
 ## v24.92 - THE KIA CARD DOES NOT NAG
 
 Co-op hunt while he was away. His note of 2026-10-12 on the KIA card: you died carrying medical you never used, soooo random, why is that where it is. It was a hint added in v13.15 from his early telemetry (two knock-downs a run and no bandage ever applied), bolted onto the end of the KILLED BY line. A death card should say what killed you, with what, how far from extraction and how long the fight lasted, and stop there. The line is gone from the card. The game still records the fact for the run report and the telemetry export, so nothing is lost from the data.

@@ -1,0 +1,12 @@
+{
+    "title":  "ONE STATUS LINE ON THE TITLE",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. Once you had logged a raid, the line under the mode list (your name, raids logged, credits banked) repeated the active save just below it. It is folded away then; on a first run the line that says what to do is kept.",
+    "now":  "The title no longer repeats your save details twice.",
+    "edits":  [
+                  {
+                      "anchor":  "      if(sub) sub.textContent=(P.runs\u003e0)",
+                      "replacement":  "      // vNN.xx, UI REDESIGN ui5q2m (his #50, from the AAA judge of the title shot after character select): ONE STATUS LINE. Once a raid\n      // was logged, this line (PILLAGER, 1 raid logged, $900 banked) said again what the active row of SAVES just under it says\n      // (1 raid, $900, 130 XP). It is left empty and folded away then; the first time lines are kept, as nothing else says them.\n      if(sub) sub.style.display=(P.runs\u003e0)?\u0027none\u0027:\u0027\u0027;\n      if(sub) sub.textContent=(P.runs\u003e0)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2m): on the title, once a raid is logged, the status line that repeated the active save row is folded away; on a first run it still says what to do\u0027,\n   run:function(){\n     var src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027);\n     if(src.indexOf(\"sub.style.display=(P.runs\u003e0)?\"+\"\u0027none\u0027\")\u003c0) return \u0027the status line still shows once a raid is logged, repeating the save row\u0027;\n     return null; }},"
+}

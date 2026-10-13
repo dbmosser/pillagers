@@ -1,0 +1,12 @@
+{
+    "title":  "NO WORD SITS ALONE ON THE TITLE",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The line under the title wrapped with two words alone on its second line. The title lines now split into lines of even length. No word changed.",
+    "now":  "The lines on the title split evenly, with no word left alone.",
+    "edits":  [
+                  {
+                      "anchor":  "  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge",
+                      "replacement":  "  /* vNN.xx, UI REDESIGN ui5q2b (his #50, from the AAA judge of the title shot): NO WORD SITS ALONE. The line under the title wrapped\n     with what remains. alone on its second line, and the step cards could leave one word under a full line the same way. These lines\n     balance now: the browser splits them into lines of even length. No word changed. */\n  #root #title .titlecol \u003e div[style*=\"max-width:760px\"], #root #title .tcard .tbody, #root #titlesub{ text-wrap:balance; }\n  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2b): the line under the title and the step cards balance their lines, so no word is left alone on a line\u0027,\n   run:function(){\n     var el=document.querySelector(\u0027#title .titlecol \u003e div[style*=\"max-width:760px\"]\u0027), tb=document.querySelector(\u0027#title .tcard .tbody\u0027), bad=[];\n     function bal(e){ var cs=getComputedStyle(e); return ((cs.textWrap||\u0027\u0027)+\u0027 \u0027+(cs.textWrapStyle||\u0027\u0027)).indexOf(\u0027balance\u0027)\u003e=0; }\n     if(!el) return \u0027no line under the title\u0027;\n     if(!bal(el)) bad.push(\u0027the line under the title does not balance its lines\u0027);\n     if(tb\u0026\u0026!bal(tb)) bad.push(\u0027a step card does not balance its lines\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,20 @@
+{
+    "title":  "THE PICKED CONTRACT LOOKS PICKED",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. On the Mainframe the picked contract showed only a thin amber line under it, which read as a divider, and clicking another contract left that line on the first one. The picked contract now has the amber edge and warm fill used on the title, and it moves with your click.",
+    "now":  "The picked contract on the Mainframe has an amber edge that follows your click.",
+    "edits":  [
+                  {
+                      "anchor":  "    if(P._conSel===ci) row.style.borderColor=\u0027var(--amber)\u0027;",
+                      "replacement":  "    if(P._conSel===ci){ row.style.borderColor=\u0027var(--amber)\u0027; row.classList.add(\u0027sel\u0027); }   // vNN.xx (ui5q2h): the selected row carries the rail"
+                  },
+                  {
+                      "anchor":  "  var c=(ci!==undefined\u0026\u0026P.contracts[ci])?P.contracts[ci]:list[0];",
+                      "replacement":  "  var c=(ci!==undefined\u0026\u0026P.contracts[ci])?P.contracts[ci]:list[0];\n  // vNN.xx, UI REDESIGN ui5q2h (his #50, from the AAA judge of the Mainframe shot): THE PICKED CONTRACT LOOKS PICKED. The selected row\n  // showed only an amber bottom hairline, which read as a divider, and a click on another row moved the card but left that hairline\n  // on the first row. The row the card shows now carries the amber rail and the warm fill (the title pick, ui5q1c), and a click\n  // moves both.\n  try{ var _sx=P.contracts.indexOf(c); [].forEach.call(document.querySelectorAll(\u0027#contracts .crow[data-con]\u0027),function(r){ var on=(+r.getAttribute(\u0027data-con\u0027)===_sx); r.classList.toggle(\u0027sel\u0027,on); r.style.borderColor=on?\u0027var(--amber)\u0027:\u0027\u0027; }); }catch(_csel){}"
+                  },
+                  {
+                      "anchor":  "  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge",
+                      "replacement":  "  /* vNN.xx, UI REDESIGN ui5q2h (his #50, from the AAA judge of the Mainframe shot): THE PICKED CONTRACT LOOKS PICKED: a 3px amber\n     rail and the warm fill, not a bottom hairline. */\n  #root .crow.sel{ background:var(--acc-dim); box-shadow:inset 3px 0 0 var(--acc); }\n  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2h): on the Mainframe the contract the card shows carries the amber rail, and a click on another row moves it there\u0027,\n   run:function(){\n     if(!(window.__station\u0026\u0026window.__hubEnter)) return \u0027SKIP: this fixture cannot walk the Undercroft\u0027;\n     var s0=P._conSel, bad=[], rows;\n     try{\n       __topClear(); __hubEnter(); __station(\u0027mf\u0027,\u0027KeyE\u0027);\n       rows=document.querySelectorAll(\u0027#contracts .crow[data-con]\u0027);\n       if(rows.length\u003c2) return \u0027SKIP: fewer than two contracts on the board\u0027;\n       rows[1].click();\n       rows=document.querySelectorAll(\u0027#contracts .crow[data-con]\u0027);\n       if(!rows[1].classList.contains(\u0027sel\u0027)) bad.push(\u0027the clicked row is not marked picked\u0027);\n       if(rows[0].classList.contains(\u0027sel\u0027)) bad.push(\u0027the first row still looks picked after a click on the second\u0027);\n       if((getComputedStyle(rows[1]).boxShadow||\u0027\u0027).indexOf(\u0027inset\u0027)\u003c0) bad.push(\u0027the picked row has no rail\u0027);\n       if((rows[0].style.borderColor||\u0027\u0027).indexOf(\u0027amber\u0027)\u003e=0) bad.push(\u0027the first row keeps the amber line after a click on the second\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ P._conSel=s0; try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

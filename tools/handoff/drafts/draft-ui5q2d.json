@@ -1,0 +1,12 @@
+{
+    "title":  "RING LABELS KEEP CLEAR OF THE EDGE",
+    "why":  "His order of 2026-10-12 (#50): redo the HUD and make it look like a AAA game, checked in pictures. An extraction ring near the side of the screen drew its label plate right up to the screen edge, 8 pixels from it. The label now slides in until its plate is 48 pixels clear of the edge, at 1080p and 4K alike. His words are not changed.",
+    "now":  "An extraction ring label near the side of the screen keeps clear of the edge.",
+    "edits":  [
+                  {
+                      "anchor":  "    var zcx=(zwid+24*_zr\u003cW)?clamp(zs.x,zwid/2+12*_zr,W-zwid/2-12*_zr):zs.x;",
+                      "replacement":  "    // vNN.xx, UI REDESIGN ui5q2d (his #50, from the AAA judge of the raid shots 21 and 33): THE RING LABEL KEEPS THE SAFE AREA. The\n    // plate of a ring label near the side of the screen stopped 8px from the edge (1912 of 1920 at 1080p), outside any safe area. It\n    // slides in until its plate is 48px clear of the edge, at every size (_zr grows the margin with the screen). His words are not changed.\n    var zcx=(zwid+108*_zr\u003cW)?clamp(zs.x,zwid/2+54*_zr,W-zwid/2-54*_zr):zs.x;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2d): a ring label near the side of the raid screen keeps its plate 48px clear of the edge (the label slides in 54px past its words), not 12px\u0027,\n   run:function(){\n     var src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027), bad=[];\n     if(src.indexOf(\u0027zwid/2+12\u0027+\u0027*_zr,W-zwid/2-12\u0027+\u0027*_zr\u0027)\u003e=0) bad.push(\u0027the ring label still slides only 12px in from the edge\u0027);\n     if(src.indexOf(\u0027zwid/2+54\u0027+\u0027*_zr,W-zwid/2-54\u0027+\u0027*_zr\u0027)\u003c0) bad.push(\u0027the ring label has no 54px safe margin\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

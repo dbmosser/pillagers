@@ -1,0 +1,12 @@
+{
+    "title":  "ONE BUTTON SIZE IN THE PAUSE BOX",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. In the raid pause box FEEDBACK was smaller than SETTINGS and ABANDON RUN beside it, so the row mixed two type sizes. It matches them now.",
+    "now":  "FEEDBACK in the pause box is the same size as the buttons beside it.",
+    "edits":  [
+                  {
+                      "anchor":  "  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge",
+                      "replacement":  "  /* vNN.xx, UI REDESIGN ui5q2e (his #50, from the AAA judge of the raid pause shot): ONE BUTTON SIZE IN THE PAUSE ROW. FEEDBACK (v24.50)\n     came after the pause row was set to 48px buttons with 16px labels (ui5q1f), so it was the one small button in the row, clearly\n     smaller at 4K. It matches SETTINGS and ABANDON RUN now. */\n  #root #pausebox #fbbtn{ min-height:48px; padding:0 26px !important; font-size:16px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }\n  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2e): FEEDBACK in the raid pause row is the same size as SETTINGS (label size and button height)\u0027,\n   run:function(){\n     var f=document.getElementById(\u0027fbbtn\u0027), s=document.getElementById(\u0027pausesetbtn\u0027);\n     if(!f||!s) return \u0027SKIP: no FEEDBACK or SETTINGS in the pause box\u0027;\n     var cf=getComputedStyle(f), cs=getComputedStyle(s), bad=[];\n     if(cf.fontSize!==cs.fontSize) bad.push(\u0027FEEDBACK is \u0027+cf.fontSize+\u0027 against SETTINGS \u0027+cs.fontSize);\n     if(cf.minHeight!==cs.minHeight) bad.push(\u0027FEEDBACK is \u0027+cf.minHeight+\u0027 high against SETTINGS \u0027+cs.minHeight);\n     if(cf.fontWeight!==cs.fontWeight) bad.push(\u0027FEEDBACK weight \u0027+cf.fontWeight+\u0027 against \u0027+cs.fontWeight);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

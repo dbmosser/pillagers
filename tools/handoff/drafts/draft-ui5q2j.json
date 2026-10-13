@@ -1,0 +1,12 @@
+{
+    "title":  "THE ROOM BEHIND A WINDOW HAS NO WORDS",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. Round a small window such as Wirt or the Last Pour, the big station signs of the Undercroft still read through the dark glass (WIRT THE GAMBLER, ENTER RAID!, a cut off SHOP, CR), like a second menu under the first. The room behind a window is now softly blurred as well as dimmed.",
+    "now":  "The Undercroft behind a window is blurred, so its signs no longer read through.",
+    "edits":  [
+                  {
+                      "anchor":  "  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge",
+                      "replacement":  "  /* vNN.xx, UI REDESIGN ui5q2j (his #50, from the visual QA of the Wirt and Last Pour shots): THE ROOM BEHIND A WINDOW HAS NO WORDS.\n     The room was dimmed to 93 percent (ui5q1b), but the big station signs are near white, so round a card window WIRT THE GAMBLER,\n     ENTER RAID!, THE MAINFRAME and the cut off SHOP, CR still read, like a second menu under the first. The room behind every window\n     is softly blurred as well now, so the signs are shapes and not words. */\n  #root .modal{ -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }\n  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2j): the room behind a window (Wirt, the Last Pour, every .modal) is blurred, so its station signs do not read as words\u0027,\n   run:function(){\n     var m=document.getElementById(\u0027gamblemodal\u0027)||document.querySelector(\u0027.modal\u0027);\n     if(!m) return \u0027SKIP: no window here\u0027;\n     var cs=getComputedStyle(m), bf=(cs.backdropFilter||cs.webkitBackdropFilter||\u0027\u0027)+\u0027\u0027;\n     return bf.indexOf(\u0027blur\u0027)\u003e=0?null:(\u0027the room behind a window is not blurred (\u0027+bf+\u0027)\u0027); }},"
+}
