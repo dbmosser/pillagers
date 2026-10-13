@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.46 - RING BADGES: SHORT CALLOUTS, CLEAR OF THE GUN CARD
+
+Co-op hunt while he was away. From his request for a list of every raid message and where it shows (2026-10-12), and his #50 (menus and text must look like a AAA game): the screen map showed an extraction ring badge for a ring just off the right of the screen pushed against the edge at mid height, where the gun card on pickup, the pickup rows and the co-op kill feed live, so its words ran under the gun card; and the badge was a long sentence (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN). The badge is now a short callout in the words the rest of the raid uses for the same state: EXTRACTION A AVAILABLE, EXTRACTION A INBOUND 18S, EXTRACT IN PROGRESS! A 12S (his phrase of October 3 kept) and EXTRACTION A CLOSED. A badge held at the screen edge carries a small arrow pointing at its ring, and where it would sit under a panel at that edge (the gun card, the pickup rows, the kill feed, CONDITIONS, the gear corner, the boards on the left) it slides along the edge to the nearest clear place.
+
+MEASURED. Check 25.46 passes, and fails on v25.45.
 ## v25.45 - THE FORGE: ACID ROUNDS EAT ARMOUR
 
 Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. ACID is the fourth element. An acid round eats into a pillager armour plate before the plate soaks it, and for 4 seconds after that the plate stops only half of what it would, for every round that hits him, a teammate round too. A Breacher Plate is gone in about seven upgraded rifle hits instead of about twenty. Machines take a quarter more damage from acid rounds. No gun can be upgraded in play yet: the Forge station comes in a later build.

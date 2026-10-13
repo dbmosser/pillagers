@@ -1,0 +1,7 @@
+v25.46: ring badges: short callouts, clear of the gun card
+
+Extraction ring badges are short callouts now, point at their ring from the screen edge, and never sit under the gun card.
+
+Check 25.46. Fails on v25.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
