@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.91 - THE CLASS KEYS: THROWABLES, MEDICAL, ARMOUR
+
+Co-op hunt while he was away. His order of 2026-10-13: grenades their own class of item with 2 slots, heals and stims their own class with 2 slots, so the player can only carry 4 guns max. Build 3 of 8, the big one. The belt is nine keys with one class each: keys 1 to 4 guns, keys 5 and 6 throwables, keys 7 and 8 medical (bandage, medkit, stim), key 9 armour. With nothing bound each class fills its keys in order (frag then smoke then the mine then the decoy; bandage then medkit then stim; the plate), a key he bound shows what he bound, and a grenade, a heal, a stim or a plate he picks up takes the lowest vacant key of its own class, so a key he learned never moves; with no vacant key it waits in the backpack with no key. The belt is now built without writing anything into the plan every frame, and a pin of the wrong class is not read. The old borrowing is gone: a stim or a mine no longer takes a gun key, and an item no longer goes on a vacant gun key. A drop on a key of another class is refused in words (THROWABLES GO ON KEYS 5 AND 6, MEDICAL GOES ON KEYS 7 AND 8, PLATES GO ON KEY 9, GUNS GO ON KEYS 1 TO 4) on the raid belt, the Undercroft belt and the Stash plan row. A saved belt plan is re-homed to the class keys once: an item already on a key of its class stays, every other item goes to the lowest free key of its class or comes off the plan, and a valuable comes off. The bot is untouched.
+
+MEASURED. Check 25.91 passes, and fails on v25.90.
 ## v25.90 - A CLICK ON A GUN KEY STILL WORKS
 
 Co-op hunt while he was away. A slip in the guns-on-keys-1-to-4 build: it refused every drop of a gun on a key past the fourth, including the press and release on the key the gun came from, which is a click. A gun still bound to such a key (a saved plan from before the change) could not be clicked up. A click on the key it came from brings the gun up again, and a drag of it onto another key past the gun keys is still refused.

@@ -1,0 +1,7 @@
+v25.91: the class keys: throwables, medical, armour
+
+The belt now has a class for each key: 4 guns, 2 throwables, 2 medical and the armour plate.
+
+Check 25.91. Fails on v25.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
