@@ -9050,7 +9050,7 @@ window.__REGRESS=[
      function fakeOff(){ AC=kAC; BUS=kBUS; REV=kREV; AMB=kAMB; if(typeof SND!=='undefined') SND=kSND; if(G&&kSim!==null) G.sim=kSim; if(hasNet){ if(ownST) NET.specTick=kST; else delete NET.specTick; NET.same=kSame; } }
      var bad=[], g=null, p=null, E0=null, M=[], i, k, n, v=null, v1=null, pt, lo, hi, per, lv={}, pr={}, kMS={}, kPause=false, faked=false, oSfx=sfx, own=false, heard=[], r0, S, f, NS=[1,3,6];
      for(k in MSIREN) kMS[k]=MSIREN[k];
-     function stage(cnt){ var j, q; for(j=0;j<M.length;j++){ M[j].state=(j<cnt)?'chase':'patrol'; M[j].alert=(j<cnt)?2:0; } g.ents=M.slice(); for(q=0;q<4;q++) tickMachSiren(1/60); return MSIREN.v; }
+     function stage(cnt){ var j, q; g.t+=6; for(j=0;j<M.length;j++){ M[j].state=(j<cnt)?'chase':'patrol'; M[j].alert=(j<cnt)?2:0; } g.ents=M.slice(); for(q=0;q<45;q++){ for(j=0;j<cnt;j++) M[j].sirenSeeT=g.t; tickMachSiren(1/60); } return MSIREN.v; }   // v25.xx (sirentune): machines that SEE him for 0.6 s, and a clock that clears the 5 s cooldown between stagings (45 ticks of 1/60 s)
      function parts(){ var r={tone:null,lfo:null,dep:null}, j, m; for(j=0;j<OSC.length;j++) for(m=0;m<MADE.length;m++) if(MADE[m].kind==='gain'&&MADE[m].outs.indexOf(OSC[j].frequency)>=0){ r.tone=OSC[j]; r.dep=MADE[m]; } if(r.dep) for(j=0;j<OSC.length;j++) if(OSC[j].outs.indexOf(r.dep)>=0) r.lfo=OSC[j]; return r; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
