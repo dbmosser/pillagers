@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.47';
+var VER='25.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24705,7 +24705,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                 }
               }
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
-              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar); else en.hp-=edmg;   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
+              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el); else en.hp-=edmg;   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
               en.hitT=.16;
               // HIS Q42. The number IS the feedback: without it a weak point and
               // a body shot look identical, which is most of why the weak point
@@ -40396,7 +40396,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.47: Pillagers now come at you from the side more and duck behind cover between shots even at long range. Check 25.47 fails on v25.46',
+  now:'v25.48: Player 2 elemental rounds burn, shock, freeze and corrode on the host too. Check 25.48 fails on v25.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47902,7 +47902,7 @@ function netHitTake(peer,m){
 }
 // A LINKED WINDOW: its round, blade or charge landed on a body the host runs. The damage worked out here goes to the host,
 // with where this player stands, the bearing of the blow and the weak point it found; the body itself is not touched here.
-function netShotSend(e,dmg,ang,wk,ar){
+function netShotSend(e,dmg,ang,wk,ar,el){
   var q, m;
   if(!e||!e.nid||!NET.on||NET.role!=='join'||!netEntsPeer()) return false;
   q=netPeerOfSeat(0); if(!q) return false;
@@ -47910,6 +47910,7 @@ function netShotSend(e,dmg,ang,wk,ar){
   if(typeof ang==='number'&&isFinite(ang)) m.a=+ang.toFixed(3);
   if(wk&&wk.name) m.wk=netClean(wk.name,16);
   if(ar>0) m.ar=+ar;   // v22.04 (K16): a round the host soaks with its own armour for this man: 1, or 1.5 for a back shot
+  if(el&&ELEM[el]) m.el=el;   // v23.xx (forge7): THE FORGE, the element of player 2's MK III round; the host applies it
   return netSend(q,m);
 }
 // THE HOST: a shot request from one of the party. Applied if the body is alive; the seat is marked for the kill by the rule
@@ -47934,6 +47935,12 @@ function netShotTake(peer,m){
   s=peer.seat;
   sx=(typeof m.x==='number'&&isFinite(m.x))?m.x:e.x; sy=(typeof m.y==='number'&&isFinite(m.y))?m.y:e.y;
   if(typeof m.wk==='string'&&m.wk){ L=weakOf(e); if(L) for(i=0;i<L.length;i++) if(L[i].name===m.wk){ applyWeak(e,L[i]); break; } }
+  // v23.xx, THE FORGE (2026-10-12), forge7: PLAYER 2'S ELEMENTAL ROUNDS. The shot word names the element of his MK III round (m.el,
+  // checked against ELEM; anything else is ignored). The host runs every status, so it applies the element here, credited to his
+  // seat: a burn or an arc kill marks his seat as his round would, and acid eats the plate before the host soaks the round. The
+  // acid machine bonus was already applied by his window, so the number he saw is the one that lands.
+  var _nel=(typeof m.el==='string'&&ELEM[m.el])?m.el:'';
+  if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
   e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s;   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
@@ -47944,6 +47951,7 @@ function netShotTake(peer,m){
     if(!G.sim) sfx('step',e.x,e.y);
   }
   if(e.hp<=0){ e.byPlayer=false; e.bySeat=s; } else if(!e.downed){ e.byPlayer=false; e.bySeat=0; }
+  if(_nel) elemHit(e,_nel,d,s,sx,sy);   // v23.xx (forge7): the element of his round, for his seat
   if(e.kind==='raider'&&e.hostile===false&&!e.merc&&!e.friendlyPC) e.hostile=true;
   if(e.kind==='stray'&&!e.hostile){ e.hostile=1; e.helped=0; e.foeSeat=s; }   // v22.07 (K18): a round from one of the party turns the Survivor, as the host own round does, and he fires back at that seat
   if(e.kind==='raider'&&e.state==='extract'){ if(!runnerTurns(e,sx,sy)) e.alert=2.6; }   // v23.xx: the same for a round from one of the party

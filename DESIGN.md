@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.48 - THE FORGE: PLAYER 2S ELEMENTAL ROUNDS
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. In two player co-op the host runs every enemy, and player 2 only sends what his rounds did. His shot word now names the element of his MK III round, and the host applies it: the burn, the arc, the stun, the chill and the acid, all credited to player 2, so a burn that finishes a pillager is his kill. Acid eats the plate before the host soaks the round, as it does for the host. An element the game does not know is ignored.
+
+MEASURED. Check 25.48 passes, and fails on v25.47.
 ## v25.47 - PILLAGERS FLANK WIDER AND TAKE COVER MORE
 
 Co-op hunt while he was away. His answer 9 a: pillagers flank and use cover more. A lone pillager in a fight walked to a point about 70 degrees off the line between you, so he mostly came at you from the front; he now swings out to about 90 degrees and arrives from your side. A pillager called in by his crew keeps the place his crew gave him. Between shots he looked for cover only when he was within 600 of you and only one step away; he now looks out to 900 and up to two steps away, so a pillager trading shots at range ducks out of your sight between shots far more often.

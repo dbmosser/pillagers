@@ -1,0 +1,7 @@
+v25.48: the forge: player 2s elemental rounds
+
+Player 2 elemental rounds burn, shock, freeze and corrode on the host too.
+
+Check 25.48. Fails on v25.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

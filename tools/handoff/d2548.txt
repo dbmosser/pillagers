@@ -1,0 +1,5 @@
+## v25.48 - THE FORGE: PLAYER 2S ELEMENTAL ROUNDS
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. In two player co-op the host runs every enemy, and player 2 only sends what his rounds did. His shot word now names the element of his MK III round, and the host applies it: the burn, the arc, the stun, the chill and the acid, all credited to player 2, so a burn that finishes a pillager is his kill. Acid eats the plate before the host soaks the round, as it does for the host. An element the game does not know is ignored.
+
+MEASURED. Check 25.48 passes, and fails on v25.47.
