@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.58 - THE WHAT IS NEW CARD NAMES THE TAUNTS AND REDESIGNS
+
+Co-op hunt while he was away. The card was stamped v24.46 and the stamp may not trail the build by more than 0.15. The card was stamped v24.46 and every ship stops when it falls 0.16 behind. Its new line names the builds since: pillager taunts (his answer 34), menu sounds, FEEDBACK with a screenshot in the ESC and TAB menu (his answer 38), and the Howler and Pillbox redesigns.
+
+MEASURED. Check 24.58 passes, and fails on v24.57.
 ## v24.57 - YOUR OPERATOR TALKS
 
 Co-op hunt while he was away. His number 45 and his answer 26 b, short voice barks. Reloading, running dry, throwing a frag, stringing a tripwire, going down and starting a heal were only written on the screen, where nobody in a fight is looking. Now a short spoken bark plays with each: RELOADING, OUT OF AMMO, FRAG OUT, TRIPWIRE SET, I AM DOWN and HEALING, and SCORE LOST in the 2 player demo. They are spoken in a clipped radio voice that cuts through a fight, one at a time with a gap between them so a busy moment never stacks voices, and they follow the split speakers like every other sound.

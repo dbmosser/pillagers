@@ -1,0 +1,7 @@
+v24.58: the what is new card names the taunts and redesigns
+
+The what is new card names the taunts and the redesigns.
+
+Check 24.58. Fails on v24.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
