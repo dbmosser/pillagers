@@ -7060,7 +7060,18 @@ window.__REGRESS=[
   {v:'24.57',what:'his #45 and answer 26 b, voice barks: the page carries a WAV clip for RELOADING, a reload (blipMine reload) asks for RELOADING and a dry gun for NOAMMO, a bark plays through the voice bus, a second bark inside 1.2 s is dropped, and nothing plays under G.sim',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof sndBus!=='function'||typeof blipMine!=='function') return 'SKIP: this fixture cannot run a raid';
-     if(typeof voxBark!=='function'||typeof VOX_BARKS!=='object') return 'no voice barks (no voxBark): reloading, going dry and going down are said only on the screen';
+     // retargeted 2026-10-12 (novoice): HIS ORDER replaced the player voice with noises ("anywhere that you added player speech, replace
+     // with a distinct noise"). On a build with no voxBark (and the downed noise), what this check still protects is that a reload and a
+     // dry gun keep their own sounds and no player speech clip is left in the page. The voice branch below is unchanged for older builds.
+     if(typeof voxBark!=='function'&&typeof sndDowned==='function'){
+       var kB0=blip, seen0=[], bad0=[];
+       try{ blip=function(t0){ seen0.push(t0); }; blipMine('reload'); blipMine('dry'); }catch(x0){ bad0.push('threw: '+(x0&&x0.message||x0)); }
+       finally{ blip=kB0; }
+       if(seen0.indexOf('reload')<0) bad0.push('a reload makes no sound');
+       if(seen0.indexOf('dry')<0) bad0.push('a dry gun makes no sound');
+       if(typeof VOX_BARKS==='object'&&VOX_BARKS&&(VOX_BARKS.RELOADING||VOX_BARKS.NOAMMO)) bad0.push('a player speech clip is still in the page');
+       return bad0.length?bad0.join('; '):null;
+     }     if(typeof voxBark!=='function'||typeof VOX_BARKS!=='object') return 'no voice barks (no voxBark): reloading, going dry and going down are said only on the screen';
      function P(v){ var q={value:v}; q.setValueAtTime=function(x){ q.value=x; return q; }; q.setTargetAtTime=function(x){ q.value=x; return q; }; q.linearRampToValueAtTime=function(x){ q.value=x; return q; }; q.exponentialRampToValueAtTime=function(x){ q.value=x; return q; }; q.cancelScheduledValues=function(){ return q; }; q.cancelAndHoldAtTime=function(){ return q; }; return q; }
      var MADE=[];
      function N(k,ps){ var o={kind:k,outs:[]}; o.connect=function(t){ if(t) o.outs.push(t); return t; }; o.disconnect=function(){ o.outs=[]; }; o.start=function(){}; o.stop=function(){}; (ps||[]).forEach(function(n){ o[n]=P(n==='gain'?1:0); }); MADE.push(o); return o; }
