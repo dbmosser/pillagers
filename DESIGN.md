@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.13 - CAREER RAIDS: THE KILL SCORE
+
+Co-op hunt while he was away. His mode design of 2026-10-12: in CAREER the high score is still an objective, and his rule that the scoring is exactly the same in DEMO and CAREER. A kill in a CAREER raid now scores as it does in the DEMO: the same points for each kind, the same streak multiplier and callouts, and the +$ popup where the body fell. Each player in a co-op raid scores his own kills. The score sits at the top of the screen with the 10 minute clock under it, as in the DEMO. The DEMO helping hands (ammo back and free bandages on kills) stay in the DEMO.
+
+MEASURED. Check 25.13 passes, and fails on v25.12.
 ## v25.12 - NO SEARCH RESUMED LINE
 
 Co-op hunt while he was away. His order of 2026-10-12: get rid of the Search resumed messaging. Picking a search back up used to print Search resumed with how far the box had got, every time you came back to it. The search bar already shows that, so the line was chatter. Picking a search back up now says nothing, and the progress carries on exactly as before. The line where a teammate is already searching a box stays, because it tells you why the box will not open.

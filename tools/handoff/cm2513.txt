@@ -1,0 +1,7 @@
+v25.13: career raids: the kill score
+
+Kills in CAREER raids score points, with streaks, shown above the clock.
+
+Check 25.13. Fails on v25.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
