@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.97 - NO BACKPACK LINE AT EXTRACTION
+
+Co-op hunt while he was away. His note of 2026-10-12: HEAVY BACKPACK, why does it say that when extracting, we got rid of different backpack sizes a long time ago. Calling extraction said a third line after the siege, LIGHT, LOADED or HEAVY BACKPACK with They heard that, Expect company or Fewer will come under it. It was read off how much the haul is worth, not a pack size, and there is only one grid backpack, so it read as nonsense. The line is gone, in solo and on a linked window. The siege still grows with the value of what you carry, it just does not say so. No other backpack weight wording was left anywhere in the game.
+
+MEASURED. Check 24.97 passes, and fails on v24.96.
 ## v24.96 - THE WHAT IS NEW CARD NAMES EXTRACT FOR X2
 
 Co-op hunt while he was away. The card was stamped v24.84 and the stamp may not trail the build by more than 0.15. The card was stamped v24.84 and every ship stops when it falls 0.16 behind. Its new line names the builds since: DEMO extraction doubles the score and ends the run (his mode design), the near-miss whizz (his sound order), and the scav pistol spawn-only (his order 2026-10-12).

@@ -1,0 +1,7 @@
+v24.97: no backpack line at extraction
+
+Calling extraction no longer says LIGHT, LOADED or HEAVY BACKPACK.
+
+Check 24.97. Fails on v24.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
