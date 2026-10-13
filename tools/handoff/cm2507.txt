@@ -1,0 +1,7 @@
+v25.07: the downed noise
+
+Going down now lands with a heavy thump, a dull ring and a muffled world, and a teammate going down is heard where he fell.
+
+Check 25.07. Fails on v25.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

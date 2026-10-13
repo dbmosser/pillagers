@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.07 - THE DOWNED NOISE
+
+Co-op hunt while he was away. His order of 2026-10-12: have a downed noise, and anywhere a player voice was added, replace it with a distinct noise. Going down said I AM DOWN in a spoken voice (v24.57), which he hears as killing the vibe, and the rest of the party heard nothing at all. Going down now has its own sound that is never taken for a hit: a heavy body drop with a low muffled thump, a short dull ring like a concussion, and the world dips for about a second (everything else goes muffled, then opens again). Player 2 hears his own fall in his own window, on his side of the split speakers. A teammate going down is heard where he fell: the drop and the thump, panned and quieter with distance. The spoken DOWN bark is gone. Sound only: nothing in the raid changes.
+
+MEASURED. Check 25.07 passes, and fails on v25.06.
 ## v25.06 - THE HUD PANEL TOGGLE IS A CHEVRON
 
 Co-op hunt while he was away. His orders of 2026-10-12 (#35 redo the HUD, #50 make it look like a AAA game). The CONDITIONS, CURRENT PILLAGERS and controls panels in a raid ended their title with [-] or [+] in grey text, which read as developer UI. They draw a small chevron in the same spot now, up while open and down while folded. The click that folds them is the same.
