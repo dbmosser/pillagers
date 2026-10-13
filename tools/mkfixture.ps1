@@ -21372,6 +21372,7 @@ window.__REGRESS=[
        g.ents.length=0; p.iv=99; p.roll=0; p.downed=false; p.dying=false; g.paused=false; g.bagOpen=false; g.mapOpen=false; keys={};
        say=function(){};
        // the walk: key 2 is the stowed SMG; it is set straight on, so only keys 3, 4 and 5 are walked
+       g.pouch.frag=Math.max(g.pouch.frag|0,1);   // v25.xx (belt7) retarget: key 5 holds a grenade, so the pad walk lands on it
        g.hot=1; r0=p.wep.reload||1; p.reloading=r0;
        beltStep(1);
        if(g.hot!==2) bad.push('RB from key 2 went to key '+(g.hot+1)+', not to key 3 with the packed shotgun');
@@ -23049,6 +23050,7 @@ window.__REGRESS=[
        g.ents.length=0; p.iv=99; p.roll=0; p.downed=false; p.dying=false; g.paused=false;
        sl=hotbarSlots();
        if(!(sl[2]&&sl[2].kind==='gun'&&sl[2].vacant&&sl[3]&&sl[3].kind==='gun'&&sl[3].vacant)) bad.push('with two guns and none packed keys 3 and 4 show '+desc(sl[2])+' and '+desc(sl[3])+', not two vacant gun keys');
+       g.pouch.frag=Math.max(g.pouch.frag|0,1);   // v25.xx (belt7) retarget: key 5 holds a grenade, so the pad walk lands on it
        g.hot=0; say=function(){}; setHot(2); say=s0;
        if(g.hot!==0) bad.push('pressing the vacant key 3 moved the highlight to key '+(g.hot+1));
        if(typeof beltStep!=='function') bad.push('no pad walk that steps over a vacant gun key (beltStep)');
