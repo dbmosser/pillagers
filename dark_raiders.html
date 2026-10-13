@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.92';
+var VER='25.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2172,7 +2172,7 @@ var VER='25.92';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='25.81';
+var WHATSNEW_VER='25.93';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2192,6 +2192,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'NEW BELT. Four gun keys, two throwables, two medical and an armour key. A better gun swaps out your weakest. DEMO extraction and siege now match CAREER.',
   'HOLD KEYS. Hold H for a plate, hold Alt for the raid status, middle mouse pings. Crouching is the quiet walk, and no voice calls out anymore.',
   'NEW KEYS. E searches, X extracts, Q swings a crowbar, F is next gun, H heals. The siren means real danger, and every machine dies with its own noise.',
   'CAREER PAYOUT. Extracting in CAREER pays your score x2 in credits. Downed pillagers get up once, reloads sound real, and Forge acid rounds eat armour.',
@@ -41233,7 +41234,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.92: A third kind of grenade is now carried in the backpack as items, and a throwable key swaps it in. Check 25.92 fails on v25.91',
+  now:'v25.93: The what is new card names the new belt. Check 25.93 fails on v25.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

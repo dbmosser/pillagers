@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.93 - THE WHAT IS NEW CARD NAMES THE NEW BELT
+
+Co-op hunt while he was away. The card was stamped v25.81 and the stamp may not trail the build by more than 0.15. The card was stamped v25.81 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the belt redo (his order 2026-10-13: guns 1-4, throwables 5-6, medical 7-8, armour 9, the weakest gun swaps out) and the DEMO fixes (extraction and siege the same as CAREER, his rule).
+
+MEASURED. Check 25.93 passes, and fails on v25.92.
 ## v25.92 - A THIRD GRENADE KIND RIDES IN THE BACKPACK
 
 Co-op hunt while he was away. His order of 2026-10-13: grenades their own class of item with 2 slots. Build 4 of 8. The two throwable keys hold two kinds of grenade; a third kind has no key, so it is now carried in the backpack as items (weight 1 each) instead of in a pouch nobody could see. It shows in the grid, can be dropped, and can be dragged onto a throwable key, which swaps it in and moves the kind it pushed out into the backpack. How many he has of a kind is the pouch plus the backpack, a throw takes from the pouch first and then the backpack, a found grenade says BACKPACK on its pickup row when it has no key, and once a frame a kind with no key moves from the pouch to the backpack. The bot, the Undercroft belt and the arcade keep everything in the pouch as before.
