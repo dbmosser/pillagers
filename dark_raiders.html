@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.44';
+var VER='25.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22391,9 +22391,24 @@ function elemHit(e,el,d,seat,sx,sy){
       e.frozenT=e.boss?0.6:((e.kind==='warden'||e.kind==='choir')?0.7:1.4);
       e.chill=0; e.freezeImm=e.frozenT+4; e.roll=0;
     }
+  } else if(el==='acid'){
+    e.corrT=4;
   }
   return true;
 }
+// v23.xx, THE FORGE (2026-10-12), forge6: ACID. An acid round eats armour plates BEFORE the armour soaks it: 0.6 of the round comes
+// off the plate first (elemShred), and for 4 s after (corrT) the plate stops only half of what it would (elemAbsorb), for every
+// round that hits him, a teammate round too. A machine takes 1.25 times the damage of an acid round, after any Bulwark shield. No
+// damage over time. A Breacher Plate pillager is bare in about seven MK III rifle hits instead of about twenty. No draw on any stream.
+function elemShred(e,d){
+  var s;
+  if(!e||!(d>0)) return 0;
+  e.corrT=4;
+  if(!(e.armor>0)) return 0;
+  s=Math.min(e.armor,0.6*d); e.armor-=s;
+  return s;
+}
+function elemAbsorb(e){ return (armorById(e.rig).absorb||0)*((e.corrT>0)?0.5:1); }
 // v23.xx, THE FORGE (2026-10-12), forge4: SHOCK. Every shock hit arcs half its damage to the nearest other body within 160 that the
 // shooter would fight, with a clear line between the two (the arc is soaked by armour as a round is, never by a Bulwark shield, and
 // finds no weak point). One arc per shooter every 0.2 s, so an SMG or a scattergun blast arcs about five times a second, not once a
@@ -22404,7 +22419,7 @@ function elemHit(e,el,d,seat,sx,sy){
 var ELEM_MACH={sentry:1,crawler:1,listener:1,bulwark:1,howler:1,snitch:1,warden:1,choir:1};
 function elemSoak(e,d){
   var sk, ab;
-  if(e.armor>0&&d>0){ sk=armorById(e.rig).absorb||0; ab=Math.min(e.armor,d*sk); e.armor-=ab; d-=ab; }
+  if(e.armor>0&&d>0){ sk=elemAbsorb(e); ab=Math.min(e.armor,d*sk); e.armor-=ab; d-=ab; }
   return d;
 }
 function elemArcOk(t){
@@ -22451,6 +22466,7 @@ function elemTick(dt){
     if(e.chillT>0){ e.chillT-=dt; if(e.chillT<=0){ e.chillT=0; e.chill=0; } }   // v23.xx (forge5): the cold runs off with the chill
     if(e.frozenT>0){ e.frozenT-=dt; if(e.frozenT<0) e.frozenT=0; }
     if(e.freezeImm>0){ e.freezeImm-=dt; if(e.freezeImm<0) e.freezeImm=0; }
+    if(e.corrT>0){ e.corrT-=dt; if(e.corrT<0) e.corrT=0; }   // v23.xx (forge6): the acid wears off
     if(e.panicCd>0){ e.panicCd-=dt; if(e.panicCd<0) e.panicCd=0; }
     if(e.panicT>0){ e.panicT-=dt; if(e.panicT<0||e.downed||e.hp<=0) e.panicT=0; }
     if(e.burnT>0){
@@ -24652,7 +24668,8 @@ function updateBullets(dt){
                 // armour it runs, in the same order as its own rounds: armour first, then the back shot bonus.
                 _nar=1;
               } else if(en.armor>0){
-                var esk=armorById(en.rig).absorb||0;
+                if(b.el==='acid') elemShred(en,edmg);   // v23.xx (forge6): ACID eats the plate before it soaks the round
+                var esk=elemAbsorb(en);   // v23.xx (forge6): a corroded plate stops half
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
               }
               // v22.07, from the whole-game bug hunt of 2026-10-08 (K18): ON A LINKED WINDOW THE HOST TURNS HIM. Up top in co-op this
@@ -24670,6 +24687,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                   edmg*=1.5; _backShot=true; if(_nar) _nar=1.5;
                 }
               }
+              if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
               if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar); else en.hp-=edmg;   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
               en.hitT=.16;
               // HIS Q42. The number IS the feedback: without it a weak point and
@@ -40322,7 +40340,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.44: A downed pillager who still has his one self-revive gets up on his own after a few seconds: shoot him while he rises or he is back in the fight. Check 25.44 fails on v25.43',
+  now:'v25.45: Acid rounds from a MK III gun eat armour plates and hurt machines more. Check 25.45 fails on v25.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47858,7 +47876,7 @@ function netShotTake(peer,m){
   s=peer.seat;
   sx=(typeof m.x==='number'&&isFinite(m.x))?m.x:e.x; sy=(typeof m.y==='number'&&isFinite(m.y))?m.y:e.y;
   if(typeof m.wk==='string'&&m.wk){ L=weakOf(e); if(L) for(i=0;i<L.length;i++) if(L[i].name===m.wk){ applyWeak(e,L[i]); break; } }
-  if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=armorById(e.rig).absorb||0, _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
+  if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
   e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s;   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){

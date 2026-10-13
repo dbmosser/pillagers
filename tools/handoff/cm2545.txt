@@ -1,0 +1,7 @@
+v25.45: the forge: acid rounds eat armour
+
+Acid rounds from a MK III gun eat armour plates and hurt machines more.
+
+Check 25.45. Fails on v25.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

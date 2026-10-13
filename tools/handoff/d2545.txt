@@ -1,0 +1,5 @@
+## v25.45 - THE FORGE: ACID ROUNDS EAT ARMOUR
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. ACID is the fourth element. An acid round eats into a pillager armour plate before the plate soaks it, and for 4 seconds after that the plate stops only half of what it would, for every round that hits him, a teammate round too. A Breacher Plate is gone in about seven upgraded rifle hits instead of about twenty. Machines take a quarter more damage from acid rounds. No gun can be upgraded in play yet: the Forge station comes in a later build.
+
+MEASURED. Check 25.45 passes, and fails on v25.44.
