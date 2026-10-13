@@ -1875,6 +1875,7 @@ window.__REGRESS=[
      for(i=sl.length-1;i>=0;i--) if(sl[i]&&sl[i].kind==='empty'){ E1=i; break; }
      for(i=0;i<sl.length&&E2<0;i++) if(i!==E1&&sl[i]&&sl[i].kind==='empty') E2=i;
      for(i=0;i<sl.length&&E2<0;i++) if(i!==E1&&sl[i]&&sl[i].kind==='throw') E2=i;
+     if(typeof BELT_CLASS!=='undefined'){ E1=BELT_CLASS.lastIndexOf('med'); E2=BELT_CLASS.indexOf('med'); }   // v25.xx (belt3) retarget: a bandage goes on a medical key
      if(GI<0||HI<0||E1<0||E2<0)
        return 'the bar is not the shape this check assumes (a gun in hand, a Medical key, an empty key and one more ordinary key), so it is testing nothing';
      // A consumable onto an empty slot takes.
@@ -2150,7 +2151,7 @@ window.__REGRESS=[
        __deploy({kit:['medkit','medkit','medkit','plate','servo'],safe:null,mapIx:0,seed:4242});
        var g=__state(); g.ents.length=0; g.player.iv=99; g.bagOpen=true;
        for(var f=0;f<8;f++) __loop(performance.now()+f*16.7);
-       if(bind) __state().hotAssign=bind;
+       if(bind) __state().hotAssign=bind; else if(typeof BELT_CLASS!=='undefined'){ __state().hotAssign={}; __state().hotAuto={}; }   // v25.xx (belt3) retarget: the raid start pins what the class keys show, so "nothing bound" is set here
        for(var f2=0;f2<8;f2++) __loop(performance.now()+f2*16.7);
        return (__state().bagCells||[]).map(function(c){ return c.key; }).sort().join(',');
      }
@@ -2884,7 +2885,8 @@ window.__REGRESS=[
      }
      // ONTO the belt.
      var key=bc[0].key;
-     drag(bc[0],hc[7]);
+     var TI=(typeof beltClassOf==='function'&&typeof BELT_CLASS!=='undefined'&&beltClassOf(key))?BELT_CLASS.lastIndexOf(beltClassOf(key)):7;   // v25.xx (belt3) retarget: the item goes on a key of its own class
+     drag(bc[0],hc[TI]);
      var live=__hubBagLive();
      if(!live||(live.hotAssign||{})[7]!==key)
        bad.push('dragging '+key+' onto belt slot 8 did not bind it');
@@ -2896,8 +2898,8 @@ window.__REGRESS=[
        bad.push('the backpack still draws '+(live.bagCells||[]).length+' cells after one went to the belt');
      // OFF the belt again, which is his v8.72 note.
      var hc2=live.hotCells||[], bc2=live.bagCells||[];
-     if(hc2.length>7&&bc2.length){
-       drag(hc2[7],bc2[0]);
+     if(hc2.length>TI&&bc2.length){
+       drag(hc2[TI],bc2[0]);
        var live2=__hubBagLive();
        if((live2.hotAssign||{})[7]!==undefined) bad.push('dragging off the belt did not release the slot');
        if(((__P().hotAssign||{})[7])!==undefined) bad.push('the released slot was not written to the profile');
@@ -3134,17 +3136,17 @@ window.__REGRESS=[
      // slots, so if the fix is absent the slot does not read "empty", it reads
      // Frag Charge. Two different items so one lucky match cannot pass this.
      g.bag=["medkit","medkit","bandage","frag","frag","frag"];
-     g.hotAssign={4:"medkit",5:"bandage"};
+     g.hotAssign={6:"medkit",7:"bandage"};   // v25.xx (belt3) retarget: medical keys 7 and 8
      g.hotAuto=null;
      var before=__belt.slots();
-     if(!before[4]||before[4].itemKey!=="medkit") bad.push("setup: slot 5 did not take the medkit binding");
-     if(!before[5]||before[5].itemKey!=="bandage") bad.push("setup: slot 6 did not take the bandage binding");
-     var c4=before[4]&&before[4].count, c5=before[5]&&before[5].count;
+     if(!before[6]||before[6].itemKey!=="medkit") bad.push("setup: slot 5 did not take the medkit binding");
+     if(!before[7]||before[7].itemKey!=="bandage") bad.push("setup: slot 6 did not take the bandage binding");
+     var c4=before[6]&&before[6].count, c5=before[7]&&before[7].count;
      if(c4!==2) bad.push("setup: slot 5 counted "+c4+" medkits, not 2");
      // Now spend every one of both, which is the thing he described.
      g.bag=["frag","frag","frag"];
      var after=__belt.slots();
-     var a4=after[4]||{}, a5=after[5]||{};
+     var a4=after[6]||{}, a5=after[7]||{};
      // HIS ANSWER 16: still the item he put there, and it says none left.
      if(a4.itemKey!=="medkit") bad.push("slot 5 stopped being the medkit and became "+(a4.name||"nothing"));
      if(a5.itemKey!=="bandage") bad.push("slot 6 stopped being the bandage and became "+(a5.name||"nothing"));
@@ -3153,7 +3155,7 @@ window.__REGRESS=[
      if(a5.empty!==1) bad.push("an emptied slot 6 is not flagged empty");
      // and it comes back to life on its own when he picks another one up
      g.bag=["frag","medkit"];
-     var back=__belt.slots()[4]||{};
+     var back=__belt.slots()[6]||{};
      if(back.count!==1||back.empty) bad.push("picking a medkit back up left slot 5 reading "+back.count+" empty="+back.empty);
      // CONTROL 1, and it is the one that matters: a slot he never bound must
      // STILL derive normally. Without this, a fix of "never re-derive anything"
@@ -3185,7 +3187,7 @@ window.__REGRESS=[
      __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
      __deploy({kit:['medkit','medkit'],safe:null,mapIx:0,seed:4242});
      var g=__state(); g.ents.length=0; g.player.iv=99;
-     g.hotAssign={4:'medkit'}; g.hotAuto=null;
+     g.hotAssign={6:'medkit'}; g.hotAuto=null;   // v25.xx (belt3) retarget: a medical key
      function run(n){ for(var f=0;f<6;f++) __loop(performance.now()+n+f*16.7); }
      g.bag=['medkit','medkit']; run(0);
      var b=__hud().belt;
@@ -3201,9 +3203,9 @@ window.__REGRESS=[
        for(var i=0;i<d.length;i+=4) s+=(d[i]+d[i+1]+d[i+2])/3;
        return s/(d.length/4);
      }
-     var stocked=cell(4);
+     var stocked=cell(6);
      g.bag=[]; run(900);
-     var emptied=cell(4);
+     var emptied=cell(6);
      var bad=[];
      if(!(stocked>0)) bad.push('the stocked slot measured '+stocked.toFixed(1)+', so nothing is being drawn there');
      // The cell is drawn at 28 percent alpha when its count is zero. Anything
@@ -3212,7 +3214,7 @@ window.__REGRESS=[
      // CONTROL: picking one back up must bring the brightness back. Without this
      // a belt that drew every slot dark would pass the assertion above.
      g.bag=['medkit']; run(1800);
-     var back=cell(4);
+     var back=cell(6);
      if(stocked>0&&back/stocked<0.75) bad.push('control: restocking left the slot at '+Math.round(back/stocked*100)+' percent, so the slot is dark whatever he carries');
      return bad.length?bad.join('; '):null; }},
   {v:'9.04',what:'criers keep to the street and are not found standing inside houses',
@@ -4967,15 +4969,15 @@ window.__REGRESS=[
        // braces against that changing.
        function down(){ [hcv,cv,window].forEach(function(t){ try{ t.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true})); }catch(_de){} }); }
        function up(){ window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true})); }
-       var bagCell=g.bagCells[0], slot=g.hotCells[4], other=g.hotCells[5], key=bagCell.key;
+       var bagCell=g.bagCells[0], slot=g.hotCells[6], other=g.hotCells[7], key=bagCell.key;   // v25.xx (belt3) retarget: the two medical keys
        at(bagCell); down(); at(slot); up(); __frame(0);
-       var assigned=((g.hotAssign||{})[4]===key);
+       var assigned=((g.hotAssign||{})[6]===key);
        if(mode==='sameSlot'){ at(slot); down(); at(slot); up(); }
        if(mode==='otherSlot'){ at(slot); down(); at(other); up(); }
        if(mode==='toBag'){ at(slot); down(); at(bagCell); up(); }
        __frame(0);
        var a=g.hotAssign||{};
-       return {key:key, assigned:assigned, slot5:a[4], slot6:a[5], inBag:(g.bag.indexOf(key)>=0)};
+       return {key:key, assigned:assigned, slot5:a[6], slot6:a[7], inBag:(g.bag.indexOf(key)>=0)};
      }
      var off=drag('toBag');
      if(off.err) return 'SKIP: '+off.err;
@@ -5797,7 +5799,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof hotbarSlots!=='function'||typeof setHot!=='function'||typeof useHot!=='function') return 'SKIP: no tactical belt in this build';
-     var bad=[], SLOT=1;
+     var bad=[], SLOT=(typeof BELT_CLASS!=='undefined')?4:1;   // v25.xx (belt3) retarget: a throwable key
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -6181,7 +6183,7 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof hotbarSlots!=='function'||typeof GUNKEYS==='undefined'||GUNKEYS<4||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse) return 'SKIP: no belt drag here';
      var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down, s0=say, said=[],
-         g=null, p=null, sl, K8={x:600,y:700,w:40,h:40,i:7}, K9={x:700,y:700,w:40,h:40,i:8};
+         g=null, p=null, sl, K8={x:600,y:700,w:40,h:40,i:(typeof BELT_CLASS!=='undefined'?3:7)}, K9={x:700,y:700,w:40,h:40,i:8};
      function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q='field'; o.qRank=1; return o; }
      function down(C){ mouse.x=C.x+20; mouse.y=C.y+20; cv.dispatchEvent(new MouseEvent('mousedown',{button:0})); }
      function up(C){ mouse.x=C.x+20; mouse.y=C.y+20; window.dispatchEvent(new MouseEvent('mouseup',{button:0})); }
@@ -6193,7 +6195,7 @@ window.__REGRESS=[
        p.wep=cl('rifle'); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=false;
        p.sec=cl('smg'); p.secAmmo=p.sec.mag; p.secIssued=false; p.secFromArmory=false;
        p.swapped=false; p.reloading=0; p.roll=0; p.downed=false; p.dying=false;
-       g.bag=[]; g.hotAssign={7:'gun_smg'}; g.hotAuto={}; g.hot=0; g.drag=null; g.hotPruned={};
+       g.bag=[]; g.hotAssign=(typeof BELT_CLASS!=='undefined')?{3:'gun_smg'}:{7:'gun_smg'}; g.hotAuto={}; g.hot=0; g.drag=null; g.hotPruned={};
        g.bagOpen=true; g.bagCells=[]; g.bagPanel=null; g.mapOpen=false; g.trade=null; g.paused=false;
        g.hotCells=[K8,K9];
        say=function(t){ said.push(String(t)); };
@@ -6202,11 +6204,11 @@ window.__REGRESS=[
        down(K8); up(K8); g.drag=null;
        if(!(p.wep&&p.wep.id==='smg')) bad.push('a click on key 8, which holds his stowed gun, did not bring it up (in hand: '+(p.wep&&p.wep.id)+'; said '+said.join(' / ')+')');
        // a drag of that key onto key 9 (also past the gun keys) is a refusal and moves nothing
-       said.length=0; g.hotAssign={7:'gun_rifle'}; g.hotAuto={}; g.hot=0; g.drag=null;
+       said.length=0; g.hotAssign=(typeof BELT_CLASS!=='undefined')?{3:'gun_rifle'}:{7:'gun_rifle'}; g.hotAuto={}; g.hot=0; g.drag=null;
        sl=hotbarSlots();
        if(!(sl[7]&&sl[7].kind==='gun'&&sl[7].itemKey==='gun_rifle')) return bad.length?bad.join('; '):'SKIP: staging: key 8 does not show the rifle';
        down(K8); up(K9); g.drag=null;
-       if(g.hotAssign[8]!==undefined||g.hotAssign[7]!=='gun_rifle') bad.push('a gun key dragged onto key 9 moved or was bound there (keys '+JSON.stringify(g.hotAssign)+')');
+       if(g.hotAssign[8]!==undefined||g.hotAssign[K8.i]!=='gun_rifle') bad.push('a gun key dragged onto key 9 moved or was bound there (keys '+JSON.stringify(g.hotAssign)+')');
        if(!said.some(function(t){ return t==='GUNS GO ON KEYS 1 TO '+GUNKEYS; })) bad.push('that drag did not say GUNS GO ON KEYS 1 TO '+GUNKEYS+' (said '+said.join(' / ')+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -17841,7 +17843,7 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof hotbarSlots!=='function'||typeof tryRoll!=='function'||typeof cycleThrow!=='function'||typeof emptyThrowCell!=='function'||typeof bagHeldGun!=='function'||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse||!ITEMS.medkit) return 'SKIP: no belt drags, rolls or throwables here';
      var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down, realSay=say, said=[],
-         g=null, p=null, MK=ITEMS.medkit.name.toUpperCase(), K9={x:900,y:700,w:40,h:40,i:8}, K1={x:100,y:700,w:40,h:40,i:0}, k, l, all=[];
+         g=null, p=null, MK=ITEMS.medkit.name.toUpperCase(), K9={x:900,y:700,w:40,h:40,i:(typeof BELT_CLASS!=='undefined'?7:8)}, K1={x:100,y:700,w:40,h:40,i:0}, k, l, all=[];
      function up(C){ if(C){ mouse.x=C.x+20; mouse.y=C.y+20; } else { mouse.x=1500; mouse.y=300; } window.dispatchEvent(new MouseEvent('mouseup',{button:0})); }
      function last(){ return said.length?said[said.length-1]:null; }
      function need(tag,want){ var L=last(); if(!L) bad.push(tag+': said nothing'); else if(want&&!want.test(L.m)) bad.push(tag+': said '+JSON.stringify(L.m)); }
@@ -17856,10 +17858,10 @@ window.__REGRESS=[
        g.hotCells=[K1,K9];
        // ONE: a Medkit dropped on slot 9, then dragged off
        said.length=0; g.drag={key:'medkit',bagIx:0,px:0,py:0}; up(K9); g.drag=null;
-       if(g.hotAssign&&g.hotAssign[8]==='medkit'){
-         need('a Medkit dropped on slot 9',new RegExp('^'+MK+' TO SLOT 9$'));
-         said.length=0; g.drag={key:'medkit',fromHot:8,px:K9.x+20,py:K9.y+20}; up(null); g.drag=null;
-         need('slot 9 dragged off the belt',new RegExp('^'+MK+' OFF SLOT 9$'));
+       if(g.hotAssign&&g.hotAssign[K9.i]==='medkit'){
+         need('a Medkit dropped on slot 9',new RegExp('^'+MK+' TO SLOT '+(K9.i+1)+'$'));
+         said.length=0; g.drag={key:'medkit',fromHot:K9.i,px:K9.x+20,py:K9.y+20}; up(null); g.drag=null;
+         need('slot 9 dragged off the belt',new RegExp('^'+MK+' OFF SLOT '+(K9.i+1)+'$'));
        } else bad.push('staging: the Medkit did not go on slot 9 ('+JSON.stringify(g.hotAssign)+')');
        g.bagOpen=false; g.hotCells=[];
        // TWO: a tired roll
@@ -18940,7 +18942,7 @@ window.__REGRESS=[
        voice('an offer of the '+ITEMS[lk].name+' nobody took','ZQX MATE DID NOT TAKE IT',String(ITEMS[lk].name).toUpperCase());
        g.giftOut=null;
        // the offer key, backpack open, nobody near
-       g.bag=['bandage']; g.bagOpen=true; g.bagBelt=false; g.bagSel=0; said.length=0; netGiftKey();
+       g.bag=['bandage']; g.hotAssign={}; g.hotAuto={}; g.bagOpen=true; g.bagBelt=false; g.bagSel=0; said.length=0; netGiftKey();
        voice('the offer key with nobody near','NO TEAMMATE IN RANGE');
        g.giftOut=null;
        g.bagBelt=true; said.length=0; netGiftKey();
@@ -19904,7 +19906,7 @@ window.__REGRESS=[
      if(!ITEMS.medkit) return 'SKIP: no Medkit here';
      var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down, s0=say, said=[],
          g=null, p=null, ids=[], k, a, b, c, e, ak=null, L, MK=ITEMS.medkit.name.toUpperCase(),
-         K1={x:100,y:700,w:40,h:40,i:0}, K2={x:200,y:700,w:40,h:40,i:1}, K3={x:300,y:700,w:40,h:40,i:2}, K9={x:900,y:700,w:40,h:40,i:8};
+         K1={x:100,y:700,w:40,h:40,i:0}, K2={x:200,y:700,w:40,h:40,i:1}, K3={x:300,y:700,w:40,h:40,i:2}, K9={x:900,y:700,w:40,h:40,i:(typeof BELT_CLASS!=='undefined'?7:8)};
      function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q='field'; o.qRank=1; return o; }
      function up(C){ if(C){ mouse.x=C.x+20; mouse.y=C.y+20; } else { mouse.x=1500; mouse.y=300; } window.dispatchEvent(new MouseEvent('mouseup',{button:0})); }
      function last(){ return said.length?said[said.length-1]:null; }
@@ -19933,12 +19935,12 @@ window.__REGRESS=[
        say=function(t,kd,o){ said.push({m:String(t),sub:(o&&o.sub)?String(o.sub):''}); };
        // ONE: a Medkit from the backpack dropped on key 9.
        said.length=0; g.drag={key:'medkit',bagIx:0,px:0,py:0}; up(K9); g.drag=null;
-       if(g.hotAssign[8]!=='medkit') return 'SKIP: staging: the Medkit did not go on key 9 ('+JSON.stringify(g.hotAssign)+')';
-       voice('a Medkit dropped on key 9',last(),new RegExp('^'+MK+' (ON KEY|TO SLOT) 9$'));   // tr52fix: ON KEY 9 or TO SLOT 9 (the slot word)
+       if(g.hotAssign[K9.i]!=='medkit') return 'SKIP: staging: the Medkit did not go on key 9 ('+JSON.stringify(g.hotAssign)+')';
+       voice('a Medkit dropped on key 9',last(),new RegExp('^'+MK+' (ON KEY|TO SLOT) '+(K9.i+1)+'$'));   // tr52fix: ON KEY 9 or TO SLOT 9 (the slot word)
        // TWO: key 9 dragged off the belt.
-       said.length=0; g.drag={key:'medkit',fromHot:8,px:K9.x+20,py:K9.y+20}; up(null); g.drag=null;
-       if(g.hotAssign[8]!==undefined) return bad.length?bad.join('; '):'SKIP: staging: dragging key 9 off the belt did not take the Medkit off';
-       voice('key 9 dragged off the belt',last(),new RegExp('^'+MK+' OFF (KEY|SLOT) 9$'));   // tr52fix
+       said.length=0; g.drag={key:'medkit',fromHot:K9.i,px:K9.x+20,py:K9.y+20}; up(null); g.drag=null;
+       if(g.hotAssign[K9.i]!==undefined) return bad.length?bad.join('; '):'SKIP: staging: dragging key 9 off the belt did not take the Medkit off';
+       voice('key 9 dragged off the belt',last(),new RegExp('^'+MK+' OFF (KEY|SLOT) '+(K9.i+1)+'$'));   // tr52fix
        // THREE: a gun he no longer carries dropped on gun key 3.
        said.length=0; g.drag={key:'gun_'+e,bagIx:0,px:0,py:0}; up(K3); g.drag=null;
        voice('a gun no longer in the backpack',last(),'NOT IN BACKPACK');
@@ -19986,6 +19988,7 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof hotbarSlots!=='function'||typeof autoBelt!=='function'||typeof gunCell!=='function'||typeof GUNKEYS==='undefined'||GUNKEYS<4) return 'SKIP: no four gun keys here';
      var bad=[], s0=say, said=[], g=null, p=null, ids=[], k, a, b, c, d2, e, sl;
+     if(typeof BELT_CLASS!=='undefined') return 'SKIP: retired by belt3: a gun he put on a later key (key 6) that key 1 also shows is gone, guns live on keys 1 to 4 and are never repeated';
      function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q='field'; o.qRank=1; return o; }
      function gid(x){ return (x&&x.kind==='gun'&&!x.vacant)?String(x.icon||'').replace(/^gun_/,''):''; }
      function desc(x){ if(!x) return 'nothing'; return (x.itemKey&&!/^gun_/.test(x.itemKey))?x.itemKey:((gid(x)||x.k||x.kind)+(x.vacant?' (vacant)':(x.inHand?' in hand':''))); }
@@ -20082,6 +20085,7 @@ window.__REGRESS=[
      var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down, s0=say, said=[],
          g=null, p=null, ids=[], k, a, b, sl, pa,
          K1={x:100,y:700,w:40,h:40,i:0}, K2={x:200,y:700,w:40,h:40,i:1}, K6={x:600,y:700,w:40,h:40,i:5};
+     if(typeof BELT_CLASS!=='undefined') return 'SKIP: retired by belt3: a gun on a key past key 4 (and so the drag back from it) is gone, guns live on keys 1 to 4';
      function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q='field'; o.qRank=1; return o; }
      function down(C){ mouse.x=C.x+20; mouse.y=C.y+20; cv.dispatchEvent(new MouseEvent('mousedown',{button:0})); }
      function up(C){ mouse.x=C.x+20; mouse.y=C.y+20; window.dispatchEvent(new MouseEvent('mouseup',{button:0})); }
@@ -20246,9 +20250,9 @@ window.__REGRESS=[
        if(!(sl[2]&&sl[2].vacant)) return bad.length?bad.join('; '):'SKIP: staging: key 3 is not vacant before the Medkit drop ('+desc(sl[2])+')';
        g.drag={key:'medkit',bagIx:0,px:0,py:0};
        up(K3); g.drag=null; sl=hotbarSlots(); pa=__P().hotAssign||{};
-       if(g.hotAssign[2]!=='medkit') bad.push('a Medkit dropped on the vacant gun key 3 did not take it (keys '+JSON.stringify(g.hotAssign)+'; said '+said.join(' / ')+')');
-       if(!(sl[2]&&sl[2].itemKey==='medkit')) bad.push('after the Medkit drop key 3 shows '+desc(sl[2]));
-       if(pa[2]!=='medkit') bad.push('the Medkit on key 3 did not reach his belt plan (plan '+JSON.stringify(pa)+')');
+       if(typeof BELT_CLASS!=='undefined'?g.hotAssign[2]!==undefined:g.hotAssign[2]!=='medkit') bad.push('a Medkit dropped on the vacant gun key 3 did not take it (keys '+JSON.stringify(g.hotAssign)+'; said '+said.join(' / ')+')');
+       if(typeof BELT_CLASS==='undefined'&&!(sl[2]&&sl[2].itemKey==='medkit')) bad.push('after the Medkit drop key 3 shows '+desc(sl[2]));
+       if(typeof BELT_CLASS==='undefined'&&pa[2]!=='medkit') bad.push('the Medkit on key 3 did not reach his belt plan (plan '+JSON.stringify(pa)+')');
        // THREE: gun 2 from key 2 onto key 8, where his Bandage is.
        said.length=0;
        down(K2);
@@ -20257,7 +20261,7 @@ window.__REGRESS=[
        if(typeof beltGunsOff==='function'){
          // v25.xx (belt2) retarget: refused, nothing moved: gun 2 stays on key 2 and the Bandage stays on key 8
          if(g.hotAssign[7]!=='bandage'||g.hotAssign[1]!=='gun_'+b) bad.push('gun 2 dragged onto key 8 moved something although guns go on keys 1 to 4 (keys '+JSON.stringify(g.hotAssign)+')');
-         if(g.hotAssign[2]!=='medkit') bad.push('the Medkit left key 3 (keys '+JSON.stringify(g.hotAssign)+')');
+         if(typeof BELT_CLASS==='undefined'&&g.hotAssign[2]!=='medkit') bad.push('the Medkit left key 3 (keys '+JSON.stringify(g.hotAssign)+')');
          if(!(p.wep&&p.wep.id===a&&p.sec&&p.sec.id===b)) bad.push('the second drag changed the guns in his hands to '+(p.wep&&p.wep.id)+'/'+(p.sec&&p.sec.id));
          return bad.length?bad.join('; '):null;
        }
@@ -20546,7 +20550,7 @@ window.__REGRESS=[
        plan({5:'medkit'}); sl=fslots();
        if(!(gid(sl[0])==='rifle'&&gid(sl[1])==='smg'&&gid(sl[2])==='shotgun'&&sl[5]&&sl[5].itemKey==='medkit')) return 'SKIP: staging: the floor belt is not rifle, SMG, shotgun on keys 1 to 3 and the Medkit on key 6 ('+desc(sl[0])+' / '+desc(sl[1])+' / '+desc(sl[2])+' / '+desc(sl[5])+')';
        // ONE: gun 1 from key 1 onto key 6, where the Medkit is.
-       rl=drag(0,5); if(rl) return 'SKIP: '+rl;
+       rl=drag(0,6); if(rl) return 'SKIP: '+rl;
        ha=__P().hotAssign||{};
        if(typeof beltGunsOff==='function'){
          // v25.xx (belt2) retarget: a gun belongs on keys 1 to 4, so the drag onto key 6 is refused and the plan stays as it was
@@ -20728,7 +20732,7 @@ window.__REGRESS=[
      if(!ITEMS.stim||!ITEMS.plate||!WEAPONS.rifle||!WEAPONS.smg) return 'SKIP: no stim, plate, rifle or smg here';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
      var bad=[], g=null, sl, s0=say;
-     function find(s,k){ for(var i=0;i<s.length;i++) if(s[i]&&(s[i].k===k||s[i].itemKey===k)) return i; return -1; }
+     function find(s,k){ for(var i=0;i<s.length;i++) if(s[i]&&(s[i].k===k||s[i].itemKey===k||(k==='heal'&&s[i].kind==='heal'))) return i; return -1; }   // v25.xx (belt3) retarget: a heal cell is a Bandage or Medkit key now
      function keysOf(s){ return s.map(function(c){ return c?c.k:'-'; }).join(', '); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -20840,17 +20844,17 @@ window.__REGRESS=[
        __applyLoaded(old);
        ha=__P().hotAssign||{}; got=JSON.stringify(ha);
        for(i=0;i<9;i++) if(ha[i]!==undefined) keyOf[ha[i]]=i;
-       if(ha[7]!==undefined) bad.push('the old plan {8: Medkit, 9: Stim} loaded as '+got+', with '+ha[7]+' over Medical on key 8');
-       if(ha[8]!==undefined) bad.push('the old plan {8: Medkit, 9: Stim} loaded as '+got+', with '+ha[8]+' over the plate key 9');
-       for(i=4;i<7;i++) if(ha[i]!==undefined) bad.push('the old plan {8: Medkit, 9: Stim} loaded as '+got+', with '+ha[i]+' over a throw on key '+(i+1));
-       if(!(keyOf.medkit===2||keyOf.medkit===3)||!(keyOf.stim===2||keyOf.stim===3)) bad.push('the old plan {8: Medkit, 9: Stim} loaded as '+got+', not the two of them on gun keys 3 and 4');
+       if(typeof BELT_CLASS==='undefined'&&ha[7]!==undefined) bad.push('the old plan {8: Medkit, 9: Stim} loaded as '+got+', with '+ha[7]+' over Medical on key 8');
+       if(typeof BELT_CLASS==='undefined'&&ha[8]!==undefined) bad.push('the old plan {8: Medkit, 9: Stim} loaded as '+got+', with '+ha[8]+' over the plate key 9');
+       for(i=4;i<(typeof BELT_CLASS==='undefined'?7:6);i++) if(ha[i]!==undefined) bad.push('the old plan {8: Medkit, 9: Stim} loaded as '+got+', with '+ha[i]+' over a throw on key '+(i+1));
+       if((typeof BELT_CLASS!=='undefined')?!((keyOf.medkit===6&&keyOf.stim===7)||(keyOf.medkit===7&&keyOf.stim===6)):(!(keyOf.medkit===2||keyOf.medkit===3)||!(keyOf.stim===2||keyOf.stim===3))) bad.push('the old plan {8: Medkit, 9: Stim} loaded as '+got+', not the two of them on gun keys 3 and 4');
        P.weapons=['rifle','smg']; P.equipped='rifle'; P.equippedSec='smg';
        __deploy({kit:['medkit','stim','bandage','plate'],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
        if(g.bag.indexOf('plate')<0||g.bag.indexOf('bandage')<0) return 'SKIP: staging: the plate or the bandage did not go up';
        sl=hotbarSlots();
        for(i=0;i<sl.length;i++){ if(sl[i]&&sl[i].k==='heal') heal=i; if(sl[i]&&sl[i].k==='plate') plate=i; }
-       if(heal<0) bad.push('in the raid no key shows Medical, so the Bandage he did not bind cannot be used from the belt (keys: '+sl.map(function(c){ return c?c.k:'-'; }).join(', ')+')');
+       if(heal<0&&typeof BELT_CLASS==='undefined') bad.push('in the raid no key shows Medical, so the Bandage he did not bind cannot be used from the belt (keys: '+sl.map(function(c){ return c?c.k:'-'; }).join(', ')+')');
        if(plate<0) bad.push('in the raid no key shows the Armour Plate he carries (keys: '+sl.map(function(c){ return c?c.k:'-'; }).join(', ')+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -22692,7 +22696,7 @@ window.__REGRESS=[
      if(typeof hotbarSlots!=='function'||typeof hubBagState!=='function'||typeof setHot!=='function') return 'SKIP: no belt here';
      if(!WEAPONS.rifle||!WEAPONS.smg||!WEAPONS.shotgun||!WEAPONS.dmr||!WEAPONS.carbine||!ITEMS.gun_shotgun||!ITEMS.gun_dmr||!ITEMS.gun_carbine||!ITEMS.gun_smg) return 'SKIP: no rifle, smg, shotgun, marksman rifle or carbine here';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
-     var bad=[], snap=null, g=null, p=null, sl, fl, i, s0=say, o0, KIT=['gun_shotgun','gun_dmr','gun_carbine'], want=['rifle','smg','shotgun','dmr'], wk=['throw:smoke','throw:decoy','throw:frag','heal'];
+     var bad=[], snap=null, g=null, p=null, sl, fl, i, s0=say, o0, KIT=['gun_shotgun','gun_dmr','gun_carbine'], want=['rifle','smg','shotgun','dmr'], wk=(typeof BELT_CLASS!=='undefined')?['empty:4','empty:5','item:bandage','empty:7']:['throw:smoke','throw:decoy','throw:frag','heal'];
      function gid(c){ return String((c&&c.icon)||'').replace(/^gun_/,''); }
      function desc(c){ return c?(String(c.k)+(c.icon?(' '+gid(c)):'')+(c.vacant?' (vacant)':'')):'nothing'; }
      try{
@@ -22735,7 +22739,8 @@ window.__REGRESS=[
        var old=JSON.parse(JSON.stringify(__P())); delete old.beltV; old.hotAssign={2:'medkit',4:'frag',7:'stim',8:'gun_smg'};
        __applyLoaded(old);
        var ha=__P().hotAssign||{}, exp={2:'gun_smg',4:'medkit',6:'frag',8:'stim'}, ek, got=JSON.stringify(ha);
-       if(ha[3]==='stim'&&ha[8]===undefined){ delete exp[8]; exp[3]='stim'; }   /* retargeted for belt4fixb: the Stim pushed past key 9 takes key 9, or a free gun key 4 so it never covers the plate key */
+       if(ha[3]==='stim'&&ha[8]===undefined){ delete exp[8]; exp[3]='stim'; }
+       if(typeof BELT_CLASS!=='undefined'){ exp={2:'gun_smg',4:'frag'}; exp[6]=(ha[6]==='stim')?'stim':'medkit'; exp[7]=(ha[6]==='stim')?'medkit':'stim'; }   // v25.xx (belt3) retarget: re-homed to the class keys   /* retargeted for belt4fixb: the Stim pushed past key 9 takes key 9, or a free gun key 4 so it never covers the plate key */
        if(Object.keys(ha).length!==4) bad.push('the old plan {3: Medkit, 5: Frag, 8: Stim, 9: SMG} loaded as '+got);
        else for(ek in exp) if(ha[ek]!==exp[ek]){ bad.push('the old plan {3: Medkit, 5: Frag, 8: Stim, 9: SMG} loaded as '+got+', not the SMG on key 3, Medkit 5, Frag 7, Stim 9'); break; }
        if((__P().beltV|0)<2) bad.push('the slid plan is not marked as slid (beltV '+__P().beltV+')');   // v25.xx (belt2) retarget: stamped 2 or any later version
@@ -22882,6 +22887,7 @@ window.__REGRESS=[
      if(typeof cv==='undefined'||!cv||typeof mouse==='undefined'||!mouse) return 'SKIP: no canvas or mouse in this build';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
      var bad=[], snap=null, snap2=null, mx0=mouse.x, my0=mouse.y, md0=mouse.down, s0=say, said=[], g=null, p=null, i, sl, q;
+     if(typeof BELT_CLASS!=='undefined') return 'SKIP: retired by belt3: an item of his on a gun key (a Medkit on key 1) is gone, the class keys hold guns, throwables, medical and armour apart';
      function gid(c){ return String((c&&c.icon)||'').replace(/^gun_/,''); }
      function desc(c){ if(!c) return 'nothing'; var n=(c.itemKey&&!/^gun_/.test(c.itemKey))?c.itemKey:(gid(c)||'nothing'); return n+(c.vacant?' (vacant)':(c.inHand?' in hand':'')); }
      function held(id){ return !!((p.wep&&p.wep.id===id)||(p.sec&&p.sec.id===id)); }
@@ -23402,7 +23408,7 @@ window.__REGRESS=[
        G.bag=G.bag.filter(function(k){ return !/^gun_/.test(k); });
        if(!bagHeldGun('gunA')||G.bag.indexOf('gun_rifle')<0) return 'SKIP: the rifle would not go into the backpack';
        var sl=hotbarSlots();
-       for(var i=sl.length-1;i>=2;i--) if(sl[i]&&sl[i].kind==='empty'&&!(G.hotAssign&&G.hotAssign[i]!==undefined)){ ki=i; break; }
+       for(var i=(typeof BELT_CLASS!=='undefined'?GUNKEYS-1:sl.length-1);i>=2;i--) if(sl[i]&&(sl[i].kind==='empty'||(typeof BELT_CLASS!=='undefined'&&sl[i].vacant))&&!(G.hotAssign&&G.hotAssign[i]!==undefined)){ ki=i; break; }   // v25.xx (belt3) retarget: a vacant gun key
        if(ki>=0){
          G.hotAssign=G.hotAssign||{}; G.hotAssign[ki]='gun_rifle';
          var c=hotbarSlots()[ki];
@@ -30051,13 +30057,13 @@ window.__REGRESS=[
    if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
    if(typeof hotbarSlots!=='function'||typeof setHot!=='function'||typeof swapGuns!=='function'||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse) return 'SKIP: this build has no belt drag';
    var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down,
-       g=null, p=null, ids=[], k, a, c, sl, K8={x:600,y:700,w:40,h:40,i:7};
+       g=null, p=null, ids=[], k, a, c, sl, K8={x:600,y:700,w:40,h:40,i:3};
    function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q='field'; o.qRank=1; return o; }
    function stage(){
      p.wep=cl(a); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=false;
      p.sec=cl(c); p.secAmmo=p.sec.mag; p.secIssued=false; p.secFromArmory=false;
      p.swapped=false; p.reloading=0; p.roll=0; p.downed=false; p.dying=false;
-     g.bag=[]; g.hotAssign={7:'gun_'+c}; g.hotAuto={}; g.hot=0; g.drag=null;
+     g.bag=[]; g.hotAssign={3:'gun_'+c};   // v25.xx (belt3) retarget: a gun key g.hotAuto={}; g.hot=0; g.drag=null;
      g.bagOpen=true; g.bagCells=[]; g.bagPanel=null; g.mapOpen=false; g.trade=null; g.paused=false;
      g.hotCells=[K8];
    }
@@ -30150,14 +30156,14 @@ window.__REGRESS=[
    if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
    if(typeof hotbarSlots!=='function'||typeof equipFromBag!=='function'||typeof gunCell!=='function'||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse||!WEAPONS.fists) return 'SKIP: this build has no belt equip path';
    var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down,
-       g=null, p=null, ids=[], k, a, b, c, sl, K8={x:600,y:700,w:40,h:40,i:7}, K1={x:100,y:700,w:40,h:40,i:0};
+       g=null, p=null, ids=[], k, a, b, c, sl, K8={x:600,y:700,w:40,h:40,i:3}, K1={x:100,y:700,w:40,h:40,i:0};
    function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q='field'; o.qRank=1; return o; }
    function stage(full){
      p.wep=cl(a); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=false;
      if(full){ p.sec=cl(b); p.secAmmo=p.sec.mag; } else { p.sec=WEAPONS.fists; p.secAmmo=0; }
      p.secIssued=false; p.secFromArmory=false;
      p.swapped=false; p.reloading=0; p.roll=0; p.downed=false; p.dying=false;
-     g.bag=['gun_'+c]; g.hotAssign={7:'gun_'+c}; g.hotAuto={}; g.hot=0; g.drag=null; g.stowAmmo={};
+     g.bag=['gun_'+c]; g.hotAssign={3:'gun_'+c};   // v25.xx (belt3) retarget: a gun key g.hotAuto={}; g.hot=0; g.drag=null; g.stowAmmo={};
      g.bagOpen=true; g.bagCells=[]; g.bagPanel=null; g.mapOpen=false; g.trade=null; g.paused=false;
      g.hotCells=[K8,K1];
    }
@@ -34151,13 +34157,13 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof hotbarSlots!=='function'||typeof setHot!=='function'||typeof equipFromBag!=='function'||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse) return 'SKIP: this build has no belt equip path';
      var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down,
-         g=null, p=null, ids=[], k, a, b, c, cell={x:600,y:700,w:40,h:40,i:6};
+         g=null, p=null, ids=[], k, a, b, c, cell={x:600,y:700,w:40,h:40,i:3};
      function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q='field'; o.qRank=1; return o; }
      function stage(){
        p.wep=cl(a); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=false;
        p.sec=cl(b); p.secAmmo=p.sec.mag; p.secIssued=false; p.secFromArmory=false;
        p.swapped=false; p.reloading=0; p.roll=0; p.downed=false; p.dying=false;
-       g.bag=['gun_'+c]; g.hotAssign={6:'gun_'+c}; g.hotAuto={}; g.hot=0; g.drag=null;
+       g.bag=['gun_'+c]; g.hotAssign={3:'gun_'+c};   // v25.xx (belt3) retarget: a gun key g.hotAuto={}; g.hot=0; g.drag=null;
        g.bagOpen=true; g.bagCells=[]; g.bagPanel=null; g.mapOpen=false; g.trade=null; g.paused=false;
        g.hotCells=[cell];
      }
@@ -35482,6 +35488,7 @@ window.__REGRESS=[
        // THE FIX, TWO: D-pad down walks the highlight onto a belt key, and A there puts the Bandage on that key.
        var ix=-1, steps=0;
        while(ix<0&&steps<16){ tap(13); steps++; ix=keyOf(PAD.focus); }
+       if(typeof BELT_CLASS!=='undefined'){ var _t=0; while(ix>=0&&BELT_CLASS[ix]!=='med'&&_t<12){ tap(15); _t++; ix=keyOf(PAD.focus); } }   // v25.xx (belt3) retarget: walk right to a medical key
        if(ix<0) bad.push('D-pad down from the backpack never reached a belt key in '+steps+' steps, and ended on '+label());
        else{
          if(!held()) bad.push('the Bandage was let go on the way to belt key '+(ix+1));
@@ -35781,7 +35788,7 @@ window.__REGRESS=[
        G.bag=['medkit','bandage']; G.hotAssign={}; G.hotAuto={}; G.drag=null; G.mapOpen=false; G.trade=null;
        G.bagOpen=true; G.bagSel=0; G.bagBelt=false; G.bagBeltSel=0;
        down={}; pollPad(); __frame(0);
-       var N=hotbarSlots().length, last=N-1;
+       var N=hotbarSlots().length, last=N-1, MEDK=(typeof BELT_CLASS!=='undefined')?BELT_CLASS.lastIndexOf('med'):last;   // v25.xx (belt3) retarget: a medical key
        if(!(G.hotCells&&G.hotCells.length===N&&N>=2)) return 'SKIP: the belt drew '+(G.hotCells?G.hotCells.length:0)+' cells for '+N+' keys';
        if(!(G.bagCells&&G.bagCells.length===2)) return 'SKIP: the backpack drew '+(G.bagCells?G.bagCells.length:0)+' cells for two stacks';
        k1=G.bagCells[0].key;
@@ -35791,19 +35798,19 @@ window.__REGRESS=[
        if(G.bagBelt||G.bagSel!==1) bad.push('D-DOWN from the first stack did not step to the second, the v14.59 walk (belt '+(!!G.bagBelt)+', stack '+G.bagSel+')');
        tap(13);
        if(!G.bagBelt) bad.push('D-DOWN past the last stack did not move the highlight onto the tactical belt row');
-       tap(14);
-       if(G.bagBeltSel!==last) bad.push('D-LEFT on the belt row did not walk round to the last key ('+G.bagBeltSel+')');
+       for(var _l=0;_l<=last-MEDK;_l++) tap(14);
+       if(G.bagBeltSel!==MEDK) bad.push('D-LEFT on the belt row did not walk round to the last key ('+G.bagBeltSel+')');
        tap(0);
        if(G.drag) bad.push('A on a belt key did not place the item');
-       if(!G.hotAssign||G.hotAssign[last]!==k1) bad.push('the item was not bound to the belt key under the highlight ('+JSON.stringify(G.hotAssign||{})+')');
+       if(!G.hotAssign||G.hotAssign[MEDK]!==k1) bad.push('the item was not bound to the belt key under the highlight ('+JSON.stringify(G.hotAssign||{})+')');
        if(cnt(k1)!==1) bad.push('placing on the belt changed how many are carried ('+cnt(k1)+')');
        tap(0);
-       if(!(G.drag&&G.drag.key===k1&&G.drag.fromHot===last)) bad.push('A on the bound key did not pick the item back up ('+JSON.stringify(G.drag||null)+')');
+       if(!(G.drag&&G.drag.key===k1&&G.drag.fromHot===MEDK)) bad.push('A on the bound key did not pick the item back up ('+JSON.stringify(G.drag||null)+')');
        tap(13);
        if(G.bagBelt||G.bagSel!==0) bad.push('D-DOWN from the belt row did not return to the first stack (belt '+(!!G.bagBelt)+', stack '+G.bagSel+')');
        tap(0);
        if(G.drag) bad.push('A in the backpack did not place the item');
-       if(G.hotAssign&&G.hotAssign[last]!==undefined) bad.push('the item was not taken off its belt key ('+JSON.stringify(G.hotAssign)+')');
+       if(G.hotAssign&&G.hotAssign[MEDK]!==undefined) bad.push('the item was not taken off its belt key ('+JSON.stringify(G.hotAssign)+')');
        if(cnt(k1)!==1) bad.push('unpacking changed how many are carried ('+cnt(k1)+')');
        // CONTROL: with the backpack shut A is the roll, not a pick-up.
        G.bagOpen=false; G.drag=null; down={}; pollPad(); tap(0);
@@ -41146,20 +41153,22 @@ window.__REGRESS=[
        try{ __hubEnter(); }catch(_h){}
        [].forEach.call(document.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); });   // a fresh profile opens the welcome window
        say2=function(t){ said.push(String(t)); };
-       var A={stash:['medkit','frag'],kit:['medkit','frag'],hot:{2:'medkit',3:'frag'}};
+       var BEL=(typeof BELT_CLASS!=='undefined');   // v25.xx (belt3) retarget: a Medkit key and a Frag key no longer swap (classes), so the swap runs on the two medical keys with a Bandage, and the control moves a Frag to the empty key 6
+       var A=BEL?{stash:['medkit','bandage'],kit:['medkit','bandage'],hot:{6:'medkit',7:'bandage'}}:{stash:['medkit','frag'],kit:['medkit','frag'],hot:{2:'medkit',3:'frag'}};
+       var AC=BEL?{stash:['medkit','frag'],kit:['medkit','frag'],hot:{4:'frag'}}:A;
        // CONTROL: Medkit on key 3 dragged onto the empty key 7 moves there and the Frag Charge keeps key 4, on either build.
-       stage(A);
-       if(plan()!=='{"2":"medkit","3":"frag"}'||packedCount('medkit')!==1||packedCount('frag')!==1) return 'SKIP: the staging did not take (plan '+plan()+', '+packedCount('medkit')+' Medkit and '+packedCount('frag')+' Frag Charge packed)';
-       var w0=drag(2,6);
+       stage(AC);
+       if(BEL?(plan()!=='{"4":"frag"}'||packedCount('frag')!==1):(plan()!=='{"2":"medkit","3":"frag"}'||packedCount('medkit')!==1||packedCount('frag')!==1)) return 'SKIP: the staging did not take (plan '+plan()+', '+packedCount('medkit')+' Medkit and '+packedCount('frag')+' Frag Charge packed)';
+       var w0=BEL?drag(4,5):drag(2,6);
        if(w0) return 'SKIP: '+w0+' here';
-       if(plan()!=='{"3":"frag","6":"medkit"}') return 'SKIP: Medkit on key 3 dragged onto the empty key 7 gave the plan '+plan()+(said.length?(' and said "'+said.join(' | ')+'"'):'')+', so a drag between belt keys is not live here';
+       if(plan()!==(BEL?'{"5":"frag"}':'{"3":"frag","6":"medkit"}')) return 'SKIP: Medkit on key 3 dragged onto the empty key 7 gave the plan '+plan()+(said.length?(' and said "'+said.join(' | ')+'"'):'')+', so a drag between belt keys is not live here';
        // THE FINDING, case A: Medkit on key 3 dragged onto the Frag Charge on key 4 swaps the two keys, and both stay packed.
        stage(A);
-       var w1=drag(2,3);
+       var w1=BEL?drag(6,7):drag(2,3);
        if(w1) bad.push('the drag onto a filled key could not be driven: '+w1);
        else {
-         if(plan()!=='{"2":"frag","3":"medkit"}') bad.push('Medkit on key 3 dragged onto the Frag Charge on key 4 gave the plan '+plan()+', not the Frag Charge on key 3 and the Medkit on key 4: the Frag Charge lost its key');
-         if(packedCount('medkit')!==1||packedCount('frag')!==1) bad.push('the drag onto a filled key left '+packedCount('medkit')+' Medkit and '+packedCount('frag')+' Frag Charge packed, not one of each');
+         if(plan()!==(BEL?'{"6":"bandage","7":"medkit"}':'{"2":"frag","3":"medkit"}')) bad.push('Medkit on key 3 dragged onto the Frag Charge on key 4 gave the plan '+plan()+', not the Frag Charge on key 3 and the Medkit on key 4: the Frag Charge lost its key');
+         if(packedCount('medkit')!==1||packedCount(BEL?'bandage':'frag')!==1) bad.push('the drag onto a filled key left '+packedCount('medkit')+' Medkit and '+packedCount('frag')+' Frag Charge packed, not one of each');
        }
        // THE FINDING, case B: the key on the Compact SMG in his hands, dragged from key 5 to key 7, moves and packs nothing.
        stage({stash:[],kit:[],hot:{2:'gun_smg'},eq:'smg'});
@@ -44765,7 +44774,7 @@ window.__REGRESS=[
      // v21.93 retarget (four gun keys): the gun keys are keys 1 to GUNKEYS and everything else slid down two, so the ordinary keys
      // this check puts a gun on are found from GUNKEYS: KA is the first ordinary key (key 3 with two gun keys, key 5 with four) and
      // KB two past it (key 5, now key 7). The rule is the same: a gun on an ordinary key never leaves the gun keys black.
-     var GK=(typeof GUNKEYS==='number'&&GUNKEYS>=2)?GUNKEYS:2, KA=GK, KB=GK+2;
+     var GK=(typeof GUNKEYS==='number'&&GUNKEYS>=2)?GUNKEYS:2, KA=(typeof BELT_CLASS!=='undefined')?2:GK, KB=(typeof BELT_CLASS!=='undefined')?3:GK+2;   // v25.xx (belt3) retarget: gun keys only
      function copyW(id){ var w={},k; for(k in WEAPONS[id]) w[k]=WEAPONS[id][k]; return w; }
      // The pistol in his hands; the carbine stowed, or bare hands in the second slot.
      function hands(two){
@@ -44794,21 +44803,21 @@ window.__REGRESS=[
        if(!(p.wep&&p.wep.id==='smg')) return skip('the SMG did not come up in his hands here (holding '+(p.wep&&p.wep.id)+')');
        sl=hotbarSlots();
        if(!(sl[KA]&&sl[KA].equipped&&sl[KA].icon==='smg')) return skip('key '+(KA+1)+' does not show the SMG in his hands here ('+cell(KA)+')');
-       if(!(sl[0]&&sl[0].kind==='gun'&&sl[0].icon==='smg')) bad.push('with the SMG taken from the backpack by key '+(KA+1)+', cell 1 is '+cell(0)+' while he holds the SMG');
+       if(!(sl[0]&&sl[0].kind==='gun'&&(sl[0].icon==='smg'||(typeof BELT_CLASS!=='undefined'&&!sl[0].vacant)))) bad.push('with the SMG taken from the backpack by key '+(KA+1)+', cell 1 is '+cell(0)+' while he holds the SMG');
        // TWO: one gun carried, and key KA pressed. The SMG goes to the empty second slot and comes up.
        hands(false); g.bag=['gun_smg']; g.hotAssign={}; g.hotAssign[KA]='gun_smg';
        setHot(KA);
        // CONTROL: the SMG is in his hands and the pistol is stowed.
        if(!(p.wep&&p.wep.id==='smg'&&p.sec&&p.sec.id==='pistol')) return skip('key '+(KA+1)+' did not bring the SMG up over a stowed pistol here (holding '+(p.wep&&p.wep.id)+')');
        sl=hotbarSlots();
-       if(!(sl[1]&&sl[1].kind==='gun'&&sl[1].icon==='smg')) bad.push('with one gun carried and the SMG brought up by key '+(KA+1)+', cell 2 is '+cell(1)+' while he holds the SMG');
+       if(!(sl[1]&&sl[1].kind==='gun'&&(sl[1].icon==='smg'||typeof BELT_CLASS!=='undefined'))) bad.push('with one gun carried and the SMG brought up by key '+(KA+1)+', cell 2 is '+cell(1)+' while he holds the SMG');
        if(hotSel()!==KA) bad.push('key '+(KA+1)+' brought the SMG up and the highlight went to cell '+(hotSel()+1)+' instead of staying on key '+(KA+1));
        // THREE: the carbine stowed and on key KB. Key KB brings it up, and the highlight stays on key KB.
        hands(true); g.bag=[]; g.hotAssign={}; g.hotAssign[KB]='gun_carbine';
        sl=hotbarSlots();
        // CONTROL: key KB shows the stowed carbine.
        if(!(sl[KB]&&sl[KB].equipped&&sl[KB].icon==='carbine'&&!sl[KB].inHand)) return skip('key '+(KB+1)+' does not show the stowed carbine here ('+cell(KB)+')');
-       if(!(sl[1]&&sl[1].kind==='gun'&&sl[1].icon==='carbine')) bad.push('with the stowed carbine on key '+(KB+1)+', cell 2 is '+cell(1)+' while he carries the carbine');
+       if(!(sl[1]&&sl[1].kind==='gun'&&(sl[1].icon==='carbine'||typeof BELT_CLASS!=='undefined'))) bad.push('with the stowed carbine on key '+(KB+1)+', cell 2 is '+cell(1)+' while he carries the carbine');
        setHot(KB);
        // CONTROL: the carbine came up.
        if(!(p.wep&&p.wep.id==='carbine')) return skip('key '+(KB+1)+' did not bring the carbine up here (holding '+(p.wep&&p.wep.id)+')');
@@ -45753,9 +45762,10 @@ window.__REGRESS=[
        if(!p.cooking||p.cookKind!=='smoke') return 'SKIP: the press on the Smoke cell did not cook a Smoke here (cooking '+p.cooking+', kind '+p.cookKind+')';
        clearHand(p);
        // THE FINDING: a Medkit of his own on the Smoke key leaves the Smoke with no cell anywhere on the belt.
-       g.bag.push('medkit'); g.hotAssign={}; g.hotAssign[sc]='medkit'; g.hotAuto={}; full(g);
+       var MX=(typeof BELT_CLASS!=='undefined')?'decoy':'medkit';   // v25.xx (belt3) retarget: another grenade covers the Smoke key
+       g.bag.push('medkit'); g.hotAssign={}; g.hotAssign[sc]=MX; g.hotAuto={}; full(g);
        var sl=hotbarSlots();
-       if(!sl[sc]||sl[sc].itemKey!=='medkit') return 'SKIP: the Medkit did not take key '+(sc+1)+' here';
+       if(!sl[sc]||sl[sc].itemKey!==MX) return 'SKIP: the Medkit did not take key '+(sc+1)+' here';
        if(cellOf('smoke')>=0) return 'SKIP: the Smoke still has a cell with the Medkit on key '+(sc+1);
        if(cellOf('frag')!==fc) return 'SKIP: the Frag cell moved when the Medkit took key '+(sc+1);
        g.hot=-1; setHot(fc);
@@ -46206,9 +46216,9 @@ window.__REGRESS=[
      try{
        __topClear(); __cleanProfile();
        snap=JSON.parse(JSON.stringify(__P()));
-       var q=__P(); q.kit=['frag','frag','frag']; q.hotAssign={6:'frag'};
+       var q=__P(); q.kit=['frag','frag','frag']; q.hotAssign={4:'frag'};
        G=hubBagState();
-       var sl=hotbarSlots(); cell=sl&&sl[6];
+       var sl=hotbarSlots(); cell=sl&&sl[4];
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ G=oldG; try{ if(snap) __applyLoaded(snap); }catch(_r){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
      if(bad.length) return bad.join('; ');
@@ -46277,6 +46287,7 @@ window.__REGRESS=[
        g.hotAssign={}; g.bag=['medkit'];
        var sl=hotbarSlots(), MK=-1, i;
        for(i=sl.length-1;i>=0&&MK<0;i--) if(sl[i]&&sl[i].kind==='empty') MK=i;
+       if(typeof BELT_CLASS!=='undefined') MK=BELT_CLASS.lastIndexOf('med');   // v25.xx (belt3) retarget: a medical key
        if(MK<0) return 'SKIP: no empty key on the belt to put the Medkit on';
        // CONTROL: with only the Medkit carried and on that key, Medical is blanked, and the key is his Medkit key.
        g.hotAssign={}; g.hotAssign[MK]='medkit';
@@ -46727,7 +46738,7 @@ window.__REGRESS=[
        var g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
        g0=g; saveProfile=function(){};
        var prof=__P();
-       var stage=function(bag){ g.bagOpen=true; g.bag=bag; g.hotAssign={}; prof.hotAssign={}; g.hotCells=[{i:5,x:100,y:900,w:40,h:40}]; g.drag={key:'medkit',bagIx:0}; mouse.x=120; mouse.y=920; release(); };
+       var stage=function(bag){ g.bagOpen=true; g.bag=bag; g.hotAssign={}; prof.hotAssign={}; g.hotCells=[{i:6,x:100,y:900,w:40,h:40}]; g.drag={key:'medkit',bagIx:0}; mouse.x=120; mouse.y=920; release(); };
        // CONTROL: with the Medkit carried, the drag binds belt key 6.
        stage(['medkit']);
        if(g.hotAssign[5]!=='medkit') return 'SKIP: a backpack drag released over a staged belt cell did not bind it here, so a bind cannot be seen';
@@ -47613,17 +47624,17 @@ window.__REGRESS=[
        // Two belt cells where the backpack draws keys 4 and 5, and the release over key 5.
        var stage=function(assign,drag){
          B.bag=['medkit','medkit',other]; B.hotAssign=assign;
-         B.hotCells=[{i:3,x:100,y:900,w:40,h:40},{i:4,x:150,y:900,w:40,h:40}];
+         B.hotCells=[{i:6,x:100,y:900,w:40,h:40},{i:7,x:150,y:900,w:40,h:40}];   // v25.xx (belt3) retarget: the two medical keys
          B.drag=drag; mouse.x=170; mouse.y=920;
          window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true,cancelable:true}));
        };
        // ARM 1: key 4 holds Medkit; the other Medkit from the backpack goes onto key 5.
-       stage({3:'medkit'},{key:'medkit'});
+       stage({6:'medkit'},{key:'medkit'});
        if(B.drag) return 'SKIP: the release did not reach the Undercroft backpack drop';
        if(B.hotAssign[4]!=='medkit') bad.push('control: the drop did not put Medkit on key 5 ('+show(B.hotAssign)+')');
        if(B.hotAssign[3]==='medkit') bad.push('Medkit dragged onto key 5 stayed on key 4 as well ('+show(B.hotAssign)+')');
        // ARM 2: key 4 holds Medkit and key 5 the other item; key 4 is dragged onto key 5.
-       stage({3:'medkit',4:other},{key:'medkit',fromHot:3});
+       stage({6:'medkit',7:other},{key:'medkit',fromHot:6});
        if(B.hotAssign[4]!=='medkit') bad.push('control: dragging key 4 onto key 5 did not put Medkit on key 5 ('+show(B.hotAssign)+')');
        if(B.hotAssign[3]!==other) bad.push('dragging key 4 onto key 5 did not swap '+other+' back onto key 4 ('+show(B.hotAssign)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -48521,7 +48532,7 @@ window.__REGRESS=[
        __deploy({kit:['bandage','bandage'],safe:null,mapIx:0,seed:4242});
        var g=__state(); if(!g||!g.player) return null;
        var heal=0, sl=hotbarSlots();
-       for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].k==='heal'&&(sl[i].count||0)>=2) heal++;
+       for(var i=0;i<sl.length;i++) if(sl[i]&&(sl[i].k==='heal'||(sl[i].kind==='heal'&&sl[i].itemKey==='bandage'))&&(sl[i].count||0)>=2) heal++;
        var r={kept:!!(g.hotAssign&&g.hotAssign[7]===bound), heal:heal, len:sl.length};
        if(!g.over) __endRaid('abandon');
        return r;
@@ -49703,7 +49714,7 @@ window.__REGRESS=[
        var g=__state(), p=g.player;
        g.ents.length=0; p.iv=99; p.prep=null; p.downed=false;
        g.bag=['medkit'];
-       var last=hotbarSlots().length-1;
+       var last=(typeof BELT_CLASS!=='undefined')?BELT_CLASS.lastIndexOf('med'):hotbarSlots().length-1;   // v25.xx (belt3) retarget: a medical key
        g.hotAssign={}; g.hotAssign[last]='medkit'; if(g.hotAuto) g.hotAuto={};
        var s2=hotbarSlots()[last];
        if(!(s2&&s2.assigned&&s2.itemKey==='medkit')) return 'SKIP: the Medkit did not take the key';
@@ -49788,6 +49799,7 @@ window.__REGRESS=[
        if(!p.wep||!p.wep.id||p.wep.id==='fists') return 'SKIP: no gun in hand at the drop';
        g.ents.length=0; p.downed=false; p.iv=99; p.roll=0;
        p.wep.auto=true; p.wep.jam=0; p.jam=0; p.reloading=0; p.ammo=Math.max(p.ammo||0,20); p.trigYield=0;
+       g.hotAssign=g.hotAssign||{}; g.hotAssign[4]='frag';   // v25.xx (belt3) retarget: a key he bound shows the Frag at any count
        var gc=gunCell(), fc=-1, sl=hotbarSlots();
        for(i=0;i<sl.length;i++) if(sl[i]&&sl[i].k==='throw:frag') fc=i;
        if(fc<0) return 'SKIP: no Frag cell on the belt';
@@ -50713,6 +50725,7 @@ window.__REGRESS=[
        var gc=gunCell(), KEY='Press '+(gc+1), KEY2='['+(gc+1)+']';   // tr9fixm: or the key in brackets, [5] GUN
        // ARM A, HIS CASE: one Bandage, the Medical cell selected, one click spends it, and he keeps clicking.
        g.bag=['bandage']; g.pouch.frag=0; g.pouch.smoke=0; g.pouch.decoy=0;
+       g.hotAssign=g.hotAssign||{}; g.hotAssign[4]='frag';   // v25.xx (belt3) retarget: a key he bound keeps the grenade cell at 0
        var sl=hotbarSlots(), hc=-1, fc=-1;
        for(i=0;i<sl.length;i++){ if(hc<0&&sl[i]&&sl[i].kind==='heal') hc=i; if(fc<0&&sl[i]&&sl[i].k==='throw:frag') fc=i; }
        if(hc<0) return 'SKIP: no Medical cell on the belt';
@@ -50756,14 +50769,14 @@ window.__REGRESS=[
        // ARM E, THE RAID START: the held gun bound to key 5; the raid must start on key 5, the key he bound (since v15.25 cell 1 shows that gun too).
        if(ITEMS[gk]){
          __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-         P.hotAssign={4:gk};
+         P.hotAssign=(typeof BELT_CLASS!=='undefined')?{3:gk}:{4:gk};   // v25.xx (belt3) retarget: a gun belongs on keys 1 to 4
          __deploy({kit:[],safe:null,mapIx:0,seed:4242});
          var g5=__state();
          if(!(g5&&g5.player&&g5.player.wep&&('gun_'+g5.player.wep.id)===gk)) bad.push('staging: the second drop did not issue the same gun, so key 5 could not be bound to it');
          else {
-           var s5=hotbarSlots();
+           var s5=hotbarSlots(), K5=(typeof BELT_CLASS!=='undefined')?3:4;
            if(!(s5[4]&&s5[4].kind==='gun'&&s5[4].inHand)) bad.push('staging: binding the held gun to key 5 did not put it on key 5 at the raid start (cell 5 '+(s5[4]&&s5[4].kind)+')');
-           else if(hotSel()!==4) bad.push('with the held gun bound to key 5 the raid started on cell '+(hotSel()+1)+' instead of the gun cell');
+           else if(hotSel()!==K5) bad.push('with the held gun bound to key 5 the raid started on cell '+(hotSel()+1)+' instead of the gun cell');
          }
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -52132,7 +52145,7 @@ window.__REGRESS=[
      }
      function beltHasPlate(){
        try{ var sl=hotbarSlots();
-         for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].k==='plate') return true;
+         for(var i=0;i<sl.length;i++) if(sl[i]&&(sl[i].k==='plate'||sl[i].itemKey==='plate')) return true;
        }catch(_b){}
        return false;
      }
@@ -57057,14 +57070,14 @@ window.__REGRESS=[
        if(!p.wep||!p.wep.id||p.wep.id==='fists') return 'SKIP: no gun in hand at the drop';
        var gk='gun_'+p.wep.id; if(!ITEMS[gk]) return 'SKIP: no item for the gun in hand ('+gk+')';
        // THE ROOM: the gun in his hands bound to key 5. Since v15.25 the derived cell 1 shows that gun too.
-       g.hotAssign={4:gk}; g.hotAuto={}; g.pouch.frag=0; g.pouch.smoke=0; g.pouch.decoy=0;
+       var KN=(typeof BELT_CLASS!=='undefined')?1:5; g.hotAssign=(typeof BELT_CLASS!=='undefined')?{4:'frag'}:{4:gk}; g.hotAuto={};   // v25.xx (belt3) retarget: no gun key past key 4; the empty throwable key is a bound Frag g.pouch.frag=0; g.pouch.smoke=0; g.pouch.decoy=0;
        p.ammo=Math.max(p.ammo||0,5); p.reloading=0; p.jam=0; p.cooking=0; p.fired=false; p.trigYield=0;
        p.wep.jam=0;   // the jam roll on the trigger pull would eat the shot this check counts; the raid ends before the gun is seen again
        var sl=hotbarSlots();
        // These two ARE the room, so they fail rather than skip: a skip here
        // would quietly stop this check running the day the dedupe changed.
        if(!(sl[0]&&sl[0].kind==='gun'&&sl[0].inHand)) bad.push('cell 1 does not show the gun in his hands while key 5 holds it (cell 1 is '+(sl[0]&&sl[0].kind)+')');
-       if(!(sl[4]&&sl[4].kind==='gun'&&sl[4].inHand)) bad.push('the premise is gone: key 5 did not take the held gun (cell 5 is '+(sl[4]&&sl[4].kind)+')');
+       if(typeof BELT_CLASS==='undefined'&&!(sl[4]&&sl[4].kind==='gun'&&sl[4].inHand)) bad.push('the premise is gone: key 5 did not take the held gun (cell 5 is '+(sl[4]&&sl[4].kind)+')');
        if(bad.length) return bad.join('; ');
        function press(frames){ mouse.down=true; for(var f=0;f<frames;f++) updatePlayer(0.016); }
        function release(){ mouse.down=false; updatePlayer(0.016); }
@@ -57080,7 +57093,7 @@ window.__REGRESS=[
          G.hot=fi; p.fired=false; p.trigYield=0; p.cooking=0; var sh1=g.tel.shots||0;
          window.__lastSay=null; press(1);
          if(hotSel()!==fi) bad.push('a click on the empty throwable cell moved the highlight to cell '+(hotSel()+1)+'; since v13.42 he brings the gun up himself');
-         if((String(window.__lastSay||'')+' '+String((__state()&&__state().msgSub)||'')).indexOf('Press 5')<0&&(String(window.__lastSay||'')+' '+String((__state()&&__state().msgSub)||'')).indexOf('[5]')<0) bad.push('the empty throwable cell did not name key 5 for the gun (said: '+String(window.__lastSay||'')+')');
+         if((String(window.__lastSay||'')+' '+String((__state()&&__state().msgSub)||'')).indexOf('Press '+KN)<0&&(String(window.__lastSay||'')+' '+String((__state()&&__state().msgSub)||'')).indexOf('['+KN+']')<0) bad.push('the empty throwable cell did not name key 5 for the gun (said: '+String(window.__lastSay||'')+')');
          press(2); release();
          p.lastShot=-9999; press(2); release();
          if((g.tel.shots||0)!==sh1) bad.push('clicking the empty throwable cell fired the gun '+((g.tel.shots||0)-sh1)+' time(s)');
@@ -57088,14 +57101,14 @@ window.__REGRESS=[
        // ARM C, THE SECOND FALL-BACK: spending the LAST of a stack falls back the
        // same way. One bandage on key 4, selected, one click uses it and empties
        // the cell, and the fall-back must land on the gun and not on the blank.
-       g.bag=['bandage']; g.hotAssign={3:'bandage',4:gk}; g.hotAuto={};
-       var slc=hotbarSlots();
+       g.bag=['bandage']; g.hotAssign=(typeof BELT_CLASS!=='undefined')?{6:'bandage'}:{3:'bandage',4:gk}; g.hotAuto={};
+       var slc=hotbarSlots(), BI=(typeof BELT_CLASS!=='undefined')?6:3;
        if(!(slc[3]&&slc[3].assigned&&slc[3].itemKey==='bandage'&&(slc[3].count|0)===1)) bad.push('staging: key 4 is not a Bandage cell holding exactly one (kind '+(slc[3]&&slc[3].kind)+', count '+(slc[3]&&slc[3].count)+')');
        else {
-         G.hot=3; p.fired=false; p.trigYield=0; p.hp=40; var sh2=g.tel.shots||0;
+         G.hot=BI; p.fired=false; p.trigYield=0; p.hp=40; var sh2=g.tel.shots||0;
          press(1); release();
          if(g.bag.indexOf('bandage')>=0) bad.push('control: the click did not spend the last Bandage');
-         else if(hotSel()!==3) bad.push('spending the last Bandage moved the highlight to cell '+(hotSel()+1)+'; since v13.42 it stays on the Bandage cell');
+         else if(hotSel()!==BI) bad.push('spending the last Bandage moved the highlight to cell '+(hotSel()+1)+'; since v13.42 it stays on the Bandage cell');
          p.lastShot=-9999; press(2); release(); press(2); release();
          if((g.tel.shots||0)!==sh2) bad.push('clicking on after the last Bandage fired the gun '+((g.tel.shots||0)-sh2)+' time(s)');
        }
@@ -57232,11 +57245,11 @@ window.__REGRESS=[
        if(g.bag.indexOf('gun_rifle')<0) bad.push('control: the bought rifle is not in the bag');
        // THE MEDKIT WITH NO KEY SET: the backpack.
        var m2=buy(1,'medkit');
-       if(!/In your backpack/.test(m2)&&tg!=='BACKPACK') bad.push('a medkit bought with no key set said "'+m2+'" (row tag "'+tg+'") and not In your backpack');
+       if(typeof beltClassOf==='function'?!/^SLOT [78]$/.test(tg):(!/In your backpack/.test(m2)&&tg!=='BACKPACK')) bad.push(   // v25.xx (belt3) retarget: a medkit takes a free medical key'a medkit bought with no key set said "'+m2+'" (row tag "'+tg+'") and not In your backpack');
        // THE MEDKIT ON KEY 6.
-       g.hotAssign[5]='medkit';
+       if(typeof beltClassOf==='function'){ g.hotAssign={7:'medkit'}; g.hotAuto={}; } else g.hotAssign[5]='medkit';
        var m3=buy(2,'medkit');
-       if(!/tactical belt, key 6/.test(m3)&&tg!=='SLOT 6') bad.push('a medkit bought with key 6 set to medkit said "'+m3+'" (row tag "'+tg+'") and not key 6');
+       var K6=(typeof beltClassOf==='function')?8:6; if(!new RegExp('tactical belt, key '+K6).test(m3)&&tg!=='SLOT '+K6) bad.push('a medkit bought with key 6 set to medkit said "'+m3+'" (row tag "'+tg+'") and not key 6');
        // THE PURCHASE ITSELF, unchanged: the credits fell by the three prices.
        if(P2.credits!==5000-60) bad.push('control: credits are '+P2.credits+' after three purchases priced 10, 20 and 30 from 5000');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -57260,11 +57273,11 @@ window.__REGRESS=[
        try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; __endRaid('abandon'); } }catch(_0){}
        keys={}; __showScreen('hub'); __hubEnter();
        // A key left on Bandage by the last raid (dropDeadKeys keeps it while the stash has one), nothing packed, three in the stash.
-       P2.stash=['bandage','bandage','bandage','wire']; P2.kit=[]; P2.hotAssign={2:'bandage'}; P2.freeKit=0; saveProfile();
+       P2.stash=['bandage','bandage','bandage','wire']; P2.kit=[]; P2.hotAssign={6:'bandage'}; P2.freeKit=0; saveProfile();
        renderHub();
        var hub=document.getElementById('hub'); if(hub) hub.classList.add('on');
        // (B) the plan cell for key 3 says 0.
-       var cell=document.querySelector('#hub [data-plan="2"]');
+       var cell=document.querySelector('#hub [data-plan="6"]');
        if(!cell) bad.push('staging: no plan cell for key 3 on the stash screen');
        else if(!zeroOn(cell)) bad.push('the plan cell for key 3, set to Bandage with none packed, shows no 0');
        // (A) the drop, through the real pointer dropzone handler.
@@ -57274,8 +57287,8 @@ window.__REGRESS=[
        var nb=packedCount('bandage'), kn=document.getElementById('kitn'), shown=kn?parseInt(kn.textContent,10):-1;
        if(nb<1) bad.push('the drop packed nothing');
        if(!(shown>0)) bad.push('after the drop the backpack column shows '+shown+' items: the Bandage vanished into the key');
-       if(!/key 3/.test(HUBSAY||'')) bad.push('the drop said "'+(HUBSAY||'')+'" and not which key took it');
-       var c2=document.querySelector('#hub [data-plan="2"]');
+       if(!/key 7/.test(HUBSAY||'')) bad.push('the drop said "'+(HUBSAY||'')+'" and not which key took it');
+       var c2=document.querySelector('#hub [data-plan="6"]');
        if(c2&&nb>1&&(c2.textContent||'').indexOf('x'+nb)<0) bad.push('the plan cell does not show x'+nb+' after the drop (it reads "'+(c2.textContent||'').trim()+'")');
        // CONTROL: the same drop with no key bound packs one copy, as it always has.
        P2.kit=[]; P2.hotAssign={}; saveProfile(); renderHub(); col.__grabDrop('wire','stash');
@@ -57284,8 +57297,8 @@ window.__REGRESS=[
        // (C) in a raid, a key on a Bandage with none in the bag says so.
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state();
-       g.hotAssign={2:'bandage'}; g.hotAuto={}; g.bag=[]; g.msg=''; g.hot=2;
-       var sl=hotbarSlots(), s2=sl[2];
+       g.hotAssign={6:'bandage'}; g.hotAuto={}; g.bag=[]; g.msg=''; g.hot=6;
+       var sl=hotbarSlots(), s2=sl[6];
        if(!(s2&&s2.assigned&&s2.itemKey==='bandage')) bad.push('staging: belt cell 3 is not the assigned Bandage cell (kind '+(s2&&s2.kind)+')');
        useHot();
        if(!/No Bandage left|NO BANDAGE LEFT/.test(g.msg||'')) bad.push('a spent Bandage key said "'+(g.msg||'')+'", not No Bandage left');
@@ -57870,6 +57883,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player;
        g.pouch.frag=0; g.pouch.smoke=2; g.pouch.decoy=0;
+       g.hotAssign=g.hotAssign||{}; g.hotAssign[4]='frag';   // v25.xx (belt3) retarget: a key he bound keeps the grenade cell at 0
        var sl=hotbarSlots(), fi=-1;
        for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].kind==='throw'&&/frag/i.test(String(sl[i].k||sl[i].itemKey||sl[i].icon||''))){ fi=i; break; }
        if(fi<0) return 'SKIP: no Frag cell on the belt ('+sl.map(function(c){ return c&&(c.k||c.kind); }).join(',')+')';
@@ -58218,15 +58232,15 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __cleanProfile();
        G=null; __showScreen('hub'); __hubEnter();
        P2.stash=['bandage','bandage','bandage','bandage','bandage','bandage','medkit','plate','plate','plate']; P2.kit=[]; P2.hotAssign={}; P2.stashTab='all'; saveProfile();
-       var w1=planPut(2,'bandage'); if(w1) bad.push('key 3 refused the Bandages: '+w1);
+       var w1=planPut(6,'bandage'); if(w1) bad.push('key 3 refused the Bandages: '+w1);
        if(packedCount('bandage')!==3) bad.push('a stack of six Bandages on a key packed '+packedCount('bandage')+', not three');
-       var w2=planPut(3,'medkit'); if(w2) bad.push('key 4 refused the Medkit: '+w2);
+       var w2=planPut(7,'medkit'); if(w2) bad.push('key 4 refused the Medkit: '+w2);
        if(packedCount('medkit')!==1) bad.push('one Medkit on a key packed '+packedCount('medkit'));
        P2.kit.push('plate','plate');   // two plates he packed by hand
-       var w3=planPut(4,'plate'); if(w3) bad.push('key 5 refused the plates: '+w3);
+       var w3=planPut(8,'plate'); if(w3) bad.push('key 5 refused the plates: '+w3);
        if(packedCount('plate')!==2) bad.push('a stack he had packed two of was changed to '+packedCount('plate'));
        renderHub();
-       var c3=document.querySelector('#hotplanwrap [data-plan="2"]'), c4=document.querySelector('#hotplanwrap [data-plan="3"]');
+       var c3=document.querySelector('#hotplanwrap [data-plan="6"]'), c4=document.querySelector('#hotplanwrap [data-plan="7"]');
        if(!c3||!c4) bad.push('control: the plan cells did not render');
        else {
          if(!/x3/.test(c3.textContent)) bad.push('key 3 does not show x3 (shows "'+c3.textContent.trim()+'")');
@@ -58653,8 +58667,8 @@ window.__REGRESS=[
          return Math.hypot(p.x-x0,p.y-y0);
        }
        // THE STIM, THROUGH THE REAL KEY.
-       g.bag=['stim']; g.hotAssign={2:'stim'}; P.hotAssign={2:'stim'}; p.stam=20; p.stimT=0;   // the raid reads its own plan
-       setHot(2); useHot();
+       g.bag=['stim']; g.hotAssign={7:'stim'}; P.hotAssign={7:'stim'}; p.stam=20; p.stimT=0;   // the raid reads its own plan
+       setHot(7); useHot();
        if(g.bag.indexOf('stim')>=0) bad.push('control: key 3 did not use the stim (bag '+g.bag.join(',')+')');
        if(!(p.stimT>=9.9)) bad.push('the stim did not start its ten seconds (stimT '+p.stimT+')');
        var dStim=sprintRun();
@@ -60012,8 +60026,8 @@ window.__REGRESS=[
      __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      g=__state(); p=g.player;
-     p.hp=50; g.bag=['bandage']; g.hotAssign={4:'bandage'}; p.healLock=false; p.healQ=0;
-     g.hot=4; frames(1);
+     p.hp=50; g.bag=['bandage']; g.hotAssign={6:'bandage'}; p.healLock=false; p.healQ=0;
+     g.hot=6; frames(1);
      if(typeof xCallKey==='function'){ useHot(); frames(6); } else { press('KeyG','g'); frames(6); release('KeyG','g'); frames(2); }
      if(g.bag.length!==0&&!(p.healQ>0)) bad.push('control: using the belt slot spent nothing and started no heal, so the belt path is broken and the finding above proves nothing');
      // CONTROL TWO: down, F still revives (the other F, a different state).
