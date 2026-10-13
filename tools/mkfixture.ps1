@@ -30063,7 +30063,7 @@ window.__REGRESS=[
      p.wep=cl(a); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=false;
      p.sec=cl(c); p.secAmmo=p.sec.mag; p.secIssued=false; p.secFromArmory=false;
      p.swapped=false; p.reloading=0; p.roll=0; p.downed=false; p.dying=false;
-     g.bag=[]; g.hotAssign={3:'gun_'+c};   // v25.xx (belt3) retarget: a gun key g.hotAuto={}; g.hot=0; g.drag=null;
+     g.bag=[]; g.hotAssign={3:'gun_'+c}; g.hotAuto={}; g.hot=0; g.drag=null;
      g.bagOpen=true; g.bagCells=[]; g.bagPanel=null; g.mapOpen=false; g.trade=null; g.paused=false;
      g.hotCells=[K8];
    }
@@ -30163,7 +30163,7 @@ window.__REGRESS=[
      if(full){ p.sec=cl(b); p.secAmmo=p.sec.mag; } else { p.sec=WEAPONS.fists; p.secAmmo=0; }
      p.secIssued=false; p.secFromArmory=false;
      p.swapped=false; p.reloading=0; p.roll=0; p.downed=false; p.dying=false;
-     g.bag=['gun_'+c]; g.hotAssign={3:'gun_'+c};   // v25.xx (belt3) retarget: a gun key g.hotAuto={}; g.hot=0; g.drag=null; g.stowAmmo={};
+     g.bag=['gun_'+c]; g.hotAssign={3:'gun_'+c}; g.hotAuto={}; g.hot=0; g.drag=null; g.stowAmmo={};
      g.bagOpen=true; g.bagCells=[]; g.bagPanel=null; g.mapOpen=false; g.trade=null; g.paused=false;
      g.hotCells=[K8,K1];
    }
@@ -34163,7 +34163,7 @@ window.__REGRESS=[
        p.wep=cl(a); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=false;
        p.sec=cl(b); p.secAmmo=p.sec.mag; p.secIssued=false; p.secFromArmory=false;
        p.swapped=false; p.reloading=0; p.roll=0; p.downed=false; p.dying=false;
-       g.bag=['gun_'+c]; g.hotAssign={3:'gun_'+c};   // v25.xx (belt3) retarget: a gun key g.hotAuto={}; g.hot=0; g.drag=null;
+       g.bag=['gun_'+c]; g.hotAssign={3:'gun_'+c}; g.hotAuto={}; g.hot=0; g.drag=null;
        g.bagOpen=true; g.bagCells=[]; g.bagPanel=null; g.mapOpen=false; g.trade=null; g.paused=false;
        g.hotCells=[cell];
      }
@@ -57070,7 +57070,7 @@ window.__REGRESS=[
        if(!p.wep||!p.wep.id||p.wep.id==='fists') return 'SKIP: no gun in hand at the drop';
        var gk='gun_'+p.wep.id; if(!ITEMS[gk]) return 'SKIP: no item for the gun in hand ('+gk+')';
        // THE ROOM: the gun in his hands bound to key 5. Since v15.25 the derived cell 1 shows that gun too.
-       var KN=(typeof BELT_CLASS!=='undefined')?1:5; g.hotAssign=(typeof BELT_CLASS!=='undefined')?{4:'frag'}:{4:gk}; g.hotAuto={};   // v25.xx (belt3) retarget: no gun key past key 4; the empty throwable key is a bound Frag g.pouch.frag=0; g.pouch.smoke=0; g.pouch.decoy=0;
+       var KN=(typeof BELT_CLASS!=='undefined')?1:5; g.hotAssign=(typeof BELT_CLASS!=='undefined')?{4:'frag'}:{4:gk}; g.hotAuto={}; g.pouch.frag=0; g.pouch.smoke=0; g.pouch.decoy=0;
        p.ammo=Math.max(p.ammo||0,5); p.reloading=0; p.jam=0; p.cooking=0; p.fired=false; p.trigYield=0;
        p.wep.jam=0;   // the jam roll on the trigger pull would eat the shot this check counts; the raid ends before the gun is seen again
        var sl=hotbarSlots();
@@ -57245,7 +57245,7 @@ window.__REGRESS=[
        if(g.bag.indexOf('gun_rifle')<0) bad.push('control: the bought rifle is not in the bag');
        // THE MEDKIT WITH NO KEY SET: the backpack.
        var m2=buy(1,'medkit');
-       if(typeof beltClassOf==='function'?!/^SLOT [78]$/.test(tg):(!/In your backpack/.test(m2)&&tg!=='BACKPACK')) bad.push(   // v25.xx (belt3) retarget: a medkit takes a free medical key'a medkit bought with no key set said "'+m2+'" (row tag "'+tg+'") and not In your backpack');
+       if(typeof beltClassOf==='function'?!/^SLOT [78]$/.test(tg):(!/In your backpack/.test(m2)&&tg!=='BACKPACK')) bad.push('a medkit bought with no key set said "'+m2+'" (row tag "'+tg+'") and not In your backpack');
        // THE MEDKIT ON KEY 6.
        if(typeof beltClassOf==='function'){ g.hotAssign={7:'medkit'}; g.hotAuto={}; } else g.hotAssign[5]='medkit';
        var m3=buy(2,'medkit');
