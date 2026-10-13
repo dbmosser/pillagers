@@ -1,0 +1,7 @@
+v25.52: good reload noises
+
+Each gun class now reloads in recorded steps timed to its own reload (magazine out, magazine in, and the rack only when empty), shells one by one, bolt, cylinder, belt and cell, and a cut reload stops.
+
+Check 25.52. Fails on v25.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
