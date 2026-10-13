@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.06 - THE HUD PANEL TOGGLE IS A CHEVRON
+
+Co-op hunt while he was away. His orders of 2026-10-12 (#35 redo the HUD, #50 make it look like a AAA game). The CONDITIONS, CURRENT PILLAGERS and controls panels in a raid ended their title with [-] or [+] in grey text, which read as developer UI. They draw a small chevron in the same spot now, up while open and down while folded. The click that folds them is the same.
+
+MEASURED. Check 25.06 passes, and fails on v25.05.
 ## v25.05 - CAREER RAIDS: THE 10 MINUTE CLOCK
 
 Co-op hunt while he was away. His mode design of 2026-10-12: CAREER is the arcade mode with the Undercroft, 10 minute raids, and his rule that the gameplay is exactly the same in DEMO and CAREER. Every raid you take up from the Undercroft is now a CAREER raid: it runs on the DEMO clock, 10 minutes instead of 9, and the extraction rings never close early, so the clock and the burn at zero are the pressure, as in the DEMO. Your own kit from the stash, full enemy damage and coming back empty after a death are unchanged. The kill score, the waves and the payout build on this in the next builds.

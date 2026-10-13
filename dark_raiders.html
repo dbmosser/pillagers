@@ -2118,7 +2118,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.05';
+var VER='25.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31956,7 +31956,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.fillStyle='#ffc04a'; ctx.fillText('CONDITIONS',bx+pad,ry);
     HUDBOX.cond={x:bx,y:by,w:bw,h:bh,tg:{x:bx+bw-LH(20),y:by,w:LH(20),h:LH(16)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1';
-    ctx.fillText(HOc.c?'[+]':'[-]',bx+bw-pad,ry);
+    hudChev(bx+bw-pad,ry,!HOc.c);   // vNN.xx (ui5q2p): a drawn chevron, not [-]
     ctx.textAlign='left'; ctx.fillStyle='#6b7783';
     ry+=lh;
     if(HOc.c) return;
@@ -33805,6 +33805,18 @@ function hudOff(id){
 // at 76 percent a world label (THE ... DOCK CACHE) read through the contracts panel. They are the plate of the menus now: graphite,
 // the top left corner cut at 10px, a hairline edge and a short amber tick on the top edge; the default fill is 88 percent, so the
 // world does not read through. A caller that asks for its own fill keeps it. Every position, size and hit box is what it was.
+// vNN.xx, UI REDESIGN ui5q2p (his #35 and #50, from the AAA judge of the raid HUD shots): THE PANEL TOGGLE IS A CHEVRON. The
+// CONDITIONS, CURRENT PILLAGERS and controls panels ended their title row with [-] or [+] in grey text, which read as developer UI.
+// The same spot (and the same click target, HUDBOX tg) draws a small chevron now: up while the panel is open, down while folded.
+// xr is the right edge and yb the text baseline, as the old fillText had them.
+function hudChev(xr,yb,open){
+  var s=Math.max(3,LH(4)), cx=xr-s-1, cy=yb-LH(4);
+  ctx.save(); ctx.strokeStyle='#a9b4be'; ctx.lineWidth=Math.max(1.5,LH(1.6)); ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.beginPath();
+  if(open){ ctx.moveTo(cx-s,cy+s*0.5); ctx.lineTo(cx,cy-s*0.5); ctx.lineTo(cx+s,cy+s*0.5); }
+  else { ctx.moveTo(cx-s,cy-s*0.5); ctx.lineTo(cx,cy+s*0.5); ctx.lineTo(cx+s,cy-s*0.5); }
+  ctx.stroke(); ctx.restore();
+}
 function hudPanel(x,y,w,h,a){
   var c, g;
   if(!(w>0&&h>0)) return;
@@ -33935,7 +33947,7 @@ function hudPanel(x,y,w,h,a){
   HUDBOX.raiders={x:PADX-8,y:y0-LH(13),w:LW,h:boxH,
     tg:{x:PADX-8+LW-LH(20),y:y0-LH(13),w:LH(20),h:LH(16)}};
   ctx.textAlign='right'; ctx.fillStyle='#8a96a1';
-  ctx.fillText(HOr.c?'[+]':'[-]',PADX-8+LW-LH(6),y0-LH(2));
+  hudChev(PADX-8+LW-LH(6),y0-LH(2),!HOr.c);   // vNN.xx (ui5q2p): a drawn chevron, not [-]
   ctx.textAlign='left';
   if(HOr.c) return;
   var yy=y0+LH(10);
@@ -34073,7 +34085,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     hudPanel(mx-8,my-6,MW,MH+10);   // v18.13: the one HUD panel
     HUDBOX.legend={x:mx-8,y:my-6,w:MW,h:MH+10,tg:{x:mx-8+MW-LH(20),y:my-6,w:LH(20),h:LH(14)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1'; ctx.font=MONO;
-    ctx.fillText('[-]',mx-8+MW-4,my+LH(4));
+    hudChev(mx-8+MW-4,my+LH(4),true);   // vNN.xx (ui5q2p): a drawn chevron, not [-]
     ctx.textAlign='left';
     for(mi=0;mi<MN.length;mi++){
       var cx0=mx+(mi%2)*COLW, cy0=my+LH(7)+Math.floor(mi/2)*MROW;
@@ -39387,7 +39399,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.05: Raids from the Undercroft are CAREER raids: 10 minutes, and the rings stay open until the clock runs out. Check 25.05 fails on v25.04',
+  now:'v25.06: The raid HUD panels fold with a small chevron instead of [-]. Check 25.06 fails on v25.05',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

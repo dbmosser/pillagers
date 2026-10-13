@@ -1,0 +1,5 @@
+## v25.06 - THE HUD PANEL TOGGLE IS A CHEVRON
+
+Co-op hunt while he was away. His orders of 2026-10-12 (#35 redo the HUD, #50 make it look like a AAA game). The CONDITIONS, CURRENT PILLAGERS and controls panels in a raid ended their title with [-] or [+] in grey text, which read as developer UI. They draw a small chevron in the same spot now, up while open and down while folded. The click that folds them is the same.
+
+MEASURED. Check 25.06 passes, and fails on v25.05.

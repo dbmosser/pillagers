@@ -1,0 +1,7 @@
+v25.06: the hud panel toggle is a chevron
+
+The raid HUD panels fold with a small chevron instead of [-].
+
+Check 25.06. Fails on v25.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

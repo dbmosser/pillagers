@@ -6076,6 +6076,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.06',what:'his #35/#50 (UI redesign ui5q2p): the raid HUD panels draw a chevron for their fold toggle, not the text [-] or [+]',
+   run:function(){
+     if(typeof hudChev!=='function') return 'the HUD has no chevron toggle';
+     var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), n=0, k=0;
+     var nd="fillText(HO"+"c.c?'[+]'", nd2="fillText(HO"+"r.c?'[+]'", nd3="fillText('[-"+"]',mx";
+     if(src.indexOf(nd)>=0||src.indexOf(nd2)>=0||src.indexOf(nd3)>=0) return 'a HUD panel still prints [-] as its toggle';
+     var real=ctx.stroke;
+     try{ ctx.stroke=function(){ n++; }; hudChev(200,200,true); hudChev(200,200,false); }
+     finally{ delete ctx.stroke; if(ctx.stroke!==real) ctx.stroke=real; }
+     return n===2?null:('the chevron drew '+n+' strokes for two calls'); }},
   {v:'25.05',what:'his mode design (2026-10-12): a raid from the Undercroft is a CAREER raid, the DEMO clock of 10 minutes, no ring closes early, G.career with its own score store, the same seeded raid; CAREER_ON 0 gives the old raid',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';

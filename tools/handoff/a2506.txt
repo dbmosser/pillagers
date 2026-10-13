@@ -1,0 +1,1 @@
+| THE HUD PANEL TOGGLE IS A CHEVRON | v25.06 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 25.06 passes, fails on v25.05 |
