@@ -54355,7 +54355,7 @@ window.__REGRESS=[
          p.x=ct.x+18; p.y=ct.y; ct.prog=ct.time*0.06; g.searching=null; g.searchT=0; keys={}; keys['KeyE']=true; said.length=0;
          updatePlayer(0.016);
          keys={};
-         if(!said.some(function(t){ return t==='Search resumed, 6% done.'; })) bad.push('the resumed search does not say Search resumed (said: '+said.join(' | ').slice(0,90)+')');
+         if(!said.some(function(t){ return t==='Search resumed, 6% done.'; })&&!(!said.some(function(t){ return /esumed/.test(t); })&&g.searching===ct&&ct.prog>ct.time*0.06)) bad.push('the resumed search neither says Search resumed nor carries on silently (said: '+said.join(' | ').slice(0,90)+')');   // retargeted 2026-10-12 for nosearchline, HIS ORDER: no Search resumed line. Either the old line, or nothing about it said and the search carrying on
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ say=realSay; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; g2.player.hp=100; g2.searching=null; __endRaid('extract'); } }catch(_e){} __topClear(); __cleanProfile(); }
