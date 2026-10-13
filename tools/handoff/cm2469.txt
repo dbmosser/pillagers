@@ -1,0 +1,7 @@
+v24.69: keycards in the world
+
+Keycards hide in boxes and drop from elites, and a vault pays 500 when opened.
+
+Check 24.69. Fails on v24.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

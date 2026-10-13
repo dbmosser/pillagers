@@ -1,0 +1,5 @@
+## v24.69 - KEYCARDS IN THE WORLD
+
+Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. The third vault build. Every DEMO raid now hides one Vault Keycard per vault in an ordinary crate, locker or safe that you can reach, never inside a locked room. Fights pay them out too: while a vault is still shut, every elite you kill drops a KEYCARD box where it fell, and so does every twelfth kill when no keycard is left in the world. Opening a vault pays VAULT OPEN plus 500 to the score of the player who opened it. A normal raid is unchanged.
+
+MEASURED. Check 24.69 passes, and fails on v24.68.

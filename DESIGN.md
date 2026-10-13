@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.69 - KEYCARDS IN THE WORLD
+
+Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. The third vault build. Every DEMO raid now hides one Vault Keycard per vault in an ordinary crate, locker or safe that you can reach, never inside a locked room. Fights pay them out too: while a vault is still shut, every elite you kill drops a KEYCARD box where it fell, and so does every twelfth kill when no keycard is left in the world. Opening a vault pays VAULT OPEN plus 500 to the score of the player who opened it. A normal raid is unchanged.
+
+MEASURED. Check 24.69 passes, and fails on v24.68.
 ## v24.68 - DEMO VAULTS
 
 Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. COLD STORAGE already has strongrooms: buildings with a closed inner room and a single doorway. In a DEMO raid two of them are now sealed into vaults, VAULT A and VAULT B. Each has a locked door with a lamp, shows on the map as a locked room, and holds two caches, one of them with an elite gun. A Vault Keycard opens one. The vault walls cannot be blown or shot through. A strongroom is only used when its walls stand whole and nothing alive, no spawn and no ring is inside it. The choice is made on its own random stream, so the rest of the raid is built exactly as before and both players see the same vaults; a normal raid is unchanged. A teammate respawn never puts you inside a shut vault.
