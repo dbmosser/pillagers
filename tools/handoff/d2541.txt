@@ -1,0 +1,5 @@
+## v25.41 - THE MINIMAP MARKS WHAT MATTERS
+
+Co-op hunt while he was away. His order of 2026-10-12: add minimap, the markers. The minimap now shows the extraction points with their letter and their state (open, inbound, live, closing two minutes before the cut, closed and crossed out), the seal, the Forge station when there is one, the vault and locked room doors, your waypoint, the party marks and pings, and your teammates (player 2 and the co-op party) in the ally colour, red while down. Enemies show only while you can see them, by the same rule the world uses to draw them, so the minimap never gives away a machine behind a wall. An extraction, the seal, your waypoint or a teammate out of range sits on the edge of the minimap as a small arrow pointing the way.
+
+MEASURED. Check 25.41 passes, and fails on v25.40.

@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.40';
+var VER='25.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32076,6 +32076,126 @@ function mmShown(){
   if(G.arcade&&typeof ARCADE==='object'&&ARCADE&&ARCADE.over) return false;
   return true;
 }
+// v24.xx (minimap2), HIS ORDER (2026-10-12): "add minimap", the markers. What the minimap shows on the street it bakes:
+// - the extraction points in their state: OPEN (teal ring), INBOUND (called, teal, pulsing), LIVE (the hold running, green, pulsing
+//   fast), CLOSING (amber, from the two minute warning) and CLOSED (dim, crossed out), each with its letter;
+// - the seal (a pale blue diamond, amber once broken), the Forge station when the raid has one, and the vault and locked room doors
+//   (an amber square, green once open);
+// - your waypoint and the party's marks and pings, in the colours the sector map gives them;
+// - teammates (player 2 and the co-op party) as ally dots with their facing, red while down;
+// - enemies ONLY while you can see them: the list the world itself draws by (VIS, built from canSee each frame, shared sight
+//   included), so the minimap never shows a machine or a pillager through a wall. They share one path, one fill.
+// An objective out of range (an extraction that is not closed, the seal, the Forge, your waypoint, a teammate) pins to the edge of
+// the minimap as a small arrow in its colour, pointing the way. The pulse runs off the raid clock; nothing here draws a seeded number.
+function mmPin(r,R,dx,dy){
+  var h=r.w/2, k=Math.max(Math.abs(dx),Math.abs(dy)), t;
+  if(k<=h-4*R) return {x:r.x+h+dx,y:r.y+h+dy,a:0,out:false};
+  t=(h-8*R)/k;
+  return {x:r.x+h+dx*t,y:r.y+h+dy*t,a:Math.atan2(dy,dx),out:true};
+}
+function mmArrow(s,R,col){
+  ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.a);
+  ctx.beginPath(); ctx.moveTo(6*R,0); ctx.lineTo(-4*R,5*R); ctx.lineTo(-2*R,0); ctx.lineTo(-4*R,-5*R); ctx.closePath();
+  ctx.lineJoin='round'; ctx.lineWidth=2*R; ctx.strokeStyle=INK; ctx.stroke(); ctx.fillStyle=col; ctx.fill();
+  ctx.restore(); MMAP.ops+=2; MMAP.got.pins++;
+}
+function mmFoe(e){ return !!e&&!e.dead&&!(e.hp<=0)&&!e.merc&&!e.friendly&&!e.friendlyPC&&!e.neutral&&e.kind!=='peddler'&&e.kind!=='stray'; }
+function mmMarks(r,sc,R){
+  var p=G.player, i, q, s, col, st, rad, a, lt=G.t||0, foes=[], mates, fg;
+  var got=MMAP.got={zones:[],seal:null,forge:null,doors:0,mates:0,foes:[],pins:0,wp:null};
+  function at(x,y){ return mmPin(r,R,(x-p.x)*sc,(y-p.y)*sc); }
+  ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.textBaseline='middle';
+  // vault and locked room doors
+  for(i=0;i<((G.map&&G.map.locked)||[]).length;i++){
+    q=G.map.locked[i]; s=at((q.doorX!==undefined)?q.doorX:q.x+q.w/2,(q.doorY!==undefined)?q.doorY:q.y+q.h/2);
+    if(s.out) continue;
+    ctx.fillStyle=INK; ctx.fillRect(s.x-4.5*R,s.y-4.5*R,9*R,9*R);
+    ctx.fillStyle=q.open?HUDC.gain:UIC.acc; ctx.fillRect(s.x-3*R,s.y-3*R,6*R,6*R); MMAP.ops+=2; got.doors++;
+  }
+  // the extraction points, in their state
+  for(i=0;i<(G.zones||[]).length;i++){
+    q=G.zones[i];
+    if(!q.open) st='closed';
+    else if(q.beaconT!==null&&q.beaconT!==undefined&&q.beaconT>0) st='inbound';
+    else if(q.beaconT!==null&&q.beaconT!==undefined&&q.hold!==null&&q.hold!==undefined) st='live';
+    else if(q.closeAt!==undefined&&G.timeLeft<=q.closeAt+120) st='closing';
+    else st='open';
+    got.zones.push(st);
+    col=(st==='closed')?UIC.tx_off:((st==='live')?HUDC.gain:((st==='closing')?UIC.warn:HUDC.extract));
+    a=(st==='inbound')?(0.6+0.4*Math.sin(lt*6)):((st==='live')?(0.55+0.45*Math.sin(lt*12)):1);
+    s=at(q.x,q.y);
+    if(s.out){ if(st!=='closed'){ ctx.globalAlpha=a; mmArrow(s,R,col); ctx.globalAlpha=1; } continue; }
+    rad=Math.max(6*R,(q.r||0)*sc);
+    ctx.globalAlpha=a; ctx.strokeStyle=col; ctx.lineWidth=2*R; ctx.beginPath(); ctx.arc(s.x,s.y,rad,0,6.2832);
+    if(st==='closed'){ ctx.moveTo(s.x-rad*0.6,s.y-rad*0.6); ctx.lineTo(s.x+rad*0.6,s.y+rad*0.6); ctx.moveTo(s.x+rad*0.6,s.y-rad*0.6); ctx.lineTo(s.x-rad*0.6,s.y+rad*0.6); }
+    ctx.stroke(); MMAP.ops++;
+    ctx.fillStyle=col; ctx.fillText(String.fromCharCode(65+i),s.x,s.y+0.5); MMAP.ops++;
+    ctx.globalAlpha=1;
+  }
+  // the seal
+  if(G.seal&&isFinite(G.seal.x)){
+    col=G.seal.done?UIC.acc:'#8fd0ff'; s=at(G.seal.x,G.seal.y);
+    if(s.out){ if(!G.seal.done){ mmArrow(s,R,col); got.seal='pin'; } }
+    else {
+      ctx.beginPath(); ctx.moveTo(s.x,s.y-6*R); ctx.lineTo(s.x+6*R,s.y); ctx.lineTo(s.x,s.y+6*R); ctx.lineTo(s.x-6*R,s.y); ctx.closePath();
+      ctx.lineWidth=2*R; ctx.strokeStyle=INK; ctx.stroke(); ctx.fillStyle=col; ctx.fill(); MMAP.ops+=2; got.seal='in';
+    }
+  }
+  // the Forge station, when the raid has one
+  fg=G.forge||G.forgeSt||null;
+  if(fg&&isFinite(fg.x)&&isFinite(fg.y)){
+    s=at(fg.x,fg.y);
+    if(s.out){ mmArrow(s,R,FORGE_GOLD); got.forge='pin'; }
+    else { ctx.fillStyle=INK; ctx.beginPath(); ctx.arc(s.x,s.y,6*R,0,6.2832); ctx.fill(); ctx.fillStyle=FORGE_GOLD; ctx.beginPath(); ctx.arc(s.x,s.y,4*R,0,6.2832); ctx.fill(); MMAP.ops+=2; got.forge='in'; }
+  }
+  // the party's marks and pings, then your waypoint
+  if(typeof NET==='object'&&NET){
+    if(NET.wps) for(var _ws in NET.wps){
+      if(!Object.prototype.hasOwnProperty.call(NET.wps,_ws)) continue;
+      q=NET.wps[_ws]; if(!q||!isFinite(q.x)) continue; s=at(q.x,q.y);
+      if(s.out){ mmArrow(s,R,'#bfe0ff'); continue; }
+      ctx.strokeStyle='#bfe0ff'; ctx.lineWidth=2*R; ctx.beginPath(); ctx.arc(s.x,s.y,4.5*R,0,6.2832); ctx.stroke(); MMAP.ops++;
+    }
+    for(i=0;i<(NET.pings||[]).length;i++){
+      q=NET.pings[i]; if(!q||!isFinite(q.x)) continue; s=at(q.x,q.y); if(s.out) continue;
+      ctx.fillStyle=q.dg?'#ff4a3a':(q.w?'#ff8a3c':'#6fe0ff');
+      ctx.beginPath(); ctx.moveTo(s.x,s.y-5*R); ctx.lineTo(s.x+4*R,s.y); ctx.lineTo(s.x,s.y+5*R); ctx.lineTo(s.x-4*R,s.y); ctx.closePath(); ctx.fill(); MMAP.ops++;
+    }
+  }
+  if(G.waypoint&&isFinite(G.waypoint.x)){
+    s=at(G.waypoint.x,G.waypoint.y); got.wp=s.out?'pin':'in';
+    if(s.out) mmArrow(s,R,UIC.acc);
+    else {
+      ctx.strokeStyle=UIC.acc; ctx.lineWidth=1.6*R; ctx.beginPath(); ctx.arc(s.x,s.y,4.5*R,0,6.2832);
+      ctx.moveTo(s.x-8*R,s.y); ctx.lineTo(s.x-2*R,s.y); ctx.moveTo(s.x+2*R,s.y); ctx.lineTo(s.x+8*R,s.y);
+      ctx.moveTo(s.x,s.y-8*R); ctx.lineTo(s.x,s.y-2*R); ctx.moveTo(s.x,s.y+2*R); ctx.lineTo(s.x,s.y+8*R); ctx.stroke(); MMAP.ops++;
+    }
+  }
+  // enemies you can see now: the world's own list (VIS), never one behind a wall. One path, one edge, one fill.
+  for(i=0;i<VIS.length;i++){
+    q=VIS[i]; if(!mmFoe(q)) continue;
+    s=at(q.x,q.y); if(s.out) continue;
+    foes.push(s); got.foes.push(q);
+  }
+  if(foes.length){
+    ctx.beginPath();
+    for(i=0;i<foes.length;i++){ ctx.moveTo(foes[i].x+4*R,foes[i].y); ctx.arc(foes[i].x,foes[i].y,4*R,0,6.2832); }
+    ctx.lineWidth=2*R; ctx.strokeStyle=INK; ctx.stroke(); ctx.fillStyle=HUDC.danger; ctx.fill(); MMAP.ops+=2;
+  }
+  // teammates: player 2 and the co-op party, in the ally colour, red while down
+  mates=(typeof NET==='object'&&NET&&NET.up)?NET.up:[];
+  for(i=0;i<mates.length;i++){
+    q=mates[i];
+    try{ if(!netUpShown(q)) continue; }catch(_nu){ continue; }
+    if(!isFinite(q.x)||!isFinite(q.y)) continue;
+    col=q.dn?HUDC.danger:HUDC.ally; s=at(q.x,q.y); got.mates++;
+    if(s.out){ mmArrow(s,R,col); continue; }
+    ctx.fillStyle=INK; ctx.beginPath(); ctx.arc(s.x,s.y,6*R,0,6.2832); ctx.fill();
+    ctx.fillStyle=col; ctx.beginPath(); ctx.arc(s.x,s.y,4.2*R,0,6.2832); ctx.fill(); MMAP.ops+=2;
+    if(!q.dn&&isFinite(q.f)){ ctx.strokeStyle=col; ctx.lineWidth=1.6*R; ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x+Math.cos(q.f)*10*R,s.y+Math.sin(q.f)*10*R); ctx.stroke(); MMAP.ops++; }
+  }
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+}
 function drawMinimap(){
   var p=G&&G.player, r, R, sc, bs, cut, x0, y0, ax, ay, bx, by, cx, cy;
   MMAP.box=null; MMAP.ops=0;
@@ -32092,6 +32212,7 @@ function drawMinimap(){
   if(MMAP.cv&&bx>ax&&by>ay){
     ctx.drawImage(MMAP.cv,ax*bs,ay*bs,(bx-ax)*bs,(by-ay)*bs,r.x+(ax-x0)*sc,r.y+(ay-y0)*sc,(bx-ax)*sc,(by-ay)*sc); MMAP.ops++;
   }
+  try{ mmMarks(r,sc,R); }catch(_mk){ ctx.globalAlpha=1; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; }   // v24.xx (minimap2): the markers, under your arrow
   // you: an amber arrow, ink edged, pointing where you face
   cx=r.x+r.w/2; cy=r.y+r.h/2;
   ctx.translate(cx,cy); ctx.rotate(p.face||0);
@@ -40131,7 +40252,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.40: A stim now clicks and hisses in, and the self-revive hisses its injector and rattles your gear as you get up. Check 25.40 fails on v25.39',
+  now:'v25.41: The minimap marks the extractions and their state, the seal, teammates, doors and the enemies you can see. Check 25.41 fails on v25.40',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

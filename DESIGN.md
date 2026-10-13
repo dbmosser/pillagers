@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.41 - THE MINIMAP MARKS WHAT MATTERS
+
+Co-op hunt while he was away. His order of 2026-10-12: add minimap, the markers. The minimap now shows the extraction points with their letter and their state (open, inbound, live, closing two minutes before the cut, closed and crossed out), the seal, the Forge station when there is one, the vault and locked room doors, your waypoint, the party marks and pings, and your teammates (player 2 and the co-op party) in the ally colour, red while down. Enemies show only while you can see them, by the same rule the world uses to draw them, so the minimap never gives away a machine behind a wall. An extraction, the seal, your waypoint or a teammate out of range sits on the edge of the minimap as a small arrow pointing the way.
+
+MEASURED. Check 25.41 passes, and fails on v25.40.
 ## v25.40 - THE INJECTORS SOUND LIKE INJECTORS
 
 Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. A Stim Injector and the self-revive played the menu chirp. Now a stim clicks its cap and hisses in, and the self-revive hisses its injector and rattles your gear as you get up, before the revive sting it already had. The sounds are the recorded CC0 foley from the v25.20 bank. Yours is centred on your side of the speakers and your teammates hear it where you stand. Sound only: nothing in the game changes.

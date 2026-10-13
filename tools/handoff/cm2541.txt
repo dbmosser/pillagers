@@ -1,0 +1,7 @@
+v25.41: the minimap marks what matters
+
+The minimap marks the extractions and their state, the seal, teammates, doors and the enemies you can see.
+
+Check 25.41. Fails on v25.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
