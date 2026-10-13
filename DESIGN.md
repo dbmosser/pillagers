@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.64 - THE STASH KEEPS THE TEXT FLOOR
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the stash found 28 labels painted at about 12 pixels: the stash is drawn slightly smaller than the other windows (his note of v9.67), and its smallest labels were already at the 13 pixel floor, so they went under it. The smallest labels (the tabs, SORT, STASH and LOADOUT, the counts, the key bar and the hint lines) are set so they land on the floor after the reduction, and the tabs are bigger; every larger word keeps his slight reduction. No word changed.
+
+MEASURED. Check 24.64 passes, and fails on v24.63.
 ## v24.63 - THE MODE LIST READS FROM THE COUCH
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the title found the mode rows were small 13 pixel caps in thin rows, the two COMING LATER notes hung off the side of the list, the walking Undercroft showed through behind the key row and the list, and the saves block was a full width web form as heavy as PLAY. The mode rows are big 52 pixel rows with 18 pixel labels now and 1 PLAYER is the large amber button, the COMING LATER notes sit inside their greyed rows, the centre of the title is darker so the menu stands clear, and the saves block is a narrower panel with the name box, CHANGE NAME and CREATE A NEW SAVE on one row. No word changed and the rows keep their order.

@@ -1073,6 +1073,16 @@
   .ui-key.pad{ border-radius:50%; width:24px; min-width:24px; padding:0; border:0; color:#111315; }
   .ui-key.pad-a{ background:#5fbf6a; } .ui-key.pad-b{ background:#e5482f; } .ui-key.pad-x{ background:#3f9de9; } .ui-key.pad-y{ background:#f5b73b; }
   .ui-key.pill{ border-radius:12px; padding:0 9px; }
+  /* vNN.xx, UI REDESIGN ui5q1d (his #50, from the AAA judge and the lint of the stash shot): THE STASH KEEPS THE 13 PIXEL FLOOR. The
+     stash is drawn at 0.92 of the window size (his v9.67 note: text in the Undercroft only slightly smaller), and its smallest labels
+     were set at the 13px floor, so 28 of them painted at 11.9px: the tabs, SORT, STASH and LOADOUT, the counts, the key bar, the hint
+     lines, the brand and the version. Those smallest labels are set at 14.2px now, which the 0.92 brings to the 13px floor; every
+     larger word keeps his slight reduction. The tabs are 16px, so the stash filters read at a glance. No word changed. */
+  #root #hub .brand, #root #hub #verlabel, #root #hub #reptop, #root #hub #stashsort, #root #hub .lohead, #root #hub #invcols em,
+  #root #hub #kitcol em, #root #hub #kitcol b, #root #hub .cell .cnt, #root #hub .loslab, #root #hub #invkeybar kbd, #root #hub #invkeybar div,
+  #root #hub #stashdetail span, #root #hub #sellhint, #root #hub #firstkit, #root #hub #sellall, #root #hub #stashsearch,
+  #root #hub #hotplanwrap span, #root #hubfreekit b, #root #hubfreekit span, #root #hub [style*="font-size:13px"]{ font-size:14.2px !important; }
+  #root #hub #stashtabs .invtab{ font-size:16px !important; }
   /* vNN.xx, UI REDESIGN ui5q1a (his #50, from the AAA judge of the title shots 01, 44 and 57): THE MODE LIST READS FROM THE COUCH.
      The mode rows were 13px caps in 40px rows, smaller than the old start button; they are 52px rows with 18px labels now, and
      1 PLAYER is the amber primary at 62px and 22px. The two SERVER rows are shorter and carry their COMING LATER tag inside the row
@@ -2014,7 +2024,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.63';
+var VER='24.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38956,7 +38966,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.63: The title mode list has big readable rows, the COMING LATER notes sit inside their rows, and the saves block is a compact panel. Check 24.63 fails on v24.62',
+  now:'v24.64: No label on the stash paints under 13 pixels, and the stash tabs are bigger. Check 24.64 fails on v24.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

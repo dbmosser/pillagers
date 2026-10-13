@@ -6063,6 +6063,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.64',what:'his #50 (UI redesign ui5q1d, from the AAA judge and the lint of the stash shot): on the stash, drawn at 0.92 of the window size (his v9.67 note), no label paints under the 13px floor (font size times the zoom), and the stash tabs are 16px',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], hub, z, q, i, el, f, low=[], tab, n=0;
+     function zoomOf(e){ var zz=1; for(var p=e;p&&p.nodeType===1;p=p.parentElement){ zz*=(parseFloat(getComputedStyle(p).zoom)||1); } return zz; }
+     try{
+       __topClear(); __hubEnter(); __station('term','KeyE');
+       hub=document.getElementById('hub');
+       if(!hub||getComputedStyle(hub).display==='none') return 'SKIP: the stash did not open';
+       // the stash zoom against the window factor (0.92 by his v9.67 note), so the headless window size does not move the measure
+       z=(parseFloat(getComputedStyle(hub).zoom)||1)/((typeof menuScale==='function'&&menuScale())||1);
+       q=hub.querySelectorAll('.brand,#verlabel,#stashsort,.lohead,.loslab,#invkeybar kbd,#sellhint,#stashtabs .invtab,.cell .cnt');
+       for(i=0;i<q.length;i++){
+         el=q[i]; if(!el.getClientRects().length) continue;
+         n++; f=parseFloat(getComputedStyle(el).fontSize)*z;
+         if(f<12.95) low.push((el.id||el.className||el.tagName)+' '+f.toFixed(1)+'px');
+       }
+       if(n<6) bad.push('only '+n+' stash labels were found to measure');
+       if(low.length) bad.push(low.length+' stash labels paint under 13px at zoom '+z.toFixed(2)+': '+low.slice(0,5).join(', '));
+       tab=hub.querySelector('#stashtabs .invtab');
+       if(tab&&parseFloat(getComputedStyle(tab).fontSize)<16) bad.push('a stash tab is '+getComputedStyle(tab).fontSize);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.63',what:'his #50 (UI redesign ui5q1a, from the AAA judge of the title shots): the mode list reads from the couch: mode rows at least 50px tall with labels of 17px or more, 1 PLAYER larger and taller still, the COMING LATER tag inside its greyed row, and the saves block at most 960px wide with CREATE A NEW SAVE on the name row',
    run:function(){
      var ti=document.getElementById('title'), m=document.getElementById('modemenu'), bad=[], was, b, s, st, sp, tg, br, tr, ng, pn, mw;

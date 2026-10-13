@@ -1,0 +1,7 @@
+v24.64: the stash keeps the text floor
+
+No label on the stash paints under 13 pixels, and the stash tabs are bigger.
+
+Check 24.64. Fails on v24.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
