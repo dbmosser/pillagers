@@ -1,0 +1,5 @@
+## v24.79 - THE DRINKS READ AS A MENU
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the Last Pour found each drink drawn as a line of small body text with a small INGEST box and the price floating apart from it. The drink names are big capitals now, the price is large and sits against a big amber INGEST, and when you cannot pay INGEST is a clear greyed button. No word changed.
+
+MEASURED. Check 24.79 passes, and fails on v24.78.

@@ -6063,6 +6063,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.79',what:'his #50 (UI redesign ui5q1o, from the AAA judge of the Last Pour shot): a drink name is 19px or more in caps, its price 20px or more, and INGEST is at least 46px tall with a 16px label, amber when it can be bought and never in the faint third text colour',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], b, nm, pr, s;
+     try{
+       __topClear(); __hubEnter(); __station('bar','KeyE');
+       b=document.querySelector('#barmodal button[data-bz]');
+       if(!b||!b.getClientRects().length) return 'SKIP: the Last Pour did not open here';
+       nm=b.parentNode.querySelector('b'); pr=b.parentNode.querySelector('.vl');
+       if(nm){ s=getComputedStyle(nm); if(!(parseFloat(s.fontSize)>=19)||s.textTransform!=='uppercase') bad.push('a drink name is '+s.fontSize+' '+s.textTransform); }
+       if(pr&&!(parseFloat(getComputedStyle(pr).fontSize)>=20)) bad.push('a drink price is '+getComputedStyle(pr).fontSize);
+       s=getComputedStyle(b);
+       if(!(parseFloat(s.minHeight)>=46)) bad.push('INGEST is held to '+s.minHeight);
+       if(!(parseFloat(s.fontSize)>=16)) bad.push('INGEST is '+s.fontSize);
+       if(!b.disabled&&s.backgroundColor!=='rgb(245, 183, 59)') bad.push('INGEST is not amber ('+s.backgroundColor+')');
+       if(b.disabled&&s.color==='rgb(122, 118, 110)') bad.push('a greyed INGEST is in the faint third text colour');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.78',what:'his #50 (UI redesign ui5q1u, from the 4K visual QA of the attract HOW TO PLAY page): an attract page keeps growing with the screen past 30px type (the cap is 60px), so at 4K it is the same share of the screen as at 1080p',
    run:function(){
      var css=document.getElementById('arcattcss'), t, m;

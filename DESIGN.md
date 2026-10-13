@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.79 - THE DRINKS READ AS A MENU
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the Last Pour found each drink drawn as a line of small body text with a small INGEST box and the price floating apart from it. The drink names are big capitals now, the price is large and sits against a big amber INGEST, and when you cannot pay INGEST is a clear greyed button. No word changed.
+
+MEASURED. Check 24.79 passes, and fails on v24.78.
 ## v24.78 - THE ATTRACT PAGES GROW WITH A 4K SCREEN
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures at 1080p and 4K and make sure the menus look good. On the 4K picture of the arcade HOW TO PLAY page the page was half the size it is at 1080p, its column heads tiny, because its type stopped growing at a size meant for smaller screens. It now grows with the screen, so a 4K TV shows it at the same share of the screen as a 1080p one.

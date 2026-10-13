@@ -1,0 +1,7 @@
+v24.79: the drinks read as a menu
+
+At the Last Pour the drink names and prices are bigger and INGEST is a big amber button.
+
+Check 24.79. Fails on v24.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
