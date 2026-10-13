@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.22 - THE WHAT IS NEW CARD NAMES REAL FOLEY
+
+Co-op hunt while he was away. The card was stamped v25.10 and the stamp may not trail the build by more than 0.15. The card was stamped v25.10 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the recorded foley bank (his orders for reload, bandage and armour sounds), no pillager words and no operator voice (his orders 2026-10-12), CAREER kill score (his mode design) and the Forge fire and shock rounds.
+
+MEASURED. Check 25.22 passes, and fails on v25.21.
 ## v25.21 - MUSIC STARTS AT 60%
 
 Co-op hunt while he was away. His answer 36 (2026-10-12): menu music at 60%. The music (the title, the demo attract and the Undercroft; there is no music in a raid) now starts at 60% out of the box. Settings has a new 60% step between 50% and 75%, and anyone who already picked a level keeps exactly that level.

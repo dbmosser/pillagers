@@ -1,0 +1,7 @@
+v25.22: the what is new card names real foley
+
+The what is new card names real foley.
+
+Check 25.22. Fails on v25.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
