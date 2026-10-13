@@ -2111,7 +2111,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.99';
+var VER='25.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6136,15 +6136,6 @@ function blip(type,d,pan){
       cwg.gain.exponentialRampToValueAtTime(.001,cwt+.27);
       cwo.connect(cwf); cwf.connect(cwg); cwg.connect(OUT); cwo.start(cwt); cwo.stop(cwt+.28);
     }
-  } else if(type==='countgo'){
-    // v23.xx (his answer 18): the raid start count. A short low beep on 3, 2 and 1 and a longer high one on GO, a square through a
-    // lowpass, on the ui bus so nothing ducks it.
-    var cgHi=!!arguments[3], cgO=a.createOscillator(), cgF=a.createBiquadFilter(), cgG=a.createGain(), cgOut=sndBus('ui')||OUT, cgL=cgHi?.42:.16;
-    cgO.type='square'; cgO.frequency.setValueAtTime(cgHi?880:440,t);
-    cgF.type='lowpass'; cgF.frequency.value=cgHi?3200:2000;
-    cgG.gain.setValueAtTime(.0001,t); cgG.gain.linearRampToValueAtTime(.05*vol,t+.01);
-    cgG.gain.setValueAtTime(.05*vol,t+cgL-.06); cgG.gain.exponentialRampToValueAtTime(.001,t+cgL);
-    cgO.connect(cgF); cgF.connect(cgG); cgG.connect(cgOut); cgO.start(t); cgO.stop(t+cgL+.02);
   } else if(type==='lastmin'){
     // v23.xx (his answer 19): THE FINAL MINUTE STING. A low brass hit (two detuned saws and a sub, the filter opening and closing)
     // under a bright two-note ring, 1.2 s, on the sting bus so nothing ducks or compresses it.
@@ -13045,42 +13036,12 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   }
   return g;
 }
-// v23.xx, HIS ANSWERS (2026-10-12), answer 18: "3-2-1 GO countdown". EVERY RAID STARTS ON A COUNT. "Gameplay elements like you are
-// asking about here should be exactly the same in demo and career", so a CAREER raid and a DEMO run both open on 3, 2, 1, GO!, big in
-// the centre over a light scrim, with a low beep on each number and a high one on GO. The world is held through the count: no clock,
-// no machines, no bullets and no player step, the way the pause holds it, so nothing can shoot him before he has his bearings, and
-// the first fight still comes inside half a minute (answer 1). GO! stays up for 0.8 s of play. A late joiner comes up straight into
-// the running raid with no count (netLateApply), and the DEMO re-drop after a death keeps its own DROPPING IN hold. The bot and the
-// sim never count (G.sim), so no seeded draw moves. GO_SEC is the length; the test fixture sets it to 0 so the older checks start
-// their raids as before, and the countdown check sets it back to 3.
-var GO_SEC=3;
-function goTick(dt){
-  if(!G||!(G.goT>0)) return false;
-  G.goT=Math.max(0,G.goT-(dt>0?dt:0));
-  var n=Math.ceil(G.goT);
-  if(n>0&&n!==G.goN){ G.goN=n; try{ blip('countgo',undefined,undefined,0); }catch(_cb){} }
-  if(G.goT<=0){ G.goN=0; G.goAt=G.t||0; try{ blip('countgo',undefined,undefined,1); }catch(_cg){} }
-  return true;
-}
-function drawGoCount(){
-  if(!G||G.over||!G.player) return false;
-  var s='', k=0, n, z, cx=Math.round(W/2), cy=Math.round(H*0.42), sc, al;
-  if(G.goT>0){ n=Math.ceil(G.goT); s=String(n); k=G.goT-(n-1); }
-  else if(typeof G.goAt==='number'&&(G.t||0)-G.goAt<0.8){ s='GO!'; k=1-((G.t||0)-G.goAt)/0.8; }
-  if(!s) return false;
-  z=Math.max(1,(typeof hudRes==='function')?hudRes():1);
-  sc=1+0.45*Math.max(0,(k-0.80)/0.20);
-  al=Math.max(0,Math.min(1,k/0.25));
-  ctx.save();
-  if(G.goT>0){ ctx.fillStyle='rgba(6,7,8,.28)'; ctx.fillRect(0,0,W,H); }
-  ctx.globalAlpha=al; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.translate(cx,cy); ctx.scale(sc,sc);
-  ctx.font=hudFS('800 '+(s==='GO!'?92:110)+'px '+HUDF);
-  ctx.fillStyle=(s==='GO!')?UIC.acc:UIC.tx_1;
-  hudText(s,0,0,7*z);
-  ctx.restore();
-  return true;
-}
+// v25.00, HIS ORDER (2026-10-12), reversing his answer 18: "get rid of the 3-2-1-GO! at the beginning, doesn't feel consistent with
+// 'entering a raid". THE RAID START COUNTDOWN IS GONE. v24.09 opened every CAREER raid and every DEMO run on 3, 2, 1, GO! over a
+// scrim with the world held until GO. All of it is removed, in demo and career alike (the length, the tick, the HUD draw, the hold
+// in the loop, the start and late-join lines and its beeps), so a raid starts the way it did before v24.09: he has control on the
+// first frame, the raid clock and the world run from the first frame, and nothing is drawn over the middle of the screen. Nothing
+// replaces it.
 function startRaid(){
   if(netGuestHeld()) return false;   // v15.91: in a party only the host takes the lift; a guest goes up on the host word (the net section)
   // v21.96, from the whole-game bug hunt of 2026-10-08 (K6): THE RECORD OF PILED GUNS IS KEPT FOR THE RAID HE JOINS AGAIN. A new raid
@@ -13145,7 +13106,6 @@ function startRaid(){
   }
   applyGhost();
   showScreen('raid');
-  if(G&&!G.sim&&GO_SEC>0){ G.goT=GO_SEC; G.goN=0; G.goAt=null; }   // v23.xx (his answer 18): the raid opens on 3, 2, 1, GO!
   // Lead with the weather, because it is a condition you plan around rather
   // than decoration, and the controls line is the same every single raid.
 // v6.68, his note: no surface contact line. Weather still announces itself; a clear sky
@@ -33169,8 +33129,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     ctx.restore();
     if(HUDBOX.raiders) HUDBOX.raiders=hudZoomRect('raiders',0,0,HUDBOX.raiders);
   }
-  if(G.arcade){ try{ arcadeHud(); }catch(_ahd){} }
-  try{ drawGoCount(); }catch(_gco){}   // v23.xx (his answer 18): 3, 2, 1, GO!   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner
+  if(G.arcade){ try{ arcadeHud(); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner
   // v8.93: the resize grips. Every panel that can be scaled gets three short
   // diagonal strokes in its bottom right corner, which is the shape every window
   // in every program has used for this since before he was born. Drawn from
@@ -38811,8 +38770,7 @@ function loop(ts){
   // stands still on the first paused frame as before. No player text, no number and no seeded draw moved.
   if(G.paused&&!G.over&&!netPauseLive()){ if(!G._ambDuck){ G._ambDuck=1; try{ ambienceOff(); }catch(_ap){} } }
   else if(G._ambDuck){ G._ambDuck=0; }
-  if(G.goT>0&&!G.over){ if(!G.paused||netPauseLive()) goTick(clamp(gap0/1000,0,.05)); }   // v23.xx (his answer 18): the world is held through 3, 2, 1, GO!
-  else if((!G.paused||netPauseLive())&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
+  if((!G.paused||netPauseLive())&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
     // the death beat: the world keeps moving underwater-slow, you do not
     G.deathBeat-=dt;
     msgTick(dt);   // v22.36 (R12): the lanes keep time in the death beat
@@ -39354,7 +39312,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.99: The claim and sell bars show only when there is something to claim or sell. Check 24.99 fails on v24.98',
+  now:'v25.00: The 3, 2, 1, GO at the start of every raid and demo run is gone. You have control the moment the raid starts. Check 25.00 fails on v24.99',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44661,7 +44619,7 @@ function netLateApply(m){
     if(wk) rebuildGeometry();
   }  if(typeof L.t==='number'&&isFinite(L.t)&&L.t>0) G.t=L.t;
   if(typeof L.left==='number'&&isFinite(L.left)) G.timeLeft=L.left;
-  G.goT=0; G.goAt=null; try{ G.lateEl=elapsed(); }catch(_le){}   // v17.64: this player came up now; his own run counts from here
+  try{ G.lateEl=elapsed(); }catch(_le){}   // v17.64: this player came up now; his own run counts from here
   p=G.player;
   if(typeof L.x==='number'&&typeof L.y==='number'&&isFinite(L.x)&&isFinite(L.y)){ p.x=L.x+36; p.y=L.y+8; if(typeof resolvePlayer==='function'){ try{ resolvePlayer(p); }catch(_rp){} } }
   if(G.arcade&&L.bench){ try{ arcadeRedropSpot(p,G,0); }catch(_ars){} }   // v23.25 (arcade6): player 1 is benched, so player 2 starts at the map spawn farthest from live hostiles

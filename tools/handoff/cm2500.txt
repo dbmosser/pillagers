@@ -1,0 +1,7 @@
+v25.00: no countdown at the start of a raid
+
+The 3, 2, 1, GO at the start of every raid and demo run is gone. You have control the moment the raid starts.
+
+Check 25.00. Fails on v24.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

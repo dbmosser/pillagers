@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.00 - NO COUNTDOWN AT THE START OF A RAID
+
+Co-op hunt while he was away. His order of 2026-10-12: get rid of the 3, 2, 1, GO at the beginning, it does not feel like entering a raid. It reverses his answer 18, which shipped as v24.09. The countdown is removed completely, in DEMO and CAREER alike: the big numbers and GO over a dark scrim, the hold that froze the world and the player through it, and its beeps. A raid starts the way it did before v24.09: he can move on the first frame, the raid clock and the machines run from the first frame, and nothing is drawn over the middle of the screen. Nothing replaces it.
+
+MEASURED. Check 25.00 passes, and fails on v24.99.
 ## v24.99 - A BAR WITH NOTHING TO DO FOLDS AWAY
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. On the Mainframe a full width greyed NOTHING COMPLETED TO CLAIM bar sat over the contracts, and on the stash a full width NOTHING TO SELL bar, the widest things on those screens and the ones that did nothing. They now show only when there is something to claim or sell.
