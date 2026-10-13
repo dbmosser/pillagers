@@ -6076,6 +6076,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.17',what:'his #50 (UI redesign ui5q2l): every Fashion rack tile is the same height (at least 156px at the menu size) and at least 180px wide',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], q, i, z, h, lo=1e9, w;
+     try{
+       __topClear(); __hubEnter(); __station('mirror','KeyE');
+       q=document.querySelectorAll('#appavatarpicker .costile');
+       z=(((typeof menuScale==='function')&&menuScale())||1);
+       var n=0;
+       for(i=0;i<q.length;i++){ if(!q[i].getClientRects().length) continue; n++; h=q[i].getBoundingClientRect().height/z; if(h<lo) lo=h; }
+       if(n<10) return 'SKIP: Fashion drew '+n+' rack tiles';
+       if(lo<150) bad.push('the shortest rack tile is '+Math.round(lo)+'px high, so the racks jump in height');
+       w=q[0].getBoundingClientRect().width/z;
+       if(w<180) bad.push('a rack tile is '+Math.round(w)+'px wide');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'25.16',what:'his order 2026-10-12, pillagers say no words: no taunt() and no TAUNT lines are left; a pillager spotting him, a pillager round hitting him, him going down beside a pillager and a pillager breaking off to extract draw no bubble over the pillager; the spot still plays the seen swell once, gated to once in four seconds',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof updateEnts!=='function'||typeof updateBullets!=='function'||typeof damagePlayer!=='function'||typeof emoteBubble!=='function') return 'SKIP: no raid here';

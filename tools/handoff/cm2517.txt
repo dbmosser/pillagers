@@ -1,0 +1,7 @@
+v25.17: one tile size on every rack
+
+Fashion rack tiles are one size on every rack and fill the rack width.
+
+Check 25.17. Fails on v25.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

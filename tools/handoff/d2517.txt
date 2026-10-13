@@ -1,0 +1,5 @@
+## v25.17 - ONE TILE SIZE ON EVERY RACK
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. In Fashion the rack tiles were narrow, so eight outfits left a third of the rack empty and a long requirement broke into three lines, and the tiles were a different height on every rack. The tiles are wider now, eight fill the rack, and every tile on every rack is the same height.
+
+MEASURED. Check 25.17 passes, and fails on v25.16.

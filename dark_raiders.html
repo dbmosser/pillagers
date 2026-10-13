@@ -1227,6 +1227,14 @@
   #root #title.on{ background:radial-gradient(ellipse 58% 60% at 50% 45%, rgba(8,9,10,0) 40%, rgba(8,9,10,.95) 88%),
     linear-gradient(90deg, rgba(17,19,21,.8) 0%, rgba(17,19,21,.9) 26%, rgba(17,19,21,.9) 74%, rgba(17,19,21,.8) 100%);
     -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+  /* vNN.xx, UI REDESIGN ui5q2l (his #50, from the AAA judge of the Fashion shot): ONE TILE SIZE ON EVERY RACK. The rack tiles were
+     132px columns, so eight outfits left the right 30 percent of the rack empty, a long requirement (PUT 3 WARDENS DOWN (0 OF 3))
+     broke into three lines, and the tiles were 145px high on OUTFIT, 128 on BUILD and 95 on SKIN, so the racks jumped in height.
+     The columns are at least 184px now, so eight share the whole rack width and a requirement fits in two even lines at most, and every
+     tile on every rack is the same 156px high, its name under the picture and its requirement at its foot. */
+  #root #appavatarpicker > div:has(> .costile){ grid-template-columns:repeat(auto-fill,minmax(184px,1fr)); }
+  #root #appavatarpicker .costile{ min-height:156px; box-sizing:border-box; }
+  #root #appavatarpicker .costile .cosreq{ text-wrap:balance; }
   /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge of the title shot with 2 PLAYER CO-OP picked and the second window
      blocked): THE PICK SHOWS. After a same machine pick that stops on a note, 1 PLAYER was still the amber button, so the screen
      did not say what had been chosen, and the blocked note was a line of small red words with a small RETRY under it, like a stray
@@ -2118,7 +2126,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.16';
+var VER='25.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39489,7 +39497,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.16: Pillagers say no words: no taunts and no taunt marks, only the low seen swell when one spots you. Check 25.16 fails on v25.15',
+  now:'v25.17: Fashion rack tiles are one size on every rack and fill the rack width. Check 25.17 fails on v25.16',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

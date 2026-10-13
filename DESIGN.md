@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.17 - ONE TILE SIZE ON EVERY RACK
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. In Fashion the rack tiles were narrow, so eight outfits left a third of the rack empty and a long requirement broke into three lines, and the tiles were a different height on every rack. The tiles are wider now, eight fill the rack, and every tile on every rack is the same height.
+
+MEASURED. Check 25.17 passes, and fails on v25.16.
 ## v25.16 - PILLAGERS SAY NO WORDS
 
 Co-op hunt while he was away. His order of 2026-10-12: get rid of any spoken words from the pillagers, they do not sound good and kill the vibe. It reverses the pillager taunts of his answer 34 b; his newest word wins. A pillager no longer taunts when he spots you, when his round hits you, when you go down beside him or when he breaks off to extract, and the taunt mark over his head is gone with the words. The low swell that tells you a pillager has seen you stays, played where he stands, within the same reach and at most once in four seconds. Machine beeps, the crew call and the pillager clank are unchanged. The What is New line that announced the taunts now names only the redesigns.
