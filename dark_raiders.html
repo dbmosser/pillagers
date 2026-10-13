@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.49';
+var VER='25.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17856,15 +17856,30 @@ function netPileTake(peer,m){
   g=NET.up[peer.seat];
   x=(typeof m.x==='number'&&isFinite(m.x))?m.x:(g?g.tx:G.player.x); y=(typeof m.y==='number'&&isFinite(m.y))?m.y:(g?g.ty:G.player.y);
   c=setLoot(mkContainer(x+rnd(-14,14),y+rnd(6,18),'crate'),[k]);
+  if((m.fk===1||m.fk===2)&&/^gun_/.test(k)) c.fw={fk:m.fk,el:(m.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''};   // v23.xx (forge11)
   c.time=0.6; c.dropped=1; c.dropBy=peer.seat; if(m.ib) c.issuedB=1; c.dropPid=(peer.pid||'');   // v21.95 (K5): who dropped it, so a word about it can wait for his next link
   if(G.vseg&&!losClear(x,y,c.x,c.y,G.vseg)){ c.x=x; c.y=y; }
   G.containers.push(c);
   return 'pile';
 }
+// v23.xx, THE FORGE (2026-10-12), forge11: A FORGED GUN DROPPED IS STILL FORGED. A gun in the backpack is a key plus a copy in
+// G.stowQ (first in, first out per model); a drop leaves the oldest copy to be trimmed, and grantLoot rebuilt a dropped gun at field
+// grade (the v8 anti-reroll rule). The pile now records the MK and the element of that copy (c.fw), on a linked window in the pile word
+// too, and the gun comes back out of the pile forged: you can drop your MK III and take it back, and a teammate can pick it up. A plain
+// gun still comes back at field grade, exactly as before. No draw on any stream.
+function forgeOfDrop(key){
+  var gk=(/^gun_/.test(key)&&ITEMS[key]&&ITEMS[key].gk)?ITEMS[key].gk:null, q, w;
+  if(!gk||!G||!G.stowQ) return null;
+  q=G.stowQ[gk]; if(!q||q.length<=gunQCount(gk)) return null;
+  w=q[0];
+  if(!w||!(w.fk===1||w.fk===2)) return null;
+  return {fk:w.fk,el:(w.fk===2&&w.el&&ELEM[w.el])?w.el:''};
+}
 function dropItem(idx){
   if(idx<0||idx>=G.bag.length) return null;
   var p=G.player,key=G.bag[idx];
   G.bag.splice(idx,1);
+  var _fw=forgeOfDrop(key);   // v23.xx (forge11)
   gearFoley('drop');   // v25.29 (usefoleyh): a soft thump
   // v18.27, HIS ORDER (2026-10-03): TRADING IS DROPPING. On a linked window up top the pile is made by the host, which runs every
   // box, so the whole party sees it and can search it; the host's new-box word brings it back to this window. A loaner Bandage
@@ -17873,7 +17888,9 @@ function dropItem(idx){
     // v18.47, FROM THE CODE COMB (2026-10-06): the word goes only when there is a host to take it; with no link the pile is made
     // here, as solo, so the item never leaves the backpack for nowhere
     var _q=netPeerOfSeat(0), _ib=(key==='bandage'&&(G.issuedBandages||0)>0)?1:0;
-    if(_q&&netSend(_q,{t:'pile',k:key,x:Math.round(p.x),y:Math.round(p.y),ib:_ib})){
+    var _pw={t:'pile',k:key,x:Math.round(p.x),y:Math.round(p.y),ib:_ib};
+    if(_fw){ _pw.fk=_fw.fk; if(_fw.el) _pw.el=_fw.el; }   // v23.xx (forge11): a forged gun stays forged in the pile the host makes
+    if(_q&&netSend(_q,_pw)){
       if(_ib){ G.issuedBandages--; if(G.bandSeen!==undefined) G.bandSeen--; }
       // v21.21, from the review of the night builds (2026-10-09, R1): an armoury gun dropped here stays on this window's list of guns
       // carried up until someone else takes it out of the pile (netGunTold on the host, netGunGoneTake here).
@@ -17893,6 +17910,7 @@ function dropItem(idx){
   }
   var c=setLoot(mkContainer(p.x+rnd(-14,14),p.y+rnd(6,18),'crate'),[key]);
   c.time=0.6; c.dropped=1;
+  if(_fw) c.fw=_fw;   // v23.xx (forge11)
   // v13.89, loot audit: never inside a wall, where no search could reach it. At his feet instead.
   if(G.vseg&&!losClear(p.x,p.y,c.x,c.y,G.vseg)){ c.x=p.x; c.y=p.y; }
   // v13.90, loot audit: an issued Bandage stays issued on the ground. The drop spends it from the
@@ -18502,6 +18520,7 @@ function grantLoot(ct,keys,delay0){
       // Audit: dropping a bagged gun and re-searching it rerolled quality until
       // Pristine. Your own discards come back at plain field grade.
       var found=ct.dropped?(function(){var g2={};for(var k2 in WEAPONS[itm.gk])g2[k2]=WEAPONS[itm.gk][k2];g2.q='field';g2.qRank=1;return g2;})():rollFieldGun(itm.gk);
+      if(ct.dropped&&ct.fw&&(ct.fw.fk===1||ct.fw.fk===2)) found=forgeApply(found,ct.fw.fk,ct.fw.el);   // v23.xx (forge11): a forged gun comes out of the pile forged
       var _gcVs=p.wep;   // v23.xx (feat2b): the gun in hand before this find is routed, for the stat card
       // HIS NOTE, 2026-08-24: "'better guns autoequip' -- no. you should be able
       // to carry all the guns you want but you only have 2 equipped, then we need
@@ -40576,7 +40595,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.49: Elemental hits now show flames, arcs, frost, ice and acid, and a forged gun glows. Check 25.49 fails on v25.48',
+  now:'v25.50: A forged gun dropped on the ground keeps its upgrade when picked up again. Check 25.50 fails on v25.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

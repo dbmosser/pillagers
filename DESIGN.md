@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.50 - THE FORGE: A DROPPED FORGED GUN STAYS FORGED
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns at the Forge, and keep what you extract with. A gun you drop from the backpack used to come back out of the pile at plain field grade (so a drop could never be used to re-roll a gun). An upgraded gun now keeps its MK and its element through the pile: drop your MK III and take it back, or leave it for your teammate in co-op, and it is still a MK III. A plain gun still comes back at field grade, as before.
+
+MEASURED. Check 25.50 passes, and fails on v25.49.
 ## v25.49 - THE FORGE: ELEMENT EFFECTS AND SOUNDS
 
 Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. Each element now looks and sounds like itself, on the body that was hit and never as a screen tint: FIRE puts flames and embers on the body (and smoke behind a panicking pillager), SHOCK draws a jagged arc to the second enemy and small arcs over a stunned machine, CRYO puts frost on a chilled body and an ice block round a frozen one, ACID drips green. Element tracers are wider and in the element colour, each element has its own impact sound and a freeze cracks. A forged gun glows at your hands, gold for MK II and the element colour for MK III. In co-op the host sends the statuses, the arcs and each player forged gun, so both windows see the same thing.

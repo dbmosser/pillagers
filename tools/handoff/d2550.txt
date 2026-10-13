@@ -1,0 +1,5 @@
+## v25.50 - THE FORGE: A DROPPED FORGED GUN STAYS FORGED
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns at the Forge, and keep what you extract with. A gun you drop from the backpack used to come back out of the pile at plain field grade (so a drop could never be used to re-roll a gun). An upgraded gun now keeps its MK and its element through the pile: drop your MK III and take it back, or leave it for your teammate in co-op, and it is still a MK III. A plain gun still comes back at field grade, as before.
+
+MEASURED. Check 25.50 passes, and fails on v25.49.

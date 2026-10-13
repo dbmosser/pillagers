@@ -1,0 +1,7 @@
+v25.50: the forge: a dropped forged gun stays forged
+
+A forged gun dropped on the ground keeps its upgrade when picked up again.
+
+Check 25.50. Fails on v25.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
