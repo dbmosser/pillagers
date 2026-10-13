@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.31 - THE WHAT IS NEW CARD NAMES BIG GUNS
+
+Co-op hunt while he was away. The card was stamped v25.22 and the stamp may not trail the build by more than 0.15. The card was stamped v25.22 and every ship stops when it falls 0.16 behind. Its new line names the builds since: bigger guns in the hands (his order 2026-10-12), the grenade, tripwire, gun and gear foley (his sound orders) and the Forge cryo rounds.
+
+MEASURED. Check 25.31 passes, and fails on v25.30.
 ## v25.30 - A SEARCH SOUNDS LIKE HANDS IN A BOX
 
 Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Holding E on a container was silent until a rare item came out, and a common item coming out made no sound at all. Now your hands rummage as the search starts and every half second while it runs, with a light metal knock in a locker, a safe, a cache or a wreck and a softer rummage on a body; a common item that comes out makes its own small sound (a magazine rattle for ammo, a handling sound for the rest), and the rare, elite and gun sounds are kept. Letting go stops it at once. The sounds are the recorded CC0 foley from the v25.20 bank, and your teammates hear them where you stand. Sound only: nothing in the game changes.
