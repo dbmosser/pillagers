@@ -1,0 +1,7 @@
+v25.87: four guns max, the weakest swaps out
+
+A fifth gun now swaps with your weakest gun that is not in your hands, and that gun goes to the backpack.
+
+Check 25.87. Fails on v25.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

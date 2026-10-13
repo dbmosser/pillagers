@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.87 - FOUR GUNS MAX, THE WEAKEST SWAPS OUT
+
+Co-op hunt while he was away. His order of 2026-10-13: lets redo the bar at the bottom, so the player can only carry 4 guns max. Build 1 of 8, on the layout as it is. When keys 1 to 4 all hold a real gun and a fifth arrives, the belt used to say GUN SLOTS FULL and leave the new gun in the backpack. It now follows his decision: swap with the lowest gun that is not actively being used, and move the lowest gun to the backpack. The new gun takes the place of the weakest gun that is not in his hands (the stowed gun, or a backpack gun on key 3 or 4) and that gun goes to the backpack with no key, shown in the grid. A found gun weaker than all of them, or tied, goes straight to the backpack and nothing moves. The rank is the tier (the forge MK counted) and then the sustained damage the stat card shows; between guns that tie, the higher key goes. The gun in his hands is never chosen. An issued loaner is left behind, as equipping from the backpack already does. The pickup rows say SLOT n for the new gun and BACKPACK for the one pushed out, and a backpack over its cap drops that gun at his feet with a red BACKPACK FULL row naming it. The bot is untouched.
+
+MEASURED. Check 25.87 passes, and fails on v25.86.
 ## v25.86 - DEMO RAIDS BUILD LIKE CAREER RAIDS
 
 Co-op hunt while he was away. His rule of 2026-10-12: gameplay is exactly the same in demo and career. The demo still zeroed the raid clock setting when it started (left over from the endless first demo), although the demo raid has its own 10 minute clock. That made the first weather change come earlier in a demo raid than in a career raid built from the same seed, and Settings showed no clock in a demo raid that had one. The demo no longer touches the setting, so a demo raid builds from the same dials as a career raid.
