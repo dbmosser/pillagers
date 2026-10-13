@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.46 - THE WHAT IS NEW CARD NAMES THE SHARPER FIGHTS
+
+Co-op hunt while he was away. The card was stamped v24.34 and the stamp may not trail the build by more than 0.15. The card was stamped v24.34 and every ship stops when it falls 0.16 behind. Its new line names the graphics builds of the last half hour: readable silhouettes (his answer 24), bullet marks, blast scars, the first-frame muzzle flash and the redrawn Crier.
+
+MEASURED. Check 24.46 passes, and fails on v24.45.
 ## v24.45 - SETTINGS READS AS ONE LAYOUT
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Settings found the list centred under a title and tabs on the left, so the page read as two layouts with a wide empty strip, the row names mixed small letters (Edit the words) with capitals (LIGHTING), THE RAID heading was faint, and the values were plain boxes with nothing to say they step through options. The list now starts on the left under the tabs, every row name is drawn in the same capitals (the words themselves are unchanged), the section headings are bright with an amber mark, and each value that steps through options shows arrows either side of it.

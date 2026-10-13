@@ -1,0 +1,7 @@
+v24.46: the what is new card names the sharper fights
+
+The what is new card names the sharper fights.
+
+Check 24.46. Fails on v24.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
