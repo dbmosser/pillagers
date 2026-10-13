@@ -1,0 +1,7 @@
+v24.94: a near miss whizzes past
+
+An enemy round that just misses you now whizzes past on the side it went by.
+
+Check 24.94. Fails on v24.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

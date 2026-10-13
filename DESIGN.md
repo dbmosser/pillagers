@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.94 - A NEAR MISS WHIZZES PAST
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sound and give every action that has no sound of its own a distinct one. An enemy round that missed you narrowly flew past in silence; enemy fire was heard only at the gun. Now a round that passes within a stride of you without hitting whizzes past once, on the side it went by: a short rush of noise falling in pitch with a tiny snap at the front, the crack of a round going past your head. It rides the HUD sound, so a loud fight never buries it, and a shotgun blast past you is one whizz, not eight. This build also adds the small kit the next new noises are built from. Sound only: nothing in the raid changes.
+
+MEASURED. Check 24.94 passes, and fails on v24.93.
 ## v24.93 - ONE BUTTON SIZE IN THE PAUSE BOX
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. In the raid pause box FEEDBACK was smaller than SETTINGS and ABANDON RUN beside it, so the row mixed two type sizes. It matches them now.
