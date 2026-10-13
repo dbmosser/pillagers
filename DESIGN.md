@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.72 - THE PAUSE BOX HAS A PRIMARY
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the raid pause box found RESUME RUN drawn as a plain outline like SETTINGS while the only coloured button was ABANDON RUN, so the eye went to the button that throws the run away, the buttons were small, and the key list was four lines of small words. RESUME RUN is the big amber button now, every button is bigger, and the key list draws each key as a keycap in bigger type. No word changed and the buttons keep their order.
+
+MEASURED. Check 24.72 passes, and fails on v24.71.
 ## v24.71 - THE HOW TO PLAY KEYS ARE VISIBLE
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make sure the menus actually look good. The picture check of the arcade attract screen found the HOW TO PLAY page showing only the action names: every key under KEYBOARD and CONTROLLER was drawn black on the black page, because of an old browser rule for tables on this page. The keys are drawn in the page colour and size now, so the page says which key does what.

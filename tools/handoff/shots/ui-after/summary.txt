@@ -44,3 +44,9 @@
   17-fashion-mirror                      staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | appearmodal
   21-raid-hud-calm                       staged      14.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
   33-raid-fight-alerts                   staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 49
+== 1080 : window 1952x1183, viewport 1920x1080
+  46-arcade-attract-how-to-play          staged      15.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  09-craft                               staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal
+== 4k : window 3872x2263, viewport 3840x2160
+  46-arcade-attract-how-to-play          staged      15.4s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0
+  09-craft                               staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal

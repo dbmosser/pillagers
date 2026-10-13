@@ -1,0 +1,7 @@
+v24.72: the pause box has a primary
+
+In the pause box RESUME RUN is the big amber button and the key list shows keycaps.
+
+Check 24.72. Fails on v24.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

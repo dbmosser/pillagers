@@ -1077,6 +1077,20 @@
   .ui-key.pad{ border-radius:50%; width:24px; min-width:24px; padding:0; border:0; color:#111315; }
   .ui-key.pad-a{ background:#5fbf6a; } .ui-key.pad-b{ background:#e5482f; } .ui-key.pad-x{ background:#3f9de9; } .ui-key.pad-y{ background:#f5b73b; }
   .ui-key.pill{ border-radius:12px; padding:0 9px; }
+  /* vNN.xx, UI REDESIGN ui5q1f (his #50, from the AAA judge of the raid pause shot): THE PAUSE BOX HAS A PRIMARY. RESUME RUN was an
+     outline button like SETTINGS and the only coloured button was ABANDON RUN, so the eye went to the button that throws the run
+     away; the buttons were 40px with 12px labels and the key legend was four lines of 13px words with bold key names. RESUME is the
+     amber primary now, every button is 48px with a 16px label, and the legend draws each key as a keycap (the title and the stash
+     key bars, ui7) at 15px. No word changed, the order is the same, and the arrows and the pad walk it as before (v24.15). */
+  #root #pausekeys{ font-size:15px !important; line-height:2.1 !important; color:var(--tx-2) !important; }
+  #root #pausekeys b{ display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:24px; padding:0 6px; margin-right:3px;
+    box-sizing:border-box; border:1px solid var(--tx-1); border-bottom-width:2px; border-radius:3px; background:rgba(0,0,0,.35); color:var(--tx-1) !important;
+    font-family:var(--f-cond); font-weight:700; font-size:13px; line-height:1; letter-spacing:.04em; text-transform:uppercase; vertical-align:middle; }
+  #root #pausebox > div:has(> #resumebtn){ gap:10px !important; margin-top:8px; }
+  #root #pausebox #resumebtn, #root #pausebox #pausesetbtn, #root #pausebox #abandonbtn, #root #pausebox #confirmabandon,
+  #root #pausebox #charselbtn, #root #pausebox #arcendbtn{ min-height:48px; padding:0 26px !important; font-size:16px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+  #root #pausebox #resumebtn{ min-width:220px; background:var(--acc); border-color:var(--acc); color:var(--acc-ink); }
+  #root #pausebox #resumebtn:hover:not(:disabled){ background:#f7c25a; border-color:#f7c25a; color:var(--acc-ink); }
   /* vNN.xx, UI REDESIGN ui5q1j (his #50, from the AAA judge of the Fashion shot): THE RACKS FILL THE PANEL. The rack tiles were
      96px, so a requirement such as 12 EXTRACTIONS ran edge to edge against both borders and PUT 3 WARDENS DOWN (0 OF 3) broke into
      five lines over the name; the racks used only the left half of the panel; and a locked tile looked almost like an owned one.
@@ -2039,7 +2053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.71';
+var VER='24.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38989,7 +39003,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.71: The arcade HOW TO PLAY page shows its keyboard and controller keys again. Check 24.71 fails on v24.70',
+  now:'v24.72: In the pause box RESUME RUN is the big amber button and the key list shows keycaps. Check 24.72 fails on v24.71',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

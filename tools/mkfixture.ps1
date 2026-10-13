@@ -6063,6 +6063,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.72',what:'his #50 (UI redesign ui5q1f, from the AAA judge of the raid pause shot): in the pause box RESUME RUN is the amber primary, the buttons are at least 46px tall with 16px labels, ABANDON RUN is not filled amber, and the key legend is 15px with its keys drawn as keycaps',
+   run:function(){
+     var pb=document.getElementById('pausebox'), rs=document.getElementById('resumebtn'), ab=document.getElementById('abandonbtn'), pk=document.getElementById('pausekeys'), bad=[], s, b, acc;
+     if(!pb||!rs||!pk) return 'SKIP: no pause box here';
+     try{
+       if(typeof keysLegendApply==='function') keysLegendApply();
+       acc=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()||'#f5b73b';
+       s=getComputedStyle(rs);
+       if(s.backgroundColor!=='rgb(245, 183, 59)') bad.push('RESUME RUN is not the amber primary ('+s.backgroundColor+', the accent is '+acc+')');
+       if(!(parseFloat(s.fontSize)>=16)) bad.push('RESUME RUN is '+s.fontSize);
+       if(!(parseFloat(s.minHeight)>=46)) bad.push('RESUME RUN is held to '+s.minHeight);
+       if(ab&&getComputedStyle(ab).backgroundColor==='rgb(245, 183, 59)') bad.push('ABANDON RUN is filled amber too');
+       if(!(parseFloat(getComputedStyle(pk).fontSize)>=15)) bad.push('the key legend is '+getComputedStyle(pk).fontSize);
+       b=document.createElement('b'); b.textContent='K'; pk.appendChild(b); s=getComputedStyle(b); var bw=parseFloat(s.borderBottomWidth), bs=s.borderBottomStyle; pk.removeChild(b);   // a key as the legend writes it
+       if(!(bw>0.5)||bs==='none') bad.push('the legend keys are bold words, not keycaps ('+bw+' '+bs+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.71',what:'his #50 (UI redesign ui5q1r, found by the visual lint of the arcade attract HOW TO PLAY page): a key cell of the HOW TO PLAY table is not black (the table inherits the colour of the page, which quirks mode does not do on its own) and is at least 13px',
    run:function(){
      if(typeof arcadeAttEl!=='function'||typeof arcadeAttHow!=='function') return 'SKIP: no attract HOW TO PLAY page here';
