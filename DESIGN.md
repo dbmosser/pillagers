@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.81 - THE CONTRACT CARD FITS WHAT IT HOLDS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the Mainframe found the cream contract card stretched to the height of the long list beside it, so a big block of blank paper sat in the middle of it, the brightest empty thing on the screen. The card now ends under its last line; the list is unchanged.
+
+MEASURED. Check 24.81 passes, and fails on v24.80.
 ## v24.80 - THE KEYS WINDOW SCALES WITH THE SCREEN
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures at 1080p and 4K and make sure the menus look good. On the 4K picture the Keys window (Settings, change keys) was drawn at its 1080p size, its words tiny, because it is built the first time it opens, after the screen size had been worked out for every other window. It now takes the same size as every other window when it is built.

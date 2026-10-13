@@ -6063,6 +6063,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.81',what:'his #50 (UI redesign ui5q1p, from the AAA judge of the Mainframe shot): in the Mainframe the contract detail card is no taller than what it holds (it does not stretch to the height of a long contract list)',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], m, d, sib, dr, sr, z;
+     try{
+       __topClear(); __hubEnter(); __station('mf','KeyE');
+       m=document.getElementById('opmodal');
+       d=m&&[].filter.call(m.querySelectorAll('.vend > .vdet'),function(e){ return e.getClientRects().length>0; })[0];
+       if(!d) return 'SKIP: no contract card shown';
+       sib=[].filter.call(d.parentNode.children,function(e){ return e!==d&&e.getClientRects().length>0; })[0];
+       if(!sib) return 'SKIP: no list beside the card';
+       dr=d.getBoundingClientRect(); sr=sib.getBoundingClientRect();
+       z=(((typeof menuScale==='function')&&menuScale())||1);
+       if(sr.height<500*z) return 'SKIP: the contract list is too short to show a stretch';
+       if(dr.height>sr.height-100*z) bad.push('the contract card stretches to '+Math.round(dr.height/z)+'px beside a '+Math.round(sr.height/z)+'px list');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.80',what:'his #50 (UI redesign ui5q1v, from the 4K visual QA of the Keys window): the Keys window, built the first time it opens, takes the same menu zoom as the other windows',
    run:function(){
      if(typeof keysOpen!=='function'||typeof applyMenuZoom!=='function') return 'SKIP: no Keys window here';

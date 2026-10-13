@@ -1,0 +1,7 @@
+v24.81: the contract card fits what it holds
+
+In the Mainframe the contract card ends under its last line instead of stretching down the screen.
+
+Check 24.81. Fails on v24.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

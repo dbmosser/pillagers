@@ -1077,6 +1077,11 @@
   .ui-key.pad{ border-radius:50%; width:24px; min-width:24px; padding:0; border:0; color:#111315; }
   .ui-key.pad-a{ background:#5fbf6a; } .ui-key.pad-b{ background:#e5482f; } .ui-key.pad-x{ background:#3f9de9; } .ui-key.pad-y{ background:#f5b73b; }
   .ui-key.pill{ border-radius:12px; padding:0 9px; }
+  /* vNN.xx, UI REDESIGN ui5q1p (his #50, from the AAA judge of the Mainframe shot): THE CONTRACT CARD IS AS TALL AS WHAT IT HOLDS. The
+     cream detail card stretched to the height of the contract list beside it, so about 420px of blank paper sat between PROGRESS
+     and REWARDS, the brightest empty thing on the screen. In the Mainframe the card now ends under its last line; the list keeps
+     its height and its scroll. */
+  #root #opmodal .vend > .vdet{ align-self:flex-start; }
   /* vNN.xx, UI REDESIGN ui5q1o (his #50, from the AAA judge of the Last Pour shot): THE DRINKS READ AS A MENU. Each drink was a line
      of body text with a small 40px INGEST box and its price floating apart from it. The name is 20px condensed caps now (the words
      are not changed, only drawn in caps), the price is large and sits against a 48px amber INGEST, and out of reach INGEST is a solid
@@ -2067,7 +2072,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.80';
+var VER='24.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39131,7 +39136,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.80: The Keys window is drawn at the right size on a 4K screen. Check 24.80 fails on v24.79',
+  now:'v24.81: In the Mainframe the contract card ends under its last line instead of stretching down the screen. Check 24.81 fails on v24.80',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
