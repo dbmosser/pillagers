@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.99 - THE PAD WALK SKIPS KEYS WITH NOTHING ON THEM
+
+Co-op hunt while he was away. His order of 2026-10-13 (redo the bar at the bottom), build 7 of 8. On a controller the bumpers walk the belt, and the walk already stepped over a vacant gun key. It now also steps over a throwable, medical or armour key that has nothing of its kind on it, so RB and LB land only on keys that hold something. A key he bound that has run out (greyed at 0) is still a key to land on.
+
+MEASURED. Check 25.99 passes, and fails on v25.98.
 ## v25.98 - THE STASH BELT ROW IN THE SAME FOUR GROUPS
 
 Co-op hunt while he was away. His answer of 2026-10-13: the career loadout screen in the Undercroft gets the same groups as the raid bar. Build 6c of 8. The belt plan row on the Stash screen now lays its nine keys out in the same four groups with the same labels as the raid bar (GUNS keys 1 to 4, THROW 5 and 6, MEDICAL 7 and 8, ARMOUR 9), and a throwable, medical or armour key he has not bound shows what the floor belt shows on it, dimmed, as the gun keys already do, so the row reads as the keys he will press. A vacant gun key on the raid belt no longer prints a 0. Drawing only.

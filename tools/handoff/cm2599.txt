@@ -1,0 +1,7 @@
+v25.99: the pad walk skips keys with nothing on them
+
+The controller bumpers now walk the belt over keys with nothing on them.
+
+Check 25.99. Fails on v25.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
