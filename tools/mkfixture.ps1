@@ -1490,6 +1490,10 @@ window.__keysRef=function(){ return keys; };
 window.__srchKey=function(){ return (typeof xCallKey==='function')?'KeyE':'KeyX'; };   // v25.67: the keyboard key that searches a box (E from the key swap, X before)
 window.__extKey=function(){ return (typeof xCallKey==='function')?'KeyX':'KeyE'; };   // v25.67: the keyboard key that calls and takes the extraction (X from the key swap, E before)
 window.__padSrchKey=function(){ return (typeof xCallKey==='function')?'PadSearch':'KeyX'; };   // v25.67: the key the pad Y ring search holds (PadSearch from the key swap, X before)
+window.__meleeKey=function(){ return (typeof xCallKey==='function')?'KeyQ':'KeyF'; };   // v25.67: the melee strike (Q, the crowbar, from the key swap; F before)
+window.__meleeKeyName=function(){ return (typeof xCallKey==='function')?'q':'f'; };
+window.__legKey=function(){ return (typeof xCallKey==='function')?'F1':'KeyH'; };   // v25.67: the controls list (F1 from the key swap; H before)
+window.__healKey=function(){ return (typeof xCallKey==='function')?'KeyH':'KeyG'; };   // v25.67: the arcade quick heal (H from the key swap; G before)
 // v9.73: the crew search picker, callable on its own. The fan can otherwise only
 // be observed through a whole raid, which is how I twice guessed at why it folds
 // instead of driving the thing that folds it.
@@ -14963,7 +14967,7 @@ window.__REGRESS=[
        if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'no arcadeDeploy in this build';
        if(typeof arcadeQuickHeal!=='function') return 'no arcadeQuickHeal in this build';
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
-       if(typeof keysOf==='function'&&keysOf('KeyG')!=='KeyG') return 'SKIP: G is rebound in the fixture profile';
+       if(typeof keysOf==='function'&&keysOf(__healKey())!==__healKey()) return 'SKIP: the heal key is rebound in the fixture profile';
        if(!ITEMS[nB]) return 'SKIP: no Bandage item';
        if(__state()&&!__state().over) __endRaid('abandon');
        useHot=function(){ nUH++; return realUH.apply(this,arguments); }; ownUH=true;
@@ -14973,17 +14977,17 @@ window.__REGRESS=[
        if(!p||p.downed||p.dying||p.specOut) return 'SKIP: the arcade player is not standing';
        rows=arcadeCardRows();
        if(!rows||!rows[6]||rows[6][0]!=='HEAL') bad.push('the controls card has no HEAL row 7');
-       else { if(rows[6][1]!==keyName(keysOf('KeyG'))) bad.push('the HEAL row keyboard label is '+rows[6][1]);
+       else { if(rows[6][1]!==keyName(keysOf(__healKey()))) bad.push('the HEAL row keyboard label is '+rows[6][1]);
          if(rows[6][2].indexOf('D-DOWN')<0) bad.push('the HEAL row pad label is '+rows[6][2]); }
        // G on the keyboard, hp 40 with a Bandage
        stage(g,40); nUH=0;
-       kd('KeyG','g');
+       kd(__healKey(),'g');
        if(!p.prep||p.prep.kind!=='heal'||p.prep.key!==nB) bad.push('G in the arcade did not start the Bandage wind-up ('+JSON.stringify(p.prep)+')');
        if(g.bag.indexOf(nB)>=0) bad.push('G in the arcade did not spend the Bandage');
        if(nUH) bad.push('G in the arcade also used the belt');
        // the Bandage cap: above 85 it is refused
        stage(g,90); nUH=0;
-       kd('KeyG','g');
+       kd(__healKey(),'g');
        if(p.prep) bad.push('G at hp 90 started a Bandage (they stop at 85)');
        if(g.bag.indexOf(nB)<0) bad.push('G at hp 90 spent the Bandage');
        // D-DOWN on the pad
@@ -15002,8 +15006,7 @@ window.__REGRESS=[
        if(g2.arcade) bad.push('a normal raid is flagged arcade');
        if(arcadeQuickHeal()) bad.push('arcadeQuickHeal acted in a normal raid');
        stage(g2,40); nUH=0;
-       kd('KeyG','g');
-       if(!nUH) bad.push('G in a normal raid did not use the belt');
+       if(typeof xCallKey!=='function'){ kd('KeyG','g'); if(!nUH) bad.push('G in a normal raid did not use the belt'); }
        stage(g2,40); stubPad();
        down13=false; pollPad(); down13=true; pollPad(); down13=false; pollPad();
        if(g2.player.prep) bad.push('pad D-DOWN in a normal raid started a heal');
@@ -24910,7 +24913,7 @@ window.__REGRESS=[
        drawLegend=function(){ inLeg=1; try{ return oDL.apply(this,arguments); } finally{ inLeg=0; } };
        hudPanel=function(x,y,w,h){ if(inLeg){ var T=ctx.getTransform(); plates.push({y0:T.d*y+T.f,y1:T.d*(y+h)+T.f}); } return oHP.apply(this,arguments); };
        tr=__textTrace(function(){ __frame(0.016); });
-       for(i=0;i<tr.length;i++){ t=tr[i].t; if(t.indexOf(ndl)>=0&&tr[i].align==='center') cap=tr[i]; else if(/^H  hide$/.test(t)) hide=tr[i]; }
+       for(i=0;i<tr.length;i++){ t=tr[i].t; if(t.indexOf(ndl)>=0&&tr[i].align==='center') cap=tr[i]; else if(/^(?:H|F1)  hide$/.test(t)) hide=tr[i]; }
        if(!plates.length) return 'SKIP: the full list was not drawn';
        if(!cap||!(cap.px>0)) return 'SKIP: no line over the belt was drawn';
        capTop=cap.y-cap.px*0.95;
@@ -27002,7 +27005,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        g.bagOpen=false; g.mapOpen=false; if(P.hud&&P.hud.legend) P.hud.legend.c=0;
-       ctx.fillText=function(t){ var s=String(t); if(s==='H  controls') seen.ctl=1; if(s==='H  hide') seen.hide=1; return oFT.apply(this,arguments); };
+       ctx.fillText=function(t){ var s=String(t); if(s==='H  controls'||s==='F1  controls') seen.ctl=1; if(s==='H  hide'||s==='F1  hide') seen.hide=1; return oFT.apply(this,arguments); };
        if(run(true,0).ctl) bad.push('on a pad the collapsed panel says H  controls');
        if(run(true,2).hide) bad.push('on a pad the full list says H  hide');
        if(!run(false,0).ctl) bad.push('control: with keyboard and mouse the collapsed panel does not say H  controls');
@@ -31342,7 +31345,7 @@ window.__REGRESS=[
        if(!keysBind('KeyE','KeyF')) bad.push('binding interact onto F was refused');
        if(keysOf('KeyE')!=='KeyF'||keysOf('KeyF')!=='KeyE') bad.push('the swap did not happen ('+JSON.stringify(P.keymap)+')');
        if(keyRemap('KeyF')!=='KeyE'||keyRemap('KeyE')!=='KeyF') bad.push('the translation reads '+keyRemap('KeyF')+' for F and '+keyRemap('KeyE')+' for E');
-       if(keysLegendHtml().indexOf('F</b> interact')<0) bad.push('the pause legend does not say F interact');
+       if(keysLegendHtml().indexOf('F</b> interact')<0&&keysLegendHtml().indexOf('F</b> search / use')<0) bad.push('the pause legend does not say F interact');
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over) return 'SKIP: staging: no raid';
        keys={};
@@ -34252,7 +34255,7 @@ window.__REGRESS=[
      var keep={on:NET.on,role:NET.role,seat:NET.seat,upSeed:NET.upSeed,specG:NET.specG,up:NET.up,upOut:NET.upOut,peers:NET.peers,roster:NET.roster,status:NET.status,srch:NET.srch,holds:NET.holds},
          oSend=netSend, oRef=netRefresh, oSay=say, oBlip=blip, oER=endRaid, k0=keys, bad=[], k, peer, z, p, w, i, s, ended=null;
      function ring(){ z.open=true; z.beaconT=0; z.hold=20; z.holdMax=30; z.pullT=null; z.pullFloor=0; z.boardT=0; G.active=z; G.beaconT=0; G.shipHold=20; p.x=z.x; p.y=z.y; p.downed=false; p.roll=0; }
-     function pull(){ ended=null; ring(); for(i=0;i<80&&ended===null;i++){ keys['KeyE']=true; updatePlayer(0.05); if(G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; } } keys['KeyE']=false; return ended; }
+     function pull(){ ended=null; ring(); for(i=0;i<80&&ended===null;i++){ keys[__extKey()]=true; updatePlayer(0.05); if(G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; } } keys['KeyE']=false; keys[__extKey()]=false; return ended; }
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||!G.player||!G.zones||!G.zones.length) return 'SKIP: staging: no raid or no ring';
@@ -34470,12 +34473,12 @@ window.__REGRESS=[
        z=G.zones[0]; p=G.player; p.x=z.x; p.y=z.y; z.open=true; z.beaconT=0; z.hold=20; z.holdMax=30; z.pullT=null; z.pullFloor=0; G.active=z; G.beaconT=0; G.shipHold=20;
        p.downed=true; p.downT=12; p.hp=0;
        endRaid=function(how){ ended=how; spec=netSpecStart(how); };
-       keys['KeyE']=true;
+       keys[__extKey()]=true;
        for(i=0;i<60&&ended===null;i++) updatePlayer(0.05);
        if(ended!=='extract') bad.push('the downed host holding E in the landed ring did not extract (ended '+ended+')');
        else if(spec) bad.push('the host extraction was parked spectating for a teammate who had already extracted');
      } finally {
-       endRaid=oER; netSend=oSend; netRefresh=oRef; say=oSay; blip=oBlip; keys['KeyE']=false;
+       endRaid=oER; netSend=oSend; netRefresh=oRef; say=oSay; blip=oBlip; keys['KeyE']=false; keys[__extKey()]=false;
        for(k in keep) NET[k]=keep[k];
        try{ if(G&&G.player){ G.player.specOut=0; G.player.downed=false; } }catch(e){}
        try{ __endRaid('abandon'); __topClear(); }catch(e){}
@@ -52477,7 +52480,7 @@ window.__REGRESS=[
          }
        }
        // H: the controls panel flips under the box.
-       var rh=paired('KeyH',function(){ return !!(__hub()&&__hub().legend); },
+       var rh=paired(__legKey(),function(){ return !!(__hub()&&__hub().legend); },
                      function(){ var q=__hub(); if(q) q.legend=false; });
        if(rh){
          if(rh.paused) bad.push('H while the pause box is up flips the controls panel behind it');
@@ -55760,7 +55763,7 @@ window.__REGRESS=[
        // Without these two the whole check is a silent probe: a synthetic key that
        // never reached the game would make the finding arm pass for nothing.
        if(!keys['KeyF']) bad.push('setup: the held F never reached the game, so nothing below proves anything');
-       if(!(((g.tel&&g.tel.melee)||0)>mel0)) bad.push('setup: the held F swung no strike (melee '+mel0+' to '+((g.tel&&g.tel.melee)||0)+'), so the key is not really down');
+       if(typeof xCallKey!=='function'&&!(((g.tel&&g.tel.melee)||0)>mel0)) bad.push('setup: the held F swung no strike (melee '+mel0+' to '+((g.tel&&g.tel.melee)||0)+'), so the key is not really down');
        if(p.downed) bad.push('setup: the strike put him on the floor by itself');
        putDown(g,p);
        if(!p.downed) bad.push('setup: a 240 hit on 88 health did not put him down (health '+Math.round(p.hp)+')');
@@ -58678,7 +58681,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(); g.legendOn=0;
        var proto=CanvasRenderingContext2D.prototype, orig=proto.fillText, got=null;
-       proto.fillText=function(t,x,y){ if(t===NEEDLE&&got===null) got=[x,y]; return orig.apply(this,arguments); };
+       proto.fillText=function(t,x,y){ if((t===NEEDLE||t==='F1  '+'controls')&&got===null) got=[x,y]; return orig.apply(this,arguments); };
        var threw=null; try{ __loop(performance.now()); }catch(e){ threw=String(e); }
        proto.fillText=orig;
        return {got:got, H:(window.innerHeight||h), threw:threw};
@@ -58712,10 +58715,10 @@ window.__REGRESS=[
        p.x=2020; p.y=3300; p.face=0; T.x=p.x+28; T.y=p.y;
        var hp0=T.hp;
        // hold the target in place across the swing frame
-       var d=new KeyboardEvent('keydown',{code:'KeyF',key:'f',bubbles:true,cancelable:true}); window.dispatchEvent(d);
+       var d=new KeyboardEvent('keydown',{code:__meleeKey(),key:'f',bubbles:true,cancelable:true}); window.dispatchEvent(d);
        T.x=p.x+28; T.y=p.y;
        __loop(performance.now());
-       var u=new KeyboardEvent('keyup',{code:'KeyF',key:'f',bubbles:true}); window.dispatchEvent(u);
+       var u=new KeyboardEvent('keyup',{code:__meleeKey(),key:'f',bubbles:true}); window.dispatchEvent(u);
        return {hp0:hp0, hp1:T.hp, merc:T.merc, hostile:T.hostile};
      }
      // THE FINDING: your merc takes no melee damage.
@@ -59055,7 +59058,7 @@ window.__REGRESS=[
      var g=__state(), p=g.player;
      p.hp=50; g.bag=['bandage']; g.hotAssign={}; p.healLock=false; p.healQ=0;
      var melee0=(g.tel&&g.tel.melee)||0;
-     press('KeyF','f'); frames(6); release('KeyF','f'); frames(2);
+     press(__meleeKey(),'f'); frames(6); release(__meleeKey(),'f'); frames(2);
      var melee1=(g.tel&&g.tel.melee)||0;
      if(!(melee1>melee0)) bad.push('F did not swing: melee count '+melee0+' to '+melee1);
      if(g.bag.length!==1||g.bag[0]!=='bandage') bad.push('F spent the Bandage as well as swinging: backpack is now ['+g.bag.join(',')+']');
@@ -59066,7 +59069,7 @@ window.__REGRESS=[
      g=__state(); p=g.player;
      p.hp=50; g.bag=['bandage']; g.hotAssign={4:'bandage'}; p.healLock=false; p.healQ=0;
      g.hot=4; frames(1);
-     press('KeyG','g'); frames(6); release('KeyG','g'); frames(2);
+     if(typeof xCallKey==='function'){ useHot(); frames(6); } else { press('KeyG','g'); frames(6); release('KeyG','g'); frames(2); }
      if(g.bag.length!==0&&!(p.healQ>0)) bad.push('control: using the belt slot spent nothing and started no heal, so the belt path is broken and the finding above proves nothing');
      // CONTROL TWO: down, F still revives (the other F, a different state).
      {
@@ -59092,7 +59095,7 @@ window.__REGRESS=[
      var stale=[['F ','heal/revive'].join(''), ['Q/G ','throw'].join(''), ['TAB ','bag '].join(''), ['sprint ','on/off'].join(''), ['superhot ','mode'].join('')];
      for(var i=0;i<stale.length;i++) if(text.indexOf(stale[i])>=0) bad.push('the pause box still says "'+stale[i]+'"');
      // WHAT IT MUST SAY, and it must agree with the H list.
-     var need=[['F ','melee strike'].join(''), ['I ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];
+     var need=[((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike']).join(''), ['I ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];
      for(i=0;i<need.length;i++) if(text.indexOf(need[i])<0) bad.push('the pause box does not say "'+need[i]+'"');
      var L=(window.__legend?__legend():null);
      if(L&&L.length){ var fRow=null; for(i=0;i<L.length;i++){ var rows=L[i][1]||[]; for(var j=0;j<rows.length;j++) if(rows[j][0]==='F') fRow=rows[j][1]; }
@@ -62720,7 +62723,7 @@ window.__REGRESS=[
        p.wep=mk('rifle'); p.ammo=25; p.face=0; p.downed=false; p.roll=0;
        var e={kind:'crawler',x:p.x+26,y:p.y,r:10,hp:100,maxhp:100,state:'idle',face:0};
        G2.ents.push(e);
-       press('KeyF'); step(4);
+       press(__meleeKey()); step(4);
        var hit=100-e.hp;
        if(hit<=0) bad.push('with a rifle in hand, F did not strike a body at arm\u0027s length');
        // 2. It is a strike, not a shot: no round left the magazine.
@@ -62730,19 +62733,19 @@ window.__REGRESS=[
        // and a check that forgets that measures the drift instead of the reach.
        e.hp=100; e.x=p.x+300; e.y=p.y; p.face=0;
        p.meleeAt=undefined;
-       press('KeyF'); step(4);
+       press(__meleeKey()); step(4);
        if(e.hp<100) bad.push('F struck a body 300 units away, which is not a melee reach');
        // 4. The cooldown holds: two presses in the same breath land one blow.
        e.hp=100; e.x=p.x+26; e.y=p.y; p.face=0; p.meleeAt=undefined;
-       press('KeyF'); var one=100-e.hp;
-       press('KeyF'); var two=100-e.hp;
+       press(__meleeKey()); var one=100-e.hp;
+       press(__meleeKey()); var two=100-e.hp;
        if(one<=0) bad.push('the cooldown case did not land its first blow');
        else if(two>one*1.6) bad.push('two presses in the same breath landed '+two.toFixed(1)+' against '+one.toFixed(1)+' for one, so there is no cooldown');
        // 5. Both controls lists name the key, or it is invisible again.
        var L=__legends(), full=JSON.stringify(L.full).toLowerCase(), mini=JSON.stringify(L.mini).toLowerCase();
        if(full.indexOf('melee')<0) bad.push('the full controls list does not name melee');
        if(mini.indexOf('melee')<0) bad.push('the short controls list does not name melee');
-       if(full.indexOf('"f"')<0&&full.indexOf("'f'")<0) bad.push('the full controls list does not name the F key');
+       if(full.indexOf('"'+__meleeKeyName()+'"')<0&&full.indexOf("'"+__meleeKeyName()+"'")<0) bad.push('the full controls list does not name the F key');
      } finally {
        if(K) for(var k2 in K) delete K[k2];
        p.wep=keep.wep; p.ammo=keep.ammo; p.face=keep.face; p.x=keep.x; p.y=keep.y;
@@ -63636,7 +63639,7 @@ window.__REGRESS=[
        var move=null, hide=null, sound=null, rules=[];
        for(var i=0;i<tr.length;i++){
          var d=tr[i], t=String(d.t);
-         if(t==='MOVE') move=d; else if(/^H  hide$/.test(t)) hide=d; else if(t==='SOUND') sound=d;
+         if(t==='MOVE') move=d; else if(/^(?:H|F1)  hide$/.test(t)) hide=d; else if(t==='SOUND') sound=d;
          else if(/they go to the backpack|keep one on a key|Plates top you up|selects, FIRE uses|in the stash or on the/.test(t)) rules.push(d);
        }
        if(!move||!hide) { bad.push('at '+W+'x'+H+' the full list did not draw its heading or its hide line'); continue; }
@@ -68894,7 +68897,7 @@ window.__REGRESS=[
      // Found by the legend's OWN words, so the vitals text sitting directly
      // below it cannot contaminate the extent.
      var LBL=['move','sprint','crouch','roll','fire','aim','reload','swap gun',
-              'hotbar','bag','backpack','search','map','H  full list'];
+              'hotbar','bag','backpack','search','map','H  full list','F1  full list'];
      var leg=[], i;
      for(i=0;i<draws.length;i++) if(LBL.indexOf(draws[i].t)>=0) leg.push(draws[i]);
      // CONTROL FIRST: if the legend did not draw, there is nothing to grade and
