@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.77 - RUN OVER: BEST MOMENTS
+
+Co-op hunt while he was away. His answer 20 (2026-10-12): RUN OVER with the score count-up, then the best moments. Once the score has counted up, the RUN OVER card shows the moments of the run: BEST STREAK (the longest chain of kills), BIGGEST HAUL (the most loot picked up in one life) and LONGEST SHOT (the farthest kill, in metres). In the 2 player demo it shows the best of the two of you, with P1 or P2 beside each. A moment that did not happen is left off.
+
+MEASURED. Check 24.77 passes, and fails on v24.76.
 ## v24.76 - DEMO HITS LAND LIKE CAREER HITS
 
 Co-op hunt while he was away. His answer of 2026-10-12: gameplay must be exactly the same in DEMO and CAREER, and the time to kill stays as it is now. A DEMO hit took half damage (added for newcomers on 2026-10-11), so the same enemy took twice as long to kill you in DEMO. A DEMO hit now takes exactly what the same hit takes in a CAREER raid. The spawn shield after a 2 player DEMO respawn stays, since the respawn is a mode rule he ordered.

@@ -1,0 +1,7 @@
+v24.77: run over: best moments
+
+After the score counts up, RUN OVER shows BEST STREAK, BIGGEST HAUL and LONGEST SHOT.
+
+Check 24.77. Fails on v24.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

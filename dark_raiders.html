@@ -2056,7 +2056,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.76';
+var VER='24.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39119,7 +39119,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.76: A hit in DEMO now does the same damage as in CAREER. Check 24.76 fails on v24.75',
+  now:'v24.77: After the score counts up, RUN OVER shows BEST STREAK, BIGGEST HAUL and LONGEST SHOT. Check 24.77 fails on v24.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47822,6 +47822,7 @@ function arcadeDeploy(o){
   ARCADE.deaths=0; ARCADE.holdT=0;   // v23.22 (arcade3)
   ARCADE.waveT=0; ARCADE.waveN=0;   // v23.37 (arcade14): the wave clock and count start again
   ARCADE.streak=null;   // v23.38 (arcade15): the kill streak starts again
+  ARCADE.bm=arcadeBmNew(); ARCADE.mateBm=null;   // v23.xx (his answer 20): the best moments start again
   try{ arcadeIniEnd(); }catch(_ie){}   // v23.41 (arcade18): initials still up keep what is there
   ARCADE.over=null; try{ arcadeOverSync(); }catch(_ov){}   // v23.39 (arcade16): the RUN OVER card goes
   ARCADE.mine=0; ARCADE.mate=0; ARCADE.pot=0; ARCADE.ext=0; ARCADE.banner=null;   // v23.23 (arcade4)
@@ -48190,6 +48191,7 @@ function arcadeBagFree(ct){
 function arcadeLoot(key){
   var n=Math.max(1,Math.round(ival(key)/ARCADE_LOOT_DIV));
   ARCADE.mine=(ARCADE.mine|0)+n; ARCADE.pot=(ARCADE.pot|0)+n;
+  try{ arcadeBmLoot(n); }catch(_bml){}   // v23.xx (his answer 20): the biggest haul
   try{ arcadeScSend(); }catch(_as){}
   return n;
 }
@@ -48256,6 +48258,58 @@ function arcadeStreakLive(){
   return arcadeStreakX(s.n);
 }
 // A kill this window credited to its own player. Returns the points. x, y: where the body fell, for the popup.
+// v23.xx, HIS ANSWERS (2026-10-12), answer 20: "RUN OVER: score count-up plus best moments". BEST MOMENTS. Once the score has counted
+// up, the RUN OVER card shows the three moments of the run: BEST STREAK (the longest chain of kills, 2 or more), BIGGEST HAUL (the
+// most loot credits picked up in one life, between drops) and LONGEST SHOT (the farthest kill, in metres from him to the body). Each
+// window keeps its own (ARCADE.bm), reset at every drop into a new run; player 2 sends its own with the score word (arcsc bm), so in
+// the 2 player demo the card shows the best of the two with P1 or P2 beside it. A moment that did not happen is left off. Display
+// only: nothing is scored, saved or drawn from a seeded stream.
+function arcadeBmNew(){ return {st:0,hl:0,ls:0,cur:0,lid:''}; }
+function arcadeBmKill(n,x,y){
+  var b=ARCADE.bm||(ARCADE.bm=arcadeBmNew()), d;
+  if((n|0)>b.st) b.st=n|0;
+  if(G&&G.player&&isFinite(x)&&isFinite(y)){ d=metres(Math.hypot(x-G.player.x,y-G.player.y)); if(d>b.ls) b.ls=d; }
+  return b;
+}
+function arcadeBmLoot(n){
+  var b=ARCADE.bm||(ARCADE.bm=arcadeBmNew()), lid=(ARCADE.deaths|0)+'|'+(ARCADE.ext|0);
+  if(b.lid!==lid){ b.lid=lid; b.cur=0; }
+  b.cur+=Math.max(0,n|0); if(b.cur>b.hl) b.hl=b.cur;
+  return b;
+}
+function arcadeBmWire(){ var b=ARCADE.bm||arcadeBmNew(); return [b.st|0,b.hl|0,b.ls|0]; }
+function arcadeBmTake(w){ if(!Array.isArray(w)) return null; return {st:Math.max(0,w[0]|0),hl:Math.max(0,w[1]|0),ls:Math.max(0,w[2]|0)}; }
+// the moments of the run for the card: the best of this window and the other, with who
+function arcadeBmFinal(){
+  var me=ARCADE.bm||arcadeBmNew(), mt=ARCADE.mateBm||null, host=(ARCADE.role==='host'), two=!ARCADE.solo&&!!mt, out={}, k, a, b;
+  ['st','hl','ls'].forEach(function(k2){
+    a=me[k2]|0; b=mt?(mt[k2]|0):0;
+    out[k2]=(b>a)?{v:b,who:two?(host?'P2':'P1'):''}:{v:a,who:two?(host?'P1':'P2'):''};
+  });
+  return out;
+}
+function arcadeBmDraw(c,o,counting){
+  var m=o&&o.bm, el, rows=[], i, t, s1, s2;
+  if(!c||!m) return false;
+  el=c.querySelector('.aobm');
+  if(!el){
+    if(m.st&&m.st.v>=2) rows.push(['BEST STREAK',m.st.v+' KILLS',m.st.who]);
+    if(m.hl&&m.hl.v>0) rows.push(['BIGGEST HAUL',arcadeCr(m.hl.v),m.hl.who]);
+    if(m.ls&&m.ls.v>0) rows.push(['LONGEST SHOT',m.ls.v+' M',m.ls.who]);
+    if(!rows.length) return false;
+    el=document.createElement('div'); el.className='aobm';
+    el.style.cssText='display:none;justify-content:center;gap:2.4em;margin:.55em 0 .1em;';
+    for(i=0;i<rows.length;i++){
+      t=document.createElement('div'); t.className='aobmt'; t.style.cssText='text-align:center;line-height:1.05';
+      s1=document.createElement('div'); s1.style.cssText='font-size:.62em;letter-spacing:.14em;color:#f2e6c8;opacity:.78'; s1.textContent=rows[i][0]+(rows[i][2]?'  \u00b7  '+rows[i][2]:'');
+      s2=document.createElement('div'); s2.style.cssText='font-size:1.25em;color:#ffc04a'; s2.textContent=rows[i][1];
+      t.appendChild(s1); t.appendChild(s2); el.appendChild(t);
+    }
+    c.appendChild(el);
+  }
+  el.style.display=counting?'none':'flex';
+  return true;
+}
 function arcadeKill(k,el,boss,x,y){
   if(!ARCADE.on||!G||!G.arcade||G.sim||G.over) return 0;
   var n=arcadeKillPts(k,el,boss), s, t=+G.t||0, mx, c;
@@ -48263,6 +48317,7 @@ function arcadeKill(k,el,boss,x,y){
   s=ARCADE.streak;   // v23.38 (arcade15): the chain, the multiplier, the popup and the callout
   if(!s||!(t-s.t<ARCADE_STREAK_GAP)||t<s.t) s=ARCADE.streak={n:0,t:t};
   s.n++; s.t=t; mx=arcadeStreakX(s.n); n*=mx;
+  try{ arcadeBmKill(s.n,x,y); }catch(_bmk){}   // v23.xx (his answer 20): the best streak and the longest shot
   if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeCr(n),'#ffc04a',0,true); }catch(_alb){} }   // v23.56 (arcade31): +$50
   c=arcadeStreakCall(s.n);
   if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(VOX_STREAK[c]) voxCall(VOX_STREAK[c]); }catch(_avc){} }   // v24.04 (his #45): the announcer calls the streak
@@ -48286,6 +48341,7 @@ function arcadeScFlush(now){
   }
   if(now-(+ARCADE.scAt||0)<ARCADE_SC_MS) return false;
   var m={t:'arcsc',pair:NET.pair,run:ARCADE.run.id,s:Math.max(0,ARCADE.mine|0),k:Math.max(0,ARCADE.kills|0),x:Math.max(0,ARCADE.ext|0)};
+  try{ m.bm=arcadeBmWire(); }catch(_bmw){}   // v23.xx (his answer 20): the best moments go with the score
   if(ARCADE.scEv){ m.ev=ARCADE.scEv; m.n=Math.max(0,ARCADE.scN|0); }
   ARCADE.scDirty=0; ARCADE.scEv=''; ARCADE.scN=0; ARCADE.scAt=now;
   netSamePost(m);
@@ -48302,6 +48358,7 @@ function arcadeScTake(m){
       ARCADE.run={id:id}; ARCADE.scDirty=1; ARCADE.scAt=0;
     }
   } else if(!ARCADE.run||ARCADE.run.id!==id) return 'ignored';
+  try{ if(m.bm) ARCADE.mateBm=arcadeBmTake(m.bm); }catch(_bmt){}   // v23.xx (his answer 20)
   ARCADE.scSeen=Date.now(); ARCADE.mate=Math.max(0,Math.round(+m.s||0)); ARCADE.mateK=Math.max(0,m.k|0); ARCADE.mateX=Math.max(0,m.x|0);
   if(m.ev==='x'&&ARCADE.role==='host'){ try{ arcadeBoardPut(); }catch(_bx){} }   // v23.41 (arcade18): a player 2 extraction checkpoints the board row
   if(m.ev==='x'&&(m.n|0)>0&&G&&G.arcade&&!G.over){ try{ say((ARCADE.role==='p2'?'PLAYER 1':'PLAYER 2')+' EXTRACTED +'+arcadeCr(m.n|0),'ally'); }catch(_sx){} }   // v23.56 (arcade31): in credits
@@ -48860,6 +48917,7 @@ function arcadeRunEnd(why){
   var host=(ARCADE.role==='host'), me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0},
       mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:String(why||''),team:arcadeTeam(),p1:host?me:mt,p2:host?mt:me};
+  try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}   // v23.xx (his answer 20): the best moments of the run
   var _bw=false; try{ _bw=arcadeBoardPut(); }catch(_bp){}   // v23.41 (arcade18): the final board row
   if(host) arcadeEndSend();   // v23.50 (arcade26): arcend with the run id, repeated until arcendok or 3 s
   arcadeRaidStop('end');
@@ -48946,6 +49004,7 @@ function arcadeOverCount(c,o){
   t=full.replace(fin,function(){ return arcadeCr(v); });
   if(el.textContent!==t) el.textContent=t;
   c.setAttribute('data-cu',k<1?'1':'0');
+  try{ arcadeBmDraw(c,o,k<1); }catch(_bmd){}   // v23.xx (his answer 20): then the best moments
   if(k<1&&!o.cuRaf&&typeof requestAnimationFrame==='function'){ o.cuRaf=1; requestAnimationFrame(function(){ o.cuRaf=0; try{ if(ARCADE.over===o&&c.style.display!=='none') arcadeOverCount(c,o); }catch(_cu){} }); }
   return k<1;
 }

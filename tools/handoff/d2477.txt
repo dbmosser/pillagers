@@ -1,0 +1,5 @@
+## v24.77 - RUN OVER: BEST MOMENTS
+
+Co-op hunt while he was away. His answer 20 (2026-10-12): RUN OVER with the score count-up, then the best moments. Once the score has counted up, the RUN OVER card shows the moments of the run: BEST STREAK (the longest chain of kills), BIGGEST HAUL (the most loot picked up in one life) and LONGEST SHOT (the farthest kill, in metres). In the 2 player demo it shows the best of the two of you, with P1 or P2 beside each. A moment that did not happen is left off.
+
+MEASURED. Check 24.77 passes, and fails on v24.76.
