@@ -1,0 +1,7 @@
+v25.01: the lock-on is one low siren
+
+When machines lock on to you, you now hear one low siren that wails while they are on you, the same every time however many there are, instead of a scatter of beeps.
+
+Check 25.01. Fails on v25.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2111,7 +2111,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.00';
+var VER='25.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4419,7 +4419,7 @@ function bus(){
 var SND=null;
 var SND_CAT={shot:'gun',reload:'gun',reloadin:'gun',dry:'gun',
   boom:'imp',hit:'imp',clank:'imp',
-  servo:'mach',skitter:'mach',drone:'mach',hydraul:'mach',dish:'mach',stepHeavy:'mach',seen:'mach',alarm:'mach',lockon:'mach',
+  servo:'mach',skitter:'mach',drone:'mach',hydraul:'mach',dish:'mach',stepHeavy:'mach',seen:'mach',alarm:'mach',
   foot:'foley',step:'foley',
   pick:'ui',pickRare:'ui',pickElite:'ui',pickGun:'ui',clockwarn:'ui',clocktick:'ui',
   heart:'vox',flap:'amb',hitmark:'ui',killconf:'ui'};
@@ -4510,6 +4510,7 @@ function sndDuck(cat,depth,hold){
 function sndMixTick(dt){
   if(typeof SND_LOOPS!=='undefined'&&SND_LOOPS&&!(G&&!G.over&&!G.sim)) sndLoopsOff();   // v24.73 (his #45): no machine hum outside a raid
   if(SND_OCC_N){ SND_OCC={}; SND_OCC_N=0; }   // v23.73 (his #45): what the walls hide is asked again each frame
+  if(typeof MSIREN==='object'&&MSIREN.v&&!(G&&!G.over&&!G.sim&&!G.paused)) machSirenOff();   // v24.xx (machsiren): no lock-on siren off a live raid
   if(!isFinite(dt)||dt<=0) return;
   for(var k in SND_DUCK){
     var D=SND_DUCK[k], r=dt, u;
@@ -5388,7 +5389,82 @@ function tickEnemyAudio(dt){
   else blip('foot',ear.d*1.35,ear.pan,bsurf,best.state==='chase'?'sprint':'walk',surfFine(best.x,best.y,bsurf));   // v23.90 (his #45)
   STEP_T=(heavy?0.62:0.44)*(best.state==='chase'?0.72:1)*(0.92+Math.random()*0.16);
 }
-// =================================================== MACHINE VOICES
+// v24.xx (machsiren), HIS ORDER 2026-10-12: "whichever robot is beeping, it sounds annoying when they get together and the beeping is
+// inconsistent, needs to be more of a low siren". THE LOCK-ON IS ONE LOW SIREN. v24.59 gave every machine its own short high double
+// beep where it stood the moment it locked on, a quarter second apart across the map, so a room of machines turning at once was a
+// scatter of chirps that never came out the same twice. Now the window holds one siren voice: a soft low wail (a triangle tone through
+// a lowpass, swept from 215 up to 365 Hz and back on a fixed 1.4 s period) that runs while at least one machine within 760 is on you
+// (chasing you; in co-op a machine chasing the nearest player, so each window hears the machines on its own player). However many there
+// are it stays one voice; with more of them it runs a little faster (1.2 s with six) and a little louder. It sits toward the nearest of
+// them (left or right, and muffled behind a wall), fades in and out over about a third of a second, and stops when none is on you, when
+// the raid ends, under the pause box, in the burn and in the death beat; if nothing drives it for a fifth of a second it fades by
+// itself. Cosmetic only: no seeded draw, no game state, nothing under G.sim.
+var MSIREN={v:null,n:0,on:0,per:0,lvl:0,x:0,y:0,made:0};
+var MSIREN_R=760, MSIREN_F0=290, MSIREN_DEP=75, MSIREN_PER=[1.4,1.2], MSIREN_LVL=0.045;
+function machSirenLocked(e,p){
+  if(!e||!p||e.state!=='chase'||!(e.hp>0)||e.merc||e.friendly||e.neutral||killWord(e)!==' DESTROYED') return false;
+  if(dist(e,p)>=MSIREN_R) return false;
+  if(typeof NET==='object'&&NET&&NET.on&&typeof netTargetFor==='function'){ try{ if(netTargetFor(e)!==p) return false; }catch(_nt){} }
+  return true;
+}
+function machSirenVoice(a,out){
+  var v={out:out,offAt:-1};
+  v.o=a.createOscillator(); v.o.type='triangle'; v.o.frequency.value=MSIREN_F0;
+  v.lfo=a.createOscillator(); v.lfo.type='sine'; v.lfo.frequency.value=1/MSIREN_PER[0];
+  v.dep=a.createGain(); v.dep.gain.value=MSIREN_DEP;
+  v.lp=a.createBiquadFilter(); v.lp.type='lowpass'; v.lp.frequency.value=950; v.lp.Q.value=0.5;
+  v.wall=a.createBiquadFilter(); v.wall.type='lowpass'; v.wall.frequency.value=8000; v.wall.Q.value=0.7;
+  v.g=a.createGain(); v.g.gain.value=0;
+  v.pn=a.createStereoPanner?a.createStereoPanner():null;
+  v.lfo.connect(v.dep); v.dep.connect(v.o.frequency);
+  v.o.connect(v.lp); v.lp.connect(v.wall); v.wall.connect(v.g);
+  if(v.pn){ v.g.connect(v.pn); v.pn.connect(out); } else v.g.connect(out);
+  v.o.start(); v.lfo.start();
+  return v;
+}
+function machSirenDrop(){
+  var v=MSIREN.v; MSIREN.v=null; if(!v) return false;
+  try{ v.o.stop(); v.lfo.stop(); }catch(_s){}
+  try{ if(v.pn) v.pn.disconnect(); else v.g.disconnect(); }catch(_d){}
+  return true;
+}
+function machSirenOff(){
+  var v=MSIREN.v, t;
+  MSIREN.n=0; MSIREN.on=0; MSIREN.lvl=0;
+  if(!v||!AC) return false;
+  t=AC.currentTime;
+  try{ v.g.gain.cancelScheduledValues(t); v.g.gain.setTargetAtTime(0,t,0.1); }catch(_o){ try{ v.g.gain.value=0; }catch(_p){} }
+  if(v.offAt<0) v.offAt=t+0.8;
+  else if(t>v.offAt) machSirenDrop();   // faded out: the next lock-on starts a fresh voice, so it starts the same way every time
+  return true;
+}
+function tickMachSiren(dt){
+  var p=G&&G.player, i, e, d, n=0, near=null, nd=1e9, a, out, v, t, k, per, lv, pl;
+  if(!G||G.sim||!p||!G.ents||G.over||G.paused||G.nuking||(G.deathBeat!==undefined&&G.deathBeat!==null)||G.goT>0||p.specOut||(typeof NET==='object'&&NET&&NET.specTick)){ if(MSIREN.v||MSIREN.on) machSirenOff(); return false; }
+  for(i=0;i<G.ents.length;i++){ e=G.ents[i]; if(!machSirenLocked(e,p)) continue; n++; d=dist(e,p); if(d<nd){ nd=d; near=e; } }
+  if(!n){ if(MSIREN.v||MSIREN.on) machSirenOff(); return true; }
+  MSIREN.n=n;
+  a=ac(); if(!a) return false;
+  out=sndBus('mach'); if(!out) return false;
+  if(MSIREN.v&&MSIREN.v.out!==out) machSirenDrop();
+  if(!MSIREN.v){ try{ MSIREN.v=machSirenVoice(a,out); MSIREN.made++; }catch(_b){ MSIREN.v=null; return false; } }
+  v=MSIREN.v; v.offAt=-1;
+  k=Math.min(n,6);
+  per=MSIREN_PER[0]-(MSIREN_PER[0]-MSIREN_PER[1])*(k-1)/5;
+  lv=MSIREN_LVL*(1+0.08*(k-1))*(0.7+0.3*clamp(1-nd/MSIREN_R,0,1));
+  pl=sndPlace(near.x,near.y);
+  t=a.currentTime;
+  try{
+    v.lfo.frequency.setTargetAtTime(1/per,t,0.25);
+    v.wall.frequency.setTargetAtTime(pl.lp||8000,t,0.08);
+    if(v.pn) v.pn.pan.setTargetAtTime(clamp((near.x-p.x)/520*(pl.panK||1),-1,1),t,0.08);
+    v.g.gain.cancelScheduledValues(t);
+    v.g.gain.setTargetAtTime(0,t+0.2,0.1);   // the dead man: undriven for a fifth of a second (a hidden tab, a menu), it fades by itself
+    v.g.gain.setTargetAtTime(lv,t,0.1);
+  }catch(_s){}
+  MSIREN.on=1; MSIREN.per=per; MSIREN.lvl=lv; MSIREN.x=near.x; MSIREN.y=near.y;
+  return true;
+}// =================================================== MACHINE VOICES
 // Sound is the gap he named, and the specific hole was that every machine on the
 // map sounded the same. In a game whose whole premise is limited sight, being
 // able to tell WHAT is out there by ear is not decoration, it is the primary
@@ -6153,17 +6229,6 @@ function blip(type,d,pan){
       lrO.type='triangle'; lrO.frequency.setValueAtTime(lmi?1320:1760,lrt);
       lrG.gain.setValueAtTime(.0001,lrt); lrG.gain.linearRampToValueAtTime(.022*vol,lrt+.01); lrG.gain.exponentialRampToValueAtTime(.001,lrt+.55);
       lrO.connect(lrG); lrG.connect(lmO); lrO.start(lrt); lrO.stop(lrt+.6);
-    }
-  } else if(type==='lockon'){
-    // v23.xx (his answer 34 a): a machine locks on. Two short square pips through a band, the second higher (1.6 then 2.15 kHz),
-    // a target-acquired chirp that reads as a machine and not as the clock or the menu.
-    for(var lki=0;lki<2;lki++){
-      var lkt=t+lki*.085, lko=a.createOscillator(), lkf=a.createBiquadFilter(), lkg=a.createGain();
-      lko.type='square'; lko.frequency.setValueAtTime(lki?2150:1600,lkt);
-      lkf.type='bandpass'; lkf.frequency.value=lki?2150:1600; lkf.Q.value=3;
-      lkg.gain.setValueAtTime(.0001,lkt); lkg.gain.linearRampToValueAtTime(.05*vol,lkt+.006);
-      lkg.gain.setValueAtTime(.05*vol,lkt+.05); lkg.gain.exponentialRampToValueAtTime(.001,lkt+.07);
-      lko.connect(lkf); lkf.connect(lkg); lkg.connect(OUT); lko.start(lkt); lko.stop(lkt+.08);
     }
   } else if(type==='clocktick'){
     // v15.24, HIS NOTE: each of the last ten seconds on the raid clock. One short high square knock, so the count down is
@@ -22985,12 +23050,7 @@ var _rdS=G.shells[_rdi];
   if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.4; if(!e._fledSaid){ e._fledSaid=1; taunt(e,'flee'); } if(e.crewArc!==undefined) delete e.crewArc; }
       else {
         if(e.state!=='chase'&&!G.sim&&(G.seenT||0)<=0){ G.seenT=5.0; sfx('seen',e.x,e.y); }
-        // v23.xx, HIS ANSWERS (2026-10-12), answer 34 a: "machine beeps". A MACHINE BEEPS WHEN IT LOCKS ON. The stinger above plays
-        // once in five seconds for the whole map, and only the sentry, the crawler and the Crier sound their alarm, so a Warden, a
-        // Howler or a Bulwark turning on him made no sound of its own. Every machine (anything that is not a person) now gives a
-        // short rising double beep where it stands the moment it acquires him: once per machine in three seconds, a quarter second
-        // apart across the map, within 760. Sound only: nothing is drawn from a seeded stream.
-        if(e.state!=='chase'&&!G.sim&&killWord(e)===' DESTROYED'&&!e.merc&&dist(e,p)<760&&!(typeof e.beepAt==='number'&&e.beepAt>(G.t||0)-3)&&!(typeof G.beepAt==='number'&&G.beepAt>(G.t||0)-0.25)){ e.beepAt=G.t||0; G.beepAt=G.t||0; sfx('lockon',e.x,e.y); }
+        // v24.xx (machsiren): a machine locking on is heard through the one lock-on siren (tickMachSiren), not through a beep of its own here.
         if(e.state!=='chase'&&e.kind==='raider') taunt(e,'spot');
         // v9.28, HIS 36. Same transition the bubble fires on, so what you hear
         // and what happens are the same event. Before the state change, because
@@ -38770,6 +38830,7 @@ function loop(ts){
   // stands still on the first paused frame as before. No player text, no number and no seeded draw moved.
   if(G.paused&&!G.over&&!netPauseLive()){ if(!G._ambDuck){ G._ambDuck=1; try{ ambienceOff(); }catch(_ap){} } }
   else if(G._ambDuck){ G._ambDuck=0; }
+  try{ tickMachSiren(dt); }catch(_ms){}   // v24.xx (machsiren): the one lock-on siren, every raid frame
   if((!G.paused||netPauseLive())&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
     // the death beat: the world keeps moving underwater-slow, you do not
     G.deathBeat-=dt;
@@ -39312,7 +39373,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.00: The 3, 2, 1, GO at the start of every raid and demo run is gone. You have control the moment the raid starts. Check 25.00 fails on v24.99',
+  now:'v25.01: When machines lock on to you, you now hear one low siren that wails while they are on you, the same every time however many there are, instead of a scatter of beeps. Check 25.01 fails on v25.00',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
