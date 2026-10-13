@@ -1,0 +1,7 @@
+v25.66: no text collides at top centre
+
+The score, clock and EXTRACT lines at top centre no longer run into each other.
+
+Check 25.66. Fails on v25.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

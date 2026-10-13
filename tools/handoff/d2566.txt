@@ -1,0 +1,5 @@
+## v25.66 - NO TEXT COLLIDES AT TOP CENTRE
+
+Co-op hunt while he was away. His note of 2026-10-13: text at top mid is colliding. Measured with the text ink boxes at 1080p and 4K, in a CAREER and a DEMO raid, with an alert or the location tag, a feed row, the boss bar and the final minute all showing: the alert lane, the feed rows and the boss bar were already clear of each other, but the score block of the DEMO and CAREER (SCORE, the number, and the clock under it) ran its clock row 4 pixels at 1080p and 10 pixels at 4K into the EXTRACT compass line, which still sat where the plain raid puts it under a one line clock. The SCORE label also sat flush on the number under it. Now the compass line and its arrow start under the bottom of the score block with a fixed gap, and the number, clock and rows beside it drop a few pixels so the label has air. The plain raid is untouched. Drawing only: nothing about the score or the clock changes.
+
+MEASURED. Check 25.66 passes, and fails on v25.65.

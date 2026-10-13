@@ -1,0 +1,216 @@
+{
+    "title":  "NEW KEYS: E SEARCH, X EXTRACT, Q CROWBAR",
+    "why":  "His orders of 2026-10-13: switch some keys around. E is search, always: boxes, bodies and caches, in an extraction ring too, and it never calls an extraction any more. X is the extraction: in a ring it starts the call, and in a landed ring it boards (every ring prompt, the banner words, the downed screen and the controls lists now say X). G is the quick throw of whatever throwable is selected, with no need to find it on the belt. H is the quick heal: it uses the best heal you carry without opening the backpack, with the same rules as the belt (a Bandage heals to 85, a Medkit to 100). Q is the melee, now a crowbar: the same blow, reach and cooldown as before, drawn as a short steel crowbar swinging through the arc with a trail, a metal whoosh as it swings and a thud where it lands. F brings up the next gun on keys 1 to 4, skipping an empty key and wrapping round. The controls list moves to F1 (it was H) and switching throwable moves to U (it was Q). X used to search on the way out, which E does everywhere now. The controller layout is unchanged.",
+    "now":  "E searches, X calls and boards the extraction, G throws, H heals, Q swings a crowbar, F brings up the next gun, F1 shows the controls.",
+    "edits":  [
+                  {
+                      "anchor":  "if(code===\u0027KeyG\u0027||code===\u0027Space\u0027||code===\u0027KeyQ\u0027||code===\u0027KeyC\u0027) return;",
+                      "replacement":  "if(code===\u0027KeyG\u0027||code===\u0027Space\u0027||code===\u0027KeyQ\u0027||code===\u0027KeyC\u0027||code===\u0027KeyH\u0027||code===\u0027KeyF\u0027||code===\u0027KeyU\u0027) return;   // v25.xx (keyswap): and the new throw, heal, melee, next gun and switch keys do nothing behind the stall"
+                  },
+                  {
+                      "anchor":  "[\u0027Tab\u0027,\u0027Space\u0027,\u0027KeyE\u0027,\u0027KeyR\u0027,\u0027KeyF\u0027,\u0027KeyG\u0027,\u0027KeyQ\u0027,\u0027KeyI\u0027,\u0027KeyM\u0027,\u0027KeyP\u0027,\u0027KeyH\u0027,\u0027KeyV\u0027,\u0027KeyC\u0027,\u0027KeyX\u0027,\u0027Backspace\u0027,\u0027ControlLeft\u0027,\u0027ShiftLeft\u0027].indexOf(code)\u003e=0",
+                      "replacement":  "[\u0027Tab\u0027,\u0027Space\u0027,\u0027KeyE\u0027,\u0027KeyR\u0027,\u0027KeyF\u0027,\u0027KeyG\u0027,\u0027KeyQ\u0027,\u0027KeyI\u0027,\u0027KeyM\u0027,\u0027KeyP\u0027,\u0027KeyH\u0027,\u0027KeyV\u0027,\u0027KeyC\u0027,\u0027KeyX\u0027,\u0027KeyU\u0027,\u0027F1\u0027,\u0027Backspace\u0027,\u0027ControlLeft\u0027,\u0027ShiftLeft\u0027].indexOf(code)\u003e=0"
+                  },
+                  {
+                      "anchor":  "if(code===\u0027KeyH\u0027\u0026\u0026G\u0026\u0026!repeat) G.legendOn=(G.legendOn+1)%3;",
+                      "replacement":  "if(code===\u0027F1\u0027\u0026\u0026G\u0026\u0026!repeat) G.legendOn=(G.legendOn+1)%3;   // v25.xx (keyswap): F1 cycles the controls list (it was H)\n  if(code===\u0027KeyH\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!repeat) quickHeal();   // v25.xx (keyswap): H is the quick heal, no backpack needed"
+                  },
+                  {
+                      "anchor":  "if(code===\u0027KeyF\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!repeat) meleeStrike();",
+                      "replacement":  "if(code===\u0027KeyF\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!repeat) nextGun();   // v25.xx (keyswap): F brings up the next gun\n  if(code===\u0027KeyQ\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!repeat) meleeStrike();   // v25.xx (keyswap): Q swings the crowbar (it was F)"
+                  },
+                  {
+                      "anchor":  "if(code===\u0027KeyQ\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!repeat) cycleThrow();",
+                      "replacement":  "if(code===\u0027KeyU\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!repeat) cycleThrow();   // v25.xx (keyswap): switch throwable moved from Q (now the crowbar) to U"
+                  },
+                  {
+                      "anchor":  "if(code===\u0027KeyG\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!repeat\u0026\u0026!(G.arcade\u0026\u0026typeof arcadeQuickHeal===\u0027function\u0027\u0026\u0026arcadeQuickHeal())) useHot();",
+                      "replacement":  "if(code===\u0027KeyG\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!repeat) doThrow();"
+                  },
+                  {
+                      "anchor":  "if(e.code===\u0027KeyH\u0027\u0026\u0026!e.repeat\u0026\u0026HB\u0026\u0026!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }",
+                      "replacement":  "if(e.code===\u0027F1\u0027\u0026\u0026!e.repeat\u0026\u0026HB\u0026\u0026!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }   // v25.xx (keyswap): F1, H is the quick heal up top"
+                  },
+                  {
+                      "anchor":  "_lg.push(\u0027H\u0027,\u0027close this\u0027);",
+                      "replacement":  "_lg.push(\u0027F1\u0027,\u0027close this\u0027);"
+                  },
+                  {
+                      "anchor":  "if(near\u0026\u0026(keys[\u0027KeyX\u0027]||(keys[\u0027KeyE\u0027]\u0026\u0026!onPad))){",
+                      "replacement":  "if(near\u0026\u0026((keys[\u0027KeyE\u0027]\u0026\u0026!(keys[\u0027PadX\u0027]\u0026\u0026onPad))||keys[\u0027PadSearch\u0027])){   // v25.xx (keyswap): E searches in a ring too; the pad X in a ring still calls instead (PadX), and its Y search is PadSearch"
+                  },
+                  {
+                      "anchor":  "tryExtractTick(dt,!!keys[\u0027KeyE\u0027]\u0026\u0026(!near||onPad));",
+                      "replacement":  "tryExtractTick(dt,xCallKey()\u0026\u0026(!near||onPad));   // v25.xx (keyswap): X calls and takes the extraction"
+                  },
+                  {
+                      "anchor":  "tryExtractTick(dt,!!keys[\u0027KeyE\u0027]);",
+                      "replacement":  "tryExtractTick(dt,xCallKey());   // v25.xx (keyswap): and downed too, on X"
+                  },
+                  {
+                      "anchor":  "padHold(\u0027KeyE\u0027,_xDown\u0026\u0026PAD.xMode===\u0027KeyE\u0027\u0026\u0026!_xSearch);",
+                      "replacement":  "padHold(\u0027KeyE\u0027,_xDown\u0026\u0026PAD.xMode===\u0027KeyE\u0027\u0026\u0026!_xSearch);\n      padHold(\u0027PadX\u0027,_xDown\u0026\u0026PAD.xMode===\u0027KeyE\u0027\u0026\u0026!_xSearch);   // v25.xx (keyswap): the pad X hold also stands for the keyboard X, the extraction call"
+                  },
+                  {
+                      "anchor":  "padHold(\u0027KeyX\u0027,(_yD\u0026\u0026!PAD.yAid)||(_xDown\u0026\u0026PAD.xMode===\u0027KeyE\u0027\u0026\u0026_xSearch));",
+                      "replacement":  "padHold(\u0027PadSearch\u0027,(_yD\u0026\u0026!PAD.yAid)||(_xDown\u0026\u0026PAD.xMode===\u0027KeyE\u0027\u0026\u0026_xSearch));   // v25.xx (keyswap): the pad ring search (was keyboard X, which is the extraction now)"
+                  },
+                  {
+                      "anchor":  "KeyP:\u0027MENU\u0027,KeyX:\u0027Y\u0027,",
+                      "replacement":  "KeyP:\u0027MENU\u0027,KeyX:\u0027X\u0027,"
+                  },
+                  {
+                      "anchor":  "var _skey=\u0027[\u0027+keyLabel(G.nearPad?\u0027KeyX\u0027:\u0027KeyE\u0027,G.nearPad?\u0027X\u0027:\u0027E\u0027)+\u0027] SEARCH \u0027,",
+                      "replacement":  "var _skey=\u0027[\u0027+((G.nearPad\u0026\u0026padOn())?padB(\u0027Y\u0027):keyLabel(\u0027KeyE\u0027,\u0027E\u0027))+\u0027] SEARCH \u0027,"
+                  },
+                  {
+                      "anchor":  "Hold \u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027 to try again.",
+                      "replacement":  "Hold \u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027 to try again."
+                  },
+                  {
+                      "anchor":  "_xk=\u0027[\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027]\u0027;",
+                      "replacement":  "_xk=\u0027[\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027]\u0027;"
+                  },
+                  {
+                      "anchor":  "sub:\u0027Hold [\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] to extract.\u0027",
+                      "replacement":  "sub:\u0027Hold [\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027] to extract.\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027Hold [\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] to call again\u0027",
+                      "replacement":  "\u0027Hold [\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027] to call again\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027[\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] EXTRACT  ",
+                      "replacement":  "\u0027[\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027] EXTRACT  "
+                  },
+                  {
+                      "anchor":  "\u0027[\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] CALL FOR EXTRACTION\u0027",
+                      "replacement":  "\u0027[\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027] CALL FOR EXTRACTION\u0027"
+                  },
+                  {
+                      "anchor":  "hudText(\u0027HOLD [\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] TO CALL FOR EXTRACTION\u0027",
+                      "replacement":  "hudText(\u0027HOLD [\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027] TO CALL FOR EXTRACTION\u0027"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(\u0027HOLD [\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] TO CALL FOR EXTRACTION\u0027",
+                      "replacement":  "ctx.fillText(\u0027HOLD [\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027] TO CALL FOR EXTRACTION\u0027"
+                  },
+                  {
+                      "anchor":  "msg:\u0027HOLD [\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] TO EXTRACT\u0027",
+                      "replacement":  "msg:\u0027HOLD [\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027] TO EXTRACT\u0027"
+                  },
+                  {
+                      "anchor":  "_msg=\u0027HOLD [\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027] TO EXTRACT\u0027;",
+                      "replacement":  "_msg=\u0027HOLD [\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027] TO EXTRACT\u0027;"
+                  },
+                  {
+                      "anchor":  "var _K=\u0027[\u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027]\u0027;",
+                      "replacement":  "var _K=\u0027[\u0027+keyLabel(\u0027KeyX\u0027,\u0027X\u0027)+\u0027]\u0027;   // v25.xx (keyswap): the extraction hint names X"
+                  },
+                  {
+                      "anchor":  "G.punchT=0.22;                      // the thrust the fists attack draws",
+                      "replacement":  "G.punchT=0.22;                      // the thrust the fists attack draws\n  G.barT=0.22; meleeFoley(\u0027swing\u0027);   // v25.xx (keyswap): and Q swings a crowbar through that same 0.22 s: drawn in the hand, with a whoosh"
+                  },
+                  {
+                      "anchor":  "if(G.punchT\u003e0) G.punchT-=dt;",
+                      "replacement":  "if(G.punchT\u003e0) G.punchT-=dt;\n  if(G.barT\u003e0) G.barT-=dt;   // v25.xx (keyswap): the crowbar swing"
+                  },
+                  {
+                      "anchor":  "if(!G.sim){ spark(_me.x,_me.y,\u0027#cdd6dd\u0027,10,200); sfx(\u0027clank\u0027,_me.x,_me.y); }",
+                      "replacement":  "if(!G.sim){ spark(_me.x,_me.y,\u0027#cdd6dd\u0027,10,200); sfx(\u0027clank\u0027,_me.x,_me.y); if(G.barT\u003e0) meleeFoley(\u0027hit\u0027,_me.x,_me.y); }   // v25.xx (keyswap): a crowbar blow thuds"
+                  },
+                  {
+                      "anchor":  "if(!G.sim\u0026\u0026!_swHit\u0026\u0026fromPlayer) blip(\u0027foot\u0027);",
+                      "replacement":  "if(!G.sim\u0026\u0026!_swHit\u0026\u0026fromPlayer\u0026\u0026!(G.barT\u003e0)) blip(\u0027foot\u0027);   // v25.xx (keyswap): a crowbar miss is its whoosh, not a footfall"
+                  },
+                  {
+                      "anchor":  "wc.fillStyle=_HANDC; wc.fillRect(2+ext,-1.6,10,3.2);",
+                      "replacement":  "if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026G.barT\u003e0){\n      // v25.xx (keyswap): THE CROWBAR. Q swings a short crowbar through the arc the blow hits in (0.95 rad either side of the aim): an\n      // inked steel bar with a hooked claw end and a red grip, the hand on the grip, and a pale trail behind the tip. Cosmetic only.\n      var _cbP=1-Math.max(0,Math.min(1,G.barT/0.22)), _cbT=-0.95+1.9*_cbP;\n      wc.fillStyle=_HANDC; wc.fillRect(2+ext,-1.6,5,3.2);\n      wc.strokeStyle=\u0027rgba(205,214,221,.38)\u0027; wc.lineWidth=1.6; wc.beginPath(); wc.arc(6+ext,0,17,-0.95,_cbT); wc.stroke();\n      wc.save(); wc.translate(6+ext,0); wc.rotate(_cbT);\n      wc.fillStyle=INK; wc.fillRect(-2.2,-2.1,20.6,4.2); wc.fillRect(14.8,-4.2,3.6,3.2);\n      wc.fillStyle=\u0027#8d99a6\u0027; wc.fillRect(-1.4,-1.3,18.2,2.6); wc.fillRect(15.4,-3.6,2.2,2.4);\n      wc.fillStyle=\u0027#c9d3dc\u0027; wc.fillRect(-1.4,-1.3,18.2,0.8);\n      wc.fillStyle=\u0027#a8372a\u0027; wc.fillRect(-1.4,-1.3,6.4,2.6);\n      wc.fillStyle=_HANDC; wc.fillRect(0.4,-1.9,3.6,3.8);\n      wc.restore();\n    } else { wc.fillStyle=_HANDC; wc.fillRect(2+ext,-1.6,10,3.2); }"
+                  },
+                  {
+                      "anchor":  "wc.beginPath(); wc.arc(13+ext,0,2.8,0,6.2832); wc.fill();",
+                      "replacement":  "if(!(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026G.barT\u003e0)){ wc.beginPath(); wc.arc(13+ext,0,2.8,0,6.2832); wc.fill(); }"
+                  },
+                  {
+                      "anchor":  "function meleeStrike(){",
+                      "replacement":  "// v25.xx (keyswap), HIS ORDERS 2026-10-13: \"E - search (always); X - start extraction countdown / extract; G - quick grenade (or other\n// throwable); H - quick heal\", then \"Q - melee (change it so you melee attack with a crowbar); F - next gun\". E searches boxes, bodies and\n// caches in a ring too and never calls an extraction; X calls it and takes it (xCallKey); G throws the selected throwable at once (doThrow);\n// H uses the best heal you carry through the same picker and wind-up as the belt (quickHeal: a Bandage stops at 85, a Medkit reaches\n// 100); Q swings a crowbar (the blow, reach and cooldown of the bare hands strike, now drawn and sounded as a crowbar); F brings up the next\n// gun on keys 1 to 4, skipping an empty key and wrapping round (nextGun, the swap path the number keys use). F1 shows the controls list,\n// and U switches throwable. The pad layout is his of 2026-09-27 and is unchanged: the pad X still holds E, now with PadX beside it to stand\n// for the keyboard X, and its Y ring search is PadSearch.\nfunction xCallKey(){ return !!(keys[\u0027KeyX\u0027]||(keys[\u0027PadX\u0027]\u0026\u0026keys[\u0027KeyE\u0027])); }\nfunction quickHeal(){\n  var p=G\u0026\u0026G.player;\n  if(!G||G.sim||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.specOut) return false;\n  try{ useMedical(); }catch(_qh){}\n  return true;\n}\nfunction nextGun(){\n  var p=G\u0026\u0026G.player, sl, cur, n=GUNKEYS, k, i;\n  if(!G||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.roll\u003e0) return false;\n  sl=hotbarSlots(); cur=heldGunCell(sl); if(cur\u003c0) cur=clamp(G.hot||0,0,n-1);\n  for(k=1;k\u003c=n;k++){\n    i=(cur+k)%n;\n    if(!sl[i]||sl[i].kind!==\u0027gun\u0027||sl[i].vacant||sl[i].inHand) continue;\n    if(G.hot===i) G.hot=cur;   // setHot ignores the key the highlight is already on\n    setHot(i);\n    return true;\n  }\n  return false;\n}\n// the crowbar sounds, from the v25.20 foley bank: a metal whoosh as it swings, a thud and a rattle where it lands\nfunction meleeFoley(kind,x,y){\n  if((G\u0026\u0026G.sim)||typeof foley!==\u0027function\u0027) return false;\n  if(kind===\u0027swing\u0027){ foley(\u0027strapRip\u0027,null,null,{rate:2.2,g:0.9,dur:0.2}); foley(\u0027boltLatch\u0027,null,null,{rate:2.4,g:0.4,at:0.05,dur:0.09,gap:0}); return true; }\n  if(kind===\u0027hit\u0027){ foley(\u0027plateClack\u0027,x,y,{rate:0.75,g:1.2}); foley(\u0027lmgClack\u0027,x,y,{rate:0.9,g:0.6,at:0.03,gap:0}); return true; }\n  return false;\n}\nfunction meleeStrike(){"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(\u0027H  controls\u0027,14,_hy);",
+                      "replacement":  "ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  controls\u0027,14,_hy);   // v25.xx (keyswap): F1"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(\u0027H  full list\u0027,mx,my+LH(7)+MROW*_mr+LH(3));",
+                      "replacement":  "ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  full list\u0027,mx,my+LH(7)+MROW*_mr+LH(3));"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(\u0027H  hide\u0027,x,top+boxH-LH(2));",
+                      "replacement":  "ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  hide\u0027,x,top+boxH-LH(2));"
+                  },
+                  {
+                      "anchor":  "[\u0027FIGHT\u0027,[[\u0027MOUSE\u0027,\u0027aim\u0027],[\u0027LMB\u0027,\u0027fire\u0027],[\u0027RMB\u0027,\u0027aim down sights\u0027],[\u0027R\u0027,\u0027reload\u0027],[\u0027F\u0027,\u0027melee strike, whatever you are holding\u0027]]],",
+                      "replacement":  "[\u0027FIGHT\u0027,[[\u0027MOUSE\u0027,\u0027aim\u0027],[\u0027LMB\u0027,\u0027fire\u0027],[\u0027RMB\u0027,\u0027aim down sights\u0027],[\u0027R\u0027,\u0027reload\u0027],[\u0027Q\u0027,\u0027melee, swing the crowbar\u0027],[\u0027F\u0027,\u0027next gun\u0027]]],"
+                  },
+                  {
+                      "anchor":  "[\u0027GEAR\u0027,[[\u00271-9\u0027,\u0027select tactical belt slot\u0027],[\u0027FIRE\u0027,\u0027use selected slot\u0027],[\u0027B / I\u0027,\u0027backpack\u0027],[\u0027ENTER\u0027,\u0027equip gun from backpack\u0027],[\u0027BKSP\u0027,\u0027reset cursor\u0027]]],",
+                      "replacement":  "[\u0027GEAR\u0027,[[\u00271-9\u0027,\u0027select tactical belt slot\u0027],[\u0027FIRE\u0027,\u0027use selected slot\u0027],[\u0027G\u0027,\u0027quick throw\u0027],[\u0027U\u0027,\u0027switch throwable\u0027],[\u0027H\u0027,\u0027quick heal\u0027],[\u0027B / I\u0027,\u0027backpack\u0027],[\u0027ENTER\u0027,\u0027equip gun from backpack\u0027],[\u0027BKSP\u0027,\u0027reset cursor\u0027]]],"
+                  },
+                  {
+                      "anchor":  "[\u0027WORLD\u0027,[[\u0027E\u0027,\u0027search / call for extraction\u0027],[\u0027X\u0027,\u0027search, even on the way out\u0027],[\u0027M\u0027,\u0027map\u0027],[\u0027H\u0027,\u0027cycle this list\u0027],",
+                      "replacement":  "[\u0027WORLD\u0027,[[\u0027E\u0027,\u0027search, use, open\u0027],[\u0027X\u0027,\u0027call for extraction, then board\u0027],[\u0027M\u0027,\u0027map\u0027],[\u0027F1\u0027,\u0027cycle this list\u0027],"
+                  },
+                  {
+                      "anchor":  "  [\u0027F\u0027,\u0027melee\u0027],",
+                      "replacement":  "  [\u0027Q\u0027,\u0027melee\u0027],[\u0027F\u0027,\u0027next gun\u0027],[\u0027G\u0027,\u0027throw\u0027],[\u0027H\u0027,\u0027heal\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027E\u0027,\u0027search\u0027],[\u0027M\u0027,\u0027map\u0027]",
+                      "replacement":  "[\u0027E\u0027,\u0027search\u0027],[\u0027X\u0027,\u0027extract\u0027],[\u0027M\u0027,\u0027map\u0027]"
+                  },
+                  {
+                      "anchor":  "\u0027E\u0027:[\u0027KeyE\u0027],\u0027M\u0027:[\u0027KeyM\u0027],\u0027Z\u0027:[\u0027KeyZ\u0027],\u0027N\u0027:[\u0027KeyN\u0027]}",
+                      "replacement":  "\u0027E\u0027:[\u0027KeyE\u0027],\u0027M\u0027:[\u0027KeyM\u0027],\u0027Z\u0027:[\u0027KeyZ\u0027],\u0027N\u0027:[\u0027KeyN\u0027],\u0027Q\u0027:[\u0027KeyQ\u0027],\u0027G\u0027:[\u0027KeyG\u0027],\u0027H\u0027:[\u0027KeyH\u0027],\u0027X\u0027:[\u0027KeyX\u0027],\u0027U\u0027:[\u0027KeyU\u0027],\u0027F1\u0027:[\u0027F1\u0027]}"
+                  },
+                  {
+                      "anchor":  "s(\u0027KeyE\u0027)+\u0027 interact \u0026nbsp; \u0027",
+                      "replacement":  "s(\u0027KeyE\u0027)+\u0027 search / use \u0026nbsp; \u0027+s(\u0027KeyX\u0027)+\u0027 extraction \u0026nbsp; \u0027"
+                  },
+                  {
+                      "anchor":  "s(\u0027KeyF\u0027)+\u0027 melee strike \u0026nbsp; \u0027",
+                      "replacement":  "s(\u0027KeyQ\u0027)+\u0027 melee \u0026nbsp; \u0027+s(\u0027KeyF\u0027)+\u0027 next gun \u0026nbsp; \u0027+s(\u0027KeyG\u0027)+\u0027 quick throw \u0026nbsp; \u0027+s(\u0027KeyH\u0027)+\u0027 quick heal \u0026nbsp; \u0027"
+                  },
+                  {
+                      "anchor":  "s(\u0027KeyH\u0027)+\u0027 controls \u0026nbsp; \u0027",
+                      "replacement":  "s(\u0027F1\u0027)+\u0027 controls \u0026nbsp; \u0027"
+                  },
+                  {
+                      "anchor":  "[\u0027KeyE\u0027,\u0027interact, search, call for extraction\u0027]",
+                      "replacement":  "[\u0027KeyE\u0027,\u0027search and use\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027KeyF\u0027,\u0027melee strike\u0027],",
+                      "replacement":  "[\u0027KeyQ\u0027,\u0027melee (crowbar)\u0027],[\u0027KeyF\u0027,\u0027next gun\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027KeyX\u0027,\u0027search what you stand on\u0027]",
+                      "replacement":  "[\u0027KeyX\u0027,\u0027call for extraction, then board\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027KeyM\u0027,\u0027map\u0027],[\u0027KeyH\u0027,\u0027controls\u0027],",
+                      "replacement":  "[\u0027KeyM\u0027,\u0027map\u0027],[\u0027F1\u0027,\u0027controls list\u0027],[\u0027KeyH\u0027,\u0027quick heal\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027KeyG\u0027,\u0027use the selected belt item\u0027],[\u0027KeyQ\u0027,\u0027switch throwable\u0027]",
+                      "replacement":  "[\u0027KeyG\u0027,\u0027quick throw\u0027],[\u0027KeyU\u0027,\u0027switch throwable\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027HEAL\u0027,kn(\u0027KeyG\u0027),padB(\u0027D-DOWN\u0027)]",
+                      "replacement":  "[\u0027HEAL\u0027,kn(\u0027KeyH\u0027),padB(\u0027D-DOWN\u0027)]"
+                  },
+                  {
+                      "anchor":  "[\u0027EXTRACT\u0027,\u0027HOLD \u0027+kn(\u0027KeyE\u0027)+\u0027 IN A TEAL RING\u0027",
+                      "replacement":  "[\u0027EXTRACT\u0027,\u0027HOLD \u0027+kn(\u0027KeyX\u0027)+\u0027 IN A TEAL RING\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his key swap: E searches a box in an open ring and never calls the extraction, X calls it and boards, H is the quick heal (a Bandage stops at 85), F1 cycles the controls list and H no longer does, G throws the selected throwable, Q swings a crowbar that hurts a machine in reach and draws it, F brings up the next gun, skips an empty key and wraps round\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||typeof updatePlayer!==\u0027function\u0027||typeof mkSentry!==\u0027function\u0027||typeof drawOp!==\u0027function\u0027||typeof hotbarSlots!==\u0027function\u0027) return \u0027SKIP: this fixture cannot stage the keys\u0027;\n     var bad=[], g=null, p=null, z=null, ct=null, S=null, E0=null, kk, v0, n0, h0, cols, sl, w0, jj, kSay=say, nB=\u0027band\u0027+\u0027age\u0027, nF=\u0027fr\u0027+\u0027ag\u0027;\n     function dn(code,key){ window.dispatchEvent(new KeyboardEvent(\u0027keydown\u0027,{code:code,key:key||code,bubbles:true,cancelable:true})); }\n     function upk(code,key){ window.dispatchEvent(new KeyboardEvent(\u0027keyup\u0027,{code:code,key:key||code,bubbles:true,cancelable:true})); }\n     function fr(n){ for(var j=0;j\u003cn;j++) updatePlayer(0.05); }\n     function clr(){ for(var q in keys) keys[q]=false; }\n     function gw(id){ var o={}, q; for(q in WEAPONS[id]) o[q]=WEAPONS[id][q]; return o; }\n     function drawCols(on){\n       var c=[], of=wc.fillRect;\n       wc.fillRect=function(){ c.push(String(wc.fillStyle)); return of.apply(wc,arguments); };\n       try{ g.punchT=0.2; g.barT=on?0.12:0; drawOp(p.x,p.y,0,0,\u0027#242832\u0027,0,0,\u0027fist\u0027,0,{hero:1,own:p,team:\u0027ally\u0027,moving:false,sprint:false,ads:false,hurt:0,bulk:armorById(p.rig).bulk,healLeft:0,healTot:0,healSec:0,rl:0}); }\n       finally{ delete wc.fillRect; g.punchT=0; g.barT=0; }\n       return c;\n     }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);\n       if(typeof keysOf===\u0027function\u0027\u0026\u0026[\u0027KeyE\u0027,\u0027KeyX\u0027,\u0027KeyG\u0027,\u0027KeyH\u0027,\u0027KeyQ\u0027,\u0027KeyF\u0027,\u0027F1\u0027].some(function(c){ return keysOf(c)!==c; })) return \u0027SKIP: a key is rebound in the fixture profile\u0027;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); p=g\u0026\u0026g.player; if(!g||g.over||!p||!g.zones||!g.zones.length||!g.containers||!g.ents) return \u0027SKIP: no live raid\u0027;\n       E0=g.ents; clr(); g.paused=false; p.downed=false; p.dying=false; p.roll=0; p.iv=99; g.searching=null; g.trade=null;\n       // F1 cycles the controls list, H does not\n       v0=g.legendOn; dn(\u0027F1\u0027,\u0027F1\u0027); upk(\u0027F1\u0027,\u0027F1\u0027);\n       if(g.legendOn!==(v0+1)%3) bad.push(\u0027F1 did not cycle the controls list (\u0027+v0+\u0027 to \u0027+g.legendOn+\u0027)\u0027);\n       v0=g.legendOn; dn(\u0027KeyH\u0027,\u0027h\u0027); upk(\u0027KeyH\u0027,\u0027h\u0027);\n       if(g.legendOn!==v0) bad.push(\u0027H still cycles the controls list\u0027);\n       // H heals: a Bandage with health missing starts the wind-up and is spent; at 90 a Bandage is refused, a Medkit is not\n       g.bag.length=0; g.bag.push(nB); p.hp=50; p.healQ=0; p.prep=null; clr();\n       dn(\u0027KeyH\u0027,\u0027h\u0027); upk(\u0027KeyH\u0027,\u0027h\u0027);\n       if(!p.prep||p.prep.kind!==\u0027heal\u0027) bad.push(\u0027H with a Bandage and 50 health did not start the heal wind-up (\u0027+JSON.stringify(p.prep)+\u0027)\u0027);\n       if(g.bag.indexOf(nB)\u003e=0) bad.push(\u0027H did not spend the Bandage\u0027);\n       fr(90);\n       if(!(p.hp\u003e50||p.healQ\u003e0)) bad.push(\u0027the Bandage H applied never raised health (\u0027+p.hp+\u0027)\u0027);\n       g.bag.length=0; g.bag.push(nB); p.hp=90; p.healQ=0; p.prep=null; clr();\n       dn(\u0027KeyH\u0027,\u0027h\u0027); upk(\u0027KeyH\u0027,\u0027h\u0027);\n       if(p.prep||g.bag.indexOf(nB)\u003c0) bad.push(\u0027H at 90 health spent a Bandage (they stop at 85)\u0027);\n       if(ITEMS.medkit){ g.bag.length=0; g.bag.push(\u0027medkit\u0027); p.hp=90; p.healQ=0; p.prep=null; clr(); dn(\u0027KeyH\u0027,\u0027h\u0027); upk(\u0027KeyH\u0027,\u0027h\u0027); if(!p.prep) bad.push(\u0027H at 90 health did not use a Medkit (it reaches 100)\u0027); }\n       p.prep=null; p.hp=100; p.healQ=0; g.bag.length=0;\n       // G throws the selected throwable at once\n       g.pouch[nF+\u0027\u0027]=2; g.tsel=THROWKEYS.indexOf(nF); g.hot=0; n0=g.pouch[nF]; clr(); g.frags.length=0;\n       dn(\u0027KeyG\u0027,\u0027g\u0027); upk(\u0027KeyG\u0027,\u0027g\u0027);\n       if(g.pouch[nF]!==n0-1) bad.push(\u0027G did not throw the selected throwable (pouch \u0027+n0+\u0027 to \u0027+g.pouch[nF]+\u0027)\u0027);\n       g.frags.length=0; clr();\n       // Q swings the crowbar: a machine in reach is hurt, the crowbar is drawn\n       p.x=g.zones[0].x; p.y=g.zones[0].y; p.face=0; S=mkSentry(p.x+40,p.y); S.hp=80; h0=S.hp; g.ents=[S]; g.searching=null; p.meleeAt=undefined; p.lastShot=undefined; p.cooking=0; g.barT=0; g.punchT=0; clr();\n       dn(\u0027KeyQ\u0027,\u0027q\u0027); upk(\u0027KeyQ\u0027,\u0027q\u0027);\n       if(!(S.hp\u003ch0)) bad.push(\u0027Q did not hurt a machine 40 away in front (\u0027+h0+\u0027 to \u0027+S.hp+\u0027)\u0027);\n       if(!(g.barT\u003e0)) bad.push(\u0027Q started no crowbar swing\u0027);\n       try{ cols=drawCols(true); if(cols.indexOf(\u0027#a8372a\u0027)\u003c0) bad.push(\u0027the swing drew no crowbar\u0027); cols=drawCols(false); if(cols.indexOf(\u0027#a8372a\u0027)\u003e=0) bad.push(\u0027the plain fist punch draws a crowbar\u0027); }catch(_dr){ bad.push(\u0027drawing the swing threw: \u0027+(_dr\u0026\u0026_dr.message||_dr)); }\n       g.ents=E0; clr(); g.barT=0; g.punchT=0;\n       // F brings up the next gun: 1 to 2, then round past the empty keys\n       p.wep=gw(\u0027pistol\u0027); p.ammo=8; p.sec=gw(\u0027smg\u0027); p.secAmmo=20; p.swapped=false; g.hotAssign={}; g.hotAuto={}; g.hot=0; p.reloading=0; clr();\n       dn(\u0027KeyF\u0027,\u0027f\u0027); upk(\u0027KeyF\u0027,\u0027f\u0027);\n       if(p.wep.id!==\u0027smg\u0027) bad.push(\u0027F from gun 1 did not bring up gun 2 (\u0027+p.wep.id+\u0027)\u0027);\n       dn(\u0027KeyF\u0027,\u0027f\u0027); upk(\u0027KeyF\u0027,\u0027f\u0027);\n       if(p.wep.id!==\u0027pistol\u0027) bad.push(\u0027F from gun 2 did not wrap round to gun 1 past the empty keys (\u0027+p.wep.id+\u0027)\u0027);\n       if(ITEMS.gun_rifle){\n         p.wep=gw(\u0027pistol\u0027); p.ammo=8; p.sec=gw(\u0027smg\u0027); p.secAmmo=20; p.swapped=false; g.bag.length=0; g.bag.push(\u0027gun_rifle\u0027); g.hotAssign={2:\u0027gun_rifle\u0027}; g.hotAuto={}; g.hot=0; clr();\n         sl=hotbarSlots();\n         if(sl[2]\u0026\u0026sl[2].kind===\u0027gun\u0027\u0026\u0026!sl[2].vacant\u0026\u0026sl[3]\u0026\u0026sl[3].vacant){\n           dn(\u0027KeyF\u0027,\u0027f\u0027); upk(\u0027KeyF\u0027,\u0027f\u0027); w0=p.wep.id;\n           if(w0!==\u0027smg\u0027) bad.push(\u0027F from gun 1 with three guns did not bring up gun 2 (\u0027+w0+\u0027)\u0027);\n           dn(\u0027KeyF\u0027,\u0027f\u0027); upk(\u0027KeyF\u0027,\u0027f\u0027); w0=p.wep.id;\n           if(w0!==\u0027rifle\u0027) bad.push(\u0027F from gun 2 did not bring up gun 3 (\u0027+w0+\u0027)\u0027);\n           dn(\u0027KeyF\u0027,\u0027f\u0027); upk(\u0027KeyF\u0027,\u0027f\u0027);\n           if(p.wep.id===\u0027rifle\u0027) bad.push(\u0027F from gun 3 did not wrap round past the empty key 4\u0027);\n         }\n       }\n       g.bag.length=0; g.hotAssign={}; g.hotAuto={}; clr();\n       // the ring: E searches the box and calls nothing; X calls and searches nothing\n       ct=null; for(jj=0;jj\u003cg.containers.length;jj++){ if(!g.containers[jj].opened\u0026\u0026g.containers[jj].loot\u0026\u0026g.containers[jj].loot.length\u0026\u0026!g.containers[jj].mercSrc){ ct=g.containers[jj]; break; } }\n       if(!ct) return bad.length?bad.join(\u0027; \u0027):\u0027SKIP: no container to stage a search\u0027;\n       z=g.zones[0]; z.open=true; z.beaconT=null; z.hold=null; z.callT=0; z.pullT=null; g.beaconT=null; g.active=z;\n       p.x=z.x; p.y=z.y; ct.x=z.x+14; ct.y=z.y; ct.opened=false; ct.prog=0; ct.pulled=0; g.searching=null; clr();\n       dn(\u0027KeyE\u0027,\u0027e\u0027); fr(40); upk(\u0027KeyE\u0027,\u0027e\u0027); clr();\n       if(!(ct.prog\u003e0)) bad.push(\u0027E in an open ring did not search the box at his feet\u0027);\n       if(z.beaconT!==null||z.callT\u003e0.01) bad.push(\u0027E in an open ring started an extraction call (callT \u0027+z.callT+\u0027, beaconT \u0027+z.beaconT+\u0027)\u0027);\n       z.beaconT=null; z.callT=0; ct.prog=0; ct.pulled=0; g.searching=null; clr();\n       dn(\u0027KeyX\u0027,\u0027x\u0027); fr(40); upk(\u0027KeyX\u0027,\u0027x\u0027); clr();\n       if(!(z.beaconT\u003e0)) bad.push(\u0027X in an open ring did not call the extraction (beaconT \u0027+z.beaconT+\u0027)\u0027);\n       if(ct.prog\u003e0) bad.push(\u0027X searched the box (it is the extraction key)\u0027);\n       // landed: E does not take the extraction, X does\n       z.beaconT=null; z.callT=0; z.hold=25; z.pullT=null; g.shipHold=null; g.active=z; g.searching=null; clr();\n       dn(\u0027KeyE\u0027,\u0027e\u0027); fr(40); upk(\u0027KeyE\u0027,\u0027e\u0027); clr();\n       if(g.over) bad.push(\u0027E in a landed ring took the extraction\u0027);\n       z.pullT=null; z.hold=25;\n       dn(\u0027KeyX\u0027,\u0027x\u0027); fr(40); upk(\u0027KeyX\u0027,\u0027x\u0027); clr();\n       if(!g.over) bad.push(\u0027X in a landed ring did not take the extraction\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ say=kSay; }catch(_s){}\n       try{ for(kk in keys) keys[kk]=false; }catch(_k){}\n       try{ if(g){ g.barT=0; g.punchT=0; if(E0) g.ents=E0; } }catch(_g){}\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.iv=0; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
