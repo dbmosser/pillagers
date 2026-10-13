@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.05 - CAREER RAIDS: THE 10 MINUTE CLOCK
+
+Co-op hunt while he was away. His mode design of 2026-10-12: CAREER is the arcade mode with the Undercroft, 10 minute raids, and his rule that the gameplay is exactly the same in DEMO and CAREER. Every raid you take up from the Undercroft is now a CAREER raid: it runs on the DEMO clock, 10 minutes instead of 9, and the extraction rings never close early, so the clock and the burn at zero are the pressure, as in the DEMO. Your own kit from the stash, full enemy damage and coming back empty after a death are unchanged. The kill score, the waves and the payout build on this in the next builds.
+
+MEASURED. Check 25.05 passes, and fails on v25.04.
 ## v25.04 - RARITY: GREEN, BLUE, PURPLE, GOLD
 
 Co-op hunt while he was away. His answer 14: the rarity colours are green, blue, purple and gold. The game had two sets: a pale mint, sky blue and orchid for loot in the raid and on the belt, and a stronger green, blue and purple with an orange top tier in the menus, so the same item changed colour between the raid and the stash, and the best tier read orange. There is now one set everywhere: common grey, uncommon green, rare blue, elite purple and gold gold, the same in the raid, on the HUD and in every menu.
