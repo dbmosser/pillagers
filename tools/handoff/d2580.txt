@@ -1,0 +1,5 @@
+## v25.80 - LOOT NAMES FADE SOONER
+
+Co-op hunt while he was away. His note of 2026-10-13: the popped-up names of looted items need to fade away slightly more quickly, right now it impedes vision. The name of an item that rises from a box lived six seconds, held full strength for the first 45 percent of that and stacked a little apart, so several pickups made a tall bright wall over the player. It now lives four seconds, holds full strength for a fifth of its life and then fades (most of its life is the fade), never quite reaches full strength (0.85 at the start), and several names stack plate on plate with no gap. Only the loot-name popup changed: DOWNED, targets down, WEAK SPOT, +100 and the other world labels keep their 1.9 second life, their hold and their strength.
+
+MEASURED. Check 25.80 passes, and fails on v25.79.

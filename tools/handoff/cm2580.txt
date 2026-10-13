@@ -1,0 +1,7 @@
+v25.80: loot names fade sooner
+
+Looted item names now fade after four seconds instead of six, start fading sooner and stack tighter.
+
+Check 25.80. Fails on v25.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

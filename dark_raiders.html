@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.79';
+var VER='25.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17479,7 +17479,7 @@ function label(x,y,txt,col,delay,big,ik){
     wc.restore();
   }catch(_lm){}
   var _lph=labelPlateH(msgPx(FS(big?TYPE.label:TYPE.micro)));   // v22.xx (R47): the plate this label is drawn on
-  LBL_STEP=Math.max(LBL_STEP,_lph+2);
+  LBL_STEP=ik?_lph:Math.max(LBL_STEP,_lph+2);   // v25.xx (lootfade): loot names stack plate on plate, no gap, so several pickups do not make a tall wall
   var row=0,tries=0;
   while(tries++<40){
     var clash=false,ny=y-row*LBL_STEP;
@@ -17501,7 +17501,7 @@ function label(x,y,txt,col,delay,big,ik){
   // a loot name, so that is the one that gets the longer life. Combat and state
   // shouts are untouched.
 G.labels.push({x:x,y:y-row*LBL_STEP,txt:txt,c:col||'#cdd6dd',t:-(delay||0),
-    life:(ik?6.0:1.9),big:!!big,ik:ik||null,w:myW});
+    life:(ik?4.0:1.9),big:!!big,ik:ik||null,w:myW});   // v25.xx (lootfade), HIS NOTE 2026-10-13: a loot name lives 4 s, not 6 (it impeded vision); the others are as they were
   // v22.xx, the raid text rewrite (R46): LOOT NAMES ARE KEPT. At the 40-label cap the oldest label went, and a loot name (his 6 s, v3.51)
   // is usually the oldest, so a fight that called out targets and weak spots pushed out the name of what he had just found. The oldest
   // label without an item is dropped first; only when every older label is a loot name does the oldest loot name go.
@@ -31480,8 +31480,8 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     // HOLD THEN FADE, v5.31. A linear fade across the whole life means the
     // label is never once drawn at full strength, which is exactly what "less
     // transparent when it first pops" is describing.
-    var _hold=lb.life*0.45;
-    var la=clamp(lb.t<=_hold?1:(1-(lb.t-_hold)/(lb.life-_hold)),0,1);
+    var _hold=lb.life*(lb.ik?0.2:0.45);   // v25.xx (lootfade): a loot name holds a fifth of its life, then fades
+    var la=clamp(lb.t<=_hold?1:(1-(lb.t-_hold)/(lb.life-_hold)),0,1)*(lb.ik?0.85:1);   // v25.xx (lootfade): and never quite full strength
     var rise=Math.min(lb.t,lb.life)*26;
     wc.globalAlpha=la;
     // v10.95, HIS NOTE: the loot pop and every other world label were set in
@@ -41369,7 +41369,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.79: Hold Alt to see the raid status: the pillagers board, your score and credits, the raid clock, the extraction and your teammate. Check 25.79 fails on v25.78',
+  now:'v25.80: Looted item names now fade after four seconds instead of six, start fading sooner and stack tighter. Check 25.80 fails on v25.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
