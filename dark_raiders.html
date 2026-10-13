@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.87';
+var VER='25.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18040,7 +18040,12 @@ function bagValue(){ var v=0; for(var i=0;i<G.bag.length;i++) v+=ival(G.bag[i]);
 // were at or above 12,000, so greedOf clamped to 1 for most of them: a player
 // calling with 12,000 and a player calling with 19,954 bought exactly the same
 // siege. A greed dial pinned at maximum is not a greed dial, it is a constant.
-function greedOf(){ return clamp(bagValue()/CFG.greedFull,0,1); }
+// v25.xx (demosiege), HIS RULE (2026-10-12): "GAMEPLAY ELEMENTS ... SHOULD BE EXACTLY THE SAME IN DEMO AND CAREER". The siege that comes with an
+// extraction call is sized by how full the backpack is (5 machines at an empty one, up to 12 at a full one). A DEMO valuable never enters the
+// backpack (it scores at once, into ARCADE.pot, at its full credit value), so a DEMO caller always had an empty one and every DEMO siege was
+// the smallest. The pot stands for the backpack there: the same figure a CAREER backpack of that loot would give, so the siege is the size a
+// CAREER caller with that haul gets.
+function greedOf(){ return clamp((bagValue()+((G&&G.arcade&&typeof ARCADE==='object'&&ARCADE)?Math.max(0,ARCADE.pot|0):0))/CFG.greedFull,0,1); }
 // v18.35, FOUND BY THE FULL TEST RUN (2026-10-04): ONE SIEGE SIZE. v18.06 cut the siege to 5 + 7 x greed (his son: too many big
 // robots) in the spawner only; the call still promised 6 + 8 x greed ("about 10 machines" with 8 coming), the late pull wave
 // and a linked window's copy of the siege still counted the old size. Every one of them reads this now.
@@ -41194,7 +41199,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.87: A fifth gun now swaps with your weakest gun that is not in your hands, and that gun goes to the backpack. Check 25.87 fails on v25.86',
+  now:'v25.88: A demo extraction siege now grows with the loot you took, as in a career raid. Check 25.88 fails on v25.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

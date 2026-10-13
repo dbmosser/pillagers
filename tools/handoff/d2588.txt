@@ -1,0 +1,5 @@
+## v25.88 - DEMO SIEGE GROWS WITH THE HAUL
+
+Co-op hunt while he was away. His rule of 2026-10-12: gameplay is exactly the same in demo and career. The siege that comes after an extraction call is sized by how full the backpack is, from 5 machines at an empty one to 12 at a full one. In the demo, valuables score at once and never enter the backpack, so a demo caller always had an empty backpack and every demo siege was the smallest. The loot points now count as the backpack for the siege, the same figure a career backpack with that loot would give.
+
+MEASURED. Check 25.88 passes, and fails on v25.87.
