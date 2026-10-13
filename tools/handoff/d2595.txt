@@ -1,0 +1,5 @@
+## v25.95 - TAP H USES THE CHEAPEST HEAL ON THE BELT
+
+Co-op hunt while he was away. His decision of 2026-10-13: tap H uses the cheapest heal that helps. The tap used to reach into the whole backpack for the cheapest heal. It now uses the cheapest heal that can still raise him from the two medical keys (7 and 8) only: a Bandage while it still helps, a Medkit past the Bandage ceiling. It never reaches into the backpack and never uses a Stim. When only a heal in the backpack would help it says NO HEAL ON BELT with the key that opens the backpack under it and spends nothing; with no heal at all it says NO MEDICAL SUPPLIES. Holding H still slots an armour plate.
+
+MEASURED. Check 25.95 passes, and fails on v25.94.

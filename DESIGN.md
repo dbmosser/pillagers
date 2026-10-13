@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.95 - TAP H USES THE CHEAPEST HEAL ON THE BELT
+
+Co-op hunt while he was away. His decision of 2026-10-13: tap H uses the cheapest heal that helps. The tap used to reach into the whole backpack for the cheapest heal. It now uses the cheapest heal that can still raise him from the two medical keys (7 and 8) only: a Bandage while it still helps, a Medkit past the Bandage ceiling. It never reaches into the backpack and never uses a Stim. When only a heal in the backpack would help it says NO HEAL ON BELT with the key that opens the backpack under it and spends nothing; with no heal at all it says NO MEDICAL SUPPLIES. Holding H still slots an armour plate.
+
+MEASURED. Check 25.95 passes, and fails on v25.94.
 ## v25.94 - U SWITCHES WHAT G THROWS, THE HIGHLIGHT STAYS ON THE GUN
 
 Co-op hunt while he was away. His decision of 2026-10-13: U picks which of the two throwable keys the G key throws, and the highlight stays on the gun. U used to move the highlight to the grenade cell, which took the trigger off the gun. It now switches the kind G throws between the grenades on keys 5 and 6 (and says so, SMOKE CANISTER READY), and the highlight does not move; pressing key 5 or 6 still selects that cell so the trigger cooks it. G throws the kind on the throwable key U chose, and if the hand was left on a kind that no key shows it throws a kind that is on a key. With no grenade on a key U says NO THROWABLE ON THE TACTICAL BELT or NO THROWABLES LEFT.

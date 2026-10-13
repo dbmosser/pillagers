@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.94';
+var VER='25.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17851,10 +17851,39 @@ function raiderCoverSpot(e,p,d){
 // and U switches throwable. The pad layout is his of 2026-09-27 and is unchanged: the pad X still holds E, now with PadX beside it to stand
 // for the keyboard X, and its Y ring search is PadSearch.
 function xCallKey(){ return !!(keys['KeyX']||(keys['PadX']&&keys['KeyE'])); }
+// v25.xx (belt5b), HIS DECISION 2026-10-13: "tap H uses the cheapest heal that helps". From the two medical keys only: the cheapest heal there
+// that can still raise him (a Bandage stops at its ceiling, a Medkit goes to full), never a Stim, never a heal that is only in the backpack. With
+// a heal in the backpack that would help and none on the belt it says NO HEAL ON BELT and names the key that opens the backpack.
+function useBeltHeal(){
+  var p=G.player, sl=hotbarSlots(), reach=healReach(p), best=null, anyBelt=false, ci, c, it, bi, a, b;
+  if(reach>=p.maxhp){ say((p.healQ>0)?'ALREADY HEALING':'HEALTH FULL'); return false; }
+  for(ci=GUNKEYS;ci<HOTBAR_N;ci++){
+    if(BELT_CLASS[ci]!=='med') continue;
+    c=sl[ci];
+    if(!c||c.kind!=='heal'||!(c.count>0)||!ITEMS[c.itemKey]) continue;
+    anyBelt=true; it=ITEMS[c.itemKey];
+    if(reach>=healCeil(it)) continue;
+    if(best){ a=it.amt||0; b=ITEMS[best.itemKey].amt||0; if(a>b||(a===b&&ival(c.itemKey)>=ival(best.itemKey))) continue; }
+    best=c;
+  }
+  if(!best){
+    if(anyBelt){ say('BANDAGES STOP AT '+Math.round(healCeil(ITEMS.bandage)),'info',{sub:'You need a Medkit.'}); return false; }
+    if(findHeal()>=0){ say('NO HEAL ON BELT','info',{sub:(padOn()?padB('VIEW  BACKPACK'):('['+keyLabel('KeyB','B')+'] BACKPACK'))}); return false; }
+    say('NO MEDICAL SUPPLIES');
+    return false;
+  }
+  if(p.prep){ say('ALREADY APPLYING','info',{sub:String(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'Medical').toUpperCase()}); return false; }
+  bi=G.bag.indexOf(best.itemKey);
+  if(bi<0) return false;
+  G.bag.splice(bi,1); if(!startPrep('heal',best.itemKey)) blip('pick');
+  G.tel.heals++;
+  spark(p.x,p.y,'#6fe0a0',10,90);
+  return true;
+}
 function quickHeal(){
   var p=G&&G.player;
   if(!G||G.sim||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.specOut) return false;
-  try{ useMedical(); }catch(_qh){}
+  try{ useBeltHeal(); }catch(_qh){}   // v25.xx (belt5b): the cheapest heal that helps, from the medical keys
   return true;
 }
 // v25.xx (holdhplate), HIS ORDER 2026-10-13 ("hold H = armour plate, tap H stays heal"): ONE KEY, TWO ACTIONS. The press arms H (HHOLD) and
@@ -41234,7 +41263,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.94: U now switches which of the two throwable keys G throws, and the highlight stays on the gun. Check 25.94 fails on v25.93',
+  now:'v25.95: A tap of H now uses the cheapest heal on the two medical keys, and says NO HEAL ON BELT when only the backpack has one. Check 25.95 fails on v25.94',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

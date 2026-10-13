@@ -1,0 +1,7 @@
+v25.95: tap h uses the cheapest heal on the belt
+
+A tap of H now uses the cheapest heal on the two medical keys, and says NO HEAL ON BELT when only the backpack has one.
+
+Check 25.95. Fails on v25.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
