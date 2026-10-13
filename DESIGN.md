@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.75 - THE LAST FAINT WORDS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make sure the menus actually look good. A picture and readability check of every screen after the menu builds found three last weak spots: LOST on the death card in a red too dark to read well, and PRESS ANY BUTTON on the arcade attract screen fading almost to nothing at the low end of its pulse. LOST is a lighter red now and the pulse never fades below about two thirds. Nothing else changed.
+
+MEASURED. Check 24.75 passes, and fails on v24.74.
 ## v24.74 - THE METERS AND THE BELT IN GRAPHITE
 
 Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD and keep all the critical info (#35), and make it look like a triple A game (#50). After the raid panels became the graphite plate, the health, stamina and armour bars still had a blue ring and the belt keys a navy fill, the old look beside the new. Both are graphite now, so the whole raid HUD is one set. Every bar and key is where it was, the same size and the same colours inside.

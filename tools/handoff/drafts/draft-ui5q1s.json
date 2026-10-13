@@ -1,0 +1,20 @@
+{
+    "title":  "THE LAST FAINT WORDS",
+    "why":  "His order of 2026-10-12 (#50): take pictures and make sure the menus actually look good. A picture and readability check of every screen after the menu builds found three last weak spots: LOST on the death card in a red too dark to read well, and PRESS ANY BUTTON on the arcade attract screen fading almost to nothing at the low end of its pulse. LOST is a lighter red now and the pulse never fades below about two thirds. Nothing else changed.",
+    "now":  "LOST on the death card and the arcade PRESS ANY BUTTON line are easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "  .ui-key.pill{ border-radius:12px; padding:0 9px; }",
+                      "replacement":  "  .ui-key.pill{ border-radius:12px; padding:0 9px; }\n  /* vNN.xx, UI REDESIGN ui5q1s (his #50, from the visual lint of every screen): LOST READS ON THE CARD. The LOST tags in the run card\n     manifest were the danger red, 3.9:1 against the card; they are a lighter red of the same hue, 5.6:1. */\n  #root #oc_manifest span[style*=\"var(--rust)\"]{ color:#ff6e55 !important; }"
+                  },
+                  {
+                      "anchor":  "    \u0027@keyframes attpulse{0%,100%{opacity:1}50%{opacity:.35}}\u0027;",
+                      "replacement":  "    \u0027@keyframes attpulse{0%,100%{opacity:1}50%{opacity:.6}}\u0027;   // vNN.xx (ui5q1s): the faint end of the pulse still reads (2.8:1 at .35)"
+                  },
+                  {
+                      "anchor":  "\u0027\u003cdiv id=\"keyslist\" style=\"max-height:58vh;overflow-y:auto;padding-right:6px\"\u003e\u003c/div\u003e",
+                      "replacement":  "\u0027\u003cdiv id=\"keyslist\" data-lint-scroll style=\"max-height:58vh;overflow-y:auto;padding-right:6px\"\u003e\u003c/div\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q1s, from the visual lint of every screen): a LOST tag on the run card is not the danger red that read at 3.9:1, the attract press line never pulses below 50 percent, and the Keys list is marked as a list that scrolls\u0027,\n   run:function(){\n     var bad=[], m=document.getElementById(\u0027oc_manifest\u0027), s, c, src, i, k;\n     if(m){ s=document.createElement(\u0027span\u0027); s.setAttribute(\u0027style\u0027,\u0027color:var(--rust)\u0027); s.textContent=\u0027  LO\u0027+\u0027ST\u0027; m.appendChild(s); c=getComputedStyle(s).color; m.removeChild(s);\n       if(c===\u0027rgb(229, 72, 47)\u0027) bad.push(\u0027a LOST tag on the run card is the danger red (\u0027+c+\u0027)\u0027); }\n     for(i=0;i\u003cdocument.styleSheets.length;i++){ try{ var R=document.styleSheets[i].cssRules; for(k=0;k\u003cR.length;k++){ if(R[k].name===\u0027attpulse\u0027){ src=R[k].cssText; } } }catch(_s){} }\n     if(src){ var mm=/50%\\s*\\{\\s*opacity:\\s*([\\d.]+)/.exec(src); if(mm\u0026\u0026parseFloat(mm[1])\u003c0.5) bad.push(\u0027the attract press line pulses down to \u0027+mm[1]); }\n     if(typeof openKeys===\u0027function\u0027||true){ var kd=[].slice.call(document.scripts).map(function(x){ return x.text||\u0027\u0027; }).join(\u0027\u0027); if(kd.indexOf(\u0027id=\"keys\u0027+\u0027list\" data-lint-scroll\u0027)\u003c0) bad.push(\u0027the Keys list is not marked as a list that scrolls\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

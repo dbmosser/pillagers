@@ -1,0 +1,7 @@
+v24.75: the last faint words
+
+LOST on the death card and the arcade PRESS ANY BUTTON line are easier to read.
+
+Check 24.75. Fails on v24.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

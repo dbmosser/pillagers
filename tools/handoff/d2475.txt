@@ -1,0 +1,5 @@
+## v24.75 - THE LAST FAINT WORDS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make sure the menus actually look good. A picture and readability check of every screen after the menu builds found three last weak spots: LOST on the death card in a red too dark to read well, and PRESS ANY BUTTON on the arcade attract screen fading almost to nothing at the low end of its pulse. LOST is a lighter red now and the pulse never fades below about two thirds. Nothing else changed.
+
+MEASURED. Check 24.75 passes, and fails on v24.74.
