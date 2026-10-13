@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.87 - THE KEYS LIST READS LIKE SETTINGS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the Keys window found the list running the whole width of the screen, small letter action names at one edge and plain boxes at the other. It is a narrower list on the left now, the action names in the same capitals as the Settings rows, and every key drawn as a keycap. No word changed.
+
+MEASURED. Check 24.87 passes, and fails on v24.86.
 ## v24.86 - DEMO KILLS PAY AS CAREER KILLS
 
 Co-op hunt while he was away. His answer of 2026-10-12: gameplay must be exactly the same in DEMO and CAREER, loot stays as it is now, and ammo is shared. A DEMO kill gave half a magazine back and every third kill gave a Bandage, which never happens in CAREER, so ammo and heals worked differently in the two modes. A DEMO kill now scores its points and nothing else; ammo and heals come from the world as they do in CAREER.

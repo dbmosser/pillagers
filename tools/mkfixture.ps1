@@ -6063,6 +6063,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.87',what:'his #50 (UI redesign ui5q1w, from the visual QA of the Keys window): the Keys list is at most 1100px wide, its action names are drawn in caps at 17px or more, and each key is a keycap with a thicker lower edge',
+   run:function(){
+     if(typeof keysOpen!=='function') return 'SKIP: no Keys window here';
+     var bad=[], l, b, k, s;
+     try{
+       keysOpen(); l=document.getElementById('keyslist');
+       if(!l) return 'SKIP: the Keys window did not build';
+       if(!(parseFloat(getComputedStyle(l).maxWidth)<=1100)) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+')');
+       b=l.querySelector('.row b'); k=l.querySelector('.keybtn');
+       if(b){ s=getComputedStyle(b); if(s.textTransform!=='uppercase'||!(parseFloat(s.fontSize)>=17)) bad.push('an action name is '+s.fontSize+' '+s.textTransform); }
+       if(k){ s=getComputedStyle(k); if(!(parseFloat(s.borderBottomWidth)>parseFloat(s.borderTopWidth))) bad.push('a key is a flat box, not a keycap'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var m=document.getElementById('keysmodal'); if(m) m.classList.remove('on'); KEYS.waiting=null; }catch(_k){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.86',what:'his answer 2026-10-12: a DEMO kill gives no ammo back and no Bandage, as a CAREER kill does not',
    run:function(){
      var bad=[], g, p, i, e, r0, nh, heals=function(){ var n=0,j,it; for(j=0;j<g.bag.length;j++){ it=ITEMS[g.bag[j]]; if(it&&it.use==='heal') n++; } return n; };

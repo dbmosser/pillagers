@@ -1,0 +1,7 @@
+v24.87: the keys list reads like settings
+
+The Keys window is a tidy list with the keys drawn as keycaps.
+
+Check 24.87. Fails on v24.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
