@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.32 - A KEY AT ITS DOOR SOUNDS LIKE A LOCK
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Spending a key or a Vault Keycard at a locked door played the menu chirp, and the heavy door itself made no sound. Now the card swipes and the reader beeps twice, then the bolts throw and the heavy door grinds open, placed at the door; an arcade vault door is lower, longer and heavier and ends on the slab seating. Your teammates hear the door where it is. The sounds are the recorded CC0 foley from the v25.20 bank. Sound only: nothing in the game changes.
+
+MEASURED. Check 25.32 passes, and fails on v25.31.
 ## v25.31 - THE WHAT IS NEW CARD NAMES BIG GUNS
 
 Co-op hunt while he was away. The card was stamped v25.22 and the stamp may not trail the build by more than 0.15. The card was stamped v25.22 and every ship stops when it falls 0.16 behind. Its new line names the builds since: bigger guns in the hands (his order 2026-10-12), the grenade, tripwire, gun and gear foley (his sound orders) and the Forge cryo rounds.

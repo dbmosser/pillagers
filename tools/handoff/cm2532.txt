@@ -1,0 +1,7 @@
+v25.32: a key at its door sounds like a lock
+
+A key or keycard at a locked door now swipes and beeps, then the bolts throw and the heavy door opens.
+
+Check 25.32. Fails on v25.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
