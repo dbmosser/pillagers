@@ -1,0 +1,7 @@
+v25.26: big guns in your hands
+
+The guns in your hands are bigger, every class has its own look, and a Forge gun shows its gold and its element.
+
+Check 25.26. Fails on v25.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
