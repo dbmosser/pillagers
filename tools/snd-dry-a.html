@@ -5638,6 +5638,7 @@ function impactMat(a,OUT,type,mat,vol,t){
     tg.gain.setValueAtTime(gv,at); tg.gain.exponentialRampToValueAtTime(0.0005,at+dur+0.01);
     to.connect(tg); tg.connect(OUT); to.start(at); to.stop(at+dur+0.02);
   }
+  if(mat==='pplate'||mat==='pflesh'||mat==='pmix') return sndAPlayerHit(a,OUT,mat,vol,t);   // v24.xx (sndA3): a hit on you
   var J=1+(Math.random()*2-1)*0.08;
   if(mat==='flesh'){ noise(700,2.2,'lowpass',620*J,0.8,0.16*vol,t); tone('sine',150*J,58,0.09,0.12*vol,t); return true; }
   if(mat==='armor'){ tone('triangle',540*J,500*J,0.16,0.07*vol,t); tone('triangle',830*J,790*J,0.12,0.045*vol,t); noise(300,3,'highpass',2200*J,0.7,0.07*vol,t); return true; }
@@ -5689,6 +5690,120 @@ SNDA_GEN.whizz=function(a,OUT,vol,t){
   if(!sndAGate('whizz',0.05,t)) return;
   sndANoise(a,OUT,{dur:0.085,swell:0.6,ft:'bandpass',f0:3500,f1:1200,q:1.6,g:0.12*vol,at:t});
   sndATone(a,OUT,'triangle',4200,3000,0.014,0.05*vol,t);
+};
+// v24.xx (sndA2), HIS ORDER 2026-10-12 (improve the sound, a distinct noise for every action): THE BLAST. Every explosive (a Frag
+// Charge, a tripwire mine, a Howler shell, a cook-off, the death beat) played one 0.18 s burst of noise through a 380 Hz lowpass, the
+// same near and far, only quieter: no crack, no weight, and soft on laptop speakers. Now distance shapes it the way it shapes the
+// guns (gunLayers). CLOSE (under 350, or in your own hands): a bright crack that falls straight into the body (one noise whose lowpass
+// drops from 4.2 kHz to 260 Hz in 0.14 s), a sub drop from 90 to 35 Hz and a scatter of debris 0.12 s later. MIDDLE: the same without
+// the debris, duller. FAR (over 700): only a dull 60 Hz thump and, a beat later, a low rolling rumble. A TRIPWIRE MINE is told apart:
+// the wire snaps and the mine clicks 80 ms before it goes, so a wire going off across the map is a wire. The ducks of v23.69 stand.
+// About 8 nodes close, 5 far; one blast per 40 ms. The noise buffers stay at 6000 samples and are slowed to length (the v10.56 rule).
+function sndABoom(a,OUT,vol,t,d,kind){
+  var near=!(d>=350), far=d>700, t0=t, n=6000, b, c, i, s, f, g;
+  if(!sndAGate('boom',0.04,t)) return;
+  if(kind==='wire'){
+    sndATone(a,OUT,'triangle',4000,2500,0.06,0.08*vol,t);
+    sndANoise(a,OUT,{dur:0.008,pw:1.5,ft:'bandpass',f0:1800,q:2.5,g:0.25*vol,at:t+0.02});
+    t0=t+0.08;
+  }
+  b=a.createBuffer(1,n,a.sampleRate); c=b.getChannelData(0);
+  for(i=0;i<n;i++) c[i]=(Math.random()*2-1)*Math.pow(1-i/n,far?1.4:2.2);
+  s=a.createBufferSource(); s.buffer=b;
+  f=a.createBiquadFilter(); f.type='lowpass'; f.Q.value=0.8;
+  g=a.createGain();
+  if(far){
+    // the thump that carries, and the rumble a beat behind it
+    sndATone(a,OUT,'sine',60,38,0.28,0.34*vol,t0);
+    if(s.playbackRate) s.playbackRate.value=0.15;
+    f.frequency.setValueAtTime(200,t0);
+    g.gain.value=0.32*vol;
+    s.connect(f); f.connect(g); g.connect(OUT); s.start(t0+0.09);
+    return;
+  }
+  // the crack falling into the body
+  if(s.playbackRate) s.playbackRate.value=near?0.22:0.26;
+  f.frequency.setValueAtTime(near?4200:1600,t0); f.frequency.exponentialRampToValueAtTime(260,t0+0.14);
+  g.gain.value=(near?0.42:0.34)*vol;
+  s.connect(f); f.connect(g); g.connect(OUT); s.start(t0);
+  // the sub drop
+  sndATone(a,OUT,'sine',near?90:70,35,0.35,(near?0.55:0.4)*vol,t0);
+  // the debris, close only
+  if(near) sndANoise(a,OUT,{dur:0.2,pw:1.4,ft:'highpass',f0:3200,q:0.7,g:0.07*vol,at:t0+0.12});
+}
+// v24.xx (sndA3), HIS ORDER 2026-10-12 (improve the sound, a distinct noise for every action): A HIT ON YOU SAYS WHAT IT HIT. Whether
+// your plate took a round or it went into you, you heard the same old square blip (the generic hit every enemy hit and every downed
+// hit also plays), so nothing told you your armour was working, or that it had gone. Now the hit on you is heard as what it struck:
+//   ALL ON THE PLATE (pplate): a short bright clang, a triangle at 1.1 kHz with its octave and a 3 kHz tick, closer and brighter
+//     than the armour hit you hear on a Warden.
+//   INTO YOU (pflesh): a dull thump, 150 Hz falling to 55, under a short low smack (the grunt still rides it).
+//   BOTH (pmix): the plate tick and the thump together, lighter each.
+//   THE PLATE BREAKS (platebreak, once, as your armour reaches 0): a glassy pair at 2.4 and 3.2 kHz falling a fifth over 0.25 s, a
+//     high shatter and a low knock, on the HUD bus, the shield break of Fortnite and Apex.
+// Live play only (blip already stops under G.sim, and the break is asked for only off the sim). No seeded draw.
+function sndAPlayerHit(a,OUT,mat,vol,t){
+  var pl=mat!=='pflesh', fl=mat!=='pplate', k=(mat==='pmix')?0.75:1;
+  if(pl){
+    sndATone(a,OUT,'triangle',1150,1060,0.12,0.085*k*vol,t);
+    sndATone(a,OUT,'triangle',2300,2150,0.07,0.03*k*vol,t);
+    sndANoise(a,OUT,{dur:0.022,pw:2.5,ft:'highpass',f0:3000,q:0.7,g:0.13*k*vol,at:t});
+  }
+  if(fl){
+    sndATone(a,OUT,'sine',150,55,0.1,0.22*k*vol,t);
+    sndANoise(a,OUT,{dur:0.05,pw:2.2,ft:'lowpass',f0:520,q:0.8,g:0.2*k*vol,at:t});
+  }
+  return true;
+}
+SND_CAT.platebreak='ui';
+SNDA_GEN.platebreak=function(a,OUT,vol,t){
+  if(!sndAGate('platebreak',0.2,t)) return;
+  sndATone(a,OUT,'triangle',2400,1600,0.25,0.05*vol,t);
+  sndATone(a,OUT,'triangle',3200,2133,0.25,0.035*vol,t);
+  sndANoise(a,OUT,{dur:0.2,pw:1.6,ft:'highpass',f0:4000,q:0.7,g:0.1*vol,at:t});
+  sndATone(a,OUT,'sine',120,70,0.08,0.2*vol,t);
+};
+// v24.xx (sndA4), HIS ORDER 2026-10-12 (improve the sound, a distinct noise for every action): BARE HANDS. A swing that missed played
+// a full footstep on stone (the whiff sound was blip foot with no ground), and a swing that landed played the thin menu ping (a clank
+// with no material), so a punch on a pillager sounded like a tap on a machine and a miss like a step. Now EVERY SWING whooshes (a
+// 120 ms band of noise rising from 600 Hz to 2.2 kHz), so a whiff reads as a whiff, and A BLOW THAT LANDS thuds: the impact of what
+// it struck (flesh or metal, as a round would), a heavy 180 to 70 Hz knock and a short low smack. The punch rides sfx with the
+// material, so the party hears the same thing where it landed. No seeded draw.
+SND_CAT.swing='foley'; SND_CAT.punch='imp';
+NOISEMARK.punch={r:44,hear:620};
+SNDA_GEN.swing=function(a,OUT,vol,t){
+  if(!sndAGate('swing',0.08,t)) return;
+  sndANoise(a,OUT,{dur:0.12,swell:0.5,ft:'bandpass',f0:600,f1:2200,q:1.2,g:0.08*vol,at:t});
+};
+SNDA_GEN.punch=function(a,OUT,vol,t,mat){
+  if(!sndAGate('punch',0.05,t)) return;
+  impactMat(a,OUT,'hit',(mat==='flesh'||mat==='armor')?mat:'metal',vol,t);
+  sndATone(a,OUT,'sine',180,70,0.1,0.14*vol,t);
+  sndANoise(a,OUT,{dur:0.04,pw:2.4,ft:'lowpass',f0:900,q:0.8,g:0.16*vol,at:t});
+};
+// v24.xx (sndA5), HIS ORDER 2026-10-12 (improve the sound, a distinct noise for every action): THE ROLL. A roll played the thin
+// generic ping (a clank with no material: the menu no, a jam, a smoke landing), a roll refused for want of stamina played the very
+// same ping, and the landing was silent (steps are muted for the 0.38 s of the roll). Now:
+//   THE ROLL: a 0.25 s swell of cloth and gear, a lowpassed noise sweeping 300 Hz to 1.2 kHz, with two small kit rattles in it.
+//   TOO TIRED: a short spent exhale (a soft band of breath, not a word) over a low dull thud, nothing like the roll.
+//   THE LANDING: as the roll ends, a body knock (110 to 60 Hz) and the grit of what you landed on (stone, boards, a grate, leaves,
+//     water). Your own ears only, so the party does not hear your feet twice. No seeded draw.
+SND_CAT.roll='foley'; SND_CAT.rollno='foley'; SND_CAT.rollland='foley';
+SNDA_GEN.roll=function(a,OUT,vol,t){
+  if(!sndAGate('roll',0.15,t)) return;
+  sndANoise(a,OUT,{dur:0.25,swell:0.7,ft:'lowpass',f0:300,f1:1200,q:0.9,g:0.16*vol,at:t});
+  sndANoise(a,OUT,{dur:0.012,pw:2,ft:'bandpass',f0:2400,q:4,g:0.07*vol,at:t+0.04});
+  sndANoise(a,OUT,{dur:0.012,pw:2,ft:'bandpass',f0:2650,q:4,g:0.05*vol,at:t+0.1});
+};
+SNDA_GEN.rollno=function(a,OUT,vol,t){
+  if(!sndAGate('rollno',0.3,t)) return;
+  sndANoise(a,OUT,{dur:0.17,swell:0.35,ft:'bandpass',f0:950,f1:700,q:0.9,g:0.12*vol,at:t});
+  sndATone(a,OUT,'sine',110,70,0.09,0.16*vol,t);
+};
+SNDA_GEN.rollland=function(a,OUT,vol,t,surf){
+  var F={water:['bandpass',1200,1.2,0.07],leaf:['highpass',3200,0.6,0.05],metal:['bandpass',3400,6,0.05],wood:['lowpass',420,3,0.09]}[surf]||['bandpass',1500,1.4,0.07];
+  if(!sndAGate('rollland',0.15,t)) return;
+  sndATone(a,OUT,'sine',110,60,0.09,0.2*vol,t);
+  sndANoise(a,OUT,{dur:surf==='water'?0.12:0.05,pw:2.2,ft:F[0],f0:F[1],q:F[2],g:F[3]*vol,at:t});
 };
 // v23.90, HIS ORDER 2026-10-12 (his #45, improve all sound as much as possible): FOOTSTEPS ON WHAT IS UNDER THEM. Five surfaces
 // gave every street, yard and puddle the same gravel and every floor the same boards. surfFine names the ground more finely for
@@ -5892,12 +6007,7 @@ function blip(type,d,pan){
       rs2.connect(rf2); rf2.connect(rg2); rg2.connect(OUT); rs2.start(t+.012);
     }
   } else if(type==='boom'){
-    var b2=a.createBuffer(1,8000,a.sampleRate),c2=b2.getChannelData(0);
-    for(var i2=0;i2<8000;i2++) c2[i2]=(Math.random()*2-1)*Math.pow(1-i2/8000,2.1);
-    var s2=a.createBufferSource(); s2.buffer=b2;
-    var f2=a.createBiquadFilter(); f2.type='lowpass'; f2.frequency.value=380;
-    var g2=a.createGain(); g2.gain.value=.3*vol;
-    s2.connect(f2); f2.connect(g2); g2.connect(OUT); s2.start(t);
+    sndABoom(a,OUT,vol,t,d,arguments[3]);   // v24.xx (sndA2): near, middle and far, and a wire tells itself apart
   } else if(type==='hit'&&impactMat(a,OUT,'hit',arguments[3],vol,t)){
     // v23.84 (his #45): a hit on flesh, armour or metal is heard as what it is
   } else if(type==='hit'){
@@ -15316,7 +15426,7 @@ function tryRoll(){
     G.rollSayT=(G.rollSayT||0);
     if(G.rollSayT<=0){
       G.rollSayT=1.5;
-      if(!G.sim){ say('TOO TIRED TO ROLL'); blip('clank'); }   // v22.xx (R52)
+      if(!G.sim){ say('TOO TIRED TO ROLL'); blip('rollno'); }   // v24.xx (sndA5): a spent exhale, not the roll   // v22.xx (R52)
     }
     return;
   }
@@ -15344,7 +15454,7 @@ function tryRoll(){
   else p.rollDir={x:Math.cos(p.face),y:Math.sin(p.face)};
   p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=ROLLSTAM;
   if(G.arcade&&p.arcSh) arcadeShieldOff();   // v23.30 (arcade9)
-  ping(p.x,p.y,80,false,false,'player','move'); blip('clank');
+  ping(p.x,p.y,80,false,false,'player','move'); if(!G.sim) blip('roll');   // v24.xx (sndA5): cloth and gear
 }
 // HIS NOTE, 2026-08-26: "when I use a throwable, it should travel in the direction
 // that I am looking, similar to firing the gun. Right now it seems to always go in
@@ -15610,7 +15720,7 @@ function tripGone(m,x,y){
   if(NET.role==='host') return 'ignored';
   if(typeof m.id!=='string') return 'bad';
   for(i=(G.trips||[]).length-1;i>=0;i--) if(G.trips[i].id===m.id) G.trips.splice(i,1);
-  if(m.b&&!G.sim){ sfx("boom",x,y); spark(x,y,'#ff6a4a',28,320); flash(x,y,260,'#ff7a4a',.42); G.shake=Math.max(G.shake,4); }
+  if(m.b&&!G.sim){ sfx("boom",x,y,'wire'); spark(x,y,'#ff6a4a',28,320); flash(x,y,260,'#ff7a4a',.42); G.shake=Math.max(G.shake,4); }
   return 'thr:tgo';
 }
 // v23.xx (feat1b), HIS #6 (2026-10-12): "tripwire mine -- good idea". WHAT SETS A WIRE OFF AND WHAT IT DOES. An armed wire goes off
@@ -15658,7 +15768,7 @@ function tripBlast(T,x,y){
   var p=G.player, R=TRIP_R, seat=(T&&T.seat)|0, i, e, de, dm, bp={x:x,y:y}, sd=Math.hypot(x-p.x,y-p.y);
   if(T&&T.id&&!T.fx) netThrSend('tgo',x,y,{id:T.id,b:1});   // v23.xx (feat1c): the party takes its copy down and sees the blast
   try{ if(sd<R*2) padRumble(Math.max(0.3,1-sd/(R*2)),200); }catch(_rb){}
-  sfx("boom",x,y);
+  sfx("boom",x,y,'wire');   // v24.xx (sndA2): the wire snaps before it goes
   if(!G.sim){ spark(x,y,'#ff6a4a',28,320); decal(x,y,'#141210',fxn(16,24)); G.puffs.push({x:x,y:y,t:0,life:.5,c:'#ff8a5a',r:44}); }
   if(!G.sim){ try{ gfxBlastScar(x,y,0.9,false); }catch(_gbs){} }   // v23.xx (gfx26): the mine scars the floor too
   G.shake=Math.max(G.shake,sd<300?8:(sd<700?4:1.5));
@@ -16890,6 +17000,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     return;
   }
   amt*=CFG.eDmg;
+  var _sndAb=0, _sndBrk=false;   // v24.xx (sndA3): what the plate took, and whether it broke, for the sound of the hit
   if(p.armor>0){
     // NOT ||, v2.16. No Rig has absorb 0.00 and 0 is falsy, so this fallback
     // silently handed a player wearing nothing 0.55 absorption, better than the
@@ -16898,6 +17009,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     var RA=armorById(p.rig);
     var soak=(RA&&typeof RA.absorb==='number')?RA.absorb:0.55;
     var ab=Math.min(p.armor,amt*soak); p.armor-=ab; amt-=ab;
+    _sndAb=ab; _sndBrk=ab>0&&p.armor<=0;
   }
   // HIS NOTE, 2026-08-25: "show damage as red on the health bar momentarily so
   // player can see what damage they just took". The bar jumped straight to the
@@ -16934,7 +17046,8 @@ function damagePlayer(amt,src,srcName,sx,sy){
   var _hh=(typeof p.hurtHeat==='number'&&typeof p.hurtHeatAt==='number')?p.hurtHeat*Math.exp(-Math.max(0,(G.t||0)-p.hurtHeatAt)/0.9):0;
   p.hurtHeat=_hh+amt; p.hurtHeatAt=G.t||0;
   G.shake=Math.max(G.shake,Math.min(24,(2.5+7*_sev)*(1+0.7*clamp(_hh/45,0,1))));
-  blip('hit'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));
+  blip('hit',undefined,undefined,_sndAb>0?(amt>0.5?'pmix':'pplate'):'pflesh'); decal(p.x+rnd(-10,10),p.y+rnd(-10,10),'#7a1a14',rnd(6,13));   // v24.xx (sndA3): plate, flesh or both
+  if(_sndBrk&&!G.sim) blip('platebreak');   // v24.xx (sndA3): the shield break
   if(p.hp<=0){
     // v12.23: A MAN GOING DOWN LETS GO OF WHAT IS IN HIS HAND. The cook clock and
     // the release both live past the downed return in updatePlayer, so a grenade
@@ -17221,10 +17334,10 @@ if(wep.mag===0){
         notoAggress(_me);            // v8.30: same rule, bare hands included
         if(_me.hp<=0) _me.byPlayer=true;
         _swHit=true;
-        if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); }
+        if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('punch',_me.x,_me.y,entMat(_me)); }   // v24.xx (sndA4): a blow that lands thuds on what it struck
       }
     }
-    if(!G.sim&&!_swHit&&fromPlayer) blip('foot');
+    if(!G.sim&&fromPlayer) blip('swing');   // v24.xx (sndA4): every swing whooshes (a miss played a footstep)
     return;
   }
   var shots=wep.pellets||1;
@@ -20013,6 +20126,7 @@ function updatePlayer(dt){
   if(p.roll>0){
     if(G.netRevT){ G.netRevT=0; G.netRevS=-1; }   // v17.05, co-op hunt 2026-09-28: a roll breaks a pick-up hold too; netRevHold, which reset it, runs only after a roll
     p.roll-=dt;
+    if(p.roll<=0&&!G.sim&&!p.downed){ try{ blip('rollland',undefined,undefined,G.pBush?'leaf':surfAt(p.x,p.y)); }catch(_rl){} }   // v24.xx (sndA5): the landing
     // A roll covers ROLLSPD a second against a sprint of 256. Moved in one hop it
     // could land the operator centre past the middle of a thin wall, and the
     // push-out then ejected him out the far face. Measured: a roll passed through

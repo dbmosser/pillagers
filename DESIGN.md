@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.91 - THE SCAV PISTOL IS SPAWN-ONLY
+
+Co-op hunt while he was away. His order of 2026-10-12: the Scav Pistol should not be a findable item; you only spawn with one, and never find one in the world or on a pillager. It is gone from every place it could turn up: lockers, bodies and the ammo landmarks, the Peddler gun slot, the gamble at Wirt, and every pillager and hired man (the ones who rolled it now carry the Tacker, the other light sidearm, so their fights feel the same; the Tacker is an issued gun and is never dropped). An imported friend who favoured it walks in with the Tacker. Reward 5 (BACKUP PISTOL) pays the gun value when you already own one instead of putting a second Scav Pistol in the stash. You still go up with it from the freebie kit and from the armoury pistol every save starts with, and a stash that already holds one keeps it. The seeded map is unchanged.
+
+MEASURED. Check 24.91 passes, and fails on v24.90.
 ## v24.90 - DEMO EXTRACTION: SCORE X2, RUN OVER
 
 Co-op hunt while he was away. His mode design and his answer 8 of 2026-10-12: extraction gives a 2x bonus to the score, and it doubles the whole raid score and ends the run. A DEMO extraction used to pay a 2,500 bonus plus the haul again and drop you straight back into the same raid. Now a finished pull (or being hauled aboard while down) doubles the score and ends the run: RUN OVER with EXTRACTED x2 and the doubled score counting up, then the initials if it makes the board. In the 2 player demo either player extracting doubles both scores and ends the run for both windows.

@@ -1,0 +1,7 @@
+v24.91: the scav pistol is spawn-only
+
+The Scav Pistol is spawn-only now: you never find one in a container, on the ground, at the Peddler or on a pillager.
+
+Check 24.91. Fails on v24.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

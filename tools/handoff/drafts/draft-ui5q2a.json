@@ -1,0 +1,12 @@
+{
+    "title":  "THE TITLE FILLS THE SCREEN",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The Undercroft walking behind the title is smaller than the screen, so it showed as a lighter rectangle with dark bands round it, like a letterboxed screenshot. The title glass now softly blurs it and fades to black at every edge, so the menu sits on the whole screen.",
+    "now":  "The title backdrop is soft and fades to black at the edges, with no rectangle showing.",
+    "edits":  [
+                  {
+                      "anchor":  "  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge",
+                      "replacement":  "  /* vNN.xx, UI REDESIGN ui5q2a (his #50, from the AAA judge of the title shots 01, 44 and 57): THE TITLE SITS ON THE WHOLE SCREEN.\n     The Undercroft floor walking behind the title is smaller than the screen, so at 1080p and 4K it showed as a lighter rectangle\n     with dark bands round it, like a letterboxed screenshot. The title glass now blurs the floor a little and closes to near black\n     towards every edge, so no edge of the floor shows and the people walking still read as a world behind the menu. */\n  #root #title.on{ background:radial-gradient(ellipse 58% 60% at 50% 45%, rgba(8,9,10,0) 40%, rgba(8,9,10,.95) 88%),\n    linear-gradient(90deg, rgba(17,19,21,.8) 0%, rgba(17,19,21,.9) 26%, rgba(17,19,21,.9) 74%, rgba(17,19,21,.8) 100%);\n    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }\n  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2a, the title backdrop): the title glass blurs the Undercroft floor and closes to near black at the edges, so the floor rectangle does not show\u0027,\n   run:function(){\n     var t=document.getElementById(\u0027title\u0027); if(!t) return \u0027no #title\u0027;\n     var was=t.classList.contains(\u0027on\u0027); if(!was) t.classList.add(\u0027on\u0027);\n     try{\n       var cs=getComputedStyle(t), bf=(cs.backdropFilter||cs.webkitBackdropFilter||\u0027\u0027)+\u0027\u0027;\n       if(bf.indexOf(\u0027blur\u0027)\u003c0) return \u0027the title glass does not blur the floor (\u0027+bf+\u0027)\u0027;\n       if((cs.backgroundImage+\u0027\u0027).indexOf(\u00270.95\u0027)\u003c0) return \u0027the title glass does not close to near black at the edges\u0027;\n       return null;\n     } finally { if(!was) t.classList.remove(\u0027on\u0027); } }},"
+}

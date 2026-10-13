@@ -12,3 +12,20 @@
   33-raid-fight-alerts                   staged      14.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 83
   44-title-from-character-select         staged      20.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
   57-title-2p-coop-picked                staged      12.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       9.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  18-settings-hub                        staged      17.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+== 4k : window 3872x2263, viewport 3840x2160
+  01-title-mode-menu                     staged       8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  04-stash-terminal                      staged      13.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  08-shop                                staged      38.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal
+  11-wirt-gambler                        staged      14.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gamblemodal
+  12-mainframe-contracts                 staged      10.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  16-bar-last-pour                       staged      14.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal
+  17-fashion-mirror                      staged       9.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | appearmodal
+  18-settings-hub                        staged      10.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  21-raid-hud-calm                       staged      20.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  25-raid-pause-box                      staged      12.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  33-raid-fight-alerts                   staged      27.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 100
+  44-title-from-character-select         staged      18.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  57-title-2p-coop-picked                staged      13.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
