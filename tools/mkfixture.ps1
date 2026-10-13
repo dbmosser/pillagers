@@ -6827,10 +6827,10 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ blip=rb; try{ if(G&&keepSim!==null) G.sim=keepSim; }catch(_s){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.hp=100; __endRaid('abandon'); } }catch(_e){} __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'24.59',what:'his answer 34 a: a machine beeps (lockon, on the machine bus) the moment it acquires him, once per machine in three seconds; a pillager does not beep',
+  {v:'24.59',what:'his answer 34 a: a machine beeps (lockon, on the machine bus) the moment it acquires him, once per machine in three seconds; a pillager does not beep (since machsiren the machine is counted by the one lock-on siren instead, and a pillager is not)',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof mkSentry!=='function'||typeof updateEnts!=='function') return 'SKIP: no raid here';
-     var bad=[], g, p, S=null, R=null, E0=null, oSfx=sfx, own=false, heard=[], f, i, osc=0;
+     var bad=[], g, p, S=null, R=null, E0=null, oSfx=sfx, own=false, heard=[], f, i, osc=0, SIR=(typeof tickMachSiren==='function'&&typeof machSirenLocked==='function');   // machsiren: the lock-on is one siren, not a beep per machine
      function look(e){ e.face=Math.atan2(p.y-e.y,p.x-e.x); e.state='patrol'; e.alert=0; e.tx=e.x; e.ty=e.y; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
@@ -6843,7 +6843,7 @@ window.__REGRESS=[
        g.beepAt=-99; g.seenT=0;
        for(f=0;f<4&&S.state!=='chase';f++) updateEnts(0.016);
        if(S.state!=='chase') return 'SKIP: staging: the sentry 140 away facing him did not acquire him ('+S.state+')';
-       if(heard.indexOf('lockon')<0) bad.push('a sentry that acquired him made no lock-on beep ('+(heard.join(',')||'nothing')+')');
+       if(SIR){ if(!machSirenLocked(S,p)) bad.push('a sentry that acquired him is not heard: the lock-on siren does not count it'); } else if(heard.indexOf('lockon')<0) bad.push('a sentry that acquired him made no lock-on beep ('+(heard.join(',')||'nothing')+')');
        heard.length=0; look(S); g.t+=1; g.beepAt=-99;
        for(f=0;f<4&&S.state!=='chase';f++) updateEnts(0.016);
        if(heard.indexOf('lockon')>=0) bad.push('the same machine beeped again inside three seconds');
@@ -6854,11 +6854,11 @@ window.__REGRESS=[
          E0=g.ents; R.x=p.x-140; R.y=p.y; look(R); g.ents=[R]; heard.length=0; g.beepAt=-99;
          for(f=0;f<4&&R.state!=='chase';f++) updateEnts(0.016);
          g.ents=E0; E0=null;
-         if(heard.indexOf('lockon')>=0) bad.push('a pillager beeped like a machine');
+         if(heard.indexOf('lockon')>=0) bad.push('a pillager beeped like a machine'); if(SIR&&R.state==='chase'&&machSirenLocked(R,p)) bad.push('a pillager on him sounds the machine lock-on siren');
          R.x=kr.x; R.y=kr.y; R.face=kr.face; R.state=kr.state; R.alert=kr.alert; R.tx=kr.tx; R.ty=kr.ty;
        }
-       if(SND_CAT.lockon!=='mach') bad.push('the lock-on beep is not on the machine bus ('+SND_CAT.lockon+')');
-       if(typeof __audio==='object'&&__audio.record&&__audio.blipRaw){
+       if(!SIR&&SND_CAT.lockon!=='mach') bad.push('the lock-on beep is not on the machine bus ('+SND_CAT.lockon+')');
+       if(!SIR&&typeof __audio==='object'&&__audio.record&&__audio.blipRaw){
          var lg=__audio.record(function(){ __audio.blipRaw('lockon'); });
          osc=(lg&&lg.osc)?lg.osc.length:0;
          if(osc<2) bad.push('the lock-on beep makes '+osc+' oscillators, so it plays nothing');
