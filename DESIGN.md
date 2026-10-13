@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.98 - THE STASH BELT ROW IN THE SAME FOUR GROUPS
+
+Co-op hunt while he was away. His answer of 2026-10-13: the career loadout screen in the Undercroft gets the same groups as the raid bar. Build 6c of 8. The belt plan row on the Stash screen now lays its nine keys out in the same four groups with the same labels as the raid bar (GUNS keys 1 to 4, THROW 5 and 6, MEDICAL 7 and 8, ARMOUR 9), and a throwable, medical or armour key he has not bound shows what the floor belt shows on it, dimmed, as the gun keys already do, so the row reads as the keys he will press. A vacant gun key on the raid belt no longer prints a 0. Drawing only.
+
+MEASURED. Check 25.98 passes, and fails on v25.97.
 ## v25.97 - MAGAZINE BAR, RESERVE NUMBER, G KEYCAP
 
 Co-op hunt while he was away. His answer of 2026-10-13: bar for magazine, number for reserve additional rounds. Build 6b of 8. Every gun key now shows its magazine as a small fill bar along the foot of the key (light above half, amber down to a quarter, red below) and the rounds he carries in reserve as the number, where it used to print the rounds in the magazine. The half-grey and full-grey states are unchanged, the Undercroft belt shows the bar alone (it has no reserve), and a gun with no magazine keeps its old look. The throwable key that G throws wears a small G keycap, following U. The hover card of a grenade, a heal and an armour plate names the key of its class: G THROW, H HEAL, HOLD H PLATE. Drawing only.

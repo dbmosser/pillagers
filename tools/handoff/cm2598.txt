@@ -1,0 +1,7 @@
+v25.98: the stash belt row in the same four groups
+
+The Stash belt row now shows the same four labelled groups as the raid bar, with the keys the floor belt would fill.
+
+Check 25.98. Fails on v25.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.97';
+var VER='25.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32397,7 +32397,7 @@ function drawBuzzFx(){
           ctx.textAlign='right'; ctx.fillText(String(Math.max(0,G.player.reserve|0)),bx+bw-LH(4),_my-LH(3)); ctx.textAlign='left';
         }
       }
-      else if(S.count!==null&&S.count!==undefined&&S.kind!=='empty'){   // v19.01: no count on an empty key
+      else if(S.count!==null&&S.count!==undefined&&S.kind!=='empty'&&!S.vacant){   // v19.01: no count on an empty key   // v25.xx (belt6c): nor on a vacant gun key
         ctx.font=beltFS(bw,0.16);   // v18.71: grows with the slot
         ctx.fillStyle=_bgDim?'#7a5040':(_bgHalf?'#ffc04a':'#FFF6DC');   // v24.xx (beltgrey): an empty magazine he can reload says 0 in the RELOAD amber
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
@@ -41325,7 +41325,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.97: Gun keys now show the magazine as a bar and the reserve as the number; the G key shows on the throwable it throws. Check 25.97 fails on v25.96',
+  now:'v25.98: The Stash belt row now shows the same four labelled groups as the raid bar, with the keys the floor belt would fill. Check 25.98 fails on v25.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42997,22 +42997,24 @@ function hotPlanHTML(where){
   // v6.60 when a gun stopped being a special kind of item.
   var h='<div style="padding:4px 12px 9px">'+
     (_hint?('<div class="glab" style="margin-bottom:5px">'+_hint+'</div>'):'')+
-    '<div style="display:flex;gap:4px;flex-wrap:wrap">';
+    '<div style="display:flex;gap:12px;flex-wrap:wrap">';   // v25.xx (belt6c): the four groups of the raid belt
   // v22.45, the four-gun belt, build 4: THE STASH SCREEN BELT SHOWS THE GUN KEYS. Keys 1 to 4 he has not bound showed a bare number,
   // while the floor belt and the raid put his guns there: gun 1 and gun 2 on keys 1 and 2 and the packed guns on keys 3 and 4. An
   // unbound gun key now shows the gun the floor belt shows on it, dimmed, so the plan reads as the keys he will press.
   var _fl=[];
   try{ var _flo=G; try{ G=hubBagState(); _fl=hotbarSlots()||[]; } finally{ G=_flo; } }catch(_fle){ _fl=[]; }
+  var _gh=['','','',''];   // v25.xx (belt6c): each group's keys, laid out below
   for(var i=0;i<HOTBAR_N;i++){
     // THE TWO GUN KEYS. Shown so the numbers on this row are the numbers he will
     // actually press, and locked so he cannot build a plan the raid will discard.
     // v6.60: no gun cells. Every slot on the belt is the same slot.
     var k=(P.hotAssign||{})[i], it=k?ITEMS[k]:null, _fg=null;
+    if(!it&&i>=GUNKEYS&&_fl[i]&&_fl[i].kind!=='empty'&&!_fl[i].assigned&&_fl[i].icon&&ITEMS[_fl[i].icon]&&ITEMS[_fl[i].icon].use!=='gun') _fg={k:_fl[i].icon,name:escHtml(String(ITEMS[_fl[i].icon].name))};   // v25.xx (belt6c): an unbound throwable, medical or armour key shows what the floor belt shows on it
     if(!it&&i<GUNKEYS&&_fl[i]&&_fl[i].kind==='gun'&&!_fl[i].vacant&&_fl[i].icon&&_fl[i].icon!=='fists'){
       var _fgk=(String(_fl[i].icon).indexOf('gun_')===0)?String(_fl[i].icon):('gun_'+_fl[i].icon);
       if(ITEMS[_fgk]) _fg={k:_fgk,name:escHtml(String(_fl[i].name||ITEMS[_fgk].name))};
     }
-    h+='<div data-plan="'+i+'" title="'+(it?('Key '+(i+1)+': '+it.name+', click to clear'):(_fg?('Key '+(i+1)+': '+_fg.name):('Key '+(i+1)+', free')))+'"'+
+    _gh[beltGroupOf(i)]+='<div data-plan="'+i+'" title="'+(it?('Key '+(i+1)+': '+it.name+', click to clear'):(_fg?('Key '+(i+1)+': '+_fg.name):('Key '+(i+1)+', free')))+'"'+
       ' style="width:34px;height:34px;border:1px '+(it?'solid':'dashed')+' var(--steel-hi);border-radius:3px;'+
       'display:flex;align-items:center;justify-content:center;cursor:'+(it?'pointer':'default')+';'+
       'background:rgba(0,0,0,.3);position:relative">'+
@@ -43028,6 +43030,8 @@ function hotPlanHTML(where){
       ((it&&packedCount(k)<1)?'<span style="position:absolute;left:2px;top:0;font-size:10.5px;color:var(--rust)">0</span>':'')+
       '</div>';
   }
+  var _gn=['GUNS','THROW','MEDICAL','ARMOUR'], _gi;   // v25.xx (belt6c): the same four groups and labels as the raid belt
+  for(_gi=0;_gi<4;_gi++) h+='<div style="background:rgba(20,23,26,.55);border-radius:4px;padding:4px 5px 3px"><div style="display:flex;gap:4px">'+_gh[_gi]+'</div><div style="text-align:center;font-size:11px;letter-spacing:.1em;color:var(--ash);margin-top:2px">'+_gn[_gi]+'</div></div>';
   h+='</div>';
   return h+'</div>';
 }
