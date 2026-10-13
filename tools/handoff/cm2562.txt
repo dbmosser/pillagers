@@ -1,0 +1,7 @@
+v25.62: siege incoming names no count
+
+SIEGE INCOMING no longer says how many machines are coming.
+
+Check 25.62. Fails on v25.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v25.62 - SIEGE INCOMING NAMES NO COUNT
+
+Co-op hunt while he was away. His order of 2026-10-12: Siege Incoming, do not tell how many machines are inbound. Calling for extraction showed SIEGE INCOMING with About N machines inbound under it. The headline stays and the count is gone, so he no longer knows how many are coming. The siege itself is unchanged: it is still sized by what you carry and the siege dial, and the machines come in at the same rate.
+
+MEASURED. Check 25.62 passes, and fails on v25.61.

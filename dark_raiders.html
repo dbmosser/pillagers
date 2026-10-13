@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.61';
+var VER='25.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16632,7 +16632,7 @@ function msgRowsUp(){   // the rows showing now, head first: {m,k,key}
 // the player reads in a raid is a short caps headline and, only when needed, a short detail, never an explaining sentence. The
 // review of batch 3 found details that still explained (the pillager who does not like it, the siege that is coming to this ring,
 // how to call again, who called and where in a sentence, why you now run the raid) and three narrated headlines. They now read as
-// callouts: SIEGE INCOMING with About N machines inbound, a closing ring with the time left as m:ss, EXTRACTION MISSED, the call
+// callouts: SIEGE INCOMING (no count since v25.62), a closing ring with the time left as m:ss, EXTRACTION MISSED, the call
 // with only its inbound figure, a teammate call as NAME then EXTRACT and the letter, HOST DISCONNECTED or HOST IS OUT with You
 // are hosting now, PILLAGER REINFORCEMENTS, SPOTTED BY SOMETHING HUGE, and the in-ring hints in two to four words. The inbound hint
 // keeps its seconds (his v12.93 audit rule: it says how long the ride is). No state, sound or timing changes.
@@ -20149,25 +20149,11 @@ function tryExtractTick(dt,wantCall){
         if(!onYourTail(se.state)){ se.state='investigate'; se.tx=z.x+rnd(-40,40); se.ty=z.y+rnd(-40,40); }
       }
       blip('alarm');
-      // v9.34, HIS 6: THE SIEGE, NAMED, AND HOW BIG IT WILL BE.
-      // The count is the same expression tickExtractPoints uses, so what he is
-      // promised here and what actually walks in cannot drift apart. Rounded to
-      // "about", because arrivals stop when the ship lands and a precise figure
-      // he does not always see would read as a lie.
-      // The ceiling, which is what the tick will refuse to go past...
-      var _scap=Math.round(siegeBase(_g)*(CFG.siegeVol===undefined?1:CFG.siegeVol));   // v18.35: the one siege size
-      // ...and how many the wait actually has room for, one every siegeIv
-      // seconds. This is the smaller of the two in every configuration the game
-      // ships with, and it is the one he will count. A long hold at the ring can
-      // bring more, up to the ceiling, which is why the line says "about".
-      // v9.85: THE RATE MOVES WITH THE DIAL TOO. siegeVol only raised the
-      // ceiling, and the ceiling is not what limits a siege; this interval is. On
-      // v9.84 Heavy delivered 6 and 15 machines against Standard 6 and 14, so the
-      // loudest option on the row was worth one machine or none. Divided here and
-      // at the tick by the same dial, so the promise and the arrivals stay in
-      // step, and Standard divides by 1 and does not move.
-      var _siv=(8-4.6*_g)/(CFG.siegeVol===undefined?1:CFG.siegeVol);
-      var _sc=Math.max(1,Math.min(_scap,Math.floor(CFG.extractWait/Math.max(0.1,_siv))));
+      // v25.62, HIS ORDER (2026-10-12): "Siege Incoming -- don't tell how many machines are inbound!" SIEGE INCOMING NAMES NO COUNT.
+      // v9.34 (his 6) named the siege and promised its size, About N machines inbound, with N worked out here from the same ceiling
+      // (siegeBase by greed and the siegeVol dial) and the same rate (one every siegeIv seconds over the wait) as tickExtractPoints.
+      // The line was the only reader of that figure, so it is gone with the detail. The siege itself is unchanged: the tick still
+      // sizes it by greed and the dial, and brings them in at the same rate. Nothing here drew from the seeded stream.
       // v24.xx (nobagline), HIS NOTE (2026-10-12): "'HEAVY BACKPACK ' - why does it say that when extracting -- we got rid of diff
       // backpack sizes etc a long time ago". The call said a third line after the siege, LIGHT, LOADED or HEAVY BACKPACK with They
       // heard that., Expect company. or Fewer will come. under it, read off _g. _g is what the haul is worth (the greed measure),
@@ -20179,11 +20165,11 @@ function tryExtractTick(dt,wantCall){
       // v22.38, the raid text rewrite (R13): EXTRACTION MOMENTS IN THE ALERT LANE. His order of 2026-10-09 is a shooter HUD; the call
       // was one line of about 130 characters (Pulled, the wait, how to extract, THE SIEGE and its size, and the backpack), so most of
       // it ran past the plate or was pushed down. It is now EXTRACTION CALLED (the wait as m:ss, then the key that extracts, or that
-      // the raid clock runs out first), then THE SIEGE with how many are coming, then a feed row for the backpack. The band under the
-      // clock owns every live countdown, so only the one inbound figure is in a detail. The count is the same _sc as before.
+      // the raid clock runs out first), then SIEGE INCOMING (no count since v25.62), then a feed row for the backpack. The band under the
+      // clock owns every live countdown, so only the one inbound figure is in a detail.
       var _xw=Math.round(CFG.extractWait), _xs=(_xw>=60)?(Math.floor(_xw/60)+':'+((_xw%60)<10?'0':'')+(_xw%60)):(_xw+'s'), _xk='['+keyLabel('KeyE','E')+']';
       say('EXTRACTION CALLED','ext',{key:'xcall',sub:'Inbound '+_xs+((raidClockOn()&&G.timeLeft<CFG.extractWait)?' \u00b7 Clock runs out first':'')});   // v12.24: not with the clock OFF   // v22.xx (tr3fixc): the shooter voice
-      say('SIEGE INCOMING','warn',{key:'siege',sub:'About '+_sc+(_sc===1?' machine':' machines')+' inbound'});   // v22.xx (tr3fixc): the shooter voice
+      say('SIEGE INCOMING','warn',{key:'siege'});   // v25.62, his order (2026-10-12): no count   // v22.xx (tr3fixc): the shooter voice
       // v24.xx (nobagline): no backpack weight line after the siege (see the nobagline note above)
     }
     return;
@@ -41028,7 +41014,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.61: Every machine now dies with its own noise, from the Crawler crunch to the Overseer blast. Check 25.61 fails on v25.60',
+  now:'v25.62: SIEGE INCOMING no longer says how many machines are coming. Check 25.62 fails on v25.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

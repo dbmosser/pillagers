@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.62 - SIEGE INCOMING NAMES NO COUNT
+
+Co-op hunt while he was away. His order of 2026-10-12: Siege Incoming, do not tell how many machines are inbound. Calling for extraction showed SIEGE INCOMING with About N machines inbound under it. The headline stays and the count is gone, so he no longer knows how many are coming. The siege itself is unchanged: it is still sized by what you carry and the siege dial, and the machines come in at the same rate.
+
+MEASURED. Check 25.62 passes, and fails on v25.61.
 ## v25.61 - EVERY MACHINE DIES WITH ITS OWN NOISE
 
 Co-op hunt while he was away. His order of 2026-10-12: all robots should have a distinct destruction noise for when they are killed. A machine died in silence: the round that killed it made the same metal tick as any other hit, and a machine killed by a charge, a Howler shell or another machine made no sound at all. Now every kind has its own: the Sentry servo seizes with an electrical pop and tinkling debris, the Crawler legs skitter out into a light crunch, the Crier alarm wails down and is cut by a crackle, the Listener dish whine climbs and snaps off, the Howler growl chokes into a burst, the Bulwark armour plates clang down, the Pillbox turret detonates and its shell rings, the Warden groans and collapses, and the Overseer goes out in a long layered blast with a falling tone and a rain of debris, the biggest sound in the game. Each is placed where it died (left, right, far and behind walls), small machines under a gunshot and big ones near it. Sound only: nothing in the raid changes.
