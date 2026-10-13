@@ -6076,6 +6076,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.18',what:'his #50 (UI redesign ui5q2h): on the Mainframe the contract the card shows carries the amber rail, and a click on another row moves it there',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var s0=P._conSel, bad=[], rows;
+     try{
+       __topClear(); __hubEnter(); __station('mf','KeyE');
+       rows=document.querySelectorAll('#contracts .crow[data-con]');
+       if(rows.length<2) return 'SKIP: fewer than two contracts on the board';
+       rows[1].click();
+       rows=document.querySelectorAll('#contracts .crow[data-con]');
+       if(!rows[1].classList.contains('sel')) bad.push('the clicked row is not marked picked');
+       if(rows[0].classList.contains('sel')) bad.push('the first row still looks picked after a click on the second');
+       if((getComputedStyle(rows[1]).boxShadow||'').indexOf('inset')<0) bad.push('the picked row has no rail');
+       if((rows[0].style.borderColor||'').indexOf('amber')>=0) bad.push('the first row keeps the amber line after a click on the second');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P._conSel=s0; try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'25.17',what:'his #50 (UI redesign ui5q2l): every Fashion rack tile is the same height (at least 156px at the menu size) and at least 180px wide',
    run:function(){
      if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';

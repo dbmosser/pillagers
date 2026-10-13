@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.18 - THE PICKED CONTRACT LOOKS PICKED
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. On the Mainframe the picked contract showed only a thin amber line under it, which read as a divider, and clicking another contract left that line on the first one. The picked contract now has the amber edge and warm fill used on the title, and it moves with your click.
+
+MEASURED. Check 25.18 passes, and fails on v25.17.
 ## v25.17 - ONE TILE SIZE ON EVERY RACK
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. In Fashion the rack tiles were narrow, so eight outfits left a third of the rack empty and a long requirement broke into three lines, and the tiles were a different height on every rack. The tiles are wider now, eight fill the rack, and every tile on every rack is the same height.

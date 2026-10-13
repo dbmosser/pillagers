@@ -1,0 +1,7 @@
+v25.18: the picked contract looks picked
+
+The picked contract on the Mainframe has an amber edge that follows your click.
+
+Check 25.18. Fails on v25.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
