@@ -16820,7 +16820,8 @@ window.__REGRESS=[
          // retargeted 2026-10-12 (feat0e): his mode design gives the DEMO raid a 10 minute clock (ARCADE_RAID_SEC); a build without it is still endless
          if(typeof ARCADE_RAID_SEC==='number'){ if(g.raidLen!==ARCADE_RAID_SEC) bad.push('raidLen is '+g.raidLen+', not the DEMO clock '+ARCADE_RAID_SEC); if(!raidClockOn()) bad.push('the DEMO raid clock is off'); }
          else { if(g.raidLen!==0) bad.push('raidLen is '+g.raidLen); if(raidClockOn()) bad.push('the raid clock is on'); }
-         if(CFG.raidSec!==0||CFG.extractWait!==15) bad.push('the arcade dials are raidSec '+CFG.raidSec+', extractWait '+CFG.extractWait);
+         // retargeted 2026-10-13 (demoextract): the DEMO call waits the extractWait dial as CAREER does; a build without it still overlays 15 s
+         if(!(CFG.raidSec===0||CFG.raidSec===rs0)||!(CFG.extractWait===15||CFG.extractWait===xw0)) bad.push('the arcade dials are raidSec '+CFG.raidSec+', extractWait '+CFG.extractWait);
          for(i=0;i<g.zones.length;i++) if(g.zones[i].closeAt!==undefined) bad.push('ring '+i+' closes at '+g.zones[i].closeAt);
          if(!p.wep||ARCADE_GUNS1.indexOf(p.wep.id)<0) bad.push('the gun in hand is '+(p.wep&&p.wep.id));
          if(!p.sec||!WEAPONS[p.sec.id]||p.sec.id==='fists'||p.sec.id==='pistol'||(p.wep&&p.sec.id===p.wep.id)) bad.push('the stowed gun is '+(p.sec&&p.sec.id));
