@@ -1,0 +1,5 @@
+## v24.98 - SETTINGS HAS A DETAIL PANE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The right third of the Settings window was empty beside the list. It is now a detail pane, as in the settings of big shooters: the setting under the mouse or the pad, its name large, its value and its whole description in a readable size.
+
+MEASURED. Check 24.98 passes, and fails on v24.97.

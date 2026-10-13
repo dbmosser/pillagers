@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.98 - SETTINGS HAS A DETAIL PANE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The right third of the Settings window was empty beside the list. It is now a detail pane, as in the settings of big shooters: the setting under the mouse or the pad, its name large, its value and its whole description in a readable size.
+
+MEASURED. Check 24.98 passes, and fails on v24.97.
 ## v24.97 - NO BACKPACK LINE AT EXTRACTION
 
 Co-op hunt while he was away. His note of 2026-10-12: HEAVY BACKPACK, why does it say that when extracting, we got rid of different backpack sizes a long time ago. Calling extraction said a third line after the siege, LIGHT, LOADED or HEAVY BACKPACK with They heard that, Expect company or Fewer will come under it. It was read off how much the haul is worth, not a pack size, and there is only one grid backpack, so it read as nonsense. The line is gone, in solo and on a linked window. The siege still grows with the value of what you carry, it just does not say so. No other backpack weight wording was left anywhere in the game.

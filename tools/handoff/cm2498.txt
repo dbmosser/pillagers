@@ -1,0 +1,7 @@
+v24.98: settings has a detail pane
+
+Settings shows the pointed setting large in a detail pane beside the list.
+
+Check 24.98. Fails on v24.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
