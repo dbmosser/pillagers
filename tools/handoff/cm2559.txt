@@ -1,0 +1,7 @@
+v25.59: every belt item shows an info card
+
+Rest the mouse on any item on the tactical belt and its info card shows above it.
+
+Check 25.59. Fails on v25.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

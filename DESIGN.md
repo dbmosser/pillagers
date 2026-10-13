@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.59 - EVERY BELT ITEM SHOWS AN INFO CARD
+
+Co-op hunt while he was away. His order of 2026-10-12: other items on the tactical belt should show an info card too. Rest the mouse on any item key (a heal, a plate, a stim, ammo, a grenade, the Tripwire Mine, a key) and its card shows above the key, in the frame and type of the gun card: the name and a bar in its rarity colour, the rarity and how many you hold, what it does in numbers (heals and up to what, armour, rounds, damage, blast and fuse, how long a smoke or a decoy lasts, what sets the Tripwire Mine off), its value in credits, and its keys as keycaps. Short caps labels, no sentences. Like the gun card it waits a short moment, goes the moment the mouse leaves and never gets in the way of the trigger.
+
+MEASURED. Check 25.59 passes, and fails on v25.58.
 ## v25.58 - THE FORGE: THE UNDERCROFT SHOWS IT
 
 Co-op hunt while he was away. His rule of 2026-10-12: an upgraded gun you extract with is yours to keep. The Undercroft now shows it: the stash and backpack hover of the gun leads with UPGRADE (MK II or MK III) and ELEMENT and gives the upgraded numbers, the belt and the sector page call it Auto Rifle MK III, and its icon glows gold for MK II or in the element colour for MK III, with a small element dot. In a raid the backpack hover reads the gun you are carrying the same way.
