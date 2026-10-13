@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.43 - THE WHAT IS NEW CARD NAMES THE MINIMAP
+
+Co-op hunt while he was away. The card was stamped v25.31 and the stamp may not trail the build by more than 0.15. The card was stamped v25.31 and every ship stops when it falls 0.16 behind; about 17 finished builds are still queued. Its new line names the builds since: the minimap and its markers (his order add minimap), CAREER waves (his mode design), the plate and injector foley (his sound orders) and the crawler latch (his order).
+
+MEASURED. Check 25.43 passes, and fails on v25.42.
 ## v25.42 - A CRAWLER ON YOU STAYS ON YOUR SIDE OF THE WALL
 
 Co-op hunt while he was away. Found by the review of the crawler latch (his order: a crawler that catches you keeps biting until it is killed). A crawler hanging on was set at the players side every frame with no wall test, so walking toward a wall with it on that side pushed its body into the wall, and the wall push-out then shoved it out through the far side. The wall came between them, it let go and was left stranded on the other side, 98 to 502 units away. Measured on 34 building walls on the first map with a crawler hanging on between the player and the wall: it went through 32 of them and let go of him, which made the latch easy to shake off just by walking into any wall. Now the spot at his side has to be clear of walls with a clear line to him; when the side it holds is blocked it slides round him to the nearest clear spot and keeps biting. No balance change: the bite and its rate are the same. DEMO and CAREER the same.

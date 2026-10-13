@@ -1,0 +1,7 @@
+v25.43: the what is new card names the minimap
+
+The what is new card names the minimap.
+
+Check 25.43. Fails on v25.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
