@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.82 - THE SEAL CAN BE ANYWHERE
+
+Co-op hunt while he was away. His order of 2026-10-12: the seal should spawn in random spots, he does not like where it spawns. Since v17.96 each raid rolled the seal among the few landmarks far from the first spawn and then walked out from the landmark centre in a fixed order to the first clear spot, so on COLD STORAGE it stood in the same place or two raid after raid. Now every raid picks the seal uniformly among all the fair spots of the whole map: a fine grid of the map, kept only where the door is clear of walls, buildings, locked rooms, water, the catwalks and the map edge, reachable on foot, at least 450 from every player spawn and at least 420 from every way out. On COLD STORAGE that is 1335 possible spots, and a trial of the roll over 40 seeds put the seal in 39 different places across all five districts, moving it more than 300 between raids in a row 36 times in 39. The roll uses the raid own side stream, so the machines, containers and loot of a seed are exactly as before and both windows of a pair get the same door. DEMO and CAREER are the same.
+
+MEASURED. Check 24.82 passes, and fails on v24.81.
 ## v24.81 - THE CONTRACT CARD FITS WHAT IT HOLDS
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the Mainframe found the cream contract card stretched to the height of the long list beside it, so a big block of blank paper sat in the middle of it, the brightest empty thing on the screen. The card now ends under its last line; the list is unchanged.

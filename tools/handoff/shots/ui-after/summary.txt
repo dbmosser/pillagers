@@ -68,3 +68,15 @@
   35-kia-card                            staged      10.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
   32-keys-window                         staged      10.9s  total   5: clip 0 off 0 small 5 contrast 0 font 0 overlap 0 focus 0
   45-arcade-attract-board                staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 1080 : window 1952x1183, viewport 1920x1080
+  16-bar-last-pour                       staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal
+  12-mainframe-contracts                 staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  32-keys-window                         staged      10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  45-arcade-attract-board                staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  46-arcade-attract-how-to-play          staged      15.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3872x2263, viewport 3840x2160
+  16-bar-last-pour                       staged       8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal
+  12-mainframe-contracts                 staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  32-keys-window                         staged      10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  45-arcade-attract-board                staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  46-arcade-attract-how-to-play          staged      15.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

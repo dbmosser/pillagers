@@ -1,0 +1,7 @@
+v24.82: the seal can be anywhere
+
+The seal now turns up in a different place each raid, anywhere on the map, never right beside a spawn or a way out.
+
+Check 24.82. Fails on v24.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
