@@ -1,0 +1,16 @@
+{
+    "title":  "NO DARK INK ON THE STATS PAGE",
+    "why":  "His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. The picture check of YOUR STATS in the Mainframe found the caption over the run log in the dark ink of the cream cards, too faint on the dark page. It is in the readable grey now.",
+    "now":  "The caption over the run log on YOUR STATS can be read.",
+    "edits":  [
+                  {
+                      "anchor":  "  .ui-key.pill{ border-radius:12px; padding:0 9px; }",
+                      "replacement":  "  .ui-key.pill{ border-radius:12px; padding:0 9px; }\n  /* vNN.xx, UI REDESIGN ui5q1q (his #50, from the lint of the Mainframe YOUR STATS shot): the caption over the run log (EVERY RUN,\n     NEWEST FIRST) took the dark ink meant for the cream cards and read at about 3:1 on the graphite page; it is the second text\n     colour there now. The cream cards keep their ink. */\n  #root #opane_rec .crlab{ color:var(--tx-2); }"
+                  },
+                  {
+                      "anchor":  "  \u003cdiv class=\"tpane\" id=\"opane_rec\" style=\"display:none;flex-direction:column;flex:1;min-height:0\"\u003e",
+                      "replacement":  "  \u003c!-- vNN.xx (ui5q1q): a long page that scrolls on purpose, marked for the visual lint --\u003e\n  \u003cdiv class=\"tpane\" id=\"opane_rec\" data-lint-scroll style=\"display:none;flex-direction:column;flex:1;min-height:0\"\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q1q, from the lint of the Mainframe YOUR STATS shot): on the stats page a caption on the graphite is not in the dark ink of the cream cards, and the page is marked as a page that scrolls\u0027,\n   run:function(){\n     var p=document.getElementById(\u0027opane_rec\u0027), bad=[], c, el;\n     if(!p) return \u0027SKIP: no stats page here\u0027;\n     el=p.querySelector(\u0027.crlab\u0027);\n     if(!el){ el=document.createElement(\u0027div\u0027); el.className=\u0027crlab\u0027; el.textContent=\u0027A CAPTION \u0027+\u0027FOR THE CHECK\u0027; p.appendChild(el); c=getComputedStyle(el).color; p.removeChild(el); }\n     else c=getComputedStyle(el).color;\n     if(c===\u0027rgb(106, 101, 90)\u0027) bad.push(\u0027a caption on the stats page is in the dark card ink (\u0027+c+\u0027)\u0027);\n     if(!p.hasAttribute(\u0027data-lint-scroll\u0027)) bad.push(\u0027the stats page is not marked as a page that scrolls\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

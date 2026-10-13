@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.83 - NO DARK INK ON THE STATS PAGE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. The picture check of YOUR STATS in the Mainframe found the caption over the run log in the dark ink of the cream cards, too faint on the dark page. It is in the readable grey now.
+
+MEASURED. Check 24.83 passes, and fails on v24.82.
 ## v24.82 - THE SEAL CAN BE ANYWHERE
 
 Co-op hunt while he was away. His order of 2026-10-12: the seal should spawn in random spots, he does not like where it spawns. Since v17.96 each raid rolled the seal among the few landmarks far from the first spawn and then walked out from the landmark centre in a fixed order to the first clear spot, so on COLD STORAGE it stood in the same place or two raid after raid. Now every raid picks the seal uniformly among all the fair spots of the whole map: a fine grid of the map, kept only where the door is clear of walls, buildings, locked rooms, water, the catwalks and the map edge, reachable on foot, at least 450 from every player spawn and at least 420 from every way out. On COLD STORAGE that is 1335 possible spots, and a trial of the roll over 40 seeds put the seal in 39 different places across all five districts, moving it more than 300 between raids in a row 36 times in 39. The roll uses the raid own side stream, so the machines, containers and loot of a seed are exactly as before and both windows of a pair get the same door. DEMO and CAREER are the same.

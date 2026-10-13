@@ -1,0 +1,7 @@
+v24.83: no dark ink on the stats page
+
+The caption over the run log on YOUR STATS can be read.
+
+Check 24.83. Fails on v24.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

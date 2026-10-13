@@ -6063,6 +6063,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.83',what:'his #50 (UI redesign ui5q1q, from the lint of the Mainframe YOUR STATS shot): on the stats page a caption on the graphite is not in the dark ink of the cream cards, and the page is marked as a page that scrolls',
+   run:function(){
+     var p=document.getElementById('opane_rec'), bad=[], c, el;
+     if(!p) return 'SKIP: no stats page here';
+     el=p.querySelector('.crlab');
+     if(!el){ el=document.createElement('div'); el.className='crlab'; el.textContent='A CAPTION '+'FOR THE CHECK'; p.appendChild(el); c=getComputedStyle(el).color; p.removeChild(el); }
+     else c=getComputedStyle(el).color;
+     if(c==='rgb(106, 101, 90)') bad.push('a caption on the stats page is in the dark card ink ('+c+')');
+     if(!p.hasAttribute('data-lint-scroll')) bad.push('the stats page is not marked as a page that scrolls');
+     return bad.length?bad.join('; '):null; }},
   {v:'24.82',what:'his order (2026-10-12): the seal can be anywhere: 40 raids at 40 seeds put it in 25 or more places spread over the whole map, never near a spawn or a way out, never in a wall, a building or water, and the same seed puts it in the same place',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof FIXED_MAPS==='undefined') return 'SKIP: no raid here';
