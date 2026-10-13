@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.19 - NO MORE OPERATOR VOICE
+
+Co-op hunt while he was away. His order of 2026-10-12: anywhere a player voice was added, replace it with a distinct noise. The spoken barks of v24.57 (reloading, out of ammo, frag out, tripwire set, healing, score lost) are gone, and every voice clip with them; the announcer stays. Reloading, an empty gun, the frag, the wire and the heal already make their own sounds, so they simply lose the voice. Three moments get a short noise of their own: holding E over a downed teammate charges up step by step and a revive lands with a quick rise and a bright click (your self-revive, a teammate or a hire getting you up, a pillager you pick up too); the extraction pull starts with a short rising beacon; and losing your score in the 2 player demo is a falling buzz that ends in a thud. Each is quieter than a gunshot and unlike any other sound. Sound only: nothing in the raid changes.
+
+MEASURED. Check 25.19 passes, and fails on v25.18.
 ## v25.18 - THE PICKED CONTRACT LOOKS PICKED
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. On the Mainframe the picked contract showed only a thin amber line under it, which read as a divider, and clicking another contract left that line on the first one. The picked contract now has the amber edge and warm fill used on the title, and it moves with your click.

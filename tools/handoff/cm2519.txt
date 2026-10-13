@@ -1,0 +1,7 @@
+v25.19: no more operator voice
+
+No more spoken barks: a revive charges up and clicks, the extraction pull rises like a beacon, and losing your score buzzes down to a thud.
+
+Check 25.19. Fails on v25.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
