@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.29 - GUNS AND GEAR SOUND LIKE GEAR
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Swapping guns and equipping one from the backpack played the menu chirp, and dropping an item made no sound. Now a swap or an equip is a strap and holster rattle and the draw clacking up, lighter and quicker for a pistol, an SMG or the Magnum and heavier for a rifle, the LMG, a shotgun, the Longshot or the Lance; a drop is a soft thump. The sounds are the recorded CC0 foley from the v25.20 bank, and your teammates hear them where you stand. Sound only: nothing in the game changes.
+
+MEASURED. Check 25.29 passes, and fails on v25.28.
 ## v25.28 - THE ROOM BEHIND A WINDOW HAS NO WORDS
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. Round a small window such as Wirt or the Last Pour, the big station signs of the Undercroft still read through the dark glass (WIRT THE GAMBLER, ENTER RAID!, a cut off SHOP, CR), like a second menu under the first. The room behind a window is now softly blurred as well as dimmed.

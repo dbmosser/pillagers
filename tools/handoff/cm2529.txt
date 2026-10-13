@@ -1,0 +1,7 @@
+v25.29: guns and gear sound like gear
+
+Swapping or equipping a gun now rattles the holster and clacks the draw, and dropping an item thumps.
+
+Check 25.29. Fails on v25.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

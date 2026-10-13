@@ -2138,7 +2138,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.28';
+var VER='25.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17628,6 +17628,7 @@ function dropItem(idx){
   if(idx<0||idx>=G.bag.length) return null;
   var p=G.player,key=G.bag[idx];
   G.bag.splice(idx,1);
+  gearFoley('drop');   // v25.29 (usefoleyh): a soft thump
   // v18.27, HIS ORDER (2026-10-03): TRADING IS DROPPING. On a linked window up top the pile is made by the host, which runs every
   // box, so the whole party sees it and can search it; the host's new-box word brings it back to this window. A loaner Bandage
   // is spent from this window's count here and marked on the pile, as the solo drop below does.
@@ -18539,6 +18540,20 @@ function bagHeldGun(slot){
   say(g.name,'pick',{item:'gun_'+g.id,tag:'BACKPACK'}); blip('pick');   // v22.xx (R52): a pickup row tagged BACKPACK
   return true;
 }
+// v25.29 (usefoleyh), HIS ORDER 2026-10-12 (about 21:10): "add sounds for bandaging, applying armor, etc". GUNS AND GEAR SOUND LIKE
+// GEAR. Swapping guns and equipping one from the backpack played the menu chirp, and dropping an item made no sound. Now (the v25.20
+// bank) a swap or an equip is a strap and holster rattle and the draw clacking up, lighter and quicker for a pistol, an SMG or the
+// Magnum and heavier for a rifle, the LMG, a shotgun, the Longshot or the Lance; a drop is a soft thump. Yours is centred; your
+// teammates hear it where you stand. Cosmetic only: no seeded draw, nothing under G.sim, no game state.
+var GEAR_LIGHT={pistol:1,tacker:1,magnum:1,smg:1,sputter:1,whisper:1,fists:1};
+function gearFoley(kind,w){
+  if((G&&G.sim)||typeof foley!=='function') return false;
+  if(kind==='drop'){ foley('pickup',null,null,{rate:0.7,g:0.8,gap:0.08}); return true; }
+  var lt=!!(w&&GEAR_LIGHT[w.id]);
+  foley('equip',null,null,{rate:lt?1.25:0.9,g:lt?0.8:1});
+  foley('boltLatch',null,null,{at:lt?0.1:0.15,rate:lt?1.5:1.0,g:lt?0.45:0.6,dur:0.15,gap:0});
+  return true;
+}
 function swapGuns(){
   var pp=G&&G.player;
   if(!pp||!pp.sec||pp.downed||pp.dying||pp.roll>0||G.over||G.paused) return false;   // v13.80
@@ -18578,7 +18593,7 @@ function swapGuns(){
   })();
   G.tel.weapon=pp.wep.name;
   // v22.73 (R28): no line for the swap; the gun card shows the gun in his hands. drawGun still says where the other gun went.
-  blip('pick');
+  if(!gearFoley('swap',pp.wep)) blip('pick');   // v25.29 (usefoleyh): the holster and the draw
   return true;
 }
 // EQUIP A CARRIED GUN INTO ONE OF THE TWO SLOTS, v1.91. His note: carry all the
@@ -18678,7 +18693,7 @@ function equipFromBag(ix,slot){
   // detail under the line named what became of the gun it replaced (to backpack, back to the armoury, left behind) and the key it
   // kept in the backpack. The line names the gun he equipped and nothing else; the gun card shows what is in his hands.
   say(_newLine,'info',null);
-  blip('pick');
+  if(!gearFoley('swap',p.wep)) blip('pick');   // v25.29 (usefoleyh): the holster and the draw
   return true;
 }
 // v21.83, the four-gun belt, build 2: A GUN KEEPS ITS KEY WHEN IT IS DRAWN OR STOWED. Keys 1 and 2 used to be the two hand slots, so
@@ -39945,7 +39960,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.28: The Undercroft behind a window is blurred, so its signs no longer read through. Check 25.28 fails on v25.27',
+  now:'v25.29: Swapping or equipping a gun now rattles the holster and clacks the draw, and dropping an item thumps. Check 25.29 fails on v25.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
