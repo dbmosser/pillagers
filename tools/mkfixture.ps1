@@ -18799,7 +18799,11 @@ window.__REGRESS=[
        p.sec=Object.assign({},WEAPONS.pistol); p.secAmmo=7;
        var s2=drew();
        if(s2.some(function(t){ return /STOWED/.test(t); })) bad.push('the card still says STOWED');
-       if(!s2.some(function(t){ return t.indexOf('OTHER GUN  '+WEAPONS.pistol.name+'  7')===0; })) bad.push('the other gun is not listed as OTHER GUN with its rounds');
+       // noequipline (his order of 2026-10-12: no word about the other guns when he equips one): while the game has the stowLine
+       // helper the line reads as v21.75 drew it; once it is gone the gun card names no other gun at all.
+       var _sl21=[].slice.call(document.scripts).some(function(s){ return (s.text||'').indexOf('function stow'+'Line(')>=0; }), _pn21=String(WEAPONS.pistol.name), _hn21=String((p.wep&&p.wep.name)||'');
+       if(_sl21){ if(!s2.some(function(t){ return t.indexOf('OTHER GUN  '+WEAPONS.pistol.name+'  7')===0; })) bad.push('the other gun is not listed as OTHER GUN with its rounds'); }
+       else if(s2.some(function(t){ return String(t).indexOf('OTHER'+' GUN')>=0||(_hn21.indexOf(_pn21)<0&&String(t).indexOf(_pn21)>=0); })) bad.push('the gun card still names the other gun');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ if(own) ctx.fillText=of; else delete ctx.fillText; try{ if(p){ p.sec=sec0; p.secAmmo=sa0; } var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
      return bad.length?bad.join('; '):null; }},
@@ -49383,11 +49387,14 @@ window.__REGRESS=[
          equipFromBag(0);
          return String(g.msg||'')+(g.msgSub?(' '+g.msgSub):'');
        }
+       // noequipline (his order of 2026-10-12, no word about the backpack when he equips a gun): the line may instead name only the
+       // gun he equipped and never the gun it replaced; it is still never the old silence about a displaced gun under another name.
+       var only=function(s){ s=String(s||'').toLowerCase(); var gn=String(WEAPONS[gunId].name).toLowerCase(), hn=String(WEAPONS[holdId].name).toLowerCase(); return s.indexOf(gn)>=0&&(gn.indexOf(hn)>=0||s.split(gn).join(' ').indexOf(hn)<0); };
        var A=equip(true,false);
-       if(A&&A.toLowerCase().indexOf('left behind')<0)
+       if(A&&A.toLowerCase().indexOf('left behind')<0&&!only(A))
          bad.push('equipping over an issued loaner left him with ['+A+'], so he was never told the loaner is gone for good: the line saying so was written and then written over by the name of the gun he had just chosen, which he already knew');
        var B=equip(false,true);
-       if(B&&B.toLowerCase().indexOf('armoury')<0&&B.toLowerCase().indexOf('into the backpack')<0&&B.toLowerCase().indexOf('to backpack')<0)   // 2026-10-08: since v21.14 it goes into the backpack
+       if(B&&B.toLowerCase().indexOf('armoury')<0&&B.toLowerCase().indexOf('into the backpack')<0&&B.toLowerCase().indexOf('to backpack')<0&&!only(B))   // 2026-10-08: since v21.14 it goes into the backpack
          bad.push('equipping over a gun he owns left him with ['+B+'], so he was never told it went back to the armoury rather than into his backpack');
        // CONTROL: an empty hand displaces nothing and must read as it always did.
        g.bag=[gunKey];
