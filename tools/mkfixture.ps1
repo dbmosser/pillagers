@@ -1488,7 +1488,7 @@ window.__mouseState=function(){ return mouse; };
 //    rather than the fight.
 window.__keysRef=function(){ return keys; };
 window.__srchKey=function(){ return (typeof xCallKey==='function')?'KeyE':'KeyX'; };   // v25.67: the keyboard key that searches a box (E from the key swap, X before)
-window.__extKey=function(){ return (typeof xCallKey==='function')?'KeyX':'KeyE'; };   // v25.67: the keyboard key that calls and takes the extraction (X from the key swap, E before)
+window.__extKey=function(){ return (typeof xCallKey==='function')?'KeyX':'KeyE'; }; /*extkeys3*/   // v25.67: the keyboard key that calls and takes the extraction (X from the key swap, E before)
 window.__padSrchKey=function(){ return (typeof xCallKey==='function')?'PadSearch':'KeyX'; };   // v25.67: the key the pad Y ring search holds (PadSearch from the key swap, X before)
 window.__meleeKey=function(){ return (typeof xCallKey==='function')?'KeyQ':'KeyF'; };   // v25.67: the melee strike (Q, the crowbar, from the key swap; F before)
 window.__meleeKeyName=function(){ return (typeof xCallKey==='function')?'q':'f'; };
@@ -1986,17 +1986,17 @@ window.__REGRESS=[
        if(!z) return null;
        z.beaconT=0; z.hold=25; z.callT=0;
        p.x=z.x; p.y=z.y; p.iv=99; p.downed=false;
-       var K=__keysRef(); for(var k in K) K[k]=false; K['KeyE']=true;
+       var K=__keysRef(); for(var k in K) K[k]=false; K[__extKey()]=true;
        for(var f=0;f<50&&__state()&&!__state().over;f++) __loop(performance.now()+f*16.7);
        var got=z.pullT;
        if(leave){
-         K['KeyE']=false; p.x=z.x+900; p.y=z.y+700;
+         K[__extKey()]=false; p.x=z.x+900; p.y=z.y+700;
          for(var f2=0;f2<120&&__state()&&!__state().over;f2++) __loop(performance.now()+f2*16.7);
        }
        var after=z.pullT;
-       p.x=z.x; p.y=z.y; K['KeyE']=true;
+       p.x=z.x; p.y=z.y; K[__extKey()]=true;
        var fr=0; for(;fr<40&&__state()&&!__state().over;fr++) __loop(performance.now()+fr*16.7);
-       K['KeyE']=false;
+       K[__extKey()]=false;
        return {got:got,after:after,extracted:(!__state()||!!__state().over),frames:fr};
      }
      var a=pull(true);
@@ -5140,7 +5140,7 @@ window.__REGRESS=[
        if(!z) return null;
        p.x=z.x; p.y=z.y;
        var K=__keysRef(); for(var k in K) delete K[k];
-       K['KeyE']=true;
+       K[__extKey()]=true;
        for(var f=0;f<200;f++){
          __loop(performance.now()+f*16.7);
          if(z.beaconT!==null&&z.beaconT!==undefined&&f>30) break; }
@@ -6693,7 +6693,7 @@ window.__REGRESS=[
        say=function(m,k,o){ said.push({m:String(m),sub:String((o&&o.sub)||'')}); return realSay.apply(this,arguments); };
        t0=Math.max(performance.now(),(typeof lastTs==='number'&&isFinite(lastTs))?lastTs:0);
        K=__keysRef(); for(var k0 in K) delete K[k0];
-       p.x=z.x; p.y=z.y; K['KeyE']=true;
+       p.x=z.x; p.y=z.y; K[__extKey()]=true;
        for(i=0;i<200&&(z.beaconT===null||z.beaconT===undefined);i++){ p.x=z.x; p.y=z.y; g.ents.length=0; n0=said.length; __loop(t0+(++f)*16.7); if(g.over) break; }
        for(var k1 in K) delete K[k1];
        if(z.beaconT===null||z.beaconT===undefined) return 'SKIP: holding E in the ring did not call for extraction here';
@@ -16831,7 +16831,7 @@ window.__REGRESS=[
        for(i=0;i<g.zones.length;i++) if(g.zones[i].open!==false){ z=g.zones[i]; break; }
        if(!z) return 'SKIP: no open extraction ring here';
        p.x=z.x; p.y=z.y;
-       h=outHint(1); if(h!=='Hold ['+keyLabel('KeyE','E')+'] to call for extraction') bad.push('in a ring with nothing called the hint is '+JSON.stringify(h));
+       h=outHint(1); if(h!=='Hold ['+keyLabel(__extKey(),__extKey().slice(3))+'] to call for extraction') bad.push('in a ring with nothing called the hint is '+JSON.stringify(h));
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        padOn=oPad; keys={};
@@ -18152,7 +18152,7 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keysRef)) return 'SKIP: this fixture cannot deploy or step';
      var bad=[], g, p, z=null, i, t0, f=0, realSay=say, realBlip=blip, said=[], clanks=0, K, ND='This point is '+'CLOSED', n=0, kz=null;
      function cnt(){ var c=0; for(var j=0;j<said.length;j++) if(said[j].indexOf(ND)===0||/^EXTRACTION [A-Z?] IS CLOSED/.test(said[j])) c++; return c; }   /* tr6fixc: the caps form counts too */
-     function hold(nf,x,y){ for(var j=0;j<nf&&!g.over;j++){ p.x=x; p.y=y; g.ents.length=0; K['KeyE']=true; __loop(t0+(++f)*16.7); } }
+     function hold(nf,x,y){ for(var j=0;j<nf&&!g.over;j++){ p.x=x; p.y=y; g.ents.length=0; K[__extKey()]=true; __loop(t0+(++f)*16.7); } }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -18821,13 +18821,13 @@ window.__REGRESS=[
        PAD.on=true; PAD.brand='xbox';
        ln=knock();
        if(ln===null) return 'SKIP: staging: the knock-down branch did not run';
-       WANT=WORDS+' '+keyLabel('KeyE','E')+' to try again.';
-       if(keyLabel('KeyE','E')==='E') bad.push('with a controller connected the pull key is still labelled E');
+       WANT=WORDS+' '+keyLabel(__extKey(),__extKey().slice(3))+' to try again.';
+       if(keyLabel(__extKey(),__extKey().slice(3))==='E') bad.push('with a controller connected the pull key is still labelled E');
        if(ln!==WANT) bad.push('with a controller the knocked down line reads '+JSON.stringify(ln)+', not '+JSON.stringify(WANT));
        if((' '+ln+' ').indexOf(' E ')>=0) bad.push('with a controller the knocked down line still names E');
        PAD.on=false; p.downed=false;
        ln=knock();
-       WANT=WORDS+' '+'E to try again.';
+       WANT=WORDS+' '+__extKey().slice(3)+' to try again.';
        if(ln!==WANT) bad.push('on the keyboard the knocked down line reads '+JSON.stringify(ln)+', not his words '+JSON.stringify(WANT));
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
@@ -19748,7 +19748,7 @@ window.__REGRESS=[
        if(!z) return 'SKIP: no open extraction ring here';
        t0=Math.max(performance.now(),(typeof lastTs==='number'&&isFinite(lastTs))?lastTs:0);
        K=__keysRef(); for(var k0 in K) delete K[k0];
-       p.x=z.x; p.y=z.y; K['KeyE']=true;
+       p.x=z.x; p.y=z.y; K[__extKey()]=true;
        for(i=0;i<200&&(z.beaconT===null||z.beaconT===undefined);i++){ p.x=z.x; p.y=z.y; g.ents.length=0; step(16.7); if(g.over) break; }
        for(var k1 in K) delete K[k1];
        if(z.beaconT===null||z.beaconT===undefined) return 'SKIP: holding E in the ring did not call for extraction here';
@@ -19986,7 +19986,7 @@ window.__REGRESS=[
        say=function(m,k,o){ said.push({m:String(m),sub:String((o&&o.sub)||'')}); return realSay.apply(this,arguments); };
        t0=Math.max(performance.now(),(typeof lastTs==='number'&&isFinite(lastTs))?lastTs:0);
        K=__keysRef(); for(var k0 in K) delete K[k0];
-       p.x=z.x; p.y=z.y; K['KeyE']=true;
+       p.x=z.x; p.y=z.y; K[__extKey()]=true;
        for(i=0;i<200&&(z.beaconT===null||z.beaconT===undefined);i++){ p.x=z.x; p.y=z.y; g.ents.length=0; n0=said.length; __loop(t0+(++f)*16.7); if(g.over) break; }
        for(var k1 in K) delete K[k1];
        if(z.beaconT===null||z.beaconT===undefined) return 'SKIP: holding E in the ring did not call for extraction here';
@@ -36325,7 +36325,7 @@ window.__REGRESS=[
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
-     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+'KeyE'+String.fromCharCode(39)+','+String.fromCharCode(39)+'E'+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset';
+     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+__extKey()+String.fromCharCode(39)+','+String.fromCharCode(39)+__extKey().slice(3)+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset';
      return null; }},
   {v:'16.18',what:'his words: knocked down while extracting says Extraction attempt reset',
    run:function(){
@@ -36333,7 +36333,7 @@ window.__REGRESS=[
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
-     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+'KeyE'+String.fromCharCode(39)+','+String.fromCharCode(39)+'E'+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset';
+     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+__extKey()+String.fromCharCode(39)+','+String.fromCharCode(39)+__extKey().slice(3)+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset';
      return null; }},
   {v:'16.17',what:'knocked down while extracting says what happened: Extraction reset. Hold E to try again, not the extraction hold line',
    run:function(){
@@ -36342,7 +36342,7 @@ window.__REGRESS=[
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
      if(src.indexOf('Extraction hold lost')>=0) return 'the knocked down line still says Extraction hold lost';
-     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+'KeyE'+String.fromCharCode(39)+','+String.fromCharCode(39)+'E'+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset. Hold E to try again.';
+     if(src.indexOf('Knocked down. Extraction progress bar reset. Hold E to try again.')<0&&src.indexOf('Knocked down. Extraction progress bar reset. Hold '+String.fromCharCode(39)+'+keyLabel('+String.fromCharCode(39)+__extKey()+String.fromCharCode(39)+','+String.fromCharCode(39)+__extKey().slice(3)+String.fromCharCode(39)+')+'+String.fromCharCode(39)+' to try again.')<0) return 'the knocked down line does not say Extraction progress bar reset. Hold E to try again.';
      return null; }},
   {v:'16.16',what:'plain game language, the larger pass: the rewritten lines are in the build, the rulebook versions are gone,',
    run:function(){
@@ -43272,25 +43272,25 @@ window.__REGRESS=[
        }
        if(!A) return 'SKIP: no two extraction points here stand apart';
        // Assembled, so the needle is never written out whole in the page. No pad is faked, so on the keyboard this reads E.
-       var HE=['HOLD',keyLabel('KeyE','E'),'TO','EXTRACT'].join(' '), HEB=['HOLD','['+keyLabel('KeyE','E')+']','TO','EXTRACT'].join(' ');
+       var HE=['HOLD',keyLabel(__extKey(),__extKey().slice(3)),'TO','EXTRACT'].join(' '), HEB=['HOLD','['+keyLabel(__extKey(),__extKey().slice(3))+']','TO','EXTRACT'].join(' ');
        // tr5fixa: since v22.66 the prompt names the key in brackets (HOLD [E] TO EXTRACT); either form is the centre verb.
        var hasHE=function(a){ return a.indexOf(HE)>=0||a.indexOf(HEB)>=0; };
        // CONTROL: one call, landed at A, him standing in it. The prompt is drawn on either build, so the recorder sees the centre verb.
        stage(false,A,A);
        if(!(g.active===A&&standingRing()===A&&ringLanded(A)&&g.beaconT!==null&&g.beaconT<=0&&g.shipHold===20)) return 'SKIP: staging: a single landed point did not reach the pointer and the HUD mirrors here (beacon '+g.beaconT+', window '+g.shipHold+')';
        var c0=drawn();
-       if(!hasHE(c0)) return 'SKIP: standing in a single landed point, the HUD drew no prompt to hold '+keyLabel('KeyE','E')+' and extract here, so this trace cannot see the centre verb';
+       if(!hasHE(c0)) return 'SKIP: standing in a single landed point, the HUD drew no prompt to hold '+keyLabel(__extKey(),__extKey().slice(3))+' and extract here, so this trace cannot see the centre verb';
        // THE FINDING: B called after A and still inbound, so the pointer is on B, and him standing in landed A.
        stage(true,B,A);
        // CONTROL: the tick left the pointer and the mirrors on inbound B, and A is still landed with him inside it, on either build.
        if(!(g.active===B&&g.beaconT!==null&&g.beaconT>0&&g.shipHold===null&&ringLanded(A)&&standingRing()===A)) return 'SKIP: staging: the pointer did not stay on the inbound point with him in the landed one here (pointer on the inbound point '+(g.active===B)+', beacon '+g.beaconT+', window '+g.shipHold+')';
        var s1=drawn();
-       if(!hasHE(s1)) bad.push('standing in a landed extraction point while a later call was still inbound at another point, the HUD drew no prompt to hold '+keyLabel('KeyE','E')+' and extract, though a hold there extracts him');
+       if(!hasHE(s1)) bad.push('standing in a landed extraction point while a later call was still inbound at another point, the HUD drew no prompt to hold '+keyLabel(__extKey(),__extKey().slice(3))+' and extract, though a hold there extracts him');
        // KEPT: standing in inbound B instead, with A landed elsewhere, nothing has landed under him and no prompt to extract is drawn.
        stage(true,B,B);
        if(!(g.active===B&&standingRing()===B&&!ringLanded(B)&&ringLanded(A))) return skip('staging: standing in the inbound point did not read as the inbound point here');
        var k1=drawn();
-       if(hasHE(k1)) bad.push('standing in an extraction point still inbound, with another landed elsewhere, the HUD drew the prompt to hold '+keyLabel('KeyE','E')+' and extract, where a hold does not extract');
+       if(hasHE(k1)) bad.push('standing in an extraction point still inbound, with another landed elsewhere, the HUD drew the prompt to hold '+keyLabel(__extKey(),__extKey().slice(3))+' and extract, where a hold does not extract');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ CFG.raiderWaves=keepWaves; }catch(_w){}
@@ -43408,7 +43408,7 @@ window.__REGRESS=[
      var bad=[], stubbed=false, g=null, p=null, z=null, keepZ=null, keepG=null, keepP=null, realFill=null, ownFill=false, seen=[], keepHaul=CFG.hauledAboard;
      var ZK=['open','beaconT','hold','holdMax','pullT','callT','siege','siegeSpawnT','siegeSpawned','siegeGreed','pingT','warned'];
      // Assembled, so the needles are never written out whole in the page.
-     var HX=['HOLD','X','TO','EXTRACT'].join(' '), HE=['HOLD','E','TO','EXTRACT'].join(' '), CX=['HOLD','X','TO','CALL','FOR','EXTRACTION'].join(' ');
+     var HX=['HOLD','X','TO','EXTRACT'].join(' '), HE=['HOLD','E','TO','EXTRACT'].join(' '), CX=['HOLD','X','TO','CALL','FOR','EXTRACTION'].join(' '), HK=['HOLD',__extKey().slice(3),'TO','EXTRACT'].join(' ');
      // tr5fixa: since v22.66 the prompts name the key in brackets (HOLD [X] TO EXTRACT); each needle matches either form.
      var has=function(a,n){ var w=n.split(' '); w[1]='['+w[1]+']'; return a.indexOf(n)>=0||a.indexOf(w.join(' '))>=0; };
      try{ navigator.getGamepads=function(){ return []; }; stubbed=(navigator.getGamepads!==NG); }catch(_s){}
@@ -43457,7 +43457,7 @@ window.__REGRESS=[
        // CONTROL: the fake pad switches the controller labels on, and the extraction key is labelled X.
        pad(true);
        if(!padOn()) return 'SKIP: the fake pad did not switch the controller labels on';
-       if(keyLabel('KeyE','E')!=='X') return 'SKIP: with a pad on, the extraction key is labelled '+keyLabel('KeyE','E')+' here, not X';
+       if(keyLabel(__extKey(),__extKey().slice(3))!=='X') return 'SKIP: with a pad on, the extraction key is labelled '+keyLabel(__extKey(),__extKey().slice(3))+' here, not X';
        // CONTROL: standing in an uncalled ring with the pad on, the call prompt names X on either build, so the trace sees the prompts.
        stage(false,false);
        if(standingRing()!==z) return 'SKIP: staging: another open ring covers the middle of this one here';
@@ -43484,10 +43484,10 @@ window.__REGRESS=[
        if(padOn()) return skip('the fake pad did not let go');
        stage(true,false);
        var k1=drawn();
-       if(!has(k1,HE)) bad.push('with no pad, standing in a landed ring, the HUD no longer told him to hold E to extract');
+       if(!has(k1,HK)) bad.push('with no pad, standing in a landed ring, the HUD no longer told him to hold E to extract');
        stage(true,true);
        var k2=drawn();
-       if(!has(k2,HE)) bad.push('with no pad, down in a landed ring, the downed screen no longer told him to hold E to extract');
+       if(!has(k2,HK)) bad.push('with no pad, down in a landed ring, the downed screen no longer told him to hold E to extract');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ if(realFill){ if(ownFill) ctx.fillText=realFill; else delete ctx.fillText; } }catch(_r){}
@@ -48331,10 +48331,10 @@ window.__REGRESS=[
        g.active=z; g.beaconT=0; g.shipHold=25; g.shipHoldMax=25;
        p.x=z.x; p.y=z.y; p.iv=99; p.downed=false;
        g.timeLeft=tl;
-       var K=__keysRef(); for(var k in K) K[k]=false; K['KeyE']=true;
+       var K=__keysRef(); for(var k in K) K[k]=false; K[__extKey()]=true;
        var f=0;
        for(;f<150&&__state()&&!__state().over;f++) __loop(performance.now()+f*16.7);
-       K['KeyE']=false;
+       K[__extKey()]=false;
        var s2=__state();
        return {over:(s2?s2.over:'gone'), pull:z.pullT, frames:f};
      }
@@ -51474,7 +51474,7 @@ window.__REGRESS=[
        var g=land();
        if(!g) return 'SKIP: the first extraction point on this landing starts closed';
        if(born()!==0) return 'SKIP: this landing starts with siege-born hostiles on it, so nothing here is attributable';
-       keysOff(); __keysRef()['KeyE']=true; frames(120);
+       keysOff(); __keysRef()[__extKey()]=true; frames(120);
        var z=__state().zones[0];
        if(!(z.beaconT!==null&&z.beaconT!==undefined&&z.beaconT>0))
          return 'SKIP: the call did not go in, so the price of it cannot be measured';
@@ -51565,7 +51565,7 @@ window.__REGRESS=[
        z.beaconT=null; z.hold=null; z.pullT=null; z.callT=0;
 
        // A TAP IS NOT A CALL, and the bar is what says so.
-       keysOff(); __keysRef()['KeyE']=true; frames(48);
+       keysOff(); __keysRef()[__extKey()]=true; frames(48);
        var g1=__state(), z1=g1.zones[0];
        if(z1.beaconT!==null)
          bad.push('a hold of well under the 1.6 seconds the call is meant to cost already called the ship, so the most expensive decision in the raid can be made by brushing a key');
@@ -51596,7 +51596,7 @@ window.__REGRESS=[
          bad.push('the boarding hold survives the key being released, so it banks between presses and the last thirty seconds stop being a hold');
 
        // AND HOLDING IT AGAIN LEAVES.
-       keysOff(); __keysRef()['KeyE']=true; frames(130);
+       keysOff(); __keysRef()[__extKey()]=true; frames(130);
        var g5=__state();
        if(!(g5&&g5.over==='extract'))
          bad.push('holding E on a landed ship for well over the 1.4 seconds boarding costs does not end the raid as an extraction, so a raid can be survived and never cashed');
@@ -66217,7 +66217,7 @@ window.__REGRESS=[
      S.x=z.x+560; S.y=z.y+420; S.state='alarm'; S.tx=p.x; S.ty=p.y; S.alert=6;
      C.x=z.x+900; C.y=z.y+700; C.state='patrol'; C.alert=0;
      var K=__keysRef(); for(var k in K) K[k]=false;
-     K['KeyE']=true;
+     K[__extKey()]=true;
      for(var f=0;f<200;f++){
        __loop(performance.now()+f*16.7);
        if(z.beaconT!==null&&z.beaconT!==undefined&&f>30) break;
