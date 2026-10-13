@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.23 - BANDAGES AND MEDKITS SOUND LIKE THEM
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Starting a Bandage or a Medkit played the menu chirp, and so did its landing, with nothing in between. Now a Bandage tears open, wraps three times through its 1.5 second wind-up and lands with a short tape rip and a pat; a Medkit snaps its case, unzips, rummages and lands with the injector and a gauze wrap. The sounds are the recorded CC0 foley from the v25.20 bank, timed against the real wind-up as it runs, so a wind-up that ends early (going down) plays nothing more. Yours is centred on your side of the speakers, your teammates hear it where you stand, and a Bandage or Medkit put on a teammate sounds the same. Sound only: nothing in the game changes.
+
+MEASURED. Check 25.23 passes, and fails on v25.22.
 ## v25.22 - THE WHAT IS NEW CARD NAMES REAL FOLEY
 
 Co-op hunt while he was away. The card was stamped v25.10 and the stamp may not trail the build by more than 0.15. The card was stamped v25.10 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the recorded foley bank (his orders for reload, bandage and armour sounds), no pillager words and no operator voice (his orders 2026-10-12), CAREER kill score (his mode design) and the Forge fire and shock rounds.

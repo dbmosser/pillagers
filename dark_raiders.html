@@ -2129,7 +2129,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.22';
+var VER='25.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17835,7 +17835,7 @@ function useMedical(){
   }
   if(p.prep){ say('ALREADY APPLYING','info',{sub:String(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'Medical').toUpperCase()}); return false; }
   var k=G.bag[idx], it=ITEMS[k];
-  G.bag.splice(idx,1); startPrep('heal',k); blip('pick');
+  G.bag.splice(idx,1); if(!startPrep('heal',k)) blip('pick');   // v25.23 (usefoleya): the Bandage or Medkit plays its own
   // v22.74, the raid text rewrite (R29): WIND-UPS SHOW ON THE USE BAR ONLY. Applying a Bandage or a Medkit, slotting a plate, and
   // bandaging or slotting a plate for a teammate each said a feed line as the wind-up began, while the use bar under the belt
   // already draws APPLYING BANDAGE, SLOTTING ARMOUR PLATE or ... ON NAME with its fill and seconds. The lines are gone; the
@@ -17857,6 +17857,43 @@ function useMedical(){
 // timers, prep for medical and prepA for armour, each ticked on its own, so
 // neither verb waits for the other; each still refuses a second of its own
 // kind while it runs.
+// v25.23 (usefoleya), HIS ORDER 2026-10-12 (about 21:10): "add sounds for bandaging, applying armor, etc". A BANDAGE AND A MEDKIT SOUND
+// LIKE ONE. Starting either played the menu chirp (blip pick), and landing it played the menu chirp again; nothing in between, so a
+// heal under fire sounded like opening the backpack. Now each one plays its recorded foley (the v25.20 bank) against its own wind-up
+// timer: a Bandage tears open, wraps three times through the 1.5 s wind-up and lands with a short tape rip and a pat; a Medkit snaps
+// its case, unzips, rummages at about 0.7 s and lands with the injector and a gauze wrap. The stages are read off the wind-up as it
+// crosses them (prepFoley, from tickPrepSlot), never scheduled ahead, so a wind-up that ends early (going down clears it) plays
+// nothing more. Yours is centred (split speakers put it on your seat side); your teammates hear it where you stand, and a bandage you
+// put on a teammate sounds the same. A kind with no row here (a plate, until its build) keeps the chirp. Cosmetic only: no seeded
+// draw, nothing under G.sim, no game state.
+// PREP_FOLEY[kind]: s is the stages [fraction of the wind-up, bank clip, foley options]; land is what plays as it lands.
+var PREP_FOLEY={
+  bandage:{s:[[0,'bandageTear',{}],[0.3,'bandageWrap',{}],[0.6,'bandageWrap',{rate:0.9,g:0.9}],[0.85,'bandageWrap',{rate:1.12,g:0.75,dur:0.2}]],
+           land:[['bandageTear',{off:0.3,dur:0.16,g:0.6,rate:1.2}],['pickup',{g:0.7,at:0.07}]]},
+  medkit:{s:[[0,'medkitSnap',{}],[0,'medkitZip',{at:0.14,g:0.9}],[0.47,'rummage',{}],[0.75,'bandageWrap',{g:0.7,dur:0.2}]],
+          land:[['injector',{}],['bandageWrap',{g:0.6,dur:0.18,at:0.22}]]}
+};
+// the row for a wind-up: by item key, else by what the item does (a heal with a ceiling is a Bandage, any other heal a Medkit)
+function prepFoleyK(PR){
+  var it=PR&&ITEMS[PR.key];
+  if(!it) return null;
+  return PREP_FOLEY[PR.key]||PREP_FOLEY[it.use==='heal'?(it.capHp?'bandage':'medkit'):(it.use==='armor'?'plate':'')]||null;
+}
+// play the stages the wind-up crossed between t0 and t1 seconds; true when this kind has foley (so the caller drops its chirp)
+function prepFoley(PR,t0,t1){
+  var K=prepFoleyK(PR), m, i, s;
+  if(!K) return false;
+  if(typeof foley!=='function') return true;
+  m=(PR.max>0)?PR.max:1;
+  for(i=0;i<K.s.length;i++){ s=K.s[i]; if(t0<s[0]*m&&s[0]*m<=t1) foley(s[1],null,null,s[2]); }
+  return true;
+}
+function prepFoleyLand(PR){
+  var K=prepFoleyK(PR), i;
+  if(!K) return false;
+  if(typeof foley==='function') for(i=0;i<K.land.length;i++) foley(K.land[i][0],null,null,K.land[i][1]);
+  return true;
+}
 function startPrep(kind,key){
   // v13.67: the issued Bandage count is kept by trackIssuedBandages, which sees every way
   // one leaves the backpack; this line saw only a use.
@@ -17865,6 +17902,7 @@ function startPrep(kind,key){
                        :(CFG.healPrep===undefined?1.5:CFG.healPrep)),
     kind:kind,key:key};
   if(kind==='armor') G.player.prepA=_pr; else G.player.prep=_pr;
+  return prepFoley(_pr,-1,0);   // v25.23 (usefoleya): the first stage, as it starts; true drops the chirp
 }
 function tickPrep(dt){
   var p=G.player;
@@ -17872,7 +17910,9 @@ function tickPrep(dt){
 }
 function tickPrepSlot(p,slot,dt){
   if(!p[slot]) return;
+  var _pf0=p[slot].t;
   p[slot].t+=dt;
+  prepFoley(p[slot],_pf0,p[slot].t);   // v25.23 (usefoleya): the stages it crossed this frame; a cleared wind-up has none left
   if(p[slot].t<p[slot].max) return;
   var PR=p[slot]; p[slot]=null;
   if(typeof PR.aid==='number'){ netAidFinish(PR); return; }   // v16.23: a bandage or plate for a teammate
@@ -17891,7 +17931,7 @@ function tickPrepSlot(p,slot,dt){
     // lands at once still says PATCHED UP.
     if(!(it&&it.hot>0&&CFG.healOverTime!==0)) say('PATCHED UP');
   }
-  blip('pick');
+  if(!prepFoleyLand(PR)) blip('pick');   // v25.23 (usefoleya): its own landing, else the chirp
 }
 // v13.67, in-raid audit: ISSUED BANDAGES ARE SPENT FIRST, HOWEVER THEY LEAVE. A use, a drop, a
 // sale to the peddler and a Bandage handed to a hire all lower how many the backpack holds,
@@ -19238,7 +19278,7 @@ function useHot(){
       // spent for nothing while the toast said it was healing you.
       if(healReach(_pp)>=healCeil(ait)){ say((ait.name+' stops at '+Math.round(healCeil(ait))).toUpperCase()); return; }
       if(_pp.prep){ say('ALREADY APPLYING','info',{sub:String(ITEMS[_pp.prep.key]?ITEMS[_pp.prep.key].name:'Medical').toUpperCase()}); return; }
-      G.bag.splice(ix,1); startPrep('heal',s2.itemKey); blip('pick');   // v22.74 (R29): the use bar says APPLYING
+      G.bag.splice(ix,1); if(!startPrep('heal',s2.itemKey)) blip('pick');   // v25.23 (usefoleya): its own foley   // v22.74 (R29): the use bar says APPLYING
       G.tel.heals++;
       return;
     }
@@ -39666,7 +39706,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.22: The what is new card names real foley. Check 25.22 fails on v25.21',
+  now:'v25.23: A Bandage now tears, wraps and tapes, and a Medkit snaps, unzips, rummages and injects, in time with the wind-up. Check 25.23 fails on v25.22',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -45532,13 +45572,13 @@ function netAidHold(quiet){
   else { ceil=it.capHp?Math.min(g.mh||100,it.capHp):(g.mh||100); if(g.hp>=ceil){ say(String(nm).toUpperCase()+' DOES NOT NEED IT'); return false; } if(p.prep){ say('ALREADY APPLYING','info',{sub:String(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'Medical').toUpperCase()}); return false; } }
   bi=G.bag.indexOf(key); if(bi<0){ say(('No '+it.name+' left').toUpperCase()); return false; }
   G.bag.splice(bi,1);
-  startPrep(arm?'armor':'heal',key);
+  var _pfa=startPrep(arm?'armor':'heal',key);   // v25.23 (usefoleya): true when it plays its own foley
   p[arm?'prepA':'prep'].aid=s;
   // v17.07, co-op hunt 2026-09-28: an issued Bandage held out to a teammate is spent from the issued count here, as dropItem does
   // (and from what the count last saw, so the frame tracker does not spend it twice), and the wind-up remembers it, so if the
   // teammate walks off and it comes back it goes back on the count. It came back as a find and was banked at the extraction.
   if(!arm&&key==='bandage'&&(G.issuedBandages||0)>0){ G.issuedBandages--; if(G.bandSeen!==undefined) G.bandSeen--; p.prep.issB=1; }
-  blip('pick');   // v22.74 (R29): the use bar says APPLYING or SLOTTING ... ON NAME
+  if(!_pfa) blip('pick');   // v22.74 (R29): the use bar says APPLYING or SLOTTING ... ON NAME
   return true;
 }
 function netAidFinish(PR){
@@ -45558,7 +45598,7 @@ function netAidFinish(PR){
   // back as a found Bandage and was banked at the extraction.
   if(NET.role==='host'){ r=netAidPass(s,NET.seat,PR.key,PR.issB?1:0); if(r!=='passed'&&r!=='aid') return kept(' could not take it. '); }
   else for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'aid',s:s,k:PR.key,ib:PR.issB?1:0});
-  say(((it&&it.use==='armor')?('Plate slotted for '+nm):('Patched up '+nm)).toUpperCase(),'ally'); blip('pick');   // v22.xx (R51): PLATE SLOTTED FOR NAME, PATCHED UP NAME
+  say(((it&&it.use==='armor')?('Plate slotted for '+nm):('Patched up '+nm)).toUpperCase(),'ally'); if(!prepFoleyLand(PR)) blip('pick');   // v22.xx (R51): PLATE SLOTTED FOR NAME, PATCHED UP NAME. v25.23 (usefoleya): its own landing
   return true;
 }
 // v17.44, HIS PICK 4 (2026-09-30): TRADING IN A RAID, without seeing the other backpack. With the backpack open, T (or Y on a

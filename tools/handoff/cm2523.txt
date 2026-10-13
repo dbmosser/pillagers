@@ -1,0 +1,7 @@
+v25.23: bandages and medkits sound like them
+
+A Bandage now tears, wraps and tapes, and a Medkit snaps, unzips, rummages and injects, in time with the wind-up.
+
+Check 25.23. Fails on v25.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

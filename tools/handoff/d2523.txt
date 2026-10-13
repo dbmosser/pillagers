@@ -1,0 +1,5 @@
+## v25.23 - BANDAGES AND MEDKITS SOUND LIKE THEM
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Starting a Bandage or a Medkit played the menu chirp, and so did its landing, with nothing in between. Now a Bandage tears open, wraps three times through its 1.5 second wind-up and lands with a short tape rip and a pat; a Medkit snaps its case, unzips, rummages and lands with the injector and a gauze wrap. The sounds are the recorded CC0 foley from the v25.20 bank, timed against the real wind-up as it runs, so a wind-up that ends early (going down) plays nothing more. Yours is centred on your side of the speakers, your teammates hear it where you stand, and a Bandage or Medkit put on a teammate sounds the same. Sound only: nothing in the game changes.
+
+MEASURED. Check 25.23 passes, and fails on v25.22.
