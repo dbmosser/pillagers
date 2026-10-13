@@ -1,0 +1,7 @@
+v24.54: one grid, one right edge
+
+In the shop and the Mainframe the grid starts under the tabs and the detail card lines up with the right edge.
+
+Check 24.54. Fails on v24.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

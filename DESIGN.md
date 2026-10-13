@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.54 - ONE GRID, ONE RIGHT EDGE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the shop and the Mainframe found the item grid and the cream detail card floating in the middle of the window: in the shop a dead band about a sixth of the screen tall sat between the tabs and the first tile, and in both the detail card stopped well short of the right edge that the heading and the footer share. The grid now starts right under the tabs and runs the full width, so the detail card ends on the same right edge as everything else. Nothing else changed.
+
+MEASURED. Check 24.54 passes, and fails on v24.53.
 ## v24.53 - THE HOWLER REDESIGN
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines, silhouettes first. The Howler was a black lunchbox with a tube stuck in it at a fixed angle: the darkest thing in the cast, gone on a dark floor, and its mortar pointed up and left whatever it was shooting at. Now it is a mortar walker on four short splayed legs that step as it moves, with a light turret ring on top so it reads on dark floors, a fat tube with a yellow muzzle ring that leans toward whatever it faces, an ammo drum on its side and a spotting lamp that shows its mood. Elite Howlers have a brass muzzle ring. Drawn only: its size and its shots are unchanged.
