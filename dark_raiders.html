@@ -2092,7 +2092,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.89';
+var VER='24.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24676,7 +24676,7 @@ function endRaid(how){
   // reached from inside the frame (the burn, the death beat), whose remaining lines still read G.
   if(G&&G.arcade&&!G.sim&&G.arcEnd) return;
   if(G&&G.arcade&&!G.sim&&how==='dead'&&raidClockOn()&&(G.nuking||G.timeLeft<=0)){ G.arcEnd='burn'; return; }
-  if(G&&G.arcade&&!G.sim){ if(how==='dead') return arcadeDied(); if(how==='extract') return arcadeExtracted(); if(how==='abandon') return arcadeRaidStop('quit'); }
+  if(G&&G.arcade&&!G.sim){ if(how==='dead') return arcadeDied(); if(how==='extract') return arcadeExtractEnd(); if(how==='abandon') return arcadeRaidStop('quit'); }
   G.over=how;
   if(NET.on&&!G.sim){ try{ netScoreSend(how); }catch(_nss){} }   // v17.39: his pick 5, the score word goes before the out word
   if(NET.on&&!G.sim){ try{ if(!netSpecStart(how)) netUpEnd(how); }catch(_ue){} }   // v15.79: the party is told this raid ended; v16.14: unless the host spectates for the party still up top
@@ -39182,7 +39182,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.89: The arcade attract screen and RUN OVER card fill a 4K TV as they fill a 1080p one. Check 24.89 fails on v24.88',
+  now:'v24.90: Extracting in the demo doubles your score and ends the run. Check 24.90 fails on v24.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47888,7 +47888,7 @@ function arcadeDeploy(o){
   ARCADE.bm=arcadeBmNew(); ARCADE.mateBm=null;   // v23.xx (his answer 20): the best moments start again
   try{ arcadeIniEnd(); }catch(_ie){}   // v23.41 (arcade18): initials still up keep what is there
   ARCADE.over=null; try{ arcadeOverSync(); }catch(_ov){}   // v23.39 (arcade16): the RUN OVER card goes
-  ARCADE.mine=0; ARCADE.mate=0; ARCADE.pot=0; ARCADE.ext=0; ARCADE.banner=null;   // v23.23 (arcade4)
+  ARCADE.mine=0; ARCADE.mate=0; ARCADE.pot=0; ARCADE.ext=0; ARCADE.banner=null; ARCADE.x2=0;   // v23.23 (arcade4)
   ARCADE.kills=0; ARCADE.mateK=0; ARCADE.mateX=0; ARCADE.scEv=''; ARCADE.scN=0; ARCADE.scAt=0; ARCADE.scDirty=(ARCADE.role!=='p2')?1:0;   // v23.29 (arcade8)
   if(ARCADE.role!=='p2') ARCADE.run={id:arcadeRunId()};   // v23.29 (arcade8): the host owns the run id
   startRaid();
@@ -48002,6 +48002,31 @@ function arcadeRedropSpot(p,g,minR){
   if(!s) return false;
   p.x=s.x; p.y=s.y;
   return true;
+}
+// v24.xx (feat0g), HIS MODE DESIGN AND ANSWER 8 (2026-10-12): "extraction gives 2x bonus to score", and extraction doubles the whole
+// raid score and ENDS the run. A finished pull (or being hauled aboard downed) in the DEMO paid EXTRACTION BONUS +2,500 and the haul
+// pot again and dropped him back into the same raid. Now it doubles the score and ends the run at the top of the next frame, as a
+// death does: RUN OVER with the doubled score and EXTRACTED x2 on the card, then initials when it makes the board. In the 2 PLAYER
+// DEMO the run authority doubles both scores (its own and the teammate one) and tells player 2 in the run end word (x2), and player 2
+// doubles its own figures as it takes it; a player 2 that extracts tells the host (arcx with its score), stands out of the fight, and
+// the host doubles and ends the run. arcadeExtracted below (the old bonus and re-drop) is no longer reached from a raid.
+function arcadeX2(){
+  ARCADE.mine=Math.max(0,ARCADE.mine|0)*2; ARCADE.mate=Math.max(0,ARCADE.mate|0)*2;
+  ARCADE.x2=1; G.arcEnd='extract';
+  return true;
+}
+function arcadeExtractEnd(){
+  if(!G||!G.arcade||!G.player) return false;
+  var p=G.player;
+  if(G.arcX) return true;
+  G.arcX=1;
+  if(ARCADE.role==='p2'&&!G.netWasJoin){
+    p.specOut=1; p.vx=0; p.vy=0; keys={};
+    netSamePost({t:'arcx',pair:NET.pair,run:String((ARCADE.run&&ARCADE.run.id)||''),s:Math.max(0,ARCADE.mine|0),k:Math.max(0,ARCADE.kills|0)});
+    return true;
+  }
+  ARCADE.ext=(ARCADE.ext|0)+1;
+  return arcadeX2();
 }
 function arcadeExtracted(){
   if(!G||!G.arcade||!G.player) return false;
@@ -48418,6 +48443,7 @@ function arcadeScFlush(now){
 // arcsc from the other window. Returns what it did.
 function arcadeScTake(m){
   if(!ARCADE.on) return 'off';
+  if(ARCADE.x2&&G&&G.arcEnd) return 'ignored';   // v24.xx (feat0g): the doubled score stands until the run end
   var id=(typeof m.run==='string')?m.run.slice(0,40):'';
   if(!id) return 'bad';
   if(ARCADE.role==='p2'){
@@ -48639,6 +48665,7 @@ function arcadeOnMsg(m){
       netSamePost({t:'arcendok',pair:NET.pair,run:_er});
       if(_er&&ARCADE.endRun===_er) return 'ignored';   // v23.50 (arcade26): a repeat of a run end already taken changes nothing
       ARCADE.endRun=_er;
+      if(m.x2){ ARCADE.mine=Math.max(0,ARCADE.mine|0)*2; ARCADE.mate=Math.max(0,ARCADE.mate|0)*2; }   // v24.xx (feat0g): the run ended on an extraction, x2
       return arcadeEndTake();
     }
     // v23.25 (arcade6): the answers to arcjoin. fresh 1: wait for the raid word. fresh 0: ask to join the raid in progress (again every
@@ -48654,6 +48681,12 @@ function arcadeOnMsg(m){
     if(m.t==='arcjoin'){ ARCADE.p2Busy=0; return arcadeJoinAsk(); }   // v23.25 (arcade6): player 2 pressed A
     if(m.t==='arcini'){ if(!ARCADE.ini||ARCADE.ini.mirror) return 'ignored'; arcadeIniOp(String(m.op||'').slice(0,4)); return 'arcini'; }   // v23.41 (arcade18): the player 2 pad on the initials card
     if(m.t==='arcact'){ ARCADE.mateAt=Date.now(); return 'arcact'; }   // v23.39 (arcade16): player 2 is playing
+    if(m.t==='arcx'){   // v24.xx (feat0g): player 2 extracted: its last score, then both doubled and the run ends
+      if(!G||!G.arcade||G.over||G.arcEnd||!ARCADE.run||String(m.run||'')!==ARCADE.run.id) return 'ignored';
+      ARCADE.mate=Math.max(ARCADE.mate|0,Math.round(+m.s||0)); ARCADE.mateK=Math.max(ARCADE.mateK|0,m.k|0); ARCADE.mateX=(ARCADE.mateX|0)+1;
+      arcadeX2();
+      return 'arcx';
+    }
     if(m.t==='arcleft'){ ARCADE.mateAt=0; if(arcadeBenched()) arcadeRunEnd('idle'); return 'arcleft'; }   // v23.39 (arcade16): player 2 idled out; nobody left playing ends the run
     return 'ignored';
   }
@@ -49007,8 +49040,9 @@ function arcadeRunEnd(why){
 var ARCADE_END={ms:3000,every:500};
 function arcadeEndSend(){
   var id=String((ARCADE.run&&ARCADE.run.id)||''), now=Date.now();
-  ARCADE.endSend={id:id,at:now,last:now};
-  netSamePost({t:'arcend',pair:NET.pair,run:id});
+  var x2=ARCADE.x2?1:0; ARCADE.x2=0;   // v24.xx (feat0g): an extraction run end tells player 2 the score was doubled
+  ARCADE.endSend={id:id,at:now,last:now,x2:x2};
+  netSamePost({t:'arcend',pair:NET.pair,run:id,x2:x2});
   return true;
 }
 // Run from the attract tick. Returns what it did: '', again or done.
@@ -49019,7 +49053,7 @@ function arcadeEndTick(now){
   if(!ARCADE.on||ARCADE.role!=='host'||now-e.at>=ARCADE_END.ms||(G&&G.arcade)){ ARCADE.endSend=null; return 'done'; }
   if(now-e.last<ARCADE_END.every) return '';
   e.last=now;
-  netSamePost({t:'arcend',pair:NET.pair,run:e.id});
+  netSamePost({t:'arcend',pair:NET.pair,run:e.id,x2:e.x2?1:0});
   return 'again';
 }
 // Player 2 takes the host run end, from arcend or the marked out word, whichever comes first.
@@ -49088,6 +49122,7 @@ function arcadeOverSync(){
     c.textContent=''; c.setAttribute('data-at',sig);
     ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row; v23.56 (arcade31): in credits
       :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
+    if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']);   // v24.xx (feat0g): the run ended on an extraction
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1]; c.appendChild(el); }
     if(ini) arcadeIniDraw(c,ini);
   }

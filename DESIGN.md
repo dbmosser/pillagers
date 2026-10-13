@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.90 - DEMO EXTRACTION: SCORE X2, RUN OVER
+
+Co-op hunt while he was away. His mode design and his answer 8 of 2026-10-12: extraction gives a 2x bonus to the score, and it doubles the whole raid score and ends the run. A DEMO extraction used to pay a 2,500 bonus plus the haul again and drop you straight back into the same raid. Now a finished pull (or being hauled aboard while down) doubles the score and ends the run: RUN OVER with EXTRACTED x2 and the doubled score counting up, then the initials if it makes the board. In the 2 player demo either player extracting doubles both scores and ends the run for both windows.
+
+MEASURED. Check 24.90 passes, and fails on v24.89.
 ## v24.89 - THE ATTRACT SCREEN FILLS A 4K TV
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures at 1080p and 4K and make sure the menus look good. On a 4K screen the arcade attract screen name, PRESS ANY BUTTON, the team strip and the RUN OVER card stopped growing at a smaller screen size, so on a 4K TV they were about two thirds of their size on a 1080p one. They now grow with the screen.

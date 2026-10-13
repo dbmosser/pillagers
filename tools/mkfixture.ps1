@@ -6063,6 +6063,68 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.90',what:'his mode design and answer 8 (2026-10-12): a DEMO extraction doubles the whole score and ends the run (RUN OVER with EXTRACTED x2, then initials when it makes the board); the 2 player host doubles both scores and tells player 2 (x2), and a player 2 extraction word (arcx) doubles and ends the run on the host',
+   run:function(){
+     if(!(window.__state&&window.__runPrep&&window.__loop&&window.__endRaid)) return 'SKIP: this fixture cannot step a raid';
+     if(typeof arcadeDeploy!=='function'||typeof arcadeLeave!=='function'||typeof arcadeOnMsg!=='function'||typeof ARCADE!=='object'||typeof NET!=='object') return 'SKIP: no arcade here';
+     var bad=[], g, f, bk=null, hadB=false, BK=(typeof ARCADE_BOARD_KEY==='string')?ARCADE_BOARD_KEY:'', nsp=netSamePost, posts=[], ownN=false, ns0=NET.same, ownS=false, r, oc;
+     function step(){ for(f=0;f<8&&__state()===g;f++) __loop(performance.now()+f*16.7); }
+     function fresh(){ if(!arcadeDeploy({mapIx:0,seed:4242})) return false; g=__state(); keys={}; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.ownAt=Date.now(); return !!(g&&g.arcade); }
+     try{
+       __topClear(); __runPrep();
+       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
+       if(BK){ try{ bk=localStorage.getItem(BK); hadB=true; localStorage.removeItem(BK); }catch(_b){} }
+       netSamePost=function(m){ posts.push(m); return true; }; ownN=true;
+       // THE 1 PLAYER DEMO
+       if(!fresh()) return 'SKIP: arcadeDeploy built no arcade raid';
+       ARCADE.solo=1; ARCADE.run={id:'tfeat0g1'}; ARCADE.mine=1500; ARCADE.mate=0; ARCADE.over=null; ARCADE.ini=null;
+       __endRaid('extract'); step();
+       if(__state()===g) bad.push('a 1 player extraction dropped him back into the raid (score '+ARCADE.mine+', hold '+ARCADE.holdT+')');
+       else {
+         if(!ARCADE.over||ARCADE.over.why!=='extract') bad.push('a 1 player extraction did not end the run (over '+JSON.stringify(ARCADE.over&&ARCADE.over.why)+')');
+         else if(ARCADE.over.team!==3000) bad.push('the 1 player extraction ended with '+ARCADE.over.team+', not 1500 x2 = 3000');
+         if(!ARCADE.ini||ARCADE.ini.run!=='tfeat0g1') bad.push('a doubled score on an empty board did not ask for initials');
+         if(typeof arcadeOverSync==='function'){ try{ arcadeOverSync(); }catch(_os){} }
+         oc=document.querySelector('#attract .arcover');
+         if(oc&&oc.style.display!=='none'&&(oc.textContent||'').indexOf('EXTRACTED'+' x2')<0) bad.push('the RUN OVER card does not read EXTRACTED x2 ('+String(oc.textContent).slice(0,80)+')');
+       }
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e1){}
+       ARCADE.ini=null;
+       // THE 2 PLAYER DEMO, the host extracts
+       ARCADE.solo=0; ARCADE.over=null; posts.length=0;
+       if(!fresh()) return bad.concat(['SKIP: no second arcade raid']).join('; ');
+       ARCADE.run={id:'tfeat0g2'}; ARCADE.mine=1500; ARCADE.mate=400; ARCADE.mateK=3;
+       __endRaid('extract'); step();
+       if(__state()===g) bad.push('a 2 player host extraction did not end the run');
+       else {
+         if(!ARCADE.over||ARCADE.over.team!==3800) bad.push('the 2 player extraction team score is '+(ARCADE.over&&ARCADE.over.team)+', not (1500+400) x2 = 3800');
+         if(!posts.some(function(m){ return m&&m.t==='arcend'&&m.x2===1; })) bad.push('the run end word to player 2 does not carry x2');
+       }
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e2){}
+       ARCADE.ini=null;
+       // THE 2 PLAYER DEMO, player 2 extracts: the host takes arcx
+       ARCADE.over=null; posts.length=0;
+       if(!fresh()) return bad.concat(['SKIP: no third arcade raid']).join('; ');
+       ARCADE.run={id:'tfeat0g3'}; ARCADE.mine=1000; ARCADE.mate=200; ARCADE.mateK=1;
+       NET.same='host'; ownS=true;
+       r=arcadeOnMsg({t:'arcx',pair:NET.pair,run:'tfeat0g3',s:300,k:2});
+       step();
+       if(r!=='arcx') bad.push('the host did not take a player 2 extraction word (got '+r+')');
+       if(__state()===g) bad.push('a player 2 extraction did not end the run on the host');
+       else if(!ARCADE.over||ARCADE.over.team!==2600) bad.push('after a player 2 extraction the team score is '+(ARCADE.over&&ARCADE.over.team)+', not (1000+300) x2 = 2600');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       if(ownN) netSamePost=nsp;
+       if(ownS) NET.same=ns0;
+       keys={};
+       try{ ARCADE.ini=null; }catch(_i){}
+       try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       try{ ARCADE.solo=0; ARCADE.mine=0; ARCADE.mate=0; ARCADE.mateK=0; ARCADE.mateX=0; ARCADE.kills=0; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.over=null; ARCADE.run=null; ARCADE.x2=0; ARCADE.endSend=null; }catch(_m){}
+       try{ if(hadB){ if(bk===null) localStorage.removeItem(BK); else localStorage.setItem(BK,bk); } }catch(_b2){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.89',what:'his #50 (UI redesign ui5q1y, the 4K attract pictures): the attract name and PRESS ANY BUTTON keep growing past a 1440p size (their caps are at least 160px and 230px)',
    run:function(){
      var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), bad=[];

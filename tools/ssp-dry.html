@@ -2899,12 +2899,20 @@ var SHOP=[
   // v11.76, HIS ORDER: cheaper. Was 3600 against a 900 credit start.
   {k:'pistol',kind:'wep',price:1800,rep:0},{k:'smg',kind:'wep',price:13200,rep:0}
 ];
+// v24.xx (scavspawnonly), HIS ORDER (2026-10-12): "scav pistol should not be a findable item -- only spawn with one, never find one in
+// environment or on pillager bot etc". The Scav Pistol is the gun you go up with (the freebie kit, the armoury pistol every save
+// starts with) and nothing else: it is out of the locker and body tables below, the landmark ammo table, the Peddler gun slot and
+// Wirt's gamble, no pillager or hired man rolls it (the three pistol rows in mkRaider are the Tacker now, the same tier and feel),
+// an imported friend who favoured it walks in with the Tacker, and reward 5 pays its value when you already own one instead of a
+// second pistol to the stash. Every roll that drew it still draws once from the rest, so no seeded draw moved and the seed 4242
+// build holds the same entities and containers. The item (Scav Pistol (field)) stays: it is what your own pistol becomes in the
+// backpack, and a stash that already holds one keeps it.
 var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
-  locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['frag',4],['stim',5],['gun_pistol',4],['gun_smg',2],['gun_carbine',2],['gun_magnum',2],['core',2]],
+  locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['frag',4],['stim',5],['gun_smg',2],['gun_carbine',2],['gun_magnum',2],['core',2]],
   safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',10],['medkit',7],['comp',6],['frag',5],['gun_rifle',5],['gun_shotgun',4],['gun_lmg',3],['gun_dmr',2],['gun_sniper',2],['blackbox',2],['KEY',4],['gun_whisper',2],['gun_lance',1]],
   body:[['ammobox',13],['bandage',10],['medkit',11],['plate',11],['stim',8],['frag',6],['smoke',4],
-        ['gun_pistol',7],['gun_smg',5],['gun_carbine',3],['optic',6],['servo',5],['board',4],
+        ['gun_smg',5],['gun_carbine',3],['optic',6],['servo',5],['board',4],
         ['cell',4],['core',5],['comp',4],['titan',2]],
   // Caches hold no junk at all. Every entry here is rare or elite, so opening one
   // is always worth the 4.6 seconds it pins you in place.
@@ -11125,7 +11133,9 @@ function raiderLook(identId,x,y){
 function mkRaider(x,y,forceId,simBuild){
   // v6.53, his note. Nine entries: pistol 3, smg 2, rifle 2, carbine 1, scattergun 1,
   // so about one pillager in five carries something the counter will not sell you.
-  var wk=pick(['pistol','pistol','pistol','smg','smg','rifle','rifle','carbine','shotgun']);
+  // v24.xx (scavspawnonly), HIS ORDER: the Scav Pistol is spawn-only, so the three pistol rows are the Tacker, the other tier 1
+  // sidearm (20 a round against 23, 14 rounds against 12), and the pick still draws once from nine.
+  var wk=pick(['tacker','tacker','tacker','smg','smg','rifle','rifle','carbine','shotgun']);
   var ident=forceId||pick(IDENTITIES);
   // THE GUARD WAS READING THE WRONG RAID, fixed v1.96. buildRaid spans lines 4680
   // to 5300 and G is not assigned until 5302, AFTER it returns, so every (G&&G.sim)
@@ -11210,7 +11220,7 @@ coat:ident.coat, ident:ident.id, name:ident.tag,
   r.rig=rrl<0.44?'none':(rrl<0.80?'light':(rrl<0.95?'medium':'heavy'));
   var RRG=armorById(r.rig);
   r.armor=RRG.cap*0.7; r.armorCap=RRG.cap; r.bulk=RRG.bulk;
-  r.bag.push('gun_'+wk);
+  if(ITEMS['gun_'+wk]) r.bag.push('gun_'+wk);   // v24.xx (scavspawnonly): the Tacker is an issued gun with no item form, so it is not loot
   // His in-run note at 93s: "raiders should drop better loot". He is right and it was
   // indefensible. A raider is the most dangerous thing on the map, he tagged the one
   // fight he had as "raider battle felt really good", and the reward was one to three
@@ -11268,7 +11278,8 @@ function pedBuyRate(){ return (CFG.pedBuy===undefined?PEDDLER_BUY:CFG.pedBuy); }
 var PED_STOCK=['medkit','medkit','plate','ammobox','bandage','comp','optic','titan','cell','servo'];
 // Every gun in the game, reachable from the stall. His order, and it also gives
 // the Peddler a reason to exist beyond plates.
-var PED_GUNS=['gun_pistol','gun_smg','gun_carbine','gun_shotgun','gun_rifle','gun_lmg','gun_dmr'];
+// v24.xx (scavspawnonly): six now, the Scav Pistol is spawn-only (his order 2026-10-12); the slot still draws once.
+var PED_GUNS=['gun_smg','gun_carbine','gun_shotgun','gun_rifle','gun_lmg','gun_dmr'];
 function pedPrice(k){ return Math.round(ival(k)*1.9); }
 // He closes his stall to you once you have killed one of him. Notoriety is
 // permanent and it is meant to be: shooting the unarmed man is the greediest
@@ -11962,7 +11973,7 @@ function buildRaid(sim){
     // find in a place that patched people up.
     medical:[['bandage',30],['medkit',20],['plate',12],['comp',8],['cell',8],['scrap',12],['board',6],['servo',4]],
     // A checkpoint or a switchyard: this is where the rounds are.
-    ammo:   [['ammobox',44],['cell',12],['scrap',12],['wire',8],['comp',8],['plate',6],['board',5],['gun_pistol',3],['gun_smg',2]]
+    ammo:   [['ammobox',44],['cell',12],['scrap',12],['wire',8],['comp',8],['plate',6],['board',5],['gun_smg',2]]
   };
   var LMTYPE={rare:'safe',medical:'locker',ammo:'locker',bulk:'crate'};
   for(var lc2=0;lc2<map.landmarks.length;lc2++){
@@ -19319,7 +19330,7 @@ function raiderUseKit(e,dt){
       // better gun still pays both. The old gun goes into the pack only when it has no copy there (an elite's blessed gun, which
       // blessElite hands him after the spawn copy is pushed), so that pack is one longer after the swap; with a copy nothing
       // moves at all and the pack length is what it always was.
-      if(old&&old.id!=='fists'&&e.bag.indexOf('gun_'+old.id)<0) e.bag.push('gun_'+old.id);
+      if(old&&old.id!=='fists'&&ITEMS['gun_'+old.id]&&e.bag.indexOf('gun_'+old.id)<0) e.bag.push('gun_'+old.id);   // v24.xx (scavspawnonly): a Tacker has no item form
       // v8.22, audit: the SAME cap blessElite applies at 6230, and for the same
       // stated reason - never open fire from outside his sight. This path had no
       // cap at all, so a raider who picked up a Longshot engaged at 648 against
@@ -24495,7 +24506,9 @@ function claimTier(ix){
       // profile, for reward 5. A duplicate now arrives as the ITEM, which is
       // worth selling; if there is no item form it pays what the gun is worth.
       var _dupK='gun_'+T.v;
-      if(ITEMS[_dupK]){
+      // v24.xx (scavspawnonly), HIS ORDER: the Scav Pistol is spawn-only, so a duplicate one (reward 5, BACKUP PISTOL, on every save
+      // that still owns the pistol) pays what the gun is worth instead of putting a second Scav Pistol in the stash.
+      if(ITEMS[_dupK]&&T.v!=='pistol'){
         P.stash.push(_dupK);
         msg='a second '+WEAPONS[T.v].name+' to the stash, yours to sell';
       } else {
@@ -39022,7 +39035,9 @@ function applyGhost(){
     // band died short of the target, and the reverse never engaged at all past
     // the body range. Same two lines the kit path uses, so there is now one rule.
     if(WEAPONS[P.ghost.wep]){
-      e.wep=(WEAPONS[P.ghost.wep].mag===0)?WEAPONS.pistol:WEAPONS[P.ghost.wep];
+      // v24.xx (scavspawnonly), HIS ORDER: no pillager carries the Scav Pistol, so a friend who favoured it (or bare hands) walks in
+      // with the Tacker, the same tier and feel.
+      e.wep=(WEAPONS[P.ghost.wep].mag===0||P.ghost.wep==='pistol')?WEAPONS.tacker:WEAPONS[P.ghost.wep];
       e.dmg=e.wep.dmg; e.rng=Math.min(e.wep.rng*0.72,580);
     }
     e.ghostHaul=(P.ghost.rate>=25)?5:9;
@@ -39350,7 +39365,7 @@ var GAMBLE_POOL=[
   ['scrap',10],['wire',10],['cell',9],['bandage',9],['ammobox',10],['board',8],
   ['optic',7],['plate',6],['servo',6],['comp',6],['medkit',5],['smoke',4],['decoy',3],['frag',3],
   ['core',4],['coil',3],['ledger',3],['titan',3],
-  ['gun_pistol',4],['gun_smg',3],['gun_carbine',2],['gun_shotgun',2],['gun_rifle',2],['gun_lmg',1],['gun_dmr',1],
+  ['gun_smg',3],['gun_carbine',2],['gun_shotgun',2],['gun_rifle',2],['gun_lmg',1],['gun_dmr',1],
   ['blackbox',1],['relay',1],['codex',1],['reactor',1],['bloom',1],['KEY',3]
 ];
 // SPEC 3.1: vendors you actually talk to, not interaction prompts on crates.

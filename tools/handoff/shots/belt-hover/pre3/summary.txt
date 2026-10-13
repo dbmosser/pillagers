@@ -1,0 +1,18 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  bh1-raid-gun-inhand                    staged       9.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh2-raid-gun-other                     staged       9.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh3-raid-item-frag                     staged      11.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh4-raid-item-medical                  staged       9.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh5-raid-item-trip                     staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh6-floor-gun                          staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh7-floor-item                         NOT STAGED   7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | SKIP: no cell
+  bh8-raid-pad-backpack                  staged       9.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3872x2263, viewport 3840x2160
+  bh1-raid-gun-inhand                    staged      11.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh2-raid-gun-other                     staged      12.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh3-raid-item-frag                     staged      10.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh4-raid-item-medical                  staged      10.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh5-raid-item-trip                     staged      12.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh6-floor-gun                          staged       8.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  bh7-floor-item                         NOT STAGED   8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | SKIP: no cell
+  bh8-raid-pad-backpack                  staged      10.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
