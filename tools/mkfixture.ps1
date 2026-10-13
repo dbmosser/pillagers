@@ -30088,7 +30088,7 @@ window.__REGRESS=[
      if(!g.drag||g.drag.key!=='gun_'+c) return 'SKIP: staging: the press on key 8 did not pick it up';
      if(!(p.wep&&p.wep.id===a)) bad.push('pressing key 8 to drag it swapped '+c+' up before anything was dropped (in hand: '+(p.wep&&p.wep.id)+')');
      up(K8.x+20,K8.y-380);
-     if(g.hotAssign[3]!==undefined) bad.push('control: dragging key 8 off the belt did not unbind it');
+     if(typeof BELT_CLASS==='undefined'&&g.hotAssign[3]!==undefined) bad.push('control: dragging key 8 off the belt did not unbind it');   // v25.xx (belt3) retarget: on a gun key the drag off the belt stows the gun and the key stays with it in the backpack
      if(!(p.wep&&p.wep.id===a)) bad.push('after dragging key 8 off the belt the gun up is '+(p.wep&&p.wep.id)+', not '+a);
    }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
    finally{
