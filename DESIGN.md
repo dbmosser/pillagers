@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.52 - THE BELT CAPTION DRAWS KEYCAPS
+
+Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD (#35) and make it look like a triple A game (#50). The picture review of the raid HUD found the caption over the belt still writing its keys as bracketed words, [FIRE] use and [V] signal, next to the keycaps every other prompt in the raid now draws. Its keys are keycaps now, on the same graphite as the panels. The words, place and size are the same.
+
+MEASURED. Check 24.52 passes, and fails on v24.51.
 ## v24.51 - PILLAGERS TAUNT WHEN THEY HIT YOU
 
 Co-op hunt while he was away. His answer 34 (2026-10-12): machine beeps and pillager taunts. The pillagers had hurt taunts written (YOU ARE BLEEDING, NEARLY HAD YOU, KEEP RUNNING) but nothing ever used them: a pillager only called out when he spotted you, put you down or ran. Now a pillager whose round lands on you can taunt you too, one line on the map at a time and never twice inside four seconds, so a firefight has a voice without turning into a wall of shouting. Machines never taunt.

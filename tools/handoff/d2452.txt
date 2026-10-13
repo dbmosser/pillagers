@@ -1,0 +1,5 @@
+## v24.52 - THE BELT CAPTION DRAWS KEYCAPS
+
+Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD (#35) and make it look like a triple A game (#50). The picture review of the raid HUD found the caption over the belt still writing its keys as bracketed words, [FIRE] use and [V] signal, next to the keycaps every other prompt in the raid now draws. Its keys are keycaps now, on the same graphite as the panels. The words, place and size are the same.
+
+MEASURED. Check 24.52 passes, and fails on v24.51.

@@ -6063,6 +6063,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.52',what:'his #50 and #35 (UI redesign ui5q1n, from the AAA judge of the raid HUD shot): in a raid the belt caption draws its FIRE key as a keycap (hudKey), as every world prompt does, and still draws the caption line',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     if(typeof hudKey!=='function') return 'SKIP: no keycaps in this build';
+     var bad=[], g, keys0=[], oK=hudKey, seen=[], real=CanvasRenderingContext2D.prototype.fillText, line;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['medkit','bandage'],safe:null,mapIx:0,seed:4242});
+       g=__state(); keys={};
+       hudKey=function(l){ keys0.push(String(l)); return oK.apply(this,arguments); };
+       CanvasRenderingContext2D.prototype.fillText=function(t){ seen.push(String(t)); return real.apply(this,arguments); };
+       try{ __frame(0.016); }finally{ CanvasRenderingContext2D.prototype.fillText=real; hudKey=oK; }
+       line=seen.filter(function(s){ return s.indexOf('] u'+'se')>=0; })[0];
+       if(!line) return 'SKIP: no belt caption was drawn this frame';
+       if(keys0.indexOf('FI'+'RE')<0) bad.push('the belt caption draws [FIRE] as a bracketed word, not a keycap ('+keys0.join(',')+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ hudKey=oK; CanvasRenderingContext2D.prototype.fillText=real; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.51',what:'his answer 34 b: a pillager whose round lands on you taunts you with a hurt line, through the one-at-a-time taunt gate; a machine round draws no taunt',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof updateBullets!=='function'||typeof taunt!=='function') return 'SKIP: no raid here';

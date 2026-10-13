@@ -1,0 +1,7 @@
+v24.52: the belt caption draws keycaps
+
+The caption over the belt shows its keys as keycaps.
+
+Check 24.52. Fails on v24.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
