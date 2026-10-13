@@ -1,0 +1,24 @@
+{
+    "title":  "CONTROLS LIST: NEW KEYS IN PAIRS",
+    "why":  "A follow-up to the key swap. The short controls list in the corner grew from 12 to 16 entries, and the new keys pushed TACTICAL BELT into the right hand column, away from the backpack key its width was measured against. The entries are laid out again in pairs, with 1-9 TACTICAL BELT and B / I on one row as before: reload and melee, next gun and throw, heal and map, the belt and the backpack, search and extract. The pause box line the page is born with names the new keys too (the game rewrites it from the key map whenever the box opens).",
+    "now":  "The short controls list now lays the new keys out in pairs, with the tactical belt back beside the backpack key.",
+    "edits":  [
+                  {
+                      "anchor":  "[\u0027G\u0027,\u0027throw\u0027],[\u0027H\u0027,\u0027heal\u0027],",
+                      "replacement":  "[\u0027G\u0027,\u0027throw\u0027],[\u0027H\u0027,\u0027heal\u0027],[\u0027M\u0027,\u0027map\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027E\u0027,\u0027search\u0027],[\u0027X\u0027,\u0027extract\u0027],[\u0027M\u0027,\u0027map\u0027]",
+                      "replacement":  "[\u0027E\u0027,\u0027search\u0027],[\u0027X\u0027,\u0027extract\u0027]"
+                  },
+                  {
+                      "anchor":  "E interact \u0026nbsp; R reload \u0026nbsp; F melee strike \u0026nbsp; ",
+                      "replacement":  "E search / use \u0026nbsp; X extraction \u0026nbsp; R reload \u0026nbsp; Q melee \u0026nbsp; F next gun \u0026nbsp; G quick throw \u0026nbsp; H quick heal \u0026nbsp; "
+                  },
+                  {
+                      "anchor":  "M map \u0026nbsp; H controls \u0026nbsp; TAB back out",
+                      "replacement":  "M map \u0026nbsp; F1 controls \u0026nbsp; TAB back out"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the compact controls list keeps 1-9 TACTICAL BELT in the left column beside B / I (the v17.76 rule) and names the new keys in pairs: Q melee, F next gun, G throw, H heal, E search, X extract\u0027,\n   run:function(){\n     if(typeof LEGEND_MINI===\u0027undefined\u0027) return \u0027SKIP: no compact legend here\u0027;\n     var bad=[], rows=LEGEND_MINI, i, ix=-1, k, found, want={\u0027Q\u0027:\u0027melee\u0027,\u0027F\u0027:\u0027next gun\u0027,\u0027G\u0027:\u0027throw\u0027,\u0027H\u0027:\u0027heal\u0027,\u0027E\u0027:\u0027search\u0027,\u0027X\u0027:\u0027extract\u0027};\n     for(i=0;i\u003crows.length;i++) if(rows[i][0]===\u00271-9\u0027) ix=i;\n     if(ix\u003c0) bad.push(\u0027the compact list has no 1-9 row\u0027);\n     else{\n       if(ix%2!==0) bad.push(\u00271-9 TACTICAL BELT sits in the right hand column (entry \u0027+ix+\u0027), so its label has no next column to be measured against\u0027);\n       if(!rows[ix+1]||rows[ix+1][0]!==\u0027B / I\u0027) bad.push(\u0027B / I does not follow 1-9 on the same row\u0027);\n     }\n     for(k in want){ found=false; for(i=0;i\u003crows.length;i++) if(rows[i][0]===k\u0026\u0026rows[i][1]===want[k]) found=true; if(!found) bad.push(\u0027the compact list lacks \u0027+k+\u0027 \u0027+want[k]); }\n     if(rows.length%2!==0) bad.push(\u0027the compact list has an odd number of entries (\u0027+rows.length+\u0027), so its last row has one hole\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

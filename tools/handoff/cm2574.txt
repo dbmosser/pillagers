@@ -1,0 +1,7 @@
+v25.74: belt keys sound like what they pick
+
+Belt keys now sound like what they pick instead of the plain chirp: a pouch rustle, a cloth wrap, an armour clack or a soft tick.
+
+Check 25.74. Fails on v25.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

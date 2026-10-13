@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.74 - BELT KEYS SOUND LIKE WHAT THEY PICK
+
+Co-op hunt while he was away. His note of 2026-10-13: wherever the plop is used, consider whether something else would be better. The plop is the short rising pick chirp (already half as loud since v25.64). Pressing a belt key (the number keys, the mouse wheel, the pad bumpers) played it after the holster clack of a gun swap had already played, and for a grenade, a medical item or a plate it was the only sound. Now a belt key sounds like what it picks: a gun swap or a draw keeps its own holster clack and adds nothing; a throwable is a short pouch rustle, a bandage or medkit the cloth wrap, a plate the armour clack; an empty cell or a gun already in hand gets the soft menu tick, and a vacant gun key the dull buzz of something locked. The plop stays, at half level, where nothing fits better: finishing a box search, the pickup and stash actions, waypoints, revives and the Undercroft buttons. Sound only.
+
+MEASURED. Check 25.74 passes, and fails on v25.73.
 ## v25.73 - NO SPOKEN ANNOUNCER, GAME SOUNDS INSTEAD
 
 Co-op hunt while he was away. His order of 2026-10-13: get rid of all spoken sounds like WAVE INCOMING and just add game sounds instead. The only spoken clips left in the page were the ten announcer calls of v24.04 (DOUBLE KILL, TRIPLE KILL, MULTI KILL, RAMPAGE, UNSTOPPABLE, NEW HIGH SCORE, TWO MINUTES, ONE MINUTE, WAVE INCOMING and EXTRACTED). They are deleted with the code that decoded and played them. The on-screen callouts stay, and each moment now has a short sound of its own, built from oscillators on the sting bus like the game other stingers and quieter than a gunshot: a wave coming in is a low urgent alarm of two rising horn pulses; a kill streak is a rising chime ladder, one more note and a higher, brighter climb for every level; NEW HIGH SCORE is a bright arpeggio ending on a held top note; EXTRACTED is a chord that resolves; the two minute mark is a ticking clock and the one minute mark ticks faster and climbing, with a low pulse at the end. One at a time, nothing under G.sim, no seeded draw.

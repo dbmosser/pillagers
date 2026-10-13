@@ -1,0 +1,5 @@
+## v25.74 - BELT KEYS SOUND LIKE WHAT THEY PICK
+
+Co-op hunt while he was away. His note of 2026-10-13: wherever the plop is used, consider whether something else would be better. The plop is the short rising pick chirp (already half as loud since v25.64). Pressing a belt key (the number keys, the mouse wheel, the pad bumpers) played it after the holster clack of a gun swap had already played, and for a grenade, a medical item or a plate it was the only sound. Now a belt key sounds like what it picks: a gun swap or a draw keeps its own holster clack and adds nothing; a throwable is a short pouch rustle, a bandage or medkit the cloth wrap, a plate the armour clack; an empty cell or a gun already in hand gets the soft menu tick, and a vacant gun key the dull buzz of something locked. The plop stays, at half level, where nothing fits better: finishing a box search, the pickup and stash actions, waypoints, revives and the Undercroft buttons. Sound only.
+
+MEASURED. Check 25.74 passes, and fails on v25.73.
