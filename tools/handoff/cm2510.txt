@@ -1,0 +1,7 @@
+v25.10: the what is new card names straight in
+
+The what is new card names straight in.
+
+Check 25.10. Fails on v25.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

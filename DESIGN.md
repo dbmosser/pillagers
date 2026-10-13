@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.10 - THE WHAT IS NEW CARD NAMES STRAIGHT IN
+
+Co-op hunt while he was away. The card was stamped v24.96 and the stamp may not trail the build by more than 0.15. The card was stamped v24.96 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the countdown removed (his order 2026-10-12), the CAREER 10 minute clock (his mode design), the lock-on siren (his order) and the rarity colours (his third answers).
+
+MEASURED. Check 25.10 passes, and fails on v25.09.
 ## v25.09 - A CRAWLER THAT CATCHES YOU HANGS ON
 
 Co-op hunt while he was away. His order of 2026-10-12: a crawler that catches you should keep hurting you until it is killed; it felt too lenient. Measured on the old build with one crawler touching a player on full health: standing still it bit every 0.7 seconds (9 bites in 6 seconds), but walking away it bit once in 6 seconds, because a walk is a little faster than a crawler and it trailed behind and never touched him again; sprinting it bit once and lost him; rolling it did no damage at all, because the one bite landed inside the roll and the roll immunity ate it. Now a crawler that touches you latches on: it stays at your side whether you walk, sprint or roll and keeps biting every 0.7 seconds until you kill it. The bite and its rate are unchanged (one crawler still takes about 5 seconds to kill a man on full health with no armour), so this is a balance change only in that you cannot outwalk it any more. A latched bite lands through the roll on purpose: the roll dodges what is coming, it is not a way out of something already on you. Going down still stops the biting, as before, and the 2 seconds after a revive still protect you; a wall between you makes it let go. Two or three can hang on at once, and each is still out in the world to be shot, knifed or fragged. Player 2 gets the same, through the host. DEMO and CAREER the same.

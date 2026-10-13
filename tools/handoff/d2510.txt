@@ -1,0 +1,5 @@
+## v25.10 - THE WHAT IS NEW CARD NAMES STRAIGHT IN
+
+Co-op hunt while he was away. The card was stamped v24.96 and the stamp may not trail the build by more than 0.15. The card was stamped v24.96 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the countdown removed (his order 2026-10-12), the CAREER 10 minute clock (his mode design), the lock-on siren (his order) and the rarity colours (his third answers).
+
+MEASURED. Check 25.10 passes, and fails on v25.09.
