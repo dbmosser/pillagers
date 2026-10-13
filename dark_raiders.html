@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.69';
+var VER='25.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2580,14 +2580,14 @@ var WEAPONS={
 
   pistol:{id:'pistol',name:'Scav Pistol',dmg:23,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:'#ffd48a'},
   smg:{id:'smg',name:'Compact SMG',dmg:12,rof:88,spread:.115,mag:30,reload:1850,rng:360,auto:true,noise:300,tint:'#ffe0a0'},
-  rifle:{optic:1.25,id:'rifle',name:'Auto Rifle',dmg:23,rof:132,spread:.070,mag:25,reload:2050,rng:520,auto:true,noise:420,tint:'#ffcf7a'},
-  dmr:{optic:1.9,id:'dmr',name:'Marksman Rifle',dmg:64,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:'#fff0c0'},
+  rifle:{optic:2,id:'rifle',name:'Auto Rifle',dmg:23,rof:132,spread:.070,mag:25,reload:2050,rng:520,auto:true,noise:420,tint:'#ffcf7a'},
+  dmr:{optic:3,id:'dmr',name:'Marksman Rifle',dmg:64,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:'#fff0c0'},
   // v6.69, his note: a beefy Scav Pistol. Two body shots instead of five, for half the
   // magazine, twice the trigger delay and a report that brings the room.
   magnum:{id:'magnum',name:'Magnum',dmg:62,rof:620,spread:.042,mag:6,reload:1900,rng:480,auto:false,noise:520,tint:'#ffb870'},
   // v6.69, his note: a ton of damage, shoots really slow. 1600ms between shots is the
   // slowest trigger in the game by a distance; Scuttle at 780 was the old record.
-  sniper:{optic:2.4,id:'sniper',name:'Longshot',dmg:170,rof:1600,spread:.006,mag:5,reload:3200,rng:900,auto:false,noise:640,tint:'#e8f0ff'},
+  sniper:{optic:4,id:'sniper',name:'Longshot',dmg:170,rof:1600,spread:.006,mag:5,reload:3200,rng:900,auto:false,noise:640,tint:'#e8f0ff'},
   // Four issued starters, one rolled at random on every deploy. Tuned at or just
   // under the Scav Pistol and Compact SMG so the shop and loot guns stay upgrades.
   tacker:{id:'tacker',name:'Tacker',dmg:20,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:'#ffd9a8',starter:1},
@@ -2598,7 +2598,7 @@ var WEAPONS={
   // was 'not even close'. Three genuinely different fire patterns, not stat dups.
   carbine:{id:'carbine',name:'Burst Carbine',dmg:17,burst:3,rof:360,spread:.055,mag:24,reload:1900,rng:500,auto:false,noise:400,tint:'#ffd88a'},
   shotgun:{id:'shotgun',name:'Riot Scattergun',dmg:16,pellets:6,rof:650,spread:.170,mag:7,reload:2400,rng:260,auto:false,noise:500,tint:'#ffbe7a'},
-  lmg:{optic:1.15,id:'lmg',name:'Support MG',dmg:16,rof:105,spread:.105,mag:60,reload:3400,rng:540,auto:true,noise:460,tint:'#ffca90'},
+  lmg:{id:'lmg',name:'Support MG',dmg:16,rof:105,spread:.105,mag:60,reload:3400,rng:540,auto:true,noise:460,tint:'#ffca90'},
   // NEVER SOLD, v5.46, corrected at v8.52. Neither is stocked by the shop or by
   // the Peddler, and neither is a seal payout. You get one out of a cache, a safe
   // or a jackpot, off an elite's body, or from three late rows on the reward board
@@ -2607,8 +2607,8 @@ var WEAPONS={
   // which the board has contradicted since those rows were added: a reward grants
   // the bare MODEL into the armoury, so it is owned, and an owned gun is wearable
   // and enters the wear and repair economy a field-only gun stays out of.
-  whisper:{optic:1.1,id:'whisper',name:'Whisper',dmg:24,rof:400,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:'#a8d8c0'},
-  lance:{optic:1.6,id:'lance',name:'Meridian Lance',dmg:150,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'}
+  whisper:{id:'whisper',name:'Whisper',dmg:24,rof:400,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:'#a8d8c0'},
+  lance:{optic:2.5,id:'lance',name:'Meridian Lance',dmg:150,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'}
 };
 var STARTERS=['tacker','sputter','chatter','scuttle'];
 // How guns rank against each other. Used both for auto-equipping a better find
@@ -27353,6 +27353,13 @@ var ZT=1,ZC=1,zoomSaveT=0;
 // again. It eases in and out in render2D (G.adsZ), only in a live raid, never in the bot sim (its aim and the seeded stream
 // stay as they were), and every reader of the projection (w2s, mouseWorld, the pad aim, the camera) sees it through ZOOM.
 // The baked sprites (walls, trees, shadows) keep the scale of the zoom without it, so aiming never re-bakes the street.
+// v25.xx (scopes2x), HIS ORDERS 2026-10-13: "no need for 1.25x scopes -- change to 2x minimum and adjust magnification-when-ADS accordingly",
+// and "guns without a scope should still do a minor zoom (maybe 1.25x) when they are ADS'd". The smallest scope is 2x now (the Auto Rifle 2,
+// the Meridian Lance 2.5, the Marksman Rifle 3, the Longshot 4; the Support MG and the Whisper, which had 1.15 and 1.1, carry none), and
+// the camera while aiming a gun zooms ADS_ZMIN+(scope-1)*0.35: an unscoped gun 1.25, a 2x about 1.60, 2.5x 1.78, 3x 1.95, 4x 2.30, so
+// each scope level is a clearly bigger punch-in. Fists and melee do not zoom. The base camera zoom (his answer 23) is untouched, the
+// controller's steadying after a trigger pull still does not zoom, and the sight lane (VF, CH, AMBR) reads the same scope number.
+var ADS_ZMIN=1.25;
 function adsZf(){ return (typeof G!=='undefined'&&G&&!G.sim&&!G.over&&typeof state!=='undefined'&&state==='raid'&&G.adsZ>0)?G.adsZ:1; }
 function ZOOM(){ return ZC*hudRes()*adsZf(); }
 function zoomTarget(){ return ZT; }
@@ -30015,7 +30022,7 @@ function render2D(dt){
   // and fog layers all have to work in those world units instead of pixels or
   // the lighting stops lining up with the ground.
   // v18.76, his note: the scope zoom eases toward its target here, once a frame, before anything reads ZOOM.
-  (function(){ var m=opticMag(), k=(CFG.adsZoom===undefined)?0.35:CFG.adsZoom, tgt=(m>1&&!G.sim&&!G.over&&!(typeof PAD!=='undefined'&&PAD&&PAD.adsing&&!PAD.adsAim))?Math.max(1,1+(m-1)*k):1, d=Math.max(0,Math.min(0.1,+dt||0));
+  (function(){ var m=opticMag(), k=(CFG.adsZoom===undefined)?0.35:CFG.adsZoom, gun=!!(p.ads&&!p.downed&&!(p.roll>0)&&p.wep&&p.wep.mag>0), tgt=(gun&&!G.sim&&!G.over&&!(typeof PAD!=='undefined'&&PAD&&PAD.adsing&&!PAD.adsAim))?Math.max(1,ADS_ZMIN+(m-1)*k):1, d=Math.max(0,Math.min(0.1,+dt||0));
     if(!(G.adsZ>0)) G.adsZ=1; G.adsZ+=(tgt-G.adsZ)*(1-Math.exp(-d*11)); if(Math.abs(tgt-G.adsZ)<0.0005) G.adsZ=tgt; })();
   var Z=ZOOM(),VW=W/Z,VH=H/Z;
   // camera with cursor lean
@@ -33095,7 +33102,7 @@ function drawHUD(){
   // awareness are visible rather than just true.
   (function(){
     var mg=opticMag(); if(mg<=1||p.downed) return;
-    var k=clamp((mg-1)/1.0,0,1);
+    var k=clamp((mg-1)/3,0,1);   // v25.xx (scopes2x): the vignette now climbs from the 2x to the 4x
     var vg=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*(0.44-0.16*k),W/2,H/2,Math.max(W,H)*0.72);
     vg.addColorStop(0,'rgba(0,0,0,0)');
     vg.addColorStop(1,'rgba(4,6,10,'+(0.30+0.34*k).toFixed(3)+')');
@@ -34397,7 +34404,7 @@ if(p.armor>0){
   var _heldGun=(!_HH||_HH.kind==='gun');
   ctx.font=FS(TYPE.head); ctx.fillStyle=_heldGun?'#cdd6dd':(_HH.c||'#cdd6dd');
   var _cornName=_heldGun
-    ? (p.wep.name+(p.ads?(opticMag()>1?('  '+opticMag().toFixed(2).replace(/0$/,'')+'x SCOPE'):'  [ADS]'):''))
+    ? (p.wep.name+(p.ads?(opticMag()>1?('  '+(+opticMag().toFixed(2))+'x SCOPE'):'  [ADS]'):''))
     : _HH.name;
   _cornMark(_cornName);
   // v18.38, THE STYLING PASS IN THE RAID (2026-10-04): THE WEAPON READOUT SITS ON A PANEL. The gun name, the ammo, what is stowed,
@@ -41129,7 +41136,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.69: The what is new card names the new keys. Check 25.69 fails on v25.68',
+  now:'v25.70: Scopes now start at 2x, and aiming any gun without a scope gives a small 1.25x zoom. Check 25.70 fails on v25.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

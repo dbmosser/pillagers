@@ -1,0 +1,48 @@
+{
+    "title":  "SCOPES START AT 2X",
+    "why":  "His orders of 2026-10-13: no need for 1.25x scopes, make 2x the minimum and adjust the magnification when aiming to match, and guns without a scope should still do a minor zoom when aimed, maybe 1.25x. The scope table was Support MG 1.15, Whisper 1.1, Auto Rifle 1.25, Meridian Lance 1.6, Marksman Rifle 1.9 and Longshot 2.4. Now the smallest scope is 2x: the Auto Rifle 2x, the Meridian Lance 2.5x, the Marksman Rifle 3x and the Longshot 4x in the same order as before, and the Support MG and the Whisper, which were below 2x, carry no scope. The camera while aiming a gun zooms 1.25 plus 0.35 for every extra step of scope: 1.25 without a scope, about 1.60 with the 2x, 1.78, 1.95 and 2.30 with the 4x, so each level is a clearly bigger punch-in. Bare hands do not zoom. The gun card reads the scope as 2x SCOPE rather than 2.0x, and the dark scope vignette now climbs from the 2x to the 4x. The base camera zoom is untouched. Balance note: the scope number is also the length of the sight lane while aiming, so every scoped gun sees further down the lane than before (the Auto Rifle 2 times your normal sight, the Longshot 4 times), on a narrower cone.",
+    "now":  "Scopes now start at 2x, and aiming any gun without a scope gives a small 1.25x zoom.",
+    "edits":  [
+                  {
+                      "anchor":  "  rifle:{optic:1.25,id:\u0027rifle\u0027",
+                      "replacement":  "  rifle:{optic:2,id:\u0027rifle\u0027"
+                  },
+                  {
+                      "anchor":  "  dmr:{optic:1.9,id:\u0027dmr\u0027",
+                      "replacement":  "  dmr:{optic:3,id:\u0027dmr\u0027"
+                  },
+                  {
+                      "anchor":  "  sniper:{optic:2.4,id:\u0027sniper\u0027",
+                      "replacement":  "  sniper:{optic:4,id:\u0027sniper\u0027"
+                  },
+                  {
+                      "anchor":  "  lmg:{optic:1.15,id:\u0027lmg\u0027",
+                      "replacement":  "  lmg:{id:\u0027lmg\u0027"
+                  },
+                  {
+                      "anchor":  "  whisper:{optic:1.1,id:\u0027whisper\u0027",
+                      "replacement":  "  whisper:{id:\u0027whisper\u0027"
+                  },
+                  {
+                      "anchor":  "  lance:{optic:1.6,id:\u0027lance\u0027",
+                      "replacement":  "  lance:{optic:2.5,id:\u0027lance\u0027"
+                  },
+                  {
+                      "anchor":  "function adsZf(){",
+                      "replacement":  "// v25.xx (scopes2x), HIS ORDERS 2026-10-13: \"no need for 1.25x scopes -- change to 2x minimum and adjust magnification-when-ADS accordingly\",\n// and \"guns without a scope should still do a minor zoom (maybe 1.25x) when they are ADS\u0027d\". The smallest scope is 2x now (the Auto Rifle 2,\n// the Meridian Lance 2.5, the Marksman Rifle 3, the Longshot 4; the Support MG and the Whisper, which had 1.15 and 1.1, carry none), and\n// the camera while aiming a gun zooms ADS_ZMIN+(scope-1)*0.35: an unscoped gun 1.25, a 2x about 1.60, 2.5x 1.78, 3x 1.95, 4x 2.30, so\n// each scope level is a clearly bigger punch-in. Fists and melee do not zoom. The base camera zoom (his answer 23) is untouched, the\n// controller\u0027s steadying after a trigger pull still does not zoom, and the sight lane (VF, CH, AMBR) reads the same scope number.\nvar ADS_ZMIN=1.25;\nfunction adsZf(){"
+                  },
+                  {
+                      "anchor":  "tgt=(m\u003e1\u0026\u0026!G.sim\u0026\u0026!G.over\u0026\u0026!(typeof PAD!==\u0027undefined\u0027\u0026\u0026PAD\u0026\u0026PAD.adsing\u0026\u0026!PAD.adsAim))?Math.max(1,1+(m-1)*k):1,",
+                      "replacement":  "gun=!!(p.ads\u0026\u0026!p.downed\u0026\u0026!(p.roll\u003e0)\u0026\u0026p.wep\u0026\u0026p.wep.mag\u003e0), tgt=(gun\u0026\u0026!G.sim\u0026\u0026!G.over\u0026\u0026!(typeof PAD!==\u0027undefined\u0027\u0026\u0026PAD\u0026\u0026PAD.adsing\u0026\u0026!PAD.adsAim))?Math.max(1,ADS_ZMIN+(m-1)*k):1,"
+                  },
+                  {
+                      "anchor":  "(\u0027  \u0027+opticMag().toFixed(2).replace(/0$/,\u0027\u0027)+\u0027x SCOPE\u0027)",
+                      "replacement":  "(\u0027  \u0027+(+opticMag().toFixed(2))+\u0027x SCOPE\u0027)"
+                  },
+                  {
+                      "anchor":  "var k=clamp((mg-1)/1.0,0,1);",
+                      "replacement":  "var k=clamp((mg-1)/3,0,1);   // v25.xx (scopes2x): the vignette now climbs from the 2x to the 4x"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his orders (scopes 2x minimum, a minor zoom without a scope): no scope below 2x remains (no 1.25), the scopes are 2, 2.5, 3 and 4 in order, and aiming zooms the camera about 1.25 without a scope, 1.60 with the 2x, 2.30 with the 4x and not at all with bare hands\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof WEAPONS===\u0027undefined\u0027||!WEAPONS.sniper||!WEAPONS.rifle||!WEAPONS.pistol||!WEAPONS.fists) return \u0027SKIP: no guns here\u0027;\n     var bad=[], k, g, p, oW, oA, z0, r, W_, vals=[];\n     for(k in WEAPONS){ W_=WEAPONS[k]; if(W_\u0026\u0026W_.optic!==undefined){ vals.push(W_.optic); if(!(W_.optic\u003e=2)) bad.push(k+\u0027 has a \u0027+W_.optic+\u0027x scope, under 2x\u0027); } }\n     if(vals.indexOf(1.25)\u003e=0) bad.push(\u0027a 1.25x scope remains\u0027);\n     if(!(WEAPONS.rifle.optic===2\u0026\u0026WEAPONS.lance\u0026\u0026WEAPONS.lance.optic===2.5\u0026\u0026WEAPONS.dmr.optic===3\u0026\u0026WEAPONS.sniper.optic===4)) bad.push(\u0027the scope table is not 2, 2.5, 3, 4 on the Auto Rifle, the Lance, the Marksman Rifle and the Longshot\u0027);\n     function run(n){ for(var j=0;j\u003cn;j++) __frame(0.05); }\n     function aim(w){ p.wep=w; p.ads=false; run(30); z0=ZOOM(); p.ads=true; run(30); r=ZOOM()/z0; p.ads=false; return r; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); p=g.player; g.bagOpen=false; g.mapOpen=false; oW=p.wep; oA=p.ads;\n       r=aim(WEAPONS.pistol); if(Math.abs(r-1.25)\u003e0.03) bad.push(\u0027aiming a gun with no scope zooms \u0027+r.toFixed(3)+\u0027 times, not about 1.25\u0027);\n       r=aim(WEAPONS.rifle); if(Math.abs(r-1.60)\u003e0.03) bad.push(\u0027aiming the 2x Auto Rifle zooms \u0027+r.toFixed(3)+\u0027 times, not about 1.60\u0027);\n       r=aim(WEAPONS.sniper); if(Math.abs(r-2.30)\u003e0.04) bad.push(\u0027aiming the 4x Longshot zooms \u0027+r.toFixed(3)+\u0027 times, not about 2.30\u0027);\n       r=aim(WEAPONS.fists); if(Math.abs(r-1)\u003e0.01) bad.push(\u0027aiming bare hands zooms \u0027+r.toFixed(3)+\u0027 times, not at all\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(p){ p.wep=oW; p.ads=false; } if(g) g.adsZ=1; }catch(_r){} try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

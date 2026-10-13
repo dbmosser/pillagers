@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.70 - SCOPES START AT 2X
+
+Co-op hunt while he was away. His orders of 2026-10-13: no need for 1.25x scopes, make 2x the minimum and adjust the magnification when aiming to match, and guns without a scope should still do a minor zoom when aimed, maybe 1.25x. The scope table was Support MG 1.15, Whisper 1.1, Auto Rifle 1.25, Meridian Lance 1.6, Marksman Rifle 1.9 and Longshot 2.4. Now the smallest scope is 2x: the Auto Rifle 2x, the Meridian Lance 2.5x, the Marksman Rifle 3x and the Longshot 4x in the same order as before, and the Support MG and the Whisper, which were below 2x, carry no scope. The camera while aiming a gun zooms 1.25 plus 0.35 for every extra step of scope: 1.25 without a scope, about 1.60 with the 2x, 1.78, 1.95 and 2.30 with the 4x, so each level is a clearly bigger punch-in. Bare hands do not zoom. The gun card reads the scope as 2x SCOPE rather than 2.0x, and the dark scope vignette now climbs from the 2x to the 4x. The base camera zoom is untouched. Balance note: the scope number is also the length of the sight lane while aiming, so every scoped gun sees further down the lane than before (the Auto Rifle 2 times your normal sight, the Longshot 4 times), on a narrower cone.
+
+MEASURED. Check 25.70 passes, and fails on v25.69.
 ## v25.69 - THE WHAT IS NEW CARD NAMES THE NEW KEYS
 
 Co-op hunt while he was away. The card was stamped v25.56 and the stamp may not trail the build by more than 0.15. The card was stamped v25.56 and every ship stops when it falls 0.16 behind. Its new line names the builds since: his new key layout (2026-10-13), the siren retune, the robot death noises, the belt info cards, big guns for everyone and SIEGE without a count (his orders).

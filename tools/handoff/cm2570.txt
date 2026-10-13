@@ -1,0 +1,7 @@
+v25.70: scopes start at 2x
+
+Scopes now start at 2x, and aiming any gun without a scope gives a small 1.25x zoom.
+
+Check 25.70. Fails on v25.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
