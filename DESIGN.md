@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.62 - THE VAULT KEYCARD
+
+Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. The first of three builds that put locked vaults into the DEMO raid. A new item, the Vault Keycard, opens a locked room. In a DEMO raid it opens any locked door on the map; in any other raid it opens only a vault door, and the map keys still open their own rooms exactly as before. When you carry both the map key and a keycard, the map key is spent first and the keycard is kept. The lamp on the door and the UNLOCK prompt use the same rule, so they never disagree. Nothing drops a keycard yet: the vaults and the keycards in the world come in the next two builds.
+
+MEASURED. Check 24.62 passes, and fails on v24.61.
 ## v24.61 - TEAM LAMP AND HIRE BAND
 
 Co-op hunt while he was away. His order of 2026-10-12, make them all look better, and his answer 24, readable silhouettes first. A small lamp in the team colour now rides on the left shoulder strap of the plate carrier, so the side a body is on reads from the strap as well as the shoulders. The hire was drawn in the foe red like any pillager although he works for you; he now wears your blue and a hi-vis amber band on his gun arm, and he never glares. Both players keep the one teammate colour, as the raid text rewrite set it.

@@ -1,0 +1,5 @@
+## v24.62 - THE VAULT KEYCARD
+
+Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. The first of three builds that put locked vaults into the DEMO raid. A new item, the Vault Keycard, opens a locked room. In a DEMO raid it opens any locked door on the map; in any other raid it opens only a vault door, and the map keys still open their own rooms exactly as before. When you carry both the map key and a keycard, the map key is spent first and the keycard is kept. The lamp on the door and the UNLOCK prompt use the same rule, so they never disagree. Nothing drops a keycard yet: the vaults and the keycards in the world come in the next two builds.
+
+MEASURED. Check 24.62 passes, and fails on v24.61.

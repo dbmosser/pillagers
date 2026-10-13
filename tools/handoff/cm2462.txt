@@ -1,0 +1,7 @@
+v24.62: the vault keycard
+
+A Vault Keycard opens any locked room in a DEMO raid.
+
+Check 24.62. Fails on v24.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

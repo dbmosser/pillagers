@@ -1996,7 +1996,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.61';
+var VER='24.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2701,6 +2701,9 @@ var ITEMS={
   key_quarry_assay:{name:'Assay Office Key',val:650,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'quarry_assay'},
   key_cm_bond_room:{name:'Bond Room Key',val:600,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'cm_bond_room'},
   key_cm_deep_freeze:{name:'Deep Freeze Key',val:700,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'cm_deep_freeze'},
+  // v23.9x (feat4a), HIS ORDER (2026-10-12): "32 more interiors". The VAULT KEYCARD. door:'arc' is no map door: in a DEMO raid it opens
+  // any locked room (the map rooms and the vaults the DEMO seals), anywhere else only a vault door (arc:1). keyFits says which.
+  keycard:{name:'Vault Keycard',val:250,wt:1,r:'rare',c:'#7fe3d4',use:'key',door:'arc'},
   key_cm_blast_vault:{name:'Blast Vault Key',val:750,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'cm_blast_vault'},
   key_cm_cryo_lockup:{name:'Cryo Lockup Key',val:650,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'cm_cryo_lockup'},
   key_cm_pump_vault:{name:'Pump Control Vault Key',val:700,wt:1,r:'rare',c:'#ffc04a',use:'key',door:'cm_pump_vault'},
@@ -8779,10 +8782,19 @@ function hudKey(label,x,y,a,sw,o){
 // he stands in (E there calls or extracts instead of searching), then the crate. Only that E prompt is drawn. A locked door with
 // no key in the backpack is not an E target (E does nothing there), so its LOCKED label still shows, and so does the search
 // prompt inside a ring, which names X, the key that searches there.
+// v23.9x (feat4a), HIS ORDER (2026-10-12): "32 more interiors". One test for "does this key open this door", used by the door, the
+// lamp on the door and the UNLOCK prompt, so the three never disagree. A map key opens its own door, as before. The Vault Keycard
+// (door:'arc') opens a vault door (arc:1) anywhere and, in a DEMO raid, any locked room. door is a locked room ({id, arc}).
+function keyFits(it,door){
+  if(!it||it.use!=='key'||!door) return false;
+  if(it.door===door.id) return true;
+  return it.door==='arc'&&!!(door.arc||(G&&G.arcade));
+}
 function doorKeyIx(door){
   var i, it;
   if(!door||!G||!G.bag) return -1;
   for(i=0;i<G.bag.length;i++){ it=ITEMS[G.bag[i]]; if(it&&it.use==='key'&&it.door===door.id) return i; }
+  for(i=0;i<G.bag.length;i++){ if(keyFits(ITEMS[G.bag[i]],door)) return i; }   // v23.9x (feat4a): then a keycard
   return -1;
 }
 function promptPick(p){
@@ -20173,11 +20185,7 @@ if(!p.fired||p.wep.auto){
   }
   G.nearDoor=doorNear;
   if(doorNear&&keys['KeyE']){
-    var ki=-1;
-    for(var kb=0;kb<G.bag.length;kb++){
-      var kit=ITEMS[G.bag[kb]];
-      if(kit&&kit.use==='key'&&kit.door===doorNear.id){ ki=kb; break; }
-    }
+    var ki=doorKeyIx(doorNear);   // v23.9x (feat4a): its own key first, then a Vault Keycard where one fits (keyFits)
     if(ki>=0){
       G.bag.splice(ki,1);
       lockedOpen(doorNear);   // v20.29 (H15): the same opening on every window
@@ -28993,7 +29001,7 @@ var SHD=G.shells[i];
       if(wl2.door){
         var _dk=false,_dq;
         for(_dq=0;_dq<G.bag.length;_dq++){ var _di=ITEMS[G.bag[_dq]];
-          if(_di&&_di.use==='key'&&_di.door===wl2.door){ _dk=true; break; } }
+          if(keyFits(_di,{id:wl2.door,arc:wl2.arc})){ _dk=true; break; } }   // v23.9x (feat4a): a keycard lights it too
         var dTop=wl2.y-LIFT, dH=wl2.h+LIFT, dBot=wl2.y+wl2.h;
         wc.fillStyle='#2a2118';
         wc.fillRect(wl2.x,dTop,wl2.w,dH);
@@ -31613,7 +31621,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     if(dsc){
       var haveKey=false;
       for(var hk=0;hk<G.bag.length;hk++){ var hki=ITEMS[G.bag[hk]];
-        if(hki&&hki.use==='key'&&hki.door===G.nearDoor.id){ haveKey=true; break; } }
+        if(keyFits(hki,G.nearDoor)){ haveKey=true; break; } }   // v23.9x (feat4a): a keycard where it fits
       // Say WHICH key, v2.94. "LOCKED" told you the door was shut, which you
       // could see, and left you to work out that a specific named key exists
       // somewhere on this map and that finding it is the way in. The second line
@@ -31621,6 +31629,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
       // an hour later is recognisable as the answer to this door.
       var kName='';
       for(var kk in ITEMS){ if(ITEMS[kk].use==='key'&&ITEMS[kk].door===G.nearDoor.id){ kName=ITEMS[kk].name; break; } }
+      if(!kName&&G.nearDoor.arc&&ITEMS.keycard) kName=ITEMS.keycard.name;   // v23.9x (feat4a): a vault names the keycard
       var _hsD=hudAtIn(dsc.x,dsc.y);   // v19.55: grows with the screen
       ctx.font=FS(TYPE.head); ctx.textAlign='center';   // v22.66 (R24): the SEARCH size, measured in it for the dodge below
       var _dlab=haveKey?('['+keyLabel('KeyE','E')+'] UNLOCK '+G.nearDoor.name):(G.nearDoor.name+' LOCKED');
@@ -34532,7 +34541,14 @@ function drawItemIcon(c,key,cx,cy,S){
       c.restore();
       break;
     default:
-      if(it&&it.use==='key'){
+      if(it&&it.use==='key'&&it.door==='arc'){   // v23.9x (feat4a): the Vault Keycard is a card with a stripe and a chip
+        shadow(S*.72,S*.48);
+        c.fillStyle=dk; c.fillRect(-S*.36,-S*.24,S*.72,S*.48);
+        c.fillStyle=col; c.fillRect(-S*.33,-S*.21,S*.66,S*.42);
+        c.fillStyle='#0e1420'; c.fillRect(-S*.33,-S*.12,S*.66,S*.09);
+        c.fillStyle='#e8d27a'; c.fillRect(-S*.26,S*.03,S*.13,S*.1);
+        c.fillStyle=lt; c.fillRect(S*.02,S*.05,S*.24,S*.035); c.fillRect(S*.02,S*.11,S*.16,S*.035);
+      } else if(it&&it.use==='key'){
         shadow(S*.7,S*.34);
         c.fillStyle=col;
         c.beginPath(); c.arc(-S*.22,0,S*.16,0,6.2832); c.fill();
@@ -38922,7 +38938,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.61: A team lamp rides on every shoulder strap, and your hire wears your colour and an amber armband. Check 24.61 fails on v24.60',
+  now:'v24.62: A Vault Keycard opens any locked room in a DEMO raid. Check 24.62 fails on v24.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
