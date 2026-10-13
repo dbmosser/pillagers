@@ -1,0 +1,7 @@
+v25.36: enemies miss more at long range
+
+Enemy fire now spreads wider at long range, so distant shooters miss more; close fights are unchanged.
+
+Check 25.36. Fails on v25.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

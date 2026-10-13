@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.36 - ENEMIES MISS MORE AT LONG RANGE
+
+Co-op hunt while he was away. His answer 8 a: enemies a little less accurate at long range. Every enemy round, from machines and pillagers alike, now spreads wider the farther away it is aimed: as before up to 350, then a little wider with distance, up to 1.8 times as wide from about 830 out. Close fights are exactly as before and your own guns are unchanged, so a long range duel favours the player who closes in or takes cover, while a close fight is as deadly as ever.
+
+MEASURED. Check 25.36 passes, and fails on v25.35.
 ## v25.35 - A LOCKED BUTTON SAYS WHY
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. At Wirt, GAMBLE and the offer BUY out of reach were dull grey buttons with nothing saying why. They now carry a small red chip with how much more they need, and the button stays readable.

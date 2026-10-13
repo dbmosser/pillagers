@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.35';
+var VER='25.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17511,6 +17511,11 @@ function meleeStrike(){
   fireWeapon(p,WEAPONS.fists,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true);
   return true;
 }
+// 2026-10-12 (accfall), HIS ANSWER 8 a: enemies a little less accurate at long range. Every round an enemy fires (machines and
+// pillagers alike) spreads wider the farther its aim point is: as before out to ACC_NEAR, then the spread grows by a third for every
+// ACC_SPAN beyond it, up to ACC_FALL more (1.8 times the spread from about 830 out). Close fights and every player gun are unchanged,
+// and no draw moved: the one spread roll per pellet is the same roll, only wider.
+var ACC_NEAR=350, ACC_SPAN=600, ACC_FALL=0.8;
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(fromPlayer&&G&&G.arcade&&G.player&&G.player.arcSh) arcadeShieldOff();   // v23.30 (arcade9): a shot drops the spawn shield
 // PARITY, v3.95, second item off his audit. Steady aim was not a player
@@ -17527,6 +17532,7 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
     // v8.52, audit: two more combatT stamps for the deleted radio. See damagePlayer.
   }
 var spx=wep.spread*(((fromPlayer&&G.player.ads)||(!fromPlayer&&sh&&sh.steady))?0.4:1);
+  if(!fromPlayer&&sh&&isFinite(tx)&&isFinite(ty)){ var _afd=Math.hypot(tx-sh.x,ty-sh.y); if(_afd>ACC_NEAR) spx*=1+Math.min(ACC_FALL,(_afd-ACC_NEAR)/ACC_SPAN); }   // 2026-10-12 (accfall): wider at long range
   // v4.38 HIS ANSWER 7: the Compact SMG climbs on a held trigger. Short taps
   // stay accurate; spraying the whole magazine is a choice with a cost.
   if(fromPlayer&&wep.id==='smg'&&G.player.fireHold) spx*=Math.min(1.9,1+G.player.fireHold*0.45);
@@ -40086,7 +40092,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.35: At Wirt a button you cannot afford says how much more it needs. Check 25.35 fails on v25.34',
+  now:'v25.36: Enemy fire now spreads wider at long range, so distant shooters miss more; close fights are unchanged. Check 25.36 fails on v25.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
