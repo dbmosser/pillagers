@@ -1,0 +1,7 @@
+v25.11: no hum under the raid
+
+The low hums under the raid are gone: no drones, no dread tone and no running machine voices, only the room noise, rain and the machine cues.
+
+Check 25.11. Fails on v25.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

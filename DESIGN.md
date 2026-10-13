@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.11 - NO HUM UNDER THE RAID
+
+Co-op hunt while he was away. His note of 2026-10-12: random hums as ambience do not sound good. Three tones ran under every raid: two low sine drones at 54 and 81.5 Hz in the ambient bed (their pitch rose as something closed on you) and a 36 Hz dread tone that swelled as the Warden came near. On top of them, v24.73 gave every machine hunting you out of sight its own running voice: a servo whine, a hydraulic throb, a drone tone, a dish sweep, a growl, a tread rumble. All of those tones are removed. What stays is not a tone: the room-tone noise under the raid (it still opens up and swells as a machine closes in), the rain, and every machine one-shot (servo, skitter, hydraulics, dish, footsteps, alarms, the lock-on beep). Nothing else in the file held a looping tone in a raid: every other oscillator is a one-shot with its own stop, and the Undercroft music plays only on the menus.
+
+MEASURED. Check 25.11 passes, and fails on v25.10.
 ## v25.10 - THE WHAT IS NEW CARD NAMES STRAIGHT IN
 
 Co-op hunt while he was away. The card was stamped v24.96 and the stamp may not trail the build by more than 0.15. The card was stamped v24.96 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the countdown removed (his order 2026-10-12), the CAREER 10 minute clock (his mode design), the lock-on siren (his order) and the rarity colours (his third answers).
