@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.81 - THE WHAT IS NEW CARD NAMES THE HOLD KEYS
+
+Co-op hunt while he was away. The card was stamped v25.69 and the stamp may not trail the build by more than 0.15. The card was stamped v25.69 and every ship stops when it falls 0.16 behind. Its new line names the builds since: hold H plate, hold Alt raid status, middle mouse ping, crouch quiet walk (his key answers 2026-10-13) and no spoken announcer (his order).
+
+MEASURED. Check 25.81 passes, and fails on v25.80.
 ## v25.80 - LOOT NAMES FADE SOONER
 
 Co-op hunt while he was away. His note of 2026-10-13: the popped-up names of looted items need to fade away slightly more quickly, right now it impedes vision. The name of an item that rises from a box lived six seconds, held full strength for the first 45 percent of that and stacked a little apart, so several pickups made a tall bright wall over the player. It now lives four seconds, holds full strength for a fifth of its life and then fades (most of its life is the fade), never quite reaches full strength (0.85 at the start), and several names stack plate on plate with no gap. Only the loot-name popup changed: DOWNED, targets down, WEAK SPOT, +100 and the other world labels keep their 1.9 second life, their hold and their strength.
