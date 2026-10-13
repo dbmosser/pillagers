@@ -1,0 +1,7 @@
+v26.00: the key lists say the new belt
+
+The key lists now say 1-4 guns, 5-6 throwables, 7-8 medical and 9 armour.
+
+Check 26.00. Fails on v25.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

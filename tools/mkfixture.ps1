@@ -6088,6 +6088,35 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'26.00',what:'his order (redo the bar at the bottom), the words: the controls list (F1) says 1-4 guns, 5-6 throwables, 7-8 medical, 9 armour and U switches which grenade G throws and H taps a heal and holds a plate, the compact list keeps an even number of entries with 1-4 guns beside B / I and 5-9 throw, heal, plate, the rules card says the four groups, and the pause screen key line says them and no longer says 1-9 tactical belt',
+   run:function(){
+     if(typeof LEGEND==='undefined'||typeof LEGEND_MINI==='undefined') return 'SKIP: no controls list here';
+     var bad=[], gear=null, i, j, rows, want={'1-4':'guns','5-6':'throwables','7-8':'medical','9':'armour plate'}, k, found, ix=-1, kh=null, html='', page='', ru=[];
+     for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='GEAR') gear=LEGEND[i][1];
+     if(!gear) return 'SKIP: no GEAR section in the controls list';
+     for(k in want){ found=false; for(j=0;j<gear.length;j++) if(gear[j][0]===k&&gear[j][1]===want[k]) found=true; if(!found) bad.push('the controls list has no row '+k+' '+want[k]); }
+     for(j=0;j<gear.length;j++){ if(gear[j][0]==='1-9') bad.push('the controls list still has a 1-9 row ('+gear[j][1]+')'); if(gear[j][0]==='H') kh=gear[j][1]; }
+     if(!kh||!/heal/.test(kh)||!/plate/.test(kh)) bad.push('the H row says '+JSON.stringify(kh)+', not a tap heal and a hold plate');
+     if(!gear.some(function(r){ return r[0]==='U'&&/grenade|throw/i.test(r[1]); })) bad.push('the controls list has no U row about which grenade G throws');
+     rows=LEGEND_MINI;
+     for(i=0;i<rows.length;i++) if(rows[i][0]==='1-4') ix=i;
+     if(ix<0) bad.push('the compact list has no 1-4 guns row');
+     else{
+       if(rows[ix][1]!=='guns') bad.push('the compact 1-4 row says '+rows[ix][1]);
+       if(ix%2!==0) bad.push('1-4 sits in the right hand column (entry '+ix+')');
+       if(!rows[ix+1]||rows[ix+1][0]!=='B / I') bad.push('B / I does not follow 1-4 on the same row');
+     }
+     if(!rows.some(function(r){ return r[0]==='5-9'&&/throw/.test(r[1])&&/heal/.test(r[1])&&/plate/.test(r[1]); })) bad.push('the compact list has no 5-9 throw, heal, plate row');
+     if(rows.some(function(r){ return r[0]==='1-9'; })) bad.push('the compact list still has a 1-9 row');
+     if(rows.length%2!==0) bad.push('the compact list has an odd number of entries ('+rows.length+')');
+     if(typeof keysLegendHtml==='function'){ html=String(keysLegendHtml()); }
+     if(html){
+       if(!/guns/.test(html)||!/throwables/.test(html)||!/medical/.test(html)||!/armour/.test(html)) bad.push('the pause key line does not say the four groups');
+       if(/1-9<\/b> tactical belt/.test(html)||/1-9 tactical belt/.test(html)) bad.push('the pause key line still says 1-9 tactical belt');
+     }
+     page=(document.getElementById('pausekeys')||{}).innerHTML||'';
+     if(page&&/1-9 tactical belt/.test(page)&&!/guns/.test(page)) bad.push('the pause screen as written still says 1-9 tactical belt');
+     return bad.length?bad.join('; '):null; }},
   {v:'25.99',what:'his order (redo the bar at the bottom), the pad walk: with two guns, a Frag on key 5, a Bandage on key 7 and nothing else, RB from key 2 goes over the vacant gun keys 3 and 4 to key 5, RB from key 5 goes over the empty key 6 to key 7, RB from key 7 goes over the empty keys 8 and 9 round to key 1, and LB from key 1 goes back over keys 9 and 8 to key 7',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';

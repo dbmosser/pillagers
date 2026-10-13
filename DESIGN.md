@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.00 - THE KEY LISTS SAY THE NEW BELT
+
+Co-op hunt while he was away. His order of 2026-10-13: redo the bar at the bottom. Build 8 of 8, the words. Every list of keys now says the new belt: keys 1 to 4 are guns, 5 and 6 throwables, 7 and 8 medical, 9 armour. The full controls list (F1) has a row for each group and says U switches which grenade G throws and H is a tap to heal and a hold for a plate; the compact controls list says 1-4 guns beside B / I and 5-9 throw, heal, plate, and adds U; the rules card names the four groups; and the pause screen key line says them in place of 1-9 tactical belt.
+
+MEASURED. Check 26.00 passes, and fails on v25.99.
 ## v25.99 - THE PAD WALK SKIPS KEYS WITH NOTHING ON THEM
 
 Co-op hunt while he was away. His order of 2026-10-13 (redo the bar at the bottom), build 7 of 8. On a controller the bumpers walk the belt, and the walk already stepped over a vacant gun key. It now also steps over a throwable, medical or armour key that has nothing of its kind on it, so RB and LB land only on keys that hold something. A key he bound that has run out (greyed at 0) is still a key to land on.
