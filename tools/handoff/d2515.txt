@@ -1,0 +1,5 @@
+## v25.15 - THE FORGE: SHOCK ROUNDS CHAIN AND STUN
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. SHOCK is the second element. Every shock hit jumps to the nearest other enemy within about 16 metres with a clear line, for half the damage (armour soaks it as it soaks a round, a Bulwark shield does not), at most once every 0.2 seconds per shooter so an SMG does not chain every pellet. It never jumps to the Peddler, the Survivor, a pillager at peace or your hire. A machine hit by shock is stunned for half a second (a Warden or a Choir a quarter, the Overseer not at all), then cannot be stunned again for 2.5 seconds, so no gun can hold a machine down for good. No gun can be upgraded in play yet: the Forge station comes in a later build.
+
+MEASURED. Check 25.15 passes, and fails on v25.14.

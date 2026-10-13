@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.15 - THE FORGE: SHOCK ROUNDS CHAIN AND STUN
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. SHOCK is the second element. Every shock hit jumps to the nearest other enemy within about 16 metres with a clear line, for half the damage (armour soaks it as it soaks a round, a Bulwark shield does not), at most once every 0.2 seconds per shooter so an SMG does not chain every pellet. It never jumps to the Peddler, the Survivor, a pillager at peace or your hire. A machine hit by shock is stunned for half a second (a Warden or a Choir a quarter, the Overseer not at all), then cannot be stunned again for 2.5 seconds, so no gun can hold a machine down for good. No gun can be upgraded in play yet: the Forge station comes in a later build.
+
+MEASURED. Check 25.15 passes, and fails on v25.14.
 ## v25.14 - THE FORGE: FIRE ROUNDS BURN
 
 Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. FIRE is the first element. A round from a MK III fire gun (every round of a Burst Carbine burst too) sets what it hits burning for 3 seconds, about a quarter of the hit again each second (at most 18 a second; armour does not stop fire), and a body the burn finishes is your kill, with the contracts, the kill feed and the score as for a round. A pillager hit by fire panics: he runs straight away from you for about a second and fires nothing, then fights on (once every 5 seconds). Machines burn and keep fighting. The damage number of a fire round is fire coloured; a weak point stays orange. No gun can be upgraded in play yet: the Forge station comes in a later build.

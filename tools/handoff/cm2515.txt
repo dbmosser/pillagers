@@ -1,0 +1,7 @@
+v25.15: the forge: shock rounds chain and stun
+
+Shock rounds from a MK III gun jump to a second enemy and briefly stun machines.
+
+Check 25.15. Fails on v25.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
