@@ -1,0 +1,7 @@
+v24.68: demo vaults
+
+A DEMO raid now has two locked vaults with elite loot.
+
+Check 24.68. Fails on v24.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

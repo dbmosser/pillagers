@@ -1,0 +1,5 @@
+## v24.68 - DEMO VAULTS
+
+Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. COLD STORAGE already has strongrooms: buildings with a closed inner room and a single doorway. In a DEMO raid two of them are now sealed into vaults, VAULT A and VAULT B. Each has a locked door with a lamp, shows on the map as a locked room, and holds two caches, one of them with an elite gun. A Vault Keycard opens one. The vault walls cannot be blown or shot through. A strongroom is only used when its walls stand whole and nothing alive, no spawn and no ring is inside it. The choice is made on its own random stream, so the rest of the raid is built exactly as before and both players see the same vaults; a normal raid is unchanged. A teammate respawn never puts you inside a shut vault.
+
+MEASURED. Check 24.68 passes, and fails on v24.67.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.68 - DEMO VAULTS
+
+Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. COLD STORAGE already has strongrooms: buildings with a closed inner room and a single doorway. In a DEMO raid two of them are now sealed into vaults, VAULT A and VAULT B. Each has a locked door with a lamp, shows on the map as a locked room, and holds two caches, one of them with an elite gun. A Vault Keycard opens one. The vault walls cannot be blown or shot through. A strongroom is only used when its walls stand whole and nothing alive, no spawn and no ring is inside it. The choice is made on its own random stream, so the rest of the raid is built exactly as before and both players see the same vaults; a normal raid is unchanged. A teammate respawn never puts you inside a shut vault.
+
+MEASURED. Check 24.68 passes, and fails on v24.67.
 ## v24.67 - THE RAID PANELS ARE THE MENU PLATE
 
 Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD as part of the graphics work and keep all the critical info (#35), and make the menus look like a triple A game (#50). The picture review of the raid HUD found its panels (contracts, the pillager board, the controls card, the backpack) still in the old look the menus left behind: see-through navy glass with a blue line and round corners, and a map label reading through the contracts panel. They are drawn as the same graphite plate as the menus now, with the cut corner, a fine edge and the short amber mark, and solid enough that the world does not show through. Every panel is where it was and the same size, and nothing on them changed.
