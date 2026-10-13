@@ -1384,6 +1384,7 @@ try{ var _osp=saveProfile; saveProfile=function(){ var t0=performance.now(); var
 window.__isFixture=1;
 // v23.xx (present: his answer 18): every live raid opens on 3, 2, 1, GO! with the world held (GO_SEC). The checks start their raids
 // at once, as before; the countdown check sets GO_SEC back to 3 for itself. On a build with no count this only makes a global.
+// 2026-10-13: his order of 2026-10-12 removed the count (nogo); kept so the builds before it still start their raids at once.
 try{ GO_SEC=0; }catch(e){}
 // THE FIXTURE IS SILENT. Verification drives real frames, and real frames fire real
 // gunshots, alarms and machine voices through WebAudio. On 2026-08-24 a 40 raid batch
@@ -8876,6 +8877,9 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'24.09',what:'his answer 18: every raid, career and demo, opens on 3, 2, 1, GO! with the world held until GO',
    run:function(){
+     // retargeted 2026-10-13 (nogo): his order of 2026-10-12 removed the countdown ("get rid of the 3-2-1-GO! at the beginning"). A build
+     // with no count passes here; the nogo check guards the raid start (control from the first frame, no big count on the HUD).
+     if(typeof goTick!=='function'&&typeof drawGoCount!=='function') return null;
      if(!window.__deploy||!window.__endRaid||!window.__loop) return 'SKIP: no raid here';
      var bad=[], g, p, x0, y0, t0, tl0, f, T, gs0=(typeof GO_SEC==='number')?GO_SEC:null, rb=blip, beeps=[], big=[], rf=ctx.fillText, ownF=false, ownB=false;
      function trace(){
