@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.28 - THE ROOM BEHIND A WINDOW HAS NO WORDS
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. Round a small window such as Wirt or the Last Pour, the big station signs of the Undercroft still read through the dark glass (WIRT THE GAMBLER, ENTER RAID!, a cut off SHOP, CR), like a second menu under the first. The room behind a window is now softly blurred as well as dimmed.
+
+MEASURED. Check 25.28 passes, and fails on v25.27.
 ## v25.27 - NO WORD SITS ALONE ON THE TITLE
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The line under the title wrapped with two words alone on its second line. The title lines now split into lines of even length. No word changed.

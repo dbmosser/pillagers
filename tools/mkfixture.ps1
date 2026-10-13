@@ -6078,6 +6078,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.28',what:'his #50 (UI redesign ui5q2j): the room behind a window (Wirt, the Last Pour, every .modal) is blurred, so its station signs do not read as words',
+   run:function(){
+     var m=document.getElementById('gamblemodal')||document.querySelector('.modal');
+     if(!m) return 'SKIP: no window here';
+     var cs=getComputedStyle(m), bf=(cs.backdropFilter||cs.webkitBackdropFilter||'')+'';
+     return bf.indexOf('blur')>=0?null:('the room behind a window is not blurred ('+bf+')'); }},
   {v:'25.27',what:'his #50 (UI redesign ui5q2b): the line under the title and the step cards balance their lines, so no word is left alone on a line',
    run:function(){
      var el=document.querySelector('#title .titlecol > div[style*="max-width:760px"]'), tb=document.querySelector('#title .tcard .tbody'), bad=[];

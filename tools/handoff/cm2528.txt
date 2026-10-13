@@ -1,0 +1,7 @@
+v25.28: the room behind a window has no words
+
+The Undercroft behind a window is blurred, so its signs no longer read through.
+
+Check 25.28. Fails on v25.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
