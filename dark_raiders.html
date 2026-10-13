@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.96';
+var VER='25.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16976,7 +16976,7 @@ function beltInfoRows(k){
 }
 function itemCardSize(o){
   var rs=Math.max(1,hudRes()), fp=msgPx(hudFS(TYPE.label)), hp=msgPx(hudFS(TYPE.head)), pad=Math.round(LH(8)*rs), rh=Math.round(fp*1.5);
-  return {w:Math.round(fp*18), h:pad*2+Math.round(hp*1.1)+rh*(1+o.rows.length+(o.val?1:0))+Math.round(rh*1.35)};
+  return {w:Math.round(fp*(o.keys&&o.keys.length>2?23:18)), h:pad*2+Math.round(hp*1.1)+rh*(1+o.rows.length+(o.val?1:0))+Math.round(rh*1.35)};   // v25.xx (belt6b): wider with a third key
 }
 function itemCardDraw(o,xR,yB,al){
   var rs=Math.max(1,hudRes()), fL=hudFS(TYPE.label), fp=msgPx(fL), fH=hudFS(TYPE.head), hp=msgPx(fH), pad=Math.round(LH(8)*rs), rh=Math.round(fp*1.5);
@@ -17009,6 +17009,11 @@ function beltInfoCard(S,c){
   it=ITEMS[k]; rk=dispR(k)||it.r||'common'; v=ival(k); n=(S.count|0);
   o={name:String(it.name).toUpperCase(), col:RCOL[rk]||HUDC.text, rar:ITEMRAR[rk]||'', held:'HELD '+n, rows:beltInfoRows(k),
      val:(v>0)?('$'+v.toLocaleString()):'', keys:[[String(keyLabel('Digit'+(c.i+1),String(c.i+1))),'SELECT'],['FIRE','USE']]};
+  if(!padOn()){   // v25.xx (belt6b): and the key of its class
+    if(it.use==='throw') o.keys.push([String(keyLabel('KeyG','G')),'THROW']);
+    else if(it.use==='heal') o.keys.push([String(keyLabel('KeyH','H')),'HEAL']);
+    else if(it.use==='armor') o.keys.push(['HOLD '+String(keyLabel('KeyH','H')),'PLATE']);
+  }
   rs=Math.max(1,hudRes()); m=Math.round(LH(8)*rs); sz=itemCardSize(o);
   xR=Math.round(Math.max(m+sz.w,Math.min(W-m,c.x+c.w/2+sz.w/2)));
   yB=Math.round(c.y-LH(6)*rs-((state!=='hub')?msgPx(beltCapFS(c.w))*1.1:0));
@@ -19645,14 +19650,14 @@ function hotbarSlots(){
   // themselves. Keys 1 to GUNKEYS are gun keys: a gun pinned to one (gunKeysSettle) shows there wherever it is, and a gun key no
   // assignment takes is filled after the assignments below (the fill).
   var _hc=[{k:'gunA',name:A.name,kind:'gun',inHand:!sw,icon:A.id,
-    count:(A.mag===0?null:Aam),c:A.tint||'#ffd48a'}];
+    count:(A.mag===0?null:Aam),c:A.tint||'#ffd48a',mag:A.mag}];   // v25.xx (belt6b): mag, for the bar
   // v8.67, HIS REPORT: the second gun cell is ALWAYS here, vacant when you are
   // carrying one gun. It used to appear only when a second gun existed, so the
   // whole bar shifted left the moment you picked one up and there was no empty
   // gun slot to drop one onto. The comment above promises the keys never move;
   // this is what makes that true.
   if(B) _hc.push({k:'gunB',name:B.name,kind:'gun',inHand:sw,icon:B.id,
-    count:(B.mag===0?null:Bam),c:B.tint||'#ffd48a'});
+    count:(B.mag===0?null:Bam),c:B.tint||'#ffd48a',mag:B.mag});
   else _hc.push({k:'gunB',name:'Second weapon',kind:'gun',inHand:false,icon:null,
     count:0,c:'#4d5762',vacant:1});
   for(var _gk0=0;_gk0<GUNKEYS;_gk0++) out.push({k:'gunkey:'+_gk0,name:'Second weapon',kind:'gun',inHand:false,icon:null,count:0,c:'#4d5762',vacant:1,gunFill:1});
@@ -19702,7 +19707,7 @@ function hotbarSlots(){
       // Shows the gun as it actually is: its rolled name, its live ammo, its tint, and
       // whether it is the one currently up, so a Gold Longshot on the belt reads gold.
       out[aix]={k:'item:'+akey,name:_eq.w.name,icon:_agk,kind:'gun',inHand:_eq.inHand,
-        count:(_eq.w.mag===0?null:_eq.am),c:_eq.w.tint||'#ffd48a',assigned:1,itemKey:akey,equipped:1,auto:(G.hotAuto&&G.hotAuto[ai])?1:0};   // v21.83: auto, a gun pin
+        count:(_eq.w.mag===0?null:_eq.am),c:_eq.w.tint||'#ffd48a',assigned:1,itemKey:akey,equipped:1,mag:_eq.w.mag,auto:(G.hotAuto&&G.hotAuto[ai])?1:0};   // v21.83: auto, a gun pin
     } else if(ait.use==='throw'){
       // v11.60, from the 2026-09-06 audit: THE v8.31 STIM HOLE, one item type
       // later. A throwable lives in the pouch and never in the backpack, so
@@ -19732,7 +19737,7 @@ function hotbarSlots(){
       // v21.83: a gun pin is marked as one, and a backpack gun on a gun key counts the rounds it will come back with (takeRounds).
       if(_agk&&have>0){
         if(G.hotAuto&&G.hotAuto[ai]) out[aix].auto=1;
-        if(aix<GUNKEYS){ var _gsa=G.stowAmmo&&G.stowAmmo[_agk], _gsm=(_sq&&_sq.mag)||(WEAPONS[_agk]&&WEAPONS[_agk].mag)||0; out[aix].count=(_gsa&&_gsa.length)?Math.min(_gsm,Math.max(0,_gsa[0]|0)):Math.ceil(_gsm/2); }
+        if(aix<GUNKEYS){ var _gsa=G.stowAmmo&&G.stowAmmo[_agk], _gsm=(_sq&&_sq.mag)||(WEAPONS[_agk]&&WEAPONS[_agk].mag)||0; out[aix].count=(_gsa&&_gsa.length)?Math.min(_gsm,Math.max(0,_gsa[0]|0)):Math.ceil(_gsm/2); out[aix].mag=_gsm; }
       }
     }
   }
@@ -19779,7 +19784,7 @@ function hotbarSlots(){
     if(_fp<0&&!_fpk&&_hc[1]&&_hc[1].vacant&&!_hcUsed[1]) _fp=1;
     if(_fpk){
       var _fpi=ITEMS[_fpk], _fpm=(WEAPONS[_fpi.gk]&&WEAPONS[_fpi.gk].mag)||0;
-      out[_fk]={k:'item:'+_fpk,name:_fpi.name,icon:_fpk,kind:'gun',inHand:false,count:Math.ceil(_fpm/2),c:_fpi.c||'#cdd6dd',itemKey:_fpk,floorGun:1};
+      out[_fk]={k:'item:'+_fpk,name:_fpi.name,icon:_fpk,kind:'gun',inHand:false,count:Math.ceil(_fpm/2),c:_fpi.c||'#cdd6dd',itemKey:_fpk,floorGun:1,mag:_fpm};
     }
     else if(_fp>=0){ out[_fk]=_hc[_fp]; _hcUsed[_fp]=true; if(_hc[_fp].vacant&&_fk>=2) _hc[_fp].name=(_fk===2?'Third weapon':'Fourth weapon'); }
     else out[_fk]={k:'gunkey:'+_fk,name:(_fk<2?'Second weapon':(_fk===2?'Third weapon':'Fourth weapon')),kind:'gun',inHand:false,icon:null,count:0,c:'#4d5762',vacant:1};
@@ -32289,6 +32294,9 @@ function drawBuzzFx(){
     // mouse code. Two copies of this arithmetic would drift the first time the
     // slot count or the scale changed, and the drop target would stop matching
     // the thing on screen.
+    var _gSel=null, _gTs=[], _gti;   // v25.xx (belt6b): the kind G throws: the kind U chose when a throwable key shows it, else the first throwable key
+    for(_gti=GUNKEYS;_gti<sl.length;_gti++) if(BELT_CLASS[_gti]==='throw'&&sl[_gti]&&sl[_gti].kind==='throw'&&sl[_gti].icon&&(sl[_gti].count|0)>0) _gTs.push(sl[_gti].icon);
+    if(_gTs.length) _gSel=(_gTs.indexOf(THROWKEYS[G.tsel])>=0)?THROWKEYS[G.tsel]:_gTs[0];
     var _gx=[0], _gp, _pp=LH(4), _gg, _gf, _gl, _gq2;   // v25.xx (belt6a): each key's offset from the left edge, and one graphite plate behind each group
     for(_gp=1;_gp<sl.length;_gp++) _gx.push(_gx[_gp-1]+((beltGroupOf(_gp)!==beltGroupOf(_gp-1))?gapG:gap));
     for(_gg=0;_gg<4;_gg++){
@@ -32369,7 +32377,27 @@ function drawBuzzFx(){
         ctx.fillStyle='#7fc4a0';
         ctx.fillRect(bx+bw-LH(7),hy+LH(3),LH(4),LH(4));
       }
-      if(S.count!==null&&S.count!==undefined&&S.kind!=='empty'){   // v19.01: no count on an empty key
+      // v25.xx (belt6b), HIS ANSWER Q7 2026-10-13: "bar for magazine, number for reserve addtnl rounds". A gun key shows its magazine as a fill bar
+      // along its foot (light above half, amber to a quarter, red below) and the rounds he carries in reserve as the number; the floor belt has no
+      // reserve, so it shows the bar alone. A gun with no magazine (melee) keeps its old look. The half-grey states above are unchanged.
+      var _gunReal=!!(S.kind==='gun'&&!S.vacant&&S.icon&&S.icon!=='fists'&&S.count!==null&&S.count!==undefined&&S.mag>0);
+      if(state!=='hub'&&S.kind==='throw'&&S.icon&&S.icon===_gSel){   // the G keycap on the throwable key G throws
+        var _gs=Math.round(bw*0.2), _gkx=bx+LH(4), _gky=hy+bw-LH(5)-_gs;
+        ctx.fillStyle='#ffc04a'; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(_gkx,_gky,_gs,_gs,Math.max(2,_gs*0.2)); else ctx.rect(_gkx,_gky,_gs,_gs); ctx.fill();
+        ctx.font=beltFS(bw,0.13); ctx.fillStyle='#1a1408'; ctx.textAlign='center'; ctx.fillText(String(keyLabel('KeyG','G')).slice(0,2),_gkx+_gs/2,_gky+_gs*0.76); ctx.textAlign='left';
+      }
+      if(_gunReal){
+        var _mh=Math.max(3,Math.round(bw*0.05)), _mx=bx+LH(5), _mw=bw-LH(10), _my=hy+bw-LH(4)-_mh, _mf=clamp((S.count|0)/S.mag,0,1);
+        ctx.fillStyle='rgba(255,255,255,.14)'; ctx.fillRect(_mx,_my,_mw,_mh);
+        ctx.globalAlpha=_bgDim?.5:1;
+        ctx.fillStyle=_mf>0.5?'#e6f0f6':(_mf>0.25?'#ffc04a':'#e0483a'); ctx.fillRect(_mx,_my,Math.round(_mw*_mf),_mh);
+        ctx.globalAlpha=1;
+        if(G.player&&!G.hubFloor){
+          ctx.font=beltFS(bw,0.16); ctx.fillStyle=_bgDim?'#7a5040':(_bgHalf?'#ffc04a':'#FFF6DC');
+          ctx.textAlign='right'; ctx.fillText(String(Math.max(0,G.player.reserve|0)),bx+bw-LH(4),_my-LH(3)); ctx.textAlign='left';
+        }
+      }
+      else if(S.count!==null&&S.count!==undefined&&S.kind!=='empty'){   // v19.01: no count on an empty key
         ctx.font=beltFS(bw,0.16);   // v18.71: grows with the slot
         ctx.fillStyle=_bgDim?'#7a5040':(_bgHalf?'#ffc04a':'#FFF6DC');   // v24.xx (beltgrey): an empty magazine he can reload says 0 in the RELOAD amber
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
@@ -41297,7 +41325,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.96: The belt now has four labelled groups: GUNS, THROW, MEDICAL and ARMOUR, with the lit group in amber. Check 25.96 fails on v25.95',
+  now:'v25.97: Gun keys now show the magazine as a bar and the reserve as the number; the G key shows on the throwable it throws. Check 25.97 fails on v25.96',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

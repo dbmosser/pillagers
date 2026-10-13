@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.97 - MAGAZINE BAR, RESERVE NUMBER, G KEYCAP
+
+Co-op hunt while he was away. His answer of 2026-10-13: bar for magazine, number for reserve additional rounds. Build 6b of 8. Every gun key now shows its magazine as a small fill bar along the foot of the key (light above half, amber down to a quarter, red below) and the rounds he carries in reserve as the number, where it used to print the rounds in the magazine. The half-grey and full-grey states are unchanged, the Undercroft belt shows the bar alone (it has no reserve), and a gun with no magazine keeps its old look. The throwable key that G throws wears a small G keycap, following U. The hover card of a grenade, a heal and an armour plate names the key of its class: G THROW, H HEAL, HOLD H PLATE. Drawing only.
+
+MEASURED. Check 25.97 passes, and fails on v25.96.
 ## v25.96 - THE BELT IN FOUR GROUPS WITH LABELS
 
 Co-op hunt while he was away. His order of 2026-10-13: redo the bar at the bottom. Build 6a of 8, the look. The nine keys now sit in four groups, GUNS (1 to 4), THROW (5 and 6), MEDICAL (7 and 8) and ARMOUR (9), with a wider gap between groups than inside one, one graphite plate behind each group, and a small caps label under each group, amber for the group the highlight is in and dim for the others. A key with nothing on it shows a dim picture of what it is for (a grenade, a cross, a plate). The belt rises by the height of the label strip so nothing above it overlaps. Drawing only.

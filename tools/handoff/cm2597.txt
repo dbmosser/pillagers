@@ -1,0 +1,7 @@
+v25.97: magazine bar, reserve number, g keycap
+
+Gun keys now show the magazine as a bar and the reserve as the number; the G key shows on the throwable it throws.
+
+Check 25.97. Fails on v25.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v25.97 - MAGAZINE BAR, RESERVE NUMBER, G KEYCAP
+
+Co-op hunt while he was away. His answer of 2026-10-13: bar for magazine, number for reserve additional rounds. Build 6b of 8. Every gun key now shows its magazine as a small fill bar along the foot of the key (light above half, amber down to a quarter, red below) and the rounds he carries in reserve as the number, where it used to print the rounds in the magazine. The half-grey and full-grey states are unchanged, the Undercroft belt shows the bar alone (it has no reserve), and a gun with no magazine keeps its old look. The throwable key that G throws wears a small G keycap, following U. The hover card of a grenade, a heal and an armour plate names the key of its class: G THROW, H HEAL, HOLD H PLATE. Drawing only.
+
+MEASURED. Check 25.97 passes, and fails on v25.96.
