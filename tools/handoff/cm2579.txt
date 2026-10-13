@@ -1,0 +1,7 @@
+v25.79: hold alt for the raid status
+
+Hold Alt to see the raid status: the pillagers board, your score and credits, the raid clock, the extraction and your teammate.
+
+Check 25.79. Fails on v25.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
