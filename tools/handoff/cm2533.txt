@@ -1,0 +1,7 @@
+v25.33: the minimap knows when to step aside
+
+Settings has a MINIMAP row, and the minimap hides under the map, the backpack and the end cards.
+
+Check 25.33. Fails on v25.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -6078,6 +6078,39 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.33',what:'his order (add minimap): a MINIMAP ON/OFF row, on by default; it hides under the map, the backpack, the end cards and in the Undercroft, and grows with the screen',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof drawHUD!=='function'||typeof ctx==='undefined') return 'SKIP: no raid HUD here';
+     if(typeof drawMinimap!=='function'||typeof MMAP!=='object') return 'SKIP: no minimap in this build';
+     var bad=[], g, row=null, i, oc=CFG.minimap, os=state, oa=(typeof ARCADE==='object'&&ARCADE)?ARCADE.over:undefined, b1, b2;
+     try{
+       for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k==='minimap') row=GAMEOPTS[i];
+       if(!row) bad.push('Settings has no MINIMAP row');
+       else if(!row.opts[row.def]||row.opts[row.def].cfg.minimap!==1) bad.push('the MINIMAP row is not on by default');
+       __topClear(); __runPrep(); __deploy({kit:['gun_carbine'],seed:4242,mapIx:0});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       CFG.minimap=1; drawHUD(); b1=MMAP.box;
+       if(!b1) bad.push('MINIMAP ON draws no minimap in a raid');
+       else if(Math.abs(b1.w-Math.round(216*hudRes()))>1) bad.push('the minimap is '+b1.w+' wide, not 216 times the screen scale '+hudRes());
+       CFG.minimap=0; drawHUD(); b2=MMAP.box;
+       if(b2) bad.push('MINIMAP OFF still draws the minimap');
+       if(b1&&HUDBOX.cond&&!(HUDBOX.cond.y<b1.y+b1.h)) bad.push('with the minimap off the CONDITIONS panel stays down where the minimap was');
+       CFG.minimap=1; delete CFG.minimap; drawMinimap(); if(!MMAP.box) bad.push('a save from before the row (no minimap key) draws no minimap');
+       CFG.minimap=1;
+       g.mapOpen=true; drawMinimap(); if(MMAP.box) bad.push('the minimap draws under the open sector map'); g.mapOpen=false;
+       g.bagOpen=true; drawMinimap(); if(MMAP.box) bad.push('the minimap draws under the open backpack'); g.bagOpen=false;
+       if(typeof ARCADE==='object'&&ARCADE){ var oar=g.arcade; g.arcade=oar||1; ARCADE.over={at:Date.now(),why:'test'}; drawMinimap(); if(MMAP.box) bad.push('the minimap draws on the RUN OVER card'); ARCADE.over=oa; g.arcade=oar; }
+       var os2=state; state='hub'; drawMinimap(); if(MMAP.box) bad.push('the minimap draws in the Undercroft'); state=os2;
+       drawMinimap(); if(!MMAP.box) bad.push('the minimap did not come back after the map, the backpack and the cards');
+       __endRaid('abandon'); g=__state();
+       if(g&&g.player){ drawMinimap(); if(MMAP.box) bad.push('the minimap draws over the end card'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(oc===undefined) delete CFG.minimap; else CFG.minimap=oc; }catch(_c0){}
+       try{ state=os; }catch(_s){} try{ if(typeof ARCADE==='object'&&ARCADE) ARCADE.over=oa; }catch(_a){}
+       try{ var g2=__state(); if(g2){ g2.mapOpen=false; g2.bagOpen=false; if(!g2.over) __endRaid('abandon'); } }catch(_e){} try{ __topClear(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'25.32',what:'his order (sounds for the use items): a key at its door beeps twice in your ears, then the bolts throw and the heavy door opens at the door after the swipe; nothing under G.sim',
    run:function(){
      if(typeof SFXBANK!=='object'||!SFXBANK||typeof foley!=='function'||typeof SFXB!=='object') return 'SKIP: no foley bank on this build';

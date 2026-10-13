@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.33 - THE MINIMAP KNOWS WHEN TO STEP ASIDE
+
+Co-op hunt while he was away. His order of 2026-10-12: add minimap. Settings has a MINIMAP row now, ON or OFF, on by default. The minimap steps aside whenever something else owns the screen: with the sector map or the backpack open, on the KILLED IN ACTION, EXTRACTED and RUN OVER cards, and in the Undercroft, where it never shows. With it off the CONDITIONS panel sits back under the credits. Player 2 sees a minimap of his own in his own window, and it grows with the screen at 1080p and 4K like the rest of the HUD.
+
+MEASURED. Check 25.33 passes, and fails on v25.32.
 ## v25.32 - A KEY AT ITS DOOR SOUNDS LIKE A LOCK
 
 Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Spending a key or a Vault Keycard at a locked door played the menu chirp, and the heavy door itself made no sound. Now the card swipes and the reader beeps twice, then the bolts throw and the heavy door grinds open, placed at the door; an arcade vault door is lower, longer and heavier and ends on the slab seating. Your teammates hear the door where it is. The sounds are the recorded CC0 foley from the v25.20 bank. Sound only: nothing in the game changes.
