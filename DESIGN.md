@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.53 - THE HOWLER REDESIGN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines, silhouettes first. The Howler was a black lunchbox with a tube stuck in it at a fixed angle: the darkest thing in the cast, gone on a dark floor, and its mortar pointed up and left whatever it was shooting at. Now it is a mortar walker on four short splayed legs that step as it moves, with a light turret ring on top so it reads on dark floors, a fat tube with a yellow muzzle ring that leans toward whatever it faces, an ammo drum on its side and a spotting lamp that shows its mood. Elite Howlers have a brass muzzle ring. Drawn only: its size and its shots are unchanged.
+
+MEASURED. Check 24.53 passes, and fails on v24.52.
 ## v24.52 - THE BELT CAPTION DRAWS KEYCAPS
 
 Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD (#35) and make it look like a triple A game (#50). The picture review of the raid HUD found the caption over the belt still writing its keys as bracketed words, [FIRE] use and [V] signal, next to the keycaps every other prompt in the raid now draws. Its keys are keycaps now, on the same graphite as the panels. The words, place and size are the same.

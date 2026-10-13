@@ -1,0 +1,7 @@
+v24.53: the howler redesign
+
+The Howler is redrawn: a four-legged mortar walker whose fat tube turns toward what it is shooting at.
+
+Check 24.53. Fails on v24.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
