@@ -7275,7 +7275,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof LEGEND_MINI==='undefined') return 'SKIP: no compact legend here';
      var bad=[], rows=LEGEND_MINI, i, ix=-1, k, found, want={'Q':'melee','F':'next gun','G':'throw','H':'heal','E':'search','X':'extract'};
-     for(i=0;i<rows.length;i++) if(rows[i][0]==='1-9') ix=i;
+     for(i=0;i<rows.length;i++) if(rows[i][0]==='1-9'||rows[i][0]==='1-4') ix=i;   // v25.xx (belt8) retarget: the row is 1-4 guns now
      if(ix<0) bad.push('the compact list has no 1-9 row');
      else{
        if(ix%2!==0) bad.push('1-9 TACTICAL BELT sits in the right hand column (entry '+ix+'), so its label has no next column to be measured against');
@@ -32597,9 +32597,9 @@ window.__REGRESS=[
        ctx.fillText=function(s,x,y){ seen.push({s:String(s),x:x,y:y,f:ctx.font}); return oFT.apply(this,arguments); };
        try{ drawHUD(); }catch(_h){}
        delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;   // never leave an own fillText: the older checks capture text on the prototype
-       for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9') kx=seen[i]; if(seen[i].s==='tactical belt') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
+       for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9'||seen[i].s==='1-4') kx=seen[i]; if(seen[i].s==='tactical belt'||seen[i].s==='guns') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
        if(!kx||!lx||!nx) bad.push('the legend did not draw its belt row ('+(kx?'':'no key ')+(lx?'':'no label ')+(nx?'':'no next key')+')');
-       else{ ctx.font=lx.f; var w=ctx.measureText('tactical belt').width; if(lx.x+w>nx.x-4) bad.push('TACTICAL BELT runs into the next column ('+Math.round(lx.x+w)+' past '+Math.round(nx.x)+')'); }
+       else{ ctx.font=lx.f; var w=ctx.measureText(lx.s).width; if(lx.x+w>nx.x-4) bad.push('TACTICAL BELT runs into the next column ('+Math.round(lx.x+w)+' past '+Math.round(nx.x)+')'); }
        __endRaid('abandon'); __topClear();
        P.runs=3; __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242,keepLegend:1});
        if(!G||G.over) return 'SKIP: staging: no second raid';
