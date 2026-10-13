@@ -1,0 +1,7 @@
+v24.99: a bar with nothing to do folds away
+
+The claim and sell bars show only when there is something to claim or sell.
+
+Check 24.99. Fails on v24.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

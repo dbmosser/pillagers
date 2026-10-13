@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.99 - A BAR WITH NOTHING TO DO FOLDS AWAY
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. On the Mainframe a full width greyed NOTHING COMPLETED TO CLAIM bar sat over the contracts, and on the stash a full width NOTHING TO SELL bar, the widest things on those screens and the ones that did nothing. They now show only when there is something to claim or sell.
+
+MEASURED. Check 24.99 passes, and fails on v24.98.
 ## v24.98 - SETTINGS HAS A DETAIL PANE
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The right third of the Settings window was empty beside the list. It is now a detail pane, as in the settings of big shooters: the setting under the mouse or the pad, its name large, its value and its whole description in a readable size.

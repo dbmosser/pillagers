@@ -1,0 +1,5 @@
+## v24.99 - A BAR WITH NOTHING TO DO FOLDS AWAY
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. On the Mainframe a full width greyed NOTHING COMPLETED TO CLAIM bar sat over the contracts, and on the stash a full width NOTHING TO SELL bar, the widest things on those screens and the ones that did nothing. They now show only when there is something to claim or sell.
+
+MEASURED. Check 24.99 passes, and fails on v24.98.
