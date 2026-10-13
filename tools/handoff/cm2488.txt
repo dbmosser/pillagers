@@ -1,0 +1,7 @@
+v24.88: the mainframe tabs share one left edge
+
+The Mainframe RACKS and REWARDS tabs line up on the left like the rest of the window.
+
+Check 24.88. Fails on v24.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.88 - THE MAINFRAME TABS SHARE ONE LEFT EDGE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The pictures of the Mainframe RACKS and REWARDS tabs showed each one as a column floating in the middle of the window under a title and tabs on the left edge. They now start on the left under the tabs, as Settings does.
+
+MEASURED. Check 24.88 passes, and fails on v24.87.
 ## v24.87 - THE KEYS LIST READS LIKE SETTINGS
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the Keys window found the list running the whole width of the screen, small letter action names at one edge and plain boxes at the other. It is a narrower list on the left now, the action names in the same capitals as the Settings rows, and every key drawn as a keycap. No word changed.

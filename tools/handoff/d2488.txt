@@ -1,0 +1,5 @@
+## v24.88 - THE MAINFRAME TABS SHARE ONE LEFT EDGE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The pictures of the Mainframe RACKS and REWARDS tabs showed each one as a column floating in the middle of the window under a title and tabs on the left edge. They now start on the left under the tabs, as Settings does.
+
+MEASURED. Check 24.88 passes, and fails on v24.87.

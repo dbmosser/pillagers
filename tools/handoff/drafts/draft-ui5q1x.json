@@ -1,0 +1,12 @@
+{
+    "title":  "THE MAINFRAME TABS SHARE ONE LEFT EDGE",
+    "why":  "His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The pictures of the Mainframe RACKS and REWARDS tabs showed each one as a column floating in the middle of the window under a title and tabs on the left edge. They now start on the left under the tabs, as Settings does.",
+    "now":  "The Mainframe RACKS and REWARDS tabs line up on the left like the rest of the window.",
+    "edits":  [
+                  {
+                      "anchor":  "  .ui-key.pill{ border-radius:12px; padding:0 9px; }",
+                      "replacement":  "  .ui-key.pill{ border-radius:12px; padding:0 9px; }\n  /* vNN.xx, UI REDESIGN ui5q1x (his #50, from the visual QA of the Mainframe RACKS and REWARDS tabs): one left edge. Both panes were\n     a centred 1080px column under the title and tabs on the left edge, the two-layouts look Settings had (ui5q1g). They start on the\n     left edge under the tabs and run 1320px, as Settings does. */\n  #root #opane_mf, #root #opane_rew{ max-width:1320px; margin:0; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q1x, from the visual QA of the Mainframe RACKS and REWARDS tabs): the RACKS and REWARDS panes start on the left edge of the tabs, not centred\u0027,\n   run:function(){\n     var bad=[], ids=[\u0027opane_mf\u0027,\u0027opane_rew\u0027], i, p, s;\n     for(i=0;i\u003cids.length;i++){\n       p=document.getElementById(ids[i]); if(!p) continue;\n       s=getComputedStyle(p);\n       if(s.marginLeft===\u0027auto\u0027||(parseFloat(s.marginLeft)\u003e2\u0026\u0026s.display!==\u0027none\u0027)) bad.push(ids[i]+\u0027 is centred (margin-left \u0027+s.marginLeft+\u0027)\u0027);\n       if(!(parseFloat(s.maxWidth)\u003e=1300)) bad.push(ids[i]+\u0027 is held to \u0027+s.maxWidth);\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

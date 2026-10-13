@@ -6063,6 +6063,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.88',what:'his #50 (UI redesign ui5q1x, from the visual QA of the Mainframe RACKS and REWARDS tabs): the RACKS and REWARDS panes start on the left edge of the tabs, not centred',
+   run:function(){
+     var bad=[], ids=['opane_mf','opane_rew'], i, p, s;
+     for(i=0;i<ids.length;i++){
+       p=document.getElementById(ids[i]); if(!p) continue;
+       s=getComputedStyle(p);
+       if(s.marginLeft==='auto'||(parseFloat(s.marginLeft)>2&&s.display!=='none')) bad.push(ids[i]+' is centred (margin-left '+s.marginLeft+')');
+       if(!(parseFloat(s.maxWidth)>=1300)) bad.push(ids[i]+' is held to '+s.maxWidth);
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.87',what:'his #50 (UI redesign ui5q1w, from the visual QA of the Keys window): the Keys list is at most 1100px wide, its action names are drawn in caps at 17px or more, and each key is a keycap with a thicker lower edge',
    run:function(){
      if(typeof keysOpen!=='function') return 'SKIP: no Keys window here';

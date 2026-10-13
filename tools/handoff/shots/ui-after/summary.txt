@@ -88,3 +88,9 @@
   15-mainframe-stats                     staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
   13-mainframe-rewards                   staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
   14-mainframe-racks                     staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+== 1080 : window 1952x1183, viewport 1920x1080
+  32-keys-window                         staged      13.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  30-settings-scroll-2400                staged      12.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | scrollTop 1710.1669921875 of 1710
+== 4k : window 3872x2263, viewport 3840x2160
+  32-keys-window                         staged      11.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  30-settings-scroll-2400                staged      12.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | scrollTop 1914.5748291015625 of 1914

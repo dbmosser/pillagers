@@ -1077,6 +1077,10 @@
   .ui-key.pad{ border-radius:50%; width:24px; min-width:24px; padding:0; border:0; color:#111315; }
   .ui-key.pad-a{ background:#5fbf6a; } .ui-key.pad-b{ background:#e5482f; } .ui-key.pad-x{ background:#3f9de9; } .ui-key.pad-y{ background:#f5b73b; }
   .ui-key.pill{ border-radius:12px; padding:0 9px; }
+  /* vNN.xx, UI REDESIGN ui5q1x (his #50, from the visual QA of the Mainframe RACKS and REWARDS tabs): one left edge. Both panes were
+     a centred 1080px column under the title and tabs on the left edge, the two-layouts look Settings had (ui5q1g). They start on the
+     left edge under the tabs and run 1320px, as Settings does. */
+  #root #opane_mf, #root #opane_rew{ max-width:1320px; margin:0; }
   /* vNN.xx, UI REDESIGN ui5q1w (his #50, from the visual QA of the Keys window): THE KEYS LIST READS LIKE SETTINGS. The list ran the
      whole width of the window, lower case action names at the left edge and plain boxes at the right, nearly 1900px apart. It is a
      1100px list on the left edge now, the action names in the 18px condensed caps of the Settings rows (the words are unchanged), and
@@ -2088,7 +2092,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.87';
+var VER='24.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39178,7 +39182,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.87: The Keys window is a tidy list with the keys drawn as keycaps. Check 24.87 fails on v24.86',
+  now:'v24.88: The Mainframe RACKS and REWARDS tabs line up on the left like the rest of the window. Check 24.88 fails on v24.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
