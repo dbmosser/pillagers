@@ -1996,7 +1996,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.60';
+var VER='24.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26331,6 +26331,16 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle='rgba(16,21,27,.85)';
   if(_BLD==='broad') wc.fillRect(x-8.2+leanX,ty-18,16.4,2.4); else if(!_BLD) wc.fillRect(x-6.5+leanX,ty-18,13,2.4);   // v20.01: wider on Broad; Curved wears a belt instead
   }
+  // v23.xx (spr22), HIS ORDER (2026-10-12) "make them all look better" and his answer 24 (silhouettes for readability first):
+  // TEAM LAMP AND HIRE BAND. A small lamp in the team colour rides on the left shoulder strap, so the side a body is on reads from
+  // the strap as well as the shoulder caps (gfxsil), and the hire, who is on your side, wears your colour, not the foe red, with
+  // a hi-vis amber band on his gun arm. Both players keep the one ally colour (v22.70, one teammate colour). Cosmetic only.
+  if(_PC&&!(OUTF&&OUTF.norig)&&(st.team==='ally'||st.team==='foe')&&typeof TEAMCOL!=='undefined'){
+    var _lmx=x+leanX+((_BLD==='broad')?-4.6:(_BLD==='curved'?-4.15:-3.2))-0.9, _lmy=ty-22.6;
+    wc.fillStyle=INK; wc.fillRect(_lmx-0.5,_lmy-0.5,2.8,2.8);
+    wc.fillStyle=TEAMCOL[st.team]; wc.fillRect(_lmx,_lmy,1.8,1.8);
+    wc.fillStyle='#ffffff'; wc.fillRect(_lmx+0.2,_lmy+0.2,0.6,0.6);
+  }
   if(iv<=0&&(OUTF?!!OUTF.jersey:(st.hero&&cosWorn('fit')==='jersey'))){   // v10.54: the baller wears it
     // v10.46: the number 23 jersey. Black side panels, and a pale 2 and 3 in
     // one-pixel strokes across the chest, five tall.
@@ -26907,6 +26917,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(_sc){ wc.fillStyle='#232a31'; wc.fillRect(5+ext,-3.6,5.5,2); wc.fillStyle=_rc||'#5c6773'; wc.fillRect(9.5+ext,-3.4,1.5,1.6); }
   wc.fillStyle=coat; if(_BLD==='broad') wc.fillRect(1+ext,-3.3,6,6.6); else if(_BLD==='curved') wc.fillRect(1+ext,-2.0,6,4.0); else if(_PC) wc.fillRect(1+ext,-2.1,6,4.2); else wc.fillRect(1+ext,-2.4,6,4.8);   /* v23.xx (spr16): Broad thicker, Lean slimmer */   // v20.10: a thicker arm on Broad, a slimmer one on Curved
   if(_PC&&/^#[0-9a-fA-F]{6}$/.test(coat)){ var _ah=(_BLD==='broad')?3.3:(_BLD==='curved'?2.0:2.1); wc.fillStyle=litHex(coat,.22,true); wc.fillRect(1+ext,(Math.cos(face)>=0)?-_ah:_ah-0.9,6,0.9); }   // v23.xx (spr15): the sleeve, lit on its upper edge
+  if(st.merc||(st.own&&st.own.merc)){ var _mbh=(_BLD==='broad')?3.3:(_BLD==='curved'?2.0:(_PC?2.1:2.4));   // v23.xx (spr22): the hire's hi-vis armband
+    wc.fillStyle=INK; wc.fillRect(2.9+ext,-_mbh,2.4,2*_mbh); wc.fillStyle='#f0a020'; wc.fillRect(3.3+ext,-_mbh,1.6,2*_mbh); wc.fillStyle='#ffd27a'; wc.fillRect(3.3+ext,-_mbh,1.6,0.6); }
   if(_rc){ wc.fillStyle=_rc; wc.fillRect(7+ext,-2.3,Math.max(3,_L-5),0.9); }
   // support hand: rides the handguard, or feeds a magazine mid-reload
   if(rl>0&&reach>0){
@@ -29174,7 +29186,7 @@ var SHD=G.shells[i];
       else if(e2.kind==='raider')
         drawOp(e2.x,e2.y,e2.face,(e2.roll>0)?(1-e2.roll/.38)*12.6:(e2.step||0)*4,e2.coat,
           clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.downed||e2.state==='down')?'down':((e2.roll>0)?'roll':(raiderCrouched(e2)?'crouch':'')),0,
-          {own:e2,team:'foe',moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0,
+          {own:e2,team:(e2.merc||e2.friendly)?'ally':'foe',merc:e2.merc?1:0,moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0,
            // v20.12, found by the build design review (2026-10-08): his answer 20 (v10.18) gives every pillager a look from the racks,
            // stored on him at spawn, but drawOp reads a look from this object and never from own, so every pillager was drawn in the
            // default look. It is passed through now, with the build he rolled.
@@ -38910,7 +38922,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.60: The low health heartbeat is now a lub-dub you can hear on laptop speakers. Check 24.60 fails on v24.59',
+  now:'v24.61: A team lamp rides on every shoulder strap, and your hire wears your colour and an amber armband. Check 24.61 fails on v24.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

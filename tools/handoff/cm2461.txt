@@ -1,0 +1,7 @@
+v24.61: team lamp and hire band
+
+A team lamp rides on every shoulder strap, and your hire wears your colour and an amber armband.
+
+Check 24.61. Fails on v24.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

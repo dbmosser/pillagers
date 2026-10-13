@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.61 - TEAM LAMP AND HIRE BAND
+
+Co-op hunt while he was away. His order of 2026-10-12, make them all look better, and his answer 24, readable silhouettes first. A small lamp in the team colour now rides on the left shoulder strap of the plate carrier, so the side a body is on reads from the strap as well as the shoulders. The hire was drawn in the foe red like any pillager although he works for you; he now wears your blue and a hi-vis amber band on his gun arm, and he never glares. Both players keep the one teammate colour, as the raid text rewrite set it.
+
+MEASURED. Check 24.61 passes, and fails on v24.60.
 ## v24.60 - A HEARTBEAT YOU CAN HEAR
 
 Co-op hunt while he was away. His answer 35 (2026-10-12): a low-health heartbeat. There was one, but it was a single very low thump, below what laptop and TV speakers can play, so on most machines low health was silent. It is now a lub-dub, two beats close together, with a short knock on each that small speakers do play, and the knock grows louder as your health falls. When it starts (under 45 health, or something hunting you close) and how fast it beats are unchanged.
