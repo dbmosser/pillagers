@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.38';
+var VER='25.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17153,6 +17153,21 @@ function killPlayer(src){
 // A DEMO hit took half (arcade10), so the same gun killed a DEMO player in twice the time it kills a CAREER player. The dial is
 // now 1: a DEMO hit takes what the same hit takes in CAREER. The hook stays so a later order can move it in one place.
 var ARCADE_DMG=1;
+// v25.39 (usefoleyc), HIS ORDER 2026-10-12 (about 21:10): "add sounds for bandaging, applying armor, etc". YOUR PLATES RING WHEN THEY
+// ARE HIT AND SHATTER WHEN THEY BREAK. A round your armour soaked sounded exactly like one that went into you (the plain hit), and the
+// plates running out made no sound at all, so you learned you were bare only from the bar. Now a round on the plates adds the metal
+// ring the bulwark already has (impactMat armor) and a light recorded plate knock, and the round that takes the last of your armour
+// plays the plate breaking once: a heavy low clack (the v25.20 bank), a shatter (impactMat glass) and the carrier tearing. Your
+// teammates hear the break where you stand. Cosmetic only: no seeded draw, nothing under G.sim, no game state.
+function armorHitFoley(broke){
+  if(G&&G.sim) return;
+  blip('hit',undefined,undefined,'armor');
+  if(typeof foley!=='function') return;
+  if(!broke){ foley('plateClack',null,null,{rate:1.4,g:0.4,dur:0.12,gap:0.07,local:1}); return; }
+  blip('hit',undefined,undefined,'glass');
+  foley('plateClack',null,null,{rate:0.72,g:1.15});
+  foley('strapRip',null,null,{off:0.1,dur:0.12,g:0.5,rate:1.5,at:0.04,local:1});
+}
 function damagePlayer(amt,src,srcName,sx,sy){
   // v21.97 (K7): and on a raid this window joined and took over when the host left
   if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))&&isFinite(amt)) amt*=netKidMul();   // v16.44, his order: kid mode, player 2 takes less
@@ -17255,6 +17270,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     var RA=armorById(p.rig);
     var soak=(RA&&typeof RA.absorb==='number')?RA.absorb:0.55;
     var ab=Math.min(p.armor,amt*soak); p.armor-=ab; amt-=ab;
+    if(ab>0) armorHitFoley(p.armor<=0);   // v25.39 (usefoleyc): the plates ring, and break when they run out
   }
   // HIS NOTE, 2026-08-25: "show damage as red on the health bar momentarily so
   // player can see what damage they just took". The bar jumped straight to the
@@ -40105,7 +40121,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.38: The seal never turns up on top of a crate, so E at a crate always searches it. Check 25.38 fails on v25.37',
+  now:'v25.39: A round on your plates now rings them, and the plates breaking plays a heavy clack and a shatter. Check 25.39 fails on v25.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

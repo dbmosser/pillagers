@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.39 - YOUR PLATES RING AND SHATTER
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. A round your armour soaked sounded exactly like one that went into you, and your plates running out made no sound at all, so you learned you were bare only from the bar. Now a round on the plates adds a metal ring and a light recorded plate knock, and the round that takes the last of your armour plays the plate breaking once: a heavy low clack, a shatter and the carrier tearing. Your teammates hear the break where you stand. Sound only: nothing in the game changes.
+
+MEASURED. Check 25.39 passes, and fails on v25.38.
 ## v25.38 - THE SEAL NEVER SITS ON A CRATE
 
 Co-op hunt while he was away. A check of the new random seal (v24.82, his order that the seal should spawn in random spots) found that it could land right on top of a crate: in 17 raids of 300 a crate stood within reach of the slab, at seed 308841 only 15 away and hidden under it. While the seal is uncut, holding E there cuts the seal instead of searching the crate, so the crate gave nothing and the cut alarm drew the machines. The seal roll now refuses any spot with a container within 120 of it (the reach of the cut plus the reach of a search) and rolls again. The roll stays on the raid own side stream, so the machines, containers and loot of a seed are exactly as before, both windows of a pair still get the same door, and the seal still moves all over the map. DEMO and CAREER are the same.

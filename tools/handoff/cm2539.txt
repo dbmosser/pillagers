@@ -1,0 +1,7 @@
+v25.39: your plates ring and shatter
+
+A round on your plates now rings them, and the plates breaking plays a heavy clack and a shatter.
+
+Check 25.39. Fails on v25.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
