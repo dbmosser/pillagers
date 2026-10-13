@@ -6063,6 +6063,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.80',what:'his #50 (UI redesign ui5q1v, from the 4K visual QA of the Keys window): the Keys window, built the first time it opens, takes the same menu zoom as the other windows',
+   run:function(){
+     if(typeof keysOpen!=='function'||typeof applyMenuZoom!=='function') return 'SKIP: no Keys window here';
+     var bad=[], z0=P.menuZoom, old=document.getElementById('keysmodal'), km, sm=document.getElementById('settingsmodal'), zk, zs;
+     try{
+       if(old&&old.parentNode) old.parentNode.removeChild(old);
+       P.menuZoom=1.5; applyMenuZoom();
+       keysOpen();
+       km=document.getElementById('keysmodal');
+       if(!km||!sm) return 'SKIP: the Keys window did not build';
+       zk=parseFloat(km.style.zoom)||1; zs=parseFloat(sm.style.zoom)||1;
+       if(Math.abs(zk-zs)>0.01) bad.push('the Keys window is drawn at zoom '+zk+' while the other windows are at '+zs);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(z0===undefined) delete P.menuZoom; else P.menuZoom=z0; try{ applyMenuZoom(); }catch(_a){} try{ var k2=document.getElementById('keysmodal'); if(k2) k2.classList.remove('on'); KEYS.waiting=null; }catch(_k){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.79',what:'his #50 (UI redesign ui5q1o, from the AAA judge of the Last Pour shot): a drink name is 19px or more in caps, its price 20px or more, and INGEST is at least 46px tall with a 16px label, amber when it can be bought and never in the faint third text colour',
    run:function(){
      if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';

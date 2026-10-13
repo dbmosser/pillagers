@@ -1,0 +1,7 @@
+v24.80: the keys window scales with the screen
+
+The Keys window is drawn at the right size on a 4K screen.
+
+Check 24.80. Fails on v24.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
