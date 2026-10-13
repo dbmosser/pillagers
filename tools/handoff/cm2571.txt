@@ -1,0 +1,7 @@
+v25.71: rebind keys: settings, change keys
+
+Settings, CHANGE KEYS now has a REBIND control on every action, shows a clash and swaps, keeps ESC and P, and takes the side mouse buttons.
+
+Check 25.71. Fails on v25.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
