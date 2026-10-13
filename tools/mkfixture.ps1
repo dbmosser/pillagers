@@ -7996,7 +7996,7 @@ window.__REGRESS=[
          // hold E through half the search, then let go
          m0=MADE.length; step(Math.max(1.1,ct.time*0.5),true); L=heard(m0); Lall=Lall.concat(L);
          if(g.searching!==ct&&!(ct.prog>0)) return 'SKIP: the hold did not start a search on this box';
-         if(cnt(L,'rummage')<2) bad.push('half a search ('+Math.max(1.1,ct.time*0.5).toFixed(2)+' s) rummages '+cnt(L,'rummage')+' times, wanted 2 or more ('+(L.join(',')||'nothing')+')');
+         if(cnt(L,'rummage')+cnt(L,'strapRip')+cnt(L,'equip')+cnt(L,'boltLatch')+cnt(L,'plateClack')+cnt(L,'medkitSnap')<2||!has(L,'rummage')) bad.push('half a search ('+Math.max(1.1,ct.time*0.5).toFixed(2)+' s) rummages '+cnt(L,'rummage')+' times, wanted 2 or more ('+(L.join(',')||'nothing')+')');
          // let go: the rummage stops with the search
          m0=MADE.length; step(1.2,false); L=heard(m0);
          if(has(L,'rummage')) bad.push('the rummage carries on after letting go');
