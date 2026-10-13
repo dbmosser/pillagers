@@ -1073,6 +1073,15 @@
   .ui-key.pad{ border-radius:50%; width:24px; min-width:24px; padding:0; border:0; color:#111315; }
   .ui-key.pad-a{ background:#5fbf6a; } .ui-key.pad-b{ background:#e5482f; } .ui-key.pad-x{ background:#3f9de9; } .ui-key.pad-y{ background:#f5b73b; }
   .ui-key.pill{ border-radius:12px; padding:0 9px; }
+  /* vNN.xx, UI REDESIGN ui5q1m (his #50, from the AAA judge of the Wirt shot): THE GAMBLE IS THE BUTTON. GAMBLE and BUY were small
+     outline buttons with 12px labels, greyed to ghosts when the credits fall short, so the main action of the window was its weakest
+     element. GAMBLE is a full width 48px amber primary now and the offer BUY a 48px button; when the credits fall short both read as
+     solid greyed buttons with words in the second text colour. No word changed. */
+  #root #gamblebtn{ flex:1; min-height:48px; padding:0 22px !important; font-size:17px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    background:var(--acc); border-color:var(--acc) !important; color:var(--acc-ink) !important; }
+  #root #gamblebtn:hover:not(:disabled){ background:#f7c25a; border-color:#f7c25a !important; }
+  #root #gamblebtn:disabled, #root #wirtlot button:disabled{ background:var(--ui-hover); border-color:var(--ui-line-hi) !important; color:var(--tx-2) !important; }
+  #root #wirtlot button{ min-height:48px; min-width:180px; font-size:16px; font-weight:700; letter-spacing:.1em; }
   /* vNN.xx, UI REDESIGN ui5q1b (his #50, from the AAA judge of the Wirt and Last Pour shots): A WINDOW SITS IN A DARK ROOM. The room
      behind a window was dimmed to 82 percent, so round a card window (Wirt, the Last Pour, the Terms, the party) the big station
      signs of the Undercroft still read as cut off words, SHOP, CR and POUR and MAY GLITCH, like a second menu under the first.
@@ -1920,7 +1929,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.41';
+var VER='24.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38548,7 +38557,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.41: The damage number sits inside the right end of the health bar instead of over the belt. Check 24.41 fails on v24.40',
+  now:'v24.42: At Wirt, GAMBLE is a big full width button and BUY is bigger. Check 24.42 fails on v24.41',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

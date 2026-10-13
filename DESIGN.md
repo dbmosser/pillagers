@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.42 - THE GAMBLE IS THE BUTTON
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Wirt found GAMBLE and BUY drawn as small outline buttons that grey out to ghosts when the credits fall short, so the main action of the window was its weakest part. GAMBLE is a big full width amber button now and BUY is bigger; out of reach, both read as clear greyed buttons. No word changed.
+
+MEASURED. Check 24.42 passes, and fails on v24.41.
 ## v24.41 - THE DAMAGE NUMBER STAYS IN THE HEALTH BAR
 
 Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD and keep the critical info (#35), and make it look like a triple A game (#50). The picture review of a fight found the number of health just lost floating out past the end of the health bar, over the frame of belt key 1. It is drawn inside the right end of the health bar now, over the health it names, and still fades out.

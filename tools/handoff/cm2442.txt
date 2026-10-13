@@ -1,0 +1,7 @@
+v24.42: the gamble is the button
+
+At Wirt, GAMBLE is a big full width button and BUY is bigger.
+
+Check 24.42. Fails on v24.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

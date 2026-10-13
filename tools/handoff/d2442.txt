@@ -1,0 +1,5 @@
+## v24.42 - THE GAMBLE IS THE BUTTON
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Wirt found GAMBLE and BUY drawn as small outline buttons that grey out to ghosts when the credits fall short, so the main action of the window was its weakest part. GAMBLE is a big full width amber button now and BUY is bigger; out of reach, both read as clear greyed buttons. No word changed.
+
+MEASURED. Check 24.42 passes, and fails on v24.41.
