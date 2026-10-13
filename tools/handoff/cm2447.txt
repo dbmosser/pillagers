@@ -1,0 +1,7 @@
+v24.47: slow frames shed effects first
+
+When frames run slow the game now drops costly effects before it lowers the resolution, and brings them back when it runs smooth.
+
+Check 24.47. Fails on v24.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

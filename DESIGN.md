@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.47 - SLOW FRAMES SHED EFFECTS FIRST
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it, and keep 60 frames a second on a mid laptop at 1080p. Auto resolution had one lever: when frames ran slow it made the whole world softer while the costly extras kept drawing at full price. Now a slow stretch drops the extras first, one step a second: the post pass, then the soft darkness and fog sheets at two thirds of their size, then the lamp shadows (HIGH lighting draws as STANDARD). Only after that does the picture get softer, as before. When frames run smooth again it all comes back in reverse. Extras already switched off in Settings are skipped, so they never cost a slow second.
+
+MEASURED. Check 24.47 passes, and fails on v24.46.
 ## v24.46 - THE WHAT IS NEW CARD NAMES THE SHARPER FIGHTS
 
 Co-op hunt while he was away. The card was stamped v24.34 and the stamp may not trail the build by more than 0.15. The card was stamped v24.34 and every ship stops when it falls 0.16 behind. Its new line names the graphics builds of the last half hour: readable silhouettes (his answer 24), bullet marks, blast scars, the first-frame muzzle flash and the redrawn Crier.

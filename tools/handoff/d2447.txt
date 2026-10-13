@@ -1,0 +1,5 @@
+## v24.47 - SLOW FRAMES SHED EFFECTS FIRST
+
+Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it, and keep 60 frames a second on a mid laptop at 1080p. Auto resolution had one lever: when frames ran slow it made the whole world softer while the costly extras kept drawing at full price. Now a slow stretch drops the extras first, one step a second: the post pass, then the soft darkness and fog sheets at two thirds of their size, then the lamp shadows (HIGH lighting draws as STANDARD). Only after that does the picture get softer, as before. When frames run smooth again it all comes back in reverse. Extras already switched off in Settings are skipped, so they never cost a slow second.
+
+MEASURED. Check 24.47 passes, and fails on v24.46.
