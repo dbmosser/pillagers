@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.54 - CAREER RAIDS: THE VAULTS
+
+Co-op hunt while he was away. His rule of 2026-10-12: the gameplay elements are exactly the same in DEMO and CAREER. A CAREER raid now has the DEMO vaults: two strongrooms sealed behind a keycard door with a vault gun inside, a Vault Keycard hidden in an ordinary box outside each, and keycards dropped by the fight (an elite or the boss while a vault is still shut, or every 12th kill when no keycard is left). Opening a vault pays VAULT OPEN +$500 into your CAREER score. The rest of the raid is built exactly as before.
+
+MEASURED. Check 25.54 passes, and fails on v25.53.
 ## v25.53 - CAREER PAYOUT: SCORE X2 IN CREDITS
 
 Co-op hunt while he was away. His mode design and answers of 2026-10-12: in CAREER the score converts to credits you spend in the Undercroft, 1 score is 1 credit, banked only when you extract, and extraction doubles the score; CAREER keeps its own personal best board. Extracting from a CAREER raid now doubles your score and pays it into your credits, and the EXTRACTED card shows CAREER SCORE, the x2 and the credits paid. The run goes on your CAREER board (your top 10), and a new top reads CAREER BEST. Dying or abandoning pays nothing (SCORE LOST). The loot you bring out goes to your stash as items, as before, and does not count in the score.

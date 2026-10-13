@@ -1,0 +1,7 @@
+v25.54: career raids: the vaults
+
+CAREER raids have the DEMO vaults and keycards, and a vault pays +500 to your score.
+
+Check 25.54. Fails on v25.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

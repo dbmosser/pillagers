@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.53';
+var VER='25.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21199,7 +21199,7 @@ if(!p.fired||p.wep.auto){
       lockedOpen(doorNear);   // v20.29 (H15): the same opening on every window
       netDoorSend(doorNear.id);
       G.tel.doorsOpened=(G.tel.doorsOpened||0)+1;
-      var _vop=(G.arcade&&doorNear.arc)?arcadeVaultPay(doorNear):undefined;   // v23.9x (feat4c): VAULT OPEN +$500 to the opener
+      var _vop=((G.arcade||G.career)&&doorNear.arc)?arcadeVaultPay(doorNear):undefined;   // v23.9x (feat4c): VAULT OPEN +$500 to the opener
       say((doorNear.name+' open').toUpperCase(),'obj',_vop); if(!doorFoley(doorNear)) blip('pick'); ping(p.x,p.y,340,false,false,'player','move');   // v22.xx (R53): an objective row in caps
     }
   }
@@ -23179,7 +23179,7 @@ if(e.state==='possum'){
         var c3=setLoot(mkContainer(e.x,e.y,'botwreck'),[pick(['board','optic','comp'])]); c3.time=.7; c3.bot='snitch';
         G.containers.push(c3);
       }
-      if(G.arcade&&!G.sim&&(e.byPlayer||e.bySeat>0)){ try{ arcadeKeycardDrop(e); }catch(_akd){} }   // v23.9x (feat4c): an elite, or every 12th kill, drops a keycard
+      if((G.arcade||G.career)&&!G.sim&&(e.byPlayer||e.bySeat>0)){ try{ arcadeKeycardDrop(e); }catch(_akd){} }   // v23.9x (feat4c): an elite, or every 12th kill, drops a keycard
       // Only announce a kill you could actually witness. Machines and raiders
       // shoot each other, so an ungated label prints readable text through walls
       // telling you something died and exactly where.
@@ -40724,7 +40724,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.53: Extracting from a CAREER raid pays your score x2 in credits and puts the run on your CAREER board. Check 25.53 fails on v25.52',
+  now:'v25.54: CAREER raids have the DEMO vaults and keycards, and a vault pays +500 to your score. Check 25.54 fails on v25.53',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -49421,8 +49421,8 @@ function arcadeKeycardOut(){
 }
 function arcadeKeycardDrop(e){
   var L, i, shut=false, ct=null;
-  if(!G||!G.arcade||G.sim||G.over||!e||!ITEMS.keycard||!ARCADE.on) return null;
-  if((ARCADE.role==='p2'&&!G.netWasJoin)||(typeof netEntsPeer==='function'&&netEntsPeer())) return null;   // the run authority only
+  if(!G||!((G.arcade&&ARCADE.on)||G.career)||G.sim||G.over||!e||!ITEMS.keycard) return null;   // v24.xx (careervault): and a CAREER raid
+  if((G.arcade&&ARCADE.role==='p2'&&!G.netWasJoin)||(typeof netEntsPeer==='function'&&netEntsPeer())) return null;   // the run authority only
   L=G.map.locked||[]; for(i=0;i<L.length;i++) if(L[i].arc&&!L[i].open) shut=true;
   if(!shut) return null;
   G.arcKillN=(G.arcKillN|0)+1;
@@ -49432,7 +49432,17 @@ function arcadeKeycardDrop(e){
   try{ say('KEYCARD DROPPED','obj'); }catch(_kd){}
   return ct;
 }
+// v24.xx (careervault), HIS RULE (2026-10-12): "GAMEPLAY ELEMENTS LIKE YOU ARE ASKING ABOUT HERE SHOULD BE EXACTLY THE SAME IN DEMO AND
+// CAREER". THE VAULTS IN A CAREER RAID. A CAREER raid is built with the same two vaults as the DEMO (two strongrooms sealed behind a
+// keycard door, a vault gun in one box, on their own side stream so the seeded raid is unchanged), the same Vault Keycard in an
+// ordinary box outside each, and the same keycard drops from the fight (an elite or the boss while a vault is shut, or every 12th
+// kill with no keycard left in the world, the host only). Opening a vault pays VAULT OPEN +$500 into the CAREER score of the opener.
 function arcadeVaultPay(R){
+  if(G&&G.career&&G.cs&&R){
+    G.cs.s=(G.cs.s|0)+ARCADE_VAULT_PAY;
+    try{ label(R.doorX,R.doorY-30,'+'+arcadeCr(ARCADE_VAULT_PAY),'#ffc04a',0,true); }catch(_cl){}
+    return {sub:'+'+arcadeCr(ARCADE_VAULT_PAY)};
+  }
   if(!ARCADE.on||!G||!G.arcade||!R) return undefined;
   ARCADE.mine=(ARCADE.mine|0)+ARCADE_VAULT_PAY;
   try{ label(R.doorX,R.doorY-30,'+'+arcadeCr(ARCADE_VAULT_PAY),'#ffc04a',0,true); }catch(_vl){}
@@ -49486,6 +49496,8 @@ function careerPostBuild(g){
   var i;
   g.career=1; g.raidLen=g.timeLeft=CAREER_RAID_SEC;
   for(i=0;i<(g.zones||[]).length;i++) g.zones[i].closeAt=undefined;
+  try{ arcadeVaults(g); }catch(_cv){}   // v24.xx (careervault): the two DEMO vaults (side stream)
+  try{ arcadeKeycards(g); }catch(_ck){}   // v24.xx (careervault): a keycard per vault in a box outside (side stream)
   g.cs={s:0,k:0,streak:null,waveT:0,waveN:0};
   return true;
 }

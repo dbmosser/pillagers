@@ -1,0 +1,5 @@
+## v25.54 - CAREER RAIDS: THE VAULTS
+
+Co-op hunt while he was away. His rule of 2026-10-12: the gameplay elements are exactly the same in DEMO and CAREER. A CAREER raid now has the DEMO vaults: two strongrooms sealed behind a keycard door with a vault gun inside, a Vault Keycard hidden in an ordinary box outside each, and keycards dropped by the fight (an elite or the boss while a vault is still shut, or every 12th kill when no keycard is left). Opening a vault pays VAULT OPEN +$500 into your CAREER score. The rest of the raid is built exactly as before.
+
+MEASURED. Check 25.54 passes, and fails on v25.53.
