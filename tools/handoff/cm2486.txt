@@ -1,0 +1,7 @@
+v24.86: demo kills pay as career kills
+
+A kill in DEMO no longer gives ammo back or a free Bandage, the same as in CAREER.
+
+Check 24.86. Fails on v24.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

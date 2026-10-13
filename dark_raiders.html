@@ -2077,7 +2077,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.85';
+var VER='24.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39167,7 +39167,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.85: THE OVERSEER seeing you now calls SPOTTED BY THE OVERSEER, and a plain Warden calls SPOTTED BY A WARDEN. Check 24.85 fails on v24.84',
+  now:'v24.86: A kill in DEMO no longer gives ammo back or a free Bandage, the same as in CAREER. Check 24.86 fails on v24.85',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48189,6 +48189,11 @@ function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|
 // refunds half a magazine of the gun in his hands into his reserve, and every 3rd kill of the run adds a Bandage to the backpack
 // while he carries fewer than 5 heals (the pickup stack shows it as KILL BONUS). The drop already gives 6 magazines and full
 // armour (arcadeKitApply). Only arcadeKill calls it, which is behind G.arcade, so a normal raid is unchanged.
+// 2026-10-12 (unify2), HIS ANSWER: "GAMEPLAY ELEMENTS ... SHOULD BE EXACTLY THE SAME IN DEMO AND CAREER", with 13 b (loot as now) and
+// 16 a (shared ammo). A DEMO kill refunded half a magazine and every third kill handed out a Bandage, which a CAREER kill never does,
+// so ammo and heals ran on different rules in the two modes. ARCADE_KILLPERKS 0 turns both off: a DEMO kill pays its score and
+// nothing else, as a CAREER kill pays nothing but the kill. The perk code stays behind the dial.
+var ARCADE_KILLPERKS=0;
 var ARCADE_HEALS_MAX=5;
 function arcadeHealsCarried(){
   var n=0, i, it;
@@ -48198,7 +48203,7 @@ function arcadeHealsCarried(){
 }
 function arcadeKillPerks(){
   var p=G&&G.player, m;
-  if(!p||!G.arcade||G.sim||G.over) return;
+  if(!p||!G.arcade||G.sim||G.over||!ARCADE_KILLPERKS) return;   // 2026-10-12 (unify2): off, DEMO kills pay as CAREER kills do
   m=(p.wep&&p.wep.mag)|0;
   if(m>0) p.reserve=(+p.reserve||0)+Math.ceil(m/2);
   if((ARCADE.kills|0)>0&&(ARCADE.kills|0)%3===0&&ITEMS.bandage&&arcadeHealsCarried()<ARCADE_HEALS_MAX){

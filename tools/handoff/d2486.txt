@@ -1,0 +1,5 @@
+## v24.86 - DEMO KILLS PAY AS CAREER KILLS
+
+Co-op hunt while he was away. His answer of 2026-10-12: gameplay must be exactly the same in DEMO and CAREER, loot stays as it is now, and ammo is shared. A DEMO kill gave half a magazine back and every third kill gave a Bandage, which never happens in CAREER, so ammo and heals worked differently in the two modes. A DEMO kill now scores its points and nothing else; ammo and heals come from the world as they do in CAREER.
+
+MEASURED. Check 24.86 passes, and fails on v24.85.

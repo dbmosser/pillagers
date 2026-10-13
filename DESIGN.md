@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.86 - DEMO KILLS PAY AS CAREER KILLS
+
+Co-op hunt while he was away. His answer of 2026-10-12: gameplay must be exactly the same in DEMO and CAREER, loot stays as it is now, and ammo is shared. A DEMO kill gave half a magazine back and every third kill gave a Bandage, which never happens in CAREER, so ammo and heals worked differently in the two modes. A DEMO kill now scores its points and nothing else; ammo and heals come from the world as they do in CAREER.
+
+MEASURED. Check 24.86 passes, and fails on v24.85.
 ## v24.85 - SPOTTED BY THE OVERSEER
 
 Co-op hunt while he was away. His note of 2026-10-12: change Spotted by something huge to Spotted by the Overseer. That callout fired for any warden that saw you, and every raid also has a plain Warden besides THE OVERSEER. Now THE OVERSEER seeing you says SPOTTED BY THE OVERSEER, and a plain Warden says SPOTTED BY A WARDEN, so the plain one never claims to be the boss. In co-op the host tells your teammate which one it was, so his window shows the same line.
