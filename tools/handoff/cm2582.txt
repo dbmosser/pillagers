@@ -1,0 +1,7 @@
+v25.82: demo extraction waits as long as career
+
+A demo extraction call now waits as long as a career one.
+
+Check 25.82. Fails on v25.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

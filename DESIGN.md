@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.82 - DEMO EXTRACTION WAITS AS LONG AS CAREER
+
+Co-op hunt while he was away. His question of 2026-10-13: why does the extraction countdown take less time in demo mode, when default gameplay should be exactly the same in demo and career. The demo had its own 15 second extraction call (set when the demo starts), while a career raid waits the Extract inbound wait setting, 30 seconds by default, so the demo ship came in twice as fast. The demo no longer sets it: a demo call waits the same time as a career call, and a change made in Settings applies to both.
+
+MEASURED. Check 25.82 passes, and fails on v25.81.
 ## v25.81 - THE WHAT IS NEW CARD NAMES THE HOLD KEYS
 
 Co-op hunt while he was away. The card was stamped v25.69 and the stamp may not trail the build by more than 0.15. The card was stamped v25.69 and every ship stops when it falls 0.16 behind. Its new line names the builds since: hold H plate, hold Alt raid status, middle mouse ping, crouch quiet walk (his key answers 2026-10-13) and no spoken announcer (his order).
