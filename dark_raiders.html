@@ -2053,7 +2053,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.73';
+var VER='24.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30233,7 +30233,7 @@ function bar(x,y,w,h,f,c,bg){
   var r=Math.max(1,Math.min(h/2,6)), fw=w*clamp(f,0,1), gr;
   function rp(px,py,pw,ph){ ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(px,py,pw,ph,r); else ctx.rect(px,py,pw,ph); }
   ctx.save();
-  rp(x,y,w,h); ctx.fillStyle=bg||'rgba(6,9,13,.8)'; ctx.fill();
+  rp(x,y,w,h); ctx.fillStyle=bg||'rgba(10,11,12,.82)'; ctx.fill();
   if(fw>0.5){
     rp(x,y,w,h); ctx.clip();
     try{ gr=ctx.createLinearGradient(0,y,0,y+h); gr.addColorStop(0,litHex(c,0.22,true)); gr.addColorStop(0.5,c); gr.addColorStop(1,darkHex(c,0.80)); ctx.fillStyle=gr; }catch(_g){ ctx.fillStyle=c; }
@@ -30241,7 +30241,7 @@ function bar(x,y,w,h,f,c,bg){
     if(h>=6){ ctx.fillStyle='rgba(255,255,255,.16)'; ctx.fillRect(x,y+1,fw,Math.max(1,h*0.12)); }
   }
   ctx.restore();
-  rp(x+.5,y+.5,w-1,h-1); ctx.strokeStyle='rgba(127,146,216,.38)'; ctx.lineWidth=1; ctx.stroke();
+  rp(x+.5,y+.5,w-1,h-1); ctx.strokeStyle='rgba(74,82,87,.9)'; ctx.lineWidth=1; ctx.stroke();   // vNN.xx (ui5q1t, his #35): the graphite hairline of the HUD plate, not periwinkle
 }
 var BUZZTR=null,BUZZTRC=null;
 var BUZZRND=[0.37,0.71,0.13,0.59,0.83,0.29,0.47,0.91];   // v10.31: eight numbers rolled fresh with every Blotter dose
@@ -30503,7 +30503,7 @@ function drawBuzzFx(){
       var _br=Math.max(3,bw*0.09);
       function _bpath(){ ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(bx+.5,hy+.5,bw-1,bw-1,_br); else ctx.rect(bx+.5,hy+.5,bw-1,bw-1); }
       ctx.save(); _bpath(); ctx.clip();
-      var _bg=ctx.createLinearGradient(0,hy,0,hy+bw); _bg.addColorStop(0,on?'rgba(70,56,28,.96)':'rgba(28,36,64,.86)'); _bg.addColorStop(1,on?'rgba(38,32,20,.94)':'rgba(6,9,13,.86)');
+      var _bg=ctx.createLinearGradient(0,hy,0,hy+bw); _bg.addColorStop(0,on?'rgba(70,56,28,.96)':'rgba(30,34,37,.9)');   /* vNN.xx (ui5q1t, his #35): a belt key is graphite like the HUD plate, not navy */ _bg.addColorStop(1,on?'rgba(38,32,20,.94)':'rgba(6,9,13,.86)');
       ctx.fillStyle=_bg; ctx.fillRect(bx,hy,bw,bw);
       // the rarity wash goes OVER the base so a selected slot still reads as
       // selected, and under the icon so it never fights the portrait
@@ -39113,7 +39113,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.73: Machines hunting you out of sight now keep up a running sound, faster and louder when they are on you. Check 24.73 fails on v24.72',
+  now:'v24.74: The health bars and the belt keys match the graphite raid panels. Check 24.74 fails on v24.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

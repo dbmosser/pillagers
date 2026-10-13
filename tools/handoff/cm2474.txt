@@ -1,0 +1,7 @@
+v24.74: the meters and the belt in graphite
+
+The health bars and the belt keys match the graphite raid panels.
+
+Check 24.74. Fails on v24.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

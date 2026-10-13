@@ -6063,6 +6063,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.74',what:'his #35 and #50 (UI redesign ui5q1t): the HUD meters have a graphite ring (no periwinkle) and the belt keys are not filled navy',
+   run:function(){
+     if(typeof bar!=='function') return 'SKIP: no meter here';
+     var bad=[], keep=ctx, oc=document.createElement('canvas'), c2, d, src;
+     oc.width=200; oc.height=60; c2=oc.getContext('2d');
+     try{ ctx=c2; bar(10,10,180,30,0.5,'#5fae6f'); }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ ctx=keep; }
+     d=c2.getImageData(150,10,1,1).data;
+     if(d[3]>0&&d[2]-d[0]>25) bad.push('the meter ring is periwinkle (rgba '+[d[0],d[1],d[2],d[3]].join(',')+')');
+     src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join('');
+     if(src.indexOf('rgba(28,36'+',64,.86)')>=0) bad.push('the belt keys are still filled navy');
+     return bad.length?bad.join('; '):null; }},
   {v:'24.73',what:'his #45, machine loops: a machine on you behind a wall within 900 holds a running voice in fight mode (louder and faster than searching), the same machine in sight holds none, nothing plays under G.sim, the seeded stream does not move and the voice goes silent when the raid ends',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof losClear!=='function'||typeof sndBus!=='function'||typeof canSee!=='function') return 'SKIP: this fixture cannot deploy a raid';

@@ -1,0 +1,20 @@
+{
+    "title":  "THE METERS AND THE BELT IN GRAPHITE",
+    "why":  "His orders of 2026-10-12: redo the HUD and keep all the critical info (#35), and make it look like a triple A game (#50). After the raid panels became the graphite plate, the health, stamina and armour bars still had a blue ring and the belt keys a navy fill, the old look beside the new. Both are graphite now, so the whole raid HUD is one set. Every bar and key is where it was, the same size and the same colours inside.",
+    "now":  "The health bars and the belt keys match the graphite raid panels.",
+    "edits":  [
+                  {
+                      "anchor":  "  rp(x+.5,y+.5,w-1,h-1); ctx.strokeStyle=\u0027rgba(127,146,216,.38)\u0027; ctx.lineWidth=1; ctx.stroke();",
+                      "replacement":  "  rp(x+.5,y+.5,w-1,h-1); ctx.strokeStyle=\u0027rgba(74,82,87,.9)\u0027; ctx.lineWidth=1; ctx.stroke();   // vNN.xx (ui5q1t, his #35): the graphite hairline of the HUD plate, not periwinkle"
+                  },
+                  {
+                      "anchor":  "rp(x,y,w,h); ctx.fillStyle=bg||\u0027rgba(6,9,13,.8)\u0027; ctx.fill();",
+                      "replacement":  "rp(x,y,w,h); ctx.fillStyle=bg||\u0027rgba(10,11,12,.82)\u0027; ctx.fill();"
+                  },
+                  {
+                      "anchor":  "_bg.addColorStop(0,on?\u0027rgba(70,56,28,.96)\u0027:\u0027rgba(28,36,64,.86)\u0027);",
+                      "replacement":  "_bg.addColorStop(0,on?\u0027rgba(70,56,28,.96)\u0027:\u0027rgba(30,34,37,.9)\u0027);   /* vNN.xx (ui5q1t, his #35): a belt key is graphite like the HUD plate, not navy */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #35 and #50 (UI redesign ui5q1t): the HUD meters have a graphite ring (no periwinkle) and the belt keys are not filled navy\u0027,\n   run:function(){\n     if(typeof bar!==\u0027function\u0027) return \u0027SKIP: no meter here\u0027;\n     var bad=[], keep=ctx, oc=document.createElement(\u0027canvas\u0027), c2, d, src;\n     oc.width=200; oc.height=60; c2=oc.getContext(\u00272d\u0027);\n     try{ ctx=c2; bar(10,10,180,30,0.5,\u0027#5fae6f\u0027); }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ ctx=keep; }\n     d=c2.getImageData(150,10,1,1).data;\n     if(d[3]\u003e0\u0026\u0026d[2]-d[0]\u003e25) bad.push(\u0027the meter ring is periwinkle (rgba \u0027+[d[0],d[1],d[2],d[3]].join(\u0027,\u0027)+\u0027)\u0027);\n     src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027);\n     if(src.indexOf(\u0027rgba(28,36\u0027+\u0027,64,.86)\u0027)\u003e=0) bad.push(\u0027the belt keys are still filled navy\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

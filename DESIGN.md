@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.74 - THE METERS AND THE BELT IN GRAPHITE
+
+Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD and keep all the critical info (#35), and make it look like a triple A game (#50). After the raid panels became the graphite plate, the health, stamina and armour bars still had a blue ring and the belt keys a navy fill, the old look beside the new. Both are graphite now, so the whole raid HUD is one set. Every bar and key is where it was, the same size and the same colours inside.
+
+MEASURED. Check 24.74 passes, and fails on v24.73.
 ## v24.73 - MACHINES YOU CANNOT SEE HUM
 
 Co-op hunt while he was away. His number 45, improve all sound as much as possible. A machine hunting you out of sight made only short sounds every second or two, so between them you lost it, and nothing told you whether it was searching or already on you. Now the three nearest machines within earshot that are searching for you or on you, and that you cannot see, each keep up a running sound of their own: a pulsing servo for a sentry, a fast rattle for a crawler, a deep throb for a warden, a wavering drone for a snitch, a slow sweep for a listener, a growl for a howler and a tread rumble for a bulwark. Searching is slow and quiet, on you it is faster and louder, it is muffled behind walls and placed left or right, and it stops when the raid ends.

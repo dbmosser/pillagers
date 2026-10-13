@@ -1,0 +1,5 @@
+## v24.74 - THE METERS AND THE BELT IN GRAPHITE
+
+Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD and keep all the critical info (#35), and make it look like a triple A game (#50). After the raid panels became the graphite plate, the health, stamina and armour bars still had a blue ring and the belt keys a navy fill, the old look beside the new. Both are graphite now, so the whole raid HUD is one set. Every bar and key is where it was, the same size and the same colours inside.
+
+MEASURED. Check 24.74 passes, and fails on v24.73.
