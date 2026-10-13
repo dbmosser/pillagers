@@ -5953,12 +5953,14 @@ window.__REGRESS=[
      if(typeof zoneBadge!=='function') return 'the extraction point badge still says OPEN or CLOSED; there is no state function to read';
      if(typeof drawHUD!=='function') return 'SKIP: no HUD draw in this build';
      var bad=[], oldWord=['EXTRACTION',' - OPEN'].join('');
-     function want(z,exp,what){ var got=String(zoneBadge(z)); if(got!==exp) bad.push(what+' reads "'+got+'" and not "'+exp+'"'); }
-     want({open:false,beaconT:null,hold:null},'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID','a closed point');
-     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','an open point nobody has called');
-     want({open:true,beaconT:17.2,hold:null},'EXTRACTION POINT - 18S UNTIL EXTRACTION BEGINS','a called point with the beacon inbound');
-     want({open:true,beaconT:0,hold:11.4},'EXTRACTION POINT - EXTRACT IN PROGRESS! 12S UNTIL EXTRACTION ENDS','a landed point in its hold window');   // v17.95: his words of 2026-10-03
-     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','a point the extraction has left');
+     // retargeted 2026-10-13 for ringbadge (his #50 and the AAA voice): the badge may also be the short callout that names the same
+     // state with the same live seconds (EXTRACTION A AVAILABLE, INBOUND 18S, EXTRACT IN PROGRESS! A 12S, EXTRACTION A CLOSED).
+     function want(z,exp,what,rx){ var got=String(zoneBadge(z)); if(got!==exp&&!(rx&&rx.test(got))) bad.push(what+' reads "'+got+'" and not "'+exp+'"'); }
+     want({open:false,beaconT:null,hold:null},'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID','a closed point',/^EXTRACTION( [A-Z])? CLOSED$/);
+     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','an open point nobody has called',/^EXTRACTION( [A-Z])? AVAILABLE$/);
+     want({open:true,beaconT:17.2,hold:null},'EXTRACTION POINT - 18S UNTIL EXTRACTION BEGINS','a called point with the beacon inbound',/^EXTRACTION( [A-Z])? INBOUND 18S$/);
+     want({open:true,beaconT:0,hold:11.4},'EXTRACTION POINT - EXTRACT IN PROGRESS! 12S UNTIL EXTRACTION ENDS','a landed point in its hold window',/^EXTRACT IN PROGRESS!( [A-Z])? 12S$/);   // v17.95: his words of 2026-10-03
+     want({open:true,beaconT:null,hold:null},'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN','a point the extraction has left',/^EXTRACTION( [A-Z])? AVAILABLE$/);
      // CONTROL: the HUD draw reads the function, or the words above are never on screen.
      var src=''; try{ src=drawHUD.toString(); }catch(_s){}
      if(src.indexOf('zoneBadge(')<0) bad.push('control: the HUD draw does not read zoneBadge, so the badge on screen is not these words');
@@ -25606,7 +25608,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
      var bad=[], g, p, z=null, oFT=ctx.fillText, rec=[], s1, s4, i;
-     function grab(){ rec.length=0; g.pCrouch=true; p.x=z.x+150; p.y=z.y; g.anchX=p.x; g.anchY=p.y; __frame(0.001); __frame(0.001); var c=null, r=null; for(var k=0;k<rec.length;k++){ if(!c&&/(HIDDEN|CONCEALED|CRASHING)/.test(rec[k].t)) c=rec[k]; if(!r&&/^EXTRACTION POINT/.test(rec[k].t)) r=rec[k]; } return {c:c,r:r}; }
+     function grab(){ rec.length=0; g.pCrouch=true; p.x=z.x+150; p.y=z.y; g.anchX=p.x; g.anchY=p.y; __frame(0.001); __frame(0.001); var c=null, r=null; for(var k=0;k<rec.length;k++){ if(!c&&/(HIDDEN|CONCEALED|CRASHING)/.test(rec[k].t)) c=rec[k]; if(!r&&(/^EXTRACTION POINT/.test(rec[k].t)||(typeof zoneBadge==='function'&&rec[k].t===String(zoneBadge(z))))) r=rec[k]; } return {c:c,r:r}; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __forceSize(1920,1080);
@@ -26904,7 +26906,7 @@ window.__REGRESS=[
        for(i=0;i<g.zones.length;i++) if(g.zones[i]&&g.zones[i].open){ Z=g.zones[i]; break; }
        if(!Z) return 'SKIP: no open ring';
        w2s=function(x,h,y){ if(x===Z.x&&y===Z.y) return {x:W-14,y:H*0.45}; return oW.apply(this,arguments); };
-       ctx.fillText=function(s,x,y){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1, w=ctx.measureText(String(s)).width; if(String(s).indexOf('EXTRACTION POINT')===0) rec.push({l:(m.a*(x-w/2)+m.e)/d,r:(m.a*(x+w/2)+m.e)/d}); return oFT.apply(this,arguments); };
+       ctx.fillText=function(s,x,y){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1, w=ctx.measureText(String(s)).width; if(String(s).indexOf('EXTRACTION POINT')===0||(typeof zoneBadge==='function'&&String(s)===String(zoneBadge(Z)))) rec.push({l:(m.a*(x-w/2)+m.e)/d,r:(m.a*(x+w/2)+m.e)/d}); return oFT.apply(this,arguments); };
        try{ __frame(0.016); } finally { w2s=oW; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
        if(!rec.length) return 'SKIP: the ring label was not drawn';
        r=rec[0];
@@ -52650,7 +52652,7 @@ window.__REGRESS=[
        return {hold:z.hold,left:g.timeLeft,badge:String(zoneBadge(z)||'')};
      }
      function badgeSeconds(txt){
-       var m=/([0-9]+)S UNTIL EXTRACTION ENDS/.exec(txt);
+       var m=/([0-9]+)S UNTIL EXTRACTION ENDS/.exec(txt)||/^EXTRACT IN PROGRESS!(?: [A-Z])? ([0-9]+)S$/.exec(txt);   // retargeted 2026-10-13 for ringbadge: the short callout carries the same seconds
        return m?(+m[1]):null;
      }
      try{
