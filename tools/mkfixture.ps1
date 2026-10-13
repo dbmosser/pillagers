@@ -7274,7 +7274,14 @@ window.__REGRESS=[
   {v:'24.73',what:'his #45, machine loops: a machine on you behind a wall within 900 holds a running voice in fight mode (louder and faster than searching), the same machine in sight holds none, nothing plays under G.sim, the seeded stream does not move and the voice goes silent when the raid ends',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof losClear!=='function'||typeof sndBus!=='function'||typeof canSee!=='function') return 'SKIP: this fixture cannot deploy a raid';
-     if(typeof tickMachLoops!=='function'||typeof SND_LOOPS==='undefined') return 'a machine on you out of sight has no running voice (no tickMachLoops): between its one-shots the ear loses it';
+     // retargeted for nohum (his note 2026-10-12, "random hums as ambiance don't sound good"): the running machine voices are removed
+     // on his order. Before that build the check below runs as written; after it, none of the loop may be half left behind, and the
+     // machines must keep their one-shot voices (the VOICE table and tickMachineVoices), which is what the ear has left.
+     if(typeof tickMachLoops!=='function'||typeof SND_LOOPS==='undefined'){
+       if(typeof MACH_LOOP!=='undefined'||typeof tickMachLoops==='function'||typeof SND_LOOPS!=='undefined') return 'the machine hum loops are half removed (MACH_LOOP, tickMachLoops or SND_LOOPS left behind)';
+       if(typeof VOICE!=='object'||!VOICE||!VOICE.sentry||!VOICE.warden||!VOICE.crawler||typeof (window.__realTickMachineVoices||tickMachineVoices)!=='function') return 'the machines lost their one-shot voices along with the hum';
+       return null;
+     }
      function P(v){ var q={value:v}; q.setValueAtTime=function(x){ q.value=x; return q; }; q.setTargetAtTime=function(x){ q.value=x; return q; }; q.linearRampToValueAtTime=function(x){ q.value=x; return q; }; q.exponentialRampToValueAtTime=function(x){ q.value=x; return q; }; q.cancelScheduledValues=function(){ return q; }; q.cancelAndHoldAtTime=function(){ return q; }; return q; }
      var MADE=[];
      function N(k,ps){ var o={kind:k,outs:[]}; o.connect=function(t){ if(t) o.outs.push(t); return t; }; o.disconnect=function(){ o.outs=[]; }; o.start=function(){}; o.stop=function(){}; (ps||[]).forEach(function(n){ o[n]=P(n==='gain'?1:0); }); MADE.push(o); return o; }
