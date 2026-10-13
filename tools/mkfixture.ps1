@@ -20349,7 +20349,8 @@ window.__REGRESS=[
        heard=[]; g.bag.push('gun_dmr'); autoBelt('gun_dmr'); g.bag.push('gun_smg'); autoBelt('gun_smg');
        heard=[]; g.bag.push('gun_carbine'); r=autoBelt('gun_carbine');
        h=said(/^GUN SLOTS FULL$/);
-       if(!h) bad.push('a fifth gun says '+JSON.stringify(heard.map(function(x){ return x.m; }))+', not GUN SLOTS FULL');
+       if(!h&&/^[^a-z]+ TO SLOT 4$/.test(String(r||''))&&said(/^[^a-z]+ TO SLOT 4$/)&&g.hotAssign[3]==='gun_carbine'&&g.bag.indexOf('gun_smg')>=0&&!said(/GUN SLOTS FULL/)){ /* v25.xx (belt1): the swap rule replaces GUN SLOTS FULL: the fifth gun takes the key of the weakest gun not in his hands (smg, key 4) and that gun stays in the backpack */ }
+       else if(!h) bad.push('a fifth gun says '+JSON.stringify(heard.map(function(x){ return x.m; }))+', not GUN SLOTS FULL (or the swap onto key 4)');
        else if(!/ IN BACKPACK$/.test(h.sub)||h.sub!==h.sub.toUpperCase()) bad.push('GUN SLOTS FULL has '+JSON.stringify(h.sub)+' under it, not the gun IN BACKPACK');
        for(i=0;i<heard.length;i++) if(heard[i].m.length>34) bad.push('the headline '+JSON.stringify(heard[i].m)+' is longer than 34 characters');
        // TWO: no old belt sentence is left in the game
