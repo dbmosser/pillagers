@@ -1920,7 +1920,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.40';
+var VER='24.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31779,13 +31779,18 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     ctx.fillStyle=STATCOL[_ps.split(' + ')[0]]||'#a5b1bc';
     ctx.fillText(_ps,25,by-_up-LH(6));
   })();
-  // The number that was just taken off, floating clear of the bar and fading.
+  // The number that was just taken off, fading.
+  // vNN.xx, UI REDESIGN ui5q1l (his #50 and #35, from the AAA judge of the raid fight shot): THE DAMAGE NUMBER STAYS IN THE HEALTH BAR.
+  // It floated out past the right end of the bar, at 1080p straight over the frame of belt key 1. It is drawn inside the right end of
+  // the bar now, over the lost health that it names, light red with a dark halo, never taller than the bar; it still fades.
   if(p.dmgPopT>0&&p.lastDmg>0){
-    var dpa=clamp(p.dmgPopT/1.05,0,1);
+    var dpa=clamp(p.dmgPopT/1.05,0,1), _dpf=FS(TYPE.title), _dpx=parseFloat((/([\d.]+)px/.exec(_dpf)||[0,20])[1]);
+    if(_dpx>HBH*0.86) _dpf=_dpf.replace(/[\d.]+px/,(Math.round(HBH*0.86*10)/10)+'px');
     ctx.save();
-    ctx.font=FS(TYPE.title);
-    ctx.fillStyle='rgba(232,86,70,'+dpa+')';
-    ctx.fillText('-'+p.lastDmg,16+HBW+14,by+18-(1-dpa)*14);
+    ctx.font=_dpf; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.shadowColor='rgba(0,0,0,.85)'; ctx.shadowBlur=3;
+    ctx.fillStyle='rgba(255,138,122,'+dpa+')';
+    ctx.fillText('-'+p.lastDmg,16+HBW-8,by+HBH/2+1);
     ctx.restore();
   }
 if(p.armor>0){
@@ -38543,7 +38548,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.40: Hostile pillagers glare: brow bars over narrowed eyes. Everyone friendly keeps round eyes. Check 24.40 fails on v24.39',
+  now:'v24.41: The damage number sits inside the right end of the health bar instead of over the belt. Check 24.41 fails on v24.40',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.41 - THE DAMAGE NUMBER STAYS IN THE HEALTH BAR
+
+Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD and keep the critical info (#35), and make it look like a triple A game (#50). The picture review of a fight found the number of health just lost floating out past the end of the health bar, over the frame of belt key 1. It is drawn inside the right end of the health bar now, over the health it names, and still fades out.
+
+MEASURED. Check 24.41 passes, and fails on v24.40.
 ## v24.40 - HOSTILE GLARE
 
 Co-op hunt while he was away. Your call: the sprite review found that a hostile pillager looked exactly as friendly as you, with the same big round eyes, so nothing on his face said threat. A foe pillager now has an upper lid that cuts each eye to an almond, slanting down toward the nose, with a dark brow bar along it: a glare. You, your team, hires, the Undercroft, the Peddler and the Survivor keep the round eyes, and the pupils still follow the aim under the lid. Your face ruling stands, the face and eyes are all still there. The side by side picture is in tools/handoff/shots/sprites-after/spr23-glare-side-by-side.jpg. If you do not like it, say so and it comes out.

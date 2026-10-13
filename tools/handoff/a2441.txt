@@ -1,0 +1,1 @@
+| THE DAMAGE NUMBER STAYS IN THE HEALTH BAR | v24.41 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 24.41 passes, fails on v24.40 |

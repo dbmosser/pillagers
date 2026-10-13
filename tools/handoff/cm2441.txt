@@ -1,0 +1,7 @@
+v24.41: the damage number stays in the health bar
+
+The damage number sits inside the right end of the health bar instead of over the belt.
+
+Check 24.41. Fails on v24.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
