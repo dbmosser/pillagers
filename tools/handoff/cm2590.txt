@@ -1,0 +1,7 @@
+v25.90: a click on a gun key still works
+
+A click on a gun bound past key 4 brings it up again; dragging it to another such key stays refused.
+
+Check 25.90. Fails on v25.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

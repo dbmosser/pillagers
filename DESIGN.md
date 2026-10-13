@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.90 - A CLICK ON A GUN KEY STILL WORKS
+
+Co-op hunt while he was away. A slip in the guns-on-keys-1-to-4 build: it refused every drop of a gun on a key past the fourth, including the press and release on the key the gun came from, which is a click. A gun still bound to such a key (a saved plan from before the change) could not be clicked up. A click on the key it came from brings the gun up again, and a drag of it onto another key past the gun keys is still refused.
+
+MEASURED. Check 25.90 passes, and fails on v25.89.
 ## v25.89 - GUNS GO ON KEYS 1 TO 4
 
 Co-op hunt while he was away. His order of 2026-10-13: lets redo the bar at the bottom, so the player can only carry 4 guns max. Build 2 of 8. A gun belongs on the four gun keys. Dragging a gun onto any other key (the raid belt, the Undercroft belt, or the plan row on the Stash screen) is now refused with GUNS GO ON KEYS 1 TO 4 and nothing moves; a gun still goes onto keys 1 to 4 as before. An old saved belt plan loses the gun bindings it had on keys 5 to 9, once (the guns themselves are untouched and the rest of the plan stays where it is), and a plan stamped with the new version is no longer slid down again by the older migration.
