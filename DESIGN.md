@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.56 - THE PILLBOX REDESIGN
+
+Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines, silhouettes first. The Pillbox was a purple drum with seven lilac bubbles and a black porthole: the pipes read as candles, the mouth as a speaker, and purple is the elite colour. Now it is a gunmetal emplacement on a bolted plinth with rusty sandbags at its corners, a rust band round its drum, a crown of seven brass organ pipes on top that still slowly turns, and a big round port with a six-blade iris that opens when it wakes and charges red inside (orange when it vents, dim white asleep). Venting heat now rises from the pipe tops. Elite Pillboxes wear a brass ring round the crown. Drawn only: the mouth is where its weak point is, and the fight is unchanged.
+
+MEASURED. Check 24.56 passes, and fails on v24.55.
 ## v24.55 - A LOCKED TILE KEEPS ITS NAME
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. The picture check of the craft tab found every recipe you cannot make yet faded as a whole, its name too, so the names were too faint to read. The picture still fades to say it is out of reach, and the name stays readable, as on the locked Fashion tiles.

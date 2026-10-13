@@ -1,0 +1,7 @@
+v24.56: the pillbox redesign
+
+The Pillbox is redrawn: a gunmetal emplacement with a crown of brass organ pipes and an iris mouth that charges red.
+
+Check 24.56. Fails on v24.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
