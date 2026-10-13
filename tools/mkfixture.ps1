@@ -5153,13 +5153,21 @@ window.__REGRESS=[
      // HIS 6, the word itself.
      if(!/siege/i.test(heavy.msg))
        bad.push('calling the ship still never uses the word siege: "'+heavy.msg.slice(0,80)+'"');
-     // AND A NUMBER HE CAN COUNT.
-     if(heavy.promised===null)
-       bad.push('the call says nothing about how many are coming');
+     // AND A NUMBER HE CAN COUNT. Retargeted for nosiegecount, HIS ORDER (2026-10-12): "Siege Incoming -- don't tell how many
+     // machines are inbound!" From that build the call names no count, so there the rule this check keeps is the one the count
+     // stood for: what he carries still sizes the siege (a full bag brings more machines than an empty one, and some come). A build
+     // that does name a count must still keep its promise, as below.
+     if(heavy.promised===null){
+       var light0=call(false,true);
+       if(heavy.arrived!==undefined&&heavy.arrived<1) bad.push('the call names no count and brought no siege at all');
+       if(light0&&light0.arrived!==undefined&&heavy.arrived!==undefined&&light0.arrived>=heavy.arrived)
+         bad.push('control: an empty bag brought '+light0.arrived+' machines and a bag worth '+heavy.greed+' brought '+heavy.arrived+', so what he carries changes nothing');
+       return bad.length?bad.join('; '):null;
+     }
      // THE CONTROL THAT MATTERS MOST, and the one that caught my own first cut
      // promising exactly twice what turned up: the number in the warning has to be
      // the number he will see, or the warning teaches him to ignore warnings.
-     else if(heavy.arrived!==undefined&&Math.abs(heavy.arrived-heavy.promised)>1)
+     if(heavy.arrived!==undefined&&Math.abs(heavy.arrived-heavy.promised)>1)
        bad.push('the call promised '+heavy.promised+' machines and '+heavy.arrived+' arrived');
      // CONTROL: the bag has to change the number, or it is a decoration rather
      // than the price of what he is carrying.
@@ -16012,7 +16020,7 @@ window.__REGRESS=[
        try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'22.38',what:'extraction moments in the alert lane: calling for extraction by holding E in a ring draws EXTRACTION CALLED and then THE SIEGE within 4 s, the siege detail names how many are coming, and no line said is longer than 56 characters',
+  {v:'22.38',what:'extraction moments in the alert lane: calling for extraction by holding E in a ring draws EXTRACTION CALLED and then THE SIEGE within 4 s, the siege detail names no stray figure (a count of machines on builds before his 2026-10-12 order took it away), and no line said is longer than 56 characters',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__frame&&window.__keysRef)) return 'SKIP: this fixture cannot deploy, step or draw';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the frame loop cannot draw';
@@ -16047,10 +16055,12 @@ window.__REGRESS=[
        for(j=0;j<said.length;j++){
          if(said[j].m.length>56) long.push(said[j].m.length+': '+said[j].m.slice(0,70));
          if(said[j].sub.length>56) long.push(said[j].sub.length+': '+said[j].sub.slice(0,70));
-         if(said[j].m===SG||said[j].m===SG2) n=(/(\d+) machine/.exec(said[j].sub)||[])[1]||null;
+         if(said[j].m===SG||said[j].m===SG2){ n=(/(\d+) machine/.exec(said[j].sub)||[])[1]||null; if(/\d/.test(said[j].sub)&&n===null) bad.push('a stray figure in the siege detail: '+said[j].sub.slice(0,70)); }
        }
        if(long.length) bad.push('lines longer than 56 characters were said: '+long.slice(0,3).join(' | '));
-       if((drawn[SG]||drawn[SG2])&&n===null) bad.push('the siege detail does not say how many are coming');
+       // retargeted for nosiegecount, HIS ORDER (2026-10-12): SIEGE INCOMING names no count from that build on, so the detail may name
+       // how many machines or nothing at all (the new check for that build asserts it names none); a figure in it must be a count of
+       // machines (checked in the loop above).
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        unspy(); say=realSay;
@@ -40429,7 +40439,10 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        snap=JSON.parse(JSON.stringify(__P()));
        keepGhost=__P().ghost;
-       __P().ghost={tag:'QX_GHOST_7',wep:'pistol',wepName:'Scav Pistol',runs:3,ext:1,rate:33,avgHaul:0};
+       // RETARGETED for scavspawnonly (his order 2026-10-12: the Scav Pistol is spawn-only, so a friend who favoured it walks in
+       // with the Tacker): the favourite is the Compact SMG, tier 2 under the Auto Rifle, so the same swap is offered and refused.
+       if(!(WEAPONS.smg&&WEAPONS.smg.mag&&(WTIER.rifle||0)>(WTIER.smg||0))) return 'SKIP: the Auto Rifle does not outrank the Compact SMG here';
+       __P().ghost={tag:'QX_GHOST_7',wep:'smg',wepName:'Compact SMG',runs:3,ext:1,rate:33,avgHaul:0};
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        // CONTROL: the kit dial is on, so pillagers use what they carry in this raid.
@@ -40438,7 +40451,7 @@ window.__REGRESS=[
        if(!gh){ applyGhost(); find(); }
        // CONTROL: the import placed the friend holding their favourite, and a plain pillager is in the same raid.
        if(!gh) return 'SKIP: no imported friend was placed in the raid';
-       if(!gh.wep||gh.wep.id!=='pistol') return 'SKIP: the import did not hand the friend the Scav Pistol here ('+(gh.wep&&gh.wep.id)+')';
+       if(!gh.wep||gh.wep.id!=='smg') return 'SKIP: the import did not hand the friend the Compact SMG here ('+(gh.wep&&gh.wep.id)+')';
        if(!r2) return 'SKIP: no plain pillager in this raid to compare against';
        // THE STAGE: the friend holds the favourite and carries an Auto Rifle, as a body that rolled one does, plus a Bandage at
        // 40 percent health; the plain pillager holds a Scav Pistol and carries the same Auto Rifle. Both swap tests are due now.
@@ -40451,7 +40464,7 @@ window.__REGRESS=[
        if(guns(r2)!==2) return 'SKIP: the plain pillager swap did not keep both guns ('+guns(r2)+'), so the frame did more than swap';
        // CONTROL: the friend is still in the raid and up after the frame.
        if(g.ents.indexOf(gh)<0||gh.downed||gh.finished) return 'SKIP: the friend left the raid or went down on the staged frame';
-       if(!gh.wep||gh.wep.id!=='pistol') bad.push('an imported friend favouring the Scav Pistol held the '+((gh.wep&&gh.wep.name)||'nothing')+' after one frame: the swap took the gun the body carried and put the favourite away');
+       if(!gh.wep||gh.wep.id!=='smg') bad.push('an imported friend favouring the Compact SMG held the '+((gh.wep&&gh.wep.name)||'nothing')+' after one frame: the swap took the gun the body carried and put the favourite away');
        if(gh.bag.indexOf('gun_rifle')<0) bad.push('the Auto Rifle the friend carried is no longer carried as loot'+(gh.bag.indexOf('gun_pistol')>=0?', and the Scav Pistol is carried in its place':''));
        // THE FIX IS NARROW: only the swap is skipped, so the hurt friend still starts the Bandage.
        if(!((gh.kitHeals||0)>heals0)&&gh.bag.indexOf('bandage')>=0) bad.push('the friend at 40 percent health did not start the Bandage they carry on that frame, so more than the gun swap is switched off for them');
