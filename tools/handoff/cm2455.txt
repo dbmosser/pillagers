@@ -1,0 +1,7 @@
+v24.55: a locked tile keeps its name
+
+A recipe you cannot make yet dims its picture but keeps its name readable.
+
+Check 24.55. Fails on v24.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

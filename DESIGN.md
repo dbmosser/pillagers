@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.55 - A LOCKED TILE KEEPS ITS NAME
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. The picture check of the craft tab found every recipe you cannot make yet faded as a whole, its name too, so the names were too faint to read. The picture still fades to say it is out of reach, and the name stays readable, as on the locked Fashion tiles.
+
+MEASURED. Check 24.55 passes, and fails on v24.54.
 ## v24.54 - ONE GRID, ONE RIGHT EDGE
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the shop and the Mainframe found the item grid and the cream detail card floating in the middle of the window: in the shop a dead band about a sixth of the screen tall sat between the tabs and the first tile, and in both the detail card stopped well short of the right edge that the heading and the footer share. The grid now starts right under the tabs and runs the full width, so the detail card ends on the same right edge as everything else. Nothing else changed.

@@ -1,0 +1,5 @@
+## v24.55 - A LOCKED TILE KEEPS ITS NAME
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. The picture check of the craft tab found every recipe you cannot make yet faded as a whole, its name too, so the names were too faint to read. The picture still fades to say it is out of reach, and the name stays readable, as on the locked Fashion tiles.
+
+MEASURED. Check 24.55 passes, and fails on v24.54.
