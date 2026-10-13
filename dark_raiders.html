@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.55';
+var VER='25.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2154,7 +2154,7 @@ var VER='25.55';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='25.43';
+var WHATSNEW_VER='25.56';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2174,6 +2174,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'CAREER PAYOUT. Extracting in CAREER pays your score x2 in credits. Downed pillagers get up once, reloads sound real, and Forge acid rounds eat armour.',
   'MINIMAP. A corner minimap marks what matters. CAREER raids bring the waves, armour plates ring and shatter, and a crawler that catches you hangs on.',
   'BIG GUNS. The guns in your hands are bigger and read at a glance. Grenades, the tripwire, guns and gear have recorded sounds, and Forge cryo rounds freeze.',
   'REAL FOLEY. Recorded reload, bandage and armour sounds. No more voices from pillagers or your operator. CAREER raids score your kills, and Forge rounds burn and shock.',
@@ -40739,7 +40740,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.55: A gun with an empty magazine and ammo to reload is now half grey on the belt; fully grey only when all ammo is gone. Check 25.55 fails on v25.54',
+  now:'v25.56: The what is new card names the career payout. Check 25.56 fails on v25.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

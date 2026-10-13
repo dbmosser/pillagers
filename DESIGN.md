@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.56 - THE WHAT IS NEW CARD NAMES THE CAREER PAYOUT
+
+Co-op hunt while he was away. The card was stamped v25.43 and the stamp may not trail the build by more than 0.15. The card was stamped v25.43 and every ship stops when it falls 0.16 behind; finished builds are still queued. Its new line names the builds since: the CAREER payout (his mode design, answers 8 and 9), the pillager self-revive and good reload noises (his orders 2026-10-12) and the Forge acid rounds.
+
+MEASURED. Check 25.56 passes, and fails on v25.55.
 ## v25.55 - AN EMPTY MAGAZINE IS HALF GREY
 
 Co-op hunt while he was away. His order of 2026-10-12: guns on the belt should grey out only half way when the magazine is empty but you carry ammo to reload, and grey out fully only when you are completely out of ammo. A gun key with an empty magazine looked exactly like a gun with nothing left. Now a loaded gun is full colour, a gun with an empty magazine and ammo to load is half grey with its 0 in the amber of the RELOAD prompt, and a gun with no ammo anywhere is fully grey as before. It covers the gun in your hands, the stowed one and a backpack gun on a gun key, and changes the moment you pick up, load or spend ammo. Bare hands never grey.

@@ -1,0 +1,7 @@
+v25.56: the what is new card names the career payout
+
+The what is new card names the career payout.
+
+Check 25.56. Fails on v25.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

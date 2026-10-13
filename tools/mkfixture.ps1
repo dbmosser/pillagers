@@ -6078,6 +6078,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.56',what:'the what is new card is stamped within 0.15 of the build and leads with the career payout news, shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>25.56+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('CAREER'+' PAYOUT')!==0) bad.push('the card does not lead with the career payout news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'25.55',what:'his order: a gun on the belt with an empty magazine and ammo to load is HALF grey; fully grey only with no ammo at all; full colour when loaded',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof drawHUD!=='function'||typeof drawIconSprite!=='function'||typeof hotbarSlots!=='function') return 'SKIP: this fixture cannot deploy or draw the belt';
