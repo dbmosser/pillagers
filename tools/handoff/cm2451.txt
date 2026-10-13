@@ -1,0 +1,7 @@
+v24.51: pillagers taunt when they hit you
+
+A pillager whose shot lands on you now taunts you.
+
+Check 24.51. Fails on v24.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

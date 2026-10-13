@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.51 - PILLAGERS TAUNT WHEN THEY HIT YOU
+
+Co-op hunt while he was away. His answer 34 (2026-10-12): machine beeps and pillager taunts. The pillagers had hurt taunts written (YOU ARE BLEEDING, NEARLY HAD YOU, KEEP RUNNING) but nothing ever used them: a pillager only called out when he spotted you, put you down or ran. Now a pillager whose round lands on you can taunt you too, one line on the map at a time and never twice inside four seconds, so a firefight has a voice without turning into a wall of shouting. Machines never taunt.
+
+MEASURED. Check 24.51 passes, and fails on v24.50.
 ## v24.50 - FEEDBACK WITH A SCREENSHOT
 
 Co-op hunt while he was away. His answer 38: in-game feedback in the ESC / TAB menu, a typed note plus a screenshot. The pause box had a note field that only went into the run report, with no picture of what you were looking at. It now has a FEEDBACK button: it takes a screenshot of the game as it stands and opens a window with the picture and a note field (type at once, CTRL+ENTER saves, ESC cancels; a controller reaches SAVE and CANCEL). SAVE writes your note with the version, the time and where you were, plus the picture: on his own machine into the exports folder through the collector, otherwise as two downloaded files. Nothing in your save changes, so it works in the demo too.

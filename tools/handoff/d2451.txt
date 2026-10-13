@@ -1,0 +1,5 @@
+## v24.51 - PILLAGERS TAUNT WHEN THEY HIT YOU
+
+Co-op hunt while he was away. His answer 34 (2026-10-12): machine beeps and pillager taunts. The pillagers had hurt taunts written (YOU ARE BLEEDING, NEARLY HAD YOU, KEEP RUNNING) but nothing ever used them: a pillager only called out when he spotted you, put you down or ran. Now a pillager whose round lands on you can taunt you too, one line on the map at a time and never twice inside four seconds, so a firefight has a voice without turning into a wall of shouting. Machines never taunt.
+
+MEASURED. Check 24.51 passes, and fails on v24.50.
