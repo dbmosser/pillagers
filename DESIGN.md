@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.78 - CROUCH IS THE QUIET WALK
+
+Co-op hunt while he was away. His answer of 2026-10-13: crouch should always be the quiet walk, with no separate Alt walk. Crouching already was the quiet way to move: no loud move noise at all (an upright walk sends a ring every three quarters of a second), the smallest footstep ring, slower and softer steps, and a Listener cannot track a crouched player. One hole is closed: the ground used to multiply a crouched step like any other, so a crouched step on metal was a ring of 94 and in undergrowth 86, louder than the same crouch on stone (72). A crouched step is now 72 on every dry ground and always smaller than the upright step on the same ground. Deep water is unchanged, because the splash is loud whatever you do. Speed, step timing and sound are as they were.
+
+MEASURED. Check 25.78 passes, and fails on v25.77.
 ## v25.77 - MIDDLE MOUSE: PING AND SIGNAL
 
 Co-op hunt while he was away. His order of 2026-10-13: middle mouse is the ping / mark, so you can mark while aiming; V keeps working. The middle button already pinged for the party through a line of its own, which was not on the key list and could not be changed, and alone it did nothing. It is a key now, like the two side buttons: the action sits on the rebind list (Settings, CHANGE KEYS, PARTY) as MIDDLE MOUSE, default the middle button, and can be moved to any key or button. In a party a press marks the spot or the enemy under the cursor for your teammates, as N does (on the open map it is your map marker); alone it opens and closes the V signal strip, so hail and stand down are one click from the aim. The press is claimed in a raid so the browser autoscroll never starts, and the controls list names the button beside N.

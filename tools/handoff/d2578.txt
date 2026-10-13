@@ -1,0 +1,5 @@
+## v25.78 - CROUCH IS THE QUIET WALK
+
+Co-op hunt while he was away. His answer of 2026-10-13: crouch should always be the quiet walk, with no separate Alt walk. Crouching already was the quiet way to move: no loud move noise at all (an upright walk sends a ring every three quarters of a second), the smallest footstep ring, slower and softer steps, and a Listener cannot track a crouched player. One hole is closed: the ground used to multiply a crouched step like any other, so a crouched step on metal was a ring of 94 and in undergrowth 86, louder than the same crouch on stone (72). A crouched step is now 72 on every dry ground and always smaller than the upright step on the same ground. Deep water is unchanged, because the splash is loud whatever you do. Speed, step timing and sound are as they were.
+
+MEASURED. Check 25.78 passes, and fails on v25.77.

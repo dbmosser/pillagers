@@ -1,0 +1,7 @@
+v25.78: crouch is the quiet walk
+
+A crouched step now makes the same small noise ring on metal and undergrowth as on stone.
+
+Check 25.78. Fails on v25.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

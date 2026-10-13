@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.77';
+var VER='25.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5204,8 +5204,8 @@ function tickPlayerSteps(dt){
   // the map that punishes moving badly.
   var stepR=G.sprinting?300:(crouch?72:170);
   if(surf==='water') stepR*=1.55;
-  else if(surf==='metal') stepR*=1.30;
-  else if(surf==='leaf') stepR*=1.20;
+  else if(surf==='metal'&&!crouch) stepR*=1.30;   // v25.xx (crouchquiet): a crouched step is the quiet walk on every dry ground
+  else if(surf==='leaf'&&!crouch) stepR*=1.20;
   ping(p.x,p.y,stepR,false,true,'player','move');
   // Sprinting through undergrowth announces you to EVERYTHING. The bush is not a
   // cloak, it is a thing you have to move through carefully.
@@ -41266,7 +41266,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.77: Middle mouse pings for the party and, alone, opens the V signal strip; it is on the rebind list. Check 25.77 fails on v25.76',
+  now:'v25.78: A crouched step now makes the same small noise ring on metal and undergrowth as on stone. Check 25.78 fails on v25.77',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
