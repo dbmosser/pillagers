@@ -1338,6 +1338,8 @@ window.__wirtLot=function(){ return wirtLotKey(); };
 window.__itemMenuRows=function(key,ctx,count){ return itemMenuRows(key,ctx,count); };
 window.__itemGk=function(k){ var it=(typeof ITEMS!=='undefined')&&ITEMS[k]; return it?(it.gk||null):null; };
 window.__noteCrash=function(k,m,w){ return noteCrash(k,m,w); };
+// crashrec (his answer 44): the fixture never reloads itself on a run of errors; the crashrec check turns it on with a stubbed reload. A no-op on a build without it.
+try{ if(typeof CRASHREC==='object'&&CRASHREC) CRASHREC.off=1; }catch(_crx){}
 window.__ploaded=function(v){ if(typeof PLOADED==='undefined') return null; if(v!==undefined) PLOADED=!!v; return PLOADED; };
 window.__applyLoaded=(typeof applyLoadedProfile==='function')?function(prof){ applyLoadedProfile({key:SKEY,value:JSON.stringify(prof)}); return true; }:undefined;
 window.__wnseen=function(v){ if(v!==undefined) WNSEEN=v; return WNSEEN; };
@@ -10232,6 +10234,9 @@ window.__REGRESS=[
        if(__state()&&__state().arcade){ try{ arcadeRaidStop('end'); }catch(_rs){} }
        try{ if(ARCADE.over) ARCADE.over=null; }catch(_ov){}
        key('F10',{c:1,s:1});
+       // opmenu (his answer 22): on the attract the chord opens the OPERATOR menu, and the chord again with it up leaves. On a build
+       // without the menu the first chord leaves. Either way only the chord gets out.
+       if(ARCADE.on&&document.getElementById('arc'+'op')) key('F10',{c:1,s:1});
        if(ARCADE.on) bad.push('Ctrl+Shift+F10 on the attract did not leave the arcade');
        if(!ARCADE.on){
          if(!arcadeDeploy({mapIx:0,seed:4242})) bad.push('no second arcade drop');
