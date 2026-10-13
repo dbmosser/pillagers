@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.08 - THE FIND SOUNDS STOP RINGING
+
+Co-op hunt while he was away. His note of 2026-10-12: the sound after finding rarer items lingers for too long. The find chimes themselves were short, but every one went into the room reverb, which inside a building, in a vault and in the Undercroft kept a bright chime ringing for another second or more after its notes ended, and a jackpot pulled item by item smeared one ring into the next. A green, blue, purple or gold find (and the gun pickup) now plays dry, with no room echo, so it is over when its notes are: inside about half a second for green and blue and under a second for purple and gold. The notes are the same, so a purple still sounds better than a blue, and a new find cuts the one still ringing so two in a row never stack. Menu clicks keep their sound.
+
+MEASURED. Check 25.08 passes, and fails on v25.07.
 ## v25.07 - THE DOWNED NOISE
 
 Co-op hunt while he was away. His order of 2026-10-12: have a downed noise, and anywhere a player voice was added, replace it with a distinct noise. Going down said I AM DOWN in a spoken voice (v24.57), which he hears as killing the vibe, and the rest of the party heard nothing at all. Going down now has its own sound that is never taken for a hit: a heavy body drop with a low muffled thump, a short dull ring like a concussion, and the world dips for about a second (everything else goes muffled, then opens again). Player 2 hears his own fall in his own window, on his side of the split speakers. A teammate going down is heard where he fell: the drop and the thump, panned and quieter with distance. The spoken DOWN bark is gone. Sound only: nothing in the raid changes.
