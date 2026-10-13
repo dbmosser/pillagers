@@ -11578,6 +11578,8 @@ window.__REGRESS=[
        try{ if(up()) arcadeRaidStop('end'); }catch(_s2){}
        if(ARCADE.over) ARCADE.over.at-=2000;
        arcadeKeyAtt(ev('KeyW'));
+       // retargeted 2026-10-13 (demoendboard): the first key after the guard may show the high score board; the next key (after its hold) drops in
+       if(!up()&&ARCADE.over&&ARCADE.over.board){ ARCADE.over.bat-=2000; arcadeKeyAtt(ev('KeyW')); }
        if(!up()) bad.push('a key 2 s after the run ended did not drop a new run in');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
@@ -15578,7 +15580,8 @@ window.__REGRESS=[
        if(!boxOn()) togglePauseBox(true);
        if(!boxOn()) bad.push('the arcade pause box does not open');
        vis=visBtns(); ids=vis.map(function(x){ return x.id; }).sort().join(',');
-       if(ids!=='arcendbtn,resumebtn'&&ids!=='arcendbtn,fbbtn,resumebtn') bad.push('the arcade pause box shows '+ids+', not only RESUME and END RUN (and FEEDBACK, his answer 38)');
+       // retargeted 2026-10-13 (demosettings): the DEMO box also offers SETTINGS now (pausesetbtn), with or without FEEDBACK
+       if(ids!=='arcendbtn,resumebtn'&&ids!=='arcendbtn,fbbtn,resumebtn'&&ids!=='arcendbtn,pausesetbtn,resumebtn'&&ids!=='arcendbtn,fbbtn,pausesetbtn,resumebtn') bad.push('the arcade pause box shows '+ids+', not only RESUME and END RUN (and FEEDBACK, his answer 38)');
        nm=el('resumebtn')?el('resumebtn').textContent:'';
        if(nm!=='RESUME') bad.push('the arcade resume button reads '+nm);
        for(i=0;i<vis.length;i++){
@@ -16001,7 +16004,8 @@ window.__REGRESS=[
        ae=el('arcendbtn'); ab=el('abandonbtn'); ps=el('pausesetbtn');
        if(!shown(ae)) bad.push('the arcade pause box has no END RUN');
        if(shown(ab)) bad.push('the arcade pause box still offers Abandon run');
-       if(shown(ps)) bad.push('the arcade pause box still offers Settings');
+       // retargeted 2026-10-13 (demosettings): the DEMO pause box offers SETTINGS now; v25.xx demosettings checks it opens
+       void ps;
        togglePauseBox(false);
        lines=[];
        ARCADE.ownAt=Date.now()-151000; ARCADE.mateAt=0;
