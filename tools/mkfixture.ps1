@@ -372,7 +372,7 @@ window.__conceal={bushAt:inBush,at:concealAt,mapBush:bushAtMap};
       for(var d=20; d<=m; d+=20){ if(!losClear(x,y,x+Math.cos(th)*d,y+Math.sin(th)*d,G.vseg)) return d; }
       return m; }
   };
-window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDENTITIES;},rec:idRec};
+try{ window.__emote={do:doEmote,list:EMOTES,down:weaponDown,ids:function(){return IDENTITIES;},rec:idRec}; }catch(_em){}   // v25.81 (noemotes): there is no emote system any more
 // The weapon footnote on the shop screen, drawn rather than grepped, because the
 // question is what he READS and a source string can be behind a branch.
 window.__shopPanel={detail:function(ix){
@@ -6326,16 +6326,20 @@ window.__REGRESS=[
        if(!KEYS_ACTS.some(function(a){ return a[0]==='Mouse1'; })) bad.push('the middle button is not on the rebind list');
        if(keyName('Mouse1')!=='MIDDLE MOUSE') bad.push('the middle button is named '+keyName('Mouse1'));
        // 2. V opens and closes the signal strip (the control)
+       if(typeof doEmote==='function'){
        dn('KeyV'); upk('KeyV');
        if(!g.emoteBar) bad.push('V did not open the signal strip here');
        dn('KeyV'); upk('KeyV');
        if(g.emoteBar) bad.push('V did not close the signal strip');
+       }
        // 3. alone, the middle button does what V does, and its press is claimed (no browser autoscroll)
        me=mdn(1); mup(1);
        if(!me.defaultPrevented) bad.push('the middle press in a raid was not claimed');
+       if(typeof doEmote==='function'){
        if(!g.emoteBar) bad.push('the middle button opened no signal strip');
        mdn(1); mup(1);
        if(g.emoteBar) bad.push('a second middle press did not close the signal strip');
+       } else if(g.emoteBar) bad.push('the middle button opened a strip in a build with no emotes');
        // 4. in a party, it makes the ping the N key makes, and opens no strip
        NET.on=true; netPingMake=function(){ calls++; return null; };
        g.emoteBar=false; raidKey('Mouse1',false,null); keys['Mouse1']=false;
@@ -6345,8 +6349,10 @@ window.__REGRESS=[
        // 5. rebound to J, J does it and the list says so
        if(!keysBind('Mouse1','KeyJ')) bad.push('the middle button action could not be rebound');
        if(keysOf('Mouse1')!=='KeyJ') bad.push('the action reads '+keysOf('Mouse1')+' after being put on J');
+       if(typeof doEmote==='function'){
        g.emoteBar=false; dn('KeyJ'); upk('KeyJ');
        if(!g.emoteBar) bad.push('after the action was put on J, J did not open the signal strip');
+       } else if(keyRemap('KeyJ')!=='Mouse1') bad.push('after the action was put on J, J is read as '+keyRemap('KeyJ'));
        g.emoteBar=false; keysReset();
        if(keysOf('Mouse1')!=='Mouse1') bad.push('RESET TO DEFAULTS left the middle button action on '+keysOf('Mouse1'));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -9210,8 +9216,8 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.16',what:'his order 2026-10-12, pillagers say no words: no taunt() and no TAUNT lines are left; a pillager spotting him, a pillager round hitting him, him going down beside a pillager and a pillager breaking off to extract draw no bubble over the pillager; the spot still plays the seen swell once, gated to once in four seconds',
    run:function(){
-     if(!window.__deploy||!window.__endRaid||typeof updateEnts!=='function'||typeof updateBullets!=='function'||typeof damagePlayer!=='function'||typeof emoteBubble!=='function') return 'SKIP: no raid here';
-     var bad=[], skip='', g, p, R=null, E0=null, kr=null, f, i, k, ok=false, own=false, oBlip=blip, oSfx=sfx, oEB=emoteBubble, seen=0, bubs=[];
+     if(!window.__deploy||!window.__endRaid||typeof updateEnts!=='function'||typeof updateBullets!=='function'||typeof damagePlayer!=='function') return 'SKIP: no raid here';
+     var bad=[], skip='', g, p, R=null, E0=null, kr=null, f, i, k, ok=false, own=false, oBlip=blip, oSfx=sfx, oEB=(typeof emoteBubble==='function')?emoteBubble:null, seen=0, bubs=[];
      if(typeof taunt!=='undefined') bad.push('the taunt function is still in the game');
      if(typeof TAUNT!=='undefined') bad.push('the taunt lines are still in the game');
      function look(e){ e.face=Math.atan2(p.y-e.y,p.x-e.x); e.state='patrol'; e.alert=0; e.tx=e.x; e.ty=e.y; }
@@ -9225,7 +9231,7 @@ window.__REGRESS=[
        if(!R) return 'SKIP: no pillager on this map';
        kr={x:R.x,y:R.y,face:R.face,state:R.state,alert:R.alert,tx:R.tx,ty:R.ty};
        blip=function(t){ if(String(t)==='seen') seen++; }; sfx=function(){};
-       emoteBubble=function(x,y){ bubs.push({x:x,y:y,g:arguments[2]}); return oEB.apply(this,arguments); }; own=true;
+       if(oEB) emoteBubble=function(x,y){ bubs.push({x:x,y:y,g:arguments[2]}); return oEB.apply(this,arguments); }; own=true;
        p.iv=99; p.crouch=false; p.hp=100; p.downed=false;
        E0=g.ents; g.ents=[R];
        var OFF=[[-140,0],[140,0],[0,140],[0,-140]];
@@ -9254,7 +9260,7 @@ window.__REGRESS=[
        }
        if(g.tel&&g.tel.taunts) bad.push('the raid still counts taunts ('+g.tel.taunts+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ if(own){ blip=oBlip; sfx=oSfx; emoteBubble=oEB; } try{ var g2=__state(); if(g2){ if(E0) g2.ents=E0; if(R&&kr){ R.x=kr.x; R.y=kr.y; R.face=kr.face; R.state=kr.state; R.alert=kr.alert; R.tx=kr.tx; R.ty=kr.ty; } if(!g2.over){ g2.bullets.length=0; g2.player.iv=0; g2.player.hp=100; g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); }
+     finally{ if(own){ blip=oBlip; sfx=oSfx; if(oEB) emoteBubble=oEB; } try{ var g2=__state(); if(g2){ if(E0) g2.ents=E0; if(R&&kr){ R.x=kr.x; R.y=kr.y; R.face=kr.face; R.state=kr.state; R.alert=kr.alert; R.tx=kr.tx; R.ty=kr.ty; } if(!g2.over){ g2.bullets.length=0; g2.player.iv=0; g2.player.hp=100; g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); }
      if(bad.length) return bad.join('; ');
      return skip?'SKIP: '+skip:null; }},
   {v:'25.15',what:'forge4: a shock hit arcs half its damage to the nearest body, stuns the machine it hit for half a second with no re-stun inside the immunity, never arcs to a pillager at peace or a hire, and arcs at most once in 0.2 s',
@@ -17204,7 +17210,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'23.07',what:'people lines in caps: the three hire orders, a hail with nobody near, a revive by a teammate, a survivor who wants ammunition you cannot spare, a gift a downed teammate cannot take and a teammate searching your box each say a caps headline of at most 34 with any detail of at most 48, and no line says Order:, slab or pulls you up',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof raidKey!=='function'||typeof netRevApply!=='function'||typeof strayGive!=='function'||typeof mkStray!=='function'||typeof netGiftTake!=='function'||typeof doEmote!=='function'||typeof EMOTES==='undefined') return 'SKIP: no hire orders, revives, survivors, gifts or emotes here';
+     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof raidKey!=='function'||typeof netRevApply!=='function'||typeof strayGive!=='function'||typeof mkStray!=='function'||typeof netGiftTake!=='function') return 'SKIP: no hire orders, revives, survivors or gifts here';
      var bad=[], g=null, p=null, i, hx=-1, said=[], realSay=say, realWF=sayWhenFree, all=[], keepN={on:NET.on,seat:NET.seat,roster:NET.roster,up:NET.up,role:NET.role,peers:NET.peers},
          OLD=['Order'+':','sl'+'ab','pulls '+'you up'], hire, e, r0=null;
      function need(tag,n0){ if(said.length<=n0) bad.push(tag+' said nothing'); }
@@ -17221,7 +17227,7 @@ window.__REGRESS=[
        for(i=0;i<3;i++){ var n0=said.length; raidKey('KeyO',false); need('hire order '+(i+1),n0); }
        g.ents.length=0;
        // TWO: a hail with nobody near
-       for(i=0;i<EMOTES.length;i++) if(EMOTES[i].k==='hail') hx=i;
+       if(typeof EMOTES!=='undefined'&&typeof doEmote==='function') for(i=0;i<EMOTES.length;i++) if(EMOTES[i].k==='hail') hx=i;
        if(hx>=0){ g.emoteCd=0; var n1=said.length; doEmote(hx); need('a hail with nobody near',n1); }
        // THREE: a revive by a teammate
        NET.roster=[{seat:0,name:'Host'},{seat:1,name:'Zqxkid'}]; NET.up=[]; NET.up[1]={x:p.x+10,y:p.y,seat:1}; NET.role='join'; NET.peers=[];
@@ -18296,7 +18302,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'22.81',what:'emote, closed ring and bystander lines are caps callouts: the hail says NOT WHILE DOWN, NOT WHILE ROLLING, LOWER YOUR GUN TO TALK and NOBODY IN EARSHOT, a pillager answers NAME WILL NOT TALK, NAME STANDS DOWN or NAME WAVES BACK, E in a closed ring says EXTRACTION A IS CLOSED with the open one as the detail, and a survivor or the Peddler killed by someone else is SOMEONE SHOT THE SURVIVOR or THE PEDDLER IS DEAD; every one is caps, at most 34 characters, with no end punctuation',
    run:function(){
-     if(typeof doEmote!=='function'||typeof EMOTES==='undefined'||typeof tryExtractTick!=='function'||typeof extLetter!=='function') return 'SKIP: no emote bar or extraction here';
+     if(typeof tryExtractTick!=='function'||typeof extLetter!=='function') return 'SKIP: no extraction here';
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      var bad=[], sk=[], oSay=say, said=[], g=null, p=null, hx=-1, i, e, z=null, z2=null, kz=null, kz2=null, ents0=null, src, l, OS=['Someone','shot','the','survivor.'].join(' '), OP=['The','Peddler','is','dead.'].join(' ');
      function voice(what,want,all){
@@ -18308,8 +18314,7 @@ window.__REGRESS=[
        else if(want&&l.m!==want) bad.push(what+' said '+JSON.stringify(l.m)+', not '+want);
        return l;
      }
-     for(i=0;i<EMOTES.length;i++) if(EMOTES[i].k==='hail') hx=i;
-     if(hx<0) return 'SKIP: no hail on the emote bar';
+     if(typeof EMOTES!=='undefined'&&typeof doEmote==='function') for(i=0;i<EMOTES.length;i++) if(EMOTES[i].k==='hail') hx=i;
      // the bystander lines, read from the page: the old sentences are gone
      src=[].slice.call(document.scripts).map(function(s){ return s.textContent||''; }).join('\n');
      if(src.indexOf(OS+' Not on you.')>=0) bad.push('a survivor killed by someone else still says the old sentence');
@@ -18320,6 +18325,7 @@ window.__REGRESS=[
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
        p=g.player; keys={}; p.downed=false; p.dying=false; p.roll=0; p.ads=false; p.lastShot=-1e9; ents0=g.ents.slice(); g.ents.length=0;
        say=function(m,kd,o){ said.push({m:String(m),k:kd,o:o||null}); };
+       if(hx>=0){
        p.downed=true; g.emoteCd=0; said.length=0; doEmote(hx); voice('a hail while down','NOT WHILE DOWN'); p.downed=false;
        p.roll=0.3; g.emoteCd=0; said.length=0; doEmote(hx); voice('a hail in a roll','NOT WHILE ROLLING'); p.roll=0;
        p.ads=true; g.emoteCd=0; said.length=0; doEmote(hx); voice('a hail while aiming','LOWER YOUR GUN TO TALK'); p.ads=false;
@@ -18336,6 +18342,7 @@ window.__REGRESS=[
          else voice('a hail a hostile pillager believes','ZQXROOK STANDS DOWN');
          e.hostile=false; e.trust=1; e.friendlyPC=0; e.x=p.x+40; g.emoteCd=0; said.length=0; doEmote(hx);
          voice('a hail a passive pillager trusts','ZQXROOK WAVES BACK',true);
+       }
        }
        g.ents.length=0;
        // E in a closed ring with another open
@@ -18510,7 +18517,7 @@ window.__REGRESS=[
   {v:'22.77',what:'lines nobody can see go: going down by damage says no DOWN line while the downed screen draws the SELF-REVIVE row, a hail with nobody near says only the earshot line and no narration, and the hauled aboard and abandon lines are not said under the outcome card',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__textTrace)) return 'SKIP: this fixture cannot deploy or trace text';
-     if(typeof damagePlayer!=='function'||typeof doEmote!=='function'||typeof drawHUD!=='function'||typeof EMOTES==='undefined') return 'SKIP: no damage, emotes or HUD in this build';
+     if(typeof damagePlayer!=='function'||typeof drawHUD!=='function') return 'SKIP: no damage or HUD in this build';
      var bad=[], g=null, p=null, _say=say, said=[], i, tr, dn, hi=-1, src, NB='nobody in '+'earshot', TH="say('They have "+"you", WO="say(_rc>0?('Walked "+"out";
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -18528,8 +18535,8 @@ window.__REGRESS=[
        if(dn.length) bad.push('going down said '+dn.length+' lines under the downed screen that says it: '+dn.join(' | '));
        // TWO: a hail with nobody near, the gun down.
        p.downed=false; p.dying=false; p.hp=100; p.roll=0; p.ads=false; p.lastShot=-1e9; g.emoteCd=0; g.ents.length=0; said.length=0;
-       for(i=0;i<EMOTES.length;i++) if(EMOTES[i].k==='hail') hi=i;
-       if(hi<0) bad.push('SKIP: no hail emote in this build');
+       if(typeof EMOTES!=='undefined'&&typeof doEmote==='function') for(i=0;i<EMOTES.length;i++) if(EMOTES[i].k==='hail') hi=i;
+       if(hi<0){ if(typeof doEmote==='function') bad.push('SKIP: no hail emote in this build'); }
        else {
          doEmote(hi);
          if(!(g.emoteCd>0)) bad.push('SKIP: staging: the hail was not done ('+said.join(' | ')+')');
@@ -30233,7 +30240,7 @@ window.__REGRESS=[
        P.keymap={}; KEYS.inv=null;
        if(keysBind('KeyE','Backquote')) bad.push('interact was put on the Superhot key');
        if(keysBind('KeyE','Backspace')) bad.push('interact was put on the cursor key');
-       ['KeyG','KeyQ','KeyZ','KeyV','KeyO'].forEach(function(c){ if(!KEYS_ACTS.some(function(a){ return a[0]===c; })) bad.push(c.slice(3)+' is not on the keys list'); });
+       ['KeyG','KeyQ','KeyZ','KeyO'].concat(typeof doEmote==='function'?['KeyV']:[]).forEach(function(c){ if(!KEYS_ACTS.some(function(a){ return a[0]===c; })) bad.push(c.slice(3)+' is not on the keys list'); });
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ saveProfile=oSave; if(P){ if(km) P.keymap=km; else delete P.keymap; } KEYS.inv=null; try{ keysInv(); keysLegendApply(); }catch(_k){} }
      return bad.length?bad.join('; '):null; }},
@@ -52139,7 +52146,7 @@ window.__REGRESS=[
            if(seen.length&&!rArmed)
              bad.push('control: in a RAID the operator is handed no weapon either, so the gun was taken off him everywhere rather than only in the Undercroft');
            var raidText=rp.map(function(d){ return String(d.t); }).join(' | ');
-           if(raidText.indexOf('[V] signal')<0)
+           if(raidText.indexOf('[V] signal')<0&&raidText.indexOf('[FIRE] use')<0)
              bad.push('control: the belt caption is gone from the RAID as well, where FIRE and SIGNAL are real actions he uses, so it was deleted rather than moved out of the Undercroft');
          }catch(_d){ bad.push('the raid control threw: '+(_d&&_d.message||_d)); }
          try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
