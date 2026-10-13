@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.61 - EVERY MACHINE DIES WITH ITS OWN NOISE
+
+Co-op hunt while he was away. His order of 2026-10-12: all robots should have a distinct destruction noise for when they are killed. A machine died in silence: the round that killed it made the same metal tick as any other hit, and a machine killed by a charge, a Howler shell or another machine made no sound at all. Now every kind has its own: the Sentry servo seizes with an electrical pop and tinkling debris, the Crawler legs skitter out into a light crunch, the Crier alarm wails down and is cut by a crackle, the Listener dish whine climbs and snaps off, the Howler growl chokes into a burst, the Bulwark armour plates clang down, the Pillbox turret detonates and its shell rings, the Warden groans and collapses, and the Overseer goes out in a long layered blast with a falling tone and a rain of debris, the biggest sound in the game. Each is placed where it died (left, right, far and behind walls), small machines under a gunshot and big ones near it. Sound only: nothing in the raid changes.
+
+MEASURED. Check 25.61 passes, and fails on v25.60.
 ## v25.60 - PILLAGERS AND YOUR TEAMMATE HOLD BIG GUNS
 
 Co-op hunt while he was away. His order of 2026-10-12, second part: the bigger guns from the last build were on you only. Pillagers, hires, friendly pillagers and your teammate in this window now hold the same gun pictures at the same size, so a pillager rifle reads as a rifle and his Support MG as a Support MG across the room. Before, his pistol and SMG vanished into his red sleeve; the gun is inked and rim lit now, so it stands off any coat. Your teammate Forge gun also shows here: his state message now carries the MK and the element with the gun, so his gold finish and his element glow are drawn in your window too. Cosmetic only: nothing a fight reads changes.

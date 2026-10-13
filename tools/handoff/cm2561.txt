@@ -1,0 +1,7 @@
+v25.61: every machine dies with its own noise
+
+Every machine now dies with its own noise, from the Crawler crunch to the Overseer blast.
+
+Check 25.61. Fails on v25.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
