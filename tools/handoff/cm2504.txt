@@ -1,0 +1,7 @@
+v25.04: rarity: green, blue, purple, gold
+
+Rarity colours are now the same everywhere: green, blue, purple and gold, with common items grey.
+
+Check 25.04. Fails on v25.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

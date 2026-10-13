@@ -47,7 +47,7 @@
     --acc:#f5b73b; --acc-ink:#1a1205; --acc-dim:rgba(245,183,59,.16);
     --danger:#e5482f; --danger-bg:rgba(60,12,8,.86); --warn:#f5b73b; --ok:#76b97c;
     --extract:#47d8c6; --ally:#9cc7ff; --armour:#7fa6c9;
-    --r-common:#9da3a8; --r-uncommon:#5fbf6a; --r-rare:#3f9de9; --r-elite:#a866e0; --r-gold:#f08f2e;
+    --r-common:#9da3a8; --r-uncommon:#5fbf6a; --r-rare:#3f9de9; --r-elite:#a866e0; --r-gold:#ffc72e;
     --void:var(--ui-void); --steel:var(--ui-line); --steel-hi:var(--ui-line-hi); --ash:var(--tx-2);
     --bone:var(--tx-1); --amber:var(--acc); --rust:var(--danger); --coolant:var(--extract);
     --hazard:var(--danger); --gain:var(--ok); --win-top:var(--ui-panel); --win-bot:var(--ui-bg);
@@ -548,7 +548,7 @@
   .cell.c-uncommon{ border-color:var(--r-uncommon); box-shadow:inset 0 0 8px rgba(95,191,106,.16); }
   .cell.c-rare{ border-color:var(--r-rare); box-shadow:inset 0 0 8px rgba(63,157,233,.20); }
   .cell.c-elite{ border-color:var(--r-elite); box-shadow:inset 0 0 10px rgba(168,102,224,.26); }
-  .cell.c-gold{ border-color:var(--r-gold); box-shadow:inset 0 0 10px rgba(240,143,46,.30); }
+  .cell.c-gold{ border-color:var(--r-gold); box-shadow:inset 0 0 10px rgba(255,199,46,.30); }
   /* v10.14: an empty backpack slot, drawn so the grid reads as a grid */
   .cell.slotempty{ border:1px dashed var(--steel-hi); opacity:.45; box-shadow:none; cursor:default; }
   .cell .cnt{ position:absolute; right:3px; bottom:1px; font-size:13px; font-weight:700;
@@ -2118,7 +2118,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.03';
+var VER='25.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2883,7 +2883,12 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
 // Mirrored by the .r-* CSS rules; the two have nothing keeping them in sync, so
 // they must always be edited together. Rare moved because #5aa9e6 on a navy
 // panel was a real contrast failure, and rare items are what the stash is for.
-var RCOL={common:'#cfd8ef',uncommon:'#7fc4a0',rare:'#7cc4ff',elite:'#d08ce8',gold:'#ffc72e'};
+// 2026-10-12 (rarity), HIS ANSWER 14: rarity colours "green blue purple gold". There were two tables: this one (pale mint, sky blue,
+// orchid) for the world, the loot rows and the belt, and the menu tokens (--r-* and UIC.r_*, a stronger green, blue and purple, and
+// an ORANGE gold) for the menus, so the same item changed colour between the raid and the stash and the top tier read orange. One
+// set now: common grey, uncommon green, rare blue, elite purple, gold gold, the same five in this table, in UIC and in the stylesheet.
+// Gold stays #ffc72e, the gold every gun of tier 5 has worn since v7.99.
+var RCOL={common:'#9da3a8',uncommon:'#5fbf6a',rare:'#3f9de9',elite:'#a866e0',gold:'#ffc72e'};
 // v7.99, his order: a gun ALWAYS shows its rarity, and the truth is the tier
 // table, not the item row (which feeds prices and stays put). Tier 5 wears
 // gold, matching the in-raid receiver edge from v7.77.
@@ -9003,7 +9008,7 @@ var UIC={ui_void:'#0b0c0d', ui_bg:'#111315', ui_panel:'#16191b', ui_raised:'#1e2
   ui_line_hi:'#4a5257', ui_scrim:'rgba(6,7,8,.82)', ui_paper:'#ebe5d6', ui_paper_2:'#ddd5c3', ui_paper_ink:'#17150f', ui_paper_ink_2:'#5a554a',
   tx_1:'#efe9dc', tx_2:'#aaa498', tx_3:'#7a766e', tx_off:'#55524c', acc:'#f5b73b', acc_ink:'#1a1205', acc_dim:'rgba(245,183,59,.16)',
   danger:'#e5482f', danger_bg:'rgba(60,12,8,.86)', warn:'#f5b73b', ok:'#76b97c', extract:'#47d8c6', ally:'#9cc7ff', armour:'#7fa6c9',
-  r_common:'#9da3a8', r_uncommon:'#5fbf6a', r_rare:'#3f9de9', r_elite:'#a866e0', r_gold:'#f08f2e'};
+  r_common:'#9da3a8', r_uncommon:'#5fbf6a', r_rare:'#3f9de9', r_elite:'#a866e0', r_gold:'#ffc72e'};   // 2026-10-12 (rarity): gold is gold, as RCOL
 var HUDC={text:UIC.tx_1, dim:UIC.tx_2, danger:UIC.danger, warn:UIC.warn, extract:UIC.extract, gain:UIC.ok, ally:UIC.ally,
   special:UIC.r_elite, plate:'rgba(6,9,13,.78)', dangerPlate:'rgba(40,8,6,.84)', ink:INK};
 // v24.19, UI REDESIGN ui5 (his #50): UIICON, the one line glyph set of the menus and the HUD (design 2.7). Path data on a 24 grid,
@@ -27258,7 +27263,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // Left standing rather than cut, because it is the one place that would paint a
   // special receiver again if a second condition were ever added back.
   var _rc=!_wp?null:((_wp.q==='gold')?'#ffc72e':
-          (_wt>=5?'#ffc72e':_wt>=4?'#d08ce8':_wt===3?'#7cc4ff':_wt===2?'#7fc4a0':'#cfd8ef'));
+          (_wt>=5?RCOL.gold:_wt>=4?RCOL.elite:_wt===3?RCOL.rare:_wt===2?RCOL.uncommon:RCOL.common));   // 2026-10-12 (rarity): the one table
   var _L=13,_B=6,_mag=0,_sc=0,_tube=0,_pump=0,_drum=0;
   if(_wid==='pistol'||_wid==='tacker'){ _L=7; _B=4; }
   else if(_wid==='magnum'){ _L=7; _B=6; }
@@ -39381,7 +39386,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.03: The title backdrop is soft and fades to black at the edges, with no rectangle showing. Check 25.03 fails on v25.02',
+  now:'v25.04: Rarity colours are now the same everywhere: green, blue, purple and gold, with common items grey. Check 25.04 fails on v25.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

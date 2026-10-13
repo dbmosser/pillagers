@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.04 - RARITY: GREEN, BLUE, PURPLE, GOLD
+
+Co-op hunt while he was away. His answer 14: the rarity colours are green, blue, purple and gold. The game had two sets: a pale mint, sky blue and orchid for loot in the raid and on the belt, and a stronger green, blue and purple with an orange top tier in the menus, so the same item changed colour between the raid and the stash, and the best tier read orange. There is now one set everywhere: common grey, uncommon green, rare blue, elite purple and gold gold, the same in the raid, on the HUD and in every menu.
+
+MEASURED. Check 25.04 passes, and fails on v25.03.
 ## v25.03 - THE TITLE FILLS THE SCREEN
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The Undercroft walking behind the title is smaller than the screen, so it showed as a lighter rectangle with dark bands round it, like a letterboxed screenshot. The title glass now softly blurs it and fades to black at every edge, so the menu sits on the whole screen.

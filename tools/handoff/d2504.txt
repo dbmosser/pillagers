@@ -1,0 +1,5 @@
+## v25.04 - RARITY: GREEN, BLUE, PURPLE, GOLD
+
+Co-op hunt while he was away. His answer 14: the rarity colours are green, blue, purple and gold. The game had two sets: a pale mint, sky blue and orchid for loot in the raid and on the belt, and a stronger green, blue and purple with an orange top tier in the menus, so the same item changed colour between the raid and the stash, and the best tier read orange. There is now one set everywhere: common grey, uncommon green, rare blue, elite purple and gold gold, the same in the raid, on the HUD and in every menu.
+
+MEASURED. Check 25.04 passes, and fails on v25.03.
