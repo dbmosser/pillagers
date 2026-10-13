@@ -1,0 +1,7 @@
+v25.83: no emotes, middle mouse pings
+
+The emote system is gone: V opens nothing, and middle mouse is the ping only.
+
+Check 25.83. Fails on v25.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
