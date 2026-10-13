@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.16 - PILLAGERS SAY NO WORDS
+
+Co-op hunt while he was away. His order of 2026-10-12: get rid of any spoken words from the pillagers, they do not sound good and kill the vibe. It reverses the pillager taunts of his answer 34 b; his newest word wins. A pillager no longer taunts when he spots you, when his round hits you, when you go down beside him or when he breaks off to extract, and the taunt mark over his head is gone with the words. The low swell that tells you a pillager has seen you stays, played where he stands, within the same reach and at most once in four seconds. Machine beeps, the crew call and the pillager clank are unchanged. The What is New line that announced the taunts now names only the redesigns.
+
+MEASURED. Check 25.16 passes, and fails on v25.15.
 ## v25.15 - THE FORGE: SHOCK ROUNDS CHAIN AND STUN
 
 Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. SHOCK is the second element. Every shock hit jumps to the nearest other enemy within about 16 metres with a clear line, for half the damage (armour soaks it as it soaks a round, a Bulwark shield does not), at most once every 0.2 seconds per shooter so an SMG does not chain every pellet. It never jumps to the Peddler, the Survivor, a pillager at peace or your hire. A machine hit by shock is stunned for half a second (a Warden or a Choir a quarter, the Overseer not at all), then cannot be stunned again for 2.5 seconds, so no gun can hold a machine down for good. No gun can be upgraded in play yet: the Forge station comes in a later build.

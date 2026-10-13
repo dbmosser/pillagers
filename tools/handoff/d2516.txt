@@ -1,0 +1,5 @@
+## v25.16 - PILLAGERS SAY NO WORDS
+
+Co-op hunt while he was away. His order of 2026-10-12: get rid of any spoken words from the pillagers, they do not sound good and kill the vibe. It reverses the pillager taunts of his answer 34 b; his newest word wins. A pillager no longer taunts when he spots you, when his round hits you, when you go down beside him or when he breaks off to extract, and the taunt mark over his head is gone with the words. The low swell that tells you a pillager has seen you stays, played where he stands, within the same reach and at most once in four seconds. Machine beeps, the crew call and the pillager clank are unchanged. The What is New line that announced the taunts now names only the redesigns.
+
+MEASURED. Check 25.16 passes, and fails on v25.15.

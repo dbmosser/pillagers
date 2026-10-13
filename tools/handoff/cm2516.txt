@@ -1,0 +1,7 @@
+v25.16: pillagers say no words
+
+Pillagers say no words: no taunts and no taunt marks, only the low seen swell when one spots you.
+
+Check 25.16. Fails on v25.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
