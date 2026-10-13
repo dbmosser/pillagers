@@ -2118,7 +2118,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.13';
+var VER='25.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16021,7 +16021,7 @@ var SH=G.shells[shI];
             G.tel.rounds=(G.tel.rounds||0)+1;
           }
         }
-        var ew={dmg:BE.wep.dmg,spread:BE.wep.spread,rng:BE.wep.rng,noise:0,tint:BE.wep.tint,_echo:1};
+        var ew={dmg:BE.wep.dmg,spread:BE.wep.spread,rng:BE.wep.rng,noise:0,tint:BE.wep.tint,_echo:1,el:BE.wep.el||''};   // v23.xx (forge3): the second and third rounds of a MK III burst carry the element
         fireWeapon(BE.sh,ew,BE.tx,BE.ty,BE.fromPlayer);
       }
     }
@@ -17297,6 +17297,7 @@ if(wep.mag===0){
     G.bullets.push({x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1),
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
+      el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
       thru:(wep.id==='lance')?1:0});   // v11.84, HIS NOTE: the Lance travels through crawlers
     if(NET.on) netFxShot(G.bullets[G.bullets.length-1]);   // v16.21: the rest of the party sees this round
   }
@@ -21914,6 +21915,54 @@ function chatNear(x,y){
   if(Math.hypot(x-p.x,y-p.y)<900) return true;
   try{ return !!canSee(p.x,p.y,p.face,x,y,G.vseg); }catch(_c){ return false; }
 }
+// v23.xx, THE FORGE (2026-10-12), forge3: FIRE. HIS IDEA: "a pack-a-punch mechanism to upgrade guns and add elemental damage would be
+// cool". A round from a MK III gun carries its element (b.el, the Burst Carbine echoes too) and elemHit applies it to the body it hit,
+// with d the damage the round really dealt after the weak point, the shield and the armour. FIRE: the body burns for 3 s at 4 + a
+// quarter of the hit a second (at most 18; armour does not stop fire), and the burn is the shooter's kill (elemCredit, the same
+// marks a round writes, so contracts, the kill feed and the scores pay as for a round). A pillager hit by fire panics for 1.2 s (once
+// in 5 s): he runs straight away from the shooter, fires nothing and does not roll, then fights on. Machines burn and keep fighting.
+// No status on a hire, a pillager who joined you, a body that is finished or dead. The timers run once a frame on the host or solo
+// (elemTick); a linked window runs no body. Plain arithmetic, no draw on any stream; the sim and the bot never fire a forged gun.
+function elemOk(e){ return !!(e&&!e.merc&&!e.friendlyPC&&!e.finished&&!e.gone&&e.hp>0); }
+function elemCredit(e,seat){
+  if(!e||e.hp>0) return;
+  if((seat|0)>0){ e.byPlayer=false; e.bySeat=seat|0; } else e.byPlayer=true;
+}
+function elemHit(e,el,d,seat,sx,sy){
+  if(!ELEM[el]||!elemOk(e)||!(d>0)) return false;
+  G.elemAny=1; seat=seat|0;
+  if(el==='fire'){
+    e.burnT=3.0; e.burnDps=Math.max(e.burnDps||0,Math.min(18,4+0.25*d)); e.burnBy=seat;
+    if(e.kind==='raider'&&!e.downed&&!(e.panicCd>0)){
+      e.panicT=1.2; e.panicCd=5; e.roll=0;
+      e.panicX=(typeof sx==='number'&&isFinite(sx))?sx:e.x; e.panicY=(typeof sy==='number'&&isFinite(sy))?sy:e.y;
+    }
+  }
+  return true;
+}
+function elemTick(dt){
+  var L=G.ents, i, e, t;
+  for(i=0;i<L.length;i++){
+    e=L[i];
+    if(e.panicCd>0){ e.panicCd-=dt; if(e.panicCd<0) e.panicCd=0; }
+    if(e.panicT>0){ e.panicT-=dt; if(e.panicT<0||e.downed||e.hp<=0) e.panicT=0; }
+    if(e.burnT>0){
+      t=Math.min(dt,e.burnT); e.burnT-=dt;
+      if(e.hp>0&&!e.finished&&!e.merc&&!e.friendlyPC){ e.hp-=(e.burnDps||0)*t; elemCredit(e,e.burnBy|0); }
+      if(e.burnT<=0){ e.burnT=0; e.burnDps=0; }
+    }
+  }
+}
+function elemHold(e,dt){
+  var dx, dy, d;
+  if(!(e.panicT>0)) return false;
+  if(e.kind!=='raider'||e.downed||e.hp<=0||e.merc||e.friendlyPC){ e.panicT=0; return false; }
+  dx=e.x-(isFinite(e.panicX)?e.panicX:e.x); dy=e.y-(isFinite(e.panicY)?e.panicY:e.y); d=Math.sqrt(dx*dx+dy*dy);
+  if(d<1){ dx=-Math.cos(e.face||0); dy=-Math.sin(e.face||0); d=1; }
+  moveToward(e,e.x+dx/d*200,e.y+dy/d*200,(e.spd||120)*1.1,dt);
+  e.face=Math.atan2(dy,dx); e.cd=Math.max(e.cd||0,0.3); e.roll=0;
+  return true;
+}
 function updateEnts(dt){
   try{ bossTick(); }catch(_bt){}   // v17.45: his pick 21, THE OVERSEER comes up two seconds in
   if(NET.on&&netEntsPeer()){ netEntsEase(dt); return; }   // v15.80: a linked window up top runs no pillager or machine of its own: the host does, and this slides each body to where the host put it
@@ -22004,6 +22053,7 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
   // stays at zero for the entire sim, which I found out by using it as a guard
   // and switching raider waves off in every sim raid ever run.
   G.frameN=(G.frameN||0)+1;
+  if(G.elemAny) elemTick(dt);   // v23.xx (forge3): THE FORGE, burns and the other element timers; never set in the sim
   for(var _kq=0;_kq<G.ents.length;_kq++){
     if(G.ents[_kq].kind==='raider') raiderUseKit(G.ents[_kq],dt);
   }
@@ -22331,6 +22381,7 @@ if(e.state==='possum'){
       if(e.cd>0) e.cd-=dt;
       continue;
     }
+    if(G.elemAny&&elemHold(e,dt)) continue;   // v23.xx (forge3): a panicking pillager runs and fires nothing
     // The Peddler runs no AI whatsoever. He holds his ground, turns to face you,
     // and hails you once when you are near enough to deal. Nothing else about
     // him ticks, which is exactly why he can never become a movement bug.
@@ -24092,7 +24143,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // system reads as decoration.
               if(!G.sim&&CFG.dmgNumbers!==0){
                 var _dn=Math.max(1,Math.round(edmg));
-                var _dc=WK?'#ff8a3c':(edmg>0&&_backShot?'#ffc04a':'#FFF6DC');
+                var _dc=WK?'#ff8a3c':((b.el&&ELEM[b.el])?ELEM[b.el].c:(edmg>0&&_backShot?'#ffc04a':'#FFF6DC'));   // v23.xx (forge3): an element round shows its colour; a weak point stays orange, the more important fact
                 dmgNum(en.x+fxn(-5,5),en.y-Math.round(en.r*1.1),_dn,_dc,hitKills(en,edmg));   // v8.35; v23.18: the kill style on player 2 too
                 if(NET.on) netFxDmg(en.x,en.y-Math.round(en.r*1.1),_dn,_dc,hitKills(en,edmg));   // v16.22: the party sees your numbers
               }
@@ -24160,6 +24211,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                 en.state='alarm'; en.lost=0; en.wind=rnd(3,4);
                 en.markX=p.x; en.markY=p.y; en.markSeat=0;   // v21.23 (R3): your round marks you
               }
+              if(b.el&&!(NET.on&&netEntsPeer())) elemHit(en,b.el,edmg,0,(b.owner||p).x,(b.owner||p).y);   // v23.xx (forge3): THE FORGE, the element of a MK III round
               if(!b._hitTold){ b._hitTold=1; G.tel.hits++; }   // v11.84: one hit per round, however many it passes through
               // Hit feedback at the reticle. The sprite flash and spark happen out
               // in the dark at range, so a landed shot could read as a miss.
@@ -39411,7 +39463,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.13: Kills in CAREER raids score points, with streaks, shown above the clock. Check 25.13 fails on v25.12',
+  now:'v25.14: Fire rounds from a MK III gun burn their target and make pillagers panic. Check 25.14 fails on v25.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

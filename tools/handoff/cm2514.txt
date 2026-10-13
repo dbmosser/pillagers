@@ -1,0 +1,7 @@
+v25.14: the forge: fire rounds burn
+
+Fire rounds from a MK III gun burn their target and make pillagers panic.
+
+Check 25.14. Fails on v25.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

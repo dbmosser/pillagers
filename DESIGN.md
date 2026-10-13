@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.14 - THE FORGE: FIRE ROUNDS BURN
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. FIRE is the first element. A round from a MK III fire gun (every round of a Burst Carbine burst too) sets what it hits burning for 3 seconds, about a quarter of the hit again each second (at most 18 a second; armour does not stop fire), and a body the burn finishes is your kill, with the contracts, the kill feed and the score as for a round. A pillager hit by fire panics: he runs straight away from you for about a second and fires nothing, then fights on (once every 5 seconds). Machines burn and keep fighting. The damage number of a fire round is fire coloured; a weak point stays orange. No gun can be upgraded in play yet: the Forge station comes in a later build.
+
+MEASURED. Check 25.14 passes, and fails on v25.13.
 ## v25.13 - CAREER RAIDS: THE KILL SCORE
 
 Co-op hunt while he was away. His mode design of 2026-10-12: in CAREER the high score is still an objective, and his rule that the scoring is exactly the same in DEMO and CAREER. A kill in a CAREER raid now scores as it does in the DEMO: the same points for each kind, the same streak multiplier and callouts, and the +$ popup where the body fell. Each player in a co-op raid scores his own kills. The score sits at the top of the screen with the 10 minute clock under it, as in the DEMO. The DEMO helping hands (ammo back and free bandages on kills) stay in the DEMO.
