@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.86 - DEMO RAIDS BUILD LIKE CAREER RAIDS
+
+Co-op hunt while he was away. His rule of 2026-10-12: gameplay is exactly the same in demo and career. The demo still zeroed the raid clock setting when it started (left over from the endless first demo), although the demo raid has its own 10 minute clock. That made the first weather change come earlier in a demo raid than in a career raid built from the same seed, and Settings showed no clock in a demo raid that had one. The demo no longer touches the setting, so a demo raid builds from the same dials as a career raid.
+
+MEASURED. Check 25.86 passes, and fails on v25.85.
 ## v25.85 - DEMO RUN OVER SHOWS THE BOARD FIRST
 
 Co-op hunt while he was away. His order of 2026-10-13: if you end a run in demo mode it should show the high score table before the next run starts. The run over card was followed by the next run on the very next press, so the board only appeared if you waited the card out. Now the run over card (score count-up, best moments, initials when the run makes the board) is always followed by the high score board with your run on it; a press on the card, or finishing the initials, shows the board, and a press on the board starts the next run. A short hold keeps a mashed button from skipping it. Waiting changes nothing.

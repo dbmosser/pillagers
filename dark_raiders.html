@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.85';
+var VER='25.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41136,7 +41136,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.85: A demo run now ends on the high score board before the next run can start. Check 25.85 fails on v25.84',
+  now:'v25.86: A demo raid now builds from the same settings as a career raid, so the weather comes at the same time. Check 25.86 fails on v25.85',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -49588,7 +49588,12 @@ function arcadeSandboxOut(){
 // waits the extractWait dial, 30 by default, so a DEMO ship arrived in half the time. His rule of 2026-10-12: gameplay is EXACTLY THE SAME
 // in DEMO and CAREER. The overlay no longer touches the call: a DEMO call waits the dial, as a CAREER call does (and a dial moved in
 // Settings applies to both). The raid clock dial stays as it was.
-var ARCADE_CFG={raidSec:0};
+// v25.xx (demounify), HIS RULE (2026-10-12): "GAMEPLAY ELEMENTS ... SHOULD BE EXACTLY THE SAME IN DEMO AND CAREER". The last dial the overlay
+// set was the raid clock (raidSec 0, from the endless first arcade). Since the 10 minute DEMO clock (ARCADE_RAID_SEC, set on the raid by
+// arcadePostBuild) nothing needs it, and it still made the DEMO different in two ways: the first weather change is drawn from the raid
+// clock dial at the build (wxAt: 85 to 120 s in a DEMO raid, 85 to 189 s in a CAREER raid), and Settings read NO CLOCK in a DEMO raid
+// that has one (and a raid length chosen there moved nothing). The overlay is empty now: a DEMO raid builds from the same dials a CAREER raid does.
+var ARCADE_CFG={};
 var ARCADE_GUNS1=['rifle','carbine','smg','shotgun','lmg'];
 var ARCADE_GUNS2=['magnum','dmr','shotgun','chatter','smg','carbine'];
 // The session overlay of the dials. The old values are kept in ARCADE.cfg0 (undefined for a dial that was not set), and

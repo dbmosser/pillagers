@@ -1,0 +1,7 @@
+v25.86: demo raids build like career raids
+
+A demo raid now builds from the same settings as a career raid, so the weather comes at the same time.
+
+Check 25.86. Fails on v25.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

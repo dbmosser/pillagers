@@ -1,0 +1,5 @@
+## v25.86 - DEMO RAIDS BUILD LIKE CAREER RAIDS
+
+Co-op hunt while he was away. His rule of 2026-10-12: gameplay is exactly the same in demo and career. The demo still zeroed the raid clock setting when it started (left over from the endless first demo), although the demo raid has its own 10 minute clock. That made the first weather change come earlier in a demo raid than in a career raid built from the same seed, and Settings showed no clock in a demo raid that had one. The demo no longer touches the setting, so a demo raid builds from the same dials as a career raid.
+
+MEASURED. Check 25.86 passes, and fails on v25.85.
