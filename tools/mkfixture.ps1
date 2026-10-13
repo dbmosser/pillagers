@@ -6061,6 +6061,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.45',what:'his #50 (UI redesign ui5q1g, from the AAA judge of the Settings shot): the settings list starts on the left edge of the tabs, every row label is drawn in caps at 17px or more, THE RAID head is at full strength, and a game option value shows stepper arrows',
+   run:function(){
+     if(typeof renderSettings!=='function'||typeof openModal!=='function') return 'SKIP: no settings here';
+     var bad=[], m=document.getElementById('settingsmodal'), was, tp, tb, b, s, hd, bt;
+     if(!m) return 'SKIP: no settings window';
+     was=m.classList.contains('on');
+     try{
+       __topClear(); openModal('settingsmodal'); renderSettings();
+       tp=document.getElementById('spane_display'); tb=document.getElementById('settabs');
+       if(tp&&tb&&tp.getClientRects().length&&Math.abs(tp.getBoundingClientRect().left-tb.getBoundingClientRect().left)>6) bad.push('the settings list starts '+Math.round(tp.getBoundingClientRect().left-tb.getBoundingClientRect().left)+'px right of the tabs');
+       b=document.querySelector('#setlist .row button[id^="go_"]');
+       b=b&&b.parentNode.querySelector('div > b');
+       if(!b) bad.push('no game option row label found');
+       else { s=getComputedStyle(b); if(s.textTransform!=='uppercase') bad.push('the row labels are not drawn in caps'); if(!(parseFloat(s.fontSize)>=17)) bad.push('a row label is '+s.fontSize); }
+       hd=document.querySelector('#setlist .row[style*="opacity:.7"]');
+       if(hd&&parseFloat(getComputedStyle(hd).opacity)<0.99) bad.push('THE RAID head is faded to '+getComputedStyle(hd).opacity);
+       bt=document.querySelector('#setlist .row button[id^="go_"]');
+       if(bt&&getComputedStyle(bt,'::after').content.indexOf('\u203a')<0) bad.push('a game option value has no stepper arrow');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} if(was) try{ openModal('settingsmodal'); }catch(_o){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.44',what:'his #50 (UI redesign ui5q1c, from the AAA judge of the title shot with a pick stopped on the blocked window note): the picked row carries the amber rail, 1 PLAYER is no longer the amber fill while the pick waits, the note is an alert card at 15px or more, RETRY is the amber primary, and clearing the note clears the marks',
    run:function(){
      if(typeof netModeMsg!=='function'||typeof NET!=='object') return 'SKIP: no mode menu here';

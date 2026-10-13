@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.45 - SETTINGS READS AS ONE LAYOUT
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Settings found the list centred under a title and tabs on the left, so the page read as two layouts with a wide empty strip, the row names mixed small letters (Edit the words) with capitals (LIGHTING), THE RAID heading was faint, and the values were plain boxes with nothing to say they step through options. The list now starts on the left under the tabs, every row name is drawn in the same capitals (the words themselves are unchanged), the section headings are bright with an amber mark, and each value that steps through options shows arrows either side of it.
+
+MEASURED. Check 24.45 passes, and fails on v24.44.
 ## v24.44 - THE PICK SHOWS ON THE TITLE
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the title after 2 PLAYER CO-OP was picked and the browser blocked the second window found that 1 PLAYER still looked like the choice, so the screen did not say what had been picked, and the blocked note was a line of small red words with a small RETRY, like a stray error. Now the picked row carries the amber edge and a warm fill, 1 PLAYER steps back to an outline while the pick waits, the note is a proper alert box with a red edge in bigger type, and RETRY is the big amber button. No word changed.

@@ -1,0 +1,7 @@
+v24.45: settings reads as one layout
+
+Settings lines up on the left, every row name is in the same capitals, and the values show stepper arrows.
+
+Check 24.45. Fails on v24.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
