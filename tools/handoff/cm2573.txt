@@ -1,0 +1,7 @@
+v25.73: no spoken announcer, game sounds instead
+
+The announcer voice is gone: waves, kill streaks, high scores, extraction and the last minutes now have game sounds instead.
+
+Check 25.73. Fails on v25.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
