@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.95';
+var VER='25.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32243,6 +32243,14 @@ function drawBuzzFx(){
   // the Undercroft needs the same one. Answer 22: the hotbar is visible down
   // there, and answer 11: he can move things to and from it while the backpack
   // is open, which needs somewhere to drop them.
+  // v25.xx (belt6a), HIS ORDER 2026-10-13: THE BELT DRAWS ITS FOUR GROUPS. beltGroupOf is the group a key is in (0 guns, 1 throwables, 2 medical,
+  // 3 armour); beltClassGlyph is the dim picture a key with nothing on it shows (a grenade, a cross, a plate).
+  function beltGroupOf(i){ return (i<GUNKEYS)?0:({throw:1,med:2,plate:3}[BELT_CLASS[i]]||0); }
+  function beltClassGlyph(cls,cx,cy,bw){
+    if(cls==='throw'){ ctx.beginPath(); ctx.arc(cx,cy,bw*0.17,0,6.2832); ctx.fill(); ctx.fillRect(cx-bw*0.03,cy-bw*0.28,bw*0.06,bw*0.10); }
+    else if(cls==='med'){ ctx.fillRect(cx-bw*0.06,cy-bw*0.18,bw*0.12,bw*0.36); ctx.fillRect(cx-bw*0.18,cy-bw*0.06,bw*0.36,bw*0.12); }
+    else if(cls==='plate'){ ctx.beginPath(); ctx.moveTo(cx-bw*0.17,cy-bw*0.2); ctx.lineTo(cx+bw*0.17,cy-bw*0.2); ctx.lineTo(cx+bw*0.17,cy+bw*0.04); ctx.lineTo(cx,cy+bw*0.22); ctx.lineTo(cx-bw*0.17,cy+bw*0.04); ctx.closePath(); ctx.fill(); }
+  }
   function drawBelt(){
     var sl=hotbarSlots(),sel=hotSel();
     // v8.08, his order: bigger. LH(46) to LH(58), and hy moves up by the same
@@ -32252,21 +32260,24 @@ function drawBuzzFx(){
     // their inner edges are the box constants times their own zoom. Cells stay
     // square and everything inside one is already drawn as a fraction of bw, so
     // the icons grow with the cell.
-    var gap=LH(6);
+    var gap=LH(6), gapG=LH(18);   // v25.xx (belt6a): LH(6) inside a group, LH(18) between groups
     var _hz=hudRes();
     // v16.28, his note: the HP bar ran under the belt. These edges ignored the size and place he gave each block, so a vitals block
     // made bigger or moved right went under the slots. They now read both (hudUserZ, hudOff), and the slots shrink to fit.
     var _bR=390*(HUDZ.body||1)*_hz*hudUserZ('body')+Math.max(0,hudOff('body').dx);        // vitals block, inner edge
     var _gL=W-252*(HUDZ.gear||1)*_hz*hudUserZ('gear')+Math.min(0,hudOff('gear').dx);      // gear stack, inner edge
     var _room=(_gL-LH(14))-(_bR+LH(14));
-    var bw=Math.floor((_room-(sl.length-1)*gap)/sl.length);
+    var _gt=0, _gq;
+    for(_gq=1;_gq<sl.length;_gq++) _gt+=(beltGroupOf(_gq)!==beltGroupOf(_gq-1))?gapG:gap;
+    var bw=Math.floor((_room-_gt)/sl.length);
     bw=Math.max(20,Math.min(bw,LH(112)));   // v16.28: the slots fit the room between the blocks, smaller if they must be, never over the vitals or the gear
-    var tw2=sl.length*bw+(sl.length-1)*gap;
+    var tw2=sl.length*bw+_gt;
     // Centred in the room, not on the screen. Screen-centred cannot grow here:
     // the left neighbour reaches further in than the right one, so the tighter
     // side would cap this below the size it already was.
     var _rL=_bR+LH(14);
-    var hx=Math.round(_rL+(_room-tw2)/2),hy=H-bw-LH(13);
+    var _lbF=beltFS(bw,0.115), _lbP=parseFloat(((/([\d.]+)px/).exec(String(_lbF))||[0,10])[1])||10, _lbH=Math.round(_lbP*1.5)+LH(3);   // v25.xx (belt6a): the group label strip under the keys
+    var hx=Math.round(_rL+(_room-tw2)/2),hy=H-bw-LH(13)-_lbH;
     if(hx<_rL) hx=Math.round(_rL);
     // v21.42, from the whole-game bug hunt of 2026-10-08 (W-A2): THE UNDERCROFT BELT IS CENTRED ON THE SCREEN. It was centred in the
     // room a raid leaves between the health block on the left and the gear stack on the right, and the health block is the wider of
@@ -32278,9 +32289,17 @@ function drawBuzzFx(){
     // mouse code. Two copies of this arithmetic would drift the first time the
     // slot count or the scale changed, and the drop target would stop matching
     // the thing on screen.
+    var _gx=[0], _gp, _pp=LH(4), _gg, _gf, _gl, _gq2;   // v25.xx (belt6a): each key's offset from the left edge, and one graphite plate behind each group
+    for(_gp=1;_gp<sl.length;_gp++) _gx.push(_gx[_gp-1]+((beltGroupOf(_gp)!==beltGroupOf(_gp-1))?gapG:gap));
+    for(_gg=0;_gg<4;_gg++){
+      _gf=-1; _gl=-1;
+      for(_gq2=0;_gq2<sl.length;_gq2++) if(beltGroupOf(_gq2)===_gg){ if(_gf<0) _gf=_gq2; _gl=_gq2; }
+      if(_gf<0) continue;
+      hudPlate(hx+_gf*bw+_gx[_gf]-_pp,hy-_pp,(_gl-_gf)*bw+(_gx[_gl]-_gx[_gf])+bw+_pp*2,bw+_lbH+_pp*2,null,HUDC.plate);
+    }
     G.hotCells=[];
     for(var q=0;q<sl.length;q++){
-      var S=sl[q],bx=hx+q*(bw+gap),on=q===sel;
+      var S=sl[q],bx=hx+q*bw+_gx[q],on=q===sel;
       G.hotCells.push({x:bx,y:hy,w:bw,h:bw,i:q});
       var empty=(S.count===0);
       // v24.xx (beltgrey), HIS ORDER (2026-10-12): "guns on quickbar/belot should grey out only half way if they are out of magazine
@@ -32336,6 +32355,7 @@ function drawBuzzFx(){
       } else if(S.kind==='heal'){
         ctx.fillRect(cx2-bw*0.06,cy2-bw*0.18,bw*0.12,bw*0.36);
         ctx.fillRect(cx2-bw*0.18,cy2-bw*0.06,bw*0.36,bw*0.12);
+      } else if(S.kind==='empty'&&S.cls){ ctx.fillStyle='#9aa7b3'; beltClassGlyph(S.cls,cx2,cy2,bw);   // v25.xx (belt6a): the dim picture of what the key is for
       } else if(S.kind!=='empty'){   // v19.01, seen on the 4K screenshots (2026-10-07): an empty key drew this fallback T and a 0, like a broken item; it is just the key now
         ctx.fillRect(cx2-bw*0.05,cy2-bw*0.20,bw*0.10,bw*0.34);
         ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
@@ -32355,6 +32375,20 @@ function drawBuzzFx(){
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
       }
     }
+    // v25.xx (belt6a), HIS ORDER 2026-10-13: a small caps label under each group, amber while the highlight is in that group.
+    (function(){
+      var NM=['GUNS','THROW','MEDICAL','ARMOUR'], g0, f, l, qq, cxl, sg=beltGroupOf(sel);
+      ctx.font=_lbF; ctx.textAlign='center';
+      for(g0=0;g0<4;g0++){
+        f=-1; l=-1;
+        for(qq=0;qq<sl.length;qq++) if(beltGroupOf(qq)===g0){ if(f<0) f=qq; l=qq; }
+        if(f<0) continue;
+        cxl=hx+(f*bw+_gx[f]+l*bw+_gx[l]+bw)/2;
+        ctx.fillStyle=(g0===sg)?UIC.acc:HUDC.dim;
+        ctx.fillText(NM[g0],cxl,hy+bw+_lbP+LH(1));
+      }
+      ctx.textAlign='left';
+    })();
     // v13.08, HIS NOTE: not in the Undercroft. The belt strip is drawn on the floor
     // as well as in a raid, and this caption offers two actions that do not exist
     // down there: there is nothing to fire at and nobody to signal. It stays in a
@@ -41263,7 +41297,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.95: A tap of H now uses the cheapest heal on the two medical keys, and says NO HEAL ON BELT when only the backpack has one. Check 25.95 fails on v25.94',
+  now:'v25.96: The belt now has four labelled groups: GUNS, THROW, MEDICAL and ARMOUR, with the lit group in amber. Check 25.96 fails on v25.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

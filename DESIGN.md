@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.96 - THE BELT IN FOUR GROUPS WITH LABELS
+
+Co-op hunt while he was away. His order of 2026-10-13: redo the bar at the bottom. Build 6a of 8, the look. The nine keys now sit in four groups, GUNS (1 to 4), THROW (5 and 6), MEDICAL (7 and 8) and ARMOUR (9), with a wider gap between groups than inside one, one graphite plate behind each group, and a small caps label under each group, amber for the group the highlight is in and dim for the others. A key with nothing on it shows a dim picture of what it is for (a grenade, a cross, a plate). The belt rises by the height of the label strip so nothing above it overlaps. Drawing only.
+
+MEASURED. Check 25.96 passes, and fails on v25.95.
 ## v25.95 - TAP H USES THE CHEAPEST HEAL ON THE BELT
 
 Co-op hunt while he was away. His decision of 2026-10-13: tap H uses the cheapest heal that helps. The tap used to reach into the whole backpack for the cheapest heal. It now uses the cheapest heal that can still raise him from the two medical keys (7 and 8) only: a Bandage while it still helps, a Medkit past the Bandage ceiling. It never reaches into the backpack and never uses a Stim. When only a heal in the backpack would help it says NO HEAL ON BELT with the key that opens the backpack under it and spends nothing; with no heal at all it says NO MEDICAL SUPPLIES. Holding H still slots an armour plate.

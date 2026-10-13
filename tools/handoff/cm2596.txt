@@ -1,0 +1,7 @@
+v25.96: the belt in four groups with labels
+
+The belt now has four labelled groups: GUNS, THROW, MEDICAL and ARMOUR, with the lit group in amber.
+
+Check 25.96. Fails on v25.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

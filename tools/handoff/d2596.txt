@@ -1,0 +1,5 @@
+## v25.96 - THE BELT IN FOUR GROUPS WITH LABELS
+
+Co-op hunt while he was away. His order of 2026-10-13: redo the bar at the bottom. Build 6a of 8, the look. The nine keys now sit in four groups, GUNS (1 to 4), THROW (5 and 6), MEDICAL (7 and 8) and ARMOUR (9), with a wider gap between groups than inside one, one graphite plate behind each group, and a small caps label under each group, amber for the group the highlight is in and dim for the others. A key with nothing on it shows a dim picture of what it is for (a grenade, a cross, a plate). The belt rises by the height of the label strip so nothing above it overlaps. Drawing only.
+
+MEASURED. Check 25.96 passes, and fails on v25.95.
