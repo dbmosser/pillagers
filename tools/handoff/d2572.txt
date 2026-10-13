@@ -1,0 +1,5 @@
+## v25.72 - A SEARCH ALWAYS OPENS ON THE RUMMAGE
+
+Co-op hunt while he was away. A fix to the varied search sound of v25.68. Its hit counters carried over from one search to the next, so a new search could open on a heavy dig left due by the one before, or lose its opening rummage to the rule that no clip plays twice in a row when the last search had ended on it. It showed as a gate check failing on a later build. The opening hit now resets the counters, so every search opens on the rummage itself and the rest of the rhythm is as it was. Sound only.
+
+MEASURED. Check 25.72 passes, and fails on v25.71.

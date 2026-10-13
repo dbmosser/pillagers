@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.72 - A SEARCH ALWAYS OPENS ON THE RUMMAGE
+
+Co-op hunt while he was away. A fix to the varied search sound of v25.68. Its hit counters carried over from one search to the next, so a new search could open on a heavy dig left due by the one before, or lose its opening rummage to the rule that no clip plays twice in a row when the last search had ended on it. It showed as a gate check failing on a later build. The opening hit now resets the counters, so every search opens on the rummage itself and the rest of the rhythm is as it was. Sound only.
+
+MEASURED. Check 25.72 passes, and fails on v25.71.
 ## v25.71 - REBIND KEYS: SETTINGS, CHANGE KEYS
 
 Co-op hunt while he was away. His order of 2026-10-13: put something in Settings where the player can remap keys. The Keys window (Settings, CHANGE KEYS) already took a click and a key press and swapped two actions that met; this finishes it. Every action now has its key and a REBIND control: click either, the key reads PRESS A KEY and the next press binds, ESC cancels. The actions sit in sections (MOVE, FIGHT, WORLD, PARTY) and the new keys are on the list, Q the crowbar and F the next gun among them. When a key is already used by another action the note under the title shows the clash and who moved where, and the two swap. ESC, TAB and P (pause), BACKSPACE, the key left of 1, 1 to 9, F9 and F11 keep their own jobs and cannot be rebound; P is off the list. The two side mouse buttons can be bound too, and an unbound side button keeps the browser back and forward. RESET TO DEFAULTS puts everything back. The map is kept in the profile and the key translation is rebuilt when a profile loads (it was left as it was), a map saved before the key swap starts again on the defaults once, and the full controls list, the Undercroft list and the controls hints now print the keys as set instead of the defaults. The controller layout never changes.

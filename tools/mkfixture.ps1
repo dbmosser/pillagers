@@ -6081,6 +6081,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.72',what:'a search always opens on the rummage itself, whatever the last search left behind: a dig due on the next hit, or a last clip of rummage, still opens on the rummage',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof foley!=='function'||typeof searchFoley!=='function') return 'SKIP: no raid or foley here';
+     if(typeof SRCHFX!=='object') return 'SKIP: this build has no varied search sound';
+     var bad=[], rec=[], kFoley=foley, kSim=null, g=null, i, s, tys=['locker','body','crate'], ct, st;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+       if(!g||g.over) return 'SKIP: no live raid';
+       kSim=g.sim; g.sim=false;
+       foley=function(r,x,y,o){ rec.push(r); return false; };
+       for(s=0;s<6;s++){
+         for(i=0;i<tys.length;i++){
+           ct={type:tys[i]};
+           SRCHFX.dig=3+(s%3); SRCHFX.n=(s%2)?(SRCHFX.dig-1):0; SRCHFX.last=(s<3)?'rummage':'equip'; SRCHFX.hit=(s%2)?2:1; SRCHFX.t=0;
+           rec.length=0; searchFoley(ct,'rummage');
+           if(rec.length!==1||rec[0]!=='rummage') bad.push(tys[i]+' search '+s+' opens on '+(rec[0]||'nothing')+', not the rummage');
+         }
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ foley=kFoley; }catch(_f){}
+       try{ if(g&&kSim!==null) g.sim=kSim; SRCHFX.t=0; SRCHFX.last=''; SRCHFX.n=0; SRCHFX.hit=0; SRCHFX.dig=4; }catch(_s){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.slice(0,5).join('; '):null; }},
   {v:'25.71',what:'his remap screen: every action has a REBIND control (Q and F among them, not P), rebinding SEARCH to F makes F search and E not, the prompt reads F, the clash with the action on F is shown and swapped, ESC cancels and a reserved key (P, ESC) is refused, a side mouse button binds, the binding survives a profile save and load, and RESET TO DEFAULTS puts E back',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__P||!window.__applyLoaded||typeof keysBind!=='function'||typeof keysOpen!=='function'||typeof updatePlayer!=='function') return 'SKIP: this fixture cannot stage the remap screen';

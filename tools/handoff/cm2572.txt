@@ -1,0 +1,7 @@
+v25.72: a search always opens on the rummage
+
+Every box search now opens on the hands-in-the-box rummage.
+
+Check 25.72. Fails on v25.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
