@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raid Messages</title>
+<style>
+:root{
+  --bg:#141619; --panel:#1c1f23; --panel2:#22262b; --line:#2e333a;
+  --tx:#dde1e6; --dim:#8a96a1; --faint:#5d6670;
+  --amber:#ffc04a; --red:#ff6b5a; --teal:#4de3d0; --green:#7fc4a0; --blue:#8fc4ff; --lilac:#d6a8ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx)}
+body{font:14px/1.4 "Barlow","Barlow Condensed","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;padding:0 16px 60px;overflow-x:hidden}
+.wrap{max-width:1840px;margin:0 auto}
+h1{font-size:26px;letter-spacing:.06em;text-transform:uppercase;margin:22px 0 2px;color:var(--amber)}
+.sub{color:var(--dim);margin:0 0 14px}
+h2{font-size:17px;letter-spacing:.06em;text-transform:uppercase;margin:0;color:var(--tx)}
+h2 .zn{display:inline-block;min-width:34px;padding:1px 7px;margin-right:8px;border-radius:4px;background:var(--amber);color:#141619;text-align:center}
+h2 .ct{color:var(--dim);font-weight:400;letter-spacing:0;text-transform:none;font-size:13px;margin-left:8px}
+.where{color:var(--dim);margin:3px 0 8px;font-size:13px}
+.map{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:6px;margin:6px 0 8px}
+.mapcap{color:var(--dim);font-size:13px;margin:0 0 16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin:8px 0 18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:6px 8px;text-decoration:none;color:var(--tx);font-size:12.5px;line-height:1.25}
+.card b{color:var(--amber);margin-right:4px}
+.card .n{float:right;color:var(--tx);font-weight:700}
+.card .g{display:block;color:var(--red);font-size:11.5px}
+.totals{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 6px}
+.tot{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:8px 12px}
+.tot .v{font-size:22px;font-weight:800;color:var(--amber);display:block;line-height:1}
+.tot .l{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em}
+.legend{color:var(--dim);font-size:13px;margin:4px 0 14px}
+.tag{display:inline-block;padding:0 6px;border-radius:3px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.t-go{background:#5a1f1a;color:#ffb3a8}
+.t-part{background:#4d3216;color:#ffd08a}
+.t-noise{background:#203a4d;color:#a9d6ff}
+.t-done{background:#1d4031;color:#a7e6c4}
+.t-gone{background:#33363b;color:#c3c9cf}
+.t-order{background:#3d2a4d;color:#e2c2ff}
+section{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 12px 6px;margin:0 0 14px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);font-weight:600}
+td{padding:6px 6px;border-bottom:1px solid #262a30;vertical-align:top;overflow-wrap:anywhere;word-break:normal}
+tr:last-child td{border-bottom:0}
+tr.cgo td{background:rgba(255,90,74,.06)}
+tr.cgone td{opacity:.62}
+td.msg{color:#f4f1e8;font-weight:600}
+td.msg .site{display:block;color:var(--faint);font-weight:400;font-size:11.5px;margin-top:2px}
+td.sm{font-size:13px;color:#c3c9cf}
+td.ch{font-size:13px}
+td.ch .tag{margin-bottom:3px}
+col.c1{width:29%} col.c2{width:21%} col.c3{width:9%} col.c4{width:15%} col.c5{width:10%} col.c6{width:16%}
+.note{color:var(--dim);font-size:13px;margin:0 0 8px}
+.foot{color:var(--dim);font-size:13px;margin-top:18px}
+.foot li{margin:3px 0}
+@media (max-width:820px){
+  table,thead,tbody,tr,td{display:block;width:100%}
+  thead{display:none}
+  colgroup{display:none}
+  tr{border-bottom:1px solid var(--line);padding:6px 0}
+  td{border:0;padding:2px 0}
+  td[data-h]:not(.msg)::before{content:attr(data-h) ": ";color:var(--faint);font-size:11.5px;text-transform:uppercase}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Pillagers: every raid message and where it shows</h1>
+<p class="sub">Read-only list from the code at HEAD v24.90, 2026-10-12. It covers DEMO and CAREER, from the drop until the KIA, EXTRACTED or RUN OVER card closes. Placeholders: {N} number, ${N} money, {NAME} name, {ITEM} item, {L} ring letter, {DIR} direction. Within each zone, the most common messages come first.</p>
+
+<img class="map" src="screen-map.png" alt="Screen map: a real 1920x1080 CAREER raid frame with the 25 message zones outlined and numbered, and a legend strip below">
+<p class="mapcap">Screen map: <b>screen-map.png</b> in this folder, a real 1920x1080 CAREER frame (seed 4242, v24.89). A solid outline means the zone is showing in this frame. A dashed outline marks where the zone appears when it is up. Zone 6 marks each centre banner's row height. The demo items in the frame are staged, for example the feed row's teammate ping. On the right edge, from 46% to 60% down, three things can overlap: the ring badge (11), the gun card (15) and, in co-op, the kill feed (14). The unmarked frame is <b>screen-map-raw.png</b>.</p>
+
+<div class="totals" id="totals"></div>
+<p class="legend">CHANGING tags: <span class="tag t-go">goes</span> the whole message is being removed by a queued build &nbsp; <span class="tag t-part">part goes</span> part of it is being cut &nbsp; <span class="tag t-noise">voice to noise</span> the spoken clip becomes a noise and the text stays &nbsp; <span class="tag t-done">shipped</span> the change is already in &nbsp; <span class="tag t-gone">gone v24.90</span> no longer reached since v24.90 (a DEMO extraction now ends the run) &nbsp; <span class="tag t-order">your order</span> one of tonight's orders covers it (not shipped yet). Nothing in the queue had shipped by v24.90 except the Overseer rename (v24.85).</p>
+<div class="cards" id="cards"></div>
+
+<div id="zones"></div>
+
+<div class="foot">
+<b style="color:var(--tx)">Notes</b>
+<ul>
+<li>Line numbers came from builds v24.79 to v24.89. At v24.90 they can sit up to about 50 lines later. For example, SIEGE INCOMING is now line 19217.</li>
+<li>Merged repeats from the raw finder list: SHIELD · MOVE TO START (listed 3 times), the initials card (3), the gun card (4), DROPPING IN, EXTRACTED!, the controls card, WAVE, the streak names, NEW HIGH SCORE, THIRTY SECONDS, PLAYER n EXTRACTED, the ring badges, the offer line, HOLD [E] TO CALL FOR EXTRACTION, the waypoint, ping, kill feed and story entries, the map header and labels, the legend, the FEEDBACK lines, the ERROR line, ? / !, {NAME} IS BACK UP and DROPPED {ITEM}.</li>
+<li>Some text shows in two places on purpose and is listed in both zones: CACHE MARKED (feed and over the Survivor), SEAL BROKEN (feed, over the seal and on the slab), and [E] REVIVE (a pillager or a teammate).</li>
+<li>Player 2: in a same-PC 2-player game, each window draws its own HUD. "Host only" means the event runs on player 1's window (the AI host) and is not sent to player 2.</li>
+</ul>
+</div>
+</div>
+
+<script>
+var ZONES=[
+ ["1","Clock / score block","Top centre, first line. The baseline is about 30 px down at 1080p. In CAREER this is the raid clock; in DEMO the score block takes its place."],
+ ["2","Compass","Top centre, the line under the clock, with a rotating arrow under the label."],
+ ["3","Alert lane","Top centre at y 96 (LH 96), up to 600 px wide. It shows one alert at a time on a plate with a glyph. crit alerts last 4.5 s; warn and ext alerts last 3.5 s and hold the slot for at least 2 s. An alert that waits more than 2.5 s drops to the feed (4). The location tag uses the same slot with no plate."],
+ ["4","Feed rows","Top centre, 2 rows under the alert lane. Row kinds are obj, ally, info, chat and sys. Each row lasts 3.2 s and reads 'HEADLINE  ·  detail'. The rows are drawn over the map too. In the solo pause they go to the answer line (24)."],
+ ["5","Boss bar, offer line, controller paused","Top centre, under the feed rows: the boss bar, then the co-op offer line (about LH 132), then CONTROLLER PAUSED (at least LH 120)."],
+ ["6","Centre banners","Screen centre. Rows by height: notoriety at 26% of H, EXTRACTED! at 30%, DROPPING IN at 36%, HOLD [E] TO EXTRACT at H/2-124, 3-2-1 GO! and YOU DIED at 42%, the DOWN stack from H/2 down, initials at 56%."],
+ ["7","Reticle","At the mouse cursor (or the pad aim point)."],
+ ["8","Over enemies","World-anchored over each enemy sprite (nameplate at spriteTop+8, the ? and ! marks above it, labels 16 to 20 px over the body). These are kept on screen at the top edge."],
+ ["9","World labels","World-anchored over containers, doors, the seal and you. Labels stack upward one plate high, rise about 26 px a second and fade."],
+ ["10","Interaction prompt","26 px above the object (the seal prompt is 66 px above you), on a plate with an amber keycap. Moved by hudDodge so prompts do not overlap."],
+ ["11","Extraction ring badges","Over each ring at radius+18, clamped to the screen edge and hidden under the open backpack."],
+ ["12","Credits / XP","Top right corner, DOM #topright."],
+ ["13","CONDITIONS panel","Top right, under the credits. CAREER only. It can be dragged, resized and collapsed."],
+ ["14","Co-op kill feed","Right edge from 46% down (or above or below CONDITIONS). 2P and co-op only."],
+ ["15","Gun card on pickup","Right edge (W-8), with its bottom at 60% of H. Hidden while the backpack or map is open."],
+ ["16","Pickup stack","Right edge at W-8, growing upward from just above the gear panel, never above 62% down. Up to 4 rows, newest at the bottom."],
+ ["17","Gear corner","Bottom right, right-aligned at W-16."],
+ ["18","Belt area","Bottom centre: the slots, the caption above them, then use bars and the extraction rows above that."],
+ ["19","Body corner","Bottom left: the status line, armour, HP and stamina."],
+ ["20","Controls legend / DEMO controls card","The legend sits bottom left above the body corner (the full list is centred above the belt). The DEMO card sits at the left edge, centred vertically."],
+ ["21","CURRENT PILLAGERS board","Top left, CAREER only. Draggable, collapsible, at most 38% of the height."],
+ ["22","Left column","Left edge: teammate rows from 30% down, status icons from 40% down (a second column if they do not fit)."],
+ ["23","Lore card","Left of centre, just above the belt."],
+ ["24","Answer line #hubtoast","Bottom centre, 38 px up, DOM, z 200. Used only while the solo pause box or a menu is open."],
+ ["25","Screen-edge band","Arrows and labels clamped to the screen edge: noise chevrons, teammate arrows, waypoints and pings."],
+ ["F1","Map overlay (M)","Full screen. The alert lane and feed rows draw over it."],
+ ["F2","KIA / EXTRACTED / ABANDONED card","CAREER. Full screen: a backdrop at rgba(17,19,21,.92), z 40, with a centred window up to 880 px wide and 86vh tall."],
+ ["F3","DEMO RUN OVER","A full-width band 24% from the top, on the attract overlay (DOM #attract .arcover)."],
+ ["F4","Pause box","Not on the map. Full-screen dim (z 35) with a centred column up to 780 px wide, opened with P, ESC or TAB in a raid."],
+ ["F5","Backpack panel","Not on the map. A centred canvas panel up to 66% of W wide, ending just above the belt (B or I)."],
+ ["F6","Peddler deal panel","Not on the map. A centred canvas panel (340x238 LH) while trading."],
+ ["S","Sound only","No place on screen. Spoken clips and stingers. Played centred or at the source; with SPLIT SPEAKERS on, player 1's window is hard left and player 2's is hard right."],
+ ["X","Not on screen, dead or missing","Things the code never shows, and gaps."]
+];
+// [zone, text, when, lasts, style, p2, ctype, ctext, site]
+var R=[
+["1","{M}:{SS}","Every frame of a CAREER raid. With no time limit it counts up instead.","Whole raid","Grey title size, outlined. Red in the last 60 s, where it pops each second.","Each window, own clock","","","drawHUD 31447"],
+["1","SCORE (1P) / TEAM SCORE (2P), then ${N}","Every frame of a DEMO raid, in the clock's place","Whole raid","Amber micro label over a white title-size number","Same team total in both windows","","","arcadeScoreHud 48412"],
+["1","{M}:{SS} (DEMO clock)","DEMO, under the score number (10 min raid)","Whole raid","Grey micro. In the last 60 s, a red head size that pops","Both","","","arcadeScoreHud 48422"],
+["1","x{N}","DEMO, left of the score while the kill-streak multiplier is above 1","While the streak lasts","Amber title size","Each own","","","arcadeScoreHud 48431"],
+["1","YOU ${N} / P2 ${N} (player 2's window: P1)","2P DEMO, right of the score, two lines","Whole raid","Grey micro","Each its own split","","","arcadeScoreHud 48427"],
+
+["2","EXTRACT {N}m / EXTRACTION {N}m / WAYPOINT {N}m + arrow","Always. EXTRACTION once a ring is called, WAYPOINT if one is set, otherwise the nearest open ring","Whole raid","Teal label size (amber for WAYPOINT). In DEMO the arrow is double size","Each own target","","","drawHUD 31479"],
+
+["3","{PLACE NAME} (e.g. RECEIVING APRON)","You walk into a named landmark, zone or district","2.5 s; once per name per 20 s","Dim #aaa498 letter-spaced caps, no plate","Each window","","","loop 38698-38724 > locSay 16125"],
+["3","THIRTY SECONDS / {extraction hint}","The raid clock passes 0:30","3.5 s","Red caps on a dark red plate, clock glyph","Each window","","","tickClockWarn 36874"],
+["3","TEN SECONDS / {extraction hint}","The raid clock passes 0:10 (replaces THIRTY SECONDS)","4.5 s","Red caps, crit","Each window","","","tickClockWarn 36883"],
+["3","EXTRACTION CALLED / Inbound {m:ss}[ · Clock runs out first]","You hold E in a ring and the call goes out","3.5 s","Teal caps, ring glyph","Caller's window","","","tryExtractTick 19164"],
+["3","SIEGE INCOMING / About {N} machine(s) inbound","Right after EXTRACTION CALLED (it waits up to 2.5 s)","3.5 s","Red caps, dark red plate","Caller's window","part","The detail line goes, leaving SIEGE INCOMING alone. Not shipped: line 19217 still has it at v24.90","tryExtractTick 19217"],
+["3","EXTRACTION CALLED / {NAME} · EXTRACT {L}","Your teammate called extraction","3.5 s","Teal caps","The other window","","","netBeaconTake 46028"],
+["3","EXTRACT IN PROGRESS! / Hold [E] to extract.","The ship has landed at the active ring","3.5 s","Teal caps","Each window","","","tickExtractPoints 19665"],
+["3","EXTRACTION MISSED / Hold [E] to call again | No time to call again","The boarding window ran out without you","3.5 s","Amber caps, ring glyph","Own","","","tickExtractPoints 19695"],
+["3","EXTRACTION {L} CLOSING / Closes in {m:ss}","A ring's close time is near","3.5 s","Amber caps","Own","","","tickExtractPoints 19742"],
+["3","EXTRACTION {L} CLOSED","A ring closes for the rest of the raid","3.5 s","Amber caps","Own","","","tickExtractPoints 19747"],
+["3","Knocked down. Extraction progress bar reset. Hold [E] to try again.","You are knocked down while holding to extract","3.5 s","Amber, a full sentence on 2 lines (your v16.19 words)","Own","","","tryExtractTick 19002"],
+["3","A CRIER IS REVEALING YOUR LOCATION","A Crier starts its alarm on you","3.5 s","Red caps","Marked player's window","","","updateEnts 22658; netMarkTake 46554"],
+["3","CRIER REVEALED YOUR LOCATION | CRIER REVEALED YOUR LAST LOCATION","The Crier mark lands (the second wording when it could not see you)","While marked, up to 8 s","Red caps","Marked player's window","","","updateEnts 22703; netMarkTake 46561"],
+["3","SPOTTED BY THE OVERSEER (was SPOTTED BY SOMETHING HUGE)","The boss first notices you, with the alarm sound","3.5 s","Red caps","Window of the player it saw","done","Shipped v24.85 (70c8478d). The old wording is left only in a comment","wardenSpotLine 10953; said 22615, P2 46617"],
+["3","SPOTTED BY A WARDEN","A non-boss Warden spots you","3.5 s","Red caps","Both (46617 mirror)","","","wardenSpotLine 10953; 22615"],
+["3","THE PILLBOX HAS SEEN YOU","A Pillbox first gets you in range","3.5 s","Red caps","Window of the player it saw","","","updateEnts 22531; netMarkTake 46568"],
+["3","SOMETHING WOKE UP","Your noise wakes a Listener within 900","3.5 s","Red caps","Host only","","","listenersHearInner 10857"],
+["3","PILLAGER TURNED HOSTILE / {NAME}","A neutral pillager turns on you","3.5 s","Red caps","Host only","","","updateEnts 22852"],
+["3","PILLAGER REINFORCEMENTS","A pillager reinforcement wave spawns","3.5 s","Red caps","Host only","","","tickRaiderWaves 19443"],
+["3","IT WAS PLAYING DEAD","A machine that was faking death gets up","3.5 s","Red caps","Host only","","","updateEnts 21879"],
+["3","THE SURVIVOR RETURNS FIRE","You shoot the Survivor","3.5 s","Red caps","Shooter's window","","","updateBullets 23893"],
+["3","GRENADE HIT COVER / Get clear","Your frag hits cover close to you","3.5 s","Red caps","Own","","","throwFrom 15365"],
+["3","GRENADE WENT OFF IN YOUR HAND","You cook a grenade too long","4.5 s","Red caps, crit","Own","","","cookOff 15431"],
+["3","MERIDIAN IS BURNING THE SITE","The site burn at the end of the clock","While burning, up to 8 s","Red caps, crit","Each window","","","loop 38629"],
+["3","YOUR RIVAL IS UP TOP / {NAME} shoots on sight.","CAREER only: 4 s after the drop, if your rival is in the raid","3.5 s","Red caps","Own","","","startRaid 13039"],
+["3","TEAMMATE DOWN / REVIVE {NAME}","Your teammate goes down","While he is down, up to 8 s","Red caps, party glyph","The other window","","","netOnState 43507"],
+["3","HOST IS OUT / {NAME} was killed | extracted | abandoned | is out. Extract to finish.","The host's raid ends while you stay in","4.5 s","Red caps, party glyph","Joiner","","","netUpWord 44545"],
+["3","HOST IS OUT | HOST DISCONNECTED / You are hosting now","The host is gone and you take over the raid","4.5 s","Red caps, party glyph","Remaining window","","","netHostGone 47468"],
+["3","WAVE {N}","DEMO: each machine wave spawns (every 10 to 22 s)","3.5 s","Red caps","Host window","noise","The announcer clip WAVE INCOMING becomes a noise; the text stays","arcadeWaveTick 48092"],
+["3","DOUBLE KILL / x2 | TRIPLE KILL / x3 | MULTI KILL / x3 | RAMPAGE / x4 | UNSTOPPABLE / x5","DEMO: kill streaks of 2, 3, 4, 5 and 8, each kill under 4 s apart","3.5 s","Teal caps, ring glyph","Own kills, own window","noise","The announcer clip becomes a noise; the text stays","arcadeKill 48334"],
+["3","NEW HIGH SCORE / SCORE ${N} | TEAM SCORE ${N}","DEMO: the run passes tonight's best (once)","3.5 s","Teal caps","Both windows","noise","The announcer clip becomes a noise; the text stays","arcadeHiSay 49296"],
+["3","SCORE LOST / -${N}","2P DEMO: you die and drop back in","3.5 s","Red caps","Own","noise","The operator clip SCORE LOST becomes a noise","arcadeDied 47877"],
+["3","STILL PLAYING? / PRESS ANY BUTTON","DEMO: no input for a while","3.5 s","Red caps","Own","","","arcadeIdleTick 48917"],
+["3","RUN ENDS IN {N} | OUT IN {N} / PRESS ANY BUTTON","DEMO: the idle countdown","Refreshed each second","Red caps","Own","","","arcadeIdleTick 48921"],
+["3","PLAYER 2 IS IN A RAID","DEMO: an offer to player 2 while P2 is busy (once)","3.5 s","Red caps","Own","","","arcadeOnMsg 48594"],
+
+["4","{ITEM} TO SLOT {N} | GUN SLOTS FULL / {ITEM} IN BACKPACK | NO FREE KEY / {ITEM}","Loot goes onto a belt key automatically, or cannot","3.2 s","Info, off-white","Own","","","autoBelt 18423-18456"],
+["4","{N} MINUTES LEFT | 1 MINUTE LEFT [/ {extraction hint}]","The raid clock passes 5:00, 4:00, 3:00, 2:00 and 1:00","3.2 s","obj","Each window","noise","At 2:00 and 1:00 the announcer clip TWO MINUTES / ONE MINUTE becomes a noise; the text stays","tickClockWarn 36876"],
+["4","Extraction hint (the detail): Hold [E] to extract, {N}s left. | Inbound {N}s · Stay in the ring | Extraction {N}m {DIR}. Leaves in {N}s. | Extraction {N}m {DIR}. Inbound in {N}s. | All extractions closed | Hold [E] to call for extraction | Nearest extraction {N}m {DIR}.","Under the clock lines here and in the alert lane","With its headline","Sentence case","Each window","","","outHint 36887-36920"],
+["4","Search resumed, {N}% done.","You go back to a part-searched container","3.2 s","Info, sentence case","Own","go","Removed. Not shipped (3 hits still in the source at v24.90)","updatePlayer 20755; netSrchHold 47013"],
+["4","{GUN} EQUIPPED | {GUN} STOWED / {OLD GUN} IN BACKPACK · SLOT {N}","You equip a gun from the backpack or from loot","3.2 s","Info","Own","order","Your order tonight: no telling what else is in the backpack when you equip a gun. Not shipped","equip 18293"],
+["4","{GUN} UP / {key hint}","You draw your second gun by its key","3.2 s","Info","Own","","","drawGun 18374"],
+["4","{GUN NAME} / RT TO DRAW","Controller: the belt step lands on a gun","3.2 s","Info","Own","","","beltStep 18776"],
+["4","EMPTY SLOT / [{N}] GUN | NO {ITEM} LEFT / [{N}] GUN (pad: [LB] [RB] GUN)","Fire or use on an empty belt cell","3.2 s","Info","Own","","","updatePlayer 20261-20287"],
+["4","GUN SLOT {N} EMPTY | NOT IN BACKPACK / {GUN} | CANNOT EQUIP / {GUN}","A gun key on an empty or unreachable slot","3.2 s","Info","Own","","","setHot 18813-18840"],
+["4","HEALTH FULL | ALREADY HEALING | BANDAGES STOP AT {N} / You need a Medkit. | NO MEDICAL SUPPLIES | ALREADY APPLYING / {ITEM}","The heal key is refused","3.2 s","Info","Own","","","useMedical 17514-17525; useHot 18915-18921"],
+["4","{ITEM} STOPS AT {N} | NO {ITEM} LEFT","A medical belt key is refused","3.2 s","Info","Own","","","useHot 18902/18920"],
+["4","PATCHED UP","An instant heal finishes","3.2 s","Info","Own","","","tickPrepSlot 17582"],
+["4","{PLATE} SLOTTED / Armour {N}.","An armour plate finishes slotting","3.2 s","Info","Own","","","tickPrepSlot 17573"],
+["4","ARMOUR FULL | ALREADY SLOTTING / {PLATE}","The plate key is refused","3.2 s","Info","Own","","","useArmor 18755/18757"],
+["4","{THROWABLE} READY | NO THROWABLE ON THE TACTICAL BELT | NO THROWABLES LEFT","You cycle throwables","3.2 s","Info","Own","","","cycleThrow 15189/15193"],
+["4","NO {THROWABLE} LEFT / [{N}] GUN | THROW THE ONE IN YOUR HAND FIRST","You throw with none left, or while cooking one","3.2 s","Info","Own","","","emptyThrowCell 15380; doThrow 15392"],
+["4","THROW BLOCKED","A non-frag throw is blocked close to you","3.2 s","Info","Own","","","throwFrom 15365"],
+["4","TOO TIRED TO ROLL","You roll with no stamina","3.2 s","Info","Own","","","tryRoll 15223"],
+["4","TRIPWIRE SET","You arm a tripwire","3.2 s","Info","Own","noise","The operator clip TRIPWIRE SET becomes a noise; the text stays","tripArm 15478"],
+["4","STIM INJECTOR ACTIVE / {N}s of unlimited stamina. | NO STIM INJECTOR LEFT | STIM INJECTOR WORE OFF","You use a stim, have none, or it wears off","3.2 s","Info; WORE OFF is chat","Own","","","useStim 18867/18870; updatePlayer 19849"],
+["4","LIQUOR WORE OFF | BLOTTER WORE OFF","A drink or drug effect ends","3.2 s","Chat","Own","","","tickBuzz 39805"],
+["4","SELF-REVIVE USED / Back on your feet. | Self-revive spent. One per raid.","You self-revive, or try a second time","3.2 s","Info","Own","","","selfRevive 19819/19814"],
+["4","NOT WHILE DOWN | NOT WHILE ROLLING","An emote, V or a medical key while down or rolling","3.2 s","Info","Own","","","doEmote 9878; raidKey 13295; useHot 18878"],
+["4","{ITEM} TO SLOT {N} [/ {OTHER} TO SLOT {N}] | {ITEM} OFF SLOT {N} | SLOT {N} TAKES GUNS ONLY | NOT IN BACKPACK / {ITEM} | CANNOT EQUIP / ROLLING | PAUSED | DOWNED | GAVE {ITEM} / {NAME} | DROPPED {ITEM} [/ TEAM CAN LOOT]","Belt and backpack drags and drops, and Z to drop","3.2 s","Info","Own","","","drag handlers 13848-14111; bagDropSel 17254"],
+["4","MOVE IT TO THE BACKPACK FIRST / TO OFFER IT | TO DROP IT | TO PICK A GUN","A backpack action with the highlight on the belt","3.2 s","Info","Own","","","bagBeltNo 17267"],
+["4","Nothing to pick up. | ISSUED GEAR STAYS IN YOUR HANDS | CANNOT STOW THAT GUN","The stow-gun action is refused","3.2 s","Info (the first is sentence case)","Own","","","bagHeldGun 18141-18143"],
+["4","LIGHT BACKPACK / Fewer will come. | LOADED BACKPACK / Expect company. | HEAVY BACKPACK / They heard that.","Right after SIEGE INCOMING, picked by the value you carry","3.2 s","Info","Caller's window","go","Removed entirely (draft-nobagline). Not shipped at v24.90","tryExtractTick 19166"],
+["4","EXTRACTION {L} IS CLOSED / Extraction {L2} is open, {N}m {DIR}.","You try to call at a closed ring","3.2 s","Info","Own","","","tryExtractTick 19072"],
+["4","CONTRACT DONE / {contract}. Complete contract at mainframe.","CAREER: a contract's goal is met","3.2 s","obj","Own","","","contractStep 4208"],
+["4","{NAME} DESTROYED / Its hoard is open. | It dropped a cache. | Search the wreck.","The Overseer, a cache-dropping machine or a wreck machine dies","3.2 s","obj","Own (boss also on the teammate's window)","","","updateEnts 22010-22051; netEntDeathFx 46532"],
+["4","{ROOM NAME} OPEN [DEMO vault: / +${N}]","You open a locked door or vault","3.2 s","obj","Opener plus the relayed copy","","","updatePlayer 20379; netDoorTake 45911"],
+["4","KEYCARD DROPPED","DEMO: an enemy drops a vault keycard","3.2 s","obj","Run host only","","","arcadeKeycardDrop 47798"],
+["4","HOT GROUND / Bonus loot.","You open a container in hot ground that rolled a bonus","3.2 s","obj","Own","","","openContainer 17809; netLootTake 47333"],
+["4","HOT GROUND MOVED / Check your map.","The hot ground zone moves","3.2 s","obj","Both","","","tickHot 33294; netWorldTake 45996"],
+["4","SEAL BROKEN / Seal payout dropped.","You break the seal (also over the seal, zone 9)","3.2 s","obj","Own","","","updatePlayer 20409"],
+["4","SOMETHING RESTOCKED NEARBY","A container within 700 restocks","3.2 s","Chat","Own","","","updateEnts 21768; netContWord 47375"],
+["4","PARTLY CLOUDY / The weather will turn | RAIN / Covers your noise and theirs | FOG / Limited visibility due to fog. | BLACKOUT / Every lamp up top is dead | STORM / Lightning shows you from farther off","At the drop, if the sky is not clear","3.2 s","Chat","Each window","","","startRaid 13027 (table 7113-7123)"],
+["4","SKIES CLEARING | CLOUDS ROLLING IN | RAIN INCOMING | FOG ROLLING IN | GRID GOING DOWN | STORM INCOMING (each with a detail)","The weather turns mid-raid","3.2 s","Chat","Both","","","wxTick 7208; netWorldTake 45966"],
+["4","LIGHTNING FUSED A CACHE","Lightning strikes a container","3.2 s","obj","Own","","","strikeTick 7303"],
+["4","LOANER GUN / Equip your own gun at The Stash.","Raid start, holding an issued gun while your own waits in the stash","3.2 s","Info","Own","","","startRaid 13033"],
+["4","{NAME} IS SEARCHING","Co-op: your teammate is already searching that container","3.2 s","Info","Own","","","netSrchHold 46999; netSrchAnswer 47049"],
+["4","{MERC NAME} EMPTY","You search your hire's carried loot and it is empty","3.2 s","Info","Own","","","updatePlayer 20824"],
+["4","SURVIVOR FOUND / Needs {ITEM}. | THE SURVIVOR IS STILL THERE | TEAMMATE FOUND A SURVIVOR / Needs {ITEM} | (guest) SURVIVOR FOUND / Needs {ITEM}. Host hands it over.","You or your teammate reach the Survivor","3.2 s","obj","Both (the guest wording on P2)","","","updateEnts 22217-22221; P2 46574/46627"],
+["4","SURVIVOR EXTRACTED / Extraction {L}","The Survivor leaves near you or in sight","3.2 s","Info","Own","","","updateEnts 22192"],
+["4","NOT ENOUGH AMMUNITION / Needs {N} rounds. | HE NEEDS A(N) {ITEM} / You have none.","You try to give the Survivor what he asks for","3.2 s","Info","Own","","","strayGive 11367/11369"],
+["4","CACHE MARKED","The Survivor's payment marks a cache (also over him, zone 8)","3.2 s","obj","Own","","","strayGive 11392"],
+["4","NOTORIETY DOWN TO {N}","Helping the Survivor lowers your notoriety","3.2 s","Info","Own","","","strayGive 11399"],
+["4","SOMEONE SHOT THE SURVIVOR / Not your kill | THE PEDDLER IS DEAD / Not your kill","Someone else kills them near you","3.2 s","Chat","Own","","","updateEnts 21947/21969"],
+["4","THE PEDDLER SET UP SHOP | THE PEDDLER IS BACK","The Peddler appears near you","3.2 s","Chat","Own","","","updateEnts 22270/22278"],
+["4","THE PEDDLER WAVES YOU OVER | THE PEDDLER TURNS HIS BACK","You first meet the Peddler","3.2 s","Ally / info","Own","","","updateEnts 22288; netMarkTake 46569"],
+["4","THE PEDDLER BOLTS / No trade. | NO DEAL","The Peddler flees, or the trade is refused","3.2 s","Info","Own","","","updateEnts 22241; updatePlayer 20598"],
+["4","HE WANTS NOTHING YOU CARRY | SOLD {N} ITEM(S) / Worth ${N} carried home. | NOT ENOUGH BANKED CREDITS / Costs ${N}.[ Carrying ${N}.]","Peddler: sell all or buy","3.2 s","Info","Own","","","pedSellAll 11444/11483; pedBuy 11496"],
+["4","{NAME} WILL NOT TALK | {NAME} STANDS DOWN | {NAME} WAVES BACK | NOTHING TO SPARE / {NAME}","Pillagers answer your emotes","3.2 s","Ally","Own","","","doEmote 9902-9954"],
+["4","LOWER YOUR GUN TO TALK | NOBODY IN EARSHOT","A hail with your gun raised, or nobody near","3.2 s","Info","Own","","","doEmote 9890/9965"],
+["4","{NAME} TRUSTED YOU","A pillager's standing rises to trust","3.2 s","Info","Own","","","updateEnts 22843; netBetrayTake 46919"],
+["4","{NAME} IS FRIENDLY | {NAME} IS WATCHING","A known pillager is near","3.2 s","Chat","Own","","","updateEnts 22856"],
+["4","{NAME} WANTS REVENGE","CAREER: you kill a pillager whose crew holds grudges","3.2 s","Info","Own","","","updateEnts 21997; netKillTake 46895"],
+["4","PILLAGER CALLED EXTRACTION / {NAME}, Extraction {L}","A pillager calls a ring near you or in sight","3.2 s","Info","Own","","","updateEnts 23559"],
+["4","{NAME} IS BACK UP / He will remember that. | HE IS BACK UP | {NAME} IS BACK UP (the teammate you revived)","A pillager you spared gets up, or your teammate stands","3.2 s","Ally","Own","","","updatePlayer 20544; netRevHold 46711"],
+["4","{ITEM} RECEIVED / SLOT {N} | ON BELT | IN BACKPACK","An item comes to you in a revive or hand-over","3.2 s","Info","Own","","","updatePlayer 20535"],
+["4","BULWARK SHIELD / Flank it.","Your shot first hits a Bulwark's shield","3.2 s","Info","Own","","","updateBullets 23874"],
+["4","DEER DOWN | BIRD DOWN","You shoot wildlife","3.2 s","Chat","Own","","","updateBullets 24029"],
+["4","{MERC} LOOTS ON HIS OWN | {MERC} FOLLOWS YOU | {MERC} HOLDS HERE","CAREER: you change your hire's order","3.2 s","Ally","Own","","","raidKey 13390"],
+["4","{NAME} IS COMING FOR YOU | {NAME} REVIVED YOU","Your hire or teammate comes to revive you, or does","3.2 s","Ally","Own","","","updateEnts 23214/23222; netRevApply 46752"],
+["4","{NAME} IS DEAD / Death benefit ${N} owed.","CAREER: your hire dies","3.2 s","obj","Own","","","updateEnts 22005"],
+["4","SELECT A HEAL / Bandage, Medkit or Armour Plate. | {NAME} ARMOUR FULL | {NAME} DOES NOT NEED IT | ALREADY SLOTTING / APPLYING / {ITEM} | NO {ITEM} LEFT","Co-op: healing a teammate is refused","3.2 s","Info","Own","","","netAidHold 44979-44987"],
+["4","PLATE SLOTTED FOR {NAME} | PATCHED UP {NAME} | {NAME} MOVED AWAY / {ITEM} kept.","Co-op: your heal on a teammate lands, or is kept","3.2 s","Ally / info","Own","","","netAidHold 45006/45015"],
+["4","PLATE FROM {NAME} / Armour {N}. | {NAME} PATCHED YOU UP | {NAME} ALREADY HEALING / {ITEM} kept. | {NAME} COULD NOT TAKE IT / {ITEM} kept.","Co-op: a teammate heals you, or your heal could not be used","3.2 s","Ally / info","Own","","","netAidApply 45311/45318; netAidKept 45364"],
+["4","TAKING IT | NO TEAMMATE IN RANGE","Co-op: you accept an offer, or offer with nobody near","3.2 s","Ally / info","Own","","","netGiftKey 45044-45058"],
+["4","OFFER EXPIRED / {NAME} | {NAME} DID NOT TAKE IT / {ITEM} | {NAME} IS DOWN | {NAME} LEFT THE RAID / Cannot take it. | HAND-OVER FAILED / {NAME}","Co-op: an offer ends or fails","3.2 s","Ally","Own","","","giftTick 30755; netGiftTake 45285"],
+["4","{NAME} DIED | {NAME} EXTRACTED | {NAME} ABANDONED | {NAME} IS OUT | PLAYER 2 OUT","Your teammate's raid ends","3.2 s","Ally","Own","","","netUpWord 44552"],
+["4","PLAYER 2 JOINED | {NAME} IS JOINING | PLAYER 2 JOINING (DEMO) | YOU JOINED THE RAID IN PROGRESS","A teammate joins in progress, or you do","3.2 s","Ally","Host / joiner","","","netLateReply 44412; arcadeRebuild 48849; netLateApply 44439"],
+["4","{NAME} could not go up with you: it could not build the same surface | it was up top already | it was on the title | it was still on the run card | it could not go up.","Co-op: a party member's window says no to going up","3.2 s","Info, sentence case (not the HUD voice)","Host window","","","44604; netUpWhyText 44550"],
+["4","PLAYER 1 EXTRACTED +${N} | PLAYER 2 EXTRACTED +${N}","DEMO 2P: the other player extracted","3.2 s","Ally","The other window","gone","Not reached since v24.90: arcadeExtracted has no callers, and an extraction ends the run","arcadeScTake 48458"],
+["4","WAYPOINT SET [/ Your party can see it.] | WAYPOINT CLEARED","Map click, right-click, or a ping with the map open","3.2 s","sys","Own","","","mouse 13533/13540; netWpFromMap 45455"],
+["4","ZOOM {N}% | HUD SIZE {N}%","Numpad + / - / 0, or the HUD size key","3.2 s","sys","Own","","","raidKey 13457-13460; hudSizeStep 13477"],
+["4","SUPERHOT ON | SUPERHOT OFF | SUPERHOT FOLLOWS THE HOST","The backquote key","3.2 s","Info / sys","Own","","","keydown 13064; cycleGameOpt 51442"],
+["4","AUTO-JOG ON / [CAPS] OR MOVE TO CANCEL | AUTO-JOG OFF | STOP FIRST / [CAPS] AUTO-JOG","Caps Lock auto-jog","3.2 s","sys / info","Own","","","updatePlayer 19985-19992"],
+["4","CONTROLLER CONNECTED | CONTROLLER DISCONNECTED / RECONNECT TO RESUME","A gamepad connects, or drops mid-raid (solo: the answer line, 24)","3.2 s","sys","Own","","","padHold 14520; trig 14889"],
+["4","CURSOR RESET","The cursor reset key","3.2 s","sys","Own","","","restoreCursor 37729"],
+["4","RAID CLOCK SET TO {m:ss}","The raid clock option changes mid-raid","3.2 s","sys","Own","","","gameOptRaidNow 49922"],
+["4","RECORDING / [F9] STOP · 3:00 MAX | RECORDING TOO SHORT TO KEEP | THIS BROWSER CANNOT RECORD | RECORDING KEPT | RECORDING NOT KEPT / SAVED TO DOWNLOADS","F9 clip recording","3.2 s","sys","Own","","","recTell 37567-37629; recSave 37682"],
+["4","FEEDBACK SAVED | FEEDBACK COPIED | FEEDBACK NOT SAVED","After SAVE in the feedback box","3.2 s","Info","Own","","","fbSaid 49880"],
+["4","WALL GLITCH SAVED TO RUN REPORT","The stuck-in-a-wall rescue fires","3.2 s","sys","Own","","","updatePlayer 20640"],
+["4","RESOLUTION STEPPED DOWN / Settings: Auto resolution","Auto resolution lowers the render scale (once)","3.2 s","sys","Own","","","drsTick 25778"],
+["4","RUNNING SLOWLY / Settings: Render resolution, Effects","The frame rate stays low (once)","3.2 s","sys","Own","","","perfNote 37876"],
+["4","ERROR SAVED TO YOUR RUN REPORT","A script error is caught (once per raid; the raw error goes to the log only)","3.2 s","sys","Own","","","errRow 37782 (ERRROW 37779)"],
+["4","(any alert from zone 3 that waited too long)","The alert queue is full, or a line waited 2.5 s (5 s if pushed aside, 8 s if held)","3.2 s","Re-said as obj with its detail","Own","","","alertToFeed 16070"],
+
+["5","THE OVERSEER (name over a red health bar)","The boss is alive, within 900, and this player has seen him","While he is alive and near","Amber label over a 6 px red bar; plate min(520, 40% W)","Each window waits for its own sighting","","","drawBossBar 31124"],
+["5","{NAME} OFFERS {ITEM} · [T] TAKE · {N}s | OFFER SENT · {ITEM} TO {NAME} · {N}s","Co-op: an item offer is open","Up to 12 s, counting down","Amber caps on a dark plate","Each its own side","","","drawGiftLine 30723-30756"],
+["5","CONTROLLER PAUSED: click one of the game windows","Same-PC 2P: this window's controller went quiet","Until the pad is back","Amber label on a dark plate","Only the quiet window","","","netPadHud 44072"],
+
+["6","DOWN + a bar + {N}s","You are downed","While downed","DOWN huge red, seconds pink; the screen veiled red","Both","","","drawHUD 32697"],
+["6","[F] SELF-REVIVE, one per raid | Bleeding out. Crawl to an open extraction point.","Downed (the second line once the self-revive is spent)","While downed","Head size, pale #e8d5d2","Both","","","drawHUD 32709"],
+["6","THEY HAVE YOU / Pulling you out. | HOLD [E] TO EXTRACT / Extracting while downed is permitted. | EXTRACTION INBOUND / Extracting while downed is permitted. | CRAWL TO THE RING / Extraction closes in {m:ss} | (no headline) / Nearest extraction is {N}m away","Downed, picked by where your ring is and whether the ship has landed","While downed","Headline huge teal, amber or red; sub-line head off-white","Both","","","downedVerb 32646-32671"],
+["6","EXTRACTING | CALLING EXTRACTION + a bar","Downed while a call or pull runs at your ring","While it runs","Head size; green or teal","Both","","","drawHUD 32717"],
+["6","HOLD [SPACE] TO SURRENDER | NO SURRENDER WITH AN EXTRACTION WAITING","Downed after the self-revive is spent","While downed","Head size, grey; pink-red while held","Both","","","drawHUD 32734"],
+["6","HOLD [E] TO CALL FOR EXTRACTION (downed)","Downed inside an open ring nobody called","While true","Head size, teal, with a bar","Both","","","drawHUD 32774"],
+["6","HOLD [E] TO EXTRACT","Standing in the called ring after the ship lands (H/2-124)","While in the ring","Huge teal, pulsing, on a dark plate","Both","","","drawHUD 32819"],
+["6","YOU DIED","The death beat before the KIA card (H*0.42)","1.5 s","Huge red with a drop copy over a red veil","Whoever died","","","drawHUD 32197"],
+["6","3 / 2 / 1 / GO!","The start of every raid (H*0.42, screen veiled)","3 s, then GO! for 0.8 s","800-weight 110 px digits, GO! amber; each pops in","Each window","go","The countdown goes. Not shipped: GO_SEC is still in the source at v24.90","drawGoCount 12970"],
+["6","NOTORIETY {N} · CLEAN | TALKED ABOUT | KNOWN | NOTORIOUS / YOU STARTED THAT FIGHT | YOU SHOT AN UNARMED SURVIVOR | YOU KILLED THE PEDDLER / Hires cost more and pillagers trust you less.","CAREER: your notoriety rises (H*0.26)","3 s","Red head size, pink why-line, dim explaining sentence; shake and alarm","The window that earned it","","","drawHUD 32168; notoStamp 16616"],
+["6","DROPPING IN {N}","DEMO: the 3 s drop after a 2P respawn (H*0.36)","3 s","Huge x1.2 amber, pulsing","The dropping player","gone","The 6 s drop after an extraction is gone since v24.90; the respawn drop stays","arcadeDropHud 48445"],
+["6","EXTRACTED! / EXTRACTION BONUS +${N} / HAUL x2 +${N} / SCORE ${N}","DEMO extraction (H*0.30)","3 s","Huge green title, amber lines","The extracting window","gone","Not reached since v24.90: an extraction doubles the score and ends the run (RUN OVER shows EXTRACTED x2)","arcadeHud 48467"],
+["6","TOP 10 TONIGHT · ENTER INITIALS / three letters / TYPE OR ▲▼ · A NEXT · B BACK · ENTER / MENU DONE · {N}","DEMO: the in-raid initials card at a top-10 extraction (H*0.56)","Up to 20 s idle","Teal header, huge letters, active one amber","Run host","gone","Since v24.90 the in-raid card is not opened; initials are on RUN OVER (F3)","arcadeIniHud 49303"],
+
+["7","[R] RELOAD | NO AMMO | JAMMED","Empty with rounds in reserve / empty with none / jammed","While true","Micro: amber for RELOAD, red for the others; the cross is struck through","Each at its own crosshair","","","drawHUD 31376"],
+["7","{N.N}s (reload seconds)","Reloading with the loud cursor on","While reloading","Amber micro, right of the crosshair","Both","","","drawHUD 31356"],
+["7","(sign) Hit marker: the centre dot swells into a diamond and a ring pulses","A round lands: white for a hit, orange for a weak spot, red for a kill","0.15 s (kill 0.2 s)","No text","Each own rounds","","","drawHUD 31389"],
+["7","(sign) Magazine ring with a tick per round; reload ring","A gun is held, or reloading","Always","No text. Amber at 50%, red at 25%","Both","","","drawHUD 31320-31350"],
+
+["8","Nameplates: SENTRY K-42, CRAWLER A-17, WARDEN X-55, CRIER, PILLBOX, BULWARK, HOWLER, LISTENER, a pillager's tag, THE OVERSEER; [RUNNING] [FRIENDLY] [LISTENING]; SURVIVOR NEEDS {ITEM} / SURVIVOR [SAFE]; THE PEDDLER / [E] DEAL / · SEARCH CRATE FIRST / [CLOSED]","Every frame, over every named thing you can see (not a dormant Listener or a pillager playing dead)","While visible","Micro on a dark plate; crew colour block; health pip when hurt; colour by mood","Each window","","","render2D 29520-29574"],
+["8","? / !","An enemy you can see is investigating (?) or chasing / alarmed (!)","While in that state","Head size, outlined; ? amber, ! red","Own","","","drawBossBar 32111-32118"],
+["8","{N} (killing shot: {N}!)","Every round that damages an enemy (setting on by default)","0.72 s (kill 1.05 s)","Cream; orange on a weak spot; amber on a back shot; drifts and falls","The party sees them","","","dmgNum 16553; drawDmgNums 16568"],
+["8","WEAK SPOT","Your round hits a weak point (once per target per 0.5 s)","1.9 s","Big, in the weak point's colour","Own","","","update ~23853"],
+["8","{NAME} ELIMINATED (pillager, Survivor, Peddler) | {NAME} DESTROYED (machine)","An enemy dies where you can see it","1.9 s","Big; red for a pillager, amber otherwise","Both","","","updateEnts 22089; P2 46536"],
+["8","+${N}","An arcade kill; N includes the streak multiplier","1.9 s","Big amber","Both","","","arcadeKill 48333; P2 46892"],
+["8","{NAME} DOWNED","A pillager is put down where you can see it","1.9 s","Big amber","Host only","","","updateEnts 21916"],
+["8","NOTORIETY +1","You hit a pillager who was not fighting you first, or kill the Survivor or the Peddler","1.9 s","Big red caps","Both","","","notoAggress 11259; 21945/21966; P2 46904"],
+["8","{NAME} IS RUNNING","A pillager you can see starts his run to extract","1.9 s","Big amber","Host only","","","updateEnts 22780"],
+["8","ALARM","A Crier winds up its alarm","While it winds","Label size, red, inside its red ring","Each window","","","drawSnitchS 27900"],
+["8","CRIER {N.N}s","The same wind-up countdown (off screen: at the edge by a red arrow)","Until the wind-up ends","Red micro","Each window","","","drawCrierMarkers 33740/33762"],
+["8","PICKED UP","A hire revives you (teal, over you), or a pillager lifts his crewmate (amber)","1.9 s","Big caps","Host only","","","updateEnts 23224/23350"],
+["8","REVIVED","A teammate revives you (teal, over you), or you revive a pillager (green)","1.9 s","Big caps","Whoever was revived","","","netRevived 46754; updatePlayer 20547"],
+["8","NEEDS {ITEM NAME}","You first find the Survivor","1.9 s","Big green caps","Host only","","","updateEnts 22223"],
+["8","CACHE MARKED, then +${PAY}","You give the Survivor what he needs ($900 to $1,500)","1.9 s","Big lilac, then small amber 0.35 s later","Own","","","strayGive 11393/11403"],
+["8","GIFT: {Item Name}","A hailed pillager waves back and drops a gift crate","1.9 s","Big green (note the colon)","Own","","","doEmote 9950"],
+["8","+{ITEM NAME}","A pillager you revived hands you an item","1.9 s after 0.35 s","Small amber caps","Own","","","updatePlayer 20537"],
+["8","Taunt bubbles: I see you! / Contact, right there! / Got eyes on! / There! Move! / Hey! HEY! / Found one! / You are bleeding! / Stay down! / Nearly had you! / Keep running! / Stay down. / That is that. / Should have stayed below. / Easy. / Not worth it! / I am out! / Keep it! / Take it, I am gone!","A pillager spots you, hits you, downs you or runs (one per map every 4 s, within 620). FINDING: the bubble never draws words; it shows a ring-and-dot mark plus a blip","2.1 s","#ffd48a disc bubble","Host only","go","The taunts are removed. Not shipped at v24.90","TAUNT 5344; taunt 5353-5372; draw 29599-29631"],
+["8","Emote bubbles (icons, no words): wave, palm, point, nod, no, think","Your emote, a pillager's answer to a hail, the Survivor's nod","1.4 to 2.0 s","Coloured glyph in a dark disc","Own","","","doEmote 9883-9925"],
+
+["9","{Item Name}  ${VALUE} (ammo: {Item Name} +{N} ammo)","Each item a finished search gives you, 0.34 s apart, stacking upward over the box","6 s (full for 45%, then fades)","Rarity colour, icon, dark plate; large for rare, elite and gold","Each own loot","","","grantLoot ~17842"],
+["9","{N} item left / {N} items left","While you search a box","While searching","Amber label size with a search bar","Own","","","drawBossBar 32086-32092"],
+["9","Cache tags: ELITE CACHE | {DISTRICT} CACHE | MERIDIAN CACHE | SEAL PAYOUT | PEDDLER STOCK | WARDEN WRECK | OVERSEER HOARD | PILLBOX WRECK | FULGURITE | THE VAULT CASE | KEYCARD","Over every unopened named cache in view","Until opened","Head size, lilac","Each window","","","drawContS 28145"],
+["9","MERIDIAN STRONGBOX","An unopened strongbox in view","Until opened","Amber label in a pulsing glow","Each window","","","drawContS 28161"],
+["9","COOKING {N.N}s (frag) | {THROWABLE} + RELEASE TO THROW | RELEASE TO SET","Over you while you hold a throwable","While held","Micro; frag green, amber, red; others blue","Own","","","drawBossBar 32006-32011"],
+["9","COOKED GRENADE! THROW GRENADE NOW","Over you: a cooked frag has 1 s left","Final second","Head size flashing red and cream","Own","","","cookShout 30688"],
+["9","Dropped {Item Name}","Over you: the backpack overflowed and the worst item was dropped","1.9 s","Small lilac grey, sentence case","Own","","","autoCull 17372"],
+["9","SHIELD · MOVE TO START","DEMO: under your feet while the spawn shield is on","Until you move","Cyan micro on a dark plate","Own (a teammate's shield has no words)","","","arcadeShieldRing 47667"],
+["9","{TEAMMATE NAME} (+ DOWN · {N}s above it)","Co-op: over every teammate shown","Always","Micro on a plate; ally blue, red when down","Both","","","netUpTags 44749"],
+["9","REVIVING + a teal bar","Co-op: over the teammate you are reviving","While reviving","Teal label size","Reviver","","","drawBossBar 32062"],
+["9","THE SEAL {N}% | SEAL BROKEN (on the slab)","Whenever the seal slab is in view","While in view","Pale blue while cutting, amber once broken","Each window","","","drawSealSlab 28658"],
+["9","SEAL BROKEN (big label)","The seal cut completes","1.9 s","Big amber","Own","","","updatePlayer 20411"],
+["9","LIGHTNING INCOMING {N}S","A strike is about to land (over its circle)","The warning time","Pale blue, brightening, on a plate","Each window","","","strikeLabel 7218; draw 30210"],
+["9","+${VAULT PAY}","Over a vault door you open in an arcade raid","1.9 s","Big amber","Opener","","","arcadeVaultPay 47805"],
+["9","(sign) Damage arc around your body, pointing at what hit you","You take a hit from a known source","0.8 s fade","4 px red arc","Both","","","drawHUD 32073"],
+
+["10","[E] SEARCH CRATE | LOCKER | SAFE | STRONGBOX | BODY | WRECK | CACHE | TAG | {PILLAGER NAME} | {MERC}'S BACKPACK (in a ring: [X] SEARCH ...; a dropped item adds its name)","Next to an unsearched container","While in reach","Head size, keycap; crew colour for a fallen pillager; 2nd line rarity colour","Own","","","drawBossBar 31885-31900"],
+["10","[E] CALL FOR EXTRACTION | INBOUND {N}s | [E] EXTRACT · {N}s | EXTRACTION CLOSED","Standing in a ring, by its state (hidden when the centre banner says it)","While in the ring","Teal; green to extract; red closed; hold bar under","Own","","","drawBossBar 31943-31963"],
+["10","EXTRACT IN PROGRESS! {L} {N}S LEFT | EXTRACT {L} INBOUND {N}s","Over other live rings you are not in","While live","Green landed, teal inbound","Own","","","drawBossBar 31931-31933"],
+["10","[E] UNLOCK {ROOM NAME} | {ROOM NAME} LOCKED / Needs the {Key Name}","Next to a locked door","While in reach","White with the key, red without; sub-line label size","Own","","","drawBossBar 31822-31828"],
+["10","[E] REVIVE {NAME} · {N}s","Next to a downed pillager (N = seconds to bleed out) or a downed teammate","While in reach","Prompt style","Whoever is near","","","drawBossBar 31844/31862"],
+["10","[E] GIVE {ITEM NAME}","Within 70 of the Survivor who still needs it (40 above him)","While in reach","Prompt style","Own","","","drawBossBar 32595"],
+["10","HOLD [E] TO CUT THE SEAL","At the seal, not yet broken (66 above you, with a bar)","While in reach","Prompt style, amber bar","Own","","","drawBossBar 32606"],
+
+["11","EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN | - {N}S UNTIL EXTRACTION BEGINS | - EXTRACT IN PROGRESS! {N}S UNTIL EXTRACTION ENDS | - CLOSED FOR THE REMAINDER OF THIS RAID","Every ring on screen (a closed one only within 800); hidden while you hold at a landed ship","While on screen","Label size on a dark strip; teal open, grey closed","Own","","","zoneBadge 30679; draw 31764-31799"],
+
+["12","{N} CREDITS  {N} XP","Always (refreshed when either changes)","Whole raid","Amber 800-weight figures, small caps labels","Each window","","","syncTopRight 3493 (#topright)"],
+
+["13","CONDITIONS [-]/[+]; LIQUOR (×N) {m:ss} left; RAID XP +{N}%; {TIME OF DAY} {WEATHER} with sight / noise / lamps / lightning effects; {TERM} +{N}% pay; CONTRACTS with progress ({desc} {n}/{N}, no heals yet, BROKEN, you healed, LOST ...)","CAREER raids only","Whole raid","Micro; amber header, rows in their own colours","Each window","","","drawHUD 31728"],
+["13","{N} note(s) logged","Telemetry notes exist","Once logged","Small, dim #6b7783","Each window","","","drawHUD 32559"],
+
+["14","{YOU | NAME} killed {KIND | NAME | ELITE NAME}","Co-op / 2P: any kill by a player","6 s, at most 4 rows","Label size right-aligned; amber for yours, light blue for the teammate's","Both","","","netFeedPush 45743; netFeedDraw 45779"],
+
+["15","{GUN NAME} / UPGRADE | DOWNGRADE | SIDEGRADE  VS {HELD GUN | BARE HANDS} / DMG RATE MAG RANGE HANDLING with +N / -N / = / {ROUTE: IN HAND, SLOT {N}, BACKPACK ...}","You loot a gun (not a DEMO scrapped gun)","4 s, fades over the last 0.5 s","Name in rarity colour; verdict green / red / amber; plate edge in the verdict colour","Own","","","gunCardHud 16313; set in grantLoot ~17996"],
+
+["16","[icon] {ITEM NAME} [xN]  SLOT {N} | IN HAND | BACKPACK | STOWED | KEY {N} | +${N} (DEMO valuable) | SCRAPPED +${N} (DEMO)","Every item you take from a container","4 s each; a repeat refreshes","Name in rarity colour, dim caps tag, icon","Own","","","pickSay 16209; drawPickups 16238; grantLoot 18022"],
+["16","BACKPACK FULL  [B] BACKPACK · [Z] DROP (pad: [VIEW] BACKPACK · [Y] DROP)","A search, autoloot or buy with no room","4 s, refreshed while E is held","Red","Own","","","updatePlayer 20743; pedBuy 11509"],
+["16","{GUN NAME}  BACKPACK","You stow the gun in your hand","4 s","Pickup row","Own","","","bagHeldGun 18157"],
+["16","BANDAGE  KILL BONUS","DEMO: every 3rd kill gives a bandage","4 s","Pickup row","Own","","","arcadeKillPerks 48170"],
+["16","{ITEM}  GIVEN TO {NAME} | {ITEM}  FROM {NAME}","A co-op hand-over completes","4 s","Pickup row","Both sides","","","netGiftTake 45270/45279"],
+["16","+${N}  FROM THE SURVIVOR","The Survivor pays you","4 s","Green","Own","","","strayGive 11388"],
+["16","+${N}  CARRIED | {ITEM}  +{N} ROUNDS | SLOT {N} | BACKPACK and -${N}  BOUGHT","Peddler: you sell all, or buy","4 s","Pickup rows; the price dim","Own","","","pedSellAll 11482; pedBuy 11529"],
+
+["17","{GUN NAME} [+ [ADS] | {X}x SCOPE] or the held belt item; forged guns read {GUN} MK II / MK III","Always","Always","Head size, grey or the item's colour","Both","","","drawHUD 32484"],
+["17","{AMMO} / {RESERVE} | MELEE | JAMMED | RELOADING | EMPTY | HELD | {N} held","Always","Always","Title size; red at 0, amber reloading","Both","","","drawHUD 32491-32496"],
+["17","{N} ITEM(S)  ${VALUE}","Always","Always","Grey micro","Both","","","drawHUD 32526"],
+["17","B / I  BACKPACK (pad: VIEW  BACKPACK)","The backpack is closed","Always","Amber label size","Both","","","drawHUD 32538"],
+["17","OTHER GUN  {NAME}  {AMMO}","You have a stowed second gun","While stowed","Dim grey micro","Both","","","drawHUD ~32519"],
+["17","HIDDEN | WELL HIDDEN | CONCEALED | PARTLY HIDDEN | CRASHING THROUGH [· IN COVER] | HIDDEN · CROUCHED | PARTLY HIDDEN · TOO CLOSE","In a bush or crouched (just above the weapon panel)","While true","Head size; green hidden, amber partly, red crashing","Both","","","drawHUD 32295"],
+
+["18","Slot numbers 1-9, counts, and the caption {ITEM NAME}  [FIRE] use  [V] signal","Always in a raid","Always","Grey numbers, cream counts (rust at 0), amber keycaps","Both","","","drawBelt 30509; caption 30614"],
+["18","EXTRACT {L} INBOUND {N}s | EXTRACT IN PROGRESS! {L} {N}S LEFT","After an extraction is called (LH 48 above the belt)","Until the raid ends","Head size; teal in the ring, amber or red outside","Both","","","drawHUD 32580"],
+["18","{N}m + an arrow | {N} HOSTILE(S) CLOSING IN","Extraction called: distance when outside the ring, the hostile count inside it","While true","Label size; amber, red above 4","Both","","","drawHUD 32603"],
+["18","HOLD [E] TO CALL FOR EXTRACTION","Standing in an open ring nobody called","While in the ring","Teal head size with a call bar","Both","","","drawHUD 32609"],
+["18","APPLYING {ITEM} {N.N}s | SLOTTING ARMOUR PLATE {N.N}s [ON {NAME}]","Using a bandage, medkit or plate","The wind-up","White label size; green bar for medical, blue for armour","Both","","","drawUseBar 30837"],
+["18","weapon down, they will listen | lower your weapon first; buttons 1 HAIL  2 STAND DOWN  3 POINT  4 THANKS","The emote bar is open (V)","While open","Grey micro hint; HAIL amber with a green border when your weapon is down","Both","","","drawHUD 32956-32989"],
+
+["19","STANDING | JOGGING | SPRINTING | CROUCHED | WADING | STANDING IN WATER | ROLLING | DOWN | DEAD + HEALING, RELOADING, SWITCHING GUNS, SHOOTING, AIMING, COOKING, TRADING, SEARCHING","Always (joined with +)","Always","Label size, coloured by the first state","Both","","","drawHUD 32379; playerStatus 33261"],
+["19","HP {N}","Always","Always","Cream title size inside the bar","Both","","","drawHUD 32346"],
+["19","-{N}","Right after a hit (right end of the health bar)","About 1 s","Salmon title size","Both","","","drawHUD 32392"],
+["19","ARMOUR {N}","You have armour","While above 0","Cream label size","Both","","","drawHUD 32403"],
+["19","STAMINA | WINDED","Always (WINDED while locked out)","Always","Micro; amber below 35, red WINDED","Both","","","drawHUD 32411"],
+
+["20","H  controls | controls [+] | mini list with [-] and H  full list | full list MOVE / FIGHT / GEAR / WORLD / TEAM / ALSO with H  hide","Always unless recording; H cycles it (CAREER starts collapsed after 3 raids)","Always","Mono and micro, dim grey","Both","","","drawLegend 33798"],
+["20","KEYBOARD | CONTROLLER: MOVE, AIM, FIRE, ROLL, RELOAD, SWITCH GUN, HEAL, EXTRACT HOLD E IN A TEAL RING, LOOT HOLD E","DEMO: while the spawn shield is up and for 4 s after","Shield + 4 s, fades","Amber action names, white keys, teal pad buttons, amber edge","Both","","","arcadeCardHud 47662"],
+
+["21","CURRENT PILLAGERS {N} / YOU row first / {NAME}  ${VALUE} [EXTRACTED | DEAD] / ★ before your rival / +{N} more out here / {N} out · {N} dead","CAREER only, with the map and backpack closed","Whole raid","Micro; amber header; green EXTRACTED, dim DEAD; elites purple, ghosts blue","Both","","","drawRaiderBoard 33598-33754"],
+
+["22","{NAME}  /  DOWN {N}s + health and armour bars","Co-op: each teammate (from 30% down or under the board)","Whole raid","Label size in the teammate colour, red when down","Each lists the other","","","netTeamHud 45423"],
+["22","HEALING {N}s | STIM {N}s | RECOVERING to {N} | WINDED out of breath / let go of sprint | WADING slow and loud | LIQUOR {m:ss} | BLOTTER {m:ss}","While each state is live (from 40% down)","While live","Hex icon; name in its colour, value grey; red rim for bad states","Both","","","drawStatusIcons 30969"],
+
+["23","{STORY NAME} (e.g. THE MANIFEST, THE GATE PASS) + its story text","Within 60 of the map's story object (once per raid)","14 s, or until you are 300 away","Amber caps title, off-white body, on a panel","Each own","","","loreTick 16352; drawLore 16393"],
+
+["24","Any sys or info line, as HEADLINE  ·  detail","Said while the solo pause box is open (the co-op pause keeps the feed rows)","5 s","DOM toast over the pause box","Own","","","say 16413 > hubToast 15902"],
+["24","CONTROLLER DISCONNECTED / RECONNECT TO RESUME","Solo: the pad drops (the pause box opens first)","5 s","DOM toast","Own","","","trig 14889"],
+["24","RAID CLOCK SET TO {m:ss}","The raid clock is changed from the solo pause","5 s","DOM toast","Own","","","gameOptRaidNow 49922"],
+["24","MENU SIZE {N}%","Mouse wheel over a menu part that does not scroll (pause box, settings, KIA card)","Toast life","DOM toast, caps","Own","","","wheel handler 49790-49825"],
+
+["25","(sign) Noise chevrons","A heard noise from something off screen","The noise ping's life","Red triangles, no text","Both","","","drawNoiseMarkers 33181"],
+["25","{NAME}  {N}m  [DOWN]","Co-op: your teammate is off screen (label inside the arrow)","While off screen","Micro, teammate colour, red when down","Both","","","netMateArrow 45387-45405"],
+["25","{NAME} WAYPOINT  {N}m","Co-op: a teammate set a waypoint (at the spot, clamped to the edge)","Until cleared","Micro, light blue #bfe0ff","Both","","","netWpDraw 45472-45491"],
+["25","{YOU | NAME}  ·  {WHAT | DANGER}  ·  {N}m","Co-op ping (N): over the spot or enemy, clamped to the edge, with a diamond","10 s","Micro; amber own, ally colour others, red / orange danger; pulses","Both","","","netPingDraw 45722-45736"],
+
+["F1","SECTOR MAP  elites and keys are live intel; CLICK to set a waypoint | CLICK set waypoint · RIGHT-CLICK clear | R STICK move marker · D-UP place marker; {time} {WEATHER} → {NEXT} {N}%","Map open (M); the header sits 10 px above the map frame's top left","While open","SECTOR MAP amber label; hints micro #9aa8d0","Own","","","drawMapOverlayRaw 35493 (header ~35530)"],
+["F1","Labels: {DISTRICT}; CACHE / LOOTED; ENCAMPMENT; {ROOM} · OPEN | LOCKED; INTEL LIVE; {LANDMARK}; SEAL {N}% | SEAL BROKEN; STRONGBOX; SURVIVOR | SURVIVOR (NEEDS); PEDDLER | PEDDLER (CLOSED); WAYPOINT; HOT GROUND / richer, and busier; EXTRACT {L} + CLOSED | EXTRACT IN PROGRESS! {N}S LEFT | CALLED {N}s | STAYS OPEN | closes in {m:ss}; SURVEYED {N}% / what you walk stays on the map; teammate names / DOWN","Map open; labels are nudged apart so they do not overlap","While open","Micro to head size; extract teal, waypoint and locks amber, hot ground orange","Own","","","drawMapOverlayRaw 35493-36010"],
+
+["F2","KILLED IN ACTION | EXTRACTED | ABANDONED","CAREER: the raid ends (KIA after the 1.5 s death beat)","Until LOG RUN AND RETURN","34 px 800 caps; red / teal / grey with a glow","Each window its own card","noise","On EXTRACTED the announcer clip EXTRACTED becomes a noise","endRaid ~25443-25517 (#oc_title)"],
+["F2","KILLED BY {KILLER} · WITH {WEAPON}, {N}M FROM EXTRACTION · IN CONTACT {M:SS} | · NEVER SPOTTED","KIA card sub-line (WITH and the distance only when known)","With the card","14 px grey caps, spaced","Own","","","endRaid ~25470-25478"],
+["F2","· YOU DIED CARRYING MEDICAL YOU NEVER USED","KIA card, if you died with medical you never used","With the card","Same as the sub-line","Own","go","Removed from the KIA card (fixture prep d5823beb is in; the source still prints it at v24.90)","endRaid ~25482"],
+["F2","OUT CLEAN · NEVER SPOTTED","EXTRACTED card, if nothing ever spotted you","With the card","14 px grey caps","Own","","","endRaid ~25449"],
+["F2","CLOSEST YOU CAME TO EXTRACTION: {N}M | RUN TERMINATED | {host-left text}","ABANDONED card sub-line","With the card","14 px grey","Own","","","endRaid ~25518"],
+["F2","HOW IT WENT: TIME | WHAT HIT YOU | DAMAGE | HEALTH, then up to 8 rows {M:SS} {SOURCE} x{N} -{DMG} {HP} left","KIA card: the last 8 grouped hits","With the card","Grey; the killing row red and bold","Own","","","endRaid ~25490-25510"],
+["F2","DAMAGE TAKEN: up to 4 rows {SOURCE} · {WEAPON}  -{DMG}  {N} HITS","KIA and EXTRACTED cards, when anything hit you","With the card","Grey; damage red","Own","","","recapHtml ~24650"],
+["F2","{N} item(s) secured for ${V} + up to 12 item pictures (+{N} more) + You extracted with {HP} of 100 health","EXTRACTED card","With the card","Bone text; 52 px icons with rarity borders","Own","","","endRaid ~25124-25135"],
+["F2","[icon] {ITEM}  LOST (per item and gun) | and {N} more, all gone | {N} items[ and {G} guns] lost, ${V} gone | Rebate held {N} items (${V})","KIA card","With the card","Item in rarity colour, LOST red","Own","","","endRaid ~25169-25212"],
+["F2","+{N} XP (50% penalty for failure to extract | 75% penalty for backing out) · {X} of {CAP}; then Next: {TIER}, reward {i} of {n}, {N} XP away. Claim it at the Mainframe. | All {n} rewards earned. ...","Every CAREER card with XP","With the card","Amber XP line, grey sentence","Own","","","endRaid ~24925-24940"],
+["F2","{N} containers · {A}% accuracy · {K} kills · {M} mins {S} seconds on the surface","Every CAREER card","With the card","Grey","Own","","","endRaid ~25336"],
+["F2","CONTRACT COMPLETE: {CONTRACT}. Complete contract at mainframe.","A contract was finished this raid","With the card","Green","Own","","","endRaid ~25015"],
+["F2","ACHIEVEMENT: {NAME}  {description}","An achievement was earned","With the card","Amber name, grey text","Own","","","endRaid ~25441"],
+["F2","{GUN} recovered to the armoury","Extract with a gun you did not own","With the card","Bone","Own","","","bankItem ~24612"],
+["F2","Hire lines: {NAME} died. Death benefit ${N} owed[, you are in debt]. | {NAME} extracts behind you with ${N}. Your cut ${N}. | ... makes his own way out ... | ... extracted earlier ... | ... never made the ramp. No cut. | ... made it out on his own. No cut. | {NAME} was left out there.","CAREER solo with a hire","With the card","Red death, teal cut, grey no cut","Not in co-op","","","endRaid ~24851-24893"],
+["F2","The survivor paid you ${N}[ and gave you a {ITEM}].","You helped the Survivor","With the card","Teal","Own","","","endRaid ~24948"],
+["F2","Stall money carried out: ${N}, banked. | Stall money lost where you fell: ${N}. | Stall money left behind: ${N}. | Spent ${N} at the stall.","You traded with the Peddler","With the card","Teal / red / grey","Own","","","endRaid ~24953-24960"],
+["F2","Hazard pay +{P}%: ${N} for {TERMS}. | You signed for {P}% and did not come back for it.","The raid had Terms","With the card","Amber / red","Own","","","endRaid ~24977"],
+["F2","The seal on {MAP} is broken. It reseals harder: stage {N} needs {S} seconds. | Seal cut {N} of {M} seconds. Banked.","Extract after cutting the seal","With the card","Amber / teal","Own","","","endRaid ~24992"],
+["F2","The vendors are starting to forget. Notoriety {N}.","Every 4th extraction with notoriety above 0","With the card","Grey","Own","","","endRaid ~25011"],
+["F2","Run abandoned. ${N} left behind. | Walked out on the job. XP -{N}.","ABANDONED card","With the card","Bone, then red","Own","","","endRaid ~25259-25262"],
+["F2","The {N} item(s) you had packed before choosing the freebie kit is/are in your stash. You come back down with an empty backpack and belt.","You took the freebie kit with items packed","With the card","Teal","Own","","","endRaid ~25304"],
+["F2","The ride down cleared your head.","ABANDONED with drink or drug effects on","With the card","Teal","Own","","","endRaid ~25315"],
+["F2","Mainframe server bonus: ${N}","Extract while you own arrays or racks","With the card","Grey, the last line","Own","","","endRaid ~24824"],
+["F2","PARTY: {NAME | YOU} {EXTRACTED | KILLED | ABANDONED} {K} kills ${H} ({N} items) {D} downs {R} revives | still up top","Co-op card with more than one seat","Refreshes as teammates finish","Grey caps heading, bone rows","Both","","","netScoreDraw ~44642 (#oc_party)"],
+["F2","HOW DID THAT RUN FEEL + tag chips (Something crashed ... Felt great, Too easy, Too hard ...) + Anything else? (optional)","Every CAREER card","With the card","Grey caps heading, sentence-case chips","Own","","","markup ~1284; TAGS ~2955"],
+["F2","Log run and return | Copy report + Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it. → Copied. Paste it to Daniel. (2.6 s) | Could not copy. The report is under Settings, Recorder. (4.2 s)","Every CAREER card","Card; feedback 2.6 or 4.2 s","Amber primary button, 13 px grey note","Own","","","markup ~1290; oc_copy ~50190"],
+
+["F3","RUN OVER / EXTRACTED x2 (if it ended on an extraction) / SCORE ${N} | TEAM SCORE ${N} / YOU or P1 and P2: ${S} · {K} KILLS · {X} EXT · {D} DEATHS","DEMO run end: the clock or burn, a 1P death, END RUN, or now any extraction","12 s, or while the initials are up","Condensed 800; RUN OVER red; score amber counting up over 1.4 s","Host card (P2 goes to its attract)","","","arcadeOverSync ~49081; EXTRACTED x2 49125 (new v24.90)"],
+["F3","BEST STREAK [· P1 | P2] {N} KILLS | BIGGEST HAUL ${N} | LONGEST SHOT {N} M","Once the score count-up finishes (missing moments are left off)","With RUN OVER","Cream labels, amber values","Host card","","","arcadeBmDraw ~48359"],
+["F3","TOP 10 TONIGHT · ENTER INITIALS / [A][A][A] / TYPE OR ▲▼ · A NEXT · B BACK · ENTER / MENU DONE","The run makes tonight's top 10","20 s with no input","Teal heading, 2.6em letters, current amber","Mirrored on P2","","","arcadeIniDraw ~49288"],
+["F3","PLAYER 2: PRESS A | PLAYER 1: PRESS ANY BUTTON | PRESS ANY BUTTON; strip JOIN YOUR TEAM · TEAM SCORE ${N} | LINKING…","DEMO 2P: the window not in the raid shows the attract","While on the attract","Condensed 800, large","This is the P2 window","","","arcadeAttShow ~48771; arcadeAttStrip ~48733"],
+
+["F4","RAID PAUSED | BLEEDING OUT (downed)","P, ESC or TAB in a raid","Until resumed","25 px 800 caps, amber","Each its own box","","","togglePauseBox ~15084"],
+["F4","Key list: MOUSE aim  LMB fire  RMB aim down sights  WASD move  SPACE dodge roll  SHIFT hold to sprint ... P / TAB pause (rebuilt for the device in hand)","Pause box open","While paused","13.5 px grey","Own","","","keysLegendApply ~15040"],
+["F4","Please provide feedback anything that went or felt wrong.","Pause box open","While paused","13.5 px grey sentence","Own","","","markup ~1247"],
+["F4","CAREER: Resume run | Settings | FEEDBACK | Abandon run. DEMO: RESUME | FEEDBACK | END RUN","Pause box open","While paused","Abandon and END RUN in a rust outline","Own","","","markup ~1250-1260"],
+["F4","NO, keep playing + YES, ABANDON THIS RUN (costs {N} XP) | (no XP to lose) | (free this early)","First press of Abandon run","Until pressed or closed","Rust","Own","","","abandonbtn ~49855"],
+["F4","END RUN? PRESS AGAIN","DEMO: first press of END RUN","3 s","Rust outline","Own","","","arcendbtn ~49964"],
+["F4","YOU ARE DOWNED.  You can extract while downed","Pause box opened while downed","While paused","13.5 px rust","Own","","","togglePauseBox ~15162"],
+["F4","YOU ARE HOSTING. Closing this window or ending the party ends the raid for your whole party.","Pause box on a co-op host","While paused","13.5 px amber","Host only","","","markup ~1263"],
+["F4","FEEDBACK / WHAT WENT WRONG OR FELT WRONG? THIS SCREENSHOT GOES WITH IT. / TYPE YOUR NOTE. CTRL+ENTER SAVES. / SAVE | CANCEL","FEEDBACK pressed (modal z 60 over the box)","Until SAVE or CANCEL","Caps heading, screenshot up to 560 px","Own","","","fbOpen ~49895"],
+
+["F5","BACKPACK [B or I to close | A pick up or place  B close | Z drop for teammate]; EQUIPPED {GUN} {AMMO}/{RESERVE} | MELEE; DMG RANGE AUTO/SEMI MAG; Integrity {HP}/{MAX}  Armour {N}  BACKPACK {N}  BELT {N}; row {a}-{b} of {n}; {ITEM} x{N}  ${V} each; Backpack is empty.","B or I opens the backpack","While open","Label header; grey micro stats","Own","","","drawBag ~35128"],
+["F5","DAMAGE / RATE / MAGAZINE / RANGE / ACCURACY / NOISE / USE / KEEP FOR rows, then ARROWS move  Z drop one  drag to tactical belt  ENTER equip  SHIFT+ENTER to back","The selected stack","While selected","Micro; faded blue labels","Own","","","itemRows ~33038"],
+["F5","Gun card: {GUN} / UPGRADE | DOWNGRADE | SIDEGRADE  VS {HELD} / DMG RATE MAG RANGE HANDLING / IN BACKPACK","The gun under the mouse, or the selected gun (right of the panel)","While hovered or selected","As the pickup card","Own","","","drawBag ~35340 > gunCardDraw ~16304"],
+
+["F6","THE PEDDLER  [E] walk away (pad: [D-PAD] choose  [A] take  [E] walk away)","E at the Peddler opens the deal panel","While open","Gold head size on a near-opaque panel","Own","","","drawTrade 33970"],
+["F6","[1]  SELL BACKPACK ({N})  +${N}","Deal panel open","While open","Green with items, grey empty; gold price","Own","","","drawTrade 33987"],
+["F6","{P}% of value, paid now. You still have to walk it out.","Deal panel open","While open","Grey micro sentence (explaining, against the HUD voice)","Own","","","drawTrade 33992; pedSellPromise 11286"],
+["F6","Carried home: ${N} and {N} XP. He pays no XP.","Deal panel open with a sellable item","While open","Grey micro sentence","Own","","","drawTrade 34000"],
+["F6","HIS STOCK  banked ${N}[  +  on you ${N}, not banked]","Deal panel open","While open","Grey micro header","Own","","","drawTrade 34006/34012"],
+["F6","[{N}]  {ITEM NAME}  ${PRICE} (bought: sold ... gone)","One row per stock item","While open","Item colour; rust if unaffordable, grey sold; gold price","Own","","","drawTrade 34020-34023"],
+["F6","He is unarmed. Shooting him has a price.","Deal panel open","While open","Grey micro sentence","Own","","","drawTrade 34027"],
+
+["S","Spoken DOUBLE KILL | TRIPLE KILL | MULTI KILL | RAMPAGE | UNSTOPPABLE","DEMO streaks (with the zone 3 callout)","About 1 s","Announcer voice; ducks the bed","Window that made the kills","noise","Becomes a noise","arcadeKill ~48345; VOX_STREAK ~5074"],
+["S","Spoken NEW HIGH SCORE","DEMO, once per run","About 1.5 s","Announcer voice","Both windows","noise","Becomes a noise","arcadeHiSay ~49318"],
+["S","Spoken WAVE INCOMING","DEMO, each wave","About 1.5 s","Announcer voice","Host window","noise","Becomes a noise","arcadeWaveTick ~48103"],
+["S","Spoken TWO MINUTES | ONE MINUTE","The clock passes 2:00 and 1:00","About 1 s","Announcer voice","Both","noise","Becomes a noise","tickClockWarn ~36897"],
+["S","Spoken EXTRACTED","The EXTRACTED card opens","About 1 s","Announcer voice","Own","noise","Becomes a noise","endRaid ~25397"],
+["S","Operator RELOADING | OUT OF AMMO | FRAG OUT | TRIPWIRE SET | I AM DOWN | HEALING | SCORE LOST","Reload start, empty trigger, frag throw, tripwire armed, downed, a heal starts, 2P DEMO score lost","Under 1 s each","Radio-filtered male voice","Own","noise","Becomes a distinct noise (all 6 voxBark calls still live at v24.90)","voxBark ~5135; calls 5159, 15336, 15478, 16873, 17528, 47878"],
+["S","Countdown beeps: low 440 Hz on 3, 2, 1, high 880 Hz on GO","Start of every raid, with the 3-2-1 GO!","3 s + GO","Square through a lowpass","Each window","go","Goes with the countdown","goTick ~12935"],
+["S","Lock-on pips (two rising square pips)","A machine within 760 starts chasing you","0.17 s","Mach bus","Own","order","Your order tonight: the beeping becomes a low siren (the fixture already checks for one, machsiren). Not shipped","updateEnts ~22902"],
+["S","Spotted sting (low swell under a falling shiver)","A hostile starts chasing you (once per 5 s), a dead machine gets up, and each taunt","0.6 s","At the enemy","Own","part","The copy that rides the taunts goes with them; the spotted sting stays","updateEnts ~22896; taunt ~5375"],
+["S","Loot chimes: pick, pickRare, pickElite, pickGun","Every pickup, bigger by rarity","Under 0.5 s","Rising chimes","Own","order","Your order tonight: the rare-item sound lingers too long. Not shipped","chooser ~17733"],
+["S","Hurt grunt (no words)","You take damage (harder above 18)","0.2 s","Synth growl","Own","","","voxGrunt ~5185"],
+["S","Alarm (saw 920/660/920 Hz)","The Overseer notices you; the siege at an extraction call; the ship lands","0.3 s","Saw alarm","Own","","","updateEnts ~22563; tryExtractTick ~19134"],
+["S","Beacon tone, inbound sonar ping, touchdown thump, boarding ticks, LAST CALL","Extraction call, the ship's approach, landing, your hold, the last 8 s","0.07 to 1 s; pings repeat","At the ring or centred","Each window","","","tickExtractPoints 19464-19679; tryExtractTick 19027/19098"],
+["S","Clock rise, final-minute sting, last-ten-seconds tick","5:00 to 2:00 and 0:30; 1:00; each of the last 10 s","0.09 to 1.2 s","Quiet ui / sting bus","Both","","","tickClockWarn ~36894-36904"],
+["S","Low health heartbeat","Health under 45, downed, or a chaser within about 320","While in danger","Lub-dub, faster with danger","Own","","","loop ~38743"],
+["S","Hit tick / kill confirm ding","Your round lands / a kill","Under 0.3 s","Crisp tick; two-note ding","Own","","","loop ~38766"],
+
+["X","No minimap","Only the M map exists (your order tonight asks for a minimap)","-","-","-","order","A minimap is ordered tonight; it is not built","-"],
+["X","No separate objective plate","Objectives are feed rows (zone 4) and the contracts in CONDITIONS (13)","-","-","-","","",""],
+["X","No belt hover card","Hovering a belt slot only changes the pointer","-","-","-","order","Being built by another workflow tonight","_overBelt ~31229"],
+["X","No Forge text","forgeApply only renames a gun to {GUN} MK II / MK III","-","-","-","","","forgeApply ~2751"],
+["X","{GUN} JAMMED / JAM CLEARED (feed) and JAMMED (reticle, ammo)","Guns never jam (your ruling), so these should never fire","-","-","-","","","updatePlayer 20311/20194"],
+["X","{N}s heal ring over the head","Dead: needs CFG.healRingHead===1, which has no default","-","-","-","","","drawOp 27045"],
+["X","Spoken REVIVING and EXTRACTING","Clips in VOX_BARKS that nothing calls","-","-","-","","","VOX_BARKS ~5116/5119"],
+["X","REC | AMMO | SMK painted into item pictures","Part of the icon art: Black Box, ammo box, Smoke Canister","With the icon","Tiny bold caps","Both","","","drawItemIcon 34383/34465/34474"],
+["X","A second copy of the seal label","Inside if(false), never drawn","-","-","-","","","29604"]
+];
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var TAGS={go:['t-go','goes'],part:['t-part','part goes'],noise:['t-noise','voice to noise'],done:['t-done','shipped'],gone:['t-gone','gone v24.90'],order:['t-order','your order']};
+var by={},cnt={go:0,part:0,noise:0,done:0,gone:0,order:0};
+R.forEach(function(r){(by[r[0]]=by[r[0]]||[]).push(r); if(r[6]) cnt[r[6]]++;});
+var onScreen=R.filter(function(r){return r[0]!=='S'&&r[0]!=='X';}).length;
+document.getElementById('totals').innerHTML=
+ '<div class="tot"><span class="v">'+onScreen+'</span><span class="l">on-screen message groups</span></div>'+
+ '<div class="tot"><span class="v">'+(by.S||[]).length+'</span><span class="l">sound-only groups</span></div>'+
+ '<div class="tot"><span class="v">'+cnt.go+'</span><span class="l">being removed (whole)</span></div>'+
+ '<div class="tot"><span class="v">'+cnt.part+'</span><span class="l">part being cut</span></div>'+
+ '<div class="tot"><span class="v">'+cnt.noise+'</span><span class="l">voice to noise</span></div>'+
+ '<div class="tot"><span class="v">'+cnt.gone+'</span><span class="l">gone since v24.90</span></div>'+
+ '<div class="tot"><span class="v">'+cnt.done+'</span><span class="l">already shipped</span></div>'+
+ '<div class="tot"><span class="v">'+cnt.order+'</span><span class="l">your orders cover</span></div>';
+var cards='',out='';
+ZONES.forEach(function(z){
+  var rows=by[z[0]]||[], g=rows.filter(function(r){return r[6]==='go'||r[6]==='part';}).length;
+  cards+='<a class="card" href="#z'+z[0]+'"><span class="n">'+rows.length+'</span><b>'+z[0]+'</b>'+esc(z[1])+(g?'<span class="g">'+g+' being cut</span>':'')+'</a>';
+  out+='<section id="z'+z[0]+'"><h2><span class="zn">'+z[0]+'</span>'+esc(z[1])+'<span class="ct">'+rows.length+' message group'+(rows.length===1?'':'s')+'</span></h2><p class="where">'+esc(z[2])+'</p>';
+  out+='<table><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col class="c6"></colgroup><thead><tr><th>Message (as shown)</th><th>When</th><th>Lasts</th><th>Style</th><th>Player 2</th><th>Changing</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var t=r[6]?TAGS[r[6]]:null;
+    out+='<tr class="'+(r[6]==='go'?'cgo':(r[6]==='gone'?'cgone':''))+'"><td class="msg" data-h="Message">'+esc(r[1])+(r[8]?'<span class="site">'+esc(r[8])+'</span>':'')+'</td>'+
+      '<td class="sm" data-h="When">'+esc(r[2])+'</td><td class="sm" data-h="Lasts">'+esc(r[3])+'</td><td class="sm" data-h="Style">'+esc(r[4])+'</td><td class="sm" data-h="P2">'+esc(r[5])+'</td>'+
+      '<td class="ch" data-h="Changing">'+(t?'<span class="tag '+t[0]+'">'+t[1]+'</span><br>'+esc(r[7]):'')+'</td></tr>';
+  });
+  out+='</tbody></table></section>';
+});
+document.getElementById('cards').innerHTML=cards;
+document.getElementById('zones').innerHTML=out;
+</script>
+</body>
+</html>

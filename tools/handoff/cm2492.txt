@@ -1,0 +1,7 @@
+v24.92: the kia card does not nag
+
+The KIA card no longer tells you that you died carrying medical you never used.
+
+Check 24.92. Fails on v24.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

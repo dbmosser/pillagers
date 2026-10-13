@@ -2092,7 +2092,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.91';
+var VER='24.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25487,12 +25487,9 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     if(_contact!==null)
       s.textContent+='   ·   IN CONTACT '+fmtMS(_contact).toUpperCase();
     else s.textContent+='   ·   NEVER SPOTTED';
-    // v13.15, from his telemetry: three runs, two knock-downs each, medical
-    // carried every time and applied zero times. The belt cell for it is built
-    // automatically and the freebie kit issues two Bandages, so nothing was
-    // stopping him; nothing had ever said so either. Only when it is true.
-    if(T.diedWithMed)
-      s.textContent+='   \u00b7   YOU DIED CARRYING MEDICAL YOU NEVER USED';
+    // nomednag, HIS NOTE (2026-10-12) on the KIA card: "soooo random, why is that where it is". The v13.15 unused medical hint
+    // that was bolted onto the end of this line is gone: a death card states what killed you and does not nag. The flag
+    // (G.tel.diedWithMed) is still recorded at death for the run report and the telemetry export line (unusedMed:1).
     // THE FEED. Newest last so it reads forward in time, which is how he will
     // reconstruct the mistake. Health after each hit is the column that makes it
     // a story: it shows the exact hit the run stopped being winnable on.
@@ -39197,7 +39194,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.91: The Scav Pistol is spawn-only now: you never find one in a container, on the ground, at the Peddler or on a pillager. Check 24.91 fails on v24.90',
+  now:'v24.92: The KIA card no longer tells you that you died carrying medical you never used. Check 24.92 fails on v24.91',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

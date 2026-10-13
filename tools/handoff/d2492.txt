@@ -1,0 +1,5 @@
+## v24.92 - THE KIA CARD DOES NOT NAG
+
+Co-op hunt while he was away. His note of 2026-10-12 on the KIA card: you died carrying medical you never used, soooo random, why is that where it is. It was a hint added in v13.15 from his early telemetry (two knock-downs a run and no bandage ever applied), bolted onto the end of the KILLED BY line. A death card should say what killed you, with what, how far from extraction and how long the fight lasted, and stop there. The line is gone from the card. The game still records the fact for the run report and the telemetry export, so nothing is lost from the data.
+
+MEASURED. Check 24.92 passes, and fails on v24.91.
