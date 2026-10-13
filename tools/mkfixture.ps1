@@ -70695,6 +70695,7 @@ window.__deploy=function(o){
 // which one is live, set() and use() are the two verbs the keys drive. Without
 // these a belt check has to infer the state from the HUD and usually infers it
 // wrong.
+window.__gx=function(s){ return eval(s); };   // v25.xx (belt6): a game-scope eval for the visual passes (belt-shot.ps1); fixture only
 window.__belt={slots:function(){ return hotbarSlots(); },
                sel:function(){ return hotSel(); },
                set:function(i){ return setHot(i); },
