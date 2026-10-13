@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.85 - DEMO RUN OVER SHOWS THE BOARD FIRST
+
+Co-op hunt while he was away. His order of 2026-10-13: if you end a run in demo mode it should show the high score table before the next run starts. The run over card was followed by the next run on the very next press, so the board only appeared if you waited the card out. Now the run over card (score count-up, best moments, initials when the run makes the board) is always followed by the high score board with your run on it; a press on the card, or finishing the initials, shows the board, and a press on the board starts the next run. A short hold keeps a mashed button from skipping it. Waiting changes nothing.
+
+MEASURED. Check 25.85 passes, and fails on v25.84.
 ## v25.84 - SETTINGS IN THE DEMO PAUSE BOX
 
 Co-op hunt while he was away. His order of 2026-10-13: settings should be accessible in demo mode. The demo pause box had only Resume, Feedback and End run, so the sound, text size and game options could not be reached in a demo run. It now has Settings, which opens the same Settings screen a career raid does; a change applies at once and lasts for the demo session, and everything is put back when the demo is left, so nothing reaches the career save. Close and Escape come back to the pause box.

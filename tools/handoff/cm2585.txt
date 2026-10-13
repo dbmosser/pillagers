@@ -1,0 +1,7 @@
+v25.85: demo run over shows the board first
+
+A demo run now ends on the high score board before the next run can start.
+
+Check 25.85. Fails on v25.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

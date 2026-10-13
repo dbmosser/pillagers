@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.84';
+var VER='25.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41136,7 +41136,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.84: The demo pause box now has Settings, the same screen as in a career raid. Check 25.84 fails on v25.83',
+  now:'v25.85: A demo run now ends on the high score board before the next run can start. Check 25.85 fails on v25.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50968,6 +50968,7 @@ function arcadeKeyAtt(e){
   }
   try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){}   // the press that drops in does nothing else
   if(ty==='keydown'&&e.repeat) return true;
+  if(!arcadeBenched()&&arcadeOverAdvance()) return true;   // v25.xx (demoendboard): a press on the RUN OVER card shows the board first
   if(arcadeBenched()) arcadeUnbench(); else arcadeDropIn();   // v23.25 (arcade6)
   return true;
 }
@@ -50977,13 +50978,36 @@ function arcadeKeyAtt(e){
 // 1.5 seconds after a run ends the presses are swallowed (the initials card, when the run made the board, still takes its keys,
 // and Ctrl+Shift+F10 still leaves); after that any press drops in as before.
 var ARCADE_OVER_GUARD_MS=1500;
-function arcadeOverGuard(){ return !!(ARCADE.on&&ARCADE.over&&ARCADE.over.at>0&&Date.now()-ARCADE.over.at<ARCADE_OVER_GUARD_MS&&!(G&&G.arcade&&!G.over)); }
+// v25.xx (demoendboard), HIS ORDER (2026-10-13): "if I end run in demo mode it should show the high score table before starting next run".
+// END RUN (and a death, an extraction or an idle out, which share the run end) showed the RUN OVER card, and the first press after it
+// dropped the next run in, so the board only came up if he waited the card out (12 s). Now the RUN OVER card is followed by the board
+// every time: a press on the card (after the 1.5 s hold) closes it and shows TONIGHTS BEST, with the run on it, and the initials
+// finishing do the same; the press on the board starts the next run after a short hold (ARCADE_BOARD_HOLD), so a mashed button does not
+// skip it. Waiting changes nothing (card 12 s, then the board, as before). Player 2 pressing A asks again until the board has been up.
+var ARCADE_BOARD_HOLD=900;
+function arcadeOverGuard(){ var o=ARCADE.over, n=Date.now(); return !!(ARCADE.on&&o&&!(G&&G.arcade&&!G.over)&&((o.at>0&&n-o.at<ARCADE_OVER_GUARD_MS)||(o.bat>0&&n-o.bat<ARCADE_BOARD_HOLD))); }
+function arcadeOverAdvance(){
+  var o=ARCADE.over;
+  if(!ARCADE.on||!o||o.board||(G&&G.arcade&&!arcadeBenched())||arcadeIniLive()) return false;
+  if(!(Date.now()-(+o.at||0)<ARCADE_IDLE.overMs)) return false;   // the card has gone: the loop is on the board already
+  o.board=1; o.bat=Date.now();
+  if(ARCADE.att){ ARCADE.att.ov=1; ARCADE.att.ph=''; }
+  try{ arcadeAttShow(); }catch(_ab){}
+  return true;
+}
+function arcadeOverWait(){
+  var o=ARCADE.over;
+  if(!ARCADE.on||!o||o.board||(G&&G.arcade)) return false;
+  if(arcadeIniLive()||arcadeOverGuard()) return true;
+  return arcadeOverAdvance();
+}
 // A new press on this window pad in the arcade attract.
 function arcadePadAtt(anyNew,aNew){
   if(!ARCADE.on) return false;
   if(arcadeOverGuard()) return false;   // v24.48 (his #39): the RUN OVER card holds 1.5 s
   if(ARCADE.role==='p2'){ if(!aNew) return false; ARCADE.wantIn=1; ARCADE.late=0; ARCADE.askAt=Date.now(); netSamePost({t:'arcjoin',pair:NET.pair}); return true; }   // v23.25 (arcade6): arcadeAttTick asks again until he is in
   if(anyNew&&arcadeBenched()) return arcadeUnbench();   // v23.25 (arcade6): a benched player 1 comes back beside player 2
+  if(anyNew&&arcadeOverAdvance()) return true;   // v25.xx (demoendboard): a press on the RUN OVER card shows the board first
   return anyNew?arcadeDropIn():false;
 }
 // The host drops straight into an arcade raid: no title, no character select, no kit question.
@@ -51017,6 +51041,7 @@ function arcadeUnbench(){
 // The host, on arcjoin. Returns what it did.
 function arcadeJoinAsk(){
   if(!ARCADE.on||ARCADE.role!=='host') return 'off';
+  if(arcadeOverWait()) return 'wait';   // v25.xx (demoendboard): the board is shown before the next run; player 2 asks again in 3 s
   if(!(G&&G.arcade&&!G.over)){
     if(G&&!G.over) return 'busy';
     netSamePost({t:'arcgo',fresh:1,pair:NET.pair});
@@ -51218,7 +51243,7 @@ function arcadeOverCount(c,o){
   return k<1;
 }
 function arcadeOverSync(){
-  var o=ARCADE.over, oc=!!(o&&Date.now()-(+o.at||0)<ARCADE_IDLE.overMs), ini=arcadeIniLive()?ARCADE.ini:null,
+  var o=ARCADE.over, oc=!!(o&&!o.board&&Date.now()-(+o.at||0)<ARCADE_IDLE.overMs), ini=arcadeIniLive()?ARCADE.ini:null,
       on=!!(ARCADE.on&&(oc||ini)&&!(G&&G.arcade&&!arcadeBenched())), c, i, ln, el, sig;   // v23.41 (arcade18): the initials card keeps it up
   if(!on&&!document.querySelector('#attract .arcover')) return false;
   c=arcadeOverEl();
@@ -51369,6 +51394,7 @@ function arcadeIniEnd(){
     s=n.touched?n.l.join(''):'???';
     try{ arcadeBoardIni(n.run,s); }catch(_bi){}
     if(ARCADE.role==='host') netSamePost({t:'arcinis',pair:NET.pair,run:n.run,on:0});
+    if(ARCADE.over&&!ARCADE.over.board&&!(G&&G.arcade)){ ARCADE.over.board=1; ARCADE.over.bat=Date.now(); if(ARCADE.att) ARCADE.att.ov=1; }   // v25.xx (demoendboard): the initials are in, so the board is next
   }
   try{ if(ARCADE.att) ARCADE.att.ph=''; arcadeOverSync(); }catch(_io){}
   return s;
