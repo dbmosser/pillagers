@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.44 - A DOWNED PILLAGER GETS UP ONCE
+
+Co-op hunt while he was away. His order of 2026-10-12: downed pillager bots should be able to use their one-time revive if they have not blown it already. Every pillager who goes down now carries one self-revive per raid, the same rule the player has. He lies on the floor for 3 seconds (still crawling for cover), then gets up over 2 seconds: a bar fills over him, his body shakes off the floor and rises to a crouch, and a short pick-up sound plays where he lies. No word is said. He stands with 40 percent of his health, the same share the self-revive gives you, hostile and back in the fight. The timing is my pick: your own self-revive is a single press, so his get-up was given 2 seconds you can see and punish, after 3 on the floor. Shoot him or let him bleed out before he is up and he dies for good, as before. The second time he goes down he only bleeds out or is picked up. A man someone is picking up does not get up on his own in the middle of it. The kill score, the streak and the announcer pay once, on his death, never on the fall or the get-up. Friendly pillagers on your side follow the same rule; hired pillagers still have no downed state, as before. Player 2 sees the bar and the rise from the host. Same in DEMO and CAREER; no seeded draw moved.
+
+MEASURED. Check 25.44 passes, and fails on v25.43.
 ## v25.43 - THE WHAT IS NEW CARD NAMES THE MINIMAP
 
 Co-op hunt while he was away. The card was stamped v25.31 and the stamp may not trail the build by more than 0.15. The card was stamped v25.31 and every ship stops when it falls 0.16 behind; about 17 finished builds are still queued. Its new line names the builds since: the minimap and its markers (his order add minimap), CAREER waves (his mode design), the plate and injector foley (his sound orders) and the crawler latch (his order).

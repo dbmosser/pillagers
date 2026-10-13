@@ -1,0 +1,7 @@
+v25.44: a downed pillager gets up once
+
+A downed pillager who still has his one self-revive gets up on his own after a few seconds: shoot him while he rises or he is back in the fight.
+
+Check 25.44. Fails on v25.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

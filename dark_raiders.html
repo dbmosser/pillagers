@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.43';
+var VER='25.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15677,6 +15677,29 @@ var RAIDER_DOWN_T=16;
 // v9.91, HIS NOTE: a downed pillager takes more than one Scav Pistol round to
 // finish. The pistol does 19; 40 is three of them. Dial, so it can be tuned.
 function raiderDownHp(){ return (CFG.raiderDownHp===undefined)?50:CFG.raiderDownHp; }   // v10.04, his answer 44: fifty
+// pillrevive, HIS ORDER (2026-10-12): "downed pillager bots should be able to use their one-time revive if they haven't blown it
+// already". A DOWNED PILLAGER GETS UP ONCE. Every pillager who goes down carries one self-revive per raid, as the player does
+// (one per raid, then the floor is the end). He lies RAIDER_GETUP_WAIT seconds first (crawling for cover as before), then gets
+// up over RAIDER_GETUP_T seconds: a bar over him fills, his body pushes off the floor and rises to a crouch, and a short pick-up
+// sound plays where he lies. No word is said (pillagers say nothing). He stands with RAIDER_GETUP_HP of his health, the same
+// share the self-revive gives the player (40 of 100), hostile and back in the fight. Shot or bled out before he is up, he dies
+// for good, as always. A man someone is picking up does not get up on his own in the middle of it, and the revive of a man who
+// was picked up is still unused. The second time he goes down he only bleeds out (or is picked up), as before. Nothing is
+// scored on the fall or the get-up: the kill pays once, on the death, where it always has. No seeded draw is made.
+var RAIDER_GETUP_WAIT=3, RAIDER_GETUP_T=2, RAIDER_GETUP_HP=0.4;
+function raiderGetUpU(e){ return (e&&e.downed&&e.getUp>0)?clamp(e.getUp/RAIDER_GETUP_T,0,1):0; }
+function raiderGetUpMode(e){ return (raiderGetUpU(e)>=0.5)?'crouch':'down'; }   // the second half of the get-up is drawn rising in a crouch
+function raiderGetUpShake(e){ var u=raiderGetUpU(e); return (u>0&&u<0.5)?Math.sin((G.t||0)*38)*1.2:0; }   // the first half, pushing off the floor
+// The get-up bar over him, between his head and his nameplate. Always true, so the draw chain goes on to draw his body.
+function raiderGetUpBar(e){
+  var u=raiderGetUpU(e), w=28, bx, by;
+  if(!(u>0)) return true;
+  bx=e.x-w/2; by=e.y-37;
+  wc.fillStyle=INK; wc.fillRect(bx-1,by-1,w+2,5);
+  wc.fillStyle='rgba(255,192,74,.22)'; wc.fillRect(bx,by,w,3);
+  wc.fillStyle=e.hostile?'#ffc04a':'#4de3d0'; wc.fillRect(bx,by,w*u,3);
+  return true;
+}
 var FRAG_FUSE=1.1;
 // HIS NOTE, 2026-08-26: "I THINK YOUR SCALING FOR METERS IS OFF -- I'M STANDING
 // RIGHT next to an extraction and it says im 90 m away lol". He is right and the
@@ -22616,6 +22639,7 @@ if(e.state==='possum'){
       if(CFG.raiderDown!==0&&e.kind==='raider'&&!e.downed&&!e.merc&&!e.finished){
         e.downed=1; e.downT=RAIDER_DOWN_T; e.hp=raiderDownHp();
         e.state='down'; e.alert=0; e.goal=null; e.cd=Math.max(e.cd||0,1);
+        e.getUp=0; e.getUpIn=RAIDER_GETUP_WAIT; e.getUpOn=(e.selfRev||CFG.raiderGetUp===0)?0:1;   // pillrevive: his one self-revive, armed here while it is unused
         if(!G.sim){
           // v8.79, his wording: DOWNED here, ELIMINATED on the kill below. These
           // were "IS DOWN" and "DOWN", which is the same word for a man who can
@@ -22839,7 +22863,7 @@ if(e.state==='possum'){
       // v10.15, his answer 45: a downed pillager crawls for cover, the way a
       // real player on the floor would. Two rings of eight points, seventy and
       // a hundred and forty units out: somewhere he can reach that you cannot see.
-      if(e.kind==='raider'&&e.hostile&&CFG.raiderCrawl!==0&&!G.sim){
+      if(e.kind==='raider'&&e.hostile&&CFG.raiderCrawl!==0&&!G.sim&&!(e.getUp>0)){   // pillrevive: not while he gets up
         if(!e.crawlTo||dist(e,e.crawlTo)<6||(e.crawlChk=(e.crawlChk||0)+dt)>1.5){
           e.crawlChk=0; e.crawlTo=null;
           var _pd=dist(e,p);
@@ -22863,6 +22887,28 @@ if(e.state==='possum'){
         if(e.hp<=0){ e.hp=0; e.downed=0; e.finished=1; }
       }
       if(e.downT<=0){ e.downed=0; e.finished=1; e.hp=0; }
+      // pillrevive, HIS ORDER (2026-10-12): HIS ONE SELF-REVIVE. Armed when he fell with it unused (getUpOn). Someone picking him
+      // up (reviveT) holds it and starts the get-up over; the wait runs out and he gets up over RAIDER_GETUP_T, still on the floor
+      // and still bleeding, so a shot finishes him for good; at the end he stands, his revive spent. His next death is nobody's
+      // until someone hits him again, as after any pick-up (v13.98), so the kill pays once.
+      if(e.downed&&!e.finished&&e.kind==='raider'&&e.getUpOn&&e.hp>0){
+        if(e.reviveT>0) e.getUp=0;
+        else if(!(e.getUp>0)){
+          e.getUpIn-=dt;
+          if(e.getUpIn<=0){ e.getUp=1e-3; e.crawlTo=null; e.moving=false; if(!G.sim){ var _guE=earsOf(e.x,e.y); blip('pick',_guE.d,_guE.pan); } }
+        }
+        else{
+          e.getUp+=dt;
+          if(e.getUp>=RAIDER_GETUP_T){
+            var _guMine=!!(e.byPlayer||e.bySeat>0);
+            e.downed=0; e.getUp=0; e.getUpOn=0; e.selfRev=1; e.hp=Math.max(1,Math.round((e.maxhp||100)*RAIDER_GETUP_HP));
+            e.byPlayer=false; e.bySeat=0; e.goal=null; e.crawlTo=null; e.cd=Math.max(e.cd||0,0.5);
+            if(e.hostile&&_guMine&&p&&!p.downed){ e.state='chase'; e.alert=2.5; e.tx=p.x; e.ty=p.y; }
+            else { e.state='loot'; e.alert=0; }
+            if(G.tel) G.tel.raiderSelfRevives=(G.tel.raiderSelfRevives||0)+1;
+          }
+        }
+      }
       if(e.cd>0) e.cd-=dt;
       continue;
     }
@@ -30296,9 +30342,10 @@ var SHD=G.shells[i];
       // any map with platforms every entity drawn after the first crawler slid
       // upward by that deck's height for the rest of the frame. On THE QUARRY,
       // where the top terrace lifts 132, that is the whole world jumping.
-      else if(e2.kind==='raider')
-        drawOp(e2.x,e2.y,e2.face,(e2.roll>0)?(1-e2.roll/.38)*12.6:(e2.step||0)*4,e2.coat,
-          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.downed||e2.state==='down')?'down':((e2.roll>0)?'roll':(raiderCrouched(e2)?'crouch':'')),0,
+      // pillrevive: a pillager getting up shows his bar, shakes off the floor, then rises in a crouch
+      else if(e2.kind==='raider'&&raiderGetUpBar(e2))
+        drawOp(e2.x+raiderGetUpShake(e2),e2.y,e2.face,(e2.roll>0)?(1-e2.roll/.38)*12.6:(e2.step||0)*4,e2.coat,
+          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.downed||e2.state==='down')?raiderGetUpMode(e2):((e2.roll>0)?'roll':(raiderCrouched(e2)?'crouch':'')),0,
           {own:e2,team:(e2.merc||e2.friendly)?'ally':'foe',merc:e2.merc?1:0,moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0,
            // v20.12, found by the build design review (2026-10-08): his answer 20 (v10.18) gives every pillager a look from the racks,
            // stored on him at spawn, but drawOp reads a look from this object and never from own, so every pillager was drawn in the
@@ -40275,7 +40322,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.43: The what is new card names the minimap. Check 25.43 fails on v25.42',
+  now:'v25.44: A downed pillager who still has his one self-revive gets up on his own after a few seconds: shoot him while he rises or he is back in the fight. Check 25.44 fails on v25.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47540,6 +47587,7 @@ function netEntFlags(e){
   if(e.kind==='raider'&&raiderCrouched(e)) f|=2048; if(e.roll>0) f|=4096; if(e.steady) f|=8192; if(e.reviving) f|=16384; if(e.shotT>0) f|=32768;
   if(e.lootT>0) f|=65536; if((e.healQ||0)>0) f|=131072; if(e.sprintPool>0) f|=262144; if(e.helped) f|=524288; if(e.grudge) f|=1048576;
   if(e.parley>0) f|=2097152; if(e.blind>0) f|=4194304;
+  if(e.downed&&e.getUp>0) f|=8388608;   // pillrevive: he is getting up
   return f;
 }
 function netEntRow(e){
@@ -47621,6 +47669,7 @@ function netEntFlagsApply(e,f){
   if((f&4096)&&!(e.roll>0)) e.roll=0.38;
   e.steady=!!(f&8192); e.reviving=(f&16384)?e:null; e.shotT=(f&32768)?0.35:0; e.lootT=(f&65536)?1:0; e.healQ=(f&131072)?1:0;
   e.sprintPool=(f&262144)?6:0; e.helped=(f&524288)?1:0; e.grudge=!!(f&1048576); e.parley=(f&2097152)?1:0; e.blind=(f&4194304)?1:0;
+  if((f&8388608)&&e.downed){ if(!(e.getUp>0)){ e.getUp=1e-3; if(!G.sim){ try{ var _guN=earsOf(e.x,e.y); blip('pick',_guN.d,_guN.pan); }catch(_gun){} } } } else e.getUp=0;   // pillrevive: the host says he is getting up; the bar fills here
 }
 // A snapshot from the host, on a linked window up top on that seed: each row onto its body by number, a body never seen made
 // on the spot. An older snapshot than the last applied is dropped (the fast channel is unordered). Returns what it did.
@@ -47758,6 +47807,7 @@ function netEntsEase(dt){
     if(e.roll>0) e.roll=Math.max(0,e.roll-dt);
     if(e.windup!==undefined&&e.windup!==null){ e.windup-=dt; if(e.windup<=0) e.windup=null; }
     if(e.overheat>0) e.overheat-=dt; if(e.shotT>0) e.shotT-=dt;
+    if(e.downed&&e.getUp>0) e.getUp=Math.min(RAIDER_GETUP_T,e.getUp+dt);   // pillrevive
     if(typeof e.wind==='number'&&e.wind>0) e.wind=Math.max(0,e.wind-dt);   // v20.38 (H11): a Crier windup the host told this window counts down here
     n++;
   }
