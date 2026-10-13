@@ -1,0 +1,7 @@
+v25.55: an empty magazine is half grey
+
+A gun with an empty magazine and ammo to reload is now half grey on the belt; fully grey only when all ammo is gone.
+
+Check 25.55. Fails on v25.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

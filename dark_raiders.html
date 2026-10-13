@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.54';
+var VER='25.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31843,6 +31843,21 @@ function drawBuzzFx(){
       var S=sl[q],bx=hx+q*(bw+gap),on=q===sel;
       G.hotCells.push({x:bx,y:hy,w:bw,h:bw,i:q});
       var empty=(S.count===0);
+      // v24.xx (beltgrey), HIS ORDER (2026-10-12): "guns on quickbar/belot should grey out only half way if they are out of magazine
+      // ammo but player has ammo to reload the gun -- should only fully grey out if they are completely out of ammo". A gun key with an
+      // empty magazine was greyed exactly like a gun with nothing left, so a gun one reload from firing read as dead. Three states now:
+      // rounds in its magazine, full colour; an empty magazine while he carries rounds it can load (the one shared pool, p.reserve, or an
+      // ammo box in the backpack, which is how the Undercroft belt carries packed ammo), HALF grey, with the 0 in the amber of the RELOAD
+      // reticle; no rounds anywhere, fully grey as before. Every gun cell: in hand, stowed, a backpack gun on a gun key, the floor belt.
+      // A gun with no magazine (melee) has no count and never greys. Derived every frame, so a pickup, a reload or the last shot shows
+      // at once.
+      var _bgHalf=false;
+      if(empty&&S.kind==='gun'&&!S.vacant&&S.icon){
+        var _bgP=G.player, _bgN=(_bgP&&+_bgP.reserve)||0, _bgi, _bgI;
+        for(_bgi=0;_bgN<=0&&G.bag&&_bgi<G.bag.length;_bgi++){ _bgI=ITEMS[G.bag[_bgi]]; if(_bgI&&_bgI.use==='ammo') _bgN+=(_bgI.amt||1); }
+        _bgHalf=_bgN>0;
+      }
+      var _bgDim=empty&&!_bgHalf;
       // v18.34, THE STYLING PASS IN THE RAID (2026-10-04): THE BELT KEYS ARE ROUNDED TILES. A belt key was a flat square with a thin
       // stroke. It is a rounded tile now with a light from the top, a rarity wash inside the same shape and a rounded ring, the
       // shape the stash cells took at v18.32. Every size, hit box and colour rule is unchanged.
@@ -31856,16 +31871,16 @@ function drawBuzzFx(){
       var _hr=(S.itemKey&&ITEMS[S.itemKey])?dispR(S.itemKey)
              :((S.kind==='gun'&&S.icon&&WEAPONS[S.icon])?gunRarity(S.icon)
              :((S.icon&&ITEMS[S.icon])?dispR(S.icon):null));
-      if(_hr&&!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }
+      if(_hr&&!_bgDim){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; if(_bgHalf) ctx.globalAlpha=.5; ctx.fillRect(bx,hy,bw,bw); ctx.globalAlpha=1; } }   // v24.xx (beltgrey): a reloadable gun keeps half its wash
       ctx.fillStyle='rgba(255,255,255,.05)'; ctx.fillRect(bx,hy,bw,Math.max(1,bw*0.04));
       ctx.restore();
       var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw)
         ||(!!G.bagOpen&&!!G.bagBelt&&q===clamp(G.bagBeltSel||0,0,sl.length-1));   // v16.79, his order: the backpack highlight on the belt row rings its key
-      ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
+      ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!_bgDim)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
       ctx.lineWidth=(dragOver||on)?2:1;
       _bpath(); ctx.stroke();   // v18.34: the rounded ring
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
-      ctx.globalAlpha=empty?.28:1;
+      ctx.globalAlpha=_bgDim?.28:(_bgHalf?.64:1);   // v24.xx (beltgrey): half grey while it can be reloaded
       ctx.fillStyle=S.c;
       // Real item portraits, v2.87: the slot draws the same icon the inventory
       // and the shops use, so a Kettle looks like a Kettle everywhere. The old
@@ -31896,7 +31911,7 @@ function drawBuzzFx(){
       }
       if(S.count!==null&&S.count!==undefined&&S.kind!=='empty'){   // v19.01: no count on an empty key
         ctx.font=beltFS(bw,0.16);   // v18.71: grows with the slot
-        ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
+        ctx.fillStyle=_bgDim?'#7a5040':(_bgHalf?'#ffc04a':'#FFF6DC');   // v24.xx (beltgrey): an empty magazine he can reload says 0 in the RELOAD amber
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
       }
     }
@@ -40724,7 +40739,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.54: CAREER raids have the DEMO vaults and keycards, and a vault pays +500 to your score. Check 25.54 fails on v25.53',
+  now:'v25.55: A gun with an empty magazine and ammo to reload is now half grey on the belt; fully grey only when all ammo is gone. Check 25.55 fails on v25.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

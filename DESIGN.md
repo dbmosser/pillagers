@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.55 - AN EMPTY MAGAZINE IS HALF GREY
+
+Co-op hunt while he was away. His order of 2026-10-12: guns on the belt should grey out only half way when the magazine is empty but you carry ammo to reload, and grey out fully only when you are completely out of ammo. A gun key with an empty magazine looked exactly like a gun with nothing left. Now a loaded gun is full colour, a gun with an empty magazine and ammo to load is half grey with its 0 in the amber of the RELOAD prompt, and a gun with no ammo anywhere is fully grey as before. It covers the gun in your hands, the stowed one and a backpack gun on a gun key, and changes the moment you pick up, load or spend ammo. Bare hands never grey.
+
+MEASURED. Check 25.55 passes, and fails on v25.54.
 ## v25.54 - CAREER RAIDS: THE VAULTS
 
 Co-op hunt while he was away. His rule of 2026-10-12: the gameplay elements are exactly the same in DEMO and CAREER. A CAREER raid now has the DEMO vaults: two strongrooms sealed behind a keycard door with a vault gun inside, a Vault Keycard hidden in an ordinary box outside each, and keycards dropped by the fight (an elite or the boss while a vault is still shut, or every 12th kill when no keycard is left). Opening a vault pays VAULT OPEN +$500 into your CAREER score. The rest of the raid is built exactly as before.
