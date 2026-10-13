@@ -1,0 +1,7 @@
+v24.63: the mode list reads from the couch
+
+The title mode list has big readable rows, the COMING LATER notes sit inside their rows, and the saves block is a compact panel.
+
+Check 24.63. Fails on v24.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

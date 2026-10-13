@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.63 - THE MODE LIST READS FROM THE COUCH
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the title found the mode rows were small 13 pixel caps in thin rows, the two COMING LATER notes hung off the side of the list, the walking Undercroft showed through behind the key row and the list, and the saves block was a full width web form as heavy as PLAY. The mode rows are big 52 pixel rows with 18 pixel labels now and 1 PLAYER is the large amber button, the COMING LATER notes sit inside their greyed rows, the centre of the title is darker so the menu stands clear, and the saves block is a narrower panel with the name box, CHANGE NAME and CREATE A NEW SAVE on one row. No word changed and the rows keep their order.
+
+MEASURED. Check 24.63 passes, and fails on v24.62.
 ## v24.62 - THE VAULT KEYCARD
 
 Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. The first of three builds that put locked vaults into the DEMO raid. A new item, the Vault Keycard, opens a locked room. In a DEMO raid it opens any locked door on the map; in any other raid it opens only a vault door, and the map keys still open their own rooms exactly as before. When you carry both the map key and a keycard, the map key is spent first and the keycard is kept. The lamp on the door and the UNLOCK prompt use the same rule, so they never disagree. Nothing drops a keycard yet: the vaults and the keycards in the world come in the next two builds.
