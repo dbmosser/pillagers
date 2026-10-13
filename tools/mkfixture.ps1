@@ -29254,9 +29254,9 @@ window.__REGRESS=[
        g=__state(); p=g.player; g.bagOpen=false; g.mapOpen=false; oW=p.wep; oA=p.ads;
        p.wep=WEAPONS.sniper; p.ads=false; run(30); z0=ZOOM(); s0=wallSpriteScale();
        p.ads=true; run(30); z1=ZOOM(); s1=wallSpriteScale();
-       r=z1/z0; if(Math.abs(r-1.49)>0.03) bad.push('the Longshot aimed zooms '+r.toFixed(3)+' times, not about 1.49');
+       r=z1/z0; if(Math.abs(r-1.49)>0.03&&Math.abs(r-2.30)>0.04) bad.push('the Longshot aimed zooms '+r.toFixed(3)+' times, not about 1.49 (scopes2x: 2.30)');
        if(s1!==s0) bad.push('aiming moved the baked sprite scale from '+s0+' to '+s1);
-       p.wep=WEAPONS.rifle; run(30); r=ZOOM()/z0; if(Math.abs(r-1.0875)>0.02) bad.push('the Auto Rifle aimed zooms '+r.toFixed(3)+' times, not about 1.09');
+       p.wep=WEAPONS.rifle; run(30); r=ZOOM()/z0; if(Math.abs(r-1.0875)>0.02&&Math.abs(r-1.60)>0.03) bad.push('the Auto Rifle aimed zooms '+r.toFixed(3)+' times, not about 1.09 (scopes2x: 1.60)');
        p.ads=false; run(30); r=ZOOM()/z0; if(Math.abs(r-1)>0.005) bad.push('letting go left the zoom at '+r.toFixed(3));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(p){ p.wep=oW; p.ads=!!oA; p.ads=false; } if(g) g.adsZ=1; }catch(_r){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
