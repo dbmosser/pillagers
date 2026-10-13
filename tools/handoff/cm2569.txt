@@ -1,0 +1,7 @@
+v25.69: the what is new card names the new keys
+
+The what is new card names the new keys.
+
+Check 25.69. Fails on v25.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

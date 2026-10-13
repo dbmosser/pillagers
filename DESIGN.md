@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.69 - THE WHAT IS NEW CARD NAMES THE NEW KEYS
+
+Co-op hunt while he was away. The card was stamped v25.56 and the stamp may not trail the build by more than 0.15. The card was stamped v25.56 and every ship stops when it falls 0.16 behind. Its new line names the builds since: his new key layout (2026-10-13), the siren retune, the robot death noises, the belt info cards, big guns for everyone and SIEGE without a count (his orders).
+
+MEASURED. Check 25.69 passes, and fails on v25.68.
 ## v25.68 - THE SEARCH SOUND NO LONGER REPEATS
 
 Co-op hunt while he was away. His order of 2026-10-13: the scavenging noise is too repetitive. While a box was searched the game played the same rummage clip, at the same pitch and level, on a fixed half second beat. Now each hit of a search takes a different clip from the foley bank, the rummage itself on every other hit and between them the strap, the holster rattle, a metal latch or clack or a case snap, never the same clip twice running, each at its own pitch (8 percent either way), level (20 percent either way) and trim start, the next one 0.25 to 0.6 seconds later, a heavier and lower dig every third to fifth hit, and now and then a short pause in the rhythm. It draws from the cosmetic stream only. No new recordings, nothing under G.sim, and the search still ends on its own completion cue.
