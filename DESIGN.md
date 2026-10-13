@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.24 - THE FORGE: CRYO ROUNDS SLOW AND FREEZE
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. CRYO is the third element. Every cryo hit chills what it hits for 2.5 seconds, so it moves at 60 percent of its speed, and builds up cold by the size of the hit. Enough cold freezes it: for 1.4 seconds it cannot move or fire (a Warden or a Choir 0.7, the Overseer 0.6), and then it cannot freeze again for 4 seconds. About five Auto Rifle hits or two Longshot hits freeze a body. Pillagers freeze too. No gun can be upgraded in play yet: the Forge station comes in a later build.
+
+MEASURED. Check 25.24 passes, and fails on v25.23.
 ## v25.23 - BANDAGES AND MEDKITS SOUND LIKE THEM
 
 Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Starting a Bandage or a Medkit played the menu chirp, and so did its landing, with nothing in between. Now a Bandage tears open, wraps three times through its 1.5 second wind-up and lands with a short tape rip and a pat; a Medkit snaps its case, unzips, rummages and lands with the injector and a gauze wrap. The sounds are the recorded CC0 foley from the v25.20 bank, timed against the real wind-up as it runs, so a wind-up that ends early (going down) plays nothing more. Yours is centred on your side of the speakers, your teammates hear it where you stand, and a Bandage or Medkit put on a teammate sounds the same. Sound only: nothing in the game changes.

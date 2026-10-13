@@ -1,0 +1,7 @@
+v25.24: the forge: cryo rounds slow and freeze
+
+Cryo rounds from a MK III gun slow enemies and freeze them after a few hits.
+
+Check 25.24. Fails on v25.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
