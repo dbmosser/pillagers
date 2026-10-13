@@ -1073,6 +1073,25 @@
   .ui-key.pad{ border-radius:50%; width:24px; min-width:24px; padding:0; border:0; color:#111315; }
   .ui-key.pad-a{ background:#5fbf6a; } .ui-key.pad-b{ background:#e5482f; } .ui-key.pad-x{ background:#3f9de9; } .ui-key.pad-y{ background:#f5b73b; }
   .ui-key.pill{ border-radius:12px; padding:0 9px; }
+  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge of the title shot with 2 PLAYER CO-OP picked and the second window
+     blocked): THE PICK SHOWS. After a same machine pick that stops on a note, 1 PLAYER was still the amber button, so the screen
+     did not say what had been chosen, and the blocked note was a line of small red words with a small RETRY under it, like a stray
+     error. The picked row now carries the amber rail and a warm fill, 1 PLAYER steps back to an outline row while the pick is
+     waiting, and the note and RETRY are one alert card: a red rail, the words at 15px, RETRY the amber primary at its right end.
+     The step cards, the line under the rows and the saves panel give back a few pixels, so the title with the alert card up still
+     fits a 1080p screen at full size. No word changed. */
+  #root #title .tcard{ padding:10px 16px; }
+  #root #titlesub{ margin-top:8px !important; }
+  #root #slotpanel{ margin-top:14px !important; }
+  #root #modemenu button.moderow.picked{ background:#2a2416; border-color:var(--acc); color:var(--tx-1); box-shadow:inset 4px 0 0 var(--acc); }
+  #root #modemenu.haspick #titlestart{ background:rgba(17,19,21,.88); border-color:var(--ui-line-hi); color:var(--acc); }
+  #root #modemenu.haspick #titlestart:hover:not(:disabled){ background:var(--ui-hover); border-color:var(--acc); }
+  #root #modealert{ box-sizing:border-box; display:flex; align-items:center; gap:14px; width:560px; max-width:100%; margin:2px 0 0;
+    padding:8px 10px 8px 16px; background:#2a1714; border:1px solid rgba(229,72,47,.45); border-left:4px solid var(--danger); border-radius:2px; }
+  #root #modemsg{ flex:1; max-width:none; text-align:left; font-size:15px; line-height:1.45; color:var(--tx-1); }
+  #root #modemenu #moderetry{ flex:none; min-width:150px; min-height:48px; padding:0 22px !important; background:var(--acc); border-color:var(--acc);
+    color:var(--acc-ink); font-size:17px; font-weight:700; letter-spacing:.12em; }
+  #root #modemenu #moderetry:hover:not(:disabled){ background:#f7c25a; border-color:#f7c25a; color:var(--acc-ink); }
   /* vNN.xx, UI REDESIGN ui5q1m (his #50, from the AAA judge of the Wirt shot): THE GAMBLE IS THE BUTTON. GAMBLE and BUY were small
      outline buttons with 12px labels, greyed to ghosts when the credits fall short, so the main action of the window was its weakest
      element. GAMBLE is a full width 48px amber primary now and the offer BUY a 48px button; when the credits fall short both read as
@@ -1518,8 +1537,8 @@
       <div class="modelater"><button class="deploy ghost moderow" id="modecoopsrv" data-mode="coopsrv" disabled>2 PLAYER CO-OP (SERVER)</button><span>coming later</span></div>
       <button class="deploy ghost moderow" id="modepvp" data-mode="pvp">2 PLAYER PVP (SAME MACHINE)</button>
       <div class="modelater"><button class="deploy ghost moderow" id="modepvpsrv" data-mode="pvpsrv" disabled>PVP (SERVER)</button><span>coming later</span></div>
-      <div id="modemsg" style="display:none"></div>
-      <button class="deploy ghost" id="moderetry" style="display:none;padding:8px 24px">RETRY</button>
+      <!-- vNN.xx (ui5q1c, his #50): the note and RETRY are one alert card; netModeMsg shows and hides it with the note -->
+      <div id="modealert" style="display:none"><div id="modemsg" style="display:none"></div><button class="deploy ghost" id="moderetry" style="display:none;padding:8px 24px">RETRY</button></div>
       <div id="p2line" style="display:none"></div>
     </div>
     <div id="titlesub" style="margin-top:12px;font-size:14px;color:var(--ash)"></div>
@@ -1929,7 +1948,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.43';
+var VER='24.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38589,7 +38608,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.43: The Crier is redrawn as a loudspeaker drone: four rotors, a horn, and the alarm comes out of the horn. Check 24.43 fails on v24.42',
+  now:'v24.44: A picked mode on the title shows it is the pick, and a blocked second window shows an alert box with a big RETRY. Check 24.44 fails on v24.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -43102,6 +43121,19 @@ function netModeMsg(t,retry){
   var m=document.getElementById('modemsg'), r=document.getElementById('moderetry');
   if(m){ m.textContent=t||''; m.style.display=t?'':'none'; }
   if(r) r.style.display=(t&&retry)?'':'none';
+  var al=document.getElementById('modealert'); if(al) al.style.display=t?'':'none';   // vNN.xx (ui5q1c): the alert card holds the note and RETRY
+  try{ netModePickMark(!!t); }catch(_pm){}   // vNN.xx (ui5q1c, his #50): the row picked shows it is the pick while its note is up
+}
+// vNN.xx, UI REDESIGN ui5q1c (his #50, the title shot with a pick stopped on a note): MARK THE PICKED ROW. While a same machine pick
+// waits on a note (the browser blocked the window, player 2 is still in a raid), the row that was picked carries .picked and the
+// menu .haspick, so the pick shows and 1 PLAYER steps back; the note going away clears both. Looks only: nothing reads the marks.
+function netModePickMark(on){
+  var mm=document.getElementById('modemenu'), q, i, id='';
+  if(!mm) return;
+  if(on&&NET.pick) id=(NET.pick==='pvp')?'modepvp':(NET.arcPick?'modearcade':'modecoop');
+  q=mm.querySelectorAll('button[data-mode]');
+  for(i=0;i<q.length;i++) q[i].classList.toggle('picked',!!id&&q[i].id===id);
+  mm.classList.toggle('haspick',!!id);
 }
 // A SAME MACHINE ROW, or RETRY. Opens the player 2 window first, inside the click, since a browser only allows a window a
 // click asked for; then this copy is the host and the title start runs. Returns what happened, so a check can read it.

@@ -1,0 +1,7 @@
+v24.44: the pick shows on the title
+
+A picked mode on the title shows it is the pick, and a blocked second window shows an alert box with a big RETRY.
+
+Check 24.44. Fails on v24.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

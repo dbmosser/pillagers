@@ -1,0 +1,5 @@
+## v24.44 - THE PICK SHOWS ON THE TITLE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the title after 2 PLAYER CO-OP was picked and the browser blocked the second window found that 1 PLAYER still looked like the choice, so the screen did not say what had been picked, and the blocked note was a line of small red words with a small RETRY, like a stray error. Now the picked row carries the amber edge and a warm fill, 1 PLAYER steps back to an outline while the pick waits, the note is a proper alert box with a red edge in bigger type, and RETRY is the big amber button. No word changed.
+
+MEASURED. Check 24.44 passes, and fails on v24.43.

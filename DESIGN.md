@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.44 - THE PICK SHOWS ON THE TITLE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the title after 2 PLAYER CO-OP was picked and the browser blocked the second window found that 1 PLAYER still looked like the choice, so the screen did not say what had been picked, and the blocked note was a line of small red words with a small RETRY, like a stray error. Now the picked row carries the amber edge and a warm fill, 1 PLAYER steps back to an outline while the pick waits, the note is a proper alert box with a red edge in bigger type, and RETRY is the big amber button. No word changed.
+
+MEASURED. Check 24.44 passes, and fails on v24.43.
 ## v24.43 - THE CRIER, REDRAWN
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of every character and machine, gritty and grounded like ARC Raiders, silhouettes first. The Crier was a grey square tilted on its corner and spinning like a sticker, with a bulb on top: it read as a picture frame or a dice, and nothing about it said drone or that it was about to shout for help. It is redrawn as a loudspeaker drone: a pod on an X frame with four spinning rotor blurs (the rotors spin, the body does not), a loudspeaker horn under it pointing where it faces with a yellow ring at the mouth, and a lamp on top that shows its mood (dim white idle, red when it calls). It tips a little toward where it faces instead of spinning. When it calls the ALARM the horn mouth glows red and the expanding red ring and the countdown arc come out of the horn, so you can see where the shout comes from; the ALARM word stays. An elite has a brass frame and a second lamp. Nothing about play changes: same hover, same size, same shadow.
