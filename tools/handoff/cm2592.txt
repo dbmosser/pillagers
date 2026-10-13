@@ -1,0 +1,7 @@
+v25.92: a third grenade kind rides in the backpack
+
+A third kind of grenade is now carried in the backpack as items, and a throwable key swaps it in.
+
+Check 25.92. Fails on v25.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
