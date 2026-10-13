@@ -2039,7 +2039,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.66';
+var VER='24.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33401,21 +33401,26 @@ function hudOff(id){
 // the backpack) each drew their own flat black rectangle with a thin stroke. They share one panel now: rounded corners, a slight
 // top-to-bottom gradient, a one pixel steel border and a hairline of light along the top edge, so the HUD reads as one set of
 // instruments. Every position, size and hit box is what it was.
+// vNN.xx, UI REDESIGN ui5q1k (his #50, and his #35: redo the HUD as part of the graphics work, keep all the critical info), from the
+// AAA judge of the raid HUD shots: THE HUD PANEL IS THE MENU PLATE. The raid panels (conditions and contracts, the pillager board, the
+// legends, the backpack) were navy glass with a periwinkle line and round corners, the look the menus left behind at ui5 and ui6, and
+// at 76 percent a world label (THE ... DOCK CACHE) read through the contracts panel. They are the plate of the menus now: graphite,
+// the top left corner cut at 10px, a hairline edge and a short amber tick on the top edge; the default fill is 88 percent, so the
+// world does not read through. A caller that asks for its own fill keeps it. Every position, size and hit box is what it was.
 function hudPanel(x,y,w,h,a){
-  var r, g;
+  var c, g;
   if(!(w>0&&h>0)) return;
-  r=Math.min(6,w/2,h/2); a=(a===undefined)?0.76:a;
-  function path(px,py,pw,ph,pr){ pr=Math.max(0,Math.min(pr,pw/2,ph/2)); ctx.beginPath(); ctx.moveTo(px+pr,py); ctx.lineTo(px+pw-pr,py); ctx.quadraticCurveTo(px+pw,py,px+pw,py+pr); ctx.lineTo(px+pw,py+ph-pr); ctx.quadraticCurveTo(px+pw,py+ph,px+pw-pr,py+ph); ctx.lineTo(px+pr,py+ph); ctx.quadraticCurveTo(px,py+ph,px,py+ph-pr); ctx.lineTo(px,py+pr); ctx.quadraticCurveTo(px,py,px+pr,py); ctx.closePath(); }
+  c=Math.max(0,Math.min(10,w/3,h/3)); a=(a===undefined)?0.88:a;
+  function path(px,py,pw,ph,pc){ ctx.beginPath(); ctx.moveTo(px+pc,py); ctx.lineTo(px+pw,py); ctx.lineTo(px+pw,py+ph); ctx.lineTo(px,py+ph); ctx.lineTo(px,py+pc); ctx.closePath(); }
   ctx.save();
-  path(x,y,w,h,r);
-  try{ g=ctx.createLinearGradient(0,y,0,y+h); g.addColorStop(0,'rgba(14,19,40,'+a+')'); g.addColorStop(1,'rgba(6,9,13,'+a+')'); ctx.fillStyle=g; }catch(_g){ ctx.fillStyle='rgba(6,9,13,'+a+')'; }
+  path(x,y,w,h,c);
+  try{ g=ctx.createLinearGradient(0,y,0,y+h); g.addColorStop(0,'rgba(24,27,30,'+a+')'); g.addColorStop(1,'rgba(14,16,18,'+a+')'); ctx.fillStyle=g; }catch(_g){ ctx.fillStyle='rgba(17,19,21,'+a+')'; }
   ctx.fill();
-  path(x+.5,y+.5,w-1,h-1,r);
-  ctx.strokeStyle='rgba(127,146,216,.42)'; ctx.lineWidth=1; ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(x+r,y+1.5); ctx.lineTo(x+w-r,y+1.5); ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1; ctx.stroke();
+  path(x+.5,y+.5,w-1,h-1,Math.max(0,c-.5));
+  ctx.strokeStyle='rgba(74,82,87,.9)'; ctx.lineWidth=1; ctx.stroke();
+  if(w>c+20){ ctx.fillStyle='#f5b73b'; ctx.fillRect(x+c+4,y,Math.min(36,w*0.25),2); }   // the amber tick of the menu plate (ui6)
   ctx.restore();
-}
-function drawRaiderBoard(){
+}function drawRaiderBoard(){
   delete HUDBOX.raiders;
   var R=G.roster, _nb=(NET.on&&netEntsPeer()&&G.netBoard)?G.netBoard:null;   // v16.34: a linked window draws the host board
   if(_nb) R=[];
@@ -38981,7 +38986,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.66: The Fashion racks fill the panel with wider tiles, and locked tiles show a lock. Check 24.66 fails on v24.65',
+  now:'v24.67: The raid HUD panels are the graphite plate of the menus, solid enough that the map does not show through. Check 24.67 fails on v24.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

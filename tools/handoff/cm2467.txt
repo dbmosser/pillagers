@@ -1,0 +1,7 @@
+v24.67: the raid panels are the menu plate
+
+The raid HUD panels are the graphite plate of the menus, solid enough that the map does not show through.
+
+Check 24.67. Fails on v24.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

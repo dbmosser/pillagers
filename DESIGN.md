@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.67 - THE RAID PANELS ARE THE MENU PLATE
+
+Co-op hunt while he was away. His orders of 2026-10-12: redo the HUD as part of the graphics work and keep all the critical info (#35), and make the menus look like a triple A game (#50). The picture review of the raid HUD found its panels (contracts, the pillager board, the controls card, the backpack) still in the old look the menus left behind: see-through navy glass with a blue line and round corners, and a map label reading through the contracts panel. They are drawn as the same graphite plate as the menus now, with the cut corner, a fine edge and the short amber mark, and solid enough that the world does not show through. Every panel is where it was and the same size, and nothing on them changed.
+
+MEASURED. Check 24.67 passes, and fails on v24.66.
 ## v24.66 - THE FASHION RACKS FILL THE PANEL
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Fashion found the rack tiles so narrow that what unlocks a tile ran into both borders or broke into five lines over its name, the racks used only the left half of the panel, and a locked tile looked almost the same as one you own. The tiles are wider and share the whole panel width, the unlock line fits inside the tile, and a locked tile shows a small lock. No word changed.
