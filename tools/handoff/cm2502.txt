@@ -1,0 +1,7 @@
+v25.02: equipping a gun says nothing about the rest
+
+Equipping or swapping a gun now shows only the gun in your hands, with no line about your other guns or the backpack.
+
+Check 25.02. Fails on v25.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

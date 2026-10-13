@@ -2111,7 +2111,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.01';
+var VER='25.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18427,22 +18427,27 @@ function equipFromBag(ix,slot){
   // half he cannot work out for himself, and it was the half being destroyed.
   var _newLine=_kept?(g.name+' stowed').toUpperCase()   // v22.43: the shooter voice (the gun in hand is not named: it did not move)
                     :(g.name+(toSec?' stowed':' equipped')).toUpperCase();   // v22.xx (R52): X EQUIPPED, or X STOWED when it went to the other hand
+  // v24.xx (noequipline): a gun drawn off its key (drawGun) is brought straight up into his hands, so its line says EQUIPPED. It said
+  // STOWED whenever it landed in the free slot first, and with the GUN UP line under it gone that was the last word on the gun in his hands.
+  if(_eqUp) _newLine=(g.name+' equipped').toUpperCase();
   // v21.83: the gun keys settle. The drawn gun keeps the key it was drawn from, or takes a free gun key, or the key of the gun it
   // pushed out; the gun pushed out keeps its own key in the backpack, and the line names that key.
   _gunKeyHint='';
   if(!G.sim){
     var _pushId=(oldW&&oldW.id!=='fists'&&oldW.mag!==0&&!oldIssued)?oldW.id:null;
     gunKeysSettle({pushed:_pushId,arrived:gk});   // v21.90: the drawn gun is the one that may take the pushed-out key
-    if(_pushId&&!_oldLine&&G.bag.indexOf('gun_'+_pushId)>=0&&!((p.wep&&p.wep.id===_pushId)||(p.sec&&p.sec.id===_pushId))&&G.hotAssign)
-      for(var _pk in G.hotAssign) if(G.hotAssign[_pk]==='gun_'+_pushId){ _gunKeyHint=(oldW.name+' in backpack \u00b7 slot '+(+_pk+1)).toUpperCase(); break; }   // v22.xx (R52): the slot word
+    // v24.xx (noequipline), HIS ORDER (2026-10-12): no hint naming the gun pushed into the backpack and its key (GUN IN BACKPACK, SLOT
+    // N). The keys still settle exactly as before; only the words went.
   }
   var _eqLine=_oldLine?(_oldLine+' '+_newLine):_newLine;
   // v22.43, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 3): a gun routed to the free slot
   // reads SHOTGUN STOWED, and the key of the gun pushed out is the detail under the line, not a capital tail on a sentence.
   // v22.xx, the raid text rewrite (R52): one caps headline, the gun he now has, and what happened to the gun it pushed out as the
   // detail with the slot it kept (Issued Scav Pistol left behind. / Meridian Lance back to the armoury.), never one long sentence.
-  var _eqSub=[_oldLine,_gunKeyHint].filter(function(_es){ return !!_es; }).join(' \u00b7 ');
-  say(_newLine,'info',_eqSub?{sub:_eqSub}:null);
+  // v24.xx (noequipline), HIS ORDER (2026-10-12): "don't need to tell what else in the backpack when i equip a different gun". The
+  // detail under the line named what became of the gun it replaced (to backpack, back to the armoury, left behind) and the key it
+  // kept in the backpack. The line names the gun he equipped and nothing else; the gun card shows what is in his hands.
+  say(_newLine,'info',null);
   blip('pick');
   return true;
 }
@@ -18518,12 +18523,15 @@ function giveUpSlot(){
 }
 // v21.83: draw a backpack gun into his hands by the give-up rule and bring it up if it landed stowed. The highlight stays on the
 // key it was pressed from when that key shows it in his hands now. False when the equip refuses (rolling, paused, down).
+var _eqUp=false;   // v24.xx (noequipline): true while drawGun equips, so the equip line names the gun as up in his hands
 function drawGun(ix){
-  var p=G&&G.player, it=ITEMS[G.bag[ix]], h0=G.hot;
+  var p=G&&G.player, it=ITEMS[G.bag[ix]], h0=G.hot, ok=false;
   if(!p||!it||it.use!=='gun') return false;
   _gunKeyHint='';
-  if(!equipFromBag(ix,giveUpSlot())) return false;
-  if(p.wep.id!==it.gk&&p.sec&&p.sec.id===it.gk){ swapGuns(); if(_gunKeyHint) say((p.wep.name+' up').toUpperCase(),'info',{sub:_gunKeyHint}); }
+  _eqUp=true; try{ ok=equipFromBag(ix,giveUpSlot()); } finally { _eqUp=false; }
+  if(!ok) return false;
+  // v24.xx (noequipline), HIS ORDER (2026-10-12): brought up with no second line naming the gun it pushed into the backpack.
+  if(p.wep.id!==it.gk&&p.sec&&p.sec.id===it.gk) swapGuns();
   var s=hotbarSlots();
   if(s[h0]&&s[h0].kind==='gun'&&s[h0].inHand) G.hot=h0;
   else if(!(s[G.hot]&&s[G.hot].kind==='gun'&&s[G.hot].inHand)) G.hot=gunCell();
@@ -31084,12 +31092,9 @@ function statusGlyph(id,cx,cy,u,col){
   }
 }
 // Called once a frame from drawHUD. Returns how many icons it drew.
-// v21.73: the gun card's line for the gun you are NOT holding, or '' when the other slot holds only Bare Hands.
-function stowLine(p){
-  var s=p&&p.sec;
-  if(!s||s.id==='fists') return '';
-  return 'OTHER GUN  '+s.name+((s.mag>0)?'  '+p.secAmmo:'');
-}
+// v24.xx (noequipline), HIS ORDER (2026-10-12): "don't need to tell what else in the backpack when i equip a different gun -- weird
+// design choice from you". stowLine (v21.73) built the gun card's OTHER GUN line, naming the gun in the other slot and its rounds, on
+// every frame and so on every swap. It is gone with both of its callers: the gun card shows the gun in his hands and its ammo only.
 function drawStatusIcons(){
   var p=G&&G.player, L=STATUSL, E, i, j, n=0, s=0, hr, S, g, r, ox, oy, yBot, rows, B, wC, nf, vf, x, y, cx, cy, tx, tw, lw, rr, u, hx, ph;
   if(!p||G.over||G.sim||G.mapOpen) return 0;
@@ -32686,7 +32691,7 @@ if(p.armor>0){
   // moves it by starts (so its resize grip sits under its left edge), and grows left only for a long gun name or stowed line. The words on
   // it, the box the mouse uses and the belt clamp are as they were.
   try{ var _gz=(HUDZ.gear||1)*hudRes()*hudUserZ('gear'), _wpR=W-8/_gz, _wtx=ctx.measureText(_cornName).width;
-       if(stowLine(p)){ ctx.font=FS(TYPE.micro); _wtx=Math.max(_wtx,ctx.measureText(stowLine(p)).width); ctx.font=FS(TYPE.head); }
+       // v24.xx (noequipline): no OTHER GUN line to measure; the card fits the gun name.
        var _wpx=Math.min(W-252,W-16-_wtx-LH(14)), _wpw=_wpR-_wpx, _hcL=(G.hotCells&&G.hotCells.length)?G.hotCells[G.hotCells.length-1]:null;
        var _gdx=(typeof _boG==='object'&&_boG)?(_boG.dx||0):0, _lim=_hcL?(W+((_hcL.x+_hcL.w+LH(8))-_gdx-W)/_gz):-1e9;   // the belt edge, brought into this corner's scaled space
        if(_hcL&&_wpx<_lim){ _wpx=_lim; _wpw=_wpR-_wpx; }   // v18.39: never over the belt (it covered key 9)
@@ -32711,12 +32716,8 @@ if(p.armor>0){
   // v21.73, HIS NOTE (2026-10-09): "it says my gun is stowed even tho i've got it out". The line over the gun name read STOWED and
   // then the other slot, so over the gun in his hands it said STOWED Bare Hands, which reads as the gun he holds being put away. It
   // now names the other gun plainly (OTHER GUN, its name, its rounds), and with nothing but Bare Hands in the other slot there is no line.
-  if(stowLine(p)){
-    ctx.font=FS(TYPE.micro); ctx.fillStyle='#7d8894';
-    var _cornStow=stowLine(p);
-    _cornMark(_cornStow);
-    ctx.fillText(_cornStow,W-16,by-LH(52));
-  }
+  // v24.xx (noequipline), HIS ORDER (2026-10-12): the OTHER GUN line (v21.73) is gone. The card names the gun in his hands and its
+  // ammo, and nothing else on it says what else he carries; the belt shows his keys.
   // The rectangle the corner owns, left for the world labels drawn on the NEXT
   // frame. A floor of 180 so a short name like FISTS still reserves the space
   // the ammo line under it needs.
@@ -39373,7 +39374,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.01: When machines lock on to you, you now hear one low siren that wails while they are on you, the same every time however many there are, instead of a scatter of beeps. Check 25.01 fails on v25.00',
+  now:'v25.02: Equipping or swapping a gun now shows only the gun in your hands, with no line about your other guns or the backpack. Check 25.02 fails on v25.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

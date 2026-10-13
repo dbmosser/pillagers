@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.02 - EQUIPPING A GUN SAYS NOTHING ABOUT THE REST
+
+Co-op hunt while he was away. His order of 2026-10-12: you do not need to be told what else is in the backpack when you equip a different gun. The gun card in the corner had a line under the gun naming the other gun you carry and its rounds (OTHER GUN), and drawing a gun off a key said where the gun it replaced went (to the backpack, back to the armoury, left behind) and which key it kept in the backpack. All of that is gone. Swapping or drawing a gun, by the number keys or on the controller, now shows the gun in your hands and its ammo, and the line that comes up names only the gun you equipped. A gun drawn off its key now reads EQUIPPED, never STOWED, since it comes straight up into your hands. The keys and the belt work exactly as before.
+
+MEASURED. Check 25.02 passes, and fails on v25.01.
 ## v25.01 - THE LOCK-ON IS ONE LOW SIREN
 
 Co-op hunt while he was away. His order of 2026-10-12: whichever robot is beeping, it sounds annoying when they get together and the beeping is inconsistent, it needs to be more of a low siren. Since v24.59 every machine gave its own short high double beep the moment it locked on to you, a quarter second apart, so a room of machines turning at once was a scatter of chirps that never sounded the same twice. Now there is one siren: a soft, low wail that rises and falls on a steady beat of about a second and a half, and it plays for as long as at least one machine is on you. Two machines or ten are still the same one siren, a little faster and a little louder with more of them, never a pile of tones. It sits on the side of the nearest machine that is on you, muffled when that machine is behind a wall, fades in and out over about a third of a second, and stops the moment none is on you, when the raid ends and when you pause. In two player, each window hears the siren for the machines on its own player. The old beep is gone.
