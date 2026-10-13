@@ -1,0 +1,7 @@
+v24.89: the attract screen fills a 4k tv
+
+The arcade attract screen and RUN OVER card fill a 4K TV as they fill a 1080p one.
+
+Check 24.89. Fails on v24.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

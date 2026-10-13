@@ -1077,6 +1077,21 @@
   .ui-key.pad{ border-radius:50%; width:24px; min-width:24px; padding:0; border:0; color:#111315; }
   .ui-key.pad-a{ background:#5fbf6a; } .ui-key.pad-b{ background:#e5482f; } .ui-key.pad-x{ background:#3f9de9; } .ui-key.pad-y{ background:#f5b73b; }
   .ui-key.pill{ border-radius:12px; padding:0 9px; }
+  /* vNN.xx, UI REDESIGN ui5q1x (his #50, from the visual QA of the Mainframe RACKS and REWARDS tabs): one left edge. Both panes were
+     a centred 1080px column under the title and tabs on the left edge, the two-layouts look Settings had (ui5q1g). They start on the
+     left edge under the tabs and run 1320px, as Settings does. */
+  #root #opane_mf, #root #opane_rew{ max-width:1320px; margin:0; }
+  /* vNN.xx, UI REDESIGN ui5q1w (his #50, from the visual QA of the Keys window): THE KEYS LIST READS LIKE SETTINGS. The list ran the
+     whole width of the window, lower case action names at the left edge and plain boxes at the right, nearly 1900px apart. It is a
+     1100px list on the left edge now, the action names in the 18px condensed caps of the Settings rows (the words are unchanged), and
+     every key is a keycap: a key with a lip, as on the title, the stash and the pause box. A key changed from its default stays amber. */
+  #root #keyslist{ max-width:1100px; width:100%; max-height:none !important; flex:1 1 auto; min-height:0; }
+  #root #keysmodal > .pbox{ margin-top:auto !important; padding-top:12px; border-top:1px solid var(--ui-line); width:100%; }
+  #root #keyslist .row{ min-height:56px; padding:6px 16px; }
+  #root #keyslist .row b{ font-family:var(--f-cond); font-weight:600; font-size:18px; letter-spacing:.06em; text-transform:uppercase; color:var(--tx-1); }
+  #root #keyslist .keybtn{ min-width:120px !important; min-height:40px; border:1px solid var(--tx-1); border-bottom-width:3px; border-radius:4px;
+    background:rgba(0,0,0,.35); font-family:var(--f-cond); font-weight:700; font-size:16px; letter-spacing:.06em; }
+  #root #keyslist .keybtn:hover:not(:disabled){ border-color:var(--acc); background:var(--ui-hover); }
   /* vNN.xx, UI REDESIGN ui5q1q (his #50, from the lint of the Mainframe YOUR STATS shot): the caption over the run log (EVERY RUN,
      NEWEST FIRST) took the dark ink meant for the cream cards and read at about 3:1 on the graphite page; it is the second text
      colour there now. The cream cards keep their ink. */
@@ -2077,7 +2092,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.86';
+var VER='24.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30551,21 +30566,6 @@ function drawBuzzFx(){
       var S=sl[q],bx=hx+q*(bw+gap),on=q===sel;
       G.hotCells.push({x:bx,y:hy,w:bw,h:bw,i:q});
       var empty=(S.count===0);
-      // v24.xx (beltgrey), HIS ORDER (2026-10-12): "guns on quickbar/belot should grey out only half way if they are out of magazine
-      // ammo but player has ammo to reload the gun -- should only fully grey out if they are completely out of ammo". A gun key with an
-      // empty magazine was greyed exactly like a gun with nothing left, so a gun one reload from firing read as dead. Three states now:
-      // rounds in its magazine, full colour; an empty magazine while he carries rounds it can load (the one shared pool, p.reserve, or an
-      // ammo box in the backpack, which is how the Undercroft belt carries packed ammo), HALF grey, with the 0 in the amber of the RELOAD
-      // reticle; no rounds anywhere, fully grey as before. Every gun cell: in hand, stowed, a backpack gun on a gun key, the floor belt.
-      // A gun with no magazine (melee) has no count and never greys. Derived every frame, so a pickup, a reload or the last shot shows
-      // at once.
-      var _bgHalf=false;
-      if(empty&&S.kind==='gun'&&!S.vacant&&S.icon){
-        var _bgP=G.player, _bgN=(_bgP&&+_bgP.reserve)||0, _bgi, _bgI;
-        for(_bgi=0;_bgN<=0&&G.bag&&_bgi<G.bag.length;_bgi++){ _bgI=ITEMS[G.bag[_bgi]]; if(_bgI&&_bgI.use==='ammo') _bgN+=(_bgI.amt||1); }
-        _bgHalf=_bgN>0;
-      }
-      var _bgDim=empty&&!_bgHalf;
       // v18.34, THE STYLING PASS IN THE RAID (2026-10-04): THE BELT KEYS ARE ROUNDED TILES. A belt key was a flat square with a thin
       // stroke. It is a rounded tile now with a light from the top, a rarity wash inside the same shape and a rounded ring, the
       // shape the stash cells took at v18.32. Every size, hit box and colour rule is unchanged.
@@ -30579,16 +30579,16 @@ function drawBuzzFx(){
       var _hr=(S.itemKey&&ITEMS[S.itemKey])?dispR(S.itemKey)
              :((S.kind==='gun'&&S.icon&&WEAPONS[S.icon])?gunRarity(S.icon)
              :((S.icon&&ITEMS[S.icon])?dispR(S.icon):null));
-      if(_hr&&!_bgDim){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; if(_bgHalf) ctx.globalAlpha=.5; ctx.fillRect(bx,hy,bw,bw); ctx.globalAlpha=1; } }   // v24.xx (beltgrey): a reloadable gun keeps half its wash
+      if(_hr&&!empty){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; ctx.fillRect(bx,hy,bw,bw); } }
       ctx.fillStyle='rgba(255,255,255,.05)'; ctx.fillRect(bx,hy,bw,Math.max(1,bw*0.04));
       ctx.restore();
       var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw)
         ||(!!G.bagOpen&&!!G.bagBelt&&q===clamp(G.bagBeltSel||0,0,sl.length-1));   // v16.79, his order: the backpack highlight on the belt row rings its key
-      ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!_bgDim)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
+      ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!empty)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
       ctx.lineWidth=(dragOver||on)?2:1;
       _bpath(); ctx.stroke();   // v18.34: the rounded ring
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
-      ctx.globalAlpha=_bgDim?.28:(_bgHalf?.64:1);   // v24.xx (beltgrey): half grey while it can be reloaded
+      ctx.globalAlpha=empty?.28:1;
       ctx.fillStyle=S.c;
       // Real item portraits, v2.87: the slot draws the same icon the inventory
       // and the shops use, so a Kettle looks like a Kettle everywhere. The old
@@ -30619,7 +30619,7 @@ function drawBuzzFx(){
       }
       if(S.count!==null&&S.count!==undefined&&S.kind!=='empty'){   // v19.01: no count on an empty key
         ctx.font=beltFS(bw,0.16);   // v18.71: grows with the slot
-        ctx.fillStyle=_bgDim?'#7a5040':(_bgHalf?'#ffc04a':'#FFF6DC');   // v24.xx (beltgrey): an empty magazine he can reload says 0 in the RELOAD amber
+        ctx.fillStyle=empty?'#7a5040':'#FFF6DC';
         ctx.textAlign='right'; ctx.fillText(String(S.count),bx+bw-LH(4),hy+bw-LH(5)); ctx.textAlign='left';
       }
     }
@@ -37548,9 +37548,9 @@ function attEl(){
   var st=document.createElement('style');
   st.textContent='#attract{position:fixed;left:0;top:0;right:0;bottom:0;z-index:9000;background:#000;display:none;cursor:none}'+
     '#attract video{width:100%;height:100%;object-fit:cover}'+
-    '#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,84px) var(--f-cond);'+
+    '#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,168px) var(--f-cond);'+
     'letter-spacing:.08em;color:#ffc04a;text-shadow:0 3px 0 #000,0 0 24px rgba(0,0,0,.9);animation:attpulse 1.6s ease-in-out infinite}'+
-    '#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,120px) var(--f-cond);'+
+    '#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,240px) var(--f-cond);'+
     'letter-spacing:.14em;color:#f2e6c8;text-shadow:0 4px 0 #000,0 0 30px rgba(0,0,0,.9);opacity:.92}'+
     '@keyframes attpulse{0%,100%{opacity:1}50%{opacity:.6}}';   // vNN.xx (ui5q1s): the faint end of the pulse still reads (2.8:1 at .35)
   document.head.appendChild(st);
@@ -39182,7 +39182,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.86: A kill in DEMO no longer gives ammo back or a free Bandage, the same as in CAREER. Check 24.86 fails on v24.85',
+  now:'v24.89: The arcade attract screen and RUN OVER card fill a 4K TV as they fill a 1080p one. Check 24.89 fails on v24.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48686,7 +48686,7 @@ function arcadeAttEl(cls){
       '#attract .arcpage .apr.hl{color:#7fe3d4}#attract .arcpage .apn{line-height:1.6;opacity:.8}#attract .arcpage .apb{color:#ff8a1f;margin-top:.35em}'+
       '#attract .arcpage table{margin:0 auto;border-collapse:collapse;color:inherit;font:inherit;letter-spacing:inherit}#attract .arcpage td,#attract .arcpage th{padding:.2em .9em;text-align:left}#attract .arcpage th{color:#9a8f78;font-size:.8em}#attract .arcpage .apk{color:#ffc04a}'+
       '#attract .arcstrip{position:absolute;left:0;right:0;bottom:28.5%;padding:.2em 0;text-align:center;background:linear-gradient(90deg,transparent,rgba(0,0,0,.66) 26%,rgba(0,0,0,.66) 74%,transparent);'+
-      'font:800 clamp(15px,1.6vw,38px) var(--f-cond);letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}';
+      'font:800 clamp(15px,1.6vw,76px) var(--f-cond);letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}';
     document.head.appendChild(st);
   }
   e=document.createElement('div'); e.className=cls; e.style.display='none'; d.appendChild(e);
@@ -48713,6 +48713,8 @@ function arcadeAttBoard(pg){
 // has no doctype, so the browser runs in quirks mode, where a table does not inherit colour or font from the page: the KEYBOARD and
 // CONTROLLER cells were default black on the black page, and only the action names (coloured on their own) showed. The table
 // inherits the colour, font and spacing of the page now (arcattcss), so every key reads in bone at the page size.
+// vNN.xx, UI REDESIGN ui5q1y (his #50, the 4K attract pictures): the attract name, PRESS ANY BUTTON, the team strip and the RUN OVER
+// card size with the screen up to a 4K TV (their caps doubled: 168, 240, 76 and 92px), as the attract pages do since ui5q1u.
 function arcadeAttHow(pg){
   var t=document.createElement('table'), tr, c, i, j, h=['','KEYBOARD','CONTROLLER'], rw;
   arcadeAttLine(pg,'aph','HOW TO PLAY');
@@ -49043,7 +49045,7 @@ function arcadeOverEl(){
   if(c) return c;
   st=document.createElement('style');
   st.textContent='#attract .arcover{position:absolute;left:0;right:0;top:24%;padding:.45em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.8) 18%,rgba(0,0,0,.8) 82%,transparent);text-align:center;'+
-    'font:800 clamp(16px,1.9vw,46px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 3px 0 #000,0 0 18px rgba(0,0,0,.9)}'+
+    'font:800 clamp(16px,1.9vw,92px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 3px 0 #000,0 0 18px rgba(0,0,0,.9)}'+
     '#attract .arcover .aoh{font-size:2.4em;color:#ff5a3a}#attract .arcover .aos{font-size:1.5em;color:#ffc04a;margin:.12em 0 .4em}#attract .arcover .aor{margin:.14em 0;opacity:.94}';
   document.head.appendChild(st);
   c=document.createElement('div'); c.className='arcover'; c.style.display='none'; d.appendChild(c);
@@ -58399,6 +58401,37 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'24.89',what:'his #50 (UI redesign ui5q1y, the 4K attract pictures): the attract name and PRESS ANY BUTTON keep growing past a 1440p size (their caps are at least 160px and 230px)',
+   run:function(){
+     var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), bad=[];
+     if(src.indexOf('clamp(26px,3.6vw,'+'84px)')>=0) bad.push('PRESS ANY BUTTON stops growing at 84px');
+     if(src.indexOf('clamp(30px,5vw,'+'120px)')>=0) bad.push('the attract name stops growing at 120px');
+     if(src.indexOf('clamp(26px,3.6vw,'+'168px)')<0) bad.push('control: PRESS ANY BUTTON has no 168px cap');
+     return bad.length?bad.join('; '):null; }},
+  {v:'24.88',what:'his #50 (UI redesign ui5q1x, from the visual QA of the Mainframe RACKS and REWARDS tabs): the RACKS and REWARDS panes start on the left edge of the tabs, not centred',
+   run:function(){
+     var bad=[], ids=['opane_mf','opane_rew'], i, p, s;
+     for(i=0;i<ids.length;i++){
+       p=document.getElementById(ids[i]); if(!p) continue;
+       s=getComputedStyle(p);
+       if(s.marginLeft==='auto'||(parseFloat(s.marginLeft)>2&&s.display!=='none')) bad.push(ids[i]+' is centred (margin-left '+s.marginLeft+')');
+       if(!(parseFloat(s.maxWidth)>=1300)) bad.push(ids[i]+' is held to '+s.maxWidth);
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'24.87',what:'his #50 (UI redesign ui5q1w, from the visual QA of the Keys window): the Keys list is at most 1100px wide, its action names are drawn in caps at 17px or more, and each key is a keycap with a thicker lower edge',
+   run:function(){
+     if(typeof keysOpen!=='function') return 'SKIP: no Keys window here';
+     var bad=[], l, b, k, s;
+     try{
+       keysOpen(); l=document.getElementById('keyslist');
+       if(!l) return 'SKIP: the Keys window did not build';
+       if(!(parseFloat(getComputedStyle(l).maxWidth)<=1100)) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+')');
+       b=l.querySelector('.row b'); k=l.querySelector('.keybtn');
+       if(b){ s=getComputedStyle(b); if(s.textTransform!=='uppercase'||!(parseFloat(s.fontSize)>=17)) bad.push('an action name is '+s.fontSize+' '+s.textTransform); }
+       if(k){ s=getComputedStyle(k); if(!(parseFloat(s.borderBottomWidth)>parseFloat(s.borderTopWidth))) bad.push('a key is a flat box, not a keycap'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var m=document.getElementById('keysmodal'); if(m) m.classList.remove('on'); KEYS.waiting=null; }catch(_k){} try{ __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'24.86',what:'his answer 2026-10-12: a DEMO kill gives no ammo back and no Bandage, as a CAREER kill does not',
    run:function(){

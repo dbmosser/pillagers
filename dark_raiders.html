@@ -2092,7 +2092,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.88';
+var VER='24.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -37548,9 +37548,9 @@ function attEl(){
   var st=document.createElement('style');
   st.textContent='#attract{position:fixed;left:0;top:0;right:0;bottom:0;z-index:9000;background:#000;display:none;cursor:none}'+
     '#attract video{width:100%;height:100%;object-fit:cover}'+
-    '#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,84px) var(--f-cond);'+
+    '#attract .attpress{position:absolute;left:0;right:0;bottom:15%;padding:.28em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.72) 22%,rgba(0,0,0,.72) 78%,transparent);text-align:center;font:800 clamp(26px,3.6vw,168px) var(--f-cond);'+
     'letter-spacing:.08em;color:#ffc04a;text-shadow:0 3px 0 #000,0 0 24px rgba(0,0,0,.9);animation:attpulse 1.6s ease-in-out infinite}'+
-    '#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,120px) var(--f-cond);'+
+    '#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,240px) var(--f-cond);'+
     'letter-spacing:.14em;color:#f2e6c8;text-shadow:0 4px 0 #000,0 0 30px rgba(0,0,0,.9);opacity:.92}'+
     '@keyframes attpulse{0%,100%{opacity:1}50%{opacity:.6}}';   // vNN.xx (ui5q1s): the faint end of the pulse still reads (2.8:1 at .35)
   document.head.appendChild(st);
@@ -39182,7 +39182,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.88: The Mainframe RACKS and REWARDS tabs line up on the left like the rest of the window. Check 24.88 fails on v24.87',
+  now:'v24.89: The arcade attract screen and RUN OVER card fill a 4K TV as they fill a 1080p one. Check 24.89 fails on v24.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48686,7 +48686,7 @@ function arcadeAttEl(cls){
       '#attract .arcpage .apr.hl{color:#7fe3d4}#attract .arcpage .apn{line-height:1.6;opacity:.8}#attract .arcpage .apb{color:#ff8a1f;margin-top:.35em}'+
       '#attract .arcpage table{margin:0 auto;border-collapse:collapse;color:inherit;font:inherit;letter-spacing:inherit}#attract .arcpage td,#attract .arcpage th{padding:.2em .9em;text-align:left}#attract .arcpage th{color:#9a8f78;font-size:.8em}#attract .arcpage .apk{color:#ffc04a}'+
       '#attract .arcstrip{position:absolute;left:0;right:0;bottom:28.5%;padding:.2em 0;text-align:center;background:linear-gradient(90deg,transparent,rgba(0,0,0,.66) 26%,rgba(0,0,0,.66) 74%,transparent);'+
-      'font:800 clamp(15px,1.6vw,38px) var(--f-cond);letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}';
+      'font:800 clamp(15px,1.6vw,76px) var(--f-cond);letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}';
     document.head.appendChild(st);
   }
   e=document.createElement('div'); e.className=cls; e.style.display='none'; d.appendChild(e);
@@ -48713,6 +48713,8 @@ function arcadeAttBoard(pg){
 // has no doctype, so the browser runs in quirks mode, where a table does not inherit colour or font from the page: the KEYBOARD and
 // CONTROLLER cells were default black on the black page, and only the action names (coloured on their own) showed. The table
 // inherits the colour, font and spacing of the page now (arcattcss), so every key reads in bone at the page size.
+// vNN.xx, UI REDESIGN ui5q1y (his #50, the 4K attract pictures): the attract name, PRESS ANY BUTTON, the team strip and the RUN OVER
+// card size with the screen up to a 4K TV (their caps doubled: 168, 240, 76 and 92px), as the attract pages do since ui5q1u.
 function arcadeAttHow(pg){
   var t=document.createElement('table'), tr, c, i, j, h=['','KEYBOARD','CONTROLLER'], rw;
   arcadeAttLine(pg,'aph','HOW TO PLAY');
@@ -49043,7 +49045,7 @@ function arcadeOverEl(){
   if(c) return c;
   st=document.createElement('style');
   st.textContent='#attract .arcover{position:absolute;left:0;right:0;top:24%;padding:.45em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.8) 18%,rgba(0,0,0,.8) 82%,transparent);text-align:center;'+
-    'font:800 clamp(16px,1.9vw,46px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 3px 0 #000,0 0 18px rgba(0,0,0,.9)}'+
+    'font:800 clamp(16px,1.9vw,92px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 3px 0 #000,0 0 18px rgba(0,0,0,.9)}'+
     '#attract .arcover .aoh{font-size:2.4em;color:#ff5a3a}#attract .arcover .aos{font-size:1.5em;color:#ffc04a;margin:.12em 0 .4em}#attract .arcover .aor{margin:.14em 0;opacity:.94}';
   document.head.appendChild(st);
   c=document.createElement('div'); c.className='arcover'; c.style.display='none'; d.appendChild(c);

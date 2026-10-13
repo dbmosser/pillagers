@@ -1,0 +1,28 @@
+{
+    "title":  "THE ATTRACT SCREEN FILLS A 4K TV",
+    "why":  "His order of 2026-10-12 (#50): take pictures at 1080p and 4K and make sure the menus look good. On a 4K screen the arcade attract screen name, PRESS ANY BUTTON, the team strip and the RUN OVER card stopped growing at a smaller screen size, so on a 4K TV they were about two thirds of their size on a 1080p one. They now grow with the screen.",
+    "now":  "The arcade attract screen and RUN OVER card fill a 4K TV as they fill a 1080p one.",
+    "edits":  [
+                  {
+                      "anchor":  "font:800 clamp(26px,3.6vw,84px) var(--f-cond);",
+                      "replacement":  "font:800 clamp(26px,3.6vw,168px) var(--f-cond);"
+                  },
+                  {
+                      "anchor":  "font:800 clamp(30px,5vw,120px) var(--f-cond);",
+                      "replacement":  "font:800 clamp(30px,5vw,240px) var(--f-cond);"
+                  },
+                  {
+                      "anchor":  "font:800 clamp(15px,1.6vw,38px) var(--f-cond);",
+                      "replacement":  "font:800 clamp(15px,1.6vw,76px) var(--f-cond);"
+                  },
+                  {
+                      "anchor":  "font:800 clamp(16px,1.9vw,46px) var(--f-cond);",
+                      "replacement":  "font:800 clamp(16px,1.9vw,92px) var(--f-cond);"
+                  },
+                  {
+                      "anchor":  "function arcadeAttHow(pg){",
+                      "replacement":  "// vNN.xx, UI REDESIGN ui5q1y (his #50, the 4K attract pictures): the attract name, PRESS ANY BUTTON, the team strip and the RUN OVER\n// card size with the screen up to a 4K TV (their caps doubled: 168, 240, 76 and 92px), as the attract pages do since ui5q1u.\nfunction arcadeAttHow(pg){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q1y, the 4K attract pictures): the attract name and PRESS ANY BUTTON keep growing past a 1440p size (their caps are at least 160px and 230px)\u0027,\n   run:function(){\n     var src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027), bad=[];\n     if(src.indexOf(\u0027clamp(26px,3.6vw,\u0027+\u002784px)\u0027)\u003e=0) bad.push(\u0027PRESS ANY BUTTON stops growing at 84px\u0027);\n     if(src.indexOf(\u0027clamp(30px,5vw,\u0027+\u0027120px)\u0027)\u003e=0) bad.push(\u0027the attract name stops growing at 120px\u0027);\n     if(src.indexOf(\u0027clamp(26px,3.6vw,\u0027+\u0027168px)\u0027)\u003c0) bad.push(\u0027control: PRESS ANY BUTTON has no 168px cap\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -6063,6 +6063,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.89',what:'his #50 (UI redesign ui5q1y, the 4K attract pictures): the attract name and PRESS ANY BUTTON keep growing past a 1440p size (their caps are at least 160px and 230px)',
+   run:function(){
+     var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), bad=[];
+     if(src.indexOf('clamp(26px,3.6vw,'+'84px)')>=0) bad.push('PRESS ANY BUTTON stops growing at 84px');
+     if(src.indexOf('clamp(30px,5vw,'+'120px)')>=0) bad.push('the attract name stops growing at 120px');
+     if(src.indexOf('clamp(26px,3.6vw,'+'168px)')<0) bad.push('control: PRESS ANY BUTTON has no 168px cap');
+     return bad.length?bad.join('; '):null; }},
   {v:'24.88',what:'his #50 (UI redesign ui5q1x, from the visual QA of the Mainframe RACKS and REWARDS tabs): the RACKS and REWARDS panes start on the left edge of the tabs, not centred',
    run:function(){
      var bad=[], ids=['opane_mf','opane_rew'], i, p, s;

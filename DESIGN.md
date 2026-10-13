@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.89 - THE ATTRACT SCREEN FILLS A 4K TV
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures at 1080p and 4K and make sure the menus look good. On a 4K screen the arcade attract screen name, PRESS ANY BUTTON, the team strip and the RUN OVER card stopped growing at a smaller screen size, so on a 4K TV they were about two thirds of their size on a 1080p one. They now grow with the screen.
+
+MEASURED. Check 24.89 passes, and fails on v24.88.
 ## v24.88 - THE MAINFRAME TABS SHARE ONE LEFT EDGE
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The pictures of the Mainframe RACKS and REWARDS tabs showed each one as a column floating in the middle of the window under a title and tabs on the left edge. They now start on the left under the tabs, as Settings does.
