@@ -2151,7 +2151,7 @@ window.__REGRESS=[
        __deploy({kit:['medkit','medkit','medkit','plate','servo'],safe:null,mapIx:0,seed:4242});
        var g=__state(); g.ents.length=0; g.player.iv=99; g.bagOpen=true;
        for(var f=0;f<8;f++) __loop(performance.now()+f*16.7);
-       if(bind) __state().hotAssign=bind; else if(typeof BELT_CLASS!=='undefined'){ __state().hotAssign={}; __state().hotAuto={}; }   // v25.xx (belt3) retarget: the raid start pins what the class keys show, so "nothing bound" is set here
+       if(bind){ __state().hotAssign=bind; if(typeof BELT_CLASS!=='undefined') __state().hotAuto={}; } else if(typeof BELT_CLASS!=='undefined'){ __state().hotAssign={}; __state().hotAuto={}; }   // v25.xx (belt3) retarget: the raid start pins what the class keys show, so "nothing bound" is set here
        for(var f2=0;f2<8;f2++) __loop(performance.now()+f2*16.7);
        return (__state().bagCells||[]).map(function(c){ return c.key; }).sort().join(',');
      }
@@ -60411,7 +60411,7 @@ window.__REGRESS=[
      var stale=[['F ','heal/revive'].join(''), ['Q/G ','throw'].join(''), ['TAB ','bag '].join(''), ['sprint ','on/off'].join(''), ['superhot ','mode'].join('')];
      for(var i=0;i<stale.length;i++) if(text.indexOf(stale[i])>=0) bad.push('the pause box still says "'+stale[i]+'"');
      // WHAT IT MUST SAY, and it must agree with the H list.
-     var need=[((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike']).join(''), ['I ','backpack'].join(''), ['tactical ','belt'].join(''), ['hold to ','sprint'].join('')];
+     var need=[((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike']).join(''), ['I ','backpack'].join(''), (text.indexOf(['tactical ','belt'].join(''))>=0?['tactical ','belt']:['1-4 ','guns']).join(''), ['hold to ','sprint'].join('')];
      for(i=0;i<need.length;i++) if(text.indexOf(need[i])<0) bad.push('the pause box does not say "'+need[i]+'"');
      var L=(window.__legend?__legend():null);
      if(L&&L.length){ var fRow=null; for(i=0;i<L.length;i++){ var rows=L[i][1]||[]; for(var j=0;j<rows.length;j++) if(rows[j][0]==='F') fRow=rows[j][1]; }
@@ -67151,7 +67151,7 @@ window.__REGRESS=[
      }
      // ONE: the compact legend. On v9.89 its TAB row read "bag".
      var mini=drawn(1);
-     var miniRows=mini.filter(function(t){ return (/^(move|sprint|crouch|roll|fire|aim|reload|swap gun|tactical belt|hotbar|search|map|bag|backpack)$/).test(t); });
+     var miniRows=mini.filter(function(t){ return (/^(move|sprint|crouch|roll|fire|aim|reload|swap gun|tactical belt|guns|hotbar|search|map|bag|backpack)$/).test(t); });
      if(miniRows.length<10) return (function(){ g.legendOn=keepLeg; return 'SKIP: the compact legend drew only '+miniRows.length+' rows'; })();
      if(mini.indexOf(BAG)>=0) bad.push('the compact legend still has a row that reads '+BAG);
      if(mini.indexOf('backpack')<0) bad.push('the compact legend has no row that reads backpack');
