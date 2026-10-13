@@ -1882,7 +1882,7 @@ window.__REGRESS=[
      if(a[E1]!=='bandage') return 'a bandage dropped on an empty slot did not stick';
      // v8.67, his order: a gun goes on ANY slot, same as any other equippable.
      var b=drop({key:'gun_rifle',bagIx:__state().bag.indexOf('gun_rifle')},HI);
-     if(b[HI]!=='gun_rifle') return 'a gun was refused from an ordinary belt slot';
+     if(b[HI]!=='gun_rifle'&&!(typeof beltGunsOff==='function'&&HI>=GUNKEYS)) return 'a gun was refused from an ordinary belt slot';   // v25.xx (belt2) retarget: from belt2 on a gun is refused on keys past the gun keys
      // A consumable on a GUN slot is still refused: a gun key showing the gun in his hands (an automatic gun pin may sit there).
      var c=drop({key:'medkit',bagIx:__state().bag.indexOf('medkit')},GI);
      if(c[GI]==='medkit') return 'a consumable was accepted onto a gun slot';
@@ -19975,6 +19975,8 @@ window.__REGRESS=[
        down(K1);
        if(!(g.drag&&g.drag.gunSlot)) return 'SKIP: staging: pressing key 1 did not pick up its gun';
        up(K6); g.drag=null; sl=hotbarSlots();
+       // v25.xx (belt2) retarget: that drag is refused from belt2 on (guns go on keys 1 to 4), so the state it used to make is set up directly
+       if(typeof beltGunsOff==='function'&&g.hotAssign[5]===undefined){ delete g.hotAssign[0]; delete g.hotAuto[0]; g.hotAssign[5]='gun_'+a; sl=hotbarSlots(); }
        if(g.hotAssign[5]!=='gun_'+a) return 'SKIP: staging: gun 1 did not go on key 6 ('+JSON.stringify(g.hotAssign)+')';
        if(!(gid(sl[0])===a&&sl[0].inHand)) return 'SKIP: staging: key 1 does not show gun 1 in his hands after it went to key 6 ('+desc(sl[0])+')';
        // THE DRAG BACK: from key 6 onto key 1.
@@ -20092,6 +20094,13 @@ window.__REGRESS=[
        down(K1);
        if(!(g.drag&&g.drag.gunSlot)) return 'SKIP: staging: pressing key 1 did not pick up its gun';
        up(K6); g.drag=null; sl=hotbarSlots(); pa=__P().hotAssign||{};
+       // v25.xx (belt2) retarget: from belt2 on, a gun belongs on keys 1 to 4 and a drag onto key 6 is refused in words with nothing moved (this check keeps testing that the drag leaves the belt whole)
+       if(typeof beltGunsOff==='function'){
+         if(g.hotAssign[5]!==undefined||pa[5]!==undefined) bad.push('a gun dragged onto key 6 was bound there although guns go on keys 1 to 4 (keys '+JSON.stringify(g.hotAssign)+')');
+         if(!said.some(function(t){ return /^GUNS GO ON KEYS 1 TO \d$/.test(t); })) bad.push('the refused drag onto key 6 did not say GUNS GO ON KEYS 1 TO 4 (said '+said.join(' / ')+')');
+         if(!(gid(sl[0])===a&&sl[0].inHand)||g.hotAssign[0]!=='gun_'+a) bad.push('the refused drag moved gun 1 off key 1 (keys '+JSON.stringify(g.hotAssign)+')');
+         if(!(p.wep&&p.wep.id===a&&p.sec&&p.sec.id===b)) bad.push('the refused drag changed the guns in his hands to '+(p.wep&&p.wep.id)+'/'+(p.sec&&p.sec.id));
+       } else {
        if(g.hotAssign[5]!=='gun_'+a||g.hotAuto[5]) bad.push('gun 1 dragged from key 1 onto key 6 was not bound there as his key (keys '+JSON.stringify(g.hotAssign)+', automatic '+JSON.stringify(g.hotAuto)+'; said '+said.join(' / ')+')');
        if(pa[5]!=='gun_'+a) bad.push('gun 1 on key 6 did not reach his belt plan (plan '+JSON.stringify(pa)+')');
        if(!(gid(sl[5])===a&&sl[5].inHand)) bad.push('after that drag key 6 shows '+desc(sl[5])+', not gun 1 in hand');
@@ -20100,6 +20109,7 @@ window.__REGRESS=[
        if(g.hotAssign[0]!==undefined) bad.push('gun 1 still holds a pin on key 1 ('+g.hotAssign[0]+')');
        var l1=said.join(' / ');
        if(said.length&&!/ON KEY 6|TO SLOT 6/.test(l1)) bad.push('the line for that drag names no key 6 in the shooter voice: '+l1);
+       }
        // TWO: a Medkit from the backpack onto the vacant gun key 3 (decision D2).
        said.length=0; sl=hotbarSlots();
        if(!(sl[2]&&sl[2].vacant)) return bad.length?bad.join('; '):'SKIP: staging: key 3 is not vacant before the Medkit drop ('+desc(sl[2])+')';
@@ -20113,6 +20123,13 @@ window.__REGRESS=[
        down(K2);
        if(!(g.drag&&g.drag.gunSlot)) return bad.length?bad.join('; '):'SKIP: staging: pressing key 2 did not pick up its gun';
        up(K8); g.drag=null; sl=hotbarSlots(); pa=__P().hotAssign||{};
+       if(typeof beltGunsOff==='function'){
+         // v25.xx (belt2) retarget: refused, nothing moved: gun 2 stays on key 2 and the Bandage stays on key 8
+         if(g.hotAssign[7]!=='bandage'||g.hotAssign[1]!=='gun_'+b) bad.push('gun 2 dragged onto key 8 moved something although guns go on keys 1 to 4 (keys '+JSON.stringify(g.hotAssign)+')');
+         if(g.hotAssign[2]!=='medkit') bad.push('the Medkit left key 3 (keys '+JSON.stringify(g.hotAssign)+')');
+         if(!(p.wep&&p.wep.id===a&&p.sec&&p.sec.id===b)) bad.push('the second drag changed the guns in his hands to '+(p.wep&&p.wep.id)+'/'+(p.sec&&p.sec.id));
+         return bad.length?bad.join('; '):null;
+       }
        if(g.hotAssign[7]!=='gun_'+b||g.hotAuto[7]) bad.push('gun 2 dragged from key 2 onto key 8 was not bound there as his key (keys '+JSON.stringify(g.hotAssign)+')');
        if(g.hotAssign[1]!=='bandage') bad.push('the Bandage he had on key 8 did not go to key 2, where gun 2 came from (keys '+JSON.stringify(g.hotAssign)+')');
        if(!(gid(sl[7])===b&&!sl[7].inHand)) bad.push('after that drag key 8 shows '+desc(sl[7])+', not gun 2 stowed');
@@ -20400,10 +20417,17 @@ window.__REGRESS=[
        // ONE: gun 1 from key 1 onto key 6, where the Medkit is.
        rl=drag(0,5); if(rl) return 'SKIP: '+rl;
        ha=__P().hotAssign||{};
+       if(typeof beltGunsOff==='function'){
+         // v25.xx (belt2) retarget: a gun belongs on keys 1 to 4, so the drag onto key 6 is refused and the plan stays as it was
+         if(ha[5]!=='medkit'||ha[0]!==undefined) bad.push('gun 1 dragged from key 1 onto key 6 of the floor belt changed the plan to '+JSON.stringify(ha)+' (guns go on keys 1 to 4)');
+         sl=fslots();
+         if(gid(sl[0])!=='rifle'||gid(sl[5])==='rifle') bad.push('after the refused drag the floor belt shows '+desc(sl[0])+' on key 1 and '+desc(sl[5])+' on key 6');
+       } else {
        if(ha[5]!=='gun_rifle') bad.push('gun 1 dragged from key 1 onto key 6 of the floor belt was not bound there (plan '+JSON.stringify(ha)+')');
        if(ha[0]!=='medkit') bad.push('the Medkit that was on key 6 did not go to key 1, where gun 1 came from (plan '+JSON.stringify(ha)+')');
        sl=fslots();
        if(gid(sl[5])!=='rifle') bad.push('after that drag key 6 of the floor belt shows '+desc(sl[5])+', not gun 1');
+       }
        // TWO: gun 2 from key 2 onto key 3, where the packed shotgun shows.
        plan({}); sl=fslots();
        if(!(gid(sl[1])==='smg'&&gid(sl[2])==='shotgun')) return bad.length?bad.join('; '):'SKIP: staging: with no plan keys 2 and 3 are not the SMG and the shotgun';
@@ -22583,7 +22607,7 @@ window.__REGRESS=[
        if(ha[3]==='stim'&&ha[8]===undefined){ delete exp[8]; exp[3]='stim'; }   /* retargeted for belt4fixb: the Stim pushed past key 9 takes key 9, or a free gun key 4 so it never covers the plate key */
        if(Object.keys(ha).length!==4) bad.push('the old plan {3: Medkit, 5: Frag, 8: Stim, 9: SMG} loaded as '+got);
        else for(ek in exp) if(ha[ek]!==exp[ek]){ bad.push('the old plan {3: Medkit, 5: Frag, 8: Stim, 9: SMG} loaded as '+got+', not the SMG on key 3, Medkit 5, Frag 7, Stim 9'); break; }
-       if(__P().beltV!==2) bad.push('the slid plan is not marked as slid (beltV '+__P().beltV+')');
+       if((__P().beltV|0)<2) bad.push('the slid plan is not marked as slid (beltV '+__P().beltV+')');   // v25.xx (belt2) retarget: stamped 2 or any later version
        __applyLoaded(JSON.parse(JSON.stringify(__P())));
        if(JSON.stringify(__P().hotAssign||{})!==got) bad.push('a second load slid the plan again: '+JSON.stringify(__P().hotAssign));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -41007,27 +41031,27 @@ window.__REGRESS=[
          if(packedCount('medkit')!==1||packedCount('frag')!==1) bad.push('the drag onto a filled key left '+packedCount('medkit')+' Medkit and '+packedCount('frag')+' Frag Charge packed, not one of each');
        }
        // THE FINDING, case B: the key on the Compact SMG in his hands, dragged from key 5 to key 7, moves and packs nothing.
-       stage({stash:[],kit:[],hot:{4:'gun_smg'},eq:'smg'});
+       stage({stash:[],kit:[],hot:{2:'gun_smg'},eq:'smg'});
        // CONTROL: the drawn Stash screen keeps the key on the gun in his hands (dropDeadKeys counts both guns in his hands, v14.85).
-       if(plan()!=='{"4":"gun_smg"}') return skip('the key on the SMG in his hands did not stay on key 5 when the Stash screen was drawn (plan '+plan()+')');
+       if(plan()!=='{"2":"gun_smg"}') return skip('the key on the SMG in his hands did not stay on key 3 when the Stash screen was drawn (plan '+plan()+')');
        else {
-         var w2=drag(4,6);
+         var w2=drag(2,3);
          if(w2) bad.push('the key on the gun in his hands could not be driven: '+w2);
          else {
-           if(plan()!=='{"6":"gun_smg"}') bad.push('the key on the SMG in his hands dragged from key 5 to key 7 left the plan '+plan()+(said.length?(' and said "'+said.join(' | ')+'"'):'')+', where it should have moved to key 7');
+           if(plan()!=='{"3":"gun_smg"}') bad.push('the key on the SMG in his hands dragged from key 5 to key 7 left the plan '+plan()+(said.length?(' and said "'+said.join(' | ')+'"'):'')+', where it should have moved to key 7');
            if((__P().kit||[]).length) bad.push('moving the key on the SMG in his hands packed '+__P().kit.join(', '));
            if(__P().equipped!=='smg'||(__P().weapons||[]).indexOf('smg')<0) bad.push('moving the key took the SMG out of his hands');
          }
        }
        // THE FINDING, case B with a spare field SMG in the stash: the key moves and the spare stays unpacked.
-       stage({stash:['gun_smg'],kit:[],hot:{4:'gun_smg'},eq:'smg'});
+       stage({stash:['gun_smg'],kit:[],hot:{2:'gun_smg'},eq:'smg'});
        // CONTROL: the same, with the spare in the stash.
-       if(plan()!=='{"4":"gun_smg"}') return skip('with a spare SMG in the stash the key on the SMG in his hands did not stay on key 5 (plan '+plan()+')');
+       if(plan()!=='{"2":"gun_smg"}') return skip('with a spare SMG in the stash the key on the SMG in his hands did not stay on key 3 (plan '+plan()+')');
        else {
-         var w3=drag(4,6);
+         var w3=drag(2,3);
          if(w3) bad.push('the key on the gun in his hands, with a spare in the stash, could not be driven: '+w3);
          else {
-           if(plan()!=='{"6":"gun_smg"}') bad.push('with a spare SMG in the stash, the key on the SMG in his hands dragged from key 5 to key 7 left the plan '+plan());
+           if(plan()!=='{"3":"gun_smg"}') bad.push('with a spare SMG in the stash, the key on the SMG in his hands dragged from key 5 to key 7 left the plan '+plan());
            if(packedCount('gun_smg')) bad.push('moving the key on the SMG in his hands packed '+packedCount('gun_smg')+' spare field SMG from the stash, which would go up the lift unasked');
            if((__P().stash||[]).indexOf('gun_smg')<0||(__P().weapons||[]).indexOf('smg')<0||__P().equipped!=='smg') bad.push('moving the key moved the spare SMG or the SMG in his hands');
          }
@@ -58047,7 +58071,9 @@ window.__REGRESS=[
          if(!g.drag||g.drag.key!=='gun_pistol') bad.push('pressing the pistol key started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':''));
          mouse.x=c5.x+c5.w/2; mouse.y=c5.y+c5.h/2;
          window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true}));
-         if(g.hotAssign[5]!=='gun_pistol') bad.push('the pistol did not move to key 6 (plan '+JSON.stringify(g.hotAssign)+')');
+         if(typeof beltGunsOff==='function'){   // v25.xx (belt2) retarget: guns go on keys 1 to 4, so the drop on key 6 is refused and the pistol stays on key 4
+           if(g.hotAssign[5]!==undefined||g.hotAssign[3]!=='gun_pistol') bad.push('the pistol dragged onto key 6 was not refused with the key left on key 4 (plan '+JSON.stringify(g.hotAssign)+')');
+         } else if(g.hotAssign[5]!=='gun_pistol') bad.push('the pistol did not move to key 6 (plan '+JSON.stringify(g.hotAssign)+')');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(g){ g.bagOpen=false; g.drag=null; } mouse.down=false; }catch(_c){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('extract'); } }catch(_e){} P2.stash=keepStash; P2.weapons=keepW; P2.equipped=keepEq; try{ saveProfile(); }catch(_s){} __topClear(); __cleanProfile(); }
@@ -58107,7 +58133,9 @@ window.__REGRESS=[
        if(!plan2||typeof plan2.__grabDrop!=='function') bad.push('control: key 6 on the belt plan is not a drop target');
        else {
          plan2.__grabDrop('gun_pistol','rack');
-         if((P2.hotAssign||{})[5]!=='gun_pistol') bad.push('the figure pistol did not take key 6 (plan '+JSON.stringify(P2.hotAssign||{})+')');
+         if(typeof beltGunsOff==='function'){   // v25.xx (belt2) retarget: guns go on keys 1 to 4, so key 6 refuses the figure pistol
+           if((P2.hotAssign||{})[5]!==undefined) bad.push('the figure pistol took key 6 although guns go on keys 1 to 4 (plan '+JSON.stringify(P2.hotAssign||{})+')');
+         } else if((P2.hotAssign||{})[5]!=='gun_pistol') bad.push('the figure pistol did not take key 6 (plan '+JSON.stringify(P2.hotAssign||{})+')');
          if(P2.weapons.indexOf('pistol')<0||P2.equipped!=='pistol') bad.push('the figure pistol left the figure');
          if(P2.stash.indexOf('gun_pistol')>=0) bad.push('the figure pistol was copied into the stash');
        }
