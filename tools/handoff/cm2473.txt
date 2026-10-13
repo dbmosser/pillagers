@@ -1,0 +1,7 @@
+v24.73: machines you cannot see hum
+
+Machines hunting you out of sight now keep up a running sound, faster and louder when they are on you.
+
+Check 24.73. Fails on v24.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

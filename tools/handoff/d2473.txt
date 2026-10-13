@@ -1,0 +1,5 @@
+## v24.73 - MACHINES YOU CANNOT SEE HUM
+
+Co-op hunt while he was away. His number 45, improve all sound as much as possible. A machine hunting you out of sight made only short sounds every second or two, so between them you lost it, and nothing told you whether it was searching or already on you. Now the three nearest machines within earshot that are searching for you or on you, and that you cannot see, each keep up a running sound of their own: a pulsing servo for a sentry, a fast rattle for a crawler, a deep throb for a warden, a wavering drone for a snitch, a slow sweep for a listener, a growl for a howler and a tread rumble for a bulwark. Searching is slow and quiet, on you it is faster and louder, it is muffled behind walls and placed left or right, and it stops when the raid ends.
+
+MEASURED. Check 24.73 passes, and fails on v24.72.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.73 - MACHINES YOU CANNOT SEE HUM
+
+Co-op hunt while he was away. His number 45, improve all sound as much as possible. A machine hunting you out of sight made only short sounds every second or two, so between them you lost it, and nothing told you whether it was searching or already on you. Now the three nearest machines within earshot that are searching for you or on you, and that you cannot see, each keep up a running sound of their own: a pulsing servo for a sentry, a fast rattle for a crawler, a deep throb for a warden, a wavering drone for a snitch, a slow sweep for a listener, a growl for a howler and a tread rumble for a bulwark. Searching is slow and quiet, on you it is faster and louder, it is muffled behind walls and placed left or right, and it stops when the raid ends.
+
+MEASURED. Check 24.73 passes, and fails on v24.72.
 ## v24.72 - THE PAUSE BOX HAS A PRIMARY
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the raid pause box found RESUME RUN drawn as a plain outline like SETTINGS while the only coloured button was ABANDON RUN, so the eye went to the button that throws the run away, the buttons were small, and the key list was four lines of small words. RESUME RUN is the big amber button now, every button is bigger, and the key list draws each key as a keycap in bigger type. No word changed and the buttons keep their order.
