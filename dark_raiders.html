@@ -1247,6 +1247,11 @@
      ENTER RAID!, THE MAINFRAME and the cut off SHOP, CR still read, like a second menu under the first. The room behind every window
      is softly blurred as well now, so the signs are shapes and not words. */
   #root .modal{ -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+  /* vNN.xx, UI REDESIGN ui5q2f (his #50, from the AAA judge of the Wirt shot): A LOCKED BUTTON SAYS WHY. GAMBLE and the offer BUY
+     out of reach carry a red chip with what they still need. */
+  #root #gamblebtn[data-need]:not([data-need=""])::after, #root #wirtlotbtn[data-need]:not([data-need=""])::after{ content:attr(data-need);
+    display:inline-block; margin-left:12px; padding:3px 8px; border:1px solid rgba(255,110,85,.55); border-radius:2px; background:rgba(229,72,47,.12);
+    color:#ff8a75; font-family:var(--f-cond); font-size:14px; font-weight:700; letter-spacing:.1em; line-height:1.2; vertical-align:middle; }
   /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge of the title shot with 2 PLAYER CO-OP picked and the second window
      blocked): THE PICK SHOWS. After a same machine pick that stops on a note, 1 PLAYER was still the amber button, so the screen
      did not say what had been chosen, and the blocked note was a line of small red words with a small RETRY under it, like a stray
@@ -2138,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.34';
+var VER='25.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40081,7 +40086,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.34: Rest the mouse on a gun on the tactical belt and its stat card shows above it. Check 25.34 fails on v25.33',
+  now:'v25.35: At Wirt a button you cannot afford says how much more it needs. Check 25.35 fails on v25.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -40903,7 +40908,11 @@ function renderGamble(){
   // the bare number, so the panel read $2,500 per roll over a button reading Gamble $2500. Display only: the price stays 2500.
   b.textContent='Gamble $'+GAMBLE_PRICE.toLocaleString();
   b.disabled=P.credits<GAMBLE_PRICE;
-  b.style.opacity=P.credits<GAMBLE_PRICE?0.45:1;
+  // vNN.xx, UI REDESIGN ui5q2f (his #50, from the AAA judge of the Wirt shot): A LOCKED BUTTON SAYS WHY. Out of reach, GAMBLE was
+  // a dull grey button and nothing said what it was waiting for. It keeps the solid greyed look (ui5q1m) at full strength, and a
+  // red chip on it says how much more it needs (NEED $1,600 MORE). The offer BUY below does the same.
+  b.style.opacity=1;
+  b.setAttribute('data-need',P.credits<GAMBLE_PRICE?('NEED $'+(GAMBLE_PRICE-P.credits).toLocaleString()+' MORE'):'');
   renderWirtLot();
 }
 // v15.03, wirt audit finding: THE LIMITED TIME OFFER CARD KEEPS TIME WHILE THE PANEL IS OPEN. renderWirtLot reads the clock once,
@@ -40963,6 +40972,7 @@ function renderWirtLot(){
   var lb=document.getElementById('wirtlotbtn');
   if(lb){
     lb.disabled=!afford;
+    lb.style.opacity=1; lb.setAttribute('data-need',afford?'':('NEED $'+(WIRT_LOT_PRICE-P.credits).toLocaleString()+' MORE'));   // vNN.xx (ui5q2f): the reason chip
     lb.onclick=function(){
       if(P.credits<WIRT_LOT_PRICE) return;
       var lot2=lot;   // v11.61: the lot that was NAMED AND PRICED on the card, not the clock at click time

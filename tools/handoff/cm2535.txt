@@ -1,0 +1,7 @@
+v25.35: a locked button says why
+
+At Wirt a button you cannot afford says how much more it needs.
+
+Check 25.35. Fails on v25.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -6078,6 +6078,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.35',what:'his #50 (UI redesign ui5q2f): out of reach, GAMBLE (and the offer BUY) carry a chip saying how much more they need, and none when they can be paid',
+   run:function(){
+     if(typeof renderGamble!=='function') return 'SKIP: no Wirt here';
+     var c0=P.credits, bad=[], b, a, lb;
+     try{
+       P.credits=900; renderGamble();
+       b=document.getElementById('gamblebtn'); a=getComputedStyle(b,'::after').content||'';
+       if(a.indexOf('NEED')<0) bad.push('GAMBLE out of reach has no reason chip ('+a+')');
+       else if(a.indexOf('1,600')<0) bad.push('the GAMBLE chip does not name the 1,600 still needed: '+a);
+       lb=document.getElementById('wirtlotbtn');
+       if(lb&&lb.disabled&&(getComputedStyle(lb,'::after').content||'').indexOf('NEED')<0) bad.push('the offer BUY out of reach has no reason chip');
+       P.credits=9999999; renderGamble();
+       a=getComputedStyle(document.getElementById('gamblebtn'),'::after').content||'';
+       if(a.indexOf('NEED')>=0) bad.push('GAMBLE that can be paid still shows a chip');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ P.credits=c0; try{ renderGamble(); }catch(_r){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'25.34',what:'his order: the mouse resting on a gun key of the tactical belt shows that gun stat card above the key, on screen and readable at 1080p and 4K, after a short dwell, gone when the mouse leaves or a drag starts, in the Undercroft too, and the trigger still fires with the mouse over the belt',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__hubEnter||typeof drawHUD!=='function'||typeof drawHubBelt!=='function'||typeof hubBagState!=='function'||typeof hotbarSlots!=='function'||typeof forgeApply!=='function') return 'SKIP: no raid here';
