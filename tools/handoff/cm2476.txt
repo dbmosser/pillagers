@@ -1,0 +1,7 @@
+v24.76: demo hits land like career hits
+
+A hit in DEMO now does the same damage as in CAREER.
+
+Check 24.76. Fails on v24.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

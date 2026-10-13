@@ -1,0 +1,40 @@
+{
+    "title":  "CAREER RAIDS: THE KILL SCORE",
+    "why":  "His mode design of 2026-10-12: in CAREER the high score is still an objective, and his rule that the scoring is exactly the same in DEMO and CAREER. A kill in a CAREER raid now scores as it does in the DEMO: the same points for each kind, the same streak multiplier and callouts, and the +$ popup where the body fell. Each player in a co-op raid scores his own kills. The score sits at the top of the screen with the 10 minute clock under it, as in the DEMO. The DEMO helping hands (ammo back and free bandages on kills) stay in the DEMO.",
+    "now":  "Kills in CAREER raids score points, with streaks, shown above the clock.",
+    "edits":  [
+                  {
+                      "anchor":  "if(G.arcade) arcadeKill(e.kind,e.elite,e.boss,e.x,e.y);",
+                      "replacement":  "if(G.arcade) arcadeKill(e.kind,e.elite,e.boss,e.x,e.y); else if(G.career) careerKill(e.kind,e.elite,e.boss,e.x,e.y);   /* v24.xx (feat0h2): the CAREER score */"
+                  },
+                  {
+                      "anchor":  "if(G.arcade) arcadeKill(k,!!(m.el||(e\u0026\u0026e.elite)),!!(e\u0026\u0026(e.boss||e.name===BOSS_NAME)),e?e.x:NaN,e?e.y:NaN);",
+                      "replacement":  "if(G.arcade||G.career) (G.arcade?arcadeKill:careerKill)(k,!!(m.el||(e\u0026\u0026e.elite)),!!(e\u0026\u0026(e.boss||e.name===BOSS_NAME)),e?e.x:NaN,e?e.y:NaN);   /* v24.xx (feat0h2): and the CAREER score of a co-op partner */"
+                  },
+                  {
+                      "anchor":  "function arcadeKill(k,el,boss,x,y){\n  if(!ARCADE.on||!G||!G.arcade||G.sim||G.over) return 0;\n  var n=arcadeKillPts(k,el,boss), s, t=+G.t||0, mx, c;\n  if(!(n\u003e0)) return 0;",
+                      "replacement":  "// v24.xx (feat0h2), HIS MODE DESIGN AND HIS RULE (2026-10-12): \"high score is still an objective\" in CAREER, and the scoring is \"EXACTLY\n// THE SAME IN DEMO AND CAREER\". THE KILL SCORE IN A CAREER RAID. The DEMO points table, streak and multiplier, +$ popup where\n// the body fell and streak callout (as arcadeKill does them) are scoreKill over a CAREER score store, G.cs, in a CAREER raid\n// (careerKill, from the same kill credit as the DEMO, the host and a co-op partner each scoring their own player). The DEMO newcomer\n// perks (half a magazine back, a Bandage every 3rd kill) stay in the DEMO: CAREER is his own kit. The score reads at the clock as in\n// the DEMO: SCORE over the figure, the streak multiplier beside it and the 10 minute clock under it.\nfunction scoreKill(st,k,el,boss,x,y){\n  var n=arcadeKillPts(k,el,boss), s, t=+G.t||0, mx, c;\n  if(!(n\u003e0)||!st) return 0;\n  s=st.streak;\n  if(!s||!(t-s.t\u003cARCADE_STREAK_GAP)||t\u003cs.t) s=st.streak={n:0,t:t};\n  s.n++; s.t=t; mx=arcadeStreakX(s.n); n*=mx;\n  if(isFinite(x)\u0026\u0026isFinite(y)){ try{ label(x,y-20,\u0027+\u0027+arcadeCr(n),\u0027#ffc04a\u0027,0,true); }catch(_alb){} }\n  c=arcadeStreakCall(s.n);\n  if(c){ try{ say(c,\u0027ext\u0027,{sub:\u0027x\u0027+mx}); }catch(_asc){} try{ if(VOX_STREAK[c]) voxCall(VOX_STREAK[c]); }catch(_avc){} }\n  return n;\n}\nfunction careerKill(k,el,boss,x,y){\n  if(!G||!G.career||!G.cs||G.sim||G.over) return 0;\n  var n=scoreKill(G.cs,k,el,boss,x,y);\n  if(!(n\u003e0)) return 0;\n  G.cs.s=(G.cs.s|0)+n; G.cs.k=(G.cs.k|0)+1;\n  return n;\n}\nfunction arcadeKill(k,el,boss,x,y){\n  if(!ARCADE.on||!G||!G.arcade||G.sim||G.over) return 0;\n  var n=arcadeKillPts(k,el,boss), s, t=+G.t||0, mx, c;\n  if(!(n\u003e0)) return 0;"
+                  },
+                  {
+                      "anchor":  "  var s=ARCADE.streak, t=(G\u0026\u0026+G.t)||0;",
+                      "replacement":  "  var s=(G\u0026\u0026G.career\u0026\u0026G.cs)?G.cs.streak:ARCADE.streak, t=(G\u0026\u0026+G.t)||0;   // v24.xx (feat0h2): a CAREER raid keeps its own streak"
+                  },
+                  {
+                      "anchor":  "function arcadeScoreHud(y,z){\n  if(!G||!G.arcade||!ctx) return;\n  var cx=Math.round(W/2), mine=Math.max(0,ARCADE.mine|0), mate=Math.max(0,ARCADE.mate|0), nm=arcadeCr(mine+mate);",
+                      "replacement":  "function arcadeScoreHud(y,z){\n  if(!G||!(G.arcade||G.career)||!ctx) return;\n  var cr=!G.arcade, solo=cr||!!ARCADE.solo;   // v24.xx (feat0h2): a CAREER raid reads its own score, one player to a window\n  var cx=Math.round(W/2), mine=Math.max(0,cr?((G.cs\u0026\u0026G.cs.s)|0):(ARCADE.mine|0)), mate=cr?0:Math.max(0,ARCADE.mate|0), nm=arcadeCr(mine+mate);"
+                  },
+                  {
+                      "anchor":  "hudText(ARCADE.solo?\u0027SCORE\u0027:\u0027TEAM SCORE\u0027,",
+                      "replacement":  "hudText(solo?\u0027SCORE\u0027:\u0027TEAM SCORE\u0027,"
+                  },
+                  {
+                      "anchor":  "  if(!ARCADE.solo){   // v23.54 (arcade30): no YOU and P2 split",
+                      "replacement":  "  if(!solo){   // v23.54 (arcade30): no YOU and P2 split"
+                  },
+                  {
+                      "anchor":  "if(G.arcade) arcadeScoreHud(_yClk,_tz); else {",
+                      "replacement":  "if(G.arcade||G.career) arcadeScoreHud(_yClk,_tz); else {"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his mode design and rule (2026-10-12): a CAREER raid scores kills exactly as the DEMO does (points by kind, the streak), into its own store G.cs, never into the DEMO score, and the clock spot reads SCORE and the figure\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__runPrep\u0026\u0026window.__ents\u0026\u0026window.__endRaid)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof mkCrawler!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027) return \u0027SKIP: no crawler or arcade here\u0027;\n     var bad=[], g, p, e, c0=(typeof CAREER_ON===\u0027number\u0027)?CAREER_ON:0, m0=ARCADE.mine|0, rh=null, ownH=false, txt=[];\n     try{\n       __topClear(); __runPrep();\n       CAREER_ON=1;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: no live raid\u0027;\n       if(!g.career||!g.cs) return \u0027SKIP: no CAREER raid in this build\u0027;\n       p=g.player;\n       e=mkCrawler(p.x+300,p.y); e.byPlayer=1; e.elite=0; e.hp=0; g.ents.push(e); __ents(0.016);\n       if(g.ents.indexOf(e)\u003e=0) bad.push(\u0027the crawler did not die\u0027);\n       if(g.cs.s!==50||g.cs.k!==1) bad.push(\u0027a crawler kill in a CAREER raid scored \u0027+g.cs.s+\u0027 with \u0027+g.cs.k+\u0027 kills, not 50 and 1\u0027);\n       e=mkCrawler(p.x+300,p.y); e.byPlayer=1; e.elite=0; e.hp=0; g.ents.push(e); __ents(0.016);\n       if(g.cs.s!==150) bad.push(\u0027a second kill inside the streak gap took the score to \u0027+g.cs.s+\u0027, not 50 + 50 x2 = 150\u0027);\n       if((ARCADE.mine|0)!==m0) bad.push(\u0027a CAREER kill changed the DEMO score\u0027);\n       if(typeof arcadeScoreHud===\u0027function\u0027\u0026\u0026typeof hudText===\u0027function\u0027){\n         rh=hudText; hudText=function(s){ txt.push(String(s)); return rh.apply(this,arguments); }; ownH=true;\n         try{ arcadeScoreHud(80,1); }catch(_h){ bad.push(\u0027the score line threw: \u0027+(_h\u0026\u0026_h.message||_h)); }\n         hudText=rh; ownH=false;\n         if(txt.indexOf(\u0027SCORE\u0027)\u003c0||!txt.some(function(s){ return s.indexOf(\u0027150\u0027)\u003e=0; })) bad.push(\u0027the clock spot does not read SCORE and 150 in a CAREER raid (\u0027+txt.join(\u0027 | \u0027)+\u0027)\u0027);\n       }\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{ if(ownH) hudText=rh; try{ CAREER_ON=c0; }catch(_r){} try{ var g2=__state(); if(g2\u0026\u0026!g2.over) __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

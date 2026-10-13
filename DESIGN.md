@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.76 - DEMO HITS LAND LIKE CAREER HITS
+
+Co-op hunt while he was away. His answer of 2026-10-12: gameplay must be exactly the same in DEMO and CAREER, and the time to kill stays as it is now. A DEMO hit took half damage (added for newcomers on 2026-10-11), so the same enemy took twice as long to kill you in DEMO. A DEMO hit now takes exactly what the same hit takes in a CAREER raid. The spawn shield after a 2 player DEMO respawn stays, since the respawn is a mode rule he ordered.
+
+MEASURED. Check 24.76 passes, and fails on v24.75.
 ## v24.75 - THE LAST FAINT WORDS
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make sure the menus actually look good. A picture and readability check of every screen after the menu builds found three last weak spots: LOST on the death card in a red too dark to read well, and PRESS ANY BUTTON on the arcade attract screen fading almost to nothing at the low end of its pulse. LOST is a lighter red now and the pulse never fades below about two thirds. Nothing else changed.

@@ -2056,7 +2056,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.75';
+var VER='24.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16685,7 +16685,10 @@ function killPlayer(src){
 }
 // v23.31, HIS ORDER (2026-10-11), build 10 of 20 (arcade10): EASIER FOR NEWCOMERS. In an arcade raid every hit on the player takes
 // half (ARCADE_DMG), in both windows; on player 2 it stacks with kid mode, which KID_MIN still floors. A normal raid never reads it.
-var ARCADE_DMG=0.5;
+// 2026-10-12 (unify1), HIS ANSWER: "GAMEPLAY ELEMENTS ... SHOULD BE EXACTLY THE SAME IN DEMO AND CAREER" and 6 a, TTK as now.
+// A DEMO hit took half (arcade10), so the same gun killed a DEMO player in twice the time it kills a CAREER player. The dial is
+// now 1: a DEMO hit takes what the same hit takes in CAREER. The hook stays so a later order can move it in one place.
+var ARCADE_DMG=1;
 function damagePlayer(amt,src,srcName,sx,sy){
   // v21.97 (K7): and on a raid this window joined and took over when the host left
   if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))&&isFinite(amt)) amt*=netKidMul();   // v16.44, his order: kid mode, player 2 takes less
@@ -39116,7 +39119,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.75: LOST on the death card and the arcade PRESS ANY BUTTON line are easier to read. Check 24.75 fails on v24.74',
+  now:'v24.76: A hit in DEMO now does the same damage as in CAREER. Check 24.76 fails on v24.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
