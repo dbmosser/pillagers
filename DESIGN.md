@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.65 - THE SIREN MEANS REAL DANGER
+
+Co-op hunt while he was away. His orders of 2026-10-13: the siren goes off too often, just taking damage should not throw it, and the alarm for crawlers should be quieter. The lock-on siren used to ring for any machine within 760 that was in the chase state, and a machine goes to chase without seeing him: a shot or a hit heard nearby, a pack call, the last place it knew. So it rang for machines round a corner and every time he took damage. Now a machine counts only while it sees him right now (with a quarter second of grace for a one frame blink), inside 500 (a sentry on alert sees about 460, so this only cuts the long lightning flash sightings), after holding that for 0.6 seconds so a glance round a corner is no lock-on, and once it has stopped it cannot start the siren again for 5 seconds, the same five seconds the SEEN stinger already waits. A crawler counts at half, so a siren with only crawlers on him is half as loud, and the shout alarm a crawler makes when it spots him is half level too. Taking damage alone never starts the siren. Sound only: nothing about how machines see, chase or hit changes.
+
+MEASURED. Check 25.65 passes, and fails on v25.64.
 ## v25.64 - THE PLOP IS HALF AS LOUD
 
 Co-op hunt while he was away. His order of 2026-10-13: the plop sound heard when changing weapons or equipping other items should be 50 percent quieter, and then that the plop used for everything should be. The plop is the short rising chirp the game plays for a belt key press, the mouse wheel, an equip, a drag onto a key, a menu press, the stash and a score of other small actions. It is now at half its old level at the source, so every place that plays it drops together. The green find chirp, which shares the same voice, and every other sound keep their level.

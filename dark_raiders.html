@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.64';
+var VER='25.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5710,11 +5710,30 @@ function tickEnemyAudio(dt){
 // the raid ends, under the pause box, in the burn and in the death beat; if nothing drives it for a fifth of a second it fades by
 // itself. Cosmetic only: no seeded draw, no game state, nothing under G.sim.
 var MSIREN={v:null,n:0,on:0,per:0,lvl:0,x:0,y:0,made:0};
-var MSIREN_R=760, MSIREN_F0=290, MSIREN_DEP=75, MSIREN_PER=[1.4,1.2], MSIREN_LVL=0.045;
+// v25.xx (sirentune), HIS ORDERS 2026-10-13: "siren seems to go off too often, maybe look at the parameters for that", "just taking damage
+// shouldn't throw the siren", "alarm for crawlers should be quieter". v24.xx counted ANY machine within 760 whose state was chase, and a
+// machine goes to chase without seeing him: a shot or a hit heard near it, a pack call, the last place it knew, so the siren rang for
+// machines round a corner and every time he took damage. Now a machine counts only while it SEES him right now (the sight flag the AI
+// stamps each frame, with a quarter second of grace for a one frame blink), inside 500 (a sentry on alert sees about 460, so only the
+// long flash-of-lightning sightings are cut), after 0.6 s of that (a glance round a corner is not a lock-on), and once it stops it
+// cannot start the siren again for 5 s (the same five seconds as the SEEN stinger). Crawlers weigh half: a crawler-only lock-on is half as
+// loud. Taking damage alone never starts it. Cosmetic only: no seeded draw, no game state beyond the machine own timers.
+var MSIREN_R=500, MSIREN_F0=290, MSIREN_DEP=75, MSIREN_PER=[1.4,1.2], MSIREN_LVL=0.045, MSIREN_SEE=0.25, MSIREN_HOLD=0.6, MSIREN_COOL=5, MSIREN_KIND={crawler:0.5};
 function machSirenLocked(e,p){
   if(!e||!p||e.state!=='chase'||!(e.hp>0)||e.merc||e.friendly||e.neutral||killWord(e)!==' DESTROYED') return false;
   if(dist(e,p)>=MSIREN_R) return false;
+  if(!((G.t||0)-(e.sirenSeeT===undefined?-99:e.sirenSeeT)<=MSIREN_SEE)) return false;   // v25.xx (sirentune): it must see him now, not chase the last place it knew
   if(typeof NET==='object'&&NET&&NET.on&&typeof netTargetFor==='function'){ try{ if(netTargetFor(e)!==p) return false; }catch(_nt){} }
+  return true;
+}
+// v25.xx (sirentune): the machine counts once it has held the lock for MSIREN_HOLD, and not within MSIREN_COOL of the moment it stopped
+function machSirenCounts(e,p,dt){
+  var t=G.t||0;
+  if(!machSirenLocked(e,p)){ if(e.sirenOn){ e.sirenOn=0; e.sirenCool=t+MSIREN_COOL; } e.sirenHold=0; return false; }
+  if(t<(e.sirenCool||0)){ e.sirenHold=0; return false; }
+  e.sirenHold=(e.sirenHold||0)+dt;
+  if(e.sirenHold<MSIREN_HOLD) return false;
+  e.sirenOn=1;
   return true;
 }
 function machSirenVoice(a,out){
@@ -5749,9 +5768,9 @@ function machSirenOff(){
   return true;
 }
 function tickMachSiren(dt){
-  var p=G&&G.player, i, e, d, n=0, near=null, nd=1e9, a, out, v, t, k, per, lv, pl;
+  var p=G&&G.player, i, e, d, n=0, near=null, nd=1e9, a, out, v, t, k, per, lv, pl, kw=0;
   if(!G||G.sim||!p||!G.ents||G.over||G.paused||G.nuking||(G.deathBeat!==undefined&&G.deathBeat!==null)||G.goT>0||p.specOut||(typeof NET==='object'&&NET&&NET.specTick)){ if(MSIREN.v||MSIREN.on) machSirenOff(); return false; }
-  for(i=0;i<G.ents.length;i++){ e=G.ents[i]; if(!machSirenLocked(e,p)) continue; n++; d=dist(e,p); if(d<nd){ nd=d; near=e; } }
+  for(i=0;i<G.ents.length;i++){ e=G.ents[i]; if(!machSirenCounts(e,p,dt)) continue; n++; kw=Math.max(kw,MSIREN_KIND[e.kind]||1); d=dist(e,p); if(d<nd){ nd=d; near=e; } }   // v25.xx (sirentune): held and cooled; the loudest kind counts
   if(!n){ if(MSIREN.v||MSIREN.on) machSirenOff(); return true; }
   MSIREN.n=n;
   a=ac(); if(!a) return false;
@@ -5761,7 +5780,7 @@ function tickMachSiren(dt){
   v=MSIREN.v; v.offAt=-1;
   k=Math.min(n,6);
   per=MSIREN_PER[0]-(MSIREN_PER[0]-MSIREN_PER[1])*(k-1)/5;
-  lv=MSIREN_LVL*(1+0.08*(k-1))*(0.7+0.3*clamp(1-nd/MSIREN_R,0,1));
+  lv=MSIREN_LVL*(1+0.08*(k-1))*(0.7+0.3*clamp(1-nd/MSIREN_R,0,1))*kw;   // v25.xx (sirentune): a crawler-only lock-on is half as loud
   pl=sndPlace(near.x,near.y);
   t=a.currentTime;
   try{
@@ -6615,7 +6634,7 @@ function blip(type,d,pan){
     var o3=a.createOscillator(),g5=a.createGain();
     o3.type='sawtooth'; o3.frequency.setValueAtTime(920,t); o3.frequency.setValueAtTime(660,t+.09);
     o3.frequency.setValueAtTime(920,t+.18);
-    g5.gain.setValueAtTime(.06*vol,t); g5.gain.exponentialRampToValueAtTime(.001,t+.3);
+    g5.gain.setValueAtTime(.06*vol*(arguments[3]==='crawler'?0.5:1),t); g5.gain.exponentialRampToValueAtTime(.001,t+.3);   // v25.xx (sirentune): a crawler shout is half level
     o3.connect(g5); g5.connect(OUT); o3.start(t); o3.stop(t+.31);
   } else if(type==='step'||type==='stepHeavy'){
     // a short filtered noise thud: scuff for a body, a lower clank for a machine
@@ -23823,6 +23842,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
     // cone and walls (canSee), and not under a roof on either side. Crouching does not hide you in the flash inside that range.
     // Blinding still cuts it (wkSight is in _fSee). Nobody sees you down. No draw is made here.
     if(!sees&&G.lightning>0&&!p.downed&&!roofAt(p.x,p.y)&&!roofAt(e.x,e.y)) sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,_fSee*FLASH_SEE,e.cone,_aSee*FLASH_SEE);
+    if(sees) e.sirenSeeT=G.t||0;   // v25.xx (sirentune): the moment it last saw him, for the lock-on siren (a chase without sight does not count)
     // v3.97: nothing here can see the player, so ask whether it can see anyone
     // else. Placed after every sight rule above, so crouch, fog, blinding and
     // concealment all still decide the player question first and this only ever
@@ -24192,7 +24212,7 @@ var _rdS=G.shells[_rdi];
         packCall(e,p.x,p.y);
         e.roleT=rnd(ROLE_T[0],ROLE_T[1]);
         e.role=(e.kind==='crawler')?'rush':'pin';
-        if(!G.sim&&dist(e,p)<700) sfx('alarm',e.x,e.y);
+        if(!G.sim&&dist(e,p)<700) sfx('alarm',e.x,e.y,(e.kind==='crawler')?'crawler':undefined);   // v25.xx (sirentune): the crawler shout at half level
       }
       // The stinger, once, on the transition into being hunted. Rate limited to
       // one in five seconds so a room of machines turning at once is one shock
@@ -41023,7 +41043,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.64: The short rising plop heard when you change weapons, equip items or press a menu button is now half as loud. Check 25.64 fails on v25.63',
+  now:'v25.65: The lock-on siren now only sounds when a machine really sees you, and crawlers are half as loud. Check 25.65 fails on v25.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

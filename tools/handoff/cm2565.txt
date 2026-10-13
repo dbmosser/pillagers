@@ -1,0 +1,7 @@
+v25.65: the siren means real danger
+
+The lock-on siren now only sounds when a machine really sees you, and crawlers are half as loud.
+
+Check 25.65. Fails on v25.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
