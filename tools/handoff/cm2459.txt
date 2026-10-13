@@ -1,0 +1,7 @@
+v24.59: machines beep when they lock on
+
+Every machine gives a short double beep where it stands when it locks on to you.
+
+Check 24.59. Fails on v24.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1996,7 +1996,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.58';
+var VER='24.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4290,7 +4290,7 @@ function bus(){
 var SND=null;
 var SND_CAT={shot:'gun',reload:'gun',reloadin:'gun',dry:'gun',
   boom:'imp',hit:'imp',clank:'imp',
-  servo:'mach',skitter:'mach',drone:'mach',hydraul:'mach',dish:'mach',stepHeavy:'mach',seen:'mach',alarm:'mach',
+  servo:'mach',skitter:'mach',drone:'mach',hydraul:'mach',dish:'mach',stepHeavy:'mach',seen:'mach',alarm:'mach',lockon:'mach',
   foot:'foley',step:'foley',
   pick:'ui',pickRare:'ui',pickElite:'ui',pickGun:'ui',clockwarn:'ui',clocktick:'ui',
   heart:'vox',flap:'amb',hitmark:'ui',killconf:'ui'};
@@ -5880,6 +5880,17 @@ function blip(type,d,pan){
       lrO.type='triangle'; lrO.frequency.setValueAtTime(lmi?1320:1760,lrt);
       lrG.gain.setValueAtTime(.0001,lrt); lrG.gain.linearRampToValueAtTime(.022*vol,lrt+.01); lrG.gain.exponentialRampToValueAtTime(.001,lrt+.55);
       lrO.connect(lrG); lrG.connect(lmO); lrO.start(lrt); lrO.stop(lrt+.6);
+    }
+  } else if(type==='lockon'){
+    // v23.xx (his answer 34 a): a machine locks on. Two short square pips through a band, the second higher (1.6 then 2.15 kHz),
+    // a target-acquired chirp that reads as a machine and not as the clock or the menu.
+    for(var lki=0;lki<2;lki++){
+      var lkt=t+lki*.085, lko=a.createOscillator(), lkf=a.createBiquadFilter(), lkg=a.createGain();
+      lko.type='square'; lko.frequency.setValueAtTime(lki?2150:1600,lkt);
+      lkf.type='bandpass'; lkf.frequency.value=lki?2150:1600; lkf.Q.value=3;
+      lkg.gain.setValueAtTime(.0001,lkt); lkg.gain.linearRampToValueAtTime(.05*vol,lkt+.006);
+      lkg.gain.setValueAtTime(.05*vol,lkt+.05); lkg.gain.exponentialRampToValueAtTime(.001,lkt+.07);
+      lko.connect(lkf); lkf.connect(lkg); lkg.connect(OUT); lko.start(lkt); lko.stop(lkt+.08);
     }
   } else if(type==='clocktick'){
     // v15.24, HIS NOTE: each of the last ten seconds on the raid clock. One short high square knock, so the count down is
@@ -22673,6 +22684,12 @@ var _rdS=G.shells[_rdi];
   if(e.kind==='raider'&&e.state==='extract'){ e.alert=2.4; if(!e._fledSaid){ e._fledSaid=1; taunt(e,'flee'); } if(e.crewArc!==undefined) delete e.crewArc; }
       else {
         if(e.state!=='chase'&&!G.sim&&(G.seenT||0)<=0){ G.seenT=5.0; sfx('seen',e.x,e.y); }
+        // v23.xx, HIS ANSWERS (2026-10-12), answer 34 a: "machine beeps". A MACHINE BEEPS WHEN IT LOCKS ON. The stinger above plays
+        // once in five seconds for the whole map, and only the sentry, the crawler and the Crier sound their alarm, so a Warden, a
+        // Howler or a Bulwark turning on him made no sound of its own. Every machine (anything that is not a person) now gives a
+        // short rising double beep where it stands the moment it acquires him: once per machine in three seconds, a quarter second
+        // apart across the map, within 760. Sound only: nothing is drawn from a seeded stream.
+        if(e.state!=='chase'&&!G.sim&&killWord(e)===' DESTROYED'&&!e.merc&&dist(e,p)<760&&!(typeof e.beepAt==='number'&&e.beepAt>(G.t||0)-3)&&!(typeof G.beepAt==='number'&&G.beepAt>(G.t||0)-0.25)){ e.beepAt=G.t||0; G.beepAt=G.t||0; sfx('lockon',e.x,e.y); }
         if(e.state!=='chase'&&e.kind==='raider') taunt(e,'spot');
         // v9.28, HIS 36. Same transition the bubble fires on, so what you hear
         // and what happens are the same event. Before the state change, because
@@ -38877,7 +38894,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.58: The what is new card names the taunts and the redesigns. Check 24.58 fails on v24.57',
+  now:'v24.59: Every machine gives a short double beep where it stands when it locks on to you. Check 24.59 fails on v24.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
