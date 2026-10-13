@@ -1,0 +1,7 @@
+v25.27: no word sits alone on the title
+
+The lines on the title split evenly, with no word left alone.
+
+Check 25.27. Fails on v25.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

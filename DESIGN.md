@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.27 - NO WORD SITS ALONE ON THE TITLE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The line under the title wrapped with two words alone on its second line. The title lines now split into lines of even length. No word changed.
+
+MEASURED. Check 25.27 passes, and fails on v25.26.
 ## v25.26 - BIG GUNS IN YOUR HANDS
 
 Co-op hunt while he was away. His order of 2026-10-12: the guns in the hands of your character need to be bigger and look more impressive, everything was way too small. A rifle in your hands was 19 by 5 units with only 12 of them clear of the chest; pistol and SMG were a stub at the fist, and rifle, Scattergun and Support MG were the same dark stick. Every gun class now has its own sprite at about one and a half times the length, from the stock tucked into the chest out to the muzzle: Tacker and Scav Pistol about 19, Magnum, Sputter and Compact SMG 21, rifles 27 to 30, Scattergun 29, Support MG 33, Marksman 36, Longshot and Lance 40. Each one is inked like the body in a gun-metal ramp with a lit top edge and a cool rim light, so it reads on a dark floor and at night, with its own parts: curved magazines, the drum and carry handle, the wooden pump, scopes with a lit lens, rails, the suppressor and the coil rings. You hold it in two hands, the far arm under the gun to the foregrip (both hands on a pistol grip), and carry it low at a sprint. Facing left the gun is mirrored so the magazine stays under the barrel; aiming up, the gun goes behind your head instead of across your face. The Forge now shows on the gun: MK II wears a gold finish with a slow shine, MK III adds its element along the barrel and at the muzzle (embers, a flickering arc, frost, a dripping bead). The reload reaches for this gun magazine well. Pillagers and your teammate follow in the next build. Each gun is drawn once into a picture and reused, so it costs fewer drawing calls than before. Cosmetic only: bullets still leave from the same point with the same range and spread.

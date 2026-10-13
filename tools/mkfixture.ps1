@@ -6078,6 +6078,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.27',what:'his #50 (UI redesign ui5q2b): the line under the title and the step cards balance their lines, so no word is left alone on a line',
+   run:function(){
+     var el=document.querySelector('#title .titlecol > div[style*="max-width:760px"]'), tb=document.querySelector('#title .tcard .tbody'), bad=[];
+     function bal(e){ var cs=getComputedStyle(e); return ((cs.textWrap||'')+' '+(cs.textWrapStyle||'')).indexOf('balance')>=0; }
+     if(!el) return 'no line under the title';
+     if(!bal(el)) bad.push('the line under the title does not balance its lines');
+     if(tb&&!bal(tb)) bad.push('a step card does not balance its lines');
+     return bad.length?bad.join('; '):null; }},
   {v:'25.26',what:'his order: the guns in your hands are bigger, every class reads, the magazine stays under a left-facing gun, the Forge shows',
    run:function(){
      if(typeof drawOp!=='function'||typeof WEAPONS==='undefined'||!WEAPONS.rifle) return 'SKIP: no drawOp here';

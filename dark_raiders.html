@@ -1238,6 +1238,10 @@
   /* vNN.xx, UI REDESIGN ui5q2h (his #50, from the AAA judge of the Mainframe shot): THE PICKED CONTRACT LOOKS PICKED: a 3px amber
      rail and the warm fill, not a bottom hairline. */
   #root .crow.sel{ background:var(--acc-dim); box-shadow:inset 3px 0 0 var(--acc); }
+  /* vNN.xx, UI REDESIGN ui5q2b (his #50, from the AAA judge of the title shot): NO WORD SITS ALONE. The line under the title wrapped
+     with what remains. alone on its second line, and the step cards could leave one word under a full line the same way. These lines
+     balance now: the browser splits them into lines of even length. No word changed. */
+  #root #title .titlecol > div[style*="max-width:760px"], #root #title .tcard .tbody, #root #titlesub{ text-wrap:balance; }
   /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge of the title shot with 2 PLAYER CO-OP picked and the second window
      blocked): THE PICK SHOWS. After a same machine pick that stops on a note, 1 PLAYER was still the amber button, so the screen
      did not say what had been chosen, and the blocked note was a line of small red words with a small RETRY under it, like a stray
@@ -2129,7 +2133,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.26';
+var VER='25.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39936,7 +39940,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.26: The guns in your hands are bigger, every class has its own look, and a Forge gun shows its gold and its element. Check 25.26 fails on v25.25',
+  now:'v25.27: The lines on the title split evenly, with no word left alone. Check 25.27 fails on v25.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
