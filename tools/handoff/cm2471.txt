@@ -1,0 +1,7 @@
+v24.71: the how to play keys are visible
+
+The arcade HOW TO PLAY page shows its keyboard and controller keys again.
+
+Check 24.71. Fails on v24.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

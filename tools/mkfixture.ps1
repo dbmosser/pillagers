@@ -6063,6 +6063,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.71',what:'his #50 (UI redesign ui5q1r, found by the visual lint of the arcade attract HOW TO PLAY page): a key cell of the HOW TO PLAY table is not black (the table inherits the colour of the page, which quirks mode does not do on its own) and is at least 13px',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof arcadeAttHow!=='function') return 'SKIP: no attract HOW TO PLAY page here';
+     var bad=[], pg=document.createElement('div'), d, td, c, f;
+     try{
+       arcadeAttEl('arcpage');
+       d=(typeof attEl==='function')?attEl():null;
+       if(!d) return 'SKIP: no attract element';
+       pg.className='arcpage'; d.appendChild(pg);
+       arcadeAttHow(pg);
+       td=pg.querySelector('td:not(.apk)');
+       if(!td) return 'SKIP: the table drew no key cell';
+       c=getComputedStyle(td).color; f=parseFloat(getComputedStyle(td).fontSize);
+       if(c==='rgb(0, 0, 0)') bad.push('the key cells are black on the black page');
+       if(!(f>=13)) bad.push('a key cell is '+f+'px');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(pg.parentNode) pg.parentNode.removeChild(pg); }catch(_r){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.70',what:'the what is new card is stamped within 0.15 of the build and leads with the vaults news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

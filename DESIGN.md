@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.71 - THE HOW TO PLAY KEYS ARE VISIBLE
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make sure the menus actually look good. The picture check of the arcade attract screen found the HOW TO PLAY page showing only the action names: every key under KEYBOARD and CONTROLLER was drawn black on the black page, because of an old browser rule for tables on this page. The keys are drawn in the page colour and size now, so the page says which key does what.
+
+MEASURED. Check 24.71 passes, and fails on v24.70.
 ## v24.70 - THE WHAT IS NEW CARD NAMES THE VAULTS
 
 Co-op hunt while he was away. The card was stamped v24.58 and the stamp may not trail the build by more than 0.15. The card was stamped v24.58 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the vault keycard and vaults (his green-lit #32 interiors), machine lock-on beeps and the low-health heartbeat (his third answers 33 and 34).

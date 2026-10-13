@@ -1,0 +1,16 @@
+{
+    "title":  "THE HOW TO PLAY KEYS ARE VISIBLE",
+    "why":  "His order of 2026-10-12 (#50): take pictures and make sure the menus actually look good. The picture check of the arcade attract screen found the HOW TO PLAY page showing only the action names: every key under KEYBOARD and CONTROLLER was drawn black on the black page, because of an old browser rule for tables on this page. The keys are drawn in the page colour and size now, so the page says which key does what.",
+    "now":  "The arcade HOW TO PLAY page shows its keyboard and controller keys again.",
+    "edits":  [
+                  {
+                      "anchor":  "\u0027#attract .arcpage table{margin:0 auto;border-collapse:collapse}",
+                      "replacement":  "\u0027#attract .arcpage table{margin:0 auto;border-collapse:collapse;color:inherit;font:inherit;letter-spacing:inherit}"
+                  },
+                  {
+                      "anchor":  "function arcadeAttHow(pg){",
+                      "replacement":  "// vNN.xx, UI REDESIGN ui5q1r (his #50, found by the visual lint of the attract HOW TO PLAY page): THE KEYS ARE VISIBLE. The page\n// has no doctype, so the browser runs in quirks mode, where a table does not inherit colour or font from the page: the KEYBOARD and\n// CONTROLLER cells were default black on the black page, and only the action names (coloured on their own) showed. The table\n// inherits the colour, font and spacing of the page now (arcattcss), so every key reads in bone at the page size.\nfunction arcadeAttHow(pg){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q1r, found by the visual lint of the arcade attract HOW TO PLAY page): a key cell of the HOW TO PLAY table is not black (the table inherits the colour of the page, which quirks mode does not do on its own) and is at least 13px\u0027,\n   run:function(){\n     if(typeof arcadeAttEl!==\u0027function\u0027||typeof arcadeAttHow!==\u0027function\u0027) return \u0027SKIP: no attract HOW TO PLAY page here\u0027;\n     var bad=[], pg=document.createElement(\u0027div\u0027), d, td, c, f;\n     try{\n       arcadeAttEl(\u0027arcpage\u0027);\n       d=(typeof attEl===\u0027function\u0027)?attEl():null;\n       if(!d) return \u0027SKIP: no attract element\u0027;\n       pg.className=\u0027arcpage\u0027; d.appendChild(pg);\n       arcadeAttHow(pg);\n       td=pg.querySelector(\u0027td:not(.apk)\u0027);\n       if(!td) return \u0027SKIP: the table drew no key cell\u0027;\n       c=getComputedStyle(td).color; f=parseFloat(getComputedStyle(td).fontSize);\n       if(c===\u0027rgb(0, 0, 0)\u0027) bad.push(\u0027the key cells are black on the black page\u0027);\n       if(!(f\u003e=13)) bad.push(\u0027a key cell is \u0027+f+\u0027px\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(pg.parentNode) pg.parentNode.removeChild(pg); }catch(_r){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
