@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.47 - PILLAGERS FLANK WIDER AND TAKE COVER MORE
+
+Co-op hunt while he was away. His answer 9 a: pillagers flank and use cover more. A lone pillager in a fight walked to a point about 70 degrees off the line between you, so he mostly came at you from the front; he now swings out to about 90 degrees and arrives from your side. A pillager called in by his crew keeps the place his crew gave him. Between shots he looked for cover only when he was within 600 of you and only one step away; he now looks out to 900 and up to two steps away, so a pillager trading shots at range ducks out of your sight between shots far more often.
+
+MEASURED. Check 25.47 passes, and fails on v25.46.
 ## v25.46 - RING BADGES: SHORT CALLOUTS, CLEAR OF THE GUN CARD
 
 Co-op hunt while he was away. From his request for a list of every raid message and where it shows (2026-10-12), and his #50 (menus and text must look like a AAA game): the screen map showed an extraction ring badge for a ring just off the right of the screen pushed against the edge at mid height, where the gun card on pickup, the pickup rows and the co-op kill feed live, so its words ran under the gun card; and the badge was a long sentence (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN). The badge is now a short callout in the words the rest of the raid uses for the same state: EXTRACTION A AVAILABLE, EXTRACTION A INBOUND 18S, EXTRACT IN PROGRESS! A 12S (his phrase of October 3 kept) and EXTRACTION A CLOSED. A badge held at the screen edge carries a small arrow pointing at its ring, and where it would sit under a panel at that edge (the gun card, the pickup rows, the kill feed, CONDITIONS, the gear corner, the boards on the left) it slides along the edge to the nearest clear place.

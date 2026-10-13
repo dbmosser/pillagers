@@ -1,0 +1,7 @@
+v25.47: pillagers flank wider and take cover more
+
+Pillagers now come at you from the side more and duck behind cover between shots even at long range.
+
+Check 25.47. Fails on v25.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

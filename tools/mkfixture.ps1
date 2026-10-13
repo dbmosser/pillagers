@@ -6078,6 +6078,37 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.47',what:'his answer 9 a: a lone pillager flanks at 1.6 rad, and finds cover out to 900 and two steps away',
+   run:function(){
+     var bad=[], g, sv, e, p, s, ang;
+     try{
+       __topClear(); __runPrep(); __resetCfg();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       e={x:0,y:0,flank:1}; ang=raiderFlankAng(e,0.3);
+       if(Math.abs(ang-(0.3+1.6))>1e-9) bad.push('a lone man flanks at '+(ang-0.3).toFixed(3)+' rad, not 1.6');
+       e.crewArc=-0.7; if(Math.abs(raiderFlankAng(e,0.3)-(0.3-0.7))>1e-9) bad.push('a crew station was not kept');
+       sv=g.vseg;
+       e={x:9000,y:9000}; p={x:9000-750,y:9000};
+       g.vseg=[{x1:9000-40,y1:9000-30,x2:9000-40,y2:9000+30}];
+       s=raiderCoverSpot(e,p,750);
+       if(!s) bad.push('no cover found at 750 behind a wall 40 off');
+       else if(losClear(p.x,p.y,s.x,s.y,g.vseg)) bad.push('the cover spot is in the open');
+       g.vseg=[{x1:9000+120,y1:9000-300,x2:9000+120,y2:9000+300},{x1:9000+140,y1:9000-300,x2:9000+140,y2:9000+300}];
+       s=raiderCoverSpot(e,p,750);
+       if(s&&losClear(p.x,p.y,s.x,s.y,g.vseg)) bad.push('a spot in the open was taken for cover');
+       g.vseg=[];
+       if(raiderCoverSpot(e,p,750)) bad.push('cover found on open ground');
+       if(raiderCoverSpot(e,p,950)) bad.push('cover searched beyond 900');
+       g.vseg=sv;
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       keys={};
+       try{ var g2=__state(); if(g2&&g2.map) g2.vseg=g2.map.segs; }catch(_v){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'25.46',what:'his raid text map and his #50: a ring badge held at the right edge at mid height, with the gun card on pickup up, is drawn clear of the card and reads as a short callout of at most 28 characters',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)||typeof gunCardDraw!=='function'||typeof hudPlate!=='function'||typeof grantLoot!=='function'||typeof zoneBadge!=='function') return 'SKIP: this fixture cannot deploy and draw a gun card';

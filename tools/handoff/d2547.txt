@@ -1,0 +1,5 @@
+## v25.47 - PILLAGERS FLANK WIDER AND TAKE COVER MORE
+
+Co-op hunt while he was away. His answer 9 a: pillagers flank and use cover more. A lone pillager in a fight walked to a point about 70 degrees off the line between you, so he mostly came at you from the front; he now swings out to about 90 degrees and arrives from your side. A pillager called in by his crew keeps the place his crew gave him. Between shots he looked for cover only when he was within 600 of you and only one step away; he now looks out to 900 and up to two steps away, so a pillager trading shots at range ducks out of your sight between shots far more often.
+
+MEASURED. Check 25.47 passes, and fails on v25.46.
