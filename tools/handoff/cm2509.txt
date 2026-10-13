@@ -1,0 +1,7 @@
+v25.09: a crawler that catches you hangs on
+
+A crawler that catches you hangs on and keeps biting until you kill it. Walking, sprinting and rolling no longer shake it off.
+
+Check 25.09. Fails on v25.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
