@@ -1,0 +1,7 @@
+v24.78: the attract pages grow with a 4k screen
+
+The arcade attract pages fill a 4K screen as they do a 1080p one.
+
+Check 24.78. Fails on v24.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

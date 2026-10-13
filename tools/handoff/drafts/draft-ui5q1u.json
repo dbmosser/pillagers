@@ -1,0 +1,12 @@
+{
+    "title":  "THE ATTRACT PAGES GROW WITH A 4K SCREEN",
+    "why":  "His order of 2026-10-12 (#50): take pictures at 1080p and 4K and make sure the menus look good. On the 4K picture of the arcade HOW TO PLAY page the page was half the size it is at 1080p, its column heads tiny, because its type stopped growing at a size meant for smaller screens. It now grows with the screen, so a 4K TV shows it at the same share of the screen as a 1080p one.",
+    "now":  "The arcade attract pages fill a 4K screen as they do a 1080p one.",
+    "edits":  [
+                  {
+                      "anchor":  "\u0027font:800 clamp(12px,1.15vw,30px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 2px 0 #000;text-align:center}\u0027+",
+                      "replacement":  "\u0027font:800 clamp(12px,1.15vw,60px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 2px 0 #000;text-align:center}\u0027+   // vNN.xx (ui5q1u): the same share of a 4K screen as of 1080p (the cap was 30px)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q1u, from the 4K visual QA of the attract HOW TO PLAY page): an attract page keeps growing with the screen past 30px type (the cap is 60px), so at 4K it is the same share of the screen as at 1080p\u0027,\n   run:function(){\n     var css=document.getElementById(\u0027arcattcss\u0027), t, m;\n     if(!css\u0026\u0026typeof arcadeAttEl===\u0027function\u0027){ try{ arcadeAttEl(\u0027arcpage\u0027); }catch(_a){} css=document.getElementById(\u0027arcattcss\u0027); }\n     if(!css) return \u0027SKIP: no attract page style here\u0027;\n     t=css.textContent||\u0027\u0027; m=/\\.arcpage\\{[^}]*clamp\\(12px,1\\.15vw,(\\d+)px\\)/.exec(t);\n     if(!m) return \u0027the attract page size rule was not found\u0027;\n     if(+m[1]\u003c60) return \u0027the attract page type stops growing at \u0027+m[1]+\u0027px, half size on a 4K screen\u0027;\n     return null; }},"
+}

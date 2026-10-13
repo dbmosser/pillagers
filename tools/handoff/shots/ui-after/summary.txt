@@ -50,3 +50,21 @@
 == 4k : window 3872x2263, viewport 3840x2160
   46-arcade-attract-how-to-play          staged      15.4s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0
   09-craft                               staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal
+== 1080 : window 1952x1183, viewport 1920x1080
+  25-raid-pause-box                      staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  42-hub-pause-box                       staged      12.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  49-arcade-pause-box                    staged      12.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  21-raid-hud-calm                       staged      14.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  33-raid-fight-alerts                   staged       9.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 66
+  35-kia-card                            staged       9.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  32-keys-window                         staged      10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  45-arcade-attract-board                staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3872x2263, viewport 3840x2160
+  25-raid-pause-box                      staged       8.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  42-hub-pause-box                       staged      12.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  49-arcade-pause-box                    staged      13.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  21-raid-hud-calm                       staged      14.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  33-raid-fight-alerts                   staged       9.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 83
+  35-kia-card                            staged      10.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  32-keys-window                         staged      10.9s  total   5: clip 0 off 0 small 5 contrast 0 font 0 overlap 0 focus 0
+  45-arcade-attract-board                staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

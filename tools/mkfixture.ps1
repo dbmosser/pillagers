@@ -6063,6 +6063,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.78',what:'his #50 (UI redesign ui5q1u, from the 4K visual QA of the attract HOW TO PLAY page): an attract page keeps growing with the screen past 30px type (the cap is 60px), so at 4K it is the same share of the screen as at 1080p',
+   run:function(){
+     var css=document.getElementById('arcattcss'), t, m;
+     if(!css&&typeof arcadeAttEl==='function'){ try{ arcadeAttEl('arcpage'); }catch(_a){} css=document.getElementById('arcattcss'); }
+     if(!css) return 'SKIP: no attract page style here';
+     t=css.textContent||''; m=/\.arcpage\{[^}]*clamp\(12px,1\.15vw,(\d+)px\)/.exec(t);
+     if(!m) return 'the attract page size rule was not found';
+     if(+m[1]<60) return 'the attract page type stops growing at '+m[1]+'px, half size on a 4K screen';
+     return null; }},
   {v:'24.77',what:'his answer 20: after the RUN OVER score counts up, the card shows the best moments of the run (BEST STREAK, BIGGEST HAUL, LONGEST SHOT), with P1 or P2 from the score word in the 2 player demo',
    run:function(){
      var bad=[], sv=null, src0, tried0, c, b, tx, g, p, i, lk=null, vk=0, bk=null, keys0, ki=null;

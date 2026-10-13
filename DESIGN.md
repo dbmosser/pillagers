@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.78 - THE ATTRACT PAGES GROW WITH A 4K SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures at 1080p and 4K and make sure the menus look good. On the 4K picture of the arcade HOW TO PLAY page the page was half the size it is at 1080p, its column heads tiny, because its type stopped growing at a size meant for smaller screens. It now grows with the screen, so a 4K TV shows it at the same share of the screen as a 1080p one.
+
+MEASURED. Check 24.78 passes, and fails on v24.77.
 ## v24.77 - RUN OVER: BEST MOMENTS
 
 Co-op hunt while he was away. His answer 20 (2026-10-12): RUN OVER with the score count-up, then the best moments. Once the score has counted up, the RUN OVER card shows the moments of the run: BEST STREAK (the longest chain of kills), BIGGEST HAUL (the most loot picked up in one life) and LONGEST SHOT (the farthest kill, in metres). In the 2 player demo it shows the best of the two of you, with P1 or P2 beside each. A moment that did not happen is left off.
