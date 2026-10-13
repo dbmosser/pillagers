@@ -1,0 +1,7 @@
+v26.01: a belt-stocked heal stays in the backpack grid
+
+Heals, grenades and plates the belt stocks by itself stay listed in the backpack grid again.
+
+Check 26.01. Fails on v26.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

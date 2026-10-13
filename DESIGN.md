@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.01 - A BELT-STOCKED HEAL STAYS IN THE BACKPACK GRID
+
+Co-op hunt while he was away. A slip in the class keys build: the game pins what each throwable, medical and armour key shows when the raid starts and when he picks something up, and a pin hides one copy of its item from the backpack grid, so with a lone Bandage on key 7 the grid listed nothing to select, drop or offer a teammate with T, and the peddler would not buy those copies. Before the class keys a heal, a grenade or a plate was never pinned and the grid showed all of them. A pin the game makes by itself for a heal, a stim, a grenade or a plate no longer hides anything. A key he bound himself, and a gun on a gun key, hide a copy as before.
+
+MEASURED. Check 26.01 passes, and fails on v26.00.
 ## v26.00 - THE KEY LISTS SAY THE NEW BELT
 
 Co-op hunt while he was away. His order of 2026-10-13: redo the bar at the bottom. Build 8 of 8, the words. Every list of keys now says the new belt: keys 1 to 4 are guns, 5 and 6 throwables, 7 and 8 medical, 9 armour. The full controls list (F1) has a row for each group and says U switches which grenade G throws and H is a tap to heal and a hold for a plate; the compact controls list says 1-4 guns beside B / I and 5-9 throw, heal, plate, and adds U; the rules card names the four groups; and the pause screen key line says them in place of 1-9 tactical belt.

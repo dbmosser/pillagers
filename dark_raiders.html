@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.00';
+var VER='26.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11951,7 +11951,7 @@ function strayGive(e){
 // v13.70: the copies the tactical belt claims, per key, the way bagStacks counts them (v8.78).
 function pedBeltClaims(){
   var cl={};
-  if(G&&G.hotAssign) for(var a in G.hotAssign){ var hk=G.hotAssign[a]; if(hk&&beltClaimsBag(hk)) cl[hk]=(cl[hk]||0)+1; }   // v14.63
+  if(G&&G.hotAssign) for(var a in G.hotAssign){ var hk=G.hotAssign[a]; if(hk&&beltClaimsPin(a,hk)) cl[hk]=(cl[hk]||0)+1; }   // v14.63
   return cl;
 }
 function pedSellAll(){
@@ -37137,6 +37137,15 @@ function beltClaimsBag(k){
   }
   return true;
 }
+// v25.xx (belt3b): does the pin on key ix hide a copy of its item from the backpack grid and from the peddler's sale? The ones he bound do, and so does
+// a gun on a gun key; the pin the game makes by itself for a heal, a stim, a grenade or a plate does not (those were never pinned before the class keys,
+// and the grid is where a lone Bandage is selected, dropped or offered to a teammate).
+function beltClaimsPin(ix,k){
+  if(!beltClaimsBag(k)) return false;
+  var cls=(typeof beltClassOf==='function')?beltClassOf(k):'';
+  if(cls&&cls!=='gun'&&G&&G.hotAuto&&G.hotAuto[ix]) return false;
+  return true;
+}
 function bagStacks(){
   var st=[],ix={};
   // v8.78, HIS RULE: INVENTORY = BACKPACK + HOTBAR, and an item is in one or the
@@ -37146,7 +37155,7 @@ function bagStacks(){
   var _hbClaim={};
   if(G.hotAssign) for(var _ha in G.hotAssign){
     var _hk=G.hotAssign[_ha];
-    if(_hk&&beltClaimsBag(_hk)) _hbClaim[_hk]=(_hbClaim[_hk]||0)+1;   // v14.63: not the gun in hand
+    if(_hk&&beltClaimsPin(_ha,_hk)) _hbClaim[_hk]=(_hbClaim[_hk]||0)+1;   // v14.63: not the gun in hand
   }
   for(var i=0;i<G.bag.length;i++){ var k=G.bag[i];
     // This copy is the one on the belt. It is on the belt INSTEAD of in here.
@@ -37386,7 +37395,7 @@ function drawBag(){
   // other's items. Counted the same way the grid claims them, per key, so it
   // cannot drift from what is drawn below it.
   var _bpN=0,_bltN=0,_clm={};
-  if(G.hotAssign) for(var _ck in G.hotAssign){ var _cv=G.hotAssign[_ck]; if(_cv&&beltClaimsBag(_cv)) _clm[_cv]=(_clm[_cv]||0)+1; }   // v14.63
+  if(G.hotAssign) for(var _ck in G.hotAssign){ var _cv=G.hotAssign[_ck]; if(_cv&&beltClaimsPin(_ck,_cv)) _clm[_cv]=(_clm[_cv]||0)+1; }   // v14.63
   for(var _ci=0;_ci<G.bag.length;_ci++){ var _ck2=G.bag[_ci];
     if(_clm[_ck2]>0){ _clm[_ck2]--; _bltN++; } else _bpN++; }
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armour '+Math.round(p.armor)+
@@ -41327,7 +41336,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.00: The key lists now say 1-4 guns, 5-6 throwables, 7-8 medical and 9 armour. Check 26.00 fails on v25.99',
+  now:'v26.01: Heals, grenades and plates the belt stocks by itself stay listed in the backpack grid again. Check 26.01 fails on v26.00',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

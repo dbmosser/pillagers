@@ -6088,6 +6088,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'26.01',what:'a pin the game makes by itself for a heal, a grenade or a plate hides nothing from the backpack grid: with Bandages, a Medkit and a plate on automatic pins the grid lists all of them, while a key he bound himself hides one copy and an automatic pin on a gun still hides the gun; and the peddler counts the same claims',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof bagStacks!=='function'||typeof pedBeltClaims!=='function') return 'SKIP: no backpack grid here';
+     if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
+     if(!ITEMS.bandage||!ITEMS.medkit||!ITEMS.plate||!ITEMS.gun_dmr) return 'SKIP: no heals, plate or marksman rifle here';
+     var bad=[], g=null, p=null;
+     function count(k){ var n=0, st=bagStacks(), i; for(i=0;i<st.length;i++) if(st[i].key===k) n+=st[i].idxs.length; return n; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
+       p=g.player; g.ents.length=0; p.iv=99;
+       g.bag=['bandage','bandage','medkit','plate','gun_dmr'];
+       g.hotAssign={2:'gun_dmr',6:'bandage',7:'medkit',8:'plate'}; g.hotAuto={2:1,6:1,7:1,8:1};
+       if(count('bandage')!==2||count('medkit')!==1||count('plate')!==1) bad.push('ONE: with automatic pins the grid lists '+count('bandage')+' Bandage, '+count('medkit')+' Medkit and '+count('plate')+' plate, not 2, 1 and 1');
+       if(count('gun_dmr')!==0) bad.push('ONE: an automatic pin on a gun stopped hiding the gun from the grid ('+count('gun_dmr')+')');
+       if((pedBeltClaims().bandage|0)!==0) bad.push('ONE: the peddler counts '+pedBeltClaims().bandage+' Bandage claimed by an automatic pin');
+       g.hotAuto={2:1};
+       if(count('bandage')!==1||count('medkit')!==0||count('plate')!==0) bad.push('TWO: with the keys he bound himself the grid lists '+count('bandage')+' Bandage, '+count('medkit')+' Medkit and '+count('plate')+' plate, not 1, 0 and 0');
+       if((pedBeltClaims().bandage|0)!==1) bad.push('TWO: the peddler counts '+pedBeltClaims().bandage+' Bandage claimed by his own key, not 1');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var g2=__state(); if(g2){ g2.drag=null; g2.hotAssign={}; g2.hotAuto={}; if(g2.player){ g2.player.iv=0; g2.player.downed=false; } if(!g2.over) __endRaid('abandon'); } }catch(_e){}
+       try{ keys={}; }catch(_m){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'26.00',what:'his order (redo the bar at the bottom), the words: the controls list (F1) says 1-4 guns, 5-6 throwables, 7-8 medical, 9 armour and U switches which grenade G throws and H taps a heal and holds a plate, the compact list keeps an even number of entries with 1-4 guns beside B / I and 5-9 throw, heal, plate, the rules card says the four groups, and the pause screen key line says them and no longer says 1-9 tactical belt',
    run:function(){
      if(typeof LEGEND==='undefined'||typeof LEGEND_MINI==='undefined') return 'SKIP: no controls list here';
