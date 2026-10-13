@@ -1,0 +1,5 @@
+## v25.25 - GRENADES AND THE TRIPWIRE SOUND LIKE THEM
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. The cook played one quiet synth clank, a quick throw pulled no pin at all, the throw left your hand in silence, a frag landed in silence until it blew, a smoke opened with no hiss, and a tripwire went down with the same clank as a smoke. Now the pin clicks out with its spoon (on the cook and on a quick throw), the throw whooshes, a frag lands with a metal knock, a smoke opens with a pressure hiss, a tripwire latches as it strings and beeps twice at the mine the moment it arms. The sounds are the recorded CC0 foley from the v25.20 bank. Sound only: nothing in the game changes, and no sound here draws a noise ring.
+
+MEASURED. Check 25.25 passes, and fails on v25.24.

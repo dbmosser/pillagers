@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.25 - GRENADES AND THE TRIPWIRE SOUND LIKE THEM
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. The cook played one quiet synth clank, a quick throw pulled no pin at all, the throw left your hand in silence, a frag landed in silence until it blew, a smoke opened with no hiss, and a tripwire went down with the same clank as a smoke. Now the pin clicks out with its spoon (on the cook and on a quick throw), the throw whooshes, a frag lands with a metal knock, a smoke opens with a pressure hiss, a tripwire latches as it strings and beeps twice at the mine the moment it arms. The sounds are the recorded CC0 foley from the v25.20 bank. Sound only: nothing in the game changes, and no sound here draws a noise ring.
+
+MEASURED. Check 25.25 passes, and fails on v25.24.
 ## v25.24 - THE FORGE: CRYO ROUNDS SLOW AND FREEZE
 
 Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. CRYO is the third element. Every cryo hit chills what it hits for 2.5 seconds, so it moves at 60 percent of its speed, and builds up cold by the size of the hit. Enough cold freezes it: for 1.4 seconds it cannot move or fire (a Warden or a Choir 0.7, the Overseer 0.6), and then it cannot freeze again for 4 seconds. About five Auto Rifle hits or two Longshot hits freeze a body. Pillagers freeze too. No gun can be upgraded in play yet: the Forge station comes in a later build.

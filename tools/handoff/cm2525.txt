@@ -1,0 +1,7 @@
+v25.25: grenades and the tripwire sound like them
+
+Grenades now pull a pin, whoosh, knock where they land and hiss for smoke, and a tripwire latches and beeps as it arms.
+
+Check 25.25. Fails on v25.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
