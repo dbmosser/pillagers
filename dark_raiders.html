@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.56';
+var VER='25.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3593,6 +3593,7 @@ try{ window.addEventListener('keydown',function(ev){ if(!SAVE_STALE||!document.g
 function saveProfile(){ if(typeof NET==='object'&&NET&&NET.upHold) return;   // v15.79: nothing is written while a party build has the host world dials in; the build is saved once they are out
   if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   // v23.20 (arcade1): the arcade plays on a sandbox copy of the profile; nothing of it is saved
   if(SAVE_STALE) return;   // v17.24: another tab has written this save since this tab read it; writing now would wipe that
+  try{ forgeSweep(); }catch(_fsw){}   // v23.xx (forge12): a gun sold or gone takes its forge record with it
   P.cfg=CFG; P.cfgv=18; storeSet(JSON.stringify(P));
   try{ syncTopRight(); }catch(_tr){}   // v11.52: every path that moves credits or XP saves
   var _mOpen=document.querySelector('.modal.on');
@@ -3837,6 +3838,7 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
           // freebie kit was counted against the stale packing rather than the one he had just packed.
           P.kitBeforeFree=null; P.hotBeforeFree=null; P.gunBeforeFree=null;
           P.weapons=P.weapons.filter(function(k){ return !!WEAPONS[k]; });
+          try{ forgeSweep(); }catch(_fsw){}   // v23.xx (forge12): a bad saved forge record is dropped on load
           if(!WEAPONS[P.equipped]) P.equipped=P.weapons.length?P.weapons[0]:'fists';
           // The saved config is a full copy of every tunable, so it silently pins
           // the old values over any new default. At v0.68 the map doubled and the
@@ -12208,6 +12210,11 @@ function buildRaid(sim){
     // for, and then shot like a clean gun. The comment above promises it "rides
     // the same rules as your primary"; now it does.
     sec=bakeWear(P.equippedSec); secIss=false;
+  }
+  // v23.xx (forge12): THE FORGE. Gun 1 and gun 2 from the armoury come up with the upgrade you extracted with. Not the sim, not the DEMO.
+  if(!sim&&!(typeof ARCADE==='object'&&ARCADE&&ARCADE.on)&&P.forged&&typeof P.forged==='object'){
+    if(!wepIssued&&wep&&wep.id&&P.forged[wep.id]) wep=forgeApply(wep,P.forged[wep.id].fk,P.forged[wep.id].el);
+    if(!secIss&&sec&&sec.id&&sec.id!=='fists'&&P.forged[sec.id]) sec=forgeApply(sec,P.forged[sec.id].fk,P.forged[sec.id].el);
   }
   // Never drop the operator into a flooded tile. Water defeats crouch and halves
   // your speed, so a wet spawn means announcing yourself from second zero with
@@ -25703,8 +25710,69 @@ function carriedGuns(p){
   if(p.wep&&p.wep.id!=='fists'&&!p.wepIssued) out.push(p.wep);
   if(p.sec&&p.sec.id!=='fists'&&!p.secIssued) out.push(p.sec);
   if(out.length===2&&out[0].id===out[1].id) out.pop();
-  out.sort(function(a,b){ return (WTIER[b.id]||0)-(WTIER[a.id]||0); });
+  out.sort(function(a,b){ return gunTierOf(b)-gunTierOf(a); });   // v23.xx (forge12): a forged gun ranks by its MK too
   return out;
+}
+// v23.xx, THE FORGE (2026-10-12), forge12. HIS RULE: "if you extract with an upgraded gun you get to keep it". CAREER only (the DEMO
+// never reaches this settle). P.forged holds one record per gun model, {fk, el}, because the armoury holds one of each model.
+// forgeBank, on an extraction after the banking: every forged gun carried out (both hands unless issued, and the backpack copies
+// still matched to backpack keys) writes its model's record when that model is in the armoury; the highest MK wins, the hands win a
+// tie, and an extracted gun never downgrades a record (a MK II carried out over a MK III record keeps the MK III). A plain armoury
+// rifle with a MK III rifle extracted becomes the MK III; the extra plain copy goes to the stash as before. The deploy re-applies the
+// record to gun 1 and gun 2 (forgeApply), so the rules of losing it are the armoury rules: a death loses the armoury gun carried and
+// its record with it, an abandon puts the armoury back as it was and never writes a record bought that raid. forgeSweep drops a record
+// whose model you no longer own anywhere (the armoury, the stash, or carried up this raid), or that is not a real gun, MK or element;
+// it runs on load, on every save, and at the end of every raid. No draw on any stream.
+function forgeBank(){
+  var p=G&&G.player, L=[], best={}, i, w, q, gk, n, j, o;
+  if(!p||G.sim||G.arcade||!P||!Array.isArray(P.weapons)) return 0;
+  if(p.wep&&!p.wepIssued) L.push([p.wep,2]);
+  if(p.sec&&!p.secIssued) L.push([p.sec,2]);
+  if(G.stowQ) for(gk in G.stowQ){ q=G.stowQ[gk]; if(!q||!q.length) continue; n=gunQCount(gk); for(j=Math.max(0,q.length-n);j<q.length;j++) L.push([q[j],1]); }
+  for(i=0;i<L.length;i++){
+    w=L[i][0]; if(!w||!(w.fk===1||w.fk===2)||!WEAPONS[w.id]) continue;
+    gk=w.id; o=best[gk];
+    if(!o||w.fk>o.fk||(w.fk===o.fk&&L[i][1]>o.pr)) best[gk]={fk:w.fk,el:(w.fk===2&&w.el&&ELEM[w.el])?w.el:'',pr:L[i][1]};
+  }
+  if(!P.forged||typeof P.forged!=='object'||Array.isArray(P.forged)) P.forged={};
+  n=0;
+  for(gk in best){
+    if(P.weapons.indexOf(gk)<0) continue;
+    o=P.forged[gk];
+    if(o&&o.fk>best[gk].fk) continue;
+    P.forged[gk]={fk:best[gk].fk,el:best[gk].el}; n++;
+  }
+  return n;
+}
+function forgeOwned(k){
+  var i, L;
+  if(!P) return false;
+  if(Array.isArray(P.weapons)&&P.weapons.indexOf(k)>=0) return true;
+  if(Array.isArray(P.stash)&&P.stash.indexOf('gun_'+k)>=0) return true;
+  if(Array.isArray(P.raidSpliced)&&P.raidSpliced.indexOf(k)>=0) return true;
+  if(typeof G!=='undefined'&&G&&!G.sim&&Array.isArray(G.spliced)&&G.spliced.indexOf(k)>=0&&!G.forgeDead) return true;
+  L=Array.isArray(P.gunPiled)?P.gunPiled:[];
+  for(i=0;i<L.length;i++) if(L[i]&&L[i].gk===k) return true;
+  return false;
+}
+function forgeSweep(how){
+  var F, k, o, i, gone;
+  if(!P) return 0;
+  F=P.forged;
+  if(F===undefined) return 0;
+  if(!F||typeof F!=='object'||Array.isArray(F)){ P.forged={}; return 0; }
+  if(how==='dead'&&typeof G!=='undefined'&&G){
+    G.forgeDead=1;
+    gone=(G.forgeGone||[]).concat(G.spliced||[]);
+    for(i=0;i<gone.length;i++) if(P.weapons.indexOf(gone[i])<0) delete F[gone[i]];
+  }
+  for(k in F){
+    if(!Object.prototype.hasOwnProperty.call(F,k)) continue;
+    o=F[k];
+    if(!o||typeof o!=='object'||!WEAPONS[k]||!(WEAPONS[k].mag>0)||!ITEMS['gun_'+k]||!(o.fk===1||o.fk===2)||(o.fk===2&&!(typeof o.el==='string'&&ELEM[o.el]))||!forgeOwned(k)){ delete F[k]; continue; }
+    if(o.fk===1) o.el='';
+  }
+  return 1;
 }
 // Held between the death headline being written and the manifest being filled,
 // because the manifest is assigned wholesale and would erase anything inserted
@@ -26141,6 +26209,7 @@ var _cdone=contractExtract(G.bag,haul);
       if(P.weapons.indexOf(_kw.id)<0) P.weapons.push(_kw.id);
       else if(!_ks[i][2]&&ITEMS['gun_'+_kw.id]) P.stash.push('gun_'+_kw.id);
     }
+    if(!G.sim) forgeBank();   // v23.xx (forge12): extract with an upgraded gun and you keep it
     // v15.58, first run audit finding: EXTRACTING WITH THE FREEBIE KIT KEEPS THE GUN YOU CHOSE IN GUN 1. The kit puts its Scav
     // Pistol in his hand not flagged issued, so that an extraction keeps it, and carriedGuns therefore lists it as a carried
     // gun: this line then put it in gun 1. A fresh player who chose Equip as your gun on the Compact SMG, as the loaner line
@@ -26273,7 +26342,7 @@ var _cdone=contractExtract(G.bag,haul);
       if(_egFree) continue;   // out of the ledger entirely, as an issued loaner already is: no count, no price, no line
       _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
       var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
-      if(wi>=0){ P.weapons.splice(wi,1);
+      if(wi>=0){ P.weapons.splice(wi,1); (G.forgeGone=G.forgeGone||[]).push(gone[j].id);   // v23.xx (forge12): its forge goes with it
         lines.push((ITEMS['gun_'+gone[j].id]?iconImgHTML('gun_'+gone[j].id,32)+' ':'')+'<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }   // v19.04: and the gun's picture
       // v9.55, HIS QUESTION: "KIA screen -- why is the gun different from the
       // others?" This branch is a gun picked up during the raid and never banked,
@@ -26345,6 +26414,7 @@ var _cdone=contractExtract(G.bag,haul);
     // total is counted after the fee, so this line is what explains the drop. A new line: no baked key is reworded.
     if(G.abandonFee>0) lines.push('<span style="color:var(--rust)">Walked out on the job. XP -'+G.abandonFee+'.</span>');
   }
+  if(!G.sim) forgeSweep(how);   // v23.xx (forge12): a death takes the forge of the armoury gun lost; an abandon writes nothing
   // v12.87, HIS NOTE 2026-09-11, verbatim: "when a player comes back to the
   // undercroft after dying in a raid or leaving/abandoning a raid, there should
   // be nothing in their loadout. This increases the feeling of loss. So, if they
@@ -40740,7 +40810,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.56: The what is new card names the career payout. Check 25.56 fails on v25.55',
+  now:'v25.57: In CAREER an upgraded gun you extract with stays upgraded in your armoury. Check 25.57 fails on v25.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.57 - THE FORGE: EXTRACT IT AND YOU KEEP IT
+
+Co-op hunt while he was away. His rule of 2026-10-12: if you extract with an upgraded gun you get to keep it. In CAREER, a forged gun you carry out (in your hands or in the backpack) now keeps its MK and element on that gun model in your armoury, and comes up forged on your next deploy. If you already owned a plain one, your armoury gun becomes the upgraded one, and an extracted upgrade never makes a better one worse. Dying with it loses it with the gun, as always (coming back empty). Abandoning puts your armoury back as it was, so an older upgrade survives and one bought that raid is not kept. A broken saved record is dropped when the save loads. DEMO has no stash, so nothing is kept there.
+
+MEASURED. Check 25.57 passes, and fails on v25.56.
 ## v25.56 - THE WHAT IS NEW CARD NAMES THE CAREER PAYOUT
 
 Co-op hunt while he was away. The card was stamped v25.43 and the stamp may not trail the build by more than 0.15. The card was stamped v25.43 and every ship stops when it falls 0.16 behind; finished builds are still queued. Its new line names the builds since: the CAREER payout (his mode design, answers 8 and 9), the pillager self-revive and good reload noises (his orders 2026-10-12) and the Forge acid rounds.

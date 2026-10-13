@@ -1,0 +1,7 @@
+v25.57: the forge: extract it and you keep it
+
+In CAREER an upgraded gun you extract with stays upgraded in your armoury.
+
+Check 25.57. Fails on v25.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
