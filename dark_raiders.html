@@ -1137,11 +1137,13 @@
   <h3>RAID PAUSED</h3>
   <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E interact &nbsp; R reload &nbsp; F melee strike &nbsp; 1-9 tactical belt &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Please provide feedback anything that went or felt wrong.</div>
-  <textarea id="pausenote" rows="3" style="max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
+  <textarea id="pausenote" rows="3" style="display:none;max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
     <button id="confirmabandon" style="padding:8px 22px;border-color:var(--rust);color:var(--rust);display:none">YES, ABANDON THIS RUN</button>
     <button id="resumebtn" style="padding:8px 22px">Resume run</button>
     <button id="pausesetbtn" style="padding:8px 22px">Settings</button>
+    <!-- v24.50, his answer 38: FEEDBACK, a typed note and a screenshot of this moment (the note box above is replaced by it) -->
+    <button id="fbbtn" style="padding:8px 22px">FEEDBACK</button>
     <!-- v10.96, HIS NOTE: the second of his two choices, shown on the floor and
          never in a raid. -->
     <button id="charselbtn" style="padding:8px 22px;display:none">RETURN TO CHARACTER SELECTION</button>
@@ -1153,6 +1155,17 @@
   <div id="pausehost" style="display:none;font-size:13.5px;color:var(--amber);margin-top:8px;text-align:center;max-width:620px;line-height:1.7">YOU ARE HOSTING. Closing this window or ending the party ends the raid for your whole party.</div>
 </div>
 
+<!-- v24.50, HIS ANSWER 38 (2026-10-12, "yes, keep it on esc/tab"): THE FEEDBACK WINDOW, over the pause box. -->
+<div class="modal" id="fbmodal" style="align-items:center;justify-content:center;text-align:center">
+  <h3>FEEDBACK</h3>
+  <div class="msub" id="fbsub">WHAT WENT WRONG OR FELT WRONG? THIS SCREENSHOT GOES WITH IT.</div>
+  <img id="fbshot" alt="" style="max-width:min(560px,90%);max-height:30vh;border:1px solid var(--steel-hi);margin:8px 0">
+  <textarea id="fbnote" rows="5" style="max-width:560px;font-size:14px" placeholder="TYPE YOUR NOTE. CTRL+ENTER SAVES."></textarea>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="fbsave" style="padding:8px 22px">SAVE</button>
+    <button id="fbcancel" data-esc="1" style="padding:8px 22px">CANCEL</button>
+  </div>
+</div>
 <div class="outcome" id="outcome">
 <div class="ocwin">
   <h1 id="oc_title">EXTRACTED</h1>
@@ -1969,7 +1982,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.49';
+var VER='24.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38705,7 +38718,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.49: Menus tick, click and buzz as you move, press and back out. Check 24.49 fails on v24.48',
+  now:'v24.50: FEEDBACK in the pause menu saves a typed note with a screenshot. Check 24.50 fails on v24.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -49197,6 +49210,89 @@ function runElapsed(){ return Math.max(0,elapsed()-((typeof G!=='undefined'&&G&&
 // length moves the clock now, keeping the time already played (on a teammate window the host clock rules); the pillager and
 // machine counts are the map as it was built and say they take effect from the next raid.
 document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
+// v24.50, HIS ANSWER 38 (2026-10-12): "yes, keep it on esc/tab". IN-GAME FEEDBACK, A NOTE AND A SCREENSHOT. The pause box held a note
+// field that went only into the run report, with no picture of what he was looking at, and on the floor it waited for the next report.
+// The box (ESC or TAB, in a raid, on the floor and in the demo) now has FEEDBACK: it takes a screenshot of the game as it stands (the
+// world and the HUD, before the window covers it), then opens a window with that picture, a note field (focused, so he can type at
+// once; CTRL+ENTER saves, ESC cancels) and SAVE and CANCEL, which a pad reaches too. SAVE writes the note with the version, the time
+// and where he was, and the picture: on his own machine through the collector into exports/ (feedback-STAMP.txt and .png), and
+// anywhere else as two downloaded files, pillagers_feedback_STAMP.txt and .png; inside an itch page, which cannot save files, the
+// note is copied instead. Nothing in the save changes, so it is safe in the demo too. The old note field is hidden.
+var FB={png:'',last:'',n:0};
+function fbShot(){
+  try{
+    var w=(cv&&cv.width)||0, h=(cv&&cv.height)||0, c, x;
+    if(!(w>0&&h>0)) return '';
+    c=document.createElement('canvas'); c.width=w; c.height=h; x=c.getContext('2d');
+    x.fillStyle='#000'; x.fillRect(0,0,w,h);
+    x.drawImage(cv,0,0,w,h);
+    if(hcv&&hcv.width>0&&hcv.height>0) x.drawImage(hcv,0,0,w,h);
+    return c.toDataURL('image/png');
+  }catch(e){ return ''; }
+}
+function fbOpen(){
+  var m=document.getElementById('fbmodal'), im=document.getElementById('fbshot'), ta=document.getElementById('fbnote');
+  if(!m) return false;
+  FB.png=fbShot();
+  if(im){ im.src=FB.png||''; im.style.display=FB.png?'':'none'; }
+  if(ta) ta.value='';
+  m.classList.add('on');
+  setTimeout(function(){ try{ if(ta&&m.classList.contains('on')) ta.focus(); }catch(_f){} },30);
+  return true;
+}
+function fbClose(){
+  var m=document.getElementById('fbmodal'), ta=document.getElementById('fbnote');
+  if(m) m.classList.remove('on');
+  try{ if(ta) ta.blur(); }catch(_b){}
+  FB.png='';
+  return true;
+}
+function fbStamp(){
+  var d=new Date(), z=function(n){ return (n<10?'0':'')+n; };
+  return d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+'-'+z(d.getHours())+z(d.getMinutes())+z(d.getSeconds());
+}
+function fbText(note){
+  var where='THE UNDERCROFT', L;
+  try{ if(G&&!G.over) where='IN A RAID'+(G.arcade?' (DEMO)':'')+', '+fmtDur(runElapsed())+' IN'; }catch(_w){}
+  L=['PILLAGERS FEEDBACK','VERSION: '+((typeof verShown==='function')?verShown(VER):VER)+' (BUILD '+VER+')','TIME: '+new Date().toString(),'WHERE: '+where,'RUNS: '+((P&&P.runs)||0),'',String(note||'').slice(0,4000)||'(NO NOTE)'];
+  return L.join('\r\n')+'\r\n';
+}
+function fbPost(url,body){ try{ return fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},body:body}); }catch(e){ return null; } }
+function fbFiles(txt,png,st){
+  if(reportEmbedded()){ try{ if(navigator.clipboard) navigator.clipboard.writeText(txt); }catch(_c){} return 'embedded'; }
+  function dl(name,href){ var a=document.createElement('a'); a.href=href; a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ try{ document.body.removeChild(a); }catch(_r){} },800); }
+  try{
+    var u=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+    dl('pillagers_feedback_'+st+'.txt',u); setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(_u){} },3000);
+    if(png) dl('pillagers_feedback_'+st+'.png',png);
+    return 'downloaded';
+  }catch(e){ return 'failed'; }
+}
+function fbSaid(){
+  var t=(FB.last==='embedded')?'FEEDBACK COPIED':((FB.last==='failed')?'FEEDBACK NOT SAVED':'FEEDBACK SAVED');
+  try{ if(G&&!G.over) say(t,'info'); else hubToast(t); }catch(_s){}
+}
+function fbSave(note,png){
+  var txt=fbText(note), st=fbStamp(), url=(typeof LOCAL_DROP==='string'&&LOCAL_DROP&&DROP===LOCAL_DROP)?LOCAL_DROP.replace(/telemetry$/,'feedback'):null, pr;
+  FB.n++;
+  if(url){
+    pr=fbPost(url,txt+'\n----PILLAGERS-PNG----\n'+(png||''));
+    if(pr&&pr.then){
+      pr.then(function(r){ FB.last=(r&&r.ok)?'posted':fbFiles(txt,png,st); fbSaid(); },function(){ FB.last=fbFiles(txt,png,st); fbSaid(); });
+      return 'post';
+    }
+  }
+  FB.last=fbFiles(txt,png,st); fbSaid();
+  return FB.last;
+}
+document.getElementById('fbbtn').onclick=function(){ fbOpen(); };
+document.getElementById('fbsave').onclick=function(){ var ta=document.getElementById('fbnote'), png=FB.png; fbClose(); fbSave(ta?ta.value:'',png); };
+document.getElementById('fbcancel').onclick=function(){ fbClose(); };
+// the game ignores keys typed into a text field, so the note field answers its own two: CTRL+ENTER saves, ESC cancels
+document.getElementById('fbnote').addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&(e.code==='Enter'||e.code==='NumpadEnter')){ e.preventDefault(); document.getElementById('fbsave').click(); }
+  else if(e.code==='Escape'&&!e.repeat){ e.preventDefault(); e.stopPropagation(); document.getElementById('fbcancel').click(); }
+});
 // v24.26, HIS ORDER 2026-10-12 (his #39, full controller navigation): END RUN ARMS FIRST. END RUN ended the whole demo run on one press,
 // with no confirm, and on a pad the highlight opens on RESUME, so one D-pad step and A threw a party run away. The first press now
 // arms it and reads END RUN? PRESS AGAIN; a second press within 3 seconds ends the run; after 3 seconds, or when the box is opened

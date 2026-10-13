@@ -1,0 +1,7 @@
+v24.50: feedback with a screenshot
+
+FEEDBACK in the pause menu saves a typed note with a screenshot.
+
+Check 24.50. Fails on v24.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

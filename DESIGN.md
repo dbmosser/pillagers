@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.50 - FEEDBACK WITH A SCREENSHOT
+
+Co-op hunt while he was away. His answer 38: in-game feedback in the ESC / TAB menu, a typed note plus a screenshot. The pause box had a note field that only went into the run report, with no picture of what you were looking at. It now has a FEEDBACK button: it takes a screenshot of the game as it stands and opens a window with the picture and a note field (type at once, CTRL+ENTER saves, ESC cancels; a controller reaches SAVE and CANCEL). SAVE writes your note with the version, the time and where you were, plus the picture: on his own machine into the exports folder through the collector, otherwise as two downloaded files. Nothing in your save changes, so it works in the demo too.
+
+MEASURED. Check 24.50 passes, and fails on v24.49.
 ## v24.49 - MENUS ANSWER WITH SOUND
 
 Co-op hunt while he was away. His number 45, improve all sound as much as possible. Moving through a menu, pressing a button, backing out and opening the pause box or the backpack were all silent, so on a controller or the arrow keys nothing told you a press had landed, where every shooter menu ticks and clicks. Now the highlight ticks as it moves, a pressed button clicks, backing out (CLOSE, LEAVE, ESC, TAB, B) makes a falling click, something locked buzzes, and the pause box and backpack make a soft sound opening and closing. The initials card ticks on each letter. These sounds are never pushed down by a fight.
