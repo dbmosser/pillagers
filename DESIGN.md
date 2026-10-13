@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.21 - MUSIC STARTS AT 60%
+
+Co-op hunt while he was away. His answer 36 (2026-10-12): menu music at 60%. The music (the title, the demo attract and the Undercroft; there is no music in a raid) now starts at 60% out of the box. Settings has a new 60% step between 50% and 75%, and anyone who already picked a level keeps exactly that level.
+
+MEASURED. Check 25.21 passes, and fails on v25.20.
 ## v25.20 - THE FOLEY BANK: RECORDED RELOAD, BANDAGE AND ARMOUR SOUNDS
 
 Co-op hunt while he was away. His orders of 2026-10-12: add good reload noises, and add sounds for bandaging, applying armour and the rest. Every sound in the game was made from oscillators and noise, which suits a gunshot and not a magazine, a bandage or a plate: a reload was one quarter-second click for every gun, and a bandage, a medkit and a plate played the menu chirp. This build puts 23 short real recordings in the game, all CC0 (Kenney, and zer0_sol, SpringySpringo, BMacZero, OwlishMedia and AntumDeluge on OpenGameArt): magazine out and in, a slide rack, a rifle magazine release and charging handle, a pistol magazine, a shotgun shell and pump, a bolt latch, a heavy box clack, a bandage tear and wrap, a medkit zip and snap, an injector, a plate clack, a velcro strap, a pin click, a keycard beep, a heavy door, a rummage, a pickup and an equip. They were cut, made mono at 22050 Hz, trimmed and evened out in level, and kept as small 8-bit mu-law WAV clips: 216 KB in all, under the 450 KB budget. One player plays them: your own sounds centred in your ears (so the split speakers still put player 1 left and player 2 right), a sound in the world placed left or right, quieter with distance and muffled behind a wall like every other world sound, with a touch of pitch spread so no two are identical, and the party hears yours where you stand. The reload, healing and armour builds that follow call it. The licences are in tools/sounds and travel in the itch zip. Sound only: nothing in the game changes.

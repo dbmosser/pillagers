@@ -1,0 +1,7 @@
+v25.21: music starts at 60%
+
+The music now starts at 60%, with a 60% step in Settings.
+
+Check 25.21. Fails on v25.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
