@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.03 - THE TITLE FILLS THE SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The Undercroft walking behind the title is smaller than the screen, so it showed as a lighter rectangle with dark bands round it, like a letterboxed screenshot. The title glass now softly blurs it and fades to black at every edge, so the menu sits on the whole screen.
+
+MEASURED. Check 25.03 passes, and fails on v25.02.
 ## v25.02 - EQUIPPING A GUN SAYS NOTHING ABOUT THE REST
 
 Co-op hunt while he was away. His order of 2026-10-12: you do not need to be told what else is in the backpack when you equip a different gun. The gun card in the corner had a line under the gun naming the other gun you carry and its rounds (OTHER GUN), and drawing a gun off a key said where the gun it replaced went (to the backpack, back to the armoury, left behind) and which key it kept in the backpack. All of that is gone. Swapping or drawing a gun, by the number keys or on the controller, now shows the gun in your hands and its ammo, and the line that comes up names only the gun you equipped. A gun drawn off its key now reads EQUIPPED, never STOWED, since it comes straight up into your hands. The keys and the belt work exactly as before.

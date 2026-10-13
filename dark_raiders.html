@@ -1220,6 +1220,13 @@
   #root #setdetail .sdv{ display:inline-block; margin-top:14px; padding:6px 12px; border:1px solid var(--acc); color:var(--acc); font-family:var(--f-cond);
     font-weight:700; font-size:20px; letter-spacing:.1em; text-transform:uppercase; }
   #root #setdetail .sdh{ margin-top:18px; font-size:17px; line-height:1.6; color:var(--tx-2); }
+  /* vNN.xx, UI REDESIGN ui5q2a (his #50, from the AAA judge of the title shots 01, 44 and 57): THE TITLE SITS ON THE WHOLE SCREEN.
+     The Undercroft floor walking behind the title is smaller than the screen, so at 1080p and 4K it showed as a lighter rectangle
+     with dark bands round it, like a letterboxed screenshot. The title glass now blurs the floor a little and closes to near black
+     towards every edge, so no edge of the floor shows and the people walking still read as a world behind the menu. */
+  #root #title.on{ background:radial-gradient(ellipse 58% 60% at 50% 45%, rgba(8,9,10,0) 40%, rgba(8,9,10,.95) 88%),
+    linear-gradient(90deg, rgba(17,19,21,.8) 0%, rgba(17,19,21,.9) 26%, rgba(17,19,21,.9) 74%, rgba(17,19,21,.8) 100%);
+    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
   /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge of the title shot with 2 PLAYER CO-OP picked and the second window
      blocked): THE PICK SHOWS. After a same machine pick that stops on a note, 1 PLAYER was still the amber button, so the screen
      did not say what had been chosen, and the blocked note was a line of small red words with a small RETRY under it, like a stray
@@ -2111,7 +2118,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.02';
+var VER='25.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39374,7 +39381,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.02: Equipping or swapping a gun now shows only the gun in your hands, with no line about your other guns or the backpack. Check 25.02 fails on v25.01',
+  now:'v25.03: The title backdrop is soft and fades to black at the edges, with no rectangle showing. Check 25.03 fails on v25.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

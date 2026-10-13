@@ -6072,6 +6072,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.03',what:'his #50 (UI redesign ui5q2a, the title backdrop): the title glass blurs the Undercroft floor and closes to near black at the edges, so the floor rectangle does not show',
+   run:function(){
+     var t=document.getElementById('title'); if(!t) return 'no #title';
+     var was=t.classList.contains('on'); if(!was) t.classList.add('on');
+     try{
+       var cs=getComputedStyle(t), bf=(cs.backdropFilter||cs.webkitBackdropFilter||'')+'';
+       if(bf.indexOf('blur')<0) return 'the title glass does not blur the floor ('+bf+')';
+       if((cs.backgroundImage+'').indexOf('0.95')<0) return 'the title glass does not close to near black at the edges';
+       return null;
+     } finally { if(!was) t.classList.remove('on'); } }},
   {v:'25.02',what:'his order (2026-10-12): equipping a different gun tells nothing about the backpack or the belt. With the rifle up, the SMG stowed, a shotgun and a marksman rifle packed on keys 3 and 4 and a Medkit and Bandages in the backpack, keys 2, 3, 4 and 1, the mouse wheel, and the pad walk with the trigger bring guns up, and no line, detail, label by him or gun card text names a gun other than the one in his hands or on the key he highlights, or an item in the backpack',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__state||!window.__sim) return 'SKIP: this fixture cannot deploy or step a raid';

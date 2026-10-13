@@ -1,0 +1,7 @@
+v25.03: the title fills the screen
+
+The title backdrop is soft and fades to black at the edges, with no rectangle showing.
+
+Check 25.03. Fails on v25.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
