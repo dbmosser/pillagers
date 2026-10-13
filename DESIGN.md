@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.68 - THE SEARCH SOUND NO LONGER REPEATS
+
+Co-op hunt while he was away. His order of 2026-10-13: the scavenging noise is too repetitive. While a box was searched the game played the same rummage clip, at the same pitch and level, on a fixed half second beat. Now each hit of a search takes a different clip from the foley bank, the rummage itself on every other hit and between them the strap, the holster rattle, a metal latch or clack or a case snap, never the same clip twice running, each at its own pitch (8 percent either way), level (20 percent either way) and trim start, the next one 0.25 to 0.6 seconds later, a heavier and lower dig every third to fifth hit, and now and then a short pause in the rhythm. It draws from the cosmetic stream only. No new recordings, nothing under G.sim, and the search still ends on its own completion cue.
+
+MEASURED. Check 25.68 passes, and fails on v25.67.
 ## v25.67 - NEW KEYS: E SEARCH, X EXTRACT, Q CROWBAR
 
 Co-op hunt while he was away. His orders of 2026-10-13: switch some keys around. E is search, always: boxes, bodies and caches, in an extraction ring too, and it never calls an extraction any more. X is the extraction: in a ring it starts the call, and in a landed ring it boards (every ring prompt, the banner words, the downed screen and the controls lists now say X). G is the quick throw of whatever throwable is selected, with no need to find it on the belt. H is the quick heal: it uses the best heal you carry without opening the backpack, with the same rules as the belt (a Bandage heals to 85, a Medkit to 100). Q is the melee, now a crowbar: the same blow, reach and cooldown as before, drawn as a short steel crowbar swinging through the arc with a trail, a metal whoosh as it swings and a thud where it lands. F brings up the next gun on keys 1 to 4, skipping an empty key and wrapping round. The controls list moves to F1 (it was H) and switching throwable moves to U (it was Q). X used to search on the way out, which E does everywhere now. The controller layout is unchanged.

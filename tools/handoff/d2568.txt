@@ -1,0 +1,5 @@
+## v25.68 - THE SEARCH SOUND NO LONGER REPEATS
+
+Co-op hunt while he was away. His order of 2026-10-13: the scavenging noise is too repetitive. While a box was searched the game played the same rummage clip, at the same pitch and level, on a fixed half second beat. Now each hit of a search takes a different clip from the foley bank, the rummage itself on every other hit and between them the strap, the holster rattle, a metal latch or clack or a case snap, never the same clip twice running, each at its own pitch (8 percent either way), level (20 percent either way) and trim start, the next one 0.25 to 0.6 seconds later, a heavier and lower dig every third to fifth hit, and now and then a short pause in the rhythm. It draws from the cosmetic stream only. No new recordings, nothing under G.sim, and the search still ends on its own completion cue.
+
+MEASURED. Check 25.68 passes, and fails on v25.67.

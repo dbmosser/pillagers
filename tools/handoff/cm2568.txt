@@ -1,0 +1,7 @@
+v25.68: the search sound no longer repeats
+
+Searching a box now sounds different every few hits instead of repeating one rummage.
+
+Check 25.68. Fails on v25.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
