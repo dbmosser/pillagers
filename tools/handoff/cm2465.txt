@@ -1,0 +1,7 @@
+v24.65: the stash answer line sits in the footer
+
+On the stash the answer line sits in the footer bar, level with CLOSE.
+
+Check 24.65. Fails on v24.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

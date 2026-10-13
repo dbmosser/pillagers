@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.65 - THE STASH ANSWER LINE SITS IN THE FOOTER
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. On the stash picture the answer line (the welcome pack is in your stash) sat across the new footer line, half in the footer and half over the sell panel. It now sits in the footer, level with CLOSE, as it already does in the shop, Fashion, the Mainframe and Settings.
+
+MEASURED. Check 24.65 passes, and fails on v24.64.
 ## v24.64 - THE STASH KEEPS THE TEXT FLOOR
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of the stash found 28 labels painted at about 12 pixels: the stash is drawn slightly smaller than the other windows (his note of v9.67), and its smallest labels were already at the 13 pixel floor, so they went under it. The smallest labels (the tabs, SORT, STASH and LOADOUT, the counts, the key bar and the hint lines) are set so they land on the floor after the reduction, and the tabs are bigger; every larger word keeps his slight reduction. No word changed.

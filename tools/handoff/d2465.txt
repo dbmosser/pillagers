@@ -1,0 +1,5 @@
+## v24.65 - THE STASH ANSWER LINE SITS IN THE FOOTER
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. On the stash picture the answer line (the welcome pack is in your stash) sat across the new footer line, half in the footer and half over the sell panel. It now sits in the footer, level with CLOSE, as it already does in the shop, Fashion, the Mainframe and Settings.
+
+MEASURED. Check 24.65 passes, and fails on v24.64.
