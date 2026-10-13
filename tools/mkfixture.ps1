@@ -8088,7 +8088,7 @@ window.__REGRESS=[
      function cellOf(icon){ var s=hotbarSlots(), i; for(i=0;i<s.length;i++) if(s[i]&&s[i].kind==='gun'&&String(s[i].icon)===icon) return i; return -1; }
      function inC(C,x,y){ return C&&x>=C.x&&x<=C.x+C.w&&y>=C.y&&y<=C.y+C.h; }
      function alphaOf(icon){ var i=cellOf(icon), C=(g.hotCells||[])[i], j; if(i<0||!C) return null; for(j=0;j<rec.length;j++) if(inC(C,rec[j].x,rec[j].y)) return rec[j].a; return null; }
-     function zeroCol(icon){ var i=cellOf(icon), C=(g.hotCells||[])[i], j; if(i<0||!C) return null; for(j=0;j<txt.length;j++) if(txt[j].t==='0'&&inC(C,txt[j].x,txt[j].y)) return txt[j].f; return null; }
+     function zeroCol(icon){ var i=cellOf(icon), C=(g.hotCells||[])[i], j; if(i<0||!C) return null; for(j=0;j<txt.length;j++) if((txt[j].t==='0'||txt[j].t===String(p.reserve|0))&&inC(C,txt[j].x,txt[j].y)) return txt[j].f;   // v25.xx (belt6b) retarget: the number on a gun key is the reserve now return null; }
      function r2(v){ return v===null?'none':(Math.round(v*100)/100); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
