@@ -1,0 +1,5 @@
+## v25.75 - CONTROLS LIST: NEW KEYS IN PAIRS
+
+Co-op hunt while he was away. A follow-up to the key swap. The short controls list in the corner grew from 12 to 16 entries, and the new keys pushed TACTICAL BELT into the right hand column, away from the backpack key its width was measured against. The entries are laid out again in pairs, with 1-9 TACTICAL BELT and B / I on one row as before: reload and melee, next gun and throw, heal and map, the belt and the backpack, search and extract. The pause box line the page is born with names the new keys too (the game rewrites it from the key map whenever the box opens).
+
+MEASURED. Check 25.75 passes, and fails on v25.74.

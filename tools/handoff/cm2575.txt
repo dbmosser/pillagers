@@ -1,0 +1,7 @@
+v25.75: controls list: new keys in pairs
+
+The short controls list now lays the new keys out in pairs, with the tactical belt back beside the backpack key.
+
+Check 25.75. Fails on v25.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.75 - CONTROLS LIST: NEW KEYS IN PAIRS
+
+Co-op hunt while he was away. A follow-up to the key swap. The short controls list in the corner grew from 12 to 16 entries, and the new keys pushed TACTICAL BELT into the right hand column, away from the backpack key its width was measured against. The entries are laid out again in pairs, with 1-9 TACTICAL BELT and B / I on one row as before: reload and melee, next gun and throw, heal and map, the belt and the backpack, search and extract. The pause box line the page is born with names the new keys too (the game rewrites it from the key map whenever the box opens).
+
+MEASURED. Check 25.75 passes, and fails on v25.74.
 ## v25.74 - BELT KEYS SOUND LIKE WHAT THEY PICK
 
 Co-op hunt while he was away. His note of 2026-10-13: wherever the plop is used, consider whether something else would be better. The plop is the short rising pick chirp (already half as loud since v25.64). Pressing a belt key (the number keys, the mouse wheel, the pad bumpers) played it after the holster clack of a gun swap had already played, and for a grenade, a medical item or a plate it was the only sound. Now a belt key sounds like what it picks: a gun swap or a draw keeps its own holster clack and adds nothing; a throwable is a short pouch rustle, a bandage or medkit the cloth wrap, a plate the armour clack; an empty cell or a gun already in hand gets the soft menu tick, and a vacant gun key the dull buzz of something locked. The plop stays, at half level, where nothing fits better: finishing a box search, the pickup and stash actions, waypoints, revives and the Undercroft buttons. Sound only.

@@ -1305,7 +1305,7 @@
 
 <div class="pausebox" id="pausebox">
   <h3>RAID PAUSED</h3>
-  <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E interact &nbsp; R reload &nbsp; F melee strike &nbsp; 1-9 tactical belt &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; H controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
+  <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E search / use &nbsp; X extraction &nbsp; R reload &nbsp; Q melee &nbsp; F next gun &nbsp; G quick throw &nbsp; H quick heal &nbsp; 1-9 tactical belt &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; F1 controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Please provide feedback anything that went or felt wrong.</div>
   <textarea id="pausenote" rows="3" style="display:none;max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.74';
+var VER='25.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35131,9 +35131,9 @@ var LEGEND_MINI=[
   ['CTRL / C','crouch'],['SPACE','roll'],
   ['LMB','fire'],['RMB','sights'],
   ['R','reload'],
-  ['Q','melee'],['F','next gun'],['G','throw'],['H','heal'],
+  ['Q','melee'],['F','next gun'],['G','throw'],['H','heal'],['M','map'],
   ['1-9','tactical belt'],['B / I','backpack'],
-  ['E','search'],['X','extract'],['M','map']
+  ['E','search'],['X','extract']
 ];
 // v18.60, FROM THE CODE COMB (2026-10-07): THE COMPACT LEGEND NAMES THE KEYS AS SET AND NEVER RUNS A KEY INTO ITS WORD. On the
 // keyboard the list said the default keys after CHANGE KEYS moved them, and every word sat a fixed 44 from its key, so CTRL / C
@@ -41227,7 +41227,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.74: Belt keys now sound like what they pick instead of the plain chirp: a pouch rustle, a cloth wrap, an armour clack or a soft tick. Check 25.74 fails on v25.73',
+  now:'v25.75: The short controls list now lays the new keys out in pairs, with the tactical belt back beside the backpack key. Check 25.75 fails on v25.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

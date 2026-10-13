@@ -6085,6 +6085,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.75',what:'the compact controls list keeps 1-9 TACTICAL BELT in the left column beside B / I (the v17.76 rule) and names the new keys in pairs: Q melee, F next gun, G throw, H heal, E search, X extract',
+   run:function(){
+     if(typeof LEGEND_MINI==='undefined') return 'SKIP: no compact legend here';
+     var bad=[], rows=LEGEND_MINI, i, ix=-1, k, found, want={'Q':'melee','F':'next gun','G':'throw','H':'heal','E':'search','X':'extract'};
+     for(i=0;i<rows.length;i++) if(rows[i][0]==='1-9') ix=i;
+     if(ix<0) bad.push('the compact list has no 1-9 row');
+     else{
+       if(ix%2!==0) bad.push('1-9 TACTICAL BELT sits in the right hand column (entry '+ix+'), so its label has no next column to be measured against');
+       if(!rows[ix+1]||rows[ix+1][0]!=='B / I') bad.push('B / I does not follow 1-9 on the same row');
+     }
+     for(k in want){ found=false; for(i=0;i<rows.length;i++) if(rows[i][0]===k&&rows[i][1]===want[k]) found=true; if(!found) bad.push('the compact list lacks '+k+' '+want[k]); }
+     if(rows.length%2!==0) bad.push('the compact list has an odd number of entries ('+rows.length+'), so its last row has one hole');
+     return bad.length?bad.join('; '):null; }},
   {v:'25.74',what:'his note (use something better than the plop): a belt key press plays no pick chirp; a throwable is a pouch rustle, a bandage or medkit the cloth wrap, a plate the armour clack, an empty cell or a gun already up the soft menu tick, a vacant gun key the locked buzz, and a gun swap by key adds nothing over its holster clack',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof setHot!=='function'||typeof beltSound!=='function'||typeof hotbarSlots!=='function') return 'the belt keys still end in the plain pick chirp (no beltSound)';
