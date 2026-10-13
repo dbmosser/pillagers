@@ -1,0 +1,5 @@
+## v24.49 - MENUS ANSWER WITH SOUND
+
+Co-op hunt while he was away. His number 45, improve all sound as much as possible. Moving through a menu, pressing a button, backing out and opening the pause box or the backpack were all silent, so on a controller or the arrow keys nothing told you a press had landed, where every shooter menu ticks and clicks. Now the highlight ticks as it moves, a pressed button clicks, backing out (CLOSE, LEAVE, ESC, TAB, B) makes a falling click, something locked buzzes, and the pause box and backpack make a soft sound opening and closing. The initials card ticks on each letter. These sounds are never pushed down by a fight.
+
+MEASURED. Check 24.49 passes, and fails on v24.48.

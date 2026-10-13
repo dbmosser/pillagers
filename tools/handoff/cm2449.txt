@@ -1,0 +1,7 @@
+v24.49: menus answer with sound
+
+Menus tick, click and buzz as you move, press and back out.
+
+Check 24.49. Fails on v24.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
