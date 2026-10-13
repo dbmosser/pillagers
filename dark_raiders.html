@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.66';
+var VER='25.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13703,7 +13703,7 @@ window.addEventListener('keydown',function(e){
     var _hubBusy=!!(_titleUp||document.querySelector('.modal.on')||document.querySelector('.imenu')||   // v12.06: the character screen counts here too
                     document.getElementById('hub').classList.contains('on')||hubBagOpen);
     // v6.73, his notes: H shows the controls down here too, and SPACE rolls.
-    if(e.code==='KeyH'&&!e.repeat&&HB&&!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }
+    if(e.code==='F1'&&!e.repeat&&HB&&!_hubBusy){ HB.legend=!HB.legend; e.preventDefault(); return; }   // v25.xx (keyswap): F1, H is the quick heal up top
     // v8.70, HIS REPORT: ESC and P pause on the floor. The raid owns these keys
     // further down and the hub branch returns long before reaching it. Only when
     // no window is open, so ESC still belongs to whatever panel is in front.
@@ -13893,9 +13893,9 @@ function raidKey(code,repeat,ev){
       if(td===1) pedSellAll(); else if(td>=2&&td<=9) pedBuy(td-2);
       return;
     }
-    if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC') return;
+    if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC'||code==='KeyH'||code==='KeyF'||code==='KeyU') return;   // v25.xx (keyswap): and the new throw, heal, melee, next gun and switch keys do nothing behind the stall
   }
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyV','KeyC','KeyX','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyV','KeyC','KeyX','KeyU','F1','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
   // v12.89, audit finding 9: ESC BELONGS TO WHATEVER IS IN FRONT, which in a raid
   // is the map, then the backpack, then the pause box behind neither. A held drag
   // goes with the bag, the way the focus-loss rescue already drops it.
@@ -13935,11 +13935,13 @@ function raidKey(code,repeat,ev){
   // is the reason his messages were unreadable. Compact is now the default and
   // holds the twelve keys you actually press; the full reference is one more
   // press of H away, so nothing is lost, it is just no longer always on screen.
-  if(code==='KeyH'&&G&&!repeat) G.legendOn=(G.legendOn+1)%3;
+  if(code==='F1'&&G&&!repeat) G.legendOn=(G.legendOn+1)%3;   // v25.xx (keyswap): F1 cycles the controls list (it was H)
+  if(code==='KeyH'&&G&&!G.over&&!G.paused&&!repeat) quickHeal();   // v25.xx (keyswap): H is the quick heal, no backpack needed
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
   // reserve pool is shared, so swapping is not a way to dodge running dry.
 
-  if(code==='KeyF'&&G&&!G.over&&!G.paused&&!repeat) meleeStrike();   // v10.64, his note
+  if(code==='KeyF'&&G&&!G.over&&!G.paused&&!repeat) nextGun();   // v25.xx (keyswap): F brings up the next gun
+  if(code==='KeyQ'&&G&&!G.over&&!G.paused&&!repeat) meleeStrike();   // v25.xx (keyswap): Q swings the crowbar (it was F)   // v10.64, his note
   // 1 to 9 SELECT A HOTBAR SLOT, ALWAYS, v2.94. His note: "player should be able
   // to switch which item is equipped by using 1-9 keys even if inventory is
   // open." The bag used to swallow every digit because v1.91 had given 1 and 2 a
@@ -13951,11 +13953,11 @@ function raidKey(code,repeat,ev){
     var dn=parseInt(code.slice(5),10);
     if(dn>=1&&dn<=9){ setHot(dn-1); if(ev) ev.preventDefault(); }
   }
-  if(code==='KeyQ'&&G&&!G.over&&!repeat) cycleThrow();
+  if(code==='KeyU'&&G&&!G.over&&!repeat) cycleThrow();   // v25.xx (keyswap): switch throwable moved from Q (now the crowbar) to U
   if(code==='KeyT'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat&&NET.on&&typeof netGiftKey==='function'&&netGiftKey()){}   // v17.44: his pick 4, T offers the selected backpack item or takes an offer; v18.22: not behind the stall
   else if(code==='KeyT'&&G&&!G.over&&!G.paused&&!G.trade&&!G.bagOpen&&!repeat&&NET.on&&typeof netAidHold==='function') netAidHold();   // v16.84, his ask: T patches up a teammate in reach with your Bandage or Medkit, the pad Y; v18.22: never with the backpack open (that T is the trade key) and never behind the stall
   if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();   // v16.43: ping for the party
-  if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat&&!(G.arcade&&typeof arcadeQuickHeal==='function'&&arcadeQuickHeal())) useHot();   // v23.46 (arcade23): in the arcade G is the quick heal
+  if(code==='KeyG'&&G&&!G.over&&!G.paused&&!repeat) doThrow();   // v23.46 (arcade23): in the arcade G is the quick heal
   // ORDERS, v3.73, partner-merc line two. One key, three states, and the words
   // are the feedback: LOOT is the freelancer he has always been, FOLLOW keeps
   // him at your shoulder, HOLD nails him to the spot he is standing on when
@@ -14744,7 +14746,7 @@ function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on); }
 // connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
 // file has been corrupted twice by non-ASCII surviving a patch script badly.
 var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'LB',
-              Space:'A',Tab:'BACK',KeyP:'MENU',KeyX:'Y',
+              Space:'A',Tab:'BACK',KeyP:'MENU',KeyX:'X',
               ShiftLeft:'LS',ControlLeft:'B',KeyM:'D-UP',KeyI:'VIEW'};   // v13.52: the full pad list and the backpack say VIEW and MENU
 // The keyboard half, kept beside the controller half so a station key can never be
 // labelled by one table and pressed by the other.
@@ -15348,7 +15350,8 @@ function pollPad(){
       if(_xDown&&G.player&&G.player.downed) PAD.xMode='KeyE';   // v17.04, co-op hunt 2026-09-28: downed, X holds E, also a hold carried onto the floor (above)
       PAD.xWas=_xDown;
       padHold('KeyR',_xDown&&PAD.xMode==='KeyR');
-      padHold('KeyE',_xDown&&PAD.xMode==='KeyE'&&!_xSearch);   // in a ring with a box at his feet X still searches first (v13.48), below
+      padHold('KeyE',_xDown&&PAD.xMode==='KeyE'&&!_xSearch);
+      padHold('PadX',_xDown&&PAD.xMode==='KeyE'&&!_xSearch);   // v25.xx (keyswap): the pad X hold also stands for the keyboard X, the extraction call   // in a ring with a box at his feet X still searches first (v13.48), below
       continue;
     }
     // v16.84, HIS ASK: HOLD Y TO PATCH UP A TEAMMATE. On the press, with a teammate up top within reach (facing not needed), Y
@@ -15361,7 +15364,7 @@ function pollPad(){
       var _yD=pressed(3)&&!bagNav;
       if(_yD&&!PAD.prev[3]){ var _yA=false; if(G&&G.giftIn&&!G.bagOpen&&!G.giftIn.yes&&G.t-G.giftIn.t<=GIFT_T){ try{ _yA=!!netGiftKey(); }catch(_gy){} } else try{ _yA=!!(NET.on&&!G.over&&typeof netAidHold==='function'&&netAidHold(!!G.nearContainer)); }catch(_ye){} PAD.yAid=_yA; }
       if(!_yD) PAD.yAid=false;
-      padHold('KeyX',(_yD&&!PAD.yAid)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));
+      padHold('PadSearch',(_yD&&!PAD.yAid)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));   // v25.xx (keyswap): the pad ring search (was keyboard X, which is the extraction now)
       continue;
     }
     // dpad down browses the bag rather than using medical while it is open
@@ -15492,13 +15495,13 @@ function disarmAbandon(){
 // (Settings, CHANGE KEYS) lists the actions; the pause box legend is rebuilt from the map. Prompts in the raid still name
 // the defaults in this build.
 var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['KeyD','move right'],['Space','dodge roll'],['ShiftLeft','sprint (hold)'],
-  ['ControlLeft','crouch (hold)'],['KeyC','crouch toggle'],['KeyE','interact, search, call for extraction'],['KeyR','reload'],['KeyF','melee strike'],
-  ['KeyX','search what you stand on'],['KeyB','backpack'],['KeyI','backpack'],['Enter','equip from the backpack'],['KeyM','map'],['KeyH','controls'],
+  ['ControlLeft','crouch (hold)'],['KeyC','crouch toggle'],['KeyE','search and use'],['KeyR','reload'],['KeyQ','melee (crowbar)'],['KeyF','next gun'],
+  ['KeyX','call for extraction, then board'],['KeyB','backpack'],['KeyI','backpack'],['Enter','equip from the backpack'],['KeyM','map'],['F1','controls list'],['KeyH','quick heal'],
   ['KeyT','offer an item to a teammate'],['KeyN','ping'],['KeyP','pause'],
   // v18.54, FROM THE CODE COMB (2026-10-07): EVERY KEY THAT DOES SOMETHING IS ON THE LIST. G, Q, Z, V and O work in the raid but were
   // not here, so binding an action onto one of them did not swap: reload on G kept R as reload too, and the belt item on G was gone
   // with no way back but RESET. They are listed now, so a bind onto one swaps like any other.
-  ['KeyG','use the selected belt item'],['KeyQ','switch throwable'],['KeyZ','drop an item for a teammate'],['KeyV','emotes'],['KeyO','order your hire']];
+  ['KeyG','quick throw'],['KeyU','switch throwable'],['KeyZ','drop an item for a teammate'],['KeyV','emotes'],['KeyO','order your hire']];
 var KEYS={inv:null,waiting:null,built:0,inited:0};
 function keysMap(){ return (typeof P!=='undefined'&&P&&P.keymap&&typeof P.keymap==='object')?P.keymap:{}; }
 function keysInv(){ var m=keysMap(), k, inv={}; for(k in m) if(Object.prototype.hasOwnProperty.call(m,k)&&typeof m[k]==='string'&&m[k]!==k) inv[m[k]]=k; KEYS.inv=inv; return inv; }
@@ -15547,8 +15550,8 @@ function keysLegendHtml(){
   // pause key, and TAB is one entry in the words of the controls card: pause, or back out.
   var k=function(t){ return '<b style="color:var(--bone)">'+t+'</b>'; };
   return k('MOUSE')+' aim &nbsp; '+k('LMB')+' fire &nbsp; '+k('RMB')+' aim down sights &nbsp; '+s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' move &nbsp; '+s('Space')+' dodge roll &nbsp; '+s('ShiftLeft')+' hold to sprint &nbsp; '+
-    s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' interact &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyF')+' melee strike &nbsp; '+k('1-9')+' tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
-    s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' ping &nbsp; '+s('KeyH')+' controls &nbsp; '+s('KeyP')+' pause &nbsp; '+k('TAB')+' pause, or back out';   // v18.25: the trade key, from the audit
+    s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' search / use &nbsp; '+s('KeyX')+' extraction &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyQ')+' melee &nbsp; '+s('KeyF')+' next gun &nbsp; '+s('KeyG')+' quick throw &nbsp; '+s('KeyH')+' quick heal &nbsp; '+k('1-9')+' tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
+    s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' ping &nbsp; '+s('F1')+' controls &nbsp; '+s('KeyP')+' pause &nbsp; '+k('TAB')+' pause, or back out';   // v18.25: the trade key, from the audit
 }
 function keysLegendApply(){ var el=document.getElementById('pausekeys'); if(!el) return false; el.innerHTML=String(keysLegendHtml()).split(' &nbsp; ').map(function(p){ return '<span style="white-space:nowrap">'+p+'</span>'; }).join(' &nbsp; '); try{ pauseFrameFit(); }catch(_pf){} return true; }   // v19.06, seen on the 4K pause screenshot (2026-10-07): an entry broke in two at the line end (TAB back / out); each key and its words now stay on one line
 function keysRowHtml(){
@@ -17864,6 +17867,41 @@ function raiderCoverSpot(e,p,d){
   }
   return null;
 }
+// v25.xx (keyswap), HIS ORDERS 2026-10-13: "E - search (always); X - start extraction countdown / extract; G - quick grenade (or other
+// throwable); H - quick heal", then "Q - melee (change it so you melee attack with a crowbar); F - next gun". E searches boxes, bodies and
+// caches in a ring too and never calls an extraction; X calls it and takes it (xCallKey); G throws the selected throwable at once (doThrow);
+// H uses the best heal you carry through the same picker and wind-up as the belt (quickHeal: a Bandage stops at 85, a Medkit reaches
+// 100); Q swings a crowbar (the blow, reach and cooldown of the bare hands strike, now drawn and sounded as a crowbar); F brings up the next
+// gun on keys 1 to 4, skipping an empty key and wrapping round (nextGun, the swap path the number keys use). F1 shows the controls list,
+// and U switches throwable. The pad layout is his of 2026-09-27 and is unchanged: the pad X still holds E, now with PadX beside it to stand
+// for the keyboard X, and its Y ring search is PadSearch.
+function xCallKey(){ return !!(keys['KeyX']||(keys['PadX']&&keys['KeyE'])); }
+function quickHeal(){
+  var p=G&&G.player;
+  if(!G||G.sim||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.specOut) return false;
+  try{ useMedical(); }catch(_qh){}
+  return true;
+}
+function nextGun(){
+  var p=G&&G.player, sl, cur, n=GUNKEYS, k, i;
+  if(!G||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.roll>0) return false;
+  sl=hotbarSlots(); cur=heldGunCell(sl); if(cur<0) cur=clamp(G.hot||0,0,n-1);
+  for(k=1;k<=n;k++){
+    i=(cur+k)%n;
+    if(!sl[i]||sl[i].kind!=='gun'||sl[i].vacant||sl[i].inHand) continue;
+    if(G.hot===i) G.hot=cur;   // setHot ignores the key the highlight is already on
+    setHot(i);
+    return true;
+  }
+  return false;
+}
+// the crowbar sounds, from the v25.20 foley bank: a metal whoosh as it swings, a thud and a rattle where it lands
+function meleeFoley(kind,x,y){
+  if((G&&G.sim)||typeof foley!=='function') return false;
+  if(kind==='swing'){ foley('strapRip',null,null,{rate:2.2,g:0.9,dur:0.2}); foley('boltLatch',null,null,{rate:2.4,g:0.4,at:0.05,dur:0.09,gap:0}); return true; }
+  if(kind==='hit'){ foley('plateClack',x,y,{rate:0.75,g:1.2}); foley('lmgClack',x,y,{rate:0.9,g:0.6,at:0.03,gap:0}); return true; }
+  return false;
+}
 function meleeStrike(){
   if(!G||G.over||G.paused||G.sim||G.trade) return false;
   var p=G.player;
@@ -17878,6 +17916,7 @@ function meleeStrike(){
   p.meleeAt=G.t;
   if(_bare) p.lastShot=G.t*1000;
   G.punchT=0.22;                      // the thrust the fists attack draws
+  G.barT=0.22; meleeFoley('swing');   // v25.xx (keyswap): and Q swings a crowbar through that same 0.22 s: drawn in the hand, with a whoosh
   // G.tel, not a bare T: T is a local alias for it inside the functions that
   // use it, and a bare one here threw before the swing ever ran. The dry run
   // caught that: the punch played and nothing was hit.
@@ -17936,10 +17975,10 @@ if(wep.mag===0){
         notoAggress(_me);            // v8.30: same rule, bare hands included
         if(_me.hp<=0) _me.byPlayer=true;
         _swHit=true;
-        if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); }
+        if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); if(G.barT>0) meleeFoley('hit',_me.x,_me.y); }   // v25.xx (keyswap): a crowbar blow thuds
       }
     }
-    if(!G.sim&&!_swHit&&fromPlayer) blip('foot');
+    if(!G.sim&&!_swHit&&fromPlayer&&!(G.barT>0)) blip('foot');   // v25.xx (keyswap): a crowbar miss is its whoosh, not a footfall
     return;
   }
   var shots=wep.pellets||1;
@@ -20043,7 +20082,7 @@ function tryExtractTick(dt,wantCall){
       z.pullT=null; z.boardT=0; z.pullFloor=0;
       // v22.63, the raid text rewrite (R20): KEYS FOLLOW THE DEVICE. His words stay word for word; only the E token is the key the
       // pull is on: the bound key on a keyboard (an unmoved keyboard reads exactly as before) and X on a controller.
-      say('Knocked down. Extraction progress bar reset. Hold '+keyLabel('KeyE','E')+' to try again.','ext',{c:'warn',key:'xcall'});   // v16.17, his note: extraction hold meant nothing to him; v16.19: his words, Extraction progress bar reset
+      say('Knocked down. Extraction progress bar reset. Hold '+keyLabel('KeyX','X')+' to try again.','ext',{c:'warn',key:'xcall'});   // v16.17, his note: extraction hold meant nothing to him; v16.19: his words, Extraction progress bar reset
       return;
     }
     if(p.downed&&CFG.hauledAboard!==0){
@@ -20195,7 +20234,7 @@ function tryExtractTick(dt,wantCall){
       // it ran past the plate or was pushed down. It is now EXTRACTION CALLED (the wait as m:ss, then the key that extracts, or that
       // the raid clock runs out first), then SIEGE INCOMING (no count since v25.62), then a feed row for the backpack. The band under the
       // clock owns every live countdown, so only the one inbound figure is in a detail.
-      var _xw=Math.round(CFG.extractWait), _xs=(_xw>=60)?(Math.floor(_xw/60)+':'+((_xw%60)<10?'0':'')+(_xw%60)):(_xw+'s'), _xk='['+keyLabel('KeyE','E')+']';
+      var _xw=Math.round(CFG.extractWait), _xs=(_xw>=60)?(Math.floor(_xw/60)+':'+((_xw%60)<10?'0':'')+(_xw%60)):(_xw+'s'), _xk='['+keyLabel('KeyX','X')+']';
       say('EXTRACTION CALLED','ext',{key:'xcall',sub:'Inbound '+_xs+((raidClockOn()&&G.timeLeft<CFG.extractWait)?' \u00b7 Clock runs out first':'')});   // v12.24: not with the clock OFF   // v22.xx (tr3fixc): the shooter voice
       say('SIEGE INCOMING','warn',{key:'siege'});   // v25.62, his order (2026-10-12): no count   // v22.xx (tr3fixc): the shooter voice
       // v24.xx (nobagline): no backpack weight line after the siege (see the nobagline note above)
@@ -20697,7 +20736,7 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
         G.tel.ringCrowd={mapBorn:_rcm,siegeBorn:_rcs};
       }
       if(dist(p,z)<1400){ sfxHere('touchdown',z.x,z.y); sfxHere('alarm',z.x,z.y);   // v11.59: mark themselves
-        say('EXTRACT IN PROGRESS!','ext',{key:'xcall',sub:'Hold ['+keyLabel('KeyE','E')+'] to extract.'}); }   // v22.38 (R13): his phrase; the band shows the seconds
+        say('EXTRACT IN PROGRESS!','ext',{key:'xcall',sub:'Hold ['+keyLabel('KeyX','X')+'] to extract.'}); }   // v22.38 (R13): his phrase; the band shows the seconds
     }
     // THE WINDOW CLOSING, once a second for the last eight. This is the only
     // sound in the family that is meant to be unpleasant: it is the one that
@@ -20727,7 +20766,7 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
       // as CLOSED. Past the closing time the line now stops at its first sentence and leaves the news to that queued line; with
       // too little clock left it says a call cannot beat the clock; every other miss still offers the call and its wait.
       if(dist(p,z)<1400){ blip('clank');
-        say('EXTRACTION MISSED','ext',{c:'warn',key:'xcall',sub:((z.closeAt!==undefined&&G.timeLeft<=z.closeAt)?'':((raidClockOn()&&G.timeLeft<CFG.extractWait)?'No time to call again':('Hold ['+keyLabel('KeyE','E')+'] to call again')))}); }   // v22.38 (R13)   // v22.xx (tr3fixc): the shooter voice
+        say('EXTRACTION MISSED','ext',{c:'warn',key:'xcall',sub:((z.closeAt!==undefined&&G.timeLeft<=z.closeAt)?'':((raidClockOn()&&G.timeLeft<CFG.extractWait)?'No time to call again':('Hold ['+keyLabel('KeyX','X')+'] to call again')))}); }   // v22.38 (R13)   // v22.xx (tr3fixc): the shooter voice
     }
   }
   // THE MIRRORS ARE A VIEW, NOT A CACHE, v2.29. G.beaconT, G.shipHold and
@@ -20875,6 +20914,7 @@ function updatePlayer(dt){
   if(p.hitFlash>0) p.hitFlash-=dt;
   if(G.rollSayT>0) G.rollSayT-=dt;   // v13.19: the refused-roll line, once every 1.5s at most
   if(G.punchT>0) G.punchT-=dt;
+  if(G.barT>0) G.barT-=dt;   // v25.xx (keyswap): the crowbar swing
   if(G.handsT>0) G.handsT-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
   if(p.muzzle>0) p.muzzle-=dt;
@@ -20944,7 +20984,7 @@ function updatePlayer(dt){
     // And per his run #5 note, a downed operator can now CALL the ship too:
     // the E key passes through, so bleeding out inside the ring with no beacon
     // inbound is a decision point instead of a death sentence.
-    tryExtractTick(dt,!!keys['KeyE']);
+    tryExtractTick(dt,xCallKey());   // v25.xx (keyswap): and downed too, on X
     return;
   }
 
@@ -21761,7 +21801,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
   // searched with no key (arcadeAutoSrch), so a walk-up player loots by walking over it. X and E still search as before.
   // v23.xx, HIS ORDER (2026-10-11 evening): "i dont like the autoloot, change it back to hold E to loot". The arcade searches by holding
   // E (or X, or the pad search button) like every other raid again, at the usual speed; arcadeAutoSrch stays for the tests but is not asked.
-  if(near&&(keys['KeyX']||(keys['KeyE']&&!onPad))){
+  if(near&&((keys['KeyE']&&!(keys['PadX']&&onPad))||keys['PadSearch'])){   // v25.xx (keyswap): E searches in a ring too; the pad X in a ring still calls instead (PadX), and its Y search is PadSearch
     // With autoloot on, a full bag sheds its worst rather than refusing you, so
     // you can keep grabbing and the pack manages itself. It never sheds rare or
     // elite, so if that is all you are carrying it still refuses.
@@ -21876,7 +21916,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
 
   // E calls the beacon, but a container underfoot wins the keypress
   tickRegen(dt);
-  tryExtractTick(dt,!!keys['KeyE']&&(!near||onPad));
+  tryExtractTick(dt,xCallKey()&&(!near||onPad));   // v25.xx (keyswap): X calls and takes the extraction
 }
 
 // ================================================================ bot player (headless sim)
@@ -28677,8 +28717,21 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.restore();
   } else if(mode==='fist'){
     // v7.61: the punch - arm thrust with a fist on the end, skin over sleeve.
-    wc.fillStyle=_HANDC; wc.fillRect(2+ext,-1.6,10,3.2);
-    wc.beginPath(); wc.arc(13+ext,0,2.8,0,6.2832); wc.fill();
+    if(typeof G!=='undefined'&&G&&G.barT>0){
+      // v25.xx (keyswap): THE CROWBAR. Q swings a short crowbar through the arc the blow hits in (0.95 rad either side of the aim): an
+      // inked steel bar with a hooked claw end and a red grip, the hand on the grip, and a pale trail behind the tip. Cosmetic only.
+      var _cbP=1-Math.max(0,Math.min(1,G.barT/0.22)), _cbT=-0.95+1.9*_cbP;
+      wc.fillStyle=_HANDC; wc.fillRect(2+ext,-1.6,5,3.2);
+      wc.strokeStyle='rgba(205,214,221,.38)'; wc.lineWidth=1.6; wc.beginPath(); wc.arc(6+ext,0,17,-0.95,_cbT); wc.stroke();
+      wc.save(); wc.translate(6+ext,0); wc.rotate(_cbT);
+      wc.fillStyle=INK; wc.fillRect(-2.2,-2.1,20.6,4.2); wc.fillRect(14.8,-4.2,3.6,3.2);
+      wc.fillStyle='#8d99a6'; wc.fillRect(-1.4,-1.3,18.2,2.6); wc.fillRect(15.4,-3.6,2.2,2.4);
+      wc.fillStyle='#c9d3dc'; wc.fillRect(-1.4,-1.3,18.2,0.8);
+      wc.fillStyle='#a8372a'; wc.fillRect(-1.4,-1.3,6.4,2.6);
+      wc.fillStyle=_HANDC; wc.fillRect(0.4,-1.9,3.6,3.8);
+      wc.restore();
+    } else { wc.fillStyle=_HANDC; wc.fillRect(2+ext,-1.6,10,3.2); }
+    if(!(typeof G!=='undefined'&&G&&G.barT>0)){ wc.beginPath(); wc.arc(13+ext,0,2.8,0,6.2832); wc.fill(); }
     wc.restore();
   } else if(_GH){
     wc.restore();   // v25.xx (bigguns1): the big held gun draws itself (gunHeld), in front of the body unless aiming up
@@ -33761,7 +33814,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
       // interaction while showing the corpse would be worse than the stutter.
       // v22.66 (R24): one prompt style. The fallen pillager's crew colour is the plate's accent bar (it was a bar beside the words),
       // and the one item a dropped crate holds is the second line, in its rarity colour.
-      var _skey='['+keyLabel(G.nearPad?'KeyX':'KeyE',G.nearPad?'X':'E')+'] SEARCH ', _ft, _fcr=null, _fsub='', _fsc=null;
+      var _skey='['+((G.nearPad&&padOn())?padB('Y'):keyLabel('KeyE','E'))+'] SEARCH ', _ft, _fcr=null, _fsub='', _fsc=null;
       if(nc2.fallen&&(nc2.fellAt===undefined||G.t-nc2.fellAt>2.3)){
         _ft=_skey+nc2.fallen.toUpperCase();
         if(nc2.fallenCrew!==undefined&&CFG.raiderFeud!==0) _fcr=['#c8452f','#4a90c2','#c2a54a','#7a4ac2'][nc2.fallenCrew%4];
@@ -33822,7 +33875,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
         hudPrompt('EXTRACTION CLOSED',ps.x,ps.y,{col:HUDC.danger});
       } else if(padZ.hold!==undefined&&padZ.hold!==null&&padZ.hold>0){
         if(!(G.active===padZ&&!p.downed&&dist(p,padZ)<padZ.r))
-          _pzb=hudPrompt('['+keyLabel('KeyE','E')+'] EXTRACT  \u00b7  '+Math.ceil(padZ.hold)+'s',ps.x,ps.y,{col:HUDC.gain}).by+LH(3);
+          _pzb=hudPrompt('['+keyLabel('KeyX','X')+'] EXTRACT  \u00b7  '+Math.ceil(padZ.hold)+'s',ps.x,ps.y,{col:HUDC.gain}).by+LH(3);
         if(padZ.pullT>0) bar(ps.x-30,_pzb,60,6,clamp(padZ.pullT/1.4,0,1),'#7fc4a0');
       } else if(padZ.beaconT!==null){
         // v22.41, the raid text rewrite (R15): THE IN-RING INBOUND PROMPT STEPS ASIDE. Standing in the ring he called, this printed
@@ -33838,7 +33891,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
         // steps aside, as the EXTRACT prompt above already does inside the ring.
         if(!(G.active===padZ&&G.beaconT===null&&!G.over)){
 ctx.fillStyle='#4de3d0';
-        _pzb=hudPrompt('['+keyLabel('KeyE','E')+'] CALL FOR EXTRACTION',ps.x,ps.y,{col:HUDC.extract}).by+LH(3);   // v22.66 (R24)
+        _pzb=hudPrompt('['+keyLabel('KeyX','X')+'] CALL FOR EXTRACTION',ps.x,ps.y,{col:HUDC.extract}).by+LH(3);   // v22.66 (R24)
         if(padZ.callT>0) bar(ps.x-30,_pzb,60,6,clamp(padZ.callT/1.6,0,1),'#4de3d0');
         }
       }
@@ -34450,7 +34503,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
     ctx.font=hudFS(TYPE.head); ctx.textAlign='center';
-    ctx.fillStyle='#4de3d0'; hudText('HOLD ['+keyLabel('KeyE','E')+'] TO CALL FOR EXTRACTION',W/2,_exRow);   // v22.66 (R24): the key in brackets, as every prompt
+    ctx.fillStyle='#4de3d0'; hudText('HOLD ['+keyLabel('KeyX','X')+'] TO CALL FOR EXTRACTION',W/2,_exRow);   // v22.66 (R24): the key in brackets, as every prompt
     // The 1.6 second hold is VISIBLE now. It had a tiny bar on the ring marker
     // and nothing where you are actually looking, so letting go at a second
     // read as the button not working.
@@ -34502,7 +34555,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     // v15.32, extraction audit finding: ON A CONTROLLER THE EXTRACT PROMPT NAMES THE X BUTTON. Down in a landed ring this huge
     // line said E on a pad too, a key the pad does not have, and the ring badge is not drawn while he is down, so nothing on
     // screen named X, the button that extracts him. It asks keyLabel, as the call row under it does; the keyboard still reads E.
-    if(_ir&&_sd) return {msg:'HOLD ['+keyLabel('KeyE','E')+'] TO EXTRACT',sub:'Extracting while downed is permitted',col:'#4de3d0'};   // v22.66 (R24): the key in brackets
+    if(_ir&&_sd) return {msg:'HOLD ['+keyLabel('KeyX','X')+'] TO EXTRACT',sub:'Extracting while downed is permitted',col:'#4de3d0'};   // v22.66 (R24): the key in brackets
     if(_ir) return {msg:'EXTRACTION INBOUND',sub:'Extracting while downed is permitted',col:'#ffc04a'};
     if((dist(p,_dz)-_dz.r)<=300)
       return {msg:'CRAWL TO THE RING',
@@ -34615,7 +34668,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     if(_cr&&_cr.open!==false&&(_cr.beaconT===null||_cr.beaconT===undefined)&&dist(p,_cr)<_cr.r){
       _rowY+=Math.round(_hD*1.35);
       ctx.font=_fD; ctx.fillStyle='#4de3d0';
-      ctx.fillText('HOLD ['+keyLabel('KeyE','E')+'] TO CALL FOR EXTRACTION',W/2,_rowY);   // v22.66 (R24): the key in brackets
+      ctx.fillText('HOLD ['+keyLabel('KeyX','X')+'] TO CALL FOR EXTRACTION',W/2,_rowY);   // v22.66 (R24): the key in brackets
       if(_cr.callT>0) bar(W/2-70,_rowY+Math.round(_hD*0.45),140,7,clamp(_cr.callT/1.6,0,1),'#4de3d0');
     }
     ctx.textAlign='left';
@@ -34660,7 +34713,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       // v15.32, extraction audit finding: ON A CONTROLLER THE EXTRACT PROMPT NAMES THE X BUTTON. This line said E on a pad too.
       // Standing in the landed ring he just called with X, the ring badge is skipped for the ring he stands in (v6.57), so this
       // was the only verb on screen and it named a key the pad does not have. It asks keyLabel, as both call prompts do.
-      _msg='HOLD ['+keyLabel('KeyE','E')+'] TO EXTRACT';   // v22.66 (R24): the key in brackets, as every prompt
+      _msg='HOLD ['+keyLabel('KeyX','X')+'] TO EXTRACT';   // v22.66 (R24): the key in brackets, as every prompt
       _sub=null;
     }
     // The plain "it is open" status deliberately does NOT appear here any more.
@@ -34933,9 +34986,9 @@ function safeSet(){
 // have left him hunting, so the panel states the keyless rules as well.
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','hold to sprint'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
-  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['F','melee strike, whatever you are holding']]],
-  ['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['B / I','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
-['WORLD',[['E','search / call for extraction'],['X','search, even on the way out'],['M','map'],['H','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['O','order your hire']]],
+  ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['Q','melee, swing the crowbar'],['F','next gun']]],
+  ['GEAR',[['1-9','select tactical belt slot'],['FIRE','use selected slot'],['G','quick throw'],['U','switch throwable'],['H','quick heal'],['B / I','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
+['WORLD',[['E','search, use, open'],['X','call for extraction, then board'],['M','map'],['F1','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['O','order your hire']]],
   ['TEAM',[['Z','drop an item for a teammate'],['N','ping, twice for danger']]],   // v18.27: his order, trading is dropping
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom'],['F9','record your play for the title']]]   // v21.56: the recorder (v21.18) was named only on the what is new card
 ];
@@ -34947,14 +35000,14 @@ var LEGEND_MINI=[
   ['CTRL / C','crouch'],['SPACE','roll'],
   ['LMB','fire'],['RMB','sights'],
   ['R','reload'],
-  ['F','melee'],
+  ['Q','melee'],['F','next gun'],['G','throw'],['H','heal'],
   ['1-9','tactical belt'],['B / I','backpack'],
-  ['E','search'],['M','map']
+  ['E','search'],['X','extract'],['M','map']
 ];
 // v18.60, FROM THE CODE COMB (2026-10-07): THE COMPACT LEGEND NAMES THE KEYS AS SET AND NEVER RUNS A KEY INTO ITS WORD. On the
 // keyboard the list said the default keys after CHANGE KEYS moved them, and every word sat a fixed 44 from its key, so CTRL / C
 // printed into crouch. The keys come from the key map now (the same text by default), and the word column clears the widest key.
-var LEGEND_MINI_CODES={'WASD':['KeyW','KeyA','KeyS','KeyD'],'SHIFT':['ShiftLeft'],'CTRL / C':['ControlLeft','KeyC'],'SPACE':['Space'],'R':['KeyR'],'F':['KeyF'],'B / I':['KeyB','KeyI'],'E':['KeyE'],'M':['KeyM'],'Z':['KeyZ'],'N':['KeyN']};
+var LEGEND_MINI_CODES={'WASD':['KeyW','KeyA','KeyS','KeyD'],'SHIFT':['ShiftLeft'],'CTRL / C':['ControlLeft','KeyC'],'SPACE':['Space'],'R':['KeyR'],'F':['KeyF'],'B / I':['KeyB','KeyI'],'E':['KeyE'],'M':['KeyM'],'Z':['KeyZ'],'N':['KeyN'],'Q':['KeyQ'],'G':['KeyG'],'H':['KeyH'],'X':['KeyX'],'U':['KeyU'],'F1':['F1']};
 function legendKeys(s){
   var c=LEGEND_MINI_CODES[s], o;
   if(!c) return s;
@@ -35701,7 +35754,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     var _hy=(HUDBOX.body?HUDBOX.body.y-LH(6):H-14);
     // v19.93, from the code review of 2026-10-08: no pad button sends H, so on a controller this hint (and H  hide below) named a key
     // the pad player cannot press, as H  full list did before v19.68. On a pad they are left out.
-    if(!(PAD&&PAD.on)) ctx.fillText('H  controls',14,_hy);
+    if(!(PAD&&PAD.on)) ctx.fillText(legendKeys('F1')+'  controls',14,_hy);   // v25.xx (keyswap): F1
     return;
   }
   // COMPACT, the default since v2.94. Two columns, twelve bindings, micro type,
@@ -35740,7 +35793,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.6)';
     // v19.68, seen on the 4K controller screenshot (2026-10-08): on a controller (player 2 in co-op) no button opens the full list, so
     // H  full list named a keyboard key the pad player cannot press. On a pad the line and its row are left out.
-    if(!(PAD&&PAD.on)) ctx.fillText('H  full list',mx,my+LH(7)+MROW*_mr+LH(3));
+    if(!(PAD&&PAD.on)) ctx.fillText(legendKeys('F1')+'  full list',mx,my+LH(7)+MROW*_mr+LH(3));
     return;
   }
   var x=14,i,j,rows=0;
@@ -35810,7 +35863,7 @@ var cy=top+LH(6);
   // and got a wall of prose instead. Both are still declared and still read
   // elsewhere; they are simply no longer in front of him when he presses H.
 ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.6)';
-  if(!(PAD&&PAD.on)) ctx.fillText('H  hide',x,top+boxH-LH(2));
+  if(!(PAD&&PAD.on)) ctx.fillText(legendKeys('F1')+'  hide',x,top+boxH-LH(2));
 }
 // Centred and large on purpose. This is the one moment in a raid where you
 // choose between money you can keep and money you might keep, and that deserves
@@ -38800,7 +38853,7 @@ function outHint(urgent){
   // v22.33, the raid text rewrite (R10): the hint is the detail under a clock alert, so it is one short sentence of at most 48
   // characters. It no longer says way out, is down or lands (the words of the extraction are extraction, inbound and extract), and
   // it names the use key through keyLabel, so on a controller it says [X]. Every branch of the v12.93 state machine is kept.
-  var _K='['+keyLabel('KeyE','E')+']';
+  var _K='['+keyLabel('KeyX','X')+']';   // v25.xx (keyswap): the extraction hint names X
   // v12.93, audit finding 7: A LIVE BEACON OWNS THIS SENTENCE. Everything below
   // used to read distance and nothing else, so at thirty seconds the game told a
   // man standing on a landed ship to hold E to CALL one, which is not the action
@@ -39327,7 +39380,7 @@ function drawHubHUD(ox,oy){
     var _lg=['WASD','walk','SHIFT','jog','SPACE','roll','E','use the station in front of you',
              'B or I','your things','TAB','pause, or back out','M','the map, on the surface'];
     if(typeof NET==='object'&&NET&&NET.on) _lg.push('E','take an item your teammate dropped (drop one from the stash menu)');   // v18.28: trading on the floor card
-    _lg.push('H','close this');
+    _lg.push('F1','close this');
     ctx.font=FS(TYPE.label);
     var _lw=0;
     for(var _li=0;_li<_lg.length;_li+=2)
@@ -41043,7 +41096,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.66: The score, clock and EXTRACT lines at top centre no longer run into each other. Check 25.66 fails on v25.65',
+  now:'v25.67: E searches, X calls and boards the extraction, G throws, H heals, Q swings a crowbar, F brings up the next gun, F1 shows the controls. Check 25.67 fails on v25.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -49570,8 +49623,8 @@ function arcadeCardRows(){
   function kn(c){ try{ return keyName(keysOf(c)); }catch(_k){ return keyName(c); } }
   var mv=[kn('KeyW'),kn('KeyA'),kn('KeyS'),kn('KeyD')], m=(mv.join('').length===4)?mv.join(''):mv.join(' ');
   return [['MOVE',m,padB('L STICK')],['AIM','MOUSE',padB('R STICK')],['FIRE','LEFT CLICK',padB('RT')],['ROLL',kn('Space'),padB('A')],
-    ['RELOAD',kn('KeyR'),padB('X')],['SWITCH GUN','1-4',padB('LB')+' / '+padB('RB')],['HEAL',kn('KeyG'),padB('D-DOWN')],   // v23.46 (arcade23): the quick heal
-    ['EXTRACT','HOLD '+kn('KeyE')+' IN A TEAL RING','HOLD '+padB('X')+' IN A TEAL RING'],['LOOT','HOLD '+kn('KeyE'),'HOLD '+padB('X')]];   // v23.xx: hold E to loot, so the card says so
+    ['RELOAD',kn('KeyR'),padB('X')],['SWITCH GUN','1-4',padB('LB')+' / '+padB('RB')],['HEAL',kn('KeyH'),padB('D-DOWN')],   // v23.46 (arcade23): the quick heal
+    ['EXTRACT','HOLD '+kn('KeyX')+' IN A TEAL RING','HOLD '+padB('X')+' IN A TEAL RING'],['LOOT','HOLD '+kn('KeyE'),'HOLD '+padB('X')]];   // v23.xx: hold E to loot, so the card says so
 }
 // how much of the card shows now, 0 to 1: full while shielded, then 4 s, fading over the last 0.6 s
 function arcadeCardOn(){

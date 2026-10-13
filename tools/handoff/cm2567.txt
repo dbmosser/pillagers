@@ -1,0 +1,7 @@
+v25.67: new keys: e search, x extract, q crowbar
+
+E searches, X calls and boards the extraction, G throws, H heals, Q swings a crowbar, F brings up the next gun, F1 shows the controls.
+
+Check 25.67. Fails on v25.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
