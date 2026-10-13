@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.48 - RUN OVER HOLDS A MOMENT
+
+Co-op hunt while he was away. His number 39, full controller navigation. On the demo attract any key, click or button drops a new run in, and that included the presses still coming from the fight that just ended: a player mashing fire or roll as he died went straight into a fresh run and never saw RUN OVER or his score. For the first second and a half after a run ends those presses are now ignored (the initials card still takes its letters); after that any press drops in as before.
+
+MEASURED. Check 24.48 passes, and fails on v24.47.
 ## v24.47 - SLOW FRAMES SHED EFFECTS FIRST
 
 Co-op hunt while he was away. His order of 2026-10-12 on the graphics program: add all of it, and keep 60 frames a second on a mid laptop at 1080p. Auto resolution had one lever: when frames ran slow it made the whole world softer while the costly extras kept drawing at full price. Now a slow stretch drops the extras first, one step a second: the post pass, then the soft darkness and fog sheets at two thirds of their size, then the lamp shadows (HIGH lighting draws as STANDARD). Only after that does the picture get softer, as before. When frames run smooth again it all comes back in reverse. Extras already switched off in Settings are skipped, so they never cost a slow second.

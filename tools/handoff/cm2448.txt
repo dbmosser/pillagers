@@ -1,0 +1,7 @@
+v24.48: run over holds a moment
+
+The RUN OVER card ignores presses for a moment so mashing does not skip it.
+
+Check 24.48. Fails on v24.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

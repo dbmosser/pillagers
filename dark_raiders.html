@@ -1969,7 +1969,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.47';
+var VER='24.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38664,7 +38664,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.47: When frames run slow the game now drops costly effects before it lowers the resolution, and brings them back when it runs smooth. Check 24.47 fails on v24.46',
+  now:'v24.48: The RUN OVER card ignores presses for a moment so mashing does not skip it. Check 24.48 fails on v24.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48101,6 +48101,7 @@ function arcadeKeyAtt(e){
   if(ARCADE.role==='host'&&arcadeIniLive()) return arcadeIniKey(e);   // v23.41 (arcade18): the initials card takes the keys, and a click drops nobody in
   if(ARCADE.role!=='host') return false;   // player 2 joins with A on its own pad; its keys go on to player 1 (netKeyFwd)
   var ty=String(e.type||''), cd=String(e.code||''), ky=String(e.key||'');
+  if(arcadeOverGuard()&&ty!=='wheel'){ try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_og){} return true; }   // v24.48 (his #39): the RUN OVER card is read, not mashed through
   if(ty==='wheel') return false;
   if(ty==='keydown'){
     if(/^F([1-9]|1[0-2])$/.test(cd)) return false;   // F9 records, F11 fullscreens
@@ -48112,9 +48113,17 @@ function arcadeKeyAtt(e){
   if(arcadeBenched()) arcadeUnbench(); else arcadeDropIn();   // v23.25 (arcade6)
   return true;
 }
+// v24.48, HIS ORDER 2026-10-12 (his #39, full controller navigation, keyboard and mouse first): THE RUN OVER CARD HOLDS FOR A MOMENT.
+// Any key, click or button on the attract drops a new run in, and that includes the presses still coming from the fight that just
+// ended: a player mashing fire or roll as he died went straight into a fresh run and never saw RUN OVER or his score. For the first
+// 1.5 seconds after a run ends the presses are swallowed (the initials card, when the run made the board, still takes its keys,
+// and Ctrl+Shift+F10 still leaves); after that any press drops in as before.
+var ARCADE_OVER_GUARD_MS=1500;
+function arcadeOverGuard(){ return !!(ARCADE.on&&ARCADE.over&&ARCADE.over.at>0&&Date.now()-ARCADE.over.at<ARCADE_OVER_GUARD_MS&&!(G&&G.arcade&&!G.over)); }
 // A new press on this window pad in the arcade attract.
 function arcadePadAtt(anyNew,aNew){
   if(!ARCADE.on) return false;
+  if(arcadeOverGuard()) return false;   // v24.48 (his #39): the RUN OVER card holds 1.5 s
   if(ARCADE.role==='p2'){ if(!aNew) return false; ARCADE.wantIn=1; ARCADE.late=0; ARCADE.askAt=Date.now(); netSamePost({t:'arcjoin',pair:NET.pair}); return true; }   // v23.25 (arcade6): arcadeAttTick asks again until he is in
   if(anyNew&&arcadeBenched()) return arcadeUnbench();   // v23.25 (arcade6): a benched player 1 comes back beside player 2
   return anyNew?arcadeDropIn():false;
