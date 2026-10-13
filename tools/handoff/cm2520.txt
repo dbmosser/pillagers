@@ -1,0 +1,7 @@
+v25.20: the foley bank: recorded reload, bandage and armour sounds
+
+The game now carries 23 recorded CC0 sounds for reloads, bandages, medkits, plates and gear, ready for the reload and healing builds.
+
+Check 25.20. Fails on v25.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

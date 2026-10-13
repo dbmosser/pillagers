@@ -65,3 +65,6 @@ That is cosmetic. Tell us about anything else.
 
 ## Fonts (2026-10-12)
 The game embeds Barlow Condensed, Barlow and IBM Plex Mono (SIL Open Font License 1.1). The itch zip must carry tools/fonts/OFL-Barlow.txt, OFL-BarlowCondensed.txt and OFL-IBMPlexMono.txt beside the game.
+
+## Sounds (2026-10-12)
+The game embeds 23 CC0 sound recordings (SFXBANK: Kenney, and zer0_sol, SpringySpringo, BMacZero, OwlishMedia and AntumDeluge on OpenGameArt). The itch zip must carry tools/sounds/LICENCES.txt and the four kenney_*_License.txt files beside the game, the way it carries the font licences.
