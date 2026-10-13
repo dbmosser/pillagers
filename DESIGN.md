@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.42 - A CRAWLER ON YOU STAYS ON YOUR SIDE OF THE WALL
+
+Co-op hunt while he was away. Found by the review of the crawler latch (his order: a crawler that catches you keeps biting until it is killed). A crawler hanging on was set at the players side every frame with no wall test, so walking toward a wall with it on that side pushed its body into the wall, and the wall push-out then shoved it out through the far side. The wall came between them, it let go and was left stranded on the other side, 98 to 502 units away. Measured on 34 building walls on the first map with a crawler hanging on between the player and the wall: it went through 32 of them and let go of him, which made the latch easy to shake off just by walking into any wall. Now the spot at his side has to be clear of walls with a clear line to him; when the side it holds is blocked it slides round him to the nearest clear spot and keeps biting. No balance change: the bite and its rate are the same. DEMO and CAREER the same.
+
+MEASURED. Check 25.42 passes, and fails on v25.41.
 ## v25.41 - THE MINIMAP MARKS WHAT MATTERS
 
 Co-op hunt while he was away. His order of 2026-10-12: add minimap, the markers. The minimap now shows the extraction points with their letter and their state (open, inbound, live, closing two minutes before the cut, closed and crossed out), the seal, the Forge station when there is one, the vault and locked room doors, your waypoint, the party marks and pings, and your teammates (player 2 and the co-op party) in the ally colour, red while down. Enemies show only while you can see them, by the same rule the world uses to draw them, so the minimap never gives away a machine behind a wall. An extraction, the seal, your waypoint or a teammate out of range sits on the edge of the minimap as a small arrow pointing the way.

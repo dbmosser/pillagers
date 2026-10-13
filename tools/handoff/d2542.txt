@@ -1,0 +1,5 @@
+## v25.42 - A CRAWLER ON YOU STAYS ON YOUR SIDE OF THE WALL
+
+Co-op hunt while he was away. Found by the review of the crawler latch (his order: a crawler that catches you keeps biting until it is killed). A crawler hanging on was set at the players side every frame with no wall test, so walking toward a wall with it on that side pushed its body into the wall, and the wall push-out then shoved it out through the far side. The wall came between them, it let go and was left stranded on the other side, 98 to 502 units away. Measured on 34 building walls on the first map with a crawler hanging on between the player and the wall: it went through 32 of them and let go of him, which made the latch easy to shake off just by walking into any wall. Now the spot at his side has to be clear of walls with a clear line to him; when the side it holds is blocked it slides round him to the nearest clear spot and keeps biting. No balance change: the bite and its rate are the same. DEMO and CAREER the same.
+
+MEASURED. Check 25.42 passes, and fails on v25.41.

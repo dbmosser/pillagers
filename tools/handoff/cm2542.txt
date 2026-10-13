@@ -1,0 +1,7 @@
+v25.42: a crawler on you stays on your side of the wall
+
+A crawler hanging on to you can no longer be shoved through a wall and lost; it slides round to your side and keeps biting.
+
+Check 25.42. Fails on v25.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
