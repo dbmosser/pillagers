@@ -1,0 +1,7 @@
+v25.64: the plop is half as loud
+
+The short rising plop heard when you change weapons, equip items or press a menu button is now half as loud.
+
+Check 25.64. Fails on v25.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

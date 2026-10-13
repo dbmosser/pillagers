@@ -1,0 +1,5 @@
+## v25.64 - THE PLOP IS HALF AS LOUD
+
+Co-op hunt while he was away. His order of 2026-10-13: the plop sound heard when changing weapons or equipping other items should be 50 percent quieter, and then that the plop used for everything should be. The plop is the short rising chirp the game plays for a belt key press, the mouse wheel, an equip, a drag onto a key, a menu press, the stash and a score of other small actions. It is now at half its old level at the source, so every place that plays it drops together. The green find chirp, which shares the same voice, and every other sound keep their level.
+
+MEASURED. Check 25.64 passes, and fails on v25.63.

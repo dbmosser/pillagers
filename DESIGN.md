@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.64 - THE PLOP IS HALF AS LOUD
+
+Co-op hunt while he was away. His order of 2026-10-13: the plop sound heard when changing weapons or equipping other items should be 50 percent quieter, and then that the plop used for everything should be. The plop is the short rising chirp the game plays for a belt key press, the mouse wheel, an equip, a drag onto a key, a menu press, the stash and a score of other small actions. It is now at half its old level at the source, so every place that plays it drops together. The green find chirp, which shares the same voice, and every other sound keep their level.
+
+MEASURED. Check 25.64 passes, and fails on v25.63.
 ## v25.63 - RELOAD DONE ALWAYS SOUNDS
 
 Co-op hunt while he was away. His order of 2026-10-13: the reload done sound has to play always. Since the gun-by-gun reload sounds of v25.52 the closing step (the rack, the pump, the bolt) played only when the gun had been empty, so a reload with a round still in the chamber finished in silence. Now the short click and thud of the original reload cue plays on every finished reload, tactical or empty, every gun class, once, after the last step of the gun itself. A reload cut short by a swap, a roll, a sprint or going down plays nothing, as before. Sound only: no reload time or ammo changes.
