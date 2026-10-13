@@ -8177,10 +8177,11 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ hudKey=oK; CanvasRenderingContext2D.prototype.fillText=real; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'24.51',what:'his answer 34 b: a pillager whose round lands on you taunts you with a hurt line, through the one-at-a-time taunt gate; a machine round draws no taunt',
+  {v:'24.51',what:'his answer 34 b: a pillager whose round lands on you taunts you with a hurt line, through the one-at-a-time taunt gate; a machine round draws no taunt (since notaunt, his order 2026-10-12 that pillagers say no words, there is no taunt: the pillager round still lands and draws no mark over him)',
    run:function(){
-     if(!window.__deploy||!window.__endRaid||typeof updateBullets!=='function'||typeof taunt!=='function') return 'SKIP: no raid here';
-     var bad=[], g, p, R=null, S=null, i, calls=[], rt=taunt, own=false, kp=null, ks=null;
+     if(!window.__deploy||!window.__endRaid||typeof updateBullets!=='function') return 'SKIP: no raid here';
+     var NOT=(typeof taunt!=='function');   // notaunt (his order 2026-10-12): no taunt is left to call
+     var bad=[], g, p, R=null, S=null, i, calls=[], rt=NOT?null:taunt, own=false, kp=null, ks=null, oEB=(typeof emoteBubble==='function')?emoteBubble:null, ownB=false, bubs=[];
      function shot(o){ G.bullets.length=0; G.bullets.push({x:p.x,y:p.y,vx:0.01,vy:0,dmg:1,life:0.5,player:false,owner:o,tint:'#ffffff',thru:0}); updateBullets(0.001); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
@@ -8190,6 +8191,13 @@ window.__REGRESS=[
        if(!R) return 'SKIP: no pillager on this map';
        kp={x:R.x,y:R.y}; R.x=p.x+220; R.y=p.y;
        if(S){ ks={x:S.x,y:S.y}; S.x=p.x-220; S.y=p.y; }
+       if(NOT){
+         if(oEB){ emoteBubble=function(x,y){ bubs.push({x:x,y:y}); return oEB.apply(this,arguments); }; ownB=true; }
+         p.iv=0; p.hp=100; p.downed=false;
+         shot(R);
+         if(!(p.hp<100)) bad.push('a pillager round on him did not land (hp '+p.hp+')');
+         if(bubs.some(function(b){ return Math.abs(b.x-R.x)<70&&Math.abs(b.y-R.y)<90; })) bad.push('a pillager round that hit him drew a mark over the pillager');
+       } else {
        taunt=function(e,k){ calls.push((e&&e.kind)+':'+k); return rt.apply(this,arguments); }; own=true;
        p.iv=0; p.hp=100; p.downed=false; g.tauntAt=-99;
        shot(R);
@@ -8198,8 +8206,9 @@ window.__REGRESS=[
        var n0=calls.length; p.iv=0; p.hp=100; shot(R);
        var gated=(g.tauntAt===g.t);
        if(S){ calls.length=0; p.iv=0; p.hp=100; g.tauntAt=-99; shot(S); if(calls.some(function(c){ return c.indexOf(':hurt')>0; })) bad.push('a machine round drew a taunt ('+calls.join(',')+')'); }
+       }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ if(own) taunt=rt; try{ if(R&&kp){ R.x=kp.x; R.y=kp.y; } if(S&&ks){ S.x=ks.x; S.y=ks.y; } var g2=__state(); if(g2&&!g2.over){ g2.bullets.length=0; g2.player.iv=0; g2.player.hp=100; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     finally{ if(own) taunt=rt; if(ownB) emoteBubble=oEB; try{ if(R&&kp){ R.x=kp.x; R.y=kp.y; } if(S&&ks){ S.x=ks.x; S.y=ks.y; } var g2=__state(); if(g2&&!g2.over){ g2.bullets.length=0; g2.player.iv=0; g2.player.hp=100; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
      return bad.length?bad.join('; '):null; }},
   {v:'24.50',what:'his answer 38: the pause box in a raid has FEEDBACK, which takes a screenshot and opens a note window; SAVE hands the typed note (with the version) and the png on and shuts the window, the pause box stays up and the save is not touched',
    run:function(){
