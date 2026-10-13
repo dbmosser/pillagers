@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.52';
+var VER='25.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26062,6 +26062,7 @@ silentExit:T.silentExit||0,
     lines.push('<span style="color:var(--rust)">You signed for '+Math.round(tPay*100)+
       '% and did not come back for it.</span>');
   }
+  try{ careerSettle(how,lines); }catch(_cst){}   // v24.xx (feat0i): the CAREER score, paid only on an extraction
   // THE SEAL banks only if you walk out. Thirty seconds of cutting and a death
   // is thirty seconds of nothing, which is the entire point of it.
   if(G.seal&&G.seal.gained>0){
@@ -40723,7 +40724,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.52: Each gun class now reloads in recorded steps timed to its own reload (magazine out, magazine in, and the rack only when empty), shells one by one, bolt, cylinder, belt and cell, and a cut reload stops. Check 25.52 fails on v25.51',
+  now:'v25.53: Extracting from a CAREER raid pays your score x2 in credits and puts the run on your CAREER board. Check 25.53 fails on v25.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -49447,6 +49448,39 @@ function arcadeVaultPay(R){
 // a seed builds the same raid, and a co-op partner builds the same one in startRaid. CAREER_ON 0 gives the old raid (the test fixture
 // pins it, as it pins GO_SEC).
 var CAREER_ON=1, CAREER_RAID_SEC=600;
+// v24.xx (feat0i), HIS MODE DESIGN AND ANSWERS (2026-10-12): "somehow the score converts to credits that you can spend in the
+// undercroft", "extraction gives 2x bonus to score", and his answers: 1 score = 1 credit, banked ONLY when you extract (the score is
+// doubled first), and CAREER keeps its own personal-best board. THE CAREER PAYOUT. An extraction doubles the raid score and pays it
+// into his Undercroft credits, and the KIA / EXTRACTED card reads CAREER SCORE $N x2 and +N CR. A banked run goes on his CAREER board
+// in his save (P.careerBoard, the top 10 by score, with his save name, the kills, the map and the time) and a new top reads CAREER
+// BEST. A death or an abandon banks nothing (SCORE LOST) and the board is not touched. The loot he brings out goes to the stash as
+// items only, as before, and never counts in the score. Each window settles its own player into its own save.
+var CAREER_BOARD_N=10;
+function careerSettle(how,lines){
+  if(!G||!G.career||G.sim||!G.cs) return 0;
+  if(typeof G.careerPaid==='number') return G.careerPaid;
+  var s=Math.max(0,G.cs.s|0), fin=0, B, best=false, rk=0, i, row;
+  if(how==='extract'){
+    fin=s*2;
+    P.credits=(+P.credits||0)+fin;
+    if(fin>0){
+      B=P.careerBoard=Array.isArray(P.careerBoard)?P.careerBoard:[];
+      row={s:fin,k:G.cs.k|0,m:P.mapIx|0,t:Date.now(),n:String(P.pname||'').slice(0,16)};
+      B.push(row); B.sort(function(a,b){ return ((b.s|0)-(a.s|0))||((a.t|0)-(b.t|0)); });
+      if(B.length>CAREER_BOARD_N) B.length=CAREER_BOARD_N;
+      for(i=0;i<B.length;i++) if(B[i]===row){ rk=i+1; break; }
+      best=(rk===1);
+      if(best) P.careerBest=fin;
+    }
+    if(lines){
+      lines.push('<span style="color:#ffc04a;font-weight:700">CAREER SCORE '+arcadeCr(s)+' x2  \u00b7  +'+arcadeN(fin)+' CR</span>');
+      if(best) lines.push('<span style="color:#ffc04a;font-weight:700">CAREER BEST</span>');
+      else if(rk>0) lines.push('<span style="color:#ffc04a">CAREER BOARD #'+rk+'</span>');
+    }
+  } else if(lines&&s>0) lines.push('<span style="color:var(--rust);font-weight:700">SCORE LOST  \u00b7  '+arcadeCr(s)+'</span>');
+  G.careerPaid=fin;
+  return fin;
+}
 function careerPostBuild(g){
   if(!g||g.sim||g.arcade) return false;
   var i;
