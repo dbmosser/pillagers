@@ -1,0 +1,7 @@
+v25.37: career raids: the waves
+
+CAREER raids send waves at you, as the DEMO does.
+
+Check 25.37. Fails on v25.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

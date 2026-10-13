@@ -1,0 +1,5 @@
+## v25.37 - CAREER RAIDS: THE WAVES
+
+Co-op hunt while he was away. His answer of 2026-10-12: CAREER waves are the same as the DEMO waves, and his rule that the gameplay is exactly the same in both. A CAREER raid now sends waves at you as the DEMO does: the same timing, the same packs of crawlers, sentries and pillagers landing out of sight near you, growing as your score grows, with the WAVE callout. A pillager from a wave is a stranger: killing one does not start a grudge or a WANTS REVENGE in your save.
+
+MEASURED. Check 25.37 passes, and fails on v25.36.

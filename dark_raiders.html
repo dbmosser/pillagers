@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.36';
+var VER='25.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11411,6 +11411,7 @@ var IDENTITIES=[
   {id:'tilt',  tag:'PermanentlyTilted',    coat:'#7a4a6a'}
 ];
 function idRec(id){
+  if(typeof waveIdent==='function'&&waveIdent(id)) return {kills:0,deaths:0,met:0,standing:-1};   // v24.xx (feat0h3): a CAREER wave pillager is never filed
   P.rivals=P.rivals||{};
   if(!P.rivals[id]) P.rivals[id]={kills:0,deaths:0,met:0,standing:0};
   return P.rivals[id];
@@ -22637,7 +22638,7 @@ if(e.state==='possum'){
         // charge the same man twice for one decision.
         // SPEC 8.5 and 5.8: the rivalry ledger. Killing an identity is a
         // permanent grudge; it will be shoot on sight every run from now on.
-        if(e.kind==='raider'&&e.ident&&!G.sim){
+        if(e.kind==='raider'&&e.ident&&!G.sim&&!waveIdent(e.ident)){   /* v24.xx (feat0h3): no grudge for a CAREER wave pillager */
           var rr2=idRec(e.ident);
           rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
           saveProfile();
@@ -39599,7 +39600,7 @@ function loop(ts){
       else updatePlayer(dt);
       if(G&&G.netRevEat){ G.netRevEat=0; keys['KeyE']=true; }   // v16.11: E given back after the step a pick-up took it (netRevHold)
       if(!G.over){ updateEnts(dt); }
-      if(G.arcade&&!G.over) try{ arcadeWaveTick(dt); }catch(_awt){}   // v23.37 (arcade14): action comes to you, host or solo only
+      if((G.arcade||G.career)&&!G.over) try{ arcadeWaveTick(dt); }catch(_awt){}   // v23.37 (arcade14): action comes to you, host or solo only
       if(G.arcade&&!G.over) try{ arcadeCullTick(dt); }catch(_act){}   // v23.53 (arcade29): the world stays light, the run authority only
       if(!G.over){ updateBullets(dt); updateThrowables(dt); }
       if(!netEntsPeer()) try{ tickHot(dt); }catch(e){}   // v20.39 (H59): a linked window keeps the hot ground where the host has it (netWorldTake), as it keeps his weather
@@ -40092,7 +40093,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.36: Enemy fire now spreads wider at long range, so distant shooters miss more; close fights are unchanged. Check 25.36 fails on v25.35',
+  now:'v25.37: CAREER raids send waves at you, as the DEMO does. Check 25.37 fails on v25.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47868,7 +47869,7 @@ function netKillTake(peer,m){
   // made by netEntMake/netEntFill, which never set boss, so player 2 scored the Overseer as a plain warden. A mirror is known as the
   // boss by its name, as every other mirror site does (name===BOSS_NAME). The kill word itself is unchanged.
   if(G.arcade||G.career) (G.arcade?arcadeKill:careerKill)(k,!!(m.el||(e&&e.elite)),!!(e&&(e.boss||e.name===BOSS_NAME)),e?e.x:NaN,e?e.y:NaN);   /* v24.xx (feat0h2): and the CAREER score of a co-op partner */   // v23.29 (arcade8): the arcade score of player 2; v23.38 (arcade15): with the popup where he fell
-  if(k==='raider'&&e&&e.ident){
+  if(k==='raider'&&e&&e.ident&&!waveIdent(e.ident)){   /* v24.xx (feat0h3) */
     rr2=idRec(e.ident); rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
     saveProfile();
     if(!G.arcade) sayWhenFree(String(e.name||'He').toUpperCase()+' WANTS REVENGE','info');   // v23.35 (arcade13): not in the arcade.   // v22.xx (R54): a caps callout   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
@@ -49062,14 +49063,15 @@ function arcadeWaveBody(men,q,c){
   return {x:c.x,y:c.y};
 }
 function arcadeWaveRaider(x,y){
-  var idn=null, i, j, c, t, R, w=ARCADE.waveN|0;
+  var idn=null, i, j, c, t, R, w=(G.career&&G.cs)?(G.cs.waveN|0):(ARCADE.waveN|0);
   for(i=0;i<IDENTITIES.length;i++){
     c=IDENTITIES[(i+w*3)%IDENTITIES.length]; t=false;
     for(j=0;j<(G.roster||[]).length;j++) if(G.roster[j].name===c.tag){ t=true; break; }
     if(!t){ idn=c; break; }
   }
   if(!idn){ c=IDENTITIES[w%IDENTITIES.length]; idn={id:c.id+'_a'+w, tag:c.tag+'_'+(w+2), coat:c.coat}; }
-  R=mkRaider(x,y,idn,false);
+  if(G.career) idn={id:idn.id+'_cw'+w,tag:idn.tag,coat:idn.coat};   // v24.xx (feat0h3): a wave identity, never filed in his save
+  R=mkRaider(x,y,idn,!!G.career);
   R.hostile=true;
   if(Array.isArray(G.roster)) G.roster.push({ref:R,name:R.name,crew:R.crew,val:0,out:false});
   return R;
@@ -49085,32 +49087,42 @@ function arcadeWaveElite(e){
 // stopped for good, because this tick returned on the p2 role. Now the run authority runs them: the host, or the player 2 that took
 // the raid over (the same rule as arcadeBoardAuth). A player 2 still sharing the host world never spawns waves. Only an arcade run
 // reaches any of it.
+// v24.xx (feat0h3), HIS ANSWER (2026-10-12): "CAREER waves are the same as DEMO", and his rule that the gameplay is EXACTLY THE SAME in
+// DEMO and CAREER. WAVES IN A CAREER RAID. The same tick runs in a CAREER raid with the same interval, cap, pack and kinds, keeping its
+// clock and count in the raid score store (G.cs) and taking its tier from the CAREER score; the host (or the one who took the raid
+// over) runs it, never a co-op partner sharing the host world. Two career-only guards keep his save clean: a wave body is made on the
+// cosmetic stream (fxBorrow), so the seeded stream of the raid never moves, and a wave pillager carries a wave identity (an id ending
+// _cwN) that idRec never files, so a wave kill writes no grudge, no WANTS REVENGE and no rival into his save, in either window.
+function waveIdent(id){ return String(id||'').indexOf('_cw')>=0; }
 function arcadeWaveTick(dt){
-  if(!G||!G.arcade||G.over||G.sim||!G.map||!Array.isArray(G.ents)) return 0;
-  if((ARCADE.role==='p2'&&!G.netWasJoin)||netEntsPeer()) return 0;   // v23.52 (arcade28): a player 2 that took the raid over runs the waves
-  var tier=Math.max(0,Math.min(8,Math.floor(arcadeTeam()/4000))), iv=Math.max(10,22-2*tier), cap=Math.min(24,6+2*tier),
+  if(!G||!(G.arcade||G.career)||G.over||G.sim||!G.map||!Array.isArray(G.ents)) return 0;
+  if((G.arcade&&ARCADE.role==='p2'&&!G.netWasJoin)||netEntsPeer()) return 0;   // v23.52 (arcade28): a player 2 that took the raid over runs the waves
+  var WS=G.arcade?ARCADE:G.cs; if(!WS) return 0;
+  var tier=Math.max(0,Math.min(8,Math.floor((G.arcade?arcadeTeam():Math.max(0,WS.s|0))/4000))), iv=Math.max(10,22-2*tier), cap=Math.min(24,6+2*tier),
       pack=Math.min(6,2+Math.floor(tier/2)), men, live, q, c, n, i, e, s, kd, kinds, made=0;
-  ARCADE.waveT=(+ARCADE.waveT||0)+((dt>0)?dt:0);
-  if(ARCADE.waveT<iv) return 0;
+  WS.waveT=(+WS.waveT||0)+((dt>0)?dt:0);
+  if(WS.waveT<iv) return 0;
   men=arcadeWaveMen(); if(!men.length) return 0;
   live=arcadeWaveLive(men);
-  if(live>=cap){ ARCADE.waveT=iv-1; return 0; }   // full: look again in a second
+  if(live>=cap){ WS.waveT=iv-1; return 0; }   // full: look again in a second
   q=men[Math.floor(Math.random()*men.length)];
   c=arcadeWaveSpot(men,q);
-  if(!c){ ARCADE.waveT=iv-0.5; return 0; }   // no floor this time: try again shortly
+  if(!c){ WS.waveT=iv-0.5; return 0; }   // no floor this time: try again shortly
   n=Math.min(pack,cap-live);
   kinds=['crawler','crawler']; if(tier>=1) kinds.push('sentry'); if(tier>=2) kinds.push('raider');
   for(i=0;i<n;i++){
     s=arcadeWaveBody(men,q,c); kd=kinds[Math.floor(Math.random()*kinds.length)];
-    e=(kd==='sentry')?mkSentry(s.x,s.y):(kd==='raider')?arcadeWaveRaider(s.x,s.y):mkCrawler(s.x,s.y);
+    e=null;
+    if(G.career) fxBorrow(function(){ e=(kd==='sentry')?mkSentry(s.x,s.y):(kd==='raider')?arcadeWaveRaider(s.x,s.y):mkCrawler(s.x,s.y); });   // v24.xx (feat0h3)
+    else e=(kd==='sentry')?mkSentry(s.x,s.y):(kd==='raider')?arcadeWaveRaider(s.x,s.y):mkCrawler(s.x,s.y);
     if(!e) continue;
     if(tier>=4&&i===0) arcadeWaveElite(e);
     e.arcWave=1; e.alert=3; e.state='investigate';
     e.tx=q.x+(Math.random()*120-60); e.ty=q.y+(Math.random()*120-60);
     G.ents.push(e); made++;
   }
-  ARCADE.waveT=0;
-  if(made){ ARCADE.waveN=(ARCADE.waveN|0)+1; say('WAVE '+ARCADE.waveN,'warn'); try{ voxCall('WAVE'); }catch(_vc){} }   // v24.04 (his #45): WAVE INCOMING
+  WS.waveT=0;
+  if(made){ WS.waveN=(WS.waveN|0)+1; say('WAVE '+WS.waveN,'warn'); try{ voxCall('WAVE'); }catch(_vc){} }   // v24.04 (his #45): WAVE INCOMING
   return made;
 }
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS

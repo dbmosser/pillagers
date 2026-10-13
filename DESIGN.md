@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.37 - CAREER RAIDS: THE WAVES
+
+Co-op hunt while he was away. His answer of 2026-10-12: CAREER waves are the same as the DEMO waves, and his rule that the gameplay is exactly the same in both. A CAREER raid now sends waves at you as the DEMO does: the same timing, the same packs of crawlers, sentries and pillagers landing out of sight near you, growing as your score grows, with the WAVE callout. A pillager from a wave is a stranger: killing one does not start a grudge or a WANTS REVENGE in your save.
+
+MEASURED. Check 25.37 passes, and fails on v25.36.
 ## v25.36 - ENEMIES MISS MORE AT LONG RANGE
 
 Co-op hunt while he was away. His answer 8 a: enemies a little less accurate at long range. Every enemy round, from machines and pillagers alike, now spreads wider the farther away it is aimed: as before up to 350, then a little wider with distance, up to 1.8 times as wide from about 830 out. Close fights are exactly as before and your own guns are unchanged, so a long range duel favours the player who closes in or takes cover, while a close fight is as deadly as ever.
