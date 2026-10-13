@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.96 - THE WHAT IS NEW CARD NAMES EXTRACT FOR X2
+
+Co-op hunt while he was away. The card was stamped v24.84 and the stamp may not trail the build by more than 0.15. The card was stamped v24.84 and every ship stops when it falls 0.16 behind. Its new line names the builds since: DEMO extraction doubles the score and ends the run (his mode design), the near-miss whizz (his sound order), and the scav pistol spawn-only (his order 2026-10-12).
+
+MEASURED. Check 24.96 passes, and fails on v24.95.
 ## v24.95 - A MINIMAP IN THE CORNER
 
 Co-op hunt while he was away. His order of 2026-10-12: add minimap. The raid HUD has a minimap in the top right corner now: north up like the sector map, about a thousand units of the street around you at the real scale of the game, on a graphite plate with a thin amber edge. Walls, buildings, water and trees are painted once when the raid starts and each frame shows one piece of that picture, so it costs almost nothing a frame. You are the amber arrow in the middle, pointing where you face. The CONDITIONS panel now starts under it, so nothing overlaps. Markers for extractions, the seal, teammates and enemies you can see come next.

@@ -1,0 +1,12 @@
+{
+    "title":  "THE NAME IS THE BIGGEST THING ON THE TITLE",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The PILLAGERS name on the title was small for a title screen. It is about two thirds larger now, with a short amber rule under it.",
+    "now":  "The PILLAGERS name on the title is larger, with an amber rule under it.",
+    "edits":  [
+                  {
+                      "anchor":  "  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge",
+                      "replacement":  "  /* vNN.xx, UI REDESIGN ui5q2q (his #50, from the AAA judge of the title shot): THE NAME IS THE BIGGEST THING ON THE TITLE. PILLAGERS\n     was 64px, under-scaled for a title screen and about the size of a window heading at 4K. It is 104px now with a short amber rule\n     under it, the way the shooters he named sign their front screens. A small screen keeps its own smaller size (v8.88). */\n  #root #title .wordmark{ font-size:104px; line-height:.95; }\n  #root #title .wordmark::after{ content:\u0027\u0027; display:block; width:72px; height:4px; margin:14px auto 0; background:var(--acc); border-radius:1px; }\n  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2q): the PILLAGERS name on the title is at least 96px with an amber rule under it\u0027,\n   run:function(){\n     var w=document.querySelector(\u0027#title .wordmark\u0027); if(!w) return \u0027no title name\u0027;\n     var fs=parseFloat(getComputedStyle(w).fontSize), a=getComputedStyle(w,\u0027::after\u0027);\n     if(window.matchMedia\u0026\u0026window.matchMedia(\u0027(max-height: 820px)\u0027).matches\u0026\u0026fs\u003c96) return \u0027SKIP: a small screen keeps its own title size\u0027;\n     if(fs\u003c96) return \u0027the title name is \u0027+fs+\u0027px\u0027;\n     if(!a||a.content===\u0027none\u0027||parseFloat(a.height)\u003c2) return \u0027no rule under the title name\u0027;\n     return null; }},"
+}

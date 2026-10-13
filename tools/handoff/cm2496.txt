@@ -1,0 +1,7 @@
+v24.96: the what is new card names extract for x2
+
+The what is new card names extract for x2.
+
+Check 24.96. Fails on v24.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

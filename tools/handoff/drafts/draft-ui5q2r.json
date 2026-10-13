@@ -1,0 +1,12 @@
+{
+    "title":  "FULLSCREEN IS A FOOTER PROMPT",
+    "why":  "His order of 2026-10-12 (#50): make the menus look like a AAA game, checked in pictures. The line BEST IN FULLSCREEN AT 1080p, 1440p OR 4K and its GO FULLSCREEN button sat in the middle of the title under the name, setup text in the spot a title keeps for itself. They are a small prompt in the bottom left corner now, with the same words and button.",
+    "now":  "The fullscreen line on the title is a small prompt in the bottom left corner.",
+    "edits":  [
+                  {
+                      "anchor":  "  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge",
+                      "replacement":  "  /* vNN.xx, UI REDESIGN ui5q2r (his #50, from the AAA judge of the title shot): FULLSCREEN IS A FOOTER PROMPT. BEST IN FULLSCREEN AT\n     1080p, 1440p OR 4K and GO FULLSCREEN sat in the middle of the column under the name, a line of setup text in the place a title\n     keeps for itself. They are a small prompt in the bottom left corner of the screen now; the words and the button are the same. */\n  #root #titleres{ position:absolute; left:28px; bottom:22px; margin:0 !important; justify-content:flex-start !important; gap:10px !important;\n    font-size:13px !important; color:var(--tx-3, #8a96a1) !important; z-index:2; }\n  #root #titleres #titlefs{ min-height:32px; }\n  /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #50 (UI redesign ui5q2r): BEST IN FULLSCREEN and GO FULLSCREEN are a prompt in the bottom left corner of the title, not a line in the middle of the column\u0027,\n   run:function(){\n     var ti=document.getElementById(\u0027title\u0027), r=document.getElementById(\u0027titleres\u0027); if(!ti||!r) return \u0027SKIP: no fullscreen line\u0027;\n     var was=ti.classList.contains(\u0027on\u0027);\n     try{\n       if(!was) ti.classList.add(\u0027on\u0027);\n       if(getComputedStyle(r).position!==\u0027absolute\u0027) return \u0027the fullscreen line is in the column flow\u0027;\n       var tb=ti.getBoundingClientRect(), rb=r.getBoundingClientRect();\n       if(tb.bottom-rb.bottom\u003e80*((parseFloat(ti.style.zoom)||1))) return \u0027the fullscreen prompt is not at the foot of the screen (\u0027+Math.round(tb.bottom-rb.bottom)+\u0027px up)\u0027;\n       if(rb.left-tb.left\u003e80) return \u0027the fullscreen prompt is not in the left corner\u0027;\n       return null;\n     } finally { if(!was) ti.classList.remove(\u0027on\u0027); } }},"
+}

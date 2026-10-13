@@ -1,0 +1,24 @@
+{
+    "title":  "THE HUD PANEL TOGGLE IS A CHEVRON",
+    "why":  "His orders of 2026-10-12 (#35 redo the HUD, #50 make it look like a AAA game). The CONDITIONS, CURRENT PILLAGERS and controls panels in a raid ended their title with [-] or [+] in grey text, which read as developer UI. They draw a small chevron in the same spot now, up while open and down while folded. The click that folds them is the same.",
+    "now":  "The raid HUD panels fold with a small chevron instead of [-].",
+    "edits":  [
+                  {
+                      "anchor":  "    ctx.fillText(HOc.c?\u0027[+]\u0027:\u0027[-]\u0027,bx+bw-pad,ry);",
+                      "replacement":  "    hudChev(bx+bw-pad,ry,!HOc.c);   // vNN.xx (ui5q2p): a drawn chevron, not [-]"
+                  },
+                  {
+                      "anchor":  "  ctx.fillText(HOr.c?\u0027[+]\u0027:\u0027[-]\u0027,PADX-8+LW-LH(6),y0-LH(2));",
+                      "replacement":  "  hudChev(PADX-8+LW-LH(6),y0-LH(2),!HOr.c);   // vNN.xx (ui5q2p): a drawn chevron, not [-]"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(\u0027[-]\u0027,mx-8+MW-4,my+LH(4));",
+                      "replacement":  "    hudChev(mx-8+MW-4,my+LH(4),true);   // vNN.xx (ui5q2p): a drawn chevron, not [-]"
+                  },
+                  {
+                      "anchor":  "function hudPanel(x,y,w,h,a){",
+                      "replacement":  "// vNN.xx, UI REDESIGN ui5q2p (his #35 and #50, from the AAA judge of the raid HUD shots): THE PANEL TOGGLE IS A CHEVRON. The\n// CONDITIONS, CURRENT PILLAGERS and controls panels ended their title row with [-] or [+] in grey text, which read as developer UI.\n// The same spot (and the same click target, HUDBOX tg) draws a small chevron now: up while the panel is open, down while folded.\n// xr is the right edge and yb the text baseline, as the old fillText had them.\nfunction hudChev(xr,yb,open){\n  var s=Math.max(3,LH(4)), cx=xr-s-1, cy=yb-LH(4);\n  ctx.save(); ctx.strokeStyle=\u0027#a9b4be\u0027; ctx.lineWidth=Math.max(1.5,LH(1.6)); ctx.lineCap=\u0027round\u0027; ctx.lineJoin=\u0027round\u0027;\n  ctx.beginPath();\n  if(open){ ctx.moveTo(cx-s,cy+s*0.5); ctx.lineTo(cx,cy-s*0.5); ctx.lineTo(cx+s,cy+s*0.5); }\n  else { ctx.moveTo(cx-s,cy-s*0.5); ctx.lineTo(cx,cy+s*0.5); ctx.lineTo(cx+s,cy-s*0.5); }\n  ctx.stroke(); ctx.restore();\n}\nfunction hudPanel(x,y,w,h,a){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his #35/#50 (UI redesign ui5q2p): the raid HUD panels draw a chevron for their fold toggle, not the text [-] or [+]\u0027,\n   run:function(){\n     if(typeof hudChev!==\u0027function\u0027) return \u0027the HUD has no chevron toggle\u0027;\n     var src=[].slice.call(document.scripts).map(function(s){ return s.text||\u0027\u0027; }).join(\u0027\u0027), n=0, k=0;\n     var nd=\"fillText(HO\"+\"c.c?\u0027[+]\u0027\", nd2=\"fillText(HO\"+\"r.c?\u0027[+]\u0027\", nd3=\"fillText(\u0027[-\"+\"]\u0027,mx\";\n     if(src.indexOf(nd)\u003e=0||src.indexOf(nd2)\u003e=0||src.indexOf(nd3)\u003e=0) return \u0027a HUD panel still prints [-] as its toggle\u0027;\n     var real=ctx.stroke;\n     try{ ctx.stroke=function(){ n++; }; hudChev(200,200,true); hudChev(200,200,false); }\n     finally{ delete ctx.stroke; if(ctx.stroke!==real) ctx.stroke=real; }\n     return n===2?null:(\u0027the chevron drew \u0027+n+\u0027 strokes for two calls\u0027); }},"
+}
