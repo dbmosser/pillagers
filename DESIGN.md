@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.84 - THE WHAT IS NEW CARD NAMES THE BEST MOMENTS
+
+Co-op hunt while he was away. The card was stamped v24.70 and the stamp may not trail the build by more than 0.15. The card was stamped v24.70 and every ship stops when it falls 0.16 behind. Its new line names the builds since: RUN OVER best moments (his third answers), DEMO hits unified with CAREER (his rule: exactly the same), and the graphite HUD meters and belt (his #50).
+
+MEASURED. Check 24.84 passes, and fails on v24.83.
 ## v24.83 - NO DARK INK ON THE STATS PAGE
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. The picture check of YOUR STATS in the Mainframe found the caption over the run log in the dark ink of the cream cards, too faint on the dark page. It is in the readable grey now.
