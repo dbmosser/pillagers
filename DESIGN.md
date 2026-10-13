@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.66 - THE FASHION RACKS FILL THE PANEL
+
+Co-op hunt while he was away. His order of 2026-10-12 (#50): the menus still look bad, take pictures and make it look like a triple A game. The picture review of Fashion found the rack tiles so narrow that what unlocks a tile ran into both borders or broke into five lines over its name, the racks used only the left half of the panel, and a locked tile looked almost the same as one you own. The tiles are wider and share the whole panel width, the unlock line fits inside the tile, and a locked tile shows a small lock. No word changed.
+
+MEASURED. Check 24.66 passes, and fails on v24.65.
 ## v24.65 - THE STASH ANSWER LINE SITS IN THE FOOTER
 
 Co-op hunt while he was away. His order of 2026-10-12 (#50): take pictures and make the menus look like a triple A game. On the stash picture the answer line (the welcome pack is in your stash) sat across the new footer line, half in the footer and half over the sell panel. It now sits in the footer, level with CLOSE, as it already does in the shop, Fashion, the Mainframe and Settings.

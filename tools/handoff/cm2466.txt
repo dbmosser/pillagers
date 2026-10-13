@@ -1,0 +1,7 @@
+v24.66: the fashion racks fill the panel
+
+The Fashion racks fill the panel with wider tiles, and locked tiles show a lock.
+
+Check 24.66. Fails on v24.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

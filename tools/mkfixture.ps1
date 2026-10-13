@@ -6063,6 +6063,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.66',what:'his #50 (UI redesign ui5q1j, from the AAA judge of the Fashion shot): the Fashion racks are a grid of tiles at least 128px wide, and a locked tile carries a lock glyph',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], t, lk, w, z, row;
+     try{
+       __topClear(); __hubEnter(); __station('mirror','KeyE');
+       t=document.querySelector('#appavatarpicker .costile');
+       if(!t||!t.getClientRects().length) return 'SKIP: Fashion drew no rack here';
+       z=(((typeof menuScale==='function')&&menuScale())||1);
+       w=t.getBoundingClientRect().width/z;
+       if(w<128) bad.push('a rack tile is '+Math.round(w)+'px wide');
+       row=t.parentNode;
+       if(getComputedStyle(row).display!=='grid') bad.push('a rack is a '+getComputedStyle(row).display+' row, not a grid that fills the panel');
+       lk=document.querySelector('#appavatarpicker .costile.lock');
+       if(lk&&getComputedStyle(lk,'::before').backgroundImage.indexOf('svg')<0) bad.push('a locked tile has no lock glyph');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.65',what:'his #50 (UI redesign ui5q1e, from the AAA judge of the stash shot): on the stash the answer line sits in the footer bar, level with CLOSE (within 6px), and not across the footer hairline',
    run:function(){
      if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
