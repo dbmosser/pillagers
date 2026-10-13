@@ -6063,6 +6063,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'24.60',what:'his answer 35: the low health heartbeat is a lub-dub with a knock a laptop speaker can play, louder as it gets worse',
+   run:function(){
+     if(typeof __audio!=='object'||!__audio.record||!__audio.blipRaw) return 'SKIP: no audio recorder in this fixture';
+     var bad=[], lg, hi=0, lo=0, starts=[], i, keepSim=(G?G.sim:null), seen=null, rb=blip;
+     try{
+       if(G) G.sim=false;
+       lg=__audio.record(function(){ __audio.blipRaw('heart',0,undefined,1); });
+       var os=(lg&&lg.osc)||[];
+       for(i=0;i<os.length;i++){ if(os[i].t0!==null&&starts.indexOf(+(+os[i].t0).toFixed(3))<0) starts.push(+(+os[i].t0).toFixed(3)); }
+       if(starts.length<2) bad.push('the heartbeat is one beat (starts at '+starts.join(',')+'), not a lub-dub');
+       if(os.length<4) bad.push('the heartbeat has no knock a small speaker plays ('+os.length+' oscillators, not two thumps and two knocks)');
+       if(window.__deploy&&window.__endRaid){
+         __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+         __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+         var g=__state(); if(g&&!g.over&&!g.sim){
+           blip=function(k){ if(k==='heart') seen=[].slice.call(arguments); };
+           g.player.hp=12; HEART=0;
+           for(var f=0;f<6&&!seen;f++) __loop(performance.now()+f*16.7);
+           blip=rb;
+           if(!seen) bad.push('no heartbeat at 12 health');
+           else if(!(typeof seen[3]==='number'&&seen[3]>0.5)) bad.push('the heartbeat at 12 health is not told how bad it is ('+seen[3]+')');
+         }
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ blip=rb; try{ if(G&&keepSim!==null) G.sim=keepSim; }catch(_s){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.hp=100; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'24.59',what:'his answer 34 a: a machine beeps (lockon, on the machine bus) the moment it acquires him, once per machine in three seconds; a pillager does not beep',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof mkSentry!=='function'||typeof updateEnts!=='function') return 'SKIP: no raid here';

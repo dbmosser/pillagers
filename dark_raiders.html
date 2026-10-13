@@ -1996,7 +1996,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.59';
+var VER='24.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5944,11 +5944,27 @@ function blip(type,d,pan){
       }
     }
   } else if(type==='heart'){
-    var ob=a.createOscillator(),gb=a.createGain();
-    ob.type='sine'; ob.frequency.setValueAtTime(62,t); ob.frequency.exponentialRampToValueAtTime(38,t+.14);
-    gb.gain.setValueAtTime(.001,t); gb.gain.linearRampToValueAtTime(.11*vol,t+.02);
-    gb.gain.exponentialRampToValueAtTime(.001,t+.20);
-    ob.connect(gb); gb.connect(OUT); ob.start(t); ob.stop(t+.22);
+    // v23.xx, HIS ANSWERS (2026-10-12), answer 35: "low-health heartbeat". THE HEARTBEAT IS HEARD ON A LAPTOP. It was one 62 to 38 Hz
+    // sine thump, below what laptop and TV speakers can play (his answer 41: the floor is a five year old laptop), so on most machines
+    // low health was silent. It is now a lub-dub, two beats 0.15 s apart (the second softer), each the old sub thump plus a short
+    // 140 to 75 Hz knock through a lowpass that small speakers do play. The knock grows with how bad it is (the 4th argument, 0 to 1,
+    // the same danger figure that sets the rate). When it plays and how fast are unchanged.
+    var hbk=arguments[3], hbi, hbt, hba, ob, gb, hko, hkf, hkg;
+    hbk=(typeof hbk==='number'&&isFinite(hbk))?clamp(hbk,0,1):0.5;
+    for(hbi=0;hbi<2;hbi++){
+      hbt=t+hbi*.15; hba=hbi?.68:1;
+      ob=a.createOscillator(); gb=a.createGain();
+      ob.type='sine'; ob.frequency.setValueAtTime(62,hbt); ob.frequency.exponentialRampToValueAtTime(38,hbt+.14);
+      gb.gain.setValueAtTime(.001,hbt); gb.gain.linearRampToValueAtTime(.11*vol*hba,hbt+.02);
+      gb.gain.exponentialRampToValueAtTime(.001,hbt+.20);
+      ob.connect(gb); gb.connect(OUT); ob.start(hbt); ob.stop(hbt+.22);
+      hko=a.createOscillator(); hkf=a.createBiquadFilter(); hkg=a.createGain();
+      hko.type='triangle'; hko.frequency.setValueAtTime(140,hbt); hko.frequency.exponentialRampToValueAtTime(75,hbt+.09);
+      hkf.type='lowpass'; hkf.frequency.value=420; hkf.Q.value=0.8;
+      hkg.gain.setValueAtTime(.0001,hbt); hkg.gain.linearRampToValueAtTime(.06*vol*hba*(0.6+0.4*hbk),hbt+.012);
+      hkg.gain.exponentialRampToValueAtTime(.001,hbt+.12);
+      hko.connect(hkf); hkf.connect(hkg); hkg.connect(OUT); hko.start(hbt); hko.stop(hbt+.13);
+    }
   } else if(type==='servo'){
     // A servo sweep: a filtered tone that slides across, with a mechanical tick
     // at the end of the travel. Hunting, it sweeps faster and higher.
@@ -38504,7 +38520,7 @@ function loop(ts){
       if(HEART<=0&&(pp.hp<45||pp.downed||chaseNear>0.25)){
         var hurtF=pp.downed?1:clamp(1-(pp.hp/45),0,1);
         var frac=Math.max(hurtF,chaseNear);
-        blip('heart',0);
+        blip('heart',0,undefined,frac);   // v23.xx (his answer 35): the knock grows as it gets worse
         HEART=pp.downed?0.52:(1.05-0.45*frac);
       }
       var i;
@@ -38894,7 +38910,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.59: Every machine gives a short double beep where it stands when it locks on to you. Check 24.59 fails on v24.58',
+  now:'v24.60: The low health heartbeat is now a lub-dub you can hear on laptop speakers. Check 24.60 fails on v24.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

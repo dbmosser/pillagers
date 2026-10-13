@@ -1,0 +1,7 @@
+v24.60: a heartbeat you can hear
+
+The low health heartbeat is now a lub-dub you can hear on laptop speakers.
+
+Check 24.60. Fails on v24.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

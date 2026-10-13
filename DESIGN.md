@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.60 - A HEARTBEAT YOU CAN HEAR
+
+Co-op hunt while he was away. His answer 35 (2026-10-12): a low-health heartbeat. There was one, but it was a single very low thump, below what laptop and TV speakers can play, so on most machines low health was silent. It is now a lub-dub, two beats close together, with a short knock on each that small speakers do play, and the knock grows louder as your health falls. When it starts (under 45 health, or something hunting you close) and how fast it beats are unchanged.
+
+MEASURED. Check 24.60 passes, and fails on v24.59.
 ## v24.59 - MACHINES BEEP WHEN THEY LOCK ON
 
 Co-op hunt while he was away. His answer 34 (2026-10-12): machine beeps and pillager taunts. Only the sentry, the crawler and the Crier sounded an alarm when they found you, and the stinger plays once in five seconds for the whole map, so a Warden, a Howler or a Bulwark turning on you made no sound of its own. Now every machine gives a short rising double beep where it stands the moment it locks on to you, once per machine in three seconds, so you can hear what found you and where. Pillagers never beep.

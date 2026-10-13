@@ -1,0 +1,5 @@
+## v24.60 - A HEARTBEAT YOU CAN HEAR
+
+Co-op hunt while he was away. His answer 35 (2026-10-12): a low-health heartbeat. There was one, but it was a single very low thump, below what laptop and TV speakers can play, so on most machines low health was silent. It is now a lub-dub, two beats close together, with a short knock on each that small speakers do play, and the knock grows louder as your health falls. When it starts (under 45 health, or something hunting you close) and how fast it beats are unchanged.
+
+MEASURED. Check 24.60 passes, and fails on v24.59.
