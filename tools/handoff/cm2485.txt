@@ -1,0 +1,7 @@
+v24.85: spotted by the overseer
+
+THE OVERSEER seeing you now calls SPOTTED BY THE OVERSEER, and a plain Warden calls SPOTTED BY A WARDEN.
+
+Check 24.85. Fails on v24.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

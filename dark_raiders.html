@@ -2077,7 +2077,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.84';
+var VER='24.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10931,6 +10931,11 @@ function mkChoir(x,y){
 // build are untouched; live play and the bot make it the same way. It guards its lair: with the player more than 1100 from
 // the lair it walks home. Down, it leaves the WARDEN WRECK and the OVERSEER HOARD. The host runs it; a linked window mirrors it.
 var BOSS_NAME='THE OVERSEER';
+// v24.xx (overseerline), HIS NOTE (2026-10-12): "'Spotted by something huge' -- change to 'Spotted by the Overseer'". The callout
+// fired for ANY warden that saw you, and every raid has a plain WARDEN (mkWarden) besides THE OVERSEER (a warden with e.boss).
+// Now THE OVERSEER says SPOTTED BY THE OVERSEER, and a plain warden says SPOTTED BY A WARDEN (its own name, never the boss).
+// The host carries which one it was in the party mark (boss:1), so a teammate window says the same line.
+function wardenSpotLine(boss){ return boss?('SPOTTED BY '+BOSS_NAME):'SPOTTED BY A WARDEN'; }
 function bossLair(){
   var map=G.map, pad=50, gr, cx=WORLD_W/2, cy=WORLD_H/2, r, a, n, x, y, nw, i, w, ok;
   gr=(G.wgrid&&G.wgrid.walls===map.walls)?G.wgrid:((map._fsGrid&&map._fsGrid.walls===map.walls)?map._fsGrid:(map._fsGrid=buildWallGrid(map.walls,WORLD_W,WORLD_H)));
@@ -22592,7 +22597,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
 
       if(sees){ e.seenYou=true; e.tx=p.x; e.ty=p.y; e.alert=4;
       if(e.boss&&e.lairX!==undefined&&Math.hypot(p.x-e.lairX,p.y-e.lairY)>1100){ e.tx=e.lairX; e.ty=e.lairY; e.seenYou=true; }   // v17.45: his pick 21, it guards its lair
-        if(!e.announced){ e.announced=true; if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'big',nid:e.nid|0,seat:p.seat|0}); } else say('SPOTTED BY SOMETHING HUGE','warn'); sfx('alarm',e.x,e.y); } }   // v20.38 (H11): said to the player it noticed   // v22.xx (tr3fixc): the shooter voice
+        if(!e.announced){ e.announced=true; if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'big',nid:e.nid|0,seat:p.seat|0,boss:e.boss?1:0}); } else say(wardenSpotLine(e.boss),'warn'); sfx('alarm',e.x,e.y); } }   // v20.38 (H11): said to the player it noticed   // v22.xx (tr3fixc): the shooter voice
       // v22.23 (K34): A WARDEN THAT HAS NOT SEEN YOU IS NOT HUNTING YOU. A round, a blast or a noise put it in 'chase' or
       // 'investigate', which this branch never reads or ends, so it kept the red mark as it wandered. Where it was sent stays in
       // tx/ty for its walk. One that has seen you hunts for good, as before. THE OVERSEER runs this branch too.
@@ -39162,7 +39167,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.84: The what is new card names the best moments. Check 24.84 fails on v24.83',
+  now:'v24.85: THE OVERSEER seeing you now calls SPOTTED BY THE OVERSEER, and a plain Warden calls SPOTTED BY A WARDEN. Check 24.85 fails on v24.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -46594,7 +46599,7 @@ function netMarkTake(peer,m){
     }
     return 'mark:fire';
   }
-  if(k==='big'){ if(mine&&!G.sim) say('SPOTTED BY SOMETHING HUGE','warn'); return 'mark:big'; }   // v22.xx (tr3fixc): the shooter voice
+  if(k==='big'){ if(mine&&!G.sim) say(wardenSpotLine(m.boss!==undefined?(m.boss|0):(e&&e.boss)),'warn'); return 'mark:big'; }   /* v24.xx (overseerline): the line names the one that saw him */   // v22.xx (tr3fixc): the shooter voice
   // v22.20, from the whole-game bug hunt of 2026-10-08 (K31): THE PILLBOX, THE PEDDLER AND THE SURVIVOR, told to the player who
   // walked up. The host sends these when one of the party is the player they saw (updateEnts); his own lines are said there.
   if(k==='pill'){ if(mine&&!G.sim) say('THE PILLBOX HAS SEEN YOU','warn'); return 'mark:pill'; }

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.85 - SPOTTED BY THE OVERSEER
+
+Co-op hunt while he was away. His note of 2026-10-12: change Spotted by something huge to Spotted by the Overseer. That callout fired for any warden that saw you, and every raid also has a plain Warden besides THE OVERSEER. Now THE OVERSEER seeing you says SPOTTED BY THE OVERSEER, and a plain Warden says SPOTTED BY A WARDEN, so the plain one never claims to be the boss. In co-op the host tells your teammate which one it was, so his window shows the same line.
+
+MEASURED. Check 24.85 passes, and fails on v24.84.
 ## v24.84 - THE WHAT IS NEW CARD NAMES THE BEST MOMENTS
 
 Co-op hunt while he was away. The card was stamped v24.70 and the stamp may not trail the build by more than 0.15. The card was stamped v24.70 and every ship stops when it falls 0.16 behind. Its new line names the builds since: RUN OVER best moments (his third answers), DEMO hits unified with CAREER (his rule: exactly the same), and the graphite HUD meters and belt (his #50).
