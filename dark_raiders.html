@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.88';
+var VER='25.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3166,7 +3166,7 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   // cut at the great door, was told Banked, reloaded the page, and the second
   // load took it, once, silently. mig945 is the rig buyback, harmless on an
   // empty stash, and is stamped for the same reason: the rule is the rule.
-  mig739:1,mig945:1,beltV:2,   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)
+  mig739:1,mig945:1,beltV:3,   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)
   // v11.73, from the 2026-09-06 menu audit: BORN SET, like dayMigrated above.
   // The pname default lives inside applyLoadedProfile, which only runs when a
   // save exists, so a player who has never saved had no name at all and the
@@ -3656,6 +3656,17 @@ function beltSlidePlan(h){
   for(i=0;i<over.length;i++) for(j=2;j<GUNKEYS&&j<HOTBAR_N;j++) if(out[j]===undefined){ out[j]=over[i]; break; }
   return out;
 }
+// v25.xx (belt2), HIS ORDER 2026-10-13: AN OLD SAVED BELT PLAN LOSES THE GUN BINDINGS PAST THE GUN KEYS, ONCE (P.beltV=3). A gun
+// bound to keys 5 to 9 comes off the plan (the gun itself is untouched); everything else stays where it is. A new profile is born set.
+function beltGunsOff(h){
+  if(!h||typeof h!=='object') return h;
+  var out={}, k;
+  for(k in h) if(Object.prototype.hasOwnProperty.call(h,k)){
+    if(isFinite(+k)&&+k>=GUNKEYS&&ITEMS[h[k]]&&ITEMS[h[k]].use==='gun') continue;
+    out[k]=h[k];
+  }
+  return out;
+}
 function applyLoadedProfile(r){
       // v14.43, title and saves audit finding 3: A SAVE THE LOADER CANNOT READ IS KEPT BEFORE IT IS REPLACED. Stored data that
       // will not parse, or has no numeric credits, is ignored below, and boot then saves the fresh character over that key, so
@@ -3768,11 +3779,18 @@ if(!P.packRefund&&P.pack>0){
 if(P.hotAssignAuto){ P.hotAssign={}; delete P.hotAssignAuto; } if(!P.menuZoom)P.menuZoom=1.3; if(P.menuZoom<1)P.menuZoom=1;   /* v10.22: never below the screen */ if(!Array.isArray(P.kit))P.kit=[]; if(!Array.isArray(P.dropKit))P.dropKit=[];
 // v21.93, the four-gun belt, build 3: the plan, the plan set aside for the freebie kit and the one kept from before it slide down
 // two, once (beltSlidePlan above).
-if(P.beltV!==2){
+if((P.beltV|0)<2){   // v25.xx (belt2): was !==2, which would slide a plan stamped 3 or later again
   P.hotAssign=beltSlidePlan(P.hotAssign||{});
   if(P.kitSaved&&P.kitSaved.hot) P.kitSaved.hot=beltSlidePlan(P.kitSaved.hot);
   if(P.hotBeforeFree) P.hotBeforeFree=beltSlidePlan(P.hotBeforeFree);
   P.beltV=2;
+}
+// v25.xx (belt2): the same three plans lose their gun bindings past the gun keys, once.
+if((P.beltV|0)<3){
+  P.hotAssign=beltGunsOff(P.hotAssign||{});
+  if(P.kitSaved&&P.kitSaved.hot) P.kitSaved.hot=beltGunsOff(P.kitSaved.hot);
+  if(P.hotBeforeFree) P.hotBeforeFree=beltGunsOff(P.hotBeforeFree);
+  P.beltV=3;
 }
 if(P.netEarn===undefined) P.netEarn=netEarnFromLog();   // v10.27: a profile from before the counter sums its log once
 // BETA v1: one sector is offered, so a profile pointing at any other is moved
@@ -14200,6 +14218,7 @@ window.addEventListener('mouseup',function(e){
           // and name keys, not slots, as the rest of the belt does.
           if(d.gunSlot){
             if(d.fromHot===_H.i) return;
+            if(_H.i>=GUNKEYS){ hubToast('GUNS GO ON KEYS 1 TO '+GUNKEYS); return; }   // v25.xx (belt2): a gun belongs on keys 1 to GUNKEYS (v22.45 let it go anywhere)
             var _hb8s=hotbarSlots(), _hb8t=_hb8s[_H.i], _hb8w=WEAPONS[d.key.slice(4)], _hb8n=(_hb8w&&_hb8w.name)||'That gun', _hb8h=(d.gunSlot==='gunA')?0:1;
             if(_hb8t&&(_hb8t.k==='gunA'||_hb8t.k==='gunB')&&_hb8t.k!==d.gunSlot){
               var _hb8a=P.equipped, _hb8b=P.equippedSec;
@@ -14233,6 +14252,7 @@ window.addEventListener('mouseup',function(e){
             return;
           }
           if(d.fromHot===_H.i) return;
+          if(_H.i>=GUNKEYS&&ITEMS[d.key]&&ITEMS[d.key].use==='gun'){ hubToast('GUNS GO ON KEYS 1 TO '+GUNKEYS); return; }   // v25.xx (belt2): a gun belongs on keys 1 to GUNKEYS
           G.hotAssign=G.hotAssign||{};
           // v14.25, Undercroft audit finding 4: ONE ITEM, ONE KEY, IN THE UNDERCROFT BACKPACK TOO. This drop only let go of the
           // key the item was dragged from. It never took the same item off its other keys, so dragging one Medkit to key 4
@@ -14312,23 +14332,9 @@ window.addEventListener('mouseup',function(e){
           say((_gw8n+' to slot '+(_onCell+1)).toUpperCase(),'info',(_gwTi&&_gwTi.use!=='gun')?{sub:(_gwTi.name+' to slot '+(d.fromHot+1)).toUpperCase()}:null);   // v22.43: the shooter voice   // v22.xx (R52): the slot word
         }
         else {
-          // v22.52, the four-gun belt, build 5 (his order of 2026-10-09: the player can load up the belt with all guns or whatever else
-          // they want): ANY GUN ON ANY KEY. A gun in his hands dragged onto a key past the gun keys was refused in words (gun keys
-          // only). It is now bound there as his key, flushed to his plan as any drag onto the belt is (minus the automatic pins), and
-          // its gun key pin comes off, so the gun key it left shows the fill. What he had on that key goes to the key the gun came
-          // from, as the trade above sends it. The guns in his hands do not change.
-          var _gaA=(G.hotAssign=G.hotAssign||{}), _gaU=(G.hotAuto=G.hotAuto||{}), _gaP=_gaA[_onCell], _gaPu=_gaU[_onCell]?1:0, _gaK, _gaM=null, _gaI;
-          for(_gaK in _gaA) if(_gaA[_gaK]===d.key){ delete _gaA[_gaK]; delete _gaU[_gaK]; }
-          delete _gaU[_onCell];
-          _gaA[_onCell]=d.key;
-          if(_gaP!==undefined&&_gaP!==d.key&&d.fromHot!==undefined&&_gaA[d.fromHot]===undefined){
-            _gaA[d.fromHot]=_gaP; if(_gaPu) _gaU[d.fromHot]=1;
-            _gaI=ITEMS[_gaP]; if(_gaI) _gaM={sub:(_gaI.name+' to slot '+(d.fromHot+1)).toUpperCase()};   // v22.xx (R52): the slot word
-          }
-          for(_gaK in _gaU) if(_gaA[_gaK]===undefined) delete _gaU[_gaK];
-          if(!G.sim){ var _gaF={}; for(_gaK in _gaA) if(!_gaU[_gaK]) _gaF[_gaK]=_gaA[_gaK]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_gaF))); try{ saveProfile(); }catch(_gaE){} }
-          G.hot=gunCell(); blip('pick');
-          say((_gw8n+' to slot '+(_onCell+1)).toUpperCase(),'info',_gaM);   // the shooter voice   // v22.xx (R52): the slot word
+          // v25.xx (belt2), HIS ORDER 2026-10-13: "so player can only carry 4 guns max". A gun belongs on keys 1 to GUNKEYS, so a gun in his
+          // hands dragged onto a key past them is refused in words and nothing moves. This reverses v22.52 (ANY GUN ON ANY KEY).
+          say('GUNS GO ON KEYS 1 TO '+GUNKEYS,'info',null); sndUi('deny');
         }
       }
       d={key:null}; dropped=true;
@@ -14452,6 +14458,11 @@ window.addEventListener('mouseup',function(e){
         // a gesture that silently does nothing teaches you the feature is missing.
         if(_si&&_siDerived){
           say('SLOT '+(HC.i+1)+' TAKES GUNS ONLY');   // v22.43: the shooter voice   // v22.xx (R52): the slot word
+          dropped=true; break;
+        }
+        // v25.xx (belt2), HIS ORDER 2026-10-13: a gun belongs on keys 1 to GUNKEYS; one dropped on a key past them is refused in words (v8.67 and v22.52 let it go anywhere).
+        if(_dit&&_dit.use==='gun'&&HC.i>=GUNKEYS){
+          say('GUNS GO ON KEYS 1 TO '+GUNKEYS,'info',null); sndUi('deny');
           dropped=true; break;
         }
         // v8.67, HIS ORDER: a gun goes on any slot. This used to refuse with
@@ -41199,7 +41210,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.88: A demo extraction siege now grows with the loot you took, as in a career raid. Check 25.88 fails on v25.87',
+  now:'v25.89: Guns now go only on keys 1 to 4; a gun dragged onto any other key is refused. Check 25.89 fails on v25.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -42821,6 +42832,7 @@ function rackToStash(key){
 }
 function rackPut(slot,key){
   var why=rackToStash(key); if(why) return why;
+  if((slot|0)>=GUNKEYS) return 'GUNS GO ON KEYS 1 TO '+GUNKEYS;   // v25.xx (belt2): a gun belongs on keys 1 to GUNKEYS
   var gk=key.slice(4);
   if(P.equipped===gk||P.equippedSec===gk){
     P.hotAssign=P.hotAssign||{};
@@ -42831,6 +42843,7 @@ function rackPut(slot,key){
 }
 function planPut(slot,key){
   if(!key||!ITEMS[key]) return 'Nothing to put there.';
+  if(ITEMS[key].use==='gun'&&(slot|0)>=GUNKEYS) return 'GUNS GO ON KEYS 1 TO '+GUNKEYS;   // v25.xx (belt2): a gun belongs on keys 1 to GUNKEYS
   // v6.60, his note: a gun is an item like any other. Both of the old refusals, that a
   // gun could not take a key and that keys 1 and 2 were reserved, are gone. Any item,
   // any slot, as many guns as he wants.

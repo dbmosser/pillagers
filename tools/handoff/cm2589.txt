@@ -1,0 +1,7 @@
+v25.89: guns go on keys 1 to 4
+
+Guns now go only on keys 1 to 4; a gun dragged onto any other key is refused.
+
+Check 25.89. Fails on v25.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
