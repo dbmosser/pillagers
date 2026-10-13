@@ -1386,6 +1386,10 @@ window.__isFixture=1;
 // at once, as before; the countdown check sets GO_SEC back to 3 for itself. On a build with no count this only makes a global.
 // 2026-10-13: his order of 2026-10-12 removed the count (nogo); kept so the builds before it still start their raids at once.
 try{ GO_SEC=0; }catch(e){}
+// v24.xx (career chain, feat0h1): every raid from the Undercroft becomes a CAREER raid (10 minute clock, rings open, kill score,
+// waves). The checks deploy the old raid, as before; the CAREER checks set CAREER_ON back to 1 for themselves. On a build with no
+// CAREER raid this only makes a global.
+try{ CAREER_ON=0; }catch(e){}
 // THE FIXTURE IS SILENT. Verification drives real frames, and real frames fire real
 // gunshots, alarms and machine voices through WebAudio. On 2026-08-24 a 40 raid batch
 // played all of it out loud on Daniel's PC while he was trying to work. He should never
