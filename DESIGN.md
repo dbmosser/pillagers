@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.95 - A MINIMAP IN THE CORNER
+
+Co-op hunt while he was away. His order of 2026-10-12: add minimap. The raid HUD has a minimap in the top right corner now: north up like the sector map, about a thousand units of the street around you at the real scale of the game, on a graphite plate with a thin amber edge. Walls, buildings, water and trees are painted once when the raid starts and each frame shows one piece of that picture, so it costs almost nothing a frame. You are the amber arrow in the middle, pointing where you face. The CONDITIONS panel now starts under it, so nothing overlaps. Markers for extractions, the seal, teammates and enemies you can see come next.
+
+MEASURED. Check 24.95 passes, and fails on v24.94.
 ## v24.94 - A NEAR MISS WHIZZES PAST
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sound and give every action that has no sound of its own a distinct one. An enemy round that missed you narrowly flew past in silence; enemy fire was heard only at the gun. Now a round that passes within a stride of you without hitting whizzes past once, on the side it went by: a short rush of noise falling in pitch with a tiny snap at the front, the crack of a round going past your head. It rides the HUD sound, so a loud fight never buries it, and a shotgun blast past you is one whizz, not eight. This build also adds the small kit the next new noises are built from. Sound only: nothing in the raid changes.

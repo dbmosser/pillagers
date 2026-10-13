@@ -16345,7 +16345,6 @@ function drawPickups(){
       w=pad+((r.item&&ITEMS[r.item])?isz+pad*0.75:0)+wN+(cnt?pad*0.75+wC:0)+(tag?pad+wT:0)+pad;
       ctx.globalAlpha=oa*al;
       hudPlate(xR-w,y-rh,w,rh,col,HUDC.plate);
-      EDGEBOX.pick=EDGEBOX.pick?{x:Math.min(EDGEBOX.pick.x,xR-w),y:y-rh,w:xR-Math.min(EDGEBOX.pick.x,xR-w),h:EDGEBOX.pick.y+EDGEBOX.pick.h-(y-rh)}:{x:xR-w,y:y-rh,w:w,h:rh};   // v24.9x (ringbadge)
       yb=Math.round(y-rh/2+fp*0.36); x=xR-pad;
       if(tag){ ctx.fillStyle=HUDC.dim; ctx.fillText(tag,x,yb); x-=wT+pad; }
       if(cnt){ ctx.fillStyle=HUDC.text; ctx.fillText(cnt,x,yb); x-=wC+pad*0.75; }
@@ -16369,7 +16368,6 @@ function gunCardDraw(cmp,xR,yB,al,tag){
   try{
     ctx.globalAlpha=oa*(al===undefined?1:al);
     hudPlate(x,y,w,h,vc,HUDC.plate);
-    GUNCARD_LAST={x:x,y:y,w:w,h:h};   // v24.9x (ringbadge): where the card is, for a ring badge at the edge
     ctx.textBaseline='alphabetic';
     yy=y+pad+Math.round(hp*0.85);
     ctx.font=fH; ctx.textAlign='left'; ctx.fillStyle=RCOL[gunRarity(cmp.f.id)]||HUDC.text;
@@ -16397,9 +16395,7 @@ function gunCardHud(){
   age=(G.t||0)-(C.t0||0);
   if(age>GUNCARD_T||age<-1){ G.gunCard=null; return 0; }
   rs=Math.max(1,hudRes());
-  var _gch=gunCardDraw(gunCompare(C.w,C.vs),W-8*rs,Math.round(H*0.6),Math.max(0,Math.min(1,(GUNCARD_T-age)/0.5)),C.route);
-  EDGEBOX.gun=GUNCARD_LAST;   // v24.9x (ringbadge)
-  return _gch;
+  return gunCardDraw(gunCompare(C.w,C.vs),W-8*rs,Math.round(H*0.6),Math.max(0,Math.min(1,(GUNCARD_T-age)/0.5)),C.route);
 }
 function alertLayout(){   // with the message scale not yet applied: the alert plate, its lines and their baselines, or null
   var a=alertUp(), hf, lf, hp, lp, gs, mw, hl, sl=[], w=0, i, y, bl=[];
@@ -30795,34 +30791,12 @@ function hudDodge(sx,sy,halfW,hgt,tail){
 // v11.54, HIS NOTE: the four states of an extraction point, in his words.
 // Nothing called yet; called and inbound (the beacon clock); landed and open
 // for the hold window (the ship clock); closed for the raid.
-// v24.9x (ringbadge), his raid text map and his #50 (2026-10-12), in the AAA voice: THE RING BADGE IS A SHORT CALLOUT. The four
-// states keep their order and their live seconds, named as the rest of the raid names them: EXTRACTION A AVAILABLE (nobody has
-// called it), EXTRACTION A INBOUND 18S (as the ring prompt and the alert lane say INBOUND), EXTRACT IN PROGRESS! A 12S (his phrase of
-// 2026-10-03, as the band says it) and EXTRACTION A CLOSED (the alert lane line). Each fits in 28 characters; the sentences ran to 64
-// and, held at the screen edge, printed under the gun card.
-var EDGEBOX={}, GUNCARD_LAST=null;   // v24.9x (ringbadge): the gun card, pickup rows and co-op kill feed as last drawn, screen pixels
 function zoneBadge(z){
-  var L=extLetter(z); L=(L==='?')?'':' '+L;
-  if(!z.open) return 'EXTRACTION'+L+' CLOSED';
-  if(z.beaconT===null||z.beaconT===undefined) return 'EXTRACTION'+L+' AVAILABLE';
-  if(z.beaconT>0) return 'EXTRACTION'+L+' INBOUND '+Math.max(0,Math.ceil(z.beaconT))+'S';
-  if(z.hold!==null&&z.hold!==undefined) return 'EXTRACT IN PROGRESS!'+L+' '+Math.max(0,Math.ceil(z.hold))+'S';   // v17.95: his words of 2026-10-03
-  return 'EXTRACTION'+L+' AVAILABLE';
-}
-// v24.9x (ringbadge): a badge held at the screen edge, from l to r across and from y-up to y+dn down, slides up or down along the edge
-// to the nearest place clear of every panel there (the HUD panels, the gun card, the pickup rows, the kill feed, the teammate rows and
-// the corner readout, as last drawn). Where it is already clear, or nowhere on screen is, it stays where it was.
-function ringBadgeSlide(l,r,y,up,dn){
-  var bx=[], k, B, i, c, best=y, bd=1e9, cand=[], m=LH(4)*Math.max(1,hudRes());
-  for(k in HUDBOX){ B=HUDBOX[k]; if(B&&B.w>0&&B.h>0) bx.push(B); }
-  for(k in EDGEBOX){ B=EDGEBOX[k]; if(B&&B.w>0&&B.h>0) bx.push(B); }
-  if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.w>0) bx.push(NETTEAMBOX);
-  if(G&&G.cornerBox) bx.push(G.cornerBox);
-  function hit(yy){ for(var j=0;j<bx.length;j++){ var b=bx[j]; if(r>b.x&&l<b.x+b.w&&yy+dn+m>b.y&&yy-up-m<b.y+b.h) return true; } return false; }
-  if(!hit(y)) return y;
-  for(i=0;i<bx.length;i++){ B=bx[i]; if(r>B.x&&l<B.x+B.w) cand.push(B.y-m-dn-1,B.y+B.h+m+up+1); }
-  for(i=0;i<cand.length;i++){ c=cand[i]; if(c-up<4||c+dn>H-4||hit(c)) continue; if(Math.abs(c-y)<bd){ bd=Math.abs(c-y); best=c; } }
-  return best;
+  if(!z.open) return 'EXTRACTION POINT - CLOSED FOR THE REMAINDER OF THIS RAID';
+  if(z.beaconT===null||z.beaconT===undefined) return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
+  if(z.beaconT>0) return 'EXTRACTION POINT - '+Math.max(0,Math.ceil(z.beaconT))+'S UNTIL EXTRACTION BEGINS';
+  if(z.hold!==null&&z.hold!==undefined) return 'EXTRACTION POINT - EXTRACT IN PROGRESS! '+Math.max(0,Math.ceil(z.hold))+'S UNTIL EXTRACTION ENDS';   // v17.95: his words of 2026-10-03
+  return 'EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN';
 }
 // v11.55, HIS NOTE: the last second of a cooked frag, in his words. One place,
 // so the draw and the check read the same line.
@@ -31926,35 +31900,18 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     // growth, so at 4K the plate ran right up to the edge of the screen (EXTRACTION POINT - SOUND THE ALARM TO BEGIN COUNTDOWN on the
     // right edge). The margin grows with the screen too. At 1080p _zr is 1 and nothing moves.
     var _zr=Math.max(1,hudRes());
-    // v24.9x (ringbadge), from his raid text map (2026-10-12) and his #50: A RING BADGE AT THE SCREEN EDGE POINTS AT ITS RING AND STAYS
-    // CLEAR OF THE EDGE STACK. A ring just off the right of the screen had its badge pushed against the edge at mid height, where the
-    // gun card on pickup, the pickup rows and the co-op kill feed live, so its words printed under the card. A badge held at the edge
-    // now carries an arrow on the side its ring is on, pointing at the ring, and where it would sit under a panel at that edge (the gun
-    // card, the pickup rows, the kill feed, CONDITIONS, the gear corner, the CURRENT PILLAGERS board, the key legend, the vitals or the
-    // teammate rows, as each was drawn last frame) it slides along the edge to the nearest clear place. A badge over its ring is untouched.
-    var _zaw=0, _zcl=false, zcx=(zwid+24*_zr<W)?clamp(zs.x,zwid/2+12*_zr,W-zwid/2-12*_zr):zs.x;
-    if(zcx!==zs.x&&zwid+24*_zr+LH(12)*_zr<W){ _zcl=true; _zaw=LH(12)*_zr; zcx=clamp(zs.x,(zwid+_zaw)/2+12*_zr,W-(zwid+_zaw)/2-12*_zr); }
-    var _zhw=(zwid+_zaw)/2, zsy=hudDodge(zcx,zs.y,_zhw+6*_zr,LH(15)*_zr,0);
-    if(_zcl) zsy=ringBadgeSlide(zcx-_zhw-6*_zr,zcx+_zhw+6*_zr,zsy,LH(11)*_zr,LH(4)*_zr);
+    var zcx=(zwid+24*_zr<W)?clamp(zs.x,zwid/2+12*_zr,W-zwid/2-12*_zr):zs.x;
+    var zsy=hudDodge(zcx,zs.y,zwid/2+6*_zr,LH(15)*_zr,0);
     // v21.07, from the whole-game bug hunt of 2026-10-08 (V-D5), seen on the 4K backpack screenshot: A RING LABEL NEVER PRINTS UNDER
     // THE OPEN BACKPACK. The label is drawn before the backpack panel, so where the two met the words showed faintly through the panel
     // and ran on past its edge, across B or I to close. While the backpack is open a label that would touch the panel (where it was
     // drawn last frame, G.bagPanel) is left out; the ring on the ground still shows, and the label is back when the backpack shuts.
     var _zbp=G.bagOpen?G.bagPanel:null;
-    if(_zbp&&zcx-_zhw-6*_zr<_zbp.x+_zbp.w&&zcx+_zhw+6*_zr>_zbp.x&&zsy-LH(11)*_zr<_zbp.y+_zbp.h&&zsy+LH(4)*_zr>_zbp.y) continue;
+    if(_zbp&&zcx-zwid/2-6*_zr<_zbp.x+_zbp.w&&zcx+zwid/2+6*_zr>_zbp.x&&zsy-LH(11)*_zr<_zbp.y+_zbp.h&&zsy+LH(4)*_zr>_zbp.y) continue;
     ctx.fillStyle='rgba(6,9,13,.78)';
-    ctx.fillRect(zcx-_zhw-6*_zr,zsy-LH(11)*_zr,zwid+_zaw+12*_zr,LH(15)*_zr);
+    ctx.fillRect(zcx-zwid/2-6*_zr,zsy-LH(11)*_zr,zwid+12*_zr,LH(15)*_zr);
     ctx.fillStyle=za?'#4de3d0':'rgba(168,180,193,.95)';
-    var _zar=(zs.x>=zcx);   // v24.9x (ringbadge): the arrow on the side its ring is on, the words beside it
-    ctx.fillText(zlab,_zcl?(_zar?zcx-_zaw/2:zcx+_zaw/2):zcx,zsy);
-    if(_zcl){
-      var _zax=_zar?(zcx+_zhw-_zaw/2):(zcx-_zhw+_zaw/2), _zay=zsy-LH(3.5)*_zr, _zan=Math.atan2(zs.y-_zay,zs.x-_zax), _zas=LH(5)*_zr;
-      ctx.beginPath();
-      ctx.moveTo(_zax+Math.cos(_zan)*_zas,_zay+Math.sin(_zan)*_zas);
-      ctx.lineTo(_zax+Math.cos(_zan+2.5)*_zas*0.85,_zay+Math.sin(_zan+2.5)*_zas*0.85);
-      ctx.lineTo(_zax+Math.cos(_zan-2.5)*_zas*0.85,_zay+Math.sin(_zan-2.5)*_zas*0.85);
-      ctx.closePath(); ctx.fill();
-    }
+    ctx.fillText(zlab,zcx,zsy);
     // v11.54: the closed whisper ("this one will not call") is inside his
     // CLOSED FOR THE REMAINDER OF THIS RAID line now.
   }
@@ -32546,7 +32503,7 @@ if(p.armor>0){
   // screen; the kill feed starts below CONDITIONS and grows too; the status column starts below the teammate rows.
   try{ NETTEAMBOX.n=0; }catch(_ntb){}   // v19.07: no rows unless drawn this frame, so a party that ended never moves the status column
   try{ if(NET.on) netTeamHud(by); }catch(_nth){}   // v16.26: your teammates, their health and armour
-  EDGEBOX.feed=null; try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed
+  try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed
   try{ if(NET.on) netPingDraw(); }catch(_npd){}   // v16.43: the party pings
   try{ if(NET.same) netPadHud(); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet
   var _boG=hudOff('gear');
@@ -33096,7 +33053,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     }
   }
   drawCrierMarkers();
-  EDGEBOX.pick=null; EDGEBOX.gun=null; try{ drawPickups(); }catch(_dpk){}   // v22.50 (R16): the pickup stack on the right edge
+  try{ drawPickups(); }catch(_dpk){}   // v22.50 (R16): the pickup stack on the right edge
   try{ gunCardHud(); }catch(_gch){}   // v23.xx (feat2b): the gun stat card on pickup
   if(G.arcade) delete HUDBOX.raiders;   // v23.35 (arcade13): no CURRENT PILLAGERS board in the arcade
   else if(!G.mapOpen&&!G.bagOpen){
@@ -45927,8 +45884,6 @@ function netFeedDraw(){
     ctx.globalAlpha=clamp((NET_FEED_T-a)/1.2,0,1);
     tw=ctx.measureText(f.txt).width;
     ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(x-tw-LH(6),y-LH(13),tw+LH(12),LH(18));
-    (function(){ var bx=(x-tw-LH(6))*_fhr, by=(y-LH(13))*_fhr, bw=(tw+LH(12))*_fhr, bh=LH(18)*_fhr, E=EDGEBOX.feed;   // v24.9x (ringbadge)
-      EDGEBOX.feed=E?{x:Math.min(E.x,bx),y:E.y,w:Math.max(E.x+E.w,bx+bw)-Math.min(E.x,bx),h:by+bh-E.y}:{x:bx,y:by,w:bw,h:bh}; })();
     ctx.fillStyle=f.me?'#ffc04a':'#bfe0ff'; ctx.fillText(f.txt,x,y);
     y+=LH(22); n++;
   }

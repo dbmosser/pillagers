@@ -1,0 +1,5 @@
+## v24.95 - A MINIMAP IN THE CORNER
+
+Co-op hunt while he was away. His order of 2026-10-12: add minimap. The raid HUD has a minimap in the top right corner now: north up like the sector map, about a thousand units of the street around you at the real scale of the game, on a graphite plate with a thin amber edge. Walls, buildings, water and trees are painted once when the raid starts and each frame shows one piece of that picture, so it costs almost nothing a frame. You are the amber arrow in the middle, pointing where you face. The CONDITIONS panel now starts under it, so nothing overlaps. Markers for extractions, the seal, teammates and enemies you can see come next.
+
+MEASURED. Check 24.95 passes, and fails on v24.94.
