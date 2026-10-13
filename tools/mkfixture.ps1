@@ -45861,7 +45861,8 @@ window.__REGRESS=[
        g.hot=-1; setHot(fc);
        if(g.tsel!==FX) return 'SKIP: pointing the belt at the Frag cell did not put the Frag in hand';
        cycleThrow();
-       if(g.tsel!==SX||g.hot!==sc) return 'SKIP: with both grenades on keys Q from the Frag did not move to the Smoke cell here';
+       if(g.tsel!==SX||(typeof throwSelFix!=='function'&&g.hot!==sc)) return 'SKIP: with both grenades on keys Q from the Frag did not move to the Smoke cell here';   // v25.xx (belt5a) retarget: U switches the kind and the highlight stays on the gun
+       if(typeof throwSelFix==='function') setHot(sc);   // v25.xx (belt5a) retarget: the trigger cooks the highlighted cell, so the Smoke cell is selected by its key
        mouse.down=true; updatePlayer(0.016);
        if(!p.cooking||p.cookKind!=='smoke') return 'SKIP: the press on the Smoke cell did not cook a Smoke here (cooking '+p.cooking+', kind '+p.cookKind+')';
        clearHand(p);
