@@ -1,0 +1,7 @@
+v25.77: middle mouse: ping and signal
+
+Middle mouse pings for the party and, alone, opens the V signal strip; it is on the rebind list.
+
+Check 25.77. Fails on v25.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

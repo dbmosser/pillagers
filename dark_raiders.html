@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.76';
+var VER='25.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13847,6 +13847,15 @@ function raidKey(code,repeat,ev){
   // the digits would act on a paused raid, and a note typed without clicking
   // the box first would open the map and swap the belt. The floor rule (v8.16).
   if(pauseOpen&&code!=='KeyP'&&code!=='Escape'&&code!=='Tab'){ if(ev) ev.preventDefault(); if(!repeat){ keys[code]=false; pauseKeyNav(code); } return; }   // v24.15 (his #39): arrows and ENTER work the box
+  // v25.xx (mmbping), HIS ORDER 2026-10-13 ("middle mouse: yes"): MIDDLE MOUSE IS THE PING AND THE SIGNAL, rebindable. With a party it marks
+  // what is under the cursor for them (netPingMake, the N key, and on the open map your marker); alone it does what V does (opens and
+  // closes the signal strip, so hail and stand down are one click from the aim). It latches no key.
+  if(code==='Mouse1'){
+    keys[code]=false; if(ev) ev.preventDefault();
+    if(repeat||!G||G.over) return;
+    if(NET.on) netPingMake(); else { raidKey('KeyV',false,ev); keys['KeyV']=false; }
+    return;
+  }
   // The emote bar owns the number row while it is up, same rule as the stall.
   if(G&&!G.over&&!G.trade&&G.emoteBar){
     if(code==='KeyV'||code==='Escape'||code==='Tab'){ if(ev) ev.preventDefault(); G.emoteBar=false; return; }
@@ -14156,7 +14165,7 @@ cv.addEventListener('mousedown',function(e){
   // (as on the pad), and the canvas click listener still wakes the audio.
   if(e.button===0&&G&&!G.over&&G.trade) return;
   if(e.button===2){ if(G&&!G.over) G.player.ads=true; return; }
-  if(e.button===1){ if(G&&!G.over&&NET.on){ netPingMake(); e.preventDefault(); } return; }   // v16.43: the middle button pings for the party
+  if(e.button===1) return;   // v16.43: the middle button pings for the party; v25.xx (mmbping): through keysMouse and the key map now (Mouse1), so it can be rebound
   // v8.96: on the Undercroft floor the same two handlers below run against the
   // backpack's own state instead of a raid. Answer 11, moving things to and from
   // the hotbar with the backpack open.
@@ -15517,7 +15526,7 @@ function disarmAbandon(){
 var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['KeyD','move right'],['Space','dodge roll'],['ShiftLeft','sprint (hold)'],
   ['ControlLeft','crouch (hold)'],['KeyC','crouch toggle'],['KeyE','search and use'],['KeyR','reload'],['KeyQ','melee (crowbar)'],['KeyF','next gun'],
   ['KeyX','call for extraction, then board'],['KeyB','backpack'],['KeyI','backpack'],['Enter','equip from the backpack'],['KeyM','map'],['F1','controls list'],['KeyH','quick heal (tap), armour plate (hold)'],
-  ['KeyT','offer an item to a teammate'],['KeyN','ping'],
+  ['KeyT','offer an item to a teammate'],['KeyN','ping'],['Mouse1','ping / signal (mouse)'],
   // v18.54, FROM THE CODE COMB (2026-10-07): EVERY KEY THAT DOES SOMETHING IS ON THE LIST. G, Q, Z, V and O work in the raid but were
   // not here, so binding an action onto one of them did not swap: reload on G kept R as reload too, and the belt item on G was gone
   // with no way back but RESET. They are listed now, so a bind onto one swaps like any other.
@@ -15539,7 +15548,7 @@ function keyRemapEvent(e){
 }
 function keyName(code){
   var T={Space:'SPACE',ShiftLeft:'SHIFT',ShiftRight:'R SHIFT',ControlLeft:'CTRL',ControlRight:'R CTRL',AltLeft:'ALT',AltRight:'R ALT',Enter:'ENTER',Tab:'TAB',Escape:'ESC',Backspace:'BACKSPACE',
-    ArrowUp:'UP',ArrowDown:'DOWN',ArrowLeft:'LEFT',ArrowRight:'RIGHT',Semicolon:';',Quote:"'",Comma:',',Period:'.',Slash:'/',Backslash:'\\',BracketLeft:'[',BracketRight:']',Minus:'-',Equal:'=',Backquote:'`',CapsLock:'CAPS',Mouse3:'MOUSE 4',Mouse4:'MOUSE 5'};
+    ArrowUp:'UP',ArrowDown:'DOWN',ArrowLeft:'LEFT',ArrowRight:'RIGHT',Semicolon:';',Quote:"'",Comma:',',Period:'.',Slash:'/',Backslash:'\\',BracketLeft:'[',BracketRight:']',Minus:'-',Equal:'=',Backquote:'`',CapsLock:'CAPS',Mouse1:'MIDDLE MOUSE',Mouse3:'MOUSE 4',Mouse4:'MOUSE 5'};
   if(T[code]) return T[code];
   if(/^Key[A-Z]$/.test(code)) return code.slice(3);
   if(/^Digit[0-9]$/.test(code)) return code.slice(5);
@@ -15568,7 +15577,7 @@ function keysReset(){ if(P){ P.keymap={}; P.keymapV=KEYS_V; } KEYS.note={t:'set'
 // so every reader of keys, in the raid, the Undercroft and the menus, sees it as the key it stands for, and an unbound button keeps the
 // browser back and forward. The pad is never touched.
 var KEYS_SECT=[['MOVE',['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC']],['FIGHT',['KeyR','KeyQ','KeyF','KeyG','KeyU','KeyH']],
-  ['WORLD',['KeyE','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyO']],['PARTY',['KeyT','KeyZ','KeyN','KeyV']]];
+  ['WORLD',['KeyE','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyO']],['PARTY',['KeyT','KeyZ','KeyN','KeyV','Mouse1']]];
 function keysActName(code){ var i; for(i=0;i<KEYS_ACTS.length;i++) if(KEYS_ACTS[i][0]===code) return String(KEYS_ACTS[i][1]).toUpperCase(); return String(code).toUpperCase(); }
 function keysRow1(a){
   var k=a[0], w=(KEYS.waiting===k), ch=(keysOf(k)!==k);
@@ -15596,10 +15605,13 @@ function keysNoteShow(){
 }
 function keysMouse(e,down){
   var pc='Mouse'+e.button, inv;
-  if(!(e.button>=3&&e.button<=4)) return false;
+  if(!(e.button===1||(e.button>=3&&e.button<=4))) return false;   // v25.xx (mmbping): the middle button joins the two side buttons
   inv=KEYS.inv||keysInv();
   if(down&&KEYS.waiting){ var m=document.getElementById('keysmodal'); if(m&&m.classList.contains('on')){ e.preventDefault(); e.stopPropagation(); keysBind(KEYS.waiting,pc); KEYS.waiting=null; keysRender(); try{ renderSettings(); }catch(_rs){} return true; } }
-  if(!inv[pc]) return false;
+  if(e.button===1){   // v25.xx (mmbping): the middle button is the key Mouse1 (ping / signal). In a live raid its press is claimed here and goes through the key map; anywhere else it is the browser's, as before.
+    if(down){ if(!(typeof G!=='undefined'&&G&&!G.over&&state==='raid')) return false; KEYS.mmb=1; e.stopPropagation(); }
+    else { if(!KEYS.mmb) return false; KEYS.mmb=0; }
+  } else if(!inv[pc]) return false;
   e.preventDefault();
   try{ window.dispatchEvent(new KeyboardEvent(down?'keydown':'keyup',{code:pc,key:pc,bubbles:true,cancelable:true})); }catch(_km){}
   return true;
@@ -15621,7 +15633,7 @@ function keysLegendHtml(){
   var k=function(t){ return '<b style="color:var(--bone)">'+t+'</b>'; };
   return k('MOUSE')+' aim &nbsp; '+k('LMB')+' fire &nbsp; '+k('RMB')+' aim down sights &nbsp; '+s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' move &nbsp; '+s('Space')+' dodge roll &nbsp; '+s('ShiftLeft')+' hold to sprint &nbsp; '+
     s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' search / use &nbsp; '+s('KeyX')+' extraction &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyQ')+' melee &nbsp; '+s('KeyF')+' next gun &nbsp; '+s('KeyG')+' quick throw &nbsp; '+s('KeyH')+' quick heal, hold for armour plate &nbsp; '+k('1-9')+' tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
-    s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' ping &nbsp; '+s('F1')+' controls &nbsp; '+s('KeyP')+' pause &nbsp; '+k('TAB')+' pause, or back out';   // v18.25: the trade key, from the audit
+    s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' / '+s('Mouse1')+' ping &nbsp; '+s('F1')+' controls &nbsp; '+s('KeyP')+' pause &nbsp; '+k('TAB')+' pause, or back out';   // v18.25: the trade key, from the audit
 }
 function keysLegendApply(){ var el=document.getElementById('pausekeys'); if(!el) return false; el.innerHTML=String(keysLegendHtml()).split(' &nbsp; ').map(function(p){ return '<span style="white-space:nowrap">'+p+'</span>'; }).join(' &nbsp; '); try{ pauseFrameFit(); }catch(_pf){} return true; }   // v19.06, seen on the 4K pause screenshot (2026-10-07): an entry broke in two at the line end (TAB back / out); each key and its words now stay on one line
 function keysRowHtml(){
@@ -15646,7 +15658,7 @@ function keysOpen(){
   var m=document.getElementById('keysmodal');
   if(!m){
     m=document.createElement('div'); m.className='modal'; m.id='keysmodal';
-    m.innerHTML='<h3>Keys</h3><div class="msub">Rebind any action to a keyboard key or a side mouse button. The controller layout never changes.</div><div id="keysnote"></div>'+
+    m.innerHTML='<h3>Keys</h3><div class="msub">Rebind any action to a keyboard key or a mouse button (middle or side). The controller layout never changes.</div><div id="keysnote"></div>'+
       '<div id="keyslist" data-lint-scroll style="max-height:58vh;overflow-y:auto;padding-right:6px"></div><div class="pbox" style="display:flex;gap:8px;margin-top:14px"><button id="keysreset" style="padding:8px 22px">RESET TO DEFAULTS</button><button id="closekeys" style="padding:8px 22px;margin-left:auto">CLOSE</button></div>';
     (document.getElementById('partymodal')&&document.getElementById('partymodal').parentNode||document.body).appendChild(m);   // v17.85: beside the other windows, in their font
     try{ if(typeof applyMenuZoom==='function') applyMenuZoom(); }catch(_kz){}   // vNN.xx (ui5q1v, the 4K Keys shot): built after the zoom was set, so it takes the menu zoom now, as every window does
@@ -41254,7 +41266,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.76: Tap H to heal, hold H to slot an armour plate, and a plate now clacks into place instead of chirping. Check 25.76 fails on v25.75',
+  now:'v25.77: Middle mouse pings for the party and, alone, opens the V signal strip; it is on the rebind list. Check 25.77 fails on v25.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

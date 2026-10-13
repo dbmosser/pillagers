@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.77 - MIDDLE MOUSE: PING AND SIGNAL
+
+Co-op hunt while he was away. His order of 2026-10-13: middle mouse is the ping / mark, so you can mark while aiming; V keeps working. The middle button already pinged for the party through a line of its own, which was not on the key list and could not be changed, and alone it did nothing. It is a key now, like the two side buttons: the action sits on the rebind list (Settings, CHANGE KEYS, PARTY) as MIDDLE MOUSE, default the middle button, and can be moved to any key or button. In a party a press marks the spot or the enemy under the cursor for your teammates, as N does (on the open map it is your map marker); alone it opens and closes the V signal strip, so hail and stand down are one click from the aim. The press is claimed in a raid so the browser autoscroll never starts, and the controls list names the button beside N.
+
+MEASURED. Check 25.77 passes, and fails on v25.76.
 ## v25.76 - HOLD H FOR AN ARMOUR PLATE
 
 Co-op hunt while he was away. His order of 2026-10-13: hold H for an armour plate, tap H stays the heal, Warzone-style, one key for both. A tap of H quick-heals as it did (now as the key comes up, so a tap takes the few hundredths of a second it is held); holding it for about a third of a second slots an armour plate through the same path the belt uses, so ARMOUR FULL, ALREADY SLOTTING and the rig ceiling apply, and with no plate it says NO ARMOUR PLATE. A tap never starts a plate and a hold never heals. Putting a plate on also stops playing the old pick chirp: the plate wind-up had no sound of its own, so it kept the chirp at the start and again when it landed; it now plays the armour clack of the foley bank as the plate seats, as the strap pulls tight and when it lands. The controls lists name the hold.
