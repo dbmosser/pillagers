@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.62';
+var VER='25.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18567,7 +18567,12 @@ function tickReload(dt){
       // its count, each a feed row for what the gun card (RELOADING, the gun in hand, the rounds), the reticle ([R] RELOAD, NO AMMO)
       // and the belt band already show. The rows are gone; every sound stays.
       p.ammo+=take; p.reserve-=take;
-      if(!G.sim){ if(fx) rlfxPlay(1); else blipMine('reloadin'); }   // v10.56: the bolt goes home; v25.52: the last step of the gun (the rack only when it was empty)
+      // v25.xx (reloaddone), HIS ORDER 2026-10-13: "'reload done' needs a sound always". v25.52 gave each gun its own steps and played the
+      // last one (the rack, the pump, the bolt) only when the gun was EMPTY, so a reload with a round still chambered finished in
+      // silence on every gun. Now the short click and thud of v10.56 (reloadin, on the gun bus, quiet under gunfire) plays on EVERY
+      // finished reload, tactical or empty, every gun class, after the gun's own last step. A reload cut short (a swap, a roll, a
+      // sprint, going down) never gets here, so it plays nothing. Cosmetic only: no seeded draw, nothing under G.sim.
+      if(!G.sim){ if(fx) rlfxPlay(1); blipMine('reloadin'); }   // v10.56: the bolt goes home; v25.52: the last step of the gun; reloaddone: and always the done cue
       if(fx) rlfxStop();
     }
   } else if(RLFX.on&&RLFX.p===p) rlfxStop();   // v25.52: cut short (a swap, a draw, going down): nothing more plays
@@ -41014,7 +41019,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.62: SIEGE INCOMING no longer says how many machines are coming. Check 25.62 fails on v25.61',
+  now:'v25.63: Every finished reload now ends with a short click and thud, tactical or empty. Check 25.63 fails on v25.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

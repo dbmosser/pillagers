@@ -1,0 +1,7 @@
+v25.63: reload done always sounds
+
+Every finished reload now ends with a short click and thud, tactical or empty.
+
+Check 25.63. Fails on v25.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

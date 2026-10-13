@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.63 - RELOAD DONE ALWAYS SOUNDS
+
+Co-op hunt while he was away. His order of 2026-10-13: the reload done sound has to play always. Since the gun-by-gun reload sounds of v25.52 the closing step (the rack, the pump, the bolt) played only when the gun had been empty, so a reload with a round still in the chamber finished in silence. Now the short click and thud of the original reload cue plays on every finished reload, tactical or empty, every gun class, once, after the last step of the gun itself. A reload cut short by a swap, a roll, a sprint or going down plays nothing, as before. Sound only: no reload time or ammo changes.
+
+MEASURED. Check 25.63 passes, and fails on v25.62.
 ## v25.62 - SIEGE INCOMING NAMES NO COUNT
 
 Co-op hunt while he was away. His order of 2026-10-12: Siege Incoming, do not tell how many machines are inbound. Calling for extraction showed SIEGE INCOMING with About N machines inbound under it. The headline stays and the count is gone, so he no longer knows how many are coming. The siege itself is unchanged: it is still sized by what you carry and the siege dial, and the machines come in at the same rate.
