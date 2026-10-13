@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.60 - PILLAGERS AND YOUR TEAMMATE HOLD BIG GUNS
+
+Co-op hunt while he was away. His order of 2026-10-12, second part: the bigger guns from the last build were on you only. Pillagers, hires, friendly pillagers and your teammate in this window now hold the same gun pictures at the same size, so a pillager rifle reads as a rifle and his Support MG as a Support MG across the room. Before, his pistol and SMG vanished into his red sleeve; the gun is inked and rim lit now, so it stands off any coat. Your teammate Forge gun also shows here: his state message now carries the MK and the element with the gun, so his gold finish and his element glow are drawn in your window too. Cosmetic only: nothing a fight reads changes.
+
+MEASURED. Check 25.60 passes, and fails on v25.59.
 ## v25.59 - EVERY BELT ITEM SHOWS AN INFO CARD
 
 Co-op hunt while he was away. His order of 2026-10-12: other items on the tactical belt should show an info card too. Rest the mouse on any item key (a heal, a plate, a stim, ammo, a grenade, the Tripwire Mine, a key) and its card shows above the key, in the frame and type of the gun card: the name and a bar in its rarity colour, the rarity and how many you hold, what it does in numbers (heals and up to what, armour, rounds, damage, blast and fuse, how long a smoke or a decoy lasts, what sets the Tripwire Mine off), its value in credits, and its keys as keycaps. Short caps labels, no sentences. Like the gun card it waits a short moment, goes the moment the mouse leaves and never gets in the way of the trigger.

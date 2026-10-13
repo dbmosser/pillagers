@@ -1,0 +1,7 @@
+v25.60: pillagers and your teammate hold big guns
+
+Pillagers, hires and your teammate hold the same big guns, and a teammate Forge gun shows its finish in your window.
+
+Check 25.60. Fails on v25.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

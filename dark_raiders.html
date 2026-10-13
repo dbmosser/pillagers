@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.59';
+var VER='25.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27796,7 +27796,11 @@ function gunBake(id,fk,el,rc,S){
   b.c=cv; st.m[key]=b; st.n++;
   return b;
 }
-function gunHeldOn(st,mode){ return !!(st&&st.hero)&&mode!=='none'&&mode!=='crouchnone'&&mode!=='fist'; }
+// v25.xx (bigguns2), HIS ORDER (2026-10-12) "guns in player's characters hands need to be bigger": EVERYONE HOLDS THE BIG GUN. The
+// player went first; pillagers, hires, friendly pillagers and your teammate in this window now hold the same baked gun at the same
+// size, so a pillager rifle reads as a rifle and his LMG as an LMG across the room, inked so it no longer vanishes into a red sleeve.
+// Your teammate Forge gun travels with his gun id (fk and el in his state message) and shows its gold and its element here too.
+function gunHeldOn(st,mode){ return mode!=='none'&&mode!=='crouchnone'&&mode!=='fist'; }
 function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
   var w=(st&&st.own&&st.own.wep&&st.own.wep.id)?st.own.wep:null, id=(w&&GUNDEF[w.id])?w.id:'rifle', D=GUNDEF[id];
   var fk=(w&&(w.fk===1||w.fk===2))?w.fk:0, el=(fk===2&&w.el&&ELEM[w.el])?w.el:'';
@@ -40905,7 +40909,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.59: Rest the mouse on any item on the tactical belt and its info card shows above it. Check 25.59 fails on v25.58',
+  now:'v25.60: Pillagers, hires and your teammate hold the same big guns, and a teammate Forge gun shows its finish in your window. Check 25.60 fails on v25.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -45295,7 +45299,7 @@ function netOnState(peer,m){
   // full stop). It now reads REVIVE and his name in caps, the verb his [E] REVIVE prompt uses at his body. The Peddler plate beside a
   // crate not yet searched reads THE PEDDLER, a middle dot, SEARCH CRATE FIRST, in the caps of every other nameplate.
   if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:'REVIVE '+String(netSeatName(s)||'your teammate').toUpperCase(),key:'tmdown'+s,icon:'party',hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); try{ sndDowned(0,x,y); }catch(_dn){} }catch(_md){} }   // v24.xx (his order 2026-10-12): and heard, where he fell
-  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
+  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
   if(up&&(m.sh||g.sh)) g.sh=m.sh?1:0;   // v23.30 (arcade9): the teammate spawn shield
   if(up){ g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; }   // v23.xx (forge8): his forged gun
   if(lk) g.lk=lk;
@@ -46443,7 +46447,7 @@ function netUpTick(dt){
   try{ voiceProxAll(); }catch(_vp){}   // v16.10: voices by distance, on the same clock
   NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
-       c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',pz:G.paused?1:0,
+       c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',fk:(p.wep&&(p.wep.fk===1||p.wep.fk===2))?p.wep.fk:0,el:(p.wep&&p.wep.fk===2&&p.wep.el)?String(p.wep.el):'',pz:G.paused?1:0,
        hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
   lk=netLook(); ls=JSON.stringify(lk);
@@ -46512,7 +46516,10 @@ function netUpDrawOne(g){
   try{
     lk=g.lk||{}; fit=FITCOL[lk.fit]||FITCOL.slate;
     if(g.w&&Object.prototype.hasOwnProperty.call(WEAPONS,g.w)&&WEAPONS[g.w]&&WEAPONS[g.w].id) wp=WEAPONS[g.w];
-    g.wep=wp;   // read by drawOp off own, as the gun in hand; the hair lag lives on the entry too, as it does on any body
+    if(wp&&(g.fk===1||g.fk===2)){   // v25.xx (bigguns2): his Forge gun, made once per change
+      if(g._fwk!==g.w+'|'+g.fk+'|'+(g.el||'')){ g._fw=forgeApply(Object.assign({},wp),g.fk,g.el||''); g._fwk=g.w+'|'+g.fk+'|'+(g.el||''); }
+      wp=g._fw||wp;
+    }    g.wep=wp;   // read by drawOp off own, as the gun in hand; the hair lag lives on the entry too, as it does on any body
     lift=drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(g.x,g.y):0);
     if(lift>0){ wc.save(); wc.translate(0,-lift); }
     mode=g.dn?'down':((g.roll>0)?'roll':(g.cr?'crouch':(wp?'':'none')));
