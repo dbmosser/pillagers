@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.30 - A SEARCH SOUNDS LIKE HANDS IN A BOX
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Holding E on a container was silent until a rare item came out, and a common item coming out made no sound at all. Now your hands rummage as the search starts and every half second while it runs, with a light metal knock in a locker, a safe, a cache or a wreck and a softer rummage on a body; a common item that comes out makes its own small sound (a magazine rattle for ammo, a handling sound for the rest), and the rare, elite and gun sounds are kept. Letting go stops it at once. The sounds are the recorded CC0 foley from the v25.20 bank, and your teammates hear them where you stand. Sound only: nothing in the game changes.
+
+MEASURED. Check 25.30 passes, and fails on v25.29.
 ## v25.29 - GUNS AND GEAR SOUND LIKE GEAR
 
 Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. Swapping guns and equipping one from the backpack played the menu chirp, and dropping an item made no sound. Now a swap or an equip is a strap and holster rattle and the draw clacking up, lighter and quicker for a pistol, an SMG or the Magnum and heavier for a rifle, the LMG, a shotgun, the Longshot or the Lance; a drop is a soft thump. The sounds are the recorded CC0 foley from the v25.20 bank, and your teammates hear them where you stand. Sound only: nothing in the game changes.

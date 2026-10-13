@@ -1,0 +1,7 @@
+v25.30: a search sounds like hands in a box
+
+Searching a container now rummages as you search, and each common item that comes out makes its own small sound.
+
+Check 25.30. Fails on v25.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
