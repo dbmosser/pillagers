@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.51 - LIGHT BLOOD: PILLAGERS AND PLAYERS
+
+Co-op hunt while he was away. His answer 37 a: light blood, only from pillager bots and players. A pillager hit by a round and a player taking damage now bleed a little: a few dark red droplets, a short red mist and now and then a small drop on the ground that fades away. Machines never bleed: a round on a machine throws the same yellow sparks as before. It is light on purpose, a few pixels and never a pool, and it is only a picture: nothing about the fight changes.
+
+MEASURED. Check 25.51 passes, and fails on v25.50.
 ## v25.50 - THE FORGE: A DROPPED FORGED GUN STAYS FORGED
 
 Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns at the Forge, and keep what you extract with. A gun you drop from the backpack used to come back out of the pile at plain field grade (so a drop could never be used to re-roll a gun). An upgraded gun now keeps its MK and its element through the pile: drop your MK III and take it back, or leave it for your teammate in co-op, and it is still a MK III. A plain gun still comes back at field grade, as before.

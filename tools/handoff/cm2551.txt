@@ -1,0 +1,7 @@
+v25.51: light blood: pillagers and players
+
+Pillagers and players now bleed a little when hit; machines throw sparks as before.
+
+Check 25.51. Fails on v25.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
