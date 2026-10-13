@@ -1,0 +1,7 @@
+v24.57: your operator talks
+
+Short spoken barks: RELOADING, OUT OF AMMO, FRAG OUT, TRIPWIRE SET, DOWN, HEALING.
+
+Check 24.57. Fails on v24.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

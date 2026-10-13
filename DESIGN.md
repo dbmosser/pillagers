@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.57 - YOUR OPERATOR TALKS
+
+Co-op hunt while he was away. His number 45 and his answer 26 b, short voice barks. Reloading, running dry, throwing a frag, stringing a tripwire, going down and starting a heal were only written on the screen, where nobody in a fight is looking. Now a short spoken bark plays with each: RELOADING, OUT OF AMMO, FRAG OUT, TRIPWIRE SET, I AM DOWN and HEALING, and SCORE LOST in the 2 player demo. They are spoken in a clipped radio voice that cuts through a fight, one at a time with a gap between them so a busy moment never stacks voices, and they follow the split speakers like every other sound.
+
+MEASURED. Check 24.57 passes, and fails on v24.56.
 ## v24.56 - THE PILLBOX REDESIGN
 
 Co-op hunt while he was away. His order of 2026-10-12: improve the sprites of all characters and machines, silhouettes first. The Pillbox was a purple drum with seven lilac bubbles and a black porthole: the pipes read as candles, the mouth as a speaker, and purple is the elite colour. Now it is a gunmetal emplacement on a bolted plinth with rusty sandbags at its corners, a rust band round its drum, a crown of seven brass organ pipes on top that still slowly turns, and a big round port with a six-blade iris that opens when it wakes and charges red inside (orange when it vents, dim white asleep). Venting heat now rises from the pipe tops. Elite Pillboxes wear a brass ring round the crown. Drawn only: the mouth is where its weak point is, and the fight is unchanged.
