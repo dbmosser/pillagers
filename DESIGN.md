@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.40 - THE INJECTORS SOUND LIKE INJECTORS
+
+Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. A Stim Injector and the self-revive played the menu chirp. Now a stim clicks its cap and hisses in, and the self-revive hisses its injector and rattles your gear as you get up, before the revive sting it already had. The sounds are the recorded CC0 foley from the v25.20 bank. Yours is centred on your side of the speakers and your teammates hear it where you stand. Sound only: nothing in the game changes.
+
+MEASURED. Check 25.40 passes, and fails on v25.39.
 ## v25.39 - YOUR PLATES RING AND SHATTER
 
 Co-op hunt while he was away. His order of 2026-10-12: add sounds for bandaging, applying armour and the rest. A round your armour soaked sounded exactly like one that went into you, and your plates running out made no sound at all, so you learned you were bare only from the bar. Now a round on the plates adds a metal ring and a light recorded plate knock, and the round that takes the last of your armour plays the plate breaking once: a heavy low clack, a shatter and the carrier tearing. Your teammates hear the break where you stand. Sound only: nothing in the game changes.

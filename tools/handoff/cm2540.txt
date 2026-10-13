@@ -1,0 +1,7 @@
+v25.40: the injectors sound like injectors
+
+A stim now clicks and hisses in, and the self-revive hisses its injector and rattles your gear as you get up.
+
+Check 25.40. Fails on v25.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
