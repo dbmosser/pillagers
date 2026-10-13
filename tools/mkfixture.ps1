@@ -1487,6 +1487,9 @@ window.__mouseState=function(){ return mouse; };
 //    hp, clear downed and set iv every step when the point of the test is the mechanic
 //    rather than the fight.
 window.__keysRef=function(){ return keys; };
+window.__srchKey=function(){ return (typeof xCallKey==='function')?'KeyE':'KeyX'; };   // v25.67: the keyboard key that searches a box (E from the key swap, X before)
+window.__extKey=function(){ return (typeof xCallKey==='function')?'KeyX':'KeyE'; };   // v25.67: the keyboard key that calls and takes the extraction (X from the key swap, E before)
+window.__padSrchKey=function(){ return (typeof xCallKey==='function')?'PadSearch':'KeyX'; };   // v25.67: the key the pad Y ring search holds (PadSearch from the key swap, X before)
 // v9.73: the crew search picker, callable on its own. The fan can otherwise only
 // be observed through a whole raid, which is how I twice guessed at why it folds
 // instead of driving the thing that folds it.
@@ -14755,8 +14758,8 @@ window.__REGRESS=[
        P.autoloot=false; full(g2);
        arm(ct,vals);
        if(arcadeBagFree(ct)) bad.push('arcadeBagFree passed a box in a normal raid');
-       for(i=0;i<15&&!ct.opened;i++){ g2.player.x=ct.x; g2.player.y=ct.y; keys['KeyX']=true; __sim(0.05); }
-       keys['KeyX']=false;
+       for(i=0;i<15&&!ct.opened;i++){ g2.player.x=ct.x; g2.player.y=ct.y; keys[__srchKey()]=true; __sim(0.05); }
+       keys[__srchKey()]=false;
        if(ct.opened) bad.push('a normal raid opened a valuables box with a full backpack');
        if(!saidFull()) bad.push('a normal raid did not say '+BF+' for a valuables box');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
@@ -19151,7 +19154,7 @@ window.__REGRESS=[
        ct.x=p.x+14; ct.y=p.y; ct.loot=[best]; ct.opened=false; ct.prog=0; ct.pulled=0; ct.time=1.5; ct.hotPaid=1;
        g.msgT=0; g.msg=''; g.msgQ=[]; g.msgQM=[]; g.feed=[]; g.alert=null; g.alertQ=[]; g.pick=[];
        t0=Math.max(performance.now(),(typeof lastTs==='number'&&isFinite(lastTs))?lastTs:0);
-       keys['KeyX']=true;
+       keys[__srchKey()]=true;
        for(i=0;i<600&&!ct.opened;i++){ __loop(t0+(++f)*16.7); look(); if(__state()!==g||g.over) break; }
        keys={};
        if(!ct.opened) return 'SKIP: staging: holding X beside the crate for 10 s never finished the search';
@@ -19314,7 +19317,7 @@ window.__REGRESS=[
        ct.x=p.x+14; ct.y=p.y; ct.loot=KS.slice(); ct.opened=false; ct.prog=0; ct.pulled=0; ct.time=1.5; ct.hotPaid=1;
        g.msgT=0; g.msg=''; g.msgQ=[]; g.msgQM=[]; g.feed=[]; g.alert=null; g.alertQ=[]; g.pick=[];
        t0=Math.max(performance.now(),(typeof lastTs==='number'&&isFinite(lastTs))?lastTs:0);
-       keys['KeyX']=true;
+       keys[__srchKey()]=true;
        for(i=0;i<600&&!ct.opened;i++){ __loop(t0+(++f)*16.7); if(__state()!==g||g.over) break; }
        keys={};
        if(!ct.opened) return 'SKIP: staging: holding X beside the crate for 10 s never finished the search (prog '+(+(ct.prog||0)).toFixed(2)+')';
@@ -21816,7 +21819,7 @@ window.__REGRESS=[
          P.autoloot=0; bagWeight=function(){ return 1e9; };
          clr(); say('zq s1'); say('zq s2'); sayWhenFree('zq q');
          if(cnt('zq q')!==1) bad.push('staging: the probe line did not wait behind two rows');
-         keys['KeyX']=true;
+         keys[__srchKey()]=true;
          for(i=0;i<360;i++){
            step(); if(g.over) break;
            rows=feedRows(); n=0;
@@ -33749,7 +33752,7 @@ window.__REGRESS=[
      var NGA=navigator.getGamepads, oSay=say, keepN={on:NET.on,same:NET.same}, k0=keys, padKeep=null, m0={x:mouse.x,y:mouse.y,down:mouse.down,init:mouse.init}, bad=[], dn=false, none=false, p=null, z=null, i, kk;
      function pad(){ if(none) return []; var b=[],n; for(n=0;n<17;n++) b.push({pressed:(n===2&&dn),value:(n===2&&dn)?1:0,touched:(n===2&&dn)}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
      function poll(d){ dn=!!d; pollPad(); }
-     function held(){ return ((keys['KeyR']?'R ':'')+(keys['KeyE']?'E ':'')+(keys['KeyX']?'X':'')).trim()||'nothing'; }
+     function held(){ return ((keys['KeyR']?'R ':'')+(keys['KeyE']?'E ':'')+(keys[__padSrchKey()]?'X':'')).trim()||'nothing'; }
      function stale(){ G.nearContainer=null; G.nearPad=false; G.nearDown=null; G.nearDoor=null; G.nearPed=null; }
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -33776,7 +33779,7 @@ window.__REGRESS=[
        poll(false);
        // THREE: the reach left from his last standing frame says a box in a ring; on the floor X holds E, not the search key.
        G.nearPad=true; G.nearContainer=(G.containers&&G.containers[0])||{x:p.x,y:p.y}; poll(true);
-       if(!keys['KeyE']||keys['KeyX']) bad.push('downed, with a box in a ring left in reach from his last standing frame, X held '+held()+', not E');
+       if(!keys['KeyE']||keys[__padSrchKey()]) bad.push('downed, with a box in a ring left in reach from his last standing frame, X held '+held()+', not E');
        poll(false);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -33904,7 +33907,7 @@ window.__REGRESS=[
      var NGA=navigator.getGamepads, oSay=say, keepN={on:NET.on,same:NET.same}, k0=keys, padKeep=null, m0={x:mouse.x,y:mouse.y,down:mouse.down,init:mouse.init}, bad=[], dn=false, none=false, p=null, ct=null, c, z, q, ok, kk;
      function pad(){ if(none) return []; var b=[],n; for(n=0;n<17;n++) b.push({pressed:(n===2&&dn),value:(n===2&&dn)?1:0,touched:(n===2&&dn)}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
      function poll(d){ dn=!!d; pollPad(); }
-     function held(){ return ((keys['KeyR']?'R ':'')+(keys['KeyE']?'E ':'')+(keys['KeyX']?'X':'')).trim()||'nothing'; }
+     function held(){ return ((keys['KeyR']?'R ':'')+(keys['KeyE']?'E ':'')+(keys[__padSrchKey()]?'X':'')).trim()||'nothing'; }
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over||!G.player||state!=='raid'||!G.containers||!G.zones) return 'SKIP: staging: no raid';
@@ -34526,7 +34529,7 @@ window.__REGRESS=[
        if(cnt('bandage')!==n0-1) bad.push('the Bandage did not come out of the backpack');
        down={}; pollPad(); p.prep=null; NET.up[0].x=p.x+900; NET.up[0].tx=p.x+900; pressY();
        if(p.prep) bad.push('Y with nobody in reach started a heal');
-       if(!keys['KeyX']) bad.push('Y with nobody in reach did not hold the ring search');
+       if(!keys[__padSrchKey()]) bad.push('Y with nobody in reach did not hold the ring search');
      } finally { navigator.getGamepads=NGA; netSend=oNS; say=oSay; for(var k in keepN) NET[k]=keepN[k]; try{ down={}; keys=k0||{}; if(p){ p.prep=null; p.prepA=null; } G.hot=0; PAD.yAid=false; __endRaid('abandon'); __topClear(); }catch(e){} }
      return bad.length?bad.join('; '):null; }},
   {v:'16.83',what:'kid firing for player 2: a Settings row beside Kid mode that player 2 can set himself, never firing while he aims with the right stick, OFF out of the box, carried by the host word; on a linked window it puts the cursor on the nearest enemy in gun range with a clear line and holds the trigger, lets go with none in sight, past range, dead, behind a wall, under the open backpack, at the Peddler or on the host window, and never with the row off',
@@ -35071,7 +35074,7 @@ window.__REGRESS=[
        r0=PAD.reach; down={14:1}; for(i=0;i<20;i++) poll(); r1=PAD.reach; down={}; poll();
        if(!(r1<r0)) bad.push('D-LEFT held did not pull the aim distance in ('+r0+' to '+r1+')');
        down={3:1}; poll();
-       if(!keys['KeyX']) bad.push('Y held does not hold the ring search');
+       if(!keys[__padSrchKey()]) bad.push('Y held does not hold the ring search');
        down={}; poll();
        if(G.player) G.player.roll=0;   // v17.00 waits for a roll to end before X chooses (the A tap above started one); time never steps here
        G.nearContainer=null; G.nearPad=null; G.nearDown=null; G.nearDoor=null; G.nearPed=null;
@@ -35098,7 +35101,7 @@ window.__REGRESS=[
        G.bagOpen=true; down={7:1}; val={7:1}; poll();
        if(mouse.down) bad.push('RT fired under the open backpack');
        down={}; val={}; poll(); G.bagOpen=false;
-       if(typeof keyLabel==='function'){ var _po=PAD.on; PAD.on=true; if(keyLabel('Space')!=='A'||keyLabel('ControlLeft')!=='B'||keyLabel('KeyG')!=='RT'||keyLabel('KeyR')!=='X'||keyLabel('KeyX')!=='Y') bad.push('the prompts name '+keyLabel('Space')+' for the roll, '+keyLabel('ControlLeft')+' for crouch, '+keyLabel('KeyG')+' for use, '+keyLabel('KeyR')+' for reload and '+keyLabel('KeyX')+' for the ring search'); PAD.on=_po; }
+       if(typeof keyLabel==='function'){ var _po=PAD.on; PAD.on=true; if(keyLabel('Space')!=='A'||keyLabel('ControlLeft')!=='B'||keyLabel('KeyG')!=='RT'||keyLabel('KeyR')!=='X'||keyLabel('KeyX')!==((typeof xCallKey==='function')?'X':'Y')) bad.push('the prompts name '+keyLabel('Space')+' for the roll, '+keyLabel('ControlLeft')+' for crouch, '+keyLabel('KeyG')+' for use, '+keyLabel('KeyR')+' for reload and '+keyLabel('KeyX')+' for the ring search'); PAD.on=_po; }
      } finally { navigator.getGamepads=NGA; raidKey=oRK; try{ down={}; val={}; mouse.down=false; if(G&&G.player) G.player.ads=false; keys=k0||{}; G.crouchTog=false; __endRaid('abandon'); __topClear(); }catch(e){} }
      return bad.length?bad.join('; '):null; }},
   {v:'16.71',what:'the what is new card is current again: within fifteen builds, and its STEADIER CO-OP line carries the rest of the stability pass',
@@ -41464,7 +41467,7 @@ window.__REGRESS=[
        if(m0.n!==1) return 'SKIP: the sector map wrote '+m0.n+' KEY marks for the one listed container holding its key, so the intel marks are not drawn here';
        // THE PLAY PATH: X held, one frame at a time, until no key is left in the container.
        var had=count(kid), f=0;
-       clearKeys(); keys['KeyX']=true;
+       clearKeys(); keys[__srchKey()]=true;
        while(f<900&&hasKey(C)&&!C.opened&&!p.downed&&!g.over){ updatePlayer(1/30); f++; }
        clearKeys();
        // CONTROL: the staged pull took the key into his backpack and stopped there, with the box still shut and the Black Box inside.
@@ -49168,7 +49171,7 @@ window.__REGRESS=[
        padWith(-1); frames(3);
        padWith(2); frames(30);
        if(!__keysRef()['KeyE']) bad.push('with the search refused by a full backpack, half a second of pad X on the ring still did not hold E, so he cannot call for extraction while that box sits at his feet');
-       if(__keysRef()['KeyX']) bad.push('with the search refused, pad X still holds X half a second in');
+       if(__keysRef()[__padSrchKey()]) bad.push('with the search refused, pad X still holds X half a second in');
        padWith(-1); frames(2); keysOff();
        bagWeight=keepBW;
        // CONTROL: nothing in reach, X is the call at once.
@@ -49302,7 +49305,7 @@ window.__REGRESS=[
        padWith(-1); frames(3);
        padWith(2); frames(2);
        if(!__keysRef()['KeyE']) bad.push('control: with nothing to search on the ring, the pad X button no longer holds E, so it cannot call the dropship');
-       if(__keysRef()['KeyX']) bad.push('control: with nothing to search on the ring, the pad X button still holds X');
+       if(__keysRef()[__padSrchKey()]) bad.push('control: with nothing to search on the ring, the pad X button still holds X');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ navigator.getGamepads=function(){ return []; }; pollPad(); }catch(_p0){}
@@ -49869,7 +49872,7 @@ window.__REGRESS=[
        var p=g.player;
        p.x=spot.x; p.y=spot.y; p.downed=false;
        g.msgQ=[]; g.msgT=0;
-       keys={}; keys['KeyX']=true;
+       keys={}; keys[__srchKey()]=true;
        for(var s=0;s<1500&&!ct.opened;s++){
          __loop(t0+(++f)*16.7); note(seen);
          if(__state()!==g||g.over) break;
@@ -50337,7 +50340,7 @@ window.__REGRESS=[
        keysOff(); frames(3);
        g1.msgQ=[]; g1.msgT=0; g1.msg='';
        var seen=[];
-       __keysRef()['KeyX']=true;
+       __keysRef()[__srchKey()]=true;
        for(var w=0;w<90&&!box.opened;w++) watch(10,seen);
        keysOff();
        if(!box.opened) return null;
@@ -50753,7 +50756,7 @@ window.__REGRESS=[
        p.x=box.x; p.y=box.y; p.downed=false;
        keysOff(); frames(3);
        say=function(m,k,o){ heard.push(String(m)+((o&&o.sub)?' | '+o.sub:'')+((k==='pick'&&o&&o.tag)?' # '+o.tag:'')); try{ return _say.apply(null,arguments); }catch(_s){} };   /* retargeted for belt4fixd: the detail under the line is read too; tr17fix: and the tag on a pickup row (R17), SLOT 2, the key that swaps to it */
-       keysOff(); __keysRef()['KeyX']=true;
+       keysOff(); __keysRef()[__srchKey()]=true;
        for(var w=0;w<60;w++){ frames(10); if(box.opened) break; }
        keysOff(); frames(4);
        if(!box.opened) return 'SKIP: the container never opened, so nothing was picked up';
@@ -51124,7 +51127,7 @@ window.__REGRESS=[
        if(bagPlates()!==0) return 'SKIP: the staging did not start with an empty backpack';
 
        // SEARCH IT, on the real key, for as long as the real search takes.
-       keysOff(); __keysRef()['KeyX']=true;
+       keysOff(); __keysRef()[__srchKey()]=true;
        for(var w=0;w<60;w++){ frames(10); if(box.opened) break; }
        keysOff(); frames(4);
        if(!box.opened) return 'SKIP: the container never opened, so nothing was looted';
@@ -51500,11 +51503,11 @@ window.__REGRESS=[
        var painted=[];
        try{ painted=__tx.record(function(){ frames(2); })||[]; }catch(_r){}
        var txt=painted.map(function(d){ return String(d.t); }).join(' | ');
-       if(txt.indexOf('SEARCH')>=0&&txt.indexOf('[X] SEARCH')<0)
+       if(txt.indexOf('SEARCH')>=0&&txt.indexOf('['+((typeof xCallKey==='function')?'E':'X')+'] SEARCH')<0)
          bad.push('the prompt on the pad still offers [E] SEARCH, and E on the pad is the way out, so it names a key that will call the beacon instead of searching');
 
        // X SEARCHES IT.
-       keysOff(); __keysRef()['KeyX']=true; frames(4);
+       keysOff(); __keysRef()[__srchKey()]=true; frames(4);
        var sState=__state();
        if(!sState.searching)
          bad.push('X does not search the body he is standing on inside the ring, which is the whole of what he asked for');
@@ -51514,7 +51517,7 @@ window.__REGRESS=[
        var g3=__state(); g3.searching=null; g3.searchT=0;
        var z3=g3.zones[0]; z3.pullT=null; z3.beaconT=null; z3.hold=null;
        g3.player.x=z3.x; g3.player.y=z3.y;
-       keysOff(); __keysRef()['KeyE']=true; frames(4);
+       keysOff(); __keysRef()[__extKey()]=true; frames(4);
        // THE PULL ITSELF IS NOT REACHABLE FROM HERE and the arm that tried to read it
        // was measuring the staging. Measured on the v13.09 fixture, with no container
        // involved at all: player 10 units inside an open ring of radius 78, raid alive,
