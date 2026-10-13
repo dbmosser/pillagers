@@ -1,0 +1,7 @@
+v25.76: hold h for an armour plate
+
+Tap H to heal, hold H to slot an armour plate, and a plate now clacks into place instead of chirping.
+
+Check 25.76. Fails on v25.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

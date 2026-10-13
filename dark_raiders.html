@@ -2155,7 +2155,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.75';
+var VER='25.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13956,7 +13956,7 @@ function raidKey(code,repeat,ev){
   // holds the twelve keys you actually press; the full reference is one more
   // press of H away, so nothing is lost, it is just no longer always on screen.
   if(code==='F1'&&G&&!repeat) G.legendOn=(G.legendOn+1)%3;   // v25.xx (keyswap): F1 cycles the controls list (it was H)
-  if(code==='KeyH'&&G&&!G.over&&!G.paused&&!repeat) quickHeal();   // v25.xx (keyswap): H is the quick heal, no backpack needed
+  if(code==='KeyH'&&G&&!G.over&&!G.paused&&!repeat){ HHOLD.arm=1; HHOLD.t=0; }   // v25.xx (holdhplate): H is armed here; a tap heals and a hold slots a plate, decided in holdHTick
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
   // reserve pool is shared, so swapping is not a way to dodge running dry.
 
@@ -15516,7 +15516,7 @@ function disarmAbandon(){
 // the defaults in this build.
 var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['KeyD','move right'],['Space','dodge roll'],['ShiftLeft','sprint (hold)'],
   ['ControlLeft','crouch (hold)'],['KeyC','crouch toggle'],['KeyE','search and use'],['KeyR','reload'],['KeyQ','melee (crowbar)'],['KeyF','next gun'],
-  ['KeyX','call for extraction, then board'],['KeyB','backpack'],['KeyI','backpack'],['Enter','equip from the backpack'],['KeyM','map'],['F1','controls list'],['KeyH','quick heal'],
+  ['KeyX','call for extraction, then board'],['KeyB','backpack'],['KeyI','backpack'],['Enter','equip from the backpack'],['KeyM','map'],['F1','controls list'],['KeyH','quick heal (tap), armour plate (hold)'],
   ['KeyT','offer an item to a teammate'],['KeyN','ping'],
   // v18.54, FROM THE CODE COMB (2026-10-07): EVERY KEY THAT DOES SOMETHING IS ON THE LIST. G, Q, Z, V and O work in the raid but were
   // not here, so binding an action onto one of them did not swap: reload on G kept R as reload too, and the belt item on G was gone
@@ -15620,7 +15620,7 @@ function keysLegendHtml(){
   // pause key, and TAB is one entry in the words of the controls card: pause, or back out.
   var k=function(t){ return '<b style="color:var(--bone)">'+t+'</b>'; };
   return k('MOUSE')+' aim &nbsp; '+k('LMB')+' fire &nbsp; '+k('RMB')+' aim down sights &nbsp; '+s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' move &nbsp; '+s('Space')+' dodge roll &nbsp; '+s('ShiftLeft')+' hold to sprint &nbsp; '+
-    s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' search / use &nbsp; '+s('KeyX')+' extraction &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyQ')+' melee &nbsp; '+s('KeyF')+' next gun &nbsp; '+s('KeyG')+' quick throw &nbsp; '+s('KeyH')+' quick heal &nbsp; '+k('1-9')+' tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
+    s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' search / use &nbsp; '+s('KeyX')+' extraction &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyQ')+' melee &nbsp; '+s('KeyF')+' next gun &nbsp; '+s('KeyG')+' quick throw &nbsp; '+s('KeyH')+' quick heal, hold for armour plate &nbsp; '+k('1-9')+' tactical belt &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
     s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' ping &nbsp; '+s('F1')+' controls &nbsp; '+s('KeyP')+' pause &nbsp; '+k('TAB')+' pause, or back out';   // v18.25: the trade key, from the audit
 }
 function keysLegendApply(){ var el=document.getElementById('pausekeys'); if(!el) return false; el.innerHTML=String(keysLegendHtml()).split(' &nbsp; ').map(function(p){ return '<span style="white-space:nowrap">'+p+'</span>'; }).join(' &nbsp; '); try{ pauseFrameFit(); }catch(_pf){} return true; }   // v19.06, seen on the 4K pause screenshot (2026-10-07): an entry broke in two at the line end (TAB back / out); each key and its words now stay on one line
@@ -17952,6 +17952,28 @@ function quickHeal(){
   try{ useMedical(); }catch(_qh){}
   return true;
 }
+// v25.xx (holdhplate), HIS ORDER 2026-10-13 ("hold H = armour plate, tap H stays heal"): ONE KEY, TWO ACTIONS. The press arms H (HHOLD) and
+// nothing happens yet. holdHTick, run every frame from updatePlayer, decides: the key let go before HHOLD.sec (0.35 s) is a TAP and
+// quick-heals, as H always did (on the release now, so a tap takes the few hundredths of a second it is held); the key still down at
+// 0.35 s is a HOLD and slots an armour plate through useArmor, the path the belt takes (so ARMOUR FULL, ALREADY SLOTTING and the rig's
+// ceiling apply as there), once; letting go after that does nothing. A tap never starts a plate and a hold never heals. A lost focus
+// forgets the press (releaseAllKeys).
+var HHOLD={arm:0,t:0,sec:0.35};
+function quickPlate(){
+  var p=G&&G.player;
+  if(!G||G.sim||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.specOut) return false;
+  if(findArmor()<0){ say('NO ARMOUR PLATE'); return false; }
+  try{ useArmor(); }catch(_qp){}
+  return true;
+}
+function holdHTick(dt){
+  if(!HHOLD.arm) return;
+  if(!G||G.over||G.sim){ HHOLD.arm=0; return; }
+  if(keys['KeyH']){
+    HHOLD.t+=dt;
+    if(HHOLD.t>=HHOLD.sec){ HHOLD.arm=0; quickPlate(); }
+  } else { HHOLD.arm=0; quickHeal(); }
+}
 function nextGun(){
   var p=G&&G.player, sl, cur, n=GUNKEYS, k, i;
   if(!G||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.roll>0) return false;
@@ -18500,7 +18522,11 @@ var PREP_FOLEY={
   bandage:{s:[[0,'bandageTear',{}],[0.3,'bandageWrap',{}],[0.6,'bandageWrap',{rate:0.9,g:0.9}],[0.85,'bandageWrap',{rate:1.12,g:0.75,dur:0.2}]],
            land:[['bandageTear',{off:0.3,dur:0.16,g:0.6,rate:1.2}],['pickup',{g:0.7,at:0.07}]]},
   medkit:{s:[[0,'medkitSnap',{}],[0,'medkitZip',{at:0.14,g:0.9}],[0.47,'rummage',{}],[0.75,'bandageWrap',{g:0.7,dur:0.2}]],
-          land:[['injector',{}],['bandageWrap',{g:0.6,dur:0.18,at:0.22}]]}
+          land:[['injector',{}],['bandageWrap',{g:0.6,dur:0.18,at:0.22}]]},
+  // v25.xx (holdhplate), HIS ORDER 2026-10-13: the plate had no row, so slotting one still played the pick chirp (and again as it landed). It
+  // clacks as the plate seats, again as the strap pulls tight at the middle of the wind-up, and lands with the heavy clack.
+  plate:{s:[[0,'plateClack',{rate:1.2,g:0.55,dur:0.14}],[0.55,'plateClack',{rate:0.95,g:0.6,dur:0.14}]],
+         land:[['plateClack',{rate:0.78,g:1.05}]]}
 };
 // the row for a wind-up: by item key, else by what the item does (a heal with a ceiling is a Bandage, any other heal a Medkit)
 function prepFoleyK(PR){
@@ -19935,7 +19961,7 @@ function useArmor(){
   // v11.82: only another plate blocks a plate; a bandage being applied does not.
   if(p.prepA){ say('ALREADY SLOTTING','info',{sub:String(ITEMS[p.prepA.key]?ITEMS[p.prepA.key].name:'Plate').toUpperCase()}); return; }
   var it=ITEMS[G.bag[ix]],k4=G.bag[ix];
-  G.bag.splice(ix,1); startPrep('armor',k4);   // v22.74 (R29): the use bar says SLOTTING
+  G.bag.splice(ix,1); if(startPrep('armor',k4)) return;   // v22.74 (R29): the use bar says SLOTTING; v25.xx (holdhplate): a plate plays its own armour clack (PREP_FOLEY.plate), the pick chirp only when it has none
   blip('pick');
 }
 function hotSel(){ return clamp(G.hot||0,0,hotbarSlots().length-1); }
@@ -21038,6 +21064,7 @@ function updatePlayer(dt){
   if(G.rollSayT>0) G.rollSayT-=dt;   // v13.19: the refused-roll line, once every 1.5s at most
   if(G.punchT>0) G.punchT-=dt;
   if(G.barT>0) G.barT-=dt;   // v25.xx (keyswap): the crowbar swing
+  holdHTick(dt);   // v25.xx (holdhplate): H, a tap or a hold
   if(G.handsT>0) G.handsT-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
   if(p.muzzle>0) p.muzzle-=dt;
@@ -39789,7 +39816,7 @@ function showScreen(s){
 // latch is what leaves sprint or crouch stuck on, which has bitten this file
 // before. Every key is now released whenever focus or visibility goes.
 function releaseAllKeys(soft){
-  keys={}; mouse.down=false; if(G) G.sprinting=false;
+  keys={}; try{ HHOLD.arm=0; }catch(_hh){} mouse.down=false; if(G) G.sprinting=false;
   // The reticle also hides for an open bag, and alt-tabbing with the bag open
   // left that panel latched too. Cleared with the keys, for the same reason.
   // v17.01, co-op hunt 2026-09-28: A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC both
@@ -41227,7 +41254,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.75: The short controls list now lays the new keys out in pairs, with the tactical belt back beside the backpack key. Check 25.75 fails on v25.74',
+  now:'v25.76: Tap H to heal, hold H to slot an armour plate, and a plate now clacks into place instead of chirping. Check 25.76 fails on v25.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

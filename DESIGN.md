@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.76 - HOLD H FOR AN ARMOUR PLATE
+
+Co-op hunt while he was away. His order of 2026-10-13: hold H for an armour plate, tap H stays the heal, Warzone-style, one key for both. A tap of H quick-heals as it did (now as the key comes up, so a tap takes the few hundredths of a second it is held); holding it for about a third of a second slots an armour plate through the same path the belt uses, so ARMOUR FULL, ALREADY SLOTTING and the rig ceiling apply, and with no plate it says NO ARMOUR PLATE. A tap never starts a plate and a hold never heals. Putting a plate on also stops playing the old pick chirp: the plate wind-up had no sound of its own, so it kept the chirp at the start and again when it landed; it now plays the armour clack of the foley bank as the plate seats, as the strap pulls tight and when it lands. The controls lists name the hold.
+
+MEASURED. Check 25.76 passes, and fails on v25.75.
 ## v25.75 - CONTROLS LIST: NEW KEYS IN PAIRS
 
 Co-op hunt while he was away. A follow-up to the key swap. The short controls list in the corner grew from 12 to 16 entries, and the new keys pushed TACTICAL BELT into the right hand column, away from the backpack key its width was measured against. The entries are laid out again in pairs, with 1-9 TACTICAL BELT and B / I on one row as before: reload and melee, next gun and throw, heal and map, the belt and the backpack, search and extract. The pause box line the page is born with names the new keys too (the game rewrites it from the key map whenever the box opens).
