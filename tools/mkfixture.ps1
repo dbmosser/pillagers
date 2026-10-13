@@ -45802,7 +45802,8 @@ window.__REGRESS=[
      var SX=THROWKEYS.indexOf('smoke'), FX=THROWKEYS.indexOf('frag');
      function cellOf(want){ var sl=hotbarSlots(), i; for(i=0;i<sl.length;i++) if(sl[i]&&(sl[i].k==='throw:'+want||sl[i].itemKey===want)) return i; return -1; }
      function clearHand(q){ mouse.down=false; q.cooking=0; q.cookT=0; q.cookKind=null; q.fired=false; q.trigYield=0; }
-     function full(q){ q.pouch={smoke:2,decoy:0,frag:2}; }
+     function full(q){ q.pouch={smoke:2,decoy:0,frag:2}; if(q.bag) q.bag=q.bag.filter(function(k){ return k!=='smoke'&&k!=='frag'&&k!=='decoy'&&k!=='trip'; }); }   // v25.xx (belt4) retarget: a kind with no key is carried in the backpack, so the count is the pouch and the backpack
+     function HV(k){ return (typeof throwHave==='function')?throwHave(k):g0.pouch[k]; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -45839,7 +45840,7 @@ window.__REGRESS=[
        var hk=String((hotbarSlots()[hotSel()]||{}).k||'');
        if(!p.cooking) bad.push('after Q the press on the highlighted '+hk+' cell cooked nothing');
        else if('throw:'+p.cookKind!==hk) bad.push('after Q the press cooked a '+p.cookKind+' under the highlighted '+hk+' cell');
-       if(g.pouch.smoke!==2) bad.push('after Q the press spent a Smoke that is on no key (smoke now '+g.pouch.smoke+')');
+       if(HV('smoke')!==2) bad.push('after Q the press spent a Smoke that is on no key (smoke now '+g.pouch.smoke+')');
        // AND A HAND LEFT ON THE SMOKE, as a drag leaves it: the trigger and G use the Frag the belt highlights.
        clearHand(p); full(g); g.hot=fc; g.tsel=SX;
        mouse.down=true; updatePlayer(0.016);
@@ -45847,7 +45848,7 @@ window.__REGRESS=[
        else if(p.cookKind!=='frag') bad.push('with the hand left on the Smoke, the press on the Frag cell cooked a '+p.cookKind);
        clearHand(p); full(g); g.hot=fc; g.tsel=SX;
        useHot();
-       if(g.pouch.smoke!==2) bad.push('with the hand left on the Smoke, G on the Frag cell threw a Smoke (smoke now '+g.pouch.smoke+', frag '+g.pouch.frag+')');
+       if(HV('smoke')!==2) bad.push('with the hand left on the Smoke, G on the Frag cell threw a Smoke (smoke now '+g.pouch.smoke+', frag '+g.pouch.frag+')');
        else if(g.pouch.frag!==1) bad.push('with the hand left on the Smoke, G on the Frag cell threw nothing (frag still '+g.pouch.frag+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
