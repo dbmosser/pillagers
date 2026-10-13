@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v24.70 - THE WHAT IS NEW CARD NAMES THE VAULTS
+
+Co-op hunt while he was away. The card was stamped v24.58 and the stamp may not trail the build by more than 0.15. The card was stamped v24.58 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the vault keycard and vaults (his green-lit #32 interiors), machine lock-on beeps and the low-health heartbeat (his third answers 33 and 34).
+
+MEASURED. Check 24.70 passes, and fails on v24.69.
 ## v24.69 - KEYCARDS IN THE WORLD
 
 Co-op hunt while he was away. His order of 2026-10-12, 32: more interiors. The third vault build. Every DEMO raid now hides one Vault Keycard per vault in an ordinary crate, locker or safe that you can reach, never inside a locked room. Fights pay them out too: while a vault is still shut, every elite you kill drops a KEYCARD box where it fell, and so does every twelfth kill when no keycard is left in the world. Opening a vault pays VAULT OPEN plus 500 to the score of the player who opened it. A normal raid is unchanged.

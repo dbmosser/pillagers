@@ -2039,7 +2039,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='24.69';
+var VER='24.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2050,7 +2050,7 @@ var VER='24.69';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='24.58';
+var WHATSNEW_VER='24.70';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2070,6 +2070,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'VAULTS. Find the vault keycard to open a sealed room. Machines beep when they lock on, and you hear your heartbeat when you are low.',
   'TAUNTS AND REDESIGNS. Pillagers taunt when they hit you, menus answer with sound, FEEDBACK sends a screenshot, and the Howler and Pillbox are redrawn.',
   'SHARPER FIGHTS. Readable silhouettes, bullets that mark the walls, blasts that leave scars, a first-frame muzzle flash and a redrawn Crier.',
   'HIT MARKERS. The crosshair centre flashes white on a hit, orange on a weak spot and red on a kill. Darker nights, SELL ALL and a RUN OVER score that counts up.',
@@ -38988,7 +38989,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v24.69: Keycards hide in boxes and drop from elites, and a vault pays 500 when opened. Check 24.69 fails on v24.68',
+  now:'v24.70: The what is new card names the vaults, the lock-on beeps and the heartbeat. Check 24.70 fails on v24.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
