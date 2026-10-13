@@ -47082,7 +47082,10 @@ window.__REGRESS=[
          bad.push('dying with medical still in the backpack and not one applied all raid is not recorded, so the run report cannot carry it and the card has nothing to say');
        frames(6);
        var txt=cardLine();
-       if(txt!==null&&txt.indexOf('MEDICAL')<0)
+       // RETARGETED for nomednag (his note 2026-10-12, "soooo random"): the card line was removed on his word,
+       // the flag stays for the run report. The card is held to the line only on a build whose source still prints it.
+       var _medLine=[].slice.call(document.scripts).some(function(sc){ return String(sc.textContent||'').indexOf('YOU DIED CARRYING '+'MEDICAL')>=0; });
+       if(_medLine&&txt!==null&&txt.indexOf('MEDICAL')<0)
          bad.push('the card never says he died carrying medical he never used, which is the whole of it: the fact is recorded and he is not told');
        try{ G=null; keys={}; showScreen('hub'); }catch(_g1){}
 
