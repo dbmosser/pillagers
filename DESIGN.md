@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.34 - A GUN ON THE BELT SHOWS ITS CARD
+
+Co-op hunt while he was away. His order of 2026-10-12: guns on the tactical belt should show their gun card when the mouse is over them. Rest the mouse on a gun key (in a raid, on the Undercroft floor and in its backpack) and that gun stat card shows just above the key: the name with its forge MK, the element of a MK III in its colour, damage, rate, magazine, range and handling. The gun in your hands reads IN HANDS; the other gun you carry and a packed gun are compared with it, as on pickup. The card waits a short moment on one key, so sweeping the crosshair across the belt never flashes cards, and it goes the moment the mouse leaves. It takes no click: firing, aiming and dragging work as before, and it hides while you hold the trigger, drag, or have the map or the pause box open. It stays inside the screen at 1080p and 4K.
+
+MEASURED. Check 25.34 passes, and fails on v25.33.
 ## v25.33 - THE MINIMAP KNOWS WHEN TO STEP ASIDE
 
 Co-op hunt while he was away. His order of 2026-10-12: add minimap. Settings has a MINIMAP row now, ON or OFF, on by default. The minimap steps aside whenever something else owns the screen: with the sector map or the backpack open, on the KILLED IN ACTION, EXTRACTED and RUN OVER cards, and in the Undercroft, where it never shows. With it off the CONDITIONS panel sits back under the credits. Player 2 sees a minimap of his own in his own window, and it grows with the screen at 1080p and 4K like the rest of the HUD.

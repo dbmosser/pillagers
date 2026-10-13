@@ -2138,7 +2138,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.33';
+var VER='25.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2627,7 +2627,8 @@ function gunStats(w){
   var sus=mag>0?per*pulls/(pulls*rof/1000+rl/1000):per*1000/rof;
   var hand=Math.round(100*(0.6*clamp(1-(w.spread||0)/0.2,0,1)+0.4*clamp(1-(rl-1200)/3000,0,1)));
   return {id:w.id||'fists',name:w.name||'Bare Hands',tier:gunTierOf(w),dmg:Math.round(per),rpm:Math.round(60000/rof),mag:mag,
-          rng:Math.round((w.rng||0)/10),hand:hand,dps:Math.round(sus)};
+          rng:Math.round((w.rng||0)/10),hand:hand,dps:Math.round(sus),
+          fk:(w.fk===1||w.fk===2)?w.fk:0, el:(w.fk===2&&w.el&&typeof ELEM!=='undefined'&&ELEM[w.el])?w.el:''};   // v24.xx (belthover1): the forge MK and the element, for the card
 }
 var GUNSTAT_ROWS=[['dmg','DMG'],['rpm','RATE'],['mag','MAG'],['rng','RANGE'],['hand','HANDLING']];
 function gunCompare(f,h){
@@ -16619,9 +16620,15 @@ function drawPickups(){
 // (UPGRADE green, DOWNGRADE red, SIDEGRADE amber) against the gun in his hands, then DMG, RATE, MAG, RANGE and HANDLING with the
 // difference (green better, red worse, = the same), and where it went. Sized by hudRes, so at 4K it is twice the 1080p size and reads
 // on a TV. gunCardDraw draws it with its bottom right corner at xR,yB and returns its height.
-function gunCardDraw(cmp,xR,yB,al,tag){
+// v24.xx (belthover1): the size of the card, read by gunCardDraw and by the belt hover card (which places it above a key before it is
+// drawn). A MK III adds one row: its element in its own colour and what it does.
+function gunCardSize(cmp,tag){
+  var rs=Math.max(1,hudRes()), fp=msgPx(hudFS(TYPE.label)), hp=msgPx(hudFS(TYPE.head)), pad=Math.round(LH(8)*rs), rh=Math.round(fp*1.5);
+  var el=!!(cmp&&cmp.f&&cmp.f.el&&typeof ELEM!=='undefined'&&ELEM[cmp.f.el]);
+  return {w:Math.round(fp*18), h:pad*2+Math.round(hp*1.1)+rh*(1+GUNSTAT_ROWS.length)+(tag?rh:0)+(el?rh:0)};
+}function gunCardDraw(cmp,xR,yB,al,tag){
   var rs=Math.max(1,hudRes()), fL=hudFS(TYPE.label), fp=msgPx(fL), fH=hudFS(TYPE.head), hp=msgPx(fH), pad=Math.round(LH(8)*rs), rh=Math.round(fp*1.5);
-  var R=GUNSTAT_ROWS, w=Math.round(fp*18), h=pad*2+Math.round(hp*1.1)+rh*(1+R.length)+(tag?rh:0), x=xR-w, y=yB-h, i, k, v, dv, yy, vc, oa=ctx.globalAlpha, xv, xd;
+  var R=GUNSTAT_ROWS, _gz=gunCardSize(cmp,tag), w=_gz.w, h=_gz.h, x=xR-w, y=yB-h, i, k, v, dv, yy, vc, oa=ctx.globalAlpha, xv, xd;
   vc=(cmp.verdict==='UPGRADE')?'#7fe08a':((cmp.verdict==='DOWNGRADE')?'#ff6b5a':'#ffc04a');
   ctx.save();
   try{
@@ -16633,7 +16640,7 @@ function gunCardDraw(cmp,xR,yB,al,tag){
     ctx.fillText(String(cmp.f.name).toUpperCase(),x+pad,yy,w-pad*2);
     yy+=rh; ctx.font=fL; ctx.fillStyle=vc; ctx.fillText(cmp.verdict,x+pad,yy);
     ctx.textAlign='right'; ctx.fillStyle=HUDC.dim;
-    ctx.fillText('VS '+(cmp.h?String(cmp.h.name).toUpperCase():'BARE HANDS'),x+w-pad,yy,w*0.56);
+    if(!cmp.noVs) ctx.fillText('VS '+(cmp.h?String(cmp.h.name).toUpperCase():'BARE HANDS'),x+w-pad,yy,w*0.56);   // v24.xx (belthover1): not on the card of the gun in hand
     xd=x+w-pad; xv=xd-Math.round(fp*3.6);
     for(i=0;i<R.length;i++){
       k=R[i][0]; v=cmp.f[k]; dv=cmp.h?cmp.d[k]:null; yy+=rh;
@@ -16641,7 +16648,10 @@ function gunCardDraw(cmp,xR,yB,al,tag){
       ctx.textAlign='right'; ctx.fillStyle=HUDC.text; ctx.fillText(String(v)+(k==='rng'?'M':''),xv,yy);
       if(dv!==null){ ctx.fillStyle=dv>0?'#7fe08a':(dv<0?'#ff6b5a':HUDC.dim); ctx.fillText(dv>0?('+'+dv):(dv<0?String(dv):'='),xd,yy); }
     }
-    if(tag){ yy+=rh; ctx.textAlign='left'; ctx.fillStyle=HUDC.dim; ctx.fillText(String(tag).toUpperCase(),x+pad,yy,w-pad*2); }
+    if(cmp.f.el&&typeof ELEM!=='undefined'&&ELEM[cmp.f.el]){   // v24.xx (belthover1): a MK III names its element in its colour, and what it does
+      yy+=rh; ctx.textAlign='left'; ctx.fillStyle=ELEM[cmp.f.el].c; ctx.fillText(ELEM[cmp.f.el].name,x+pad,yy);
+      ctx.textAlign='right'; ctx.fillStyle=HUDC.dim; ctx.fillText(String(ELEM[cmp.f.el].w2||''),x+w-pad,yy,w*0.62);
+    }    if(tag){ yy+=rh; ctx.textAlign='left'; ctx.fillStyle=HUDC.dim; ctx.fillText(String(tag).toUpperCase(),x+pad,yy,w-pad*2); }
   } finally { ctx.restore(); ctx.globalAlpha=oa; }
   return h;
 }
@@ -16655,6 +16665,61 @@ function gunCardHud(){
   if(age>GUNCARD_T||age<-1){ G.gunCard=null; return 0; }
   rs=Math.max(1,hudRes());
   return gunCardDraw(gunCompare(C.w,C.vs),W-8*rs,Math.round(H*0.6),Math.max(0,Math.min(1,(GUNCARD_T-age)/0.5)),C.route);
+}
+// v24.xx (belthover1), HIS ORDER (2026-10-12): "guns on the toolbar should automatically show their gun card when theyy are moused
+// over -- other items should show info card too". THE BELT HOVER CARD, GUNS FIRST. The mouse resting on a gun key of the tactical
+// belt shows that gun's stat card (gunCardDraw, the one card of the pickup and the backpack: the name with its MK, the element of a
+// MK III, the five numbers) just above the key and its caption, kept inside the screen at any size. The gun in his hands reads IN
+// HANDS with no comparison; the other gun he carries (OTHER GUN) and a packed gun (IN BACKPACK) are compared with it. It waits a
+// short dwell on one key (BELTHOV_DWELL), so sweeping the crosshair across the belt never flashes cards, and it is gone the frame
+// the mouse leaves. Drawing only: it takes no click and no key, so firing, aiming and dragging are untouched; it hides while the
+// trigger is held, during a drag or a HUD panel drag, with the map, the pause box or a trade up, while down, and while a controller
+// owns the crosshair. The Undercroft belt (the floor and the backpack) draws the same card. BELTHOV is the key under the mouse, when
+// the mouse got there, and the card drawn this frame (box, in screen pixels), for the fixture.
+var BELTHOV={i:-1,at:0,st:'',box:null}, BELTHOV_DWELL=0.15;
+function beltHovNow(){ return ((typeof performance!=='undefined'&&performance.now)?performance.now():Date.now())/1000; }
+function beltHovGun(S){
+  var p=G&&G.player, it, gk;
+  if(!S||S.kind!=='gun'||S.vacant) return null;
+  it=S.itemKey?ITEMS[S.itemKey]:null;
+  gk=(it&&it.use==='gun')?it.gk:((S.icon&&WEAPONS[S.icon])?S.icon:null);
+  if(!gk||gk==='fists'||!WEAPONS[gk]||!(WEAPONS[gk].mag>0)) return null;
+  if(p&&S.inHand&&p.wep&&p.wep.id===gk) return {w:p.wep,hand:1};
+  if(p&&(!it||S.equipped)){
+    if(p.sec&&p.sec.id===gk) return {w:p.sec,tag:'OTHER GUN'};
+    if(p.wep&&p.wep.id===gk) return {w:p.wep,hand:1};
+  }
+  return {w:((typeof gunQPeek==='function')&&gunQPeek(gk))||WEAPONS[gk],tag:'IN BACKPACK'};
+}
+function beltHovCell(){
+  var C=G&&G.hotCells, i, c;
+  if(!C||!C.length||typeof mouse==='undefined'||!mouse) return null;
+  for(i=0;i<C.length;i++){ c=C[i]; if(c&&mouse.x>=c.x&&mouse.x<=c.x+c.w&&mouse.y>=c.y&&mouse.y<=c.y+c.h) return c; }
+  return null;
+}
+function beltHovOff(){
+  var p=G&&G.player;
+  return !G||!!G.over||!!G.mapOpen||!!G.paused||!!pauseOpen||!!G.trade||!!G.drag||!!mouse.down||!!HUDDRAG||!!HUDRESIZE
+    ||!!(padOn()&&PAD.curOwn)||!!(p&&(p.downed||p.dying));
+}
+function beltHoverHud(){
+  var now=beltHovNow(), c, S, g, cmp, rs, m, sz, xR, yB, p=G&&G.player;
+  BELTHOV.box=null;
+  c=beltHovOff()?null:beltHovCell();
+  if(!c){ BELTHOV.i=-1; return null; }
+  if(c.i!==BELTHOV.i||BELTHOV.st!==state){ BELTHOV.i=c.i; BELTHOV.at=now; BELTHOV.st=state; return null; }
+  if(now-BELTHOV.at<BELTHOV_DWELL) return null;
+  S=hotbarSlots()[c.i]; g=beltHovGun(S);
+  if(!g) return null;
+  cmp=g.hand?{verdict:'IN HANDS',f:gunStats(g.w),h:null,d:{},noVs:1}:gunCompare(g.w,p&&p.wep);
+  rs=Math.max(1,hudRes()); m=Math.round(LH(8)*rs); sz=gunCardSize(cmp,g.tag||'');
+  xR=Math.round(Math.max(m+sz.w,Math.min(W-m,c.x+c.w/2+sz.w/2)));
+  yB=Math.round(c.y-LH(6)*rs-((state!=='hub')?msgPx(beltCapFS(c.w))*1.1:0));   // above the key, and above its caption line in a raid
+  yB=Math.max(m+sz.h,Math.min(H-m,yB));
+  ctx.save(); try{ hudPlate(xR-sz.w,yB-sz.h,sz.w,sz.h,null,'rgba(11,12,13,.9)'); } finally { ctx.restore(); }   // a solid backing: over the belt the card sits on busy ground and HUD panels
+  gunCardDraw(cmp,xR,yB,1,g.tag||'');
+  BELTHOV.box={x:xR-sz.w,y:yB-sz.h,w:sz.w,h:sz.h,i:c.i,kind:'gun',name:String(cmp.f.name)};
+  return BELTHOV.box;
 }
 function alertLayout(){   // with the message scale not yet applied: the alert plate, its lines and their baselines, or null
   var a=alertUp(), hf, lf, hp, lp, gs, mw, hl, sl=[], w=0, i, y, bl=[];
@@ -33812,6 +33877,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
   drawCrierMarkers();
   try{ drawPickups(); }catch(_dpk){}   // v22.50 (R16): the pickup stack on the right edge
   try{ gunCardHud(); }catch(_gch){}   // v23.xx (feat2b): the gun stat card on pickup
+  try{ beltHoverHud(); }catch(_bhv){}   // v24.xx (belthover1): the card of the gun the mouse rests on, on the tactical belt
   if(G.arcade) delete HUDBOX.raiders;   // v23.35 (arcade13): no CURRENT PILLAGERS board in the arcade
   else if(!G.mapOpen&&!G.bagOpen){
     // v8.91: grows from the top left corner it already sits in.
@@ -35896,7 +35962,7 @@ function drawHubBelt(){
   // heading did before v20.88. While a window is open over the floor it is not drawn; the window has its own belt where it needs one.
   if(hubWinOn()){ HUBBELT.cells=[]; return; }
   var old=G, st=hubBagState();
-  try{ G=st; drawBelt(); HUBBELT.cells=(st.hotCells||[]).slice(); }
+  try{ G=st; drawBelt(); HUBBELT.cells=(st.hotCells||[]).slice(); try{ beltHoverHud(); }catch(_bhv){} }   // v24.xx (belthover1): the belt hover card on the floor
   catch(_hbl){ HUBBELT.cells=[]; }
   finally{ G=old; }
 }
@@ -35942,7 +36008,7 @@ function drawHubBag(){
   var old=G;
   // The ghost goes LAST and inside the swap, so it rides over the panel and the
   // belt exactly as it does in a raid and reads the Undercroft bag's own drag.
-  try{ G=hubBagG; drawBag(); drawBelt(); drawDragGhost(); }
+  try{ G=hubBagG; drawBag(); drawBelt(); try{ beltHoverHud(); }catch(_bhv){} drawDragGhost(); }   // v24.xx (belthover1): and over the Undercroft backpack
   catch(_hb){}
   finally{ G=old; }
 }
@@ -40015,7 +40081,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.33: Settings has a MINIMAP row, and the minimap hides under the map, the backpack and the end cards. Check 25.33 fails on v25.32',
+  now:'v25.34: Rest the mouse on a gun on the tactical belt and its stat card shows above it. Check 25.34 fails on v25.33',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
