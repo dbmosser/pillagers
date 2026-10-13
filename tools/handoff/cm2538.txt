@@ -1,0 +1,7 @@
+v25.38: the seal never sits on a crate
+
+The seal never turns up on top of a crate, so E at a crate always searches it.
+
+Check 25.38. Fails on v25.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

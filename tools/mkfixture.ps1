@@ -6078,6 +6078,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'25.38',what:'skeptic of his seal order (2026-10-12): the seal never lands within reach of a crate, so E at a crate always searches it: 70 raids, no container but the strongbox within 116 of the seal (the cut reach 70 plus the search reach 46), and the seal still stands in 40 or more places',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof FIXED_MAPS==='undefined') return 'SKIP: no raid here';
+     var bad=[], hits=[], s, g, i, Q, d, md, mq, n=0, sp={}, ns=0, k;
+     try{
+       __topClear(); __runPrep();
+       for(s=1;s<=70;s++){
+         __deploy({kit:[],safe:null,mapIx:0,seed:s*7919});
+         g=__state(); if(!g||!g.seal) return 'SKIP: no seal in the raid at seed '+(s*7919);
+         k=g.seal.x+','+g.seal.y; if(!sp[k]){ sp[k]=1; ns++; }
+         md=1e9; mq=null;
+         for(i=0;i<(g.containers||[]).length;i++){
+           Q=g.containers[i]; if(!Q||Q.strong) continue;
+           d=Math.hypot(Q.x-g.seal.x,Q.y-g.seal.y); if(d<md){ md=d; mq=Q; }
+         }
+         n++;
+         if(mq&&md<116) hits.push((s*7919)+': a '+(mq.kind||mq.type||'container')+' '+Math.round(md)+' from the seal');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} __topClear(); }
+     if(bad.length) return bad.join('; ');
+     if(n<70) return 'only '+n+' raids ran';
+     if(hits.length) return hits.length+' of 70 raids put the seal within reach of a crate, so E there cuts the seal and never searches it: '+hits.slice(0,5).join('; ');
+     if(ns<40) return '70 seeds put the seal in only '+ns+' different places';
+     return null; }},
   {v:'25.37',what:'his answer (2026-10-12): CAREER waves are the same as the DEMO waves; a wave in a CAREER raid lands near him with the DEMO kinds, counts in the raid store, draws nothing from the seeded stream, and a wave pillager kill files no grudge in his save',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__ents&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';

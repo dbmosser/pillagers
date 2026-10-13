@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.38 - THE SEAL NEVER SITS ON A CRATE
+
+Co-op hunt while he was away. A check of the new random seal (v24.82, his order that the seal should spawn in random spots) found that it could land right on top of a crate: in 17 raids of 300 a crate stood within reach of the slab, at seed 308841 only 15 away and hidden under it. While the seal is uncut, holding E there cuts the seal instead of searching the crate, so the crate gave nothing and the cut alarm drew the machines. The seal roll now refuses any spot with a container within 120 of it (the reach of the cut plus the reach of a search) and rolls again. The roll stays on the raid own side stream, so the machines, containers and loot of a seed are exactly as before, both windows of a pair still get the same door, and the seal still moves all over the map. DEMO and CAREER are the same.
+
+MEASURED. Check 25.38 passes, and fails on v25.37.
 ## v25.37 - CAREER RAIDS: THE WAVES
 
 Co-op hunt while he was away. His answer of 2026-10-12: CAREER waves are the same as the DEMO waves, and his rule that the gameplay is exactly the same in both. A CAREER raid now sends waves at you as the DEMO does: the same timing, the same packs of crawlers, sentries and pillagers landing out of sight near you, growing as your score grows, with the WAVE callout. A pillager from a wave is a stranger: killing one does not start a grudge or a WANTS REVENGE in your save.
