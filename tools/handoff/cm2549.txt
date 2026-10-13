@@ -1,0 +1,7 @@
+v25.49: the forge: element effects and sounds
+
+Elemental hits now show flames, arcs, frost, ice and acid, and a forged gun glows.
+
+Check 25.49. Fails on v25.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

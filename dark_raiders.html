@@ -2143,7 +2143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='25.48';
+var VER='25.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6283,6 +6283,47 @@ function blip(type,d,pan){
     osh.frequency.setValueAtTime(2350,t+.155); osh.frequency.exponentialRampToValueAtTime(3400,t+.44);
     gsh.gain.setValueAtTime(.030,t+.155); gsh.gain.exponentialRampToValueAtTime(.001,t+.46);
     osh.connect(gsh); gsh.connect(OUT); osh.start(t+.155); osh.stop(t+.48);
+  } else if(type==='elFire'){
+    // v23.xx (forge8): a short whoosh with a crackle in it
+    var efl=Math.floor(a.sampleRate*0.24), efb=a.createBuffer(1,efl,a.sampleRate), efc=efb.getChannelData(0);
+    for(var efi=0;efi<efl;efi++) efc[efi]=(Math.random()*2-1)*Math.pow(1-efi/efl,1.5)*((Math.random()<0.03)?2.4:1);
+    var efs=a.createBufferSource(); efs.buffer=efb;
+    var eff=a.createBiquadFilter(); eff.type='lowpass'; eff.frequency.setValueAtTime(700,t); eff.frequency.exponentialRampToValueAtTime(2800,t+.2);
+    var efg=a.createGain(); efg.gain.value=.15*vol;
+    efs.connect(eff); eff.connect(efg); efg.connect(OUT); efs.start(t);
+  } else if(type==='elShock'){
+    // v23.xx (forge8): a sawtooth sweep from 1.2 kHz down to 200 Hz
+    var eso=a.createOscillator(), esg=a.createGain(); eso.type='sawtooth';
+    eso.frequency.setValueAtTime(1200,t); eso.frequency.exponentialRampToValueAtTime(200,t+.12);
+    esg.gain.setValueAtTime(.06*vol,t); esg.gain.exponentialRampToValueAtTime(.001,t+.13);
+    eso.connect(esg); esg.connect(OUT); eso.start(t); eso.stop(t+.14);
+  } else if(type==='elCryo'){
+    // v23.xx (forge8): two glassy sines
+    [2200,3300].forEach(function(F,ix){
+      var eco=a.createOscillator(), ecg=a.createGain(), t0=t+ix*0.03; eco.type='sine'; eco.frequency.setValueAtTime(F,t0);
+      ecg.gain.setValueAtTime(.04*vol,t0); ecg.gain.exponentialRampToValueAtTime(.001,t0+.22);
+      eco.connect(ecg); ecg.connect(OUT); eco.start(t0); eco.stop(t0+.24);
+    });
+  } else if(type==='elFreeze'){
+    // v23.xx (forge8): the crack of a freeze, a bright snap over a low knock
+    var ezl=Math.floor(a.sampleRate*0.09), ezb=a.createBuffer(1,ezl,a.sampleRate), ezc=ezb.getChannelData(0);
+    for(var ezi=0;ezi<ezl;ezi++) ezc[ezi]=(Math.random()*2-1)*Math.pow(1-ezi/ezl,3);
+    var ezs=a.createBufferSource(); ezs.buffer=ezb;
+    var ezf=a.createBiquadFilter(); ezf.type='highpass'; ezf.frequency.value=2500;
+    var ezg=a.createGain(); ezg.gain.value=.16*vol;
+    ezs.connect(ezf); ezf.connect(ezg); ezg.connect(OUT); ezs.start(t);
+    var ezo=a.createOscillator(), ezog=a.createGain(); ezo.type='sine';
+    ezo.frequency.setValueAtTime(140,t); ezo.frequency.exponentialRampToValueAtTime(60,t+.12);
+    ezog.gain.setValueAtTime(.10*vol,t); ezog.gain.exponentialRampToValueAtTime(.001,t+.14);
+    ezo.connect(ezog); ezog.connect(OUT); ezo.start(t); ezo.stop(t+.15);
+  } else if(type==='elAcid'){
+    // v23.xx (forge8): a hiss, band passed at 3 kHz
+    var eal=Math.floor(a.sampleRate*0.25), eab=a.createBuffer(1,eal,a.sampleRate), eac=eab.getChannelData(0);
+    for(var eai=0;eai<eal;eai++) eac[eai]=(Math.random()*2-1)*Math.pow(1-eai/eal,1.2);
+    var eas=a.createBufferSource(); eas.buffer=eab;
+    var eaf=a.createBiquadFilter(); eaf.type='bandpass'; eaf.frequency.value=3000; eaf.Q.value=1.5;
+    var eag=a.createGain(); eag.gain.value=.10*vol;
+    eas.connect(eaf); eaf.connect(eag); eag.connect(OUT); eas.start(t);
   } else if(type==='pickGun'){
     // Metal, not music: a filtered noise scrape over a low thunk, so it reads as
     // a weapon being lifted rather than as a better pickup chime.
@@ -22396,6 +22437,7 @@ function elemCredit(e,seat){
 function elemHit(e,el,d,seat,sx,sy){
   if(!ELEM[el]||!elemOk(e)||!(d>0)) return false;
   G.elemAny=1; seat=seat|0;
+  if(!G.sim) elemSnd(e,el);   // v23.xx (forge8): the impact sound and sparks, once per target every 0.15 s
   if(el==='fire'){
     e.burnT=3.0; e.burnDps=Math.max(e.burnDps||0,Math.min(18,4+0.25*d)); e.burnBy=seat;
     if(e.kind==='raider'&&!e.downed&&!(e.panicCd>0)){
@@ -22414,6 +22456,7 @@ function elemHit(e,el,d,seat,sx,sy){
     if(e.chill>=6-1e-6&&!(e.freezeImm>0)){
       e.frozenT=e.boss?0.6:((e.kind==='warden'||e.kind==='choir')?0.7:1.4);
       e.chill=0; e.freezeImm=e.frozenT+4; e.roll=0;
+      if(!G.sim){ sfx('elFreeze',e.x,e.y); spark(e.x,e.y-10,'#ffffff',10,200); }   // v23.xx (forge8): the crack of the freeze
     }
   } else if(el==='acid'){
     e.corrT=4;
@@ -22433,6 +22476,141 @@ function elemShred(e,d){
   return s;
 }
 function elemAbsorb(e){ return (armorById(e.rig).absorb||0)*((e.corrT>0)?0.5:1); }
+// v23.xx, THE FORGE (2026-10-12), forge8: WHAT THE ELEMENTS LOOK AND SOUND LIKE, on both windows. All cosmetic: fxn and fxr only,
+// never the seeded stream, never in the sim. On the body that was hit, at the aim point or on the character, never a screen tint
+// (his rule: 2.5D is not FPS). The host mirrors five status bits to player 2 (netEntFlags), sends each shock arc as a cosmetic fx
+// word, and every window draws the same effects from the same fields. FIRE: flame tongues licking up the body, embers and a warm
+// glow, a smoke trail on a panicking pillager. SHOCK: a jagged arc to the chained body, small arcs crawling over a stunned machine.
+// CRYO: a pale rim and frost while chilled, a translucent ice block while frozen. ACID: green drips. Elemental tracers are wider.
+// A forged gun glows at the hands, gold for MK II and the element colour for MK III, and player 2's state word carries fk and el so
+// each window sees the other's glow. Sounds: elFire, elShock, elCryo, elAcid on impact (one per target every 0.15 s) and elFreeze.
+function elemSnd(e,el){
+  var t;
+  if(!G||G.sim||!e||!ELEM[el]) return false;
+  t=G.t||0;
+  if(e.elSndT!==undefined&&t>=e.elSndT&&t-e.elSndT<0.15) return false;
+  e.elSndT=t;
+  sfx(ELEM[el].snd,e.x,e.y);
+  spark(e.x,e.y-8,ELEM[el].c,6,170);
+  return true;
+}
+function elemArcFx(x1,y1,x2,y2,send){
+  var i, m;
+  if(!G||G.sim||!isFinite(x1)||!isFinite(y1)||!isFinite(x2)||!isFinite(y2)) return false;
+  G.arcs=G.arcs||[];
+  if(G.arcs.length<24) G.arcs.push({x1:x1,y1:y1,x2:x2,y2:y2,t:0,life:0.14});
+  if(send&&typeof NET==='object'&&NET&&NET.on&&netUpShared()){
+    m={t:'fx',k:'a',s:NET.seat,a:[Math.round(x1),Math.round(y1),Math.round(x2),Math.round(y2)]};
+    for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSendFast(NET.peers[i],m);
+  }
+  return true;
+}
+function elemBodyH(e){ return (e.kind==='raider'||e.kind==='stray'||e.kind==='peddler')?34:Math.max(14,(e.r||14)*1.4+6); }
+function elemFlame(x,y,w,h){
+  wc.beginPath(); wc.moveTo(x-w,y);
+  wc.quadraticCurveTo(x-w*0.7,y-h*0.55,x,y-h);
+  wc.quadraticCurveTo(x+w*0.7,y-h*0.55,x+w,y);
+  wc.closePath(); wc.fill();
+}
+function drawElemFx(dt){
+  var L, i, e, k, j, t, n=0, r, H, x0, h, a, pts, ph, ang;
+  if(!G||G.sim) return 0;
+  dt=(isFinite(dt)&&dt>0)?Math.min(dt,0.1):0; t=G.t||0;
+  if(G.arcs&&G.arcs.length){
+    wc.save(); wc.globalCompositeOperation='lighter'; wc.lineJoin='round'; wc.lineCap='round';
+    for(i=G.arcs.length-1;i>=0;i--){
+      a=G.arcs[i]; a.t+=dt; if(a.t>=a.life){ G.arcs.splice(i,1); continue; }
+      pts=[[a.x1,a.y1-14]];
+      for(j=1;j<7;j++) pts.push([a.x1+(a.x2-a.x1)*j/7+fxn(-7,7),a.y1+(a.y2-a.y1)*j/7-14+fxn(-7,7)]);
+      pts.push([a.x2,a.y2-14]);
+      wc.globalAlpha=clamp(1-a.t/a.life,0,1);
+      for(k=0;k<2;k++){
+        wc.strokeStyle=k?'#ffffff':ELEM.shock.c; wc.lineWidth=k?1.2:3.5;
+        wc.beginPath(); wc.moveTo(pts[0][0],pts[0][1]);
+        for(j=1;j<pts.length;j++) wc.lineTo(pts[j][0],pts[j][1]);
+        wc.stroke();
+      }
+      gfxEmit((a.x1+a.x2)/2,(a.y1+a.y2)/2-14,40,ELEM.shock.c,0.6);
+      n++;
+    }
+    wc.restore();
+  }
+  L=G.ents;
+  for(i=0;i<L.length;i++){
+    e=L[i];
+    if(!(e.burnT>0||e.stunT>0||e.chillT>0||e.frozenT>0||e.corrT>0)) continue;
+    if((e.hp<=0&&!e.downed)||e.finished||e.gone||!isFinite(e.x)||!isFinite(e.y)) continue;
+    r=e.r||14; H=elemBodyH(e);
+    wc.save();
+    if(e.burnT>0){
+      wc.globalCompositeOperation='lighter';
+      for(k=0;k<4;k++){
+        x0=e.x+(k-1.5)*r*0.42+Math.sin(t*7+k*2.1)*2;
+        h=H*(0.62+0.28*Math.sin(t*13+k*1.7));
+        wc.globalAlpha=0.5; wc.fillStyle=ELEM.fire.c; elemFlame(x0,e.y-2,5.5,h);
+        wc.globalAlpha=0.65; wc.fillStyle='#ffc04a'; elemFlame(x0,e.y-2,2.6,h*0.6);
+      }
+      if(fxr()<dt*10) spark(e.x+fxn(-r*0.5,r*0.5),e.y-H*0.5,'#ffb040',1,70);
+      if(e.panicT>0&&fxr()<dt*14&&G.puffs) G.puffs.push({x:e.x+fxn(-4,4),y:e.y-4,t:0,life:0.6,c:'#3b3632',r:10});
+      gfxEmit(e.x,e.y-H*0.5,r*2.6,'#ff6a2a',0.55);
+      n++;
+    }
+    if(e.stunT>0){
+      wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.9; wc.strokeStyle='#bfe0ff'; wc.lineWidth=1.4;
+      for(k=0;k<2;k++){
+        ang=fxn(0,6.283); wc.beginPath();
+        for(j=0;j<5;j++){ var rr2=r*0.95+fxn(-3,3), aa=ang+j*0.45; if(j) wc.lineTo(e.x+Math.cos(aa)*rr2,e.y-H*0.45+Math.sin(aa)*rr2*0.7); else wc.moveTo(e.x+Math.cos(aa)*rr2,e.y-H*0.45+Math.sin(aa)*rr2*0.7); }
+        wc.stroke();
+      }
+      gfxEmit(e.x,e.y-H*0.45,r*2,ELEM.shock.c,0.45);
+      n++;
+    }
+    if(e.frozenT>0){
+      wc.globalCompositeOperation='source-over'; wc.globalAlpha=1;
+      var bw=r+5, top=e.y-H-7, bot=e.y+4;
+      wc.fillStyle='rgba(185,232,255,.36)'; wc.strokeStyle='rgba(255,255,255,.85)'; wc.lineWidth=1.5;
+      wc.beginPath(); wc.moveTo(e.x-bw,bot); wc.lineTo(e.x-bw-2,top+6); wc.lineTo(e.x-bw*0.4,top); wc.lineTo(e.x+bw*0.5,top+2);
+      wc.lineTo(e.x+bw+2,top+8); wc.lineTo(e.x+bw,bot); wc.closePath(); wc.fill(); wc.stroke();
+      wc.strokeStyle='rgba(255,255,255,.55)'; wc.lineWidth=1;
+      wc.beginPath(); wc.moveTo(e.x-bw*0.55,top+6); wc.lineTo(e.x-bw*0.2,bot-6); wc.stroke();
+      gfxEmit(e.x,e.y-H*0.5,r*2.2,ELEM.cryo.c,0.5);
+      n++;
+    } else if(e.chillT>0){
+      wc.globalCompositeOperation='source-over'; wc.globalAlpha=0.6; wc.strokeStyle=ELEM.cryo.c; wc.lineWidth=2;
+      wc.beginPath(); wc.ellipse(e.x,e.y-H*0.45,r+3,H*0.55+3,0,0,6.2832); wc.stroke();
+      wc.fillStyle='#ffffff'; wc.globalAlpha=0.85;
+      for(k=0;k<5;k++){ ph=k*1.257+t*0.6; wc.fillRect(e.x+Math.cos(ph)*(r+1)-1,e.y-H*0.45+Math.sin(ph*1.3)*H*0.45-1,2,2); }
+      n++;
+    }
+    if(e.corrT>0){
+      wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.22; wc.fillStyle=ELEM.acid.c;
+      wc.beginPath(); wc.ellipse(e.x,e.y-H*0.45,r+1,H*0.5,0,0,6.2832); wc.fill();
+      wc.globalCompositeOperation='source-over';
+      for(k=0;k<3;k++){
+        ph=(t*1.4+k*0.37)%1;
+        wc.globalAlpha=0.85*(1-ph); wc.fillStyle=ELEM.acid.c;
+        wc.beginPath(); wc.ellipse(e.x+(k-1)*r*0.5,e.y-H*0.7+ph*(H*0.7+6),1.7,2.8,0,0,6.2832); wc.fill();
+      }
+      n++;
+    }
+    wc.restore();
+  }
+  return n;
+}
+function forgeGlow(x,y,face,w,down){
+  var fk=(w&&(w.fk===1||w.fk===2))?w.fk:0, c, hx, hy, r, gr, a, s;
+  if(!fk||down||!G||G.sim||!isFinite(x)||!isFinite(y)) return false;
+  c=(fk===2&&w.el&&ELEM[w.el])?ELEM[w.el].c:FORGE_GOLD;
+  face=isFinite(face)?face:0; s=Math.sin((G.t||0)*9.42);
+  hx=x+Math.cos(face)*12; hy=y-10+Math.sin(face)*4;
+  a=0.6+0.25*s; r=11+2*s;
+  wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=a;
+  gr=wc.createRadialGradient(hx,hy,0,hx,hy,r); gr.addColorStop(0,c); gr.addColorStop(1,'rgba(0,0,0,0)');
+  wc.fillStyle=gr; wc.beginPath(); wc.arc(hx,hy,r,0,6.2832); wc.fill();
+  wc.restore();
+  gfxEmit(hx,hy,r*1.8,c,0.5*a);
+  return true;
+}
 // v23.xx, THE FORGE (2026-10-12), forge4: SHOCK. Every shock hit arcs half its damage to the nearest other body within 160 that the
 // shooter would fight, with a clear line between the two (the arc is soaked by armour as a round is, never by a Bulwark shield, and
 // finds no weak point). One arc per shooter every 0.2 s, so an SMG or a scattergun blast arcs about five times a second, not once a
@@ -22476,7 +22654,7 @@ function elemArc(e,d,seat,sx,sy){
   best.hp-=a; best.hitT=.16; best.pHitT=.3; best.pHitSeat=seat|0;
   elemProvoke(best,sx,sy,seat);
   elemCredit(best,seat);
-  G.arcFx={x1:e.x,y1:e.y,x2:best.x,y2:best.y,t:0};
+  elemArcFx(e.x,e.y,best.x,best.y,1);   // v23.xx (forge8): the arc line, on every window
   if(!G.sim&&CFG.dmgNumbers!==0) dmgNum(best.x,best.y-Math.round(best.r*1.1),Math.max(1,Math.round(a)),ELEM.shock.c,best.hp<=0);
   return best;
 }
@@ -30302,6 +30480,7 @@ var SHD=G.shells[i];
          healLeft:Math.max(0,healReach(p)-p.hp),healTot:(p.healAmt0||0),
          healSec:((p.healQ||0)>0&&(p.healRate||0)>0)?(Math.max(0,healReach(p)-p.hp)/(p.healRate)):0,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
+      try{ forgeGlow(p.x,p.y,p.face,p.wep,p.downed||p.hp<=0); }catch(_fg){}   // v23.xx (forge8): a forged gun glows at the hands
       if(pWet){
         wc.restore(); _svd--;
         // The waterline itself: a dark ellipse where the body enters, a bright
@@ -30691,7 +30870,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
   for(i=0;i<_BLS.length;i++){
 var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
     var _trc=(!isDay()&&!b.owner)?3:1;
-    wc.strokeStyle=b.tint; wc.lineWidth=2;
+    wc.strokeStyle=b.tint; wc.lineWidth=(b.el||b.elw)?3:2;   // v23.xx (forge8): an elemental tracer is wider, in its colour
     wc.beginPath(); wc.moveTo(b.x-b.vx/bm*9*_trc,b.y-b.vy/bm*9*_trc-12);
     wc.lineTo(b.x,b.y-12); wc.stroke();
     if(_trc>1){
@@ -30708,6 +30887,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   try{ drawDeathAnims(); }catch(_dda){}   // v17.47: his pick 29
   try{ gfxBodyFx(dt); }catch(_gbf){}   // v23.xx (gfx2): body and air effects hook
+  try{ drawElemFx(dt); }catch(_gef){}   // v23.xx (forge8): THE FORGE, flames, arcs, frost, ice and acid on the bodies
   try{ gfxMuzzleFx(dt); }catch(_gmz){}   // v23.xx (gfx24): the muzzle flash of every shot since the last frame, at full strength
   try{ gfxAir(dt); }catch(_gae){}   // v23.xx (gfx30): batch E air pass (explosions)
   for(i=0;i<G.puffs.length;i++){
@@ -40396,7 +40576,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v25.48: Player 2 elemental rounds burn, shock, freeze and corrode on the host too. Check 25.48 fails on v25.47',
+  now:'v25.49: Elemental hits now show flames, arcs, frost, ice and acid, and a forged gun glows. Check 25.49 fails on v25.48',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -44788,11 +44968,13 @@ function netOnState(peer,m){
   if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:'REVIVE '+String(netSeatName(s)||'your teammate').toUpperCase(),key:'tmdown'+s,icon:'party',hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); try{ sndDowned(0,x,y); }catch(_dn){} }catch(_md){} }   // v24.xx (his order 2026-10-12): and heard, where he fell
   if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
   if(up&&(m.sh||g.sh)) g.sh=m.sh?1:0;   // v23.30 (arcade9): the teammate spawn shield
+  if(up){ g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; }   // v23.xx (forge8): his forged gun
   if(lk) g.lk=lk;
   if(NET.role==='host'){
     out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};
     if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; }   // v15.79: passed on as it came
     if(lk) out.lk=lk;
+    if(up&&g.fk){ out.fk=g.fk; if(g.el) out.el=g.el; }   // v23.xx (forge8)
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSendFast(NET.peers[i],out);
   }
   return 'state';
@@ -45938,6 +46120,7 @@ function netUpTick(dt){
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
   if(G.arcade&&p.arcSh) msg.sh=1;   // v23.30 (arcade9): only while shielded
+  if(p.wep&&(p.wep.fk===1||p.wep.fk===2)){ msg.fk=p.wep.fk; if(p.wep.fk===2&&p.wep.el&&ELEM[p.wep.el]) msg.el=p.wep.el; }   // v23.xx (forge8): the forged gun in hand, for his glow
   NET.upN++;
   if(NET.role==='host') netEntsTick();   // v15.80: on the same clock, where every body stands, and every body that arrived or left since the last tick
   if(NET.role==='host') netContTick();   // v15.91: on the same clock, every container that arrived, opened or shut since the last tick
@@ -46009,6 +46192,7 @@ function netUpDrawOne(g){
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
        gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build});
     if(g.sh&&G&&G.arcade) arcadeShieldRing(g.x,g.y,0);   // v23.30 (arcade9)
+    if(g.fk) forgeGlow(g.x,g.y,g.f,{fk:g.fk,el:g.el},g.dn);   // v23.xx (forge8): his forged gun glows too
   }catch(e){}
   if(lift>0){ try{ wc.restore(); }catch(e2){} }
 }
@@ -46107,7 +46291,7 @@ function netUpShared(){ return !!((netEntsHost()||netEntsPeer())&&netInCount()>0
 function netFxShot(b){
   var i, m;
   if(!b||!netUpShared()) return false;
-  m={t:'fx',k:'b',s:NET.seat,b:[Math.round(b.x),Math.round(b.y),Math.round(b.vx),Math.round(b.vy),+(+b.life||0).toFixed(3),String(b.tint||'#ffd48a').slice(0,9)]};
+  m={t:'fx',k:'b',s:NET.seat,b:[Math.round(b.x),Math.round(b.y),Math.round(b.vx),Math.round(b.vy),+(+b.life||0).toFixed(3),String(b.tint||'#ffd48a').slice(0,9),b.el?1:0]};   // v23.xx (forge8): 1 for an elemental round, drawn wider
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSendFast(NET.peers[i],m);
   return true;
 }
@@ -46200,9 +46384,13 @@ function netFxTake(peer,m){
   if(NET.role==='host') for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q!==peer&&q.state==='in') netSendFast(q,m); }
   if(m.k==='b'&&m.b&&m.b.length>=5){
     a=m.b; G.fxBullets=G.fxBullets||[];
-    if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1});
+    if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1,elw:a[6]?1:0});
     if(!G.sim){ try{ gfxShotFx(+a[0]||0,+a[1]||0,Math.atan2(+a[3]||0,+a[2]||0),a[5]); }catch(_gsx){} }   // v23.xx (gfx24): and its muzzle flash
     return 'fx:b';
+  }
+  if(m.k==='a'&&m.a&&m.a.length>=4){   // v23.xx (forge8): a shock arc the host drew
+    a=m.a; if(isFinite(a[0])&&isFinite(a[1])&&isFinite(a[2])&&isFinite(a[3])) elemArcFx(+a[0],+a[1],+a[2],+a[3],0);
+    return 'fx:a';
   }
   if(m.k==='d'&&m.d&&m.d.length>=4){   // v16.22: a damage number one of the party put up
     a=m.d; try{ if(!G.sim&&CFG.dmgNumbers!==0) dmgNum(+a[0]||0,+a[1]||0,Math.max(1,a[2]|0),(/^#[0-9a-fA-F]{3,8}$/).test(a[3])?a[3]:'#FFF6DC',!!a[4]); }catch(_dn){}
@@ -47663,6 +47851,7 @@ function netEntFlags(e){
   if(e.kind==='raider'&&raiderCrouched(e)) f|=2048; if(e.roll>0) f|=4096; if(e.steady) f|=8192; if(e.reviving) f|=16384; if(e.shotT>0) f|=32768;
   if(e.lootT>0) f|=65536; if((e.healQ||0)>0) f|=131072; if(e.sprintPool>0) f|=262144; if(e.helped) f|=524288; if(e.grudge) f|=1048576;
   if(e.parley>0) f|=2097152; if(e.blind>0) f|=4194304;
+  if(e.burnT>0) f|=8388608; if(e.stunT>0) f|=16777216; if(e.chillT>0) f|=33554432; if(e.frozenT>0) f|=67108864; if(e.corrT>0) f|=134217728;   // v23.xx (forge8): THE FORGE statuses, so player 2 sees them
   if(e.downed&&e.getUp>0) f|=8388608;   // pillrevive: he is getting up
   return f;
 }
@@ -47745,6 +47934,7 @@ function netEntFlagsApply(e,f){
   if((f&4096)&&!(e.roll>0)) e.roll=0.38;
   e.steady=!!(f&8192); e.reviving=(f&16384)?e:null; e.shotT=(f&32768)?0.35:0; e.lootT=(f&65536)?1:0; e.healQ=(f&131072)?1:0;
   e.sprintPool=(f&262144)?6:0; e.helped=(f&524288)?1:0; e.grudge=!!(f&1048576); e.parley=(f&2097152)?1:0; e.blind=(f&4194304)?1:0;
+  e.burnT=(f&8388608)?0.3:0; e.stunT=(f&16777216)?0.3:0; e.chillT=(f&33554432)?0.3:0; e.frozenT=(f&67108864)?0.3:0; e.corrT=(f&134217728)?0.3:0;   // v23.xx (forge8): drawn here, run by the host only
   if((f&8388608)&&e.downed){ if(!(e.getUp>0)){ e.getUp=1e-3; if(!G.sim){ try{ var _guN=earsOf(e.x,e.y); blip('pick',_guN.d,_guN.pan); }catch(_gun){} } } } else e.getUp=0;   // pillrevive: the host says he is getting up; the bar fills here
 }
 // A snapshot from the host, on a linked window up top on that seed: each row onto its body by number, a body never seen made

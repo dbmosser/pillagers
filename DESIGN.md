@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v25.49 - THE FORGE: ELEMENT EFFECTS AND SOUNDS
+
+Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. Each element now looks and sounds like itself, on the body that was hit and never as a screen tint: FIRE puts flames and embers on the body (and smoke behind a panicking pillager), SHOCK draws a jagged arc to the second enemy and small arcs over a stunned machine, CRYO puts frost on a chilled body and an ice block round a frozen one, ACID drips green. Element tracers are wider and in the element colour, each element has its own impact sound and a freeze cracks. A forged gun glows at your hands, gold for MK II and the element colour for MK III. In co-op the host sends the statuses, the arcs and each player forged gun, so both windows see the same thing.
+
+MEASURED. Check 25.49 passes, and fails on v25.48.
 ## v25.48 - THE FORGE: PLAYER 2S ELEMENTAL ROUNDS
 
 Co-op hunt while he was away. His idea of 2026-10-12: upgrade guns and add elemental damage. In two player co-op the host runs every enemy, and player 2 only sends what his rounds did. His shot word now names the element of his MK III round, and the host applies it: the burn, the arc, the stun, the chill and the acid, all credited to player 2, so a burn that finishes a pillager is his kill. Acid eats the plate before the host soaks the round, as it does for the host. An element the game does not know is ignored.
