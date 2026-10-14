@@ -19581,27 +19581,27 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); p=g.player;
-       if(!WEAPONS.smg_v||!WEAPONS.smg||!WEAPONS.lance||!ITEMS.gun_lance||!ITEMS.gun_smg||!ITEMS.gun_rifle||!ITEMS.gun_pistol) return 'SKIP: a gun this check names is missing';
-       p.wep=cp('smg_v'); p.sec=cp('smg'); p.ammo=p.wep.mag; p.secAmmo=p.sec.mag;
+       if(!WEAPONS.carbine||!WEAPONS.smg||!WEAPONS.lance||!ITEMS.gun_lance||!ITEMS.gun_carbine||!ITEMS.gun_rifle||!ITEMS.gun_pistol) return 'SKIP: a gun this check names is missing';
+       p.wep=cp('smg'); p.sec=cp('carbine'); p.ammo=p.wep.mag; p.secAmmo=p.sec.mag;
        p.wepIssued=false; p.secIssued=false; p.wepFromArmory=false; p.secFromArmory=false; p.swapped=false; p.reloading=0;
        g.bag=g.bag.filter(function(b){ return !(ITEMS[b]&&ITEMS[b].use==='gun'); });
        g.hotAssign={}; g.hotAuto={}; gunKeysSettle({deploy:1});
        grantLoot({x:p.x,y:p.y,loot:[]},['gun_lance']);
-       if(!p.wep||p.wep.id!=='smg_v') bad.push('the gun in hand became '+(p.wep&&p.wep.id)+', not smg_v');
+       if(!p.wep||p.wep.id!=='smg') bad.push('the gun in hand became '+(p.wep&&p.wep.id)+', not smg');
        if(!p.sec||p.sec.id!=='lance') bad.push('the stowed slot holds '+(p.sec&&p.sec.id)+', not lance');
-       if(g.bag.indexOf('gun_smg')<0) bad.push('the old stowed smg is not in the backpack');
+       if(g.bag.indexOf('gun_carbine')<0) bad.push('the old stowed carbine is not in the backpack');
        if(g.bag.indexOf('gun_lance')>=0) bad.push('the lance also went into the backpack');
-       k=onKey('gun_smg',2); if(k!==2&&k!==3) bad.push('no key 3 or 4 holds gun_smg ('+JSON.stringify(g.hotAssign)+')');
+       k=onKey('gun_carbine',2); if(k!==2&&k!==3) bad.push('no key 3 or 4 holds gun_carbine ('+JSON.stringify(g.hotAssign)+')');
        if(!bad.length){
          grantLoot({x:p.x,y:p.y,loot:[]},['gun_rifle']);
-         if(p.wep.id!=='smg_v'||p.sec.id!=='lance') bad.push('a rifle moved a gun in the hands ('+p.wep.id+'/'+p.sec.id+')');
+         if(p.wep.id!=='smg'||p.sec.id!=='lance') bad.push('a rifle moved a gun in the hands ('+p.wep.id+'/'+p.sec.id+')');
          if(g.bag.indexOf('gun_rifle')<0) bad.push('a rifle, better than the worst gun carried, is not in the backpack');
          else { k=onKey('gun_rifle',2); if(k!==2&&k!==3) bad.push('no key 3 or 4 holds gun_rifle ('+JSON.stringify(g.hotAssign)+')'); }
          m0=ARCADE.mine|0; b0=g.bag.length;
          grantLoot({x:p.x,y:p.y,loot:[]},['gun_pistol']);
          if(g.bag.indexOf('gun_pistol')>=0||g.bag.length!==b0) bad.push('a pistol, worse than every gun carried, went into the backpack');
          if(!((ARCADE.mine|0)>m0)) bad.push('a scrapped pistol scored nothing ('+m0+' to '+ARCADE.mine+')');
-         if(p.wep.id!=='smg_v'||p.sec.id!=='lance') bad.push('a pistol moved a gun in the hands');
+         if(p.wep.id!=='smg'||p.sec.id!=='lance') bad.push('a pistol moved a gun in the hands');
        }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
