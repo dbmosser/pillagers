@@ -8934,7 +8934,7 @@ window.__REGRESS=[
          if(!p.wep||p.wep.id!==id){ bad.push(id+': the swap did not bring the gun up'); continue; }
          t=(p.wep&&p.wep.mag>0)?firstShot():0;
          if(t<0) bad.push(id+': never fired within 4 s');
-         else if(Math.abs(t-want[id])>0.035) bad.push(id+': first shot after '+t.toFixed(2)+' s, not '+want[id]+' s');
+         else if(Math.abs(t-want[id])>0.035&&!(id==='lmg'&&Math.abs(t-(want[id]+0.15))<0.035)) bad.push(id+': first shot after '+t.toFixed(2)+' s, not '+want[id]+' s');   // v26.xx (feel13): the Support MG spins up for 0.15 s after the draw, so it fires at 1.0 s (before) or 1.15 s (after)
        }
        if(!(DRAWT.pistol<DRAWT.smg&&DRAWT.smg<DRAWT.rifle&&DRAWT.rifle<DRAWT.shotgun&&DRAWT.shotgun<DRAWT.dmr&&DRAWT.dmr<DRAWT.sniper&&DRAWT.sniper<DRAWT.lmg)) bad.push('the draw times do not rise from pistol to machine gun');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
