@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.31 - THE WHAT IS NEW CARD NAMES THE WHEEL AND THE FORGE
+
+Co-op hunt while he was away. The card was stamped v26.18 and the stamp may not trail the build by more than 0.15. The card was stamped v26.18 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the item wheel and nine gun slots (his order 2026-10-14), the Forge station (his pack-a-punch order) and the rarity variants (his order).
+
+MEASURED. Check 26.31 passes, and fails on v26.30.
 ## v26.30 - PILLAGERS, THE PEDDLER AND WIRT DEAL HIGHER RARITY GUNS
 
 Co-op hunt while he was away. The second half of the higher rarity guns, from his order of 2026-10-14. A pillager now carries the higher rarity version of his gun about one time in seven (a pillager with a Compact SMG, an Auto Rifle, a Burst Carbine or a Riot Scattergun), an elite pillager about one time in six, and the body drops exactly that gun with its higher damage. The Peddler stocks the higher version in his gun slot at about one stall in five, priced for what it is worth, and Wirt gives one in five of the guns he deals as the higher version. Each of them is decided from a number the game already draws, or from where the stall stands, so nothing new is drawn and the seeded raids are what they were. The stat card of a gun now says its rarity in its colour next to the name, and when the card compares two guns of the same model at different rarities it says which rarity it is against, with the damage figures and an UPGRADE verdict. The backpack and stash hover card of a higher gun says its rarity and the damage it adds on its damage row, without taking a new row.

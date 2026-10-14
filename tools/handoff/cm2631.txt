@@ -1,0 +1,7 @@
+v26.31: the what is new card names the wheel and the forge
+
+The what is new card names the wheel and the forge.
+
+Check 26.31. Fails on v26.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

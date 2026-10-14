@@ -6093,6 +6093,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'26.31',what:'the what is new card is stamped within 0.15 of the build and leads with the the wheel and the forge news, shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>26.31+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('THE WHEEL A'+'ND THE FORGE')!==0) bad.push('the card does not lead with the the wheel and the forge news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'26.30',what:'his order (2026-10-14), the other ways a gun turns up: a pillager carries the twin one rarity up about one time in seven and his body drops it, an elite pillager about one in six, the Peddler stocks it at one stall in five, Wirt gamble gives it one gun in five, none of them draws a new number, and the stat card names the rarity (the same model at another rarity says which) and the hover damage row of a twin says its rarity and gain',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__applyLoaded)||typeof mkRaider!=='function'||typeof mkPeddler!=='function'||typeof gunCardDraw!=='function'||typeof gunCompare!=='function'||typeof itemRows!=='function'||typeof rollTable!=='function') return 'SKIP: this fixture cannot build a pillager, a stall or a gun card';
