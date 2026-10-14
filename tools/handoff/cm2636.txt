@@ -1,0 +1,7 @@
+v26.36: every gun has its own key
+
+Every kind of gun has its own key on the bar, and a better rarity of the gun you hold swaps in at once with your rounds.
+
+Check 26.36. Fails on v26.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
