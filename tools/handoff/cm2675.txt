@@ -1,0 +1,7 @@
+v26.75: the what is new card names the raid flow
+
+The what is new card names the raid director, the air strike and the run goals.
+
+Check 26.75. Fails on v26.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

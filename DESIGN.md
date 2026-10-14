@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.75 - THE WHAT IS NEW CARD NAMES THE RAID FLOW
+
+Co-op hunt while he was away. The card was stamped v26.61 and the stamp may not trail the build by more than 0.15. Its new line names the raid flow builds since: the director that makes the waves rise and fall, the air strike you charge with damage, and the three run goals each raid.
+
+MEASURED. Check 26.75 passes, and fails on v26.74.
 ## v26.74 - AIR STRIKE PLATE AT 4K
 
 Co-op hunt while he was away. A fix to the air strike meter: its plate was sized in the small HUD units while its words were drawn at the screen size, so on a 4K screen the words would have outgrown the plate. The plate, its bar and the callout over the aim ring now all scale with the screen the way the raid status panel does.

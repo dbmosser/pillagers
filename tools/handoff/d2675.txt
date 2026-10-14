@@ -1,0 +1,5 @@
+## v26.75 - THE WHAT IS NEW CARD NAMES THE RAID FLOW
+
+Co-op hunt while he was away. The card was stamped v26.61 and the stamp may not trail the build by more than 0.15. Its new line names the raid flow builds since: the director that makes the waves rise and fall, the air strike you charge with damage, and the three run goals each raid.
+
+MEASURED. Check 26.75 passes, and fails on v26.74.
