@@ -1,0 +1,7 @@
+v26.80: raid events: orbital debris
+
+Raids now plan one or two events with a countdown ring and a map mark; the first is orbital debris with burning loot wrecks.
+
+Check 26.80. Fails on v26.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
