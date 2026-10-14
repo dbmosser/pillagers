@@ -1,0 +1,5 @@
+## v26.41 - MOUSE SENSITIVITY, HIP AND AIMING DOWN SIGHTS
+
+Co-op hunt while he was away. His order: add all of this to Settings. Controls gets two rows, MOUSE SENSITIVITY and AIM DOWN SIGHTS SENSITIVITY, each from 50% to 200% with 100% as it was. In a raid, when you move the mouse the aim turns round you by that much: at 200% it turns twice as far for the same move of your hand, at 50% half as far, and aiming down sights has its own setting so you can be steadier when you aim. How far out the crosshair sits is left alone. At 100% it is the plain cursor exactly as before, and wherever the cursor is for pointing (the backpack, the map, the wheel, the stall, the pause box, the belt) it is the real cursor too. Saved with the profile; in the DEMO it holds for the session.
+
+MEASURED. Check 26.41 passes, and fails on v26.40.

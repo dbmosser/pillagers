@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.41 - MOUSE SENSITIVITY, HIP AND AIMING DOWN SIGHTS
+
+Co-op hunt while he was away. His order: add all of this to Settings. Controls gets two rows, MOUSE SENSITIVITY and AIM DOWN SIGHTS SENSITIVITY, each from 50% to 200% with 100% as it was. In a raid, when you move the mouse the aim turns round you by that much: at 200% it turns twice as far for the same move of your hand, at 50% half as far, and aiming down sights has its own setting so you can be steadier when you aim. How far out the crosshair sits is left alone. At 100% it is the plain cursor exactly as before, and wherever the cursor is for pointing (the backpack, the map, the wheel, the stall, the pause box, the belt) it is the real cursor too. Saved with the profile; in the DEMO it holds for the session.
+
+MEASURED. Check 26.41 passes, and fails on v26.40.
 ## v26.40 - AIM, CROUCH AND SPRINT: HOLD OR TOGGLE
 
 Co-op hunt while he was away. His order: add all of this to Settings. Controls gets three rows, one each for AIM (the right mouse button), CROUCH and SPRINT, each HOLD or TOGGLE, and each starts as the game already played: aim is held, crouch is a toggle, sprint is held. AIM on TOGGLE aims on one press of the right button and stops on the next. CROUCH on HOLD keeps you down only while the key is down (Ctrl or C), and a controller B stays one tap per change. SPRINT on TOGGLE runs on one press of the key, or of the controller stick click, until the next press, until you stop moving, or until you run out of breath. They change at once, are saved with the profile, and in the DEMO hold for the session.

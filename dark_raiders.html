@@ -2194,7 +2194,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.40';
+var VER='26.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14544,13 +14544,57 @@ cv.addEventListener('wheel',function(e){
 // back the stance from an older press.
 window.addEventListener('keyup',function(e){ keys[keyRemap(e.code)]=false; if(CFG.crouchHold===1&&G&&!G.over&&(keyRemap(e.code)==='ControlLeft'||keyRemap(e.code)==='ControlRight'||keyRemap(e.code)==='KeyC')) G.crouchTog=false; /* v26.xx (settings2): CROUCH HOLD stands up with the key */ if(keyRemap(e.code)==='KeyQ'&&typeof G!=='undefined'&&G&&G.wheel&&typeof wheelRelease==='function') wheelRelease(); /* v26.xx (wheel2): and the wheel picks */ if(keyRemap(e.code)==='AltLeft'&&state==='raid') e.preventDefault(); /* v25.xx (altstatus): and its release, or the browser takes the menu focus */ if((e.code==='ControlLeft'||e.code==='ControlRight')&&G) G.ctrlUndo=null; });
 cv.addEventListener('click',function(){ ac(); });
+// v26.xx (settings3), HIS ORDER 2026-10-14: MOUSE SENSITIVITY. In a live raid, with no panel to point at, a move of the mouse turns the aim by the
+// row's factor (hip, or aiming down sights while the sights are up): the angle of the real cursor round the player on screen is followed by the
+// crosshair scaled, its distance kept, and drawn in along its own line if that would leave the screen. At 100% (or in any menu, the backpack, the
+// map, the wheel, the stall, the pause box, over the belt or a HUD panel's bar) the crosshair is the real cursor exactly, as it was. It follows from
+// where the crosshair is when scaling starts, so nothing jumps; the real cursor, hidden while aiming, is the OS pointer over the belt and the panels.
+var MS={rx:null,ry:null,th:null};
+function msSens(){ var p=G&&G.player, v=(p&&p.ads)?CFG.msAds:CFG.msHip; return (typeof v==='number'&&v>=0.2&&v<=4)?v:1; }
+function msPlayerScreen(){
+  var p=G.player, z=ZOOM(), cx=(G.camX===undefined?p.x-W/(2*z):G.camX), cy=(G.camY===undefined?p.y-H/z*0.54:G.camY);
+  return {x:(p.x-cx)*z,y:(p.y-cy)*z};
+}
+function msLive(rx,ry){
+  var i, c, h;
+  if(state!=='raid'||!G||G.over||G.sim||!G.player||G.player.downed||G.paused||pauseOpen||tuneOpen) return false;
+  if(G.bagOpen||G.mapOpen||G.wheel||G.trade||G.forgeUI||HUDDRAG||HUDRESIZE) return false;
+  for(i=0;G.hotCells&&i<G.hotCells.length;i++){ c=G.hotCells[i]; if(rx>=c.x&&rx<=c.x+c.w&&ry>=c.y&&ry<=c.y+c.h) return false; }
+  h=(typeof hudHit==='function')?hudHit(rx,ry):null;
+  if(h&&(h.part==='bar'||h.part==='glyph'||h.part==='grip')) return false;
+  return true;
+}
+function msMove(rx,ry,px,py){
+  var s=msSens(), ps, a0, a1, da, d, x, y, t, m;
+  if(s===1||!msLive(rx,ry)){ MS.th=null; MS.rx=null; return false; }
+  ps=msPlayerScreen();
+  if(MS.th===null||MS.rx===null){ MS.th=Math.atan2(py-ps.y,px-ps.x); MS.rx=px; MS.ry=py; }
+  a0=Math.atan2(MS.ry-ps.y,MS.rx-ps.x); a1=Math.atan2(ry-ps.y,rx-ps.x); da=a1-a0;
+  while(da>Math.PI) da-=2*Math.PI;
+  while(da<-Math.PI) da+=2*Math.PI;
+  MS.th+=da*s; MS.rx=rx; MS.ry=ry;
+  d=Math.sqrt((rx-ps.x)*(rx-ps.x)+(ry-ps.y)*(ry-ps.y));
+  if(!(d>=1)) return true;
+  x=d*Math.cos(MS.th); y=d*Math.sin(MS.th); t=1; m=20*hudRes();
+  if(W>0&&H>0){
+    if(x>0&&ps.x+x>W-m) t=Math.min(t,(W-m-ps.x)/x);
+    if(x<0&&ps.x+x<m) t=Math.min(t,(m-ps.x)/x);
+    if(y>0&&ps.y+y>H-m) t=Math.min(t,(H-m-ps.y)/y);
+    if(y<0&&ps.y+y<m) t=Math.min(t,(m-ps.y)/y);
+    if(!(t>0)) t=0;
+  }
+  mouse.x=clamp(ps.x+x*t,0,W); mouse.y=clamp(ps.y+y*t,0,H);
+  return true;
+}
 cv.addEventListener('mousemove',function(e){
   var r=cv.getBoundingClientRect();
-  mouse.x=e.clientX-r.left; mouse.y=e.clientY-r.top;
+  var _mpx=mouse.x, _mpy=mouse.y, _mrx=e.clientX-r.left, _mry=e.clientY-r.top;   // v26.xx (settings3): the crosshair before this move, and the real cursor now
+  mouse.x=_mrx; mouse.y=_mry;
   // v16.77, his order: a real mouse move takes the crosshair back from the pad, which places it every frame while it owns
   // it (padCursorPut). Not in the player 2 window of a same machine party: that window has no mouse of its own, so the
   // host pointer crossing it must not drag the child crosshair away.
   if(typeof PAD!=='undefined'&&PAD&&!(typeof NET!=='undefined'&&NET&&NET.same==='p2')) PAD.curOwn=0;
+  try{ msMove(_mrx,_mry,_mpx,_mpy); }catch(_ms){ MS.th=null; }   // v26.xx (settings3): MOUSE SENSITIVITY
   if(HUDDRAG){
     P.hud=P.hud||{}; var HD=P.hud[HUDDRAG.id]=P.hud[HUDDRAG.id]||{};
     HD.dx=HUDDRAG.dx+(mouse.x-HUDDRAG.mx);
@@ -42680,7 +42724,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.40: Controls has hold or toggle for aim, crouch and sprint. Check 26.40 fails on v26.39',
+  now:'v26.41: Controls has mouse sensitivity for the hip and for aiming down sights. Check 26.41 fails on v26.40',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55238,6 +55282,29 @@ var GAMEOPTS=[
      {n:'HOLD',   cfg:{sprintTgl:0}},
      {n:'TOGGLE', cfg:{sprintTgl:1}}
    ], def:0},
+  // v26.xx (settings3), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): MOUSE SENSITIVITY, for the hip and for aiming down sights.
+  // The mouse is the cursor, so the sensitivity is how far the AIM TURNS for a move of the mouse: the angle of the cursor round the player is
+  // scaled (2x turns twice as far, 0.5x half as far) and the distance is left as it is. 100% is the cursor exactly as it was. See msMove.
+  {k:'msHip', label:'MOUSE SENSITIVITY', sec:'CONTROLS',
+   hint:'HOW FAR THE AIM TURNS FOR A MOVE OF THE MOUSE. 100% IS THE CURSOR AS IT IS. NOT WHILE THE BACKPACK, THE MAP OR THE WHEEL IS OPEN.',
+   opts:[
+     {n:'50%',  cfg:{msHip:0.5}},
+     {n:'75%',  cfg:{msHip:0.75}},
+     {n:'100%', cfg:{msHip:1}},
+     {n:'125%', cfg:{msHip:1.25}},
+     {n:'150%', cfg:{msHip:1.5}},
+     {n:'200%', cfg:{msHip:2}}
+   ], def:2},
+  {k:'msAds', label:'AIM DOWN SIGHTS SENSITIVITY', sec:'CONTROLS',
+   hint:'THE SAME, WHILE YOU AIM DOWN SIGHTS. LOWER IS STEADIER.',
+   opts:[
+     {n:'50%',  cfg:{msAds:0.5}},
+     {n:'75%',  cfg:{msAds:0.75}},
+     {n:'100%', cfg:{msAds:1}},
+     {n:'125%', cfg:{msAds:1.25}},
+     {n:'150%', cfg:{msAds:1.5}},
+     {n:'200%', cfg:{msAds:2}}
+   ], def:2},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',
    opts:[

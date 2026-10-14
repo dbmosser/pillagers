@@ -1,0 +1,7 @@
+v26.41: mouse sensitivity, hip and aiming down sights
+
+Controls has mouse sensitivity for the hip and for aiming down sights.
+
+Check 26.41. Fails on v26.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
