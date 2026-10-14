@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.67';
+var VER='26.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11589,7 +11589,7 @@ function mercEngage(e,dt){
 // the nearest hostile raider it CAN see as a target.
 function machHuntRaider(e,dt){
   if(!CFG.machVsRaider||!e||e.downed) return false;
-  if(e.kind!=='sentry'&&e.kind!=='crawler') return false;
+  if(e.kind!=='sentry'&&e.kind!=='crawler'&&e.kind!=='bulwark'&&!(e.kind==='warden'&&!e.boss)) return false;   // v26.xx (ai23): and a plain Warden or a Bulwark
   // v8.48, audit: SIGHT, not reach. e.rng is a sight range for a sentry (340) and
   // a BITE REACH for a crawler (26), and using it as the acquisition radius meant
   // a crawler could only target a pillager already touching it - so it never
@@ -20180,6 +20180,16 @@ function suppHit(en){
   if(en.supp>=SUPP_N){ en.pinT=SUPP_PIN; en.supp=0; return true; }
   return false;
 }
+// v26.xx (ai23), HIS WORDS (2026-10-14, suggestion 23): pillagers and machines "should fight each other even w/o decoys". What fought
+// before: a pillager LOOTING shot a machine in sight (v3.9x, within 280 and 600 of you), and a Sentry or Crawler that could not see you
+// went for a pillager in sight (v3.97). A pillager RUNNING for the ring, which is where most of them are most of the time, ignored every
+// machine he met, and a Warden or a Bulwark had no eyes for anyone but you. Now (1) a pillager in the extract state deals with a machine
+// in sight within 280 the way he deals with a rival crew (feudEngage takes machFoe as a foe too: same range, same gate of 600 from the
+// party), and (2) a plain Warden or a Bulwark that cannot see you hunts a pillager in sight (machHuntRaider). THE OVERSEER is left
+// alone (it walks home), and so are the Snitch, the Peddler and the Survivor. No decoy, no noise needed: contact is enough.
+function machFoe(o){
+  return !!o&&o.kind!=='raider'&&o.kind!=='snitch'&&o.kind!=='peddler'&&o.kind!=='stray'&&!o.neutral&&!o.boss&&!o.downed&&!o.finished&&o.hp>0;
+}
 function feudFoe(a,b){
   if(CFG.raiderFeud===0) return false;
   if(G&&G.crewsHot===undefined) G.crewsHot=((G.seed>>>0)%10)<6;
@@ -20212,7 +20222,7 @@ function feudEngage(e,dt){
   var foe=null,fd=280;
   for(var i=0;i<G.ents.length;i++){
     var o=G.ents[i];
-    if(!feudFoe(e,o)||o.hp<=0) continue;
+    if((!feudFoe(e,o)&&!machFoe(o))||o.hp<=0) continue;   // v26.xx (ai23): a machine in sight is a foe too
     var d=dist(e,o);
     if(d<fd&&losClear(e.x,e.y,o.x,o.y,G.vseg)){ fd=d; foe=o; }
   }
@@ -43418,7 +43428,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.67: The cursor outer ring widens when you move, sprint or shoot and tightens when you stand or crouch, and your spread follows it. Check 26.67 fails on v26.66',
+  now:'v26.68: Pillagers heading for the ring now fight machines they meet, and Wardens and Bulwarks fight pillagers they see. Check 26.68 fails on v26.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

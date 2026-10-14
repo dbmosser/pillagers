@@ -1,0 +1,7 @@
+v26.68: pillagers and machines fight on contact
+
+Pillagers heading for the ring now fight machines they meet, and Wardens and Bulwarks fight pillagers they see.
+
+Check 26.68. Fails on v26.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

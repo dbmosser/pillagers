@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.68 - PILLAGERS AND MACHINES FIGHT ON CONTACT
+
+Co-op hunt while he was away. His words on suggestion 23: pillagers and machines should fight each other even without decoys. Before, a pillager who was looting shot a machine he met, and a Sentry or Crawler that could not see you went for a pillager in sight, but a pillager running for the ring, which is where most of them are most of the time, ignored every machine he passed, and a Warden or Bulwark had eyes for nobody but you. Now a pillager heading for the ring stops and shoots a machine that is in sight within 280 units, the way he already does with a rival crew, and a plain Warden or a Bulwark that cannot see you shoots at a pillager in sight. THE OVERSEER keeps to its lair and the Crier, the Peddler and the Survivor stay out of it. No decoy or noise is needed: being in sight of each other is enough, so a firefight you can walk up to and loot afterward turns up on its own.
+
+MEASURED. Check 26.68 passes, and fails on v26.67.
 ## v26.67 - BLOOM RING
 
 Co-op hunt while he was away. His yes to a bloom ring. The outer ring round your cursor (the one that counts your rounds, and the one that fills while you reload) now tells you how steady your aim is. It sits wider when you walk, wider again when you sprint or roll, and swells a little with every shot; it closes in when you stand still and tightens further when you crouch. The crosshair style and colour rows still decide how it looks. It tells the truth, too: the spread of every round you fire now follows the ring. Standing still is exactly as accurate as before, crouching is a tenth tighter, walking is about a sixth looser and sprinting and shooting about a third, with steady aim (right mouse) keeping its big tightening. This is a balance change, which his rule of 2 October allows, and the seeded stream does not move.
