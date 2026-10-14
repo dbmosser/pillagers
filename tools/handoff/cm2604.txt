@@ -1,0 +1,7 @@
+v26.04: crouch still to creep back health
+
+Crouch and keep still and your health slowly creeps back, up to 85.
+
+Check 26.04. Fails on v26.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

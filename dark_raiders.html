@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.03';
+var VER='26.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17542,7 +17542,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // dropped where it started, as ESC drops it. Live play only: the bot never opens either.
   if(!G.sim&&(G.mapOpen||G.bagOpen)){ G.mapOpen=false; G.mapCur=null; if(G.bagOpen){ G.bagOpen=false; G.drag=null; } }
   padRumble(Math.min(1,0.3+amt/40),Math.round(110+Math.min(200,amt*6)));   // v17.37: his pick 2, the pad buzzes with the hit
-  p.combatT=0;
+  p.combatT=0; p.crQuiet=0;   // v26.xx (crouchregen): and the 6 quiet seconds the crouched creep wants start over
   // HIS NOTE, 2026-08-26: "add screen shake any time you take damage". Shake was
   // reserved for the loud things, explosions, a wall coming down, a jam, so a
   // sentry chipping you across a street produced a red vignette and nothing else,
@@ -19269,6 +19269,23 @@ function tickRegen(dt){
   // 85 and a minute of quiet did what only a Medkit may. Regen stops at the Bandage ceiling, and never takes health away above
   // it; with the heal ceilings dial off it runs to 100 as before.
   var _top=healCeil(ITEMS.bandage);
+  // v26.xx (crouchregen), HIS NOTE (2026-10-13): "crouching and sitting still should very slowly regain health". CROUCHED AND KEPT
+  // STILL, he creeps back one point every 2 seconds. It wants 3 seconds of stillness (no move input and no push of more than a few
+  // units), 3 seconds since the last shot fired or taken and 6 since the last hit that landed; a move, a shot, a roll, standing up
+  // or a hit puts the wait back to the start. It stops at the Bandage ceiling like the creep below, so 85 and no higher and a Medkit
+  // stays the only way to 100, and while it runs it takes the place of that creep (one point in 2 seconds beats one in 3, and it
+  // starts at 6 quiet seconds, not 10) so the two never stack. Not downed, not dying, not the bot. The RECOVERING mark rides the
+  // same regenLive stamp. The health is this window's own and rides the same broadcast a heal does. No seeded draw, no new dial.
+  var _cs=!G.sim&&crouchHeld()&&!p.moving&&!p.downed&&!p.dying&&p.hp>0&&!p.specOut&&!(G.deathBeat!==undefined&&G.deathBeat!==null);
+  p.crQuiet=(p.crQuiet===undefined?99:p.crQuiet)+dt;
+  if(_cs&&p.crX!==undefined&&Math.abs(p.x-p.crX)+Math.abs(p.y-p.crY)<6) p.crStill=(p.crStill||0)+dt;
+  else { p.crStill=0; p.crX=p.x; p.crY=p.y; }
+  if(_cs&&p.crStill>=3&&p.combatT>=3&&p.crQuiet>=6&&p.hp<_top){
+    p.crAcc=(p.crAcc||0)+dt; p.regenAcc=0; p.regenLive=G.t; p.crLive=G.t;
+    while(p.crAcc>=2&&p.hp<_top){ p.crAcc-=2; p.hp=Math.min(_top,p.hp+1); G.tel.regen=(G.tel.regen||0)+1; }
+    return;
+  }
+  p.crAcc=0;
   if(p.downed||p.hp>=_top||p.combatT<CFG.regenDelay){ p.regenAcc=0; return; }
   p.regenAcc=(p.regenAcc||0)+dt;
   p.regenLive=G.t;   // v21.65: the RECOVERING icon shows only while this really runs
@@ -32841,7 +32858,7 @@ function statusLive(p){
       // v21.65, HIS NOTE (2026-10-09): "the left hand side says recovering to 85 but i'm not". The icon worked the rule out for itself,
       // so it showed whenever the numbers allowed it, also in moments the regen was not running at all. It now shows only while the regen
       // actually ran in the last half second, so it never says RECOVERING while health stands still.
-      if(!p.downed&&p.hp>0&&p.hp<top&&(p.combatT||0)>=CFG.regenDelay&&typeof p.regenLive==='number'&&G.t-p.regenLive<0.5){ E.on=true; if(E.vk!==top){ E.vk=top; E.v='to '+top; } }
+      if(!p.downed&&p.hp>0&&p.hp<top&&((p.combatT||0)>=CFG.regenDelay||(typeof p.crLive==='number'&&G.t-p.crLive<0.5))&&typeof p.regenLive==='number'&&G.t-p.regenLive<0.5){ E.on=true; if(E.vk!==top){ E.vk=top; E.v='to '+top; } }
     } else if(E.id==='wind'){
       // the v4.24 lock (the ring runs down as the bar climbs back to 12) and the v8.73 latch, which the player update clears
       // every frame the sprint key is up, so while it is set the key is still held
@@ -41464,7 +41481,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.03: The belt now rings the chosen grenade and the chosen heal in gold, like the gun in hand. Check 26.03 fails on v26.02',
+  now:'v26.04: Crouch and keep still and your health slowly creeps back, up to 85. Check 26.04 fails on v26.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
