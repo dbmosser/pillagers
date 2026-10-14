@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.46 - SCREEN SHAKE, BRIGHTNESS AND SHOW FPS
+
+Co-op hunt while he was away. His order: add all of this to Settings. Display gets three rows. SCREEN SHAKE is OFF, LIGHT, STANDARD or STRONG: off holds the picture still through blasts and heavy hits, strong shakes it half as hard again, and standard is how it has been. BRIGHTNESS is DARKER, STANDARD, BRIGHTER or BRIGHTEST and lifts or sinks the shadows of the world, which is what a night raid needs, without touching the menus and the HUD; at standard the picture is untouched. SHOW FPS puts a small frame rate plate in the top left corner of every screen. They change at once and are saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.46 passes, and fails on v26.45.
 ## v26.45 - THE WHAT IS NEW CARD NAMES THE NEW SETTINGS
 
 Co-op hunt while he was away. The card was stamped v26.43 and the stamp may not trail the build by more than 0.15. Its new line names the builds since: Settings in sections with a jump bar, the UI and footsteps volume rows and mono audio, hold or toggle for aim, crouch and sprint, the mouse sensitivity rows, auto-reload and pause when the window loses focus (his order of 2026-10-14).

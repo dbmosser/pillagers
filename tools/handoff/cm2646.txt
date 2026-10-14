@@ -1,0 +1,7 @@
+v26.46: screen shake, brightness and show fps
+
+Display has screen shake, brightness and show fps.
+
+Check 26.46. Fails on v26.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

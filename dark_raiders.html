@@ -1263,6 +1263,10 @@
   #root #setlist .setjump button:hover:not(:disabled){ color:var(--acc); border-color:var(--acc); background:var(--ui-hover); }
   #root #setlist .row[style*="opacity:.7"]{ margin-top:14px; border-top:1px solid var(--ui-line); padding-top:24px; }
   #root #setlist .setjump + .row[style*="opacity:.7"]{ margin-top:0; border-top:0; padding-top:16px; }
+  /* v26.xx (settings5): SHOW FPS, a small graphite plate with an amber number, cut at the top left like the HUD panels, top left of the screen. */
+  #fpsbox{ position:fixed; left:8px; top:6px; z-index:60; display:none; padding:3px 10px 2px 14px; background:rgba(11,12,13,.82); border:1px solid var(--ui-line-hi);
+    color:var(--acc); font-family:var(--f-cond); font-weight:700; font-size:15px; line-height:1.3; letter-spacing:.14em; pointer-events:none; clip-path:polygon(8px 0,100% 0,100% 100%,0 100%,0 8px); }
+  #fpsbox.on{ display:block; }
   /* vNN.xx, UI REDESIGN ui5q2a (his #50, from the AAA judge of the title shots 01, 44 and 57): THE TITLE SITS ON THE WHOLE SCREEN.
      The Undercroft floor walking behind the title is smaller than the screen, so at 1080p and 4K it showed as a lighter rectangle
      with dark bands round it, like a letterboxed screenshot. The title glass now blurs the floor a little and closes to near black
@@ -2197,7 +2201,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.45';
+var VER='26.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41581,6 +41585,46 @@ function gfxStoresDrop(){
 // x EFFECT INTENSITY (CFG.fxInt: FULL 1, HALF 0.5, OFF 0), along a smooth wave of three sines per axis at fixed phases, so a rifle
 // shot barely moves the picture, a frag shakes it and a Warden shell rocks it, and no frame jumps more than about a third of the
 // amplitude from the last. Nothing here draws from any stream (no rnd, no fxr) and nothing feeds the sim. A new raid starts at 0.
+// v26.xx (settings5), HIS ORDER 2026-10-14: SCREEN SHAKE. The Settings row (OFF, LIGHT 0.5, STANDARD 1, STRONG 1.5) scales the trauma shake below on top of
+// EFFECT INTENSITY; an unset or odd value is the usual strength.
+function shakeK(){ var s=+CFG.shake; return (isFinite(s)&&s>=0&&s<=3)?s:1; }
+// v26.xx (settings5): BRIGHTNESS. A gamma on the world canvas through an SVG filter (the exponent below 1 lifts the shadows, above 1 sinks them);
+// at 1, the default, the canvas has no filter at all. brightApply runs every frame and writes only when the row changed.
+var BRT={v:1};
+function brightApply(){
+  var v=+CFG.gam, svg, fl, i, fs, ids=['R','G','B'];
+  if(!(v>0.3&&v<3)) v=1;
+  if(BRT.v===v&&(v===1||document.getElementById('gamf'))) return false;
+  if(v!==1){
+    svg=document.getElementById('gamsvg');
+    if(!svg){
+      svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.id='gamsvg'; svg.setAttribute('width','0'); svg.setAttribute('height','0'); svg.style.position='absolute';
+      fl=document.createElementNS('http://www.w3.org/2000/svg','filter'); fl.id='gamf'; fl.setAttribute('color-interpolation-filters','sRGB');
+      fs=document.createElementNS('http://www.w3.org/2000/svg','feComponentTransfer'); fl.appendChild(fs);
+      for(i=0;i<3;i++){ var f=document.createElementNS('http://www.w3.org/2000/svg','feFunc'+ids[i]); f.setAttribute('type','gamma'); f.setAttribute('amplitude','1'); f.setAttribute('offset','0'); f.setAttribute('exponent','1'); fs.appendChild(f); }
+      svg.appendChild(fl); document.body.appendChild(svg);
+    }
+    [].forEach.call(svg.querySelectorAll('feComponentTransfer > *'),function(f){ f.setAttribute('exponent',String(v)); });
+    cv.style.filter='url(#gamf)';
+  } else cv.style.filter='';
+  BRT.v=v;
+  return true;
+}
+// v26.xx (settings5): SHOW FPS. A small plate (#fpsbox, a DOM element, so it shows on every screen) with the frames each second, measured over half a
+// second of the frames the loop really runs, one number written twice a second. Off, the plate is hidden and nothing is measured.
+var FPSV={t0:0,n:0,fps:0,el:null};
+function fpsTick(ts){
+  var el, s;
+  if(CFG.showFps!==1){ if(FPSV.el&&FPSV.el.className) FPSV.el.className=''; FPSV.t0=0; FPSV.n=0; return false; }
+  if(!FPSV.t0){ FPSV.t0=ts; FPSV.n=0; return true; }
+  FPSV.n++;
+  if(ts-FPSV.t0>=500){
+    FPSV.fps=Math.round(FPSV.n*1000/(ts-FPSV.t0)); FPSV.t0=ts; FPSV.n=0;
+    el=FPSV.el; if(!el||!el.isConnected){ el=document.getElementById('fpsbox'); if(!el){ el=document.createElement('div'); el.id='fpsbox'; document.body.appendChild(el); } FPSV.el=el; }
+    s=FPSV.fps+' FPS'; if(el.textContent!==s) el.textContent=s; if(el.className!=='on') el.className='on';
+  }
+  return true;
+}
 function gfxTrauma(dt){
   var g=(typeof G!=='undefined')?G:null, d=Math.max(0,Math.min(0.1,+dt||0)), s, k, hr, A, t;
   GFX.sx=0; GFX.sy=0; GFX.shA=0;
@@ -41593,7 +41637,7 @@ function gfxTrauma(dt){
   GFX.shT=(+GFX.shT||0)+d;
   k=(CFG.fxInt===undefined)?1:Math.max(0,Math.min(1,+CFG.fxInt||0));
   hr=(typeof hudRes==='function')?Math.max(1,+hudRes()||1):1;
-  A=18*hr*GFX.tr*GFX.tr*k;
+  A=18*hr*GFX.tr*GFX.tr*k*shakeK();   // v26.xx (settings5): SCREEN SHAKE
   if(!(A>0.05)) return 0;
   t=GFX.shT;
   GFX.sx=Math.round(A*(Math.sin(t*15)+0.5*Math.sin(t*23+1.7)+0.25*Math.sin(t*35+4.1))/1.75);
@@ -42125,7 +42169,9 @@ function loop(ts){
   if(CFG.gfxScale!==RES_APPLIED||DRS.scale!==DRS.applied||(DRS.q|0)!==(DRS.qa|0)){ try{ resize(); }catch(_rz){} }   // v17.43: his pick 28, a new render resolution applies at once; v18.01: and an auto step
   // v23.xx (gfx6): the quality ladder rung rests at 0 with the scale, and a new rung rebuilds the canvases like a new scale
   try{ volApply(); }catch(_va){}   // v17.74: the volume rows, applied at once
+  try{ brightApply(); }catch(_br){}   // v26.xx (settings5): BRIGHTNESS, applied at once
   if(frameCapSkip(ts)) return;   // v17.43: his pick 28, the frame cap
+  try{ fpsTick(ts); }catch(_fq){}   // v26.xx (settings5): SHOW FPS
   // THE CLAMP WAS ONE SIDED, found v2.99. This bounded dt from ABOVE at 50ms, so a
   // backgrounded tab returning does not teleport everything, but it never bounded
   // it from BELOW. A negative dt runs the entire game backwards for one frame: the
@@ -42739,7 +42785,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.45: The what is new card names the new settings. Check 26.45 fails on v26.44',
+  now:'v26.46: Display has screen shake, brightness and show fps. Check 26.46 fails on v26.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55335,6 +55381,32 @@ var GAMEOPTS=[
    opts:[
      {n:'OFF', cfg:{pauseBlur:0}},
      {n:'ON',  cfg:{pauseBlur:1}}
+   ], def:0},
+  // v26.xx (settings5), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): SCREEN SHAKE, BRIGHTNESS and SHOW FPS, in DISPLAY. All three start as
+  // the game was: shake at its usual strength, the picture as drawn, no readout. SCREEN SHAKE scales the camera trauma shake alone (EFFECT INTENSITY
+  // still scales it with the hit pause and the rest). BRIGHTNESS is a gamma on the world canvas (it lifts or sinks the shadows, the way a night
+  // raid needs), applied at once. SHOW FPS puts a small frame rate plate in the top left corner of every screen.
+  {k:'shake', label:'SCREEN SHAKE', sec:'DISPLAY',
+   hint:'HOW HARD THE PICTURE SHAKES: BLASTS, HEAVY HITS AND THE WARDEN. OFF HOLDS IT STILL.',
+   opts:[
+     {n:'OFF',      cfg:{shake:0}},
+     {n:'LIGHT',    cfg:{shake:0.5}},
+     {n:'STANDARD', cfg:{shake:1}},
+     {n:'STRONG',   cfg:{shake:1.5}}
+   ], def:2},
+  {k:'gam', label:'BRIGHTNESS', sec:'DISPLAY',
+   hint:'LIFTS OR SINKS THE SHADOWS OF THE WORLD. NIGHT RAIDS ARE DARK ON PURPOSE.',
+   opts:[
+     {n:'DARKER',    cfg:{gam:1.25}},
+     {n:'STANDARD',  cfg:{gam:1}},
+     {n:'BRIGHTER',  cfg:{gam:0.8}},
+     {n:'BRIGHTEST', cfg:{gam:0.65}}
+   ], def:1},
+  {k:'showFps', label:'SHOW FPS', sec:'DISPLAY',
+   hint:'THE FRAMES EACH SECOND, SMALL, IN THE TOP LEFT CORNER.',
+   opts:[
+     {n:'OFF', cfg:{showFps:0}},
+     {n:'ON',  cfg:{showFps:1}}
    ], def:0},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',
