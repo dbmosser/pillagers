@@ -1,0 +1,7 @@
+v26.55: hit stop and the lance kick
+
+Heavy rounds stop what they hit for a beat, and the Meridian Lance kicks you back a step.
+
+Check 26.55. Fails on v26.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

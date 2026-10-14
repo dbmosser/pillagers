@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.54';
+var VER='26.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19214,6 +19214,7 @@ if(wep.mag===0){
   // hits and accuracy climbs past 100 percent
   if(fromPlayer){
     G.player.recoil=1; G.player.combatT=0; G.tel.shots+=shots;
+    if(gunBase(wep.id)==='lance'&&!G.sim) lanceKick(G.player,ang);   // v26.xx (feel10): the Meridian Lance shoves you back a step
     padRumble(0.12,35);   // v17.37: a light tick per shot
     G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2);
     // Every round through a gun you own is counted on the profile. Pellets count
@@ -22473,6 +22474,7 @@ function updatePlayer(dt){
   beltThrowTick();   // v25.xx (belt4): a kind of grenade with no throwable key goes from the pouch to the backpack
   if(G.handsT>0) G.handsT-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
+  if(p.kickT>0){ var _lkd=Math.min(dt,p.kickT); p.kickT-=dt; p.x+=(p.kickVx||0)*_lkd; p.y+=(p.kickVy||0)*_lkd; collide(p,G.map.walls); }   // v26.xx (feel10): the Lance kick
   if(p.muzzle>0) p.muzzle-=dt;
   if(p.iv>0) p.iv-=dt;
   // v11.83, HIS SPEC: the stim clock, up here with the other timers so it keeps
@@ -24645,6 +24647,7 @@ function elemTick(dt){
   if(G.arcCd) for(k in G.arcCd) if(G.arcCd[k]>0) G.arcCd[k]=Math.max(0,G.arcCd[k]-dt);   // v23.xx (forge4): the arc cooldown per shooter
   for(i=0;i<L.length;i++){
     e=L[i];
+    if(e.stopT>0){ e.stopT-=dt; if(e.stopT<0) e.stopT=0; }   // v26.xx (feel10): the hit-stop clock
     if(e.stunT>0){ e.stunT-=dt; if(e.stunT<0) e.stunT=0; }
     if(e.stunImm>0){ e.stunImm-=dt; if(e.stunImm<0) e.stunImm=0; }
     if(e.chillT>0){ e.chillT-=dt; if(e.chillT<=0){ e.chillT=0; e.chill=0; } }   // v23.xx (forge5): the cold runs off with the chill
@@ -24660,7 +24663,26 @@ function elemTick(dt){
     }
   }
 }
+// v26.xx (feel10), HIS ORDER (2026-10-14): "hit stop to enemies - do minor player knock back on using the meridian lance". WHAT WAS WRONG: a
+// round that landed changed nothing about the body it hit, so a Magnum or a Longshot hit read the same as a pistol tap. A HEAVY ROUND (40 or
+// more) NOW STOPS THE BODY IT HITS FOR HITSTOP_T SECONDS: it neither moves nor shoots, held by the same hold the shock stun uses (elemHold),
+// and the stop is ticked off with the other element timers (elemTick). A body that dies from the round is not held, a boss is never held, and
+// the stop is live play only (G.sim never sets it, so G.elemAny stays unset in the bot raids). THE MERIDIAN LANCE KICKS YOU BACK: firing it
+// shoves the player backwards along the shot for LANCE_KICK_T seconds at LANCE_KICK_V, through the wall push-out, so it never goes into a wall.
+// Nothing here draws from the seeded stream.
+var HITSTOP_DMG=40, HITSTOP_T=0.06, LANCE_KICK_V=190, LANCE_KICK_T=0.12;
+function hitStopOn(e,dmg){
+  if(!G||G.sim||!e||e.boss||e.downed||e.finished||!(e.hp>0)||!(dmg>=HITSTOP_DMG)) return false;
+  e.stopT=HITSTOP_T; G.elemAny=1;
+  return true;
+}
+function lanceKick(p,ang){
+  if(!G||G.sim||!p||!isFinite(ang)) return false;
+  p.kickVx=-Math.cos(ang)*LANCE_KICK_V; p.kickVy=-Math.sin(ang)*LANCE_KICK_V; p.kickT=LANCE_KICK_T;
+  return true;
+}
 function elemHold(e,dt){
+  if(e.stopT>0&&e.hp>0&&!e.downed){ e.moving=false; return true; }   // v26.xx (feel10): held for the beat a heavy round lands
   var dx, dy, d;
   if(e.stunT>0||e.frozenT>0){ e.moving=false; e.cd=Math.max(e.cd||0,0.35); return true; }   // v23.xx (forge4, forge5): stunned by shock or frozen by cryo: no sight, no move, no shot, as the overheat   // v23.xx (forge4): stunned by shock: no sight, no move, no shot, as the overheat
   if(!(e.panicT>0)) return false;
@@ -26865,7 +26887,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               }
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
               if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el); else en.hp-=edmg;   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
-              en.hitT=.16;
+              en.hitT=.16; hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat
               // HIS Q42. The number IS the feedback: without it a weak point and
               // a body shot look identical, which is most of why the weak point
               // system reads as decoration.
@@ -42995,7 +43017,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.54: Settings polish: a flush jump bar that lights the section in view, a proper KID MODE head, and the key notes no longer squeezed. Check 26.54 fails on v26.53',
+  now:'v26.55: Heavy rounds stop what they hit for a beat, and the Meridian Lance kicks you back a step. Check 26.55 fails on v26.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50623,7 +50645,7 @@ function netShotTake(peer,m){
   var _nel=(typeof m.el==='string'&&ELEM[m.el])?m.el:'';
   if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
-  e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s;   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
+  e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,d);   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
     px=-Math.sin(m.a); py=Math.cos(m.a);

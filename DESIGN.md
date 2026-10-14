@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.55 - HIT STOP AND THE LANCE KICK
+
+Co-op hunt while he was away. His order: "hit stop to enemies - do minor player knock back on using the meridian lance". A round that landed changed nothing about the body it hit, so a heavy hit felt like a pistol tap. Now a heavy round, 40 damage or more (the Magnum, the Marksman Rifle, the Longshot, the Meridian Lance), stops the body it hits for a sixtieth of a second: it neither walks nor shoots for that beat. A body the round kills is not held, a boss is never held, and a light round does nothing. The Meridian Lance also shoves you back a short step along the shot when you fire it, through the walls push-out, so it never puts you into one. Nothing draws from the seeded stream and the bot raids are untouched.
+
+MEASURED. Check 26.55 passes, and fails on v26.54.
 ## v26.54 - SETTINGS POLISH FROM THE 1080P SHOTS
 
 Co-op hunt while he was away. His order: the menus must look AAA, and the new Settings page was looked at in 1080p pictures. Four things were wrong. The jump bar stuck three pixels below the top of the list, so the label of a row scrolling underneath showed above it; it now sits flush. The chip of the section you are in lights up as you scroll, and the jump goes straight there. KID MODE was a small amber label that looked like part of the section above; it is a head like the others now. And the note line in the Keys window, and in the new pad buttons window, was squeezed to a sliver when the list was long, so a clash message was cut in half; it keeps its height. The Superhot key, which showed as a dot, is named LEFT OF 1.
