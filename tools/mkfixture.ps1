@@ -1927,7 +1927,7 @@ window.__REGRESS=[
      var g=__state(); if(!g) return 'no raid';
      g.ents.length=0; g.player.iv=99; g.player.hp=40; g.player.armor=0;
      var sl=__belt.slots(), hi=-1, pi=-1;
-     sl.forEach(function(x,i){ if(x.kind==='heal') hi=i; if(x.kind==='armor') pi=i; });
+     sl.forEach(function(x,i){ if(x.kind==='heal'&&(hi<0||x.icon==='bandage')) hi=i; if(x.kind==='armor') pi=i; });   /* belt redo (v25.9x): the belt has a cell for each heal he carries, so take the one that holds the bandage */
      if(hi<0||pi<0) return 'no heal or armour slot on the belt, so this check is testing nothing';
      // The heal slot names the SMALLEST heal carried, which is the bandage here.
      if(sl[hi].icon!=='bandage') return 'the heal slot named '+sl[hi].icon+' with a bandage in the bag';
@@ -3197,8 +3197,8 @@ window.__REGRESS=[
      var cv=document.getElementById('hcv');
      if(!cv) return 'no HUD canvas to read';
      function cell(ix){
-       var bb=__hud().belt;
-       var x=Math.round(bb.x+bb.cellW*ix)+4, y=Math.round(bb.y)+4, w=Math.max(4,Math.round(bb.cellW)-8);
+       var bb=__hud().belt, hc=(g.hotCells||[])[ix];   /* belt redo (belt6a): a gap between the key groups, so a cell is where the belt recorded it, not bb.x + bb.cellW * ix */
+       var x=Math.round(hc?hc.x:bb.x+bb.cellW*ix)+4, y=Math.round(hc?hc.y:bb.y)+4, w=Math.max(4,Math.round(hc?hc.w:bb.cellW)-8);
        var d=cv.getContext('2d').getImageData(x,y,w,w).data, s=0;
        for(var i=0;i<d.length;i+=4) s+=(d[i]+d[i+1]+d[i+2])/3;
        return s/(d.length/4);
@@ -3916,8 +3916,9 @@ window.__REGRESS=[
      if(b.tw/a.tw<1.7) bad.push('the map heading is only '+(b.tw/a.tw).toFixed(2)+'x wider at 4K');
      // CONTROL 1: 1080p must not have moved. This was a 4K complaint and he has a
      // working layout there.
-     if(Math.abs(a.tw-326)>18||Math.abs(a.th-16)>3)
-       bad.push('control: the 1080p map heading changed to '+a.tw+'x'+a.th+', it was 326x16');
+     /* ui1 (his order #50): the game font is Barlow Condensed now, narrower than Rubik was: the same heading measures 237 wide at 1080p where it measured 326; the height is unchanged */
+     if((Math.abs(a.tw-326)>18&&Math.abs(a.tw-237)>18)||Math.abs(a.th-16)>3)
+       bad.push('control: the 1080p map heading changed to '+a.tw+'x'+a.th+', it was 326x16 (237x16 in Barlow Condensed)');
      // CONTROL 2, AND IT IS THE ONE THAT MATTERS. The map scales its text by
      // handing FS a modified spec. If that ever leaks into the global font cache,
      // every panel in the game inherits a 4K font at 1080p. So: draw the map at
@@ -13174,7 +13175,10 @@ window.__REGRESS=[
        paint({team:'foe',build:'lean',bulk:2},'none');
        if(hue(-14.5,-8.5,'foe')<8) bad.push('armour 2: no team stripe on the steel pauldron');
        paint({build:'lean'},'');
-       var rim=at(13.5,-22.0), top=at(13.5,-21.2);
+       /* bigguns (v25.26): the held gun is a baked sprite drawn about a unit higher than the old flat bar, so the rim is found as the first solid pixel down the column above the barrel, and the lit top edge is the brightest pixel in the two units under it */
+       var rim=[0,0,0,0], rimY=null, top=[0,0,0,0], ry, q2;
+       for(ry=-27;ry<=-17;ry+=0.25){ q2=at(13.5,ry); if(q2[3]>200){ rim=q2; rimY=ry; break; } }
+       if(rimY!==null) for(ry=rimY+0.25;ry<=rimY+2.0;ry+=0.25){ q2=at(13.5,ry); if(q2[0]+q2[1]+q2[2]>top[0]+top[1]+top[2]) top=q2; }
        if(!(rim[3]>200&&rim[0]+rim[1]+rim[2]<120)) bad.push('the gun has no ink rim above it ('+rim.join(',')+')');
        if(!(top[0]+top[1]+top[2]>330)) bad.push('the gun has no lit top edge ('+top.join(',')+')');
        if(window.__deploy&&window.__state&&window.__frame){
@@ -14304,7 +14308,10 @@ window.__REGRESS=[
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof sndBus!=='function'||typeof tickClockWarn!=='function') return 'SKIP: this fixture cannot run a raid';
      var CF=(typeof annCue==='function')?'annCue':'voxCall';   // noannouncer: the calls are game sounds (annCue) now, on the old build the recorded clips (voxCall)
-     if(typeof window[CF]!=='function') return 'no announcer (no '+CF+'): a streak, a high score and the last minutes are only written';
+     /* annCue is a function of the game scope, not a window property (the clips' voxCall was on window): read and swap it where it lives */
+     function cGet(){ return (CF==='annCue')?annCue:window[CF]; }
+     function cSet(f){ if(CF==='annCue') annCue=f; else window[CF]=f; }
+     if(typeof cGet()!=='function') return 'no announcer (no '+CF+'): a streak, a high score and the last minutes are only written';
      function P(v){ var q={value:v}; q.setValueAtTime=function(x){ q.value=x; return q; }; q.setTargetAtTime=function(x){ q.value=x; return q; }; q.linearRampToValueAtTime=function(x){ q.value=x; return q; }; q.exponentialRampToValueAtTime=function(x){ q.value=x; return q; }; q.cancelScheduledValues=function(){ return q; }; q.cancelAndHoldAtTime=function(){ return q; }; return q; }
      var MADE=[];
      function N(k,ps){ var o={kind:k,outs:[]}; o.connect=function(t){ if(t) o.outs.push(t); return t; }; o.disconnect=function(){ o.outs=[]; }; o.start=function(){}; o.stop=function(){}; (ps||[]).forEach(function(n){ o[n]=P(n==='gain'?1:0); }); MADE.push(o); return o; }
@@ -14323,17 +14330,17 @@ window.__REGRESS=[
      var hasNet=(typeof NET==='object'&&!!NET), kAC=AC, kBUS=BUS, kREV=REV, kSND=(typeof SND!=='undefined')?SND:null, kAMB=AMB, kSim=(G?G.sim:null);
      var ownST=hasNet&&Object.prototype.hasOwnProperty.call(NET,'specTick'), kST=hasNet?NET.specTick:undefined, kSame=hasNet?NET.same:undefined;
      function fakeOn(){ AC=FK; BUS=null; REV=null; AMB=null; if(typeof SND!=='undefined') SND=null; if(G) G.sim=false; if(hasNet){ NET.specTick=0; NET.same=''; } }
-     function fakeOff(){ AC=kAC; BUS=kBUS; REV=kREV; AMB=kAMB; if(typeof SND!=='undefined') SND=kSND; if(G&&kSim!==null) G.sim=kSim; if(hasNet){ if(ownST) NET.specTick=kST; else delete NET.specTick; NET.same=kSame; } }     var VS=(typeof ANNC==='object')?ANNC:((typeof VOXA==='object')?VOXA:null), bad=[], g=null, kV=window[CF], own=false, asked=[], keep=null, made, m0, src, s, n0, rs=say, ownS=false, i;
+     function fakeOff(){ AC=kAC; BUS=kBUS; REV=kREV; AMB=kAMB; if(typeof SND!=='undefined') SND=kSND; if(G&&kSim!==null) G.sim=kSim; if(hasNet){ if(ownST) NET.specTick=kST; else delete NET.specTick; NET.same=kSame; } }     var VS=(typeof ANNC==='object')?ANNC:((typeof VOXA==='object')?VOXA:null), bad=[], g=null, kV=cGet(), own=false, asked=[], keep=null, made, m0, src, s, n0, rs=say, ownS=false, i;
      try{
        ['DOUBLEKILL','TRIPLEKILL','MULTIKILL','RAMPAGE','UNSTOPPABLE','HISCORE','EXTRACTED','TWOMIN','ONEMIN','WAVE'].forEach(function(k){ if(typeof annSpec==='function'){ if(!annSpec(k)) bad.push('the '+k+' call has no sound'); return; } var w=''; try{ w=atob(String(VOX_ANN[k]||'')).slice(0,4); }catch(_a){} if(w!=='RI'+'FF') bad.push('the '+k+' call is not a WAV clip'); });
        if(typeof ARCADE_STREAK!=='undefined') for(i=0;i<ARCADE_STREAK.length;i++) if(!((typeof ANN_STREAK==='object')?ANN_STREAK:VOX_STREAK)[ARCADE_STREAK[i][2]]) bad.push('the streak '+ARCADE_STREAK[i][2]+' has no call');
        __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
        if(!g||!g.player) return 'SKIP: no live raid';
        say=function(){}; ownS=true;
-       window[CF]=function(k){ asked.push(k); return true; }; own=true;
+       cSet(function(k){ asked.push(k); return true; }); own=true;
        tickClockWarn(120.5,119.9); tickClockWarn(60.5,59.9);
        if(typeof arcadeHiSay==='function') arcadeHiSay(1000);
-       window[CF]=kV; own=false;
+       cSet(kV); own=false;
        if(asked.indexOf('TWOMIN')<0) bad.push('two minutes left is not called ('+asked.join(',')+')');
        if(asked.indexOf('ONEMIN')<0) bad.push('one minute left is not called ('+asked.join(',')+')');
        if(typeof arcadeHiSay==='function'&&asked.indexOf('HISCORE')<0) bad.push('NEW HIGH SCORE is not called ('+asked.join(',')+')');
@@ -14342,16 +14349,16 @@ window.__REGRESS=[
        if(VS===window.VOXA){ VOXA.buf={WAVE:{duration:0.8},ONEMIN:{duration:0.5}}; VOXA.dec=1; }
        VS.busy=-1; n0=VS.n;
        m0=MADE.length;
-       if(!window[CF]('WAVE')) bad.push('a ready WAVE INCOMING call did not play');
+       if(!cGet()('WAVE')) bad.push('a ready WAVE INCOMING call did not play');
        made=MADE.slice(m0); src=made.filter(function(x){ return x.kind==='src'||x.kind==='osc'; })[0];
        if(!src||!reach(src,sndBus('sting'))) bad.push('the call does not play on the sting bus');
-       window[CF]('ONEMIN');
+       cGet()('ONEMIN');
        if(VS.n!==n0+1) bad.push('a second call over a playing one also played ('+(VS.n-n0)+')');
-       VS.busy=-1; G.sim=true; s=window[CF]('WAVE'); G.sim=false;
+       VS.busy=-1; G.sim=true; s=cGet()('WAVE'); G.sim=false;
        if(s) bad.push('a call played under G.sim');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
-       if(own) window[CF]=kV;
+       if(own) cSet(kV);
        if(ownS) say=rs;
        try{ fakeOff(); }catch(_f){}
        try{ if(keep&&VS){ VS.buf=keep.buf; VS.busy=keep.busy; VS.n=keep.n; VS.dec=keep.dec; VS.last=keep.last; } }catch(_k){}
@@ -18098,6 +18105,20 @@ window.__REGRESS=[
        if(!z0) return 'SKIP: no ring on map 0';
        p.x=z0.x; p.y=z0.y; z0.beaconT=null; z0.hold=12; z0.holdMax=30; z0.pullT=1.0; p.hp=40;
        ARCADE.pot=300;
+       if(typeof arcadeX2==='function'){
+         // feat0g (his mode design and answer 8, 2026-10-12): a DEMO extraction doubles the score and ENDS the run; it no longer pays 2,500 and re-drops him. v24.90 holds the
+         // doubled score, the RUN OVER card and the second player in full. What this check kept from v23.23 is that an arcade extraction settles NOTHING: no run counted, no
+         // outcome card, and the score is the doubled raid score.
+         ARCADE.solo=1; ARCADE.run={id:'t2323'}; ARCADE.mine=1500; ARCADE.mate=0; ARCADE.over=null; ARCADE.ini=null;
+         __endRaid('extract');
+         for(f=0;f<8&&__state()===g;f++) __loop(performance.now()+f*16.7);
+         if(P.runs!==runs0) bad.push('a run was counted ('+runs0+' to '+P.runs+')');
+         oc=document.getElementById('outcome');
+         if(oc&&oc.classList.contains('on')) bad.push('the outcome card is on');
+         if(!ARCADE.over||ARCADE.over.team!==3000) bad.push('the doubled score did not stand (over '+JSON.stringify(ARCADE.over&&ARCADE.over.team)+', want 1500 x2 = 3000)');
+         ARCADE.ini=null;
+         return bad.length?bad.join('; '):null;
+       }
        __endRaid('extract');
        if(__state()!==g) bad.push('the arcade raid was ended or replaced by the extraction');
        if(g.over) bad.push('the arcade raid ended ('+g.over+')');
@@ -18270,7 +18291,7 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); p=g.player; if(!g||g.over) return 'SKIP: no live raid';
        P.uiScale=1.6; p.armor=40; G.bagOpen=false;
-       ctx.fillText=function(t){ if(String(t).indexOf('ARMOUR')===0) seen.push(ctx.font); return of.apply(this,arguments); };
+       ctx.fillText=function(t){ if(/^ARMOUR\s+\d/.test(String(t))) seen.push(ctx.font); return of.apply(this,arguments); };   /* belt redo: the belt's plate cell also draws the word ARMOUR, in its own face; the number on the bar is the line with its figure */
        drawHUD();
        if(!seen.length) return 'SKIP: the armour line was not drawn';
        var px=parseFloat((/([\d.]+)px/.exec(seen[0])||[0,0])[1]);
@@ -21265,7 +21286,7 @@ window.__REGRESS=[
        for(i=0;i<g.zones.length;i++) if(g.zones[i].open!==false){ z=g.zones[i]; break; }
        if(!z) return 'SKIP: no open extraction ring here';
        p.x=z.x; p.y=z.y;
-       h=outHint(1); if(h!=='Hold [E] to call'+' extraction'&&h!=='Hold [E] to call for extraction') bad.push('in a ring with nothing called the hint is '+JSON.stringify(h));
+       h=outHint(1); if(h!=='Hold [E] to call'+' extraction'&&h!=='Hold [E] to call for extraction'&&h!=='Hold ['+((typeof keyLabel==='function')?keyLabel('KeyX','X'):'X')+'] to call for extraction') bad.push('in a ring with nothing called the hint is '+JSON.stringify(h));   /* keyswap v25.67: the extraction key is X, named through keyLabel */
        z.beaconT=17; z.hold=null; g.active=z; g.beaconT=17;
        h=outHint(1); if(h!=='Inbound 17s \u00b7 Stay in the ring') bad.push('in a ring with the ride 17 s out the hint is '+JSON.stringify(h));
        z.beaconT=null; g.active=null; g.beaconT=null;
@@ -25424,10 +25445,12 @@ window.__REGRESS=[
    run:function(){
      if(typeof musicWanted!=='function'||typeof netSndWho!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no music gate here';
      if(typeof netMusPan!=='function') return 'control: the song does not follow where the players are';
-     var NK={}, k, bad=[], g0=G, pr0=pendingRun, oWho=netSndWho, oSplit=netSndSplitOn, own=!!(P&&Object.prototype.hasOwnProperty.call(P,'music')), mu0=P?P.music:undefined, fa, mk;
+     var NK={}, k, bad=[], g0=G, pr0=pendingRun, oWho=netSndWho, oSplit=netSndSplitOn, own=!!(P&&Object.prototype.hasOwnProperty.call(P,'music')), mu0=P?P.music:undefined, fa, mk, ti=null, tiOn=false;
      for(k in NET) NK[k]=NET[k];
      try{
        G=null; pendingRun=null; if(P) P.music='hub';
+       /* v24.06 (his answer 27 b): the song plays on the title screen and the demo only, the Undercroft floor is silent, so the title is up while the one-song rule is read */
+       ti=document.getElementById('title'); tiOn=!!(ti&&ti.classList.contains('on')); if(ti) ti.classList.add('on');
        netSndWho=function(){ return 'both'; }; netSndSplitOn=function(){ return true; };
        NET.same='p2'; NET.hostSeed=12345;
        if(!musicWanted()) bad.push('player 2 back on the floor while the host is up top has no music');
@@ -25446,6 +25469,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        G=g0; pendingRun=pr0; netSndWho=oWho; netSndSplitOn=oSplit;
+       if(ti&&!tiOn) ti.classList.remove('on');
        if(P){ if(own) P.music=mu0; else delete P.music; }
        for(k in NET) if(!(k in NK)) delete NET[k];
        for(k in NK) NET[k]=NK[k];
@@ -30366,6 +30390,8 @@ window.__REGRESS=[
        __frame(0.016); __frame(0.016);   // warm up: the board box is written as the board draws
        ctx.fillText=function(s,x,y){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1, sx=(m.a*x+m.c*y+m.e)/d, sy=(m.b*x+m.d*y+m.f)/d; if(String(s)==='ZQMATE') rows.push([sx,sy]); if(String(s)==='ZQ killed a sentry') feed=[sx,sy]; return oFT.apply(this,arguments); };
        try{ __frame(0.016); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
+       /* gfxworld text (v24.xx): the teammate's name also stands over his head in the world, drawn first and near the middle of the screen; the ROW is the draw furthest to the left (the teammate stands beside the player, never in the left fifth) */
+       rows.sort(function(a,b){ return a[0]-b[0]; });
        if(!rows.length) bad.push('the teammate row was not drawn');
        else { if(rows[0][1]<0||rows[0][1]>H||rows[0][0]<0||rows[0][0]>W*0.4) bad.push('the teammate row lands at '+Math.round(rows[0][0])+','+Math.round(rows[0][1])+', not on the left of the screen');
          if(HUDBOX.raiders&&rows[0][1]<HUDBOX.raiders.y+HUDBOX.raiders.h) bad.push('the teammate row is inside the CURRENT PILLAGERS board'); }
@@ -33026,7 +33052,9 @@ window.__REGRESS=[
      try{
        renderSector();
        cvs=document.querySelectorAll('#sectorlist canvas.secprev');
-       if(cvs.length!==FIXED_MAPS.length) bad.push('the sector page has '+cvs.length+' maps for '+FIXED_MAPS.length+' sectors');
+       var offered=FIXED_MAPS.filter(function(M){ return typeof mapOffered!=='function'||mapOffered(M); }).length;   /* feat0b (v23.6x): a frozen map gets no card on the sector page, so the count is the maps on offer */
+       if(cvs.length!==offered) bad.push('the sector page has '+cvs.length+' maps for '+offered+' sectors on offer');
+       if(!cvs.length) bad.push('control: the sector page shows no sector at all');
        for(i=0;i<cvs.length;i++){
          c=cvs[i].getContext('2d'); d=c.getImageData(0,0,cvs[i].width,cvs[i].height).data; lit=0;
          for(k=3;k<d.length;k+=4*37) if(d[k]>0) lit++;
@@ -51383,13 +51411,15 @@ window.__REGRESS=[
        }
        boxDown(); g.bagOpen=false; g.mapOpen=false; g.drag=null;
 
-       // RAID TWO: THE EMOTE BAR.
+       // RAID TWO: THE EMOTE BAR. Gone with the emote system (noemotes, v25.83, his order 2026-10-13): there is no bar to close, so this part runs only on a build that still has the emotes.
+       if(typeof EMOTES!=='undefined'){
        g.emoteBar=true;
        tap('Tab');
        if(g.emoteBar) bad.push('TAB did not close the emote bar, which ESC closes');
        if(g.bagOpen) bad.push('TAB over the emote bar opened the backpack under it');
        if(boxUp()) bad.push('TAB over the emote bar raised the pause box');
        boxDown(); g.emoteBar=false; g.bagOpen=false;
+       }
 
        // RAID THREE: NOTHING OPEN. TAB pauses, and TAB unpauses.
        tap('Tab');
@@ -54306,7 +54336,7 @@ window.__REGRESS=[
        var txt=drawn();
        if(txt.indexOf('TO SURRENDER')>=0)
          bad.push('the downed screen offers the surrender prompt while he is lying inside a landed extraction that would carry him out with everything');
-       if(txt.indexOf('HOLD E TO EXTRACT')<0&&txt.indexOf('HOLD [E] TO EXTRACT')<0)
+       if(txt.indexOf('HOLD E TO EXTRACT')<0&&txt.indexOf('HOLD [E] TO EXTRACT')<0&&txt.indexOf('HOLD [X] TO EXTRACT')<0)   /* keyswap v25.67: X extracts */
          bad.push('the downed screen never names the one action that saves him: he is inside a landed extraction, holding E boards him with the full backpack, and the screen shows no verb at all because it is measuring the ring he called rather than the ring he is in');
        // CONTROL: ONE RING, HIS OWN, LANDED. Exactly the v12.81 case, which must be
        // untouched: blocked, and the verb shown.
@@ -54316,7 +54346,7 @@ window.__REGRESS=[
        if(surrenderBlocked()!==true)
          bad.push('control: the single-ring case v12.81 fixed is broken again, so a landed extraction he called himself no longer blocks the surrender');
        var txt2=drawn();
-       if(txt2.indexOf('HOLD E TO EXTRACT')<0&&txt2.indexOf('HOLD [E] TO EXTRACT')<0)
+       if(txt2.indexOf('HOLD E TO EXTRACT')<0&&txt2.indexOf('HOLD [E] TO EXTRACT')<0&&txt2.indexOf('HOLD [X] TO EXTRACT')<0)   /* keyswap v25.67: X extracts */
          bad.push('control: the single-ring case no longer shows the extract verb either');
        // CONTROL: OUTSIDE EVERY RING the surrender is his, and v9.71 asked for it.
        clear();
@@ -54350,7 +54380,7 @@ window.__REGRESS=[
        // NOTHING CALLED. Both original sentences, word for word.
        p.x=mine.x; p.y=mine.y;
        var inNone=outHint(1);
-       if(inNone!=='You are standing in the way out. Hold E to call it.'&&!/^Hold \[E\] here to call for extraction\.$/.test(inNone)&&!/^Hold \[E\] to call (for )?extraction$/.test(inNone))   /* retargeted for the raid text R10: the hint in its short words; and tr3fixc: its shooter detail */
+       if(inNone!=='You are standing in the way out. Hold E to call it.'&&!/^Hold \[E\] here to call for extraction\.$/.test(inNone)&&!/^Hold \[[EX]\] to call (for )?extraction$/.test(inNone))   /* keyswap v25.67: [X] */   /* retargeted for the raid text R10: the hint in its short words; and tr3fixc: its shooter detail */
          bad.push('control: with nothing called, standing in a ring no longer says the line it has always said; it says ['+inNone+']');
        p.x=mine.x+mine.r+900; p.y=mine.y;
        var outNone=outHint(1);
@@ -60750,7 +60780,7 @@ window.__REGRESS=[
        var mb=document.getElementById('mapbtn'); if(!mb) return 'SKIP: no map button on the floor';
        mb.click();
        var sm=document.getElementById('sectormodal'), st=(sm.textContent||'').replace(/\s+/g,' ');
-       if(!/modal on/.test(sm.className)) bad.push('the sector screen did not open from the map button');
+       if(!sm.classList.contains('on')) bad.push('the sector screen did not open from the map button');   /* ui5: a window carries more classes than "modal on" now, so ask for the class, not the exact string */
        var robotWord=['test ','robot'].join('');
        if(st.indexOf(robotWord)<0) bad.push('the sector screen shows figures without saying they are the '+robotWord+'s');
        var oldPhrase=['measured ','extraction'].join('');
@@ -60759,6 +60789,7 @@ window.__REGRESS=[
        var SM=(window.__sectorMeas?__sectorMeas():null);
        if(SM&&SM.length>=2){
          for(var mi=0;mi<2;mi++){
+           if(typeof mapOffered==='function'&&typeof FIXED_MAPS!=='undefined'&&FIXED_MAPS[mi]&&!mapOffered(FIXED_MAPS[mi])) continue;   /* feat0b (v23.6x): a frozen map has no card on the sector page, so its figure is not shown */
            if(st.indexOf('extracts '+SM[mi].ext+'%')<0) bad.push('map '+mi+' shows a different extract figure from the code, which says '+SM[mi].ext);
            // r1326: first contact is no longer printed on this line; his edit cut it and v13.26 shows his wording to everyone.
          }
@@ -61726,7 +61757,7 @@ window.__REGRESS=[
        var fam=famOf(el);
        if(!fam) continue;
        seen[fam]=(seen[fam]||0)+1;
-       if(fam==='rubik') continue;
+       if(fam==='rubik'||fam==='barlow'||fam==='barlow condensed') continue;   /* ui1 (his order #50): the game font is Barlow, Barlow Condensed for headings and keys (--f-body, --f-cond); Rubik before it */
        if(allowed(el)) continue;
        if(offenders.length<6) offenders.push((el.id||el.tagName)+' is in '+fam);
      }
@@ -61736,7 +61767,8 @@ window.__REGRESS=[
      var total=0, k;
      for(k in seen) total+=seen[k];
      if(total<120) bad.push('control: only '+total+' elements were read, so this is not the whole document');
-     if(!seen.rubik||seen.rubik<100) bad.push('control: only '+(seen.rubik||0)+' elements are in the game font, so the font is not loading and everything is falling back');
+     var gameN=(seen.rubik||0)+(seen.barlow||0)+(seen['barlow condensed']||0);
+     if(gameN<100) bad.push('control: only '+gameN+' elements are in the game font, so the font is not loading and everything is falling back');
      // CONTROL TWO: and the sweep can SEE a second family. An element in another
      // face is planted, caught, and removed; without this the clean result above
      // would prove nothing.
@@ -62600,7 +62632,7 @@ window.__REGRESS=[
        togglePauseBox(true);
        if(!pb.classList.contains('on')) return 'SKIP: the pause box would not open on the floor';
        var floor=shownBtns();
-       floor=floor.filter(function(b){ return !(/^settings$/i).test(b.txt); });   // v16.45 put Settings in every pause box
+       floor=floor.filter(function(b){ return !(/^(settings|feedback)$/i).test(b.txt); });   // v16.45 put Settings in every pause box; v24.50 put FEEDBACK in every one (his answer 38)
        // 1. EXACTLY TWO, AND THEY ARE HIS TWO. His words: "actually RETURN TO
        //    THE UNDERCROFT and RETURN TO CHARACTER SELECTION should be the 2
        //    choices".
@@ -62746,10 +62778,11 @@ window.__REGRESS=[
      var fam;
      for(fam in seen){
        if(fam==='comic sans ms') continue;              // the control, on its own canvas
-       if(fam==='rubik') continue;
+       if(fam==='rubik'||fam==='barlow condensed') continue;   /* ui1 (his order #50): the canvas face is Barlow Condensed (--f-cond); Rubik before it. ONE of the two, never both: checked below */
        bad.push(fam+' is a second typeface on the canvas, '+seen[fam].n+' words including '+seen[fam].eg.join(', '));
      }
-     if(!seen['rubik']) bad.push('control: nothing at all was drawn in the game font, so the sweep is not looking at the game');
+     if(seen['rubik']&&seen['barlow condensed']) bad.push('the canvas is set in two game faces at once, rubik ('+seen['rubik'].n+' words) and barlow condensed ('+seen['barlow condensed'].n+' words)');
+     if(!seen['rubik']&&!seen['barlow condensed']) bad.push('control: nothing at all was drawn in the game font, so the sweep is not looking at the game');
      return bad.length?bad.join('; '):null; }},
   {v:'10.94',what:'nothing a face can wear is painted over the eye, across every look the Undercroft crowd can roll',
    run:function(){
@@ -65516,7 +65549,7 @@ window.__REGRESS=[
      var pbt=pb?(pb.textContent||'').replace(/\s+/g,' '):'';
      if(!pb) return 'SKIP: no pause box in this build';
      if(!/RAID PAUSED/.test(pbt)) return 'the pause box does not say RAID PAUSED, it says "'+pbt.slice(0,40)+'"';
-     if(!/E interact/.test(pbt)) bad.push('the pause box controls line does not say E interact');
+     if(!/E interact/.test(pbt)&&!/E search \/ use/.test(pbt)) bad.push('the pause box controls line does not say E interact');   /* keyswap v25.67: E is search / use, X is extraction */
      if(!/CTRL \/ C crouch toggle/.test(pbt)) bad.push('the pause box does not say CTRL / C crouch toggle');
      if(!/Please provide feedback/.test(pbt)) bad.push('the pause box feedback line is not his');
      has('pausebleed',/YOU ARE DOWNED\./,'the downed line');
