@@ -1,0 +1,5 @@
+## v26.38 - SETTINGS IN SECTIONS, WITH THREE NEW SOUND ROWS
+
+Co-op hunt while he was away. His order: add all of this to Settings. The first step is the shape of the page. Settings was one long list under THE RAID, with the sound, picture and pad rows in the order they were added. It now reads in sections: THE RAID first, then AUDIO, CONTROLS, CONTROLLER and DISPLAY (and ACCESSIBILITY when it has rows), each with a head, under a jump bar that scrolls straight to a section. Every old row is where it belongs and does what it did. AUDIO gets three new rows. UI VOLUME sets the menu clicks and the HUD pings (pickups, hit ticks, the clock). FOOTSTEPS VOLUME sets your steps and the steps you hear, so a quiet pair of feet or a loud one is your pick. MONO AUDIO puts the whole output on one channel with nothing panned left or right, for one ear or one speaker. All three start where the game already was: full, full and off. They change at once and are saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.38 passes, and fails on v26.37.

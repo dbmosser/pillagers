@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.38 - SETTINGS IN SECTIONS, WITH THREE NEW SOUND ROWS
+
+Co-op hunt while he was away. His order: add all of this to Settings. The first step is the shape of the page. Settings was one long list under THE RAID, with the sound, picture and pad rows in the order they were added. It now reads in sections: THE RAID first, then AUDIO, CONTROLS, CONTROLLER and DISPLAY (and ACCESSIBILITY when it has rows), each with a head, under a jump bar that scrolls straight to a section. Every old row is where it belongs and does what it did. AUDIO gets three new rows. UI VOLUME sets the menu clicks and the HUD pings (pickups, hit ticks, the clock). FOOTSTEPS VOLUME sets your steps and the steps you hear, so a quiet pair of feet or a loud one is your pick. MONO AUDIO puts the whole output on one channel with nothing panned left or right, for one ear or one speaker. All three start where the game already was: full, full and off. They change at once and are saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.38 passes, and fails on v26.37.
 ## v26.37 - SET THE GUN KEYS AND THE WHEEL IN THE STASH
 
 Co-op hunt while he was away. His order: the gun keys and the wheel can be changed in the stash. Under the tactical belt on the Stash screen there are now two plates. GUN KEYS shows keys 1 to 9 with the kind of gun on each (pistol, SMG, rifle, carbine, LMG, shotgun, marksman, sniper, energy); drag a tile onto another key and the two kinds trade places, so the Sniper can sit on key 2 if you want. WHEEL shows the eight places of the item wheel on a compass plate; drag a tile onto another place and the two items trade. RESET on each puts his table and his order back. Both are kept on your save and your next raid in CAREER uses them; DEMO always uses his table and his order. The tiles work with a controller too. Dragging a gun on the bar in a raid still moves it for that raid only.

@@ -1,0 +1,7 @@
+v26.38: settings in sections, with three new sound rows
+
+Settings is in sections with a jump bar, and AUDIO has UI volume, footsteps volume and mono.
+
+Check 26.38. Fails on v26.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
