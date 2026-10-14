@@ -45,7 +45,7 @@
                   },
                   {
                       "anchor":  "[\u0027Q\u0027,\u0027melee\u0027],[\u0027F\u0027,\u0027next gun\u0027],",
-                      "replacement":  "[\u0027V\u0027,\u0027melee\u0027],[\u0027Q\u0027,\u0027item wheel\u0027],[\u0027F\u0027,\u0027next gun\u0027],"
+                      "replacement":  "[\u0027V\u0027,\u0027melee\u0027],[\u0027F\u0027,\u0027next gun\u0027],"
                   },
                   {
                       "anchor":  "\u0027Q\u0027:[\u0027KeyQ\u0027]",

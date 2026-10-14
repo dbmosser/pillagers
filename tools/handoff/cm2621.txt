@@ -1,0 +1,7 @@
+v26.21: the forge upgrades your gun to mk ii
+
+At THE FORGE press E to upgrade your gun to MK II for 2,500 score. The MK III and the elements come next.
+
+Check 26.21. Fails on v26.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

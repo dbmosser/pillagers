@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.21 - THE FORGE UPGRADES YOUR GUN TO MK II
+
+Co-op hunt while he was away. His question of 2026-10-14 (where is the Forge) and his order of 2026-10-12 (a pack-a-punch to upgrade guns, in the raid only). At THE FORGE, E now opens its panel: it shows the gun in your hands against its MK II (damage, magazine and reload before and after) and the price in RAID SCORE, the same in the DEMO and in CAREER. Pick MK II with 1, the mouse or A on a pad and the gun in your hands becomes its MK II: +30 percent damage, a quarter more magazine, a fifth quicker reload, GUN UPGRADED, a hammer and anvil ring, gold sparks, and the pickup card shows the new gun against the old. The ring carries 700 out, so machines and pillagers in earshot come to look: forging is done in the open. MK II costs 2,500 score. With too little it says NEED $2,500 and opens nothing; with no gun it says NO GUN IN HAND. ESC, TAB, B or CLOSE leave with no charge. The panel is not a pause, the raid runs on behind it. The MK III and the elements come next.
+
+MEASURED. Check 26.21 passes, and fails on v26.20.
 ## v26.20 - THE FORGE STANDS IN EVERY RAID
 
 Co-op hunt while he was away. His question of 2026-10-14: he had not seen the Forge that upgrades weapons and asked if it is on the map. The upgrade rules shipped earlier (MK II, MK III, the four elements, kept on extraction), but the station you walk up to did not. Now every raid has THE FORGE: a furnace block with a glowing mouth, an anvil, embers rising and a warm glow on the ground, a dashed reach ring and its name over it, standing in the aisle between the packing floor and CHILL ROW (moved to the nearest clear, reachable ground if something stands there, never on a crate or inside a wall). It is marked with a gold anvil on the minimap and on the sector map. Walking up to upgrade a gun comes in the next builds. Placing it draws nothing from the seeded stream, so every raid is the same as before.
