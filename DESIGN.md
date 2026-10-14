@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.60 - LMG SPIN UP
+
+Co-op hunt while he was away. His order: "add lmg spin up". The Support MG now winds up. Hold the trigger and nothing fires for the first fifth of a second or so while the barrels turn; then the shots come slowly and speed up until, three quarters of a second in, it fires at its own full rate. Let go and it winds down over about half a second, so a short pause keeps most of the speed and a long one starts it over. A rising whirr plays while it winds and is cut when you let go. Only the Support MG does this; every other gun fires exactly as before.
+
+MEASURED. Check 26.60 passes, and fails on v26.59.
 ## v26.59 - PILLAGERS HAVE ROLES YOU CAN READ
 
 Co-op hunt while he was away. His yes to suggestion 21, pillager roles, and his request for pillagers in more distinct colours. Every pillager now has a role worked out from what he carries (no random number is spent): a RUSHER (shotgun, some SMGs) wears red with shoulder spikes and closes in nearer than he used to; a FLANKER (carbine, some SMGs and rifles) wears green with a streaming scarf; a SUPPRESSOR (Support MG, some SMGs) wears amber with a bandolier and an ammo box; a MARKSMAN (Magnum, Marksman Rifle, Longshot, Whisper, Lance, some rifles) wears blue with a pointed hood, holds his full range and backs off sooner; and anyone in a heavy rig is a SHIELD carrier in violet with a plate on his arm. Half of each coat is the role colour, so a crew reads as different people at a glance, and no words are used. Hired men and friends keep their team look. The medic who revives mates is not in this build.

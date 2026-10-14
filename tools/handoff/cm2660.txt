@@ -1,0 +1,7 @@
+v26.60: lmg spin up
+
+The Support MG spins up: a short wind, slow first shots, then its full rate.
+
+Check 26.60. Fails on v26.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
