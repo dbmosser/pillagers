@@ -1,0 +1,7 @@
+v26.69: the raid director
+
+The waves now rise and fall with how the raid is going: a breather after a hard hit, an ambush from behind after a long quiet.
+
+Check 26.69. Fails on v26.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

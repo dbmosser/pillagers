@@ -5,7 +5,7 @@
     "edits":  [
                   {
                       "anchor":  "  WS.waveT=(+WS.waveT||0)+((dt\u003e0)?dt:0);\n  if(WS.waveT\u003civ) return 0;",
-                      "replacement":  "  var D=flowDir(dt), amb=0;   // v26.xx (flow1): the Director reads the stress first; a breather stands the wave clock still, a quiet stretch speeds it\n  WS.waveT=(+WS.waveT||0)+((dt\u003e0)?dt:0)*D.pace;\n  if(WS.waveT\u003civ) return 0;"
+                      "replacement":  "  var D=flowDir(dt), amb=0;   // v26.xx (flow1): the Director reads the stress first; a breather stands the wave clock still, a quiet stretch speeds it\n  WS.waveT=(+WS.waveT||0)+((dt\u003e0)?dt:0)*D.pace;\n  if(D.pace\u003c=0){ WS.waveT=Math.min(WS.waveT,iv-0.5); return 0; }   // v26.xx (flow1): in a breather the next pack waits, however long the clock has been ready\n  if(WS.waveT\u003civ) return 0;"
                   },
                   {
                       "anchor":  "  q=men[Math.floor(Math.random()*men.length)];\n  c=arcadeWaveSpot(men,q);",

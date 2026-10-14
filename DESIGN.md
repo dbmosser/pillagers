@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.69 - THE RAID DIRECTOR
+
+Co-op hunt while he was away. His yes to the Raid Director: pressure should rise and fall. The waves used to come on a clock, every ten to twenty-two seconds whatever was happening. Now the game reads how the raid is going. Lose a lot of health, or have machines on you, and the raid goes into a breather: no new pack for fourteen to twenty-four seconds and until things calm down, so you can heal and reload. Stay quiet and the waves come sooner, up to a pace sixty percent faster. After a long quiet stretch, two minutes into the raid, the next wave is an ambush: two machines more than a normal pack, landing just off screen on the side you are facing away from, called WAVE with AMBUSH BEHIND YOU. No ambush while you stand near an extraction ring, and no pack ever lands within the ring of an extraction point. DEMO and CAREER do the same.
+
+MEASURED. Check 26.69 passes, and fails on v26.68.
 ## v26.68 - PILLAGERS AND MACHINES FIGHT ON CONTACT
 
 Co-op hunt while he was away. His words on suggestion 23: pillagers and machines should fight each other even without decoys. Before, a pillager who was looting shot a machine he met, and a Sentry or Crawler that could not see you went for a pillager in sight, but a pillager running for the ring, which is where most of them are most of the time, ignored every machine he passed, and a Warden or Bulwark had eyes for nobody but you. Now a pillager heading for the ring stops and shoots a machine that is in sight within 280 units, the way he already does with a rival crew, and a plain Warden or a Bulwark that cannot see you shoots at a pillager in sight. THE OVERSEER keeps to its lair and the Crier, the Peddler and the Survivor stay out of it. No decoy or noise is needed: being in sight of each other is enough, so a firefight you can walk up to and loot afterward turns up on its own.
