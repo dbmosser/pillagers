@@ -1,0 +1,7 @@
+v26.50: reduced flashing
+
+Accessibility has reduced flashing.
+
+Check 26.50. Fails on v26.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

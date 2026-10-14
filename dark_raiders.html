@@ -2201,7 +2201,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.49';
+var VER='26.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17906,6 +17906,7 @@ function bloodFx(x,y,sx,sy,amt){
 function spark(x,y,col,n,spread){
   if(G.sim) return;
   if(CFG.fxLevel===0) n=Math.ceil(n/3);   // v17.43: his pick 28, reduced effects
+  if(CFG.flashRed===1) n=Math.ceil(n*0.5);   // v26.xx (settings9): REDUCED FLASHING, half the sparks of every burst
   // v7.69: cosmetic draws come from the cosmetic stream. Live play used to
   // burn seeded draws here that the sim never saw.
   for(var i=0;i<n;i++){
@@ -17918,7 +17919,7 @@ function spark(x,y,col,n,spread){
 // real holes in the darkness overlay instead of only tinting the sprite.
 function flash(x,y,r,col,life){
   if(G.sim) return;
-  G.flashes.push({x:x,y:y,r:r,c:col||'#ffc27a',t:0,life:life||.14});
+  G.flashes.push({x:x,y:y,r:r*(CFG.flashRed===1?0.6:1),c:col||'#ffc27a',t:0,life:(life||.14)*(CFG.flashRed===1?0.7:1)});   // v26.xx (settings9): REDUCED FLASHING, a smaller and shorter light
   if(G.flashes.length>60) G.flashes.shift();
 }
 // World-anchored text that rises and fades. Used for loot pickups and kill
@@ -29453,7 +29454,7 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
   if(muzzle>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,212,138,.95)';
-    wc.beginPath(); wc.arc(D.tip+ext,D.by,4.5,0,6.2832); wc.fill();
+    wc.fillStyle='rgba(255,212,138,'+(0.95*flashK()).toFixed(3)+')'; wc.beginPath(); wc.arc(D.tip+ext,D.by,4.5,0,6.2832); wc.fill();   // v26.xx (settings9): REDUCED FLASHING dims the muzzle flash
     wc.fillRect(D.tip+ext-4,D.by-1,10,2);
     wc.globalCompositeOperation='source-over';
   }
@@ -30239,7 +30240,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(muzzle>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,212,138,.95)';
-    wc.beginPath(); wc.arc(_L+_B+ext,0,4.5,0,6.2832); wc.fill();
+    wc.fillStyle='rgba(255,212,138,'+(0.95*flashK()).toFixed(3)+')'; wc.beginPath(); wc.arc(_L+_B+ext,0,4.5,0,6.2832); wc.fill();
     wc.fillRect(_L+_B-4+ext,-1,10,2);
     wc.globalCompositeOperation='source-over';
   }
@@ -30456,7 +30457,7 @@ function drawWardenAt(e){
   wc.restore();
   if(e.muzzle>0){
     wc.globalCompositeOperation='lighter';
-    wc.fillStyle='#ffc04a'; wc.globalAlpha=clamp(e.muzzle*6,0,1);
+    wc.fillStyle='#ffc04a'; wc.globalAlpha=clamp(e.muzzle*6,0,1)*flashK();
     wc.beginPath(); wc.arc(x+fl*32.4,y-27,7,0,6.2832); wc.fill();
     wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   }
@@ -30542,7 +30543,7 @@ function drawChoirS(e){
   }
   if(e.muzzle>0){
     wc.globalCompositeOperation='lighter';
-    wc.fillStyle='#ffb070'; wc.globalAlpha=clamp(e.muzzle*6,0,1);
+    wc.fillStyle='#ffb070'; wc.globalAlpha=clamp(e.muzzle*6,0,1)*flashK();
     wc.beginPath(); wc.arc(mx,my,8,0,6.2832); wc.fill();
     wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   }
@@ -30646,7 +30647,7 @@ function drawSentryS(e){
   wc.fillStyle='#2a2f35'; wc.fillRect(28.4*S,-3.6*S,3*S,7.2*S);
   if(e.muzzle>0){
     wc.globalCompositeOperation='lighter';
-    wc.fillStyle='rgba(255,194,122,.95)';
+    wc.fillStyle='rgba(255,194,122,'+(0.95*flashK()).toFixed(3)+')';
     wc.beginPath(); wc.arc(32*S,-1.6*S,4.2*S,0,6.2832); wc.fill();
     wc.beginPath(); wc.arc(32*S,1.6*S,4.2*S,0,6.2832); wc.fill();
     wc.globalCompositeOperation='source-over';
@@ -33096,7 +33097,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // v6.87, his note: a strike shows you the whole map for a moment, inside or out. The
   // fog sheet is what hides things, so the flash lifts the sheet rather than merely
   // brightening the picture over the top of it.
-  var _flash=clamp((G.lightning||0)/0.34,0,1);
+  var _flash=clamp((G.lightning||0)/0.34,0,1)*flashK();   // v26.xx (settings9): REDUCED FLASHING lifts the fog less in a bolt
   if(_flash>0) _lift+=_flash*0.52;
   fx2.fillStyle=isDay()?('rgba(58,46,38,'+clamp(.46-(BR-1)*.06-_lift,.22,.54)+')')
 // v4.35 HIS NOTE, three times now: night is too dark and jarring. The
@@ -33352,7 +33353,7 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
       // for you (above), and updateEnts reads it: they see you FLASH_SEE times farther while it is up (v16.03, his order)
       var lf=G.lightning>0.26?(0.34-G.lightning)/0.08:G.lightning/0.26;
       wc.globalCompositeOperation='lighter';
-      wc.fillStyle='rgba(150,170,220,'+(0.40*clamp(lf,0,1))+')';
+      wc.fillStyle='rgba(150,170,220,'+lightningA(lf)+')';
       wc.fillRect(0,0,W,H);
       wc.globalCompositeOperation='source-over';
     }
@@ -41586,6 +41587,10 @@ function gfxStoresDrop(){
 // v26.xx (settings5), HIS ORDER 2026-10-14: SCREEN SHAKE. The Settings row (OFF, LIGHT 0.5, STANDARD 1, STRONG 1.5) scales the trauma shake below on top of
 // EFFECT INTENSITY; an unset or odd value is the usual strength.
 function shakeK(){ var s=+CFG.shake; return (isFinite(s)&&s>=0&&s<=3)?s:1; }
+// v26.xx (settings9): REDUCED FLASHING. flashK is the factor on the brightness of a drawn flash (muzzle sprites, the lightning sheet and the fog lift it
+// makes); lightningA is the alpha of the lightning sheet for a point in the bolt (lf, 0 to 1).
+function flashK(){ return CFG.flashRed===1?0.45:1; }
+function lightningA(lf){ return 0.40*clamp(lf,0,1)*flashK(); }
 // v26.xx (settings6), HIS ORDER 2026-10-14: THE CROSSHAIR ROWS. xhArms draws the four arms of the cross (or none for the dot, a ring for the circle, three
 // for the T), xhDot the middle (a plain 2 pixel square, or a round dot for the dot and the circle), xhCol the neutral colour and xhSize the factor on the
 // gap, the arm and the rings. The defaults draw exactly what the HUD drew before.
@@ -42835,7 +42840,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.49: Accessibility has colour-blind modes for rarity and for the two sides. Check 26.49 fails on v26.48',
+  now:'v26.50: Accessibility has reduced flashing. Check 26.50 fails on v26.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55514,6 +55519,16 @@ var GAMEOPTS=[
      {n:'DEUTERANOPIA', cfg:{cb:1}},
      {n:'PROTANOPIA',   cfg:{cb:2}},
      {n:'TRITANOPIA',   cfg:{cb:3}}
+   ], def:0},
+  // v26.xx (settings9), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): REDUCED FLASHING, in ACCESSIBILITY. OFF is the game as it was. ON
+  // tones down the bright flashes: the light of a blast, a shot or the Forge (smaller and shorter, flash()), the muzzle flashes drawn on the gun and the
+  // machine, the lightning that lights the whole street, and half of every burst of sparks, the Forge's included. Cosmetic only: what lightning
+  // shows to the machines, the damage and the sound are untouched.
+  {k:'flashRed', label:'REDUCED FLASHING', sec:'ACCESSIBILITY',
+   hint:'TONES DOWN THE BRIGHT FLASHES: BLASTS, MUZZLE FLASHES, LIGHTNING AND FORGE SPARKS.',
+   opts:[
+     {n:'OFF', cfg:{flashRed:0}},
+     {n:'ON',  cfg:{flashRed:1}}
    ], def:0},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',
