@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.19';
+var VER='26.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8217,6 +8217,11 @@ wreckHues:['#7a3f38','#6d6a52','#8a6a3a','#5a6068','#46564a'],   // v7.91: warme
 wreckDens:0.7, ruinDens:1.2,   // v7.93: swept floors, more collapsed racking
   // Fewer vehicles inside a cold store, more of what a store keeps in its yard.
   wreckMix:['car','skip','pallets','pallets','pipes','barrier'],
+  // v26.xx (forgest1), HIS QUESTION 2026-10-14 ("I still haven't seen the forge to improve weapons, is it on the map?"): THE FORGE STATION. The
+  // upgrade rules shipped (v24.03 to v25.58); this is the place you walk up to. Authored in the 170 unit aisle between the PACKING FLOOR racking
+  // and the CHILL ROW units, 330 from the middle of the map; forgeSpot nudges it to the nearest clear, reachable ground. A map with no forge
+  // field has no station.
+  forge:{x:2420,y:1540,name:'THE FORGE'},
   story:{x:1900,y:360,name:'THE MANIFEST',
     text:'A clipboard, frozen to the desk: "Inventory, year one after departure: forty thousand tonnes of provisions, ownerless. The machines keep the cold chain unbroken. Nobody has told them to stop."'},
   veg:{r:0.88,g:0.92,b:1.12},   // v4.21: frost-bitten   // v4.20: cold blue concrete
@@ -10912,6 +10917,43 @@ function sealSpot(map,def,cons){
   for(t=0;t<n;t++){ c=C[(k+t)%n]; if(built(c)) return {x:c.x,y:c.y}; }
   return {x:C[k].x,y:C[k].y};
 }
+// v26.xx (forgest1), HIS QUESTION 2026-10-14: THE FORGE STATION is placed at the raid build, after every seeded pass, and draws NOTHING from any
+// stream (the spiral is fixed), so a seed builds the same raid as before: the same ents and the same containers. It is not a wall and not an
+// ent, like the seal slab. From the authored point of the map it takes the first spot that is clear of every solid wall by 34, clear of every
+// crate by 60 and on ground a body can reach; else the same 16 heading spiral the seal uses, 40 units a ring out to 400; else the authored
+// point itself, so the station is never lost. Both windows of a pair build the same walls from the same seed, so they agree on the spot.
+var FORGE_REACH=70;
+function forgeSpot(map,def,cons){
+  var f=def&&def.forge, MW=(map&&map.walls)||[], CN=cons||[], r, h, a, x, y;
+  if(!f||!isFinite(f.x)||!isFinite(f.y)) return null;
+  function clearAt(px,py){
+    var i, R, Q;
+    if(px<140||py<140||px>WORLD_W-140||py>WORLD_H-140) return false;
+    for(i=0;i<MW.length;i++){ R=MW[i]; if(R&&!R.win&&!R.ledge&&px>R.x-34&&px<R.x+R.w+34&&py>R.y-34&&py<R.y+R.h+34) return false; }
+    for(i=0;i<CN.length;i++){ Q=CN[i]; if(Q&&Math.abs(Q.x-px)<60&&Math.abs(Q.y-py)<60&&Math.hypot(Q.x-px,Q.y-py)<60) return false; }
+    if(map&&map.reachGrid&&!navReachable(map,px,py)) return false;
+    return true;
+  }
+  if(clearAt(f.x,f.y)) return {x:f.x,y:f.y,name:String(f.name||'THE FORGE')};
+  for(r=40;r<=400;r+=40) for(h=0;h<16;h++){
+    a=h*0.3926991; x=Math.round(f.x+Math.cos(a)*r); y=Math.round(f.y+Math.sin(a)*r);
+    if(clearAt(x,y)) return {x:x,y:y,name:String(f.name||'THE FORGE')};
+  }
+  return {x:f.x,y:f.y,name:String(f.name||'THE FORGE')};
+}
+// The anvil, one silhouette for the world, the minimap and the sector map: a horn on the left, a flat face, a waist and a base. c is the
+// context, (x,y) the middle, s the half width; filled in fill with an ink edge.
+var FORGE_ANVIL=[[-1,-0.35],[-0.45,-0.58],[0.95,-0.58],[0.95,-0.14],[0.3,-0.14],[0.2,0.14],[0.55,0.46],[0.55,0.78],[-0.55,0.78],[-0.55,0.46],[-0.2,0.14],[-0.28,-0.14],[-0.7,-0.14]];
+function forgeAnvil(c,x,y,s,fill,ink){
+  var i, P=FORGE_ANVIL;
+  c.save();
+  c.beginPath(); c.moveTo(x+P[0][0]*s,y+P[0][1]*s);
+  for(i=1;i<P.length;i++) c.lineTo(x+P[i][0]*s,y+P[i][1]*s);
+  c.closePath();
+  c.lineJoin='round'; c.lineWidth=Math.max(1.2,s*0.3); c.strokeStyle=ink; c.stroke();
+  c.fillStyle=fill; c.fill();
+  c.restore();
+}
 function sealPayout(tier){
   var pool=WINDFALL_ELITE.slice(),loot=[];
   var n=Math.min(pool.length,3+Math.floor(tier/2));
@@ -13303,7 +13345,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // needs it. Declaring it twice would let the raid clock and the ring clock
   // drift apart, which is the exact failure this build is fixing.
   if(CFG.decks!==1){ map.plats=[]; map.ramps=[]; }   // v13.41: emptied before the ground bake below, which draws nothing from them
-  var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wingrid:buildSegGrid(map.wsegs||[],WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}),
+  var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wingrid:buildSegGrid(map.wsegs||[],WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}), forge:(sim?null:forgeSpot(map,FIXED_MAPS[mapIx],containers)),
     nMach:N_SENTRY+N_CRAWLER,map:map,vegPal:mkVegPal(map),ground:sim?null:bakeGround(map),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
     spawnDbg:_spDbg,issDraw:wepDrew,spawnGun:wepSpawn,   // v15.79: whether a loaner was drawn from the stream, told to the party so their builds make the same draw
     player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
@@ -30778,6 +30820,46 @@ var SHD=G.shells[i];
     wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx,swy-60);
     wc.textAlign='left';
   }
+  // v26.xx (forgest1), HIS QUESTION 2026-10-14: THE FORGE STATION in the world, from the depth sort. A furnace block with a pulsing molten
+  // mouth, a chimney with embers rising, an anvil on top, a warm glow on the ground (and a bloom source for the night), a dashed reach ring
+  // and its name over it, a clear landmark from across the aisle. Cosmetic only: the pulse runs off the raid clock, nothing is drawn
+  // from any stream.
+  function drawForge(){
+    var F=G.forge, t=G.t||0, sp, pu, pv, k, ph, fx, fy, gl, near;
+    if(!F||!isFinite(F.x)||!isFinite(F.y)) return;
+    sp=w2s(F.x,0,F.y);
+    if(sp.x<-220||sp.x>W+220||sp.y<-260||sp.y>H+220) return;
+    fx=F.x; fy=F.y; near=!!G.nearForge;
+    pu=0.5+0.5*Math.sin(t*2.6); pv=0.5+0.5*Math.sin(t*7.1+1.3);
+    wc.save(); wc.globalCompositeOperation='lighter';
+    gl=wc.createRadialGradient(fx,fy+4,6,fx,fy+4,96);
+    gl.addColorStop(0,'rgba(255,150,40,'+(0.30+0.12*pu).toFixed(3)+')'); gl.addColorStop(1,'rgba(255,110,20,0)');
+    wc.fillStyle=gl; wc.beginPath(); wc.ellipse(fx,fy+4,96,54,0,0,6.2832); wc.fill();
+    wc.restore();
+    wc.save(); wc.strokeStyle=near?'rgba(255,201,74,.60)':'rgba(255,201,74,.22)'; wc.lineWidth=near?2:1.4; wc.setLineDash([6,7]);
+    wc.beginPath(); wc.ellipse(fx,fy+4,FORGE_REACH,FORGE_REACH*0.56,0,0,6.2832); wc.stroke(); wc.restore();
+    wc.fillStyle='rgba(10,8,6,.42)'; wc.beginPath(); wc.ellipse(fx,fy+6,34,11,0,0,6.2832); wc.fill();
+    wc.fillStyle=INK; rrF(fx-28,fy-13,56,19,3);
+    wc.fillStyle='#3b414a'; rrF(fx-26,fy-12,52,16,2); wc.fillStyle='#5b6470'; wc.fillRect(fx-26,fy-12,52,2);
+    wc.fillStyle=INK; rrF(fx-24,fy-50,48,40,3);
+    wc.fillStyle='#2a2f37'; rrF(fx-22,fy-48,44,36,2); wc.fillStyle='#454d58'; wc.fillRect(fx-22,fy-48,44,3);
+    wc.fillStyle='rgba(0,0,0,.30)'; for(k=0;k<3;k++) wc.fillRect(fx-22,fy-40+k*9,44,1);
+    wc.fillStyle=INK; wc.fillRect(fx+9,fy-70,13,24); wc.fillStyle='#343a43'; wc.fillRect(fx+11,fy-68,9,22); wc.fillStyle='#4b535e'; wc.fillRect(fx+11,fy-68,9,2);
+    wc.fillStyle=INK; wc.fillRect(fx-16,fy-41,32,17);
+    gl=wc.createLinearGradient(0,fy-39,0,fy-26);
+    gl.addColorStop(0,'#ffe9a8'); gl.addColorStop(0.45,'#ff9a2a'); gl.addColorStop(1,'#a8300a');
+    wc.globalAlpha=0.78+0.22*pv; wc.fillStyle=gl; wc.fillRect(fx-14,fy-39,28,13); wc.globalAlpha=1;
+    wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.30+0.20*pv; wc.fillStyle='#ff8a2a'; wc.fillRect(fx-14,fy-39,28,13); wc.restore();
+    forgeAnvil(wc,fx-7,fy-60,14,'#59626e',INK);
+    wc.save(); wc.globalCompositeOperation='lighter';
+    for(k=0;k<4;k++){ ph=(t*0.55+k*0.25)%1; wc.globalAlpha=(1-ph)*0.85; wc.fillStyle=(k&1)?'#ffb040':'#ff7a2a'; wc.fillRect(fx+14+Math.sin(t*2.3+k*1.9)*6,fy-72-ph*40,2,2); }
+    wc.restore();
+    wc.textAlign='center'; wc.font=FS(TYPE.label);
+    wc.fillStyle=INK; wc.fillText(F.name||'THE FORGE',fx+1,fy-83);
+    wc.fillStyle=FORGE_GOLD; wc.fillText(F.name||'THE FORGE',fx,fy-84);
+    wc.textAlign='left';
+    gfxEmit(fx,fy-30,120,'#ff8a2a',0.5+0.12*pv);
+  }
   function _pushThrown(){
     var _ti,_dy2,_fr2;
     for(_ti=0;_ti<G.decoys.length;_ti++){
@@ -30819,6 +30901,7 @@ var SHD=G.shells[i];
   // v8.50: THE GREAT DOOR SORTS WITH THE WORLD. Keyed on the slab's own y, so
   // standing in front of it puts you in front of it.
   if(G.seal) DR.push({k:G.seal.y,fn:drawSealSlab});
+  if(G.forge) DR.push({k:G.forge.y,fn:drawForge});   // v26.xx (forgest1): the Forge station
   for(i=0;i<G.ents.length;i++){
     var e=G.ents[i];
     if(!e.seen) continue;
@@ -33442,7 +33525,7 @@ function mmMarks(r,sc,R){
   if(fg&&isFinite(fg.x)&&isFinite(fg.y)){
     s=at(fg.x,fg.y);
     if(s.out){ mmArrow(s,R,FORGE_GOLD); got.forge='pin'; }
-    else { ctx.fillStyle=INK; ctx.beginPath(); ctx.arc(s.x,s.y,6*R,0,6.2832); ctx.fill(); ctx.fillStyle=FORGE_GOLD; ctx.beginPath(); ctx.arc(s.x,s.y,4*R,0,6.2832); ctx.fill(); MMAP.ops+=2; got.forge='in'; }
+    else { forgeAnvil(ctx,s.x,s.y,6.5*R,FORGE_GOLD,INK); MMAP.ops+=2; got.forge='in'; }   // v26.xx (forgest1): the anvil, not a dot
   }
   // the party's marks and pings, then your waypoint
   if(typeof NET==='object'&&NET){
@@ -38278,6 +38361,15 @@ function drawMapOverlayRaw(){
     ctx.fillText(G.seal.done?'SEAL BROKEN':('SEAL '+Math.round(pctM*100)+'%'),slx,sly-16*_MZ);
     ctx.textAlign='left';
   }
+  // v26.xx (forgest1), HIS QUESTION 2026-10-14: THE FORGE on the sector map, a gold anvil in a ring with its name, at the map zoom.
+  if(G.forge&&isFinite(G.forge.x)&&isFinite(G.forge.y)){
+    var fgx=ox+G.forge.x*sc, fgy=oy+G.forge.y*sc;
+    ctx.fillStyle='rgba(255,201,74,.16)'; ctx.beginPath(); ctx.arc(fgx,fgy,14*_MZ,0,6.2832); ctx.fill();
+    ctx.strokeStyle=FORGE_GOLD; ctx.lineWidth=1.5*_MZ; ctx.beginPath(); ctx.arc(fgx,fgy,14*_MZ,0,6.2832); ctx.stroke();
+    forgeAnvil(ctx,fgx,fgy,8.5*_MZ,FORGE_GOLD,INK);
+    ctx.textAlign='center'; ctx.font=FS(TYPE.micro); ctx.fillStyle=FORGE_GOLD;
+    ctx.fillText(String(G.forge.name||'THE FORGE'),fgx,fgy-19*_MZ); ctx.textAlign='left';
+  }
   // THE STRONGBOX. Marked from the start: it is not a secret, it is a dare.
   for(i=0;i<G.containers.length;i++){
     var sbm=G.containers[i];
@@ -41678,7 +41770,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.19: THE OVERSEER now sees and shoots from 87 meters instead of 62, and it fires at you from its ground even past its lair, so when it looks at you it is dangerous. Check 26.19 fails on v26.18',
+  now:'v26.20: THE FORGE now stands in every raid and is marked on the minimap and the map. Upgrading guns there comes next. Check 26.20 fails on v26.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v26.20: the forge stands in every raid
+
+THE FORGE now stands in every raid and is marked on the minimap and the map. Upgrading guns there comes next.
+
+Check 26.20. Fails on v26.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

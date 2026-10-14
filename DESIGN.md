@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.20 - THE FORGE STANDS IN EVERY RAID
+
+Co-op hunt while he was away. His question of 2026-10-14: he had not seen the Forge that upgrades weapons and asked if it is on the map. The upgrade rules shipped earlier (MK II, MK III, the four elements, kept on extraction), but the station you walk up to did not. Now every raid has THE FORGE: a furnace block with a glowing mouth, an anvil, embers rising and a warm glow on the ground, a dashed reach ring and its name over it, standing in the aisle between the packing floor and CHILL ROW (moved to the nearest clear, reachable ground if something stands there, never on a crate or inside a wall). It is marked with a gold anvil on the minimap and on the sector map. Walking up to upgrade a gun comes in the next builds. Placing it draws nothing from the seeded stream, so every raid is the same as before.
+
+MEASURED. Check 26.20 passes, and fails on v26.19.
 ## v26.19 - THE OVERSEER SEES FARTHER
 
 Co-op hunt while he was away. His note of 2026-10-14: THE OVERSEER was looking right at him and did not attack. Three faults, all fixed. First, its sight was a plain Warden sight of 62 meters; the boss now sees and shoots from 87 meters (1.4 times as far; a balance change, allowed by his ruling of 2026-10-02), and a plain Warden is unchanged. Second, the guard-the-lair rule of v17.45 turned its body toward home as soon as you stood more than 110 meters from its lair, so the shot it had begun to charge ran out facing away and never fired: it looked at you, charged and did nothing. Now, when it sees you inside its reach it holds where it stands, faces you and fires, and the lair rule only stops it chasing you out of its ground; out of its reach it walks home as before. Third, it looks left or right by its heading while it only saw in a narrow cone of that heading, so it could face you and not see you; it now sees whatever stands on the side it faces, with a clear line, and never through a wall. In a party the host runs it and either player can be seen and shot.
