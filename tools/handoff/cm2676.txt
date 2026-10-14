@@ -1,0 +1,7 @@
+v26.76: searchers sweep in widening rings
+
+Enemies that lose you now search in three widening rings and show an amber scan cone that smoke and crouching visibly cut short.
+
+Check 26.76. Fails on v26.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
