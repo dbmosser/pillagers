@@ -31802,7 +31802,8 @@ window.__REGRESS=[
    run:function(){
      if(typeof siegeBase!=='function') return 'the siege size is written out in several places';
      var bad=[], t=(typeof __REGRESS!=='undefined')?__REGRESS.find(function(x){ return x.v==='9.34'; }):null, r;
-     if(Math.abs(siegeBase(0)-5)>1e-9||Math.abs(siegeBase(1)-12)>1e-9) bad.push('the siege size reads '+siegeBase(0)+' to '+siegeBase(1));
+     // retargeted for siegelite (2026-10-13, his note: too many bots at extract, and the haul share of the siege is capped): the size is a flat base plus a haul share capped at SIEGE_HAUL_CAP machines at the shipped dial, so the old 5 + 7 x greed is one of two accepted shapes. The rule this check keeps is unchanged: ONE size, counted the same everywhere (the promise check below).
+     if(!(Math.abs(siegeBase(0)-5)<=1e-9&&Math.abs(siegeBase(1)-12)<=1e-9)&&!(typeof SIEGE_HAUL_CAP==='number'&&typeof SIEGE_DIAL==='number'&&Math.abs((siegeBase(1)-siegeBase(0))*SIEGE_DIAL-SIEGE_HAUL_CAP)<=1e-9)) bad.push('the siege size reads '+siegeBase(0)+' to '+siegeBase(1));
      if(!t) return bad.length?bad.join('; '):'SKIP: no promise check to run';
      try{ __runPrep(); __topClear(); r=t.run(); }catch(e){ r='threw: '+(e&&e.message||e); }
      if(r&&String(r).indexOf('SKIP')!==0) bad.push('the promise and the arrivals still differ: '+String(r).slice(0,120));
@@ -32403,11 +32404,11 @@ window.__REGRESS=[
        CFG.siegeVol=1; Z.beaconT=25; Z.hold=null; Z.siegeSpawned=0; Z.siegeSpawnT=0; Z.siegeGreed=null; g.active=Z; g.beaconT=25;
        srand(777);
        for(i=0;i<60;i++){ Z.siegeSpawnT=99; tickExtractPoints(0.016); }
-       GR=Z.siegeGreed; want=Math.round(5+7*GR);
+       GR=Z.siegeGreed; want=Math.round(siegeBase(GR));   // retargeted for siegelite (2026-10-13): siegeBase is 5 + 7 x greed on the old build, the same call the siege makes
        born=g.ents.filter(function(e){ return e.siegeBorn; });
        if(born.length!==want) bad.push('the ring sent '+born.length+' machines at greed '+(+GR).toFixed(2)+', not '+want);
        for(i=0;i<born.length;i++) born[i].siegeBorn=0;
-       CFG.siegeVol=10; Z.siegeSpawned=0; Z.siegeGreed=null; Z.beaconT=25; srand(777);
+       CFG.siegeVol=40; Z.siegeSpawned=0; Z.siegeGreed=null; Z.beaconT=25; srand(777);   // retargeted for siegelite (2026-10-13): it was 10; an empty bag's ceiling is now 3 at the Standard dial, so ten times that is under the 30 arrivals the mix needs
        for(i=0;i<140;i++){ Z.siegeSpawnT=99; tickExtractPoints(0.016); }
        born=g.ents.filter(function(e){ return e.siegeBorn; });
        for(i=0;i<born.length;i++) if(born[i].kind==='sentry') sn++;
@@ -67866,14 +67867,14 @@ window.__REGRESS=[
      // CONTROL THREE, AND IT IS THE ONE THAT MATTERS. Standard is what the game
      // is balanced on and what every other number here is measured against, so it
      // must not have moved by a single machine.
-     if(SL.n!==5||SH.n!==12)   // v18.06: his son's smaller siege (cap 5+7 x greed); it was 6 and 14
+     if(!((SL.n===5&&SH.n===12)||(SL.n===3&&SH.n===11)))   // v18.06: his son's smaller siege (cap 5+7 x greed); it was 6 and 14. Retargeted for siegelite (2026-10-13, his note: too many bots at extract): flat 1.6 + a haul share capped at 5, so 3 and 11 from that build on
        bad.push('control: a standard siege now brings '+SL.n+' and '+SH.n+
-                ' rather than 5 and 12, so the default extraction moved');
+                ' rather than 5 and 12 (3 and 11 from siegelite), so the default extraction moved');
      // CONTROL FOUR: and neither did Light, which already worked. A fix that
      // scaled the rate the wrong way would show up here first.
-     if(LL.n!==3||LH2.n!==7)   // v18.06: it was 4 and 8
+     if(!((LL.n===3&&LH2.n===7)||(LL.n===2&&LH2.n===7)))   // v18.06: it was 4 and 8. Retargeted for siegelite (2026-10-13): a light haul's ceiling is 2 machines, a full one still 7
        bad.push('control: a light siege now brings '+LL.n+' and '+LH2.n+
-                ' rather than 3 and 7, so the option that already worked moved');
+                ' rather than 3 and 7 (2 and 7 from siegelite), so the option that already worked moved');
      return bad.length?bad.join('; '):null; }},
   {v:'9.84',what:'the Machines setting moves the crawlers, not just the sentries',
    run:function(){
