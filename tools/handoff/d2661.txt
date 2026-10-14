@@ -1,0 +1,5 @@
+## v26.61 - THE WHAT IS NEW CARD NAMES THE COMBAT FEEL BUILDS
+
+Co-op hunt while he was away. The card was stamped v26.45 and the stamp may not trail the build by more than 0.15. Its new line names the combat feel builds since: heavy rounds that stop what they hit, the Meridian Lance kick, the active reload in the bright part of the reload ring and the Support MG spin-up. The two lines that described the retired belt, BELT KEYS and NEW BELT, are taken off the card.
+
+MEASURED. Check 26.61 passes, and fails on v26.60.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.61 - THE WHAT IS NEW CARD NAMES THE COMBAT FEEL BUILDS
+
+Co-op hunt while he was away. The card was stamped v26.45 and the stamp may not trail the build by more than 0.15. Its new line names the combat feel builds since: heavy rounds that stop what they hit, the Meridian Lance kick, the active reload in the bright part of the reload ring and the Support MG spin-up. The two lines that described the retired belt, BELT KEYS and NEW BELT, are taken off the card.
+
+MEASURED. Check 26.61 passes, and fails on v26.60.
 ## v26.60 - LMG SPIN UP
 
 Co-op hunt while he was away. His order: "add lmg spin up". The Support MG now winds up. Hold the trigger and nothing fires for the first fifth of a second or so while the barrels turn; then the shots come slowly and speed up until, three quarters of a second in, it fires at its own full rate. Let go and it winds down over about half a second, so a short pause keeps most of the speed and a long one starts it over. A rising whirr plays while it winds and is cut when you let go. Only the Support MG does this; every other gun fires exactly as before.

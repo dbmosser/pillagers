@@ -1,0 +1,20 @@
+{
+    "title":  "THE WHAT IS NEW CARD NAMES THE COMBAT FEEL BUILDS",
+    "why":  "The card was stamped v26.45 and the stamp may not trail the build by more than 0.15. Its new line names the combat feel builds since: heavy rounds that stop what they hit, the Meridian Lance kick, the active reload in the bright part of the reload ring and the Support MG spin-up. The two lines that described the retired belt, BELT KEYS and NEW BELT, are taken off the card.",
+    "now":  "The what is new card names the combat feel builds and drops the retired belt lines.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002726.45\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002726.61\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
+                      "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027COMBAT FEEL. Heavy rounds stop what they hit and the Lance kicks. R again in the bright part of the reload ring finishes it, +15% damage. The Support MG spins up.\u0027,"
+                  },
+                  {
+                      "anchor":  "  \u0027BELT KEYS. U and G pick and throw grenades, J and H pick and use heals, 5 to 9 use a slot at once. Crouch still to creep back health.\u0027,\n  \u0027NEW BELT. Four gun keys, two throwables, two medical and an armour key. A better gun swaps out your weakest. DEMO extraction and siege now match CAREER.\u0027,\n  \u0027HOLD KEYS. Hold H for a plate, hold Alt for the raid status, middle mouse pings. Crouching is the quiet walk, and no voice calls out anymore.\u0027,",
+                      "replacement":  "  \u0027HOLD KEYS. Hold H for a plate, hold Alt for the raid status, middle mouse pings. Crouching is the quiet walk, and no voice calls out anymore.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build, leads with the COMBAT FEEL news shown whole, and no longer carries the retired belt lines\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof wnShort!==\u0027function\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e26.61+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), i, t;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027COMBAT\u0027+\u0027 FEEL.\u0027)!==0) bad.push(\u0027the card does not lead with the combat feel news\u0027);\n     else if(wnShort(WHATSNEW[1]).slice(-3)===\u0027...\u0027) bad.push(\u0027the new line is cut on the card\u0027);\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     for(i=0;i\u003cWHATSNEW.length;i++){ t=String(WHATSNEW[i]); if(t.indexOf(\u0027BELT\u0027+\u0027 KEYS.\u0027)===0||t.indexOf(\u0027NEW\u0027+\u0027 BELT.\u0027)===0) bad.push(\u0027a retired belt line is still on the card: \u0027+t.slice(0,12)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

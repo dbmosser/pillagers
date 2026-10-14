@@ -1,0 +1,7 @@
+v26.61: the what is new card names the combat feel builds
+
+The what is new card names the combat feel builds and drops the retired belt lines.
+
+Check 26.61. Fails on v26.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
