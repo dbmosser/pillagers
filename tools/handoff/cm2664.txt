@@ -1,0 +1,7 @@
+v26.64: finisher
+
+Hold V on a downed pillager to finish him for a score bonus.
+
+Check 26.64. Fails on v26.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

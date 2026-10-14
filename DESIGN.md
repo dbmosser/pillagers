@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.64 - FINISHER
+
+Co-op hunt while he was away. His yes to a finisher. Hold the crowbar key, V, on a pillager who is down on the floor and within reach, and after about half a second you finish him on the spot: a heavy blow, a kick of the screen, 100 added to your run score in a DEMO run and a CAREER run, and the kill counts for you as any of your kills does. It is the answer to his one get-up: you can end him before he is back on his feet. A tap on V is still the crowbar swing and nothing else, and a pillager who is standing is never touched. A downed pillager in reach shows FINISH and the key over him, with a ring that fills while you hold. On a linked window the host does the killing.
+
+MEASURED. Check 26.64 passes, and fails on v26.63.
 ## v26.63 - CLOSE CALL
 
 Co-op hunt while he was away. His yes to the dodge-through reward. Rolling through a round now pays. A round that reaches you while the roll still protects you (the first stretch of it, the invulnerable window) gives back the stamina the roll cost, adds 25 to your run score in a DEMO run and in a CAREER run, and calls CLOSE CALL over you with the figure. It pays once per roll, so a shotgun blast through a roll is one reward, not six. The round is stopped by the roll exactly as before, so the damage you take does not change. A round that finds you standing does none of this.
