@@ -6331,9 +6331,9 @@ window.__REGRESS=[
          if(w&&RV_BASE[w.id]){
            cnt++;
            if(r.dmg!==WEAPONS[w.id].dmg||w.dmg!==WEAPONS[RV_BASE[w.id]].dmg*VARIANT_DMG) bad.push('a pillager with the '+w.name+' twin has the wrong damage ('+r.dmg+')');
-           if(r.elite!==1&&r.bag.indexOf('gun_'+w.id)<0) bad.push('a pillager with the '+w.name+' twin does not carry its twin to drop');
+           if(r.elite!==1&&r.noGunDrop!==w.id&&r.bag.indexOf('gun_'+w.id)<0) bad.push('a pillager with the '+w.name+' twin does not carry its twin to drop');
            if(r.elite===1&&!ITEMS['gun_'+w.id]) bad.push('an elite pillager with the '+w.name+' twin has no item for his body to drop');
-         } else if(w&&w.id!=='tacker'&&w.id!=='smg'&&w.id!=='rifle'&&w.id!=='carbine'&&w.id!=='shotgun'&&r.elite!==1) bad.push('a pillager carries '+w.id);
+         } else if(w&&!w.starter&&w.id!=='magnum'&&w.id!=='smg'&&w.id!=='rifle'&&w.id!=='carbine'&&w.id!=='shotgun'&&r.elite!==1) bad.push('a pillager carries '+w.id);
        }
        if(cnt<15||cnt>80) bad.push('pillagers carried a twin '+cnt+' times in '+n+' (about 40 expected)');
        srand(11); mkRaider(500,500,null,true); a=RNGS; RV_PCT=0; srand(11); mkRaider(500,500,null,true); b=RNGS; RV_PCT=pct0;
@@ -6588,7 +6588,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__applyLoaded)||typeof rollFieldGun!=='function'||typeof openContainer!=='function'||typeof dropItem!=='function'||typeof drawGun!=='function'||typeof gunCompare!=='function'||typeof beltGunLow!=='function') return 'SKIP: this fixture cannot deploy, roll, drop and equip a gun';
      if(typeof RV_OF==='undefined'||typeof VARIANT_DMG==='undefined'||typeof gunBase!=='function') return 'guns have no rarity variants (RV_OF, VARIANT_DMG, gunBase)';
-     var bad=[], RN=['common','uncommon','rare','elite','gold'], SRC=['smg','magnum','carbine','shotgun','rifle','lmg','dmr','whisper'], NONE=['pistol','sniper','lance','tacker'];
+     var bad=[], RN=['common','uncommon','rare','elite','gold'], SRC=['smg','magnum','carbine','shotgun','rifle','lmg','dmr','whisper'], NONE=['pistol','sniper','lance'];
      var SAME=['rof','reload','mag','spread','rng','noise','pellets','burst','auto','optic','tint','name'];
      var P2=__P(), i, j, k, b, v, vi, ib, iv, cnt, hi, mm, nb, nv, nx, n, g, p, q, ct, o, ok, ix, snap=null, s0=RNGS, r0=RSEED, pend0=pendSeed;
      function gunsHeld(){
@@ -7352,7 +7352,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'26.17',what:'his order (2026-10-14): a kit never issues a loaner: with no gun anywhere TOP GEAR, RANDOM FROM STASH, MY LOADOUT and the quick ascent go up with the Scav Pistol in hand (not issued, not from the armoury), an extraction banks it into an empty armoury and adds no second one to the stash, a death bills nothing for it, and with a gun owned only that gun goes up',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)||typeof askKit!=='function'||typeof kitExtraHide!=='function'||typeof STARTERS==='undefined'||typeof saveProfile!=='function'||!WEAPONS.pistol||!WEAPONS.smg) return 'SKIP: this fixture cannot ask the kit question and deploy';
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)||typeof askKit!=='function'||typeof kitExtraHide!=='function'||typeof saveProfile!=='function'||!WEAPONS.pistol||!WEAPONS.smg) return 'SKIP: this fixture cannot ask the kit question and deploy';
      var md=document.getElementById('askmodal'), bT=document.getElementById('asktop'), bR=document.getElementById('askrand'), bY=document.getElementById('askyes');
      if(!md||!bT||!bR||!bY) return 'SKIP: no kit card in this page';
      var bad=[], P2=__P(), i, why, g, p, txt, oc, n0, r;
@@ -7361,7 +7361,7 @@ window.__REGRESS=[
      var keep={}; for(i=0;i<KEYS.length;i++) keep[KEYS[i]]=snap(P2[KEYS[i]]);
      function loaners(tag){ var q=__state().player, o=[];
        if(q.wepIssued||q.secIssued) o.push(tag+': a hand is flagged issued');
-       if(STARTERS.indexOf(q.wep&&q.wep.id)>=0||STARTERS.indexOf(q.sec&&q.sec.id)>=0) o.push(tag+': a loaner starter ('+(q.wep&&q.wep.id)+' / '+(q.sec&&q.sec.id)+') is in a hand');
+       if((q.wep&&q.wep.starter)||(q.sec&&q.sec.starter)) o.push(tag+': a loaner starter ('+(q.wep&&q.wep.id)+' / '+(q.sec&&q.sec.id)+') is in a hand');
        if(__state().bag.some(function(k){ return /^gun_/.test(k); })) o.push(tag+': a gun was put in the backpack');
        return o; }
      function up(btn,weapons,equipped){
@@ -9892,7 +9892,7 @@ window.__REGRESS=[
   {v:'25.63',what:'his order (reload done sound): every finished reload plays exactly one reload done cue on the frame the rounds go in, tactical and empty, each gun class; a reload cut short plays none; nothing under G.sim',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof tickReload!=='function'||typeof reloadFoley!=='function'||typeof WEAPONS!=='object') return 'SKIP: this fixture cannot stage a reload';
-     var bad=[], rec=[], kBlip=blip, kFoley=foley, kSim=null, g=null, p=null, sv=null, ids=['pistol','smg','rifle','shotgun','lmg','sniper','magnum','lance','scuttle','dmr'], staged=0, i, w, dry, r, cues, late;
+     var bad=[], rec=[], kBlip=blip, kFoley=foley, kSim=null, g=null, p=null, sv=null, ids=['pistol','smg','rifle','shotgun','lmg','sniper','magnum','lance','carbine','dmr'], staged=0, i, w, dry, r, cues, late;
      var run=function(w,dry,cut){
        var ticks=0;
        rec.length=0; p.wep=w; p.ammo=dry?0:Math.max(1,Math.floor(w.mag/2)); p.reserve=w.mag*3; p.reloading=w.reload; p.roll=0; p.downed=false;
@@ -11679,7 +11679,7 @@ window.__REGRESS=[
        diffN(d,none,function(wx){ if(wx>x1) x1=wx; return true; });
        return x1;
      }
-     var MIN={tacker:15,pistol:15,magnum:18,sputter:18,smg:18,chatter:24,carbine:24,rifle:28,whisper:27,scuttle:20,shotgun:26,lmg:31,dmr:33,sniper:37,lance:37};
+     var MIN={pistol:15,magnum:18,smg:18,carbine:24,rifle:28,whisper:27,shotgun:26,lmg:31,dmr:33,sniper:37,lance:37};
      var tips={}, id, none0, d, dl, noneL, D={}, gold;
      try{
        if(typeof G!=='undefined'&&G) G.t=1.0;
@@ -16871,7 +16871,7 @@ window.__REGRESS=[
      for(k in c.d) if(c.d[k]!==0) bad.push('the same gun has a '+k+' delta of '+c.d[k]);
      c=gunCompare(WEAPONS.pistol,WEAPONS.fists); if(c.verdict!=='UPGRADE'||c.h!==null) bad.push('a gun over bare hands reads '+c.verdict);
      c=gunCompare(WEAPONS.pistol,null); if(c.verdict!=='UPGRADE') bad.push('a gun over nothing reads '+c.verdict);
-     c=gunCompare(WEAPONS.smg,WEAPONS.chatter);
+     c=gunCompare(WEAPONS.carbine,WEAPONS.rifle);
      if(['UPGRADE','DOWNGRADE','SIDEGRADE'].indexOf(c.verdict)<0) bad.push('same-tier guns read '+c.verdict);
      return bad.length?bad.join('; '):null; }},
   {v:'23.77',what:'his #45, punchy guns: a shot 100 away gets a bright 4 kHz snap and no far thump, a shot 800 away loses the snap, is dulled to 800 Hz and gets a low thump, the open answers with a roll and a building with slaps, and no layer schedules a buffer over 6000 samples',
@@ -19169,27 +19169,27 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); p=g.player;
-       if(!WEAPONS.chatter||!WEAPONS.smg||!WEAPONS.lance||!ITEMS.gun_lance||!ITEMS.gun_smg||!ITEMS.gun_rifle||!ITEMS.gun_pistol) return 'SKIP: a gun this check names is missing';
-       p.wep=cp('chatter'); p.sec=cp('smg'); p.ammo=p.wep.mag; p.secAmmo=p.sec.mag;
+       if(!WEAPONS.smg_v||!WEAPONS.smg||!WEAPONS.lance||!ITEMS.gun_lance||!ITEMS.gun_smg||!ITEMS.gun_rifle||!ITEMS.gun_pistol) return 'SKIP: a gun this check names is missing';
+       p.wep=cp('smg_v'); p.sec=cp('smg'); p.ammo=p.wep.mag; p.secAmmo=p.sec.mag;
        p.wepIssued=false; p.secIssued=false; p.wepFromArmory=false; p.secFromArmory=false; p.swapped=false; p.reloading=0;
        g.bag=g.bag.filter(function(b){ return !(ITEMS[b]&&ITEMS[b].use==='gun'); });
        g.hotAssign={}; g.hotAuto={}; gunKeysSettle({deploy:1});
        grantLoot({x:p.x,y:p.y,loot:[]},['gun_lance']);
-       if(!p.wep||p.wep.id!=='chatter') bad.push('the gun in hand became '+(p.wep&&p.wep.id)+', not chatter');
+       if(!p.wep||p.wep.id!=='smg_v') bad.push('the gun in hand became '+(p.wep&&p.wep.id)+', not smg_v');
        if(!p.sec||p.sec.id!=='lance') bad.push('the stowed slot holds '+(p.sec&&p.sec.id)+', not lance');
        if(g.bag.indexOf('gun_smg')<0) bad.push('the old stowed smg is not in the backpack');
        if(g.bag.indexOf('gun_lance')>=0) bad.push('the lance also went into the backpack');
        k=onKey('gun_smg',2); if(k!==2&&k!==3) bad.push('no key 3 or 4 holds gun_smg ('+JSON.stringify(g.hotAssign)+')');
        if(!bad.length){
          grantLoot({x:p.x,y:p.y,loot:[]},['gun_rifle']);
-         if(p.wep.id!=='chatter'||p.sec.id!=='lance') bad.push('a rifle moved a gun in the hands ('+p.wep.id+'/'+p.sec.id+')');
+         if(p.wep.id!=='smg_v'||p.sec.id!=='lance') bad.push('a rifle moved a gun in the hands ('+p.wep.id+'/'+p.sec.id+')');
          if(g.bag.indexOf('gun_rifle')<0) bad.push('a rifle, better than the worst gun carried, is not in the backpack');
          else { k=onKey('gun_rifle',2); if(k!==2&&k!==3) bad.push('no key 3 or 4 holds gun_rifle ('+JSON.stringify(g.hotAssign)+')'); }
          m0=ARCADE.mine|0; b0=g.bag.length;
          grantLoot({x:p.x,y:p.y,loot:[]},['gun_pistol']);
          if(g.bag.indexOf('gun_pistol')>=0||g.bag.length!==b0) bad.push('a pistol, worse than every gun carried, went into the backpack');
          if(!((ARCADE.mine|0)>m0)) bad.push('a scrapped pistol scored nothing ('+m0+' to '+ARCADE.mine+')');
-         if(p.wep.id!=='chatter'||p.sec.id!=='lance') bad.push('a pistol moved a gun in the hands');
+         if(p.wep.id!=='smg_v'||p.sec.id!=='lance') bad.push('a pistol moved a gun in the hands');
        }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
@@ -24982,7 +24982,7 @@ window.__REGRESS=[
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof netLootTake!=='function'||typeof netContInit!=='function'||typeof mkContainer!=='function'||typeof setLoot!=='function') return 'SKIP: no raid or party here';
      var NK={}, k, bad=[], gk=null, key=null, ok=null, i, ks=Object.keys(ITEMS), g, c, cid, r, w0, rs0, gp0, e0, s0, oSwf=sayWhenFree;
-     function starter(x){ return typeof STARTERS!=='undefined'&&STARTERS.indexOf(x)>=0; }
+     function starter(x){ var w0=WEAPONS[x]; return !!(w0&&w0.starter); }
      for(i=0;i<ks.length;i++){ var _it=ITEMS[ks[i]]; if(!/^gun_/.test(ks[i])||!_it||_it.use!=='gun'||!_it.gk||!WEAPONS[_it.gk]||starter(_it.gk)||_it.gk==='fists') continue; if(!key){ key=ks[i]; gk=_it.gk; } else if(_it.gk!==gk){ ok=_it.gk; break; } }
      if(!key||!ok) return 'SKIP: no two armoury gun items here';
      for(k in NET) NK[k]=NET[k];
@@ -25389,7 +25389,7 @@ window.__REGRESS=[
        g=__state(); p=g&&g.player; if(!g||g.over||!p) return 'SKIP: no live raid for the loaner';
        // noloaner: a kit no longer issues a loaner (it goes up with the free Scav Pistol), so the issued gun this part is about is put in
        // his hand here, the way the sim and the dev kit still hand one out. On the old build the deploy had already done it.
-       if(!p.wepIssued&&p.wep&&p.wep.id==='pistol'&&WEAPONS.tacker){ p.wep=WEAPONS.tacker; p.ammo=p.wep.mag; p.wepIssued=true; p.wepFromArmory=false; try{ gunKeysSettle({deploy:1}); g.hot=gunCell(); }catch(_gk){} }
+       if(!p.wepIssued&&p.wep&&p.wep.id==='pistol'&&WEAPONS.carbine){ p.wep=WEAPONS.carbine; p.ammo=p.wep.mag; p.wepIssued=true; p.wepFromArmory=false; try{ gunKeysSettle({deploy:1}); g.hot=gunCell(); }catch(_gk){} }
        if(!(p.wepIssued&&p.wep&&p.wep.id!=='fists'&&p.wep.id!=='smg'&&p.wep.id!=='shotgun'&&p.sec&&p.sec.id==='smg'&&!p.secIssued)) return 'SKIP: staging: did not deploy with an issued loaner up and his SMG stowed';
        var lo=p.wep.id;
        g.ents.length=0; p.iv=99; p.roll=0; p.downed=false; p.dying=false; p.swapped=false; p.wepFromArmory=false; p.secFromArmory=false;
@@ -26198,7 +26198,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'21.66',what:'his note: the single shot guns hit harder, so they keep up with the automatics',
    run:function(){
-     var want={pistol:23,tacker:20,scuttle:12,magnum:62,dmr:64,sniper:170,lance:150,shotgun:16,whisper:24}, bad=[], k;
+     var want={pistol:23,magnum:62,dmr:64,sniper:170,lance:150,shotgun:16,whisper:24}, bad=[], k;
      for(k in want) if(!WEAPONS[k]||WEAPONS[k].dmg!==want[k]) bad.push(k+' does '+(WEAPONS[k]&&WEAPONS[k].dmg)+', not '+want[k]);
      if(WEAPONS.whisper&&WEAPONS.whisper.rof!==400) bad.push('the Whisper fires every '+WEAPONS.whisper.rof+' ms, not 400');
      function sus(w){ var per=w.dmg*(w.pellets||1)*(w.burst||1), shots=w.mag/(w.burst||1); return per*shots/(shots*w.rof/1000+w.reload/1000); }
@@ -41945,7 +41945,7 @@ window.__REGRESS=[
      // The linked window carries the loaner draw the other way round from the host: a gun of its own when the host drew a
      // loaner, no gun when the host had one (the fixture pin equips one), so the build only lands where the host put it when
      // the draw is held in step.
-     function armPeerGun(){ if(hostDrew){ P.equipped='tacker'; P.weapons=['tacker']; } else { P.equipped='fists'; P.weapons=[]; } }
+     function armPeerGun(){ if(hostDrew){ P.equipped='smg'; P.weapons=['smg']; } else { P.equipped='fists'; P.weapons=[]; } }
      try{
        __topClear(); closeAll();
        netReset(); say2=function(){};
@@ -41989,20 +41989,20 @@ window.__REGRESS=[
        p=G.player;
        NET.on=false; n0=frame(); NET.on=true;
        if(!n0) bad.push('the raid frame drew no operator at all, so there is nothing to compare');
-       var st1=netOnMsg(A,js({t:'st',k:'r',sd:4242,x:p.x+30,y:p.y,f:0.5,m:1,c:0,sp:0,dn:0,r:0,w:'tacker'}));
+       var st1=netOnMsg(A,js({t:'st',k:'r',sd:4242,x:p.x+30,y:p.y,f:0.5,m:1,c:0,sp:0,dn:0,r:0,w:'smg'}));
        if(st1!=='state') bad.push('a word from up top was not filed ('+st1+')');
        u=NET.up[1];
-       if(!u||Math.abs(u.x-(p.x+30))>0.01||Math.abs(u.y-p.y)>0.01||u.sd!==4242||u.w!=='tacker') bad.push('the word from up top did not put him where he said, in this raid, with his gun ('+js(u?{x:u.x,y:u.y,sd:u.sd,w:u.w}:null)+')');
+       if(!u||Math.abs(u.x-(p.x+30))>0.01||Math.abs(u.y-p.y)>0.01||u.sd!==4242||u.w!=='smg') bad.push('the word from up top did not put him where he said, in this raid, with his gun ('+js(u?{x:u.x,y:u.y,sd:u.sd,w:u.w}:null)+')');
        if(NET.floor[1]) bad.push('a word from up top was filed on the floor list');
        var rl=last(sentC,'st');
-       if(!rl||rl.k!=='r'||rl.s!==1||rl.sd!==4242||rl.w!=='tacker'||typeof rl.c!=='number') bad.push('the host did not pass the word from up top on to the third seat as it came ('+js(rl)+')');
+       if(!rl||rl.k!=='r'||rl.s!==1||rl.sd!==4242||rl.w!=='smg'||typeof rl.c!=='number') bad.push('the host did not pass the word from up top on to the third seat as it came ('+js(rl)+')');
        if(last(sentA,'st')) bad.push('the host passed his own word back to him');
        netUpTick(0);
        n1=frame();
        if(n1!==n0+1) bad.push('with one of the party up top the raid frame drew '+n1+' operators where the same frame with the party off drew '+n0+': not exactly one more');
        if(at(p.x+30,p.y)!==1) bad.push('he is drawn '+at(p.x+30,p.y)+' times at his place, not once');
        var o1=opAt(p.x+30,p.y);
-       if(o1&&o1.wep!=='tacker') bad.push('he is not drawn with the gun he said he holds ('+(o1.wep||'none')+')');
+       if(o1&&o1.wep!=='smg') bad.push('he is not drawn with the gun he said he holds ('+(o1.wep||'none')+')');
        if(texts.indexOf('ZQX MATE')<0) bad.push('his name is not painted over his head');
        NET.on=false;
        if(frame()!==n0||texts.indexOf('ZQX MATE')>=0) bad.push('with the party off the raid frame still draws him, or his name ('+ops.length+' against '+n0+')');
@@ -42082,7 +42082,7 @@ window.__REGRESS=[
        if(G&&RW&&((G.wx&&G.wx.id)||'')!==RW.wx) bad.push('the weather differs from the host ('+(G&&G.wx?G.wx.id:'?')+' against '+RW.wx+')');
        if(P!==keepP) bad.push('the build swapped P for another object');
        if(G&&G.player&&G.player.wep){
-         if(hostDrew&&G.player.wep.id!=='tacker') bad.push('this window did not go up with its own gun ('+G.player.wep.id+')');
+         if(hostDrew&&G.player.wep.id!=='smg') bad.push('this window did not go up with its own gun ('+G.player.wep.id+')');
          if(!hostDrew&&!(G.player.wepIssued||G.spawnGun)) bad.push('this window with no gun did not go up with a loaner ('+G.player.wep.id+')');   // noloaner: or the free pistol
        }
        if(G&&G.bag&&G.bag.indexOf('medkit')<0) bad.push('this window did not go up with its own packed kit');
@@ -42107,7 +42107,7 @@ window.__REGRESS=[
        spy(); p=G.player;
        NET.on=false; n0=frame(); NET.on=true;
        rng0=RNGS;
-       var st2=netOnMsg(H,js({t:'st',k:'r',sd:4242,s:0,x:p.x-40,y:p.y+10,f:2,m:0,c:0,sp:1,dn:0,r:0,w:'tacker'}));
+       var st2=netOnMsg(H,js({t:'st',k:'r',sd:4242,s:0,x:p.x-40,y:p.y+10,f:2,m:0,c:0,sp:1,dn:0,r:0,w:'smg'}));
        if(st2!=='state'||!NET.up[0]) bad.push('the host word from up top was not filed on this window ('+st2+')');
        netUpTick(0);
        n1=frame();
@@ -42138,7 +42138,7 @@ window.__REGRESS=[
        if(tk3!=='mismatch') bad.push('the word without the loaner hint was not refused as a mismatch ('+tk3+'): the loaner draw is not held in step, or a different world is played');
        if(G||state!=='hub') bad.push('a mismatched word left a raid in hand (state '+state+')');
        if(js(P.stash)!==js(['medkit','plate','bandage'])||js(P.kit)!==js(['medkit'])) bad.push('the stash and the packed kit did not come back after the mismatch ('+js(P.stash)+', '+js(P.kit)+')');
-       if(P.intel!==1||P.equipped!==(hostDrew?'tacker':'fists')) bad.push('the save did not come back whole after the mismatch (intel '+P.intel+', equipped '+P.equipped+')');
+       if(P.intel!==1||P.equipped!==(hostDrew?'smg':'fists')) bad.push('the save did not come back whole after the mismatch (intel '+P.intel+', equipped '+P.equipped+')');
        if(!NET.err||NET.err.toLowerCase().indexOf('undercroft')<0||NET.err.toLowerCase().indexOf('surface')<0) bad.push('the PARTY window does not say this window stays in the Undercroft: '+NET.err);
        var noW2=last(sentB,'up');
        if(!noW2||noW2.st!=='no'||noW2.why!=='surface') bad.push('the host was not told the surface could not be built ('+js(noW2)+')');
@@ -46958,7 +46958,7 @@ window.__REGRESS=[
        keepEnts=g.ents; keepHot=g.hot;
        // An automatic: the gun in his hands if it is one, else a starter automatic. A copy with no jam, so the weapon table is
        // untouched and no round is lost to a jam roll.
-       var base=(p.wep&&p.wep.auto&&p.wep.mag>0)?p.wep:(WEAPONS.sputter||WEAPONS.chatter||WEAPONS.smg);
+       var base=(p.wep&&p.wep.auto&&p.wep.mag>0)?p.wep:WEAPONS.smg;
        if(!(base&&base.auto&&base.mag>0)) return 'SKIP: no automatic gun in this build';
        var w=Object.assign({},base); w.jam=0;
        g.ents=[]; p.downed=false; p.roll=0; p.iv=99; p.cooking=0; p.trigYield=0; p.swapped=false;
@@ -51337,10 +51337,10 @@ window.__REGRESS=[
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'13.87',what:'a found gun in slot 2 bags the gun it replaces: a field Scav Pistol held in slot 2 goes into the backpack when a found SMG takes the slot, while an empty slot 2 simply takes the SMG (searching and loot audit 2026-09-14, finding 5)',
+  {v:'13.87',what:'a found gun in slot 2 bags the gun it replaces: a field Scav Pistol held in slot 2 goes into the backpack when a found Auto Rifle takes the slot, while an empty slot 2 simply takes the Auto Rifle (searching and loot audit 2026-09-14, finding 5)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     if(typeof openContainer!=='function'||typeof mkContainer!=='function'||typeof setLoot!=='function'||!WEAPONS.tacker||!WEAPONS.pistol||!ITEMS.gun_smg) return 'SKIP: no crates or starter guns in this build';
+     if(typeof openContainer!=='function'||typeof mkContainer!=='function'||typeof setLoot!=='function'||!WEAPONS.smg||!WEAPONS.pistol||!ITEMS.gun_rifle) return 'SKIP: no crates or starter guns in this build';
      var bad=[];
      function copyW(id){ var w={},k; for(k in WEAPONS[id]) w[k]=WEAPONS[id][k]; return w; }
      try{
@@ -51352,19 +51352,19 @@ window.__REGRESS=[
        p.downed=false; p.iv=99; p.swapped=false;
        function arm(secGun){
          g.bag=[];
-         p.wep=copyW('tacker'); p.ammo=p.wep.mag; p.wepIssued=true; p.wepFromArmory=false;
+         p.wep=copyW('smg'); p.ammo=p.wep.mag; p.wepIssued=true; p.wepFromArmory=false;
          if(secGun){ p.sec=copyW('pistol'); p.secAmmo=12; p.secIssued=false; p.secFromArmory=false; }
          else { p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false; }
        }
-       function find(){ var box=setLoot(mkContainer(p.x+6,p.y+6,'crate'),['gun_smg']); g.containers.push(box); openContainer(box,['gun_smg']); }
-       function held(id){ return (p.wep&&p.wep.id===id)||(p.sec&&p.sec.id===id); }
+       function find(){ var box=setLoot(mkContainer(p.x+6,p.y+6,'crate'),['gun_rifle']); g.containers.push(box); openContainer(box,['gun_rifle']); }
+       function held(id){ var gb=(typeof gunBase==='function')?gunBase:function(x){ return x; }; return (p.wep&&gb(p.wep.id)===id)||(p.sec&&gb(p.sec.id)===id); }
        // CONTROL FIRST: an empty slot 2 takes the SMG.
        arm(false); find();
-       if(!(p.sec&&p.sec.id==='smg')) return 'SKIP: a found SMG did not go to an empty slot 2, so the displacing branch is not reached here';
+       if(!held('rifle')) return 'SKIP: a found Auto Rifle did not go to an empty slot 2, so the displacing branch is not reached here';
        // THE FINDING: a field Scav Pistol in slot 2.
        arm(true); find();
-       if(!held('smg')) return 'SKIP: the found SMG was not equipped over the pistol';
-       if(!held('pistol')&&g.bag.indexOf('gun_pistol')<0) bad.push('a found SMG took slot 2 and the field Scav Pistol held there is in neither hand nor the backpack');
+       if(!held('rifle')) return 'SKIP: the found Auto Rifle was not equipped over the pistol';
+       if(!held('pistol')&&g.bag.indexOf('gun_pistol')<0) bad.push('a found Auto Rifle took slot 2 and the field Scav Pistol held there is in neither hand nor the backpack');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var g2=__state(); if(g2){ if(g2.player) g2.player.iv=0; if(!g2.over) __endRaid('abandon'); } }catch(_e){}
