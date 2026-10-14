@@ -1,2 +1,4 @@
-corpus_file=/c/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/corpus-night-1013.txt
-corpus_head=
+llm_head=c728a3ef
+summary_head=c728a3ef
+corpus_head=7890ee3d
+corpus_file=C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/corpus-night-1014-0821.txt

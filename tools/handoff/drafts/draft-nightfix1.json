@@ -1,0 +1,12 @@
+{
+    "title":  "THE FEEDBACK WINDOW SAYS CLOSE",
+    "why":  "His rule is CLOSE and ESC on every menu. The feedback window was the one window whose way out said CANCEL. It says CLOSE now, like every other window, and ESC still closes it.",
+    "now":  "The feedback window has a CLOSE button now, like every other window.",
+    "edits":  [
+                  {
+                      "anchor":  "    \u003cbutton id=\"fbcancel\" data-esc=\"1\" style=\"padding:8px 22px\"\u003eCANCEL\u003c/button\u003e",
+                      "replacement":  "    \u003c!-- v26.10 (nightfix1), from the overnight regression run of 2026-10-13: HIS RULE, CLOSE AND ESC ON EVERY MENU. The feedback window (v24.50) was the one window whose way out said CANCEL. It says CLOSE, like the rest. --\u003e\n    \u003cbutton id=\"fbcancel\" data-esc=\"1\" style=\"padding:8px 22px\"\u003eCLOSE\u003c/button\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his rule, CLOSE and ESC on every menu: the feedback window has a way out that says CLOSE, and ESC closes it\u0027,\n   run:function(){\n     var m=document.getElementById(\u0027fbmodal\u0027), bad=[], b, on0;\n     if(!m||typeof fbOpen!==\u0027function\u0027||typeof fbClose!==\u0027function\u0027) return \u0027SKIP: no feedback window here\u0027;\n     on0=m.classList.contains(\u0027on\u0027);\n     try{\n       b=m.querySelector(\u0027[data-esc]\u0027);\n       if(!b) bad.push(\u0027the feedback window has no way out marked for ESC\u0027);\n       else if(b.textContent.trim()!==\u0027CLOSE\u0027) bad.push(\u0027the way out of the feedback window says \u0027+JSON.stringify(b.textContent.trim())+\u0027, not CLOSE\u0027);\n       fbOpen();\n       if(!m.classList.contains(\u0027on\u0027)) return \u0027SKIP: the feedback window would not open here\u0027;\n       document.dispatchEvent(new KeyboardEvent(\u0027keydown\u0027,{code:\u0027Escape\u0027,key:\u0027Escape\u0027,bubbles:true,cancelable:true}));\n       if(m.classList.contains(\u0027on\u0027)) bad.push(\u0027ESC did not close the feedback window\u0027);\n       fbOpen();\n       if(b) b.click();\n       if(m.classList.contains(\u0027on\u0027)) bad.push(\u0027the way out of the feedback window did not close it\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ fbClose(); }catch(_e){} if(on0) m.classList.add(\u0027on\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

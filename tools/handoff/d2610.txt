@@ -1,0 +1,5 @@
+## v26.10 - THE FEEDBACK WINDOW SAYS CLOSE
+
+Co-op hunt while he was away. His rule is CLOSE and ESC on every menu. The feedback window was the one window whose way out said CANCEL. It says CLOSE now, like every other window, and ESC still closes it.
+
+MEASURED. Check 26.10 passes, and fails on v26.09.

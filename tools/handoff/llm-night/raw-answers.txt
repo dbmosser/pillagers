@@ -1,23 +1,652 @@
 
-L195: NEW BELT. Four gun keys, two throwables, two medical and an armour key. A better gun swaps out your weakest. DEMO extraction and siege now match CAREER. => Remove "DEMO extraction and siege now match CAREER."
-L207: HIT MARKERS. The crosshair centre flashes white on a hit, orange on a weak spot and red on a kill. Darker nights, SELL ALL and a RUN OVER score that counts up. => Remove "orange on a weak spot"
-L198: CAREER PAYOUT. Extracting in CAREER pays your score x2 in credits. Downed pillagers get up once, reloads sound real, and Forge acid rounds eat armour. => Remove "extracting in CAREER"
-L2227: ATTRACT POLISH. The title clip reads clearly, F9 hides the controls list and shows its time, and the controls list now names F9. A hire on an order moves once. => Remove mention of F9 showing time.
-L2230: ATTRACT MODE. Press F9 in a raid to record your play; the title shows it when nobody is playing. The Undercroft song now follows the players. => Remove mention of recording play with F9.
-L2246: YOUR NOTES OF OCTOBER 7. The Overseer health bar waits until you have seen him. Bandages, medkits and plates show a bar above your belt. Scoped guns zoom in a little when you aim. FASHION shows every outfit, face, tattoo and hairstyle on your own operator. => Remove mention of bandage/medkit/plate bars.
-L2250: TRADING IS DROPPING. Up top, press Z (Y on a controller, backpack open) and the item is a pile at your feet; your teammate searches it like any box. In the Undercroft, right-click a stash item (Y on a controller), choose Drop on the floor, and they press E beside the crate. The key legends and the Party window say so. New characters start with short dark hair. => Remove mention of Z/Y keys for dropping items.
-L2253: STEADIER TWO-PLAYER GAMES ON ONE PC. A key held in one window is let go when you click the other, ESC in the player 2 window no longer pauses player 1, and a click in one window never shuts the backpack of the other player. Kid mode at 1/20 really gives player 2 a twentieth of every hit, letting go of the right stick ends aiming so Superhot time stops and kid firing comes back, a downed controller player calls for extraction with X, and a heal your teammate could not take comes back to your backpack. Kills go to whoever made them, and a gun or a loaner Bandage handed between players is never kept by both. => Remove mention of letting go right stick ending aiming.
-L2256: THE NIGHT OF OCTOBER 3. Fewer big robots at the extraction. You see what your teammate sees: their view cone is open in your fog and the enemies in it are shown (Settings: Shared sight
-L2261: JOIN THE RAID IN PROGRESS => JOIN RAID NOW  
-L2274: X SEARCHES WHAT YOU ARE STANDING ON, even inside an extraction point, where E is the key that calls for extraction. => X CALLS AND BOARDS EXTRACTION, E SEARCHES
 NONE
 NONE
-L2361: WITH THE RAID CLOCK SWITCHED OFF, THE EXTRACTION WINDOW IS THE FULL THIRTY SECONDS. It used to shut after three, and the call said the clock would run out first. => NONE (This line does not break any rules but could be simplified for clarity)
-L2375: A CRAWLER THAT WAS COMING FOR YOU KEEPS COMING. It no longer gives up on the way to the last place it saw you; standing still does not switch it off. => NONE (This line does not break any rules but could be simplified for clarity)
-L2384: GUNS DRAG LIKE ANY OTHER ITEM. Drag a gun off the rack onto a tactical belt key or into the backpack and it comes with you; a gun on the figure takes the key and stays in your hands. => NONE (This line does not break any rules but could be simplified for clarity)
-L2385: FOUR LINES SAY WHAT THEY MEAN: the Crier names itself when its alarm goes out, the Pillbox says destroyed when it dies, the self-revive is one per raid, and a search picked up again says Search resumed. => L2385: FOUR LINES SAY WHAT THEY MEAN: THE CRIER NAMES ITSELF WHEN ITS ALARM GOES OUT, THE PILLBOX SAYS DESTROYED WHEN IT DIES, AND THE SELF-REVIVE IS ONE PER RAID. (Remove the mention of "search resumed" as it is removed in the rules)
-L2386: ENTER IN THE NAME BOX SETS YOUR NAME, and so does the start button: what you typed is what you are called. => NONE
-L2388: A BELT KEY HOLDING A GUN FROM YOUR BACKPACK NOW EQUIPS IT, and every belt cell can be dragged to another key. => NONE
-L2405: THE EXTRACTION WINDOW SAYS EXTRACT NOW. It used to say EXTRACTION IN PROGRESS, which reads as something happening without you rather than the one moment you have to be in the ring holding E. => NONE
+L2225: RAID TEXT. Two lines in the same second both show, a long line wraps instead of running off the screen, and a warning stays up until read.
+=> SUGGESTED FIX: Ensure only one line appears at a time; wrap text to fit within the screen or truncate it if necessary; make warnings disappear after being acknowledged.
 
+L2227: YOUR PLAYTEST. Single shot guns hit harder, pillagers return fire and drop better gear, the pillbox is gentler, and a downed extraction shows its bar.
+=> SUGGESTED FIX: Remove any mention of "playtest," "single shot guns," "pillagers return fire," "better gear," "gentler," or "downed extraction shows its bar."
+
+L2231: ATTRACT MODE. Press F9 in a raid to record your play; the title shows it when nobody is playing. The Undercroft song now follows the players.
+=> SUGGESTED FIX: Remove any mention of "playtest" and "Undercroft song."
+
+L2232: YOUR NOTES. RANDOM FROM STASH gives two random guns, a gun pushed out of a belt slot goes in your backpack, and the map keeps an extract closing time.
+=> SUGGESTED FIX: Remove any mention of "RANDOM FROM STASH," "gun pushed out of a belt slot," or "extract closing time."
+
+L2235: SMALL THINGS FIXED. Sort by rarity follows the cell colours, the shop says how many you bought, ESC closes the stash from search, and a helped Survivor never shoots you.
+=> SUGGESTED FIX: Remove any mention of "sort by rarity," "shop says how many you bought," or "Survivor never shoots."
+
+L2236: CONTROLLER AND 4K. A pad can now pick a save, dress at FASHION and tag a run, and the boss bar, HP number and station prompts sit right at 4K.
+=> SUGGESTED FIX: Remove any mention of "boss bar," "HP number," or "station prompts."
+
+L2238: RIVALS WITH FACES. Rival pillagers now show their own hair, skin, hats and builds, and the bar, gambler and TERMS windows fit and read cleaner.
+=> SUGGESTED FIX: Remove any mention of "rivals with faces," "hair," "skin,"
+L2225: RAID TEXT. Two lines in the same second both show, a long line wraps instead of running off the screen, and a warning stays up until read.
+=> SUGGESTED FIX: Ensure only one line appears at a time; wrap text to fit within the screen or truncate it if necessary; make warnings disappear after being acknowledged.
+
+L2227: YOUR PLAYTEST. Single shot guns hit harder, pillagers return fire and drop better gear, the pillbox is gentler, and a downed extraction shows its bar.
+=> SUGGESTED FIX: Remove any mention of "playtest" or specific gameplay changes; avoid describing how enemies behave.
+
+L2231: ATTRACT MODE. Press F9 in a raid to record your play; the title shows it when nobody is playing. The Undercroft song now follows the players.
+=> SUGGESTED FIX: Remove any mention of "attract mode" or specific gameplay changes; avoid describing how enemies behave.
+
+L2232: YOUR NOTES. RANDOM FROM STASH gives two random guns, a gun pushed out of a belt slot goes in your backpack, and the map keeps an extract closing time.
+=> SUGGESTED FIX: Remove any mention of "your notes" or specific gameplay changes; avoid describing how enemies behave.
+
+L2235: SMALL THINGS FIXED. Sort by rarity follows the cell colours, the shop says how many you bought, ESC closes the stash from search, and a helped Survivor never shoots you.
+=> SUGGESTED FIX: Remove any mention of "small things fixed" or specific gameplay changes; avoid describing how enemies behave.
+
+L2236: CONTROLLER AND 4K. A pad can now pick a save, dress at FASHION and tag a run, and the boss bar, HP number and station prompts sit right at 4K.
+=> SUGGESTED FIX: Remove any mention of "controller" or specific gameplay changes; avoid describing how enemies behave.
+
+L2238: RIVALS WITH FACES. Rival pillagers now show their own hair, skin, hats and builds, and the bar, gambler and TERMS windows fit and read cleaner.
+=> SUGGESTED FIX: Remove any mention of "rivals with faces" or specific gameplay changes; avoid describing how enemies behave.
+
+L2239: YOUR BUILD SHOWS. Lean, Broad and
+L2261: KNOWING WHERE YOUR TEAMMATE IS. You are told when your teammate joins the raid and when he is out of it (killed, extracted or abandoned). JOIN THE RAID IN PROGRESS is bigger, and a teammate who joins late sees the walls already blown open and the map markers already placed, and is charged only for the time he played. In a party raid the backpack says Y (or T) offers an item. Pings and the kill feed name THE OVERSEER.
+=> NONE
+
+L2262: PLAYING TOGETHER, SMOOTHER. JOIN THE RAID IN PROGRESS now shows in the Undercroft while your host is up top, and going up at the lift as a teammate joins the raid too, even after your window was closed and opened again. An open trade offer stays on screen with the seconds left to take it. THE OVERSEER is drawn to its size.
+=> NONE
+
+L2263: TRADING, DROP-IN AND A BOSS. With the backpack open, T or Y offers the selected item to your teammate, who takes it with T or Y. A teammate in the Undercroft can JOIN THE RAID IN PROGRESS. THE OVERSEER guards the middle of every map. The stash has search and sort, Settings has Render resolution, Frame cap and Effects, and hits and deaths are animated.
+=> NONE
+
+L2264: NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.
+=> NONE
+
+L2265: STEADIER CO-OP. A teammate still reading his run card goes up with the party, a search keeps running and the enemies stay audible after the host has left the raid, a pick up is called revived only once it took, pinging twice marks danger, the pause box shuts when a raid ends under it, a controller tap on the map places your marker and shuts the map, B backs out
+L2261: KNOWING WHERE YOUR TEAMMATE IS. You are told when your teammate joins the raid and when he is out of it (killed, extracted or abandoned). JOIN THE RAID IN PROGRESS is bigger, and a teammate who joins late sees the walls already blown open and the map markers already placed, and is charged only for the time he played. In a party raid the backpack says Y (or T) offers an item. Pings and the kill feed name THE OVERSEER.
+=> NONE
+
+L2262: PLAYING TOGETHER, SMOOTHER. JOIN THE RAID IN PROGRESS now shows in the Undercroft while your host is up top, and going up at the lift as a teammate joins the raid too, even after your window was closed and opened again. An open trade offer stays on screen with the seconds left to take it. THE OVERSEER is drawn to its size.
+=> NONE
+
+L2263: TRADING, DROP-IN AND A BOSS. With the backpack open, T or Y offers the selected item to your teammate, who takes it with T or Y. A teammate in the Undercroft can JOIN THE RAID IN PROGRESS. THE OVERSEER guards the middle of every map. The stash has search and sort, Settings has Render resolution, Frame cap and Effects, and hits and deaths are animated.
+=> NONE
+
+L2264: NEW FOR THE PARTY. Every player chooses a kit when the party ascends from the sector page. Tap D-UP, N or the middle mouse button to ping a spot or an enemy for your party; hold D-UP for the map, where the right stick moves a cursor and a tap places a marker everyone sees. A kill feed names who killed what, an arrow points to a teammate off screen, and the end of raid card shows the whole party. Kid mode in Settings gives player 2 less damage, and Settings opens from the pause box in a raid.
+=> NONE
+
+L2265: STEADIER CO-OP. A teammate still reading his run card goes up with the party, a search keeps running and the enemies stay audible after the host has left the raid, a pick up is called revived only once it took, pinging twice marks danger, the pause box shuts when a raid ends under it, a controller tap on the map places your marker and shuts the map, B backs out
+L2301: THE OPEN BACKPACK STOPS THE FLOOR. Reading it in the Undercroft used to leave every station live underneath: standing on the lift and pressing R started a raid from behind the panel, with no sector page, no day reset and no question about what you were taking up.
+=> NONE
+NONE
+L2326: X SEARCHES A BODY LYING IN AN EXTRACTION POINT. Standing on the way out, the game refused to even look for what was lying there: no prompt, and E always called the beacon, so a man killed in front of you was unlootable and nothing said why. E is still the way out. X searches whatever you are standing on, anywhere, and the prompt names the key it will take.
+=> NONE
+L2326: X SEARCHES A BODY LYING IN AN EXTRACTION POINT. Standing on the way out, the game refused to even look for what was lying there: no prompt, and E always called the beacon, so a man killed in front of you was unlootable and nothing said why. E is still the way out. X searches whatever you are standing on, anywhere, and the prompt names the key it will take.
+=> NONE
+NONE
+NONE
+L2386: FOUR LINES SAY WHAT THEY MEAN: the Crier names itself when its alarm goes out, the Pillbox says destroyed when it dies, the self-revive is one per raid, and a search picked up again says Search resumed.
+=> NONE
+
+L2387: ENTER IN THE NAME BOX SETS YOUR NAME, and so does the start button: what you typed is what you are called.
+=> NONE
+
+L2388: THIS CARD FITS THE SCREEN NOW, newest first, and a first launch never sees it at all.
+=> NONE
+
+L2389: A BELT KEY HOLDING A GUN FROM YOUR BACKPACK NOW EQUIPS IT, and every belt cell can be dragged to another key.
+=> NONE
+
+L2390: A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK: with the backpack open, drag it off its slot and drop it in.
+=> NONE
+
+L2391: A LIGHTNING STRIKE THAT MISSES YOU SOMETIMES FUSES THE GROUND. What it leaves is FULGURITE, worth 2,500, and nothing else.
+=> NONE
+
+L2392: THE RAID CONDITIONS PANEL NO LONGER PRINTS "left to be gone" OR "nothing killed yet", on his order; those two contracts still stand at the Mainframe.
+=> NONE
+
+L2393: A HELPED SURVIVOR WALKS TO THE NEAREST OPEN EXTRACTION on his own and leaves when he reaches it, instead of following you.
+=> NONE
+
+L2394: THE SURVIVOR PAYS THREE TIMES AS MUCH and hands you a piece of salvage on the spot when you meet his request.
+=> NONE
+
+L2395: THE MAP NAMES EACH EXTRACTION AND COUNTS DOWN TO ITS CLOSE in a size you can read.
+=> NONE
+
+L2396: THE MERIDIAN LANCE TRAVELS THROUGH CRAWLERS, hitting every one on the line with its full damage.
+=> NONE
+
+L2397: THE STIM INJECTOR IS TEN SECONDS OF LEGS: unlimited stamina and a fifth more speed while it runs.
+=> NONE
+
+L2398: HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes
+L2386: FOUR LINES SAY WHAT THEY MEAN: the Crier names itself when its alarm goes out, the Pillbox says destroyed when it dies, the self-revive is one per raid, and a search picked up again says Search resumed.
+=> NONE
+
+L2387: ENTER IN THE NAME BOX SETS YOUR NAME, and so does the start button: what you typed is what you are called.
+=> NONE
+
+L2388: THIS CARD FITS THE SCREEN NOW, newest first, and a first launch never sees it at all.
+=> NONE
+
+L2389: A BELT KEY HOLDING A GUN FROM YOUR BACKPACK NOW EQUIPS IT, and every belt cell can be dragged to another key.
+=> NONE
+
+L2390: A GUN IN YOUR HANDS GOES BACK INTO THE BACKPACK: with the backpack open, drag it off its slot and drop it in.
+=> NONE
+
+L2391: A LIGHTNING STRIKE THAT MISSES YOU SOMETIMES FUSES THE GROUND. What it leaves is FULGURITE, worth 2,500, and nothing else.
+=> NONE
+
+L2392: THE RAID CONDITIONS PANEL NO LONGER PRINTS "left to be gone" OR "nothing killed yet", on his order; those two contracts still stand at the Mainframe.
+=> NONE
+
+L2393: A HELPED SURVIVOR WALKS TO THE NEAREST OPEN EXTRACTION on his own and leaves when he reaches it, instead of following you.
+=> NONE
+
+L2394: THE SURVIVOR PAYS THREE TIMES AS MUCH and hands you a piece of salvage on the spot when you meet his request.
+=> NONE
+
+L2395: THE MAP NAMES EACH EXTRACTION AND COUNTS DOWN TO ITS CLOSE in a size you can read.
+=> NONE
+
+L2396: THE MERIDIAN LANCE TRAVELS THROUGH CRAWLERS, hitting every one on the line with its full damage.
+=> NONE
+
+L2397: THE STIM INJECTOR IS TEN SECONDS OF LEGS: unlimited stamina and a fifth more speed while it runs.
+=> NONE
+
+L2398: HEALING STACKS AGAIN. The next bandage goes on while the prior one is still healing, and a plate goes
+L2418: A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. => NONE  
+L2419: WIRT SELLS YOU THE THING ON THE COUNTER. => NONE  
+L2420: A GRENADE ON A BELT KEY WORKS NOW. => NONE  
+L2421: EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. => NONE  
+L2422: THE UNDERCROFT HAS ITS SCREEN BACK. => NONE  
+L2423: THE STORM WARNING RING SAYS LIGHTNING INCOMING, with the seconds left, right at the circle. => NONE  
+L2424: LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. => NONE  
+L2425: A COOKED GRENADE SHOUTS FOR ITS LAST SECOND: COOKED GRENADE! THROW GRENADE NOW, above the countdown. => NONE  
+L2426: EXTRACTION POINTS SAY WHICH STATE THEY ARE IN. => NONE  
+L2427: SPRINT AND ROLL STAND YOU UP. => NONE  
+L2428: YOUR CREDITS AND XP ARE IN THE TOP RIGHT CORNER, ALWAYS. => NONE  
+L2429: THE SECTOR PAGE NAMES THE RIGHT MAP AGAIN. => NONE  
+L2430: PACKING AT THE STASH WITH YOUR BACKPACK OPEN NO LONGER GETS UNDONE. => NONE  
+L2431: CLICKING ON YOUR OPEN BACKPACK NO LONGER FIRES YOUR GUN. => NONE  
+L2432: A GUN YOU EQUIP FROM THE STASH MENU NO LONGER VANISHES. => NONE  
+L2433: A CRASH WHILE THE GAME IS STILL LOADING CAN NO LONGER WIPE YOUR SAVE. => NONE  
+L2434: A PILLAGER WHO SEES YOU NOW ACTUALLY SHOOTS. => NONE  
+L2435: THE TITLE SCREEN NO LONGER ANSWERS THE FLOOR KEYS. => NONE  
+L2436: YOUR SETTINGS SURVIVE A LOAD AGAIN. => NONE  
+L2438: NO TWO CONTRACTS ON THE BOARD ARE THE SAME JOB. => NONE  
+L2439: A VENTED PILL
+L2418: A MERC WHO GETS OUT BEFORE YOU NOW PAYS YOUR CUT. => NONE (Does not break any rules)
+L2419: WIRT SELLS YOU THE THING ON THE COUNTER. => NONE (Does not break any rules)
+L2420: A GRENADE ON A BELT KEY WORKS NOW. => NONE (Does not break any rules)
+L2421: EVERY NOISE YOU CAN HEAR BUT NOT SEE DRAWS ITS RING. => NONE (Does not break any rules)
+L2422: THE UNDERCROFT HAS ITS SCREEN BACK. => NONE (Does not break any rules)
+L2423: THE STORM WARNING RING SAYS LIGHTNING INCOMING, with the seconds left, right at the circle. => NONE (Does not break any rules)
+L2424: LIGHTNING NO LONGER STRIKES INSIDE A BUILDING. => NONE (Does not break any rules)
+L2425: A COOKED GRENADE SHOUTS FOR ITS LAST SECOND: COOKED GRENADE! THROW GRENADE NOW, above the countdown. => NONE (Does not break any rules)
+L2426: EXTRACTION POINTS SAY WHICH STATE THEY ARE IN. => NONE (Does not break any rules)
+L2427: SPRINT AND ROLL STAND YOU UP. => NONE (Does not break any rules)
+L2428: YOUR CREDITS AND XP ARE IN THE TOP RIGHT CORNER, ALWAYS. => NONE (Does not break any rules)
+L2429: THE SECTOR PAGE NAMES THE RIGHT MAP AGAIN. => NONE (Does not break any rules)
+L2430: PACKING AT THE STASH WITH YOUR BACKPACK OPEN NO LONGER GETS UNDONE. => NONE (Does not break any rules)
+L2431: CLICKING ON YOUR OPEN BACKPACK NO LONGER FIRES YOUR GUN. => NONE (Does not break any rules)
+L2432: A GUN YOU EQUIP FROM THE STASH MENU NO LONGER VANISHES. => NONE (Does not break any rules)
+L2433: A CRASH WHILE THE GAME IS STILL LOADING CAN NO LONGER WIPE YOUR SAVE. => NONE (Does not break any rules)
+L24
+L2451: THE BACKPACK ARROWS BEHAVE WHEN EVERYTHING IS ON THE BELT. With every carried item claimed by a tactical belt key the backpack grid is empty, and an arrow key used to throw the selection away. It now does nothing until there is something to select.
+=> NONE
+
+L2452: F NO LONGER BURNS A BANDAGE WHEN YOU PUNCH. Since F became the melee strike, a press while hurt also used the smallest heal in your backpack, silently. Heals are used from the tactical belt, and F now only strikes (and still revives you when you are down).
+=> NONE
+
+L2453: THE PAUSE SCREEN KEY LIST IS RIGHT AGAIN. It printed a stray "&nbsp;" between every key and still said F heals, TAB opens the bag and Q throws. It now matches the controls list under H: F is your melee strike, I opens the backpack, 1 to 9 is the tactical belt.
+=> NONE
+
+L2455: THE SCORECARD CAN WATCH THE CREWS FEUD TOO. Rival crews only pick fights within sight of you, by design, so the scorecard now has a seat in the middle of the map as well as one outside it. Checked: they do shoot each other where you can see it.
+=> NONE
+
+L2456: THE PILLAGERS GOT THEIR OWN SCORECARD. The test robot can now sit a whole raid out and watch what the other pillagers do to the end: how many get out, how many the machines take. Nothing changed in the raid; the numbers are on the board for a ruling.
+=> NONE
+
+L2457: NO BUILDING LOSES ITS ROOMS AND NO CORNER IS WALLED OFF BEHIND A TABLE. Measured on seven seeds of both maps: the repair pass that used to tear out interiors now touches nothing, and the little pockets of floor behind furniture are gone with the doorway rules.
+=> NONE
+
+L2458: THE SECOND MAP MEASURED THE SAME WAY. The test robot ran the same 320 raids on THE COLD MILE with the building rules off and on, so the bigger map has its own number and not the first map borrowed.
+=> L2458: NONE
+
+L2459: A MACHINE ON A LONG FRAME NO LONGER FREEZES ON ITS OWN ROUTE
+L2451: THE BACKPACK ARROWS BEHAVE WHEN EVERYTHING IS ON THE BELT. With every carried item claimed by a tactical belt key the backpack grid is empty, and an arrow key used to throw the selection away. It now does nothing until there is something to select.
+=> NONE
+
+L2452: F NO LONGER BURNS A BANDAGE WHEN YOU PUNCH. Since F became the melee strike, a press while hurt also used the smallest heal in your backpack, silently. Heals are used from the tactical belt, and F now only strikes (and still revives you when you are down).
+=> NONE
+
+L2453: THE PAUSE SCREEN KEY LIST IS RIGHT AGAIN. It printed a stray "&nbsp;" between every key and still said F heals, TAB opens the bag and Q throws. It now matches the controls list under H: F is your melee strike, I opens the backpack, 1 to 9 is the tactical belt.
+=> L2453: THE PAUSE SCREEN KEY LIST IS RIGHT AGAIN. It printed a stray "&nbsp;" between every key and still said F heals, TAB opens the bag and Q throws. It now matches the controls list under H: F is your melee strike, I opens the backpack, 1 to 9 is the tactical belt.
+
+L2455: THE SCORECARD CAN WATCH THE CREWS FEUD TOO. Rival crews only pick fights within sight of you, by design, so the scorecard now has a seat in the middle of the map as well as one outside it. Checked: they do shoot each other where you can see it.
+=> NONE
+
+L2456: THE PILLAGERS GOT THEIR OWN SCORECARD. The test robot can now sit a whole raid out and watch what the other pillagers do to the end: how many get out, how many the machines take. Nothing changed in the raid; the numbers are on the board for a ruling.
+=> NONE
+
+L2457: NO BUILDING LOSES ITS ROOMS AND NO CORNER IS WALLED OFF BEHIND A TABLE. Measured on seven seeds of both maps: the repair pass that used to tear out interiors now touches nothing, and the little pockets of floor behind furniture are gone with the doorway rules.
+=> NONE
+
+L2458: THE SECOND MAP MEASURED THE SAME WAY. The test robot ran
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+ ```css
+/* vNN.xx, UI REDESIGN ui5q1g (his #50, from the AAA judge of the Settings shot): SETTINGS READS AS ONE LAYOUT. The list was a
+centred 1080px column under a title and tabs on the left edge, so the page read as two layouts with a 400px gutter; the row
+labels mixed sentence case (Edit the words) with caps (LIGHTING); THE RAID head was faint grey; and the values were plain
+boxes with nothing to say they step through options. The list now starts on the left edge under the tabs and runs 1320px;
+every label is the same 18px condensed caps (the words are not changed, only drawn in caps), the hints are one 14px grey; */
+#root #settingsmodal .slist{ max-width:1320px !important; }
+#root #settingsmodal .slab{ font-family:var(--f-cond); font-size:18px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
+#root #settingsmodal .shint{ font-size:14px; color:var(--tx-2); }
+```
+NONE
+NONE
+NONE
+NONE
+NONE
+It looks like you have a list of updates or changes for some kind of game, possibly a survival or action-adventure title. Each entry in your list seems to describe a specific fix, improvement, or new feature that has been implemented into the game's codebase.
+
+Here are a few key points from the entries:
+
+1. **Game Updates and Fixes**:
+   - Several issues related to equipment management (e.g., guns not being swapped out behind the player’s back).
+   - Improvements in user interface elements like menus, backpacks, and map displays.
+   - Bug fixes for specific game mechanics such as crawling behavior, extraction timing, and interaction with certain enemies or objects.
+
+2. **Player Experience Enhancements**:
+   - Changes to how players earn experience points (XP) and credits, including adjustments to the freebie kit system.
+   - Improvements in control schemes, especially for controllers, making gameplay more intuitive.
+   - Adjustments to game balance, such as changing the behavior of certain enemies or items.
+
+3. **User Interface Enhancements**:
+   - Redesigned menus and screens that are now responsive to different screen resolutions and text sizes.
+   - Enhanced feedback mechanisms, like clearer prompts and notifications during gameplay.
+
+4. **Gameplay Mechanics Adjustments**:
+   - Changes in how players interact with the environment (e.g., sprinting leaving only one trail of boot prints).
+   - Adjustments to combat mechanics, such as the behavior of certain weapons or
+I apologize, but I don't have any specific information about a "RESTORE CODE" or how to use it in the context you've described. The text you provided appears to be part of some kind of game's codebase or documentation, mentioning features like character restoration and various settings options.
+
+If you're looking for instructions on restoring your character in this game, I'd recommend checking the following:
+
+1. Look for a "Restore Code" option within the game itself, as mentioned in the text.
+2. Check any official support forums or help sections related to the game.
+3. If it's an indie game, look for developer contact information and reach out directly.
+
+The code snippet you provided seems to be part of some kind of random number generator (RNG) implementation, which is common in games that involve randomness like loot drops or enemy behavior. However, this doesn't appear to be related to character restoration specifically.
+
+If you have any more details about the game or what exactly happened to your character, I might be able to provide more targeted advice.
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+LINE 4601: Assignment used where a comparison was meant (`if(!S) return B;` should be `if(S === null || S === undefined) return B;`).
+LINE 4603: try/catch that swallows a whole per-frame draw or update.
+LINE 4728: Property access on a value that can be null or undefined in per-frame code without a guard (`SND_DOWN.mine++;` should check if `SND_DOWN` is defined).
+LINE 4730: Property access on a value that can be null or undefined in per-frame code without a guard (`SND_DOWN.mate++;` should check if `SND_DOWN` is defined).
+LINE 4751: Possible NaN or undefined values reaching canvas calls (fillText positions) (`R.lp=Math.round(clamp(1500-600*d/900,900,1500));`).
+NONE
+NONE
+LINE 5207: try/catch that swallows a whole per-frame draw or update.
+LINE 5213: property access on a value that can be null or undefined in per-frame code without a guard (G.map).
+LINE 5231: function crouchHeld() uses G.crouchTog without checking if G is defined.
+LINE 5241: variable bsh used before it is set, assuming it's supposed to be p.bush based on context.
+LINE 5308: canSee function call with undefined parameters if G.vseg is not defined.
+This code snippet appears to be part of a larger JavaScript application, likely for a web-based game or interactive experience. It defines and manages sound effects (SFX) using the Web Audio API. Here's a breakdown of its key components:
+
+### 1. **Sound Effects Bank (`SFXBANK`)**
+
+The `SFXBANK` object contains various sound effect roles as keys, each associated with an object that includes:
+- `c`: Category or context for the sound.
+- `g`: Base gain (volume) level.
+- `d`: Duration of the sound in seconds.
+- `w`: Base64-encoded WAV audio data.
+
+### 2. **Sound Effects Buffer (`SFXB`)**
+
+The `SFXB` object manages the decoded audio buffers for each sound effect:
+- `buf`: Stores the decoded audio buffers.
+- `ac`: The current AudioContext instance.
+- `nb`: Number of successfully loaded sound effects.
+- `n`: Count of times each sound effect has been played.
+- `at`: Timestamps when each sound effect was last played to prevent rapid repetition.
+
+### 3. **Functions**
+
+#### a. **`sfxbWav(a, s)`**
+This function decodes Base64-encoded WAV audio data into an AudioBuffer:
+- Takes an `AudioContext` (`a`) and the encoded string (`s`).
+- Parses the WAV header to extract format details.
+- Converts the raw PCM data into
+NONE
+NONE
+LINE 6034: assignment used where a comparison was meant, duplicate object keys, code after an unconditional return, a variable used before it is set  
+LINE 6129: property access on a value that can be null or undefined in per-frame code without a guard  
+LINE 6157: calls or reads of names from removed systems (taunt, TAUNT, voxBark, voxCall, VOX_ANN, GO_SEC, goTick, drawGoCount, doEmote, EMOTES, emoteBubble, MACH_LOOP, stowLine)
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+LINE 14004: try{ renderSettings(); }catch(_ue){} - A try/catch that swallows a whole per-frame draw or update.
+LINE 14034: window.addEventListener('keyup',function(e){ keys[keyRemap(e.code)]=false; if(keyRemap(e.code)==='AltLeft'&&state==='raid') e.preventDefault(); /* v25.xx (altstatus): and its release, or the browser takes the menu focus */ if((e.code==='ControlLeft'||e.code=== - Code after an unconditional return.
+LINE 14093: var GB=G.bagCells||[]; - Property access on a value that can be null or undefined in per-frame code without a guard.
+LINE 14128: for(var dc=0;dc<G.bagCells.length;dc++){ - Property access on a value that can be null or undefined in per-frame code without a guard.
+LINE 14176: var _pinHand=!!(_hs2&&_HC2.i<GUNKEYS&&_hs2.kind==='gun'&&_hs2.equipped&&_hs2.icon&&_hs2.icon!=='fists'&&G.player); - Property access on a value that can be null or undefined in per-frame code without a guard.
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+LINE 17408: A try/catch that swallows a whole per-frame draw or update.
+LINE 17432: Assignment used where a comparison was meant, `ik?4.0:1.9` should be `ik===true?4.0:1.9`.
+LINE 17563: Property access on a value that can be null or undefined in per-frame code without a guard, `G.shake=Math.max(G.shake,Math.min(6,1.8+amt*0.16));` should check if G is defined.
+LINE 17592: Duplicate object keys, `k:src,w:recapWeapon(src,srcName)` might have a typo or intended to be different keys.
+LINE 17600: Code after an unconditional return, which is not a bug but could indicate potential dead code.
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+This code snippet appears to be part of a larger JavaScript program that handles rendering and animation for a game character, specifically focusing on drawing the player's gun or weapon held in their hand. Here's a breakdown of what each function does:
+
+1. **gunPath(c, q)**: This function draws a path based on the type specified ('r' for rectangle, 'c' for circle, or an array for polygon) using the provided coordinates and dimensions.
+
+2. **gunBake(id, fk, el, rc, S)**: This function creates a cached canvas image of a gun sprite with various properties like id (type), fk (fire mode), el (element type), rc (rarity color), and S (scale). It uses the `gunPath` function to draw the parts of the gun.
+
+3. **gunHeldOn(st, mode)**: This helper function checks if a weapon is being held based on the game state (`st`) and the holding mode (`mode`).
+
+4. **gunHeld(px, ty, face, fl, st, coat, bld, pc, ads, sprint, rl, muzzle)**: This function draws the gun in the player's hand at position (px, ty) with various parameters like facing direction (`face`), flip factor (`fl`), game state (`st`), clothing color (`coat`), body type (`bld`), pose class (`pc`), aiming down sights (`ads`),
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+LINE 32205: try{ gfxScreen(dt); }catch(_gsc){} - This try/catch block swallows any errors that occur in the per-frame draw or update function `gfxScreen`.
+
+LINE 32207: try{ drawHUD(); } finally { GFXWT=null; } - This try/finally block also swallows any errors that occur in the per-frame draw or update function `drawHUD`, and it sets `GFXWT` to null regardless of whether an error occurs.
+
+LINE 32400: wc.drawImage(BUZZTR,0,0); - If `BUZZTR` is not properly initialized or has a width or height of 0, this could result in drawing nothing on the canvas.
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+LINE 34276: Possible NaN or undefined values reaching canvas calls (arc, createRadialGradient, drawImage, fillText positions).
+LINE 34358: Property access on a value that can be null or undefined in per-frame code without a guard.
+LINE 34361: Assignment used where a comparison was meant.
+LINE 34370: Variable used before it is set (s2).
+LINE 34395: A try/catch that swallows a whole per-frame draw or update.
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+This code snippet appears to be JavaScript for rendering various icons using the HTML5 Canvas API. The `keyIcon` function takes four parameters:
+
+- `c`: A 2D canvas context object.
+- `key`: A string representing which icon to draw (e.g., 'bandage', 'medkit').
+- `S`: A scaling factor for the size of the icons.
+- `col`: An optional color parameter used in some icons.
+
+The function defines several helper functions like `lin`, `rad`, `rr`, `ell`, and others to simplify drawing operations. It then uses these helpers to draw different shapes, gradients, and lines that make up each icon based on the value of `key`.
+
+For example:
+
+- If `key` is 'bandage', it draws a bandage-like shape with white and light brown colors.
+- If `key` is 'medkit', it draws a medical kit icon with red and dark red gradients.
+
+The function also includes some conditional logic to handle different keys and draw the corresponding icons. It uses transformations like translation, rotation, and scaling (controlled by the `S` parameter) to position and size the icons appropriately on the canvas.
+
+Overall, this code provides a flexible way to render various UI elements or game items as icons using vector graphics on an HTML5 canvas.
+NONE
+NONE
+NONE
+NONE
+NONE
+LINE 37805: calls or reads of names from removed systems (taunt)
+LINE 37806: calls or reads of names from removed systems (tb)
+LINE 37821: property access on a value that can be null or undefined in per-frame code without a guard (G.map.zones)
+LINE 37842: possible NaN or undefined values reaching canvas calls (fillText positions) (L.x, L.y)
+LINE 37905: variable used before it is set (_hdY)
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+LINE 50427: `NET.up.length` is accessed without checking if `NET.up` is an array.
+LINE 50438: `spotFree(m,x,y,22)` and `shutRoomAt(m,x,y)` are called with `m` which might be null or undefined.
+LINE 50441: `m.spawns.length` is accessed without checking if `m.spawns` is an array.
+LINE 50486: `ringD(s.x,s.y)` and `foeD(s.x,s.y)` are called with `s` which might be null or undefined.
+LINE 50537: `G.deathBeat=null; p.dying=false; p.downed=false; p.downT=0; p.pendKiller=null; p.prep=null; p.prepA=null;` is duplicated code.
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
 NONE

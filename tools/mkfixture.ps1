@@ -6089,6 +6089,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'26.10',what:'his rule, CLOSE and ESC on every menu: the feedback window has a way out that says CLOSE, and ESC closes it',
+   run:function(){
+     var m=document.getElementById('fbmodal'), bad=[], b, on0;
+     if(!m||typeof fbOpen!=='function'||typeof fbClose!=='function') return 'SKIP: no feedback window here';
+     on0=m.classList.contains('on');
+     try{
+       b=m.querySelector('[data-esc]');
+       if(!b) bad.push('the feedback window has no way out marked for ESC');
+       else if(b.textContent.trim()!=='CLOSE') bad.push('the way out of the feedback window says '+JSON.stringify(b.textContent.trim())+', not CLOSE');
+       fbOpen();
+       if(!m.classList.contains('on')) return 'SKIP: the feedback window would not open here';
+       document.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
+       if(m.classList.contains('on')) bad.push('ESC did not close the feedback window');
+       fbOpen();
+       if(b) b.click();
+       if(m.classList.contains('on')) bad.push('the way out of the feedback window did not close it');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ fbClose(); }catch(_e){} if(on0) m.classList.add('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'26.09',what:'his note: the crowbar does a lot more damage, three swings kill a crawler: a standard crawler at full health survives two Q swings and dies on the third (it took nine), the cooldown still refuses a second swing in the same instant, a bare-hands punch stays well under a crowbar blow, and a blow from behind is still 1.5 times as hard',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof meleeStrike!=='function'||typeof mkCrawler!=='function'||typeof fireWeapon!=='function'||typeof WEAPONS!=='object'||!WEAPONS.fists) return 'SKIP: this fixture cannot stage a swing';

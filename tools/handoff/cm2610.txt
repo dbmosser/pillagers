@@ -1,0 +1,7 @@
+v26.10: the feedback window says close
+
+The feedback window has a CLOSE button now, like every other window.
+
+Check 26.10. Fails on v26.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
