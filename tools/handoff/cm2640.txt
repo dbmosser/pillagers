@@ -1,0 +1,7 @@
+v26.40: aim, crouch and sprint: hold or toggle
+
+Controls has hold or toggle for aim, crouch and sprint.
+
+Check 26.40. Fails on v26.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

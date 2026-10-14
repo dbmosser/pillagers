@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.40 - AIM, CROUCH AND SPRINT: HOLD OR TOGGLE
+
+Co-op hunt while he was away. His order: add all of this to Settings. Controls gets three rows, one each for AIM (the right mouse button), CROUCH and SPRINT, each HOLD or TOGGLE, and each starts as the game already played: aim is held, crouch is a toggle, sprint is held. AIM on TOGGLE aims on one press of the right button and stops on the next. CROUCH on HOLD keeps you down only while the key is down (Ctrl or C), and a controller B stays one tap per change. SPRINT on TOGGLE runs on one press of the key, or of the controller stick click, until the next press, until you stop moving, or until you run out of breath. They change at once, are saved with the profile, and in the DEMO hold for the session.
+
+MEASURED. Check 26.40 passes, and fails on v26.39.
 ## v26.39 - NO STARTER GUN IN THE CLASS KEYS
 
 Co-op hunt while he was away. The class keys build (v26.36) landed just after the four starter guns were removed (v26.35) and listed the Tacker, Sputter, Chatter and Scuttle in its class table, so the removal was not whole. They are out of it now. Nothing else moves: no gun has a key it did not have, since none of the four could be in a raid any more. A new check reads the whole game script for the four names used as a table key or a quoted gun id, so a table added later cannot bring one back.

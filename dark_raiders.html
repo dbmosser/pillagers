@@ -2194,7 +2194,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.39';
+var VER='26.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14318,7 +14318,7 @@ function raidKey(code,repeat,ev){
   // forgets it. A plain Ctrl press still crouches at once, one change per press. No number, dial or seeded draw moved.
   if((code==='ControlLeft'||code==='ControlRight'||code==='KeyC')&&G&&!G.over&&!G.sim&&!repeat){
     G.ctrlUndo=(ev&&code!=='KeyC')?G.crouchTog:null;
-    G.crouchTog=!G.crouchTog;
+    G.crouchTog=(CFG.crouchHold===1&&ev)?true:!G.crouchTog;   // v26.xx (settings2): CROUCH HOLD (a real key; the pad B is a tap and stays a toggle)
   }
   // v10.87, HIS NOTE: sprint is HELD, not toggled, so there is no keydown
   // handler for it at all. updatePlayer reads the key itself. Crouch is
@@ -14542,7 +14542,7 @@ cv.addEventListener('wheel',function(e){
 // v15.65, stealth audit finding: CTRL WITH THE MOUSE WHEEL SIZES THE HUD WITHOUT TOGGLING CROUCH. A Ctrl let go with no wheel
 // was a plain crouch press, so the stance kept for the wheel is forgotten here, and a later Ctrl with the wheel cannot give
 // back the stance from an older press.
-window.addEventListener('keyup',function(e){ keys[keyRemap(e.code)]=false; if(keyRemap(e.code)==='KeyQ'&&typeof G!=='undefined'&&G&&G.wheel&&typeof wheelRelease==='function') wheelRelease(); /* v26.xx (wheel2): and the wheel picks */ if(keyRemap(e.code)==='AltLeft'&&state==='raid') e.preventDefault(); /* v25.xx (altstatus): and its release, or the browser takes the menu focus */ if((e.code==='ControlLeft'||e.code==='ControlRight')&&G) G.ctrlUndo=null; });
+window.addEventListener('keyup',function(e){ keys[keyRemap(e.code)]=false; if(CFG.crouchHold===1&&G&&!G.over&&(keyRemap(e.code)==='ControlLeft'||keyRemap(e.code)==='ControlRight'||keyRemap(e.code)==='KeyC')) G.crouchTog=false; /* v26.xx (settings2): CROUCH HOLD stands up with the key */ if(keyRemap(e.code)==='KeyQ'&&typeof G!=='undefined'&&G&&G.wheel&&typeof wheelRelease==='function') wheelRelease(); /* v26.xx (wheel2): and the wheel picks */ if(keyRemap(e.code)==='AltLeft'&&state==='raid') e.preventDefault(); /* v25.xx (altstatus): and its release, or the browser takes the menu focus */ if((e.code==='ControlLeft'||e.code==='ControlRight')&&G) G.ctrlUndo=null; });
 cv.addEventListener('click',function(){ ac(); });
 cv.addEventListener('mousemove',function(e){
   var r=cv.getBoundingClientRect();
@@ -14594,7 +14594,7 @@ cv.addEventListener('mousedown',function(e){
   // (as on the pad), and the canvas click listener still wakes the audio.
   if(e.button===0&&G&&!G.over&&G.forgeUI){ forgeClick(); return; }   // v26.xx (forgest2): a click on the Forge panel picks, and never fires behind it
   if(e.button===0&&G&&!G.over&&G.trade) return;
-  if(e.button===2){ if(G&&!G.over) G.player.ads=true; return; }
+  if(e.button===2){ if(G&&!G.over) G.player.ads=(CFG.aimTgl===1)?!G.player.ads:true; return; }   // v26.xx (settings2): AIM TOGGLE flips it, HOLD sets it
   if(e.button===1) return;   // v16.43: the middle button pings for the party; v25.xx (mmbping): through keysMouse and the key map now (Mouse1), so it can be rebound
   // v8.96: on the Undercroft floor the same two handlers below run against the
   // backpack's own state instead of a raid. Answer 11, moving things to and from
@@ -14844,7 +14844,7 @@ window.addEventListener('mouseup',function(e){
     P.hotAssign=hubBagG.hotAssign||{};
     try{ saveProfile(); }catch(_hs2){}
   }
-  if(e.button===2){ if(G) G.player.ads=false; }
+  if(e.button===2&&CFG.aimTgl!==1){ if(G) G.player.ads=false; }   // v26.xx (settings2): a toggled aim stays on until the next press
   // DROP. Released over a quickbar cell, the item is assigned to that slot;
   // released anywhere else the drag is simply abandoned, which is what every
   // inventory that works does. On the window rather than the canvas so letting
@@ -22432,6 +22432,15 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // yourself out sets stamRelease, and the line below clears it only when the
   // key is actually let go, so a held Shift cannot saw sprint on and off.
   var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
+  // v26.xx (settings2), HIS ORDER 2026-10-14: SPRINT TOGGLE. With the SPRINT row on TOGGLE a fresh press of the key (or of the pad stick click, which holds
+  // the same key) turns sprint on, the next press turns it off, and it also ends when you stop moving, go down or run out of breath (the lock then
+  // needs a new press, as a held key needs letting go). On HOLD, the default, none of this runs and the key is read as it always was.
+  if(CFG.sprintTgl===1){
+    if(_shHeld&&!G.shWas&&!p.downed) G.sprintOn=!G.sprintOn;
+    G.shWas=_shHeld;
+    if(G.sprintOn&&(mg===0||p.downed||p.stam<=2||p.stamLock||p.stamRelease)) G.sprintOn=false;
+    _shHeld=!!G.sprintOn;
+  } else { G.sprintOn=false; G.shWas=_shHeld; }
   if(!_shHeld) p.stamRelease=0;
   // v11.53, HIS NOTE: "activating sprint should automatically stop crouching".
   // The crouch toggle (v10.07) used to veto the sprint key on the line below,
@@ -41236,7 +41245,7 @@ function showScreen(s){
 // latch is what leaves sprint or crouch stuck on, which has bitten this file
 // before. Every key is now released whenever focus or visibility goes.
 function releaseAllKeys(soft){
-  keys={}; try{ HHOLD.arm=0; }catch(_hh){} mouse.down=false; if(G) G.sprinting=false; if(G) G.wheel=null; /* v26.xx (wheel2) */
+  keys={}; try{ HHOLD.arm=0; }catch(_hh){} mouse.down=false; if(G) G.sprinting=false; if(G&&CFG.crouchHold===1) G.crouchTog=false; /* v26.xx (settings2): a held crouch is let go with the keys */ if(G) G.wheel=null; /* v26.xx (wheel2) */
   // The reticle also hides for an open bag, and alt-tabbing with the bag open
   // left that panel latched too. Cleared with the keys, for the same reason.
   // v17.01, co-op hunt 2026-09-28: A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC both
@@ -42671,7 +42680,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.39: The four removed starter guns are out of the class key table too, and a check keeps them out of every table. Check 26.39 fails on v26.38',
+  now:'v26.40: Controls has hold or toggle for aim, crouch and sprint. Check 26.40 fails on v26.39',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55206,6 +55215,28 @@ var GAMEOPTS=[
    opts:[
      {n:'OFF', cfg:{mono:0}},
      {n:'ON',  cfg:{mono:1}}
+   ], def:0},
+  // v26.xx (settings2), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): HOLD OR TOGGLE for AIM, CROUCH and SPRINT, each its own row.
+  // The defaults are today: aim down sights is held on the right mouse button, crouch is a toggle (Ctrl or C), sprint is held. AIM TOGGLE: one
+  // press of the right button aims, the next stops. CROUCH HOLD: crouched only while the key is down (a controller B stays a tap). SPRINT TOGGLE:
+  // one press (the key, or a pad stick click) runs until the next press, until you stop moving or until the breath runs out.
+  {k:'aimMode', label:'AIM (RIGHT MOUSE)', sec:'CONTROLS',
+   hint:'HOLD: AIM WHILE THE BUTTON IS DOWN. TOGGLE: PRESS ONCE TO AIM, AGAIN TO STOP.',
+   opts:[
+     {n:'HOLD',   cfg:{aimTgl:0}},
+     {n:'TOGGLE', cfg:{aimTgl:1}}
+   ], def:0},
+  {k:'crouchMode', label:'CROUCH', sec:'CONTROLS',
+   hint:'TOGGLE: ONE PRESS CROUCHES, THE NEXT STANDS. HOLD: CROUCHED ONLY WHILE THE KEY IS DOWN. KEYBOARD ONLY.',
+   opts:[
+     {n:'TOGGLE', cfg:{crouchHold:0}},
+     {n:'HOLD',   cfg:{crouchHold:1}}
+   ], def:0},
+  {k:'sprintMode', label:'SPRINT', sec:'CONTROLS',
+   hint:'HOLD: RUN WHILE THE KEY IS DOWN. TOGGLE: PRESS ONCE TO RUN, UNTIL YOU STOP OR TIRE. THE PAD STICK CLICK TOO.',
+   opts:[
+     {n:'HOLD',   cfg:{sprintTgl:0}},
+     {n:'TOGGLE', cfg:{sprintTgl:1}}
    ], def:0},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',

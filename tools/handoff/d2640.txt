@@ -1,0 +1,5 @@
+## v26.40 - AIM, CROUCH AND SPRINT: HOLD OR TOGGLE
+
+Co-op hunt while he was away. His order: add all of this to Settings. Controls gets three rows, one each for AIM (the right mouse button), CROUCH and SPRINT, each HOLD or TOGGLE, and each starts as the game already played: aim is held, crouch is a toggle, sprint is held. AIM on TOGGLE aims on one press of the right button and stops on the next. CROUCH on HOLD keeps you down only while the key is down (Ctrl or C), and a controller B stays one tap per change. SPRINT on TOGGLE runs on one press of the key, or of the controller stick click, until the next press, until you stop moving, or until you run out of breath. They change at once, are saved with the profile, and in the DEMO hold for the session.
+
+MEASURED. Check 26.40 passes, and fails on v26.39.
