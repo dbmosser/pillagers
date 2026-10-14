@@ -1,0 +1,7 @@
+v26.79: the warden has an armoured front
+
+A plain Warden now shrugs off most fire from the front; hit it from the sides or the back.
+
+Check 26.79. Fails on v26.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

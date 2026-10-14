@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.79 - THE WARDEN HAS AN ARMOURED FRONT
+
+Co-op hunt while he was away. His words on suggestion 28: he thought we already had armoured fronts and soft backs. We had them for the Bulwark since v3.98: it soaks nearly all of a round that arrives inside its front arc, and every machine and pillager takes half again as much from behind. The plain Warden had no facing armour at all, only its weak points, so its front was no tougher than its flank. That is the part now finished: a plain Warden shrugs off 60 percent of a round that arrives inside the arc in front of it (about 57 degrees each side of where it faces), takes the full round from the sides, and still takes half again from behind, where its core seam also is. A round into its optic, the weak point on its front, still pays, because weak points are tested before armour. The Bulwark keeps its own numbers, the Overseer stays unarmoured (it has its phases now), and blasts, mines and fire come from no side, so they go past the armour: flank it, or bring a frag. Hitting an armoured front says WARDEN ARMOUR and HIT ITS BACK once.
+
+MEASURED. Check 26.79 passes, and fails on v26.78.
 ## v26.78 - FIRE HAZARDS
 
 Co-op hunt while he was away. His yes to fire as a hazard that makes spots impassable, not coming in from the map edges. Every raid now plans two fuel fires out on open ground, away from where you drop and from the extraction rings. A fire smoulders for four seconds (a dashed ring on the ground and FUEL FIRE in the alert with the distance and direction), then burns for 55 seconds as a disc of flame about as wide as a house. While it burns nobody can walk through it: you, the machines and the pillagers are all stopped at its edge, and standing at the edge burns you (the machines burn faster). Bullets fly over it. The Director never lands a pack inside one. It dies down to embers, and it shows as a mark on the minimap and the sector map. DEMO and CAREER work the same, and the fire is a single call (fireAdd) so the coming raid events can start fires of their own.

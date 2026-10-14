@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.78';
+var VER='26.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20476,6 +20476,16 @@ function mimicTick(dt){
     }
   }
 }
+// v26.xx (ai28), HIS WORDS (2026-10-14, suggestion 28): "I thought we already had this". WHAT WE HAD: the BULWARK, since v3.98, soaks 88
+// percent of any round that arrives inside its front arc (CFG.bulwarkArc 1.15 radians each side of its facing, CFG.bulwarkSoak 0.12), and
+// everything is hit half again as hard from behind (the back shot bonus), so the Bulwark has always had an armoured front and soft sides
+// and back, and a weak point (the spine) on its back. WHAT WAS MISSING: the plain WARDEN had no facing armour at all, only the weak
+// points, so its front was no tougher than its flank. Now a plain Warden shrugs off 60 percent of a round that arrives inside the
+// front arc of WARDEN_ARC (1.0 radian, 57 degrees, each side of where it faces), and takes the full round from the sides and half again
+// from behind; a round into its optic (the weak point on its front) still pays, as the weak points are tested before the armour. The
+// Bulwark keeps its own numbers. THE OVERSEER is left unarmoured on purpose (it has its phases now, ai24). Blasts, mines and fire come
+// from no side, so they go past the armour: that is what flanking and a frag are for.
+var WARDEN_ARC=1.0, WARDEN_SOAK=0.4;
 function feudFoe(a,b){
   if(CFG.raiderFeud===0) return false;
   if(G&&G.crewsHot===undefined) G.crewsHot=((G.seed>>>0)%10)<6;
@@ -27481,7 +27491,7 @@ function updateBullets(dt){
                   G.tel.weakHits=(G.tel.weakHits||0)+1;
                   G.hitMark={t:0,life:.15,kill:false,weak:true};   // v23.9x (hitmark): the marker line below keeps this weak mark now
                 }
-} else if(en.kind==='bulwark'&&(function(){
+} else if((en.kind==='bulwark'||(en.kind==='warden'&&!en.boss))&&(function(){   // v26.xx (ai28): and a plain Warden
                 // THE SHIELD. A round is soaked when it arrives inside the
                 // front arc, measured from the bullet's own travel direction
                 // against the machine's facing, so it is about where YOU are,
@@ -27491,13 +27501,13 @@ function updateBullets(dt){
                 // always the wrong plan.
                 var _ba=Math.atan2(-b.vy,-b.vx);
                 var _bd=Math.abs(Math.atan2(Math.sin(_ba-en.face),Math.cos(_ba-en.face)));
-                return _bd<(CFG.bulwarkArc===undefined?1.15:CFG.bulwarkArc);
+                return _bd<((en.kind==='warden')?WARDEN_ARC:(CFG.bulwarkArc===undefined?1.15:CFG.bulwarkArc));
               })()){
-                edmg*=(CFG.bulwarkSoak===undefined?0.12:CFG.bulwarkSoak);
+                edmg*=(en.kind==='warden')?WARDEN_SOAK:(CFG.bulwarkSoak===undefined?0.12:CFG.bulwarkSoak);
                 if(!G.sim){
                   spark(b.x,b.y,'#9fb4c4',10,220);
                   sfx('clank',b.x,b.y,'armor');
-                  if(!en._shTold){ en._shTold=1; say('BULWARK SHIELD','info',{sub:'Flank it.'}); }   // v22.xx (R54): the Bulwark by its name, never the slab   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
+                  if(!en._shTold){ en._shTold=1; say((en.kind==='warden')?'WARDEN ARMOUR':'BULWARK SHIELD','info',{sub:(en.kind==='warden')?'Hit its back.':'Flank it.'}); }   // v22.xx (R54): the Bulwark by its name, never the slab   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
                 }
               } else if(NET.on&&netEntsPeer()){
                 // v22.04, from the whole-game bug hunt of 2026-10-08 (K16): THE HOST SOAKS PLAYER 2'S ROUNDS WITH THE ARMOUR IT KEEPS.
@@ -43756,7 +43766,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.78: Two fuel fires per raid burn as impassable discs of flame that stop and burn anyone at their edge. Check 26.78 fails on v26.77',
+  now:'v26.79: A plain Warden now shrugs off most fire from the front; hit it from the sides or the back. Check 26.79 fails on v26.78',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
