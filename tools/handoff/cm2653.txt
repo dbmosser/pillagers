@@ -1,0 +1,7 @@
+v26.53: change pad buttons: controller rebinding
+
+Controller has change pad buttons: rebind any pad action.
+
+Check 26.53. Fails on v26.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

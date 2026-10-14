@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.53 - CHANGE PAD BUTTONS: CONTROLLER REBINDING
+
+Co-op hunt while he was away. His order: controller rebinding is new. The CONTROLLER section of Settings has CHANGE PAD BUTTONS, a window like CHANGE KEYS for the pad. It lists the sixteen things a pad does in a raid (sprint, dodge roll, crouch, fire, the two focus aims, the aim distance pair, use and reload, the ring search, the two gun bumpers, the item wheel, the backpack, ping and map, pause) and the button each is on. Click REBIND, the row says PRESS A BUTTON, and the next button you press is the new one (a button still held from the click is waited out first, the press that binds does nothing else, and ESC or ten seconds cancels). If another action had that button, the two swap and the window says so. RESET TO DEFAULTS puts back his layout of 2026-09-27. In a raid the new button does the action and the old one no longer does, for taps, holds, triggers and bumpers alike; every prompt, the controls legend and the small pad legend name the new button, and they are saved in the profile; in the DEMO they hold for the session. The sticks stay as they are, and the menus, the title and the Undercroft keep the standard buttons, which the window says.
+
+MEASURED. Check 26.53 passes, and fails on v26.52.
 ## v26.52 - THE KEYS WINDOW NAMES EVERY KEY
 
 Co-op hunt while he was away. His order: make sure the key rebinding covers every action. It had most of them, but H (tap to heal, hold for an armour plate), Caps Lock (auto-jog), the two HUD size keys, the two zoom keys and the zoom reset all work in a raid and were not on the list, so none of them could be moved. They are now, in sections (MOVE, FIGHT, WORLD, PARTY and a new VIEW), and a bind onto one swaps like any other. At the bottom the window lists the keys that cannot move and what they do: 1 to 9 pick a gun, P and TAB pause or back out, ESC closes a window, BACKSPACE puts the cursor back, the key left of 1 is Superhot and F11 is fullscreen. The check scans the raid key code, so a key added later without a place on the list fails it.
