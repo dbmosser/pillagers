@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.81 - RAID EVENTS: MACHINE CONVOY
+
+Co-op hunt while he was away. The second raid event, the machine convoy: an armoured crawler train crosses the map with a loot crate. A 20 second warning shows a ring at the start, then the train forms there and sets off for a far corner of the map: a Carrier (a Bulwark with more than twice the health and its front shield, so you have to flank it) with four armoured elite crawlers around it. They march by the street grid, fighting whatever they meet and falling back in, and the ring and the map mark follow the Carrier. Kill the Carrier and it drops the convoy crate where it fell, three cache rolls and a safe roll, marked on the maps until you open it. If it reaches its destination the train vanishes and the crate goes with it. DEMO and CAREER work the same.
+
+MEASURED. Check 26.81 passes, and fails on v26.80.
 ## v26.80 - RAID EVENTS: ORBITAL DEBRIS
 
 Co-op hunt while he was away. His answer to give me the events: all six raid events, one or two per raid, each with a map marker and a countdown ring. This build is the event system and the first event. A raid now plans one or two events from its seed (so a party on the same seed meets the same ones), the first about two and a half to three and a half minutes in. An event shows a ring on the ground that fills round as the countdown runs down, with its name and the seconds, and a marker with the time on the minimap and the sector map. ORBITAL DEBRIS: a 22 second warning over a wide ring, then five pieces fall inside it, each shown by a shadow and a dashed ring for two seconds before it lands. A piece hurts everything it lands on, you included, and leaves a burning wreck: a fire you cannot walk through for 45 seconds with a wreck on its edge holding two good items, marked on the map until you open it. The other five events come in the next builds. DEMO and CAREER work the same.

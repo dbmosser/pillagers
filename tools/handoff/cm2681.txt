@@ -1,0 +1,7 @@
+v26.81: raid events: machine convoy
+
+The machine convoy event: kill the carrier of an armoured crawler train to take its loot crate before it gets away.
+
+Check 26.81. Fails on v26.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v26.81 - RAID EVENTS: MACHINE CONVOY
+
+Co-op hunt while he was away. The second raid event, the machine convoy: an armoured crawler train crosses the map with a loot crate. A 20 second warning shows a ring at the start, then the train forms there and sets off for a far corner of the map: a Carrier (a Bulwark with more than twice the health and its front shield, so you have to flank it) with four armoured elite crawlers around it. They march by the street grid, fighting whatever they meet and falling back in, and the ring and the map mark follow the Carrier. Kill the Carrier and it drops the convoy crate where it fell, three cache rolls and a safe roll, marked on the maps until you open it. If it reaches its destination the train vanishes and the crate goes with it. DEMO and CAREER work the same.
+
+MEASURED. Check 26.81 passes, and fails on v26.80.
