@@ -2201,7 +2201,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.50';
+var VER='26.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15554,13 +15554,19 @@ function dtPad(){
   PAD._t=now;
   return clamp(d,0.004,0.05);
 }
+// v26.xx (settings10): THE STICK ROWS. padDz is the dead travel (0.22 as it always was), padSens how far a stick must go to reach full (1 as it always was; padAxis
+// clamps at 1), padInv flips up and down on the aim stick where it is placed, rumbleK is the factor on what padRumble sends.
+function padDz(){ var d=+CFG.padDz; return (d>=0.02&&d<=0.6)?d:0.22; }
+function padSens(){ var s=+CFG.padSens; return (s>=0.3&&s<=3)?s:1; }
+function padInv(v){ return CFG.padInvY===1?-v:v; }
+function rumbleK(){ var k=+CFG.rumbleK; return (k>=0&&k<=3)?k:1; }
 function padAxis(v){
   // Radial deadzone with rescaling, so the first millimetre past the deadzone
   // is a small input and not a jump to 0.22 of full speed.
-  var dz=0.22;
+  var dz=padDz();   // v26.xx (settings10): STICK DEADZONE
   var a=Math.abs(v);
   if(a<dz) return 0;
-  return Math.sign(v)*((a-dz)/(1-dz));
+  return Math.sign(v)*Math.min(1,((a-dz)/(1-dz))*padSens());   // v26.xx (settings10): STICK SENSITIVITY
 }
 // Release every input the pad currently owns. Without this, a pad that dies or
 // is unplugged mid firefight leaves mouse.down true and the gun firing until the
@@ -15640,8 +15646,8 @@ function pollPad(){
     var psx=(p.x-cx)*pz,psy=(p.y-cy)*pz;
     var rl=Math.sqrt(rx*rx+ry*ry); if(rl>1){ rx/=rl; ry/=rl; }
     var _rr2=(PAD.reach===undefined?200:PAD.reach);
-    PAD.aimA=Math.atan2(ry,rx);   // v16.77, his order: the angle the idle frames keep the crosshair on
-    padCursorPut(psx,psy,rx*_rr2*pz,ry*_rr2*pz);
+    PAD.aimA=Math.atan2(padInv(ry),rx);   // v16.77, his order: the angle the idle frames keep the crosshair on; v26.xx (settings10): INVERT AIM STICK
+    padCursorPut(psx,psy,rx*_rr2*pz,padInv(ry)*_rr2*pz);
   }
   // v16.77, his order: BOTH STICKS IDLE, THE CROSSHAIR STAYS. While the pad owns the crosshair it is placed again every frame:
   // the aim distance along the last aim angle from where the player stands on screen now, so it rides with the camera,
@@ -42840,7 +42846,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.50: Accessibility has reduced flashing. Check 26.50 fails on v26.49',
+  now:'v26.51: Controller has stick sensitivity, deadzone, invert aim and vibration strength. Check 26.51 fails on v26.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47865,6 +47871,7 @@ function padRumbleOn(gp,s,ms){
 }
 function padRumble(s,ms){
   if(CFG.rumble===0||!(s>0)||!(ms>0)) return 'off';
+  s=s*rumbleK();   // v26.xx (settings10): VIBRATION STRENGTH
   if(typeof G!=='undefined'&&G&&G.sim) return 'sim';
   var now=(typeof performance!=='undefined')?performance.now():Date.now();
   if(!(now-RUMBLE.usedAt<60000)) return 'idle';
@@ -55535,6 +55542,41 @@ var GAMEOPTS=[
    opts:[
      {n:'Off', cfg:{rumble:0}},
      {n:'On',  cfg:{rumble:1}}
+   ], def:1},
+  // v26.xx (settings10), HIS ORDER 2026-10-14 ("ok add all this stuff to settings, including rebinding keys and controller"): THE STICK ROWS, in
+  // CONTROLLER, after Controller rumble. STICK SENSITIVITY is how far a stick has to travel to reach full (a higher one reaches full sooner, for the
+  // walking stick and the aim stick alike); STICK DEADZONE is the dead travel round the middle; INVERT AIM STICK flips up and down on the aim stick
+  // only (the item wheel and the map cursor keep their natural direction); VIBRATION STRENGTH scales what the rumble sends, and the row is only drawn where the
+  // browser can vibrate a pad at all. The defaults are what the pad always did: 100%, 0.22, off, standard.
+  {k:'padSens', label:'STICK SENSITIVITY', sec:'CONTROLLER',
+   hint:'HOW FAR A STICK MOVES TO REACH FULL TILT: WALKING AND AIMING. HIGHER IS QUICKER.',
+   opts:[
+     {n:'LOW',       cfg:{padSens:0.75}},
+     {n:'STANDARD',  cfg:{padSens:1}},
+     {n:'HIGH',      cfg:{padSens:1.25}},
+     {n:'VERY HIGH', cfg:{padSens:1.5}}
+   ], def:1},
+  {k:'padDz', label:'STICK DEADZONE', sec:'CONTROLLER',
+   hint:'HOW FAR A STICK MOVES BEFORE THE GAME SEES IT. RAISE IT IF A WORN STICK DRIFTS.',
+   opts:[
+     {n:'SMALL',    cfg:{padDz:0.12}},
+     {n:'STANDARD', cfg:{padDz:0.22}},
+     {n:'LARGE',    cfg:{padDz:0.32}},
+     {n:'HUGE',     cfg:{padDz:0.4}}
+   ], def:1},
+  {k:'padInvY', label:'INVERT AIM STICK', sec:'CONTROLLER',
+   hint:'THE AIM STICK UP BECOMES DOWN. THE ITEM WHEEL AND THE MAP KEEP THEIR OWN WAY.',
+   opts:[
+     {n:'OFF', cfg:{padInvY:0}},
+     {n:'ON',  cfg:{padInvY:1}}
+   ], def:0},
+  {k:'rumbleK', label:'VIBRATION STRENGTH', sec:'CONTROLLER',
+   show:function(){ return typeof Gamepad!=='undefined'&&!!Gamepad&&!!Gamepad.prototype&&('vibrationActuator' in Gamepad.prototype); },
+   hint:'HOW HARD THE PAD BUZZES WHEN CONTROLLER RUMBLE IS ON.',
+   opts:[
+     {n:'LIGHT',    cfg:{rumbleK:0.5}},
+     {n:'STANDARD', cfg:{rumbleK:1}},
+     {n:'STRONG',   cfg:{rumbleK:1.5}}
    ], def:1},
   {k:'raiders', label:'Other pillagers',
    hint:'Human-shaped rivals looting the same map. They fight each other and the machines as well as you.',

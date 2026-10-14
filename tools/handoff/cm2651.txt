@@ -1,0 +1,7 @@
+v26.51: stick sensitivity, deadzone, invert and vibration
+
+Controller has stick sensitivity, deadzone, invert aim and vibration strength.
+
+Check 26.51. Fails on v26.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

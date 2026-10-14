@@ -1,0 +1,5 @@
+## v26.51 - STICK SENSITIVITY, DEADZONE, INVERT AND VIBRATION
+
+Co-op hunt while he was away. His order: add all of this to Settings, including the controller. The CONTROLLER section gets four rows. STICK SENSITIVITY is LOW, STANDARD, HIGH or VERY HIGH: how far a stick has to move to reach full tilt, for walking and for aiming. STICK DEADZONE is SMALL, STANDARD, LARGE or HUGE: the dead travel in the middle, so a worn stick that drifts can be told to be quiet. INVERT AIM STICK flips up and down on the aim stick only, and the item wheel and the map cursor keep their own way. VIBRATION STRENGTH is LIGHT, STANDARD or STRONG: how hard the pad buzzes when Controller rumble is on, and the row is only shown where the browser can vibrate a pad at all. Every row starts as the pad always was, change at once and are saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.51 passes, and fails on v26.50.

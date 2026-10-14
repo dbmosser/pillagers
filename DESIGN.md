@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.51 - STICK SENSITIVITY, DEADZONE, INVERT AND VIBRATION
+
+Co-op hunt while he was away. His order: add all of this to Settings, including the controller. The CONTROLLER section gets four rows. STICK SENSITIVITY is LOW, STANDARD, HIGH or VERY HIGH: how far a stick has to move to reach full tilt, for walking and for aiming. STICK DEADZONE is SMALL, STANDARD, LARGE or HUGE: the dead travel in the middle, so a worn stick that drifts can be told to be quiet. INVERT AIM STICK flips up and down on the aim stick only, and the item wheel and the map cursor keep their own way. VIBRATION STRENGTH is LIGHT, STANDARD or STRONG: how hard the pad buzzes when Controller rumble is on, and the row is only shown where the browser can vibrate a pad at all. Every row starts as the pad always was, change at once and are saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.51 passes, and fails on v26.50.
 ## v26.50 - REDUCED FLASHING
 
 Co-op hunt while he was away. His order: add all of this to Settings. The ACCESSIBILITY section gets REDUCED FLASHING, off as the game was. On, the bright flashes are toned down: the light of a blast, a shot or the Forge is smaller and shorter, every burst of sparks has half as many (the Forge sparks too), the muzzle flash on a gun is dimmer, and the lightning that lights the whole street is dimmer and lifts the fog less. It is only what is drawn: what a lightning bolt shows to the machines, the damage and the sounds are as they were. It changes at once and is saved with the profile; in the DEMO it holds for the session.
