@@ -1,0 +1,7 @@
+v26.29: the wheel looks the part
+
+The item wheel has a proper look, a ring on the crosshair shows a gun being drawn, and your gun is put away while an item is out.
+
+Check 26.29. Fails on v26.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

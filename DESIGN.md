@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.29 - THE WHEEL LOOKS THE PART
+
+Co-op hunt while he was away. His bar for looks (every screen should look like a AAA game), applied to the item wheel and the draw time. The wheel opens on a soft vignette with a ring of tick marks; each segment is a graphite plate with a rarity rim, the picture, the name in caps and a count badge; the segment under your aim lifts out and goes amber, a pointer lights on the hub, and the hub says what the item does (HEALS TO 85, COOK AND THROW, ARMOUR +20); one line under the wheel names the key to let go of. While a gun is being drawn a ring fills on the crosshair and is gone when the gun is ready, the magazine ring waits for it, and with a grenade or a heal out your character shows bare hands instead of the gun.
+
+MEASURED. Check 26.29 passes, and fails on v26.28.
 ## v26.28 - THE ITEM WHEEL ON A CONTROLLER
 
 Co-op hunt while he was away. His order of 2026-10-14, for the controller: hold D-DOWN to open the item wheel, push the right stick toward a segment and let go of D-DOWN to take the item out; RT then uses it, as the mouse button does. LB and RB still walk the guns, and the crosshair stays still while the wheel is open. D-DOWN no longer heals in the arcade; the wheel is the only way to a heal. While you are down, D-DOWN still revives you as before. Releasing with the stick in the middle cancels.

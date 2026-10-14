@@ -1,0 +1,5 @@
+## v26.29 - THE WHEEL LOOKS THE PART
+
+Co-op hunt while he was away. His bar for looks (every screen should look like a AAA game), applied to the item wheel and the draw time. The wheel opens on a soft vignette with a ring of tick marks; each segment is a graphite plate with a rarity rim, the picture, the name in caps and a count badge; the segment under your aim lifts out and goes amber, a pointer lights on the hub, and the hub says what the item does (HEALS TO 85, COOK AND THROW, ARMOUR +20); one line under the wheel names the key to let go of. While a gun is being drawn a ring fills on the crosshair and is gone when the gun is ready, the magazine ring waits for it, and with a grenade or a heal out your character shows bare hands instead of the gun.
+
+MEASURED. Check 26.29 passes, and fails on v26.28.
