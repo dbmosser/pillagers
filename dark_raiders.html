@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.56';
+var VER='26.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31629,6 +31629,18 @@ function wallSprite(wl2,d3,LIFT){
   e={c:cv2,ss:ss,t:WALLSPR.tick,w:wl2,lift:LIFT}; WALLSPR.m[k]=e; WALLSPR.n++;   // v23.xx (gfx25): w and lift let a new bullet mark paint into this sprite in place
   return e;
 }
+// v26.xx (feel12), HIS ORDER (2026-10-14): "Yes this is a good idea" to a camera look-ahead toward the cursor, longer for sniper-class guns.
+// WHAT WAS THERE: the camera already leaned toward the cursor by 0.13 of its distance from the screen centre (0.30 and 0.46 held to aim). WHAT
+// IT IS NOW: with a gun in hand the lean is LOOK_BASE (0.20) of that distance, and LOOK_LONG (0.30) for a gun with a scope of 2.5 or more
+// (the Marksman Rifle, the Longshot and the Meridian Lance), so you see farther along the line you shoot. It eases in and out through the same camera ease as
+// before (the lean target is read every frame and the camera chases it), the world clamp still holds, bare hands and a thrown item keep the
+// old 0.13, and the held-to-aim lean is unchanged. Render only: no gameplay number, no seeded draw.
+var LOOK_BASE=0.20, LOOK_LONG=0.30, LOOK_HANDS=0.13;
+function lookLean(p){
+  var w=p&&p.wep;
+  if(!w||!(w.mag>0)||p.hand) return LOOK_HANDS;
+  return (w.optic>=2.5)?LOOK_LONG:LOOK_BASE;
+}
 function render2D(dt){
   var p=G.player,i,j;
   gfxpBegin();   // v23.xx (gfx1): one frame in 15 times its passes
@@ -31655,7 +31667,7 @@ function render2D(dt){
   // zoom-invariant, and the camera is then derived exactly from the current
   // eased zoom. Nothing chases a target that zoom is moving, so a wheel spin
   // changes the scale and nothing else.
-  var lean=p.ads?(opticMag()>1?.46:.30):.13;
+  var lean=p.ads?(opticMag()>1?.46:.30):lookLean(p);   // v26.xx (feel12): the look-ahead, longer for the long guns
   var leanSX=(mouse.x-W/2)*lean, leanSY=(mouse.y-H/2)*lean;
   if(G.anchX===undefined){ G.anchX=p.x; G.anchY=p.y; G.leanSX=leanSX; G.leanSY=leanSY; GFX.tr=0; GFX.shL=+G.shake||0; }   // v23.xx (gfx38): a snapped camera (raid start, respawn, redrop) starts with no trauma
   var ke=Math.min(1,dt*9);
@@ -43044,7 +43056,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.56: Press R again in the bright stretch of the reload ring to finish it at once and add 15 percent damage to the next magazine. Check 26.56 fails on v26.55',
+  now:'v26.57: The camera looks farther ahead toward your cursor, farthest with the long scoped guns. Check 26.57 fails on v26.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v26.57: camera look ahead
+
+The camera looks farther ahead toward your cursor, farthest with the long scoped guns.
+
+Check 26.57. Fails on v26.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
