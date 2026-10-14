@@ -1,0 +1,7 @@
+v26.27: the bar holds nine guns
+
+The bottom bar is nine gun slots, 1 to 9; grenades, heals and plates are only on the item wheel (hold Q).
+
+Check 26.27. Fails on v26.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

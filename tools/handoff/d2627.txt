@@ -1,0 +1,5 @@
+## v26.27 - THE BAR HOLDS NINE GUNS
+
+Co-op hunt while he was away. His order of 2026-10-14: "Lets ONLY show guns at the bottom of the screen, only 9 of them. Then lets add a wheel for heals and grenades." The bar at the bottom of the screen now has nine gun keys, 1 to 9, and nothing else: no grenade, heal or plate keys, and no group labels. A tenth gun takes the place of the weakest gun you are not holding, which goes to the backpack, as the four gun rule did before. Everything else, grenades, smoke, decoys, tripwires, bandages, medkits, stims and armour plates, is used from the item wheel (hold Q, aim, let go, then pull the trigger): the old keys G, U, J and H, the hold on H, and the digits 5 to 9 as item keys are gone, which also frees those keys. An item dropped on the bar is refused with ITEMS GO ON THE WHEEL, a saved plan loses its item bindings once and keeps its guns, grenades stay in the pouch, and the DEMO controls card now says SWITCH GUN 1-9 and ITEMS HOLD Q.
+
+MEASURED. Check 26.27 passes, and fails on v26.26.
