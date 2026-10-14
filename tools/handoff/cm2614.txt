@@ -1,0 +1,7 @@
+v26.14: the team lamp stays in front of the gun
+
+The team lamp on the shoulder strap now shows in front of the gun at every angle.
+
+Check 26.14. Fails on v26.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

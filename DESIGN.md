@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.14 - THE TEAM LAMP STAYS IN FRONT OF THE GUN
+
+Co-op hunt while he was away. Found by the overnight regression run. The small team lamp on the left shoulder strap (blue on you and your teammate, red on a pillager) hid under the held gun since the guns got bigger: facing east, south-east, south and west the gun covered it. It is drawn after the gun now, in the same place and size, so the side a body is on reads from the strap at every angle. Looks only.
+
+MEASURED. Check 26.14 passes, and fails on v26.13.
 ## v26.13 - THE SELF-REVIVE SAYS SO AGAIN
 
 Co-op hunt while he was away. Found by the overnight regression run. When the self-revive got its injector and gear sounds (v25.40), the note about it was written in front of the callout, which turned the callout into comment text. Getting up on your own has said nothing on screen since. SELF-REVIVE USED, with Back on your feet under it, is back, beside the new sounds.

@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.13';
+var VER='26.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29084,7 +29084,18 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.restore();
   } else if(_GH){
     wc.restore();   // v25.xx (bigguns1): the big held gun draws itself (gunHeld), in front of the body unless aiming up
-    if(!_GB) gunHeld(x+leanX,ty,face,fl,st,coat,_BLD,_PC,ads,sprint,rl,muzzle);  } else {
+    if(!_GB){
+      gunHeld(x+leanX,ty,face,fl,st,coat,_BLD,_PC,ads,sprint,rl,muzzle);
+      // v26.14 (nightfix5), found by the overnight regression run of 2026-10-13 (check 24.61, spr22): THE TEAM LAMP STAYS IN FRONT OF THE HELD GUN. Since the big held guns (v25.26) the
+      // gun sprite is drawn over the left shoulder strap, so the team lamp hid under the stock facing east, south-east, south and west: half the compass. It is drawn again
+      // after the gun, same place and size, so the side a body is on still reads from the strap. Cosmetic only.
+      if(_PC&&!(OUTF&&OUTF.norig)&&(st.team==='ally'||st.team==='foe')&&typeof TEAMCOL!=='undefined'){
+        wc.fillStyle=INK; wc.fillRect(_lmx-0.5,_lmy-0.5,2.8,2.8);
+        wc.fillStyle=TEAMCOL[st.team]; wc.fillRect(_lmx,_lmy,1.8,1.8);
+        wc.fillStyle='#ffffff'; wc.fillRect(_lmx+0.2,_lmy+0.2,0.6,0.6);
+      }
+    }
+  } else {
   // v7.77, his order: every family its own silhouette, the tier on the top
   // edge. Read off the carried weapon so player, merc and rival pillagers all
   // show what they are actually holding.
@@ -41567,7 +41578,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.13: Getting up with the self-revive says SELF-REVIVE USED again, along with the new sounds. Check 26.13 fails on v26.12',
+  now:'v26.14: The team lamp on the shoulder strap now shows in front of the gun at every angle. Check 26.14 fails on v26.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
