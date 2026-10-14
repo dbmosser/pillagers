@@ -1,0 +1,7 @@
+v26.24: pick an item, then pull the trigger
+
+Pick an item on the wheel, pull the trigger to use one, and your gun comes back by itself.
+
+Check 26.24. Fails on v26.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
