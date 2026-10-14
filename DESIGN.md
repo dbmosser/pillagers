@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.73 - RUN GOALS
+
+Co-op hunt while he was away. His yes to run goals: three tiny goals per raid, each paying a score chip, the same in DEMO and CAREER. Every raid now draws three small goals from a pool of eight: 10 kills, search 6 crates, survive 3 waves, call an air strike, open a vault, down 3 pillagers, kill an elite, down a warden. They are listed in a panel under the minimap (under the conditions panel in CAREER) with a count, and a goal you meet pays its chip into the run score at once, with GOAL DONE and the amount on screen. The same seed always draws the same three, so a party sharing a seed shares its goals. The vault goal is left out of a map with no vault. The raids themselves are unchanged: the goals are drawn on a side stream, not from the stream that builds the map.
+
+MEASURED. Check 26.73 passes, and fails on v26.72.
 ## v26.72 - ELITE MACHINES CARRY AN AFFIX
 
 Co-op hunt while he was away. His yes to suggestion 25, elite affixes, with his condition that an elite should be a different colour or obviously different. An elite machine (the eight percent that already have a bit over twice the health) now carries exactly one affix, and every affix is as common as the others. SHIELDED (cyan) has a shield worth half its health that soaks your rounds first, drawn as a bubble that thins as you shoot it; a blast, a mine or fire goes straight past it, so that is the answer. VOLATILE (orange) explodes when it dies and hurts you and anything near it. FAST (yellow) is a third quicker on its feet. MENDER (green) repairs every machine within a long reach of itself, five percent every half second, with a beam to each one, so it is the one to kill first. Each wears its own colour in place of the old purple ring, with a glow and two rings on the ground and a badge over its head (a hexagon, a burst, a double chevron, a plus). A kill pays three times the points of its kind, where a plain elite pays two. Pillager elites keep their better guns and the old ring, and the Overseer has no affix. Player 2 is told the affix and sees the shield.

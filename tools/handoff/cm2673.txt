@@ -1,0 +1,7 @@
+v26.73: run goals
+
+Every raid now has three small run goals in a panel, each paying a score chip when met.
+
+Check 26.73. Fails on v26.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
