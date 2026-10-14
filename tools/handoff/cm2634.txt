@@ -1,0 +1,7 @@
+v26.34: the wheel is in his order
+
+The item wheel now runs medkit, smoke, frag, tripwire, armour, decoy, bandage, stim, clockwise from the top.
+
+Check 26.34. Fails on v26.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

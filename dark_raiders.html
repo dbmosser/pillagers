@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.33';
+var VER='26.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18553,7 +18553,10 @@ function holdHTick(dt){
 // armour plate, BOTTOM-LEFT the tripwire, LEFT the stim, TOP-LEFT the bandage (throwables on the right, medical on the left, the plate
 // underneath). Whatever he carries, in the backpack or the pouch, fills its slot by itself: nothing is set up or assigned. A type he has none
 // of still has its slot, dimmed with a 0, and letting go on it takes nothing out. DEMO and CAREER lay it out the same; nothing is saved.
-var WHEEL_ORDER=['medkit','frag','smoke','decoy','plate','trip','stim','bandage'];
+// v26.xx (wheelorder), HIS ORDER 2026-10-14 ("wheel should go in this order instead / medkit, smoke, frag, tripwire, armour, decoy, bandage, stim"):
+// the same eight slots in his order, clockwise from the top: TOP the medkit, TOP-RIGHT the smoke, RIGHT the frag, BOTTOM-RIGHT the tripwire, BOTTOM the
+// armour plate, BOTTOM-LEFT the decoy, LEFT the bandage, TOP-LEFT the stim. Only the order changed: the mouse and the right stick both read this table.
+var WHEEL_ORDER=['medkit','smoke','frag','trip','plate','decoy','bandage','stim'];
 function wheelHave(k){
   var it=ITEMS[k], n=0, i;
   if(!it||!G) return 0;
@@ -42536,7 +42539,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.33: The item wheel now has eight fixed slots, and an empty one shows dim with a 0. Check 26.33 fails on v26.32',
+  now:'v26.34: The item wheel now runs medkit, smoke, frag, tripwire, armour, decoy, bandage, stim, clockwise from the top. Check 26.34 fails on v26.33',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

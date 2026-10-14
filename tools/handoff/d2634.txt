@@ -1,0 +1,5 @@
+## v26.34 - THE WHEEL IS IN HIS ORDER
+
+Co-op hunt while he was away. His order: the item wheel goes in a new order. Clockwise from the top it is now medkit, smoke canister, frag charge, tripwire mine, armour plate, decoy beacon, bandage, stim injector. So the medkit is at the top, the smoke at the top right, the frag charge on the right, the tripwire at the bottom right, the armour plate at the bottom, the decoy at the bottom left, the bandage on the left and the stim at the top left. The slots are still the same eight in the same places every time, whatever you carry, and the right stick on a controller reads the same ring.
+
+MEASURED. Check 26.34 passes, and fails on v26.33.

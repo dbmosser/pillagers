@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.34 - THE WHEEL IS IN HIS ORDER
+
+Co-op hunt while he was away. His order: the item wheel goes in a new order. Clockwise from the top it is now medkit, smoke canister, frag charge, tripwire mine, armour plate, decoy beacon, bandage, stim injector. So the medkit is at the top, the smoke at the top right, the frag charge on the right, the tripwire at the bottom right, the armour plate at the bottom, the decoy at the bottom left, the bandage on the left and the stim at the top left. The slots are still the same eight in the same places every time, whatever you carry, and the right stick on a controller reads the same ring.
+
+MEASURED. Check 26.34 passes, and fails on v26.33.
 ## v26.33 - THE WHEEL HAS EIGHT FIXED SLOTS
 
 Co-op hunt while he was away. His answer: a fixed eight-slot ring. The item wheel is now always the same eight slots in the same places, so your hand learns them. Clockwise from the top: medkit, frag charge, smoke canister, decoy beacon, armour plate, tripwire mine, stim injector, bandage. Throwables are on the right, medical on the left, the plate underneath. Whatever you carry, in the backpack or the pouch, fills its slot by itself, so there is nothing to set up. A type you have none of keeps its slot, dimmed with a 0, and letting go on it takes nothing out and says so. DEMO and CAREER are the same. The hint line above the ring also moved a little closer to it so it stays off the extraction timer.
