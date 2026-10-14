@@ -36,13 +36,22 @@ $out | Set-Content (Join-Path $O 'leftovers.txt')
 
 # 2. text audit
 $rx=@("say\('([^']{6,})'","label\([^,]+,[^,]+,'([^']{6,})'","fillText\('([^']{6,})'","sub:'([^']{6,})'","textContent\s*=\s*'([^']{6,})'","innerHTML\s*=\s*'([^'<]{6,})","^\s*'([A-Z][A-Z ,.!?']{8,}[^']*)',\s*$")
+# 2026-10-14 (his "ok lets do all that"): narrowed. Night 1 flagged 107 lines, almost all old What's New history entries, which never show
+# in a raid. So: skip the WHATSNEW history array, and with -Since audit only strings on lines changed since that commit (the day's work).
+$wnA=-1; $wnB=-1
+for($i=0;$i -lt $lines.Count;$i++){ if($wnA -lt 0 -and $lines[$i] -match '^\s*var WHATSNEW\s*=\s*\['){ $wnA=$i } elseif($wnA -ge 0 -and $lines[$i] -match '^\s*\];'){ $wnB=$i; break } }
+$chg=$null
+if($Since){ $chg=@{}; $dd=& git -C $R diff -U0 "$Since..HEAD" -- dark_raiders.html 2>$null
+  foreach($h in $dd){ if($h -match '^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@'){ $c=[int]$Matches[1]; $n=1; if($Matches[2] -ne $null -and $Matches[2] -ne ''){ $n=[int]$Matches[2] }; for($q=$c;$q -lt $c+$n;$q++){ $chg[$q]=1 } } } }
 $seen=@{}; $items=New-Object System.Collections.Generic.List[string]
 for($i=0;$i -lt $lines.Count;$i++){ $L=$lines[$i]; $tl=$L.TrimStart(); if($tl.StartsWith('//')){ continue }
+  if($wnA -ge 0 -and $i -ge $wnA -and ($wnB -lt 0 -or $i -le $wnB)){ continue }
+  if($chg -ne $null -and -not $chg.ContainsKey($i+1)){ continue }
   foreach($x in $rx){ foreach($m in [regex]::Matches($L,$x)){ $s=$m.Groups[1].Value; if(-not $seen.ContainsKey($s)){ $seen[$s]=1; $items.Add("L$($i+1): $s") } } } }
 $rules=@'
 You audit player-facing text in PILLAGERS, a top-down 2.5D extraction shooter (DEMO arcade mode and CAREER mode). The owner's rules:
 1. In-raid callouts are terse ALL-CAPS HUD lines like a AAA shooter (LOCATION REVEALED, SIEGE INCOMING, EXTRACTION CALLED), with at most a short detail. Never an explaining sentence.
-2. Keys: E search/use (never extraction), X call and board extraction, G throw, U switch throwable, H tap heal / hold armour plate, Q crowbar melee, F next gun, F1 controls list, middle mouse ping, hold Alt raid status, R reload, 1-4 guns, 5-6 throwables, 7-8 medical, 9 armour. Text naming another key for these actions is wrong.
+2. Keys: E search/use (never extraction), X call and board extraction, G throw the chosen grenade, U next grenade, H use the chosen heal (hold H = armour plate), J next heal, 5-6 throw that grenade, 7-8 use that heal, 9 plate, Q crowbar melee, F next gun, F1 controls list, middle mouse ping, hold Alt raid status, R reload, 1-4 guns. Text naming another key for these actions is wrong.
 3. Removed, must not be mentioned or promised: any voice, announcer, barks or taunts; emotes; the 3-2-1 GO countdown; backpack sizes (LIGHT/LOADED/HEAVY BACKPACK); "search resumed"; how many machines a siege brings; weak spots or headshots on pillagers or players (machines may have weak spots); guns wearing out or jamming; Halloween; the second map THE COLD MILE.
 4. Gameplay is identical in DEMO and CAREER; text must not claim otherwise.
 For the numbered lines below, list ONLY the lines that break a rule, one per line, as: L<number>: <problem> => <suggested fix>. If none break a rule, answer NONE. No other words.

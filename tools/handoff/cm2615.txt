@@ -1,0 +1,7 @@
+v26.15: every container searches in its own sound
+
+Every container now searches with its own mix of sounds.
+
+Check 26.15. Fails on v26.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

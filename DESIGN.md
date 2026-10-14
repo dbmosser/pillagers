@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.15 - EVERY CONTAINER SEARCHES IN ITS OWN SOUND
+
+Co-op hunt while he was away. His words while playing, 2026-10-14: searching one crate after the next starts to get repetitive. The earlier fix made the hits inside one search differ, but it also made every search open on the same rummage clip and count from the same start, so crate after crate began the same way. Now each container has a character of its own, worked out from where it stands with no random draw, so a box always sounds like itself and the next one does not: the clip a search opens on, the order the clips come in and a base pitch within 10 percent either way. The clips follow the material: lockers, safes and wrecks lean on the metal latch and plate clacks, crates on the knocks and the rummage, bodies and dropped packs on the strap and cloth, and a cache mixes them. A search never opens on the clip the search before it opened on. The beat, the heavier dig every third to fifth hit and the completion cue are as they were. Sound only.
+
+MEASURED. Check 26.15 passes, and fails on v26.14.
 ## v26.14 - THE TEAM LAMP STAYS IN FRONT OF THE GUN
 
 Co-op hunt while he was away. Found by the overnight regression run. The small team lamp on the left shoulder strap (blue on you and your teammate, red on a pillager) hid under the held gun since the guns got bigger: facing east, south-east, south and west the gun covered it. It is drawn after the gun now, in the same place and size, so the side a body is on reads from the strap at every angle. Looks only.

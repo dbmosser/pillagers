@@ -1,0 +1,445 @@
+# fuzz.ps1 : the nightly INPUT FUZZER. A TOOL ONLY: it never edits or loads anything into the game except through the test fixture
+# copy (tools\fixture-soak-fuzz.html, gitignored) and the read-only hook tools\fuzz-hook.js. ASCII only (PowerShell 5.1 reads .ps1 as ANSI).
+# Born from his order of 2026-10-13/14: "do whatever you need to do to make my pc resources useful for the many hours that they are idle".
+#
+# RUN IT:   powershell -NoProfile -ExecutionPolicy Bypass -File tools\fuzz.ps1                       (120 minutes, port 9331, 300 s raids)
+#           ... -Minutes 5 -RaidSec 60 -IgnoreFlag       a short run (-IgnoreFlag: run even if light.flag, the "he is at the PC" flag, exists)
+#           ... -SelfTest                                injects setTimeout(function(){throw new Error('fuzztest')},0) once, to prove it is logged
+#           ... -Mode demo1|demo2|career -RaidSeed N     REPLAY one raid (the mode and raidSeed are in every problem record)
+# WHAT ONE RAID DOES: starts a raid in its own headless Chrome (1920x1080, port 9331) from a fixture copy, modes in turn: demo1 (1 PLAYER
+#   ARCADE DEMO), career (a CAREER raid from the Undercroft path), demo2 (the arcade with 2 player rules, this window as host alone; the real
+#   2P same-PC party needs a second window and the pad channel, so it is skipped). Then for -RaidSec seconds it sends random but plausible
+#   input as REAL CDP events (Input.dispatchKeyEvent / dispatchMouseEvent, ticks of 50 ms, from a SEEDED System.Random so a raid replays;
+#   the game's own RNG is never touched): WASD bursts (+ shift sprint), aim drift, fire clicks, RMB aim, wheel, R E X G U H J Q F 1-9
+#   (taps and holds), B/I M ESC P Alt SPACE CTRL C middle click Tab Enter, and random backpack drags on the real bag/belt cells.
+#   Half the raids are "tough" (hp topped up under 35) so they live long enough to reach the late states. After -RaidSec the raid clock is
+#   set to 2 s and the raid must END on its own within 75 s (the burn / death path), else a "noend" problem.
+# WHAT IT LOGS (tools\handoff\fuzz\): fuzz.log = one line per raid (raid count, problems, unique errors); fuzz-<date>.jsonl = one record per
+#   NEW problem (same message = one record, counted): build, runSeed, mode, raidSeed, raid second, kind, message, stack, the last 60 inputs.
+#   Kinds: error / rejection / console.error / game-crash (JS errors), nan (non-finite player x y hp armor, or any entity), stuck (no
+#   movement 20 s with movement keys held outside menus), stall (no rAF 5 s), noend (a raid that never ends after the clock), hang
+#   (the page stopped answering 10+ s), start (a raid that would not start), cleanup (endRaid threw), dialog.
+# STOPS EARLY when light.flag appears (he is back), closes its Chrome, and a hidden watchdog kills that Chrome if this script is killed.
+param(
+  [int]$Minutes=120,
+  [int]$Port=9331,
+  [int]$Seed=0,
+  [int]$RaidSec=300,
+  [int]$Srv=0,
+  [string]$Mode='',
+  [int]$RaidSeed=0,
+  [double]$MinFreeGB=5,
+  [switch]$IgnoreFlag,
+  [switch]$SelfTest
+)
+$ErrorActionPreference='Stop'
+$R='C:\claudecode\dark raiders'; $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'
+$Flag='C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders\8a09e991-b4f4-4b23-b10f-ded92e837fc3\scratchpad\light.flag'
+$LogF=$OutDir+'\fuzz.log'; $Jsonl=$OutDir+'\fuzz-'+(Get-Date -Format 'yyyy-MM-dd')+'.jsonl'
+$Enc=New-Object Text.UTF8Encoding $false
+New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+if($Seed -eq 0){ $Seed=[int]((Get-Date).Ticks % 2000000000) }
+if($Port -in 8802,9346,9335,9345,9344){ Write-Output ('refusing port '+$Port); exit 2 }
+
+function Stamp(){ (Get-Date).ToString('yyyy-MM-dd HH:mm:ss') }
+function Clean([string]$s){ ($s -replace '[^\x20-\x7e]','?') }
+function LogLine([string]$s){ [IO.File]::AppendAllText($LogF,(Clean $s)+"`n",$Enc) }
+function JsonRec($o){ [IO.File]::AppendAllText($Jsonl,(($o | ConvertTo-Json -Compress -Depth 6))+"`n",$Enc) }
+function JsStr([string]$s){ (ConvertTo-Json -InputObject $s -Compress) }
+
+if((Test-Path -LiteralPath $Flag) -and -not $IgnoreFlag){ LogLine ((Stamp)+' FUZZ not started: light.flag exists (he is at the PC)'); Write-Output 'light.flag exists: not started'; exit 0 }
+
+# ---------------------------------------------------------------- chrome, server, page
+function Kill-Chrome(){
+  try{
+    Get-CimInstance Win32_Process -Filter "Name='chrome.exe'" | Where-Object { $_.CommandLine -match ('remote-debugging-port='+$Port+'(\s|$)') } |
+      ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
+  }catch{}
+}
+function Probe-Server([int]$p){
+  try{ $rq=[Net.WebRequest]::Create('http://localhost:'+$p+'/fixture-soak-fuzz.html'); $rq.Timeout=4000; $rs=$rq.GetResponse(); $len=$rs.ContentLength; $rs.Close(); return ($len -gt 5000000) }catch{ return $false }
+}
+function Pick-Server(){
+  $c=@(); if($Srv -gt 0){ $c+=$Srv }; $c+=@(8810,8809,8808,8807,8806,8805,8804,8803)
+  foreach($p in $c){ if(Probe-Server $p){ return $p } }
+  return 0
+}
+$script:ownSrv=$null; $script:srvPort=0
+function Copy-Fixture(){
+  # its own copy: a ship mid-run rebuilds fixture.html, and a half written file must never be served
+  for($i=0;$i -lt 8;$i++){
+    try{
+      $t1=(Get-Item ($T+'\fixture.html')).LastWriteTimeUtc
+      Copy-Item ($T+'\fixture.html') ($T+'\fixture-soak-fuzz.html') -Force
+      $fi=Get-Item ($T+'\fixture-soak-fuzz.html'); $s2=Get-Item ($T+'\fixture.html')
+      $tail=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($fi.FullName),[int]($fi.Length-300),300)
+      if($fi.Length -gt 5000000 -and $fi.Length -eq $s2.Length -and $s2.LastWriteTimeUtc -eq $t1 -and $tail -match '</script>'){ return $true }
+    }catch{}
+    Start-Sleep 5
+  }
+  return $false
+}
+
+# ---------------------------------------------------------------- CDP over one websocket
+$script:ws=$null; $script:rxTask=$null; $script:rxBuf=New-Object byte[] 262144; $script:rxMs=New-Object IO.MemoryStream; $script:id=0
+function NextId(){ $script:id++; return $script:id }
+function Ws-Connect([string]$url){
+  $w=New-Object System.Net.WebSockets.ClientWebSocket
+  $w.ConnectAsync([Uri]$url,[Threading.CancellationToken]::None).Wait(8000) | Out-Null
+  $script:ws=$w; $script:rxTask=$null; $script:rxMs.SetLength(0)
+}
+function Ws-Send([string]$s){
+  $b=[Text.Encoding]::UTF8.GetBytes($s)
+  $t=$script:ws.SendAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$b)),[System.Net.WebSockets.WebSocketMessageType]::Text,$true,[Threading.CancellationToken]::None)
+  if(-not $t.Wait(8000)){ throw 'CDP timeout (send)' }
+}
+function Ws-Recv([int]$ms){
+  $sw=[Diagnostics.Stopwatch]::StartNew()
+  while($true){
+    if(-not $script:rxTask){ $script:rxTask=$script:ws.ReceiveAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$script:rxBuf)),[Threading.CancellationToken]::None) }
+    $left=$ms-[int]$sw.ElapsedMilliseconds; if($left -lt 1){ $left=1 }
+    if(-not $script:rxTask.Wait($left)){ return $null }
+    $r=$script:rxTask.Result; $script:rxTask=$null
+    if($r.MessageType -eq [System.Net.WebSockets.WebSocketMessageType]::Close){ throw 'CDP socket closed' }
+    $script:rxMs.Write($script:rxBuf,0,$r.Count)
+    if($r.EndOfMessage){ $m=[Text.Encoding]::UTF8.GetString($script:rxMs.ToArray()); $script:rxMs.SetLength(0); return $m }
+  }
+}
+$script:dialogs=0
+function Cdp([int]$id,[string]$json,[int]$ms){
+  Ws-Send $json
+  $sw=[Diagnostics.Stopwatch]::StartNew(); $pre='{"id":'+$id+','
+  while($true){
+    $left=$ms-[int]$sw.ElapsedMilliseconds
+    if($left -le 0){ throw 'CDP timeout' }
+    $m=Ws-Recv $left
+    if($m -eq $null){ throw 'CDP timeout' }
+    if($m.StartsWith($pre)){ return $m }
+    if($m.StartsWith('{"method":"Page.javascriptDialogOpening"')){
+      $script:dialogs++
+      $d=NextId; Ws-Send ('{"id":'+$d+',"method":"Page.handleJavaScriptDialog","params":{"accept":false}}')
+    }
+  }
+}
+function Ev([string]$expr,[int]$ms=15000){
+  $id=NextId
+  $m=Cdp $id ('{"id":'+$id+',"method":"Runtime.evaluate","params":{"expression":'+(JsStr $expr)+',"returnByValue":true,"awaitPromise":false}}') $ms
+  $o=$m | ConvertFrom-Json
+  if($o.result.exceptionDetails){ $ex=$o.result.exceptionDetails; $d=''; if($ex.exception){ $d=[string]$ex.exception.description }; throw ('EVAL: '+$ex.text+' '+$d) }
+  return $o.result.result.value
+}
+function Gx([string]$js,[int]$ms=15000){ return (Ev ('window.__gx('+(JsStr $js)+')') $ms) }
+function Cmd([string]$method,[string]$params='{}'){ $id=NextId; [void](Cdp $id ('{"id":'+$id+',"method":"'+$method+'","params":'+$params+'}') 15000) }
+
+$script:needReset=$true; $script:ver='?'; $script:maps=@()
+$script:Hook=[IO.File]::ReadAllText($T+'\fuzz-hook.js')
+function Open-Page(){
+  $base='http://127.0.0.1:'+$Port
+  try{ (Invoke-RestMethod ($base+'/json') -TimeoutSec 5) | Where-Object { $_.type -eq 'page' } | ForEach-Object { try{ Invoke-RestMethod ($base+'/json/close/'+$_.id) -TimeoutSec 5 | Out-Null }catch{} } }catch{}
+  $tab=Invoke-RestMethod -Method Put -Uri ($base+'/json/new?http://localhost:'+$script:srvPort+'/fixture-soak-fuzz.html') -TimeoutSec 10
+  Ws-Connect $tab.webSocketDebuggerUrl
+  Cmd 'Page.enable'
+  Cmd 'Emulation.setDeviceMetricsOverride' '{"width":1920,"height":1080,"deviceScaleFactor":1,"mobile":false}'
+  Cmd 'Emulation.setFocusEmulationEnabled' '{"enabled":true}'
+  Cmd 'Page.bringToFront'
+  $ok=$false
+  for($i=0;$i -lt 120;$i++){
+    try{ if((Ev "typeof window.__gx==='function'&&typeof window.__deploy==='function'") -eq $true){ $ok=$true; break } }catch{}
+    Start-Sleep 1
+  }
+  if(-not $ok){ throw 'the fixture page did not come up in 120 s' }
+  Start-Sleep 2
+  $r=Gx $script:Hook
+  if($r -ne 'installed' -and $r -ne 'already'){ throw ('hook install said: '+$r) }
+  [void](Gx '__runPrep()')
+  $script:ver=[string](Gx 'VER')
+  $mp=Gx "(function(){ var a=[],i; for(i=0;i<FIXED_MAPS.length;i++){ try{ if(mapOffered(FIXED_MAPS[i])) a.push(i); }catch(e){ a.push(i); } } return JSON.stringify(a.length?a:[0]); })()"
+  $script:maps=@(); foreach($v in ($mp | ConvertFrom-Json)){ $script:maps+=[int]$v }
+  $script:needReset=$false
+}
+
+# ---------------------------------------------------------------- input layer
+$KM=@{}
+foreach($c in 65..90){ $L=[string][char]$c; $KM['Key'+$L]=@($L.ToLower(),('Key'+$L),$c) }
+foreach($d in 1..9){ $KM['Digit'+$d]=@([string]$d,('Digit'+$d),(48+$d)) }
+$KM['Space']=@(' ','Space',32); $KM['Escape']=@('Escape','Escape',27); $KM['Tab']=@('Tab','Tab',9); $KM['Enter']=@('Enter','Enter',13)
+$KM['ControlLeft']=@('Control','ControlLeft',17); $KM['AltLeft']=@('Alt','AltLeft',18); $KM['ShiftLeft']=@('Shift','ShiftLeft',16)
+$MOVE=@('KeyW','KeyA','KeyS','KeyD'); $MODK=@('ControlLeft','AltLeft','ShiftLeft')
+$script:ring=New-Object 'System.Collections.Generic.Queue[string]'
+$script:held=@{}; $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:lastMmRing=-100; $script:nEv=0
+function Ring([string]$s){ $script:ring.Enqueue(([string]$script:tick)+':'+$s); while($script:ring.Count -gt 60){ [void]$script:ring.Dequeue() } }
+function ModBits(){ $m=0; if($script:held.ContainsKey('AltLeft')){ $m+=1 }; if($script:held.ContainsKey('ControlLeft')){ $m+=2 }; if($script:held.ContainsKey('ShiftLeft')){ $m+=8 }; return $m }
+function KeyEv([string]$type,[string]$n,[bool]$rep){
+  $k=$KM[$n]; $id=NextId; $script:nEv++
+  $rp='false'; if($rep){ $rp='true' }
+  [void](Cdp $id ('{"id":'+$id+',"method":"Input.dispatchKeyEvent","params":{"type":"'+$type+'","key":"'+$k[0]+'","code":"'+$k[1]+'","windowsVirtualKeyCode":'+$k[2]+',"nativeVirtualKeyCode":'+$k[2]+',"modifiers":'+(ModBits)+',"autoRepeat":'+$rp+'}}') 10000)
+}
+function Press([string]$n,[int]$ticks){
+  if($script:held.ContainsKey($n)){ return }
+  $script:held[$n]=@{since=$script:tick;until=($script:tick+$ticks)}
+  KeyEv 'keyDown' $n $false
+  Ring ('kd '+$n)
+  if(-not ($MOVE -contains $n) -and -not ($MODK -contains $n)){ $script:lastAct=$script:tick }
+}
+function Release([string]$n){
+  if(-not $script:held.ContainsKey($n)){ return }
+  $script:held.Remove($n)
+  KeyEv 'keyUp' $n $false
+  Ring ('ku '+$n)
+}
+function MouseEv([string]$type,[int]$x,[int]$y,[string]$btn,[int]$buttons,[int]$cc,[int]$dy){
+  $id=NextId; $script:nEv++
+  [void](Cdp $id ('{"id":'+$id+',"method":"Input.dispatchMouseEvent","params":{"type":"'+$type+'","x":'+$x+',"y":'+$y+',"button":"'+$btn+'","buttons":'+$buttons+',"clickCount":'+$cc+',"modifiers":'+(ModBits)+',"deltaX":0,"deltaY":'+$dy+'}}') 10000)
+}
+function BtnName([int]$bit){ if($bit -eq 1){ return 'left' }; if($bit -eq 2){ return 'right' }; return 'middle' }
+function MMove([int]$x,[int]$y){
+  if($x -lt 0){ $x=0 }; if($y -lt 0){ $y=0 }; if($x -gt 1919){ $x=1919 }; if($y -gt 1079){ $y=1079 }
+  $script:mx=$x; $script:my=$y
+  $b='none'; if($script:btns -band 1){ $b='left' }elseif($script:btns -band 2){ $b='right' }elseif($script:btns -band 4){ $b='middle' }
+  MouseEv 'mouseMoved' $x $y $b $script:btns 0 0
+  if(($script:tick-$script:lastMmRing) -ge 6){ $script:lastMmRing=$script:tick; Ring ('mm '+$x+','+$y) }
+}
+function MDown([int]$bit){ $script:btns=($script:btns -bor $bit); MouseEv 'mousePressed' $script:mx $script:my (BtnName $bit) $script:btns 1 0; Ring ('md '+(BtnName $bit)+' '+$script:mx+','+$script:my) }
+function MUp([int]$bit){ $script:btns=($script:btns -band (-bnot $bit)); MouseEv 'mouseReleased' $script:mx $script:my (BtnName $bit) $script:btns 1 0; Ring ('mu '+(BtnName $bit)) }
+function Wheel([int]$dy){ MouseEv 'mouseWheel' $script:mx $script:my 'none' $script:btns 0 $dy; Ring ('wh '+$dy) }
+function Release-All(){
+  foreach($n in @($script:held.Keys)){ try{ Release $n }catch{} }
+  foreach($b in 1,2,4){ if($script:btns -band $b){ try{ MUp $b }catch{} } }
+}
+
+# ---------------------------------------------------------------- problems
+$script:uniq=@{}; $script:dups=@{}; $script:raidProblems=0; $script:newUniq=0; $script:curMode=''; $script:curSeed=0; $script:raidNo=0; $script:raidSw=$null
+function Norm-Key([string]$kind,[string]$msg){
+  $m=($msg -replace '^Uncaught\s+','' -replace '\d+','#')
+  if(@('error','rejection','console.error','game-crash') -contains $kind){ return 'js|'+$m }
+  return $kind+'|'+$m
+}
+function Add-Problem([string]$kind,[string]$msg,[string]$where){
+  $script:raidProblems++
+  $key=Norm-Key $kind $msg
+  if($script:uniq.ContainsKey($key)){ $script:uniq[$key]++; $script:dups[$key]=$script:uniq[$key]; return }
+  $script:uniq[$key]=1; $script:newUniq++
+  $sec=0; if($script:raidSw){ $sec=[int]$script:raidSw.Elapsed.TotalSeconds }
+  JsonRec ([ordered]@{ ts=(Stamp); build=$script:ver; runSeed=$Seed; raidNo=$script:raidNo; mode=$script:curMode; raidSeed=$script:curSeed; raidSec=$sec; kind=$kind; msg=$msg; where=$where; last60=@($script:ring.ToArray()) })
+}
+
+# ---------------------------------------------------------------- one raid
+$POLLX='JSON.stringify(window.__fz.poll())'
+function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
+  $script:curMode=$mode; $script:curSeed=$rseed; $script:raidProblems=0; $script:newUniq=0
+  $script:ring.Clear(); $script:held=@{}; $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:nEv=0
+  $rng=New-Object System.Random($rseed)
+  $mapIx=0; if($script:maps.Count -gt 0){ $mapIx=[int]$script:maps[$rseed % $script:maps.Count] }
+  $god=($rng.NextDouble() -lt 0.5)
+  $kit='[]'
+  if($mode -eq 'career'){
+    $pool=@('bandage','medkit','plate','frag','gun_smg','gun_carbine'); $n=2+$rng.Next(0,4); $ks=@()
+    for($i=0;$i -lt $n;$i++){ $ks+=("'"+$pool[$rng.Next(0,$pool.Count)]+"'") }
+    $kit='['+($ks -join ',')+']'
+  }
+  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0 }
+  $script:raidSw=[Diagnostics.Stopwatch]::StartNew()
+  if($mode -eq 'demo1'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var r=arcadeSoloPick(); var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&ARCADE.solo),r:r,arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
+  elseif($mode -eq 'demo2'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&!ARCADE.solo),arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
+  else { $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=1; var r=__deploy({kit:'+$kit+',mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(G&&G.career&&!G.arcade),err:(r&&r.error)||null}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
+  $sr=''
+  try{ $sr=[string](Gx $js 60000) }catch{ $sr='ERR '+$_.Exception.Message }
+  if($sr -notmatch '"ok":true'){
+    Add-Problem 'start' ($mode+' raid did not start: '+$sr) ''
+    $res.end='nostart'; $res.sec=[int]$script:raidSw.Elapsed.TotalSeconds
+    return $res
+  }
+  $endPhase=$false; $endAt=0.0; $reason=''; $stuckAcc=0.0; $lastX=$null; $lastY=$null; $menuTicks=0; $dragPts=$null; $dragI=0
+  $lUntil=0; $rUntil=0; $tx=960; $ty=540; $bagC=@(); $hotC=@(); $baseGb=@(); $baseSet=$false; $stallAt=-99999.0; $stuckRep=$false; $o=$null
+  $a=New-Object double[] 24; $next=0; $selfDone=(-not $SelfTest); $noPoll=0
+  $dirs=@(@('KeyW'),@('KeyW','KeyD'),@('KeyD'),@('KeyS','KeyD'),@('KeyS'),@('KeyS','KeyA'),@('KeyA'),@('KeyW','KeyA'))
+  $taps=@('KeyR','KeyE','KeyX','KeyG','KeyU','KeyH','KeyJ','KeyQ','KeyF','Digit1','Digit2','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8','Digit9')
+  $sw=$script:raidSw
+  try{
+    while($true){
+      $script:tick++; $tk=$script:tick
+      if(($tk % 20) -eq 0 -and -not $IgnoreFlag -and (Test-Path -LiteralPath $Flag)){ $reason='lightflag'; break }
+      $el=$sw.Elapsed.TotalSeconds
+      if(-not $endPhase -and $el -ge $secs){
+        $endPhase=$true; $endAt=$el+75
+        if($o -and $o.clk -eq 1){ [void](Gx '(function(){ try{ if(G&&!G.over&&raidClockOn()) G.timeLeft=Math.min(G.timeLeft,2); }catch(e){} })()') }
+        else { $reason='time'; break }
+      }
+      if($endPhase -and $el -ge $endAt){ Add-Problem 'noend' ('raid still running 75 s after its clock ran out ('+$mode+')') ('tl='+$o.tl+' menu='+$o.menu); $reason='noend'; break }
+      if(-not $selfDone -and $tk -ge 40){ $selfDone=$true; [void](Ev "setTimeout(function(){ throw new Error('fuzztest') },0)") }
+      # ---- releases
+      foreach($n in @($script:held.Keys)){
+        $h=$script:held[$n]
+        if($tk -ge $h.until){ Release $n }
+        elseif(($tk-$h.since) -ge 10 -and ($tk % 2) -eq 0 -and -not ($MODK -contains $n)){ KeyEv 'keyDown' $n $true }
+      }
+      if(($script:btns -band 1) -and $null -eq $dragPts -and $tk -ge $lUntil){ MUp 1 }
+      if(($script:btns -band 2) -and $tk -ge $rUntil){ MUp 2 }
+      # ---- the dice: 24 draws a tick, always, so a raid seed replays the same inputs
+      for($i=0;$i -lt 24;$i++){ $a[$i]=$rng.NextDouble() }
+      $menu=0; if($o){ $menu=[int]$o.menu }
+      $bagOpen=(($menu -band 8) -ne 0)
+      # movement bursts
+      $mv=0; foreach($m in $MOVE){ if($script:held.ContainsKey($m)){ $mv++ } }
+      if($mv -eq 0 -and $a[0] -lt 0.15){
+        $dd=$dirs[[int][Math]::Floor($a[1]*8)]; $hl=6+[int][Math]::Floor($a[2]*30)
+        foreach($k in $dd){ Press $k $hl }
+      }
+      if($a[3] -lt 0.008){ Press 'ShiftLeft' (10+[int][Math]::Floor($a[4]*50)) }
+      # fire and aim buttons (not while a drag owns the left button)
+      if($null -eq $dragPts){
+        if(-not ($script:btns -band 1) -and $a[5] -lt 0.05){ MDown 1; $lUntil=$tk+2+[int][Math]::Floor($a[6]*38) }
+      }
+      if(-not ($script:btns -band 2) -and $a[7] -lt 0.012){ MDown 2; $rUntil=$tk+10+[int][Math]::Floor($a[8]*50) }
+      if($a[9] -lt 0.02){ $w=50+[int][Math]::Floor($a[10]*200); if($a[11] -lt 0.5){ $w=-$w }; Wheel $w }
+      # key taps and holds
+      if($a[12] -lt 0.03){
+        $tn=$taps[[int][Math]::Floor($a[13]*$taps.Count)]; $hl=1+[int][Math]::Floor($a[14]*2)
+        if(@('KeyH','KeyE','KeyR') -contains $tn -and $a[15] -lt 0.3){ $hl=8+[int][Math]::Floor($a[14]*32) }
+        Press $tn $hl
+      }
+      if($a[16] -lt 0.012){ Press 'Space' 2 }
+      $u=$a[17]
+      if($u -lt 0.006){ Press 'KeyB' 2 }
+      elseif($u -lt 0.010){ Press 'KeyI' 2 }
+      elseif($u -lt 0.014){ Press 'KeyM' 2 }
+      elseif($u -lt 0.018){ Press 'Escape' 2 }
+      elseif($u -lt 0.021){ Press 'KeyP' 2 }
+      elseif($u -lt 0.025){ Press 'AltLeft' (5+[int][Math]::Floor($a[18]*35)) }
+      elseif($u -lt 0.031){ Press 'ControlLeft' 2 }
+      elseif($u -lt 0.037){ Press 'KeyC' 2 }
+      elseif($u -lt 0.040){ MDown 4; MUp 4 }
+      elseif($u -lt 0.041){ Press 'Tab' 2 }
+      elseif($u -lt 0.042){ Press 'Enter' 2 }
+      # a menu left open for 5 s is closed, as a player would
+      if(($menu -band 15) -ne 0){ $menuTicks++ } else { $menuTicks=0 }
+      if($menuTicks -gt 100 -and $a[19] -lt 0.1){ Press 'Escape' 2; $menuTicks=0 }
+      # ---- the mouse: a drag when the backpack is open, else aim drift
+      if($null -ne $dragPts){
+        if($dragI -lt $dragPts.Count){ $pt=$dragPts[$dragI]; MMove ([int]$pt[0]) ([int]$pt[1]); $dragI++ }
+        else { MUp 1; $dragPts=$null }
+      }
+      elseif($bagOpen -and $a[20] -lt 0.08){
+        if($bagC.Count -gt 0){ $sp=$bagC[[int][Math]::Floor($a[21]*$bagC.Count)] } else { $sp=@((600+[int]($a[21]*700)),(300+[int]($a[22]*400))) }
+        $all=@(); $all+=$bagC; $all+=$hotC
+        if($all.Count -gt 0){ $ep=$all[[int][Math]::Floor($a[22]*$all.Count)] } else { $ep=@((400+[int]($a[22]*1100)),(200+[int]($a[21]*600))) }
+        MMove ([int]$sp[0]) ([int]$sp[1]); MDown 1
+        $n=5+[int][Math]::Floor($a[23]*5); $dragPts=@()
+        for($s=1;$s -le $n;$s++){ $dragPts+=,@((([int]$sp[0])+([int]$ep[0]-[int]$sp[0])*$s/$n),(([int]$sp[1])+([int]$ep[1]-[int]$sp[1])*$s/$n)) }
+        $dragI=0
+      }
+      else {
+        if($a[20] -lt 0.06){
+          if($a[21] -lt 0.75){ $ang=$a[22]*6.2832; $rr=100+$a[23]*400; $tx=960+[Math]::Cos($ang)*$rr; $ty=540+[Math]::Sin($ang)*$rr }
+          else { $tx=5+$a[22]*1909; $ty=5+$a[23]*1069 }
+        }
+        $dx=($tx-$script:mx)*0.3+($a[18]-0.5)*6; $dy=($ty-$script:my)*0.3+($a[19]-0.5)*6
+        if([Math]::Abs($dx)+[Math]::Abs($dy) -ge 2){ MMove ([int]($script:mx+$dx)) ([int]($script:my+$dy)) }
+      }
+      # ---- the poll, every 5th tick
+      if(($tk % 5) -eq 0){
+        try{ $o=(Ev $POLLX 20000) | ConvertFrom-Json }
+        catch{
+          if($_.Exception.Message -like 'EVAL:*'){ Add-Problem 'poll' $_.Exception.Message ''; $reason='poll'; $script:needReset=$true; break }
+          throw
+        }
+        foreach($e in @($o.errs)){ if($e){ Add-Problem ([string]$e.k) ([string]$e.m) ([string]$e.w) } }
+        if($o.heap -gt $res.heap){ $res.heap=[int]$o.heap }
+        if($o.ents -gt $res.ents){ $res.ents=[int]$o.ents }
+        if($o.raf -gt 5000 -or ($o.raid -eq 1 -and $o.gl -gt 5000)){
+          if(($el-$stallAt) -gt 30){ $stallAt=$el; Add-Problem 'stall' ('no animation frame for '+[Math]::Max($o.raf,$o.gl)+' ms ('+$mode+')') ('raf='+$o.raf+' gameloop='+$o.gl) }
+        }
+        if($o.raid -ne 1 -or $o.over -eq 1 -or ($o.arc -eq 1 -and $o.ae -eq 1)){ $res.score=[int]$o.sc; $reason='ended'; if($endPhase){ $reason='clock-end' }; break }
+        $res.score=[int]$o.sc
+        # non-finite numbers: the four named fields always, the rest only if they were finite at the raid start
+        $bd=@(); foreach($b in @($o.bad)){ if($b){ $bd+=[string]$b } }
+        if($baseSet){ foreach($gnm in @($o.gb)){ if($gnm -and -not ($baseGb -contains [string]$gnm)){ $bd+=[string]$gnm } } }
+        else { $baseSet=$true; $baseGb=@(); foreach($gnm in @($o.gb)){ if($gnm){ $baseGb+=[string]$gnm } } }
+        foreach($b in $bd){ Add-Problem 'nan' ('non-finite '+($b -replace '\d+','#')) ('raw='+$b+' x='+$o.x+' y='+$o.y+' hp='+$o.hp) }
+        # stuck: movement keys held, no menu, no action key for 2 s, and the player has not moved
+        $moved=$true; if($lastX -ne $null){ $moved=(([Math]::Abs([double]$o.x-$lastX)+[Math]::Abs([double]$o.y-$lastY)) -gt 1.5) }
+        $lastX=[double]$o.x; $lastY=[double]$o.y
+        $mvk=0; foreach($m in $MOVE){ if($script:held.ContainsKey($m)){ $mvk++ } }
+        if($o.menu -ne 0 -or $moved -or $o.x -eq $null){ $stuckAcc=0.0 }
+        elseif($mvk -gt 0 -and ($tk-$script:lastAct) -gt 40){ $stuckAcc+=0.25 }
+        if($stuckAcc -ge 20 -and -not $stuckRep){ $stuckRep=$true; Add-Problem 'stuck' ('player did not move for 20 s with movement keys held ('+$mode+')') ('x='+$o.x+' y='+$o.y+' hp='+$o.hp) }
+        if($o.bc){ $bagC=@(); foreach($c in $o.bc){ $bagC+=,@([int]$c[0],[int]$c[1]) } } else { $bagC=@() }
+        if($o.hc){ $hotC=@(); foreach($c in $o.hc){ $hotC+=,@([int]$c[0],[int]$c[1]) } } else { $hotC=@() }
+        # tough raids: hp topped up below 35, but never in the clock-out phase (the burn must be able to end the raid)
+        if($god -and -not $endPhase -and $o.hp -ne $null -and $o.hp -gt 0 -and $o.hp -lt 35 -and $o.dn -ne 1){ [void](Gx '(function(){ try{ var p=G.player; if(isFinite(p.hp)&&p.hp>0&&p.hp<35) p.hp=p.maxhp; }catch(e){} })()') }
+      }
+      $next+=50
+      $d=$next-[int]$sw.ElapsedMilliseconds
+      if($d -gt 0){ Start-Sleep -Milliseconds $d }
+      elseif($d -lt -200){ $next=[int]$sw.ElapsedMilliseconds }
+    }
+  }
+  catch{
+    $em=$_.Exception.Message
+    if($em -like 'CDP timeout*'){ Add-Problem 'hang' ('the page stopped answering for 10+ s ('+$mode+')') $em; $reason='hang' }
+    else { Add-Problem 'cdp' $em ''; $reason='cdp' }
+    $script:needReset=$true
+  }
+  $res.sec=[int]$sw.Elapsed.TotalSeconds; $res.ticks=$script:tick; $res.events=$script:nEv; $res.end=$reason
+  if(-not $script:needReset){
+    try{
+      Release-All
+      $cr=[string](Gx "(function(){ try{ if(G&&!G.over&&state==='raid') endRaid('abandon'); }catch(e){ return 'endRaid threw: '+e+' '+String(e&&e.stack||'').slice(0,240); } try{ __topClear(); }catch(e){ return '__topClear threw: '+e; } return 'ok'; })()" 30000)
+      if($cr -ne 'ok'){ Add-Problem 'cleanup' $cr '' }
+    }catch{ Add-Problem 'hang' ('cleanup: '+$_.Exception.Message) ''; $script:needReset=$true }
+  }
+  return $res
+}
+
+# ---------------------------------------------------------------- main
+$t0=Get-Date; $deadline=$t0.AddMinutes($Minutes); $stopWhy='time'; $raids=0; $totProb=0; $status=0
+try{
+  Kill-Chrome
+  # a hidden watchdog, so a killed fuzz.ps1 (he is back) cannot leave this Chrome burning CPU: it waits for this process, then ends the Chrome
+  $wdScript='Wait-Process -Id '+$PID+' -ErrorAction SilentlyContinue; Get-CimInstance Win32_Process -Filter "Name=''chrome.exe''" | Where-Object { $_.CommandLine -match ''remote-debugging-port='+$Port+'(\s|$)'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }'
+  Start-Process -FilePath powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-EncodedCommand',[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($wdScript))) | Out-Null
+  if(-not (Copy-Fixture)){ throw 'could not copy tools\fixture.html (missing or half written)' }
+  $script:srvPort=Pick-Server
+  if($script:srvPort -eq 0){
+    $script:ownSrv=Start-Process -FilePath powershell.exe -WindowStyle Hidden -PassThru -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$T+'\serve.ps1" -Root "'+$T+'" -Port 8811')
+    for($i=0;$i -lt 20;$i++){ Start-Sleep 1; if(Probe-Server 8811){ $script:srvPort=8811; break } }
+    if($script:srvPort -eq 0){ throw 'no static server answers and serve.ps1 on 8811 did not start' }
+  }
+  $prof=$env:TEMP+'\pillagers-cdp'+$Port
+  try{ if(Test-Path $prof){ Remove-Item -Recurse -Force $prof -ErrorAction SilentlyContinue } }catch{}
+  $so=& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($T+'\cdp.ps1') -Start -Port $Port -Profile $prof
+  if(($so | Out-String) -notmatch 'browser up'){ throw ('chrome did not start on '+$Port+': '+($so | Out-String)) }
+  Open-Page
+  LogLine ((Stamp)+' FUZZ START seed='+$Seed+' minutes='+$Minutes+' raidsec='+$RaidSec+' port='+$Port+' srv='+$script:srvPort+' build='+$script:ver+' maps='+($script:maps -join ','))
+  $modes=@('demo1','career','demo2'); $master=New-Object System.Random($Seed)
+  while($true){
+    if(-not $IgnoreFlag -and (Test-Path -LiteralPath $Flag)){ $stopWhy='light.flag (he is back)'; break }
+    $left=($deadline-(Get-Date)).TotalSeconds
+    if($Mode -eq '' -and $left -lt 70){ break }
+    $freeGB=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB
+    if($freeGB -lt $MinFreeGB){ $stopWhy=('low RAM '+[Math]::Round($freeGB,1)+' GB free'); break }
+    $script:raidNo++
+    $m=$modes[($script:raidNo-1) % 3]; $rs=$master.Next(1,2147483000)
+    if($Mode -ne ''){ $m=$Mode; $rs=$RaidSeed }
+    $secs=$RaidSec; if($Mode -eq '' -and $secs -gt ($left-60)){ $secs=[int]($left-60) }
+    if($script:needReset){ Kill-Chrome; Start-Sleep 2; $so=& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($T+'\cdp.ps1') -Start -Port $Port -Profile $prof; Open-Page }
+    $rres=Run-Raid $m $rs $secs; if($rres -is [array]){ $rres=$rres[-1] }
+    $raids++; $totProb+=$script:raidProblems
+    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' heapMB='+$rres.heap+' build='+$script:ver)
+    if($rres.end -eq 'lightflag'){ $stopWhy='light.flag (he is back)'; break }
+    if($Mode -ne ''){ $stopWhy='replay done'; break }
+  }
+}
+catch{
+  $stopWhy='ERROR: '+$_.Exception.Message; $status=1
+  LogLine ((Stamp)+' FUZZ ERROR '+$_.Exception.Message+' at '+$_.InvocationInfo.ScriptLineNumber)
+}
+finally{
+  try{ if($script:ws){ $script:ws.Dispose() } }catch{}
+  Kill-Chrome
+  if($script:ownSrv){ try{ Stop-Process -Id $script:ownSrv.Id -Force -ErrorAction SilentlyContinue }catch{} }
+  if($script:dups.Count -gt 0){ JsonRec ([ordered]@{ ts=(Stamp); kind='dup-counts'; runSeed=$Seed; counts=$script:dups }) }
+  LogLine ((Stamp)+' FUZZ END raids='+$raids+' problems='+$totProb+' unique='+$script:uniq.Count+' reason='+$stopWhy+' minutes='+[Math]::Round(((Get-Date)-$t0).TotalMinutes,1))
+}
+Write-Output ('fuzz done: raids='+$raids+' problems='+$totProb+' unique='+$script:uniq.Count+' reason='+$stopWhy+' log='+$LogF)
+exit $status
