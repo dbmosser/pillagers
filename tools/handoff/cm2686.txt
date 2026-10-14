@@ -1,0 +1,7 @@
+v26.86: raid events: overseer rampage
+
+The Overseer rampage event: the boss leaves its lair for two minutes and sweeps the map, then comes for you.
+
+Check 26.86. Fails on v26.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
