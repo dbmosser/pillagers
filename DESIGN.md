@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.66 - RICOCHET OFF STEEL
+
+Co-op hunt while he was away. His yes to rounds that ricochet off steel. A round you fire that reaches a metal wall at a glancing angle (a locked-room wall, a keyed door or a vehicle wreck) no longer just dies there: it turns about the face, keeps 60 percent of its damage, flies on a little way and throws a bright spark and a ping. It bounces once. A round that hits head-on, a round on concrete or wood, and every round an enemy fires behave exactly as before, so this is only a bank shot for you. A glancing round at a wreck now glances instead of punching through, the wall is still damaged by the strike, and the bot raids are untouched.
+
+MEASURED. Check 26.66 passes, and fails on v26.65.
 ## v26.65 - GRENADE LANDING MARKER
 
 Co-op hunt while he was away. His yes to a grenade landing marker. Pull the pin and hold the trigger on a throwable and the screen now shows where it will come down: a dotted arc from your hand to the landing point and a ring on the ground there. The ring is the size of the thing: the whole blast of a Frag Charge in red, the cloud of a Smoke Grenade in grey, a small ring for the decoy and the tripwire. On a frag the fuse left counts down in seconds in the middle of the ring, and the ring pulses in the last half second. Where the grenade lands is now worked out in one place that the throw and the marker both read, so the ring is exactly where it comes down, a wall on the line stops it short as it always did, and nothing about the throw itself changes.
