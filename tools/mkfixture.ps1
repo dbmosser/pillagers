@@ -3109,13 +3109,16 @@ window.__REGRESS=[
          var g=__guns.roll(k);
          dmgs[g.dmg]=1; names[g.name]=1; qs[g.q]=1;
        }
+       // rarvar1: a green, blue or purple gun can be found one rarity up (same name, 1.25 times the damage, nothing else different): that damage is the same gun
+       var vdm=(typeof RV_OF!=='undefined'&&RV_OF[k]&&WEAPONS[RV_OF[k]])?WEAPONS[RV_OF[k]].dmg:null;
+       if(vdm!==null&&vdm!==base.dmg) delete dmgs[vdm];
        var nd=Object.keys(dmgs).length, nn=Object.keys(names).length;
        if(nd!==1) bad.push(base.name+' can be found at '+nd+' different damages: '+Object.keys(dmgs).join(', '));
        if(nn!==1) bad.push(base.name+' can be found under '+nn+' different names: '+Object.keys(names).join(', '));
        if(Object.keys(names)[0]!==base.name) bad.push(base.name+' is found as "'+Object.keys(names)[0]+'"');
        // and it must be the BASE weapon, not some other flat number
        var one=__guns.roll(k);
-       if(one.dmg!==base.dmg) bad.push(base.name+' rolls '+one.dmg+' damage against a base of '+base.dmg);
+       if(one.dmg!==base.dmg&&one.dmg!==vdm) bad.push(base.name+' rolls '+one.dmg+' damage against a base of '+base.dmg);
        if(one.spread!==base.spread) bad.push(base.name+' rolls '+one.spread+' spread against a base of '+base.spread);
        if(one.mag!==base.mag) bad.push(base.name+' rolls a magazine of '+one.mag+' against '+base.mag);
        if((one.tint||null)!==(base.tint||null))
