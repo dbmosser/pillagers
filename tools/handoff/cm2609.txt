@@ -1,0 +1,7 @@
+v26.09: a harder crowbar
+
+The crowbar hits three times as hard: three swings now kill a crawler, where it took nine.
+
+Check 26.09. Fails on v26.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

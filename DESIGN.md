@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.09 - A HARDER CROWBAR
+
+Co-op hunt while he was away. His note of 2026-10-13: the crowbar needs to do a lot more damage, and three swings should kill a crawler; he had also asked that the crowbar be a viable choice in close combat, think Halo. This is a balance change, allowed since he lifted the balance freeze on 2026-10-02. A crowbar blow (Q) now does 18 damage, up from 6, so a standard crawler at full health (52) survives two swings and dies on the third; it took nine before. A pillager at full health (78) takes five swings, a Crier three, a Sentry nine. A blow from behind is still half as hard again, so a crawler hit in the back goes down in two, and elite machines, with more than double the health, take longer. Only the crowbar changed: the bare-hands punch on the left click is still 6, and the reach, the swing speed and everything the enemies do to you are the same.
+
+MEASURED. Check 26.09 passes, and fails on v26.08.
 ## v26.08 - THE SMOKE CLOUD IS 1.3 TIMES BIGGER
 
 Co-op hunt while he was away. His order of 2026-10-13: the smoke grenade should cover a bigger area, about 1.3 times what it did. A thrown Smoke Canister now opens a cloud 1.3 times as wide (a radius of about 21 metres where it was 16.5), so there is more cloud to stand in. The cloud a pillager drops when he is hurt or running, and the cloud your party sees when someone else throws one, are the same size. The line of sight it blocks reaches the same 1.3 times further out and the grey puffs are drawn to match, so what you see is what hides you. It still lasts 12 seconds.

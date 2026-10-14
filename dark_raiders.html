@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.08';
+var VER='26.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18060,6 +18060,15 @@ function meleeImpact(sx,sy,ex,ey,er){
   G.shake=Math.max(G.shake||0,1.8);
   return true;
 }
+// v26.xx (crowbardmg), HIS NOTE 2026-10-13: "crowbar needs to do alot more damage -- 3 swings should kill a crawler", and his earlier
+// answer that the crowbar is "a viable choice in close combat, think Halo". A BALANCE CHANGE (balancing is allowed since 2026-10-02).
+// The Q blow was the bare hands strike, 6 damage, so a standard crawler (52 health) took nine swings. The crowbar blow now does 18, which
+// is ceil(52 / 3): a crawler at full health survives two swings (36) and dies on the third (54). Only the crowbar blow changes. The
+// left-click punch with bare hands stays at 6; the reach (60) and the 420 ms cooldown are the same; a blow from behind is still 1.5
+// times as hard (27, so two swings for a crawler); a blow still ignores armour; nothing an enemy does to you moves. No draw from the
+// seeded stream (the damage is a number), and the bot never swings a crowbar (meleeStrike refuses in a sim raid).
+var CROWBAR_DMG=18;
+function crowbarWep(){ var w=cloneObj(WEAPONS.fists); w.dmg=CROWBAR_DMG; return w; }
 function meleeStrike(){
   if(!G||G.over||G.paused||G.sim||G.trade) return false;
   var p=G.player;
@@ -18079,7 +18088,7 @@ function meleeStrike(){
   // use it, and a bare one here threw before the swing ever ran. The dry run
   // caught that: the punch played and nothing was hit.
   if(G.tel) G.tel.melee=(G.tel.melee||0)+1;
-  fireWeapon(p,WEAPONS.fists,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true);
+  fireWeapon(p,crowbarWep(),p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true);   // v26.xx (crowbardmg): the crowbar's own 18, not the bare hands 6
   return true;
 }
 // 2026-10-12 (accfall), HIS ANSWER 8 a: enemies a little less accurate at long range. Every round an enemy fires (machines and
@@ -41543,7 +41552,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.08: A Smoke Canister now covers 1.3 times the ground it did, so there is more cloud to hide in. Check 26.08 fails on v26.07',
+  now:'v26.09: The crowbar hits three times as hard: three swings now kill a crawler, where it took nine. Check 26.09 fails on v26.08',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
