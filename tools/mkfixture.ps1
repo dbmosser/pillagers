@@ -6213,7 +6213,7 @@ window.__REGRESS=[
        g.bag=['bandage','medkit']; g.pouch.frag=2; g.pouch.smoke=1; g.pouch.decoy=0; g.pouch.trip=0;
        for(i=0;i<40;i++) updatePlayer(0.02);
        // ONE: the wheel
-       keys['KeyQ']=true; raidKey('KeyQ',false,null);
+       mouse.x=W/2; mouse.y=H/2; keys['KeyQ']=true; raidKey('KeyQ',false,null);   /* wheelcenter: the mouse starts on the wheel centre */
        if(!g.wheel) return 'ONE: the wheel did not open';
        m=g.wheel.list.length; an=-Math.PI/2+2*(Math.PI*2/m); mouse.x=g.wheel.mx+Math.cos(an)*220; mouse.y=g.wheel.my+Math.sin(an)*220; updatePlayer(0.2);
        frame();
@@ -6601,7 +6601,7 @@ window.__REGRESS=[
      function stock(){ g.bag=['bandage','bandage','medkit']; g.pouch.frag=2; g.pouch.smoke=1; g.pouch.decoy=0; g.pouch.trip=0; p.hp=50; p.healQ=0; p.healRate=0; p.healCap=undefined; p.prep=null; p.prepA=null; p.cooking=0; p.hand=null; p.reloading=0; p.jam=0; p.ammo=p.wep.mag; g.msel=undefined; }
      function run(sec,down){ var n=Math.round(sec/0.02), i; mouse.down=!!down; for(i=0;i<n;i++) updatePlayer(0.02); }
      function pick(k){
-       keys['KeyQ']=true; raidKey('KeyQ',false,null); w=g.wheel; if(!w) return false;
+       mouse.x=W/2; mouse.y=H/2; keys['KeyQ']=true; raidKey('KeyQ',false,null); w=g.wheel; if(!w) return false;   /* wheelcenter: the mouse starts on the screen centre, the wheel centre */
        m=w.list.length; for(j=0;j<m;j++) if(w.list[j].k===k) break;
        if(j>=m) return false;
        var an=-Math.PI/2+j*(Math.PI*2/m); mouse.x=w.mx+Math.cos(an)*220; mouse.y=w.my+Math.sin(an)*220; updatePlayer(0.016);
@@ -6678,7 +6678,7 @@ window.__REGRESS=[
      function cl(q){ var o={}, k; for(k in WEAPONS[q]) o[k]=WEAPONS[q][k]; o.q='field'; o.qRank=1; return o; }
      function stock(){ g.bag=['bandage','medkit']; g.pouch.frag=2; g.pouch.smoke=1; g.pouch.decoy=0; g.pouch.trip=0; }
      function aim(jx,len){ var an=-Math.PI/2+jx*(Math.PI*2/m); mouse.x=w.mx+Math.cos(an)*len; mouse.y=w.my+Math.sin(an)*len; updatePlayer(0.016); }
-     function open(){ keys['KeyQ']=true; raidKey('KeyQ',false,null); w=g.wheel; return w; }
+     function open(){ mouse.x=W/2; mouse.y=H/2; keys['KeyQ']=true; raidKey('KeyQ',false,null); w=g.wheel; return w; }   /* wheelcenter: the wheel is on the screen centre and picks by the direction from it, so the mouse starts there */
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
