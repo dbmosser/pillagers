@@ -2,7 +2,7 @@
 # nightly.sh : puts his idle PC to work, with no Claude usage. His words 2026-10-13: "do whatever you need to do top make my pc resources
 # useful for the many hours that they it idle". Runs beside the scratchpad governor.sh (which owns light.flag: present = he is at the PC).
 # Every 5 min:
-# - When he has been away 30+ min, run each job ONCE per new game HEAD, in order:
+# - When he has been away 30+ min, run each job ONCE per new game HEAD, in order (the corpus only 22:00-07:00, since it holds the ship lock ~2.5 h):
 #   (1) the full regression corpus, (2) the local-LLM audits (tools/llm-night.ps1), (3) the input fuzzer (tools/fuzz.ps1, if present).
 # - When he comes back, stop the LLM and fuzz jobs at once, unload the model so the GPU is his, and stop a corpus run, freeing its lock.
 # - After a job finishes, write the morning summary tools/handoff/nightly/<date>.md, which Claude reads instead of the raw logs.
@@ -43,7 +43,8 @@ while true; do
     away=$((away+5))
     if [ $away -ge 30 ]; then
       if [ "$(running 'corpq\.sh')" = "0" ] && [ "$(running 'llm-night\.ps1')" = "0" ] && [ "$(running 'fuzz\.ps1')" = "0" ]; then
-        if [ "$(get corpus_head)" != "$head" ]; then
+        hr=$((10#$(date +%H))); night=0; { [ $hr -ge 22 ] || [ $hr -lt 7 ]; } && night=1
+        if [ $night = 1 ] && [ "$(get corpus_head)" != "$head" ]; then
           out="$S/corpus-night-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"
           echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
           (bash -c "echo \"\$\$ corpus-night \$(date +%H:%M:%S)\" > '$S/shipq.owner'; exec bash '$S/corpq.sh' '$out'" > /dev/null 2>&1; echo "$(date +%H:%M) corpus done" >> "$LOG") &

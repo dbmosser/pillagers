@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.10';
+var VER='26.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20671,7 +20671,12 @@ function raiderUseKit(e,dt){
   // that heals. One at a time and over time, as v3.34 made it for the player
   // (the player's one-at-a-time rule was reversed at v11.82; his stays, so the
   // same three seconds of vulnerability still applies to him).
-  if((e.healQ||0)>0){
+  // v26.11 (nightfix2), found by the overnight regression run of 2026-10-13 (check 25.44, his second fall): A PILLAGER AT NO HEALTH DOES NOT HEAL HIMSELF OUT OF HIS FALL. This
+  // heal runs before updateEnts counts the fall (hp <= 0 goes down). A pillager with a heal running and a medkit in his bag, brought to nothing, got a
+  // sliver of health back first (the heal adds up to 0.15 a frame), so hp was 0.05 and the fall never counted: he stood up at 0.05 health, and his second
+  // fall (the one that kills him) never came. On no health he is going down this frame, so the heal waits; it picks up again if he gets up.
+  if(e.hp<=0){ /* going down this frame: no heal */ }
+  else if((e.healQ||0)>0){
     var give=Math.min(e.healQ,(e.healRate||9)*dt);
     var room=e.maxhp-e.hp;
     if(room<=0){ e.healQ=0; }
@@ -41553,7 +41558,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.10: The feedback window has a CLOSE button now, like every other window. Check 26.10 fails on v26.09',
+  now:'v26.11: A pillager who is healing now goes down when his health reaches nothing, instead of standing back up. Check 26.11 fails on v26.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

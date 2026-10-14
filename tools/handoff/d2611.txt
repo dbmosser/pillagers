@@ -1,0 +1,5 @@
+## v26.11 - A HEALING PILLAGER STILL GOES DOWN
+
+Co-op hunt while he was away. Found by the overnight regression run: a pillager who was healing could be brought to no health and still stand. His heal gave back a sliver of health before the fall was counted, so he never went down, and the second fall that finishes him never came either. Now a pillager on no health goes down at once, healing or not, and the heal picks up again if he gets up.
+
+MEASURED. Check 26.11 passes, and fails on v26.10.
