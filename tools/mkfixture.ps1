@@ -7903,7 +7903,7 @@ window.__REGRESS=[
        src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join('\n');
        nd=['function doEmo'+'te(','var EMO'+'TES=','function emote'+'Bubble(','function emoteStrip'+'Y(','G.bub'+'bles'];
        for(i=0;i<nd.length;i++) if(src.indexOf(nd[i])>=0) bad.push('the page still holds '+nd[i]);
-       if(KEYS_ACTS.some(function(a){ return a[0]==='KeyV'; })) bad.push('V is still an action on the keys list');
+       if(KEYS_ACTS.some(function(a){ return a[0]==='KeyV'&&!/melee/.test(String(a[1])); })) bad.push('V is still an action on the keys list');   /* wheel2: V is the crowbar now, never an emote */
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); p=g&&g.player; if(!g||g.over||!p) return bad.length?bad.join('; '):'SKIP: no live raid';
        g.paused=false; g.trade=null; g.bagOpen=false; g.mapOpen=false; p.downed=false; p.dying=false; p.roll=0; p.iv=99; clr(); NET.on=false; delete g[EB];
@@ -7924,7 +7924,7 @@ window.__REGRESS=[
        netPingMake=kPing; NET.on=false;
        // 4. a saved key map from the days V was an action leaves no key dead
        P.keymap={KeyV:'KeyJ'}; KEYS.inv=null; keysInv();
-       if(keyRemap('KeyJ')!=='KeyJ') bad.push('an old map that put the V action on J still turns J into '+keyRemap('KeyJ'));
+       if(keyRemap('KeyJ')!=='KeyJ'&&!KEYS_ACTS.some(function(a){ return a[0]==='KeyV'; })) bad.push('an old map that put the V action on J still turns J into '+keyRemap('KeyJ'));   /* wheel2: V is a real action again (melee), so J may be bound to it */
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ proto.fillText=oFT; }catch(_f){}
@@ -8267,7 +8267,7 @@ window.__REGRESS=[
        if(ix%2!==0) bad.push('1-9 TACTICAL BELT sits in the right hand column (entry '+ix+'), so its label has no next column to be measured against');
        if(!rows[ix+1]||rows[ix+1][0]!=='B / I') bad.push('B / I does not follow 1-9 on the same row');
      }
-     for(k in want){ found=false; for(i=0;i<rows.length;i++) if(rows[i][0]===k&&rows[i][1]===want[k]) found=true; if(!found) bad.push('the compact list lacks '+k+' '+want[k]); }
+     for(k in want){ found=false; for(i=0;i<rows.length;i++) if((rows[i][0]===k||(k==='Q'&&rows[i][0]==='V'))&&rows[i][1]===want[k]) found=true; if(!found) bad.push('the compact list lacks '+k+' '+want[k]); }   /* wheel2: melee is on V, Q is the item wheel */
      if(rows.length%2!==0) bad.push('the compact list has an odd number of entries ('+rows.length+'), so its last row has one hole');
      return bad.length?bad.join('; '):null; }},
   {v:'25.74',what:'his note (use something better than the plop): a belt key press plays no pick chirp; a throwable is a pouch rustle, a bandage or medkit the cloth wrap, a plate the armour clack, an empty cell or a gun already up the soft menu tick, a vacant gun key the locked buzz, and a gun swap by key adds nothing over its holster clack',
@@ -8594,7 +8594,7 @@ window.__REGRESS=[
        g.frags.length=0; clr();
        // Q swings the crowbar: a machine in reach is hurt, the crowbar is drawn
        p.x=g.zones[0].x; p.y=g.zones[0].y; p.face=0; S=mkSentry(p.x+40,p.y); S.hp=80; h0=S.hp; g.ents=[S]; g.searching=null; p.meleeAt=undefined; p.lastShot=undefined; p.cooking=0; g.barT=0; g.punchT=0; clr();
-       dn('KeyQ','q'); upk('KeyQ','q');
+       var mkM=(typeof wheelOpen==='function')?'KeyV':'KeyQ'; dn(mkM,'q'); upk(mkM,'q');   /* wheel2: melee moved from Q to V */
        if(!(S.hp<h0)) bad.push('Q did not hurt a machine 40 away in front ('+h0+' to '+S.hp+')');
        if(!(g.barT>0)) bad.push('Q started no crowbar swing');
        try{ cols=drawCols(true); if(cols.indexOf('#a8372a')<0) bad.push('the swing drew no crowbar'); cols=drawCols(false); if(cols.indexOf('#a8372a')>=0) bad.push('the plain fist punch draws a crowbar'); }catch(_dr){ bad.push('drawing the swing threw: '+(_dr&&_dr.message||_dr)); }
