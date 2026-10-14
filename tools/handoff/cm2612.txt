@@ -1,0 +1,7 @@
+v26.12: one inbound line in the called ring
+
+Standing in the ring you called, the INBOUND countdown shows once, in the band, not twice.
+
+Check 26.12. Fails on v26.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

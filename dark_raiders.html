@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.11';
+var VER='26.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34062,6 +34062,11 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     // banner showing, the badge is the third copy of a fact already on screen twice.
     if(za&&G.active===zz2&&!G.over&&G.beaconT!==null&&G.beaconT<=0&&
        G.shipHold!==null&&G.shipHold!==undefined&&!p.downed&&dist(p,zz2)<zz2.r) continue;
+    // v26.12 (nightfix3), found by the overnight regression run of 2026-10-13 (check 22.41, since the ring badges became caps callouts at v25.46): THE RING BADGE
+    // STEPS ASIDE WHILE HE STANDS IN THE RING HE CALLED. v22.41 took the INBOUND prompt off his own character because the band above the belt says EXTRACT A INBOUND
+    // with the same seconds. The ring badge now reads EXTRACTION A INBOUND 20S, over the ring he is standing in, so the same fact was on screen twice again. As in
+    // the landed case just above, the badge is left out while the band shows it; from outside the ring, or for a ring he did not call, it is drawn as before.
+    if(za&&G.active===zz2&&!G.over&&G.beaconT!==null&&G.beaconT!==undefined&&G.beaconT>0&&!p.downed&&dist(p,zz2)<zz2.r) continue;
     // v6.93: a closed ring stops shouting across the map. Inside 800 it is worth knowing
     // this one will not call; from further off it is noise on a screen that already has
     // a compass pointing at the nearest way out.
@@ -41558,7 +41563,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.11: A pillager who is healing now goes down when his health reaches nothing, instead of standing back up. Check 26.11 fails on v26.10',
+  now:'v26.12: Standing in the ring you called, the INBOUND countdown shows once, in the band, not twice. Check 26.12 fails on v26.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.12 - ONE INBOUND LINE IN THE CALLED RING
+
+Co-op hunt while he was away. Found by the overnight regression run. When the ring badges became short caps callouts, the one over the ring you are standing in started saying EXTRACTION A INBOUND with its seconds, while the band above the belt says the same thing. That is the double line v22.41 took away. While you stand in the ring you called, only the band shows it now. From outside the ring, or for a ring somebody else called, the badge is drawn as before.
+
+MEASURED. Check 26.12 passes, and fails on v26.11.
 ## v26.11 - A HEALING PILLAGER STILL GOES DOWN
 
 Co-op hunt while he was away. Found by the overnight regression run: a pillager who was healing could be brought to no health and still stand. His heal gave back a sliver of health before the fall was counted, so he never went down, and the second fall that finishes him never came either. Now a pillager on no health goes down at once, healing or not, and the heal picks up again if he gets up.
