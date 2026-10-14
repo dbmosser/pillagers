@@ -2197,7 +2197,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.42';
+var VER='26.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2208,7 +2208,7 @@ var VER='26.42';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='26.31';
+var WHATSNEW_VER='26.43';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2228,6 +2228,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'GUN KEYS. Every kind of gun has its own key: 1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG, 6 shotgun, 7 marksman, 8 sniper, 9 energy. Set them in the stash.',
   'THE WHEEL AND THE FORGE. Hold Q for the item wheel, pick one, pull the trigger. The Forge upgrades your gun, and guns drop one rarity up.',
   'DRAW TIMES. Each gun takes its own moment to draw: a pistol is quick, an LMG is slow. Every container searches in its own sound.',
   'BELT KEYS. U and G pick and throw grenades, J and H pick and use heals, 5 to 9 use a slot at once. Crouch still to creep back health.',
@@ -36498,7 +36499,7 @@ function safeSet(){
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','hold to sprint'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['V','melee, swing the crowbar'],['Q','item wheel, hold and aim'],['F','next gun']]],
-  ['GEAR',[['1-9','guns'],['HOLD Q','item wheel: aim at a grenade, heal or plate and let go'],['FIRE','use the item in hand, or fire'],['B / I','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
+  ['GEAR',[['1-9','a gun for each kind, set in the stash'],['HOLD Q','item wheel: aim at a grenade, heal or plate and let go'],['FIRE','use the item in hand, or fire'],['B / I','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search, use, open'],['X','call for extraction, then board'],['M','map'],['F1','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['O','order your hire']]],
   ['TEAM',[['Z','drop an item for a teammate'],['N','ping, twice for danger']]],   // v18.27: his order, trading is dropping
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom'],['F9','record your play for the title']]]   // v21.56: the recorder (v21.18) was named only on the what is new card
@@ -42727,7 +42728,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.42: The gun keys plate on the Stash screen shows every name whole and bigger gun pictures. Check 26.42 fails on v26.41',
+  now:'v26.43: The controls list and the What is New card now name the gun keys. Check 26.43 fails on v26.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,20 @@
+{
+    "title":  "THE KEY LIST AND THE CARD NAME THE GUN KEYS",
+    "why":  "The controls list (F1) still said the 1 to 9 keys were just guns. It now says there is a gun for each kind, set in the stash, and the What is New card leads with the gun keys: every kind of gun has its own key, 1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG, 6 shotgun, 7 marksman, 8 sniper, 9 energy, and they can be set in the stash. The card was stamped v26.31 and is stamped with this build now.",
+    "now":  "The controls list and the What is New card now name the gun keys.",
+    "edits":  [
+                  {
+                      "anchor":  "[\u0027GEAR\u0027,[[\u00271-9\u0027,\u0027guns\u0027],",
+                      "replacement":  "[\u0027GEAR\u0027,[[\u00271-9\u0027,\u0027a gun for each kind, set in the stash\u0027],"
+                  },
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002726.31\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002726.43\u0027;"
+                  },
+                  {
+                      "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
+                      "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027GUN KEYS. Every kind of gun has its own key: 1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG, 6 shotgun, 7 marksman, 8 sniper, 9 energy. Set them in the stash.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027gunkeys4, his order: the controls list (F1) says the 1-9 keys are a gun for each kind, set in the stash, and the what is new card leads with the gun keys (every kind of gun has its own key, 1 pistol to 9 energy), shown whole, stamped within 0.15 of the build\u0027,\n   run:function(){\n     if(typeof LEGEND===\u0027undefined\u0027||typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof wnShort!==\u0027function\u0027) return \u0027SKIP: this build has no controls list or what is new card\u0027;\n     var bad=[], gear=null, i, row=null, d=parseFloat(VER)-parseFloat(WHATSNEW_VER), s;\n     for(i=0;i\u003cLEGEND.length;i++) if(LEGEND[i][0]===\u0027GEAR\u0027) gear=LEGEND[i][1];\n     if(!gear) return \u0027SKIP: the controls list has no GEAR heading\u0027;\n     for(i=0;i\u003cgear.length;i++) if(gear[i][0]===\u00271-9\u0027) row=gear[i];\n     if(!row) bad.push(\u0027the controls list has no 1-9 row\u0027);\n     else if(!/kind/.test(row[1])||!/stash/.test(row[1])) bad.push(\u0027the 1-9 row says \u0027+JSON.stringify(row[1])+\u0027, not a gun for each kind set in the stash\u0027);\n     if(parseFloat(WHATSNEW_VER)\u003e26.43+0.001) return bad.length?bad.join(\u0027; \u0027):\u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027GUN\u0027+\u0027 KEYS\u0027)!==0) bad.push(\u0027the card does not lead with the gun keys\u0027);\n     else { s=wnShort(WHATSNEW[1]); if(s.slice(-3)===\u0027...\u0027) bad.push(\u0027the gun keys line is cut on the card\u0027); if(!/pistol/.test(s)||!/energy/.test(s)||!/stash/.test(s)) bad.push(\u0027the card line does not name the kinds and the stash (\u0027+s+\u0027)\u0027); }\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

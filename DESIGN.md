@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.43 - THE KEY LIST AND THE CARD NAME THE GUN KEYS
+
+Co-op hunt while he was away. The controls list (F1) still said the 1 to 9 keys were just guns. It now says there is a gun for each kind, set in the stash, and the What is New card leads with the gun keys: every kind of gun has its own key, 1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG, 6 shotgun, 7 marksman, 8 sniper, 9 energy, and they can be set in the stash. The card was stamped v26.31 and is stamped with this build now.
+
+MEASURED. Check 26.43 passes, and fails on v26.42.
 ## v26.42 - THE SETUP PLATES FIT THEIR WORDS
 
 Co-op hunt while he was away. On the first look at the Stash screen the word MARKSMAN on the GUN KEYS plate was cut short (MARKSMAI), and the gun pictures on the tiles were small dark shapes. The GUN KEYS plate now takes a little more of the row than the WHEEL plate so every name is drawn whole, the key number takes a little less room, and the gun pictures are drawn larger.

@@ -1,0 +1,7 @@
+v26.43: the key list and the card name the gun keys
+
+The controls list and the What is New card now name the gun keys.
+
+Check 26.43. Fails on v26.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
