@@ -24008,6 +24008,9 @@ window.__REGRESS=[
        P.weapons=['smg']; P.equipped='rifle'; P.equippedSec='smg'; P.hotAssign={};
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); p=g&&g.player; if(!g||g.over||!p) return 'SKIP: no live raid for the loaner';
+       // noloaner: a kit no longer issues a loaner (it goes up with the free Scav Pistol), so the issued gun this part is about is put in
+       // his hand here, the way the sim and the dev kit still hand one out. On the old build the deploy had already done it.
+       if(!p.wepIssued&&p.wep&&p.wep.id==='pistol'&&WEAPONS.tacker){ p.wep=WEAPONS.tacker; p.ammo=p.wep.mag; p.wepIssued=true; p.wepFromArmory=false; try{ gunKeysSettle({deploy:1}); g.hot=gunCell(); }catch(_gk){} }
        if(!(p.wepIssued&&p.wep&&p.wep.id!=='fists'&&p.wep.id!=='smg'&&p.wep.id!=='shotgun'&&p.sec&&p.sec.id==='smg'&&!p.secIssued)) return 'SKIP: staging: did not deploy with an issued loaner up and his SMG stowed';
        var lo=p.wep.id;
        g.ents.length=0; p.iv=99; p.roll=0; p.downed=false; p.dying=false; p.swapped=false; p.wepFromArmory=false; p.secFromArmory=false;
@@ -40591,7 +40594,7 @@ window.__REGRESS=[
          if(!G||RW.wx!==((G.wx&&G.wx.id)||'')) bad.push('the raid word does not carry the weather the host got ('+RW.wx+' against '+(G&&G.wx?G.wx.id:'?')+')');
          hostDrew=!!(G&&G.issDraw);
          if(RW.iss!==(hostDrew?1:0)) bad.push('the raid word does not say whether the host drew a loaner (iss '+RW.iss+', issDraw '+(G?G.issDraw:'?')+')');
-         if(G&&G.player&&G.player.wepIssued!==hostDrew) bad.push('control: the raid says a loaner was '+(hostDrew?'':'not ')+'drawn but the host holds '+(G.player.wepIssued?'a loaner':'its own gun'));
+         if(G&&G.player&&!!(G.player.wepIssued||G.spawnGun)!==hostDrew) bad.push('control: the raid says a loaner was '+(hostDrew?'':'not ')+'drawn but the host holds '+((G.player.wepIssued||G.spawnGun)?'a loaner':'its own gun'));   // noloaner: the free pistol stands where the loaner stood
          if(!netUpFpSame(RW.fp,hostFp)) bad.push('the raid word fingerprint is not the built world ('+netUpFpText(RW.fp)+' against '+netUpFpText(hostFp)+')');
          if(!RW.cfg||typeof RW.cfg!=='object') bad.push('the raid word carries no dials');
          if(!RW.terms||typeof RW.terms.length!=='number') bad.push('the raid word carries no terms');
@@ -40701,7 +40704,7 @@ window.__REGRESS=[
        if(P!==keepP) bad.push('the build swapped P for another object');
        if(G&&G.player&&G.player.wep){
          if(hostDrew&&G.player.wep.id!=='tacker') bad.push('this window did not go up with its own gun ('+G.player.wep.id+')');
-         if(!hostDrew&&!G.player.wepIssued) bad.push('this window with no gun did not go up with a loaner ('+G.player.wep.id+')');
+         if(!hostDrew&&!(G.player.wepIssued||G.spawnGun)) bad.push('this window with no gun did not go up with a loaner ('+G.player.wep.id+')');   // noloaner: or the free pistol
        }
        if(G&&G.bag&&G.bag.indexOf('medkit')<0) bad.push('this window did not go up with its own packed kit');
        if(CFG.nRaider!==0) bad.push('this window own dial (no pillagers) did not come back after the build (nRaider '+CFG.nRaider+')');
@@ -52605,7 +52608,7 @@ window.__REGRESS=[
          for(var u=0;u<up.length;u++) if(seen.indexOf(up[u])<0) seen.push(up[u]); }
        note();
        for(i=0;i<300;i++){ __loop(t0+(i+1)*16.7); note(); }
-       return {issued:!!G2.player.wepIssued, seen:seen};
+       return {issued:!!(G2.player.wepIssued||G2.spawnGun), seen:seen};   // noloaner: a loaner on the old build, the free Scav Pistol (spawnGun) on the new
      }
      function hasN(m){ return String(m).toLowerCase().indexOf(needle.toLowerCase())>=0; }
      try{
@@ -64369,7 +64372,7 @@ window.__REGRESS=[
        try{ saveProfile(); }catch(_s){}
        __deploy({kit:[ITEM],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player;
-       var held={id:p.wep&&p.wep.id, issued:!!p.wepIssued};
+       var held={id:p.wep&&p.wep.id, issued:!!(p.wepIssued||g.spawnGun)};   // noloaner: the free pistol is the loaner of today
        // What is actually in the bag decides the honest total, so it is read
        // from the game rather than assumed from what was packed.
        var bagVal=0, bagN=g.bag.length;
