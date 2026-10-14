@@ -1120,6 +1120,9 @@
     font-family:var(--f-cond); font-weight:700; font-size:14px; letter-spacing:.16em; clip-path:polygon(9px 0,100% 0,100% 100%,0 100%,0 9px); }
   #root #keyslist .rebind:hover:not(:disabled){ color:var(--acc); border-color:var(--acc); background:var(--ui-hover); }
   #root #keyslist .keybtn.wait{ color:var(--acc-ink) !important; background:var(--acc) !important; border-color:var(--acc) !important; }
+  /* v26.xx (settings11): a locked key, drawn like a key button but dashed and dim, with nothing to press. */
+  #root #keyslist .keyfixed{ display:inline-flex; align-items:center; justify-content:center; min-width:120px; min-height:40px; box-sizing:border-box; padding:0 12px; border:1px dashed var(--ui-line-hi);
+    border-radius:4px; color:var(--tx-3); font-family:var(--f-cond); font-weight:700; font-size:16px; letter-spacing:.08em; text-transform:uppercase; }
   #root #keyslist .keysec{ margin-top:14px; padding:10px 16px 6px; border-top:1px solid var(--ui-line); font-family:var(--f-cond); font-weight:700; font-size:15px; letter-spacing:.2em; color:var(--acc); }
   #root #keyslist .keysec:first-child{ margin-top:0; border-top:0; }
   #root #keysnote{ max-width:1100px; margin:8px 0 12px; padding:9px 16px; border-left:3px solid var(--ui-line-hi); background:rgba(0,0,0,.28); color:var(--tx-2); min-height:24px;
@@ -2201,7 +2204,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.51';
+var VER='26.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16040,7 +16043,11 @@ var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['Ke
   // v18.54, FROM THE CODE COMB (2026-10-07): EVERY KEY THAT DOES SOMETHING IS ON THE LIST. G, Q, Z, V and O work in the raid but were
   // not here, so binding an action onto one of them did not swap: reload on G kept R as reload too, and the belt item on G was gone
   // with no way back but RESET. They are listed now, so a bind onto one swaps like any other.
-  ['KeyZ','drop an item for a teammate'],['KeyO','order your hire'],['AltLeft','raid status (hold)']];
+  ['KeyZ','drop an item for a teammate'],['KeyO','order your hire'],['AltLeft','raid status (hold)'],
+  // v26.xx (settings11), HIS ORDER 2026-10-14 ("make sure it covers every current action"): THE KEYS THAT WERE MISSING. H (tap to heal, hold for an armour plate, v25.xx holdhplate),
+  // CAPS LOCK (auto-jog), the HUD size pair, the zoom pair and the zoom reset all work in the raid and were not on the list, so none could be moved and a bind onto one
+  // did not swap. They are on it now. The keys that cannot move (1 to 9, P, TAB, ESC, BACKSPACE, the key left of 1, F11) are listed at the end, locked.
+  ['KeyH','heal (tap), armour plate (hold)'],['CapsLock','auto-jog'],['Equal','hud bigger'],['Minus','hud smaller'],['NumpadAdd','zoom in'],['NumpadSubtract','zoom out'],['Digit0','zoom to 100%']];
 var KEYS={inv:null,waiting:null,built:0,inited:0,note:null};
 // v25.xx (keyremap), HIS ORDER 2026-10-13 ("add something in settings where the player can remap keys"): the version of the map (a map made
 // before the key swap named jobs that have moved, so a profile older than this starts on the defaults, once, at load), and the keys no action
@@ -16086,8 +16093,8 @@ function keysReset(){ if(P){ P.keymap={}; P.keymapV=KEYS_V; } KEYS.note={t:'set'
 // who moved where. The two side mouse buttons bind too (Mouse3 and Mouse4): a bound button is dispatched as the keyboard event of that code,
 // so every reader of keys, in the raid, the Undercroft and the menus, sees it as the key it stands for, and an unbound button keeps the
 // browser back and forward. The pad is never touched.
-var KEYS_SECT=[['MOVE',['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC']],['FIGHT',['KeyR','KeyQ','KeyV','KeyF']],
-  ['WORLD',['KeyE','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyO','AltLeft']],['PARTY',['KeyT','KeyZ','KeyN','Mouse1']]];
+var KEYS_SECT=[['MOVE',['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC','CapsLock']],['FIGHT',['KeyR','KeyQ','KeyV','KeyF','KeyH']],
+  ['WORLD',['KeyE','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyO','AltLeft']],['PARTY',['KeyT','KeyZ','KeyN','Mouse1']],['VIEW',['Equal','Minus','NumpadAdd','NumpadSubtract','Digit0']]];
 function keysActName(code){ var i; for(i=0;i<KEYS_ACTS.length;i++) if(KEYS_ACTS[i][0]===code) return String(KEYS_ACTS[i][1]).toUpperCase(); return String(code).toUpperCase(); }
 function keysRow1(a){
   var k=a[0], w=(KEYS.waiting===k), ch=(keysOf(k)!==k);
@@ -16102,6 +16109,15 @@ function keysListBody(){
   }
   for(i=0;i<KEYS_ACTS.length;i++) if(!done[KEYS_ACTS[i][0]]) left.push(KEYS_ACTS[i]);
   if(left.length){ h+='<div class="keysec">OTHER</div>'; for(i=0;i<left.length;i++) h+=keysRow1(left[i]); }
+  h+=keysFixedHtml();   // v26.xx (settings11): and the keys that cannot move
+  return h;
+}
+// v26.xx (settings11): THE KEYS THAT CANNOT MOVE, listed under the others so the window names every key the game answers. 1 to 9 pick a gun (the stash sets which gun is on which),
+// P and TAB pause or back out, ESC closes a window, BACKSPACE puts the cursor back, the key left of 1 is Superhot and F11 is fullscreen.
+var KEYS_LOCKED=[['SELECT A GUN','1 - 9'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['SUPERHOT MODE','`'],['FULLSCREEN','F11']];
+function keysFixedHtml(){
+  var h='<div class="keysec">LOCKED: THESE KEEP THEIR JOBS</div>', i;
+  for(i=0;i<KEYS_LOCKED.length;i++) h+='<div class="row"><div style="flex:1"><b>'+KEYS_LOCKED[i][0]+'</b></div><span class="keyfixed">'+KEYS_LOCKED[i][1]+'</span></div>';
   return h;
 }
 function keysNoteShow(){
@@ -42846,7 +42862,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.51: Controller has stick sensitivity, deadzone, invert aim and vibration strength. Check 26.51 fails on v26.50',
+  now:'v26.52: The Keys window now lists every key the raid answers, and the locked ones. Check 26.52 fails on v26.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

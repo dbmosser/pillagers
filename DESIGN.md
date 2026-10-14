@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.52 - THE KEYS WINDOW NAMES EVERY KEY
+
+Co-op hunt while he was away. His order: make sure the key rebinding covers every action. It had most of them, but H (tap to heal, hold for an armour plate), Caps Lock (auto-jog), the two HUD size keys, the two zoom keys and the zoom reset all work in a raid and were not on the list, so none of them could be moved. They are now, in sections (MOVE, FIGHT, WORLD, PARTY and a new VIEW), and a bind onto one swaps like any other. At the bottom the window lists the keys that cannot move and what they do: 1 to 9 pick a gun, P and TAB pause or back out, ESC closes a window, BACKSPACE puts the cursor back, the key left of 1 is Superhot and F11 is fullscreen. The check scans the raid key code, so a key added later without a place on the list fails it.
+
+MEASURED. Check 26.52 passes, and fails on v26.51.
 ## v26.51 - STICK SENSITIVITY, DEADZONE, INVERT AND VIBRATION
 
 Co-op hunt while he was away. His order: add all of this to Settings, including the controller. The CONTROLLER section gets four rows. STICK SENSITIVITY is LOW, STANDARD, HIGH or VERY HIGH: how far a stick has to move to reach full tilt, for walking and for aiming. STICK DEADZONE is SMALL, STANDARD, LARGE or HUGE: the dead travel in the middle, so a worn stick that drifts can be told to be quiet. INVERT AIM STICK flips up and down on the aim stick only, and the item wheel and the map cursor keep their own way. VIBRATION STRENGTH is LIGHT, STANDARD or STRONG: how hard the pad buzzes when Controller rumble is on, and the row is only shown where the browser can vibrate a pad at all. Every row starts as the pad always was, change at once and are saved with the profile; in the DEMO they hold for the session.

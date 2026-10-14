@@ -1,0 +1,7 @@
+v26.52: the keys window names every key
+
+The Keys window now lists every key the raid answers, and the locked ones.
+
+Check 26.52. Fails on v26.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
