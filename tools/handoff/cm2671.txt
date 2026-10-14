@@ -1,0 +1,7 @@
+v26.71: air strike
+
+Dealing damage charges an air strike: press G when it is full, click a spot, and six blasts hit the hostiles there.
+
+Check 26.71. Fails on v26.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

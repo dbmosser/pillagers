@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.71 - AIR STRIKE
+
+Co-op hunt while he was away. His yes to an air strike, no codes, something you build up by doing damage. The damage you deal now fills a meter, and when it is full the screen says AIR STRIKE READY. Press G and a dashed red ring follows your cursor (out to about a screen away): click to call it on that spot, or press G again to cancel. A second and a half later six blasts walk across the ring, each one hitting every hostile machine and hostile pillager it reaches, with the kills counting as yours. It never hurts you, a teammate, your hire, a peaceful pillager or the Peddler, and the damage it deals does not fill the meter again. The meter starts empty every raid and is spent when you call it. DEMO and CAREER work the same, and the key is on the Settings key list so it can be moved.
+
+MEASURED. Check 26.71 passes, and fails on v26.70.
 ## v26.70 - THE OVERSEER FIGHTS IN THREE PHASES
 
 Co-op hunt while he was away. His yes to suggestion 24, Overseer phases. The Overseer was one long health bar and a cannon. Now it has three phases you can read. Above two thirds of its health it fights as before. At two thirds it stops for a moment (a shockwave ring, a shake of the camera, a line on screen) and then calls crawlers out of the ground around it, three at a time, again every twenty seconds while it knows where you are, never more than six of its own. At one third it stops again and begins a sweeping laser every ten seconds: it stands still, turns to your bearing and charges for a second while the red aim lane fills, then sweeps a wide red beam across about ninety degrees, which hurts anyone standing in it and is stopped by walls, so you outrun it along the sweep or put a wall in the way. When the sweep ends its core is exposed: it vents for four seconds, unable to move or shoot, and every round that hits it does half again as much damage. The big score for killing it is unchanged. In co-op the host runs all of it and player 2 sees the beam and the phase lines.

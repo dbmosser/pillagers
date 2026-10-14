@@ -1,0 +1,5 @@
+## v26.71 - AIR STRIKE
+
+Co-op hunt while he was away. His yes to an air strike, no codes, something you build up by doing damage. The damage you deal now fills a meter, and when it is full the screen says AIR STRIKE READY. Press G and a dashed red ring follows your cursor (out to about a screen away): click to call it on that spot, or press G again to cancel. A second and a half later six blasts walk across the ring, each one hitting every hostile machine and hostile pillager it reaches, with the kills counting as yours. It never hurts you, a teammate, your hire, a peaceful pillager or the Peddler, and the damage it deals does not fill the meter again. The meter starts empty every raid and is spent when you call it. DEMO and CAREER work the same, and the key is on the Settings key list so it can be moved.
+
+MEASURED. Check 26.71 passes, and fails on v26.70.
