@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.77 - SOME CRATES ARE MIMICS
+
+Co-op hunt while he was away. His yes to suggestion 27, mimic containers. Now and then, about one crate or locker in fifty, the box is a mimic with a dormant crawler lying in it. Which ones are mimics is fixed by where a box stands and the raid seed, with no random number spent, so the maps, the loot and every number the raid is built from are exactly as they were. A careful player gets a faint metallic tick when he comes within a short walk of a mimic. Start searching it and, under a second later, the crawler bursts out and goes for you, and being a crawler it latches on. The box keeps its loot and searches as normal afterward, a mimic wakes only once, and the bot simulation never wakes one.
+
+MEASURED. Check 26.77 passes, and fails on v26.76.
 ## v26.76 - SEARCHERS SWEEP IN WIDENING RINGS
 
 Co-op hunt while he was away. His yes to suggestion 26, search patterns. A pillager or machine that lost you used to walk to one point near where it last saw you and, finding nothing there, give up the whole hunt on the spot. Now it searches in three widening rings: on reaching its point it picks a new one farther out along the same line and keeps looking, a good deal wider each time, and only gives up at the third. And you can see it: each searcher you can see paints a faint amber scan cone on the ground in front of it, wider and longer with each ring, sweeping a little from side to side. The cone is cut off by walls and by smoke, so smoke visibly breaks it, and it shortens to the distance past which crouching hides you from it while you crouch, which is exactly the distance at which crouching works. Player 2 sees the same cones. Nothing else about how they hunt changes.

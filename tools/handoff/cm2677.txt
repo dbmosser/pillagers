@@ -1,0 +1,7 @@
+v26.77: some crates are mimics
+
+About one crate in fifty is a mimic: a faint tick near it, and a crawler bursts out if you search it.
+
+Check 26.77. Fails on v26.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

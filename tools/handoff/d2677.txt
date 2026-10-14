@@ -1,0 +1,5 @@
+## v26.77 - SOME CRATES ARE MIMICS
+
+Co-op hunt while he was away. His yes to suggestion 27, mimic containers. Now and then, about one crate or locker in fifty, the box is a mimic with a dormant crawler lying in it. Which ones are mimics is fixed by where a box stands and the raid seed, with no random number spent, so the maps, the loot and every number the raid is built from are exactly as they were. A careful player gets a faint metallic tick when he comes within a short walk of a mimic. Start searching it and, under a second later, the crawler bursts out and goes for you, and being a crawler it latches on. The box keeps its loot and searches as normal afterward, a mimic wakes only once, and the bot simulation never wakes one.
+
+MEASURED. Check 26.77 passes, and fails on v26.76.
