@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.85 - RAID EVENTS: LOCKDOWN ALARM
+
+Co-op hunt while he was away. The fifth raid event, the lockdown alarm: blast doors seal a district for 60 seconds with a cache inside, and its machines go berserk. A 25 second warning shows a wide ring with the cache in the middle, so there is time to get in. Then the doors slam and the ring is a wall for a minute: whoever is inside stays inside and whoever is outside stays outside, you included, though bullets still fly over it. The machines inside go berserk, a third faster and a quarter harder, always after you, with a red ring under each, and a garrison is made up to five if the ground held fewer. At 60 seconds the doors open and the berserk machines pour out for 20 seconds more before they calm. The lockdown cache in the middle holds three cache rolls and a jackpot roll, marked on the maps until you open it. DEMO and CAREER work the same.
+
+MEASURED. Check 26.85 passes, and fails on v26.84.
 ## v26.84 - STYLE SCORING
 
 Co-op hunt while he was away. His yes to style scoring: a decaying combo ring at the cursor, style bonuses and short medal pop-ups. While a kill chain of two or more is live, a ring drains clockwise just outside the magazine ring and shows the chain multiplier, so you can see how long the chain has left without looking at the score. Style now pays on top of the kill: a LONG SHOT (45 metres or more) pays 100, a MELEE KILL (the last blow was a swing) 120, a GRENADE DOUBLE (two kills in one blast) 200, a MULTI-KILL (three kills inside one and a half seconds) 150, and UNTOUCHED (thirty seconds with no damage and at least one kill in them) 100, again every thirty seconds. Each one is a medal: its name and the figure in a small plate that rises over the cursor for under two seconds, with a short note of its own and no voice. DEMO and CAREER score it the same way.

@@ -1,0 +1,7 @@
+v26.85: raid events: lockdown alarm
+
+The lockdown alarm event: a sealed district with berserk machines and a jackpot cache for whoever gets it.
+
+Check 26.85. Fails on v26.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
