@@ -1,0 +1,7 @@
+v26.08: the smoke cloud is 1.3 times bigger
+
+A Smoke Canister now covers 1.3 times the ground it did, so there is more cloud to hide in.
+
+Check 26.08. Fails on v26.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

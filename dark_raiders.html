@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.07';
+var VER='26.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -10779,6 +10779,13 @@ function collide(e,walls){
   }
   e.x=clamp(e.x,8,WORLD_W-8); e.y=clamp(e.y,8,WORLD_H-8);
 }
+// v26.xx (smokebig), HIS ORDER 2026-10-13: "smoke grenade should still cover bigger area -- make it like 1.3x its current sie". THE SMOKE CLOUD IS
+// 1.3 TIMES AS WIDE. One place now sizes a cloud, smokeRad(): the dial smokeR (165, the old radius, kept as the base so a saved profile that holds
+// 165 gets the new size too) times SMOKE_BIG. The cloud you throw, the cloud a pillager drops, the copy the host and the party take off the wire and
+// the RADIUS on the hover card all read it, so the sight octagon smokeSegs builds (0.92 of the radius) and the puffs the air pass draws (sized from
+// the same radius) stay one cloud. It still lasts 12 seconds. No rnd is drawn.
+var SMOKE_BIG=1.3;
+function smokeRad(){ return (CFG.smokeR===undefined?165:CFG.smokeR)*SMOKE_BIG; }
 function smokeSegs(){
   var out=[],i,j;
   for(i=0;i<G.smokes.length;i++){
@@ -16061,7 +16068,7 @@ function activateThrow(th){
   // v17.29, co-op hunt 2026-09-28: and in a shared raid the party is told (netThrSend). Player 2 spent his smoke or decoy and it
   // landed only in his own window, where the enemies are copies: the host enemies saw him through the cloud and never heard the
   // decoy. The host now puts it in the world it runs, and the other windows draw it.
-  if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12}); sfx("clank",th.tx,th.ty); throwFoley('smoke',th.tx,th.ty); netThrSend('smoke',th.tx,th.ty); }
+  if(th.kind==='smoke'){ G.smokes.push({x:th.tx,y:th.ty,r:smokeRad(),t:0,life:12}); sfx("clank",th.tx,th.ty); throwFoley('smoke',th.tx,th.ty); netThrSend('smoke',th.tx,th.ty); }
   else if(th.kind==='decoy'){ G.decoys.push({x:th.tx,y:th.ty,t:0,life:6,acc:.7}); sfx("clank",th.tx,th.ty); netThrSend('decoy',th.tx,th.ty); }
   else if(th.kind==='frag'){
     // Whatever fuse the thrower did not burn in his hand. Floored so a grenade
@@ -16978,7 +16985,7 @@ function beltInfoRows(k){
   else if(it.use==='stim'){ R.push(['LASTS',s1(STIM_SEC)]); R.push(['SPEED','+'+Math.round((STIM_SPD-1)*100)+'%']); R.push(['STAMINA','UNLIMITED']); }
   else if(tk==='frag'){ R.push(['DAMAGE','140']); R.push(['BLAST',Math.round((CFG.fragR===undefined?190:CFG.fragR)/10)+'M']); R.push(['FUSE',s1(FRAG_FUSE)]); }   // 140: explodeFrag, 115+25 at the centre
   else if(tk==='trip'){ R.push(['TRIGGER','WIRE CROSSED']); R.push(['DAMAGE','140']); R.push(['BLAST',Math.round(TRIP_R/10)+'M']); R.push(['ARMS',s1(TRIP_ARM)]); R.push(['LASTS',s1(TRIP_LIFE)]); }   // 140: tripBlast, 110+30
-  else if(tk==='smoke'){ R.push(['RADIUS',Math.round((CFG.smokeR===undefined?165:CFG.smokeR)/10)+'M']); R.push(['LASTS','12S']); }   // activateThrow: life 12
+  else if(tk==='smoke'){ R.push(['RADIUS',Math.round(smokeRad()/10)+'M']); R.push(['LASTS','12S']); }   // activateThrow: life 12
   else if(tk==='decoy'){ R.push(['LASTS','6S']); }   // activateThrow: life 6
   else if(it.use==='key') R.push(['OPENS','1 LOCKED ROOM']);
   return R;
@@ -20684,7 +20691,7 @@ function raiderThrow(e,foe,fd,dt){
 // smoke first: a hurt man breaks sight before he trades grenades.
   if(e.hp<(e.maxhp||100)*0.45&&(e.smkT===undefined||e.smkT<=0)){
     e.smkT=14;
-    G.smokes.push({x:e.x,y:e.y,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12});
+    G.smokes.push({x:e.x,y:e.y,r:smokeRad(),t:0,life:12});
     netThrSend('smoke',e.x,e.y);   // v21.98 (K8, K15): the party sees his cloud too, as the host enemies already do
     if(!G.sim) sfx('clank',e.x,e.y);
     return true;
@@ -24445,7 +24452,7 @@ if(e.kind==='raider'&&e.state!=='extract'&&!e.cornered&&e.hp<e.maxhp*0.3){   // 
         e.fled=1;
         if(CFG.raiderKit!==0&&(e.smkT===undefined||e.smkT<=0)){
           e.smkT=14;
-          G.smokes.push({x:e.x,y:e.y,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12});
+          G.smokes.push({x:e.x,y:e.y,r:smokeRad(),t:0,life:12});
           netThrSend('smoke',e.x,e.y);   // v21.98 (K8, K15): and the cloud he drops as he runs
           if(!G.sim) sfx('clank',e.x,e.y);
         }
@@ -41536,7 +41543,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.07: Calling extraction brings fewer machines: a flat base plus a few more for a big haul (at most 5), and new waves hold off until the ship has gone or the window has closed. Check 26.07 fails on v26.06',
+  now:'v26.08: A Smoke Canister now covers 1.3 times the ground it did, so there is more cloud to hide in. Check 26.08 fails on v26.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47334,7 +47341,7 @@ function netThrTake(peer,m){
   if(k==='frag'){ fu=clamp(+m.f||FRAG_FUSE,0.05,3); w.f=fu; }
   if(NET.role==='host') for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q!==peer&&q.state==='in') netSend(q,w); }
   if(k==='frag'){ G.frags.push({x:x,y:y,t:0,fuse:fu,fx:1}); return 'thr:frag'; }
-  if(k==='smoke') G.smokes.push({x:x,y:y,r:(CFG.smokeR===undefined?165:CFG.smokeR),t:0,life:12});
+  if(k==='smoke') G.smokes.push({x:x,y:y,r:smokeRad(),t:0,life:12});
   else G.decoys.push({x:x,y:y,t:0,life:6,acc:.7,fx:(NET.role==='host')?0:1});
   return 'thr:'+k;
 }
