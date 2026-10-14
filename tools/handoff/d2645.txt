@@ -1,0 +1,5 @@
+## v26.45 - THE WHAT IS NEW CARD NAMES THE NEW SETTINGS
+
+Co-op hunt while he was away. The card was stamped v26.43 and the stamp may not trail the build by more than 0.15. Its new line names the builds since: Settings in sections with a jump bar, the UI and footsteps volume rows and mono audio, hold or toggle for aim, crouch and sprint, the mouse sensitivity rows, auto-reload and pause when the window loses focus (his order of 2026-10-14).
+
+MEASURED. Check 26.45 passes, and fails on v26.44.

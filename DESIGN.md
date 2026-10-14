@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.45 - THE WHAT IS NEW CARD NAMES THE NEW SETTINGS
+
+Co-op hunt while he was away. The card was stamped v26.43 and the stamp may not trail the build by more than 0.15. Its new line names the builds since: Settings in sections with a jump bar, the UI and footsteps volume rows and mono audio, hold or toggle for aim, crouch and sprint, the mouse sensitivity rows, auto-reload and pause when the window loses focus (his order of 2026-10-14).
+
+MEASURED. Check 26.45 passes, and fails on v26.44.
 ## v26.44 - AUTO-RELOAD AND PAUSE ON FOCUS LOSS
 
 Co-op hunt while he was away. His order: add all of this to Settings. Controls gets two more rows. AUTO-RELOAD WHEN EMPTY is on, as the game always was: pull the trigger on an empty magazine and it reloads. Off, the empty gun only clicks until you press the reload key. PAUSE WHEN THE WINDOW LOSES FOCUS is off, as it was: when it is on, a raid on your own opens the pause box the moment you switch to another window or hide the tab, the same box ESC opens. It never pauses in a party or a two-window game on one PC, because the raid cannot stop for one player there. Saved with the profile; in the DEMO they hold for the session.
