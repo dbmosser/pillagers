@@ -1,0 +1,7 @@
+v26.62: sustained fire pins a pillager
+
+Heavy fire near a pillager now pins him: he ducks, stops advancing and shoots wild.
+
+Check 26.62. Fails on v26.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

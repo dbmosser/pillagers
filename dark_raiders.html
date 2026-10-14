@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.61';
+var VER='26.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20052,6 +20052,19 @@ function drawRoleMark(e){
     wc.fillStyle=litHex(c,.35); wc.fillRect(x+fl*6+1,y-28,2,20);
   }
 }
+// v26.xx (ai22), HIS YES (2026-10-14, suggestion 22): "ok as a pillager behavior mechanic". SUPPRESSION. Rounds of yours that go past a
+// hostile pillager (inside SUPP_R of him) count against him; SUPP_N of them inside SUPP_WIN seconds pin him for SUPP_PIN seconds, and
+// more fire keeps him pinned. A pinned pillager in a fight stops advancing and flanking, ducks (the crouched pose), slips to cover that is
+// no nearer you if there is any, and what he fires is wild (two and a half times the usual error). A rate of fire matters because the
+// count is rounds past him: a Support MG pins a man in half a second, a Magnum seldom. A round from player 2 that hits him counts too.
+// The state is on the host (a linked window sees the duck through a flag bit). No random number is drawn: it is counting and a timer.
+var SUPP_R=70, SUPP_N=4, SUPP_WIN=1.8, SUPP_PIN=2.6;
+function suppHit(en){
+  if(!en||en.kind!=='raider'||en.merc||en.friendlyPC||en.hostile===false||en.downed||en.finished||!(en.hp>0)) return false;
+  en.supp=(en.supp||0)+1; en.suppT=SUPP_WIN;
+  if(en.supp>=SUPP_N){ en.pinT=SUPP_PIN; en.supp=0; return true; }
+  return false;
+}
 function feudFoe(a,b){
   if(CFG.raiderFeud===0) return false;
   if(G&&G.crewsHot===undefined) G.crewsHot=((G.seed>>>0)%10)<6;
@@ -24920,6 +24933,8 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
       }
     }
     if(_se.shotT>0){ _se.shotT-=dt; if(_se.shotT<0) _se.shotT=0; }
+    if(_se.suppT>0){ _se.suppT-=dt; if(_se.suppT<=0) _se.supp=0; }   // v26.xx (ai22): the count of rounds past him runs out
+    if(_se.pinT>0){ _se.pinT-=dt; if(_se.pinT<0) _se.pinT=0; }
   }
   // A FRAME COUNTER BOTH PATHS INCREMENT. updateEnts is called exactly once per
   // frame by simStep AND by the live loop, which makes it the only honest place
@@ -26142,7 +26157,12 @@ var _rpx=e.x,_rpy=e.y;                       // v3.95: where he was before he mo
         // sighting, a blind raider walked 218 units at cosine 0.996 straight at a
         // man he had never seen there. The `else if(!sees)` line below is his
         // correct behaviour and it was unreachable at any range this branch took.
-        if((sees||!_cg)&&(d>e.rng*raiderApf(e)||(e.crewArc!==undefined&&sees&&dist(e,{x:fx3,y:fy3})>70))) navSeek(e,fx3,fy3,e.spd,dt);   // v26.xx (ai21): how close he closes depends on his role
+        if(e.pinT>0){
+          // v26.xx (ai22): PINNED. He holds where he is (ducked), or slips to cover that is no nearer you.
+          var _pcv=raiderCoverSpot(e,p,d);
+          if(_pcv&&dist(_pcv,p)>=d-20&&dist(e,_pcv)>8) moveToward(e,_pcv.x,_pcv.y,e.spd*.85,dt);
+        }
+        else if((sees||!_cg)&&(d>e.rng*raiderApf(e)||(e.crewArc!==undefined&&sees&&dist(e,{x:fx3,y:fy3})>70))) navSeek(e,fx3,fy3,e.spd,dt);   // v26.xx (ai21): how close he closes depends on his role
         // v6.66: HIS STATUE. Lost sight of you at mid range with a ready weapon used
         // to match no movement branch at all, so he froze until his alert ran out.
         // He now closes on the last place he saw you, which is what the tx/ty pair
@@ -26200,7 +26220,7 @@ if(raiderThrow(e,p,d,dt)){ e.cd=1.2; }
             var _rk=(CFG.raiderAim===undefined?1:CFG.raiderAim);
             var _rmv=(p.moving?((p.net?p.sp:G.sprinting)?0.030:0.018):0);   // v15.80: the sprint of whichever player he aims at
             var _rjit=Math.max(e.steady?8:16,
-                               d*_rk*((e.steady?0.038:0.062)+_rmv));
+                               d*_rk*((e.steady?0.038:0.062)+_rmv))*(e.pinT>0?2.5:1);   // v26.xx (ai22): a pinned man shoots wild
             fireWeapon(e,e.wep,p.x+rnd(-_rjit,_rjit),p.y+rnd(-_rjit,_rjit),false);
             e.cd=(e.wep.rof/1000)*rnd(1.7,2.9);
           }
@@ -26961,6 +26981,8 @@ function updateBullets(dt){
                dist(b,en)<en.r+CFG.missWake) runnerTurns(en,p.x,p.y);
             // v3.94: the first 0.30s of a 0.38s roll is invulnerable, the same
             // window the player gets, so a raider who times it eats nothing.
+            // v26.xx (ai22): a round of yours past a hostile pillager is suppression (once per round per man).
+            if(en.kind==='raider'&&en.suppB!==b&&dist(b,en)<en.r+SUPP_R){ en.suppB=b; suppHit(en); }
             if(en.roll>0.08) continue;
             if(en.finished) continue;   // v16.98, co-op hunt 2026-09-28: a man who bled out lies here one more frame; a round on the body wrote the kill mark again and took the kill from player 2, so it passes over him
             if(dist(b,en)<en.r+3){
@@ -32913,7 +32935,7 @@ var SHD=G.shells[i];
       // pillrevive: a pillager getting up shows his bar, shakes off the floor, then rises in a crouch
       else if(e2.kind==='raider'&&raiderGetUpBar(e2))
         drawOp(e2.x+raiderGetUpShake(e2),e2.y,e2.face,(e2.roll>0)?(1-e2.roll/.38)*12.6:(e2.step||0)*4,raiderCoat(e2),
-          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.downed||e2.state==='down')?raiderGetUpMode(e2):((e2.roll>0)?'roll':(raiderCrouched(e2)?'crouch':'')),0,
+          clamp((e2.bag?e2.bag.length:0)/7,0,1),e2.muzzle,(e2.downed||e2.state==='down')?raiderGetUpMode(e2):((e2.roll>0)?'roll':((raiderCrouched(e2)||e2.pinT>0)?'crouch':'')),0,
           {own:e2,team:(e2.merc||e2.friendly)?'ally':'foe',merc:e2.merc?1:0,moving:!!e2.moving,sprint:e2.state==='extract',ads:e2.state==='chase',hurt:e2.hitT,bulk:e2.bulk||0,
            // v20.12, found by the build design review (2026-10-08): his answer 20 (v10.18) gives every pillager a look from the racks,
            // stored on him at spawn, but drawOp reads a look from this object and never from own, so every pillager was drawn in the
@@ -43221,7 +43243,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.61: The what is new card names the combat feel builds and drops the retired belt lines. Check 26.61 fails on v26.60',
+  now:'v26.62: Heavy fire near a pillager now pins him: he ducks, stops advancing and shoots wild. Check 26.62 fails on v26.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50570,6 +50592,7 @@ function netEntFlags(e){
   if(e.parley>0) f|=2097152; if(e.blind>0) f|=4194304;
   if(e.burnT>0) f|=8388608; if(e.stunT>0) f|=16777216; if(e.chillT>0) f|=33554432; if(e.frozenT>0) f|=67108864; if(e.corrT>0) f|=134217728;   // v23.xx (forge8): THE FORGE statuses, so player 2 sees them
   if(e.downed&&e.getUp>0) f|=8388608;   // pillrevive: he is getting up
+  if(e.pinT>0) f|=268435456;   // v26.xx (ai22): pinned, so player 2 sees him duck
   return f;
 }
 function netEntRow(e){
@@ -50649,6 +50672,7 @@ function netEntFlagsApply(e,f){
   e.overheat=(f&1024)?Math.max(e.overheat||0,0.3):0;
   if(f&2048){ e.goal=e; if(e.state!=='loot') e.state='loot'; } else if(e.goal===e) e.goal=null;
   if((f&4096)&&!(e.roll>0)) e.roll=0.38;
+  e.pinT=(f&268435456)?0.5:0;   // v26.xx (ai22)
   e.steady=!!(f&8192); e.reviving=(f&16384)?e:null; e.shotT=(f&32768)?0.35:0; e.lootT=(f&65536)?1:0; e.healQ=(f&131072)?1:0;
   e.sprintPool=(f&262144)?6:0; e.helped=(f&524288)?1:0; e.grudge=!!(f&1048576); e.parley=(f&2097152)?1:0; e.blind=(f&4194304)?1:0;
   e.burnT=(f&8388608)?0.3:0; e.stunT=(f&16777216)?0.3:0; e.chillT=(f&33554432)?0.3:0; e.frozenT=(f&67108864)?0.3:0; e.corrT=(f&134217728)?0.3:0;   // v23.xx (forge8): drawn here, run by the host only
@@ -50849,7 +50873,7 @@ function netShotTake(peer,m){
   var _nel=(typeof m.el==='string'&&ELEM[m.el])?m.el:'';
   if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
-  e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,d);   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
+  e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,d); suppHit(e);   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
     px=-Math.sin(m.a); py=Math.cos(m.a);

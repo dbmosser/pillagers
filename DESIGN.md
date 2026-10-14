@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.62 - SUSTAINED FIRE PINS A PILLAGER
+
+Co-op hunt while he was away. His yes to suggestion 22, suppression, as a pillager behaviour. Rounds of yours that go past a hostile pillager count against him; four of them inside under two seconds pin him for about two and a half seconds, and more fire keeps him pinned. A pinned pillager stops advancing and stops flanking, ducks down, slips behind cover if there is cover that is no nearer to you, and what he shoots is wild. So the rate of fire matters: a Support MG pins a man in about half a second, a Magnum or a Marksman Rifle seldom does. A round from player 2 that lands on a man counts the same, and player 2 sees him duck. Pillagers you are not shooting at behave exactly as before.
+
+MEASURED. Check 26.62 passes, and fails on v26.61.
 ## v26.61 - THE WHAT IS NEW CARD NAMES THE COMBAT FEEL BUILDS
 
 Co-op hunt while he was away. The card was stamped v26.45 and the stamp may not trail the build by more than 0.15. Its new line names the combat feel builds since: heavy rounds that stop what they hit, the Meridian Lance kick, the active reload in the bright part of the reload ring and the Support MG spin-up. The two lines that described the retired belt, BELT KEYS and NEW BELT, are taken off the card.
