@@ -1,0 +1,5 @@
+## v26.44 - AUTO-RELOAD AND PAUSE ON FOCUS LOSS
+
+Co-op hunt while he was away. His order: add all of this to Settings. Controls gets two more rows. AUTO-RELOAD WHEN EMPTY is on, as the game always was: pull the trigger on an empty magazine and it reloads. Off, the empty gun only clicks until you press the reload key. PAUSE WHEN THE WINDOW LOSES FOCUS is off, as it was: when it is on, a raid on your own opens the pause box the moment you switch to another window or hide the tab, the same box ESC opens. It never pauses in a party or a two-window game on one PC, because the raid cannot stop for one player there. Saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.44 passes, and fails on v26.43.

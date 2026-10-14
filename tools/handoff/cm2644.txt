@@ -1,0 +1,7 @@
+v26.44: auto-reload and pause on focus loss
+
+Controls has auto-reload when empty and pause when the window loses focus.
+
+Check 26.44. Fails on v26.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
