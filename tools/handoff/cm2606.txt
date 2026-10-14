@@ -1,0 +1,7 @@
+v26.06: a bigger crowbar swing
+
+The crowbar swing is bigger and bolder: a longer bar, a wide pale swoosh, a flash and sparks where it lands, and a lean into the blow.
+
+Check 26.06. Fails on v26.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

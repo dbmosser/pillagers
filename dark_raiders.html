@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.05';
+var VER='26.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18039,6 +18039,20 @@ function meleeFoley(kind,x,y){
   if(kind==='hit'){ foley('plateClack',x,y,{rate:0.75,g:1.2}); foley('lmgClack',x,y,{rate:0.9,g:0.6,at:0.03,gap:0}); return true; }
   return false;
 }
+// v26.xx (meleebig), HIS NOTE 2026-10-13: "melee swing animation needs to be larger, more prominent". THE CROWBAR LANDS: a short pale
+// flash and a puff at the struck point, two bursts of sparks and a small kick of the screen (the existing shake, 1.8, far under a gun
+// shot). Drawn on the cosmetic stream (spark uses fxn), live play only, and nothing a blow reads: the damage, reach and cooldown are
+// the bare hands strike as before.
+function meleeImpact(sx,sy,ex,ey,er){
+  if(!G||G.sim) return false;
+  var a=Math.atan2(ey-sy,ex-sx), r=(+er>0)?+er:12, ix=ex-Math.cos(a)*r*0.5, iy=ey-Math.sin(a)*r*0.5;
+  if(!isFinite(ix)||!isFinite(iy)) return false;
+  flash(ix,iy,170,'#eef6fb',0.12);
+  G.puffs.push({x:ix,y:iy,t:0,life:0.14,c:'#f4faff',r:30});
+  spark(ix,iy,'#ffffff',12,320); spark(ix,iy,'#ffd89a',8,260);
+  G.shake=Math.max(G.shake||0,1.8);
+  return true;
+}
 function meleeStrike(){
   if(!G||G.over||G.paused||G.sim||G.trade) return false;
   var p=G.player;
@@ -18112,7 +18126,7 @@ if(wep.mag===0){
         notoAggress(_me);            // v8.30: same rule, bare hands included
         if(_me.hp<=0) _me.byPlayer=true;
         _swHit=true;
-        if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); if(G.barT>0) meleeFoley('hit',_me.x,_me.y); }   // v25.xx (keyswap): a crowbar blow thuds
+        if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); if(G.barT>0){ meleeFoley('hit',_me.x,_me.y); meleeImpact(sh.x,sh.y,_me.x,_me.y,_me.r); } }   // v26.xx (meleebig): and the crowbar lands with a flash, sparks and a small kick   // v25.xx (keyswap): a crowbar blow thuds
       }
     }
     if(!G.sim&&!_swHit&&fromPlayer&&!(G.barT>0)) blip('foot');   // v25.xx (keyswap): a crowbar miss is its whoosh, not a footfall
@@ -28348,6 +28362,10 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var bobY=moving?Math.abs(Math.sin(ph))*1.5:Math.sin(ph*.35)*.5;
   var leanX=sprint?fl*1.6:(moving?fl*.7:0);
   var ty=y-bobY+lift;
+  // v26.xx (meleebig): THE BODY LEANS INTO THE CROWBAR. For the 0.22 s of the swing the upper body shifts toward the aim, out and back
+  // (3.4 at the most when facing across, 1 when facing up or down), the way a sprint leans it. Only the crowbar swing (mode fist with
+  // G.barT running) does this; the legs stay planted and nothing a fight reads moves.
+  if(mode==='fist'&&typeof G!=='undefined'&&G&&G.barT>0) leanX+=(Math.cos(face)*2.4+fl*1.0)*Math.sin(3.1416*(1-Math.max(0,Math.min(1,G.barT/0.22))));
 
   // Toriyama proportions, redistributed inside the SAME 34px envelope so the
   // nameplate and offscreen marker layouts are untouched. Head goes 8x8 to
@@ -28989,10 +29007,24 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     if(typeof G!=='undefined'&&G&&G.barT>0){
       // v25.xx (keyswap): THE CROWBAR. Q swings a short crowbar through the arc the blow hits in (0.95 rad either side of the aim): an
       // inked steel bar with a hooked claw end and a red grip, the hand on the grip, and a pale trail behind the tip. Cosmetic only.
-      var _cbP=1-Math.max(0,Math.min(1,G.barT/0.22)), _cbT=-0.95+1.9*_cbP;
-      wc.fillStyle=_HANDC; wc.fillRect(2+ext,-1.6,5,3.2);
-      wc.strokeStyle='rgba(205,214,221,.38)'; wc.lineWidth=1.6; wc.beginPath(); wc.arc(6+ext,0,17,-0.95,_cbT); wc.stroke();
-      wc.save(); wc.translate(6+ext,0); wc.rotate(_cbT);
+      // v26.xx (meleebig), HIS NOTE 2026-10-13: "melee swing animation needs to be larger, more prominent". The swing now sweeps 140
+      // degrees across the aim (70 each side, it was 109), quick out and a short follow-through, with the bar drawn 1.6 times as long and
+      // as thick, and a bold SWOOSH: a pale crescent smear at the bar's reach, widest at the tip and ending in a point, four overlapping
+      // layers that trail 0.04 to 0.15 s behind the tip so it is brightest at the tip and gone 0.15 s back, with a white leading edge.
+      // Cosmetic only: no draw from the raid stream, the blow, reach and cooldown are unchanged.
+      var _cbP=1-Math.max(0,Math.min(1,G.barT/0.22)), _cbA=1.2217, _cbQ=Math.min(1,_cbP/0.85), _cbT=-_cbA+2*_cbA*_cbQ*(2-_cbQ);
+      var _cbF=_cbP<0.8?1:Math.max(0,(1-_cbP)/0.2), _cbR=52, _cbL, _cbU, _cbV, _cbS, _cbK, _cbW, _cbD;
+      wc.fillStyle=_HANDC; wc.fillRect(2+ext,-1.6,7,3.2);
+      for(_cbL=3;_cbL>=0;_cbL--){
+        _cbU=Math.max(0,_cbP-0.15*(_cbL+1)/4/0.22); _cbV=Math.min(1,_cbU/0.85); _cbS=-_cbA+2*_cbA*_cbV*(2-_cbV);
+        if(_cbT-_cbS<0.03||_cbF<=0) continue;
+        wc.fillStyle='rgba(238,246,252,'+(0.26*_cbF).toFixed(3)+')';
+        wc.beginPath(); wc.arc(6+ext,0,_cbR,_cbS,_cbT);
+        for(_cbK=6;_cbK>=0;_cbK--){ _cbW=_cbK/6; _cbD=_cbR-18*Math.pow(_cbW,1.2); wc.lineTo(6+ext+Math.cos(_cbS+(_cbT-_cbS)*_cbW)*_cbD,Math.sin(_cbS+(_cbT-_cbS)*_cbW)*_cbD); }
+        wc.closePath(); wc.fill();
+        if(_cbL===0){ wc.strokeStyle='rgba(255,255,255,'+(0.8*_cbF).toFixed(3)+')'; wc.lineWidth=1.8; wc.beginPath(); wc.arc(6+ext,0,_cbR-0.9,_cbS,_cbT); wc.stroke(); }
+      }
+      wc.save(); wc.translate(6+ext,0); wc.rotate(_cbT); wc.scale(1.6,1.6);
       wc.fillStyle=INK; wc.fillRect(-2.2,-2.1,20.6,4.2); wc.fillRect(14.8,-4.2,3.6,3.2);
       wc.fillStyle='#8d99a6'; wc.fillRect(-1.4,-1.3,18.2,2.6); wc.fillRect(15.4,-3.6,2.2,2.4);
       wc.fillStyle='#c9d3dc'; wc.fillRect(-1.4,-1.3,18.2,0.8);
@@ -41482,7 +41514,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.05: The what is new card names the belt keys. Check 26.05 fails on v26.04',
+  now:'v26.06: The crowbar swing is bigger and bolder: a longer bar, a wide pale swoosh, a flash and sparks where it lands, and a lean into the blow. Check 26.06 fails on v26.05',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

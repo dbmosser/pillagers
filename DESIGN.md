@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.06 - A BIGGER CROWBAR SWING
+
+Co-op hunt while he was away. His note of 2026-10-13: the melee swing animation needs to be larger and more prominent. The crowbar now sweeps 140 degrees across your aim, drawn 1.6 times as long and thick, with a bold pale swoosh behind it that fades within about a sixth of a second and reaches as far as the blow does. Your body leans into the swing, and a hit lands with a short flash, a burst of sparks at the struck point and a small kick of the screen. Only the picture changed: the damage, reach and cooldown of the blow are the same.
+
+MEASURED. Check 26.06 passes, and fails on v26.05.
 ## v26.05 - THE WHAT IS NEW CARD NAMES THE BELT KEYS
 
 Co-op hunt while he was away. The card was stamped v25.93 and the stamp may not trail the build by more than 0.15. The card was stamped v25.93 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the belt keys and keycaps, the gold rings (his orders 2026-10-13) and crouch regen (his order).
