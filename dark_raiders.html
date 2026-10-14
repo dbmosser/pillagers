@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.24';
+var VER='26.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11103,14 +11103,15 @@ function forgeGun(){ var p=G&&G.player, w=p&&p.wep; return (w&&w.id&&w.id!=='fis
 function forgeOpts(){
   var w=forgeGun();
   if(!w) return {err:'NO GUN IN HAND',opts:[]};
-  if(w.fk===1||w.fk===2) return {err:'MAX TIER',opts:[]};
+  if(w.fk===2) return {err:'MAX TIER',opts:[]};
+  if(w.fk===1) return {err:'',opts:ELEM_ORDER.map(function(e){ return {k:'el',el:e,cost:FORGE_COST[1]}; })};   // v26.xx (forgest3): MK III, and which element
   return {err:'',opts:[{k:'mk2',cost:FORGE_COST[0]}]};
 }
 function forgePromptInfo(){
   var R=forgeOpts(), w=forgeGun(), need, short;
   if(R.err) return {line:R.err,sub:'',short:false};
   need=R.opts[0].cost; short=forgeScore()<need;
-  return {line:'['+keyLabel('KeyE','E')+'] UPGRADE \u00b7 '+(w.fk===1?'MK III':'MK II'),sub:short?('NEED '+arcadeCr(need)):arcadeCr(need),short:short};
+  return {line:'['+keyLabel('KeyE','E')+'] UPGRADE \u00b7 '+(w.fk===1?'MK III':'MK II'),sub:short?('NEED '+arcadeCr(need)):(arcadeCr(need)+(w.fk===1?' \u00b7 CHOOSE ELEMENT':'')),short:short};
 }
 function forgeOpen(){
   var R=forgeOpts(), need;
@@ -11125,7 +11126,7 @@ function forgeOpen(){
 }
 function forgeClose(spent){
   if(!G) return false;
-  G.forgeUI=null; G.forgeLock=1;
+  G.forgeUI=null; G.forgeLock=keys['KeyE']?1:0;   // v26.xx (forgest3): the lock holds only while E is still down, so a quick second visit opens at once
   if(typeof PAD!=='undefined'&&PAD&&PAD.on) PAD.xAfterTrade=1;
   if(!spent){ try{ sndUi('back'); }catch(_fc){} }
   return true;
@@ -11135,11 +11136,12 @@ function forgeBuy(ix){
   if(!U||!p||!w||!o||G.over) return false;
   if(!forgeSpend(o.cost)){ say('NEED '+arcadeCr(o.cost),'warn'); try{ sndUi('deny'); }catch(_b0){} return false; }
   nw=forgeApply(w,1);
+  if(o.k==='el') nw=forgeApply(w,2,o.el);   // v26.xx (forgest3): MK III with the element picked
   p.wep=nw; p.wepIssued=false;
-  col=FORGE_GOLD; tag='MK II';
-  say('GUN UPGRADED','obj',{sub:String(nw.name).toUpperCase()});
+  col=(o.k==='el')?ELEM[o.el].c:FORGE_GOLD; tag=(o.k==='el')?ELEM[o.el].name:'MK II';
+  say('GUN UPGRADED','obj',{sub:String(nw.name).toUpperCase()+((o.k==='el')?('  \u00b7  '+ELEM[o.el].name):'')});
   G.gunCard={gk:nw.id,w:nw,vs:w,route:tag+'  -'+arcadeCr(o.cost),t0:G.t||0};
-  blip('forge');
+  blip('forge'); if(o.k==='el'&&ELEM[o.el]&&ELEM[o.el].snd) blip(ELEM[o.el].snd);   // v26.xx (forgest3): and the element's own sound
   if(F&&isFinite(F.x)){
     spark(F.x,F.y-26,col,40,420); flash(F.x,F.y-30,130,col,0.5);
     ping(F.x,F.y,700,false,false,'player','fire');
@@ -11169,16 +11171,52 @@ function forgeKeycap(label,x,yb,font){
   ctx.font=of;
   return sw;
 }
+// v26.xx (forgest3): the four element marks of the MK III cards, one small glyph each in its colour: a flame, a bolt, a snowflake, a drop.
+function forgeElemGlyph(c,el,cx,cy,s,col){
+  var i, j, e, a, dx, dy, ex, ey, oa;
+  function flame(k,oy,fill){
+    c.fillStyle=fill; c.beginPath(); c.moveTo(cx,cy+oy-s*k);
+    c.bezierCurveTo(cx+s*0.2*k,cy+oy-s*0.5*k,cx+s*0.8*k,cy+oy-s*0.2*k,cx+s*0.65*k,cy+oy+s*0.4*k);
+    c.bezierCurveTo(cx+s*0.55*k,cy+oy+s*0.85*k,cx-s*0.55*k,cy+oy+s*0.85*k,cx-s*0.65*k,cy+oy+s*0.4*k);
+    c.bezierCurveTo(cx-s*0.7*k,cy+oy+s*0.05*k,cx-s*0.3*k,cy+oy-s*0.2*k,cx-s*0.2*k,cy+oy-s*0.55*k);
+    c.bezierCurveTo(cx-s*0.1*k,cy+oy-s*0.7*k,cx-s*0.05*k,cy+oy-s*0.85*k,cx,cy+oy-s*k);
+    c.closePath(); c.fill();
+  }
+  c.save();
+  c.globalAlpha=0.20; c.fillStyle=col; c.beginPath(); c.arc(cx,cy,s*1.3,0,6.2832); c.fill(); c.globalAlpha=1;
+  c.fillStyle=col; c.strokeStyle=col; c.lineCap='round'; c.lineJoin='round';
+  if(el==='fire'){ flame(1,0,col); flame(0.5,s*0.32,'#ffd27a'); }
+  else if(el==='shock'){
+    c.beginPath(); c.moveTo(cx+s*0.2,cy-s); c.lineTo(cx-s*0.6,cy+s*0.12); c.lineTo(cx-s*0.05,cy+s*0.12); c.lineTo(cx-s*0.25,cy+s); c.lineTo(cx+s*0.65,cy-s*0.22); c.lineTo(cx+s*0.08,cy-s*0.22); c.closePath(); c.fill();
+  }
+  else if(el==='cryo'){
+    c.lineWidth=Math.max(1.5,s*0.17);
+    for(i=0;i<3;i++){
+      a=i*Math.PI/3+Math.PI/2; dx=Math.cos(a)*s; dy=Math.sin(a)*s;
+      c.beginPath(); c.moveTo(cx-dx,cy-dy); c.lineTo(cx+dx,cy+dy); c.stroke();
+      for(e=-1;e<=1;e+=2){
+        ex=cx+dx*0.62*e; ey=cy+dy*0.62*e; oa=a+(e>0?0:Math.PI);
+        for(j=-1;j<=1;j+=2){ c.beginPath(); c.moveTo(ex,ey); c.lineTo(ex+Math.cos(oa+j*0.75)*s*0.34,ey+Math.sin(oa+j*0.75)*s*0.34); c.stroke(); }
+      }
+    }
+  }
+  else {
+    c.beginPath(); c.moveTo(cx,cy-s); c.quadraticCurveTo(cx+s*0.7,cy-s*0.05,cx+s*0.62,cy+s*0.3);
+    c.arc(cx,cy+s*0.3,s*0.62,0,Math.PI,false); c.quadraticCurveTo(cx-s*0.7,cy-s*0.05,cx,cy-s); c.closePath(); c.fill();
+    c.globalAlpha=0.55; c.fillStyle='#ffffff'; c.beginPath(); c.ellipse(cx-s*0.22,cy+s*0.28,s*0.1,s*0.2,0.3,0,6.2832); c.fill();
+  }
+  c.restore();
+}
 function drawForgeUI(){
-  var U=G&&G.forgeUI, p=G&&G.player, R, w, rs, u, fT, fH, fL, fM, fG, pT, pH, pL, pM, n, PW, PH, HH, GB, CH, FH, pad, x, y, i, o, nw, os, ns, sel, c, cx, cy, cw, chh, a, yy, rows, k, vr, tx, tw, ckL, xr, ok, lab, kw, hy;
+  var U=G&&G.forgeUI, p=G&&G.player, R, w, rs, u, fT, fH, fL, fM, fG, pT, pH, pL, pM, n, PW, PH, HH, GB, CH, FH, pad, x, y, i, o, nw, os, ns, sel, c, cx, cy, cw, chh, a, yy, rows, k, vr, tx, tw, ckL, xr, ok, lab, kw, hy, E, wd;
   if(!U||!p||G.over) return;
   R=forgeOpts(); w=forgeGun();
   if(!w||!R.opts.length){ G.forgeUI=null; return; }
   rs=Math.max(1,hudRes()); u=function(px){ return Math.round(LH(px)*rs); };
   fT=hudFS(TYPE.title); fH=hudFS(TYPE.head); fL=hudFS(TYPE.label); fM=hudFS(TYPE.micro); fG=hudFS(TYPE.huge);
   pT=msgPx(fT); pH=msgPx(fH); pL=msgPx(fL); pM=msgPx(fM);
-  n=R.opts.length; pad=u(24); HH=u(54); GB=u(92); CH=u(132); FH=u(46);
-  PW=u(600); PH=HH+GB+u(8)+CH+u(10)+FH;
+  n=R.opts.length; pad=u(24); HH=u(54); GB=u(92); CH=u(144); FH=u(46);
+  PW=u(660); PH=HH+GB+u(8)+CH+u(10)+FH;
   x=Math.round((W-PW)/2); y=Math.round(H*0.47-PH/2);
   if(y<u(8)) y=u(8);
   ctx.save();
@@ -11218,7 +11256,7 @@ function drawForgeUI(){
     }
     // the choices
     U.cells=[];
-    cy=y+HH+GB+u(8); cx=x+pad; cw=PW-pad*2; chh=CH;
+    cy=y+HH+GB+u(8); cx=x+pad; cw=(n>1)?Math.floor((PW-pad*2-u(12)*(n-1))/n):(PW-pad*2); chh=CH;
     for(i=0;i<n;i++){
       o=R.opts[i]; sel=((U.sel|0)===i);
       c={x:cx,y:cy,w:cw,h:chh,i:i}; U.cells.push(c);
@@ -11227,7 +11265,7 @@ function drawForgeUI(){
       forgeChamfer(c.x,c.y,c.w,c.h,u(10));
       ctx.fillStyle=sel?UIC.ui_hover:UIC.ui_raised; ctx.fill();
       ctx.strokeStyle=sel?UIC.acc:UIC.ui_line; ctx.lineWidth=sel?2:1; ctx.stroke();
-      ctx.fillStyle=FORGE_GOLD; ctx.fillRect(c.x+u(10),c.y,u(48),u(3));
+      ctx.fillStyle=(o.k==='el')?ELEM[o.el].c:FORGE_GOLD; ctx.fillRect(c.x+u(10),c.y,u(48),u(3));
       if(o.k==='mk2'){
         nw=forgeApply(w,1); os=gunStats(w); ns=gunStats(nw);
         ctx.font=fG; ctx.fillStyle=FORGE_GOLD; ctx.fillText('MK II',c.x+u(22),c.y+u(58));
@@ -11248,6 +11286,15 @@ function drawForgeUI(){
         forgeKeycap(padOn()?padB('A'):'1',c.x+c.w-u(22)-u(30),c.y+chh-u(14),fL);
         ctx.font=fL; ctx.fillStyle=UIC.tx_1; ctx.textAlign='right'; ctx.fillText('UPGRADE',c.x+c.w-u(22)-u(40),c.y+chh-u(14)); ctx.textAlign='left';
       }
+      if(o.k==='el'){
+        E=ELEM[o.el]; wd=String(E.w2||'').split(' \u00b7 ');
+        forgeElemGlyph(ctx,o.el,c.x+c.w/2,c.y+u(42),u(16),E.c);
+        ctx.textAlign='center';
+        ctx.font=fH; ctx.fillStyle=E.c; ctx.fillText(E.name,c.x+c.w/2,c.y+u(84));
+        ctx.font=fM; ctx.fillStyle=UIC.tx_2; ctx.fillText(wd[0]||'',c.x+c.w/2,c.y+u(101)); ctx.fillText(wd[1]||'',c.x+c.w/2,c.y+u(115));
+        ctx.textAlign='left'; ctx.font=fL; ctx.fillStyle=(forgeScore()<o.cost)?UIC.danger:UIC.acc; ctx.fillText(arcadeCr(o.cost),c.x+u(14),c.y+chh-u(12));
+        if(!padOn()) forgeKeycap(String(i+1),c.x+c.w-u(14)-u(24),c.y+chh-u(12),fM);
+      }
       cx+=cw+u(12);
     }
     U.mx=mouse.x; U.my=mouse.y;
@@ -11255,8 +11302,8 @@ function drawForgeUI(){
     yy=y+PH-Math.round(FH/2)+Math.round(pL*0.35); xr=x+pad;
     ctx.font=fL;
     function hint(key,txt){ var kw=forgeKeycap(key,xr,yy,fL); ctx.font=fL; ctx.fillStyle=UIC.tx_2; ctx.textAlign='left'; ctx.fillText(txt,xr+kw+u(8),yy); xr+=kw+u(8)+hudRawW(txt)+u(26); }
-    if(padOn()){ hint(padB('A'),'UPGRADE'); hint(padB('B'),'CLOSE'); }
-    else { hint('1','UPGRADE'); hint(keyLabel('KeyE','E'),'CONFIRM'); hint('ESC','CLOSE'); }
+    if(padOn()){ if(n>1) hint('D-PAD','CHOOSE'); hint(padB('A'),'UPGRADE'); hint(padB('B'),'CLOSE'); }
+    else { hint(n>1?('1-'+n):'1',n>1?'CHOOSE':'UPGRADE'); hint(keyLabel('KeyE','E'),'CONFIRM'); hint('ESC','CLOSE'); }
   } finally { ctx.restore(); }
 }
 function sealPayout(tier){
@@ -42330,7 +42377,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.24: Pick an item on the wheel, pull the trigger to use one, and your gun comes back by itself. Check 26.24 fails on v26.23',
+  now:'v26.25: At THE FORGE a MK II gun can become MK III with FIRE, SHOCK, CRYO or ACID for 6,000 score. Check 26.25 fails on v26.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

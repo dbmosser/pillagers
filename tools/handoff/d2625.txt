@@ -1,0 +1,5 @@
+## v26.25 - THE FORGE: MK III AND THE FOUR ELEMENTS
+
+Co-op hunt while he was away. His order of 2026-10-12 (upgrade guns and add elemental damage at a pack-a-punch, in the raid only) and his question of 2026-10-14 (where is the Forge). A gun already upgraded to MK II now gets the second step at THE FORGE: E opens four cards, FIRE (burn, panic), SHOCK (chain, stun), CRYO (slow, freeze) and ACID (shred, anti-machine), each with its own mark and colour, for 6,000 score. Pick with 1 to 4, the mouse (hover and click) or the D-pad and A on a pad; ESC, TAB, B or CLOSE leave with no charge. The gun becomes MK III with the element picked: its tracer takes the element colour, its rounds carry the element, GUN UPGRADED says the name and the element, the element plays its own sound, and the pickup card shows it. An upgraded gun you extract with is yours to keep. A MK III gun reads MAX TIER at the Forge, and too little score reads NEED $6,000 and opens nothing.
+
+MEASURED. Check 26.25 passes, and fails on v26.24.

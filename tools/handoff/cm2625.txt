@@ -1,0 +1,7 @@
+v26.25: the forge: mk iii and the four elements
+
+At THE FORGE a MK II gun can become MK III with FIRE, SHOCK, CRYO or ACID for 6,000 score.
+
+Check 26.25. Fails on v26.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

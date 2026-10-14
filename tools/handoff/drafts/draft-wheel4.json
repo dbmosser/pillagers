@@ -1,0 +1,100 @@
+{
+    "title":  "THE BAR HOLDS NINE GUNS",
+    "why":  "His order of 2026-10-14: \"Lets ONLY show guns at the bottom of the screen, only 9 of them. Then lets add a wheel for heals and grenades.\" The bar at the bottom of the screen now has nine gun keys, 1 to 9, and nothing else: no grenade, heal or plate keys, and no group labels. A tenth gun takes the place of the weakest gun you are not holding, which goes to the backpack, as the four gun rule did before. Everything else, grenades, smoke, decoys, tripwires, bandages, medkits, stims and armour plates, is used from the item wheel (hold Q, aim, let go, then pull the trigger): the old keys G, U, J and H, the hold on H, and the digits 5 to 9 as item keys are gone, which also frees those keys. An item dropped on the bar is refused with ITEMS GO ON THE WHEEL, a saved plan loses its item bindings once and keeps its guns, grenades stay in the pouch, and the DEMO controls card now says SWITCH GUN 1-9 and ITEMS HOLD Q.",
+    "now":  "The bottom bar is nine gun slots, 1 to 9; grenades, heals and plates are only on the item wheel (hold Q).",
+    "edits":  [
+                  {
+                      "anchor":  "var GUNKEYS=4;",
+                      "replacement":  "var GUNKEYS=9;   // v26.xx (wheel4), HIS ORDER 2026-10-14: \"Lets ONLY show guns at the bottom of the screen, only 9 of them.\" Nine gun keys; grenades, heals and plates live on the item wheel (hold Q)"
+                  },
+                  {
+                      "anchor":  "var BELT_CLASS=[\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027throw\u0027,\u0027throw\u0027,\u0027med\u0027,\u0027med\u0027,\u0027plate\u0027];",
+                      "replacement":  "var BELT_CLASS=[\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027];   // v26.xx (wheel4): was four guns, two throwables, two medical and a plate; the items moved to the wheel"
+                  },
+                  {
+                      "anchor":  "  if(code===\u0027KeyH\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!repeat){ HHOLD.arm=1; HHOLD.t=0; }   // v25.xx (holdhplate): H is armed here; a tap heals and a hold slots a plate, decided in holdHTick",
+                      "replacement":  "  // v26.xx (wheel4), HIS ORDER 2026-10-14: EVERYTHING GOES THROUGH THE WHEEL. H (tap heal and hold plate), G (quick throw), U and J (cycling) and the item keys 5 to 9 are gone; hold Q."
+                  },
+                  {
+                      "anchor":  "  if(code===\u0027KeyU\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!repeat) cycleThrow();   // v25.xx (keyswap): switch throwable moved from Q (now the crowbar) to U",
+                      "replacement":  "  // (U, J and G: see above)"
+                  },
+                  {
+                      "anchor":  "  if(code===\u0027KeyJ\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!repeat) cycleHeal();   // v26.02 (beltkeys): J picks the next heal on the medical keys, as U picks the next grenade",
+                      "replacement":  "  // (U, J and G: see above)"
+                  },
+                  {
+                      "anchor":  "  if(code===\u0027KeyG\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!repeat){ throwSelFix(); doThrow(); }   // v23.46 (arcade23): in the arcade G is the quick heal   // v25.xx (belt5a): G throws the kind on a throwable key",
+                      "replacement":  "  // (U, J and G: see above)"
+                  },
+                  {
+                      "anchor":  "[\u0027F1\u0027,\u0027controls list\u0027],[\u0027KeyH\u0027,\u0027quick heal (tap), armour plate (hold)\u0027],",
+                      "replacement":  "[\u0027F1\u0027,\u0027controls list\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027KeyG\u0027,\u0027quick throw\u0027],[\u0027KeyU\u0027,\u0027switch throwable\u0027],[\u0027KeyJ\u0027,\u0027switch medical\u0027],[\u0027KeyZ\u0027",
+                      "replacement":  "[\u0027KeyZ\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027KeyF\u0027,\u0027KeyG\u0027,\u0027KeyU\u0027,\u0027KeyH\u0027,\u0027KeyJ\u0027]]",
+                      "replacement":  "\u0027KeyF\u0027]]"
+                  },
+                  {
+                      "anchor":  "+s(\u0027KeyF\u0027)+\u0027 next gun \u0026nbsp; \u0027+s(\u0027KeyG\u0027)+\u0027 throw \u0026nbsp; \u0027+s(\u0027KeyU\u0027)+\u0027 next grenade \u0026nbsp; \u0027+s(\u0027KeyH\u0027)+\u0027 heal, hold for plate \u0026nbsp; \u0027+s(\u0027KeyJ\u0027)+\u0027 next heal \u0026nbsp; \u0027+k(\u00271-4\u0027)+\u0027 guns \u0026nbsp; \u0027+k(\u00275-6\u0027)+\u0027 throw that grenade \u0026nbsp; \u0027+k(\u00277-8\u0027)+\u0027 use that heal \u0026nbsp; \u0027+k(\u00279\u0027)+\u0027 plate \u0026nbsp; \u0027",
+                      "replacement":  "+s(\u0027KeyF\u0027)+\u0027 next gun \u0026nbsp; \u0027+k(\u00271-9\u0027)+\u0027 guns \u0026nbsp; \u0027"
+                  },
+                  {
+                      "anchor":  "[\u00271-4\u0027,\u0027guns\u0027],[\u00275-6\u0027,\u0027throw that grenade\u0027],[\u00277-8\u0027,\u0027use that heal\u0027],[\u00279\u0027,\u0027plate\u0027],[\u0027FIRE\u0027,\u0027use selected key\u0027],[\u0027G\u0027,\u0027throw the chosen grenade\u0027],[\u0027U\u0027,\u0027next grenade\u0027],[\u0027H\u0027,\u0027use the chosen heal, hold plate\u0027],[\u0027J\u0027,\u0027next heal\u0027],",
+                      "replacement":  "[\u00271-9\u0027,\u0027guns\u0027],[\u0027HOLD Q\u0027,\u0027item wheel: aim at a grenade, heal or plate and let go\u0027],[\u0027FIRE\u0027,\u0027use the item in hand, or fire\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027G\u0027,\u0027throw\u0027],[\u0027H\u0027,\u0027heal\u0027],[\u0027U / J\u0027,\u0027next throw, heal\u0027],",
+                      "replacement":  "[\u0027Q\u0027,\u0027item wheel\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u00271-4\u0027,\u0027guns\u0027],[\u0027B / I\u0027,\u0027backpack\u0027],[\u00275-9\u0027,\u0027throw, heal, plate\u0027],",
+                      "replacement":  "[\u00271-9\u0027,\u0027guns\u0027],[\u0027B / I\u0027,\u0027backpack\u0027],[\u0027LMB\u0027,\u0027use item in hand\u0027],"
+                  },
+                  {
+                      "anchor":  "_lbH=Math.round(_lbP*1.5)+LH(3);",
+                      "replacement":  "_lbH=0;"
+                  },
+                  {
+                      "anchor":  "    // v25.xx (belt6a), HIS ORDER 2026-10-13: a small caps label under each group, amber while the highlight is in that group.\n    (function(){\n      var NM=[\u0027GUNS\u0027,\u0027THROW\u0027,\u0027MEDICAL\u0027,\u0027ARMOUR\u0027], g0, f, l, qq, cxl, sg=beltGroupOf(sel);\n      ctx.font=_lbF; ctx.textAlign=\u0027center\u0027;\n      for(g0=0;g0\u003c4;g0++){\n        f=-1; l=-1;\n        for(qq=0;qq\u003csl.length;qq++) if(beltGroupOf(qq)===g0){ if(f\u003c0) f=qq; l=qq; }\n        if(f\u003c0) continue;\n        cxl=hx+(f*bw+_gx[f]+l*bw+_gx[l]+bw)/2;\n        ctx.fillStyle=(g0===sg)?UIC.acc:HUDC.dim;\n        ctx.fillText(NM[g0],cxl,hy+bw+_lbP+LH(1));\n      }\n      ctx.textAlign=\u0027left\u0027;\n    })();",
+                      "replacement":  "    // v26.xx (wheel4): no group labels under the belt; it holds nine guns and nothing else."
+                  },
+                  {
+                      "anchor":  "for(_gi=0;_gi\u003c4;_gi++) h+=\u0027\u003cdiv style=\"background:rgba(20,23,26,.55)",
+                      "replacement":  "for(_gi=0;_gi\u003c1;_gi++) h+=\u0027\u003cdiv style=\"background:rgba(20,23,26,.55)"
+                  },
+                  {
+                      "anchor":  "  if(!beltClassOf(key)) return;   // v25.xx (belt3): a gun, a throwable, a heal, a stim or a plate; anything else has no key",
+                      "replacement":  "  if(beltClassOf(key)!==\u0027gun\u0027) return;   // v26.xx (wheel4): the belt takes guns only; a throwable, a heal, a stim or a plate waits for the wheel"
+                  },
+                  {
+                      "anchor":  "function beltClassWord(cls){\n  return cls===\u0027gun\u0027?(\u0027GUNS GO ON KEYS 1 TO \u0027+GUNKEYS):(cls===\u0027throw\u0027?\u0027THROWABLES GO ON KEYS 5 AND 6\u0027:(cls===\u0027med\u0027?\u0027MEDICAL GOES ON KEYS 7 AND 8\u0027:(cls===\u0027plate\u0027?\u0027PLATES GO ON KEY 9\u0027:\u0027NOT A BELT ITEM\u0027)));",
+                      "replacement":  "function beltClassWord(cls){\n  return cls===\u0027gun\u0027?(\u0027GUNS GO ON KEYS 1 TO \u0027+GUNKEYS):\u0027ITEMS GO ON THE WHEEL\u0027;   // v26.xx (wheel4): the belt takes guns only"
+                  },
+                  {
+                      "anchor":  "function beltThrowTick(){\n",
+                      "replacement":  "function beltThrowTick(){\n  return;   // v26.xx (wheel4): every grenade stays in the pouch; the wheel reads the pouch and the backpack\n"
+                  },
+                  {
+                      "anchor":  "if(P.netEarn===undefined) P.netEarn=netEarnFromLog();",
+                      "replacement":  "// v26.xx (wheel4): and the three plans lose every item that is not a gun, once (the belt holds guns only).\nif((P.beltV|0)\u003c5){\n  P.hotAssign=beltItemsOff(P.hotAssign||{});\n  if(P.kitSaved\u0026\u0026P.kitSaved.hot) P.kitSaved.hot=beltItemsOff(P.kitSaved.hot);\n  if(P.hotBeforeFree) P.hotBeforeFree=beltItemsOff(P.hotBeforeFree);\n  P.beltV=5;\n}\nif(P.netEarn===undefined) P.netEarn=netEarnFromLog();"
+                  },
+                  {
+                      "anchor":  "function applyLoadedProfile(r){",
+                      "replacement":  "// v26.xx (wheel4), HIS ORDER 2026-10-14: THE BELT HOLDS GUNS ONLY (P.beltV=5). Every binding that is not a gun comes off a saved plan; a gun stays on its key.\nfunction beltItemsOff(h){\n  if(!h||typeof h!==\u0027object\u0027) return h;\n  var out={}, k;\n  for(k in h) if(Object.prototype.hasOwnProperty.call(h,k)){\n    if(ITEMS[h[k]]\u0026\u0026ITEMS[h[k]].use===\u0027gun\u0027) out[k]=h[k];\n  }\n  return out;\n}\nfunction applyLoadedProfile(r){"
+                  },
+                  {
+                      "anchor":  "mig739:1,mig945:1,beltV:4,",
+                      "replacement":  "mig739:1,mig945:1,beltV:5,"
+                  },
+                  {
+                      "anchor":  "[\u0027SWITCH GUN\u0027,\u00271-4\u0027,padB(\u0027LB\u0027)+\u0027 / \u0027+padB(\u0027RB\u0027)],[\u0027HEAL\u0027,kn(\u0027KeyH\u0027),padB(\u0027D-DOWN\u0027)],",
+                      "replacement":  "[\u0027SWITCH GUN\u0027,\u00271-9\u0027,padB(\u0027LB\u0027)+\u0027 / \u0027+padB(\u0027RB\u0027)],[\u0027ITEMS\u0027,\u0027HOLD \u0027+kn(\u0027KeyQ\u0027),\u0027HOLD \u0027+padB(\u0027D-DOWN\u0027)],"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027wheel4, his order: the bar holds nine gun slots and nothing else; G, U, J, H, hold H and the item digits do nothing, a digit is a gun key, an item dropped on the belt is refused (ITEMS GO ON THE WHEEL), an automatic pin is never an item, nine guns fill the nine keys, and an old plan loses its items once\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: no raid here\u0027;\n     if(typeof raidKey!==\u0027function\u0027||typeof updatePlayer!==\u0027function\u0027||typeof gunKeysSettle!==\u0027function\u0027||typeof beltDropRefusal!==\u0027function\u0027) return \u0027SKIP: no belt here\u0027;\n     if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026(G.sim||!G.over)) return \u0027SKIP: a raid or a sim is live\u0027;\n     var bad=[], g=null, p=null, sl, i, gk=[], k, icons, nr, proto=CanvasRenderingContext2D.prototype, oFT=proto.fillText, txt=[], pl, hot0;\n     function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q=\u0027field\u0027; o.qRank=1; return o; }\n     function cnt(k2){ var c=0, j; for(j=0;j\u003cg.bag.length;j++) if(g.bag[j]===k2) c++; return c; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player; p.iv=99; p.maxhp=100; g.ents.length=0; g.bagOpen=false; g.mapOpen=false; g.paused=false; g.trade=null; keys={}; mouse.down=false;\n       for(k in ITEMS) if(ITEMS[k].use===\u0027gun\u0027\u0026\u0026ITEMS[k].gk\u0026\u0026WEAPONS[ITEMS[k].gk]\u0026\u0026WEAPONS[ITEMS[k].gk].mag\u003e0\u0026\u0026gk.length\u003c9) gk.push(k);\n       if(gk.length\u003c9) return \u0027SKIP: fewer than nine guns here\u0027;\n       // ONE: nine keys, all guns\n       sl=hotbarSlots();\n       if(GUNKEYS!==9) bad.push(\u0027ONE: GUNKEYS is \u0027+GUNKEYS+\u0027, not 9\u0027);\n       if(sl.length!==9) bad.push(\u0027ONE: the belt has \u0027+sl.length+\u0027 keys, not 9\u0027);\n       for(i=0;i\u003csl.length;i++) if(sl[i].kind!==\u0027gun\u0027) bad.push(\u0027ONE: key \u0027+(i+1)+\u0027 is a \u0027+sl[i].kind+\u0027, not a gun\u0027);\n       // TWO: no item key does anything\n       g.bag=[\u0027bandage\u0027,\u0027bandage\u0027,\u0027medkit\u0027,\u0027plate\u0027,\u0027stim\u0027]; g.pouch.frag=2; g.pouch.smoke=1; g.pouch.decoy=1; g.pouch.trip=1; p.hp=50; p.healQ=0; p.prep=null; p.prepA=null; p.cooking=0;\n       var ks=[\u0027KeyG\u0027,\u0027KeyU\u0027,\u0027KeyJ\u0027,\u0027KeyH\u0027,\u0027Digit5\u0027,\u0027Digit6\u0027,\u0027Digit7\u0027,\u0027Digit8\u0027,\u0027Digit9\u0027];\n       for(i=0;i\u003cks.length;i++){ keys[ks[i]]=true; raidKey(ks[i],false,null); updatePlayer(0.2); keys={}; updatePlayer(0.05); }\n       if(g.pouch.frag!==2||g.pouch.smoke!==1||g.pouch.decoy!==1||g.pouch.trip!==1) bad.push(\u0027TWO: a key threw a grenade (frag \u0027+g.pouch.frag+\u0027, smoke \u0027+g.pouch.smoke+\u0027)\u0027);\n       if(cnt(\u0027bandage\u0027)!==2||cnt(\u0027medkit\u0027)!==1||cnt(\u0027plate\u0027)!==1||cnt(\u0027stim\u0027)!==1) bad.push(\u0027TWO: a key used an item (bag \u0027+g.bag.join(\u0027,\u0027)+\u0027)\u0027);\n       if(p.prep||p.prepA||p.cooking||p.stimT\u003e0) bad.push(\u0027TWO: a key started a heal, a plate or a cook\u0027);\n       // THREE: nine real guns fill the nine keys at the deploy\n       p.wep=cl(ITEMS[gk[0]].gk); p.ammo=p.wep.mag; p.sec=cl(ITEMS[gk[1]].gk); p.secAmmo=p.sec.mag; p.swapped=false; p.reloading=0; p.reserve=60;\n       g.bag=gk.slice(2); g.hotAssign={}; g.hotAuto={}; g.hotPruned={};\n       gunKeysSettle({deploy:1});\n       sl=hotbarSlots(); icons=[]; nr=0;\n       for(i=0;i\u003csl.length;i++){ icons.push(sl[i].icon||\u0027-\u0027); if(sl[i].kind===\u0027gun\u0027\u0026\u0026!sl[i].vacant\u0026\u0026sl[i].icon\u0026\u0026sl[i].icon!==\u0027fists\u0027) nr++; }\n       if(nr!==9) bad.push(\u0027THREE: \u0027+nr+\u0027 of the nine keys show a real gun (\u0027+icons.join(\u0027,\u0027)+\u0027)\u0027);\n       // FOUR: a digit is a gun key: key 7 draws the gun on it\n       hot0=sl[6]\u0026\u0026sl[6].icon; if(hot0\u0026\u0026ITEMS[hot0]\u0026\u0026ITEMS[hot0].gk) hot0=ITEMS[hot0].gk;\n       if(hot0){ raidKey(\u0027Digit7\u0027,false,null); keys={}; updatePlayer(0.05);\n         if(!p.wep||p.wep.id!==hot0) bad.push(\u0027FOUR: key 7 left \u0027+(p.wep\u0026\u0026p.wep.id)+\u0027 in hand, not \u0027+hot0); }\n       // FIVE: an item dropped on the belt is refused in words; a gun is not\n       for(i=0;i\u003c[\u0027frag\u0027,\u0027smoke\u0027,\u0027bandage\u0027,\u0027medkit\u0027,\u0027plate\u0027,\u0027stim\u0027].length;i++){ k=[\u0027frag\u0027,\u0027smoke\u0027,\u0027bandage\u0027,\u0027medkit\u0027,\u0027plate\u0027,\u0027stim\u0027][i]; pl=beltDropRefusal(k,2); if(!pl||!/WHEEL/.test(pl)) bad.push(\u0027FIVE: \u0027+k+\u0027 on key 3 was answered \u0027+JSON.stringify(pl)); }\n       if(beltDropRefusal(gk[2],8)!==\u0027\u0027) bad.push(\u0027FIVE: a gun on key 9 was refused (\u0027+beltDropRefusal(gk[2],8)+\u0027)\u0027);\n       // SIX: picking up an item pins nothing\n       g.hotAssign={}; g.hotAuto={}; autoBelt(\u0027bandage\u0027,true); autoBelt(\u0027frag\u0027,true); autoBelt(\u0027plate\u0027,true);\n       for(k in g.hotAssign) if(ITEMS[g.hotAssign[k]]\u0026\u0026ITEMS[g.hotAssign[k]].use!==\u0027gun\u0027) bad.push(\u0027SIX: an item was pinned to key \u0027+(+k+1)+\u0027 (\u0027+g.hotAssign[k]+\u0027)\u0027);\n       // SEVEN: an old plan loses its items once, and keeps its gun\n       pl=beltItemsOff({0:\u0027gun_pistol\u0027,4:\u0027frag\u0027,5:\u0027smoke\u0027,6:\u0027bandage\u0027,8:\u0027plate\u0027});\n       if(JSON.stringify(pl)!==\u0027{\"0\":\"gun_pistol\"}\u0027) bad.push(\u0027SEVEN: the old plan became \u0027+JSON.stringify(pl));\n       // EIGHT: the belt draws no group labels\n       txt=[]; proto.fillText=function(s,x,y){ txt.push(String(s)); return oFT.apply(this,arguments); };\n       try{ if(window.__frame){ __frame(0); __frame(0); } } finally { proto.fillText=oFT; }\n       if(window.__frame){\n         [\u0027THROW\u0027,\u0027MEDICAL\u0027,\u0027ARMOUR\u0027].forEach(function(w){ if(txt.indexOf(w)\u003e=0) bad.push(\u0027EIGHT: the belt still draws the label \u0027+w); });\n         if(!g.hotCells||g.hotCells.length!==9) bad.push(\u0027EIGHT: the belt drew \u0027+(g.hotCells?g.hotCells.length:0)+\u0027 keys, not 9\u0027);\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ proto.fillText=oFT; }catch(_f){}\n       try{ mouse.down=false; keys={}; var g2=__state(); if(g2){ g2.wheel=null; g2.hot=0; g2.hotAssign={}; g2.hotAuto={}; if(!g2.over){ g2.player.iv=0; g2.player.prep=null; g2.player.prepA=null; __endRaid(\u0027abandon\u0027); } } }catch(_e){}\n       __topClear(); __resetCfg(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
