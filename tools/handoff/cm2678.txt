@@ -1,0 +1,7 @@
+v26.78: fire hazards
+
+Two fuel fires per raid burn as impassable discs of flame that stop and burn anyone at their edge.
+
+Check 26.78. Fails on v26.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

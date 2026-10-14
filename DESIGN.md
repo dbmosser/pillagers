@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.78 - FIRE HAZARDS
+
+Co-op hunt while he was away. His yes to fire as a hazard that makes spots impassable, not coming in from the map edges. Every raid now plans two fuel fires out on open ground, away from where you drop and from the extraction rings. A fire smoulders for four seconds (a dashed ring on the ground and FUEL FIRE in the alert with the distance and direction), then burns for 55 seconds as a disc of flame about as wide as a house. While it burns nobody can walk through it: you, the machines and the pillagers are all stopped at its edge, and standing at the edge burns you (the machines burn faster). Bullets fly over it. The Director never lands a pack inside one. It dies down to embers, and it shows as a mark on the minimap and the sector map. DEMO and CAREER work the same, and the fire is a single call (fireAdd) so the coming raid events can start fires of their own.
+
+MEASURED. Check 26.78 passes, and fails on v26.77.
 ## v26.77 - SOME CRATES ARE MIMICS
 
 Co-op hunt while he was away. His yes to suggestion 27, mimic containers. Now and then, about one crate or locker in fifty, the box is a mimic with a dormant crawler lying in it. Which ones are mimics is fixed by where a box stands and the raid seed, with no random number spent, so the maps, the loot and every number the raid is built from are exactly as they were. A careful player gets a faint metallic tick when he comes within a short walk of a mimic. Start searching it and, under a second later, the crawler bursts out and goes for you, and being a crawler it latches on. The box keeps its loot and searches as normal afterward, a mimic wakes only once, and the bot simulation never wakes one.
