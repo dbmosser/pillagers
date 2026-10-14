@@ -1,0 +1,5 @@
+## v26.87 - THE WHAT IS NEW CARD NAMES THE RAID EVENTS
+
+Co-op hunt while he was away. The card was stamped v26.75 and the stamp may not trail the build by more than 0.15. Its new line names the raid events built since: orbital debris, the machine convoy, the bounty pillager, the coolant rupture, the lockdown alarm and the Overseer rampage.
+
+MEASURED. Check 26.87 passes, and fails on v26.86.

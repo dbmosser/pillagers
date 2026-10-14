@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.87 - THE WHAT IS NEW CARD NAMES THE RAID EVENTS
+
+Co-op hunt while he was away. The card was stamped v26.75 and the stamp may not trail the build by more than 0.15. Its new line names the raid events built since: orbital debris, the machine convoy, the bounty pillager, the coolant rupture, the lockdown alarm and the Overseer rampage.
+
+MEASURED. Check 26.87 passes, and fails on v26.86.
 ## v26.86 - RAID EVENTS: OVERSEER RAMPAGE
 
 Co-op hunt while he was away. The sixth and last raid event, the Overseer rampage: the boss leaves its lair and sweeps the map. With the Overseer alive, a 12 second warning puts a ring on it, then for two minutes it is off its leash and 60 percent faster. It walks to three points in three different quarters of the map and then comes for you wherever you are, by the street grid, firing and using its phases as ever. The ring and the map mark follow it. When the two minutes are up, or it dies, it goes back to being the guardian of its lair. DEMO and CAREER work the same.
