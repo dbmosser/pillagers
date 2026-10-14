@@ -1,0 +1,7 @@
+v26.83: raid events: coolant rupture
+
+The coolant rupture event fogs a district: shorter view, double cryo and richer crates inside.
+
+Check 26.83. Fails on v26.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

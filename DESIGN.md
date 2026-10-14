@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.83 - RAID EVENTS: COOLANT RUPTURE
+
+Co-op hunt while he was away. The fourth raid event, the coolant rupture: a district fogs over. An 18 second warning shows a wide ring and a countdown, then for 75 seconds that district is a white cloud with three effects. You see less inside it, down to under half as far at the middle, fading back to normal toward the rim (the machines see as they always did). Cryo rounds from the Forge build cold twice as fast on anything inside, so a freeze comes in half the hits. And every crate, locker, safe and cache in the district that is still shut holds one more item, shown by a pale glint. When it ends everything goes back. DEMO and CAREER work the same.
+
+MEASURED. Check 26.83 passes, and fails on v26.82.
 ## v26.82 - RAID EVENTS: BOUNTY PILLAGER
 
 Co-op hunt while he was away. The third raid event, the bounty pillager: a marked crew boss with a big score reward who hunts you. A 15 second warning shows a ring where he will come in, then a hostile pillager steps out of the streets with four times the health, a full rig of plate and a rich bag for his body to drop. He comes for you wherever you go, whether or not he has seen you, and the ring, the map mark and BOUNTY $1,500 follow him. Put him down yourself and the bounty is paid into your run score at once, in DEMO and in CAREER; if something else kills him nothing is paid. Stay alive for 150 seconds of the hunt and he slips away. He never touches your CAREER save: he is a wave kind of pillager with no grudge or rival filed.
