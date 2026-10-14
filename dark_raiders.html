@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.83';
+var VER='26.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17124,7 +17124,7 @@ function explodeFrag(f){
       // already sets byPlayer=false for raider-on-raider fire (14061) and for
       // lightning (3722); this is the same convention.
       if(e.hp<=0){ e.byPlayer=!!_fMine; e.bySeat=0; }   // v15.80: a charge on the host is never one of the party, so the seat mark comes off with the kill
-      if(_fMine){ e.pHitT=.3; e.pHitSeat=0; }   // v11.37: only YOUR charge provokes; v17.31, co-op hunt 2026-09-28: and it is the host player own, not a seat
+      if(_fMine){ e.pHitT=.3; e.pHitSeat=0; } if(_fMine){ e.blow='x'; e.blowT=G.t; }   // v26.xx (party1): and the last blow on him was a blast   // v11.37: only YOUR charge provokes; v17.31, co-op hunt 2026-09-28: and it is the host player own, not a seat
       // And a blast only turns the survivors onto him if it was his. An enemy
       // grenade used to aggro the dead man's own crew onto the player.
       // v11.36: a blast does not stand a bystander or a downed man up into a
@@ -19331,6 +19331,7 @@ if(wep.mag===0){
         _me.hitT=.16; _me.pHitT=.3; _me.pHitSeat=0;   // v11.37: your strike provokes; v17.31, co-op hunt 2026-09-28: yours, not a seat
         notoAggress(_me);            // v8.30: same rule, bare hands included
         if(_me.hp<=0) _me.byPlayer=true;
+        _me.blow='m'; _me.blowT=G.t;   // v26.xx (party1): the last blow on him was a swing
         _swHit=true;
         if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); if(G.barT>0){ meleeFoley('hit',_me.x,_me.y); meleeImpact(sh.x,sh.y,_me.x,_me.y,_me.r); } }   // v26.xx (meleebig): and the crowbar lands with a flash, sparks and a small kick   // v25.xx (keyswap): a crowbar blow thuds
       }
@@ -23052,6 +23053,7 @@ function updatePlayer(dt){
   if(p.recoil>0) p.recoil-=dt*7;
   if(p.kickT>0){ var _lkd=Math.min(dt,p.kickT); p.kickT-=dt; p.x+=(p.kickVx||0)*_lkd; p.y+=(p.kickVy||0)*_lkd; collide(p,G.map.walls); }   // v26.xx (feel10): the Lance kick
   bloomTick(p,dt);   // v26.xx (feel19): how loose the aim is right now
+  try{ styleTick(p,dt); }catch(_sty){}   // v26.xx (party1): the calm clock and the medal plates
   if(p.muzzle>0) p.muzzle-=dt;
   if(p.iv>0) p.iv-=dt;
   // v11.83, HIS SPEC: the stim clock, up here with the other timers so it keeps
@@ -25525,7 +25527,7 @@ if(e.state==='possum'){
       if(e.byPlayer&&!(G.player&&G.player.specOut)){
         T.kills[e.kind]++; contractKill(e.kind);
         if(e.elite) T.eliteKills=(T.eliteKills||0)+1;
-        if(G.arcade) arcadeKill(e.kind,(e.elite&&e.affix)?3:e.elite,e.boss,e.x,e.y); else if(G.career) careerKill(e.kind,(e.elite&&e.affix)?3:e.elite,e.boss,e.x,e.y);   /* v24.xx (feat0h2): the CAREER score */   // v23.29 (arcade8): the arcade score, by kind; v23.38 (arcade15): with the popup where he fell
+        if(G.arcade) arcadeKill(e.kind,(e.elite&&e.affix)?3:e.elite,e.boss,e.x,e.y,e); else if(G.career) careerKill(e.kind,(e.elite&&e.affix)?3:e.elite,e.boss,e.x,e.y,e);   /* v24.xx (feat0h2): the CAREER score */   // v23.29 (arcade8): the arcade score, by kind; v23.38 (arcade15): with the popup where he fell
         // v8.29: the charge for shooting a neutral now lands at the SHOT, not
         // here - see the bullet path. Billing it again at his death would
         // charge the same man twice for one decision.
@@ -27578,7 +27580,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // before, and a round into a downed man that does not finish him leaves the mark with whoever downed him.
               // No number, no player text and no seeded draw moved.
               if(en.hp<=0) en.byPlayer=true; else if(!en.downed) en.byPlayer=false;
-              en.pHitT=.3; en.pHitSeat=0;   // v11.37: YOUR round, so it may provoke and it may earn a grudge; v17.31, co-op hunt 2026-09-28: yours, not a seat
+              en.pHitT=.3; en.pHitSeat=0; en.blow='g'; en.blowT=G.t;   // v26.xx (party1): and the last blow on him was a round   // v11.37: YOUR round, so it may provoke and it may earn a grudge; v17.31, co-op hunt 2026-09-28: yours, not a seat
               // v9.25, HIS NOTE: pillagers "just stood there after getting
               // attacked". Being shot now turns a peaceful pillager hostile on
               // the round that hits him, rather than leaving it to whether a
@@ -35702,7 +35704,8 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
       ctx.fillText(rState==='jam'?'JAMMED':(rState==='dry'?'NO AMMO':'['+keyLabel('KeyR','R')+'] RELOAD'),rx0,ry0+gap+len+LH(14)*_wz);
       ctx.textAlign='left';
     }
-    xhDot(ctx,rx0,ry0,rState,rCol,_rz);   // v26.xx (settings6): the middle, the 2 pixel square it was by default
+    xhDot(ctx,rx0,ry0,rState,rCol,_rz);
+    try{ styleDraw(ctx,p,rx0,ry0); }catch(_sdw){}   // v26.xx (party1): the combo ring and the medal plates   // v26.xx (settings6): the middle, the 2 pixel square it was by default
     // v23.9x (hitmark), HIS ORDER (2026-10-12), his words on the hit marker: "i don't really understand how a hit marker is going to
     // work in 2.5 d -- just take your best shot i suppose", and then "maybe just on the inside reticule of the crosshair or something?
     // (Realize that many mechanics of first or third person shooters will not 1:1 translate to 2.5d)". THE HIT MARKER IS THE INSIDE OF
@@ -43766,7 +43769,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.83: The coolant rupture event fogs a district: shorter view, double cryo and richer crates inside. Check 26.83 fails on v26.82',
+  now:'v26.84: Kills now earn style bonuses and medals, and a combo ring drains around the cursor. Check 26.84 fails on v26.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -51645,7 +51648,7 @@ function netKillTake(peer,m){
   // v23.36 (arcmidfixa), review of arcade builds 7 to 13: AN OVERSEER KILL BY PLAYER 2 SCORED 400, NOT 2,000. The body here is a mirror
   // made by netEntMake/netEntFill, which never set boss, so player 2 scored the Overseer as a plain warden. A mirror is known as the
   // boss by its name, as every other mirror site does (name===BOSS_NAME). The kill word itself is unchanged.
-  if(G.arcade||G.career) (G.arcade?arcadeKill:careerKill)(k,((e&&e.elite&&e.affix)?3:!!(m.el||(e&&e.elite))),!!(e&&(e.boss||e.name===BOSS_NAME)),e?e.x:NaN,e?e.y:NaN);   /* v24.xx (feat0h2): and the CAREER score of a co-op partner */   // v23.29 (arcade8): the arcade score of player 2; v23.38 (arcade15): with the popup where he fell
+  if(G.arcade||G.career) (G.arcade?arcadeKill:careerKill)(k,((e&&e.elite&&e.affix)?3:!!(m.el||(e&&e.elite))),!!(e&&(e.boss||e.name===BOSS_NAME)),e?e.x:NaN,e?e.y:NaN,e);   /* v24.xx (feat0h2): and the CAREER score of a co-op partner */   // v23.29 (arcade8): the arcade score of player 2; v23.38 (arcade15): with the popup where he fell
   if(k==='raider'&&e&&e.ident&&!waveIdent(e.ident)){   /* v24.xx (feat0h3) */
     rr2=idRec(e.ident); rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
     saveProfile();
@@ -54106,15 +54109,16 @@ function scoreKill(st,k,el,boss,x,y){
   if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(ANN_STREAK[c]) annCue(ANN_STREAK[c]); }catch(_avc){} }
   return n;
 }
-function careerKill(k,el,boss,x,y){
+function careerKill(k,el,boss,x,y,ke){
   if(!G||!G.career||!G.cs||G.sim||G.over) return 0;
   try{ flowKill(k,el,boss); }catch(_fk2){}   // v26.xx (flow3): the run goals count what died
   var n=scoreKill(G.cs,k,el,boss,x,y);
   if(!(n>0)) return 0;
   G.cs.s=(G.cs.s|0)+n; G.cs.k=(G.cs.k|0)+1;
+  try{ styleKill(k,el,boss,x,y,ke); }catch(_sk2){}   // v26.xx (party1): the same style bonuses in a CAREER raid
   return n;
 }
-function arcadeKill(k,el,boss,x,y){
+function arcadeKill(k,el,boss,x,y,ke){
   if(!ARCADE.on||!G||!G.arcade||G.sim||G.over) return 0;
   try{ flowKill(k,el,boss); }catch(_fk1){}   // v26.xx (flow3): the run goals count what died
   var n=arcadeKillPts(k,el,boss), s, t=+G.t||0, mx, c;
@@ -54127,10 +54131,123 @@ function arcadeKill(k,el,boss,x,y){
   c=arcadeStreakCall(s.n);
   if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(ANN_STREAK[c]) annCue(ANN_STREAK[c]); }catch(_avc){} }   // v25.xx (noannouncer): the streak plays its chime ladder
   ARCADE.mine=(ARCADE.mine|0)+n; ARCADE.kills=(ARCADE.kills|0)+1;
+  try{ styleKill(k,el,boss,x,y,ke); }catch(_sk){}   // v26.xx (party1): the style bonuses and medals
   arcadeKillPerks();   // v23.31 (arcade10): half a magazine back, a Bandage every 3rd kill
   arcadeScSend();
   return n;
 }
+// v26.xx (party1), HIS YES (2026-10-14) to suggestion 37, STYLE SCORING: "a decaying combo ring at the cursor, style bonuses and short medal pop-ups". The same in DEMO and CAREER.
+// THE RING. While a kill chain of two or more is live (the streak that already multiplies the score, ARCADE_STREAK_GAP, 4 s), a ring sits just outside
+// the cursor's magazine and bloom rings and drains clockwise as the chain runs out, with its multiplier beside it (x2 to x5); it is amber, and
+// hotter for the higher multipliers. THE STYLE BONUSES pay into the run score through scoreBonus(), on top of the kill: LONG SHOT (45 m or more away,
+// 100), MELEE KILL (the last blow was a swing, 120), GRENADE DOUBLE (two kills in one blast, 200), MULTI-KILL (three kills inside 1.5 s, 150) and
+// UNTOUCHED (30 s with no damage and at least one kill in them, 100, again every 30 s). The last blow on a body is marked where it lands (blow m,
+// x or g and blowT on the body; the swing, the frag blast and the round), so a kill is read as it is credited. Each bonus is a short MEDAL: its
+// name and the figure in a small plate that rises over the ring for 1.7 s, with a short note of its own (no voice). Nothing here draws from the
+// seeded stream, nothing runs under G.sim, and the P2 window scores its own kills the same way (a mirror body carries no mark, so it scores the
+// range, the burst and the calm).
+var STY={long:100,longM:45,melee:120,gren:200,grenT:0.5,multi:150,multiN:3,multiT:1.5,calm:100,calmT:30,pop:1.7,max:3,fresh:1.5};
+var STY_SND={
+  'LONG SHOT':[[0,1568,1568,0.34,'sine',0.05],[0,2349,2349,0.2,'sine',0.014]],
+  'MELEE KILL':[[0,150,70,0.16,'square',0.05],[0.05,660,660,0.18,'triangle',0.04]],
+  'GRENADE DOUBLE':[[0,523,523,0.12,'triangle',0.05],[0.07,659,659,0.12,'triangle',0.05],[0.14,784,784,0.3,'triangle',0.05]],
+  'MULTI-KILL':[[0,784,784,0.1,'triangle',0.05],[0.06,988,988,0.1,'triangle',0.05],[0.12,1175,1175,0.1,'triangle',0.05],[0.18,1568,1568,0.34,'triangle',0.05]],
+  'UNTOUCHED':[[0,392,392,0.5,'sine',0.04],[0,494,494,0.5,'sine',0.03],[0,587,587,0.5,'sine',0.03]]
+};
+function styS(){ if(!G.sty) G.sty={pops:[],kt:[],gT:-9,gN:0,calmAt:STY.calmT,calmK:0,hp0:-1}; return G.sty; }
+function styStreak(){ return (G&&G.career&&G.cs)?G.cs.streak:((typeof ARCADE==='object'&&ARCADE)?ARCADE.streak:null); }
+// a short note on the sting bus: [start s, from Hz, to Hz, seconds, wave, peak level]
+function styTone(notes){
+  var a, t, out, i, n, o, g;
+  if(!G||G.sim||!notes) return false;
+  if(typeof NET==='object'&&NET&&NET.specTick) return false;
+  try{
+    a=ac(); if(!a) return false;
+    out=sndBus('sting'); if(!out) return false;
+    t=a.currentTime;
+    for(i=0;i<notes.length;i++){
+      n=notes[i]; o=a.createOscillator(); g=a.createGain(); o.type=n[4];
+      o.frequency.setValueAtTime(n[1],t+n[0]); if(n[2]!==n[1]) o.frequency.exponentialRampToValueAtTime(n[2],t+n[0]+n[3]);
+      g.gain.setValueAtTime(0.0001,t+n[0]); g.gain.linearRampToValueAtTime(n[5],t+n[0]+0.008); g.gain.exponentialRampToValueAtTime(0.0005,t+n[0]+n[3]);
+      o.connect(g); g.connect(out); o.start(t+n[0]); o.stop(t+n[0]+n[3]+0.02);
+    }
+  }catch(_st){ return false; }
+  return true;
+}
+// one medal: the figure into the score, the plate over the cursor ring, the note. Returns the figure paid.
+function styMedal(txt,pts,x,y){
+  var S=styS();
+  if(!scoreBonus(pts,x,y-12,'')) return 0;
+  S.pops.push({txt:txt,pts:pts,t:+G.t||0});
+  if(S.pops.length>8) S.pops.shift();
+  try{ styTone(STY_SND[txt]); }catch(_sn){}
+  return pts;
+}
+// a kill was credited (the DEMO door and the CAREER door, the host and a partner each their own). e is the body, when there is one.
+function styleKill(k,el,boss,x,y,e){
+  var S, t, p, d, fresh, bl, paid=0;
+  if(!G||G.sim||G.over||!G.player||!(G.arcade||G.career)) return 0;
+  S=styS(); t=+G.t||0; p=G.player; S.calmK++;
+  if(!isFinite(x)||!isFinite(y)){ x=p.x; y=p.y; }
+  bl=e&&e.blow; fresh=!!(e&&typeof e.blowT==='number'&&t-e.blowT<STY.fresh&&t>=e.blowT);
+  if(bl==='m'&&fresh) paid+=styMedal('MELEE KILL',STY.melee,x,y);
+  else if(bl==='g'&&fresh){ d=metres(Math.hypot(x-p.x,y-p.y)); if(d>=STY.longM) paid+=styMedal('LONG SHOT',STY.long,x,y); }
+  if(bl==='x'&&fresh){
+    if(t-S.gT<STY.grenT&&t>=S.gT) S.gN++; else S.gN=1;
+    S.gT=t;
+    if(S.gN===2) paid+=styMedal('GRENADE DOUBLE',STY.gren,x,y);
+  }
+  S.kt.push(t); while(S.kt.length&&t-S.kt[0]>STY.multiT) S.kt.shift();
+  if(S.kt.length>=STY.multiN){ paid+=styMedal('MULTI-KILL',STY.multi,x,y); S.kt.length=0; }
+  return paid;
+}
+// every step of the player: the calm clock (damage is read off health and armour, so a dodged round does not count) and the old plates
+function styleTick(p,dt){
+  var S, t, hp, i;
+  if(!G||G.sim||G.over||!p||!(G.arcade||G.career)||!(dt>0)) return;
+  S=styS(); t=+G.t||0; hp=(+p.hp||0)+(+p.armor||0);
+  if(S.hp0>=0&&hp<S.hp0-0.001){ S.calmAt=t+STY.calmT; S.calmK=0; }
+  S.hp0=hp;
+  if(t>=S.calmAt){
+    if(S.calmK>0&&!p.downed&&!p.dying) styMedal('UNTOUCHED',STY.calm,p.x,p.y-30);
+    S.calmAt+=STY.calmT; if(S.calmAt<=t) S.calmAt=t+STY.calmT;
+    S.calmK=0;
+  }
+  for(i=S.pops.length-1;i>=0;i--) if(t-S.pops[i].t>STY.pop+0.5||t<S.pops[i].t) S.pops.splice(i,1);
+}
+// the ring and the medal plates, at the cursor (rx, ry are the cursor on the HUD canvas)
+function styleDraw(c,p,rx,ry){
+  var S=G&&G.sty, z, xs, r, s, f, mx, t, col, i, n, pp, age, a, y, str, tw, hh;
+  if(!G||G.sim||!(G.arcade||G.career)||!isFinite(rx)||!isFinite(ry)) return;
+  t=+G.t||0; z=Math.max(1,hudRes()); xs=xhSize();
+  r=(8+7+4+10)*z*xs+bloomPx(p)*z*xs;
+  s=styStreak();
+  c.save();
+  if(s&&s.n>=2&&t>=s.t&&t-s.t<ARCADE_STREAK_GAP){
+    f=1-(t-s.t)/ARCADE_STREAK_GAP; mx=arcadeStreakX(s.n);
+    col=(mx>=4)?'255,96,58':((mx>=3)?'255,150,60':'255,192,74');
+    c.lineCap='round'; c.lineWidth=3.2*z;
+    c.strokeStyle='rgba('+col+',.2)'; c.beginPath(); c.arc(rx,ry,r,0,6.2832); c.stroke();
+    c.strokeStyle='rgba('+col+',.95)'; c.beginPath(); c.arc(rx,ry,r,-1.5708,-1.5708+6.2832*f); c.stroke();
+    c.font=hudFS(TYPE.micro); c.textAlign='left'; c.fillStyle='rgba('+col+',1)';
+    hudText('x'+mx,Math.round(rx+r+7*z),Math.round(ry+4*z));
+  }
+  if(S&&S.pops&&S.pops.length){
+    c.font=hudFS(TYPE.label); c.textAlign='center'; n=0;
+    for(i=S.pops.length-1;i>=0&&n<STY.max;i--){
+      pp=S.pops[i]; age=t-pp.t; if(age<0||age>STY.pop) continue;
+      a=Math.min(1,age/0.12)*Math.min(1,(STY.pop-age)/0.4);
+      y=ry-r-(14+n*24)*z-Math.min(age,0.5)*22*z;
+      str=pp.txt+'  +'+arcadeCr(pp.pts); tw=c.measureText(str).width; hh=20*z;
+      c.globalAlpha=0.78*a; c.fillStyle='rgba(12,14,18,1)'; c.fillRect(Math.round(rx-tw/2-9*z),Math.round(y-hh*0.72),Math.round(tw+18*z),Math.round(hh));
+      c.globalAlpha=a; c.fillStyle='rgba(255,192,74,1)'; c.fillRect(Math.round(rx-tw/2-9*z),Math.round(y-hh*0.72),Math.round(3*z),Math.round(hh));
+      c.fillStyle='rgba(255,236,196,1)'; hudText(str,Math.round(rx),Math.round(y));
+      n++;
+    }
+  }
+  c.restore();
+}
+// PARTY-MODULE-END (the next party builds add their code above this line)
 // The score changed: tell the other window now, or on the next flush inside the 250 ms limit. ev x (with n) is an extraction.
 function arcadeScSend(ev,n){
   if(!ARCADE.on) return false;

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.84 - STYLE SCORING
+
+Co-op hunt while he was away. His yes to style scoring: a decaying combo ring at the cursor, style bonuses and short medal pop-ups. While a kill chain of two or more is live, a ring drains clockwise just outside the magazine ring and shows the chain multiplier, so you can see how long the chain has left without looking at the score. Style now pays on top of the kill: a LONG SHOT (45 metres or more) pays 100, a MELEE KILL (the last blow was a swing) 120, a GRENADE DOUBLE (two kills in one blast) 200, a MULTI-KILL (three kills inside one and a half seconds) 150, and UNTOUCHED (thirty seconds with no damage and at least one kill in them) 100, again every thirty seconds. Each one is a medal: its name and the figure in a small plate that rises over the cursor for under two seconds, with a short note of its own and no voice. DEMO and CAREER score it the same way.
+
+MEASURED. Check 26.84 passes, and fails on v26.83.
 ## v26.83 - RAID EVENTS: COOLANT RUPTURE
 
 Co-op hunt while he was away. The fourth raid event, the coolant rupture: a district fogs over. An 18 second warning shows a wide ring and a countdown, then for 75 seconds that district is a white cloud with three effects. You see less inside it, down to under half as far at the middle, fading back to normal toward the rim (the machines see as they always did). Cryo rounds from the Forge build cold twice as fast on anything inside, so a freeze comes in half the hits. And every crate, locker, safe and cache in the district that is still shut holds one more item, shown by a pale glint. When it ends everything goes back. DEMO and CAREER work the same.

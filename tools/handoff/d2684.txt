@@ -1,0 +1,5 @@
+## v26.84 - STYLE SCORING
+
+Co-op hunt while he was away. His yes to style scoring: a decaying combo ring at the cursor, style bonuses and short medal pop-ups. While a kill chain of two or more is live, a ring drains clockwise just outside the magazine ring and shows the chain multiplier, so you can see how long the chain has left without looking at the score. Style now pays on top of the kill: a LONG SHOT (45 metres or more) pays 100, a MELEE KILL (the last blow was a swing) 120, a GRENADE DOUBLE (two kills in one blast) 200, a MULTI-KILL (three kills inside one and a half seconds) 150, and UNTOUCHED (thirty seconds with no damage and at least one kill in them) 100, again every thirty seconds. Each one is a medal: its name and the figure in a small plate that rises over the cursor for under two seconds, with a short note of its own and no voice. DEMO and CAREER score it the same way.
+
+MEASURED. Check 26.84 passes, and fails on v26.83.

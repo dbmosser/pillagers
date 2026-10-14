@@ -1,0 +1,7 @@
+v26.84: style scoring
+
+Kills now earn style bonuses and medals, and a combo ring drains around the cursor.
+
+Check 26.84. Fails on v26.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
