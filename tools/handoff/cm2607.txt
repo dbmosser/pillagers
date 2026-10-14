@@ -1,0 +1,7 @@
+v26.07: lighter siege at extraction
+
+Calling extraction brings fewer machines: a flat base plus a few more for a big haul (at most 5), and new waves hold off until the ship has gone or the window has closed.
+
+Check 26.07. Fails on v26.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

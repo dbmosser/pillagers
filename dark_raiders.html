@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.06';
+var VER='26.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18246,7 +18246,28 @@ function greedOf(){ return clamp((bagValue()+((G&&G.arcade&&typeof ARCADE==='obj
 // v18.35, FOUND BY THE FULL TEST RUN (2026-10-04): ONE SIEGE SIZE. v18.06 cut the siege to 5 + 7 x greed (his son: too many big
 // robots) in the spawner only; the call still promised 6 + 8 x greed ("about 10 machines" with 8 coming), the late pull wave
 // and a linked window's copy of the siege still counted the old size. Every one of them reads this now.
-function siegeBase(GR){ return 5+7*GR; }
+// v26.xx (siegelite), HIS NOTE (2026-10-13), after a raid he enjoyed ("that last game felt really good overall"): "maybe too many bots at
+// extract but thats it". Then, on how the haul sizes the siege: "enemy multipler due tyo haul size should be marginal and/or cappeeed",
+// and "no cap should be like an extra 5 enemies". Balancing is allowed (his ruling of 2026-10-02). WHAT WAS WRONG: the siege was
+// 5 + 7 x greed machines at the Standard dial (3 to 7 at the shipped Light dial), arriving one every 12.6 s at a light haul down to one
+// every 5.7 s at a full one, and the arcade wave director dropped its own packs (2 to 6 bodies, bigger with the score) at the ring on top
+// of it, so a high score met 15 machines in the 30 s wait. WHAT IT IS NOW: THE SIEGE IS A FLAT BASE PLUS A CAPPED SHARE FOR THE HAUL.
+// SIEGE_FLAT is the base and SIEGE_HAUL_CAP the most a full haul can add on top of it, both counted in machines AT THE SHIPPED DIAL
+// (SIEGE_DIAL, the 0.6 Light setting), so a retune is one number and siegeVol still scales the whole thing from there. The arrival
+// interval barely moves with the haul (SIEGE_IV less SIEGE_IV_HAUL x greed, in Standard seconds). siegeBase stays "the size at the
+// Standard dial" for its four readers (the arrival ceiling, the pull ceiling, a linked window's copy and the settings rows). While any
+// ring is called the wave director holds its spawns (siegeCalled). Nothing here draws from the seeded stream.
+var SIEGE_FLAT=1.6, SIEGE_HAUL_CAP=5, SIEGE_DIAL=0.6, SIEGE_IV=6.4, SIEGE_IV_HAUL=2.0;
+function siegeBase(GR){ return (SIEGE_FLAT+SIEGE_HAUL_CAP*clamp(GR,0,1))/SIEGE_DIAL; }
+function siegeIvOf(GR){ return SIEGE_IV-SIEGE_IV_HAUL*clamp(GR,0,1); }
+// Is any ring called right now, from the call through the 30 s boarding window? beaconT is a number from the call until the window
+// closes and null otherwise.
+function siegeCalled(){
+  var i, b;
+  if(!G||!G.zones) return false;
+  for(i=0;i<G.zones.length;i++){ b=G.zones[i].beaconT; if(b!==null&&b!==undefined) return true; }
+  return false;
+}
 // Put an item back on the ground as a searchable pile, so dropping something is
 // a decision you can walk back rather than destroying it. Fast to re-open,
 // because you already know what is in it.
@@ -20727,6 +20748,7 @@ function tickRaiderWaves(dt){
   var cap=(CFG.raiderWaveCap===undefined?8:CFG.raiderWaveCap);
   var floorN=(CFG.raiderWaveMin===undefined?12:CFG.raiderWaveMin);
   var gap=(CFG.raiderWaveGap===undefined?60:CFG.raiderWaveGap);
+  if((G.arcade||G.career)&&siegeCalled()) return;   // v26.xx (siegelite): reinforcements hold while a ring is called, as the packs do (arcadeWaveTick)
   G.waveT=(G.waveT||0)+dt;
   G.waveN=G.waveN||0;
   // Counted before the wait, because how long to wait depends on how empty it is.
@@ -20841,7 +20863,7 @@ function tickExtractPoints(dt){
   // beacon announcement: raising the cap alone did nothing because the window
   // never had room to reach it.
   var _sv85=(CFG.siegeVol===undefined?1:CFG.siegeVol);
-  var siegeIv=(8-4.6*GR)/_sv85, siegeCap=Math.round(siegeBase(GR)*_sv85);   // v18.06: his son, fewer at the ring (was 6+8*GR); v18.35: the one siege size
+  var siegeIv=siegeIvOf(GR)/_sv85, siegeCap=Math.round(siegeBase(GR)*_sv85);   // v18.06: his son, fewer at the ring (was 6+8*GR); v18.35: the one siege size
   // THE SIEGE CLOCK IS PER CALL, v2.27, and it was global inside a per-zone loop.
   // Every line around it is per zone: z.beaconT, z.hold, and z.siegeGreed, which
   // is read three lines up so the price is fixed per call. The counter and the
@@ -41514,7 +41536,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.06: The crowbar swing is bigger and bolder: a longer bar, a wide pale swoosh, a flash and sparks where it lands, and a lean into the blow. Check 26.06 fails on v26.05',
+  now:'v26.07: Calling extraction brings fewer machines: a flat base plus a few more for a big haul (at most 5), and new waves hold off until the ship has gone or the window has closed. Check 26.07 fails on v26.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48612,7 +48634,7 @@ function netSpecRings(dt){
     z.beaconT-=dt;
     if(z.siegeGreed===undefined||z.siegeGreed===null) z.siegeGreed=greedOf();
     GR=z.siegeGreed; sv=(CFG.siegeVol===undefined?1:CFG.siegeVol);
-    iv=(8-4.6*GR)/sv; cap=Math.round(siegeBase(GR)*sv);   // v18.35: the one siege size, as the host counts it
+    iv=siegeIvOf(GR)/sv; cap=Math.round(siegeBase(GR)*sv);   // v18.35: the one siege size, as the host counts it
     z.siegeSpawnT=(z.siegeSpawnT||0)+dt; z.siegeSpawned=z.siegeSpawned||0;
     if(z.siegeSpawnT>=iv&&z.siegeSpawned<cap){
       z.siegeSpawnT=0; ss=null; st=0;
@@ -50607,6 +50629,11 @@ function arcadeWaveTick(dt){
   var WS=G.arcade?ARCADE:G.cs; if(!WS) return 0;
   var tier=Math.max(0,Math.min(8,Math.floor((G.arcade?arcadeTeam():Math.max(0,WS.s|0))/4000))), iv=Math.max(10,22-2*tier), cap=Math.min(24,6+2*tier),
       pack=Math.min(6,2+Math.floor(tier/2)), men, live, q, c, n, i, e, s, kd, kinds, made=0;
+  // v26.xx (siegelite), HIS NOTE (2026-10-13): "maybe too many bots at extract". A CALLED RING HOLDS THE WAVE DIRECTOR. The packs landed 770
+  // to 1,060 from him at the ring on top of the siege (a high score met 10 wave bodies and 5 siege machines in the 30 s wait). From the
+  // call to the end of the boarding window nothing new spawns and the clock stands still, so the first pack after a missed window is
+  // the one that was due. Both modes: DEMO and CAREER run this same tick.
+  if(siegeCalled()) return 0;
   WS.waveT=(+WS.waveT||0)+((dt>0)?dt:0);
   if(WS.waveT<iv) return 0;
   men=arcadeWaveMen(); if(!men.length) return 0;
