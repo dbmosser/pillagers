@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.05 - THE WHAT IS NEW CARD NAMES THE BELT KEYS
+
+Co-op hunt while he was away. The card was stamped v25.93 and the stamp may not trail the build by more than 0.15. The card was stamped v25.93 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the belt keys and keycaps, the gold rings (his orders 2026-10-13) and crouch regen (his order).
+
+MEASURED. Check 26.05 passes, and fails on v26.04.
 ## v26.04 - CROUCH STILL TO CREEP BACK HEALTH
 
 Co-op hunt while he was away. His note of 2026-10-13: crouching and sitting still should very slowly regain health. Crouch and keep still for 3 seconds, with no hit taken in the last 6, and you now creep back one point of health every 2 seconds, with the RECOVERING mark lit. It stops at 85, the same ceiling as a Bandage, so a Medkit is still the only way back to 100, and above 85 it does nothing. Moving, firing, rolling, standing up or taking a hit stops it and the 3 second wait starts over. While it runs it takes the place of the old slow creep (one point every 3 seconds after 10 quiet seconds, standing or crouched) so the two never add up; that old creep is unchanged for everyone who is not crouched and still. It works the same in the demo and the career, and in a second window your own health is carried to your teammate the way a heal is. Nothing random is drawn.
