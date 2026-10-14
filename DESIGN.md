@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.54 - SETTINGS POLISH FROM THE 1080P SHOTS
+
+Co-op hunt while he was away. His order: the menus must look AAA, and the new Settings page was looked at in 1080p pictures. Four things were wrong. The jump bar stuck three pixels below the top of the list, so the label of a row scrolling underneath showed above it; it now sits flush. The chip of the section you are in lights up as you scroll, and the jump goes straight there. KID MODE was a small amber label that looked like part of the section above; it is a head like the others now. And the note line in the Keys window, and in the new pad buttons window, was squeezed to a sliver when the list was long, so a clash message was cut in half; it keeps its height. The Superhot key, which showed as a dot, is named LEFT OF 1.
+
+MEASURED. Check 26.54 passes, and fails on v26.53.
 ## v26.53 - CHANGE PAD BUTTONS: CONTROLLER REBINDING
 
 Co-op hunt while he was away. His order: controller rebinding is new. The CONTROLLER section of Settings has CHANGE PAD BUTTONS, a window like CHANGE KEYS for the pad. It lists the sixteen things a pad does in a raid (sprint, dodge roll, crouch, fire, the two focus aims, the aim distance pair, use and reload, the ring search, the two gun bumpers, the item wheel, the backpack, ping and map, pause) and the button each is on. Click REBIND, the row says PRESS A BUTTON, and the next button you press is the new one (a button still held from the click is waited out first, the press that binds does nothing else, and ESC or ten seconds cancels). If another action had that button, the two swap and the window says so. RESET TO DEFAULTS puts back his layout of 2026-09-27. In a raid the new button does the action and the old one no longer does, for taps, holds, triggers and bumpers alike; every prompt, the controls legend and the small pad legend name the new button, and they are saved in the profile; in the DEMO they hold for the session. The sticks stay as they are, and the menus, the title and the Undercroft keep the standard buttons, which the window says.

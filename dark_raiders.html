@@ -1125,7 +1125,7 @@
     border-radius:4px; color:var(--tx-3); font-family:var(--f-cond); font-weight:700; font-size:16px; letter-spacing:.08em; text-transform:uppercase; }
   #root #keyslist .keysec{ margin-top:14px; padding:10px 16px 6px; border-top:1px solid var(--ui-line); font-family:var(--f-cond); font-weight:700; font-size:15px; letter-spacing:.2em; color:var(--acc); }
   #root #keyslist .keysec:first-child{ margin-top:0; border-top:0; }
-  #root #keysnote{ max-width:1100px; margin:8px 0 12px; padding:9px 16px; border-left:3px solid var(--ui-line-hi); background:rgba(0,0,0,.28); color:var(--tx-2); min-height:24px;
+  #root #keysnote{ flex:0 0 auto; max-width:1100px; margin:8px 0 12px; padding:9px 16px; border-left:3px solid var(--ui-line-hi); background:rgba(0,0,0,.28); color:var(--tx-2); min-height:24px;
     font-family:var(--f-cond); font-weight:600; font-size:16px; letter-spacing:.08em; clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px); }
   #root #keysnote.wait, #root #keysnote.set{ border-left-color:var(--acc); background:var(--acc-dim); color:var(--tx-1); }
   #root #keysnote.clash{ border-left-color:var(--danger); background:rgba(224,92,92,.12); color:var(--tx-1); }
@@ -1259,11 +1259,14 @@
   #root #setdetail .sdh{ margin-top:18px; font-size:17px; line-height:1.6; color:var(--tx-2); }
   /* v26.xx (settings1), HIS ORDER 2026-10-14: SETTINGS IN SECTIONS. A jump bar sticks to the top of the list (one chamfered chip a section, as the
      REBIND controls are cut), and every section head after the first has a hairline over it and room to breathe. */
-  #root #setlist .setjump{ position:sticky; top:0; z-index:3; display:block; min-height:0; padding:10px 16px; border-bottom:1px solid var(--ui-line); background:var(--ui-panel); }
+  #root #setlist .setjump{ position:sticky; top:-3px; margin-top:-3px; z-index:3; display:block; min-height:0; padding:13px 16px 10px; border-bottom:1px solid var(--ui-line); background:var(--ui-panel); }
   #root #setlist .setjump .sj{ display:flex; flex-wrap:wrap; gap:8px; }
   #root #setlist .setjump button{ min-width:0 !important; min-height:34px; padding:4px 18px; border:1px solid var(--ui-line-hi); background:rgba(0,0,0,.35); color:var(--tx-2);
     font-family:var(--f-cond); font-weight:700; font-size:14px; letter-spacing:.16em; clip-path:polygon(9px 0,100% 0,100% 100%,0 100%,0 9px); }
   #root #setlist .setjump button:hover:not(:disabled){ color:var(--acc); border-color:var(--acc); background:var(--ui-hover); }
+  #root #setlist .setjump button.on{ color:var(--acc); border-color:var(--acc); background:var(--acc-dim); }
+  /* the section heads outrank the row labels (the label rule is more specific than the head rule, so the heads were the same 18px): a head is 21px, bold, wide */
+  #root #setlist .row[style*="opacity:.7"] > div:first-child > b{ font-size:21px; font-weight:700; letter-spacing:.12em; }
   #root #setlist .row[style*="opacity:.7"]{ margin-top:14px; border-top:1px solid var(--ui-line); padding-top:24px; }
   #root #setlist .setjump + .row[style*="opacity:.7"]{ margin-top:0; border-top:0; padding-top:16px; }
   /* v26.xx (settings5): SHOW FPS, a small graphite plate with an amber number, cut at the top left like the HUD panels, top left of the screen. */
@@ -2204,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.53';
+var VER='26.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16120,7 +16123,7 @@ function keysListBody(){
 }
 // v26.xx (settings11): THE KEYS THAT CANNOT MOVE, listed under the others so the window names every key the game answers. 1 to 9 pick a gun (the stash sets which gun is on which),
 // P and TAB pause or back out, ESC closes a window, BACKSPACE puts the cursor back, the key left of 1 is Superhot and F11 is fullscreen.
-var KEYS_LOCKED=[['SELECT A GUN','1 - 9'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['SUPERHOT MODE','`'],['FULLSCREEN','F11']];
+var KEYS_LOCKED=[['SELECT A GUN','1 - 9'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['SUPERHOT MODE','LEFT OF 1'],['FULLSCREEN','F11']];
 function keysFixedHtml(){
   var h='<div class="keysec">LOCKED: THESE KEEP THEIR JOBS</div>', i;
   for(i=0;i<KEYS_LOCKED.length;i++) h+='<div class="row"><div style="flex:1"><b>'+KEYS_LOCKED[i][0]+'</b></div><span class="keyfixed">'+KEYS_LOCKED[i][1]+'</span></div>';
@@ -42992,7 +42995,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.53: Controller has change pad buttons: rebind any pad action. Check 26.53 fails on v26.52',
+  now:'v26.54: Settings polish: a flush jump bar that lights the section in view, a proper KID MODE head, and the key notes no longer squeezed. Check 26.54 fails on v26.53',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -49530,7 +49533,7 @@ function kidSync(raw){
 }
 try{ window.addEventListener('storage',function(ev){ if(!ev||ev.key!==KID_SHARE_KEY||!kidSync(ev.newValue)) return; try{ var _sm=document.getElementById('settingsmodal'); if(_sm&&_sm.classList.contains('on')) renderSettings(); }catch(_kr){} }); }catch(_kse){}
 function kidHeadHtml(){
-  return '<div class="row" style="margin-top:14px;border-top:1px solid var(--steel-hi);padding-top:10px"><div style="flex:1"><b style="color:var(--amber);letter-spacing:.14em">KID MODE</b>'+
+  return '<div class="row" style="opacity:.7"><div style="flex:1"><b>KID MODE</b>'+
     '<div class="hint">For playing with a younger player 2. Either window can set these, and they change the raid at once.</div></div></div>';
 }
 function kbRowHtml(){
@@ -55960,6 +55963,14 @@ function setSecJump(host,n){
   }
   return true;
 }
+// v26.xx (settingsfix): THE CHIP OF THE SECTION IN VIEW LIGHTS. setSecSpy finds the last section head at or above the top of the list (under the jump bar) and gives its chip the class on.
+function setSecSpy(host){
+  var bar=host.querySelector('.setjump'), bh=bar?bar.getBoundingClientRect().height:0, ht=host.getBoundingClientRect().top, cur=null, i, h, bs;
+  for(i=0;i<SETSEC.length;i++){ h=document.getElementById(setSecId(SETSEC[i])); if(h&&h.getBoundingClientRect().top<=ht+bh+6) cur=SETSEC[i]; }
+  bs=host.querySelectorAll('.setjump button');
+  for(i=0;i<bs.length;i++) bs[i].classList.toggle('on',bs[i].getAttribute('data-sec')===cur);
+  return cur;
+}
 function setSecMove(host){
   var mv=host.querySelectorAll('[data-mv]'), i, r, s, n, nx;
   for(i=0;i<mv.length;i++){
@@ -55968,7 +55979,8 @@ function setSecMove(host){
     if(!nx) nx=document.getElementById('setsec_end');
     if(nx&&nx.parentNode) nx.parentNode.insertBefore(r,nx);
   }
-  [].forEach.call(host.querySelectorAll('.setjump button'),function(b){ b.onclick=function(){ setSecJump(host,b.getAttribute('data-sec')); }; });
+  [].forEach.call(host.querySelectorAll('.setjump button'),function(b){ b.onclick=function(){ setSecJump(host,b.getAttribute('data-sec')); setSecSpy(host); }; });
+  host.onscroll=function(){ setSecSpy(host); }; setSecSpy(host);   // v26.xx (settingsfix)
 }
 function renderSettingsInner(host){
   // THE GAME ROWS COME FIRST. The presentation rows below are real settings but

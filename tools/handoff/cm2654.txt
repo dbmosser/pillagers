@@ -1,0 +1,7 @@
+v26.54: settings polish from the 1080p shots
+
+Settings polish: a flush jump bar that lights the section in view, a proper KID MODE head, and the key notes no longer squeezed.
+
+Check 26.54. Fails on v26.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
