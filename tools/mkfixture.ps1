@@ -8121,7 +8121,7 @@ window.__REGRESS=[
          if(!find(/^FUSE$/,c)||!find(new RegExp('^'+(Math.round(FRAG_FUSE*10)/10)+'S$'),c)) bad.push(tg+'the Frag card has no fuse');
          if(!find(/^BLAST$/,c)) bad.push(tg+'the Frag card has no blast');
          if(!inBox(/^VALUE$/)||!inBox(new RegExp('^\\'+fv+'$'))) bad.push(tg+'the Frag card does not show its value '+fv);
-         if(!inBox(new RegExp('^'+(iF+1)+'$'))||!inBox(/^FIRE$/)||!inBox(/^USE$/)) bad.push(tg+'the Frag card does not show its keys');
+         if(!inBox(new RegExp('^'+(iF+1)+'$'))||!((inBox(/^FIRE$/)&&inBox(/^USE$/))||inBox(/^THROW$/))) bad.push(tg+'the Frag card does not show its keys');   /* beltkeys: in a raid the digit throws at once, so the card says THROW where it said FIRE USE */
          judge(tg,c);
          mouse.x=c.x+c.w/2; mouse.y=c.y-c.h*2; hud();
          if(find(/^FRAG CHARGE$/,c)) bad.push(tg+'the card stays up after the mouse leaves the key');
