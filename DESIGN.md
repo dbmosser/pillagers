@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.28 - THE ITEM WHEEL ON A CONTROLLER
+
+Co-op hunt while he was away. His order of 2026-10-14, for the controller: hold D-DOWN to open the item wheel, push the right stick toward a segment and let go of D-DOWN to take the item out; RT then uses it, as the mouse button does. LB and RB still walk the guns, and the crosshair stays still while the wheel is open. D-DOWN no longer heals in the arcade; the wheel is the only way to a heal. While you are down, D-DOWN still revives you as before. Releasing with the stick in the middle cancels.
+
+MEASURED. Check 26.28 passes, and fails on v26.27.
 ## v26.27 - THE BAR HOLDS NINE GUNS
 
 Co-op hunt while he was away. His order of 2026-10-14: "Lets ONLY show guns at the bottom of the screen, only 9 of them. Then lets add a wheel for heals and grenades." The bar at the bottom of the screen now has nine gun keys, 1 to 9, and nothing else: no grenade, heal or plate keys, and no group labels. A tenth gun takes the place of the weakest gun you are not holding, which goes to the backpack, as the four gun rule did before. Everything else, grenades, smoke, decoys, tripwires, bandages, medkits, stims and armour plates, is used from the item wheel (hold Q, aim, let go, then pull the trigger): the old keys G, U, J and H, the hold on H, and the digits 5 to 9 as item keys are gone, which also frees those keys. An item dropped on the bar is refused with ITEMS GO ON THE WHEEL, a saved plan loses its item bindings once and keeps its guns, grenades stay in the pouch, and the DEMO controls card now says SWITCH GUN 1-9 and ITEMS HOLD Q.

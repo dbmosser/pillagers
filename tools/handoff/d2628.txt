@@ -1,0 +1,5 @@
+## v26.28 - THE ITEM WHEEL ON A CONTROLLER
+
+Co-op hunt while he was away. His order of 2026-10-14, for the controller: hold D-DOWN to open the item wheel, push the right stick toward a segment and let go of D-DOWN to take the item out; RT then uses it, as the mouse button does. LB and RB still walk the guns, and the crosshair stays still while the wheel is open. D-DOWN no longer heals in the arcade; the wheel is the only way to a heal. While you are down, D-DOWN still revives you as before. Releasing with the stick in the middle cancels.
+
+MEASURED. Check 26.28 passes, and fails on v26.27.

@@ -1,0 +1,7 @@
+v26.28: the item wheel on a controller
+
+On a controller, hold D-DOWN and push the right stick to open and use the item wheel.
+
+Check 26.28. Fails on v26.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
