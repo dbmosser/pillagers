@@ -16,3 +16,5 @@ tools/fx[0-9]*.html
 tools/prev[0-9]*.html
 tools/cloud/__pycache__/
 tools/fixture-soak-*.html
+tools/handoff/fuzz/*.jsonl
+tools/handoff/fuzz/fuzz-trace.txt
