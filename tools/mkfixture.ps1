@@ -1472,6 +1472,7 @@ try{ window.__realAutoExport=autoExport; autoExport=function(){ if(typeof P!=='u
 try{ window.__realDownloadExport=downloadExport; }catch(e){}
 try{ downloadExport=function(){ if(typeof P!=='undefined'&&P) P.lastReport='fixture-dl-stub'; }; }catch(e){}
 window.__gun={roll:rollFieldGun,fire:fireWeapon,quals:GUNQ,wtier:WTIER,weapons:WEAPONS,items:function(){return ITEMS;}};
+window.__plainRoll=function(gk){ var w=rollFieldGun(gk), k, c; if(w.id===gk) return w; c={}; for(k in WEAPONS[gk]) c[k]=WEAPONS[gk][k]; c.q='field'; c.qRank=1; return c; };   // rarvar1: a roll may be the twin one rarity up
 window.__pad={poll:pollPad,state:function(){ return PAD; },tap:function(){ return PADTAP; },
   hold:function(){ return PADHOLD; },legend:function(){ return LEGEND_PAD; }};
 window.__mouseState=function(){ return mouse; };
@@ -9563,7 +9564,7 @@ window.__REGRESS=[
        // ONE: a field rifle forged MK III cryo in hand, extracted
        base(); saveProfile();
        if(!up()) return 'SKIP: no live raid';
-       p.sec=forgeApply(rollFieldGun('rifle'),2,'cryo'); p.secAmmo=10; p.secIssued=false; p.secFromArmory=false;
+       p.sec=forgeApply(__plainRoll('rifle'),2,'cryo'); p.secAmmo=10; p.secIssued=false; p.secFromArmory=false;
        p.downed=false; p.hp=100;
        __endRaid('extract');
        q=__P(); f=q.forged&&q.forged.rifle;
@@ -9928,7 +9929,7 @@ window.__REGRESS=[
          else if(got.fk!==2||got.el!=='acid'||got.name!=='Auto Rifle MK III') bad.push('the rifle came back as '+got.name+' fk '+got.fk+' el '+got.el);
        }
        p.wep=oW; p.sec=oS; p.ammo=oA; p.secAmmo=oSA; clearGun('rifle');
-       G.bag.push('gun_rifle'); gunQPush(rollFieldGun('rifle'));
+       G.bag.push('gun_rifle'); gunQPush(__plainRoll('rifle'));
        dropItem(G.bag.lastIndexOf('gun_rifle'));
        ct=G.containers[G.containers.length-1];
        if(ct&&ct.fw) bad.push('a plain dropped gun made a forged pile');
@@ -51187,7 +51188,7 @@ window.__REGRESS=[
        g.ents.length=0; p.downed=false; g.pedCarry=0; g.bag=[]; g.issuedBandages=0; g.spliced=null;
        P2.weapons=['carbine']; P2.equipped='carbine'; P2.equippedSec='none';
        p.sec=WEAPONS.fists; p.secIssued=true; p.secFromArmory=false;
-       if(hand){ p.wep=rollFieldGun('carbine'); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=!!fromArm; }
+       if(hand){ p.wep=__plainRoll('carbine'); p.ammo=p.wep.mag; p.wepIssued=false; p.wepFromArmory=!!fromArm; }
        else { p.wep=WEAPONS.fists; p.wepIssued=true; p.wepFromArmory=false; }
        if(inBag) g.bag.push('gun_carbine');
        var before=copies();
