@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.15';
+var VER='26.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19529,6 +19529,25 @@ function gearFoley(kind,w){
   foley('boltLatch',null,null,{at:lt?0.1:0.15,rate:lt?1.5:1.0,g:lt?0.45:0.6,dur:0.15,gap:0});
   return true;
 }
+// v26.xx (wheel1), HIS ORDER 2026-10-14: "different guns should have different 'pull out' / 'ready to fire' times". A gun that comes into his hands
+// (a swap, a draw from the backpack, a pickup, and in the next builds the gun coming back after an item) cannot fire until it is ready: a
+// pistol in a quarter of a second, an SMG 0.4, a rifle 0.55, a shotgun 0.6, a marksman rifle 0.7, a sniper 0.85, the machine gun and the lance a
+// full second. The time is the gun's CLASS, so a Forge upgrade (MK II, MK III, an element) does not change it. drawTick, run every frame from
+// updatePlayer, starts the clock when the gun in his hands is not the one it saw last frame; the first frame of a raid starts nothing (the gun
+// is drawn already), and the bot sim never waits (the clock is held at 0 under G.sim). p.drawT is the seconds left; p.drawLen the full time,
+// for the reticle. No seeded draw, nothing a bot reads.
+var DRAWT={tacker:0.25,pistol:0.25,magnum:0.35,sputter:0.4,smg:0.4,whisper:0.45,chatter:0.5,carbine:0.5,rifle:0.55,scuttle:0.6,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0,lance:1.0};
+function drawTime(w){
+  if(!w||!w.id||w.mag===0) return 0;
+  return Object.prototype.hasOwnProperty.call(DRAWT,w.id)?DRAWT[w.id]:0.5;
+}
+function drawTick(p,dt){
+  var w=p.wep;
+  if((G&&G.sim)||!w){ p.drawT=0; p.drawRef=w; return; }
+  if(p.drawRef===undefined){ p.drawRef=w; p.drawT=0; p.drawLen=0; }   // the first frame: already drawn
+  else if(p.drawRef!==w){ p.drawRef=w; p.drawLen=drawTime(w); p.drawT=p.drawLen; }
+  else if(p.drawT>0) p.drawT=Math.max(0,p.drawT-dt);
+}
 function swapGuns(){
   var pp=G&&G.player;
   if(!pp||!pp.sec||pp.downed||pp.dying||pp.roll>0||G.over||G.paused) return false;   // v13.80
@@ -21676,6 +21695,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
   // if an empty slot swallowed the trigger you would be standing in a firefight
   // clicking at nothing until you remembered to press 1. An empty slot is not a
   // held item, so the trigger goes back to the gun.
+  drawTick(p,dt);   // v26.xx (wheel1): the gun that just came into his hands is not ready yet
   var HSL=hotbarSlots(), HSC=HSL[hotSel()];
   // count is tested as "not greater than zero" rather than "=== 0" because a
   // slot can carry null: a magazine-less gun does.
@@ -21747,7 +21767,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       else useHot();
     }
   }
-  else if(mouse.down&&!p.trigYield&&!p.cooking&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v13.62: no shot with a live grenade in hand   // v12.08: not on the hold that yielded to the gun
+  else if(mouse.down&&!p.trigYield&&!p.cooking&&!(p.drawT>0)&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof){   // v13.62: no shot with a live grenade in hand   // v12.08: not on the hold that yielded to the gun
     var _mw=p.wep;
     if(_mw.mag===0){
       // v13.84, combat audit: the left-click swing waits on the F strike's clock too.
@@ -41633,7 +41653,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.15: Every container now searches with its own mix of sounds. Check 26.15 fails on v26.14',
+  now:'v26.16: Guns now take a moment to draw: a pistol is ready fast, a sniper rifle or the machine gun takes nearly a second. Check 26.16 fails on v26.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

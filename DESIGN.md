@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.16 - GUNS TAKE A MOMENT TO DRAW
+
+Co-op hunt while he was away. His order of 2026-10-14: "different guns should have different pull out / ready to fire times". A gun that comes into your hands now needs a moment before it fires, and the moment depends on the gun: a pistol is ready in a quarter of a second, a submachine gun in 0.4, a rifle in 0.55, a shotgun in 0.6, a marksman rifle in 0.7, a sniper rifle in 0.85, and the machine gun and the lance take a full second. It counts on every swap, every draw from the backpack and every pickup, and the same time applies to a Forge upgraded gun. A fresh raid starts with the gun already drawn, and the bot never waits. This is the first step of the item wheel: the same clock will time the gun coming back after a grenade or a heal.
+
+MEASURED. Check 26.16 passes, and fails on v26.15.
 ## v26.15 - EVERY CONTAINER SEARCHES IN ITS OWN SOUND
 
 Co-op hunt while he was away. His words while playing, 2026-10-14: searching one crate after the next starts to get repetitive. The earlier fix made the hits inside one search differ, but it also made every search open on the same rummage clip and count from the same start, so crate after crate began the same way. Now each container has a character of its own, worked out from where it stands with no random draw, so a box always sounds like itself and the next one does not: the clip a search opens on, the order the clips come in and a base pitch within 10 percent either way. The clips follow the material: lockers, safes and wrecks lean on the metal latch and plate clacks, crates on the knocks and the rummage, bodies and dropped packs on the strap and cloth, and a cache mixes them. A search never opens on the clip the search before it opened on. The beat, the heavier dig every third to fifth hit and the completion cue are as they were. Sound only.

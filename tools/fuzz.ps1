@@ -215,8 +215,10 @@ function Norm-Key([string]$kind,[string]$msg){
   return $kind+'|'+$m
 }
 function Add-Problem([string]$kind,[string]$msg,[string]$where){
-  $script:raidProblems++
   $key=Norm-Key $kind $msg
+  # the game's own crash list repeats what the error hook already saw: not a second problem
+  if($kind -eq 'game-crash' -and $script:uniq.ContainsKey($key)){ return }
+  $script:raidProblems++
   if($script:uniq.ContainsKey($key)){ $script:uniq[$key]++; $script:dups[$key]=$script:uniq[$key]; return }
   $script:uniq[$key]=1; $script:newUniq++
   $sec=0; if($script:raidSw){ $sec=[int]$script:raidSw.Elapsed.TotalSeconds }
@@ -237,7 +239,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
     for($i=0;$i -lt $n;$i++){ $ks+=("'"+$pool[$rng.Next(0,$pool.Count)]+"'") }
     $kit='['+($ks -join ',')+']'
   }
-  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0 }
+  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0; travel=0; fires=0; menuPct=0 }
   $script:raidSw=[Diagnostics.Stopwatch]::StartNew()
   if($mode -eq 'demo1'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var r=arcadeSoloPick(); var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&ARCADE.solo),r:r,arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
   elseif($mode -eq 'demo2'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&!ARCADE.solo),arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
@@ -251,7 +253,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
   }
   $endPhase=$false; $endAt=0.0; $reason=''; $stuckAcc=0.0; $lastX=$null; $lastY=$null; $menuTicks=0; $dragPts=$null; $dragI=0
   $lUntil=0; $rUntil=0; $tx=960; $ty=540; $bagC=@(); $hotC=@(); $baseGb=@(); $baseSet=$false; $stallAt=-99999.0; $stuckRep=$false; $o=$null
-  $a=New-Object double[] 24; $next=0; $selfDone=(-not $SelfTest); $noPoll=0
+  $a=New-Object double[] 24; $next=0; $selfDone=(-not $SelfTest -or $script:selfRan); $noPoll=0; $lastAm=$null; $menuPolls=0; $polls=0
   $dirs=@(@('KeyW'),@('KeyW','KeyD'),@('KeyD'),@('KeyS','KeyD'),@('KeyS'),@('KeyS','KeyA'),@('KeyA'),@('KeyW','KeyA'))
   $taps=@('KeyR','KeyE','KeyX','KeyG','KeyU','KeyH','KeyJ','KeyQ','KeyF','Digit1','Digit2','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8','Digit9')
   $sw=$script:raidSw
@@ -266,7 +268,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
         else { $reason='time'; break }
       }
       if($endPhase -and $el -ge $endAt){ Add-Problem 'noend' ('raid still running 75 s after its clock ran out ('+$mode+')') ('tl='+$o.tl+' menu='+$o.menu); $reason='noend'; break }
-      if(-not $selfDone -and $tk -ge 40){ $selfDone=$true; [void](Ev "setTimeout(function(){ throw new Error('fuzztest') },0)") }
+      if(-not $selfDone -and $tk -ge 40){ $selfDone=$true; $script:selfRan=$true; [void](Ev "setTimeout(function(){ throw new Error('fuzztest') },0)") }
       # ---- releases
       foreach($n in @($script:held.Keys)){
         $h=$script:held[$n]
@@ -300,20 +302,20 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
       }
       if($a[16] -lt 0.012){ Press 'Space' 2 }
       $u=$a[17]
-      if($u -lt 0.006){ Press 'KeyB' 2 }
-      elseif($u -lt 0.010){ Press 'KeyI' 2 }
-      elseif($u -lt 0.014){ Press 'KeyM' 2 }
-      elseif($u -lt 0.018){ Press 'Escape' 2 }
-      elseif($u -lt 0.021){ Press 'KeyP' 2 }
-      elseif($u -lt 0.025){ Press 'AltLeft' (5+[int][Math]::Floor($a[18]*35)) }
-      elseif($u -lt 0.031){ Press 'ControlLeft' 2 }
-      elseif($u -lt 0.037){ Press 'KeyC' 2 }
-      elseif($u -lt 0.040){ MDown 4; MUp 4 }
-      elseif($u -lt 0.041){ Press 'Tab' 2 }
-      elseif($u -lt 0.042){ Press 'Enter' 2 }
+      if($u -lt 0.0015){ Press 'KeyB' 2 }
+      elseif($u -lt 0.0025){ Press 'KeyI' 2 }
+      elseif($u -lt 0.0033){ Press 'KeyM' 2 }
+      elseif($u -lt 0.0039){ Press 'Escape' 2 }
+      elseif($u -lt 0.0043){ Press 'KeyP' 2 }
+      elseif($u -lt 0.0073){ Press 'AltLeft' (5+[int][Math]::Floor($a[18]*35)) }
+      elseif($u -lt 0.0098){ Press 'ControlLeft' 2 }
+      elseif($u -lt 0.0123){ Press 'KeyC' 2 }
+      elseif($u -lt 0.0138){ MDown 4; MUp 4 }
+      elseif($u -lt 0.0143){ Press 'Tab' 2 }
+      elseif($u -lt 0.0148){ Press 'Enter' 2 }
       # a menu left open for 5 s is closed, as a player would
       if(($menu -band 15) -ne 0){ $menuTicks++ } else { $menuTicks=0 }
-      if($menuTicks -gt 100 -and $a[19] -lt 0.1){ Press 'Escape' 2; $menuTicks=0 }
+      if($menuTicks -gt 40 -and $a[19] -lt 0.12){ Press 'Escape' 2; $menuTicks=0 }
       # ---- the mouse: a drag when the backpack is open, else aim drift
       if($null -ne $dragPts){
         if($dragI -lt $dragPts.Count){ $pt=$dragPts[$dragI]; MMove ([int]$pt[0]) ([int]$pt[1]); $dragI++ }
@@ -351,6 +353,9 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
         }
         if($o.raid -ne 1 -or $o.over -eq 1 -or ($o.arc -eq 1 -and $o.ae -eq 1)){ $res.score=[int]$o.sc; $reason='ended'; if($endPhase){ $reason='clock-end' }; break }
         $res.score=[int]$o.sc
+        $polls++; if(($o.menu -band 15) -ne 0){ $menuPolls++ }
+        if($lastAm -ne $null -and $o.am -ne $null -and $o.am -lt $lastAm){ $res.fires++ }
+        $lastAm=$o.am; $res.menuPct=[int](100*$menuPolls/$polls)
         # non-finite numbers: the four named fields always, the rest only if they were finite at the raid start
         $bd=@(); foreach($b in @($o.bad)){ if($b){ $bd+=[string]$b } }
         if($baseSet){ foreach($gnm in @($o.gb)){ if($gnm -and -not ($baseGb -contains [string]$gnm)){ $bd+=[string]$gnm } } }
@@ -358,6 +363,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
         foreach($b in $bd){ Add-Problem 'nan' ('non-finite '+($b -replace '\d+','#')) ('raw='+$b+' x='+$o.x+' y='+$o.y+' hp='+$o.hp) }
         # stuck: movement keys held, no menu, no action key for 2 s, and the player has not moved
         $moved=$true; if($lastX -ne $null){ $moved=(([Math]::Abs([double]$o.x-$lastX)+[Math]::Abs([double]$o.y-$lastY)) -gt 1.5) }
+        if($lastX -ne $null -and $o.x -ne $null){ $stp=[Math]::Abs([double]$o.x-$lastX)+[Math]::Abs([double]$o.y-$lastY); if($stp -lt 400){ $res.travel=[int]($res.travel+$stp) } }
         $lastX=[double]$o.x; $lastY=[double]$o.y
         $mvk=0; foreach($m in $MOVE){ if($script:held.ContainsKey($m)){ $mvk++ } }
         if($o.menu -ne 0 -or $moved -or $o.x -eq $null){ $stuckAcc=0.0 }
@@ -425,7 +431,7 @@ try{
     if($script:needReset){ Kill-Chrome; Start-Sleep 2; $so=& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($T+'\cdp.ps1') -Start -Port $Port -Profile $prof; Open-Page }
     $rres=Run-Raid $m $rs $secs; if($rres -is [array]){ $rres=$rres[-1] }
     $raids++; $totProb+=$script:raidProblems
-    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' heapMB='+$rres.heap+' build='+$script:ver)
+    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' travelPx='+$rres.travel+' fires='+$rres.fires+' menuPct='+$rres.menuPct+' heapMB='+$rres.heap+' build='+$script:ver)
     if($rres.end -eq 'lightflag'){ $stopWhy='light.flag (he is back)'; break }
     if($Mode -ne ''){ $stopWhy='replay done'; break }
   }

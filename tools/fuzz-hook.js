@@ -70,7 +70,7 @@
       try{ o.sc=g.arcade?(ARCADE.mine|0):((g.cs&&g.cs.s)|0); }catch(x){}
       if(p){
         o.x=p.x; o.y=p.y; o.hp=p.hp; o.ar=p.armor; o.mhp=p.maxhp;
-        o.dn=(p.downed||p.dying)?1:0;
+        o.dn=(p.downed||p.dying)?1:0; o.am=(typeof p.ammo==='number'&&isFinite(p.ammo))?p.ammo:null;
         bad1('p.x',p.x,bad); bad1('p.y',p.y,bad); bad1('p.hp',p.hp,bad); bad1('p.armor',p.armor,bad);
         if(typeof p.x!=='number') bad.push('p.x type '+typeof p.x);
         if(typeof p.hp!=='number') bad.push('p.hp type '+typeof p.hp);

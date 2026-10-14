@@ -1,0 +1,7 @@
+v26.16: guns take a moment to draw
+
+Guns now take a moment to draw: a pistol is ready fast, a sniper rifle or the machine gun takes nearly a second.
+
+Check 26.16. Fails on v26.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
