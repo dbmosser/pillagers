@@ -6690,7 +6690,7 @@ window.__REGRESS=[
        // NINE: with nine real guns on the nine keys, a stronger find takes the key of the weakest gun not in his hands, and that gun goes to the backpack with no key
        var rk=gk.slice().sort(function(a,b){ var wa=cl(ITEMS[a].gk), wb=cl(ITEMS[b].gk); return beltGunLow(wa,wb)?-1:(beltGunLow(wb,wa)?1:0); });
        var rs=[]; for(i=0;i<rk.length;i++) if(!rs.length||beltGunLow(cl(ITEMS[rs[rs.length-1]].gk),cl(ITEMS[rk[i]].gk))) rs.push(rk[i]);
-       if(rs.length>=10){
+       if(rs.length>=10&&typeof gunClassPlace!=='function'){   // gunkeys1: a gun goes to the key of its class now, one gun a class, so nine real guns do not fill nine keys and a tenth no longer takes the weakest key; the rule holds on the build before
          p.wep=cl(ITEMS[rs[8]].gk); p.ammo=p.wep.mag; p.sec=cl(ITEMS[rs[7]].gk); p.secAmmo=p.sec.mag; p.swapped=false; p.reloading=0;
          g.bag=rs.slice(0,7); g.stowQ={}; g.stowAmmo={}; g.hotAssign={}; g.hotAuto={}; g.hotPruned={};
          gunKeysSettle({deploy:1});
