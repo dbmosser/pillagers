@@ -6089,6 +6089,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'26.13',what:'the self-revive says so on screen: SELF-REVIVE USED with Back on your feet as the detail, and a second one is refused with its own line',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof selfRevive!=='function') return 'SKIP: no self-revive here';
+     var bad=[], g=null, p=null, said=[], realSay=say, up;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       p=g.player; p.downed=false;
+       say=function(m,k,o){ said.push({m:String(m),sub:(o&&o.sub)||''}); return realSay.apply(this,arguments); };
+       p.downed=true; p.revived=false; said.length=0;
+       selfRevive();
+       if(!said.some(function(l){ return l.m==='SELF-REVIVE USED'; })) bad.push('the self-revive said nothing on screen ('+JSON.stringify(said.map(function(l){ return l.m; }))+')');
+       else if(!said.some(function(l){ return l.m==='SELF-REVIVE USED'&&l.sub==='Back on your feet.'; })) bad.push('the self-revive line has no detail');
+       if(p.downed||!p.revived) bad.push('the self-revive did not get him up');
+       p.downed=true; said.length=0; up=selfRevive();
+       if(up) bad.push('control: a second self-revive in one raid worked');
+       if(!said.some(function(l){ return l.m.indexOf('Self-revive spent')===0; })) bad.push('control: the spent self-revive is not refused with its own line');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       say=realSay;
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __resetCfg(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'26.12',what:'standing in the ring he called with extraction 20 s out, exactly one drawn line says INBOUND (the band), and the ring badge is still drawn from outside the ring',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy or draw';

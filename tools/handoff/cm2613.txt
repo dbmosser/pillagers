@@ -1,0 +1,7 @@
+v26.13: the self-revive says so again
+
+Getting up with the self-revive says SELF-REVIVE USED again, along with the new sounds.
+
+Check 26.13. Fails on v26.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

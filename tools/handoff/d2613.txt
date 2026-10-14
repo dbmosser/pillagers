@@ -1,0 +1,5 @@
+## v26.13 - THE SELF-REVIVE SAYS SO AGAIN
+
+Co-op hunt while he was away. Found by the overnight regression run. When the self-revive got its injector and gear sounds (v25.40), the note about it was written in front of the callout, which turned the callout into comment text. Getting up on your own has said nothing on screen since. SELF-REVIVE USED, with Back on your feet under it, is back, beside the new sounds.
+
+MEASURED. Check 26.13 passes, and fails on v26.12.

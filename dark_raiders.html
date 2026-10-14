@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.12';
+var VER='26.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21213,7 +21213,11 @@ function selfRevive(){
   // of these and it is gone once used, so the decision is WHEN to spend it rather
   // than whether the bag happens to hold a bandage at the moment you go down.
   p.hp=40; p.downed=false; p.revived=true; p.iv=2; p.pendKiller=null;
-  G.tel.revives++; if(!injFoley('revive')) blip('pick'); try{ sndRevLand(); }catch(_rl){}   // v25.40 (usefoleyd): the injector and the gear say('SELF-REVIVE USED','info',{sub:'Back on your feet.'});   // v22.xx (R51): the caps headline, the rest as the detail
+  G.tel.revives++; if(!injFoley('revive')) blip('pick'); try{ sndRevLand(); }catch(_rl){}   // v25.40 (usefoleyd): the injector and the gear sound it
+  // v26.13 (nightfix4), found by the overnight regression run of 2026-10-13 (check 23.04): THE SELF-REVIVE SAYS SO AGAIN. v25.40 gave it the injector and gear sounds, and
+  // the note for that was written in front of the callout, which turned the say() call into comment text: since then getting up on your own said nothing on screen.
+  // The callout is back as v22.xx (R51) had it, the caps headline with the rest as the detail, beside the new sounds.
+  say('SELF-REVIVE USED','info',{sub:'Back on your feet.'});
   return true;
 }
 
@@ -41563,7 +41567,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.12: Standing in the ring you called, the INBOUND countdown shows once, in the band, not twice. Check 26.12 fails on v26.11',
+  now:'v26.13: Getting up with the self-revive says SELF-REVIVE USED again, along with the new sounds. Check 26.13 fails on v26.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

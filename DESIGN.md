@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.13 - THE SELF-REVIVE SAYS SO AGAIN
+
+Co-op hunt while he was away. Found by the overnight regression run. When the self-revive got its injector and gear sounds (v25.40), the note about it was written in front of the callout, which turned the callout into comment text. Getting up on your own has said nothing on screen since. SELF-REVIVE USED, with Back on your feet under it, is back, beside the new sounds.
+
+MEASURED. Check 26.13 passes, and fails on v26.12.
 ## v26.12 - ONE INBOUND LINE IN THE CALLED RING
 
 Co-op hunt while he was away. Found by the overnight regression run. When the ring badges became short caps callouts, the one over the ring you are standing in started saying EXTRACTION A INBOUND with its seconds, while the band above the belt says the same thing. That is the double line v22.41 took away. While you stand in the ring you called, only the band shows it now. From outside the ring, or for a ring somebody else called, the badge is drawn as before.
