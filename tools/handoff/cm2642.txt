@@ -1,0 +1,7 @@
+v26.42: the setup plates fit their words
+
+The gun keys plate on the Stash screen shows every name whole and bigger gun pictures.
+
+Check 26.42. Fails on v26.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.42 - THE SETUP PLATES FIT THEIR WORDS
+
+Co-op hunt while he was away. On the first look at the Stash screen the word MARKSMAN on the GUN KEYS plate was cut short (MARKSMAI), and the gun pictures on the tiles were small dark shapes. The GUN KEYS plate now takes a little more of the row than the WHEEL plate so every name is drawn whole, the key number takes a little less room, and the gun pictures are drawn larger.
+
+MEASURED. Check 26.42 passes, and fails on v26.41.
 ## v26.41 - MOUSE SENSITIVITY, HIP AND AIMING DOWN SIGHTS
 
 Co-op hunt while he was away. His order: add all of this to Settings. Controls gets two rows, MOUSE SENSITIVITY and AIM DOWN SIGHTS SENSITIVITY, each from 50% to 200% with 100% as it was. In a raid, when you move the mouse the aim turns round you by that much: at 200% it turns twice as far for the same move of your hand, at 50% half as far, and aiming down sights has its own setting so you can be steadier when you aim. How far out the crosshair sits is left alone. At 100% it is the plain cursor exactly as before, and wherever the cursor is for pointing (the backpack, the map, the wheel, the stall, the pause box, the belt) it is the real cursor too. Saved with the profile; in the DEMO it holds for the session.

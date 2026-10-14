@@ -1,0 +1,5 @@
+## v26.42 - THE SETUP PLATES FIT THEIR WORDS
+
+Co-op hunt while he was away. On the first look at the Stash screen the word MARKSMAN on the GUN KEYS plate was cut short (MARKSMAI), and the gun pictures on the tiles were small dark shapes. The GUN KEYS plate now takes a little more of the row than the WHEEL plate so every name is drawn whole, the key number takes a little less room, and the gun pictures are drawn larger.
+
+MEASURED. Check 26.42 passes, and fails on v26.41.
