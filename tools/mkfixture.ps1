@@ -6283,7 +6283,7 @@ window.__REGRESS=[
        // ONE: the wheel
        mouse.x=W/2; mouse.y=H/2; keys['KeyQ']=true; raidKey('KeyQ',false,null);   /* wheelcenter: the mouse starts on the wheel centre */
        if(!g.wheel) return 'ONE: the wheel did not open';
-       m=g.wheel.list.length; an=-Math.PI/2+2*(Math.PI*2/m); mouse.x=g.wheel.mx+Math.cos(an)*220; mouse.y=g.wheel.my+Math.sin(an)*220; updatePlayer(0.2);
+       m=g.wheel.list.length; for(i=0;i<m;i++) if(g.wheel.list[i].k==='bandage') break; an=-Math.PI/2+(i<m?i:2)*(Math.PI*2/m); mouse.x=g.wheel.mx+Math.cos(an)*220; mouse.y=g.wheel.my+Math.sin(an)*220; updatePlayer(0.2);
        frame();
        ['FRAG CHARGE','SMOKE CANISTER','BANDAGE','MEDKIT','RELEASE TO TAKE OUT','x2','x1'].forEach(function(s){ if(txt.indexOf(s)<0) bad.push('ONE: the open wheel drew no '+s); });
        if(txt.indexOf('HEALS TO 85')<0) bad.push('ONE: the picked bandage showed no HEALS TO 85 ('+txt.filter(function(s){ return /HEAL|COOK|THROW/.test(s); }).join('|')+')');
@@ -6340,7 +6340,7 @@ window.__REGRESS=[
        mx0=mouse.x; my0=mouse.y; sx=1; sy=0; step(); step();
        if(Math.abs(mouse.x-mx0)>0.5||Math.abs(mouse.y-my0)>0.5) bad.push('THREE: the crosshair moved with the wheel open ('+mx0+','+my0+' to '+mouse.x+','+mouse.y+')');
        // FOUR: letting go takes the picked item out
-       an=-Math.PI/2+1*(Math.PI*2/m); sx=Math.cos(an); sy=Math.sin(an); step();
+       an=-Math.PI/2+(function(){ var q; for(q=0;q<m;q++) if(g.wheel.list[q].k==='smoke') return q; return 1; })()*(Math.PI*2/m); sx=Math.cos(an); sy=Math.sin(an); step();   /* wheelfixed: the smoke has its own slot */
        down13=false; step();
        if(g.wheel) bad.push('FOUR: the wheel stayed open after D-DOWN was let go');
        if(!p.hand||p.hand.k!=='smoke') bad.push('FOUR: letting go on the smoke left '+(p.hand?p.hand.k:'nothing')+' in hand');
@@ -6746,6 +6746,7 @@ window.__REGRESS=[
      function cl(q){ var o={}, k; for(k in WEAPONS[q]) o[k]=WEAPONS[q][k]; o.q='field'; o.qRank=1; return o; }
      function stock(){ g.bag=['bandage','medkit']; g.pouch.frag=2; g.pouch.smoke=1; g.pouch.decoy=0; g.pouch.trip=0; }
      function aim(jx,len){ var an=-Math.PI/2+jx*(Math.PI*2/m); mouse.x=w.mx+Math.cos(an)*len; mouse.y=w.my+Math.sin(an)*len; updatePlayer(0.016); }
+     function idx(k2){ var q; for(q=0;q<w.list.length;q++) if(w.list[q].k===k2) return q; return -1; }   /* wheelfixed: a type has its own slot now, so find it by key */
      function open(){ mouse.x=W/2; mouse.y=H/2; keys['KeyQ']=true; raidKey('KeyQ',false,null); w=g.wheel; return w; }   /* wheelcenter: the wheel is on the screen centre and picks by the direction from it, so the mouse starts there */
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -6762,7 +6763,7 @@ window.__REGRESS=[
        // ONE: Q opens the wheel with the carried types in order, and does not swing the crowbar
        a0=g.barT||0;
        if(!open()) { bad.push('ONE: Q opened nothing'); return bad.join('; '); }
-       if(w.list.map(function(q){ return q.k; }).join(',')!=='frag,smoke,bandage,medkit') bad.push('ONE: the wheel lists '+w.list.map(function(q){ return q.k+q.n; }).join(',')+', not frag,smoke,bandage,medkit');
+       if(w.list.filter(function(q){ return q.n>0; }).map(function(q){ return q.k; }).sort().join(',')!=='bandage,frag,medkit,smoke') bad.push('ONE: the wheel carries '+w.list.filter(function(q){ return q.n>0; }).map(function(q){ return q.k+q.n; }).join(',')+', not frag,smoke,bandage,medkit');   /* wheelfixed: the ring always has its eight slots; the ones with a count are the carried types */
        if((g.barT||0)>a0) bad.push('ONE: Q swung the crowbar');
        m=w.list.length;
        // TWO: the trigger is dead while it is open
@@ -6775,12 +6776,12 @@ window.__REGRESS=[
        aim(1,6); if(g.wheel.sel!==-1) bad.push('THREE: a move of six pixels picked segment '+g.wheel.sel);
        // FOUR: letting go on the smoke picks the smoke for G; the wheel closes
        tsel0=g.tsel;
-       aim(1,220); keys['KeyQ']=false; wheelRelease();
+       aim(idx('smoke'),220); keys['KeyQ']=false; wheelRelease();
        if(g.wheel) bad.push('FOUR: the wheel stayed open after Q was let go');
        if(THROWKEYS[g.tsel]!=='smoke'&&!(p.hand&&p.hand.k==='smoke')) bad.push('FOUR: letting go on the smoke left the pick on '+THROWKEYS[g.tsel]);   /* wheel3: and from then on the pick takes the item out */
        p.hand=null;
        // FIVE: the medkit sets the heal H uses
-       open(); aim(3,220); keys['KeyQ']=false; wheelRelease();
+       open(); aim(idx('medkit'),220); keys['KeyQ']=false; wheelRelease();
        if(g.msel!=='medkit'&&!(p.hand&&p.hand.k==='medkit')) bad.push('FIVE: letting go on the medkit left the heal pick on '+g.msel);
        p.hand=null;
        // SIX: letting go in the middle cancels and changes nothing
