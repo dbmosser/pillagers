@@ -1,0 +1,7 @@
+v26.35: the four starter guns are gone
+
+The Tacker, Sputter, Chatter and Scuttle are gone: pillagers carry real lootable guns and the DEMO kit deals real guns.
+
+Check 26.35. Fails on v26.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.34';
+var VER='26.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2610,14 +2610,8 @@ var WEAPONS={
   // magazine, twice the trigger delay and a report that brings the room.
   magnum:{id:'magnum',name:'Magnum',dmg:62,rof:620,spread:.042,mag:6,reload:1900,rng:480,auto:false,noise:520,tint:'#ffb870'},
   // v6.69, his note: a ton of damage, shoots really slow. 1600ms between shots is the
-  // slowest trigger in the game by a distance; Scuttle at 780 was the old record.
+  // slowest trigger in the game by a distance.
   sniper:{optic:4,id:'sniper',name:'Longshot',dmg:170,rof:1600,spread:.006,mag:5,reload:3200,rng:900,auto:false,noise:640,tint:'#e8f0ff'},
-  // Four issued starters, one rolled at random on every deploy. Tuned at or just
-  // under the Scav Pistol and Compact SMG so the shop and loot guns stay upgrades.
-  tacker:{id:'tacker',name:'Tacker',dmg:20,rof:240,spread:.048,mag:14,reload:1300,rng:400,auto:false,noise:320,tint:'#ffd9a8',starter:1},
-  sputter:{id:'sputter',name:'Sputter',dmg:11,rof:80,spread:.130,mag:28,reload:1750,rng:330,auto:true,noise:300,tint:'#ffe6b8',starter:1},
-  chatter:{id:'chatter',name:'Chatter',dmg:20,rof:150,spread:.085,mag:22,reload:1950,rng:470,auto:true,noise:400,tint:'#ffd18a',starter:1},
-  scuttle:{id:'scuttle',name:'Scuttle',dmg:12,pellets:5,rof:780,spread:.200,mag:6,reload:2200,rng:210,auto:false,noise:470,tint:'#ffc98a',starter:1},
   // Field families added at v1.08, because his answer to gear versus valuables
   // was 'not even close'. Three genuinely different fire patterns, not stat dups.
   carbine:{id:'carbine',name:'Burst Carbine',dmg:17,burst:3,rof:360,spread:.055,mag:24,reload:1900,rng:500,auto:false,noise:400,tint:'#ffd88a'},
@@ -2634,7 +2628,11 @@ var WEAPONS={
   whisper:{id:'whisper',name:'Whisper',dmg:24,rof:400,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:'#a8d8c0'},
   lance:{optic:2.5,id:'lance',name:'Meridian Lance',dmg:150,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'}
 };
-var STARTERS=['tacker','sputter','chatter','scuttle'];
+// v26.35 (nostarters), HIS ORDER (2026-10-14): "get rid of sputter tacker chatter scuttle -- i dont understand why those were ever in the
+// game". The four issued starter guns are gone. This list is what is left of the loaner draw: buildRaid still makes that one draw from four
+// names (a live raid takes the Scav Pistol and drops the pick, the bot sim plays the gun it names), so the seeded stream, the seed 4242 raid
+// and the party loaner word are what they were. Four real guns of the old strength: the Scav Pistol, Compact SMG, Auto Rifle and Riot Scattergun.
+var SIM_START=['pistol','smg','rifle','shotgun'];
 // How guns rank against each other. Used both for auto-equipping a better find
 // in the field and for deciding which of the two carried guns to equip on return.
 // v5.93: whisper and lance were missing entirely and every reader defaults a
@@ -2642,10 +2640,10 @@ var STARTERS=['tacker','sputter','chatter','scuttle'];
 // v21.66, HIS NOTE (2026-10-09): "the shotgun and any single shot gun like the whisper, meridian lance etc need to deal more damage to be
 // competitive against the automatics like the auto rifle and smg". Sustained damage with reloads was about 107 a second for the Auto
 // Rifle and 85 to 99 for the SMG and the Support MG, against 45 to 70 for the single shots and 24 for the Whisper. Per shot now: Scav
-// Pistol 23, Tacker 20, Scuttle 12 a pellet, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet,
+// Pistol 23, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet,
 // Whisper 24 and a shot every 0.40 s. The single shots land about 70 to 110 a second sustained; they still trade the magazine for reach and
 // the hit that ends a fight. The Burst Carbine (three a pull, about 85) is unchanged.
-var WTIER={fists:0,tacker:1,pistol:1,sputter:2,scuttle:2,smg:2,chatter:2,magnum:3,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4,whisper:4,sniper:5,lance:5};
+var WTIER={fists:0,pistol:1,smg:2,magnum:3,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4,whisper:4,sniper:5,lance:5};
 // v23.xx (feat2a), HIS #17 (2026-10-12): "better gun stat cards - yes", and his answer 34: the card shows on pickup and in the
 // backpack. THE MODEL, pure and drawn by nobody yet (the pickup card and the backpack card are the next two builds, and the UI
 // redesign can restyle both without touching this). Five numbers, all higher-is-better: DMG a pull (a pellet gun counts every
@@ -3028,8 +3026,8 @@ var SHOP=[
 // v24.xx (scavspawnonly), HIS ORDER (2026-10-12): "scav pistol should not be a findable item -- only spawn with one, never find one in
 // environment or on pillager bot etc". The Scav Pistol is the gun you go up with (the freebie kit, the armoury pistol every save
 // starts with) and nothing else: it is out of the locker and body tables below, the landmark ammo table, the Peddler gun slot and
-// Wirt's gamble, no pillager or hired man rolls it (the three pistol rows in mkRaider are the Tacker now, the same tier and feel),
-// an imported friend who favoured it walks in with the Tacker, and reward 5 pays its value when you already own one instead of a
+// Wirt's gamble, no pillager or hired man rolls it (the three sidearm rows in mkRaider carry the Magnum and the Compact SMG now, v26.35 nostarters),
+// an imported friend who favoured it walks in with the Magnum, and reward 5 pays its value when you already own one instead of a
 // second pistol to the stash. Every roll that drew it still draws once from the rest, so no seeded draw moved and the seed 4242
 // build holds the same entities and containers. The item (Scav Pistol (field)) stays: it is what your own pistol becomes in the
 // backpack, and a stash that already holds one keeps it.
@@ -3927,21 +3925,6 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
           if(!Array.isArray(P.stash)) P.stash=[];
           P.stash=P.stash.filter(function(k){ return !!ITEMS[k]; });
           if(!Array.isArray(P.weapons)) P.weapons=[];
-          // THE v2.97 GUN RENAME MIGRATION. The four issued starters were named
-          // Ferro, Kettle, Stitcher and Hullcracker, which are four real ARC
-          // RAIDERS weapons, so they are gone. Their internal KEYS went with the
-          // names rather than being left behind as a private record of the lift.
-          // This has to run BEFORE the filter on the very next lines, and that is
-          // the whole reason it exists: the filter drops any weapon key the build
-          // no longer knows, so without this a returning save would have its owned
-          // starters and their accumulated wear SILENTLY DELETED, which is the
-          // worst class of bug this file can ship. Owned guns, the equipped gun
-          // and the wear ledger are all keyed by gun id, so all three are mapped.
-          var GUNMIG={ferro:'tacker',kettle:'sputter',stitcher:'chatter',hullcracker:'scuttle'};
-          P.weapons=P.weapons.map(function(k){ return GUNMIG[k]||k; });
-          if(GUNMIG[P.equipped]) P.equipped=GUNMIG[P.equipped];
-          if(P.wear){ for(var _gk in GUNMIG){ if(P.wear[_gk]!==undefined){
-            P.wear[GUNMIG[_gk]]=(P.wear[GUNMIG[_gk]]||0)+P.wear[_gk]; delete P.wear[_gk]; } } }
           // v14.03, save audit: a raid that ended by the page going away (a closed tab, F5, a crash, a frozen PC)
           // never settled the armoury guns it had taken out. They go back, as an abandon would put them back.
           if(Array.isArray(P.raidSpliced)){
@@ -6494,17 +6477,13 @@ function blip(type,d,pan){
     // The Magnum and the Longshot had no voice and borrowed the rifle's.
     var FV={
       pistol: {len:1700,lp:2600,hp:300,g:.13,decay:3.6,body:{f0:200,f1:70,d:.09,g:.10,type:'sine'}},
-      tacker: {len:1300,lp:3400,hp:600,g:.12,decay:4.4,body:{f0:260,f1:110,d:.06,g:.07,type:'triangle'}},
       smg:    {len:1500,lp:2100,hp:200,g:.11,decay:4.0,body:{f0:170,f1:80,d:.07,g:.08,type:'sine'}},
-      sputter:{len:1200,lp:1600,hp:150,g:.11,decay:4.6,body:{f0:130,f1:60,d:.06,g:.09,type:'square'},rattle:1},
-      chatter:{len:1900,lp:2200,hp:250,g:.12,decay:3.8,body:{f0:190,f1:75,d:.08,g:.09,type:'sine'}},
       carbine:{len:2000,lp:2300,hp:220,g:.13,decay:3.6,body:{f0:210,f1:80,d:.08,g:.10,type:'sine'}},
       rifle:  {len:2600,lp:0,hp:180,g:.16,decay:3.2,body:{f0:180,f1:60,d:.10,g:.12,type:'sine'}},
       dmr:    {len:4200,lp:1400,hp:120,g:.20,decay:2.6,body:{f0:120,f1:45,d:.10,g:.14,type:'sine'},bolt:1},
       magnum: {len:3800,lp:1100,hp:80,g:.24,decay:2.4,body:{f0:95,f1:38,d:.12,g:.20,type:'sine'},tail:1},
       sniper: {len:5600,lp:1000,hp:60,g:.26,decay:2.2,body:{f0:80,f1:32,d:.14,g:.22,type:'sine'},tail:1,bolt:1},
       shotgun:{len:4200,lp:900,hp:100,g:.22,decay:2.2,body:{f0:120,f1:45,d:.12,g:.14,type:'sine'},pump:1},
-      scuttle:{len:3200,lp:1300,hp:200,g:.20,decay:2.6,body:{f0:150,f1:60,d:.09,g:.11,type:'triangle'},pump:1},
       lmg:    {len:2400,lp:1500,hp:160,g:.15,decay:2.9,body:{f0:150,f1:60,d:.09,g:.11,type:'sine'}},
       // The Whisper is a cough, not a crack: short, heavily filtered, quiet.
       whisper:{len:900,lp:900,hp:200,g:.07,decay:4.2,body:{f0:140,f1:90,d:.05,g:.03,type:'sine'}},
@@ -6569,15 +6548,6 @@ function blip(type,d,pan){
         var cg=a.createGain(); cg.gain.value=.08*vol;
         cs.connect(cfl); cfl.connect(cg); cg.connect(OUT); cs.start(t+ck[ci]);
       }
-    }
-    if(V.rattle){
-      // a second, lighter crack a hair behind the first: the Sputter sputters
-      var rl2=Math.round(V.len*.6),rb2=a.createBuffer(1,rl2,a.sampleRate),rc2=rb2.getChannelData(0);
-      for(var ri2=0;ri2<rl2;ri2++) rc2[ri2]=(Math.random()*2-1)*Math.pow(1-ri2/rl2,V.decay);
-      var rs2=a.createBufferSource(); rs2.buffer=rb2;
-      var rf2=a.createBiquadFilter(); rf2.type='lowpass'; rf2.frequency.value=(V.lp||1600)*.8*J;
-      var rg2=a.createGain(); rg2.gain.value=V.g*vol*.6;
-      rs2.connect(rf2); rf2.connect(rg2); rg2.connect(OUT); rs2.start(t+.012);
     }
   } else if(type==='boom'){
     var b2=a.createBuffer(1,8000,a.sampleRate),c2=b2.getChannelData(0);
@@ -11621,6 +11591,7 @@ function blessElite(e){
     // The three fields mkRaider derives from the weapon move together, or an elite with
     // a Longshot would keep an SMG's engagement range and read as broken.
     e.wep=WEAPONS[_gk]; e.dmg=WEAPONS[_gk].dmg;
+    e.noGunDrop=null;   // v26.35 (nostarters): the gun an elite is blessed with is a find, and it drops as before
     e.rng=Math.min(WEAPONS[_gk].rng*.72,580);   // never opens fire from outside your sight
   }
   return e;
@@ -12089,9 +12060,11 @@ function raiderLook(identId,x,y){
 function mkRaider(x,y,forceId,simBuild){
   // v6.53, his note. Nine entries: pistol 3, smg 2, rifle 2, carbine 1, scattergun 1,
   // so about one pillager in five carries something the counter will not sell you.
-  // v24.xx (scavspawnonly), HIS ORDER: the Scav Pistol is spawn-only, so the three pistol rows are the Tacker, the other tier 1
-  // sidearm (20 a round against 23, 14 rounds against 12), and the pick still draws once from nine.
-  var _wkL=['tacker','tacker','tacker','smg','smg','rifle','rifle','carbine','shotgun'], _wkR=rr()*_wkL.length, wk=_wkL[Math.floor(_wkR)];
+  // v24.xx (scavspawnonly), HIS ORDER: the Scav Pistol is spawn-only, so no pillager carries it, and its three rows held the Tacker.
+  // v26.35 (nostarters), HIS ORDER (2026-10-14): "get rid of sputter tacker chatter scuttle". Those three sidearm rows (the first three)
+  // carry real, lootable guns now: one the Magnum and two the Compact SMG, so the Compact SMG is the commonest gun on a pillager (four rows
+  // of nine) and the lower tiers lead. Nine rows still, so the pick still draws once from nine and the seeded stream is what it was.
+  var _wkL=['magnum','smg','smg','smg','smg','rifle','rifle','carbine','shotgun'], _wkR=rr()*_wkL.length, wk=_wkL[Math.floor(_wkR)], _wkSide=Math.floor(_wkR)<3;
   // v26.30 (rarvar2): the pick above is pick() written out (the same one draw, the same row). Where in its row it fell is as even as the
   // pick itself, and decides the rarity: under RV_PCT of the row he carries the twin one rarity up (his drop is that twin).
   wk=rvGun(wk,_wkR-Math.floor(_wkR));
@@ -12179,7 +12152,10 @@ coat:ident.coat, ident:ident.id, name:ident.tag,
   r.rig=rrl<0.44?'none':(rrl<0.80?'light':(rrl<0.95?'medium':'heavy'));
   var RRG=armorById(r.rig);
   r.armor=RRG.cap*0.7; r.armorCap=RRG.cap; r.bulk=RRG.bulk;
-  if(ITEMS['gun_'+wk]) r.bag.push('gun_'+wk);   // v24.xx (scavspawnonly): the Tacker is an issued gun with no item form, so it is not loot
+  // v26.35 (nostarters): the three sidearm rows used to carry the Tacker, which had no item form and so never dropped. The gun they carry
+  // now is a real one, but the share of pillagers who drop a gun stays what it was: it is in his hands and not in his pack, and noGunDrop
+  // names it, so the death path, the revive payout and the swap leave no copy of it. The other six rows put theirs in the pack as before.
+  if(ITEMS['gun_'+wk]){ if(_wkSide) r.noGunDrop=wk; else r.bag.push('gun_'+wk); }
   // His in-run note at 93s: "raiders should drop better loot". He is right and it was
   // indefensible. A raider is the most dangerous thing on the map, he tagged the one
   // fight he had as "raider battle felt really good", and the reward was one to three
@@ -12747,8 +12723,8 @@ function buildRaid(sim){
   var _upIss=(typeof NET==='object'&&NET&&NET.upHold)?NET.upIss:null;
   if(wep&&wearable(P.equipped)) wep=bakeWear(P.equipped);
   if(!wep||wep.id==='fists'||!P.weapons||P.weapons.indexOf(P.equipped)<0){
-    if(_upIss===false){ var _upR=RNGS; wep=WEAPONS[pick(STARTERS)]; RNGS=_upR; }
-    else wep=WEAPONS[pick(STARTERS)];
+    if(_upIss===false){ var _upR=RNGS; wep=WEAPONS[pick(SIM_START)]; RNGS=_upR; }
+    else wep=WEAPONS[pick(SIM_START)];
     // v26.17 (noloaner), HIS ORDER (2026-10-14, playing CAREER): "i chose top gear and it gave me a loaner gun -- if i don't have a gun it
     // should just give me a scav pistol". Gun 1 empty or not his (after a death, TOP GEAR or RANDOM FROM STASH with nothing in the armoury
     // to equip, MY LOADOUT on bare hands, the quick ascent) issued one of four loaner starters, flagged issued, so an extraction banked
@@ -12758,7 +12734,7 @@ function buildRaid(sim){
     // keeps its starter. DEMO never comes here (its sandbox owns the gun it deals).
     wepDrew=true;
     if(!sim&&WEAPONS[FREEKIT_GUN]){ wep=WEAPONS[FREEKIT_GUN]; wepSpawn=true; } else wepIssued=true;
-  } else if(_upIss===true){ pick(STARTERS); }
+  } else if(_upIss===true){ pick(SIM_START); }
   // Secondary: YOURS if you have chosen one and still own it, otherwise the
   // issued Scav Pistol. Swap with X. An issued sidearm is a loaner and is never
   // taken from the armoury nor lost from it; one you chose rides the same rules
@@ -19517,7 +19493,7 @@ var RLFX={on:false,p:null,w:null,tot:0,st:[],i:0,dry:false,hum:null};
 function reloadPlan(w,dry,n){
   var id=gunBase((w&&w.id)||''), S=[], k;   // v26.26 (rarvar1): a rarity twin reloads like its model
   function a(f,r,o){ S.push({f:f,r:r,o:o||{}}); }
-  if(id==='shotgun'||id==='scuttle'){
+  if(id==='shotgun'){
     a(0,'boltLatch',{rate:1.35,g:0.55});   // the loading gate
     for(k=0;k<n;k++) a(n>1?0.1+0.75*k/(n-1):0.45,'shellIn');   // one shell for every shell taken, 10 to 85 percent
     if(dry) a(1,'pump');
@@ -19543,15 +19519,15 @@ function reloadPlan(w,dry,n){
     a(0.66,'magIn',{rate:0.8});   // the belt is laid
     a(0.84,'boltLatch',{rate:0.75});   // the cover slams
     if(dry) a(1,'rifleCharge',{rate:0.85});
-  } else if(id==='rifle'||id==='chatter'||id==='carbine'||id==='dmr'){
+  } else if(id==='rifle'||id==='carbine'||id==='dmr'){
     a(0,'rifleMagOut',{rate:id==='dmr'?0.92:1});
     a(0.75,'magIn',{rate:id==='dmr'?0.85:0.92});
     if(dry) a(1,'rifleCharge',{rate:id==='dmr'?0.82:1});
-  } else if(id==='smg'||id==='sputter'||id==='whisper'){
+  } else if(id==='smg'||id==='whisper'){
     a(0,'magOut',{rate:1.08});
     a(0.75,'magIn',{rate:1.08});
     if(dry) a(1,'rifleCharge',{rate:1.18});
-  } else {   // the Scav Pistol, the Tacker and any gun added later
+  } else {   // the Scav Pistol and any gun added later
     a(0,'magOut');
     a(0.75,'pistolSeat');
     if(dry) a(1,'slideRack');
@@ -20321,7 +20297,7 @@ function bagHeldGun(slot){
 // bank) a swap or an equip is a strap and holster rattle and the draw clacking up, lighter and quicker for a pistol, an SMG or the
 // Magnum and heavier for a rifle, the LMG, a shotgun, the Longshot or the Lance; a drop is a soft thump. Yours is centred; your
 // teammates hear it where you stand. Cosmetic only: no seeded draw, nothing under G.sim, no game state.
-var GEAR_LIGHT={pistol:1,tacker:1,magnum:1,smg:1,sputter:1,whisper:1,fists:1};
+var GEAR_LIGHT={pistol:1,magnum:1,smg:1,whisper:1,fists:1};
 var GEAR_AT=-1;   // v25.xx (plopswap): the raid clock at the last holster clack, so the belt key does not add a second sound over it
 function gearFoley(kind,w){
   if((G&&G.sim)||typeof foley!=='function') return false;
@@ -20339,7 +20315,7 @@ function gearFoley(kind,w){
 // updatePlayer, starts the clock when the gun in his hands is not the one it saw last frame; the first frame of a raid starts nothing (the gun
 // is drawn already), and the bot sim never waits (the clock is held at 0 under G.sim). p.drawT is the seconds left; p.drawLen the full time,
 // for the reticle. No seeded draw, nothing a bot reads.
-var DRAWT={tacker:0.25,pistol:0.25,magnum:0.35,sputter:0.4,smg:0.4,whisper:0.45,chatter:0.5,carbine:0.5,rifle:0.55,scuttle:0.6,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0,lance:1.0};
+var DRAWT={pistol:0.25,magnum:0.35,smg:0.4,whisper:0.45,carbine:0.5,rifle:0.55,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0,lance:1.0};
 function drawTime(w){
   if(!w||!w.id||w.mag===0) return 0;
   return Object.prototype.hasOwnProperty.call(DRAWT,w.id)?DRAWT[w.id]:0.5;
@@ -21537,7 +21513,7 @@ function raiderUseKit(e,dt){
       // better gun still pays both. The old gun goes into the pack only when it has no copy there (an elite's blessed gun, which
       // blessElite hands him after the spawn copy is pushed), so that pack is one longer after the swap; with a copy nothing
       // moves at all and the pack length is what it always was.
-      if(old&&old.id!=='fists'&&ITEMS['gun_'+old.id]&&e.bag.indexOf('gun_'+old.id)<0) e.bag.push('gun_'+old.id);   // v24.xx (scavspawnonly): a Tacker has no item form
+      if(old&&old.id!=='fists'&&ITEMS['gun_'+old.id]&&old.id!==e.noGunDrop&&e.bag.indexOf('gun_'+old.id)<0) e.bag.push('gun_'+old.id);   // v26.35 (nostarters): a sidearm-row gun is in his hands only
       // v8.22, audit: the SAME cap blessElite applies at 6230, and for the same
       // stated reason - never open fire from outside his sight. This path had no
       // cap at all, so a raider who picked up a Longshot engaged at 648 against
@@ -22795,7 +22771,7 @@ if(!p.fired||p.wep.auto){
         if(_rpi>=0) _rb.splice(_rpi,1);
         // A man carrying nothing at all still owes you: the weapon in his hands.
         // v13.88, loot audit: once. He keeps holding it, so a second revive paid another copy.
-        else if(!downRdr.paidRevive&&downRdr.wep&&downRdr.wep.id&&ITEMS['gun_'+downRdr.wep.id]) _rpk='gun_'+downRdr.wep.id;
+        else if(!downRdr.paidRevive&&heldGunDrops(downRdr)) _rpk='gun_'+downRdr.wep.id;
         if(_rpk&&ITEMS[_rpk]){
           // v15.07, throwables audit finding 5: A GRENADE A PILLAGER PAYS FOR A REVIVE CAN BE THROWN. A Frag, Smoke or Decoy he
           // paid went into the backpack, but doThrow, startCook and the belt throw cell read only G.pouch, so the cell showed x0
@@ -24031,6 +24007,10 @@ function bodyBonus(e){
   for(i=0;i<n;i++){ k=rollLoot(LOOT.safe); if(k) out.push(k); }
   return out;
 }
+// v26.35 (nostarters): does the gun in a pillager's hands leave a copy on his body? Every gun with an item form does, except the one a
+// sidearm-row pillager spawned with (noGunDrop, set in mkRaider): that row used to carry the Tacker, which never dropped, and the rate
+// of dropped guns is kept where it was. The death path, the revive payout and the swap all ask here.
+function heldGunDrops(e){ return !!(e&&e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]&&e.noGunDrop!==e.wep.id); }
 // v22.xx, the raid text rewrite (R35): FAR-OFF CHATTER STAYS OFF YOUR SCREEN. HIS ORDER (2026-10-09): the raid text reads like
 // Call of Duty, Fortnite or ARC Raiders, and in those the screen tells you what is happening to you, not a running commentary on
 // the far side of the map. A pillager calling or riding out a ring across the map, the Survivor reaching a ring, the Peddler
@@ -24595,7 +24575,7 @@ if(e.state==='possum'){
         cq.cache=1; cq.time=2.4; cq.tag='PILLBOX WRECK'; G.containers.push(cq);
         say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Search the wreck.'});   // v22.xx (R53): an objective row in caps
         decal(e.x,e.y,'#2a1a3a',rnd(28,40));
-      } else if(e.kind==='raider'&&(e.bag.length||(e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]))){
+      } else if(e.kind==='raider'&&(e.bag.length||heldGunDrops(e))){
         // v6.53: what he was holding goes on the body with what he had looted. The
         // gate above changed with it, or an armed man who had looted nothing still
         // left no body to search.
@@ -24606,7 +24586,7 @@ if(e.state==='possum'){
         // v9.10: not if he already handed it over for the revive. Without this
         // the same weapon pays twice, once for saving him and once for killing
         // him afterwards, which is the obvious way to farm the new payout.
-        if(e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]&&!e.paidRevive&&_drop.indexOf('gun_'+e.wep.id)<0)
+        if(heldGunDrops(e)&&!e.paidRevive&&_drop.indexOf('gun_'+e.wep.id)<0)
           _drop.push('gun_'+e.wep.id);
         _drop=_drop.concat(bodyBonus(e));   // v21.67, his note: what a pillager drops is better
         var c=setLoot(mkContainer(e.x,e.y,'body'),_drop); G.containers.push(c);
@@ -29084,8 +29064,8 @@ function drawRigPC(b,cx,ty,cc,jc,jh,norig){   // v23.xx (spr20): norig, the clot
 // v25.xx (bigguns1), HIS ORDER (2026-10-12): "guns in player's characters hands need to be bigger/look more impressive, everything is
 // wayy too small". BIG GUNS. A rifle in your hands was 19 by 5 units with only 12 of them clear of the chest; pistol and SMG were a
 // stub at the fist, and rifle, Scattergun and Support MG were one dark stick. Every gun class now has its own baked sprite at about
-// one and a half times the length, drawn from the stock butt tucked into the chest out to the muzzle: Tacker and Scav Pistol about
-// 19, Magnum, Sputter and Compact SMG 21, rifles 27 to 30, Scattergun 29, Support MG 33, Marksman 36, Longshot and Lance 40. Each is
+// one and a half times the length, drawn from the stock butt tucked into the chest out to the muzzle: the Scav Pistol about
+// 19, Magnum and Compact SMG 21, rifles 27 to 30, Scattergun 29, Support MG 33, Marksman 36, Longshot and Lance 40. Each is
 // inked like the body, in a gun-metal ramp with one lit top edge and a cool rim light on its lower edge so it reads on a dark floor,
 // with its own parts: magazines, the drum, the pump, scopes with a lit lens, rails, the suppressor, the coil rings. Held in two
 // hands: the trigger hand on the grip, the far arm under the gun to the foregrip (both hands on the grip for a pistol); at a sprint
@@ -29106,25 +29086,15 @@ var GUNDEF=(function(){
   function grip(x,m){ return P([x,2.2, x+2.6,2.2, x+2.0,6.2, x-0.6,6.2],m||'d'); }
   function cmag(x,y){ return P([x,y, x+2.8,y, x+4.0,y+6.3, x+1.2,y+6.7],'l','H'); }
   var D={};
-  D.tacker={pist:1,tip:16.8,by:0,grip:4.4,fg:4.4,well:[8.5,2.8],port:[8,-2.75],rv:[3,-2.75,11,5.5],br:[14,16.8],p:[
-    P([4,1.5, 7,1.5, 6.2,6, 3.4,6],'d'), R(5.5,2.75,6.5,1.4,'l'), R(3,-2.75,11,5.5,'m','FHR'), R(9,-2.75,2,5.5,'y','O'),
-    R(14,-1.5,2.8,3,'d','H')]};
   D.pistol={pist:1,tip:17.2,by:-1.3,grip:4.2,fg:4.2,well:[5,6],port:[10,-2.6],rv:[3,-2.9,13.4,4.9],br:[12,17.2],p:[
     P([3.6,1.6, 6.8,1.6, 6.0,6.2, 2.8,6.2],'d'), R(6.8,1.6,2.6,1.5,'d'), R(3,-0.6,12.4,2.6,'m','R'), R(3,-2.9,13.4,2.4,'l','FH'),
     R(9,-2.6,2.2,0.9,'k','O'), R(16.4,-2.2,0.8,1.8,'d')]};
   D.magnum={pist:1,tip:20,by:0,grip:4.2,fg:4.2,well:[10,2.5],port:[10,-2.5],rv:[3,-2.4,7,4.6],br:[12,20],p:[
     P([3.4,1.4, 6.6,1.4, 5.6,6.6, 2.4,6.6],'w'), R(3,-2.4,7,4.6,'m','FHR'), R(12,-1.7,8,3.4,'m','HR'), R(12,-2.6,8,0.9,'d'),
     C(10,0,2.5,'l','F'), R(9,-0.3,2,0.6,'k','O'), R(18.6,-3.6,0.9,1.1,'d')]};
-  D.sputter={tip:20,by:0,grip:5,fg:15.2,well:[11.2,2.8],port:[9,-2.8],rv:[3,-2.8,10,5.6],br:[13,20],p:[
-    R(-3,-1.6,6,0.9,'d'), R(-3,-1.6,1,3.8,'d'), R(-3,1.3,6,0.9,'d'), grip(5), P([10,2.8, 12.4,2.8, 14.2,7, 11.8,7.4],'l','H'),
-    R(3,-2.8,10,5.6,'m','FHR'), R(13,-1.9,4.6,3.8,'d','H'), R(14,-0.5,0.8,1,'k','OV'), R(15.6,-0.5,0.8,1,'k','OV'),
-    R(17.6,-1.2,2.4,2.4,'m')]};
   D.smg={tip:21,by:0,grip:4.6,fg:16.5,well:[10.3,3],port:[8,-3],rv:[2.5,-3,11.5,6],br:[14,21],p:[
     R(-2.5,-2.2,5.5,1.8,'d'), R(-3,-2.6,1.3,4.6,'d'), grip(4.6), R(9,3,2.6,6,'l','H'), R(2.5,-3,11.5,6,'m','FHR'),
     R(14,-2,5,4,'d','H'), R(15,-0.6,0.9,1.2,'k','OV'), R(16.8,-0.6,0.9,1.2,'k','OV'), R(19,-1.2,2,2.4,'m')]};
-  D.chatter={tip:26.5,by:0,grip:5,fg:16.5,well:[10.4,2.6],port:[9,-2.6],rv:[3,-2.6,10,5.2],br:[13,26.5],p:[
-    grip(5), cmag(9,2.6), P([-3,-2.2, 3,-1.6, 3,2, -3,3],'d','F'), R(3,-2.6,10,5.2,'m','FHR'), R(13,-2,8,3.8,'d','HR'),
-    R(20,-3.6,0.9,1.6,'d'), R(21,-1,5.5,2,'m','H')]};
   D.carbine={tip:26.4,by:0,grip:5,fg:17.5,well:[10.8,2.6],port:[9,-2.6],rv:[3,-2.6,11,5.2],br:[14,26.4],p:[
     grip(5), cmag(9.4,2.6), R(-3,-2.4,1.8,5,'d','F'), R(-1.2,-1.2,4.4,1.6,'d'), R(3,-2.6,11,5.2,'m','FHR'), R(14,-2,7,3.8,'l','FHR'),
     R(15.4,-2,0.8,0.8,'k','O'), R(17.2,-2,0.8,0.8,'k','O'), R(19,-2,0.8,0.8,'k','O'), R(21,-1,5.4,2,'m','H'),
@@ -29138,9 +29108,6 @@ var GUNDEF=(function(){
     grip(5), R(9.5,2.4,2.4,5.4,'l','H'), P([-3,-2, 2.8,-1.6, 2.8,1.8, -3,2.8],'d','F'), P([-1.8,-0.6, 1.4,-0.5, 1.4,0.7, -1.8,1.4],'k','O'),
     R(2.8,-2.4,11,4.8,'m','FHR'), R(13.8,-1.6,4.6,3.2,'d'), R(18.4,-2.2,11,4.4,'d','HR'), R(21.5,-2.2,0.6,4.4,'k','OV'),
     R(25,-2.2,0.6,4.4,'k','OV')]};
-  D.scuttle={tip:21.2,by:0,grip:4.8,fg:13,well:[7,2.9],port:[7,-2.9],rv:[4,-2.9,6,5.8],br:[10,21.2],p:[
-    P([-3,-1.8, 4.2,-1.8, 4.6,2.6, 1.6,2.6, -3,3.8],'w'), R(-2,0.2,5,0.5,'W','O'), R(4,-2.9,6,5.8,'m','FHR'),
-    R(10,-2.4,10,2.3,'m','H'), R(10,-0.1,10,2.3,'l','R'), R(10.5,1.6,5.4,1.8,'W'), R(19.6,-2.9,1.6,5.6,'d')]};
   D.shotgun={tip:28.4,by:-1.3,grip:5,fg:17.5,well:[10,3],port:[8,-3],rv:[3,-3,9,6],br:[12,28.4],p:[
     grip(5), P([-3,-2.2, 3,-2, 3,2.4, -3,3.6],'w'), R(3,-3,9,6,'m','FHR'), R(5,-1.6,5,1.9,'d'), R(5.4,-1.4,1,1.5,'r','O'),
     R(7,-1.4,1,1.5,'r','O'), R(8.6,-1.4,1,1.5,'r','O'), R(12,0.1,13,2.2,'d','R'), R(12,-2.6,15.5,2.6,'m','H'), R(14,-0.4,7,4,'W','H'),
@@ -30011,15 +29978,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var _rc=!_wp?null:((_wp.q==='gold')?'#ffc72e':
           (_wt>=5?RCOL.gold:_wt>=4?RCOL.elite:_wt===3?RCOL.rare:_wt===2?RCOL.uncommon:RCOL.common));   // 2026-10-12 (rarity): the one table
   var _L=13,_B=6,_mag=0,_sc=0,_tube=0,_pump=0,_drum=0;
-  if(_wid==='pistol'||_wid==='tacker'){ _L=7; _B=4; }
+  if(_wid==='pistol'){ _L=7; _B=4; }
   else if(_wid==='magnum'){ _L=7; _B=6; }
-  else if(_wid==='smg'||_wid==='sputter'){ _L=10; _B=3; _mag=1; }
-  else if(_wid==='shotgun'||_wid==='scuttle'){ _L=12; _B=7; _pump=1; }
+  else if(_wid==='smg'){ _L=10; _B=3; _mag=1; }
+  else if(_wid==='shotgun'){ _L=12; _B=7; _pump=1; }
   else if(_wid==='lmg'){ _L=14; _B=6; _drum=1; }
   else if(_wid==='whisper'){ _L=11; _B=2; _tube=1; _mag=1; }
   else if(_wid==='dmr'){ _L=15; _B=7; _sc=1; _mag=1; }
   else if(_wid==='sniper'||_wid==='lance'){ _L=17; _B=8; _sc=1; }
-  else { _mag=1; }   // chatter, carbine, rifle and anything new: the 13px body
+  else { _mag=1; }   // carbine, rifle and anything new: the 13px body
   // v23.xx (gfxsil), HIS #24: the gun was a dark grey bar on a dark coat over dark ground, so what a body held did not read.
   // It is inked now, body and barrel, with a lit top edge, so the weapon is its own shape at a glance.
   wc.fillStyle=INK; wc.fillRect(1.2+ext,-2.4,_L+1.6,4.8); wc.fillRect(_L-1.8+ext,-1.8,_B+1.6,3.6);
@@ -37377,10 +37344,10 @@ function drawTrade(){
 // v10.09, HIS NOTE: "its hard to even tell what they are". One painter used to
 // draw every gun from the same five rectangles. This one draws by family, each
 // with the shape people know it by, outlined dark so it reads at 22 pixels.
-var GUN_FAMILY={pistol:'hand',tacker:'hand',magnum:'revolver',
-                smg:'smg',sputter:'smg',chatter:'smg',
+var GUN_FAMILY={pistol:'hand',magnum:'revolver',
+                smg:'smg',
                 carbine:'rifle',rifle:'rifle',whisper:'rifle',
-                shotgun:'shotgun',scuttle:'shotgun',
+                shotgun:'shotgun',
                 lmg:'lmg',dmr:'marksman',sniper:'marksman',lance:'lance'};
 // v26.26 (rarvar1): a rarity twin is drawn, held and timed as its model: the model's row in every table keyed by a gun id.
 (function(){ var T=[GUN_FAMILY,GUNDEF,DRAWT,GEAR_LIGHT], i, b; for(b in RV_OF) for(i=0;i<T.length;i++) if(T[i]&&T[i][b]!==undefined) T[i][RV_OF[b]]=T[i][b]; })();
@@ -42379,8 +42346,11 @@ function applyGhost(){
     // the body range. Same two lines the kit path uses, so there is now one rule.
     if(WEAPONS[P.ghost.wep]){
       // v24.xx (scavspawnonly), HIS ORDER: no pillager carries the Scav Pistol, so a friend who favoured it (or bare hands) walks in
-      // with the Tacker, the same tier and feel.
-      e.wep=(WEAPONS[P.ghost.wep].mag===0||P.ghost.wep==='pistol')?WEAPONS.tacker:WEAPONS[P.ghost.wep];
+      // with a gun of his own tier. v26.35 (nostarters): the Magnum, where it was the Tacker. It is the gun in his hands and no copy
+      // for his body, so the drop rate is what it was.
+      var _gSub=(WEAPONS[P.ghost.wep].mag===0||P.ghost.wep==='pistol');
+      e.wep=_gSub?WEAPONS.magnum:WEAPONS[P.ghost.wep];
+      if(_gSub) e.noGunDrop=e.wep.id;
       e.dmg=e.wep.dmg; e.rng=Math.min(e.wep.rng*0.72,580);
     }
     e.ghostHaul=(P.ghost.rate>=25)?5:9;
@@ -42539,7 +42509,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.34: The item wheel now runs medkit, smoke, frag, tripwire, armour, decoy, bandage, stim, clockwise from the top. Check 26.34 fails on v26.33',
+  now:'v26.35: The Tacker, Sputter, Chatter and Scuttle are gone: pillagers carry real lootable guns and the DEMO kit deals real guns. Check 26.35 fails on v26.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50990,7 +50960,7 @@ function arcadeSandboxOut(){
 // and arcadePostBuild then makes it an arcade raid: G.arcade, no clock, no ring ever closes, no peddler and no stray, the key panel
 // collapsed, and a random kit. buildRaid is not touched and the kit draws only Math.random, so the seeded build is the build a
 // normal raid gets, and a normal raid after the arcade is byte for byte the same. The kit: a gun in hand from ARCADE_GUNS1 and a
-// different one stowed from ARCADE_GUNS2 (never a pistol, a Tacker or bare hands), plain field copies, a full magazine each and six
+// different one stowed from ARCADE_GUNS2 (never a pistol or bare hands), plain field copies, a full magazine each and six
 // more magazines for the gun in hand, 3 Bandages and a Medkit, a Frag and a Smoke, full armour and full health. arcadeLeave now
 // stops the arcade raid (no run is settled, nothing is saved, no card) before it puts his profile and his dials back.
 // v25.xx (demoextract), HIS QUESTION (2026-10-13): "demo mode -- why does the extraction prep countdown take less time? I want default
@@ -51005,7 +50975,7 @@ function arcadeSandboxOut(){
 // that has one (and a raid length chosen there moved nothing). The overlay is empty now: a DEMO raid builds from the same dials a CAREER raid does.
 var ARCADE_CFG={};
 var ARCADE_GUNS1=['rifle','carbine','smg','shotgun','lmg'];
-var ARCADE_GUNS2=['magnum','dmr','shotgun','chatter','smg','carbine'];
+var ARCADE_GUNS2=['magnum','dmr','shotgun','rifle','smg','carbine'];   // v26.35 (nostarters): the Auto Rifle where the Chatter was
 // The session overlay of the dials. The old values are kept in ARCADE.cfg0 (undefined for a dial that was not set), and
 // arcadeSandboxOut puts them back.
 function arcadeCfgIn(){
