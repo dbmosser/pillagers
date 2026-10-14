@@ -1,0 +1,7 @@
+v26.03: belt: selected grenade and heal ringed in gold
+
+The belt now rings the chosen grenade and the chosen heal in gold, like the gun in hand.
+
+Check 26.03. Fails on v26.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

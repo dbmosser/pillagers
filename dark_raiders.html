@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.02';
+var VER='26.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32455,8 +32455,13 @@ function drawBuzzFx(){
       ctx.restore();
       var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw)
         ||(!!G.bagOpen&&!!G.bagBelt&&q===clamp(G.bagBeltSel||0,0,sl.length-1));   // v16.79, his order: the backpack highlight on the belt row rings its key
-      ctx.strokeStyle=dragOver?'#ffc04a':(on?'#ffc04a':((_hr&&RCOL[_hr]&&!_bgDim)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
-      ctx.lineWidth=(dragOver||on)?2:1;
+      // v26.xx (beltselring), HIS ORDER 2026-10-13: "selected throwables/heals should be outlined in gold just like the selected gun is". The gold ring of
+      // the gun in hand (on) is now also drawn on the grenade G throws (_gSel, the cell wearing the G cap) and on the heal H uses (_mSel, the cell wearing
+      // the H cap), so up to three keys wear it at once: the gun in hand, the chosen grenade and the chosen heal. Same colour, width and corner. The other
+      // grenade, the other heal, the plate and a key with nothing on it get none, and the Undercroft floor belt (no G or H there) keeps the gun ring alone.
+      var _selOut=on||(state!=='hub'&&(S.count|0)>0&&((S.kind==='throw'&&!!S.icon&&!!_gSel&&S.icon===_gSel)||((S.kind==='heal'||S.kind==='stim')&&q===_mSel)));
+      ctx.strokeStyle=dragOver?'#ffc04a':(_selOut?'#ffc04a':((_hr&&RCOL[_hr]&&!_bgDim)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
+      ctx.lineWidth=(dragOver||_selOut)?2:1;
       _bpath(); ctx.stroke();   // v18.34: the rounded ring
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
       ctx.globalAlpha=_bgDim?.28:(_bgHalf?.64:1);   // v24.xx (beltgrey): half grey while it can be reloaded
@@ -41459,7 +41464,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.02: Keys 5 to 9 now use their belt item at once with the gun still in hand, U and J pick the next grenade and heal, and keycaps on the belt show which key does what. Check 26.02 fails on v26.01',
+  now:'v26.03: The belt now rings the chosen grenade and the chosen heal in gold, like the gun in hand. Check 26.03 fails on v26.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.03 - BELT: SELECTED GRENADE AND HEAL RINGED IN GOLD
+
+Co-op hunt while he was away. His note of 2026-10-13: "selected throwables/heals should be outlined in gold just like the selected gun is". The gold ring the belt draws round the gun in hand is now also drawn round the grenade G throws and the heal H uses, in the same colour, width and corner, so up to three keys wear it at once: the gun in hand, the chosen grenade and the chosen heal. The ring follows U and J, and a click on a grenade or heal key. The other grenade, the other heal, the plate and a key with nothing on it get no ring, and the keycaps are unchanged. The Undercroft floor belt keeps the gun ring alone.
+
+MEASURED. Check 26.03 passes, and fails on v26.02.
 ## v26.02 - BELT KEYS: PICK, USE AND KEYCAPS
 
 Co-op hunt while he was away. His orders of 2026-10-13: "U = next grenade, G = throw it / J = next heal, H = use it", number keys 5 to 9 as instant keys that leave the gun equipped, and button glyphs shown in context. U picks the next grenade and G throws the pick; the new J picks the next heal (rebindable, in the FIGHT list of the key screen) and tap H uses the picked heal instead of the cheapest one; with no J pressed the pick is the cheapest heal that helps, as before. In a raid the keys 5 and 6 throw the grenade on that key at once, 7 and 8 use the heal on that key at once, and 9 slots a plate, and the gun stays in the hands every time without moving the G or H pick. A click on a grenade or heal key picks it. Small keycaps on the belt say which key acts where right now: G on the grenade G throws and U on the other, H on the heal H uses and J on the other, HOLD H on the plate, F on the gun F brings up next, and R on the gun in hand when its magazine is empty and there are rounds to load. They print the keys as set and, on a controller, the pad button where the pad has one. The hover cards, the controls list, the compact list, the rules card and the pause key line say the same.
