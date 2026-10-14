@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.72 - ELITE MACHINES CARRY AN AFFIX
+
+Co-op hunt while he was away. His yes to suggestion 25, elite affixes, with his condition that an elite should be a different colour or obviously different. An elite machine (the eight percent that already have a bit over twice the health) now carries exactly one affix, and every affix is as common as the others. SHIELDED (cyan) has a shield worth half its health that soaks your rounds first, drawn as a bubble that thins as you shoot it; a blast, a mine or fire goes straight past it, so that is the answer. VOLATILE (orange) explodes when it dies and hurts you and anything near it. FAST (yellow) is a third quicker on its feet. MENDER (green) repairs every machine within a long reach of itself, five percent every half second, with a beam to each one, so it is the one to kill first. Each wears its own colour in place of the old purple ring, with a glow and two rings on the ground and a badge over its head (a hexagon, a burst, a double chevron, a plus). A kill pays three times the points of its kind, where a plain elite pays two. Pillager elites keep their better guns and the old ring, and the Overseer has no affix. Player 2 is told the affix and sees the shield.
+
+MEASURED. Check 26.72 passes, and fails on v26.71.
 ## v26.71 - AIR STRIKE
 
 Co-op hunt while he was away. His yes to an air strike, no codes, something you build up by doing damage. The damage you deal now fills a meter, and when it is full the screen says AIR STRIKE READY. Press G and a dashed red ring follows your cursor (out to about a screen away): click to call it on that spot, or press G again to cancel. A second and a half later six blasts walk across the ring, each one hitting every hostile machine and hostile pillager it reaches, with the kills counting as yours. It never hurts you, a teammate, your hire, a peaceful pillager or the Peddler, and the damage it deals does not fill the meter again. The meter starts empty every raid and is spent when you call it. DEMO and CAREER work the same, and the key is on the Settings key list so it can be moved.

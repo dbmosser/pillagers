@@ -1,0 +1,7 @@
+v26.72: elite machines carry an affix
+
+Elite machines now carry one affix each: shielded, volatile, fast or mender, each in its own colour with a badge.
+
+Check 26.72. Fails on v26.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

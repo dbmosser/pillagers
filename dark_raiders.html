@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.71';
+var VER='26.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11654,6 +11654,7 @@ function blessElite(e){
     e.noGunDrop=null;   // v26.35 (nostarters): the gun an elite is blessed with is a find, and it drops as before
     e.rng=Math.min(WEAPONS[_gk].rng*.72,580);   // never opens fire from outside your sight
   }
+  if(e.kind!=='raider') affixApply(e,Math.floor(roll/rate*4));   // v26.xx (ai25): the affix, from where the elite roll fell; no new draw
   return e;
 }
 function mkSentry(x,y){
@@ -20273,6 +20274,130 @@ function overseerTick(e,p,sees,dt){
   }
   return false;
 }
+// v26.xx (ai25), HIS YES (2026-10-14, suggestion 25): "ok for elites, they should be a diff color or obviously different though".
+// ELITE AFFIXES. An elite MACHINE (the 8 percent that already have 2.2 times the health) now carries one affix, chosen with no new draw
+// (from where the elite roll fell inside its 8 percent, so every affix is as common as the others and the seeded stream is as it was):
+//   SHIELDED (cyan): a shield worth half its health that soaks ROUNDS first; a blast, a mine or fire goes straight past it.
+//   VOLATILE (orange): it explodes when it dies (130 units, up to 55 to you or to anything near it).
+//   FAST (yellow): a third quicker on its feet.
+//   MENDER (green): mends every machine within 260 of it by 5 percent every half second; kill it first.
+// Each shows as its own colour, not the old purple elite ring: a glow and two rings on the ground, a badge over the head (a hexagon, a
+// burst, a double chevron, a plus), the shield as a bubble that thins as it is shot, the mender's reach as a faint ring and a beam to
+// each machine it mends. A kill pays three times the score of its kind (the plain elite pays two). The pillager elites keep their
+// better guns and the purple ring; the Overseer has no affix. A linked window is told the affix with the new body, and the shield
+// through a flag bit. Cosmetic code draws nothing from any random stream.
+var AFFIX={
+  shield:{c:'#4fd6ff'},
+  boom:{c:'#ff8a3c'},
+  fast:{c:'#f2e84a'},
+  mend:{c:'#5cff8a'}
+};
+var AFFIX_KEYS=['shield','boom','fast','mend'], AFFIX_BOOM_R=130, AFFIX_MEND_R=260;
+function affixApply(e,ix){
+  var k;
+  if(!e||e.kind==='raider'||e.boss||e.affix||!e.elite) return null;
+  k=AFFIX_KEYS[((Math.floor(ix)%4)+4)%4];
+  e.affix=k;
+  if(k==='fast') e.spd=Math.round((e.spd||100)*1.35);
+  else if(k==='shield') e.shieldHp=Math.round((e.maxhp||100)*0.5);
+  return k;
+}
+function affixSoak(en,d){
+  var a;
+  if(!en||!(en.shieldHp>0)) return d;
+  a=Math.min(en.shieldHp,d); en.shieldHp-=a;
+  if(!G.sim){ spark(en.x,en.y-en.r*0.6,AFFIX.shield.c,8,200); if(!(en.shieldHp>0)) sfx('clank',en.x,en.y,'armor'); }
+  return d-a;
+}
+function affixBoom(e){
+  var R=AFFIX_BOOM_R, pls, i, pl, d, o, de;
+  e.finished=1;
+  sfx('boom',e.x,e.y);
+  if(!G.sim){
+    spark(e.x,e.y,AFFIX.boom.c,28,320); G.puffs.push({x:e.x,y:e.y,t:0,life:.6,c:AFFIX.boom.c,r:44}); G.shake=Math.max(G.shake||0,6);
+    flash(e.x,e.y,260,AFFIX.boom.c,.4);
+    try{ boomFx(e.x,e.y,1,'frag'); }catch(_ab){}
+  }
+  ping(e.x,e.y,520,false,false,'env','fire');
+  pls=(typeof netPlayersList==='function')?netPlayersList():[G.player];
+  for(i=0;i<pls.length;i++){
+    pl=pls[i]; if(!pl||pl.dying||pl.specOut) continue;
+    d=dist(pl,e);
+    if(d<R&&losClear(e.x,e.y,pl.x,pl.y,G.map.segs)) netHitPlayer(pl,45*(1-d/R)+10,e.kind,e.name,e.x,e.y);
+  }
+  for(i=G.ents.length-1;i>=0;i--){
+    o=G.ents[i]; if(o===e||o.finished||o.boss||!(o.hp>0)) continue;
+    de=dist(o,e);
+    if(de<R+o.r&&losClear(e.x,e.y,o.x,o.y,G.map.segs)){ o.hp-=55*(1-Math.max(0,de-o.r)/R)+5; o.hitT=.2; if(o.hp<=0){ o.byPlayer=false; o.bySeat=0; } }
+  }
+}
+function affixMend(e){
+  var i, o, n=0;
+  e.mendTo=[];
+  for(i=0;i<G.ents.length;i++){
+    o=G.ents[i];
+    if(o===e||o.boss||o.kind==='raider'||o.kind==='peddler'||o.kind==='stray'||o.neutral||o.downed||o.finished||!(o.hp>0)||!(o.hp<o.maxhp)) continue;
+    if(dist(o,e)>AFFIX_MEND_R) continue;
+    o.hp=Math.min(o.maxhp,o.hp+Math.max(3,o.maxhp*0.05)); n++;
+    if(e.mendTo.length<4) e.mendTo.push({x:o.x,y:o.y});
+  }
+  e.mendFx=(n>0)?0.4:0;
+  return n;
+}
+function drawAffixMark(e){
+  var A=AFFIX[e.affix], t=(typeof G!=='undefined'&&G)?(G.t||0):0, pu, r=e.r, x=e.x, y=e.y, gr;
+  if(!A||!isFinite(x)||!isFinite(y)||!(r>0)) return;
+  pu=0.6+0.4*Math.sin(t*4+x*0.02);
+  wc.save();
+  try{
+    wc.globalCompositeOperation='lighter';
+    gr=wc.createRadialGradient(x,y,r*0.3,x,y,r*2.2); gr.addColorStop(0,hexA(A.c,0.34*pu)); gr.addColorStop(1,hexA(A.c,0));
+    wc.fillStyle=gr; wc.beginPath(); wc.ellipse(x,y+2,r*2.2,r*1.15,0,0,6.2832); wc.fill();
+    wc.strokeStyle=hexA(A.c,0.55+0.35*pu); wc.lineWidth=3; wc.beginPath(); wc.ellipse(x,y+2,r*1.45,r*0.72,0,0,6.2832); wc.stroke();
+    wc.lineWidth=1.5; wc.beginPath(); wc.ellipse(x,y+2,r*1.85,r*0.93,0,0,6.2832); wc.stroke();
+    if(e.affix==='mend'){ wc.strokeStyle=hexA(A.c,0.16); wc.lineWidth=1; wc.beginPath(); wc.ellipse(x,y+2,AFFIX_MEND_R,AFFIX_MEND_R*0.6,0,0,6.2832); wc.stroke(); }
+  }catch(_am){}
+  wc.restore();
+}
+function drawAffixTop(e){
+  var A=AFFIX[e.affix], k=e.affix, x=e.x, y=e.y-spriteTop(e)-12, fl=(Math.cos(e.face)<0)?-1:1, f, j, aa, rr, cx, pts, o;
+  if(!A||!isFinite(e.x)||!isFinite(e.y)) return;
+  function ptsFill(col,p){ var q; wc.fillStyle=col; wc.beginPath(); for(q=0;q<p.length;q+=2){ if(q===0) wc.moveTo(p[0],p[1]); else wc.lineTo(p[q],p[q+1]); } wc.closePath(); wc.fill(); }
+  wc.save();
+  try{
+    if(k==='shield'&&e.shieldHp>0){
+      f=clamp(e.shieldHp/((e.maxhp||100)*0.5),0,1);
+      wc.globalCompositeOperation='lighter';
+      wc.strokeStyle=hexA(A.c,0.25+0.4*f); wc.lineWidth=2.5;
+      wc.beginPath(); wc.ellipse(e.x,e.y-e.r*0.9,e.r*1.3,e.r*1.45,0,0,6.2832); wc.stroke();
+      wc.fillStyle=hexA(A.c,0.07+0.08*f); wc.fill();
+      wc.globalCompositeOperation='source-over';
+    }
+    if(k==='mend'&&e.mendFx>0&&e.mendTo){
+      wc.strokeStyle=hexA(A.c,0.7); wc.lineWidth=2;
+      for(j=0;j<e.mendTo.length;j++){ o=e.mendTo[j]; wc.beginPath(); wc.moveTo(e.x,e.y-e.r*0.8); wc.lineTo(o.x,o.y-8); wc.stroke(); }
+    }
+    pts=[];
+    if(k==='shield'){
+      for(j=0;j<6;j++){ aa=j*1.0472+0.5236; pts.push(x+Math.cos(aa)*8,y+Math.sin(aa)*8); } ptsFill(INK,pts); pts=[];
+      for(j=0;j<6;j++){ aa=j*1.0472+0.5236; pts.push(x+Math.cos(aa)*6,y+Math.sin(aa)*6); } ptsFill(A.c,pts);
+    } else if(k==='boom'){
+      for(j=0;j<16;j++){ aa=j*0.3927; rr=(j%2)?4.2:9; pts.push(x+Math.cos(aa)*rr,y+Math.sin(aa)*rr); } ptsFill(INK,pts); pts=[];
+      for(j=0;j<16;j++){ aa=j*0.3927; rr=(j%2)?2.6:7; pts.push(x+Math.cos(aa)*rr,y+Math.sin(aa)*rr); } ptsFill(A.c,pts);
+    } else if(k==='fast'){
+      for(j=0;j<2;j++){
+        cx=x+fl*(j*6-3);
+        pts=[cx-fl*3,y-6,cx+fl*4,y,cx-fl*3,y+6,cx-fl*5.5,y+6,cx+fl*1.5,y,cx-fl*5.5,y-6];
+        wc.strokeStyle=INK; wc.lineWidth=2.5; wc.beginPath(); wc.moveTo(pts[0],pts[1]); wc.lineTo(pts[2],pts[3]); wc.lineTo(pts[4],pts[5]); wc.lineTo(pts[6],pts[7]); wc.lineTo(pts[8],pts[9]); wc.lineTo(pts[10],pts[11]); wc.closePath(); wc.stroke();
+        ptsFill(A.c,pts);
+      }
+    } else if(k==='mend'){
+      wc.fillStyle=INK; wc.fillRect(x-8,y-3.5,16,7); wc.fillRect(x-3.5,y-8,7,16);
+      wc.fillStyle=A.c; wc.fillRect(x-6.5,y-2,13,4); wc.fillRect(x-2,y-6.5,4,13);
+    }
+  }catch(_at){}
+  wc.restore();
+}
 function feudFoe(a,b){
   if(CFG.raiderFeud===0) return false;
   if(G&&G.crewsHot===undefined) G.crewsHot=((G.seed>>>0)%10)<6;
@@ -25143,6 +25268,8 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
       }
     }
     if(_se.shotT>0){ _se.shotT-=dt; if(_se.shotT<0) _se.shotT=0; }
+    if(_se.mendFx>0) _se.mendFx-=dt;   // v26.xx (ai25)
+    if(_se.affix==='mend'&&_se.hp>0&&!_se.downed&&!_se.finished){ _se.mendT=(_se.mendT||0)-dt; if(_se.mendT<=0){ _se.mendT=0.5; affixMend(_se); } }
     if(_se.suppT>0){ _se.suppT-=dt; if(_se.suppT<=0) _se.supp=0; }   // v26.xx (ai22): the count of rounds past him runs out
     if(_se.pinT>0){ _se.pinT-=dt; if(_se.pinT<0) _se.pinT=0; }
   }
@@ -25309,7 +25436,7 @@ if(e.state==='possum'){
       if(e.byPlayer&&!(G.player&&G.player.specOut)){
         T.kills[e.kind]++; contractKill(e.kind);
         if(e.elite) T.eliteKills=(T.eliteKills||0)+1;
-        if(G.arcade) arcadeKill(e.kind,e.elite,e.boss,e.x,e.y); else if(G.career) careerKill(e.kind,e.elite,e.boss,e.x,e.y);   /* v24.xx (feat0h2): the CAREER score */   // v23.29 (arcade8): the arcade score, by kind; v23.38 (arcade15): with the popup where he fell
+        if(G.arcade) arcadeKill(e.kind,(e.elite&&e.affix)?3:e.elite,e.boss,e.x,e.y); else if(G.career) careerKill(e.kind,(e.elite&&e.affix)?3:e.elite,e.boss,e.x,e.y);   /* v24.xx (feat0h2): the CAREER score */   // v23.29 (arcade8): the arcade score, by kind; v23.38 (arcade15): with the popup where he fell
         // v8.29: the charge for shooting a neutral now lands at the SHOT, not
         // here - see the bullet path. Billing it again at his death would
         // charge the same man twice for one decision.
@@ -25415,6 +25542,7 @@ if(e.state==='possum'){
       spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffc04a',22,300);
       if(!G.sim&&machDieKind(e)) sfx('mdie',e.x,e.y,machDieKind(e));   // robotdeaths (his order 2026-10-12): each machine kind dies with its own noise
       deathAnimAdd(e);   // v17.47: his pick 29, the death animation
+      if(e.affix==='boom') affixBoom(e);   // v26.xx (ai25): a volatile machine goes off as it dies
       if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffc04a',r:26});
       G.ents.splice(i,1); continue;
     }
@@ -27319,7 +27447,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               }
               if(en.boss&&en.overheat>0) edmg*=1.5;   // v26.xx (ai24): the Overseer core is exposed while it vents
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
-              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el); else en.hp-=edmg;   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
+              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el); else en.hp-=affixSoak(en,edmg);   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
               en.hitT=.16; hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat
               // HIS Q42. The number IS the feedback: without it a weak point and
               // a body shot look identical, which is most of why the weak point
@@ -33164,7 +33292,8 @@ var SHD=G.shells[i];
       // ELITE MARKER, v3.62: one site under every kind's sprite, in the same
       // purple the loot pips already use for elite, so the colour is a word
       // the player has met before. Pure time drive, no PRNG touch.
-      if(e2.elite){
+      if(e2.elite&&e2.affix&&AFFIX[e2.affix]) drawAffixMark(e2);   // v26.xx (ai25): an affixed elite wears its own colour, not the purple ring
+      else if(e2.elite){
         var _ep=0.55+0.45*Math.sin(G.t*3.1+e2.x*0.02);
         wc.save(); wc.globalCompositeOperation='lighter';
         wc.strokeStyle='rgba(208,140,232,'+(0.28+0.24*_ep).toFixed(3)+')';
@@ -33230,6 +33359,7 @@ var SHD=G.shells[i];
       // colour: hot orange for the vent, cold blue for the optic. They ride the
       // machine's facing, so watching one turn is watching the shot open and
       // close.
+      if(e2.elite&&e2.affix&&AFFIX[e2.affix]) drawAffixTop(e2);   // v26.xx (ai25): its badge, shield bubble and mend beams
       var WL=weakOf(e2);
       if(WL) for(var wk=0;wk<WL.length;wk++){
         var WW=WL[wk],wpt=weakPos(e2,WW);
@@ -43528,7 +43658,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.71: Dealing damage charges an air strike: press G when it is full, click a spot, and six blasts hit the hostiles there. Check 26.71 fails on v26.70',
+  now:'v26.72: Elite machines now carry one affix each: shielded, volatile, fast or mender, each in its own colour with a badge. Check 26.72 fails on v26.71',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50877,6 +51007,7 @@ function netEntFlags(e){
   if(e.parley>0) f|=2097152; if(e.blind>0) f|=4194304;
   if(e.burnT>0) f|=8388608; if(e.stunT>0) f|=16777216; if(e.chillT>0) f|=33554432; if(e.frozenT>0) f|=67108864; if(e.corrT>0) f|=134217728;   // v23.xx (forge8): THE FORGE statuses, so player 2 sees them
   if(e.downed&&e.getUp>0) f|=8388608;   // pillrevive: he is getting up
+  if(e.shieldHp>0) f|=536870912;   // v26.xx (ai25): the shield is up, so player 2 sees the bubble
   if(e.swpT>0) f|=1073741824;   // v26.xx (ai24): the Overseer is sweeping, so player 2 sees the beam
   if(e.pinT>0) f|=268435456;   // v26.xx (ai22): pinned, so player 2 sees him duck
   return f;
@@ -50887,7 +51018,7 @@ function netEntRow(e){
 }
 // A body that arrived after the build: what a linked window needs to draw and name it.
 function netEntNewWord(e){
-  var m={t:'ent',op:'new',id:e.nid,k:e.kind,x:Math.round(e.x),y:Math.round(e.y),n:netClean(e.name,24),r:e.r,mh:e.maxhp,hp:Math.ceil(clamp(e.hp/(e.maxhp||1),0,1)*20),el:e.elite?1:0,ho:e.hostile?1:0};
+  var m={t:'ent',op:'new',id:e.nid,k:e.kind,x:Math.round(e.x),y:Math.round(e.y),n:netClean(e.name,24),r:e.r,mh:e.maxhp,hp:Math.ceil(clamp(e.hp/(e.maxhp||1),0,1)*20),el:e.elite?1:0,ho:e.hostile?1:0,af:e.affix?String(e.affix):''};
   if(e.kind==='raider'){ m.c=netClean(e.coat,12); m.cr=e.crew|0; m.idn=netClean(e.ident,24); m.w=(e.wep&&e.wep.id)?String(e.wep.id):''; m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; if(typeof e.lx==='number'){ m.lx=e.lx; m.ly=e.ly; } }   // v20.13: his birthplace, which his look is hashed from
   return m;
 }
@@ -50935,7 +51066,7 @@ function netEntFill(e,m){
   if(typeof m.n==='string') e.name=netClean(m.n,24);
   if(typeof m.r==='number'&&m.r>0&&m.r<80) e.r=m.r;
   if(typeof m.mh==='number'&&m.mh>0){ e.maxhp=m.mh; if(typeof m.hp==='number') e.hp=Math.round(clamp(m.hp,0,20)/20*e.maxhp); }
-  e.elite=m.el?1:0; e.hostile=!!m.ho;
+  e.elite=m.el?1:0; e.hostile=!!m.ho; e.affix=(typeof m.af==='string'&&AFFIX[m.af])?m.af:null;   // v26.xx (ai25)
   if(e.kind==='raider'){
     if(typeof m.c==='string'&&(/^#[0-9a-fA-F]{3,8}$/).test(m.c)) e.coat=m.c;
     if(typeof m.cr==='number') e.crew=m.cr|0;
@@ -50960,6 +51091,7 @@ function netEntFlagsApply(e,f){
   if((f&4096)&&!(e.roll>0)) e.roll=0.38;
   e.pinT=(f&268435456)?0.5:0;   // v26.xx (ai22)
   e.swpT=(f&1073741824)?0.4:0;   // v26.xx (ai24)
+  if(e.affix==='shield') e.shieldHp=(f&536870912)?Math.max(e.shieldHp||0,1):0;   // v26.xx (ai25)
   e.steady=!!(f&8192); e.reviving=(f&16384)?e:null; e.shotT=(f&32768)?0.35:0; e.lootT=(f&65536)?1:0; e.healQ=(f&131072)?1:0;
   e.sprintPool=(f&262144)?6:0; e.helped=(f&524288)?1:0; e.grudge=!!(f&1048576); e.parley=(f&2097152)?1:0; e.blind=(f&4194304)?1:0;
   e.burnT=(f&8388608)?0.3:0; e.stunT=(f&16777216)?0.3:0; e.chillT=(f&33554432)?0.3:0; e.frozenT=(f&67108864)?0.3:0; e.corrT=(f&134217728)?0.3:0;   // v23.xx (forge8): drawn here, run by the host only
@@ -51161,7 +51293,7 @@ function netShotTake(peer,m){
   var _nel=(typeof m.el==='string'&&ELEM[m.el])?m.el:'';
   if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
-  e.hp-=d; e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,d); suppHit(e);   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
+  e.hp-=affixSoak(e,d); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,d); suppHit(e);   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
     px=-Math.sin(m.a); py=Math.cos(m.a);
@@ -51403,7 +51535,7 @@ function netKillTake(peer,m){
   // v23.36 (arcmidfixa), review of arcade builds 7 to 13: AN OVERSEER KILL BY PLAYER 2 SCORED 400, NOT 2,000. The body here is a mirror
   // made by netEntMake/netEntFill, which never set boss, so player 2 scored the Overseer as a plain warden. A mirror is known as the
   // boss by its name, as every other mirror site does (name===BOSS_NAME). The kill word itself is unchanged.
-  if(G.arcade||G.career) (G.arcade?arcadeKill:careerKill)(k,!!(m.el||(e&&e.elite)),!!(e&&(e.boss||e.name===BOSS_NAME)),e?e.x:NaN,e?e.y:NaN);   /* v24.xx (feat0h2): and the CAREER score of a co-op partner */   // v23.29 (arcade8): the arcade score of player 2; v23.38 (arcade15): with the popup where he fell
+  if(G.arcade||G.career) (G.arcade?arcadeKill:careerKill)(k,((e&&e.elite&&e.affix)?3:!!(m.el||(e&&e.elite))),!!(e&&(e.boss||e.name===BOSS_NAME)),e?e.x:NaN,e?e.y:NaN);   /* v24.xx (feat0h2): and the CAREER score of a co-op partner */   // v23.29 (arcade8): the arcade score of player 2; v23.38 (arcade15): with the popup where he fell
   if(k==='raider'&&e&&e.ident&&!waveIdent(e.ident)){   /* v24.xx (feat0h3) */
     rr2=idRec(e.ident); rr2.kills++; rr2.standing=Math.min(rr2.standing-2,-1); rr2.met++;
     saveProfile();
@@ -52671,6 +52803,7 @@ function arcadeWaveElite(e){
   if(!e||e.elite) return e;
   var hm=(CFG.eliteHp===undefined?2.2:CFG.eliteHp);
   e.elite=1; e.hp=Math.round(e.hp*hm); e.maxhp=Math.round(e.maxhp*hm); e.r=Math.round(e.r*1.12);
+  if(e.kind!=='raider') affixApply(e,((Math.round(e.x)*73856093)^(Math.round(e.y)*19349663))>>>0);   // v26.xx (ai25): a wave elite machine, from a hash of where it stands
   return e;
 }
 // v23.52, HIS YES (2026-10-11) to the five recommendations, arcade28 (a low finding of the arcade 14-25 review): WAVES FOLLOW THE RAID
@@ -52980,7 +53113,7 @@ function arcadeCullTick(dt){
   return n;
 }
 function arcadeRunId(){ ARCADE.runN=(ARCADE.runN|0)+1; return 'r'+Date.now().toString(36)+'_'+ARCADE.runN; }
-function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return el?n*2:n; }
+function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return el?n*(el>1?el:2):n; }   // v26.xx (ai25): an affixed elite passes 3, a plain elite 2
 // v23.31, HIS ORDER (2026-10-11), build 10 of 20 (arcade10): EASIER FOR NEWCOMERS. Every kill this window credits to its own player
 // refunds half a magazine of the gun in his hands into his reserve, and every 3rd kill of the run adds a Bandage to the backpack
 // while he carries fewer than 5 heals (the pickup stack shows it as KILL BONUS). The drop already gives 6 magazines and full
