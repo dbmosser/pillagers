@@ -1,0 +1,7 @@
+v26.47: crosshair shape, colour and size
+
+Display has crosshair shape, colour and size.
+
+Check 26.47. Fails on v26.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.47 - CROSSHAIR SHAPE, COLOUR AND SIZE
+
+Co-op hunt while he was away. His order: add all of this to Settings. Display gets three crosshair rows. CROSSHAIR picks the shape: the four arm CROSS it has always been, a DOT, a CIRCLE or a T. CROSSHAIR COLOUR picks WHITE (the usual, which turns amber while you aim down sights), GREEN, CYAN or MAGENTA, four a colour-blind eye can tell apart; a colour of your own holds for the aiming state too, while the jammed, empty and reloading warnings keep their own colours. CROSSHAIR SIZE is SMALL, STANDARD, LARGE or HUGE and takes the magazine and reload rings with it. Out of the box the crosshair is drawn exactly as before. They change at once and are saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.47 passes, and fails on v26.46.
 ## v26.46 - SCREEN SHAKE, BRIGHTNESS AND SHOW FPS
 
 Co-op hunt while he was away. His order: add all of this to Settings. Display gets three rows. SCREEN SHAKE is OFF, LIGHT, STANDARD or STRONG: off holds the picture still through blasts and heavy hits, strong shakes it half as hard again, and standard is how it has been. BRIGHTNESS is DARKER, STANDARD, BRIGHTER or BRIGHTEST and lifts or sinks the shadows of the world, which is what a night raid needs, without touching the menus and the HUD; at standard the picture is untouched. SHOW FPS puts a small frame rate plate in the top left corner of every screen. They change at once and are saved with the profile; in the DEMO they hold for the session.

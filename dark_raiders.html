@@ -2201,7 +2201,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.46';
+var VER='26.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34663,7 +34663,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
             :rState==='dry'?'rgba(224,72,58,.95)'
             :rState==='empty'?'rgba(255,192,74,.95)'
             :rState==='reload'?'rgba(255,192,74,.85)'
-            :(p.ads?'rgba(255,190,90,.95)':'rgba(230,240,246,.85)');
+            :xhCol(p.ads);   // v26.xx (settings6): CROSSHAIR COLOUR (white, amber aiming, as it was)
     // v9.53, HIS REPORT AT 4K: "reticule is tiny". It was drawn from literal
     // pixel numbers, an arm 7 long and a gap of 8, scaled by nothing whatsoever,
     // so on a 3840 wide screen the thing you aim with was seven pixels of line.
@@ -34672,16 +34672,11 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
     // last fifty builds were tested at. The line width goes with it, or the arms
     // get longer while staying hairlines.
     var _rz=hudRes();
-    var gap=(p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0)))*_rz;
-    if(rState) gap=Math.max(gap,11*_rz);
-    var len=(p.ads?5:7)*_rz;
+    var gap=(p.ads?3.5:(8+(p.recoil>0?p.recoil*7:0)+(G.sprinting?5:0)))*_rz*xhSize();   // v26.xx (settings6): CROSSHAIR SIZE
+    if(rState) gap=Math.max(gap,11*_rz*xhSize());
+    var len=(p.ads?5:7)*_rz*xhSize();
     ctx.strokeStyle=rCol; ctx.lineWidth=(rState?2:1.6)*_rz;
-    ctx.beginPath();
-    ctx.moveTo(rx0-gap-len,ry0); ctx.lineTo(rx0-gap,ry0);
-    ctx.moveTo(rx0+gap,ry0); ctx.lineTo(rx0+gap+len,ry0);
-    ctx.moveTo(rx0,ry0-gap-len); ctx.lineTo(rx0,ry0-gap);
-    ctx.moveTo(rx0,ry0+gap); ctx.lineTo(rx0,ry0+gap+len);
-    ctx.stroke();
+    xhArms(ctx,rx0,ry0,gap,len);   // v26.xx (settings6): CROSSHAIR, the arms as the row says (the cross, as it was, by default)
     }
     // HIS NOTE: "add a visual indicator as part of the reticule/mouse that shows
     // how many rounds are left before reload, see best practices for this in
@@ -34780,7 +34775,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
       ctx.fillText(rState==='jam'?'JAMMED':(rState==='dry'?'NO AMMO':'['+keyLabel('KeyR','R')+'] RELOAD'),rx0,ry0+gap+len+LH(14)*_wz);
       ctx.textAlign='left';
     }
-    ctx.fillStyle=rState?rCol:'rgba(230,240,246,.9)'; ctx.fillRect(rx0-1,ry0-1,2,2);
+    xhDot(ctx,rx0,ry0,rState,rCol,_rz);   // v26.xx (settings6): the middle, the 2 pixel square it was by default
     // v23.9x (hitmark), HIS ORDER (2026-10-12), his words on the hit marker: "i don't really understand how a hit marker is going to
     // work in 2.5 d -- just take your best shot i suppose", and then "maybe just on the inside reticule of the crosshair or something?
     // (Realize that many mechanics of first or third person shooters will not 1:1 translate to 2.5d)". THE HIT MARKER IS THE INSIDE OF
@@ -41588,6 +41583,29 @@ function gfxStoresDrop(){
 // v26.xx (settings5), HIS ORDER 2026-10-14: SCREEN SHAKE. The Settings row (OFF, LIGHT 0.5, STANDARD 1, STRONG 1.5) scales the trauma shake below on top of
 // EFFECT INTENSITY; an unset or odd value is the usual strength.
 function shakeK(){ var s=+CFG.shake; return (isFinite(s)&&s>=0&&s<=3)?s:1; }
+// v26.xx (settings6), HIS ORDER 2026-10-14: THE CROSSHAIR ROWS. xhArms draws the four arms of the cross (or none for the dot, a ring for the circle, three
+// for the T), xhDot the middle (a plain 2 pixel square, or a round dot for the dot and the circle), xhCol the neutral colour and xhSize the factor on the
+// gap, the arm and the rings. The defaults draw exactly what the HUD drew before.
+var XHCOL=[null,'rgba(61,255,122,.95)','rgba(53,230,255,.95)','rgba(255,79,216,.95)'];
+function xhCol(ads){ var c=XHCOL[CFG.xhCol|0]; return c||(ads?'rgba(255,190,90,.95)':'rgba(230,240,246,.85)'); }
+function xhSize(){ var s=+CFG.xhSz; return (s>=0.5&&s<=2)?s:1; }
+function xhArms(c,x,y,gap,len){
+  var st=CFG.xhStyle|0;
+  c.beginPath();
+  if(st===1){ c.stroke(); return; }
+  if(st===2){ c.arc(x,y,gap+len*0.5,0,6.2832); c.stroke(); return; }
+  c.moveTo(x-gap-len,y); c.lineTo(x-gap,y);
+  c.moveTo(x+gap,y); c.lineTo(x+gap+len,y);
+  if(st!==3){ c.moveTo(x,y-gap-len); c.lineTo(x,y-gap); }
+  c.moveTo(x,y+gap); c.lineTo(x,y+gap+len);
+  c.stroke();
+}
+function xhDot(c,x,y,rs,col,rz){
+  var st=CFG.xhStyle|0;
+  c.fillStyle=rs?col:(((CFG.xhCol|0)&&XHCOL[CFG.xhCol|0])?XHCOL[CFG.xhCol|0]:'rgba(230,240,246,.9)');
+  if(st===1||st===2){ c.beginPath(); c.arc(x,y,(st===1?2.4:1.6)*rz,0,6.2832); c.fill(); }
+  else c.fillRect(x-1,y-1,2,2);
+}
 // v26.xx (settings5): BRIGHTNESS. A gamma on the world canvas through an SVG filter (the exponent below 1 lifts the shadows, above 1 sinks them);
 // at 1, the default, the canvas has no filter at all. brightApply runs every frame and writes only when the row changed.
 var BRT={v:1};
@@ -42785,7 +42803,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.46: Display has screen shake, brightness and show fps. Check 26.46 fails on v26.45',
+  now:'v26.47: Display has crosshair shape, colour and size. Check 26.47 fails on v26.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55408,6 +55426,34 @@ var GAMEOPTS=[
      {n:'OFF', cfg:{showFps:0}},
      {n:'ON',  cfg:{showFps:1}}
    ], def:0},
+  // v26.xx (settings6), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): THE CROSSHAIR, its shape, its colour and its size, in DISPLAY. The
+  // defaults are today: the four arm cross, the soft white (amber while aiming down sights), the size it was. The colours are four a colour-blind eye
+  // reads: white, green, cyan and magenta. A colour of his own is used for the aim state too; the gun states (jammed, dry, empty, reloading) keep their
+  // own warning colours, as the magazine and reload rings do.
+  {k:'xhStyle', label:'CROSSHAIR', sec:'DISPLAY',
+   hint:'THE SHAPE: CROSS, DOT, CIRCLE OR T. THE MAGAZINE AND RELOAD RINGS STAY AROUND IT.',
+   opts:[
+     {n:'CROSS',  cfg:{xhStyle:0}},
+     {n:'DOT',    cfg:{xhStyle:1}},
+     {n:'CIRCLE', cfg:{xhStyle:2}},
+     {n:'T',      cfg:{xhStyle:3}}
+   ], def:0},
+  {k:'xhCol', label:'CROSSHAIR COLOUR', sec:'DISPLAY',
+   hint:'WHITE IS THE USUAL, AMBER WHILE AIMING. THE OTHERS HOLD ONE COLOUR FOR BOTH.',
+   opts:[
+     {n:'WHITE',   cfg:{xhCol:0}},
+     {n:'GREEN',   cfg:{xhCol:1}},
+     {n:'CYAN',    cfg:{xhCol:2}},
+     {n:'MAGENTA', cfg:{xhCol:3}}
+   ], def:0},
+  {k:'xhSz', label:'CROSSHAIR SIZE', sec:'DISPLAY',
+   hint:'HOW BIG THE CROSSHAIR IS, WITH THE RINGS ROUND IT.',
+   opts:[
+     {n:'SMALL',    cfg:{xhSz:0.8}},
+     {n:'STANDARD', cfg:{xhSz:1}},
+     {n:'LARGE',    cfg:{xhSz:1.3}},
+     {n:'HUGE',     cfg:{xhSz:1.6}}
+   ], def:1},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',
    opts:[
