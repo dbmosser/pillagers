@@ -7436,6 +7436,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'26.03',what:'his order (selected throwable and heal outlined in gold like the selected gun): the belt rings the gun in hand, the grenade G throws and the heal H uses in the same gold, so three keys can wear it at once; the other grenade, the other heal, the plate and an empty key are not ringed, and the rings follow U and J',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the belt cannot be drawn';
      if(typeof raidKey!=='function'||typeof medSelIx!=='function'||!ITEMS.frag||!ITEMS.smoke||!ITEMS.bandage||!ITEMS.medkit||!ITEMS.plate) return 'SKIP: no keys or belt items here';
@@ -7499,6 +7500,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'26.02',what:'his orders (cycle keys, instant keys and keycaps on the belt): 5 to 9 use the item on their key at once with the gun still in hand and leave the G and H picks alone; U picks the next grenade and G throws it; J picks the next heal and H uses it, not the cheapest; the belt keycaps read G and U on the two grenades, H and J on the two heals, HOLD H on the plate and F on the next gun; and J reads K once it is rebound',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the belt cannot be drawn';
      if(typeof raidKey!=='function'||typeof quickHeal!=='function'||typeof keysBind!=='function'||!ITEMS.frag||!ITEMS.smoke||!ITEMS.bandage||!ITEMS.medkit||!ITEMS.plate) return 'SKIP: no keys or belt items here';
@@ -7610,6 +7612,18 @@ window.__REGRESS=[
   {v:'26.00',what:'his order (redo the bar at the bottom), the words: the controls list (F1) says 1-4 guns, 5-6 throwables, 7-8 medical, 9 armour and U switches which grenade G throws and H taps a heal and holds a plate, the compact list keeps an even number of entries with 1-4 guns beside B / I and 5-9 throw, heal, plate, the rules card says the four groups, and the pause screen key line says them and no longer says 1-9 tactical belt',
    run:function(){
      if(typeof LEGEND==='undefined'||typeof LEGEND_MINI==='undefined') return 'SKIP: no controls list here';
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9){   /* wheel4: the words of the nine gun bar and the wheel */
+       var bad9=[], gear9=null, i9, rows9=LEGEND_MINI, ix9=-1;
+       for(i9=0;i9<LEGEND.length;i9++) if(LEGEND[i9][0]==='GEAR') gear9=LEGEND[i9][1];
+       if(!gear9) return 'SKIP: no GEAR section in the controls list';
+       if(!gear9.some(function(r){ return r[0]==='1-9'&&/gun/.test(r[1]); })) bad9.push('the controls list has no 1-9 guns row');
+       if(!gear9.some(function(r){ return /Q/.test(r[0])&&/wheel/.test(r[1]); })) bad9.push('the controls list has no HOLD Q item wheel row');
+       if(gear9.some(function(r){ return ['G','U','H','J','5-6','7-8'].indexOf(r[0])>=0; })) bad9.push('the controls list still has an item key row');
+       for(i9=0;i9<rows9.length;i9++) if(rows9[i9][0]==='1-9') ix9=i9;
+       if(ix9<0) bad9.push('the compact list has no 1-9 guns row'); else { if(ix9%2!==0) bad9.push('1-9 sits in the right hand column (entry '+ix9+')'); if(!rows9[ix9+1]||rows9[ix9+1][0]!=='B / I') bad9.push('B / I does not follow 1-9 on the same row'); }
+       if(rows9.length%2!==0) bad9.push('the compact list has an odd number of entries ('+rows9.length+')');
+       return bad9.length?bad9.join('; '):null;
+     }
      var bad=[], gear=null, i, j, rows, want={'1-4':['guns'],'5-6':['throwables','throw that grenade'],'7-8':['medical','use that heal'],'9':['armour plate','plate']}, k, found, ix=-1, kh=null, html='', page='', ru=[];
      for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='GEAR') gear=LEGEND[i][1];
      if(!gear) return 'SKIP: no GEAR section in the controls list';
@@ -7668,6 +7682,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.98',what:'his answer (the CAREER LOADOUT screen gets the same groups as the raid bar): the belt plan row of the Stash screen has its nine keys in four groups labelled GUNS (keys 1 to 4), THROW (5, 6), MEDICAL (7, 8) and ARMOUR (9), and with a Frag and a Bandage packed and nothing bound, keys 5 and 7 show them dimmed as the floor belt does; and a vacant gun key on the raid belt prints no 0',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__applyLoaded&&window.__frame)) return 'SKIP: this fixture cannot deploy, draw or load a profile';
      if(typeof hotPlanHTML!=='function'||!ITEMS.frag||!ITEMS.bandage||!WEAPONS.rifle||!WEAPONS.smg) return 'SKIP: no belt plan row or items here';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the belt cannot be drawn';
@@ -7716,6 +7731,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.97',what:'his answer (bar for magazine, number for reserve additional rounds): the rifle in hand with 22 rounds loaded of 30 and 37 in reserve shows a light bar three quarters full along the foot of its key and the number 37, and not the 22; the throwable key G throws (Smoke after U) wears a G keycap and the Frag key does not; and the hover cards read THROW for a grenade, HEAL for a Bandage and PLATE for the armour plate',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the belt cannot be drawn';
      if(typeof beltInfoCard!=='function'||!ITEMS.frag||!ITEMS.smoke||!ITEMS.bandage||!ITEMS.plate||!WEAPONS.rifle) return 'SKIP: no hover card or belt items here';
@@ -7768,6 +7784,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.96',what:'his order (redo the bar at the bottom, guns, throwables, medical and armour their own groups): the nine keys are the same size, the gap between the groups (after keys 4, 6 and 8) is wider than the gap inside a group, a small caps label GUNS, THROW, MEDICAL and ARMOUR is drawn under its group, and it is amber for the group the highlight is in and dim for the others',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the belt cannot be drawn';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
@@ -7816,6 +7833,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.95',what:'his decision (tap H uses the cheapest heal that helps): with a Bandage on key 7, a Medkit on key 8 and a Stim in the backpack, a tap uses the Bandage; at 90 health, past the Bandage ceiling, it uses the Medkit; it never uses the Stim; with only a Stim and an empty Medkit key on the belt and a Bandage in the backpack it says NO HEAL ON BELT with the backpack key under it and spends nothing; with nothing at all it says NO MEDICAL SUPPLIES',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof quickHeal!=='function'||typeof hotbarSlots!=='function'||!ITEMS.bandage||!ITEMS.medkit||!ITEMS.stim) return 'SKIP: no quick heal, belt or medical items here';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
@@ -7859,6 +7877,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.94',what:'his decision (U picks what G throws): with Frag on key 5 and Smoke on key 6 and the highlight on the gun, U switches which one G throws and says SMOKE CANISTER READY, the highlight stays on the gun, U again goes back to the Frag, G throws the kind U chose, G with the hand left on a kind that is on no key throws a kind that is, and U with no grenade on a key says so',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof hotbarSlots!=='function'||typeof cycleThrow!=='function') return 'SKIP: no belt here';
      if(!ITEMS.frag||!ITEMS.smoke||!ITEMS.decoy||typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: no grenades here, or a raid or a sim is live';
@@ -7912,6 +7931,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.92',what:'his order (grenades their own class, 2 slots): a third kind of grenade has no throwable key, so it is carried in the backpack as items: with frag and smoke on the two keys, a found Decoy lands in the backpack (row tag BACKPACK, three items in the grid), the frag and smoke counts stay on their keys, a throw takes from the pouch and then the backpack, a Decoy tile dragged onto key 5 takes the key and the Frag moves to the backpack, and the Undercroft belt keeps its counts',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof hotbarSlots!=='function'||typeof grantLoot!=='function'||typeof doThrow!=='function'||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse) return 'SKIP: no belt or throw here';
      if(!ITEMS.frag||!ITEMS.smoke||!ITEMS.decoy||typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: no grenades here, or a raid or a sim is live';
@@ -7962,6 +7982,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.91',what:'his order (grenades their own class, 2 slots; heals and stims their own class, 2 slots): keys 1-4 are guns, 5-6 throwables, 7-8 medical, 9 armour. With nothing bound the belt fills each class in order (frag then smoke; bandage then medkit; the plate), hotbarSlots writes no state and does not read a pin of the wrong class, a heal found takes the lowest vacant medical key and a third kind waits with no key and no gun key is borrowed, a drop on a key of the wrong class is refused in words (a medkit on a gun key, on key 5; a grenade key on key 7) while a medkit on key 7 is taken, and a saved plan is re-homed to the class keys once (beltV 4)',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy a raid or load a profile';
      if(typeof hotbarSlots!=='function'||typeof autoBelt!=='function'||typeof GUNKEYS==='undefined'||GUNKEYS<4||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse) return 'SKIP: no four gun keys or belt drag here';
      if(!ITEMS.bandage||!ITEMS.medkit||!ITEMS.stim||!ITEMS.plate||!ITEMS.frag||!ITEMS.smoke||!ITEMS.decoy||!WEAPONS.rifle||!WEAPONS.smg) return 'SKIP: a belt item is missing in this build';
@@ -8052,6 +8073,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.90',what:'a click on a key past the gun keys that still holds a backpack gun (a plan from before) brings that gun up, while a drag of that key onto another key past the gun keys is refused with GUNS GO ON KEYS 1 TO 4',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the four-gun cap became nine (checked again with nine guns by the wheel4 check)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof hotbarSlots!=='function'||typeof GUNKEYS==='undefined'||GUNKEYS<4||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse) return 'SKIP: no belt drag here';
      var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down, s0=say, said=[],
@@ -8093,6 +8115,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.89',what:'his order (so player can only carry 4 guns max): a gun belongs on keys 1 to 4. A gun in his hands dragged onto key 6, a backpack gun dropped on key 8, and a gun put on key 6 on the Stash plan row are refused with GUNS GO ON KEYS 1 TO 4 and nothing moves, while a gun still goes onto key 3; an old saved plan loses its gun bindings on keys 5 to 9 once (the rest stays) and a plan stamped 3 is not slid again',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the four-gun cap became nine (checked again with nine guns by the wheel4 check)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy a raid or load a profile';
      if(typeof hotbarSlots!=='function'||typeof rackPut!=='function'||typeof planPut!=='function'||typeof GUNKEYS==='undefined'||GUNKEYS<4||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse) return 'SKIP: no four gun keys or belt drag here';
      if(!WEAPONS.rifle||!WEAPONS.smg||!WEAPONS.carbine||!ITEMS.gun_carbine||!ITEMS.bandage||!ITEMS.medkit||!ITEMS.smoke) return 'SKIP: no rifle, smg, carbine, bandage, medkit or smoke here';
@@ -8194,6 +8217,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.87',what:'his order (so player can only carry 4 guns max; swap with the lowest gun that is not in use, move it to the inventory): with keys 1 to 4 all showing a real gun, a gun that arrives takes the place of the weakest gun that is not in his hands and that gun goes to the backpack with no key (the stowed gun or a backpack gun on key 3 or 4), a weaker find or a tie goes straight to the backpack with nothing moving, the gun in his hands is never chosen, the rows say SLOT n and BACKPACK, an issued loaner is left behind, and a backpack over its cap drops the gun that was pushed out',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the four-gun cap became nine (checked again with nine guns by the wheel4 check)';
      if(!window.__deploy||!window.__endRaid||!window.__state) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof autoBelt!=='function'||typeof grantLoot!=='function'||typeof hotbarSlots!=='function'||typeof GUNKEYS==='undefined'||GUNKEYS<4) return 'SKIP: no four gun keys here';
      var ids=['rifle','carbine','shotgun','magnum','smg','lmg','pistol'], i;
@@ -8777,6 +8801,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'25.76',what:'his order (hold H = armour plate, tap H = heal): a tap of H quick-heals and slots no plate, a half second hold slots a plate and does not heal, and a plate going on plays the armour clack of the foley bank (plateClack) at the start and at the landing, not the pick chirp',
    run:function(){
+     if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9) return 'SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)';
      if(!window.__deploy||!window.__endRaid||typeof updatePlayer!=='function'||typeof useArmor!=='function'||typeof tickPrepSlot!=='function'||!ITEMS.plate||!ITEMS.bandage) return 'SKIP: this fixture cannot stage the H key';
      var bad=[], g=null, p=null, kBlip=blip, kFoley=foley, kSay=say, kv=null, rec=[], k0=null;
      function dn(code){ window.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:code,bubbles:true,cancelable:true})); }
@@ -8822,7 +8847,7 @@ window.__REGRESS=[
   {v:'25.75',what:'the compact controls list keeps 1-9 TACTICAL BELT in the left column beside B / I (the v17.76 rule) and names the new keys in pairs: Q melee, F next gun, G throw, H heal, E search, X extract',
    run:function(){
      if(typeof LEGEND_MINI==='undefined') return 'SKIP: no compact legend here';
-     var bad=[], rows=LEGEND_MINI, i, ix=-1, k, found, want={'Q':'melee','F':'next gun','G':'throw','H':'heal','E':'search','X':'extract'};
+     var bad=[], rows=LEGEND_MINI, i, ix=-1, k, found, want={'Q':'melee','F':'next gun','G':'throw','H':'heal','E':'search','X':'extract'}; if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9){ delete want.G; delete want.H; want.Q='item wheel'; want.V='melee'; }
      for(i=0;i<rows.length;i++) if(rows[i][0]==='1-9'||rows[i][0]==='1-4') ix=i;   // v25.xx (belt8) retarget: the row is 1-4 guns now
      if(ix<0) bad.push('the compact list has no 1-9 row');
      else{
@@ -9003,7 +9028,7 @@ window.__REGRESS=[
        // 4. the window: a REBIND on every action, Q and F on the list, not P; ESC cancels; P and ESC are refused; a free key binds
        keysReset(); keysOpen();
        if(KEYS_ACTS.some(function(a){ return a[0]==='KeyP'; })) bad.push('the pause key is on the rebind list');
-       ['KeyQ','KeyF','KeyE','KeyX','KeyG','KeyH','F1'].forEach(function(c){ if(!KEYS_ACTS.some(function(a){ return a[0]===c; })) bad.push(c+' is not on the rebind list'); });
+       ['KeyQ','KeyF','KeyE','KeyX'].concat((typeof GUNKEYS!=='undefined'&&GUNKEYS>=9)?['KeyV']:['KeyG','KeyH']).concat(['F1']).forEach(function(c){ if(!KEYS_ACTS.some(function(a){ return a[0]===c; })) bad.push(c+' is not on the rebind list'); });
        if(document.querySelectorAll('#keyslist .rebind').length!==KEYS_ACTS.length||document.querySelectorAll('#keyslist .keybtn').length!==KEYS_ACTS.length) bad.push('the list has '+document.querySelectorAll('#keyslist .rebind').length+' REBIND controls for '+KEYS_ACTS.length+' actions');
        b=el('#keyslist .rebind[data-k="KeyE"]');
        if(b){ b.click(); if(KEYS.waiting!=='KeyE') bad.push('REBIND did not wait for a key'); bk=el('#keyslist .keybtn[data-k="KeyE"]'); if(!bk||bk.textContent.indexOf('PRESS A KEY')<0) bad.push('the key did not say PRESS A KEY');
@@ -9019,13 +9044,13 @@ window.__REGRESS=[
        try{ var mm=document.getElementById('keysmodal'); if(mm) mm.classList.remove('on'); }catch(_m){}
        // 5. a side mouse button binds and acts as its key; unbound it does nothing
        if(keyName('Mouse3')!=='MOUSE 4') bad.push('the side button is named '+keyName('Mouse3'));
-       if(!keysBind('KeyH','Mouse3')) bad.push('a side mouse button could not be bound');
+       var KH71=(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9)?'KeyV':'KeyH'; if(!keysBind(KH71,'Mouse3')) bad.push('a side mouse button could not be bound'); if(KH71==='KeyV'){ g.barT=0; p.meleeAt=undefined; p.lastShot=undefined; p.cooking=0; }
        g.bag.length=0; g.bag.push(nB); p.hp=50; p.healQ=0; p.prep=null; clr();
        window.dispatchEvent(new MouseEvent('mousedown',{button:3,bubbles:true,cancelable:true})); window.dispatchEvent(new MouseEvent('mouseup',{button:3,bubbles:true,cancelable:true})); __holdTick();
-       if(!p.prep||p.prep.kind!=='heal') bad.push('the side button bound to quick heal did not heal ('+JSON.stringify(p.prep)+')');
+       if(KH71==='KeyV'){ if(!(g.barT>0)) bad.push('the side button bound to melee did not swing'); g.barT=0; p.meleeAt=undefined; p.lastShot=undefined; } else if(!p.prep||p.prep.kind!=='heal') bad.push('the side button bound to quick heal did not heal ('+JSON.stringify(p.prep)+')');
        keysReset(); g.bag.length=0; g.bag.push(nB); p.hp=50; p.healQ=0; p.prep=null; clr();
        window.dispatchEvent(new MouseEvent('mousedown',{button:3,bubbles:true,cancelable:true})); window.dispatchEvent(new MouseEvent('mouseup',{button:3,bubbles:true,cancelable:true})); __holdTick();
-       if(p.prep) bad.push('an unbound side button healed');
+       if(KH71==='KeyV'){ if(g.barT>0) bad.push('an unbound side button swung'); } else if(p.prep) bad.push('an unbound side button healed');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ say=kSay; }catch(_s){}
@@ -9137,6 +9162,7 @@ window.__REGRESS=[
        if(g.legendOn!==(v0+1)%3) bad.push('F1 did not cycle the controls list ('+v0+' to '+g.legendOn+')');
        v0=g.legendOn; dn('KeyH','h'); upk('KeyH','h'); __holdTick();
        if(g.legendOn!==v0) bad.push('H still cycles the controls list');
+       if(typeof GUNKEYS==='undefined'||GUNKEYS<9){   /* wheel4: H and G are gone */
        // H heals: a Bandage with health missing starts the wind-up and is spent; at 90 a Bandage is refused, a Medkit is not
        g.bag.length=0; g.bag.push(nB); p.hp=50; p.healQ=0; p.prep=null; clr();
        dn('KeyH','h'); upk('KeyH','h'); __holdTick();
@@ -9149,10 +9175,13 @@ window.__REGRESS=[
        if(p.prep||g.bag.indexOf(nB)<0) bad.push('H at 90 health spent a Bandage (they stop at 85)');
        if(ITEMS.medkit){ g.bag.length=0; g.bag.push('medkit'); p.hp=90; p.healQ=0; p.prep=null; clr(); dn('KeyH','h'); upk('KeyH','h'); __holdTick(); if(!p.prep) bad.push('H at 90 health did not use a Medkit (it reaches 100)'); }
        p.prep=null; p.hp=100; p.healQ=0; g.bag.length=0;
+       }
+       if(typeof GUNKEYS==='undefined'||GUNKEYS<9){   /* wheel4 */
        // G throws the selected throwable at once
        g.pouch[nF+'']=2; g.tsel=THROWKEYS.indexOf(nF); g.hot=0; n0=g.pouch[nF]; clr(); g.frags.length=0;
        dn('KeyG','g'); upk('KeyG','g');
        if(g.pouch[nF]!==n0-1) bad.push('G did not throw the selected throwable (pouch '+n0+' to '+g.pouch[nF]+')');
+       }
        g.frags.length=0; clr();
        // Q swings the crowbar: a machine in reach is hurt, the crowbar is drawn
        p.x=g.zones[0].x; p.y=g.zones[0].y; p.face=0; S=mkSentry(p.x+40,p.y); S.hp=80; h0=S.hp; g.ents=[S]; g.searching=null; p.meleeAt=undefined; p.lastShot=undefined; p.cooking=0; g.barT=0; g.punchT=0; clr();
