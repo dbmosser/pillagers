@@ -1,0 +1,7 @@
+v26.74: air strike plate at 4k
+
+The air strike meter plate now grows with the screen, so it fits at 4K.
+
+Check 26.74. Fails on v26.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

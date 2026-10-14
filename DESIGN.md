@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.74 - AIR STRIKE PLATE AT 4K
+
+Co-op hunt while he was away. A fix to the air strike meter: its plate was sized in the small HUD units while its words were drawn at the screen size, so on a 4K screen the words would have outgrown the plate. The plate, its bar and the callout over the aim ring now all scale with the screen the way the raid status panel does.
+
+MEASURED. Check 26.74 passes, and fails on v26.73.
 ## v26.73 - RUN GOALS
 
 Co-op hunt while he was away. His yes to run goals: three tiny goals per raid, each paying a score chip, the same in DEMO and CAREER. Every raid now draws three small goals from a pool of eight: 10 kills, search 6 crates, survive 3 waves, call an air strike, open a vault, down 3 pillagers, kill an elite, down a warden. They are listed in a panel under the minimap (under the conditions panel in CAREER) with a count, and a goal you meet pays its chip into the run score at once, with GOAL DONE and the amount on screen. The same seed always draws the same three, so a party sharing a seed shares its goals. The vault goal is left out of a map with no vault. The raids themselves are unchanged: the goals are drawn on a side stream, not from the stream that builds the map.

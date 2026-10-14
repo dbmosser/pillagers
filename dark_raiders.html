@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.73';
+var VER='26.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43659,7 +43659,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.73: Every raid now has three small run goals in a panel, each paying a score chip when met. Check 26.73 fails on v26.72',
+  now:'v26.74: The air strike meter plate now grows with the screen, so it fits at 4K. Check 26.74 fails on v26.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53005,6 +53005,7 @@ function airDraw(c,p){
   var A=G.flow&&G.flow.air, z, q, s, m, T, i, j, st, tf, dd, pt, pulse, bw, bh, x, y, c0, fl, rdy, R, t=G.t||0, ar, bx, bwid, by, hd;
   if(!A) return;
   z=Math.max(1,hudRes()); q=ZOOM(); R=AIR.R*q; ar=AIR.spread*q+R*0.4;
+  var U=function(v){ return LH(v)*z; };   // v26.xx (flow2b): the HUD size the raid status uses, so the plate grows with the screen as the text does
   c.save();
   if(A.aim){
     m=mouseWorld(); T=airClamp(m.x,m.y); s=w2s(T.x,0,T.y); pulse=0.5+0.5*Math.sin(t*9);
@@ -53013,8 +53014,8 @@ function airDraw(c,p){
     c.beginPath(); c.arc(s.x,s.y,ar,0,6.2832); c.stroke(); c.setLineDash([]);
     c.lineWidth=2*z; c.beginPath(); c.moveTo(s.x-22*z,s.y); c.lineTo(s.x-8*z,s.y); c.moveTo(s.x+8*z,s.y); c.lineTo(s.x+22*z,s.y);
     c.moveTo(s.x,s.y-22*z); c.lineTo(s.x,s.y-8*z); c.moveTo(s.x,s.y+8*z); c.lineTo(s.x,s.y+22*z); c.stroke();
-    c.textAlign='center'; c.font=hudFS(TYPE.head); c.fillStyle='#ffd0c0'; hudText('AIR STRIKE',s.x,s.y-ar-LH(24));
-    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     G CANCEL',s.x,s.y-ar-LH(8));
+    c.textAlign='center'; c.font=hudFS(TYPE.head); c.fillStyle='#ffd0c0'; hudText('AIR STRIKE',s.x,s.y-ar-U(24));
+    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     G CANCEL',s.x,s.y-ar-U(8));
   }
   for(i=0;i<A.sk.length;i++){
     st=A.sk[i]; s=w2s(st.x,0,st.y);
@@ -53034,16 +53035,16 @@ function airDraw(c,p){
     }
   }
   if(A.m>0||A.aim||A.sk.length){
-    c0=(G.hotCells&&G.hotCells[0])?G.hotCells[0].y:H-LH(130);
-    bw=LH(200); bh=LH(28); x=Math.round(W/2+LH(16)); y=Math.round(c0-LH(112));
+    c0=(G.hotCells&&G.hotCells[0])?G.hotCells[0].y:H-U(130);
+    bw=U(200); bh=U(28); x=Math.round(W/2+U(16)); y=Math.round(c0-U(112));
     rdy=A.m>=AIR.need; fl=clamp(A.m/AIR.need,0,1);
     hudPlate(x,y,bw,bh,rdy?UIC.acc:null,HUDC.plate);
-    c.textAlign='left'; c.font=hudFS(TYPE.micro); c.fillStyle=rdy?UIC.acc:UIC.tx_2; hudText('AIR STRIKE',x+LH(12),y+Math.round(bh*0.64));
-    bx=x+LH(96); bwid=bw-LH(96)-LH(48); by=Math.round(y+bh*0.5-LH(3));
-    c.fillStyle='rgba(255,255,255,.12)'; c.fillRect(bx,by,bwid,LH(6));
-    c.fillStyle=rdy?('rgba(255,192,74,'+(0.75+0.25*Math.sin(t*8)).toFixed(3)+')'):'#ff8a3c'; c.fillRect(bx,by,bwid*fl,LH(6));
-    if(rdy) hudKey('G',x+bw-LH(46),y+Math.round(bh*0.7),LH(8),LH(32));
-    else { c.textAlign='right'; c.fillStyle=UIC.tx_1; hudText(Math.floor(fl*100)+'%',x+bw-LH(10),y+Math.round(bh*0.64)); }
+    c.textAlign='left'; c.font=hudFS(TYPE.micro); c.fillStyle=rdy?UIC.acc:UIC.tx_2; hudText('AIR STRIKE',x+U(12),y+Math.round(bh*0.64));
+    bx=x+U(96); bwid=bw-U(96)-U(48); by=Math.round(y+bh*0.5-U(3));
+    c.fillStyle='rgba(255,255,255,.12)'; c.fillRect(bx,by,bwid,U(6));
+    c.fillStyle=rdy?('rgba(255,192,74,'+(0.75+0.25*Math.sin(t*8)).toFixed(3)+')'):'#ff8a3c'; c.fillRect(bx,by,bwid*fl,U(6));
+    if(rdy) hudKey('G',x+bw-U(46),y+Math.round(bh*0.7),U(8),U(32));
+    else { c.textAlign='right'; c.fillStyle=UIC.tx_1; hudText(Math.floor(fl*100)+'%',x+bw-U(10),y+Math.round(bh*0.64)); }
   }
   c.restore();
 }

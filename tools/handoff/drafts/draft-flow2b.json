@@ -1,0 +1,48 @@
+{
+    "title":  "AIR STRIKE PLATE AT 4K",
+    "why":  "A fix to the air strike meter: its plate was sized in the small HUD units while its words were drawn at the screen size, so on a 4K screen the words would have outgrown the plate. The plate, its bar and the callout over the aim ring now all scale with the screen the way the raid status panel does.",
+    "now":  "The air strike meter plate now grows with the screen, so it fits at 4K.",
+    "edits":  [
+                  {
+                      "anchor":  "  z=Math.max(1,hudRes()); q=ZOOM(); R=AIR.R*q; ar=AIR.spread*q+R*0.4;",
+                      "replacement":  "  z=Math.max(1,hudRes()); q=ZOOM(); R=AIR.R*q; ar=AIR.spread*q+R*0.4;\n  var U=function(v){ return LH(v)*z; };   // v26.xx (flow2b): the HUD size the raid status uses, so the plate grows with the screen as the text does"
+                  },
+                  {
+                      "anchor":  "hudText(\u0027AIR STRIKE\u0027,s.x,s.y-ar-LH(24));",
+                      "replacement":  "hudText(\u0027AIR STRIKE\u0027,s.x,s.y-ar-U(24));"
+                  },
+                  {
+                      "anchor":  "\u0027 CALL     G CANCEL\u0027,s.x,s.y-ar-LH(8));",
+                      "replacement":  "\u0027 CALL     G CANCEL\u0027,s.x,s.y-ar-U(8));"
+                  },
+                  {
+                      "anchor":  "    c0=(G.hotCells\u0026\u0026G.hotCells[0])?G.hotCells[0].y:H-LH(130);\n    bw=LH(200); bh=LH(28); x=Math.round(W/2+LH(16)); y=Math.round(c0-LH(112));",
+                      "replacement":  "    c0=(G.hotCells\u0026\u0026G.hotCells[0])?G.hotCells[0].y:H-U(130);\n    bw=U(200); bh=U(28); x=Math.round(W/2+U(16)); y=Math.round(c0-U(112));"
+                  },
+                  {
+                      "anchor":  "hudText(\u0027AIR STRIKE\u0027,x+LH(12),y+Math.round(bh*0.64));",
+                      "replacement":  "hudText(\u0027AIR STRIKE\u0027,x+U(12),y+Math.round(bh*0.64));"
+                  },
+                  {
+                      "anchor":  "    bx=x+LH(96); bwid=bw-LH(96)-LH(48); by=Math.round(y+bh*0.5-LH(3));",
+                      "replacement":  "    bx=x+U(96); bwid=bw-U(96)-U(48); by=Math.round(y+bh*0.5-U(3));"
+                  },
+                  {
+                      "anchor":  "c.fillStyle=\u0027rgba(255,255,255,.12)\u0027; c.fillRect(bx,by,bwid,LH(6));",
+                      "replacement":  "c.fillStyle=\u0027rgba(255,255,255,.12)\u0027; c.fillRect(bx,by,bwid,U(6));"
+                  },
+                  {
+                      "anchor":  "\u0027#ff8a3c\u0027; c.fillRect(bx,by,bwid*fl,LH(6));",
+                      "replacement":  "\u0027#ff8a3c\u0027; c.fillRect(bx,by,bwid*fl,U(6));"
+                  },
+                  {
+                      "anchor":  "    if(rdy) hudKey(\u0027G\u0027,x+bw-LH(46),y+Math.round(bh*0.7),LH(8),LH(32));",
+                      "replacement":  "    if(rdy) hudKey(\u0027G\u0027,x+bw-U(46),y+Math.round(bh*0.7),U(8),U(32));"
+                  },
+                  {
+                      "anchor":  "hudText(Math.floor(fl*100)+\u0027%\u0027,x+bw-LH(10),y+Math.round(bh*0.64)); }",
+                      "replacement":  "hudText(Math.floor(fl*100)+\u0027%\u0027,x+bw-U(10),y+Math.round(bh*0.64)); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027flow2b, the air strike meter plate grows with the screen: at a HUD scale of 2 (4K) the plate is twice as wide as at 1, as the text in it is\u0027,\n   run:function(){\n     if(!(window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__runPrep\u0026\u0026window.__frame)) return \u0027SKIP: no raid or frame here\u0027;\n     if(typeof arcadeDeploy!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027) return \u0027SKIP: no arcade here\u0027;\n     if(typeof airDraw!==\u0027function\u0027) return \u0027there is no air strike in this build\u0027;\n     var bad=[], g=null, p, w1, w2, pr=CanvasRenderingContext2D.prototype, orr=pr.roundRect, oh=hudRes;\n     function plateW(res){\n       var ws=[], i, mx=0;\n       hudRes=function(){ return res; };\n       pr.roundRect=function(x,y,w,h){ ws.push(w); return orr.apply(this,arguments); };\n       try{ airDraw(ctx,p); } finally { hudRes=oh; pr.roundRect=orr; }\n       for(i=0;i\u003cws.length;i++) if(ws[i]\u003emx) mx=ws[i];\n       return mx;\n     }\n     try{\n       if(!orr) return \u0027SKIP: no roundRect here\u0027;\n       __topClear(); __runPrep();\n       if(ARCADE.on) return \u0027SKIP: the arcade is on after __topClear\u0027;\n       if(!arcadeDeploy({mapIx:0,seed:4242})) return \u0027SKIP: arcadeDeploy built no arcade raid\u0027;\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: no live raid\u0027;\n       p=g.player; keys={};\n       flowTick(0.016); g.flow.air.m=500; render2D(0);\n       w1=plateW(1); w2=plateW(2);\n       if(!(w1\u003e0)) bad.push(\u0027the plate was not drawn at scale 1\u0027);\n       else if(!(w2\u003e=w1*1.8)) bad.push(\u0027the plate is \u0027+w1.toFixed(0)+\u0027 wide at scale 1 and \u0027+w2.toFixed(0)+\u0027 at scale 2\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       try{ hudRes=oh; pr.roundRect=orr; }catch(_r){}\n       keys={};\n       try{ if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE.on) arcadeLeave(); }catch(_l){}\n       try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ if(typeof ARCADE===\u0027object\u0027){ ARCADE.mine=0; ARCADE.waveT=0; ARCADE.holdT=0; } }catch(_h){}\n       __topClear();\n     }\n     return bad.length?bad.slice(0,8).join(\u0027; \u0027):null; }},"
+}
