@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.29';
+var VER='26.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7231,8 +7231,9 @@ function resolveKey(){
 // undefined, and threw inside the death handler. Killing an armoured raider could take
 // the raid down. Anything that rolls a loot table goes through here now.
 function rollLoot(t){ var k=rollTable(t); return k==='KEY'?resolveKey():k; }
+var RT_FRAC=0.99;   // v26.30 (rarvar2): where in its row the last rollTable pick fell, 0 to 1 and as even as the pick itself: a rarity can be decided from it with no draw
 function rollTable(t){var s=0,i;for(i=0;i<t.length;i++)s+=t[i][1];var r=rr()*s;
-  for(i=0;i<t.length;i++){r-=t[i][1];if(r<=0)return t[i][0];}return t[0][0];}
+  for(i=0;i<t.length;i++){r-=t[i][1];if(r<=0){RT_FRAC=1+r/t[i][1];return t[i][0];}}RT_FRAC=0.99;return t[0][0];}
 // One shared contour colour for every body on the map. Warm near-black rather
 // than pure black, so an outline carries the local hue instead of punching a
 // hole in it. The whole Chrono Trigger sprite read rests on the fact that every
@@ -11611,10 +11612,11 @@ function blessElite(e){
   if(e.kind==='raider'&&CFG.eliteGuns!==0){
     // Weighted toward the workhorses; the Lance stays the rarest thing on a body.
     var _pool=[['dmr',26],['lmg',24],['magnum',20],['whisper',14],['sniper',11],['lance',5]];
-    var _t=0,_acc=0,_gk='dmr',_i;
+    var _t=0,_acc=0,_gk='dmr',_i,_gf=0.99;
     for(_i=0;_i<_pool.length;_i++) _t+=_pool[_i][1];
     var _want=gunRoll*_t;
-    for(_i=0;_i<_pool.length;_i++){ _acc+=_pool[_i][1]; if(_want<_acc){ _gk=_pool[_i][0]; break; } }
+    for(_i=0;_i<_pool.length;_i++){ _acc+=_pool[_i][1]; if(_want<_acc){ _gk=_pool[_i][0]; _gf=(_want-(_acc-_pool[_i][1]))/_pool[_i][1]; break; } }
+    _gk=rvGun(_gk,_gf);   // v26.30 (rarvar2): and where the gun roll fell in its row decides the twin, no new draw
     // The three fields mkRaider derives from the weapon move together, or an elite with
     // a Longshot would keep an SMG's engagement range and read as broken.
     e.wep=WEAPONS[_gk]; e.dmg=WEAPONS[_gk].dmg;
@@ -12088,7 +12090,10 @@ function mkRaider(x,y,forceId,simBuild){
   // so about one pillager in five carries something the counter will not sell you.
   // v24.xx (scavspawnonly), HIS ORDER: the Scav Pistol is spawn-only, so the three pistol rows are the Tacker, the other tier 1
   // sidearm (20 a round against 23, 14 rounds against 12), and the pick still draws once from nine.
-  var wk=pick(['tacker','tacker','tacker','smg','smg','rifle','rifle','carbine','shotgun']);
+  var _wkL=['tacker','tacker','tacker','smg','smg','rifle','rifle','carbine','shotgun'], _wkR=rr()*_wkL.length, wk=_wkL[Math.floor(_wkR)];
+  // v26.30 (rarvar2): the pick above is pick() written out (the same one draw, the same row). Where in its row it fell is as even as the
+  // pick itself, and decides the rarity: under RV_PCT of the row he carries the twin one rarity up (his drop is that twin).
+  wk=rvGun(wk,_wkR-Math.floor(_wkR));
   var ident=forceId||pick(IDENTITIES);
   // THE GUARD WAS READING THE WRONG RAID, fixed v1.96. buildRaid spans lines 4680
   // to 5300 and G is not assigned until 5302, AFTER it returns, so every (G&&G.sim)
@@ -12300,6 +12305,7 @@ function mkPeddler(x,y,map){
   }
   // The gun slot, always filled, drawn from all seven.
   var _pg=pick(PED_GUNS);
+  _pg=rvKey(_pg,((((Math.floor(x)*73+Math.floor(y)*151)%100)+100)%100)/100);   // v26.30 (rarvar2): one stall in five stocks the twin; the stall place decides, so nothing is drawn
   stock.push({k:_pg,price:pedPrice(_pg),sold:false});
   while(stock.length<4&&pool.length){
     var ix=ri(0,pool.length-1),k2=pool.splice(ix,1)[0];
@@ -17405,11 +17411,14 @@ function gunCardSize(cmp,tag){
     GUNCARD_LAST={x:x,y:y,w:w,h:h};   // v24.9x (ringbadge): where the card is, for a ring badge at the edge
     ctx.textBaseline='alphabetic';
     yy=y+pad+Math.round(hp*0.85);
+    var _rwd=ITEMRAR[gunRarity(cmp.f.id)]||'', _rww=0;   // v26.30 (rarvar2): the rarity word sits at the right of the name, in its colour
+    if(_rwd){ ctx.font=fL; _rww=Math.round(ctx.measureText(_rwd).width+pad); }
     ctx.font=fH; ctx.textAlign='left'; ctx.fillStyle=RCOL[gunRarity(cmp.f.id)]||HUDC.text;
-    ctx.fillText(String(cmp.f.name).toUpperCase(),x+pad,yy,w-pad*2);
+    ctx.fillText(String(cmp.f.name).toUpperCase(),x+pad,yy,w-pad*2-_rww);
+    if(_rwd){ ctx.font=fL; ctx.textAlign='right'; ctx.fillText(_rwd,x+w-pad,yy); ctx.textAlign='left'; }
     yy+=rh; ctx.font=fL; ctx.fillStyle=vc; ctx.fillText(cmp.verdict,x+pad,yy);
     ctx.textAlign='right'; ctx.fillStyle=HUDC.dim;
-    if(!cmp.noVs) ctx.fillText('VS '+(cmp.h?String(cmp.h.name).toUpperCase():'BARE HANDS'),x+w-pad,yy,w*0.56);   // v24.xx (belthover1): not on the card of the gun in hand
+    if(!cmp.noVs) ctx.fillText('VS '+(cmp.h?String(cmp.h.name).toUpperCase()+((cmp.h.id!==cmp.f.id&&gunBase(cmp.h.id)===gunBase(cmp.f.id))?(' '+(ITEMRAR[gunRarity(cmp.h.id)]||'')):''):'BARE HANDS'),x+w-pad,yy,w*0.56);   // v26.30 (rarvar2): the same model at another rarity says which   // v24.xx (belthover1): not on the card of the gun in hand
     xd=x+w-pad; xv=xd-Math.round(fp*3.6);
     for(i=0;i<R.length;i++){
       k=R[i][0]; v=cmp.f[k]; dv=cmp.h?cmp.d[k]:null; yy+=rh;
@@ -36215,6 +36224,7 @@ function itemRows(key){
     // the whole spread landing, with the per-pellet figure after it.
     var perShot=Math.round(W2.dmg*(W2.pellets||1)*10)/10;   // v23.xx (forge13): a forged pellet gun reads 124.8, not a float tail
     var dmgTxt=perShot+' a hit';
+    if(RV_BASE[it.gk]) dmgTxt+='   '+(ITEMRAR[gunRarity(it.gk)]||'')+' +'+Math.round((VARIANT_DMG-1)*100)+'%';   // v26.30 (rarvar2): a rarity twin says its rarity and what it adds on the row it adds to (no new row: the hover keeps its eight)
     if(W2.pellets>1) dmgTxt+='   '+W2.pellets+' pellets of '+W2.dmg;
     if(W2.burst>1)   dmgTxt+='   '+W2.burst+'-round burst';
     // Sustained damage only where you can actually hold the trigger down.
@@ -42485,7 +42495,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.29: The item wheel has a proper look, a ring on the crosshair shows a gun being drawn, and your gun is put away while an item is out. Check 26.29 fails on v26.28',
+  now:'v26.30: Pillagers, the Peddler and Wirt now deal the higher rarity guns too, and the stat card names the rarity. Check 26.30 fails on v26.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53046,7 +53056,8 @@ document.getElementById('termsclear').onclick=function(){
 document.getElementById('gamblebtn').onclick=function(){
   if(P.credits<GAMBLE_PRICE) return;
   P.credits-=GAMBLE_PRICE;
-  var key=rollTable(GAMBLE_POOL); if(key==='KEY') key=resolveKey();
+  var key=rollTable(GAMBLE_POOL), _gf=RT_FRAC; if(key==='KEY') key=resolveKey();
+  key=rvKey(key,_gf);   // v26.30 (rarvar2): a gun out of the gamble is the twin one time in five, decided by where the pick fell
   P.stash.push(key);
   P.gambleLog=P.gambleLog||[]; P.gambleLog.push(key);
   if(P.gambleLog.length>40) P.gambleLog.shift();

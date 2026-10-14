@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.30 - PILLAGERS, THE PEDDLER AND WIRT DEAL HIGHER RARITY GUNS
+
+Co-op hunt while he was away. The second half of the higher rarity guns, from his order of 2026-10-14. A pillager now carries the higher rarity version of his gun about one time in seven (a pillager with a Compact SMG, an Auto Rifle, a Burst Carbine or a Riot Scattergun), an elite pillager about one time in six, and the body drops exactly that gun with its higher damage. The Peddler stocks the higher version in his gun slot at about one stall in five, priced for what it is worth, and Wirt gives one in five of the guns he deals as the higher version. Each of them is decided from a number the game already draws, or from where the stall stands, so nothing new is drawn and the seeded raids are what they were. The stat card of a gun now says its rarity in its colour next to the name, and when the card compares two guns of the same model at different rarities it says which rarity it is against, with the damage figures and an UPGRADE verdict. The backpack and stash hover card of a higher gun says its rarity and the damage it adds on its damage row, without taking a new row.
+
+MEASURED. Check 26.30 passes, and fails on v26.29.
 ## v26.29 - THE WHEEL LOOKS THE PART
 
 Co-op hunt while he was away. His bar for looks (every screen should look like a AAA game), applied to the item wheel and the draw time. The wheel opens on a soft vignette with a ring of tick marks; each segment is a graphite plate with a rarity rim, the picture, the name in caps and a count badge; the segment under your aim lifts out and goes amber, a pointer lights on the hub, and the hub says what the item does (HEALS TO 85, COOK AND THROW, ARMOUR +20); one line under the wheel names the key to let go of. While a gun is being drawn a ring fills on the crosshair and is gone when the gun is ready, the magazine ring waits for it, and with a grenade or a heal out your character shows bare hands instead of the gun.

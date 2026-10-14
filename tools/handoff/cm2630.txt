@@ -1,0 +1,7 @@
+v26.30: pillagers, the peddler and wirt deal higher rarity guns
+
+Pillagers, the Peddler and Wirt now deal the higher rarity guns too, and the stat card names the rarity.
+
+Check 26.30. Fails on v26.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
