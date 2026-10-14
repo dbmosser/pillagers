@@ -2201,7 +2201,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.48';
+var VER='26.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41611,6 +41611,34 @@ function xhDot(c,x,y,rs,col,rz){
 }
 // v26.xx (settings5): BRIGHTNESS. A gamma on the world canvas through an SVG filter (the exponent below 1 lifts the shadows, above 1 sinks them);
 // at 1, the default, the canvas has no filter at all. brightApply runs every frame and writes only when the row changed.
+// v26.xx (settings8): COLOUR-BLIND MODE. CB_NORM is the game as drawn (the five rarity colours, then the team marks and the HUD ally and danger); the three
+// sets below it are what the row swaps in. cbApply runs every frame and writes only when the mode changed, so it also puts a mode right after a session
+// overlay (the DEMO) comes and goes. It changes the tables the drawing reads at draw time (RCOL, TEAMCOL, TEAMHI, UIC, HUDC) and the stylesheet tokens
+// (--r-*, --ally) on the page element, and empties the icon cache that painted rarity rims.
+var CBM={m:0,done:0};
+var CB_KEYS=['common','uncommon','rare','elite','gold'];
+var CB_NORM={rar:['#9da3a8','#5fbf6a','#3f9de9','#a866e0','#ffc72e'],ally:'#5fb0ff',allyHi:'#b4dcff',foe:'#e5482f',foeHi:'#ff9a84',uiAlly:'#9cc7ff',danger:'#e5482f'};
+var CB_SETS=[CB_NORM,
+  {rar:['#9da3a8','#6ff0e0','#4f8bff','#ff7a1a','#ffe85a'],ally:'#4fa8ff',allyHi:'#a9d4ff',foe:'#ff7a1a',foeHi:'#ffc08a',uiAlly:'#9cc7ff',danger:'#ff7a1a'},
+  {rar:['#9da3a8','#6ff0e0','#4f8bff','#ff7a1a','#ffe85a'],ally:'#4fa8ff',allyHi:'#a9d4ff',foe:'#ff8a2a',foeHi:'#ffc08a',uiAlly:'#9cc7ff',danger:'#ff8a2a'},
+  {rar:['#9da3a8','#6ff0e0','#3a5fe0','#ff7a1a','#f5f56a'],ally:'#35e0b0',allyHi:'#a6f0dc',foe:'#ff8a2a',foeHi:'#ffc08a',uiAlly:'#9cf0d8',danger:'#ff8a2a'}];
+function cbApply(){
+  var m=(CFG.cb|0), S, i, k, root;
+  if(m<0||m>3) m=0;
+  if(CBM.done&&CBM.m===m) return false;
+  S=CB_SETS[m]||CB_NORM; root=document.documentElement;
+  for(i=0;i<5;i++){
+    k=CB_KEYS[i]; RCOL[k]=S.rar[i]; UIC['r_'+k]=S.rar[i];
+    if(m) root.style.setProperty('--r-'+k,S.rar[i]); else root.style.removeProperty('--r-'+k);
+  }
+  HUDC.special=UIC.r_elite;
+  TEAMCOL.ally=S.ally; TEAMCOL.foe=S.foe; TEAMHI.ally=S.allyHi; TEAMHI.foe=S.foeHi;
+  UIC.ally=S.uiAlly; HUDC.ally=S.uiAlly; HUDC.danger=S.danger;
+  if(m) root.style.setProperty('--ally',S.uiAlly); else root.style.removeProperty('--ally');
+  try{ ICONSPR.m={}; ICONSPR.n=0; }catch(_ic){}
+  CBM.m=m; CBM.done=1;
+  return true;
+}
 var BRT={v:1};
 function brightApply(){
   var v=+CFG.gam, svg, fl, i, fs, ids=['R','G','B'];
@@ -42191,6 +42219,7 @@ function loop(ts){
   // v23.xx (gfx6): the quality ladder rung rests at 0 with the scale, and a new rung rebuilds the canvases like a new scale
   try{ volApply(); }catch(_va){}   // v17.74: the volume rows, applied at once
   try{ brightApply(); }catch(_br){}   // v26.xx (settings5): BRIGHTNESS, applied at once
+  try{ cbApply(); }catch(_cb){}   // v26.xx (settings8): COLOUR-BLIND MODE, applied at once
   if(frameCapSkip(ts)) return;   // v17.43: his pick 28, the frame cap
   try{ fpsTick(ts); }catch(_fq){}   // v26.xx (settings5): SHOW FPS
   // THE CLAMP WAS ONE SIDED, found v2.99. This bounded dt from ABOVE at 50ms, so a
@@ -42806,7 +42835,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.48: Display has minimap size and zoom. Check 26.48 fails on v26.47',
+  now:'v26.49: Accessibility has colour-blind modes for rarity and for the two sides. Check 26.49 fails on v26.48',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55474,6 +55503,18 @@ var GAMEOPTS=[
      {n:'STANDARD', cfg:{mmSpan:1000}},
      {n:'WIDE',     cfg:{mmSpan:1400}}
    ], def:1},
+  // v26.xx (settings8), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): COLOUR-BLIND MODES for the rarity colours and the enemy and ally
+  // marks, in the new ACCESSIBILITY section. OFF is the game as it was. Each mode swaps two tables (cbApply): the five rarity colours (the world, the
+  // belt, the menus) and the team marks (pillagers against your party, the minimap dots). The sets were chosen by simulating each kind of colour
+  // blindness and keeping every rarity and the two sides far apart in what that eye sees.
+  {k:'cb', label:'COLOUR-BLIND MODE', sec:'ACCESSIBILITY',
+   hint:'RECOLOURS RARITY AND THE ENEMY AND ALLY MARKS: DEUTERANOPIA AND PROTANOPIA (RED-GREEN), TRITANOPIA (BLUE-YELLOW).',
+   opts:[
+     {n:'OFF',          cfg:{cb:0}},
+     {n:'DEUTERANOPIA', cfg:{cb:1}},
+     {n:'PROTANOPIA',   cfg:{cb:2}},
+     {n:'TRITANOPIA',   cfg:{cb:3}}
+   ], def:0},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',
    opts:[

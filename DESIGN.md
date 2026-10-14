@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.49 - COLOUR-BLIND MODES FOR RARITY AND SIDES
+
+Co-op hunt while he was away. His order: add all of this to Settings. A new ACCESSIBILITY section starts with COLOUR-BLIND MODE: OFF, DEUTERANOPIA, PROTANOPIA or TRITANOPIA. Each mode recolours the five rarities (common, uncommon, rare, elite, gold) everywhere, in the world, on the belt and in the menus, and the marks of the two sides, your party against the pillagers and the machines, on the map, the minimap and the world. The colours were picked by simulating each kind of colour blindness and keeping every rarity and the two sides well apart in what that eye sees: the original green, blue and purple run together for a green-blind eye, so the modes use aqua, blue, orange and yellow, and the sides become blue (or teal) against orange. Off is the game as drawn. It changes at once and is saved with the profile; in the DEMO it holds for the session.
+
+MEASURED. Check 26.49 passes, and fails on v26.48.
 ## v26.48 - MINIMAP SIZE AND ZOOM
 
 Co-op hunt while he was away. His order: add all of this to Settings. Display gets two minimap rows. MINIMAP SIZE is SMALL, STANDARD or LARGE: it scales the plate in the top right corner, and the panels under it move down to make room. MINIMAP ZOOM is CLOSE, STANDARD or WIDE: how much street the plate shows, a tight view of the next corner or the lie of the whole district. Standard is the minimap exactly as it was. They change at once and are saved with the profile; in the DEMO they hold for the session.

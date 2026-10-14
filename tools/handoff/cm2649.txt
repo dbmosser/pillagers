@@ -1,0 +1,7 @@
+v26.49: colour-blind modes for rarity and sides
+
+Accessibility has colour-blind modes for rarity and for the two sides.
+
+Check 26.49. Fails on v26.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
