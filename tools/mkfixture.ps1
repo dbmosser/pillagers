@@ -6093,15 +6093,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'26.33',what:'wheelfixed, his order: the item wheel is always the same eight slots in the same places, clockwise from the top (medkit, frag, smoke, decoy, plate, tripwire, stim, bandage), whatever is carried; what you carry fills its slot by itself, a carried smoke is picked at RIGHT, a type with none stays in its slot dimmed with a 0 and letting go on it takes nothing out, and DEMO and CAREER lay it out the same',
+  {v:'26.33',what:'wheelfixed, his order: the item wheel is always the same eight slots in the same places, in one fixed order, clockwise from the top (26.33: medkit, frag, smoke, decoy, plate, tripwire, stim, bandage; 26.34 reordered it), whatever is carried; what you carry fills its slot by itself, a carried smoke is picked at its own slot, a type with none stays in its slot dimmed with a 0 and letting go on it takes nothing out, and DEMO and CAREER lay it out the same',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: no raid or frame here';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing can be drawn';
      if(typeof drawWheel!=='function'||typeof wheelOpen!=='function'||typeof wheelAt!=='function'||typeof updatePlayer!=='function'||typeof raidKey!=='function'||typeof drawIconSprite!=='function') return 'SKIP: no wheel here';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
-     var ORDER='medkit,frag,smoke,decoy,plate,trip,stim,bandage', bad=[], g=null, p=null, proto=CanvasRenderingContext2D.prototype, oFT=proto.fillText, oDW=drawWheel, oDI=drawIconSprite, realSay=say, inW=false, icons=[], texts=[], said=[], j, w0, sh, ia, ib, pc, c0, a0, lay=[];
+     var ORDERS=['medkit,frag,smoke,decoy,plate,trip,stim,bandage','medkit,smoke,frag,trip,plate,decoy,bandage,stim'], ORDER='', fs=0, sm=0, bad=[], g=null, p=null, proto=CanvasRenderingContext2D.prototype, oFT=proto.fillText, oDW=drawWheel, oDI=drawIconSprite, realSay=say, inW=false, icons=[], texts=[], said=[], j, w0, sh, ia, ib, pc, c0, a0, lay=[];
      function cl(q){ var o={}, f; for(f in WEAPONS[q]) o[f]=WEAPONS[q][f]; o.q='field'; o.qRank=1; return o; }
      function keysOf8(){ return g.wheel.list.map(function(q){ return q.k; }).join(','); }
+     function slotOf(k2){ var q; for(q=0;q<g.wheel.list.length;q++) if(g.wheel.list[q].k===k2) return q; return -1; }   /* wheelorder: a type has its own slot, wherever the order puts it */
+     function atSlot(s,f){ var an=-Math.PI/2+s*(Math.PI/4), r=Math.round(sh*f); at(Math.round(Math.cos(an)*r),Math.round(Math.sin(an)*r)); }
      function stageAll(){ g.bag=['bandage','medkit','stim','plate']; g.pouch.frag=2; g.pouch.smoke=1; g.pouch.decoy=1; g.pouch.trip=1; p.hand=null; }
      function stageSmoke(){ g.bag=[]; g.pouch.frag=0; g.pouch.smoke=1; g.pouch.decoy=0; g.pouch.trip=0; p.hand=null; }
      function open(){ g.wheel=null; mouse.x=W/2; mouse.y=H/2; keys['KeyQ']=true; raidKey('KeyQ',false,null); return g.wheel; }
@@ -6126,22 +6128,22 @@ window.__REGRESS=[
        say=function(s){ said.push(String(s)); };
        // ONE: the same eight slots in the same order whatever is carried, and the counts are the carried amounts
        stageAll(); if(!open()) return 'ONE: the wheel did not open with everything carried';
-       if(keysOf8()!==ORDER) bad.push('ONE: carrying everything, the slots read '+keysOf8()+', not '+ORDER);
-       if(g.wheel.list.map(function(q){ return q.n; }).join(',')!=='1,2,1,1,1,1,1,1'&&g.wheel.list.length===8) bad.push('ONE: the counts read '+g.wheel.list.map(function(q){ return q.n; }).join(',')+', not 1,2,1,1,1,1,1,1');
+       ORDER=keysOf8(); if(ORDERS.indexOf(ORDER)<0) bad.push('ONE: carrying everything, the slots read '+ORDER+', not one of '+ORDERS.join(' / '));   /* wheelorder: the ring is one fixed order whatever is carried; his order changed it, so either build's order is accepted, and every later open must keep the one it started with */
+       if(g.wheel.list.length===8&&g.wheel.list.map(function(q){ return q.k+q.n; }).sort().join(',')!=='bandage1,decoy1,frag2,medkit1,plate1,smoke1,stim1,trip1') bad.push('ONE: the counts read '+g.wheel.list.map(function(q){ return q.k+q.n; }).join(',')+', not frag2 and one of each of the rest');   /* wheelorder: counted by type, not by place */
        letgo();
        stageSmoke(); if(!open()) return 'ONE: the wheel did not open with a smoke carried';
        if(keysOf8()!==ORDER) bad.push('ONE: carrying one smoke, the slots read '+keysOf8()+', not '+ORDER);
        // TWO: the eight directions are fixed: top, top-right, right, bottom-right, bottom, bottom-left, left, top-left
        lay=[wheelAt(8,0,-1),wheelAt(8,1,-1),wheelAt(8,1,0),wheelAt(8,1,1),wheelAt(8,0,1),wheelAt(8,-1,1),wheelAt(8,-1,0),wheelAt(8,-1,-1)];
        if(lay.join(',')!=='0,1,2,3,4,5,6,7') bad.push('TWO: the compass reads '+lay.join(','));
-       at(Math.round(sh*0.24),0);
-       if(g.wheel.sel!==2||g.wheel.list[2].k!=='smoke') bad.push('THREE: the mouse at RIGHT read slot '+g.wheel.sel+' ('+(g.wheel.list[2]&&g.wheel.list[2].k)+'), not the smoke');
+       sm=slotOf('smoke'); atSlot(sm,0.24);   /* wheelorder: the smoke is picked at its own slot, wherever the order puts it */
+       if(sm<0||g.wheel.sel!==sm) bad.push('THREE: the mouse at the smoke slot ('+sm+') read slot '+g.wheel.sel+' ('+(g.wheel.list[g.wheel.sel]&&g.wheel.list[g.wheel.sel].k)+'), not the smoke');
        letgo();
-       if(!p.hand||p.hand.k!=='smoke') bad.push('THREE: letting go at RIGHT took '+(p.hand?p.hand.k:'nothing')+' out, not the smoke');
+       if(!p.hand||p.hand.k!=='smoke') bad.push('THREE: letting go at the smoke slot took '+(p.hand?p.hand.k:'nothing')+' out, not the smoke');
        p.hand=null;
        // FOUR: a type with none stays in its slot, dim, with a 0, and cannot be picked
-       stageSmoke(); said=[]; open(); at(Math.round(sh*0.14),-Math.round(sh*0.14));
-       if(g.wheel.sel!==1||g.wheel.list[1].k!=='frag'||g.wheel.list[1].n!==0) bad.push('FOUR: top-right read slot '+g.wheel.sel+' '+g.wheel.list[1].k+' x'+g.wheel.list[1].n);
+       stageSmoke(); said=[]; open(); fs=slotOf('frag'); atSlot(fs,0.2);   /* wheelorder: the empty frag is found at its own slot */
+       if(fs<0||g.wheel.sel!==fs||g.wheel.list[fs].n!==0) bad.push('FOUR: the frag slot ('+fs+') read slot '+g.wheel.sel+' x'+(g.wheel.list[fs]&&g.wheel.list[fs].n));
        g.wheel.t=Math.max(g.wheel.t,0.2);
        frame();
        ia=-1; ib=-1; icons.forEach(function(q){ if(q[0]==='frag') ia=q[1]; if(q[0]==='smoke') ib=q[1]; });
