@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.66';
+var VER='26.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19255,6 +19255,33 @@ function meleeStrike(){
 // pillagers alike) spreads wider the farther its aim point is: as before out to ACC_NEAR, then the spread grows by a third for every
 // ACC_SPAN beyond it, up to ACC_FALL more (1.8 times the spread from about 830 out). Close fights and every player gun are unchanged,
 // and no draw moved: the one spread roll per pellet is the same roll, only wider.
+// v26.xx (feel19), HIS ORDER (2026-10-14): "bloom ring ok". THE OUTER RING TELLS THE TRUTH ABOUT YOUR AIM. p.bloom is how loose your aim is right now,
+// from -0.3 (crouched and still) through 0 (standing still) to 1.2: walking holds it at 0.45, sprinting or rolling at 0.9, crouched and moving
+// at 0.1, held to aim it is 0.4 times those, and every shot adds up to 0.4 more that fades at 0.9 a second. It eases out fast (8 a second) and
+// back in slower (4 a second). The cursor's outer rings (the magazine ring, the reload ring and the draw ring) sit BLOOM_PX (14, times the
+// screen and crosshair size) further out for every 1.0 of bloom, so the ring widens when you move, sprint or shoot and tightens when you stop
+// or crouch, and the crosshair colour and style rows still rule the look. AND IT IS TRUE: the spread of every round you fire is multiplied by
+// bloomMul, 1 + BLOOM_SPREAD x bloom (0.35), so a still shot is exactly as accurate as it was, a crouched one is a tenth tighter, a walking
+// one a sixth looser and a sprint-and-shoot a third. A balance change, allowed since 2026-10-02. The roll of the spread is the same one draw as
+// before, so the seeded stream does not move; live play only (G.sim never ticks it, so the bot raids are untouched).
+var BLOOM_PX=14, BLOOM_SPREAD=0.35;
+function bloomTick(p,dt){
+  var sp, base, tgt, b0;
+  if(!G||G.sim||!p) return 0;
+  if(!isFinite(dt)||dt<=0) return p.bloom||0;
+  sp=(p.blmX===undefined)?0:Math.min(400,Math.sqrt((p.x-p.blmX)*(p.x-p.blmX)+(p.y-p.blmY)*(p.y-p.blmY))/dt);
+  p.blmX=p.x; p.blmY=p.y;
+  base=(sp<12)?0:((G.sprinting||p.roll>0)?0.9:0.45);
+  if(G.pCrouch) base=(sp<12)?-0.3:0.1;
+  if(p.ads) base*=0.4;
+  p.bloomK=Math.max(0,(p.bloomK||0)-dt*0.9);
+  tgt=base+p.bloomK; b0=p.bloom||0;
+  p.bloom=b0+(tgt-b0)*Math.min(1,dt*((tgt>b0)?8:4));
+  return p.bloom;
+}
+function bloomShot(p){ if(G&&!G.sim&&p) p.bloomK=Math.min(0.4,(p.bloomK||0)+0.1); }
+function bloomMul(p){ return (G&&!G.sim&&p)?(1+BLOOM_SPREAD*Math.max(-0.3,Math.min(1.2,p.bloom||0))):1; }
+function bloomPx(p){ return Math.max(-0.3,Math.min(1.2,(p&&p.bloom)||0))*BLOOM_PX; }
 var ACC_NEAR=350, ACC_SPAN=600, ACC_FALL=0.8;
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(fromPlayer&&G&&G.arcade&&G.player&&G.player.arcSh) arcadeShieldOff();   // v23.30 (arcade9): a shot drops the spawn shield
@@ -19271,7 +19298,7 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(G&&!G.sim){
     // v8.52, audit: two more combatT stamps for the deleted radio. See damagePlayer.
   }
-var spx=wep.spread*(((fromPlayer&&G.player.ads)||(!fromPlayer&&sh&&sh.steady))?0.4:1);
+var spx=wep.spread*(((fromPlayer&&G.player.ads)||(!fromPlayer&&sh&&sh.steady))?0.4:1)*(fromPlayer?bloomMul(G.player):1);   // v26.xx (feel19): and it is true, the spread follows the ring
   if(!fromPlayer&&sh&&isFinite(tx)&&isFinite(ty)){ var _afd=Math.hypot(tx-sh.x,ty-sh.y); if(_afd>ACC_NEAR) spx*=1+Math.min(ACC_FALL,(_afd-ACC_NEAR)/ACC_SPAN); }   // 2026-10-12 (accfall): wider at long range
   // v4.38 HIS ANSWER 7: the Compact SMG climbs on a held trigger. Short taps
   // stay accurate; spraying the whole magazine is a choice with a cost.
@@ -19345,6 +19372,7 @@ if(wep.mag===0){
   if(fromPlayer){
     G.player.recoil=1; G.player.combatT=0; G.tel.shots+=shots;
     if(gunBase(wep.id)==='lance'&&!G.sim) lanceKick(G.player,ang);   // v26.xx (feel10): the Meridian Lance shoves you back a step
+    if(!wep._echo) bloomShot(G.player);   // v26.xx (feel19): every shot loosens the aim a little
     padRumble(0.12,35);   // v17.37: a light tick per shot
     G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2);
     // Every round through a gun you own is counted on the profile. Pellets count
@@ -22717,6 +22745,7 @@ function updatePlayer(dt){
   if(G.handsT>0) G.handsT-=dt;
   if(p.recoil>0) p.recoil-=dt*7;
   if(p.kickT>0){ var _lkd=Math.min(dt,p.kickT); p.kickT-=dt; p.x+=(p.kickVx||0)*_lkd; p.y+=(p.kickVy||0)*_lkd; collide(p,G.map.walls); }   // v26.xx (feel10): the Lance kick
+  bloomTick(p,dt);   // v26.xx (feel19): how loose the aim is right now
   if(p.muzzle>0) p.muzzle-=dt;
   if(p.iv>0) p.iv-=dt;
   // v11.83, HIS SPEC: the stim clock, up here with the other timers so it keeps
@@ -35252,7 +35281,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
     var _gunUp=(!_HB||_HB.kind==='gun');
     if(_gunUp&&!p.hand&&!(p.drawT>0)&&!rState&&p.wep&&p.wep.mag>0){   // v26.xx (wheel6): no magazine ring while the gun is away or being drawn
       var _mf=clamp(p.ammo/p.wep.mag,0,1);
-      var _mr=gap+len+4*_rz;
+      var _mr=gap+len+4*_rz+bloomPx(p)*_rz*xhSize();   // v26.xx (feel19): the bloom ring
       var _mc=_mf>0.5?'230,240,246':(_mf>0.25?'255,192,74':'224,72,58');
 // v4.05 HIS NOTE: "amt of bullets in clip shown on mouse cursor needs to
       // be thicker/more obvious/more animated". Three answers in one: the ring
@@ -35279,7 +35308,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
       ctx.lineCap='butt';
     }
     if(p.drawT>0&&p.drawLen>0&&!rState){   // v26.xx (wheel6): the gun is being drawn: the ring fills clockwise from twelve, and is gone when it is ready
-      var _drf=clamp(1-p.drawT/p.drawLen,0,1), _drr=gap+len+4*_wz;
+      var _drf=clamp(1-p.drawT/p.drawLen,0,1), _drr=gap+len+4*_wz+bloomPx(p)*_wz*xhSize();
       ctx.strokeStyle='rgba(230,240,246,.22)'; ctx.lineWidth=3.2*_wz;
       ctx.beginPath(); ctx.arc(rx0,ry0,_drr,0,6.2832); ctx.stroke();
       ctx.strokeStyle='rgba(230,240,246,.95)';
@@ -35293,7 +35322,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
       // and the seconds still to wait sit beside the cursor counting down,
       // which is the "how long" he asked for, literally.
       var _rlf=clamp(1-p.reloading/((p.rlTot>0)?p.rlTot:p.wep.reload),0,1);   // v26.xx (feel11): of the reload it really began with
-      var _rlr=gap+len+4*_wz;   // v22.xx (R41): the ring, its widths and the seconds grow with the screen
+      var _rlr=gap+len+4*_wz+bloomPx(p)*_wz*xhSize();   // v22.xx (R41): the ring, its widths and the seconds grow with the screen
       if(CFG.cursorLoud!==0){
         ctx.strokeStyle='rgba(255,192,74,.26)'; ctx.lineWidth=4.4*_wz;
         ctx.beginPath(); ctx.arc(rx0,ry0,_rlr,0,6.2832); ctx.stroke();
@@ -43389,7 +43418,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.66: Your rounds glance once off steel walls at a shallow angle, with a spark and a ping. Check 26.66 fails on v26.65',
+  now:'v26.67: The cursor outer ring widens when you move, sprint or shoot and tightens when you stand or crouch, and your spread follows it. Check 26.67 fails on v26.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

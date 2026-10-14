@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.67 - BLOOM RING
+
+Co-op hunt while he was away. His yes to a bloom ring. The outer ring round your cursor (the one that counts your rounds, and the one that fills while you reload) now tells you how steady your aim is. It sits wider when you walk, wider again when you sprint or roll, and swells a little with every shot; it closes in when you stand still and tightens further when you crouch. The crosshair style and colour rows still decide how it looks. It tells the truth, too: the spread of every round you fire now follows the ring. Standing still is exactly as accurate as before, crouching is a tenth tighter, walking is about a sixth looser and sprinting and shooting about a third, with steady aim (right mouse) keeping its big tightening. This is a balance change, which his rule of 2 October allows, and the seeded stream does not move.
+
+MEASURED. Check 26.67 passes, and fails on v26.66.
 ## v26.66 - RICOCHET OFF STEEL
 
 Co-op hunt while he was away. His yes to rounds that ricochet off steel. A round you fire that reaches a metal wall at a glancing angle (a locked-room wall, a keyed door or a vehicle wreck) no longer just dies there: it turns about the face, keeps 60 percent of its damage, flies on a little way and throws a bright spark and a ping. It bounces once. A round that hits head-on, a round on concrete or wood, and every round an enemy fires behave exactly as before, so this is only a bank shot for you. A glancing round at a wreck now glances instead of punching through, the wall is still damaged by the strike, and the bot raids are untouched.

@@ -1,0 +1,7 @@
+v26.67: bloom ring
+
+The cursor outer ring widens when you move, sprint or shoot and tightens when you stand or crouch, and your spread follows it.
+
+Check 26.67. Fails on v26.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
