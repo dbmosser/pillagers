@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.58 - MACHINES DRAW WHERE THEY ARE ABOUT TO SHOOT
+
+Co-op hunt while he was away. His yes to suggestion 20, attack telegraphs. A Sentry or a Warden (THE OVERSEER is a Warden) winding up a shot used to show only a red glow at its muzzle and a charging sound, so where the round would go was a guess. Now it paints a thin red aim line on the ground from the machine out to where the round would stop, either at the end of its reach or at the first wall, with a narrow lane that fills outward from the machine over the windup, so the lane is full and bright just as the shot leaves. A Howler shell in the air now fills its landing circle as it comes down, and the full circle is marked faintly from the first moment. The windups, the cooldowns and the damage are exactly as they were: this only shows what the machine is already about to do, and only for a machine you can see.
+
+MEASURED. Check 26.58 passes, and fails on v26.57.
 ## v26.57 - CAMERA LOOK AHEAD
 
 Co-op hunt while he was away. His yes to a camera look-ahead toward the cursor, longer for sniper-class guns. The camera already leaned a little toward your cursor; with a gun in your hands it now leans more, 0.20 of the distance from the screen centre to the cursor instead of 0.13, so you see farther along the line you shoot. The Marksman Rifle, the Longshot and the Meridian Lance, the guns with a long scope, look farther still at 0.30. Bare hands keep the old lean and the lean you get holding the aim button is unchanged. It eases in and out through the same camera ease as before, the world edge still holds, and nothing in the game rules changes.

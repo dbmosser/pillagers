@@ -1,0 +1,7 @@
+v26.58: machines draw where they are about to shoot
+
+A Sentry or Warden about to shoot now paints a red aim lane on the ground, and a Howler shell fills its landing circle.
+
+Check 26.58. Fails on v26.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

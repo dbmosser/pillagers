@@ -1,0 +1,5 @@
+## v26.58 - MACHINES DRAW WHERE THEY ARE ABOUT TO SHOOT
+
+Co-op hunt while he was away. His yes to suggestion 20, attack telegraphs. A Sentry or a Warden (THE OVERSEER is a Warden) winding up a shot used to show only a red glow at its muzzle and a charging sound, so where the round would go was a guess. Now it paints a thin red aim line on the ground from the machine out to where the round would stop, either at the end of its reach or at the first wall, with a narrow lane that fills outward from the machine over the windup, so the lane is full and bright just as the shot leaves. A Howler shell in the air now fills its landing circle as it comes down, and the full circle is marked faintly from the first moment. The windups, the cooldowns and the damage are exactly as they were: this only shows what the machine is already about to do, and only for a machine you can see.
+
+MEASURED. Check 26.58 passes, and fails on v26.57.
