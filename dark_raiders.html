@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.81';
+var VER='26.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43766,7 +43766,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.81: The machine convoy event: kill the carrier of an armoured crawler train to take its loot crate before it gets away. Check 26.81 fails on v26.80',
+  now:'v26.82: The bounty pillager event: a marked crew boss hunts you, and downing him yourself pays 1,500. Check 26.82 fails on v26.81',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53697,6 +53697,72 @@ EVENTS.convoy={name:'MACHINE CONVOY',sub:'ARMOURED TRAIN',warn:20,dur:170,r:240,
     if(!ev.d.won&&ev.d.crew&&!ev.d.left){ ev.d.left=1; if(ev.d.car&&ev.d.car.hp>0) convoyLeave(ev); }
   },
   live:function(ev){ var n=convoyCrew(ev).length; return n+' LEFT'; }
+};
+// v26.xx (flow7), HIS ANSWER (2026-10-14), the raid events, the third: BOUNTY PILLAGER, "a marked crew boss with a big score reward, who hunts you". A 15 s
+// warning over a ring where he will come in (700 to 1,000 from you, off the rings), then a hostile pillager of the wave kind (arcadeWaveRaider: the CAREER
+// save never hears of him) steps in with four times the health, a full rig of plate (at least 100) and a rich bag (a cache roll and two safe rolls on top of his
+// own) for the body to drop. HE HUNTS YOU: every frame he is put on the chase toward where you stand, alert held up, so he comes for you through the streets
+// whether or not he has seen you. The ring, the mark and BOUNTY $1,500 follow him. Put him down (the kill is yours) and the BOUNTY is paid into the run
+// score at once (DEMO score, CAREER raid score); if something else killed him nothing is paid. After 150 s on the hunt he slips away. Made on a side stream
+// of the event, so the seeded stream and the CAREER save are untouched. DEMO and CAREER are the same.
+var BOUNTY={pay:1500};
+EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,fade:4,col:'#ff5a4a',
+  mx:function(ev){ var e=ev.d.e; return (ev.ph!=='warn'&&e&&e.hp>0)?e.x:ev.x; },
+  my:function(ev){ var e=ev.d.e; return (ev.ph!=='warn'&&e&&e.hp>0)?e.y:ev.y; },
+  pick:function(ev){
+    var p=G.player, S=null;
+    evStream(ev,function(){
+      var k, a, d, x, y;
+      for(k=0;k<80&&!S;k++){
+        a=rr()*6.2832; d=700+rr()*300; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;
+        if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,350)) S={x:x,y:y};
+      }
+    });
+    if(!S) return false;
+    ev.x=S.x; ev.y=S.y;
+    return true;
+  },
+  start:function(ev){
+    var e=null, seed=(((G.seed>>>0)^Math.imul((ev.n|0)+71,2654435761))>>>0)||1;
+    sideStream(seed,EV.tag+6,function(){
+      var k;
+      e=arcadeWaveRaider(ev.x,ev.y);
+      e.hp=e.maxhp=Math.round(e.maxhp*4); e.armorCap=Math.max(e.armorCap||0,100); e.armor=e.armorCap; e.bounty=1;
+      e.bag.push(rollLoot(LOOT.cache),rollLoot(LOOT.safe),rollLoot(LOOT.safe));
+    });
+    e.state='chase'; e.alert=3; e.tx=G.player.x; e.ty=G.player.y;
+    G.ents.push(e);
+    ev.d.e=e; ev.d.over=0; ev.r=60;
+    try{ say('BOUNTY ON THE MAP','warn',{sub:'HE HUNTS YOU  $'+BOUNTY.pay}); }catch(_bs){}
+  },
+  tick:function(ev,dt){
+    var e=ev.d.e, p=G.player, down;
+    if(ev.d.over) return;
+    if(!e){ ev.d.over=1; return; }
+    down=!(e.hp>0)||e.downed||e.finished||G.ents.indexOf(e)<0;
+    if(down){
+      ev.d.over=1;
+      if(e.byPlayer!==false){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; }
+      else { try{ say('BOUNTY GONE','info',{sub:'NOT YOUR KILL'}); }catch(_bg){} }
+      return;
+    }
+    e.state='chase'; e.alert=3; e.chaseHold=0; e.tx=p.x; e.ty=p.y;
+  },
+  done:function(ev){ return !!ev.d.over; },
+  end:function(ev){
+    var e=ev.d.e, k;
+    if(!ev.d.over&&e&&e.hp>0){
+      k=G.ents.indexOf(e); if(k>=0) G.ents.splice(k,1);
+      try{ say('BOUNTY SLIPPED AWAY','info'); }catch(_be){}
+    }
+  },
+  live:function(ev){ return 'HUNTING YOU'; },
+  draw:function(ev,c,s,q,z){
+    var e=ev.d.e, U=function(v){ return LH(v)*z; };
+    if(ev.ph!=='live'||!e||!(e.hp>0)) return;
+    c.textAlign='center'; c.font=hudFS(TYPE.label); c.fillStyle='#ff6a5a';
+    hudText('BOUNTY  $'+BOUNTY.pay,s.x,s.y+ev.r*q+U(16));
+  }
 };
 // FLOW-MODULE-END (the next flow builds add their code above this line)
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.82 - RAID EVENTS: BOUNTY PILLAGER
+
+Co-op hunt while he was away. The third raid event, the bounty pillager: a marked crew boss with a big score reward who hunts you. A 15 second warning shows a ring where he will come in, then a hostile pillager steps out of the streets with four times the health, a full rig of plate and a rich bag for his body to drop. He comes for you wherever you go, whether or not he has seen you, and the ring, the map mark and BOUNTY $1,500 follow him. Put him down yourself and the bounty is paid into your run score at once, in DEMO and in CAREER; if something else kills him nothing is paid. Stay alive for 150 seconds of the hunt and he slips away. He never touches your CAREER save: he is a wave kind of pillager with no grudge or rival filed.
+
+MEASURED. Check 26.82 passes, and fails on v26.81.
 ## v26.81 - RAID EVENTS: MACHINE CONVOY
 
 Co-op hunt while he was away. The second raid event, the machine convoy: an armoured crawler train crosses the map with a loot crate. A 20 second warning shows a ring at the start, then the train forms there and sets off for a far corner of the map: a Carrier (a Bulwark with more than twice the health and its front shield, so you have to flank it) with four armoured elite crawlers around it. They march by the street grid, fighting whatever they meet and falling back in, and the ring and the map mark follow the Carrier. Kill the Carrier and it drops the convoy crate where it fell, three cache rolls and a safe roll, marked on the maps until you open it. If it reaches its destination the train vanishes and the crate goes with it. DEMO and CAREER work the same.

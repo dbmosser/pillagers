@@ -1,0 +1,7 @@
+v26.82: raid events: bounty pillager
+
+The bounty pillager event: a marked crew boss hunts you, and downing him yourself pays 1,500.
+
+Check 26.82. Fails on v26.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
