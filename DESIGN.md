@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.56 - ACTIVE RELOAD
+
+Co-op hunt while he was away. His idea: "maybe reload can be a bar that goes halfway with like a sweet spot and if the player hits reload again during the sweet spot it adds the damage and finishes the reload instantly". The ring that fills round your cursor while you reload now has a bright stretch on it, the sweet spot, from 42 to 60 percent of the reload. Press R again while the ring is inside it and the reload finishes at once, the next magazine does 15 percent more damage, and a ping and a green flash say so. Press too early or too late and nothing happens: the reload goes on at its normal speed, with no jam and no penalty. Holding R from the start does not count, so you have to let go and press again. The bonus ends when the magazine is empty, at the next reload or when you change gun.
+
+MEASURED. Check 26.56 passes, and fails on v26.55.
 ## v26.55 - HIT STOP AND THE LANCE KICK
 
 Co-op hunt while he was away. His order: "hit stop to enemies - do minor player knock back on using the meridian lance". A round that landed changed nothing about the body it hit, so a heavy hit felt like a pistol tap. Now a heavy round, 40 damage or more (the Magnum, the Marksman Rifle, the Longshot, the Meridian Lance), stops the body it hits for a sixtieth of a second: it neither walks nor shoots for that beat. A body the round kills is not held, a boss is never held, and a light round does nothing. The Meridian Lance also shoves you back a short step along the shot when you fire it, through the walls push-out, so it never puts you into one. Nothing draws from the seeded stream and the bot raids are untouched.

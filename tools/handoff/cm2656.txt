@@ -1,0 +1,7 @@
+v26.56: active reload
+
+Press R again in the bright stretch of the reload ring to finish it at once and add 15 percent damage to the next magazine.
+
+Check 26.56. Fails on v26.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
