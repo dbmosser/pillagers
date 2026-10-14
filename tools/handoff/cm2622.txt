@@ -1,0 +1,7 @@
+v26.22: music at the end of a raid
+
+The EXTRACTED card plays a short rising piece and the KILLED IN ACTION card a low falling one, at the Music volume.
+
+Check 26.22. Fails on v26.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
