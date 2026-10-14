@@ -7986,7 +7986,7 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.slice(0,6).join('; '):null; }},
-  {v:'25.72',what:'a search always opens on the rummage itself, whatever the last search left behind: a dig due on the next hit, or a last clip of rummage, still opens on the rummage',
+  {v:'25.72',what:'a search always opens clean, whatever the last search left behind: a dig due on the next hit, or a last clip equal to the opening, still opens on exactly one ordinary bank hit (never a dig) and the counters start the search over',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof foley!=='function'||typeof searchFoley!=='function') return 'SKIP: no raid or foley here';
      if(typeof SRCHFX!=='object') return 'SKIP: this build has no varied search sound';
@@ -7995,13 +7995,18 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
        if(!g||g.over) return 'SKIP: no live raid';
        kSim=g.sim; g.sim=false;
-       foley=function(r,x,y,o){ rec.push(r); return false; };
+       foley=function(r,x,y,o){ rec.push({r:r,o:o||{}}); return false; };
        for(s=0;s<6;s++){
          for(i=0;i<tys.length;i++){
            ct={type:tys[i]};
            SRCHFX.dig=3+(s%3); SRCHFX.n=(s%2)?(SRCHFX.dig-1):0; SRCHFX.last=(s<3)?'rummage':'equip'; SRCHFX.hit=(s%2)?2:1; SRCHFX.t=0;
            rec.length=0; searchFoley(ct,'rummage');
-           if(rec.length!==1||rec[0]!=='rummage') bad.push(tys[i]+' search '+s+' opens on '+(rec[0]||'nothing')+', not the rummage');
+           if(rec.length!==1) bad.push(tys[i]+' search '+s+' opens with '+rec.length+' hits, not one');
+           else {
+             if(rec[0].o.dig) bad.push(tys[i]+' search '+s+' opens on a dig ('+rec[0].r+')');
+             if(typeof SFXBANK!=='object'||!SFXBANK[rec[0].r]) bad.push(tys[i]+' search '+s+' opens on '+rec[0].r+', not a bank clip');
+             if(SRCHFX.hit!==1||SRCHFX.n!==1) bad.push(tys[i]+' search '+s+' did not start its counters over ('+SRCHFX.hit+', '+SRCHFX.n+')');
+           }
          }
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -10079,10 +10084,11 @@ window.__REGRESS=[
          // hold E through half the search, then let go
          m0=MADE.length; step(Math.max(1.1,ct.time*0.5),true); L=heard(m0); Lall=Lall.concat(L);
          if(g.searching!==ct&&!(ct.prog>0)) return 'SKIP: the hold did not start a search on this box';
-         if(cnt(L,'rummage')+cnt(L,'strapRip')+cnt(L,'equip')+cnt(L,'boltLatch')+cnt(L,'plateClack')+cnt(L,'medkitSnap')<2||!has(L,'rummage')) bad.push('half a search ('+Math.max(1.1,ct.time*0.5).toFixed(2)+' s) rummages '+cnt(L,'rummage')+' times, wanted 2 or more ('+(L.join(',')||'nothing')+')');
+         var SRCHC=['rummage','strapRip','equip','boltLatch','plateClack','medkitSnap','lmgClack','pinClick','bandageTear'], nS=L.filter(function(x){ return SRCHC.indexOf(x)>=0; }).length;   // v26.xx (searchmix): any search clip of the material of the box, not only the rummage
+         if(nS<2) bad.push('half a search ('+Math.max(1.1,ct.time*0.5).toFixed(2)+' s) makes '+nS+' search hits, wanted 2 or more ('+(L.join(',')||'nothing')+')');
          // let go: the rummage stops with the search
          m0=MADE.length; step(1.2,false); L=heard(m0);
-         if(has(L,'rummage')) bad.push('the rummage carries on after letting go');
+         if(L.some(function(x){ return SRCHC.indexOf(x)>=0; })) bad.push('the search sound carries on after letting go ('+L.join(',')+')');
          // finish it: every common item that comes out makes a sound of its own
          m0=MADE.length; for(n=0;n<200&&!ct.done&&(ct.loot.length||ct.prog<ct.time);n++) step(0.05,true); L=heard(m0); Lall=Lall.concat(L);
          if(cnt(Lall,'pickup')+cnt(Lall,'magIn')<com) bad.push(com+' common items came out with '+(cnt(Lall,'pickup')+cnt(Lall,'magIn'))+' pull sounds ('+(Lall.join(',')||'nothing')+')');
