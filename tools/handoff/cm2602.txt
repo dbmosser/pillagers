@@ -1,0 +1,7 @@
+v26.02: belt keys: pick, use and keycaps
+
+Keys 5 to 9 now use their belt item at once with the gun still in hand, U and J pick the next grenade and heal, and keycaps on the belt show which key does what.
+
+Check 26.02. Fails on v26.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

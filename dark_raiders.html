@@ -1305,7 +1305,7 @@
 
 <div class="pausebox" id="pausebox">
   <h3>RAID PAUSED</h3>
-  <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E search / use &nbsp; X extraction &nbsp; R reload &nbsp; Q melee &nbsp; F next gun &nbsp; G quick throw &nbsp; H quick heal &nbsp; 1-4 guns &nbsp; 5-6 throwables &nbsp; 7-8 medical &nbsp; 9 armour &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; F1 controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
+  <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E search / use &nbsp; X extraction &nbsp; R reload &nbsp; Q melee &nbsp; F next gun &nbsp; G throw &nbsp; U next grenade &nbsp; H heal, hold plate &nbsp; J next heal &nbsp; 1-4 guns &nbsp; 5-6 throw that grenade &nbsp; 7-8 use that heal &nbsp; 9 plate &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; F1 controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Please provide feedback anything that went or felt wrong.</div>
   <textarea id="pausenote" rows="3" style="display:none;max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
@@ -2161,7 +2161,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.01';
+var VER='26.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13823,9 +13823,9 @@ function raidKey(code,repeat,ev){
       if(td===1) pedSellAll(); else if(td>=2&&td<=9) pedBuy(td-2);
       return;
     }
-    if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC'||code==='KeyH'||code==='KeyF'||code==='KeyU') return;   // v25.xx (keyswap): and the new throw, heal, melee, next gun and switch keys do nothing behind the stall
+    if(code==='KeyG'||code==='Space'||code==='KeyQ'||code==='KeyC'||code==='KeyH'||code==='KeyF'||code==='KeyU'||code==='KeyJ') return;   // v25.xx (keyswap): and the new throw, heal, melee, next gun and switch keys do nothing behind the stall
   }
-  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyC','KeyX','KeyU','F1','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
+  if(['Tab','Space','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyI','KeyM','KeyP','KeyH','KeyC','KeyX','KeyU','KeyJ','F1','Backspace','ControlLeft','ShiftLeft'].indexOf(code)>=0) if(ev) ev.preventDefault();
   // v12.89, audit finding 9: ESC BELONGS TO WHATEVER IS IN FRONT, which in a raid
   // is the map, then the backpack, then the pause box behind neither. A held drag
   // goes with the bag, the way the focus-loss rescue already drops it.
@@ -13881,9 +13881,17 @@ function raidKey(code,repeat,ev){
   // exactly one thing everywhere in the game.
   if(G&&!G.over&&!repeat&&code.indexOf('Digit')===0){
     var dn=parseInt(code.slice(5),10);
-    if(dn>=1&&dn<=9){ setHot(dn-1); if(ev) ev.preventDefault(); }
+    if(dn>=1&&dn<=9){
+      // v26.02 (beltkeys), HIS ORDER 2026-10-13: "in each instance, the player should LEAVE THE GUN EQUIPPED and it should just instantly use the
+      // item in the slot". Keys 1 to 4 select and draw guns as before. In a raid keys 5 to 9 are INSTANT keys: 5 and 6 throw the grenade on that
+      // key, 7 and 8 use the heal on that key, 9 slots a plate, and the gun stays in his hands every time (beltInstant). They move neither the
+      // G pick nor the H pick. The Undercroft floor keeps the old pick-the-key meaning of the digits.
+      if(dn>GUNKEYS&&!G.hubFloor) beltInstant(dn-1); else setHot(dn-1);
+      if(ev) ev.preventDefault();
+    }
   }
   if(code==='KeyU'&&G&&!G.over&&!repeat) cycleThrow();   // v25.xx (keyswap): switch throwable moved from Q (now the crowbar) to U
+  if(code==='KeyJ'&&G&&!G.over&&!repeat) cycleHeal();   // v26.02 (beltkeys): J picks the next heal on the medical keys, as U picks the next grenade
   if(code==='KeyT'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat&&NET.on&&typeof netGiftKey==='function'&&netGiftKey()){}   // v17.44: his pick 4, T offers the selected backpack item or takes an offer; v18.22: not behind the stall
   else if(code==='KeyT'&&G&&!G.over&&!G.paused&&!G.trade&&!G.bagOpen&&!repeat&&NET.on&&typeof netAidHold==='function') netAidHold();   // v16.84, his ask: T patches up a teammate in reach with your Bandage or Medkit, the pad Y; v18.22: never with the backpack open (that T is the trade key) and never behind the stall
   if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();   // v16.43: ping for the party
@@ -14142,7 +14150,7 @@ cv.addEventListener('mousedown',function(e){
         // and happens only when the release is a click (window mouseup).
         // v18.90, his report (2026-10-07): "can't move a gun from slot 8 to slot 1". The v17.18 rule, a press only picks the key up, now covers a key holding a gun that is already in his hands too: pressing key 8 to drag it swapped that gun up on the press, before he had dropped anything. The swap waits for the release and happens only when the release is a click.
         var _bagGun=!!(_hs2&&_hs2.kind==='gun'&&_hs2.itemKey);
-        if(!_bagGun) setHot(_HC2.i);
+        if(!_bagGun&&!beltPickCell(_HC2.i)) setHot(_HC2.i);   // v26.02 (beltkeys): a click on a grenade or medical key picks it, as U and J do
         // v11.91, HIS NOTE: "why can't i drag items to diff keys??" The derived
         // cells (Medical, Armour Plate, the grenades) carried no item key, so
         // only a cell he had already assigned could be picked up. A derived
@@ -15425,7 +15433,7 @@ var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['Ke
   // v18.54, FROM THE CODE COMB (2026-10-07): EVERY KEY THAT DOES SOMETHING IS ON THE LIST. G, Q, Z, V and O work in the raid but were
   // not here, so binding an action onto one of them did not swap: reload on G kept R as reload too, and the belt item on G was gone
   // with no way back but RESET. They are listed now, so a bind onto one swaps like any other.
-  ['KeyG','quick throw'],['KeyU','switch throwable'],['KeyZ','drop an item for a teammate'],['KeyO','order your hire'],['AltLeft','raid status (hold)']];
+  ['KeyG','quick throw'],['KeyU','switch throwable'],['KeyJ','switch medical'],['KeyZ','drop an item for a teammate'],['KeyO','order your hire'],['AltLeft','raid status (hold)']];
 var KEYS={inv:null,waiting:null,built:0,inited:0,note:null};
 // v25.xx (keyremap), HIS ORDER 2026-10-13 ("add something in settings where the player can remap keys"): the version of the map (a map made
 // before the key swap named jobs that have moved, so a profile older than this starts on the defaults, once, at load), and the keys no action
@@ -15471,7 +15479,7 @@ function keysReset(){ if(P){ P.keymap={}; P.keymapV=KEYS_V; } KEYS.note={t:'set'
 // who moved where. The two side mouse buttons bind too (Mouse3 and Mouse4): a bound button is dispatched as the keyboard event of that code,
 // so every reader of keys, in the raid, the Undercroft and the menus, sees it as the key it stands for, and an unbound button keeps the
 // browser back and forward. The pad is never touched.
-var KEYS_SECT=[['MOVE',['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC']],['FIGHT',['KeyR','KeyQ','KeyF','KeyG','KeyU','KeyH']],
+var KEYS_SECT=[['MOVE',['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC']],['FIGHT',['KeyR','KeyQ','KeyF','KeyG','KeyU','KeyH','KeyJ']],
   ['WORLD',['KeyE','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyO','AltLeft']],['PARTY',['KeyT','KeyZ','KeyN','Mouse1']]];
 function keysActName(code){ var i; for(i=0;i<KEYS_ACTS.length;i++) if(KEYS_ACTS[i][0]===code) return String(KEYS_ACTS[i][1]).toUpperCase(); return String(code).toUpperCase(); }
 function keysRow1(a){
@@ -15527,7 +15535,7 @@ function keysLegendHtml(){
   // pause key, and TAB is one entry in the words of the controls card: pause, or back out.
   var k=function(t){ return '<b style="color:var(--bone)">'+t+'</b>'; };
   return k('MOUSE')+' aim &nbsp; '+k('LMB')+' fire &nbsp; '+k('RMB')+' aim down sights &nbsp; '+s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' move &nbsp; '+s('Space')+' dodge roll &nbsp; '+s('ShiftLeft')+' hold to sprint &nbsp; '+
-    s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' search / use &nbsp; '+s('KeyX')+' extraction &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyQ')+' melee &nbsp; '+s('KeyF')+' next gun &nbsp; '+s('KeyG')+' quick throw &nbsp; '+s('KeyH')+' quick heal, hold for armour plate &nbsp; '+k('1-4')+' guns &nbsp; '+k('5-6')+' throwables &nbsp; '+k('7-8')+' medical &nbsp; '+k('9')+' armour &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
+    s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' search / use &nbsp; '+s('KeyX')+' extraction &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyQ')+' melee &nbsp; '+s('KeyF')+' next gun &nbsp; '+s('KeyG')+' throw &nbsp; '+s('KeyU')+' next grenade &nbsp; '+s('KeyH')+' heal, hold for plate &nbsp; '+s('KeyJ')+' next heal &nbsp; '+k('1-4')+' guns &nbsp; '+k('5-6')+' throw that grenade &nbsp; '+k('7-8')+' use that heal &nbsp; '+k('9')+' plate &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
     s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' / '+s('Mouse1')+' ping &nbsp; '+s('AltLeft')+' raid status (hold) &nbsp; '+s('F1')+' controls &nbsp; '+s('KeyP')+' pause &nbsp; '+k('TAB')+' pause, or back out';   // v18.25: the trade key, from the audit
 }
 function keysLegendApply(){ var el=document.getElementById('pausekeys'); if(!el) return false; el.innerHTML=String(keysLegendHtml()).split(' &nbsp; ').map(function(p){ return '<span style="white-space:nowrap">'+p+'</span>'; }).join(' &nbsp; '); try{ pauseFrameFit(); }catch(_pf){} return true; }   // v19.06, seen on the 4K pause screenshot (2026-10-07): an entry broke in two at the line end (TAB back / out); each key and its words now stay on one line
@@ -17010,7 +17018,14 @@ function beltInfoCard(S,c){
   o={name:String(it.name).toUpperCase(), col:RCOL[rk]||HUDC.text, rar:ITEMRAR[rk]||'', held:'HELD '+n, rows:beltInfoRows(k),
      val:(v>0)?('$'+v.toLocaleString()):'', keys:[[String(keyLabel('Digit'+(c.i+1),String(c.i+1))),'SELECT'],['FIRE','USE']]};
   if(!padOn()){   // v25.xx (belt6b): and the key of its class
-    if(it.use==='throw') o.keys.push([String(keyLabel('KeyG','G')),'THROW']);
+    if(state!=='hub'&&(it.use==='throw'||it.use==='heal'||it.use==='stim'||it.use==='armor')){   // v26.02 (beltkeys): the digit acts at once, G and H act on the pick, U and J move it
+      var _hk=String(keyLabel('Digit'+(c.i+1),String(c.i+1))), _hh=String(keyLabel('KeyH','H'));
+      if(it.use==='throw') o.keys=[[_hk,'THROW'],[String(keyLabel('KeyG','G')),'THROW CHOSEN'],[String(keyLabel('KeyU','U')),'NEXT']];
+      else if(it.use==='heal') o.keys=[[_hk,'HEAL'],[_hh,'HEAL CHOSEN'],[String(keyLabel('KeyJ','J')),'NEXT']];
+      else if(it.use==='stim') o.keys=[[_hk,'USE'],[_hh,'USE CHOSEN'],[String(keyLabel('KeyJ','J')),'NEXT']];
+      else o.keys=[[_hk,'SLOT'],['HOLD '+_hh,'PLATE']];
+    }
+    else if(it.use==='throw') o.keys.push([String(keyLabel('KeyG','G')),'THROW']);
     else if(it.use==='heal') o.keys.push([String(keyLabel('KeyH','H')),'HEAL']);
     else if(it.use==='armor') o.keys.push(['HOLD '+String(keyLabel('KeyH','H')),'PLATE']);
   }
@@ -17859,31 +17874,114 @@ function xCallKey(){ return !!(keys['KeyX']||(keys['PadX']&&keys['KeyE'])); }
 // v25.xx (belt5b), HIS DECISION 2026-10-13: "tap H uses the cheapest heal that helps". From the two medical keys only: the cheapest heal there
 // that can still raise him (a Bandage stops at its ceiling, a Medkit goes to full), never a Stim, never a heal that is only in the backpack. With
 // a heal in the backpack that would help and none on the belt it says NO HEAL ON BELT and names the key that opens the backpack.
-function useBeltHeal(){
-  var p=G.player, sl=hotbarSlots(), reach=healReach(p), best=null, anyBelt=false, ci, c, it, bi, a, b;
-  if(reach>=p.maxhp){ say((p.healQ>0)?'ALREADY HEALING':'HEALTH FULL'); return false; }
+// v26.02 (beltkeys), HIS ORDER 2026-10-13 ("U = next grenade, G = throw it / J = next heal, H = use it"). The medical keys' non-empty cells,
+// in key order: a Bandage, a Medkit or a Stim.
+function medCells(sl){
+  var out=[], ci, c;
+  for(ci=GUNKEYS;ci<HOTBAR_N;ci++){
+    if(BELT_CLASS[ci]!=='med') continue;
+    c=sl[ci];
+    if(c&&(c.kind==='heal'||c.kind==='stim')&&(c.count>0)&&ITEMS[c.itemKey]) out.push(ci);
+  }
+  return out;
+}
+// The cheapest heal that can still raise him (v25.xx belt5b): a Bandage stops at its ceiling, a Medkit goes to full, never a Stim. Returns the key
+// index (-1 when none helps) and whether the belt holds any heal at all. The belt keycaps and the default pick read this one function.
+function beltHealPick(sl,reach){
+  var best=-1, anyBelt=false, ci, c, it, a, b;
   for(ci=GUNKEYS;ci<HOTBAR_N;ci++){
     if(BELT_CLASS[ci]!=='med') continue;
     c=sl[ci];
     if(!c||c.kind!=='heal'||!(c.count>0)||!ITEMS[c.itemKey]) continue;
     anyBelt=true; it=ITEMS[c.itemKey];
     if(reach>=healCeil(it)) continue;
-    if(best){ a=it.amt||0; b=ITEMS[best.itemKey].amt||0; if(a>b||(a===b&&ival(c.itemKey)>=ival(best.itemKey))) continue; }
-    best=c;
+    if(best>=0){ a=it.amt||0; b=ITEMS[sl[best].itemKey].amt||0; if(a>b||(a===b&&ival(c.itemKey)>=ival(sl[best].itemKey))) continue; }
+    best=ci;
   }
-  if(!best){
-    if(anyBelt){ say('BANDAGES STOP AT '+Math.round(healCeil(ITEMS.bandage)),'info',{sub:'You need a Medkit.'}); return false; }
+  return {i:best,any:anyBelt};
+}
+// The medical key H uses: the one J chose (G.msel, an item key) while it is still carried; otherwise the cheapest heal that helps, otherwise the
+// first heal on the belt (never a Stim by default; a Stim is used when J chose it). -1 when the belt holds nothing to use.
+function medSelIx(sl){
+  var cs=medCells(sl), i, pk;
+  if(!cs.length) return -1;
+  if(G.msel) for(i=0;i<cs.length;i++) if(sl[cs[i]].itemKey===G.msel) return cs[i];
+  pk=beltHealPick(sl,healReach(G.player));
+  if(pk.i>=0) return pk.i;
+  for(i=0;i<cs.length;i++) if(sl[cs[i]].kind==='heal') return cs[i];
+  return -1;
+}
+// J: the next non-empty medical key, round, as U does for the grenades.
+function cycleHeal(){
+  var sl=hotbarSlots(), cs=medCells(sl), cur=medSelIx(sl), at=-1, i, nx;
+  if(!cs.length){ say((findHeal()>=0)?'NO HEAL ON BELT':'NO MEDICAL SUPPLIES'); return false; }
+  for(i=0;i<cs.length;i++) if(cs[i]===cur) at=i;
+  nx=cs[(at+1)%cs.length];
+  G.msel=sl[nx].itemKey;
+  say((ITEMS[G.msel].name+' ready').toUpperCase());
+  return true;
+}
+// Tap H: the SELECTED medical item (medSelIx), not the cheapest. ix names a key instead (the digits 7 and 8). A heal is refused at full
+// health or past its ceiling and says why; a Stim is used whatever the health.
+function useBeltHeal(ix){
+  var p=G.player, sl=hotbarSlots(), reach=healReach(p), c, it, bi;
+  if(ix===undefined) ix=medSelIx(sl);
+  c=(ix>=0)?sl[ix]:null;
+  if(c&&c.kind==='stim'&&(c.count>0)&&ITEMS[c.itemKey]) return useStim(G.bag.indexOf(c.itemKey));
+  if(reach>=p.maxhp){ say((p.healQ>0)?'ALREADY HEALING':'HEALTH FULL'); return false; }
+  if(!c||c.kind!=='heal'||!(c.count>0)||!ITEMS[c.itemKey]){
     if(findHeal()>=0){ say('NO HEAL ON BELT','info',{sub:(padOn()?padB('VIEW  BACKPACK'):('['+keyLabel('KeyB','B')+'] BACKPACK'))}); return false; }
     say('NO MEDICAL SUPPLIES');
     return false;
   }
+  it=ITEMS[c.itemKey];
+  if(reach>=healCeil(it)){
+    if(c.itemKey==='bandage') say('BANDAGES STOP AT '+Math.round(healCeil(ITEMS.bandage)),'info',{sub:'You need a Medkit.'});
+    else say((it.name+' stops at '+Math.round(healCeil(it))).toUpperCase());
+    return false;
+  }
   if(p.prep){ say('ALREADY APPLYING','info',{sub:String(ITEMS[p.prep.key]?ITEMS[p.prep.key].name:'Medical').toUpperCase()}); return false; }
-  bi=G.bag.indexOf(best.itemKey);
+  bi=G.bag.indexOf(c.itemKey);
   if(bi<0) return false;
-  G.bag.splice(bi,1); if(!startPrep('heal',best.itemKey)) blip('pick');
+  G.bag.splice(bi,1); if(!startPrep('heal',c.itemKey)) blip('pick');
   G.tel.heals++;
   spark(p.x,p.y,'#6fe0a0',10,90);
   return true;
+}
+// The digits 5 to 9 in a raid: the item on that key, at once, with the gun still in his hands. A grenade key throws its grenade through the quick
+// throw path (G.tsel is pointed at it for the throw and put back, so the G pick does not move), a medical key uses its item through the path H
+// uses (useBeltHeal), key 9 slots a plate as a hold on H does (quickPlate). An empty key gives the usual none line. G.hot never moves.
+function beltInstant(i){
+  var p=G&&G.player, sl, c, cls=BELT_CLASS[i], ti, sv;
+  if(!G||G.sim||G.over||G.paused||G.trade||G.hubFloor||!p||i<GUNKEYS||i>=HOTBAR_N) return false;
+  if(p.downed){ say('NOT WHILE DOWN'); return false; }
+  if(p.dying||p.specOut) return false;
+  sl=hotbarSlots(); c=sl[i];
+  if(cls==='throw'){
+    ti=(c&&c.kind==='throw'&&c.icon&&(c.count|0)>0)?THROWKEYS.indexOf(c.icon):-1;
+    if(ti<0){ say('NO THROWABLE ON KEY '+(i+1)); return false; }
+    sv=G.tsel; G.tsel=ti;
+    try{ doThrow(); } finally { G.tsel=sv; }
+    return true;
+  }
+  if(cls==='med') return useBeltHeal(i);
+  if(cls==='plate') return quickPlate();
+  return false;
+}
+// A click on a grenade or medical key picks it, as U and J do (it used to put the highlight there, so the trigger cooked it); a gun key draws.
+function beltPickCell(i){
+  var sl, c, ti;
+  if(!G||G.hubFloor||G.sim||i<GUNKEYS||i>=HOTBAR_N) return false;
+  sl=hotbarSlots(); c=sl[i];
+  if(!c) return false;
+  if(BELT_CLASS[i]==='throw'&&c.kind==='throw'&&c.icon&&(c.count|0)>0){
+    ti=THROWKEYS.indexOf(c.icon); if(ti<0) return false;
+    G.tsel=ti; say((c.name+' ready').toUpperCase()); return true;
+  }
+  if(BELT_CLASS[i]==='med'&&(c.kind==='heal'||c.kind==='stim')&&(c.count|0)>0&&c.itemKey&&ITEMS[c.itemKey]){
+    G.msel=c.itemKey; say((c.name+' ready').toUpperCase()); return true;
+  }
+  return false;
 }
 function quickHeal(){
   var p=G&&G.player;
@@ -17913,18 +18011,25 @@ function holdHTick(dt){
     if(HHOLD.t>=HHOLD.sec){ HHOLD.arm=0; quickPlate(); }
   } else { HHOLD.arm=0; quickHeal(); }
 }
-function nextGun(){
-  var p=G&&G.player, sl, cur, n=GUNKEYS, k, i;
-  if(!G||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.roll>0) return false;
-  sl=hotbarSlots(); cur=heldGunCell(sl); if(cur<0) cur=clamp(G.hot||0,0,n-1);
+// v26.02 (beltkeys): the gun F brings up next, as a pure pick, so the belt can draw the F keycap on it. cur is the key of the gun in hand.
+function nextGunCell(sl){
+  var n=GUNKEYS, cur=heldGunCell(sl), k, i;
+  if(cur<0) cur=clamp(G.hot||0,0,n-1);
   for(k=1;k<=n;k++){
     i=(cur+k)%n;
     if(!sl[i]||sl[i].kind!=='gun'||sl[i].vacant||sl[i].inHand) continue;
-    if(G.hot===i) G.hot=cur;   // setHot ignores the key the highlight is already on
-    setHot(i);
-    return true;
+    return {i:i,cur:cur};
   }
-  return false;
+  return null;
+}
+function nextGun(){
+  var p=G&&G.player, sl, ng;
+  if(!G||G.over||G.paused||G.trade||!p||p.downed||p.dying||p.roll>0) return false;
+  sl=hotbarSlots(); ng=nextGunCell(sl);
+  if(!ng) return false;
+  if(G.hot===ng.i) G.hot=ng.cur;   // setHot ignores the key the highlight is already on
+  setHot(ng.i);
+  return true;
 }
 // the crowbar sounds, from the v25.20 foley bank: a metal whoosh as it swings, a thud and a rattle where it lands
 function meleeFoley(kind,x,y){
@@ -32297,6 +32402,13 @@ function drawBuzzFx(){
     var _gSel=null, _gTs=[], _gti;   // v25.xx (belt6b): the kind G throws: the kind U chose when a throwable key shows it, else the first throwable key
     for(_gti=GUNKEYS;_gti<sl.length;_gti++) if(BELT_CLASS[_gti]==='throw'&&sl[_gti]&&sl[_gti].kind==='throw'&&sl[_gti].icon&&(sl[_gti].count|0)>0) _gTs.push(sl[_gti].icon);
     if(_gTs.length) _gSel=(_gTs.indexOf(THROWKEYS[G.tsel])>=0)?THROWKEYS[G.tsel]:_gTs[0];
+    // v26.02 (beltkeys), HIS ORDER 2026-10-13 ("give players keybinds/button glyphs in a contextual manner where possible"): a small keycap on the cell
+    // each key acts on right now, recorded as it is drawn (G.beltCaps, like G.hotCells). G on the grenade G throws and U on the other; H on the heal H
+    // uses and J on the other; HOLD H on the plate; F on the gun F brings up next; R on the gun in hand when its magazine is empty and he carries rounds.
+    // Each prints the key as set (keyLabel); on a controller it prints the pad button where the pad has one for the act, and no cap where it has none.
+    var _bcaps=[], _mSel=-1, _nG=-1, _ng;
+    G.beltCaps=_bcaps;
+    if(state!=='hub'){ _mSel=medSelIx(sl); _ng=nextGunCell(sl); if(_ng) _nG=_ng.i; }
     var _gx=[0], _gp, _pp=LH(4), _gg, _gf, _gl, _gq2;   // v25.xx (belt6a): each key's offset from the left edge, and one graphite plate behind each group
     for(_gp=1;_gp<sl.length;_gp++) _gx.push(_gx[_gp-1]+((beltGroupOf(_gp)!==beltGroupOf(_gp-1))?gapG:gap));
     for(_gg=0;_gg<4;_gg++){
@@ -32381,10 +32493,21 @@ function drawBuzzFx(){
       // along its foot (light above half, amber to a quarter, red below) and the rounds he carries in reserve as the number; the floor belt has no
       // reserve, so it shows the bar alone. A gun with no magazine (melee) keeps its old look. The half-grey states above are unchanged.
       var _gunReal=!!(S.kind==='gun'&&!S.vacant&&S.icon&&S.icon!=='fists'&&S.count!==null&&S.count!==undefined&&S.mag>0);
-      if(state!=='hub'&&S.kind==='throw'&&S.icon&&S.icon===_gSel){   // the G keycap on the throwable key G throws
-        var _gs=Math.round(bw*0.2), _gkx=bx+LH(4), _gky=hy+bw-LH(5)-_gs;
-        ctx.fillStyle='#ffc04a'; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(_gkx,_gky,_gs,_gs,Math.max(2,_gs*0.2)); else ctx.rect(_gkx,_gky,_gs,_gs); ctx.fill();
-        ctx.font=beltFS(bw,0.13); ctx.fillStyle='#1a1408'; ctx.textAlign='center'; ctx.fillText(String(keyLabel('KeyG','G')).slice(0,2),_gkx+_gs/2,_gky+_gs*0.76); ctx.textAlign='left';
+      if(state!=='hub'){   // v26.02 (beltkeys): the keycap of the key that acts on this cell (the G cap of v25.xx belt6b, and the rest)
+        var _cc='', _cpre='', _cgr=false;
+        if(S.kind==='throw'&&S.icon&&_gSel){ if(S.icon===_gSel) _cc='KeyG'; else if((S.count|0)>0){ _cc='KeyU'; _cgr=true; } }
+        else if((S.kind==='heal'||S.kind==='stim')&&(S.count|0)>0&&_mSel>=0){ if(q===_mSel) _cc='KeyH'; else { _cc='KeyJ'; _cgr=true; } }
+        else if(S.kind==='armor'&&(S.count|0)>0){ _cc='KeyH'; _cpre='HOLD '; }
+        else if(S.kind==='gun'&&!S.vacant&&S.icon){ if(_bgHalf&&S.inHand) _cc='KeyR'; else if(q===_nG){ _cc='KeyF'; _cgr=true; } }
+        if(_cc&&!(padOn()&&!PADLABEL[_cc])){
+          var _ct=_cpre+String(keyLabel(_cc,_cc.slice(3))), _cs=Math.round(bw*0.2), _cw, _ckx=bx+LH(4), _cky;
+          _cky=(_gunReal?(hy+bw-LH(4)-Math.max(3,Math.round(bw*0.05))-LH(3)):(hy+bw-LH(5)))-_cs;   // above the magazine bar on a gun key
+          ctx.font=beltFS(bw,0.13);
+          _cw=Math.min(Math.round(bw*0.62),Math.max(_cs,Math.round(ctx.measureText(_ct).width+_cs*0.6)));
+          ctx.fillStyle=_cgr?'#59626b':'#ffc04a'; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(_ckx,_cky,_cw,_cs,Math.max(2,_cs*0.2)); else ctx.rect(_ckx,_cky,_cw,_cs); ctx.fill();
+          ctx.fillStyle=_cgr?'#eef3f7':'#1a1408'; ctx.textAlign='center'; ctx.fillText(_ct,_ckx+_cw/2,_cky+_cs*0.76,_cw-LH(2)); ctx.textAlign='left';
+          _bcaps.push({i:q,s:_ct,k:_cc,x:_ckx,y:_cky,w:_cw,h:_cs});
+        }
       }
       if(_gunReal){
         var _mh=Math.max(3,Math.round(bw*0.05)), _mx=bx+LH(5), _mw=bw-LH(10), _my=hy+bw-LH(4)-_mh, _mf=clamp((S.count|0)/S.mag,0,1);
@@ -35121,7 +35244,7 @@ function safeSet(){
 var LEGEND=[
   ['MOVE',[['WASD','move'],['SHIFT','hold to sprint'],['CTRL / C','crouch on/off, near silent'],['SPACE','dodge roll']]],
   ['FIGHT',[['MOUSE','aim'],['LMB','fire'],['RMB','aim down sights'],['R','reload'],['Q','melee, swing the crowbar'],['F','next gun']]],
-  ['GEAR',[['1-4','guns'],['5-6','throwables'],['7-8','medical'],['9','armour plate'],['FIRE','use selected key'],['G','throw the chosen grenade'],['U','switch which grenade'],['H','tap heal, hold plate'],['B / I','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
+  ['GEAR',[['1-4','guns'],['5-6','throw that grenade'],['7-8','use that heal'],['9','plate'],['FIRE','use selected key'],['G','throw the chosen grenade'],['U','next grenade'],['H','use the chosen heal, hold plate'],['J','next heal'],['B / I','backpack'],['ENTER','equip gun from backpack'],['BKSP','reset cursor']]],
 ['WORLD',[['E','search, use, open'],['X','call for extraction, then board'],['M','map'],['F1','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['O','order your hire']]],
   ['TEAM',[['Z','drop an item for a teammate'],['N','ping, twice for danger']]],   // v18.27: his order, trading is dropping
   ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom'],['F9','record your play for the title']]]   // v21.56: the recorder (v21.18) was named only on the what is new card
@@ -35134,14 +35257,14 @@ var LEGEND_MINI=[
   ['CTRL / C','crouch'],['SPACE','roll'],
   ['LMB','fire'],['RMB','sights'],
   ['R','reload'],
-  ['Q','melee'],['F','next gun'],['G','throw'],['H','heal'],['U','switch throw'],
+  ['Q','melee'],['F','next gun'],['G','throw'],['H','heal'],['U / J','next throw, heal'],
   ['1-4','guns'],['B / I','backpack'],['5-9','throw, heal, plate'],['M','map'],
   ['E','search'],['X','extract']
 ];
 // v18.60, FROM THE CODE COMB (2026-10-07): THE COMPACT LEGEND NAMES THE KEYS AS SET AND NEVER RUNS A KEY INTO ITS WORD. On the
 // keyboard the list said the default keys after CHANGE KEYS moved them, and every word sat a fixed 44 from its key, so CTRL / C
 // printed into crouch. The keys come from the key map now (the same text by default), and the word column clears the widest key.
-var LEGEND_MINI_CODES={'WASD':['KeyW','KeyA','KeyS','KeyD'],'SHIFT':['ShiftLeft'],'CTRL / C':['ControlLeft','KeyC'],'SPACE':['Space'],'R':['KeyR'],'F':['KeyF'],'B / I':['KeyB','KeyI'],'E':['KeyE'],'M':['KeyM'],'Z':['KeyZ'],'N':['KeyN'],'Q':['KeyQ'],'G':['KeyG'],'H':['KeyH'],'X':['KeyX'],'U':['KeyU'],'F1':['F1'],'O':['KeyO'],'ENTER':['Enter'],'B or I':['KeyB','KeyI']};
+var LEGEND_MINI_CODES={'WASD':['KeyW','KeyA','KeyS','KeyD'],'SHIFT':['ShiftLeft'],'CTRL / C':['ControlLeft','KeyC'],'SPACE':['Space'],'R':['KeyR'],'F':['KeyF'],'B / I':['KeyB','KeyI'],'E':['KeyE'],'M':['KeyM'],'Z':['KeyZ'],'N':['KeyN'],'Q':['KeyQ'],'G':['KeyG'],'H':['KeyH'],'X':['KeyX'],'U':['KeyU'],'J':['KeyJ'],'U / J':['KeyU','KeyJ'],'F1':['F1'],'O':['KeyO'],'ENTER':['Enter'],'B or I':['KeyB','KeyI']};
 function legendKeys(s){
   var c=LEGEND_MINI_CODES[s], o;
   if(!c) return s;
@@ -35208,9 +35331,9 @@ var GEARRULES=[
   ['','full they go to the backpack,'],
   ['','so keep one on a key.'],
   ['TACTICAL BELT','1-4 guns, 5-6 throw,'],
-  ['','7-8 medical, 9 armour.'],
-  ['','FIRE uses the key.'],
-  ['','Only one item in hand.'],
+  ['','7-8 heal, 9 plate. G, H use'],
+  ['','the pick. U, J pick the next.'],
+  ['','Gun stays in hand.'],
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
 ['RINGS','Teal ring is live. Grey cold.'],
@@ -41336,7 +41459,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.01: Heals, grenades and plates the belt stocks by itself stay listed in the backpack grid again. Check 26.01 fails on v26.00',
+  now:'v26.02: Keys 5 to 9 now use their belt item at once with the gun still in hand, U and J pick the next grenade and heal, and keycaps on the belt show which key does what. Check 26.02 fails on v26.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

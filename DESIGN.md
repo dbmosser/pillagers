@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.02 - BELT KEYS: PICK, USE AND KEYCAPS
+
+Co-op hunt while he was away. His orders of 2026-10-13: "U = next grenade, G = throw it / J = next heal, H = use it", number keys 5 to 9 as instant keys that leave the gun equipped, and button glyphs shown in context. U picks the next grenade and G throws the pick; the new J picks the next heal (rebindable, in the FIGHT list of the key screen) and tap H uses the picked heal instead of the cheapest one; with no J pressed the pick is the cheapest heal that helps, as before. In a raid the keys 5 and 6 throw the grenade on that key at once, 7 and 8 use the heal on that key at once, and 9 slots a plate, and the gun stays in the hands every time without moving the G or H pick. A click on a grenade or heal key picks it. Small keycaps on the belt say which key acts where right now: G on the grenade G throws and U on the other, H on the heal H uses and J on the other, HOLD H on the plate, F on the gun F brings up next, and R on the gun in hand when its magazine is empty and there are rounds to load. They print the keys as set and, on a controller, the pad button where the pad has one. The hover cards, the controls list, the compact list, the rules card and the pause key line say the same.
+
+MEASURED. Check 26.02 passes, and fails on v26.01.
 ## v26.01 - A BELT-STOCKED HEAL STAYS IN THE BACKPACK GRID
 
 Co-op hunt while he was away. A slip in the class keys build: the game pins what each throwable, medical and armour key shows when the raid starts and when he picks something up, and a pin hides one copy of its item from the backpack grid, so with a lone Bandage on key 7 the grid listed nothing to select, drop or offer a teammate with T, and the peddler would not buy those copies. Before the class keys a heal, a grenade or a plate was never pinned and the grid showed all of them. A pin the game makes by itself for a heal, a stim, a grenade or a plate no longer hides anything. A key he bound himself, and a gun on a gun key, hide a copy as before.
