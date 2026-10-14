@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.32 - THE WHEEL IN THE MIDDLE, BIGGER
+
+Co-op hunt while he was away. His note after playing the wheel: it is pretty awesome but it needs to show in the middle of the screen and larger instead of on top of the player. The item wheel now opens on the centre of the screen, not over your character, and it is much bigger: its radius is about a third of the screen height, so it grows on a big monitor (it stayed the same size at 4K before). The pictures, names and counts are bigger to match. You pick by pushing the mouse toward a segment as seen from the screen centre; the middle of the ring still cancels, and a quick tap of Q with the cursor off to one side does not pick anything until you move the mouse. The dark backdrop is lighter, so you can still see what is coming around the ring. The words RELEASE TO TAKE OUT moved above the ring, clear of the belt.
+
+MEASURED. Check 26.32 passes, and fails on v26.31.
 ## v26.31 - THE WHAT IS NEW CARD NAMES THE WHEEL AND THE FORGE
 
 Co-op hunt while he was away. The card was stamped v26.18 and the stamp may not trail the build by more than 0.15. The card was stamped v26.18 and every ship stops when it falls 0.16 behind. Its new line names the builds since: the item wheel and nine gun slots (his order 2026-10-14), the Forge station (his pack-a-punch order) and the rarity variants (his order).

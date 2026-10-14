@@ -1,0 +1,7 @@
+v26.32: the wheel in the middle, bigger
+
+The item wheel now opens in the middle of the screen and is much bigger.
+
+Check 26.32. Fails on v26.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
