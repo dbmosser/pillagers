@@ -1,0 +1,7 @@
+v26.26: guns can be found one rarity up
+
+Green, blue and purple guns now turn up one rarity higher about one find in five, doing 25 percent more damage and nothing else changed.
+
+Check 26.26. Fails on v26.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
