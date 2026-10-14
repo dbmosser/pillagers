@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.18';
+var VER='26.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11448,6 +11448,16 @@ function mkChoir(x,y){
 // build are untouched; live play and the bot make it the same way. It guards its lair: with the player more than 1100 from
 // the lair it walks home. Down, it leaves the WARDEN WRECK and the OVERSEER HOARD. The host runs it; a linked window mirrors it.
 var BOSS_NAME='THE OVERSEER';
+// v26.xx (overseersight), HIS NOTE (2026-10-14): "Overseer needs better sight distance, he was looking right at me and didn't attack".
+// Three faults in the warden branch, the worst of them the leash of v17.45. (1) Its sight, which is also its reach (rng), was a plain
+// warden's 620, short for a boss that fills the screen: BOSS_SIGHT times that now, 868 (a balance change, allowed by his ruling of
+// 2026-10-02; the cone, the speed and the damage are unchanged). (2) Past 1100 from its lair the leash sent its walk home and turned
+// its body that way, so the windup it had started ran out facing the lair, the cone lost you and the shot never came: it charged,
+// looked at you and did nothing. Now, seeing you inside its reach, it holds where it stands, faces you and fires; the leash still
+// stops it CHASING (out of reach it walks home as before). (3) The sprite looks left or right by the sign of cos(face) while the
+// cone is 66 degrees either side of the heading, so walking up or down it could face you and not see you: it now sees whatever
+// stands on the side it faces, out to its sight, with a clear line. A plain warden is untouched.
+var BOSS_SIGHT=1.4;
 // v24.xx (overseerline), HIS NOTE (2026-10-12): "'Spotted by something huge' -- change to 'Spotted by the Overseer'". The callout
 // fired for ANY warden that saw you, and every raid has a plain WARDEN (mkWarden) besides THE OVERSEER (a warden with e.boss).
 // Now THE OVERSEER says SPOTTED BY THE OVERSEER, and a plain warden says SPOTTED BY A WARDEN (its own name, never the boss).
@@ -11475,7 +11485,7 @@ function bossTick(force){   // v17.69: force, for a teammate taking the raid ove
   if(CFG.boss===0){ G.bossDone=1; return null; }
   L=bossLair(); hp=Math.round(4000*(CFG.eHp||1));
   e={kind:'warden',boss:1,x:L.x,y:L.y,r:44,hp:hp,maxhp:hp,name:BOSS_NAME,face:0,state:'patrol',tx:L.x,ty:L.y,cd:0,alert:0,
-     spd:WARDEN_SPD,dmg:Math.round((CFG.wardenDmg===undefined?46:CFG.wardenDmg)*1.5),rng:(CFG.wardenRng===undefined?620:CFG.wardenRng),
+     spd:WARDEN_SPD,dmg:Math.round((CFG.wardenDmg===undefined?46:CFG.wardenDmg)*1.5),rng:Math.round((CFG.wardenRng===undefined?620:CFG.wardenRng)*BOSS_SIGHT),   // v26.xx (overseersight): 868, not 620
      cone:1.15,hitT:0,seenYou:false,lairX:L.x,lairY:L.y};
   G.ents.push(e); G.bossDone=1; G.bossRef=e;
   return e;
@@ -24240,6 +24250,7 @@ if(e.kind==='howler'&&e.hearT>0){
       if(_aSee<_tch) _aSee=_tch;
     }
     var sees=canSee(e.x,e.y,e.face,p.x,p.y,G.vseg,_fSee,e.cone,_aSee);
+    if(!sees&&e.boss&&e.kind==='warden'&&(Math.cos(e.face)>=0)===(p.x>=e.x)) sees=canSee(e.x,e.y,Math.atan2(p.y-e.y,p.x-e.x),p.x,p.y,G.vseg,_fSee,e.cone,_aSee);   // v26.xx (overseersight): THE OVERSEER sees what its sprite looks at, the whole side it faces, not only a cone of its heading
     // v11.46: losing sight for a full second re-arms the one-time reaction beat
     // below. A one-frame blink (a pylon edge, a jittered grid cell) must not, or
     // the beat re-fires every other frame and is a floor again by another road.
@@ -24342,8 +24353,9 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
       // of the raid. Sight is one way in; being HUNTED is the other, and that is
       // handled where chase and alarm are entered rather than only here.
 
+      var _bhold=false;   // v26.xx (overseersight): true when THE OVERSEER sees you past its leash inside its reach and holds its ground to shoot
       if(sees){ e.seenYou=true; e.tx=p.x; e.ty=p.y; e.alert=4;
-      if(e.boss&&e.lairX!==undefined&&Math.hypot(p.x-e.lairX,p.y-e.lairY)>1100){ e.tx=e.lairX; e.ty=e.lairY; e.seenYou=true; }   // v17.45: his pick 21, it guards its lair
+      if(e.boss&&e.lairX!==undefined&&Math.hypot(p.x-e.lairX,p.y-e.lairY)>1100){ e.tx=e.lairX; e.ty=e.lairY; e.seenYou=true; _bhold=(!p.downed&&dist(e,p)<e.rng&&Math.hypot(e.x-e.lairX,e.y-e.lairY)<=1100); }   // v17.45: his pick 21, it guards its lair
         if(!e.announced){ e.announced=true; if(p&&p.net){ if(NET.on) netMarkSend({t:'mark',k:'big',nid:e.nid|0,seat:p.seat|0,boss:e.boss?1:0}); } else say(wardenSpotLine(e.boss),'warn'); sfx('alarm',e.x,e.y); } }   // v20.38 (H11): said to the player it noticed   // v22.xx (tr3fixc): the shooter voice
       // v22.23 (K34): A WARDEN THAT HAS NOT SEEN YOU IS NOT HUNTING YOU. A round, a blast or a noise put it in 'chase' or
       // 'investigate', which this branch never reads or ends, so it kept the red mark as it wandered. Where it was sent stays in
@@ -24360,7 +24372,8 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
         // round or a blast) sends it home instead, losing you sends it home instead of to a ring, and its unaware walk is a
         // short beat around the lair. The same draws are made in the same places; only where it walks moved.
         if(e.boss&&e.lairX!==undefined&&Math.hypot(e.tx-e.lairX,e.ty-e.lairY)>1100){ e.tx=e.lairX; e.ty=e.lairY; }
-navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x);
+if(_bhold){ wantW=Math.atan2(p.y-e.y,p.x-e.x); e.tx=e.x; e.ty=e.y; }   // v26.xx (overseersight): past its leash but inside its reach it holds, faces you and fires; it does not walk after you
+else { navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x); }
         if(e.boss&&e.lairX!==undefined){ if(!sees&&dist(e,{x:e.tx,y:e.ty})<70){ e.tx=e.lairX; e.ty=e.lairY; } }   // v20.56 (H8): it lost you, so it goes home, not to a ring
         else if(!sees&&dist(e,{x:e.tx,y:e.ty})<70&&G.zones&&G.zones.length){
           var _wbz=null,_wbd=1e9;
@@ -41665,7 +41678,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.18: The what is new card names draw times. Check 26.18 fails on v26.17',
+  now:'v26.19: THE OVERSEER now sees and shoots from 87 meters instead of 62, and it fires at you from its ground even past its lair, so when it looks at you it is dangerous. Check 26.19 fails on v26.18',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

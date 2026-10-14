@@ -1,0 +1,7 @@
+v26.19: the overseer sees farther
+
+THE OVERSEER now sees and shoots from 87 meters instead of 62, and it fires at you from its ground even past its lair, so when it looks at you it is dangerous.
+
+Check 26.19. Fails on v26.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
