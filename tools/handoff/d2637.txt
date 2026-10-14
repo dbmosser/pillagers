@@ -1,0 +1,5 @@
+## v26.37 - SET THE GUN KEYS AND THE WHEEL IN THE STASH
+
+Co-op hunt while he was away. His order: the gun keys and the wheel can be changed in the stash. Under the tactical belt on the Stash screen there are now two plates. GUN KEYS shows keys 1 to 9 with the kind of gun on each (pistol, SMG, rifle, carbine, LMG, shotgun, marksman, sniper, energy); drag a tile onto another key and the two kinds trade places, so the Sniper can sit on key 2 if you want. WHEEL shows the eight places of the item wheel on a compass plate; drag a tile onto another place and the two items trade. RESET on each puts his table and his order back. Both are kept on your save and your next raid in CAREER uses them; DEMO always uses his table and his order. The tiles work with a controller too. Dragging a gun on the bar in a raid still moves it for that raid only.
+
+MEASURED. Check 26.37 passes, and fails on v26.36.

@@ -1,0 +1,7 @@
+v26.37: set the gun keys and the wheel in the stash
+
+The Stash screen now has GUN KEYS and WHEEL plates: drag tiles to swap which kind of gun sits on which key and where each item sits on the wheel, with RESET for his table and his order.
+
+Check 26.37. Fails on v26.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

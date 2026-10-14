@@ -21,7 +21,7 @@
                   },
                   {
                       "anchor":  "function wheelList(){\n  var out=[], i;\n  for(i=0;i\u003cWHEEL_ORDER.length;i++) out.push({k:WHEEL_ORDER[i],n:wheelHave(WHEEL_ORDER[i])});",
-                      "replacement":  "function wheelList(){\n  var out=[], i, ord=wheelOrderOf();   // v26.xx (gunkeys2): the order the stash set (CAREER), else his order\n  for(i=0;i\u003cord.length;i++) out.push({k:ord[i],n:wheelHave(ord[i])});"
+                      "replacement":  "function wheelList(){\n  var out=[], i, ord=wheelOrderOf();   // v26.xx (gunkeys2): the order the stash set, else his order\n  for(i=0;i\u003cord.length;i++) out.push({k:ord[i],n:wheelHave(ord[i])});"
                   },
                   {
                       "anchor":  "[data-plan],.imenurow:not(.dim),[data-slot],.costile,.avslot,.tag\u0027",

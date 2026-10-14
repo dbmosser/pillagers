@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.37 - SET THE GUN KEYS AND THE WHEEL IN THE STASH
+
+Co-op hunt while he was away. His order: the gun keys and the wheel can be changed in the stash. Under the tactical belt on the Stash screen there are now two plates. GUN KEYS shows keys 1 to 9 with the kind of gun on each (pistol, SMG, rifle, carbine, LMG, shotgun, marksman, sniper, energy); drag a tile onto another key and the two kinds trade places, so the Sniper can sit on key 2 if you want. WHEEL shows the eight places of the item wheel on a compass plate; drag a tile onto another place and the two items trade. RESET on each puts his table and his order back. Both are kept on your save and your next raid in CAREER uses them; DEMO always uses his table and his order. The tiles work with a controller too. Dragging a gun on the bar in a raid still moves it for that raid only.
+
+MEASURED. Check 26.37 passes, and fails on v26.36.
 ## v26.36 - EVERY GUN HAS ITS OWN KEY
 
 Co-op hunt while he was away. His order: the gun should always go to the same slot on the bar, so the player always presses the same button to get it. Each kind of gun now has its key: 1 pistols (Scav Pistol, Magnum), 2 SMG, 3 rifle, 4 burst carbine, 5 support machine gun, 6 shotgun, 7 marksman guns (Marksman Rifle, Whisper), 8 sniper (Longshot), 9 energy (Meridian Lance). A gun you pick up goes to the key of its kind. If that key already holds a gun of the same kind, the better one by the stat card keeps the key and the other goes to the backpack. A higher rarity of the same gun swaps in at once: if the old one is in your hands, the new one is in your hands and the rounds in the magazine come with it (up to the new magazine). The old rule where a tenth gun took the place of your weakest is gone. You can still drag guns around on the bar; that moves them for this raid only, it does not change the keys. The same holds in DEMO. Next builds: setting the keys in the stash, and the words.
