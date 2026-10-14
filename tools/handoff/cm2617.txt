@@ -1,0 +1,7 @@
+v26.17: no gun means a scav pistol, never a loaner
+
+A kit never issues a loaner: with no gun of your own you go up with the Scav Pistol in hand, kept on an extraction, and with a gun of your own only that gun goes up.
+
+Check 26.17. Fails on v26.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

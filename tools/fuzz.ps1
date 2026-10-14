@@ -30,7 +30,8 @@ param(
   [int]$RaidSeed=0,
   [double]$MinFreeGB=5,
   [switch]$IgnoreFlag,
-  [switch]$SelfTest
+  [switch]$SelfTest,
+  [switch]$Trace
 )
 $ErrorActionPreference='Stop'
 $R='C:\claudecode\dark raiders'; $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'
@@ -354,6 +355,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
         if($o.raid -ne 1 -or $o.over -eq 1 -or ($o.arc -eq 1 -and $o.ae -eq 1)){ $res.score=[int]$o.sc; $reason='ended'; if($endPhase){ $reason='clock-end' }; break }
         $res.score=[int]$o.sc
         $polls++; if(($o.menu -band 15) -ne 0){ $menuPolls++ }
+        if($Trace){ [IO.File]::AppendAllText(($OutDir+"/fuzz-trace.txt"),("t"+$tk+" menu="+$o.menu+" x="+$o.x+" y="+$o.y+" hp="+$o.hp+" held="+(($script:held.Keys) -join ",")+" last="+(@($script:ring.ToArray())[-1])+"`n"),$Enc) }
         if($lastAm -ne $null -and $o.am -ne $null -and $o.am -lt $lastAm){ $res.fires++ }
         $lastAm=$o.am; $res.menuPct=[int](100*$menuPolls/$polls)
         # non-finite numbers: the four named fields always, the rest only if they were finite at the raid start
