@@ -2162,7 +2162,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.32';
+var VER='26.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18548,7 +18548,12 @@ function holdHTick(dt){
 // to pick it; letting go in the middle, or on nothing, cancels. This build only chooses: a grenade or a heal pick sets what G and H use (the
 // next build takes the item out and the trigger uses it), a plate slots. Melee moved to V. The wheel keeps no state in the profile yet and
 // draws nothing the world reads.
-var WHEEL_ORDER=['frag','smoke','decoy','trip','bandage','medkit','stim','plate'];
+// v26.xx (wheelfixed), HIS ORDER 2026-10-14 ("yes fixed 8 slot ring"): THE WHEEL IS ALWAYS THE SAME EIGHT SLOTS IN THE SAME PLACES, so a hand
+// learns where each thing is. Clockwise from the top: TOP the medkit, TOP-RIGHT the frag, RIGHT the smoke, BOTTOM-RIGHT the decoy, BOTTOM the
+// armour plate, BOTTOM-LEFT the tripwire, LEFT the stim, TOP-LEFT the bandage (throwables on the right, medical on the left, the plate
+// underneath). Whatever he carries, in the backpack or the pouch, fills its slot by itself: nothing is set up or assigned. A type he has none
+// of still has its slot, dimmed with a 0, and letting go on it takes nothing out. DEMO and CAREER lay it out the same; nothing is saved.
+var WHEEL_ORDER=['medkit','frag','smoke','decoy','plate','trip','stim','bandage'];
 function wheelHave(k){
   var it=ITEMS[k], n=0, i;
   if(!it||!G) return 0;
@@ -18557,9 +18562,14 @@ function wheelHave(k){
   return n;
 }
 function wheelList(){
-  var out=[], i, n;
-  for(i=0;i<WHEEL_ORDER.length;i++){ n=wheelHave(WHEEL_ORDER[i]); if(n>0) out.push({k:WHEEL_ORDER[i],n:n}); }
+  var out=[], i;
+  for(i=0;i<WHEEL_ORDER.length;i++) out.push({k:WHEEL_ORDER[i],n:wheelHave(WHEEL_ORDER[i])});
   return out;
+}
+function wheelAny(list){
+  var i;
+  for(i=0;list&&i<list.length;i++) if(list[i].n>0) return true;
+  return false;
 }
 // The segment of m under the direction (dx,dy): 0 at the top, clockwise.
 function wheelAt(m,dx,dy){
@@ -18573,7 +18583,7 @@ function wheelOpen(){
   if(G.wheel) return true;
   if(p.hand) handCancel(p);   // v26.xx (wheel3): the wheel again puts the item away
   list=wheelList();
-  if(!list.length){ say('NOTHING TO USE'); return false; }
+  if(!wheelAny(list)){ say('NOTHING TO USE'); return false; }
   G.wheel={t:0,list:list,sel:-1,mx:W/2,my:H/2,ox:mouse.x,oy:mouse.y,armed:0,d:0};   // v26.xx (wheelcenter): mx,my is the wheel centre (the screen centre); ox,oy is where the mouse was when Q went down
   return true;
 }
@@ -18619,6 +18629,7 @@ function wheelRelease(){
   if(!w) return false;
   G.wheel=null;
   if(w.sel<0||!w.list||!w.list[w.sel]) return false;
+  if(!(wheelHave(w.list[w.sel].k)>0)){ say(('NO '+ITEMS[w.list[w.sel].k].name).toUpperCase()); return false; }   // v26.xx (wheelfixed): the slot is there, and empty
   return wheelPick(w.list[w.sel].k);
 }
 // v26.xx (wheel3), HIS ORDER 2026-10-14: "You go to the wheel, you select one. Then you pull the trigger, and that lets you use the item. Then your gun
@@ -18730,7 +18741,7 @@ function wheelBlurb(k){
 // v26.xx (wheelcenter): the same wheel, drawn on the middle of the screen at wheelGeom's size. The backdrop is a light vignette round the ring
 // (it fades to nothing by twice the radius), so the world and what is coming stay in view; the hint line sits above the ring, clear of the belt.
 function drawWheel(){
-  var w=G&&G.wheel, p=G&&G.player, m, gm, R, ri, sc, sk, j, seg, ac, a0, a1, gap, ro, k, it, cx, cy, fade, rm, ix, iy, sz, rim, on, gr, i, sel, nm, tw, bx, by, hk, lift, ph, ca, ck, chord, kk;
+  var w=G&&G.wheel, p=G&&G.player, m, gm, R, ri, sc, sk, j, seg, ac, a0, a1, gap, ro, k, it, cx, cy, fade, rm, ix, iy, sz, rim, on, hv, ok, gr, i, sel, nm, tw, bx, by, hk, lift, ph, ca, ck, chord, kk;
   if(!w||!w.list||!w.list.length||!p) return;
   m=w.list.length; gm=wheelGeom(); R=gm.R; ri=gm.ri; cx=gm.cx; cy=gm.cy; sc=gm.sc; sk=Math.max(1,sc);
   fade=Math.min(1,w.t/0.10); seg=Math.PI*2/m; gap=(m>1)?0.045:0; sel=w.sel; lift=LH(14)*sc; ck=R+LH(18)*sc;
@@ -18745,32 +18756,35 @@ function drawWheel(){
     ctx.beginPath(); ctx.moveTo(cx+Math.cos(a0)*ck,cy+Math.sin(a0)*ck); ctx.lineTo(cx+Math.cos(a0)*(ck+ca),cy+Math.sin(a0)*(ck+ca)); ctx.stroke();
   }
   for(j=0;j<m;j++){
-    k=w.list[j].k; it=ITEMS[k]; on=(j===sel);
+    k=w.list[j].k; it=ITEMS[k]; hv=(j===sel); ok=w.list[j].n>0; on=hv&&ok;
     ac=-Math.PI/2+j*seg; a0=ac-seg/2+gap/2; a1=ac+seg/2-gap/2;
     if(m===1){ a0=ac-Math.PI+0.001; a1=ac+Math.PI-0.001; }
     ro=on?R+lift:R;
     ctx.beginPath(); ctx.arc(cx,cy,ro,a0,a1); ctx.arc(cx,cy,ri,a1,a0,true); ctx.closePath();
     gr=ctx.createRadialGradient(cx,cy,ri,cx,cy,ro);
     if(on){ gr.addColorStop(0,'rgba(86,66,26,.96)'); gr.addColorStop(1,'rgba(52,40,16,.96)'); }
+    else if(hv){ gr.addColorStop(0,'rgba(44,48,52,.92)'); gr.addColorStop(1,'rgba(28,31,34,.92)'); }
     else { gr.addColorStop(0,'rgba(34,38,41,.92)'); gr.addColorStop(1,'rgba(20,23,25,.92)'); }
     ctx.fillStyle=gr; ctx.fill();
     ctx.lineWidth=(on?LH(2.5):LH(1.5))*Math.min(sk,2); ctx.strokeStyle=on?UIC.acc:UIC.ui_line_hi; ctx.stroke();
     rim=null; try{ rim=RCOL[dispR(k)]; }catch(_rc){}
-    if(rim){ ctx.beginPath(); ctx.arc(cx,cy,ro-LH(3)*sc,a0+0.03,a1-0.03); ctx.lineWidth=LH(3)*Math.min(sk,2); ctx.strokeStyle=rim; ctx.stroke(); }
+    if(rim){ ctx.globalAlpha=fade*(ok?1:0.35); ctx.beginPath(); ctx.arc(cx,cy,ro-LH(3)*sc,a0+0.03,a1-0.03); ctx.lineWidth=LH(3)*Math.min(sk,2); ctx.strokeStyle=rim; ctx.stroke(); ctx.globalAlpha=fade; }
     if(on){ ctx.beginPath(); ctx.arc(cx,cy,ri+LH(2)*sc,a0+0.02,a1-0.02); ctx.lineWidth=LH(3)*Math.min(sk,2); ctx.strokeStyle=UIC.acc; ctx.stroke(); }
     rm=(ri+ro)/2; sz=on?R*0.36:R*0.31; ix=cx+Math.cos(ac)*rm; iy=cy+Math.sin(ac)*rm-R*0.05;
-    ctx.globalAlpha=fade*(w.list[j].n>0?1:0.3);
+    ctx.globalAlpha=fade*(ok?1:0.3);
     drawIconSprite(ctx,k,ix,iy,sz);
     ctx.globalAlpha=fade;
     ctx.textAlign='center';
     nm=String(it.name).toUpperCase();
     chord=(m>2)?2*rm*Math.sin(seg/2)*0.9:R;
     wheelFit(nm,TYPE.head,sk,chord);
-    ctx.fillStyle=on?UIC.tx_1:UIC.tx_2; hudText(nm,ix,iy+sz*0.5+LH(15)*sc);
+    ctx.fillStyle=on?UIC.tx_1:(ok?UIC.tx_2:UIC.tx_3); hudText(nm,ix,iy+sz*0.5+LH(15)*sc);
     ctx.font=FSz(TYPE.head,sk*0.95); tw=ctx.measureText('x'+w.list[j].n).width+LH(14)*sk; ph=LH(24)*sk;
     bx=ix+sz*0.5-tw*0.35; by=iy-sz*0.5-ph*0.45;
+    ctx.globalAlpha=fade*(ok?1:0.55);
     hudPlate(bx,by,tw,ph,null,'rgba(11,12,13,.9)');
-    ctx.fillStyle=UIC.acc; ctx.fillText('x'+w.list[j].n,bx+tw/2,by+ph*0.74);
+    ctx.fillStyle=ok?UIC.acc:UIC.tx_3; ctx.fillText('x'+w.list[j].n,bx+tw/2,by+ph*0.74);
+    ctx.globalAlpha=fade;
   }
   ctx.beginPath(); ctx.arc(cx,cy,ri-LH(8)*sc,0,Math.PI*2); ctx.fillStyle='rgba(11,12,13,.8)'; ctx.fill();
   ctx.lineWidth=LH(1.5)*Math.min(sk,2); ctx.strokeStyle=UIC.ui_line_hi; ctx.stroke();
@@ -18779,20 +18793,20 @@ function drawWheel(){
     ctx.beginPath(); ctx.moveTo(cx+Math.cos(ac)*(ri-LH(8)*sc),cy+Math.sin(ac)*(ri-LH(8)*sc));
     ctx.lineTo(cx+Math.cos(ac-0.16)*(ri-LH(20)*sc),cy+Math.sin(ac-0.16)*(ri-LH(20)*sc));
     ctx.lineTo(cx+Math.cos(ac+0.16)*(ri-LH(20)*sc),cy+Math.sin(ac+0.16)*(ri-LH(20)*sc));
-    ctx.closePath(); ctx.fillStyle=UIC.acc; ctx.fill();
+    ctx.closePath(); ctx.fillStyle=(w.list[sel].n>0)?UIC.acc:UIC.tx_3; ctx.fill();
   }
   ctx.textAlign='center';
   chord=2*(ri-LH(16)*sc)*0.92;
   if(sel>=0&&w.list[sel]){
-    k=w.list[sel].k; nm=String(ITEMS[k].name).toUpperCase();
-    wheelFit(nm,TYPE.head,sk*1.15,chord); ctx.fillStyle=UIC.tx_1; hudText(nm,cx,cy-LH(2)*sc);
-    nm=wheelBlurb(k); wheelFit(nm,TYPE.label,sk,chord); ctx.fillStyle=UIC.acc; hudText(nm,cx,cy+LH(20)*sc);
+    k=w.list[sel].k; nm=String(ITEMS[k].name).toUpperCase(); ok=w.list[sel].n>0;
+    wheelFit(nm,TYPE.head,sk*1.15,chord); ctx.fillStyle=ok?UIC.tx_1:UIC.tx_2; hudText(nm,cx,cy-LH(2)*sc);
+    nm=ok?wheelBlurb(k):'NONE CARRIED'; wheelFit(nm,TYPE.label,sk,chord); ctx.fillStyle=ok?UIC.acc:UIC.tx_3; hudText(nm,cx,cy+LH(20)*sc);
   } else {
     ctx.font=FSz(TYPE.head,sk*1.15); ctx.fillStyle=UIC.tx_2; hudText('ITEMS',cx,cy-LH(2)*sc);
     ctx.font=FSz(TYPE.label,sk); ctx.fillStyle=UIC.tx_3; hudText('AIM TO CHOOSE',cx,cy+LH(20)*sc);
   }
   hk=padOn()?'D-DOWN':String(keyLabel('KeyQ','Q'));
-  kk=Math.min(sk,2.4); by=cy-R-LH(54)*sc;
+  kk=Math.min(sk,2.4); by=cy-R-LH(38)*sc;
   ctx.save(); ctx.translate(cx,by); ctx.scale(kk,kk);
   ctx.font=FS(TYPE.label); tw=ctx.measureText('RELEASE TO TAKE OUT').width+LH(52);
   hudPlate(-tw/2,-LH(16),tw,LH(26),null,HUDC.plate);
@@ -42522,7 +42536,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.32: The item wheel now opens in the middle of the screen and is much bigger. Check 26.32 fails on v26.31',
+  now:'v26.33: The item wheel now has eight fixed slots, and an empty one shows dim with a 0. Check 26.33 fails on v26.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.33 - THE WHEEL HAS EIGHT FIXED SLOTS
+
+Co-op hunt while he was away. His answer: a fixed eight-slot ring. The item wheel is now always the same eight slots in the same places, so your hand learns them. Clockwise from the top: medkit, frag charge, smoke canister, decoy beacon, armour plate, tripwire mine, stim injector, bandage. Throwables are on the right, medical on the left, the plate underneath. Whatever you carry, in the backpack or the pouch, fills its slot by itself, so there is nothing to set up. A type you have none of keeps its slot, dimmed with a 0, and letting go on it takes nothing out and says so. DEMO and CAREER are the same. The hint line above the ring also moved a little closer to it so it stays off the extraction timer.
+
+MEASURED. Check 26.33 passes, and fails on v26.32.
 ## v26.32 - THE WHEEL IN THE MIDDLE, BIGGER
 
 Co-op hunt while he was away. His note after playing the wheel: it is pretty awesome but it needs to show in the middle of the screen and larger instead of on top of the player. The item wheel now opens on the centre of the screen, not over your character, and it is much bigger: its radius is about a third of the screen height, so it grows on a big monitor (it stayed the same size at 4K before). The pictures, names and counts are bigger to match. You pick by pushing the mouse toward a segment as seen from the screen centre; the middle of the ring still cancels, and a quick tap of Q with the cursor off to one side does not pick anything until you move the mouse. The dark backdrop is lighter, so you can still see what is coming around the ring. The words RELEASE TO TAKE OUT moved above the ring, clear of the belt.

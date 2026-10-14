@@ -1,0 +1,7 @@
+v26.33: the wheel has eight fixed slots
+
+The item wheel now has eight fixed slots, and an empty one shows dim with a 0.
+
+Check 26.33. Fails on v26.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
