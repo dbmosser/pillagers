@@ -1,0 +1,5 @@
+## v26.39 - NO STARTER GUN IN THE CLASS KEYS
+
+Co-op hunt while he was away. The class keys build (v26.36) landed just after the four starter guns were removed (v26.35) and listed the Tacker, Sputter, Chatter and Scuttle in its class table, so the removal was not whole. They are out of it now. Nothing else moves: no gun has a key it did not have, since none of the four could be in a raid any more. A new check reads the whole game script for the four names used as a table key or a quoted gun id, so a table added later cannot bring one back.
+
+MEASURED. Check 26.39 passes, and fails on v26.38.

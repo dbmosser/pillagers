@@ -2194,7 +2194,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.38';
+var VER='26.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20534,7 +20534,7 @@ function equipFromBag(ix,slot){
 // rule that a tenth gun takes the key of the weakest. A drag on the bar still moves a gun to any key, for this raid only: the table is the default
 // and the plan on the profile is not written by a raid drag. The table is P.gunKeys when the stash set one (CAREER); DEMO always uses his table.
 var GUN_CLASSES=['pistol','smg','rifle','carbine','lmg','shotgun','marksman','sniper','energy'];
-var GUN_CLASS_OF={pistol:'pistol',magnum:'pistol',tacker:'pistol',smg:'smg',sputter:'smg',rifle:'rifle',chatter:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',scuttle:'shotgun',dmr:'marksman',whisper:'marksman',sniper:'sniper',lance:'energy'};
+var GUN_CLASS_OF={pistol:'pistol',magnum:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',dmr:'marksman',whisper:'marksman',sniper:'sniper',lance:'energy'};   // v26.39 (nostarters2): the four starter guns are in no table
 function gunClassOf(gk){ var b=(typeof RV_BASE==='object'&&RV_BASE&&RV_BASE[gk])||gk; return Object.prototype.hasOwnProperty.call(GUN_CLASS_OF,b)?GUN_CLASS_OF[b]:''; }
 function gunKeyTable(){   // the class on each key, from the profile when it holds a whole table (nine classes, each once), else his table
   var src=(typeof P==='object'&&P&&Array.isArray(P.gunKeys))?P.gunKeys:null, ok=!!src&&src.length===GUN_CLASSES.length, seen={}, i;
@@ -42671,7 +42671,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.38: Settings is in sections with a jump bar, and AUDIO has UI volume, footsteps volume and mono. Check 26.38 fails on v26.37',
+  now:'v26.39: The four removed starter guns are out of the class key table too, and a check keeps them out of every table. Check 26.39 fails on v26.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

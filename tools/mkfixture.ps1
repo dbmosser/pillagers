@@ -6093,6 +6093,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'26.39',what:'his order (2026-10-14), the four starter guns are in no table at all: the class keys (GUN_CLASS_OF) name none of them, and nothing in the game script names one as a table key or a quoted gun id, so a table added later cannot bring one back',
+   run:function(){
+     if(typeof GUN_CLASS_OF!=='object'||!GUN_CLASS_OF) return 'SKIP: this build has no class key table';
+     var NM=['tac'+'ker','sput'+'ter','chat'+'ter','scut'+'tle'], bad=[], i, txt='', scs=[].slice.call(document.scripts), need='var GUN_CLASS'+'_OF=', re1, re2, m, hits=[];
+     for(i=0;i<NM.length;i++) if(GUN_CLASS_OF[NM[i]]!==undefined) bad.push('the class keys still name '+NM[i]);
+     for(i=0;i<scs.length;i++) if((scs[i].textContent||'').indexOf(need)>=0){ txt=scs[i].textContent; break; }
+     if(!txt) return bad.length?bad.join('; '):'SKIP: the game script is not in the page as text';
+     re1=new RegExp('[\'"](' +NM.join('|')+ ')[\'"]','g');
+     re2=new RegExp('[{,]\\s*(' +NM.join('|')+ ')\\s*:','g');
+     while((m=re1.exec(txt))&&hits.length<4) hits.push(txt.slice(Math.max(0,m.index-30),m.index+40).replace(/\s+/g,' '));
+     while((m=re2.exec(txt))&&hits.length<4) hits.push(txt.slice(Math.max(0,m.index-30),m.index+40).replace(/\s+/g,' '));
+     if(hits.length) bad.push('the game script still names a starter gun: '+hits.join(' | '));
+     return bad.length?bad.join('; '):null; }},
   {v:'26.38',what:'settings1, his order 2026-10-14: Settings reads in sections (THE RAID, AUDIO, CONTROLS, CONTROLLER, DISPLAY, SAVES AND TOOLS) under a jump bar, each row in its own section, and AUDIO carries UI VOLUME, FOOTSTEPS VOLUME and MONO AUDIO: they default to today (full, full, off), step and save, and change what is played (the HUD bus level, the level of a step, a one channel output with no pan)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__opts&&window.__opts.apply&&window.__opts.cycle&&window.__opts.rows)) return 'SKIP: this fixture cannot deploy or reach the Settings rows';

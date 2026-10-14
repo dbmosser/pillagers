@@ -1,0 +1,7 @@
+v26.39: no starter gun in the class keys
+
+The four removed starter guns are out of the class key table too, and a check keeps them out of every table.
+
+Check 26.39. Fails on v26.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
