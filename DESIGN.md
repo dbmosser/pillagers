@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.18 - THE WHAT IS NEW CARD NAMES DRAW TIMES
+
+Co-op hunt while he was away. The card was stamped v26.05 and the stamp may not trail the build by more than 0.15. The card was stamped v26.05 and every ship stops when it falls 0.16 behind. Its new line names the builds since: gun draw times (his wheel order 2026-10-14), the per-container search sounds (his order) and the overnight fixes.
+
+MEASURED. Check 26.18 passes, and fails on v26.17.
 ## v26.17 - NO GUN MEANS A SCAV PISTOL, NEVER A LOANER
 
 Co-op hunt while he was away. His order of 2026-10-14, playing CAREER: he chose TOP GEAR and was handed a loaner gun, and said that with no gun he should simply get a Scav Pistol. Any deploy with gun 1 empty (after a death, TOP GEAR or RANDOM FROM STASH with nothing in the armoury to equip, MY LOADOUT on bare hands, the quick ascent) issued one of four loaner starters, the Tacker, Sputter, Chatter or Scuttle, which cannot be banked and is left behind. Now it goes up with the Scav Pistol in hand, exactly as the freebie kit does: it is not an issued loaner, so an extraction banks it into an armoury that has none (and never as a second Scav Pistol in the stash, since the Scav Pistol is spawn-only), and a death costs nothing he owned, so it is not counted or billed on the card as a gun lost. With a gun of his own the kit takes that gun and adds nothing beside it. Guns waiting in the stash as items are still equipped by hand, and the raid line then says SCAV PISTOL with the detail that his own gun waits at The Stash. The player 2 window follows the same rule on its own save. The DEMO kit and the bot sim are untouched, and no seeded draw moved: the old starter draw is still made and thrown away, so the seed 4242 raid and a party stay in step. The sector page and the last screen before the lift now say a Scav Pistol where they said a gun issued at the lift and a loaner.

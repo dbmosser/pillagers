@@ -29,6 +29,7 @@ param(
   [string]$Mode='',
   [int]$RaidSeed=0,
   [double]$MinFreeGB=5,
+  [string]$FlagFile='',
   [switch]$IgnoreFlag,
   [switch]$SelfTest,
   [switch]$Trace
@@ -36,6 +37,7 @@ param(
 $ErrorActionPreference='Stop'
 $R='C:\claudecode\dark raiders'; $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'
 $Flag='C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders\8a09e991-b4f4-4b23-b10f-ded92e837fc3\scratchpad\light.flag'
+if($FlagFile -ne ''){ $Flag=$FlagFile }
 $LogF=$OutDir+'\fuzz.log'; $Jsonl=$OutDir+'\fuzz-'+(Get-Date -Format 'yyyy-MM-dd')+'.jsonl'
 $Enc=New-Object Text.UTF8Encoding $false
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
@@ -167,7 +169,7 @@ $KM['Space']=@(' ','Space',32); $KM['Escape']=@('Escape','Escape',27); $KM['Tab'
 $KM['ControlLeft']=@('Control','ControlLeft',17); $KM['AltLeft']=@('Alt','AltLeft',18); $KM['ShiftLeft']=@('Shift','ShiftLeft',16)
 $MOVE=@('KeyW','KeyA','KeyS','KeyD'); $MODK=@('ControlLeft','AltLeft','ShiftLeft')
 $script:ring=New-Object 'System.Collections.Generic.Queue[string]'
-$script:held=@{}; $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:lastMmRing=-100; $script:nEv=0
+$script:held=(New-Object 'System.Collections.Generic.Dictionary[string,object]'); $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:lastMmRing=-100; $script:nEv=0
 function Ring([string]$s){ $script:ring.Enqueue(([string]$script:tick)+':'+$s); while($script:ring.Count -gt 60){ [void]$script:ring.Dequeue() } }
 function ModBits(){ $m=0; if($script:held.ContainsKey('AltLeft')){ $m+=1 }; if($script:held.ContainsKey('ControlLeft')){ $m+=2 }; if($script:held.ContainsKey('ShiftLeft')){ $m+=8 }; return $m }
 function KeyEv([string]$type,[string]$n,[bool]$rep){
@@ -230,7 +232,7 @@ function Add-Problem([string]$kind,[string]$msg,[string]$where){
 $POLLX='JSON.stringify(window.__fz.poll())'
 function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
   $script:curMode=$mode; $script:curSeed=$rseed; $script:raidProblems=0; $script:newUniq=0
-  $script:ring.Clear(); $script:held=@{}; $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:nEv=0
+  $script:ring.Clear(); $script:held=(New-Object 'System.Collections.Generic.Dictionary[string,object]'); $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:nEv=0
   $rng=New-Object System.Random($rseed)
   $mapIx=0; if($script:maps.Count -gt 0){ $mapIx=[int]$script:maps[$rseed % $script:maps.Count] }
   $god=($rng.NextDouble() -lt 0.5)
