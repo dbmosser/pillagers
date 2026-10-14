@@ -1,0 +1,1 @@
+| MINIMAP SIZE AND ZOOM | v26.48 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 26.48 passes, fails on v26.47 |

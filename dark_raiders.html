@@ -2201,7 +2201,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.47';
+var VER='26.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34339,8 +34339,11 @@ function drawBossBar(){
 // two never overlap; the kill feed already follows that panel. It grows with the screen (hudRes) like the rest of the HUD. The
 // bake is redone only when the map or the pixel scale changes (a new raid, a resize). Cosmetic: no seeded draw and no game state.
 var MMSPAN=1000, MMAP={cv:null,map:null,bs:0,bakes:0,box:null,ops:0};
+// v26.xx (settings7): the two rows. mmSizeK is the factor on the plate, mmSpan the world units it shows across; an unset or odd value is the usual.
+function mmSizeK(){ var s=+CFG.mmSz; return (s>=0.5&&s<=2)?s:1; }
+function mmSpan(){ var s=+CFG.mmSpan; return (s>=400&&s<=2500)?s:MMSPAN; }
 function mmRect(){
-  var R=hudRes(), s=Math.round(216*R), T=G&&G.tel, top;
+  var R=hudRes(), s=Math.round(216*R*mmSizeK()), T=G&&G.tel, top;   // v26.xx (settings7): MINIMAP SIZE
   top=Math.ceil(topRightBottom()+8+((T&&T.notes&&T.notes.length)?LH(20):0));
   top=Math.max(Math.round(16*R),top);
   return {x:Math.round(W-16*R-s),y:top,w:s,h:s};
@@ -34519,14 +34522,14 @@ function drawMinimap(){
   MMAP.box=null; MMAP.ops=0;
   if(!p||G.sim||!G.map||!(W>0)||!(H>0)) return 0;
   if(!mmShown()) return 0;   // v24.xx (minimap3): the Settings row, the map, the backpack, the end cards and the Undercroft
-  r=mmRect(); R=hudRes(); sc=r.w/MMSPAN; cut=Math.round(10*R);
+  r=mmRect(); R=hudRes(); sc=r.w/mmSpan(); cut=Math.round(10*R);   // v26.xx (settings7): MINIMAP ZOOM
   bs=Math.min(sc*Math.max(1,DPRH||1),4096/Math.max(WORLD_W,WORLD_H));
   if(!MMAP.cv||MMAP.map!==G.map||Math.abs(MMAP.bs-bs)>1e-6){ MMAP.cv=mmBake(bs); MMAP.map=G.map; MMAP.bs=bs; }
   ctx.save();
   mmPath(ctx,r,cut); ctx.fillStyle='rgba(11,12,13,.92)'; ctx.fill(); MMAP.ops++;
   ctx.clip();
-  x0=p.x-MMSPAN/2; y0=p.y-MMSPAN/2;
-  ax=Math.max(0,x0); ay=Math.max(0,y0); bx=Math.min(WORLD_W,x0+MMSPAN); by=Math.min(WORLD_H,y0+MMSPAN);
+  x0=p.x-mmSpan()/2; y0=p.y-mmSpan()/2;
+  ax=Math.max(0,x0); ay=Math.max(0,y0); bx=Math.min(WORLD_W,x0+mmSpan()); by=Math.min(WORLD_H,y0+mmSpan());
   if(MMAP.cv&&bx>ax&&by>ay){
     ctx.drawImage(MMAP.cv,ax*bs,ay*bs,(bx-ax)*bs,(by-ay)*bs,r.x+(ax-x0)*sc,r.y+(ay-y0)*sc,(bx-ax)*sc,(by-ay)*sc); MMAP.ops++;
   }
@@ -42803,7 +42806,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.47: Display has crosshair shape, colour and size. Check 26.47 fails on v26.46',
+  now:'v26.48: Display has minimap size and zoom. Check 26.48 fails on v26.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55453,6 +55456,23 @@ var GAMEOPTS=[
      {n:'STANDARD', cfg:{xhSz:1}},
      {n:'LARGE',    cfg:{xhSz:1.3}},
      {n:'HUGE',     cfg:{xhSz:1.6}}
+   ], def:1},
+  // v26.xx (settings7), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): MINIMAP SIZE and MINIMAP ZOOM, in DISPLAY. The defaults are the
+  // minimap as it was: 216 pixels at 1080p showing 1000 world units across. SIZE scales the plate (the HUD panels under it move down to make room);
+  // ZOOM is how many world units the plate shows across, close (700) for a tight street, wide (1400) for the lie of the land.
+  {k:'mmSize', label:'MINIMAP SIZE', sec:'DISPLAY',
+   hint:'HOW BIG THE MINIMAP IS, TOP RIGHT. THE PANELS UNDER IT MOVE DOWN.',
+   opts:[
+     {n:'SMALL',    cfg:{mmSz:0.75}},
+     {n:'STANDARD', cfg:{mmSz:1}},
+     {n:'LARGE',    cfg:{mmSz:1.35}}
+   ], def:1},
+  {k:'mmZoom', label:'MINIMAP ZOOM', sec:'DISPLAY',
+   hint:'HOW MUCH STREET IT SHOWS. CLOSE IS A TIGHT VIEW, WIDE IS THE LIE OF THE LAND.',
+   opts:[
+     {n:'CLOSE',    cfg:{mmSpan:700}},
+     {n:'STANDARD', cfg:{mmSpan:1000}},
+     {n:'WIDE',     cfg:{mmSpan:1400}}
    ], def:1},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',

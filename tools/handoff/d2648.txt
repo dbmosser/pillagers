@@ -1,0 +1,5 @@
+## v26.48 - MINIMAP SIZE AND ZOOM
+
+Co-op hunt while he was away. His order: add all of this to Settings. Display gets two minimap rows. MINIMAP SIZE is SMALL, STANDARD or LARGE: it scales the plate in the top right corner, and the panels under it move down to make room. MINIMAP ZOOM is CLOSE, STANDARD or WIDE: how much street the plate shows, a tight view of the next corner or the lie of the whole district. Standard is the minimap exactly as it was. They change at once and are saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.48 passes, and fails on v26.47.

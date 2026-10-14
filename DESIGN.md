@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.48 - MINIMAP SIZE AND ZOOM
+
+Co-op hunt while he was away. His order: add all of this to Settings. Display gets two minimap rows. MINIMAP SIZE is SMALL, STANDARD or LARGE: it scales the plate in the top right corner, and the panels under it move down to make room. MINIMAP ZOOM is CLOSE, STANDARD or WIDE: how much street the plate shows, a tight view of the next corner or the lie of the whole district. Standard is the minimap exactly as it was. They change at once and are saved with the profile; in the DEMO they hold for the session.
+
+MEASURED. Check 26.48 passes, and fails on v26.47.
 ## v26.47 - CROSSHAIR SHAPE, COLOUR AND SIZE
 
 Co-op hunt while he was away. His order: add all of this to Settings. Display gets three crosshair rows. CROSSHAIR picks the shape: the four arm CROSS it has always been, a DOT, a CIRCLE or a T. CROSSHAIR COLOUR picks WHITE (the usual, which turns amber while you aim down sights), GREEN, CYAN or MAGENTA, four a colour-blind eye can tell apart; a colour of your own holds for the aiming state too, while the jammed, empty and reloading warnings keep their own colours. CROSSHAIR SIZE is SMALL, STANDARD, LARGE or HUGE and takes the magazine and reload rings with it. Out of the box the crosshair is drawn exactly as before. They change at once and are saved with the profile; in the DEMO they hold for the session.
