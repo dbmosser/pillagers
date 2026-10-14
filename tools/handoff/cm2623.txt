@@ -1,0 +1,7 @@
+v26.23: the item wheel
+
+Hold Q for the item wheel: aim at a grenade or a heal and let go to pick it. Melee is on V now.
+
+Check 26.23. Fails on v26.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
