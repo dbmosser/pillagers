@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.69';
+var VER='26.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20190,6 +20190,88 @@ function suppHit(en){
 function machFoe(o){
   return !!o&&o.kind!=='raider'&&o.kind!=='snitch'&&o.kind!=='peddler'&&o.kind!=='stray'&&!o.neutral&&!o.boss&&!o.downed&&!o.finished&&o.hp>0;
 }
+// v26.xx (ai24), HIS YES (2026-10-14, suggestion 24): THE OVERSEER'S PHASES. It was one long health bar with a cannon. Now it has three
+// readable phases by health: PHASE 1 above 66 percent is as it was. At 66 percent it PAUSES for 1.4 seconds (a shockwave ring, the
+// camera shakes, a callout), then PHASE 2 calls crawlers out of the ground around it (three at once, again every 20 seconds while it
+// has seen you, never more than six of its own alive). At 33 percent it pauses again and PHASE 3 begins a SWEEPING LASER every ten
+// seconds: it stands still, turns to your bearing, charges for a second (the red aim lane of ai20 fills), then sweeps a beam across
+// about 90 degrees at 0.6 radians a second, stopped by walls, which hurts anyone in it (8 every tenth of a second; outrun it along the
+// sweep, or put a wall in the way). When the sweep ends its CORE IS EXPOSED: it vents for four seconds (no move, no shot, as a seam hit
+// does it) and every round that hits it does half again as much. The big score for killing it (ARCADE_BOSSPTS) is unchanged. The host
+// runs all of it; a linked window sees the beam through a flag bit and the phase lines through a mark. Its crawlers are made on the
+// cosmetic stream (fxBorrow), so the seeded stream of the raid never moves.
+var OV_P2=0.66, OV_P3=0.33, OV_SUMMON=20, OV_SWEEPCD=10, OV_CHARGE=1.0, OV_SWEEP=2.6, OV_RATE=0.6, OV_HALF=18, OV_TICK=0.1, OV_DMG=8, OV_MAXC=6;
+function overseerPhaseOf(e){ var f=(e&&e.maxhp>0)?e.hp/e.maxhp:1; return f>OV_P2?1:(f>OV_P3?2:3); }
+function ovPhaseLine(n){ return (n>=3)?'OVERSEER SWEEP LASER':'OVERSEER CALLS CRAWLERS'; }
+function overseerBeam(e){
+  var ux, uy, t;
+  if(!e||!(e.swpT>0)||!(e.hp>0)) return null;
+  ux=Math.cos(e.face); uy=Math.sin(e.face);
+  try{ t=rayHitG(e.x,e.y,ux,uy,e.rng||868); }catch(_ob){ t=e.rng||868; }
+  if(!(t>0)) return null;
+  return {x1:e.x+ux*e.r*0.6,y1:e.y+uy*e.r*0.6,x2:e.x+ux*t,y2:e.y+uy*t,ux:ux,uy:uy,len:t};
+}
+function overseerSummon(e){
+  var n=0, made=0, i, c, a, x, y, pl=G.player;
+  for(i=0;i<G.ents.length;i++){ c=G.ents[i]; if(c.summoned&&c.hp>0&&!c.downed) n++; }
+  for(i=0;i<12&&made<3&&n+made<OV_MAXC;i++){
+    a=i*0.5236+(G.t||0)*0.7; x=e.x+Math.cos(a)*(e.r+80); y=e.y+Math.sin(a)*(e.r+80);
+    if(!(x>60&&y>60&&x<WORLD_W-60&&y<WORLD_H-60)||!spotFree(G.map,x,y,18)) continue;
+    c=null; fxBorrow(function(){ c=mkCrawler(x,y); });
+    c.summoned=1; c.state='chase'; c.alert=3; c.tx=pl?pl.x:x; c.ty=pl?pl.y:y;
+    G.ents.push(c); made++;
+    i+=3;
+  }
+  return made;
+}
+function overseerTick(e,p,sees,dt){
+  var ph, i, pl, pls, L, dx, dy, al, pp;
+  if(!e||!e.boss||!(e.hp>0)) return false;
+  ph=overseerPhaseOf(e);
+  if(!e.phase) e.phase=1;
+  if(ph>e.phase){
+    e.phase=ph; e.stagT=1.4; e.sumT=0; e.sweepCd=OV_SWEEPCD*0.5; e.chgT=0; e.swpT=0; e.windup=null;
+    if(!G.sim){
+      G.shake=Math.max(G.shake||0,6); sfx('alarm',e.x,e.y); ping(e.x,e.y,900,false,false,'robot','fire',e);
+      say(ovPhaseLine(ph),'warn');
+      if(NET.on) netMarkSend({t:'mark',k:'phase',nid:e.nid|0,n:ph});
+    }
+  }
+  if(e.stagT>0){ e.stagT-=dt; e.moving=false; e.cd=Math.max(e.cd||0,0.4); return true; }
+  if(ph>=2&&e.seenYou){ e.sumT=(e.sumT||0)-dt; if(e.sumT<=0){ e.sumT=OV_SUMMON; overseerSummon(e); } }
+  if(ph<3) return false;
+  if(e.chgT>0){
+    e.chgT-=dt; e.windup=Math.max(0.001,0.7*e.chgT/OV_CHARGE); e.moving=false; e.cd=Math.max(e.cd||0,0.4);
+    e.face+=clamp(angDiff(e.swpA,e.face),-4*dt,4*dt);
+    if(e.chgT<=0){ e.chgT=0; e.windup=null; e.swpT=OV_SWEEP; e.swpTk=0; e.face=e.swpA; if(!G.sim) sfx('alarm',e.x,e.y); }
+    return true;
+  }
+  if(e.swpT>0){
+    e.swpT-=dt; e.swpA+=e.swpD*OV_RATE*dt; e.face=e.swpA; e.moving=false; e.cd=Math.max(e.cd||0,0.4);
+    e.swpTk=(e.swpTk||0)-dt;
+    if(e.swpTk<=0){
+      e.swpTk=OV_TICK; L=overseerBeam(e);
+      if(L){
+        pls=(typeof netPlayersList==='function')?netPlayersList():[G.player];
+        for(i=0;i<pls.length;i++){
+          pl=pls[i]; if(!pl||pl.downed||pl.dying||pl.specOut) continue;
+          dx=pl.x-e.x; dy=pl.y-e.y; al=dx*L.ux+dy*L.uy; pp=Math.abs(dx*L.uy-dy*L.ux);
+          if(al>0&&al<L.len+(pl.r||11)&&pp<OV_HALF+(pl.r||11)) netHitPlayer(pl,OV_DMG,'warden',BOSS_NAME,e.x,e.y);
+        }
+      }
+    }
+    if(e.swpT<=0){ e.swpT=0; e.overheat=4.0; e.htImmune=Math.max(e.htImmune||0,7); e.sweepCd=OV_SWEEPCD; e.cd=Math.max(e.cd||0,1.2); }
+    return true;
+  }
+  e.sweepCd=(e.sweepCd===undefined?OV_SWEEPCD*0.5:e.sweepCd)-dt;
+  if(e.sweepCd<=0&&sees&&p&&!p.downed&&dist(e,p)<e.rng){
+    e.swpN=(e.swpN||0)+1; e.swpD=(e.swpN%2)?1:-1;
+    e.swpA=Math.atan2(p.y-e.y,p.x-e.x)-e.swpD*(OV_RATE*OV_SWEEP*0.5);
+    e.chgT=OV_CHARGE; e.windup=0.7; if(!G.sim) sfx('charge',e.x,e.y);
+    return true;
+  }
+  return false;
+}
 function feudFoe(a,b){
   if(CFG.raiderFeud===0) return false;
   if(G&&G.crewsHot===undefined) G.crewsHot=((G.seed>>>0)%10)<6;
@@ -25820,6 +25902,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
       // of the raid. Sight is one way in; being HUNTED is the other, and that is
       // handled where chase and alarm are entered rather than only here.
 
+      if(e.boss&&overseerTick(e,p,sees,dt)){ collide(e,G.map.walls); continue; }   // v26.xx (ai24): the Overseer phases, host only
       var _bhold=false;   // v26.xx (overseersight): true when THE OVERSEER sees you past its leash inside its reach and holds its ground to shoot
       if(sees){ e.seenYou=true; e.tx=p.x; e.ty=p.y; e.alert=4;
       if(e.boss&&e.lairX!==undefined&&Math.hypot(p.x-e.lairX,p.y-e.lairY)>1100){ e.tx=e.lairX; e.ty=e.lairY; e.seenYou=true; _bhold=(!p.downed&&dist(e,p)<e.rng&&Math.hypot(e.x-e.lairX,e.y-e.lairY)<=1100); }   // v17.45: his pick 21, it guards its lair
@@ -27233,6 +27316,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                   edmg*=1.5; _backShot=true; if(_nar) _nar=1.5;
                 }
               }
+              if(en.boss&&en.overheat>0) edmg*=1.5;   // v26.xx (ai24): the Overseer core is exposed while it vents
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
               if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el); else en.hp-=edmg;   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
               en.hitT=.16; hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat
@@ -32233,6 +32317,20 @@ if(!sc.seen) continue;
     wc.strokeStyle='rgba(255,36,28,'+(0.25+0.6*_tn.f).toFixed(3)+')'; wc.lineWidth=1+1.2*_tn.f;
     wc.beginPath(); wc.moveTo(_tn.x1,_tn.y1); wc.lineTo(_tn.x2,_tn.y2); wc.stroke();
     wc.beginPath(); wc.arc(_tn.x2,_tn.y2,2+3*_tn.f,0,6.2832); wc.stroke();
+    wc.restore();
+  }
+  // v26.xx (ai24): the Overseer sweeping laser, a wide red beam on the ground from the machine to the first wall.
+  for(i=0;i<G.ents.length;i++){
+    var _ob=G.ents[i];
+    if(!_ob.boss||!_ob.seen||!(_ob.swpT>0)) continue;
+    var _on=overseerBeam(_ob); if(!_on) continue;
+    var _onx=-_on.uy*OV_HALF, _ony=_on.ux*OV_HALF;
+    wc.save();
+    wc.fillStyle='rgba(255,36,28,0.30)';
+    wc.beginPath(); wc.moveTo(_on.x1+_onx,_on.y1+_ony); wc.lineTo(_on.x2+_onx,_on.y2+_ony); wc.lineTo(_on.x2-_onx,_on.y2-_ony); wc.lineTo(_on.x1-_onx,_on.y1-_ony); wc.closePath(); wc.fill();
+    wc.globalCompositeOperation='lighter';
+    wc.strokeStyle='rgba(255,190,170,0.85)'; wc.lineWidth=4;
+    wc.beginPath(); wc.moveTo(_on.x1,_on.y1); wc.lineTo(_on.x2,_on.y2); wc.stroke();
     wc.restore();
   }
 // noise pings. v4.05: drawn AFTER the darkness now, see below; this pass
@@ -43428,7 +43526,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.69: The waves now rise and fall with how the raid is going: a breather after a hard hit, an ambush from behind after a long quiet. Check 26.69 fails on v26.68',
+  now:'v26.70: The Overseer now has three phases: it calls crawlers at two thirds health, then sweeps a laser, and its core is exposed when the laser ends. Check 26.70 fails on v26.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50777,6 +50875,7 @@ function netEntFlags(e){
   if(e.parley>0) f|=2097152; if(e.blind>0) f|=4194304;
   if(e.burnT>0) f|=8388608; if(e.stunT>0) f|=16777216; if(e.chillT>0) f|=33554432; if(e.frozenT>0) f|=67108864; if(e.corrT>0) f|=134217728;   // v23.xx (forge8): THE FORGE statuses, so player 2 sees them
   if(e.downed&&e.getUp>0) f|=8388608;   // pillrevive: he is getting up
+  if(e.swpT>0) f|=1073741824;   // v26.xx (ai24): the Overseer is sweeping, so player 2 sees the beam
   if(e.pinT>0) f|=268435456;   // v26.xx (ai22): pinned, so player 2 sees him duck
   return f;
 }
@@ -50858,6 +50957,7 @@ function netEntFlagsApply(e,f){
   if(f&2048){ e.goal=e; if(e.state!=='loot') e.state='loot'; } else if(e.goal===e) e.goal=null;
   if((f&4096)&&!(e.roll>0)) e.roll=0.38;
   e.pinT=(f&268435456)?0.5:0;   // v26.xx (ai22)
+  e.swpT=(f&1073741824)?0.4:0;   // v26.xx (ai24)
   e.steady=!!(f&8192); e.reviving=(f&16384)?e:null; e.shotT=(f&32768)?0.35:0; e.lootT=(f&65536)?1:0; e.healQ=(f&131072)?1:0;
   e.sprintPool=(f&262144)?6:0; e.helped=(f&524288)?1:0; e.grudge=!!(f&1048576); e.parley=(f&2097152)?1:0; e.blind=(f&4194304)?1:0;
   e.burnT=(f&8388608)?0.3:0; e.stunT=(f&16777216)?0.3:0; e.chillT=(f&33554432)?0.3:0; e.frozenT=(f&67108864)?0.3:0; e.corrT=(f&134217728)?0.3:0;   // v23.xx (forge8): drawn here, run by the host only
@@ -50966,6 +51066,7 @@ function netMarkTake(peer,m){
   if(k==='big'){ if(mine&&!G.sim) say(wardenSpotLine(m.boss!==undefined?(m.boss|0):(e&&e.boss)),'warn'); return 'mark:big'; }   /* v24.xx (overseerline): the line names the one that saw him */   // v22.xx (tr3fixc): the shooter voice
   // v22.20, from the whole-game bug hunt of 2026-10-08 (K31): THE PILLBOX, THE PEDDLER AND THE SURVIVOR, told to the player who
   // walked up. The host sends these when one of the party is the player they saw (updateEnts); his own lines are said there.
+  if(k==='phase'){ if(!G.sim) say(ovPhaseLine(m.n|0),'warn'); return 'mark:phase'; }   // v26.xx (ai24): the Overseer changed phase, said to the whole party
   if(k==='pill'){ if(mine&&!G.sim) say('THE PILLBOX HAS SEEN YOU','warn'); return 'mark:pill'; }
   if(k==='ped'){ if(mine&&!G.sim) say(pedOpen()?'THE PEDDLER WAVES YOU OVER':'THE PEDDLER TURNS HIS BACK',pedOpen()?'ally':'info'); return 'mark:ped'; }   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
   if(k==='sv'){

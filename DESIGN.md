@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.70 - THE OVERSEER FIGHTS IN THREE PHASES
+
+Co-op hunt while he was away. His yes to suggestion 24, Overseer phases. The Overseer was one long health bar and a cannon. Now it has three phases you can read. Above two thirds of its health it fights as before. At two thirds it stops for a moment (a shockwave ring, a shake of the camera, a line on screen) and then calls crawlers out of the ground around it, three at a time, again every twenty seconds while it knows where you are, never more than six of its own. At one third it stops again and begins a sweeping laser every ten seconds: it stands still, turns to your bearing and charges for a second while the red aim lane fills, then sweeps a wide red beam across about ninety degrees, which hurts anyone standing in it and is stopped by walls, so you outrun it along the sweep or put a wall in the way. When the sweep ends its core is exposed: it vents for four seconds, unable to move or shoot, and every round that hits it does half again as much damage. The big score for killing it is unchanged. In co-op the host runs all of it and player 2 sees the beam and the phase lines.
+
+MEASURED. Check 26.70 passes, and fails on v26.69.
 ## v26.69 - THE RAID DIRECTOR
 
 Co-op hunt while he was away. His yes to the Raid Director: pressure should rise and fall. The waves used to come on a clock, every ten to twenty-two seconds whatever was happening. Now the game reads how the raid is going. Lose a lot of health, or have machines on you, and the raid goes into a breather: no new pack for fourteen to twenty-four seconds and until things calm down, so you can heal and reload. Stay quiet and the waves come sooner, up to a pace sixty percent faster. After a long quiet stretch, two minutes into the raid, the next wave is an ambush: two machines more than a normal pack, landing just off screen on the side you are facing away from, called WAVE with AMBUSH BEHIND YOU. No ambush while you stand near an extraction ring, and no pack ever lands within the ring of an extraction point. DEMO and CAREER do the same.

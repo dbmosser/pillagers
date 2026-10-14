@@ -1,0 +1,7 @@
+v26.70: the overseer fights in three phases
+
+The Overseer now has three phases: it calls crawlers at two thirds health, then sweeps a laser, and its core is exposed when the laser ends.
+
+Check 26.70. Fails on v26.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
