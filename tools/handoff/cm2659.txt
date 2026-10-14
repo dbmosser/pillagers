@@ -1,0 +1,7 @@
+v26.59: pillagers have roles you can read
+
+Pillagers now read by role: red rushers close in, blue marksmen hold range, green flankers, amber suppressors, violet shield carriers.
+
+Check 26.59. Fails on v26.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

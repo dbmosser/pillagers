@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.59 - PILLAGERS HAVE ROLES YOU CAN READ
+
+Co-op hunt while he was away. His yes to suggestion 21, pillager roles, and his request for pillagers in more distinct colours. Every pillager now has a role worked out from what he carries (no random number is spent): a RUSHER (shotgun, some SMGs) wears red with shoulder spikes and closes in nearer than he used to; a FLANKER (carbine, some SMGs and rifles) wears green with a streaming scarf; a SUPPRESSOR (Support MG, some SMGs) wears amber with a bandolier and an ammo box; a MARKSMAN (Magnum, Marksman Rifle, Longshot, Whisper, Lance, some rifles) wears blue with a pointed hood, holds his full range and backs off sooner; and anyone in a heavy rig is a SHIELD carrier in violet with a plate on his arm. Half of each coat is the role colour, so a crew reads as different people at a glance, and no words are used. Hired men and friends keep their team look. The medic who revives mates is not in this build.
+
+MEASURED. Check 26.59 passes, and fails on v26.58.
 ## v26.58 - MACHINES DRAW WHERE THEY ARE ABOUT TO SHOOT
 
 Co-op hunt while he was away. His yes to suggestion 20, attack telegraphs. A Sentry or a Warden (THE OVERSEER is a Warden) winding up a shot used to show only a red glow at its muzzle and a charging sound, so where the round would go was a guess. Now it paints a thin red aim line on the ground from the machine out to where the round would stop, either at the end of its reach or at the first wall, with a narrow lane that fills outward from the machine over the windup, so the lane is full and bright just as the shot leaves. A Howler shell in the air now fills its landing circle as it comes down, and the full circle is marked faintly from the first moment. The windups, the cooldowns and the damage are exactly as they were: this only shows what the machine is already about to do, and only for a machine you can see.
