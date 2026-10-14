@@ -1,0 +1,7 @@
+v26.63: close call
+
+Rolling through a round gives back the roll stamina and scores a CLOSE CALL.
+
+Check 26.63. Fails on v26.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

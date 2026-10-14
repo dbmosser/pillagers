@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.62';
+var VER='26.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26909,6 +26909,22 @@ function penExit(w,x,y,ux,uy){
   var t=Math.min(tx,ty);
   return (t>0&&t<1e9)?t:0;
 }
+// v26.xx (feel15), HIS ORDER (2026-10-14): "dodge-through reward ok". ROLL THROUGH A ROUND AND IT PAYS. A round that reaches you inside the roll's
+// invulnerable window (the roll is on and the i-frames are still running) refunds the stamina the roll cost (ROLLSTAM), adds CC_PTS to the run score
+// and calls CLOSE CALL, once per roll (CC_GAP is longer than the roll cooldown). The round is still stopped by the i-frames exactly as before, so
+// nothing about the damage you take changes. Live play only, and no seeded draw.
+var CC_PTS=25, CC_GAP=0.9;
+function closeCall(b){
+  var p=G&&G.player, sc;
+  if(!p||G.sim||G.over||!(p.roll>0)||!(p.iv>0)) return false;
+  if(p.ccT!==undefined&&G.t-p.ccT<CC_GAP) return false;
+  p.ccT=G.t;
+  p.stam=Math.min(100,(+p.stam||0)+ROLLSTAM);
+  sc=scoreBonus(CC_PTS,p.x,p.y-32,'CLOSE CALL');
+  if(!sc){ try{ label(p.x,p.y-32,'CLOSE CALL','#ffc04a',0,true); }catch(_l){} }
+  try{ blip('whizz',undefined,0); spark(p.x,p.y-12,'#ffe6a8',10,240); }catch(_s){}
+  return true;
+}
 function updateBullets(dt){
   var p=G.player;
   for(var i=G.bullets.length-1;i>=0;i--){
@@ -27203,7 +27219,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
           // v16.56, stability (co-op review): a host who left the raid and is spectating (v16.14) has no body in it. His
           // player stayed where he fell or extracted and still stopped enemy rounds, so a teammate saw red numbers on empty
           // ground, a round meant for him stopped short, and the host window played the grunts.
-          if(!_mOwn&&!p.specOut&&dist(b,p)<p.r+3){ damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); hit=true; }   // 2026-10-12 (blood): damagePlayer bleeds
+          if(!_mOwn&&!p.specOut&&dist(b,p)<p.r+3){ closeCall(b); damagePlayer(b.dmg,b.owner.kind,b.owner.name,b.x-b.vx*0.05,b.y-b.vy*0.05); hit=true; }   // 2026-10-12 (blood): damagePlayer bleeds
           // v24.xx (sndA1), his order 2026-10-12 (distinct noises): A ROUND THAT MISSES YOU NARROWLY WHIZZES PAST, once per round, the
           // first time it comes within 40 of you on a line that will not hit you; panned to the side of you it passes. Sound only.
           if(!hit&&!_mOwn&&!b._wz&&!G.sim&&!p.specOut&&!p.downed&&trav>0){
@@ -43243,7 +43259,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.62: Heavy fire near a pillager now pins him: he ducks, stops advancing and shoots wild. Check 26.62 fails on v26.61',
+  now:'v26.63: Rolling through a round gives back the roll stamina and scores a CLOSE CALL. Check 26.63 fails on v26.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52673,6 +52689,17 @@ function arcadeBmDraw(c,o,counting){
 // (careerKill, from the same kill credit as the DEMO, the host and a co-op partner each scoring their own player). The DEMO newcomer
 // perks (half a magazine back, a Bandage every 3rd kill) stay in the DEMO: CAREER is his own kit. The score reads at the clock as in
 // the DEMO: SCORE over the figure, the streak multiplier beside it and the 10 minute clock under it.
+// v26.xx (feel15), HIS ORDER (2026-10-14): a style bonus that is not a kill. scoreBonus(n,x,y,text) adds n to the run score the same way in a DEMO run
+// (ARCADE.mine, sent to the other window) and in a CAREER run (G.cs.s), and pops the text with the figure where it happened. In a raid that has
+// neither it adds nothing and returns 0. Live play only; no seeded draw.
+function scoreBonus(n,x,y,txt){
+  if(!G||G.sim||G.over||!(n>0)) return 0;
+  if(G.arcade&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ ARCADE.mine=(ARCADE.mine|0)+n; try{ arcadeScSend(); }catch(_e){} }
+  else if(G.career&&G.cs){ G.cs.s=(G.cs.s|0)+n; }
+  else return 0;
+  try{ label(x,y,txt+' +'+arcadeCr(n),'#ffc04a',0,true); }catch(_l){}
+  return n;
+}
 function scoreKill(st,k,el,boss,x,y){
   var n=arcadeKillPts(k,el,boss), s, t=+G.t||0, mx, c;
   if(!(n>0)||!st) return 0;

@@ -1,0 +1,5 @@
+## v26.63 - CLOSE CALL
+
+Co-op hunt while he was away. His yes to the dodge-through reward. Rolling through a round now pays. A round that reaches you while the roll still protects you (the first stretch of it, the invulnerable window) gives back the stamina the roll cost, adds 25 to your run score in a DEMO run and in a CAREER run, and calls CLOSE CALL over you with the figure. It pays once per roll, so a shotgun blast through a roll is one reward, not six. The round is stopped by the roll exactly as before, so the damage you take does not change. A round that finds you standing does none of this.
+
+MEASURED. Check 26.63 passes, and fails on v26.62.

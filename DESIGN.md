@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.63 - CLOSE CALL
+
+Co-op hunt while he was away. His yes to the dodge-through reward. Rolling through a round now pays. A round that reaches you while the roll still protects you (the first stretch of it, the invulnerable window) gives back the stamina the roll cost, adds 25 to your run score in a DEMO run and in a CAREER run, and calls CLOSE CALL over you with the figure. It pays once per roll, so a shotgun blast through a roll is one reward, not six. The round is stopped by the roll exactly as before, so the damage you take does not change. A round that finds you standing does none of this.
+
+MEASURED. Check 26.63 passes, and fails on v26.62.
 ## v26.62 - SUSTAINED FIRE PINS A PILLAGER
 
 Co-op hunt while he was away. His yes to suggestion 22, suppression, as a pillager behaviour. Rounds of yours that go past a hostile pillager count against him; four of them inside under two seconds pin him for about two and a half seconds, and more fire keeps him pinned. A pinned pillager stops advancing and stops flanking, ducks down, slips behind cover if there is cover that is no nearer to you, and what he shoots is wild. So the rate of fire matters: a Support MG pins a man in about half a second, a Magnum or a Marksman Rifle seldom does. A round from player 2 that lands on a man counts the same, and player 2 sees him duck. Pillagers you are not shooting at behave exactly as before.
