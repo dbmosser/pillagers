@@ -1,0 +1,5 @@
+## v28.10 - THE AIR STRIKE NAMES YOUR KEYS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the air strike prompts were written out by hand, so they ignored rebinding. The key half was fixed earlier (v27.43); on a controller, with CHANGE PAD BUTTONS moving previous gun to Y, the chord is really Y and RB, but the ready plate, the aim line and AIR STRIKE READY still said LB + RB. The three prompts now read the buttons as set; on the defaults they read exactly as before.
+
+MEASURED. Check 28.10 passes, and fails on v28.09.

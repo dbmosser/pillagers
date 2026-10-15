@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.09';
+var VER='28.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46184,7 +46184,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.09: In a two-player game each player now has a coloured ring and a number, and two matching looks are told apart. Check 28.09 fails on v28.08',
+  now:'v28.10: The air strike prompts name the controller buttons you set, not always LB + RB. Check 28.10 fails on v28.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55812,7 +55812,7 @@ function airDraw(c,p){
     c.lineWidth=2*z; c.beginPath(); c.moveTo(s.x-22*z,s.y); c.lineTo(s.x-8*z,s.y); c.moveTo(s.x+8*z,s.y); c.lineTo(s.x+22*z,s.y);
     c.moveTo(s.x,s.y-22*z); c.lineTo(s.x,s.y-8*z); c.moveTo(s.x,s.y+8*z); c.lineTo(s.x,s.y+22*z); c.stroke();
     c.textAlign='center'; c.font=hudFS(TYPE.head); c.fillStyle='#ffd0c0'; hudText('AIR STRIKE',s.x,s.y-ar-U(24));
-    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     '+(padOn()?padB('LB + RB'):keyLabel('KeyG','G'))+' CANCEL',s.x,s.y-ar-U(8));
+    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     '+(padOn()?padB(pbn(4)+' + '+pbn(5)):keyLabel('KeyG','G'))+' CANCEL',s.x,s.y-ar-U(8));   // v28.xx (cloud-menus-air-strike-keys), CLOUD HUNT 2026-10-15: the cancel names the buttons as set (previous gun moved to Y says Y + RB)
   }
   for(i=0;i<A.sk.length;i++){
     st=A.sk[i]; s=w2s(st.x,0,st.y);
@@ -57323,7 +57323,7 @@ function airStrikeFx(x,y,a0,seat){
   try{ blip('airInbound'); }catch(_aib){}   // v27.94 (snd3): the other window hears the craft come in, not the confirm (that is the caller's)
   return true;
 }
-function airHint(){ return (typeof padOn==='function'&&padOn())?padB('LB + RB'):('PRESS '+keyLabel('KeyG','G')); }   // v27.43 (rvw1, cloud review 21): the key as it is bound
+function airHint(){ return (typeof padOn==='function'&&padOn())?padB(pbn(4)+' + '+pbn(5)):('PRESS '+keyLabel('KeyG','G')); }   // v27.43 (rvw1, cloud review 21): the key as it is bound
 // v27.27 (coop8), HIS ORDER (2026-10-14), the two player first: THE RUN GOALS ARE THE PARTY'S. Each window drew its own three goals and counted its own kills, crates and strikes, so the
 // two lists drifted apart and a goal one player finished paid its chip twice (once from each window). The host now owns the goals: it says the three (key r: which, how far, done) in the world
 // word, the linked window draws exactly those and says GOAL DONE when one is met, and counts and pays nothing (goalsTick). What counts is the PARTY'S: a kill of player 2 reaches the run goals
@@ -57401,7 +57401,7 @@ function fireGoal(e){
   if(e.state==='chase'||e.state==='alarm'||e.state==='hunt') return p?{x:p.x,y:p.y}:null;
   return (isFinite(e.tx)&&isFinite(e.ty))?{x:e.tx,y:e.ty}:null;
 }
-function airCapLabel(){ return padOn()?padB('LB+RB'):keyLabel('KeyG','G'); }
+function airCapLabel(){ return padOn()?padB(pbn(4)+'+'+pbn(5)):keyLabel('KeyG','G'); }   // v28.xx (cloud-menus-air-strike-keys), CLOUD HUNT 2026-10-15: the chord reads the buttons after CHANGE PAD BUTTONS; the keyboard half was fixed at v27.43
 function flowCrate(ct){
   var S;
   if(!ct||G.sim||!G.player||ct.type==='body'||ct.type==='botwreck'||ct.dropped) return 0;

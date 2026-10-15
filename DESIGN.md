@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.10 - THE AIR STRIKE NAMES YOUR KEYS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the air strike prompts were written out by hand, so they ignored rebinding. The key half was fixed earlier (v27.43); on a controller, with CHANGE PAD BUTTONS moving previous gun to Y, the chord is really Y and RB, but the ready plate, the aim line and AIR STRIKE READY still said LB + RB. The three prompts now read the buttons as set; on the defaults they read exactly as before.
+
+MEASURED. Check 28.10 passes, and fails on v28.09.
 ## v28.09 - TWO PLAYERS NEVER LOOK ALIKE
 
 Co-op hunt while he was away. His order of 2026-10-15: for the party on the 30th, both players of the two-player DEMO must look great and clearly different. When two people are linked in a co-op or DEMO game, every player now carries a seat mark that both windows draw the same: a ring on the ground at the feet (player 1 amber, player 2 cyan, then lime and pink) with its number on a badge. And if both picked the same colour scheme, which two fresh profiles always do, the second seat is drawn in the next free preset (Frost, then Ember, Verdant) in both windows, so the two are different at a glance before anyone opens FASHION. A scheme you picked yourself is kept when the other player picked something else. A PvP match keeps its red and blue. Cosmetic only.

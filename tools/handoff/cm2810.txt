@@ -1,0 +1,7 @@
+v28.10: the air strike names your keys
+
+The air strike prompts name the controller buttons you set, not always LB + RB.
+
+Check 28.10. Fails on v28.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
