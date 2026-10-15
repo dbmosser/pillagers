@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.44 - THE FINISHER ON A CONTROLLER
+
+Co-op hunt while he was away. A cloud review of v26.54 to v27.30 found that the finisher could not be done on a controller. It read keyboard V and no pad button reached it, so player 2 on a pad was shown FINISH [V] over every downed pillager and could not do it. The pad has no melee button, so the finisher goes on Y, the button for the other close-in jobs (search the ring, help a teammate), held with a downed pillager in reach: the same 0.55 second hold, the same reach and points, and it does not swing the crowbar. Y keeps its other jobs, which win when they apply: helping a downed teammate, and searching a box or the ring when one is in reach underfoot. It follows CHANGE PAD BUTTONS (whatever button action 3 is on), the PAD list and the legend say so, and the prompt names the button as bound (Y, or TRIANGLE on a PlayStation pad), which the next build draws.
+
+MEASURED. Check 27.44 passes, and fails on v27.43.
 ## v27.43 - THE CLOUD REVIEW: FIRES, CRATES, BOUNTY, CONVOY, KEYS
 
 Co-op hunt while he was away. The cloud review of 2026-10-15, each finding checked against the code first. 3: pillagers and machines chasing the player across a fire stood grinding on its edge and burning; they now slide round the edge the short way, and no event, fire or ambush is placed in a stronghold. 10: the convoy crew and the bounty pillager were taken out of the world in plain view when their event ended; a body now leaves only where nobody can see it, otherwise it stays as an ordinary enemy and the callout says so. 12: the 6 CRATES run goal counted boxes that pillagers and hires had emptied; it counts what the party opens, player 2 included, never bodies. 17: the bounty was paid for a down and for deaths nobody caused; now only a kill by the party pays and a downed hunter is still on the hunt. 21: the air strike prompts named the keyboard key G whatever it was bound to; they name the bound key.

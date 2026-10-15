@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.43';
+var VER='27.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15304,7 +15304,7 @@ function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on); }
 // The label to show for a keyboard code, swapped for its controller button when a pad is
 // connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
 // file has been corrupted twice by non-ASCII surviving a patch script badly.
-var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'D-DOWN',
+var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'D-DOWN',KeyV:'Y',
               Space:'A',Tab:'BACK',KeyP:'MENU',KeyX:'X',
               ShiftLeft:'LS',ControlLeft:'B',KeyM:'D-UP',KeyI:'VIEW'};
 // v26.xx (padbind), HIS ORDER 2026-10-14 ("CONTROLLER REBINDING is NEW"): PADLABEL is the table the raid prompts read, and it follows the pad bindings now (padLabelsApply rewrites it);
@@ -15951,7 +15951,13 @@ function pollPad(){
       var _yD=pressed(3)&&!bagNav;
       if(_yD&&!PAD.prev[3]){ var _yA=false; if(G&&G.giftIn&&!G.bagOpen&&!G.giftIn.yes&&G.t-G.giftIn.t<=GIFT_T){ try{ _yA=!!netGiftKey(); }catch(_gy){} } else try{ _yA=!!(NET.on&&!G.over&&typeof netAidHold==='function'&&netAidHold(!!G.nearContainer)); }catch(_ye){} PAD.yAid=_yA; }
       if(!_yD) PAD.yAid=false;
-      padHold('PadSearch',(_yD&&!PAD.yAid)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));   // v25.xx (keyswap): the pad ring search (was keyboard X, which is the extraction now)
+      // v27.xx (feel2g), a cloud review finding (2026-10-15, #5): THE FINISHER ON A CONTROLLER. The finisher (v26.64) read keyboard V and no pad button reached it, so player 2 on a pad was
+      // shown FINISH [V] over every downed pillager and could not do it. Y (pad action 3, whatever CHANGE PAD BUTTONS has put it on) held with a downed pillager in finisher reach is the
+      // finisher: it holds the same key V the keyboard does (and so does not swing the crowbar), and the prompt names the button as bound (PADLABEL). Y keeps its other jobs, which win
+      // when they apply: helping a teammate (netAidHold, decided on the press), and the search of a box or the ring when one is in reach underfoot.
+      var _yF=!!(_yD&&!PAD.yAid&&G&&!G.over&&G.player&&!G.player.downed&&!G.nearContainer&&!G.nearPad&&finTarget(G.player));
+      padHold('KeyV',_yF);
+      padHold('PadSearch',(_yD&&!PAD.yAid&&!_yF)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));   // v25.xx (keyswap): the pad ring search (was keyboard X, which is the extraction now)
       continue;
     }
     // dpad down browses the bag rather than using medical while it is open
@@ -16240,10 +16246,10 @@ function keysRowHtml(){
 var PAD_BTN=['A','B','X','Y','LB','RB','LT','RT','VIEW','MENU','LS','RS','D-UP','D-DOWN','D-LEFT','D-RIGHT'];
 var PAD_ACTS=[[10,'sprint','MOVE'],[0,'dodge roll','MOVE'],[1,'crouch','MOVE'],
   [7,'fire, use what is selected','FIGHT'],[6,'focus aim (hold)','FIGHT'],[11,'focus aim (toggle)','FIGHT'],[14,'aim distance shorter','FIGHT'],[15,'aim distance longer','FIGHT'],
-  [2,'use, search, reload, call for extraction','FIGHT'],[3,'search in a ring, help a teammate','FIGHT'],
+  [2,'use, search, reload, call for extraction','FIGHT'],[3,'search in a ring, help a teammate, finish a downed pillager','FIGHT'],
   [4,'previous gun (hold: zoom out)','GEAR'],[5,'next gun (hold: zoom in)','GEAR'],[13,'item wheel (hold)','GEAR'],[8,'backpack','GEAR'],
   [12,'ping (hold: the map)','WORLD'],[9,'pause','WORLD']];
-var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8};
+var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8,KeyV:3};   // v27.xx (feel2g): V, the finisher, is on action 3 (Y)
 var PADB={waiting:null,armed:0,t0:0,note:null,sig:''};
 function padMapArr(){
   var m=(typeof P!=='undefined'&&P&&P.padmap&&typeof P.padmap==='object')?P.padmap:null, o=[], used={}, i, v;
@@ -16268,7 +16274,7 @@ function padLegendBuild(){
     ['MOVE',[['L STICK','move, analog'],[n(10),'sprint'],[n(1),'crouch'],[n(0),'dodge roll']]],
     ['FIGHT',[['R STICK','aim'],[n(7),'fire / use selected'],[n(6)+' / '+n(11),'focus aim, hold / toggle'],[(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-LEFT/RIGHT':(dl+' / '+dr),'aim distance'],[n(2),'reload']]],
     ['GEAR',[[n(4)+'/'+n(5)+' tap','change tactical belt slot'],[n(4)+'/'+n(5)+' hold','zoom out / in'],[n(13),'item wheel (hold), revive when down'],[n(8),'backpack']]],
-    ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
+    ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring; hold to finish a pillager'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
     ['TEAM',[[n(3),'backpack open: drop an item for a teammate'],[n(12),'ping, twice for danger']]]
   ];
 }
@@ -38404,7 +38410,7 @@ var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['B','crouch'],['A','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['RT','fire / use selected'],['LT / RS CLICK','focus aim, hold / toggle'],['D-LEFT/RIGHT','aim distance'],['X','reload']]],
   ['GEAR',[['LB/RB tap','change tactical belt slot'],['LB/RB hold','zoom out / in'],['D-DOWN','item wheel (hold), revive when down'],['VIEW','backpack']]],
-  ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
+  ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring; hold to finish a pillager'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
   // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): THE PING IS D-UP ON A CONTROLLER. This row said LB + RB, but both
   // bumpers together walk the belt and zoom and have not pinged since v16.46 moved the ping to D-UP, so the row taught a button
   // that does nothing. It names D-UP now, the same button the WORLD row above names.
@@ -44777,7 +44783,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.43: Fires, crates, the bounty, the convoy and the strike key are cleaned up. Check 27.43 fails on v27.42',
+  now:'v27.44: On a controller, hold Y on a downed pillager in reach to finish him. Check 27.44 fails on v27.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
