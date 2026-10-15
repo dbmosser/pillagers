@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.54 - HOWLER LANDING CIRCLE SHOWS THE REAL BLAST
+
+Co-op hunt while he was away. The Howler shell's red landing circle was drawn squashed: as wide as the blast but only six tenths as tall. The world is drawn true to scale (the frag marker and the air strike rings are round) and the shell hurts everyone within the same distance in every direction, so a man a bit north or south of the aim point stood outside the drawn circle and still got hit. Proven in the cloud: a man 75 south of the aim point, outside the drawn circle, lost health just like a man 75 east, who was inside it; the circle's outline was 90 wide but 54 tall. Now the filling disc, the faint full outline and the growing ring are drawn round; size, colour, fade and fill timing are unchanged. Next playtest: the Howler circle will look taller than before, the same width, and now shows exactly where the shell hurts.
+
+MEASURED. Check 28.54 passes, and fails on v28.53.
 ## v28.53 - NO FINISH PROMPT WHILE YOU DIE
 
 Co-op hunt while he was away. When you die there is a 1.5 second beat before the death card. In that beat the FINISH [V] ring and text stayed over a downed pillager in reach, though V does nothing while you die. Proven in the cloud: FINISH drawn over a downed pillager in reach, then the death, and every frame of the beat still drew FINISH while holding V did nothing. The prompt now needs you alive. Standing, it shows as before.

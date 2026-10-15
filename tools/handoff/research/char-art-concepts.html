@@ -129,7 +129,7 @@ function stitchH(c,x,y,w,col){c.fillStyle=col;for(let i=0;i<w;i+=2)c.fillRect(x+
 function chibi(c,L,Q){
   const S=L.sch,p=S.p,s=S.s,a=S.a,B=Q.bob;
   const skin=skinR(SKIN[L.skin]),hair=ramp(HAIR[L.hair]);
-  const trs=mix(p,'#0c0a14',.5), plate=mix(s,p,.20), boot=mix(s,'#3a2e28',.30);
+  const trs=mix(p,'#0c0a14',.5), plate=mix(s,'#7a7e86',.40), boot=mix(s,'#3a2e28',.30);
   shadow(c,3,1,12,3.8,.40);                 // the cast shadow falls to the bottom-right
   shadow(c,-.5,.5,7,2,.30,true);            // the contact shadow under the feet
   const O={x:3,y:-16-B},ca=Math.cos(Q.a),sa=Math.sin(Q.a),H2={x:O.x+ca*12-sa*1,y:O.y+sa*12+ca*1};
@@ -151,7 +151,7 @@ function chibi(c,L,Q){
   }
   // ---- upper body (breathes and bobs) ----
   c.save();c.translate(0,-B);
-  blk(c,-6,-23,12,12,3,p);                   // coat
+  blk(c,-7,-23,14,12,3,p);                   // coat
   weave(c,-5,-22,10,10,.07);
   R(c,-5,-23,10,1,ramp(p).hi);
   // plate carrier
@@ -231,7 +231,7 @@ function chibiHead(c,L,Q,p,s,a,skin,hair){
   }
   // ---- headgear ----
   if(hd==='tach'){
-    const hc=mix('#5a6358',s,.25),hr=ramp(hc);
+    const hc=mix('#79836f',s,.10),hr=ramp(hc);
     blk(c,-8,-43,16,10,5,hc,{R:hr});                                // the dome
     R(c,-6,-42,6,1,hr.hi); R(c,-7,-41,1,3,hr.hi); R(c,-8,-34,16,1,hr.dk);
     dots(c,'#2b302a',[-5,-38,-2,-38,1,-38]);                         // net loops
@@ -278,8 +278,8 @@ function hsh(x,y){let h=(x*374761393+y*668265263)|0;h=(h^(h>>>13))*1274126177|0;
 function wear(c,x,y,w,h,k){
   k=k||1;const m='#b4b9c0';
   c.fillStyle=m;
-  for(let i=1;i<w-1;i++){ if(hsh(x+i,y)<.20*k) c.fillRect(x+i,y,1,1); if(hsh(x+i,y+h)<.22*k) c.fillRect(x+i,y+h-1,1,1); }
-  for(let j=1;j<h-1;j++){ if(hsh(x,y+j)<.14*k) c.fillRect(x,y+j,1,1); if(hsh(x+w,y+j)<.10*k) c.fillRect(x+w-1,y+j,1,1); }
+  for(let i=1;i<w-1;i++){ if(hsh(x+i,y)<.13*k) c.fillRect(x+i,y,1,1); if(hsh(x+i,y+h)<.14*k) c.fillRect(x+i,y+h-1,1,1); }
+  for(let j=1;j<h-1;j++){ if(hsh(x,y+j)<.09*k) c.fillRect(x,y+j,1,1); if(hsh(x+w,y+j)<.07*k) c.fillRect(x+w-1,y+j,1,1); }
   c.fillStyle='rgba(20,14,10,.30)';c.fillRect(x+1,y+h-2,w-2,1);
 }
 function seam(c,x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h);}
@@ -288,24 +288,24 @@ function gear(c,L,Q){
   const under=mix(s,'#4a4a56',.30), underR=ramp(under), boot=mix(s,'#3c322c',.35), pk=mix(s,p,.10), leath='#5c4430';
   shadow(c,4,1,16,4.6,.42);
   shadow(c,0,.5,9,2.2,.30,true);
-  const O={x:5,y:-22-B},ca=Math.cos(Q.a),sa=Math.sin(Q.a),H2={x:O.x+ca*13-sa*1,y:O.y+sa*13+ca*1};
+  const O={x:5,y:-20-B},ca=Math.cos(Q.a),sa=Math.sin(Q.a),H2={x:O.x+ca*13-sa*1,y:O.y+sa*13+ca*1};
   if(Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,1,a);c.restore(); }
   gearPack(c,L,B,p,s,a,pk);
-  limb(c,-8,-28-B,H2.x,H2.y,5,under,{ex:1,ey:-19-B});                  // the support arm, behind the plate
+  limb(c,-8,-26-B,H2.x,H2.y,5,under,{ex:1,ey:-17-B});                  // the support arm, behind the plate
   // ---- legs: thick, with knee plates and a thigh pouch ----
   const lg=[{cx:-4.5,sw:-Q.sw,lf:Q.liftB,pouch:0},{cx:4.5,sw:Q.sw,lf:Q.liftA,pouch:1}];
   for(const g of lg){
-    const x=Math.round(g.cx+g.sw*.6-3.5),h=Math.max(5,11-g.lf);
-    blk(c,x,-17,7,h,2,under,{R:underR});
-    weave(c,x,-17,7,h,.08);
-    blk(c,x+1,-14,5,5,2,p,{R:pr}); R(c,x+1,-12,5,1,a); wear(c,x+1,-14,5,5,1);          // the knee plate
-    if(g.pouch){ blk(c,x+4,-17,4,5,1,pk); R(c,x+4,-15,4,1,ramp(pk).hi); R(c,x+5,-13,1,1,'#b8b0a0'); }
+    const x=Math.round(g.cx+g.sw*.6-3.5),h=Math.max(4,9-g.lf);
+    blk(c,x,-15,7,h,2,under,{R:underR});
+    weave(c,x,-15,7,h,.08);
+    blk(c,x,-12,7,4,1,p,{R:pr}); R(c,x+1,-10,5,1,a); wear(c,x,-12,7,4,.8);          // the knee plate
+    if(g.pouch){ blk(c,x+4,-15,4,5,1,pk); R(c,x+4,-13,4,1,ramp(pk).hi); R(c,x+5,-11,1,1,'#b8b0a0'); }
     blk(c,x-1,-7-g.lf,9,7,2,boot);                                   // boot
     blk(c,x+3,-7-g.lf,5,4,2,p,{ol:0}); R(c,x-1,-1-g.lf,9,1,'#0a0808');   // the toe cap in paint, the sole
     R(c,x-1,-7-g.lf,9,1,mix(a,'#000',.15));
   }
   // ---- upper body ----
-  c.save();c.translate(0,-B);
+  c.save();c.translate(0,2-B);
   blk(c,-8,-31,16,15,3,under,{R:underR}); weave(c,-7,-30,14,13,.08);
   R(c,-8,-18,16,2,INK); R(c,-7,-18,14,1,leath); stitchH(c,-7,-18,14,'#8a6a46'); blk(c,-1,-19,4,3,1,'#cfc6ae',{ol:0}); R(c,0,-18,2,1,'#3a3328');   // belt and a brass buckle
   // chest plate by vest type
@@ -344,7 +344,7 @@ function gear(c,L,Q){
   gearHead(c,L,p,s,a,pr,under);
   c.restore();
   // ---- near arm, bracer, gloves, gun ----
-  const Nh={x:10,y:-29-B};
+  const Nh={x:10,y:-27-B};
   if(!Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,1,a);c.restore(); }
   limb(c,Nh.x,Nh.y,O.x,O.y,5.4,under);
   blk(c,Math.round((Nh.x+O.x)/2)-2,Math.round((Nh.y+O.y)/2)-2,5,5,2,p,{R:pr,ol:1}); R(c,Math.round((Nh.x+O.x)/2)-2,Math.round((Nh.y+O.y)/2)+1,5,1,a);
@@ -353,7 +353,7 @@ function gear(c,L,Q){
   R(c,Math.round(O.x)-1,Math.round(O.y)-2,3,1,ramp(gl).hi);
 }
 function gearPack(c,L,B,p,s,a,pk){
-  const t=L.pack; c.save();c.translate(0,-B);
+  const t=L.pack; c.save();c.translate(0,2-B);
   const pr=ramp(pk);
   if(t==='fuel'){
     const tc=mix(a,'#1a1c14',.55),tr=ramp(tc);
@@ -434,10 +434,10 @@ function bold(c,L,Q){
   const a=L.sch.a,B=Q.bob,p=lift(L.sch.p,.26),s=lift(L.sch.s,.13);
   const trs=mix(s,p,.45), boot=mix(s,'#2a2420',.1), skin=skinR(SKIN[L.skin]);
   shadow(c,4,1,13,3.4,.45,true);
-  const O={x:4,y:-18-B},ca=Math.cos(Q.a),sa=Math.sin(Q.a),H2={x:O.x+ca*12-sa*1,y:O.y+sa*12+ca*1};
+  const O={x:4,y:-16-B},ca=Math.cos(Q.a),sa=Math.sin(Q.a),H2={x:O.x+ca*12-sa*1,y:O.y+sa*12+ca*1};
   if(Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,2,a);c.restore(); }
   boldPack(c,L,B,p,s,a);
-  limb(c,-8,-25-B,H2.x,H2.y,5.4,p,{ex:0,ey:-17-B,ol:1.5});
+  limb(c,-8,-23-B,H2.x,H2.y,5.0,p,{ex:0,ey:-15-B,ol:1.5});
   // ---- legs ----
   const lg=[{cx:-3.5,sw:-Q.sw,lf:Q.liftB},{cx:3.5,sw:Q.sw,lf:Q.liftA}];
   for(const g of lg){
@@ -449,7 +449,7 @@ function bold(c,L,Q){
     R(c,x-1,-1-g.lf,9,1,INK); R(c,x+5,-6-g.lf,3,1,mix(a,'#fff',.6));
   }
   // ---- body ----
-  c.save();c.translate(0,-B);
+  c.save();c.translate(0,2-B);
   const vt=L.vest, pd=L.pads, stl=mix('#9aa6b6',p,.3);
   bsh(c,pPoly([[-10,-29],[10,-29],[7,-14],[-7,-14]],3),p);                       // V-shaped torso
   if(vt==='heavy'){
@@ -478,14 +478,14 @@ function bold(c,L,Q){
   boldHead(c,L,Q,p,s,a,skin);
   c.restore();
   // ---- near arm, fist, gun ----
-  const Nh={x:9,y:-25-B};
+  const Nh={x:9,y:-23-B};
   if(!Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,2,a);c.restore(); }
-  limb(c,Nh.x,Nh.y,O.x,O.y,5.8,p,{ol:1.5});
+  limb(c,Nh.x,Nh.y,O.x,O.y,5.2,p,{ol:1.5});
   R(c,Math.round(Nh.x*.4+O.x*.6)-2,Math.round(Nh.y*.4+O.y*.6),4,3,a);              // the accent cuff
   bsh(c,pRR(O.x-3.2,O.y-2.8,6.4,5.6,2.5),s); bsh(c,pRR(H2.x-3.2,H2.y-2.8,6.4,5.6,2.5),s);
 }
 function boldPack(c,L,B,p,s,a){
-  const t=L.pack;c.save();c.translate(0,-B);
+  const t=L.pack;c.save();c.translate(0,2-B);
   if(t==='fuel'){
     const tc=mix(a,'#2a2a22',.4);
     bsh(c,pRR(-20,-36,8,20,4),tc); bsh(c,pRR(-14,-33,8,17,4),mix(tc,p,.3));
@@ -499,7 +499,7 @@ function boldPack(c,L,B,p,s,a){
 }
 function boldHead(c,L,Q,p,s,a,skin){
   const hd=L.head, hair=ramp(HAIR[L.hair]);
-  const eye=(x,y)=>{ R(c,x,y,3,4,'#fff'); R(c,x+1,y+1,2,3,INK); R(c,x+2,y+1,1,1,'#fff'); };
+  const eye=(x,y)=>{ R(c,x,y,3,3,'#fff'); R(c,x+1,y,2,3,INK); R(c,x+2,y,1,1,'#fff'); };
   const glass=(x,y,w,h,r)=>{ bsh(c,pRR(x,y,w,h,r),a,{ow:1.3}); R(c,x+1,y+1,Math.max(1,w-6),1,'#fff'); R(c,x+w-4,y+h-2,2,1,mix(a,'#fff',.6)); };
   if(hd==='heavy'){
     const hc=mix('#aab4c4',p,.28);
@@ -510,29 +510,33 @@ function boldHead(c,L,Q,p,s,a,skin){
     R(c,-5,-33,10,2,INK); R(c,-4,-32,2,1,'#e6ebf2');R(c,0,-32,2,1,'#e6ebf2');R(c,4,-32,1,1,'#e6ebf2');
     return;
   }
-  // head: a jaw you could land a punch on
-  bsh(c,pPoly([[-7.5,-43],[7.5,-43],[8,-35],[6,-29.5],[-6,-29.5],[-8,-35]],3.5),SKIN[L.skin],{R:skin});
+  // head: a squared jaw, a grown-up face
+  bsh(c,pPoly([[-7,-43],[7,-43],[7.5,-35],[5.5,-29.5],[-5.5,-29.5],[-7.5,-35]],3.2),SKIN[L.skin],{R:skin});
   R(c,-9,-38,2,4,skin.lo);                                                    // far ear
-  eye(-2,-37); eye(3,-37);
-  c.strokeStyle=INK;c.lineWidth=1.7;c.lineCap='round';c.beginPath();c.moveTo(-3.4,-39.6);c.lineTo(1.2,-38.4);c.moveTo(2.8,-38.4);c.lineTo(7.2,-39.8);c.stroke();   // brows, angled in
-  R(c,2,-32,4,1,INK); R(c,6,-33,1,1,INK);                                    // a smirk
-  R(c,8,-35,1,2,skin.lo);
+  eye(-2,-38); eye(3,-38);
+  c.strokeStyle=INK;c.lineWidth=2;c.lineCap='round';c.beginPath();c.moveTo(-3.6,-40.4);c.lineTo(1.4,-39.2);c.moveTo(2.6,-39.2);c.lineTo(7,-40.6);c.stroke();   // heavy brows, angled in
+  R(c,8,-36,1,2,skin.lo);
   if(hd==='tach'){
+    bsh(c,pPoly([[-6.5,-35],[6.5,-35],[5.5,-29.5],[-5.5,-29.5]],2),s,{ow:1.3});    // a mask over the lower face
+    R(c,-4,-33,8,1,a); dots(c,mix(s,'#fff',.4),[-3,-31,-1,-31,1,-31,3,-31]);
     bsh(c,pRR(-9,-49,18,9,5),p);                                              // the helmet in the primary
-    R(c,-9,-43,18,2,a); R(c,-3,-49,3,6,a); R(c,-8,-46,2,2,INK);R(c,6,-46,2,2,INK);
+    R(c,-9,-43,18,2,a); R(c,-3,-49,3,6,a);
     bsh(c,pRR(-10.5,-42,4,8,1.5),s,{ow:1.2}); bsh(c,pRR(6.5,-42,4,8,1.5),s,{ow:1.2});   // ear pro
-    glass(-6,-45.5,14,3,1.5);                                                // the visor lens pushed up on the front of the helmet
+    glass(-6,-46,14,3,1.5);                                                  // the visor lens pushed up on the front of the helmet
   } else if(hd==='beanie'){
     const kn=mix(p,'#fff',.12);
     bsh(c,pRR(-9,-49,18,10,6),kn); bsh(c,pRR(-10,-43,20,4,2),a,{ow:1.3}); R(c,-9,-42,18,1,mix(a,'#fff',.6));
     bsh(c,pEll(0,-51,3.6,3.6),a,{ow:1.3});                                     // a big pom
     R(c,-9,-40,2,5,hair.mid);R(c,7,-40,2,6,hair.mid);
+    R(c,1,-32,5,1,INK); R(c,6,-33,1,1,INK);                                    // a smirk
+    bsh(c,pRR(-7,-31,14,3.5,1.7),a,{ow:1.2});                                  // the scarf
   } else {
     bsh(c,pRR(-8,-48,16,8,4),p);                                               // cap
     bsh(c,pPoly([[1,-42],[11,-42],[12,-40],[1,-40]],1),mix(p,'#000',.3),{ow:1.3});
     R(c,-2,-46,4,3,a);
-    glass(-7,-38,15,4,2);                                                       // shades over the eyes
+    glass(-7,-39,15,4,2);                                                       // shades over the eyes
     R(c,-9,-41,2,6,hair.mid);
+    R(c,1,-32,5,1,INK); R(c,6,-33,1,1,INK); R(c,2,-31,3,1,'#fff');           // a grin
   }
 }
 /* ===== PAGE: layout, ground patches, the four looks, the poses ===== */

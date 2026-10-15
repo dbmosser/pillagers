@@ -1,0 +1,7 @@
+v28.54: howler landing circle shows the real blast
+
+The Howler landing circle is now round and shows exactly where the shell hurts; before it was squashed and men just above or below it still got hit.
+
+Check 28.54. Fails on v28.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
