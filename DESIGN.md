@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.49 - THE BOSS BAR IS ON THE HUD PLATE
+
+Co-op hunt while he was away. His rule of 2026-10-14: the new features are integrated and polished to the level of the old. The boss bar was a flat dark box with a hand picked red and an amber name. It is now on the one HUD plate (rail, track and fill in the danger colour, the name in bone), and the Overseer bar marks the two thresholds its phases change at (66 and 33 percent) as ticks across the fill and names the phase it is in beside the name. Its place, its size, the 4K scale and the edge that the offer line starts under are unchanged.
+
+MEASURED. Check 27.49 passes, and fails on v27.48.
 ## v27.48 - THE WHAT IS NEW CARD NAMES THE FEED
 
 Co-op hunt while he was away. The card was stamped v27.32 and the stamp may not trail the build by more than 0.15. Its new line names the feed and the alert lane.

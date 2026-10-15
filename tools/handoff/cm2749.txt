@@ -1,0 +1,7 @@
+v27.49: the boss bar is on the hud plate
+
+The boss bar is now on the HUD plate and the Overseer bar shows its phases.
+
+Check 27.49. Fails on v27.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

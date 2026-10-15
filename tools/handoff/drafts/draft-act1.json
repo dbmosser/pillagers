@@ -8,7 +8,7 @@
                       "replacement":  "var HUDREG={}, HUDPREV={};   // v16.xx (act1): HUDPREV, the registry of the frame before, for the pieces that give way to one drawn after them"
                   },
                   {
-                      "anchor":  "  HUDREG={};   // v27.45 (hud1): this frame\u0027s registry starts empty",
+                      "anchor":  "  HUDREG={};   // v27.48 (hud1): this frame\u0027s registry starts empty",
                       "replacement":  "  HUDPREV=HUDREG; HUDREG={};   // v16.xx (hud1): this frame\u0027s registry starts empty; v16.xx (act1): the last one is kept"
                   },
                   {
