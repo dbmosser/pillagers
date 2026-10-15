@@ -9106,7 +9106,8 @@ window.__REGRESS=[
        for(i=0;i<arcs.length;i++) if(Math.abs(arcs[i][0]-640)<0.5&&Math.abs(arcs[i][1]-360)<0.5&&arcs[i][2]>=19*z*xs) ok++;
        if(ok<2) bad.push('FIVE: the combo ring was not drawn at the cursor, outside the magazine ring ('+arcs.length+' arcs)');
        else { q=arcs[arcs.length-1]; if(Math.abs((q[4]-q[3])/6.2832-0.5)>0.06) bad.push('FIVE: the ring a chain half spent shows '+((q[4]-q[3])/6.2832).toFixed(2)+' of its sweep, not a half'); }
-       if(txts.join('|').indexOf('LONG'+' SHOT')<0) bad.push('FIVE: the medal plate did not draw its name');
+       var txm=[]; if(typeof styMedalDraw==='function'){ proto.fillText=function(){ txm.push(String(arguments[0])); return oFt.apply(this,arguments); }; try{ styMedalDraw(ctx,p); } finally { proto.fillText=oFt; } }   // partyp1: the medal is an emblem row at the left edge, its name on a plate under the newest
+       if((txts.join('|')+'|'+txm.join('|')).indexOf('LONG'+' SHOT')<0) bad.push('FIVE: the medal did not draw its name');
        if(txts.join('|').indexOf('x3')<0) bad.push('FIVE: the ring does not show its multiplier');
        arcs.length=0; txts.length=0; ARCADE.streak=null; g.sty.pops.length=0;
        proto.arc=function(){ arcs.push([].slice.call(arguments)); return oArc.apply(this,arguments); };
