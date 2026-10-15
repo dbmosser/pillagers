@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.89 - THE CROWBAR PAYS A PILLAGER THE SAME FROM BEHIND
+
+Co-op hunt while he was away. The cloud review of 2026-10-15, finding 14, and his answer 31 (consistent damage in pillager fights, no weak spots or bonus damage). v27.06 took the back shot bonus off rounds into a pillager, but the crowbar swing still did half again into a pillager back. It now does a pillager the same damage from every side. A machine still takes half again from behind, as before. The swing, its reach, its cooldown and its base damage are unchanged.
+
+MEASURED. Check 27.89 passes, and fails on v27.88.
 ## v27.88 - THE CARD DOES NOT CLAIM SHARED POWER-UPS
 
 Co-op hunt while he was away. From the cloud review of the party builds: the What is New card said power-ups are shared in the two player game, which is not true. Each window drops power-ups for its own kills and the pickups belong to that window, nothing about them goes over the link. The card now says each player has his own power-ups.

@@ -1,0 +1,5 @@
+## v27.89 - THE CROWBAR PAYS A PILLAGER THE SAME FROM BEHIND
+
+Co-op hunt while he was away. The cloud review of 2026-10-15, finding 14, and his answer 31 (consistent damage in pillager fights, no weak spots or bonus damage). v27.06 took the back shot bonus off rounds into a pillager, but the crowbar swing still did half again into a pillager back. It now does a pillager the same damage from every side. A machine still takes half again from behind, as before. The swing, its reach, its cooldown and its base damage are unchanged.
+
+MEASURED. Check 27.89 passes, and fails on v27.88.

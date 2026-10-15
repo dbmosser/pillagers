@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.88';
+var VER='27.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20769,7 +20769,7 @@ if(wep.mag===0){
         // Listener bites already do (v8.59).
         if(!losClear(sh.x,sh.y,_me.x,_me.y,G.map.segs)) continue;
         var _mdm=wep.dmg*pwrMul('dmg',fromPlayer);
-        if(Math.abs(Math.atan2(Math.sin(base-_me.face),Math.cos(base-_me.face)))<0.9) _mdm*=1.5;
+        if(_me.kind!=='raider'&&Math.abs(Math.atan2(Math.sin(base-_me.face),Math.cos(base-_me.face)))<0.9) _mdm*=1.5;   // v27.xx (crowbar15), the cloud review of 2026-10-15 (finding 14) and his answer 31: no bonus damage on a pillager, from any side; a machine keeps its blow from behind
         if(NET.on&&netEntsPeer()) netShotSend(_me,_mdm,base,null); else _me.hp-=_mdm;   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
         _me.hitT=.16; _me.pHitT=.3; _me.pHitSeat=0;   // v11.37: your strike provokes; v17.31, co-op hunt 2026-09-28: yours, not a seat
         notoAggress(_me);            // v8.30: same rule, bare hands included
@@ -45808,7 +45808,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.88: The What is New card says each player has his own power-ups. Check 27.88 fails on v27.87',
+  now:'v27.89: The crowbar does a pillager the same damage from behind as from the front. Check 27.89 fails on v27.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v27.89: the crowbar pays a pillager the same from behind
+
+The crowbar does a pillager the same damage from behind as from the front.
+
+Check 27.89. Fails on v27.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

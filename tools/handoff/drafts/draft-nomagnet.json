@@ -12,7 +12,7 @@
                       "replacement":  ""
                   },
                   {
-                      "anchor":  "  else if(k===\u0027mag\u0027){\n    c.lineWidth=lw*1.4; c.beginPath(); c.arc(x,y+s*0.12,s*0.62,0,3.1416); c.stroke();\n    c.beginPath(); c.moveTo(x-s*0.62,y+s*0.12); c.lineTo(x-s*0.62,y-s*0.55); c.moveTo(x+s*0.62,y+s*0.12); c.lineTo(x+s*0.62,y-s*0.55); c.stroke();\n    c.fillStyle=\u0027rgba(255,92,76,1)\u0027; c.fillRect(x-s*0.86,y-s*0.95,s*0.48,s*0.4); c.fillStyle=\u0027rgba(232,244,255,1)\u0027; c.fillRect(x+s*0.38,y-s*0.95,s*0.48,s*0.4);\n  }\n",
+                      "anchor":  "  else if(k===\u0027mag\u0027){\n    c.beginPath(); c.arc(x,y+s*0.15,s*0.6,0,3.1416); c.stroke();\n    c.beginPath(); c.moveTo(x-s*0.6,y+s*0.15); c.lineTo(x-s*0.6,y-s*0.6); c.moveTo(x+s*0.6,y+s*0.15); c.lineTo(x+s*0.6,y-s*0.6); c.stroke();\n    c.fillStyle=\u0027rgba(255,255,255,1)\u0027; c.fillRect(x-s*0.85,y-s*0.9,s*0.5,s*0.32); c.fillRect(x+s*0.35,y-s*0.9,s*0.5,s*0.32);\n  }\n",
                       "replacement":  ""
                   },
                   {
