@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.18 - PLAYER 2 HUNTS THE SAME GOLDEN ENEMY
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The golden enemy and its clue hunt were worked out by each window for itself, from where each player stood, so the two players could hunt two different golden machines with two different sets of clues, and the fall of the real one was announced to the host alone. The host now says which body is gilded and how the hunt stands, and the linked window keeps exactly that: the same golden machine with its shine, the same three props, the same search circle on the minimap and the map. Player 2 can take a clue too: it is said in his window at once and told to the host, which marks it for both and shrinks the circle for both. When the golden enemy falls GOLDEN ENEMY DOWN is said to both, the hunt ends, and the hoard is marked on both maps.
+
+MEASURED. Check 27.18 passes, and fails on v27.17.
 ## v27.17 - THE GUN CARD HAS A SPOT OF ITS OWN
 
 Co-op hunt while he was away. His note of 2026-10-14: the gun cards on the right are causing collisions. The card shown when you pick up a gun sat at the right edge, 60 percent of the way down, which is where CONDITIONS (grown by its contracts), the run goals, the co-op kill feed and the pickup rows all end up, so on a pickup it landed on top of one or more of them. It now stands on the gear readout at the bottom right, just left of the right column, where nothing else is drawn, and it steps further left if the kill feed or a wide pickup row reaches it. The kill feed also keeps clear of the run goals now, as it did of CONDITIONS.

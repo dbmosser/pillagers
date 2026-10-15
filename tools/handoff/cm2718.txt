@@ -1,0 +1,7 @@
+v27.18: player 2 hunts the same golden enemy
+
+Player 2 now hunts the same golden enemy as player 1 and finds the same clues.
+
+Check 27.18. Fails on v27.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
