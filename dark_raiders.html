@@ -2225,7 +2225,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.02';
+var VER='27.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44046,7 +44046,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.02: The stash sorts by type, filters by chip, and any item can be locked. Check 27.02 fails on v27.01',
+  now:'v27.03: The shop stock re-rolls after every raid: two of four extras are on the counter. Check 27.03 fails on v27.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47127,6 +47127,26 @@ if(r.ghostIn) line+=' ghost:1';
   L.push('=== END RECORDER ===');
   return L.join('\n');
 }
+// v26.xx (career6), HIS YES (2026-10-14) to suggestion 35, THE SHOP STOCK THAT RE-ROLLS EACH RAID: "shop stock re-rolls each raid", not by the clock. The counter always has the basics
+// (Bandage, Medkit, Ammo Box, Armor Plate, the Scav Pistol and the Compact SMG, the floor you can always buy back to); of the four extras (Smoke Canister, Decoy Beacon, Frag Charge,
+// Stim Injector) two are on the counter at a time, and WHICH two is rolled again every time a raid is finished (the run count, P.runs, is the roll number). The roll is a side stream
+// (sideStream, SHOP_TAG, the way the run goals are drawn), so it touches no seeded stream and the same roll number always gives the same two. An extra that is out shows greyed in the
+// grid with SOLD OUT where its price was, its row says Sold out and cannot be bought, and the ascent check does not offer it. Prices do not change; nothing is cheaper or dearer.
+var SHOP_TAG=67, SHOP_PICK=2, SHOP_CORE={bandage:1,medkit:1,ammobox:1,plate:1,pistol:1,smg:1}, SHOP_MEMO={n:-1,set:null};
+function shopRollNo(){ return (P&&((+P.runs)|0))|0; }
+function shopStockSet(){
+  var n=shopRollNo(), pool=[], out={}, i, j, t;
+  if(SHOP_MEMO.set&&SHOP_MEMO.n===n) return SHOP_MEMO.set;
+  for(i=0;i<SHOP.length;i++) if(SHOP[i]&&!SHOP_CORE[SHOP[i].k]&&SHOP[i].kind!=='pack') pool.push(SHOP[i].k);
+  sideStream((Math.imul(n+1,2654435761)>>>0)||1,SHOP_TAG,function(){
+    for(i=pool.length-1;i>0;i--){ j=Math.floor(rr()*(i+1)); t=pool[i]; pool[i]=pool[j]; pool[j]=t; }
+  });
+  for(i=0;i<pool.length&&i<SHOP_PICK;i++) out[pool[i]]=1;
+  SHOP_MEMO.n=n; SHOP_MEMO.set=out;
+  return out;
+}
+function shopStocked(o){ return !o||!!SHOP_CORE[o.k]||o.kind==='pack'||!!shopStockSet()[o.k]; }
+careerStyle('careercss6','.vcell.sold{opacity:.5}.vcell.sold .vp{color:var(--danger);letter-spacing:.1em}');
 function renderShop(){
   // HIS NOTE, 2026-08-25: "requisition -- it doesn't show how much money i have
   // so that's annoying", and the same for Vesh. Every counter that takes money
@@ -47184,6 +47204,7 @@ function renderShop(){
         saveProfile(); renderShop(); renderHub();
       };
     }
+    if(!owned&&!shopStocked(o)){ b.textContent='Sold out'; b.disabled=true; b.onclick=null; }   // v26.xx (career6): an extra that is out this raid
     var sic=o.kind==='wep'?o.k:(o.kind==='pack'?'pack':o.k);
     row.appendChild(iconImg(sic,26));
     row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
@@ -47292,10 +47313,10 @@ function renderShopGrid(){
     var btn=row.querySelector('button');
     var locked=(P.xp||0)<o.rep;
     var cell=document.createElement('div');
-    cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'')+((o.price>(P.credits||0))?' poor':'');   // v21.46: a price you cannot pay reads grey
+    cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'')+((o.price>(P.credits||0))?' poor':'')+(shopStocked(o)?'':' sold');   // v26.xx (career6)   // v21.46: a price you cannot pay reads grey
     cell.innerHTML=iconImgHTML(shopEntryIcon(o),64)+
       '<div class="vlbl">'+escHtml(shopEntryLabel(o))+'</div>'+
-      '<span class="vp">'+o.price.toLocaleString()+'</span>'+
+      '<span class="vp">'+(shopStocked(o)?o.price.toLocaleString():'SOLD OUT')+'</span>'+
       (locked?'<span class="vlk">\u25cf</span>':'');
     cell.title=shopEntryLabel(o)+(locked?('  (needs XP '+o.rep+')'):'');
     cell.onclick=function(){
@@ -58163,6 +58184,7 @@ function renderStage(prefill){
   var B=document.getElementById('stagebuy'); B.innerHTML='';
   SHOP.forEach(function(o){
     if((P.xp||0)<o.rep) return;
+    if(!shopStocked(o)) return;   // v26.xx (career6): and what is out this raid is not offered here either
     // label and ownership follow the trader's own rules so the two counters can
     // never tell you different things about the same thing
     var label='',owned=false,sub='';

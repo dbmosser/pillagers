@@ -1,0 +1,7 @@
+v27.03: the shop re-rolls each raid
+
+The shop stock re-rolls after every raid: two of four extras are on the counter.
+
+Check 27.03. Fails on v27.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

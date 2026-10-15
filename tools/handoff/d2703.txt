@@ -1,0 +1,5 @@
+## v27.03 - THE SHOP RE-ROLLS EACH RAID
+
+Co-op hunt while he was away. His yes to suggestion 35. The counter now has its stock rolled again every time a raid is finished, not by the clock. The basics are always there: Bandage, Medkit, Ammo Box, Armor Plate, the Scav Pistol and the Compact SMG. Of the four extras (Smoke Canister, Decoy Beacon, Frag Charge, Stim Injector) two are on the counter at a time, and which two changes with each raid. An extra that is out shows greyed in the grid with SOLD OUT where its price was, cannot be bought, and is not offered on the ascent check either. The roll is a side stream, so it does not touch the seeded raid, and the same raid count always gives the same counter. Prices are unchanged.
+
+MEASURED. Check 27.03 passes, and fails on v27.02.

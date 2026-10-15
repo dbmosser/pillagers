@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.03 - THE SHOP RE-ROLLS EACH RAID
+
+Co-op hunt while he was away. His yes to suggestion 35. The counter now has its stock rolled again every time a raid is finished, not by the clock. The basics are always there: Bandage, Medkit, Ammo Box, Armor Plate, the Scav Pistol and the Compact SMG. Of the four extras (Smoke Canister, Decoy Beacon, Frag Charge, Stim Injector) two are on the counter at a time, and which two changes with each raid. An extra that is out shows greyed in the grid with SOLD OUT where its price was, cannot be bought, and is not offered on the ascent check either. The roll is a side stream, so it does not touch the seeded raid, and the same raid count always gives the same counter. Prices are unchanged.
+
+MEASURED. Check 27.03 passes, and fails on v27.02.
 ## v27.02 - STASH SORT, FILTER AND LOCK
 
 Co-op hunt while he was away. His yes to suggestion 34. SORT on the stash gains TYPE (guns, then supplies, parts, salvage, keys, with the dearer first in each group) beside DEFAULT, VALUE, NAME, RARITY and COUNT. A row of filter chips under the tabs shows ALL, MEDICAL, VALUABLES (a thousand credits or more each) and LOCKED, each with how many it holds; one is on at a time, and the armoury row waits while a chip is on. And any item can be LOCKED: Lock (keep) on its menu (right-click, or Y on a controller) or the Lock button on its hover line puts a star on it. A locked item is never sold by SELL JUNK AND LOOSE SALVAGE, even if you tagged it as junk, has no Sell one or Sell all, and is pinned to the front of the grid whatever the sort. It can still be packed, put on a key and used. An older save has no locks.
