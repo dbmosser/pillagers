@@ -1,0 +1,7 @@
+v27.91: the player is a neon green chevron on the big map
+
+On the big map you are now a neon green chevron pointing where you face.
+
+Check 27.91. Fails on v27.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
