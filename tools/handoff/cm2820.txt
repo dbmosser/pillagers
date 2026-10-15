@@ -1,0 +1,7 @@
+v28.20: gun key and wheel names fit
+
+Every gun key and item wheel name on the stash now shows in full at 1440p and 4K.
+
+Check 28.20. Fails on v28.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

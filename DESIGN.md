@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.20 - GUN KEY AND WHEEL NAMES FIT
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: at the default menu size on a 1440p or 4K screen, and at 1920x1080 fullscreen, the GUN KEYS and ITEM WHEEL tiles on the stash cut their names off mid word (MARKSMAN 58 px of text in 35, CARBINE 45 in 35, SHOTGUN, PISTOL, SNIPER, ENERGY, BANDAGE, ARMOUR, TRIPWIRE). Proven in headless Chromium at 1920x1080 with the menu zoom 1.3 (the same layout as 2560x1440). The tile names drop to 12px with no letter spacing, the two plates sit 10px apart instead of 22, the tile insides are a little tighter, and the gun plate takes a touch more of the row; every name now shows whole with a few pixels to spare and the gun picture never touches its name.
+
+MEASURED. Check 28.20 passes, and fails on v28.19.
 ## v28.19 - PLAYER 2 KEEPS THE CONVOY WHEN THE HOST LEAVES
 
 Co-op hunt while he was away. His ruling: when the host is gone the remaining player picks up the raid. If the host left during the 20 second warning of a machine convoy, player 2's window started the convoy itself, but the host never sent where the convoy was going (only the host picks the destination), so the carrier was steered to NaN: the carrier and its armoured crawlers vanished off the map, the map mark was lost, KILL THE CARRIER could not be done and the event ran out with no crate. Proven in a staged pair: host launches a convoy, the world word goes to player 2, the host goes out, player 2 runs it live: carrier at NaN,NaN with destination undefined. The world word now carries the destination, player 2 takes it, and the carrier is never steered to a NaN point.

@@ -445,9 +445,9 @@
   .loslab b{ color:var(--bone); font-weight:600; }
   /* v26.xx (gunkeys2), his #50 (menus must look AAA): THE STASH SETUP PLATES, under the tactical belt. GUN KEYS (keys 1 to 9) and the item WHEEL (the eight ring places on a
      3 by 3 compass plate) are rows of chamfered tiles in the graphite and amber of the other windows: the key number or the place in amber, the picture, the name in condensed caps. */
-  #kitsetup .ksrow{ display:flex; gap:22px; padding:2px 12px 4px; }
+  #kitsetup .ksrow{ display:flex; gap:10px; padding:2px 12px 4px; }   /* v28.20 (cloud-menus-kit-tile-names-fit), CLOUD HUNT 2026-10-15: the names were cut at the default menu size from 1080p fullscreen up; the plates sit closer */
   #kitsetup .ksp{ flex:1 1 0; min-width:0; }
-  #kitsetup .ksp:first-child{ flex:1.1 1 0; }   /* v26.xx (gunkeys3): the nine class names (MARKSMAN) need a little more room than the wheel names (TRIPWIRE) */
+  #kitsetup .ksp:first-child{ flex:1.2 1 0; }   /* v26.xx (gunkeys3): the nine class names (MARKSMAN) need a little more room than the wheel names (TRIPWIRE) */   /* v28.20 (cloud-menus-kit-tile-names-fit), CLOUD HUNT 2026-10-15: 1.2 leaves MARKSMAN and TRIPWIRE the same spare room */
   #kitsetup .loslab{ padding:6px 0 6px; align-items:center; }
   #kitsetup .ksreset{ min-height:0; padding:3px 11px; font-family:var(--f-cond); font-weight:700; font-size:12px; letter-spacing:.18em; color:var(--tx-2); background:rgba(0,0,0,.35);
     border:1px solid var(--ui-line-hi); border-radius:0; cursor:pointer; clip-path:polygon(7px 0,100% 0,100% 100%,0 100%,0 7px); }
@@ -459,8 +459,8 @@
   #kitsetup .kst.padfocus{ clip-path:none; }
   #kitsetup .kst b{ flex:none; width:11px; font-weight:700; font-size:18px; line-height:1; color:var(--acc); }
   #kitsetup .kst .ic{ flex:none; }
-  #kitsetup .kst span{ min-width:0; overflow:hidden; white-space:nowrap; font-weight:700; font-size:13px; letter-spacing:.06em; color:var(--tx-1); text-transform:uppercase; }
-  #kitsetup .kst{ gap:6px; padding:0 6px; }
+  #kitsetup .kst span{ min-width:0; overflow:hidden; white-space:nowrap; font-weight:700; font-size:12px; letter-spacing:0; color:var(--tx-1); text-transform:uppercase; }   /* v28.20 (cloud-menus-kit-tile-names-fit), CLOUD HUNT 2026-10-15: 13px spaced did not fit MARKSMAN */
+  #kitsetup .kst{ gap:4px; padding:0 3px; }   /* v28.20 (cloud-menus-kit-tile-names-fit), CLOUD HUNT 2026-10-15: 4px still keeps the enlarged gun picture off its name */
   #kitsetup [data-gk] .ic{ transform:scale(1.4); }   /* a gun picture is a wide shape in a square: drawn larger it reads on a tile this size */
   #kitsetup .kstc{ justify-content:center; background:transparent; border:1px dashed var(--ui-line); clip-path:none; }
   #kitsetup .kstc span{ font-weight:700; font-size:12px; letter-spacing:.22em; color:var(--tx-2); }
@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.19';
+var VER='28.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46467,7 +46467,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.19: If your host leaves while a machine convoy is on its way, the convoy still comes and you can still kill the carrier for its crate. Check 28.19 fails on v28.18',
+  now:'v28.20: Every gun key and item wheel name on the stash now shows in full at 1440p and 4K. Check 28.20 fails on v28.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
