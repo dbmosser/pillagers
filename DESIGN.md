@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.89 - MAGNET, SHIELD BUBBLE AND SCREEN CLEAR
+
+Co-op hunt while he was away. The other three power-ups he said yes to join the drops. MAGNET (20 seconds) pulls the loose wrecks and bodies that still hold something, and the pickups on the floor, toward you from about fifty metres, and they stop at your feet; a wreck never slides through a wall or out of a shut room, and not while you are searching it. SHIELD BUBBLE (10 seconds) puts a bubble round you that takes every hit, a round, a blast or a fire, with a flash and a ping. SCREEN CLEAR is the nuke of the Zombies power-ups: a pulse leaves you and every ordinary machine on the screen dies. Bosses, elites, wardens and pillagers are not touched, and the machines it kills count for no streak and no kill, so the clear pays a flat thirty for each, up to four hundred. Each has its own colour, its own glyph and its own note, and no voice.
+
+MEASURED. Check 26.89 passes, and fails on v26.88.
 ## v26.88 - ARCADE POWER-UPS
 
 Co-op hunt while he was away. His yes to arcade power-ups, with the bottomless clip he asked for, after the Zombies power-ups. Kills now drop a glowing walk-over pickup at a low rate: about one in twenty, four times that for an elite, always from a boss, and never closer than fifteen seconds apart. Each is timed and has its own colour and its own short note, with no voice. BOTTOMLESS CLIP (20 seconds) makes every shot free and keeps the magazine full, so there is no reload and no dry gun. DOUBLE DAMAGE (15 seconds) makes every round and swing hit twice as hard. RAPID FIRE (15 seconds) shortens the gap between shots to about half. A ring of the power-up colour runs at your feet while it lasts, a timer chip for each sits above the belt, and a falling note marks the end. The drops are rolled from the raid seed and the kill number, so the same raid with the same kills drops the same pickups, and nothing else in the raid moves. DEMO and CAREER work the same, and each player drops for their own kills.

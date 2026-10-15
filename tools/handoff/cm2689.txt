@@ -1,0 +1,7 @@
+v26.89: magnet, shield bubble and screen clear
+
+Three more power-ups drop: a magnet, a shield bubble and a screen clear.
+
+Check 26.89. Fails on v26.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
