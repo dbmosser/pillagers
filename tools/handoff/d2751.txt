@@ -1,0 +1,5 @@
+## v27.51 - THE CENTRE BANNERS ARE ALERTS
+
+Co-op hunt while he was away. His order of 2026-10-14: messages that came in at different heights in the middle of the screen should come in one place. The notoriety stamp was a banner of its own at a quarter of the way down, and the drop-in count after a respawn was a big number at a third of the way down. Both are now alerts in the one lane at the top centre, the same place as the siege, the extraction call and the events. The notoriety alert reads the rating and its name with why underneath, and is a line in the feed as well; the drop-in alert counts down in the lane only. The end of raid cards stay as they are.
+
+MEASURED. Check 27.51 passes, and fails on v27.50.

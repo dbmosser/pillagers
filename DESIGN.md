@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.51 - THE CENTRE BANNERS ARE ALERTS
+
+Co-op hunt while he was away. His order of 2026-10-14: messages that came in at different heights in the middle of the screen should come in one place. The notoriety stamp was a banner of its own at a quarter of the way down, and the drop-in count after a respawn was a big number at a third of the way down. Both are now alerts in the one lane at the top centre, the same place as the siege, the extraction call and the events. The notoriety alert reads the rating and its name with why underneath, and is a line in the feed as well; the drop-in alert counts down in the lane only. The end of raid cards stay as they are.
+
+MEASURED. Check 27.51 passes, and fails on v27.50.
 ## v27.50 - THE ALERT IS POLISHED
 
 Co-op hunt while he was away. His answer of 2026-10-14 on the alert lane: polish the UI as you see fit, consistent with AAA practices. The headline of an alert is now the large size of the HUD (it was the size of a prompt), the plate drops in from a little above as it fades in, and a thin time bar along its foot runs down with the life of the alert, so a callout shows how long it will stay. The detail line under the headline keeps its size.
