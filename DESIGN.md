@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.35 - PLAYER 2 GETS CLOSE CALL
+
+Co-op hunt while he was away. An enemy round that reached player 2 while his roll i-frames were up never paid CLOSE CALL: the host pays it only in his own round loop, and the hit word the host sends player 2 did not say it was a round, so player 2 took it straight into damagePlayer, which stops at the i-frames with no stamina back, no +25 and no callout. Proven with eval: rolling player 2 kept 10 stamina and the score did not move, while the host in the same spot gets 55 and +25. Now the host marks a round on player 2 with rd:1 (a blast or a bite stays unmarked, matching the host, who is paid only for a round), and player 2 calls closeCall before damagePlayer when the word says round. A standing player 2 takes the round exactly as before.
+
+MEASURED. Check 28.35 passes, and fails on v28.34.
 ## v28.34 - PLAYER 2 SEES THE MENDER BEAMS
 
 Co-op hunt while he was away. The mender elite draws a green beam to each machine it is mending, the tell that says kill it first. Only the AI tick sets the beam (affixMend), and a linked window runs no AI (updateEnts returns at netEntsEase), so player 2 window never drew a single beam: the mender just stood there while the machines around it healed. Proven in one window staged as player 2: a mender with a half-hurt machine 60 away draws 0 beams. Now player 2 window works out the same targets with the host rule (same filter, same reach, up to 4, heals nothing) and draws the beams on the host rhythm, 0.4 s in every 0.5 s. No new data on the wire; the host is unchanged.

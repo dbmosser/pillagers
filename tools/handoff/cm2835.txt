@@ -1,0 +1,7 @@
+v28.35: player 2 gets close call
+
+Player 2 now gets CLOSE CALL (stamina back and +25) when he rolls through an enemy round, just like player 1.
+
+Check 28.35. Fails on v28.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
