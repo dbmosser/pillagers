@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.45 - THE WHAT IS NEW CARD NAMES POLISH PASS 5
+
+Co-op hunt while he was away. The card was stamped v28.32 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 28.45 passes, and fails on v28.44.
 ## v28.44 - NO FREE CONVOY CRATE WHEN THE HOST LEAVES
 
 Co-op hunt while he was away. His ruling: when the host is gone the remaining player picks up the raid. At the takeover player 2's window lets go of every body it only knew from host words, and that included the carrier and crew of a live machine convoy, a live bounty pillager and the Overseer mirror of a live rampage. On the next tick the window ran the host event code on those gone bodies. Proven on v27.43+ in a staged career pair (host launches all three, the world word goes to player 2 onto real net bodies, real netHostGone, then the event tick): CONVOY DOWN / SEARCH THE CRATE with a free CONVOY CRATE nobody earned; a false BOUNTY GONE / HE GOT AWAY; and the rampage kept pointing at the spliced Overseer mirror, so its ring and map mark sat on a ghost spot for the rest of its 120 s. Now, before those bodies are let go, a live convoy, bounty or rampage whose body came only from the host ends quietly: no crate, no line, no ring.
