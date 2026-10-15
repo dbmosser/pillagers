@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.57 - THE SUPPORT MG SPINS UP AGAIN AFTER YOU ARE DOWNED
+
+Co-op hunt while he was away. The Support MG spin only wound down on a standing frame, so going down froze it at whatever it was. Proven in the cloud: spun up to full, downed for seconds, picked up, and the first fresh pull fired at full rate in the first tenth of a second, where a fresh pull from a standstill fires nothing for 0.15 s. v26.60 says a long pause starts the spin over, and a bleed-out is the longest pause there is. Going down now lets the spin go and cuts the whirr, so a pull after a pick-up winds up from the start.
+
+MEASURED. Check 28.57 passes, and fails on v28.56.
 ## v28.56 - A ROUND THAT BREAKS A WRECK NO LONGER BOUNCES OFF IT
 
 Co-op hunt while he was away. A glancing shot of yours off a metal wreck bounces once. When that same shot was the one that broke the wreck, the wreck vanished but the shot still bounced off the empty space and could hit a man behind it for more than half its damage. Proven in the cloud: a healthy wreck bounced the shot, and the shot that broke the wreck bounced too, off nothing. Now a shot bounces only off a wreck that is still there; the shot that breaks it carries on through the gap as it did before bouncing existed. Shots off a standing wreck are unchanged.
