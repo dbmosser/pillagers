@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.29';
+var VER='28.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46493,7 +46493,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.29: FASHION has tabs for head, body, pack, colours and sets, a bigger turning picture, and rarity bars. Check 28.29 fails on v28.28',
+  now:'v28.30: If your host extracts or goes down while a coolant rupture or another raid event is on, it now ends for you instead of leaving the fog on you for the rest of the raid. Check 28.30 fails on v28.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53559,7 +53559,7 @@ function netWorldTake(peer,m){
     a.x=clamp(+m.hz[0],a.r,WORLD_W-a.r); a.y=clamp(+m.hz[1],a.r,WORLD_H-a.r);
     if(k>(a.moves|0)){ a.moves=k; a.at=0; if(!G.sim) say('HOT GROUND MOVED','obj',{sub:'Check your map.'}); }   // v22.xx (R53): an objective row in caps
   }
-  try{ if(m.fl) flowNetTake(m.fl); }catch(_fnt){}   // v27.04 (coop1): the host raid flow, kept as the host has it
+  try{ if(m.fl) flowNetTake(m.fl); else if(m.fl===null&&flowPeer()) flowHostOff(); }catch(_fnt){}   // v28.30 (cloud-coop-host-out-events-end), CLOUD HUNT 2026-10-15: a spectating host (extracted or dead) sends fl null, so its live raid events end here too instead of staying on for good
   return 'wd';
 }
 // A beacon called on this window: a linked window asks the host for the party. Returns whether it asked.
@@ -57343,8 +57343,16 @@ function flowNetOut(){
   // FLOW-NET-OUT (the next coop builds add their keys above this line)
   return o;
 }
+function flowHostOff(){   // v28.30 (cloud-coop-host-out-events-end), CLOUD HUNT 2026-10-15: the host left the raid (extracted or dead and spectating): every live or warned event fades out on this window, and no later host flow word is taken this raid
+  var S=G&&G.flow, L, i, e, n=0;
+  if(!S||!S.hostIn||S.hostOff) return 0;
+  S.hostOff=1; L=(S.ev&&S.ev.live)||[];
+  for(i=0;i<L.length;i++){ e=L[i]; if(e&&(e.ph==='live'||e.ph==='warn')){ e.ph='end'; e.et=0; n++; } }
+  return n;
+}
 function flowNetTake(fl){
-  if(!fl||typeof fl!=='object'||!flowOn()||!flowPeer()) return 0;
+  if(!fl||typeof fl!=='object'||!flowOn()||!flowPeer()||(G.flow&&G.flow.hostOff)) return 0;   // v28.30 (cloud-coop-host-out-events-end), CLOUD HUNT 2026-10-15: nothing from the host flow once it has left the raid (a late word would bring an ended event back)
+  flowS().hostIn=1;   // v28.30 (cloud-coop-host-out-events-end), CLOUD HUNT 2026-10-15: this window has taken host flow, so a later fl null means the host left
   if(fl.f&&typeof fl.f.length==='number') fireNetTake(fl.f);
   if(fl.e&&typeof fl.e.length==='number') evNetTake(fl.e);   // v27.07 (coop2): the raid events
   if(fl.s&&typeof fl.s.length==='number') shNetTake(fl.s);   // v27.12 (coop4): the strongholds

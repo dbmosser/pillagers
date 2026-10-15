@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.30 - RAID EVENTS END FOR PLAYER 2 WHEN THE HOST LEAVES
+
+Co-op hunt while he was away. In a career co-op raid, when the host extracts or dies while player 2 is still up, the host window spectates and keeps sending the world word, but with no raid flow in it (flowNetOut returns null once the raid is over for the host). Player 2 window only ends an event when a host word says so, and only reads the flow when it is there, so a live event stayed on for good: a coolant rupture kept his sight at 45 percent and the cold fog on him for the rest of the raid. Proven in a staged career pair: after 120 seconds the rupture was still live on player 2 with sight 0.45. Now the first spectating host word ends every live or warned event on player 2 window (it fades out as a normal end does), and no later host flow word is taken that raid, so a late word cannot bring it back. A live host that has no raid flow (a raid with no events) also sends null, but player 2 window has then never taken flow, so nothing happens there.
+
+MEASURED. Check 28.30 passes, and fails on v28.29.
 ## v28.29 - THE APPEARANCE SCREEN
 
 Co-op hunt while he was away. His order of 2026-10-15: the appearance screen redone in the game UI style, in the same window. Five tabs over the racks, HEAD, BODY, PACK, COLOURS and SETS, replace the one long wall of racks (every rack is on exactly one tab, and a slot on the left jumps to its own tab). The picture of your operator is bigger and turns slowly, facing all the way round while the window is open, so you see the pack, the pads and the face from every side. Every tile wears a bar in its rarity colour, from what it takes to earn it (grey for owned from the start, then green, blue, purple and gold for a Warden kill or the reward board), a scheme tile shows its three colours, and a locked tile still says in capitals how to earn it. Cosmetic only.

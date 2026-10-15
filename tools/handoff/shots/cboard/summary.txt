@@ -7,3 +7,7 @@
   c3-leaderboard-step                    staged      10.3s  
   c4-leaderboard-step-outside            NOT STAGED   9.4s    | ERROR Exception calling "Wait" with "1" argument(s): "One or more errors occurred."
   c5-personal-best                       NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
+== 1080 : window 1952x1183, viewport 1920x1080
+  c5-personal-best                       staged      20.4s  
+== 1080 : window 1952x1183, viewport 1920x1080
+  c4-leaderboard-step-outside            staged      10.1s  

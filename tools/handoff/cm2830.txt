@@ -1,0 +1,7 @@
+v28.30: raid events end for player 2 when the host leaves
+
+If your host extracts or goes down while a coolant rupture or another raid event is on, it now ends for you instead of leaving the fog on you for the rest of the raid.
+
+Check 28.30. Fails on v28.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
