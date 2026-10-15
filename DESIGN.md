@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.93 - THE PARTY SEED
+
+Co-op hunt while he was away. His yes to the party seed. NEW PARTY in the operator menu now also locks one seed and the sector for the night. Every DEMO run after it builds the same raid, the same layout, the same loot and the same golden enemy, so everyone who plays that night gets the same chance and the board is fair. The seed is picked the way a raid picks its own, so nothing else in the game moves, and it lasts until the party is twelve hours old or NEW PARTY is pressed again. The board page says SEEDED NIGHT with a four letter code, and the operator card shows the same code. A raid started with a seed of its own (a test, for one) still uses that seed.
+
+MEASURED. Check 26.93 passes, and fails on v26.92.
 ## v26.92 - THE GOLDEN ENEMY, EVERY RAID
 
 Co-op hunt while he was away. His answer that the golden enemy appears every raid. Every raid now gilds one machine or hostile pillager, picked from the ones at least 700 away from where you drop (never the Overseer, a hire or a bystander), and the same seed gilds the same one. It has three times the health, is a tenth bigger, and glows gold with a golden ellipse on the ground, three sparks and GOLDEN over its head. When it dies, however it dies, it leaves a golden hoard where it fell: three jackpot rolls and two cache rolls, marked on the maps until you open it, with GOLDEN ENEMY DOWN in the alert. The golden enemy is the thing the coming clue hunt will lead you to. DEMO and CAREER work the same.

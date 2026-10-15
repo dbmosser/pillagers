@@ -1,0 +1,7 @@
+v26.93: the party seed
+
+NEW PARTY locks one seed for the night, so every demo run plays the same raid.
+
+Check 26.93. Fails on v26.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

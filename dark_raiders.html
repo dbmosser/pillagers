@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.92';
+var VER='26.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43774,7 +43774,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.92: Every raid gilds one tough golden enemy that glows and drops a golden hoard when it dies. Check 26.92 fails on v26.91',
+  now:'v26.93: NEW PARTY locks one seed for the night, so every demo run plays the same raid. Check 26.93 fails on v26.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52663,10 +52663,11 @@ function arcadeDeploy(o){
   if(!ARCADE.on&&!arcadeSandboxIn(o.role||'host')) return false;
   arcadeCfgIn();
   if(G&&G.arcade) arcadeRaidStop('new');
-  var mi=(o.mapIx!==undefined)?o.mapIx:ARCADE.mapIx;
+  var mi=(o.mapIx!==undefined)?o.mapIx:((arcadePartyMap()>=0)?arcadePartyMap():ARCADE.mapIx);   // v26.xx (party6): the party sector
   P.mapIx=clamp((mi|0),0,FIXED_MAPS.length-1);
   if(o.cond) P.cond=o.cond;
   if(o.seed!==undefined) pendSeed=(o.seed>>>0);
+  else { var _ps=arcadePartySeed(); if(_ps) pendSeed=_ps; }   // v26.xx (party6): the party seed, unless a seed was passed
   ARCADE.deaths=0; ARCADE.holdT=0;   // v23.22 (arcade3)
   ARCADE.waveT=0; ARCADE.waveN=0;   // v23.37 (arcade14): the wave clock and count start again
   ARCADE.streak=null;   // v23.38 (arcade15): the kill streak starts again
@@ -55256,6 +55257,7 @@ function arcadeAttBoard(pg){
   try{ if(typeof arcadeBoardTonight==='function') rows=arcadeBoardTonight()||[]; }catch(_bt){ rows=[]; }
   try{ if(typeof arcadeBoardBest==='function') best=+arcadeBoardBest()||0; }catch(_bb){ best=0; }
   arcadeAttLine(pg,'aph','TONIGHT\u2019S BEST');
+  try{ if(arcadePartyCode()) arcadeAttLine(pg,'apb','SEEDED NIGHT  \u00b7  '+arcadePartyCode()); }catch(_pc){}   // v26.xx (party6): the board says the night is seeded
   if(!rows.length) arcadeAttLine(pg,'apn','NO SCORES YET');
   for(i=0;i<rows.length&&i<10;i++){ r=rows[i]||{}; arcadeAttLine(pg,'apr'+((id&&r.run===id)?' hl':''),(i+1)+'.  '+String(r.i||'???').slice(0,3).toUpperCase(),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits
   if(o&&(+o.team||0)>0) arcadeAttLine(pg,'apb','LAST RUN '+arcadeCr(o.team));
@@ -55376,9 +55378,20 @@ function arcadeOpChord(e){
 // (ARCADE_PARTY_KEY, never his save); tonights board counts only runs after it.
 var ARCADE_PARTY_KEY='pillagers:arcade:party';
 var ARCOP=null;   // {el, ix, arm, note}
-function arcadePartyAt(){ var t=0; try{ t=+localStorage.getItem(ARCADE_PARTY_KEY)||0; }catch(_pa){ t=0; } return t; }
+// v26.xx (party6), HIS YES (2026-10-14) to suggestion 38, "sure, seed function": THE PARTY SEED. NEW PARTY now also locks one seed and the sector for the night. The
+// party record is {t: when, s: the seed, m: the sector} under ARCADE_PARTY_KEY (an older record that is just a time still reads as a party with no seed).
+// The seed is picked the way a raid picks its own, from Math.random (buildRaid does the same when nothing forces a seed), so no seeded stream is touched; it
+// is the raid seed itself, handed to arcadeDeploy as pendSeed for every run until the party is 12 hours old (the board's night) or NEW PARTY is pressed again.
+// So every DEMO run that night plays the same raid (the layout, the loot, the golden enemy and everything else that grows from the seed) and the board is fair.
+// A seed passed to arcadeDeploy still wins. The board page and the operator card say it is a SEEDED NIGHT, with a four letter code for the seed.
+function arcadePartyRec(){ var o=null, s; try{ s=localStorage.getItem(ARCADE_PARTY_KEY); if(s) o=(s.charAt(0)==='{')?JSON.parse(s):{t:+s||0}; }catch(_pr){ o=null; } return (o&&typeof o==='object')?o:{t:0}; }
+function arcadePartyAt(){ return +arcadePartyRec().t||0; }
+function arcadePartySeed(){ var o=arcadePartyRec(), s=(+o.s)>>>0; return (s&&(+o.t||0)>0&&Date.now()-o.t<ARCADE_BOARD.night)?s:0; }
+function arcadePartyMap(){ var o=arcadePartyRec(); return (arcadePartySeed()&&typeof o.m==='number'&&o.m>=0&&o.m<FIXED_MAPS.length)?(o.m|0):-1; }
+function arcadePartyCode(){ var s=arcadePartySeed(); return s?s.toString(36).toUpperCase().slice(-4):''; }
 function arcadeNewParty(){
-  try{ localStorage.setItem(ARCADE_PARTY_KEY,String(Date.now())); }catch(_np){ return false; }
+  var _sd=((Math.random()*4294967296)>>>0)||1;   // v26.xx (party6): the night seed, picked as a raid picks its own
+  try{ localStorage.setItem(ARCADE_PARTY_KEY,JSON.stringify({t:Date.now(),s:_sd,m:(ARCADE.mapIx|0)})); }catch(_np){ return false; }
   try{ if(ARCADE.att) ARCADE.att.ph=''; }catch(_ap){}   // the board page draws again
   return true;
 }
@@ -55408,7 +55421,7 @@ function arcadeOpDraw(){
   el.appendChild(d);
   d=document.createElement('div'); d.textContent='OPERATOR'; d.style.cssText='font:var(--t-h2);letter-spacing:.08em;color:var(--tx-1)';
   el.appendChild(d);
-  d=document.createElement('div'); d.textContent='DEMO  \u00b7  TONIGHT: '+n+' RUN'+(n===1?'':'S')+' ON THE BOARD'; d.style.cssText='font:var(--t-label);letter-spacing:.1em;color:var(--tx-2);margin:4px 0 16px';
+  d=document.createElement('div'); d.textContent='DEMO  \u00b7  TONIGHT: '+n+' RUN'+(n===1?'':'S')+' ON THE BOARD'+(arcadePartyCode()?'  \u00b7  SEED '+arcadePartyCode():''); d.style.cssText='font:var(--t-label);letter-spacing:.1em;color:var(--tx-2);margin:4px 0 16px';
   el.appendChild(d);
   for(i=0;i<rows.length;i++){
     (function(ix,r){
@@ -55449,9 +55462,9 @@ function arcadeOpPick(ix){
   var r=arcadeOpRows()[ix]; if(!r) return false;
   ARCOP.ix=ix;
   if(r.id==='party'){
-    if(!ARCOP.arm){ ARCOP.arm=1; ARCOP.note='CLEARS TONIGHT\u2019S BEST  \u00b7  BEST EVER STAYS'; arcadeOpDraw(); return true; }
+    if(!ARCOP.arm){ ARCOP.arm=1; ARCOP.note='CLEARS TONIGHT\u2019S BEST  \u00b7  NEW SEED  \u00b7  BEST EVER STAYS'; arcadeOpDraw(); return true; }
     ARCOP.arm=0;
-    ARCOP.note=arcadeNewParty()?'NEW PARTY  \u00b7  BOARD CLEARED':'COULD NOT CLEAR THE BOARD';
+    ARCOP.note=arcadeNewParty()?'NEW PARTY  \u00b7  BOARD CLEARED  \u00b7  SEED '+arcadePartyCode():'COULD NOT CLEAR THE BOARD';
     try{ sfx('pick'); }catch(_sp){}
     arcadeOpDraw(); return true;
   }
