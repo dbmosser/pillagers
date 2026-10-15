@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.72';
+var VER='27.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44834,7 +44834,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.72: A restore code now brings back your stash locks and your trophies. Check 27.72 fails on v27.71',
+  now:'v27.73: Opening Settings now lights the chip of the section you are looking at. Check 27.73 fails on v27.72',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61123,6 +61123,9 @@ function openSettings(tab){
     if(pane) pane.style.display=(want===t[0])?'':'none';
   });
   openModal('settingsmodal');
+  // v27.73 (cloud-menus-settings-chip-on-open), CLOUD HUNT 2026-10-15: the section chips were lit while the window was still hidden, where every head reads as
+  // at the top, so the last chip (ACCESSIBILITY) lit on every open until a scroll. Now they are lit again once the window shows.
+  try{ setSecSpy(document.getElementById('setlist')); }catch(_ss){}
 }
 document.getElementById('exportbtn').onclick=function(){ openSettings('rec'); };
 // v13.21: THE LAST RESORT SPEAKS. The outcome card sends a failed copy here by

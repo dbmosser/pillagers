@@ -1,0 +1,7 @@
+v27.73: settings lights the right section on open
+
+Opening Settings now lights the chip of the section you are looking at.
+
+Check 27.73. Fails on v27.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

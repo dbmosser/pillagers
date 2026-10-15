@@ -1,0 +1,5 @@
+## v27.73 - SETTINGS LIGHTS THE RIGHT SECTION ON OPEN
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: on opening Settings the section chip lit was ACCESSIBILITY, the last one, though the list sat at the top on THE RAID. The chips were lit while the window was still hidden, where every section head measures as at the top, and nothing lit them again until a scroll. Proven in headless Chromium: {"scrollTop":0,"litAfterOpen":["ACCESSIBILITY"],"spyNow":"THE RAID"}. The chips are now lit again once the window shows.
+
+MEASURED. Check 27.73 passes, and fails on v27.72.

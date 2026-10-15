@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.73 - SETTINGS LIGHTS THE RIGHT SECTION ON OPEN
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: on opening Settings the section chip lit was ACCESSIBILITY, the last one, though the list sat at the top on THE RAID. The chips were lit while the window was still hidden, where every section head measures as at the top, and nothing lit them again until a scroll. Proven in headless Chromium: {"scrollTop":0,"litAfterOpen":["ACCESSIBILITY"],"spyNow":"THE RAID"}. The chips are now lit again once the window shows.
+
+MEASURED. Check 27.73 passes, and fails on v27.72.
 ## v27.72 - A RESTORE CODE KEEPS LOCKS AND TROPHIES
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: a restore code carried neither the stash locks (P.keep) nor the trophy case (P.trophies), and restoreApply never touched either, so his own code on a fresh browser came back with every lock gone (a locked item sellable again) and GOLD HUNTER and OVERSEER DOWN lost for good (they are only earned by the kill), while a code pasted over another character kept that character's locks. Proven in headless Chromium: {"keep":"{}","troph":"{}","sellable":true,"leakKeep":"{\"medkit\":1}"}. The code now writes both, compactly so it stays short: the locks (kp) as a list of item ids and the trophies (tr) as the local calendar day each was earned (the case shows only month and day). restoreApply sets both from it, keeping only items and trophies this build knows; a day comes back as noon of that day, so the case shows the same date in any time zone. It also reads the longer shapes (locks as an object, trophy times in ms, told apart by size), and an older code with neither starts both clean.
