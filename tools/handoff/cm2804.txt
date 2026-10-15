@@ -1,0 +1,7 @@
+v28.04: the colour scheme
+
+A new COLOURS rack in FASHION: a three-colour scheme for your coat, plate, pack and trim.
+
+Check 28.04. Fails on v28.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

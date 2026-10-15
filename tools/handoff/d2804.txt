@@ -1,0 +1,5 @@
+## v28.04 - THE COLOUR SCHEME
+
+Co-op hunt while he was away. His order of 2026-10-15: "player cosmetics still need major improvements". Your operator can now wear a colour scheme: a primary, a secondary and an accent, picked as one preset on a new COLOURS rack. The primary is the coat, the sleeves and the trousers; the secondary is the plate carrier, the pack and the boots; the accent is the trim, a band on the gun arm, a stripe across the plate, the pack flap and the boot collars. Nineteen presets: the ten plain clothing colours became schemes of their own (an old save keeps its colour), and nine new ones are earned, Ember, Frost, Verdant, Crimson, Royal, Dune, Toxic, Nightshade and Gilded. Your own gun sleeve now follows your clothes (it was always navy). The scheme goes across the two-window link and is kept in saved looks. Picking a part yourself, a boot or a pack, still wins over the scheme. Cosmetic only.
+
+MEASURED. Check 28.04 passes, and fails on v28.03.

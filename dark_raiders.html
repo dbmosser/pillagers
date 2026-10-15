@@ -2276,7 +2276,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.03';
+var VER='28.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31623,7 +31623,30 @@ var COSMETICS=[
   {id:'charcoal',  name:'Charcoal',    how:'always', kind:'fit'},
   {id:'bone',      name:'Bone',        how:'always', kind:'fit'},
   // v10.46, his notes: a red and black number 23 jersey. Earned.
-  {id:'jersey',    name:'Number 23 Jersey', how:'level:4', kind:'fit'}
+  {id:'jersey',    name:'Number 23 Jersey', how:'level:4', kind:'fit'},
+  // v28.04 (cosm1), HIS ORDER (2026-10-15): "player cosmetics still need major improvements". THE COLOUR SCHEME: primary, secondary and
+  // accent, worn as one preset. The ten plain clothing colours became schemes of their own (the same colour as the primary, so an old
+  // save keeps its colour: cosWorn maps an old clothing id to its scheme), and nine new ones are earned. Standard Issue is the old look.
+  {id:'schstd',     name:'Standard Issue', how:'always',     kind:'scheme'},
+  {id:'schmoss',    name:'Moss Green',     how:'always',     kind:'scheme'},
+  {id:'schrust',    name:'Rust',           how:'always',     kind:'scheme'},
+  {id:'schoxblood', name:'Oxblood',        how:'always',     kind:'scheme'},
+  {id:'schsand',    name:'Sand',           how:'always',     kind:'scheme'},
+  {id:'schash',     name:'Ash Grey',       how:'always',     kind:'scheme'},
+  {id:'schindigo',  name:'Indigo',         how:'always',     kind:'scheme'},
+  {id:'schteal',    name:'Teal',           how:'always',     kind:'scheme'},
+  {id:'schdrab',    name:'Olive Drab',     how:'always',     kind:'scheme'},
+  {id:'schcharcoal',name:'Charcoal',       how:'always',     kind:'scheme'},
+  {id:'schbone',    name:'Bone',           how:'always',     kind:'scheme'},
+  {id:'schember',   name:'Ember',          how:'runs:2',     kind:'scheme'},
+  {id:'schfrost',   name:'Frost',          how:'runs:4',     kind:'scheme'},
+  {id:'schverdant', name:'Verdant',        how:'extracts:2', kind:'scheme'},
+  {id:'schcrimson', name:'Crimson',        how:'runs:12',    kind:'scheme'},
+  {id:'schroyal',   name:'Royal',          how:'extracts:6', kind:'scheme'},
+  {id:'schdune',    name:'Dune',           how:'level:3',    kind:'scheme'},
+  {id:'schtoxic',   name:'Toxic',          how:'runs:20',    kind:'scheme'},
+  {id:'schnight',   name:'Nightshade',     how:'warden:1',   kind:'scheme'},
+  {id:'schgilded',  name:'Gilded',         how:'board:1',    kind:'scheme'}
 ];
 // dark, lit, highlight. The figure is 15px across, so three tones is the whole
 // range the head has room for.
@@ -31688,8 +31711,8 @@ function cosFind(id){
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
-var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo',outfit:'cosOutfit'};
-var COSDEF={hair:'dark',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'crop',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone',outfit:'outnone'};   // v18.26, HIS ORDER (2026-10-03): short dark hair is the default look; a new character wore long blonde, which read as a gold outline round the face
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo',outfit:'cosOutfit',scheme:'cosScheme'};
+var COSDEF={hair:'dark',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'crop',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone',outfit:'outnone',scheme:'schstd'};   // v18.26, HIS ORDER (2026-10-03): short dark hair is the default look; a new character wore long blonde, which read as a gold outline round the face
 // v10.54: WHAT EACH OUTFIT OVERRULES. coat and trs are the torso and the
 // trousers, boots the two legs, skin the head, hands the gun hand; cut, hat and
 // beard replace the racks; mark names the suit's own paint, done last.
@@ -31706,6 +31729,44 @@ var OUTFITS={
   // v23.xx (spr21): the Survivor's own clothes, never sold: a washed out civilian jacket, no rig, no pack (nopack), no gun.
   outsurvivor:{coat:'#8a8578',trs:'#56534a',boots:['#3a342c','#4a4238'],skin:null,hands:null,cut:'crop',hair:'dark',hat:'none',beard:'stubble',mark:'survivor',cloth:1,norig:1,nopack:1}
 };
+// v28.04 (cosm1): the three colours of each preset, primary (coat, sleeves, trousers), secondary (the plate carrier, the pack, the boots)
+// and accent (the trim: a band on the gun arm, a stripe on the plate, the pack flap, the boot collar). Dark ground first: the primary is
+// a mid tone that holds against the dark floor, the secondary a near black of the same family, the accent the one bright note.
+var SCHEMES={
+  schmoss:    {p:'#5b7350',s:'#2b3326',a:'#d9c25a'},
+  schrust:    {p:'#875040',s:'#2e2220',a:'#e8a03a'},
+  schoxblood: {p:'#6b3448',s:'#241620',a:'#e0788c'},
+  schsand:    {p:'#907c56',s:'#3a3324',a:'#ebe5cc'},
+  schash:     {p:'#565a61',s:'#202226',a:'#c9d1d8'},
+  schindigo:  {p:'#464f87',s:'#1c2038',a:'#9ec5ff'},
+  schteal:    {p:'#31706c',s:'#14282a',a:'#5fe0c8'},
+  schdrab:    {p:'#6b6b44',s:'#2a2a1c',a:'#c8d060'},
+  schcharcoal:{p:'#3a3d44',s:'#16171a',a:'#ff7a3a'},
+  schbone:    {p:'#b5ac93',s:'#4a4434',a:'#b8452f'},
+  schember:   {p:'#a8501f',s:'#2a2224',a:'#ffb52e'},
+  schfrost:   {p:'#4a7f9f',s:'#1a2733',a:'#c4f0ff'},
+  schverdant: {p:'#4d8a3e',s:'#1f2a1a',a:'#e4f06a'},
+  schcrimson: {p:'#a02a36',s:'#201618',a:'#ff7e6e'},
+  schroyal:   {p:'#4a4fb0',s:'#1a1b30',a:'#ffd25a'},
+  schdune:    {p:'#b39560',s:'#3a2f20',a:'#fff0c8'},
+  schtoxic:   {p:'#2f3338',s:'#15171a',a:'#8dff2e'},
+  schnight:   {p:'#7a45b0',s:'#221833',a:'#ff63c3'},
+  schgilded:  {p:'#2a5a58',s:'#101c1c',a:'#ffd24a'}
+};
+var _SCHD={};
+// The colours a body wears, or null: Standard Issue (the clothing colour as it always was), a suit, the jersey, a body with no scheme
+// (the crowd, the pillagers, the Peddler). A hero reads its own rack; anyone else reads st.scheme, which came over the link.
+function schemeOf(st){
+  var id, S, D;
+  if(!st||typeof st!=='object') return null;
+  if(st.hero){ if(outfitOf(st)||cosWorn('fit')==='jersey') return null; id=cosWorn('scheme'); }
+  else { if(st.outfit&&st.outfit!=='outnone') return null; id=st.scheme; }
+  S=id?SCHEMES[id]:null; if(!S) return null;
+  D=_SCHD[id]; if(D) return D;
+  D=_SCHD[id]={id:id,p:S.p,s:S.s,a:S.a,arm:darkHex(S.p,.16),trs:darkHex(S.p,.34),plate:S.s,plateHi:litHex(S.s,.26),plateLo:darkHex(S.s,.38),
+    pack:litHex(S.s,.14),boots:[S.s,litHex(S.s,.14)]};
+  return D;
+}
 function outfitOf(st){
   var id=st&&st.hero?cosWorn('outfit'):((st&&st.outfit)||'outnone');
   return OUTFITS[id]||null;
@@ -31741,6 +31802,7 @@ var BOOTCOL={bootblack:['#191f26','#232a32'],boottan:['#6a4a2a','#8a6438'],booto
 var EYECOL={eyebrown:'#5a3a22',eyehazel:'#8a6a34',eyeblue:'#4a7ab8',eyegreen:'#4a8a5a',eyegrey:'#8a949c',eyeamber:'#c88a2a'};
 function cosWorn(kind){
   var want=(typeof P!=='undefined'&&P)?P[COSKEY[kind]]:null;
+  if(kind==='scheme'&&(want===undefined||want===null)&&typeof P!=='undefined'&&P&&P.cosFit&&P.cosFit!=='slate') want='sch'+P.cosFit;   // v28.04 (cosm1): an old save keeps its colour
   var c=cosFind(want);
   if(c&&c.kind===kind&&cosOwned(c)) return c.id;
   return COSDEF[kind]||'none';
@@ -31851,9 +31913,10 @@ function rigPouch(px,py,pw,ph){
   wc.fillStyle=RIG_OLIVE[1]; wc.fillRect(px,py,pw-0.5,ph-0.5);
   wc.fillStyle=RIG_OLIVE[2]; wc.fillRect(px,py,pw-0.5,0.7);
 }
-function drawRigPC(b,cx,ty,cc,jc,jh,norig){   // v23.xx (spr20): norig, the cloth lit with no rig on it (a suit with cloth:1)
+function drawRigPC(b,cx,ty,cc,jc,jh,norig,sch){   // v23.xx (spr20): norig, the cloth lit with no rig on it (a suit with cloth:1)
   var cHi=litHex(cc,.24,true), cLo=darkHex(cc,.40), rg=darkHex(cc,.30), rgHi=litHex(rg,.14), rgLo=darkHex(cc,.56),
       top=(b==='broad')?-23.8:(b==='curved'?-23.4:-22), low=(b==='curved')?-14.6:-12, i, x0, R;
+  if(sch){ rg=sch.plate; rgHi=sch.plateHi; rgLo=sch.plateLo; }   // v28.04 (cosm1): the carrier is the secondary
   wc.save(); torsoPathPC(b,cx,ty,jh); wc.clip();
   // the cloth: lit across the tops of the shoulders and down the left side, in shade down the right
   wc.fillStyle=cHi; wc.fillRect(cx-12,ty+top-2,24,3.3);
@@ -31870,6 +31933,7 @@ function drawRigPC(b,cx,ty,cc,jc,jh,norig){   // v23.xx (spr20): norig, the clot
     wc.fillStyle=litHex(rg,.42); wc.fillRect(cx-4.3,by-1.6,1.5,.9); wc.fillRect(cx+1.4,by-1.6,1.5,.9);
     wc.fillStyle=RIG_BELT; wc.fillRect(cx-12,ty-15.5,24,1.3);                            // the belt at her waist
     wc.fillStyle=RIG_BUCKLE; wc.fillRect(cx-0.8,ty-15.5,1.6,1.3);
+    if(sch){ wc.fillStyle=sch.a; wc.fillRect(cx-6.5,ty-15.5,13,0.8); }   // v28.04 (cosm1): her belt in the accent
     rigPouch(cx-6.0,ty-14.2,2.6,2.8); rigPouch(cx+3.4,ty-14.2,2.6,2.8);                 // and the pouches on her hips
   } else {
     R=(b==='broad')?{w:12.4,y:-20.6,h:7.4,sx:-5.6,sx2:3.6,sw:2,pw:3.2,py:-16.8,ph:3.2,by:-12.6,bh:1.6}
@@ -31878,6 +31942,7 @@ function drawRigPC(b,cx,ty,cc,jc,jh,norig){   // v23.xx (spr20): norig, the clot
     wc.fillStyle=rgLo; wc.fillRect(cx-R.w/2-0.5,ty+R.y-0.5,R.w+1,R.h+1);                                          // the plate
     wc.fillStyle=rg; wc.fillRect(cx-R.w/2,ty+R.y,R.w-0.6,R.h-0.6);
     wc.fillStyle=rgHi; wc.fillRect(cx-R.w/2,ty+R.y,R.w-0.6,0.7); wc.fillRect(cx-R.w/2,ty+R.y,0.6,R.h-0.6);
+    if(sch){ wc.fillStyle=sch.a; wc.fillRect(cx-R.w/2+0.9,ty+R.y+1.4,R.w-2.4,0.9); }   // v28.04 (cosm1): the accent stripe across the plate
     x0=cx-(3*R.pw+0.8)/2;
     for(i=0;i<3;i++) rigPouch(x0+i*(R.pw+0.4),ty+R.py,R.pw,R.ph);                                    // three magazine pouches
     wc.fillStyle=RIG_BELT; wc.fillRect(cx-12,ty+R.by,24,R.bh);                                         // the belt
@@ -32050,6 +32115,8 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
   wc.fillStyle=INK; wc.fillRect(-1.2,-aw-0.5,gx+1.4,2*aw+1); wc.fillStyle=coat; wc.fillRect(-0.8,-aw,gx+0.8,2*aw);
   if(pc&&/^#[0-9a-fA-F]{6}$/.test(coat)){ wc.fillStyle=litHex(coat,.22,true); wc.fillRect(-0.8,-aw,gx+0.8,0.9); }
   if(st.merc||(st.own&&st.own.merc)){ wc.fillStyle=INK; wc.fillRect(1.3,-aw,2.4,2*aw); wc.fillStyle='#f0a020'; wc.fillRect(1.7,-aw,1.6,2*aw); wc.fillStyle='#ffd27a'; wc.fillRect(1.7,-aw,1.6,0.6); }
+  var _sc=schemeOf(st);
+  if(_sc){ wc.fillStyle=INK; wc.fillRect(gx-3.4,-aw-0.2,2.8,2*aw+0.4); wc.fillStyle=_sc.a; wc.fillRect(gx-3.0,-aw,2.0,2*aw); }   // v28.04 (cosm1): the accent cuff, the biggest trim on the body
   wc.fillStyle=INK; wc.fillRect(gx-0.5,-0.1,4.4,4.4); wc.fillStyle=hc; wc.fillRect(gx,0.4,3.4,3.4);
   if(rl>0&&reach>0){
     tx=D.well[0]+ext-1.7; ty2=D.well[1]+(1-reach)*7;
@@ -32091,6 +32158,11 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
   }
 }
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
+  // v28.04 (cosm1): THE SLEEVE FOLLOWS THE CLOTHES. Your own gun arm was always navy while everyone else wore their clothing colour; the hero
+  // sleeve is now the clothing colour too, or the scheme primary, so the biggest shape on the body shows what you wear.
+  var _SCH=schemeOf(st);
+  if(_SCH) coat=_SCH.arm;
+  else if(st&&st.hero&&!outfitOf(st)) coat=(FITCOL[cosWorn('fit')]||FITCOL.slate)[1];
   var fl=Math.cos(face)<0?-1:1;
   shadowE(x,y+1,10,4,.38);
   // Both of these return before the body is drawn, so without their own contour
@@ -32142,7 +32214,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // every band instead of leaving a seam.
   var OUTF=outfitOf(st);   // v10.54: an outfit overrules the racks below
   var _BID=st.hero?cosWorn('build'):(st.build||'lean'), _BLD=(_BID==='broad'||_BID==='curved')?_BID:null, _JG=(_BLD==='curved')?bodyJiggle(st.own,ty-y-lift):JIG0;   // v20.01: the body's build
-  var cc=iv>0?'#2a6a5e':(OUTF?OUTF.coat:(st.hero?((FITCOL[cosWorn('fit')]||FITCOL.slate)[1]):coat)),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
+  var cc=iv>0?'#2a6a5e':(OUTF?OUTF.coat:(_SCH?_SCH.p:(st.hero?((FITCOL[cosWorn('fit')]||FITCOL.slate)[1]):coat))),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);
   // Each leg gets its own ink plate, and the boots keep a real gap between them.
   // Drawn as one flush block they read as a single slab, which is the one place
   // the contour treatment fell down. Boot soles still land exactly on ty.
@@ -32160,12 +32232,13 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   rrF(x+.5+swing,ty-5.1-liftA,6.6,5.1,1.5);
   // v10.32: the boots take their colour from the racks.
   var _BT=OUTF?OUTF.boots:(BOOTCOL[st.hero?cosWorn('boots'):(st.boots||'bootblack')]||BOOTCOL.bootblack);   // v10.54
+  if(_SCH&&_BT===BOOTCOL.bootblack) _BT=_SCH.boots;   // v28.04 (cosm1): boots left at the default wear the secondary
   // v10.50, his note: "shoes should be separate from pants". The lower leg is
   // trousers, a darker cut of the coat, and the boot colour is the foot and a
   // collar two units tall above it, so a red boot is a red boot and not red
   // trousers.
   // v10.54: a suit names its trousers; null means bare legs in the skin colour.
-  var _TRS=OUTF?(OUTF.trs||(OUTF.skin||(st.hero?(SKINCOL[cosWorn('skin')]||SKINCOL.fair):(SKINCOL[st.skin]||'#f2d2a8')))):darkHex(cc,.50);
+  var _TRS=OUTF?(OUTF.trs||(OUTF.skin||(st.hero?(SKINCOL[cosWorn('skin')]||SKINCOL.fair):(SKINCOL[st.skin]||'#f2d2a8')))):(_SCH?_SCH.trs:darkHex(cc,.50));
   wc.fillStyle=_TRS;
   rrF(x-6.3+swing2*.5,ty-11,4.6,7.5-liftB*.5,1);
   rrF(x+1.7+swing*.5,ty-11,4.6,7.5-liftA*.5,1);
@@ -32191,6 +32264,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillStyle=litHex(_BT[0],.30); wc.fillRect(x-6.5+swing2+_toe,ty-4.2-liftB,2.2,1.0);
     wc.fillStyle=litHex(_BT[1],.30); wc.fillRect(x+1.1+swing+_toe,ty-4.2-liftA,2.2,1.0);
   }
+  if(_SCH&&!_BT[2]){ wc.fillStyle=_SCH.a; wc.fillRect(x-6.4+swing2*.5,ty-6.5-liftB,4.8,1.0); wc.fillRect(x+1.6+swing*.5,ty-6.5-liftA,4.8,1.0); }   // v28.04 (cosm1): the accent collar
   if(_LSX!==1) wc.restore();   // v23.xx (spr16): end of the Broad legs
 
   // v25.xx (bigguns1): the held gun. Aiming up, the gun and both arms are drawn here, behind the pack, the body and the head.
@@ -32198,8 +32272,11 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(_GB) gunHeld(x+leanX,ty,face,fl,st,coat,_BLD,_PC,ads,sprint,rl,muzzle);  var pw=6+pk*5;
   if(!(OUTF&&OUTF.nopack)){   // v23.xx (spr21): the Survivor has no pack
   wc.fillStyle=INK; rrF(x-fl*9-pw/2+leanX-1,ty-22,pw+2,11,3);
-  wc.fillStyle=PACKCOL[st.hero?cosWorn('pack'):(st.pack||'packbrown')]||PACKCOL.packbrown;   // v10.34
+  var _PKC=PACKCOL[st.hero?cosWorn('pack'):(st.pack||'packbrown')]||PACKCOL.packbrown;   // v10.34
+  if(_SCH&&_PKC===PACKCOL.packbrown) _PKC=_SCH.pack;   // v28.04 (cosm1): a pack left at the default wears the secondary
+  wc.fillStyle=_PKC;
   rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
+  if(_SCH){ wc.fillStyle=_SCH.a; wc.fillRect(x-fl*9-pw/2+leanX+0.6,ty-20.4,pw-1.2,1.2); }   // v28.04 (cosm1): the accent flap
   }
   if(!_BLD){
   if(_PC){ wc.fillStyle=INK; rrF(x-6.6+leanX,ty-23,13.2,13,4); wc.fillStyle=cc; rrF(x-5.6+leanX,ty-22,11.2,11,3); }   // v23.xx (spr16): Lean is slimmer
@@ -32216,7 +32293,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // rig, so the rig's near-black band was laid across the lower half of the
   // numeral. It goes on after the rig now, a dozen lines down.
   // chest rig, and a hit shimmer when recently hurt
-  if(_PC) drawRigPC(_BLD||'lean',x+leanX,ty,cc,_JG.c,_JG.h,!!(OUTF&&OUTF.norig));   // v23.xx (spr15): the plate carrier, not stripes
+  if(_PC) drawRigPC(_BLD||'lean',x+leanX,ty,cc,_JG.c,_JG.h,!!(OUTF&&OUTF.norig),_SCH);   // v23.xx (spr15): the plate carrier, not stripes
   else {
   wc.fillStyle='rgba(16,21,27,.85)';
   if(_BLD==='broad') wc.fillRect(x-8.2+leanX,ty-18,16.4,2.4); else if(!_BLD) wc.fillRect(x-6.5+leanX,ty-18,13,2.4);   // v20.01: wider on Broad; Curved wears a belt instead
@@ -45964,7 +46041,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.03: The run card is one ledger: raid score, credits, haul and a raid total. Check 28.03 fails on v28.02',
+  now:'v28.04: A new COLOURS rack in FASHION: a three-colour scheme for your coat, plate, pack and trim. Check 28.04 fails on v28.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50453,7 +50530,7 @@ function netRefresh(){ try{ netLateBtn(); }catch(_nlb){} var m=document.getEleme
 // SOLO PLAY IS UNTOUCHED. The floor calls in here only while NET.on, so a solo frame draws, sends and changes nothing new.
 // Nothing here draws from the seeded stream (rr, rnd, ri, pick, rollTable) or reads G.
 var NET_HUB_STEP=0.1, NET_HUB_SNAP=160, NET_HUB_STALE=3, NET_HUB_EASE=12;
-var NET_LOOK=['hair','hat','skin','fit','cut','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','build'];   // v20.03, his answer (2026-10-08): everyone sees your build
+var NET_LOOK=['hair','hat','skin','fit','cut','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','build','scheme'];   // v20.03, his answer (2026-10-08): everyone sees your build
 // What he is wearing, one rack id per kind, read the way his own body is drawn.
 function netLook(){
   var lk={}, i;
@@ -50581,7 +50658,7 @@ function netDrawPeer(g){
     drawOp(g.x,g.y,g.f,rl?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,rl?'roll':'none',0,
       {hero:0,moving:!!g.mv,sprint:false,ads:false,hurt:0,rl:0,
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
-       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,own:g});
+       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,scheme:lk.scheme,own:g});
   }catch(e){}
 }
 // Their names over their heads, drawn after the darkness like the station names, with the same camera.
@@ -51746,7 +51823,7 @@ function netUpDrawOne(g){
     drawOp(g.x,g.y,g.f,(g.roll>0)?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,mode,0,
       {hero:0,own:g,team:(NET.mode==='pvp')?'foe':'ally',moving:!!g.mv,sprint:!!g.sp,ads:false,hurt:0,rl:0,bulk:0,
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
-       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build});
+       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,scheme:lk.scheme});
     if(g.sh&&G&&G.arcade) arcadeShieldRing(g.x,g.y,0);   // v23.30 (arcade9)
     if(g.fk) forgeGlow(g.x,g.y,g.f,{fk:g.fk,el:g.el},g.dn);   // v23.xx (forge8): his forged gun glows too
   }catch(e){}
@@ -61981,7 +62058,7 @@ var PREVLOOK=null;
 function prevCacheGuard(){ var lk=''; try{ lk=cosLookKey(); }catch(_lk){ return; } if(lk!==PREVLOOK){ COSPREV={}; OUTPREV={}; PREVLOOK=lk; } }
 // v19.49, from the review (2026-10-08): the worn outfit is left out. The piece previews are painted with the outfit off (v19.09) and the
 // outfit previews never keyed on it, so trying on outfits threw away all 57 pictures and repainted them unchanged on every click.
-function cosLookKey(){ return ['skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face','tattoo','patch'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(','); }
+function cosLookKey(){ return ['skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face','tattoo','patch','scheme'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(','); }
 // v19.17, from the review (2026-10-07): the previews were painted at 128 pixels and shown 64 wide under the menu zoom, about 158 screen
 // pixels at 4K and up to 267 at the biggest menu size, so they came out soft beside the stash icons. They are now painted at the size
 // they are shown (in quarter steps, at most three times), still laid out on the same 128 grid, so nothing moves; at 1080p nothing changes.
@@ -62034,7 +62111,7 @@ function cosPreviewURL(kind,id){
   return hit;
 }
 function cosSwatch(c){
-  if(c.kind==='fit'||c.kind==='tattoo'||c.kind==='face'||c.kind==='hat'||c.kind==='beard'||c.kind==='cut'||c.kind==='build'){   // v18.82: the piece on you; v20.04: and BUILD, now that a build changes the body (v20.01)
+  if(c.kind==='scheme'||c.kind==='fit'||c.kind==='tattoo'||c.kind==='face'||c.kind==='hat'||c.kind==='beard'||c.kind==='cut'||c.kind==='build'){   // v18.82: the piece on you; v20.04: and BUILD, now that a build changes the body (v20.01)
     var _cpv=cosPreviewURL(c.kind,c.id);
     if(_cpv) return '<img alt="" style="width:64px;height:64px;display:block;margin:0 auto 2px;border-radius:6px;background:rgba(0,0,0,.18)" src="'+_cpv+'">';
   }
@@ -62224,8 +62301,8 @@ function avatarHTML(){
           '<span style="width:11px;height:14px;border-radius:3px 3px 4px 4px;display:inline-block;background:'+(PACKCOL[cosWorn('pack')]||PACKCOL.packbrown)+'"></span>');   // v10.34
   h+=slot('patch','PATCH',(cosFind(cosWorn('patch'))||{name:'No Patch'}).name,'\u25A3');   // v10.35
   h+=slot('tattoo','TATTOO',(cosFind(cosWorn('tattoo'))||{name:'No Ink'}).name,'\u2727');   // v10.36
-  h+=slot('fit','CLOTHING',(cosFind(cosWorn('fit'))||{name:'Slate'}).name,
-          '<span style="width:14px;height:14px;border-radius:3px;display:inline-block;background:'+ft[1]+'"></span>');
+  h+=slot('scheme','COLOURS',(cosFind(cosWorn('scheme'))||{name:'Standard Issue'}).name,   // v28.04 (cosm1): the colour scheme replaces the clothing slot
+          '<span style="display:inline-flex;gap:1px">'+(function(){ var _d=schemeOf({hero:1}), _c=_d?[_d.p,_d.s,_d.a]:[ft[1],ft[0],'#8a96a1']; return _c.map(function(c){ return '<i style="display:block;width:5px;height:14px;background:'+c+'"></i>'; }).join(''); })()+'</span>');
   // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
   // armour and there is nothing to choose, so a slot here was a control that
   // did nothing. The rig picker below is now unreachable.
@@ -62236,7 +62313,7 @@ function avatarHTML(){
 }
 // v10.16, his answers 18 and 19. A look is the six cosmetic keys and nothing
 // else. SURPRISE ME picks an owned thing from every rack.
-var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit'];   // v10.54: the outfit is part of a look
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','scheme'];   // v10.54: the outfit is part of a look
 function lookSnap(){ var L={}; for(var i=0;i<LOOK_KINDS.length;i++) L[LOOK_KINDS[i]]=cosWorn(LOOK_KINDS[i]); return L; }
 function lookWear(L){
   if(!L) return false;
@@ -62352,7 +62429,7 @@ function renderAvPicker(pickHost,host){
       'Click a slot to change it. Headgear and hair are cosmetic and earned through play.';
     return;
   }
-  if(slot==='outfit'||slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'){   // v10.54: outfit
+  if(slot==='outfit'||slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'||slot==='scheme'){   // v10.54: outfit
     renderCosmetics(box,slot,hid,pid); return;
   }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
@@ -62371,12 +62448,12 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['outfit','OUTFIT'],['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
+  var GROUPS=[['outfit','OUTFIT'],['scheme','COLOUR SCHEME'],['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:.12em;font-size:13px;color:var(--tx-2)">'+g[1]+'</div>';   // v24.22 (ui6b): readable rack heads
     H+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
-    COSMETICS.filter(function(c){ return c.kind===g[0]; }).forEach(function(c){
+    COSMETICS.filter(function(c){ return c.kind===g[0]&&!(c.kind==='fit'&&c.id!=='jersey'); }).forEach(function(c){   // v28.04 (cosm1): the plain clothing colours are schemes now; only the jersey stays in CLOTHING
       var own=cosOwned(c), on=(cosWorn(g[0])===c.id);
       H+='<div class="costile'+(own?'':' lock')+(on?' on':'')+'" data-kind="'+g[0]+'" data-id="'+c.id+'">'+
          cosSwatch(c)+'<div class="cosname">'+c.name+'</div>'+
@@ -62400,6 +62477,7 @@ function renderCosmetics(target,kindOnly,hid,pid){
         } else { try{ sfx('clank'); }catch(e){} return; }
       }
       P[COSKEY[kind]||'cosHat']=id;
+      if(kind==='scheme'&&P.cosFit&&P.cosFit!=='slate') P.cosFit='slate';   // v28.04 (cosm1): a scheme is the clothes, so an older clothing colour or the jersey steps aside
       saveProfile();
       // v19.20, from the review (2026-10-07): renderAvatar draws the racks again itself (renderAvPicker), so in FASHION every click built
       // all the racks twice, about 0.5 MB of pictures parsed twice in one click. When the racks are the picker renderAvatar fills, it is
