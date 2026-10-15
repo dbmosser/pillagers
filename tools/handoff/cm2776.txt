@@ -1,0 +1,7 @@
+v27.76: tab closes the keys windows
+
+TAB now closes the Keys and Pad buttons windows, as ESC does.
+
+Check 27.76. Fails on v27.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

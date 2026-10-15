@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.75';
+var VER='27.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16445,10 +16445,13 @@ try{ window.addEventListener('keydown',function(ev){
   // stays up with the raid paused. F11 still reaches fullscreen while no press is waiting, and a held ESC does nothing after
   // the first press.
   if(ev.stopImmediatePropagation&&(KEYS.waiting||ev.code!=='F11')) ev.stopImmediatePropagation();
-  if(ev.repeat&&ev.code==='Escape') return;
-  if(KEYS.pad){ if(ev.code==='Escape'){ if(PADB.waiting!==null){ PADB.waiting=null; keysRender(); } else m.classList.remove('on'); } return; }   // v26.xx (padbind): in pad mode only ESC means anything on the keyboard
-  if(KEYS.waiting){ if(ev.code!=='Escape'){ if(!keysBind(KEYS.waiting,ev.code)){ keysRender(); return; } } KEYS.waiting=null; keysRender(); try{ renderSettings(); }catch(_r3){} }   // v25.xx (keyremap): a reserved key says so and the press keeps waiting
-  else if(ev.code==='Escape'){ m.classList.remove('on'); }
+  // v27.76 (cloud-menus-tab-closes-keys), CLOUD HUNT 2026-10-15: his v13.44 ruling is TAB DOES WHAT ESCAPE DOES, but this window swallowed TAB and acted only on ESC, so TAB
+  // could not shut the Keys or Pad buttons window or cancel a waiting press. TAB is reserved (keysBind), so it now means exactly what ESC means here.
+  var _kEsc=(ev.code==='Escape'||ev.code==='Tab');
+  if(ev.repeat&&_kEsc) return;
+  if(KEYS.pad){ if(_kEsc){ if(PADB.waiting!==null){ PADB.waiting=null; keysRender(); } else m.classList.remove('on'); } return; }   // v26.xx (padbind): in pad mode only ESC (or TAB) means anything on the keyboard
+  if(KEYS.waiting){ if(!_kEsc){ if(!keysBind(KEYS.waiting,ev.code)){ keysRender(); return; } } KEYS.waiting=null; keysRender(); try{ renderSettings(); }catch(_r3){} }   // v25.xx (keyremap): a reserved key says so and the press keeps waiting
+  else if(_kEsc){ m.classList.remove('on'); }
 },true); }catch(_kw){}
 // v19.90, from the code review of 2026-10-08: the pause box frame was a fixed 400px, and with the controller key line (v19.71, six
 // lines) plus the BLEEDING OUT and hosting lines its content ran past the frame top and bottom. The frame now fits what is showing,
@@ -44835,7 +44838,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.75: The Settings section chips jump to their section on a 1440p or 4K screen too. Check 27.75 fails on v27.74',
+  now:'v27.76: TAB now closes the Keys and Pad buttons windows, as ESC does. Check 27.76 fails on v27.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

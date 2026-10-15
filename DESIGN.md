@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.76 - TAB CLOSES THE KEYS WINDOWS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: his v13.44 ruling is that TAB does what ESC does, but the Keys window and the Pad buttons window swallowed TAB and acted only on ESC, so TAB could not shut either window or cancel a waiting press. Proven in headless Chromium: {"keysAfterTab":true,"padAfterTab":true,"raidKeysAfterTab":true} while ESC shut each one. TAB now means exactly what ESC means in those windows: it cancels a waiting press first, else it shuts that window only, and in a raid the pause box stays up.
+
+MEASURED. Check 27.76 passes, and fails on v27.75.
 ## v27.75 - SETTINGS CHIPS JUMP RIGHT ON A BIG SCREEN
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the section chips at the top of Settings (THE RAID, AUDIO, CONTROLS, CONTROLLER, DISPLAY, ACCESSIBILITY) measured how far to scroll in zoomed pixels and scrolled the list by that many unzoomed pixels. On a 4K screen, where the menu is zoomed about 2x, every chip overshot and the list came back on THE RAID; at 1440p each chip fell short; only 1080p was right. Proven in headless Chromium with the Settings window at zoom 2: {"AUDIO":"THE RAID off=1515","CONTROLS":"THE RAID off=2557","CONTROLLER":"THE RAID off=3843","DISPLAY":"THE RAID off=4834"}; with the fix every chip lands at off=0 with its own chip lit. The distance is now divided by the menu zoom.

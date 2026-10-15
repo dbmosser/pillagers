@@ -1,0 +1,5 @@
+## v27.76 - TAB CLOSES THE KEYS WINDOWS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: his v13.44 ruling is that TAB does what ESC does, but the Keys window and the Pad buttons window swallowed TAB and acted only on ESC, so TAB could not shut either window or cancel a waiting press. Proven in headless Chromium: {"keysAfterTab":true,"padAfterTab":true,"raidKeysAfterTab":true} while ESC shut each one. TAB now means exactly what ESC means in those windows: it cancels a waiting press first, else it shuts that window only, and in a raid the pause box stays up.
+
+MEASURED. Check 27.76 passes, and fails on v27.75.
