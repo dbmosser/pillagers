@@ -1,0 +1,5 @@
+## v27.25 - THE AIR STRIKE ON A CONTROLLER
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players, and player 2 plays on a controller. The air strike was armed with the G key, and the keyboard is player 1 in a two player game, so player 2 could fill his meter and never spend it. On a controller, both bumpers pressed together now arm the strike (and press them again to cancel the aim); the trigger calls it as it already did. The chord walks no belt and zooms nothing, a single bumper tap still walks the belt, and the AIR STRIKE READY line, the aim help and the meter plate name the two bumpers on a controller instead of the G key.
+
+MEASURED. Check 27.25 passes, and fails on v27.24.

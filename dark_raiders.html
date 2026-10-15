@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.24';
+var VER='27.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15991,6 +15991,13 @@ function pollPad(){
     var _slN=hotbarSlots().length;
     if(_lbN&&!PAD.prev[4]){ PAD.lbAt=_bnow; PAD.lbHeld=0; }
     if(_rbN&&!PAD.prev[5]){ PAD.rbAt=_bnow; PAD.rbHeld=0; }
+    // v27.25 (coop7): BOTH BUMPERS TOGETHER ARM THE AIR STRIKE. It was a keyboard key (G) and the keyboard is player 1's, so a player on a controller (player 2) could fill the
+    // meter and never spend it. The two bumpers pressed within 0.3 s of each other are a chord: they arm it (or cancel the aim), and neither walks the belt or zooms.
+    if(_lbN&&_rbN&&(!PAD.prev[4]||!PAD.prev[5])&&!PAD.airChord&&PAD.lbAt!=null&&PAD.rbAt!=null&&Math.abs(PAD.lbAt-PAD.rbAt)<0.3&&typeof flowOn==='function'&&flowOn()){
+      PAD.airChord=1; PAD.lbHeld=1; PAD.rbHeld=1; PAD.lbAt=null; PAD.rbAt=null;
+      try{ airKey(); }catch(_pak){}
+    }
+    if(!_lbN&&!_rbN) PAD.airChord=0;
     if(_lbN&&PAD.lbAt!=null&&_bnow-PAD.lbAt>=0.25){ PAD.lbHeld=1; if(typeof setZoom==='function') setZoom(zoomTarget()/Math.exp(1.1*_bdt)); }
     if(_rbN&&PAD.rbAt!=null&&_bnow-PAD.rbAt>=0.25){ PAD.rbHeld=1; if(typeof setZoom==='function') setZoom(zoomTarget()*Math.exp(1.1*_bdt)); }
     if(_slN>0){
@@ -44658,7 +44665,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.24: There is now one persistent feed at the bottom left that takes every raid line, newest at the bottom. Check 27.24 fails on v27.23',
+  now:'v27.25: A player on a controller can now arm the air strike with both bumpers together. Check 27.25 fails on v27.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54038,7 +54045,7 @@ function airScan(){
     h=(+e.hp>0)?+e.hp:0;
     if(typeof e.airH==='number'&&h<e.airH&&(+e.pHitT||0)>0&&airSide(e)&&!(e.pHitSeat|0)){   // v27.19 (coop6): and never a round player 2 landed, that is his meter
       drop=e.airH-h; A.dealt+=drop;
-      if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+drop); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:'PRESS G'}); } }
+      if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+drop); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:airHint()}); } }
     }
     e.airH=h;
   }
@@ -54111,7 +54118,7 @@ function airDraw(c,p){
     c.lineWidth=2*z; c.beginPath(); c.moveTo(s.x-22*z,s.y); c.lineTo(s.x-8*z,s.y); c.moveTo(s.x+8*z,s.y); c.lineTo(s.x+22*z,s.y);
     c.moveTo(s.x,s.y-22*z); c.lineTo(s.x,s.y-8*z); c.moveTo(s.x,s.y+8*z); c.lineTo(s.x,s.y+22*z); c.stroke();
     c.textAlign='center'; c.font=hudFS(TYPE.head); c.fillStyle='#ffd0c0'; hudText('AIR STRIKE',s.x,s.y-ar-U(24));
-    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     G CANCEL',s.x,s.y-ar-U(8));
+    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     '+(padOn()?padB('LB + RB'):'G')+' CANCEL',s.x,s.y-ar-U(8));
   }
   for(i=0;i<A.sk.length;i++){
     st=A.sk[i]; s=w2s(st.x,0,st.y);
@@ -54136,10 +54143,10 @@ function airDraw(c,p){
     rdy=A.m>=AIR.need; fl=clamp(A.m/AIR.need,0,1);
     hudPlate(x,y,bw,bh,rdy?UIC.acc:null,HUDC.plate);
     c.textAlign='left'; c.font=hudFS(TYPE.micro); c.fillStyle=rdy?UIC.acc:UIC.tx_2; hudText('AIR STRIKE',x+U(12),y+Math.round(bh*0.64));
-    bx=x+U(96); bwid=bw-U(96)-U(48); by=Math.round(y+bh*0.5-U(3));
+    bx=x+U(96); bwid=bw-U(96)-U(padOn()?76:48); by=Math.round(y+bh*0.5-U(3));
     c.fillStyle='rgba(255,255,255,.12)'; c.fillRect(bx,by,bwid,U(6));
     c.fillStyle=rdy?('rgba(255,192,74,'+(0.75+0.25*Math.sin(t*8)).toFixed(3)+')'):'#ff8a3c'; c.fillRect(bx,by,bwid*fl,U(6));
-    if(rdy) hudKey('G',x+bw-U(46),y+Math.round(bh*0.7),U(8),U(32));
+    if(rdy) hudKey(padOn()?padB('LB+RB'):'G',x+bw-U(padOn()?74:46),y+Math.round(bh*0.7),U(8),U(padOn()?62:32));   // v27.25 (coop7): the chord on a controller
     else { c.textAlign='right'; c.fillStyle=UIC.tx_1; hudText(Math.floor(fl*100)+'%',x+bw-U(10),y+Math.round(bh*0.64)); }
   }
   c.restore();
@@ -55679,7 +55686,7 @@ function airCharge(e,dmg){
   A=airS(); if(A.blast) return 0;
   add=Math.min(+dmg,(+e.hp>0)?+e.hp:0); if(!(add>0)) return 0;
   A.dealt+=add;
-  if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+add); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:'PRESS G'}); } }
+  if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+add); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:airHint()}); } }
   return add;
 }
 function flowNetAirSend(x,y,a0){
@@ -55698,6 +55705,7 @@ function airStrikeFx(x,y,a0,seat){
   try{ say('AIR STRIKE INBOUND','warn',nm?{sub:String(nm).toUpperCase()}:undefined); }catch(_asf){}
   return true;
 }
+function airHint(){ return (typeof padOn==='function'&&padOn())?padB('LB + RB'):'PRESS G'; }
 // FLOW-MODULE-END (the next flow builds add their code above this line)
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS
 // LIGHT. Over 3 hours of nonstop play the bodies grew from 41 to 217 and the containers from 154 to 598: the waves land near the

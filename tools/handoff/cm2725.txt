@@ -1,0 +1,7 @@
+v27.25: the air strike on a controller
+
+A player on a controller can now arm the air strike with both bumpers together.
+
+Check 27.25. Fails on v27.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.25 - THE AIR STRIKE ON A CONTROLLER
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players, and player 2 plays on a controller. The air strike was armed with the G key, and the keyboard is player 1 in a two player game, so player 2 could fill his meter and never spend it. On a controller, both bumpers pressed together now arm the strike (and press them again to cancel the aim); the trigger calls it as it already did. The chord walks no belt and zooms nothing, a single bumper tap still walks the belt, and the AIR STRIKE READY line, the aim help and the meter plate name the two bumpers on a controller instead of the G key.
+
+MEASURED. Check 27.25 passes, and fails on v27.24.
 ## v27.24 - THE PERSISTENT FEED
 
 Co-op hunt while he was away. His order of 2026-10-14: the way different messages come in at different places is messy and needs to be made consistent, maybe a persistent feed like WoW. There is now one feed at the bottom left, above the body corner: the last ten lines, the newest at the bottom, each full bright for six seconds and then dimmed to 35 percent, where it stays until a newer line pushes it out (the last forty are kept). Everything the raid says goes in, with a small glyph and a colour for its kind: pickups in their rarity colour and counted, alerts, objectives, teammate lines, kills (yours, a teammate and machines and pillagers killing each other), medals and money, power-ups. The controls list stands above it. The old places still show for now; the next builds move them out.
