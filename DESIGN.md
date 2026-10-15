@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.50 - THE ALERT IS POLISHED
+
+Co-op hunt while he was away. His answer of 2026-10-14 on the alert lane: polish the UI as you see fit, consistent with AAA practices. The headline of an alert is now the large size of the HUD (it was the size of a prompt), the plate drops in from a little above as it fades in, and a thin time bar along its foot runs down with the life of the alert, so a callout shows how long it will stay. The detail line under the headline keeps its size.
+
+MEASURED. Check 27.50 passes, and fails on v27.49.
 ## v27.49 - THE BOSS BAR IS ON THE HUD PLATE
 
 Co-op hunt while he was away. His rule of 2026-10-14: the new features are integrated and polished to the level of the old. The boss bar was a flat dark box with a hand picked red and an amber name. It is now on the one HUD plate (rail, track and fill in the danger colour, the name in bone), and the Overseer bar marks the two thresholds its phases change at (66 and 33 percent) as ticks across the fill and names the phase it is in beside the name. Its place, its size, the 4K scale and the edge that the offer line starts under are unchanged.
