@@ -1,0 +1,7 @@
+v28.47: your teammate shows bare hands when his hands are busy
+
+In co-op, a teammate with a grenade or heal out, searching, cutting a seal or on Bare Hands now shows bare hands in your window, just as he sees himself.
+
+Check 28.47. Fails on v28.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.46';
+var VER='28.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46509,7 +46509,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.46: When your host leaves and you pick up the raid, the fuel fires and raid events that already happened no longer start over. Check 28.46 fails on v28.45',
+  now:'v28.47: In co-op, a teammate with a grenade or heal out, searching, cutting a seal or on Bare Hands now shows bare hands in your window, just as he sees himself. Check 28.47 fails on v28.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -51067,13 +51067,13 @@ function netOnState(peer,m){
   // full stop). It now reads REVIVE and his name in caps, the verb his [E] REVIVE prompt uses at his body. The Peddler plate beside a
   // crate not yet searched reads THE PEDDLER, a middle dot, SEARCH CRATE FIRST, in the caps of every other nameplate.
   if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:'REVIVE '+String(netSeatName(s)||'your teammate').toUpperCase(),key:'tmdown'+s,icon:'party',hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); try{ sndDowned(0,x,y); }catch(_dn){} }catch(_md){} }   // v24.xx (his order 2026-10-12): and heard, where he fell
-  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour
+  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); g.hd=m.hd?1:0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd kept; a word without it (an older window) reads as empty hands
   if(up&&(m.sh||g.sh)) g.sh=m.sh?1:0;   // v23.30 (arcade9): the teammate spawn shield
   if(up){ g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; }   // v23.xx (forge8): his forged gun
   if(lk) g.lk=lk;
   if(NET.role==='host'){
     out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};
-    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; }   // v15.79: passed on as it came
+    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; out.hd=g.hd; }   // v15.79: passed on as it came // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd passed on too
     if(lk) out.lk=lk;
     if(up&&g.fk){ out.fk=g.fk; if(g.el) out.el=g.el; }   // v23.xx (forge8)
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSendFast(NET.peers[i],out);
@@ -52220,7 +52220,7 @@ function netUpTick(dt){
   NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
        c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',fk:(p.wep&&(p.wep.fk===1||p.wep.fk===2))?p.wep.fk:0,el:(p.wep&&p.wep.fk===2&&p.wep.el)?String(p.wep.el):'',pz:G.paused?1:0,
-       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate
+       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0,hd:(G.handsT>0||p.hand)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd, his hands are busy (a grenade or heal out, a search or a seal), so his teammate draws him without his gun as he sees himself
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
@@ -52294,7 +52294,7 @@ function netUpDrawOne(g){
     }    g.wep=wp;   // read by drawOp off own, as the gun in hand; the hair lag lives on the entry too, as it does on any body
     lift=drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(g.x,g.y):0);
     if(lift>0){ wc.save(); wc.translate(0,-lift); }
-    mode=g.dn?'down':((g.roll>0)?'roll':(g.cr?'crouch':(wp?'':'none')));
+    mode=g.dn?'down':((g.roll>0)?'roll':(g.cr?'crouch':((wp&&!g.hd&&wp.id!=='fists')?'':'none'))); // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: bare hands while his hands are busy or he is on Bare Hands, as his own window draws him
     drawOp(g.x,g.y,g.f,(g.roll>0)?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,mode,0,
       {hero:0,own:g,team:(NET.mode==='pvp')?'foe':'ally',moving:!!g.mv,sprint:!!g.sp,ads:false,hurt:0,rl:0,bulk:0,
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
