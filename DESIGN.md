@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.12 - PACK AND BOOT SHAPES
+
+Co-op hunt while he was away. His order of 2026-10-15: every cosmetic should change the silhouette, not only a colour. Four new packs on the BACKPACK rack that change the outline of your back: a Bedroll Pack with a rolled blanket across the top, a Radio Pack with a box and a tall antenna, a Fuel Can Pack with a red can strapped on the outside, and a Frame Pack, taller and wider with side pouches. Two new boots: Shin Guards, steel plates over the lower leg, and Tall Gaiters, laced leather up to the knee. They start from the canvas pack and the black boots, so a colour scheme paints them, and they carry the scheme accent. The pack and boot tiles now show the piece on the figure. Both go across the two-window link. Cosmetic only.
+
+MEASURED. Check 28.12 passes, and fails on v28.11.
 ## v28.11 - THE GLOW SAYS WHY
 
 Co-op hunt while he was away. His answer on the needed-item glow: he was not sure how it works. So it now explains itself. The first time a shut box that holds an item one of your contracts needs is near you, one caps callout reads CONTRACT ITEM NEARBY over GOLD GLOW MARKS THE BOX, once for your save and never again. The item says why wherever you see it: its row in the pickup stack carries the tag NEEDED, CONTRACT as soon as it is made, and picking up a second one still counts into the same row, and in the backpack its name line carries the same tag in gold. Nothing that drops or is paid changes.

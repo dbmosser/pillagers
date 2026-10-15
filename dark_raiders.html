@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.11';
+var VER='28.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31642,6 +31642,9 @@ var COSMETICS=[
   {id:'sneakchi',  name:'Chicago High-Tops', how:'runs:20',     kind:'boots'},
   {id:'sneakcon',  name:'Concord Low-Tops',  how:'extracts:12', kind:'boots'},
   {id:'sneakbred', name:'Bred High-Tops',    how:'level:5',     kind:'boots'},
+  // v28.12 (cosm5): BOOT SHAPES: shin guards over the lower leg, tall laced gaiters to the knee.
+  {id:'bootshin',  name:'Shin Guards',       how:'runs:13',     kind:'boots'},
+  {id:'bootgaiter',name:'Tall Gaiters',      how:'extracts:15', kind:'boots'},
   // v10.33, his answer 14: GLOVES, the eleventh rack. Bare hands take the skin colour.
   {id:'barehands', name:'Bare Hands',     how:'always',      kind:'gloves'},
   {id:'glovetan',  name:'Work Gloves',    how:'runs:3',      kind:'gloves'},
@@ -31654,6 +31657,12 @@ var COSMETICS=[
   {id:'packblack', name:'Black Pack',     how:'runs:16',     kind:'pack'},
   {id:'packrust',  name:'Rust Pack',      how:'extracts:7',  kind:'pack'},
   {id:'packsand',  name:'Sand Pack',      how:'level:3',     kind:'pack'},
+  // v28.12 (cosm5), HIS ORDER (2026-10-15): "player cosmetics still need major improvements". PACK SHAPES: four packs that change the outline of your back,
+  // not only its colour. They wear the scheme secondary like the canvas pack and carry the accent.
+  {id:'packroll',  name:'Bedroll Pack',   how:'runs:11',     kind:'pack'},
+  {id:'packradio', name:'Radio Pack',     how:'extracts:5',  kind:'pack'},
+  {id:'packfuel',  name:'Fuel Can Pack',  how:'extracts:10', kind:'pack'},
+  {id:'packframe', name:'Frame Pack',     how:'level:4',     kind:'pack'},
   // v10.35, his answer 14: PATCH, the thirteenth rack. A mark on the chest.
   {id:'patchnone', name:'No Patch',       how:'always',      kind:'patch'},
   {id:'patchcross',name:'Red Cross',      how:'runs:4',      kind:'patch'},
@@ -31927,7 +31936,44 @@ function drawPatch(c,id,x,y,s){
   else if(id==='patchflag'){ c.fillRect(x+s*0.15,y+s*0.2,s*0.7,s*0.2); c.fillRect(x+s*0.15,y+s*0.6,s*0.7,s*0.2); }
 }
 // v10.34: the pack colours.
-var PACKCOL={packbrown:'#5c4a34',packolive:'#3a5a2c',packblack:'#1e2228',packrust:'#6a3a2a',packsand:'#8a7a52'};
+var PACKCOL={packbrown:'#5c4a34',packolive:'#3a5a2c',packblack:'#1e2228',packrust:'#6a3a2a',packsand:'#8a7a52',
+             packroll:'#5c4a34',packradio:'#5c4a34',packfuel:'#5c4a34',packframe:'#5c4a34'};   // v28.12 (cosm5): the shapes start from the canvas colour, so a scheme paints them
+// v28.12 (cosm5): what a pack shape adds to the outline. px is the pack centre, pw its width; the base pack is drawn first.
+function drawPackExtra(id,px,ty,fl,pw,sch){
+  var A=sch?sch.a:'#c8a24a', bx, ax;
+  if(id==='packroll'){
+    wc.fillStyle=INK; rrF(px-pw/2-2.6,ty-26.8,pw+5.2,5.6,2.8);
+    wc.fillStyle='#8a7a5a'; rrF(px-pw/2-2.0,ty-26.3,pw+4.0,4.6,2.3);
+    wc.fillStyle='#ad9c7c'; wc.fillRect(px-pw/2-1.4,ty-26.1,pw+2.8,1.0);
+    wc.fillStyle='#3a2e20'; wc.fillRect(px-pw/2+0.2,ty-26.4,1.0,5.0); wc.fillRect(px+pw/2-1.2,ty-26.4,1.0,5.0);
+    wc.fillStyle=A; wc.fillRect(px-0.9,ty-26.4,1.8,5.0);
+  } else if(id==='packradio'){
+    ax=px+pw/2-0.4;
+    wc.fillStyle=INK; wc.fillRect(ax-0.7,ty-40.0,1.4,13.0);
+    wc.fillStyle=INK; rrF(px-pw/2-1.6,ty-29.2,pw+3.2,8.6,1.8);
+    wc.fillStyle='#38443f'; rrF(px-pw/2-1.0,ty-28.7,pw+2.0,7.6,1.3);
+    wc.fillStyle='#566560'; wc.fillRect(px-pw/2-0.8,ty-28.5,pw+1.6,1.3);
+    wc.fillStyle='#202a26'; wc.fillRect(px-pw/2-0.6,ty-23.6,pw+1.2,0.9);
+    wc.fillStyle=A; wc.fillRect(px-pw/2+0.0,ty-26.4,1.6,1.6); wc.fillStyle='#d8e0dc'; wc.fillRect(px+0.7,ty-26.4,1.6,1.6);
+    wc.fillStyle=A; wc.fillRect(ax-1.1,ty-41.2,2.2,2.2);
+  } else if(id==='packfuel'){
+    bx=px-fl*(pw/2+3.6);
+    wc.fillStyle=INK; rrF(bx-3.8,ty-21.8,7.6,10.4,1.8); wc.fillRect(bx-1.4,ty-23.6,2.8,2.4);
+    wc.fillStyle='#8a3a2a'; rrF(bx-3.2,ty-21.2,6.4,9.2,1.3);
+    wc.fillStyle='#b25a44'; wc.fillRect(bx-2.8,ty-21.0,5.6,1.3);
+    wc.fillStyle='#5a2418'; wc.fillRect(bx-3.2,ty-16.4,6.4,0.9);
+    wc.fillStyle=A; wc.fillRect(bx-1.0,ty-23.3,2.0,1.5);
+    wc.fillStyle='#5a2418'; wc.fillRect(bx-0.6,ty-19.6,1.2,2.4);
+  } else if(id==='packframe'){
+    wc.fillStyle=INK; rrF(px-pw/2-2.4,ty-30.2,pw+4.8,10.6,2.4);
+    wc.fillStyle=sch?sch.pack:'#4a5a3a'; rrF(px-pw/2-1.8,ty-29.7,pw+3.6,9.6,1.9);
+    wc.fillStyle='rgba(255,255,255,.16)'; wc.fillRect(px-pw/2-1.4,ty-29.5,pw+2.8,1.2);
+    wc.fillStyle='#2a2f26'; wc.fillRect(px-pw/2-1.8,ty-25.2,pw+3.6,0.9);
+    wc.fillStyle=INK; rrF(px-pw/2-4.4,ty-20.6,3.2,6.6,1.2); rrF(px+pw/2+1.2,ty-20.6,3.2,6.6,1.2);
+    wc.fillStyle=sch?sch.pack:'#4a5a3a'; rrF(px-pw/2-3.9,ty-20.1,2.2,5.6,0.9); rrF(px+pw/2+1.7,ty-20.1,2.2,5.6,0.9);
+    wc.fillStyle=A; wc.fillRect(px-pw/2-1.8,ty-29.7,pw+3.6,1.0);
+  }
+}
 // v10.33: glove colours; bare hands are the skin.
 var GLOVECOL={glovetan:'#8a6438',gloveblack:'#1c2028',glovegrey:'#6a727c',glovered:'#8a2a2a'};
 function handColour(st){
@@ -31940,6 +31986,8 @@ function handColour(st){
 var BOOTCOL={bootblack:['#191f26','#232a32'],boottan:['#6a4a2a','#8a6438'],bootolive:['#36402a','#4a5638'],bootox:['#4a2028','#663038'],bootbone:['#8a8270','#a89e88'],
              // v10.47: sneakers carry a third stop, the sole, and a fourth, the collar band.
              sneakchi:['#a81a1a','#cc2424','#f2f0ea','#14161b'],sneakcon:['#14161b','#1f2227','#f2f0ea','#e6e3da'],sneakbred:['#14161b','#1f2227','#c41e1e','#c41e1e']};
+BOOTCOL.bootshin=BOOTCOL.bootblack;   // v28.12 (cosm5): the shin guards start from black boots, so a scheme paints them
+BOOTCOL.bootgaiter=['#4a4234','#6a5c44'];
 // v10.19: the iris colours.
 var EYECOL={eyebrown:'#5a3a22',eyehazel:'#8a6a34',eyeblue:'#4a7ab8',eyegreen:'#4a8a5a',eyegrey:'#8a949c',eyeamber:'#c88a2a'};
 function cosWorn(kind){
@@ -32375,7 +32423,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   rrF(x+1.1+swing*.5,ty-11.6,5.8,7.9-liftA*.5,1.5);
   rrF(x+.5+swing,ty-5.1-liftA,6.6,5.1,1.5);
   // v10.32: the boots take their colour from the racks.
-  var _BT=OUTF?OUTF.boots:(BOOTCOL[st.hero?cosWorn('boots'):(st.boots||'bootblack')]||BOOTCOL.bootblack);   // v10.54
+  var _BTID=st.hero?cosWorn('boots'):(st.boots||'bootblack');   // v28.12 (cosm5)
+  var _BT=OUTF?OUTF.boots:(BOOTCOL[_BTID]||BOOTCOL.bootblack);   // v10.54
   if(_SCH&&_BT===BOOTCOL.bootblack) _BT=_SCH.boots;   // v28.04 (cosm1): boots left at the default wear the secondary
   // v10.50, his note: "shoes should be separate from pants". The lower leg is
   // trousers, a darker cut of the coat, and the boot colour is the foot and a
@@ -32408,6 +32457,18 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillStyle=litHex(_BT[0],.30); wc.fillRect(x-6.5+swing2+_toe,ty-4.2-liftB,2.2,1.0);
     wc.fillStyle=litHex(_BT[1],.30); wc.fillRect(x+1.1+swing+_toe,ty-4.2-liftA,2.2,1.0);
   }
+  if(!OUTF&&_BTID==='bootshin'){   // v28.12 (cosm5): shin guards, a plate over the front of each lower leg
+    wc.fillStyle=INK; rrF(x-6.8+swing2*.5,ty-10.2-liftB*.5,5.2,5.6,1.4); rrF(x+1.4+swing*.5,ty-10.2-liftA*.5,5.2,5.6,1.4);
+    wc.fillStyle='#69747e'; rrF(x-6.2+swing2*.5,ty-9.7-liftB*.5,4.0,4.6,1.0); rrF(x+2.0+swing*.5,ty-9.7-liftA*.5,4.0,4.6,1.0);
+    wc.fillStyle='#8f9ba6'; wc.fillRect(x-6.0+swing2*.5,ty-9.6-liftB*.5,3.6,1.0); wc.fillRect(x+2.2+swing*.5,ty-9.6-liftA*.5,3.6,1.0);
+    wc.fillStyle=_SCH?_SCH.a:'#c8a24a'; wc.fillRect(x-6.0+swing2*.5,ty-6.6-liftB*.5,3.6,0.9); wc.fillRect(x+2.2+swing*.5,ty-6.6-liftA*.5,3.6,0.9);
+  } else if(!OUTF&&_BTID==='bootgaiter'){   // v28.12 (cosm5): tall laced gaiters up to the knee, wider than the trouser leg
+    wc.fillStyle=INK; rrF(x-7.0+swing2*.5,ty-10.8-liftB*.5,5.8,7.4,1.5); rrF(x+1.2+swing*.5,ty-10.8-liftA*.5,5.8,7.4,1.5);
+    wc.fillStyle=_BT[0]; rrF(x-6.4+swing2*.5,ty-10.3-liftB*.5,4.6,6.4,1.1); rrF(x+1.8+swing*.5,ty-10.3-liftA*.5,4.6,6.4,1.1);
+    wc.fillStyle=_BT[1]; wc.fillRect(x-6.4+swing2*.5,ty-10.3-liftB*.5,1.4,6.4); wc.fillRect(x+1.8+swing*.5,ty-10.3-liftA*.5,1.4,6.4);
+    wc.fillStyle='#d8cfb4'; wc.fillRect(x-4.4+swing2*.5,ty-9.4-liftB*.5,0.8,0.8); wc.fillRect(x-4.4+swing2*.5,ty-7.8-liftB*.5,0.8,0.8); wc.fillRect(x+3.8+swing*.5,ty-9.4-liftA*.5,0.8,0.8); wc.fillRect(x+3.8+swing*.5,ty-7.8-liftA*.5,0.8,0.8);
+    wc.fillStyle=_SCH?_SCH.a:'#c8a24a'; wc.fillRect(x-6.4+swing2*.5,ty-10.3-liftB*.5,4.6,1.0); wc.fillRect(x+1.8+swing*.5,ty-10.3-liftA*.5,4.6,1.0);
+  }
   if(_SCH&&!_BT[2]){ wc.fillStyle=_SCH.a; wc.fillRect(x-6.4+swing2*.5,ty-6.5-liftB,4.8,1.0); wc.fillRect(x+1.6+swing*.5,ty-6.5-liftA,4.8,1.0); }   // v28.04 (cosm1): the accent collar
   if(_LSX!==1) wc.restore();   // v23.xx (spr16): end of the Broad legs
 
@@ -32416,11 +32477,13 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(_GB) gunHeld(x+leanX,ty,face,fl,st,coat,_BLD,_PC,ads,sprint,rl,muzzle);  var pw=6+pk*5;
   if(!(OUTF&&OUTF.nopack)){   // v23.xx (spr21): the Survivor has no pack
   wc.fillStyle=INK; rrF(x-fl*9-pw/2+leanX-1,ty-22,pw+2,11,3);
-  var _PKC=PACKCOL[st.hero?cosWorn('pack'):(st.pack||'packbrown')]||PACKCOL.packbrown;   // v10.34
+  var _PKID=st.hero?cosWorn('pack'):(st.pack||'packbrown');   // v28.12 (cosm5)
+  var _PKC=PACKCOL[_PKID]||PACKCOL.packbrown;   // v10.34
   if(_SCH&&_PKC===PACKCOL.packbrown) _PKC=_SCH.pack;   // v28.04 (cosm1): a pack left at the default wears the secondary
   wc.fillStyle=_PKC;
   rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
-  if(_SCH){ wc.fillStyle=_SCH.a; wc.fillRect(x-fl*9-pw/2+leanX+0.6,ty-20.4,pw-1.2,1.2); }   // v28.04 (cosm1): the accent flap
+  if(_SCH){ wc.fillStyle=_SCH.a; wc.fillRect(x-fl*9-pw/2+leanX+0.6,ty-20.4,pw-1.2,1.2); }
+  if(/^pack(roll|radio|fuel|frame)$/.test(_PKID)) drawPackExtra(_PKID,x-fl*9+leanX,ty,fl,pw,_SCH);   // v28.12 (cosm5)   // v28.04 (cosm1): the accent flap
   }
   if(!_BLD){
   if(_PC){ wc.fillStyle=INK; rrF(x-6.6+leanX,ty-23,13.2,13,4); wc.fillStyle=cc; rrF(x-5.6+leanX,ty-22,11.2,11,3); }   // v23.xx (spr16): Lean is slimmer
@@ -46203,7 +46266,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.11: The gold glow says why: a one-time callout and a NEEDED, CONTRACT tag on the item. Check 28.11 fails on v28.10',
+  now:'v28.12: Four new pack shapes and two boot shapes in FASHION: bedroll, radio, fuel can, frame pack, shin guards, tall gaiters. Check 28.12 fails on v28.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62292,7 +62355,7 @@ function cosPreviewURL(kind,id){
   return hit;
 }
 function cosSwatch(c){
-  if(c.kind==='scheme'||c.kind==='fit'||c.kind==='tattoo'||c.kind==='face'||c.kind==='hat'||c.kind==='beard'||c.kind==='cut'||c.kind==='build'){   // v18.82: the piece on you; v20.04: and BUILD, now that a build changes the body (v20.01)
+  if(c.kind==='pack'||c.kind==='boots'||c.kind==='scheme'||c.kind==='fit'||c.kind==='tattoo'||c.kind==='face'||c.kind==='hat'||c.kind==='beard'||c.kind==='cut'||c.kind==='build'){   // v18.82: the piece on you; v20.04: and BUILD, now that a build changes the body (v20.01)
     var _cpv=cosPreviewURL(c.kind,c.id);
     if(_cpv) return '<img alt="" style="width:64px;height:64px;display:block;margin:0 auto 2px;border-radius:6px;background:rgba(0,0,0,.18)" src="'+_cpv+'">';
   }

@@ -1,0 +1,7 @@
+v28.12: pack and boot shapes
+
+Four new pack shapes and two boot shapes in FASHION: bedroll, radio, fuel can, frame pack, shin guards, tall gaiters.
+
+Check 28.12. Fails on v28.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
