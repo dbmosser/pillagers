@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.26 - THE CONTROLS LIST STANDS BESIDE THE FEED
+
+Co-op hunt while he was away. Seen in the first picture of the busy raid frame: with the feed at the bottom left, the compact controls list was pushed up above it and ran over the bottom of the CURRENT PILLAGERS board. It now stands on the vitals as before, but to the right of the feed, and it shrinks a little if it must so that it ends before the middle of the screen, where the player stands. The one-line controls hint stands just over the feed.
+
+MEASURED. Check 27.26 passes, and fails on v27.25.
 ## v27.25 - THE AIR STRIKE ON A CONTROLLER
 
 Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players, and player 2 plays on a controller. The air strike was armed with the G key, and the keyboard is player 1 in a two player game, so player 2 could fill his meter and never spend it. On a controller, both bumpers pressed together now arm the strike (and press them again to cancel the aim); the trigger calls it as it already did. The chord walks no belt and zooms nothing, a single bumper tap still walks the belt, and the AIR STRIKE READY line, the aim help and the meter plate name the two bumpers on a controller instead of the G key.
