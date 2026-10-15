@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.09 - THE LOCKDOWN FENCES PLAYER 2 TOO
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The lockdown alarm seals a district for 60 seconds: nobody crosses the ring. That was true of player 1 and of the machines, which the host moves, but player 2 walks in his own window, so the fence was not there for him. Player 2 now takes his side of the ring the moment the doors slam (inside is SEALED IN, outside is DISTRICT SEALED), is put back on his side if he tries to cross, and is told DOORS OPEN when the seal lifts and LOCKDOWN OVER when it ends.
+
+MEASURED. Check 27.09 passes, and fails on v27.08.
 ## v27.08 - THE HAUL REVEAL
 
 Co-op hunt while he was away. His yes to suggestion 36. After an extraction, the pictures of what you brought out, under the line that says how many items were secured, now come up one at a time on the EXTRACTED card instead of all at once. The cheapest comes first and the best lands last, a sixth of a second each and half as long again for a purple or a gold one, each with a flash and a glow in its own rarity colour and the same pick sound that rarity makes when you loot it. A HAUL line in caps counts up as they land and ends on the figure the card secured. A click on the card, ESC, ENTER or A on a controller skips it: the first press only fills the strip in, and the next press logs the run as before. A single item shows at once, and a death has no reveal. The DEMO shows no card, so nothing changes there. Nothing paid or kept changes.

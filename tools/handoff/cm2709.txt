@@ -1,0 +1,7 @@
+v27.09: the lockdown fences player 2 too
+
+The lockdown alarm now seals player 2 in or out of the ring as well, then opens its doors.
+
+Check 27.09. Fails on v27.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

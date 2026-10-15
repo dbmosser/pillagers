@@ -2225,7 +2225,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.08';
+var VER='27.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44272,7 +44272,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.08: Your haul reveals one item at a time with a rarity flash, and can be skipped. Check 27.08 fails on v27.07',
+  now:'v27.09: The lockdown alarm now seals player 2 in or out of the ring as well, then opens its doors. Check 27.09 fails on v27.08',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55081,6 +55081,8 @@ function evNetTake(rows){
     ev.ph=ph;
     evNetTakeX(ev,r[12]);
     if(was==='warn'&&ph!=='warn') evPeerStart(ev);
+    else if(was===null&&ph==='live') evPeerStart(ev);   // v27.09 (coop3): a word that finds the event already live (a lost word) still says it and picks the side
+    else if(was==='live'&&ph==='end'&&id==='lock'){ try{ say('LOCKDOWN OVER','info'); }catch(_le){} }
     seen[ev.n+id]=1; E.n=Math.max(E.n|0,ev.n+1);
   }
   for(j=L.length-1;j>=0;j--) if(!seen[L[j].n+L[j].id]) L.splice(j,1);
@@ -55098,11 +55100,15 @@ function debrisImpactPeer(pt){
   if(d<R+(p.r||11)&&!p.downed&&!p.dying&&!p.specOut) damagePlayer(Math.round(150*(1-d/(R+(p.r||11)))+30),'debris','ORBITAL DEBRIS',pt.x,pt.y);
 }
 function evPeerTick(dt){
-  var E=evS(), L=E.live, i, j, ev, pt, c, t=G.t||0;
+  var E=evS(), L=E.live, i, j, ev, pt, c, t=G.t||0, p=G.player;
   for(i=L.length-1;i>=0;i--){
     ev=L[i]; ev.t+=dt;
     if(ev.ph==='live') ev.lt+=dt;
     else if(ev.ph==='end'){ ev.et+=dt; if(ev.et>=ev.fade+2){ L.splice(i,1); continue; } }
+    if(ev.id==='lock'&&ev.ph==='live'){   // v27.09 (coop3): the district doors, felt by this player
+      if(lockSealed(ev)&&p&&!p.specOut&&ev.d.pSide) lockKeep(p,p.r||11,ev,ev.d.pSide);
+      else if(!lockSealed(ev)&&!ev.d.rel){ ev.d.rel=1; try{ say('DOORS OPEN','warn',{sub:'THEY ARE COMING OUT'}); }catch(_lo){} }
+    }
     if(ev.id==='debris'&&ev.ph==='live'&&ev.d.pts){
       for(j=0;j<ev.d.pts.length;j++){
         pt=ev.d.pts[j];
