@@ -1,0 +1,7 @@
+v27.15: the what is new card names the two player flow
+
+The what is new card names the two player flow builds.
+
+Check 27.15. Fails on v27.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

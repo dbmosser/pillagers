@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.15 - THE WHAT IS NEW CARD NAMES THE TWO PLAYER FLOW
+
+Co-op hunt while he was away. The card was stamped v26.99 and the stamp may not trail the build by more than 0.15. Its new line names the two player flow builds since: player 2 sees and feels the fires, the raid events, the strongholds, the golden enemy, the run goals and the air strike, and the power-ups are shared.
+
+MEASURED. Check 27.15 passes, and fails on v27.14.
 ## v27.14 - THE PICKUP STACK SHOWS SIX ROWS
 
 Co-op hunt while he was away. His answer 36: the pickup stack should show more rows. What you pick up shows as rows on the right edge above the gun card, and it held only the last four, so a quick run through a room pushed the first pickups off before you had read them. It now holds six rows. Each row still lives four seconds, the newest is at the bottom and the same item picked up again still adds to its row.
