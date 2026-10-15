@@ -4,7 +4,7 @@
     "now":  "The air strike, power-ups, medals, golden enemy and haul reveal have their own dark sounds, and the old thin chimes are gone.",
     "edits":  [
                   {
-                      "anchor":  "  say(\u0027AIR STRIKE INBOUND\u0027,\u0027warn\u0027);\n",
+                      "anchor":  "  say(\u0027AIR STRIKE INBOUND\u0027,\u0027warn\u0027);",
                       "replacement":  "  say(\u0027AIR STRIKE INBOUND\u0027,\u0027warn\u0027);\n  // v16.xx (snd3), HIS ORDER (2026-10-15, \"add the sounds\"): THE AIR STRIKE HAS SOUNDS. Calling it said AIR STRIKE INBOUND in silence and each of the six\n  // blasts was the plain boom. Now the call is a target lock, a radio squelch and two low confirm pulses (yours, on the HUD bus), the strike craft comes\n  // in over you for the 1.5 s before the first blast (a rocket roar rising in pitch), and each of the six blasts is a recorded blast at its own pitch\n  // with a sub drop, the same ring and range as boom. No words, no voices. Cosmetic only: no seeded draw, no game state.\n  try{ blip(\u0027airConfirm\u0027); blip(\u0027airInbound\u0027); }catch(_ac){}"
                   },
                   {

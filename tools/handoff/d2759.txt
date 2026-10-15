@@ -1,0 +1,5 @@
+## v27.59 - ENTER SKIPS THE HAUL REVEAL
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: v27.08 says ENTER skips the haul reveal on the EXTRACTED card, but only ESC, TAB, pad A and B and a real click skipped it. With the focus on the page, which is where it sits when the card comes up, ENTER did nothing and the items kept ticking in one by one. Proven in headless Chromium: ENTER sent through the page left the reveal running with every item still hidden. ENTER now skips the reveal and leaves the card up, the way the first ESC does; once the haul is all shown it does what it did before. ENTER typed in the note box is not touched.
+
+MEASURED. Check 27.59 passes, and fails on v27.58.

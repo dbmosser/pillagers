@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.59 - ENTER SKIPS THE HAUL REVEAL
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: v27.08 says ENTER skips the haul reveal on the EXTRACTED card, but only ESC, TAB, pad A and B and a real click skipped it. With the focus on the page, which is where it sits when the card comes up, ENTER did nothing and the items kept ticking in one by one. Proven in headless Chromium: ENTER sent through the page left the reveal running with every item still hidden. ENTER now skips the reveal and leaves the card up, the way the first ESC does; once the haul is all shown it does what it did before. ENTER typed in the note box is not touched.
+
+MEASURED. Check 27.59 passes, and fails on v27.58.
 ## v27.58 - THE KEY LISTS USE THE WINDOW
 
 Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, CHANGE KEYS and CHANGE PAD BUTTONS were one column 1100 pixels wide in a 1920 pixel window, the right 40 percent empty, with thirty rows to scroll through. They list the actions in two columns across the window now, each section heading across both, so the same rows take half the height. The rows, the keycaps and REBIND are unchanged.

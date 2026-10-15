@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.58';
+var VER='27.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14442,6 +14442,13 @@ function raidKey(code,repeat,ev){
   // ocCommit logs the run once with its tags and note exactly as a click does, and the return stops this function touching G
   // after the button has let it go. A key repeat does nothing, and a press while the note box has the focus still goes to the
   // note, as in every other window. No player text, no number and no seeded draw moved.
+  // v27.59 (cloud-menus-enter-skips-haul), CLOUD HUNT 2026-10-15: ENTER SKIPS THE HAUL REVEAL, as v27.08 says. Only ESC, TAB, pad A and B and a real click did;
+  // with the focus on the page an ENTER did nothing. It skips and leaves the card up; once the haul is all shown ENTER does what it did before.
+  // A key typed in the note box never reaches here (the TEXTAREA bail in the keydown listener).
+  if((code==='Enter'||code==='NumpadEnter')&&!repeat&&G&&G.over){
+    var _oce=document.getElementById('outcome');
+    if(_oce&&_oce.classList.contains('on')&&haulRevealSkip()){ if(ev) ev.preventDefault(); return; }
+  }
   if((code==='Escape'||code==='Tab')&&!repeat&&G&&G.over){
     var _ocw=document.getElementById('outcome');
     if(_ocw&&_ocw.classList.contains('on')){ if(ev) ev.preventDefault(); if(haulRevealSkip()) return; document.getElementById('oc_btn').click(); return; }   // v26.xx (career7): the first press skips the haul reveal
@@ -44806,7 +44813,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.58: CHANGE KEYS and CHANGE PAD BUTTONS list the actions in two columns. Check 27.58 fails on v27.57',
+  now:'v27.59: ENTER skips the haul reveal on the EXTRACTED card. Check 27.59 fails on v27.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

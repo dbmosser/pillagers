@@ -1,0 +1,7 @@
+v27.59: enter skips the haul reveal
+
+ENTER skips the haul reveal on the EXTRACTED card.
+
+Check 27.59. Fails on v27.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
