@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.80 - THE BLOOM RESETS WITH A SNAP
+
+Co-op hunt while he was away. The pacing half of the Halo Reach bloom. A Reach player learns the cadence of a gun from the reticle, so the ring on the cursor now says when the bloom is gone: the moment the bloom a round or a held burst opened has fully closed again, the gun is back to its pinpoint round and the ring settles, it flares white, a thin ring contracts onto it and four ticks click into place for under a third of a second, with a quiet click under it. It happens once per reset, only after a real bloom (a quarter of the way open or more) has been closed, so a lone round in a quiet moment says nothing, and it stays out of the way while you spam. With reduced flashing on, the contracting ring is left out and the ticks and the click stay.
+
+MEASURED. Check 27.80 passes, and fails on v27.79.
 ## v27.79 - HALO REACH BLOOM
 
 Co-op hunt while he was away. His yes to the Halo Reach DMR bloom, adapted to the ring on the cursor. In Reach every shot opens the reticle, it closes again over a short recovery, the next round lands at random inside the reticle as it is now, so a closed reticle is a pinpoint shot and spamming widens the spread: players pace their shots, and the reticle is the honest readout. Every gun now has its own bloom. The semi-autos (pistol, Magnum, Marksman Rifle, Longshot, Burst Carbine, Riot Scattergun, Whisper, Meridian Lance) open wide on one round and close again in about a second, so the fastest trigger finger leaves some bloom on the next round while a beat of patience gives the pinpoint round back. The autos (SMG, Auto Rifle, Support MG) open a hair per round and fill over about two seconds of held fire, which is what a burst is for. The cursor ring grows with the bloom and closes with it, and moving adds to it as before. This is a balance change, which his rule of 2 October allows: the first round after a pause is exactly as accurate as it was, a spammed semi-auto is up to about two and a half times as loose, and the bot raids and the seeded stream are untouched.

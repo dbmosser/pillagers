@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.79';
+var VER='27.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20657,6 +20657,17 @@ var BLM={
   lmg:    {add:0.035,rec:0.55,dly:0.30,cone:0.040}
 };
 var BLM_UNITS=1.3;
+// v27.xx (feel2b), HIS YES (2026-10-14), the pacing half of the Reach bloom: THE RING SNAPS TIGHT THE MOMENT THE BLOOM IS FULLY CLOSED. A Reach player learns the cadence from the
+// reticle; here the ring on the cursor does it: when the bloom a round (or a held burst) opened has fully closed again (the gun is back to its pinpoint round and the ring has
+// settled) the ring flares white and a thin ring contracts onto it with four ticks for BLM_RST seconds, and a quiet click plays, once per reset. It only happens after a bloom of a
+// quarter or more has been closed, so a lone round in a quiet moment says nothing, and with REDUCED FLASHING the contracting ring is left out (the ticks and the click stay).
+var BLM_RST=0.30;
+function bloomResetTick(p){
+  if(!G||G.sim||!p) return false;
+  try{ if(typeof foley==='function'&&(p.bloomPk||0)>=0.45) foley('boltLatch',null,null,{g:0.4,rate:1.6,dur:0.05,vary:0.03,gap:0.1,local:1}); }catch(_br){}
+  p.bloomPk=0;
+  return true;
+}
 function blmOf(w){ return (w&&w.id&&BLM[gunBase(w.id)])||null; }
 function bloomTick(p,dt){
   var sp, base, tgt, b0, t;
@@ -20668,11 +20679,13 @@ function bloomTick(p,dt){
   if(G.pCrouch) base=(sp<12)?-0.3:0.1;
   if(p.ads) base*=0.4;
   t=blmOf(p.wep)||BLM.pistol;
-  if(p.bloomPend>0){ p.bloomK=Math.min(1,(p.bloomK||0)+p.bloomPend); p.bloomPend=0; p.bloomQ=0; }   // the rounds since the last step open the bloom
+  if(p.bloomPend>0){ p.bloomK=Math.min(1,(p.bloomK||0)+p.bloomPend); p.bloomPend=0; p.bloomQ=0; if(p.bloomK>=0.25) p.bloomArm=1; if(p.bloomK>(p.bloomPk||0)) p.bloomPk=p.bloomK; }   // the rounds since the last step open the bloom (and arm the reset flash)
   p.bloomQ=((p.bloomQ===undefined)?9:p.bloomQ)+dt;
   if(p.bloomQ>t.dly) p.bloomK=Math.max(0,(p.bloomK||0)-dt*t.rec);   // and it closes again once the gun has been quiet for dly
   tgt=base+BLM_UNITS*(p.bloomK||0); b0=p.bloom||0;
   p.bloom=b0+(tgt-b0)*Math.min(1,dt*((tgt>b0)?8:4));
+  if(p.rstT>0) p.rstT=Math.max(0,p.rstT-dt);
+  if(p.bloomArm&&(p.bloomK||0)<=0&&Math.abs(p.bloom-base)<0.25){ p.bloomArm=0; p.rstT=BLM_RST; p.rstN=(p.rstN||0)+1; bloomResetTick(p); }   // v27.xx (feel2b): fully closed
   return p.bloom;
 }
 function bloomShot(p,w){
@@ -37258,7 +37271,8 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
       var _shotAge=(G.t*1000)-(p.lastShot||-1e9);
       var _kick=(_loud&&_shotAge>=0&&_shotAge<160)?(1-_shotAge/160):0;
       var _lowPulse=(_loud&&_mf<=0.25)?(0.14+0.14*Math.sin(G.t*9)):0;
-      var _ma=Math.min(1,(_loud?(0.48+0.42*(1-_mf)):(0.22+0.55*(1-_mf)))+_kick*0.4+_lowPulse);
+      var _rf=(p.rstT>0)?clamp(p.rstT/BLM_RST,0,1):0;   // v27.xx (feel2b): the ring snaps tight when the bloom is fully closed
+      var _ma=Math.min(1,(_loud?(0.48+0.42*(1-_mf)):(0.22+0.55*(1-_mf)))+_kick*0.4+_lowPulse+_rf*0.45);
       ctx.lineWidth=((CFG.cursorLoud!==0?3.4:2.2)+((typeof _kick!=='undefined')?_kick*1.6:0))*_wz; ctx.lineCap='butt';   // v22.xx (R41): the ring width grows with the screen
       if(p.wep.mag<=28){
         var _seg=6.2832/p.wep.mag, _pad=_seg*0.22;
@@ -37270,6 +37284,18 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
       } else {
         ctx.strokeStyle='rgba('+_mc+','+_ma+')';
         ctx.beginPath(); ctx.arc(rx0,ry0,_mr,-1.5708,-1.5708+6.2832*_mf); ctx.stroke();
+      }
+      if(_rf>0){   // v27.xx (feel2b): fully closed: a thin ring contracts onto the magazine ring and four ticks click into place, white, over BLM_RST seconds
+        ctx.lineCap='butt';
+        if(CFG.flashRed!==1){
+          ctx.strokeStyle='rgba(255,255,255,'+(0.8*_rf).toFixed(3)+')'; ctx.lineWidth=(1.4+1.2*_rf)*_wz;
+          ctx.beginPath(); ctx.arc(rx0,ry0,_mr+(2+9*_rf)*_wz,0,6.2832); ctx.stroke();
+        }
+        ctx.strokeStyle='rgba(255,255,255,'+(0.95*_rf).toFixed(3)+')'; ctx.lineWidth=2.2*_wz;
+        for(var _ri=0;_ri<4;_ri++){
+          var _rca=Math.cos(_ri*1.5708), _rsa=Math.sin(_ri*1.5708);
+          ctx.beginPath(); ctx.moveTo(rx0+_rca*(_mr+1*_wz),ry0+_rsa*(_mr+1*_wz)); ctx.lineTo(rx0+_rca*(_mr-(3+4*_rf)*_wz),ry0+_rsa*(_mr-(3+4*_rf)*_wz)); ctx.stroke();
+        }
       }
       ctx.lineCap='butt';
     }
@@ -45721,7 +45747,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.79: Every gun blooms its own way: spam a semi-auto and the spread opens, pace your shots and the pinpoint round comes back. Check 27.79 fails on v27.78',
+  now:'v27.80: The ring on the cursor snaps tight with a pulse and a quiet click the moment a gun bloom has fully closed, so you can hear and see when to fire. Check 27.80 fails on v27.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

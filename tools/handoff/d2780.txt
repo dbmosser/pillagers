@@ -1,0 +1,5 @@
+## v27.80 - THE BLOOM RESETS WITH A SNAP
+
+Co-op hunt while he was away. The pacing half of the Halo Reach bloom. A Reach player learns the cadence of a gun from the reticle, so the ring on the cursor now says when the bloom is gone: the moment the bloom a round or a held burst opened has fully closed again, the gun is back to its pinpoint round and the ring settles, it flares white, a thin ring contracts onto it and four ticks click into place for under a third of a second, with a quiet click under it. It happens once per reset, only after a real bloom (a quarter of the way open or more) has been closed, so a lone round in a quiet moment says nothing, and it stays out of the way while you spam. With reduced flashing on, the contracting ring is left out and the ticks and the click stay.
+
+MEASURED. Check 27.80 passes, and fails on v27.79.

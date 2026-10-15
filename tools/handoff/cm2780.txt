@@ -1,0 +1,7 @@
+v27.80: the bloom resets with a snap
+
+The ring on the cursor snaps tight with a pulse and a quiet click the moment a gun bloom has fully closed, so you can hear and see when to fire.
+
+Check 27.80. Fails on v27.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
