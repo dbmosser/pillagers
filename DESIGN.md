@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.41 - THE OVERSEER CALLS A LIMITED NUMBER OF CRAWLERS
+
+Co-op hunt while he was away. The cloud review found the Overseer was an endless crawler farm in the arcade: from its second phase it called three crawlers every twenty seconds for as long as it had seen you, and each one scored and rolled its drops like any kill. It now calls twelve in all, four calls of three, and then fights with its cannon and its laser.
+
+MEASURED. Check 27.41 passes, and fails on v27.40.
 ## v27.40 - THE MEDAL SPOT IS RESERVED
 
 Co-op hunt while he was away. His answer of 2026-10-14: Halo puts medals in a row at the left, so room for a medal spot goes in the layout. A row between the feed and the vitals, the width of the feed and tall enough for the 48 pixel emblems, is reserved for the later medal polish and registered in the HUD table, so nothing else can draw there. The feed stands on it, so it moved up by that height; the row is empty until the emblems are drawn.

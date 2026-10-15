@@ -1,0 +1,5 @@
+## v27.41 - THE OVERSEER CALLS A LIMITED NUMBER OF CRAWLERS
+
+Co-op hunt while he was away. The cloud review found the Overseer was an endless crawler farm in the arcade: from its second phase it called three crawlers every twenty seconds for as long as it had seen you, and each one scored and rolled its drops like any kill. It now calls twelve in all, four calls of three, and then fights with its cannon and its laser.
+
+MEASURED. Check 27.41 passes, and fails on v27.40.
