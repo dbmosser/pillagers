@@ -1,0 +1,5 @@
+## v27.56 - THE FLOOR CARD AND BACKPACK ARE SOLID
+
+Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the What is New card on the Undercroft floor was a flat plate at 94 percent with its own blue-grey border, unlike every other panel, and the Undercroft backpack was a plate at 96 percent; the big station signs (SHOP, CRAFT AND HIRE, THE STASH, SETTINGS) showed through the words of both. They are the one solid game plate now, with the amber tick. In a raid the backpack still lets the world show through.
+
+MEASURED. Check 27.56 passes, and fails on v27.55.

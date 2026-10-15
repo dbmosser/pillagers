@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.56 - THE FLOOR CARD AND BACKPACK ARE SOLID
+
+Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the What is New card on the Undercroft floor was a flat plate at 94 percent with its own blue-grey border, unlike every other panel, and the Undercroft backpack was a plate at 96 percent; the big station signs (SHOP, CRAFT AND HIRE, THE STASH, SETTINGS) showed through the words of both. They are the one solid game plate now, with the amber tick. In a raid the backpack still lets the world show through.
+
+MEASURED. Check 27.56 passes, and fails on v27.55.
 ## v27.55 - SETTINGS TEXT IN ONE VOICE
 
 Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the row descriptions in Settings came in two voices: sentence case under THE RAID (his words and the older rows), and long lines in capitals under CONTROLS, DISPLAY, AUDIO, CONTROLLER and ACCESSIBILITY, about forty rows shouting at once. They are all sentence case now. No wording changed, and none of his own lines was touched.

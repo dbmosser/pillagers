@@ -1,0 +1,7 @@
+v27.56: the floor card and backpack are solid
+
+The What is New card and the Undercroft backpack are solid plates.
+
+Check 27.56. Fails on v27.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2242,7 +2242,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.55';
+var VER='27.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40598,7 +40598,7 @@ function drawBag(){
   // to ask where the panel is was to repeat its placement maths somewhere else,
   // which is exactly how its belt reserve drifted out of date for three builds.
   G.bagPanel={x:x,y:y,w:PW,h:hh};
-  hudPanel(x,y,PW,hh,0.96);   // v18.13: the one HUD panel
+  hudPanel(x,y,PW,hh,(typeof hubBagG!=='undefined'&&G===hubBagG)?1:0.96);   // v18.13: the one HUD panel   // v27.xx (uic8): solid in the Undercroft, where the station signs read through it; in a raid the world still shows through
   // v21.39, from the 4K visual pass of 2026-10-09 (W-D1): THE BACKPACK WORDS LINE UP WITH THE GRID. Every line of text in this panel
   // sat 11 pixels in from the panel edge at every screen size, while the tiles start a margin in (MARG, which grows with the screen),
   // so at 4K the title, the gun, its numbers and the item line hugged the left edge of the panel about 75 pixels left of the first
@@ -42935,8 +42935,9 @@ function drawHubHUD(ox,oy){
       wnH=LH(90)+wnRows.length*wnLH+wnGaps*LH(7);
     }
     var wnX=_wnWW/2-wnW/2, wnY=_wnHH/2-wnH/2-LH(10);
-    ctx.fillStyle='rgba(6,9,13,.94)'; ctx.fillRect(wnX,wnY,wnW,wnH);
-    ctx.strokeStyle='#3a4552'; ctx.lineWidth=1; ctx.strokeRect(wnX+.5,wnY+.5,wnW-1,wnH-1);
+    // v27.xx, UI CLEANUP uic8 (his 2026-10-14 note, from the 1080p shot of the card over the floor): THE CARD IS THE ONE HUD PLATE, AND SOLID. It was a flat 94 percent
+    // rectangle with its own blue-grey border, unlike every other plate, and the station signs of the floor (SHOP, CRAFT AND HIRE, SETTINGS) read through its words.
+    hudPanel(wnX,wnY,wnW,wnH,1);
     ctx.textAlign='center';
     ctx.font=FS(TYPE.title); ctx.fillStyle='#ffc04a';
     // WHATSNEW_VER, not VER: the list belongs to the build that last changed it,
@@ -44796,7 +44797,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.55: Every Settings row description is in sentence case. Check 27.55 fails on v27.54',
+  now:'v27.56: The What is New card and the Undercroft backpack are solid plates. Check 27.56 fails on v27.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
