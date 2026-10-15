@@ -1,0 +1,7 @@
+v26.90: the operator menu: new party
+
+On the DEMO attract, Ctrl+Shift+F10 opens the OPERATOR menu: NEW PARTY clears tonights board, EXIT DEMO leaves.
+
+Check 26.90. Fails on v26.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

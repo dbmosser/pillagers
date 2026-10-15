@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.90 - THE OPERATOR MENU: NEW PARTY
+
+Co-op hunt while he was away. His answer 22 (2026-10-12): a NEW PARTY reset in the operator menu. On the DEMO attract the operator chord (Ctrl+Shift+F10) now opens a small OPERATOR card instead of leaving at once. NEW PARTY wipes tonights best (the 1 player and 2 player lists) so a new party starts on a clean board; BEST EVER stays as the score to beat. It asks once more before it clears. EXIT DEMO leaves the demo as the chord used to, and pressing the chord again with the card up also leaves. ESC or BACK closes the card. While it is up, no key or pad press drops a guest into a run. In a running demo raid the chord still leaves at once.
+
+MEASURED. Check 26.90 passes, and fails on v26.89.
 ## v26.89 - MAGNET, SHIELD BUBBLE AND SCREEN CLEAR
 
 Co-op hunt while he was away. The other three power-ups he said yes to join the drops. MAGNET (20 seconds) pulls the loose wrecks and bodies that still hold something, and the pickups on the floor, toward you from about fifty metres, and they stop at your feet; a wreck never slides through a wall or out of a shut room, and not while you are searching it. SHIELD BUBBLE (10 seconds) puts a bubble round you that takes every hit, a round, a blast or a fire, with a flash and a ping. SCREEN CLEAR is the nuke of the Zombies power-ups: a pulse leaves you and every ordinary machine on the screen dies. Bosses, elites, wardens and pillagers are not touched, and the machines it kills count for no streak and no kill, so the clear pays a flat thirty for each, up to four hundred. Each has its own colour, its own glyph and its own note, and no voice.

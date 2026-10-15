@@ -1,0 +1,5 @@
+## v26.90 - THE OPERATOR MENU: NEW PARTY
+
+Co-op hunt while he was away. His answer 22 (2026-10-12): a NEW PARTY reset in the operator menu. On the DEMO attract the operator chord (Ctrl+Shift+F10) now opens a small OPERATOR card instead of leaving at once. NEW PARTY wipes tonights best (the 1 player and 2 player lists) so a new party starts on a clean board; BEST EVER stays as the score to beat. It asks once more before it clears. EXIT DEMO leaves the demo as the chord used to, and pressing the chord again with the card up also leaves. ESC or BACK closes the card. While it is up, no key or pad press drops a guest into a run. In a running demo raid the chord still leaves at once.
+
+MEASURED. Check 26.90 passes, and fails on v26.89.
