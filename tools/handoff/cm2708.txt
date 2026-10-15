@@ -1,0 +1,7 @@
+v27.08: the haul reveal
+
+Your haul reveals one item at a time with a rarity flash, and can be skipped.
+
+Check 27.08. Fails on v27.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

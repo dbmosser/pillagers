@@ -1,0 +1,5 @@
+## v27.08 - THE HAUL REVEAL
+
+Co-op hunt while he was away. His yes to suggestion 36. After an extraction, the pictures of what you brought out, under the line that says how many items were secured, now come up one at a time on the EXTRACTED card instead of all at once. The cheapest comes first and the best lands last, a sixth of a second each and half as long again for a purple or a gold one, each with a flash and a glow in its own rarity colour and the same pick sound that rarity makes when you loot it. A HAUL line in caps counts up as they land and ends on the figure the card secured. A click on the card, ESC, ENTER or A on a controller skips it: the first press only fills the strip in, and the next press logs the run as before. A single item shows at once, and a death has no reveal. The DEMO shows no card, so nothing changes there. Nothing paid or kept changes.
+
+MEASURED. Check 27.08 passes, and fails on v27.07.

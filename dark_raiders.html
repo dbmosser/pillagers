@@ -2225,7 +2225,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.07';
+var VER='27.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14403,7 +14403,7 @@ function raidKey(code,repeat,ev){
   // note, as in every other window. No player text, no number and no seeded draw moved.
   if((code==='Escape'||code==='Tab')&&!repeat&&G&&G.over){
     var _ocw=document.getElementById('outcome');
-    if(_ocw&&_ocw.classList.contains('on')){ if(ev) ev.preventDefault(); document.getElementById('oc_btn').click(); return; }
+    if(_ocw&&_ocw.classList.contains('on')){ if(ev) ev.preventDefault(); if(haulRevealSkip()) return; document.getElementById('oc_btn').click(); return; }   // v26.xx (career7): the first press skips the haul reveal
   }
   // v15.49, pause audit finding 9: HOLDING ESC OR P DOES NOT FLICKER THE PAUSE BOX. Only TAB ignored a key repeat here, so a
   // held P flipped the box open and shut on every repeat, wiping the keys and the mouse each time it opened, and it came to
@@ -15528,7 +15528,7 @@ function padMenu(pressed){
   // the mouse press that starts a drag (stashPadAct), the highlight is then the cursor, and A on the target is the release:
   // every backpack cell, stash cell and belt key, every rule and every word are the mouse drop. A control that cannot be
   // dragged, and A with nothing held on a button, is the click it always was.
-  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(!stashPadAct(PAD.focus)) PAD.focus.click(); }
+  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(md.id==='outcome'&&haulRevealSkip()){} else if(!stashPadAct(PAD.focus)) PAD.focus.click(); }   // v26.xx (career7): A on the card skips the haul reveal first
   // v14.23: on the pause box B and Menu resume the run. The search for a way out below would click the hidden RETURN TO
   // CHARACTER SELECTION first, which does nothing in a raid.
   // v14.26: B on the title does nothing. The search for a way out below finds no button there and would strip the title's
@@ -15549,7 +15549,7 @@ function padMenu(pressed){
     if(md===IMENU){ closeItemMenu(); padSetFocus(null); PAD.focus=null; return true; }   // v17.16, co-op hunt 2026-09-28: B shuts the menu, which has no button to find
     var back=null,bs=md.querySelectorAll('button');
     for(var i=0;i<bs.length;i++) if(/leave|close|not yet|keep my kit|back|done|return/i.test(bs[i].textContent||'')) { back=bs[i]; break; }
-    if(back) back.click(); else md.classList.remove('on');
+    if(md.id==='outcome'&&haulRevealSkip()){} else if(back) back.click(); else md.classList.remove('on');   // v26.xx (career7): B on the card skips the haul reveal first
     padSetFocus(null); PAD.focus=null;
   }
   return true;
@@ -28966,9 +28966,9 @@ var _cdone=contractExtract(G.bag,haul);
     (function(){ var keys=G.bag.slice(), iss=(_issN||0), k, s='', n=0;
       for(k=keys.length-1;k>=0&&iss>0;k--) if(keys[k]==='bandage'){ keys.splice(k,1); iss--; }
       keys.sort(function(a,b){ return ival(b)-ival(a); });
-      for(k=0;k<keys.length&&k<12;k++){ if(ITEMS[keys[k]]){ s+='<span title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],52)+'</span>'; n++; } }   // v19.99, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now
+      for(k=0;k<keys.length&&k<12;k++){ if(ITEMS[keys[k]]){ s+='<span class="haulit" data-k="'+keys[k]+'" data-r="'+(dispR(keys[k])||ITEMS[keys[k]].r||'common')+'" data-v="'+ival(keys[k])+'" title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],52)+'</span>'; n++; } }   // v19.99, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now
       if(keys.length>12) s+='<span style="color:var(--ash);margin-left:6px">+'+(keys.length-12)+' more</span>';
-      if(n) lines.push('<span class="haulstrip" style="display:inline-block;margin:4px 0 2px">'+s+'</span>');
+      if(n) lines.push('<span class="haulstrip" data-sec="'+_secV+'" style="display:inline-block;margin:4px 0 2px">'+s+'</span>');   // v26.xx (career7): the value the card secured, for the reveal total
     })();
     lines.push('You extracted with '+Math.round(G.player.hp)+' of 100 health');
   } else if(how==='dead'){
@@ -29367,9 +29367,78 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   document.getElementById('oc_note').value='';
   if(NET.on&&!G.sim){ try{ netSumSend(how,(how==='extract')?haul:0); }catch(_ns){} }   // v16.40: the party summary
   document.getElementById('outcome').classList.add('on');
+  if(how==='extract'&&!G.sim){ try{ haulRevealStart(); }catch(_hrv){} }   // v26.xx (career7): the haul reveals one by one
   // v26.xx (outcomemusic), HIS ORDER (2026-10-14): the piece for how the raid ended plays as the card comes up. An abandon plays none.
   try{ if(how==='extract') outMusic('win'); else if(how==='dead') outMusic('kia'); }catch(_om){}
 }
+// v26.xx (career7), HIS YES (2026-10-14) to suggestion 36, THE HAUL REVEAL: "after an extract, the items reveal one by one with a rarity flash. It can be skipped with a click, ESC or pad A."
+// The pictures under "N items secured" on the EXTRACTED card (the strip, up to twelve, dearest first) start hidden and come up one at a time, the cheapest first so the best lands
+// last: about a sixth of a second each and half as long again for a purple or a gold one, each with a flash and a glow in its own rarity colour and the pick sound of that rarity
+// (lootVoice, the one the pickup plays), under a running HAUL line in caps that counts up to the figure the card secured. A strip of one picture is not worth a reveal and
+// shows at once. A real click anywhere on the card (the mouse, or ENTER and SPACE on its button), ESC or TAB, or A or B on a controller SKIPS it: the first
+// press only fills the strip in and does not leave the card, the next press logs the run as before. An extraction only: a death or an abandon has no strip. The DEMO shows no
+// card, so nothing changes there. Display only: nothing that is paid or kept moves.
+var HAUL_REV=null, HAUL_LAST=0;
+function haulRevealing(){ return !!(HAUL_REV&&HAUL_REV.i<HAUL_REV.list.length); }
+function haulTotalLine(){
+  var R=HAUL_REV, el;
+  if(!R) return;
+  el=document.getElementById('haultot'); if(!el) return;
+  el.textContent='HAUL  $'+Math.round(R.sum).toLocaleString();
+}
+function haulRevealStart(){
+  var w=document.getElementById('oc_manifest'), strip, its, i, list=[], sec;
+  HAUL_REV=null;
+  if(!w) return 0;
+  strip=w.querySelector('.haulstrip'); if(!strip) return 0;
+  its=strip.querySelectorAll('.haulit'); if(its.length<2) return 0;
+  for(i=its.length-1;i>=0;i--){ list.push(its[i]); its[i].classList.add('hid'); }
+  sec=+strip.getAttribute('data-sec')||0;
+  strip.insertAdjacentHTML('afterend','<div class="haultot" id="haultot">HAUL  $0</div>');
+  HAUL_REV={list:list,i:0,t:0.3,sum:0,sec:sec};
+  HAUL_LAST=0;
+  return list.length;
+}
+function haulShow(nd,quiet){
+  var R=HAUL_REV, r=nd.getAttribute('data-r')||'common', k=nd.getAttribute('data-k')||'';
+  nd.classList.remove('hid');
+  if(!quiet){
+    nd.style.setProperty('--hc',RCOL[r]||'#9da3a8'); nd.classList.add('pop');
+    try{ if(k&&ITEMS[k]) sfx(lootVoice([k])); }catch(_sf){}
+  }
+  if(R){ R.sum+=(+nd.getAttribute('data-v'))||0; haulTotalLine(); }
+}
+function haulRevealTick(dt){
+  var R=HAUL_REV, nd, r;
+  if(!R||R.i>=R.list.length) return 0;
+  R.t-=(dt>0?dt:0);
+  while(R.t<=0&&R.i<R.list.length){
+    nd=R.list[R.i++]; haulShow(nd,false);
+    r=nd.getAttribute('data-r');
+    R.t+=(r==='elite'||r==='gold')?0.26:0.17;
+  }
+  if(R.i>=R.list.length){ if(R.sec>0) R.sum=R.sec; haulTotalLine(); }
+  return R.i;
+}
+function haulRevealSkip(){
+  var R=HAUL_REV;
+  if(!R||R.i>=R.list.length) return false;
+  while(R.i<R.list.length) haulShow(R.list[R.i++],true);
+  if(R.sec>0) R.sum=R.sec;
+  haulTotalLine();
+  return true;
+}
+(function(){
+  var oc=document.getElementById('outcome');
+  if(oc) oc.addEventListener('click',function(ev){ if(ev.isTrusted&&haulRevealing()){ ev.preventDefault(); ev.stopPropagation(); haulRevealSkip(); } },true);   // a real click (mouse or keyboard) on the card skips; the presses the game makes itself (ESC, pad A and B) skip in their own code
+  setInterval(function(){ var n=(typeof performance!=='undefined')?performance.now():Date.now(), d=HAUL_LAST?Math.min(0.2,(n-HAUL_LAST)/1000):0.04; HAUL_LAST=n; try{ haulRevealTick(d); }catch(_ht){} },40);
+})();
+careerStyle('careercss7',
+  '.haulit{transition:opacity .12s}'+
+  '.haulit.hid{opacity:0}'+
+  '.haulit.pop{animation:haulpop .6s ease-out}'+
+  '@keyframes haulpop{0%{transform:scale(1.5);filter:brightness(2.4);box-shadow:0 0 0 0 var(--hc)}45%{transform:scale(1.08);filter:brightness(1.4);box-shadow:0 0 26px 8px var(--hc)}100%{transform:scale(1);filter:none;box-shadow:0 0 0 0 rgba(0,0,0,0)}}'+
+  '.haultot{font-family:var(--f-cond);font-weight:700;font-size:21px;letter-spacing:.14em;color:var(--acc);margin:4px 0 6px;text-transform:uppercase}');
 function buildTags(){
   var w=document.getElementById('tagwrap'); w.innerHTML='';
   TAGS.forEach(function(t){
@@ -44203,7 +44272,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.07: Player 2 now sees the raid events, with their warning rings, and feels the debris and the fog. Check 27.07 fails on v27.06',
+  now:'v27.08: Your haul reveals one item at a time with a rarity flash, and can be skipped. Check 27.08 fails on v27.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

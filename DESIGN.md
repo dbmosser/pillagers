@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.08 - THE HAUL REVEAL
+
+Co-op hunt while he was away. His yes to suggestion 36. After an extraction, the pictures of what you brought out, under the line that says how many items were secured, now come up one at a time on the EXTRACTED card instead of all at once. The cheapest comes first and the best lands last, a sixth of a second each and half as long again for a purple or a gold one, each with a flash and a glow in its own rarity colour and the same pick sound that rarity makes when you loot it. A HAUL line in caps counts up as they land and ends on the figure the card secured. A click on the card, ESC, ENTER or A on a controller skips it: the first press only fills the strip in, and the next press logs the run as before. A single item shows at once, and a death has no reveal. The DEMO shows no card, so nothing changes there. Nothing paid or kept changes.
+
+MEASURED. Check 27.08 passes, and fails on v27.07.
 ## v27.07 - PLAYER 2 SEES AND FEELS THE RAID EVENTS
 
 Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The six raid events (orbital debris, machine convoy, bounty pillager, coolant rupture, lockdown alarm, Overseer rampage) were run by each window for itself, so player 2 had none of the host events: no ring, no countdown, no debris, no fog. The host now lists its live events in the world word, and the linked window keeps exactly those: the warning ring and its count, the pieces of debris about to land, the fog, the marks on both maps, and the same callouts. A piece of debris that lands on player 2 blasts, shakes and hurts him in his own window. Player 2 plans no events of his own any more. The machines of an event are the host bodies and the crates it leaves come over as they always did.
