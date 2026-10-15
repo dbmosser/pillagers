@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.10 - GUNS IN HAND, EVEN BIGGER
+
+Co-op hunt while he was away. His answer 42: the guns in the hands are "even bigger". The held gun, both arms and the hands are now drawn thirty percent larger from the same shoulder point, on top of the size they got in v25.26 and v25.60, for you and for pillagers alike. The flash of a shot now sits on the drawn muzzle, the brass leaves the drawn ejection port, and a tracer starts at the muzzle instead of inside the gun. The round itself does not move: it still leaves 17 units out with the same speed, spread, range and damage, and nothing a fight reads has changed. Cosmetic only.
+
+MEASURED. Check 27.10 passes, and fails on v27.09.
 ## v27.09 - THE LOCKDOWN FENCES PLAYER 2 TOO
 
 Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The lockdown alarm seals a district for 60 seconds: nobody crosses the ring. That was true of player 1 and of the machines, which the host moves, but player 2 walks in his own window, so the fence was not there for him. Player 2 now takes his side of the ring the moment the doors slam (inside is SEALED IN, outside is DISTRICT SEALED), is put back on his side if he tries to cross, and is told DOORS OPEN when the seal lifts and LOCKDOWN OVER when it ends.

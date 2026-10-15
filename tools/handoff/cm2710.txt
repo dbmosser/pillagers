@@ -1,0 +1,7 @@
+v27.10: guns in hand, even bigger
+
+The guns in your hands are bigger again, and the muzzle flash, tracer and brass come from the end of the barrel.
+
+Check 27.10. Fails on v27.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

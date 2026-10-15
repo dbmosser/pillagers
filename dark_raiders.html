@@ -2225,7 +2225,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.09';
+var VER='27.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19513,7 +19513,7 @@ if(wep.mag===0){
   var shots=wep.pellets||1;
   for(var pel=0;pel<shots;pel++){
     var ang=base+rnd(-spx,spx);
-    G.bullets.push({x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
+    G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?AR_BONUS:1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
@@ -19564,7 +19564,8 @@ if(wep.mag===0){
     // v8.35: brass is decoration. Five SEEDED draws per shot fired, which the bot
     // never made, so one exchange of fire put the two on different streams.
     var sa=ang-1.5+fxn(-.3,.3);
-    G.shells.push({brass:1,x:sh.x,y:sh.y,vx:Math.cos(sa)*fxn(60,130),vy:Math.sin(sa)*fxn(60,130),t:0,life:fxn(.5,.9),rot:fxn(0,6)});
+    var _pt=gunPortOff(sh,wep,ang);   // v27.xx (guns2x): the brass leaves the ejection port of the drawn gun
+    G.shells.push({brass:1,x:sh.x+_pt.x,y:sh.y+_pt.y,vx:Math.cos(sa)*fxn(60,130),vy:Math.sin(sa)*fxn(60,130),t:0,life:fxn(.5,.9),rot:fxn(0,6)});
   }
 }
 // ---------------------------------------------------------------- THE COST OF GREED
@@ -30381,6 +30382,30 @@ function drawRigPC(b,cx,ty,cc,jc,jh,norig){   // v23.xx (spr20): norig, the clot
 // gun magazine well, and the spent magazine falls from there. Baked once per class, finish, tier and screen scale, so a body
 // costs one image and a few hand rectangles a frame, fewer calls than before. Cosmetic only: no seeded draw (G.t only), and
 // nothing a fight reads moves: bullets keep their spawn point, range and spread, and collision radii are unchanged.
+// v27.xx (guns2x), HIS ANSWER 42 (2026-10-13): the guns in hand "even bigger". Everything that is drawn in the hands (the baked gun,
+// both arms, the hands, the Forge shine, the flash on the gun) is now drawn at GUNK times the size, from the same shoulder point. The
+// flash of the shot, the first stretch of the tracer and the ejected brass follow the DRAWN muzzle and port (gunMuzzleAt, gunMuzD,
+// gunPortOff) for the player and for pillagers; the real round does not move: it still spawns 17 units out, with the same speed,
+// spread and range, and a body's collision radius is unchanged. Cosmetic only.
+var GUNK=1.3;
+function gunMuzD(sh,wep){
+  var D;
+  if(!sh||!wep||!G||!(sh===G.player||sh.kind==='raider')) return 0;
+  D=GUNDEF[wep.id]||GUNDEF.rifle;
+  return (D.tip+(D.pist?2:0))*GUNK;
+}
+function gunMuzzleAt(sh,wep,a){
+  var L=gunMuzD(sh,wep), D, sg, by;
+  if(!(L>0)) return null;
+  D=GUNDEF[wep.id]||GUNDEF.rifle; sg=(Math.cos(a)<0)?-1:1; by=D.by*GUNK*sg;
+  return {x:sh.x+Math.cos(a)*L-Math.sin(a)*by, y:sh.y-20+Math.sin(a)*L+Math.cos(a)*by};
+}
+function gunPortOff(sh,wep,a){
+  var D, d;
+  if(!(gunMuzD(sh,wep)>0)) return {x:0,y:0};
+  D=GUNDEF[wep.id]||GUNDEF.rifle; d=(D.port?D.port[0]:8)*GUNK;
+  return {x:Math.cos(a)*d, y:Math.sin(a)*d};
+}
 var GUNSPR=null;
 var GUNMAT={d:'#23282e',m:'#353c45',l:'#4a535d',w:'#5c4a34',W:'#7a6246',k:'#0e1013',y:'#d8a020',r:'#b83a2a',g:'#9fd8ff',c:'#5a3e86',v:'#d8b4ff',e:'#eef2f4'};
 var GUNGOLD={d:'#8a6a1e',m:'#c9962c',l:'#e0ac3a'};
@@ -30486,7 +30511,7 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
   var wt=(w&&WTIER[w.id]!==undefined)?WTIER[w.id]+(RV_BASE[w.id]?1:0):1;   // v26.26 (rarvar1): a rarity twin wears the next rarity up
   var rc=!w?'':((w.q==='gold')?'#ffc72e':(wt>=5?RCOL.gold:(wt>=4?RCOL.elite:(wt===3?RCOL.rare:(wt===2?RCOL.uncommon:RCOL.common)))));   // the tier colour, from the one rarity table
   var S=1, B, drop=0, reach=0, gy, ext, hc, aw, low, ang, sx, gx, t, k, f, tx, ty2, ec, i;
-  try{ S=Math.min(5,wallSpriteScale()+1); }catch(_s){ S=2; }
+  try{ S=Math.min(6,Math.ceil((wallSpriteScale()+1)*GUNK)); }catch(_s){ S=2; }   // v27.xx (guns2x): baked for the bigger size
   B=gunBake(id,fk,el,rc,S);
   if(rl>0){
     if(rl<.35) drop=(rl/.35)*.55;
@@ -30497,7 +30522,7 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
   gy=ty-20+(ads?-1:0); ext=(D.pist?2:0)+(ads?2:(low?-2:0)); hc=handColour(st);
   aw=(bld==='broad')?3.3:(bld==='curved'?2.0:(pc?2.1:2.4));
   ang=face+fl*(drop+(low?0.45:0));
-  wc.save(); wc.translate(px,gy); wc.rotate(ang); if(fl<0) wc.scale(1,-1);
+  wc.save(); wc.translate(px,gy); wc.rotate(ang); if(fl<0) wc.scale(1,-1); wc.scale(GUNK,GUNK); aw/=1.12;   // v27.xx (guns2x): the whole held gun, arms and hands at GUNK times the size
   // the far arm, under the gun to the foregrip (to the magazine well while reloading; to the grip on a pistol)
   sx=(reach>0)?(D.well[0]+ext):(D.pist?(D.grip+ext+0.4):(D.fg+ext));
   if(!low){ wc.fillStyle=INK; wc.fillRect(-0.5,0.4,sx+0.6,3.8); wc.fillStyle=coat; wc.fillRect(0,0.9,sx-0.4,2.8); }
@@ -33986,7 +34011,9 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
 var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
     var _trc=(!isDay()&&!b.owner)?3:1;
     wc.strokeStyle=b.tint; wc.lineWidth=(b.el||b.elw)?3:2;   // v23.xx (forge8): an elemental tracer is wider, in its colour
-    wc.beginPath(); wc.moveTo(b.x-b.vx/bm*9*_trc,b.y-b.vy/bm*9*_trc-12);
+    var _gtl=9*_trc, _gtv;
+    if(b.mzd>0){ _gtv=Math.hypot(b.x-b.sx,b.y-b.sy); if(_gtv<b.mzd) continue; _gtl=Math.min(_gtl,_gtv-b.mzd); }   // v27.xx (guns2x): a tracer starts at the drawn muzzle, not inside the gun
+    wc.beginPath(); wc.moveTo(b.x-b.vx/bm*_gtl,b.y-b.vy/bm*_gtl-12);
     wc.lineTo(b.x,b.y-12); wc.stroke();
     if(_trc>1){
       wc.strokeStyle='rgba(255,236,180,.9)'; wc.lineWidth=1;
@@ -43331,7 +43358,8 @@ function muzSprite(fam,tint){
 function gfxShot(sh,wep,ang,fromPlayer){
   if(!gfxHook('shot')||!sh) return false;
   if(GFXMUZ.length>=24) GFXMUZ.shift();
-  GFXMUZ.push({g:G,x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17-12,a:ang,f:muzFam(wep),c:muzTint(wep&&wep.tint),sh:sh,me:!!fromPlayer,n:0,age:0});
+  var _mz=null; try{ _mz=gunMuzzleAt(sh,wep,ang); }catch(_gm){}   // v27.xx (guns2x): the flash sits on the drawn muzzle of a player or a pillager
+  GFXMUZ.push({g:G,x:_mz?_mz.x:sh.x+Math.cos(ang)*17,y:_mz?_mz.y:sh.y+Math.sin(ang)*17-12,a:ang,f:muzFam(wep),c:muzTint(wep&&wep.tint),sh:sh,me:!!fromPlayer,n:0,age:0});
   return true;
 }
 function gfxShotFx(x,y,ang,tint){   // a teammate tracer: one flash per shot, not one per pellet
@@ -44272,7 +44300,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.09: The lockdown alarm now seals player 2 in or out of the ring as well, then opens its doors. Check 27.09 fails on v27.08',
+  now:'v27.10: The guns in your hands are bigger again, and the muzzle flash, tracer and brass come from the end of the barrel. Check 27.10 fails on v27.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -21,7 +21,7 @@
                   },
                   {
                       "anchor":  "G.shells.push({brass:1,x:sh.x,y:sh.y,",
-                      "replacement":  "var _pt=gunPortOff(sh,wep,sa);   // v27.xx (guns2x): the brass leaves the ejection port of the drawn gun\n    G.shells.push({brass:1,x:sh.x+_pt.x,y:sh.y+_pt.y,"
+                      "replacement":  "var _pt=gunPortOff(sh,wep,ang);   // v27.xx (guns2x): the brass leaves the ejection port of the drawn gun\n    G.shells.push({brass:1,x:sh.x+_pt.x,y:sh.y+_pt.y,"
                   },
                   {
                       "anchor":  "G.bullets.push({x:sh.x+Math.cos(ang)*17,",
