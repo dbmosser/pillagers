@@ -134,3 +134,26 @@ on an anchor the PC changed; that STOP is the right outcome (re-draft or drop it
 | cloud-robust-takeover-events | PLAYER 2 TAKING OVER THE RAID DOES NOT RUN THE RAID EVENTS AGAIN | DROP: same as cloud-coop-takeover-no-replay |
 | cloud-robust-takeover-fires | PLAYER 2 TAKING OVER THE RAID DOES NOT LIGHT THE FIRES TWICE | DROP: same as cloud-coop-takeover-no-replay |
 | cloud-robust-takeover-stronghold | A STRONGHOLD IS NOT CLEARED BY PLAYER 2 TAKING OVER THE RAID | DROP: same as cloud-raid-takeover |
+
+## Re-gated after the hunts (2026-10-15 morning)
+
+Every draft passed its gate in its own hunt. A second pass against the newest master was cut short (cloud time limits); these
+passed it again. The ship step on the PC gates each draft again in any case.
+
+- cloud-coop-barrels-both-windows (as v27.49 on v27.48)
+- cloud-coop-bounty-end-said (as v27.49 on v27.48)
+- cloud-coop-convoy-dest (as v27.49 on v27.48)
+- cloud-coop-event-ends-said (as v27.49 on v27.48)
+- cloud-coop-getup-vs-burn (as v27.49 on v27.48)
+- cloud-coop-host-out-events-end (as v27.49 on v27.48)
+- cloud-coop-kid-firing-no-item (as v27.49 on v27.48)
+- cloud-coop-late-body-boss-range (as v27.49 on v27.48)
+- cloud-coop-mender-beams-seen (as v27.49 on v27.48)
+- cloud-coop-overseer-phase-shake (as v27.49 on v27.48)
+- cloud-coop-p2-blast-past-shield (as v27.49 on v27.48)
+- cloud-coop-p2-close-call (as v27.49 on v27.48)
+- cloud-coop-p2-hit-stop-rule (as v27.49 on v27.48)
+- cloud-coop-p2-kept-kit (as v27.49 on v27.48)
+- cloud-coop-barrels-both-windows (as v27.53 on v27.52)
+- cloud-coop-bounty-end-said (as v27.53 on v27.52)
+- cloud-coop-convoy-dest (as v27.53 on v27.52)
