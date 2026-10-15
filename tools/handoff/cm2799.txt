@@ -1,0 +1,7 @@
+v27.99: the demo clock is bigger
+
+The raid clock under the score is bigger, and bigger again in the last minute.
+
+Check 27.99. Fails on v27.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

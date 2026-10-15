@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.99 - THE DEMO CLOCK IS BIGGER
+
+Co-op hunt while he was away. His answer 14: the countdown clock needs to be bigger. The clock under the score in a DEMO (and in a CAREER) raid was the smallest type on the screen, about 13 pixels at 1080p, and only 19 in the last minute. It is now the size of the HUD callouts, about 19 pixels, and in the last minute it grows to the same size as the score, about 26, still red and still popping, and the whole block makes room for it. Nothing about the clock itself, its length or the score has changed.
+
+MEASURED. Check 27.99 passes, and fails on v27.98.
 ## v27.98 - THE CAREER LEADERBOARD: DATA AND BOARD
 
 Co-op hunt while he was away. His order of 2026-10-15: career mode should have a leaderboard shown after every match, built into the existing screens. This is the first of the builds for it. The CAREER list in his save (it held the ten best extractions) now keeps his twenty best runs by raid score, deaths as well as extractions, each with its sector, time and date, plus a count of every run and the three hundred best scores so a run outside the top twenty still knows its rank. A save from before seeds the count from the rows it has. The board view is the party scoreboard look from the DEMO (gold heading, bone rows, teal row for the run just played, grey column heads) built from the same row builder, with RANK number OF total, a NEW PERSONAL BEST plate for a number one, and a pinned row under the list for a run outside the top twenty. The score is also tallied by where it came from (kills, medals, goals, bounty, strongholds, vaults, forge) for the run card ledger that follows. The board ranks by raid score only. Nothing is drawn yet: the run card and the Undercroft entry are the next two builds.

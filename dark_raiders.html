@@ -2269,7 +2269,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.98';
+var VER='27.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45852,7 +45852,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.98: Your CAREER board now keeps your twenty best runs, deaths included. Check 27.98 fails on v27.97',
+  now:'v27.99: The raid clock under the score is bigger, and bigger again in the last minute. Check 27.99 fails on v27.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -57945,8 +57945,11 @@ function arcadeScoreHud(y,z){
   ctx.font=fb; ctx.fillStyle='#e8eef2'; hudText(nm,cx,y); w=ctx.measureText(nm).width;
   if(raidClockOn()){   // v23.6x (feat0e): the DEMO clock under the score, red under 45 s like the raid clock
     var _ct=Math.ceil(Math.max(0,+G.timeLeft||0)), _cm=Math.floor(_ct/60), _cs=_ct%60;
-    var _cfin=(_ct<=CLOCK_RED), _cy=Math.round(y+h*(_cfin?0.88:0.62)), _apo=(_cfin&&_ct>0)?clockPopIn(cx,_cy-h*0.3,G.timeLeft):false;   // v23.xx (his answer 19): the final minute, red, bigger and popping
-    ctx.font=_cfin?FSz(TYPE.head,z):fs; ctx.fillStyle=_cfin?'#ff5a4a':'#cdd6dd'; hudText(_cm+':'+(_cs<10?'0':'')+_cs,cx,_cy); if(_apo) ctx.restore();
+    // v27.xx (clockbig), HIS ANSWER 14 (2026-10-13): "the countdown clock needs to be bigger". The clock under the score was the smallest type on the HUD (13 pixels at
+                    // 1080p, 19 in the last minute). It is the head size now (19.5) and the title size, the same as the score, in the last minute (26), and sits a little lower to
+                    // make room. DEMO and CAREER draw this one block.
+                    var _cfin=(_ct<=CLOCK_RED), _cy=Math.round(y+h*(_cfin?1.14:0.92)), _apo=(_cfin&&_ct>0)?clockPopIn(cx,_cy-h*0.3,G.timeLeft):false;   // v23.xx (his answer 19): the final minute, red, bigger and popping
+    ctx.font=_cfin?FSz(TYPE.title,z):FSz(TYPE.head,z); ctx.fillStyle=_cfin?'#ff5a4a':'#cdd6dd'; hudText(_cm+':'+(_cs<10?'0':'')+_cs,cx,_cy); if(_apo) ctx.restore();
     _bot=Math.max(_bot,Math.round(_cy+(+((/([\d.]+)px/.exec(ctx.font)||[0,14])[1]))*0.25));   // v25.xx (topmid): the bottom of the clock row
   }
   gx=Math.round(cx+w/2+10*z);
