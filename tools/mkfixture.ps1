@@ -6836,7 +6836,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__P&&window.__applyLoaded)) return 'SKIP: this fixture has no profile';
      if(typeof stashLocked!=='function') return 'there is no stash lock in this build';
-     var bad=[], snap=null, q, hub=document.getElementById('hub'), hubWas=hub.classList.contains('on'), i, a, rows, labs, chips, cells, n, order, ix, prev, tabs, c0, t, cell, kept, seenK;
+     var bad=[], snap=null, q, hub=document.getElementById('hub'), hubWas=hub.classList.contains('on'), i, a, rows, labs, chips, cells, n, order, ix, prev, tabs, c0, t, cell, kept, seenK, hasChips, txt;
      function labels(r){ var o=[],j; for(j=0;j<r.length;j++) if(r[j]&&r[j].label) o.push(r[j].label); return o.join('|'); }
      function cellCount(){ return document.querySelectorAll('#stashgrid .cell').length; }
      try{
@@ -6879,24 +6879,32 @@ window.__REGRESS=[
        kept=document.querySelectorAll('#stashgrid .cell.kept');
        if(kept.length!==2) bad.push('FIVE: '+kept.length+' starred cells for 2 locked items');
        for(i=0;i<kept.length;i++) if(!kept[i].querySelector('.kstar')){ bad.push('FIVE: a locked cell has no star'); break; }
-       chips=document.querySelectorAll('#stashchips .kchip');
-       if(chips.length!==4) bad.push('FIVE: '+chips.length+' chips, not 4');
+       hasChips=!!document.getElementById('stashchips');   // the build before the one-row stash (career8) drew a chips row; the one-row build has VALUABLES and LOCKED as tabs
+       chips=document.querySelectorAll(hasChips?'#stashchips .kchip':'#stashtabs .invtab');
+       if(hasChips&&chips.length!==4) bad.push('FIVE: '+chips.length+' chips, not 4');
+       if(!hasChips){ txt=Array.prototype.map.call(chips,function(c){ return c.textContent; }).join('|'); if(txt.indexOf('VALUABLES')<0||txt.indexOf('LOCKED')<0) bad.push('FIVE: the tab row has no VALUABLES and LOCKED ('+txt+')'); }
        cell=document.querySelector('#stashgrid .cell.kept'); if(cell&&typeof cell.onmouseenter==='function'){ cell.onmouseenter(); t=(document.getElementById('stashacts')||{}).textContent||''; if(t.indexOf('Unlock')<0||t.indexOf('Sell one')>=0) bad.push('FIVE: the hover of a locked item reads "'+t.slice(0,60)+'"'); }
-       // SIX: each chip filters
-       function press(w){ var b=document.querySelector('#stashchips .kchip[data-chip="'+w+'"]'); if(!b) { bad.push('SIX: no chip '+w); return false; } b.click(); return true; }
+       // SIX: each chip or tab filters
+       function press(w){
+         var b=null, tabs, j, lab={val:'VALUABLES',lock:'LOCKED',all:'ALL'};
+         if(hasChips) b=document.querySelector('#stashchips .kchip[data-chip="'+w+'"]');
+         else { tabs=document.querySelectorAll('#stashtabs .invtab'); for(j=0;j<tabs.length;j++) if(tabs[j].textContent.indexOf(lab[w])===0){ b=tabs[j]; break; } }
+         if(!b){ bad.push('SIX: no chip or tab '+w); return false; }
+         b.click(); return true;
+       }
        n=0; seenK={}; q.stash.forEach(function(k){ if(!seenK[k]){ seenK[k]=1; if(ITEMS[k]&&(ITEMS[k].use==='heal'||ITEMS[k].use==='stim')) n++; } });
        if(n<1) bad.push('SIX: the test stash holds no medical item');
-       if(press('med')&&cellCount()!==n) bad.push('SIX: MEDICAL shows '+cellCount()+' cells, not '+n);
+       if(hasChips&&press('med')&&cellCount()!==n) bad.push('SIX: MEDICAL shows '+cellCount()+' cells, not '+n);
        n=0; seenK={}; q.stash.forEach(function(k){ if(!seenK[k]){ seenK[k]=1; if(ival(k)>=1000) n++; } });
        if(n<1) bad.push('SIX: the test stash holds no valuable item');
        if(press('val')&&cellCount()!==n) bad.push('SIX: VALUABLES shows '+cellCount()+' cells, not '+n);
        if(press('lock')&&cellCount()!==2) bad.push('SIX: LOCKED shows '+cellCount()+' cells, not 2');
        n=0; seenK={}; q.stash.forEach(function(k){ if(!seenK[k]){ seenK[k]=1; n++; } }); n+=(q.weapons||[]).length;
        if(press('all')&&cellCount()!==n) bad.push('SIX: ALL shows '+cellCount()+' cells, not '+n);
-       if(q.stashChip) bad.push('SIX: ALL left the chip at '+q.stashChip);
-       // SEVEN: a chip with nothing under it lets go, and an old save loads
-       q.stashChip='lock'; stashLockToggle('scrap'); stashLockToggle('cell'); renderHub();
-       if(q.stashChip) bad.push('SEVEN: an empty LOCKED chip stayed on');
+       if(hasChips&&q.stashChip) bad.push('SIX: ALL left the chip at '+q.stashChip);
+       // SEVEN: a chip or tab with nothing under it lets go, and an old save loads
+       if(hasChips){ q.stashChip='lock'; stashLockToggle('scrap'); stashLockToggle('cell'); renderHub(); if(q.stashChip) bad.push('SEVEN: an empty LOCKED chip stayed on'); }
+       else { q.stashTab='lock'; stashLockToggle('scrap'); stashLockToggle('cell'); renderHub(); if(q.stashTab!=='all') bad.push('SEVEN: an empty LOCKED tab stayed on ('+q.stashTab+')'); }
        delete q.keep; delete q.stashChip;
        try{ renderHub(); if(stashLocked('scrap')) bad.push('SEVEN: a save with no locks has a lock'); }catch(ex){ bad.push('SEVEN: an old save threw: '+(ex&&ex.message||ex)); }
      }catch(x2){ bad.push('threw: '+(x2&&x2.message||x2)); }
@@ -34861,7 +34869,7 @@ window.__REGRESS=[
        __hubEnter(); __station('lift','KeyE');
        b=[].slice.call(document.querySelectorAll('#sectormodal button')).filter(function(x){ return /ASCEND TO THIS SECTOR/.test(x.textContent); })[0];
        if(!b) return 'SKIP: no ascend button';
-       b.click();
+       if(typeof kitDeploy==='function'){ document.getElementById('sectormodal').classList.remove('on'); askKit(); } else b.click();   // the one-row kit (kit1): the sector page goes straight up now, so the card is raised the way a party mate sees it
        m=document.getElementById('askmodal'); if(!m||!m.classList.contains('on')) return 'SKIP: the loadout question did not open';
        bs=[].slice.call(m.querySelectorAll('.askrow button')).filter(function(x){ return x.offsetWidth>0; });
        if(bs.length<4) return 'SKIP: the loadout choices are not showing ('+bs.length+')';
@@ -41423,7 +41431,7 @@ window.__REGRESS=[
        if(!on(sm)||__P().cond!=='day') return 'the lift did not open the sector page at DAY here';
        cn.click();
        if(__P().cond!=='night') return 'NIGHT on the sector page did not take here';
-       dp.click();
+       if(typeof kitDeploy==='function'){ document.getElementById('sectormodal').classList.remove('on'); askKit(); } else dp.click();   // kit1: see above
        if(!on(am)||on(sm)) return 'ASCEND TO THIS SECTOR did not swap the sector page for the loadout question here';
        if(String(aq.textContent||'').indexOf('taking up')<0) return 'the question raised was not the loadout question here';
        return null;
@@ -49188,7 +49196,7 @@ window.__REGRESS=[
        cn.click();
        // CONTROL: NIGHT took.
        if(__P().cond!=='night') return 'NIGHT on the sector page did not take here';
-       dp.click();
+       if(typeof kitDeploy==='function'){ document.getElementById('sectormodal').classList.remove('on'); askKit(); } else dp.click();   // kit1: see above
        // CONTROL: the loadout question is up and the sector page it was asked from is down.
        if(!on(am)||on(sm)) return 'ASCEND TO THIS SECTOR did not swap the sector page for the loadout question here';
        if(String(aq.textContent||'').indexOf('taking up')<0) return 'the question raised was not the loadout question here';
@@ -73795,7 +73803,7 @@ window.__REGRESS=[
      if(cb){ nt.click(); if(!/NIGHT/.test(cb.textContent)) bad.push('the stash button did not follow the sector page to NIGHT'); d.click(); }
      // CONTROL: the sector page still leads to the loadout question.
      var dep=document.getElementById('sectordeploy');
-     if(dep){ dep.click(); if(!(ask&&ask.classList.contains('on'))&&!document.getElementById('stagemodal').classList.contains('on')) bad.push('control: ASCEND on the sector page no longer leads to the loadout question'); }
+     if(dep&&typeof kitDeploy!=='function'){ dep.click(); if(!(ask&&ask.classList.contains('on'))&&!document.getElementById('stagemodal').classList.contains('on')) bad.push('control: ASCEND on the sector page no longer leads to the loadout question'); }
      return done(bad.length?bad.join('; '):null); }},
   {v:'9.96',what:'a dose from the bar pays 2.5 percent more raid XP per dose while it lasts, and nothing on a sale',
    run:function(){
