@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.50 - PLAYER 2 IS TOLD EVERY WAVE
+
+Co-op hunt while he was away. In a two player raid only the host window makes the waves, and WAVE n (with AMBUSH BEHIND YOU on an ambush) and its WAVE sting were said only there: the wave tick stops on player 2 window, and the host raid flow word carried no wave count, so player 2 was never told a wave was coming and his wave count stayed at 0 (after he took a raid over, his first wave was WAVE 1 again). Proven in a staged pair in one window: the host said WAVE 5 and player 2 said nothing with a count of 0. Now the host flow word carries the wave count and whether it was an ambush; player 2 window says the same WAVE n with the same sting when the count goes up, and takes the host count. A teammate who joins late takes the count quietly on his first word.
+
+MEASURED. Check 28.50 passes, and fails on v28.49.
 ## v28.49 - PLAYER 2 SEES THE VOLATILE BLAST
 
 Co-op hunt while he was away. When a VOLATILE elite died, the host window showed its blast (spark, big puff, flash, the frag blast and a shake of 6, all in affixBoom) but player 2 window drew only the ordinary death spark: his mirror of the body knows it is volatile (the new word carries af and netEntFill keeps it as e.affix), yet netEntDeathFx, which runs when the host says the body is gone dead, never looked at it. He heard the boom (the fx word) with nothing on screen and no shake. Proven with eval: the real gone word for a volatile mirror fed through netOnMsg left player 2 shake at 0 with no blast or flash. Now netEntDeathFx draws the same blast and shake as the host for a volatile body; no extra sound, so he does not hear it twice. Shake and flash still follow his own window settings.

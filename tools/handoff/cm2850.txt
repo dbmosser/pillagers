@@ -1,0 +1,7 @@
+v28.50: player 2 is told every wave
+
+In co-op your teammate is now told WAVE and AMBUSH BEHIND YOU and hears the wave sting too.
+
+Check 28.50. Fails on v28.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

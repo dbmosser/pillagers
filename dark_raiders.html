@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.49';
+var VER='28.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46509,7 +46509,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.49: Player 2 now sees and feels a VOLATILE elite blow up, the same blast and shake player 1 gets. Check 28.49 fails on v28.48',
+  now:'v28.50: In co-op your teammate is now told WAVE and AMBUSH BEHIND YOU and hears the wave sting too. Check 28.50 fails on v28.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55993,7 +55993,8 @@ function arcadeWaveTick(dt){
     G.ents.push(e); made++;
   }
   WS.waveT=0;
-  if(made){ WS.waveN=(WS.waveN|0)+1; say('WAVE '+WS.waveN,'warn',amb?{sub:'AMBUSH BEHIND YOU'}:undefined); try{ annCue('WAVE'); }catch(_vc){} try{ flowDirFired(D,amb,made); }catch(_fdf){} }   // v24.04 (his #45): WAVE INCOMING; v26.xx (flow1): and an ambush says where from
+  if(made){ WS.waveN=(WS.waveN|0)+1; WS.waveAmb=amb; say('WAVE '+WS.waveN,'warn',amb?{sub:'AMBUSH BEHIND YOU'}:undefined); try{ annCue('WAVE'); }catch(_vc){} try{ flowDirFired(D,amb,made); }catch(_fdf){} }   // v24.04 (his #45): WAVE INCOMING; v26.xx (flow1): and an ambush says where from
+  // v28.50 (cloud-coop-wave-said-to-p2), CLOUD HUNT 2026-10-15: the wave count and whether it was an ambush ride in the host raid flow, so player 2 is told the same WAVE n
   return made;
 }
 // ======================================================================= THE RAID FLOW (v26.xx flow1 and on)
@@ -57377,6 +57378,7 @@ function flowNetOut(){
   o.s=shNetOut();   // v27.12 (coop4): and the strongholds
   o.g=goldNetOut();   // v27.18 (coop5): and the golden enemy
   o.r=goalsNetOut();   // v27.27 (coop8): and the run goals
+  var WS=G.arcade?ARCADE:G.cs; if(WS) o.w=[WS.waveN|0,WS.waveAmb?1:0];   // v28.50 (cloud-coop-wave-said-to-p2), CLOUD HUNT 2026-10-15: and the wave count (player 2 is told WAVE n as the host is)
   // FLOW-NET-OUT (the next coop builds add their keys above this line)
   return o;
 }
@@ -57395,7 +57397,15 @@ function flowNetTake(fl){
   if(fl.s&&typeof fl.s.length==='number') shNetTake(fl.s);   // v27.12 (coop4): the strongholds
   if(fl.g) goldNetTake(fl.g);   // v27.18 (coop5): the golden enemy
   if(fl.r) goalsNetTake(fl.r);   // v27.27 (coop8): the run goals
+  if(fl.w&&typeof fl.w.length==='number') waveNetTake(fl.w);   // v28.50 (cloud-coop-wave-said-to-p2), CLOUD HUNT 2026-10-15: the wave count
   // FLOW-NET-IN (the next coop builds take their keys above this line)
+  return 1;
+}
+function waveNetTake(w){   // v28.50 (cloud-coop-wave-said-to-p2), CLOUD HUNT 2026-10-15: the host made a wave: player 2 is told WAVE n (and AMBUSH BEHIND YOU) and hears the sting as the host does, and his count is the host count (a late joiner first word says nothing)
+  var WS=G.arcade?ARCADE:G.cs, F=flowS(), n=w[0]|0;
+  if(!WS||n<0) return 0;
+  if(F.waveSeen&&n>(WS.waveN|0)){ say('WAVE '+n,'warn',w[1]?{sub:'AMBUSH BEHIND YOU'}:undefined); try{ annCue('WAVE'); }catch(_vc){} }
+  F.waveSeen=1; WS.waveN=Math.max(WS.waveN|0,n);
   return 1;
 }
 function fireNetTake(rows){

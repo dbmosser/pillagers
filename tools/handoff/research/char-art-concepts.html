@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PILLAGERS - operator art concepts</title>
+<style>
+:root{--bg:#0f1015;--panel:#171922;--line:#2a2d3a;--ink:#e8e6df;--dim:#9a9aa6;--acc:#ffb52e;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,sans-serif;}
+body{width:1920px;height:1080px;overflow:hidden;padding:14px 28px 0}
+header{display:flex;align-items:baseline;gap:22px;margin:0 0 8px}
+header h1{font-size:22px;letter-spacing:.14em;margin:0;font-weight:800}
+header .sub{font-size:13px;color:var(--dim);letter-spacing:.04em}
+header .rule{margin-left:auto;font-size:12px;color:var(--dim);font-family:Consolas,monospace}
+#cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px 8px}
+.dhead{display:flex;gap:12px;align-items:center;margin-bottom:5px}
+.dnum{font-size:34px;font-weight:900;color:var(--acc);line-height:1;width:30px;text-align:center}
+.dtxt h2{margin:0;font-size:19px;letter-spacing:.16em;font-weight:800}
+.dtxt .tag{margin:1px 0 0;font-size:12px;color:var(--dim);letter-spacing:.03em}
+.note{font-size:11.5px;line-height:1.38;color:#c9c8c0;margin:3px 0 8px;padding:6px 8px;background:#12141b;border-left:3px solid var(--acc);height:84px;overflow:hidden}
+.note b{color:var(--acc);letter-spacing:.08em}
+.rowab{display:flex;gap:10px}
+.box{background:#10121a;border:1px solid var(--line);border-radius:4px;padding:5px 6px 6px}
+.box.wide{margin-top:8px}
+.lab{font-size:10px;letter-spacing:.1em;color:var(--dim);margin-bottom:4px;font-weight:700}
+canvas{display:block;border-radius:2px}
+.strip{display:flex;gap:6px}
+.cell{flex:1}
+.cell canvas{width:100%!important;height:auto!important;image-rendering:auto}
+.cl{font-size:10px;letter-spacing:.12em;text-align:center;color:#c9c8c0;margin-top:3px;font-weight:700}
+</style></head><body>
+<header><h1>PILLAGERS - OPERATOR ART CONCEPTS</h1><span class="sub">three directions for the bigger art upgrade. every figure on this page is drawn live on canvas in the game's own style (ink contour, rounded fills, ramps). pick one.</span><span class="rule">raid zoom = 1 unit : 1 px at 1080p, figure ~44 px</span></header>
+<div id="cols"></div>
+<script>
+'use strict';
+/* ===== CORE: the game's own drawing language (INK contour, rounded rect fills, three-step ramps) plus a few helpers ===== */
+const INK='#120e0c';
+let MIR=1;   // +1 drawing a right-facing body, -1 inside the mirror; the light always comes from the screen's top-left
+function h2r(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function r2h(r){return '#'+r.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');}
+function mix(a,b,t){const A=h2r(a),B=h2r(b);return r2h([A[0]+(B[0]-A[0])*t,A[1]+(B[1]-A[1])*t,A[2]+(B[2]-A[2])*t]);}
+function lum(h){const r=h2r(h);return (r[0]*.3+r[1]*.59+r[2]*.11)/255;}
+const WARM='#fff2d0',COOL='#1c1838';
+/* a hue-shifted ramp: lights drift warm, shadows drift cool; dark colours get a stronger light so they still read */
+function ramp(h,k){
+  k=k||1; const l=lum(h); const boost=l<.22?(.22-l)*1.6:0;
+  return {hi:mix(h,WARM,Math.min(.7,.30*k+boost)),mid:h,lo:mix(h,COOL,.30*k),dk:mix(h,COOL,.58*k)};
+}
+function rrp(c,x,y,w,h,r){c.beginPath();c.roundRect(x,y,w,h,r);}
+function rr(c,x,y,w,h,r,col){c.fillStyle=col;rrp(c,x,y,w,h,r);c.fill();}
+function R(c,x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h);}
+/* an outlined, shaded block: outline, shadow base, lit face, top-left rim. o.ol = outline px (0 none), o.olc = outline colour, o.band = shade band px */
+function blk(c,x,y,w,h,r,col,o){
+  o=o||{}; const Rm=o.R||ramp(col); const ol=o.ol===undefined?1:o.ol;
+  if(ol>0){c.fillStyle=o.olc||INK;rrp(c,x-ol,y-ol,w+2*ol,h+2*ol,r+ol);c.fill();}
+  c.save();rrp(c,x,y,w,h,r);c.clip();
+  const b=o.band===undefined?Math.max(1,Math.min(2,Math.round(Math.min(w,h)*.26))):o.band;
+  c.fillStyle=Rm.lo;c.fillRect(x,y,w,h);
+  if(!o.flat){
+    if(MIR>0){c.fillStyle=Rm.mid;c.fillRect(x,y,w-b,h-b);if(o.rim!==0){c.fillStyle=Rm.hi;c.fillRect(x,y,w-b,1);c.fillRect(x,y,1,h-b);}}
+    else{c.fillStyle=Rm.mid;c.fillRect(x+b,y,w-b,h-b);if(o.rim!==0){c.fillStyle=Rm.hi;c.fillRect(x+b,y,w-b,1);c.fillRect(x+w-1,y,1,h-b);}}
+  } else { c.fillStyle=Rm.mid;c.fillRect(x,y,w,h); }
+  c.restore();
+}
+/* a thick limb (arm): outline, shade, lit centre */
+function limb(c,x1,y1,x2,y2,w,col,o){
+  o=o||{}; const Rm=ramp(col); c.lineCap='round'; c.lineJoin='round';
+  const ol=o.ol===undefined?1:o.ol;
+  const P=(ww,dx,dy)=>{c.lineWidth=ww;c.beginPath();c.moveTo(x1+dx,y1+dy);if(o.ex!==undefined){c.lineTo(o.ex+dx,o.ey+dy);}c.lineTo(x2+dx,y2+dy);c.stroke();};
+  if(ol>0){c.strokeStyle=o.olc||INK;P(w+2*ol,0,0);}
+  c.strokeStyle=Rm.lo;P(w,0,0);
+  if(!o.flat){c.strokeStyle=Rm.mid;P(Math.max(1,w-1.4),-.5*MIR,-.5);c.strokeStyle=Rm.hi;P(Math.max(.8,w*.28),-.9*MIR,-.9);}
+  else{c.strokeStyle=Rm.mid;P(Math.max(1,w-1.2),-.4*MIR,-.4);}
+}
+function shadow(c,x,y,rx,ry,a,hard){
+  c.save();
+  if(hard){c.fillStyle='rgba(8,8,18,'+a+')';c.beginPath();c.ellipse(x,y,rx,ry,0,0,6.2832);c.fill();}
+  else{for(let i=0;i<3;i++){c.fillStyle='rgba(8,8,18,'+(a/2.2).toFixed(3)+')';c.beginPath();c.ellipse(x,y,rx*(1-i*.17),ry*(1-i*.17),0,0,6.2832);c.fill();}}
+  c.restore();
+}
+function dots(c,col,pts){c.fillStyle=col;for(let i=0;i<pts.length;i+=2)c.fillRect(pts[i],pts[i+1],1,1);}
+function skinR(h){return {hi:mix(h,'#fff6e6',.38),mid:h,lo:mix(h,'#7a3a40',.22),dk:mix(h,'#3a1a28',.45)};}
+const SKIN={porcelain:'#f7ddc2',fair:'#f2d2a8',olive:'#d8ab7a',tan:'#c08a56',deep:'#8f5d3d'};
+const HAIR={blonde:'#d2a948',dark:'#43363f',black:'#241f29',ginger:'#b5582a',white:'#d9dbe3'};
+const METAL='#5d6574', GUNM='#3a3f4b', LEATH='#6a4a32';
+
+/* ===== POSE: the same inputs the game gives drawOp (face angle, walk phase) ===== */
+function mkPose(P){
+  const fl=Math.cos(P.ang)<0?-1:1;
+  let a=fl>0?P.ang:Math.PI-P.ang; while(a>Math.PI)a-=2*Math.PI; while(a<-Math.PI)a+=2*Math.PI;
+  const mv=!!P.mv, ph=P.ph||0, amp=mv?3:0;
+  return {fl:fl,a:a,mv:mv,ph:ph,sw:Math.round(Math.sin(ph)*amp),liftA:Math.round(Math.max(0,Math.sin(ph))*2.6),liftB:Math.round(Math.max(0,-Math.sin(ph))*2.6),
+          bob:mv?Math.round(Math.abs(Math.sin(ph))*1.4):0,up:a<-0.62,low:P.low};
+}
+/* draw a figure: fn(c,L,Q) draws a right-facing body with the ground contact at (0,0) */
+function drawFig(c,fn,x,y,L,P,S){
+  const Q=mkPose(P); c.save(); c.translate(Math.round(x),Math.round(y)); c.scale(S*Q.fl,S); MIR=Q.fl; fn(c,L,Q); MIR=1; c.restore();
+}
+/* the rifle, drawn along +x from the rear grip. style: 0 chibi (slim, wood stock), 1 gear (shroud, optic), 2 bold (chunky, accent block) */
+function gunDraw(c,style,acc){
+  const m=GUNM, d='#22252d';
+  if(style===0){
+    blk(c,-9,-1,9,4,1,'#6a4a30');                       // stock
+    blk(c,0,-2,12,5,1,m);                               // receiver
+    blk(c,12,-1,10,2,0,'#2b2e37',{ol:1,band:1});        // barrel
+    R(c,22,-1,2,2,'#14151a'); R(c,22,-1,1,1,'#7a8090'); // muzzle
+    blk(c,3,3,3,6,1,d);                                 // magazine
+    blk(c,4,-5,6,3,1,'#2a2f3a'); R(c,5,-4,2,1,'#8fe0ff');// optic with a lens glint
+  } else if(style===1){
+    blk(c,-10,-2,10,5,1,'#2c2f38');                     // stock
+    blk(c,0,-3,14,6,1,m);                               // receiver
+    blk(c,14,-2,10,4,1,'#2d313b');                      // shroud
+    R(c,24,-1,3,2,'#14151a'); R(c,25,-1,1,1,'#7a8090');
+    blk(c,4,3,4,7,1,d);                                 // magazine
+    blk(c,3,-7,9,4,1,'#262a33'); R(c,10,-6,2,2,acc||'#ff9a3a'); R(c,4,-6,3,1,'#6d7585'); // scope
+    R(c,8,-2,5,1,acc||'#ff9a3a');                       // accent stripe
+  } else {
+    blk(c,-9,-2,9,6,2,'#2b2e37',{ol:1.5});
+    blk(c,0,-3,13,7,2,'#4a4f5c',{ol:1.5});
+    blk(c,13,-2,10,4,1,'#2b2e37',{ol:1.5});
+    R(c,23,-1,3,2,'#0e0f14');
+    blk(c,3,4,4,6,1,'#22252d',{ol:1.5});
+    R(c,2,-2,9,2,acc||'#ffd25a');                       // the accent block
+  }
+}
+/* ===== DIRECTION 1: REFINED CHIBI. The same proportions as today, a big quality jump:
+   four-step hue-shifted ramps, light from the top-left, a 1 px ink contour, material reads, straps and pouches, visor glint, cast shadow. ===== */
+function weave(c,x,y,w,h,a){c.fillStyle='rgba(0,0,0,'+(a||.07)+')';for(let j=0;j<h;j++)for(let i=0;i<w;i++)if(((i+j)&1)===0)c.fillRect(x+i,y+j,1,1);}
+function stitchH(c,x,y,w,col){c.fillStyle=col;for(let i=0;i<w;i+=2)c.fillRect(x+i,y,1,1);}
+function chibi(c,L,Q){
+  const S=L.sch,p=S.p,s=S.s,a=S.a,B=Q.bob;
+  const skin=skinR(SKIN[L.skin]),hair=ramp(HAIR[L.hair]);
+  const trs=mix(p,'#0c0a14',.5), plate=mix(s,p,.20), boot=mix(s,'#3a2e28',.30);
+  shadow(c,3,1,12,3.8,.40);                 // the cast shadow falls to the bottom-right
+  shadow(c,-.5,.5,7,2,.30,true);            // the contact shadow under the feet
+  const O={x:3,y:-16-B},ca=Math.cos(Q.a),sa=Math.sin(Q.a),H2={x:O.x+ca*12-sa*1,y:O.y+sa*12+ca*1};
+  if(Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,0,a);c.restore(); }
+  chibiPack(c,L,Q,B,p,s,a);
+  // far arm: goes behind the torso and comes out in front of it onto the fore end of the gun
+  limb(c,-6,-19-B,H2.x,H2.y,4,mix(p,'#000',.12),{ex:0,ey:-12-B});
+  // ---- legs ----
+  const lg=[{cx:-3.5,sw:-Q.sw,lf:Q.liftB},{cx:3.5,sw:Q.sw,lf:Q.liftA}];
+  for(const g of lg){
+    const x=Math.round(g.cx+g.sw*.6-2.5),h=Math.max(3,6-g.lf);
+    blk(c,x,-11,5,h,1,trs);                  // trousers
+    R(c,x+(MIR>0?1:2),-9,1,3,mix(trs,'#000',.25));       // a fold behind the knee
+    weave(c,x,-11,5,h,.06);
+    blk(c,x-1,-5-g.lf,7,5,2,boot);            // boot
+    R(c,x-1,-1-g.lf,7,1,'#0a0808');           // sole
+    R(c,x+(MIR>0?2:3),-4-g.lf,2,1,ramp(boot).hi); R(c,x+(MIR>0?2:3),-3-g.lf,2,1,ramp(boot).lo);   // laces
+    R(c,x+(MIR>0?4:-0),-5-g.lf,2,1,mix(s,a,.65));          // the accent collar
+  }
+  // ---- upper body (breathes and bobs) ----
+  c.save();c.translate(0,-B);
+  blk(c,-6,-23,12,12,3,p);                   // coat
+  weave(c,-5,-22,10,10,.07);
+  R(c,-5,-23,10,1,ramp(p).hi);
+  // plate carrier
+  const vt=L.vest;
+  if(vt==='heavy'){
+    blk(c,-6,-23,12,11,2,'#6d7684'); R(c,-4,-22,8,1,'#a9b2c0'); R(c,-6,-19,12,1,'#4a5160');
+    R(c,-5,-14,10,2,mix(s,'#000',.2)); R(c,-4,-14,8,1,a);
+    dots(c,'#c9d1db',[-5,-21,4,-21,-5,-13,4,-13]);
+    c.fillStyle=a;for(let i=0;i<3;i++){R(c,-3+i*2,-18-(i&1),1,3,a);}      // chevron ribs
+  } else {
+    blk(c,-5,-22,10,10,2,plate);
+    R(c,-5,-22,10,1,ramp(plate).hi);
+    R(c,-4,-14,8,1,a);                                                      // the accent stripe across the plate
+    blk(c,-4,-19,3,4,1,mix(plate,'#8a7a5a',.3),{ol:0}); blk(c,1,-19,3,4,1,mix(plate,'#8a7a5a',.3),{ol:0});   // mag pouches
+    R(c,-4,-19,3,1,ramp(plate).hi);R(c,1,-19,3,1,ramp(plate).hi); R(c,-3,-16,1,1,'#b8b0a0'); R(c,2,-16,1,1,'#b8b0a0');
+    if(vt==='band'){                                                         // bandolier with brass cartridges
+      limb(c,-5,-23,5,-13,2.4,'#6a4a32');
+      c.fillStyle='#e0b45a';for(let i=0;i<5;i++){R(c,-4+i*2,-22+i*2,1,1,'#f2d27a');R(c,-3+i*2,-21+i*2,1,1,'#c8963a');}
+    }
+  }
+  R(c,-6,-12,12,2,INK);R(c,-5,-12,10,1,'#5a4230');R(c,-5,-12,10,1,'#5a4230');stitchH(c,-5,-12,10,'#8a6a46');   // leather belt with stitching
+  blk(c,-1,-13,3,3,1,'#c9c0a8',{ol:0}); R(c,0,-12,1,1,'#3a3328');                                          // buckle
+  // shoulder straps
+  R(c,-4,-23,2,3,ramp(plate).lo); R(c,2,-23,2,3,ramp(plate).lo);
+  // shoulder caps and pads
+  const pd=L.pads;
+  blk(c,-9,-23,4,5,2,p); blk(c,5,-23,4,5,2,p);
+  if(pd==='round'){ blk(c,-10,-25,7,6,3,'#4b4f5a'); blk(c,4,-25,7,6,3,'#4b4f5a'); R(c,-8,-24,2,1,'#9aa0ad'); R(c,6,-24,2,1,'#9aa0ad'); R(c,-9,-20,5,1,a); R(c,5,-20,5,1,a); }
+  else if(pd==='big'){ blk(c,-14,-28,10,9,4,'#7b8594'); R(c,-12,-27,5,1,'#c4cdd8'); R(c,-13,-23,8,1,a); dots(c,'#e1e7ee',[-12,-25,-6,-25]); blk(c,4,-25,7,6,3,'#5b6574'); R(c,6,-24,3,1,'#a9b2c0'); R(c,5,-20,5,1,a); }
+  // ---- head ----
+  chibiHead(c,L,Q,p,s,a,skin,hair);
+  c.restore();
+  // ---- near arm, hands and the gun ----
+  const Nh={x:6,y:-20-B};
+  if(!Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,0,a);c.restore(); }
+  limb(c,Nh.x,Nh.y,O.x,O.y,4.2,p);
+  R(c,Nh.x-1,Nh.y-1,3,1,ramp(p).hi);
+  if(L.pads==='round'||L.pads==='big') R(c,Nh.x-1,Nh.y+2,3,1,a);   // cuff band
+  const gl=mix(s,'#40342c',.4);
+  blk(c,Math.round(O.x)-2,Math.round(O.y)-2,4,4,1.5,gl); blk(c,Math.round(H2.x)-2,Math.round(H2.y)-2,4,4,1.5,gl);
+}
+function chibiPack(c,L,Q,B,p,s,a){
+  const t=L.pack, col=mix(s,p,.18);
+  c.save();c.translate(0,-B);
+  if(t==='fuel'){
+    const tc=mix(a,'#1a1c14',.58);
+    blk(c,-14,-26,8,17,3,tc); R(c,-13,-25,2,14,ramp(tc).hi); R(c,-14,-20,8,1,'#14160e'); R(c,-14,-15,8,1,'#14160e');   // a fuel tank with hoops
+    blk(c,-12,-29,4,3,1,'#9aa0ad'); R(c,-11,-29,2,1,'#e1e7ee');
+    limb(c,-7,-24,-4,-20,1.6,'#2a2c22');
+  } else if(t==='black'){
+    blk(c,-13,-24,8,14,3,mix(col,'#101018',.35)); R(c,-12,-23,2,11,ramp(mix(col,'#101018',.35)).hi);
+    blk(c,-13,-18,8,5,2,mix(col,'#1c1c26',.1),{ol:0}); R(c,-10,-16,2,2,'#b8b0a0'); R(c,-13,-12,8,1,a);
+    blk(c,-15,-20,3,6,1,'#2a2c36');                                       // side pouch
+  } else {
+    blk(c,-13,-24,8,14,3,col); R(c,-12,-23,2,11,ramp(col).hi); R(c,-13,-17,8,1,ramp(col).dk); stitchH(c,-12,-16,6,ramp(col).hi);
+    R(c,-10,-18,2,3,'#b8b0a0'); R(c,-13,-12,8,1,a);
+    blk(c,-15,-21,3,6,1,'#5c4a34');
+  }
+  c.restore();
+}
+function chibiHead(c,L,Q,p,s,a,skin,hair){
+  const hd=L.head, fs=1;
+  const heavy=(hd==='heavy');
+  // ---- the head itself ----
+  if(!heavy){
+    blk(c,-7,-36,14,12,5,SKIN[L.skin],{R:skin});
+    R(c,-8,-31,2,3,skin.lo);                                       // far ear
+    // eyes
+    const ex=[-1,3];
+    for(const x of ex){ R(c,x,-31,2,3,INK); R(c,x,-31,1,1,'#fff'); R(c,x+(MIR>0?1:0),-29,1,1,L.eye||'#5aa0d8'); R(c,x-1,-33,3,1,hair.mid); }
+    R(c,0,-27,2,1,'rgba(220,100,110,.55)'); R(c,3,-27,2,1,'rgba(220,100,110,.55)'); R(c,1,-26,2,1,skin.dk);   // blush, mouth
+    R(c,4,-29,1,1,skin.lo);                                         // nose
+    // hair
+    if(hd!=='beanie'){ blk(c,-8,-38,16,7,4,HAIR[L.hair],{R:hair,ol:1}); R(c,-6,-38,6,1,hair.hi); R(c,-8,-32,3,6,hair.lo); R(c,-7,-31,2,5,hair.mid);
+      R(c,2,-33,3,2,hair.mid); R(c,-1,-33,3,1,hair.lo);   // the fringe, two strands
+      if(hd==='tach'||hd==='cap') {R(c,-8,-34,16,1,hair.lo);} }
+  }
+  // ---- headgear ----
+  if(hd==='tach'){
+    const hc=mix('#5a6358',s,.25),hr=ramp(hc);
+    blk(c,-9,-42,18,11,5,hc,{R:hr});                                // dome
+    R(c,-7,-41,7,1,hr.hi); R(c,-8,-40,2,3,hr.hi); R(c,-9,-33,18,1,hr.dk);   // spec, rim
+    dots(c,'#2b302a',[-5,-38,-2,-38,1,-38,4,-38]);                   // net loops
+    blk(c,-11,-35,4,7,2,'#2c2f38'); blk(c,7,-35,4,7,2,'#2c2f38'); R(c,-10,-34,2,1,'#7a8294'); R(c,8,-34,2,1,'#7a8294');   // ear pro
+    blk(c,3,-45,5,4,1,'#3a3f4b'); R(c,5,-44,3,1,a); R(c,8,-44,1,2,mix(a,'#fff',.4)); // the lamp on the rail
+    // visor over the eyes: tinted glass with a glint
+    c.fillStyle=INK;rrp(c,-8,-34,16,6,3);c.fill();
+    c.fillStyle='rgba(32,120,150,.62)';rrp(c,-7,-33,14,4,2);c.fill();
+    c.fillStyle='rgba(8,40,60,.5)';c.fillRect(-7,-30,14,1);
+    for(let i=0;i<3;i++){c.fillStyle=i===1?'#ffffff':'rgba(255,255,255,.6)';c.fillRect(-4+i,-33+i,1,1);c.fillRect(1+i,-33+i,1,1);}
+    R(c,6,-33,1,1,'#fff');
+  } else if(hd==='heavy'){
+    const hc='#7a8696',hr=ramp(hc);
+    blk(c,-10,-33,20,14,4,mix(hc,s,.15),{R:ramp(mix(hc,s,.15))});   // cheek and chin guards
+    blk(c,-9,-43,18,12,6,hc,{R:hr});                                  // dome
+    R(c,-6,-42,8,1,hr.hi); R(c,-8,-41,2,5,hr.hi); R(c,-9,-32,18,1,hr.dk);
+    blk(c,-1,-48,3,7,1,a,{R:ramp(a)}); R(c,0,-47,1,5,mix(a,'#fff',.6));          // the crest
+    R(c,0,-41,1,9,hr.lo);                                              // panel seam
+    c.fillStyle=INK;rrp(c,-8,-36,16,6,3);c.fill();
+    c.fillStyle=mix(a,'#000',.34);rrp(c,-7,-35,14,4,2);c.fill();      // glowing visor slit
+    c.fillStyle=a;c.fillRect(-6,-34,12,2);c.fillStyle=mix(a,'#fff',.7);c.fillRect(-5,-34,4,1);
+    R(c,-5,-26,10,1,hr.dk); R(c,-3,-24,6,3,'#4a5160'); R(c,-2,-23,4,1,'#2a2f3a');      // chin guard and vents
+    dots(c,'#dde3ea',[-8,-30,7,-30,-8,-40,7,-40]);                      // rivets
+  } else if(hd==='beanie'){
+    const wc=mix(p,'#fff',.14),wr=ramp(wc);
+    blk(c,-8,-41,16,9,5,wc,{R:wr});
+    for(let x=-6;x<=6;x+=2) R(c,x,-40,1,6,wr.lo);                     // knit ribs
+    blk(c,-9,-35,18,4,2,mix(wc,a,.35)); R(c,-8,-34,16,1,a); R(c,-8,-32,16,1,ramp(wc).dk);   // the rolled brim, the accent
+    blk(c,-2,-45,5,5,2.5,a); R(c,-1,-44,2,1,mix(a,'#fff',.6));         // pom
+    R(c,-9,-33,2,2,hair.mid);R(c,7,-33,2,3,hair.mid);
+  } else if(hd==='cap'){
+    const cc=mix(p,'#3a3028',.15),cr=ramp(cc);
+    blk(c,-8,-40,16,7,3,cc,{R:cr}); R(c,-6,-39,8,1,cr.hi); R(c,-1,-37,4,2,a); R(c,0,-37,2,1,mix(a,'#fff',.5));
+    blk(c,3,-35,10,3,1.5,mix(cc,'#000',.3)); R(c,4,-35,8,1,ramp(mix(cc,'#000',.3)).hi);   // the peak
+    R(c,-8,-34,16,1,cr.dk);
+  }
+}
+/* ===== PAGE: layout, ground patches, the four looks, the poses ===== */
+const SCH={
+  crimson:{p:'#a02a36',s:'#201618',a:'#ff7e6e'},
+  toxic:  {p:'#2f3338',s:'#15171a',a:'#8dff2e'},
+  frost:  {p:'#4a7f9f',s:'#1a2733',a:'#c4f0ff'},
+  ember:  {p:'#a8501f',s:'#2a2224',a:'#ffb52e'}
+};
+/* the two sets are the game's RAIDER and HEAVY; the two schemes are FROST and EMBER on the standard loadout */
+const LOOKS=[
+  {name:'RAIDER SET',  sch:SCH.crimson,head:'tach',  vest:'band', pads:'round',pack:'black',skin:'tan',   hair:'dark',  eye:'#5aa0d8'},
+  {name:'HEAVY SET',   sch:SCH.toxic,  head:'heavy', vest:'heavy',pads:'big',  pack:'fuel', skin:'olive', hair:'dark',  eye:'#6a4a30'},
+  {name:'FROST SCHEME',sch:SCH.frost,  head:'beanie',vest:'plate',pads:'none', pack:'std',  skin:'porcelain',hair:'blonde',eye:'#4a8ac0'},
+  {name:'EMBER SCHEME',sch:SCH.ember,  head:'cap',   vest:'plate',pads:'none', pack:'std',  skin:'deep',  hair:'black', eye:'#3a2a20'}
+];
+const POSES={
+  aim:    {ang:-0.10,mv:false,ph:0},
+  walkA:  {ang:0.50,mv:true,ph:1.25},
+  walkB:  {ang:0.50,mv:true,ph:-1.25},
+  aimUp:  {ang:Math.PI+0.85,mv:false,ph:0}
+};
+/* ---- ground: the game's own day and night floor colours with the speckle and tufts it bakes ---- */
+function rng(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+function ground(c,w,h,mode,seed){
+  const r=rng(seed||7), day=(mode!=='night');
+  c.fillStyle=day?'#6E6A63':'#252c38';c.fillRect(0,0,w,h);
+  if(day){ // grass blobs
+    for(let i=0;i<4;i++){const gx=r()*w,gy=r()*h,rad=34+r()*40,g=c.createRadialGradient(gx,gy,2,gx,gy,rad);g.addColorStop(0,'rgba(92,128,72,.55)');g.addColorStop(1,'rgba(92,128,72,0)');c.fillStyle=g;c.beginPath();c.arc(gx,gy,rad,0,6.2832);c.fill();}
+  }
+  const n=Math.round(w*h/260);
+  for(let i=0;i<n;i++){const x=r()*w,y=r()*h,s=2+r()*4;c.fillStyle=day?'rgba('+(70+r()*40|0)+','+(75+r()*40|0)+','+(70+r()*40|0)+','+(.25+r()*.4)+')':'rgba('+(60+r()*30|0)+','+(66+r()*30|0)+','+(80+r()*30|0)+','+(.25+r()*.4)+')';c.fillRect(x|0,y|0,s|0,(s*(.6+r()*.7))|0);}
+  const nt=Math.round(w*h/700);
+  for(let i=0;i<nt;i++){const x=r()*w,y=r()*h;c.strokeStyle=day?'rgba('+(70+r()*40|0)+','+(110+r()*40|0)+','+(60+r()*30|0)+','+(.3+r()*.35)+')':'rgba(60,84,70,'+(.3+r()*.3)+')';c.lineWidth=1.2;for(let k=0;k<3;k++){c.beginPath();c.moveTo(x,y);c.lineTo(x+(r()*12-6),y-(5+r()*7));c.stroke();}}
+}
+function el(tag,cls,html,parent){const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;if(parent)parent.appendChild(e);return e;}
+function cv(w,h,parent){const e=document.createElement('canvas');e.width=w;e.height=h;e.style.width=w+'px';e.style.height=h+'px';if(parent)parent.appendChild(e);return e;}
+
+const DIRS=[];
+function build(){
+  const root=document.getElementById('cols');
+  DIRS.forEach((D,di)=>{
+    const col=el('section','col',null,root);
+    const head=el('div','dhead',null,col);
+    el('div','dnum',String(di+1),head);
+    const ht=el('div','dtxt',null,head);
+    el('h2',null,D.title,ht); el('p','tag',D.tag,ht);
+    el('p','note','<b>BUILD:</b> '+D.note,col);
+    // (a) raid zoom on the ground, (b) the same at 4x
+    const rowAB=el('div','rowab',null,col);
+    const boxA=el('div','box',null,rowAB); el('div','lab','A  RAID ZOOM  1x  (4 LOOKS ON DUST, GRASS, NIGHT FLOOR)',boxA);
+    const ca=cv(330,128,boxA); const c=ca.getContext('2d');
+    ground(c,330,128,'day',11+di); c.save();c.beginPath();c.rect(214,0,116,128);c.clip();ground(c,330,128,'night',31+di);c.restore();
+    c.fillStyle='rgba(0,0,0,.25)';c.fillRect(213,0,1,128);
+    const pl=[[0,'aim',44],[1,'walkA',112],[2,'aimUp',181],[3,'walkB',262]];
+    pl.forEach(q=>{drawFig(c,D.fn,q[2],104,LOOKS[q[0]],POSES[q[1]],1);});
+    const boxB=el('div','box',null,rowAB); el('div','lab','B  THE SAME AT 4x',boxB);
+    const cb=cv(250,214,boxB); const c2=cb.getContext('2d');ground(c2,250,214,'day',44+di);
+    drawFig(c2,D.fn,100,196,LOOKS[0],POSES.aim,4);
+    // (c) four looks
+    const boxC=el('div','box wide',null,col); el('div','lab','C  FOUR LOOKS  (TWO OUTFIT SETS, TWO COLOUR SCHEMES)  3x',boxC);
+    const rc=el('div','strip',null,boxC);
+    LOOKS.forEach((L,i)=>{const w=el('div','cell',null,rc);const k=cv(144,150,w);const g=k.getContext('2d');ground(g,144,150,i<2?'day':'night',60+i+di*9);drawFig(g,D.fn,54,134,L,POSES.aim,3);el('div','cl',L.name,w);});
+    // (d) walk and aim poses
+    const boxD=el('div','box wide',null,col); el('div','lab','D  WALK AND AIM POSES  3x  (WALK, WALK OTHER FOOT, AIM, AIM UP-LEFT)',boxD);
+    const rd=el('div','strip',null,boxD);
+    [['WALK','walkA'],['STRIDE','walkB'],['AIM','aim'],['AIM UP-LEFT','aimUp']].forEach((q,i)=>{const w=el('div','cell',null,rd);const k=cv(144,150,w);const g=k.getContext('2d');ground(g,144,150,'day',80+i+di*9);drawFig(g,D.fn,q[1]==='aimUp'?88:54,134,LOOKS[0],POSES[q[1]],3);el('div','cl',q[0],w);});
+  });
+}
+DIRS.push({title:'REFINED CHIBI',tag:'today\'s proportions, a big quality jump',fn:chibi,
+ note:'bake each look once to an offscreen sprite, one per facing (right plus mirrored left) and per walk phase (6 frames), so the 20-odd blk() calls per body run only on a look change; the frame cost stays one drawImage. cosm1 scheme colours feed ramp(); cosm3 head and cosm5 pack/boots layers are the same slots, redrawn with the shading ramps; cosm4 vest and pads draw over the torso exactly as now.'});
+build();
+</script></body></html>
