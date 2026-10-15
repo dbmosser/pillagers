@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.44 - NO FREE CONVOY CRATE WHEN THE HOST LEAVES
+
+Co-op hunt while he was away. His ruling: when the host is gone the remaining player picks up the raid. At the takeover player 2's window lets go of every body it only knew from host words, and that included the carrier and crew of a live machine convoy, a live bounty pillager and the Overseer mirror of a live rampage. On the next tick the window ran the host event code on those gone bodies. Proven on v27.43+ in a staged career pair (host launches all three, the world word goes to player 2 onto real net bodies, real netHostGone, then the event tick): CONVOY DOWN / SEARCH THE CRATE with a free CONVOY CRATE nobody earned; a false BOUNTY GONE / HE GOT AWAY; and the rampage kept pointing at the spliced Overseer mirror, so its ring and map mark sat on a ghost spot for the rest of its 120 s. Now, before those bodies are let go, a live convoy, bounty or rampage whose body came only from the host ends quietly: no crate, no line, no ring.
+
+MEASURED. Check 28.44 passes, and fails on v28.43.
 ## v28.43 - PARTY RUN GOALS KEEP THEIR PROGRESS WHEN THE HOST LEAVES
 
 Co-op hunt while he was away. His ruling: when the host is gone the remaining player picks up the raid, and since v27.27 the run goals are the party's: the host counts them and player 2 shows the host's progress. At the takeover player 2's window starts counting the goals itself again, but from its own counts only, so the party progress fell back to player 2's own: 10 KILLS at 7 of 10 on the host became 3 of 10 (his own 3 kills), and 3 WAVES and AIR STRIKE fell the same way. Proven in a staged pair (host 7 kills sent in the world word, player 2 with 3 of his own, the real netHostGone, then the goal tick): 3 of 10 after the takeover. Now at the takeover each goal not yet done keeps the gap between the party progress and this window's own count, and the goal tick adds it back, so it stays 7 of 10 and 3 more kills finish it.

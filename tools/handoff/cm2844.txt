@@ -1,0 +1,7 @@
+v28.44: no free convoy crate when the host leaves
+
+If your host leaves while a machine convoy, a bounty pillager or an Overseer rampage is live, that event just ends for you instead of dropping a crate nobody earned or calling a line that is not true.
+
+Check 28.44. Fails on v28.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
