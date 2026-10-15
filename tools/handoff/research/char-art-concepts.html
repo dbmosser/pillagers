@@ -10,8 +10,8 @@ header{display:flex;align-items:baseline;gap:22px;margin:0 0 8px}
 header h1{font-size:22px;letter-spacing:.14em;margin:0;font-weight:800}
 header .sub{font-size:13px;color:var(--dim);letter-spacing:.04em}
 header .rule{margin-left:auto;font-size:12px;color:var(--dim);font-family:Consolas,monospace}
-#cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.col{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px 8px}
+#cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.col{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px 8px}
 .dhead{display:flex;gap:12px;align-items:center;margin-bottom:5px}
 .dnum{font-size:34px;font-weight:900;color:var(--acc);line-height:1;width:30px;text-align:center}
 .dtxt h2{margin:0;font-size:19px;letter-spacing:.16em;font-weight:800}
@@ -269,6 +269,274 @@ function chibiHead(c,L,Q,p,s,a,skin,hair){
     R(c,-8,-34,16,1,cr.dk);
   }
 }
+/* ===== DIRECTION 2: GEAR-HEAVY RAIDER. ARC-Raiders-like: a small head (about 1/4 of the height), broad shoulders, a pack and armour plates that
+   dominate the silhouette, a helmet or visor on every look, worn paint edges and colour panels. The scheme PRIMARY is the armour paint, the
+   SECONDARY the padded under-layer and pack, the ACCENT the lens glow and the stripes. ===== */
+function hsh(x,y){let h=(x*374761393+y*668265263)|0;h=(h^(h>>>13))*1274126177|0;return ((h^(h>>>16))>>>0)/4294967296;}
+/* chipped paint: bare metal showing along the top and bottom edges, a scratch or two, grime gathering low */
+function wear(c,x,y,w,h,k){
+  k=k||1;const m='#b4b9c0';
+  c.fillStyle=m;
+  for(let i=1;i<w-1;i++){ if(hsh(x+i,y)<.20*k) c.fillRect(x+i,y,1,1); if(hsh(x+i,y+h)<.22*k) c.fillRect(x+i,y+h-1,1,1); }
+  for(let j=1;j<h-1;j++){ if(hsh(x,y+j)<.14*k) c.fillRect(x,y+j,1,1); if(hsh(x+w,y+j)<.10*k) c.fillRect(x+w-1,y+j,1,1); }
+  c.fillStyle='rgba(20,14,10,.30)';c.fillRect(x+1,y+h-2,w-2,1);
+}
+function seam(c,x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h);}
+function gear(c,L,Q){
+  const S=L.sch,p=S.p,s=S.s,a=S.a,B=Q.bob,pr=ramp(p);
+  const under=mix(s,'#4a4a56',.30), underR=ramp(under), boot=mix(s,'#3c322c',.35), pk=mix(s,p,.10), leath='#5c4430';
+  shadow(c,4,1,16,4.6,.42);
+  shadow(c,0,.5,9,2.2,.30,true);
+  const O={x:5,y:-22-B},ca=Math.cos(Q.a),sa=Math.sin(Q.a),H2={x:O.x+ca*13-sa*1,y:O.y+sa*13+ca*1};
+  if(Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,1,a);c.restore(); }
+  gearPack(c,L,B,p,s,a,pk);
+  limb(c,-8,-28-B,H2.x,H2.y,5,under,{ex:1,ey:-19-B});                  // the support arm, behind the plate
+  // ---- legs: thick, with knee plates and a thigh pouch ----
+  const lg=[{cx:-4.5,sw:-Q.sw,lf:Q.liftB,pouch:0},{cx:4.5,sw:Q.sw,lf:Q.liftA,pouch:1}];
+  for(const g of lg){
+    const x=Math.round(g.cx+g.sw*.6-3.5),h=Math.max(5,11-g.lf);
+    blk(c,x,-17,7,h,2,under,{R:underR});
+    weave(c,x,-17,7,h,.08);
+    blk(c,x+1,-14,5,5,2,p,{R:pr}); R(c,x+1,-12,5,1,a); wear(c,x+1,-14,5,5,1);          // the knee plate
+    if(g.pouch){ blk(c,x+(MIR>0?4:-1),-17,4,5,1,pk); R(c,x+(MIR>0?4:-1),-15,4,1,ramp(pk).hi); R(c,x+(MIR>0?5:0),-13,1,1,'#b8b0a0'); }
+    blk(c,x-1,-7-g.lf,9,7,2,boot);                                   // boot
+    blk(c,x-1+(MIR>0?4:0),-7-g.lf,5,4,2,p,{ol:0}); R(c,x-1,-1-g.lf,9,1,'#0a0808');   // the toe cap in paint, the sole
+    R(c,x-1,-7-g.lf,9,1,mix(a,'#000',.15));
+  }
+  // ---- upper body ----
+  c.save();c.translate(0,-B);
+  blk(c,-8,-31,16,15,3,under,{R:underR}); weave(c,-7,-30,14,13,.08);
+  R(c,-8,-18,16,2,INK); R(c,-7,-18,14,1,leath); stitchH(c,-7,-18,14,'#8a6a46'); blk(c,-1,-19,4,3,1,'#cfc6ae',{ol:0}); R(c,0,-18,2,1,'#3a3328');   // belt and a brass buckle
+  // chest plate by vest type
+  const vt=L.vest;
+  if(vt==='heavy'){
+    blk(c,-8,-31,16,13,3,p,{R:pr}); seam(c,0,-31,1,9,pr.dk); seam(c,-8,-26,16,1,pr.dk);
+    blk(c,-6,-29,5,4,1,mix(p,s,.4),{ol:0}); blk(c,2,-29,5,4,1,mix(p,s,.4),{ol:0}); R(c,-5,-28,3,1,a); R(c,3,-28,3,1,a);   // vents in the accent
+    R(c,-8,-21,16,2,a); wear(c,-8,-31,16,13,1.4);
+    blk(c,-5,-22,10,3,1,mix(p,s,.5),{ol:0});
+  } else if(vt==='band'){
+    blk(c,-7,-30,14,11,2,p,{R:pr}); seam(c,0,-30,1,8,pr.dk); wear(c,-7,-30,14,11,1.2);
+    limb(c,-8,-32,7,-19,3,leath);                                    // the bandolier
+    for(let i=0;i<6;i++){R(c,-6+i*2,-30+i*2,1,2,'#f2d27a');R(c,-5+i*2,-29+i*2,1,1,'#b88a3a');}
+    R(c,-7,-22,14,1,a); blk(c,-6,-21,5,3,1,pk,{ol:0}); blk(c,1,-21,5,3,1,pk,{ol:0});
+  } else {
+    blk(c,-7,-30,14,11,2,p,{R:pr}); seam(c,0,-30,1,8,pr.dk); R(c,-7,-23,14,2,a); wear(c,-7,-30,14,11,1.2);
+    blk(c,-6,-21,5,3,1,pk,{ol:0}); blk(c,1,-21,5,3,1,pk,{ol:0}); R(c,-5,-20,3,1,ramp(pk).hi); R(c,2,-20,3,1,ramp(pk).hi);
+    dots(c,'#e1e7ee',[-6,-29,5,-29]);
+  }
+  // harness straps over the plate
+  R(c,-5,-31,2,6,ramp(under).dk); R(c,3,-31,2,6,ramp(under).dk);
+  // shoulders: the pauldrons carry the silhouette
+  const pd=L.pads;
+  if(pd==='big'){
+    blk(c,-17,-37,12,12,5,p,{R:pr}); R(c,-16,-36,5,1,pr.hi); R(c,-17,-29,12,2,a); R(c,-15,-33,8,1,pr.dk); wear(c,-17,-37,12,12,1.6); dots(c,'#e1e7ee',[-15,-31,-8,-31]);
+    blk(c,4,-35,10,10,4,p,{R:pr}); R(c,5,-34,4,1,pr.hi); R(c,4,-28,10,2,a); wear(c,4,-35,10,10,1.4);
+  } else if(pd==='round'){
+    blk(c,-15,-35,10,9,4,p,{R:pr}); R(c,-14,-34,4,1,pr.hi); R(c,-15,-29,10,2,a); wear(c,-15,-35,10,9,1.4);
+    blk(c,5,-35,10,9,4,p,{R:pr}); R(c,6,-34,4,1,pr.hi); R(c,5,-29,10,2,a); wear(c,5,-35,10,9,1.4);
+  } else {
+    blk(c,-13,-34,8,7,3,p,{R:pr}); R(c,-12,-33,3,1,pr.hi); R(c,-13,-29,8,1,a); wear(c,-13,-34,8,7,1.2);
+    blk(c,5,-34,8,7,3,p,{R:pr}); R(c,6,-33,3,1,pr.hi); R(c,5,-29,8,1,a); wear(c,5,-34,8,7,1.2);
+  }
+  // neck gorget and head
+  blk(c,-5,-36,10,4,2,under,{R:underR});
+  gearHead(c,L,p,s,a,pr,under);
+  c.restore();
+  // ---- near arm, bracer, gloves, gun ----
+  const Nh={x:10,y:-29-B};
+  if(!Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,1,a);c.restore(); }
+  limb(c,Nh.x,Nh.y,O.x,O.y,5.4,under);
+  blk(c,Math.round((Nh.x+O.x)/2)-2,Math.round((Nh.y+O.y)/2)-2,5,5,2,p,{R:pr,ol:1}); R(c,Math.round((Nh.x+O.x)/2)-2,Math.round((Nh.y+O.y)/2)+1,5,1,a);
+  const gl=mix(s,'#463a30',.35);
+  blk(c,Math.round(O.x)-2,Math.round(O.y)-2,5,5,2,gl); blk(c,Math.round(H2.x)-2,Math.round(H2.y)-2,5,5,2,gl);
+  R(c,Math.round(O.x)-1,Math.round(O.y)-2,3,1,ramp(gl).hi);
+}
+function gearPack(c,L,B,p,s,a,pk){
+  const t=L.pack; c.save();c.translate(0,-B);
+  const pr=ramp(pk);
+  if(t==='fuel'){
+    const tc=mix(a,'#1a1c14',.55),tr=ramp(tc);
+    blk(c,-20,-39,8,22,4,tc,{R:tr}); R(c,-19,-38,2,17,tr.hi); R(c,-20,-33,8,1,'#101208'); R(c,-20,-26,8,1,'#101208');
+    blk(c,-13,-35,7,19,3,mix(tc,p,.25)); R(c,-12,-34,2,15,ramp(mix(tc,p,.25)).hi); R(c,-13,-29,7,1,'#101208');
+    blk(c,-18,-43,4,4,1,'#9aa0ad'); R(c,-17,-43,2,1,'#e1e7ee'); blk(c,-11,-39,3,4,1,'#9aa0ad');
+    limb(c,-14,-38,-6,-31,2,'#1a1c14'); wear(c,-20,-39,8,22,1.4);
+  } else if(t==='black'){
+    blk(c,-19,-37,15,22,3,mix(pk,'#101018',.3),{R:ramp(mix(pk,'#101018',.3))}); seam(c,-12,-37,1,22,'#0c0c12'); weave(c,-18,-36,13,20,.1);
+    blk(c,-20,-41,17,5,2.5,mix(p,'#1c1c20',.5)); R(c,-19,-40,15,1,ramp(mix(p,'#1c1c20',.5)).hi); R(c,-17,-41,1,5,'#0c0c12'); R(c,-9,-41,1,5,'#0c0c12');   // the bedroll
+    blk(c,-23,-32,4,10,1,pk); blk(c,-9,-26,5,9,1,pk); R(c,-8,-25,3,1,ramp(pk).hi);   // side pouches
+    R(c,-15,-33,1,2,'#cfc6ae'); R(c,-15,-22,1,2,'#cfc6ae'); R(c,-19,-18,15,1,a);
+    R(c,-17,-52,1,11,'#8b92a0'); R(c,-17,-53,1,1,a); R(c,-18,-46,3,1,'#8b92a0');     // the radio whip
+    wear(c,-19,-37,15,22,1.2);
+  } else {
+    blk(c,-19,-37,15,22,3,pk,{R:pr}); seam(c,-12,-37,1,22,pr.dk); weave(c,-18,-36,13,20,.09);
+    blk(c,-20,-41,17,5,2.5,'#6a5840'); R(c,-19,-40,15,1,'#9a8460'); R(c,-17,-41,1,5,'#3a2e20'); R(c,-9,-41,1,5,'#3a2e20');
+    blk(c,-23,-31,4,10,1,'#4a3c2c'); blk(c,-9,-27,5,9,1,'#4a3c2c');
+    R(c,-15,-34,1,2,'#cfc6ae'); R(c,-15,-22,1,2,'#cfc6ae'); R(c,-19,-18,15,1,a);
+    wear(c,-19,-37,15,22,1.1);
+  }
+  c.restore();
+}
+function gearHead(c,L,p,s,a,pr,under){
+  const hd=L.head, glow=a, glowD=mix(a,'#000',.45);
+  const skin=skinR(SKIN[L.skin]);
+  const lens=(x,y,w,h,r)=>{ c.fillStyle=INK;rrp(c,x-1,y-1,w+2,h+2,r+1);c.fill(); c.fillStyle=glowD;rrp(c,x,y,w,h,r);c.fill(); c.fillStyle=glow;rrp(c,x,y,w,Math.max(1,h-1),r);c.fill(); R(c,x+1,y+1,Math.max(1,w-5),1,'#fff'); R(c,x+w-3,y+h-2,2,1,mix(glow,'#fff',.55)); };
+  if(hd==='heavy'){
+    blk(c,-8,-50,16,14,5,p,{R:pr}); R(c,-6,-49,6,1,pr.hi); R(c,-8,-45,1,5,pr.hi); wear(c,-8,-50,16,14,1.5);
+    blk(c,-10,-44,3,8,1,under); blk(c,7,-44,3,8,1,under);              // cheek plates
+    R(c,-1,-50,2,6,a);                                                   // the crest stripe
+    lens(-7,-45,14,4,2); R(c,-1,-45,2,8,INK); R(c,-1,-44,2,7,glowD);    // T visor
+    blk(c,-5,-39,10,4,2,under); dots(c,'#8b92a0',[-3,-38,-1,-38,1,-38,3,-38]);   // the jaw guard with vents
+    R(c,-7,-53,1,4,'#8b92a0'); R(c,-7,-54,1,1,a); R(c,6,-52,1,3,'#8b92a0');      // aerials
+  } else if(hd==='tach'){
+    blk(c,-7,-48,14,12,5,p,{R:pr}); R(c,-5,-47,5,1,pr.hi); R(c,-1,-48,2,5,a); wear(c,-7,-48,14,12,1.5);
+    blk(c,-9,-43,3,7,1,under); blk(c,6,-43,3,7,1,under);
+    lens(-6,-43,12,4,2);
+    blk(c,-4,-39,8,4,2,mix(s,'#4a4a56',.2)); dots(c,'#8b92a0',[-2,-38,0,-38,2,-38]); R(c,-3,-37,6,1,INK);
+    R(c,5,-52,1,5,'#8b92a0'); R(c,5,-53,1,1,a);
+  } else if(hd==='beanie'){
+    const kn=mix(p,'#fff',.1),kr=ramp(kn);
+    blk(c,-7,-48,14,8,4,kn,{R:kr}); for(let x=-5;x<=5;x+=2) R(c,x,-47,1,5,kr.lo);
+    blk(c,-8,-42,16,3,1.5,mix(kn,a,.3)); R(c,-7,-41,14,1,a);
+    blk(c,-5,-39,10,5,2,skin.mid,{R:skin}); R(c,-5,-36,10,2,skin.lo);   // the lower face, under the goggles
+    blk(c,-6,-38,12,5,2,mix(s,'#4a4a56',.2));                        // the neck gaiter pulled over the nose
+    lens(-6,-43,5,5,2.5); lens(1,-43,5,5,2.5); R(c,-8,-42,16,1,'#1a1c22'); R(c,-1,-42,2,1,'#1a1c22');
+  } else { // cap
+    blk(c,-7,-48,14,6,3,p,{R:pr}); R(c,-5,-47,5,1,pr.hi); R(c,-1,-46,3,2,a);
+    blk(c,2,-44,9,2,1,mix(p,'#000',.3)); R(c,3,-44,7,1,ramp(mix(p,'#000',.3)).hi);
+    blk(c,-5,-39,10,5,2,skin.mid,{R:skin}); R(c,-5,-36,10,2,skin.lo);
+    blk(c,-6,-38,12,5,2,mix(a,'#000',.55));
+    lens(-7,-43,14,4,2);
+  }
+}
+/* ===== DIRECTION 3: BOLD STYLISED. Fortnite-like: chunky but a grown-up head and a V-shaped body, strong colour blocking (primary body, secondary
+   gear, accent punch), a thick 1.5 px ink, one hard cel shade and a one-pixel rim, exaggerated gear shapes, nothing finer than 2 px. ===== */
+function pRR(x,y,w,h,r){const p=new Path2D();p.roundRect(x,y,w,h,r);return p;}
+function pEll(cx,cy,rx,ry){const p=new Path2D();p.ellipse(cx,cy,rx,ry,0,0,6.2832);return p;}
+function pPoly(pts,r){const p=new Path2D(),n=pts.length;
+  for(let i=0;i<n;i++){const a=pts[(i+n-1)%n],b=pts[i],d=pts[(i+1)%n];const v1=[a[0]-b[0],a[1]-b[1]],v2=[d[0]-b[0],d[1]-b[1]];const l1=Math.hypot(v1[0],v1[1]),l2=Math.hypot(v2[0],v2[1]);
+    const t=Math.min(r,l1/2,l2/2),s1=[b[0]+v1[0]/l1*t,b[1]+v1[1]/l1*t],e1=[b[0]+v2[0]/l2*t,b[1]+v2[1]/l2*t];
+    if(i===0)p.moveTo(s1[0],s1[1]);else p.lineTo(s1[0],s1[1]);p.quadraticCurveTo(b[0],b[1],e1[0],e1[1]);}
+  p.closePath();return p;}
+function bramp(h){const l=lum(h),boost=l<.22?(.22-l)*1.8:0;return {hi:mix(h,'#fff6d6',Math.min(.75,.36+boost)),mid:h,lo:mix(h,'#0e0a28',.40)};}
+/* one bold shape: thick ink outside, a hard shade crescent on the bottom-right, a rim on the top-left */
+function bsh(c,path,col,o){
+  o=o||{};const ow=o.ow===undefined?1.5:o.ow,Rm=o.R||bramp(col),sh=o.sh===undefined?2:o.sh;
+  if(ow>0){c.lineJoin='round';c.strokeStyle=o.olc||INK;c.lineWidth=ow*2;c.stroke(path);}
+  c.save();c.clip(path);
+  c.fillStyle=Rm.lo;c.fill(path);
+  c.save();c.translate(-sh*MIR,-sh);c.fillStyle=Rm.mid;c.fill(path);c.restore();
+  if(o.rim!==0){const P=new Path2D();P.addPath(path);P.addPath(path,new DOMMatrix([1,0,0,1,1.3*MIR,1.3]));c.fillStyle=Rm.hi;c.fill(P,'evenodd');}
+  c.restore();
+}
+function bold(c,L,Q){
+  const S=L.sch,p=S.p,s=S.s,a=S.a,B=Q.bob;
+  const trs=mix(s,p,.38), boot=mix(s,'#2a2420',.1), skin=skinR(SKIN[L.skin]);
+  shadow(c,4,1,13,3.4,.45,true);
+  const O={x:4,y:-18-B},ca=Math.cos(Q.a),sa=Math.sin(Q.a),H2={x:O.x+ca*12-sa*1,y:O.y+sa*12+ca*1};
+  if(Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,2,a);c.restore(); }
+  boldPack(c,L,B,p,s,a);
+  limb(c,-8,-26-B,H2.x,H2.y,6,p,{ex:0,ey:-16-B,ol:1.5});
+  // ---- legs ----
+  const lg=[{cx:-3.5,sw:-Q.sw,lf:Q.liftB},{cx:3.5,sw:Q.sw,lf:Q.liftA}];
+  for(const g of lg){
+    const x=Math.round(g.cx+g.sw*.6-3.5),h=Math.max(5,10-g.lf);
+    bsh(c,pRR(x,-16,7,h,2.5),trs);
+    bsh(c,pRR(x-1,-7-g.lf,9,7,3),boot);
+    c.save();c.clip(pRR(x-1,-7-g.lf,9,7,3));R(c,x+(MIR>0?4:-1),-7-g.lf,6,7,a);c.restore();   // the toe cap is the accent
+    R(c,x-1,-1-g.lf,9,1,INK); R(c,x+(MIR>0?5:0),-6-g.lf,3,1,mix(a,'#fff',.6));
+  }
+  // ---- body ----
+  c.save();c.translate(0,-B);
+  const vt=L.vest, pd=L.pads;
+  bsh(c,pPoly([[-10,-31],[10,-31],[7.5,-15],[-7.5,-15]],3),p);               // V-shaped torso
+  if(vt==='heavy'){
+    bsh(c,pPoly([[-8,-31],[8,-31],[6.5,-18],[-6.5,-18]],2.5),mix('#9aa6b6',p,.35));
+    R(c,-5,-28,4,3,INK);R(c,1,-28,4,3,INK); R(c,-4,-27,2,1,a); R(c,2,-27,2,1,a); R(c,-1,-31,2,12,mix('#9aa6b6',p,.35)); R(c,-1,-22,2,3,a);
+  } else if(vt==='band'){
+    bsh(c,pPoly([[-10,-31],[-5,-31],[9,-17],[4.5,-15]],1.5),mix(s,'#6a4a30',.5),{ow:1});     // the sash
+    R(c,-6,-27,2,2,a);R(c,-2,-23,2,2,a);R(c,2,-19,2,2,a); R(c,-7,-30,2,1,mix(a,'#fff',.6));
+  } else {
+    bsh(c,pRR(-6.5,-30,13,10,3),s,{ow:1.2});                                   // the chest plate
+    c.fillStyle=a;c.beginPath();c.moveTo(-3.5,-27);c.lineTo(0,-24);c.lineTo(3.5,-27);c.lineTo(3.5,-24.6);c.lineTo(0,-21.6);c.lineTo(-3.5,-24.6);c.closePath();c.fill();   // the chevron emblem
+  }
+  // belt
+  bsh(c,pRR(-8,-18,16,4,1.5),s,{ow:1.2}); R(c,-2,-18,5,4,INK); R(c,-1,-17,3,2,a); R(c,-1,-17,1,1,mix(a,'#fff',.7));   // a big buckle
+  // shoulders
+  if(pd==='big'){
+    bsh(c,pPoly([[-18,-31],[-9,-35],[-5,-27],[-8,-22],[-17,-24]],3),s); R(c,-16,-26,9,2,a);
+    c.fillStyle=a;for(let i=0;i<3;i++){c.beginPath();c.moveTo(-17+i*4,-32+i*1);c.lineTo(-15+i*4,-38+i*1);c.lineTo(-13+i*4,-33+i*1);c.closePath();c.fill();}   // three spikes
+    bsh(c,pEll(9,-28,5.5,4.5),s); R(c,5,-27,9,1,a);
+  } else if(pd==='round'){
+    bsh(c,pEll(-10,-28,6,5),s); bsh(c,pEll(10,-28,6,5),s); R(c,-14,-27,8,2,a); R(c,6,-27,8,2,a);
+    R(c,-12,-31,3,1,mix(a,'#fff',.7));R(c,8,-31,3,1,mix(a,'#fff',.7));
+  } else {
+    bsh(c,pEll(-9,-28,4.6,4),p); bsh(c,pEll(9,-28,4.6,4),p);
+  }
+  // head and headgear
+  boldHead(c,L,Q,p,s,a,skin);
+  c.restore();
+  // ---- near arm, fist, gun ----
+  const Nh={x:9,y:-27-B};
+  if(!Q.up){ c.save();c.translate(O.x,O.y);c.rotate(Q.a);gunDraw(c,2,a);c.restore(); }
+  limb(c,Nh.x,Nh.y,O.x,O.y,6.4,p,{ol:1.5});
+  const cx=Math.round((Nh.x*.35+O.x*.65));
+  R(c,cx-3,Math.round((Nh.y*.35+O.y*.65))-1,4,3,a);                              // the accent cuff
+  bsh(c,pRR(O.x-3.5,O.y-3,7,6,2.5),s); bsh(c,pRR(H2.x-3.5,H2.y-3,7,6,2.5),s);
+}
+function boldPack(c,L,B,p,s,a){
+  const t=L.pack;c.save();c.translate(0,-B);
+  if(t==='fuel'){
+    const tc=mix(a,'#222',.35);
+    bsh(c,pRR(-21,-38,8,22,4),tc); bsh(c,pRR(-14,-34,8,19,4),mix(tc,p,.3));
+    R(c,-19,-40,4,3,'#cfd5de'); R(c,-12,-36,3,3,'#cfd5de'); R(c,-21,-30,8,2,INK); R(c,-14,-26,8,2,INK);
+    R(c,-6,-30,2,6,s);
+  } else if(t==='black'){
+    bsh(c,pRR(-20,-36,15,21,5),s); bsh(c,pRR(-21,-41,17,6,3),mix(p,'#fff',.14)); R(c,-19,-30,13,3,a); R(c,-14,-28,3,5,INK); R(c,-13,-27,1,3,mix(a,'#fff',.6));
+    R(c,-17,-52,2,11,INK); R(c,-16,-51,1,10,'#9aa0ad'); R(c,-17,-53,2,2,a);
+  } else {
+    bsh(c,pRR(-20,-36,15,21,5),s); bsh(c,pRR(-21,-41,17,6,3),mix(p,'#fff',.14)); R(c,-19,-30,13,3,a); R(c,-14,-28,3,5,INK); R(c,-13,-27,1,3,mix(a,'#fff',.6));
+  }
+  c.restore();
+}
+function boldHead(c,L,Q,p,s,a,skin){
+  const hd=L.head, hair=ramp(HAIR[L.hair]);
+  const eye=(x,y)=>{ R(c,x,y,4,4,'#fff'); R(c,x+(MIR>0?2:0),y+1,2,3,INK); R(c,x+(MIR>0?3:0),y+1,1,1,'#fff'); };
+  const glass=(x,y,w,h,r)=>{ bsh(c,pRR(x,y,w,h,r),a,{ow:1.3}); R(c,x+1,y+1,Math.max(1,w-5),1,'#fff'); R(c,x+w-3,y+h-2,2,1,mix(a,'#fff',.6)); };
+  if(hd==='heavy'){
+    const hc=mix('#aab4c4',p,.28);
+    bsh(c,pRR(-9,-47,18,18,6),hc);                                           // a full helm
+    bsh(c,pRR(-8,-40,16,6,3),mix(a,'#000',.55),{ow:1.3}); R(c,-7,-39,14,3,a); R(c,-6,-39,5,1,'#fff');   // one wide glowing slit
+    R(c,-1,-47,2,7,INK);                                                      // seam
+    bsh(c,pPoly([[-2,-52],[3,-52],[5,-46],[-5,-46]],1),a,{ow:1.2});         // the crest fin
+    R(c,-5,-33,10,2,INK); R(c,-4,-32,2,1,'#e6ebf2');R(c,0,-32,2,1,'#e6ebf2');R(c,4,-32,1,1,'#e6ebf2');
+    return;
+  }
+  // head: a jaw you could land a punch on
+  bsh(c,pPoly([[-8,-45],[8,-45],[8.5,-34],[6,-29.5],[-6,-29.5],[-8.5,-34]],3.5),SKIN[L.skin],{R:skin});
+  R(c,-9,-38,2,4,skin.lo);                                                    // far ear
+  // determined eyes
+  eye(-2,-37); eye(4,-37);
+  c.strokeStyle=INK;c.lineWidth=1.7;c.lineCap='round';c.beginPath();c.moveTo(-3.2,-39.5);c.lineTo(1.6,-38.3);c.moveTo(3.2,-38.3);c.lineTo(8,-39.6);c.stroke();   // brows, angled in
+  R(c,2,-32,4,1,INK); R(c,6,-33,1,1,INK);                                    // a smirk
+  R(c,8,-35,2,2,skin.lo);
+  if(hd==='tach'){
+    bsh(c,pRR(-9,-50,18,9,5),p);                                              // the helmet in the primary
+    R(c,-9,-45,18,2,a); R(c,-3,-50,3,5,a); R(c,-8,-46,2,2,INK);R(c,6,-46,2,2,INK);
+    bsh(c,pRR(-10,-41,4,8,1.5),s,{ow:1.2}); bsh(c,pRR(6,-41,4,8,1.5),s,{ow:1.2});   // ear pro
+    glass(-7,-40,15,5,2.5);
+  } else if(hd==='beanie'){
+    const kn=mix(p,'#fff',.12);
+    bsh(c,pRR(-9,-50,18,11,6),kn); bsh(c,pRR(-10,-42,20,4,2),a,{ow:1.3}); R(c,-9,-41,18,1,mix(a,'#fff',.6));
+    bsh(c,pEll(0,-52,3.6,3.6),a,{ow:1.3});                                     // a big pom
+    R(c,-9,-41,2,5,hair.mid);R(c,7,-41,2,6,hair.mid);
+  } else {
+    bsh(c,pRR(-8,-49,16,8,4),p);                                               // cap
+    bsh(c,pPoly([[1,-42],[11,-42],[12,-40],[1,-40]],1),mix(p,'#000',.3),{ow:1.3});
+    R(c,-2,-47,4,3,a);
+    glass(-7,-40,15,4,2);                                                       // shades
+    R(c,-9,-41,2,6,hair.mid);
+  }
+}
 /* ===== PAGE: layout, ground patches, the four looks, the poses ===== */
 const SCH={
   crimson:{p:'#a02a36',s:'#201618',a:'#ff7e6e'},
@@ -318,14 +586,14 @@ function build(){
     // (a) raid zoom on the ground, (b) the same at 4x
     const rowAB=el('div','rowab',null,col);
     const boxA=el('div','box',null,rowAB); el('div','lab','A  RAID ZOOM  1x  (4 LOOKS ON DUST, GRASS, NIGHT FLOOR)',boxA);
-    const ca=cv(330,128,boxA); const c=ca.getContext('2d');
-    ground(c,330,128,'day',11+di); c.save();c.beginPath();c.rect(214,0,116,128);c.clip();ground(c,330,128,'night',31+di);c.restore();
-    c.fillStyle='rgba(0,0,0,.25)';c.fillRect(213,0,1,128);
-    const pl=[[0,'aim',44],[1,'walkA',112],[2,'aimUp',181],[3,'walkB',262]];
-    pl.forEach(q=>{drawFig(c,D.fn,q[2],104,LOOKS[q[0]],POSES[q[1]],1);});
+    const ca=cv(312,214,boxA); const c=ca.getContext('2d');
+    ground(c,312,214,'day',11+di); c.save();c.beginPath();c.rect(200,0,112,214);c.clip();ground(c,312,214,'night',31+di);c.restore();
+    c.fillStyle='rgba(0,0,0,.25)';c.fillRect(199,0,1,214);
+    const pl=[[0,"aim",42,92],[1,"walkA",104,92],[2,"aimUp",170,92],[3,"walkB",246,92],[0,"walkA",42,190],[1,"aim",104,190],[2,"walkB",170,190],[3,"aim",246,190]];
+    pl.forEach(q=>{drawFig(c,D.fn,q[2],q[3],LOOKS[q[0]],POSES[q[1]],1);});
     const boxB=el('div','box',null,rowAB); el('div','lab','B  THE SAME AT 4x',boxB);
-    const cb=cv(250,214,boxB); const c2=cb.getContext('2d');ground(c2,250,214,'day',44+di);
-    drawFig(c2,D.fn,100,196,LOOKS[0],POSES.aim,4);
+    const cb=cv(232,214,boxB); const c2=cb.getContext('2d');ground(c2,232,214,'day',44+di);
+    drawFig(c2,D.fn,92,196,LOOKS[0],POSES.aim,4);
     // (c) four looks
     const boxC=el('div','box wide',null,col); el('div','lab','C  FOUR LOOKS  (TWO OUTFIT SETS, TWO COLOUR SCHEMES)  3x',boxC);
     const rc=el('div','strip',null,boxC);
@@ -338,5 +606,9 @@ function build(){
 }
 DIRS.push({title:'REFINED CHIBI',tag:'today\'s proportions, a big quality jump',fn:chibi,
  note:'bake each look once to an offscreen sprite, one per facing (right plus mirrored left) and per walk phase (6 frames), so the 20-odd blk() calls per body run only on a look change; the frame cost stays one drawImage. cosm1 scheme colours feed ramp(); cosm3 head and cosm5 pack/boots layers are the same slots, redrawn with the shading ramps; cosm4 vest and pads draw over the torso exactly as now.'});
+DIRS.push({title:'GEAR-HEAVY RAIDER',tag:'ARC Raiders proportions: small head, broad shoulders, the pack and plates are the silhouette',fn:gear,
+ note:'a new rig, ~46 px tall (today 34-42) and 26 px across the pauldrons, so nameplate, off-screen marker and aim-ring anchors lift ~6 px; hitbox stays. Bake three sprites per facing (body+legs x 6 walk frames, pack, helmet; the last two are static) and drawImage them in order, gun and arms stay live. cosm1 scheme: primary = armour paint, secondary = under-layer and pack, accent = lens glow and stripes; cosm3 = visor shells, cosm4 = chest plates, cosm5 = the big back mass. wear() is baked in once. Most art work: 4 helmets, 3 packs, 3 plates, 3 pauldron sets.'});
+DIRS.push({title:'BOLD STYLISED',tag:'Fortnite-like: chunky shapes, hard colour blocks, thick outline, reads at a glance',fn:bold,
+ note:'cheapest to draw and the clearest from above. Each part is one Path2D shape with a 1.5 px ink and a hard-shade crescent (no texture, no ramps), ~35 fills live; baked it is one drawImage per body per facing. The thicker contour (1.5 px against the world\'s 1 px) is set on bodies only, which also lifts the player off the ground at 4K. cosm1 gives the three flat blocks directly; cosm3 hats, cosm4 vests and pads, cosm5 packs become exaggerated shape sets with an emblem per set. The crowd and pillagers reuse the same rig with a colour swap.'});
 build();
 </script></body></html>

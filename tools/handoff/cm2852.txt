@@ -1,0 +1,7 @@
+v28.52: a roll no longer holds up the gun you are drawing
+
+Rolling while you draw a gun no longer makes the draw take longer.
+
+Check 28.52. Fails on v28.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

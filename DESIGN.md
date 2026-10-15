@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.52 - A ROLL NO LONGER HOLDS UP THE GUN YOU ARE DRAWING
+
+Co-op hunt while he was away. The draw clock did not run during a roll, so a roll straight after a swap froze it for the whole 0.38 s of the roll, while the reload already keeps going through a roll (v13.83). Proven in the cloud with the real keys: swap to the Longshot and it is ready after about 0.85 s; swap and roll at once and it was ready after about 1.26 s. The draw clock now runs in the roll branch beside the reload, once a frame either way, so the gun is drawn on time through a roll.
+
+MEASURED. Check 28.52 passes, and fails on v28.51.
 ## v28.51 - NO CLOSE CALL ON THE FLOOR
 
 Co-op hunt while he was away. A crawler hanging on him bites through a roll, so it can put him down in the middle of one. The roll then stayed frozen while he was down and every revive handed it back: a round that reached him on the floor paid CLOSE CALL (25 and the roll stamina), a round right after he got up paid again, and he slid on with the old roll. Proven in the cloud: rolled, downed by a crawler bite, one round on the floor paid 25, got up, one more round paid 25. Going down now ends the roll, and a man who is down or dying gets no CLOSE CALL. A roll on his feet pays exactly as before.
