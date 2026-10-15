@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.29';
+var VER='27.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20769,6 +20769,62 @@ function affixMend(e){
   e.mendFx=(n>0)?0.4:0;
   return n;
 }
+// v26.xx (aip1), HIS ANSWER (2026-10-14 night playtest): "tint and/or outline" for the elites, and "all the new features need to be integrated
+// and polished up to a AAA level like the previous stuff". An elite machine wore a glow and two rings on the ground and a badge over its
+// head, which the nameplate covered; the body itself looked like any other. Now the BODY carries it: the machine is drawn into a
+// scratch canvas (same scale, same pixel grid, shadow still on the ground), a clean outline in its colour is stamped round the silhouette
+// (a crisp inner line and a soft outer one that breathes), a faint tint of the colour is laid over the body only, and the two go back
+// to the world canvas under and over the unchanged sprite. The ground ring is one thin ring now. Cosmetic code: it draws no random
+// number, and a machine that is not an elite is drawn exactly as before.
+var RIM={ca:null,cb:null,xa:null,xb:null,on:0,h:null,n:0};
+function rimOpen(e,col){
+  var T, cx, cy, hw, up, dn, sx, sy, w, h, h1, k;
+  if(!e||!col||RIM.on||typeof wc==='undefined'||!wc||!wc.getTransform||(typeof G!=='undefined'&&G&&G.sim)) return null;
+  try{
+    T=wc.getTransform();
+    if(!(T.a>0)||!(T.d>0)||T.b||T.c||!isFinite(e.x)||!isFinite(e.y)) return null;
+    cx=T.a*e.x+T.e; cy=T.d*e.y+T.f;
+    hw=(e.r*1.9+20)*T.a; up=(spriteTop(e)+34)*T.d; dn=(e.r*0.9+12)*T.d;
+    sx=Math.floor(cx-hw)-4; sy=Math.floor(cy-up)-4; w=Math.ceil(hw*2)+8; h=Math.ceil(up+dn)+8;
+    if(w<8||h<8||w>1400||h>1400) return null;
+    if(!RIM.ca){ RIM.ca=document.createElement('canvas'); RIM.cb=document.createElement('canvas'); RIM.xa=RIM.ca.getContext('2d'); RIM.xb=RIM.cb.getContext('2d'); }
+    if(!RIM.xa||!RIM.xb) return null;
+    if(RIM.ca.width<w){ RIM.ca.width=w; RIM.cb.width=w; }
+    if(RIM.ca.height<h){ RIM.ca.height=h; RIM.cb.height=h; }
+    RIM.xa.setTransform(1,0,0,1,0,0); RIM.xa.globalAlpha=1; RIM.xa.globalCompositeOperation='source-over'; RIM.xa.clearRect(0,0,w,h);
+    RIM.xa.setTransform(T.a,0,0,T.d,T.e-sx,T.f-sy);
+    h1={w0:wc,sh0:shadowE,col:col,sx:sx,sy:sy,w:w,h:h,u:T.a,e:e};
+    RIM.on=1; RIM.h=h1;
+    shadowE=function(x,y,rx,ry,a){ var w1=wc; wc=h1.w0; try{ h1.sh0(x,y,rx,ry,a); } finally{ wc=w1; } };   // the ground shadow stays on the world canvas, out of the outline
+    wc=RIM.xa;
+    return h1;
+  }catch(_ro){ rimAbort(); return null; }
+}
+function rimAbort(){
+  var h=RIM.h;
+  if(h){ wc=h.w0; shadowE=h.sh0; }
+  RIM.on=0; RIM.h=null;
+}
+function rimClose(h){
+  var k, d, dx, dy, m, pu, xa=RIM.xa, xb=RIM.xb;
+  if(!h) return;
+  wc=h.w0; shadowE=h.sh0; RIM.on=0; RIM.h=null;
+  try{
+    pu=0.5+0.5*Math.sin(((typeof G!=='undefined'&&G)?(G.t||0):0)*3.2+h.e.x*0.02);
+    xa.setTransform(1,0,0,1,0,0); xa.globalCompositeOperation='source-atop'; xa.fillStyle=hexA(h.col,0.12+0.05*pu); xa.fillRect(0,0,h.w,h.h); xa.globalCompositeOperation='source-over';
+    wc.save(); wc.setTransform(1,0,0,1,0,0);
+    for(m=0;m<2;m++){
+      d=m?Math.max(1,Math.round(h.u*0.55)):Math.max(2,Math.round(h.u*1.3));
+      xb.setTransform(1,0,0,1,0,0); xb.globalCompositeOperation='source-over'; xb.clearRect(0,0,h.w,h.h);
+      for(k=0;k<8;k++){ dx=Math.round(Math.cos(k*0.7854)*d); dy=Math.round(Math.sin(k*0.7854)*d); xb.drawImage(RIM.ca,0,0,h.w,h.h,dx,dy,h.w,h.h); }
+      xb.globalCompositeOperation='source-in'; xb.fillStyle=hexA(h.col,m?(0.86+0.14*pu):(0.26+0.12*pu)); xb.fillRect(0,0,h.w,h.h); xb.globalCompositeOperation='source-over';
+      wc.drawImage(RIM.cb,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h);
+    }
+    wc.drawImage(RIM.ca,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h);
+    wc.restore();
+    RIM.n++;
+  }catch(_rc){ try{ wc.restore(); }catch(_r2){} }
+}
 function drawAffixMark(e){
   var A=AFFIX[e.affix], t=(typeof G!=='undefined'&&G)?(G.t||0):0, pu, r=e.r, x=e.x, y=e.y, gr;
   if(!A||!isFinite(x)||!isFinite(y)||!(r>0)) return;
@@ -20776,10 +20832,10 @@ function drawAffixMark(e){
   wc.save();
   try{
     wc.globalCompositeOperation='lighter';
-    gr=wc.createRadialGradient(x,y,r*0.3,x,y,r*2.2); gr.addColorStop(0,hexA(A.c,0.34*pu)); gr.addColorStop(1,hexA(A.c,0));
-    wc.fillStyle=gr; wc.beginPath(); wc.ellipse(x,y+2,r*2.2,r*1.15,0,0,6.2832); wc.fill();
-    wc.strokeStyle=hexA(A.c,0.55+0.35*pu); wc.lineWidth=3; wc.beginPath(); wc.ellipse(x,y+2,r*1.45,r*0.72,0,0,6.2832); wc.stroke();
-    wc.lineWidth=1.5; wc.beginPath(); wc.ellipse(x,y+2,r*1.85,r*0.93,0,0,6.2832); wc.stroke();
+    gr=wc.createRadialGradient(x,y,r*0.3,x,y,r*1.9); gr.addColorStop(0,hexA(A.c,0.15*pu)); gr.addColorStop(1,hexA(A.c,0));
+    wc.fillStyle=gr; wc.beginPath(); wc.ellipse(x,y+2,r*1.9,r*1.0,0,0,6.2832); wc.fill();
+    wc.strokeStyle=hexA(A.c,0.42+0.22*pu); wc.lineWidth=1.6; wc.beginPath(); wc.ellipse(x,y+2,r*1.32,r*0.66,0,0,6.2832); wc.stroke();
+    wc.strokeStyle=hexA(A.c,0.16); wc.lineWidth=1; wc.beginPath(); wc.ellipse(x,y+2,r*1.62,r*0.81,0,0,6.2832); wc.stroke();
     if(e.affix==='mend'){ wc.strokeStyle=hexA(A.c,0.16); wc.lineWidth=1; wc.beginPath(); wc.ellipse(x,y+2,AFFIX_MEND_R,AFFIX_MEND_R*0.6,0,0,6.2832); wc.stroke(); }
   }catch(_am){}
   wc.restore();
@@ -33939,6 +33995,8 @@ var SHD=G.shells[i];
         wc.beginPath(); wc.ellipse(e2.x,e2.y+2,e2.r*1.2,Math.max(3,e2.r*0.5),0,0,6.2832); wc.stroke();
         wc.restore();
       }
+      var _rm=null;
+      if(e2.elite&&e2.affix&&AFFIX[e2.affix]) _rm=rimOpen(e2,AFFIX[e2.affix].c);   // v26.xx (aip1): the elite outline
       if(e2.kind==='choir') drawChoirS(e2);
       else if(e2.kind==='warden') drawWardenAt(e2);   // v17.49: the boss is drawn to its size
       else if(e2.kind==='sentry') drawSentryS(e2);
@@ -33991,6 +34049,7 @@ var SHD=G.shells[i];
            // default look. It is passed through now, with the build he rolled.
            hair:e2.hair,cut:e2.cut,hat:e2.hat,skin:e2.skin,beard:e2.beard,eyes:e2.eyes,faceMark:e2.faceMark,boots:e2.boots,
            gloves:e2.gloves,pack:e2.pack,patch:e2.patch,tattoo:e2.tattoo,build:e2.build}),drawRoleMark(e2);   // v26.xx (ai21): his role mark on top of the body
+      rimClose(_rm);   // v26.xx (aip1)
 
       // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
       // secret is not a tactic. Drawn on top of the body, pulsing, in their own
@@ -34020,6 +34079,7 @@ var SHD=G.shells[i];
       if(eLift>0) wc.restore();
     }
     }catch(drErr){
+      try{ rimAbort(); }catch(_ra){}   // v26.xx (aip1): the world canvas first, whatever the body left
       // A throw part way through one item can skip the wc.restore() that pairs
       // with a deck lift, and then EVERY entity drawn after it in that frame is
       // shifted by that deck's height. The armour was only ever meant to lose
@@ -44673,7 +44733,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.29: The press E prompts over crates, doors and bodies are now 60 percent of their old size. Check 27.29 fails on v27.28',
+  now:'v27.30: Elite machines now wear a clean coloured outline and a faint tint, and one thin ring on the ground. Check 27.30 fails on v27.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

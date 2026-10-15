@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.30 - ELITE MACHINES GET AN OUTLINE
+
+Co-op hunt while he was away. His playtest answer on the elites was tint and/or outline. An elite machine now wears a clean outline in its colour (cyan shielded, orange volatile, yellow fast, green mender) with a faint tint over the body, so it reads as special at a glance. The two heavy rings and the glow on the ground are one thin ring now.
+
+MEASURED. Check 27.30 passes, and fails on v27.29.
 ## v27.29 - THE PROMPTS ARE 60 PERCENT SIZE
 
 Co-op hunt while he was away. His note of 2026-10-14: the press E to loot text is way too big. Every prompt in the world (the keycap and its words over a crate, a door, a body, the seal, an extraction ring) now draws at 60 percent of its old size: the plate, the keycap, the words and the second line shrink together about their own place, so the prompt stays where it was. It still grows with the screen like the rest of the HUD, so at 4K it is just as legible.
