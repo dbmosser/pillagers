@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pillagers HUD Layout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0c0d; --panel:#16191b; --raised:#1e2225; --line:#2e3337; --line-hi:#4a5257;
+  --tx:#efe9dc; --dim:#aaa498; --faint:#7a766e; --acc:#f5b73b; --danger:#e5482f; --ok:#76b97c; --teal:#47d8c6; --ally:#9cc7ff; --gold:#ffc72e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx)}
+body{font:15px/1.45 "Barlow","Segoe UI",system-ui,sans-serif;padding:0 16px 48px;overflow-x:hidden}
+.wrap{max-width:1600px;margin:0 auto}
+h1{font:800 30px/1.05 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.02em;text-transform:uppercase;margin:22px 0 4px;color:var(--acc)}
+.sub{color:var(--dim);margin:0 0 14px;max-width:1100px}
+.bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
+.bar button{font:700 14px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--tx);background:var(--raised);border:1px solid var(--line);border-radius:3px;padding:8px 11px;cursor:pointer}
+.bar button[aria-pressed="true"]{background:var(--acc);color:#1a1205;border-color:var(--acc)}
+.bar label{font:600 13px "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);display:flex;gap:6px;align-items:center;margin-left:8px}
+.status{font:600 14px "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;text-transform:uppercase;margin:4px 0 10px}
+.status .ok{color:var(--ok)} .status .bad{color:var(--danger)}
+.stage{background:#000;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.stage svg{display:block;width:100%;height:auto}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;white-space:nowrap}
+th{font:700 13px "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+td.num,th.num{font-variant-numeric:tabular-nums;text-align:right}
+td .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.tblwrap{overflow-x:auto}
+.note{color:var(--dim);font-size:14px;max-width:1100px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Pillagers HUD: target layout</h1>
+<p class="sub">From <b>hud-spec-2026-10-15.md</b>. Every rectangle comes from the spec's solver (Appendix A), run live in this page. Pick a case: the zones are re-solved for that screen and checked, and no two zones may touch. Dashed zones show only while something is up in them. The mock content uses the game's real strings.</p>
+<div class="bar" id="presets"></div>
+<div class="bar">
+  <label><input type="checkbox" id="optContent" checked> mock content</label>
+  <label><input type="checkbox" id="optZones" checked> zone outlines</label>
+</div>
+<div class="status" id="status"></div>
+<div class="stage" id="stage"></div>
+<div class="tblwrap"><table id="tbl"></table></div>
+<p class="note">Text steps at 1080p: S 18, M 24, L 32, D 48 (numerals and DOWN / YOU DIED only). At 4K, double them. Colours: red is danger, teal is extraction, blue is team, gold is reward, amber is objective and keycaps. Rarity colours appear on item names only. Not shown: world marks (prompts, loot labels, nameplates, ring badges), edge chevrons, the map and the backpack.</p>
+</div>
+<script>
+// ---------------------------------------------------------------- the solver (identical to the spec, Appendix A)
+function hudClamp(v,a,b){ return v<a?a:(v>b?b:v); }
+function hudLayout(W,H,o){
+  o=o||{};
+  var u=Math.min(W/1920,H/1080); if(H>=900) u=Math.max(u,1); u=hudClamp(u,0.67,2.2);
+  var tx=hudClamp(o.text||1,1,1.5), hs=hudClamp(o.hs||1,0.85,1.15);
+  var g=u*hs, k=u*hs*(1+(tx-1)*0.5), t=u*hs*tx, mmK=o.mm||1, mates=(o.mates===undefined)?1:o.mates;
+  var ix=o.tv?Math.round(W*0.05):Math.round(32*u), iy=o.tv?Math.round(H*0.05):Math.round(32*u);
+  var L=ix, R=W-ix, T=iy, B=H-iy, CX=W/2, Z=[], byId={};
+  function add(id,x,y,w,h,z){ var r={id:id,x:Math.round(x),y:Math.round(y),w:Math.round(w),h:Math.round(h),z:z}; Z.push(r); byId[id]=r; return r; }
+  function bot(r){ return r.y+r.h; }
+  function rgt(r){ return r.x+r.w; }
+  var VW=440*k, WW=400*k, m=16*g, gap=8*g, grp=8*g;
+  var halfRoom=Math.min(CX-(L+VW+m),(R-WW-m)-CX);
+  var slot=Math.min(80*g,(2*halfRoom-8*gap-2*grp)/9);
+  var narrow=slot<56*g, half=(R-L)/2-8*g;
+  if(narrow&&tx>1.25){ tx=1.25; k=u*hs*(1+(tx-1)*0.5); t=u*hs*tx; VW=440*k; WW=400*k; }
+  var belt, vit, wep, act, sta, med, mm, obj, card, feed, score, nav, alert, boss, life, squad, bw, aw, lw, n, fb, ft, sqH, cw, avail, objH, cardH, fw, medH;
+  medH=Math.max(64*g,44*t+8*g);
+  if(!narrow){
+    bw=9*slot+8*gap+2*grp;
+    belt=add('belt',CX-bw/2,B-(slot+8*g),bw,slot+8*g,3);
+    vit=add('vitals',L,B-96*g,VW,96*g,3);
+    wep=add('weapon',R-WW,B-184*Math.max(g,t*0.85),WW,184*Math.max(g,t*0.85),3);
+    aw=Math.min(800*k,2*halfRoom);
+    act=add('action',CX-aw/2,belt.y-8*g-72*t,aw,72*t,4);
+    sta=add('status',L,vit.y-8*g-36*t,VW,36*t,3);
+  } else {
+    slot=Math.min(80*g,((R-L)-8*gap-2*grp)/9);
+    bw=9*slot+8*gap+2*grp;
+    belt=add('belt',CX-bw/2,B-(slot+8*g),bw,slot+8*g,3);
+    vit=add('vitals',L,belt.y-8*g-96*g,Math.min(VW,half),96*g,3);
+    wep=add('weapon',R-Math.min(WW,half),belt.y-8*g-96*Math.max(g,t*0.85),Math.min(WW,half),96*Math.max(g,t*0.85),3);
+    aw=Math.min(800*k,R-L);
+    act=add('action',CX-aw/2,Math.min(vit.y,wep.y)-8*g-72*t,aw,72*t,4);
+    sta=add('status',L,act.y-8*g-36*t,Math.min(VW,half),36*t,3);
+  }
+  med=add('medals',L,sta.y-8*g-medH,sta.w,medH,4);
+  var mmS=(narrow?160:216)*g*mmK;
+  mm=add('minimap',R-mmS,T,mmS,mmS,3);
+  var scW=(narrow?240:320)*k, nvW=(narrow?280:400)*k;
+  score=add('score',CX-scW/2,T,scW,72*t,4);
+  nav=add('nav',CX-nvW/2,bot(score)+6*g,nvW,28*t,4);
+  sqH=28*t+56*t*mates; if(o.expand==='squad') sqH=Math.max(sqH,472*t);
+  squad=add('squad',L,T,Math.min(360*k,(CX-nvW/2-m)-L),sqH,3);
+  aw=Math.min(640*k,2*(mm.x-12*g-CX));
+  if(bot(squad)>bot(nav)+12*g) aw=Math.min(aw,2*(CX-rgt(squad)-12*g));
+  alert=add('alert',CX-aw/2,bot(nav)+12*g,aw,72*t,6);
+  boss=add('boss',CX-Math.min(520*k,aw)/2,bot(alert)+8*g,Math.min(520*k,aw),36*t,4);
+  cw=narrow?Math.min(320*k,half):320*k;
+  if(narrow){
+    obj=add('objectives',R-cw,Math.max(bot(mm),bot(boss))+8*g,cw,32*t,3);
+    card=add('card',R-cw,act.y-16*g-316*k,cw,316*k,4);
+  } else {
+    avail=(wep.y-16*g)-(bot(mm)+12*g);
+    objH=(o.expand==='obj')?520*t:260*t; cardH=316*k;
+    if(objH+12*g+cardH>avail){ cardH=Math.max(240*k,avail-objH-12*g); }
+    if(objH+12*g+cardH>avail){ objH=Math.max(120*t,avail-12*g-cardH); }
+    obj=add('objectives',R-cw,bot(mm)+12*g,cw,objH,3);
+    if(objH+12*g+cardH>avail) card=add('card',obj.x-16*g-cw,wep.y-16*g-cardH,cw,cardH,4);
+    else card=add('card',R-cw,wep.y-16*g-cardH,cw,cardH,4);
+  }
+  lw=Math.min(800*k,aw*1.25);
+  if(narrow) lw=Math.min(lw,(R-L)*0.36);
+  if(card.y<bot(boss)+12*g+120*t) lw=Math.min(lw,2*(card.x-16*g-CX));
+  life=add('life',CX-lw/2,Math.max(bot(boss)+12*g,narrow?bot(obj)+12*g:0,H*(narrow?0.26:0.28)),lw,120*t,7);
+  fw=Math.min(med.w,(life.x-16*g)-L);
+  function feedFit(){ fb=med.y-12*g; for(n=10;n>4;n--){ if(fb-(n*28*t+(n-1)*4*t)>=Math.max(bot(squad)+16*g,narrow?bot(boss)+12*g:0)) break; } return n; }
+  n=feedFit();
+  if(n<6&&mates>1){ squad.h=Math.round(28*t+56*t); n=feedFit(); }
+  if(n<4){ squad.h=Math.round(28*t); n=feedFit(); }
+  ft=fb-(n*28*t+(n-1)*4*t);
+  if(life.y+life.h<ft) fw=med.w;
+  feed=add('feed',L,ft,fw,fb-ft,4);
+  return {W:W,H:H,u:u,g:g,k:k,t:t,profile:narrow?'narrow':'wide',slot:Math.round(slot),feedN:n,inset:[ix,iy],zones:Z,byId:byId};
+}
+function hudOverlaps(Lo){
+  var Z=Lo.zones, out=[], i, j, a, b, gm=Math.round(4*Lo.u);
+  for(i=0;i<Z.length;i++){
+    a=Z[i];
+    if(a.x<0||a.y<0||a.x+a.w>Lo.W||a.y+a.h>Lo.H||a.w<=0||a.h<=0) out.push(a.id+' off screen');
+    for(j=i+1;j<Z.length;j++){
+      b=Z[j];
+      if(a.x<b.x+b.w+gm&&b.x<a.x+a.w+gm&&a.y<b.y+b.h+gm&&b.y<a.y+a.h+gm) out.push(a.id+' x '+b.id);
+    }
+  }
+  return out;
+}
+// ---------------------------------------------------------------- the mock (pure string building; ES3 so cscript can test it)
+var C={tx:'#efe9dc',dim:'#aaa498',danger:'#e5482f',acc:'#f5b73b',teal:'#47d8c6',ally:'#9cc7ff',gold:'#ffc72e',ok:'#76b97c',
+       common:'#9da3a8',uncommon:'#5fbf6a',rare:'#3f9de9',elite:'#a866e0',plate:'rgba(6,9,13,.78)',dplate:'rgba(40,8,6,.84)',ink:'#0b0d10'};
+var ZCOL={score:'#f5b73b',nav:'#47d8c6',alert:'#e5482f',boss:'#e5482f',squad:'#9cc7ff',minimap:'#8fa3b0',objectives:'#f5b73b',card:'#3f9de9',
+          life:'#e5482f',feed:'#efe9dc',medals:'#ffc72e',status:'#76b97c',vitals:'#76b97c',action:'#47d8c6',belt:'#aaa498',weapon:'#f5b73b'};
+var ZNAME={score:'SCORE / CLOCK',nav:'NAV',alert:'ALERT LANE',boss:'BOSS / OFFER',squad:'SQUAD',minimap:'MINIMAP',objectives:'OBJECTIVES',card:'CARD SLOT',
+           life:'LIFE BAND',feed:'FEED',medals:'MEDALS',status:'STATUS',vitals:'VITALS',action:'ACTION BAND',belt:'BELT',weapon:'WEAPON'};
+var TRANSIENT={alert:1,boss:1,card:1,life:1,action:1,medals:1};
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function r1(v){ return Math.round(v*10)/10; }
+function rect(x,y,w,h,fill,extra){ return '<rect x="'+r1(x)+'" y="'+r1(y)+'" width="'+r1(w)+'" height="'+r1(h)+'" fill="'+fill+'"'+(extra||'')+'/>'; }
+function txt(x,y,s,px,col,wt,anchor,extra){
+  var sk=(extra&&extra.indexOf('stroke-width')>=0)?'':(' stroke="'+C.ink+'" stroke-width="'+r1(px*0.11)+'" paint-order="stroke" stroke-linejoin="round"');   // the ink outline, unless the caller sets its own
+  return '<text x="'+r1(x)+'" y="'+r1(y)+'" font-size="'+r1(px)+'" font-weight="'+(wt||600)+'" fill="'+col+'"'+(anchor?' text-anchor="'+anchor+'"':'')+sk+(extra||'')+'>'+esc(s)+'</text>';
+}
+// spec rule: a line never wraps or spills; it gives way at its end with ... (Barlow Condensed caps average about 0.47 em a character)
+function fitText(s,px,maxW){ s=String(s); if(s.length*px*0.47<=maxW) return s; var n=Math.max(1,Math.floor(maxW/(px*0.47))-3); return s.slice(0,n)+'...'; }
+function hitAny(Lo,x,y,w,h){ var i, z; for(i=0;i<Lo.zones.length;i++){ z=Lo.zones[i]; if(x<z.x+z.w&&z.x<x+w&&y<z.y+z.h&&z.y<y+h) return true; } return false; }
+function plate(x,y,w,h,rail,fill,u){ return rect(x,y,w,h,fill||C.plate,' rx="'+r1(4*u)+'"')+(rail?rect(x,y+2*u,3*u,h-4*u,rail):''); }
+function panel(x,y,w,h,u){
+  var c=10*u;
+  return '<path d="M'+r1(x+c)+' '+r1(y)+'H'+r1(x+w)+'V'+r1(y+h)+'H'+r1(x)+'V'+r1(y+c)+'Z" fill="rgba(17,19,21,.88)" stroke="#4a5257" stroke-width="'+r1(u)+'"/>'+rect(x+c+4*u,y,36*u,2*u,C.acc);
+}
+function bar(x,y,w,h,f,col,bg){ return rect(x,y,w,h,bg||'rgba(255,255,255,.12)')+rect(x,y,w*f,h,col); }
+function emblem(cx,cy,s,kind,col,label,u){
+  var p='', i, a, r=s/2, pts=[];
+  if(kind==='hex'){ for(i=0;i<6;i++){ a=Math.PI/3*i+Math.PI/6; pts.push(r1(cx+r*Math.cos(a))+','+r1(cy+r*Math.sin(a))); } p='<polygon points="'+pts.join(' ')+'" fill="rgba(20,16,10,.92)" stroke="'+col+'" stroke-width="'+r1(3*u)+'"/>'; }
+  else if(kind==='dia'){ p='<polygon points="'+r1(cx)+','+r1(cy-r)+' '+r1(cx+r)+','+r1(cy)+' '+r1(cx)+','+r1(cy+r)+' '+r1(cx-r)+','+r1(cy)+'" fill="rgba(20,16,10,.92)" stroke="'+col+'" stroke-width="'+r1(3*u)+'"/>'; }
+  else { p='<circle cx="'+r1(cx)+'" cy="'+r1(cy)+'" r="'+r1(r)+'" fill="rgba(20,16,10,.92)" stroke="'+col+'" stroke-width="'+r1(3*u)+'"/>'; }
+  return p+txt(cx,cy+s*0.17,label,s*0.42,col,800,'middle');
+}
+function mockSVG(Lo,o){
+  o=o||{};
+  var W=Lo.W, H=Lo.H, u=Lo.u, t=Lo.t, Z=Lo.byId, S=18*t, M=24*t, LL=32*t, D=48*t, out=[], i, z, x, y, r, rows, kinds, n, ln, cx, cy;
+  out.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" font-family="Barlow Condensed, Arial Narrow, sans-serif" role="img" aria-label="HUD layout mock">');
+  // ground: a dull top-down field so plates read as they would in the game
+  out.push(rect(0,0,W,H,'#3b4232'));
+  out.push('<g opacity=".55">'+rect(W*0.08,H*0.12,W*0.3,H*0.5,'#4f5a3f')+rect(W*0.6,H*0.08,W*0.25,H*0.32,'#7a5a36')+rect(W*0.62,H*0.48,W*0.36,H*0.06,'#8d8270')+rect(W*0.62,H*0.62,W*0.36,H*0.06,'#8d8270')+rect(W*0.44,H*0.42,W*0.08,H*0.24,'#555a5e')+'</g>');
+  // the play space (reserved for the world)
+  if(Z.feed&&Z.objectives&&Lo.profile==='wide'){
+    x=Math.max(Z.feed.x+Z.feed.w,Z.vitals.x+Z.vitals.w)+8*u; y=Z.boss.y+Z.boss.h+8*u;
+    out.push(rect(x,y,Math.min(Z.card.x,Z.objectives.x,Z.weapon.x)-8*u-x,Z.action.y-8*u-y,'none',' stroke="#ffffff" stroke-opacity=".18" stroke-dasharray="'+r1(10*u)+' '+r1(8*u)+'" stroke-width="'+r1(2*u)+'"'));
+    out.push(txt(x+10*u,Z.action.y-18*u,'PLAY SPACE: WORLD MARKS, CURSOR AND LIFE BAND ONLY',S*0.9,'rgba(255,255,255,.45)',700));
+  }
+  // the character, a crate prompt and the cursor layer
+  cx=W/2; cy=H/2;
+  out.push('<circle cx="'+cx+'" cy="'+cy+'" r="'+r1(14*u)+'" fill="#d9c9a3" stroke="#000" stroke-width="'+r1(2*u)+'"/>');
+  if(o.content){
+    // spec 8: the prompt dodges every zone. The mock tries the crate right of the character, then left, then above; none free: no prompt.
+    var cand=[[cx+150*u,cy+90*u],[cx-150*u,cy+90*u],[cx,cy-110*u]], ci;
+    x=null; for(ci=0;ci<cand.length;ci++) if(!hitAny(Lo,cand[ci][0]-110*u,cand[ci][1]-26*u-M*1.5,220*u,M*1.5+52*u)){ x=cand[ci][0]; y=cand[ci][1]; break; }
+  }
+  if(o.content&&x!==null){
+    out.push(rect(x-16*u,y,32*u,26*u,'#8a6a3e',' stroke="#000" stroke-width="'+r1(u)+'"'));
+    out.push(plate(x-110*u,y-26*u-M*1.5,220*u,M*1.5,null,null,u));
+    out.push(rect(x-100*u,y-26*u-M*1.25,M*1.05,M,C.acc,' rx="'+r1(3*u)+'"')+txt(x-100*u+M*0.52,y-26*u-M*0.45,'E',M*0.8,'#1a1205',800,'middle',' stroke-width="0"'));
+    out.push(txt(x-100*u+M*1.3,y-26*u-M*0.42,'SEARCH CRATE',M,C.tx,700));
+  }
+  if(o.content){   // the cursor layer: reticle, combo ring, x3 and the +$ echo
+    x=cx+230*u; y=cy-80*u;
+    out.push('<g stroke="#e6f0f6" stroke-width="'+r1(2*u)+'" fill="none"><circle cx="'+x+'" cy="'+y+'" r="'+r1(16*u)+'"/><circle cx="'+x+'" cy="'+y+'" r="'+r1(29*u)+'" stroke="'+C.acc+'" stroke-dasharray="'+r1(120*u)+' '+r1(80*u)+'"/></g>');
+    out.push(txt(x+36*u,y+5*u,'x3',S,C.acc,800)+txt(x,y-44*u,'+$50',S,C.gold,800,'middle'));
+  }
+  for(i=0;i<Lo.zones.length;i++){
+    z=Lo.zones[i];
+    if(o.content){
+      if(z.id==='score'){
+        out.push(txt(z.x+z.w/2-D*1.5,z.y+D*0.86,'x3',M,C.acc,800,'end')+txt(z.x+z.w/2,z.y+D*0.86,'$12,450',D,C.tx,800,'middle'));
+        out.push(txt(z.x+z.w/2,z.y+z.h-4*u,'SCORE  9:59  YOU $8,100 · P2 $4,350',S*0.9,C.dim,600,'middle'));
+      } else if(z.id==='nav'){
+        out.push(txt(z.x+z.w/2,z.y+z.h*0.8,'EXTRACT B 141m ▸',S,C.teal,700,'middle'));
+      } else if(z.id==='alert'){
+        out.push(plate(z.x,z.y,z.w,z.h,C.danger,C.dplate,u));
+        out.push('<path d="M'+r1(z.x+28*u)+' '+r1(z.y+z.h*0.28)+'l'+r1(14*u)+' '+r1(24*u)+'h'+r1(-28*u)+'z" fill="none" stroke="'+C.danger+'" stroke-width="'+r1(2.5*u)+'"/>');
+        out.push(txt(z.x+z.w/2+14*u,z.y+LL*1.05,'CRIER REVEALED YOUR LOCATION',LL,C.danger,800,'middle'));
+        out.push(txt(z.x+z.w/2+14*u,z.y+z.h-10*t,'P1 THREAT · 3.5 S · ALSO A FEED LINE',S,C.tx,600,'middle'));
+      } else if(z.id==='boss'){
+        out.push(txt(z.x,z.y+S,'THE OVERSEER',S,C.acc,700)+txt(z.x+z.w,z.y+S,'74%',S,C.dim,600,'end')+bar(z.x,z.y+z.h-8*u,z.w,6*u,0.74,C.danger));
+      } else if(z.id==='squad'){
+        out.push(panel(z.x,z.y,z.w,z.h,u)+txt(z.x+12*u,z.y+S*1.2,fitText('PILLAGERS 8 · 0 OUT · 5 DEAD',S,z.w-24*u),S,C.tx,700));
+        for(n=0;n*56*t+28*t+8<z.h&&n<3;n++){
+          y=z.y+28*t+n*56*t;
+          out.push(txt(z.x+12*u,y+S*1.15,n?'PLAYER 3':'PLAYER 2',S,C.ally,700)+txt(z.x+z.w-12*u,y+S*1.15,n?'DOWN 12S':'',S,C.danger,700,'end'));
+          out.push(bar(z.x+12*u,y+S*1.5,z.w-24*u,6*u,n?0.18:0.82,n?C.danger:C.ok)+bar(z.x+12*u,y+S*1.5+9*u,z.w-24*u,3*u,0.6,'#7fa6c9'));
+        }
+      } else if(z.id==='minimap'){
+        out.push(panel(z.x,z.y,z.w,z.h,u)+rect(z.x+z.w*0.3,z.y+z.h*0.3,z.w*0.25,z.h*0.2,'#3a4048')+'<circle cx="'+r1(z.x+z.w*0.55)+'" cy="'+r1(z.y+z.h*0.6)+'" r="'+r1(5*u)+'" fill="'+C.acc+'"/>'+
+                 '<circle cx="'+r1(z.x+z.w*0.85)+'" cy="'+r1(z.y+z.h*0.2)+'" r="'+r1(7*u)+'" fill="none" stroke="'+C.teal+'" stroke-width="'+r1(2*u)+'"/>');
+      } else if(z.id==='objectives'){
+        out.push(panel(z.x,z.y,z.w,z.h,u));
+        if(z.h<S*2.4){ out.push(txt(z.x+12*u,z.y+z.h*0.72,'SEARCH 5 CRATES',S,C.tx,600)+txt(z.x+z.w-12*u,z.y+z.h*0.72,'4/5  +3',S,C.acc,700,'end')); rows=[]; }   // narrow: one tracked line
+        else rows=[['NOON · FOG · SIGHT -40%',C.dim,''],['SEARCH 5 CRATES','4/5',C.tx],['DESTROY 2 PILLAGERS','0/2',C.tx],['EXTRACT 1x DATA CORE','0/1',C.tx],['RUN GOALS',C.acc,''],['AIR STRIKE','+$300',C.tx],['10 KILLS 0/10','+$200',C.tx],['+4 MORE',C.dim,'']];
+        for(n=0;n<rows.length&&z.y+12*u+(n+1)*S*1.4<z.y+z.h;n++){
+          y=z.y+12*u+(n+1)*S*1.4;
+          if(rows[n][2]){ out.push(txt(z.x+12*u,y,rows[n][0],S,rows[n][2],600)+txt(z.x+z.w-12*u,y,rows[n][1],S,(rows[n][1].charAt(0)==='+')?C.gold:C.acc,700,'end')); }
+          else out.push(txt(z.x+12*u,y,rows[n][0],S,rows[n][1],700));
+        }
+      } else if(z.id==='card'){
+        out.push(panel(z.x,z.y,z.w,z.h,u)+txt(z.x+12*u,z.y+M*1.3,'RIOT SCATTERGUN',M,C.rare,800)+txt(z.x+z.w-12*u,z.y+M*1.3,'RARE',S,C.rare,700,'end'));
+        out.push(txt(z.x+12*u,z.y+M*1.3+S*1.5,'DOWNGRADE',S,C.danger,700)+txt(z.x+z.w-12*u,z.y+M*1.3+S*1.5,'VS AUTO RIFLE',S,C.dim,600,'end'));
+        rows=[['DMG','96','+73',C.ok],['RATE','92','-363',C.danger],['MAG','7','-18',C.danger],['RANGE','26M','-26',C.danger],['HANDLING','33','-35',C.danger],['SLOT 2','','',C.dim]];
+        for(n=0;n<rows.length&&z.y+M*1.3+S*1.5*(n+2)<z.y+z.h-6*u;n++){
+          y=z.y+M*1.3+S*1.5*(n+2);
+          out.push(txt(z.x+12*u,y,rows[n][0],S,C.dim,600)+txt(z.x+z.w*0.66,y,rows[n][1],S,C.tx,700,'end')+txt(z.x+z.w-12*u,y,rows[n][2],S,rows[n][3],700,'end'));
+        }
+      } else if(z.id==='life'){
+        out.push(txt(z.x+z.w/2,z.y+z.h*0.42,fitText('HOLD [E] TO EXTRACT',LL,z.w-16*u),LL,C.teal,800,'middle',' opacity=".55"'));
+        if(56*S*0.47<=z.w-16*u) out.push(txt(z.x+z.w/2,z.y+z.h*0.42+S*1.6,'SHOWS ONLY WHILE THE STATE HOLDS: DOWN, EXTRACT, YOU DIED',S,C.dim,600,'middle',' opacity=".8"'));
+        else out.push(txt(z.x+z.w/2,z.y+z.h*0.42+S*1.6,'STATE ONLY',S,C.dim,600,'middle',' opacity=".8"'));
+      } else if(z.id==='feed'){
+        kinds=[
+          ['▣','Component Kit','  x7 · SLOT 4',C.uncommon,1],['⚠','SIEGE INCOMING','',C.danger,1],['☰','CACHE MARKED',' · TEAMMATE PINGED A STRONGBOX',C.acc,1],
+          ['↑','EXTRACTION A OPEN','',C.teal,1],['☺','PLAYER 2 IS BACK UP','',C.ally,1],['★','BOTTOMLESS CLIP',' · 20 S',C.gold,1],
+          ['☠','YOU ▸ SENTRY K-98','  +$50',C.acc,0],['☠','PLAYER 2 ▸ CRAWLER','',C.ally,0],['☠','GREASETRAP ELIMINATED','',C.danger,0],['★','TRIPLE KILL','  +$150',C.gold,0]];
+        n=Lo.feedN; rows=kinds.slice(kinds.length-n);
+        for(ln=0;ln<rows.length;ln++){
+          y=z.y+ln*32*t; var bright=(ln>=rows.length-4), room=z.w-10*u-S*1.3-10*u, hd=fitText(rows[ln][1],S,room), dt=fitText(rows[ln][2],S,room-hd.length*S*0.47);   // spec 5: the headline gives way first
+          if(dt==='...'||dt.length<4) dt='';
+          if(bright) out.push(plate(z.x,y,Math.min(z.w,(hd.length+dt.length)*S*0.47+S*2.6),28*t,rows[ln][3],null,u));
+          out.push('<g opacity="'+(bright?1:0.35)+'">'+txt(z.x+10*u,y+28*t*0.7,rows[ln][0],S*0.95,rows[ln][3],700)+txt(z.x+10*u+S*1.3,y+28*t*0.7,hd,S,rows[ln][3],700)+
+                   (dt?txt(z.x+10*u+S*1.3+hd.length*S*0.47,y+28*t*0.7,dt,S,(dt.indexOf('$')>=0)?C.gold:C.dim,600):'')+'</g>');
+        }
+      } else if(z.id==='medals'){
+        r=Math.min(48*Lo.g,z.h-10*u);
+        out.push(emblem(z.x+r/2+4*u,z.y+z.h/2,r*1.08,'hex',C.danger,'x3',u)+emblem(z.x+r*1.5+12*u,z.y+z.h/2,r,'circle',C.gold,'★',u)+emblem(z.x+r*2.5+20*u,z.y+z.h/2,r,'dia',C.acc,'◆',u));
+        x=z.x+r*3+36*u;
+        out.push(txt(x,z.y+z.h/2-2*u,'TRIPLE KILL',S,C.gold,800)+txt(x,z.y+z.h/2+S,'+$150',S,C.gold,700));
+      } else if(z.id==='status'){
+        rows=[['HEALING 3S',C.ok],['STIM 12S',C.acc],['[F1] CONTROLS',C.dim]]; x=z.x;
+        for(n=0;n<rows.length;n++){ var cwid=rows[n][0].length*S*0.5+20*u; out.push(plate(x,z.y+2*u,cwid,z.h-4*u,rows[n][1],null,u)+txt(x+12*u,z.y+z.h*0.68,rows[n][0],S,rows[n][1],700)); x+=cwid+8*u; }
+      } else if(z.id==='vitals'){
+        out.push(txt(z.x,z.y+M,'●',M,C.dim,700)+bar(z.x+M*1.4,z.y+z.h*0.3,z.w-M*1.4-M*2.6,8*Lo.g,0.6,'#7fa6c9'));
+        out.push(bar(z.x+M*1.4,z.y+z.h*0.3+14*Lo.g,z.w-M*1.4-M*2.6,20*Lo.g,0.86,C.ok)+txt(z.x+z.w,z.y+z.h*0.3+M*1.05,'86',M,C.tx,800,'end'));
+        out.push(bar(z.x+M*1.4,z.y+z.h*0.3+40*Lo.g,z.w-M*1.4-M*2.6,3*Lo.g,0.55,C.acc));
+      } else if(z.id==='action'){
+        y=z.y+z.h*0.5-4*u;
+        out.push(txt(z.x+z.w/2,y-6*u,'EXTRACT A INBOUND 0:15',M,C.teal,800,'middle'));
+        out.push(plate(z.x+z.w/2-250*Lo.k,z.y+z.h*0.56,240*Lo.k,z.h*0.42,C.gold,null,u)+txt(z.x+z.w/2-238*Lo.k,z.y+z.h*0.9,'BOTTOMLESS CLIP  12S',S,C.gold,700));
+        out.push(plate(z.x+z.w/2+10*Lo.k,z.y+z.h*0.56,240*Lo.k,z.h*0.42,C.danger,null,u)+txt(z.x+z.w/2+22*Lo.k,z.y+z.h*0.9,'DOUBLE DAMAGE  8S',S,'#ff6b5a',700));
+      } else if(z.id==='belt'){
+        var sl=Lo.slot, gp=(z.w-9*sl)/10; x=z.x;   // 8 gaps between cells plus 2 group gaps (guns | throwables | heals)
+        for(n=0;n<9;n++){
+          out.push(rect(x,z.y+((n===2)?0:8*Lo.g),sl,sl,'rgba(17,19,21,.88)',' stroke="'+((n===2)?C.acc:'#4a5257')+'" stroke-width="'+r1((n===2?2:1)*Lo.g)+'" rx="'+r1(2*Lo.g)+'"'));
+          out.push(txt(x+6*Lo.g,z.y+((n===2)?0:8*Lo.g)+S,String(n+1),S*0.9,C.dim,700));
+          if(n>=1&&n<=4) out.push(bar(x+8*Lo.g,z.y+((n===2)?0:8*Lo.g)+sl-12*Lo.g,sl-16*Lo.g,4*Lo.g,(n===2)?0.42:0.9,(n===2)?C.acc:C.dim)+txt(x+sl-6*Lo.g,z.y+((n===2)?0:8*Lo.g)+sl-18*Lo.g,(n===2)?'60':'120',S*0.9,C.tx,700,'end'));
+          x+=sl+((n===4||n===6)?gp*2:gp);
+        }
+      } else if(z.id==='weapon'){
+        out.push(panel(z.x,z.y,z.w,z.h,u));
+        y=z.y+14*u;
+        out.push(rect(z.x+12*u,y,S*1.1,S*1.1,C.acc,' rx="'+r1(3*u)+'"')+txt(z.x+12*u+S*0.55,y+S*0.85,'G',S*0.8,'#1a1205',800,'middle',' stroke-width="0"')+txt(z.x+12*u+S*1.5,y+S*0.9,'AIR STRIKE',S,C.tx,700)+bar(z.x+z.w*0.52,y+S*0.35,z.w*0.3,6*u,0.6,C.acc)+txt(z.x+z.w-12*u,y+S*0.9,'60%',S,C.dim,700,'end'));
+        if(z.h>120*u){
+          out.push(txt(z.x+z.w-12*u,z.y+z.h*0.43,'AUTO RIFLE',M,C.tx,800,'end')+txt(z.x+12*u,z.y+z.h*0.43,'AUTO',S,C.dim,700));
+          out.push(txt(z.x+z.w-12*u-S*2.6,z.y+z.h*0.78,'25',D,C.tx,800,'end')+txt(z.x+z.w-12*u,z.y+z.h*0.78,'/ 60',S,C.dim,700,'end'));
+          out.push(txt(z.x+z.w-12*u,z.y+z.h-10*u,'[B] 2 ITEMS · $120',S,C.dim,700,'end'));
+        } else out.push(txt(z.x+z.w-12*u,z.y+z.h-12*u,'AUTO RIFLE  25 / 60',M,C.tx,800,'end'));
+      }
+    }
+    if(o.zones){
+      out.push(rect(z.x,z.y,z.w,z.h,'none',' stroke="'+ZCOL[z.id]+'" stroke-width="'+r1(2*u)+'"'+(TRANSIENT[z.id]?' stroke-dasharray="'+r1(9*u)+' '+r1(6*u)+'"':'')+' opacity=".95"'));
+      // the tag sits inside the zone's top right corner, so it never lands on a neighbour
+      var tg=ZNAME[z.id]+'  z'+z.z+'  '+z.w+'x'+z.h, tw=(tg.length*6.1+8)*u;
+      out.push(rect(z.x+z.w-tw,z.y,tw,14*u,ZCOL[z.id],' opacity=".9"'));
+      out.push('<text x="'+r1(z.x+z.w-tw+4*u)+'" y="'+r1(z.y+10.5*u)+'" font-size="'+r1(11*u)+'" font-weight="800" fill="#0b0c0d">'+esc(tg)+'</text>');
+    }
+  }
+  // the safe frame
+  out.push(rect(Lo.inset[0],Lo.inset[1],W-2*Lo.inset[0],H-2*Lo.inset[1],'none',' stroke="#ffffff" stroke-opacity=".25" stroke-dasharray="'+r1(4*u)+' '+r1(6*u)+'" stroke-width="'+r1(u)+'"'));
+  out.push('</svg>');
+  return out.join('');
+}
+var PRESETS=[
+  {id:'c1080',name:'1920x1080 CAREER solo',W:1920,H:1080,o:{mates:0}},
+  {id:'d2p',name:'1920x1080 2P (P1 window)',W:1920,H:1080,o:{mates:1}},
+  {id:'p2pop',name:'P2 popup 1728x940',W:1728,H:940,o:{mates:1}},
+  {id:'k4',name:'3840x2160 (4K)',W:3840,H:2160,o:{mates:1}},
+  {id:'tv',name:'1080p TV safe',W:1920,H:1080,o:{tv:1,mates:1}},
+  {id:'t150',name:'1080p text 150%',W:1920,H:1080,o:{text:1.5,mates:1}},
+  {id:'narrow',name:'Narrow 960x1080',W:960,H:1080,o:{mates:1}}
+];
+function zoneTable(Lo){
+  var h='<tr><th>Zone</th><th class="num">x</th><th class="num">y</th><th class="num">w</th><th class="num">h</th><th class="num">x/W</th><th class="num">y/H</th><th class="num">w/W</th><th class="num">h/H</th><th class="num">z</th></tr>', i, z;
+  function f(v){ return (Math.round(v*10000)/10000).toFixed(4); }
+  for(i=0;i<Lo.zones.length;i++){ z=Lo.zones[i];
+    h+='<tr><td><span class="sw" style="background:'+ZCOL[z.id]+'"></span>'+ZNAME[z.id]+'</td><td class="num">'+z.x+'</td><td class="num">'+z.y+'</td><td class="num">'+z.w+'</td><td class="num">'+z.h+'</td><td class="num">'+f(z.x/Lo.W)+'</td><td class="num">'+f(z.y/Lo.H)+'</td><td class="num">'+f(z.w/Lo.W)+'</td><td class="num">'+f(z.h/Lo.H)+'</td><td class="num">'+z.z+'</td></tr>'; }
+  return h;
+}
+// ---------------------------------------------------------------- page wiring (browser only)
+if(typeof document!=='undefined'){
+  var cur=PRESETS[0], el=function(id){ return document.getElementById(id); };
+  var draw=function(){
+    var Lo=hudLayout(cur.W,cur.H,cur.o), ov=hudOverlaps(Lo), i, bs=el('presets').getElementsByTagName('button');
+    for(i=0;i<bs.length;i++) bs[i].setAttribute('aria-pressed',bs[i].getAttribute('data-id')===cur.id?'true':'false');
+    el('stage').innerHTML=mockSVG(Lo,{content:el('optContent').checked,zones:el('optZones').checked});
+    el('status').innerHTML=cur.W+' x '+cur.H+' · profile '+Lo.profile+' · u '+(Math.round(Lo.u*100)/100)+' · belt slot '+Lo.slot+' · feed lines '+Lo.feedN+' · overlap check: '+
+      (ov.length?'<span class="bad">'+ov.join(', ')+'</span>':'<span class="ok">0 overlaps</span>');
+    el('tbl').innerHTML=zoneTable(Lo);
+  };
+  (function(){
+    var i, b, h='';
+    for(i=0;i<PRESETS.length;i++) h+='<button type="button" data-id="'+PRESETS[i].id+'">'+PRESETS[i].name+'</button>';
+    el('presets').innerHTML=h;
+    el('presets').onclick=function(e){ var t=e.target, j; if(!t||!t.getAttribute) return; for(j=0;j<PRESETS.length;j++) if(PRESETS[j].id===t.getAttribute('data-id')) cur=PRESETS[j]; draw(); };
+    el('optContent').onchange=draw; el('optZones').onchange=draw;
+    for(i=0;i<PRESETS.length;i++) if(location.hash==='#'+PRESETS[i].id) cur=PRESETS[i];   // a link can pick the case: #p2pop, #narrow, #k4 ...
+    draw();
+  })();
+}
+</script>
+</body>
+</html>

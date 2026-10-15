@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.29';
+var VER='27.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19762,13 +19762,14 @@ if(wep.mag===0){
     return;
   }
   var shots=wep.pellets||1;
+  G.shotSid=(G.shotSid|0)+1;   // v26.xx (aip4): one number for every round of one trigger pull, so a blast of pellets is one round for the suppression count
   for(var pel=0;pel<shots;pel++){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?AR_BONUS:1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
-      thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
+      thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):'',sid:G.shotSid});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
     if(NET.on) netFxShot(G.bullets[G.bullets.length-1]);   // v16.21: the rest of the party sees this round
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
@@ -20607,6 +20608,19 @@ function suppHit(en){
   if(en.supp>=SUPP_N){ en.pinT=SUPP_PIN; en.supp=0; return true; }
   return false;
 }
+// v26.xx (aip4), the cloud review of 2026-10-15 (finding 11): "suppression counts each round many times, and one shotgun blast pins". The first cut
+// kept only the LAST round that passed a man (suppB), so two rounds in flight near him took turns and each was counted again every frame it stayed
+// within 70 units (about 8 frames), and each of the six pellets of one blast was a round of its own against the four a pin needs. Now each round
+// is counted ONCE for each man (b.suppL lists the men it has been counted for) and every round of one trigger pull shares a number (b.sid), so a
+// blast of pellets counts once. The pin is the same: SUPP_N rounds inside SUPP_WIN seconds. No random number: a list and a number.
+function suppPass(b,en){
+  var L=b.suppL||(b.suppL=[]);
+  if(L.indexOf(en)>=0) return false;
+  L.push(en);
+  if(b.sid&&en.suppSid===b.sid) return false;
+  en.suppSid=b.sid||0;
+  return suppHit(en);
+}
 // v26.xx (ai23), HIS WORDS (2026-10-14, suggestion 23): pillagers and machines "should fight each other even w/o decoys". What fought
 // before: a pillager LOOTING shot a machine in sight (v3.9x, within 280 and 600 of you), and a Sentry or Crawler that could not see you
 // went for a pillager in sight (v3.97). A pillager RUNNING for the ring, which is where most of them are most of the time, ignored every
@@ -20718,9 +20732,6 @@ var AFFIX={
   mend:{c:'#5cff8a'}
 };
 var AFFIX_KEYS=['shield','boom','fast','mend'], AFFIX_BOOM_R=130, AFFIX_MEND_R=260;
-// v26.xx (aip2), HIS ANSWER (2026-10-14 night playtest): the elites "should be integrated and polished". The badge over the head sat exactly where the
-// nameplate is drawn, so the plate covered it (two marks on one spot). The plate carries the word now, in the colour of the affix, and the badge is gone.
-var AFFIX_WORD={shield:'SHIELDED',boom:'VOLATILE',fast:'FAST',mend:'MENDER'};
 function affixApply(e,ix){
   var k;
   if(!e||e.kind==='raider'||e.boss||e.affix||!e.elite) return null;
@@ -20772,6 +20783,62 @@ function affixMend(e){
   e.mendFx=(n>0)?0.4:0;
   return n;
 }
+// v26.xx (aip1), HIS ANSWER (2026-10-14 night playtest): "tint and/or outline" for the elites, and "all the new features need to be integrated
+// and polished up to a AAA level like the previous stuff". An elite machine wore a glow and two rings on the ground and a badge over its
+// head, which the nameplate covered; the body itself looked like any other. Now the BODY carries it: the machine is drawn into a
+// scratch canvas (same scale, same pixel grid, shadow still on the ground), a clean outline in its colour is stamped round the silhouette
+// (a crisp inner line and a soft outer one that breathes), a faint tint of the colour is laid over the body only, and the two go back
+// to the world canvas under and over the unchanged sprite. The ground ring is one thin ring now. Cosmetic code: it draws no random
+// number, and a machine that is not an elite is drawn exactly as before.
+var RIM={ca:null,cb:null,xa:null,xb:null,on:0,h:null,n:0};
+function rimOpen(e,col){
+  var T, cx, cy, hw, up, dn, sx, sy, w, h, h1, k;
+  if(!e||!col||RIM.on||typeof wc==='undefined'||!wc||!wc.getTransform||(typeof G!=='undefined'&&G&&G.sim)) return null;
+  try{
+    T=wc.getTransform();
+    if(!(T.a>0)||!(T.d>0)||T.b||T.c||!isFinite(e.x)||!isFinite(e.y)) return null;
+    cx=T.a*e.x+T.e; cy=T.d*e.y+T.f;
+    hw=(e.r*1.9+20)*T.a; up=(spriteTop(e)+34)*T.d; dn=(e.r*0.9+12)*T.d;
+    sx=Math.floor(cx-hw)-4; sy=Math.floor(cy-up)-4; w=Math.ceil(hw*2)+8; h=Math.ceil(up+dn)+8;
+    if(w<8||h<8||w>1400||h>1400) return null;
+    if(!RIM.ca){ RIM.ca=document.createElement('canvas'); RIM.cb=document.createElement('canvas'); RIM.xa=RIM.ca.getContext('2d'); RIM.xb=RIM.cb.getContext('2d'); }
+    if(!RIM.xa||!RIM.xb) return null;
+    if(RIM.ca.width<w){ RIM.ca.width=w; RIM.cb.width=w; }
+    if(RIM.ca.height<h){ RIM.ca.height=h; RIM.cb.height=h; }
+    RIM.xa.setTransform(1,0,0,1,0,0); RIM.xa.globalAlpha=1; RIM.xa.globalCompositeOperation='source-over'; RIM.xa.clearRect(0,0,w,h);
+    RIM.xa.setTransform(T.a,0,0,T.d,T.e-sx,T.f-sy);
+    h1={w0:wc,sh0:shadowE,col:col,sx:sx,sy:sy,w:w,h:h,u:T.a,e:e};
+    RIM.on=1; RIM.h=h1;
+    shadowE=function(x,y,rx,ry,a){ var w1=wc; wc=h1.w0; try{ h1.sh0(x,y,rx,ry,a); } finally{ wc=w1; } };   // the ground shadow stays on the world canvas, out of the outline
+    wc=RIM.xa;
+    return h1;
+  }catch(_ro){ rimAbort(); return null; }
+}
+function rimAbort(){
+  var h=RIM.h;
+  if(h){ wc=h.w0; shadowE=h.sh0; }
+  RIM.on=0; RIM.h=null;
+}
+function rimClose(h){
+  var k, d, dx, dy, m, pu, xa=RIM.xa, xb=RIM.xb;
+  if(!h) return;
+  wc=h.w0; shadowE=h.sh0; RIM.on=0; RIM.h=null;
+  try{
+    pu=0.5+0.5*Math.sin(((typeof G!=='undefined'&&G)?(G.t||0):0)*3.2+h.e.x*0.02);
+    xa.setTransform(1,0,0,1,0,0); xa.globalCompositeOperation='source-atop'; xa.fillStyle=hexA(h.col,0.12+0.05*pu); xa.fillRect(0,0,h.w,h.h); xa.globalCompositeOperation='source-over';
+    wc.save(); wc.setTransform(1,0,0,1,0,0);
+    for(m=0;m<2;m++){
+      d=m?Math.max(1,Math.round(h.u*0.55)):Math.max(2,Math.round(h.u*1.3));
+      xb.setTransform(1,0,0,1,0,0); xb.globalCompositeOperation='source-over'; xb.clearRect(0,0,h.w,h.h);
+      for(k=0;k<8;k++){ dx=Math.round(Math.cos(k*0.7854)*d); dy=Math.round(Math.sin(k*0.7854)*d); xb.drawImage(RIM.ca,0,0,h.w,h.h,dx,dy,h.w,h.h); }
+      xb.globalCompositeOperation='source-in'; xb.fillStyle=hexA(h.col,m?(0.86+0.14*pu):(0.26+0.12*pu)); xb.fillRect(0,0,h.w,h.h); xb.globalCompositeOperation='source-over';
+      wc.drawImage(RIM.cb,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h);
+    }
+    wc.drawImage(RIM.ca,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h);
+    wc.restore();
+    RIM.n++;
+  }catch(_rc){ try{ wc.restore(); }catch(_r2){} }
+}
 function drawAffixMark(e){
   var A=AFFIX[e.affix], t=(typeof G!=='undefined'&&G)?(G.t||0):0, pu, r=e.r, x=e.x, y=e.y, gr;
   if(!A||!isFinite(x)||!isFinite(y)||!(r>0)) return;
@@ -20779,10 +20846,10 @@ function drawAffixMark(e){
   wc.save();
   try{
     wc.globalCompositeOperation='lighter';
-    gr=wc.createRadialGradient(x,y,r*0.3,x,y,r*2.2); gr.addColorStop(0,hexA(A.c,0.34*pu)); gr.addColorStop(1,hexA(A.c,0));
-    wc.fillStyle=gr; wc.beginPath(); wc.ellipse(x,y+2,r*2.2,r*1.15,0,0,6.2832); wc.fill();
-    wc.strokeStyle=hexA(A.c,0.55+0.35*pu); wc.lineWidth=3; wc.beginPath(); wc.ellipse(x,y+2,r*1.45,r*0.72,0,0,6.2832); wc.stroke();
-    wc.lineWidth=1.5; wc.beginPath(); wc.ellipse(x,y+2,r*1.85,r*0.93,0,0,6.2832); wc.stroke();
+    gr=wc.createRadialGradient(x,y,r*0.3,x,y,r*1.9); gr.addColorStop(0,hexA(A.c,0.15*pu)); gr.addColorStop(1,hexA(A.c,0));
+    wc.fillStyle=gr; wc.beginPath(); wc.ellipse(x,y+2,r*1.9,r*1.0,0,0,6.2832); wc.fill();
+    wc.strokeStyle=hexA(A.c,0.42+0.22*pu); wc.lineWidth=1.6; wc.beginPath(); wc.ellipse(x,y+2,r*1.32,r*0.66,0,0,6.2832); wc.stroke();
+    wc.strokeStyle=hexA(A.c,0.16); wc.lineWidth=1; wc.beginPath(); wc.ellipse(x,y+2,r*1.62,r*0.81,0,0,6.2832); wc.stroke();
     if(e.affix==='mend'){ wc.strokeStyle=hexA(A.c,0.16); wc.lineWidth=1; wc.beginPath(); wc.ellipse(x,y+2,AFFIX_MEND_R,AFFIX_MEND_R*0.6,0,0,6.2832); wc.stroke(); }
   }catch(_am){}
   wc.restore();
@@ -20805,7 +20872,24 @@ function drawAffixTop(e){
       wc.strokeStyle=hexA(A.c,0.7); wc.lineWidth=2;
       for(j=0;j<e.mendTo.length;j++){ o=e.mendTo[j]; wc.beginPath(); wc.moveTo(e.x,e.y-e.r*0.8); wc.lineTo(o.x,o.y-8); wc.stroke(); }
     }
-    // v26.xx (aip2): no badge here any more, the nameplate names the affix (AFFIX_WORD)
+    pts=[];
+    if(k==='shield'){
+      for(j=0;j<6;j++){ aa=j*1.0472+0.5236; pts.push(x+Math.cos(aa)*8,y+Math.sin(aa)*8); } ptsFill(INK,pts); pts=[];
+      for(j=0;j<6;j++){ aa=j*1.0472+0.5236; pts.push(x+Math.cos(aa)*6,y+Math.sin(aa)*6); } ptsFill(A.c,pts);
+    } else if(k==='boom'){
+      for(j=0;j<16;j++){ aa=j*0.3927; rr=(j%2)?4.2:9; pts.push(x+Math.cos(aa)*rr,y+Math.sin(aa)*rr); } ptsFill(INK,pts); pts=[];
+      for(j=0;j<16;j++){ aa=j*0.3927; rr=(j%2)?2.6:7; pts.push(x+Math.cos(aa)*rr,y+Math.sin(aa)*rr); } ptsFill(A.c,pts);
+    } else if(k==='fast'){
+      for(j=0;j<2;j++){
+        cx=x+fl*(j*6-3);
+        pts=[cx-fl*3,y-6,cx+fl*4,y,cx-fl*3,y+6,cx-fl*5.5,y+6,cx+fl*1.5,y,cx-fl*5.5,y-6];
+        wc.strokeStyle=INK; wc.lineWidth=2.5; wc.beginPath(); wc.moveTo(pts[0],pts[1]); wc.lineTo(pts[2],pts[3]); wc.lineTo(pts[4],pts[5]); wc.lineTo(pts[6],pts[7]); wc.lineTo(pts[8],pts[9]); wc.lineTo(pts[10],pts[11]); wc.closePath(); wc.stroke();
+        ptsFill(A.c,pts);
+      }
+    } else if(k==='mend'){
+      wc.fillStyle=INK; wc.fillRect(x-8,y-3.5,16,7); wc.fillRect(x-3.5,y-8,7,16);
+      wc.fillStyle=A.c; wc.fillRect(x-6.5,y-2,13,4); wc.fillRect(x-2,y-6.5,4,13);
+    }
   }catch(_at){}
   wc.restore();
 }
@@ -27884,7 +27968,7 @@ function updateBullets(dt){
             // v3.94: the first 0.30s of a 0.38s roll is invulnerable, the same
             // window the player gets, so a raider who times it eats nothing.
             // v26.xx (ai22): a round of yours past a hostile pillager is suppression (once per round per man).
-            if(en.kind==='raider'&&en.suppB!==b&&dist(b,en)<en.r+SUPP_R){ en.suppB=b; suppHit(en); }
+            if(en.kind==='raider'&&dist(b,en)<en.r+SUPP_R) suppPass(b,en);   // v26.xx (aip4): the round counts once for this man (it counted again every frame it stayed near, and a blast of pellets counted six times)
             if(en.roll>0.08) continue;
             if(en.finished) continue;   // v16.98, co-op hunt 2026-09-28: a man who bled out lies here one more frame; a round on the body wrote the kill mark again and took the kill from player 2, so it passes over him
             if(dist(b,en)<en.r+3){
@@ -33925,6 +34009,8 @@ var SHD=G.shells[i];
         wc.beginPath(); wc.ellipse(e2.x,e2.y+2,e2.r*1.2,Math.max(3,e2.r*0.5),0,0,6.2832); wc.stroke();
         wc.restore();
       }
+      var _rm=null;
+      if(e2.elite&&e2.affix&&AFFIX[e2.affix]) _rm=rimOpen(e2,AFFIX[e2.affix].c);   // v26.xx (aip1): the elite outline
       if(e2.kind==='choir') drawChoirS(e2);
       else if(e2.kind==='warden') drawWardenAt(e2);   // v17.49: the boss is drawn to its size
       else if(e2.kind==='sentry') drawSentryS(e2);
@@ -33977,6 +34063,7 @@ var SHD=G.shells[i];
            // default look. It is passed through now, with the build he rolled.
            hair:e2.hair,cut:e2.cut,hat:e2.hat,skin:e2.skin,beard:e2.beard,eyes:e2.eyes,faceMark:e2.faceMark,boots:e2.boots,
            gloves:e2.gloves,pack:e2.pack,patch:e2.patch,tattoo:e2.tattoo,build:e2.build}),drawRoleMark(e2);   // v26.xx (ai21): his role mark on top of the body
+      rimClose(_rm);   // v26.xx (aip1)
 
       // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
       // secret is not a tactic. Drawn on top of the body, pulsing, in their own
@@ -34006,6 +34093,7 @@ var SHD=G.shells[i];
       if(eLift>0) wc.restore();
     }
     }catch(drErr){
+      try{ rimAbort(); }catch(_ra){}   // v26.xx (aip1): the world canvas first, whatever the body left
       // A throw part way through one item can skip the wc.restore() that pairs
       // with a deck lift, and then EVERY entity drawn after it in that frame is
       // shifted by that deck's height. The armour was only ever meant to lose
@@ -34120,7 +34208,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     else ne._plateTag='';
     var plate=ne.kind==='peddler'
       ? (pedOpen()?(G.nearPed===ne?(G.pedBlocked?'THE PEDDLER  \u00b7  SEARCH CRATE FIRST':(promptPick(G.player)==='deal'?('THE PEDDLER  ['+keyLabel('KeyE','E')+'] DEAL'):'THE PEDDLER')):'THE PEDDLER'):'THE PEDDLER  [CLOSED]')   // v22.67 (R25): DEAL only when E deals
-      : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''))+((ne.elite&&ne.affix&&AFFIX_WORD[ne.affix])?'  '+AFFIX_WORD[ne.affix]:'');   // v26.xx (aip2): an affixed elite machine says what it is, in its colour (drawn below)
+      : ne.name+(ne.state==='extract'?' [RUNNING]':(ne._plateTag||''));
     // CREWS ARE VISIBLE, v2.57. v2.49 gave every raider a crew and rival crews
     // shoot each other, and then nothing on screen said who was with whom, so a
     // feud read as two identical men inexplicably trading fire. The plate now
@@ -34162,11 +34250,6 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
       :(ne.state==='chase'||ne.state==='alarm'
         ? (hostile?'#ff6b5a':'#ff9a3c')
         : (hostile?'#e0a89e':'#9aa6b2'))));
-    if(ne.elite&&ne.affix&&AFFIX_WORD[ne.affix]&&AFFIX[ne.affix]&&ne.kind!=='raider'){   // v26.xx (aip2): the name in the plate colour, the affix word in its own
-      var _aw=AFFIX_WORD[ne.affix], _ab=plate.slice(0,plate.length-_aw.length);
-      wc.fillText(_ab,ne.x-tw/2,ne.y-lift);
-      wc.fillStyle=AFFIX[ne.affix].c; wc.fillText(_aw,ne.x-tw/2+wc.measureText(_ab).width,ne.y-lift);
-    } else
     wc.fillText(plate,ne.x-tw/2,ne.y-lift);   // v8.39: inside its plate, not off the right of it
     // health pip so a wounded target reads at a glance
     if(ne.hp<ne.maxhp){
@@ -44664,7 +44747,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.29: The press E prompts over crates, doors and bodies are now 60 percent of their old size. Check 27.29 fails on v27.28',
+  now:'v27.30: Elite machines now wear a clean coloured outline and a faint tint, and one thin ring on the ground. Check 27.30 fails on v27.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67011,6 +67094,45 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'27.30',what:'his playtest answer on the elites, tint and/or outline: an elite machine with an affix is drawn through the outline pass, once a frame and in its own colour, a plain machine is not, and a throw while the body is drawn puts the world canvas and the ground shadow back',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof render2D!=='function'||typeof mkSentry!=='function'||typeof affixApply!=='function'||typeof spotFree!=='function') return 'SKIP: no raid here';
+     var bad=[], g=null, p=null, all=null, e, i, k, aa=0, sx=0, sy=0, ks=['shield','boom','fast','mend'], cols=[[79,214,255],[255,138,60],[242,232,74],[92,255,138]], n0, id, d, hit, wc0=null, sh0=null, oS=null;
+     function inW(x,y){ return x>60&&y>60&&x<WORLD_W-60&&y<WORLD_H-60; }
+     try{
+       if(typeof RIM==='undefined'||typeof rimOpen!=='function') return 'an elite machine has no outline pass';
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       p=g.player; p.iv=99; p.hp=100000; p.downed=false; all=g.ents.slice();
+       for(k=0;k<24;k++){ aa=k/24*6.2832; sx=p.x+Math.cos(aa)*120; sy=p.y+Math.sin(aa)*120; if(inW(sx,sy)&&spotFree(g.map,sx,sy,30)&&losClear(p.x,p.y,sx,sy,G.vseg)) break; }
+       if(k>=24) return 'SKIP: no open ground beside the player';
+       p.face=Math.atan2(sy-p.y,sx-p.x);
+       wc0=wc; sh0=shadowE;
+       for(i=0;i<4;i++){
+         e=mkSentry(sx,sy); e.elite=1; e.hp=e.maxhp; e.state='patrol'; e.alert=0; e.affix=null; affixApply(e,i); g.ents=[e];
+         n0=RIM.n; render2D(0.016);
+         if(RIM.n!==n0+1) bad.push('an elite '+ks[i]+' machine in view was drawn through the outline pass '+(RIM.n-n0)+' times, not once');
+         id=RIM.xb.getImageData(0,0,RIM.cb.width,RIM.cb.height).data; hit=0;
+         for(d=0;d<id.length;d+=4) if(id[d+3]>=170&&Math.abs(id[d]-cols[i][0])<30&&Math.abs(id[d+1]-cols[i][1])<30&&Math.abs(id[d+2]-cols[i][2])<30) hit++;
+         if(hit<60) bad.push('the '+ks[i]+' outline holds only '+hit+' pixels of its colour');
+       }
+       e=mkSentry(sx,sy); e.elite=0; e.affix=null; e.state='patrol'; e.alert=0; g.ents=[e]; n0=RIM.n; render2D(0.016);
+       if(RIM.n!==n0) bad.push('a plain machine was drawn through the outline pass');
+       e=mkSentry(sx,sy); e.elite=1; e.hp=e.maxhp; e.state='patrol'; e.alert=0; e.affix=null; affixApply(e,0); g.ents=[e];
+       oS=drawSentryS; drawSentryS=function(){ throw new Error('aip1 probe'); };
+       try{ render2D(0.016); } finally { drawSentryS=oS; }
+       g.drawErr=null; if(g.tel) g.tel.drawErr=null;
+       if(wc!==wc0) bad.push('after a throw in the body draw the world canvas is not back');
+       if(shadowE!==sh0) bad.push('after a throw in the body draw the ground shadow is not back');
+       if(RIM.on) bad.push('the outline pass is left open after a throw');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       try{ if(oS) drawSentryS=oS; }catch(_e9){}
+       try{ if(wc0) wc=wc0; if(sh0) shadowE=sh0; if(typeof RIM!=='undefined') RIM.on=0; }catch(_e0){}
+       try{ if(g&&all) g.ents=all; if(g){ g.drawErr=null; if(g.tel) g.tel.drawErr=null; } var g2=__state(); if(g2&&!g2.over){ g2.player.iv=0; g2.player.hp=100; g2.player.downed=false; __endRaid('abandon'); } }catch(_e3){}
+       __topClear();
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'27.29',what:'his note: the press E prompts over a crate, a door or a body are 60 percent of their old size, in the keycap, the words and the plate, and keep their place',
    run:function(){

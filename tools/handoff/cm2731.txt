@@ -1,0 +1,7 @@
+v27.31: the what is new card names the elites and kits
+
+The what is new card names the elite outline, the one row stash and the gun key ghosts.
+
+Check 27.31. Fails on v27.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
