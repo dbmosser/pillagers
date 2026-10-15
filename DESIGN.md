@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.36 - THE AIR STRIKE PLATE MOVES TO THE RIGHT
+
+Co-op hunt while he was away. His playtest note of 2026-10-14: the air strike bar is in a weird place and causes collisions, it should be over on the right further. The plate sat just right of the middle of the screen, a little over the gun bar, where the power-up timer chips, the item you are readying and the bar own hover and ammo text all live, so they ran into it. It now sits at the right end of the gun bar, one chip row up, past the chips and the item in hand and clear of the keys; the corner gun card starts at the end of the bar so there is no room beside it, and if the plate would ever meet the gear card, the pickup stack, the pickup gun card or the kill feed it lifts clear above them. The same plate is drawn by the same code in both windows of a two player game, each with its own meter.
+
+MEASURED. Check 27.36 passes, and fails on v27.35.
 ## v27.35 - THE FEED ZONE IS A QUARTER WIDE
 
 Co-op hunt while he was away. Seen in the picture of the busy raid frame: the feed zone reserved 30 percent of the screen width while its lines are under two thirds of that, so the controls list beside it was squeezed to a tiny size. The zone is now a quarter of the width and each line is a little tighter, so the ten lines are about 280 pixels tall at 1080p and the controls list keeps a readable size.
