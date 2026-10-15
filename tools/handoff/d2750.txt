@@ -1,0 +1,5 @@
+## v27.50 - THE ALERT IS POLISHED
+
+Co-op hunt while he was away. His answer of 2026-10-14 on the alert lane: polish the UI as you see fit, consistent with AAA practices. The headline of an alert is now the large size of the HUD (it was the size of a prompt), the plate drops in from a little above as it fades in, and a thin time bar along its foot runs down with the life of the alert, so a callout shows how long it will stay. The detail line under the headline keeps its size.
+
+MEASURED. Check 27.50 passes, and fails on v27.49.

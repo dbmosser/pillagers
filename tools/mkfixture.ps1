@@ -6093,6 +6093,128 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.52',what:'feel2d, his words: the Support MG needs a higher fire rate once fully spinning. Held, the gap between rounds keeps closing past the gun own 105 ms to about 81 ms (1.3 times the rate), the report rises in pitch with the rate, and it drops back when the trigger is released; other guns are untouched',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__sim)) return 'SKIP: no raid here';
+     var bad=[], g, p, all, oWep, oAmmo, oRes, oDown, shots=[], last, i, sum, pitches=[], realBlip, p0, p1, m0, m1;
+     function step(n){ for(var q=0;q<n;q++){ g.t+=0.016; __sim(0.016); if(p.lastShot!==last){ last=p.lastShot; shots.push(last); } } }
+     function arm(w,a){ mouse.down=false; p.wep=w; p.ammo=a; p.reserve=300; p.reloading=0; p.hand=false; p.jam=0; p.fired=false; p.spin=0; g.t+=0.016; __sim(0.016); for(var q=0;q<260&&p.drawT>0;q++){ g.t+=0.016; __sim(0.016); } p.lastShot=-1e9; p.fired=false; p.spin=0; last=p.lastShot; shots.length=0; pitches.length=0; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       if(g.sim) return 'SKIP: the fixture raid is a sim raid';
+       p=g.player; all=g.ents.slice(); g.ents=[]; oWep=p.wep; oAmmo=p.ammo; oRes=p.reserve; oDown=mouse.down;
+       realBlip=blipMine; blipMine=function(type){ if(type==='shot') pitches.push((typeof SND_PITCH==='undefined')?1:SND_PITCH); };
+       // ONE: the Support MG, held for two seconds: the rate at full spin is well above the gun own
+       arm(cloneObj(WEAPONS.lmg),60); p.iv=99;
+       mouse.down=true; step(125);
+       if(shots.length<12) bad.push('ONE: the Support MG fired only '+shots.length+' rounds in 2 s held');
+       else {
+         sum=0; for(i=shots.length-8;i<shots.length;i++) sum+=shots[i]-shots[i-1];
+         sum/=8;
+         if(!(sum<=100)) bad.push('ONE: at full spin the gap is '+Math.round(sum)+' ms, not 100 or less (the gun own gap is 105)');
+         if(!(sum>=64)) bad.push('ONE: at full spin the gap is '+Math.round(sum)+' ms, faster than 1.3 times the rate allows');
+       }
+       // TWO: the report rises with the rate
+       p0=pitches.length?pitches[0]:null; p1=pitches.length?pitches[pitches.length-1]:null;
+       if(pitches.length<12) bad.push('TWO: only '+pitches.length+' shot voices were played');
+       else {
+         if(!(p1>=1.06)) bad.push('TWO: the report at full spin is at pitch '+(+p1).toFixed(2)+', not 1.06 or more');
+         if(!(p0<=0.92)) bad.push('TWO: the first report is at pitch '+(+p0).toFixed(2)+', not 0.92 or less');
+       }
+       // THREE: let go and the rate drops back
+       m1=spinMul(p);
+       mouse.down=false; step(70);
+       m0=spinMul(p);
+       if(!(m1<=0.85)) bad.push('THREE: at full spin the gap multiplier is '+m1.toFixed(2)+', not 0.85 or less');
+       if(!(m0>=1.2)) bad.push('THREE: a second after letting go the gap multiplier is '+m0.toFixed(2)+', not 1.2 or more');
+       // FOUR: another gun is not touched
+       arm(cloneObj(WEAPONS.rifle),25); mouse.down=true; step(40);
+       if(Math.abs(spinMul(p)-1)>0.001) bad.push('FOUR: the Auto Rifle has a spin multiplier of '+spinMul(p).toFixed(2));
+       if(pitches.length&&pitches.some(function(x){ return Math.abs(x-1)>0.001; })) bad.push('FOUR: the Auto Rifle report is at a pitch other than 1');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(realBlip) blipMine=realBlip; mouse.down=false; if(p){ p.wep=oWep; p.ammo=oAmmo; p.reserve=oRes; p.spin=0; p.fired=false; } if(g&&all) g.ents=all.slice(); if(g) g.bullets.length=0; if(typeof lmgWhirrStop==='function') lmgWhirrStop(); }catch(_h){}
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.slice(0,8).join('; '):null; }},
+  {v:'27.51',what:'his order: the banners that came in at their own heights of the centre are alerts in the top centre lane: a notoriety rise and the drop-in count, and the notoriety is in the feed',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||!window.__frame||typeof notoStamp!=='function'||typeof arcadeDropHud!=='function'||typeof ARCADE==='undefined') return 'SKIP: no raid or arcade here';
+     var bad=[], g, a, i, holdWas=ARCADE.holdT, hit=false, F, ln, ni=ARCADE.on;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); }catch(_d){}
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       g.bagOpen=false; g.mapOpen=false; g.ents.length=0; keys={}; g.arcade=0; g.alert=null; g.alertQ=[];
+       notoStamp('YOU STARTED THAT FIGHT');
+       a=g.alert; if(!a||String(a.m).indexOf('NOTORIETY')!==0) bad.push('a notoriety rise is not an alert in the top lane');
+       else if(a.sub!=='YOU STARTED THAT FIGHT') bad.push('the alert detail reads "'+a.sub+'", not why');
+       F=g.fd; ln=null; if(F) for(i=0;i<F.lines.length;i++) if(F.lines[i].txt.indexOf('NOTORIETY')===0) ln=F.lines[i];
+       if(!ln) bad.push('the notoriety rise is not a line in the feed');
+       for(i=0;i<document.scripts.length&&!hit;i++) if(String(document.scripts[i].text).indexOf('v8.27: THE NOTO'+'RIETY STAMP')>=0) hit=true;
+       if(hit) bad.push('the notoriety banner draw is still in the source');
+       g.alert=null; g.alertQ=[];
+       ARCADE.holdT=2.4; arcadeDropHud();
+       a=g.alert; if(!a||a.m!=='DROPPING IN 3') bad.push('the drop-in count is not an alert (reads '+(a?a.m:'nothing')+')');
+       ARCADE.holdT=1.2; arcadeDropHud();
+       a=g.alert; if(!a||a.m!=='DROPPING IN 2') bad.push('the drop-in alert is not refreshed in place (reads '+(a?a.m:'nothing')+')');
+       F=g.fd; if(F) for(i=0;i<F.lines.length;i++) if(F.lines[i].txt.indexOf('DROPPING IN')===0) bad.push('the drop-in count is written into the feed');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ ARCADE.holdT=holdWas; ARCADE.on=ni; }catch(_h){} try{ var g2=__state(); if(g2){ g2.alert=null; g2.alertQ=[]; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'27.50',what:'his answer: the alert headline is the L size, the plate drops in as it fades in, and a time bar along its foot runs down with the alert life',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||!window.__frame||!window.__textTrace||typeof alertDraw!=='function') return 'SKIP: no raid here';
+     var bad=[], g, a, tr, i, ref, hd, zm, thin=[], oFR=ctx.fillRect, full, half, mx;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); }catch(_d){}
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       g.bagOpen=false; g.mapOpen=false; g.ents.length=0; keys={};
+       g.alert=null; g.alertQ=[]; say('SIEGE INCOMING','warn',{sub:'6 MACHINES'});
+       a=g.alert; if(!a) return 'SKIP: the alert did not take the lane';
+       if(!(a.T0>0)||Math.abs(a.T0-a.T)>0.01) bad.push('the alert has no life to draw its time bar from (T0 '+a.T0+')');
+       a.at=(g.t||0)-1;
+       zm=(HUDZ.msg||1)*hudRes()*hudUserZ('msg');
+       tr=__textTrace(function(){ ctx.save(); ctx.font=FS(TYPE.head); ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.fillText('REFHEAD',2,2); ctx.restore(); __frame(0.016); });
+       ref=tr.filter(function(t){ return t.t==='REFHEAD'; })[0];
+       hd=tr.filter(function(t){ return t.t==='SIEGE INCOMING'; })[0];
+       if(!ref||!hd) return 'SKIP: the alert headline was not traced';
+       i=(hd.px/ref.px)/zm;
+       if(i<1.2||i>1.5) bad.push('the alert headline is '+i.toFixed(2)+' of the old head size, not the L step (about 1.33)');
+       // the time bar: thin plate wide rects drawn under the headline, full and then at half life
+       function bar(T){ a=g.alert; a.T=T; thin.length=0; ctx.fillRect=function(x,y,w,h){ if(h>0&&h<=6&&w>20&&y>=LH(90)&&y<=LH(96)+300) thin.push({w:w}); return oFR.apply(this,arguments); }; try{ __frame(0.016); } finally { delete ctx.fillRect; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; } var best=0, k; for(k=0;k<thin.length;k++) best=Math.max(best,thin[k].w); return best; }
+       full=bar(a.T0); half=bar(a.T0/2);
+       if(!(full>0)) bad.push('no time bar is drawn along the foot of the plate');
+       else if(!(half>0.3*full&&half<0.7*full)) bad.push('the time bar at half life is '+Math.round(half)+' wide against '+Math.round(full)+' at full life');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ delete ctx.fillRect; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; }catch(_f){} try{ var g2=__state(); if(g2){ g2.alert=null; g2.alertQ=[]; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'27.49',what:'the HUD rule: the boss bar is on the HUD plate and THE OVERSEER bar names the phase it is in (PHASE 2 under 66 percent, PHASE 3 under 33), as it keeps its place and its bottom edge',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||!window.__textTrace||typeof drawBossBar!=='function'||typeof bossTick!=='function'||typeof overseerPhaseOf!=='function') return 'SKIP: no boss bar here';
+     var bad=[], g, b, tr, cb0=CFG.boss, i, e, ph={}, want=[[0.8,''],[0.5,'PHASE 2'],[0.2,'PHASE 3']], k, bot, seen;
+     try{
+       __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       g.t=Math.max(g.t||0,30); g.bossDone=0; if(CFG.boss===0) CFG.boss=1; b=bossTick(true); CFG.boss=cb0; if(!b) return 'SKIP: staging: no Overseer';
+       b.x=g.player.x+200; b.y=g.player.y; b.barSeen=1;
+       for(k=0;k<want.length;k++){
+         b.hp=Math.max(1,Math.round(b.maxhp*want[k][0]));
+         tr=__textTrace(function(){ drawBossBar(); });
+         seen=tr.filter(function(t){ return /^PHASE /.test(t.t); }).map(function(t){ return t.t; });
+         if(!tr.some(function(t){ return t.t===b.name; })) { bad.push('the boss name is not drawn at '+Math.round(want[k][0]*100)+' percent'); continue; }
+         if(want[k][1]===''&&seen.length) bad.push('a phase is named at '+Math.round(want[k][0]*100)+' percent: '+seen.join(','));
+         if(want[k][1]!==''&&seen.indexOf(want[k][1])<0) bad.push('the bar at '+Math.round(want[k][0]*100)+' percent does not say '+want[k][1]+' (it says '+(seen.join(',')||'nothing')+')');
+         if(!(HUDBOSSB>0)) bad.push('the boss plate left no bottom edge at '+Math.round(want[k][0]*100)+' percent');
+       }
+     }catch(e2){ bad.push('threw: '+(e2&&e2.message||e2)); }
+     finally{ CFG.boss=cb0; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'27.48',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
@@ -8653,10 +8775,13 @@ window.__REGRESS=[
        bo0=g.bagOpen; pk0=g.pick; g.bagOpen=false; g.mapOpen=false;
        g.pick=[{m:'Circuit Board',item:'board',n:1,tag:'',c:'',T:4,at:(+g.t||0)-1,key:'',sub:''}];
        g.need={board:2}; g.needN=1;
-       rec=strokes(function(){ drawPickups(); });
+       // v27.xx (feed3) retarget: with the pickup stack not drawn, the row is a line of the feed, outlined gold the same way
+       var stackOff=(typeof PICKDRAW!=='undefined'&&!PICKDRAW);
+       if(stackOff){ g.fd=null; say('Circuit Board','pick',{item:'board'}); }
+       rec=strokes(function(){ if(stackOff) __frame(0.016); else drawPickups(); });
        if(rec.indexOf('#ffd452')<0) bad.push('SEVEN: no gold edge on the board in the pickup stack');
        g.need={}; g.needN=0;
-       rec=strokes(function(){ drawPickups(); });
+       rec=strokes(function(){ if(stackOff) __frame(0.016); else drawPickups(); });
        if(rec.indexOf('#ffd452')>=0) bad.push('SEVEN: a gold edge on the stack with nothing needed');
        g.bagOpen=bo0; g.pick=pk0;
        // EIGHT: the world pass calls it
@@ -28777,8 +28902,10 @@ window.__REGRESS=[
        else {
          row.at=(g.t||0)-1;
          ctx.fillText=function(t,x){ ev.push([String(t),+x]); return oFT.apply(this,arguments); };
-         ctx.save(); try{ n=drawPickups(); } finally { ctx.restore(); unspy(); }
-         for(i=0;i<ev.length;i++) if(ev[i][0].indexOf(GV)>=0&&ev[i][1]>W*0.6) hit=true;
+         // v27.xx (feed3) retarget: with the pickup stack not drawn, the GIVEN TO row is a line of the feed, drawn in the feed zone on the left
+         if(typeof PICKDRAW!=='undefined'&&!PICKDRAW){ ctx.save(); try{ __frame(0.016); n=1; } finally { ctx.restore(); unspy(); } for(i=0;i<ev.length;i++) if(ev[i][0].indexOf(GV)>=0&&ev[i][1]<W*0.4) hit=true; }
+         else { ctx.save(); try{ n=drawPickups(); } finally { ctx.restore(); unspy(); }
+         for(i=0;i<ev.length;i++) if(ev[i][0].indexOf(GV)>=0&&ev[i][1]>W*0.6) hit=true; }
          if(!hit) bad.push('with the backpack shut the GIVEN TO row is not drawn (drawPickups drew '+n+' rows)');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -28807,12 +28934,18 @@ window.__REGRESS=[
          P.uiScale=cases[i][0];
          if(!P.hud||typeof P.hud!=='object') P.hud={};
          P.hud.gear=JSON.parse(JSON.stringify(P.hud.gear||{})); P.hud.gear.z=cases[i][1];
-         g.pick=[]; pickSay(BF,{key:'bagfull',c:'danger',sub:'[Z] DROP'});
+         g.pick=[]; g.fd=null; pickSay(BF,{key:'bagfull',c:'danger',sub:'[Z] DROP'});
          for(j=0;j<g.pick.length;j++) g.pick[j].at=(g.t||0)-1;
          ev=[]; n=-1;
          ctx.fillText=function(t,x){ ev.push([String(t),+x]); return oFT.apply(this,arguments); };
-         ctx.save(); try{ n=drawPickups(); } finally { ctx.restore(); unspy(); }
-         hit=false; for(j=0;j<ev.length;j++) if(ev[j][0].indexOf(BF)>=0&&ev[j][1]>W*0.6&&ev[j][1]<=W) hit=true;
+         if(typeof PICKDRAW!=='undefined'&&!PICKDRAW){   // v27.xx (feed3) retarget: the newest row is a line of the feed now, drawn whole in its zone at any text size
+           say(BF,'pick',{key:'bagfull',c:'danger',sub:'[Z] DROP'});
+           ctx.save(); try{ __frame(0.016); n=1; } finally { ctx.restore(); unspy(); }
+           hit=false; for(j=0;j<ev.length;j++) if(ev[j][0].indexOf(BF)>=0&&ev[j][1]>=0&&ev[j][1]<W*0.4) hit=true;
+         } else {
+           ctx.save(); try{ n=drawPickups(); } finally { ctx.restore(); unspy(); }
+           hit=false; for(j=0;j<ev.length;j++) if(ev[j][0].indexOf(BF)>=0&&ev[j][1]>W*0.6&&ev[j][1]<=W) hit=true;
+         }
          if(!hit) bad.push('at text size '+Math.round(cases[i][0]*100)+' percent with the gun card at '+cases[i][1]+'x the BACKPACK FULL row is not drawn (drawPickups drew '+n+' rows)');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -29331,7 +29464,7 @@ window.__REGRESS=[
        ctx.fillText=function(t,x){ ev.push({t:String(t),x:+x}); return oFT.apply(this,arguments); };
        try{ __loop(t0+(++f)*16.7); } finally { unspy(); }
        for(i=0;i<NM.length;i++){
-         hit=null; for(j=0;j<ev.length;j++) if(ev[j].t.indexOf(NM[i])>=0&&ev[j].x>0.6*W){ hit=ev[j]; break; }
+         hit=null; for(j=0;j<ev.length;j++) if(ev[j].t.indexOf(NM[i])>=0&&(ev[j].x>0.6*W||(typeof PICKDRAW!=='undefined'&&!PICKDRAW&&ev[j].x<0.4*W))){ hit=ev[j]; break; }   // v27.xx (feed3) retarget: the names are lines of the feed (left) once the stack is not drawn
          if(!hit){
            drawn=ev.filter(function(e){ return e.t.indexOf(NM[i])>=0; }).map(function(e){ return Math.round(e.x); });
            bad.push(NM[i]+' is not drawn on the right of the screen in the frame after the search'+(drawn.length?' (drawn at x '+drawn.join(',')+' of '+W+')':' (not drawn at all)'));
@@ -35435,7 +35568,10 @@ window.__REGRESS=[
        return got===n?o:null;
      }
      // the boss plate: the rectangle painted just before the dark red of the bar, with the bar
-     function bossBand(){ var j, R1=rec.filter(function(q){ return q.r!==2; }); for(j=1;j<R1.length;j++) if(R1[j].r&&R1[j].fs==='#3a0d0d'&&R1[j-1].r) return {y0:Math.min(R1[j-1].y0,R1[j].y0),y1:Math.max(R1[j-1].y1,R1[j].y1)}; return null; }
+     function bossBand(){ var j, qq, R1=rec.filter(function(q){ return q.r!==2; }); for(j=1;j<R1.length;j++) if(R1[j].r&&R1[j].fs==='#3a0d0d'&&R1[j-1].r) return {y0:Math.min(R1[j-1].y0,R1[j].y0),y1:Math.max(R1[j-1].y1,R1[j].y1)};
+       // v27.xx (boss1) retarget: the boss plate is a HUD roundRect plate now (and its rail), then the track (a 12 percent white rect) and the fill in the danger colour
+       for(j=1;j<rec.length-1;j++) if(rec[j].r===1&&rec[j].fs==='rgba(255, 255, 255, 0.12)'&&rec[j+1].r===1&&rec[j+1].fs==='#e5482f'){ qq=j-1; while(qq>0&&rec[qq].r!==2&&j-qq<4) qq--; if(rec[qq].r===2) return {y0:Math.min(rec[qq].y0,rec[j].y0),y1:Math.max(rec[qq].y1,rec[j].y1)}; }
+       return null; }
      function hit(a,b){ return a.y0<b.y1-0.5&&b.y0<a.y1-0.5; }
      function rd(a){ return Math.round(a.y0)+' to '+Math.round(a.y1); }
      try{
@@ -35461,13 +35597,14 @@ window.__REGRESS=[
          B=bossBand();
          O=band(function(s){ return s.indexOf(' offers you ')>=0||s.indexOf(' OFFERS ')>=0; },1);
          C=band(function(s){ return s.indexOf(CP)===0; },1);
-         if(!M||!B||!O||!C){ bad.push('control at '+at+': not all four were drawn (message '+!!M+', boss bar '+!!B+', offer '+!!O+', controller word '+!!C+')'); continue; }
-         if(hit(M,B)) bad.push('at '+at+' the message plate ('+rd(M)+') covers the boss bar ('+rd(B)+')');
+         var noMsg=(typeof MSGROWS!=='undefined'&&!MSGROWS);   // v27.xx (feed3) retarget: the top rows are lines of the feed, so there is no message plate to keep a band
+         if((!M&&!noMsg)||!B||!O||!C){ bad.push('control at '+at+': not all four were drawn (message '+!!M+', boss bar '+!!B+', offer '+!!O+', controller word '+!!C+')'); continue; }
+         if(M&&hit(M,B)) bad.push('at '+at+' the message plate ('+rd(M)+') covers the boss bar ('+rd(B)+')');
          if(hit(O,C)) bad.push('at '+at+' the offer line ('+rd(O)+') and the controller word ('+rd(C)+') print on top of each other');
          if(hit(B,O)) bad.push('at '+at+' the boss bar ('+rd(B)+') and the offer line ('+rd(O)+') overlap');
          if(hit(B,C)) bad.push('at '+at+' the boss bar ('+rd(B)+') and the controller word ('+rd(C)+') overlap');
-         if(hit(M,O)) bad.push('at '+at+' the message plate ('+rd(M)+') and the offer line ('+rd(O)+') overlap');
-         if(hit(M,C)) bad.push('at '+at+' the message plate ('+rd(M)+') and the controller word ('+rd(C)+') overlap');
+         if(M&&hit(M,O)) bad.push('at '+at+' the message plate ('+rd(M)+') and the offer line ('+rd(O)+') overlap');
+         if(M&&hit(M,C)) bad.push('at '+at+' the message plate ('+rd(M)+') and the controller word ('+rd(C)+') overlap');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{

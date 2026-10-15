@@ -1,0 +1,7 @@
+v27.51: the centre banners are alerts
+
+The notoriety stamp and the drop-in count are now alerts in the top centre lane.
+
+Check 27.51. Fails on v27.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,7 @@
+v27.50: the alert is polished
+
+The alert headline is larger, the plate drops in, and a time bar runs down along its foot.
+
+Check 27.50. Fails on v27.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
