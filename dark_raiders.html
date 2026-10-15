@@ -277,6 +277,19 @@
 .costile.lock:hover{border-color:var(--steel-hi);background:rgba(0,0,0,.32)}
 .cosname{margin-top:6px;font-size:13px;letter-spacing:1px}
 .cosreq{margin-top:2px;font-size:13px;color:var(--tx-2);letter-spacing:.08em;text-transform:uppercase}
+/* v28.29 (cosm7), HIS ORDER (2026-10-15): the appearance screen in the game UI style. A tile wears a bar in its rarity colour (from what it takes to earn it),
+   a scheme tile shows its three colours, the colour rack has a one line legend. */
+#appavatarpicker .costile[data-rar]{ border-top:3px solid var(--rar,#9da3a8); }
+#appavatarpicker .costile[data-rar="common"]{ --rar:#9da3a8; }
+#appavatarpicker .costile[data-rar="uncommon"]{ --rar:#5fbf6a; }
+#appavatarpicker .costile[data-rar="rare"]{ --rar:#3f9de9; }
+#appavatarpicker .costile[data-rar="elite"]{ --rar:#a866e0; }
+#appavatarpicker .costile[data-rar="gold"]{ --rar:#ffc72e; }
+#appavatarpicker .costile[data-rar="elite"]:not(.lock){ box-shadow:0 0 10px rgba(168,102,224,.16); }
+#appavatarpicker .costile[data-rar="gold"]:not(.lock){ box-shadow:0 0 12px rgba(255,199,46,.18); }
+.cosdots{ display:flex; gap:3px; margin-top:4px; justify-content:center; }
+.cosdots i{ display:block; width:18px; height:7px; border:1px solid #0b0d10; box-sizing:border-box; }
+.cosnote{ font-size:13px; letter-spacing:.08em; color:var(--tx-2); margin:0 0 8px; text-transform:uppercase; }
 /* v21.29, from the whole-game bug hunt of 2026-10-08 (W-A1): THE OWNED LINE SITS LEVEL ACROSS A RACK. A rack tile was a plain box, so a
    name that broke over two lines (The Skeleton, The Tomb Explorer, The Street Poet on the 4K FASHION picture) pushed its OWNED or WORN
    line a whole line lower than the tiles beside it, and the OUTFIT rack read as a ragged row. A tile is a column now and its status
@@ -1524,7 +1537,7 @@
   <!-- v18.81, seen on the FASHION screenshot (2026-10-07): the racks were capped at 520 pixels, so at 1080p they stopped a third of
        the way down their panel (the EYES row cut through, blank below) while the whole grid scrolled for the tall slot list on the
        left. Each column now fills the window and scrolls on its own. -->
-  <div class="hubgrid" style="grid-template-columns:260px 1fr;grid-template-rows:minmax(0,1fr);margin-top:6px">
+  <div class="hubgrid" style="grid-template-columns:400px 1fr;grid-template-rows:minmax(0,1fr);margin-top:6px">
     <div class="panel" style="display:flex;flex-direction:column;min-height:0">
       <h2>Your operator</h2>
       <!-- v19.16, from the review (2026-10-07): an inner box scrolls, as the racks do, so the panel frame line and the heading stay put
@@ -1537,6 +1550,7 @@
     </div>
     <div class="panel" style="display:flex;flex-direction:column;min-height:0">
       <h2>The racks</h2>
+      <div id="apptabs" class="invtabs ui-tabs" style="flex:none;margin:0 12px"></div>
       <div id="appavatarpicker" style="padding:8px 12px;flex:1;min-height:0;overflow-y:auto"></div>
     </div>
   </div>
@@ -2290,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.28';
+var VER='28.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46479,7 +46493,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.28: In co-op, player 2 no longer sees a burning downed pillager start to get up early, and hears the get-up when it really happens. Check 28.28 fails on v28.27',
+  now:'v28.29: FASHION has tabs for head, body, pack, colours and sets, a bigger turning picture, and rarity bars. Check 28.29 fails on v28.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62763,7 +62777,7 @@ function avatarHTML(){
   // v10.25, his note: she is drawn by the raid's own painter, on the canvas
   // below, five times raid size. The doll under it is hidden and kept for
   // the pieces that still read it; nobody sees it.
-  var h='<canvas class="avcv" id="avcv" width="200" height="320"></canvas>'+
+  var h='<canvas class="avcv" id="avcv" width="380" height="470"></canvas>'+
     '<div class="avfig" style="display:none">'+
     '<div class="avhead" style="background:'+sk+';transform:scale('+bd.head.toFixed(2)+')">'+
       (function(){
@@ -62929,14 +62943,63 @@ function renderLooks(hid,pid){
 // v10.25: THE FIGURE IS THE SPRITE. The world painter draws onto whatever wc
 // points at, so it is pointed at the Depot's canvas for one call and put
 // back. Facing right, standing, no gun: the pose of the raid's first frame.
+// v28.29 (cosm7): THE TABS. Every rack is on exactly one tab; a slot on the left jumps to its tab.
+var COSTABS=[['head','HEAD',['hat','cut','hair','beard','skin','eyes','face','tattoo']],['body','BODY',['build','vest','pads','boots','patch','fit']],
+             ['pack','PACK',['pack','gloves']],['colours','COLOURS',['scheme']],['sets','SETS',['set','outfit']]];
+var AVTAB='head', COSRAR=['common','uncommon','rare','elite','gold'];
+function cosOrd(kind){ for(var i=0;i<COSTABS.length;i++){ var j=COSTABS[i][2].indexOf(kind); if(j>=0) return j; } return 99; }
+function cosTabOf(kind){ for(var i=0;i<COSTABS.length;i++) if(COSTABS[i][2].indexOf(kind)>=0) return COSTABS[i][0]; return ''; }
+function renderAvTabs(){
+  var box=document.getElementById('apptabs'); if(!box) return;
+  box.innerHTML='';
+  COSTABS.forEach(function(t){
+    var d=document.createElement('div'); d.className='invtab'+(AVTAB===t[0]?' on':''); d.textContent=t[1]; d.setAttribute('data-tab',t[0]);
+    d.onclick=function(){ AVTAB=t[0]; P._avSlot=null; renderAvatar('appavatar','appavatarpicker'); try{ sfx('pick'); }catch(_s){} };
+    box.appendChild(d);
+  });
+}
+// The rarity of a piece, from what it takes to earn it: owned from the start is common; a few raids or an extraction or two uncommon; a long
+// grind, a high level or a rank of extractions rare and epic; a Warden kill or the reward board gold. A set is as rare as its rarest piece.
+function cosRarity(c){
+  var r=0, bits, k, v, kk, i, p;
+  if(!c) return 'common';
+  if(c.how==='set'){ for(kk in c.parts){ p=cosFind(c.parts[kk]); i=COSRAR.indexOf(cosRarity(p)); if(i>r) r=i; } return COSRAR[r]; }
+  bits=String(c.how).split(':'); k=bits[0]; v=+bits[1]||0;
+  if(k==='always') r=0;
+  else if(k==='runs') r=(v<=6)?1:(v<=14?2:3);
+  else if(k==='extracts') r=(v<=5)?1:(v<=10?2:(v<=14?3:4));
+  else if(k==='level') r=(v<=2)?1:(v<=4?2:3);
+  else if(k==='warden') r=(v<=1)?3:4;
+  else if(k==='board') r=4;
+  else r=2;
+  return COSRAR[r];
+}
+function cosDots(c){
+  var S, a;
+  if(!c||c.kind!=='scheme') return '';
+  S=SCHEMES[c.id]; a=S?[S.p,S.s,S.a]:[(FITCOL.slate||[])[1]||'#59626f',(FITCOL.slate||[])[0]||'#3d4450','#8a96a1'];
+  return '<div class="cosdots">'+a.map(function(h){ return '<i style="background:'+h+'"></i>'; }).join('')+'</div>';
+}
+// THE TURNTABLE. The big picture of your operator turns slowly while FASHION is open (the facing sweeps the whole way round, so the pack, the pads
+// and the eyes all show), breathing as it stands. Drawn by the raid painter, only while the window is up; a step is also callable by itself.
+var AVANG=0.45, AVPH=0, AVTMR=0;
+function avTurnStep(dt){ AVANG+=0.9*dt; if(AVANG>6.2832) AVANG-=6.2832; AVPH+=dt*5.5; drawAvatarCanvas(); }
+function avTurnStart(){
+  if(AVTMR||typeof setInterval!=='function') return;
+  AVTMR=setInterval(function(){
+    var m=document.getElementById('appearmodal');
+    if(!m||!m.classList.contains('on')||!document.getElementById('avcv')){ clearInterval(AVTMR); AVTMR=0; return; }
+    try{ avTurnStep(0.08); }catch(_t){}
+  },80);
+}
 function drawAvatarCanvas(){
   var c=document.getElementById('avcv'); if(!c||typeof drawOp!=='function') return;
   var x2=c.getContext('2d'); if(!x2) return;
   x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,c.width,c.height);
-  var S=5.2;
+  var S=Math.max(5.2,c.height/62);   // v28.29 (cosm7): the figure fills the taller canvas
   x2.save(); x2.translate(c.width/2,c.height-16); x2.scale(S,S);
   var keep=wc; wc=x2;
-  try{ drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); }
+  try{ drawOp(0,0,AVANG,AVPH,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); }   // v28.29 (cosm7): turning
   catch(e){}
   wc=keep; x2.restore();
 }
@@ -62945,7 +63008,7 @@ function renderAvatar(host,pickHost){
   var a=document.getElementById(hid); if(!a) return;
   a.innerHTML=avatarHTML();
   drawAvatarCanvas();   // v10.25: the painter, not the doll
-  if(hid==='appavatar') renderLooks(hid,pid);     // v10.16: only at the Depot
+  if(hid==='appavatar'){ renderLooks(hid,pid); renderAvTabs(); avTurnStart(); }     // v10.16: only at the Depot; v28.29 (cosm7): the tabs and the turntable
   Array.prototype.forEach.call(a.querySelectorAll('.avslot'),function(el){
     el.onclick=function(){
       var id=el.getAttribute('data-av');
@@ -62992,14 +63055,17 @@ function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
   var GROUPS=[['set','SETS'],['outfit','OUTFIT'],['scheme','COLOUR SCHEME'],['build','BUILD'],['vest','VEST'],['pads','SHOULDERS'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
-    .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
+    .filter(function(g){ return kindOnly?(g[0]===kindOnly):(hid!=='appavatar'||cosTabOf(g[0])===AVTAB); })   // v28.29 (cosm7): in FASHION the open tab only, in the order of its list
+    .sort(function(a,b){ return (hid==='appavatar'&&!kindOnly)?(cosOrd(a[0])-cosOrd(b[0])):0; });
+  if(kindOnly&&hid==='appavatar'&&cosTabOf(kindOnly)) AVTAB=cosTabOf(kindOnly);   // a slot on the left opens its own tab
   GROUPS.forEach(function(g){
-    H+='<div style="margin:10px 0 4px 0;letter-spacing:.12em;font-size:13px;color:var(--tx-2)">'+g[1]+'</div>';   // v24.22 (ui6b): readable rack heads
+    H+='<div style="margin:10px 0 4px 0;letter-spacing:.12em;font-size:13px;color:var(--tx-2)">'+g[1]+'</div>';
+    if(g[0]==='scheme') H+='<div class="cosnote">PRIMARY: COAT AND SLEEVES. SECONDARY: PLATE, PACK, BOOTS. ACCENT: TRIM.</div>';   // v28.29 (cosm7)   // v24.22 (ui6b): readable rack heads
     H+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
     (g[0]==='set'?COSSETS:COSMETICS).filter(function(c){ return c.kind===g[0]&&!(c.kind==='fit'&&c.id!=='jersey'); }).forEach(function(c){   // v28.04 (cosm1): the plain clothing colours are schemes now; only the jersey stays in CLOTHING
       var own=cosOwned(c), on=(g[0]==='set')?setWorn(c):(cosWorn(g[0])===c.id);
-      H+='<div class="costile'+(own?'':' lock')+(on?' on':'')+'" data-kind="'+g[0]+'" data-id="'+c.id+'">'+
-         cosSwatch(c)+'<div class="cosname">'+c.name+'</div>'+
+      H+='<div class="costile'+(own?'':' lock')+(on?' on':'')+'" data-kind="'+g[0]+'" data-id="'+c.id+'" data-rar="'+cosRarity(c)+'">'+
+         cosSwatch(c)+'<div class="cosname">'+c.name+'</div>'+cosDots(c)+
          '<div class="cosreq">'+(own?(on?'WORN':'owned'):cosNeed(c))+'</div></div>';
     });
     H+='</div>';

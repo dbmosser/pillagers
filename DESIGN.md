@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.29 - THE APPEARANCE SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-15: the appearance screen redone in the game UI style, in the same window. Five tabs over the racks, HEAD, BODY, PACK, COLOURS and SETS, replace the one long wall of racks (every rack is on exactly one tab, and a slot on the left jumps to its own tab). The picture of your operator is bigger and turns slowly, facing all the way round while the window is open, so you see the pack, the pads and the face from every side. Every tile wears a bar in its rarity colour, from what it takes to earn it (grey for owned from the start, then green, blue, purple and gold for a Warden kill or the reward board), a scheme tile shows its three colours, and a locked tile still says in capitals how to earn it. Cosmetic only.
+
+MEASURED. Check 28.29 passes, and fails on v28.28.
 ## v28.28 - PLAYER 2 SEES A BURNING DOWNED PILLAGER GET UP EARLY
 
 Co-op hunt while he was away. The body snapshot used one flag bit (8388608) for two things: burning and getting up. When a downed pillager was hit by a fire round, player 2's window read the burn as the get-up: it showed the get-up bar and played the pick sound up to 3 s early (misleading his finisher window), then played no sound at the real get-up, and a man getting up who had stopped burning was drawn on fire. Proven in headless Chromium by downing a pillager, hitting him with elemHit fire, and feeding the host snapshot row through netEntsApply to a linked copy each frame. Now the row carries a ninth number with burning and getting up apart, and the linked window reads that; the old bit stays set as before for older readers.
