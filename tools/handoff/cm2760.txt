@@ -1,0 +1,7 @@
+v27.60: f1 list names moved keys
+
+The F1 full controls list names the keys you moved for the item wheel hold, walk, zoom, HUD size and zoom reset.
+
+Check 27.60. Fails on v27.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.59';
+var VER='27.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38401,11 +38401,12 @@ var LEGEND_MINI=[
 // v18.60, FROM THE CODE COMB (2026-10-07): THE COMPACT LEGEND NAMES THE KEYS AS SET AND NEVER RUNS A KEY INTO ITS WORD. On the
 // keyboard the list said the default keys after CHANGE KEYS moved them, and every word sat a fixed 44 from its key, so CTRL / C
 // printed into crouch. The keys come from the key map now (the same text by default), and the word column clears the widest key.
-var LEGEND_MINI_CODES={'WASD':['KeyW','KeyA','KeyS','KeyD'],'SHIFT':['ShiftLeft'],'CTRL / C':['ControlLeft','KeyC'],'SPACE':['Space'],'R':['KeyR'],'F':['KeyF'],'B / I':['KeyB','KeyI'],'E':['KeyE'],'M':['KeyM'],'Z':['KeyZ'],'N':['KeyN'],'Q':['KeyQ'],'V':['KeyV'],'G':['KeyG'],'H':['KeyH'],'X':['KeyX'],'U':['KeyU'],'J':['KeyJ'],'U / J':['KeyU','KeyJ'],'F1':['F1'],'O':['KeyO'],'ENTER':['Enter'],'B or I':['KeyB','KeyI']};
+var LEGEND_MINI_CODES={'WASD':['KeyW','KeyA','KeyS','KeyD'],'SHIFT':['ShiftLeft'],'CTRL / C':['ControlLeft','KeyC'],'SPACE':['Space'],'R':['KeyR'],'F':['KeyF'],'B / I':['KeyB','KeyI'],'E':['KeyE'],'M':['KeyM'],'Z':['KeyZ'],'N':['KeyN'],'Q':['KeyQ'],'V':['KeyV'],'G':['KeyG'],'H':['KeyH'],'X':['KeyX'],'U':['KeyU'],'J':['KeyJ'],'U / J':['KeyU','KeyJ'],'F1':['F1'],'O':['KeyO'],'ENTER':['Enter'],'B or I':['KeyB','KeyI'],'CAPS':['CapsLock'],'NUM + -':['NumpadAdd','NumpadSubtract'],'- =':['Minus','Equal'],'0':['Digit0']};   // v27.60 (cloud-menus-f1-list-moved-keys), CLOUD HUNT 2026-10-15: the F1 full list kept CAPS, NUM + -, - = and 0 after CHANGE KEYS moved them (v26.52 made them movable, v25.71 promised the list prints the keys as set)
 function legendKeys(s){
   var c=LEGEND_MINI_CODES[s], o;
+  if(!c&&typeof s==='string'&&s.indexOf('HOLD ')===0&&LEGEND_MINI_CODES[s.slice(5)]) return 'HOLD '+legendKeys(s.slice(5));   // v27.60 (cloud-menus-f1-list-moved-keys), CLOUD HUNT 2026-10-15: HOLD Q kept saying Q after the item wheel moved; it names the key as set
   if(!c) return s;
-  try{ o=c.map(function(k){ return keyName(keysOf(k)); }); }catch(_l){ return s; }
+  try{ if(!c.some(function(k){ return keysOf(k)!==k; })) return s; o=c.map(function(k){ var q=keysOf(k); return ({NumpadAdd:'NUM +',NumpadSubtract:'NUM -'})[q]||keyName(q); }); }catch(_l){ return s; }   // v27.60 (cloud-menus-f1-list-moved-keys), CLOUD HUNT 2026-10-15: a row whose keys are all where they were reads its own text, so the defaults (CAPS, NUM + -, - =) never change, and the zoom pair reads NUM + / NUM - (keyName says NUM Add)
   return (s==='WASD')?o.join(''):o.join(s==='B or I'?' or ':' / ');
 }
 var LEGEND_MINI_PAD=[
@@ -44813,7 +44814,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.59: ENTER skips the haul reveal on the EXTRACTED card. Check 27.59 fails on v27.58',
+  now:'v27.60: The F1 full controls list names the keys you moved for the item wheel hold, walk, zoom, HUD size and zoom reset. Check 27.60 fails on v27.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

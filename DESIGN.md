@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.60 - F1 LIST NAMES MOVED KEYS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: v25.71 promised the F1 full controls list prints the keys as set, and v26.52 made Caps Lock, the HUD size pair, the zoom pair and 0 movable, but the list kept HOLD Q, CAPS, NUM + -, - = and 0 after CHANGE KEYS moved them. Proven in headless Chromium: with Q on K, Caps Lock on L, = on J, Num + on U and 0 on Y, the drawn rows still read HOLD Q, CAPS, NUM + -, - = and 0 while the Q row read K. Those rows now look up the keys as set; a row whose keys are all where they were reads its own text, so nothing changes by default.
+
+MEASURED. Check 27.60 passes, and fails on v27.59.
 ## v27.59 - ENTER SKIPS THE HAUL REVEAL
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: v27.08 says ENTER skips the haul reveal on the EXTRACTED card, but only ESC, TAB, pad A and B and a real click skipped it. With the focus on the page, which is where it sits when the card comes up, ENTER did nothing and the items kept ticking in one by one. Proven in headless Chromium: ENTER sent through the page left the reveal running with every item still hidden. ENTER now skips the reveal and leaves the card up, the way the first ESC does; once the haul is all shown it does what it did before. ENTER typed in the note box is not touched.
