@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.23 - RANDOM KIT: 2 GUNS, 1 OF EACH
+
+Co-op hunt while he was away. His word on RANDOM KIT: two guns, and one of each item on the wheel. It picks two different guns at random from the ones you own, the armoury and any gun items in the stash, and never the Scav Pistol while you own another gun. The first is in your hands, the second in your other hand, and each goes on its own class key (1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG, 6 shotgun, 7 marksman, 8 sniper, 9 energy); a gun that was only in the stash moves into the armoury as Equip as your gun does. With no gun at all you go up with the Scav Pistol. The items are one of each of the eight wheel types you have in the stash (Medkit, Smoke, Frag, Tripwire, Armour, Decoy, Bandage, Stim), the Armour only if your rig holds plates, then one Ammo Box, never more than the backpack takes and in wheel order if it runs short. Items stay in the stash until the raid starts. There is one item to each wheel type in this build, so no variant is picked. BEST KIT is the next build.
+
+MEASURED. Check 27.23 passes, and fails on v27.22.
 ## v27.22 - EMPTY GUN KEYS SHOW A GHOST
 
 Co-op hunt while he was away. His order: the guns the player is not carrying on the bar at the bottom should be translucent, and fill in opaque once the player has that gun. Each of the nine gun keys that holds no gun now shows a ghost of its class (the Scav Pistol on 1, the Compact SMG on 2, the Auto Rifle on 3, the Burst Carbine on 4, the Support MG on 5, the Riot Scattergun on 6, the Marksman Rifle on 7, the Longshot on 8 and the Meridian Lance on 9, or the classes your own key table sets): one flat light grey silhouette at about 27 percent, with no rarity colour and no magazine bar, under its key number. Carry a gun of that class and the key draws exactly as it did, opaque, with its rarity, magazine bar, reserve number and gold ring when in hand. A gun dragged to another key for the raid fills that key and its old key goes back to its ghost. The Undercroft bar and both windows of a two-player game use the same drawing, so they show it too.

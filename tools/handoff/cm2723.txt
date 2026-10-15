@@ -1,0 +1,7 @@
+v27.23: random kit: 2 guns, 1 of each
+
+RANDOM KIT gives two random guns on their class keys and one of each wheel item.
+
+Check 27.23. Fails on v27.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
