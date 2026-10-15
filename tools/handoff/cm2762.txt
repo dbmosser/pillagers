@@ -1,0 +1,7 @@
+v27.62: the haul reveal stops with its card
+
+Leaving the EXTRACTED card mid reveal no longer plays pick sounds in the Undercroft.
+
+Check 27.62. Fails on v27.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

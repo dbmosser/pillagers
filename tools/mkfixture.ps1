@@ -6093,6 +6093,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.62',what:'cloud-menus-haul-reveal-stops: the EXTRACTED card closed mid reveal (as the party lift closes it) ends the reveal and plays no more pick sounds',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof haulRevealing!=='function'||typeof haulRevealTick!=='function'||typeof netCardOff!=='function'||typeof HAUL_REV==='undefined') return 'SKIP: no haul reveal in this fixture';
+     var P2=__P(), snap=JSON.parse(JSON.stringify(P2)), bad=[], oSfx=sfx, n=0, k, closed;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
+       G.player.iv=99; G.bag=['scrap','board','optic','servo','core','medkit','wire','cell'];
+       __endRaid('extract');
+       if(!haulRevealing()) return 'SKIP: staging: the haul did not start revealing';
+       closed=netCardOff();
+       if(!closed) return 'SKIP: staging: the card did not close';
+       sfx=function(){ n++; };
+       haulRevealTick(5); haulRevealTick(5);
+       if(haulRevealing()) bad.push('the haul still reveals after its card closed');
+       if(n) bad.push(n+' pick sounds played after the card closed');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       sfx=oSfx; HAUL_REV=null;
+       try{ for(k in P2) if(!(k in snap)) delete P2[k]; for(k in snap) P2[k]=snap[k]; saveProfile(); }catch(_r){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'27.61',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.62 - THE HAUL REVEAL STOPS WITH ITS CARD
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the EXTRACTED card's button closed the card without ending the haul reveal, and a close the game makes itself (netCardOff when the party lift takes a teammate still reading his card) is a script click the skip never sees, so the reveal kept ticking behind the Undercroft and played the pick sound of every item still hidden. Proven in headless Chromium: {"closed":true,"state":"hub","stillRevealing":true,"soundsAfterClose":8}. The button now ends the reveal as it closes the card. Display only: nothing paid or kept moves.
+
+MEASURED. Check 27.62 passes, and fails on v27.61.
 ## v27.61 - THE WHAT IS NEW CARD NAMES THE CLEANER RAIDS
 
 Co-op hunt while he was away. The card was stamped v27.48 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

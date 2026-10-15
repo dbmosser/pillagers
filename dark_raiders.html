@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.61';
+var VER='27.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44815,7 +44815,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.61: The what is new card names the message feed, the alert lane, the barrels and the kit row. Check 27.61 fails on v27.60',
+  now:'v27.62: Leaving the EXTRACTED card mid reveal no longer plays pick sounds in the Undercroft. Check 27.62 fails on v27.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -58712,6 +58712,7 @@ document.getElementById('oc_copy').onclick=function(){
   }catch(_cp){ if(fallbackCopy()) done(); else failed(); }
 };
 document.getElementById('oc_btn').onclick=function(){
+  HAUL_REV=null;   // v27.62 (cloud-menus-haul-reveal-stops), CLOUD HUNT 2026-10-15: a card closed mid reveal (the party lift, netCardOff) ends the reveal, so no pick sound plays in the Undercroft
   ocCommit();
   document.getElementById('outcome').classList.remove('on');
   G=null; keys={};
