@@ -1,0 +1,7 @@
+v27.48: the what is new card names the feed
+
+The what is new card names the feed.
+
+Check 27.48. Fails on v27.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

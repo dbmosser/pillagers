@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.48 - THE WHAT IS NEW CARD NAMES THE FEED
+
+Co-op hunt while he was away. The card was stamped v27.32 and the stamp may not trail the build by more than 0.15. Its new line names the feed and the alert lane.
+
+MEASURED. Check 27.48 passes, and fails on v27.47.
 ## v27.47 - THE GOLDEN CLUE HUNT IS CUT
 
 Co-op hunt while he was away. His answer of 2026-10-14: cut the golden clue hunt, keep the golden enemy in every raid. The three clue props, the search circle that shrank to the golden machine, the CLUE callouts and every mark of them are gone, with their words, their code, the clue word to player 2 and their checks. The golden enemy itself stays: one machine or hostile pillager is still gilded in every raid, it is said once when it is picked, and there is no puzzle to find it: it shows as a gold mark on the minimap and the map while it is within 900 of you, and its shine draws wherever it is on screen. It leaves its hoard as before.

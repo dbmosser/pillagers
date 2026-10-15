@@ -6093,6 +6093,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.48',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>27.48+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('ONE'+' FEED.')!==0) bad.push('the card does not lead with the new news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'27.47',what:'nocluehunt, his answer (cut the golden clue hunt, keep the golden enemy every raid): there is no clue hunt (no props, no search circle, no clue words or marks, no clue code), the golden enemy is still gilded in every raid, it is said once, it is a gold mark on the maps within 900 of the player and not beyond, and the world word to player 2 names the golden body and no hunt',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
