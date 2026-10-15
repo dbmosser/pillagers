@@ -1,0 +1,7 @@
+v27.55: settings text in one voice
+
+Every Settings row description is in sentence case.
+
+Check 27.55. Fails on v27.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

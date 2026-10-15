@@ -6093,6 +6093,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.55',what:'his 2026-10-14 note (UI cleanup uic7): the Settings row descriptions are in one voice, sentence case like the rows of THE RAID: none of the rows is a line in capitals (38 of them were, in CONTROLS, DISPLAY, AUDIO, CONTROLLER and ACCESSIBILITY)',
+   run:function(){
+     if(typeof openSettings!=='function') return 'SKIP: no Settings window in this build';
+     var m=document.getElementById('settingsmodal'), was=m&&m.classList.contains('on');
+     if(!m) return 'SKIP: no Settings window';
+     var bad=[];
+     try{
+       try{ __topClear(); }catch(_t){}
+       openSettings();
+       var hs=document.querySelectorAll('#setlist .row .hint'), i, t, n=0, caps=[];
+       for(i=0;i<hs.length;i++){ t=String(hs[i].textContent||'').trim(); if(t.length<12) continue; n++; if(t===t.toUpperCase()&&/[A-Z]{4}/.test(t)) caps.push(t.slice(0,48)); }
+       if(n<20) return 'SKIP: only '+n+' row descriptions are drawn here';
+       if(caps.length) bad.push(caps.length+' of '+n+' row descriptions are in capitals, such as: '+caps.slice(0,3).join(' | '));
+       return bad.length?bad.join('; '):null;
+     } finally { try{ __topClear(); }catch(_c){} if(!was) m.classList.remove('on'); } }},
   {v:'27.54',what:'his 2026-10-14 note (UI cleanup uic6): the credits and XP readout is hidden on the title, the run card, the pause box, the DEMO pages and the welcome pack, map select, Settings, key, party and terms windows, and still shows on the shop and the stash',
    run:function(){
      var tr=document.getElementById('topright');

@@ -2242,7 +2242,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.54';
+var VER='27.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44796,7 +44796,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.54: Credits and XP show only on the screens where you spend them. Check 27.54 fails on v27.53',
+  now:'v27.55: Every Settings row description is in sentence case. Check 27.55 fails on v27.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59760,7 +59760,7 @@ var GAMEOPTS=[
      {n:'Off', cfg:{sharedSight:0}}
    ], def:0},
   {k:'gfxScale', label:'Render resolution',
-   hint:'THE WORLD ONLY. HUD AND TEXT STAY SHARP. LOWER RUNS FASTER.',   // v23.xx (gfx4): the HUD canvas no longer takes this scale
+   hint:'The world only. HUD and text stay sharp. Lower runs faster.',   // v23.xx (gfx4): the HUD canvas no longer takes this scale
    opts:[
      {n:'Full',   cfg:{gfxScale:1}},
      {n:'High',   cfg:{gfxScale:0.85}},
@@ -59791,34 +59791,34 @@ var GAMEOPTS=[
   // wallBake and fxLevel: readers test CFG.gfxLight!==0 and so on. Each row starts to change the picture as its own build lands;
   // CLASSIC with POST FX OFF is the look of v23.58 exactly, the rollback and the A/B arm.
   {k:'gfxLight', label:'LIGHTING',
-   hint:'HIGH: LAMPS CAST SHADOWS. STANDARD: LAMPS, NO SHADOWS. CLASSIC: THE ORIGINAL LOOK.',
+   hint:'High: lamps cast shadows. Standard: lamps, no shadows. Classic: the original look.',
    opts:[
      {n:'HIGH',     cfg:{gfxLight:2}},
      {n:'STANDARD', cfg:{gfxLight:1}},
      {n:'CLASSIC',  cfg:{gfxLight:0}}
    ], def:0},
   {k:'gfxPost', label:'POST FX',
-   hint:'BLOOM AND COLOUR GRADE. OFF RUNS FASTER.',
+   hint:'Bloom and colour grade. Off runs faster.',
    opts:[
      {n:'ON',  cfg:{gfxPost:1}},
      {n:'OFF', cfg:{gfxPost:0}}
    ], def:0},
   {k:'fxInt', label:'EFFECT INTENSITY',
-   hint:'SHAKE, HIT PAUSE, HIT FLASH, BLOOM AND GRAIN.',
+   hint:'Shake, hit pause, hit flash, bloom and grain.',
    opts:[
      {n:'FULL', cfg:{fxInt:1}},
      {n:'HALF', cfg:{fxInt:0.5}},
      {n:'OFF',  cfg:{fxInt:0}}
    ], def:0},
   {k:'hudTv', label:'HUD SIZE',
-   hint:'LARGE FOR TV: BIGGER RAID TEXT FOR A SCREEN ACROSS THE ROOM.',
+   hint:'Large for TV: bigger raid text for a screen across the room.',
    opts:[
      {n:'STANDARD',     cfg:{hudTv:0}},
      {n:'LARGE FOR TV', cfg:{hudTv:1}}
    ], def:0},
   // v24.xx (minimap3): his "add minimap"; on by default
   {k:'minimap', label:'MINIMAP',
-   hint:'THE STREET AROUND YOU, TOP RIGHT IN A RAID.',
+   hint:'The street around you, top right in a raid.',
    opts:[
      {n:'ON',  cfg:{minimap:1}},
      {n:'OFF', cfg:{minimap:0}}
@@ -59859,7 +59859,7 @@ var GAMEOPTS=[
   // the ones you hear), and a MONO switch for one ear or one speaker. Defaults are today: full, full, off. UI rides the HUD bus (volApply),
   // the footsteps scale inside blip, and MONO folds the output to one channel and drops every pan.
   {k:'volUi', label:'UI VOLUME', sec:'AUDIO',
-   hint:'MENU CLICKS AND HUD PINGS: PICKUPS, HIT TICKS AND THE CLOCK. ON TOP OF EFFECTS VOLUME.',
+   hint:'Menu clicks and HUD pings: pickups, hit ticks and the clock. On top of effects volume.',
    opts:[
      {n:'OFF',  cfg:{volUi:0}},
      {n:'25%',  cfg:{volUi:0.25}},
@@ -59868,7 +59868,7 @@ var GAMEOPTS=[
      {n:'FULL', cfg:{volUi:1}}
    ], def:4},
   {k:'volFoot', label:'FOOTSTEPS VOLUME', sec:'AUDIO',
-   hint:'YOUR STEPS AND THE STEPS YOU HEAR. LOWER IS QUIETER FEET ALL ROUND.',
+   hint:'Your steps and the steps you hear. Lower is quieter feet all round.',
    opts:[
      {n:'OFF',  cfg:{volFoot:0}},
      {n:'25%',  cfg:{volFoot:0.25}},
@@ -59877,7 +59877,7 @@ var GAMEOPTS=[
      {n:'FULL', cfg:{volFoot:1}}
    ], def:4},
   {k:'mono', label:'MONO AUDIO', sec:'AUDIO',
-   hint:'ONE CHANNEL FOR EVERYTHING, NO LEFT OR RIGHT. FOR ONE EAR OR ONE SPEAKER.',
+   hint:'One channel for everything, no left or right. For one ear or one speaker.',
    opts:[
      {n:'OFF', cfg:{mono:0}},
      {n:'ON',  cfg:{mono:1}}
@@ -59887,19 +59887,19 @@ var GAMEOPTS=[
   // press of the right button aims, the next stops. CROUCH HOLD: crouched only while the key is down (a controller B stays a tap). SPRINT TOGGLE:
   // one press (the key, or a pad stick click) runs until the next press, until you stop moving or until the breath runs out.
   {k:'aimMode', label:'AIM (RIGHT MOUSE)', sec:'CONTROLS',
-   hint:'HOLD: AIM WHILE THE BUTTON IS DOWN. TOGGLE: PRESS ONCE TO AIM, AGAIN TO STOP.',
+   hint:'Hold: aim while the button is down. Toggle: press once to aim, again to stop.',
    opts:[
      {n:'HOLD',   cfg:{aimTgl:0}},
      {n:'TOGGLE', cfg:{aimTgl:1}}
    ], def:0},
   {k:'crouchMode', label:'CROUCH', sec:'CONTROLS',
-   hint:'TOGGLE: ONE PRESS CROUCHES, THE NEXT STANDS. HOLD: CROUCHED ONLY WHILE THE KEY IS DOWN. KEYBOARD ONLY.',
+   hint:'Toggle: one press crouches, the next stands. Hold: crouched only while the key is down. Keyboard only.',
    opts:[
      {n:'TOGGLE', cfg:{crouchHold:0}},
      {n:'HOLD',   cfg:{crouchHold:1}}
    ], def:0},
   {k:'sprintMode', label:'SPRINT', sec:'CONTROLS',
-   hint:'HOLD: RUN WHILE THE KEY IS DOWN. TOGGLE: PRESS ONCE TO RUN, UNTIL YOU STOP OR TIRE. THE PAD STICK CLICK TOO.',
+   hint:'Hold: run while the key is down. Toggle: press once to run, until you stop or tire. The pad stick click too.',
    opts:[
      {n:'HOLD',   cfg:{sprintTgl:0}},
      {n:'TOGGLE', cfg:{sprintTgl:1}}
@@ -59908,7 +59908,7 @@ var GAMEOPTS=[
   // The mouse is the cursor, so the sensitivity is how far the AIM TURNS for a move of the mouse: the angle of the cursor round the player is
   // scaled (2x turns twice as far, 0.5x half as far) and the distance is left as it is. 100% is the cursor exactly as it was. See msMove.
   {k:'msHip', label:'MOUSE SENSITIVITY', sec:'CONTROLS',
-   hint:'HOW FAR THE AIM TURNS FOR A MOVE OF THE MOUSE. 100% IS THE CURSOR AS IT IS. NOT WHILE THE BACKPACK, THE MAP OR THE WHEEL IS OPEN.',
+   hint:'How far the aim turns for a move of the mouse. 100% is the cursor as it is. Not while the backpack, the map or the wheel is open.',
    opts:[
      {n:'50%',  cfg:{msHip:0.5}},
      {n:'75%',  cfg:{msHip:0.75}},
@@ -59918,7 +59918,7 @@ var GAMEOPTS=[
      {n:'200%', cfg:{msHip:2}}
    ], def:2},
   {k:'msAds', label:'AIM DOWN SIGHTS SENSITIVITY', sec:'CONTROLS',
-   hint:'THE SAME, WHILE YOU AIM DOWN SIGHTS. LOWER IS STEADIER.',
+   hint:'The same, while you aim down sights. Lower is steadier.',
    opts:[
      {n:'50%',  cfg:{msAds:0.5}},
      {n:'75%',  cfg:{msAds:0.75}},
@@ -59932,13 +59932,13 @@ var GAMEOPTS=[
   // empty gun only clicks until R. PAUSE ON FOCUS LOSS (a solo raid only, never in a party or a same machine pair) opens the pause box when
   // the window loses focus or is hidden, as ESC would.
   {k:'autoReload', label:'AUTO-RELOAD WHEN EMPTY', sec:'CONTROLS',
-   hint:'THE TRIGGER ON AN EMPTY MAGAZINE RELOADS IT. OFF: IT ONLY CLICKS UNTIL YOU PRESS RELOAD.',
+   hint:'The trigger on an empty magazine reloads it. Off: it only clicks until you press reload.',
    opts:[
      {n:'ON',  cfg:{autoRel:1}},
      {n:'OFF', cfg:{autoRel:0}}
    ], def:0},
   {k:'pauseBlur', label:'PAUSE WHEN THE WINDOW LOSES FOCUS', sec:'CONTROLS',
-   hint:'A SOLO RAID PAUSES WHEN YOU SWITCH AWAY. NEVER IN A PARTY.',
+   hint:'A solo raid pauses when you switch away. Never in a party.',
    opts:[
      {n:'OFF', cfg:{pauseBlur:0}},
      {n:'ON',  cfg:{pauseBlur:1}}
@@ -59948,7 +59948,7 @@ var GAMEOPTS=[
   // still scales it with the hit pause and the rest). BRIGHTNESS is a gamma on the world canvas (it lifts or sinks the shadows, the way a night
   // raid needs), applied at once. SHOW FPS puts a small frame rate plate in the top left corner of every screen.
   {k:'shake', label:'SCREEN SHAKE', sec:'DISPLAY',
-   hint:'HOW HARD THE PICTURE SHAKES: BLASTS, HEAVY HITS AND THE WARDEN. OFF HOLDS IT STILL.',
+   hint:'How hard the picture shakes: blasts, heavy hits and the warden. Off holds it still.',
    opts:[
      {n:'OFF',      cfg:{shake:0}},
      {n:'LIGHT',    cfg:{shake:0.5}},
@@ -59956,7 +59956,7 @@ var GAMEOPTS=[
      {n:'STRONG',   cfg:{shake:1.5}}
    ], def:2},
   {k:'gam', label:'BRIGHTNESS', sec:'DISPLAY',
-   hint:'LIFTS OR SINKS THE SHADOWS OF THE WORLD. NIGHT RAIDS ARE DARK ON PURPOSE.',
+   hint:'Lifts or sinks the shadows of the world. Night raids are dark on purpose.',
    opts:[
      {n:'DARKER',    cfg:{gam:1.25}},
      {n:'STANDARD',  cfg:{gam:1}},
@@ -59964,7 +59964,7 @@ var GAMEOPTS=[
      {n:'BRIGHTEST', cfg:{gam:0.65}}
    ], def:1},
   {k:'showFps', label:'SHOW FPS', sec:'DISPLAY',
-   hint:'THE FRAMES EACH SECOND, SMALL, IN THE TOP LEFT CORNER.',
+   hint:'The frames each second, small, in the top left corner.',
    opts:[
      {n:'OFF', cfg:{showFps:0}},
      {n:'ON',  cfg:{showFps:1}}
@@ -59973,7 +59973,7 @@ var GAMEOPTS=[
   // v8.35 under a hidden dial (CFG.dmgNumbers, 1 unless 0: yours on a target, the red ones over you for your teammate, the shock arcs); the row
   // is that dial. ON is today and the default, OFF takes every one of them off the screen. Cosmetic only: the damage is not touched.
   {k:'dmgNumbers', label:'DAMAGE NUMBERS', sec:'DISPLAY',
-   hint:'THE NUMBERS THAT FLOAT OFF A TARGET WHEN YOU HIT IT, AND OFF YOU WHEN YOU ARE HIT.',
+   hint:'The numbers that float off a target when you hit it, and off you when you are hit.',
    opts:[
      {n:'OFF', cfg:{dmgNumbers:0}},
      {n:'ON',  cfg:{dmgNumbers:1}}
@@ -59983,7 +59983,7 @@ var GAMEOPTS=[
   // reads: white, green, cyan and magenta. A colour of his own is used for the aim state too; the gun states (jammed, dry, empty, reloading) keep their
   // own warning colours, as the magazine and reload rings do.
   {k:'xhStyle', label:'CROSSHAIR', sec:'DISPLAY',
-   hint:'THE SHAPE: CROSS, DOT, CIRCLE OR T. THE MAGAZINE AND RELOAD RINGS STAY AROUND IT.',
+   hint:'The shape: cross, dot, circle or t. The magazine and reload rings stay around it.',
    opts:[
      {n:'CROSS',  cfg:{xhStyle:0}},
      {n:'DOT',    cfg:{xhStyle:1}},
@@ -59991,7 +59991,7 @@ var GAMEOPTS=[
      {n:'T',      cfg:{xhStyle:3}}
    ], def:0},
   {k:'xhCol', label:'CROSSHAIR COLOUR', sec:'DISPLAY',
-   hint:'WHITE IS THE USUAL, AMBER WHILE AIMING. THE OTHERS HOLD ONE COLOUR FOR BOTH.',
+   hint:'White is the usual, amber while aiming. The others hold one colour for both.',
    opts:[
      {n:'WHITE',   cfg:{xhCol:0}},
      {n:'GREEN',   cfg:{xhCol:1}},
@@ -59999,7 +59999,7 @@ var GAMEOPTS=[
      {n:'MAGENTA', cfg:{xhCol:3}}
    ], def:0},
   {k:'xhSz', label:'CROSSHAIR SIZE', sec:'DISPLAY',
-   hint:'HOW BIG THE CROSSHAIR IS, WITH THE RINGS ROUND IT.',
+   hint:'How big the crosshair is, with the rings round it.',
    opts:[
      {n:'SMALL',    cfg:{xhSz:0.8}},
      {n:'STANDARD', cfg:{xhSz:1}},
@@ -60010,14 +60010,14 @@ var GAMEOPTS=[
   // minimap as it was: 216 pixels at 1080p showing 1000 world units across. SIZE scales the plate (the HUD panels under it move down to make room);
   // ZOOM is how many world units the plate shows across, close (700) for a tight street, wide (1400) for the lie of the land.
   {k:'mmSize', label:'MINIMAP SIZE', sec:'DISPLAY',
-   hint:'HOW BIG THE MINIMAP IS, TOP RIGHT. THE PANELS UNDER IT MOVE DOWN.',
+   hint:'How big the minimap is, top right. The panels under it move down.',
    opts:[
      {n:'SMALL',    cfg:{mmSz:0.75}},
      {n:'STANDARD', cfg:{mmSz:1}},
      {n:'LARGE',    cfg:{mmSz:1.35}}
    ], def:1},
   {k:'mmZoom', label:'MINIMAP ZOOM', sec:'DISPLAY',
-   hint:'HOW MUCH STREET IT SHOWS. CLOSE IS A TIGHT VIEW, WIDE IS THE LIE OF THE LAND.',
+   hint:'How much street it shows. Close is a tight view, wide is the lie of the land.',
    opts:[
      {n:'CLOSE',    cfg:{mmSpan:700}},
      {n:'STANDARD', cfg:{mmSpan:1000}},
@@ -60028,7 +60028,7 @@ var GAMEOPTS=[
   // belt, the menus) and the team marks (pillagers against your party, the minimap dots). The sets were chosen by simulating each kind of colour
   // blindness and keeping every rarity and the two sides far apart in what that eye sees.
   {k:'cb', label:'COLOUR-BLIND MODE', sec:'ACCESSIBILITY',
-   hint:'RECOLOURS RARITY AND THE ENEMY AND ALLY MARKS: DEUTERANOPIA AND PROTANOPIA (RED-GREEN), TRITANOPIA (BLUE-YELLOW).',
+   hint:'Recolours rarity and the enemy and ally marks: deuteranopia and protanopia (red-green), tritanopia (blue-yellow).',
    opts:[
      {n:'OFF',          cfg:{cb:0}},
      {n:'DEUTERANOPIA', cfg:{cb:1}},
@@ -60040,7 +60040,7 @@ var GAMEOPTS=[
   // machine, the lightning that lights the whole street, and half of every burst of sparks, the Forge's included. Cosmetic only: what lightning
   // shows to the machines, the damage and the sound are untouched.
   {k:'flashRed', label:'REDUCED FLASHING', sec:'ACCESSIBILITY',
-   hint:'TONES DOWN THE BRIGHT FLASHES: BLASTS, MUZZLE FLASHES, LIGHTNING AND FORGE SPARKS.',
+   hint:'Tones down the bright flashes: blasts, muzzle flashes, lightning and forge sparks.',
    opts:[
      {n:'OFF', cfg:{flashRed:0}},
      {n:'ON',  cfg:{flashRed:1}}
@@ -60057,7 +60057,7 @@ var GAMEOPTS=[
   // only (the item wheel and the map cursor keep their natural direction); VIBRATION STRENGTH scales what the rumble sends, and the row is only drawn where the
   // browser can vibrate a pad at all. The defaults are what the pad always did: 100%, 0.22, off, standard.
   {k:'padSens', label:'STICK SENSITIVITY', sec:'CONTROLLER',
-   hint:'HOW FAR A STICK MOVES TO REACH FULL TILT: WALKING AND AIMING. HIGHER IS QUICKER.',
+   hint:'How far a stick moves to reach full tilt: walking and aiming. Higher is quicker.',
    opts:[
      {n:'LOW',       cfg:{padSens:0.75}},
      {n:'STANDARD',  cfg:{padSens:1}},
@@ -60065,7 +60065,7 @@ var GAMEOPTS=[
      {n:'VERY HIGH', cfg:{padSens:1.5}}
    ], def:1},
   {k:'padDz', label:'STICK DEADZONE', sec:'CONTROLLER',
-   hint:'HOW FAR A STICK MOVES BEFORE THE GAME SEES IT. RAISE IT IF A WORN STICK DRIFTS.',
+   hint:'How far a stick moves before the game sees it. Raise it if a worn stick drifts.',
    opts:[
      {n:'SMALL',    cfg:{padDz:0.12}},
      {n:'STANDARD', cfg:{padDz:0.22}},
@@ -60073,14 +60073,14 @@ var GAMEOPTS=[
      {n:'HUGE',     cfg:{padDz:0.4}}
    ], def:1},
   {k:'padInvY', label:'INVERT AIM STICK', sec:'CONTROLLER',
-   hint:'THE AIM STICK UP BECOMES DOWN. THE ITEM WHEEL AND THE MAP KEEP THEIR OWN WAY.',
+   hint:'The aim stick up becomes down. The item wheel and the map keep their own way.',
    opts:[
      {n:'OFF', cfg:{padInvY:0}},
      {n:'ON',  cfg:{padInvY:1}}
    ], def:0},
   {k:'rumbleK', label:'VIBRATION STRENGTH', sec:'CONTROLLER',
    show:function(){ return typeof Gamepad!=='undefined'&&!!Gamepad&&!!Gamepad.prototype&&('vibrationActuator' in Gamepad.prototype); },
-   hint:'HOW HARD THE PAD BUZZES WHEN CONTROLLER RUMBLE IS ON.',
+   hint:'How hard the pad buzzes when controller rumble is on.',
    opts:[
      {n:'LIGHT',    cfg:{rumbleK:0.5}},
      {n:'STANDARD', cfg:{rumbleK:1}},

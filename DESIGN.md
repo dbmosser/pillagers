@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.55 - SETTINGS TEXT IN ONE VOICE
+
+Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the row descriptions in Settings came in two voices: sentence case under THE RAID (his words and the older rows), and long lines in capitals under CONTROLS, DISPLAY, AUDIO, CONTROLLER and ACCESSIBILITY, about forty rows shouting at once. They are all sentence case now. No wording changed, and none of his own lines was touched.
+
+MEASURED. Check 27.55 passes, and fails on v27.54.
 ## v27.54 - CREDITS AND XP ONLY WHERE THEY ARE SPENT
 
 Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the credits and XP readout in the top right corner sat on every screen, over the title, the run cards, the pause box and the party DEMO pages, and on the frame line of the welcome pack, the map select screen and Settings, where the numbers mean nothing. It is hidden on those now and stays on the Undercroft floor, the stash and the shop, craft, hire, Wirt, bar, Mainframe and Fashion windows. In a raid it is left to the HUD.
