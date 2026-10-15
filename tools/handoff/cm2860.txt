@@ -1,0 +1,7 @@
+v28.60: player 2 fights the overseer, not a warden
+
+Player 2 now hits the Overseer as hard as player 1 and sees its sweeping laser.
+
+Check 28.60. Fails on v28.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

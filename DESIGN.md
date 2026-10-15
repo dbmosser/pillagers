@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.60 - PLAYER 2 FIGHTS THE OVERSEER, NOT A WARDEN
+
+Co-op hunt while he was away. In a two player raid player 2 window builds its own copy of every body from what the host tells it. The Overseer copy was never marked as the boss, so in player 2 window it was a plain Warden named THE OVERSEER. His rounds into its front were soaked by the plain Warden front armour (60 percent off, with WARDEN ARMOUR on his screen) though the Overseer has no armoured front, and they missed the half again bonus while its core vents; and the sweeping laser, which is drawn only for the boss, never showed for him though it still hurt him. Proven in headless Chromium with a linked pair: the same 100 round into the front does 100 on the host and 150 while venting, and player 2 sent 40 and 40 with WARDEN ARMOUR said; his window drew the beam in 0 frames where the host drew it in 2. The copy is now the boss when the host names it THE OVERSEER, so player 2 hits it, is told and sees it as player 1 does.
+
+MEASURED. Check 28.60 passes, and fails on v28.59.
 ## v28.59 - THE GOLDEN LABEL STANDS ABOVE THE NAMEPLATE
 
 Co-op hunt while he was away. Every body in sight wears its nameplate over its head, and the golden enemy has a GOLDEN label over its head too. The label was set at a fixed height that is where the nameplate sits, so whenever the golden enemy was in sight GOLDEN was printed across the top of its name. Proven in headless Chromium on real frames, every raid has one: at 1080p GOLDEN overlapped the CRAWLER nameplate by 43 by 10 pixels (sentry 43 by 12, howler 43 by 13), at 4K by 86 by 19. The label now stands just above the plate, at its old height or higher. Its words, colour and size are unchanged.
