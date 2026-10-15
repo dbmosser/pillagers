@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.05 - THE CAREER LEADERBOARD ON THE RUN CARD
+
+Co-op hunt while he was away. His order of 2026-10-15: career mode should have a leaderboard shown after every match, built into the existing UI. After a CAREER extraction or death the run card now has a second step in the same card, no second window: the ledger, then the haul reveal, then the LEADERBOARD. The continue control reads LEADERBOARD first; a click on it, ENTER or the controller A opens the board, and there it is LOG RUN AND RETURN again. ESC, TAB and the controller B still close the card and log the run at once, from either step. The board is the same one the Undercroft will open: his twenty best runs by raid score with rank, score, outcome, sector, time and date, this run in teal climbing into its place while its score counts up, RANK number OF total on top, a NEW PERSONAL BEST plate for a number one, and a pinned row under the list when the run did not make the top twenty. An abandon is not a run and has no step. Each player window shows its own save.
+
+MEASURED. Check 28.05 passes, and fails on v28.04.
 ## v28.04 - THE COLOUR SCHEME
 
 Co-op hunt while he was away. His order of 2026-10-15: "player cosmetics still need major improvements". Your operator can now wear a colour scheme: a primary, a secondary and an accent, picked as one preset on a new COLOURS rack. The primary is the coat, the sleeves and the trousers; the secondary is the plate carrier, the pack and the boots; the accent is the trim, a band on the gun arm, a stripe across the plate, the pack flap and the boot collars. Nineteen presets: the ten plain clothing colours became schemes of their own (an old save keeps its colour), and nine new ones are earned, Ember, Frost, Verdant, Crimson, Royal, Dune, Toxic, Nightshade and Gilded. Your own gun sleeve now follows your clothes (it was always navy). The scheme goes across the two-window link and is kept in saved looks. Picking a part yourself, a boot or a pack, still wins over the scheme. Cosmetic only.

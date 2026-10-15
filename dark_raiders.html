@@ -1427,6 +1427,7 @@
   <div class="sub" id="oc_sub"></div>
   <div class="manifest" id="oc_manifest"></div>
   <div class="manifest" id="oc_party" style="display:none;margin-top:12px"></div>
+  <div id="oc_board"></div>
   <!-- v21.37, from the whole-game bug hunt of 2026-10-08 (W-E2), seen on the 4K run card screenshots: THE RUN CARD HEADINGS ARE
        READABLE. HOW DID THAT RUN FEEL was 10.5 px, the smallest text on the card and smaller than the tags it heads, so from the
        couch it was hard to read. It is 12.5 px now, a touch under the tags so it still reads as their heading, and HOW IT WENT
@@ -2276,7 +2277,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.04';
+var VER='28.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15334,7 +15335,7 @@ function raidKey(code,repeat,ev){
   // A key typed in the note box never reaches here (the TEXTAREA bail in the keydown listener).
   if((code==='Enter'||code==='NumpadEnter')&&!repeat&&G&&G.over){
     var _oce=document.getElementById('outcome');
-    if(_oce&&_oce.classList.contains('on')&&haulRevealSkip()){ if(ev) ev.preventDefault(); return; }
+    if(_oce&&_oce.classList.contains('on')&&(haulRevealSkip()||ocLbNext())){ if(ev) ev.preventDefault(); return; }   // v27.NN (cboard3): the press after the haul reveal opens the LEADERBOARD step
   }
   if((code==='Escape'||code==='Tab')&&!repeat&&G&&G.over){
     var _ocw=document.getElementById('outcome');
@@ -16463,7 +16464,7 @@ function padMenu(pressed){
   // the mouse press that starts a drag (stashPadAct), the highlight is then the cursor, and A on the target is the release:
   // every backpack cell, stash cell and belt key, every rule and every word are the mouse drop. A control that cannot be
   // dragged, and A with nothing held on a button, is the click it always was.
-  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(md.id==='outcome'&&haulRevealSkip()){} else if(!stashPadAct(PAD.focus)) PAD.focus.click(); }   // v26.xx (career7): A on the card skips the haul reveal first
+  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(md.id==='outcome'&&haulRevealSkip()){} else if(md.id==='outcome'&&PAD.focus.id==='oc_btn'&&ocLbNext()){} else if(!stashPadAct(PAD.focus)) PAD.focus.click(); }   // v26.xx (career7): A on the card skips the haul reveal first
   // v14.23: on the pause box B and Menu resume the run. The search for a way out below would click the hidden RETURN TO
   // CHARACTER SELECTION first, which does nothing in a raid.
   // v14.26: B on the title does nothing. The search for a way out below finds no button there and would strip the title's
@@ -16486,7 +16487,7 @@ function padMenu(pressed){
     // v27.68 (cloud-menus-pad-b-closes-settings), CLOUD HUNT 2026-10-15: B took the first button whose words read like a way out, and in Settings the MINIMAP ZOOM row reading CLOSE
     // comes before the window's own CLOSE, so B changed the zoom and left Settings open. A Settings option row (id go_...) is never the way out.
     for(var i=0;i<bs.length;i++) if(!/^go_/.test(bs[i].id||'')&&/leave|close|not yet|keep my kit|back|done|return/i.test(bs[i].textContent||'')) { back=bs[i]; break; }
-    if(md.id==='outcome'&&haulRevealSkip()){} else if(back) back.click(); else md.classList.remove('on');   // v26.xx (career7): B on the card skips the haul reveal first
+    if(md.id==='outcome'&&haulRevealSkip()){} else if(md.id==='outcome'&&document.getElementById('oc_btn')) document.getElementById('oc_btn').click(); else if(back) back.click(); else md.classList.remove('on');   // v27.NN (cboard3): B on the card is the continue control whatever it reads now   // v26.xx (career7): B on the card skips the haul reveal first
     padSetFocus(null); PAD.focus=null;
   }
   return true;
@@ -30783,6 +30784,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   if(NET.on&&!G.sim){ try{ netSumSend(how,(how==='extract')?haul:0); }catch(_ns){} }   // v16.40: the party summary
   document.getElementById('outcome').classList.add('on');
   try{ ocLgStart(); }catch(_lgs){}   // v27.NN (cboard2): the ledger tallies row by row, then the haul reveals
+  try{ ocLbStart(how); }catch(_lbs){}   // v27.NN (cboard3): a CAREER card ends on the LEADERBOARD step
   if(how==='extract'&&!G.sim){ try{ haulRevealStart(); }catch(_hrv){} }   // v26.xx (career7): the haul reveals one by one
   // v26.xx (outcomemusic), HIS ORDER (2026-10-14): the piece for how the raid ended plays as the card comes up. An abandon plays none.
   try{ if(how==='extract') outMusic('win'); else if(how==='dead') outMusic('kia'); }catch(_om){}
@@ -30958,6 +30960,55 @@ careerStyle('lgcss',
   '.lg .lgeb i{display:block;font-style:normal;font-size:10.5px;letter-spacing:.14em;line-height:1.25;color:#ffe69a}'+
   '@keyframes lgin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}'+
   '.lg.lgdone .lgr,.lg.lgdone .lgstrip,.lg.lgdone .lgst,.lg.lgdone .lgem{animation:none;opacity:1}');
+// v27.NN (cboard3), HIS ORDER (2026-10-15): "career mode should still have a leaderboard that is shown after every match". THE LEADERBOARD STEP. After a CAREER extraction
+// or death the run card has a second step in the same card (no second window): the ledger, then the haul reveal, then the LEADERBOARD. The continue control reads
+// LEADERBOARD on the first step; a click on it, ENTER or the pad A advances (the first press while the tally or the reveal runs only lands it, as before), and on the
+// board it is LOG RUN AND RETURN again. ESC, TAB and the pad B still close the card at once and log the run, from either step. The step shows the same board as the
+// Undercroft (careerBoardView): this run teal and climbing into its rank, RANK #N OF M, NEW PERSONAL BEST for a number one, a pinned row for a run outside the top 20.
+// Ranked by RAID SCORE. An abandon is not a run here and has no step. Each window shows its own save.
+var OCLB=null;
+function ocLbStart(how){
+  var oc=document.getElementById('outcome'), b=document.getElementById('oc_btn'), host=document.getElementById('oc_board');
+  OCLB=null;
+  if(oc) oc.classList.remove('lbs');
+  if(host) host.textContent='';
+  if(b) b.textContent='Log run and return';
+  if(!G||!G.career||G.sim||!G.careerLb||!(how==='extract'||how==='dead')) return false;
+  OCLB={step:0,R:G.careerLb};
+  if(b) b.textContent='Leaderboard';
+  return true;
+}
+function ocLbEnd(){
+  var oc=document.getElementById('outcome'), b=document.getElementById('oc_btn'), host=document.getElementById('oc_board');
+  OCLB=null;
+  if(oc) oc.classList.remove('lbs');
+  if(host){ lbCountEnd(host); host.textContent=''; }
+  if(b) b.textContent='Log run and return';
+}
+function ocLbNext(){
+  var o=OCLB, oc=document.getElementById('outcome'), b=document.getElementById('oc_btn'), host=document.getElementById('oc_board'), win;
+  if(!o||o.step||!oc||!host||!oc.classList.contains('on')) return false;
+  o.step=1;
+  careerBoardView(host,{row:o.R.row,rank:o.R.rank,inTop:o.R.inTop,best:o.R.best,anim:1});
+  oc.classList.add('lbs');
+  if(b) b.textContent='Log run and return';
+  win=oc.querySelector('.ocwin'); if(win) win.scrollTop=0;
+  try{ sndUi('ok'); }catch(_su){}
+  return true;
+}
+(function(){
+  var oc=document.getElementById('outcome');
+  if(oc) oc.addEventListener('click',function(ev){
+    var b=document.getElementById('oc_btn');
+    if(ev.defaultPrevented||!ev.isTrusted||!OCLB||OCLB.step||!b||!(ev.target===b||b.contains(ev.target))) return;
+    ev.preventDefault(); ev.stopPropagation(); ocLbNext();   // a real click on the continue control opens the board; the presses the game makes itself (ESC, pad B) close the card
+  },true);
+})();
+careerStyle('ocbcss',
+  '#outcome #oc_board{display:none;width:100%;margin-top:8px}'+
+  '#outcome.lbs #oc_board{display:block}'+
+  '#outcome.lbs .ocwin>*:not(#oc_title):not(#oc_sub):not(#oc_board):not(.ocacts){display:none}'+
+  '#outcome.lbs #oc_copy{display:none}');
 function buildTags(){
   var w=document.getElementById('tagwrap'); w.innerHTML='';
   TAGS.forEach(function(t){
@@ -46041,7 +46092,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.04: A new COLOURS rack in FASHION: a three-colour scheme for your coat, plate, pack and trim. Check 28.04 fails on v28.03',
+  now:'v28.05: A career run card now ends on your leaderboard, with the run you just played climbing into its rank. Check 28.05 fails on v28.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60147,7 +60198,7 @@ document.getElementById('oc_copy').onclick=function(){
   }catch(_cp){ if(fallbackCopy()) done(); else failed(); }
 };
 document.getElementById('oc_btn').onclick=function(){
-  HAUL_REV=null;   // v27.62 (cloud-menus-haul-reveal-stops), CLOUD HUNT 2026-10-15: a card closed mid reveal (the party lift, netCardOff) ends the reveal, so no pick sound plays in the Undercroft
+  HAUL_REV=null; try{ ocLbEnd(); }catch(_lbe){}   // v27.62 (cloud-menus-haul-reveal-stops), CLOUD HUNT 2026-10-15: a card closed mid reveal (the party lift, netCardOff) ends the reveal, so no pick sound plays in the Undercroft
   ocCommit();
   document.getElementById('outcome').classList.remove('on');
   G=null; keys={};
