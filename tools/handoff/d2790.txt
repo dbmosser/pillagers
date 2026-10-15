@@ -1,0 +1,5 @@
+## v27.90 - A LOW ALARM THROUGH THE EXTRACTION COUNTDOWN
+
+Co-op hunt while he was away. His answer 41: no music for the extraction countdown, but "maybe some sort of low alarm?". When you call a ring there is now a quiet low alarm: a slow two-tone throb, about 124 hertz then 93, under a second long, well under the level of the ship ping. It sounds at once on the call and again every 1.8 seconds through the wait for the ship and through the boarding hold, and stops when the ring is no longer called. It is a sound and not music, and it is only made in a live raid.
+
+MEASURED. Check 27.90 passes, and fails on v27.89.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.90 - A LOW ALARM THROUGH THE EXTRACTION COUNTDOWN
+
+Co-op hunt while he was away. His answer 41: no music for the extraction countdown, but "maybe some sort of low alarm?". When you call a ring there is now a quiet low alarm: a slow two-tone throb, about 124 hertz then 93, under a second long, well under the level of the ship ping. It sounds at once on the call and again every 1.8 seconds through the wait for the ship and through the boarding hold, and stops when the ring is no longer called. It is a sound and not music, and it is only made in a live raid.
+
+MEASURED. Check 27.90 passes, and fails on v27.89.
 ## v27.89 - THE CROWBAR PAYS A PILLAGER THE SAME FROM BEHIND
 
 Co-op hunt while he was away. The cloud review of 2026-10-15, finding 14, and his answer 31 (consistent damage in pillager fights, no weak spots or bonus damage). v27.06 took the back shot bonus off rounds into a pillager, but the crowbar swing still did half again into a pillager back. It now does a pillager the same damage from every side. A machine still takes half again from behind, as before. The swing, its reach, its cooldown and its base damage are unchanged.

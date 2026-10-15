@@ -1,0 +1,7 @@
+v27.90: a low alarm through the extraction countdown
+
+A quiet low alarm now throbs through the extraction countdown.
+
+Check 27.90. Fails on v27.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

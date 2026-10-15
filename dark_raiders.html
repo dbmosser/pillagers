@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.89';
+var VER='27.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7720,6 +7720,18 @@ function blip(type,d,pan){
     lf.start(t); lf.stop(t+.96);
     ob.start(t); ob.stop(t+.95);
     oq.start(t); oq.stop(t+.96);
+  } else if(type==='xalarm'){
+    // v27.xx (xalarm), HIS ANSWER 41 (2026-10-13): "i don't know about music but maybe some sort of low alarm?" during the extraction countdown.
+    // A QUIET LOW ALARM, not music: one slow two-tone throb (about 124 Hz, then 93 Hz) through a low pass, a sawtooth underneath so a laptop
+    // speaker can play it, under a second long, at a level well under the ship ping. tickExtractPoints plays it again every 1.8 seconds from
+    // the call until the ring is no longer called, so it loops through the whole countdown and the boarding hold.
+    var ox1=a.createOscillator(), gx1=a.createGain(), fx1=a.createBiquadFilter();
+    ox1.type='sawtooth'; fx1.type='lowpass'; fx1.frequency.value=360; fx1.Q.value=0.7;
+    ox1.frequency.setValueAtTime(124,t); ox1.frequency.setValueAtTime(93,t+.46);
+    gx1.gain.setValueAtTime(.001,t); gx1.gain.linearRampToValueAtTime(.032*vol,t+.06);
+    gx1.gain.setValueAtTime(.032*vol,t+.40); gx1.gain.linearRampToValueAtTime(.0015,t+.46);
+    gx1.gain.linearRampToValueAtTime(.032*vol,t+.52); gx1.gain.setValueAtTime(.032*vol,t+.86); gx1.gain.exponentialRampToValueAtTime(.001,t+.98);
+    ox1.connect(fx1); fx1.connect(gx1); gx1.connect(OUT); ox1.start(t); ox1.stop(t+1.0);
   } else if(type==='inbound'){
     // THE WAIT NEEDED A HEARTBEAT. A single sonar ping, repeated on an interval
     // the caller shortens as the ship gets closer, so the approach is audible
@@ -24168,11 +24180,19 @@ function tickRaiderWaves(dt){
   G.waveN++;
   if(!G.sim) say('PILLAGER REINFORCEMENTS','warn');   // v22.xx (tr3fixc): the shooter voice
 }
+var XALARM_GAP=1.8;   // v27.xx (xalarm): seconds between throbs of the extraction alarm
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
   for(var zi=0;zi<G.zones.length;zi++){
     var z=G.zones[zi];
-    if(z.beaconT===null||z.beaconT===undefined) continue;
+    if(z.beaconT===null||z.beaconT===undefined){ z.alarmT=undefined; continue; }
+    // v27.xx (xalarm), HIS ANSWER 41: THE LOW ALARM LOOPS through the extraction countdown, the wait for the ship and the boarding hold alike
+    // (a ring is called from the call until its beacon is cleared). Only the ring you called, never the bot sim, and the dial CFG.xAlarm 0 mutes it.
+    if(!G.sim&&z===G.active&&CFG.xAlarm!==0){
+      if(z.alarmT===undefined) z.alarmT=XALARM_GAP;
+      z.alarmT+=dt;
+      if(z.alarmT>=XALARM_GAP){ z.alarmT=0; blip('xalarm'); }
+    }
     // THE APPROACH IS AUDIBLE NOW. A ping whose interval shrinks from 2.2s at
     // the moment of the call to 0.55s as the ship arrives, so the wait has a
     // pulse and you can hear how close it is with your eyes on the tree line
@@ -45808,7 +45828,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.89: The crowbar does a pillager the same damage from behind as from the front. Check 27.89 fails on v27.88',
+  now:'v27.90: A quiet low alarm now throbs through the extraction countdown. Check 27.90 fails on v27.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
