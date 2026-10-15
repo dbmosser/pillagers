@@ -1,0 +1,7 @@
+v27.07: player 2 sees and feels the raid events
+
+Player 2 now sees the raid events, with their warning rings, and feels the debris and the fog.
+
+Check 27.07. Fails on v27.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

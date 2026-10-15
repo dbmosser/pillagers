@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.07 - PLAYER 2 SEES AND FEELS THE RAID EVENTS
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The six raid events (orbital debris, machine convoy, bounty pillager, coolant rupture, lockdown alarm, Overseer rampage) were run by each window for itself, so player 2 had none of the host events: no ring, no countdown, no debris, no fog. The host now lists its live events in the world word, and the linked window keeps exactly those: the warning ring and its count, the pieces of debris about to land, the fog, the marks on both maps, and the same callouts. A piece of debris that lands on player 2 blasts, shakes and hurts him in his own window. Player 2 plans no events of his own any more. The machines of an event are the host bodies and the crates it leaves come over as they always did.
+
+MEASURED. Check 27.07 passes, and fails on v27.06.
 ## v27.06 - NO BONUS DAMAGE ON PILLAGERS
 
 Co-op hunt while he was away. His answer 31: "consistent damage is better in pillage battles, no weakspots/headshots". Pillagers never had a weak spot, but a round into a pillager back did half again the damage (the back shot bonus), so a flank cost him more than a front shot. A pillager is now hit for what the round does, from any side, so every fight with a pillager is the same sum. Machines keep their weak points (the Sentry vent, the Warden seam, the Bulwark spine) and the back shot bonus, since the weak points are all on machines and those fights are built around flanking. The crowbar is unchanged. No player takes a bonus from a pillager round either: there never was one.
