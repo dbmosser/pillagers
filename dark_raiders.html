@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.37';
+var VER='28.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16412,6 +16412,7 @@ function padSetFocus(el){
   if(el!==old){ try{ sndUi('move'); }catch(_su){} }   // v24.49 (his #45): the highlight ticks as it moves
   PAD.focus=el;
   try{ el.scrollIntoView({block:'nearest',inline:'nearest'}); }catch(_e){}
+  try{ var _sl=el.closest&&el.closest('#setlist'), _sj=_sl&&_sl.querySelector('.setjump'); if(_sj&&!_sj.contains(el)){ var _c=_sj.getBoundingClientRect().bottom-el.getBoundingClientRect().top, _z=(_sl.offsetHeight>0)?_sl.getBoundingClientRect().height/_sl.offsetHeight:1; if(_c>0) _sl.scrollTop-=(_c+4)/(_z>0?_z:1); } }catch(_sj2){}   // v28.38 (cloud-coop-pad-settings-under-bar), CLOUD HUNT 2026-10-15: in Settings the sticky jump bar covers the top of the list, so a control the pad highlights scrolls clear below it; the overlap is converted from screen pixels to list pixels under the menu zoom, as setSecJump notes
   // v22.01, from the whole-game bug hunt of 2026-10-08 (K11): A HIGHLIGHTED STASH ITEM IS NAMED. The line above the stash grid
   // (name, count, price, what wants it, a gun's damage) is written when the mouse comes onto a cell, and the controller highlight
   // never sent that, so a pad player read the idle hint whatever he picked. A stash or armoury cell the highlight lands on now
@@ -46506,7 +46507,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.37: On a controller, pressing X in the sweet spot of a reload now lands the active reload even standing next to a box. Check 28.37 fails on v28.36',
+  now:'v28.38: On a controller, walking up the Settings list always keeps the highlighted setting in sight below the jump bar. Check 28.38 fails on v28.37',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

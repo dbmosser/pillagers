@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.38 - CONTROLLER HIGHLIGHT NEVER HIDES UNDER THE SETTINGS JUMP BAR
+
+Co-op hunt while he was away. In Settings the jump bar (the row of section chips) sticks to the top of the list and is opaque. When a controller walks up the list, the highlight scrolls only until the control touches the top edge of the list, which is behind the bar, so the highlighted control could not be seen. Proven at 1920x1080: walking the D-pad up from CLOSE, 54 highlighted controls sat under the bar, 52 of them fully hidden, and the same at the smaller menu zoom a smaller window or the player 2 window gets. Now, after the highlight scrolls into view, the list scrolls a little further so the control sits just below the bar. Highlighting a jump chip itself does not move the list.
+
+MEASURED. Check 28.38 passes, and fails on v28.37.
 ## v28.37 - ACTIVE RELOAD ON A CONTROLLER NEXT TO A BOX
 
 Co-op hunt while he was away. On a controller X is the only reload button, and the X press picks search or reload once: with any box, body, door or forge in reach it always picked search, and the active reload reads only the reload key. So a second X press in the sweet spot of a reload searched the box instead of landing the bonus, and player 2, always on a controller, could never land an active reload near anything searchable while a keyboard player could. Proven in headless Chromium by driving the real pad poll with a fake controller: with nothing near, X in the sweet spot gives the bonus; with a box in reach it gave xMode KeyE, no bonus, and a search. Now, only while the reload is inside the sweet spot, X counts as the reload press; a downed teammate in reach still takes the revive, and X earlier or later in the reload still searches.

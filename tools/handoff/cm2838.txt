@@ -1,0 +1,7 @@
+v28.38: controller highlight never hides under the settings jump bar
+
+On a controller, walking up the Settings list always keeps the highlighted setting in sight below the jump bar.
+
+Check 28.38. Fails on v28.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
