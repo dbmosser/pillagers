@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.00 - DEMO PLAYERS GET A RANDOM CHARACTER
+
+Co-op hunt while he was away. His answer 15: in the DEMO each run gives the player a random character. Every run now builds a new look for you on the sandbox copy of your profile that the DEMO plays on: build, skin, hair, cut, beard, eyes, face, outfit colour, hat, boots, gloves, pack, patch and tattoo, each picked at random from the whole rack, with the Own Clothes outfit most of the time so the rest shows. The rack is open only inside the DEMO, so nothing is bought or unlocked on your real save, and your own character is back when you leave. A second player window plays its own copy, so the two players look different, and a run keeps its look through a respawn. Nothing about play changes.
+
+MEASURED. Check 28.00 passes, and fails on v27.99.
 ## v27.99 - THE DEMO CLOCK IS BIGGER
 
 Co-op hunt while he was away. His answer 14: the countdown clock needs to be bigger. The clock under the score in a DEMO (and in a CAREER) raid was the smallest type on the screen, about 13 pixels at 1080p, and only 19 in the last minute. It is now the size of the HUD callouts, about 19 pixels, and in the last minute it grows to the same size as the score, about 26, still red and still popping, and the whole block makes room for it. Nothing about the clock itself, its length or the score has changed.

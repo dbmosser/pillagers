@@ -1,0 +1,7 @@
+v28.00: demo players get a random character
+
+Each DEMO run now gives you a random character.
+
+Check 28.00. Fails on v27.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
