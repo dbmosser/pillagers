@@ -1,0 +1,31 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  c01-appear-default                     staged       7.6s    | appearmodal
+  c02-appear-unlocked                    NOT STAGED   5.7s    | EXCEPTION ReferenceError: P is not defined
+    at look (<anonymous>:1:2296)
+    at <anonymous>:3:158
+    at async <anonymous>:1:21
+  c03-raid-A-default                     NOT STAGED   4.9s    | EXCEPTION ReferenceError: P is not defined
+    at look (<anonymous>:1:2296)
+    at raid (<anonymous>:3:96)
+    at <anonymous>:3:154
+    at async <anonymous>:1:21
+  c04-raid-B-spartan                     NOT STAGED   4.8s    | EXCEPTION ReferenceError: P is not defined
+    at look (<anonymous>:1:2296)
+    at raid (<anonymous>:3:96)
+    at <anonymous>:3:154
+    at async <anonymous>:1:21
+  c05-raid-C-hood                        NOT STAGED   4.8s    | EXCEPTION ReferenceError: P is not defined
+    at look (<anonymous>:1:2296)
+    at raid (<anonymous>:3:96)
+    at <anonymous>:3:154
+    at async <anonymous>:1:21
+  c06-raid-D-ghost                       NOT STAGED   4.8s    | EXCEPTION ReferenceError: P is not defined
+    at look (<anonymous>:1:2296)
+    at raid (<anonymous>:3:96)
+    at <anonymous>:3:154
+    at async <anonymous>:1:21
+  c07-2p-frame                           NOT STAGED   4.7s    | EXCEPTION ReferenceError: P is not defined
+    at look (<anonymous>:1:2296)
+    at raid (<anonymous>:3:96)
+    at <anonymous>:3:153
+    at async <anonymous>:1:21

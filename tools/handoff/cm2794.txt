@@ -1,0 +1,7 @@
+v27.94: the air strike, power-ups, medals and haul have sounds
+
+The air strike, power-ups, medals, golden enemy and haul reveal have their own dark sounds, and the old thin chimes are gone.
+
+Check 27.94. Fails on v27.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2258,7 +2258,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.93';
+var VER='27.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30799,7 +30799,7 @@ function haulShow(nd,quiet){
   nd.classList.remove('hid');
   if(!quiet){
     nd.style.setProperty('--hc',RCOL[r]||'#9da3a8'); nd.classList.add('pop');
-    try{ if(k&&ITEMS[k]) sfx(lootVoice([k])); }catch(_sf){}
+    try{ if(k&&ITEMS[k]) blip(SPK_HAUL[r]||'haulTick'); }catch(_sf){}   // v27.94 (snd3): each item of the haul comes up with a soft tock that climbs with its rarity (common to gold)
   }
   if(R){ R.sum+=(+nd.getAttribute('data-v'))||0; haulTotalLine(); }
 }
@@ -45840,7 +45840,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.93: The What is New card is now a button on the pause menu, and no longer pops up by itself. Check 27.93 fails on v27.92',
+  now:'v27.94: The air strike, power-ups, medals, golden enemy and haul reveal have their own dark sounds, and the old thin chimes are gone. Check 27.94 fails on v27.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55266,12 +55266,17 @@ function airCall(x,y){
   A.m=0; A.aim=0; A.rdy=0; A.used=(A.used|0)+1;
   A.sk.push({x:x,y:y,t:0,n:0,pts:pts});
   say('AIR STRIKE INBOUND','warn');
+  // v27.94 (snd3), HIS ORDER (2026-10-15, "add the sounds"): THE AIR STRIKE HAS SOUNDS. Calling it said AIR STRIKE INBOUND in silence and each of the six
+  // blasts was the plain boom. Now the call is a target lock, a radio squelch and two low confirm pulses (yours, on the HUD bus), the strike craft comes
+  // in over you for the 1.5 s before the first blast (a rocket roar rising in pitch), and each of the six blasts is a recorded blast at its own pitch
+  // with a sub drop, the same ring and range as boom. No words, no voices. Cosmetic only: no seeded draw, no game state.
+  try{ blip('airConfirm'); blip('airInbound'); }catch(_ac){}
   try{ flowNetAirSend(x,y,a0); }catch(_fas){}   // v27.19 (coop6): and the other window sees it come
   return true;
 }
 function airBlast(st,i){
   var q=st.pts[i], p=G.player, R=AIR.R, j, e, de, dm;
-  sfx('boom',q.x,q.y);
+  sfx('airBoom',q.x,q.y,i);   // v27.94 (snd3): one of six blasts, each at its own pitch (the blast number rides as wid)
   spark(q.x,q.y,'#ffcf7a',26,320); flash(q.x,q.y,260,'#ffb267',.4);
   try{ boomFx(q.x,q.y,1.2,'frag'); }catch(_ab){}
   try{ gfxBlastScar(q.x,q.y,1,false); }catch(_as){}
@@ -56480,7 +56485,7 @@ function goldTick(dt){
     S.tries=(S.tries|0)+1; S.tried=0;
     ix=goldPickIx();
     if(ix>=0){ e=G.ents[ix]; S.hp0=e.maxhp||e.hp; goldMake(e); S.ref=e; }   // v27.47 (nocluehunt): said once, there is no hunt
-    if(ix>=0){ try{ say('GOLDEN ENEMY','info',{sub:'KILL IT FOR THE HOARD'}); }catch(_gsy){} }
+    if(ix>=0){ try{ say('GOLDEN ENEMY','info',{sub:'KILL IT FOR THE HOARD'}); }catch(_gsy){} try{ blip('goldAppear'); }catch(_gap){} }   // v27.94 (snd3): three low bells out of a sub bloom, once a raid when it is gilded
     return;
   }
   e=S.ref;
@@ -56792,7 +56797,7 @@ function goldNetTake(a){
     return 1;
   }
   e=evEnt(a[0]|0);
-  if(e&&!S.dead){ if(!e.golden){ e.golden=1; e.r=Math.round(e.r*GOLD.big); } if(!S.ref){ try{ say('GOLDEN ENEMY','info',{sub:'KILL IT FOR THE HOARD'}); }catch(_gsy){} } S.ref=e; }   // v27.47 (nocluehunt): said once on this window too
+  if(e&&!S.dead){ if(!e.golden){ e.golden=1; e.r=Math.round(e.r*GOLD.big); } if(!S.ref){ try{ say('GOLDEN ENEMY','info',{sub:'KILL IT FOR THE HOARD'}); }catch(_gsy){} try{ blip('goldAppear'); }catch(_gap2){} } S.ref=e; }   // v27.47 (nocluehunt): said once on this window too
   return 1;
 }
 // v27.47 (nocluehunt): the clue words and the clue mirror are gone with the hunt; the golden enemy mirror above stays
@@ -56826,6 +56831,7 @@ function airStrikeFx(x,y,a0,seat){
   A.sk.push({x:x,y:y,t:0,n:0,pts:pts,fx:1});
   nm=(typeof netSeatName==='function')?netSeatName(seat):null;
   try{ say('AIR STRIKE INBOUND','warn',nm?{sub:String(nm).toUpperCase()}:undefined); }catch(_asf){}
+  try{ blip('airInbound'); }catch(_aib){}   // v27.94 (snd3): the other window hears the craft come in, not the confirm (that is the caller's)
   return true;
 }
 function airHint(){ return (typeof padOn==='function'&&padOn())?padB('LB + RB'):('PRESS '+keyLabel('KeyG','G')); }   // v27.43 (rvw1, cloud review 21): the key as it is bound
@@ -57177,7 +57183,7 @@ function scoreKill(st,k,el,boss,x,y){
   s.n++; s.t=t; mx=arcadeStreakX(s.n); n*=mx;
   if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeCr(n),'#ffc04a',0,true); }catch(_alb){} }
   c=arcadeStreakCall(s.n);
-  if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(ANN_STREAK[c]) annCue(ANN_STREAK[c]); }catch(_avc){} }
+  if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(ANN_STREAK[c]) blip('medal'+(SPK_MEDALS[c]||1)); }catch(_avc){} }   // v27.94 (snd3): the streak is a medal pop that climbs, DOUBLE KILL medal1 to UNSTOPPABLE medal5
   return n;
 }
 function careerKill(k,el,boss,x,y,ke){
@@ -57201,7 +57207,7 @@ function arcadeKill(k,el,boss,x,y,ke){
   try{ arcadeBmKill(s.n,x,y); }catch(_bmk){}   // v23.xx (his answer 20): the best streak and the longest shot
   if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeCr(n),'#ffc04a',0,true); }catch(_alb){} }   // v23.56 (arcade31): +$50
   c=arcadeStreakCall(s.n);
-  if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(ANN_STREAK[c]) annCue(ANN_STREAK[c]); }catch(_avc){} }   // v25.xx (noannouncer): the streak plays its chime ladder
+  if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(ANN_STREAK[c]) blip('medal'+(SPK_MEDALS[c]||1)); }catch(_avc){} }   // v27.94 (snd3): the streak plays a medal pop that climbs (it was a chime ladder)
   ARCADE.mine=(ARCADE.mine|0)+n; ARCADE.kills=(ARCADE.kills|0)+1;
   try{ styleKill(k,el,boss,x,y,ke); }catch(_sk){}   // v26.xx (party1): the style bonuses and medals
   try{ pwrKill(k,el,boss,x,y,ke); }catch(_pk){}   // v26.xx (party2): a kill may drop a power-up
@@ -57255,8 +57261,9 @@ function styMedal(txt,pts,x,y){
   try{ feedMedal(txt,pts); }catch(_fmd){}   // v27.24 (feed1): the medal and its figure in the feed
   S.pops.push({txt:txt,pts:pts,t:+G.t||0});
   if(S.pops.length>8) S.pops.shift();
-  try{ styTone(STY_SND[txt]); }catch(_sn){}
-  try{ styTone(STY_TIER_SND[styTierOf(txt)]); }catch(_tn){}   // v27.39 (partyp2): and the voice of its tier on top
+  // v27.94 (snd3): the medal has ONE sound, a Halo style pop that climbs with the tier of its plate (copper medal1, amber medal2, gold medal3), in place of the
+  // old note and the tier voice on top of it
+  try{ blip('medal'+Math.max(1,Math.min(3,styTierOf(txt)))); }catch(_sn){}
   return pts;
 }
 // v27.39 (partyp2), HIS ORDER (2026-10-14, the party playtest): the medals are polished like Halo's, and a Halo medal has a sound for its tier. Every medal keeps
@@ -57488,7 +57495,7 @@ function pwrDrop(kd,x,y){
   S.since=0; S.lastDrop=t; S.drops++;
   S.log.push(S.kn+':'+kd); if(S.log.length>400) S.log.shift();
   try{ label(x,y-30,D.n,D.hex,0,true); }catch(_l){}
-  try{ styTone(PWR_SND.spawn); }catch(_s){}
+  try{ blip('pwrAppear'); }catch(_s){}   // v27.94 (snd3): a power-up drops: a low bell out of a sub
   return S.items[S.items.length-1];
 }
 // a kill was credited: maybe a drop where he fell (e is the body, when there is one)
@@ -57513,7 +57520,7 @@ function pwrTake(S,it,p){
   S.act[it.k]=Math.max(+S.act[it.k]||0,D.sec);
   try{ say(D.n,'ext',D.sec>0?{sub:D.sec+' S'}:undefined); }catch(_s){}
   try{ spark(it.x,it.y,D.hex,18,280); }catch(_sp){}
-  try{ styTone(PWR_SND[it.k]); }catch(_t){}
+  try{ if(SPK_PWR[it.k]) blip(SPK_PWR[it.k]); else styTone(PWR_SND[it.k]); }catch(_t){}   // v27.94 (snd3): each power-up has its own pickup sound (a kind with none keeps its old note)
   if(it.k==='pulse'){ try{ pwrPulse(p); }catch(_pp){} }   // v26.xx (party3): the screen clear goes off at once
   return true;
 }
@@ -57531,8 +57538,8 @@ function pwrTick(p,dt){
   for(k in S.act){
     if(!(S.act[k]>0)) continue;
     before=S.act[k]; S.act[k]-=dt;
-    if(S.act[k]<=0){ S.act[k]=0; try{ styTone(PWR_SND.end); }catch(_e){} }
-    else if(S.act[k]<=PWR.warn&&Math.ceil(S.act[k])!==Math.ceil(before)){ try{ styTone(PWR_SND.tick); }catch(_k){} }
+    if(S.act[k]<=0){ S.act[k]=0; try{ blip('pwrEnd'); }catch(_e){} }   // v27.94 (snd3): one runs out
+    else if(S.act[k]<=PWR.warn&&Math.ceil(S.act[k])!==Math.ceil(before)){ try{ blip('pwrLast'); }catch(_k){} }   // v27.94 (snd3): each of the last 3 s
   }
   if(S.act.clip>0&&p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; p.reloading=0; p.jam=0; }
   pwrTick2(p,dt,S);   // v26.xx (party3): the pulse clock and the bubble flash
@@ -57633,7 +57640,7 @@ function pwrShieldHit(sx,sy){
   S.shFlash=PWRX.flash;
   a=(sx!==undefined&&isFinite(sx)&&isFinite(sy))?Math.atan2(sy-p.y,sx-p.x):-1.5708;
   try{ spark(p.x+Math.cos(a)*24,p.y-14+Math.sin(a)*26,'#7ffcf0',8,170); }catch(_a){}
-  if(t-(S.shSnd===undefined?-9:S.shSnd)>0.15){ S.shSnd=t; try{ styTone(PWR_SND.shhit); }catch(_b){} }
+  if(t-(S.shSnd===undefined?-9:S.shSnd)>0.15){ S.shSnd=t; try{ blip('pwrBubbleHit'); }catch(_b){} }   // v27.94 (snd3): the bubble takes a hit
   return true;
 }
 // v27.86 (partyp4), from the cloud review of 2026-10-15 (items 8 and 23), and his own words on the screen clear (2026-10-14): "this is like a nuke in zombies? keep it

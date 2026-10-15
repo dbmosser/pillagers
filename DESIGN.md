@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.94 - THE AIR STRIKE, POWER-UPS, MEDALS AND HAUL HAVE SOUNDS
+
+Co-op hunt while he was away. His order of 2026-10-15: add the sounds. Calling the air strike now plays a target lock, a radio squelch and two low confirm pulses, the strike craft comes in over you with a rising roar for the 1.5 seconds before the first blast, and each of the six blasts is a recorded blast at its own pitch with a sub drop instead of the plain boom. Each power-up has its own drop sound, pickup sound, last-three-seconds tick, end sound and bubble hit. The kill medals are one low climbing pop per tier: the streak medals (DOUBLE KILL up to UNSTOPPABLE) climb in five steps, and the style medals sound by the tier of their plate. They replace the old thin chime ladder and notes. The golden enemy gets a low three-bell sound when it is gilded, and each item of the haul reveal ticks with a soft tock that climbs with its rarity. No words, no voices, no music.
+
+MEASURED. Check 27.94 passes, and fails on v27.93.
 ## v27.93 - WHAT IS NEW IS A PAUSE MENU BUTTON
 
 Co-op hunt while he was away. His answer 37: the What is New card moves to a button on the pause menu. It used to pop up by itself on the Undercroft floor once for each time you loaded the game, over the screen you had come to look at. It no longer does. The pause menu has a WHAT IS NEW button beside FEEDBACK; it opens a window with the newest eight notes, in the same words the card used, with CLOSE and ESC to shut it. The card stamp and the list are unchanged, so the build refresh that keeps the list current works as before.
