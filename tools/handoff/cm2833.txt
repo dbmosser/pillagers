@@ -1,0 +1,7 @@
+v28.33: one name for the raid score
+
+The score on the raid status plate is called RAID SCORE, like the run card.
+
+Check 28.33. Fails on v28.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

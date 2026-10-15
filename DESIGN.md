@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.33 - ONE NAME FOR THE RAID SCORE
+
+Co-op hunt while he was away. His order of 2026-10-15: score and haul should read as one story. The run card ledger and the leaderboard call the number RAID SCORE, but the running score on the raid status plate (hold ALT) still said CAREER SCORE, so the same number had two names. The tile reads RAID SCORE now, in a career raid. The DEMO keeps its own DEMO SCORE. Picture only: no score, credit or price moved.
+
+MEASURED. Check 28.33 passes, and fails on v28.32.
 ## v28.32 - THE WHAT IS NEW CARD NAMES POLISH PASS 4
 
 Co-op hunt while he was away. The card was stamped v28.17 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
