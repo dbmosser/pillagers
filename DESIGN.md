@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.92 - THE MAGNET POWER-UP IS GONE
+
+Co-op hunt while he was away. His words of 2026-10-15 about the magnet power-up: I do not like the idea, get rid of it. The magnet is removed completely: it no longer drops, it has no pickup, no effect, no picture, no timer chip, no note and no callout, and the sound pack carries no cue for it. The other five power-ups (bottomless clip, double damage, rapid fire, shield bubble, screen clear) stay and drop as before; there is one kind fewer on the drop table. The older checks that tested the magnet now test that no power-up moves a box.
+
+MEASURED. Check 27.92 passes, and fails on v27.91.
 ## v27.91 - THE PLAYER IS A NEON GREEN CHEVRON ON THE BIG MAP
 
 Co-op hunt while he was away. His order: make the player a neon green chevron on the big map (M) so he is easier to see. It was a gold dot with a facing line, the same gold as the district blocks and the loot marks. Now a neon green chevron pointing where he faces, outlined in ink over a soft green halo.

@@ -1,0 +1,7 @@
+v27.92: the magnet power-up is gone
+
+The magnet power-up is gone; the other five power-ups stay.
+
+Check 27.92. Fails on v27.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

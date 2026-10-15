@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.91';
+var VER='27.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45831,7 +45831,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.91: On the big map you are now a neon green chevron pointing where you face. Check 27.91 fails on v27.90',
+  now:'v27.92: The magnet power-up is gone; the other five power-ups stay. Check 27.92 fails on v27.91',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -57450,7 +57450,6 @@ var PWR_KINDS=[
   {k:'clip',n:'BOTTOMLESS CLIP',sec:20,w:22,hex:'#ffd24a',rgb:'255,210,74'},
   {k:'dmg',n:'DOUBLE DAMAGE',sec:15,w:20,hex:'#ff4a3a',rgb:'255,74,58'},
   {k:'rapid',n:'RAPID FIRE',sec:15,w:20,hex:'#7dff4a',rgb:'125,255,74'},
-  {k:'mag',n:'MAGNET',sec:20,w:12,hex:'#4aa8ff',rgb:'74,168,255'},
   {k:'shield',n:'SHIELD BUBBLE',sec:10,w:16,hex:'#4ff0e0',rgb:'79,240,224'},
   {k:'pulse',n:'SCREEN CLEAR',sec:0,w:10,hex:'#c88bff',rgb:'200,139,255'},
   // PWR-KINDS (the next party builds add their rows above this line)
@@ -57462,7 +57461,6 @@ var PWR_SND={
   spawn:[[0,1319,1319,0.08,'sine',0.03],[0.07,1760,1760,0.18,'sine',0.03]],
   end:[[0,660,330,0.2,'triangle',0.04]],
   tick:[[0,1500,1500,0.04,'square',0.03]],
-  mag:[[0,1200,300,0.35,'sine',0.06],[0.1,300,900,0.3,'sine',0.04]],
   shield:[[0,1047,1047,0.5,'sine',0.05],[0,1568,1568,0.5,'sine',0.03],[0.08,2093,2093,0.4,'sine',0.02]],
   pulse:[[0,140,35,0.7,'sine',0.12],[0,420,70,0.5,'square',0.05],[0.05,1800,200,0.4,'sawtooth',0.03]],
   shhit:[[0,1900,1200,0.08,'triangle',0.04]],
@@ -57528,7 +57526,7 @@ function pwrTick(p,dt){
     else if(S.act[k]<=PWR.warn&&Math.ceil(S.act[k])!==Math.ceil(before)){ try{ styTone(PWR_SND.tick); }catch(_k){} }
   }
   if(S.act.clip>0&&p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; p.reloading=0; p.jam=0; }
-  pwrTick2(p,dt,S);   // v26.xx (party3): the magnet, the pulse clock and the bubble flash
+  pwrTick2(p,dt,S);   // v26.xx (party3): the pulse clock and the bubble flash
 }
 // the glyph in the middle of a pickup coin (x, y the middle, s the size)
 function pwrGlyph(c,k,x,y,s,D,z){
@@ -57537,11 +57535,6 @@ function pwrGlyph(c,k,x,y,s,D,z){
   if(k==='clip'){ c.beginPath(); c.arc(x-s*0.5,y,s*0.5,0,6.2832); c.stroke(); c.beginPath(); c.arc(x+s*0.5,y,s*0.5,0,6.2832); c.stroke(); }
   else if(k==='dmg'){ c.font=hudFS(TYPE.label); c.textAlign='center'; c.fillText('2X',x,y+4*z); }
   else if(k==='rapid'){ for(j=0;j<3;j++){ c.beginPath(); c.moveTo(x-s*0.9+j*s*0.62,y-s*0.7); c.lineTo(x-s*0.35+j*s*0.62,y); c.lineTo(x-s*0.9+j*s*0.62,y+s*0.7); c.stroke(); } }
-  else if(k==='mag'){
-    c.beginPath(); c.arc(x,y+s*0.15,s*0.6,0,3.1416); c.stroke();
-    c.beginPath(); c.moveTo(x-s*0.6,y+s*0.15); c.lineTo(x-s*0.6,y-s*0.6); c.moveTo(x+s*0.6,y+s*0.15); c.lineTo(x+s*0.6,y-s*0.6); c.stroke();
-    c.fillStyle='rgba(255,255,255,1)'; c.fillRect(x-s*0.85,y-s*0.9,s*0.5,s*0.32); c.fillRect(x+s*0.35,y-s*0.9,s*0.5,s*0.32);
-  }
   else if(k==='shield'){
     c.beginPath(); c.moveTo(x,y-s); c.lineTo(x+s*0.8,y-s*0.55); c.lineTo(x+s*0.8,y+s*0.15); c.lineTo(x,y+s); c.lineTo(x-s*0.8,y+s*0.15); c.lineTo(x-s*0.8,y-s*0.55); c.closePath(); c.stroke();
   }
@@ -57612,30 +57605,17 @@ function pwrDraw(c,p){
   c.restore();
 }
 // v26.xx (party3), HIS YES (2026-10-14) to suggestion 40, the other three power-ups. They join the drops of party2 (the same rolls, three more kinds on the
-// table). MAGNET (20 s): loose wrecks and bodies that still hold something, and the pickups on the floor, slide toward you from PWRX.magR (52 m) and stop
-// at your feet; a wreck never slides through a wall or out of a shut room, and not while you search it. SHIELD BUBBLE (10 s): a bubble round you takes every
+// table). (The MAGNET of this build was taken out at his order, v27.92 nomagnet.) SHIELD BUBBLE (10 s): a bubble round you takes every
 // hit, from a round to a blast to a fire, with a flash and a ping (above the arcade spawn shield). SCREEN CLEAR (at once): a pulse leaves you, and every
 // ordinary machine on the screen dies (crawler, snitch, sentry, listener, howler, bulwark); bosses, elites, wardens, the pillbox and pillagers are not
 // touched. Those machines are credited to nobody (no streak, no kill count): the pulse pays a flat PWRX.pulsePer (30) for each, up to PWRX.pulseMax (400),
 // as a medal. In a linked window the machines are the host's, so the pulse is sent as a killing blow of the player's own. Live play only.
-var PWRX={magR:520,magSp:340,magPick:520,magStop:56,pulsePer:30,pulseMax:400,pulseT:0.8,flash:0.3};
-function pwrMagnet(p,dt,S){
-  var i, c, it, d, st, nx, ny, mt={body:1,botwreck:1,cache:1};
-  for(i=0;i<S.items.length;i++){
-    it=S.items[i]; d=Math.hypot(p.x-it.x,p.y-it.y);
-    if(d<PWRX.magR*1.3&&d>PWR.pick*0.5){ st=Math.min(d,PWRX.magPick*dt); it.x+=(p.x-it.x)/d*st; it.y+=(p.y-it.y)/d*st; }
-  }
-  for(i=0;G.containers&&i<G.containers.length;i++){
-    c=G.containers[i];
-    if(!c||!mt[c.type]||!c.loot||!c.loot.length||G.searching===c) continue;
-    if((c.tag&&EV_WRECK_TAGS[c.tag])||NET.on) continue;   // v27.45 (rvw3, cloud review 9): the reward of an event stays where the event put it, and in a party nobody drags boxes (each window would move its own copy and the host would answer FAR for a box the other player sees at his feet)
-    d=Math.hypot(p.x-c.x,p.y-c.y); if(d>PWRX.magR||d<=PWRX.magStop) continue;
-    st=Math.min(d-PWRX.magStop,PWRX.magSp*dt); nx=c.x+(p.x-c.x)/d*st; ny=c.y+(p.y-c.y)/d*st;
-    if(spotFree(G.map,nx,ny,12)&&!shutRoomAt(G.map,nx,ny)&&!shutRoomAt(G.map,c.x,c.y)){ c.x=nx; c.y=ny; if(fxr()<dt*4) spark(c.x,c.y,'#7fc4ff',2,60); }
-  }
-}
+var PWRX={pulsePer:30,pulseMax:400,pulseT:0.8,flash:0.3};
+// v27.92 (nomagnet), HIS ORDER (2026-10-15) about the magnet power-up: "i don't like the idea, get rid of it". THE MAGNET IS GONE, completely: its row in the drop table, its pickup, its
+// effect (the function that slid bodies, wrecks, caches and pickups toward you, and its constants), its picture, its timer chip, its note, its callout and the words that named it. The other five
+// power-ups (BOTTOMLESS CLIP, DOUBLE DAMAGE, RAPID FIRE, SHIELD BUBBLE, SCREEN CLEAR) are unchanged and drop as before; the drop table is five kinds. The notes above that talk about the magnet
+// (v26.xx party3, v27.45 rvw3) are history. No seeded draw: the drop roll is the same side stream, one kind fewer on the table.
 function pwrTick2(p,dt,S){
-  if(S.act.mag>0) pwrMagnet(p,dt,S);
   if(S.pulse){ S.pulse.t+=dt; if(S.pulse.t>=PWRX.pulseT) S.pulse=null; }
   if(S.shFlash>0) S.shFlash-=dt;
 }

@@ -1,0 +1,3 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  44-title-from-character-select         staged      12.9s  
+  03-hub-floor                           staged       5.8s  
