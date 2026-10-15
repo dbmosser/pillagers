@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.01 - THE WHAT IS NEW CARD NAMES POLISH PASS 2
+
+Co-op hunt while he was away. The card was stamped v27.87 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 28.01 passes, and fails on v28.00.
 ## v28.00 - DEMO PLAYERS GET A RANDOM CHARACTER
 
 Co-op hunt while he was away. His answer 15: in the DEMO each run gives the player a random character. Every run now builds a new look for you on the sandbox copy of your profile that the DEMO plays on: build, skin, hair, cut, beard, eyes, face, outfit colour, hat, boots, gloves, pack, patch and tattoo, each picked at random from the whole rack, with the Own Clothes outfit most of the time so the rest shows. The rack is open only inside the DEMO, so nothing is bought or unlocked on your real save, and your own character is back when you leave. A second player window plays its own copy, so the two players look different, and a run keeps its look through a respawn. Nothing about play changes.
