@@ -1,0 +1,1 @@
+| A GUN SWAPPED IN DURING A RELOAD STARTS ITS OWN RELOAD RING | v28.55 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 28.55 passes, fails on v28.54 |

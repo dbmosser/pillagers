@@ -1,0 +1,7 @@
+v28.55: a gun swapped in during a reload starts its own reload ring
+
+Swapping to an empty gun while reloading starts its reload ring from the beginning.
+
+Check 28.55. Fails on v28.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.55 - A GUN SWAPPED IN DURING A RELOAD STARTS ITS OWN RELOAD RING
+
+Co-op hunt while he was away. Changing gun stopped the reload but kept the old gun's reload length for the active reload ring. With the trigger held on an empty Support MG, a swap to an empty pistol started the pistol's reload at once, and the ring measured it against the Support MG's longer reload: proven in the cloud, the pistol's ring opened at about 59 percent, already past the sweet spot, and an R pressed in the next frame or two finished the reload at once with the bonus. The swap now clears the ring's record too, and so does every other way a different gun comes into his hands mid-reload (a pick-up, the fall back to the other gun when the one in hand is gone, a draw from the backpack, a gun handed over), so the new gun's reload starts its ring from empty, as every other reload does.
+
+MEASURED. Check 28.55 passes, and fails on v28.54.
 ## v28.54 - HOWLER LANDING CIRCLE SHOWS THE REAL BLAST
 
 Co-op hunt while he was away. The Howler shell's red landing circle was drawn squashed: as wide as the blast but only six tenths as tall. The world is drawn true to scale (the frag marker and the air strike rings are round) and the shell hurts everyone within the same distance in every direction, so a man a bit north or south of the aim point stood outside the drawn circle and still got hit. Proven in the cloud: a man 75 south of the aim point, outside the drawn circle, lost health just like a man 75 east, who was inside it; the circle's outline was 90 wide but 54 tall. Now the filling disc, the faint full outline and the growing ring are drawn round; size, colour, fade and fill timing are unchanged. Next playtest: the Howler circle will look taller than before, the same width, and now shows exactly where the shell hurts.

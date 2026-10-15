@@ -5,30 +5,31 @@
 :root{--bg:#0f1015;--panel:#171922;--line:#2a2d3a;--ink:#e8e6df;--dim:#9a9aa6;--acc:#ffb52e;}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,sans-serif;}
-body{width:1920px;height:1080px;overflow:hidden;padding:14px 28px 0}
+body{width:1920px;height:1080px;overflow:hidden;padding:12px 14px 0}
 header{display:flex;align-items:baseline;gap:22px;margin:0 0 8px}
-header h1{font-size:22px;letter-spacing:.14em;margin:0;font-weight:800}
+header h1{font-size:22px;letter-spacing:.14em;margin:0;font-weight:800;white-space:nowrap}
 header .sub{font-size:13px;color:var(--dim);letter-spacing:.04em}
 header .rule{margin-left:auto;font-size:12px;color:var(--dim);font-family:Consolas,monospace}
-#cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-.col{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px 8px}
+#cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.col{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 10px 8px}
 .dhead{display:flex;gap:12px;align-items:center;margin-bottom:5px}
 .dnum{font-size:34px;font-weight:900;color:var(--acc);line-height:1;width:30px;text-align:center}
 .dtxt h2{margin:0;font-size:19px;letter-spacing:.16em;font-weight:800}
 .dtxt .tag{margin:1px 0 0;font-size:12px;color:var(--dim);letter-spacing:.03em}
-.note{font-size:11.5px;line-height:1.38;color:#c9c8c0;margin:3px 0 8px;padding:6px 8px;background:#12141b;border-left:3px solid var(--acc);min-height:96px}
+.note{font-size:11px;line-height:1.38;color:#c9c8c0;margin:3px 0 8px;padding:6px 8px;background:#12141b;border-left:3px solid var(--acc);height:104px;overflow:hidden}
 .note b{color:var(--acc);letter-spacing:.08em}
 .rowab{display:flex;gap:10px}
 .box{background:#10121a;border:1px solid var(--line);border-radius:4px;padding:5px 6px 6px}
 .box.wide{margin-top:8px}
 .lab{font-size:10px;letter-spacing:.1em;color:var(--dim);margin-bottom:4px;font-weight:700}
 canvas{display:block;border-radius:2px}
-.strip{display:flex;gap:6px}
-.cell{flex:1}
-.cell canvas{width:100%!important;height:auto!important;image-rendering:auto}
-.cl{font-size:10px;letter-spacing:.12em;text-align:center;color:#c9c8c0;margin-top:3px;font-weight:700}
+.strip{display:flex;gap:3px;justify-content:center}
+.cell{flex:0 0 auto}
+.cell canvas{width:142px;height:152px}
+.facts{display:flex;gap:6px;margin-top:8px}.fact{flex:1;background:#12141b;border:1px solid var(--line);border-radius:4px;padding:5px 7px;font-size:11px;line-height:1.3;color:#c9c8c0}.fact b{display:block;font-size:9.5px;letter-spacing:.12em;color:var(--acc);margin-bottom:2px}.cl{font-size:10px;letter-spacing:.12em;text-align:center;color:#c9c8c0;margin-top:3px;font-weight:700}
+#foot{margin-top:8px;font-size:11px;color:#8d8d99;line-height:1.4}
 </style></head><body>
-<header><h1>PILLAGERS - OPERATOR ART CONCEPTS</h1><span class="sub">three directions for the bigger art upgrade. every figure on this page is drawn live on canvas in the game's own style (ink contour, rounded fills, ramps). pick one.</span><span class="rule">raid zoom = 1 unit : 1 px at 1080p, figure ~44 px</span></header>
+<header><h1>PILLAGERS - OPERATOR ART CONCEPTS</h1><span class="sub">three directions for the bigger art upgrade, every figure drawn live on canvas in the game style. pick one.</span><span class="rule">1x = raid zoom at 1080p</span></header>
 <div id="cols"></div>
 <script>
 'use strict';
@@ -87,8 +88,8 @@ const METAL='#5d6574', GUNM='#3a3f4b', LEATH='#6a4a32';
 function mkPose(P){
   const fl=Math.cos(P.ang)<0?-1:1;
   let a=fl>0?P.ang:Math.PI-P.ang; while(a>Math.PI)a-=2*Math.PI; while(a<-Math.PI)a+=2*Math.PI;
-  const mv=!!P.mv, ph=P.ph||0, amp=mv?3:0;
-  return {fl:fl,a:a,mv:mv,ph:ph,sw:Math.round(Math.sin(ph)*amp),liftA:Math.round(Math.max(0,Math.sin(ph))*2.6),liftB:Math.round(Math.max(0,-Math.sin(ph))*2.6),
+  const mv=!!P.mv, ph=P.ph||0, amp=mv?4:0;
+  return {fl:fl,a:a,mv:mv,ph:ph,sw:Math.round(Math.sin(ph)*amp),liftA:Math.round(Math.max(0,Math.sin(ph))*3),liftB:Math.round(Math.max(0,-Math.sin(ph))*3),
           bob:mv?Math.round(Math.abs(Math.sin(ph))*1.4):0,up:a<-0.62,low:P.low};
 }
 /* draw a figure: fn(c,L,Q) draws a right-facing body with the ground contact at (0,0) */
@@ -97,6 +98,7 @@ function drawFig(c,fn,x,y,L,P,S){
 }
 /* the rifle, drawn along +x from the rear grip. style: 0 chibi (slim, wood stock), 1 gear (shroud, optic), 2 bold (chunky, accent block) */
 function gunDraw(c,style,acc){
+  c.save();c.translate(1,2.4);c.fillStyle='rgba(8,6,18,.30)';rrp(c,-7,-2,33,7,2);c.fill();c.restore();   // the gun's own shadow on whatever is under it
   const m=GUNM, d='#22252d';
   if(style===0){
     blk(c,-6,-1,6,4,1,'#5a3f2a');                       // stock
@@ -182,6 +184,7 @@ function chibi(c,L,Q){
   if(pd==='round'){ blk(c,-10,-25,7,6,3,'#4b4f5a'); blk(c,4,-25,7,6,3,'#4b4f5a'); R(c,-8,-24,2,1,'#9aa0ad'); R(c,6,-24,2,1,'#9aa0ad'); R(c,-9,-20,5,1,a); R(c,5,-20,5,1,a); }
   else if(pd==='big'){ blk(c,-14,-28,10,9,4,'#7b8594'); R(c,-12,-27,5,1,'#c4cdd8'); R(c,-13,-23,8,1,a); dots(c,'#e1e7ee',[-12,-25,-6,-25]); blk(c,4,-25,7,6,3,'#5b6574'); R(c,6,-24,3,1,'#a9b2c0'); R(c,5,-20,5,1,a); }
   // ---- head ----
+  R(c,-6,-24,12,2,'rgba(10,8,20,.30)');
   chibiHead(c,L,Q,p,s,a,skin,hair);
   c.restore();
   // ---- near arm, hands and the gun ----
@@ -475,6 +478,7 @@ function bold(c,L,Q){
   } else {
     bsh(c,pEll(-9.5,-26,4.8,4),p); bsh(c,pEll(9.5,-26,4.8,4),p);
   }
+  R(c,-7,-29,14,2,'rgba(10,8,20,.32)');
   boldHead(c,L,Q,p,s,a,skin);
   c.restore();
   // ---- near arm, fist, gun ----
@@ -595,22 +599,28 @@ function build(){
     pl.forEach(q=>{drawFig(c,D.fn,q[2],q[3],LOOKS[q[0]],POSES[q[1]],1);});
     const boxB=el('div','box',null,rowAB); el('div','lab','B  THE SAME AT 4x',boxB);
     const cb=cv(232,236,boxB); const c2=cb.getContext('2d');ground(c2,232,236,'day',44+di);
-    drawFig(c2,D.fn,92,222,LOOKS[0],POSES.aim,4);
+    drawFig(c2,D.fn,100,222,LOOKS[0],POSES.aim,4);
     // (c) four looks
-    const boxC=el('div','box wide',null,col); el('div','lab','C  FOUR LOOKS  (TWO OUTFIT SETS, TWO COLOUR SCHEMES)  3x',boxC);
+    const boxC=el('div','box wide',null,col); el('div','lab','C  FOUR LOOKS  (TWO OUTFIT SETS, TWO COLOUR SCHEMES)  2.5x',boxC);
     const rc=el('div','strip',null,boxC);
-    LOOKS.forEach((L,i)=>{const w=el('div','cell',null,rc);const k=cv(144,176,w);const g=k.getContext('2d');ground(g,144,176,i<2?'day':'night',60+i+di*9);drawFig(g,D.fn,54,160,L,POSES.aim,3);el('div','cl',L.name,w);});
+    LOOKS.forEach((L,i)=>{const w=el('div','cell',null,rc);const k=cv(142,152,w);const g=k.getContext('2d');ground(g,142,152,i<2?'day':'night',60+i+di*9);drawFig(g,D.fn,60,140,L,POSES.aim,2.5);el('div','cl',L.name,w);});
     // (d) walk and aim poses
-    const boxD=el('div','box wide',null,col); el('div','lab','D  WALK AND AIM POSES  3x  (WALK, WALK OTHER FOOT, AIM, AIM UP-LEFT)',boxD);
+    const boxD=el('div','box wide',null,col); el('div','lab','D  WALK AND AIM POSES  2.5x  (WALK, WALK OTHER FOOT, AIM, AIM UP-LEFT)',boxD);
     const rd=el('div','strip',null,boxD);
-    [['WALK','walkA'],['STRIDE','walkB'],['AIM','aim'],['AIM UP-LEFT','aimUp']].forEach((q,i)=>{const w=el('div','cell',null,rd);const k=cv(144,176,w);const g=k.getContext('2d');ground(g,144,176,'day',80+i+di*9);drawFig(g,D.fn,q[1]==="aimUp"?88:54,160,LOOKS[0],POSES[q[1]],3);el('div','cl',q[0],w);});
+    [['WALK','walkA'],['STRIDE','walkB'],['AIM','aim'],['AIM UP-LEFT','aimUp']].forEach((q,i)=>{const w=el('div','cell',null,rd);const k=cv(142,152,w);const g=k.getContext('2d');ground(g,142,152,'day',80+i+di*9);drawFig(g,D.fn,q[1]==="aimUp"?82:60,140,LOOKS[di],POSES[q[1]],2.5);el('div','cl',q[0],w);});
+    const fx=el('div','facts',null,col); D.facts.forEach(f=>{const t=el('div','fact',null,fx);el('b',null,f[0],t);el('span',null,f[1],t);});
   });
 }
 DIRS.push({title:'REFINED CHIBI',tag:'today\'s proportions, a big quality jump',fn:chibi,
- note:'bake each look once to an offscreen sprite, one per facing (right plus mirrored left) and per walk phase (6 frames), so the 20-odd blk() calls per body run only on a look change; the frame cost stays one drawImage. cosm1 scheme colours feed ramp(); cosm3 head and cosm5 pack/boots layers are the same slots, redrawn with the shading ramps; cosm4 vest and pads draw over the torso exactly as now.'});
+ facts:[['ENVELOPE','same 34-42 px, nothing else moves'],['FRAME COST','one drawImage once baked'],['BEST AT','warmth, faces, cheap to ship']],
+ note:'bake each look once to an offscreen sprite, one per facing (right plus mirrored left) and per walk phase (6 frames), so the ~100 fills per body only run when a look changes and the frame cost stays one drawImage. The cosm1 scheme colours feed ramp(); the cosm3 head, cosm4 vest and pads and cosm5 pack and boots layers keep their slots and are redrawn with the shading. Gun and arms stay live. The cheapest of the three: nameplates, hit boxes and anchors do not move.'});
 DIRS.push({title:'GEAR-HEAVY RAIDER',tag:'ARC Raiders proportions: small head, broad shoulders, the pack and plates are the silhouette',fn:gear,
- note:'a new rig, ~46 px tall (today 34-42) and 26 px across the pauldrons, so nameplate, off-screen marker and aim-ring anchors lift ~6 px; hitbox stays. Bake three sprites per facing (body+legs x 6 walk frames, pack, helmet; the last two are static) and drawImage them in order, gun and arms stay live. cosm1 scheme: primary = armour paint, secondary = under-layer and pack, accent = lens glow and stripes; cosm3 = visor shells, cosm4 = chest plates, cosm5 = the big back mass. wear() is baked in once. Most art work: 4 helmets, 3 packs, 3 plates, 3 pauldron sets.'});
+ facts:[['ENVELOPE','~46 px tall, 26-31 wide: anchors lift ~5 px'],['FRAME COST','3 baked layers, 3 drawImage'],['BEST AT','silhouette and grit, most art work']],
+ note:'a new rig, ~46 px tall (today 34-42) and 26-31 px across the pauldrons, so the nameplate, off-screen marker and aim-ring anchors lift ~5 px; the hitbox stays. Bake three sprites per facing (body and legs x 6 walk frames, pack, helmet: the last two are static) and drawImage them in order; gun and arms stay live. cosm1: primary = armour paint, secondary = under-layer and pack, accent = lens glow and stripes; cosm3 = visor shells, cosm4 = chest plates, cosm5 = the back mass; wear() is baked once. Most art work: 4 helmets, 3 packs, 3 plates, 3 pauldron sets.'});
 DIRS.push({title:'BOLD STYLISED',tag:'Fortnite-like: chunky shapes, hard colour blocks, thick outline, reads at a glance',fn:bold,
- note:'cheapest to draw and the clearest from above. Each part is one Path2D shape with a 1.5 px ink and a hard-shade crescent (no texture, no ramps), ~35 fills live; baked it is one drawImage per body per facing. The thicker contour (1.5 px against the world\'s 1 px) is set on bodies only, which also lifts the player off the ground at 4K. cosm1 gives the three flat blocks directly; cosm3 hats, cosm4 vests and pads, cosm5 packs become exaggerated shape sets with an emblem per set. The crowd and pillagers reuse the same rig with a colour swap.'});
+ facts:[['ENVELOPE','~46 px, a little wider than today'],['FRAME COST','~35 fills live, or one baked'],['BEST AT','small size, colour, pick-up fun']],
+ note:'the cheapest to draw and the clearest from above. Each part is one Path2D shape with a 1.5 px ink and a hard-shade crescent (no texture, no ramps): about 35 fills live, or one drawImage once baked per facing. The thicker contour (1.5 px against the world\'s 1 px) goes on bodies only, which also lifts the player off the ground at 4K. cosm1 gives the three flat blocks directly; cosm3 hats, cosm4 vests and pads, cosm5 packs become exaggerated shape sets with an emblem per set. The crowd and pillagers reuse the rig with a colour swap.'});
 build();
-</script></body></html>
+</script>
+<div id="foot">Nothing here touches dark_raiders.html. All three keep the aim ring, hit box and walk timing; a pick turns into a baked sprite layer set (look x facing x 6 walk frames) built from this code, with the gun and arms still drawn live. 1x canvases are the real raid zoom; the 4x and 2.5x ones redraw the same code larger.</div>
+</body></html>
