@@ -1,0 +1,7 @@
+v28.22: weak spot shows its multiplier
+
+A weak point hit now shows its multiplier, such as WEAK SPOT 3.4x.
+
+Check 28.22. Fails on v28.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

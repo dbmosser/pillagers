@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.22 - WEAK SPOT SHOWS ITS MULTIPLIER
+
+Co-op hunt while he was away. His order: when a shot hits a weak spot the label should show the multiplier, for example weak spot 2.4x. The label on a weak point hit now reads WEAK SPOT and the multiplier that hit pays, to one decimal with a lower case x: WEAK SPOT 3.4x on a Sentry vent, 2.0x on its optic, and so on for the Warden seam, the Bulwark spine and the Pillbox. It is still in the weak point colour and still shows once per target every half second. The Overseer core, which is exposed while it vents and pays half again on every round, now says WEAK SPOT 1.5x the same way, and the two multiply when a seam is hit while it vents. Only the words changed; the multipliers, what a weak point does and the damage are as before. Pillagers have no weak spots, so nothing changes there.
+
+MEASURED. Check 28.22 passes, and fails on v28.21.
 ## v28.21 - THE COMBO RING IS BOLD AND ALIVE
 
 Co-op hunt while he was away. About the combo ring at the cursor he said he did not notice it at all. It was a thin ring with a small ten-pixel multiplier beside it. Now the ring is bolder, with a dark underlay so it reads on a bright floor and a soft glow on its sweep; the multiplier is a big number on a plate of its own (the x4 and x5 bigger again); the ring flashes outward and the number pops each time the chain grows; and in the last third of the chain the sweep shifts toward red and flickers while the number shivers, so he can see the chain is about to run out. It stays tidy: still one ring and one number beside it.

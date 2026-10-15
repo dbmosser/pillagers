@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.21';
+var VER='28.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11720,6 +11720,11 @@ function weakHit(e,bx,by,ux,uy){
   }
   return best;
 }
+// v27.xx (weakx), HIS ORDER (2026-10-14): "when we hit weak spot show the multiplier, e.g. 'weak spot 2.4x'". The label on a weak point hit reads WEAK SPOT and the multiplier
+// the hit pays, one decimal and a lower case x (WEAK SPOT 3.4x on a Sentry vent, 2.0x on its optic), in the weak point colour, still once per target every half second. The
+// Overseer core, exposed while it vents, pays 1.5 on every round and says WEAK SPOT 1.5x the same way (and the two multiply when a seam is hit while it vents). Only the words
+// move; the multipliers, the effects and the damage are untouched. Pillagers have no weak spots.
+function weakTxt(m){ return 'WEAK SPOT '+(Math.round((+m||1)*10)/10).toFixed(1)+'x'; }
 function applyWeak(e,W){
   if(W.eff==='overheat'){
     // It stops dead and cannot shoot while it vents. That is the reward: you
@@ -29117,7 +29122,7 @@ function updateBullets(dt){
                      WEAK SPOT label per pellet, eight stacked words in one frame that also pushed the loot names out of the 40-label
                      list. The label now shows at most once per target every 0.5 s (en.weakLblT); the damage, the spark, the clank, the
                      hit tick and the count of weak hits stay per pellet. */
-                  if(!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),'WEAK SPOT',WK.c,0,true); }   /* v21.64, HIS NOTE (2026-10-09): OPTIC 2X read as a scope, not a weak point; it says WEAK SPOT, in the weak point colour */
+                  if(!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(WK.mult*((en.boss&&en.overheat>0)?1.5:1)),WK.c,0,true); }   /* v21.64, HIS NOTE (2026-10-09): OPTIC 2X read as a scope, not a weak point; it says WEAK SPOT, in the weak point colour */
                   spark(b.x,b.y,WK.c,26,340);
                   sfx('clank',b.x,b.y,'metal');
                   G.tel.weakHits=(G.tel.weakHits||0)+1;
@@ -29174,7 +29179,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                   edmg*=1.5; _backShot=true; if(_nar) _nar=1.5;
                 }
               }
-              if(en.boss&&en.overheat>0) edmg*=1.5;   // v26.xx (ai24): the Overseer core is exposed while it vents
+              if(en.boss&&en.overheat>0){ edmg*=1.5; if(!WK&&!G.sim&&!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(1.5),'#ffc04a',0,true); } }   // v27.xx (weakx): and the exposed core says its multiplier too   // v26.xx (ai24): the Overseer core is exposed while it vents
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
               if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el); else en.hp-=affixSoak(en,edmg);   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here
               en.hitT=.16; hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat
@@ -46467,7 +46472,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.21: The combo ring is bold with a big multiplier, flashes when the chain grows and flickers red when it is about to run out. Check 28.21 fails on v28.20',
+  now:'v28.22: A weak point hit now shows its multiplier, such as WEAK SPOT 3.4x. Check 28.22 fails on v28.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
