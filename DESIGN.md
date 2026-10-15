@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.64 - A TAKEOVER PAYS NO FREE STRONGHOLD OR GOLDEN HOARD
+
+Co-op hunt while he was away. When the host window closes or loses its link, player 2 picks up the raid. The bodies his window only mirrored from the host are let go then (only the Overseer is rebuilt), and that includes a stronghold garrison and, often, the golden enemy (the golden pick is a garrison body in about a third of raids). The raid then ran on his window: an open stronghold found no defender alive and paid STRONGHOLD CLEARED, 1,000, for a garrison nobody fought, and the golden enemy, gone from the list, was taken as killed and dropped a free golden hoard with GOLDEN ENEMY DOWN. Proven in headless Chromium: host breached the gate with 11 defenders alive, player 2 took the world word with mirrored bodies, the host dropped, and three ticks later player 2 had STRONGHOLD CLEARED +1,000 and GOLDEN ENEMY DOWN with one hoard. A stronghold with no defender known to the window is not taken as cleared, and a golden enemy that was a mirror let go at the takeover is not taken as killed.
+
+MEASURED. Check 28.64 passes, and fails on v28.63.
 ## v28.63 - A DEAD OVERSEER ENDS ITS RAMPAGE
 
 Co-op hunt while he was away. The Overseer rampage gives a 12 second warning with a ring on the boss. Killing the Overseer inside that warning is ordinary play, since the ring shows you where it is. When the warning ran out the rampage found its boss dead and returned without starting, and its tick only ever looked for the death of a boss that had started, so the event never ended: for the full two minutes the ring, the map mark and OVERSEER RAMPAGE HUNTING YOU stayed up where a dead boss had stood, and no other raid event could start until it ran out. Proven in headless Chromium: Overseer killed one second before the warning ended, real frames run, the event still live 101 s later with its mark, and a debris event held until it ended. A rampage whose boss is already dead now ends when its warning does.

@@ -1,0 +1,7 @@
+v28.64: a takeover pays no free stronghold or golden hoard
+
+When player 2 picks up the raid after the host drops, he is no longer paid a stronghold clear or a golden hoard nobody earned.
+
+Check 28.64. Fails on v28.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
