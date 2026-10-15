@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.15 - THE NINTH BELT KEY STAYS ON SCREEN
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: on the stash the tactical belt row ran past the LOADOUT panel at the default menu size, key 9 off the edge of the screen at 1440p (key 9 right edge 2633 px, panel 2523, screen 2560). The box round the keys took the width of nine full size keys and never shrank, so the v18.98 rule that shrinks each key to fit had nothing to work on. Proven in headless Chromium at 1920x1080 with the menu zoom 1.3 (the 2560x1440 layout): key 9 right 1976 against the panel 1892 and the screen 1920. The box may now shrink (min-width:0), so the nine keys share one row inside the panel and stay square.
+
+MEASURED. Check 28.15 passes, and fails on v28.14.
 ## v28.14 - A KIT IS FOR ONE RAID
 
 Co-op hunt while he was away. From the cloud code review (findings 20 and 32). A RANDOM KIT or BEST KIT kept as your pick used to rewrite your hands, your gun keys and your packing every time you went up afterwards, and the lift quick ascent did it without showing any page. Now a kit is for the raid you pick it for. The pick stays on the map select screen until you go up with it, then falls back to MY LOADOUT, so the next time the screen opens on your own loadout. While a kit is picked the line under the row says THIS RAID ONLY. The quick ascent never applies a kit and takes what you packed. RANDOM KIT and BEST KIT also leave alone a gun you locked in the stash: it is never picked and never moved into the armoury.

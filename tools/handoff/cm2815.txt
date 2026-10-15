@@ -1,0 +1,7 @@
+v28.15: the ninth belt key stays on screen
+
+All nine tactical belt keys on the stash now stay inside the LOADOUT panel at 1440p and 4K.
+
+Check 28.15. Fails on v28.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
