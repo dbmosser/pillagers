@@ -1,0 +1,7 @@
+v28.59: the golden label stands above the nameplate
+
+The GOLDEN label over the golden enemy no longer prints on top of its name.
+
+Check 28.59. Fails on v28.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

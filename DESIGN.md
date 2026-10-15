@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.59 - THE GOLDEN LABEL STANDS ABOVE THE NAMEPLATE
+
+Co-op hunt while he was away. Every body in sight wears its nameplate over its head, and the golden enemy has a GOLDEN label over its head too. The label was set at a fixed height that is where the nameplate sits, so whenever the golden enemy was in sight GOLDEN was printed across the top of its name. Proven in headless Chromium on real frames, every raid has one: at 1080p GOLDEN overlapped the CRAWLER nameplate by 43 by 10 pixels (sentry 43 by 12, howler 43 by 13), at 4K by 86 by 19. The label now stands just above the plate, at its old height or higher. Its words, colour and size are unchanged.
+
+MEASURED. Check 28.59 passes, and fails on v28.58.
 ## v28.58 - THE WHAT IS NEW CARD NAMES POLISH PASS 6
 
 Co-op hunt while he was away. The card was stamped v28.45 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
