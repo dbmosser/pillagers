@@ -1,0 +1,5 @@
+## v28.28 - PLAYER 2 SEES A BURNING DOWNED PILLAGER GET UP EARLY
+
+Co-op hunt while he was away. The body snapshot used one flag bit (8388608) for two things: burning and getting up. When a downed pillager was hit by a fire round, player 2's window read the burn as the get-up: it showed the get-up bar and played the pick sound up to 3 s early (misleading his finisher window), then played no sound at the real get-up, and a man getting up who had stopped burning was drawn on fire. Proven in headless Chromium by downing a pillager, hitting him with elemHit fire, and feeding the host snapshot row through netEntsApply to a linked copy each frame. Now the row carries a ninth number with burning and getting up apart, and the linked window reads that; the old bit stays set as before for older readers.
+
+MEASURED. Check 28.28 passes, and fails on v28.27.

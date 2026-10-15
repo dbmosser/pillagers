@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.28 - PLAYER 2 SEES A BURNING DOWNED PILLAGER GET UP EARLY
+
+Co-op hunt while he was away. The body snapshot used one flag bit (8388608) for two things: burning and getting up. When a downed pillager was hit by a fire round, player 2's window read the burn as the get-up: it showed the get-up bar and played the pick sound up to 3 s early (misleading his finisher window), then played no sound at the real get-up, and a man getting up who had stopped burning was drawn on fire. Proven in headless Chromium by downing a pillager, hitting him with elemHit fire, and feeding the host snapshot row through netEntsApply to a linked copy each frame. Now the row carries a ninth number with burning and getting up apart, and the linked window reads that; the old bit stays set as before for older readers.
+
+MEASURED. Check 28.28 passes, and fails on v28.27.
 ## v28.27 - POWER-UPS ARE BIG FLOATING ICONS
 
 Co-op hunt while he was away. About the power-ups he said he never saw one, and that they should be a floating icon like the Zombies ones. A pickup was a thirty pixel coin with a thin beam. Now each is a big floating icon: a chamfered metal medallion (the shape of the medals) with a rim in the power-up colour and a picture of its own, floating well above the ground, bobbing and slowly spinning, over a tall light beam with sparks rising in it that shows even from a pickup just off the screen, with a glow on the ground and a turning ring that is exactly the reach that picks it up. It arrives with a flash, shows its name under it when he is near, and blinks over its last seconds, faster over the last two. The pictures: an infinity sign over a row of rounds for the bottomless clip, a bold 2X, three chevrons, a shield and a blast.

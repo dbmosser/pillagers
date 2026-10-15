@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.27';
+var VER='28.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46479,7 +46479,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.27: Power-ups are big floating icons over a tall beam, spinning and blinking before they vanish. Check 28.27 fails on v28.26',
+  now:'v28.28: In co-op, player 2 no longer sees a burning downed pillager start to get up early, and hears the get-up when it really happens. Check 28.28 fails on v28.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53941,7 +53941,7 @@ function netEntFlags(e){
 }
 function netEntRow(e){
   var k=NET_ENT_KINDS.indexOf(e.kind), s=NET_ENT_STATES.indexOf(e.state), mh=e.maxhp||1;
-  return [e.nid,(k<0)?0:k,Math.round(e.x),Math.round(e.y),+(+e.face||0).toFixed(2),(s<0)?0:s,Math.ceil(clamp(e.hp/mh,0,1)*20),netEntFlags(e)];
+  return [e.nid,(k<0)?0:k,Math.round(e.x),Math.round(e.y),+(+e.face||0).toFixed(2),(s<0)?0:s,Math.ceil(clamp(e.hp/mh,0,1)*20),netEntFlags(e),(e.burnT>0?1:0)|((e.downed&&e.getUp>0)?2:0)];  // v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: bit 8388608 is both burning and getting up, so the row carries the two apart
 }
 // A body that arrived after the build: what a linked window needs to draw and name it.
 function netEntNewWord(e){
@@ -54007,7 +54007,7 @@ function netEntFill(e,m){
   }
 }
 // The flags off a snapshot row, onto the body: what the drawing, the nameplates and the board read.
-function netEntFlagsApply(e,f){
+function netEntFlagsApply(e,f,bx){  // v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: bx is the row's burning (1) and getting up (2), apart; undefined reads the old shared bit
   e.downed=(f&1)?1:0; e.finished=(f&2)?1:0; e.alert=(f&4)?1:0; e.moving=!!(f&8); e.hostile=!!(f&16); e.friendlyPC=(f&32)?1:0;
   if((f&64)&&!(e.hitT>0)) e.hitT=.16;
   if((f&128)&&!(e.muzzle>0)) e.muzzle=.06;
@@ -54022,8 +54022,8 @@ function netEntFlagsApply(e,f){
   e.srch=(f&-2147483648)?1:0;   // v26.xx (ai26)
   e.steady=!!(f&8192); e.reviving=(f&16384)?e:null; e.shotT=(f&32768)?0.35:0; e.lootT=(f&65536)?1:0; e.healQ=(f&131072)?1:0;
   e.sprintPool=(f&262144)?6:0; e.helped=(f&524288)?1:0; e.grudge=!!(f&1048576); e.parley=(f&2097152)?1:0; e.blind=(f&4194304)?1:0;
-  e.burnT=(f&8388608)?0.3:0; e.stunT=(f&16777216)?0.3:0; e.chillT=(f&33554432)?0.3:0; e.frozenT=(f&67108864)?0.3:0; e.corrT=(f&134217728)?0.3:0;   // v23.xx (forge8): drawn here, run by the host only
-  if((f&8388608)&&e.downed){ if(!(e.getUp>0)){ e.getUp=1e-3; if(!G.sim){ try{ var _guN=earsOf(e.x,e.y); blip('pick',_guN.d,_guN.pan); }catch(_gun){} } } } else e.getUp=0;   // pillrevive: the host says he is getting up; the bar fills here
+  e.burnT=((typeof bx==='number')?(bx&1):(f&8388608))?0.3:0; e.stunT=(f&16777216)?0.3:0; e.chillT=(f&33554432)?0.3:0; e.frozenT=(f&67108864)?0.3:0; e.corrT=(f&134217728)?0.3:0;   // v23.xx (forge8): drawn here, run by the host only; v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: burning from the row, apart from the get-up
+  if(((typeof bx==='number')?(bx&2):(f&8388608))&&e.downed){ if(!(e.getUp>0)){ e.getUp=1e-3; if(!G.sim){ try{ var _guN=earsOf(e.x,e.y); blip('pick',_guN.d,_guN.pan); }catch(_gun){} } } } else e.getUp=0;   // pillrevive: the host says he is getting up; the bar fills here; v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: the get-up from the row, apart from the burn
 }
 // A snapshot from the host, on a linked window up top on that seed: each row onto its body by number, a body never seen made
 // on the spot. An older snapshot than the last applied is dropped (the fast channel is unordered). Returns what it did.
@@ -54049,7 +54049,7 @@ function netEntsApply(peer,m){
     e.nT=1; e.ntx=x; e.nty=y; e.ntf=f; e.nAge=0;
     e.state=NET_ENT_STATES[st]||'patrol';
     e.hp=Math.round(clamp(hb,0,20)/20*(e.maxhp||1));
-    netEntFlagsApply(e,fl);
+    netEntFlagsApply(e,fl,(typeof r[8]==='number'&&isFinite(r[8]))?(r[8]|0):undefined);  // v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: the burn and get-up apart
     n++;
   }
   return 'ents';

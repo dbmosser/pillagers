@@ -1,0 +1,7 @@
+v28.28: player 2 sees a burning downed pillager get up early
+
+In co-op, player 2 no longer sees a burning downed pillager start to get up early, and hears the get-up when it really happens.
+
+Check 28.28. Fails on v28.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
