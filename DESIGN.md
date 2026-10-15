@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.64 - KEYS WINDOW CROUCH AND SPRINT ROWS CLAIM NO MODE
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the Keys window rows read SHIFT sprint (hold), CTRL crouch (hold) and C crouch toggle, but the CROUCH and SPRINT settings decide hold or toggle. Proven in headless Chromium on a fresh profile: crouchHold 0, a Ctrl tap crouched (true) and a second tap stood (false) while the row said crouch (hold); with CROUCH HOLD, C held instead while its row still said crouch toggle, and with SPRINT TOGGLE the SHIFT row still said hold. The rows now read sprint, crouch and crouch (second key). The pause legend is not touched (check v17.86 pins it).
+
+MEASURED. Check 27.64 passes, and fails on v27.63.
 ## v27.63 - HELD AIM LET GO ON A FOCUS CHANGE
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: with AIM on HOLD (the default), a right mouse button held when the window lost focus left the aim on after focus came back, so he walked slow and aimed until he right clicked again. The keys, the mouse button, sprint and a held crouch were already let go on a focus change, but not the aim. Proven in headless Chromium: right press on the canvas, window blur and focus, ten frames: still aiming. A held aim is now let go with the keys; AIM on TOGGLE keeps a toggled aim as before.

@@ -1,0 +1,7 @@
+v27.64: keys window crouch and sprint rows claim no mode
+
+The Keys window names sprint and crouch without claiming hold or toggle; the CROUCH and SPRINT settings decide that.
+
+Check 27.64. Fails on v27.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
