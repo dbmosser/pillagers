@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.13';
+var VER='28.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43469,7 +43469,7 @@ acts:{KeyE:['go up',function(){
            // This called startRaid directly and never set kitChosen, so the
            // standard-kit fallback fired and the loadout stayed in the vault. The
            // same fault as the ASCEND button at v6.11, in a second place.
-           KeyR:['quick ascent',function(){ if(netGuestHeld()) return; liftResetDay(); if(kitPickOf()!=='mine') kitApply(kitPickOf()); commitKit(); ac(); startRaid(); }],   // v26.xx (kit1): the kept kit, if it is not MY LOADOUT   // v12.61: day by default here too, which is his answer 24; v15.91: a party guest is held
+           KeyR:['quick ascent',function(){ if(netGuestHeld()) return; liftResetDay(); commitKit(); ac(); startRaid(); }],   // v26.xx (kit4): the quick ascent skips the map select screen, so it takes what you packed and never a kit from an earlier visit (cloud review 20)   // v26.xx (kit1): the kept kit, if it is not MY LOADOUT   // v12.61: day by default here too, which is his answer 24; v15.91: a party guest is held
            // v6.50: the terms moved here from the shop counter. They are hardship you
            // sign for extra pay on the NEXT RAID, so they belong on the station that
            // sends you up, not beside a counter with prices on it.
@@ -43810,7 +43810,11 @@ function kitApply(kind){
   saveProfile();
 }
 function kitAnswer(kind,then){ kitApply(kind); (then||function(){ netKitGate(ascendNow); })(); }
-function kitDeploy(){ kitAnswer(kitPickOf()); }
+// v26.xx (kit4), CLOUD REVIEW FINDING 20: A KIT IS FOR THE RAID YOU PICK IT FOR. A kept RANDOM KIT or BEST KIT rewrote his hands, his gun keys and his packing on every ascent that came after, and the
+// lift R quick ascent did it with no page to see. The pick stays on the page until he goes up with it, then it falls back to MY LOADOUT (P.kitPick), so the next map select screen opens on his own
+// loadout; the quick ascent never applies a kit; and the line under the row says THIS RAID ONLY while a kit is picked. RANDOM KIT and BEST KIT also leave a gun he locked in the stash alone
+// (cloud review 32): a locked gun is never picked and so never moved into the armoury.
+function kitDeploy(){ var k=kitPickOf(); P.kitPick='mine'; kitAnswer(k); }
 function syncSectorKitPick(){
   var host=document.getElementById('sectorkitpick'), bs, i, cur=kitPickOf();
   if(!host) return;
@@ -43841,7 +43845,7 @@ careerStyle('careercss9',
 function kitOwnGuns(){
   var out=[], seen={}, i, k, it;
   for(i=0;i<(P.weapons||[]).length;i++){ k=P.weapons[i]; if(k&&k!=='fists'&&WEAPONS[k]&&!seen[k]){ seen[k]=1; out.push(k); } }
-  for(i=0;i<(P.stash||[]).length;i++){ it=ITEMS[P.stash[i]]; if(it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]&&!seen[it.gk]){ seen[it.gk]=1; out.push(it.gk); } }
+  for(i=0;i<(P.stash||[]).length;i++){ it=ITEMS[P.stash[i]]; if(it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]&&!seen[it.gk]&&!stashLocked(P.stash[i])){ seen[it.gk]=1; out.push(it.gk); }   /* v26.xx (kit4): a gun he locked stays where it is */ }
   return out;
 }
 // the chosen guns into place: list[0] in his hands, list[1] in the other hand, the rest packed from the stash; each on its class key. Returns the packed gun items.
@@ -46348,7 +46352,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.13: Two new racks in FASHION: vests (bandolier, harness, utility, heavy plates) and shoulder pads (round, spiked, big pauldron). Check 28.13 fails on v28.12',
+  now:'v28.14: A kit is for one raid: the pick resets to MY LOADOUT, and a locked gun is never taken. Check 28.14 fails on v28.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60777,7 +60781,7 @@ function syncSectorWx(){
 function syncSectorKit(){
   var el=document.getElementById('sectorkit');
   if(!el) return;
-  if(kitPickOf()!=='mine'){ var _kp=kitPickOf(); el.innerHTML='<b>Going up with:</b> '+KIT_INFO[_kp][0]+'  \u00b7  '+KIT_INFO[_kp][1]; return; }   // v26.xx (kit1): a kit picked on this page is what goes up
+  if(kitPickOf()!=='mine'){ var _kp=kitPickOf(); el.innerHTML='<b>Going up with:</b> '+KIT_INFO[_kp][0]+'  \u00b7  '+KIT_INFO[_kp][1]+'  \u00b7  THIS RAID ONLY'; return; }   // v26.xx (kit1): a kit picked on this page is what goes up
   var w=null;
   try{ w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null; }catch(_gw){ w=null; }
   if(w) w=hubForged(w);   // v23.xx (forge13): going up with the Auto Rifle MK III

@@ -1,0 +1,7 @@
+v28.14: a kit is for one raid
+
+A kit is for one raid: the pick resets to MY LOADOUT, and a locked gun is never taken.
+
+Check 28.14. Fails on v28.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

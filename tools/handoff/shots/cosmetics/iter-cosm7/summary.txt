@@ -1,0 +1,3 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  x-check                                staged       4.9s    | RESULT null
+  x-appear                               staged       7.5s    | appearmodal

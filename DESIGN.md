@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.14 - A KIT IS FOR ONE RAID
+
+Co-op hunt while he was away. From the cloud code review (findings 20 and 32). A RANDOM KIT or BEST KIT kept as your pick used to rewrite your hands, your gun keys and your packing every time you went up afterwards, and the lift quick ascent did it without showing any page. Now a kit is for the raid you pick it for. The pick stays on the map select screen until you go up with it, then falls back to MY LOADOUT, so the next time the screen opens on your own loadout. While a kit is picked the line under the row says THIS RAID ONLY. The quick ascent never applies a kit and takes what you packed. RANDOM KIT and BEST KIT also leave alone a gun you locked in the stash: it is never picked and never moved into the armoury.
+
+MEASURED. Check 28.14 passes, and fails on v28.13.
 ## v28.13 - THE BODY LAYER: VESTS AND SHOULDER PADS
 
 Co-op hunt while he was away. His order of 2026-10-15: every cosmetic should visibly change the silhouette at gameplay zoom, not just a tint. Two new racks in FASHION. VEST goes over the plate carrier: a Bandolier with brass cartridges across the chest, a Light Harness that takes the plate off and leaves cross straps and pouches, a Utility Vest with big front pockets and a radio with an antenna on the shoulder, and Heavy Plates that stand wider than the torso. SHOULDERS: Round Pads, Spiked Pads, and one Big Pauldron on the shoulder away from the gun, drawn over the shoulder caps so the team colour stays as the rim. The trim takes the colour scheme accent. Armour 2 and up keeps its own steel pauldrons so the tier still reads. Both racks go across the two-window link and are kept in saved looks; the Undercroft crowd wears them too. Cosmetic only.
