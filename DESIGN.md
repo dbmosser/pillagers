@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.65 - AN AIR STRIKE KILL IS NOT COUNTED ON YOUR GUN
+
+Co-op hunt while he was away. Cloud robustness hunt. Every gun counts its kills from the mark the last blow leaves on a body: a round marks it with the gun, a swing, a frag or a barrel marks it as theirs. The air strike left no mark, so a body you had shot and then finished with the strike kept your round's mark, and the kill went on that gun's tally (and, inside 1.5 s and past 45 m, paid a LONG SHOT). Proven in headless Chromium on v27.32 (CAREER seed 3): a crawler last hit by the Scav Pistol, then killed by an air strike: the gun tally went from {} to {pistol:1}. Now the strike marks the bodies it hits as an air strike blow, so the kill counts as yours (the kill mark is untouched) but on no gun and as no gun style.
+
+MEASURED. Check 28.65 passes, and fails on v28.64.
 ## v28.64 - A TAKEOVER PAYS NO FREE STRONGHOLD OR GOLDEN HOARD
 
 Co-op hunt while he was away. When the host window closes or loses its link, player 2 picks up the raid. The bodies his window only mirrored from the host are let go then (only the Overseer is rebuilt), and that includes a stronghold garrison and, often, the golden enemy (the golden pick is a garrison body in about a third of raids). The raid then ran on his window: an open stronghold found no defender alive and paid STRONGHOLD CLEARED, 1,000, for a garrison nobody fought, and the golden enemy, gone from the list, was taken as killed and dropped a free golden hoard with GOLDEN ENEMY DOWN. Proven in headless Chromium: host breached the gate with 11 defenders alive, player 2 took the world word with mirrored bodies, the host dropped, and three ticks later player 2 had STRONGHOLD CLEARED +1,000 and GOLDEN ENEMY DOWN with one hoard. A stronghold with no defender known to the window is not taken as cleared, and a golden enemy that was a mirror let go at the takeover is not taken as killed.

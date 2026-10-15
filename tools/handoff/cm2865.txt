@@ -1,0 +1,7 @@
+v28.65: an air strike kill is not counted on your gun
+
+A kill made by your air strike is no longer added to the kill count of the last gun you hit that target with.
+
+Check 28.65. Fails on v28.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

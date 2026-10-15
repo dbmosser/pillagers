@@ -6093,6 +6093,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.65',what:'cloud-robust-air-tally: a body shot with a gun and then killed by the air strike adds nothing to that gun kill tally',
+   run:function(){
+     if(typeof airCall!=='function'||typeof airFoe!=='function'||typeof gunKillNote!=='function'||typeof render2D!=='function'||!window.__deploy) return 'SKIP: no air strike or gun tally here';
+     var bad=null, co=CAREER_ON, R0=render2D, ts, e, i;
+     function fr(n){ for(var q=0;q<n;q++){ ts+=50; if(G&&G.player) G.player.hp=Math.max(G.player.hp,90); HID.fromWorker=1; try{ loop(ts); } finally{ HID.fromWorker=0; } } }
+     try{
+       render2D=function(){};
+       __topClear(); __runPrep(); CAREER_ON=1; __deploy({kit:[],mapIx:0,seed:3});
+       if(!G||!G.player||G.arcade) return 'SKIP: no CAREER raid was built';
+       ts=performance.now()+100000; fr(40);
+       e=G.ents.filter(function(x){ return airFoe(x)&&x.kind==='crawler'; })[0];
+       if(!e) return 'SKIP: no crawler to strike';
+       e.blow='g'; e.blowT=G.t; e.blowG='pistol'; e.hp=5; G.gunK={};
+       airCall(e.x,e.y);
+       for(i=0;i<120&&e.hp>0;i++){ e.vx=0; e.vy=0; fr(1); }
+       fr(5);
+       if(e.hp>0) return 'SKIP: the strike did not kill the crawler';
+       if(G.gunK&&G.gunK.pistol) bad='an air strike kill was added to the Scav Pistol tally ('+G.gunK.pistol+')';
+     } finally {
+       render2D=R0;
+       try{ if(G&&!G.over) endRaid('abandon'); }catch(_e){}
+       CAREER_ON=co; __topClear();
+     }
+     return bad; }},
   {v:'28.64',what:'cloud-raid-takeover: when player 2 picks up the raid after the host drops, an open stronghold whose garrison he only mirrored is not paid as cleared and the mirrored golden enemy drops no free hoard',
    run:function(){
      if(!(window.__state&&window.__runPrep)) return 'SKIP: no raid here';
