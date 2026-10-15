@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.28 - BEST KIT: 3 GUNS, UP TO 3 OF EACH
+
+Co-op hunt while he was away. His word on BEST KIT: three guns, and up to three of each item on the wheel. It takes your three best guns, ranked by the colour they wear (a rarity twin outranks its plain model), then tier, then worth, always three different models. The best is in your hands, the second in your other hand, the third is packed from the stash (a gun in the armoury is moved out to the stash for it), and each sits on its own class key. The items are up to three of each of the eight wheel types you have in the stash, in wheel order (Medkit, Smoke, Frag, Tripwire, Armour, Decoy, Bandage, Stim), the Armour only if your rig holds plates, then the biggest Ammo Box, never more than the backpack takes. Items stay in the stash until the raid starts. This replaces the old TOP GEAR fill of one gun, two of each grenade and a few single items. With no gun you go up with the Scav Pistol.
+
+MEASURED. Check 27.28 passes, and fails on v27.27.
 ## v27.27 - THE RUN GOALS ARE THE PARTY
 
 Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. Each window drew its own three run goals and counted its own kills, crates and strikes, so the two lists drifted apart and a goal one player finished paid its chip twice. The host now owns the goals: it says the three goals and how far each is in the world word, player 2 shows exactly those and says GOAL DONE when one is met, and he counts and pays nothing of his own. What counts is the party: player 2 kills reach the goals, his air strike counts for AIR STRIKE, and his kill of the bounty pillager claims the bounty. The goals are also in the hold Alt raid status now, one tile each, with the figure or DONE.

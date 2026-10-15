@@ -28,12 +28,12 @@
                       "replacement":  "  o.g=goldNetOut();   // v27.18 (coop5): and the golden enemy"
                   },
                   {
-                      "anchor":  "  if(fl.c) clueNetTake(fl.c);   // v27.18 (coop5): the clue hunt\n  // FLOW-NET-IN (the next coop builds take their keys above this line)",
-                      "replacement":  "  // FLOW-NET-IN (the next coop builds take their keys above this line)"
+                      "anchor":  "  if(fl.c) clueNetTake(fl.c);   // v27.18 (coop5): the clue hunt\n  if(fl.r) goalsNetTake(fl.r);   // v27.27 (coop8): the run goals",
+                      "replacement":  "  if(fl.r) goalsNetTake(fl.r);   // v27.27 (coop8): the run goals"
                   },
                   {
                       "anchor":  "  if(m.k===\u0027clue\u0027){\n    if(NET.role!==\u0027host\u0027||!netEntsHost()||!flowOn()) return \u0027ignored\u0027;\n    return clueTaken(m.i|0,1)?\u0027clue\u0027:\u0027gone\u0027;\n  }\n  if(m.k===\u0027air\u0027){",
-                      "replacement":  "    if(NET.role!==\u0027host\u0027||!netEntsHost()||!flowOn()) return \u0027ignored\u0027;\n    return clueTaken(m.i|0,1)?\u0027clue\u0027:\u0027gone\u0027;\n  }\n  if(m.k===\u0027air\u0027){"
+                      "replacement":  "  if(m.k===\u0027air\u0027){"
                   },
                   {
                       "anchor":  "    if(ix\u003e=0){ e=G.ents[ix]; S.hp0=e.maxhp||e.hp; goldMake(e); S.ref=e; }",

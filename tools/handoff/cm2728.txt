@@ -1,0 +1,7 @@
+v27.28: best kit: 3 guns, up to 3 of each
+
+BEST KIT gives your three best guns and up to three of each wheel item.
+
+Check 27.28. Fails on v27.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
