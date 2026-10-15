@@ -1,14 +1,14 @@
-{"generated":"2026-10-15T11:01:21","url":"http://localhost:8808/fixture.html","recipes":"C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/cosm-recipes-cosm7.json","seconds":73,"screens":[
-{"name":"x-sheet","screen":"x-sheet","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
-{"name":"x-raid1","screen":"x-raid1","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
-{"name":"x-raid2","screen":"x-raid2","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
-{"name":"x-raid3","screen":"x-raid3","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
-{"name":"x-raid4","screen":"x-raid4","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
-{"name":"x-2p","screen":"x-2p","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
+{"generated":"2026-10-15T11:03:53","url":"http://localhost:8808/fixture.html","recipes":"C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/cosm-recipes-cosm7.json","seconds":14,"screens":[
+{"name":"x-sheet","screen":"x-sheet","1080":{"staged":true,"note":"sheet 8","viewport":"1920x1080","shot":"x-sheet-1080.jpg","lint":""}},
+{"name":"x-raid1","screen":"x-raid1","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-raid1-1080.jpg","lint":""}},
+{"name":"x-raid2","screen":"x-raid2","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-raid2-1080.jpg","lint":""}},
+{"name":"x-raid3","screen":"x-raid3","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-raid3-1080.jpg","lint":""}},
+{"name":"x-raid4","screen":"x-raid4","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-raid4-1080.jpg","lint":""}},
+{"name":"x-2p","screen":"x-2p","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-2p-1080.jpg","lint":""}},
 {"name":"x-tab-head","screen":"x-tab-head","1080":{"staged":true,"note":"appearmodal","viewport":"1920x1080","shot":"x-tab-head-1080.jpg","lint":""}},
-{"name":"x-tab-body","screen":"x-tab-body","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
+{"name":"x-tab-body","screen":"x-tab-body","1080":{"staged":true,"note":"appearmodal","viewport":"1920x1080","shot":"x-tab-body-1080.jpg","lint":""},"4k":{"staged":true,"note":"appearmodal","viewport":"3840x2160","shot":"x-tab-body-4k.jpg","lint":""}},
 {"name":"x-tab-pack","screen":"x-tab-pack","1080":{"staged":true,"note":"appearmodal","viewport":"1920x1080","shot":"x-tab-pack-1080.jpg","lint":""}},
-{"name":"x-tab-colours","screen":"x-tab-colours","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
-{"name":"x-tab-sets","screen":"x-tab-sets","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
-{"name":"x-hub","screen":"x-hub","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}}
+{"name":"x-tab-colours","screen":"x-tab-colours","1080":{"staged":true,"note":"appearmodal","viewport":"1920x1080","shot":"x-tab-colours-1080.jpg","lint":""}},
+{"name":"x-tab-sets","screen":"x-tab-sets","1080":{"staged":true,"note":"appearmodal","viewport":"1920x1080","shot":"x-tab-sets-1080.jpg","lint":""}},
+{"name":"x-hub","screen":"x-hub","1080":{"staged":true,"note":"hub","viewport":"1920x1080","shot":"x-hub-1080.jpg","lint":""}}
 ]}

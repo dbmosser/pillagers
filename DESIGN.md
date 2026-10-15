@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.31 - KID FIRING LEAVES HIS ITEM ALONE
+
+Co-op hunt while he was away. With Kid firing on, player 2 taking a frag, bandage or plate out from the wheel had it used for him: taking an item out leaves the gun as the selected slot, and kid firing tested only that slot, so with a machine in range it pressed the trigger and the item in his hand took it. Proven with eval: player 2 with a machine in range took a frag out and 0.35 s later it was cooked and thrown, 3 frags down to 2, while every other trigger path already skips a held item (v26.24: an item takes a fresh pull of the trigger). Now kid firing does not fire while an item is in his hand; it still turns him toward the machine, and with nothing in his hand it shoots exactly as before.
+
+MEASURED. Check 28.31 passes, and fails on v28.30.
 ## v28.30 - RAID EVENTS END FOR PLAYER 2 WHEN THE HOST LEAVES
 
 Co-op hunt while he was away. In a career co-op raid, when the host extracts or dies while player 2 is still up, the host window spectates and keeps sending the world word, but with no raid flow in it (flowNetOut returns null once the raid is over for the host). Player 2 window only ends an event when a host word says so, and only reads the flow when it is there, so a live event stayed on for good: a coolant rupture kept his sight at 45 percent and the cold fog on him for the rest of the raid. Proven in a staged career pair: after 120 seconds the rupture was still live on player 2 with sight 0.45. Now the first spectating host word ends every live or warned event on player 2 window (it fades out as a normal end does), and no later host flow word is taken that raid, so a late word cannot bring it back. A live host that has no raid flow (a raid with no events) also sends null, but player 2 window has then never taken flow, so nothing happens there.

@@ -1,0 +1,7 @@
+v28.31: kid firing leaves his item alone
+
+With Kid firing on, a frag, bandage or plate player 2 takes out now stays in his hand until he uses it himself.
+
+Check 28.31. Fails on v28.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -65,3 +65,14 @@ stay (Curved stays clearly female, the 2026-10-08 build ruling; cosmetics are ea
 - cosm6 SHIPPED v28.18 outfit SETS (Scavenger, Raider, Engineer, Recon, Heavy), owned when every piece is.
 - cosm4fix, cosm7 (the tabbed appearance screen with a turning picture and rarity bars) and the older-check retargets (v10.54, v9.99, v10.47) are in the ship queue.
 - Frame cost measured (drawOp, minimum of nine batches of 1500): hero body 77-90 us before, 103-112 us after; a pillager body 75-96 us before and after. Nothing needed baking.
+
+## FINAL (v28.29)
+- cosm4fix SHIPPED v28.26 (the vest no longer darkens the carrier; found by running the older appearance checks against the cosm4 build).
+- cosm7 SHIPPED v28.29 (tabs HEAD, BODY, PACK, COLOURS, SETS; a bigger turning picture; rarity bars; the three colours on a scheme tile). Older checks retargeted in tools/mkfixture.ps1 (commit 4faf8dbe): v10.54 (outfit tiles are on the SETS tab), v9.99 (the wardrobe headings are read over all five tabs), v10.47 (a boot tile may be a figure picture that carries the sole). v25.17 (every rack tile at least 156px) holds untouched.
+- cosm8 (pictures, frame cost): no baking needed (see STATUS); the pictures are below. No separate build.
+- Open, for him: (1) the seat marks are a ring plus a number badge on the ground, no head marker (the name plate over a teammate and any hat would have covered it); (2) in a party, a body left at the same scheme as a lower seat takes the next free preset (Frost, Ember, Verdant, Nightshade): say if he would rather keep his own always; (3) the crowd in the Undercroft now wears the new schemes, vests and pads too (it rolls every rack); the new headgear stays his alone (crowd:0); (4) the HUD team score line (YOU / P2) is not coloured by seat, that code is the arcade owner's.
+
+## Pictures (tools/handoff/shots/cosmetics/)
+- before/: c01-appear-default, c02-appear-unlocked, c03-c06 raid at 1080p, lineup-raid-7x.jpg (four looks cropped 7x), c07 and c07-2p-crop-7x.jpg.
+- after/: x-tab-head, x-tab-body, x-tab-pack, x-tab-colours, x-tab-sets (the appearance screen, 1080p; x-tab-body-4k.jpg at 4K), x-raid1..4 (four sets in a raid at 1080p), lineup-raid-7x.jpg (the same crop as before), x-2p-1080.jpg and x-2p-crop-8x.jpg (two players, seat rings), x-sheet-1080.jpg (the five sets from three sides), x-hub-1080.jpg (the Undercroft crowd).
+- contact-before-after.jpg (before and after lineups stacked); iter-cosm1 ... iter-cosm7/ hold the picture of each build while it was made.

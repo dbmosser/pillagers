@@ -1,13 +1,15 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  x-tab-head                             staged       7.5s    | appearmodal
-  x-tab-body                             NOT STAGED   8.2s    | ERROR Unable to connect to the remote server
-  x-tab-pack                             staged       8.3s    | appearmodal
-  x-tab-colours                          NOT STAGED   8.2s    | ERROR Unable to connect to the remote server
-  x-tab-sets                             NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
-  x-raid1                                NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
-  x-raid2                                NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
-  x-raid3                                NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
-  x-raid4                                NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
-  x-2p                                   NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
-  x-sheet                                NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
-  x-hub                                  NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
+  x-tab-head                             staged       7.7s    | appearmodal
+  x-tab-body                             staged       7.3s    | appearmodal
+  x-tab-pack                             staged       7.2s    | appearmodal
+  x-tab-colours                          staged       7.2s    | appearmodal
+  x-tab-sets                             staged       7.2s    | appearmodal
+  x-raid1                                staged       7.3s    | {"x":380,"y":582,"z":1}
+  x-raid2                                staged       7.4s    | {"x":380,"y":582,"z":1}
+  x-raid3                                staged       7.3s    | {"x":380,"y":582,"z":1}
+  x-raid4                                staged       7.3s    | {"x":380,"y":582,"z":1}
+  x-2p                                   staged       8.9s    | {"x":380,"y":582,"z":1}
+  x-sheet                                staged       5.1s    | sheet 8
+  x-hub                                  staged       8.2s    | hub
+== 4k : window 3872x2263, viewport 3840x2160
+  x-tab-body                             staged       7.6s    | appearmodal
