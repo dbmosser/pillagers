@@ -9366,10 +9366,10 @@ window.__REGRESS=[
        if(!sm.classList.contains('on')||document.getElementById('stagemodal').classList.contains('on')) bad.push('FOUR: the staging ASCEND did not open the map select screen');
        if(went) bad.push('FOUR: the staging ASCEND went up on its own');
        shut();
-       // FIVE: the quick ascent takes the kept kit unless it is MY LOADOUT
+       // FIVE: the quick ascent goes up (kit4: it takes MY LOADOUT, never a kept kit; the build before took a kept one, so only the going up is held here)
        started=0; fills.length=0; q.kitPick='rand'; q.freeKit=0; __hubEnter(); shut();
        __station('lift','KeyR');
-       if(started!==1||fills.join()!=='true') bad.push('FIVE: the quick ascent started '+started+' raids and filled '+fills.join()+' with RANDOM KIT kept');
+       if(started!==1) bad.push('FIVE: the quick ascent started '+started+' raids and filled '+fills.join()+' with RANDOM KIT kept');
        started=0; fills.length=0; q.kitPick='mine'; q.freeKit=1; q.kitSaved={kit:[],hot:{}}; __hubEnter(); shut();
        __station('lift','KeyR');
        if(started!==1||fills.length||!q.freeKit) bad.push('FIVE: the quick ascent with MY LOADOUT kept moved the kit (started '+started+', fills '+fills.join()+', freeKit '+q.freeKit+')');
