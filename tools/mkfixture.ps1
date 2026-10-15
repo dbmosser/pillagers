@@ -6093,6 +6093,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.65',what:'cloud-menus-keys-x-no-board: the Keys window rows and the controls card never use the retired word board; the X row says call for extraction, then extract',
+   run:function(){
+     if(typeof keysOpen!=='function'||typeof KEYS==='undefined'||typeof KEYS_ACTS==='undefined'||!KEYS_ACTS.length||typeof LEGEND==='undefined') return 'SKIP: this fixture has no Keys window or controls card';
+     var bad=[], Pf=__P(), km0=JSON.stringify(Pf.keymap===undefined?null:Pf.keymap), m, t, i, j, x=null;
+     try{
+       __topClear(); __runPrep();
+       Pf.keymap={}; KEYS.inv=null; keysInv();
+       keysOpen(false);
+       m=document.getElementById('keysmodal');
+       if(!m||!m.classList.contains('on')) return 'SKIP: the Keys window did not open';
+       t=m.querySelectorAll('.row b');
+       if(!t.length) bad.push('the Keys window drew no action rows');
+       for(i=0;i<t.length;i++) if((/(^|[^a-z])board([^a-z]|$)/i).test(String(t[i].textContent||''))) bad.push('the Keys window row reads '+JSON.stringify(String(t[i].textContent)));
+       for(i=0;i<KEYS_ACTS.length;i++){ if((/(^|[^a-z])board([^a-z]|$)/i).test(String(KEYS_ACTS[i][1]))) bad.push('the Keys row for '+KEYS_ACTS[i][0]+' reads '+JSON.stringify(KEYS_ACTS[i][1])); if(KEYS_ACTS[i][0]==='KeyX') x=String(KEYS_ACTS[i][1]); }
+       if(x===null) bad.push('X is not on the Keys list'); else if(!(/call for extraction, then extract/).test(x)) bad.push('the Keys row for X reads '+JSON.stringify(x));
+       for(i=0;i<LEGEND.length;i++) for(j=0;j<LEGEND[i][1].length;j++) if((/(^|[^a-z])board([^a-z]|$)/i).test(String(LEGEND[i][1][j][1]))) bad.push('the controls card row '+LEGEND[i][1][j][0]+' reads '+JSON.stringify(LEGEND[i][1][j][1]));
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ KEYS.waiting=null; KEYS.note=null; KEYS.pad=false; }catch(_k){}
+       try{ if(m) m.classList.remove('on'); }catch(_m){}
+       try{ var _k0=JSON.parse(km0); if(_k0===null) delete Pf.keymap; else Pf.keymap=_k0; KEYS.inv=null; keysInv(); }catch(_r){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'27.64',what:'cloud-menus-keys-hold-toggle-labels: the Keys window rows for SHIFT, CTRL and C name sprint and crouch without claiming hold or toggle, since the CROUCH and SPRINT settings decide that (by default Ctrl toggles)',
    run:function(){
      if(typeof keysOpen!=='function'||typeof KEYS==='undefined'||typeof KEYS_ACTS==='undefined'||!KEYS_ACTS.length) return 'SKIP: this fixture has no Keys window';

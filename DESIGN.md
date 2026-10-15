@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.65 - THE X KEY ROW SAYS CALL FOR EXTRACTION, THEN EXTRACT
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the Keys window row for X and the controls card both read call for extraction, then board. Board is a retired word; his words are ascend and extract. Proven in headless Chromium: the X label in KEYS_ACTS and the LEGEND WORLD row both match /\bboard\b/. Neither string is a TXSHIP key and no existing check quotes it. Both now read call for extraction, then extract: X calls for extraction in a ring, then a second hold extracts (the raid prompt says Hold [X] to extract).
+
+MEASURED. Check 27.65 passes, and fails on v27.64.
 ## v27.64 - KEYS WINDOW CROUCH AND SPRINT ROWS CLAIM NO MODE
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the Keys window rows read SHIFT sprint (hold), CTRL crouch (hold) and C crouch toggle, but the CROUCH and SPRINT settings decide hold or toggle. Proven in headless Chromium on a fresh profile: crouchHold 0, a Ctrl tap crouched (true) and a second tap stood (false) while the row said crouch (hold); with CROUCH HOLD, C held instead while its row still said crouch toggle, and with SPRINT TOGGLE the SHIFT row still said hold. The rows now read sprint, crouch and crouch (second key). The pause legend is not touched (check v17.86 pins it).

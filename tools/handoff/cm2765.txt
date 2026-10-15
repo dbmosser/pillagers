@@ -1,0 +1,7 @@
+v27.65: the x key row says call for extraction, then extract
+
+The Keys window and the controls card say X calls for extraction, then extracts, without the old word board.
+
+Check 27.65. Fails on v27.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
