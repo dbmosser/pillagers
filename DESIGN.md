@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.98 - THE COMBO MULTIPLIER CLEARS THE TEAM RING
+
+Co-op hunt while he was away. From the 1080p picture of the party builds: with the cyan TEAM ring up, the amber x3 beside the combo ring sat on the edge of it. The multiplier now moves out past the TEAM ring while that ring is showing, and stays where it was when it is not.
+
+MEASURED. Check 26.98 passes, and fails on v26.97.
 ## v26.97 - THE ARMORY CODEX
 
 Co-op hunt while he was away. His yes to suggestion 30. The stash has a new ARMORY button beside SORT. It opens a page that lists every gun in the game, with the rarity each one wears: the eleven models and the rarity twins of the green, blue and purple ones, from common up to gold. A gun you have never held shows as a silhouette marked NOT FOUND with its rarity and class, so you can see what is out there to hunt. A gun you have held shows its name and, once it has kills, its tally. A gun is filed the moment it is in your armoury, stash or backpack, or in your hands or backpack up in a raid, and it stays filed for good. NEW marks what you found since you last closed the page. CLOSE and ESC shut it. Nothing about the guns themselves changes.

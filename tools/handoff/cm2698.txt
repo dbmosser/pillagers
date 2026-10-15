@@ -1,0 +1,7 @@
+v26.98: the combo multiplier clears the team ring
+
+The combo multiplier moves clear of the TEAM ring while it shows.
+
+Check 26.98. Fails on v26.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

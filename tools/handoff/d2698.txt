@@ -1,0 +1,5 @@
+## v26.98 - THE COMBO MULTIPLIER CLEARS THE TEAM RING
+
+Co-op hunt while he was away. From the 1080p picture of the party builds: with the cyan TEAM ring up, the amber x3 beside the combo ring sat on the edge of it. The multiplier now moves out past the TEAM ring while that ring is showing, and stays where it was when it is not.
+
+MEASURED. Check 26.98 passes, and fails on v26.97.

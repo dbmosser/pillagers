@@ -2216,7 +2216,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.97';
+var VER='26.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43898,7 +43898,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.97: The stash has an ARMORY page that lists every gun and rarity, found or not. Check 26.97 fails on v26.96',
+  now:'v26.98: The combo multiplier moves clear of the TEAM ring while it shows. Check 26.98 fails on v26.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54871,7 +54871,7 @@ function styleDraw(c,p,rx,ry){
     c.strokeStyle='rgba('+col+',.2)'; c.beginPath(); c.arc(rx,ry,r,0,6.2832); c.stroke();
     c.strokeStyle='rgba('+col+',.95)'; c.beginPath(); c.arc(rx,ry,r,-1.5708,-1.5708+6.2832*f); c.stroke();
     c.font=hudFS(TYPE.micro); c.textAlign='left'; c.fillStyle='rgba('+col+',1)';
-    hudText('x'+mx,Math.round(rx+r+7*z),Math.round(ry+4*z));
+    hudText('x'+mx,Math.round(rx+r+((typeof ARCADE==='object'&&ARCADE&&G.arcade&&!ARCADE.solo&&ARCADE.team&&Date.now()-ARCADE.team.at<TEAM.win*1000)?18:7)*z),Math.round(ry+4*z));   // v26.xx (party7): clear of the TEAM ring
   }
   if(S&&S.pops&&S.pops.length){
     c.font=hudFS(TYPE.label); c.textAlign='center'; n=0;
