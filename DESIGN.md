@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.54 - CREDITS AND XP ONLY WHERE THEY ARE SPENT
+
+Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the credits and XP readout in the top right corner sat on every screen, over the title, the run cards, the pause box and the party DEMO pages, and on the frame line of the welcome pack, the map select screen and Settings, where the numbers mean nothing. It is hidden on those now and stays on the Undercroft floor, the stash and the shop, craft, hire, Wirt, bar, Mainframe and Fashion windows. In a raid it is left to the HUD.
+
+MEASURED. Check 27.54 passes, and fails on v27.53.
 ## v27.53 - THE PAUSE BOX LISTS WHERE YOU ARE
 
 Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, the pause box in the Undercroft listed the raid keys (raid status, extraction, drop an item for a teammate), and the pause box in the party DEMO listed the backpack, ENTER to equip from the backpack, Z to drop for a teammate and ping, which a guest at the machine has no use for. The Undercroft box lists what the floor legend lists now, and the DEMO box lists the rows of its own controls card. The raid box is unchanged.

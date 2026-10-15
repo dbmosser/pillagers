@@ -1,0 +1,7 @@
+v27.54: credits and xp only where they are spent
+
+Credits and XP show only on the screens where you spend them.
+
+Check 27.54. Fails on v27.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
