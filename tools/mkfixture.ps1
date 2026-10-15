@@ -8548,7 +8548,7 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
-       if(typeof evLaunch!=='function'||typeof flowTick!=='function'||!EVENTS.lock) return 'there is no lockdown event in this build';
+       if(typeof evLaunch!=='function'||typeof flowTick!=='function') return 'there are no raid events in this build'; if(!EVENTS.lock) return 'SKIP: the lockdown alarm was taken out at his order (nolockdown), so there is nothing to stage';
        p=g.player; keys={};
        say=function(m,kd,o){}; own=true;
        ARCADE.mine=0; ARCADE.holdT=0; g.t=5; flowTick(0.1); E=g.flow.ev; E.plan.length=0;
