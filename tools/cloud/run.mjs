@@ -3,6 +3,7 @@
 //   node tools/cloud/run.mjs check FILE V [N]      runs every __REGRESS entry with v===V, N times (default 2)
 //   node tools/cloud/run.mjs verify FILE           __verifySafe(): pass, ents, containers
 //   node tools/cloud/run.mjs range FILE A B        __regressBg(A,B) slice, prints summary and fails
+//   node tools/cloud/run.mjs recent FILE N V      the newest N checks (not v V) once each; prints RECENT {"v[idx]":"message"} for those that fail
 //   node tools/cloud/run.mjs eval FILE 'JS'       runs JS in the loaded page, prints the result
 //   node tools/cloud/run.mjs net FILE [run|runsame] nettest.html?f=FILE, presses RUN or RUN SAME MACHINE, prints the result and log
 // FILE is a name inside tools/. Exit code 0 only when the result is PASS.
@@ -75,6 +76,17 @@ try {
       if (r.r && r.r.startsWith('SKIP: ')) skip++; else if (r.r) { fails.push('v' + r.v + ' [' + i + '] ' + r.r.slice(0, 300)); if (r.r.startsWith('TIMEOUT')) break; }
     }
     console.log((fails.length ? 'FAIL x' + fails.length : 'PASS') + ', ' + ran + ' run, ' + skip + ' skipped [' + a + ',' + b + ')'); fails.forEach(f => console.log('  ' + f)); ok = !fails.length;
+  } else if (cmd === 'recent') {
+    // the newest N checks by version, skipping version a4 (the new one), each with its own time limit; ok unless a check stalls
+    await load(file); await page.evaluate(() => __runPrep());
+    const idx = await page.evaluate(([n, skip]) => __REGRESS.map((t, i) => ({ v: t.v, i })).filter(x => x.v !== skip).sort((x, y) => parseFloat(y.v) - parseFloat(x.v) || x.i - y.i).slice(0, n).map(x => x.i), [+a3 || 80, a4 || '']);
+    const out = {}; ok = true;
+    for (const i of idx) {
+      const r = await Promise.race([page.evaluate(i => { __topClear(); const t = __REGRESS[i]; let r; try { r = t.run(); } catch (e) { r = 'threw: ' + (e && e.stack || e); } return { v: t.v, r: (r && typeof r.then !== 'function') ? String(r) : null }; }, i),
+        new Promise(ok => setTimeout(() => ok({ v: '?', r: 'TIMEOUT at index ' + i }), +(process.env.CHECK_MS || 120000)))]);
+      if (r.r && !r.r.startsWith('SKIP: ')) { out[(r.v === '?' ? '?' : r.v) + '[' + i + ']'] = r.r.slice(0, 200); if (r.r.startsWith('TIMEOUT')) { ok = false; break; } }
+    }
+    console.log('RECENT ' + JSON.stringify(out)); console.log('recent: ' + idx.length + ' checks run');
   } else if (cmd === 'eval') {
     await load(file); const r = await page.evaluate(a3); console.log(typeof r === 'string' ? r : JSON.stringify(r)); ok = true;
   } else if (cmd === 'net') {
