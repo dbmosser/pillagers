@@ -19467,6 +19467,12 @@ function drawHand(){
   if(!h||!ITEMS[h.k]||G.wheel) return;
   it=ITEMS[h.k]; c0=(G.hotCells&&G.hotCells[0])?G.hotCells[0].y:H-LH(130);
   bw=LH(250); bh=LH(46); x=Math.round(W/2-bw/2); y=Math.round(c0-bh-LH(26));
+  // v27.45 (act1), the cloud review (2026-10-15, finding 7) and the HUD spec: THE THINGS ABOVE THE BELT STACK, NEVER OVERLAP. The power-up
+  // chips (a row 40 over the keys) and the extraction lines (the headline 48 over them) were drawn through the item in hand plate
+  // (about 113 to 41 over the keys) whenever a power-up ran, or a ring was called, while an item was readying. The plate now stands above
+  // whichever of them was up last frame (they register their space), a few pixels clear.
+  if(HUDPREV.chips) y=Math.min(y,Math.round(HUDPREV.chips.y-LH(6)-bh));
+  if(HUDPREV.extract) y=Math.min(y,Math.round(HUDPREV.extract.y-LH(6)-bh));
   ctx.save();
   hudReg('hand',x,y,bw,bh);   // v27.45 (hud1)
   hudPlate(x,y,bw,bh,UIC.acc,HUDC.plate);
@@ -36177,7 +36183,7 @@ function drawMinimap(){
 // item in hand, the lore card, the status icons), and hudRects() adds what the HUD already kept (the panels in HUDBOX, the run goals and
 // the gun card in EDGEBOX, the minimap, the feed rows, the belt cells, the teammate rows). hudRectOverlaps(rects) lists every pair that
 // shares a pixel, and every piece off the screen: the overlap check of the busy frame reads it. Measuring only; nothing is drawn by it.
-var HUDREG={};
+var HUDREG={}, HUDPREV={};   // v27.45 (act1): HUDPREV, the registry of the frame before, for the pieces that give way to one drawn after them
 function hudReg(n,x,y,w,h){ if(w>0&&h>0&&x===x&&y===y&&w===w&&h===h) HUDREG[n]={x:x,y:y,w:w,h:h}; }
 function hudRects(){
   var o={}, k, i, c, x0=1e9, y0=1e9, x1=-1e9, y1=-1e9, r;
@@ -36213,7 +36219,7 @@ function drawHUD(){
   var p=G.player,T=G.tel,i;
   hudClampAll();
   ctx.clearRect(0,0,W,H);
-  HUDREG={};   // v27.45 (hud1): this frame's registry starts empty
+  HUDPREV=HUDREG; HUDREG={};   // v27.45 (hud1): this frame's registry starts empty; v27.45 (act1): the last one is kept
   var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);
   vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.45)');
   ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
@@ -37683,7 +37689,9 @@ ctx.restore();
   var _exR=Math.max(1,(typeof hudRes==='function')?hudRes():1);
   var _exRow=_exBelt-LH(26)*_exR;   // the arrow, the distance, the converging count
   var _exBan=_exBelt-LH(48)*_exR;   // the headline above it
+  var _exUp=false;   // v27.45 (act1): whether the extraction lines are up this frame
   if(G.beaconT!==null&&!G.over){
+    _exUp=true;
     var inRing=dist(p,G.active)<G.active.r;
     var _exL=extLetter(G.active);
     ctx.font=hudFS(TYPE.head); ctx.textAlign='center';
@@ -37720,6 +37728,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     }
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
+    _exUp=true;
     ctx.font=hudFS(TYPE.head); ctx.textAlign='center';
     ctx.fillStyle='#4de3d0'; hudText('HOLD ['+keyLabel('KeyX','X')+'] TO CALL FOR EXTRACTION',W/2,_exRow);   // v22.66 (R24): the key in brackets, as every prompt
     // The 1.6 second hold is VISIBLE now. It had a tiny bar on the ring marker
@@ -37728,6 +37737,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     if(G.active.callT>0) bar(W/2-70*_exR,_exRow+LH(5)*_exR,140*_exR,7*_exR,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     ctx.textAlign='left';
   }
+  if(_exUp) hudReg('extract',W/2-LH(150)*_exR,_exBan-LH(16)*_exR,LH(300)*_exR,(_exRow-_exBan)+LH(26)*_exR);   // v27.45 (act1): the extraction lines' space, for the item in hand to stand above
   // HIS NOTE, v3.58: "THE SEAL NEEDS some sort of visual indicator to tell you
   // to hold E". Same disease as the beacon call: the interaction existed, the
   // instruction lived nowhere.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.46 - THE STRONGHOLD IS PART OF THE MAP
+
+Co-op hunt while he was away. His order of 2026-10-14, after he played it: the stand at the gate feature is a mess, the map needs to be adapted, you cannot just stick a circle in the middle of existing buildings. The stronghold was a 240 wide circle of fence and gate drawn on the screen over whatever stood there, so it cut through buildings. It is a real building now: the raid picks an enclosed building with room for the garrison and the cache, on open reachable ground at the same distances from the drop and the rings, and its own doorway becomes the gate, a steel shutter built into the wall that blocks bodies, rounds and sight until it is breached. Every other doorway of the building is barricaded the same way so the gate is the one way in, and the building walls can no longer be broken. Holding in front of the gate fills a ring at the gate only, with the label HOLD TO BREACH, and the breach blows the shutter off with a blast, a scar and a shake, and opens the way for good. Both players build the same walls: player 2 window builds them from the host word, so both see and hit the same compound. The map outline marks the building, not a circle.
+
+MEASURED. Check 27.46 passes, and fails on v27.45.
 ## v27.45 - THE MAGNET LEAVES EVENT REWARDS AND PARTY BOXES ALONE
 
 Co-op hunt while he was away. The cloud review of 2026-10-15, finding 9, checked against the code. The magnet power-up pulled every body, bot wreck and cache within 520 toward you through walls and fences. The stronghold cache, the convoy crate and the golden hoard are caches, so they slid out of a sealed stronghold to whoever stood at the fence; and in a party each window moved its own copy of a box, so the host answered far to a search of a box the other player saw at his feet. The magnet leaves the reward boxes of events where the event put them, and in a party it moves no boxes; it still pulls the pickups on the ground and, alone, the plain bodies.
