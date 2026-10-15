@@ -1,0 +1,5 @@
+## v28.24 - THE CAMERA ZOOMS OUT WHEN YOU SPRINT
+
+Co-op hunt while he was away. His answer 43: the camera should zoom out a little while you sprint, as a setting. Sprinting now pulls the camera back about seven percent, so a little more of the street shows, and it eases in and out with the sprint in the same way the scope eases. It is a row in DISPLAY, SPRINT ZOOM-OUT, ON by default; OFF holds the camera where it was. The view is all that changes: speed, noise, aim and damage are untouched.
+
+MEASURED. Check 28.24 passes, and fails on v28.23.

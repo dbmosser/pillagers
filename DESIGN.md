@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.24 - THE CAMERA ZOOMS OUT WHEN YOU SPRINT
+
+Co-op hunt while he was away. His answer 43: the camera should zoom out a little while you sprint, as a setting. Sprinting now pulls the camera back about seven percent, so a little more of the street shows, and it eases in and out with the sprint in the same way the scope eases. It is a row in DISPLAY, SPRINT ZOOM-OUT, ON by default; OFF holds the camera where it was. The view is all that changes: speed, noise, aim and damage are untouched.
+
+MEASURED. Check 28.24 passes, and fails on v28.23.
 ## v28.23 - LEADERBOARD HEADS SIT OVER THEIR COLUMNS
 
 Co-op hunt while he was away. Seen in the first 1080p picture of the run card leaderboard step: the small grey column heads (RANK, SCORE, OUTCOME, SECTOR, TIME, DATE) did not sit over their figures, because the head row was set in a smaller type and the grid columns are measured in that type, so they came out narrower than the rows under them and SCORE ended well to the left of the dollar figures. The heads are smaller on their own now and the row keeps the same column widths as the rows, so each head shares its edge with the column under it. Picture only, no number moved.

@@ -1,0 +1,7 @@
+v28.24: the camera zooms out when you sprint
+
+The camera now pulls back a little while you sprint. Settings has a SPRINT ZOOM-OUT row in DISPLAY.
+
+Check 28.24. Fails on v28.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

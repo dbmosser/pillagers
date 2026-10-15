@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.23';
+var VER='28.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31457,6 +31457,7 @@ var ZT=1,ZC=1,zoomSaveT=0;
 // each scope level is a clearly bigger punch-in. Fists and melee do not zoom. The base camera zoom (his answer 23) is untouched, the
 // controller's steadying after a trigger pull still does not zoom, and the sight lane (VF, CH, AMBR) reads the same scope number.
 var ADS_ZMIN=1.25;
+var SPRINT_ZK=0.93;   // v27.xx (sprintzoom), HIS ANSWER 43 (2026-10-13): the camera zooms out "a little" while you sprint, as a setting, ON by default; the same ease as the scope (G.adsZ)
 function adsZf(){ return (typeof G!=='undefined'&&G&&!G.sim&&!G.over&&typeof state!=='undefined'&&state==='raid'&&G.adsZ>0)?G.adsZ:1; }
 function ZOOM(){ return ZC*hudRes()*adsZf(); }
 function zoomTarget(){ return ZT; }
@@ -34584,7 +34585,7 @@ function render2D(dt){
   // and fog layers all have to work in those world units instead of pixels or
   // the lighting stops lining up with the ground.
   // v18.76, his note: the scope zoom eases toward its target here, once a frame, before anything reads ZOOM.
-  (function(){ var m=opticMag(), k=(CFG.adsZoom===undefined)?0.35:CFG.adsZoom, gun=!!(p.ads&&!p.downed&&!(p.roll>0)&&p.wep&&p.wep.mag>0), tgt=(gun&&!G.sim&&!G.over&&!(typeof PAD!=='undefined'&&PAD&&PAD.adsing&&!PAD.adsAim))?Math.max(1,ADS_ZMIN+(m-1)*k):1, d=Math.max(0,Math.min(0.1,+dt||0));
+  (function(){ var m=opticMag(), k=(CFG.adsZoom===undefined)?0.35:CFG.adsZoom, gun=!!(p.ads&&!p.downed&&!(p.roll>0)&&p.wep&&p.wep.mag>0), tgt=(gun&&!G.sim&&!G.over&&!(typeof PAD!=='undefined'&&PAD&&PAD.adsing&&!PAD.adsAim))?Math.max(1,ADS_ZMIN+(m-1)*k):((CFG.sprintZoom!==0&&G.sprinting&&!G.sim&&!G.over&&!p.downed)?SPRINT_ZK:1), d=Math.max(0,Math.min(0.1,+dt||0));
     if(!(G.adsZ>0)) G.adsZ=1; G.adsZ+=(tgt-G.adsZ)*(1-Math.exp(-d*11)); if(Math.abs(tgt-G.adsZ)<0.0005) G.adsZ=tgt; })();
   var Z=ZOOM(),VW=W/Z,VH=H/Z;
   // camera with cursor lean
@@ -46472,7 +46473,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.23: The leaderboard column heads now sit over their columns. Check 28.23 fails on v28.22',
+  now:'v28.24: The camera now pulls back a little while you sprint. Settings has a SPRINT ZOOM-OUT row in DISPLAY. Check 28.24 fails on v28.23',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61886,6 +61887,15 @@ var GAMEOPTS=[
      {n:'STANDARD', cfg:{shake:1}},
      {n:'STRONG',   cfg:{shake:1.5}}
    ], def:2},
+  // v27.xx (sprintzoom), HIS ANSWER 43 (2026-10-13): SPRINT ZOOM-OUT, in DISPLAY. The camera pulls back about seven percent while you sprint (a little more
+  // street shows), easing in and out with the sprint, the way the scope eases. ON is the default; OFF holds the camera still. The view only: nothing a
+  // fight reads moves.
+  {k:'sprintZoom', label:'SPRINT ZOOM-OUT', sec:'DISPLAY',
+   hint:'The camera pulls back a little while you sprint, so you see more of the street.',
+   opts:[
+     {n:'OFF', cfg:{sprintZoom:0}},
+     {n:'ON',  cfg:{sprintZoom:1}}
+   ], def:1},
   {k:'gam', label:'BRIGHTNESS', sec:'DISPLAY',
    hint:'Lifts or sinks the shadows of the world. Night raids are dark on purpose.',
    opts:[
