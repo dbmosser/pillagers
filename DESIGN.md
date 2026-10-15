@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.13 - THE BODY LAYER: VESTS AND SHOULDER PADS
+
+Co-op hunt while he was away. His order of 2026-10-15: every cosmetic should visibly change the silhouette at gameplay zoom, not just a tint. Two new racks in FASHION. VEST goes over the plate carrier: a Bandolier with brass cartridges across the chest, a Light Harness that takes the plate off and leaves cross straps and pouches, a Utility Vest with big front pockets and a radio with an antenna on the shoulder, and Heavy Plates that stand wider than the torso. SHOULDERS: Round Pads, Spiked Pads, and one Big Pauldron on the shoulder away from the gun, drawn over the shoulder caps so the team colour stays as the rim. The trim takes the colour scheme accent. Armour 2 and up keeps its own steel pauldrons so the tier still reads. Both racks go across the two-window link and are kept in saved looks; the Undercroft crowd wears them too. Cosmetic only.
+
+MEASURED. Check 28.13 passes, and fails on v28.12.
 ## v28.12 - PACK AND BOOT SHAPES
 
 Co-op hunt while he was away. His order of 2026-10-15: every cosmetic should change the silhouette, not only a colour. Four new packs on the BACKPACK rack that change the outline of your back: a Bedroll Pack with a rolled blanket across the top, a Radio Pack with a box and a tall antenna, a Fuel Can Pack with a red can strapped on the outside, and a Frame Pack, taller and wider with side pouches. Two new boots: Shin Guards, steel plates over the lower leg, and Tall Gaiters, laced leather up to the knee. They start from the canvas pack and the black boots, so a colour scheme paints them, and they carry the scheme accent. The pack and boot tiles now show the piece on the figure. Both go across the two-window link. Cosmetic only.

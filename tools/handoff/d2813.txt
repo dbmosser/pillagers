@@ -1,0 +1,5 @@
+## v28.13 - THE BODY LAYER: VESTS AND SHOULDER PADS
+
+Co-op hunt while he was away. His order of 2026-10-15: every cosmetic should visibly change the silhouette at gameplay zoom, not just a tint. Two new racks in FASHION. VEST goes over the plate carrier: a Bandolier with brass cartridges across the chest, a Light Harness that takes the plate off and leaves cross straps and pouches, a Utility Vest with big front pockets and a radio with an antenna on the shoulder, and Heavy Plates that stand wider than the torso. SHOULDERS: Round Pads, Spiked Pads, and one Big Pauldron on the shoulder away from the gun, drawn over the shoulder caps so the team colour stays as the rim. The trim takes the colour scheme accent. Armour 2 and up keeps its own steel pauldrons so the tier still reads. Both racks go across the two-window link and are kept in saved looks; the Undercroft crowd wears them too. Cosmetic only.
+
+MEASURED. Check 28.13 passes, and fails on v28.12.

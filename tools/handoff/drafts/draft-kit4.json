@@ -13,7 +13,7 @@
                   },
                   {
                       "anchor":  "if(it\u0026\u0026it.use===\u0027gun\u0027\u0026\u0026it.gk\u0026\u0026WEAPONS[it.gk]\u0026\u0026!seen[it.gk]){ seen[it.gk]=1; out.push(it.gk); }",
-                      "replacement":  "if(it\u0026\u0026it.use===\u0027gun\u0027\u0026\u0026it.gk\u0026\u0026WEAPONS[it.gk]\u0026\u0026!seen[it.gk]\u0026\u0026!stashLocked(P.stash[i])){ seen[it.gk]=1; out.push(it.gk); }   // v26.xx (kit4): a gun he locked stays where it is"
+                      "replacement":  "if(it\u0026\u0026it.use===\u0027gun\u0027\u0026\u0026it.gk\u0026\u0026WEAPONS[it.gk]\u0026\u0026!seen[it.gk]\u0026\u0026!stashLocked(P.stash[i])){ seen[it.gk]=1; out.push(it.gk); }   /* v26.xx (kit4): a gun he locked stays where it is */"
                   },
                   {
                       "anchor":  "el.innerHTML=\u0027\u003cb\u003eGoing up with:\u003c/b\u003e \u0027+KIT_INFO[_kp][0]+\u0027  \\u00b7  \u0027+KIT_INFO[_kp][1]; return; }",

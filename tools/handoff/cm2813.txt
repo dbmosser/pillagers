@@ -1,0 +1,7 @@
+v28.13: the body layer: vests and shoulder pads
+
+Two new racks in FASHION: vests (bandolier, harness, utility, heavy plates) and shoulder pads (round, spiked, big pauldron).
+
+Check 28.13. Fails on v28.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.12';
+var VER='28.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31749,7 +31749,18 @@ var COSMETICS=[
   {id:'schdune',    name:'Dune',           how:'level:3',    kind:'scheme'},
   {id:'schtoxic',   name:'Toxic',          how:'runs:20',    kind:'scheme'},
   {id:'schnight',   name:'Nightshade',     how:'warden:1',   kind:'scheme'},
-  {id:'schgilded',  name:'Gilded',         how:'board:1',    kind:'scheme'}
+  {id:'schgilded',  name:'Gilded',         how:'board:1',    kind:'scheme'},
+  // v28.13 (cosm4), HIS ORDER (2026-10-15): "player cosmetics still need major improvements". BODY LAYER: the VEST over the plate carrier and the
+  // SHOULDER pads, two racks that change the chest and the shoulders of the silhouette. Plate Carrier and No Pads are the old look.
+  {id:'vestplate', name:'Plate Carrier',  how:'always',      kind:'vest'},
+  {id:'vestband',  name:'Bandolier',      how:'runs:6',      kind:'vest'},
+  {id:'vestharn',  name:'Light Harness',  how:'level:2',     kind:'vest'},
+  {id:'vestutil',  name:'Utility Vest',   how:'extracts:4',  kind:'vest'},
+  {id:'vestheavy', name:'Heavy Plates',   how:'extracts:9',  kind:'vest'},
+  {id:'padsnone',  name:'No Pads',        how:'always',      kind:'pads'},
+  {id:'padsround', name:'Round Pads',     how:'runs:8',      kind:'pads'},
+  {id:'padsspike', name:'Spiked Pads',    how:'extracts:7',  kind:'pads'},
+  {id:'padsbig',   name:'Big Pauldron',   how:'warden:1',    kind:'pads'}
 ];
 // dark, lit, highlight. The figure is 15px across, so three tones is the whole
 // range the head has room for.
@@ -31814,8 +31825,8 @@ function cosFind(id){
 // wiped profile or an edited save cannot leave her in a hat she has not earned.
 // v6.46: five kinds now, so the worn id and the fallback both come from a table
 // instead of a two-way branch with the answer baked into the return.
-var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo',outfit:'cosOutfit',scheme:'cosScheme'};
-var COSDEF={hair:'dark',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'crop',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone',outfit:'outnone',scheme:'schstd'};   // v18.26, HIS ORDER (2026-10-03): short dark hair is the default look; a new character wore long blonde, which read as a gold outline round the face
+var COSKEY={hair:'cosHair',hat:'cosHat',build:'cosBuild',skin:'cosSkin',fit:'cosFit',cut:'cosCut',beard:'cosBeard',eyes:'cosEyes',face:'cosFace',boots:'cosBoots',gloves:'cosGloves',pack:'cosPack',patch:'cosPatch',tattoo:'cosTattoo',outfit:'cosOutfit',scheme:'cosScheme',vest:'cosVest',pads:'cosPads'};
+var COSDEF={hair:'dark',hat:'none',build:'lean',skin:'fair',fit:'slate',cut:'crop',beard:'clean',eyes:'eyebrown',face:'faceplain',boots:'bootblack',gloves:'barehands',pack:'packbrown',patch:'patchnone',tattoo:'tatnone',outfit:'outnone',scheme:'schstd',vest:'vestplate',pads:'padsnone'};   // v18.26, HIS ORDER (2026-10-03): short dark hair is the default look; a new character wore long blonde, which read as a gold outline round the face
 // v10.54: WHAT EACH OUTFIT OVERRULES. coat and trs are the torso and the
 // trousers, boots the two legs, skin the head, hands the gun hand; cut, hat and
 // beard replace the racks; mark names the suit's own paint, done last.
@@ -31917,6 +31928,73 @@ function drawSeatRing(x,y,s){
   wc.fillStyle=c; wc.beginPath(); wc.arc(x,y+8.4,3.7,0,6.2832); wc.fill();
   wc.fillStyle='#10151b'; wc.font='700 6.6px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif'; wc.textAlign='center';
   wc.fillText(String((s&3)+1),x,y+10.6); wc.textAlign='left';
+}
+// v28.13 (cosm4): THE VEST. drawn over the plate carrier of a body that wears one: a bandolier with brass cartridges across the chest, a
+// light harness that takes the plate off and leaves cross straps, a utility vest with big front pockets and a radio on the shoulder, heavy
+// plates that stand wider than the torso. W is the half width of the chest of the body build. Colours come from the scheme when it has one.
+function drawVest(id,b,cx,ty,cc,sch,fl){
+  var W=(b==='broad')?8.4:(b==='curved'?6.2:5.4), A=sch?sch.a:'#c8a24a', i, t, px, py, x1, y1, x2, y2, HP, py0;
+  if(id==='vestband'){
+    x1=cx-W+0.9; y1=ty-22.0; x2=cx+W-0.9; y2=ty-12.8;
+    wc.lineCap='butt'; wc.strokeStyle=INK; wc.lineWidth=4.2; wc.beginPath(); wc.moveTo(x1,y1); wc.lineTo(x2,y2); wc.stroke();
+    wc.strokeStyle='#6a5236'; wc.lineWidth=2.6; wc.beginPath(); wc.moveTo(x1,y1); wc.lineTo(x2,y2); wc.stroke();
+    wc.strokeStyle='#8a6e48'; wc.lineWidth=0.8; wc.beginPath(); wc.moveTo(x1,y1-0.8); wc.lineTo(x2,y2-0.8); wc.stroke();
+    for(i=0;i<5;i++){ t=0.14+i*0.18; px=x1+(x2-x1)*t; py=y1+(y2-y1)*t; wc.fillStyle=INK; wc.fillRect(px-1.3,py-1.7,2.6,3.4); wc.fillStyle='#d8b04a'; wc.fillRect(px-0.8,py-1.2,1.6,2.4); wc.fillStyle='#fff0b0'; wc.fillRect(px-0.8,py-1.2,1.6,0.7); }
+    wc.fillStyle=INK; wc.fillRect(x1-0.9,y1-1.1,3.0,3.0); wc.fillStyle=A; wc.fillRect(x1-0.4,y1-0.6,2.0,2.0);
+  } else if(id==='vestharn'){
+    wc.fillStyle=cc; rrF(cx-W+0.4,ty-21.4,2*W-0.8,9.8,2.0);
+    wc.fillStyle=litHex(cc,.2,true); wc.fillRect(cx-W+0.6,ty-21.2,2*W-1.2,1.6);
+    wc.fillStyle=darkHex(cc,.34); wc.fillRect(cx-W+0.6,ty-13.4,2*W-1.2,1.4);
+    wc.lineCap='butt'; wc.strokeStyle=INK; wc.lineWidth=3.0;
+    wc.beginPath(); wc.moveTo(cx-W+1.2,ty-21.4); wc.lineTo(cx+W-1.2,ty-13.0); wc.moveTo(cx+W-1.2,ty-21.4); wc.lineTo(cx-W+1.2,ty-13.0); wc.stroke();
+    wc.strokeStyle=darkHex(cc,.5); wc.lineWidth=1.7;
+    wc.beginPath(); wc.moveTo(cx-W+1.2,ty-21.4); wc.lineTo(cx+W-1.2,ty-13.0); wc.moveTo(cx+W-1.2,ty-21.4); wc.lineTo(cx-W+1.2,ty-13.0); wc.stroke();
+    wc.fillStyle=INK; wc.fillRect(cx-1.7,ty-18.5,3.4,3.4); wc.fillStyle=A; wc.fillRect(cx-1.1,ty-17.9,2.2,2.2);
+    rigPouch(cx-W+0.6,ty-14.4,2.8,3.0); rigPouch(cx+W-3.4,ty-14.4,2.8,3.0);
+  } else if(id==='vestutil'){
+    wc.fillStyle=INK; rrF(cx-W-2.4,ty-17.4,6.6,6.6,1.6); rrF(cx+W-4.2,ty-17.4,6.6,6.6,1.6);
+    wc.fillStyle='#4a4f3a'; rrF(cx-W-1.8,ty-16.9,5.4,5.6,1.2); rrF(cx+W-3.6,ty-16.9,5.4,5.6,1.2);
+    wc.fillStyle='#62684c'; wc.fillRect(cx-W-1.6,ty-16.8,5.0,1.4); wc.fillRect(cx+W-3.4,ty-16.8,5.0,1.4);
+    wc.fillStyle='#2e3224'; wc.fillRect(cx-W-1.6,ty-14.6,5.0,0.8); wc.fillRect(cx+W-3.4,ty-14.6,5.0,0.8);
+    wc.fillStyle=A; wc.fillRect(cx-W-0.5,ty-13.6,2.8,0.9); wc.fillRect(cx+W-2.3,ty-13.6,2.8,0.9);
+    px=cx-fl*(W+3.2);
+    wc.fillStyle=INK; rrF(px-1.9,ty-28.4,3.8,7.2,1.2); wc.fillRect(px-0.6,ty-35.2,1.2,7.2);
+    wc.fillStyle='#39414a'; rrF(px-1.3,ty-27.8,2.6,6.0,0.8); wc.fillStyle=A; wc.fillRect(px-1.1,ty-35.8,2.2,1.6);
+  } else if(id==='vestheavy'){
+    HP=W+2.4; py0=ty-21.8;
+    wc.fillStyle=INK; rrF(cx-HP-0.9,py0-0.9,2*HP+1.8,10.6,3);
+    wc.fillStyle='#46505a'; rrF(cx-HP,py0,2*HP,8.8,2.4);
+    wc.fillStyle='#707b87'; rrF(cx-HP+0.6,py0,2*HP-1.2,2.6,1.5);
+    wc.fillStyle='#2d343b'; wc.fillRect(cx-HP+0.6,py0+6.6,2*HP-1.2,1.6); wc.fillRect(cx-0.6,py0+2.6,1.2,4.2);
+    wc.fillStyle=A; wc.fillRect(cx-HP+1.0,py0+4.4,2*HP-2.0,1.0);
+    wc.fillStyle='#9aa6b2'; wc.fillRect(cx-HP+0.9,py0+1.0,0.9,0.9); wc.fillRect(cx+HP-1.8,py0+1.0,0.9,0.9);
+  }
+}
+// v28.13 (cosm4): THE SHOULDERS. Round pads, spiked pads and one big pauldron on the shoulder away from the gun, drawn over the shoulder caps
+// (the team colour stays visible as the rim). Only on a body in cloth: armour 2 and up keeps its own steel pauldrons so the tier still reads.
+function drawPads(id,b,cx,ty,fl,sch){
+  var sx=(b==='broad')?9.6:(b==='curved'?6.7:8.4), y0=ty-23.4, s, px, A=sch?sch.a:'#c8a24a';
+  if(id==='padsround'||id==='padsspike'){
+    for(s=-1;s<=1;s+=2){
+      px=cx+s*(sx+1.4);
+      if(id==='padsspike'){
+        wc.fillStyle=INK; wc.beginPath(); wc.moveTo(px-3.4,y0+0.8); wc.lineTo(px+s*1.8,y0-8.8); wc.lineTo(px+3.4,y0+0.8); wc.closePath(); wc.fill();
+        wc.fillStyle='#aab6c2'; wc.beginPath(); wc.moveTo(px-2.2,y0+0.6); wc.lineTo(px+s*1.6,y0-7.2); wc.lineTo(px+2.2,y0+0.6); wc.closePath(); wc.fill();
+      }
+      wc.fillStyle=INK; wc.beginPath(); wc.ellipse(px,y0+2.4,5.6,4.7,0,0,6.2832); wc.fill();
+      wc.fillStyle='#4e5963'; wc.beginPath(); wc.ellipse(px,y0+2.4,4.9,4.0,0,0,6.2832); wc.fill();
+      wc.fillStyle='#8896a3'; wc.beginPath(); wc.ellipse(px-0.7,y0+1.2,3.4,2.1,0,0,6.2832); wc.fill();
+      wc.strokeStyle=A; wc.lineWidth=0.9; wc.beginPath(); wc.ellipse(px,y0+2.4,4.2,3.3,0,0.3,2.9); wc.stroke();
+    }
+  } else if(id==='padsbig'){
+    px=cx-fl*(sx+2.0);
+    wc.fillStyle=INK; wc.beginPath(); wc.ellipse(px,y0+2.6,7.6,6.0,0,0,6.2832); wc.fill();
+    wc.fillStyle='#4a545e'; wc.beginPath(); wc.ellipse(px,y0+2.6,6.9,5.3,0,0,6.2832); wc.fill();
+    wc.fillStyle='#6d7985'; wc.beginPath(); wc.ellipse(px-0.6,y0+1.4,5.6,3.4,0,0,6.2832); wc.fill();
+    wc.fillStyle='#98a5b1'; wc.beginPath(); wc.ellipse(px-1.4,y0+0.4,3.4,1.5,0,0,6.2832); wc.fill();
+    wc.strokeStyle='#2f363d'; wc.lineWidth=1.0; wc.beginPath(); wc.arc(px,y0+2.6,4.6,0.5,2.6); wc.stroke();
+    wc.fillStyle=A; wc.fillRect(px-5.6,y0+3.4,11.2,1.3);
+  }
 }
 function outfitOf(st){
   var id=st&&st.hero?cosWorn('outfit'):((st&&st.outfit)||'outnone');
@@ -32500,7 +32578,9 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // rig, so the rig's near-black band was laid across the lower half of the
   // numeral. It goes on after the rig now, a dozen lines down.
   // chest rig, and a hit shimmer when recently hurt
-  if(_PC) drawRigPC(_BLD||'lean',x+leanX,ty,cc,_JG.c,_JG.h,!!(OUTF&&OUTF.norig),_SCH);   // v23.xx (spr15): the plate carrier, not stripes
+  if(_PC) drawRigPC(_BLD||'lean',x+leanX,ty,cc,_JG.c,_JG.h,!!(OUTF&&OUTF.norig),_SCH);
+  var _VID=OUTF?'vestplate':(st.hero?cosWorn('vest'):(st.vest||'vestplate'));   // v28.13 (cosm4)
+  if(_PC&&_VID!=='vestplate'&&!(OUTF&&OUTF.norig)) drawVest(_VID,_BLD,x+leanX,ty,cc,_SCH,fl);   // v23.xx (spr15): the plate carrier, not stripes
   else {
   wc.fillStyle='rgba(16,21,27,.85)';
   if(_BLD==='broad') wc.fillRect(x-8.2+leanX,ty-18,16.4,2.4); else if(!_BLD) wc.fillRect(x-6.5+leanX,ty-18,13,2.4);   // v20.01: wider on Broad; Curved wears a belt instead
@@ -33006,6 +33086,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       if(_tm){ wc.fillStyle=TEAMHI[_tm]; wc.fillRect(_px-_sw/2+0.6,_t+0.3,_sw-1.2,1.0); }
     }
   })();
+  var _PDS=OUTF?'padsnone':(st.hero?cosWorn('pads'):(st.pads||'padsnone'));   // v28.13 (cosm4)
+  if(_PDS!=='padsnone'&&(st.bulk||0)<2) drawPads(_PDS,_BLD,x+leanX,ty,fl,_SCH);
   // HEALING, ABOVE HER HEAD, v5.44, his note. A shrinking arc and the seconds
   // remaining, drawn where he is already looking rather than in the corner.
   // v19.00, his note (2026-10-07): "like maybe the green circle heal happens open on the left instead of above the player's head".
@@ -46266,7 +46348,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.12: Four new pack shapes and two boot shapes in FASHION: bedroll, radio, fuel can, frame pack, shin guards, tall gaiters. Check 28.12 fails on v28.11',
+  now:'v28.13: Two new racks in FASHION: vests (bandolier, harness, utility, heavy plates) and shoulder pads (round, spiked, big pauldron). Check 28.13 fails on v28.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50756,7 +50838,7 @@ function netRefresh(){ try{ netLateBtn(); }catch(_nlb){} var m=document.getEleme
 // SOLO PLAY IS UNTOUCHED. The floor calls in here only while NET.on, so a solo frame draws, sends and changes nothing new.
 // Nothing here draws from the seeded stream (rr, rnd, ri, pick, rollTable) or reads G.
 var NET_HUB_STEP=0.1, NET_HUB_SNAP=160, NET_HUB_STALE=3, NET_HUB_EASE=12;
-var NET_LOOK=['hair','hat','skin','fit','cut','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','build','scheme'];   // v20.03, his answer (2026-10-08): everyone sees your build
+var NET_LOOK=['hair','hat','skin','fit','cut','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','build','scheme','vest','pads'];   // v20.03, his answer (2026-10-08): everyone sees your build
 // What he is wearing, one rack id per kind, read the way his own body is drawn.
 function netLook(){
   var lk={}, i;
@@ -50884,7 +50966,7 @@ function netDrawPeer(g){
     drawOp(g.x,g.y,g.f,rl?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,rl?'roll':'none',0,
       {hero:0,moving:!!g.mv,sprint:false,ads:false,hurt:0,rl:0,
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
-       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,scheme:lk.scheme,own:g});
+       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,scheme:lk.scheme,vest:lk.vest,pads:lk.pads,own:g});
   }catch(e){}
 }
 // Their names over their heads, drawn after the darkness like the station names, with the same camera.
@@ -52049,7 +52131,7 @@ function netUpDrawOne(g){
     drawOp(g.x,g.y,g.f,(g.roll>0)?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,mode,0,
       {hero:0,own:g,team:(NET.mode==='pvp')?'foe':'ally',moving:!!g.mv,sprint:!!g.sp,ads:false,hurt:0,rl:0,bulk:0,
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
-       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,scheme:lk.scheme});
+       gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,scheme:lk.scheme,vest:lk.vest,pads:lk.pads});
     if(g.sh&&G&&G.arcade) arcadeShieldRing(g.x,g.y,0);   // v23.30 (arcade9)
     if(g.fk) forgeGlow(g.x,g.y,g.f,{fk:g.fk,el:g.el},g.dn);   // v23.xx (forge8): his forged gun glows too
   }catch(e){}
@@ -62302,7 +62384,7 @@ var PREVLOOK=null;
 function prevCacheGuard(){ var lk=''; try{ lk=cosLookKey(); }catch(_lk){ return; } if(lk!==PREVLOOK){ COSPREV={}; OUTPREV={}; PREVLOOK=lk; } }
 // v19.49, from the review (2026-10-08): the worn outfit is left out. The piece previews are painted with the outfit off (v19.09) and the
 // outfit previews never keyed on it, so trying on outfits threw away all 57 pictures and repainted them unchanged on every click.
-function cosLookKey(){ return ['skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face','tattoo','patch','scheme'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(','); }
+function cosLookKey(){ return ['skin','build','hair','cut','hat','eyes','beard','pack','boots','gloves','fit','face','tattoo','patch','scheme','vest','pads'].map(function(s){ try{ return cosWorn(s); }catch(_w){ return ''; } }).join(','); }
 // v19.17, from the review (2026-10-07): the previews were painted at 128 pixels and shown 64 wide under the menu zoom, about 158 screen
 // pixels at 4K and up to 267 at the biggest menu size, so they came out soft beside the stash icons. They are now painted at the size
 // they are shown (in quarter steps, at most three times), still laid out on the same 128 grid, so nothing moves; at 1080p nothing changes.
@@ -62355,7 +62437,7 @@ function cosPreviewURL(kind,id){
   return hit;
 }
 function cosSwatch(c){
-  if(c.kind==='pack'||c.kind==='boots'||c.kind==='scheme'||c.kind==='fit'||c.kind==='tattoo'||c.kind==='face'||c.kind==='hat'||c.kind==='beard'||c.kind==='cut'||c.kind==='build'){   // v18.82: the piece on you; v20.04: and BUILD, now that a build changes the body (v20.01)
+  if(c.kind==='pack'||c.kind==='boots'||c.kind==='vest'||c.kind==='pads'||c.kind==='scheme'||c.kind==='fit'||c.kind==='tattoo'||c.kind==='face'||c.kind==='hat'||c.kind==='beard'||c.kind==='cut'||c.kind==='build'){   // v18.82: the piece on you; v20.04: and BUILD, now that a build changes the body (v20.01)
     var _cpv=cosPreviewURL(c.kind,c.id);
     if(_cpv) return '<img alt="" style="width:64px;height:64px;display:block;margin:0 auto 2px;border-radius:6px;background:rgba(0,0,0,.18)" src="'+_cpv+'">';
   }
@@ -62547,6 +62629,8 @@ function avatarHTML(){
   h+=slot('tattoo','TATTOO',(cosFind(cosWorn('tattoo'))||{name:'No Ink'}).name,'\u2727');   // v10.36
   h+=slot('scheme','COLOURS',(cosFind(cosWorn('scheme'))||{name:'Standard Issue'}).name,   // v28.04 (cosm1): the colour scheme replaces the clothing slot
           '<span style="display:inline-flex;gap:1px">'+(function(){ var _d=schemeOf({hero:1}), _c=_d?[_d.p,_d.s,_d.a]:[ft[1],ft[0],'#8a96a1']; return _c.map(function(c){ return '<i style="display:block;width:5px;height:14px;background:'+c+'"></i>'; }).join(''); })()+'</span>');
+  h+=slot('vest','VEST',(cosFind(cosWorn('vest'))||{name:'Plate Carrier'}).name,'\u25A4');   // v28.13 (cosm4)
+  h+=slot('pads','SHOULDERS',(cosFind(cosWorn('pads'))||{name:'No Pads'}).name,'\u25D6');
   // v5.83: the BODY ARMOUR slot is gone with rigs. Everyone wears the same
   // armour and there is nothing to choose, so a slot here was a control that
   // did nothing. The rig picker below is now unreachable.
@@ -62557,7 +62641,7 @@ function avatarHTML(){
 }
 // v10.16, his answers 18 and 19. A look is the six cosmetic keys and nothing
 // else. SURPRISE ME picks an owned thing from every rack.
-var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','scheme'];   // v10.54: the outfit is part of a look
+var LOOK_KINDS=['build','skin','hair','cut','hat','fit','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','scheme','vest','pads'];   // v10.54: the outfit is part of a look
 function lookSnap(){ var L={}; for(var i=0;i<LOOK_KINDS.length;i++) L[LOOK_KINDS[i]]=cosWorn(LOOK_KINDS[i]); return L; }
 function lookWear(L){
   if(!L) return false;
@@ -62673,7 +62757,7 @@ function renderAvPicker(pickHost,host){
       'Click a slot to change it. Headgear and hair are cosmetic and earned through play.';
     return;
   }
-  if(slot==='outfit'||slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'||slot==='scheme'){   // v10.54: outfit
+  if(slot==='outfit'||slot==='hat'||slot==='hair'||slot==='build'||slot==='skin'||slot==='fit'||slot==='cut'||slot==='beard'||slot==='eyes'||slot==='face'||slot==='boots'||slot==='gloves'||slot==='pack'||slot==='patch'||slot==='tattoo'||slot==='scheme'||slot==='vest'||slot==='pads'){   // v10.54: outfit
     renderCosmetics(box,slot,hid,pid); return;
   }
   // v6.43: the wep and wep2 branch is gone with the slots that opened it. Guns are
@@ -62692,7 +62776,7 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['outfit','OUTFIT'],['scheme','COLOUR SCHEME'],['build','BUILD'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
+  var GROUPS=[['outfit','OUTFIT'],['scheme','COLOUR SCHEME'],['build','BUILD'],['vest','VEST'],['pads','SHOULDERS'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:.12em;font-size:13px;color:var(--tx-2)">'+g[1]+'</div>';   // v24.22 (ui6b): readable rack heads
