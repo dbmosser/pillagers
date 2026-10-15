@@ -1242,7 +1242,7 @@
   /* vNN.xx, UI REDESIGN ui5q2e (his #50, from the AAA judge of the raid pause shot): ONE BUTTON SIZE IN THE PAUSE ROW. FEEDBACK (v24.50)
      came after the pause row was set to 48px buttons with 16px labels (ui5q1f), so it was the one small button in the row, clearly
      smaller at 4K. It matches SETTINGS and ABANDON RUN now. */
-  #root #pausebox #fbbtn, #root #pausebox #wnbtn{ min-height:48px; padding:0 26px !important; font-size:16px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+  #root #pausebox #fbbtn, #root #pausebox #wnbtn, #root #pausebox #lbbtn{ min-height:48px; padding:0 26px !important; font-size:16px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
   /* vNN.xx, UI REDESIGN ui5q2o (his #50, from the AAA judge of the Settings shot): A DETAIL PANE. The right third of the Settings window
      was empty beside the list. It is a detail pane now, as in the settings of the shooters he named: the row under the mouse or the
      pad (the first row when nothing is pointed at) with its name large, its value, and its whole description in a readable size.
@@ -1393,6 +1393,8 @@
     <button id="confirmabandon" style="padding:8px 22px;border-color:var(--rust);color:var(--rust);display:none">YES, ABANDON THIS RUN</button>
     <button id="resumebtn" style="padding:8px 22px">Resume run</button>
     <button id="pausesetbtn" style="padding:8px 22px">Settings</button>
+    <!-- v27.NN (cboard4), HIS ORDER (2026-10-15): the CAREER LEADERBOARD, on the Undercroft floor only (a raid has its own run card) -->
+    <button id="lbbtn" style="padding:8px 22px">LEADERBOARD</button>
     <!-- v24.50, his answer 38: FEEDBACK, a typed note and a screenshot of this moment (the note box above is replaced by it) -->
     <button id="fbbtn" style="padding:8px 22px">FEEDBACK</button>
     <!-- v27.xx (wnbutton), HIS ANSWER 37 (2026-10-13): the What's New card leaves the floor and is a button here -->
@@ -1426,6 +1428,11 @@
   <div class="msub" id="wnsub"></div>
   <div id="wnlist" style="max-width:min(900px,92%);max-height:56vh;overflow:auto;text-align:left;font-size:14px;line-height:1.6;color:var(--tx-1);margin:8px 0"></div>
   <button id="wnclose" data-esc="1" style="padding:8px 22px">CLOSE</button>
+</div>
+<!-- v27.NN (cboard4), HIS ORDER (2026-10-15): THE LEADERBOARD WINDOW, over the pause box on the Undercroft floor: the board the run card ends on (careerBoardView), with no run highlighted. -->
+<div class="modal" id="lbmodal" style="align-items:center;justify-content:center;text-align:center">
+  <div id="lbhost" style="width:min(860px,92%);max-height:70vh;overflow:auto;margin:6px 0 10px"></div>
+  <button id="lbclose" data-esc="1" style="padding:8px 22px">CLOSE</button>
 </div>
 <div class="outcome" id="outcome">
 <div class="ocwin">
@@ -2283,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.07';
+var VER='28.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17453,6 +17460,7 @@ function togglePauseBox(on){
     var _cs=document.getElementById('charselbtn');
     if(_cs) _cs.style.display=(_inRaid||_bleed)?'none':'';
     if(_cs&&_arcP) _cs.style.display='none';
+    var _lbb=document.getElementById('lbbtn'); if(_lbb) _lbb.style.display=(_inRaid||_bleed||_arcP)?'none':'';   // v27.NN (cboard4): the LEADERBOARD button is the floor's
   })();
   syncPause();
   if(on){ try{ pauseFrameFit(); }catch(_pf){} }   // v19.90: the frame fits what is showing
@@ -46126,7 +46134,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.07: Explosive barrels now go up in both windows of a two-player game, and both windows lay the same barrels. Check 28.07 fails on v28.06',
+  now:'v28.08: The Undercroft pause box has a LEADERBOARD button. Check 28.08 fails on v28.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59974,6 +59982,22 @@ function wnClose(){
 }
 document.getElementById('wnbtn').onclick=function(){ wnOpen(); };
 document.getElementById('wnclose').onclick=function(){ wnClose(); };
+function lbOpen(){
+  var m=document.getElementById('lbmodal'), h=document.getElementById('lbhost');
+  if(!m||!h) return false;
+  careerBoardView(h,{});
+  m.classList.add('on');
+  try{ sndUi('open'); }catch(_su){}
+  return true;
+}
+function lbClose(){
+  var m=document.getElementById('lbmodal'), h=document.getElementById('lbhost');
+  if(m) m.classList.remove('on');
+  if(h) h.textContent='';
+  return true;
+}
+document.getElementById('lbbtn').onclick=function(){ lbOpen(); };
+document.getElementById('lbclose').onclick=function(){ lbClose(); };
 document.getElementById('fbbtn').onclick=function(){ fbOpen(); };
 document.getElementById('fbsave').onclick=function(){ var ta=document.getElementById('fbnote'), png=FB.png; fbClose(); fbSave(ta?ta.value:'',png); };
 document.getElementById('fbcancel').onclick=function(){ fbClose(); };

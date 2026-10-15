@@ -1,0 +1,5 @@
+## v28.08 - LEADERBOARD IN THE UNDERCROFT PAUSE BOX
+
+Co-op hunt while he was away. His order of 2026-10-15: the career leaderboard should be built into the existing UI. The third build puts it on the Undercroft floor too: the pause box that opens there (RETURN TO THE UNDERCROFT, Settings, Feedback, What is New) has a LEADERBOARD button in the same row and style, which opens the same board the run card ends on, his twenty best runs by raid score, in a window over the box. CLOSE and ESC shut it like the other windows. A raid pause box does not show the button. Each save shows its own board.
+
+MEASURED. Check 28.08 passes, and fails on v28.07.

@@ -1,0 +1,7 @@
+v28.08: leaderboard in the undercroft pause box
+
+The Undercroft pause box has a LEADERBOARD button.
+
+Check 28.08. Fails on v28.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

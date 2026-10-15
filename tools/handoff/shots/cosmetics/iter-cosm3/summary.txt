@@ -1,0 +1,11 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  x-check                                staged       4.6s    | RESULT gasmask shows only 0 pixels of the scheme accent; gasmask does not follow the scheme accent
+  x-sheet                                staged       5.1s    | sheet 8
+== 1080 : window 1952x1183, viewport 1920x1080
+  x-check                                staged       4.6s    | RESULT gasmask shows only 1 pixels of the scheme accent
+== 1080 : window 1952x1183, viewport 1920x1080
+  x-check                                staged       4.6s    | RESULT null
+  x-raid1                                staged       7.3s    | {"x":380,"y":582,"z":1}
+  x-raid2                                staged       7.3s    | {"x":380,"y":582,"z":1}
+  x-raid3                                staged       7.3s    | {"x":380,"y":582,"z":1}
+  x-raid4                                staged       7.3s    | {"x":380,"y":582,"z":1}

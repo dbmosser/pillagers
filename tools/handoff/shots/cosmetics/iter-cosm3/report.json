@@ -1,0 +1,8 @@
+{"generated":"2026-10-15T10:08:58","url":"http://localhost:8808/gd-cosm.html","recipes":"C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/cosm-recipes-cosm3.json","seconds":41,"screens":[
+{"name":"x-check","screen":"x-check","1080":{"staged":true,"note":"RESULT null","viewport":"1920x1080","shot":"x-check-1080.jpg","lint":""}},
+{"name":"x-sheet","screen":"x-sheet","1080":{"staged":true,"note":"sheet 8","viewport":"1920x1080","shot":"x-sheet-1080.jpg","lint":""}},
+{"name":"x-raid1","screen":"x-raid1","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-raid1-1080.jpg","lint":""}},
+{"name":"x-raid2","screen":"x-raid2","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-raid2-1080.jpg","lint":""}},
+{"name":"x-raid3","screen":"x-raid3","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-raid3-1080.jpg","lint":""}},
+{"name":"x-raid4","screen":"x-raid4","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-raid4-1080.jpg","lint":""}}
+]}
