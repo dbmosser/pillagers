@@ -6354,7 +6354,7 @@ window.__REGRESS=[
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade here';
      var bad=[], g=null, p, own=false, rs=say, oWep, oAmmo, oRes, i, S, last, log1, log2, n1, s0, s1, kinds={}, d1, d2, c1, c2, arcs=[], txts=[], proto, oArc, oFt, sp, hit;
      function step(n){ var q; for(q=0;q<n;q++){ g.t+=0.016; __sim(0.016); } }
-     function arm(w,a,r){ var HS=hotbarSlots(), ix=-1, q0; for(q0=0;q0<HS.length;q0++) if(HS[q0]&&HS[q0].kind==='gun'&&!HS[q0].vacant){ ix=q0; break; } if(ix>=0&&hotSel()!==ix) setHot(ix); mouse.down=false; p.wep=w; p.ammo=a; p.reserve=r; p.reloading=0; p.hand=false; p.jam=0; p.fired=false; p.spin=0; g.t+=0.016; __sim(0.016); for(var q=0;q<260&&p.drawT>0;q++){ g.t+=0.016; __sim(0.016); } p.lastShot=-1e9; p.fired=false; g.bullets.length=0; }
+     function arm(w,a,r){ g.hotAssign={0:'gun_'+w.id}; g.hotPruned={}; g.hot=0; p.swapped=false; p.sec=null; p.secAmmo=0; mouse.down=false; p.wep=w; p.ammo=a; p.reserve=r; p.reloading=0; p.hand=false; p.jam=0; p.fired=false; p.spin=0; g.t+=0.016; __sim(0.016); for(var q=0;q<260&&p.drawT>0;q++){ g.t+=0.016; __sim(0.016); } p.lastShot=-1e9; p.fired=false; g.bullets.length=0; }
      function drops(){ var q; g.pwr=null; S=pwrS(); for(q=0;q<1000;q++){ g.t+=1; S.items.length=0; pwrKill('crawler',0,false,p.x+60,p.y,null); } return S; }
      try{
        __topClear(); __runPrep();
