@@ -2225,7 +2225,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.16';
+var VER='27.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17875,13 +17875,33 @@ function gunCardSize(cmp,tag){
 // v23.xx (feat2b): the pickup card, 4 s from the pickup (fading for the last half second), at the right edge above the pickup stack.
 // Hidden while the backpack or the map is open (the backpack has its own card).
 var GUNCARD_T=4;
+// v27.17 (gcfix), HIS NOTE (2026-10-14): "gun cards on the right are causing collisions now". THE GUN CARD HAS A SPOT OF ITS OWN. It sat
+// at the right edge with its bottom at 60 percent of the screen, which is where CONDITIONS (grown by its contracts), the run goals,
+// the co-op kill feed and the pickup rows (six since v27.14) all end up, so on a pickup the card landed on top of one or more of
+// them. It now stands on the gear readout (its bottom a margin above the top of that panel) and just left of the right column
+// (CONDITIONS and the run goals), where nothing else is drawn; if the kill feed or a wide pickup row reaches it anyway it steps
+// left of that. The ring badge already slides clear of the card (EDGEBOX.gun). Drawing only.
+function gunCardSpot(cmp,tag){
+  var rs=Math.max(1,hudRes()), m=Math.round(LH(8)*rs), sz=gunCardSize(cmp,tag), xR=W-m, yB=Math.round(H*0.6), B, i, j, moved, bs;
+  B=HUDBOX.gear; if(B&&B.h>0&&B.y>H*0.4) yB=Math.round(B.y-m);
+  yB=Math.max(sz.h+m,Math.min(H-m,yB));
+  B=HUDBOX.cond; xR=Math.min(xR,((B&&B.w>0&&B.x>W*0.5)?B.x:(W-Math.round(LH(190)*rs)))-m);
+  for(j=0;j<4;j++){
+    moved=false; bs=[EDGEBOX.goals,EDGEBOX.feed,EDGEBOX.pick];
+    for(i=0;i<bs.length;i++){ B=bs[i]; if(B&&B.w>0&&B.x<xR&&B.x+B.w>xR-sz.w&&B.y<yB&&B.y+B.h>yB-sz.h){ xR=Math.round(B.x-m); moved=true; } }
+    if(!moved) break;
+  }
+  xR=Math.max(sz.w+m,xR);
+  return {xR:xR,yB:yB};
+}
 function gunCardHud(){
   var C=G&&G.gunCard, age, rs;
   if(!C||!G.player||G.over||G.bagOpen||G.mapOpen) return 0;
   age=(G.t||0)-(C.t0||0);
   if(age>GUNCARD_T||age<-1){ G.gunCard=null; return 0; }
   rs=Math.max(1,hudRes());
-  var _gch=gunCardDraw(gunCompare(C.w,C.vs),W-8*rs,Math.round(H*0.6),Math.max(0,Math.min(1,(GUNCARD_T-age)/0.5)),C.route);
+  var _gcm=gunCompare(C.w,C.vs), _gsp=gunCardSpot(_gcm,C.route);   // v27.17 (gcfix): its own spot, left of the right column and on the gear readout
+  var _gch=gunCardDraw(_gcm,_gsp.xR,_gsp.yB,Math.max(0,Math.min(1,(GUNCARD_T-age)/0.5)),C.route);
   EDGEBOX.gun=GUNCARD_LAST;   // v24.9x (ringbadge)
   return _gch;
 }
@@ -36359,7 +36379,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
   })();
   ctx.restore();
   if(HUDBOX.cond) HUDBOX.cond=hudZoomRect('cond',W,0,HUDBOX.cond);
-  try{ if(flowOn()) goalsHud(ctx); }catch(_gh){}   // v26.xx (flow3): the run goals, the same panel in DEMO and CAREER
+  EDGEBOX.goals=null; try{ if(flowOn()) goalsHud(ctx); }catch(_gh){}   // v26.xx (flow3): the run goals, the same panel in DEMO and CAREER
   // v22.xx, the raid text rewrite (R38): A LINE SAID WITH THE MAP OPEN DRAWS OVER IT. HIS ORDER (2026-10-09): the raid text reads like
   // a shooter HUD, and in those a callout is never hidden by the map. The message band (the alert, the location tag and the feed)
   // was drawn here, before the sector map, whose opaque backing is drawn last, so with the map open WAYPOINT MARKED, a ring
@@ -44304,7 +44324,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.16: The low-health heartbeat now starts at 30 health instead of 45. Check 27.16 fails on v27.15',
+  now:'v27.17: The gun card on pickup now has its own spot above the gear readout, clear of CONDITIONS, the run goals, the kill feed and the pickup rows. Check 27.17 fails on v27.16',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -51114,7 +51134,9 @@ function netFeedDraw(){
   // v19.58, from the review (2026-10-08): v19.48 pushed the feed under the panel whenever the panel was in its column, so a panel
   // dragged low pulled the feed down over its own rows and onto the weapon readout. The feed moves only when the panel covers its
   // own band at 46 percent: below the panel when that still clears the weapon readout (about 78 percent down), else above the panel.
-  var _fy0=H*0.46, _fcb=HUDBOX.cond, _fn=Math.max(1,(NET.feed||[]).length), _fbh=_fn*LH(22)*_fhr;
+  var _fy0=H*0.46, _fcb=HUDBOX.cond, _fn=Math.max(1,(NET.feed||[]).length), _fbh=_fn*LH(22)*_fhr, _fgb=EDGEBOX.goals;
+  // v27.17 (gcfix): the run goals sit under CONDITIONS, so the panel the feed keeps clear of is the two of them together
+  if(_fgb&&_fgb.w>0) _fcb=_fcb?{x:Math.min(_fcb.x,_fgb.x),y:Math.min(_fcb.y,_fgb.y),w:Math.max(_fcb.x+_fcb.w,_fgb.x+_fgb.w)-Math.min(_fcb.x,_fgb.x),h:Math.max(_fcb.y+_fcb.h,_fgb.y+_fgb.h)-Math.min(_fcb.y,_fgb.y)}:_fgb;
   if(_fcb&&_fcb.x<W-LH(16)*_fhr&&_fcb.x+_fcb.w>W-LH(220)*_fhr&&_fcb.y<_fy0+_fbh&&_fcb.y+_fcb.h>_fy0-LH(13)*_fhr){
     var _fbelow=_fcb.y+_fcb.h+LH(20)*_fhr, _fabove=_fcb.y-(_fn-1)*LH(22)*_fhr-LH(12)*_fhr;
     if(_fbelow+_fbh<=H*0.78) _fy0=_fbelow; else if(_fabove>=LH(20)*_fhr) _fy0=_fabove;
@@ -53896,6 +53918,7 @@ function goalsHud(c){
   else { w=U(176); x=W-Math.round(16*z)-w; y=(MMAP.box?mmBottom():Math.max(topRightBottom(),U(60)))+Math.round(10*z); }
   c.save();
   hudPanel(x,y,w,h,0.84);
+  EDGEBOX.goals={x:x,y:y,w:w,h:h};   // v27.17 (gcfix): where the run goals are, so the gun card and the kill feed keep clear of them
   c.textBaseline='alphabetic'; c.textAlign='left'; c.font=hudFS(TYPE.micro);
   c.fillStyle='#ffc04a'; hudText('RUN GOALS',x+pad,y+pad+lh*0.8);
   for(i=0;i<S.goals.length;i++){

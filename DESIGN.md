@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.17 - THE GUN CARD HAS A SPOT OF ITS OWN
+
+Co-op hunt while he was away. His note of 2026-10-14: the gun cards on the right are causing collisions. The card shown when you pick up a gun sat at the right edge, 60 percent of the way down, which is where CONDITIONS (grown by its contracts), the run goals, the co-op kill feed and the pickup rows all end up, so on a pickup it landed on top of one or more of them. It now stands on the gear readout at the bottom right, just left of the right column, where nothing else is drawn, and it steps further left if the kill feed or a wide pickup row reaches it. The kill feed also keeps clear of the run goals now, as it did of CONDITIONS.
+
+MEASURED. Check 27.17 passes, and fails on v27.16.
 ## v27.16 - THE HEARTBEAT STARTS AT 30 PERCENT
 
 Co-op hunt while he was away. His answer 40: the low-health heartbeat should start at 30 percent. It began at 45 health, so you heard it while still fairly healthy. It now begins at 30 and builds from nothing at that line to its worst at zero, so it is the same curve over a shorter range. Being downed still sets it off, and so does something hunting you close, as before.

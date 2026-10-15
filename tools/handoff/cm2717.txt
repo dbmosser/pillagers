@@ -1,0 +1,7 @@
+v27.17: the gun card has a spot of its own
+
+The gun card on pickup now has its own spot above the gear readout, clear of CONDITIONS, the run goals, the kill feed and the pickup rows.
+
+Check 27.17. Fails on v27.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
