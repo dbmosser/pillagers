@@ -1,0 +1,7 @@
+v28.49: player 2 sees the volatile blast
+
+Player 2 now sees and feels a VOLATILE elite blow up, the same blast and shake player 1 gets.
+
+Check 28.49. Fails on v28.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

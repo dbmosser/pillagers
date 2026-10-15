@@ -1,0 +1,5 @@
+## v28.49 - PLAYER 2 SEES THE VOLATILE BLAST
+
+Co-op hunt while he was away. When a VOLATILE elite died, the host window showed its blast (spark, big puff, flash, the frag blast and a shake of 6, all in affixBoom) but player 2 window drew only the ordinary death spark: his mirror of the body knows it is volatile (the new word carries af and netEntFill keeps it as e.affix), yet netEntDeathFx, which runs when the host says the body is gone dead, never looked at it. He heard the boom (the fx word) with nothing on screen and no shake. Proven with eval: the real gone word for a volatile mirror fed through netOnMsg left player 2 shake at 0 with no blast or flash. Now netEntDeathFx draws the same blast and shake as the host for a volatile body; no extra sound, so he does not hear it twice. Shake and flash still follow his own window settings.
+
+MEASURED. Check 28.49 passes, and fails on v28.48.

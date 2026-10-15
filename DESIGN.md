@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.49 - PLAYER 2 SEES THE VOLATILE BLAST
+
+Co-op hunt while he was away. When a VOLATILE elite died, the host window showed its blast (spark, big puff, flash, the frag blast and a shake of 6, all in affixBoom) but player 2 window drew only the ordinary death spark: his mirror of the body knows it is volatile (the new word carries af and netEntFill keeps it as e.affix), yet netEntDeathFx, which runs when the host says the body is gone dead, never looked at it. He heard the boom (the fx word) with nothing on screen and no shake. Proven with eval: the real gone word for a volatile mirror fed through netOnMsg left player 2 shake at 0 with no blast or flash. Now netEntDeathFx draws the same blast and shake as the host for a volatile body; no extra sound, so he does not hear it twice. Shake and flash still follow his own window settings.
+
+MEASURED. Check 28.49 passes, and fails on v28.48.
 ## v28.48 - YOUR TEAMMATE'S SHIELD BUBBLE IS SEEN IN YOUR WINDOW
 
 Co-op hunt while he was away. The SHIELD BUBBLE power-up (v26.89) is drawn only round your own player (pwrDraw2), and the state word sent to the teammate carried a shield flag only for the DEMO spawn shield, so neither window ever saw the bubble on the other, in DEMO or in a normal Undercroft raid. Damage was already right; only the look was missing. Proven in a staged pair in one window: with the bubble up player 2's state word had no bubble flag, the host kept none and drew nothing round him. Now the word carries pb while the bubble is up, the host keeps it and passes it on, and the teammate is drawn inside the same bubble (same colours, radius and centre) on the world canvas, without the flash and the end blink that only his own window knows.

@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.48';
+var VER='28.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46509,7 +46509,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.48: In co-op, when your teammate picks up a SHIELD BUBBLE you now see the bubble round him too. Check 28.48 fails on v28.47',
+  now:'v28.49: Player 2 now sees and feels a VOLATILE elite blow up, the same blast and shake player 1 gets. Check 28.49 fails on v28.48',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54145,6 +54145,7 @@ function netEntDeathFx(e){
     if(p&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-16,(e.name||kindWord(e.kind))+killWord(e),e.kind==='raider'?'#ff5a4a':'#ffc04a',0,true);   // v22.xx (R49)
     spark(e.x,e.y,e.kind==='raider'?'#c8452f':'#ffc04a',22,300);
     if(G.puffs) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffc04a',r:26});
+    if(e.affix==='boom'){ spark(e.x,e.y,AFFIX.boom.c,28,320); if(G.puffs) G.puffs.push({x:e.x,y:e.y,t:0,life:.6,c:AFFIX.boom.c,r:44}); G.shake=Math.max(G.shake||0,6); flash(e.x,e.y,260,AFFIX.boom.c,.4); try{ boomFx(e.x,e.y,1,'frag'); }catch(_ab){} }   // v28.49 (cloud-coop-volatile-boom-seen), CLOUD HUNT 2026-10-15: the VOLATILE blast the host sees and feels (affixBoom), now in player 2 window; its sound already comes by the fx word
   }catch(_fx){}
 }
 // A LINKED WINDOW, every frame in place of its own updateEnts: each body slides toward where the host last put it, turns on
