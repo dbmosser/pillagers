@@ -1,0 +1,7 @@
+v26.94: golden enemy clue hunt
+
+Three clue props shrink a search circle on the map toward the raid golden enemy.
+
+Check 26.94. Fails on v26.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

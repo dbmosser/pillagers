@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.94 - GOLDEN ENEMY CLUE HUNT
+
+Co-op hunt while he was away. His yes to the golden-enemy clue hunt: three clues shrink a circle toward the golden enemy. Every raid lays three clue props on open ground, a dropped scanner, a trail of gold dust and a chirping beacon, and the maps show a search circle 1,400 wide with the golden enemy somewhere inside it (never in the middle). Each clue you walk over shrinks the circle to 900, then 520, then 220, and the circle follows the golden enemy as it walks. With all three taken the mark pins to the edge of the minimap as an arrow. The props chirp on the screen with a ring that spreads every two seconds, and show on the minimap and the sector map only when you are within 600 of them, so you have to explore. When the golden enemy dies the hunt is over and the circle and props are gone. The same seed lays the same clues. DEMO and CAREER work the same.
+
+MEASURED. Check 26.94 passes, and fails on v26.93.
 ## v26.93 - THE PARTY SEED
 
 Co-op hunt while he was away. His yes to the party seed. NEW PARTY in the operator menu now also locks one seed and the sector for the night. Every DEMO run after it builds the same raid, the same layout, the same loot and the same golden enemy, so everyone who plays that night gets the same chance and the board is fair. The seed is picked the way a raid picks its own, so nothing else in the game moves, and it lasts until the party is twelve hours old or NEW PARTY is pressed again. The board page says SEEDED NIGHT with a four letter code, and the operator card shows the same code. A raid started with a seed of its own (a test, for one) still uses that seed.
