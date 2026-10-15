@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.42';
+var VER='27.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21227,6 +21227,7 @@ function openContainer(ct,onlyKeys){
     }
   }
   ct.opened=true; T.containers++;
+  try{ flowCrate(ct); }catch(_fcr){}   // v27.43 (rvw1): the run goal counts what the party opens
   if(T.firstLoot===null) T.firstLoot=G.t;
   // Instrumentation for every system shipped since v1.00, so his exports carry
   // signal on the new content instead of leaving me to tune it blind.
@@ -44776,7 +44777,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.42: The conditions panel is now RUN INFO and holds the run goals with the contracts. Check 27.42 fails on v27.41',
+  now:'v27.43: Fires, crates, the bounty, the convoy and the strike key are cleaned up. Check 27.43 fails on v27.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53078,6 +53079,7 @@ function netSrchTick(dt){
 // tally, contracts and hot ground bonus are not touched.
 function netContOpenHost(ct,by){
   ct.opened=true; ct.prog=0; ct.netBy=-1; ct.netOpen=1; ct.netOpenBy=by;
+  try{ flowCrate(ct); }catch(_fch){}   // v27.43 (rvw1): player 2's box counts for the party too
   netContLitter(ct);
   netBroadcast({t:'cont',cid:ct.cid,st:'open',by:by});
 }
@@ -54230,7 +54232,7 @@ function airDraw(c,p){
     c.lineWidth=2*z; c.beginPath(); c.moveTo(s.x-22*z,s.y); c.lineTo(s.x-8*z,s.y); c.moveTo(s.x+8*z,s.y); c.lineTo(s.x+22*z,s.y);
     c.moveTo(s.x,s.y-22*z); c.lineTo(s.x,s.y-8*z); c.moveTo(s.x,s.y+8*z); c.lineTo(s.x,s.y+22*z); c.stroke();
     c.textAlign='center'; c.font=hudFS(TYPE.head); c.fillStyle='#ffd0c0'; hudText('AIR STRIKE',s.x,s.y-ar-U(24));
-    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     '+(padOn()?padB('LB + RB'):'G')+' CANCEL',s.x,s.y-ar-U(8));
+    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     '+(padOn()?padB('LB + RB'):keyLabel('KeyG','G'))+' CANCEL',s.x,s.y-ar-U(8));
   }
   for(i=0;i<A.sk.length;i++){
     st=A.sk[i]; s=w2s(st.x,0,st.y);
@@ -54259,7 +54261,7 @@ function airDraw(c,p){
     bx=x+U(96); bwid=bw-U(96)-U(padOn()?76:48); by=Math.round(y+bh*0.5-U(3));
     c.fillStyle='rgba(255,255,255,.12)'; c.fillRect(bx,by,bwid,U(6));
     c.fillStyle=rdy?('rgba(255,192,74,'+(0.75+0.25*Math.sin(t*8)).toFixed(3)+')'):'#ff8a3c'; c.fillRect(bx,by,bwid*fl,U(6));
-    if(rdy) hudKey(padOn()?padB('LB+RB'):'G',x+bw-U(padOn()?74:46),y+Math.round(bh*0.7),U(8),U(padOn()?62:32));   // v27.25 (coop7): the chord on a controller
+    if(rdy) hudKey(airCapLabel(),x+bw-U((padOn()||airCapLabel().length>1)?74:46),y+Math.round(bh*0.7),U(8),U((padOn()||airCapLabel().length>1)?62:32));   // v27.43 (rvw1, cloud review 21): the key as it is bound
     else { c.textAlign='right'; c.fillStyle=UIC.tx_1; hudText(Math.floor(fl*100)+'%',x+bw-U(10),y+Math.round(bh*0.64)); }
   }
   c.restore();
@@ -54320,7 +54322,7 @@ function goalsMake(S){
 function goalProg(id,S){
   var K=S.kinds||{}, i, n=0, L, C;
   if(id==='kill10') return S.kills|0;
-  if(id==='crate6'){ C=G.containers||[]; for(i=0;i<C.length;i++) if(C[i]&&C[i].opened) n++; S.crates=Math.max(S.crates|0,n); return S.crates; }
+  if(id==='crate6') return S.crates|0;   // v27.43 (rvw1, cloud review 12): the boxes the party opened (flowCrate), not the ones pillagers and hires emptied
   if(id==='wave3') return (S.dir&&S.dir.waves)|0;
   if(id==='air1') return ((S.air&&S.air.used)|0)+(S.pAir|0);   // v27.27 (coop8): a strike either player called
   if(id==='vault'){ L=(G.map&&G.map.locked)||[]; for(i=0;i<L.length;i++) if(L[i]&&L[i].open) n++; return n; }
@@ -54413,13 +54415,20 @@ function firePlan(S){
   return plan;
 }
 // put a body back on the edge of a lit fire; true when it was inside
-function fireKeep(o,rad){
-  var F=G.flow.fires, i, f, d, R, a, nx, ny, k, ta;
+function fireKeep(o,rad,tg,dt){   // v27.43 (rvw1, cloud review 3): tg is where a body is going and dt the frame, so one that wants to cross the fire slides round its edge instead of grinding on it
+  var F=G.flow.fires, i, f, d, R, a, nx, ny, k, ta, sg, cr;
   for(i=0;i<F.length;i++){
     f=F[i]; if(!fireLit(f)) continue;
     d=Math.hypot(o.x-f.x,o.y-f.y); R=f.r+rad;
     if(d>=R) continue;
     a=(d>0.5)?Math.atan2(o.y-f.y,o.x-f.x):((o.id|0)*1.7+0.3);
+    if(tg&&dt>0&&d>0.5&&(tg.x-f.x)*(o.x-f.x)+(tg.y-f.y)*(o.y-f.y)<0){   // v27.43 (rvw1): his way lies across the fire: along the edge, the short way round
+      cr=(o.x-f.x)*(tg.y-o.y)-(o.y-f.y)*(tg.x-o.x);
+      sg=(o.fkS&&Math.abs(cr)<R*60)?o.fkS:((cr>=0)?1:-1); o.fkS=sg;   // and he keeps to the side he chose, so a body straight in line does not dither
+      ta=a+sg*Math.min(0.6,150*dt/R);
+      nx=f.x+Math.cos(ta)*(R+1); ny=f.y+Math.sin(ta)*(R+1);
+      if(nx>20&&ny>20&&nx<WORLD_W-20&&ny<WORLD_H-20&&spotFree(G.map,nx,ny,Math.max(6,rad*0.6))){ o.x=nx; o.y=ny; return true; }
+    }
     for(k=0;k<5;k++){
       ta=a+((k===0)?0:((k&1)?1:-1)*Math.ceil(k/2)*0.55);
       nx=f.x+Math.cos(ta)*(R+1); ny=f.y+Math.sin(ta)*(R+1);
@@ -54460,7 +54469,7 @@ function fireTick(dt){
   for(i=0;i<G.ents.length;i++){
     e=G.ents[i];
     if(!e||!(e.hp>0)||e.kind==='snitch') continue;
-    fireKeep(e,e.r||12);
+    fireKeep(e,e.r||12,fireGoal(e),dt);   // v27.43 (rvw1): and where he is going
     if(fireNear(e,e.r||12)){ e.hp-=FIRE.ebur*dt; e.hitT=Math.max(e.hitT||0,0.1); }
   }
 }
@@ -54693,7 +54702,7 @@ EVENTS.debris={name:'ORBITAL DEBRIS',sub:'GET CLEAR',warn:22,dur:20,r:300,fade:4
       for(k=0;k<60&&!got;k++){
         a=rr()*6.2832; d=500+rr()*500; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;
         if(x<300||y<300||x>WORLD_W-300||y>WORLD_H-300) continue;
-        if(!spotFree(G.map,x,y,40)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)||flowZoneNear(x,y,420)) continue;
+        if(!spotFree(G.map,x,y,40)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)||flowZoneNear(x,y,420)||shAt(x,y,80)) continue;
         got={x:x,y:y};
       }
     });
@@ -54747,8 +54756,13 @@ EVENTS.debris={name:'ORBITAL DEBRIS',sub:'GET CLEAR',warn:22,dur:20,r:300,fade:4
 // (the arcade cull leaves it), and nothing else changes. DEMO and CAREER are the same.
 function convoyCrew(ev){ var a=[], i, e; for(i=0;ev.d.crew&&i<ev.d.crew.length;i++){ e=ev.d.crew[i]; if(e&&e.hp>0&&G.ents.indexOf(e)>=0) a.push(e); } return a; }
 function convoyLeave(ev){
-  var i, k;
-  for(i=0;ev.d.crew&&i<ev.d.crew.length;i++){ k=G.ents.indexOf(ev.d.crew[i]); if(k>=0) G.ents.splice(k,1); }
+  var i, k, e, kept=0;
+  for(i=0;ev.d.crew&&i<ev.d.crew.length;i++){
+    e=ev.d.crew[i]; k=G.ents.indexOf(e); if(k<0) continue;
+    if(evBodyAway(e)) G.ents.splice(k,1);   // v27.43 (rvw1, cloud review 10): out of the world only where nobody can see it
+    else { e.carrier=0; kept++; }           // in view or close: he stays, an ordinary machine now
+  }
+  return kept;
 }
 function convoyCrate(ev,x,y){
   var L=[], c=null, E=evS(), seed=(((G.seed>>>0)^Math.imul((ev.n|0)+101,2654435761))>>>0)||1;
@@ -54762,7 +54776,7 @@ EVENTS.convoy={name:'MACHINE CONVOY',sub:'ARMOURED TRAIN',warn:20,dur:170,r:240,
   my:function(ev){ var c=ev.d.car; return (ev.ph!=='warn'&&c&&c.hp>0)?c.y:ev.y; },
   pick:function(ev){
     var p=G.player, S=null, D=null;
-    function ok(x,y){ return x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,300); }
+    function ok(x,y){ return x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,300)&&!shAt(x,y,80); }
     evStream(ev,function(){
       var k, a, d, x, y;
       for(k=0;k<60&&!S;k++){ a=rr()*6.2832; d=700+rr()*400; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d; if(ok(x,y)) S={x:x,y:y}; }
@@ -54800,7 +54814,7 @@ EVENTS.convoy={name:'MACHINE CONVOY',sub:'ARMOURED TRAIN',warn:20,dur:170,r:240,
     }
     if(Math.hypot(car.x-ev.d.dx,car.y-ev.d.dy)<70){
       ev.d.over=1; convoyLeave(ev);
-      try{ say('CONVOY AWAY','info'); }catch(_ca){}
+      try{ if(G.ents.indexOf(car)<0) say('CONVOY AWAY','info'); else say('CONVOY ARRIVED','info',{sub:'THEY STAY'}); }catch(_ca){}   // v27.43 (rvw1): AWAY is said only once it is true
       return;
     }
     for(i=0;i<crew.length;i++){
@@ -54835,7 +54849,7 @@ EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,f
       var k, a, d, x, y;
       for(k=0;k<80&&!S;k++){
         a=rr()*6.2832; d=700+rr()*300; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;
-        if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,350)) S={x:x,y:y};
+        if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,350)&&!shAt(x,y,80)) S={x:x,y:y};
       }
     });
     if(!S) return false;
@@ -54859,21 +54873,23 @@ EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,f
     var e=ev.d.e, p=G.player, down;
     if(ev.d.over) return;
     if(!e){ ev.d.over=1; return; }
-    down=!(e.hp>0)||e.downed||e.finished||G.ents.indexOf(e)<0;
+    down=!(e.hp>0)||e.finished||G.ents.indexOf(e)<0;   // v27.43 (rvw1, cloud review 17): a DOWNED hunter can get up, so he is still on the hunt
     if(down){
       ev.d.over=1;
-      if(e.byPlayer!==false||(e.bySeat|0)>0){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; }   // v27.27 (coop8): player 2's kill claims it too
-      else { try{ say('BOUNTY GONE','info',{sub:'NOT YOUR KILL'}); }catch(_bg){} }
+      if(e.hp<=0&&(e.byPlayer===true||(e.bySeat|0)>0)){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; }   // paid for a kill of the party (player 2 too), never for a death nobody caused (fire, debris, a barrel)
+      else { try{ say('BOUNTY GONE','info',{sub:(e.hp<=0)?'NOT YOUR KILL':'HE GOT AWAY'}); }catch(_bg){} }
       return;
     }
+    if(e.downed) return;
     e.state='chase'; e.alert=3; e.chaseHold=0; e.tx=p.x; e.ty=p.y;
   },
   done:function(ev){ return !!ev.d.over; },
   end:function(ev){
     var e=ev.d.e, k;
     if(!ev.d.over&&e&&e.hp>0){
-      k=G.ents.indexOf(e); if(k>=0) G.ents.splice(k,1);
-      try{ say('BOUNTY SLIPPED AWAY','info'); }catch(_be){}
+      k=G.ents.indexOf(e);
+      if(k>=0&&evBodyAway(e)){ G.ents.splice(k,1); try{ say('BOUNTY SLIPPED AWAY','info'); }catch(_be){} }   // v27.43 (rvw1, cloud review 10): out of the world only where nobody can see it
+      else if(k>=0){ e.bounty=0; try{ say('BOUNTY OVER','info',{sub:'HE STAYS'}); }catch(_bo){} }
     }
   },
   live:function(ev){ return 'HUNTING YOU'; },
@@ -54919,7 +54935,7 @@ EVENTS.cool={name:'COOLANT RUPTURE',sub:'FOG AND COLD',warn:18,dur:75,r:420,fade
       var k, a, d, x, y;
       for(k=0;k<80&&!S;k++){
         a=rr()*6.2832; d=450+rr()*550; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;
-        if(x>400&&y>400&&x<WORLD_W-400&&y<WORLD_H-400&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,450)) S={x:x,y:y};
+        if(x>400&&y>400&&x<WORLD_W-400&&y<WORLD_H-400&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,450)&&!shAt(x,y,80)) S={x:x,y:y};
       }
     });
     if(!S) return false;
@@ -54995,7 +55011,7 @@ EVENTS.rampage={name:'OVERSEER RAMPAGE',sub:'IT LEAVES THE LAIR',warn:12,dur:RAM
         cx=WORLD_W*(0.25+0.5*(q&1)); cy=WORLD_H*(0.25+0.5*(q>>1));
         for(t=0;t<40;t++){
           x=cx+(rr()-0.5)*700; y=cy+(rr()-0.5)*700;
-          if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)){ wps.push({x:x,y:y}); break; }
+          if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!shAt(x,y,80)){ wps.push({x:x,y:y}); break; }
         }
       }
     });
@@ -55697,7 +55713,7 @@ function airStrikeFx(x,y,a0,seat){
   try{ say('AIR STRIKE INBOUND','warn',nm?{sub:String(nm).toUpperCase()}:undefined); }catch(_asf){}
   return true;
 }
-function airHint(){ return (typeof padOn==='function'&&padOn())?padB('LB + RB'):'PRESS G'; }
+function airHint(){ return (typeof padOn==='function'&&padOn())?padB('LB + RB'):('PRESS '+keyLabel('KeyG','G')); }   // v27.43 (rvw1, cloud review 21): the key as it is bound
 // v27.27 (coop8), HIS ORDER (2026-10-14), the two player first: THE RUN GOALS ARE THE PARTY'S. Each window drew its own three goals and counted its own kills, crates and strikes, so the
 // two lists drifted apart and a goal one player finished paid its chip twice (once from each window). The host now owns the goals: it says the three (key r: which, how far, done) in the world
 // word, the linked window draws exactly those and says GOAL DONE when one is met, and counts and pays nothing (goalsTick). What counts is the PARTY'S: a kill of player 2 reaches the run goals
@@ -55754,6 +55770,33 @@ function airPlateAt(bw,bh,z){
     y=Math.round(hit.y-g8-bh);
   }
   return {x:clamp(x,g8,Math.max(g8,W-bw-g8)),y:Math.max(g8,y)};
+}
+// v27.43 (rvw1), the CLOUD REVIEW of 2026-10-15 (findings 3, 10, 12, 17, 21), each checked against the code before it was changed.
+// 3: the fires pushed a body back onto the edge every frame, so a pillager or a machine chasing him across a fire stood grinding on it (and burned); a body now slides along the edge the short way round toward
+//    where it is going (fireGoal). And no raid event, fire or ambush is ever placed in a stronghold (flowZoneNear says so, and every picker asks it).
+// 10: the convoy's crew and the bounty pillager were taken out of the world in plain view when the event ended; a body is removed now only where nobody sees it (not seen, and not within 300), otherwise it stays as an
+//    ordinary enemy, and CONVOY AWAY / BOUNTY SLIPPED AWAY are said only when they are true (CONVOY ARRIVED, BOUNTY OVER when they stay).
+// 12: the 6 CRATES goal counted every box that was opened, by pillagers and hires too; it counts what the party opens (not bodies, not bot wrecks, not dropped litter), player 2's boxes included.
+// 17: the bounty was paid on a DOWN (he can get up) and for deaths nobody caused (fire, debris, a barrel); now only a kill by the party pays, and a downed hunter is still on the hunt.
+// 21: the air strike prompts named the keyboard key G whatever it was bound to; they name the bound key.
+function evBodyAway(e){
+  var p=G.player;
+  if(!e) return true;
+  if(e.seen) return false;
+  if(p&&Math.hypot(e.x-p.x,e.y-p.y)<300) return false;
+  return true;
+}
+function fireGoal(e){
+  var p=G.player;
+  if(e.state==='chase'||e.state==='alarm'||e.state==='hunt') return p?{x:p.x,y:p.y}:null;
+  return (isFinite(e.tx)&&isFinite(e.ty))?{x:e.tx,y:e.ty}:null;
+}
+function airCapLabel(){ return padOn()?padB('LB+RB'):keyLabel('KeyG','G'); }
+function flowCrate(ct){
+  var S;
+  if(!ct||G.sim||!G.player||ct.type==='body'||ct.type==='botwreck'||ct.dropped) return 0;
+  S=flowS(); S.crates=(S.crates|0)+1;
+  return S.crates;
 }
 // FLOW-MODULE-END (the next flow builds add their code above this line)
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS
