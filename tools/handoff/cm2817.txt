@@ -1,0 +1,7 @@
+v28.17: the what is new card names polish pass 3
+
+The what is new card names polish pass 3.
+
+Check 28.17. Fails on v28.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

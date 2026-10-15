@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.17 - THE WHAT IS NEW CARD NAMES POLISH PASS 3
+
+Co-op hunt while he was away. The card was stamped v28.01 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 28.17 passes, and fails on v28.16.
 ## v28.16 - SIX NEW HEADGEARS
 
 Co-op hunt while he was away. His order of 2026-10-15: player cosmetics need major improvements, and every cosmetic should visibly change the silhouette at gameplay zoom, not just a tint. Six new headgears on the HEADGEAR rack that change the shape of the head: a Boonie Hat with a wide floppy brim, a Tactical Helmet with ear defenders and a lamp, a yellow Hard Hat with a ridge and a lamp, a Goggle Cap with the lenses pushed up, a Gas Mask with a hood and a filter canister on the side you face, and a Heavy Helmet with a tall crest, cheek guards and a nose bar. The trim takes the colour scheme accent, so a hat matches the rest of the look. They are earned (7 raids, 6 and 12 extractions, 9 raids, level 3, two Warden kills) and, like the Spartan Helmet, yours alone: no pillager or crowd member wears them. Cosmetic only.
