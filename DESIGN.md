@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.11 - WAVES GROW THE LONGER YOU STAY
+
+Co-op hunt while he was away. His answer 28: waves should grow the longer you stay in a raid ("i thought we already discussed that"). They did not, quite: the wave tier came from the team score alone, so a quiet or careful player met the same small packs at minute nine as at minute one. The wave tier now also has a floor that rises with the raid clock, one step every two minutes up to tier 4: bigger packs and a shorter gap between them, sentries from the second minute, hostile pillagers from the fourth, and from the eighth minute the first body of each pack is an elite. The score still lifts the tier higher, up to the same 8, so a hot run still ramps faster. DEMO and CAREER run the same wave tick, so both ramp alike. The floor stops at 4 on purpose, to stay gentle.
+
+MEASURED. Check 27.11 passes, and fails on v27.10.
 ## v27.10 - GUNS IN HAND, EVEN BIGGER
 
 Co-op hunt while he was away. His answer 42: the guns in the hands are "even bigger". The held gun, both arms and the hands are now drawn thirty percent larger from the same shoulder point, on top of the size they got in v25.26 and v25.60, for you and for pillagers alike. The flash of a shot now sits on the drawn muzzle, the brass leaves the drawn ejection port, and a tracer starts at the muzzle instead of inside the gun. The round itself does not move: it still leaves 17 units out with the same speed, spread, range and damage, and nothing a fight reads has changed. Cosmetic only.

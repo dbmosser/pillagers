@@ -6093,6 +6093,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.11',what:'his answer 28: waves grow the longer you stay: with no score the wave tier still rises with the raid clock (one step every two minutes, up to 4), the score still lifts it to 8, and the wave tick uses it',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||!window.__state) return 'SKIP: no raid here';
+     if(typeof waveTier!=='function') return 'there is no wave tier function: the waves grow with the score only';
+     var bad=[], g=null, t0, tl0, ts=[], i, secs=[0,130,250,370,490,590], t;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: no live raid';
+       t0=g.t; tl0=g.timeLeft;
+       for(i=0;i<secs.length;i++){
+         g.t=secs[i]; if(raidClockOn()) g.timeLeft=g.raidLen-secs[i];
+         ts.push(waveTier(0));
+       }
+       if(ts[0]!==0) bad.push('at minute 0 the tier is '+ts[0]+', not 0');
+       for(i=1;i<ts.length;i++) if(ts[i]<ts[i-1]) bad.push('the tier fell from '+ts[i-1]+' to '+ts[i]+' as the clock ran');
+       if(!(ts[1]>=1)) bad.push('after 130 seconds with no score the tier is still '+ts[1]);
+       if(!(ts[4]>=4)) bad.push('after 490 seconds with no score the tier is only '+ts[4]);
+       if(ts[5]>4) bad.push('the clock alone lifts the tier past 4 ('+ts[5]+')');
+       g.t=0; if(raidClockOn()) g.timeLeft=g.raidLen;
+       t=waveTier(40000);
+       if(t!==8) bad.push('a score of 40000 at minute 0 gives tier '+t+', not 8');
+       if(String(arcadeWaveTick).indexOf('waveTier(')<0) bad.push('the wave tick does not read the tier from waveTier');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       try{ if(g){ g.t=t0; g.timeLeft=tl0; } }catch(_t){}
+       try{ var g2=__state(); if(g2&&!g2.over&&g2.player){ g2.player.iv=0; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'27.10',what:'his answer 42: guns in hand even bigger: the flash, the brass and the tracer follow the drawn muzzle and port, the real round still spawns 17 units out',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__state||typeof fireWeapon!=='function'||typeof GFXMUZ==='undefined') return 'SKIP: this fixture cannot fire a shot';
