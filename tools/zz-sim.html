@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.43';
+var VER='27.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14445,7 +14445,7 @@ function raidKey(code,repeat,ev){
   // is the reason his messages were unreadable. Compact is now the default and
   // holds the twelve keys you actually press; the full reference is one more
   // press of H away, so nothing is lost, it is just no longer always on screen.
-  if(code==='F1'&&G&&!repeat) G.legendOn=(G.legendOn+1)%3;   // v25.xx (keyswap): F1 cycles the controls list (it was H)
+  if(code==='F1'&&G&&!repeat){ if(G.legendOn===1&&typeof legendUp==='function'&&!legendUp()) G.legendT=G.t||0; else { G.legendOn=(G.legendOn+1)%3; G.legendT=G.t||0; } }   // v27.45 (legend1): F1 on a list that is not up brings it back   // v25.xx (keyswap): F1 cycles the controls list (it was H)
   // v26.xx (wheel4), HIS ORDER 2026-10-14: EVERYTHING GOES THROUGH THE WHEEL. H (tap heal and hold plate), G (quick throw), U and J (cycling) and the item keys 5 to 9 are gone; hold Q.
   // X swaps primary and secondary. Each keeps its own loaded magazine; the
   // reserve pool is shared, so swapping is not a way to dodge running dry.
@@ -15304,7 +15304,7 @@ function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on); }
 // The label to show for a keyboard code, swapped for its controller button when a pad is
 // connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
 // file has been corrupted twice by non-ASCII surviving a patch script badly.
-var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'D-DOWN',
+var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'D-DOWN',KeyV:'Y',
               Space:'A',Tab:'BACK',KeyP:'MENU',KeyX:'X',
               ShiftLeft:'LS',ControlLeft:'B',KeyM:'D-UP',KeyI:'VIEW'};
 // v26.xx (padbind), HIS ORDER 2026-10-14 ("CONTROLLER REBINDING is NEW"): PADLABEL is the table the raid prompts read, and it follows the pad bindings now (padLabelsApply rewrites it);
@@ -15951,7 +15951,13 @@ function pollPad(){
       var _yD=pressed(3)&&!bagNav;
       if(_yD&&!PAD.prev[3]){ var _yA=false; if(G&&G.giftIn&&!G.bagOpen&&!G.giftIn.yes&&G.t-G.giftIn.t<=GIFT_T){ try{ _yA=!!netGiftKey(); }catch(_gy){} } else try{ _yA=!!(NET.on&&!G.over&&typeof netAidHold==='function'&&netAidHold(!!G.nearContainer)); }catch(_ye){} PAD.yAid=_yA; }
       if(!_yD) PAD.yAid=false;
-      padHold('PadSearch',(_yD&&!PAD.yAid)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));   // v25.xx (keyswap): the pad ring search (was keyboard X, which is the extraction now)
+      // v27.xx (feel2g), a cloud review finding (2026-10-15, #5): THE FINISHER ON A CONTROLLER. The finisher (v26.64) read keyboard V and no pad button reached it, so player 2 on a pad was
+      // shown FINISH [V] over every downed pillager and could not do it. Y (pad action 3, whatever CHANGE PAD BUTTONS has put it on) held with a downed pillager in finisher reach is the
+      // finisher: it holds the same key V the keyboard does (and so does not swing the crowbar), and the prompt names the button as bound (PADLABEL). Y keeps its other jobs, which win
+      // when they apply: helping a teammate (netAidHold, decided on the press), and the search of a box or the ring when one is in reach underfoot.
+      var _yF=!!(_yD&&!PAD.yAid&&G&&!G.over&&G.player&&!G.player.downed&&!G.nearContainer&&!G.nearPad&&finTarget(G.player));
+      padHold('KeyV',_yF);
+      padHold('PadSearch',(_yD&&!PAD.yAid&&!_yF)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));   // v25.xx (keyswap): the pad ring search (was keyboard X, which is the extraction now)
       continue;
     }
     // dpad down browses the bag rather than using medical while it is open
@@ -16240,10 +16246,10 @@ function keysRowHtml(){
 var PAD_BTN=['A','B','X','Y','LB','RB','LT','RT','VIEW','MENU','LS','RS','D-UP','D-DOWN','D-LEFT','D-RIGHT'];
 var PAD_ACTS=[[10,'sprint','MOVE'],[0,'dodge roll','MOVE'],[1,'crouch','MOVE'],
   [7,'fire, use what is selected','FIGHT'],[6,'focus aim (hold)','FIGHT'],[11,'focus aim (toggle)','FIGHT'],[14,'aim distance shorter','FIGHT'],[15,'aim distance longer','FIGHT'],
-  [2,'use, search, reload, call for extraction','FIGHT'],[3,'search in a ring, help a teammate','FIGHT'],
+  [2,'use, search, reload, call for extraction','FIGHT'],[3,'search in a ring, help a teammate, finish a downed pillager','FIGHT'],
   [4,'previous gun (hold: zoom out)','GEAR'],[5,'next gun (hold: zoom in)','GEAR'],[13,'item wheel (hold)','GEAR'],[8,'backpack','GEAR'],
   [12,'ping (hold: the map)','WORLD'],[9,'pause','WORLD']];
-var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8};
+var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8,KeyV:3};   // v27.xx (feel2g): V, the finisher, is on action 3 (Y)
 var PADB={waiting:null,armed:0,t0:0,note:null,sig:''};
 function padMapArr(){
   var m=(typeof P!=='undefined'&&P&&P.padmap&&typeof P.padmap==='object')?P.padmap:null, o=[], used={}, i, v;
@@ -16268,7 +16274,7 @@ function padLegendBuild(){
     ['MOVE',[['L STICK','move, analog'],[n(10),'sprint'],[n(1),'crouch'],[n(0),'dodge roll']]],
     ['FIGHT',[['R STICK','aim'],[n(7),'fire / use selected'],[n(6)+' / '+n(11),'focus aim, hold / toggle'],[(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-LEFT/RIGHT':(dl+' / '+dr),'aim distance'],[n(2),'reload']]],
     ['GEAR',[[n(4)+'/'+n(5)+' tap','change tactical belt slot'],[n(4)+'/'+n(5)+' hold','zoom out / in'],[n(13),'item wheel (hold), revive when down'],[n(8),'backpack']]],
-    ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
+    ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring; hold to finish a pillager'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
     ['TEAM',[[n(3),'backpack open: drop an item for a teammate'],[n(12),'ping, twice for danger']]]
   ];
 }
@@ -17689,6 +17695,7 @@ function alertShow(m,k,o,now){
     alertEnq(a.m,a.k,{sub:a.sub,key:a.key,hold:a.hold,icon:a.icon,c:a.c,life:alertHeld(a)?Math.max(a.T,1.5):a.T},now,1);
   G.alert={m:m,k:k,sub:(o&&o.sub)||'',key:(o&&o.key)||'',hold:(o&&o.hold)||null,icon:(o&&o.icon)||'',c:(o&&o.c)||'',
            T:(o&&o.life>0)?o.life:MSGK[k].life,at:now};
+  G.alert.T0=G.alert.T;   // v27.45 (alert3): the life it was shown with, for the time bar under the plate
 }
 function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',(o.sub||o.key)?{sub:o.sub||'',key:o.key||'',fd:1}:{fd:1}); }   // v27.24 (feed1): fd, it was written into the feed when it was said
 function alertQDrop(m,key){ var q=G.alertQ, i; if(!q) return; for(i=q.length-1;i>=0;i--) if((q[i].m===m&&!msgDiffKey(q[i].key,key))||(key&&q[i].key===key)) q.splice(i,1); }   // v23.xx (tr9fixo): two keyed alerts with one headline are two alerts
@@ -17829,6 +17836,7 @@ function pickCol(r){
 }
 function drawPickups(){
   var q=G&&G.pick, now, rs, zg, og, base, top, fL, fp, rh, gap, pad, isz, i, r, y, yb, al, col, nm, cnt, tag, wN, wC, wT, w, x, xR, oa, n=0;
+  if(!PICKDRAW) return 0;   // v27.45 (feed3): a pickup is a line in the feed now (G.pick is kept)
   if(!q||!q.length||!G.player||G.over||G.bagOpen||G.mapOpen) return 0;
   now=G.t||0; rs=Math.max(1,hudRes());
   zg=(HUDZ.gear||1)*rs*hudUserZ('gear'); og=hudOff('gear');
@@ -17928,7 +17936,12 @@ function gunCardSpot(cmp,tag){
   var rs=Math.max(1,hudRes()), m=Math.round(LH(8)*rs), sz=gunCardSize(cmp,tag), xR=W-m, yB=Math.round(H*0.6), B, i, j, moved, bs;
   B=HUDBOX.gear; if(B&&B.h>0&&B.y>H*0.4) yB=Math.round(B.y-m);
   yB=Math.max(sz.h+m,Math.min(H-m,yB));
-  B=HUDBOX.cond; xR=Math.min(xR,((B&&B.w>0&&B.x>W*0.5)?B.x:(W-Math.round(LH(190)*rs)))-m);
+  // v27.45 (cardslot1), the HUD spec (2026-10-15, decision 5): THE GUN CARD STANDS IN THE RIGHT COLUMN. The card stands on the gear readout at
+  // the right edge, under the info panel, as the spec's card slot; it steps left of the column only when the panel above it reaches down
+  // to its top (a long contract list), which is the one case it cannot be in the column. v27.17 had always stepped it left, into the field.
+  B=HUDBOX.cond;
+  if(B&&B.w>0&&B.x>W*0.5){ if(yB-sz.h<B.y+B.h+Math.round(12*rs)) xR=Math.min(xR,B.x-Math.round(m*1.5)); }
+  else xR=Math.min(xR,W-Math.round(LH(190)*rs)-m);
   for(j=0;j<4;j++){
     moved=false; bs=[EDGEBOX.goals,EDGEBOX.feed,EDGEBOX.pick];
     for(i=0;i<bs.length;i++){ B=bs[i]; if(B&&B.w>0&&B.x<xR&&B.x+B.w>xR-sz.w&&B.y<yB&&B.y+B.h>yB-sz.h){ xR=Math.round(B.x-m); moved=true; } }
@@ -18089,7 +18102,10 @@ function beltHoverHud(){
 function alertLayout(){   // with the message scale not yet applied: the alert plate, its lines and their baselines, or null
   var a=alertUp(), hf, lf, hp, lp, gs, mw, hl, sl=[], w=0, i, y, bl=[];
   if(!a) return null;
-  hf=FS(TYPE.head); lf=FS(TYPE.label); hp=msgPx(hf); lp=msgPx(lf); gs=Math.round(hp*0.9);
+  // v27.45 (alert3), HIS ANSWER (2026-10-14), "just polish UI up as you see fit consistent with AAA practices", and the HUD spec (section 6): the
+  // headline of an alert is the L size (the 32 px step), the detail under it stays the S size. It was the M size, the size of a prompt; a callout
+  // that has to be read in a firefight is the biggest line the HUD has bar the score and DOWN.
+  hf=FS(TYPE.title); lf=FS(TYPE.label); hp=msgPx(hf); lp=msgPx(lf); gs=Math.round(hp*0.9);
   mw=Math.max(LH(80),msgMaxW()-gs-LH(29));
   ctx.save();
   try{
@@ -18125,13 +18141,17 @@ function alertDraw(L){   // inside the message scale, at the top of the band
       x0=Math.round(W/2-L.w/2), y0=LH(96), gx=x0+LH(12), tx, i, oa=ctx.globalAlpha, oal=ctx.textAlign;
   if(!(al>0)) return;
   ctx.globalAlpha=oa*al;
+  ctx.save(); ctx.translate(0,Math.round((1-Math.min(1,(now-a.at)/0.12))*-LH(10)));   // v27.45 (alert3): it drops in from 10 above over its fade in
   hudPlate(x0,y0,L.w,L.h,col,(a.k==='crit'||a.k==='warn')?HUDC.dangerPlate:HUDC.plate);
+  try{ var _ahz=hudZoomRect('msg',W/2,0,{x:x0,y:y0,w:L.w,h:L.h}); hudReg('alert',_ahz.x,_ahz.y,_ahz.w,_ahz.h); }catch(_arg){}   // v27.45 (hud1)
   alertGlyph(a.icon||(a.k==='ext'?'ring':'threat'),gx,y0+L.bl[0]-Math.round(L.hp*0.36),L.gs,col);
   tx=gx+L.gs+LH(7);
   ctx.textAlign='left';
   ctx.font=L.hf; ctx.fillStyle=col;
   for(i=0;i<L.hl.length;i++) hudText(L.hl[i],tx,y0+L.bl[i],2);
   if(L.sl.length){ ctx.font=L.lf; ctx.fillStyle=HUDC.text; for(i=0;i<L.sl.length;i++) hudText(L.sl[i],tx,y0+L.bl[L.hl.length+i],2); }
+  if(a.T0>0&&!alertHeld(a)){ ctx.fillStyle=col; ctx.globalAlpha=oa*al*0.6; ctx.fillRect(x0+LH(3),y0+L.h-Math.max(2,LH(2)),Math.max(0,(L.w-LH(3))*Math.min(1,a.T/a.T0)),Math.max(2,LH(2))); }   // v27.45 (alert3): its time, a bar along the foot of the plate
+  ctx.restore();
   ctx.globalAlpha=oa; ctx.textAlign=oal;
 }
 // v22.36, the raid text rewrite (R12): THE LANES KEEP TIME IN THE DEATH BEAT AND THE BURN. The message rows, the alert and the
@@ -18176,6 +18196,7 @@ function drawLore(){
     h=pad*2+th+lines.length*lh;
     top=H*0.82; if(G.hotCells&&G.hotCells.length){ for(i=0;i<G.hotCells.length;i++) if(G.hotCells[i].y>H*0.4) top=Math.min(top,G.hotCells[i].y); }
     y=Math.max(LH(8),Math.round(top-LH(14)*rs-h)); x=Math.max(LH(8),Math.round(W/2-LH(16)*rs-w));
+    hudReg('lore',x,y,w,h);   // v27.45 (hud1)
     ctx.globalAlpha=al;
     hudPanel(x,y,w,h,0.84);
     ctx.textAlign='left'; ctx.textBaseline='alphabetic';
@@ -18200,6 +18221,15 @@ function drawLore(){
 // seeded draw, nothing under G.sim, no game state; the feed clock (G.fd.t) runs on msgTick, so it stands still under the solo pause.
 var FEED={show:10,keep:40,hold:6,dim:0.35,fade:1,again:1,merge:30,enter:0.14};
 var FEEDBOX={on:0,x:0,y:0,w:0,h:0,rows:[]};
+// v27.45 (feed3), HIS ORDER (2026-10-14): THE OLD PLACES ARE GONE. Everything they showed is a line in the feed (feed1), so they are not
+// drawn any more: the message rows at the top centre (MSGROWS), the pickup stack at the right edge (PICKDRAW), the co-op kill feed at the
+// right edge (NETFEEDDRAW), the rising loot names and other message labels at the world (a label that is a line in the feed is hidden:
+// feedHides) and the medal plates over the cursor (STYPLATE; the combo ring stays). The data they read is kept as it was (G.msg,
+// G.feed, G.pick, NET.feed, G.labels, the medal list), so nothing that reads it moves; only the drawing stops. Hit feedback stays on
+// its target: WEAK SPOT, ACTIVE RELOAD, CLOSE CALL and PICKED UP are still world labels. The alert lane, the location tag, the boss
+// bar and the prompts are not touched.
+var MSGROWS=0, PICKDRAW=0, NETFEEDDRAW=0, STYPLATE=0;
+function feedHides(txt){ return !(/^(WEAK SPOT|ACTIVE RELOAD|PICKED UP|CLOSE CALL|\+\$[\d,]+)$/).test(String(txt)); }
 // v27.40 (medal0), HIS ANSWER (2026-10-14), "Halo puts medals in a row at the left": THE MEDAL SPOT IS RESERVED. A row for the style medals
 // (the later party polish draws the emblems there, 48 px at 1080p) between the feed and the vitals, the feed's width: nothing else may draw
 // in it. The feed stands on it now, so the feed moved up by its height; until the emblems exist the spot is empty.
@@ -18217,7 +18247,12 @@ function feedItemCol(item,c){
   return (rk&&RCOL[rk])||HUDC.text;
 }
 function feedPwrOf(s){ var i; for(i=0;typeof PWR_KINDS!=='undefined'&&i<PWR_KINDS.length;i++) if(PWR_KINDS[i].n===s) return PWR_KINDS[i]; return null; }
-function feedAlpha(ln){ var age=(G.fd?G.fd.t:0)-ln.at; return (age<=FEED.hold)?1:Math.max(FEED.dim,1-(1-FEED.dim)*(age-FEED.hold)/FEED.fade); }
+// v27.45 (feed4), the HUD spec (2026-10-15, section 5 and step 10): THE FEED READS AS A QUIET COLUMN. A line dimmed to 35 percent kept its plate,
+// so ten dimmed lines were ten dark boxes. A line now loses its plate as it dims (the plate fades with the line over the same second, the
+// words stay at 35 percent, the glyph keeps the kind colour), and in a fight the aged lines dim to 20 percent. FEEDDIM is the level this frame.
+var FEEDDIM=0.35;
+function feedAlpha(ln){ var age=(G.fd?G.fd.t:0)-ln.at, d=FEEDDIM; return (age<=FEED.hold)?1:Math.max(d,1-(1-d)*(age-FEED.hold)/FEED.fade); }
+function feedPlateA(ln){ var age=(G.fd?G.fd.t:0)-ln.at; return (age<=FEED.hold)?1:Math.max(0,1-(age-FEED.hold)/FEED.fade); }
 // segs: a string or [{t,c}]; fk the kind; o {key, tag, n, count, col, gl}. Returns the line.
 function feedAdd(segs,fk,o){
   var F, now, key, txt, i, ln, n;
@@ -18236,7 +18271,7 @@ function feedAdd(segs,fk,o){
     }
     break;
   }
-  ln={id:(F.seq=(F.seq|0)+1),fk:fk||'info',segs:segs,txt:txt,key:key,n:n,tag:(o&&o.tag)?String(o.tag):'',money:'',col:(o&&o.col)||feedCol(fk),
+  ln={id:(F.seq=(F.seq|0)+1),fk:fk||'info',segs:segs,txt:txt,key:key,n:n,tag:(o&&o.tag)?String(o.tag):'',money:'',item:(o&&o.item)?String(o.item):'',col:(o&&o.col)||feedCol(fk),
       gl:(o&&o.gl!==undefined)?o.gl:FEEDGL[fk||'info'],at:now,last:now,born:now,mf:''};
   F.lines.push(ln);
   while(F.lines.length>FEED.keep) F.lines.shift();
@@ -18264,7 +18299,7 @@ function feedSay(m,k,o){
     else if(item&&ITEMS[item]){ fk='loot'; col=feedItemCol(item,o&&o.c); cnt=true; key='p:'+item+'|'+tag; }
     else if((/^[+\-]\$/).test(s)){ fk='money'; col=(o&&o.c&&HUDC[o.c]&&o.c!=='gain')?HUDC[o.c]:UIC.r_gold; key='m:'+s+'|'+tag; }
     else { fk='info'; col=feedItemCol('',o&&o.c); key=(o&&o.key)?('k:'+o.key):''; }
-    return feedAdd([{t:s,c:col}],fk,{key:key,tag:tag,n:(o&&o.n>0)?o.n:1,count:cnt,col:col});
+    return feedAdd([{t:s,c:col}],fk,{key:key,tag:tag,n:(o&&o.n>0)?o.n:1,count:cnt,col:col,item:item});   // v27.45 (feed3): the item, for the needed-item outline
   }
   fk=feedKindOf(s,k,o); col=feedCol(fk); gl=undefined;
   if(fk==='power'){ D=feedPwrOf(s); if(D) col=D.hex; }
@@ -18335,7 +18370,7 @@ function feedRect(){
   // tighter (1.38 x the type, was 1.5), so the ten lines are about 280 px tall at 1080p.
   var rs=Math.max(1,hudRes()), fp=msgPx(hudFS(TYPE.label)), rh=Math.round(fp*1.38), gap=Math.max(2,Math.round(LH(2)*rs)), B=HUDBOX.body, h=FEED.show*rh+(FEED.show-1)*gap, bot;
   bot=((B&&B.h>0&&B.y>H*0.5)?B.y:Math.round(H-LH(142)*rs*1.4))-Math.round(LH(8)*rs);
-  MEDALBOX.h=Math.round(LH(40)*rs); MEDALBOX.y=bot-MEDALBOX.h; MEDALBOX.x=Math.round(LH(9)*rs); MEDALBOX.w=Math.round(W*0.24); MEDALBOX.on=1;   // v27.40 (medal0): the medal spot, on the vitals
+  MEDALBOX.h=Math.round(88*rs); MEDALBOX.y=bot-MEDALBOX.h; MEDALBOX.x=Math.round(LH(9)*rs); MEDALBOX.w=Math.round(W*0.24); MEDALBOX.on=1;   // v27.40 (medal0): the medal spot, on the vitals
   bot=MEDALBOX.y-Math.round(LH(6)*rs);   // and the feed stands on it
   return {x:Math.round(LH(9)*rs),y:bot-h,w:Math.round(W*0.24),h:h,rh:rh,gap:gap,fp:fp};
 }
@@ -18366,9 +18401,15 @@ function feedParts(ln,fL,maxW){
 function feedDraw(){
   var F=G&&G.fd, R, rs, fL, pad, gs, oa, y, yt, x, w, i, n, ln, al, e, pr, j, tx, yb, tw0;
   FEEDBOX.on=0; FEEDBOX.rows=[];
+  try{ FEEDDIM=(typeof inCombatNow==='function'&&inCombatNow())?0.20:FEED.dim; }catch(_fdm){ FEEDDIM=FEED.dim; }   // v27.45 (feed4): the aged lines dim further in a fight
   if(!G||G.sim||!G.player||G.over) return 0;
   R=feedRect(); FEEDBOX.x=R.x; FEEDBOX.y=R.y; FEEDBOX.w=R.w; FEEDBOX.h=R.h; FEEDBOX.on=1;   // the zone is kept whether or not a line is up
   if(!F||!F.lines.length) return 0;
+  // v27.45 (feed5), the HUD spec (2026-10-15, section 3.4): THE DEMO CONTROLS CARD AND THE FEED SHARE THE LEFT, THE CARD FIRST. The card
+  // (MOVE, AIM, FIRE... while the spawn shield is up and 4 s after) stands at the left, centred on the screen height, 440 tall at 1080p, where
+  // the feed's ten lines are: the two drew on top of each other at every drop in. While the card is up the feed waits (its lines are kept and
+  // appear when the card fades; the zone stays reserved).
+  if(typeof arcadeCardOn==='function'&&arcadeCardOn()>0) return 0;
   rs=Math.max(1,hudRes()); fL=hudFS(TYPE.label); pad=Math.round(LH(7)*rs); gs=Math.round(R.fp*0.95); oa=ctx.globalAlpha;
   ctx.save();
   try{
@@ -18379,13 +18420,15 @@ function feedDraw(){
       pr=feedParts(ln,fL,R.w-pad*3-gs-Math.round(pad*0.7));
       w=Math.min(R.w,pad+Math.round(pad*0.5)+(ln.gl?gs+Math.round(pad*0.7):0)+pr.w+pad);
       x=R.x+Math.round((e-1)*LH(18)*rs); yt=y-R.rh;
+      ctx.globalAlpha=oa*feedPlateA(ln)*e;
+      if(feedPlateA(ln)>0.02) hudPlate(x,yt,w,R.rh,ln.col,HUDC.plate);   // v27.45 (feed4): a dimmed line has no plate
       ctx.globalAlpha=oa*al*e;
-      hudPlate(x,yt,w,R.rh,ln.col,HUDC.plate);
       tx=x+pad+Math.round(pad*0.5);
       if(ln.gl){ feedGlyph(ln.gl,tx,yt+R.rh/2,gs,ln.col); tx+=gs+Math.round(pad*0.7); }
       yb=yt+Math.round(R.rh/2+R.fp*0.34);
       ctx.font=fL;
       for(j=0;j<pr.length;j++){ ctx.fillStyle=pr[j].c; ctx.fillText(pr[j].t,tx,yb); tx+=pr[j].w; }
+      if(ln.fk==='loot'&&ln.item&&G.need&&G.need[ln.item]>0){ ctx.strokeStyle='#ffd452'; ctx.lineWidth=Math.max(2,rs*1.5); ctx.strokeRect(x+1,yt+1,w-2,R.rh-2); }   // v27.45 (feed3): an item a contract needs is outlined gold (career3), as it was on the pickup row
       FEEDBOX.rows.push({id:ln.id,t:ln.txt,fk:ln.fk,a:al,x:x,y:yt,w:w,h:R.rh});
       y-=R.rh+R.gap;
     }
@@ -18661,7 +18704,7 @@ function label(x,y,txt,col,delay,big,ik){
   // a loot name, so that is the one that gets the longer life. Combat and state
   // shouts are untouched.
 G.labels.push({x:x,y:y-row*LBL_STEP,txt:txt,c:col||'#cdd6dd',t:-(delay||0),
-    life:(ik?4.0:1.9),big:!!big,ik:ik||null,w:myW});   // v25.xx (lootfade), HIS NOTE 2026-10-13: a loot name lives 4 s, not 6 (it impeded vision); the others are as they were
+    life:(ik?4.0:1.9),big:!!big,ik:ik||null,w:myW,hid:feedHides(txt)});   // v27.45 (feed3): hid, a label that is a line in the feed is not drawn at the world   // v25.xx (lootfade), HIS NOTE 2026-10-13: a loot name lives 4 s, not 6 (it impeded vision); the others are as they were
   // v22.xx, the raid text rewrite (R46): LOOT NAMES ARE KEPT. At the 40-label cap the oldest label went, and a loot name (his 6 s, v3.51)
   // is usually the oldest, so a fight that called out targets and weak spots pushed out the name of what he had just found. The oldest
   // label without an item is dropped first; only when every older label is a loot name does the oldest loot name go.
@@ -19425,6 +19468,7 @@ function drawHand(){
   it=ITEMS[h.k]; c0=(G.hotCells&&G.hotCells[0])?G.hotCells[0].y:H-LH(130);
   bw=LH(250); bh=LH(46); x=Math.round(W/2-bw/2); y=Math.round(c0-bh-LH(26));
   ctx.save();
+  hudReg('hand',x,y,bw,bh);   // v27.45 (hud1)
   hudPlate(x,y,bw,bh,UIC.acc,HUDC.plate);
   drawIconSprite(ctx,h.k,x+LH(30),y+bh/2,LH(34));
   ctx.textAlign='left'; ctx.font=FS(TYPE.head); ctx.fillStyle=UIC.tx_1; hudText(String(it.name).toUpperCase(),x+LH(54),y+LH(19));
@@ -34306,7 +34350,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
   // floating labels: loot found, targets down
   for(i=0;i<G.labels.length;i++){
     var lb=G.labels[i];
-    if(lb.t<0) continue;
+    if(lb.t<0||lb.hid) continue;   // v27.45 (feed3): a hidden label is in the feed
     // HOLD THEN FADE, v5.31. A linear fade across the whole life means the
     // label is never once drawn at full strength, which is exactly what "less
     // transparent when it first pops" is describing.
@@ -35782,6 +35826,7 @@ function drawStatusIcons(){
       ctx.font=vf; ctx.fillStyle='#cdd6dd'; ctx.fillText(E.v||'',tx,cy+LH(9));
     }
   } finally { ctx.restore(); }
+  hudReg('status',ox,oy,Math.ceil(s/rows)*(S+LH(110))*hr*_sk,Math.max(0,Math.min(s,rows)*(S+g)-g)*hr*_sk);   // v27.45 (hud1)
   return s;
 }
 var CONDWRAP={}, CONDWRAPN=0;   // v19.82: the CONDITIONS box's wrapped lines, by font, width and text (see wrap() below)
@@ -35889,11 +35934,20 @@ function drawBossBar(){
   w=Math.min(520,W*0.4/_br); x=W/2-w/2;
   ctx.save();
   if(_br>1){ ctx.translate(W/2,_bt); ctx.scale(_br,_br); ctx.translate(-W/2,-_bt); }
-  ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(x-4,y-LH(16),w+8,LH(16)+10);
-  ctx.fillStyle='#3a0d0d'; ctx.fillRect(x,y,w,6);
-  ctx.fillStyle='#ff4a3a'; ctx.fillRect(x,y,w*f,6);
-  ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#ffc04a'; ctx.fillText(e.name,W/2,y-LH(4));
-  HUDBOSSB=Math.round(_bt+(y+10-_bt)*_br);   // the bottom of the boss plate in screen pixels, for the offer line and the controller word (v20.55), grown with it
+  // v27.45 (boss1), HIS RULE (2026-10-14), "all the new features need to be integrated and polished up to a AAA level": THE BOSS BAR IS ON THE
+  // HUD PLATE AND SHOWS ITS PHASES. It was a flat dark box with a hand-picked red, the name in amber. It is the one HUD plate now (rail in
+  // the danger colour, the track and the fill in it, the name in bone), and THE OVERSEER's bar carries the two thresholds its phases
+  // change at (66 and 33 percent, OV_P2 and OV_P3) as ink ticks across the fill, with the phase it is in (PHASE 2, PHASE 3) at the right
+  // of the name. The place, the size, the 4K scale and the bottom edge the controller word and the offer line start under are as they were.
+  var _bph=(typeof overseerPhaseOf==='function'&&e.name===BOSS_NAME)?overseerPhaseOf(e):0;
+  hudPlate(x-4,y-LH(16),w+8,LH(16)+10,UIC.danger,HUDC.plate);
+  ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y,w,6);
+  ctx.fillStyle=UIC.danger; ctx.fillRect(x,y,w*f,6);
+  if(_bph){ ctx.fillStyle=HUDC.ink; ctx.fillRect(x+w*OV_P2-1,y-1,2,8); ctx.fillRect(x+w*OV_P3-1,y-1,2,8); }
+  ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle=HUDC.text; ctx.fillText(e.name,W/2,y-LH(4));
+  if(_bph>1){ ctx.textAlign='right'; ctx.fillStyle=HUDC.dim; ctx.fillText('PHASE '+_bph,x+w-LH(4),y-LH(4)); ctx.textAlign='center'; }
+  HUDBOSSB=Math.round(_bt+(y+10-_bt)*_br);
+  hudReg('boss',W/2+(x-4-W/2)*_br,_bt,(w+8)*_br,(LH(16)+10)*_br);   // v27.45 (hud1)   // the bottom of the boss plate in screen pixels, for the offer line and the controller word (v20.55), grown with it
   ctx.restore();
 }
 // v24.xx (minimap1), HIS ORDER (2026-10-12): "add minimap". A MINIMAP IN THE TOP RIGHT CORNER OF THE RAID HUD. North up like the
@@ -36117,10 +36171,49 @@ function drawMinimap(){
   MMAP.box=r;
   return 1;
 }
+// v27.45 (hud1), HIS ORDERS (2026-10-14): "the whole game just needs ui clean up", and the HUD is one table of zones that nothing overlaps.
+// THE REGISTRY. Every piece of the raid HUD says where it drew this frame, in screen pixels, under its name: hudReg(name,x,y,w,h) for the
+// pieces that kept their rectangle to themselves (the score block, the alert, the boss bar, the air strike plate, the power-up chips, the
+// item in hand, the lore card, the status icons), and hudRects() adds what the HUD already kept (the panels in HUDBOX, the run goals and
+// the gun card in EDGEBOX, the minimap, the feed rows, the belt cells, the teammate rows). hudRectOverlaps(rects) lists every pair that
+// shares a pixel, and every piece off the screen: the overlap check of the busy frame reads it. Measuring only; nothing is drawn by it.
+var HUDREG={};
+function hudReg(n,x,y,w,h){ if(w>0&&h>0&&x===x&&y===y&&w===w&&h===h) HUDREG[n]={x:x,y:y,w:w,h:h}; }
+function hudRects(){
+  var o={}, k, i, c, x0=1e9, y0=1e9, x1=-1e9, y1=-1e9, r;
+  function put(n,B){ if(B&&B.w>0&&B.h>0&&B.x===B.x&&B.y===B.y) o[n]={x:B.x,y:B.y,w:B.w,h:B.h}; }
+  for(k in HUDREG) o[k]=HUDREG[k];
+  put('info',HUDBOX.cond); put('goals',EDGEBOX.goals); put('body',HUDBOX.body); put('gear',HUDBOX.gear); put('legend',HUDBOX.legend); put('raiders',HUDBOX.raiders);
+  if(typeof MEDALBOX==='object'&&MEDALBOX&&MEDALBOX.on) put('medals',MEDALBOX);   // the reserved medal spot (medal0)
+  if(typeof MMAP==='object'&&MMAP&&MMAP.box) put('minimap',MMAP.box);
+  if(G&&G.gunCard&&EDGEBOX.gun) put('card',EDGEBOX.gun);
+  if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n) put('team',NETTEAMBOX);
+  if(typeof FEEDBOX==='object'&&FEEDBOX.on&&FEEDBOX.rows&&FEEDBOX.rows.length){
+    for(i=0;i<FEEDBOX.rows.length;i++){ r=FEEDBOX.rows[i]; x0=Math.min(x0,r.x); y0=Math.min(y0,r.y); x1=Math.max(x1,r.x+r.w); y1=Math.max(y1,r.y+r.h); }
+    put('feed',{x:x0,y:y0,w:x1-x0,h:y1-y0});
+  }
+  x0=1e9; y0=1e9; x1=-1e9; y1=-1e9;
+  if(G&&G.hotCells&&G.hotCells.length){
+    for(i=0;i<G.hotCells.length;i++){ c=G.hotCells[i]; x0=Math.min(x0,c.x); y0=Math.min(y0,c.y); x1=Math.max(x1,c.x+c.w); y1=Math.max(y1,c.y+c.h); }
+    put('belt',{x:x0,y:y0,w:x1-x0,h:y1-y0});
+  }
+  return o;
+}
+function hudRectOverlaps(o){
+  var ks=[], k, i, j, a, b, out=[];
+  for(k in o) ks.push(k);
+  for(i=0;i<ks.length;i++){
+    a=o[ks[i]];
+    if(a.x<-0.5||a.y<-0.5||a.x+a.w>W+0.5||a.y+a.h>H+0.5) out.push(ks[i]+' off screen');
+    for(j=i+1;j<ks.length;j++){ b=o[ks[j]]; if(a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h) out.push(ks[i]+' x '+ks[j]); }
+  }
+  return out;
+}
 function drawHUD(){
   var p=G.player,T=G.tel,i;
   hudClampAll();
   ctx.clearRect(0,0,W,H);
+  HUDREG={};   // v27.45 (hud1): this frame's registry starts empty
   var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);
   vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.45)');
   ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
@@ -36395,7 +36488,12 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
   var _fClk=FSz(TYPE.title,_tz), _fCmp=FSz(TYPE.label,_tz), _fMk=FSz(TYPE.head,_tz);
   function _fpx(f){ var m=/([\d.]+)px/.exec(f); return m?+m[1]:12; }
   var _hClk=_fpx(_fClk), _hCmp=_fpx(_fCmp), _hMk=_fpx(_fMk);
-  var _yClk=Math.round(6*_tz+_hClk);
+  // v27.45 (topfix1), the HUD spec (2026-10-15, bug B4) and his note "text at top mid is colliding": THE SCORE CAPTION WAS CUT BY THE TOP
+  // EDGE. In a CAREER or DEMO raid the score block (SCORE, the figure, the clock) hangs its caption 0.8 of the figure above the clock
+  // line, and the clock line sat 6 above the figure's height, so the caption's baseline landed at about 12 pixels at 1080p and its capitals
+  // (about 12 high) lost their top. The whole top stack now starts LH(8) lower in those raids, so the caption has its own margin under the
+  // edge; the compass line, the extraction arrow and the marks under it follow, being laid out from this line.
+  var _yClk=Math.round(6*_tz+_hClk)+((G&&(G.arcade||G.career))?Math.round(LH(8)*_tz):0);
   // 0.30 of the line above is its descent, which is the part that was overlapping.
   var _yCmp=Math.round(_yClk+_hClk*0.30+_hCmp);
   var _yArw=Math.round(_yCmp+_hCmp*0.90);
@@ -36768,7 +36866,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.textAlign='center';
     // v21.87 (R05): a row wraps into at most two lines no wider than msgMaxW, on one plate, and the next row starts under it.
     var _mh=msgRowH(), _mla=msgLineA(), _mmx=msgMaxW(), _mty=HUDFEEDT||LH(96);   // v22.13 (R08): under the alert while one shows
-    for(var _mri=0;_mri<_frows.length;_mri++){
+    for(var _mri=0;MSGROWS&&_mri<_frows.length;_mri++){   // v27.45 (feed3): the rows are lines in the feed now
       var _mrw=_frows[_mri], _ma=clamp(_mrw.T,0,1)*(_mri?0.75:1), _mln=msgWrap(msgRowText(_mrw),_mmx), _mw=0, _mph;
       for(var _mli=0;_mli<_mln.length;_mli++) _mw=Math.max(_mw,ctx.measureText(_mln[_mli]).width);
       _mph=_mh+(_mln.length-1)*_mla;
@@ -37942,7 +38040,8 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       ctx.translate(_legDX+_legFX,_legShift+_legDY);   // bottom on the target, plus his drag (and the room the feed takes)
       hudZoomIn('legend',0,_legTarget);    // then grow upward from there
     }
-    drawLegend(G.legendOn===2?_fz:1);   // v20.74 (H40): the full list is told its zoom
+    if(G.legendOn===0||(G.legendOn===1&&!legendUp()&&!keys['F1'])){ delete HUDBOX.legend; ctx.setTransform(DPRH,0,0,DPRH,0,0); legendHint(); }   // v27.45 (legend1): the compact list is not up: its hint
+    else drawLegend(G.legendOn===2?_fz:1);   // v20.74 (H40): the full list is told its zoom
     ctx.restore();
     if(HUDBOX.legend){
       // v9.46: SCREEN SPACE, and the shift added the way the draw adds it.
@@ -38404,7 +38503,7 @@ var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['B','crouch'],['A','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['RT','fire / use selected'],['LT / RS CLICK','focus aim, hold / toggle'],['D-LEFT/RIGHT','aim distance'],['X','reload']]],
   ['GEAR',[['LB/RB tap','change tactical belt slot'],['LB/RB hold','zoom out / in'],['D-DOWN','item wheel (hold), revive when down'],['VIEW','backpack']]],
-  ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
+  ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring; hold to finish a pillager'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
   // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): THE PING IS D-UP ON A CONTROLLER. This row said LB + RB, but both
   // bumpers together walk the belt and zoom and have not pinged since v16.46 moved the ping to D-UP, so the row taught a button
   // that does nothing. It names D-UP now, the same button the WORLD row above names.
@@ -38716,6 +38815,18 @@ var HUDBOX={},HUDDRAG=null,HUDRESIZE=null;
 // variation cannot undo.
 var HUDZ={body:1.40, gear:1.36, raiders:1.15, legend:1.5, cond:1.05};
 var LEGZ0=HUDZ.legend, LEGMW=0;   // v27.26 (feedleg): the compact controls list zoom as set, and its width at zoom 1 as last drawn
+// v27.45 (legend1), the HUD spec (2026-10-15, decision 6 and step 6): THE CONTROLS LIST LEAVES THE PLAY SPACE. The compact list (the one a new
+// player has up for his first raids) stood on the vitals beside the feed, which put the biggest box on the screen in the field beside the
+// character, teaching what a player learns in half a minute. It now shows for the first LEGEND_T0 seconds of a raid, while F1 is held, and
+// for LEGEND_T1 seconds after F1 is pressed; the rest of the time the one line hint (F1 controls) stands over the feed in its place. F1 on a
+// list that is not up brings it back (it does not step on to the full list); F1 on a list that is up cycles as it always did.
+var LEGEND_T0=45, LEGEND_T1=12;
+function legendUp(){ var t=(G&&G.t)||0; return t<LEGEND_T0||(t-((G&&G.legendT)||-999)<LEGEND_T1); }
+function legendHint(){
+  var y=(FEEDBOX.on?FEEDBOX.y-LH(6):(HUDBOX.body?HUDBOX.body.y-LH(6):H-14));
+  ctx.font=FS(TYPE.micro); ctx.textAlign='left'; ctx.fillStyle='rgba(140,152,163,.55)';
+  if(!(PAD&&PAD.on)) ctx.fillText(legendKeys('F1')+'  controls',14,y);
+}
 // v8.93: and the size is his, not mine. A grip in the bottom right corner of any
 // panel scales it, saved on the profile beside the position and the collapsed
 // flag. Clamped so a panel cannot be shrunk into nothing or grown off the screen.
@@ -44777,7 +44888,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.43: Fires, crates, the bounty, the convoy and the strike key are cleaned up. Check 27.43 fails on v27.42',
+  now:'v27.45: The magnet no longer drags event rewards, and moves no boxes in a party. Check 27.45 fails on v27.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -51562,6 +51673,7 @@ function netFeedPush(s,who){
 }
 function netFeedDraw(){
   var i, f, now=Date.now(), y, x, n=0, a, tw, _fhr=Math.max(1,(typeof hudRes==='function')?hudRes():1);   // v19.07: grown with the screen
+  if(!NETFEEDDRAW) return 0;   // v27.45 (feed3): a kill is a line in the feed now (NET.feed is kept)
   if(!NET.feed||!NET.feed.length) return 0;
   // v19.48, from the review (2026-10-08): 46 percent clears a normal CONDITIONS panel, but one grown with its grip, dragged down or
   // long with contracts reached past it, and the feed printed over its rows. The feed starts under the panel whenever the panel is
@@ -54257,6 +54369,7 @@ function airDraw(c,p){
     G.airBox={x:x,y:y,w:bw,h:bh};
     rdy=A.m>=AIR.need; fl=clamp(A.m/AIR.need,0,1);
     hudPlate(x,y,bw,bh,rdy?UIC.acc:null,HUDC.plate);
+    hudReg('strike',x,y,bw,bh);   // v27.45 (hud1)
     c.textAlign='left'; c.font=hudFS(TYPE.micro); c.fillStyle=rdy?UIC.acc:UIC.tx_2; hudText('AIR STRIKE',x+U(12),y+Math.round(bh*0.64));
     bx=x+U(96); bwid=bw-U(96)-U(padOn()?76:48); by=Math.round(y+bh*0.5-U(3));
     c.fillStyle='rgba(255,255,255,.12)'; c.fillRect(bx,by,bwid,U(6));
@@ -55798,6 +55911,9 @@ function flowCrate(ct){
   S=flowS(); S.crates=(S.crates|0)+1;
   return S.crates;
 }
+// v27.45 (rvw3), the CLOUD REVIEW of 2026-10-15, finding 9 (checked against the code): the MAGNET power-up pulled every body, bot wreck and CACHE within 520 toward you through walls and fences. The STRONGHOLD CACHE, the CONVOY CRATE and the
+// GOLDEN HOARD are caches, so they slid out of a sealed stronghold to whoever stood at the fence; and in a party each window moved its own copy of a box, so the host answered FAR to a search of a box that the other player
+// saw at his feet. The magnet does not touch the reward boxes of an event now, and in a party (two linked windows) it does not move boxes at all; it still pulls the pickups on the ground.
 // FLOW-MODULE-END (the next flow builds add their code above this line)
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS
 // LIGHT. Over 3 hours of nonstop play the bodies grew from 41 to 217 and the containers from 154 to 598: the waves land near the
@@ -56246,6 +56362,10 @@ function styEmblem(c,key,tier,s,age){
 // board, the controls list, the vitals, the feed, the teammate rows) that its emblems and the name plate under them need
 function styMedalSpot(z,n){
   var s=Math.round(STYM.size*z), g=Math.round(STYM.gap*z), x0=Math.round(LH(9)*z), rw=n*(2*s+g)-g, up=s, dn=s+Math.round(34*z), m=Math.round(6*z), bx=[], k, B, i, c, cy=Math.round(H*0.5), best=-1, bd=1e9, free=1, cand=[];
+  // v27.45 (medal1), HIS ANSWER (2026-10-14): "Halo puts medals in a row at the left" and the layout table reserves it. The medal row stands in the
+  // reserved medal spot (MEDALBOX, between the feed and the vitals: the emblems 50 tall and the name plate under them, 88 u in all) instead of
+  // looking for a clear stretch of the left edge among the panels, so the feed, the controls list and the pillagers board can never be under it.
+  if(typeof MEDALBOX==='object'&&MEDALBOX.on&&MEDALBOX.w>0&&rw<=MEDALBOX.w) return {x:MEDALBOX.x,y:MEDALBOX.y+s+Math.round(2*z),s:s,g:g,free:1,dn:dn};
   for(k in HUDBOX){ B=HUDBOX[k]; if(B&&B.w>0&&B.h>0) bx.push(B); }
   if(typeof EDGEBOX==='object') for(k in EDGEBOX){ B=EDGEBOX[k]; if(B&&B.w>0&&B.h>0) bx.push(B); }
   if(typeof FEEDBOX==='object'&&FEEDBOX&&FEEDBOX.on&&FEEDBOX.w>0) bx.push(FEEDBOX);
@@ -56484,19 +56604,22 @@ function pwrDraw(c,p){
     n++;
   }
   if(ids.length){
-    c.font=hudFS(TYPE.micro); c.textAlign='left'; tot=-8*z;
+    c.font=hudFS(TYPE.label); c.textAlign='left'; tot=-8*z;   // v27.45 (chips1): the HUD label size, as the feed and the panels (was micro)
     for(i=0;i<ids.length;i++){ ids[i].tw=c.measureText(ids[i].n).width+60*z; tot+=ids[i].tw+8*z; }
     miny=H*0.84;
     if(G.hotCells&&G.hotCells.length){ miny=1e9; for(i=0;i<G.hotCells.length;i++) miny=Math.min(miny,G.hotCells[i].y); miny-=40*z; }
-    x0=Math.round(W/2-tot/2); y0=Math.round(miny-24*z);
+    x0=Math.round(W/2-tot/2); y0=Math.round(miny-28*z);   // v27.45 (chips1): 28 tall (was 24), the label size's row
+    hudReg('chips',x0,y0,Math.round(tot),Math.round(24*z));   // v27.45 (hud1)
     for(i=0;i<ids.length;i++){
       D=ids[i]; ew=D.tw; f=Math.max(0,Math.min(1,S.act[D.k]/D.sec));
       a=(S.act[D.k]<=PWR.warn&&(Math.floor(S.act[D.k]*5)%2))?0.45:1;
-      c.globalAlpha=a*0.82; c.fillStyle='rgba(12,14,18,1)'; c.fillRect(x0,y0,Math.round(ew),Math.round(24*z));
-      c.globalAlpha=a; c.fillStyle='rgba('+D.rgb+',1)'; c.fillRect(x0,y0,Math.round(3*z),Math.round(24*z));
-      c.fillStyle='rgba('+D.rgb+',.9)'; c.fillRect(x0+Math.round(3*z),y0+Math.round(21*z),Math.round((ew-3*z)*f),Math.round(3*z));
-      c.fillStyle='rgba(255,246,220,1)'; hudText(D.n,x0+Math.round(11*z),y0+Math.round(15*z));
-      c.textAlign='right'; c.fillStyle='rgba('+D.rgb+',1)'; hudText(Math.ceil(S.act[D.k])+'S',x0+Math.round(ew-8*z),y0+Math.round(15*z)); c.textAlign='left';
+      // v27.45 (chips1), HIS RULE (2026-10-14), "integrated and polished like the previous stuff": THE POWER-UP CHIP IS A HUD PLATE. It was its own
+      // flat dark box with a rail, drawn by hand, in the smallest type; it is the line plate now (rounded, the 3 px rail in its power-up colour),
+      // the name and the seconds in the label size like the feed lines, and the timer bar under the words. A chip blinks over its last 3 s as before.
+      c.globalAlpha=a; hudPlate(x0,y0,Math.round(ew),Math.round(28*z),'rgba('+D.rgb+',1)',HUDC.plate);
+      c.fillStyle='rgba('+D.rgb+',.9)'; c.fillRect(x0+Math.round(8*z),y0+Math.round(24*z),Math.round((ew-14*z)*f),Math.round(2.5*z));
+      c.fillStyle=HUDC.text; hudText(D.n,x0+Math.round(11*z),y0+Math.round(18*z));
+      c.textAlign='right'; c.fillStyle='rgba('+D.rgb+',1)'; hudText(Math.ceil(S.act[D.k])+'S',x0+Math.round(ew-8*z),y0+Math.round(18*z)); c.textAlign='left';
       x0+=Math.round(ew+8*z);
     }
   }
@@ -56519,6 +56642,7 @@ function pwrMagnet(p,dt,S){
   for(i=0;G.containers&&i<G.containers.length;i++){
     c=G.containers[i];
     if(!c||!mt[c.type]||!c.loot||!c.loot.length||G.searching===c) continue;
+    if((c.tag&&EV_WRECK_TAGS[c.tag])||NET.on) continue;   // v27.45 (rvw3, cloud review 9): the reward of an event stays where the event put it, and in a party nobody drags boxes (each window would move its own copy and the host would answer FAR for a box the other player sees at his feet)
     d=Math.hypot(p.x-c.x,p.y-c.y); if(d>PWRX.magR||d<=PWRX.magStop) continue;
     st=Math.min(d-PWRX.magStop,PWRX.magSp*dt); nx=c.x+(p.x-c.x)/d*st; ny=c.y+(p.y-c.y)/d*st;
     if(spotFree(G.map,nx,ny,12)&&!shutRoomAt(G.map,nx,ny)&&!shutRoomAt(G.map,c.x,c.y)){ c.x=nx; c.y=ny; if(fxr()<dt*4) spark(c.x,c.y,'#7fc4ff',2,60); }
@@ -56696,6 +56820,7 @@ function arcadeScoreHud(y,z){
   }
   var _sx=arcadeStreakLive();   // v23.38 (arcade15): the live streak multiplier, left of the score
   if(_sx>1){ ctx.font=fb; ctx.textAlign='right'; ctx.fillStyle='#ffc04a'; hudText('x'+_sx,Math.round(cx-w/2-10*z),y); }
+  hudReg('score',cx-Math.max(w,LH(40)*z)/2-6*z,Math.round(yL-h*0.80)-Math.round(h*0.5),Math.max(w,LH(40)*z)+12*z,_bot-(Math.round(yL-h*0.80)-Math.round(h*0.5)));   // v27.45 (hud1)
   ctx.restore();
   return _bot;   // v25.xx (topmid): where the block ends, for the compass under it
 }
@@ -67182,6 +67307,90 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.45',what:'rvw3, the cloud review (9): the magnet power-up does not pull the reward box of an event (stronghold cache, convoy crate, golden hoard) and moves no box at all in a party, but still pulls a plain body when playing alone',
+   run:function(){
+     if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
+     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof pwrMagnet!=='function'||typeof pwrS!=='function'||typeof mkContainer!=='function') return 'SKIP: no arcade or magnet here';
+     var bad=[], g=null, p=null, S, c1, c2, c3, k, a, spots=[], NKon, NKrole, d0, i, loot, box, p3;
+     try{
+       __topClear(); __runPrep();
+       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       p=g.player; keys={};
+       for(k=0;k<48&&spots.length<3;k++){ a=k*0.5236+0.3; if(spotFree(g.map,p.x+Math.cos(a)*210,p.y+Math.sin(a)*210,20)&&spotFree(g.map,p.x+Math.cos(a)*120,p.y+Math.sin(a)*120,14)&&spotFree(g.map,p.x+Math.cos(a)*60,p.y+Math.sin(a)*60,14)&&(!spots.length||Math.abs(a-spots[spots.length-1].a)>1.2)) spots.push({a:a,x:p.x+Math.cos(a)*210,y:p.y+Math.sin(a)*210}); }
+       if(spots.length<3) return 'SKIP: no open ground for three boxes next to the player';
+       box=function(sp,type,tag){ var c=mkContainer(sp.x,sp.y,type); if(!c.loot||!c.loot.length) c.loot=[rollLoot(LOOT.cache)]; if(tag) c.tag=tag; c.opened=false; g.containers.push(c); return c; };
+       c1=box(spots[0],'cache','STRONGHOLD CACHE'); c2=box(spots[1],'body',null); c3=box(spots[2],'body',null);
+       S=pwrS();
+       // ONE: alone: the plain body comes in, the stronghold cache does not
+       d0=Math.hypot(c2.x-p.x,c2.y-p.y); pwrMagnet(p,0.5,S);
+       if(!(Math.hypot(c2.x-p.x,c2.y-p.y)<d0-5)) bad.push('ONE: the magnet no longer pulls a plain body when playing alone');
+       if(Math.hypot(c1.x-spots[0].x,c1.y-spots[0].y)>0.5) bad.push('ONE: the magnet pulled the stronghold cache');
+       // TWO: in a party it moves no box at all
+       p3={x:c3.x,y:c3.y}; NKon=NET.on; NKrole=NET.role; NET.on=true; NET.role='host';
+       try{ d0=Math.hypot(c3.x-p.x,c3.y-p.y); pwrMagnet(p,0.5,S); if(Math.hypot(c3.x-p3.x,c3.y-p3.y)>0.5) bad.push('TWO: the magnet moved a box in a party'); }
+       finally{ NET.on=NKon; NET.role=NKrole; }
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       keys={};
+       try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       try{ if(typeof ARCADE==='object'){ ARCADE.mine=0; ARCADE.waveT=0; ARCADE.holdT=0; } }catch(_h){}
+       __topClear();
+     }
+     return bad.length?bad.slice(0,8).join('; '):null; }},
+  {v:'27.44',what:'feel2g, a cloud review finding (#5): the finisher works on a controller. Y held with a downed pillager in reach finishes him in 0.55 s (a tap does not, a standing pillager is not touched, and it does not swing the crowbar), the prompt names the Y button on a pad and V on a keyboard, and the pad list says so',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__sim)||typeof pollPad!=='function'||typeof PAD==='undefined'||typeof finTarget!=='function') return 'SKIP: no raid or pad here';
+     var bad=[], g, p, all, rd, X0, Y0, dx=0, dy=0, ok=false, k, ux, uy, i, oCrawl, gp, hadOwn=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), kNG=navigator.getGamepads, kPAD={on:PAD.on,aiming:PAD.aiming,curOwn:PAD.curOwn,brand:PAD.brand,aimA:PAD.aimA}, oMelee, lab, row;
+     function mkpad(down){ var bt=[], q, d; for(q=0;q<17;q++){ d=down.indexOf(q)>=0; bt.push({pressed:d,value:d?1:0}); } return {connected:true,id:'Xbox Wireless Controller',index:0,axes:[0,0,0,0],buttons:bt,mapping:'standard'}; }
+     function frame(down){ gp=mkpad(down); navigator.getGamepads=function(){ return [gp]; }; pollPad(); g.t+=0.016; __sim(0.016); }
+     function down(){ rd.x=X0+dx*30; rd.y=Y0+dy*30; rd.hp=40; rd.maxhp=100; rd.downed=1; rd.finished=0; rd.downT=14; rd.hostile=true; rd.state='down'; rd.getUpOn=1; rd.getUpIn=3; rd.getUp=0; rd.byPlayer=false; rd.crawlTo=null; rd.reviveT=0; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       if(g.sim) return 'SKIP: the fixture raid is a sim raid';
+       p=g.player; all=g.ents.slice(); X0=p.x; Y0=p.y; oCrawl=CFG.raiderCrawl; p.iv=99; oMelee=p.meleeAt;
+       for(k=0;k<8;k++){ ux=Math.cos(k*0.7854); uy=Math.sin(k*0.7854); if(losClear(X0,Y0,X0+ux*80,Y0+uy*80,g.map.segs)){ dx=ux; dy=uy; ok=true; break; } }
+       if(!ok) return 'SKIP: staging: no open line from the drop point';
+       rd=all.filter(function(x){ return x.kind==='raider'&&!x.merc&&!x.friendlyPC; })[0];
+       if(!rd) return 'SKIP: no pillager on this map';
+       CFG.raiderCrawl=0; g.ents=[rd]; keys={}; mouse.down=false; PAD.prev=[]; g.bagOpen=false; g.mapOpen=false; g.paused=false; g.wheel=null; g.trade=null;
+       frame([]);
+       // ONE: Y held on a downed pillager in reach finishes him
+       down(); for(i=0;i<20;i++){ down(); frame([3]); }
+       if(!(rd.hp>0)||!rd.downed) bad.push('ONE: Y finished him before the 0.55 s hold ran out');
+       for(i=0;i<26;i++){ if(!(rd.hp>0)) break; frame([3]); }
+       if(rd.hp>0&&rd.downed&&g.ents.indexOf(rd)>=0) bad.push('ONE: holding Y for 0.8 s did not finish a downed pillager');
+       frame([]);
+       // TWO: a tap does nothing
+       down(); for(i=0;i<8;i++){ down(); frame([3]); } frame([]); frame([]);
+       if(!(rd.hp>0)||!rd.downed) bad.push('TWO: a short press on Y finished him');
+       // THREE: Y held near a standing pillager touches nothing, and the crowbar is not swung
+       down(); rd.downed=0; rd.hostile=false; rd.state='patrol'; rd.hp=rd.maxhp=100; p.meleeAt=undefined;
+       for(i=0;i<50;i++) frame([3]);
+       frame([]);
+       if(!(rd.hp>0)) bad.push('THREE: holding Y near a standing pillager hurt him');
+       if(p.meleeAt!==undefined) bad.push('THREE: Y swung the crowbar');
+       // FOUR: the prompt names the button as bound
+       PAD.on=true;
+       lab=keyLabel('KeyV','V');
+       if(lab!=='Y') bad.push('FOUR: on a pad the finisher is named '+lab+', not Y');
+       row=''; for(i=0;i<PAD_ACTS.length;i++) if(PAD_ACTS[i][0]===3) row=String(PAD_ACTS[i][1]);
+       if(row.indexOf('finish')<0) bad.push('FOUR: the CHANGE PAD BUTTONS row for Y says "'+row+'"');
+       PAD.on=false;
+       if(keyLabel('KeyV','V')!=='V') bad.push('FOUR: with no pad the finisher is named '+keyLabel('KeyV','V')+', not V');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(hadOwn) navigator.getGamepads=kNG; else delete navigator.getGamepads; }catch(_n){}
+       try{ PAD.prev=[]; PAD.on=kPAD.on; PAD.aiming=kPAD.aiming; PAD.curOwn=kPAD.curOwn; PAD.brand=kPAD.brand; PAD.aimA=kPAD.aimA; if(typeof padRelease==='function') padRelease(); }catch(_p){}
+       keys={}; mouse.down=false;
+       try{ if(typeof oCrawl!=='undefined') CFG.raiderCrawl=oCrawl; if(g){ if(p) p.meleeAt=oMelee; if(all) g.ents=all.slice(); g.bullets.length=0; g.finT=0; g.finE=null; } }catch(_h){}
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.slice(0,8).join('; '):null; }},
   {v:'27.43',what:'rvw1, the cloud review (3, 10, 12, 17, 21): no event or fire is placed in a stronghold, a body whose way lies across a fire slides round its edge instead of grinding on it, the 6 CRATES goal counts only the boxes the party opens (player 2 too, no bodies), the bounty is paid for a kill of the party only and not for a down or a death nobody caused, the convoy crew and the bounty pillager are never taken out of the world in view, and the air strike prompts name the key as bound',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';

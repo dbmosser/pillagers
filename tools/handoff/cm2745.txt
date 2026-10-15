@@ -1,0 +1,7 @@
+v27.45: the magnet leaves event rewards and party boxes alone
+
+The magnet no longer drags event rewards, and moves no boxes in a party.
+
+Check 27.45. Fails on v27.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

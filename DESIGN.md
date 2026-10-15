@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.45 - THE MAGNET LEAVES EVENT REWARDS AND PARTY BOXES ALONE
+
+Co-op hunt while he was away. The cloud review of 2026-10-15, finding 9, checked against the code. The magnet power-up pulled every body, bot wreck and cache within 520 toward you through walls and fences. The stronghold cache, the convoy crate and the golden hoard are caches, so they slid out of a sealed stronghold to whoever stood at the fence; and in a party each window moved its own copy of a box, so the host answered far to a search of a box the other player saw at his feet. The magnet leaves the reward boxes of events where the event put them, and in a party it moves no boxes; it still pulls the pickups on the ground and, alone, the plain bodies.
+
+MEASURED. Check 27.45 passes, and fails on v27.44.
 ## v27.44 - THE FINISHER ON A CONTROLLER
 
 Co-op hunt while he was away. A cloud review of v26.54 to v27.30 found that the finisher could not be done on a controller. It read keyboard V and no pad button reached it, so player 2 on a pad was shown FINISH [V] over every downed pillager and could not do it. The pad has no melee button, so the finisher goes on Y, the button for the other close-in jobs (search the ring, help a teammate), held with a downed pillager in reach: the same 0.55 second hold, the same reach and points, and it does not swing the crowbar. Y keeps its other jobs, which win when they apply: helping a downed teammate, and searching a box or the ring when one is in reach underfoot. It follows CHANGE PAD BUTTONS (whatever button action 3 is on), the PAD list and the legend say so, and the prompt names the button as bound (Y, or TRIANGLE on a PlayStation pad), which the next build draws.

@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.44';
+var VER='27.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44783,7 +44783,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.44: On a controller, hold Y on a downed pillager in reach to finish him. Check 27.44 fails on v27.43',
+  now:'v27.45: The magnet no longer drags event rewards, and moves no boxes in a party. Check 27.45 fails on v27.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55804,6 +55804,9 @@ function flowCrate(ct){
   S=flowS(); S.crates=(S.crates|0)+1;
   return S.crates;
 }
+// v27.45 (rvw3), the CLOUD REVIEW of 2026-10-15, finding 9 (checked against the code): the MAGNET power-up pulled every body, bot wreck and CACHE within 520 toward you through walls and fences. The STRONGHOLD CACHE, the CONVOY CRATE and the
+// GOLDEN HOARD are caches, so they slid out of a sealed stronghold to whoever stood at the fence; and in a party each window moved its own copy of a box, so the host answered FAR to a search of a box that the other player
+// saw at his feet. The magnet does not touch the reward boxes of an event now, and in a party (two linked windows) it does not move boxes at all; it still pulls the pickups on the ground.
 // FLOW-MODULE-END (the next flow builds add their code above this line)
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS
 // LIGHT. Over 3 hours of nonstop play the bodies grew from 41 to 217 and the containers from 154 to 598: the waves land near the
@@ -56525,6 +56528,7 @@ function pwrMagnet(p,dt,S){
   for(i=0;G.containers&&i<G.containers.length;i++){
     c=G.containers[i];
     if(!c||!mt[c.type]||!c.loot||!c.loot.length||G.searching===c) continue;
+    if((c.tag&&EV_WRECK_TAGS[c.tag])||NET.on) continue;   // v27.45 (rvw3, cloud review 9): the reward of an event stays where the event put it, and in a party nobody drags boxes (each window would move its own copy and the host would answer FAR for a box the other player sees at his feet)
     d=Math.hypot(p.x-c.x,p.y-c.y); if(d>PWRX.magR||d<=PWRX.magStop) continue;
     st=Math.min(d-PWRX.magStop,PWRX.magSp*dt); nx=c.x+(p.x-c.x)/d*st; ny=c.y+(p.y-c.y)/d*st;
     if(spotFree(G.map,nx,ny,12)&&!shutRoomAt(G.map,nx,ny)&&!shutRoomAt(G.map,c.x,c.y)){ c.x=nx; c.y=ny; if(fxr()<dt*4) spark(c.x,c.y,'#7fc4ff',2,60); }
