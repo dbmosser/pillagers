@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.61';
+var VER='28.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46528,7 +46528,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.61: Player 2 now sees the searchers scan cones as long as player 1 does. Check 28.61 fails on v28.60',
+  now:'v28.62: In the two player DEMO a death now ends your power-ups instead of carrying them into the respawn. Check 28.62 fails on v28.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55777,6 +55777,7 @@ function arcadeRespawn(why){
   p.arcSh=1;   // v23.30 (arcade9): the spawn shield
   p.vx=0; p.vy=0; G.anchX=undefined; G.shake=0;
   if(why!=='bench') ARCADE.deaths=(ARCADE.deaths|0)+1;   // v23.25 (arcade6): coming off the bench is not a death
+  if(why!=='bench'&&G.pwr) G.pwr.act={};   // v28.62 (cloud-raid-pwrdeath), CLOUD HUNT 2026-10-15: a death ends the power-ups; the dying test in pwrTick never ran, the death beat skips the player tick
   ARCADE.holdT=3;
   return true;
 }

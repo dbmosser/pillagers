@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.62 - POWER-UPS END WHEN YOU DIE
+
+Co-op hunt while he was away. The timed power-ups (bottomless clip, double damage, rapid fire, magnet, shield bubble) were meant to end on a death: the power-up tick clears them while the player is dying. But during the death beat the game does not run the player tick, and the respawn clears the dying mark before the next one, so that line never ran. In the two player DEMO a player who died with double damage and bottomless clip running came back from the respawn still holding both, with most of their time left. Proven in headless Chromium with real frames: power-ups at 15 and 20 s, a lethal hit, the death beat, the respawn at full health, and the power-ups still running at 14 and 19 s with the damage still doubled. The respawn now ends them. The 1 player DEMO and CAREER were never affected: their death ends the raid.
+
+MEASURED. Check 28.62 passes, and fails on v28.61.
 ## v28.61 - PLAYER 2 SEES THE FULL SCAN CONES
 
 Co-op hunt while he was away. A searcher paints a faint amber scan cone on the ground, and DESIGN v26.76 says player 2 sees the same cones. The cone is cut to how far the body can see, and player 2 window does not know that for the bodies that come up after the raid is built (the waves, the Overseer, its summons): each is a copy that starts with a sight of 100, and the host never told it the real one. So the cone of every such body in his window stopped at 135 where the host drew 250 (a sentry sees 340, a pillager 259), telling him he was out of reach where he was not. The same short sight cut the Overseer laser in his window to 100. Proven in headless Chromium with a linked pair: host sentry cone 250 and pillager cone 250, the same bodies in player 2 window 135 and 135. The host now sends each new body's sight reach with the word that names it, and the copy takes it, so the cones and the laser reach as far for him as on the host. The same fix makes the red sight cone of a sentry and the windup aim line as long for him as on the host (they were cut to 100 and 115 on those bodies).

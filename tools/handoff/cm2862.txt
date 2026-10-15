@@ -1,0 +1,7 @@
+v28.62: power-ups end when you die
+
+In the two player DEMO a death now ends your power-ups instead of carrying them into the respawn.
+
+Check 28.62. Fails on v28.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
