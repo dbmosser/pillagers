@@ -1,0 +1,7 @@
+v27.27: the run goals are the party
+
+The run goals are now shared by both players, and they show in the hold Alt raid status.
+
+Check 27.27. Fails on v27.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

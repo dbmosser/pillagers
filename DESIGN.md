@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.27 - THE RUN GOALS ARE THE PARTY
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. Each window drew its own three run goals and counted its own kills, crates and strikes, so the two lists drifted apart and a goal one player finished paid its chip twice. The host now owns the goals: it says the three goals and how far each is in the world word, player 2 shows exactly those and says GOAL DONE when one is met, and he counts and pays nothing of his own. What counts is the party: player 2 kills reach the goals, his air strike counts for AIR STRIKE, and his kill of the bounty pillager claims the bounty. The goals are also in the hold Alt raid status now, one tile each, with the figure or DONE.
+
+MEASURED. Check 27.27 passes, and fails on v27.26.
 ## v27.26 - THE CONTROLS LIST STANDS BESIDE THE FEED
 
 Co-op hunt while he was away. Seen in the first picture of the busy raid frame: with the feed at the bottom left, the compact controls list was pushed up above it and ran over the bottom of the CURRENT PILLAGERS board. It now stands on the vitals as before, but to the right of the feed, and it shrinks a little if it must so that it ends before the middle of the screen, where the player stands. The one-line controls hint stands just over the feed.

@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.26';
+var VER='27.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38966,6 +38966,7 @@ function raidStatusDraw(){
   z=G.active;
   for(i=0;i<G.zones.length;i++){ if(G.zones[i].open===false) continue; tz++; d=dist(p,G.zones[i]); if(d<bd){ bd=d; nz=G.zones[i]; } }
   T.push({l:'EXTRACTION',v:z?zoneBadge(z):(tz?'NONE CALLED':'ALL CLOSED'),c:z?HUDC.extract:(tz?'#cdd6dd':HUDC.danger),s:nz?('NEAREST '+extLetter(nz)+'  '+metres(bd)+'M '+compass8(nz.x-p.x,nz.y-p.y)):'',rail:z?HUDC.extract:'#4a5257'});
+  try{ goalsTiles(T); }catch(_gtl){}   // v27.27 (coop8): the run goals, a tile each
   // the teammates
   if(typeof NET==='object'&&NET&&NET.on&&NET.roster){
     for(i=0;i<NET.roster.length;i++){
@@ -44674,7 +44675,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.26: The compact controls list now stands to the right of the feed, clear of the pillagers board. Check 27.26 fails on v27.25',
+  now:'v27.27: The run goals are now shared by both players, and they show in the hold Alt raid status. Check 27.27 fails on v27.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52121,7 +52122,7 @@ function netEntNewWord(e){
 function netEntGone(e){
   var how=(e.hp<=0||e.finished)?'dead':'out', q;
   netBroadcast({t:'ent',op:'gone',id:e.nid,how:how,n:NET.entN});   // n: the snapshot that follows; an older one naming this body is a late packet
-  if(how==='dead'&&e.bySeat>0&&!e.byPlayer){ q=netPeerOfSeat(e.bySeat); if(q) netSend(q,{t:'kill',seat:e.bySeat,id:e.nid,k:e.kind,el:e.elite?1:0}); }
+  if(how==='dead'&&e.bySeat>0&&!e.byPlayer){ q=netPeerOfSeat(e.bySeat); if(q) netSend(q,{t:'kill',seat:e.bySeat,id:e.nid,k:e.kind,el:e.elite?1:0}); try{ flowKill(e.kind,e.elite?1:0,!!(e.boss||e.name===BOSS_NAME)); }catch(_nfk){} }   // v27.27 (coop8): and a kill of player 2 counts for the run goals
   if(how==='dead'&&(e.byPlayer||e.bySeat>0)) netFeedKill(e.byPlayer?0:e.bySeat,e);   // v16.42: the kill feed
   return how;
 }
@@ -54218,7 +54219,7 @@ function goalProg(id,S){
   if(id==='kill10') return S.kills|0;
   if(id==='crate6'){ C=G.containers||[]; for(i=0;i<C.length;i++) if(C[i]&&C[i].opened) n++; S.crates=Math.max(S.crates|0,n); return S.crates; }
   if(id==='wave3') return (S.dir&&S.dir.waves)|0;
-  if(id==='air1') return (S.air&&S.air.used)|0;
+  if(id==='air1') return ((S.air&&S.air.used)|0)+(S.pAir|0);   // v27.27 (coop8): a strike either player called
   if(id==='vault'){ L=(G.map&&G.map.locked)||[]; for(i=0;i<L.length;i++) if(L[i]&&L[i].open) n++; return n; }
   if(id==='pill3') return K.raider|0;
   if(id==='elite') return S.elites|0;
@@ -54237,6 +54238,7 @@ function flowChip(n,head,sub){
 }
 function goalsTick(dt){
   var S=flowS(), i, gl, v;
+  if(flowPeer()) return;   // v27.27 (coop8): a linked player 2 window counts nothing and pays no chip, the goals are the host (goalsNetTake)
   if(!S.goals) goalsMake(S);
   for(i=0;i<S.goals.length;i++){
     gl=S.goals[i]; if(gl.done) continue;
@@ -54757,7 +54759,7 @@ EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,f
     down=!(e.hp>0)||e.downed||e.finished||G.ents.indexOf(e)<0;
     if(down){
       ev.d.over=1;
-      if(e.byPlayer!==false){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; }
+      if(e.byPlayer!==false||(e.bySeat|0)>0){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; }   // v27.27 (coop8): player 2's kill claims it too
       else { try{ say('BOUNTY GONE','info',{sub:'NOT YOUR KILL'}); }catch(_bg){} }
       return;
     }
@@ -55374,6 +55376,7 @@ function flowNetOut(){
   o.e=evNetOut();   // v27.07 (coop2): and the raid events
   o.s=shNetOut();   // v27.12 (coop4): and the strongholds
   o.g=goldNetOut(); o.c=clueNetOut();   // v27.18 (coop5): and the golden enemy and the clue hunt
+  o.r=goalsNetOut();   // v27.27 (coop8): and the run goals
   // FLOW-NET-OUT (the next coop builds add their keys above this line)
   return o;
 }
@@ -55384,6 +55387,7 @@ function flowNetTake(fl){
   if(fl.s&&typeof fl.s.length==='number') shNetTake(fl.s);   // v27.12 (coop4): the strongholds
   if(fl.g) goldNetTake(fl.g);   // v27.18 (coop5): the golden enemy
   if(fl.c) clueNetTake(fl.c);   // v27.18 (coop5): the clue hunt
+  if(fl.r) goalsNetTake(fl.r);   // v27.27 (coop8): the run goals
   // FLOW-NET-IN (the next coop builds take their keys above this line)
   return 1;
 }
@@ -55568,7 +55572,10 @@ function flowNetWord(peer,m){
     if(!flowOn()||!isFinite(+m.x)||!isFinite(+m.y)||!isFinite(+m.a)) return 'bad';
     if(typeof netUpShared!=='function'||!netUpShared()) return 'off';
     airStrikeFx(clamp(+m.x,0,WORLD_W),clamp(+m.y,0,WORLD_H),+m.a,m.s|0);
-    if(NET.role==='host') for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],m);
+    if(NET.role==='host'){
+      flowS().pAir=(flowS().pAir|0)+1;   // v27.27 (coop8): and it counts for the run goal
+      for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],m);
+    }
     return 'air';
   }
   // FLOW-NET-WORD (the next coop builds take their words above this line)
@@ -55715,6 +55722,43 @@ function airStrikeFx(x,y,a0,seat){
   return true;
 }
 function airHint(){ return (typeof padOn==='function'&&padOn())?padB('LB + RB'):'PRESS G'; }
+// v27.27 (coop8), HIS ORDER (2026-10-14), the two player first: THE RUN GOALS ARE THE PARTY'S. Each window drew its own three goals and counted its own kills, crates and strikes, so the
+// two lists drifted apart and a goal one player finished paid its chip twice (once from each window). The host now owns the goals: it says the three (key r: which, how far, done) in the world
+// word, the linked window draws exactly those and says GOAL DONE when one is met, and counts and pays nothing (goalsTick). What counts is the PARTY'S: a kill of player 2 reaches the run goals
+// (the host reports it where it credits the kill to his seat), his strike counts for AIR STRIKE, his kill of the bounty pillager claims the bounty, and the crates and vault doors he opens
+// are the host's boxes and doors already. The goals are in the hold Alt raid status too, a tile each, with the figure or DONE.
+function goalsNetOut(){
+  var S=G.flow, a=[], i, gl;
+  if(!S||!S.goals) return 0;
+  for(i=0;i<S.goals.length&&i<3;i++){ gl=S.goals[i]; a.push([GOAL_IDS.indexOf(gl.id),gl.v|0,gl.done?1:0]); }
+  return a;
+}
+function goalsNetTake(a){
+  var S=flowS(), i, r, id, gl, first, was;
+  if(!a||typeof a.length!=='number') return 0;
+  first=!S.goals;
+  if(first) S.goals=[];
+  for(i=0;i<a.length&&i<3;i++){
+    r=a[i]; if(!r||typeof r.length!=='number') continue;
+    id=GOAL_IDS[r[0]|0]; if(!id||!GOALS[id]) continue;
+    gl=S.goals[i];
+    if(!gl||gl.id!==id){ gl={id:id,t:GOALS[id].t,n:GOALS[id].n,chip:GOALS[id].chip,v:0,done:0}; S.goals[i]=gl; }
+    was=gl.done; gl.v=Math.min(gl.n,r[1]|0); gl.done=r[2]?1:0;
+    if(gl.done&&!was&&!first){ try{ say('GOAL DONE','ext',{sub:gl.t}); }catch(_gd){} }
+  }
+  if(first&&!S.gtoldP){ S.gtoldP=1; try{ say('RUN GOALS','obj',{sub:'THREE SMALL GOALS'}); }catch(_rg){} }
+  return S.goals.length;
+}
+// the goals as tiles of the raid status plate (the plate calls this; T is its list)
+function goalsTiles(T){
+  var S=G&&G.flow, i, gl;
+  if(!S||!S.goals||!flowOn()) return 0;
+  for(i=0;i<S.goals.length;i++){
+    gl=S.goals[i];
+    T.push({l:'RUN GOAL  '+gl.t,v:gl.done?'DONE':((gl.n>1)?(gl.v+' / '+gl.n):'NOT YET'),c:gl.done?'#7fc4a0':'#e8eef2',s:gl.done?'':('+'+arcadeCr(gl.chip)),rail:gl.done?'#7fc4a0':'#f5b73b'});
+  }
+  return S.goals.length;
+}
 // FLOW-MODULE-END (the next flow builds add their code above this line)
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS
 // LIGHT. Over 3 hours of nonstop play the bodies grew from 41 to 217 and the containers from 154 to 598: the waves land near the
