@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.74 - THE WHAT IS NEW CARD NAMES THE POLISH PASS
+
+Co-op hunt while he was away. The card was stamped v27.61 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 27.74 passes, and fails on v27.73.
 ## v27.73 - SETTINGS LIGHTS THE RIGHT SECTION ON OPEN
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: on opening Settings the section chip lit was ACCESSIBILITY, the last one, though the list sat at the top on THE RAID. The chips were lit while the window was still hidden, where every section head measures as at the top, and nothing lit them again until a scroll. Proven in headless Chromium: {"scrollTop":0,"litAfterOpen":["ACCESSIBILITY"],"spyNow":"THE RAID"}. The chips are now lit again once the window shows.

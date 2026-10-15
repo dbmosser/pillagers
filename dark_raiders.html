@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.73';
+var VER='27.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2260,7 +2260,7 @@ var VER='27.73';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='27.61';
+var WHATSNEW_VER='27.74';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2280,6 +2280,7 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'MORE POLISH. Cleaner screens and sharper feedback across the raid, from the gun bar to the end cards.',
   'CLEANER RAIDS. One message feed on the left, one alert lane at the top, red barrels and a kit row on the map screen.',
   'ONE FEED. What you pick up, kill and earn is a line at the bottom left, and the big moments are an alert at the top.',
   'RUN GOALS. Both players count toward the three goals, in both windows and in the hold-Alt raid status.',
@@ -44834,7 +44835,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.73: Opening Settings now lights the chip of the section you are looking at. Check 27.73 fails on v27.72',
+  now:'v27.74: The what is new card names the polish pass. Check 27.74 fails on v27.73',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
