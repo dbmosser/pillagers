@@ -1,0 +1,5 @@
+## v28.21 - THE COMBO RING IS BOLD AND ALIVE
+
+Co-op hunt while he was away. About the combo ring at the cursor he said he did not notice it at all. It was a thin ring with a small ten-pixel multiplier beside it. Now the ring is bolder, with a dark underlay so it reads on a bright floor and a soft glow on its sweep; the multiplier is a big number on a plate of its own (the x4 and x5 bigger again); the ring flashes outward and the number pops each time the chain grows; and in the last third of the chain the sweep shifts toward red and flickers while the number shivers, so he can see the chain is about to run out. It stays tidy: still one ring and one number beside it.
+
+MEASURED. Check 28.21 passes, and fails on v28.20.

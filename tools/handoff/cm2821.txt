@@ -1,0 +1,7 @@
+v28.21: the combo ring is bold and alive
+
+The combo ring is bold with a big multiplier, flashes when the chain grows and flickers red when it is about to run out.
+
+Check 28.21. Fails on v28.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

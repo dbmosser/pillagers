@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.21 - THE COMBO RING IS BOLD AND ALIVE
+
+Co-op hunt while he was away. About the combo ring at the cursor he said he did not notice it at all. It was a thin ring with a small ten-pixel multiplier beside it. Now the ring is bolder, with a dark underlay so it reads on a bright floor and a soft glow on its sweep; the multiplier is a big number on a plate of its own (the x4 and x5 bigger again); the ring flashes outward and the number pops each time the chain grows; and in the last third of the chain the sweep shifts toward red and flickers while the number shivers, so he can see the chain is about to run out. It stays tidy: still one ring and one number beside it.
+
+MEASURED. Check 28.21 passes, and fails on v28.20.
 ## v28.20 - GUN KEY AND WHEEL NAMES FIT
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: at the default menu size on a 1440p or 4K screen, and at 1920x1080 fullscreen, the GUN KEYS and ITEM WHEEL tiles on the stash cut their names off mid word (MARKSMAN 58 px of text in 35, CARBINE 45 in 35, SHOTGUN, PISTOL, SNIPER, ENERGY, BANDAGE, ARMOUR, TRIPWIRE). Proven in headless Chromium at 1920x1080 with the menu zoom 1.3 (the same layout as 2560x1440). The tile names drop to 12px with no letter spacing, the two plates sit 10px apart instead of 22, the tile insides are a little tighter, and the gun plate takes a touch more of the row; every name now shows whole with a few pixels to spare and the gun picture never touches its name.
