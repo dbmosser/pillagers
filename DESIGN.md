@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.99 - THE WHAT IS NEW CARD NAMES PARTY MODE
+
+Co-op hunt while he was away. The card was stamped v26.87 and the stamp may not trail the build by more than 0.15. Its new line names the party builds since: style medals and the combo ring, the timed power-ups, the TEAM combo for two players, and the NEW PARTY seed.
+
+MEASURED. Check 26.99 passes, and fails on v26.98.
 ## v26.98 - THE COMBO MULTIPLIER CLEARS THE TEAM RING
 
 Co-op hunt while he was away. From the 1080p picture of the party builds: with the cyan TEAM ring up, the amber x3 beside the combo ring sat on the edge of it. The multiplier now moves out past the TEAM ring while that ring is showing, and stays where it was when it is not.

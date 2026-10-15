@@ -1,0 +1,5 @@
+## v26.99 - THE WHAT IS NEW CARD NAMES PARTY MODE
+
+Co-op hunt while he was away. The card was stamped v26.87 and the stamp may not trail the build by more than 0.15. Its new line names the party builds since: style medals and the combo ring, the timed power-ups, the TEAM combo for two players, and the NEW PARTY seed.
+
+MEASURED. Check 26.99 passes, and fails on v26.98.
