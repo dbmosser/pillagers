@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.01 - THE TROPHY CASE
+
+Co-op hunt while he was away. His yes to suggestion 33. The stash has a new TROPHIES button beside ARMORY. It opens a trophy case, a shelf of eight plaques: FIRST OUT for an extraction, GHOST for walking out unspotted, MOTHERLODE for a $20,000 haul, CENTURION for 100 kills with one gun, FORGED for keeping a MK III gun, FULL ARMORY for every gun in the codex, GOLD HUNTER for killing the golden enemy and OVERSEER DOWN for killing the Overseer. Earned plaques are lit in bronze, silver or gold with the day they were earned; the rest are dark and say in caps what it takes. The first six are worked out from what your save already says, so an older save has its shelf the first time the stash is drawn. The last two are given the moment the kill happens, with a TROPHY EARNED callout. A trophy is kept for good and changes nothing in the game.
+
+MEASURED. Check 27.01 passes, and fails on v27.00.
 ## v27.00 - THE NEEDED-ITEM GLOW
 
 Co-op hunt while he was away. His yes to suggestion 31, with his answer that it is the container that glows because items on the ground are boxes. When an unfinished contract still needs an item (the extraction cards that ask you to carry out a Circuit Board, an Optic, a Servo or a Data Core), any shut container that holds one now glows gold on the ground, with a small diamond over it, so a contract steers where you search. The item has the same gold edge on its cell in the backpack and on its row in the pickup stack when it comes out of the box. It goes dark the moment the item is out of the box, the card is done, or the box is opened. What the lift carried up with you does not count toward a card, and so it does not count here. There are no contracts in the DEMO, so nothing glows there. Nothing that drops, is found or is paid changes.

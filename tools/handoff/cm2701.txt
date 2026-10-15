@@ -1,0 +1,7 @@
+v27.01: the trophy case
+
+The stash has a trophy case of eight plaques, lit when earned.
+
+Check 27.01. Fails on v27.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
