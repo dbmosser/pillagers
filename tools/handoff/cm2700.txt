@@ -1,0 +1,7 @@
+v27.00: the needed-item glow
+
+A box that holds an item your contract needs glows gold, and so does the item.
+
+Check 27.00. Fails on v26.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

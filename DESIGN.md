@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.00 - THE NEEDED-ITEM GLOW
+
+Co-op hunt while he was away. His yes to suggestion 31, with his answer that it is the container that glows because items on the ground are boxes. When an unfinished contract still needs an item (the extraction cards that ask you to carry out a Circuit Board, an Optic, a Servo or a Data Core), any shut container that holds one now glows gold on the ground, with a small diamond over it, so a contract steers where you search. The item has the same gold edge on its cell in the backpack and on its row in the pickup stack when it comes out of the box. It goes dark the moment the item is out of the box, the card is done, or the box is opened. What the lift carried up with you does not count toward a card, and so it does not count here. There are no contracts in the DEMO, so nothing glows there. Nothing that drops, is found or is paid changes.
+
+MEASURED. Check 27.00 passes, and fails on v26.99.
 ## v26.99 - THE WHAT IS NEW CARD NAMES PARTY MODE
 
 Co-op hunt while he was away. The card was stamped v26.87 and the stamp may not trail the build by more than 0.15. Its new line names the party builds since: style medals and the combo ring, the timed power-ups, the TEAM combo for two players, and the NEW PARTY seed.
