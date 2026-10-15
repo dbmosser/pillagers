@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.43 - PARTY RUN GOALS KEEP THEIR PROGRESS WHEN THE HOST LEAVES
+
+Co-op hunt while he was away. His ruling: when the host is gone the remaining player picks up the raid, and since v27.27 the run goals are the party's: the host counts them and player 2 shows the host's progress. At the takeover player 2's window starts counting the goals itself again, but from its own counts only, so the party progress fell back to player 2's own: 10 KILLS at 7 of 10 on the host became 3 of 10 (his own 3 kills), and 3 WAVES and AIR STRIKE fell the same way. Proven in a staged pair (host 7 kills sent in the world word, player 2 with 3 of his own, the real netHostGone, then the goal tick): 3 of 10 after the takeover. Now at the takeover each goal not yet done keeps the gap between the party progress and this window's own count, and the goal tick adds it back, so it stays 7 of 10 and 3 more kills finish it.
+
+MEASURED. Check 28.43 passes, and fails on v28.42.
 ## v28.42 - THE OVERSEER RAMPAGE ENDS WHEN THE HOST LEAVES
 
 Co-op hunt while he was away. In a career co-op raid, when the host extracts or goes down and spectates while player 2 plays on, the host window keeps moving the machines for player 2 (netSpecTick runs updateEnts) but never ticks the raid events, so no event end ever ran on those bodies. A live Overseer rampage left the Overseer at 1.6x speed with its lair moved to the last sweep point for the rest of the raid, since the rampage end is the only thing that puts them back. Proven in a staged career pair: thirty seconds after the host went down and started spectating, the Overseer was still on its rampage. Now when the host starts spectating, a live rampage puts the Overseer back to its own speed and its own lair exactly as the rampage end does (no alert line, nothing removed, no reward). This matches the companion draft that ends raid events on player 2 window at the same moment. Bounty and convoy are left as they are; the lockdown is gone since v27.37.

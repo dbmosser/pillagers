@@ -1,0 +1,7 @@
+v28.43: party run goals keep their progress when the host leaves
+
+If your host leaves mid raid, the run goals keep the progress you made together instead of dropping back to only your own kills.
+
+Check 28.43. Fails on v28.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

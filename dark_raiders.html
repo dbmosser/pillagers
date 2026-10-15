@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.42';
+var VER='28.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46508,7 +46508,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.42: If your host extracts or goes down during an Overseer rampage, the Overseer now goes back to its lair at its normal speed instead of roaming fast for the rest of the raid. Check 28.42 fails on v28.41',
+  now:'v28.43: If your host leaves mid raid, the run goals keep the progress you made together instead of dropping back to only your own kills. Check 28.43 fails on v28.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55084,6 +55084,7 @@ function netHostGone(why){
   for(_i=0;_i<G.ents.length;_i++){ _e=G.ents[_i]; if(!_e) continue; if(_e.goal===_e){ _e.goal=null; _e.lootT=0; } if(_e.reviving===_e) _e.reviving=null; }
   if(_boss){ G.bossDone=0; _b=bossTick(true); if(_b&&_boss.maxhp>0&&_boss.hp>0) _b.hp=Math.max(1,Math.round(_b.maxhp*Math.min(1,_boss.hp/_boss.maxhp))); }
   else if((G.t||0)>=2) G.bossDone=1;
+  if(G.flow&&G.flow.goals) for(_i=0;_i<G.flow.goals.length;_i++){ _e=G.flow.goals[_i]; if(_e&&!_e.done) _e.off=Math.max(0,(_e.v|0)-goalProg(_e.id,G.flow)); }   // v28.43 (cloud-coop-takeover-goals-kept), CLOUD HUNT 2026-10-15: the party goal progress the host sent is kept as an offset over this window's own count
   G.netLeft='';
   NET.status=(why==='out')?'Your host is out of the raid. You are running it now.':'Connection to your host was lost. You are running the raid now.';
   try{ say((why==='out')?'HOST IS OUT':'HOST DISCONNECTED','crit',{sub:'You are hosting now',icon:'party'}); }catch(_hs){}   // v22.35 (R11): an alert at once   // v22.xx (tr3fixc): the shooter voice
@@ -56265,7 +56266,7 @@ function goalsTick(dt){
   if(!S.goals) goalsMake(S);
   for(i=0;i<S.goals.length;i++){
     gl=S.goals[i]; if(gl.done) continue;
-    v=goalProg(gl.id,S); gl.v=Math.min(gl.n,v);
+    v=goalProg(gl.id,S)+(gl.off|0); gl.v=Math.min(gl.n,v);   // v28.43 (cloud-coop-takeover-goals-kept), CLOUD HUNT 2026-10-15: plus the party progress kept at a host takeover
     if(v>=gl.n){ gl.done=1; flowChip(gl.chip,'GOAL DONE',gl.t); }
   }
   if(!S.gtold&&(G.t||0)>=1.5){ S.gtold=1; }   // v27.42 (info1): the goals are rows of RUN INFO all raid, no callout for them at the start
