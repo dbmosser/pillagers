@@ -40,3 +40,10 @@ His order: "looks like you managed to spend all my cloud credits. shut down the 
 | cloud/hud-spec | 00ed7686 | 2026-10-14 23:03 |
 | cloud/review-2026-10-15 | f5f849b4 | 2026-10-14 22:54 |
 | cloud/sound-pack | 35cb1352 | 2026-10-14 23:39 |
+
+## Archive (added before the branches were deleted, on his "yes delete them")
+13 hunt-branch files whose content differed from master are kept in tools/cloud/archive-2026-10-15/<hunt>/<path>:
+- helper scripts: feel ev.sh and gatetail.sh; robust oldload.mjs, oldsave.mjs, pair.mjs and soak.mjs;
+- each hunt's own run.mjs;
+- the feel and raid findings as their hunts left them.
+Every draft on the hunt branches was already identical in master. After this commit the 11 remote cloud branches were deleted.
