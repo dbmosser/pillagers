@@ -7694,7 +7694,7 @@ window.__REGRESS=[
   {v:'27.45',what:'rvw3, the cloud review (9): the magnet power-up does not pull the reward box of an event (stronghold cache, convoy crate, golden hoard) and moves no box at all in a party, but still pulls a plain body when playing alone',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
-     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof pwrMagnet!=='function'||typeof pwrS!=='function'||typeof mkContainer!=='function') return 'SKIP: no arcade or magnet here';
+     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof pwrS!=='function'||typeof pwrTick!=='function'||typeof mkContainer!=='function') return 'SKIP: no arcade or power-ups here';
      var bad=[], g=null, p=null, S, c1, c2, c3, k, a, spots=[], NKon, NKrole, d0, i, loot, box, p3;
      try{
        __topClear(); __runPrep();
@@ -7707,6 +7707,17 @@ window.__REGRESS=[
        box=function(sp,type,tag){ var c=mkContainer(sp.x,sp.y,type); if(!c.loot||!c.loot.length) c.loot=[rollLoot(LOOT.cache)]; if(tag) c.tag=tag; c.opened=false; g.containers.push(c); return c; };
        c1=box(spots[0],'cache','STRONGHOLD CACHE'); c2=box(spots[1],'body',null); c3=box(spots[2],'body',null);
        S=pwrS();
+       if(typeof pwrMagnet!=='function'){
+         // nomagnet: the magnet is gone; what stays is the rule that NO power-up (every kind running at once) moves a reward box or a body, alone or in a party
+         S.act={}; PWR_KINDS.forEach(function(q2){ S.act[q2.k]=20; });
+         p3={x:c3.x,y:c3.y}; NKon=NET.on; NKrole=NET.role;
+         try{ for(i=0;i<40;i++) pwrTick(p,0.05); NET.on=true; NET.role='host'; for(i=0;i<40;i++) pwrTick(p,0.05); }
+         finally{ NET.on=NKon; NET.role=NKrole; }
+         if(Math.hypot(c1.x-spots[0].x,c1.y-spots[0].y)>0.5) bad.push('ONE: a power-up moved the stronghold cache');
+         if(Math.hypot(c2.x-spots[1].x,c2.y-spots[1].y)>0.5) bad.push('ONE: a power-up moved a plain body');
+         if(Math.hypot(c3.x-p3.x,c3.y-p3.y)>0.5) bad.push('TWO: a power-up moved a box in a party');
+         S.act={};
+       } else {
        // ONE: alone: the plain body comes in, the stronghold cache does not
        d0=Math.hypot(c2.x-p.x,c2.y-p.y); pwrMagnet(p,0.5,S);
        if(!(Math.hypot(c2.x-p.x,c2.y-p.y)<d0-5)) bad.push('ONE: the magnet no longer pulls a plain body when playing alone');
@@ -7715,6 +7726,7 @@ window.__REGRESS=[
        p3={x:c3.x,y:c3.y}; NKon=NET.on; NKrole=NET.role; NET.on=true; NET.role='host';
        try{ d0=Math.hypot(c3.x-p.x,c3.y-p.y); pwrMagnet(p,0.5,S); if(Math.hypot(c3.x-p3.x,c3.y-p3.y)>0.5) bad.push('TWO: the magnet moved a box in a party'); }
        finally{ NET.on=NKon; NET.role=NKrole; }
+       }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
        keys={};
@@ -8172,7 +8184,7 @@ window.__REGRESS=[
        __forceSize(w,h);
        NET.on=true; NET.max=4; NET.role=role; NET.seat=(role==='host')?0:1; NET.up=[]; NET.peers=[]; NET.upSeed=g.seed>>>0;
        A=airS(); A.m=Math.round(AIR.need*0.6); A.rdy=0; A.aim=0; A.sk=[];
-       S=pwrS(); S.act={clip:12,dmg:8,rapid:5,shield:6,mag:9};
+       S=pwrS(); S.act={clip:12,dmg:8,rapid:5,shield:6};
        p.hand={k:'bandage',t:0.4,len:1.2}; g.bagOpen=false; g.mapOpen=false; g.wheel=null;
        __frame(0.016); __frame(0.016);
        z=Math.max(1,hudRes());
@@ -10756,7 +10768,7 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
-       if(typeof pwrMagnet!=='function'||typeof pwrPulse!=='function'||typeof pwrShieldHit!=='function') return 'there are no magnet, shield or screen clear in this build';
+       if(typeof pwrPulse!=='function'||typeof pwrShieldHit!=='function') return 'there are no shield or screen clear in this build';
        p=g.player; keys={}; say=function(){}; own=true; ARCADE.holdT=0; oSh=p.arcSh; oAr=p.armor; oIv=p.iv; hp0=p.hp;
        g.ents=g.ents.filter(function(q2){ return q2&&(q2.neutral||q2.kind==='peddler'||q2.kind==='stray'); });
        g.pwr=null; S=pwrS();
@@ -10764,9 +10776,10 @@ window.__REGRESS=[
        for(i=0;i<3000;i++){ S.lastDrop-=1; S.items.length=0; pwrKill('crawler',0,false,p.x+60,p.y,null); }
        S.log.forEach(function(w){ kinds[w.split(':')[1]]=1; });
        S.log.length=0;
-       ['clip','dmg','rapid','mag','shield','pulse'].forEach(function(k){ if(!kinds[k]) bad.push('ONE: '+k+' never dropped in three thousand kills'); });
-       // TWO: the magnet: a body on open ground slides to the player, and a pickup too; with no magnet nothing moves
+       ['clip','dmg','rapid','shield','pulse'].concat(typeof pwrMagnet==='function'?['mag']:[]).forEach(function(k){ if(!kinds[k]) bad.push('ONE: '+k+' never dropped in three thousand kills'); });
+       // TWO: the magnet: a body on open ground slides to the player, and a pickup too; with no magnet nothing moves (nomagnet: only on a build that has one)
        S.items.length=0; S.act={}; ok=0;
+       if(typeof pwrMagnet==='function'){
        for(j=0;j<12&&!ok;j++){
          a=j*0.5236; x=p.x+Math.cos(a)*300; y=p.y+Math.sin(a)*300;
          if(losClear(p.x,p.y,x,y,g.map.segs)&&!shutRoomAt(g.map,x,y)){ ok=1; for(i=0;i<=20;i++) if(!spotFree(g.map,p.x+(x-p.x)*i/20,p.y+(y-p.y)*i/20,16)) ok=0; }
@@ -10782,6 +10795,7 @@ window.__REGRESS=[
        g.containers.splice(g.containers.indexOf(cc),1);
        S.items.push({k:'dmg',x:p.x+400,y:p.y,t:0,life:16,id:1}); step(60);
        if(S.items.length&&S.items[0].x>p.x+390) bad.push('TWO: a pickup 400 away did not move toward the player under the magnet');
+       }
        S.items.length=0; S.act={};
        // THREE: the shield bubble takes every hit
        p.arcSh=0; p.armor=0; p.iv=0; p.hp=100; hp0=100;
@@ -10818,12 +10832,12 @@ window.__REGRESS=[
        if(hit<2) bad.push('FIVE: the shield bubble was not drawn round the player ('+arcs.length+' arcs)');
        if(!q) bad.push('FIVE: the screen clear wave was not drawn');
        arcs.length=0; txts.length=0; S.act={}; S.pulse=null; S.items.length=0;
-       S.items.push({k:'mag',x:p.x+120,y:p.y,t:0,life:16,id:11}); S.items.push({k:'shield',x:p.x-120,y:p.y,t:0,life:16,id:12}); S.items.push({k:'pulse',x:p.x,y:p.y+120,t:0,life:16,id:13});
+       if(pwrDef('mag')) S.items.push({k:'mag',x:p.x+120,y:p.y,t:0,life:16,id:11}); S.items.push({k:'shield',x:p.x-120,y:p.y,t:0,life:16,id:12}); S.items.push({k:'pulse',x:p.x,y:p.y+120,t:0,life:16,id:13});
        render2D(0);
        proto.arc=function(){ arcs.push([].slice.call(arguments)); return oArc.apply(this,arguments); };
        try{ pwrDraw(ctx,p); } finally { proto.arc=oArc; }
        hit=0; for(j=0;j<S.items.length;j++){ sp=w2s(S.items[j].x,0,S.items[j].y); for(i=0;i<arcs.length;i++) if(Math.abs(arcs[i][0]-sp.x)<1&&Math.abs(arcs[i][1]-sp.y)<24*ZOOM()&&arcs[i][2]>=10*ZOOM()){ hit++; break; } }
-       if(hit<3) bad.push('FIVE: only '+hit+' of the three new coins were drawn');
+       if(hit<S.items.length) bad.push('FIVE: only '+hit+' of the '+S.items.length+' new coins were drawn');
      }catch(x2){ bad.push('threw: '+(x2&&x2.message||x2)); }
      finally{
        if(own) say=rs;
