@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.21';
+var VER='27.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34828,6 +34828,29 @@ function drawBuzzFx(){
   // is open, which needs somewhere to drop them.
   // v25.xx (belt6a), HIS ORDER 2026-10-13: THE BELT DRAWS ITS FOUR GROUPS. beltGroupOf is the group a key is in (0 guns, 1 throwables, 2 medical,
   // 3 armour); beltClassGlyph is the dim picture a key with nothing on it shows (a grenade, a cross, a plate).
+  // v27.xx (gunghost), HIS ORDER (2026-10-14): "the guns that player isn't carrying on the bar at the bottom should be translucent and then they fill in opaque (as-is) once
+  // player has that gun". A GUN KEY WITH NO GUN SHOWS A GHOST: the base model of the class that key belongs to (gunKeyList: 1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG,
+  // 6 shotgun, 7 marksman, 8 sniper, 9 lance; the Scav Pistol shape on 1, the Marksman Rifle on 7), drawn as one flat light grey silhouette at GHOST_A (about 27 percent), with
+  // no rarity colour and no magazine bar, under its key number. Once he carries a gun of that class on the key (or drags one onto it for the raid) the key draws opaque exactly as
+  // before; a key a gun was dragged off goes back to its ghost. The silhouette is the gun icon the belt already draws, filled flat (source-in), made once per gun and size.
+  var GHOST_A=0.27, GHOST_OF={pistol:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',marksman:'dmr',sniper:'sniper',energy:'lance'}, GHOSTSPR={};
+  function gunGhost(id,S){
+    var e=null, k=id+'|'+Math.round(S), c=GHOSTSPR[k], t, x;
+    try{ e=iconSprite(id,S); }catch(_gi){ e=null; }
+    if(!e||!e.c) return null;
+    if(c&&c.src===e.c) return c;
+    t=document.createElement('canvas'); t.width=e.c.width; t.height=e.c.height; x=t.getContext('2d');
+    if(!x) return null;
+    x.drawImage(e.c,0,0); x.globalCompositeOperation='source-in'; x.fillStyle='#c9d3dc'; x.fillRect(0,0,t.width,t.height);
+    c={c:t,s:e.s,src:e.c}; GHOSTSPR[k]=c;
+    return c;
+  }
+  function gunGhostDraw(q,cx,cy,bw){
+    var cl=gunKeyList()[q], id=GHOST_OF[cl], gh=id?gunGhost(id,bw*0.64):null, oa;
+    if(!gh) return false;
+    oa=ctx.globalAlpha; ctx.globalAlpha=GHOST_A; ctx.drawImage(gh.c,cx-gh.s/2,cy-gh.s/2,gh.s,gh.s); ctx.globalAlpha=oa;
+    return true;
+  }
   function beltGroupOf(i){ return (i<GUNKEYS)?0:({throw:1,med:2,plate:3}[BELT_CLASS[i]]||0); }
   function beltClassGlyph(cls,cx,cy,bw){
     if(cls==='throw'){ ctx.beginPath(); ctx.arc(cx,cy,bw*0.17,0,6.2832); ctx.fill(); ctx.fillRect(cx-bw*0.03,cy-bw*0.28,bw*0.06,bw*0.10); }
@@ -34943,6 +34966,7 @@ function drawBuzzFx(){
       // and the shops use, so a Kettle looks like a Kettle everywhere. The old
       // four-glyph fallback survives for any slot without an icon key.
       if(S.icon){ drawIconSprite(ctx,S.icon,cx2,cy2,bw*0.64); }   // v18.33: the sprite icon
+      else if(S.kind==='gun'&&S.vacant&&q<GUNKEYS&&gunGhostDraw(q,cx2,cy2,bw)){ /* v27.xx (gunghost): the ghost of the class this key is for */ }
       else if(S.kind==='gun'){
         ctx.fillRect(cx2-bw*0.28,cy2-bw*0.05,bw*0.46,bw*0.11);
         ctx.fillRect(cx2+bw*0.10,cy2-bw*0.13,bw*0.10,bw*0.09);
@@ -44370,7 +44394,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.21: The stash filter is one row of tabs again, with VALUABLES and LOCKED on it. Check 27.21 fails on v27.20',
+  now:'v27.22: Gun keys with no gun on them now show a faint ghost of their gun, and fill in once you carry that gun. Check 27.22 fails on v27.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.22 - EMPTY GUN KEYS SHOW A GHOST
+
+Co-op hunt while he was away. His order: the guns the player is not carrying on the bar at the bottom should be translucent, and fill in opaque once the player has that gun. Each of the nine gun keys that holds no gun now shows a ghost of its class (the Scav Pistol on 1, the Compact SMG on 2, the Auto Rifle on 3, the Burst Carbine on 4, the Support MG on 5, the Riot Scattergun on 6, the Marksman Rifle on 7, the Longshot on 8 and the Meridian Lance on 9, or the classes your own key table sets): one flat light grey silhouette at about 27 percent, with no rarity colour and no magazine bar, under its key number. Carry a gun of that class and the key draws exactly as it did, opaque, with its rarity, magazine bar, reserve number and gold ring when in hand. A gun dragged to another key for the raid fills that key and its old key goes back to its ghost. The Undercroft bar and both windows of a two-player game use the same drawing, so they show it too.
+
+MEASURED. Check 27.22 passes, and fails on v27.21.
 ## v27.21 - ONE ROW ON THE STASH
 
 Co-op hunt while he was away. His word on the v27.02 stash: "why 2 menus here?". The filter chips I put under the category row made two ALL tabs with different counts. There is one row again. VALUABLES and LOCKED are now two more tabs on the category row, after KEYS and before the search box, counted by the same rule as the others, one tab on at a time. The second row and its second ALL are gone, and MEDICAL with them because CONSUMABLES already covers it. The lock is unchanged: the star, the menu item, never sold, pinned to the front. A LOCKED or VALUABLES chip a save had kept moves into the tab once, and an empty tab lets go of itself the way OTHER does.

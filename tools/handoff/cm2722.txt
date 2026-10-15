@@ -1,0 +1,7 @@
+v27.22: empty gun keys show a ghost
+
+Gun keys with no gun on them now show a faint ghost of their gun, and fill in once you carry that gun.
+
+Check 27.22. Fails on v27.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
