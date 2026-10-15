@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.39 - PLAYER 2 SEES THE GUN EACH PILLAGER REALLY HOLDS
+
+Co-op hunt while he was away. On the first frame of most raids each pillager swaps to a better gun his pack rolled (raiderUseKit), but only on the host: player 2 window runs no pillager of its own, built bodies are never announced, and the snapshot row carries no gun. So in player 2 window he kept his build gun: the wrong gun was drawn in his hands, his role colour and label were wrong, and the KILLED BY card named the wrong gun. Proven in a staged pair from one seed (arcade, map 1, seed 1077): after half a second the host pillagers held carbines and the same men in player 2 window still held SMGs. Now the host tells player 2 when a pillager changes guns (the existing new body word, without the name tag so his place, look and state are kept), and a late joiner hears every swap already made.
+
+MEASURED. Check 28.39 passes, and fails on v28.38.
 ## v28.38 - CONTROLLER HIGHLIGHT NEVER HIDES UNDER THE SETTINGS JUMP BAR
 
 Co-op hunt while he was away. In Settings the jump bar (the row of section chips) sticks to the top of the list and is opaque. When a controller walks up the list, the highlight scrolls only until the control touches the top edge of the list, which is behind the bar, so the highlighted control could not be seen. Proven at 1920x1080: walking the D-pad up from CLOSE, 54 highlighted controls sat under the bar, 52 of them fully hidden, and the same at the smaller menu zoom a smaller window or the player 2 window gets. Now, after the highlight scrolls into view, the list scrolls a little further so the control sits just below the bar. Highlighting a jump chip itself does not move the list.

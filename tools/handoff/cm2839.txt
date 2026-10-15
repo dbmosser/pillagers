@@ -1,0 +1,7 @@
+v28.39: player 2 sees the gun each pillager really holds
+
+In co-op, player 2 now sees the gun each pillager really holds, with the right role colour, and his KILLED BY card names the right gun.
+
+Check 28.39. Fails on v28.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

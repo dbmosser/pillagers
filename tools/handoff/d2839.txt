@@ -1,0 +1,5 @@
+## v28.39 - PLAYER 2 SEES THE GUN EACH PILLAGER REALLY HOLDS
+
+Co-op hunt while he was away. On the first frame of most raids each pillager swaps to a better gun his pack rolled (raiderUseKit), but only on the host: player 2 window runs no pillager of its own, built bodies are never announced, and the snapshot row carries no gun. So in player 2 window he kept his build gun: the wrong gun was drawn in his hands, his role colour and label were wrong, and the KILLED BY card named the wrong gun. Proven in a staged pair from one seed (arcade, map 1, seed 1077): after half a second the host pillagers held carbines and the same men in player 2 window still held SMGs. Now the host tells player 2 when a pillager changes guns (the existing new body word, without the name tag so his place, look and state are kept), and a late joiner hears every swap already made.
+
+MEASURED. Check 28.39 passes, and fails on v28.38.
