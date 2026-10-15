@@ -1,4 +1,4 @@
-{"generated":"2026-10-15T10:02:18","url":"http://localhost:8808/gd-cosm.html","recipes":"C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/cosm-recipes-cosm2.json","seconds":20,"screens":[
+{"generated":"2026-10-15T10:04:33","url":"http://localhost:8808/gd-cosm.html","recipes":"C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/cosm-recipes-cosm2.json","seconds":16,"screens":[
 {"name":"x-check","screen":"x-check","1080":{"staged":true,"note":"RESULT null","viewport":"1920x1080","shot":"x-check-1080.jpg","lint":""}},
 {"name":"x-2p","screen":"x-2p","1080":{"staged":true,"note":"{\"x\":380,\"y\":582,\"z\":1}","viewport":"1920x1080","shot":"x-2p-1080.jpg","lint":""}}
 ]}

@@ -1,0 +1,7 @@
+v28.06: the abandon confirm is two buttons
+
+Abandon run now asks with just two buttons, YES and NO, inside the box.
+
+Check 28.06. Fails on v28.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

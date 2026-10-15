@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.06 - THE ABANDON CONFIRM IS TWO BUTTONS
+
+Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, pressing Abandon run put five buttons in one row, YES ABANDON, RESUME RUN, SETTINGS, FEEDBACK and NO KEEP PLAYING, about 1050 pixels of buttons in an 825 pixel box, hanging out past both edges of the frame, with RESUME RUN and NO KEEP PLAYING doing the same job. While the question is up the box now shows only YES and NO. The YES stays on the far side as before, and ESC still closes the box.
+
+MEASURED. Check 28.06 passes, and fails on v28.05.
 ## v28.05 - THE CAREER LEADERBOARD ON THE RUN CARD
 
 Co-op hunt while he was away. His order of 2026-10-15: career mode should have a leaderboard shown after every match, built into the existing UI. After a CAREER extraction or death the run card now has a second step in the same card, no second window: the ledger, then the haul reveal, then the LEADERBOARD. The continue control reads LEADERBOARD first; a click on it, ENTER or the controller A opens the board, and there it is LOG RUN AND RETURN again. ESC, TAB and the controller B still close the card and log the run at once, from either step. The board is the same one the Undercroft will open: his twenty best runs by raid score with rank, score, outcome, sector, time and date, this run in teal climbing into its place while its score counts up, RANK number OF total on top, a NEW PERSONAL BEST plate for a number one, and a pinned row under the list when the run did not make the top twenty. An abandon is not a run and has no step. Each player window shows its own save.

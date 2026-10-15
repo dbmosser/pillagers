@@ -1,0 +1,5 @@
+## v28.06 - THE ABANDON CONFIRM IS TWO BUTTONS
+
+Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, pressing Abandon run put five buttons in one row, YES ABANDON, RESUME RUN, SETTINGS, FEEDBACK and NO KEEP PLAYING, about 1050 pixels of buttons in an 825 pixel box, hanging out past both edges of the frame, with RESUME RUN and NO KEEP PLAYING doing the same job. While the question is up the box now shows only YES and NO. The YES stays on the far side as before, and ESC still closes the box.
+
+MEASURED. Check 28.06 passes, and fails on v28.05.
