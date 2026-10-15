@@ -2258,7 +2258,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.94';
+var VER='27.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20518,18 +20518,11 @@ function lmgWhirrStop(){
   try{ a=ac(); t=a?a.currentTime:0; h.g.gain.cancelScheduledValues(t); h.g.gain.setValueAtTime(h.g.gain.value,t); h.g.gain.linearRampToValueAtTime(0.0001,t+0.05); h.o.stop(t+0.07); }catch(e){}
 }
 function lmgWhirr(){
-  var a, out, t, o, f, g;
+  var h=null;
   if((G&&G.sim)||(typeof NET==='object'&&NET&&NET.specTick)) return;
-  a=ac(); if(!a) return; out=sndBus('gun'); if(!out) return;
   lmgWhirrStop();
-  try{
-    t=a.currentTime; o=a.createOscillator(); f=a.createBiquadFilter(); g=a.createGain();
-    o.type='sawtooth'; o.frequency.setValueAtTime(70,t); o.frequency.exponentialRampToValueAtTime(260,t+LMG_SPIN_T);
-    f.type='lowpass'; f.frequency.value=900; f.Q.value=0.9;
-    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.05,t+LMG_SPIN_T*0.6); g.gain.linearRampToValueAtTime(0.0001,t+LMG_SPIN_T+0.05);
-    o.connect(f); f.connect(g); g.connect(out); o.start(t); o.stop(t+LMG_SPIN_T+0.08);
-    LMGSPIN.hum={o:o,g:g};
-  }catch(e){}
+  try{ h=spkPlay('lmgSpinUp',{wid:(G&&G.player&&G.player.spin)||0}); }catch(e){ h=null; }   // v27.95 (snd4): the motor and the climbing whine, from the spin it starts at
+  LMGSPIN.hum=h;   // the handle {g,o} (a gain node and a source with stop) that lmgWhirrStop cuts in 50 ms
 }
 function spinTick(p,dt){
   var want, was;
@@ -20539,7 +20532,7 @@ function spinTick(p,dt){
   was=p.spin||0;
   p.spin=clamp(was+(want?dt/LMG_SPIN_T:-dt/LMG_SPIN_DOWN),0,1);
   if(want&&was<=0&&p.spin>0) lmgWhirr();
-  else if(!want&&LMGSPIN.hum) lmgWhirrStop();
+  else if(!want&&LMGSPIN.hum){ lmgWhirrStop(); try{ spkPlay('lmgWindDown',{wid:was}); }catch(_lw){} }   // v27.95 (snd4): let go, the whine falls and the rattle slows from the spin you let go at
   return p.spin;
 }
 function nextGun(){
@@ -20604,7 +20597,7 @@ function finishHim(p,e){
   notoAggress(e);
   if(NET.on&&netEntsPeer()) netShotSend(e,(+e.hp||1)+5,a,null,0,'');
   else { e.hp=0; e.byPlayer=true; e.pHitT=.3; e.pHitSeat=0; }
-  try{ meleeImpact(p.x,p.y,e.x,e.y,e.r); meleeFoley('hit',e.x,e.y); G.shake=Math.max(G.shake||0,4.2); bloodFx(e.x,e.y-14,p.x,p.y,40); }catch(_f){}
+  try{ meleeImpact(p.x,p.y,e.x,e.y,e.r); meleeFoley('hit',e.x,e.y); sfx('finishBlow',e.x,e.y); G.shake=Math.max(G.shake||0,4.2); bloodFx(e.x,e.y-14,p.x,p.y,40); }catch(_f){}   // v27.95 (snd4): and the heavy blow of the finisher on top
   if(!scoreBonus(FIN_PTS,e.x,e.y-30,'FINISHER')){ try{ label(e.x,e.y-30,'FINISHER','#ffc04a',0,true); }catch(_l){} }
   if(G.tel) G.tel.finishers=(G.tel.finishers||0)+1;
   return true;
@@ -21489,10 +21482,15 @@ function activeReloadTick(p){
   if(!p.rlArm) return false;
   p.rlArm=0;
   f=1-p.reloading/p.rlTot;
-  if(f<AR_A||f>AR_B) return false;
+  // v27.95 (snd4), HIS ORDER (2026-10-15, "add the sounds"): THE GUN MOMENTS HAVE SOUNDS. The active reload's sweet spot made the old reload ping and a press outside
+  // it made nothing, so you could not hear whether you had hit it. Now a press in the sweet spot is a bright lock click and a low thump (arHit), and a press outside it
+  // a dull miss (arMiss); the Support MG's spin has its own sound, a motor engaging and a whine climbing two octaves as the barrels wind up (lmgSpinUp) and falling as
+  // they wind down (lmgWindDown); and the finisher lands with a heavy blow of its own (finishBlow) on top of the crowbar sound. No words, no voices. Cosmetic only:
+  // no seeded draw, no game state.
+  if(f<AR_A||f>AR_B){ try{ blip('arMiss'); }catch(_am){} return false; }
   p.arBonus=1; p.arGun=p.wep;
   p.reloading=1; tickReload(0.002);
-  try{ rlfxPing(0); spark(p.x,p.y-14,'#9fe8b0',14,260); label(p.x,p.y-34,'ACTIVE RELOAD','#9fe8b0',0,true); }catch(_ar){}
+  try{ blip('arHit'); spark(p.x,p.y-14,'#9fe8b0',14,260); label(p.x,p.y-34,'ACTIVE RELOAD','#9fe8b0',0,true); }catch(_ar){}
   return true;
 }
 // v27.xx (feel2c), HIS WORDS (2026-10-14): "keep -- bar needs a clear red line for when the active reload happens". THE RELOAD BAR SHOWS THE ACTIVE RELOAD IN RED. The bar over the
@@ -45840,7 +45838,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.94: The air strike, power-ups, medals, golden enemy and haul reveal have their own dark sounds, and the old thin chimes are gone. Check 27.94 fails on v27.93',
+  now:'v27.95: The active reload, the Support MG spin and the finisher have their own sounds. Check 27.95 fails on v27.94',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

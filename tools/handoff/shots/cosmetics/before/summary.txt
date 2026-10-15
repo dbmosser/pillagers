@@ -1,31 +1,12 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  c01-appear-default                     staged       7.6s    | appearmodal
-  c02-appear-unlocked                    NOT STAGED   5.7s    | EXCEPTION ReferenceError: P is not defined
-    at look (<anonymous>:1:2296)
-    at <anonymous>:3:158
+  c01-appear-default                     staged       7.7s    | appearmodal
+  c02-appear-unlocked                    staged       7.4s    | appearmodal
+  c03-raid-A-default                     staged       7.3s    | {"x":1340,"y":1122,"z":1}
+  c04-raid-B-spartan                     staged       7.4s    | {"x":1340,"y":1122,"z":1}
+  c05-raid-C-hood                        staged       7.4s    | {"x":1340,"y":1122,"z":1}
+  c06-raid-D-ghost                       staged       7.3s    | {"x":1340,"y":1122,"z":1}
+  c07-2p-frame                           NOT STAGED   7.3s    | EXCEPTION ReferenceError: NET is not defined
+    at <anonymous>:3:345
     at async <anonymous>:1:21
-  c03-raid-A-default                     NOT STAGED   4.9s    | EXCEPTION ReferenceError: P is not defined
-    at look (<anonymous>:1:2296)
-    at raid (<anonymous>:3:96)
-    at <anonymous>:3:154
-    at async <anonymous>:1:21
-  c04-raid-B-spartan                     NOT STAGED   4.8s    | EXCEPTION ReferenceError: P is not defined
-    at look (<anonymous>:1:2296)
-    at raid (<anonymous>:3:96)
-    at <anonymous>:3:154
-    at async <anonymous>:1:21
-  c05-raid-C-hood                        NOT STAGED   4.8s    | EXCEPTION ReferenceError: P is not defined
-    at look (<anonymous>:1:2296)
-    at raid (<anonymous>:3:96)
-    at <anonymous>:3:154
-    at async <anonymous>:1:21
-  c06-raid-D-ghost                       NOT STAGED   4.8s    | EXCEPTION ReferenceError: P is not defined
-    at look (<anonymous>:1:2296)
-    at raid (<anonymous>:3:96)
-    at <anonymous>:3:154
-    at async <anonymous>:1:21
-  c07-2p-frame                           NOT STAGED   4.7s    | EXCEPTION ReferenceError: P is not defined
-    at look (<anonymous>:1:2296)
-    at raid (<anonymous>:3:96)
-    at <anonymous>:3:153
-    at async <anonymous>:1:21
+== 1080 : window 1952x1183, viewport 1920x1080
+  c03-raid-A-default                     staged       7.4s    | {"px":300,"py":680,"cx":-80,"cy":98,"z":1,"rw":1918,"rh":1078,"cw":1918,"ch":1078}

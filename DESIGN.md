@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.95 - THE GUN MOMENTS HAVE SOUNDS
+
+Co-op hunt while he was away. His order of 2026-10-15: add the sounds. The active reload now answers by ear: a press in the sweet spot is a bright lock click with a low thump, a press outside it is a dull miss, and the press that starts a reload stays quiet. The Support MG spin has its own sound, a motor engaging with a whine that climbs two octaves as the barrels wind up, and letting go plays the whine falling and the rattle slowing to a stop. The finisher lands with a heavy blow, a crunch and a bone snap of its own on top of the crowbar sound. No words, no voices, no music.
+
+MEASURED. Check 27.95 passes, and fails on v27.94.
 ## v27.94 - THE AIR STRIKE, POWER-UPS, MEDALS AND HAUL HAVE SOUNDS
 
 Co-op hunt while he was away. His order of 2026-10-15: add the sounds. Calling the air strike now plays a target lock, a radio squelch and two low confirm pulses, the strike craft comes in over you with a rising roar for the 1.5 seconds before the first blast, and each of the six blasts is a recorded blast at its own pitch with a sub drop instead of the plain boom. Each power-up has its own drop sound, pickup sound, last-three-seconds tick, end sound and bubble hit. The kill medals are one low climbing pop per tier: the streak medals (DOUBLE KILL up to UNSTOPPABLE) climb in five steps, and the style medals sound by the tier of their plate. They replace the old thin chime ladder and notes. The golden enemy gets a low three-bell sound when it is gilded, and each item of the haul reveal ticks with a soft tock that climbs with its rarity. No words, no voices, no music.

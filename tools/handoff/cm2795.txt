@@ -1,0 +1,7 @@
+v27.95: the gun moments have sounds
+
+The active reload, the Support MG spin and the finisher have their own sounds.
+
+Check 27.95. Fails on v27.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

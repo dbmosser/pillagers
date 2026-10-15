@@ -29,6 +29,9 @@ echo "$(date '+%m-%d %H:%M') nightly.sh started" >> "$LOG"
 away=0
 while true; do
   head=$(git -C "$R" rev-parse --short HEAD 2>/dev/null)
+  # 10-15 his order "push the game to itch once a day so we always have a backup ... and to the github": every ship pushes both;
+  # once a day, catch up any push that failed (tools/itch-daily.sh pushes only when itch or origin/master is behind).
+  if [ "$(get backup_day)" != "$(date +%F)" ]; then put backup_day "$(date +%F)"; bash "$R/tools/itch-daily.sh" >> "$LOG" 2>&1; fi
   if [ -f "$S/light.flag" ]; then
     away=0
     if [ "$(running 'llm-night\.ps1')" != "0" ] || [ "$(running 'fuzz\.ps1')" != "0" ]; then
