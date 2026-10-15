@@ -1,0 +1,7 @@
+v27.21: one row on the stash
+
+The stash filter is one row of tabs again, with VALUABLES and LOCKED on it.
+
+Check 27.21. Fails on v27.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

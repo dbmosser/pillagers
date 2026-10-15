@@ -44,7 +44,8 @@ while true; do
     if [ $away -ge 30 ]; then
       if [ "$(running 'corpq\.sh')" = "0" ] && [ "$(running 'llm-night\.ps1')" = "0" ] && [ "$(running 'fuzz\.ps1')" = "0" ]; then
         hr=$((10#$(date +%H))); night=0; { [ $hr -ge 22 ] || [ $hr -lt 7 ]; } && night=1
-        if [ $night = 1 ] && [ "$(get corpus_head)" != "$head" ]; then
+        qidle=$(( $(date +%s) - $(git -C "$R" log -1 --format=%ct 2>/dev/null || echo 0) ))   # 10-15: only once the ship queue has been idle 45 min (agents ship all night; the corpus holds the lock ~2.5 h)
+        if [ $night = 1 ] && [ $qidle -ge 2700 ] && [ "$(get corpus_head)" != "$head" ]; then
           out="$S/corpus-night-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"
           echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
           (bash -c "echo \"\$\$ corpus-night \$(date +%H:%M:%S)\" > '$S/shipq.owner'; exec bash '$S/corpq.sh' '$out'" > /dev/null 2>&1; echo "$(date +%H:%M) corpus done" >> "$LOG") &

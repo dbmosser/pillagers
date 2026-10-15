@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.21 - ONE ROW ON THE STASH
+
+Co-op hunt while he was away. His word on the v27.02 stash: "why 2 menus here?". The filter chips I put under the category row made two ALL tabs with different counts. There is one row again. VALUABLES and LOCKED are now two more tabs on the category row, after KEYS and before the search box, counted by the same rule as the others, one tab on at a time. The second row and its second ALL are gone, and MEDICAL with them because CONSUMABLES already covers it. The lock is unchanged: the star, the menu item, never sold, pinned to the front. A LOCKED or VALUABLES chip a save had kept moves into the tab once, and an empty tab lets go of itself the way OTHER does.
+
+MEASURED. Check 27.21 passes, and fails on v27.20.
 ## v27.20 - THE KIT ON THE MAP SELECT SCREEN
 
 Co-op hunt while he was away. His word: the kit should be part of the map select screen, not a separate later screen. The map select screen now has a KIT row of four under the weather row, in the same style: MY LOADOUT, FREEBIE KIT, RANDOM KIT and BEST KIT, each with its caps detail under it (RANDOM KIT is 2 GUNS and 1 EACH, BEST KIT is 3 GUNS and UP TO 3 EACH). One is on at a time, the last one is kept in your save, and an old save starts on MY LOADOUT. ASCEND TO THIS SECTOR applies the kit you picked and goes straight up, so the loadout card no longer comes after the map select. The staging screen ASCEND now opens the map select screen, so every route up ends there. The lift quick ascent still skips the page, and takes your kept kit if it is not MY LOADOUT. A party mate still gets the card for his own kit, with the same auto-ascend timer. RANDOM FROM STASH is now RANDOM KIT and TOP GEAR is now BEST KIT everywhere. This build changes the names and the screen; the guns and items each kit gives are the next builds.

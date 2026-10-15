@@ -1,0 +1,5 @@
+## v27.21 - ONE ROW ON THE STASH
+
+Co-op hunt while he was away. His word on the v27.02 stash: "why 2 menus here?". The filter chips I put under the category row made two ALL tabs with different counts. There is one row again. VALUABLES and LOCKED are now two more tabs on the category row, after KEYS and before the search box, counted by the same rule as the others, one tab on at a time. The second row and its second ALL are gone, and MEDICAL with them because CONSUMABLES already covers it. The lock is unchanged: the star, the menu item, never sold, pinned to the front. A LOCKED or VALUABLES chip a save had kept moves into the tab once, and an empty tab lets go of itself the way OTHER does.
+
+MEASURED. Check 27.21 passes, and fails on v27.20.

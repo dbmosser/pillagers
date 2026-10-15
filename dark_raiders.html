@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.20';
+var VER='27.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44370,7 +44370,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.20: The kit is a row on the map select screen: MY LOADOUT, FREEBIE KIT, RANDOM KIT, BEST KIT. Check 27.20 fails on v27.19',
+  now:'v27.21: The stash filter is one row of tabs again, with VALUABLES and LOCKED on it. Check 27.21 fails on v27.20',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -46188,8 +46188,9 @@ try{ renderFreeKit(); }catch(_fk){}
   // v10.11, his answer 2: Guns, Consumables (plates, heals, grenades), Parts,
   // Salvage, Keys, Other if needed. ALL first, because it is the whole stash.
   var TABS=[['all','ALL'],['gun','GUNS'],['use','CONSUMABLES'],['part','PARTS'],
-            ['salvage','SALVAGE'],['key','KEYS'],['other','OTHER']];
+            ['salvage','SALVAGE'],['key','KEYS'],['other','OTHER'],['val','VALUABLES'],['lock','LOCKED']];   // v26.xx (career8): and VALUABLES and LOCKED on the one row
   function tabOf(k){ return stashTabOf(k); }
+  if(P.stashChip!==undefined){ if(P.stashChip==='val'||P.stashChip==='lock') P.stashTab=P.stashChip; delete P.stashChip; }   // v26.xx (career8): the v27.02 chip moves into the tab, once
   if(!P.stashTab) P.stashTab='all';
   var tb=document.getElementById('stashtabs');
   if(tb){
@@ -46201,11 +46202,12 @@ try{ renderFreeKit(); }catch(_fk){}
     {
       var r2=document.createElement('div'); r2.className='invtabs'; r2.style.padding='0';
       TABS.forEach(function(T){
-        var cnt=keysArr.filter(function(k){ return T[0]==='all'||tabOf(k)===T[0]; })
+        var cnt=keysArr.filter(function(k){ return stashTabOk(k,T[0]); })
                        .reduce(function(a,k){ return a+counts[k]; },0)
                  +((T[0]==='all'||T[0]==='gun')?(P.weapons||[]).length:0);
         // v10.11: OTHER only when something falls into it.
         if(T[0]==='other'&&!cnt){ if(P.stashTab==='other') P.stashTab='all'; return; }
+        if((T[0]==='val'||T[0]==='lock')&&!cnt&&P.stashTab===T[0]) P.stashTab='all';   // v26.xx (career8): an empty VALUABLES or LOCKED lets go
         var d=document.createElement('div');
         d.className='invtab'+(P.stashTab===T[0]?' on':'');
         d.style.fontSize='13px';   // v19.76, seen on a 4K menu text scan (2026-10-08): 10.5px was the smallest print in any menu, in a row with room to spare
@@ -46238,15 +46240,6 @@ try{ renderFreeKit(); }catch(_fk){}
       var trb=document.createElement('div'); trb.className='invtab'; trb.id='trophybtn'; trb.style.fontSize='13px';   // v26.xx (career4): THE TROPHY CASE
       trb.textContent='TROPHIES  '+trophyCount()+'/'+TROPHIES.length; trb.onclick=function(){ trophyOpen(); };
       r3.appendChild(sq); r3.appendChild(sb); r3.appendChild(cxb); r3.appendChild(trb); tb.appendChild(r3);
-      if(P.stashChip&&!stashChipN(P.stashChip,keysArr,counts)) P.stashChip='';   // v26.xx (career5): a chip with nothing under it lets go
-      { var r4=document.createElement('div'); r4.className='kchips'; r4.id='stashchips';   // the filter chips
-        STASH_CHIPS.forEach(function(C){
-          var cb=document.createElement('button'); cb.className='kchip'+(((P.stashChip||'')===C[0])?' on':''); cb.setAttribute('data-chip',C[0]||'all');
-          cb.innerHTML=C[1]+'<b>'+stashChipN(C[0],keysArr,counts)+'</b>';
-          cb.onclick=function(){ P.stashChip=C[0]; saveProfile(); renderHub(); };
-          r4.appendChild(cb);
-        });
-        tb.appendChild(r4); }
     }
   }
   // THE HOTBAR PLAN lives under the grid on its own tab, and is a drop target
@@ -46366,7 +46359,7 @@ try{ renderFreeKit(); }catch(_fk){}
   detailIdle();
   // WHICH PLACE. STASH is the vault, INVENTORY is what you are taking up, and
   // HOTBAR PLAN shows the same stash so you have something to drag FROM.
-  var shown=keysArr.filter(function(k){ return P.stashTab==='all'||tabOf(k)===P.stashTab; }).filter(function(k){ return stashChipOk(k); });   // v26.xx (career5): and the chip
+  var shown=keysArr.filter(function(k){ return stashTabOk(k,P.stashTab); });   // v26.xx (career8): the tab, VALUABLES and LOCKED among them
   stashSortKeys(shown,counts);   // v17.42: his pick 25, the sort he chose
   stashPinLocked(shown);   // v26.xx (career5): a locked item stays at the front, whatever the sort
   renderKitCol();
@@ -46529,7 +46522,7 @@ try{ renderFreeKit(); }catch(_fk){}
   // THE ARMOURY, SHOWN, v6.47. Only under ALL and GUNS, because a gun is not salvage
   // and has no business under PARTS. The equipped pair are marked rather than hidden:
   // seeing where a gun went is the whole reason to look at this row.
-  if(sl&&!P.stashChip&&(P.stashTab==='all'||P.stashTab==='gun')){   // v26.xx (career5): the armoury row waits while a chip is on
+  if(sl&&(P.stashTab==='all'||P.stashTab==='gun')){
     var _own=(P.weapons||[]).slice();
     for(var _oi=0;_oi<_own.length;_oi++){
       (function(gk){
@@ -46579,7 +46572,7 @@ try{ renderFreeKit(); }catch(_fk){}
   // v11.31: ALL draws the owned guns too, so it is exempt on the same terms
   // as GUNS; a fresh profile read "ALL 1", one pistol cell, and "Nothing in
   // the stash" under it.
-  if(!shown.length&&sl&&!(!P.stashChip&&(P.stashTab==='gun'||P.stashTab==='all')&&(P.weapons||[]).length)){
+  if(!shown.length&&sl&&!((P.stashTab==='gun'||P.stashTab==='all')&&(P.weapons||[]).length)){
     var em2=document.createElement('div'); em2.className='cellempty';
     em2.style.cssText='grid-column:1/-1;padding:14px;text-align:center';
     em2.textContent=(P.stashTab==='all')?'Nothing in the stash. Ascend, pillage, extract.':'Nothing under this tab.';
@@ -48106,13 +48099,20 @@ applyStashLayout();
 var STASH_Q='';
 var STASH_SORTS={'default':'DEFAULT',value:'VALUE',name:'NAME',rarity:'RARITY',count:'COUNT',type:'TYPE'};   // v26.xx (career5): and TYPE
 // v26.xx (career5), HIS YES (2026-10-14) to suggestion 34, STASH SORT, FILTER AND LOCK: "sort by type, rarity or value; filter chips; and a lock on an item so it is never sold or
-// moved by sorting". SORT gains TYPE beside DEFAULT, VALUE, NAME, RARITY and COUNT (guns, supplies, parts, salvage, keys, the rest, the dearer first inside each). A row of FILTER CHIPS
-// under the tabs shows ALL, MEDICAL (heals and stims), VALUABLES ($1,000 or more each) and LOCKED, each with its count; one chip is on at a time (P.stashChip, kept in the save; a chip
-// with nothing under it lets go by itself), and the armoury row is hidden while a chip is on. THE LOCK is per item: Lock (keep) on the item menu (right-click, or Y on a controller)
+// moved by sorting". SORT gains TYPE beside DEFAULT, VALUE, NAME, RARITY and COUNT (guns, supplies, parts, salvage, keys, the rest, the dearer first inside each). Two more TABS on the category row, VALUABLES ($1,000 or more each) and LOCKED, with their counts, one tab on at a time (career8: it was a second row of chips). THE LOCK is per item: Lock (keep) on the item menu (right-click, or Y on a controller)
 // and a Lock button on the hover line put a star on the cell and the item in P.keep (item key to 1, an old save has none). A locked item is never sold by SELL JUNK AND LOOSE SALVAGE
 // (sellable says no, even for a tagged junk item), has no Sell one or Sell all on its menu or its hover line, and is pinned to the front of the grid whatever the sort, so no sort
 // moves it. Locking changes nothing else: the item can still be packed, put on a key and used.
-var STASH_CHIPS=[['','ALL'],['med','MEDICAL'],['val','VALUABLES'],['lock','LOCKED']];
+// v26.xx (career8), HIS WORD (2026-10-14, on the v27.02 stash): "why 2 menus here?". There is ONE row. VALUABLES ($1,000 or more each) and LOCKED are two more TABS on the category
+// row, after KEYS and OTHER and before the search box, counted by the same rule as the others (so no count disagrees with ALL), one selection at a time across the whole row (P.stashTab).
+// The second row with its own ALL is gone, and MEDICAL with it (CONSUMABLES covers it). A tab with nothing under it lets go by itself, as OTHER does. A chip a save kept (P.stashChip)
+// is moved into the tab once if it was VALUABLES or LOCKED and dropped otherwise.
+function stashTabOk(k,t){
+  if(!t||t==='all') return true;
+  if(t==='val') return ival(k)>=1000;
+  if(t==='lock') return stashLocked(k);
+  return stashTabOf(k)===t;
+}
 function stashLocked(k){ return !!(P&&P.keep&&typeof P.keep==='object'&&P.keep[k]); }
 function stashLockToggle(k){
   if(!P||!ITEMS[k]) return false;
@@ -48120,21 +48120,6 @@ function stashLockToggle(k){
   if(P.keep[k]) delete P.keep[k]; else P.keep[k]=1;
   try{ saveProfile(); }catch(_s){}
   return !!P.keep[k];
-}
-function stashChipOk(k,c){
-  var t=ITEMS[k];
-  if(c===undefined) c=(P&&P.stashChip)||'';
-  if(!c) return true;
-  if(c==='lock') return stashLocked(k);
-  if(!t) return false;
-  if(c==='med') return t.use==='heal'||t.use==='stim';
-  if(c==='val') return ival(k)>=1000;
-  return true;
-}
-function stashChipN(c,keys,counts){
-  var n=0, i;
-  for(i=0;i<keys.length;i++) if(stashChipOk(keys[i],c)) n+=(counts&&counts[keys[i]])||1;
-  return n;
 }
 function stashPinLocked(a){
   var lk=[], rest=[], i;
@@ -48147,10 +48132,6 @@ function stashPinLocked(a){
   return a;
 }
 careerStyle('careercss5',
-  '.kchips{display:flex;gap:8px;flex:1 1 100%;align-items:center;padding:8px 0 6px 0}'+
-  '.kchip{font-family:var(--f-cond);font-weight:600;font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--ui-line-hi);color:var(--tx-2);background:rgba(0,0,0,.25);cursor:pointer;clip-path:polygon(7px 0,100% 0,100% 100%,0 100%,0 7px)}'+
-  '.kchip b{font-weight:700;margin-left:8px;opacity:.7}'+
-  '.kchip.on{color:var(--acc-ink);background:var(--acc);border-color:var(--acc)}'+
   '#stashgrid .cell.kept{box-shadow:inset 0 0 0 1px var(--acc)}'+
   '#stashgrid .cell .kstar{position:absolute;left:3px;top:1px;font-size:14px;line-height:1;color:var(--acc);pointer-events:none}');
 function stashSortKeys(a,counts){
