@@ -1,0 +1,7 @@
+v28.19: player 2 keeps the convoy when the host leaves
+
+If your host leaves while a machine convoy is on its way, the convoy still comes and you can still kill the carrier for its crate.
+
+Check 28.19. Fails on v28.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

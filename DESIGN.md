@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.19 - PLAYER 2 KEEPS THE CONVOY WHEN THE HOST LEAVES
+
+Co-op hunt while he was away. His ruling: when the host is gone the remaining player picks up the raid. If the host left during the 20 second warning of a machine convoy, player 2's window started the convoy itself, but the host never sent where the convoy was going (only the host picks the destination), so the carrier was steered to NaN: the carrier and its armoured crawlers vanished off the map, the map mark was lost, KILL THE CARRIER could not be done and the event ran out with no crate. Proven in a staged pair: host launches a convoy, the world word goes to player 2, the host goes out, player 2 runs it live: carrier at NaN,NaN with destination undefined. The world word now carries the destination, player 2 takes it, and the carrier is never steered to a NaN point.
+
+MEASURED. Check 28.19 passes, and fails on v28.18.
 ## v28.18 - OUTFIT SETS
 
 Co-op hunt while he was away. His order of 2026-10-15: a handful of complete looks built from the layers, plus single items to mix. A new SETS rack at the top of FASHION with five complete looks: SCAVENGER (drab scheme, sweat band, tan boots and gloves), RAIDER (crimson, tactical helmet, bandolier, round pads, black pack and gloves), ENGINEER (ember, hard hat, utility vest, radio pack, olive boots), RECON (verdant, boonie hat, light harness, frame pack, gaiters) and HEAVY (toxic, heavy helmet, heavy plates, big pauldron, fuel can pack, shin guards). A set is worn in one click, takes a suit off, and keeps your own face, hair, skin and build; you can change any piece afterwards. A set is owned when every piece in it is, and a locked set names the first piece you still need and how to earn it. The tile shows the whole set on your own operator. Cosmetic only.
