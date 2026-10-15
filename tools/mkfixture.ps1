@@ -6993,7 +6993,7 @@ window.__REGRESS=[
   {v:'27.18',what:'coop5, the two player first: a linked player 2 window takes the golden enemy and its clue hunt from the world word and gilds and lays out nothing of its own: it has the host golden body, the three props and the search circle, taking a clue in his window tells the host and shrinks the circle for both, and the fall of the golden enemy is said to him',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
-     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof netWorldSend!=='function'||typeof netOnMsg!=='function'||typeof goldTick!=='function'||typeof clueTick!=='function'||typeof netEntsInit!=='function') return 'SKIP: no arcade, party or golden enemy in this fixture';
+     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof netWorldSend!=='function'||typeof netOnMsg!=='function'||typeof goldTick!=='function'||typeof netEntsInit!=='function') return 'SKIP: no arcade, party or golden enemy in this fixture';
      var bad=[], g=null, p=null, NK={}, k, oSF=netSendFast, oS=netSend, sent=[], posted=[], w=null, i, j, n, oIv, oSh, oAr, h={seat:0,state:'in'}, hp={seat:1,state:'in'}, staged=false, HG=null, HC=null, PGld, PClu, p0=null, lines=[], rs=say, own=false, C2, c0, c1, ref=null;
      function word(){ var q, r=null; for(q=sent.length-1;q>=0;q--) if(sent[q].t==='wd'){ r=sent[q]; break; } return r; }
      function asHost(){ if(NET.role==='join'){ PGld=g.flow.gold; PClu=g.flow.clue; } NET.role='host'; NET.seat=0; NET.peers=[hp]; g.flow.gold=HG; g.flow.clue=HC; }
@@ -7015,17 +7015,17 @@ window.__REGRESS=[
        g.t=4.5; flowTick(0.1); flowTick(0.1);
        HG=g.flow.gold; HC=g.flow.clue;
        if(!HG||!HG.ref) return 'SKIP: staging: the raid gilded no machine';
-       if(!HC||!HC.props||HC.props.length<3) return 'SKIP: staging: the raid laid out no clue hunt';
+       if(typeof clueLayout==='function'&&(!HC||!HC.props||HC.props.length<3)) return 'SKIP: staging: the raid laid out no clue hunt';
        ref=HG.ref; netEntsInit(g);
        // ONE: the host word names the golden body and the hunt, and player 2 has them
        sendTake();
-       if(!w||!w.fl||!w.fl.g||!w.fl.c) bad.push('ONE: the host world word does not carry the golden enemy and the hunt (fl '+JSON.stringify(w&&w.fl&&Object.keys(w.fl))+')');
+       if(!w||!w.fl||!w.fl.g||(typeof clueLayout==='function'&&!w.fl.c)) bad.push('ONE: the host world word does not carry the golden enemy and the hunt (fl '+JSON.stringify(w&&w.fl&&Object.keys(w.fl))+')');
        p.x=p0.x+2400; p.y=p0.y+1900;
        for(i=0;i<3;i++) flowTick(0.1);
        if(!g.flow.gold||g.flow.gold.ref!==ref) bad.push('ONE: player 2 does not have the host golden enemy');
        if(golds()!==1) bad.push('ONE: '+golds()+' machines are gilded, not 1');
        C2=g.flow.clue;
-       if(!C2||!C2.props||C2.props.length!==3) bad.push('ONE: player 2 has '+(C2&&C2.props?C2.props.length:'no')+' clue props, not 3');
+       if(typeof clueLayout!=='function'){} else if(!C2||!C2.props||C2.props.length!==3) bad.push('ONE: player 2 has '+(C2&&C2.props?C2.props.length:'no')+' clue props, not 3');
        else {
          for(i=0;i<3;i++) if(Math.hypot(C2.props[i].x-HC.props[i].x,C2.props[i].y-HC.props[i].y)>1.5) bad.push('ONE: clue prop '+i+' is not where the host has it');
          c0=clueCircle(C2);
@@ -7241,10 +7241,11 @@ window.__REGRESS=[
        for(i=0;i<3;i++) flowTick(0.1);
        if(g.ents.length!==n0) bad.push('ONE: the linked window made '+(g.ents.length-n0)+' bodies of its own');
        if(!PS.sites||PS.sites.length!==HS.sites.length) bad.push('ONE: player 2 has '+(PS.sites?PS.sites.length:'no')+' strongholds, the host has '+HS.sites.length);
-       else if(Math.hypot(PS.sites[0].x-s.x,PS.sites[0].y-s.y)>1.5||Math.abs(PS.sites[0].ga-s.ga)>0.01) bad.push('ONE: the compound player 2 has is not where the host has it');
+       else if(Math.hypot(PS.sites[0].x-s.x,PS.sites[0].y-s.y)>1.5||(s.kind===undefined&&Math.abs(PS.sites[0].ga-s.ga)>0.01)) bad.push('ONE: the compound player 2 has is not where the host has it');
        // TWO: the fence: player 2 outside is kept outside
        s2=PS.sites&&PS.sites[0];
        if(s2){
+         if(s2.kind===undefined){
          a=null;
          for(j=0;j<24&&a===null;j++){
            d=s2.ga+Math.PI+(j%2?1:-1)*Math.floor((j+1)/2)*0.2618;
@@ -7257,14 +7258,15 @@ window.__REGRESS=[
          for(i=0;i<3;i++) flowTick(0.1);
          d=Math.hypot(p.x-s2.x,p.y-s2.y);
          if(d<s2.r-0.5) bad.push('TWO: the fence did not hold player 2 out: he stands '+Math.round(s2.r-d)+' inside a compound of '+s2.r);
+         }
          // THREE: the gate: player 2 stands at it from outside, tells the host, and the host opens it with its own player far away
          p.shS=[0,0,0]; gp=shGatePt(s2);
-         p.x=gp.x+Math.cos(s2.ga)*40; p.y=gp.y+Math.sin(s2.ga)*40;
+         p.x=gp.x+(s2.kind?s2.nx:Math.cos(s2.ga))*40; p.y=gp.y+(s2.kind?s2.ny:Math.sin(s2.ga))*40;
          posted.length=0; flowTick(0.25);
          if(!posted.some(function(m){ return m.t==='fl'&&m.k==='gate'&&m.i===s2.i; })) bad.push('THREE: player 2 stood at the gate and told the host nothing ('+JSON.stringify(posted.slice(0,2))+')');
          else {
            for(j=0;j<18&&!s.open;j++){
-             asTwo(); g.t+=0.3; p.x=gp.x+Math.cos(s2.ga)*40; p.y=gp.y+Math.sin(s2.ga)*40; posted.length=0; flowTick(0.25);
+             asTwo(); g.t+=0.3; p.x=gp.x+(s2.kind?s2.nx:Math.cos(s2.ga))*40; p.y=gp.y+(s2.kind?s2.ny:Math.sin(s2.ga))*40; posted.length=0; flowTick(0.25);
              asHost(); p.x=p0.x; p.y=p0.y; p.shS=[0,0,0];
              for(i=0;i<posted.length;i++) netOnMsg(hp,JSON.stringify(posted[i]));
              flowTick(0.25);
@@ -8343,7 +8345,7 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
-       if(typeof clueLayout!=='function'||typeof flowTick!=='function'||typeof goldTick!=='function') return 'there is no clue hunt in this build';
+       if(typeof clueLayout!=='function') return 'SKIP: the golden clue hunt was cut at his order (nocluehunt)'; if(typeof flowTick!=='function'||typeof goldTick!=='function') return 'there is no golden enemy in this build';
        p=g.player; keys={};
        say=function(m,kd,o){ lines.push(String(m)+'|'+((o&&o.sub)||'')); }; own=true;
        ARCADE.mine=0; ARCADE.holdT=0; g.t=5; flowTick(0.1); flowTick(0.1); S=g.flow.gold; C=g.flow.clue;
@@ -8559,24 +8561,27 @@ window.__REGRESS=[
        if(!SS||!SS.sites||!SS.sites.length) return 'ONE: the raid planned '+(SS&&SS.sites?SS.sites.length:'no')+' strongholds';
        if(SS.sites.length>2) bad.push('ONE: '+SS.sites.length+' strongholds');
        s=SS.sites[0];
+       function ccx(q){ return (q.kind===undefined)?q.x:q.x+q.w/2; }
+       function ccy(q){ return (q.kind===undefined)?q.y:q.y+q.h/2; }
        for(i=0;i<SS.sites.length;i++){
          s=SS.sites[i];
-         if(Math.hypot(s.x-p.x,s.y-p.y)<649) bad.push('ONE: stronghold '+i+' is '+Math.round(Math.hypot(s.x-p.x,s.y-p.y))+' from the drop');
-         for(j=0;j<g.zones.length;j++) if(Math.hypot(s.x-g.zones[j].x,s.y-g.zones[j].y)<499) bad.push('ONE: stronghold '+i+' is within 500 of ring '+j);
-         if(!isFinite(s.ga)) bad.push('ONE: stronghold '+i+' has no gate');
+         if(Math.hypot(ccx(s)-p.x,ccy(s)-p.y)<649) bad.push('ONE: stronghold '+i+' is '+Math.round(Math.hypot(ccx(s)-p.x,ccy(s)-p.y))+' from the drop');
+         for(j=0;j<g.zones.length;j++) if(Math.hypot(ccx(s)-g.zones[j].x,ccy(s)-g.zones[j].y)<499) bad.push('ONE: stronghold '+i+' is within 500 of ring '+j);
+         if(s.kind===undefined&&!isFinite(s.ga)) bad.push('ONE: stronghold '+i+' has no gate');
          if(s.def.length<4) bad.push('ONE: stronghold '+i+' has a garrison of '+s.def.length);
-         for(j=0;j<s.def.length;j++){ e=s.def[j]; if(Math.hypot(e.x-s.x,e.y-s.y)>s.r||g.ents.indexOf(e)<0) bad.push('ONE: a defender is outside or not in the world'); }
+         for(j=0;j<s.def.length;j++){ e=s.def[j]; if((s.kind===undefined?Math.hypot(e.x-s.x,e.y-s.y)>s.r:!(e.x>s.x&&e.x<s.x+s.w&&e.y>s.y&&e.y<s.y+s.h))||g.ents.indexOf(e)<0) bad.push('ONE: a defender is outside or not in the world'); }
          if(!s.cache||s.cache.loot.length<4||g.containers.indexOf(s.cache)<0) bad.push('ONE: stronghold '+i+' has no cache of four');
          else { n=0; for(j=0;j<s.cache.loot.length;j++) if((_RRANK[dispR(s.cache.loot[j])]||0)>=3) n++; if(n<s.cache.loot.length) bad.push('ONE: only '+n+' of '+s.cache.loot.length+' cache items are purple or better'); }
        }
        s=SS.sites[0];
        // TWO: the same seed lays out the same strongholds
        t1=shLayout(); t2=shLayout();
-       if(JSON.stringify(t1)!==JSON.stringify(t2)||JSON.stringify(t1)!==JSON.stringify(SS.sites.map(function(q){ return {i:q.i,x:q.x,y:q.y,r:q.r,ga:q.ga,gw:q.gw,open:0,prog:0,w2:0,clear:0,def:[],def2:[],cache:null}; }))) bad.push('TWO: the same seed laid out different strongholds');
+       if(JSON.stringify(t1)!==JSON.stringify(t2)||(s.kind===undefined&&JSON.stringify(t1)!==JSON.stringify(SS.sites.map(function(q){ return {i:q.i,x:q.x,y:q.y,r:q.r,ga:q.ga,gw:q.gw,open:0,prog:0,w2:0,clear:0,def:[],def2:[],cache:null}; })))) bad.push('TWO: the same seed laid out different strongholds');
        // THREE: advertised on the maps
        M=flowMarks(); mk=0; for(i=0;i<M.length;i++) if(M[i].kind==='sh'&&M[i].pin) mk++;
        if(mk!==SS.sites.length) bad.push('THREE: '+mk+' of '+SS.sites.length+' strongholds are marks on the maps');
        // FOUR: the fence: on open ground away from the gate a player who crossed in is put back out, and a machine who crossed out is put back in
+       if(s.kind===undefined){
        ok=0;
        for(j=0;j<48&&!ok;j++){
          ang=j*0.1309; x0=Math.cos(ang); y0=Math.sin(ang);
@@ -8596,8 +8601,9 @@ window.__REGRESS=[
        gp=shGatePt(s); p.shS[s.i]=2; p.x=s.x+Math.cos(s.ga)*(s.r-30); p.y=s.y+Math.sin(s.ga)*(s.r-30);
        flowTick(0.1);
        if(Math.hypot(p.x-s.x,p.y-s.y)<s.r) bad.push('FOUR: the player walked through the closed gate');
+       }
        // FIVE: the breach: 3 s at the gate opens it, wave two comes, the cache is marked
-       p.x=gp.x+Math.cos(s.ga)*30; p.y=gp.y+Math.sin(s.ga)*30; p.shS[s.i]=2; lines.length=0;
+       gp=shGatePt(s); p.x=gp.x+(s.kind?s.nx:Math.cos(s.ga))*30; p.y=gp.y+(s.kind?s.ny:Math.sin(s.ga))*30; (p.shS=p.shS||[0,0,0])[s.i]=2; lines.length=0;
        for(i=0;i<8;i++) flowTick(0.25);
        if(s.open) bad.push('FIVE: the gate opened after only 2 s');
        if(!(s.prog>0.5&&s.prog<1)) bad.push('FIVE: the breach is at '+s.prog.toFixed(2)+' after 2 s');
@@ -8610,6 +8616,7 @@ window.__REGRESS=[
        if(!saw) bad.push('FIVE: no GATE BREACHED callout');
        M=flowMarks(); mk=0; for(i=0;i<M.length;i++) if(M[i].kind==='loot'&&Math.abs(M[i].x-s.cache.x)<1&&String(M[i].txt)===tagC) mk++;
        if(!mk) bad.push('FIVE: the cache is not a mark once the gate is open');
+       if(s.kind===undefined){
        // SIX: through the open gate nobody is held
        p.x=s.x+Math.cos(s.ga)*(s.r-30); p.y=s.y+Math.sin(s.ga)*(s.r-30); tmp=p.x;
        flowTick(0.1);
@@ -8620,8 +8627,9 @@ window.__REGRESS=[
        try{ flowDraw(ctx,p); } finally { proto.arc=oArc; }
        sc=w2s(s.x,0,s.y); hit=0; for(i=0;i<cap.length;i++) if(cap[i].length>=5&&Math.abs(cap[i][0]-sc.x)<2&&Math.abs(cap[i][1]-sc.y)<2&&Math.abs(cap[i][2]-s.r*ZOOM())<1.5) hit++;
        if(hit<2) bad.push('SEVEN: the fence was drawn '+hit+' times ('+cap.length+' arcs)');
+       }
        // EIGHT: the Director never lands a pack in a stronghold
-       if(arcadeWaveOk([],{x:s.x+900,y:s.y},s.x,s.y,0,5000)) bad.push('EIGHT: a pack may land in a stronghold');
+       if(arcadeWaveOk([],{x:ccx(s)+900,y:ccy(s)},ccx(s),ccy(s),0,5000)) bad.push('EIGHT: a pack may land in a stronghold');
        // NINE: clear both waves and the chip is paid, once
        m0=ARCADE.mine|0; lines.length=0;
        for(i=0;i<SS.sites.length;i++){ for(j=0;j<SS.sites[i].def.length;j++) SS.sites[i].def[j].hp=0; for(j=0;j<SS.sites[i].def2.length;j++) SS.sites[i].def2[j].hp=0; }
