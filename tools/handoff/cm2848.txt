@@ -1,0 +1,7 @@
+v28.48: your teammate's shield bubble is seen in your window
+
+In co-op, when your teammate picks up a SHIELD BUBBLE you now see the bubble round him too.
+
+Check 28.48. Fails on v28.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.48 - YOUR TEAMMATE'S SHIELD BUBBLE IS SEEN IN YOUR WINDOW
+
+Co-op hunt while he was away. The SHIELD BUBBLE power-up (v26.89) is drawn only round your own player (pwrDraw2), and the state word sent to the teammate carried a shield flag only for the DEMO spawn shield, so neither window ever saw the bubble on the other, in DEMO or in a normal Undercroft raid. Damage was already right; only the look was missing. Proven in a staged pair in one window: with the bubble up player 2's state word had no bubble flag, the host kept none and drew nothing round him. Now the word carries pb while the bubble is up, the host keeps it and passes it on, and the teammate is drawn inside the same bubble (same colours, radius and centre) on the world canvas, without the flash and the end blink that only his own window knows.
+
+MEASURED. Check 28.48 passes, and fails on v28.47.
 ## v28.47 - YOUR TEAMMATE SHOWS BARE HANDS WHEN HIS HANDS ARE BUSY
 
 Co-op hunt while he was away. In your own window your character puts the gun away while a grenade or a heal is out, while searching or cutting a seal, and on Bare Hands (v26.29, v7.61), but the state word sent to the teammate carried only the gun, so the other window kept drawing him holding his gun (and on Bare Hands drew a default long gun shape). Proven in a staged pair in one window, both ways: with a frag out, searching, or on Bare Hands the host was drawn in player 2 window with mode '' (gun out) instead of 'none', and the same for player 2 seen by the host and passed on to a third window. Now the state word carries one more flag, hd, for busy hands, the host passes it on, and the teammate is drawn with bare hands exactly when he sees himself that way. A word without the flag (an older window) reads as empty hands, as before.
