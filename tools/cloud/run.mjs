@@ -75,6 +75,15 @@ try {
       if (r.r && r.r.startsWith('SKIP: ')) skip++; else if (r.r) { fails.push('v' + r.v + ' [' + i + '] ' + r.r.slice(0, 300)); if (r.r.startsWith('TIMEOUT')) break; }
     }
     console.log((fails.length ? 'FAIL x' + fails.length : 'PASS') + ', ' + ran + ' run, ' + skip + ' skipped [' + a + ',' + b + ')'); fails.forEach(f => console.log('  ' + f)); ok = !fails.length;
+  } else if (cmd === 'recent') {
+    // the newest N checks (default 80, skipping the newest when a3 says so): prints a JSON map v -> failure text
+    await load(file);
+    const r = await Promise.race([page.evaluate(([n, skip]) => { const o = {}; const R = __REGRESS.slice().sort((a, b) => parseFloat(b.v) - parseFloat(a.v)).slice(0, n + (skip ? 1 : 0));
+      for (let i = skip ? 1 : 0; i < R.length; i++) { const t = R[i]; let r; try { __runPrep(); __topClear(); r = t.run(); } catch (x) { r = 'threw ' + x; }
+        if (r && String(r).indexOf('SKIP') !== 0 && !(r && typeof r.then === 'function')) o[t.v + ' ' + String(t.what).slice(0, 60)] = String(r).slice(0, 200); }
+      return JSON.stringify(o); }, [+(a4 || 80), a3 === 'skipnewest']),
+      new Promise(ok => setTimeout(() => ok('{"TIMEOUT":"recent run over ' + (process.env.RECENT_MS || 900000) + ' ms"}'), +(process.env.RECENT_MS || 900000)))]);
+    console.log(r); ok = true;
   } else if (cmd === 'eval') {
     await load(file); const r = await page.evaluate(a3); console.log(typeof r === 'string' ? r : JSON.stringify(r)); ok = true;
   } else if (cmd === 'net') {

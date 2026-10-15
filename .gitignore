@@ -18,3 +18,4 @@ tools/cloud/__pycache__/
 tools/fixture-soak-*.html
 tools/handoff/fuzz/*.jsonl
 tools/handoff/fuzz/fuzz-trace.txt
+tools/gd-*.html

@@ -1,0 +1,28 @@
+{
+ "title": "A GUN SWAPPED IN DURING A RELOAD STARTS ITS OWN RELOAD RING",
+ "why": "Changing gun stopped the reload but kept the old gun's reload length for the active reload ring. With the trigger held on an empty Support MG, a swap to an empty pistol started the pistol's reload at once, and the ring measured it against the Support MG's longer reload: proven in the cloud, the pistol's ring opened at about 59 percent, already past the sweet spot, and an R pressed in the next frame or two finished the reload at once with the bonus. The swap now clears the ring's record too, and so does every other way a different gun comes into his hands mid-reload (a pick-up, the fall back to the other gun when the one in hand is gone, a draw from the backpack, a gun handed over), so the new gun's reload starts its ring from empty, as every other reload does.",
+ "now": "Swapping to an empty gun while reloading starts its reload ring from the beginning.",
+ "edits": [
+  {
+   "anchor": "  pp.reloading=0; pp.fired=true; pp.lastShot=G.t*1000; pp.swapT=G.t;",
+   "replacement": "  // v16.xx (cloud-feel-reload-swap-ring), CLOUD HUNT 2026-10-15: the swap stopped the reload but kept the old gun's ring length (rlTot), so an\n  // empty gun swapped in with the trigger held measured its new reload against the old one and the ring opened past its sweet spot.\n  pp.reloading=0; pp.rlTot=0; pp.rlArm=0; pp.fired=true; pp.lastShot=G.t*1000; pp.swapT=G.t;"
+  },
+  {
+   "anchor": "        p.wep=found; p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0;   // v13.81",
+   "replacement": "        p.wep=found; p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v13.81; v16.xx (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand"
+  },
+  {
+   "anchor": "    p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0;",
+   "replacement": "    p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v16.xx (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand"
+  },
+  {
+   "anchor": "  else { p.wep=g; p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; }",
+   "replacement": "  else { p.wep=g; p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; }   // v16.xx (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand"
+  },
+  {
+   "anchor": "  if(hand){ p.wep=nc; p.ammo=carry; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; G.tel.weapon=nc.name; }",
+   "replacement": "  if(hand){ p.wep=nc; p.ammo=carry; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; G.tel.weapon=nc.name; }   // v16.xx (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand"
+  }
+ ],
+ "check": "  {v:'VER',what:'cloud-feel-reload-swap-ring: an empty LMG reloading with the trigger held, swapped (F) to an empty pistol: the pistol reload ring starts near empty and an R pressed at once does not finish it',\n   run:function(){\n     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: no raid here';\n     var bad=[], g, p, f0, rl0, i;\n     function kd(c){ window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:c,bubbles:true})); }\n     function ku(c){ window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:c,bubbles:true})); }\n     function st(n){ for(i=0;i<n;i++){ g.t+=0.016; __sim(0.016); } }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';\n       if(g.sim) return 'SKIP: the fixture raid is a sim raid';\n       p=g.player; g.ents=[]; p.iv=99;\n       p.wep=cloneObj(WEAPONS.lmg); p.ammo=0; p.reserve=200; p.reloading=0; p.sec=cloneObj(WEAPONS.pistol); p.secAmmo=0; p.drawRef=undefined;\n       st(80);\n       mouse.down=true; st(30);\n       if(!(p.reloading>0&&p.rlTot>0)) return 'SKIP: staging: the empty LMG did not start its reload with the trigger held';\n       kd('KeyF'); ku('KeyF');\n       if(!p.wep||p.wep.id!=='pistol') return 'SKIP: staging: F did not swap to the pistol';\n       st(1);\n       if(!(p.reloading>0)) return 'SKIP: staging: the empty pistol did not start its reload with the trigger held';\n       f0=1-p.reloading/((p.rlTot>0)?p.rlTot:p.wep.reload);\n       if(!(f0<0.1)) bad.push('the pistol reload ring opened at '+Math.round(f0*100)+' percent');\n       mouse.down=false; rl0=p.reloading;\n       kd('KeyR'); st(1); ku('KeyR'); st(1);\n       if(!(p.reloading>0)||p.arBonus) bad.push('an R pressed at once finished the pistol reload (reloading '+Math.round(rl0)+' to '+Math.round(p.reloading)+', bonus '+(p.arBonus?1:0)+')');\n     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }\n     finally{\n       try{ mouse.down=false; ku('KeyR'); ku('KeyF'); keys['KeyR']=false; keys['KeyF']=false; }catch(_k){}\n       try{ __endRaid('abandon'); }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join('; '):null; }},"
+}
