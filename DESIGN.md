@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.32 - THE WHAT IS NEW CARD NAMES THE RUN GOALS
+
+Co-op hunt while he was away. The card was stamped v27.31 and the stamp may not trail the build by more than 0.15. Its new line names the run goals, now shared by both players
+
+MEASURED. Check 27.32 passes, and fails on v27.31.
 ## v27.31 - THE WHAT IS NEW CARD NAMES THE ELITES AND KITS
 
 Co-op hunt while he was away. The card was stamped v27.15 and the stamp may not trail the build by more than 0.15. Its new line names the two player flow builds since: player 2 sees and feels the fires, the raid events, the strongholds, the golden enemy, the run goals and the air strike, and the power-ups are shared.

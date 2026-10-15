@@ -1,0 +1,12 @@
+{
+    "title":  "THE CARD DOES NOT CLAIM SHARED POWER-UPS",
+    "why":  "From the cloud review of the party builds: the What is New card said power-ups are shared in the two player game, which is not true. Each window drops power-ups for its own kills and the pickups belong to that window, nothing about them goes over the link. The card now says each player has his own power-ups.",
+    "now":  "The What is New card says each player has his own power-ups.",
+    "edits":  [
+                  {
+                      "anchor":  "run goals and air strikes. Power-ups are shared.\u0027,",
+                      "replacement":  "run goals and air strikes. Each player has his own power-ups.\u0027,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027partyp6, from the cloud review (19): the What is New card does not say power-ups are shared (each window drops for its own kills and the pickups are its own); it says each player has his own\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||!WHATSNEW||!WHATSNEW.length) return \u0027SKIP: no What is New card here\u0027;\n     var bad=[], txt=WHATSNEW.join(\u0027|\u0027), line=null, i;\n     for(i=0;i\u003cWHATSNEW.length;i++) if(/^TWO PLAYER FLOW/.test(WHATSNEW[i])) line=WHATSNEW[i];\n     if(!line) return \u0027SKIP: the card has no two player line\u0027;\n     if(txt.indexOf(\u0027Power-ups\u0027+\u0027 are shared\u0027)\u003e=0) bad.push(\u0027the card still says power-ups are shared\u0027);\n     if(!/Each player has his own power-ups/.test(line)) bad.push(\u0027the two player line does not say each player has his own power-ups: \u0027+line);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
