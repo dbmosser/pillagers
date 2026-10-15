@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.28';
+var VER='27.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9796,7 +9796,20 @@ function hudKey(label,x,y,a,sw,o){
   ctx.fillText(L,kx+kw/2,y-LH(0.5));
   ctx.textAlign=oa; ctx.fillStyle=of;
   return kw;
-}function hudPrompt(s,x,y,o){
+}
+// v27.29 (feedocc1), HIS NOTE (2026-10-14), the press E to loot text: "wayy too big". EVERY PROMPT IN THE WORLD IS 60 PERCENT OF ITS SIZE.
+// hudPrompt (the keycap and its words over a crate, a door, a body, the seal, a ring) draws as it always did, in hudPromptDraw, inside a
+// scale of HUDPROMPTZ (0.6) about its own anchor (x, y), so the plate, the keycap, the words and the second line shrink together and the
+// prompt stays where it was. It still grows with the screen (the caller's hudAtIn, the same HUD scale), so at 4K it is 60 percent of the
+// 4K size and as legible as at 1080p. The returned width and bottom are the drawn ones, for a bar under the prompt.
+var HUDPROMPTZ=0.6;
+function hudPrompt(s,x,y,o){
+  var r;
+  ctx.save(); ctx.translate(x,y); ctx.scale(HUDPROMPTZ,HUDPROMPTZ); ctx.translate(-x,-y);
+  try{ r=hudPromptDraw(s,x,y,o); } finally { ctx.restore(); }
+  return {w:r.w*HUDPROMPTZ,by:y+(r.by-y)*HUDPROMPTZ};
+}
+function hudPromptDraw(s,x,y,o){
   var t=String(s), m, w, a, d, sub=(o&&o.sub)?String(o.sub):'', sw=0, h, bw, i0, i1;
   ctx.font=FS(TYPE.head); ctx.textAlign='center';
   m=ctx.measureText(t); w=m.width;
@@ -44660,7 +44673,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.28: BEST KIT gives your three best guns and up to three of each wheel item. Check 27.28 fails on v27.27',
+  now:'v27.29: The press E prompts over crates, doors and bodies are now 60 percent of their old size. Check 27.29 fails on v27.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

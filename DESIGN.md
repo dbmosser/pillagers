@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.29 - THE PROMPTS ARE 60 PERCENT SIZE
+
+Co-op hunt while he was away. His note of 2026-10-14: the press E to loot text is way too big. Every prompt in the world (the keycap and its words over a crate, a door, a body, the seal, an extraction ring) now draws at 60 percent of its old size: the plate, the keycap, the words and the second line shrink together about their own place, so the prompt stays where it was. It still grows with the screen like the rest of the HUD, so at 4K it is just as legible.
+
+MEASURED. Check 27.29 passes, and fails on v27.28.
 ## v27.28 - BEST KIT: 3 GUNS, UP TO 3 OF EACH
 
 Co-op hunt while he was away. His word on BEST KIT: three guns, and up to three of each item on the wheel. It takes your three best guns, ranked by the colour they wear (a rarity twin outranks its plain model), then tier, then worth, always three different models. The best is in your hands, the second in your other hand, the third is packed from the stash (a gun in the armoury is moved out to the stash for it), and each sits on its own class key. The items are up to three of each of the eight wheel types you have in the stash, in wheel order (Medkit, Smoke, Frag, Tripwire, Armour, Decoy, Bandage, Stim), the Armour only if your rig holds plates, then the biggest Ammo Box, never more than the backpack takes. Items stay in the stash until the raid starts. This replaces the old TOP GEAR fill of one gun, two of each grenade and a few single items. With no gun you go up with the Scav Pistol.
