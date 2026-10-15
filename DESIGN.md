@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.06 - NO BONUS DAMAGE ON PILLAGERS
+
+Co-op hunt while he was away. His answer 31: "consistent damage is better in pillage battles, no weakspots/headshots". Pillagers never had a weak spot, but a round into a pillager back did half again the damage (the back shot bonus), so a flank cost him more than a front shot. A pillager is now hit for what the round does, from any side, so every fight with a pillager is the same sum. Machines keep their weak points (the Sentry vent, the Warden seam, the Bulwark spine) and the back shot bonus, since the weak points are all on machines and those fights are built around flanking. The crowbar is unchanged. No player takes a bonus from a pillager round either: there never was one.
+
+MEASURED. Check 27.06 passes, and fails on v27.05.
 ## v27.05 - RED EXPLOSIVE BARRELS
 
 Co-op hunt while he was away. His answer 30: he had never seen an explosive barrel, and asked for them red with an exclamation mark. The earlier barrel drafts never reached the game, so there was nothing to see. Now every raid, DEMO and CAREER alike, has about two dozen red barrels with a big white ! on them, in clusters of one to three on open, reachable floor, away from where you drop in and from the extraction points, each with a slow red glow on the ground so they read across a lane. A round that reaches one stops in it, and a little damage sets it off: it flickers for a moment and goes up. The blast hurts everything near it that it can see, you included, machines, pillagers and walls, and it sets off the barrels beside it after a short beat, so a cluster goes up in a chain. A grenade sets them off too. Kills go to whoever set the barrel off, and a barrel your teammate sets off never hurts you (no team damage). The barrels are placed on their own random stream, so the map, the enemies and the loot are exactly as before. A second player window on the same machine does not yet see a barrel go up in the first one.

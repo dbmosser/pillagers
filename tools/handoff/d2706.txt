@@ -1,0 +1,5 @@
+## v27.06 - NO BONUS DAMAGE ON PILLAGERS
+
+Co-op hunt while he was away. His answer 31: "consistent damage is better in pillage battles, no weakspots/headshots". Pillagers never had a weak spot, but a round into a pillager back did half again the damage (the back shot bonus), so a flank cost him more than a front shot. A pillager is now hit for what the round does, from any side, so every fight with a pillager is the same sum. Machines keep their weak points (the Sentry vent, the Warden seam, the Bulwark spine) and the back shot bonus, since the weak points are all on machines and those fights are built around flanking. The crowbar is unchanged. No player takes a bonus from a pillager round either: there never was one.
+
+MEASURED. Check 27.06 passes, and fails on v27.05.

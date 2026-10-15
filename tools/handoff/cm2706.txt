@@ -1,0 +1,7 @@
+v27.06: no bonus damage on pillagers
+
+Pillagers take the same damage from every side. No more extra damage for shooting one in the back.
+
+Check 27.06. Fails on v27.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
