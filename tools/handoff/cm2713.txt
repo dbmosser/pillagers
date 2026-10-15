@@ -1,0 +1,7 @@
+v27.13: damage numbers are a setting
+
+Settings has a DAMAGE NUMBERS row in DISPLAY, ON by default. Turn it off to hide the numbers.
+
+Check 27.13. Fails on v27.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

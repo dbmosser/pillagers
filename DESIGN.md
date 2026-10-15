@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.13 - DAMAGE NUMBERS ARE A SETTING
+
+Co-op hunt while he was away. His answer 33: the damage numbers become a Settings row, on by default. The numbers that float off a target when you hit it (and the red ones over you that your teammate sees) have been on since v8.35 under a dial you could not reach. That dial is now a row in DISPLAY, DAMAGE NUMBERS, ON by default, so the game looks exactly as it did, and OFF takes every number off the screen. The damage itself is untouched.
+
+MEASURED. Check 27.13 passes, and fails on v27.12.
 ## v27.12 - PLAYER 2 BREACHES AND IS FENCED BY THE STRONGHOLDS
 
 Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The strongholds (the fenced compounds with a gate, two waves and a purple cache) were laid out by each window for itself: player 2 built a second set of defenders that only his window knew, and the fence, the gate and the clear were the host alone. The host now lists its compounds in the world word and the linked window keeps exactly those. Player 2 is fenced in or out of each compound like player 1, on the side he first stood. He can open the gate too: standing at it from outside tells the host, which counts it beside its own player, so either of them or both together breach it in the same three seconds. The open gate, the cache on the maps and the cleared compound are shown and said in his window as well.

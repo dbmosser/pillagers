@@ -1,0 +1,5 @@
+## v27.13 - DAMAGE NUMBERS ARE A SETTING
+
+Co-op hunt while he was away. His answer 33: the damage numbers become a Settings row, on by default. The numbers that float off a target when you hit it (and the red ones over you that your teammate sees) have been on since v8.35 under a dial you could not reach. That dial is now a row in DISPLAY, DAMAGE NUMBERS, ON by default, so the game looks exactly as it did, and OFF takes every number off the screen. The damage itself is untouched.
+
+MEASURED. Check 27.13 passes, and fails on v27.12.
