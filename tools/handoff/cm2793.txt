@@ -1,0 +1,7 @@
+v27.93: what is new is a pause menu button
+
+The What is New card is now a button on the pause menu, and no longer pops up by itself.
+
+Check 27.93. Fails on v27.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

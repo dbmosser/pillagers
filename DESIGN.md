@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.93 - WHAT IS NEW IS A PAUSE MENU BUTTON
+
+Co-op hunt while he was away. His answer 37: the What is New card moves to a button on the pause menu. It used to pop up by itself on the Undercroft floor once for each time you loaded the game, over the screen you had come to look at. It no longer does. The pause menu has a WHAT IS NEW button beside FEEDBACK; it opens a window with the newest eight notes, in the same words the card used, with CLOSE and ESC to shut it. The card stamp and the list are unchanged, so the build refresh that keeps the list current works as before.
+
+MEASURED. Check 27.93 passes, and fails on v27.92.
 ## v27.92 - THE MAGNET POWER-UP IS GONE
 
 Co-op hunt while he was away. His words of 2026-10-15 about the magnet power-up: I do not like the idea, get rid of it. The magnet is removed completely: it no longer drops, it has no pickup, no effect, no picture, no timer chip, no note and no callout, and the sound pack carries no cue for it. The other five power-ups (bottomless clip, double damage, rapid fire, shield bubble, screen clear) stay and drop as before; there is one kind fewer on the drop table. The older checks that tested the magnet now test that no power-up moves a box.
