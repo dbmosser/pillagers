@@ -1,0 +1,7 @@
+v27.77: the sound pack is in the game
+
+The new sound pack is in the game: forty-two dark, low cues and thirteen recordings, loaded at start.
+
+Check 27.77. Fails on v27.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
