@@ -1,0 +1,7 @@
+v28.53: no finish prompt while you die
+
+The FINISH prompt no longer hangs over a downed pillager while you die.
+
+Check 28.53. Fails on v28.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

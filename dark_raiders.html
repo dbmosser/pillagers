@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.52';
+var VER='28.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20704,7 +20704,9 @@ function finisherTick(p,dt){
   return finishHim(p,e);
 }
 function drawFinisher(c,p){
-  var e=(p&&!p.downed&&G&&!G.over&&!G.sim)?finTarget(p):null, s, z, r, f;
+  // v28.53 (cloud-feel-finish-dying), CLOUD HUNT 2026-10-15: not in the death beat either. killPlayer clears downed and sets dying for 1.5 s, and
+  // finisherTick refuses then, so FINISH stayed drawn over a downed pillager in reach while V did nothing.
+  var e=(p&&!p.downed&&!p.dying&&G&&!G.over&&!G.sim)?finTarget(p):null, s, z, r, f;
   if(!e) return false;
   s=w2s(e.x,0,e.y); z=Math.max(1,hudRes()); r=24*z; f=(G.finE===e)?clamp(G.finT/FIN_T,0,1):0;
   c.lineWidth=3*z; c.lineCap='butt';
@@ -46515,7 +46517,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.52: Rolling while you draw a gun no longer makes the draw take longer. Check 28.52 fails on v28.51',
+  now:'v28.53: The FINISH prompt no longer hangs over a downed pillager while you die. Check 28.53 fails on v28.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

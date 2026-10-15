@@ -1,0 +1,5 @@
+## v28.53 - NO FINISH PROMPT WHILE YOU DIE
+
+Co-op hunt while he was away. When you die there is a 1.5 second beat before the death card. In that beat the FINISH [V] ring and text stayed over a downed pillager in reach, though V does nothing while you die. Proven in the cloud: FINISH drawn over a downed pillager in reach, then the death, and every frame of the beat still drew FINISH while holding V did nothing. The prompt now needs you alive. Standing, it shows as before.
+
+MEASURED. Check 28.53 passes, and fails on v28.52.
