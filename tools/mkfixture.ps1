@@ -6093,6 +6093,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.14',what:'his answer 36: the pickup stack holds six rows, not four: eight different pickups in a row leave the newest six, and the stack draws all six',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||!window.__state||typeof pickSay!=='function'||typeof drawPickups!=='function') return 'SKIP: no pickup stack here';
+     var bad=[], g=null, i, n, names=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       g.pick=[]; g.bagOpen=false; g.mapOpen=false;
+       for(i=0;i<8;i++) pickSay('ZQ ROW '+i,{c:'text'});
+       if(g.pick.length!==6) bad.push('eight pickups left '+g.pick.length+' rows in the stack, not 6');
+       else if(g.pick[5].m!=='ZQ ROW 7'||g.pick[0].m!=='ZQ ROW 2') bad.push('the stack does not keep the newest six ('+g.pick[0].m+' to '+g.pick[5].m+')');
+       g.t+=0.4;
+       for(i=0;i<g.pick.length;i++) g.pick[i].at=g.t-1;
+       n=drawPickups();
+       if(H>=1000&&n!==6) bad.push('the stack drew '+n+' of its 6 rows at '+W+'x'+H);
+       g.pick=[];
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       try{ if(g) g.pick=[]; }catch(_p){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.iv=0; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'27.13',what:'his answer 33: damage numbers are a Settings row in DISPLAY, ON by default; OFF stops them floating off a hit',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__opts&&window.__opts.apply&&window.__opts.cycle&&window.__opts.rows)) return 'SKIP: this fixture cannot deploy or reach the Settings rows';

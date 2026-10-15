@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.14 - THE PICKUP STACK SHOWS SIX ROWS
+
+Co-op hunt while he was away. His answer 36: the pickup stack should show more rows. What you pick up shows as rows on the right edge above the gun card, and it held only the last four, so a quick run through a room pushed the first pickups off before you had read them. It now holds six rows. Each row still lives four seconds, the newest is at the bottom and the same item picked up again still adds to its row.
+
+MEASURED. Check 27.14 passes, and fails on v27.13.
 ## v27.13 - DAMAGE NUMBERS ARE A SETTING
 
 Co-op hunt while he was away. His answer 33: the damage numbers become a Settings row, on by default. The numbers that float off a target when you hit it (and the red ones over you that your teammate sees) have been on since v8.35 under a dial you could not reach. That dial is now a row in DISPLAY, DAMAGE NUMBERS, ON by default, so the game looks exactly as it did, and OFF takes every number off the screen. The damage itself is untouched.

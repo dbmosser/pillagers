@@ -1,0 +1,5 @@
+## v27.14 - THE PICKUP STACK SHOWS SIX ROWS
+
+Co-op hunt while he was away. His answer 36: the pickup stack should show more rows. What you pick up shows as rows on the right edge above the gun card, and it held only the last four, so a quick run through a room pushed the first pickups off before you had read them. It now holds six rows. Each row still lives four seconds, the newest is at the bottom and the same item picked up again still adds to its row.
+
+MEASURED. Check 27.14 passes, and fails on v27.13.

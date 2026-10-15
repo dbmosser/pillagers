@@ -2225,7 +2225,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.13';
+var VER='27.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17733,7 +17733,7 @@ function locDraw(l){   // inside the message scale, in the alert slot
 // kill feed). The stack holds 4 rows for 4 s each, newest at the bottom; the same item picked up again while its row is up adds to
 // its count and refreshes it. It is hidden while the backpack or the map is open. The world loot labels at the box (his 6 s) stay.
 // Cosmetic only: nothing here runs while G.sim is set, draws a random number or changes game state.
-var PICKN=4, PICKLIFE=4;
+var PICKN=6, PICKLIFE=4;   // v27.xx (pickrows), HIS ANSWER 36 (2026-10-13): "the pickup stack gets MORE rows". Six rows, were four; each still lives four seconds, newest at the bottom
 function pickSay(m,o){
   if(!G) return;
   var q=(G.pick=G.pick||[]), now=G.t||0, it=(o&&o.item)||'', n=(o&&o.n>0)?Math.round(o.n):1, i, r;
@@ -44300,7 +44300,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.13: Settings has a DAMAGE NUMBERS row in DISPLAY, ON by default. Turn it off to hide the numbers. Check 27.13 fails on v27.12',
+  now:'v27.14: The pickup stack on the right edge now shows six rows instead of four. Check 27.14 fails on v27.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

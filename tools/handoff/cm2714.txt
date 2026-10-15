@@ -1,0 +1,7 @@
+v27.14: the pickup stack shows six rows
+
+The pickup stack on the right edge now shows six rows instead of four.
+
+Check 27.14. Fails on v27.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
