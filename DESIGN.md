@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.40 - PLAYER 2 SEES SEARCH CONES ON BUILT BODIES
+
+Co-op hunt while he was away. Searchers draw a widening amber scan cone and DESIGN says player 2 sees the same cones. But the bodies that exist from the raid build are player 2 own copies with no net flag, so searching() took the host branch, which needs a search point that only the host AI sets; player 2 window runs no AI, so it never drew a cone on any of those bodies even though the host row carried the search flag. Proven in headless Chromium: a staged player 2 window applies a real host row with the search bit, the flag lands (srch 1) but searching() is false and searchCone() is null. Now, in a linked player 2 window up top, every body takes searching from the host flag, and draws the middle ring, as the bodies the host sends later already did. Solo and host windows are unchanged.
+
+MEASURED. Check 28.40 passes, and fails on v28.39.
 ## v28.39 - PLAYER 2 SEES THE GUN EACH PILLAGER REALLY HOLDS
 
 Co-op hunt while he was away. On the first frame of most raids each pillager swaps to a better gun his pack rolled (raiderUseKit), but only on the host: player 2 window runs no pillager of its own, built bodies are never announced, and the snapshot row carries no gun. So in player 2 window he kept his build gun: the wrong gun was drawn in his hands, his role colour and label were wrong, and the KILLED BY card named the wrong gun. Proven in a staged pair from one seed (arcade, map 1, seed 1077): after half a second the host pillagers held carbines and the same men in player 2 window still held SMGs. Now the host tells player 2 when a pillager changes guns (the existing new body word, without the name tag so his place, look and state are kept), and a late joiner hears every swap already made.

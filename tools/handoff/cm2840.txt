@@ -1,0 +1,7 @@
+v28.40: player 2 sees search cones on built bodies
+
+In co-op, player 2 now sees the amber search cone on every searching enemy, the same as player 1.
+
+Check 28.40. Fails on v28.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
