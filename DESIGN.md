@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.88 - ARCADE POWER-UPS
+
+Co-op hunt while he was away. His yes to arcade power-ups, with the bottomless clip he asked for, after the Zombies power-ups. Kills now drop a glowing walk-over pickup at a low rate: about one in twenty, four times that for an elite, always from a boss, and never closer than fifteen seconds apart. Each is timed and has its own colour and its own short note, with no voice. BOTTOMLESS CLIP (20 seconds) makes every shot free and keeps the magazine full, so there is no reload and no dry gun. DOUBLE DAMAGE (15 seconds) makes every round and swing hit twice as hard. RAPID FIRE (15 seconds) shortens the gap between shots to about half. A ring of the power-up colour runs at your feet while it lasts, a timer chip for each sits above the belt, and a falling note marks the end. The drops are rolled from the raid seed and the kill number, so the same raid with the same kills drops the same pickups, and nothing else in the raid moves. DEMO and CAREER work the same, and each player drops for their own kills.
+
+MEASURED. Check 26.88 passes, and fails on v26.87.
 ## v26.87 - THE WHAT IS NEW CARD NAMES THE RAID EVENTS
 
 Co-op hunt while he was away. The card was stamped v26.75 and the stamp may not trail the build by more than 0.15. Its new line names the raid events built since: orbital debris, the machine convoy, the bounty pillager, the coolant rupture, the lockdown alarm and the Overseer rampage.

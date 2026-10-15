@@ -1,0 +1,7 @@
+v26.88: arcade power-ups
+
+Kills drop timed power-ups: a bottomless clip, double damage and rapid fire.
+
+Check 26.88. Fails on v26.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
