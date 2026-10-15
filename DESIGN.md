@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.58 - THE KEY LISTS USE THE WINDOW
+
+Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, CHANGE KEYS and CHANGE PAD BUTTONS were one column 1100 pixels wide in a 1920 pixel window, the right 40 percent empty, with thirty rows to scroll through. They list the actions in two columns across the window now, each section heading across both, so the same rows take half the height. The rows, the keycaps and REBIND are unchanged.
+
+MEASURED. Check 27.58 passes, and fails on v27.57.
 ## v27.57 - THE FLOOR SAYS ITS MONEY ONCE
 
 Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the small line under THE UNDERCROFT in the corner of the floor printed your credits and XP, the same two numbers the big readout in the top right corner already shows, and in 9 pixel type. It says the stash and the runs now and leaves the money to the readout.

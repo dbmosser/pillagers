@@ -1314,6 +1314,13 @@
   body:has(#title.on) #topright, body:has(.outcome.on) #topright, body:has(.pausebox.on) #topright, body:has(#attract.on) #topright,
   body:has(#welcomemodal.on) #topright, body:has(#sectormodal.on) #topright, body:has(#settingsmodal.on) #topright, body:has(#keysmodal.on) #topright,
   body:has(#partymodal.on) #topright, body:has(#termsmodal.on) #topright{ visibility:hidden; }
+  /* vNN.xx, UI CLEANUP uic10 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of CHANGE
+     KEYS and CHANGE PAD BUTTONS): THE KEY LISTS USE THE WINDOW. The list was one column 1100 px wide in a 1920 px window with the right 40 percent
+     empty, and 30 key rows meant scrolling. It is two columns across the window now, each section head across both, so the same rows fit
+     in half the height. The rows, the keycaps, REBIND and the note above are unchanged; the pad walks them by place as before. */
+  #root #keyslist{ max-width:1500px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:36px; align-content:start; }
+  #root #keyslist .keysec{ grid-column:1 / -1; }
+  #root #keysnote{ max-width:1500px; }
   /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge of the title shot with 2 PLAYER CO-OP picked and the second window
      blocked): THE PICK SHOWS. After a same machine pick that stops on a note, 1 PLAYER was still the amber button, so the screen
      did not say what had been chosen, and the blocked note was a line of small red words with a small RETRY under it, like a stray
@@ -2242,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.57';
+var VER='27.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44799,7 +44806,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.57: The line under THE UNDERCROFT no longer repeats credits and XP. Check 27.57 fails on v27.56',
+  now:'v27.58: CHANGE KEYS and CHANGE PAD BUTTONS list the actions in two columns. Check 27.58 fails on v27.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

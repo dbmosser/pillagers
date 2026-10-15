@@ -1,0 +1,7 @@
+v27.58: the key lists use the window
+
+CHANGE KEYS and CHANGE PAD BUTTONS list the actions in two columns.
+
+Check 27.58. Fails on v27.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
