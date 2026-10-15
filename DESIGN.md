@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.35 - THE FEED ZONE IS A QUARTER WIDE
+
+Co-op hunt while he was away. Seen in the picture of the busy raid frame: the feed zone reserved 30 percent of the screen width while its lines are under two thirds of that, so the controls list beside it was squeezed to a tiny size. The zone is now a quarter of the width and each line is a little tighter, so the ten lines are about 280 pixels tall at 1080p and the controls list keeps a readable size.
+
+MEASURED. Check 27.35 passes, and fails on v27.34.
 ## v27.34 - PLAYER 2 KILLS COUNT TOO
 
 Co-op hunt while he was away. From the cloud code review (finding 24). In a co-op career raid, a kill that player 2 made did not count for his gun and could not earn him a trophy: the KILLS tally and the kill trophies were only fed from the host window. The kill word player 2 takes now counts the kill for the gun his last round came from, so his tally is banked at the end of his raid like the host, and killing the Overseer or the golden enemy earns him OVERSEER DOWN and GOLD HUNTER on his own save.

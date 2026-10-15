@@ -1,0 +1,5 @@
+## v27.35 - THE FEED ZONE IS A QUARTER WIDE
+
+Co-op hunt while he was away. Seen in the picture of the busy raid frame: the feed zone reserved 30 percent of the screen width while its lines are under two thirds of that, so the controls list beside it was squeezed to a tiny size. The zone is now a quarter of the width and each line is a little tighter, so the ten lines are about 280 pixels tall at 1080p and the controls list keeps a readable size.
+
+MEASURED. Check 27.35 passes, and fails on v27.34.

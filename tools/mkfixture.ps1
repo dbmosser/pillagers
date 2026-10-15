@@ -6093,6 +6093,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.35',what:'seen in the busy frame picture: the feed zone is a quarter of the screen wide and ten lines tall, so the controls list beside it keeps a readable size',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||!window.__frame) return 'SKIP: no raid here';
+     if(typeof FEEDBOX==='undefined'||typeof feedRect!=='function') return 'this build has no feed zone';
+     var bad=[], g, F, L, i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); }catch(_d){}
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       g.bagOpen=false; g.mapOpen=false; g.ents.length=0; keys={}; g.legendOn=1;
+       say('Scrap Metal','pick',{item:'scrap',n:1});
+       for(i=0;i<6;i++) __frame(0.016);
+       F=FEEDBOX; L=HUDBOX.legend;
+       if(!F.on) return 'the feed zone is not laid out';
+       if(F.w>W*0.26) bad.push('the feed zone is '+Math.round(F.w)+' wide of '+W+', over a quarter');
+       if(F.w<W*0.18) bad.push('the feed zone is only '+Math.round(F.w)+' wide of '+W);
+       if(!L||!(L.w>0)) return 'SKIP: no controls list drawn';
+       if(HUDZ.legend<1.0) bad.push('the controls list is squeezed to zoom '+HUDZ.legend.toFixed(2)+' beside the feed');
+       if(L.x+L.w>W*0.47+2) bad.push('the controls list reaches '+Math.round(L.x+L.w)+' of '+W);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'27.34',what:'career10, cloud review finding 24: a kill word that player 2 takes counts for the gun his last round came from (his tally is banked at the end of his raid) and the Overseer kill earns OVERSEER DOWN on his save',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__endRaid&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy';

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pillagers Sound Pack</title>
+<style>
+:root{
+  --bg:#0d0f12; --panel:#161a20; --panel2:#1d222a; --line:#2a313b; --text:#e6e9ee; --dim:#8b95a3; --acc:#ffb84a; --acc2:#ff6a3a;
+  --syn:#7fb2ff; --smp:#9fe0a0; --both:#e0b0ff; --ok:#6fdc8c;
+}
+:root[data-theme="light"]{ --bg:#f3f4f6; --panel:#ffffff; --panel2:#eef0f3; --line:#d5d9df; --text:#14181d; --dim:#5b6573; --acc:#b86a00; --acc2:#c2410c; --syn:#2a62c9; --smp:#2f8a3a; --both:#8a3fbf; --ok:#2f8a3a; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--text); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+header{ position:sticky; top:0; z-index:5; background:var(--bg); border-bottom:1px solid var(--line); padding:14px 16px 12px; }
+h1{ margin:0 0 4px; font-size:20px; letter-spacing:.06em; text-transform:uppercase; }
+.sub{ color:var(--dim); font-size:13px; max-width:980px; }
+.controls{ display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; margin-top:10px; font-size:13px; }
+.controls label{ display:flex; align-items:center; gap:6px; color:var(--dim); }
+.controls select,.controls input[type=range]{ accent-color:var(--acc); }
+select{ background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:3px 6px; }
+.meter{ width:140px; height:8px; background:var(--panel2); border:1px solid var(--line); border-radius:4px; overflow:hidden; }
+.meter i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--ok),var(--acc) 70%,var(--acc2)); transition:width .05s linear; }
+main{ padding:8px 16px 40px; max-width:1200px; margin:0 auto; }
+section{ margin-top:22px; }
+h2{ font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--acc); margin:0 0 10px; border-bottom:1px solid var(--line); padding-bottom:6px; }
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px; }
+button.cue{ text-align:left; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:10px 12px; cursor:pointer; font:inherit; display:flex; flex-direction:column; gap:4px; min-height:74px; }
+button.cue:hover{ border-color:var(--acc); background:var(--panel2); }
+button.cue:active,button.cue.on{ border-color:var(--acc2); }
+button.cue b{ font-size:14px; font-weight:600; }
+.tags{ display:flex; flex-wrap:wrap; gap:6px; font-size:11.5px; color:var(--dim); }
+.tags span{ border:1px solid var(--line); border-radius:4px; padding:0 5px; }
+.k-synth{ color:var(--syn); border-color:var(--syn)!important; }
+.k-sample{ color:var(--smp); border-color:var(--smp)!important; }
+.k-both{ color:var(--both); border-color:var(--both)!important; }
+button.seq{ border-style:dashed; }
+table{ width:100%; border-collapse:collapse; font-size:13px; }
+th,td{ text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+th{ color:var(--dim); font-weight:600; }
+td code{ font-size:12px; color:var(--acc); word-break:break-all; }
+.tablewrap{ overflow-x:auto; }
+.note{ color:var(--dim); font-size:13px; }
+.theme{ margin-left:auto; }
+@media (max-width:600px){ .grid{ grid-template-columns:1fr; } .theme{ margin-left:0; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pillagers sound pack</h1>
+  <div class="sub">The sounds for tonight's features: raid events, air strike, power-ups, medals, gate, barrels, active reload, LMG spin, finisher, golden enemy and haul reveal. Click a button to hear it. Everything plays through a copy of the game's mix: the world sounds go through its compressor and limiter, and the HUD sounds and stings skip them, so the levels you hear match the game. No voices anywhere.</div>
+  <div class="controls">
+    <label>Volume <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8"></label>
+    <label>Where the world sounds are
+      <select id="dist">
+        <option value="0">beside you</option>
+        <option value="250">near, on your left (250)</option>
+        <option value="700">far, on your right (700)</option>
+        <option value="1100">at the edge of hearing (1100)</option>
+      </select>
+    </label>
+    <label><input id="wall" type="checkbox"> behind a wall</label>
+    <label>Level <span class="meter"><i id="mt"></i></span></label>
+    <label class="theme">Theme
+      <select id="theme"><option value="">system</option><option value="dark">dark</option><option value="light">light</option></select>
+    </label>
+  </div>
+</header>
+<main id="main">
+  <noscript><p>This page needs JavaScript to play the sounds.</p></noscript>
+</main>
+<script src="sound-pack.js"></script>
+<script>
+(function(){
+  var A=null, BUS=null, S=null, AN=null, AB=null, raf=0;
+  var GROUPS=[['events','The five raid events'],['air','The air strike'],['power','The six power-ups'],['medals','Medals, a pop per tier'],['world','Gate breach, barrels, finisher, golden enemy'],['gun','Active reload and the LMG spin'],['haul','The haul reveal']];
+  var WORLD={gun:1,imp:1,mach:1,foley:1,amb:1,vox:1,world:1};
+  function el(t,c,h){ var e=document.createElement(t); if(c) e.className=c; if(h!==undefined) e.innerHTML=h; return e; }
+  function theme(v){ try{ if(v) document.documentElement.setAttribute('data-theme',v); else document.documentElement.removeAttribute('data-theme'); localStorage.setItem('spkTheme',v); }catch(e){} }
+  (function(){ var v=''; try{ v=localStorage.getItem('spkTheme')||''; }catch(e){} document.getElementById('theme').value=v; theme(v); })();
+  document.getElementById('theme').onchange=function(){ theme(this.value); };
+  // a copy of the game's mix buses (sndBuild): the world chain is a gain of 1.15, a compressor, a limiter and a trim of 0.5; the HUD and the stings go straight out
+  function ctx(){
+    var cats=['gun','imp','mach','foley','amb','vox','ui','sting','world'], w, c, l, tr, i, g;
+    if(A) { if(A.state==='suspended') A.resume(); return A; }
+    A=new (window.AudioContext||window.webkitAudioContext)();
+    BUS=A.createGain(); BUS.gain.value=+document.getElementById('vol').value;
+    AN=A.createAnalyser(); AN.fftSize=1024; AB=new Float32Array(AN.fftSize);
+    BUS.connect(AN); AN.connect(A.destination);
+    w=A.createGain(); w.gain.value=1.15;
+    c=A.createDynamicsCompressor(); c.threshold.value=-16; c.knee.value=10; c.ratio.value=3.5; c.attack.value=0.004; c.release.value=0.22;
+    l=A.createDynamicsCompressor(); l.threshold.value=-3; l.knee.value=0; l.ratio.value=20; l.attack.value=0.001; l.release.value=0.1;
+    tr=A.createGain(); tr.gain.value=0.5;
+    w.connect(c); c.connect(l); l.connect(tr); tr.connect(BUS);
+    S={};
+    for(i=0;i<cats.length;i++){ g=A.createGain(); g.connect((cats[i]==='ui'||cats[i]==='sting')?BUS:w); S[cats[i]]=g; }
+    meter();
+    return A;
+  }
+  function meter(){
+    var m=document.getElementById('mt'), i, pk=0;
+    if(!AN) return;
+    AN.getFloatTimeDomainData(AB);
+    for(i=0;i<AB.length;i++) pk=Math.max(pk,Math.abs(AB[i]));
+    m.style.width=Math.min(100,Math.max(0,(20*Math.log10(pk+1e-6)+48)/48*100)).toFixed(1)+'%';
+    raf=requestAnimationFrame(meter);
+  }
+  document.getElementById('vol').oninput=function(){ if(BUS) BUS.gain.value=+this.value; };
+  // where a world sound sits: the game's own distance fade (blip), its pan (earsOf, wider when near) and the wall muffle (sndPlace)
+  function place(name){
+    var d=+document.getElementById('dist').value, wall=document.getElementById('wall').checked, cat=SPK_CAT[name], out=S[cat]||S.world, vol=1, hr=900, nm, pn, lp, side;
+    if(!WORLD[cat]||d<=0&&!wall) return {out:out,vol:1,d:undefined};
+    nm=SPK_NOISEMARK[name]; if(nm&&nm.hear>900) hr=nm.hear*1.05;
+    vol=d<=450?1-d/900:Math.max(0,0.5*(hr-d)/(hr-450));
+    side=(d===250)?-1:1;
+    if(d>0&&A.createStereoPanner){ pn=A.createStereoPanner(); pn.pan.value=Math.max(-1,Math.min(1,side*Math.min(1,d/520)*(d<150?1.4:(d>700?0.7:1)))); pn.connect(out); out=pn; }
+    if(wall){ lp=A.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=Math.round(Math.max(900,Math.min(1500,1500-600*d/900))); lp.Q.value=0.7; lp.connect(out); out=lp; }
+    return {out:out,vol:vol,d:d};
+  }
+  function play(name,at,wid){
+    var P, t;
+    ctx(); P=place(name); t=A.currentTime+0.03+(at||0);
+    if(P.vol<=0.02) return null;
+    return SPK_GEN[name](A,P.out,P.vol,t,wid,P.d);
+  }
+  function flash(b){ b.classList.add('on'); setTimeout(function(){ b.classList.remove('on'); },250); }
+  function tags(I,name){
+    var k=I.kind, s='<span class="k-'+k+'">'+(k==='both'?'synth + CC0 sample':(k==='sample'?'CC0 sample':'synth'))+'</span>';
+    s+='<span>'+SPK_CAT[name]+' bus</span><span>'+I.len.toFixed(2)+' s</span>';
+    if(I.uses&&I.uses.length) s+='<span>'+I.uses.join(', ')+'</span>';
+    return s;
+  }
+  // the moments as they happen in a raid, several cues in their game timing
+  var SEQ={
+    events:[['ORBITAL DEBRIS, a piece: falling then landing',function(){ play('debrisFall',0); play('debrisLand',2.2); }],
+            ['ORBITAL DEBRIS, the whole event: callout, then three pieces 2.3 s apart',function(){ play('evDebrisWarn',0); for(var i=0;i<3;i++){ play('debrisFall',2.4+i*2.3); play('debrisLand',4.6+i*2.3); } }]],
+    air:[['THE WHOLE STRIKE: called, inbound, six blasts 0.2 s apart',function(){ play('airConfirm',0); play('airInbound',0); for(var i=0;i<6;i++) play('airBoom',1.5+i*0.2,i); }]],
+    power:[['A drop, the pickup, the last three seconds and the end (DOUBLE DAMAGE)',function(){ play('pwrAppear',0); play('pwrGetDmg',1.0); play('pwrLast',2.4); play('pwrLast',3.4); play('pwrLast',4.4); play('pwrEnd',5.4); }]],
+    medals:[['The ladder, tier 1 to tier 5',function(){ for(var i=1;i<=5;i++) play('medal'+i,(i-1)*0.75); }]],
+    world:[['A cluster of three barrels going up as a chain',function(){ play('barrelBlast',0); play('barrelChain',0.2); play('barrelChain',0.45); }]],
+    gun:[['LMG: hold the trigger 0.75 s, then let go',function(){ play('lmgSpinUp',0,0); play('lmgWindDown',0.75,1); }],
+         ['LMG: a short burst, let go at half spin',function(){ var h=play('lmgSpinUp',0,0), t; if(h){ t=A.currentTime+0.03+0.375; h.g.gain.cancelScheduledValues(t); h.g.gain.setValueAtTime(h.g.gain.value||1,t); h.g.gain.linearRampToValueAtTime(0.0001,t+0.05); } play('lmgWindDown',0.375,0.5); }]],
+    haul:[['A haul of eight, cheapest first, as the EXTRACTED card shows it',function(){ var L=['haulTick','haulTick','haulUncommon','haulTick','haulRare','haulUncommon','haulElite','haulGold'], t=0, i; for(i=0;i<L.length;i++){ play(L[i],t); t+=(L[i]==='haulElite'||L[i]==='haulGold')?0.26:0.17; } }]]
+  };
+  var main=document.getElementById('main'), gi, sec, grid, name, I, b, j;
+  for(gi=0;gi<GROUPS.length;gi++){
+    sec=el('section'); sec.appendChild(el('h2','',GROUPS[gi][1])); grid=el('div','grid');
+    for(name in SPK_GEN){
+      I=SPK_INFO[name]; if(!I||I.grp!==GROUPS[gi][0]) continue;
+      b=el('button','cue','<b>'+I.lab+'</b><div class="tags"><span>'+name+'</span>'+tags(I,name)+'</div>');
+      b.onclick=(function(n,bt){ return function(){ flash(bt); play(n,0,(n==='airBoom')?Math.floor(Math.random()*6):undefined); }; })(name,b);
+      grid.appendChild(b);
+    }
+    for(j=0;SEQ[GROUPS[gi][0]]&&j<SEQ[GROUPS[gi][0]].length;j++){
+      b=el('button','cue seq','<b>'+SEQ[GROUPS[gi][0]][j][0]+'</b><div class="tags"><span>a sequence, in game timing</span></div>');
+      b.onclick=(function(fn,bt){ return function(){ flash(bt); fn(); }; })(SEQ[GROUPS[gi][0]][j][1],b);
+      grid.appendChild(b);
+    }
+    sec.appendChild(grid); main.appendChild(sec);
+  }
+  // the map: each feature moment, its cue, and where it goes in dark_raiders.html
+  sec=el('section'); sec.appendChild(el('h2','','Where each one goes in the game (for the wiring)'));
+  var tw=el('div','tablewrap'), tb='<table><tr><th>Feature</th><th>Moment</th><th>Cue</th><th>Place in dark_raiders.html</th><th>Call</th></tr>';
+  for(j=0;j<SPK_MAP.length;j++){ var r=SPK_MAP[j]; tb+='<tr><td>'+r.f+'</td><td>'+r.m+'</td><td>'+r.cue+'</td><td>'+r.site+'</td><td><code>'+r.call.replace(/</g,'&lt;')+'</code></td></tr>'; }
+  tw.innerHTML=tb+'</table>'; sec.appendChild(tw);
+  sec.appendChild(el('p','note','Sources and licences of the 13 recordings: LICENCES.md beside this page. All are CC0 (Kenney.nl). '+SPK_VER+'.'));
+  main.appendChild(sec);
+})();
+</script>
+</body>
+</html>
