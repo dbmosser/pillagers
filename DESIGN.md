@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.53 - THE PAUSE BOX LISTS WHERE YOU ARE
+
+Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, the pause box in the Undercroft listed the raid keys (raid status, extraction, drop an item for a teammate), and the pause box in the party DEMO listed the backpack, ENTER to equip from the backpack, Z to drop for a teammate and ping, which a guest at the machine has no use for. The Undercroft box lists what the floor legend lists now, and the DEMO box lists the rows of its own controls card. The raid box is unchanged.
+
+MEASURED. Check 27.53 passes, and fails on v27.52.
 ## v27.52 - SUPPORT MG KEEPS ACCELERATING
 
 Co-op hunt while he was away. His words: the Support MG feels good but needs to increase its fire rate once fully spinning. The spin-up used to close the gap between rounds to the gun own 105 milliseconds and stop. Now it keeps closing as the barrels wind: the fire rate climbs through the whole spin-up and is about 1.3 times what it was once fully spinning (a gap of about 81 milliseconds), and it drops back down as the barrels wind down when you let go. You hear it and feel it: the report of every round rises in pitch with the rate, from a low note at the start of the spin to a bright one at full speed, and the controller rumble grows with it. This is a balance change, which his rule of 2 October allows: a full magazine of 60 is gone in about 4.9 seconds instead of 6.3, so the gun is worth more once it is spinning and costs more of your reserve. Only the Support MG, only in live play; the bot raids and the seeded stream are untouched.

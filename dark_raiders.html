@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.52';
+var VER='27.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16228,6 +16228,11 @@ function keysLegendHtml(){
   // styles, and TAB was listed twice with two jobs (back out, then pause). The fixed keys take the same bold as the rest, P is the
   // pause key, and TAB is one entry in the words of the controls card: pause, or back out.
   var k=function(t){ return '<b style="color:var(--bone)">'+t+'</b>'; };
+  // v27.xx, UI CLEANUP uic5 (his 2026-10-14 note, from the 1080p shots of the Undercroft and DEMO pause boxes): THE PAUSE BOX LISTS THE KEYS OF WHERE YOU ARE.
+  // The Undercroft box listed the raid (raid status, extraction, drop an item for a teammate) and the DEMO box listed the backpack, ENTER equip, Z drop and ping,
+  // keys a walk-up guest has no use for, in 25 keycaps. The floor lists what the floor legend (H) lists; the DEMO lists the rows of its own controls card.
+  if(typeof state!=='undefined'&&state==='hub') return s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' walk &nbsp; '+s('ShiftLeft')+' jog &nbsp; '+s('Space')+' roll &nbsp; '+s('KeyE')+' use a station &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+k('TAB')+' pause, or back out';
+  if(typeof G!=='undefined'&&G&&G.arcade&&typeof arcadeCardRows==='function'){ try{ return arcadeCardRows().map(function(r){ return k(r[1])+' '+String(r[0]).toLowerCase(); }).join(' &nbsp; ')+' &nbsp; '+k('TAB')+' pause'; }catch(_ac){} }
   return k('MOUSE')+' aim &nbsp; '+k('LMB')+' fire &nbsp; '+k('RMB')+' aim down sights &nbsp; '+s('KeyW')+s('KeyA')+s('KeyS')+s('KeyD')+' move &nbsp; '+s('Space')+' dodge roll &nbsp; '+s('ShiftLeft')+' hold to sprint &nbsp; '+
     s('ControlLeft')+' / '+s('KeyC')+' crouch toggle &nbsp; '+s('KeyE')+' search / use &nbsp; '+s('KeyX')+' extraction &nbsp; '+s('KeyR')+' reload &nbsp; '+s('KeyV')+' melee &nbsp; '+s('KeyQ')+' item wheel (hold) &nbsp; '+s('KeyF')+' next gun &nbsp; '+k('1-9')+' guns &nbsp; '+s('KeyB')+' / '+s('KeyI')+' backpack &nbsp; '+
     s('Enter')+' equip from backpack &nbsp; '+s('KeyM')+' map &nbsp; '+s('KeyZ')+' drop an item for a teammate &nbsp; '+s('KeyN')+' / '+s('Mouse1')+' ping &nbsp; '+s('AltLeft')+' raid status (hold) &nbsp; '+s('F1')+' controls &nbsp; '+s('KeyP')+' pause &nbsp; '+k('TAB')+' pause, or back out';   // v18.25: the trade key, from the audit
@@ -44782,7 +44787,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.52: The Support MG fires about 1.3 times faster once fully spinning, and its report rises in pitch with the rate. Check 27.52 fails on v27.51',
+  now:'v27.53: The pause box lists the keys of the place you are in. Check 27.53 fails on v27.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

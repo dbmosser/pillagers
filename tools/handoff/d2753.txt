@@ -1,0 +1,5 @@
+## v27.53 - THE PAUSE BOX LISTS WHERE YOU ARE
+
+Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, the pause box in the Undercroft listed the raid keys (raid status, extraction, drop an item for a teammate), and the pause box in the party DEMO listed the backpack, ENTER to equip from the backpack, Z to drop for a teammate and ping, which a guest at the machine has no use for. The Undercroft box lists what the floor legend lists now, and the DEMO box lists the rows of its own controls card. The raid box is unchanged.
+
+MEASURED. Check 27.53 passes, and fails on v27.52.

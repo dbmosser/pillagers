@@ -120,3 +120,26 @@ rummage      foley 0.1988 s  from picks/rummage_leather.ogg cut 0.00-0.34 s (2 c
 pickup       foley 0.2016 s  from picks/pickup_leather.ogg cut 0.00-0.31 s (2 ch, 44100 Hz) -> mono 22050 Hz 8-bit mu-law WAV, silence trimmed, peak normalised
 equip        foley 0.2345 s  from picks/equip_belt.ogg cut 0.00-0.28 s (2 ch, 44100 Hz) -> mono 22050 Hz 8-bit mu-law WAV, silence trimmed, peak normalised
 The paths above (foley-dl\...) are the download folders on the build machine; the licence texts of the four Kenney packs are beside this file.
+
+SOUND PACK 2026-10-15 (the raid event, air strike, power-up, medal, barrel, finisher and haul sounds; embedded in the game as SPK_BANK, build snd1)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+All 13 recordings are CC0 1.0, no attribution required, credited above. Both packs were public direct downloads, no account was used.
+Sources already listed above: [K-SCI] Kenney "Sci-fi Sounds" (zip sha256 119340f351a5098ad814f78719438c0da355a9ce8a4c8a3af6a8d48aa3d49e04)
+and [K-IMP] Kenney "Impact Sounds" (zip sha256 029d734af1582474edf3a694d1b0cebc97c1c152f2f39fa34d4c2bafc5de77f8). Their licence texts sit beside this file.
+Each clip: cut as shown, mixed to mono, resampled to the rate shown, silence trimmed, peak normalised to 0.95, 3 ms fade in, fade out, stored as 8-bit mu-law WAV.
+The cues themselves (every synthesized layer, the mixing, the levels) are original code written for Pillagers.
+role | bus | seconds | rate | source file | window in the source
+xplBig      imp    1.554 s  16000 Hz  K-SCI Audio/explosionCrunch_003.ogg        0.000-1.554 (whole)
+xplMid      imp    1.200 s  16000 Hz  K-SCI Audio/explosionCrunch_001.ogg        0.000-1.200
+xplShort    imp    0.760 s  16000 Hz  K-SCI Audio/explosionCrunch_000.ogg        0.000-0.760 (whole)
+xplLow      imp    1.945 s  11025 Hz  K-SCI Audio/explosionCrunch_004.ogg        0.000-1.945 (whole)
+subBoom     imp    1.244 s   6000 Hz  K-SCI Audio/lowFrequency_explosion_000.ogg 0.007-1.251
+thruster    world  1.600 s  11025 Hz  K-SCI Audio/thrusterFire_003.ogg           0.600-2.200
+engineLow   mach   1.800 s   8000 Hz  K-SCI Audio/spaceEngineLow_002.ogg         0.400-2.200
+forceField  sting  0.712 s  16000 Hz  K-SCI Audio/forceField_001.ogg             0.000-0.712
+metalCrash  imp    0.206 s  22050 Hz  K-IMP Audio/impactMetal_heavy_001.ogg      0.000-0.206
+metalHit    imp    0.204 s  22050 Hz  K-IMP Audio/impactMetal_heavy_003.ogg      0.000-0.204 (whole)
+drumBonk    imp    0.338 s  16000 Hz  K-IMP Audio/impactPlate_heavy_001.ogg      0.000-0.338
+punch       imp    0.386 s  16000 Hz  K-IMP Audio/impactPunch_heavy_000.ogg      0.000-0.386
+stomp       mach   0.539 s  11025 Hz  K-IMP Audio/impactMining_000.ogg           0.000-0.539
+The other 24 cues of the pack are synthesized only (oscillators and filtered noise), with no third party material.

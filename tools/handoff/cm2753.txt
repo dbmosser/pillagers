@@ -1,0 +1,7 @@
+v27.53: the pause box lists where you are
+
+The pause box lists the keys of the place you are in.
+
+Check 27.53. Fails on v27.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
