@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.05 - RED EXPLOSIVE BARRELS
+
+Co-op hunt while he was away. His answer 30: he had never seen an explosive barrel, and asked for them red with an exclamation mark. The earlier barrel drafts never reached the game, so there was nothing to see. Now every raid, DEMO and CAREER alike, has about two dozen red barrels with a big white ! on them, in clusters of one to three on open, reachable floor, away from where you drop in and from the extraction points, each with a slow red glow on the ground so they read across a lane. A round that reaches one stops in it, and a little damage sets it off: it flickers for a moment and goes up. The blast hurts everything near it that it can see, you included, machines, pillagers and walls, and it sets off the barrels beside it after a short beat, so a cluster goes up in a chain. A grenade sets them off too. Kills go to whoever set the barrel off, and a barrel your teammate sets off never hurts you (no team damage). The barrels are placed on their own random stream, so the map, the enemies and the loot are exactly as before. A second player window on the same machine does not yet see a barrel go up in the first one.
+
+MEASURED. Check 27.05 passes, and fails on v27.04.
 ## v27.04 - PLAYER 2 SEES AND FEELS THE FIRES
 
 Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players, and two player play comes first. The fuel fires and the burning debris wrecks were the host window only: player 2 planned fires of his own that were not the host fires, and never saw the ones the debris lit. The host now says where its fires are in the world word it already sends twice a second, and the linked window keeps exactly those fires, with their warm up, their life and their embers. Player 2 is kept out of a lit fire and burned at its edge as player 1 is, and the fire shows on his minimap and his sector map. It costs no new message: the fires ride in the world word.
