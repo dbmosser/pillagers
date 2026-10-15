@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.91 - STRONGHOLDS
+
+Co-op hunt while he was away. His yes to strongholds: one or two advertised fortified compounds per raid, each with a gate, two defending waves and a purple-or-better cache. Every raid now plans one or two strongholds from its seed, and the alert and both maps show them from the start, with an arrow at the edge of the minimap. A stronghold is a ring of steel mesh fence about 240 across: nobody crosses it, you, the machines and the pillagers alike, though bullets fly through the mesh. Inside is the garrison, three sentries and three crawlers. The gate is on the side facing where you dropped: stand at it from outside for three seconds and a ring fills round it, the gate is breached for good, it makes a loud noise, and the second wave comes at you from inside: three elite crawlers, a Bulwark and a sentry. The cache in the middle holds four items, every one purple or better, and shows on the maps once the gate is open. Clear the garrison and the second wave and the stronghold pays a 1,000 chip into your run score. The Director never lands a pack inside one. DEMO and CAREER work the same.
+
+MEASURED. Check 26.91 passes, and fails on v26.90.
 ## v26.90 - THE OPERATOR MENU: NEW PARTY
 
 Co-op hunt while he was away. His answer 22 (2026-10-12): a NEW PARTY reset in the operator menu. On the DEMO attract the operator chord (Ctrl+Shift+F10) now opens a small OPERATOR card instead of leaving at once. NEW PARTY wipes tonights best (the 1 player and 2 player lists) so a new party starts on a clean board; BEST EVER stays as the score to beat. It asks once more before it clears. EXIT DEMO leaves the demo as the chord used to, and pressing the chord again with the card up also leaves. ESC or BACK closes the card. While it is up, no key or pad press drops a guest into a run. In a running demo raid the chord still leaves at once.

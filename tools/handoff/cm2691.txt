@@ -1,0 +1,7 @@
+v26.91: strongholds
+
+Each raid has one or two fenced strongholds on the map: breach the gate, beat two waves, take the purple cache.
+
+Check 26.91. Fails on v26.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
