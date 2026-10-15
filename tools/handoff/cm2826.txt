@@ -1,0 +1,7 @@
+v28.26: the vest no longer darkens the carrier
+
+The default plate carrier is lit again; the vest build had put a dark band across every chest.
+
+Check 28.26. Fails on v28.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

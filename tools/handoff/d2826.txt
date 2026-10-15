@@ -1,0 +1,5 @@
+## v28.26 - THE VEST NO LONGER DARKENS THE CARRIER
+
+Co-op hunt while he was away. A fault in the vest build (28.13), found when an older check on the plate carrier was run against it. The vest line had been put between the plate carrier and the branch that paints the old dark band across the chest for bodies that are not in a carrier, so after that build every body in the default plate carrier was painted with the dark chest band as well, and the lit cloth at the edge of the torso went dark. The vest now sits inside the carrier branch, and the default look is as it was before the vests.
+
+MEASURED. Check 28.26 passes, and fails on v28.25.
