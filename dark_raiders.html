@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.81';
+var VER='27.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18064,7 +18064,7 @@ function brlNear(x,y,R,by){
   for(i=0;i<(G.brl||[]).length;i++){
     B=G.brl[i]; if(B.gone||B.fuse>=0) continue;
     d=Math.hypot(B.x-x,B.y-y);
-    if(d<R) brlLight(B,by,0.12+0.22*d/R);
+    if(d<R&&brlLight(B,by,0.12+0.22*d/R)) B.chain=1;   // v27.82 (snd2): lit by another barrel blast, so its own blast sounds as part of a chain
   }
 }
 function brlTick(dt){
@@ -18083,7 +18083,7 @@ function brlBlast(B){
   B.gone=1; B.fuse=-1;
   sd=Math.hypot(x-p.x,y-p.y);
   try{ if(sd<R*1.8) padRumble(Math.max(0.3,1-sd/(R*1.8)),240); }catch(_rb){}
-  sfx('boom',x,y);
+  sfx(B.chain?'barrelChain':'barrelBlast',x,y);   // v27.82 (snd2): a barrel has its own blast (a drum crack and a low thump), a barrel in a chain a shorter harder one
   if(!G.sim){
     spark(x,y,'#ff8a3a',40,380); spark(x,y,'#fff0c0',14,220); decal(x,y,'#141210',fxn(26,36));
     G.puffs.push({x:x,y:y,t:0,life:.7,c:'#ff7a3a',r:64}); G.puffs.push({x:x,y:y-12,t:0,life:1.4,c:'#3a3430',r:56});
@@ -45772,7 +45772,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.81: The reload bar shows the active reload as a red zone with red lines and a playhead, and the cursor ring shows it in red too. Check 27.81 fails on v27.80',
+  now:'v27.82: The raid events, the gate breach and the explosive barrels have their own dark sounds, and a barrel chain sounds like a chain. Check 27.82 fails on v27.81',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55612,6 +55612,11 @@ function evLaunch(id){
   if(def.pick&&!def.pick(ev)) return null;
   E.n++; E.live.push(ev);
   try{ say(def.name,'warn',{sub:def.sub?(def.sub+'  '+Math.round(ev.warn)+'S'):(Math.round(ev.warn)+'S')}); }catch(_el){}
+  // v27.82 (snd2), HIS ORDER (2026-10-15, "add the sounds"): THE FIVE RAID EVENTS HAVE SOUNDS. say() plays nothing, so an event was announced on the
+  // screen and in silence. Each of the five now plays its own sting with the callout (ORBITAL DEBRIS a long falling roar over a low drone, MACHINE CONVOY
+  // a metal clank and a rising engine, BOUNTY PILLAGER low drums, COOLANT RUPTURE a hiss and a cold fifth, OVERSEER RAMPAGE a stomp and a low horn),
+  // centred on the sting bus so it reaches you wherever the ring is. No words, no voices. Cosmetic only: no seeded draw, no game state.
+  try{ if(SPK_EVWARN[id]) blip(SPK_EVWARN[id]); }catch(_ew){}
   return ev;
 }
 function evTick(dt){
@@ -55694,7 +55699,7 @@ function debrisWreck(ev,pt){
 }
 function debrisImpact(ev,pt){
   var p=G.player, R=72, j, e, de, d;
-  sfx('boom',pt.x,pt.y);
+  sfx('debrisLand',pt.x,pt.y);   // v27.82 (snd2): the debris blast has its own sound (recorded crunch, sub drop, metal crash), the same ring and range as boom
   spark(pt.x,pt.y,'#ffcf7a',30,340); flash(pt.x,pt.y,300,'#ffb267',.5);
   try{ boomFx(pt.x,pt.y,1.4,'frag'); }catch(_de){}
   try{ gfxBlastScar(pt.x,pt.y,1.3,false); }catch(_ds){}
@@ -55742,7 +55747,10 @@ EVENTS.debris={name:'ORBITAL DEBRIS',sub:'GET CLEAR',warn:22,dur:20,r:300,fade:4
   },
   tick:function(ev){
     var pts=ev.d.pts||[], i;
-    for(i=0;i<pts.length;i++) if(!pts[i].done&&ev.lt>=pts[i].at){ pts[i].done=1; debrisImpact(ev,pts[i]); }
+    for(i=0;i<pts.length;i++){
+      if(!pts[i].fell&&!pts[i].done&&ev.lt>=pts[i].at-2.2){ pts[i].fell=1; try{ sfx('debrisFall',pts[i].x,pts[i].y); }catch(_df){} }   // v27.82 (snd2): the roar of it coming down, once per piece
+      if(!pts[i].done&&ev.lt>=pts[i].at){ pts[i].done=1; debrisImpact(ev,pts[i]); }
+    }
   },
   done:function(ev){
     var pts=ev.d.pts||[], i, last=0;
@@ -55817,6 +55825,7 @@ EVENTS.convoy={name:'MACHINE CONVOY',sub:'ARMOURED TRAIN',warn:20,dur:170,r:240,
     for(i=0;i<crew.length;i++) G.ents.push(crew[i]);
     ev.d.car=car; ev.d.crew=crew; ev.d.over=0;
     try{ say('CONVOY MOVING','warn',{sub:'KILL THE CARRIER'}); }catch(_cs){}
+    try{ sfx('convoyRoll',ev.x,ev.y); }catch(_cr){}   // v27.82 (snd2): the train forms and sets off, tread clanks over a low engine
   },
   tick:function(ev,dt){
     var car=ev.d.car, crew=ev.d.crew||[], i, e;
@@ -55892,7 +55901,7 @@ EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,f
     down=!(e.hp>0)||e.finished||G.ents.indexOf(e)<0;   // v27.43 (rvw1, cloud review 17): a DOWNED hunter can get up, so he is still on the hunt
     if(down){
       ev.d.over=1;
-      if(e.hp<=0&&(e.byPlayer===true||(e.bySeat|0)>0)){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; }   // paid for a kill of the party (player 2 too), never for a death nobody caused (fire, debris, a barrel)
+      if(e.hp<=0&&(e.byPlayer===true||(e.bySeat|0)>0)){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; try{ blip('bountyPaid'); }catch(_bp){} }   // paid for a kill of the party (player 2 too), never for a death nobody caused (fire, debris, a barrel)
       else { try{ say('BOUNTY GONE','info',{sub:(e.hp<=0)?'NOT YOUR KILL':'HE GOT AWAY'}); }catch(_bg){} }
       return;
     }
@@ -55971,6 +55980,7 @@ EVENTS.cool={name:'COOLANT RUPTURE',sub:'FOG AND COLD',warn:18,dur:75,r:420,fade
     });
     ev.d.rich=n;
     try{ say('COOLANT RUPTURE','crit',{sub:'RICHER CRATES  '+n}); }catch(_cs){}
+    try{ sfx('coolantBurst',ev.x,ev.y); }catch(_cb){}   // v27.82 (snd2): the pipe bursts, a metal crack and a long cold hiss
   },
   live:function(ev){ return Math.max(0,Math.ceil(ev.dur-ev.lt))+'S'; },
   draw:function(ev,c,s,q,z){
@@ -56034,6 +56044,7 @@ EVENTS.rampage={name:'OVERSEER RAMPAGE',sub:'IT LEAVES THE LAIR',warn:12,dur:RAM
     b.rmp=1; b.rmpL=[b.lairX,b.lairY]; b.rmpSpd=b.spd; b.spd=b.spd*RAMP.fast; b.seenYou=true;
     ev.d.wps=wps; ev.d.wi=0; ev.d.wt=0; ev.r=90;
     try{ say('OVERSEER RAMPAGE','crit',{sub:'IT HAS LEFT THE LAIR'}); }catch(_rs){}
+    try{ sfx('rampageRoar',b.x,b.y); }catch(_rrs){}   // v27.82 (snd2): it leaves the lair, a roar over heavy stomps, from where it stands
   },
   tick:function(ev,dt){
     var b=ev.d.b, p=G.player, wp, w=ev.d.wps||[];
@@ -56191,7 +56202,7 @@ function shUnseal(s){
 // the blast that takes the shutter: sound, flash, sparks and flying metal, a scar on the ground, a shake
 function shBreachFx(s){
   var gp=shGatePt(s), p=G.player;
-  try{ sfx('boom',gp.x,gp.y); }catch(_a){}
+  try{ sfx('gateBreach',gp.x,gp.y); }catch(_a){}   // v27.82 (snd2): the gate blown in: a slowed low blast, a giant metal crash, the gate groaning, debris raining (same ring and range as boom)
   try{ spark(gp.x,gp.y,'#ffcf7a',26,320); spark(gp.x,gp.y,'#9aa3ac',16,260); flash(gp.x,gp.y,300,'#ffb267',.5); }catch(_b){}
   try{ boomFx(gp.x,gp.y,1.3,'frag'); }catch(_c){}
   try{ gfxBlastScar(gp.x,gp.y,1.1,false); }catch(_d){}
@@ -56553,7 +56564,7 @@ function evNetTake(rows){
     if(!ev){
       ev={id:id,n:r[1]|0,name:def.name,t:0,warn:def.warn||EV.warn,dur:def.dur||30,ph:ph,lt:0,et:0,fade:def.fade||4,x:0,y:0,r:def.r||300,d:{},told:0};
       L.push(ev); was=null;
-      if(ph==='warn'){ try{ say(def.name,'warn',{sub:def.sub?(def.sub+'  '+Math.round(+r[9])+'S'):(Math.round(+r[9])+'S')}); }catch(_en){} }
+      if(ph==='warn'){ try{ say(def.name,'warn',{sub:def.sub?(def.sub+'  '+Math.round(+r[9])+'S'):(Math.round(+r[9])+'S')}); }catch(_en){} try{ if(SPK_EVWARN[id]) blip(SPK_EVWARN[id]); }catch(_ew2){} }   // v27.82 (snd2): and its sting
     } else was=ev.ph;
     if(isFinite(+r[3])&&isFinite(+r[4])){ ev.x=+r[3]; ev.y=+r[4]; }
     if(+r[5]>0) ev.r=+r[5];
@@ -56575,7 +56586,7 @@ function evNetTake(rows){
 // a piece of debris landed: its blast, its shake and its damage on THIS player (the bodies, the fire and the wreck are the host)
 function debrisImpactPeer(pt){
   var p=G.player, R=72, d;
-  sfx('boom',pt.x,pt.y);
+  sfx('debrisLand',pt.x,pt.y);   // v27.82 (snd2): and in the linked window
   spark(pt.x,pt.y,'#ffcf7a',30,340); flash(pt.x,pt.y,300,'#ffb267',.5);
   try{ boomFx(pt.x,pt.y,1.4,'frag'); }catch(_de){}
   try{ gfxBlastScar(pt.x,pt.y,1.3,false); }catch(_ds){}

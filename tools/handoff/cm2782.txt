@@ -1,0 +1,7 @@
+v27.82: the events, gate and barrels have sounds
+
+The raid events, the gate breach and the explosive barrels have their own dark sounds, and a barrel chain sounds like a chain.
+
+Check 27.82. Fails on v27.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

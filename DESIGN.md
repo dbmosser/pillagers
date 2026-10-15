@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.82 - THE EVENTS, GATE AND BARRELS HAVE SOUNDS
+
+Co-op hunt while he was away. His order of 2026-10-15: add the sounds. The five raid events were announced on the screen and in silence. Each now plays its own low sting with its callout (orbital debris, machine convoy, bounty pillager, coolant rupture, Overseer rampage). A piece of debris roars as it falls and lands with a big low blast of its own instead of the plain boom, the convoy sets off with tread clanks over an engine, the coolant pipe bursts with a hiss, the Overseer leaves its lair with a roar and stomps, and a paid bounty has a short sting. The stronghold gate blowing in and the explosive barrels have blasts of their own too (a barrel lit by another barrel sounds shorter and harder, so a chain is heard as a chain). No words, no voices, no music; the other player window plays the stings too.
+
+MEASURED. Check 27.82 passes, and fails on v27.81.
 ## v27.81 - RELOAD BAR: RED ACTIVE ZONE
 
 Co-op hunt while he was away. His words: the reload bar needs a clear red line for when the active reload happens. The bar over your head had no sweet spot at all (only the ring on the cursor did, in green), so the moment was hard to see. Now the bar is a little bigger, the 42 to 60 percent stretch of it is a solid red zone with a red line at each end that reaches past the bar, and a white playhead runs along it, in the amber of the rest of the bar. While the playhead is inside the zone, which is the moment a second R counts, the zone goes light red and its lines white; once it is missed the zone dims. The sweet spot on the ring on the cursor is red too, with a red tick across the ring at each end, so the cue is the same wherever you look. It reads the same at 1080p and 4K and in both windows. Looks only: the reload itself and the bonus are unchanged.
