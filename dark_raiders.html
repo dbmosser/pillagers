@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.69';
+var VER='27.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19237,7 +19237,7 @@ function useBeltHeal(ix){
   if(c&&c.kind==='stim'&&(c.count>0)&&ITEMS[c.itemKey]) return useStim(G.bag.indexOf(c.itemKey));
   if(reach>=p.maxhp){ say((p.healQ>0)?'ALREADY HEALING':'HEALTH FULL'); return false; }
   if(!c||c.kind!=='heal'||!(c.count>0)||!ITEMS[c.itemKey]){
-    if(findHeal()>=0){ say('NO HEAL ON BELT','info',{sub:(padOn()?padB('VIEW  BACKPACK'):('['+keyLabel('KeyB','B')+'] BACKPACK'))}); return false; }
+    if(findHeal()>=0){ say('NO HEAL ON BELT','info',{sub:(padOn()?padB(pbn(8)+'  BACKPACK'):('['+keyLabel('KeyB','B')+'] BACKPACK'))}); return false; }  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the NO HEAL ON BELT line named VIEW for the backpack after CHANGE PAD BUTTONS moved it; it names the button the backpack is on
     say('NO MEDICAL SUPPLIES');
     return false;
   }
@@ -21460,7 +21460,7 @@ function grantLoot(ct,keys,delay0){
           var _swk=-1, _sws=hotbarSlots(), _swj;
           for(_swj=0;_swj<_sws.length&&_swk<0;_swj++) if(_sws[_swj]&&_sws[_swj].kind==='gun'&&!_sws[_swj].vacant&&!_sws[_swj].inHand&&_sws[_swj].icon===found.id) _swk=_swj;
           if(_swk<0) _swk=1;
-          _lootSub=(padOn()?padB('LB or RB to swap'):('Press '+keyLabel('Digit'+(_swk+1),String(_swk+1))+' to swap')).toUpperCase();
+          _lootSub=(padOn()?padB(pbn(4)+' or '+pbn(5)+' to swap'):('Press '+keyLabel('Digit'+(_swk+1),String(_swk+1))+' to swap')).toUpperCase();  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the pickup line said LB or RB after the belt buttons moved; it names them as set
           _ptags[l]='SLOT '+(_swk+1);   // v22.54 (R17): the row says the slot it took, and that slot is the key that swaps to it
           if(found.qRank>=2) blip('pickGun');
         }
@@ -22529,7 +22529,7 @@ function beltStep(dir){
   // draws it at once.
   if(bagGunCell(sl[i])){
     G.hot=i;
-    if(!G.sim) say(String(sl[i].name||'Gun').toUpperCase(),'info',{sub:padB('RT TO DRAW')});
+    if(!G.sim) say(String(sl[i].name||'Gun').toUpperCase(),'info',{sub:padB(pbn(7)+' TO DRAW')});  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the belt said RT TO DRAW after fire moved off RT; it names the fire button as set
     sndUi('move');   // v25.xx (plopswap): the soft menu tick for a highlight that only moves
     return;
   }
@@ -37013,7 +37013,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
       // interaction while showing the corpse would be worse than the stutter.
       // v22.66 (R24): one prompt style. The fallen pillager's crew colour is the plate's accent bar (it was a bar beside the words),
       // and the one item a dropped crate holds is the second line, in its rarity colour.
-      var _skey='['+((G.nearPad&&padOn())?padB('Y'):keyLabel('KeyE','E'))+'] SEARCH ', _ft, _fcr=null, _fsub='', _fsc=null;
+      var _skey='['+((G.nearPad&&padOn())?padB(pbn(3)):keyLabel('KeyE','E'))+'] SEARCH ', _ft, _fcr=null, _fsub='', _fsc=null;  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the ring prompt said [Y] SEARCH after the ring search moved off Y; it names the button as set
       if(nc2.fallen&&(nc2.fellAt===undefined||G.t-nc2.fellAt>2.3)){
         _ft=_skey+nc2.fallen.toUpperCase();
         if(nc2.fallenCrew!==undefined&&CFG.raiderFeud!==0) _fcr=['#c8452f','#4a90c2','#c2a54a','#7a4ac2'][nc2.fallenCrew%4];
@@ -37603,7 +37603,7 @@ if(p.armor>0){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
     // v22.65, the raid text rewrite (R23): THE BACKPACK CUE FOLLOWS KEY CHANGES. On the keyboard it always said B / I even after
     // CHANGE KEYS moved the backpack; both keys now come from keyLabel, so an unmoved keyboard reads B / I as before.
-    ctx.fillText(padOn()?padB('VIEW  BACKPACK'):(keyLabel('KeyB','B')+' / '+keyLabel('KeyI','I')+'  BACKPACK'),W-16,by-LH(70));   // v13.52: pad B is the dodge roll
+    ctx.fillText(padOn()?padB(pbn(8)+'  BACKPACK'):(keyLabel('KeyB','B')+' / '+keyLabel('KeyI','I')+'  BACKPACK'),W-16,by-LH(70));   // v13.52: pad B is the dodge roll  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the backpack cue said VIEW after the backpack moved to another button, and VIEW no longer opened it; it names the button it is on
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
   for(i=0;i<3;i++){
@@ -44834,7 +44834,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.69: With your own controller buttons, the press that closes the pause box or ascends no longer fires, rolls or crouches in the raid. Check 27.69 fails on v27.68',
+  now:'v27.70: With the controller buttons changed, the raid prompts name the buttons you set. Check 27.70 fails on v27.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56022,7 +56022,7 @@ function arcadeGunLoot(ct,key,itm,found){
     if(push) gunKeysSettle({deploy:1});
     if(T) T.gunsEquipped=(T.gunsEquipped||0)+1;
     k=keyOf('gun_'+found.id);
-    _lootSub=(padOn()?padB('LB or RB to swap'):('Press '+keyLabel('Digit'+((k<0?1:k)+1),String((k<0?1:k)+1))+' to swap')).toUpperCase();
+    _lootSub=(padOn()?padB(pbn(4)+' or '+pbn(5)+' to swap'):('Press '+keyLabel('Digit'+((k<0?1:k)+1),String((k<0?1:k)+1))+' to swap')).toUpperCase();  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the pickup line said LB or RB after the belt buttons moved; it names them as set
     if(found.qRank>=2) blip('pickGun');
     return {tag:'STOWED',line:(found.name+' stowed').toUpperCase()};
   }

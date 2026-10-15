@@ -1,0 +1,7 @@
+v27.70: pad prompts name the buttons as set
+
+With the controller buttons changed, the raid prompts name the buttons you set.
+
+Check 27.70. Fails on v27.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

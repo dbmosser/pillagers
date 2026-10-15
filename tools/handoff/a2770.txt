@@ -1,0 +1,1 @@
+| PAD PROMPTS NAME THE BUTTONS AS SET | v27.70 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 27.70 passes, fails on v27.69 |

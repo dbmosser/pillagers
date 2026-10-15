@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.70 - PAD PROMPTS NAME THE BUTTONS AS SET
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: v26.53 promised every raid prompt names the new button after CHANGE PAD BUTTONS, but six still typed the default name: the backpack cue and NO HEAL ON BELT said VIEW, the belt said RT TO DRAW, the pickup line said LB or RB to swap, and the ring prompt said [Y] SEARCH. Proven in headless Chromium: with the backpack moved to Y the cue still said VIEW  BACKPACK while VIEW no longer opened it and Y did; with fire on A the belt still said RT TO DRAW. Each now asks pbn() for the button the action is on; the default layout reads exactly as before.
+
+MEASURED. Check 27.70 passes, and fails on v27.69.
 ## v27.69 - A MENU PRESS NEVER ACTS IN THE RAID AFTER CHANGE PAD BUTTONS
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: with CHANGE PAD BUTTONS moving an action onto A, B or MENU, the press that shut a menu went on into the raid as that action. With fire on A, A on RESUME RUN (or on ASCEND TO THIS SECTOR) fired a real shot; with dodge roll on B, B in the pause box rolled; with crouch on MENU, MENU crouched. Proven in headless Chromium through the real frame loop: fire bound to A, A on RESUME RUN, 1 shot fired; the standard buttons, 0. The menu marks a press as seen by the physical button but the raid reads the button the action is bound to, so the mark missed; the other way round, with pause moved onto B, a B in the raid opened the pause box and the next poll shut it again (holding B flickered it). Now the raid reads the marks of seen presses by action and hands them back by button, every button held while a menu has the controller is noted, and in the raid a moved action on a noted button reads as up until it is let go. The standard layout behaves exactly as before.

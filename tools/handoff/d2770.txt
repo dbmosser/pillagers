@@ -1,0 +1,5 @@
+## v27.70 - PAD PROMPTS NAME THE BUTTONS AS SET
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: v26.53 promised every raid prompt names the new button after CHANGE PAD BUTTONS, but six still typed the default name: the backpack cue and NO HEAL ON BELT said VIEW, the belt said RT TO DRAW, the pickup line said LB or RB to swap, and the ring prompt said [Y] SEARCH. Proven in headless Chromium: with the backpack moved to Y the cue still said VIEW  BACKPACK while VIEW no longer opened it and Y did; with fire on A the belt still said RT TO DRAW. Each now asks pbn() for the button the action is on; the default layout reads exactly as before.
+
+MEASURED. Check 27.70 passes, and fails on v27.69.
