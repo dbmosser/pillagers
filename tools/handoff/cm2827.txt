@@ -1,0 +1,7 @@
+v28.27: power-ups are big floating icons
+
+Power-ups are big floating icons over a tall beam, spinning and blinking before they vanish.
+
+Check 28.27. Fails on v28.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

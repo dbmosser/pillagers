@@ -1,6 +1,7 @@
-{"generated":"2026-10-15T10:43:29","url":"http://localhost:8808/fixture.html","recipes":"C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/cboard-shots.json","seconds":48,"screens":[
+{"generated":"2026-10-15T10:54:04","url":"http://localhost:8808/fixture.html","recipes":"C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/cboard-shots.json","seconds":33,"screens":[
 {"name":"c1-extracted-ledger","screen":"EXTRACTED ledger","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"c1-extracted-ledger-1080.jpg","lint":""}},
 {"name":"c2-kia-ledger","screen":"KIA ledger","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"c2-kia-ledger-1080.jpg","lint":""}},
 {"name":"c3-leaderboard-step","screen":"LEADERBOARD step","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"c3-leaderboard-step-1080.jpg","lint":""}},
+{"name":"c5-personal-best","screen":"LEADERBOARD step, number one","1080":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}},
 {"name":"c4-leaderboard-step-outside","screen":"LEADERBOARD step, outside the top 20","1080":{"staged":false,"note":"ERROR Exception calling \"Wait\" with \"1\" argument(s): \"One or more errors occurred.\"","viewport":"","shot":"","lint":""}}
 ]}

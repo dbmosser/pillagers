@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.27 - POWER-UPS ARE BIG FLOATING ICONS
+
+Co-op hunt while he was away. About the power-ups he said he never saw one, and that they should be a floating icon like the Zombies ones. A pickup was a thirty pixel coin with a thin beam. Now each is a big floating icon: a chamfered metal medallion (the shape of the medals) with a rim in the power-up colour and a picture of its own, floating well above the ground, bobbing and slowly spinning, over a tall light beam with sparks rising in it that shows even from a pickup just off the screen, with a glow on the ground and a turning ring that is exactly the reach that picks it up. It arrives with a flash, shows its name under it when he is near, and blinks over its last seconds, faster over the last two. The pictures: an infinity sign over a row of rounds for the bottomless clip, a bold 2X, three chevrons, a shield and a blast.
+
+MEASURED. Check 28.27 passes, and fails on v28.26.
 ## v28.26 - THE VEST NO LONGER DARKENS THE CARRIER
 
 Co-op hunt while he was away. A fault in the vest build (28.13), found when an older check on the plate carrier was run against it. The vest line had been put between the plate carrier and the branch that paints the old dark band across the chest for bodies that are not in a carrier, so after that build every body in the default plate carrier was painted with the dark chest band as well, and the lit cloth at the edge of the torso went dark. The vest now sits inside the carrier branch, and the default look is as it was before the vests.
