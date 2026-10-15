@@ -1,0 +1,7 @@
+v27.39: the medals sound by tier
+
+Rarer medals sound bigger: a plain tick, a high shimmer, or a low thump and a rising run.
+
+Check 27.39. Fails on v27.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

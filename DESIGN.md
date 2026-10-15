@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.39 - THE MEDALS SOUND BY TIER
+
+Co-op hunt while he was away. His order after the party playtest was medals polished the way Halo does them, and in Halo a rarer medal sounds bigger. Every style medal kept its own short note, one for each picture. Now the tier of the medal adds a voice on top of it: the plain medals (copper) add nothing and are just a tick, the skilled ones (amber) add a high two-note shimmer, and the rare ones (gold) add a low thump and a rising run of six bright notes, so a rare medal is heard across the room. Sound only: no score changes and nothing is drawn from the seeded stream.
+
+MEASURED. Check 27.39 passes, and fails on v27.38.
 ## v27.38 - THE STYLE MEDALS ARE EMBLEMS
 
 Co-op hunt while he was away. His verdict on the party playtest was that the new features must be polished to the level of the older ones, and on the style medals he said to keep all of them but that they needed a UI overhaul, because Halo does medals well. A medal was a line of text on a small plate that rose over the cursor and was gone in under two seconds. Now each medal is an emblem of its own: a chamfered badge of beaten metal (copper for the plain medals, amber for the skilled ones, bright gold for the rare ones) with one picture that is its alone, a scope for LONG SHOT, a blade for MELEE KILL, two grenades for GRENADE DOUBLE, a skull for MULTI-KILL, a shield with a tick for UNTOUCHED, a burst for SCREEN CLEAR and two figures in team cyan for TEAM COMBO. The newest pops in large and settles with a ring flash and a sweep of light across the metal, the older ones slide along the row, and each stays up 4.2 seconds. The row sits at the left edge, in the clear stretch between the pillager board, the controls list and the feed, and the name and figure of the newest sit on a plate under it. The old text plates at the cursor are gone.
