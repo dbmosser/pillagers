@@ -1,0 +1,7 @@
+v27.41: the overseer calls a limited number of crawlers
+
+The Overseer now calls at most twelve crawlers in all.
+
+Check 27.41. Fails on v27.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

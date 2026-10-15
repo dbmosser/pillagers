@@ -1,0 +1,7 @@
+v27.29: the prompts are 60 percent size
+
+The press E prompts over crates, doors and bodies are now 60 percent of their old size.
+
+Check 27.29. Fails on v27.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

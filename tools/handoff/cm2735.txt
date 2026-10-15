@@ -1,0 +1,7 @@
+v27.35: the feed zone is a quarter wide
+
+The feed zone is now a quarter of the screen wide, so the controls list beside it stays readable.
+
+Check 27.35. Fails on v27.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

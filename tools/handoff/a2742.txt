@@ -1,0 +1,1 @@
+| RUN INFO: THE GOALS JOIN THE CONDITIONS | v27.42 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 27.42 passes, fails on v27.41 |

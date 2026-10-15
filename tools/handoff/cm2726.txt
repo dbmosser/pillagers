@@ -1,0 +1,7 @@
+v27.26: the controls list stands beside the feed
+
+The compact controls list now stands to the right of the feed, clear of the pillagers board.
+
+Check 27.26. Fails on v27.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

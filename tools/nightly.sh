@@ -49,7 +49,7 @@ while true; do
           out="$S/corpus-night-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"
           echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
           (bash -c "echo \"\$\$ corpus-night \$(date +%H:%M:%S)\" > '$S/shipq.owner'; exec bash '$S/corpq.sh' '$out'" > /dev/null 2>&1; echo "$(date +%H:%M) corpus done" >> "$LOG") &
-        elif [ "$(get llm_head)" != "$head" ]; then
+        elif [ "$(get llm_head)" != "$head" ] && [ "$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -dc 0-9)" -ge 20 ] 2>/dev/null; then   # 10-15: the model holds ~12 GB of RAM; only with 20+ GB free (his 6 GB floor)
           since=$(get llm_head); put llm_head "$head"
           echo "$(date +%H:%M) llm audits start, since ${since:-whole file}" >> "$LOG"
           (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/llm-night.ps1" -Model qwen2.5-coder:14b ${since:+-Since $since} > /dev/null 2>&1; echo "$(date +%H:%M) llm audits done" >> "$LOG") &

@@ -1,0 +1,32 @@
+{
+    "title":  "THE ITEM IN HAND STANDS ABOVE THE CHIPS",
+    "why":  "The cloud review of 2026-10-15 (finding 7) and the HUD spec: the pieces above the belt overlapped. The power-up timer chips (a row just over the belt keys) and the extraction lines (the headline and the arrow over them) were drawn straight through the item in hand plate whenever a power-up ran or an extraction was called while an item was readying. The pieces now tell the HUD registry where they drew, and the item in hand plate stands above whichever of them was up the frame before.",
+    "now":  "The item in hand plate now stands clear above the power-up chips and the extraction lines.",
+    "edits":  [
+                  {
+                      "anchor":  "var HUDREG={};",
+                      "replacement":  "var HUDREG={}, HUDPREV={};   // v16.xx (act1): HUDPREV, the registry of the frame before, for the pieces that give way to one drawn after them"
+                  },
+                  {
+                      "anchor":  "  HUDREG={};   // v27.45 (hud1): this frame\u0027s registry starts empty",
+                      "replacement":  "  HUDPREV=HUDREG; HUDREG={};   // v16.xx (hud1): this frame\u0027s registry starts empty; v16.xx (act1): the last one is kept"
+                  },
+                  {
+                      "anchor":  "  if(G.beaconT!==null\u0026\u0026!G.over){\n    var inRing=dist(p,G.active)\u003cG.active.r;",
+                      "replacement":  "  var _exUp=false;   // v16.xx (act1): whether the extraction lines are up this frame\n  if(G.beaconT!==null\u0026\u0026!G.over){\n    _exUp=true;\n    var inRing=dist(p,G.active)\u003cG.active.r;"
+                  },
+                  {
+                      "anchor":  "  } else if(!G.over\u0026\u0026dist(p,G.active)\u003cG.active.r){\n    ctx.font=hudFS(TYPE.head); ctx.textAlign=\u0027center\u0027;\n    ctx.fillStyle=\u0027#4de3d0\u0027; hudText(\u0027HOLD [\u0027",
+                      "replacement":  "  } else if(!G.over\u0026\u0026dist(p,G.active)\u003cG.active.r){\n    _exUp=true;\n    ctx.font=hudFS(TYPE.head); ctx.textAlign=\u0027center\u0027;\n    ctx.fillStyle=\u0027#4de3d0\u0027; hudText(\u0027HOLD [\u0027"
+                  },
+                  {
+                      "anchor":  "  // HIS NOTE, v3.58: \"THE SEAL NEEDS some sort of visual indicator to tell you",
+                      "replacement":  "  if(_exUp) hudReg(\u0027extract\u0027,W/2-LH(150)*_exR,_exBan-LH(16)*_exR,LH(300)*_exR,(_exRow-_exBan)+LH(26)*_exR);   // v16.xx (act1): the extraction lines\u0027 space, for the item in hand to stand above\n  // HIS NOTE, v3.58: \"THE SEAL NEEDS some sort of visual indicator to tell you"
+                  },
+                  {
+                      "anchor":  "  bw=LH(250); bh=LH(46); x=Math.round(W/2-bw/2); y=Math.round(c0-bh-LH(26));",
+                      "replacement":  "  bw=LH(250); bh=LH(46); x=Math.round(W/2-bw/2); y=Math.round(c0-bh-LH(26));\n  // v16.xx (act1), the cloud review (2026-10-15, finding 7) and the HUD spec: THE THINGS ABOVE THE BELT STACK, NEVER OVERLAP. The power-up\n  // chips (a row 40 over the keys) and the extraction lines (the headline 48 over them) were drawn through the item in hand plate\n  // (about 113 to 41 over the keys) whenever a power-up ran, or a ring was called, while an item was readying. The plate now stands above\n  // whichever of them was up last frame (they register their space), a few pixels clear.\n  if(HUDPREV.chips) y=Math.min(y,Math.round(HUDPREV.chips.y-LH(6)-bh));\n  if(HUDPREV.extract) y=Math.min(y,Math.round(HUDPREV.extract.y-LH(6)-bh));"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the cloud review (finding 7): the item in hand plate stands clear above the power-up chips and the extraction lines instead of being drawn through them\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||!window.__frame) return \u0027SKIP: no raid here\u0027;\n     if(typeof hudRects!==\u0027function\u0027||typeof HUDPREV===\u0027undefined\u0027) return \u0027this build has no HUD registry for the stack above the belt\u0027;\n     var bad=[], g, p, R, i, Z, hit;\n     function ov(a,b){ return a\u0026\u0026b\u0026\u0026a.x\u003cb.x+b.w\u0026\u0026b.x\u003ca.x+a.w\u0026\u0026a.y\u003cb.y+b.h\u0026\u0026b.y\u003ca.y+a.h; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       try{ __pinDPR(1); }catch(_d){}\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       try{ careerPostBuild(g); }catch(_c){}\n       g.bagOpen=false; g.mapOpen=false; g.ents.length=0; keys={}; p=g.player; p.iv=99;\n       Z=g.zones\u0026\u0026g.zones[0]; if(!Z) return \u0027SKIP: no extraction ring here\u0027;\n       for(i=0;i\u003c6;i++){\n         try{ pwrS().act.clip=12; pwrS().act.dmg=9; }catch(_a){}\n         p.hand={k:(ITEMS.frag?\u0027frag\u0027:\u0027bandage\u0027),t:0.5,len:1};\n         __frame(0.016);\n       }\n       R=hudRects();\n       if(!R.chips||!R.hand) return \u0027SKIP: the chips or the item in hand were not drawn here\u0027;\n       if(ov(R.chips,R.hand)) bad.push(\u0027the item in hand plate (\u0027+Math.round(R.hand.y)+\u0027 to \u0027+Math.round(R.hand.y+R.hand.h)+\u0027) is drawn through the power-up chips (\u0027+Math.round(R.chips.y)+\u0027 to \u0027+Math.round(R.chips.y+R.chips.h)+\u0027)\u0027);\n       // and with a called extraction up as well\n       g.active=Z; g.beaconT=6; g.shipHold=null;\n       for(i=0;i\u003c6;i++){ p.hand={k:(ITEMS.frag?\u0027frag\u0027:\u0027bandage\u0027),t:0.5,len:1}; __frame(0.016); }\n       R=hudRects();\n       if(R.extract\u0026\u0026R.hand){ if(ov(R.extract,R.hand)) bad.push(\u0027the item in hand plate is drawn through the extraction lines\u0027); if(R.chips\u0026\u0026ov(R.chips,R.hand)) bad.push(\u0027the item in hand plate is drawn through the chips when the extraction lines are up too\u0027); }\n       else bad.push(\u0027the extraction lines did not register their space\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var g2=__state(); if(g2){ g2.beaconT=null; if(g2.player) g2.player.hand=null; if(!g2.over){ g2.career=0; g2.player.iv=0; g2.player.downed=false; __endRaid(\u0027abandon\u0027); } } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

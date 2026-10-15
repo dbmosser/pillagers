@@ -1,0 +1,7 @@
+v27.38: the style medals are emblems
+
+Each style medal is a metal emblem in a row at the left, the newest popping in with its name under it.
+
+Check 27.38. Fails on v27.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

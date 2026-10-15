@@ -1,0 +1,7 @@
+v27.46: the stronghold is part of the map
+
+Strongholds are now real buildings with a shutter gate you hold in front of to breach, not a circle on the map.
+
+Check 27.46. Fails on v27.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,7 @@
+v27.32: the what is new card names the run goals
+
+The what is new card names the shared run goals.
+
+Check 27.32. Fails on v27.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

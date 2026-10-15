@@ -1,0 +1,12 @@
+{
+    "title":  "THE ARMOUR CALLOUT IS CAPS WORDS",
+    "why":  "The cloud review of 2026-10-15 (finding 29): the one HUD callout that was still a sentence. The first time you shoot a Warden or a Bulwark through its armour the callout read Hit its back. or Flank it. in sentence case with a full stop, against the terse caps rule. It now reads HIT ITS BACK and FLANK IT under the machine name.",
+    "now":  "The Warden and Bulwark armour callout now reads HIT ITS BACK and FLANK IT in caps.",
+    "edits":  [
+                  {
+                      "anchor":  "{sub:(en.kind===\u0027warden\u0027)?\u0027Hit its back.\u0027:\u0027Flank it.\u0027}",
+                      "replacement":  "{sub:(en.kind===\u0027warden\u0027)?\u0027HIT ITS BACK\u0027:\u0027FLANK IT\u0027}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the cloud review (finding 29): the armour callout on a Warden and a Bulwark is two caps words, not a sentence with a full stop\u0027,\n   run:function(){\n     var bad=[], i, t, hit=0, old=0, d1=\u0027Hit its\u0027+\u0027 back.\u0027, d2=\u0027Flank\u0027+\u0027 it.\u0027;\n     for(i=0;i\u003cdocument.scripts.length;i++){\n       t=String(document.scripts[i].text);\n       if(t.indexOf(\u0027?\\\u0027\u0027+\u0027HIT ITS BACK\\\u0027:\\\u0027FLANK IT\\\u0027\u0027)\u003e=0) hit=1;\n       if(t.indexOf(\u0027\\\u0027\u0027+d1+\u0027\\\u0027\u0027)\u003e=0||t.indexOf(\u0027\\\u0027\u0027+d2+\u0027\\\u0027\u0027)\u003e=0) old=1;\n     }\n     if(old) bad.push(\u0027the armour callout detail is still a sentence\u0027);\n     if(!hit) bad.push(\u0027the armour callout detail is not HIT ITS BACK and FLANK IT\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

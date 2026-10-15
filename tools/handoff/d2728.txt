@@ -1,0 +1,5 @@
+## v27.28 - BEST KIT: 3 GUNS, UP TO 3 OF EACH
+
+Co-op hunt while he was away. His word on BEST KIT: three guns, and up to three of each item on the wheel. It takes your three best guns, ranked by the colour they wear (a rarity twin outranks its plain model), then tier, then worth, always three different models. The best is in your hands, the second in your other hand, the third is packed from the stash (a gun in the armoury is moved out to the stash for it), and each sits on its own class key. The items are up to three of each of the eight wheel types you have in the stash, in wheel order (Medkit, Smoke, Frag, Tripwire, Armour, Decoy, Bandage, Stim), the Armour only if your rig holds plates, then the biggest Ammo Box, never more than the backpack takes. Items stay in the stash until the raid starts. This replaces the old TOP GEAR fill of one gun, two of each grenade and a few single items. With no gun you go up with the Scav Pistol.
+
+MEASURED. Check 27.28 passes, and fails on v27.27.

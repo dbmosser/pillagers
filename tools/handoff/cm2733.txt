@@ -1,0 +1,7 @@
+v27.33: alerts have a sting
+
+Each alert that takes the lane now plays a short sting of its rank.
+
+Check 27.33. Fails on v27.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

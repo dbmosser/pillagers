@@ -1,0 +1,7 @@
+v27.40: the medal spot is reserved
+
+A row for the style medals is reserved between the feed and the vitals.
+
+Check 27.40. Fails on v27.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

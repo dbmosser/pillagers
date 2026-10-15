@@ -1,0 +1,7 @@
+v27.30: elite machines get an outline
+
+Elite machines now wear a clean coloured outline and a faint tint, and one thin ring on the ground.
+
+Check 27.30. Fails on v27.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,7 @@
+v27.44: the finisher on a controller
+
+On a controller, hold Y on a downed pillager in reach to finish him.
+
+Check 27.44. Fails on v27.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

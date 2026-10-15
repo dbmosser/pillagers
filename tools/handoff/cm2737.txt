@@ -1,0 +1,7 @@
+v27.37: the lockdown alarm is gone
+
+The lockdown alarm event is gone: no more sealed rings.
+
+Check 27.37. Fails on v27.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

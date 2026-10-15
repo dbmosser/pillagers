@@ -1,0 +1,7 @@
+v27.43: the cloud review: fires, crates, bounty, convoy, keys
+
+Fires, crates, the bounty, the convoy and the strike key are cleaned up.
+
+Check 27.43. Fails on v27.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

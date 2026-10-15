@@ -1,0 +1,7 @@
+v27.36: the air strike plate moves to the right
+
+The air strike meter now sits over on the right of the gun bar, out of the way of the power-up timers.
+
+Check 27.36. Fails on v27.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

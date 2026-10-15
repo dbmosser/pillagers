@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.23';
+var VER='27.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2244,7 +2244,7 @@ var VER='27.23';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='27.15';
+var WHATSNEW_VER='27.48';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2264,9 +2264,12 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'ONE FEED. What you pick up, kill and earn is a line at the bottom left, and the big moments are an alert at the top.',
+  'RUN GOALS. Both players count toward the three goals, in both windows and in the hold-Alt raid status.',
+  'ELITES AND KITS. Elite machines wear a coloured outline, the stash is one row, and empty gun keys show a ghost.',
   'TWO PLAYER FLOW. Player 2 now sees and feels the fires, events, strongholds, golden enemy, run goals and air strikes. Power-ups are shared.',
   'PARTY MODE. Style medals and a combo ring, timed power-ups from kills, a TEAM combo for two, and NEW PARTY locks one seed for the night.',
-  'RAID EVENTS. One or two a raid, with a ring and a countdown: falling debris, a convoy, a bounty hunter, coolant fog, a lockdown, an Overseer rampage.',
+  'RAID EVENTS. One or two a raid, with a ring and a countdown: falling debris, a convoy, a bounty hunter, coolant fog, an Overseer rampage.',
   'RAID FLOW. Waves rise and fall with the fight. Deal damage to charge an air strike, G to aim, click to call. Three run goals a raid, each paying a chip.',
   'COMBAT FEEL. Heavy rounds stop what they hit and the Lance kicks. R again in the bright part of the reload ring finishes it, +15% damage. The Support MG spins up.',
   'SETTINGS. Now in sections. New: UI and footsteps volume, mono, hold or toggle for aim, crouch and sprint, mouse sensitivity.',
@@ -9796,7 +9799,20 @@ function hudKey(label,x,y,a,sw,o){
   ctx.fillText(L,kx+kw/2,y-LH(0.5));
   ctx.textAlign=oa; ctx.fillStyle=of;
   return kw;
-}function hudPrompt(s,x,y,o){
+}
+// v27.29 (feedocc1), HIS NOTE (2026-10-14), the press E to loot text: "wayy too big". EVERY PROMPT IN THE WORLD IS 60 PERCENT OF ITS SIZE.
+// hudPrompt (the keycap and its words over a crate, a door, a body, the seal, a ring) draws as it always did, in hudPromptDraw, inside a
+// scale of HUDPROMPTZ (0.6) about its own anchor (x, y), so the plate, the keycap, the words and the second line shrink together and the
+// prompt stays where it was. It still grows with the screen (the caller's hudAtIn, the same HUD scale), so at 4K it is 60 percent of the
+// 4K size and as legible as at 1080p. The returned width and bottom are the drawn ones, for a bar under the prompt.
+var HUDPROMPTZ=0.6;
+function hudPrompt(s,x,y,o){
+  var r;
+  ctx.save(); ctx.translate(x,y); ctx.scale(HUDPROMPTZ,HUDPROMPTZ); ctx.translate(-x,-y);
+  try{ r=hudPromptDraw(s,x,y,o); } finally { ctx.restore(); }
+  return {w:r.w*HUDPROMPTZ,by:y+(r.by-y)*HUDPROMPTZ};
+}
+function hudPromptDraw(s,x,y,o){
   var t=String(s), m, w, a, d, sub=(o&&o.sub)?String(o.sub):'', sw=0, h, bw, i0, i1;
   ctx.font=FS(TYPE.head); ctx.textAlign='center';
   m=ctx.measureText(t); w=m.width;
@@ -15289,7 +15305,7 @@ function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on); }
 // The label to show for a keyboard code, swapped for its controller button when a pad is
 // connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
 // file has been corrupted twice by non-ASCII surviving a patch script badly.
-var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'D-DOWN',
+var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'D-DOWN',KeyV:'Y',
               Space:'A',Tab:'BACK',KeyP:'MENU',KeyX:'X',
               ShiftLeft:'LS',ControlLeft:'B',KeyM:'D-UP',KeyI:'VIEW'};
 // v26.xx (padbind), HIS ORDER 2026-10-14 ("CONTROLLER REBINDING is NEW"): PADLABEL is the table the raid prompts read, and it follows the pad bindings now (padLabelsApply rewrites it);
@@ -15936,7 +15952,13 @@ function pollPad(){
       var _yD=pressed(3)&&!bagNav;
       if(_yD&&!PAD.prev[3]){ var _yA=false; if(G&&G.giftIn&&!G.bagOpen&&!G.giftIn.yes&&G.t-G.giftIn.t<=GIFT_T){ try{ _yA=!!netGiftKey(); }catch(_gy){} } else try{ _yA=!!(NET.on&&!G.over&&typeof netAidHold==='function'&&netAidHold(!!G.nearContainer)); }catch(_ye){} PAD.yAid=_yA; }
       if(!_yD) PAD.yAid=false;
-      padHold('PadSearch',(_yD&&!PAD.yAid)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));   // v25.xx (keyswap): the pad ring search (was keyboard X, which is the extraction now)
+      // v27.xx (feel2g), a cloud review finding (2026-10-15, #5): THE FINISHER ON A CONTROLLER. The finisher (v26.64) read keyboard V and no pad button reached it, so player 2 on a pad was
+      // shown FINISH [V] over every downed pillager and could not do it. Y (pad action 3, whatever CHANGE PAD BUTTONS has put it on) held with a downed pillager in finisher reach is the
+      // finisher: it holds the same key V the keyboard does (and so does not swing the crowbar), and the prompt names the button as bound (PADLABEL). Y keeps its other jobs, which win
+      // when they apply: helping a teammate (netAidHold, decided on the press), and the search of a box or the ring when one is in reach underfoot.
+      var _yF=!!(_yD&&!PAD.yAid&&G&&!G.over&&G.player&&!G.player.downed&&!G.nearContainer&&!G.nearPad&&finTarget(G.player));
+      padHold('KeyV',_yF);
+      padHold('PadSearch',(_yD&&!PAD.yAid&&!_yF)||(_xDown&&PAD.xMode==='KeyE'&&_xSearch));   // v25.xx (keyswap): the pad ring search (was keyboard X, which is the extraction now)
       continue;
     }
     // dpad down browses the bag rather than using medical while it is open
@@ -15991,6 +16013,13 @@ function pollPad(){
     var _slN=hotbarSlots().length;
     if(_lbN&&!PAD.prev[4]){ PAD.lbAt=_bnow; PAD.lbHeld=0; }
     if(_rbN&&!PAD.prev[5]){ PAD.rbAt=_bnow; PAD.rbHeld=0; }
+    // v27.25 (coop7): BOTH BUMPERS TOGETHER ARM THE AIR STRIKE. It was a keyboard key (G) and the keyboard is player 1's, so a player on a controller (player 2) could fill the
+    // meter and never spend it. The two bumpers pressed within 0.3 s of each other are a chord: they arm it (or cancel the aim), and neither walks the belt or zooms.
+    if(_lbN&&_rbN&&(!PAD.prev[4]||!PAD.prev[5])&&!PAD.airChord&&PAD.lbAt!=null&&PAD.rbAt!=null&&Math.abs(PAD.lbAt-PAD.rbAt)<0.3&&typeof flowOn==='function'&&flowOn()){
+      PAD.airChord=1; PAD.lbHeld=1; PAD.rbHeld=1; PAD.lbAt=null; PAD.rbAt=null;
+      try{ airKey(); }catch(_pak){}
+    }
+    if(!_lbN&&!_rbN) PAD.airChord=0;
     if(_lbN&&PAD.lbAt!=null&&_bnow-PAD.lbAt>=0.25){ PAD.lbHeld=1; if(typeof setZoom==='function') setZoom(zoomTarget()/Math.exp(1.1*_bdt)); }
     if(_rbN&&PAD.rbAt!=null&&_bnow-PAD.rbAt>=0.25){ PAD.rbHeld=1; if(typeof setZoom==='function') setZoom(zoomTarget()*Math.exp(1.1*_bdt)); }
     if(_slN>0){
@@ -16218,10 +16247,10 @@ function keysRowHtml(){
 var PAD_BTN=['A','B','X','Y','LB','RB','LT','RT','VIEW','MENU','LS','RS','D-UP','D-DOWN','D-LEFT','D-RIGHT'];
 var PAD_ACTS=[[10,'sprint','MOVE'],[0,'dodge roll','MOVE'],[1,'crouch','MOVE'],
   [7,'fire, use what is selected','FIGHT'],[6,'focus aim (hold)','FIGHT'],[11,'focus aim (toggle)','FIGHT'],[14,'aim distance shorter','FIGHT'],[15,'aim distance longer','FIGHT'],
-  [2,'use, search, reload, call for extraction','FIGHT'],[3,'search in a ring, help a teammate','FIGHT'],
+  [2,'use, search, reload, call for extraction','FIGHT'],[3,'search in a ring, help a teammate, finish a downed pillager','FIGHT'],
   [4,'previous gun (hold: zoom out)','GEAR'],[5,'next gun (hold: zoom in)','GEAR'],[13,'item wheel (hold)','GEAR'],[8,'backpack','GEAR'],
   [12,'ping (hold: the map)','WORLD'],[9,'pause','WORLD']];
-var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8};
+var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8,KeyV:3};   // v27.xx (feel2g): V, the finisher, is on action 3 (Y)
 var PADB={waiting:null,armed:0,t0:0,note:null,sig:''};
 function padMapArr(){
   var m=(typeof P!=='undefined'&&P&&P.padmap&&typeof P.padmap==='object')?P.padmap:null, o=[], used={}, i, v;
@@ -16246,7 +16275,7 @@ function padLegendBuild(){
     ['MOVE',[['L STICK','move, analog'],[n(10),'sprint'],[n(1),'crouch'],[n(0),'dodge roll']]],
     ['FIGHT',[['R STICK','aim'],[n(7),'fire / use selected'],[n(6)+' / '+n(11),'focus aim, hold / toggle'],[(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-LEFT/RIGHT':(dl+' / '+dr),'aim distance'],[n(2),'reload']]],
     ['GEAR',[[n(4)+'/'+n(5)+' tap','change tactical belt slot'],[n(4)+'/'+n(5)+' hold','zoom out / in'],[n(13),'item wheel (hold), revive when down'],[n(8),'backpack']]],
-    ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
+    ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring; hold to finish a pillager'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
     ['TEAM',[[n(3),'backpack open: drop an item for a teammate'],[n(12),'ping, twice for danger']]]
   ];
 }
@@ -17649,14 +17678,26 @@ function alertHeld(a){
 // queue with the life it had left. It waits there without pushing anything aside and returns as soon as the slot is free: up to
 // 5 s, or up to 8 s while its condition holds, and if it still cannot show it drops into the feed as before. A held line whose
 // condition ends while it waits has nothing left to say and is dropped.
+// v27.33 (alert2), HIS ORDER (2026-10-14): the alert lane is "one at a time, short, with its sting". An alert had its callers' own sounds,
+// and a good many had none, so a siege, a clock warning or an event could come in without a sound at all. Each alert that takes the lane
+// now plays a short sting of its rank on the sting bus (the same bus as the medals): a low double pulse for a crit, two falling square
+// notes for a warn, two rising triangle notes for an extraction or good news. Quiet, and under any sound the caller has. An alert
+// refreshed in place, or the same line said again, takes the lane once and stings once. Sound only: no state moves.
+var ALERTSND={
+  crit:[[0,196,196,0.1,'sawtooth',0.035],[0.12,196,196,0.1,'sawtooth',0.035],[0.24,147,147,0.3,'sawtooth',0.04]],
+  warn:[[0,330,330,0.09,'square',0.022],[0.1,262,262,0.2,'square',0.022]],
+  ext:[[0,659,659,0.08,'triangle',0.03],[0.07,880,880,0.18,'triangle',0.03]]
+};
+function alertSting(k){ if(!G||G.sim||!ALERTSND[k]) return false; return styTone(ALERTSND[k]); }
 function alertShow(m,k,o,now){
+  try{ alertSting(k); }catch(_asg){}   // v27.33 (alert2): its sting
   var a=alertUp();
   if(a&&(a.m!==m||msgDiffKey(a.key,(o&&o.key)||''))&&(now-a.at<0.6||alertHeld(a)||(a.T>1.0&&!a.hold)))   // v22.xx (tr3fixa): it goes back to the queue with the life it had left   // v23.xx (tr9fixo): two keyed alerts with one headline are two alerts
     alertEnq(a.m,a.k,{sub:a.sub,key:a.key,hold:a.hold,icon:a.icon,c:a.c,life:alertHeld(a)?Math.max(a.T,1.5):a.T},now,1);
   G.alert={m:m,k:k,sub:(o&&o.sub)||'',key:(o&&o.key)||'',hold:(o&&o.hold)||null,icon:(o&&o.icon)||'',c:(o&&o.c)||'',
            T:(o&&o.life>0)?o.life:MSGK[k].life,at:now};
 }
-function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',(o.sub||o.key)?{sub:o.sub||'',key:o.key||''}:null); }
+function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',(o.sub||o.key)?{sub:o.sub||'',key:o.key||'',fd:1}:{fd:1}); }   // v27.24 (feed1): fd, it was written into the feed when it was said
 function alertQDrop(m,key){ var q=G.alertQ, i; if(!q) return; for(i=q.length-1;i>=0;i--) if((q[i].m===m&&!msgDiffKey(q[i].key,key))||(key&&q[i].key===key)) q.splice(i,1); }   // v23.xx (tr9fixo): two keyed alerts with one headline are two alerts
 function alertEnq(m,k,o,now,back){   // v22.xx (tr3fixa): back, an alert another line displaced
   var q=(G.alertQ=G.alertQ||[]), key=(o&&o.key)||'', i, lo, lr;
@@ -17772,6 +17813,7 @@ function pickSay(m,o){
 // elite, and those can still be dropped by hand.
 function bagDropHint(){ return padOn()?padB('['+pbn(8)+'] BACKPACK  \u00b7  ['+pbn(3)+'] DROP'):('['+keyLabel('KeyB','B')+'] BACKPACK  \u00b7  ['+keyLabel('KeyZ','Z')+'] DROP'); }
 function pickTag(item,tag){
+  try{ feedTag(item,tag); }catch(_ftg){}   // v27.24 (feed1): and on the feed line
   var q=G&&G.pick, i;
   if(!q) return;
   for(i=q.length-1;i>=0;i--) if(q[i].item===item&&q[i].T>0){ q[i].tag=String(tag||''); return; }
@@ -18150,6 +18192,213 @@ function drawLore(){
   } finally { ctx.restore(); }
   return lines.length;
 }
+// v27.24 (feed1), HIS ORDER (2026-10-14): "the way that different player messages come in at different places is messy, needs to be made
+// consistent, maybe we should just have a persistent feed ala WoW?". THE FEED. One persistent message feed at the bottom left, above the
+// body corner, like the chat frame of WoW: the last 10 lines, the newest at the bottom, each line full bright for 6 s and then dimmed to
+// 35 percent, where it stays until a newer line pushes it out (40 lines are kept for the history). Every line the raid says goes in:
+// each said line (say, whatever its kind: an alert is written here as well as shown in the alert lane), a pickup (the item in its
+// rarity colour, counted when it is picked again), every kill he could witness (his own, a teammate's, and machines and pillagers
+// killing each other), medals and money, power-ups and teammate lines. A line is a small glyph and its kind colour (loot rarity, red
+// danger, teammate blue, gold medal and money, amber objective, teal extraction), in the HUD voice, on the one HUD plate. A line said
+// again within a second (a per-frame caller) is the same line kept bright, never counted; one said again within 30 s (a pickup within 6 s)
+// is counted (x2) and moves to the bottom. The 10 lines are a reserved zone (FEEDBOX): the controls legend and the status icons are
+// laid out above it. The old places (the message rows, the pickup stack, the kill feed, the loot labels) still show in this build; the
+// next builds move them out. A window has its own feed, and a teammate's lines reach it through the same say(). Cosmetic only: no
+// seeded draw, nothing under G.sim, no game state; the feed clock (G.fd.t) runs on msgTick, so it stands still under the solo pause.
+var FEED={show:10,keep:40,hold:6,dim:0.35,fade:1,again:1,merge:30,enter:0.14};
+var FEEDBOX={on:0,x:0,y:0,w:0,h:0,rows:[]};
+// v27.40 (medal0), HIS ANSWER (2026-10-14), "Halo puts medals in a row at the left": THE MEDAL SPOT IS RESERVED. A row for the style medals
+// (the later party polish draws the emblems there, 48 px at 1080p) between the feed and the vitals, the feed's width: nothing else may draw
+// in it. The feed stands on it now, so the feed moved up by its height; until the emblems exist the spot is empty.
+var MEDALBOX={on:0,x:0,y:0,w:0,h:0};
+var FEEDGL={loot:'backpack',kill:'skull',team:'party',danger:'warning',medal:'xp',money:'credits',obj:'contract',ext:'extraction',power:'xp',info:'info',dim:''};
+var FEEDMEDALS=/^(DOUBLE KILL|TRIPLE KILL|MULTI KILL|MULTI-KILL|RAMPAGE|UNSTOPPABLE|NEW HIGH SCORE)/;
+function feedS(){ if(!G.fd) G.fd={t:0,seq:0,lines:[]}; return G.fd; }
+function feedCol(fk){
+  return fk==='danger'?HUDC.danger:fk==='kill'?HUDC.danger:fk==='team'?HUDC.ally:(fk==='medal'||fk==='money')?UIC.r_gold:fk==='obj'?HUDC.warn:fk==='ext'?HUDC.extract:fk==='dim'?HUDC.dim:HUDC.text;
+}
+function feedItemCol(item,c){
+  var it, rk;
+  if(c&&HUDC[c]) return HUDC[c];
+  it=item&&ITEMS[item]; rk=it?(dispR(item)||it.r):'';
+  return (rk&&RCOL[rk])||HUDC.text;
+}
+function feedPwrOf(s){ var i; for(i=0;typeof PWR_KINDS!=='undefined'&&i<PWR_KINDS.length;i++) if(PWR_KINDS[i].n===s) return PWR_KINDS[i]; return null; }
+function feedAlpha(ln){ var age=(G.fd?G.fd.t:0)-ln.at; return (age<=FEED.hold)?1:Math.max(FEED.dim,1-(1-FEED.dim)*(age-FEED.hold)/FEED.fade); }
+// segs: a string or [{t,c}]; fk the kind; o {key, tag, n, count, col, gl}. Returns the line.
+function feedAdd(segs,fk,o){
+  var F, now, key, txt, i, ln, n;
+  if(!G||G.sim||!G.player) return null;
+  F=feedS(); now=F.t; key=(o&&o.key)||''; n=(o&&o.n>0)?Math.round(o.n):1;
+  if(typeof segs==='string') segs=[{t:segs,c:null}];
+  txt=''; for(i=0;i<segs.length;i++) txt+=segs[i].t;
+  for(i=F.lines.length-1;i>=Math.max(0,F.lines.length-6);i--){
+    ln=F.lines[i];
+    if(!((key&&ln.key===key)||(!key&&!ln.key&&ln.txt===txt))) continue;
+    if(!(o&&o.count)&&now-ln.last<FEED.again){ ln.last=now; ln.at=now; return ln; }
+    if(now-ln.at<((o&&o.count)?FEED.hold:FEED.merge)){
+      ln.n+=n; ln.at=now; ln.last=now; ln.segs=segs; ln.txt=txt; ln.mf='';
+      if(i<F.lines.length-1){ F.lines.splice(i,1); F.lines.push(ln); }
+      return ln;
+    }
+    break;
+  }
+  ln={id:(F.seq=(F.seq|0)+1),fk:fk||'info',segs:segs,txt:txt,key:key,n:n,tag:(o&&o.tag)?String(o.tag):'',money:'',col:(o&&o.col)||feedCol(fk),
+      gl:(o&&o.gl!==undefined)?o.gl:FEEDGL[fk||'info'],at:now,last:now,born:now,mf:''};
+  F.lines.push(ln);
+  while(F.lines.length>FEED.keep) F.lines.shift();
+  return ln;
+}
+function feedKindOf(s,k,o){
+  if(o&&o.fk) return o.fk;
+  if(k==='crit'||k==='warn') return 'danger';
+  if(k==='ext') return feedPwrOf(s)?'power':(FEEDMEDALS.test(s)?'medal':'ext');
+  if(k==='obj') return (/^GOAL DONE/).test(s)?'medal':'obj';
+  if(k==='ally') return 'team';
+  if(k==='chat'||k==='sys') return 'dim';
+  return 'info';
+}
+// every say(): the line goes into the feed whatever lane it also takes. A line the old pipeline says a second time (the waiting
+// queue coming out, an alert that waited too long going to the rows) is not written again (o.fd, G.msgDrain).
+function feedSay(m,k,o){
+  var s, sub, fk, col, D, item, tag, key, segs, cnt=false, gl;
+  if(!G||G.sim||!G.player||G.msgDrain||(o&&o.fd)) return null;
+  s=String(m); if(!s) return null;
+  sub=(o&&o.sub)?String(o.sub):''; item=(o&&o.item)||'';
+  if(k==='pick'){
+    tag=(o&&o.sub)?String(o.sub):((o&&o.tag)?String(o.tag).toUpperCase():'');
+    if(o&&o.c==='danger'){ fk='danger'; col=HUDC.danger; key=(o.key?('k:'+o.key):''); }
+    else if(item&&ITEMS[item]){ fk='loot'; col=feedItemCol(item,o&&o.c); cnt=true; key='p:'+item+'|'+tag; }
+    else if((/^[+\-]\$/).test(s)){ fk='money'; col=(o&&o.c&&HUDC[o.c]&&o.c!=='gain')?HUDC[o.c]:UIC.r_gold; key='m:'+s+'|'+tag; }
+    else { fk='info'; col=feedItemCol('',o&&o.c); key=(o&&o.key)?('k:'+o.key):''; }
+    return feedAdd([{t:s,c:col}],fk,{key:key,tag:tag,n:(o&&o.n>0)?o.n:1,count:cnt,col:col});
+  }
+  fk=feedKindOf(s,k,o); col=feedCol(fk); gl=undefined;
+  if(fk==='power'){ D=feedPwrOf(s); if(D) col=D.hex; }
+  segs=[{t:s,c:(fk==='info'||fk==='dim')?feedCol(fk):col}];
+  if(sub) segs.push({t:'  \u00b7  '+sub,c:HUDC.dim});
+  return feedAdd(segs,fk,{key:(o&&o.key)?('k:'+o.key):'',col:col});
+}
+// a world label (rising text): loot names are the pickup lines, hit feedback stays on its target, a kill has its own line and
+// a medal carries its own figure; everything else (a revive, a notoriety rise, a seal broken) is a line here too.
+function feedLabel(t,c,ik){
+  var s=String(t);
+  if(!G||G.sim||!G.player||ik||!s) return null;
+  if((/^(WEAK SPOT|ACTIVE RELOAD|PICKED UP|CLOSE CALL)$/).test(s)||(/ (DESTROYED|ELIMINATED)$/).test(s)||feedPwrOf(s)) return null;
+  if((/^\s\+\$/).test(s)) return null;
+  if((/^\+\$[\d,]+$/).test(s)) return feedMoney(s);
+  return feedAdd([{t:s,c:c||HUDC.text}],'info',{col:c||null,gl:'info'});
+}
+// the figure of a kill rides on his own kill line when that line is under a second old; otherwise it is a line of its own
+function feedMoney(s){
+  var F=feedS(), Ln=F.lines[F.lines.length-1];
+  if(Ln&&Ln.fk==='kill'&&Ln.mine&&!Ln.money&&F.t-Ln.last<0.8){ Ln.money=s; Ln.mf=''; return Ln; }
+  return feedAdd([{t:s,c:UIC.r_gold}],'money',{key:'m:'+s});
+}
+function feedMedal(txt,pts){
+  return feedAdd([{t:String(txt),c:UIC.r_gold},{t:'  +'+arcadeCr(pts),c:UIC.r_gold}],'medal',{});
+}
+function feedSame(a,b){
+  a=String(a).toUpperCase().replace(/^ELITE /,''); b=String(b).toUpperCase().replace(/^ELITE /,'');
+  return a===b||a.indexOf(b)===0||b.indexOf(a)===0;
+}
+// by: who did it ('' when nobody known), mine: it was this player, mate: a teammate; vn the victim, verb after it when unattributed
+function feedKillLine(by,mine,mate,vn,vcol,verb){
+  var F, now, i, Ln, segs, acc;
+  if(!G||G.sim||!G.player) return null;
+  F=feedS(); now=F.t;
+  segs=by?[{t:by,c:mine?HUDC.text:HUDC.ally},{t:'  >  ',c:HUDC.dim},{t:vn,c:vcol}]:[{t:vn,c:vcol},{t:verb||' DESTROYED',c:HUDC.dim}];
+  acc=mine?UIC.acc:(mate?HUDC.ally:HUDC.danger);
+  for(i=F.lines.length-1;i>=Math.max(0,F.lines.length-6);i--){
+    Ln=F.lines[i];
+    if(!(Ln.fk==='kill'&&now-Ln.last<1.5&&feedSame(Ln.vn,vn))) continue;
+    if(by&&!Ln.by){ Ln.segs=segs; Ln.txt=by+'  >  '+vn; Ln.by=by; Ln.mine=mine; Ln.col=acc; Ln.vn=vn; Ln.mf=''; Ln.last=now; return Ln; }
+    if(!by&&Ln.by) return Ln;
+    if((by||'')===(Ln.by||'')){ Ln.n++; Ln.at=now; Ln.last=now; Ln.mf=''; return Ln; }
+    break;
+  }
+  Ln=feedAdd(segs,'kill',{key:'kill:'+(F.seq+1),col:acc});
+  if(Ln){ Ln.vn=vn; Ln.by=by; Ln.mine=!!mine; }
+  return Ln;
+}
+function feedKillEnt(e){
+  var p=G&&G.player, mine, seat, by, vn;
+  if(!G||G.sim||!p||!e) return null;
+  mine=!!e.byPlayer&&!p.specOut; seat=(e.bySeat|0);
+  if(!mine&&seat<=0&&!canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) return null;
+  vn=String(e.name||kindWord(e.kind));
+  by=mine?'YOU':(seat>0?String(netSeatName(seat)||('PLAYER '+(seat+1))).toUpperCase():'');
+  return feedKillLine(by,mine,seat>0,vn,(e.kind==='raider')?HUDC.danger:HUDC.warn,killWord(e));
+}
+function feedTag(item,tag){
+  var F=G&&G.fd, i, Ln;
+  if(!F) return;
+  for(i=F.lines.length-1;i>=0;i--){ Ln=F.lines[i]; if(Ln.fk==='loot'&&Ln.key.indexOf('p:'+item+'|')===0){ Ln.tag=String(tag||''); Ln.mf=''; return; } }
+}
+function feedTick(dt){ if(G&&G.fd) G.fd.t+=dt; }
+function feedRect(){
+  // v27.35 (feedw), seen in the busy frame picture: the feed zone was 30 percent of the screen wide (576 px at 1080p) and its lines are
+  // under 410, so the controls list beside it was squeezed to a sliver. The zone is 24 percent of the width, and each line is a little
+  // tighter (1.38 x the type, was 1.5), so the ten lines are about 280 px tall at 1080p.
+  var rs=Math.max(1,hudRes()), fp=msgPx(hudFS(TYPE.label)), rh=Math.round(fp*1.38), gap=Math.max(2,Math.round(LH(2)*rs)), B=HUDBOX.body, h=FEED.show*rh+(FEED.show-1)*gap, bot;
+  bot=((B&&B.h>0&&B.y>H*0.5)?B.y:Math.round(H-LH(142)*rs*1.4))-Math.round(LH(8)*rs);
+  MEDALBOX.h=Math.round(LH(40)*rs); MEDALBOX.y=bot-MEDALBOX.h; MEDALBOX.x=Math.round(LH(9)*rs); MEDALBOX.w=Math.round(W*0.24); MEDALBOX.on=1;   // v27.40 (medal0): the medal spot, on the vitals
+  bot=MEDALBOX.y-Math.round(LH(6)*rs);   // and the feed stands on it
+  return {x:Math.round(LH(9)*rs),y:bot-h,w:Math.round(W*0.24),h:h,rh:rh,gap:gap,fp:fp};
+}
+function feedGlyph(name,x,cy,s,col){
+  var Pt=name?uiIconPath(name):null;
+  if(!Pt) return;
+  ctx.save();
+  try{ ctx.translate(x,cy-s/2); ctx.scale(s/24,s/24); ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke(Pt); } finally { ctx.restore(); }
+}
+// the words of a line, measured once per font: [{t,c,w}] and the total width
+function feedParts(ln,fL,maxW){
+  var P, w=0, i, sg, t, c0, tw;
+  if(ln.mf===fL&&ln.pr&&ln.pw===maxW) return ln.pr;
+  ctx.font=fL; P=[];
+  for(i=0;i<ln.segs.length;i++){ sg=ln.segs[i]; P.push({t:sg.t,c:sg.c||ln.col}); }
+  if(ln.n>1) P.push({t:'  x'+ln.n,c:HUDC.text});
+  if(ln.money) P.push({t:'  '+ln.money,c:UIC.r_gold});
+  if(ln.tag) P.push({t:'  \u00b7  '+ln.tag,c:HUDC.dim});
+  for(i=0;i<P.length;i++){ P[i].w=ctx.measureText(P[i].t).width; w+=P[i].w; }
+  if(w>maxW&&P.length){   // too long for the zone: the first piece gives way, with a mark at its end
+    t=P[0].t; tw=w-P[0].w;
+    while(t.length>3&&tw+ctx.measureText(t+'...').width>maxW) t=t.slice(0,-1);
+    P[0].t=t+'...'; P[0].w=ctx.measureText(P[0].t).width; w=tw+P[0].w;
+  }
+  ln.pr=P; ln.pr.w=w; ln.mf=fL; ln.pw=maxW;
+  return P;
+}
+function feedDraw(){
+  var F=G&&G.fd, R, rs, fL, pad, gs, oa, y, yt, x, w, i, n, ln, al, e, pr, j, tx, yb, tw0;
+  FEEDBOX.on=0; FEEDBOX.rows=[];
+  if(!G||G.sim||!G.player||G.over) return 0;
+  R=feedRect(); FEEDBOX.x=R.x; FEEDBOX.y=R.y; FEEDBOX.w=R.w; FEEDBOX.h=R.h; FEEDBOX.on=1;   // the zone is kept whether or not a line is up
+  if(!F||!F.lines.length) return 0;
+  rs=Math.max(1,hudRes()); fL=hudFS(TYPE.label); pad=Math.round(LH(7)*rs); gs=Math.round(R.fp*0.95); oa=ctx.globalAlpha;
+  ctx.save();
+  try{
+    ctx.font=fL; ctx.textBaseline='alphabetic'; ctx.textAlign='left';
+    y=R.y+R.h;
+    for(i=F.lines.length-1,n=0;i>=0&&n<FEED.show;i--,n++){
+      ln=F.lines[i]; al=feedAlpha(ln); e=Math.min(1,(F.t-ln.born)/FEED.enter);
+      pr=feedParts(ln,fL,R.w-pad*3-gs-Math.round(pad*0.7));
+      w=Math.min(R.w,pad+Math.round(pad*0.5)+(ln.gl?gs+Math.round(pad*0.7):0)+pr.w+pad);
+      x=R.x+Math.round((e-1)*LH(18)*rs); yt=y-R.rh;
+      ctx.globalAlpha=oa*al*e;
+      hudPlate(x,yt,w,R.rh,ln.col,HUDC.plate);
+      tx=x+pad+Math.round(pad*0.5);
+      if(ln.gl){ feedGlyph(ln.gl,tx,yt+R.rh/2,gs,ln.col); tx+=gs+Math.round(pad*0.7); }
+      yb=yt+Math.round(R.rh/2+R.fp*0.34);
+      ctx.font=fL;
+      for(j=0;j<pr.length;j++){ ctx.fillStyle=pr[j].c; ctx.fillText(pr[j].t,tx,yb); tx+=pr[j].w; }
+      FEEDBOX.rows.push({id:ln.id,t:ln.txt,fk:ln.fk,a:al,x:x,y:yt,w:w,h:R.rh});
+      y-=R.rh+R.gap;
+    }
+  } finally { ctx.restore(); ctx.globalAlpha=oa; }
+  return n;
+}
 function msgTick(dt){
   if(!G) return;
   dt=(dt>0)?Math.min(0.1,dt):0;
@@ -18159,6 +18408,7 @@ function msgTick(dt){
   locTick(dt);   // v22.xx (R34): the location tag
   loreTick(dt);   // v22.xx (R39): the map story card
   pickTick(dt);   // v22.50 (R16): the pickup stack
+  feedTick(dt);   // v27.24 (feed1): the feed clock
   giftTick();   // v22.75 (R30): an offer that ran out ends here, not in drawGiftLine
   // v13.32, v13.33: a short queue of lines that must not be lost, shown when the rows free up. v21.88 (R06): only into a row that is
   // free or past its protection. v21.91 (R07): the highest ranked waiting line first, stale ones dropped, 1.8 s while two or more wait.
@@ -18181,6 +18431,7 @@ function say(m,kind,o){
     var k=msgKind(kind), lg=(G.msgLog=G.msgLog||[]);
     lg.push({m:m,k:k,t:G.t||0,sub:(o&&o.sub)||''}); if(lg.length>16) lg.shift();
     if(k==='log') return;
+    try{ feedSay(m,k,o); }catch(_fsy){}   // v27.24 (feed1): every line said is in the feed, whatever lane it also takes
     if(k==='pick'){ pickSay(m,o); return; }   // v22.50 (R16): an item picked up is a row in the pickup stack, never a feed row
     if(msgAlertK(k)){ alertSay(m,k,o); return; }   // v22.13 (R08): crit, warn and ext take the alert lane, not a feed row
     // v22.xx, the raid text rewrite (R37): A LINE SAID UNDER THE SOLO PAUSE BOX SHOWS ON IT. HIS ORDER (2026-10-09): the raid text
@@ -18377,6 +18628,7 @@ function notoStamp(why){
 function labelPlateH(px){ px=(px>0)?px:13; return Math.round(px*0.74+px*0.2+2*Math.max(3,px*0.18)); }
 function label(x,y,txt,col,delay,big,ik){
   if(G.sim) return;
+  try{ feedLabel(txt,col,ik); }catch(_flb){}   // v27.24 (feed1): a label that is a message is a line in the feed too
   // Push off any live label that would land on top of this one. Without this a
   // container holding three items stacks all three lines in the same spot.
   // One spacing for the test and the placement, and the same rise the renderer uses.
@@ -20406,6 +20658,10 @@ function machFoe(o){
 // runs all of it; a linked window sees the beam through a flag bit and the phase lines through a mark. Its crawlers are made on the
 // cosmetic stream (fxBorrow), so the seeded stream of the raid never moves.
 var OV_P2=0.66, OV_P3=0.33, OV_SUMMON=20, OV_SWEEPCD=10, OV_CHARGE=1.0, OV_SWEEP=2.6, OV_RATE=0.6, OV_HALF=18, OV_TICK=0.1, OV_DMG=8, OV_MAXC=6;
+// v26.xx (aip7), the cloud review of 2026-10-15 (finding 22): "the Overseer is an endless crawler farm in DEMO". It called three crawlers every twenty seconds for as long
+// as it had seen you (never more than six alive), and each one scores, rolls its drops and feeds the streak like any other kill, so a player who stood by a phase 2
+// Overseer could harvest them for the whole run. It calls at most OV_SUMTOT crawlers in all now (four calls of three); after that it fights with its cannon and its laser.
+var OV_SUMTOT=12;
 function overseerPhaseOf(e){ var f=(e&&e.maxhp>0)?e.hp/e.maxhp:1; return f>OV_P2?1:(f>OV_P3?2:3); }
 function ovPhaseLine(n){ return (n>=3)?'OVERSEER SWEEP LASER':'OVERSEER CALLS CRAWLERS'; }
 function overseerBeam(e){
@@ -20418,6 +20674,7 @@ function overseerBeam(e){
 }
 function overseerSummon(e){
   var n=0, made=0, i, c, a, x, y, pl=G.player;
+  if((e.sumN|0)>=OV_SUMTOT) return 0;   // v26.xx (aip7): it has called all it may
   for(i=0;i<G.ents.length;i++){ c=G.ents[i]; if(c.summoned&&c.hp>0&&!c.downed) n++; }
   for(i=0;i<12&&made<3&&n+made<OV_MAXC;i++){
     a=i*0.5236+(G.t||0)*0.7; x=e.x+Math.cos(a)*(e.r+80); y=e.y+Math.sin(a)*(e.r+80);
@@ -20427,6 +20684,7 @@ function overseerSummon(e){
     G.ents.push(c); made++;
     i+=3;
   }
+  e.sumN=(e.sumN|0)+made;   // v26.xx (aip7): the running total of its calls
   return made;
 }
 function overseerTick(e,p,sees,dt){
@@ -20547,6 +20805,62 @@ function affixMend(e){
   e.mendFx=(n>0)?0.4:0;
   return n;
 }
+// v26.xx (aip1), HIS ANSWER (2026-10-14 night playtest): "tint and/or outline" for the elites, and "all the new features need to be integrated
+// and polished up to a AAA level like the previous stuff". An elite machine wore a glow and two rings on the ground and a badge over its
+// head, which the nameplate covered; the body itself looked like any other. Now the BODY carries it: the machine is drawn into a
+// scratch canvas (same scale, same pixel grid, shadow still on the ground), a clean outline in its colour is stamped round the silhouette
+// (a crisp inner line and a soft outer one that breathes), a faint tint of the colour is laid over the body only, and the two go back
+// to the world canvas under and over the unchanged sprite. The ground ring is one thin ring now. Cosmetic code: it draws no random
+// number, and a machine that is not an elite is drawn exactly as before.
+var RIM={ca:null,cb:null,xa:null,xb:null,on:0,h:null,n:0};
+function rimOpen(e,col){
+  var T, cx, cy, hw, up, dn, sx, sy, w, h, h1, k;
+  if(!e||!col||RIM.on||typeof wc==='undefined'||!wc||!wc.getTransform||(typeof G!=='undefined'&&G&&G.sim)) return null;
+  try{
+    T=wc.getTransform();
+    if(!(T.a>0)||!(T.d>0)||T.b||T.c||!isFinite(e.x)||!isFinite(e.y)) return null;
+    cx=T.a*e.x+T.e; cy=T.d*e.y+T.f;
+    hw=(e.r*1.9+20)*T.a; up=(spriteTop(e)+34)*T.d; dn=(e.r*0.9+12)*T.d;
+    sx=Math.floor(cx-hw)-4; sy=Math.floor(cy-up)-4; w=Math.ceil(hw*2)+8; h=Math.ceil(up+dn)+8;
+    if(w<8||h<8||w>1400||h>1400) return null;
+    if(!RIM.ca){ RIM.ca=document.createElement('canvas'); RIM.cb=document.createElement('canvas'); RIM.xa=RIM.ca.getContext('2d'); RIM.xb=RIM.cb.getContext('2d'); }
+    if(!RIM.xa||!RIM.xb) return null;
+    if(RIM.ca.width<w){ RIM.ca.width=w; RIM.cb.width=w; }
+    if(RIM.ca.height<h){ RIM.ca.height=h; RIM.cb.height=h; }
+    RIM.xa.setTransform(1,0,0,1,0,0); RIM.xa.globalAlpha=1; RIM.xa.globalCompositeOperation='source-over'; RIM.xa.clearRect(0,0,w,h);
+    RIM.xa.setTransform(T.a,0,0,T.d,T.e-sx,T.f-sy);
+    h1={w0:wc,sh0:shadowE,col:col,sx:sx,sy:sy,w:w,h:h,u:T.a,e:e};
+    RIM.on=1; RIM.h=h1;
+    shadowE=function(x,y,rx,ry,a){ var w1=wc; wc=h1.w0; try{ h1.sh0(x,y,rx,ry,a); } finally{ wc=w1; } };   // the ground shadow stays on the world canvas, out of the outline
+    wc=RIM.xa;
+    return h1;
+  }catch(_ro){ rimAbort(); return null; }
+}
+function rimAbort(){
+  var h=RIM.h;
+  if(h){ wc=h.w0; shadowE=h.sh0; }
+  RIM.on=0; RIM.h=null;
+}
+function rimClose(h){
+  var k, d, dx, dy, m, pu, xa=RIM.xa, xb=RIM.xb;
+  if(!h) return;
+  wc=h.w0; shadowE=h.sh0; RIM.on=0; RIM.h=null;
+  try{
+    pu=0.5+0.5*Math.sin(((typeof G!=='undefined'&&G)?(G.t||0):0)*3.2+h.e.x*0.02);
+    xa.setTransform(1,0,0,1,0,0); xa.globalCompositeOperation='source-atop'; xa.fillStyle=hexA(h.col,0.12+0.05*pu); xa.fillRect(0,0,h.w,h.h); xa.globalCompositeOperation='source-over';
+    wc.save(); wc.setTransform(1,0,0,1,0,0);
+    for(m=0;m<2;m++){
+      d=m?Math.max(1,Math.round(h.u*0.55)):Math.max(2,Math.round(h.u*1.3));
+      xb.setTransform(1,0,0,1,0,0); xb.globalCompositeOperation='source-over'; xb.clearRect(0,0,h.w,h.h);
+      for(k=0;k<8;k++){ dx=Math.round(Math.cos(k*0.7854)*d); dy=Math.round(Math.sin(k*0.7854)*d); xb.drawImage(RIM.ca,0,0,h.w,h.h,dx,dy,h.w,h.h); }
+      xb.globalCompositeOperation='source-in'; xb.fillStyle=hexA(h.col,m?(0.86+0.14*pu):(0.26+0.12*pu)); xb.fillRect(0,0,h.w,h.h); xb.globalCompositeOperation='source-over';
+      wc.drawImage(RIM.cb,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h);
+    }
+    wc.drawImage(RIM.ca,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h);
+    wc.restore();
+    RIM.n++;
+  }catch(_rc){ try{ wc.restore(); }catch(_r2){} }
+}
 function drawAffixMark(e){
   var A=AFFIX[e.affix], t=(typeof G!=='undefined'&&G)?(G.t||0):0, pu, r=e.r, x=e.x, y=e.y, gr;
   if(!A||!isFinite(x)||!isFinite(y)||!(r>0)) return;
@@ -20554,10 +20868,10 @@ function drawAffixMark(e){
   wc.save();
   try{
     wc.globalCompositeOperation='lighter';
-    gr=wc.createRadialGradient(x,y,r*0.3,x,y,r*2.2); gr.addColorStop(0,hexA(A.c,0.34*pu)); gr.addColorStop(1,hexA(A.c,0));
-    wc.fillStyle=gr; wc.beginPath(); wc.ellipse(x,y+2,r*2.2,r*1.15,0,0,6.2832); wc.fill();
-    wc.strokeStyle=hexA(A.c,0.55+0.35*pu); wc.lineWidth=3; wc.beginPath(); wc.ellipse(x,y+2,r*1.45,r*0.72,0,0,6.2832); wc.stroke();
-    wc.lineWidth=1.5; wc.beginPath(); wc.ellipse(x,y+2,r*1.85,r*0.93,0,0,6.2832); wc.stroke();
+    gr=wc.createRadialGradient(x,y,r*0.3,x,y,r*1.9); gr.addColorStop(0,hexA(A.c,0.15*pu)); gr.addColorStop(1,hexA(A.c,0));
+    wc.fillStyle=gr; wc.beginPath(); wc.ellipse(x,y+2,r*1.9,r*1.0,0,0,6.2832); wc.fill();
+    wc.strokeStyle=hexA(A.c,0.42+0.22*pu); wc.lineWidth=1.6; wc.beginPath(); wc.ellipse(x,y+2,r*1.32,r*0.66,0,0,6.2832); wc.stroke();
+    wc.strokeStyle=hexA(A.c,0.16); wc.lineWidth=1; wc.beginPath(); wc.ellipse(x,y+2,r*1.62,r*0.81,0,0,6.2832); wc.stroke();
     if(e.affix==='mend'){ wc.strokeStyle=hexA(A.c,0.16); wc.lineWidth=1; wc.beginPath(); wc.ellipse(x,y+2,AFFIX_MEND_R,AFFIX_MEND_R*0.6,0,0,6.2832); wc.stroke(); }
   }catch(_am){}
   wc.restore();
@@ -20920,6 +21234,7 @@ function openContainer(ct,onlyKeys){
     }
   }
   ct.opened=true; T.containers++;
+  try{ flowCrate(ct); }catch(_fcr){}   // v27.43 (rvw1): the run goal counts what the party opens
   if(T.firstLoot===null) T.firstLoot=G.t;
   // Instrumentation for every system shipped since v1.00, so his exports carry
   // signal on the new content instead of leaving me to tune it blind.
@@ -25726,6 +26041,7 @@ if(e.state==='possum'){
       // v17.11, co-op hunt 2026-09-28: not once the host is out. A host who dies, extracts or abandons while the party is still up
       // top keeps the raid running for them, and a man he had dropped who bled out there added a kill to the run row he had already
       // saved, stepped his contracts and wrote a grudge into his save, for a raid he was no longer in. Such a death is credited to nobody.
+      try{ feedKillEnt(e); }catch(_fke){}   // v27.24 (feed1): the kill in the feed, his, a teammate's or nobody's
       if(e.byPlayer&&!(G.player&&G.player.specOut)){
         T.kills[e.kind]++; contractKill(e.kind);
         try{ gunKillNote(e); }catch(_gkn){}
@@ -27442,7 +27758,7 @@ e.lootT=(e.lootT||0)+dt;
       if(e[_wf]<=0){
         // Camp guards patrol their post, not the map. Their whole job is to be
         // between you and the safes when you arrive.
-        if(e.camp){ var ga2=rnd(0,6.2832),gr2=rnd(40,240); e.tx=e.camp.x+Math.cos(ga2)*gr2; e.ty=e.camp.y+Math.sin(ga2)*gr2; }
+        if(e.camp){ var ga2=rnd(0,6.2832),gr2=rnd(Math.min(40,(e.campR||240)*0.3),e.campR||240); e.tx=e.camp.x+Math.cos(ga2)*gr2; e.ty=e.camp.y+Math.sin(ga2)*gr2; }   // v27.46 (sh2): a camp may be a room, not a field (campR)
         else { var sp=freeSpot(G.map,24);
           // v9.04, HIS NOTE: a crier does not pick a spot inside a house. The
           // point is PROJECTED out rather than re-rolled, which costs no draw
@@ -33563,6 +33879,7 @@ var SHD=G.shells[i];
       // a frame, two recessed panels and a lock plate, and the plate is GREEN
       // when the matching key is in your bag and AMBER when it is not, so the
       // question "can I open that yet" is answered from across the map.
+      if(wl2.sh!==undefined){ try{ shWallDraw(wc,wl2,LIFT); }catch(_swd){} continue; }   // v27.46 (sh2): the shutter, a barricade or a stretch of fence of a stronghold
       if(wl2.door){
         var _dk=false,_dq;
         for(_dq=0;_dq<G.bag.length;_dq++){ var _di=ITEMS[G.bag[_dq]];
@@ -33716,6 +34033,8 @@ var SHD=G.shells[i];
         wc.beginPath(); wc.ellipse(e2.x,e2.y+2,e2.r*1.2,Math.max(3,e2.r*0.5),0,0,6.2832); wc.stroke();
         wc.restore();
       }
+      var _rm=null;
+      if(e2.elite&&e2.affix&&AFFIX[e2.affix]) _rm=rimOpen(e2,AFFIX[e2.affix].c);   // v26.xx (aip1): the elite outline
       if(e2.kind==='choir') drawChoirS(e2);
       else if(e2.kind==='warden') drawWardenAt(e2);   // v17.49: the boss is drawn to its size
       else if(e2.kind==='sentry') drawSentryS(e2);
@@ -33768,6 +34087,7 @@ var SHD=G.shells[i];
            // default look. It is passed through now, with the build he rolled.
            hair:e2.hair,cut:e2.cut,hat:e2.hat,skin:e2.skin,beard:e2.beard,eyes:e2.eyes,faceMark:e2.faceMark,boots:e2.boots,
            gloves:e2.gloves,pack:e2.pack,patch:e2.patch,tattoo:e2.tattoo,build:e2.build}),drawRoleMark(e2);   // v26.xx (ai21): his role mark on top of the body
+      rimClose(_rm);   // v26.xx (aip1)
 
       // SPEC 8.7: the openings have to be VISIBLE or they are a secret, and a
       // secret is not a tactic. Drawn on top of the body, pulsing, in their own
@@ -33797,6 +34117,7 @@ var SHD=G.shells[i];
       if(eLift>0) wc.restore();
     }
     }catch(drErr){
+      try{ rimAbort(); }catch(_ra){}   // v26.xx (aip1): the world canvas first, whatever the body left
       // A throw part way through one item can skip the wc.restore() that pairs
       // with a deck lift, and then EVERY entity drawn after it in that frame is
       // shifted by that deck's height. The armour was only ever meant to lose
@@ -35414,7 +35735,7 @@ function drawStatusIcons(){
   // vitals only when their top was below it, so a board dragged down, or a list grown or dragged up, had the icons drawn over it. Every
   // panel at the left is now treated the same, top to bottom: one that starts by the column's first row pushes the column below it, one
   // that starts lower ends the column above it. When that leaves no room for a row, the column moves to the right of those panels.
-  var _bx=[HUDBOX.raiders,HUDBOX.legend,HUDBOX.body].filter(function(b){ return b&&b.x<ox+wC&&b.x+b.w>ox; }).sort(function(a,b){ return a.y-b.y; }), _bi, _br;
+  var _bx=[HUDBOX.raiders,HUDBOX.legend,HUDBOX.body,FEEDBOX.on?FEEDBOX:null].filter(function(b){ return b&&b.x<ox+wC&&b.x+b.w>ox; }).sort(function(a,b){ return a.y-b.y; }), _bi, _br;
   for(_bi=0;_bi<_bx.length;_bi++){ B=_bx[_bi];
     if(B.y+B.h+g*hr<=oy||B.y>=yBot) continue;
     if(B.y<=oy+S*hr/2) oy=Math.round(B.y+B.h+g*hr);
@@ -35875,6 +36196,7 @@ function drawHUD(){
   try{ flowDraw(ctx,p); }catch(_fdw){}   // v26.xx (flow2): the raid flow on the HUD (the air strike aim, the strikes in flight and the meter)
   try{ pwrDraw(ctx,p); }catch(_pwd){}   // v26.xx (party2): the power-ups on the floor, the aura and the timer chips
   try{ pwrDraw2(ctx,p); }catch(_pwd2){}   // v26.xx (party3): the shield bubble and the screen clear wave
+  try{ styMedalDraw(ctx,p); }catch(_smd){}   // v27.38 (partyp1): the medal row at the left edge
   // reticle at the cursor
 if(!p.downed&&!G.bagOpen&&!G.mapOpen){
     var rx0=mouse.x,ry0=mouse.y;
@@ -36218,7 +36540,8 @@ _tgt=G.active; _lbl='EXTRACTION';
   try{ drawMinimap(); }catch(_mm){ MMAP.box=null; }   // v24.xx (minimap1): his "add minimap", top right, before CONDITIONS so it can start below it
   ctx.save(); hudZoomIn('cond',W,0);
   (function(){
-    if(G.arcade){ delete HUDBOX.cond; return; }   // v23.35 (arcade13): no CONDITIONS panel in the arcade
+    var _arc=!!G.arcade;   // v27.42 (info1): the DEMO shows the panel too, with its run goals only
+    if(_arc&&!(G.flow&&G.flow.goals&&G.flow.goals.length)){ delete HUDBOX.cond; return; }   // v23.35 (arcade13): no CONDITIONS in the arcade; v27.42 (info1): but its goals   // v23.35 (arcade13): no CONDITIONS panel in the arcade
     var MW=(G.wx||WEATHER[0]), MT=tod(), rows=[], _clines=[];
 
     var _bzTags=[['drunk','LIQUOR'],['lsd','BLOTTER']];   // v19.00: the drink is Blotter (BOOZE), the word its status icon uses
@@ -36338,6 +36661,18 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
         for(var _cz=0;_cz<_clines.length;_cz++) rows.push({k:'',v:_clines[_cz].v,vc:_clines[_cz].vc});
       }
     }
+    // v27.42 (info1), HIS ANSWER (2026-10-14): "merge into conditions, maybe rename it run info". THE RUN GOALS ARE ROWS OF THIS PANEL. They
+    // were a panel of their own under CONDITIONS, one more box in the right column for the gun card, the feed and the badges to land on;
+    // now the panel is RUN INFO: the conditions and the contracts, then RUN GOALS (the goal, its count and what it pays, DONE in green
+    // once it has paid), in one box. In the DEMO, which never had the conditions or the contracts, it holds only the goals.
+    if(_arc) rows=[];
+    if(G.flow&&G.flow.goals&&G.flow.goals.length){
+      rows.push({k:'RUN GOALS',v:'',c:'#ffc04a'});
+      for(var _gq=0;_gq<G.flow.goals.length;_gq++){
+        var _gl=G.flow.goals[_gq];
+        rows.push({k:'',v:String(_gl.t)+((!_gl.done&&_gl.n>1)?('\u00a0\u00a0'+_gl.v+'/'+_gl.n):'')+'\u00a0\u00a0'+(_gl.done?'DONE':('+'+arcadeCr(_gl.chip))),vc:_gl.done?'#7fc4a0':'#cdd6dd'});
+      }
+    }
     // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
     // capture showed why that was wrong: STORM's effects are four clauses long,
     // so the text ran straight out of the panel and across the map, and the rows
@@ -36393,7 +36728,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
 hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     var ry=by+pad+LH(8);
-    ctx.fillStyle='#ffc04a'; ctx.fillText('CONDITIONS',bx+pad,ry);
+    ctx.fillStyle='#ffc04a'; ctx.fillText('RUN INFO',bx+pad,ry);   // v27.42 (info1): was CONDITIONS
     HUDBOX.cond={x:bx,y:by,w:bw,h:bh,tg:{x:bx+bw-LH(20),y:by,w:LH(20),h:LH(16)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1';
     hudChev(bx+bw-pad,ry,!HOc.c);   // vNN.xx (ui5q2p): a drawn chevron, not [-]
@@ -36411,7 +36746,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
   })();
   ctx.restore();
   if(HUDBOX.cond) HUDBOX.cond=hudZoomRect('cond',W,0,HUDBOX.cond);
-  EDGEBOX.goals=null; try{ if(flowOn()) goalsHud(ctx); }catch(_gh){}   // v26.xx (flow3): the run goals, the same panel in DEMO and CAREER
+  EDGEBOX.goals=null;   // v27.42 (info1): the run goals are rows of RUN INFO (goalsHud is kept, not drawn)   // v26.xx (flow3): the run goals, the same panel in DEMO and CAREER
   // v22.xx, the raid text rewrite (R38): A LINE SAID WITH THE MAP OPEN DRAWS OVER IT. HIS ORDER (2026-10-09): the raid text reads like
   // a shooter HUD, and in those a callout is never hidden by the map. The message band (the alert, the location tag and the feed)
   // was drawn here, before the sector map, whose opaque backing is drawn last, so with the map open WAYPOINT MARKED, a ring
@@ -36455,6 +36790,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     ctx.restore();                              // v10.43: end of the message scale
   }
+  try{ feedDraw(); }catch(_fdw){}   // v27.24 (feed1): the feed, bottom left (over the map too)
   };
   if(!G.mapOpen) _lanes();   // v22.xx (R38): with the map open the band is drawn after it, below
   // Extraction ring labels, drawn on the HUD above the fog. Three unexplained
@@ -37566,7 +37902,15 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     // block, so growing it downward would push it through the health bar.
     // Where the bottom of the legend has to land: just above the vitals, which
     // is what it must clear. HUDBOX.body is set earlier in this same frame.
-    var _legTarget=(HUDBOX.body?HUDBOX.body.y:H)-LH(8);
+    var _legTarget=(HUDBOX.body?HUDBOX.body.y:H)-LH(8), _legFX=0, _lgR=Math.max(1,hudRes()), _lgU=hudUserZ('legend');
+    // v27.26 (feedleg), seen in the busy frame picture: the controls list stood above the feed and ran up over the CURRENT PILLAGERS board.
+    // The compact list now stands on the vitals as before but to the right of the feed, and shrinks if it must so that it ends before
+    // 47 percent of the screen width (the player stands in the middle of it). The feed keeps its own zone at the left.
+    if(FEEDBOX.on&&G.legendOn===1){
+      var _lgX=FEEDBOX.x+FEEDBOX.w+Math.round(LH(10)*_lgR), _lgZ=LEGZ0;
+      if(LEGMW>0) _lgZ=Math.max(0.9,Math.min(LEGZ0,((W*0.47-_lgX)/LEGMW)/(_lgR*_lgU)));
+      HUDZ.legend=_lgZ; _legFX=Math.round(_lgX-6*_lgZ*_lgR*_lgU);
+    } else HUDZ.legend=LEGZ0;
     var _legUB=(typeof _legAnchorY==='number'&&_legAnchorY>0)?_legAnchorY:_legTarget;
     var _legShift=_legTarget-_legUB;
     // v9.83: AND HIS DRAG RIDES ON TOP OF THE ANCHOR. The anchor above forces
@@ -37603,7 +37947,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       _fz=Math.min(_fz,Math.max(0.5,(H-LH(12))/(_fBox+LH(96))));
       ctx.translate(W/2,H); ctx.scale(_fz,_fz); ctx.translate(-W/2,-H);
     } else {
-      ctx.translate(_legDX,_legShift+_legDY);   // bottom on the target, plus his drag
+      ctx.translate(_legDX+_legFX,_legShift+_legDY);   // bottom on the target, plus his drag (and the room the feed takes)
       hudZoomIn('legend',0,_legTarget);    // then grow upward from there
     }
     drawLegend(G.legendOn===2?_fz:1);   // v20.74 (H40): the full list is told its zoom
@@ -37628,10 +37972,11 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       // Where the panel sits with the anchor applied and his drag NOT applied.
       // The clamp above measures against this, so dragging never feeds back into
       // its own limit.
-      _legBase={x:_lz.x,y:_lz.y+_legShift,w:_lz.w,h:_lz.h};
-      _lz.x+=_legDX;
+      if(G.legendOn===1) LEGMW=_lz.w/(HUDZ.legend*_lgR*_lgU);   // v27.26 (feedleg): its width at zoom 1, for the cap next frame
+      _legBase={x:_lz.x+_legFX,y:_lz.y+_legShift,w:_lz.w,h:_lz.h};
+      _lz.x+=_legDX+_legFX;
       _lz.y+=_legShift+_legDY;
-      if(_lz.tg) _lz.tg={x:_lz.tg.x+_legDX,y:_lz.tg.y+_legShift+_legDY,w:_lz.tg.w,h:_lz.tg.h};
+      if(_lz.tg) _lz.tg={x:_lz.tg.x+_legDX+_legFX,y:_lz.tg.y+_legShift+_legDY,w:_lz.tg.w,h:_lz.tg.h};
       HUDBOX.legend=_lz;
     }
   }
@@ -38067,7 +38412,7 @@ var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['B','crouch'],['A','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['RT','fire / use selected'],['LT / RS CLICK','focus aim, hold / toggle'],['D-LEFT/RIGHT','aim distance'],['X','reload']]],
   ['GEAR',[['LB/RB tap','change tactical belt slot'],['LB/RB hold','zoom out / in'],['D-DOWN','item wheel (hold), revive when down'],['VIEW','backpack']]],
-  ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
+  ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring; hold to finish a pillager'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
   // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): THE PING IS D-UP ON A CONTROLLER. This row said LB + RB, but both
   // bumpers together walk the belt and zoom and have not pinged since v16.46 moved the ping to D-UP, so the row taught a button
   // that does nothing. It names D-UP now, the same button the WORLD row above names.
@@ -38378,6 +38723,7 @@ var HUDBOX={},HUDDRAG=null,HUDRESIZE=null;
 // by under one percent. At 1.05 it sits about 16 percent under, which content
 // variation cannot undo.
 var HUDZ={body:1.40, gear:1.36, raiders:1.15, legend:1.5, cond:1.05};
+var LEGZ0=HUDZ.legend, LEGMW=0;   // v27.26 (feedleg): the compact controls list zoom as set, and its width at zoom 1 as last drawn
 // v8.93: and the size is his, not mine. A grip in the bottom right corner of any
 // panel scales it, saved on the profile beside the position and the collapsed
 // flag. Clamped so a panel cannot be shrunk into nothing or grown off the screen.
@@ -38745,6 +39091,7 @@ function raidStatusDraw(){
   z=G.active;
   for(i=0;i<G.zones.length;i++){ if(G.zones[i].open===false) continue; tz++; d=dist(p,G.zones[i]); if(d<bd){ bd=d; nz=G.zones[i]; } }
   T.push({l:'EXTRACTION',v:z?zoneBadge(z):(tz?'NONE CALLED':'ALL CLOSED'),c:z?HUDC.extract:(tz?'#cdd6dd':HUDC.danger),s:nz?('NEAREST '+extLetter(nz)+'  '+metres(bd)+'M '+compass8(nz.x-p.x,nz.y-p.y)):'',rail:z?HUDC.extract:'#4a5257'});
+  try{ goalsTiles(T); }catch(_gtl){}   // v27.27 (coop8): the run goals, a tile each
   // the teammates
   if(typeof NET==='object'&&NET&&NET.on&&NET.roster){
     for(i=0;i<NET.roster.length;i++){
@@ -38878,7 +39225,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
     // v11.39: above the vitals panel, not inside it. HUDBOX.body is set earlier
     // this frame and carries the panel drag, so the hint follows it.
-    var _hy=(HUDBOX.body?HUDBOX.body.y-LH(6):H-14);
+    var _hy=(FEEDBOX.on?FEEDBOX.y-LH(6):(HUDBOX.body?HUDBOX.body.y-LH(6):H-14));   // v27.26 (feedleg): the hint stands over the feed, not on its last line
     // v19.93, from the code review of 2026-10-08: no pad button sends H, so on a controller this hint (and H  hide below) named a key
     // the pad player cannot press, as H  full list did before v19.68. On a pad they are left out.
     if(!(PAD&&PAD.on)) ctx.fillText(legendKeys('F1')+'  controls',14,_hy);   // v25.xx (keyswap): F1
@@ -41982,39 +42329,24 @@ function kitFillRandom(){
   P.kit=kitWheelItems(1,kitPlaceGuns(list),function(am){ return am[Math.floor(Math.random()*am.length)]; });
   return {gun:list[0]||null,kit:P.kit};
 }
+// v26.xx (kit3), HIS WORD (2026-10-14): "if 'best kit', give 3 guns" and "top gear should pull up to 3 of each". BEST KIT: HIS THREE BEST GUNS, by the rarity each wears (the colour: a rarity twin
+// outranks its model), then the tier, then what it is worth, three different models (never a gun and its own twin). The best is in his hands, the second in the other hand, the third packed
+// from the stash (an armoury gun is moved out to the stash for it), each on its class key, as RANDOM KIT does (kitPlaceGuns). THE ITEMS: UP TO THREE of each of the eight wheel types he
+// has in the stash, in wheel order (Medkit, Smoke, Frag, Tripwire, Armour, Decoy, Bandage, Stim; one item to a type in this build, so no variant to rank), the Armour only with a rig
+// that holds plates, then the biggest Ammo Box, never more than the pack room. The items stay in the stash until the raid starts. (The old TOP GEAR was one gun, two of each grenade and a
+// plate, an ammo and two heals.)
+function kitFillBest(){
+  var own=kitOwnGuns(), sorted, list=[], seenB={}, i;
+  sorted=own.slice().sort(function(a,b){
+    return ((_RRANK[gunRarity(b)]||0)-(_RRANK[gunRarity(a)]||0))||((WTIER[b]||0)-(WTIER[a]||0))||(ival('gun_'+b)-ival('gun_'+a))||(a<b?-1:1);
+  });
+  for(i=0;i<sorted.length&&list.length<3;i++){ if(seenB[gunBase(sorted[i])]) continue; seenB[gunBase(sorted[i])]=1; list.push(sorted[i]); }
+  P.kit=kitWheelItems(3,kitPlaceGuns(list),function(am){ var bi=am[0], j; for(j=1;j<am.length;j++) if((ITEMS[am[j]].amt||0)>(ITEMS[bi].amt||0)) bi=am[j]; return bi; });
+  return {gun:list[0]||null,kit:P.kit};
+}
 function kitFill(rand){
   if(rand) return kitFillRandom();   // v26.xx (kit2): RANDOM KIT is two guns and one of each wheel item
-  var own=(P.weapons||[]).filter(function(g){ return g&&g!=='fists'&&WEAPONS[g]; }), g=null, pool=(P.stash||[]).slice(), out=[], i, j, t, cap=0, tc={}, c;
-  if(own.length){
-    if(rand){
-      // v21.13, HIS ORDER (2026-10-08): "'random from stash' loadout should never start player with a scav pistol if i have guns
-      // in the stash. give me 2 random stash guns always". It picked one gun at random from everything he owns, the Scav Pistol
-      // included, and left the second slot as it was, so he could go up holding a Scav Pistol or carrying one on his back. Now
-      // both slots are filled at random from his guns, two different kinds, and the Scav Pistol is never picked while he owns
-      // any other gun; with only one other gun, it goes in his hands and the back slot stays empty.
-      var _rp=own.filter(function(k){ return k!=='pistol'; }), _rs;
-      if(!_rp.length) _rp=own.slice();
-      g=_rp[Math.floor(Math.random()*_rp.length)];
-      _rs=_rp.filter(function(k){ return k!==g; });
-      P.equippedSec=_rs.length?_rs[Math.floor(Math.random()*_rs.length)]:'none';
-    } else { own.sort(function(a,b){ return (WTIER[b]||0)-(WTIER[a]||0); }); g=own[0]; }
-  }
-  if(g){ if(P.equippedSec===g) P.equippedSec='none'; P.equipped=g; }
-  try{ cap=rigCeil(myRig()); }catch(_rc){ cap=0; }
-  function ok(k){ var q=ITEMS[k]; return !!q&&(q.use==='throw'||q.use==='ammo'||q.use==='heal'||(q.use==='armor'&&cap>0)); }
-  if(rand){
-    c=pool.filter(ok);
-    for(i=0;i<6&&c.length;i++){ j=Math.floor(Math.random()*c.length); out.push(c[j]); c.splice(j,1); }
-  } else {
-    for(i=0;i<pool.length;i++){ t=ITEMS[pool[i]]; if(t&&t.use==='throw'&&(tc[pool[i]]||0)<2){ tc[pool[i]]=(tc[pool[i]]||0)+1; out.push(pool[i]); pool[i]=null; } }
-    ['armor','ammo','heal','heal'].forEach(function(u){
-      var bi=-1, bv=-1, j2, q;
-      for(j2=0;j2<pool.length;j2++){ if(!pool[j2]||!ok(pool[j2])) continue; q=ITEMS[pool[j2]]; if(q.use===u&&(q.amt||0)>bv){ bi=j2; bv=q.amt||0; } }
-      if(bi>=0){ out.push(pool[bi]); pool[bi]=null; }
-    });
-  }
-  P.kit=out;
-  return {gun:g,kit:out};
+  return kitFillBest();   // v26.xx (kit3): BEST KIT is the three best guns and up to three of each
 }
 function kitExtraHide(){ ['askrand','asktop'].forEach(function(id){ var b=document.getElementById(id); if(b) b.style.display='none'; }); ASKRAND=null; ASKTOP=null; }
 function askRestore(){
@@ -44453,7 +44785,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.23: RANDOM KIT gives two random guns on their class keys and one of each wheel item. Check 27.23 fails on v27.22',
+  now:'v27.48: The what is new card names the feed. Check 27.48 fails on v27.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -51229,6 +51561,7 @@ function netFeedTake(peer,m){
   return 'kf';
 }
 function netFeedPush(s,who){
+  try{ if(NET.role==='join'){ var _fm=(s===NET.seat); feedKillLine(_fm?'YOU':String(netSeatName(s)||'PILLAGER').toUpperCase(),_fm,!_fm,String(who),HUDC.warn,''); } }catch(_fkp){}   // v27.24 (feed1): the host window writes its own kill line when the body falls
   var nm=(s===NET.seat)?'YOU':(netSeatName(s)||'PILLAGER');
   if(!NET.feed) NET.feed=[];
   NET.feed.push({txt:nm+' killed '+who,me:(s===NET.seat),at:Date.now()});
@@ -51899,7 +52232,7 @@ function netEntNewWord(e){
 function netEntGone(e){
   var how=(e.hp<=0||e.finished)?'dead':'out', q;
   netBroadcast({t:'ent',op:'gone',id:e.nid,how:how,n:NET.entN});   // n: the snapshot that follows; an older one naming this body is a late packet
-  if(how==='dead'&&e.bySeat>0&&!e.byPlayer){ q=netPeerOfSeat(e.bySeat); if(q) netSend(q,{t:'kill',seat:e.bySeat,id:e.nid,k:e.kind,el:e.elite?1:0}); }
+  if(how==='dead'&&e.bySeat>0&&!e.byPlayer){ q=netPeerOfSeat(e.bySeat); if(q) netSend(q,{t:'kill',seat:e.bySeat,id:e.nid,k:e.kind,el:e.elite?1:0}); try{ flowKill(e.kind,e.elite?1:0,!!(e.boss||e.name===BOSS_NAME)); }catch(_nfk){} }   // v27.27 (coop8): and a kill of player 2 counts for the run goals
   if(how==='dead'&&(e.byPlayer||e.bySeat>0)) netFeedKill(e.byPlayer?0:e.bySeat,e);   // v16.42: the kill feed
   return how;
 }
@@ -52038,6 +52371,7 @@ function netEntWord(peer,m){
 // drops is the host world, a later slice). Nothing here draws from the seeded stream.
 function netEntDeathFx(e){
   try{ deathAnimAdd(e); }catch(_dz){}   // v17.47: his pick 29, the death animation in a linked window
+  try{ feedKillEnt(e); }catch(_fkm){}   // v27.24 (feed1): the kill in this window feed (the host word that names who did it joins this line)
   if(e&&e.name===BOSS_NAME){ try{ say(BOSS_NAME+' DESTROYED','obj',{sub:'Its hoard is open.'}); }catch(_bs){} }   // v17.56: the teammate hears the boss go down, as the host does   // v22.xx (R53): an objective row in caps
   try{
     var p=G.player;
@@ -52406,6 +52740,7 @@ function netKillTake(peer,m){
   if(!k) return 'bad';
   if(T.kills&&T.kills[k]!==undefined) T.kills[k]++;
   try{ contractKill(k); }catch(_ck){}
+  if(e){ try{ gunKillNote(e); }catch(_gkn2){} try{ trophyKill(e); }catch(_tk2){} }   // v26.xx (career10): cloud review 24: player 2 kill tally and trophies count on his own window too
   if(m.el||(e&&e.elite)) T.eliteKills=(T.eliteKills||0)+1;
   // v23.36 (arcmidfixa), review of arcade builds 7 to 13: AN OVERSEER KILL BY PLAYER 2 SCORED 400, NOT 2,000. The body here is a mirror
   // made by netEntMake/netEntFill, which never set boss, so player 2 scored the Overseer as a plain warden. A mirror is known as the
@@ -52752,6 +53087,7 @@ function netSrchTick(dt){
 // tally, contracts and hot ground bonus are not touched.
 function netContOpenHost(ct,by){
   ct.opened=true; ct.prog=0; ct.netBy=-1; ct.netOpen=1; ct.netOpenBy=by;
+  try{ flowCrate(ct); }catch(_fch){}   // v27.43 (rvw1): player 2's box counts for the party too
   netContLitter(ct);
   netBroadcast({t:'cont',cid:ct.cid,st:'open',by:by});
 }
@@ -53831,7 +54167,7 @@ function airScan(){
     h=(+e.hp>0)?+e.hp:0;
     if(typeof e.airH==='number'&&h<e.airH&&(+e.pHitT||0)>0&&airSide(e)&&!(e.pHitSeat|0)){   // v27.19 (coop6): and never a round player 2 landed, that is his meter
       drop=e.airH-h; A.dealt+=drop;
-      if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+drop); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:'PRESS G'}); } }
+      if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+drop); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:airHint()}); } }
     }
     e.airH=h;
   }
@@ -53891,7 +54227,7 @@ function airTick(dt){
   }
 }
 function airDraw(c,p){
-  var A=G.flow&&G.flow.air, z, q, s, m, T, i, j, st, tf, dd, pt, pulse, bw, bh, x, y, c0, fl, rdy, R, t=G.t||0, ar, bx, bwid, by, hd;
+  var A=G.flow&&G.flow.air, z, q, s, m, T, i, j, st, tf, dd, pt, pulse, bw, bh, x, y, c0, fl, rdy, R, t=G.t||0, ar, bx, bwid, by, hd, R0;
   if(!A) return;
   z=Math.max(1,hudRes()); q=ZOOM(); R=AIR.R*q; ar=AIR.spread*q+R*0.4;
   var U=function(v){ return LH(v)*z; };   // v26.xx (flow2b): the HUD size the raid status uses, so the plate grows with the screen as the text does
@@ -53904,7 +54240,7 @@ function airDraw(c,p){
     c.lineWidth=2*z; c.beginPath(); c.moveTo(s.x-22*z,s.y); c.lineTo(s.x-8*z,s.y); c.moveTo(s.x+8*z,s.y); c.lineTo(s.x+22*z,s.y);
     c.moveTo(s.x,s.y-22*z); c.lineTo(s.x,s.y-8*z); c.moveTo(s.x,s.y+8*z); c.lineTo(s.x,s.y+22*z); c.stroke();
     c.textAlign='center'; c.font=hudFS(TYPE.head); c.fillStyle='#ffd0c0'; hudText('AIR STRIKE',s.x,s.y-ar-U(24));
-    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     G CANCEL',s.x,s.y-ar-U(8));
+    c.font=hudFS(TYPE.micro); c.fillStyle=UIC.tx_2; hudText((padOn()?pbn(7):'LMB')+' CALL     '+(padOn()?padB('LB + RB'):keyLabel('KeyG','G'))+' CANCEL',s.x,s.y-ar-U(8));
   }
   for(i=0;i<A.sk.length;i++){
     st=A.sk[i]; s=w2s(st.x,0,st.y);
@@ -53925,14 +54261,15 @@ function airDraw(c,p){
   }
   if(A.m>0||A.aim||A.sk.length){
     c0=(G.hotCells&&G.hotCells[0])?G.hotCells[0].y:H-U(130);
-    bw=U(200); bh=U(28); x=Math.round(W/2+U(16)); y=Math.round(c0-U(112));
+    bw=U(200); bh=U(28); R0=airPlateAt(bw,bh,z); x=R0.x; y=R0.y;   // v27.36 (strikeplace): over on the right, at the end of the gun bar (was just right of the middle, in the way of the power-up chips and the item in hand)
+    G.airBox={x:x,y:y,w:bw,h:bh};
     rdy=A.m>=AIR.need; fl=clamp(A.m/AIR.need,0,1);
     hudPlate(x,y,bw,bh,rdy?UIC.acc:null,HUDC.plate);
     c.textAlign='left'; c.font=hudFS(TYPE.micro); c.fillStyle=rdy?UIC.acc:UIC.tx_2; hudText('AIR STRIKE',x+U(12),y+Math.round(bh*0.64));
-    bx=x+U(96); bwid=bw-U(96)-U(48); by=Math.round(y+bh*0.5-U(3));
+    bx=x+U(96); bwid=bw-U(96)-U(padOn()?76:48); by=Math.round(y+bh*0.5-U(3));
     c.fillStyle='rgba(255,255,255,.12)'; c.fillRect(bx,by,bwid,U(6));
     c.fillStyle=rdy?('rgba(255,192,74,'+(0.75+0.25*Math.sin(t*8)).toFixed(3)+')'):'#ff8a3c'; c.fillRect(bx,by,bwid*fl,U(6));
-    if(rdy) hudKey('G',x+bw-U(46),y+Math.round(bh*0.7),U(8),U(32));
+    if(rdy) hudKey(airCapLabel(),x+bw-U((padOn()||airCapLabel().length>1)?74:46),y+Math.round(bh*0.7),U(8),U((padOn()||airCapLabel().length>1)?62:32));   // v27.43 (rvw1, cloud review 21): the key as it is bound
     else { c.textAlign='right'; c.fillStyle=UIC.tx_1; hudText(Math.floor(fl*100)+'%',x+bw-U(10),y+Math.round(bh*0.64)); }
   }
   c.restore();
@@ -53946,7 +54283,6 @@ function flowTick(dt){
   evTick(dt);
   shTick(dt);
   goldTick(dt);
-  clueTick(dt);
   // FLOW-TICKS (the next flow builds add their ticks above this line)
 }
 function flowDraw(c,p){
@@ -53956,7 +54292,6 @@ function flowDraw(c,p){
   evDraw(c);
   shDraw(c);
   goldDraw(c);
-  clueDraw(c);
   // FLOW-DRAWS (the next flow builds add their draws above this line)
 }
 // v26.xx (flow3), HIS YES (2026-10-14) to suggestion 6, RUN GOALS: "three tiny goals per raid, each paying a score chip, the same in DEMO and CAREER". Three
@@ -53993,9 +54328,9 @@ function goalsMake(S){
 function goalProg(id,S){
   var K=S.kinds||{}, i, n=0, L, C;
   if(id==='kill10') return S.kills|0;
-  if(id==='crate6'){ C=G.containers||[]; for(i=0;i<C.length;i++) if(C[i]&&C[i].opened) n++; S.crates=Math.max(S.crates|0,n); return S.crates; }
+  if(id==='crate6') return S.crates|0;   // v27.43 (rvw1, cloud review 12): the boxes the party opened (flowCrate), not the ones pillagers and hires emptied
   if(id==='wave3') return (S.dir&&S.dir.waves)|0;
-  if(id==='air1') return (S.air&&S.air.used)|0;
+  if(id==='air1') return ((S.air&&S.air.used)|0)+(S.pAir|0);   // v27.27 (coop8): a strike either player called
   if(id==='vault'){ L=(G.map&&G.map.locked)||[]; for(i=0;i<L.length;i++) if(L[i]&&L[i].open) n++; return n; }
   if(id==='pill3') return K.raider|0;
   if(id==='elite') return S.elites|0;
@@ -54014,13 +54349,14 @@ function flowChip(n,head,sub){
 }
 function goalsTick(dt){
   var S=flowS(), i, gl, v;
+  if(flowPeer()) return;   // v27.27 (coop8): a linked player 2 window counts nothing and pays no chip, the goals are the host (goalsNetTake)
   if(!S.goals) goalsMake(S);
   for(i=0;i<S.goals.length;i++){
     gl=S.goals[i]; if(gl.done) continue;
     v=goalProg(gl.id,S); gl.v=Math.min(gl.n,v);
     if(v>=gl.n){ gl.done=1; flowChip(gl.chip,'GOAL DONE',gl.t); }
   }
-  if(!S.gtold&&(G.t||0)>=1.5){ S.gtold=1; say('RUN GOALS','obj',{sub:'THREE SMALL GOALS'}); }
+  if(!S.gtold&&(G.t||0)>=1.5){ S.gtold=1; }   // v27.42 (info1): the goals are rows of RUN INFO all raid, no callout for them at the start
 }
 function goalsHud(c){
   var S=G.flow, gl, i, z, U, w, lh, pad, h, x, y, hb, yy, n=0;
@@ -54085,13 +54421,20 @@ function firePlan(S){
   return plan;
 }
 // put a body back on the edge of a lit fire; true when it was inside
-function fireKeep(o,rad){
-  var F=G.flow.fires, i, f, d, R, a, nx, ny, k, ta;
+function fireKeep(o,rad,tg,dt){   // v27.43 (rvw1, cloud review 3): tg is where a body is going and dt the frame, so one that wants to cross the fire slides round its edge instead of grinding on it
+  var F=G.flow.fires, i, f, d, R, a, nx, ny, k, ta, sg, cr;
   for(i=0;i<F.length;i++){
     f=F[i]; if(!fireLit(f)) continue;
     d=Math.hypot(o.x-f.x,o.y-f.y); R=f.r+rad;
     if(d>=R) continue;
     a=(d>0.5)?Math.atan2(o.y-f.y,o.x-f.x):((o.id|0)*1.7+0.3);
+    if(tg&&dt>0&&d>0.5&&(tg.x-f.x)*(o.x-f.x)+(tg.y-f.y)*(o.y-f.y)<0){   // v27.43 (rvw1): his way lies across the fire: along the edge, the short way round
+      cr=(o.x-f.x)*(tg.y-o.y)-(o.y-f.y)*(tg.x-o.x);
+      sg=(o.fkS&&Math.abs(cr)<R*60)?o.fkS:((cr>=0)?1:-1); o.fkS=sg;   // and he keeps to the side he chose, so a body straight in line does not dither
+      ta=a+sg*Math.min(0.6,150*dt/R);
+      nx=f.x+Math.cos(ta)*(R+1); ny=f.y+Math.sin(ta)*(R+1);
+      if(nx>20&&ny>20&&nx<WORLD_W-20&&ny<WORLD_H-20&&spotFree(G.map,nx,ny,Math.max(6,rad*0.6))){ o.x=nx; o.y=ny; return true; }
+    }
     for(k=0;k<5;k++){
       ta=a+((k===0)?0:((k&1)?1:-1)*Math.ceil(k/2)*0.55);
       nx=f.x+Math.cos(ta)*(R+1); ny=f.y+Math.sin(ta)*(R+1);
@@ -54132,7 +54475,7 @@ function fireTick(dt){
   for(i=0;i<G.ents.length;i++){
     e=G.ents[i];
     if(!e||!(e.hp>0)||e.kind==='snitch') continue;
-    fireKeep(e,e.r||12);
+    fireKeep(e,e.r||12,fireGoal(e),dt);   // v27.43 (rvw1): and where he is going
     if(fireNear(e,e.r||12)){ e.hp-=FIRE.ebur*dt; e.hitT=Math.max(e.hitT||0,0.1); }
   }
 }
@@ -54187,7 +54530,7 @@ function flowMarks(){
   fireMarks(out);
   evMarks(out);
   shMarks(out);
-  clueMarks(out);
+  goldMarks(out);   // v27.47 (nocluehunt): the golden enemy, on the maps when it is near
   // FLOW-MARKS (the next flow builds add their marks above this line)
   return out;
 }
@@ -54229,7 +54572,7 @@ function flowMap(c,ox,oy,sc,MZ,FSf){
 // WRECK: a fire of 58 that burns 45 s (impassable, as the fuel fires) and a wreck on its edge with two good items (a safe roll and a locker roll),
 // marked on the maps until it is opened.
 var EV={tag:62,first:[150,215],gap:[150,200],warn:25,retry:12};
-var EV_IDS=['debris','convoy','bounty','cool','lock','rampage'];
+var EV_IDS=['debris','convoy','bounty','cool','rampage'];   // v27.37 (nolockdown): the lockdown alarm is gone for good
 var EVENTS={};
 function evS(){ var S=flowS(); if(!S.ev) S.ev={plan:null,live:[],n:0,wrecks:[]}; return S.ev; }
 function evEligible(){
@@ -54365,7 +54708,7 @@ EVENTS.debris={name:'ORBITAL DEBRIS',sub:'GET CLEAR',warn:22,dur:20,r:300,fade:4
       for(k=0;k<60&&!got;k++){
         a=rr()*6.2832; d=500+rr()*500; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;
         if(x<300||y<300||x>WORLD_W-300||y>WORLD_H-300) continue;
-        if(!spotFree(G.map,x,y,40)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)||flowZoneNear(x,y,420)) continue;
+        if(!spotFree(G.map,x,y,40)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)||flowZoneNear(x,y,420)||shAt(x,y,80)) continue;
         got={x:x,y:y};
       }
     });
@@ -54419,8 +54762,13 @@ EVENTS.debris={name:'ORBITAL DEBRIS',sub:'GET CLEAR',warn:22,dur:20,r:300,fade:4
 // (the arcade cull leaves it), and nothing else changes. DEMO and CAREER are the same.
 function convoyCrew(ev){ var a=[], i, e; for(i=0;ev.d.crew&&i<ev.d.crew.length;i++){ e=ev.d.crew[i]; if(e&&e.hp>0&&G.ents.indexOf(e)>=0) a.push(e); } return a; }
 function convoyLeave(ev){
-  var i, k;
-  for(i=0;ev.d.crew&&i<ev.d.crew.length;i++){ k=G.ents.indexOf(ev.d.crew[i]); if(k>=0) G.ents.splice(k,1); }
+  var i, k, e, kept=0;
+  for(i=0;ev.d.crew&&i<ev.d.crew.length;i++){
+    e=ev.d.crew[i]; k=G.ents.indexOf(e); if(k<0) continue;
+    if(evBodyAway(e)) G.ents.splice(k,1);   // v27.43 (rvw1, cloud review 10): out of the world only where nobody can see it
+    else { e.carrier=0; kept++; }           // in view or close: he stays, an ordinary machine now
+  }
+  return kept;
 }
 function convoyCrate(ev,x,y){
   var L=[], c=null, E=evS(), seed=(((G.seed>>>0)^Math.imul((ev.n|0)+101,2654435761))>>>0)||1;
@@ -54434,7 +54782,7 @@ EVENTS.convoy={name:'MACHINE CONVOY',sub:'ARMOURED TRAIN',warn:20,dur:170,r:240,
   my:function(ev){ var c=ev.d.car; return (ev.ph!=='warn'&&c&&c.hp>0)?c.y:ev.y; },
   pick:function(ev){
     var p=G.player, S=null, D=null;
-    function ok(x,y){ return x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,300); }
+    function ok(x,y){ return x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,300)&&!shAt(x,y,80); }
     evStream(ev,function(){
       var k, a, d, x, y;
       for(k=0;k<60&&!S;k++){ a=rr()*6.2832; d=700+rr()*400; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d; if(ok(x,y)) S={x:x,y:y}; }
@@ -54472,7 +54820,7 @@ EVENTS.convoy={name:'MACHINE CONVOY',sub:'ARMOURED TRAIN',warn:20,dur:170,r:240,
     }
     if(Math.hypot(car.x-ev.d.dx,car.y-ev.d.dy)<70){
       ev.d.over=1; convoyLeave(ev);
-      try{ say('CONVOY AWAY','info'); }catch(_ca){}
+      try{ if(G.ents.indexOf(car)<0) say('CONVOY AWAY','info'); else say('CONVOY ARRIVED','info',{sub:'THEY STAY'}); }catch(_ca){}   // v27.43 (rvw1): AWAY is said only once it is true
       return;
     }
     for(i=0;i<crew.length;i++){
@@ -54507,7 +54855,7 @@ EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,f
       var k, a, d, x, y;
       for(k=0;k<80&&!S;k++){
         a=rr()*6.2832; d=700+rr()*300; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;
-        if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,350)) S={x:x,y:y};
+        if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,350)&&!shAt(x,y,80)) S={x:x,y:y};
       }
     });
     if(!S) return false;
@@ -54531,21 +54879,23 @@ EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,f
     var e=ev.d.e, p=G.player, down;
     if(ev.d.over) return;
     if(!e){ ev.d.over=1; return; }
-    down=!(e.hp>0)||e.downed||e.finished||G.ents.indexOf(e)<0;
+    down=!(e.hp>0)||e.finished||G.ents.indexOf(e)<0;   // v27.43 (rvw1, cloud review 17): a DOWNED hunter can get up, so he is still on the hunt
     if(down){
       ev.d.over=1;
-      if(e.byPlayer!==false){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; }
-      else { try{ say('BOUNTY GONE','info',{sub:'NOT YOUR KILL'}); }catch(_bg){} }
+      if(e.hp<=0&&(e.byPlayer===true||(e.bySeat|0)>0)){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; }   // paid for a kill of the party (player 2 too), never for a death nobody caused (fire, debris, a barrel)
+      else { try{ say('BOUNTY GONE','info',{sub:(e.hp<=0)?'NOT YOUR KILL':'HE GOT AWAY'}); }catch(_bg){} }
       return;
     }
+    if(e.downed) return;
     e.state='chase'; e.alert=3; e.chaseHold=0; e.tx=p.x; e.ty=p.y;
   },
   done:function(ev){ return !!ev.d.over; },
   end:function(ev){
     var e=ev.d.e, k;
     if(!ev.d.over&&e&&e.hp>0){
-      k=G.ents.indexOf(e); if(k>=0) G.ents.splice(k,1);
-      try{ say('BOUNTY SLIPPED AWAY','info'); }catch(_be){}
+      k=G.ents.indexOf(e);
+      if(k>=0&&evBodyAway(e)){ G.ents.splice(k,1); try{ say('BOUNTY SLIPPED AWAY','info'); }catch(_be){} }   // v27.43 (rvw1, cloud review 10): out of the world only where nobody can see it
+      else if(k>=0){ e.bounty=0; try{ say('BOUNTY OVER','info',{sub:'HE STAYS'}); }catch(_bo){} }
     }
   },
   live:function(ev){ return 'HUNTING YOU'; },
@@ -54591,7 +54941,7 @@ EVENTS.cool={name:'COOLANT RUPTURE',sub:'FOG AND COLD',warn:18,dur:75,r:420,fade
       var k, a, d, x, y;
       for(k=0;k<80&&!S;k++){
         a=rr()*6.2832; d=450+rr()*550; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;
-        if(x>400&&y>400&&x<WORLD_W-400&&y<WORLD_H-400&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,450)) S={x:x,y:y};
+        if(x>400&&y>400&&x<WORLD_W-400&&y<WORLD_H-400&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,450)&&!shAt(x,y,80)) S={x:x,y:y};
       }
     });
     if(!S) return false;
@@ -54634,125 +54984,10 @@ EVENTS.cool={name:'COOLANT RUPTURE',sub:'FOG AND COLD',warn:18,dur:75,r:420,fade
     }
   }
 };
-// v26.xx (flow9), HIS ANSWER (2026-10-14), the raid events, the fifth: LOCKDOWN ALARM, "blast doors seal a district for 60 s with a cache inside, and its machines
-// go berserk". A 25 s warning over a ring 300 wide (450 to 1,000 from you, 450 and more from any extraction ring) with a cache in the middle: the alarm gives
-// you time to get in. Then the DOORS SLAM and the ring is a wall for LOCK.seal (60) s: every body inside stays inside and every body outside stays outside
-// (whoever crosses the line is put back on its own side, the player, the machines and the pillagers alike; bullets fly over). The machines inside, with a
-// garrison made up to five if the ground held fewer, go BERSERK: 35 percent faster, 25 percent harder, always on the chase after you, with a red ring under
-// them. At 60 s the DOORS OPEN, and the berserk machines pour out for LOCK.rel (20) more seconds, then calm down and the event ends. The LOCKDOWN CACHE in the
-// middle (three cache rolls and a jackpot roll) is yours if you can take it; it is marked on the maps until opened. Made on side streams of the event.
-// DEMO and CAREER are the same.
-var LOCK={seal:60,rel:20,fast:1.35,hard:1.25,garrison:5};
-function lockMachine(e){ return !!e&&e.hp>0&&!e.boss&&!e.merc&&!e.neutral&&e.kind!=='raider'&&e.kind!=='peddler'&&e.kind!=='stray'&&e.kind!=='snitch'&&!e.friendlyPC; }
-function lockSealed(ev){ return !!ev&&ev.id==='lock'&&ev.ph==='live'&&ev.lt<LOCK.seal; }
-// put o back on its own side of the ring (inside: 1, outside: 2); true when it was moved
-function lockKeep(o,rad,ev,side){
-  var d=Math.hypot(o.x-ev.x,o.y-ev.y), R=ev.r, a, tgt, nx, ny;
-  if(side===1){ if(d<=R-rad-2) return false; tgt=R-rad-6; } else { if(d>=R+rad+2) return false; tgt=R+rad+6; }
-  a=(d>0.5)?Math.atan2(o.y-ev.y,o.x-ev.x):0;
-  nx=ev.x+Math.cos(a)*tgt; ny=ev.y+Math.sin(a)*tgt;
-  if(spotFree(G.map,nx,ny,Math.max(6,rad*0.6))){ o.x=nx; o.y=ny; return true; }
-  return false;
-}
-function lockCache(ev){
-  var L=[], c=null, E=evS(), seed=(((G.seed>>>0)^Math.imul((ev.n|0)+91,2654435761))>>>0)||1;
-  sideStream(seed,EV.tag+8,function(){ var k; for(k=0;k<3;k++) L.push(rollLoot(LOOT.cache)); L.push(rollLoot(LOOT.jackpot)); });
-  sideStream(seed,EV.tag+9,function(){ c=setLoot(mkContainer(ev.x,ev.y,'cache'),L); });
-  c.time=4.2; c.tag='LOCKDOWN CACHE'; c.wreck=1; G.containers.push(c); E.wrecks.push(c);
-  return c;
-}
-EVENTS.lock={name:'LOCKDOWN ALARM',sub:'DISTRICT SEALS',warn:25,dur:80,r:300,fade:4,col:'#ff6a3a',
-  pick:function(ev){
-    var p=G.player, S=null;
-    evStream(ev,function(){
-      var k, a, d, x, y;
-      for(k=0;k<80&&!S;k++){
-        a=rr()*6.2832; d=450+rr()*550; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;
-        if(x>400&&y>400&&x<WORLD_W-400&&y<WORLD_H-400&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!flowZoneNear(x,y,450)) S={x:x,y:y};
-      }
-    });
-    if(!S) return false;
-    ev.x=S.x; ev.y=S.y;
-    lockCache(ev);
-    return true;
-  },
-  start:function(ev){
-    var p=G.player, inn=[], i, e, made=[], seed=(((G.seed>>>0)^Math.imul((ev.n|0)+93,2654435761))>>>0)||1, d;
-    for(i=0;i<G.ents.length;i++){
-      e=G.ents[i];
-      if(!e) continue;
-      e.lkSide=(Math.hypot(e.x-ev.x,e.y-ev.y)<ev.r)?1:2;
-      if(e.lkSide===1&&lockMachine(e)) inn.push(e);
-    }
-    if(inn.length<LOCK.garrison){
-      sideStream(seed,EV.tag+10,function(){
-        var k, t, a, r, x, y, m;
-        for(k=0;inn.length+made.length<LOCK.garrison&&k<20;k++){
-          for(t=0;t<12;t++){
-            a=rr()*6.2832; r=rr()*ev.r*0.7; x=ev.x+Math.cos(a)*r; y=ev.y+Math.sin(a)*r;
-            if(spotFree(G.map,x,y,30)){ m=(k&1)?mkSentry(x,y):mkCrawler(x,y); m.lkSide=1; made.push(m); break; }
-          }
-        }
-      });
-      for(i=0;i<made.length;i++){ G.ents.push(made[i]); inn.push(made[i]); }
-    }
-    for(i=0;i<inn.length;i++){ e=inn[i]; e.berserk=1; e.lkSpd=e.spd; e.lkDmg=e.dmg; e.spd=e.spd*LOCK.fast; e.dmg=e.dmg*LOCK.hard; e.state='chase'; e.alert=3; }
-    ev.d.in=inn; ev.d.pSide=(Math.hypot(p.x-ev.x,p.y-ev.y)<ev.r)?1:2; ev.d.rel=0;
-    try{ say(ev.d.pSide===1?'SEALED IN':'DISTRICT SEALED','crit',{sub:'MACHINES BERSERK  '+LOCK.seal+'S'}); }catch(_ls){}
-  },
-  tick:function(ev,dt){
-    var p=G.player, i, e, sealed=lockSealed(ev), inn=ev.d.in||[], d;
-    if(sealed){
-      if(p&&!p.specOut) lockKeep(p,p.r||11,ev,ev.d.pSide);
-      for(i=0;i<G.ents.length;i++){
-        e=G.ents[i];
-        if(!e||!(e.hp>0)||e.kind==='snitch') continue;
-        if(!e.lkSide) e.lkSide=(Math.hypot(e.x-ev.x,e.y-ev.y)<ev.r)?1:2;
-        lockKeep(e,e.r||12,ev,e.lkSide);
-      }
-    } else if(!ev.d.rel){
-      ev.d.rel=1;
-      try{ say('DOORS OPEN','warn',{sub:'THEY ARE COMING OUT'}); }catch(_lo){}
-    }
-    for(i=0;i<inn.length;i++){
-      e=inn[i];
-      if(!e||!(e.hp>0)||e.downed||G.ents.indexOf(e)<0) continue;
-      e.state='chase'; e.alert=3; e.chaseHold=0; e.tx=p.x; e.ty=p.y;
-    }
-  },
-  end:function(ev){
-    var inn=ev.d.in||[], i, e;
-    for(i=0;i<inn.length;i++){ e=inn[i]; if(e&&e.berserk){ e.berserk=0; if(e.lkSpd) e.spd=e.lkSpd; if(e.lkDmg) e.dmg=e.lkDmg; } }
-    try{ say('LOCKDOWN OVER','info'); }catch(_le){}
-  },
-  live:function(ev){ return (ev.lt<LOCK.seal)?('SEALED '+fmtClock(Math.ceil(LOCK.seal-ev.lt))):'DOORS OPEN'; },
-  draw:function(ev,c,s,q,z){
-    var R=ev.r*q, t=G.t||0, inn=ev.d.in||[], i, e, es, a, k, sealed=lockSealed(ev), u=12*z;
-    if(ev.ph==='warn'){
-      c.strokeStyle='rgba(255,106,58,'+(0.35+0.3*Math.abs(Math.sin(t*6))).toFixed(3)+')'; c.lineWidth=3*z; c.setLineDash([26*z,16*z]);
-      c.beginPath(); c.arc(s.x,s.y,R,0,6.2832); c.stroke(); c.setLineDash([]);
-      return;
-    }
-    if(ev.ph==='live'){
-      if(sealed){
-        c.strokeStyle='rgba(255,84,48,.9)'; c.lineWidth=8*z; c.setLineDash([24*z,12*z]);
-        c.beginPath(); c.arc(s.x,s.y,R,0,6.2832); c.stroke(); c.setLineDash([]);
-        c.fillStyle='rgba(255,84,48,.95)';
-        for(k=0;k<4;k++){ a=k*1.5708; c.save(); c.translate(s.x+Math.cos(a)*R,s.y+Math.sin(a)*R); c.rotate(a); c.fillRect(-u*0.5,-u*1.6,u,u*3.2); c.restore(); }
-        c.fillStyle='rgba(255,84,48,.06)'; c.beginPath(); c.arc(s.x,s.y,R,0,6.2832); c.fill();
-      } else {
-        c.strokeStyle='rgba(255,170,90,.55)'; c.lineWidth=3*z; c.setLineDash([16*z,16*z]);
-        c.beginPath(); c.arc(s.x,s.y,R,0,6.2832); c.stroke(); c.setLineDash([]);
-      }
-    }
-    c.lineWidth=2.2*z;
-    for(i=0;i<inn.length;i++){
-      e=inn[i]; if(!e||!e.berserk||!(e.hp>0)) continue;
-      es=w2s(e.x,0,e.y); c.strokeStyle='rgba(255,60,40,'+(0.5+0.4*Math.sin(t*10+i)).toFixed(3)+')';
-      c.beginPath(); c.arc(es.x,es.y,(e.r||14)*q*1.7,0,6.2832); c.stroke();
-    }
-  }
-};
+// v27.37 (nolockdown), HIS ORDER (2026-10-14): "get rid of the sealed lockdown thing that's a mess". THE LOCKDOWN ALARM IS GONE, FOR GOOD. The event (flow9) sealed a ring of ground for a minute, with a cache in it and the
+// machines inside gone berserk, and the fence ran through whatever the ring crossed. It is out of the pool, with its fences and the collision they made, its cache and the map tag of it, its callouts, its marks, its clocks and
+// everything player 2 was told about it. The other five events stay (orbital debris, convoy, bounty pillager, coolant fog, Overseer rampage), one or two a raid as before: the plan is drawn on the event side stream, so it
+// moves nothing else that is seeded. He is never to see it again, and it must not come back.
 // v26.xx (flow10), HIS ANSWER (2026-10-14), the raid events, the sixth and last: OVERSEER RAMPAGE, "the boss leaves its lair and sweeps the map". Only in a raid whose
 // Overseer is alive. A 12 s warning with the ring on the Overseer, then for RAMP.dur (120) s it is OFF THE LEASH: 60 percent faster, it walks three waypoints
 // on open ground in three different quarters of the map (a side stream of the event picks them) and then comes for YOU wherever you are. It does this with its
@@ -54782,7 +55017,7 @@ EVENTS.rampage={name:'OVERSEER RAMPAGE',sub:'IT LEAVES THE LAIR',warn:12,dur:RAM
         cx=WORLD_W*(0.25+0.5*(q&1)); cy=WORLD_H*(0.25+0.5*(q>>1));
         for(t=0;t<40;t++){
           x=cx+(rr()-0.5)*700; y=cy+(rr()-0.5)*700;
-          if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)){ wps.push({x:x,y:y}); break; }
+          if(x>300&&y>300&&x<WORLD_W-300&&y<WORLD_H-300&&spotFree(G.map,x,y,40)&&navReachable(G.map,x,y)&&!shutRoomAt(G.map,x,y)&&!shAt(x,y,80)){ wps.push({x:x,y:y}); break; }
         }
       }
     });
@@ -54809,47 +55044,76 @@ EVENTS.rampage={name:'OVERSEER RAMPAGE',sub:'IT LEAVES THE LAIR',warn:12,dur:RAM
   },
   live:function(ev){ var w=ev.d.wps||[]; return (ev.d.wi<w.length)?('SWEEP '+(ev.d.wi+1)+'/'+w.length):'HUNTING YOU'; }
 };
-// v26.xx (flow11), HIS YES (2026-10-14) to suggestion 4, STRONGHOLDS: "1-2 advertised fortified compounds, with a gate, two defending waves and a purple+ cache". Once the raid
-// is 3 s old it plans one, and half the time a second, stronghold on the side stream SH.tag of its seed: a ring of ground SH.r (240) across, on open reachable floor at
-// least 650 from the drop, 500 from any extraction ring and 900 from the other, with a gate on the side that faces the drop where the ground is open. THEY ARE ADVERTISED:
-// STRONGHOLD in the alert at the start and a mark with an arrow on the minimap and the sector map. THE FENCE: the ring is a fence of steel mesh (drawn on the HUD) that
-// nobody crosses, the player, the machines and the pillagers alike (each body keeps the side it started on; bullets fly through the mesh), except through the gate once
-// it is open. WAVE ONE is the garrison, three sentries and three crawlers inside. THE GATE is breached by standing within 100 of it from outside for 3 s (a ring fills
-// round it); a hold that is broken drains twice as fast. The breach is loud, opens the gate for good and sends WAVE TWO at you from inside: three elite crawlers, a
-// Bulwark and a sentry. The PURPLE CACHE in the middle (four items, every one purple or better, the last from the jackpot table) shows on the maps once the gate is
-// open. CLEAR it (gate open and both waves dead) and the STRONGHOLD CHIP of 1,000 is paid into the run score. Made on side streams. DEMO and CAREER are the same.
-var SH={tag:64,r:240,gw:0.24,n1:6,breach:3.0,chip:1000,reach:100};
+// v27.46 (flow11, REBUILT by sh2), HIS YES (2026-10-14) to suggestion 4, STRONGHOLDS: "1-2 advertised fortified compounds, with a gate, two defending waves and a purple+ cache". And HIS ORDER OF THE SAME NIGHT, after
+// he played it: "this stand at the gate feature is a mess, the map needs to be adapted, you can't just stick a circle in the middle of existing buildings lol". THE STRONGHOLD IS NOW PART OF THE MAP. The first
+// version drew a 240 wide circular fence and gate on the HUD over whatever stood there (it only asked whether the middle was free), so it cut through buildings. Now, once the raid is 3 s old, it picks a REAL BUILDING
+// on the side stream SH.tag of its seed: one whose room is big enough for six defenders and a cache (SH.minArea of floor, SH.minSide across), on open reachable ground at least 650 from the drop, clear of every
+// extraction ring (260 and half its length), touching no other building or locked room, with nobody peaceful in it, and 900 from the other stronghold. ITS OWN DOORWAY BECOMES THE GATE: the door nearest the drop whose outside
+// is open and reachable gets a steel shutter built into the wall (a real wall: it blocks bodies, rounds and sight until it is breached), and every other doorway of the building is barricaded the same way, so the gate is the one
+// way in; the building shell, windows and all, cannot be broken (noDes), so nothing walks, shoots or blasts a way round. The walls are added after the build, with no draw from the seeded stream, and the sight lines, collision
+// grids and nav are rebuilt from them (rebuildGeometry, the call a destroyed wall or a keyed door makes). WAVE ONE is the garrison, three sentries and three crawlers inside, tethered to the room (camp and campR). THE GATE is
+// breached by holding in front of it from outside for 3 s (a ring fills at the gate and nowhere else; a hold that is broken drains twice as fast); the label at the gate says HOLD TO BREACH. The breach blows the shutter off
+// (a blast, a scar, a shake, flying metal), opens the way for good, and sends WAVE TWO at you from inside: three elite crawlers, a Bulwark and a sentry. The PURPLE CACHE inside (four items, every one purple or better, the
+// last from the jackpot table) shows on the maps once the gate is open. CLEAR it (gate open and both waves dead) and the STRONGHOLD CHIP of 1,000 is paid into the run score. A window of a two player game builds the very same
+// walls from the host word (shNetTake), so both players see and hit the same compound. REAL BUILDINGS ONLY (his answer): no compound is ever built in the open, and a raid with no building that fits has no stronghold. Made on side streams. DEMO and CAREER are the same.
+var SH={tag:64,n1:6,breach:3.0,chip:1000,reach:100,minArea:90000,minSide:240,wid:9000};
 function shS(){ var S=flowS(); if(!S.sh) S.sh={sites:null}; return S.sh; }
 function shAt(x,y,pad){
-  var SS=G&&G.flow&&G.flow.sh, i, s;
+  var SS=G&&G.flow&&G.flow.sh, i, s, d=pad||0;
   if(!SS||!SS.sites) return null;
-  for(i=0;i<SS.sites.length;i++){ s=SS.sites[i]; if(Math.hypot(x-s.x,y-s.y)<s.r+(pad||0)) return s; }
+  for(i=0;i<SS.sites.length;i++){ s=SS.sites[i]; if(x>s.x-d&&x<s.x+s.w+d&&y>s.y-d&&y<s.y+s.h+d) return s; }
   return null;
 }
-function shGatePt(s){ return {x:s.x+Math.cos(s.ga)*s.r,y:s.y+Math.sin(s.ga)*s.r}; }
+function shGatePt(s){ return {x:s.gx+s.gw/2,y:s.gy+s.gh/2}; }
 function shAlive(e){ return !!e&&e.hp>0&&!e.downed&&G.ents.indexOf(e)>=0; }
-function shGate(x,y,from){
-  var base=Math.atan2(from.y-y,from.x-x), k, a, best=null, bd=9, cx, cy, d;
-  for(k=0;k<24;k++){
-    a=k*0.2618; cx=Math.cos(a); cy=Math.sin(a);
-    if(!(spotFree(G.map,x+cx*(SH.r-34),y+cy*(SH.r-34),12)&&spotFree(G.map,x+cx*(SH.r+34),y+cy*(SH.r+34),12))) continue;
-    d=Math.abs(angDiff(a,base)); if(d<bd){ bd=d; best=a; }
+function shHit(a,b,pad){ return a.x<b.x+b.w+pad&&a.x+a.w>b.x-pad&&a.y<b.y+b.h+pad&&a.y+a.h>b.y-pad; }
+function shInterior(s){ return {x:s.x+16,y:s.y+16,w:s.w-32,h:s.h-32}; }
+// the outer doorways of a building: the gaps makeBuilding left in its shell (the map keeps them as map.doors)
+function shDoorsOf(m,b){
+  var out=[], j, d;
+  for(j=0;j<(m.doors||[]).length;j++){ d=m.doors[j]; if(d.x>=b.x-1&&d.y>=b.y-1&&d.x+d.w<=b.x+b.w+1&&d.y+d.h<=b.y+b.h+1) out.push(d); }
+  return out;
+}
+// the buildings that can be a stronghold, with the doorway that would be its gate (no draw)
+function shCands(sites){
+  var m=G.map, p=G.player, B=m.buildings||[], out=[], i, j, k, b, iw, ih, cx, cy, D, bad, e, best, bd, dc, nx, ny, ox, oy, ix, iy, gp, d, o;
+  for(i=0;i<B.length;i++){
+    b=B[i]; iw=b.w-32; ih=b.h-32;
+    if(iw*ih<SH.minArea||Math.min(iw,ih)<SH.minSide) continue;
+    cx=b.x+b.w/2; cy=b.y+b.h/2;
+    if(Math.hypot(cx-p.x,cy-p.y)<650||flowZoneNear(cx,cy,260+Math.max(b.w,b.h)/2)) continue;
+    D=shDoorsOf(m,b); if(!D.length) continue;
+    bad=0;
+    for(k=0;k<B.length&&!bad;k++) if(k!==i&&shHit(b,B[k],4)) bad=1;
+    for(k=0;k<(m.locked||[]).length&&!bad;k++) if(shHit(b,m.locked[k],0)) bad=1;
+    for(k=0;k<G.ents.length&&!bad;k++){ e=G.ents[k]; if(e&&(e.neutral||e.kind==='peddler'||e.kind==='stray')&&e.x>b.x&&e.x<b.x+b.w&&e.y>b.y&&e.y<b.y+b.h) bad=1; }
+    for(k=0;k<sites.length&&!bad;k++) if(Math.hypot(cx-(sites[k].x+sites[k].w/2),cy-(sites[k].y+sites[k].h/2))<900) bad=1;
+    if(bad) continue;
+    best=null; bd=1e9;
+    for(j=0;j<D.length;j++){
+      d=D[j]; gp={x:d.x+d.w/2,y:d.y+d.h/2};
+      if(d.w>=d.h){ nx=0; ny=(gp.y<cy)?-1:1; } else { nx=(gp.x<cx)?-1:1; ny=0; }
+      ox=gp.x+nx*48; oy=gp.y+ny*48; ix=gp.x-nx*48; iy=gp.y-ny*48;
+      if(!spotFree(m,ox,oy,18)||!navReachable(m,ox,oy)||!navReachable(m,ix,iy)) continue;
+      dc=Math.hypot(gp.x-p.x,gp.y-p.y);
+      if(dc<bd){ bd=dc; best={d:d,nx:nx,ny:ny}; }
+    }
+    if(best) out.push({bi:i,b:b,gate:best});
   }
-  return best;
+  return out;
+}
+function shMakeB(i,c){
+  var b=c.b, d=c.gate.d;
+  return {i:i,kind:'b',bi:c.bi,x:b.x,y:b.y,w:b.w,h:b.h,gx:d.x,gy:d.y,gw:d.w,gh:d.h,nx:c.gate.nx,ny:c.gate.ny,open:0,prog:0,w2:0,clear:0,def:[],def2:[],cache:null,walls:[],gateWall:null};
 }
 function shLayout(){
-  var p=G.player, sites=[];
+  var sites=[];
   sideStream((G.seed>>>0)||1,SH.tag,function(){
-    var n=1+(rr()<0.5?1:0), k, tries, x, y, ga, j, ok;
+    var n=1+(rr()<0.5?1:0), k, C, s;
     for(k=0;k<n;k++){
-      for(tries=0;tries<200;tries++){
-        x=350+rr()*(WORLD_W-700); y=350+rr()*(WORLD_H-700);
-        if(Math.hypot(x-p.x,y-p.y)<650) continue;
-        ok=1; for(j=0;j<sites.length;j++) if(Math.hypot(x-sites[j].x,y-sites[j].y)<900) ok=0;
-        if(!ok||!spotFree(G.map,x,y,50)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)||flowZoneNear(x,y,SH.r+260)) continue;
-        ga=shGate(x,y,p); if(ga===null) continue;
-        sites.push({i:sites.length,x:x,y:y,r:SH.r,ga:ga,gw:SH.gw,open:0,prog:0,w2:0,clear:0,def:[],def2:[],cache:null}); break;
-      }
+      C=shCands(sites); s=null;
+      if(C.length) s=shMakeB(sites.length,C[Math.floor(rr()*C.length)]);   // real buildings only: a raid with no building that fits has no stronghold
+      if(s) sites.push(s);
     }
   });
   return sites;
@@ -54862,34 +55126,102 @@ function shLoot(){
   }
   return L;
 }
-function shPopulate(s){
-  var seed=(((G.seed>>>0)^Math.imul(s.i+1,40503))>>>0)||1, list=[], L=[], c=null, i;
-  sideStream(seed,SH.tag+1,function(){
-    var k, t, a, r, x, y, e;
-    for(k=0;k<SH.n1;k++){
-      for(t=0;t<30;t++){
-        a=rr()*6.2832; r=rr()*s.r*0.65; x=s.x+Math.cos(a)*r; y=s.y+Math.sin(a)*r;
-        if(spotFree(G.map,x,y,26)){ e=(k<3)?mkSentry(x,y):mkCrawler(x,y); e.shS=[0,0,0]; e.shS[s.i]=1; e.shi=s.i; list.push(e); break; }
+// a wall of the compound: a real wall of the map, so it blocks, it draws, it stops rounds and sight; never broken. Added once (a second call with the same rectangle gives the first back).
+function shWall(s,x,y,w,h,kind,d){
+  var S=shS(), m=G.map, i, wl;
+  for(i=0;i<m.walls.length;i++){ wl=m.walls[i]; if(wl.sh!==undefined&&wl[kind]&&wl.x===x&&wl.y===y&&wl.w===w&&wl.h===h){ if(s.walls.indexOf(wl)<0) s.walls.push(wl); return wl; } }
+  S.wn=(S.wn|0)+1;
+  wl={x:x,y:y,w:w,h:h,d:d,noDes:1,sh:s.i,wid:SH.wid+(S.wn|0)}; wl[kind]=1;
+  m.walls.push(wl); s.walls.push(wl);
+  return wl;
+}
+// the compound's walls: the shell sealed, the gate shutter and the barricades (no rebuild here, the caller rebuilds once)
+function shBuild(s){
+  var m=G.map, b, D, j, d, k, w2;
+  if(s.built) return s.walls.length;
+  s.built=1;
+  if(s.kind==='b'){
+    b=m.buildings[s.bi]; if(!b) return 0;
+    for(k=0;k<m.walls.length;k++){
+      w2=m.walls[k];
+      if(w2.sh!==undefined||w2.ib!==undefined||w2.tree||w2.furn||w2.wreck||w2.ruin||w2.door||w2.lockWall||w2.ledge) continue;
+      if(w2.x>=b.x-1&&w2.y>=b.y-1&&w2.x+w2.w<=b.x+b.w+1&&w2.y+w2.h<=b.y+b.h+1&&(w2.x<b.x+18||w2.y<b.y+18||w2.x+w2.w>b.x+b.w-18||w2.y+w2.h>b.y+b.h-18)) w2.noDes=1;
+    }
+    D=shDoorsOf(m,b);
+    for(j=0;j<D.length;j++){
+      d=D[j];
+      if(Math.abs(d.x-s.gx)<1&&Math.abs(d.y-s.gy)<1&&Math.abs(d.w-s.gw)<1&&Math.abs(d.h-s.gh)<1){ s.gx=d.x; s.gy=d.y; s.gw=d.w; s.gh=d.h; s.gateWall=shWall(s,d.x,d.y,d.w,d.h,'sgate',b.d); }
+      else shWall(s,d.x,d.y,d.w,d.h,'sblk',b.d);
+    }
+  }
+  return s.walls.length;
+}
+// bodies that stand where a new wall went are put outside it, along the way out of the compound
+function shClear(s){
+  var i, j, wl, o, L=[G.player], cx=s.x+s.w/2, cy=s.y+s.h/2, r, dx, dy;
+  for(i=0;i<G.ents.length;i++) L.push(G.ents[i]);
+  for(j=0;j<s.walls.length;j++){
+    wl=s.walls[j];
+    for(i=0;i<L.length;i++){
+      o=L[i]; if(!o||!isFinite(o.x)||!isFinite(o.y)) continue;
+      r=(o.r||12)+2;
+      if(o.x>wl.x-r&&o.x<wl.x+wl.w+r&&o.y>wl.y-r&&o.y<wl.y+wl.h+r){
+        dx=(wl.x+wl.w/2)-cx; dy=(wl.y+wl.h/2)-cy;
+        if(Math.abs(dx)*s.h>Math.abs(dy)*s.w) o.x=(dx>0)?wl.x+wl.w+r+4:wl.x-r-4; else o.y=(dy>0)?wl.y+wl.h+r+4:wl.y-r-4;
       }
+    }
+  }
+}
+// the shutter comes out of the wall (the way in is open for good); the sight lines, collision and nav are rebuilt
+function shUnseal(s){
+  var ix=s.gateWall?G.map.walls.indexOf(s.gateWall):-1;
+  if(ix>=0){ G.map.walls.splice(ix,1); rebuildGeometry(); }
+  s.gateWall=null;
+}
+// the blast that takes the shutter: sound, flash, sparks and flying metal, a scar on the ground, a shake
+function shBreachFx(s){
+  var gp=shGatePt(s), p=G.player;
+  try{ sfx('boom',gp.x,gp.y); }catch(_a){}
+  try{ spark(gp.x,gp.y,'#ffcf7a',26,320); spark(gp.x,gp.y,'#9aa3ac',16,260); flash(gp.x,gp.y,300,'#ffb267',.5); }catch(_b){}
+  try{ boomFx(gp.x,gp.y,1.3,'frag'); }catch(_c){}
+  try{ gfxBlastScar(gp.x,gp.y,1.1,false); }catch(_d){}
+  if(p) G.shake=Math.max(G.shake||0,Math.max(3,8-dist(p,gp)/130));
+}
+function shSpot(s,I,pad,away){
+  var t, x, y, gp=shGatePt(s);
+  for(t=0;t<40;t++){
+    x=I.x+rr()*I.w; y=I.y+rr()*I.h;
+    if(spotFree(G.map,x,y,pad)&&Math.hypot(x-gp.x,y-gp.y)>=away) return {x:x,y:y};
+  }
+  return null;
+}
+function shPopulate(s){
+  var seed=(((G.seed>>>0)^Math.imul(s.i+1,40503))>>>0)||1, list=[], L=[], c=null, i, I=shInterior(s), ccx=I.x+I.w/2, ccy=I.y+I.h/2, R=Math.max(70,Math.min(I.w,I.h)*0.42);
+  sideStream(seed,SH.tag+1,function(){
+    var k, sp, e;
+    for(k=0;k<SH.n1;k++){
+      sp=shSpot(s,I,26,110); if(!sp) continue;
+      e=(k<3)?mkSentry(sp.x,sp.y):mkCrawler(sp.x,sp.y); e.camp={x:ccx,y:ccy}; e.campR=R; e.shi=s.i; list.push(e);
     }
     L=shLoot();
   });
   for(i=0;i<list.length;i++) G.ents.push(list[i]);
   s.def=list;
-  sideStream(seed,SH.tag+2,function(){ c=setLoot(mkContainer(s.x,s.y,'cache'),L); });
+  sideStream(seed,SH.tag+2,function(){ var q=shSpot(s,I,34,140)||shSpot(s,I,28,60)||{x:ccx,y:ccy}; c=setLoot(mkContainer(q.x,q.y,'cache'),L); });
   c.time=4.4; c.tag='STRONGHOLD CACHE'; c.wreck=1; G.containers.push(c); s.cache=c;
 }
 function shReinforce(s){
-  var seed=(((G.seed>>>0)^Math.imul(s.i+1,40503)^0x9e3779b1)>>>0)||1, list=[], p=G.player, i, kinds=['crawler','crawler','crawler','bulwark','sentry'];
+  var seed=(((G.seed>>>0)^Math.imul(s.i+1,40503)^0x9e3779b1)>>>0)||1, list=[], p=G.player, i, kinds=['crawler','crawler','crawler','bulwark','sentry'], I=shInterior(s), gp=shGatePt(s);
   sideStream(seed,SH.tag+3,function(){
-    var k, t, a, r, x, y, e;
+    var k, t, x, y, e, dd, lt;
     for(k=0;k<kinds.length;k++){
       for(t=0;t<30;t++){
-        a=s.ga+(rr()-0.5)*1.0; r=s.r*(0.35+rr()*0.3); x=s.x+Math.cos(a)*r; y=s.y+Math.sin(a)*r;
-        if(spotFree(G.map,x,y,26)){
+        dd=70+rr()*130; lt=(rr()-0.5)*160;
+        x=gp.x-s.nx*dd-s.ny*lt; y=gp.y-s.ny*dd+s.nx*lt;
+        if(x>I.x&&x<I.x+I.w&&y>I.y&&y<I.y+I.h&&spotFree(G.map,x,y,26)){
           e=(kinds[k]==='crawler')?mkCrawler(x,y):((kinds[k]==='bulwark')?mkBulwark(x,y):mkSentry(x,y));
           if(kinds[k]==='crawler') arcadeWaveElite(e);
-          e.shS=[0,0,0]; e.shS[s.i]=1; e.shi=s.i; e.state='chase'; e.alert=3; e.tx=p.x; e.ty=p.y; list.push(e); break;
+          e.shi=s.i; e.state='chase'; e.alert=3; e.tx=p.x; e.ty=p.y; list.push(e); break;
         }
       }
     }
@@ -54900,42 +55232,36 @@ function shReinforce(s){
 function shOpen(s){
   var gp=shGatePt(s);
   s.open=1; s.prog=1;
-  try{ sfx('boom',gp.x,gp.y); ping(gp.x,gp.y,700,false,false,'env','fire'); spark(gp.x,gp.y,'#ffcf7a',24,300); }catch(_so){}
+  shBreachFx(s);
+  try{ ping(gp.x,gp.y,700,false,false,'env','fire'); }catch(_so){}
+  shUnseal(s);
   try{ say('GATE BREACHED','warn',{sub:'THEY ARE COMING'}); }catch(_sg){}
   shReinforce(s);
   if(s.cache) evS().wrecks.push(s.cache);
 }
-// keep o on the side of the fence it is on, except through an open gate; true when it was moved
-function shKeep(s,o,rad){
-  var dx=o.x-s.x, dy=o.y-s.y, d=Math.sqrt(dx*dx+dy*dy), a, side, tgt, nx, ny;
-  if(!o.shS) o.shS=[0,0,0];
-  if(!o.shS[s.i]) o.shS[s.i]=(d<s.r)?1:2;
-  if(d>s.r+400) return false;
-  a=Math.atan2(dy,dx);
-  if(s.open&&Math.abs(angDiff(a,s.ga))<=s.gw){ o.shS[s.i]=(d<s.r)?1:2; return false; }
-  side=o.shS[s.i];
-  if(side===1){ if(d<=s.r-rad-2) return false; tgt=s.r-rad-6; } else { if(d>=s.r+rad+2) return false; tgt=s.r+rad+6; }
-  if(d<0.5) a=0;
-  nx=s.x+Math.cos(a)*tgt; ny=s.y+Math.sin(a)*tgt;
-  if(spotFree(G.map,nx,ny,Math.max(6,rad*0.6))){ o.x=nx; o.y=ny; return true; }
-  return false;
+// is this body at the gate, outside it, close enough to be breaching it
+function shNear(s,p){
+  var gp=shGatePt(s), dx=p.x-gp.x, dy=p.y-gp.y;
+  return Math.hypot(dx,dy)<SH.reach&&(dx*s.nx+dy*s.ny)>-10;
 }
 function shTick(dt){
-  var SS=shS(), i, j, k, s, e, p=G.player, gp, d, near, alive;
-  if(flowPeer()){ shPeerTick(dt); return; }   // v27.12 (coop4): a linked player 2 window lays out and fills no stronghold, it keeps the host ones (shNetTake)
+  var SS=shS(), i, k, s, p=G.player, near, alive, p2;
+  if(flowPeer()){ shPeerTick(dt); return; }   // v27.46 (coop4): a linked player 2 window lays out and fills no stronghold, it keeps the host ones (shNetTake)
   if(!SS.sites){
     if((G.t||0)<3) return;
     SS.sites=shLayout();
-    for(i=0;i<SS.sites.length;i++) shPopulate(SS.sites[i]);
-    if(SS.sites.length){ try{ say('STRONGHOLD','info',{sub:SS.sites.length+' ON THE MAP'}); }catch(_st){} }
+    for(i=0;i<SS.sites.length;i++) shBuild(SS.sites[i]);
+    if(SS.sites.length){
+      rebuildGeometry();
+      for(i=0;i<SS.sites.length;i++){ shClear(SS.sites[i]); shPopulate(SS.sites[i]); }
+      try{ say('STRONGHOLD','info',{sub:SS.sites.length+' ON THE MAP'}); }catch(_st){}
+    }
   }
   for(i=0;i<SS.sites.length;i++){
     s=SS.sites[i];
-    if(p&&!p.specOut) shKeep(s,p,p.r||11);
-    for(j=0;j<G.ents.length;j++){ e=G.ents[j]; if(!e||!(e.hp>0)||e.kind==='snitch') continue; shKeep(s,e,e.r||12); }
-    if(!s.open&&p&&((!p.downed&&!p.dying)||(G.t||0)-(+s.p2at||-9)<0.6)){   // v27.12 (coop4): or a partner is at the gate
-      gp=shGatePt(s); d=Math.hypot(p.x-gp.x,p.y-gp.y);
-      near=((d<SH.reach)&&(p.shS&&p.shS[s.i]===2)&&!p.downed&&!p.dying)||((G.t||0)-(+s.p2at||-9)<0.6);
+    p2=((G.t||0)-(+s.p2at||-9)<0.6);   // v27.46 (coop4): or a partner is at the gate
+    if(!s.open&&p&&((!p.downed&&!p.dying)||p2)){
+      near=(!p.downed&&!p.dying&&shNear(s,p))||p2;
       s.prog=near?Math.min(1,s.prog+dt/SH.breach):Math.max(0,s.prog-dt*2/SH.breach);
       if(s.prog>=1) shOpen(s);
     }
@@ -54952,35 +55278,77 @@ function shMarks(out){
   if(!SS||!SS.sites) return;
   for(i=0;i<SS.sites.length;i++){
     s=SS.sites[i];
-    out.push({x:s.x,y:s.y,r:s.r,col:s.clear?'#7a8a80':'#ff8a3a',shape:'sq',kind:'sh',txt:'STRONGHOLD'+(s.clear?' CLEARED':''),pin:s.clear?0:1,a:s.clear?0.55:1});
+    out.push({x:s.x+s.w/2,y:s.y+s.h/2,r:0,col:s.clear?'#7a8a80':'#ff8a3a',shape:'sq',kind:'sh',txt:'STRONGHOLD'+(s.clear?' CLEARED':''),pin:s.clear?0:1,a:s.clear?0.55:1});
   }
 }
+// the world label and the fill ring, at the gate only (the compound itself is walls of the map)
 function shDraw(c){
-  var SS=G.flow&&G.flow.sh, i, s, sc, q, z, R, k, a, gp, gs, t=G.t||0, U, p=G.player, dim;
+  var SS=G.flow&&G.flow.sh, i, s, gp, gs, ls, z, U, p=G.player, txt, d, gl;
   if(!SS||!SS.sites||!SS.sites.length) return;
-  q=ZOOM(); z=Math.max(1,hudRes()); U=function(v){ return LH(v)*z; };
+  z=Math.max(1,hudRes()); U=function(v){ return LH(v)*z; };
   c.save();
   for(i=0;i<SS.sites.length;i++){
-    s=SS.sites[i]; sc=w2s(s.x,0,s.y); R=s.r*q; dim=s.clear?0.4:1;
-    if(sc.x<-R*1.3||sc.y<-R*1.3||sc.x>W+R*1.3||sc.y>H+R*1.3) continue;
-    c.lineCap='butt';
-    c.strokeStyle='rgba(24,28,32,'+(0.85*dim).toFixed(3)+')'; c.lineWidth=8*z; c.beginPath(); c.arc(sc.x,sc.y,R,s.ga+s.gw,s.ga+6.2832-s.gw); c.stroke();
-    c.strokeStyle='rgba(150,162,172,'+(0.9*dim).toFixed(3)+')'; c.lineWidth=3*z; c.beginPath(); c.arc(sc.x,sc.y,R,s.ga+s.gw,s.ga+6.2832-s.gw); c.stroke();
-    c.fillStyle='rgba(90,100,110,'+(0.95*dim).toFixed(3)+')';
-    for(k=0;k<30;k++){ a=s.ga+s.gw+0.12+k*((6.2832-2*s.gw-0.24)/29); c.fillRect(sc.x+Math.cos(a)*R-3*z,sc.y+Math.sin(a)*R-3*z,6*z,6*z); }
-    c.lineWidth=7*z;
-    c.strokeStyle=s.open?'rgba(95,191,106,.55)':'rgba(255,72,48,'+(0.7+0.25*Math.sin(t*5)).toFixed(3)+')';
-    if(s.open) c.setLineDash([10*z,10*z]);
-    c.beginPath(); c.arc(sc.x,sc.y,R,s.ga-s.gw,s.ga+s.gw); c.stroke(); c.setLineDash([]);
+    s=SS.sites[i]; if(s.open) continue;
     gp=shGatePt(s); gs=w2s(gp.x,0,gp.y);
-    if(!s.open&&s.prog>0){
+    if(gs.x<-300||gs.y<-300||gs.x>W+300||gs.y>H+300) continue;
+    if(!s.open){
+      c.save(); c.globalCompositeOperation='lighter';
+      gl=c.createRadialGradient(gs.x,gs.y,0,gs.x,gs.y,Math.max(40,95*ZOOM()));
+      gl.addColorStop(0,'rgba(255,70,45,'+(0.16+0.10*Math.sin((G.t||0)*5)).toFixed(3)+')'); gl.addColorStop(1,'rgba(255,60,40,0)');
+      c.fillStyle=gl; c.beginPath(); c.arc(gs.x,gs.y,Math.max(40,95*ZOOM()),0,6.2832); c.fill(); c.restore();
+    }
+    if(s.prog>0){
+      c.strokeStyle='rgba(0,0,0,.45)'; c.lineWidth=7*z; c.beginPath(); c.arc(gs.x,gs.y,U(30),0,6.2832); c.stroke();
       c.strokeStyle='rgba(255,192,74,.95)'; c.lineWidth=5*z; c.beginPath(); c.arc(gs.x,gs.y,U(30),-1.5708,-1.5708+6.2832*s.prog); c.stroke();
     }
-    if(!s.open&&p&&Math.hypot(p.x-gp.x,p.y-gp.y)<600){
-      c.textAlign='center'; c.font=hudFS(TYPE.label); c.fillStyle='#ffd0a0'; hudText(s.prog>0?'BREACHING':'STAND AT THE GATE',gs.x,gs.y-U(40));
+    d=p?Math.hypot(p.x-gp.x,p.y-gp.y):1e9;
+    if(d<600){
+      ls=w2s(gp.x+s.nx*70,0,gp.y+s.ny*70);
+      txt=(s.prog>0)?('BREACHING  '+Math.round(s.prog*100)+'%'):'HOLD TO BREACH';
+      c.textAlign='center'; c.font=hudFS(TYPE.label); c.fillStyle='rgba(6,9,13,.72)';
+      c.fillRect(ls.x-c.measureText(txt).width/2-U(8),ls.y-U(18),c.measureText(txt).width+U(16),U(22));
+      c.fillStyle=(s.prog>0)?'#ffc04a':'#ffd0a0'; hudText(txt,ls.x,ls.y-U(2));
     }
   }
   c.restore();
+}
+// the walls of a compound, painted in the wall pass: the shutter, a barricade, a stretch of fence. LIFT is the wall lift; the faces are what the other walls have, a roof strip and a front.
+function shWallDraw(c,w,LIFT){
+  var x=w.x, y=w.y, ww=w.w, hh=w.h, fy=y+hh-LIFT, ty=y-LIFT, t=G.t||0, k, horiz=(ww>=hh), n, a;
+  if(w.sgate){
+    a=0.55+0.4*Math.sin(t*5);
+    c.fillStyle='#101215'; c.fillRect(x-1,ty-1,ww+2,hh+LIFT+2);
+    c.fillStyle='#4a525b'; c.fillRect(x,fy,ww,LIFT);
+    c.fillStyle='#626d79'; c.fillRect(x,ty,ww,hh);
+    c.fillStyle='rgba(0,0,0,.30)';
+    if(horiz){ for(k=x+5;k<x+ww-2;k+=7) c.fillRect(k,fy+7,1.3,LIFT-18); }
+    else { for(k=fy+8;k<fy+LIFT-8;k+=6) c.fillRect(x+2,k,ww-4,1.3); }
+    // hazard band along the foot of the slab, wide stripes
+    n=horiz?Math.floor(ww/10):Math.floor(LIFT/10);
+    for(k=0;k<n;k++){
+      c.fillStyle=(k&1)?'#f0c020':'#15171a';
+      if(horiz) c.fillRect(x+2+k*10,fy+LIFT-10,10,8); else c.fillRect(x+2,fy+2+k*10,ww-4,8);
+    }
+    // the lamp bar across the head of the slab: red while the gate holds, pulsing
+    c.fillStyle='#0c0d0f'; c.fillRect(x+2,fy+1,ww-4,6);
+    c.fillStyle='rgba(255,64,40,'+a.toFixed(3)+')'; c.fillRect(x+3,fy+2,ww-6,4);
+    c.fillStyle='rgba(255,230,200,.20)'; c.fillRect(x,ty,ww,1.2);
+    return;
+  }
+  if(w.sblk){
+    c.fillStyle='#16130f'; c.fillRect(x-1,ty-1,ww+2,hh+LIFT+2);
+    c.fillStyle='#3a2f22'; c.fillRect(x,fy,ww,LIFT);
+    c.fillStyle='#4a3c2a'; c.fillRect(x,ty,ww,hh);
+    c.strokeStyle='#7a6244'; c.lineWidth=3.2;
+    c.beginPath();
+    if(horiz){ c.moveTo(x+3,fy+3); c.lineTo(x+ww-3,fy+LIFT-3); c.moveTo(x+ww-3,fy+3); c.lineTo(x+3,fy+LIFT-3); }
+    else { c.moveTo(x+2,fy+3); c.lineTo(x+ww-2,fy+LIFT-3); c.moveTo(x+ww-2,fy+3); c.lineTo(x+2,fy+LIFT-3); }
+    c.stroke();
+    c.fillStyle='#b9a37c';
+    c.fillRect(x+ww/2-1,fy+LIFT/2-1,2.4,2.4); c.fillRect(x+3,fy+3,2,2); c.fillRect(x+ww-5,fy+LIFT-5,2,2);
+    c.fillStyle='rgba(232,214,186,.14)'; c.fillRect(x,ty,ww,1.2);
+    return;
+  }
 }
 // v26.xx (flow12), HIS ANSWERS (2026-10-12, 11 a: "a rare GOLDEN enemy with big loot"; 2026-10-13, 27: "the golden enemy appears every raid"). THE GOLDEN ENEMY, every raid.
 // Once the raid is 3 s old one machine or hostile pillager is gilded: picked on the side stream GOLD.tag of the seed from those at least 700 from the drop (a Crawler, Sentry,
@@ -55022,7 +55390,8 @@ function goldTick(dt){
     S.tried=(S.tried||0)+dt; if(S.tried<1&&S.tries) return;
     S.tries=(S.tries|0)+1; S.tried=0;
     ix=goldPickIx();
-    if(ix>=0){ e=G.ents[ix]; S.hp0=e.maxhp||e.hp; goldMake(e); S.ref=e; }
+    if(ix>=0){ e=G.ents[ix]; S.hp0=e.maxhp||e.hp; goldMake(e); S.ref=e; }   // v27.47 (nocluehunt): said once, there is no hunt
+    if(ix>=0){ try{ say('GOLDEN ENEMY','info',{sub:'KILL IT FOR THE HOARD'}); }catch(_gsy){} }
     return;
   }
   e=S.ref;
@@ -55046,93 +55415,17 @@ function goldDraw(c){
   c.restore();
   c.save(); c.textAlign='center'; c.font=hudFS(TYPE.micro); c.fillStyle='#ffd24a'; hudText('GOLDEN',s.x,s.y-R*1.9-LH(6)*z); c.restore();
 }
-// v26.xx (flow13), HIS YES (2026-10-14) to suggestion 3, THE GOLDEN-ENEMY CLUE HUNT: "three clues shrink a circle toward the every-raid golden enemy". Four seconds into a raid
-// that has a golden enemy (flow12), three CLUE PROPS are laid on open reachable ground (the side stream CLUE.tag of the seed: at least 450 from the drop, 650 from each other, 300 from
-// any extraction ring, off the strongholds): a DROPPED SCANNER, a GOLD DUST TRAIL and a CHIRPING BEACON. From the start the maps show a SEARCH CIRCLE 1,400 across that has the golden
-// enemy inside it, and the callout says so. Each clue is TAKEN by walking within 55 of it (the callout CLUE n/3 names it, sparks), and each one shrinks the circle to 900, then 520,
-// then 220, the golden enemy always inside, never in the middle (the circle keeps a fixed offset from it per stage, from the side stream, so it follows the golden enemy as it
-// walks). With all three taken the mark pins to the edge of the minimap as an arrow. The props chirp on the HUD (a ring that spreads every two seconds) and show on the minimap
-// and the sector map only within 600 of you. When the golden enemy dies the hunt is over: the circle and the props are gone. DEMO and CAREER are the same.
-var CLUE={tag:66,R:[1400,900,520,220],pick:55,minD:450,sep:650,shown:600};
-var CLUE_KINDS=['scanner','dust','beacon'];
-var CLUE_TXT={scanner:'DROPPED SCANNER',dust:'GOLD DUST TRAIL',beacon:'CHIRPING BEACON'};
-function clueS(){ var S=flowS(); if(!S.clue) S.clue={props:null,n:0,done:0,off:null,lx:0,ly:0}; return S.clue; }
-function clueLayout(){
-  var p=G.player, props=[];
-  sideStream((G.seed>>>0)||1,CLUE.tag,function(){
-    var k, tries, x, y, ok, j;
-    for(k=0;k<3;k++){
-      for(tries=0;tries<200;tries++){
-        x=250+rr()*(WORLD_W-500); y=250+rr()*(WORLD_H-500);
-        if(Math.hypot(x-p.x,y-p.y)<CLUE.minD) continue;
-        ok=1; for(j=0;j<props.length;j++) if(Math.hypot(x-props[j].x,y-props[j].y)<CLUE.sep) ok=0;
-        if(!ok||!spotFree(G.map,x,y,30)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)||flowZoneNear(x,y,300)||shAt(x,y,80)) continue;
-        props.push({kind:CLUE_KINDS[k],x:x,y:y,got:0}); break;
-      }
-    }
-  });
-  return props;
-}
-function clueCircle(C){
-  if(C.mir) return C.mir;   // v27.18 (coop5): the circle as the host has it, for a linked window
-  var S=G.flow.gold, e=S&&S.ref, st=Math.min(3,Math.round(C.n/Math.max(1,C.props.length)*3)), R=CLUE.R[st], gx, gy, o=C.off[st];
-  if(e&&e.hp>0){ gx=e.x; gy=e.y; C.lx=gx; C.ly=gy; } else { gx=C.lx; gy=C.ly; }
-  return {x:gx+Math.cos(o.a)*o.d*R,y:gy+Math.sin(o.a)*o.d*R,r:R,st:st};
-}
-function clueTick(dt){
-  var S=G.flow.gold, C=clueS(), p=G.player, i, pr;
-  if(flowPeer()){ cluePeerTick(dt); return; }   // v27.18 (coop5): a linked player 2 window lays out no hunt, it keeps the host one (clueNetTake)
-  if(C.done) return;
-  if(!C.props){
-    if(!S||!S.ref||(G.t||0)<4) return;
-    C.props=clueLayout(); C.off=[]; C.lx=S.ref.x; C.ly=S.ref.y;
-    sideStream((G.seed>>>0)||1,CLUE.tag+1,function(){ var k; for(k=0;k<4;k++) C.off.push({a:rr()*6.2832,d:0.1+rr()*0.4}); });
-    try{ say('GOLDEN ENEMY','info',{sub:'SEARCH CIRCLE ON THE MAP'}); }catch(_cs){}
-    return;
-  }
-  if(S&&S.dead){ C.done=1; return; }
-  if(!p||p.downed||p.dying) return;
-  for(i=0;i<C.props.length;i++){
-    pr=C.props[i];
-    if(pr.got||Math.hypot(p.x-pr.x,p.y-pr.y)>=CLUE.pick) continue;
-    pr.got=1; C.n++;
-    try{ spark(pr.x,pr.y,'#ffe08a',14,200); say('CLUE '+C.n+'/'+C.props.length,'obj',{sub:CLUE_TXT[pr.kind]}); }catch(_cp){}
-  }
-}
-function clueMarks(out){
-  var C=G.flow&&G.flow.clue, p=G.player, i, pr, c;
-  if(!C||!C.props||C.done) return;
-  c=clueCircle(C);
-  out.push({x:c.x,y:c.y,r:c.r,col:'#ffc72e',shape:'dia',kind:'gold',txt:'GOLDEN ENEMY  '+(C.props.length-C.n)+' CLUES',pin:(c.st>=3)?1:0,a:1});
-  for(i=0;i<C.props.length;i++){
-    pr=C.props[i];
-    if(!pr.got&&Math.hypot(p.x-pr.x,p.y-pr.y)<CLUE.shown) out.push({x:pr.x,y:pr.y,r:0,col:'#ffe08a',shape:'sq',kind:'clue',txt:'CLUE',pin:0,a:1});
-  }
-}
-function clueDraw(c){
-  var C=G.flow&&G.flow.clue, i, k, pr, s, z, t=G.t||0, ph, u;
-  if(!C||!C.props||C.done) return;
-  z=Math.max(1,hudRes());
-  c.save();
-  for(i=0;i<C.props.length;i++){
-    pr=C.props[i]; if(pr.got) continue;
-    s=w2s(pr.x,0,pr.y);
-    if(s.x<-100||s.y<-100||s.x>W+100||s.y>H+100) continue;
-    ph=(t*0.5+i*0.33)%1; u=z;
-    c.strokeStyle='rgba(255,224,138,'+(0.8*(1-ph)).toFixed(3)+')'; c.lineWidth=2*u;
-    c.beginPath(); c.arc(s.x,s.y,(10+60*ph)*u,0,6.2832); c.stroke();
-    c.fillStyle='rgba(255,224,138,.9)';
-    if(pr.kind==='scanner'){
-      c.fillStyle='rgba(60,70,80,.95)'; c.fillRect(s.x-6*u,s.y-4*u,12*u,8*u);
-      c.fillStyle='rgba(120,230,255,'+(0.5+0.5*Math.sin(t*6)).toFixed(3)+')'; c.fillRect(s.x-3*u,s.y-2*u,6*u,4*u);
-    } else if(pr.kind==='dust'){
-      for(k=0;k<6;k++){ c.beginPath(); c.arc(s.x+(k-2.5)*9*u,s.y+Math.sin(t*3+k)*3*u,2.2*u,0,6.2832); c.fill(); }
-    } else {
-      c.fillStyle='rgba(60,70,80,.95)'; c.fillRect(s.x-2.5*u,s.y-14*u,5*u,16*u);
-      c.fillStyle='rgba(255,224,138,'+(0.5+0.5*Math.sin(t*9)).toFixed(3)+')'; c.beginPath(); c.arc(s.x,s.y-15*u,3.5*u,0,6.2832); c.fill();
-    }
-  }
-  c.restore();
+// v27.47 (nocluehunt), HIS ANSWER (2026-10-14): "GOLDEN CLUE HUNT: CUT it, removing its clues, marks, words and checks. The golden enemy itself stays, every raid." The hunt (three clue props, the search circle that
+// shrank to the golden enemy, the CLUE n/3 callouts and every mark of them) is gone, and with it the words and the checks that named it. THE GOLDEN ENEMY STAYS, EVERY RAID: one machine or hostile pillager is
+// gilded once the raid is 3 s old exactly as before (flow12), and says so once (GOLDEN ENEMY, KILL IT FOR THE HOARD). There is no puzzle to find it: it shows as a gold mark on the minimap and the sector map while it is
+// within GOLD_NEAR (900) of you, and its shine draws wherever it is on screen. It drops its hoard as before.
+var GOLD_NEAR=900;
+function goldMarks(out){
+  var S=G.flow&&G.flow.gold, e, p=G.player;
+  if(!S||!S.ref||S.dead||!p) return;
+  e=S.ref;
+  if(!(e.hp>0)||Math.hypot(e.x-p.x,e.y-p.y)>GOLD_NEAR) return;
+  out.push({x:e.x,y:e.y,r:0,col:'#ffc72e',shape:'dia',kind:'gold',txt:'GOLDEN ENEMY',pin:0,a:1});
 }
 // v27.04 (coop1), HIS ORDER (2026-10-14), the two player first: the raid flow batch shipped for the host or a solo player only, and it must work for both players. THE
 // FLOW COMES TO PLAYER 2, THE FIRES FIRST. A linked player 2 window ran its own fire plan beside the host, and the debris fires the host lit were never in it, so the two
@@ -55150,7 +55443,8 @@ function flowNetOut(){
   o={f:a};
   o.e=evNetOut();   // v27.07 (coop2): and the raid events
   o.s=shNetOut();   // v27.12 (coop4): and the strongholds
-  o.g=goldNetOut(); o.c=clueNetOut();   // v27.18 (coop5): and the golden enemy and the clue hunt
+  o.g=goldNetOut();   // v27.18 (coop5): and the golden enemy
+  o.r=goalsNetOut();   // v27.27 (coop8): and the run goals
   // FLOW-NET-OUT (the next coop builds add their keys above this line)
   return o;
 }
@@ -55160,7 +55454,7 @@ function flowNetTake(fl){
   if(fl.e&&typeof fl.e.length==='number') evNetTake(fl.e);   // v27.07 (coop2): the raid events
   if(fl.s&&typeof fl.s.length==='number') shNetTake(fl.s);   // v27.12 (coop4): the strongholds
   if(fl.g) goldNetTake(fl.g);   // v27.18 (coop5): the golden enemy
-  if(fl.c) clueNetTake(fl.c);   // v27.18 (coop5): the clue hunt
+  if(fl.r) goalsNetTake(fl.r);   // v27.27 (coop8): the run goals
   // FLOW-NET-IN (the next coop builds take their keys above this line)
   return 1;
 }
@@ -55187,7 +55481,7 @@ function fireNetTake(rows){
 // start of a live event. Everything the old draw and mark code read is in the rebuilt event, so the ring, the count, the pieces about to land, the fog and the marks on both
 // maps come from the code that was there. Player 2 FEELS a piece of debris that lands on him: the blast, the shake and the damage are his own window's. The machines of an event
 // are the host's bodies and come over in the body words; the crate an event leaves comes over in the box words and is marked on the maps by its name.
-var EV_WRECK_TAGS={'DEBRIS WRECK':1,'CONVOY CRATE':1,'LOCKDOWN CACHE':1,'STRONGHOLD CACHE':1,'GOLDEN HOARD':1};
+var EV_WRECK_TAGS={'DEBRIS WRECK':1,'CONVOY CRATE':1,'STRONGHOLD CACHE':1,'GOLDEN HOARD':1};
 function evEnt(nid){ return (nid>0&&NET.entMap&&NET.entMap[nid])||null; }
 function evNetX(ev){
   var d=ev.d, a, i, c;
@@ -55195,7 +55489,6 @@ function evNetX(ev){
   if(ev.id==='convoy'){ a=[(d.car&&d.car.nid)|0,[],d.over?1:0]; for(i=0;d.crew&&i<d.crew.length&&i<8;i++) if(d.crew[i]&&d.crew[i].nid) a[1].push(d.crew[i].nid); return a; }
   if(ev.id==='bounty') return [(d.e&&d.e.nid)|0,d.over?1:0];
   if(ev.id==='rampage') return [(d.b&&d.b.nid)|0,d.wi|0,(d.wps&&d.wps.length)|0,d.over?1:0];
-  if(ev.id==='lock'){ a=[]; for(i=0;d.in&&i<d.in.length&&i<16;i++) if(d.in[i]&&d.in[i].nid&&d.in[i].berserk&&d.in[i].hp>0) a.push(d.in[i].nid); return [a]; }
   if(ev.id==='cool'){ a=[]; for(i=0;i<G.containers.length&&a.length<24;i++){ c=G.containers[i]; if(c&&c.rich&&!c.opened&&c.cid>=0) a.push(c.cid); } return [a]; }
   return 0;
 }
@@ -55223,11 +55516,7 @@ function evNetTakeX(ev,X){
     d.car=evEnt(X[0]|0); d.crew=[]; for(i=0;X[1]&&i<X[1].length&&i<8;i++){ c=evEnt(X[1][i]|0); if(c) d.crew.push(c); } d.over=X[2]?1:0;
   } else if(ev.id==='bounty'){ d.e=evEnt(X[0]|0); d.over=X[1]?1:0; }
   else if(ev.id==='rampage'){ d.b=evEnt(X[0]|0); d.wi=X[1]|0; d.wps=new Array(Math.max(0,Math.min(9,X[2]|0))); d.over=X[3]?1:0; }
-  else if(ev.id==='lock'){
-    for(i=0;X[0]&&i<X[0].length&&i<16;i++){ c=evEnt(X[0][i]|0); if(c) keep[c.nid]=c; }
-    for(i=0;d.in&&i<d.in.length;i++) if(d.in[i]&&!keep[d.in[i].nid]) d.in[i].berserk=0;
-    d.in=[]; for(i in keep){ keep[i].berserk=1; d.in.push(keep[i]); }
-  } else if(ev.id==='cool'){
+  else if(ev.id==='cool'){
     d.rich=(X[0]&&X[0].length)|0;
     for(i=0;X[0]&&i<X[0].length&&i<24;i++){ c=(typeof netContOf==='function')?netContOf(X[0][i]|0):null; if(c) c.rich=1; }
   }
@@ -55235,13 +55524,11 @@ function evNetTakeX(ev,X){
 // what a linked window says when a live event starts: the host said it in its own start code
 function evPeerStart(ev){
   var p=G.player, id=ev.id;
-  if(id==='lock') ev.d.pSide=(p&&Math.hypot(p.x-ev.x,p.y-ev.y)<ev.r)?1:2;
   try{
     if(id==='debris') say('DEBRIS INBOUND','crit');
     else if(id==='convoy') say('CONVOY MOVING','warn',{sub:'KILL THE CARRIER'});
     else if(id==='bounty') say('BOUNTY ON THE MAP','warn',{sub:'HE HUNTS '+String(((typeof netSeatName==='function')?netSeatName(0):'')||'THE HOST').toUpperCase()+'  $'+BOUNTY.pay});
     else if(id==='cool') say('COOLANT RUPTURE','crit',{sub:'RICHER CRATES  '+(ev.d.rich|0)});
-    else if(id==='lock') say(ev.d.pSide===1?'SEALED IN':'DISTRICT SEALED','crit',{sub:'MACHINES BERSERK  '+LOCK.seal+'S'});
     else if(id==='rampage') say('OVERSEER RAMPAGE','crit',{sub:'IT HAS LEFT THE LAIR'});
   }catch(_eps){}
 }
@@ -55270,7 +55557,6 @@ function evNetTake(rows){
     evNetTakeX(ev,r[12]);
     if(was==='warn'&&ph!=='warn') evPeerStart(ev);
     else if(was===null&&ph==='live') evPeerStart(ev);   // v27.09 (coop3): a word that finds the event already live (a lost word) still says it and picks the side
-    else if(was==='live'&&ph==='end'&&id==='lock'){ try{ say('LOCKDOWN OVER','info'); }catch(_le){} }
     seen[ev.n+id]=1; E.n=Math.max(E.n|0,ev.n+1);
   }
   for(j=L.length-1;j>=0;j--) if(!seen[L[j].n+L[j].id]) L.splice(j,1);
@@ -55293,10 +55579,6 @@ function evPeerTick(dt){
     ev=L[i]; ev.t+=dt;
     if(ev.ph==='live') ev.lt+=dt;
     else if(ev.ph==='end'){ ev.et+=dt; if(ev.et>=ev.fade+2){ L.splice(i,1); continue; } }
-    if(ev.id==='lock'&&ev.ph==='live'){   // v27.09 (coop3): the district doors, felt by this player
-      if(lockSealed(ev)&&p&&!p.specOut&&ev.d.pSide) lockKeep(p,p.r||11,ev,ev.d.pSide);
-      else if(!lockSealed(ev)&&!ev.d.rel){ ev.d.rel=1; try{ say('DOORS OPEN','warn',{sub:'THEY ARE COMING OUT'}); }catch(_lo){} }
-    }
     if(ev.id==='debris'&&ev.ph==='live'&&ev.d.pts){
       for(j=0;j<ev.d.pts.length;j++){
         pt=ev.d.pts[j];
@@ -55337,15 +55619,14 @@ function flowNetWord(peer,m){
     for(i=0;SS.sites&&i<SS.sites.length;i++){ s=SS.sites[i]; if(s.i===(m.i|0)){ if(!s.open) s.p2at=G.t||0; return 'gate'; } }
     return 'gone';
   }
-  if(m.k==='clue'){
-    if(NET.role!=='host'||!netEntsHost()||!flowOn()) return 'ignored';
-    return clueTaken(m.i|0,1)?'clue':'gone';
-  }
   if(m.k==='air'){
     if(!flowOn()||!isFinite(+m.x)||!isFinite(+m.y)||!isFinite(+m.a)) return 'bad';
     if(typeof netUpShared!=='function'||!netUpShared()) return 'off';
     airStrikeFx(clamp(+m.x,0,WORLD_W),clamp(+m.y,0,WORLD_H),+m.a,m.s|0);
-    if(NET.role==='host') for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],m);
+    if(NET.role==='host'){
+      flowS().pAir=(flowS().pAir|0)+1;   // v27.27 (coop8): and it counts for the run goal
+      for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],m);
+    }
     return 'air';
   }
   // FLOW-NET-WORD (the next coop builds take their words above this line)
@@ -55354,36 +55635,45 @@ function flowNetWord(peer,m){
 function shNetOut(){
   var SS=G.flow&&G.flow.sh, a=[], i, s;
   if(!SS||!SS.sites) return a;
-  for(i=0;i<SS.sites.length&&i<3;i++){ s=SS.sites[i]; a.push([s.i|0,Math.round(s.x),Math.round(s.y),+(+s.ga).toFixed(3),s.open?1:0,+(+s.prog).toFixed(2),s.clear?1:0]); }
+  for(i=0;i<SS.sites.length&&i<3;i++){ s=SS.sites[i]; a.push([s.i|0,0,s.bi|0,Math.round(s.x),Math.round(s.y),Math.round(s.w),Math.round(s.h),Math.round(s.gx),Math.round(s.gy),Math.round(s.gw),Math.round(s.gh),s.nx|0,s.ny|0,s.open?1:0,+(+s.prog).toFixed(2),s.clear?1:0]); }
   return a;
 }
+// v27.46 (sh2): a linked window builds the very same walls from the word (the building and the doorway are told, the map is the same), once, and breaks the gate when the host says it is open
 function shNetTake(rows){
-  var SS=shS(), i, j, r, s, wasOpen, wasClear;
+  var SS=shS(), i, j, r, s, wasOpen, wasClear, fresh, built=0;
   if(!SS.sites) SS.sites=[];
   for(i=0;i<rows.length&&i<3;i++){
     r=rows[i];
-    if(!r||typeof r.length!=='number'||r.length<7||!isFinite(+r[1])||!isFinite(+r[2])||!isFinite(+r[3])) continue;
+    if(!r||typeof r.length!=='number'||r.length<16) continue;
+    for(j=3;j<11;j++) if(!isFinite(+r[j])) { r=null; break; }
+    if(!r) continue;
     s=null; for(j=0;j<SS.sites.length;j++) if(SS.sites[j].i===(r[0]|0)){ s=SS.sites[j]; break; }
-    if(!s){ s={i:r[0]|0,x:0,y:0,r:SH.r,ga:0,gw:SH.gw,open:0,prog:0,w2:0,clear:0,def:[],def2:[],cache:null}; SS.sites.push(s); }
+    fresh=!s;
+    if(!s){
+      s={i:r[0]|0,kind:'b',bi:r[2]|0,x:+r[3],y:+r[4],w:+r[5],h:+r[6],gx:+r[7],gy:+r[8],gw:+r[9],gh:+r[10],nx:r[11]|0,ny:r[12]|0,open:0,prog:0,w2:0,clear:0,def:[],def2:[],cache:null,walls:[],gateWall:null};
+      SS.sites.push(s);
+      if(shBuild(s)){ built=1; shClear(s); }
+    }
     wasOpen=s.open; wasClear=s.clear;
-    s.x=+r[1]; s.y=+r[2]; s.ga=+r[3]; s.open=r[4]?1:0; s.clear=r[6]?1:0;
-    s.prog=s.open?1:Math.max(+r[5]||0,(wasOpen?0:s.prog));
-    if(s.open&&!wasOpen&&s.fresh){ try{ var gp=shGatePt(s); sfx('boom',gp.x,gp.y); spark(gp.x,gp.y,'#ffcf7a',24,300); say('GATE BREACHED','warn',{sub:'THEY ARE COMING'}); }catch(_so){} }
-    if(s.clear&&!wasClear&&s.fresh){ try{ say('STRONGHOLD CLEARED','ext',{sub:'STRONGHOLD'}); }catch(_sc){} }
-    s.fresh=1;
+    s.open=r[13]?1:0; s.clear=r[15]?1:0;
+    s.prog=s.open?1:Math.max(+r[14]||0,(wasOpen?0:s.prog));
+    if(s.open&&!wasOpen){
+      if(!fresh){ try{ shBreachFx(s); say('GATE BREACHED','warn',{sub:'THEY ARE COMING'}); }catch(_so){} }
+      shUnseal(s); built=0;
+    }
+    if(s.clear&&!wasClear&&!fresh){ try{ say('STRONGHOLD CLEARED','ext',{sub:'STRONGHOLD'}); }catch(_sc){} }
   }
+  if(built) rebuildGeometry();
   if(SS.sites.length&&!SS.told){ SS.told=1; try{ say('STRONGHOLD','info',{sub:SS.sites.length+' ON THE MAP'}); }catch(_st){} }
   return SS.sites.length;
 }
 function shPeerTick(dt){
-  var SS=shS(), i, s, p=G.player, gp, d, near, t=G.t||0;
+  var SS=shS(), i, s, p=G.player, near, t=G.t||0;
   if(!SS.sites||!p) return;
   for(i=0;i<SS.sites.length;i++){
     s=SS.sites[i];
-    if(!p.specOut) shKeep(s,p,p.r||11);
-    if(s.open||p.downed||p.dying){ continue; }
-    gp=shGatePt(s); d=Math.hypot(p.x-gp.x,p.y-gp.y);
-    near=(d<SH.reach)&&(p.shS&&p.shS[s.i]===2);
+    if(s.open||p.downed||p.dying) continue;
+    near=shNear(s,p);
     s.prog=near?Math.min(0.999,s.prog+dt/SH.breach):Math.max(0,s.prog-dt*2/SH.breach);   // looks only: the host counts the real breach
     if(near&&(t-(+s.gateAt||-9)>=0.25||t<(+s.gateAt||0))){ s.gateAt=t; flowNetPost({k:'gate',i:s.i}); }
   }
@@ -55413,52 +55703,10 @@ function goldNetTake(a){
     return 1;
   }
   e=evEnt(a[0]|0);
-  if(e&&!S.dead){ if(!e.golden){ e.golden=1; e.r=Math.round(e.r*GOLD.big); } S.ref=e; }
+  if(e&&!S.dead){ if(!e.golden){ e.golden=1; e.r=Math.round(e.r*GOLD.big); } if(!S.ref){ try{ say('GOLDEN ENEMY','info',{sub:'KILL IT FOR THE HOARD'}); }catch(_gsy){} } S.ref=e; }   // v27.47 (nocluehunt): said once on this window too
   return 1;
 }
-function clueNetOut(){
-  var C=G.flow&&G.flow.clue, a=[], i, c;
-  if(!C||!C.props) return 0;
-  if(C.done) return [1];
-  c=clueCircle(C);
-  for(i=0;i<C.props.length&&i<3;i++) a.push([CLUE_KINDS.indexOf(C.props[i].kind),Math.round(C.props[i].x),Math.round(C.props[i].y),C.props[i].got?1:0]);
-  return [0,C.n|0,Math.round(c.x),Math.round(c.y),Math.round(c.r),c.st|0,a];
-}
-function clueNetTake(a){
-  var C=clueS(), i, r, pr, first;
-  if(!a||typeof a.length!=='number') return 0;
-  if(a[0]){ C.done=1; return 1; }
-  if(a.length<7||!a[6]||typeof a[6].length!=='number'||!isFinite(+a[2])||!isFinite(+a[3])||!isFinite(+a[4])) return 0;
-  first=!C.props;
-  if(first){ C.props=[]; C.off=[]; C.lx=0; C.ly=0; }
-  for(i=0;i<a[6].length&&i<3;i++){
-    r=a[6][i]; if(!r||r.length<4||!isFinite(+r[1])||!isFinite(+r[2])) continue;
-    pr=C.props[i];
-    if(!pr){ pr={kind:CLUE_KINDS[r[0]|0]||'scanner',x:0,y:0,got:0}; C.props[i]=pr; }
-    pr.x=+r[1]; pr.y=+r[2]; if(r[3]) pr.got=1;
-  }
-  C.n=a[1]|0;
-  C.mir={x:+a[2],y:+a[3],r:+a[4],st:a[5]|0};
-  if(first){ try{ say('GOLDEN ENEMY','info',{sub:'SEARCH CIRCLE ON THE MAP'}); }catch(_cs){} }
-  return 1;
-}
-// a clue taken, by anyone: marked, counted, said. Returns whether it was new.
-function clueTaken(ix,byOther){
-  var C=G.flow&&G.flow.clue, pr;
-  if(!C||!C.props||C.done||!C.props[ix]||C.props[ix].got) return false;
-  pr=C.props[ix]; pr.got=1; C.n=(C.n|0)+1;
-  try{ spark(pr.x,pr.y,'#ffe08a',14,200); say('CLUE '+C.n+'/'+C.props.length,'obj',{sub:CLUE_TXT[pr.kind]+(byOther?'  YOUR PARTNER':'')}); }catch(_cp){}
-  return true;
-}
-function cluePeerTick(dt){
-  var C=clueS(), p=G.player, i, pr;
-  if(!C.props||C.done||!p||p.downed||p.dying) return;
-  for(i=0;i<C.props.length;i++){
-    pr=C.props[i];
-    if(!pr||pr.got||Math.hypot(p.x-pr.x,p.y-pr.y)>=CLUE.pick) continue;
-    if(clueTaken(i,0)) flowNetPost({k:'clue',i:i});
-  }
-}
+// v27.47 (nocluehunt): the clue words and the clue mirror are gone with the hunt; the golden enemy mirror above stays
 // v27.19 (coop6), HIS ORDER (2026-10-14), the two player first: PLAYER 2 HAS HIS OWN AIR STRIKE. The meter filled from the health a body lost while it carried your hit mark, read from the bodies in your
 // own window; on a linked window the bodies belong to the host (their health arrives in tenths of a second and the mark is never set by a round that was only sent), so player 2's meter
 // never filled. And on the host, a round player 2 landed set the same mark, so player 2 filled player 1's meter. Now each meter is filled by its own player: the host reads a drop of health only
@@ -55472,7 +55720,7 @@ function airCharge(e,dmg){
   A=airS(); if(A.blast) return 0;
   add=Math.min(+dmg,(+e.hp>0)?+e.hp:0); if(!(add>0)) return 0;
   A.dealt+=add;
-  if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+add); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:'PRESS G'}); } }
+  if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+add); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:airHint()}); } }
   return add;
 }
 function flowNetAirSend(x,y,a0){
@@ -55491,6 +55739,94 @@ function airStrikeFx(x,y,a0,seat){
   try{ say('AIR STRIKE INBOUND','warn',nm?{sub:String(nm).toUpperCase()}:undefined); }catch(_asf){}
   return true;
 }
+function airHint(){ return (typeof padOn==='function'&&padOn())?padB('LB + RB'):('PRESS '+keyLabel('KeyG','G')); }   // v27.43 (rvw1, cloud review 21): the key as it is bound
+// v27.27 (coop8), HIS ORDER (2026-10-14), the two player first: THE RUN GOALS ARE THE PARTY'S. Each window drew its own three goals and counted its own kills, crates and strikes, so the
+// two lists drifted apart and a goal one player finished paid its chip twice (once from each window). The host now owns the goals: it says the three (key r: which, how far, done) in the world
+// word, the linked window draws exactly those and says GOAL DONE when one is met, and counts and pays nothing (goalsTick). What counts is the PARTY'S: a kill of player 2 reaches the run goals
+// (the host reports it where it credits the kill to his seat), his strike counts for AIR STRIKE, his kill of the bounty pillager claims the bounty, and the crates and vault doors he opens
+// are the host's boxes and doors already. The goals are in the hold Alt raid status too, a tile each, with the figure or DONE.
+function goalsNetOut(){
+  var S=G.flow, a=[], i, gl;
+  if(!S||!S.goals) return 0;
+  for(i=0;i<S.goals.length&&i<3;i++){ gl=S.goals[i]; a.push([GOAL_IDS.indexOf(gl.id),gl.v|0,gl.done?1:0]); }
+  return a;
+}
+function goalsNetTake(a){
+  var S=flowS(), i, r, id, gl, first, was;
+  if(!a||typeof a.length!=='number') return 0;
+  first=!S.goals;
+  if(first) S.goals=[];
+  for(i=0;i<a.length&&i<3;i++){
+    r=a[i]; if(!r||typeof r.length!=='number') continue;
+    id=GOAL_IDS[r[0]|0]; if(!id||!GOALS[id]) continue;
+    gl=S.goals[i];
+    if(!gl||gl.id!==id){ gl={id:id,t:GOALS[id].t,n:GOALS[id].n,chip:GOALS[id].chip,v:0,done:0}; S.goals[i]=gl; }
+    was=gl.done; gl.v=Math.min(gl.n,r[1]|0); gl.done=r[2]?1:0;
+    if(gl.done&&!was&&!first){ try{ say('GOAL DONE','ext',{sub:gl.t}); }catch(_gd){} }
+  }
+  if(first&&!S.gtoldP){ S.gtoldP=1; }   // v27.42 (info1): as on the host, no callout for the goals
+  return S.goals.length;
+}
+// the goals as tiles of the raid status plate (the plate calls this; T is its list)
+function goalsTiles(T){
+  var S=G&&G.flow, i, gl;
+  if(!S||!S.goals||!flowOn()) return 0;
+  for(i=0;i<S.goals.length;i++){
+    gl=S.goals[i];
+    T.push({l:'RUN GOAL  '+gl.t,v:gl.done?'DONE':((gl.n>1)?(gl.v+' / '+gl.n):'NOT YET'),c:gl.done?'#7fc4a0':'#e8eef2',s:gl.done?'':('+'+arcadeCr(gl.chip)),rail:gl.done?'#7fc4a0':'#f5b73b'});
+  }
+  return S.goals.length;
+}
+// v27.36 (strikeplace), HIS PLAYTEST NOTE (2026-10-14): "air strike bar is in a weird place and is causing collisions, should be over on the right further". The meter plate sat just right of the middle of the
+// screen, 112 over the gun bar, which is where the power-up timer chips (centred, a row over the bar), the item in hand and the bar's own hover and ammo text live, so they ran into it. It goes to the RIGHT END OF
+// THE GUN BAR now: its right edge on the right edge of the last belt key, one chip row up (the chips sit 40 over the keys and are 24 tall), so it is past the chips and the item in hand, clear of the keys, and short of
+// the gun card in the corner. The gun card starts at the belt's right end, so there is no room beside the bar; if the plate would meet the gear card, the pickup stack, the pickup gun card or the kill feed (their boxes
+// are recorded as they are drawn) it is lifted clear above whatever it met. Player 1 and both player 2 windows draw it by the same code, each its own meter. The box it was drawn in is G.airBox.
+function airPlateAt(bw,bh,z){
+  var hc=G.hotCells, L=(hc&&hc.length)?hc[hc.length-1]:null, g8=Math.round(8*z), x, y, top=1e9, i, o, tries, hit, E, R;
+  if(!L) return {x:Math.round(W-bw-16*z),y:Math.round(H*0.6)};
+  for(i=0;i<hc.length;i++) top=Math.min(top,hc[i].y);
+  x=Math.round(L.x+L.w-bw);
+  y=Math.round(top-64*z-g8-bh);
+  E=[HUDBOX.gear,(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.pick:null,(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.gun:null,(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.feed:null];
+  for(tries=0;tries<4;tries++){
+    hit=null;
+    for(i=0;i<E.length;i++){ o=E[i]; if(o&&o.w>0&&o.h>0&&x<o.x+o.w+g8&&x+bw>o.x-g8&&y<o.y+o.h+g8&&y+bh>o.y-g8){ hit=o; break; } }
+    if(!hit) break;
+    y=Math.round(hit.y-g8-bh);
+  }
+  return {x:clamp(x,g8,Math.max(g8,W-bw-g8)),y:Math.max(g8,y)};
+}
+// v27.43 (rvw1), the CLOUD REVIEW of 2026-10-15 (findings 3, 10, 12, 17, 21), each checked against the code before it was changed.
+// 3: the fires pushed a body back onto the edge every frame, so a pillager or a machine chasing him across a fire stood grinding on it (and burned); a body now slides along the edge the short way round toward
+//    where it is going (fireGoal). And no raid event, fire or ambush is ever placed in a stronghold (flowZoneNear says so, and every picker asks it).
+// 10: the convoy's crew and the bounty pillager were taken out of the world in plain view when the event ended; a body is removed now only where nobody sees it (not seen, and not within 300), otherwise it stays as an
+//    ordinary enemy, and CONVOY AWAY / BOUNTY SLIPPED AWAY are said only when they are true (CONVOY ARRIVED, BOUNTY OVER when they stay).
+// 12: the 6 CRATES goal counted every box that was opened, by pillagers and hires too; it counts what the party opens (not bodies, not bot wrecks, not dropped litter), player 2's boxes included.
+// 17: the bounty was paid on a DOWN (he can get up) and for deaths nobody caused (fire, debris, a barrel); now only a kill by the party pays, and a downed hunter is still on the hunt.
+// 21: the air strike prompts named the keyboard key G whatever it was bound to; they name the bound key.
+function evBodyAway(e){
+  var p=G.player;
+  if(!e) return true;
+  if(e.seen) return false;
+  if(p&&Math.hypot(e.x-p.x,e.y-p.y)<300) return false;
+  return true;
+}
+function fireGoal(e){
+  var p=G.player;
+  if(e.state==='chase'||e.state==='alarm'||e.state==='hunt') return p?{x:p.x,y:p.y}:null;
+  return (isFinite(e.tx)&&isFinite(e.ty))?{x:e.tx,y:e.ty}:null;
+}
+function airCapLabel(){ return padOn()?padB('LB+RB'):keyLabel('KeyG','G'); }
+function flowCrate(ct){
+  var S;
+  if(!ct||G.sim||!G.player||ct.type==='body'||ct.type==='botwreck'||ct.dropped) return 0;
+  S=flowS(); S.crates=(S.crates|0)+1;
+  return S.crates;
+}
+// v27.45 (rvw3), the CLOUD REVIEW of 2026-10-15, finding 9 (checked against the code): the MAGNET power-up pulled every body, bot wreck and CACHE within 520 toward you through walls and fences. The STRONGHOLD CACHE, the CONVOY CRATE and the
+// GOLDEN HOARD are caches, so they slid out of a sealed stronghold to whoever stood at the fence; and in a party each window moved its own copy of a box, so the host answered FAR to a search of a box that the other player
+// saw at his feet. The magnet does not touch the reward boxes of an event now, and in a party (two linked windows) it does not move boxes at all; it still pulls the pickups on the ground.
 // FLOW-MODULE-END (the next flow builds add their code above this line)
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS
 // LIGHT. Over 3 hours of nonstop play the bodies grew from 41 to 217 and the containers from 154 to 598: the waves land near the
@@ -55795,7 +56131,7 @@ function arcadeKill(k,el,boss,x,y,ke){
 // name and the figure in a small plate that rises over the ring for 1.7 s, with a short note of its own (no voice). Nothing here draws from the
 // seeded stream, nothing runs under G.sim, and the P2 window scores its own kills the same way (a mirror body carries no mark, so it scores the
 // range, the burst and the calm).
-var STY={long:100,longM:45,melee:120,gren:200,grenT:0.5,multi:150,multiN:3,multiT:1.5,calm:100,calmT:30,pop:1.7,max:3,fresh:1.5};
+var STY={long:100,longM:45,melee:120,gren:200,grenT:0.5,multi:150,multiN:3,multiT:1.5,calm:100,calmT:30,pop:4.2,max:3,fresh:1.5};   // v27.38 (partyp1): a medal stays up 4.2 s, not 1.7
 var STY_SND={
   'LONG SHOT':[[0,1568,1568,0.34,'sine',0.05],[0,2349,2349,0.2,'sine',0.014]],
   'MELEE KILL':[[0,150,70,0.16,'square',0.05],[0.05,660,660,0.18,'triangle',0.04]],
@@ -55827,11 +56163,20 @@ function styTone(notes){
 function styMedal(txt,pts,x,y){
   var S=styS();
   if(!scoreBonus(pts,x,y-12,'')) return 0;
+  try{ feedMedal(txt,pts); }catch(_fmd){}   // v27.24 (feed1): the medal and its figure in the feed
   S.pops.push({txt:txt,pts:pts,t:+G.t||0});
   if(S.pops.length>8) S.pops.shift();
   try{ styTone(STY_SND[txt]); }catch(_sn){}
+  try{ styTone(STY_TIER_SND[styTierOf(txt)]); }catch(_tn){}   // v27.39 (partyp2): and the voice of its tier on top
   return pts;
 }
+// v27.39 (partyp2), HIS ORDER (2026-10-14, the party playtest): the medals are polished like Halo's, and a Halo medal has a sound for its tier. Every medal keeps
+// its own note (STY_SND, the note of its picture); on top of it the tier adds its voice: the plain medals (tier 1, copper) add nothing, the skilled ones (tier 2,
+// amber) a two note shimmer high above, and the rare ones (tier 3, gold) a low thump and a rising run of six bright notes, so a rare medal is heard across the
+// room and a plain one is a tick. Sound only: no score, no seeded draw.
+var STY_TIER_SND=[null,null,
+  [[0.05,2093,2093,0.3,'sine',0.022],[0.1,2637,2637,0.3,'sine',0.016]],
+  [[0,98,49,0.5,'sine',0.1],[0.03,196,196,0.14,'triangle',0.04],[0.1,2093,2093,0.12,'triangle',0.03],[0.16,2637,2637,0.12,'triangle',0.03],[0.22,3136,3136,0.12,'triangle',0.03],[0.28,4186,4186,0.5,'sine',0.026]]];
 // a kill was credited (the DEMO door and the CAREER door, the host and a partner each their own). e is the body, when there is one.
 function styleKill(k,el,boss,x,y,e){
   var S, t, p, d, fresh, bl, paid=0;
@@ -55864,7 +56209,131 @@ function styleTick(p,dt){
   }
   for(i=S.pops.length-1;i>=0;i--) if(t-S.pops[i].t>STY.pop+0.5||t<S.pops[i].t) S.pops.splice(i,1);
 }
-// the ring and the medal plates, at the cursor (rx, ry are the cursor on the HUD canvas)
+// v27.38 (partyp1), HIS ORDER (2026-10-14, after the party playtest, his words): "all the new features neeed to be integrated and polished up to a AAA
+// level" and on the style medals "keep all of them ... need ui overhaul though -- halo does a great job with these sorts of metals". THE MEDAL ROW. A medal
+// was a line of text on a small plate that rose over the cursor and was gone in under two seconds. Now each medal is an EMBLEM of its own, drawn on the
+// canvas in the game's metal and amber: a chamfered badge with a rim of beaten metal (copper for the plain medals, amber for the skilled ones, bright gold
+// for the rare ones), a dark field and one picture that is its alone (LONG SHOT a scope, MELEE KILL a blade, GRENADE DOUBLE two grenades, MULTI-KILL a skull,
+// UNTOUCHED a shield with a tick, SCREEN CLEAR a burst, TEAM COMBO two figures in the team cyan). The newest pops in large and settles with a ring flash and a
+// sweep of light across the metal; the older ones slide along the row to make room; each stays up 4.2 s (STY.pop) and fades. The row sits at the LEFT edge, in
+// the clear stretch between the pillager board, the controls list and the feed (the same panel boxes the ring badge reads), and the NAME and figure of the
+// newest sit on a plate under it for 2.4 s. The text of the medal also goes to the feed as one line (feedMedal, from styMedal). The old text plates at the
+// cursor are gone. Cosmetic only: nothing here draws from a seeded stream, nothing runs under G.sim.
+var STYM={size:25,gap:9,slide:12,pop:0.34,shine:0.8,nameT:2.4,fade:0.6,max:5};
+var STY_TIER={'MELEE KILL':1,'LONG SHOT':2,'UNTOUCHED':2,'MULTI-KILL':2,'TEAM COMBO':2,'GRENADE DOUBLE':3,'SCREEN CLEAR':3};
+var STY_TIERC=[null,
+  {hi:'#efc08e',mid:'#b87c4a',lo:'#5e3a20',glow:'226,160,98'},
+  {hi:'#ffe69a',mid:'#f5b73b',lo:'#8a5a10',glow:'255,196,74'},
+  {hi:'#fffdf0',mid:'#ffd24a',lo:'#b46c0c',glow:'255,226,130'}];
+var STY_ICON={
+  'LONG SHOT':'M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16zM12 1v6M12 17v6M1 12h6M17 12h6M12 11.2a.8.8 0 1 0 0 1.6a.8.8 0 1 0 0-1.6z',
+  'MELEE KILL':'M20 3.5L10.5 13M5.5 12l6.5 6.5M9 15L3.5 20.5M14 21a9 9 0 0 0 7.5-8',
+  'GRENADE DOUBLE':'M12 8.5a5.2 6.3 0 1 0 0 12.6a5.2 6.3 0 1 0 0-12.6zM10 8.5V5.5h4v3M14 6l4.6-1.9M7.2 14.8h9.6M19.6 3a1.4 1.4 0 1 0 0 2.8a1.4 1.4 0 1 0 0-2.8z',
+  'MULTI-KILL':'M12 3a8 8 0 0 0-8 8c0 3 1.5 4.8 3 5.8V20h10v-3.2c1.5-1 3-2.8 3-5.8a8 8 0 0 0-8-8zM9 11h1M14 11h1M10 20v-2M14 20v-2M8 22.6h2M11 22.6h2M14 22.6h2',
+  'UNTOUCHED':'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM8.5 12l2.5 2.5L16 9.5',
+  'SCREEN CLEAR':'M12 9.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1',
+  'TEAM COMBO':'M9 8a3 3 0 1 0 0 6a3 3 0 1 0 0-6zM17 9a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5zM3 20a6 6 0 0 1 12 0M15 20a5 5 0 0 1 7-4'
+};
+var STYBOX={n:0,x:0,y:0,w:0,h:0,s:0,free:1,items:[]};
+var _styP={};
+function styKey(txt){ return String(txt).replace(/\s+x\d+$/i,''); }
+function styTierOf(txt){ return STY_TIER[styKey(txt)]||2; }
+function styPath(key){
+  if(_styP[key]===undefined){ try{ _styP[key]=new Path2D(STY_ICON[key]||UIICON.xp); }catch(_e){ _styP[key]=null; } }
+  return _styP[key];
+}
+function styOct(c,r,u){
+  c.beginPath(); c.moveTo(-r+u,-r); c.lineTo(r-u,-r); c.lineTo(r,-r+u); c.lineTo(r,r-u); c.lineTo(r-u,r); c.lineTo(-r+u,r); c.lineTo(-r,r-u); c.lineTo(-r,-r+u); c.closePath();
+}
+// one emblem at the middle of the current transform (s the half size, age the seconds since it popped)
+function styEmblem(c,key,tier,s,age){
+  var T=STY_TIERC[tier]||STY_TIERC[2], P=styPath(key), teal=(key==='TEAM COMBO'), ac=teal?'95,245,228':T.glow, u=s*0.4, k=s*0.56/12, gr, sh, i;
+  c.save(); c.translate(0,s*0.08); c.fillStyle='rgba(0,0,0,.5)'; styOct(c,s,u); c.fill(); c.restore();
+  gr=c.createLinearGradient(-s,-s,s,s); gr.addColorStop(0,T.hi); gr.addColorStop(0.45,T.mid); gr.addColorStop(1,T.lo);
+  c.fillStyle=gr; styOct(c,s,u); c.fill();
+  c.lineWidth=Math.max(1,s*0.05); c.strokeStyle='rgba(0,0,0,.45)'; styOct(c,s*0.9,u*0.9); c.stroke();
+  gr=c.createRadialGradient(0,-s*0.15,s*0.1,0,0,s*0.8); gr.addColorStop(0,'#2b3137'); gr.addColorStop(1,'#0f1215');
+  c.fillStyle=gr; styOct(c,s*0.78,u*0.78); c.fill();
+  c.lineWidth=Math.max(1,s*0.045); c.strokeStyle='rgba('+ac+',.6)'; c.stroke();
+  if(P){
+    c.save(); c.scale(k,k); c.translate(-12,-12.4); c.lineCap='round'; c.lineJoin='round';
+    c.lineWidth=4.6; c.strokeStyle='rgba('+ac+',.22)'; c.stroke(P);
+    c.lineWidth=2.5; c.strokeStyle='rgb('+ac+')'; c.stroke(P);
+    c.restore();
+  }
+  c.fillStyle='rgba('+ac+',.95)';
+  for(i=0;i<tier;i++){ c.beginPath(); c.arc((i-(tier-1)/2)*s*0.2,s*0.7,Math.max(1,s*0.055),0,6.2832); c.fill(); }
+  sh=(age-0.12)/STYM.shine;
+  if(sh>0&&sh<1){
+    c.save(); styOct(c,s,u); c.clip(); c.rotate(-0.55);
+    gr=c.createLinearGradient(-s*0.4+(sh-0.5)*s*4.8,0,s*0.4+(sh-0.5)*s*4.8,0);
+    gr.addColorStop(0,'rgba(255,255,255,0)'); gr.addColorStop(0.5,'rgba(255,255,255,.66)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+    c.fillStyle=gr; c.fillRect(-s*3,-s*3,s*6,s*6); c.restore();
+  }
+}
+// where the row goes: the left edge, its middle on the middle of the screen, slid up or down to the nearest stretch clear of every panel (the pillager
+// board, the controls list, the vitals, the feed, the teammate rows) that its emblems and the name plate under them need
+function styMedalSpot(z,n){
+  var s=Math.round(STYM.size*z), g=Math.round(STYM.gap*z), x0=Math.round(LH(9)*z), rw=n*(2*s+g)-g, up=s, dn=s+Math.round(34*z), m=Math.round(6*z), bx=[], k, B, i, c, cy=Math.round(H*0.5), best=-1, bd=1e9, free=1, cand=[];
+  for(k in HUDBOX){ B=HUDBOX[k]; if(B&&B.w>0&&B.h>0) bx.push(B); }
+  if(typeof EDGEBOX==='object') for(k in EDGEBOX){ B=EDGEBOX[k]; if(B&&B.w>0&&B.h>0) bx.push(B); }
+  if(typeof FEEDBOX==='object'&&FEEDBOX&&FEEDBOX.on&&FEEDBOX.w>0) bx.push(FEEDBOX);
+  if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.w>0) bx.push(NETTEAMBOX);
+  function hit(yy){ for(var j=0;j<bx.length;j++){ var b=bx[j]; if(x0+rw>b.x&&x0<b.x+b.w&&yy+dn+m>b.y&&yy-up-m<b.y+b.h) return true; } return false; }
+  if(hit(cy)){
+    for(i=0;i<bx.length;i++){ B=bx[i]; if(x0+rw>B.x&&x0<B.x+B.w) cand.push(B.y-m-dn-1,B.y+B.h+m+up+1); }
+    cand.push(Math.round(H*0.25),Math.round(H*0.75));
+    for(i=0;i<cand.length;i++){ c=cand[i]; if(c-up<4||c+dn>H-4||hit(c)) continue; if(Math.abs(c-cy)<bd){ bd=Math.abs(c-cy); best=c; } }
+    if(best>=0) cy=best; else free=0;
+  }
+  return {x:x0,y:cy,s:s,g:g,free:free,dn:dn};
+}
+// the row: the newest first at the left edge, the older ones further along. Returns how many emblems it drew.
+function styMedalDraw(c,p){
+  var S=G&&G.sty, z, t, i, j, live=[], pp, age, sp, s, tx, ty, sc, u, a, key, tier, dt, f, v, T, teal, rgb, nm, fg, w, hh, x, y, o;
+  STYBOX.n=0; STYBOX.items.length=0;
+  if(!G||G.sim||G.mapOpen||!S||!S.pops||!S.pops.length||!(G.arcade||G.career)||!p) return 0;
+  t=+G.t||0; z=Math.max(1,hudRes());
+  for(i=S.pops.length-1;i>=0&&live.length<STYM.max;i--){ pp=S.pops[i]; age=t-pp.t; if(age>=0&&age<=STY.pop) live.push(pp); }
+  if(!live.length) return 0;
+  sp=styMedalSpot(z,live.length); s=sp.s; STYBOX.s=s; STYBOX.free=sp.free;
+  c.save();
+  try{
+    for(j=live.length-1;j>=0;j--){
+      pp=live[j]; age=t-pp.t; key=styKey(pp.txt); tier=styTierOf(pp.txt); T=STY_TIERC[tier]||STY_TIERC[2]; teal=(key==='TEAM COMBO'); rgb=teal?'95,245,228':T.glow;
+      tx=sp.x+s+j*(2*s+sp.g); ty=sp.y;
+      if(typeof pp.sx!=='number'){ pp.sx=tx; pp.lt=t; }
+      dt=Math.max(0,Math.min(0.1,t-pp.lt)); pp.lt=t; f=1-Math.exp(-dt*STYM.slide); pp.sx+=(tx-pp.sx)*f; if(Math.abs(tx-pp.sx)<0.3) pp.sx=tx;
+      u=Math.min(1,age/STYM.pop); sc=1+0.8*(1-u)*(1-u);
+      v=Math.min(1,(STY.pop-age)/STYM.fade); a=Math.min(1,age/0.07)*v; ty+=(1-v)*s*0.3;
+      c.globalAlpha=a;
+      if(tier>=3){ c.globalCompositeOperation='lighter'; c.fillStyle='rgba('+rgb+','+(0.16+0.06*Math.sin(t*5)).toFixed(3)+')'; c.beginPath(); c.arc(pp.sx,ty,s*1.9,0,6.2832); c.fill(); c.globalCompositeOperation='source-over'; }
+      if(age<0.5){
+        o=age/0.5; c.globalCompositeOperation='lighter'; c.globalAlpha=a*(1-o)*0.9; c.strokeStyle='rgb('+rgb+')'; c.lineWidth=Math.max(2,s*0.14*(1-o));
+        c.beginPath(); c.arc(pp.sx,ty,s*(1.05+o*1.4),0,6.2832); c.stroke();
+        c.fillStyle='rgba('+rgb+','+(0.35*(1-o)).toFixed(3)+')'; c.beginPath(); c.arc(pp.sx,ty,s*(1+o*0.8),0,6.2832); c.fill();
+        c.globalCompositeOperation='source-over'; c.globalAlpha=a;
+      }
+      c.save(); c.translate(pp.sx,ty); c.scale(sc,sc); styEmblem(c,key,tier,s,age); c.restore();
+      STYBOX.items.push({txt:pp.txt,key:key,tier:tier,x:pp.sx,y:ty,s:s,sc:sc,a:a});
+    }
+    STYBOX.items.reverse();
+    pp=live[0]; age=t-pp.t;
+    if(age<STYM.nameT){
+      key=styKey(pp.txt); T=STY_TIERC[styTierOf(pp.txt)]||STY_TIERC[2]; teal=(key==='TEAM COMBO');
+      a=Math.min(1,age/0.14)*Math.min(1,(STYM.nameT-age)/0.5);
+      c.globalAlpha=a; c.font=hudFS(TYPE.label); c.textAlign='left'; c.textBaseline='alphabetic';
+      nm=String(pp.txt); fg='+'+arcadeCr(pp.pts); hh=Math.round(26*z); w=Math.round(c.measureText(nm).width+c.measureText(fg).width+34*z);
+      x=sp.x; y=sp.y+s+Math.round(7*z);
+      hudPlate(x,y,w,hh,teal?'rgb(95,245,228)':T.mid,'rgba(8,10,13,.88)');
+      c.fillStyle='rgba(255,246,222,1)'; hudText(nm,x+Math.round(13*z),y+Math.round(hh*0.5+5*z));
+      c.fillStyle=teal?'rgb(95,245,228)':T.hi; c.textAlign='right'; hudText(fg,x+w-Math.round(9*z),y+Math.round(hh*0.5+5*z)); c.textAlign='left';
+    }
+    STYBOX.n=live.length; STYBOX.x=sp.x; STYBOX.y=sp.y-s; STYBOX.w=live.length*(2*s+sp.g)-sp.g; STYBOX.h=sp.dn+s;
+  } finally { c.restore(); }
+  return live.length;
+}
+// the ring at the cursor (the medals are the row at the left edge now, styMedalDraw)
 function styleDraw(c,p,rx,ry){
   var S=G&&G.sty, z, xs, r, s, f, mx, t, col, i, n, pp, age, a, y, str, tw, hh;
   if(!G||G.sim||!(G.arcade||G.career)||!isFinite(rx)||!isFinite(ry)) return;
@@ -55881,19 +56350,7 @@ function styleDraw(c,p,rx,ry){
     c.font=hudFS(TYPE.micro); c.textAlign='left'; c.fillStyle='rgba('+col+',1)';
     hudText('x'+mx,Math.round(rx+r+((typeof ARCADE==='object'&&ARCADE&&G.arcade&&!ARCADE.solo&&ARCADE.team&&Date.now()-ARCADE.team.at<TEAM.win*1000)?18:7)*z),Math.round(ry+4*z));   // v26.xx (party7): clear of the TEAM ring
   }
-  if(S&&S.pops&&S.pops.length){
-    c.font=hudFS(TYPE.label); c.textAlign='center'; n=0;
-    for(i=S.pops.length-1;i>=0&&n<STY.max;i--){
-      pp=S.pops[i]; age=t-pp.t; if(age<0||age>STY.pop) continue;
-      a=Math.min(1,age/0.12)*Math.min(1,(STY.pop-age)/0.4);
-      y=ry-r-(14+n*24)*z-Math.min(age,0.5)*22*z;
-      str=pp.txt+'  +'+arcadeCr(pp.pts); tw=c.measureText(str).width; hh=20*z;
-      c.globalAlpha=0.78*a; c.fillStyle='rgba(12,14,18,1)'; c.fillRect(Math.round(rx-tw/2-9*z),Math.round(y-hh*0.72),Math.round(tw+18*z),Math.round(hh));
-      c.globalAlpha=a; c.fillStyle='rgba(255,192,74,1)'; c.fillRect(Math.round(rx-tw/2-9*z),Math.round(y-hh*0.72),Math.round(3*z),Math.round(hh));
-      c.fillStyle='rgba(255,236,196,1)'; hudText(str,Math.round(rx),Math.round(y));
-      n++;
-    }
-  }
+  // v27.38 (partyp1): the medal plates that rose over the ring are gone; the medals are the emblem row at the left edge (styMedalDraw)
   c.restore();
 }
 // v26.xx (party2), HIS YES (2026-10-14) to suggestion 40, ARCADE POWER-UPS, in his words: "make one bottomless clip/infinite ammo for a limited time. Look at COD Zombies".
@@ -56091,6 +56548,7 @@ function pwrMagnet(p,dt,S){
   for(i=0;G.containers&&i<G.containers.length;i++){
     c=G.containers[i];
     if(!c||!mt[c.type]||!c.loot||!c.loot.length||G.searching===c) continue;
+    if((c.tag&&EV_WRECK_TAGS[c.tag])||NET.on) continue;   // v27.45 (rvw3, cloud review 9): the reward of an event stays where the event put it, and in a party nobody drags boxes (each window would move its own copy and the host would answer FAR for a box the other player sees at his feet)
     d=Math.hypot(p.x-c.x,p.y-c.y); if(d>PWRX.magR||d<=PWRX.magStop) continue;
     st=Math.min(d-PWRX.magStop,PWRX.magSp*dt); nx=c.x+(p.x-c.x)/d*st; ny=c.y+(p.y-c.y)/d*st;
     if(spotFree(G.map,nx,ny,12)&&!shutRoomAt(G.map,nx,ny)&&!shutRoomAt(G.map,c.x,c.y)){ c.x=nx; c.y=ny; if(fxr()<dt*4) spark(c.x,c.y,'#7fc4ff',2,60); }

@@ -1,0 +1,16 @@
+{
+    "title":  "THE FLOW MARKS ARE BUILT ONCE A FRAME",
+    "why":  "The cloud review of 2026-10-15 (finding 30): the marks of the raid flow (fires, events, strongholds) were built from scratch twice in every frame, once for the minimap and once for the sector map. They are now built once for each raid time and shared, since the state they read stands still while the frame is drawn.",
+    "now":  "The flow marks are now built once a frame and shared by the minimap and the sector map.",
+    "edits":  [
+                  {
+                      "anchor":  "function flowMarks(){\n  var out=[];\n  if(!G||!G.flow) return out;",
+                      "replacement":  "// v16.xx (perf1), the cloud review (2026-10-15, finding 30): the marks of the flow were built twice a frame, once for the minimap and once for\n// the sector map, each building the lists of the fires, the events, the strongholds again. They are built once per raid time and kept\n// (G.flowMk): the raid time stands still while the frame is drawn twice, and the state the marks read stands still with it.\nfunction flowMarks(){\n  var out=[];\n  if(!G||!G.flow) return out;\n  if(G.flowMk\u0026\u0026G.flowMk.t===(G.t||0)) return G.flowMk.out;"
+                  },
+                  {
+                      "anchor":  "  // FLOW-MARKS (the next flow builds add their marks above this line)\n  return out;",
+                      "replacement":  "  // FLOW-MARKS (the next flow builds add their marks above this line)\n  G.flowMk={t:G.t||0,out:out};\n  return out;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the cloud review (finding 30): the flow marks are built once for a raid time, so the minimap and the sector map in one frame share one list\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||typeof flowMarks!==\u0027function\u0027||typeof fireMarks!==\u0027function\u0027) return \u0027SKIP: no flow marks here\u0027;\n     var bad=[], g, n=0, oF=fireMarks, a, b, c;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       try{ careerPostBuild(g); }catch(_c){}\n       if(!g.flow) g.flow={};\n       delete g.flowMk;\n       fireMarks=function(out){ n++; return oF.apply(this,arguments); };\n       try{ g.t=77; a=flowMarks(); b=flowMarks(); g.t=78; c=flowMarks(); } finally { fireMarks=oF; }\n       if(n!==2) bad.push(\u0027the marks were built \u0027+n+\u0027 times for two raid times, not 2\u0027);\n       if(a!==b) bad.push(\u0027two calls in one raid time did not share one list\u0027);\n       if(a===c) bad.push(\u0027the list was not rebuilt for a later raid time\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ fireMarks=oF; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.career=0; g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,132 @@
+{
+    "title":  "SETTINGS TEXT IN ONE VOICE",
+    "why":  "His note after playing: the UI is not as clean as it should be. In the pictures, the row descriptions in Settings came in two voices: sentence case under THE RAID (his words and the older rows), and long lines in capitals under CONTROLS, DISPLAY, AUDIO, CONTROLLER and ACCESSIBILITY, about forty rows shouting at once. They are all sentence case now. No wording changed, and none of his own lines was touched.",
+    "now":  "Every Settings row description is in sentence case.",
+    "edits":  [
+                  {
+                      "anchor":  "hint:\u0027THE WORLD ONLY. HUD AND TEXT STAY SHARP. LOWER RUNS FASTER.\u0027",
+                      "replacement":  "hint:\u0027The world only. HUD and text stay sharp. Lower runs faster.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HIGH: LAMPS CAST SHADOWS. STANDARD: LAMPS, NO SHADOWS. CLASSIC: THE ORIGINAL LOOK.\u0027",
+                      "replacement":  "hint:\u0027High: lamps cast shadows. Standard: lamps, no shadows. Classic: the original look.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027BLOOM AND COLOUR GRADE. OFF RUNS FASTER.\u0027",
+                      "replacement":  "hint:\u0027Bloom and colour grade. Off runs faster.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027SHAKE, HIT PAUSE, HIT FLASH, BLOOM AND GRAIN.\u0027",
+                      "replacement":  "hint:\u0027Shake, hit pause, hit flash, bloom and grain.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027LARGE FOR TV: BIGGER RAID TEXT FOR A SCREEN ACROSS THE ROOM.\u0027",
+                      "replacement":  "hint:\u0027Large for TV: bigger raid text for a screen across the room.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027THE STREET AROUND YOU, TOP RIGHT IN A RAID.\u0027",
+                      "replacement":  "hint:\u0027The street around you, top right in a raid.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027MENU CLICKS AND HUD PINGS: PICKUPS, HIT TICKS AND THE CLOCK. ON TOP OF EFFECTS VOLUME.\u0027",
+                      "replacement":  "hint:\u0027Menu clicks and HUD pings: pickups, hit ticks and the clock. On top of effects volume.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027YOUR STEPS AND THE STEPS YOU HEAR. LOWER IS QUIETER FEET ALL ROUND.\u0027",
+                      "replacement":  "hint:\u0027Your steps and the steps you hear. Lower is quieter feet all round.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027ONE CHANNEL FOR EVERYTHING, NO LEFT OR RIGHT. FOR ONE EAR OR ONE SPEAKER.\u0027",
+                      "replacement":  "hint:\u0027One channel for everything, no left or right. For one ear or one speaker.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOLD: AIM WHILE THE BUTTON IS DOWN. TOGGLE: PRESS ONCE TO AIM, AGAIN TO STOP.\u0027",
+                      "replacement":  "hint:\u0027Hold: aim while the button is down. Toggle: press once to aim, again to stop.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027TOGGLE: ONE PRESS CROUCHES, THE NEXT STANDS. HOLD: CROUCHED ONLY WHILE THE KEY IS DOWN. KEYBOARD ONLY.\u0027",
+                      "replacement":  "hint:\u0027Toggle: one press crouches, the next stands. Hold: crouched only while the key is down. Keyboard only.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOLD: RUN WHILE THE KEY IS DOWN. TOGGLE: PRESS ONCE TO RUN, UNTIL YOU STOP OR TIRE. THE PAD STICK CLICK TOO.\u0027",
+                      "replacement":  "hint:\u0027Hold: run while the key is down. Toggle: press once to run, until you stop or tire. The pad stick click too.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOW FAR THE AIM TURNS FOR A MOVE OF THE MOUSE. 100% IS THE CURSOR AS IT IS. NOT WHILE THE BACKPACK, THE MAP OR THE WHEEL IS OPEN.\u0027",
+                      "replacement":  "hint:\u0027How far the aim turns for a move of the mouse. 100% is the cursor as it is. Not while the backpack, the map or the wheel is open.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027THE SAME, WHILE YOU AIM DOWN SIGHTS. LOWER IS STEADIER.\u0027",
+                      "replacement":  "hint:\u0027The same, while you aim down sights. Lower is steadier.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027THE TRIGGER ON AN EMPTY MAGAZINE RELOADS IT. OFF: IT ONLY CLICKS UNTIL YOU PRESS RELOAD.\u0027",
+                      "replacement":  "hint:\u0027The trigger on an empty magazine reloads it. Off: it only clicks until you press reload.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027A SOLO RAID PAUSES WHEN YOU SWITCH AWAY. NEVER IN A PARTY.\u0027",
+                      "replacement":  "hint:\u0027A solo raid pauses when you switch away. Never in a party.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOW HARD THE PICTURE SHAKES: BLASTS, HEAVY HITS AND THE WARDEN. OFF HOLDS IT STILL.\u0027",
+                      "replacement":  "hint:\u0027How hard the picture shakes: blasts, heavy hits and the warden. Off holds it still.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027LIFTS OR SINKS THE SHADOWS OF THE WORLD. NIGHT RAIDS ARE DARK ON PURPOSE.\u0027",
+                      "replacement":  "hint:\u0027Lifts or sinks the shadows of the world. Night raids are dark on purpose.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027THE FRAMES EACH SECOND, SMALL, IN THE TOP LEFT CORNER.\u0027",
+                      "replacement":  "hint:\u0027The frames each second, small, in the top left corner.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027THE NUMBERS THAT FLOAT OFF A TARGET WHEN YOU HIT IT, AND OFF YOU WHEN YOU ARE HIT.\u0027",
+                      "replacement":  "hint:\u0027The numbers that float off a target when you hit it, and off you when you are hit.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027THE SHAPE: CROSS, DOT, CIRCLE OR T. THE MAGAZINE AND RELOAD RINGS STAY AROUND IT.\u0027",
+                      "replacement":  "hint:\u0027The shape: cross, dot, circle or t. The magazine and reload rings stay around it.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027WHITE IS THE USUAL, AMBER WHILE AIMING. THE OTHERS HOLD ONE COLOUR FOR BOTH.\u0027",
+                      "replacement":  "hint:\u0027White is the usual, amber while aiming. The others hold one colour for both.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOW BIG THE CROSSHAIR IS, WITH THE RINGS ROUND IT.\u0027",
+                      "replacement":  "hint:\u0027How big the crosshair is, with the rings round it.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOW BIG THE MINIMAP IS, TOP RIGHT. THE PANELS UNDER IT MOVE DOWN.\u0027",
+                      "replacement":  "hint:\u0027How big the minimap is, top right. The panels under it move down.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOW MUCH STREET IT SHOWS. CLOSE IS A TIGHT VIEW, WIDE IS THE LIE OF THE LAND.\u0027",
+                      "replacement":  "hint:\u0027How much street it shows. Close is a tight view, wide is the lie of the land.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027RECOLOURS RARITY AND THE ENEMY AND ALLY MARKS: DEUTERANOPIA AND PROTANOPIA (RED-GREEN), TRITANOPIA (BLUE-YELLOW).\u0027",
+                      "replacement":  "hint:\u0027Recolours rarity and the enemy and ally marks: deuteranopia and protanopia (red-green), tritanopia (blue-yellow).\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027TONES DOWN THE BRIGHT FLASHES: BLASTS, MUZZLE FLASHES, LIGHTNING AND FORGE SPARKS.\u0027",
+                      "replacement":  "hint:\u0027Tones down the bright flashes: blasts, muzzle flashes, lightning and forge sparks.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOW FAR A STICK MOVES TO REACH FULL TILT: WALKING AND AIMING. HIGHER IS QUICKER.\u0027",
+                      "replacement":  "hint:\u0027How far a stick moves to reach full tilt: walking and aiming. Higher is quicker.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOW FAR A STICK MOVES BEFORE THE GAME SEES IT. RAISE IT IF A WORN STICK DRIFTS.\u0027",
+                      "replacement":  "hint:\u0027How far a stick moves before the game sees it. Raise it if a worn stick drifts.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027THE AIM STICK UP BECOMES DOWN. THE ITEM WHEEL AND THE MAP KEEP THEIR OWN WAY.\u0027",
+                      "replacement":  "hint:\u0027The aim stick up becomes down. The item wheel and the map keep their own way.\u0027"
+                  },
+                  {
+                      "anchor":  "hint:\u0027HOW HARD THE PAD BUZZES WHEN CONTROLLER RUMBLE IS ON.\u0027",
+                      "replacement":  "hint:\u0027How hard the pad buzzes when controller rumble is on.\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his 2026-10-14 note (UI cleanup uic7): the Settings row descriptions are in one voice, sentence case like the rows of THE RAID: none of the rows is a line in capitals (38 of them were, in CONTROLS, DISPLAY, AUDIO, CONTROLLER and ACCESSIBILITY)\u0027,\n   run:function(){\n     if(typeof openSettings!==\u0027function\u0027) return \u0027SKIP: no Settings window in this build\u0027;\n     var m=document.getElementById(\u0027settingsmodal\u0027), was=m\u0026\u0026m.classList.contains(\u0027on\u0027);\n     if(!m) return \u0027SKIP: no Settings window\u0027;\n     var bad=[];\n     try{\n       try{ __topClear(); }catch(_t){}\n       openSettings();\n       var hs=document.querySelectorAll(\u0027#setlist .row .hint\u0027), i, t, n=0, caps=[];\n       for(i=0;i\u003chs.length;i++){ t=String(hs[i].textContent||\u0027\u0027).trim(); if(t.length\u003c12) continue; n++; if(t===t.toUpperCase()\u0026\u0026/[A-Z]{4}/.test(t)) caps.push(t.slice(0,48)); }\n       if(n\u003c20) return \u0027SKIP: only \u0027+n+\u0027 row descriptions are drawn here\u0027;\n       if(caps.length) bad.push(caps.length+\u0027 of \u0027+n+\u0027 row descriptions are in capitals, such as: \u0027+caps.slice(0,3).join(\u0027 | \u0027));\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally { try{ __topClear(); }catch(_c){} if(!was) m.classList.remove(\u0027on\u0027); } }},"
+}

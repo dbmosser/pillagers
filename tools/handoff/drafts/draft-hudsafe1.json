@@ -1,0 +1,80 @@
+{
+    "title":  "THE FLOW DRAWS AND TICKS ARE EXCEPTION SAFE",
+    "why":  "The cloud review of 2026-10-15 (finding 28): each draw of the raid flow and the party (the fires, the air strike, the events, the strongholds, the golden enemy, the power-up chips and the combo rings) saved the canvas state and switched blend mode, and a single bad number (a non finite radius in a gradient) left the saved state open and the additive blend on for every piece drawn after it, in every later frame. Each is now run under a guard that counts its saves and closes whatever it left open, and puts the blend mode, the alpha and the dash back. The flow ticks each have a try of their own, so one that throws stops itself for that frame and not the ticks after it.",
+    "now":  "The flow and party HUD draws and ticks are now exception safe, one throw cannot leave the canvas in a bad state.",
+    "edits":  [
+                  {
+                      "anchor":  "function flowTick(dt){\n  if(!flowOn()) return;",
+                      "replacement":  "// v16.xx (hudsafe1), the cloud review (2026-10-15, finding 28): HUD DRAWS AND FLOW TICKS ARE NOT EXCEPTION-SAFE. Each draw of the raid flow\n// and the party (the fires, the air strike, the events, the strongholds, the golden enemy, the power-ups, the combo rings) saves the canvas\n// state, may switch to additive blending, and restores at its end, so one bad number (a non finite radius in a gradient) left the saved\n// state unbalanced and the blend mode on for every HUD piece drawn after it, in every later frame, with the save stack growing. hudGuard\n// runs a draw with its saves and restores counted: whatever it left open is closed, and the blend mode, the alpha and the dash are put\n// back, whether it threw or not (a throw is swallowed here, as the callers did). The flow ticks each have a try of their own, so one\n// throw stops that one tick for that frame and never the ones after it.\nfunction hudGuard(c,fn){\n  var depth=0, sv=c.save, rs=c.restore, ok=true;\n  c.save=function(){ depth++; return sv.apply(c,arguments); };\n  c.restore=function(){ depth--; return rs.apply(c,arguments); };\n  try{ fn(); }catch(_hg){ ok=false; }\n  finally {\n    delete c.save; delete c.restore;\n    while(depth\u003e0){ try{ rs.call(c); }catch(_r){} depth--; }\n    try{ c.globalCompositeOperation=\u0027source-over\u0027; c.globalAlpha=1; c.setLineDash([]); c.shadowBlur=0; }catch(_s){}\n  }\n  return ok;\n}\nfunction flowTick(dt){\n  if(!flowOn()) return;"
+                  },
+                  {
+                      "anchor":  "  airScan(); airTick(dt);",
+                      "replacement":  "  try{ airScan(); airTick(dt); }catch(_ft1){}   // v16.xx (hudsafe1): its own try"
+                  },
+                  {
+                      "anchor":  "  goalsTick(dt);",
+                      "replacement":  "  try{ goalsTick(dt); }catch(_ft2){}   // v16.xx (hudsafe1): its own try"
+                  },
+                  {
+                      "anchor":  "  fireTick(dt);",
+                      "replacement":  "  try{ fireTick(dt); }catch(_ft3){}   // v16.xx (hudsafe1): its own try"
+                  },
+                  {
+                      "anchor":  "  evTick(dt);",
+                      "replacement":  "  try{ evTick(dt); }catch(_ft4){}   // v16.xx (hudsafe1): its own try"
+                  },
+                  {
+                      "anchor":  "  shTick(dt);",
+                      "replacement":  "  try{ shTick(dt); }catch(_ft5){}   // v16.xx (hudsafe1): its own try"
+                  },
+                  {
+                      "anchor":  "  goldTick(dt);",
+                      "replacement":  "  try{ goldTick(dt); }catch(_ft6){}   // v16.xx (hudsafe1): its own try"
+                  },
+                  {
+                      "anchor":  "  clueTick(dt);",
+                      "replacement":  "  try{ clueTick(dt); }catch(_ft7){}   // v16.xx (hudsafe1): its own try"
+                  },
+                  {
+                      "anchor":  "  fireDraw(c);",
+                      "replacement":  "  hudGuard(c,function(){ fireDraw(c); });   // v16.xx (hudsafe1): its saves and its blend mode are closed whatever happens"
+                  },
+                  {
+                      "anchor":  "  airDraw(c,p);",
+                      "replacement":  "  hudGuard(c,function(){ airDraw(c,p); });   // v16.xx (hudsafe1): its saves and its blend mode are closed whatever happens"
+                  },
+                  {
+                      "anchor":  "  evDraw(c);",
+                      "replacement":  "  hudGuard(c,function(){ evDraw(c); });   // v16.xx (hudsafe1): its saves and its blend mode are closed whatever happens"
+                  },
+                  {
+                      "anchor":  "  shDraw(c);",
+                      "replacement":  "  hudGuard(c,function(){ shDraw(c); });   // v16.xx (hudsafe1): its saves and its blend mode are closed whatever happens"
+                  },
+                  {
+                      "anchor":  "  goldDraw(c);",
+                      "replacement":  "  hudGuard(c,function(){ goldDraw(c); });   // v16.xx (hudsafe1): its saves and its blend mode are closed whatever happens"
+                  },
+                  {
+                      "anchor":  "  clueDraw(c);",
+                      "replacement":  "  hudGuard(c,function(){ clueDraw(c); });   // v16.xx (hudsafe1): its saves and its blend mode are closed whatever happens"
+                  },
+                  {
+                      "anchor":  "  try{ pwrDraw(ctx,p); }catch(_pwd){}",
+                      "replacement":  "  try{ hudGuard(ctx,function(){ pwrDraw(ctx,p); }); }catch(_pwd){}   // v16.xx (hudsafe1)"
+                  },
+                  {
+                      "anchor":  "  try{ pwrDraw2(ctx,p); }catch(_pwd2){}",
+                      "replacement":  "  try{ hudGuard(ctx,function(){ pwrDraw2(ctx,p); }); }catch(_pwd2){}   // v16.xx (hudsafe1)"
+                  },
+                  {
+                      "anchor":  "    try{ styleDraw(ctx,p,rx0,ry0); }catch(_sdw){}",
+                      "replacement":  "    try{ hudGuard(ctx,function(){ styleDraw(ctx,p,rx0,ry0); }); }catch(_sdw){}   // v16.xx (hudsafe1)"
+                  },
+                  {
+                      "anchor":  "    try{ teamDraw(ctx,p,rx0,ry0); }catch(_tdw){}",
+                      "replacement":  "    try{ hudGuard(ctx,function(){ teamDraw(ctx,p,rx0,ry0); }); }catch(_tdw){}   // v16.xx (hudsafe1)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the cloud review (finding 28): a HUD draw of the raid flow that throws half way leaves no canvas state open and no additive blend on, and one flow tick that throws does not stop the ones after it\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid) return \u0027SKIP: no raid here\u0027;\n     if(typeof hudGuard!==\u0027function\u0027) return \u0027this build has no draw guard\u0027;\n     var bad=[], g, c=ctx, saves=0, restores=0, oS=c.save, oR=c.restore, ok, ticks=[], i, oTick, kept;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       c.save();\n       try{\n         c.save=function(){ saves++; return oS.apply(c,arguments); };\n         c.restore=function(){ restores++; return oR.apply(c,arguments); };\n         try{\n           ok=hudGuard(c,function(){ c.save(); c.save(); c.globalCompositeOperation=\u0027lighter\u0027; c.globalAlpha=0.3; c.setLineDash([3,3]); throw new Error(\u0027a bad radius\u0027); });\n         } finally { delete c.save; delete c.restore; }\n       } finally { c.restore(); }\n       if(ok!==false) bad.push(\u0027a draw that threw was reported as fine\u0027);\n       if(saves!==2||restores!==2) bad.push(\u0027the saves left open by a draw that threw were not closed (\u0027+saves+\u0027 saves, \u0027+restores+\u0027 restores)\u0027);\n       if(c.globalCompositeOperation!==\u0027source-over\u0027) bad.push(\u0027the blend mode is \"\u0027+c.globalCompositeOperation+\u0027\" after a draw that threw\u0027);\n       if(c.globalAlpha!==1) bad.push(\u0027the alpha is \u0027+c.globalAlpha+\u0027 after a draw that threw\u0027);\n       if(c.getLineDash().length) bad.push(\u0027the line dash is left on after a draw that threw\u0027);\n       // a tick that throws does not stop the ticks after it\n       oTick=window.__flowTicksProbe;\n       kept=[typeof fireTick===\u0027function\u0027?fireTick:null,typeof evTick===\u0027function\u0027?evTick:null];\n       if(kept[0]\u0026\u0026kept[1]){\n         fireTick=function(){ throw new Error(\u0027a bad tick\u0027); };\n         evTick=function(dt){ ticks.push(\u0027ev\u0027); };\n         try{ g.arcade=0; g.career=1; if(!g.cs) g.cs={s:0,k:0,streak:null,waveT:0,waveN:0}; flowTick(0.016); } finally { fireTick=kept[0]; evTick=kept[1]; }\n         if(ticks.indexOf(\u0027ev\u0027)\u003c0) bad.push(\u0027a tick that threw stopped the ticks after it\u0027);\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ c.save=oS; c.restore=oR; delete c.save; delete c.restore; }catch(_d){} try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.career=0; g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

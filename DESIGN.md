@@ -40024,6 +40024,131 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.48 - THE WHAT IS NEW CARD NAMES THE FEED
+
+Co-op hunt while he was away. The card was stamped v27.32 and the stamp may not trail the build by more than 0.15. Its new line names the feed and the alert lane.
+
+MEASURED. Check 27.48 passes, and fails on v27.47.
+## v27.47 - THE GOLDEN CLUE HUNT IS CUT
+
+Co-op hunt while he was away. His answer of 2026-10-14: cut the golden clue hunt, keep the golden enemy in every raid. The three clue props, the search circle that shrank to the golden machine, the CLUE callouts and every mark of them are gone, with their words, their code, the clue word to player 2 and their checks. The golden enemy itself stays: one machine or hostile pillager is still gilded in every raid, it is said once when it is picked, and there is no puzzle to find it: it shows as a gold mark on the minimap and the map while it is within 900 of you, and its shine draws wherever it is on screen. It leaves its hoard as before.
+
+MEASURED. Check 27.47 passes, and fails on v27.46.
+## v27.46 - THE STRONGHOLD IS PART OF THE MAP
+
+Co-op hunt while he was away. His order of 2026-10-14, after he played it: the stand at the gate feature is a mess, the map needs to be adapted, you cannot just stick a circle in the middle of existing buildings. The stronghold was a 240 wide circle of fence and gate drawn on the screen over whatever stood there, so it cut through buildings. It is a real building now: the raid picks an enclosed building with room for the garrison and the cache, on open reachable ground at the same distances from the drop and the rings, and its own doorway becomes the gate, a steel shutter built into the wall that blocks bodies, rounds and sight until it is breached. Every other doorway of the building is barricaded the same way so the gate is the one way in, and the building walls can no longer be broken. Holding in front of the gate fills a ring at the gate only, with the label HOLD TO BREACH, and the breach blows the shutter off with a blast, a scar and a shake, and opens the way for good. Both players build the same walls: player 2 window builds them from the host word, so both see and hit the same compound. The map outline marks the building, not a circle.
+
+MEASURED. Check 27.46 passes, and fails on v27.45.
+## v27.45 - THE MAGNET LEAVES EVENT REWARDS AND PARTY BOXES ALONE
+
+Co-op hunt while he was away. The cloud review of 2026-10-15, finding 9, checked against the code. The magnet power-up pulled every body, bot wreck and cache within 520 toward you through walls and fences. The stronghold cache, the convoy crate and the golden hoard are caches, so they slid out of a sealed stronghold to whoever stood at the fence; and in a party each window moved its own copy of a box, so the host answered far to a search of a box the other player saw at his feet. The magnet leaves the reward boxes of events where the event put them, and in a party it moves no boxes; it still pulls the pickups on the ground and, alone, the plain bodies.
+
+MEASURED. Check 27.45 passes, and fails on v27.44.
+## v27.44 - THE FINISHER ON A CONTROLLER
+
+Co-op hunt while he was away. A cloud review of v26.54 to v27.30 found that the finisher could not be done on a controller. It read keyboard V and no pad button reached it, so player 2 on a pad was shown FINISH [V] over every downed pillager and could not do it. The pad has no melee button, so the finisher goes on Y, the button for the other close-in jobs (search the ring, help a teammate), held with a downed pillager in reach: the same 0.55 second hold, the same reach and points, and it does not swing the crowbar. Y keeps its other jobs, which win when they apply: helping a downed teammate, and searching a box or the ring when one is in reach underfoot. It follows CHANGE PAD BUTTONS (whatever button action 3 is on), the PAD list and the legend say so, and the prompt names the button as bound (Y, or TRIANGLE on a PlayStation pad), which the next build draws.
+
+MEASURED. Check 27.44 passes, and fails on v27.43.
+## v27.43 - THE CLOUD REVIEW: FIRES, CRATES, BOUNTY, CONVOY, KEYS
+
+Co-op hunt while he was away. The cloud review of 2026-10-15, each finding checked against the code first. 3: pillagers and machines chasing the player across a fire stood grinding on its edge and burning; they now slide round the edge the short way, and no event, fire or ambush is placed in a stronghold. 10: the convoy crew and the bounty pillager were taken out of the world in plain view when their event ended; a body now leaves only where nobody can see it, otherwise it stays as an ordinary enemy and the callout says so. 12: the 6 CRATES run goal counted boxes that pillagers and hires had emptied; it counts what the party opens, player 2 included, never bodies. 17: the bounty was paid for a down and for deaths nobody caused; now only a kill by the party pays and a downed hunter is still on the hunt. 21: the air strike prompts named the keyboard key G whatever it was bound to; they name the bound key.
+
+MEASURED. Check 27.43 passes, and fails on v27.42.
+## v27.42 - RUN INFO: THE GOALS JOIN THE CONDITIONS
+
+Co-op hunt while he was away. His answer of 2026-10-14 to the run goals question: merge them into conditions, maybe rename it run info. The run goals were a panel of their own under CONDITIONS, one more box in the right column. The panel is now RUN INFO: the conditions and the contracts, then the RUN GOALS (each goal with its count and what it pays, DONE in green once paid), in one box. In the DEMO, which never showed conditions or contracts, the panel holds just the goals.
+
+MEASURED. Check 27.42 passes, and fails on v27.41.
+## v27.41 - THE OVERSEER CALLS A LIMITED NUMBER OF CRAWLERS
+
+Co-op hunt while he was away. The cloud review found the Overseer was an endless crawler farm in the arcade: from its second phase it called three crawlers every twenty seconds for as long as it had seen you, and each one scored and rolled its drops like any kill. It now calls twelve in all, four calls of three, and then fights with its cannon and its laser.
+
+MEASURED. Check 27.41 passes, and fails on v27.40.
+## v27.40 - THE MEDAL SPOT IS RESERVED
+
+Co-op hunt while he was away. His answer of 2026-10-14: Halo puts medals in a row at the left, so room for a medal spot goes in the layout. A row between the feed and the vitals, the width of the feed and tall enough for the 48 pixel emblems, is reserved for the later medal polish and registered in the HUD table, so nothing else can draw there. The feed stands on it, so it moved up by that height; the row is empty until the emblems are drawn.
+
+MEASURED. Check 27.40 passes, and fails on v27.39.
+## v27.39 - THE MEDALS SOUND BY TIER
+
+Co-op hunt while he was away. His order after the party playtest was medals polished the way Halo does them, and in Halo a rarer medal sounds bigger. Every style medal kept its own short note, one for each picture. Now the tier of the medal adds a voice on top of it: the plain medals (copper) add nothing and are just a tick, the skilled ones (amber) add a high two-note shimmer, and the rare ones (gold) add a low thump and a rising run of six bright notes, so a rare medal is heard across the room. Sound only: no score changes and nothing is drawn from the seeded stream.
+
+MEASURED. Check 27.39 passes, and fails on v27.38.
+## v27.38 - THE STYLE MEDALS ARE EMBLEMS
+
+Co-op hunt while he was away. His verdict on the party playtest was that the new features must be polished to the level of the older ones, and on the style medals he said to keep all of them but that they needed a UI overhaul, because Halo does medals well. A medal was a line of text on a small plate that rose over the cursor and was gone in under two seconds. Now each medal is an emblem of its own: a chamfered badge of beaten metal (copper for the plain medals, amber for the skilled ones, bright gold for the rare ones) with one picture that is its alone, a scope for LONG SHOT, a blade for MELEE KILL, two grenades for GRENADE DOUBLE, a skull for MULTI-KILL, a shield with a tick for UNTOUCHED, a burst for SCREEN CLEAR and two figures in team cyan for TEAM COMBO. The newest pops in large and settles with a ring flash and a sweep of light across the metal, the older ones slide along the row, and each stays up 4.2 seconds. The row sits at the left edge, in the clear stretch between the pillager board, the controls list and the feed, and the name and figure of the newest sit on a plate under it. The old text plates at the cursor are gone.
+
+MEASURED. Check 27.38 passes, and fails on v27.37.
+## v27.37 - THE LOCKDOWN ALARM IS GONE
+
+Co-op hunt while he was away. His order of 2026-10-14: get rid of the sealed lockdown thing, that is a mess. The lockdown alarm raid event, which sealed a ring of ground for a minute with a cache in the middle and made the machines inside berserk, is removed completely: it is out of the event pool, so no raid plans it, and its fences with their collision, its lockdown cache, its callouts (SEALED IN, DISTRICT SEALED, DOORS OPEN, LOCKDOWN OVER), its marks on the minimap and the map, and everything player 2 was told about it are gone. The other five events stay (orbital debris, machine convoy, bounty pillager, coolant rupture, Overseer rampage), still one or two a raid, drawn on the same event stream so nothing else that is seeded moves. The older checks that staged the lockdown now report that it was taken out.
+
+MEASURED. Check 27.37 passes, and fails on v27.36.
+## v27.36 - THE AIR STRIKE PLATE MOVES TO THE RIGHT
+
+Co-op hunt while he was away. His playtest note of 2026-10-14: the air strike bar is in a weird place and causes collisions, it should be over on the right further. The plate sat just right of the middle of the screen, a little over the gun bar, where the power-up timer chips, the item you are readying and the bar own hover and ammo text all live, so they ran into it. It now sits at the right end of the gun bar, one chip row up, past the chips and the item in hand and clear of the keys; the corner gun card starts at the end of the bar so there is no room beside it, and if the plate would ever meet the gear card, the pickup stack, the pickup gun card or the kill feed it lifts clear above them. The same plate is drawn by the same code in both windows of a two player game, each with its own meter.
+
+MEASURED. Check 27.36 passes, and fails on v27.35.
+## v27.35 - THE FEED ZONE IS A QUARTER WIDE
+
+Co-op hunt while he was away. Seen in the picture of the busy raid frame: the feed zone reserved 30 percent of the screen width while its lines are under two thirds of that, so the controls list beside it was squeezed to a tiny size. The zone is now a quarter of the width and each line is a little tighter, so the ten lines are about 280 pixels tall at 1080p and the controls list keeps a readable size.
+
+MEASURED. Check 27.35 passes, and fails on v27.34.
+## v27.34 - PLAYER 2 KILLS COUNT TOO
+
+Co-op hunt while he was away. From the cloud code review (finding 24). In a co-op career raid, a kill that player 2 made did not count for his gun and could not earn him a trophy: the KILLS tally and the kill trophies were only fed from the host window. The kill word player 2 takes now counts the kill for the gun his last round came from, so his tally is banked at the end of his raid like the host, and killing the Overseer or the golden enemy earns him OVERSEER DOWN and GOLD HUNTER on his own save.
+
+MEASURED. Check 27.34 passes, and fails on v27.33.
+## v27.33 - ALERTS HAVE A STING
+
+Co-op hunt while he was away. His order of 2026-10-14: the alert lane is one at a time, short, with its sting. Many alerts had no sound at all, so a siege, a clock warning or an event could come in silently. Each alert that takes the lane now plays a short sting of its rank, quiet and on the same sound bus as the medals: a low double pulse for a critical alert, two falling notes for a warning, two rising notes for an extraction or good news. An alert refreshed in place stings once.
+
+MEASURED. Check 27.33 passes, and fails on v27.32.
+## v27.32 - THE WHAT IS NEW CARD NAMES THE RUN GOALS
+
+Co-op hunt while he was away. The card was stamped v27.31 and the stamp may not trail the build by more than 0.15. Its new line names the run goals, now shared by both players
+
+MEASURED. Check 27.32 passes, and fails on v27.31.
+## v27.31 - THE WHAT IS NEW CARD NAMES THE ELITES AND KITS
+
+Co-op hunt while he was away. The card was stamped v27.15 and the stamp may not trail the build by more than 0.15. Its new line names the two player flow builds since: player 2 sees and feels the fires, the raid events, the strongholds, the golden enemy, the run goals and the air strike, and the power-ups are shared.
+
+MEASURED. Check 27.31 passes, and fails on v27.30.
+## v27.30 - ELITE MACHINES GET AN OUTLINE
+
+Co-op hunt while he was away. His playtest answer on the elites was tint and/or outline. An elite machine now wears a clean outline in its colour (cyan shielded, orange volatile, yellow fast, green mender) with a faint tint over the body, so it reads as special at a glance. The two heavy rings and the glow on the ground are one thin ring now.
+
+MEASURED. Check 27.30 passes, and fails on v27.29.
+## v27.29 - THE PROMPTS ARE 60 PERCENT SIZE
+
+Co-op hunt while he was away. His note of 2026-10-14: the press E to loot text is way too big. Every prompt in the world (the keycap and its words over a crate, a door, a body, the seal, an extraction ring) now draws at 60 percent of its old size: the plate, the keycap, the words and the second line shrink together about their own place, so the prompt stays where it was. It still grows with the screen like the rest of the HUD, so at 4K it is just as legible.
+
+MEASURED. Check 27.29 passes, and fails on v27.28.
+## v27.28 - BEST KIT: 3 GUNS, UP TO 3 OF EACH
+
+Co-op hunt while he was away. His word on BEST KIT: three guns, and up to three of each item on the wheel. It takes your three best guns, ranked by the colour they wear (a rarity twin outranks its plain model), then tier, then worth, always three different models. The best is in your hands, the second in your other hand, the third is packed from the stash (a gun in the armoury is moved out to the stash for it), and each sits on its own class key. The items are up to three of each of the eight wheel types you have in the stash, in wheel order (Medkit, Smoke, Frag, Tripwire, Armour, Decoy, Bandage, Stim), the Armour only if your rig holds plates, then the biggest Ammo Box, never more than the backpack takes. Items stay in the stash until the raid starts. This replaces the old TOP GEAR fill of one gun, two of each grenade and a few single items. With no gun you go up with the Scav Pistol.
+
+MEASURED. Check 27.28 passes, and fails on v27.27.
+## v27.27 - THE RUN GOALS ARE THE PARTY
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. Each window drew its own three run goals and counted its own kills, crates and strikes, so the two lists drifted apart and a goal one player finished paid its chip twice. The host now owns the goals: it says the three goals and how far each is in the world word, player 2 shows exactly those and says GOAL DONE when one is met, and he counts and pays nothing of his own. What counts is the party: player 2 kills reach the goals, his air strike counts for AIR STRIKE, and his kill of the bounty pillager claims the bounty. The goals are also in the hold Alt raid status now, one tile each, with the figure or DONE.
+
+MEASURED. Check 27.27 passes, and fails on v27.26.
+## v27.26 - THE CONTROLS LIST STANDS BESIDE THE FEED
+
+Co-op hunt while he was away. Seen in the first picture of the busy raid frame: with the feed at the bottom left, the compact controls list was pushed up above it and ran over the bottom of the CURRENT PILLAGERS board. It now stands on the vitals as before, but to the right of the feed, and it shrinks a little if it must so that it ends before the middle of the screen, where the player stands. The one-line controls hint stands just over the feed.
+
+MEASURED. Check 27.26 passes, and fails on v27.25.
+## v27.25 - THE AIR STRIKE ON A CONTROLLER
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players, and player 2 plays on a controller. The air strike was armed with the G key, and the keyboard is player 1 in a two player game, so player 2 could fill his meter and never spend it. On a controller, both bumpers pressed together now arm the strike (and press them again to cancel the aim); the trigger calls it as it already did. The chord walks no belt and zooms nothing, a single bumper tap still walks the belt, and the AIR STRIKE READY line, the aim help and the meter plate name the two bumpers on a controller instead of the G key.
+
+MEASURED. Check 27.25 passes, and fails on v27.24.
+## v27.24 - THE PERSISTENT FEED
+
+Co-op hunt while he was away. His order of 2026-10-14: the way different messages come in at different places is messy and needs to be made consistent, maybe a persistent feed like WoW. There is now one feed at the bottom left, above the body corner: the last ten lines, the newest at the bottom, each full bright for six seconds and then dimmed to 35 percent, where it stays until a newer line pushes it out (the last forty are kept). Everything the raid says goes in, with a small glyph and a colour for its kind: pickups in their rarity colour and counted, alerts, objectives, teammate lines, kills (yours, a teammate and machines and pillagers killing each other), medals and money, power-ups. The controls list stands above it. The old places still show for now; the next builds move them out.
+
+MEASURED. Check 27.24 passes, and fails on v27.23.
 ## v27.23 - RANDOM KIT: 2 GUNS, 1 OF EACH
 
 Co-op hunt while he was away. His word on RANDOM KIT: two guns, and one of each item on the wheel. It picks two different guns at random from the ones you own, the armoury and any gun items in the stash, and never the Scav Pistol while you own another gun. The first is in your hands, the second in your other hand, and each goes on its own class key (1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG, 6 shotgun, 7 marksman, 8 sniper, 9 energy); a gun that was only in the stash moves into the armoury as Equip as your gun does. With no gun at all you go up with the Scav Pistol. The items are one of each of the eight wheel types you have in the stash (Medkit, Smoke, Frag, Tripwire, Armour, Decoy, Bandage, Stim), the Armour only if your rig holds plates, then one Ammo Box, never more than the backpack takes and in wheel order if it runs short. Items stay in the stash until the raid starts. There is one item to each wheel type in this build, so no variant is picked. BEST KIT is the next build.

@@ -1,0 +1,16 @@
+{
+    "title":  "THE FLOOR SAYS ITS MONEY ONCE",
+    "why":  "His note after playing: the UI is not as clean as it should be. In the pictures, the small line under THE UNDERCROFT in the corner of the floor printed your credits and XP, the same two numbers the big readout in the top right corner already shows, and in 9 pixel type. It says the stash and the runs now and leaves the money to the readout.",
+    "now":  "The line under THE UNDERCROFT no longer repeats credits and XP.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(!hubWinOn()) ctx.fillText(\u0027$\u0027+P.credits.toLocaleString()+\u0027  \\u00b7  XP \u0027+(P.xp||0).toLocaleString()+",
+                      "replacement":  "  // v27.xx, UI CLEANUP uic9 (his 2026-10-14 note, from the 1080p shot of the Undercroft): THE FLOOR SAYS ITS MONEY ONCE. The line under the heading printed credits and XP in 9 px\n  // type, the same two numbers the corner readout shows at 32 px; it keeps the stash and the runs, and the readout keeps the money.\n  if(!hubWinOn()) ctx.fillText(("
+                  },
+                  {
+                      "anchor":  "+P.runs+\u0027 run\u0027+(P.runs===1?\u0027\u0027:\u0027s\u0027),16,44);   // v8.56: said \"1 runs\" beside a correctly pluralised stash count",
+                      "replacement":  "+P.runs+\u0027 run\u0027+(P.runs===1?\u0027\u0027:\u0027s\u0027)).replace(/^\\s+\\S\\s+/,\u0027\u0027),16,44);   // v8.56: said \"1 runs\" beside a correctly pluralised stash count"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his 2026-10-14 note (UI cleanup uic9): the line under THE UNDERCROFT says the stash and the runs and no longer prints credits and XP a second time (the corner readout shows them)\u0027,\n   run:function(){\n     if(typeof drawHubHUD!==\u0027function\u0027||typeof __hubEnter!==\u0027function\u0027||typeof __loop!==\u0027function\u0027) return \u0027SKIP: no Undercroft floor here\u0027;\n     var oFT=ctx.fillText, rec=[], i, st=null;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       var t=document.getElementById(\u0027title\u0027); if(t) t.classList.remove(\u0027on\u0027);\n       __hubEnter(); __loop(performance.now()); __loop(performance.now()+17);\n       ctx.fillText=function(s){ rec.push(String(s)); return oFT.apply(this,arguments); };\n       try{ __loop(performance.now()+34); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }\n       for(i=0;i\u003crec.length;i++) if(rec[i].indexOf(\u0027 in stash\u0027)\u003e=0) st=rec[i];\n       if(!st) return \u0027SKIP: the floor line was not drawn\u0027;\n       if(!/^\\d+ items? in stash\\s+\\S\\s+\\d+ runs?$/.test(st)) return \u0027the line under the heading reads \"\u0027+st+\u0027\", not the stash and the runs alone\u0027;\n       return null;\n     } finally { try{ __topClear(); __cleanProfile(); }catch(_c){} } }},"
+}

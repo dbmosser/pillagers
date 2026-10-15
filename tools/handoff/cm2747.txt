@@ -1,0 +1,7 @@
+v27.47: the golden clue hunt is cut
+
+The golden enemy hunt with clues is gone; the golden enemy is still in every raid.
+
+Check 27.47. Fails on v27.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
