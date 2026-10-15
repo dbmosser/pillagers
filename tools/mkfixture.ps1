@@ -8790,7 +8790,7 @@ window.__REGRESS=[
        }
        // SIX: a night is 12 hours
        localStorage.setItem(PK,JSON.stringify({t:Date.now()-13*3600000,s:777,m:0}));
-       if(arcadePartySeed()!==0) bad.push('SIX: a party 13 hours old still locks its seed');
+       if(arcadePartySeed()!==0&&arcadePartySeed()!==777) bad.push('SIX: a party 13 hours old locks a strange seed ('+arcadePartySeed()+')');   // a4x12: the seed ends at 12 hours on the old build and only with NEW PARTY on the new one
        localStorage.setItem(PK,String(Date.now()));
        if(arcadePartySeed()!==0) bad.push('SIX: an old record with only a time locked a seed');
        if(!(arcadePartyAt()>0)) bad.push('SIX: an old record with only a time stopped reading as a party start');
@@ -24223,7 +24223,7 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(__state()&&!__state().over) __endRaid('abandon');
        K=ARCADE_BOARD_KEY; bk=localStorage.getItem(K); ownBk=true;
-       for(i=0;i<10;i++) rw.push({run:'q'+i,i:'ZZZ',s:20000+i*1000,x:1,k:1,t:t0-60000-i,u:'cr'});
+       for(i=0;i<((typeof ARCADE_BOARD==='object'&&ARCADE_BOARD.top)||10);i++) rw.push({run:'q'+i,i:'ZZZ',s:20000+i*1000,x:1,k:1,t:t0-60000-i,u:'cr'});
        localStorage.setItem(K,JSON.stringify({v:1,rows:rw}));
        if(!arcadeDeploy({mapIx:0,seed:4242})||!__state()||!__state().arcade) return 'SKIP: arcadeDeploy built no arcade raid';
        try{ attStop(); }catch(_as){}
@@ -24656,7 +24656,7 @@ window.__REGRESS=[
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(__state()&&!__state().over) __endRaid('abandon');
        K=ARCADE_BOARD_KEY; bk=localStorage.getItem(K); ownBk=true;
-       for(i=0;i<10;i++) rw.push({run:'q'+i,i:'ZZZ',s:20000+i*1000,x:1,k:1,t:t0-60000-i,u:'cr'});
+       for(i=0;i<((typeof ARCADE_BOARD==='object'&&ARCADE_BOARD.top)||10);i++) rw.push({run:'q'+i,i:'ZZZ',s:20000+i*1000,x:1,k:1,t:t0-60000-i,u:'cr'});
        localStorage.setItem(K,JSON.stringify({v:1,rows:rw}));
        if(!arcadeDeploy({mapIx:0,seed:4242})||!__state()||!__state().arcade) return 'SKIP: arcadeDeploy built no arcade raid';
        try{ attStop(); }catch(_as){}
@@ -24942,7 +24942,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'23.41',what:'arcade18, his order 2026-10-11: the party scoreboard, initials and NEW HIGH SCORE, the board keeps one row per run under its own key, tonight is the top 10 of the last 12 hours and BEST EVER the overall best, a top 10 run end asks for 3 initials on the RUN OVER card (an op, a player 2 op, the pad and the keyboard, 20 s untouched keeps ???), player 2 mirrors the card and sends its pad, an extraction checkpoints the row, NEW HIGH SCORE is said once when the team passes tonights best, his save is never written and a normal raid writes nothing',
    run:function(){
-     var bad=[], sv=null, src0, tried0, K='', bk=null, ownBk=false, sk=null, t0=Date.now(), rows, r, c, tx, posted=[], said=[], rs=null, own=false, role0='', ownRole=false, id, b1, g2, n, j;
+     var bad=[], sv=null, src0, tried0, K='', bk=null, ownBk=false, sk=null, t0=Date.now(), pk0=null, pkOwn=false, rows, r, c, tx, posted=[], said=[], rs=null, own=false, role0='', ownRole=false, id, b1, g2, n, j;
      function kd(code,key){ window.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true})); window.dispatchEvent(new KeyboardEvent('keyup',{code:code,key:key,bubbles:true})); }
      function row(rn){ var a=arcadeBoardLoad(), q; for(q=0;q<a.length;q++) if(a[q].run===rn) return a[q]; return null; }
      function card(){ var e=ATT.el?ATT.el.querySelector('.arcover'):null; return (e&&e.style.display!=='none')?e.textContent:''; }
@@ -24964,10 +24964,12 @@ window.__REGRESS=[
        localStorage.removeItem(K);
        if(arcadeBoardTonight().length!==0||arcadeBoardBest()!==0) bad.push('an empty board is not empty');
        localStorage.setItem(K,JSON.stringify({v:1,rows:[{run:'a',s:500,t:t0-1000,u:'cr'},{run:'b',s:900,t:t0-2000,u:'cr'},{run:'a',s:1200,i:'AAA',t:t0-500,u:'cr'},{run:'old',s:99999,i:'ZZZ',t:t0-13*3600000,u:'cr'}]}));
+       try{ if(typeof ARCADE_PARTY_KEY==='string'){ pk0=localStorage.getItem(ARCADE_PARTY_KEY); pkOwn=true; localStorage.setItem(ARCADE_PARTY_KEY,JSON.stringify({t:t0-13*3600000+60000})); } }catch(_pk){}   // a4x12: the 13 hour old row is before a party start, so it is left out on both builds
        rows=arcadeBoardTonight();
        if(rows.length!==2||rows[0].run!=='a'||rows[0].s!==1200||rows[0].i!=='AAA'||rows[1].run!=='b'||rows[1].s!==900) bad.push('tonight is not one row per run from the last 12 hours, best first ('+JSON.stringify(rows)+')');
        if(arcadeBoardBest()!==99999) bad.push('BEST EVER is '+arcadeBoardBest()+', not 99999');
        if(!arcadeBoardQual('b')||arcadeBoardQual('a')||arcadeBoardQual('old')) bad.push('the initials rule is wrong (only b is in tonights top 10 with no initials)');
+       try{ if(pkOwn){ if(pk0===null) localStorage.removeItem(ARCADE_PARTY_KEY); else localStorage.setItem(ARCADE_PARTY_KEY,pk0); pkOwn=false; } }catch(_pr){}
        if(!arcadeEnter('host')) return bad.concat(['arcadeEnter(host) failed']).join('; ');
        sk=localStorage.getItem(SKEY);
        // the card: an op, a player 2 op, the pad, then the keyboard finishes it
@@ -26914,7 +26916,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof updateBullets!=='function'||typeof weakOf!=='function'||typeof weakPos!=='function'||typeof mkSentry!=='function'||typeof label!=='function') return 'SKIP: no weak points or labels here';
      var bad=[], g=null, p=null, e, L, W=null, i, pt, ux, uy, n, WS='WEAK '+'SPOT', LT='ZQX '+'LOOT ', w1, w2, left;
-     function weakN(){ var c=0; for(var j=0;j<g.labels.length;j++) if(g.labels[j].txt===WS) c++; return c; }
+     function weakN(){ var c=0; for(var j=0;j<g.labels.length;j++) if(String(g.labels[j].txt).indexOf(WS)===0) c++; return c; }
      function volley(k){
        g.bullets.length=0;
        for(var j=0;j<k;j++){ var bx=e.x+ux*(e.r+2.5), by=e.y+uy*(e.r+2.5); g.bullets.push({x:bx,y:by,vx:-ux*1180,vy:-uy*1180,dmg:1,life:0.5,player:true,owner:p,tint:'#ffd48a',thru:0}); }
@@ -32521,7 +32523,7 @@ window.__REGRESS=[
    run:function(){
      var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd='WK.name+'+"'  x'+WK.mult";
      if(src.indexOf(nd)>=0) return 'a weak point hit still shows the part name and its multiplier (OPTIC 2X)';
-     if(src.indexOf("'WEAK "+"SPOT'")<0) return 'a weak point hit does not say WEAK SPOT';
+     if(src.indexOf("'WEAK "+"SPOT'")<0&&src.indexOf("'WEAK "+"SPOT '")<0) return 'a weak point hit does not say WEAK SPOT';   // weakx: and the words with the multiplier after them
      return null; }},
   {v:'21.63',what:'a found Scav Pistol never takes a slot while you carry a better gun: holding Bare Hands in slot 2 with a rifle in slot 1, it goes into the backpack',
    run:function(){
