@@ -1,0 +1,7 @@
+v28.37: active reload on a controller next to a box
+
+On a controller, pressing X in the sweet spot of a reload now lands the active reload even standing next to a box.
+
+Check 28.37. Fails on v28.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

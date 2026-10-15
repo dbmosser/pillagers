@@ -1,0 +1,1 @@
+| ACTIVE RELOAD ON A CONTROLLER NEXT TO A BOX | v28.37 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 28.37 passes, fails on v28.36 |

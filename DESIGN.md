@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.37 - ACTIVE RELOAD ON A CONTROLLER NEXT TO A BOX
+
+Co-op hunt while he was away. On a controller X is the only reload button, and the X press picks search or reload once: with any box, body, door or forge in reach it always picked search, and the active reload reads only the reload key. So a second X press in the sweet spot of a reload searched the box instead of landing the bonus, and player 2, always on a controller, could never land an active reload near anything searchable while a keyboard player could. Proven in headless Chromium by driving the real pad poll with a fake controller: with nothing near, X in the sweet spot gives the bonus; with a box in reach it gave xMode KeyE, no bonus, and a search. Now, only while the reload is inside the sweet spot, X counts as the reload press; a downed teammate in reach still takes the revive, and X earlier or later in the reload still searches.
+
+MEASURED. Check 28.37 passes, and fails on v28.36.
 ## v28.36 - PLAYER 2 GOES UP WITH HIS KEPT KIT
 
 Co-op hunt while he was away. The lift R quick ascent takes the kept kit (RANDOM KIT, BEST KIT, FREEBIE KIT on the map select screen) for player 1, but player 2 went up with MY LOADOUT whenever no kit card was raised for him: when the host lift R started the raid and on every drop in (his own lift R or JOIN THE RAID IN PROGRESS), because the host word only committed his packed list. Proven in a staged player 2 window with BEST KIT and RANDOM KIT kept: the up word filled no kit. Now the up word applies his kept kit when no kit card was raised; a card he answered, or one that timed out on his current kit, still decides as before.

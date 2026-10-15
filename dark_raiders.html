@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.36';
+var VER='28.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16893,7 +16893,7 @@ function pollPad(){
       // cut, and at a found survivor the [X] GIVE prompt was a reload too. A seal already open is left out (its reach is not looked
       // up again once it opens), and so is a survivor the prompt does not offer (not yet found, or turned hostile), so X still
       // reloads in a fight with him.
-      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=(G.nearContainer||G.nearPad||G.nearDown||G.nearDoor||G.nearPed||G.nearForge||(G.nearSeal&&!G.nearSeal.done)||(G.nearStray&&G.nearStray.found&&!G.nearStray.hostile)||_xm)?'KeyE':'KeyR'; if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }
+      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=(G.nearContainer||G.nearPad||G.nearDown||G.nearDoor||G.nearPed||G.nearForge||(G.nearSeal&&!G.nearSeal.done)||(G.nearStray&&G.nearStray.found&&!G.nearStray.hostile)||_xm)?'KeyE':'KeyR'; var _rp=G.player; if(PAD.xMode==='KeyE'&&_rp&&!_rp.downed&&_rp.reloading>0&&_rp.rlTot>0&&!G.nearDown&&!_xm){ var _arf=1-_rp.reloading/_rp.rlTot; if(_arf>=AR_A&&_arf<=AR_B) PAD.xMode='KeyR'; } if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }   // v28.37 (cloud-coop-pad-active-reload), CLOUD HUNT 2026-10-15: X is the only reload button on a controller, so in the sweet spot of a reload it lands the active reload even with a box, body, door or forge in reach (it searched instead, so player 2 could never get the bonus there); a downed teammate still takes the revive
       if(_xDown&&G.player&&G.player.downed) PAD.xMode='KeyE';   // v17.04, co-op hunt 2026-09-28: downed, X holds E, also a hold carried onto the floor (above)
       PAD.xWas=_xDown;
       padHold('KeyR',_xDown&&PAD.xMode==='KeyR');
@@ -46506,7 +46506,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.36: In co-op, player 2 now goes up with the kit he picked on the map select screen (RANDOM KIT, BEST KIT or FREEBIE KIT) when player 1 takes the quick ascent or when he drops into a raid in progress. Check 28.36 fails on v28.35',
+  now:'v28.37: On a controller, pressing X in the sweet spot of a reload now lands the active reload even standing next to a box. Check 28.37 fails on v28.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
