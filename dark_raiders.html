@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.70';
+var VER='27.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44834,7 +44834,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.70: With the controller buttons changed, the raid prompts name the buttons you set. Check 27.70 fails on v27.69',
+  now:'v27.71: A restore code now brings back your ARMORY codex and the kills with each gun. Check 27.71 fails on v27.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47584,6 +47584,10 @@ function restoreMake(){
          gh:(P.ghost&&typeof P.ghost==='object'&&P.ghost.tag)?P.ghost:null,
          // v20.72 (H37): THE ACHIEVEMENTS AND THE TWO LIFETIME KILL COUNTS THEY ARE MADE OF.
          ac:achForCode(), an:{r:(P.achN&&P.achN.raider)|0,m:(P.achN&&P.achN.mach)|0},
+         // v27.71 (cloud-menus-restore-keeps-codex), CLOUD HUNT 2026-10-15: the ARMORY codex (found guns) and the kills with each gun travel with the code in one short
+         // field: every found gun is a key, its value the kills with it (0 for found with no kills), plus any other gun that has kills
+         gk:(function(){ var q={}, k, n; if(P.codex&&typeof P.codex==='object') for(k in P.codex) if(P.codex[k]&&k!=='fists'&&Object.prototype.hasOwnProperty.call(WEAPONS,k)&&ITEMS['gun_'+k]) q[k]=0;
+           if(P.gunKills&&typeof P.gunKills==='object') for(k in P.gunKills){ n=(+P.gunKills[k])|0; if(n>0&&Object.prototype.hasOwnProperty.call(WEAPONS,k)) q[k]=n; } return q; })(),
          w:{},s:{}};
   // What they are wearing. The RACKS themselves are derived from the numbers
   // above by cosOwned, so nothing here has to list what they have unlocked.
@@ -47707,6 +47711,13 @@ function restoreApply(o){
   // (achScan), since its runs belong to the replaced character. The gamble history goes with the save it belonged to.
   var _ak={}, _ai;
   for(_ai=0;_ai<ACHS.length;_ai++) _ak[ACHS[_ai].id]=1;
+  // v27.71 (cloud-menus-restore-keeps-codex), CLOUD HUNT 2026-10-15: THE ARMORY CODEX AND THE GUN KILLS ARE THE RESTORED CHARACTER'S. Neither was carried nor cleared,
+  // so a code pasted over another character kept that character's found guns and gun kills (CENTURION earned again from them), and his own code on a fresh
+  // browser lost every found gun he no longer holds and all his gun kills. The code's gk holds both: every gun key this build knows that the codex lists is filed
+  // as found, and each count above 0 is its kills. An older code with none starts both clean. A restored entry is an old find (1), so the codex does not mark
+  // it NEW against the replaced character's last look.
+  P.codex={}; P.gunKills={}; (function(){ var _ck, _cn; if(o.gk&&typeof o.gk==='object'&&!Array.isArray(o.gk)) for(_ck in o.gk) if(Object.prototype.hasOwnProperty.call(o.gk,_ck)&&Object.prototype.hasOwnProperty.call(WEAPONS,_ck)){
+    if(_ck!=='fists'&&ITEMS['gun_'+_ck]) P.codex[_ck]=1; _cn=Math.floor(+o.gk[_ck]); if(_cn>0&&_cn<1e7) P.gunKills[_ck]=_cn; } })();
   P.ach={}; P.achN={raider:Math.max(0,(o.an&&o.an.r)|0),mach:Math.max(0,(o.an&&o.an.m)|0)}; P.achScan=1; P.gambleLog=[];
   if(o.ac&&typeof o.ac.length==='number') for(_ai=0;_ai<o.ac.length&&_ai<40;_ai++) if(typeof o.ac[_ai]==='string'&&Object.prototype.hasOwnProperty.call(_ak,o.ac[_ai])) P.ach[o.ac[_ai]]=Date.now();
   // v11.66: the armoury, when the code carries one. A gun this build does not

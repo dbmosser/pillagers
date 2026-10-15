@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.71 - A RESTORE CODE KEEPS THE CODEX AND GUN KILLS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: a restore code carried neither the ARMORY codex of found guns (P.codex) nor the kills with each gun (P.gunKills, which CENTURION reads), and restoreApply never touched either. A code pasted over another character kept that character's codex and kills (a pistol-only character showed ARMORY 4/19 and earned CENTURION again from the leaked kills), and his own code on a fresh browser lost every found gun he no longer holds and all his gun kills. Proven in headless Chromium by making a code, changing the save and applying the code: the codex and kills stayed the replaced save's. The code now writes both in one short field (gk): every found gun is a key, its value the kills with it (0 for found with no kills), plus any other gun with kills. restoreApply files every gun key this build knows in the codex and sets the kills of each one above 0; an older code with none starts both clean.
+
+MEASURED. Check 27.71 passes, and fails on v27.70.
 ## v27.70 - PAD PROMPTS NAME THE BUTTONS AS SET
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: v26.53 promised every raid prompt names the new button after CHANGE PAD BUTTONS, but six still typed the default name: the backpack cue and NO HEAL ON BELT said VIEW, the belt said RT TO DRAW, the pickup line said LB or RB to swap, and the ring prompt said [Y] SEARCH. Proven in headless Chromium: with the backpack moved to Y the cue still said VIEW  BACKPACK while VIEW no longer opened it and Y did; with fire on A the belt still said RT TO DRAW. Each now asks pbn() for the button the action is on; the default layout reads exactly as before.

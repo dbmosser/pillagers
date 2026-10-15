@@ -1,0 +1,7 @@
+v27.71: a restore code keeps the codex and gun kills
+
+A restore code now brings back your ARMORY codex and the kills with each gun.
+
+Check 27.71. Fails on v27.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
