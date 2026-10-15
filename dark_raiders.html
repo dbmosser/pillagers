@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.82';
+var VER='27.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20593,8 +20593,20 @@ function drawFinisher(c,p){
   c.lineWidth=3*z; c.lineCap='butt';
   c.strokeStyle='rgba(255,192,74,.30)'; c.beginPath(); c.arc(s.x,s.y,r,0,6.2832); c.stroke();
   if(f>0){ c.strokeStyle='rgba(255,192,74,.96)'; c.beginPath(); c.arc(s.x,s.y,r,-1.5708,-1.5708+6.2832*f); c.stroke(); }
-  c.font=hudFS(TYPE.micro); c.textAlign='center'; c.fillStyle='rgba(255,192,74,.96)';
-  c.fillText(f>0?'FINISHING':'FINISH ['+keyLabel('KeyV','V')+']',s.x,s.y-r-6*z);
+  // v27.xx (feel2e), HIS WORDS (2026-10-14): "i didn't see a prompt telling me how to do the finisher -- keep it though". THE FINISHER HAS THE STANDARD WORLD PROMPT. A downed pillager in
+  // reach showed FINISH [V] in tiny type over a ring, under the REVIVE prompt of the same man, and nobody saw it. It is now hudPrompt, the prompt every other world action uses (the
+  // plate, the bone caps, the key drawn as a keycap): HOLD [V] FINISH, in danger red, over the man at the same spot as the REVIVE prompt and stacked under it when both are up. The ring
+  // under him stays and fills while you hold. The key is named as set (CHANGE KEYS) and, on a controller, the button as bound (Y by default, TRIANGLE on a PlayStation pad; v27.xx feel2g).
+  {
+    var _fp=w2s(e.x,26,e.y), _fhs, _fy;
+    if(_fp){
+      _fhs=hudAtIn(_fp.x,_fp.y);
+      try{
+        _fy=_fp.y+((G.nearDown===e&&promptPick(p)==='down')?LH(26):0);
+        hudPrompt('HOLD ['+keyLabel('KeyV','V')+'] FINISH',_fp.x,_fy,{col:HUDC.danger});
+      } finally { c.textAlign='left'; if(_fhs) c.restore(); }
+    }
+  }
   return true;
 }
 function meleeStrike(){
@@ -45772,7 +45784,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.82: The raid events, the gate breach and the explosive barrels have their own dark sounds, and a barrel chain sounds like a chain. Check 27.82 fails on v27.81',
+  now:'v27.83: A downed pillager in reach shows HOLD V FINISH in the standard world prompt, stacked under the revive prompt. Check 27.83 fails on v27.82',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

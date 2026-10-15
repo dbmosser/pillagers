@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.83 - THE FINISHER SAYS HOW
+
+Co-op hunt while he was away. His words: he did not see a prompt telling him how to do the finisher, but he wants to keep it. The old one was a few small words over a ring, drawn under the REVIVE prompt of the same man, so it was missed. A downed pillager in finisher reach now shows the standard world prompt, the same one the door, the crate and the seal use: HOLD [V] FINISH on a plate, in danger red, with the V drawn as a keycap (the key as you have set it in CHANGE KEYS). It sits where the REVIVE prompt sits and stacks under it when both are up, and the ring under him still fills while you hold. A standing pillager, or you being down, shows nothing. On a controller the prompt names the finisher button as bound, Y by default and TRIANGLE on a PlayStation pad. The finisher itself, its 0.55 second hold, its reach and its 100 points are unchanged.
+
+MEASURED. Check 27.83 passes, and fails on v27.82.
 ## v27.82 - THE EVENTS, GATE AND BARRELS HAVE SOUNDS
 
 Co-op hunt while he was away. His order of 2026-10-15: add the sounds. The five raid events were announced on the screen and in silence. Each now plays its own low sting with its callout (orbital debris, machine convoy, bounty pillager, coolant rupture, Overseer rampage). A piece of debris roars as it falls and lands with a big low blast of its own instead of the plain boom, the convoy sets off with tread clanks over an engine, the coolant pipe bursts with a hiss, the Overseer leaves its lair with a roar and stomps, and a paid bounty has a short sting. The stronghold gate blowing in and the explosive barrels have blasts of their own too (a barrel lit by another barrel sounds shorter and harder, so a chain is heard as a chain). No words, no voices, no music; the other player window plays the stings too.

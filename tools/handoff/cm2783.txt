@@ -1,0 +1,7 @@
+v27.83: the finisher says how
+
+A downed pillager in reach shows HOLD V FINISH in the standard world prompt, stacked under the revive prompt.
+
+Check 27.83. Fails on v27.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
