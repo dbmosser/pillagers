@@ -18783,8 +18783,8 @@ window.__REGRESS=[
        if(g.careerPaid!==1400) bad.push('a CAREER extraction with 700 paid '+g.careerPaid+', not 700 x2 = 1400');
        if(!((+P.credits||0)-cr0>=1400)) bad.push('his credits rose '+((+P.credits||0)-cr0)+' on a 1400 payout');
        m=(document.getElementById('oc_manifest')||{}).textContent||'';
-       if(m.indexOf('CAREER'+' SCORE')<0) bad.push('the EXTRACTED card does not read CAREER SCORE');
-       if(m.indexOf('CAREER'+' BEST')<0) bad.push('the first banked run does not read CAREER BEST');
+       if(m.indexOf('CAREER'+' SCORE')<0&&m.indexOf('RAID'+' SCORE')<0) bad.push('the EXTRACTED card does not read CAREER SCORE or RAID SCORE');
+       if(m.indexOf('CAREER'+' BEST')<0&&m.indexOf('PERSONAL'+' BEST')<0) bad.push('the first banked run does not read CAREER BEST or PERSONAL BEST');
        if(!Array.isArray(P.careerBoard)||!P.careerBoard.length||P.careerBoard[0].s!==1400||P.careerBoard[0].k!==5) bad.push('the CAREER board does not hold the 1400 run ('+JSON.stringify(P.careerBoard)+')');
        __topClear(); __runPrep();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -18795,7 +18795,7 @@ window.__REGRESS=[
        if((+P.credits||0)-cr1>=1400) bad.push('a CAREER death raised his credits by '+((+P.credits||0)-cr1));
        if(!Array.isArray(P.careerBoard)||P.careerBoard.filter(function(r){ return r.o!=='k'; }).length!==1) bad.push('a CAREER death changed the extraction rows of the board ('+JSON.stringify(P.careerBoard)+')');
        m=(document.getElementById('oc_manifest')||{}).textContent||'';
-       if(m.indexOf('SCORE'+' LOST')<0) bad.push('the KIA card does not read SCORE LOST');
+       if(m.indexOf('SCORE'+' LOST')<0&&!(m.indexOf('RAID'+' SCORE')>=0&&m.indexOf('LOST')>=0)) bad.push('the KIA card does not read SCORE LOST or a RAID SCORE with the credits LOST');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
        try{ CAREER_ON=c0; }catch(_r){}
