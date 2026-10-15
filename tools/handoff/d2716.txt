@@ -1,0 +1,5 @@
+## v27.16 - THE HEARTBEAT STARTS AT 30 PERCENT
+
+Co-op hunt while he was away. His answer 40: the low-health heartbeat should start at 30 percent. It began at 45 health, so you heard it while still fairly healthy. It now begins at 30 and builds from nothing at that line to its worst at zero, so it is the same curve over a shorter range. Being downed still sets it off, and so does something hunting you close, as before.
+
+MEASURED. Check 27.16 passes, and fails on v27.15.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.16 - THE HEARTBEAT STARTS AT 30 PERCENT
+
+Co-op hunt while he was away. His answer 40: the low-health heartbeat should start at 30 percent. It began at 45 health, so you heard it while still fairly healthy. It now begins at 30 and builds from nothing at that line to its worst at zero, so it is the same curve over a shorter range. Being downed still sets it off, and so does something hunting you close, as before.
+
+MEASURED. Check 27.16 passes, and fails on v27.15.
 ## v27.15 - THE WHAT IS NEW CARD NAMES THE TWO PLAYER FLOW
 
 Co-op hunt while he was away. The card was stamped v26.99 and the stamp may not trail the build by more than 0.15. Its new line names the two player flow builds since: player 2 sees and feels the fires, the raid events, the strongholds, the golden enemy, the run goals and the air strike, and the power-ups are shared.

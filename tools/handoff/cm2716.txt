@@ -1,0 +1,7 @@
+v27.16: the heartbeat starts at 30 percent
+
+The low-health heartbeat now starts at 30 health instead of 45.
+
+Check 27.16. Fails on v27.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
