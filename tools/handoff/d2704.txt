@@ -1,0 +1,5 @@
+## v27.04 - PLAYER 2 SEES AND FEELS THE FIRES
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players, and two player play comes first. The fuel fires and the burning debris wrecks were the host window only: player 2 planned fires of his own that were not the host fires, and never saw the ones the debris lit. The host now says where its fires are in the world word it already sends twice a second, and the linked window keeps exactly those fires, with their warm up, their life and their embers. Player 2 is kept out of a lit fire and burned at its edge as player 1 is, and the fire shows on his minimap and his sector map. It costs no new message: the fires ride in the world word.
+
+MEASURED. Check 27.04 passes, and fails on v27.03.

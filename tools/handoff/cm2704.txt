@@ -1,0 +1,7 @@
+v27.04: player 2 sees and feels the fires
+
+Player 2 now sees the same fires as player 1 and cannot walk through them.
+
+Check 27.04. Fails on v27.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

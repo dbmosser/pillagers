@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.04 - PLAYER 2 SEES AND FEELS THE FIRES
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players, and two player play comes first. The fuel fires and the burning debris wrecks were the host window only: player 2 planned fires of his own that were not the host fires, and never saw the ones the debris lit. The host now says where its fires are in the world word it already sends twice a second, and the linked window keeps exactly those fires, with their warm up, their life and their embers. Player 2 is kept out of a lit fire and burned at its edge as player 1 is, and the fire shows on his minimap and his sector map. It costs no new message: the fires ride in the world word.
+
+MEASURED. Check 27.04 passes, and fails on v27.03.
 ## v27.03 - THE SHOP RE-ROLLS EACH RAID
 
 Co-op hunt while he was away. His yes to suggestion 35. The counter now has its stock rolled again every time a raid is finished, not by the clock. The basics are always there: Bandage, Medkit, Ammo Box, Armor Plate, the Scav Pistol and the Compact SMG. Of the four extras (Smoke Canister, Decoy Beacon, Frag Charge, Stim Injector) two are on the counter at a time, and which two changes with each raid. An extra that is out shows greyed in the grid with SOLD OUT where its price was, cannot be bought, and is not offered on the ascent check either. The roll is a side stream, so it does not touch the seeded raid, and the same raid count always gives the same counter. Prices are unchanged.
