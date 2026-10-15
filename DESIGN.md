@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.47 - THE GOLDEN CLUE HUNT IS CUT
+
+Co-op hunt while he was away. His answer of 2026-10-14: cut the golden clue hunt, keep the golden enemy in every raid. The three clue props, the search circle that shrank to the golden machine, the CLUE callouts and every mark of them are gone, with their words, their code, the clue word to player 2 and their checks. The golden enemy itself stays: one machine or hostile pillager is still gilded in every raid, it is said once when it is picked, and there is no puzzle to find it: it shows as a gold mark on the minimap and the map while it is within 900 of you, and its shine draws wherever it is on screen. It leaves its hoard as before.
+
+MEASURED. Check 27.47 passes, and fails on v27.46.
 ## v27.46 - THE STRONGHOLD IS PART OF THE MAP
 
 Co-op hunt while he was away. His order of 2026-10-14, after he played it: the stand at the gate feature is a mess, the map needs to be adapted, you cannot just stick a circle in the middle of existing buildings. The stronghold was a 240 wide circle of fence and gate drawn on the screen over whatever stood there, so it cut through buildings. It is a real building now: the raid picks an enclosed building with room for the garrison and the cache, on open reachable ground at the same distances from the drop and the rings, and its own doorway becomes the gate, a steel shutter built into the wall that blocks bodies, rounds and sight until it is breached. Every other doorway of the building is barricaded the same way so the gate is the one way in, and the building walls can no longer be broken. Holding in front of the gate fills a ring at the gate only, with the label HOLD TO BREACH, and the breach blows the shutter off with a blast, a scar and a shake, and opens the way for good. Both players build the same walls: player 2 window builds them from the host word, so both see and hit the same compound. The map outline marks the building, not a circle.
