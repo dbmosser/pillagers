@@ -6093,6 +6093,40 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.41',what:'cloud-coop-smg-on-its-key: with no gun plan of his (a fresh save, as player 2 most often is) and the SMG in his hands with a Sniper stowed, the raid starts with the SMG on its own key 2 and up, not on key 1 with key 2 empty; Sniper/SMG, Pistol/Magnum and Rifle/Pistol start as before',
+   run:function(){
+     if(!(window.__P&&window.__applyLoaded&&window.__deploy)) return 'SKIP: this fixture has no profile';
+     if(typeof gunClassKey!=='function'||typeof gunKeysSettle!=='function') return 'SKIP: this build has no class gun keys';
+     var bad=[], snap=null, r;
+     function one(w1,w2){
+       var q, g, o={};
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       q=__P(); q.weapons=['pistol','smg','sniper','rifle','shotgun','magnum']; q.equipped=w1; q.equippedSec=w2; q.hotAssign={}; delete q.gunKeys; q.kit=[];
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state();
+       o.A=JSON.stringify(g.hotAssign||{}); o.hot=g.hot; o.demo=!!(g.arcade&&!g.career);
+       try{ __endRaid('abandon'); }catch(_e){}
+       return o;
+     }
+     try{
+       snap=JSON.parse(JSON.stringify(__P()));
+       r=one('smg','sniper');
+       if(r.demo) return 'SKIP: the raid was a DEMO raid';
+       if(r.A!=='{"1":"gun_smg","7":"gun_sniper"}') bad.push('SMG/Sniper keys read '+r.A+', not the SMG on key 2 and the Sniper on key 8');
+       if(r.hot!==1) bad.push('SMG/Sniper starts on key '+(r.hot+1)+', not key 2');
+       r=one('sniper','smg');
+       if(r.A!=='{"1":"gun_smg","7":"gun_sniper"}'||r.hot!==7) bad.push('Sniper/SMG read '+r.A+' on key '+(r.hot+1));
+       r=one('pistol','magnum');
+       if(r.A!=='{"0":"gun_pistol","1":"gun_magnum"}'||r.hot!==0) bad.push('Pistol/Magnum read '+r.A+' on key '+(r.hot+1));
+       r=one('rifle','pistol');
+       if(r.A!=='{"0":"gun_pistol","2":"gun_rifle"}'||r.hot!==2) bad.push('Rifle/Pistol read '+r.A+' on key '+(r.hot+1));
+     }catch(x2){ bad.push('threw: '+(x2&&x2.message||x2)); }
+     finally{
+       try{ if(G&&!G.over&&!G.hubFloor) __endRaid('abandon'); }catch(_a){}
+       try{ if(snap) __applyLoaded(snap); }catch(_r){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'28.40',what:'cloud-coop-search-cones-built: a body that player 2 window built itself with the raid (no net flag, no AI of its own there) shows the search cone when a host row says it is searching, as it does on the host; a body the row says is not searching shows none, and a solo raid decides searching as before',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__deploy)) return 'SKIP: no raid here';

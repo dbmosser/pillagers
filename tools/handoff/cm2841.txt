@@ -1,0 +1,7 @@
+v28.41: the smg starts on its own key
+
+With an SMG in your hands and a second gun stowed, the raid now starts with the SMG on its own key 2, as the Undercroft shows it.
+
+Check 28.41. Fails on v28.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
