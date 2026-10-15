@@ -54,3 +54,14 @@ lineup-raid-7x.jpg the four cropped and enlarged 7x, c07 the 2-player staging). 
 Cosmetic only (no hitbox, speed or stat); no draw from the seeded stream (G.t and entity fields only); seed 4242 fingerprint (ents 85/374,
 containers 165/593); every new profile field has a default and old ids map; every new line of text in the game's caps HUD voice; his rulings
 stay (Curved stays clearly female, the 2026-10-08 build ruling; cosmetics are earned; toggles).
+
+## STATUS (updated as builds ship; the scripts are in the session scratchpad mk-cosm*.ps1)
+- cosm1 SHIPPED v28.04 the colour scheme (19 presets, three colours, sleeve follows clothes, old clothing ids map to their scheme twin).
+- cosm2 SHIPPED v28.09 two players never look alike (seat ring and number badge in a party; same scheme at two seats goes to the next free preset in both windows).
+- cosm3 SHIPPED v28.16 six headgears (boonie, tactical helmet, hard hat, goggle cap, gas mask, heavy helmet).
+- cosm4 SHIPPED v28.13 vests (bandolier, light harness, utility, heavy plates) and shoulder pads (round, spiked, big pauldron).
+  FAULT FOUND IN IT by running the older appearance checks against it: the vest line sat between the plate carrier and its else, so every default body got the old dark chest band. Fixed by cosm4fix (see below).
+- cosm5 SHIPPED v28.12 pack shapes (bedroll, radio, fuel can, frame pack) and boot shapes (shin guards, tall gaiters).
+- cosm6 SHIPPED v28.18 outfit SETS (Scavenger, Raider, Engineer, Recon, Heavy), owned when every piece is.
+- cosm4fix, cosm7 (the tabbed appearance screen with a turning picture and rarity bars) and the older-check retargets (v10.54, v9.99, v10.47) are in the ship queue.
+- Frame cost measured (drawOp, minimum of nine batches of 1500): hero body 77-90 us before, 103-112 us after; a pillager body 75-96 us before and after. Nothing needed baking.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.23 - LEADERBOARD HEADS SIT OVER THEIR COLUMNS
+
+Co-op hunt while he was away. Seen in the first 1080p picture of the run card leaderboard step: the small grey column heads (RANK, SCORE, OUTCOME, SECTOR, TIME, DATE) did not sit over their figures, because the head row was set in a smaller type and the grid columns are measured in that type, so they came out narrower than the rows under them and SCORE ended well to the left of the dollar figures. The heads are smaller on their own now and the row keeps the same column widths as the rows, so each head shares its edge with the column under it. Picture only, no number moved.
+
+MEASURED. Check 28.23 passes, and fails on v28.22.
 ## v28.22 - WEAK SPOT SHOWS ITS MULTIPLIER
 
 Co-op hunt while he was away. His order: when a shot hits a weak spot the label should show the multiplier, for example weak spot 2.4x. The label on a weak point hit now reads WEAK SPOT and the multiplier that hit pays, to one decimal with a lower case x: WEAK SPOT 3.4x on a Sentry vent, 2.0x on its optic, and so on for the Warden seam, the Bulwark spine and the Pillbox. It is still in the weak point colour and still shows once per target every half second. The Overseer core, which is exposed while it vents and pays half again on every round, now says WEAK SPOT 1.5x the same way, and the two multiply when a seam is hit while it vents. Only the words changed; the multipliers, what a weak point does and the damage are as before. Pillagers have no weak spots, so nothing changes there.

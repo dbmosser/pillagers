@@ -1,0 +1,7 @@
+v28.23: leaderboard heads sit over their columns
+
+The leaderboard column heads now sit over their columns.
+
+Check 28.23. Fails on v28.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
