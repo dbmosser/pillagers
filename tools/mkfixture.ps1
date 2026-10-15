@@ -9561,7 +9561,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__endRaid&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy';
      if(typeof haulRevealStart!=='function') return 'there is no haul reveal in this build';
-     var bad=[], snap=null, g=null, p=null, its, i, vals, seen, prev, sounds=[], oS=sfx, tot, last, hid, btn, oc, first, before, ws, q2;
+     var bad=[], snap=null, g=null, p=null, its, i, vals, seen, prev, sounds=[], oS=sfx, oB=blip, tot, last, hid, btn, oc, first, before, ws, q2;
      function stripItems(){ return document.querySelectorAll('#oc_manifest .haulstrip .haulit'); }
      function hidN(){ return document.querySelectorAll('#oc_manifest .haulstrip .haulit.hid').length; }
      function raid(bag){
@@ -9575,6 +9575,7 @@ window.__REGRESS=[
      try{
        snap=JSON.parse(JSON.stringify(__P()));
        sfx=function(t){ sounds.push(t); };
+       blip=function(t){ if(/^haul/.test(String(t))) sounds.push(t); };   // snd3: the pick sound of a picture is a haul cue through blip (haulTick to haulGold)
        // ONE: an extraction with several things in the bag starts the reveal
        if(!raid(['scrap','board','optic','servo','core','medkit'])) return 'SKIP: no live raid';
        __endRaid('extract');
@@ -9639,6 +9640,7 @@ window.__REGRESS=[
      }catch(x2){ bad.push('threw: '+(x2&&x2.message||x2)); }
      finally{
        try{ sfx=oS; }catch(_s){}
+       try{ blip=oB; }catch(_sb){}
        try{ HAUL_REV=null; }catch(_h){}
        try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
        try{ keys={}; }catch(_k){}
