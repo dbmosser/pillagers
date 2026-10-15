@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.37 - THE LOCKDOWN ALARM IS GONE
+
+Co-op hunt while he was away. His order of 2026-10-14: get rid of the sealed lockdown thing, that is a mess. The lockdown alarm raid event, which sealed a ring of ground for a minute with a cache in the middle and made the machines inside berserk, is removed completely: it is out of the event pool, so no raid plans it, and its fences with their collision, its lockdown cache, its callouts (SEALED IN, DISTRICT SEALED, DOORS OPEN, LOCKDOWN OVER), its marks on the minimap and the map, and everything player 2 was told about it are gone. The other five events stay (orbital debris, machine convoy, bounty pillager, coolant rupture, Overseer rampage), still one or two a raid, drawn on the same event stream so nothing else that is seeded moves. The older checks that staged the lockdown now report that it was taken out.
+
+MEASURED. Check 27.37 passes, and fails on v27.36.
 ## v27.36 - THE AIR STRIKE PLATE MOVES TO THE RIGHT
 
 Co-op hunt while he was away. His playtest note of 2026-10-14: the air strike bar is in a weird place and causes collisions, it should be over on the right further. The plate sat just right of the middle of the screen, a little over the gun bar, where the power-up timer chips, the item you are readying and the bar own hover and ammo text all live, so they ran into it. It now sits at the right end of the gun bar, one chip row up, past the chips and the item in hand and clear of the keys; the corner gun card starts at the end of the bar so there is no room beside it, and if the plate would ever meet the gear card, the pickup stack, the pickup gun card or the kill feed it lifts clear above them. The same plate is drawn by the same code in both windows of a two player game, each with its own meter.

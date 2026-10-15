@@ -4,8 +4,24 @@
     "now":  "Fires, crates, the bounty, the convoy and the strike key are cleaned up.",
     "edits":  [
                   {
-                      "anchor":  "  for(i=0;G\u0026\u0026G.zones\u0026\u0026i\u003cG.zones.length;i++){ z=G.zones[i]; if(z\u0026\u0026z.open!==false\u0026\u0026isFinite(z.x)\u0026\u0026Math.hypot(x-z.x,y-z.y)\u003cr+(z.r||0)) return true; }\n  return false;",
-                      "replacement":  "  for(i=0;G\u0026\u0026G.zones\u0026\u0026i\u003cG.zones.length;i++){ z=G.zones[i]; if(z\u0026\u0026z.open!==false\u0026\u0026isFinite(z.x)\u0026\u0026Math.hypot(x-z.x,y-z.y)\u003cr+(z.r||0)) return true; }\n  if(typeof shAt===\u0027function\u0027\u0026\u0026shAt(x,y,80)) return true;   // v16.xx (rvw1, cloud review 3): and the strongholds: no event, fire or ambush is placed in one\n  return false;"
+                      "anchor":  "        if(!spotFree(G.map,x,y,40)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)||flowZoneNear(x,y,420)) continue;",
+                      "replacement":  "        if(!spotFree(G.map,x,y,40)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)||flowZoneNear(x,y,420)||shAt(x,y,80)) continue;"
+                  },
+                  {
+                      "anchor":  "    function ok(x,y){ return x\u003e300\u0026\u0026y\u003e300\u0026\u0026x\u003cWORLD_W-300\u0026\u0026y\u003cWORLD_H-300\u0026\u0026spotFree(G.map,x,y,40)\u0026\u0026navReachable(G.map,x,y)\u0026\u0026!shutRoomAt(G.map,x,y)\u0026\u0026!flowZoneNear(x,y,300); }",
+                      "replacement":  "    function ok(x,y){ return x\u003e300\u0026\u0026y\u003e300\u0026\u0026x\u003cWORLD_W-300\u0026\u0026y\u003cWORLD_H-300\u0026\u0026spotFree(G.map,x,y,40)\u0026\u0026navReachable(G.map,x,y)\u0026\u0026!shutRoomAt(G.map,x,y)\u0026\u0026!flowZoneNear(x,y,300)\u0026\u0026!shAt(x,y,80); }"
+                  },
+                  {
+                      "anchor":  "        if(x\u003e300\u0026\u0026y\u003e300\u0026\u0026x\u003cWORLD_W-300\u0026\u0026y\u003cWORLD_H-300\u0026\u0026spotFree(G.map,x,y,40)\u0026\u0026navReachable(G.map,x,y)\u0026\u0026!shutRoomAt(G.map,x,y)\u0026\u0026!flowZoneNear(x,y,350)) S={x:x,y:y};",
+                      "replacement":  "        if(x\u003e300\u0026\u0026y\u003e300\u0026\u0026x\u003cWORLD_W-300\u0026\u0026y\u003cWORLD_H-300\u0026\u0026spotFree(G.map,x,y,40)\u0026\u0026navReachable(G.map,x,y)\u0026\u0026!shutRoomAt(G.map,x,y)\u0026\u0026!flowZoneNear(x,y,350)\u0026\u0026!shAt(x,y,80)) S={x:x,y:y};"
+                  },
+                  {
+                      "anchor":  "EVENTS.cool={name:\u0027COOLANT RUPTURE\u0027,sub:\u0027FOG AND COLD\u0027,warn:18,dur:75,r:420,fade:4,col:\u0027#8fd8ff\u0027,\n  pick:function(ev){\n    var p=G.player, S=null;\n    evStream(ev,function(){\n      var k, a, d, x, y;\n      for(k=0;k\u003c80\u0026\u0026!S;k++){\n        a=rr()*6.2832; d=450+rr()*550; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;\n        if(x\u003e400\u0026\u0026y\u003e400\u0026\u0026x\u003cWORLD_W-400\u0026\u0026y\u003cWORLD_H-400\u0026\u0026spotFree(G.map,x,y,40)\u0026\u0026navReachable(G.map,x,y)\u0026\u0026!shutRoomAt(G.map,x,y)\u0026\u0026!flowZoneNear(x,y,450)) S={x:x,y:y};",
+                      "replacement":  "EVENTS.cool={name:\u0027COOLANT RUPTURE\u0027,sub:\u0027FOG AND COLD\u0027,warn:18,dur:75,r:420,fade:4,col:\u0027#8fd8ff\u0027,\n  pick:function(ev){\n    var p=G.player, S=null;\n    evStream(ev,function(){\n      var k, a, d, x, y;\n      for(k=0;k\u003c80\u0026\u0026!S;k++){\n        a=rr()*6.2832; d=450+rr()*550; x=p.x+Math.cos(a)*d; y=p.y+Math.sin(a)*d;\n        if(x\u003e400\u0026\u0026y\u003e400\u0026\u0026x\u003cWORLD_W-400\u0026\u0026y\u003cWORLD_H-400\u0026\u0026spotFree(G.map,x,y,40)\u0026\u0026navReachable(G.map,x,y)\u0026\u0026!shutRoomAt(G.map,x,y)\u0026\u0026!flowZoneNear(x,y,450)\u0026\u0026!shAt(x,y,80)) S={x:x,y:y};"
+                  },
+                  {
+                      "anchor":  "          if(x\u003e300\u0026\u0026y\u003e300\u0026\u0026x\u003cWORLD_W-300\u0026\u0026y\u003cWORLD_H-300\u0026\u0026spotFree(G.map,x,y,40)\u0026\u0026navReachable(G.map,x,y)\u0026\u0026!shutRoomAt(G.map,x,y)){ wps.push({x:x,y:y}); break; }",
+                      "replacement":  "          if(x\u003e300\u0026\u0026y\u003e300\u0026\u0026x\u003cWORLD_W-300\u0026\u0026y\u003cWORLD_H-300\u0026\u0026spotFree(G.map,x,y,40)\u0026\u0026navReachable(G.map,x,y)\u0026\u0026!shutRoomAt(G.map,x,y)\u0026\u0026!shAt(x,y,80)){ wps.push({x:x,y:y}); break; }"
                   },
                   {
                       "anchor":  "function fireKeep(o,rad){\n  var F=G.flow.fires, i, f, d, R, a, nx, ny, k, ta;",
