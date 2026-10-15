@@ -6550,7 +6550,7 @@ window.__REGRESS=[
      var bad=[], g=null, p, own=false, rs=say, S, i, j, a, x, y, ok, cc, d0, d1, hp0, oSh, oAr, oIv, kinds={}, cr, sn, bo, el, rd, far, arcs=[], txts=[], proto, oArc, oFt, sp, hit, q, it, oGlyph;
      function step(n){ var k; for(k=0;k<n;k++){ g.t+=0.016; __sim(0.016); } }
      try{
-       __topClear(); __runPrep();
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
@@ -6559,7 +6559,7 @@ window.__REGRESS=[
        g.ents=g.ents.filter(function(q2){ return q2&&(q2.neutral||q2.kind==='peddler'||q2.kind==='stray'); });
        g.pwr=null; S=pwrS();
        // ONE: all six kinds drop
-       for(i=0;i<3000;i++){ g.t+=1; S.items.length=0; pwrKill('crawler',0,false,p.x+60,p.y,null); }
+       for(i=0;i<3000;i++){ S.lastDrop-=1; S.items.length=0; pwrKill('crawler',0,false,p.x+60,p.y,null); }
        S.log.forEach(function(w){ kinds[w.split(':')[1]]=1; });
        S.log.length=0;
        ['clip','dmg','rapid','mag','shield','pulse'].forEach(function(k){ if(!kinds[k]) bad.push('ONE: '+k+' never dropped in three thousand kills'); });
@@ -6640,11 +6640,11 @@ window.__REGRESS=[
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__sim)) return 'SKIP: no raid here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade here';
      var bad=[], g=null, p, own=false, rs=say, oWep, oAmmo, oRes, i, S, last, log1, log2, n1, s0, s1, kinds={}, d1, d2, c1, c2, arcs=[], txts=[], proto, oArc, oFt, sp, hit;
-     function step(n){ var q; for(q=0;q<n;q++){ g.t+=0.016; __sim(0.016); } }
-     function arm(w,a,r){ g.hotAssign={0:'gun_'+w.id}; g.hotPruned={}; g.hot=0; p.swapped=false; p.sec=null; p.secAmmo=0; mouse.down=false; p.wep=w; p.ammo=a; p.reserve=r; p.reloading=0; p.hand=false; p.jam=0; p.fired=false; p.spin=0; g.t+=0.016; __sim(0.016); for(var q=0;q<260&&p.drawT>0;q++){ g.t+=0.016; __sim(0.016); } p.lastShot=-1e9; p.fired=false; g.bullets.length=0; }
-     function drops(){ var q; g.pwr=null; S=pwrS(); for(q=0;q<1000;q++){ g.t+=1; S.items.length=0; pwrKill('crawler',0,false,p.x+60,p.y,null); } return S; }
+     function step(n){ var q; for(q=0;q<n;q++){ if(p.wep) sel(p.wep); g.t+=0.016; __sim(0.016); } }
+     function sel(w){ var HS=hotbarSlots(), q; for(q=0;q<HS.length;q++) if(HS[q]&&HS[q].kind==='gun'&&HS[q].equipped&&HS[q].icon===w.id){ g.hot=q; return q; } return -1; } function arm(w,a,r){ g.hotAssign={0:'gun_'+w.id}; g.hotPruned={}; g.hot=0; p.swapped=false; p.sec=null; p.secAmmo=0; mouse.down=false; p.wep=w; sel(w); p.ammo=a; p.reserve=r; p.reloading=0; p.hand=false; p.jam=0; p.fired=false; p.spin=0; g.t+=0.016; __sim(0.016); for(var q=0;q<260&&p.drawT>0;q++){ g.t+=0.016; __sim(0.016); } p.lastShot=-1e9; p.fired=false; g.bullets.length=0; }
+     function drops(){ var q; g.pwr=null; S=pwrS(); for(q=0;q<1000;q++){ S.lastDrop-=1; S.items.length=0; pwrKill('crawler',0,false,p.x+60,p.y,null); } return S; }
      try{
-       __topClear(); __runPrep();
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
@@ -6659,7 +6659,7 @@ window.__REGRESS=[
        if(log1!==log2) bad.push('ONE: the same raid and the same kills dropped different power-ups the second time');
        S.log.forEach(function(w){ kinds[w.split(':')[1]]=1; });
        if(Object.keys(kinds).length<3) bad.push('ONE: only '+Object.keys(kinds).join(',')+' ever dropped');
-       g.pwr=null; S=pwrS(); g.t+=100; pwrKill('warden',0,true,p.x+60,p.y,{});
+       g.pwr=null; S=pwrS(); S.lastDrop-=100; pwrKill('warden',0,true,p.x+60,p.y,{});
        if(S.items.length!==1) bad.push('ONE: a boss kill dropped '+S.items.length+' power-ups, not one');
        // TWO: walk over to take it; a far one stays; an old one goes
        S.items.length=0; S.act={};
@@ -6671,7 +6671,7 @@ window.__REGRESS=[
        if(S.items.length) bad.push('TWO: a pickup past its life stayed on the floor');
        // THREE: BOTTOMLESS CLIP: nothing in reserve, the trigger held: three rounds without it, a stream with it
        S.act={}; arm(cloneObj(WEAPONS.smg),3,0); mouse.down=true; step(40); c1=g.bullets.length;
-       if(c1!==3) bad.push('THREE: the control fired '+c1+' rounds from a 3 round magazine with nothing in reserve');
+       if(c1!==3) bad.push('THREE: the control fired '+c1+' rounds from a 3 round magazine with nothing in reserve [sel '+sel(p.wep)+' hot '+g.hot+' down '+p.downed+' roll '+p.roll+' hand '+p.hand+' drawT '+p.drawT+' slots '+JSON.stringify(hotbarSlots().map(function(s2){ return [s2.kind,s2.vacant?1:0,s2.equipped?1:0,s2.icon||'']; }))+']');
        arm(cloneObj(WEAPONS.smg),3,0); S.act.clip=20; mouse.down=true; step(60); c2=g.bullets.length;
        if(c2<8) bad.push('THREE: with the bottomless clip only '+c2+' rounds left the gun in a second');
        if(p.ammo!==p.wep.mag) bad.push('THREE: the magazine reads '+p.ammo+' of '+p.wep.mag+' under the bottomless clip');
