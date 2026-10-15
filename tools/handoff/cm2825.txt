@@ -1,0 +1,7 @@
+v28.25: player 2 hears how the convoy and the rampage end
+
+In co-op, both players now hear when the convoy is down, gets away or arrives and stays, and when the Overseer returns to his lair.
+
+Check 28.25. Fails on v28.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

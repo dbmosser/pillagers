@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.24';
+var VER='28.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46473,7 +46473,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.24: The camera now pulls back a little while you sprint. Settings has a SPRINT ZOOM-OUT row in DISPLAY. Check 28.24 fails on v28.23',
+  now:'v28.25: In co-op, both players now hear when the convoy is down, gets away or arrives and stays, and when the Overseer returns to his lair. Check 28.25 fails on v28.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56686,13 +56686,13 @@ EVENTS.convoy={name:'MACHINE CONVOY',sub:'ARMOURED TRAIN',warn:20,dur:170,r:240,
     if(ev.d.over) return;
     if(!car){ ev.d.over=1; return; }
     if(!(car.hp>0)||G.ents.indexOf(car)<0){
-      ev.d.over=1; ev.d.won=1;
+      ev.d.over=1; ev.d.won=1; ev.d.said=1;   // v28.25 (cloud-coop-event-ends-said), CLOUD HUNT 2026-10-15: remember the end line said (1 CONVOY DOWN) for the word
       convoyCrate(ev,car.x,car.y);
       try{ say('CONVOY DOWN','ext',{sub:'SEARCH THE CRATE'}); }catch(_cd){}
       return;
     }
     if(Math.hypot(car.x-ev.d.dx,car.y-ev.d.dy)<70){
-      ev.d.over=1; convoyLeave(ev);
+      ev.d.over=1; convoyLeave(ev); ev.d.said=(G.ents.indexOf(car)<0)?2:3;   // v28.25 (cloud-coop-event-ends-said), CLOUD HUNT 2026-10-15: remember the end line said (2 CONVOY AWAY, 3 CONVOY ARRIVED) for the word
       try{ if(G.ents.indexOf(car)<0) say('CONVOY AWAY','info'); else say('CONVOY ARRIVED','info',{sub:'THEY STAY'}); }catch(_ca){}   // v27.43 (rvw1): AWAY is said only once it is true
       return;
     }
@@ -56914,7 +56914,7 @@ EVENTS.rampage={name:'OVERSEER RAMPAGE',sub:'IT LEAVES THE LAIR',warn:12,dur:RAM
     var b=ev.d.b;
     if(b&&b.rmp){
       b.rmp=0; if(b.rmpL){ b.lairX=b.rmpL[0]; b.lairY=b.rmpL[1]; } if(b.rmpSpd) b.spd=b.rmpSpd;
-      if(b.hp>0){ try{ say('OVERSEER RETURNS','info'); }catch(_re){} }
+      if(b.hp>0){ ev.d.said=1; try{ say('OVERSEER RETURNS','info'); }catch(_re){} }   // v28.25 (cloud-coop-event-ends-said), CLOUD HUNT 2026-10-15: remember the end line said for the word
     }
   },
   live:function(ev){ var w=ev.d.wps||[]; return (ev.d.wi<w.length)?('SWEEP '+(ev.d.wi+1)+'/'+w.length):'HUNTING YOU'; }
@@ -57374,6 +57374,7 @@ function evNetOut(){
     ev=E.live[i]; def=EVENTS[ev.id]; if(!def) continue;
     x=def.mx?def.mx(ev):ev.x; y=def.my?def.my(ev):ev.y;
     a.push([EV_IDS.indexOf(ev.id),ev.n|0,(ev.ph==='warn')?0:((ev.ph==='live')?1:2),Math.round(x),Math.round(y),Math.round(ev.r),+(+ev.t).toFixed(1),+(+ev.lt).toFixed(1),+(+ev.et).toFixed(1),+(+ev.warn).toFixed(1),+(+ev.dur).toFixed(1),+(+ev.fade).toFixed(1),evNetX(ev)]);
+    if((ev.id==='convoy'||ev.id==='rampage')&&ev.d.said){ x=a[a.length-1][12]; if(x) x[(ev.id==='convoy')?5:4]=ev.d.said|0; }   // v28.25 (cloud-coop-event-ends-said), CLOUD HUNT 2026-10-15: the end line the host said goes in the word, so player 2 window says the same one
   }
   return a;
 }
@@ -57396,6 +57397,13 @@ function evNetTakeX(ev,X){
     d.rich=(X[0]&&X[0].length)|0;
     for(i=0;X[0]&&i<X[0].length&&i<24;i++){ c=(typeof netContOf==='function')?netContOf(X[0][i]|0):null; if(c) c.rich=1; }
   }
+}
+// what a linked window says when a live event ends: the host said it in its own tick or end code   // v28.25 (cloud-coop-event-ends-said), CLOUD HUNT 2026-10-15: CONVOY DOWN, CONVOY AWAY, CONVOY ARRIVED and OVERSEER RETURNS were said in the host window only
+function evPeerEnd(ev,X){
+  try{
+    if(ev.id==='convoy'&&X){ if(X[5]===1) say('CONVOY DOWN','ext',{sub:'SEARCH THE CRATE'}); else if(X[5]===2) say('CONVOY AWAY','info'); else if(X[5]===3) say('CONVOY ARRIVED','info',{sub:'THEY STAY'}); }
+    else if(ev.id==='rampage'&&X&&X[4]===1) say('OVERSEER RETURNS','info');
+  }catch(_epe){}
 }
 // what a linked window says when a live event starts: the host said it in its own start code
 function evPeerStart(ev){
@@ -57433,6 +57441,7 @@ function evNetTake(rows){
     evNetTakeX(ev,r[12]);
     if(was==='warn'&&ph!=='warn') evPeerStart(ev);
     else if(was===null&&ph==='live') evPeerStart(ev);   // v27.09 (coop3): a word that finds the event already live (a lost word) still says it and picks the side
+    if(was==='live'&&ph==='end') evPeerEnd(ev,r[12]);   // v28.25 (cloud-coop-event-ends-said), CLOUD HUNT 2026-10-15: player 2 window says the end of an event the way the host does
     seen[ev.n+id]=1; E.n=Math.max(E.n|0,ev.n+1);
   }
   for(j=L.length-1;j>=0;j--) if(!seen[L[j].n+L[j].id]) L.splice(j,1);

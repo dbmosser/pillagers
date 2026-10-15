@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.25 - PLAYER 2 HEARS HOW THE CONVOY AND THE RAMPAGE END
+
+Co-op hunt while he was away. When a machine convoy or an Overseer rampage ended, only the host window said it: CONVOY DOWN / SEARCH THE CRATE when the carrier was killed, CONVOY AWAY when it got away at its destination, CONVOY ARRIVED / THEY STAY when it reached its destination in view and stayed, and OVERSEER RETURNS when the rampage ran out with the Overseer alive. Player 2 window runs none of the event code that says those lines; it already says the warning and the start of each event, not the end. Proven in a staged pair in one window: each of those endings had the host say its line and player 2 window say nothing. The host now remembers which end line it said at the moment it said it and sends that in the world word, and player 2 window says the same line, once, when the event goes from live to over. Because it is the line the host said, not a guess from the state half a second later, a carrier that stayed and then died, or an Overseer that went home and then died, before the next word still gives player 2 the same line as the host. A convoy that times out and an Overseer that is killed still say nothing on either window. Say only: the crate, the bodies and the boss are still the host's.
+
+MEASURED. Check 28.25 passes, and fails on v28.24.
 ## v28.24 - THE CAMERA ZOOMS OUT WHEN YOU SPRINT
 
 Co-op hunt while he was away. His answer 43: the camera should zoom out a little while you sprint, as a setting. Sprinting now pulls the camera back about seven percent, so a little more of the street shows, and it eases in and out with the sprint in the same way the scope eases. It is a row in DISPLAY, SPRINT ZOOM-OUT, ON by default; OFF holds the camera where it was. The view is all that changes: speed, noise, aim and damage are untouched.
