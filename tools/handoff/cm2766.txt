@@ -1,0 +1,7 @@
+v27.66: kid rows picked up at launch
+
+A window opened later now starts with the kid rows the other window set.
+
+Check 27.66. Fails on v27.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

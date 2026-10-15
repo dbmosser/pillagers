@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.66 - KID ROWS PICKED UP AT LAUNCH
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the kid rows (Kid damage, Kid firing, Player 2 comes back after death) are shared between the two windows, but a window only pulled them when the other window changed them while it was open, or when its own Settings opened. A window launched after the other one changed them played the old values until Settings was opened. Proven in headless Chromium: the boot path never reads the shared rows; with own Kid damage 1/2, Kid firing on and comes back on, and a newer share with all off, the old values stayed. The shared rows are now read once at launch, right after the save is read; an older share still leaves his own values alone.
+
+MEASURED. Check 27.66 passes, and fails on v27.65.
 ## v27.65 - THE X KEY ROW SAYS CALL FOR EXTRACTION, THEN EXTRACT
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the Keys window row for X and the controls card both read call for extraction, then board. Board is a retired word; his words are ascend and extract. Proven in headless Chromium: the X label in KEYS_ACTS and the LEGEND WORLD row both match /\bboard\b/. Neither string is a TXSHIP key and no existing check quotes it. Both now read call for extraction, then extract: X calls for extraction in a ring, then a second hold extracts (the raid prompt says Hold [X] to extract).

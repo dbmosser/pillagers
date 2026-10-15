@@ -1,0 +1,5 @@
+## v27.66 - KID ROWS PICKED UP AT LAUNCH
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the kid rows (Kid damage, Kid firing, Player 2 comes back after death) are shared between the two windows, but a window only pulled them when the other window changed them while it was open, or when its own Settings opened. A window launched after the other one changed them played the old values until Settings was opened. Proven in headless Chromium: the boot path never reads the shared rows; with own Kid damage 1/2, Kid firing on and comes back on, and a newer share with all off, the old values stayed. The shared rows are now read once at launch, right after the save is read; an older share still leaves his own values alone.
+
+MEASURED. Check 27.66 passes, and fails on v27.65.

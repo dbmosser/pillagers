@@ -6093,6 +6093,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.66',what:'cloud-menus-kid-sync-launch: a window opened after the other window changed the kid rows picks up the shared values at launch, not only when its Settings opens',
+   run:function(){
+     if(typeof kidSync!=='function'||typeof KID_SHARE_KEY==='undefined') return 'SKIP: this fixture has no shared kid rows';
+     var bad=[], Pf=__P(), k0=null, had={}, F=['kidDmg','p2Auto','kidBack','kidAt'], i;
+     try{ k0=localStorage.getItem(KID_SHARE_KEY); }catch(_l){}
+     for(i=0;i<F.length;i++) had[F[i]]=(F[i] in Pf)?Pf[F[i]]:undefined;
+     try{
+       var pl='PLOADED'+'=true;', sc=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).filter(function(t){ return t.split(pl).length===2; });
+       if(sc.length!==1) bad.push('the boot line that marks the save as read was not found once');
+       else if(!(/PLOADED\s*=\s*true;[\s\S]*?\bkidSync\s*\(\s*\)[\s\S]*?ensureContracts\s*\(\s*\)/).test(sc[0])) bad.push('the boot path does not pull the shared kid rows after the save is read, so a window launched later plays stale values until its Settings opens');
+       Pf.kidDmg=0.5; Pf.p2Auto=1; Pf.kidBack=1; Pf.kidAt=1000;
+       localStorage.setItem(KID_SHARE_KEY, JSON.stringify({kd:1,af:0,kb:0,at:2000}));
+       kidSync();
+       if(Pf.kidDmg!==1||Pf.p2Auto!==0||Pf.kidBack!==0||Pf.kidAt!==2000) bad.push('a newer share did not replace the own kid rows: '+JSON.stringify({kd:Pf.kidDmg,af:Pf.p2Auto,kb:Pf.kidBack,at:Pf.kidAt}));
+       Pf.kidDmg=0.5; Pf.p2Auto=1; Pf.kidBack=1; Pf.kidAt=3000;
+       kidSync();
+       if(Pf.kidDmg!==0.5||Pf.p2Auto!==1||Pf.kidBack!==1||Pf.kidAt!==3000) bad.push('an older share replaced the own kid rows: '+JSON.stringify({kd:Pf.kidDmg,af:Pf.p2Auto,kb:Pf.kidBack,at:Pf.kidAt}));
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ if(k0===null) localStorage.removeItem(KID_SHARE_KEY); else localStorage.setItem(KID_SHARE_KEY,k0); }catch(_r){}
+       for(i=0;i<F.length;i++){ if(had[F[i]]===undefined) delete Pf[F[i]]; else Pf[F[i]]=had[F[i]]; }
+       try{ __cleanProfile(); }catch(_c){}
+       try{ saveProfile(); }catch(_s){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'27.65',what:'cloud-menus-keys-x-no-board: the Keys window rows and the controls card never use the retired word board; the X row says call for extraction, then extract',
    run:function(){
      if(typeof keysOpen!=='function'||typeof KEYS==='undefined'||typeof KEYS_ACTS==='undefined'||!KEYS_ACTS.length||typeof LEGEND==='undefined') return 'SKIP: this fixture has no Keys window or controls card';
