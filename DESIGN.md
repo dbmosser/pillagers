@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.78 - UI VOLUME SILENCES THE FIND SOUNDS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the UI VOLUME row promises PICKUPS, but the find sounds (a rare, elite, gun or uncommon pickup) play through their own dry output (sndFindOut), which took only the effects level and went straight out, skipping the UI bus. So at UI VOLUME OFF every find still played at full. Proven in headless Chromium with a stand-in audio context: {"off":0.8,"full":0.8} (the find gain at UI VOLUME OFF and FULL, effects level 0.8). The find output now takes the effects level times UI VOLUME, so OFF silences it and FULL is exactly as before.
+
+MEASURED. Check 27.78 passes, and fails on v27.77.
 ## v27.77 - THE SOUND PACK IS IN THE GAME
 
 Co-op hunt while he was away. His order of 2026-10-15: add the sounds. The finished pack of new sounds is now inside the game and loaded at start: thirteen CC0 recordings (Kenney, credited in the licence file) and forty-two cues for the raid events, the air strike, the power-ups, the kill medals, the gate breach, the explosive barrels, the active reload, the LMG spin, the finisher, the golden enemy and the haul reveal. They are dark and low, with no words, no voices and no music. This build only brings them in; the next builds play them at each moment.

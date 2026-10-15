@@ -1,0 +1,7 @@
+v27.78: ui volume silences the find sounds
+
+UI VOLUME now turns down the pickup sounds for rare finds and guns too.
+
+Check 27.78. Fails on v27.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
