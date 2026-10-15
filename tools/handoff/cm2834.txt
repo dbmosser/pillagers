@@ -1,0 +1,7 @@
+v28.34: player 2 sees the mender beams
+
+In co-op, player 2 now sees the green mender beams too, so he knows which machine to kill first.
+
+Check 28.34. Fails on v28.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

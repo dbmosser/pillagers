@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.34 - PLAYER 2 SEES THE MENDER BEAMS
+
+Co-op hunt while he was away. The mender elite draws a green beam to each machine it is mending, the tell that says kill it first. Only the AI tick sets the beam (affixMend), and a linked window runs no AI (updateEnts returns at netEntsEase), so player 2 window never drew a single beam: the mender just stood there while the machines around it healed. Proven in one window staged as player 2: a mender with a half-hurt machine 60 away draws 0 beams. Now player 2 window works out the same targets with the host rule (same filter, same reach, up to 4, heals nothing) and draws the beams on the host rhythm, 0.4 s in every 0.5 s. No new data on the wire; the host is unchanged.
+
+MEASURED. Check 28.34 passes, and fails on v28.33.
 ## v28.33 - ONE NAME FOR THE RAID SCORE
 
 Co-op hunt while he was away. His order of 2026-10-15: score and haul should read as one story. The run card ledger and the leaderboard call the number RAID SCORE, but the running score on the raid status plate (hold ALT) still said CAREER SCORE, so the same number had two names. The tile reads RAID SCORE now, in a career raid. The DEMO keeps its own DEMO SCORE. Picture only: no score, credit or price moved.
