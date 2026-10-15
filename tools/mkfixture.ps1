@@ -6093,6 +6093,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'27.57',what:'his 2026-10-14 note (UI cleanup uic9): the line under THE UNDERCROFT says the stash and the runs and no longer prints credits and XP a second time (the corner readout shows them)',
+   run:function(){
+     if(typeof drawHubHUD!=='function'||typeof __hubEnter!=='function'||typeof __loop!=='function') return 'SKIP: no Undercroft floor here';
+     var oFT=ctx.fillText, rec=[], i, st=null;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       var t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __loop(performance.now()); __loop(performance.now()+17);
+       ctx.fillText=function(s){ rec.push(String(s)); return oFT.apply(this,arguments); };
+       try{ __loop(performance.now()+34); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
+       for(i=0;i<rec.length;i++) if(rec[i].indexOf(' in stash')>=0) st=rec[i];
+       if(!st) return 'SKIP: the floor line was not drawn';
+       if(!/^\d+ items? in stash\s+\S\s+\d+ runs?$/.test(st)) return 'the line under the heading reads "'+st+'", not the stash and the runs alone';
+       return null;
+     } finally { try{ __topClear(); __cleanProfile(); }catch(_c){} } }},
   {v:'27.56',what:'his 2026-10-14 note (UI cleanup uic8): the What is New card and the Undercroft backpack are solid plates (the station signs of the floor read through both at 94 and 96 percent)',
    run:function(){
      if(!(window.__wnseen&&window.__hubEnter&&window.__hubFrame&&window.__showScreen&&window.__hubBagSet)||typeof hudPanel!=='function'||typeof drawHubBag!=='function') return 'SKIP: this fixture cannot draw the floor card and the backpack';

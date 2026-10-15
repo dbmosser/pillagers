@@ -1,0 +1,7 @@
+v27.57: the floor says its money once
+
+The line under THE UNDERCROFT no longer repeats credits and XP.
+
+Check 27.57. Fails on v27.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.57 - THE FLOOR SAYS ITS MONEY ONCE
+
+Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the small line under THE UNDERCROFT in the corner of the floor printed your credits and XP, the same two numbers the big readout in the top right corner already shows, and in 9 pixel type. It says the stash and the runs now and leaves the money to the readout.
+
+MEASURED. Check 27.57 passes, and fails on v27.56.
 ## v27.56 - THE FLOOR CARD AND BACKPACK ARE SOLID
 
 Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the What is New card on the Undercroft floor was a flat plate at 94 percent with its own blue-grey border, unlike every other panel, and the Undercroft backpack was a plate at 96 percent; the big station signs (SHOP, CRAFT AND HIRE, THE STASH, SETTINGS) showed through the words of both. They are the one solid game plate now, with the amber tick. In a raid the backpack still lets the world show through.

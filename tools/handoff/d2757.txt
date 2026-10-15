@@ -1,0 +1,5 @@
+## v27.57 - THE FLOOR SAYS ITS MONEY ONCE
+
+Co-op hunt while he was away. His note after playing: the UI is not as clean as it should be. In the pictures, the small line under THE UNDERCROFT in the corner of the floor printed your credits and XP, the same two numbers the big readout in the top right corner already shows, and in 9 pixel type. It says the stash and the runs now and leaves the money to the readout.
+
+MEASURED. Check 27.57 passes, and fails on v27.56.
