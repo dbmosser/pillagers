@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.30';
+var VER='27.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2244,7 +2244,7 @@ var VER='27.30';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='27.15';
+var WHATSNEW_VER='27.32';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2264,6 +2264,8 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'RUN GOALS. Both players count toward the three goals, in both windows and in the hold-Alt raid status.',
+  'ELITES AND KITS. Elite machines wear a coloured outline, the stash is one row, and empty gun keys show a ghost.',
   'TWO PLAYER FLOW. Player 2 now sees and feels the fires, events, strongholds, golden enemy, run goals and air strikes. Power-ups are shared.',
   'PARTY MODE. Style medals and a combo ring, timed power-ups from kills, a TEAM combo for two, and NEW PARTY locks one seed for the night.',
   'RAID EVENTS. One or two a raid, with a ring and a countdown: falling debris, a convoy, a bounty hunter, coolant fog, a lockdown, an Overseer rampage.',
@@ -17305,7 +17307,7 @@ function explodeFrag(f){
     if(_fMine&&e.merc&&!e.downed) continue;   // v13.68, hire audit: your charge spares your hire, as your rounds (v6.72) and fists (v11.38) do
     if(de<R+e.r&&losClear(f.x,f.y,e.x,e.y,G.map.segs)){
       var _fdm=115*(1-Math.max(0,de-e.r)/R)+25;   // v11.77: was 85 and 15
-      if(_fMine&&NET.on&&netEntsPeer()) netShotSend(e,_fdm,Math.atan2(e.y-f.y,e.x-f.x),null); else e.hp-=_fdm;   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
+      if(_fMine&&NET.on&&netEntsPeer()) netShotSend(e,_fdm,Math.atan2(e.y-f.y,e.x-f.x),null,0,'',1); else e.hp-=_fdm;   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
       e.hitT=.2;
       // v8.30, his ruling: "frag kills a neutral should def get a point." And
       // it closes the hole v8.29 opened - a frag that only WOUNDED a neutral
@@ -19762,14 +19764,13 @@ if(wep.mag===0){
     return;
   }
   var shots=wep.pellets||1;
-  G.shotSid=(G.shotSid|0)+1;   // v26.xx (aip4): one number for every round of one trigger pull, so a blast of pellets is one round for the suppression count
   for(var pel=0;pel<shots;pel++){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?AR_BONUS:1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
-      thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):'',sid:G.shotSid});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
+      thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
     if(NET.on) netFxShot(G.bullets[G.bullets.length-1]);   // v16.21: the rest of the party sees this round
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
@@ -20607,19 +20608,6 @@ function suppHit(en){
   en.supp=(en.supp||0)+1; en.suppT=SUPP_WIN;
   if(en.supp>=SUPP_N){ en.pinT=SUPP_PIN; en.supp=0; return true; }
   return false;
-}
-// v26.xx (aip4), the cloud review of 2026-10-15 (finding 11): "suppression counts each round many times, and one shotgun blast pins". The first cut
-// kept only the LAST round that passed a man (suppB), so two rounds in flight near him took turns and each was counted again every frame it stayed
-// within 70 units (about 8 frames), and each of the six pellets of one blast was a round of its own against the four a pin needs. Now each round
-// is counted ONCE for each man (b.suppL lists the men it has been counted for) and every round of one trigger pull shares a number (b.sid), so a
-// blast of pellets counts once. The pin is the same: SUPP_N rounds inside SUPP_WIN seconds. No random number: a list and a number.
-function suppPass(b,en){
-  var L=b.suppL||(b.suppL=[]);
-  if(L.indexOf(en)>=0) return false;
-  L.push(en);
-  if(b.sid&&en.suppSid===b.sid) return false;
-  en.suppSid=b.sid||0;
-  return suppHit(en);
 }
 // v26.xx (ai23), HIS WORDS (2026-10-14, suggestion 23): pillagers and machines "should fight each other even w/o decoys". What fought
 // before: a pillager LOOTING shot a machine in sight (v3.9x, within 280 and 600 of you), and a Sentry or Crawler that could not see you
@@ -27968,7 +27956,7 @@ function updateBullets(dt){
             // v3.94: the first 0.30s of a 0.38s roll is invulnerable, the same
             // window the player gets, so a raider who times it eats nothing.
             // v26.xx (ai22): a round of yours past a hostile pillager is suppression (once per round per man).
-            if(en.kind==='raider'&&dist(b,en)<en.r+SUPP_R) suppPass(b,en);   // v26.xx (aip4): the round counts once for this man (it counted again every frame it stayed near, and a blast of pellets counted six times)
+            if(en.kind==='raider'&&en.suppB!==b&&dist(b,en)<en.r+SUPP_R){ en.suppB=b; suppHit(en); }
             if(en.roll>0.08) continue;
             if(en.finished) continue;   // v16.98, co-op hunt 2026-09-28: a man who bled out lies here one more frame; a round on the body wrote the kill mark again and took the kill from player 2, so it passes over him
             if(dist(b,en)<en.r+3){
@@ -44747,7 +44735,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.30: Elite machines now wear a clean coloured outline and a faint tint, and one thin ring on the ground. Check 27.30 fails on v27.29',
+  now:'v27.32: The what is new card names the shared run goals. Check 27.32 fails on v27.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52423,7 +52411,7 @@ function netHitTake(peer,m){
 }
 // A LINKED WINDOW: its round, blade or charge landed on a body the host runs. The damage worked out here goes to the host,
 // with where this player stands, the bearing of the blow and the weak point it found; the body itself is not touched here.
-function netShotSend(e,dmg,ang,wk,ar,el){
+function netShotSend(e,dmg,ang,wk,ar,el,bl){
   var q, m;
   if(!e||!e.nid||!NET.on||NET.role!=='join'||!netEntsPeer()) return false;
   q=netPeerOfSeat(0); if(!q) return false;
@@ -52433,6 +52421,7 @@ function netShotSend(e,dmg,ang,wk,ar,el){
   if(wk&&wk.name) m.wk=netClean(wk.name,16);
   if(ar>0) m.ar=+ar;   // v22.04 (K16): a round the host soaks with its own armour for this man: 1, or 1.5 for a back shot
   if(el&&ELEM[el]) m.el=el;   // v23.xx (forge7): THE FORGE, the element of player 2's MK III round; the host applies it
+  if(bl) m.bl=1;   // v26.xx (aip5): a blast (a frag, the air strike, the screen clear): the host sends it past a shield, as its own blasts go
   return netSend(q,m);
 }
 // THE HOST: a shot request from one of the party. Applied if the body is alive; the seat is marked for the kill by the rule
@@ -52464,7 +52453,7 @@ function netShotTake(peer,m){
   var _nel=(typeof m.el==='string'&&ELEM[m.el])?m.el:'';
   if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
-  e.hp-=affixSoak(e,d); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,d); suppHit(e);   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
+  e.hp-=(m.bl===1)?d:affixSoak(e,d); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,d); if(m.bl!==1) suppHit(e);   // v26.xx (aip5): a blast goes past the shield and is not a round that pins   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
     px=-Math.sin(m.a); py=Math.cos(m.a);
@@ -54164,7 +54153,7 @@ function airBlast(st,i){
     if(!airFoe(e)) continue;
     de=dist(e,q); if(de>=R+e.r) continue;
     dm=Math.round(AIR.dmg*(1-Math.max(0,de-e.r)/R)+AIR.dmg*0.25);
-    if(typeof NET==='object'&&NET&&NET.on&&typeof netEntsPeer==='function'&&netEntsPeer()){ airS().blast=1; try{ netShotSend(e,dm,Math.atan2(e.y-q.y,e.x-q.x),null); } finally { airS().blast=0; } } else e.hp-=dm;   // v27.19 (coop6): the strike own damage never refills the meter, on a linked window either
+    if(typeof NET==='object'&&NET&&NET.on&&typeof netEntsPeer==='function'&&netEntsPeer()){ airS().blast=1; try{ netShotSend(e,dm,Math.atan2(e.y-q.y,e.x-q.x),null,0,'',1); } finally { airS().blast=0; } } else e.hp-=dm;   // v27.19 (coop6): the strike own damage never refills the meter, on a linked window either
     e.airH=(e.hp>0)?e.hp:0; e.hitT=.2; e.pHitT=.3; e.pHitSeat=0;
     if(e.hp<=0){ e.byPlayer=true; e.bySeat=0; }
     else if(e.state!=='alarm'&&!e.downed){ e.state='chase'; e.alert=2.5; e.tx=p.x; e.ty=p.y; }
@@ -56458,7 +56447,7 @@ function pwrPulse(p){
     e=G.ents[i];
     if(!e||!K[e.kind]||!(e.hp>0)||e.boss||e.elite||e.downed||e.finished||e.neutral) continue;
     s=w2s(e.x,0,e.y); if(s.x<-40||s.y<-40||s.x>W+40||s.y>H+40) continue;
-    if(net) netShotSend(e,9999,Math.atan2(e.y-p.y,e.x-p.x),null);
+    if(net) netShotSend(e,9999,Math.atan2(e.y-p.y,e.x-p.x),null,0,'',1);
     else { e.hp=0; e.byPlayer=false; e.bySeat=0; }
     e.hitT=0.2; n++;
     try{ spark(e.x,e.y,D.hex,10,260); }catch(_s){}
@@ -67094,6 +67083,26 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'27.32',what:'the what is new card is stamped within 0.15 of the build and leads with the RUN GOALS news shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>27.32+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('RUN'+' GOALS.')!==0) bad.push('the card does not lead with the run goals news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
+  {v:'27.31',what:'the what is new card is stamped within 0.15 of the build and leads with the ELITES AND KITS news shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>27.31+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('ELITES AND'+' KITS.')!==0) bad.push('the card does not lead with the elites and kits news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
      return bad.length?bad.join('; '):null; }},
   {v:'27.30',what:'his playtest answer on the elites, tint and/or outline: an elite machine with an affix is drawn through the outline pass, once a frame and in its own colour, a plain machine is not, and a throw while the body is drawn puts the world canvas and the ground shadow back',
    run:function(){

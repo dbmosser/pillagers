@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.30';
+var VER='27.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2244,7 +2244,7 @@ var VER='27.30';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='27.15';
+var WHATSNEW_VER='27.32';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2264,6 +2264,8 @@ function wnShort(s){
 var WNSEEN=0;          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'RUN GOALS. Both players count toward the three goals, in both windows and in the hold-Alt raid status.',
+  'ELITES AND KITS. Elite machines wear a coloured outline, the stash is one row, and empty gun keys show a ghost.',
   'TWO PLAYER FLOW. Player 2 now sees and feels the fires, events, strongholds, golden enemy, run goals and air strikes. Power-ups are shared.',
   'PARTY MODE. Style medals and a combo ring, timed power-ups from kills, a TEAM combo for two, and NEW PARTY locks one seed for the night.',
   'RAID EVENTS. One or two a raid, with a ring and a countdown: falling debris, a convoy, a bounty hunter, coolant fog, a lockdown, an Overseer rampage.',
@@ -17669,7 +17671,19 @@ function alertHeld(a){
 // queue with the life it had left. It waits there without pushing anything aside and returns as soon as the slot is free: up to
 // 5 s, or up to 8 s while its condition holds, and if it still cannot show it drops into the feed as before. A held line whose
 // condition ends while it waits has nothing left to say and is dropped.
+// v27.33 (alert2), HIS ORDER (2026-10-14): the alert lane is "one at a time, short, with its sting". An alert had its callers' own sounds,
+// and a good many had none, so a siege, a clock warning or an event could come in without a sound at all. Each alert that takes the lane
+// now plays a short sting of its rank on the sting bus (the same bus as the medals): a low double pulse for a crit, two falling square
+// notes for a warn, two rising triangle notes for an extraction or good news. Quiet, and under any sound the caller has. An alert
+// refreshed in place, or the same line said again, takes the lane once and stings once. Sound only: no state moves.
+var ALERTSND={
+  crit:[[0,196,196,0.1,'sawtooth',0.035],[0.12,196,196,0.1,'sawtooth',0.035],[0.24,147,147,0.3,'sawtooth',0.04]],
+  warn:[[0,330,330,0.09,'square',0.022],[0.1,262,262,0.2,'square',0.022]],
+  ext:[[0,659,659,0.08,'triangle',0.03],[0.07,880,880,0.18,'triangle',0.03]]
+};
+function alertSting(k){ if(!G||G.sim||!ALERTSND[k]) return false; return styTone(ALERTSND[k]); }
 function alertShow(m,k,o,now){
+  try{ alertSting(k); }catch(_asg){}   // v27.33 (alert2): its sting
   var a=alertUp();
   if(a&&(a.m!==m||msgDiffKey(a.key,(o&&o.key)||''))&&(now-a.at<0.6||alertHeld(a)||(a.T>1.0&&!a.hold)))   // v22.xx (tr3fixa): it goes back to the queue with the life it had left   // v23.xx (tr9fixo): two keyed alerts with one headline are two alerts
     alertEnq(a.m,a.k,{sub:a.sub,key:a.key,hold:a.hold,icon:a.icon,c:a.c,life:alertHeld(a)?Math.max(a.T,1.5):a.T},now,1);
@@ -44734,7 +44748,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.30: Elite machines now wear a clean coloured outline and a faint tint, and one thin ring on the ground. Check 27.30 fails on v27.29',
+  now:'v27.33: Each alert that takes the lane now plays a short sting of its rank. Check 27.33 fails on v27.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67193,6 +67207,49 @@ window.__REGRESS=[
        if(line.indexOf('stash')<0) bad.push('the drop does not say the item went to the stash: "'+line+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'27.33',what:'his order: each alert that takes the lane plays a short sting of its rank, and one refreshed in place or said again does not sting twice',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof styTone!=='function') return 'SKIP: no raid or sting bus here';
+     var bad=[], g, calls=0, oT=styTone, got=[], ks=['crit','warn','ext'], i;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       g.bagOpen=false; g.mapOpen=false; g.ents.length=0; keys={};
+       styTone=function(n){ calls++; got.push(n&&n.length); return true; };
+       for(i=0;i<ks.length;i++){
+         g.alert=null; g.alertQ=[]; calls=0;
+         say('STING TEST '+ks[i],ks[i],{key:'st'+ks[i]});
+         if(calls!==1) bad.push('a '+ks[i]+' alert played '+calls+' stings, not 1');
+         say('STING TEST '+ks[i],ks[i],{key:'st'+ks[i]});
+         if(calls!==1) bad.push('a '+ks[i]+' alert said again played '+calls+' stings');
+       }
+       g.alert=null; g.alertQ=[]; calls=0;
+       say('NOT AN ALERT','info');
+       if(calls!==0) bad.push('a plain line played a lane sting');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ styTone=oT; try{ var g2=__state(); if(g2){ g2.alert=null; g2.alertQ=[]; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'27.32',what:'the what is new card is stamped within 0.15 of the build and leads with the RUN GOALS news shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>27.32+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('RUN'+' GOALS.')!==0) bad.push('the card does not lead with the run goals news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
+  {v:'27.31',what:'the what is new card is stamped within 0.15 of the build and leads with the ELITES AND KITS news shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>27.31+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('ELITES AND'+' KITS.')!==0) bad.push('the card does not lead with the elites and kits news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
      return bad.length?bad.join('; '):null; }},
   {v:'27.30',what:'his playtest answer on the elites, tint and/or outline: an elite machine with an affix is drawn through the outline pass, once a frame and in its own colour, a plain machine is not, and a throw while the body is drawn puts the world canvas and the ground shadow back',
    run:function(){

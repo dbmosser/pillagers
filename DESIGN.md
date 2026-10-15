@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.33 - ALERTS HAVE A STING
+
+Co-op hunt while he was away. His order of 2026-10-14: the alert lane is one at a time, short, with its sting. Many alerts had no sound at all, so a siege, a clock warning or an event could come in silently. Each alert that takes the lane now plays a short sting of its rank, quiet and on the same sound bus as the medals: a low double pulse for a critical alert, two falling notes for a warning, two rising notes for an extraction or good news. An alert refreshed in place stings once.
+
+MEASURED. Check 27.33 passes, and fails on v27.32.
 ## v27.32 - THE WHAT IS NEW CARD NAMES THE RUN GOALS
 
 Co-op hunt while he was away. The card was stamped v27.31 and the stamp may not trail the build by more than 0.15. Its new line names the run goals, now shared by both players
