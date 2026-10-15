@@ -1,0 +1,7 @@
+v27.52: support mg keeps accelerating
+
+The Support MG fires about 1.3 times faster once fully spinning, and its report rises in pitch with the rate.
+
+Check 27.52. Fails on v27.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

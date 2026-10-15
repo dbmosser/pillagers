@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.52 - SUPPORT MG KEEPS ACCELERATING
+
+Co-op hunt while he was away. His words: the Support MG feels good but needs to increase its fire rate once fully spinning. The spin-up used to close the gap between rounds to the gun own 105 milliseconds and stop. Now it keeps closing as the barrels wind: the fire rate climbs through the whole spin-up and is about 1.3 times what it was once fully spinning (a gap of about 81 milliseconds), and it drops back down as the barrels wind down when you let go. You hear it and feel it: the report of every round rises in pitch with the rate, from a low note at the start of the spin to a bright one at full speed, and the controller rumble grows with it. This is a balance change, which his rule of 2 October allows: a full magazine of 60 is gone in about 4.9 seconds instead of 6.3, so the gun is worth more once it is spinning and costs more of your reserve. Only the Support MG, only in live play; the bot raids and the seeded stream are untouched.
+
+MEASURED. Check 27.52 passes, and fails on v27.51.
 ## v27.51 - THE CENTRE BANNERS ARE ALERTS
 
 Co-op hunt while he was away. His order of 2026-10-14: messages that came in at different heights in the middle of the screen should come in one place. The notoriety stamp was a banner of its own at a quarter of the way down, and the drop-in count after a respawn was a big number at a third of the way down. Both are now alerts in the one lane at the top centre, the same place as the siege, the extraction call and the events. The notoriety alert reads the rating and its name with why underneath, and is a line in the feed as well; the drop-in alert counts down in the lane only. The end of raid cards stay as they are.

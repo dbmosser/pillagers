@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.51';
+var VER='27.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6586,7 +6586,7 @@ function blip(type,d,pan){
     var GL=gunLayers(d,sndSpaceN());   // v23.77 (his #45): near, mid or far, and the place it is fired in
     // No two shots alike: six percent of jitter, rolled per shot, on the
     // brightness and the body, and separately on the level.
-    var J=1+(Math.random()*2-1)*0.06, J2=1+(Math.random()*2-1)*0.06;
+    var J=(1+(Math.random()*2-1)*0.06)*(SND_PITCH||1), J2=1+(Math.random()*2-1)*0.06;   // v27.xx (feel2d): the Support MG report rises with its rate
     var b=a.createBuffer(1,V.len,a.sampleRate),c=b.getChannelData(0);
     for(var i=0;i<V.len;i++) c[i]=(Math.random()*2-1)*Math.pow(1-i/V.len,V.decay);
     var s=a.createBufferSource(); s.buffer=b;
@@ -19566,12 +19566,20 @@ function nextGunCell(sl){
 // the spin reaches full at LMG_SPIN_T (0.75 s). Let go and it winds down over LMG_SPIN_DOWN (0.6 s), so a short pause keeps most of the speed.
 // A rising whirr plays while it winds, and is cut when you let go. The Support MG only; every other gun is untouched. Live play only: G.sim never
 // spins (spinMul is 1 and spinGo is true), and nothing here draws from the seeded stream.
-var LMG_SPIN_T=0.75, LMG_SPIN_DOWN=0.6, LMG_SPIN_GO=0.2, LMG_SLOW=2.2, LMGSPIN={hum:null};
+// v27.xx (feel2d), HIS WORDS (2026-10-14): "feels good but needs to increase fire rate once fully spinning". THE SUPPORT MG KEEPS ACCELERATING. The spin-up used to close the gap between rounds
+// to the gun's own 105 ms and stop there; now it keeps closing: the gap runs from LMG_SLOW (2.2 times the gun's gap) at the start of the spin to 1 / LMG_FULL (1.3 times the rate, a gap of
+// 81 ms) at full spin, in a straight line over the same wind-up (the gun's own rate is passed about four fifths of the way up), and it drops back down as the barrels wind down when you
+// let go. THE SOUND RISES WITH THE RATE: the report of every round is played at a pitch (SND_PITCH, read by the shot voice) from about 0.82 at the start of the spin to 1.1 at full speed,
+// the controller rumble grows with it, and the quiet whirr is unchanged. A balance change (a magazine of 60 is gone in 4.9 seconds, not 6.3), allowed since 2 October. Live play only
+// (G.sim never spins), and nothing here draws from the seeded stream.
+var LMG_SPIN_T=0.75, LMG_SPIN_DOWN=0.6, LMG_SPIN_GO=0.2, LMG_SLOW=2.2, LMG_FULL=1.3, LMGSPIN={hum:null}, SND_PITCH=1;
+function lmgPitch(p){ var m; if(!G||G.sim||!lmgUp(p)) return 1; m=spinMul(p); return clamp(1+0.35*(1/m-1),0.82,1.14); }
+function lmgOver(p){ var m; if(!G||G.sim||!lmgUp(p)) return 0; m=spinMul(p); return clamp((1/m-1)/(LMG_FULL-1),0,1); }
 function lmgUp(p){ return !!(p&&p.wep&&p.wep.mag>0&&!p.hand&&gunBase(p.wep.id)==='lmg'); }
 function spinMul(p){
   if(!G||G.sim||!lmgUp(p)) return 1;
   var s=clamp(((p.spin||0)-LMG_SPIN_GO)/(1-LMG_SPIN_GO),0,1);
-  return 1+(LMG_SLOW-1)*(1-s);
+  return LMG_SLOW+(1/LMG_FULL-LMG_SLOW)*s;   // v27.xx (feel2d): and it keeps closing past the gun's own gap, to 1.3 times the rate at full spin
 }
 function spinGo(p){ return (!G||G.sim||!lmgUp(p))?true:((p.spin||0)>=LMG_SPIN_GO); }
 function lmgWhirrStop(){
@@ -19827,7 +19835,7 @@ if(wep.mag===0){
   // Your own weapon stays centred because it is in your hands. Everyone else's
   // is placed, which is what turns a distant firefight into a direction rather
   // than an event.
-  if(fromPlayer) blipMine(melee?'hit':'shot',0,undefined,wep.id);   // v20.41 (H51): and the party hears it where you stand
+  if(fromPlayer){ SND_PITCH=(!melee&&G&&!G.sim&&gunBase(wep.id)==='lmg')?lmgPitch(G.player):1; try{ blipMine(melee?'hit':'shot',0,undefined,wep.id); } finally { SND_PITCH=1; } }   // v20.41 (H51): and the party hears it where you stand   // v27.xx (feel2d): at the pitch of the spin
   else sfx(melee?'hit':'shot',sh.x,sh.y,wep.id);
   if(!melee){
     sh.muzzle=.06;
@@ -19840,7 +19848,7 @@ if(wep.mag===0){
     G.player.recoil=1; G.player.combatT=0; G.tel.shots+=shots;
     if(gunBase(wep.id)==='lance'&&!G.sim) lanceKick(G.player,ang);   // v26.xx (feel10): the Meridian Lance shoves you back a step
     if(!wep._echo) bloomShot(G.player);   // v26.xx (feel19): every shot loosens the aim a little
-    padRumble(0.12,35);   // v17.37: a light tick per shot
+    padRumble(0.12+0.12*lmgOver(G.player),35);   // v17.37: a light tick per shot   // v27.xx (feel2d): and the Support MG rumbles harder as it spins up
     G.shake=Math.max(G.shake,wep.dmg>40?4.5:2.2);
     // Every round through a gun you own is counted on the profile. Pellets count
     // once: a shotgun blast is one round out of the magazine, not five.
@@ -44774,7 +44782,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.51: The notoriety stamp and the drop-in count are now alerts in the top centre lane. Check 27.51 fails on v27.50',
+  now:'v27.52: The Support MG fires about 1.3 times faster once fully spinning, and its report rises in pitch with the rate. Check 27.52 fails on v27.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
