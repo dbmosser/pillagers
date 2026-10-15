@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.62';
+var VER='27.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43267,6 +43267,7 @@ function showScreen(s){
 // before. Every key is now released whenever focus or visibility goes.
 function releaseAllKeys(soft){
   keys={}; try{ HHOLD.arm=0; }catch(_hh){} mouse.down=false; if(G) G.sprinting=false; if(G&&CFG.crouchHold===1) G.crouchTog=false; /* v26.xx (settings2): a held crouch is let go with the keys */ if(G) G.wheel=null; /* v26.xx (wheel2) */
+  if(G&&G.player&&CFG.aimTgl!==1) G.player.ads=false;   // v27.63 (cloud-menus-held-aim-blur), CLOUD HUNT 2026-10-15: with AIM on HOLD a right button held when the window lost focus never sends its mouseup here, so the aim (slow walk) stayed on until the next right click; a toggled aim stays
   // The reticle also hides for an open bag, and alt-tabbing with the bag open
   // left that panel latched too. Cleared with the keys, for the same reason.
   // v17.01, co-op hunt 2026-09-28: A CLICK IN ONE WINDOW NO LONGER SHUTS THE BACKPACK OF THE OTHER PLAYER. On one PC both
@@ -44815,7 +44816,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.62: Leaving the EXTRACTED card mid reveal no longer plays pick sounds in the Undercroft. Check 27.62 fails on v27.61',
+  now:'v27.63: A held aim is let go when the window loses focus, like the other held keys. Check 27.63 fails on v27.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

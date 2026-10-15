@@ -1,0 +1,7 @@
+v27.63: held aim let go on a focus change
+
+A held aim is let go when the window loses focus, like the other held keys.
+
+Check 27.63. Fails on v27.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

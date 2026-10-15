@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.63 - HELD AIM LET GO ON A FOCUS CHANGE
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: with AIM on HOLD (the default), a right mouse button held when the window lost focus left the aim on after focus came back, so he walked slow and aimed until he right clicked again. The keys, the mouse button, sprint and a held crouch were already let go on a focus change, but not the aim. Proven in headless Chromium: right press on the canvas, window blur and focus, ten frames: still aiming. A held aim is now let go with the keys; AIM on TOGGLE keeps a toggled aim as before.
+
+MEASURED. Check 27.63 passes, and fails on v27.62.
 ## v27.62 - THE HAUL REVEAL STOPS WITH ITS CARD
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the EXTRACTED card's button closed the card without ending the haul reveal, and a close the game makes itself (netCardOff when the party lift takes a teammate still reading his card) is a script click the skip never sees, so the reveal kept ticking behind the Undercroft and played the pick sound of every item still hidden. Proven in headless Chromium: {"closed":true,"state":"hub","stillRevealing":true,"soundsAfterClose":8}. The button now ends the reveal as it closes the card. Display only: nothing paid or kept moves.
