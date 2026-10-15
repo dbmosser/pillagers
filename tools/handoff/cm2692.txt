@@ -1,0 +1,7 @@
+v26.92: the golden enemy, every raid
+
+Every raid gilds one tough golden enemy that glows and drops a golden hoard when it dies.
+
+Check 26.92. Fails on v26.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

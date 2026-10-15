@@ -1,0 +1,5 @@
+## v26.92 - THE GOLDEN ENEMY, EVERY RAID
+
+Co-op hunt while he was away. His answer that the golden enemy appears every raid. Every raid now gilds one machine or hostile pillager, picked from the ones at least 700 away from where you drop (never the Overseer, a hire or a bystander), and the same seed gilds the same one. It has three times the health, is a tenth bigger, and glows gold with a golden ellipse on the ground, three sparks and GOLDEN over its head. When it dies, however it dies, it leaves a golden hoard where it fell: three jackpot rolls and two cache rolls, marked on the maps until you open it, with GOLDEN ENEMY DOWN in the alert. The golden enemy is the thing the coming clue hunt will lead you to. DEMO and CAREER work the same.
+
+MEASURED. Check 26.92 passes, and fails on v26.91.

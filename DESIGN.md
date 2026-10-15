@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.92 - THE GOLDEN ENEMY, EVERY RAID
+
+Co-op hunt while he was away. His answer that the golden enemy appears every raid. Every raid now gilds one machine or hostile pillager, picked from the ones at least 700 away from where you drop (never the Overseer, a hire or a bystander), and the same seed gilds the same one. It has three times the health, is a tenth bigger, and glows gold with a golden ellipse on the ground, three sparks and GOLDEN over its head. When it dies, however it dies, it leaves a golden hoard where it fell: three jackpot rolls and two cache rolls, marked on the maps until you open it, with GOLDEN ENEMY DOWN in the alert. The golden enemy is the thing the coming clue hunt will lead you to. DEMO and CAREER work the same.
+
+MEASURED. Check 26.92 passes, and fails on v26.91.
 ## v26.91 - STRONGHOLDS
 
 Co-op hunt while he was away. His yes to strongholds: one or two advertised fortified compounds per raid, each with a gate, two defending waves and a purple-or-better cache. Every raid now plans one or two strongholds from its seed, and the alert and both maps show them from the start, with an arrow at the edge of the minimap. A stronghold is a ring of steel mesh fence about 240 across: nobody crosses it, you, the machines and the pillagers alike, though bullets fly through the mesh. Inside is the garrison, three sentries and three crawlers. The gate is on the side facing where you dropped: stand at it from outside for three seconds and a ring fills round it, the gate is breached for good, it makes a loud noise, and the second wave comes at you from inside: three elite crawlers, a Bulwark and a sentry. The cache in the middle holds four items, every one purple or better, and shows on the maps once the gate is open. Clear the garrison and the second wave and the stronghold pays a 1,000 chip into your run score. The Director never lands a pack inside one. DEMO and CAREER work the same.
