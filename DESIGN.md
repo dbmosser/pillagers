@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.97 - THE ARMORY CODEX
+
+Co-op hunt while he was away. His yes to suggestion 30. The stash has a new ARMORY button beside SORT. It opens a page that lists every gun in the game, with the rarity each one wears: the eleven models and the rarity twins of the green, blue and purple ones, from common up to gold. A gun you have never held shows as a silhouette marked NOT FOUND with its rarity and class, so you can see what is out there to hunt. A gun you have held shows its name and, once it has kills, its tally. A gun is filed the moment it is in your armoury, stash or backpack, or in your hands or backpack up in a raid, and it stays filed for good. NEW marks what you found since you last closed the page. CLOSE and ESC shut it. Nothing about the guns themselves changes.
+
+MEASURED. Check 26.97 passes, and fails on v26.96.
 ## v26.96 - GUN KILL TALLY
 
 Co-op hunt while he was away. His yes to suggestion 29. Every gun now counts its kills. A round remembers which gun fired it, and when that round is the one that finishes a machine or a pillager, the kill goes on that gun. The count is kept in your save when a raid ends in an extraction or a death (an abandoned run counts nothing), and it shows as a KILLS line on the gun card when you pick a gun up, in the backpack, on the belt hover and on the stash hover. A swing of the crowbar, a grenade or a fire does not count for a gun. A rarity twin of a gun counts its own kills. An old save simply starts every gun at none.

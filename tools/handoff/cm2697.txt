@@ -1,0 +1,7 @@
+v26.97: the armory codex
+
+The stash has an ARMORY page that lists every gun and rarity, found or not.
+
+Check 26.97. Fails on v26.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
