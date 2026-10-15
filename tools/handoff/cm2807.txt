@@ -1,0 +1,7 @@
+v28.07: the barrels are the same in co-op
+
+Explosive barrels now go up in both windows of a two-player game, and both windows lay the same barrels.
+
+Check 28.07. Fails on v28.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

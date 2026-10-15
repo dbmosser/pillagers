@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.07 - THE BARRELS ARE THE SAME IN CO-OP
+
+Co-op hunt while he was away. The cloud review of 2026-10-15, finding 4: the red barrels did not know about co-op. Each window laid them clear of its own player, so the two windows could lay different sets, and a barrel one window set off went up only there: a blast player 2 started hurt nobody but him and the host window kept its barrel standing, and the host barrels did nothing in player 2 window. Now the barrels are laid clear of every drop point of the map, so every window lays the same set, and a barrel lit in one window is told to the other (and the host passes it on), so it goes up in both at the same time. Each window runs the blast for its own player, its walls and its effects, and the host window also hurts the bodies it runs, credited to the player who lit it. His rule of no team damage holds: a barrel a teammate lit still does not hurt you, while one you lit, or one an enemy shot, does. Solo play is unchanged.
+
+MEASURED. Check 28.07 passes, and fails on v28.06.
 ## v28.06 - THE ABANDON CONFIRM IS TWO BUTTONS
 
 Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, pressing Abandon run put five buttons in one row, YES ABANDON, RESUME RUN, SETTINGS, FEEDBACK and NO KEEP PLAYING, about 1050 pixels of buttons in an 825 pixel box, hanging out past both edges of the frame, with RESUME RUN and NO KEEP PLAYING doing the same job. While the question is up the box now shows only YES and NO. The YES stays on the far side as before, and ESC still closes the box.

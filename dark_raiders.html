@@ -2283,7 +2283,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.06';
+var VER='28.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18064,6 +18064,7 @@ function brlOk(g,x,y){
   var i, m=g.map, p=g.player;
   if(!(x>80&&y>80&&x<WORLD_W-80&&y<WORLD_H-80)) return false;
   if(!spotFree(m,x,y,30)||shutRoomAt(m,x,y)||!navReachable(m,x,y)) return false;
+  for(i=0;i<(m.spawns||[]).length;i++) if(Math.hypot(x-m.spawns[i].x,y-m.spawns[i].y)<460) return false;   // v27.xx (brlnet): clear of every drop point of the map, so every window lays the same barrels
   if(p&&Math.hypot(x-p.x,y-p.y)<460) return false;
   for(i=0;i<(m.extracts||[]).length;i++) if(Math.hypot(x-m.extracts[i].x,y-m.extracts[i].y)<240) return false;
   for(i=0;i<g.containers.length;i++) if(Math.hypot(x-g.containers[i].x,y-g.containers[i].y)<40) return false;
@@ -18091,10 +18092,36 @@ function brlPlace(g){
     }
   });
 }
-function brlLight(B,by,fuse){
+function brlLight(B,by,fuse,net){
   if(!B||B.gone||B.fuse>=0) return false;
   B.fuse=fuse; B.by=by;
+  if(!net){ try{ brlNetOut(B); }catch(_bno){} }   // v27.xx (brlnet): and the other windows light their copy
   return true;
+}
+// v27.xx (brlnet), the cloud review of 2026-10-15 (finding 4): THE BARRELS ARE THE SAME IN EVERY WINDOW AND A BLAST IS FELT IN EVERY WINDOW. They were laid by each
+// window clear of its own player, so two windows could lay different sets; and a barrel one window lit went up only there. Now the set is laid clear of every drop point of
+// the map (brlOk), and a barrel lit anywhere is told to the others ({t:'brl', i: the barrel, by: the seat that lit it or -1, f: its fuse}, on the reliable channel; the host passes a
+// joined window word on to the rest, as a thrown charge is). Each window then runs the same fuse and the same blast: its own effects, the damage to its own player (a barrel a
+// teammate lit still never hurts you, his rule of no team damage; one an enemy round lit, or you lit, does) and its walls; the host window also hurts the bodies it runs, credited to
+// the seat that lit it. A barrel lit by the chain is lit the same way in both, and a word for one already lit is dropped. Solo play never sends or takes it.
+function brlNetOut(B){
+  var i, m;
+  if(!G||G.sim||typeof netUpShared!=='function'||!netUpShared()) return false;
+  m={t:'brl',i:B.id|0,by:(B.by|0)===B.by?B.by:-1,f:+(+B.fuse).toFixed(2)};
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],m);
+  return true;
+}
+function brlNetTake(peer,m){
+  var B, by, f, i, q;
+  if(!peer||peer.state!=='in') return 'ignored';
+  if(typeof netUpShared!=='function'||!netUpShared()) return 'off';
+  if(!G||G.sim||!G.brl||typeof m.i!=='number'||!isFinite(m.i)) return 'bad';
+  B=G.brl[m.i|0]; if(!B||B.id!==(m.i|0)||B.gone) return 'gone';
+  by=(typeof m.by==='number'&&m.by===(m.by|0)&&m.by>=0&&m.by<8)?m.by:-1;
+  f=clamp(+m.f||0.1,0.05,1);
+  if(!brlLight(B,by,f,1)) return 'dup';
+  if(NET.role==='host') for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q!==peer&&q.state==='in') netSend(q,{t:'brl',i:B.id|0,by:by,f:f}); }
+  return 'brl';
 }
 function brlShot(b){
   var i, B, L=G.brl;
@@ -46099,7 +46126,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.06: Abandon run now asks with just two buttons, YES and NO, inside the box. Check 28.06 fails on v28.05',
+  now:'v28.07: Explosive barrels now go up in both windows of a two-player game, and both windows lay the same barrels. Check 28.07 fails on v28.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -50429,6 +50456,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
   if(m.t==='png') return netPingTake(peer,m);   // v16.43: a ping from one of the party
   if(m.t==='wp') return netWpTake(peer,m);   // v16.46: a teammate map marker
   if(m.t==='fx') return netFxTake(peer,m);   // v16.21: a round or a sound from one of the party, to draw and play
+  if(m.t==='brl') return brlNetTake(peer,m);   // v27.xx (brlnet): an explosive barrel one of the party lit
   if(m.t==='thr') return netThrTake(peer,m);   // v17.29, co-op hunt 2026-09-28: a smoke, a decoy or a charge blast one of the party threw
   if(m.t==='sc') return netScoreTake(peer,m);   // v17.39: a teammate score for the end card
   if(m.t==='gift') return netGiftTake(peer,m);   // v17.44: his pick 4, an offer, a yes, a hand-over or a no
