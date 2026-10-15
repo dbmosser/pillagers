@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.42 - RUN INFO: THE GOALS JOIN THE CONDITIONS
+
+Co-op hunt while he was away. His answer of 2026-10-14 to the run goals question: merge them into conditions, maybe rename it run info. The run goals were a panel of their own under CONDITIONS, one more box in the right column. The panel is now RUN INFO: the conditions and the contracts, then the RUN GOALS (each goal with its count and what it pays, DONE in green once paid), in one box. In the DEMO, which never showed conditions or contracts, the panel holds just the goals.
+
+MEASURED. Check 27.42 passes, and fails on v27.41.
 ## v27.41 - THE OVERSEER CALLS A LIMITED NUMBER OF CRAWLERS
 
 Co-op hunt while he was away. The cloud review found the Overseer was an endless crawler farm in the arcade: from its second phase it called three crawlers every twenty seconds for as long as it had seen you, and each one scored and rolled its drops like any kill. It now calls twelve in all, four calls of three, and then fights with its cannon and its laser.

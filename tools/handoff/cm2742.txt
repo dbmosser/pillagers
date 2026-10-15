@@ -1,0 +1,7 @@
+v27.42: run info: the goals join the conditions
+
+The conditions panel is now RUN INFO and holds the run goals with the contracts.
+
+Check 27.42. Fails on v27.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

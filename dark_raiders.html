@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.41';
+var VER='27.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36531,7 +36531,8 @@ _tgt=G.active; _lbl='EXTRACTION';
   try{ drawMinimap(); }catch(_mm){ MMAP.box=null; }   // v24.xx (minimap1): his "add minimap", top right, before CONDITIONS so it can start below it
   ctx.save(); hudZoomIn('cond',W,0);
   (function(){
-    if(G.arcade){ delete HUDBOX.cond; return; }   // v23.35 (arcade13): no CONDITIONS panel in the arcade
+    var _arc=!!G.arcade;   // v27.42 (info1): the DEMO shows the panel too, with its run goals only
+    if(_arc&&!(G.flow&&G.flow.goals&&G.flow.goals.length)){ delete HUDBOX.cond; return; }   // v23.35 (arcade13): no CONDITIONS in the arcade; v27.42 (info1): but its goals   // v23.35 (arcade13): no CONDITIONS panel in the arcade
     var MW=(G.wx||WEATHER[0]), MT=tod(), rows=[], _clines=[];
 
     var _bzTags=[['drunk','LIQUOR'],['lsd','BLOTTER']];   // v19.00: the drink is Blotter (BOOZE), the word its status icon uses
@@ -36651,6 +36652,18 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
         for(var _cz=0;_cz<_clines.length;_cz++) rows.push({k:'',v:_clines[_cz].v,vc:_clines[_cz].vc});
       }
     }
+    // v27.42 (info1), HIS ANSWER (2026-10-14): "merge into conditions, maybe rename it run info". THE RUN GOALS ARE ROWS OF THIS PANEL. They
+    // were a panel of their own under CONDITIONS, one more box in the right column for the gun card, the feed and the badges to land on;
+    // now the panel is RUN INFO: the conditions and the contracts, then RUN GOALS (the goal, its count and what it pays, DONE in green
+    // once it has paid), in one box. In the DEMO, which never had the conditions or the contracts, it holds only the goals.
+    if(_arc) rows=[];
+    if(G.flow&&G.flow.goals&&G.flow.goals.length){
+      rows.push({k:'RUN GOALS',v:'',c:'#ffc04a'});
+      for(var _gq=0;_gq<G.flow.goals.length;_gq++){
+        var _gl=G.flow.goals[_gq];
+        rows.push({k:'',v:String(_gl.t)+((!_gl.done&&_gl.n>1)?('\u00a0\u00a0'+_gl.v+'/'+_gl.n):'')+'\u00a0\u00a0'+(_gl.done?'DONE':('+'+arcadeCr(_gl.chip))),vc:_gl.done?'#7fc4a0':'#cdd6dd'});
+      }
+    }
     // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
     // capture showed why that was wrong: STORM's effects are four clauses long,
     // so the text ran straight out of the panel and across the map, and the rows
@@ -36706,7 +36719,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
 hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     var ry=by+pad+LH(8);
-    ctx.fillStyle='#ffc04a'; ctx.fillText('CONDITIONS',bx+pad,ry);
+    ctx.fillStyle='#ffc04a'; ctx.fillText('RUN INFO',bx+pad,ry);   // v27.42 (info1): was CONDITIONS
     HUDBOX.cond={x:bx,y:by,w:bw,h:bh,tg:{x:bx+bw-LH(20),y:by,w:LH(20),h:LH(16)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1';
     hudChev(bx+bw-pad,ry,!HOc.c);   // vNN.xx (ui5q2p): a drawn chevron, not [-]
@@ -36724,7 +36737,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
   })();
   ctx.restore();
   if(HUDBOX.cond) HUDBOX.cond=hudZoomRect('cond',W,0,HUDBOX.cond);
-  EDGEBOX.goals=null; try{ if(flowOn()) goalsHud(ctx); }catch(_gh){}   // v26.xx (flow3): the run goals, the same panel in DEMO and CAREER
+  EDGEBOX.goals=null;   // v27.42 (info1): the run goals are rows of RUN INFO (goalsHud is kept, not drawn)   // v26.xx (flow3): the run goals, the same panel in DEMO and CAREER
   // v22.xx, the raid text rewrite (R38): A LINE SAID WITH THE MAP OPEN DRAWS OVER IT. HIS ORDER (2026-10-09): the raid text reads like
   // a shooter HUD, and in those a callout is never hidden by the map. The message band (the alert, the location tag and the feed)
   // was drawn here, before the sector map, whose opaque backing is drawn last, so with the map open WAYPOINT MARKED, a ring
@@ -44763,7 +44776,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.41: The Overseer now calls at most twelve crawlers in all. Check 27.41 fails on v27.40',
+  now:'v27.42: The conditions panel is now RUN INFO and holds the run goals with the contracts. Check 27.42 fails on v27.41',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54335,7 +54348,7 @@ function goalsTick(dt){
     v=goalProg(gl.id,S); gl.v=Math.min(gl.n,v);
     if(v>=gl.n){ gl.done=1; flowChip(gl.chip,'GOAL DONE',gl.t); }
   }
-  if(!S.gtold&&(G.t||0)>=1.5){ S.gtold=1; say('RUN GOALS','obj',{sub:'THREE SMALL GOALS'}); }
+  if(!S.gtold&&(G.t||0)>=1.5){ S.gtold=1; }   // v27.42 (info1): the goals are rows of RUN INFO all raid, no callout for them at the start
 }
 function goalsHud(c){
   var S=G.flow, gl, i, z, U, w, lh, pad, h, x, y, hb, yy, n=0;
@@ -55709,7 +55722,7 @@ function goalsNetTake(a){
     was=gl.done; gl.v=Math.min(gl.n,r[1]|0); gl.done=r[2]?1:0;
     if(gl.done&&!was&&!first){ try{ say('GOAL DONE','ext',{sub:gl.t}); }catch(_gd){} }
   }
-  if(first&&!S.gtoldP){ S.gtoldP=1; try{ say('RUN GOALS','obj',{sub:'THREE SMALL GOALS'}); }catch(_rg){} }
+  if(first&&!S.gtoldP){ S.gtoldP=1; }   // v27.42 (info1): as on the host, no callout for the goals
   return S.goals.length;
 }
 // the goals as tiles of the raid status plate (the plate calls this; T is its list)

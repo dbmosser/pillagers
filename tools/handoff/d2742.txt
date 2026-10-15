@@ -1,0 +1,5 @@
+## v27.42 - RUN INFO: THE GOALS JOIN THE CONDITIONS
+
+Co-op hunt while he was away. His answer of 2026-10-14 to the run goals question: merge them into conditions, maybe rename it run info. The run goals were a panel of their own under CONDITIONS, one more box in the right column. The panel is now RUN INFO: the conditions and the contracts, then the RUN GOALS (each goal with its count and what it pays, DONE in green once paid), in one box. In the DEMO, which never showed conditions or contracts, the panel holds just the goals.
+
+MEASURED. Check 27.42 passes, and fails on v27.41.
