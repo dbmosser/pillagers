@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.87 - THE WHAT IS NEW CARD NAMES POLISH PASS 1
+
+Co-op hunt while he was away. The card was stamped v27.74 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 27.87 passes, and fails on v27.86.
 ## v27.86 - THE SCREEN CLEAR SPARES EVERYTHING SPECIAL
 
 Co-op hunt while he was away. From the cloud review of the party builds, and his own words about the screen clear ("this is like a nuke in zombies? keep it i guess but it shouldn't hurt pillagers"). The pulse already spared bosses, elites and pillagers, but a golden machine died to it (and dropped its hoard with no GOLD HUNTER), so did the convoy carrier, which solved the whole convoy event in one press, and so did the bounty hunter, the machines the Overseer summons and the stronghold garrisons. Now the pulse kills only ordinary machines. A second problem was in a linked window: player 2's pulse sent each machine to the host as a 9999-damage round, which the host throws away over 1500, so nothing died; and had it, each machine would have counted as his kill with score, streak, medals and air strike charge. His window now sends a pulse word that the host applies and credits to nobody, as the solo pulse does, and he is paid the same flat medal as solo.
