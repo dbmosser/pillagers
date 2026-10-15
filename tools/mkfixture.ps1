@@ -7691,7 +7691,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof styMedal!=='function') return 'SKIP: no arcade here';
-     var bad=[], g=null, p, own=false, rs=say, oT=null, calls, c1, c2, c3, i, lo, hi, pay;
+     var bad=[], g=null, p, own=false, rs=say, oT=null, calls, c1, c2, c3, i, lo, hi, pay, ob=null, nw=false;
      function run(txt){ calls=[]; pay=styMedal(txt,10,p.x,p.y); return calls.slice(); }
      try{
        __topClear(); __runPrep();
@@ -7701,8 +7701,16 @@ window.__REGRESS=[
        if(typeof STY_TIER_SND==='undefined') return 'there are no tier sounds in this build';
        p=g.player; keys={}; say=function(){}; own=true; ARCADE.holdT=0;
        oT=styTone; styTone=function(n){ if(n&&n.length) calls.push(n); return true; };
+       nw=(String(styMedal).indexOf('STY_TIER'+'_SND')<0);   // from snd3 a medal is ONE climbing pop per plate tier (blip medal1 to medal3), not a note and a tier voice
+       if(nw){ ob=blip; blip=function(t){ if(/^medal/.test(String(t))) calls.push(String(t)); }; }
        c1=run('MELEE'+' KILL'); if(!pay) return 'SKIP: the staged medal paid nothing';
        c2=run('LONG'+' SHOT'); c3=run('GRENADE'+' DOUBLE');
+       if(nw){
+         if(c1.length!==1||c2.length!==1||c3.length!==1) bad.push('ONE: a medal made '+c1.length+', '+c2.length+' and '+c3.length+' pops, not one each');
+         else if(!(c1[0]<c2[0]&&c2[0]<c3[0])) bad.push('TWO: the three plate tiers do not climb ('+c1[0]+', '+c2[0]+', '+c3[0]+')');
+         c1=run('TEAM'+' COMBO x2'); if(c1.length<1) bad.push('FIVE: a team combo medal made no sound of its own tier');
+         return bad.length?bad.join('; '):null;
+       }
        if(c1.length!==1) bad.push('ONE: a plain medal made '+c1.length+' sounds, not its own note alone');
        if(c2.length!==2) bad.push('TWO: a skilled medal made '+c2.length+' sounds, not its note and the shimmer');
        else { lo=1e9; for(i=0;i<c2[1].length;i++) lo=Math.min(lo,c2[1][i][1]); if(!(lo>=2000)) bad.push('TWO: the skilled shimmer reaches down to '+lo+' Hz'); }
@@ -7719,6 +7727,7 @@ window.__REGRESS=[
      finally{
        if(own) say=rs;
        try{ if(oT) styTone=oT; }catch(_t){}
+       try{ if(ob) blip=ob; }catch(_tb){}
        keys={};
        try{ if(g) g.sty=null; }catch(_gs){}
        try{ if(typeof ARCADE==='object'){ ARCADE.streak=null; if(ARCADE.on) arcadeLeave(); } }catch(_l){}
