@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.85 - DAMAGE NUMBERS BY WHAT THE HIT WAS
+
+Co-op hunt while he was away. His words: the damage numbers should be coloured by weak spot or element. They now say what the hit was before you read them. A hit on a weak point is the colour of that weak point (the Sentry vent and the Pillbox slit orange, the optic cyan, the Warden core seam amber, the Choir dorsal spine violet), where every weak point used to share one orange. A round from a forged gun is the colour of its element (fire red, shock blue, cryo ice, acid green). A hit the armour mostly soaked, a pillager plate, the Bulwark shield or the Warden armour, is grey. A plain hit stays white, and a hit from behind on a machine stays amber as before. A weak point comes first because it ignores armour, then the element, then the armour. The colour goes across to the other window in the same word, so player 2 sees the same colours, and the DAMAGE NUMBERS row in Settings still turns them all off. Looks only: no damage moved.
+
+MEASURED. Check 27.85 passes, and fails on v27.84.
 ## v27.84 - HIT STOP CANNOT STUN LOCK
 
 Co-op hunt while he was away. A cloud review of v26.54 to v27.30 found that hit-stop could freeze a body in place when a power-up was running. The beat a heavy round (40 damage or more) stops a body for is decided on the damage after DOUBLE DAMAGE and the active reload bonus, so with DOUBLE DAMAGE an Auto Rifle round became a heavy one, and with RAPID FIRE as well (a round every 66 milliseconds) the body was held frozen about nine frames in ten: any body that was not a boss, the golden enemy and the wardens included. A body that has just been stopped is now immune to the next stop for 0.3 seconds, the same shape as the shock stun immunity, so a stream of rounds can hold it for at most a fifth of the time, and a single heavy round is still stopped for the same short beat as before. Live play only.

@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.84';
+var VER='27.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19480,6 +19480,18 @@ function hitKills(en,dmg){
   if(typeof NET==='object'&&NET&&NET.on&&typeof netEntsPeer==='function'&&netEntsPeer()) return ((+en.hp||0)-(+dmg||0))<=0;
   return en.hp<=0;
 }
+// v27.xx (feel2f), HIS WORDS (2026-10-14): "coloured by weak spot/element". DAMAGE NUMBERS ARE CODED BY WHAT THE HIT WAS. A number over a target now says it before you read it: a hit on a
+// weak point is the colour of THAT weak point (the vent and the Pillbox slit orange, the optic cyan, the core seam amber, the dorsal spine violet; it was one orange for all), a round
+// from a forged gun is the colour of its element (FIRE red, SHOCK blue, CRYO ice, ACID green), a hit the armour mostly soaked (a pillager's plate, the Bulwark shield, the Warden armour) is
+// GREY, a hit from behind on a machine is amber as before, and a plain hit stays white. A weak point comes first (it ignores armour), then the element, then the armour. The colour
+// goes to the other window in the same word, so player 2 sees the same colours. Cosmetic only: the damage and the DAMAGE NUMBERS setting (v27.13) are untouched.
+var DMGC_SOAK='#9aa3ab';
+function dmgNumCol(wk,el,soak,back){
+  if(wk) return wk.c||'#ff8a3c';
+  if(el&&ELEM[el]) return ELEM[el].c;
+  if(soak) return DMGC_SOAK;
+  return back?'#ffc04a':'#FFF6DC';
+}
 function dmgNum(x,y,amount,col,kill){
   if(!G||G.sim) return;
   G.dmgN=G.dmgN||[];
@@ -19502,6 +19514,7 @@ function drawDmgNums(){
     wc.globalAlpha=Math.min(1,k*1.8);
     wc.font=FS(d.kill?TYPE.head:TYPE.label);
     wc.textAlign='center';
+    var _dlw=wc.lineWidth, _dlj=wc.lineJoin; wc.lineJoin='round'; wc.lineWidth=3; wc.strokeStyle=INK; wc.strokeText(d.kill?(d.n+'!'):String(d.n),d.x,d.y); wc.lineWidth=_dlw; wc.lineJoin=_dlj;   // v27.xx (feel2f): an ink outline, so every colour reads on every floor
     wc.fillStyle=INK;   wc.fillText(d.kill?(d.n+'!'):String(d.n),d.x+1,d.y+1);
     wc.fillStyle=d.c;   wc.fillText(d.kill?(d.n+'!'):String(d.n),d.x,d.y);
   }
@@ -29002,6 +29015,7 @@ function updateBullets(dt){
               // SPEC 8.7: a weak point is checked BEFORE armour, because it is
               // the gap in the armour. Nothing soaks a round through the vent.
               var _nar=0;   // v22.04 (K16): on a linked window, the armour flag the host soaks this round with
+              var _soak=0;   // v27.xx (feel2f): the armour took most of this round (a grey number)
               var WK=weakHit(en,b.x,b.y,ux,uy);   // v20.27 (H1): along the round's path
               if(WK){
                 edmg*=WK.mult;
@@ -29030,6 +29044,7 @@ function updateBullets(dt){
                 return _bd<((en.kind==='warden')?WARDEN_ARC:(CFG.bulwarkArc===undefined?1.15:CFG.bulwarkArc));
               })()){
                 edmg*=(en.kind==='warden')?WARDEN_SOAK:(CFG.bulwarkSoak===undefined?0.12:CFG.bulwarkSoak);
+                _soak=1;   // v27.xx (feel2f)
                 if(!G.sim){
                   spark(b.x,b.y,'#9fb4c4',10,220);
                   sfx('clank',b.x,b.y,'armor');
@@ -29047,6 +29062,7 @@ function updateBullets(dt){
                 if(b.el==='acid') elemShred(en,edmg);   // v23.xx (forge6): ACID eats the plate before it soaks the round
                 var esk=elemAbsorb(en);   // v23.xx (forge6): a corroded plate stops half
                 var eab=Math.min(en.armor,edmg*esk); en.armor-=eab; edmg-=eab;
+                if(eab>0) _soak=1;   // v27.xx (feel2f)
               }
               // v22.07, from the whole-game bug hunt of 2026-10-08 (K18): ON A LINKED WINDOW THE HOST TURNS HIM. Up top in co-op this
               // body is a copy of the one the host runs: turning it here was put back by the next snapshot, so the line came again on
@@ -29075,9 +29091,9 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // system reads as decoration.
               if(!G.sim&&CFG.dmgNumbers!==0){
                 var _dn=Math.max(1,Math.round(edmg));
-                var _dc=WK?'#ff8a3c':((b.el&&ELEM[b.el])?ELEM[b.el].c:(edmg>0&&_backShot?'#ffc04a':'#FFF6DC'));   // v23.xx (forge3): an element round shows its colour; a weak point stays orange, the more important fact
-                dmgNum(en.x+fxn(-5,5),en.y-Math.round(en.r*1.1),_dn,_dc,hitKills(en,edmg));   // v8.35; v23.18: the kill style on player 2 too
-                if(NET.on) netFxDmg(en.x,en.y-Math.round(en.r*1.1),_dn,_dc,hitKills(en,edmg));   // v16.22: the party sees your numbers
+                var _dc=dmgNumCol(WK,b.el,_soak||(NET.on&&netEntsPeer()&&en.armor>0&&!WK),edmg>0&&_backShot);   // v27.xx (feel2f): the weak point's own colour, the element, grey for armour, white; was one orange for every weak point
+                dmgNum(en.x+fxn(-5,5),en.y-Math.round(en.r*(WK?2.7:1.1)),_dn,_dc,hitKills(en,edmg));   // v8.35; v23.18: the kill style on player 2 too   // v27.xx (feel2f): a weak point number starts above its label
+                if(NET.on) netFxDmg(en.x,en.y-Math.round(en.r*(WK?2.7:1.1)),_dn,_dc,hitKills(en,edmg));   // v16.22: the party sees your numbers
               }
               // v3.94: he has just been shot at by YOU, and a person answers
               // that by getting off the line. Perpendicular to the incoming
@@ -45791,7 +45807,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.84: A stream of heavy rounds can hold a body frozen for at most a fifth of the time, and one heavy round still stops it for a beat. Check 27.84 fails on v27.83',
+  now:'v27.85: Damage numbers are coloured by what the hit was: weak spot colour, element colour, grey for armour, white for plain. Check 27.85 fails on v27.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

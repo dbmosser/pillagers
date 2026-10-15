@@ -1,0 +1,7 @@
+v27.85: damage numbers by what the hit was
+
+Damage numbers are coloured by what the hit was: weak spot colour, element colour, grey for armour, white for plain.
+
+Check 27.85. Fails on v27.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
