@@ -1,0 +1,7 @@
+v27.12: player 2 breaches and is fenced by the strongholds
+
+Player 2 now sees the strongholds, is fenced by them, and can breach the gate with player 1.
+
+Check 27.12. Fails on v27.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

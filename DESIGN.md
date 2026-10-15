@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.12 - PLAYER 2 BREACHES AND IS FENCED BY THE STRONGHOLDS
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The strongholds (the fenced compounds with a gate, two waves and a purple cache) were laid out by each window for itself: player 2 built a second set of defenders that only his window knew, and the fence, the gate and the clear were the host alone. The host now lists its compounds in the world word and the linked window keeps exactly those. Player 2 is fenced in or out of each compound like player 1, on the side he first stood. He can open the gate too: standing at it from outside tells the host, which counts it beside its own player, so either of them or both together breach it in the same three seconds. The open gate, the cache on the maps and the cleared compound are shown and said in his window as well.
+
+MEASURED. Check 27.12 passes, and fails on v27.11.
 ## v27.11 - WAVES GROW THE LONGER YOU STAY
 
 Co-op hunt while he was away. His answer 28: waves should grow the longer you stay in a raid ("i thought we already discussed that"). They did not, quite: the wave tier came from the team score alone, so a quiet or careful player met the same small packs at minute nine as at minute one. The wave tier now also has a floor that rises with the raid clock, one step every two minutes up to tier 4: bigger packs and a shorter gap between them, sentries from the second minute, hostile pillagers from the fourth, and from the eighth minute the first body of each pack is an elite. The score still lifts the tier higher, up to the same 8, so a hot run still ramps faster. DEMO and CAREER run the same wave tick, so both ramp alike. The floor stops at 4 on purpose, to stay gentle.

@@ -1,0 +1,5 @@
+## v27.12 - PLAYER 2 BREACHES AND IS FENCED BY THE STRONGHOLDS
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The strongholds (the fenced compounds with a gate, two waves and a purple cache) were laid out by each window for itself: player 2 built a second set of defenders that only his window knew, and the fence, the gate and the clear were the host alone. The host now lists its compounds in the world word and the linked window keeps exactly those. Player 2 is fenced in or out of each compound like player 1, on the side he first stood. He can open the gate too: standing at it from outside tells the host, which counts it beside its own player, so either of them or both together breach it in the same three seconds. The open gate, the cache on the maps and the cleared compound are shown and said in his window as well.
+
+MEASURED. Check 27.12 passes, and fails on v27.11.

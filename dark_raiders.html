@@ -2225,7 +2225,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.11';
+var VER='27.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44300,7 +44300,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.11: The longer you stay in a raid, the bigger the waves get, even when you are not scoring. Check 27.11 fails on v27.10',
+  now:'v27.12: Player 2 now sees the strongholds, is fenced by them, and can breach the gate with player 1. Check 27.12 fails on v27.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48646,6 +48646,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
   if(m.t==='srch') return (NET.role==='host')?netSrchTake(peer,m):netSrchAnswer(peer,m);   // v15.91: a search request from one of the party, or the host answer to one
   if(m.t==='loot') return netLootTake(peer,m);   // v15.91: loot from the host list, into this window own backpack
   if(m.t==='cont') return netContWord(peer,m);   // v15.91: a container arrived, is held, is free, opened or shut, from the host
+  if(m.t==='fl') return flowNetWord(peer,m);   // v27.12 (coop4): a raid flow word between the windows (the gate, and the later builds)
   if(NET.role==='host'){
     if(m.t==='hello'){
       if(peer.state!=='open') return 'ignored';
@@ -54780,6 +54781,7 @@ function shKeep(s,o,rad){
 }
 function shTick(dt){
   var SS=shS(), i, j, k, s, e, p=G.player, gp, d, near, alive;
+  if(flowPeer()){ shPeerTick(dt); return; }   // v27.12 (coop4): a linked player 2 window lays out and fills no stronghold, it keeps the host ones (shNetTake)
   if(!SS.sites){
     if((G.t||0)<3) return;
     SS.sites=shLayout();
@@ -54790,9 +54792,9 @@ function shTick(dt){
     s=SS.sites[i];
     if(p&&!p.specOut) shKeep(s,p,p.r||11);
     for(j=0;j<G.ents.length;j++){ e=G.ents[j]; if(!e||!(e.hp>0)||e.kind==='snitch') continue; shKeep(s,e,e.r||12); }
-    if(!s.open&&p&&!p.downed&&!p.dying){
+    if(!s.open&&p&&((!p.downed&&!p.dying)||(G.t||0)-(+s.p2at||-9)<0.6)){   // v27.12 (coop4): or a partner is at the gate
       gp=shGatePt(s); d=Math.hypot(p.x-gp.x,p.y-gp.y);
-      near=(d<SH.reach)&&(p.shS&&p.shS[s.i]===2);
+      near=((d<SH.reach)&&(p.shS&&p.shS[s.i]===2)&&!p.downed&&!p.dying)||((G.t||0)-(+s.p2at||-9)<0.6);
       s.prog=near?Math.min(1,s.prog+dt/SH.breach):Math.max(0,s.prog-dt*2/SH.breach);
       if(s.prog>=1) shOpen(s);
     }
@@ -55003,6 +55005,7 @@ function flowNetOut(){
   for(i=0;i<F.length&&i<8;i++){ f=F[i]; a.push([f.id|0,Math.round(f.x),Math.round(f.y),Math.round(f.r),+(+f.t).toFixed(1),+(+f.warn).toFixed(1),+(+f.life).toFixed(1),(f.src==='fuel')?0:1]); }
   o={f:a};
   o.e=evNetOut();   // v27.07 (coop2): and the raid events
+  o.s=shNetOut();   // v27.12 (coop4): and the strongholds
   // FLOW-NET-OUT (the next coop builds add their keys above this line)
   return o;
 }
@@ -55010,6 +55013,7 @@ function flowNetTake(fl){
   if(!fl||typeof fl!=='object'||!flowOn()||!flowPeer()) return 0;
   if(fl.f&&typeof fl.f.length==='number') fireNetTake(fl.f);
   if(fl.e&&typeof fl.e.length==='number') evNetTake(fl.e);   // v27.07 (coop2): the raid events
+  if(fl.s&&typeof fl.s.length==='number') shNetTake(fl.s);   // v27.12 (coop4): the strongholds
   // FLOW-NET-IN (the next coop builds take their keys above this line)
   return 1;
 }
@@ -55156,7 +55160,74 @@ function evPeerTick(dt){
   if(t-(+E.wkT||-9)>=1||t<(+E.wkT||0)){
     E.wkT=t;
     for(i=E.wrecks.length-1;i>=0;i--) if(!E.wrecks[i]||E.wrecks[i].opened||G.containers.indexOf(E.wrecks[i])<0) E.wrecks.splice(i,1);
-    for(i=0;i<G.containers.length;i++){ c=G.containers[i]; if(c&&c.tag&&EV_WRECK_TAGS[c.tag]&&!c.opened&&!c.fwk){ c.fwk=1; E.wrecks.push(c); } }
+    for(i=0;i<G.containers.length;i++){
+      c=G.containers[i];
+      if(!c||!c.tag||!EV_WRECK_TAGS[c.tag]||c.opened||c.fwk) continue;
+      if(c.tag==='STRONGHOLD CACHE'&&!(shAt(c.x,c.y,30)||{}).open) continue;   // v27.12 (coop4): the compound cache is on the maps once the gate is open, as on the host
+      c.fwk=1; E.wrecks.push(c);
+    }
+  }
+}
+// v27.12 (coop4), HIS ORDER (2026-10-14), the two player first: THE STRONGHOLDS COME TO PLAYER 2. The compounds were laid out by every window for itself: player 2 built a second set
+// of defenders that only his window knew (bodies the host does not have), and the fence, the gate and the clear were the host's alone. The host now lists its compounds in the world
+// word (key s: the number, the place, the angle of the gate, whether it is open, how far the breach is, whether it is cleared); the linked window lays out and fills none (shTick),
+// keeps what the host says, and its player is fenced in or out of each compound like the host player (shKeep, on the side he first stood). The defenders are the host bodies and come
+// over in the body words. THE BREACH IS FOR BOTH: standing at the gate from outside for the breach time fills the ring, and player 2's window tells the host so every quarter second
+// he does (a raid flow word, t fl, k gate, reliable), which the host counts beside its own player; so either of them, or the two together, open it. The cache shows on the maps once
+// the gate is open, as it does on the host, and the open gate and the clear are said on his window too. No new channel: the compounds ride in the world word and the gate in the flow word.
+function flowNetPost(m){
+  var q;
+  if(!flowPeer()||typeof netPeerOfSeat!=='function') return false;
+  q=netPeerOfSeat(0); if(!q) return false;
+  m.t='fl'; return netSend(q,m);
+}
+function flowNetWord(peer,m){
+  var SS, i, s;
+  if(!peer||peer.state!=='in'||!m||typeof m.k!=='string') return 'ignored';
+  if(m.k==='gate'){
+    if(NET.role!=='host'||!netEntsHost()||!flowOn()) return 'ignored';
+    SS=shS();
+    for(i=0;SS.sites&&i<SS.sites.length;i++){ s=SS.sites[i]; if(s.i===(m.i|0)){ if(!s.open) s.p2at=G.t||0; return 'gate'; } }
+    return 'gone';
+  }
+  // FLOW-NET-WORD (the next coop builds take their words above this line)
+  return 'bad';
+}
+function shNetOut(){
+  var SS=G.flow&&G.flow.sh, a=[], i, s;
+  if(!SS||!SS.sites) return a;
+  for(i=0;i<SS.sites.length&&i<3;i++){ s=SS.sites[i]; a.push([s.i|0,Math.round(s.x),Math.round(s.y),+(+s.ga).toFixed(3),s.open?1:0,+(+s.prog).toFixed(2),s.clear?1:0]); }
+  return a;
+}
+function shNetTake(rows){
+  var SS=shS(), i, j, r, s, wasOpen, wasClear;
+  if(!SS.sites) SS.sites=[];
+  for(i=0;i<rows.length&&i<3;i++){
+    r=rows[i];
+    if(!r||typeof r.length!=='number'||r.length<7||!isFinite(+r[1])||!isFinite(+r[2])||!isFinite(+r[3])) continue;
+    s=null; for(j=0;j<SS.sites.length;j++) if(SS.sites[j].i===(r[0]|0)){ s=SS.sites[j]; break; }
+    if(!s){ s={i:r[0]|0,x:0,y:0,r:SH.r,ga:0,gw:SH.gw,open:0,prog:0,w2:0,clear:0,def:[],def2:[],cache:null}; SS.sites.push(s); }
+    wasOpen=s.open; wasClear=s.clear;
+    s.x=+r[1]; s.y=+r[2]; s.ga=+r[3]; s.open=r[4]?1:0; s.clear=r[6]?1:0;
+    s.prog=s.open?1:Math.max(+r[5]||0,(wasOpen?0:s.prog));
+    if(s.open&&!wasOpen&&s.fresh){ try{ var gp=shGatePt(s); sfx('boom',gp.x,gp.y); spark(gp.x,gp.y,'#ffcf7a',24,300); say('GATE BREACHED','warn',{sub:'THEY ARE COMING'}); }catch(_so){} }
+    if(s.clear&&!wasClear&&s.fresh){ try{ say('STRONGHOLD CLEARED','ext',{sub:'STRONGHOLD'}); }catch(_sc){} }
+    s.fresh=1;
+  }
+  if(SS.sites.length&&!SS.told){ SS.told=1; try{ say('STRONGHOLD','info',{sub:SS.sites.length+' ON THE MAP'}); }catch(_st){} }
+  return SS.sites.length;
+}
+function shPeerTick(dt){
+  var SS=shS(), i, s, p=G.player, gp, d, near, t=G.t||0;
+  if(!SS.sites||!p) return;
+  for(i=0;i<SS.sites.length;i++){
+    s=SS.sites[i];
+    if(!p.specOut) shKeep(s,p,p.r||11);
+    if(s.open||p.downed||p.dying){ continue; }
+    gp=shGatePt(s); d=Math.hypot(p.x-gp.x,p.y-gp.y);
+    near=(d<SH.reach)&&(p.shS&&p.shS[s.i]===2);
+    s.prog=near?Math.min(0.999,s.prog+dt/SH.breach):Math.max(0,s.prog-dt*2/SH.breach);   // looks only: the host counts the real breach
+    if(near&&(t-(+s.gateAt||-9)>=0.25||t<(+s.gateAt||0))){ s.gateAt=t; flowNetPost({k:'gate',i:s.i}); }
   }
 }
 // FLOW-MODULE-END (the next flow builds add their code above this line)
