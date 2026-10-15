@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.81 - RELOAD BAR: RED ACTIVE ZONE
+
+Co-op hunt while he was away. His words: the reload bar needs a clear red line for when the active reload happens. The bar over your head had no sweet spot at all (only the ring on the cursor did, in green), so the moment was hard to see. Now the bar is a little bigger, the 42 to 60 percent stretch of it is a solid red zone with a red line at each end that reaches past the bar, and a white playhead runs along it, in the amber of the rest of the bar. While the playhead is inside the zone, which is the moment a second R counts, the zone goes light red and its lines white; once it is missed the zone dims. The sweet spot on the ring on the cursor is red too, with a red tick across the ring at each end, so the cue is the same wherever you look. It reads the same at 1080p and 4K and in both windows. Looks only: the reload itself and the bonus are unchanged.
+
+MEASURED. Check 27.81 passes, and fails on v27.80.
 ## v27.80 - THE BLOOM RESETS WITH A SNAP
 
 Co-op hunt while he was away. The pacing half of the Halo Reach bloom. A Reach player learns the cadence of a gun from the reticle, so the ring on the cursor now says when the bloom is gone: the moment the bloom a round or a held burst opened has fully closed again, the gun is back to its pinpoint round and the ring settles, it flares white, a thin ring contracts onto it and four ticks click into place for under a third of a second, with a quiet click under it. It happens once per reset, only after a real bloom (a quarter of the way open or more) has been closed, so a lone round in a quiet moment says nothing, and it stays out of the way while you spam. With reduced flashing on, the contracting ring is left out and the ticks and the click stay.

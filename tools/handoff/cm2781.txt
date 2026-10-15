@@ -1,0 +1,7 @@
+v27.81: reload bar: red active zone
+
+The reload bar shows the active reload as a red zone with red lines and a playhead, and the cursor ring shows it in red too.
+
+Check 27.81. Fails on v27.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
