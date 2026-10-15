@@ -1332,6 +1332,13 @@
   #root .ocwin .fbhead::after{ content:'+'; color:var(--acc); font-size:17px; line-height:1; }
   #root .ocwin.fbopen .fbhead::after{ content:'\2212'; }
   #root .ocwin:not(.fbopen) #tagwrap, #root .ocwin:not(.fbopen) #oc_note{ display:none; }
+  /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
+     map select screen and the Undercroft floor): THE ANSWER LINE STAYS OFF THE BUTTONS. The line sat 38 px up in the middle of the screen
+     whatever was open, so it landed on ASCEND TO THIS SECTOR (the whole bottom of the map select screen is that one button) and, on the
+     floor, on the middle cells of the tactical belt (TROPHY EARNED over gun key 4). On the map select screen it rides under the heading
+     now; on the bare floor and in a raid it sits above the belt. Windows with a footer that has room keep their own place (v20.89). */
+  body:has(#sectormodal.on) #hubtoast{ bottom:auto; top:50px; }
+  body:not(:has(.modal.on)):not(:has(#hub.on)):not(:has(#title.on)):not(:has(.outcome.on)):not(:has(.pausebox.on)):not(:has(#attract.on)) #hubtoast{ bottom:150px; }
   /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge of the title shot with 2 PLAYER CO-OP picked and the second window
      blocked): THE PICK SHOWS. After a same machine pick that stops on a note, 1 PLAYER was still the amber button, so the screen
      did not say what had been chosen, and the blocked note was a line of small red words with a small RETRY under it, like a stray
@@ -2269,7 +2276,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.01';
+var VER='28.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45853,7 +45860,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.01: The what is new card names polish pass 2. Check 28.01 fails on v28.00',
+  now:'v28.02: The answer line no longer covers ASCEND TO THIS SECTOR or the tactical belt. Check 28.02 fails on v28.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

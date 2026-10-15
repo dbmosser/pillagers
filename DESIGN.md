@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.02 - THE ANSWER LINE STAYS OFF THE BUTTONS
+
+Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, the one-line answer at the bottom of the screen (TROPHY EARNED, The welcome pack is in your stash.) sat on top of ASCEND TO THIS SECTOR on the map select screen, hiding the button words, and on the Undercroft floor it sat on the middle cells of the tactical belt. It rides under the heading on the map select screen now, and above the belt on the floor and in a raid.
+
+MEASURED. Check 28.02 passes, and fails on v28.01.
 ## v28.01 - THE WHAT IS NEW CARD NAMES POLISH PASS 2
 
 Co-op hunt while he was away. The card was stamped v27.87 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

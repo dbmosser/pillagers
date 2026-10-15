@@ -1,0 +1,7 @@
+v28.02: the answer line stays off the buttons
+
+The answer line no longer covers ASCEND TO THIS SECTOR or the tactical belt.
+
+Check 28.02. Fails on v28.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
