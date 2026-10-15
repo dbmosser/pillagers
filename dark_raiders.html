@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.67';
+var VER='27.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15597,7 +15597,9 @@ function padMenu(pressed){
     if(GRAB&&GRAB.pad){ grabEnd(); return true; }   // v16.80: B lets a pad grab go, and closes nothing else on that press
     if(md===IMENU){ closeItemMenu(); padSetFocus(null); PAD.focus=null; return true; }   // v17.16, co-op hunt 2026-09-28: B shuts the menu, which has no button to find
     var back=null,bs=md.querySelectorAll('button');
-    for(var i=0;i<bs.length;i++) if(/leave|close|not yet|keep my kit|back|done|return/i.test(bs[i].textContent||'')) { back=bs[i]; break; }
+    // v27.68 (cloud-menus-pad-b-closes-settings), CLOUD HUNT 2026-10-15: B took the first button whose words read like a way out, and in Settings the MINIMAP ZOOM row reading CLOSE
+    // comes before the window's own CLOSE, so B changed the zoom and left Settings open. A Settings option row (id go_...) is never the way out.
+    for(var i=0;i<bs.length;i++) if(!/^go_/.test(bs[i].id||'')&&/leave|close|not yet|keep my kit|back|done|return/i.test(bs[i].textContent||'')) { back=bs[i]; break; }
     if(md.id==='outcome'&&haulRevealSkip()){} else if(back) back.click(); else md.classList.remove('on');   // v26.xx (career7): B on the card skips the haul reveal first
     padSetFocus(null); PAD.focus=null;
   }
@@ -44820,7 +44822,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.67: REDUCED FLASHING now also tones down the white-out when the site goes up. Check 27.67 fails on v27.66',
+  now:'v27.68: B on a controller now closes Settings even when MINIMAP ZOOM is set to CLOSE, and leaves the zoom alone. Check 27.68 fails on v27.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

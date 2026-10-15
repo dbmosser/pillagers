@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.68 - CONTROLLER B CLOSES SETTINGS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: with MINIMAP ZOOM set to CLOSE, pressing B on a controller in Settings did not shut the window. B looks for the first button whose words read like a way out, and the MINIMAP ZOOM row reading CLOSE comes before the window CLOSE button, so B clicked the row: the zoom went from CLOSE to STANDARD and Settings stayed open. Proven in headless Chromium through the real pad poll: {"zoomBtn":"CLOSE","openAfterB":true,"span1":1000,"zoomBtn2":"STANDARD"}. B now skips the Settings option rows, so it reaches the window CLOSE button.
+
+MEASURED. Check 27.68 passes, and fails on v27.67.
 ## v27.67 - REDUCED FLASHING TONES DOWN THE SITE GOING UP
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: REDUCED FLASHING says it tones down the bright flashes, but when the clock ran out the site going up still drew its full-screen white-out at full strength and its rapid barrage of blooms at full size and length, because those blooms are pushed straight in and never go through flash(). Proven in headless Chromium with REDUCED FLASHING on: white-out alpha 0.92 (off 0.92) and bloom life 0.5 (off 0.5). With it on, the white-out now takes the same 0.45 factor as the lightning, and the blooms the same smaller and shorter light flash() gives every other blast. With it off nothing changes.

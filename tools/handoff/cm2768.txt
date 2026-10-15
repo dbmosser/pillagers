@@ -1,0 +1,7 @@
+v27.68: controller b closes settings
+
+B on a controller now closes Settings even when MINIMAP ZOOM is set to CLOSE, and leaves the zoom alone.
+
+Check 27.68. Fails on v27.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
