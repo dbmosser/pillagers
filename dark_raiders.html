@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.60';
+var VER='28.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46528,7 +46528,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.60: Player 2 now hits the Overseer as hard as player 1 and sees its sweeping laser. Check 28.60 fails on v28.59',
+  now:'v28.61: Player 2 now sees the searchers scan cones as long as player 1 does. Check 28.61 fails on v28.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54009,7 +54009,8 @@ function netEntRow(e){
 // A body that arrived after the build: what a linked window needs to draw and name it.
 function netEntGunWord(e){ var m=netEntNewWord(e); delete m.idn; delete m.lx; delete m.ly; return m; }  // v28.39 (cloud-coop-pillager-gun-sync), CLOUD HUNT 2026-10-15: a known body took another gun: the new word without his name tag, so player 2 keeps his place, look and state and takes the gun
 function netEntNewWord(e){
-  var m={t:'ent',op:'new',id:e.nid,k:e.kind,x:Math.round(e.x),y:Math.round(e.y),n:netClean(e.name,24),r:e.r,mh:e.maxhp,hp:Math.ceil(clamp(e.hp/(e.maxhp||1),0,1)*20),el:e.elite?1:0,ho:e.hostile?1:0,af:e.affix?String(e.affix):''};
+  // v28.61 (cloud-raid-p2reach), CLOUD HUNT 2026-10-15: sr, its sight reach, so the copy draws the scan cone and the laser as far as the host does
+  var m={t:'ent',op:'new',id:e.nid,k:e.kind,x:Math.round(e.x),y:Math.round(e.y),n:netClean(e.name,24),r:e.r,mh:e.maxhp,hp:Math.ceil(clamp(e.hp/(e.maxhp||1),0,1)*20),el:e.elite?1:0,ho:e.hostile?1:0,af:e.affix?String(e.affix):'',sr:Math.round(+e.rng||0)};
   if(e.kind==='raider'){ m.c=netClean(e.coat,12); m.cr=e.crew|0; m.idn=netClean(e.ident,24); m.w=(e.wep&&e.wep.id)?String(e.wep.id):''; m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; if(typeof e.lx==='number'){ m.lx=e.lx; m.ly=e.ly; } }   // v20.13: his birthplace, which his look is hashed from
   return m;
 }
@@ -54057,6 +54058,7 @@ function netEntFill(e,m){
   var lk, A;
   if(typeof m.n==='string') e.name=netClean(m.n,24);
   if(typeof m.r==='number'&&m.r>0&&m.r<80) e.r=m.r;
+  if(typeof m.sr==='number'&&m.sr>0&&m.sr<3000) e.rng=m.sr;   // v28.61 (cloud-raid-p2reach): the host sight reach (a copy started at 100)
   if(typeof m.mh==='number'&&m.mh>0){ e.maxhp=m.mh; if(typeof m.hp==='number') e.hp=Math.round(clamp(m.hp,0,20)/20*e.maxhp); }
   e.elite=m.el?1:0; e.hostile=!!m.ho; e.affix=(typeof m.af==='string'&&AFFIX[m.af])?m.af:null;   // v26.xx (ai25)
   e.boss=(e.kind==='warden'&&e.name===BOSS_NAME)?1:0;   // v28.60 (cloud-raid-p2boss), CLOUD HUNT 2026-10-15: the copy of THE OVERSEER is the boss: his rounds met a plain Warden front and he never saw the laser

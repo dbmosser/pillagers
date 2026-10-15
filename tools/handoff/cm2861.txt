@@ -1,0 +1,7 @@
+v28.61: player 2 sees the full scan cones
+
+Player 2 now sees the searchers scan cones as long as player 1 does.
+
+Check 28.61. Fails on v28.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
