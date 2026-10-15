@@ -1,0 +1,7 @@
+v28.03: the run card is one after action ledger
+
+The run card is one ledger: raid score, credits, haul and a raid total.
+
+Check 28.03. Fails on v28.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.03 - THE RUN CARD IS ONE AFTER ACTION LEDGER
+
+Co-op hunt while he was away. His order of 2026-10-15: the stats page should account for the scoring system against the haul amount, reconciled in one smooth AAA way. The EXTRACTED card showed the haul and no raid score, while the raid score (kills, medals, goals, bounty, strongholds, vaults and the double on extraction) lived only on the HUD, so the two money numbers read as unrelated. A CAREER run card is now one ledger in terse caps that tallies in row by row: the raid score rows by where each point came from, the extraction double, RAID SCORE, the CREDITS it banked (one credit a point, as before), the HAUL (the item pictures, items secured and haul value) and one headline RAID TOTAL, the credits earned plus the haul value. A death keeps the score rows, shows the credits and the haul as LOST with the figure struck through, and a total of nothing, because a death returns empty. The sentences about health, containers, accuracy and time become five stat tiles, and the achievements become medal emblems in the metal of the v27.38 medals. A press on the card lands the tally at once, and the haul reveal waits for the tally. Leaderboards and the run record rank by RAID SCORE. No price, credit payout or seeded draw changed.
+
+MEASURED. Check 28.03 passes, and fails on v28.02.
 ## v28.02 - THE ANSWER LINE STAYS OFF THE BUTTONS
 
 Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, the one-line answer at the bottom of the screen (TROPHY EARNED, The welcome pack is in your stash.) sat on top of ASCEND TO THIS SECTOR on the map select screen, hiding the button words, and on the Undercroft floor it sat on the middle cells of the tactical belt. It rides under the heading on the map select screen now, and above the belt on the floor and in a raid.
