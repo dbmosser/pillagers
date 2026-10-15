@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.63 - A DEAD OVERSEER ENDS ITS RAMPAGE
+
+Co-op hunt while he was away. The Overseer rampage gives a 12 second warning with a ring on the boss. Killing the Overseer inside that warning is ordinary play, since the ring shows you where it is. When the warning ran out the rampage found its boss dead and returned without starting, and its tick only ever looked for the death of a boss that had started, so the event never ended: for the full two minutes the ring, the map mark and OVERSEER RAMPAGE HUNTING YOU stayed up where a dead boss had stood, and no other raid event could start until it ran out. Proven in headless Chromium: Overseer killed one second before the warning ended, real frames run, the event still live 101 s later with its mark, and a debris event held until it ended. A rampage whose boss is already dead now ends when its warning does.
+
+MEASURED. Check 28.63 passes, and fails on v28.62.
 ## v28.62 - POWER-UPS END WHEN YOU DIE
 
 Co-op hunt while he was away. The timed power-ups (bottomless clip, double damage, rapid fire, magnet, shield bubble) were meant to end on a death: the power-up tick clears them while the player is dying. But during the death beat the game does not run the player tick, and the respawn clears the dying mark before the next one, so that line never ran. In the two player DEMO a player who died with double damage and bottomless clip running came back from the respawn still holding both, with most of their time left. Proven in headless Chromium with real frames: power-ups at 15 and 20 s, a lethal hit, the death beat, the respawn at full health, and the power-ups still running at 14 and 19 s with the damage still doubled. The respawn now ends them. The 1 player DEMO and CAREER were never affected: their death ends the raid.

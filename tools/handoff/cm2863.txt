@@ -1,0 +1,7 @@
+v28.63: a dead overseer ends its rampage
+
+An Overseer killed during the rampage warning now ends the rampage when the warning runs out, not two minutes later.
+
+Check 28.63. Fails on v28.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

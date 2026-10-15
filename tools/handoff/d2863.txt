@@ -1,0 +1,5 @@
+## v28.63 - A DEAD OVERSEER ENDS ITS RAMPAGE
+
+Co-op hunt while he was away. The Overseer rampage gives a 12 second warning with a ring on the boss. Killing the Overseer inside that warning is ordinary play, since the ring shows you where it is. When the warning ran out the rampage found its boss dead and returned without starting, and its tick only ever looked for the death of a boss that had started, so the event never ended: for the full two minutes the ring, the map mark and OVERSEER RAMPAGE HUNTING YOU stayed up where a dead boss had stood, and no other raid event could start until it ran out. Proven in headless Chromium: Overseer killed one second before the warning ended, real frames run, the event still live 101 s later with its mark, and a debris event held until it ended. A rampage whose boss is already dead now ends when its warning does.
+
+MEASURED. Check 28.63 passes, and fails on v28.62.
