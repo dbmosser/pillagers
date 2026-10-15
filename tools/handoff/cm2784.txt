@@ -1,0 +1,7 @@
+v27.84: hit stop cannot stun lock
+
+A stream of heavy rounds can hold a body frozen for at most a fifth of the time, and one heavy round still stops it for a beat.
+
+Check 27.84. Fails on v27.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

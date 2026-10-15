@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.84 - HIT STOP CANNOT STUN LOCK
+
+Co-op hunt while he was away. A cloud review of v26.54 to v27.30 found that hit-stop could freeze a body in place when a power-up was running. The beat a heavy round (40 damage or more) stops a body for is decided on the damage after DOUBLE DAMAGE and the active reload bonus, so with DOUBLE DAMAGE an Auto Rifle round became a heavy one, and with RAPID FIRE as well (a round every 66 milliseconds) the body was held frozen about nine frames in ten: any body that was not a boss, the golden enemy and the wardens included. A body that has just been stopped is now immune to the next stop for 0.3 seconds, the same shape as the shock stun immunity, so a stream of rounds can hold it for at most a fifth of the time, and a single heavy round is still stopped for the same short beat as before. Live play only.
+
+MEASURED. Check 27.84 passes, and fails on v27.83.
 ## v27.83 - THE FINISHER SAYS HOW
 
 Co-op hunt while he was away. His words: he did not see a prompt telling him how to do the finisher, but he wants to keep it. The old one was a few small words over a ring, drawn under the REVIVE prompt of the same man, so it was missed. A downed pillager in finisher reach now shows the standard world prompt, the same one the door, the crate and the seal use: HOLD [V] FINISH on a plate, in danger red, with the V drawn as a keycap (the key as you have set it in CHANGE KEYS). It sits where the REVIVE prompt sits and stacks under it when both are up, and the ring under him still fills while you hold. A standing pillager, or you being down, shows nothing. On a controller the prompt names the finisher button as bound, Y by default and TRIANGLE on a PlayStation pad. The finisher itself, its 0.55 second hold, its reach and its 100 points are unchanged.
