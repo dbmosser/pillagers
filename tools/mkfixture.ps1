@@ -76182,11 +76182,13 @@ window.__REGRESS=[
          renderAvatar('appavatar','appavatarpicker');
          var slots=document.querySelectorAll('#appavatar [data-av]');
          if(!slots.length||slots[0].getAttribute('data-av')!=='outfit') bad.push('the Depot does not list OUTFIT as its first slot');
+         if(typeof AVTAB!=='undefined'){ AVTAB='sets'; renderAvatar('appavatar','appavatarpicker'); }   // v28.xx (cosm7): the suits are on the SETS tab
          var tiles=document.querySelectorAll('#appavatarpicker .costile[data-kind="outfit"]');
          if(tiles.length<8) bad.push('the Depot racks show '+tiles.length+' outfit tiles, not eight');
        } else bad.push('the Depot is not on this page');
      } finally {
        P2.cosAll=keep.all; P2.cosOutfit=keep.out||'outnone'; P2.cosFit=keep.fit; P2._avSlot=keep.slot;
+       try{ if(typeof AVTAB!=='undefined') AVTAB='head'; }catch(_avt){}
        try{ saveProfile(); }catch(_sv){}
      }
      return bad.length?bad.join('; '):null; }},
@@ -76451,7 +76453,7 @@ window.__REGRESS=[
      if(red(bred)-red(blk)<4) bad.push('the Bred high-tops have no red sole on the sprite');
      // The figure and the swatches carry the sole too.
      if(typeof avatarHTML==='function'){ P2.cosBoots='sneakchi'; var h=avatarHTML(); if(!/avboots[^>]*border-bottom:4px solid #f2f0ea/.test(h)) bad.push('the figure draws no sole under the Chicago high-tops'); }
-     want.forEach(function(id){ var sw=cosSwatch(cosFind(id)); if(/>\?</.test(sw)) bad.push(id+' has no swatch'); else if(sw.indexOf(BOOTCOL[id][2])<0) bad.push(id+' swatch has no sole'); });
+     want.forEach(function(id){ var sw=cosSwatch(cosFind(id)); if(/>\?</.test(sw)) bad.push(id+' has no swatch'); else if(sw.indexOf(BOOTCOL[id][2])<0&&!/<img /.test(sw)) bad.push(id+' swatch has no sole'); });   // v28.xx (cosm5): a figure picture carries the sole
      // CONTROL: black boots draw no sole, on the sprite or the figure.
      P2.cosBoots='bootblack'; var blk2=feet();
      if(pale(blk2)>pale(blk)+2) bad.push('control: black boots grew a sole');
@@ -78265,6 +78267,11 @@ window.__REGRESS=[
      if(!tiles.length) bad.push('the wardrobe is empty before a slot is clicked');
      var groups=['BUILD','SKIN','HAIR','HAIRSTYLE','HEADGEAR','CLOTHING'], missing=[];
      var wt=(document.getElementById('appavatarpicker')||{}).textContent||'';
+     if(typeof COSTABS!=='undefined'&&typeof AVTAB!=='undefined'){   // v28.xx (cosm7): the racks are on five tabs; read every tab
+       var keepTab=AVTAB; wt='';
+       for(var tb=0;tb<COSTABS.length;tb++){ AVTAB=COSTABS[tb][0]; renderAvatar('appavatar','appavatarpicker'); wt+=(document.getElementById('appavatarpicker')||{}).textContent||''; }
+       AVTAB='head'; renderAvatar('appavatar','appavatarpicker'); tiles=md.querySelectorAll('#appavatarpicker .costile');
+     }
      for(var g=0;g<groups.length;g++) if(wt.indexOf(groups[g])<0) missing.push(groups[g]);
      if(missing.length) bad.push('the wardrobe does not show '+missing.join(', '));
      if(md.querySelector('[data-save],[data-load]')) bad.push('the loadout saves are on the Appearance screen, where they do not belong');
