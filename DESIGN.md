@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.95 - TEAM COMBO
+
+Co-op hunt while he was away. His yes to the team combo in the 2 player DEMO. When both players get a kill within two seconds of each other and within about fifty metres, the second kill pays a team bonus of forty times the chain, to the team score, with a TEAM COMBO callout, a medal and a note. A kill is in one pair only, so the figure is paid once; pairs that follow inside two seconds make the chain longer, up to times five, and a longer gap starts it again. Both screens hold the same chain, drawn as a cyan ring just outside your own combo ring that drains over the two seconds, with TEAM and the chain beside it. The windows tell each other about every kill to do this. The 1 player DEMO is unchanged.
+
+MEASURED. Check 26.95 passes, and fails on v26.94.
 ## v26.94 - GOLDEN ENEMY CLUE HUNT
 
 Co-op hunt while he was away. His yes to the golden-enemy clue hunt: three clues shrink a circle toward the golden enemy. Every raid lays three clue props on open ground, a dropped scanner, a trail of gold dust and a chirping beacon, and the maps show a search circle 1,400 wide with the golden enemy somewhere inside it (never in the middle). Each clue you walk over shrinks the circle to 900, then 520, then 220, and the circle follows the golden enemy as it walks. With all three taken the mark pins to the edge of the minimap as an arrow. The props chirp on the screen with a ring that spreads every two seconds, and show on the minimap and the sector map only when you are within 600 of them, so you have to explore. When the golden enemy dies the hunt is over and the circle and props are gone. The same seed lays the same clues. DEMO and CAREER work the same.

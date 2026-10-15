@@ -1,0 +1,7 @@
+v26.95: team combo
+
+In the 2 player demo, kills by both players close together build a shared TEAM combo.
+
+Check 26.95. Fails on v26.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

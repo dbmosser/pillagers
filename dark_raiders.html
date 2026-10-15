@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.94';
+var VER='26.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35711,6 +35711,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
     }
     xhDot(ctx,rx0,ry0,rState,rCol,_rz);
     try{ styleDraw(ctx,p,rx0,ry0); }catch(_sdw){}   // v26.xx (party1): the combo ring and the medal plates   // v26.xx (settings6): the middle, the 2 pixel square it was by default
+    try{ teamDraw(ctx,p,rx0,ry0); }catch(_tdw){}   // v26.xx (party4): the TEAM combo ring
     // v23.9x (hitmark), HIS ORDER (2026-10-12), his words on the hit marker: "i don't really understand how a hit marker is going to
     // work in 2.5 d -- just take your best shot i suppose", and then "maybe just on the inside reticule of the crosshair or something?
     // (Realize that many mechanics of first or third person shooters will not 1:1 translate to 2.5d)". THE HIT MARKER IS THE INSIDE OF
@@ -43774,7 +43775,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.94: Three clue props shrink a search circle on the map toward the raid golden enemy. Check 26.94 fails on v26.93',
+  now:'v26.95: In the 2 player demo, kills by both players close together build a shared TEAM combo. Check 26.95 fails on v26.94',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54645,6 +54646,7 @@ function arcadeKill(k,el,boss,x,y,ke){
   ARCADE.mine=(ARCADE.mine|0)+n; ARCADE.kills=(ARCADE.kills|0)+1;
   try{ styleKill(k,el,boss,x,y,ke); }catch(_sk){}   // v26.xx (party1): the style bonuses and medals
   try{ pwrKill(k,el,boss,x,y,ke); }catch(_pk){}   // v26.xx (party2): a kill may drop a power-up
+  try{ teamKill(x,y); }catch(_tk){}   // v26.xx (party4): a kill within 2 s and a short way of the partner's builds the TEAM combo
   arcadeKillPerks();   // v23.31 (arcade10): half a magazine back, a Bandage every 3rd kill
   arcadeScSend();
   return n;
@@ -55016,6 +55018,54 @@ function pwrDraw2(c,p){
   }
   c.restore();
 }
+// v26.xx (party4), HIS YES (2026-10-14) to suggestion 49, the TEAM COMBO, in the 2 player DEMO: "kills by both players within 2 s and a short distance build a
+// shared TEAM multiplier". Each window tells the other about every kill it credits (arckill: where it fell, and whether it paired). A kill pairs with the
+// partner's latest kill that has not been paired yet when it comes inside TEAM.win (2 s) and TEAM.r (52 m) of it: the window that makes the SECOND kill pays
+// TEAM.pts (40) times the chain, to the team score (a TEAM COMBO medal, a TEAM COMBO callout and a note), and tells the other window that the pair was made
+// (lk), so a kill is in one pair only and the figure is paid once. A pair that comes within 2 s of the last pair makes the chain longer, up to x5 (200); a
+// longer gap starts again at x1. Both windows hold the same chain, drawn as a cyan ring just outside the personal combo ring that drains over the 2 s, with
+// TEAM xN beside it. The 1 player DEMO sends and draws nothing. Nothing is drawn from the seeded stream.
+var TEAM={win:2,r:520,pts:40,max:5};
+var TEAM_SND=[[0,659,659,0.1,'triangle',0.05],[0.06,988,988,0.1,'triangle',0.05],[0.12,1319,1319,0.3,'triangle',0.05],[0,330,330,0.3,'sine',0.03]];
+function teamKill(x,y){
+  var now=Date.now(), mk, T, n, p, paid=0, lk=0;
+  if(typeof ARCADE!=='object'||!ARCADE.on||ARCADE.solo||!G||!G.arcade||G.sim||G.over||!G.player) return 0;
+  p=G.player; if(!isFinite(x)||!isFinite(y)){ x=p.x; y=p.y; }
+  mk=ARCADE.mk;
+  if(mk&&!mk.used&&now-mk.at<TEAM.win*1000&&Math.hypot(x-mk.x,y-mk.y)<=TEAM.r){
+    T=ARCADE.team; n=(T&&now-T.at<TEAM.win*1000)?Math.min(TEAM.max,T.n+1):1;
+    ARCADE.team={n:n,at:now}; mk.used=1; lk=1;
+    paid=styMedal('TEAM COMBO x'+n,TEAM.pts*n,x,y);
+    try{ say('TEAM COMBO','ext',{sub:'x'+n}); }catch(_s){}
+    try{ styTone(TEAM_SND); }catch(_t){}
+  }
+  netSamePost({t:'arckill',pair:NET.pair,x:Math.round(x),y:Math.round(y),lk:lk,tn:lk?ARCADE.team.n:0});
+  return paid;
+}
+// the partner's kill word: remembered as the kill the next kill here may pair with (used when it was itself the second of a pair)
+function arcadeTeamTake(m){
+  var now=Date.now();
+  if(!ARCADE.on||ARCADE.solo) return 'ignored';
+  if(!isFinite(+m.x)||!isFinite(+m.y)) return 'bad';
+  ARCADE.mk={x:+m.x,y:+m.y,at:now,used:m.lk?1:0};
+  if(m.lk&&(m.tn|0)>0) ARCADE.team={n:Math.min(TEAM.max,m.tn|0),at:now};
+  return 'arckill';
+}
+// the TEAM ring at the cursor (rx, ry), outside the personal combo ring
+function teamDraw(c,p,rx,ry){
+  var T, f, z, xs, r, col='95,245,228';
+  if(!G||G.sim||!G.arcade||typeof ARCADE!=='object'||!ARCADE.on||ARCADE.solo||!isFinite(rx)||!isFinite(ry)) return;
+  T=ARCADE.team; if(!T||!(T.n>=1)) return;
+  f=1-(Date.now()-T.at)/(TEAM.win*1000); if(!(f>0)) return;
+  z=Math.max(1,hudRes()); xs=xhSize();
+  r=(8+7+4+10)*z*xs+bloomPx(p)*z*xs+8*z;
+  c.save(); c.lineCap='round'; c.lineWidth=2.6*z;
+  c.strokeStyle='rgba('+col+',.2)'; c.beginPath(); c.arc(rx,ry,r,0,6.2832); c.stroke();
+  c.strokeStyle='rgba('+col+',.95)'; c.beginPath(); c.arc(rx,ry,r,-1.5708,-1.5708+6.2832*Math.min(1,f)); c.stroke();
+  c.font=hudFS(TYPE.micro); c.textAlign='right'; c.fillStyle='rgba('+col+',1)';
+  hudText('TEAM x'+T.n,Math.round(rx-r-7*z),Math.round(ry+4*z));
+  c.restore();
+}
 // PARTY-MODULE-END (the next party builds add their code above this line)
 // The score changed: tell the other window now, or on the next flush inside the 250 ms limit. ev x (with n) is an extraction.
 function arcadeScSend(ev,n){
@@ -55245,6 +55295,7 @@ function arcadeEnter(role){
 function arcadeOnMsg(m){
   if(!m||typeof m.t!=='string') return 'bad';
   if(m.t==='arcsc') return arcadeScTake(m);   // v23.29 (arcade8): the teammate score, both ways
+  if(m.t==='arckill') return arcadeTeamTake(m);   // v26.xx (party4): the partner kill, for the TEAM combo
   if(NET.same==='p2'){
     if(m.t==='arcon'){
       // v23.26 (arcfixa): player 2 tells the host it is in (arcin), so the host stops offering; an offer that comes again while it is
