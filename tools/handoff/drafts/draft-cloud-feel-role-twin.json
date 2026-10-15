@@ -1,0 +1,12 @@
+{
+ "title": "A PILLAGER WITH A RARER COPY OF A GUN FIGHTS LIKE ONE WITH THE PLAIN GUN",
+ "why": "Each pillager's fighting role (rusher, flanker, suppressor, marksman) is picked from the gun he carries, but the rarer copy of a gun has its own name, so it was not recognised and the role fell to a random pick: a pillager with a rarer Shotgun could come out as a suppressor, one with a rarer Support MG as a rusher. Proven in the cloud: 60 pillagers each with the plain and the rarer copy of Magnum, Shotgun, Carbine, Support MG, Marksman Rifle, Whisper and Rifle; the plain guns always gave their own role, the rarer copies spread over all three random roles. The role now reads the rarer copy as the gun it is a copy of. Pillagers with plain guns are unchanged.",
+ "now": "A pillager carrying a rarer copy of a gun now fights the way that gun's carrier always does.",
+ "edits": [
+  {
+   "anchor": "  w=(e.wep&&e.wep.id)||''; h=raiderHash(e);",
+   "replacement": "  // v16.xx (cloud-feel-role-twin), CLOUD HUNT 2026-10-15: a rarity twin (shotgun_v and the rest) has its own id, so the tests below missed it\n  // and the role fell to the hash pick (a twin Shotgun could come out a suppressor). gunBase reads the twin as the gun it is a copy of.\n  w=gunBase((e.wep&&e.wep.id)||''); h=raiderHash(e);"
+  }
+ ],
+ "check": "  {v:'VER',what:'cloud-feel-role-twin: a pillager carrying a rarity twin gets the same role as one carrying its base gun, and the base guns keep their roles',\n   run:function(){\n     if(typeof RV_BASE!=='object'||!RV_BASE||typeof raiderRole!=='function') return 'SKIP: no rarity twins here';\n     var bad=[], id, b, i, r0, r1, n=0, exp={lmg:'supp',dmr:'mark',whisper:'mark',magnum:'mark',shotgun:'rush',carbine:'flank'};\n     for(id in RV_BASE){\n       b=RV_BASE[id]; if(!WEAPONS[id]||!WEAPONS[b]) continue; n++;\n       for(i=0;i<8;i++){\n         r0=raiderRole({kind:'raider',wep:WEAPONS[b],ident:'Twin'+i,rig:'std'});\n         r1=raiderRole({kind:'raider',wep:WEAPONS[id],ident:'Twin'+i,rig:'std'});\n         if(r0!==r1){ bad.push('a pillager Twin'+i+' with the '+id+' is '+r1+' where with the '+b+' he is '+r0); break; }\n       }\n     }\n     if(!n) return 'SKIP: no rarity twin in WEAPONS';\n     for(b in exp){ if(WEAPONS[b]&&raiderRole({kind:'raider',wep:WEAPONS[b],ident:'Base',rig:'std'})!==exp[b]) bad.push('the '+b+' no longer gives '+exp[b]); }\n     return bad.length?bad.slice(0,4).join('; '):null;\n   }},"
+}
