@@ -2225,7 +2225,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.18';
+var VER='27.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44324,7 +44324,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.18: Player 2 now hunts the same golden enemy as player 1 and finds the same clues. Check 27.18 fails on v27.17',
+  now:'v27.19: Player 2 now has his own air strike meter, and both players see and feel each strike. Check 27.19 fails on v27.18',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52021,6 +52021,7 @@ function netShotSend(e,dmg,ang,wk,ar,el){
   var q, m;
   if(!e||!e.nid||!NET.on||NET.role!=='join'||!netEntsPeer()) return false;
   q=netPeerOfSeat(0); if(!q) return false;
+  try{ airCharge(e,dmg); }catch(_ach){}   // v27.19 (coop6): the damage a linked window sends the host charges its own air strike meter
   m={t:'shot',id:e.nid,dmg:+(+dmg).toFixed(2),x:+(+G.player.x).toFixed(1),y:+(+G.player.y).toFixed(1)};
   if(typeof ang==='number'&&isFinite(ang)) m.a=+ang.toFixed(3);
   if(wk&&wk.name) m.wk=netClean(wk.name,16);
@@ -53714,10 +53715,11 @@ function airClamp(x,y){
 }
 function airScan(){
   var A=airS(), i, e, h, drop;
+  if(flowPeer()) return;   // v27.19 (coop6): a linked window's meter is charged by the damage it sends the host (airCharge, in netShotSend), not by watching bodies it does not run
   for(i=0;i<G.ents.length;i++){
     e=G.ents[i]; if(!e) continue;
     h=(+e.hp>0)?+e.hp:0;
-    if(typeof e.airH==='number'&&h<e.airH&&(+e.pHitT||0)>0&&airSide(e)){
+    if(typeof e.airH==='number'&&h<e.airH&&(+e.pHitT||0)>0&&airSide(e)&&!(e.pHitSeat|0)){   // v27.19 (coop6): and never a round player 2 landed, that is his meter
       drop=e.airH-h; A.dealt+=drop;
       if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+drop); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:'PRESS G'}); } }
     }
@@ -53740,6 +53742,7 @@ function airCall(x,y){
   A.m=0; A.aim=0; A.rdy=0; A.used=(A.used|0)+1;
   A.sk.push({x:x,y:y,t:0,n:0,pts:pts});
   say('AIR STRIKE INBOUND','warn');
+  try{ flowNetAirSend(x,y,a0); }catch(_fas){}   // v27.19 (coop6): and the other window sees it come
   return true;
 }
 function airBlast(st,i){
@@ -53749,12 +53752,13 @@ function airBlast(st,i){
   try{ boomFx(q.x,q.y,1.2,'frag'); }catch(_ab){}
   try{ gfxBlastScar(q.x,q.y,1,false); }catch(_as){}
   G.shake=Math.max(G.shake||0,Math.max(2,7-dist(p,q)/150));
+  if(st.fx) return;   // v27.19 (coop6): a strike called in the other window: the rings, the blasts and the shake here, its damage is dealt there
   for(j=G.ents.length-1;j>=0;j--){
     e=G.ents[j];
     if(!airFoe(e)) continue;
     de=dist(e,q); if(de>=R+e.r) continue;
     dm=Math.round(AIR.dmg*(1-Math.max(0,de-e.r)/R)+AIR.dmg*0.25);
-    if(typeof NET==='object'&&NET&&NET.on&&typeof netEntsPeer==='function'&&netEntsPeer()) netShotSend(e,dm,Math.atan2(e.y-q.y,e.x-q.x),null); else e.hp-=dm;
+    if(typeof NET==='object'&&NET&&NET.on&&typeof netEntsPeer==='function'&&netEntsPeer()){ airS().blast=1; try{ netShotSend(e,dm,Math.atan2(e.y-q.y,e.x-q.x),null); } finally { airS().blast=0; } } else e.hp-=dm;   // v27.19 (coop6): the strike own damage never refills the meter, on a linked window either
     e.airH=(e.hp>0)?e.hp:0; e.hitT=.2; e.pHitT=.3; e.pHitSeat=0;
     if(e.hp<=0){ e.byPlayer=true; e.bySeat=0; }
     else if(e.state!=='alarm'&&!e.downed){ e.state='chase'; e.alert=2.5; e.tx=p.x; e.ty=p.y; }
@@ -55227,6 +55231,13 @@ function flowNetWord(peer,m){
     if(NET.role!=='host'||!netEntsHost()||!flowOn()) return 'ignored';
     return clueTaken(m.i|0,1)?'clue':'gone';
   }
+  if(m.k==='air'){
+    if(!flowOn()||!isFinite(+m.x)||!isFinite(+m.y)||!isFinite(+m.a)) return 'bad';
+    if(typeof netUpShared!=='function'||!netUpShared()) return 'off';
+    airStrikeFx(clamp(+m.x,0,WORLD_W),clamp(+m.y,0,WORLD_H),+m.a,m.s|0);
+    if(NET.role==='host') for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],m);
+    return 'air';
+  }
   // FLOW-NET-WORD (the next coop builds take their words above this line)
   return 'bad';
 }
@@ -55337,6 +55348,38 @@ function cluePeerTick(dt){
     if(!pr||pr.got||Math.hypot(p.x-pr.x,p.y-pr.y)>=CLUE.pick) continue;
     if(clueTaken(i,0)) flowNetPost({k:'clue',i:i});
   }
+}
+// v27.19 (coop6), HIS ORDER (2026-10-14), the two player first: PLAYER 2 HAS HIS OWN AIR STRIKE. The meter filled from the health a body lost while it carried your hit mark, read from the bodies in your
+// own window; on a linked window the bodies belong to the host (their health arrives in tenths of a second and the mark is never set by a round that was only sent), so player 2's meter
+// never filled. And on the host, a round player 2 landed set the same mark, so player 2 filled player 1's meter. Now each meter is filled by its own player: the host reads a drop of health only
+// when the hit mark is the host's own (not a seat's), and a linked window adds the damage it sends the host (netShotSend, the figure its own round worked out, never more than the health
+// the body shows) when the body is a machine or a hostile pillager. The strike's own damage never refills either meter. THE STRIKE IS SEEN AND FELT BY BOTH: calling it tells the other
+// windows (t fl, k air: the spot and the spread angle, so the same six points), which show AIR STRIKE INBOUND, the six rings and the blasts with the sound and the shake, and no damage there;
+// the damage is dealt by the window that called it, on the bodies it runs or asks the host to hurt.
+function airCharge(e,dmg){
+  var A, add;
+  if(!flowOn()||!airSide(e)||!(+dmg>0)) return 0;
+  A=airS(); if(A.blast) return 0;
+  add=Math.min(+dmg,(+e.hp>0)?+e.hp:0); if(!(add>0)) return 0;
+  A.dealt+=add;
+  if(A.m<AIR.need){ A.m=Math.min(AIR.need,A.m+add); if(A.m>=AIR.need&&!A.rdy){ A.rdy=1; say('AIR STRIKE READY','ext',{sub:'PRESS G'}); } }
+  return add;
+}
+function flowNetAirSend(x,y,a0){
+  var i, m;
+  if(typeof NET!=='object'||!NET||!NET.on||typeof netUpShared!=='function'||!netUpShared()) return false;
+  m={t:'fl',k:'air',x:Math.round(x),y:Math.round(y),a:+(+a0).toFixed(3),s:NET.seat|0};
+  for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],m);
+  return true;
+}
+function airStrikeFx(x,y,a0,seat){
+  var A=airS(), pts=[], i, a, r, nm;
+  if(A.sk.length>=6) return false;
+  for(i=0;i<AIR.n;i++){ a=a0+i*2.4; r=AIR.spread*Math.sqrt((i+0.5)/AIR.n); pts.push({x:x+Math.cos(a)*r,y:y+Math.sin(a)*r}); }
+  A.sk.push({x:x,y:y,t:0,n:0,pts:pts,fx:1});
+  nm=(typeof netSeatName==='function')?netSeatName(seat):null;
+  try{ say('AIR STRIKE INBOUND','warn',nm?{sub:String(nm).toUpperCase()}:undefined); }catch(_asf){}
+  return true;
 }
 // FLOW-MODULE-END (the next flow builds add their code above this line)
 // v23.53, HIS YES (2026-10-11) to the five recommendations, arcade29 (found by the 3-hour arcade soak of 2026-10-11): THE WORLD STAYS

@@ -1,0 +1,7 @@
+v27.19: player 2 has his own air strike
+
+Player 2 now has his own air strike meter, and both players see and feel each strike.
+
+Check 27.19. Fails on v27.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

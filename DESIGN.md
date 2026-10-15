@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.19 - PLAYER 2 HAS HIS OWN AIR STRIKE
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The air strike meter fills from the damage you deal, read from the bodies in your own window. Player 2 does not run the bodies (the host does), so his meter never filled; and a round player 2 landed charged player 1 meter instead. Now each meter is filled by its own player: the host counts only its own rounds, and player 2 window counts the damage it sends the host. A strike is seen and felt by both: calling it shows AIR STRIKE INBOUND, the six rings, the blasts, the sound and the shake in the other window too, and the damage is dealt by the window that called it. The strike damage never refills the meter.
+
+MEASURED. Check 27.19 passes, and fails on v27.18.
 ## v27.18 - PLAYER 2 HUNTS THE SAME GOLDEN ENEMY
 
 Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The golden enemy and its clue hunt were worked out by each window for itself, from where each player stood, so the two players could hunt two different golden machines with two different sets of clues, and the fall of the real one was announced to the host alone. The host now says which body is gilded and how the hunt stands, and the linked window keeps exactly that: the same golden machine with its shine, the same three props, the same search circle on the minimap and the map. Player 2 can take a clue too: it is said in his window at once and told to the host, which marks it for both and shrinks the circle for both. When the golden enemy falls GOLDEN ENEMY DOWN is said to both, the hunt ends, and the hoard is marked on both maps.

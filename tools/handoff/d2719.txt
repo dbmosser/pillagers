@@ -1,0 +1,5 @@
+## v27.19 - PLAYER 2 HAS HIS OWN AIR STRIKE
+
+Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The air strike meter fills from the damage you deal, read from the bodies in your own window. Player 2 does not run the bodies (the host does), so his meter never filled; and a round player 2 landed charged player 1 meter instead. Now each meter is filled by its own player: the host counts only its own rounds, and player 2 window counts the damage it sends the host. A strike is seen and felt by both: calling it shows AIR STRIKE INBOUND, the six rings, the blasts, the sound and the shake in the other window too, and the damage is dealt by the window that called it. The strike damage never refills the meter.
+
+MEASURED. Check 27.19 passes, and fails on v27.18.
