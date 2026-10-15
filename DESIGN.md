@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.96 - THE RUN CARD ENDS ON THE RESULT
+
+Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, every run card carried twenty-nine feedback tags and a note box, more than half of the card; on the haul reveal card the tags ran past the screen and the bottom row was cut off behind the buttons. The heading HOW DID THAT RUN FEEL is a bar now that opens the tags and the note, and every new card comes up with them shut. All the tags are still there and a controller reaches the bar.
+
+MEASURED. Check 27.96 passes, and fails on v27.95.
 ## v27.95 - THE GUN MOMENTS HAVE SOUNDS
 
 Co-op hunt while he was away. His order of 2026-10-15: add the sounds. The active reload now answers by ear: a press in the sweet spot is a bright lock click with a low thump, a press outside it is a dull miss, and the press that starts a reload stays quiet. The Support MG spin has its own sound, a motor engaging with a whine that climbs two octaves as the barrels wind up, and letting go plays the whine falling and the rattle slowing to a stop. The finisher lands with a heavy blow, a crunch and a bone snap of its own on top of the crowbar sound. No words, no voices, no music.

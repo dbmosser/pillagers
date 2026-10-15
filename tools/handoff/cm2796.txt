@@ -1,0 +1,7 @@
+v27.96: the run card ends on the result
+
+The run cards end on the result, with the feedback tags behind a bar that opens them.
+
+Check 27.96. Fails on v27.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

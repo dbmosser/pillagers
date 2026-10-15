@@ -1321,6 +1321,17 @@
   #root #keyslist{ max-width:1500px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:36px; align-content:start; }
   #root #keyslist .keysec{ grid-column:1 / -1; }
   #root #keysnote{ max-width:1500px; }
+  /* vNN.xx, UI CLEANUP uic2 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of
+     the extracted, killed and abandoned cards): THE RUN CARD ENDS ON THE RESULT. Twenty-nine feedback tags and a note box took more than
+     half of every run card (the haul reveal card ran past the screen and cut the bottom tag row off behind the buttons). HOW DID THAT RUN
+     FEEL is a bar that opens them now, shut on every new card, a button so the pad reaches it. Every tag and the note work as before. */
+  #root .ocwin .fbhead{ appearance:none; display:inline-flex; align-items:center; gap:10px; margin-top:12px; padding:9px 16px; min-height:0 !important; min-width:0 !important;
+    background:transparent; border:1px solid var(--ui-line); border-radius:0; color:var(--tx-2); font-family:var(--f-cond); font-weight:700; font-size:13px; letter-spacing:.14em;
+    text-transform:uppercase; cursor:pointer; }
+  #root .ocwin .fbhead:hover, #root .ocwin.fbopen .fbhead{ color:var(--tx-1); border-color:var(--tx-3, #8a96a1); }
+  #root .ocwin .fbhead::after{ content:'+'; color:var(--acc); font-size:17px; line-height:1; }
+  #root .ocwin.fbopen .fbhead::after{ content:'\2212'; }
+  #root .ocwin:not(.fbopen) #tagwrap, #root .ocwin:not(.fbopen) #oc_note{ display:none; }
   /* vNN.xx, UI REDESIGN ui5q1c (his #50, from the AAA judge of the title shot with 2 PLAYER CO-OP picked and the second window
      blocked): THE PICK SHOWS. After a same machine pick that stops on a note, 1 PLAYER was still the amber button, so the screen
      did not say what had been chosen, and the blocked note was a line of small red words with a small RETRY under it, like a stray
@@ -1413,7 +1424,7 @@
        READABLE. HOW DID THAT RUN FEEL was 10.5 px, the smallest text on the card and smaller than the tags it heads, so from the
        couch it was hard to read. It is 12.5 px now, a touch under the tags so it still reads as their heading, and HOW IT WENT
        on a death card matches it. -->
-  <div style="font-size:13px;color:var(--ash);letter-spacing:.12em;margin-top:16px">HOW DID THAT RUN FEEL</div>
+  <button type="button" class="fbhead" id="fbhead">HOW DID THAT RUN FEEL</button>   <!-- v27.xx (uic2): opens the tags and the note; shut on every new card -->
   <div class="tagwrap" id="tagwrap"></div>
   <textarea id="oc_note" rows="2" style="max-width:774px" placeholder="Anything else? (optional)"></textarea>
   <div class="ocacts">
@@ -2258,7 +2269,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.95';
+var VER='27.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30757,6 +30768,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
    try{ netScoreDraw(); }catch(_nsd){}   // v17.39: the PARTY block under the manifest
   DEATH_FEED_HTML='';
   selTags=[]; buildTags();
+  try{ var _fbw=document.querySelector('#outcome .ocwin'); if(_fbw) _fbw.classList.remove('fbopen'); }catch(_fbo){}   // v27.xx (uic2): every card comes up with the tags shut
   document.getElementById('oc_note').value='';
   if(NET.on&&!G.sim){ try{ netSumSend(how,(how==='extract')?haul:0); }catch(_ns){} }   // v16.40: the party summary
   document.getElementById('outcome').classList.add('on');
@@ -30832,6 +30844,8 @@ careerStyle('careercss7',
   '.haulit.pop{animation:haulpop .6s ease-out}'+
   '@keyframes haulpop{0%{transform:scale(1.5);filter:brightness(2.4);box-shadow:0 0 0 0 var(--hc)}45%{transform:scale(1.08);filter:brightness(1.4);box-shadow:0 0 26px 8px var(--hc)}100%{transform:scale(1);filter:none;box-shadow:0 0 0 0 rgba(0,0,0,0)}}'+
   '.haultot{font-family:var(--f-cond);font-weight:700;font-size:21px;letter-spacing:.14em;color:var(--acc);margin:4px 0 6px;text-transform:uppercase}');
+// v27.xx, UI CLEANUP uic2: the bar over the feedback tags opens and shuts them (the card shuts them whenever it comes up)
+(function(){ var h=document.getElementById('fbhead'), w=h&&h.closest?h.closest('.ocwin'):null; if(h&&w) h.addEventListener('click',function(){ w.classList.toggle('fbopen'); }); })();
 function buildTags(){
   var w=document.getElementById('tagwrap'); w.innerHTML='';
   TAGS.forEach(function(t){
@@ -45838,7 +45852,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.95: The active reload, the Support MG spin and the finisher have their own sounds. Check 27.95 fails on v27.94',
+  now:'v27.96: The run cards end on the result, with the feedback tags behind a bar that opens them. Check 27.96 fails on v27.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
