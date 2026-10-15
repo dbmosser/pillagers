@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.02 - STASH SORT, FILTER AND LOCK
+
+Co-op hunt while he was away. His yes to suggestion 34. SORT on the stash gains TYPE (guns, then supplies, parts, salvage, keys, with the dearer first in each group) beside DEFAULT, VALUE, NAME, RARITY and COUNT. A row of filter chips under the tabs shows ALL, MEDICAL, VALUABLES (a thousand credits or more each) and LOCKED, each with how many it holds; one is on at a time, and the armoury row waits while a chip is on. And any item can be LOCKED: Lock (keep) on its menu (right-click, or Y on a controller) or the Lock button on its hover line puts a star on it. A locked item is never sold by SELL JUNK AND LOOSE SALVAGE, even if you tagged it as junk, has no Sell one or Sell all, and is pinned to the front of the grid whatever the sort. It can still be packed, put on a key and used. An older save has no locks.
+
+MEASURED. Check 27.02 passes, and fails on v27.01.
 ## v27.01 - THE TROPHY CASE
 
 Co-op hunt while he was away. His yes to suggestion 33. The stash has a new TROPHIES button beside ARMORY. It opens a trophy case, a shelf of eight plaques: FIRST OUT for an extraction, GHOST for walking out unspotted, MOTHERLODE for a $20,000 haul, CENTURION for 100 kills with one gun, FORGED for keeping a MK III gun, FULL ARMORY for every gun in the codex, GOLD HUNTER for killing the golden enemy and OVERSEER DOWN for killing the Overseer. Earned plaques are lit in bronze, silver or gold with the day they were earned; the rest are dark and say in caps what it takes. The first six are worked out from what your save already says, so an older save has its shelf the first time the stash is drawn. The last two are given the moment the kill happens, with a TROPHY EARNED callout. A trophy is kept for good and changes nothing in the game.

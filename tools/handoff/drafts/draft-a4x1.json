@@ -1,0 +1,36 @@
+{
+    "title":  "GUNS IN HAND, EVEN BIGGER",
+    "why":  "His answer 42: the guns in the hands are \"even bigger\". The held gun, both arms and the hands are now drawn thirty percent larger from the same shoulder point, on top of the size they got in v25.26 and v25.60, for you and for pillagers alike. The flash of a shot now sits on the drawn muzzle, the brass leaves the drawn ejection port, and a tracer starts at the muzzle instead of inside the gun. The round itself does not move: it still leaves 17 units out with the same speed, spread, range and damage, and nothing a fight reads has changed. Cosmetic only.",
+    "now":  "The guns in your hands are bigger again, and the muzzle flash, tracer and brass come from the end of the barrel.",
+    "edits":  [
+                  {
+                      "anchor":  "var GUNSPR=null;",
+                      "replacement":  "// v27.xx (guns2x), HIS ANSWER 42 (2026-10-13): the guns in hand \"even bigger\". Everything that is drawn in the hands (the baked gun,\n// both arms, the hands, the Forge shine, the flash on the gun) is now drawn at GUNK times the size, from the same shoulder point. The\n// flash of the shot, the first stretch of the tracer and the ejected brass follow the DRAWN muzzle and port (gunMuzzleAt, gunMuzD,\n// gunPortOff) for the player and for pillagers; the real round does not move: it still spawns 17 units out, with the same speed,\n// spread and range, and a body\u0027s collision radius is unchanged. Cosmetic only.\nvar GUNK=1.3;\nfunction gunMuzD(sh,wep){\n  var D;\n  if(!sh||!wep||!G||!(sh===G.player||sh.kind===\u0027raider\u0027)) return 0;\n  D=GUNDEF[wep.id]||GUNDEF.rifle;\n  return (D.tip+(D.pist?2:0))*GUNK;\n}\nfunction gunMuzzleAt(sh,wep,a){\n  var L=gunMuzD(sh,wep), D, sg, by;\n  if(!(L\u003e0)) return null;\n  D=GUNDEF[wep.id]||GUNDEF.rifle; sg=(Math.cos(a)\u003c0)?-1:1; by=D.by*GUNK*sg;\n  return {x:sh.x+Math.cos(a)*L-Math.sin(a)*by, y:sh.y-20+Math.sin(a)*L+Math.cos(a)*by};\n}\nfunction gunPortOff(sh,wep,a){\n  var D, d;\n  if(!(gunMuzD(sh,wep)\u003e0)) return {x:0,y:0};\n  D=GUNDEF[wep.id]||GUNDEF.rifle; d=(D.port?D.port[0]:8)*GUNK;\n  return {x:Math.cos(a)*d, y:Math.sin(a)*d};\n}\nvar GUNSPR=null;"
+                  },
+                  {
+                      "anchor":  "try{ S=Math.min(5,wallSpriteScale()+1); }catch(_s){ S=2; }",
+                      "replacement":  "try{ S=Math.min(6,Math.ceil((wallSpriteScale()+1)*GUNK)); }catch(_s){ S=2; }   // v27.xx (guns2x): baked for the bigger size"
+                  },
+                  {
+                      "anchor":  "wc.save(); wc.translate(px,gy); wc.rotate(ang); if(fl\u003c0) wc.scale(1,-1);",
+                      "replacement":  "wc.save(); wc.translate(px,gy); wc.rotate(ang); if(fl\u003c0) wc.scale(1,-1); wc.scale(GUNK,GUNK); aw/=1.12;   // v27.xx (guns2x): the whole held gun, arms and hands at GUNK times the size"
+                  },
+                  {
+                      "anchor":  "GFXMUZ.push({g:G,x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17-12,",
+                      "replacement":  "var _mz=null; try{ _mz=gunMuzzleAt(sh,wep,ang); }catch(_gm){}   // v27.xx (guns2x): the flash sits on the drawn muzzle of a player or a pillager\n  GFXMUZ.push({g:G,x:_mz?_mz.x:sh.x+Math.cos(ang)*17,y:_mz?_mz.y:sh.y+Math.sin(ang)*17-12,"
+                  },
+                  {
+                      "anchor":  "G.shells.push({brass:1,x:sh.x,y:sh.y,",
+                      "replacement":  "var _pt=gunPortOff(sh,wep,sa);   // v27.xx (guns2x): the brass leaves the ejection port of the drawn gun\n    G.shells.push({brass:1,x:sh.x+_pt.x,y:sh.y+_pt.y,"
+                  },
+                  {
+                      "anchor":  "G.bullets.push({x:sh.x+Math.cos(ang)*17,",
+                      "replacement":  "G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),x:sh.x+Math.cos(ang)*17,"
+                  },
+                  {
+                      "anchor":  "wc.beginPath(); wc.moveTo(b.x-b.vx/bm*9*_trc,b.y-b.vy/bm*9*_trc-12);",
+                      "replacement":  "var _gtl=9*_trc, _gtv;\n    if(b.mzd\u003e0){ _gtv=Math.hypot(b.x-b.sx,b.y-b.sy); if(_gtv\u003cb.mzd) continue; _gtl=Math.min(_gtl,_gtv-b.mzd); }   // v27.xx (guns2x): a tracer starts at the drawn muzzle, not inside the gun\n    wc.beginPath(); wc.moveTo(b.x-b.vx/bm*_gtl,b.y-b.vy/bm*_gtl-12);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his answer 42: guns in hand even bigger: the flash, the brass and the tracer follow the drawn muzzle and port, the real round still spawns 17 units out\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||!window.__state||typeof fireWeapon!==\u0027function\u0027||typeof GFXMUZ===\u0027undefined\u0027) return \u0027SKIP: this fixture cannot fire a shot\u0027;\n     var bad=[], g=null, p=null, w, b, m, s, d, by0=GFX.bypass;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player; p.iv=99; p.face=0; keys={}; GFX.bypass=0; GFXMUZ.length=0; g.bullets.length=0;\n       w=(typeof WEAPONS!==\u0027undefined\u0027)?WEAPONS.rifle:null; if(!w) return \u0027SKIP: staging: no rifle\u0027;\n       if(typeof GUNK===\u0027undefined\u0027||!(GUNK\u003e=1.2)) bad.push(\u0027the held gun has no size scale of 1.2 or more (GUNK)\u0027);\n       fireWeapon(p,w,p.x+300,p.y,true);\n       b=g.bullets[g.bullets.length-1]; m=GFXMUZ[GFXMUZ.length-1]; s=g.shells[g.shells.length-1];\n       if(!b) return \u0027SKIP: staging: no round was fired\u0027;\n       d=Math.hypot(b.x-p.x,b.y-p.y);\n       if(Math.abs(d-17)\u003e0.01) bad.push(\u0027the real round spawns \u0027+d.toFixed(2)+\u0027 units from the shooter, not 17\u0027);\n       if(!m) bad.push(\u0027the shot left no muzzle flash event\u0027); else if(!(m.x-p.x\u003e=36)) bad.push(\u0027the flash is \u0027+(m.x-p.x).toFixed(1)+\u0027 units out, not at the drawn muzzle of a rifle (36 or more)\u0027);\n       if(!s||!s.brass) bad.push(\u0027the shot left no brass\u0027); else if(!(s.x-p.x\u003e=8)) bad.push(\u0027the brass starts \u0027+(s.x-p.x).toFixed(1)+\u0027 units out, not at the ejection port (8 or more)\u0027);\n       if(!(b.mzd\u003e=15)) bad.push(\u0027the round carries no tracer start past the drawn muzzle (mzd \u0027+b.mzd+\u0027)\u0027);\n       GFXMUZ.length=0; g.bullets.length=0;\n       fireWeapon(p,w,p.x-300,p.y,true);\n       m=GFXMUZ[GFXMUZ.length-1];\n       if(!m||!(m.x-p.x\u003c=-36)) bad.push(\u0027shooting left, the flash is not 36 or more to the left (\u0027+(m?(m.x-p.x).toFixed(1):\u0027none\u0027)+\u0027)\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       GFX.bypass=by0; keys={}; try{ GFXMUZ.length=0; }catch(_m){}\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over\u0026\u0026g2.player){ g2.player.iv=0; g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

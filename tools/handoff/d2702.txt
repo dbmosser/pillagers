@@ -1,0 +1,5 @@
+## v27.02 - STASH SORT, FILTER AND LOCK
+
+Co-op hunt while he was away. His yes to suggestion 34. SORT on the stash gains TYPE (guns, then supplies, parts, salvage, keys, with the dearer first in each group) beside DEFAULT, VALUE, NAME, RARITY and COUNT. A row of filter chips under the tabs shows ALL, MEDICAL, VALUABLES (a thousand credits or more each) and LOCKED, each with how many it holds; one is on at a time, and the armoury row waits while a chip is on. And any item can be LOCKED: Lock (keep) on its menu (right-click, or Y on a controller) or the Lock button on its hover line puts a star on it. A locked item is never sold by SELL JUNK AND LOOSE SALVAGE, even if you tagged it as junk, has no Sell one or Sell all, and is pinned to the front of the grid whatever the sort. It can still be packed, put on a key and used. An older save has no locks.
+
+MEASURED. Check 27.02 passes, and fails on v27.01.

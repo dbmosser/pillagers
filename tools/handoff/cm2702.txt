@@ -1,0 +1,7 @@
+v27.02: stash sort, filter and lock
+
+The stash sorts by type, filters by chip, and any item can be locked.
+
+Check 27.02. Fails on v27.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
