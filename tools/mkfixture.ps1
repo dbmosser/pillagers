@@ -8703,10 +8703,13 @@ window.__REGRESS=[
        bo0=g.bagOpen; pk0=g.pick; g.bagOpen=false; g.mapOpen=false;
        g.pick=[{m:'Circuit Board',item:'board',n:1,tag:'',c:'',T:4,at:(+g.t||0)-1,key:'',sub:''}];
        g.need={board:2}; g.needN=1;
-       rec=strokes(function(){ drawPickups(); });
+       // v27.xx (feed3) retarget: with the pickup stack not drawn, the row is a line of the feed, outlined gold the same way
+       var stackOff=(typeof PICKDRAW!=='undefined'&&!PICKDRAW);
+       if(stackOff){ g.fd=null; say('Circuit Board','pick',{item:'board'}); }
+       rec=strokes(function(){ if(stackOff) __frame(0.016); else drawPickups(); });
        if(rec.indexOf('#ffd452')<0) bad.push('SEVEN: no gold edge on the board in the pickup stack');
        g.need={}; g.needN=0;
-       rec=strokes(function(){ drawPickups(); });
+       rec=strokes(function(){ if(stackOff) __frame(0.016); else drawPickups(); });
        if(rec.indexOf('#ffd452')>=0) bad.push('SEVEN: a gold edge on the stack with nothing needed');
        g.bagOpen=bo0; g.pick=pk0;
        // EIGHT: the world pass calls it
@@ -28827,8 +28830,10 @@ window.__REGRESS=[
        else {
          row.at=(g.t||0)-1;
          ctx.fillText=function(t,x){ ev.push([String(t),+x]); return oFT.apply(this,arguments); };
-         ctx.save(); try{ n=drawPickups(); } finally { ctx.restore(); unspy(); }
-         for(i=0;i<ev.length;i++) if(ev[i][0].indexOf(GV)>=0&&ev[i][1]>W*0.6) hit=true;
+         // v27.xx (feed3) retarget: with the pickup stack not drawn, the GIVEN TO row is a line of the feed, drawn in the feed zone on the left
+         if(typeof PICKDRAW!=='undefined'&&!PICKDRAW){ ctx.save(); try{ __frame(0.016); n=1; } finally { ctx.restore(); unspy(); } for(i=0;i<ev.length;i++) if(ev[i][0].indexOf(GV)>=0&&ev[i][1]<W*0.4) hit=true; }
+         else { ctx.save(); try{ n=drawPickups(); } finally { ctx.restore(); unspy(); }
+         for(i=0;i<ev.length;i++) if(ev[i][0].indexOf(GV)>=0&&ev[i][1]>W*0.6) hit=true; }
          if(!hit) bad.push('with the backpack shut the GIVEN TO row is not drawn (drawPickups drew '+n+' rows)');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -28857,12 +28862,18 @@ window.__REGRESS=[
          P.uiScale=cases[i][0];
          if(!P.hud||typeof P.hud!=='object') P.hud={};
          P.hud.gear=JSON.parse(JSON.stringify(P.hud.gear||{})); P.hud.gear.z=cases[i][1];
-         g.pick=[]; pickSay(BF,{key:'bagfull',c:'danger',sub:'[Z] DROP'});
+         g.pick=[]; g.fd=null; pickSay(BF,{key:'bagfull',c:'danger',sub:'[Z] DROP'});
          for(j=0;j<g.pick.length;j++) g.pick[j].at=(g.t||0)-1;
          ev=[]; n=-1;
          ctx.fillText=function(t,x){ ev.push([String(t),+x]); return oFT.apply(this,arguments); };
-         ctx.save(); try{ n=drawPickups(); } finally { ctx.restore(); unspy(); }
-         hit=false; for(j=0;j<ev.length;j++) if(ev[j][0].indexOf(BF)>=0&&ev[j][1]>W*0.6&&ev[j][1]<=W) hit=true;
+         if(typeof PICKDRAW!=='undefined'&&!PICKDRAW){   // v27.xx (feed3) retarget: the newest row is a line of the feed now, drawn whole in its zone at any text size
+           say(BF,'pick',{key:'bagfull',c:'danger',sub:'[Z] DROP'});
+           ctx.save(); try{ __frame(0.016); n=1; } finally { ctx.restore(); unspy(); }
+           hit=false; for(j=0;j<ev.length;j++) if(ev[j][0].indexOf(BF)>=0&&ev[j][1]>=0&&ev[j][1]<W*0.4) hit=true;
+         } else {
+           ctx.save(); try{ n=drawPickups(); } finally { ctx.restore(); unspy(); }
+           hit=false; for(j=0;j<ev.length;j++) if(ev[j][0].indexOf(BF)>=0&&ev[j][1]>W*0.6&&ev[j][1]<=W) hit=true;
+         }
          if(!hit) bad.push('at text size '+Math.round(cases[i][0]*100)+' percent with the gun card at '+cases[i][1]+'x the BACKPACK FULL row is not drawn (drawPickups drew '+n+' rows)');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -29381,7 +29392,7 @@ window.__REGRESS=[
        ctx.fillText=function(t,x){ ev.push({t:String(t),x:+x}); return oFT.apply(this,arguments); };
        try{ __loop(t0+(++f)*16.7); } finally { unspy(); }
        for(i=0;i<NM.length;i++){
-         hit=null; for(j=0;j<ev.length;j++) if(ev[j].t.indexOf(NM[i])>=0&&ev[j].x>0.6*W){ hit=ev[j]; break; }
+         hit=null; for(j=0;j<ev.length;j++) if(ev[j].t.indexOf(NM[i])>=0&&(ev[j].x>0.6*W||(typeof PICKDRAW!=='undefined'&&!PICKDRAW&&ev[j].x<0.4*W))){ hit=ev[j]; break; }   // v27.xx (feed3) retarget: the names are lines of the feed (left) once the stack is not drawn
          if(!hit){
            drawn=ev.filter(function(e){ return e.t.indexOf(NM[i])>=0; }).map(function(e){ return Math.round(e.x); });
            bad.push(NM[i]+' is not drawn on the right of the screen in the frame after the search'+(drawn.length?' (drawn at x '+drawn.join(',')+' of '+W+')':' (not drawn at all)'));
@@ -35485,7 +35496,10 @@ window.__REGRESS=[
        return got===n?o:null;
      }
      // the boss plate: the rectangle painted just before the dark red of the bar, with the bar
-     function bossBand(){ var j, R1=rec.filter(function(q){ return q.r!==2; }); for(j=1;j<R1.length;j++) if(R1[j].r&&R1[j].fs==='#3a0d0d'&&R1[j-1].r) return {y0:Math.min(R1[j-1].y0,R1[j].y0),y1:Math.max(R1[j-1].y1,R1[j].y1)}; return null; }
+     function bossBand(){ var j, qq, R1=rec.filter(function(q){ return q.r!==2; }); for(j=1;j<R1.length;j++) if(R1[j].r&&R1[j].fs==='#3a0d0d'&&R1[j-1].r) return {y0:Math.min(R1[j-1].y0,R1[j].y0),y1:Math.max(R1[j-1].y1,R1[j].y1)};
+       // v27.xx (boss1) retarget: the boss plate is a HUD roundRect plate now (and its rail), then the track (a 12 percent white rect) and the fill in the danger colour
+       for(j=1;j<rec.length-1;j++) if(rec[j].r===1&&rec[j].fs==='rgba(255, 255, 255, 0.12)'&&rec[j+1].r===1&&rec[j+1].fs==='#e5482f'){ qq=j-1; while(qq>0&&rec[qq].r!==2&&j-qq<4) qq--; if(rec[qq].r===2) return {y0:Math.min(rec[qq].y0,rec[j].y0),y1:Math.max(rec[qq].y1,rec[j].y1)}; }
+       return null; }
      function hit(a,b){ return a.y0<b.y1-0.5&&b.y0<a.y1-0.5; }
      function rd(a){ return Math.round(a.y0)+' to '+Math.round(a.y1); }
      try{
@@ -35511,13 +35525,14 @@ window.__REGRESS=[
          B=bossBand();
          O=band(function(s){ return s.indexOf(' offers you ')>=0||s.indexOf(' OFFERS ')>=0; },1);
          C=band(function(s){ return s.indexOf(CP)===0; },1);
-         if(!M||!B||!O||!C){ bad.push('control at '+at+': not all four were drawn (message '+!!M+', boss bar '+!!B+', offer '+!!O+', controller word '+!!C+')'); continue; }
-         if(hit(M,B)) bad.push('at '+at+' the message plate ('+rd(M)+') covers the boss bar ('+rd(B)+')');
+         var noMsg=(typeof MSGROWS!=='undefined'&&!MSGROWS);   // v27.xx (feed3) retarget: the top rows are lines of the feed, so there is no message plate to keep a band
+         if((!M&&!noMsg)||!B||!O||!C){ bad.push('control at '+at+': not all four were drawn (message '+!!M+', boss bar '+!!B+', offer '+!!O+', controller word '+!!C+')'); continue; }
+         if(M&&hit(M,B)) bad.push('at '+at+' the message plate ('+rd(M)+') covers the boss bar ('+rd(B)+')');
          if(hit(O,C)) bad.push('at '+at+' the offer line ('+rd(O)+') and the controller word ('+rd(C)+') print on top of each other');
          if(hit(B,O)) bad.push('at '+at+' the boss bar ('+rd(B)+') and the offer line ('+rd(O)+') overlap');
          if(hit(B,C)) bad.push('at '+at+' the boss bar ('+rd(B)+') and the controller word ('+rd(C)+') overlap');
-         if(hit(M,O)) bad.push('at '+at+' the message plate ('+rd(M)+') and the offer line ('+rd(O)+') overlap');
-         if(hit(M,C)) bad.push('at '+at+' the message plate ('+rd(M)+') and the controller word ('+rd(C)+') overlap');
+         if(M&&hit(M,O)) bad.push('at '+at+' the message plate ('+rd(M)+') and the offer line ('+rd(O)+') overlap');
+         if(M&&hit(M,C)) bad.push('at '+at+' the message plate ('+rd(M)+') and the controller word ('+rd(C)+') overlap');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
