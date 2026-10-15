@@ -1,0 +1,7 @@
+v28.18: outfit sets
+
+A new SETS rack in FASHION: Scavenger, Raider, Engineer, Recon and Heavy, each worn in one click.
+
+Check 28.18. Fails on v28.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

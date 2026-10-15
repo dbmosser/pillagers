@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.17';
+var VER='28.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31793,7 +31793,46 @@ var HAIRCOL={blonde:['#b8913f','#d9b257','#f2d98c'],dark:['#2f2830','#4d4048','#
              green:['#4a5f3a','#6d8a52','#9ab472'],
              ashen:['#5a5350','#7d746f','#a29a93'],
              violet:['#4b2f63','#6d4790','#9b6fc4']};
+// v28.18 (cosm6), HIS ORDER (2026-10-15): "outfit sets: a handful of complete looks built from the layers". A SET is five or six pieces worn in one
+// click: the scheme, the headgear, the vest, the shoulders, the pack, the boots and the gloves. It keeps your face, hair, skin and build. A set
+// is owned when every piece in it is owned, and a locked set names the first piece you still need and how to earn it. They are not on the worn
+// list (nothing reads a set once it is on): wearing one writes its pieces to the racks, and you change any piece after.
+var COSSETS=[
+  {id:'setscav',  name:'Scavenger', kind:'set', how:'set', parts:{scheme:'schdrab',   hat:'band',      vest:'vestplate', pads:'padsnone',  pack:'packbrown', boots:'boottan',   gloves:'glovetan'}},
+  {id:'setraid',  name:'Raider',    kind:'set', how:'set', parts:{scheme:'schcrimson',hat:'tachelm',   vest:'vestband',  pads:'padsround', pack:'packblack', boots:'bootblack', gloves:'gloveblack'}},
+  {id:'seteng',   name:'Engineer',  kind:'set', how:'set', parts:{scheme:'schember',  hat:'hardhat',   vest:'vestutil',  pads:'padsnone',  pack:'packradio', boots:'bootolive', gloves:'glovetan'}},
+  {id:'setrecon', name:'Recon',     kind:'set', how:'set', parts:{scheme:'schverdant',hat:'boonie',    vest:'vestharn',  pads:'padsnone',  pack:'packframe', boots:'bootgaiter',gloves:'glovegrey'}},
+  {id:'setheavy', name:'Heavy',     kind:'set', how:'set', parts:{scheme:'schtoxic',  hat:'heavyhelm', vest:'vestheavy', pads:'padsbig',   pack:'packfuel',  boots:'bootshin',  gloves:'gloveblack'}}
+];
+function setOwned(c){ var k, p; if(!c||!c.parts) return false; for(k in c.parts){ p=cosFind(c.parts[k]); if(!p||!cosOwned(p)) return false; } return true; }
+function setNeed(c){ var k, p; if(!c||!c.parts) return ''; for(k in c.parts){ p=cosFind(c.parts[k]); if(p&&!cosOwned(p)) return 'needs '+p.name+': '+cosNeed(p); } return 'unlocked'; }
+function setWorn(c){ var k; if(!c||!c.parts) return false; for(k in c.parts) if(cosWorn(k)!==c.parts[k]) return false; return cosWorn('outfit')==='outnone'; }
+function setApply(c){ var k; if(!c||!c.parts) return false; for(k in c.parts) if(COSKEY[k]) P[COSKEY[k]]=c.parts[k]; P[COSKEY.outfit]='outnone'; return true; }
+// The tile picture: your own operator with the whole set on, painted the way the one-piece previews are (measured, then painted to fill the tile).
+function setPreviewURL(c){
+  var key, hit, cv2, x2, keepW, keepOwned, keep={}, k, ck, q, ids={}, par=c&&c.parts, dd, up, dn, s1;
+  if(!par||typeof drawOp!=='function'||typeof P==='undefined'||!P) return '';
+  prevCacheGuard(); q=prevQ(); key='set:'+c.id+'|q'+q+'|'+cosLookKey(); hit=COSPREV[key]; if(hit!==undefined) return hit;
+  cv2=document.createElement('canvas'); cv2.width=Math.round(128*q); cv2.height=Math.round(128*q); x2=cv2.getContext('2d');
+  if(!x2) return '';
+  keepW=wc; keepOwned=cosOwned;
+  for(k in par){ ck=COSKEY[k]; if(ck){ keep[ck]=P[ck]; ids[par[k]]=1; } }
+  keep[COSKEY.outfit]=P[COSKEY.outfit];
+  try{
+    wc=x2; P[COSKEY.outfit]='outnone';
+    for(k in par){ ck=COSKEY[k]; if(ck) P[ck]=par[k]; }
+    cosOwned=function(cc){ return (cc&&ids[cc.id])?true:keepOwned(cc); };
+    cosPreviewPaint(x2,1.4,96);
+    dd=prevRows(x2);
+    if(dd.bot>=0&&dd.top>0&&dd.bot<127){ up=(96-dd.top)/1.4; dn=(dd.bot-96)/1.4; if(up+dn>4){ s1=Math.max(1.6,Math.min(3.6,112/(up+dn))); cosPreviewPaint(x2,s1,8+up*s1); } }
+  }catch(_d){}
+  finally{ wc=keepW; cosOwned=keepOwned; for(ck in keep){ if(keep[ck]===undefined) delete P[ck]; else P[ck]=keep[ck]; } }
+  try{ hit=cv2.toDataURL(); }catch(_u){ hit=''; }
+  COSPREV[key]=hit;
+  return hit;
+}
 function cosOwned(c){
+  if(c&&c.how==='set') return setOwned(c);   // v28.18 (cosm6)
   if(!c) return false;
   if(c.how==='always') return true;
   if(typeof P==='undefined'||!P) return false;
@@ -31811,6 +31850,7 @@ function cosOwned(c){
   return false;
 }
 function cosNeed(c){
+  if(c&&c.how==='set') return setNeed(c);   // v28.18 (cosm6)
   var bits=String(c.how).split(':'),k=bits[0],v=bits[1];
   if(c.how==='always') return 'unlocked';
   // v8.56, audit: "1 raids run" and "1 extractions" on the panel whose whole job
@@ -31829,6 +31869,7 @@ function cosNeed(c){
 }
 function cosFind(id){
   for(var i=0;i<COSMETICS.length;i++) if(COSMETICS[i].id===id) return COSMETICS[i];
+  for(i=0;i<COSSETS.length;i++) if(COSSETS[i].id===id) return COSSETS[i];   // v28.18 (cosm6)
   return null;
 }
 // What she is actually wearing right now. Never returns something locked, so a
@@ -46426,7 +46467,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.17: The what is new card names polish pass 3. Check 28.17 fails on v28.16',
+  now:'v28.18: A new SETS rack in FASHION: Scavenger, Raider, Engineer, Recon and Heavy, each worn in one click. Check 28.18 fails on v28.17',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62518,6 +62559,10 @@ function cosPreviewURL(kind,id){
   return hit;
 }
 function cosSwatch(c){
+  if(c.kind==='set'){   // v28.18 (cosm6): the whole set on your own operator
+    var _spv=setPreviewURL(c);
+    if(_spv) return '<img alt="" style="width:64px;height:64px;display:block;margin:0 auto 2px;border-radius:6px;background:rgba(0,0,0,.18)" src="'+_spv+'">';
+  }
   if(c.kind==='pack'||c.kind==='boots'||c.kind==='vest'||c.kind==='pads'||c.kind==='scheme'||c.kind==='fit'||c.kind==='tattoo'||c.kind==='face'||c.kind==='hat'||c.kind==='beard'||c.kind==='cut'||c.kind==='build'){   // v18.82: the piece on you; v20.04: and BUILD, now that a build changes the body (v20.01)
     var _cpv=cosPreviewURL(c.kind,c.id);
     if(_cpv) return '<img alt="" style="width:64px;height:64px;display:block;margin:0 auto 2px;border-radius:6px;background:rgba(0,0,0,.18)" src="'+_cpv+'">';
@@ -62857,13 +62902,13 @@ function renderAvPicker(pickHost,host){
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
   var H='';
-  var GROUPS=[['outfit','OUTFIT'],['scheme','COLOUR SCHEME'],['build','BUILD'],['vest','VEST'],['pads','SHOULDERS'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
+  var GROUPS=[['set','SETS'],['outfit','OUTFIT'],['scheme','COLOUR SCHEME'],['build','BUILD'],['vest','VEST'],['pads','SHOULDERS'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
     .filter(function(g){ return !kindOnly||g[0]===kindOnly; });
   GROUPS.forEach(function(g){
     H+='<div style="margin:10px 0 4px 0;letter-spacing:.12em;font-size:13px;color:var(--tx-2)">'+g[1]+'</div>';   // v24.22 (ui6b): readable rack heads
     H+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
-    COSMETICS.filter(function(c){ return c.kind===g[0]&&!(c.kind==='fit'&&c.id!=='jersey'); }).forEach(function(c){   // v28.04 (cosm1): the plain clothing colours are schemes now; only the jersey stays in CLOTHING
-      var own=cosOwned(c), on=(cosWorn(g[0])===c.id);
+    (g[0]==='set'?COSSETS:COSMETICS).filter(function(c){ return c.kind===g[0]&&!(c.kind==='fit'&&c.id!=='jersey'); }).forEach(function(c){   // v28.04 (cosm1): the plain clothing colours are schemes now; only the jersey stays in CLOTHING
+      var own=cosOwned(c), on=(g[0]==='set')?setWorn(c):(cosWorn(g[0])===c.id);
       H+='<div class="costile'+(own?'':' lock')+(on?' on':'')+'" data-kind="'+g[0]+'" data-id="'+c.id+'">'+
          cosSwatch(c)+'<div class="cosname">'+c.name+'</div>'+
          '<div class="cosreq">'+(own?(on?'WORN':'owned'):cosNeed(c))+'</div></div>';
@@ -62885,7 +62930,7 @@ function renderCosmetics(target,kindOnly,hid,pid){
           try{ sfx('pickRare'); }catch(e){}   // v14.38: a voice that exists
         } else { try{ sfx('clank'); }catch(e){} return; }
       }
-      P[COSKEY[kind]||'cosHat']=id;
+      if(kind==='set') setApply(c); else P[COSKEY[kind]||'cosHat']=id;   // v28.18 (cosm6): a set writes all its pieces
       if(kind==='scheme'&&P.cosFit&&P.cosFit!=='slate') P.cosFit='slate';   // v28.04 (cosm1): a scheme is the clothes, so an older clothing colour or the jersey steps aside
       saveProfile();
       // v19.20, from the review (2026-10-07): renderAvatar draws the racks again itself (renderAvPicker), so in FASHION every click built
