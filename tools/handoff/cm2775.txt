@@ -1,0 +1,7 @@
+v27.75: settings chips jump right on a big screen
+
+The Settings section chips jump to their section on a 1440p or 4K screen too.
+
+Check 27.75. Fails on v27.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

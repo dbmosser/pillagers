@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.75 - SETTINGS CHIPS JUMP RIGHT ON A BIG SCREEN
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the section chips at the top of Settings (THE RAID, AUDIO, CONTROLS, CONTROLLER, DISPLAY, ACCESSIBILITY) measured how far to scroll in zoomed pixels and scrolled the list by that many unzoomed pixels. On a 4K screen, where the menu is zoomed about 2x, every chip overshot and the list came back on THE RAID; at 1440p each chip fell short; only 1080p was right. Proven in headless Chromium with the Settings window at zoom 2: {"AUDIO":"THE RAID off=1515","CONTROLS":"THE RAID off=2557","CONTROLLER":"THE RAID off=3843","DISPLAY":"THE RAID off=4834"}; with the fix every chip lands at off=0 with its own chip lit. The distance is now divided by the menu zoom.
+
+MEASURED. Check 27.75 passes, and fails on v27.74.
 ## v27.74 - THE WHAT IS NEW CARD NAMES THE POLISH PASS
 
 Co-op hunt while he was away. The card was stamped v27.61 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
