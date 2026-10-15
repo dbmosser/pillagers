@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.66';
+var VER='27.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34905,7 +34905,7 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
     var _nf=(_nt<0.42)?(_nt/0.42)*0.30:(0.30+Math.min(1,(_nt-0.42)/0.35)*0.62);
     if(_nt>1.9) _nf=Math.max(0,_nf-(_nt-1.9)*0.55);
     wc.globalCompositeOperation='lighter';
-    wc.fillStyle='rgba(255,236,196,'+clamp(_nf,0,0.94).toFixed(3)+')';
+    wc.fillStyle='rgba(255,236,196,'+clamp(_nf*flashK(),0,0.94).toFixed(3)+')';   // v27.67 (cloud-menus-nuke-reduced-flash), CLOUD HUNT 2026-10-15: REDUCED FLASHING left this full-screen white-out at full strength; it now takes flashK like the lightning
     wc.fillRect(0,0,W,H);
     wc.globalCompositeOperation='source-over';
   }
@@ -38682,7 +38682,7 @@ function tickNuke(dt){
       // v8.54, audit: with a colour. Without one the read assigns undefined to
       // fillStyle, which the canvas ignores, so the bloom came out in whatever the
       // previous pass left set - a district lamp colour.
-      G.flashes.push({x:bx,y:by,r:rnd(180,340),t:0,life:0.5,c:'#ffd6a0'});
+      G.flashes.push({x:bx,y:by,r:rnd(180,340)*(CFG.flashRed===1?0.6:1),t:0,life:0.5*(CFG.flashRed===1?0.7:1),c:'#ffd6a0'});   // v27.67 (cloud-menus-nuke-reduced-flash), CLOUD HUNT 2026-10-15: these blooms skip flash(), so REDUCED FLASHING never shrank them; same factors as flash(), same rnd draw
       G.shake=Math.min(30,(G.shake||0)+7);
       try{ sfx('boom',bx,by); }catch(e){}
     }
@@ -44820,7 +44820,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.66: A window opened later now starts with the kid rows the other window set. Check 27.66 fails on v27.65',
+  now:'v27.67: REDUCED FLASHING now also tones down the white-out when the site goes up. Check 27.67 fails on v27.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

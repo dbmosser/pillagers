@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.67 - REDUCED FLASHING TONES DOWN THE SITE GOING UP
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: REDUCED FLASHING says it tones down the bright flashes, but when the clock ran out the site going up still drew its full-screen white-out at full strength and its rapid barrage of blooms at full size and length, because those blooms are pushed straight in and never go through flash(). Proven in headless Chromium with REDUCED FLASHING on: white-out alpha 0.92 (off 0.92) and bloom life 0.5 (off 0.5). With it on, the white-out now takes the same 0.45 factor as the lightning, and the blooms the same smaller and shorter light flash() gives every other blast. With it off nothing changes.
+
+MEASURED. Check 27.67 passes, and fails on v27.66.
 ## v27.66 - KID ROWS PICKED UP AT LAUNCH
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the kid rows (Kid damage, Kid firing, Player 2 comes back after death) are shared between the two windows, but a window only pulled them when the other window changed them while it was open, or when its own Settings opened. A window launched after the other one changed them played the old values until Settings was opened. Proven in headless Chromium: the boot path never reads the shared rows; with own Kid damage 1/2, Kid firing on and comes back on, and a newer share with all off, the old values stayed. The shared rows are now read once at launch, right after the save is read; an older share still leaves his own values alone.

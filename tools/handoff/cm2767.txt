@@ -1,0 +1,7 @@
+v27.67: reduced flashing tones down the site going up
+
+REDUCED FLASHING now also tones down the white-out when the site goes up.
+
+Check 27.67. Fails on v27.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
