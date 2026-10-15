@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.40 - THE MEDAL SPOT IS RESERVED
+
+Co-op hunt while he was away. His answer of 2026-10-14: Halo puts medals in a row at the left, so room for a medal spot goes in the layout. A row between the feed and the vitals, the width of the feed and tall enough for the 48 pixel emblems, is reserved for the later medal polish and registered in the HUD table, so nothing else can draw there. The feed stands on it, so it moved up by that height; the row is empty until the emblems are drawn.
+
+MEASURED. Check 27.40 passes, and fails on v27.39.
 ## v27.39 - THE MEDALS SOUND BY TIER
 
 Co-op hunt while he was away. His order after the party playtest was medals polished the way Halo does them, and in Halo a rarer medal sounds bigger. Every style medal kept its own short note, one for each picture. Now the tier of the medal adds a voice on top of it: the plain medals (copper) add nothing and are just a tick, the skilled ones (amber) add a high two-note shimmer, and the rare ones (gold) add a low thump and a rising run of six bright notes, so a rare medal is heard across the room. Sound only: no score changes and nothing is drawn from the seeded stream.
