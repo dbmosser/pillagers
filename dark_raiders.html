@@ -2269,7 +2269,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.96';
+var VER='27.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45852,7 +45852,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.96: The run cards end on the result, with the feedback tags behind a bar that opens them. Check 27.96 fails on v27.95',
+  now:'v27.97: The DEMO high score board holds twenty rows and is cleared only by NEW PARTY in the operator menu. Check 27.97 fails on v27.96',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -58073,7 +58073,7 @@ function arcadeAttEl(cls){
     st.textContent='#attract .arcpage{position:absolute;left:50%;top:24%;transform:translateX(-50%);min-width:44%;max-width:92%;box-sizing:border-box;padding:.55em 1.6em .7em;background:rgba(0,0,0,.74);border:2px solid rgba(255,192,74,.5);border-radius:6px;'+
       'font:800 clamp(12px,1.15vw,60px) var(--f-cond);letter-spacing:.08em;color:#f2e6c8;text-shadow:0 2px 0 #000;text-align:center}'+   // vNN.xx (ui5q1u): the same share of a 4K screen as of 1080p (the cap was 30px)
       '#attract .arcpage .aph{font-size:1.8em;color:#ffc04a;margin-bottom:.3em}#attract .arcpage .apr{display:flex;justify-content:space-between;gap:2em;line-height:1.3}'+
-      '#attract .arcpage .apr.hl{color:#7fe3d4}#attract .arcpage .apn{line-height:1.6;opacity:.8}#attract .arcpage .apb{color:#ff8a1f;margin-top:.35em}'+
+      '#attract .arcpage .apr.hl{color:#7fe3d4}#attract .arcpage .apn{line-height:1.6;opacity:.8}#attract .arcpage .apb{color:#ff8a1f;margin-top:.35em}#attract .arcpage .apcols{display:flex;gap:3.2em;justify-content:center;align-items:flex-start}#attract .arcpage .apcol{min-width:13em}'+
       '#attract .arcpage table{margin:0 auto;border-collapse:collapse;color:inherit;font:inherit;letter-spacing:inherit}#attract .arcpage td,#attract .arcpage th{padding:.2em .9em;text-align:left}#attract .arcpage th{color:#9a8f78;font-size:.8em}#attract .arcpage .apk{color:#ffc04a}'+
       '#attract .arcstrip{position:absolute;left:0;right:0;bottom:28.5%;padding:.2em 0;text-align:center;background:linear-gradient(90deg,transparent,rgba(0,0,0,.66) 26%,rgba(0,0,0,.66) 74%,transparent);'+
       'font:800 clamp(15px,1.6vw,76px) var(--f-cond);letter-spacing:.1em;color:#7fe3d4;text-shadow:0 2px 0 #000}';
@@ -58096,7 +58096,9 @@ function arcadeAttBoard(pg){
   arcadeAttLine(pg,'aph','TONIGHT\u2019S BEST');
   try{ if(arcadePartyCode()) arcadeAttLine(pg,'apb','SEEDED NIGHT  \u00b7  '+arcadePartyCode()); }catch(_pc){}   // v26.xx (party6): the board says the night is seeded
   if(!rows.length) arcadeAttLine(pg,'apn','NO SCORES YET');
-  for(i=0;i<rows.length&&i<10;i++){ r=rows[i]||{}; arcadeAttLine(pg,'apr'+((id&&r.run===id)?' hl':''),(i+1)+'.  '+String(r.i||'???').slice(0,3).toUpperCase(),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits
+  var cols=null, c1=null, c2=null;
+  if(rows.length>10){ cols=document.createElement('div'); cols.className='apcols'; c1=document.createElement('div'); c1.className='apcol'; c2=document.createElement('div'); c2.className='apcol'; cols.appendChild(c1); cols.appendChild(c2); pg.appendChild(cols); }   // v27.xx (board20): ten rows a column
+  for(i=0;i<rows.length&&i<ARCADE_BOARD.top;i++){ r=rows[i]||{}; arcadeAttLine(cols?(i<10?c1:c2):pg,'apr'+((id&&r.run===id)?' hl':''),(i+1)+'.  '+String(r.i||'???').slice(0,3).toUpperCase(),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits
   if(o&&(+o.team||0)>0) arcadeAttLine(pg,'apb','LAST RUN '+arcadeCr(o.team));
   if(best>0) arcadeAttLine(pg,'apb','BEST EVER '+arcadeCr(best));
 }
@@ -58223,7 +58225,7 @@ var ARCOP=null;   // {el, ix, arm, note}
 // A seed passed to arcadeDeploy still wins. The board page and the operator card say it is a SEEDED NIGHT, with a four letter code for the seed.
 function arcadePartyRec(){ var o=null, s; try{ s=localStorage.getItem(ARCADE_PARTY_KEY); if(s) o=(s.charAt(0)==='{')?JSON.parse(s):{t:+s||0}; }catch(_pr){ o=null; } return (o&&typeof o==='object')?o:{t:0}; }
 function arcadePartyAt(){ return +arcadePartyRec().t||0; }
-function arcadePartySeed(){ var o=arcadePartyRec(), s=(+o.s)>>>0; return (s&&(+o.t||0)>0&&Date.now()-o.t<ARCADE_BOARD.night)?s:0; }
+function arcadePartySeed(){ var o=arcadePartyRec(), s=(+o.s)>>>0; return (s&&(+o.t||0)>0)?s:0; }   // v27.xx (board20): the seed lasts until the next NEW PARTY, as the board does
 function arcadePartyMap(){ var o=arcadePartyRec(); return (arcadePartySeed()&&typeof o.m==='number'&&o.m>=0&&o.m<FIXED_MAPS.length)?(o.m|0):-1; }
 function arcadePartyCode(){ var s=arcadePartySeed(); return s?s.toString(36).toUpperCase().slice(-4):''; }
 function arcadeNewParty(){
@@ -58655,7 +58657,10 @@ function arcadeOverSync(){
 // the loop pages wait and a click or key drops nobody in. NEW HIGH SCORE is said once per run on both windows (archi) when the team
 // passes tonights best. Every line is behind ARCADE.on or G.arcade, so a normal raid writes and draws nothing new.
 var ARCADE_BOARD_KEY='pillagers:arcade:board';
-var ARCADE_BOARD={keep:100,night:12*3600000,top:10,iniMs:20000,mirMs:25000};
+// v27.xx (board20), HIS ANSWERS 12 and 13 (2026-10-13): the DEMO high score board has TWENTY rows (top, was 10), and it is reset ONLY through NEW PARTY in
+// the operator menu: the 12 hour night no longer drops a row off it (arcadeBoardTonight counts every run since the last NEW PARTY, or all of them when there has
+// been none) and the party seed no longer ends at 12 hours either. The page shows the twenty in two columns of ten. BEST EVER is unchanged.
+var ARCADE_BOARD={keep:100,night:12*3600000,top:20,iniMs:20000,mirMs:25000};
 var ARCADE_INI_AB='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 // v23.57, arcade32 (a low finding of the arcade31 review): THE BOARD STARTS FRESH IN CREDITS. Rows saved before the arcade score became
 // credits (v23.56) hold scores with loot at one tenth, but read as $ next to full value rows, so BEST EVER and NEW HIGH SCORE compared
@@ -58701,7 +58706,7 @@ function arcadeBoardTonight(now,md){
   now=+now||Date.now();
   md=(md===1||md===2)?md:arcadeBoardMode();   // v23.54 (arcade30): the list of the mode in play
   var r=arcadeBoardDedupe(arcadeBoardLoad()), out=[], i;
-  var since=Math.max(now-ARCADE_BOARD.night,(typeof arcadePartyAt==='function')?arcadePartyAt():0);   // v26.xx (party5): or since NEW PARTY
+  var since=(typeof arcadePartyAt==='function')?arcadePartyAt():0;   // v26.xx (party5): or since NEW PARTY
   for(i=0;i<r.length;i++) if(arcadeBoardIn(r[i],md)&&r[i].t>=since&&r[i].t<=now+60000) out.push(r[i]);
   out.sort(function(p,q){ return (q.s-p.s)||(p.t-q.t); });
   return out.slice(0,ARCADE_BOARD.top);

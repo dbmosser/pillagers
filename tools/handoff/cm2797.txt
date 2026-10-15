@@ -1,0 +1,7 @@
+v27.97: the demo board has twenty rows
+
+The DEMO high score board holds twenty rows and is cleared only by NEW PARTY in the operator menu.
+
+Check 27.97. Fails on v27.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

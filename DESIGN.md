@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.97 - THE DEMO BOARD HAS TWENTY ROWS
+
+Co-op hunt while he was away. His answers 12 and 13: the DEMO high score board has twenty rows, and it resets only through NEW PARTY in the operator menu. It listed the top ten runs of the last twelve hours, so a long party quietly lost its early scores off the board. Now it lists the top twenty of every run since the last NEW PARTY (or every run, when there has not been one), however old, and the attract page draws them in two columns of ten. NEW PARTY clears it, BEST EVER is unchanged, and the seeded night from NEW PARTY now lasts until the next NEW PARTY too, so the board stays fair for as long as it stays. The initials card is offered to any run that makes the twenty.
+
+MEASURED. Check 27.97 passes, and fails on v27.96.
 ## v27.96 - THE RUN CARD ENDS ON THE RESULT
 
 Co-op hunt while he was away. His note after playing: the UI and the messages are not as clean as they should be. In the pictures, every run card carried twenty-nine feedback tags and a note box, more than half of the card; on the haul reveal card the tags ran past the screen and the bottom row was cut off behind the buttons. The heading HOW DID THAT RUN FEEL is a bar now that opens the tags and the note, and every new card comes up with them shut. All the tags are still there and a controller reaches the bar.
