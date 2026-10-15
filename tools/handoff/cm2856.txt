@@ -1,0 +1,7 @@
+v28.56: a round that breaks a wreck no longer bounces off it
+
+A shot that breaks a wreck no longer bounces off the empty space where the wreck was.
+
+Check 28.56. Fails on v28.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

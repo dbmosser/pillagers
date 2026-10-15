@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.56 - A ROUND THAT BREAKS A WRECK NO LONGER BOUNCES OFF IT
+
+Co-op hunt while he was away. A glancing shot of yours off a metal wreck bounces once. When that same shot was the one that broke the wreck, the wreck vanished but the shot still bounced off the empty space and could hit a man behind it for more than half its damage. Proven in the cloud: a healthy wreck bounced the shot, and the shot that broke the wreck bounced too, off nothing. Now a shot bounces only off a wreck that is still there; the shot that breaks it carries on through the gap as it did before bouncing existed. Shots off a standing wreck are unchanged.
+
+MEASURED. Check 28.56 passes, and fails on v28.55.
 ## v28.55 - A GUN SWAPPED IN DURING A RELOAD STARTS ITS OWN RELOAD RING
 
 Co-op hunt while he was away. Changing gun stopped the reload but kept the old gun's reload length for the active reload ring. With the trigger held on an empty Support MG, a swap to an empty pistol started the pistol's reload at once, and the ring measured it against the Support MG's longer reload: proven in the cloud, the pistol's ring opened at about 59 percent, already past the sweet spot, and an R pressed in the next frame or two finished the reload at once with the bonus. The swap now clears the ring's record too, and so does every other way a different gun comes into his hands mid-reload (a pick-up, the fall back to the other gun when the one in hand is gone, a draw from the backpack, a gun handed over), so the new gun's reload starts its ring from empty, as every other reload does.

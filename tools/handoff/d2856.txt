@@ -1,0 +1,5 @@
+## v28.56 - A ROUND THAT BREAKS A WRECK NO LONGER BOUNCES OFF IT
+
+Co-op hunt while he was away. A glancing shot of yours off a metal wreck bounces once. When that same shot was the one that broke the wreck, the wreck vanished but the shot still bounced off the empty space and could hit a man behind it for more than half its damage. Proven in the cloud: a healthy wreck bounced the shot, and the shot that broke the wreck bounced too, off nothing. Now a shot bounces only off a wreck that is still there; the shot that breaks it carries on through the gap as it did before bouncing existed. Shots off a standing wreck are unchanged.
+
+MEASURED. Check 28.56 passes, and fails on v28.55.

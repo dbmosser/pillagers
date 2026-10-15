@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.55';
+var VER='28.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29437,7 +29437,10 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
         // the same raid, which is precisely what makes such a measurement lie.
         var _decR=rnd(3,6);
         if(_struck&&!G.sim){ try{ wallMark(_struck,b.x,b.y,ux,uy); }catch(_gwm){} }   // v23.xx (gfx2): wall mark hook, AFTER the roll and drawing nothing from the stream
-        var _pf=ricoFace(b,_struck,ux,uy)?null:penFactor(_struck);   // v26.xx (feel18): a glancing round at steel glances, it does not punch through
+        // v28.56 (cloud-feel-rico-wreck-gone), CLOUD HUNT 2026-10-15: a round that breaks the wreck it strikes bounced off a wall that was gone; it
+        // glances only while the struck wall still stands (damageWall above counts it down), otherwise it goes on as it did before feel18.
+        var _rs=!!_struck&&!(_struck.hpLeft<=0);   // on a linked window the host takes the broken wall away a moment later, so the wall's own strength decides in both windows
+        var _pf=(_rs&&ricoFace(b,_struck,ux,uy))?null:penFactor(_struck);   // v26.xx (feel18): a glancing round at steel glances, it does not punch through
         if(_pf&&(b._pen||0)<PEN_MAX&&b.dmg*_pf.dmg>=PEN_FLOOR){
           b._pen=(b._pen||0)+1;
           b.dmg*=_pf.dmg;
@@ -29463,7 +29466,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
           if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
           decal(b.x,b.y,'#0d0f13',_decR);
           sfx("clank",b.x,b.y,matOf(_struck));
-          if(ricochetOff(b,_struck,ux,uy)) punched=true; else hit=true;   // v26.xx (feel18): off steel once
+          if(_rs&&ricochetOff(b,_struck,ux,uy)) punched=true; else hit=true;   // v26.xx (feel18): off steel once   // v28.56 (cloud-feel-rico-wreck-gone), CLOUD HUNT 2026-10-15: only off a wall still standing
         }
       }
       if(!hit&&!punched){ b.x=sx+ux*trav; b.y=sy+uy*trav; }
@@ -46521,7 +46524,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.55: Swapping to an empty gun while reloading starts its reload ring from the beginning. Check 28.55 fails on v28.54',
+  now:'v28.56: A shot that breaks a wreck no longer bounces off the empty space where the wreck was. Check 28.56 fails on v28.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
