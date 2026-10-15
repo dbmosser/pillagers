@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.50';
+var VER='28.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19942,7 +19942,10 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // intended. Machines are blinded to a downed man by their own rule on purpose; pillagers are meant to see him. Going down now
     // takes the crouch toggle off and clears the crouched flag, and the downed branch keeps the stance fresh every frame (the sim
     // bot already reads a downed man as not crouched). No number, dial or seeded draw moved.
-p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null; G.crouchTog=false; G.pCrouch=false;
+    // v28.51 (cloud-feel-closecall-downed), CLOUD HUNT 2026-10-15: and going down ends a roll. The roll counts down below the downed return of
+    // updatePlayer, so a man downed mid-roll kept it frozen through the bleed-out and every revive handed it back: he slid on, and the next round
+    // paid a CLOSE CALL for a dodge he never made.
+p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null; G.crouchTog=false; G.pCrouch=false; p.roll=0;
   padRumble(1,450);   // v17.37: going down is the longest buzz
   if(!G.sim){ try{ sndDowned(1); }catch(_dn){} }   // v24.xx (his order 2026-10-12): the downed noise, where the spoken I AM DOWN was
     // v12.46, 2026-09-07 audit: AND THE AUTO-JOG STOPS WHEN HE DOES. It is
@@ -29012,7 +29015,9 @@ function penExit(w,x,y,ux,uy){
 var CC_PTS=25, CC_GAP=0.9;
 function closeCall(b){
   var p=G&&G.player, sc;
-  if(!p||G.sim||G.over||!(p.roll>0)||!(p.iv>0)) return false;
+  // v28.51 (cloud-feel-closecall-downed), CLOUD HUNT 2026-10-15: a man on the floor or in the death beat is not dodging anything, so a round
+  // that reaches him there pays no CLOSE CALL (a crawler hanging on him could down him in the middle of a roll, with the roll's i-frames still on).
+  if(!p||G.sim||G.over||p.downed||p.dying||!(p.roll>0)||!(p.iv>0)) return false;
   if(p.ccT!==undefined&&G.t-p.ccT<CC_GAP) return false;
   p.ccT=G.t;
   p.stam=Math.min(100,(+p.stam||0)+ROLLSTAM);
@@ -46509,7 +46514,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.50: In co-op your teammate is now told WAVE and AMBUSH BEHIND YOU and hears the wave sting too. Check 28.50 fails on v28.49',
+  now:'v28.51: A round that reaches you while you are down, or right after you get up, no longer pays a CLOSE CALL, and you no longer slide on after getting up. Check 28.51 fails on v28.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

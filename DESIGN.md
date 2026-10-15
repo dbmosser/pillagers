@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.51 - NO CLOSE CALL ON THE FLOOR
+
+Co-op hunt while he was away. A crawler hanging on him bites through a roll, so it can put him down in the middle of one. The roll then stayed frozen while he was down and every revive handed it back: a round that reached him on the floor paid CLOSE CALL (25 and the roll stamina), a round right after he got up paid again, and he slid on with the old roll. Proven in the cloud: rolled, downed by a crawler bite, one round on the floor paid 25, got up, one more round paid 25. Going down now ends the roll, and a man who is down or dying gets no CLOSE CALL. A roll on his feet pays exactly as before.
+
+MEASURED. Check 28.51 passes, and fails on v28.50.
 ## v28.50 - PLAYER 2 IS TOLD EVERY WAVE
 
 Co-op hunt while he was away. In a two player raid only the host window makes the waves, and WAVE n (with AMBUSH BEHIND YOU on an ambush) and its WAVE sting were said only there: the wave tick stops on player 2 window, and the host raid flow word carried no wave count, so player 2 was never told a wave was coming and his wave count stayed at 0 (after he took a raid over, his first wave was WAVE 1 again). Proven in a staged pair in one window: the host said WAVE 5 and player 2 said nothing with a count of 0. Now the host flow word carries the wave count and whether it was an ambush; player 2 window says the same WAVE n with the same sting when the count goes up, and takes the host count. A teammate who joins late takes the count quietly on his first word.

@@ -1,0 +1,7 @@
+v28.51: no close call on the floor
+
+A round that reaches you while you are down, or right after you get up, no longer pays a CLOSE CALL, and you no longer slide on after getting up.
+
+Check 28.51. Fails on v28.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
