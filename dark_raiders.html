@@ -1685,8 +1685,8 @@
     <div class="askrow">
       <button class="deploy" id="askyes" style="flex:2">YES</button>
       <button id="askalt" style="flex:2;display:none">FREEBIE KIT</button>
-      <button id="askrand" style="flex:2;display:none">RANDOM FROM STASH</button>
-      <button id="asktop" style="flex:2;display:none">TOP GEAR</button>
+      <button id="askrand" style="flex:2;display:none">RANDOM KIT</button>
+      <button id="asktop" style="flex:2;display:none">BEST KIT</button>
       <button id="askno" style="flex:1">Not yet</button>
     </div>
   </div>
@@ -1725,6 +1725,14 @@
   </div>
   <!-- v19.25, seen on the 4K lift screenshot (2026-10-08): what he takes up, and the no-armour warning, were 11 px, the smallest text on
        the page and the last thing read before going up; 15 now, and the day and weather hints 14 -->
+  <!-- v26.xx (kit1), HIS WORD (2026-10-14): the kit is part of the MAP SELECT screen, not a separate later card. One choice at a time, the last one kept in the save. -->
+  <div id="sectorkitpick" style="display:flex;align-items:stretch;gap:8px;margin-top:9px;flex-wrap:wrap">
+    <span style="font-size:13px;letter-spacing:.14em;color:var(--ash);min-width:5.8em;align-self:center">KIT</span>
+    <button class="deploy ghost kitb" data-kit="mine"><span>MY LOADOUT</span><span class="kd">YOUR PACK</span></button>
+    <button class="deploy ghost kitb" data-kit="free"><span>FREEBIE KIT</span><span class="kd">SCAV PISTOL &middot; 4 ITEMS</span></button>
+    <button class="deploy ghost kitb" data-kit="rand"><span>RANDOM KIT</span><span class="kd">2 GUNS &middot; 1 EACH</span></button>
+    <button class="deploy ghost kitb" data-kit="best"><span>BEST KIT</span><span class="kd">3 GUNS &middot; UP TO 3 EACH</span></button>
+  </div>
   <div id="sectorkit" style="margin-top:11px;font-size:15px;line-height:1.5;padding:9px 12px;
        border:1px solid var(--steel-hi);border-radius:3px"></div>
 
@@ -2225,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.19';
+var VER='27.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2300,7 +2308,7 @@ var WHATSNEW=[
   'SMALL FIXES. The shop and hire tabs grey out what you cannot afford, YOUR STATS counts its runs, and F9 shows its time and stops at the title.',
   '4K POLISH, PART TWO. The Fashion racks, loadout counts, sector facts, backpack words and run card line up, and map markers grow at 4K.',
   'ATTRACT MODE. Press F9 in a raid to record your play; the title shows it when nobody is playing. The Undercroft song now follows the players.',
-  'YOUR NOTES. RANDOM FROM STASH gives two random guns, a gun pushed out of a belt slot goes in your backpack, and the map keeps an extract closing time.',
+  'YOUR NOTES. RANDOM KIT gives two random guns, a gun pushed out of a belt slot goes in your backpack, and the map keeps an extract closing time.',
   'MORE 4K POLISH. The map hides the HUD and keeps its tags inside, ring labels keep clear of the edge and the backpack, and the run card fits the screen.',
   '4K POLISH. Shop tiles fill their frame, tabs hold still, the stash search lines up, sector maps are sharp, and the Mainframe, bar and Wirt line up.',
   'SMALL THINGS FIXED. Sort by rarity follows the cell colours, the shop says how many you bought, ESC closes the stash from search, and a helped Survivor never shoots you.',
@@ -41531,7 +41539,7 @@ acts:{KeyE:['go up',function(){
            // This called startRaid directly and never set kitChosen, so the
            // standard-kit fallback fired and the loadout stayed in the vault. The
            // same fault as the ASCEND button at v6.11, in a second place.
-           KeyR:['quick ascent',function(){ if(netGuestHeld()) return; liftResetDay(); commitKit(); ac(); startRaid(); }],   // v12.61: day by default here too, which is his answer 24; v15.91: a party guest is held
+           KeyR:['quick ascent',function(){ if(netGuestHeld()) return; liftResetDay(); if(kitPickOf()!=='mine') kitApply(kitPickOf()); commitKit(); ac(); startRaid(); }],   // v26.xx (kit1): the kept kit, if it is not MY LOADOUT   // v12.61: day by default here too, which is his answer 24; v15.91: a party guest is held
            // v6.50: the terms moved here from the shop counter. They are hardship you
            // sign for extra pay on the NEXT RAID, so they belong on the station that
            // sends you up, not beside a counter with prices on it.
@@ -41800,32 +41808,12 @@ function askKit(then,mate){   // v16.37: then, what an answer leads to; mate, a 
   // player who backed out to buy a Medkit first was pulled up 15 seconds later with whatever was packed. The host still takes
   // everyone up; the teammate's card now says so, and its way out reads KEEP MY KIT, which is what it does.
   if(mate&&ss) ss.innerHTML+='<br><br><b>PARTY IS GOING UP</b> \u00b7 Auto-ascend in '+NET_KIT_WAIT+' seconds with your current kit';   // in the shooter voice (his order of 2026-10-09)
-  ASKYES=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; saveProfile(); then(); };   // v12.16: MY LOADOUT gets his packing back too
+  ASKYES=function(){ kitAnswer('mine',then); };   // v12.16: MY LOADOUT gets his packing back too (v26.xx kit1: in kitApply)
   // v16.87, his ask: RANDOM FROM STASH and TOP GEAR fill the packing list and go up as MY LOADOUT does.
-  ASKRAND=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; kitFill(true); saveProfile(); then(); };
-  ASKTOP=function(){ if(P.freeKit) freeKitRestore(); P.freeKit=0; kitFill(false); saveProfile(); then(); };
+  ASKRAND=function(){ kitAnswer('rand',then); };
+  ASKTOP=function(){ kitAnswer('best',then); };
   (function(){ var _kr=document.getElementById('askrand'), _kt=document.getElementById('asktop'); if(_kr) _kr.style.display=''; if(_kt) _kt.style.display=''; })();
-  ASKALT=function(){
-    // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
-    // belt plan (a key pointing at something you are not carrying is the v5.72
-    // fault). This one did not, so a friend who took the free kit here landed
-    // with keys bound to items left in the stash and, because an assigned heal
-    // key replaces the derived Medical cell, two Bandages with no key to use.
-    // v12.26, HIS NOTE: "when you gave my loadout back i am not sure i got the
-    // whole thing back including everything in my backpack". The stash button
-    // (v12.16) empties P.kit into P.kitSaved when the kit is taken there, and this
-    // answer, still offered at the lift, re-snapshotted the emptied kit over it, so
-    // commitKit kept an empty list and the death restore gave nothing back. Kept
-    // aside only when the kit is not already taken: the stash button's own rule.
-    // v13.06: the gun slot is gone from this snapshot. It was written here, cleared
-    // here, kept aside and put back, and read by nothing in the file: what a raid arms
-    // him with comes from P.equipped and P.equippedSec, which none of that touched.
-    if(!P.freeKit) P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{}))};   // kept aside for the restore, as the stash button does since v12.16
-    P.hotAssign={};
-    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
-    try{ renderStage(); }catch(_e){}
-    then();
-  };
+  ASKALT=function(){ kitAnswer('free',then); };   // v26.xx (kit1): the answer lives in kitApply, shared with the sector page
   var y=document.getElementById('askyes'), a=document.getElementById('askalt');
   if(y) y.textContent='MY LOADOUT';
   if(a){ a.textContent='FREEBIE KIT'; a.style.display=''; }
@@ -41854,6 +41842,64 @@ var ASKYES=null, ASKALT=null, ASKBACK=null, ASKRAND=null, ASKTOP=null;
 // your gun uses), then goes up exactly as MY LOADOUT does. TOP GEAR: his highest tier gun, two of each grenade, then the
 // biggest plate (only with a rig that holds plates), the biggest ammo and the two biggest heals, the size of the auto-pack.
 // RANDOM FROM STASH: a gun he owns picked at random and six stash items of those kinds picked at random.
+// v26.xx (kit1), HIS WORD (2026-10-14): "it should be PART OF THE MAP SELECT SCREEN, not a separate later screen". The kit is a row of four on the map select screen
+// (the sector page, opened by the lift E, by the staging screen ASCEND and by the stash): MY LOADOUT, FREEBIE KIT, RANDOM KIT (was RANDOM FROM STASH) and BEST KIT (was TOP
+// GEAR), one on at a time, each with its caps detail under it, the last one kept in the save (P.kitPick, an old save reads MY LOADOUT). ASCEND TO THIS SECTOR applies the
+// chosen kit and goes straight up, so the loadout question no longer comes after it. The card (askKit) is still what a PARTY MATE sees for his own kit on his own save, with
+// the auto-ascend timer (NET_KIT_WAIT) as before, and its four answers are the same four. The staging screen ASCEND now opens the sector page, so every route up ends there; the
+// lift R quick ascent skips the page as it always did and takes the kept kit if it is not MY LOADOUT.
+var KIT_PICKS=['mine','free','rand','best'];
+var KIT_INFO={mine:['MY LOADOUT','YOUR PACK'],free:['FREEBIE KIT','SCAV PISTOL \u00b7 4 ITEMS'],rand:['RANDOM KIT','2 GUNS \u00b7 1 EACH'],best:['BEST KIT','3 GUNS \u00b7 UP TO 3 EACH']};
+function kitPickOf(){ var k=(typeof P==='object'&&P)?P.kitPick:''; return KIT_PICKS.indexOf(k)>=0?k:'mine'; }
+// the four answers, without the going up: MY LOADOUT gets his packing back, FREEBIE KIT sets it aside, RANDOM KIT and BEST KIT fill the packing list
+function kitApply(kind){
+  if(kind==='free'){
+    // v12.13: THE SAME AS THE STASH SCREEN'S FREEBIE BUTTON, which clears the
+    // belt plan (a key pointing at something you are not carrying is the v5.72
+    // fault). This one did not, so a friend who took the free kit here landed
+    // with keys bound to items left in the stash and, because an assigned heal
+    // key replaces the derived Medical cell, two Bandages with no key to use.
+    // v12.26, HIS NOTE: "when you gave my loadout back i am not sure i got the
+    // whole thing back including everything in my backpack". The stash button
+    // (v12.16) empties P.kit into P.kitSaved when the kit is taken there, and this
+    // answer, still offered at the lift, re-snapshotted the emptied kit over it, so
+    // commitKit kept an empty list and the death restore gave nothing back. Kept
+    // aside only when the kit is not already taken: the stash button's own rule.
+    // v13.06: the gun slot is gone from this snapshot. It was written here, cleared
+    // here, kept aside and put back, and read by nothing in the file: what a raid arms
+    // him with comes from P.equipped and P.equippedSec, which none of that touched.
+    if(!P.freeKit) P.kitSaved={kit:(P.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P.hotAssign||{}))};   // kept aside for the restore, as the stash button does since v12.16
+    P.hotAssign={};
+    P.freeKit=1; P.kitBeforeFree=null; saveProfile();
+    try{ renderStage(); }catch(_e){}
+    return;
+  }
+  if(P.freeKit) freeKitRestore();
+  P.freeKit=0;
+  if(kind==='rand') kitFill(true); else if(kind==='best') kitFill(false);
+  saveProfile();
+}
+function kitAnswer(kind,then){ kitApply(kind); (then||function(){ netKitGate(ascendNow); })(); }
+function kitDeploy(){ kitAnswer(kitPickOf()); }
+function syncSectorKitPick(){
+  var host=document.getElementById('sectorkitpick'), bs, i, cur=kitPickOf();
+  if(!host) return;
+  bs=host.querySelectorAll('.kitb');
+  for(i=0;i<bs.length;i++) bs[i].classList.toggle('on',bs[i].getAttribute('data-kit')===cur);
+}
+(function(){
+  var bs=document.querySelectorAll('#sectorkitpick .kitb'), i;
+  for(i=0;i<bs.length;i++) bs[i].onclick=function(){
+    var k=this.getAttribute('data-kit');
+    if(KIT_PICKS.indexOf(k)<0) return;
+    P.kitPick=k; saveProfile(); syncSectorKitPick(); try{ syncSectorKit(); }catch(_sk){}
+    try{ sndUi('click'); }catch(_su){}
+  };
+})();
+careerStyle('careercss9',
+  '.kitb{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:7px 16px;flex:0 0 auto}'+
+  '.kitb .kd{font-size:12px;letter-spacing:.12em;opacity:.72;font-weight:600}'+
+  '.kitb.on{border-color:var(--amber);color:var(--amber);background:rgba(255,192,74,.10)}');
 function kitFill(rand){
   var own=(P.weapons||[]).filter(function(g){ return g&&g!=='fists'&&WEAPONS[g]; }), g=null, pool=(P.stash||[]).slice(), out=[], i, j, t, cap=0, tc={}, c;
   if(own.length){
@@ -44324,7 +44370,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.19: Player 2 now has his own air strike meter, and both players see and feel each strike. Check 27.19 fails on v27.18',
+  now:'v27.20: The kit is a row on the map select screen: MY LOADOUT, FREEBIE KIT, RANDOM KIT, BEST KIT. Check 27.20 fails on v27.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -58348,6 +58394,7 @@ var _myR=0;
   }
   syncSectorCond();
   syncSectorKit();
+  try{ syncSectorKitPick(); }catch(_skp){}   // v26.xx (kit1)
 }
 // v9.97, HIS NOTE: day or night is chosen on the sector page. The chosen one
 // is drawn the way the chosen map is, amber, so the page reads as one choice
@@ -58417,6 +58464,7 @@ function syncSectorWx(){
 function syncSectorKit(){
   var el=document.getElementById('sectorkit');
   if(!el) return;
+  if(kitPickOf()!=='mine'){ var _kp=kitPickOf(); el.innerHTML='<b>Going up with:</b> '+KIT_INFO[_kp][0]+'  \u00b7  '+KIT_INFO[_kp][1]; return; }   // v26.xx (kit1): a kit picked on this page is what goes up
   var w=null;
   try{ w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null; }catch(_gw){ w=null; }
   if(w) w=hubForged(w);   // v23.xx (forge13): going up with the Auto Rifle MK III
@@ -59015,11 +59063,14 @@ function commitKit(){
   saveProfile();
   return P.dropKit.length>0;
 }
-document.getElementById('stagedrop').onclick=function(){ ascendNow(); };
+document.getElementById('stagedrop').onclick=function(){   // v26.xx (kit1): every route up ends on the map select screen, with the kit row on it
+  var sm=document.getElementById('stagemodal'); if(sm) sm.classList.remove('on');
+  renderSector(); openModal('sectormodal');
+};
 document.getElementById('sectordeploy').onclick=function(){
   // v7.42: choosing the sector leads to the loadout question, not straight up.
   document.getElementById('sectormodal').classList.remove('on');
-  askKit();
+  kitDeploy();   // v26.xx (kit1): the kit was chosen on this page, so it goes straight up
 };
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');

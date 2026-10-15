@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.20 - THE KIT ON THE MAP SELECT SCREEN
+
+Co-op hunt while he was away. His word: the kit should be part of the map select screen, not a separate later screen. The map select screen now has a KIT row of four under the weather row, in the same style: MY LOADOUT, FREEBIE KIT, RANDOM KIT and BEST KIT, each with its caps detail under it (RANDOM KIT is 2 GUNS and 1 EACH, BEST KIT is 3 GUNS and UP TO 3 EACH). One is on at a time, the last one is kept in your save, and an old save starts on MY LOADOUT. ASCEND TO THIS SECTOR applies the kit you picked and goes straight up, so the loadout card no longer comes after the map select. The staging screen ASCEND now opens the map select screen, so every route up ends there. The lift quick ascent still skips the page, and takes your kept kit if it is not MY LOADOUT. A party mate still gets the card for his own kit, with the same auto-ascend timer. RANDOM FROM STASH is now RANDOM KIT and TOP GEAR is now BEST KIT everywhere. This build changes the names and the screen; the guns and items each kit gives are the next builds.
+
+MEASURED. Check 27.20 passes, and fails on v27.19.
 ## v27.19 - PLAYER 2 HAS HIS OWN AIR STRIKE
 
 Co-op hunt while he was away. His order of 2026-10-14: the raid flow batch must work for both players. The air strike meter fills from the damage you deal, read from the bodies in your own window. Player 2 does not run the bodies (the host does), so his meter never filled; and a round player 2 landed charged player 1 meter instead. Now each meter is filled by its own player: the host counts only its own rounds, and player 2 window counts the damage it sends the host. A strike is seen and felt by both: calling it shows AIR STRIKE INBOUND, the six rings, the blasts, the sound and the shake in the other window too, and the damage is dealt by the window that called it. The strike damage never refills the meter.

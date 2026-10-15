@@ -1,0 +1,7 @@
+v27.20: the kit on the map select screen
+
+The kit is a row on the map select screen: MY LOADOUT, FREEBIE KIT, RANDOM KIT, BEST KIT.
+
+Check 27.20. Fails on v27.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
