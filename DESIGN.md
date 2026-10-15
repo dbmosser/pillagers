@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.61 - THE WHAT IS NEW CARD NAMES THE CLEANER RAIDS
+
+Co-op hunt while he was away. The card was stamped v27.48 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 27.61 passes, and fails on v27.60.
 ## v27.60 - F1 LIST NAMES MOVED KEYS
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: v25.71 promised the F1 full controls list prints the keys as set, and v26.52 made Caps Lock, the HUD size pair, the zoom pair and 0 movable, but the list kept HOLD Q, CAPS, NUM + -, - = and 0 after CHANGE KEYS moved them. Proven in headless Chromium: with Q on K, Caps Lock on L, = on J, Num + on U and 0 on Y, the drawn rows still read HOLD Q, CAPS, NUM + -, - = and 0 while the Q row read K. Those rows now look up the keys as set; a row whose keys are all where they were reads its own text, so nothing changes by default.

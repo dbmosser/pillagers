@@ -1,0 +1,7 @@
+v27.61: the what is new card names the cleaner raids
+
+The what is new card names the message feed, the alert lane, the barrels and the kit row.
+
+Check 27.61. Fails on v27.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
