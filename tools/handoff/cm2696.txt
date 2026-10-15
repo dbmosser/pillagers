@@ -1,0 +1,7 @@
+v26.96: gun kill tally
+
+Each gun counts its kills, and the tally shows on the gun card.
+
+Check 26.96. Fails on v26.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

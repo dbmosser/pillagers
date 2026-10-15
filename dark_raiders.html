@@ -2207,7 +2207,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='26.95';
+var VER='26.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17668,7 +17668,7 @@ function drawPickups(){
 function gunCardSize(cmp,tag){
   var rs=Math.max(1,hudRes()), fp=msgPx(hudFS(TYPE.label)), hp=msgPx(hudFS(TYPE.head)), pad=Math.round(LH(8)*rs), rh=Math.round(fp*1.5);
   var el=!!(cmp&&cmp.f&&cmp.f.el&&typeof ELEM!=='undefined'&&ELEM[cmp.f.el]);
-  return {w:Math.round(fp*18), h:pad*2+Math.round(hp*1.1)+rh*(1+GUNSTAT_ROWS.length)+(tag?rh:0)+(el?rh:0)};
+  return {w:Math.round(fp*18), h:pad*2+Math.round(hp*1.1)+rh*(1+GUNSTAT_ROWS.length)+(tag?rh:0)+(el?rh:0)+((cmp&&cmp.f&&gunKillsOf(cmp.f.id)>0)?rh:0)};   // v26.xx (career1): a row for the kill tally
 }function gunCardDraw(cmp,xR,yB,al,tag){
   var rs=Math.max(1,hudRes()), fL=hudFS(TYPE.label), fp=msgPx(fL), fH=hudFS(TYPE.head), hp=msgPx(fH), pad=Math.round(LH(8)*rs), rh=Math.round(fp*1.5);
   var R=GUNSTAT_ROWS, _gz=gunCardSize(cmp,tag), w=_gz.w, h=_gz.h, x=xR-w, y=yB-h, i, k, v, dv, yy, vc, oa=ctx.globalAlpha, xv, xd;
@@ -17698,7 +17698,8 @@ function gunCardSize(cmp,tag){
     if(cmp.f.el&&typeof ELEM!=='undefined'&&ELEM[cmp.f.el]){   // v24.xx (belthover1): a MK III names its element in its colour, and what it does
       yy+=rh; ctx.textAlign='left'; ctx.fillStyle=ELEM[cmp.f.el].c; ctx.fillText(ELEM[cmp.f.el].name,x+pad,yy);
       ctx.textAlign='right'; ctx.fillStyle=HUDC.dim; ctx.fillText(String(ELEM[cmp.f.el].w2||''),x+w-pad,yy,w*0.62);
-    }    if(tag){ yy+=rh; ctx.textAlign='left'; ctx.fillStyle=HUDC.dim; ctx.fillText(String(tag).toUpperCase(),x+pad,yy,w-pad*2); }
+    }    if(gunKillsOf(cmp.f.id)>0){ yy+=rh; ctx.textAlign='left'; ctx.fillStyle=HUDC.dim; ctx.fillText('KILLS',x+pad,yy); ctx.textAlign='right'; ctx.fillStyle=HUDC.text; ctx.fillText(gunKillsOf(cmp.f.id).toLocaleString(),x+w-pad,yy); }   // v26.xx (career1): the tally
+    if(tag){ yy+=rh; ctx.textAlign='left'; ctx.fillStyle=HUDC.dim; ctx.fillText(String(tag).toUpperCase(),x+pad,yy,w-pad*2); }
   } finally { ctx.restore(); ctx.globalAlpha=oa; }
   return h;
 }
@@ -19348,7 +19349,7 @@ if(wep.mag===0){
       vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?AR_BONUS:1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
-      thru:(wep.id==='lance')?1:0});   // v11.84, HIS NOTE: the Lance travels through crawlers
+      thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
     if(NET.on) netFxShot(G.bullets[G.bullets.length-1]);   // v16.21: the rest of the party sees this round
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
@@ -25529,6 +25530,7 @@ if(e.state==='possum'){
       // saved, stepped his contracts and wrote a grudge into his save, for a raid he was no longer in. Such a death is credited to nobody.
       if(e.byPlayer&&!(G.player&&G.player.specOut)){
         T.kills[e.kind]++; contractKill(e.kind);
+        try{ gunKillNote(e); }catch(_gkn){}   // v26.xx (career1): the gun tally
         if(e.elite) T.eliteKills=(T.eliteKills||0)+1;
         if(G.arcade) arcadeKill(e.kind,(e.elite&&e.affix)?3:e.elite,e.boss,e.x,e.y,e); else if(G.career) careerKill(e.kind,(e.elite&&e.affix)?3:e.elite,e.boss,e.x,e.y,e);   /* v24.xx (feat0h2): the CAREER score */   // v23.29 (arcade8): the arcade score, by kind; v23.38 (arcade15): with the popup where he fell
         // v8.29: the charge for shooting a neutral now lands at the SHOT, not
@@ -27583,7 +27585,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // before, and a round into a downed man that does not finish him leaves the mark with whoever downed him.
               // No number, no player text and no seeded draw moved.
               if(en.hp<=0) en.byPlayer=true; else if(!en.downed) en.byPlayer=false;
-              en.pHitT=.3; en.pHitSeat=0; en.blow='g'; en.blowT=G.t;   // v26.xx (party1): and the last blow on him was a round   // v11.37: YOUR round, so it may provoke and it may earn a grudge; v17.31, co-op hunt 2026-09-28: yours, not a seat
+              en.pHitT=.3; en.pHitSeat=0; en.blow='g'; en.blowT=G.t; en.blowG=b.gid||'';   // v26.xx (party1): and the last blow on him was a round   // v11.37: YOUR round, so it may provoke and it may earn a grudge; v17.31, co-op hunt 2026-09-28: yours, not a seat
               // v9.25, HIS NOTE: pillagers "just stood there after getting
               // attacked". Being shot now turns a peaceful pillager hostile on
               // the round that hits him, rather than leaving it to whether a
@@ -28461,6 +28463,7 @@ silentExit:T.silentExit||0,
     P.kills=P.kills||{};
     var _tk=(G.tel&&G.tel.kills)||{};
     for(var _kk in _tk) P.kills[_kk]=(P.kills[_kk]||0)+(_tk[_kk]||0);
+    try{ gunKillsBank(how); }catch(_gkb){}   // v26.xx (career1): and each gun's kills
   }
   togglePauseBox(false);
   var lines=[];
@@ -37381,6 +37384,33 @@ function hubForged(w){
   var f=(w&&w.id&&P&&P.forged)?P.forged[w.id]:null;
   return (f&&(f.fk===1||f.fk===2)&&(P.weapons||[]).indexOf(w.id)>=0)?forgeApply(w,f.fk,f.el):w;
 }
+// v26.xx (career1), HIS YES (2026-10-14) to suggestion 29, GUN KILL TALLY: "each gun counts its kills, shown on the gun card". Every round of yours carries the
+// id of the gun that fired it (gid); the body it hits keeps that id as blowG next to the blow mark; when that body dies of your round the kill is counted for
+// the gun (gunKillNote, into the raid's own tally G.gunK, so the live card reads it at once). The tally is banked into the save (P.gunKills, gun id to count,
+// an old save simply has none) when a raid ends in an extraction or a death; an abandoned run counts nothing, like every other score of the run. One count per
+// gun id: a rarity twin (the _v gun) is a gun of its own and counts its own. A swing, a blast and a burn are not a gun and count for none. It shows as a KILLS
+// row on the gun card (the pickup card, the backpack card, the belt hover card) and on the stash and backpack hover. Display and a count only.
+function gunKillsOf(gk){
+  var n=0;
+  try{ if(P&&P.gunKills&&typeof P.gunKills==='object') n+=(+P.gunKills[gk])|0; }catch(_g){}
+  try{ if(typeof G!=='undefined'&&G&&!G.over&&!G.sim&&G.gunK) n+=(+G.gunK[gk])|0; }catch(_r){}
+  return n>0?n:0;
+}
+function gunKillNote(e){
+  var id, t;
+  if(!G||G.sim||G.arcade||!e||e.blow!=='g'||!e.blowG) return 0;
+  id=String(e.blowG); if(id==='fists'||!WEAPONS[id]) return 0;
+  t=G.gunK||(G.gunK={}); t[id]=(t[id]|0)+1;
+  return t[id];
+}
+function gunKillsBank(how){
+  var k, n=0;
+  if(!G||G.sim||G.arcade||how==='abandon'||!G.gunK||!P) return 0;
+  if(!P.gunKills||typeof P.gunKills!=='object'||Array.isArray(P.gunKills)) P.gunKills={};
+  for(k in G.gunK){ if(Object.prototype.hasOwnProperty.call(G.gunK,k)&&WEAPONS[k]){ P.gunKills[k]=((+P.gunKills[k])|0)+((+G.gunK[k])|0); n+=(+G.gunK[k])|0; } }
+  G.gunK={};
+  return n;
+}
 function itemRows(key){
   var it=ITEMS[key]; if(!it) return [];
   var R=[];
@@ -37406,6 +37436,7 @@ function itemRows(key){
     R.push(['RANGE',Math.round(W2.rng/10)+'m']);
     R.push(['ACCURACY',W2.spread<=0.03?'tight':(W2.spread<=0.07?'good':(W2.spread<=0.14?'loose':'scattergun'))]);
     R.push(['NOISE',W2.noise>=300?'very loud':(W2.noise>=200?'loud':(W2.noise>0?'quiet':'silent'))]);
+    { var _gkn=gunKillsOf(it.gk); if(_gkn>0) R.push(['KILLS',_gkn.toLocaleString()]); }   // v26.xx (career1): the tally, only once a gun has a kill
   } else if(it.use){
     R.push(['USE',String(it.use).toUpperCase()]);
   }
@@ -43775,7 +43806,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v26.95: In the 2 player demo, kills by both players close together build a shared TEAM combo. Check 26.95 fails on v26.94',
+  now:'v26.96: Each gun counts its kills, and the tally shows on the gun card. Check 26.96 fails on v26.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

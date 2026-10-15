@@ -1,0 +1,5 @@
+## v26.96 - GUN KILL TALLY
+
+Co-op hunt while he was away. His yes to suggestion 29. Every gun now counts its kills. A round remembers which gun fired it, and when that round is the one that finishes a machine or a pillager, the kill goes on that gun. The count is kept in your save when a raid ends in an extraction or a death (an abandoned run counts nothing), and it shows as a KILLS line on the gun card when you pick a gun up, in the backpack, on the belt hover and on the stash hover. A swing of the crowbar, a grenade or a fire does not count for a gun. A rarity twin of a gun counts its own kills. An old save simply starts every gun at none.
+
+MEASURED. Check 26.96 passes, and fails on v26.95.

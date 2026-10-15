@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v26.96 - GUN KILL TALLY
+
+Co-op hunt while he was away. His yes to suggestion 29. Every gun now counts its kills. A round remembers which gun fired it, and when that round is the one that finishes a machine or a pillager, the kill goes on that gun. The count is kept in your save when a raid ends in an extraction or a death (an abandoned run counts nothing), and it shows as a KILLS line on the gun card when you pick a gun up, in the backpack, on the belt hover and on the stash hover. A swing of the crowbar, a grenade or a fire does not count for a gun. A rarity twin of a gun counts its own kills. An old save simply starts every gun at none.
+
+MEASURED. Check 26.96 passes, and fails on v26.95.
 ## v26.95 - TEAM COMBO
 
 Co-op hunt while he was away. His yes to the team combo in the 2 player DEMO. When both players get a kill within two seconds of each other and within about fifty metres, the second kill pays a team bonus of forty times the chain, to the team score, with a TEAM COMBO callout, a medal and a note. A kill is in one pair only, so the figure is paid once; pairs that follow inside two seconds make the chain longer, up to times five, and a longer gap starts it again. Both screens hold the same chain, drawn as a cyan ring just outside your own combo ring that drains over the two seconds, with TEAM and the chain beside it. The windows tell each other about every kill to do this. The 1 player DEMO is unchanged.
