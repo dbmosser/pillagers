@@ -1,0 +1,7 @@
+v28.42: the overseer rampage ends when the host leaves
+
+If your host extracts or goes down during an Overseer rampage, the Overseer now goes back to its lair at its normal speed instead of roaming fast for the rest of the raid.
+
+Check 28.42. Fails on v28.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

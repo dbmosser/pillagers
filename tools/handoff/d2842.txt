@@ -1,0 +1,5 @@
+## v28.42 - THE OVERSEER RAMPAGE ENDS WHEN THE HOST LEAVES
+
+Co-op hunt while he was away. In a career co-op raid, when the host extracts or goes down and spectates while player 2 plays on, the host window keeps moving the machines for player 2 (netSpecTick runs updateEnts) but never ticks the raid events, so no event end ever ran on those bodies. A live Overseer rampage left the Overseer at 1.6x speed with its lair moved to the last sweep point for the rest of the raid, since the rampage end is the only thing that puts them back. Proven in a staged career pair: thirty seconds after the host went down and started spectating, the Overseer was still on its rampage. Now when the host starts spectating, a live rampage puts the Overseer back to its own speed and its own lair exactly as the rampage end does (no alert line, nothing removed, no reward). This matches the companion draft that ends raid events on player 2 window at the same moment. Bounty and convoy are left as they are; the lockdown is gone since v27.37.
+
+MEASURED. Check 28.42 passes, and fails on v28.41.

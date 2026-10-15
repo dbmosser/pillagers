@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.41';
+var VER='28.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46508,7 +46508,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.41: With an SMG in your hands and a second gun stowed, the raid now starts with the SMG on its own key 2, as the Undercroft shows it. Check 28.41 fails on v28.40',
+  now:'v28.42: If your host extracts or goes down during an Overseer rampage, the Overseer now goes back to its lair at its normal speed instead of roaming fast for the rest of the raid. Check 28.42 fails on v28.41',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53758,6 +53758,11 @@ function netSpecStart(how){
   if(!Array.isArray(G.terms)) G.terms=termsOn().slice();   // v22.27 (K38): the Terms this raid was built with, kept for the party; Terms signed on the floor meanwhile are for the next run
   if(G.player) G.player.specOut=1;
   G.searching=null; G.searchT=0;   // v16.53: and a box the host was searching when his run ended is let go, not held for ever
+  try{ (function(L){ var j, ev, b;   // v28.42 (cloud-coop-spectate-event-buffs-end), CLOUD HUNT 2026-10-15: the spectating host keeps moving the bodies for player 2 but never ticks the raid events, so a live Overseer rampage kept the Overseer fast with its lair moved for good: it ends here as its def.end restores it (no line, nothing removed, no reward)
+    for(j=0;j<L.length;j++){ ev=L[j]; if(!ev||ev.ph!=='live'||ev.id!=='rampage'||!ev.d) continue;
+      b=ev.d.b; if(b&&b.rmp){ b.rmp=0; if(b.rmpL){ b.lairX=b.rmpL[0]; b.lairY=b.rmpL[1]; } if(b.rmpSpd) b.spd=b.rmpSpd; }
+      ev.ph='end'; ev.et=0; }
+  })((G.flow&&G.flow.ev&&G.flow.ev.live)||[]); }catch(_sev){}
   netBroadcast({t:'up',st:'spec',how:netClean(how,12)});
   NET.status='Your party is still in the raid. Waiting for them to finish.';
   return true;
