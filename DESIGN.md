@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.79 - HALO REACH BLOOM
+
+Co-op hunt while he was away. His yes to the Halo Reach DMR bloom, adapted to the ring on the cursor. In Reach every shot opens the reticle, it closes again over a short recovery, the next round lands at random inside the reticle as it is now, so a closed reticle is a pinpoint shot and spamming widens the spread: players pace their shots, and the reticle is the honest readout. Every gun now has its own bloom. The semi-autos (pistol, Magnum, Marksman Rifle, Longshot, Burst Carbine, Riot Scattergun, Whisper, Meridian Lance) open wide on one round and close again in about a second, so the fastest trigger finger leaves some bloom on the next round while a beat of patience gives the pinpoint round back. The autos (SMG, Auto Rifle, Support MG) open a hair per round and fill over about two seconds of held fire, which is what a burst is for. The cursor ring grows with the bloom and closes with it, and moving adds to it as before. This is a balance change, which his rule of 2 October allows: the first round after a pause is exactly as accurate as it was, a spammed semi-auto is up to about two and a half times as loose, and the bot raids and the seeded stream are untouched.
+
+MEASURED. Check 27.79 passes, and fails on v27.78.
 ## v27.78 - UI VOLUME SILENCES THE FIND SOUNDS
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the UI VOLUME row promises PICKUPS, but the find sounds (a rare, elite, gun or uncommon pickup) play through their own dry output (sndFindOut), which took only the effects level and went straight out, skipping the UI bus. So at UI VOLUME OFF every find still played at full. Proven in headless Chromium with a stand-in audio context: {"off":0.8,"full":0.8} (the find gain at UI VOLUME OFF and FULL, effects level 0.8). The find output now takes the effects level times UI VOLUME, so OFF silences it and FULL is exactly as before.

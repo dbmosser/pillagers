@@ -1,0 +1,7 @@
+v27.79: halo reach bloom
+
+Every gun blooms its own way: spam a semi-auto and the spread opens, pace your shots and the pinpoint round comes back.
+
+Check 27.79. Fails on v27.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
