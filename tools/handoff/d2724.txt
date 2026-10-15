@@ -1,0 +1,5 @@
+## v27.24 - THE PERSISTENT FEED
+
+Co-op hunt while he was away. His order of 2026-10-14: the way different messages come in at different places is messy and needs to be made consistent, maybe a persistent feed like WoW. There is now one feed at the bottom left, above the body corner: the last ten lines, the newest at the bottom, each full bright for six seconds and then dimmed to 35 percent, where it stays until a newer line pushes it out (the last forty are kept). Everything the raid says goes in, with a small glyph and a colour for its kind: pickups in their rarity colour and counted, alerts, objectives, teammate lines, kills (yours, a teammate and machines and pillagers killing each other), medals and money, power-ups. The controls list stands above it. The old places still show for now; the next builds move them out.
+
+MEASURED. Check 27.24 passes, and fails on v27.23.

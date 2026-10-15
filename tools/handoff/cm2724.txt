@@ -1,0 +1,7 @@
+v27.24: the persistent feed
+
+There is now one persistent feed at the bottom left that takes every raid line, newest at the bottom.
+
+Check 27.24. Fails on v27.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

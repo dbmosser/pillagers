@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.24 - THE PERSISTENT FEED
+
+Co-op hunt while he was away. His order of 2026-10-14: the way different messages come in at different places is messy and needs to be made consistent, maybe a persistent feed like WoW. There is now one feed at the bottom left, above the body corner: the last ten lines, the newest at the bottom, each full bright for six seconds and then dimmed to 35 percent, where it stays until a newer line pushes it out (the last forty are kept). Everything the raid says goes in, with a small glyph and a colour for its kind: pickups in their rarity colour and counted, alerts, objectives, teammate lines, kills (yours, a teammate and machines and pillagers killing each other), medals and money, power-ups. The controls list stands above it. The old places still show for now; the next builds move them out.
+
+MEASURED. Check 27.24 passes, and fails on v27.23.
 ## v27.23 - RANDOM KIT: 2 GUNS, 1 OF EACH
 
 Co-op hunt while he was away. His word on RANDOM KIT: two guns, and one of each item on the wheel. It picks two different guns at random from the ones you own, the armoury and any gun items in the stash, and never the Scav Pistol while you own another gun. The first is in your hands, the second in your other hand, and each goes on its own class key (1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG, 6 shotgun, 7 marksman, 8 sniper, 9 energy); a gun that was only in the stash moves into the armoury as Equip as your gun does. With no gun at all you go up with the Scav Pistol. The items are one of each of the eight wheel types you have in the stash (Medkit, Smoke, Frag, Tripwire, Armour, Decoy, Bandage, Stim), the Armour only if your rig holds plates, then one Ammo Box, never more than the backpack takes and in wheel order if it runs short. Items stay in the stash until the raid starts. There is one item to each wheel type in this build, so no variant is picked. BEST KIT is the next build.

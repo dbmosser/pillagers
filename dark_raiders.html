@@ -2233,7 +2233,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.23';
+var VER='27.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17656,7 +17656,7 @@ function alertShow(m,k,o,now){
   G.alert={m:m,k:k,sub:(o&&o.sub)||'',key:(o&&o.key)||'',hold:(o&&o.hold)||null,icon:(o&&o.icon)||'',c:(o&&o.c)||'',
            T:(o&&o.life>0)?o.life:MSGK[k].life,at:now};
 }
-function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',(o.sub||o.key)?{sub:o.sub||'',key:o.key||''}:null); }
+function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',(o.sub||o.key)?{sub:o.sub||'',key:o.key||'',fd:1}:{fd:1}); }   // v27.24 (feed1): fd, it was written into the feed when it was said
 function alertQDrop(m,key){ var q=G.alertQ, i; if(!q) return; for(i=q.length-1;i>=0;i--) if((q[i].m===m&&!msgDiffKey(q[i].key,key))||(key&&q[i].key===key)) q.splice(i,1); }   // v23.xx (tr9fixo): two keyed alerts with one headline are two alerts
 function alertEnq(m,k,o,now,back){   // v22.xx (tr3fixa): back, an alert another line displaced
   var q=(G.alertQ=G.alertQ||[]), key=(o&&o.key)||'', i, lo, lr;
@@ -17772,6 +17772,7 @@ function pickSay(m,o){
 // elite, and those can still be dropped by hand.
 function bagDropHint(){ return padOn()?padB('['+pbn(8)+'] BACKPACK  \u00b7  ['+pbn(3)+'] DROP'):('['+keyLabel('KeyB','B')+'] BACKPACK  \u00b7  ['+keyLabel('KeyZ','Z')+'] DROP'); }
 function pickTag(item,tag){
+  try{ feedTag(item,tag); }catch(_ftg){}   // v27.24 (feed1): and on the feed line
   var q=G&&G.pick, i;
   if(!q) return;
   for(i=q.length-1;i>=0;i--) if(q[i].item===item&&q[i].T>0){ q[i].tag=String(tag||''); return; }
@@ -18150,6 +18151,204 @@ function drawLore(){
   } finally { ctx.restore(); }
   return lines.length;
 }
+// v27.24 (feed1), HIS ORDER (2026-10-14): "the way that different player messages come in at different places is messy, needs to be made
+// consistent, maybe we should just have a persistent feed ala WoW?". THE FEED. One persistent message feed at the bottom left, above the
+// body corner, like the chat frame of WoW: the last 10 lines, the newest at the bottom, each line full bright for 6 s and then dimmed to
+// 35 percent, where it stays until a newer line pushes it out (40 lines are kept for the history). Every line the raid says goes in:
+// each said line (say, whatever its kind: an alert is written here as well as shown in the alert lane), a pickup (the item in its
+// rarity colour, counted when it is picked again), every kill he could witness (his own, a teammate's, and machines and pillagers
+// killing each other), medals and money, power-ups and teammate lines. A line is a small glyph and its kind colour (loot rarity, red
+// danger, teammate blue, gold medal and money, amber objective, teal extraction), in the HUD voice, on the one HUD plate. A line said
+// again within a second (a per-frame caller) is the same line kept bright, never counted; one said again within 30 s (a pickup within 6 s)
+// is counted (x2) and moves to the bottom. The 10 lines are a reserved zone (FEEDBOX): the controls legend and the status icons are
+// laid out above it. The old places (the message rows, the pickup stack, the kill feed, the loot labels) still show in this build; the
+// next builds move them out. A window has its own feed, and a teammate's lines reach it through the same say(). Cosmetic only: no
+// seeded draw, nothing under G.sim, no game state; the feed clock (G.fd.t) runs on msgTick, so it stands still under the solo pause.
+var FEED={show:10,keep:40,hold:6,dim:0.35,fade:1,again:1,merge:30,enter:0.14};
+var FEEDBOX={on:0,x:0,y:0,w:0,h:0,rows:[]};
+var FEEDGL={loot:'backpack',kill:'skull',team:'party',danger:'warning',medal:'xp',money:'credits',obj:'contract',ext:'extraction',power:'xp',info:'info',dim:''};
+var FEEDMEDALS=/^(DOUBLE KILL|TRIPLE KILL|MULTI KILL|MULTI-KILL|RAMPAGE|UNSTOPPABLE|NEW HIGH SCORE)/;
+function feedS(){ if(!G.fd) G.fd={t:0,seq:0,lines:[]}; return G.fd; }
+function feedCol(fk){
+  return fk==='danger'?HUDC.danger:fk==='kill'?HUDC.danger:fk==='team'?HUDC.ally:(fk==='medal'||fk==='money')?UIC.r_gold:fk==='obj'?HUDC.warn:fk==='ext'?HUDC.extract:fk==='dim'?HUDC.dim:HUDC.text;
+}
+function feedItemCol(item,c){
+  var it, rk;
+  if(c&&HUDC[c]) return HUDC[c];
+  it=item&&ITEMS[item]; rk=it?(dispR(item)||it.r):'';
+  return (rk&&RCOL[rk])||HUDC.text;
+}
+function feedPwrOf(s){ var i; for(i=0;typeof PWR_KINDS!=='undefined'&&i<PWR_KINDS.length;i++) if(PWR_KINDS[i].n===s) return PWR_KINDS[i]; return null; }
+function feedAlpha(ln){ var age=(G.fd?G.fd.t:0)-ln.at; return (age<=FEED.hold)?1:Math.max(FEED.dim,1-(1-FEED.dim)*(age-FEED.hold)/FEED.fade); }
+// segs: a string or [{t,c}]; fk the kind; o {key, tag, n, count, col, gl}. Returns the line.
+function feedAdd(segs,fk,o){
+  var F, now, key, txt, i, ln, n;
+  if(!G||G.sim||!G.player) return null;
+  F=feedS(); now=F.t; key=(o&&o.key)||''; n=(o&&o.n>0)?Math.round(o.n):1;
+  if(typeof segs==='string') segs=[{t:segs,c:null}];
+  txt=''; for(i=0;i<segs.length;i++) txt+=segs[i].t;
+  for(i=F.lines.length-1;i>=Math.max(0,F.lines.length-6);i--){
+    ln=F.lines[i];
+    if(!((key&&ln.key===key)||(!key&&!ln.key&&ln.txt===txt))) continue;
+    if(!(o&&o.count)&&now-ln.last<FEED.again){ ln.last=now; ln.at=now; return ln; }
+    if(now-ln.at<((o&&o.count)?FEED.hold:FEED.merge)){
+      ln.n+=n; ln.at=now; ln.last=now; ln.segs=segs; ln.txt=txt; ln.mf='';
+      if(i<F.lines.length-1){ F.lines.splice(i,1); F.lines.push(ln); }
+      return ln;
+    }
+    break;
+  }
+  ln={id:(F.seq=(F.seq|0)+1),fk:fk||'info',segs:segs,txt:txt,key:key,n:n,tag:(o&&o.tag)?String(o.tag):'',money:'',col:(o&&o.col)||feedCol(fk),
+      gl:(o&&o.gl!==undefined)?o.gl:FEEDGL[fk||'info'],at:now,last:now,born:now,mf:''};
+  F.lines.push(ln);
+  while(F.lines.length>FEED.keep) F.lines.shift();
+  return ln;
+}
+function feedKindOf(s,k,o){
+  if(o&&o.fk) return o.fk;
+  if(k==='crit'||k==='warn') return 'danger';
+  if(k==='ext') return feedPwrOf(s)?'power':(FEEDMEDALS.test(s)?'medal':'ext');
+  if(k==='obj') return (/^GOAL DONE/).test(s)?'medal':'obj';
+  if(k==='ally') return 'team';
+  if(k==='chat'||k==='sys') return 'dim';
+  return 'info';
+}
+// every say(): the line goes into the feed whatever lane it also takes. A line the old pipeline says a second time (the waiting
+// queue coming out, an alert that waited too long going to the rows) is not written again (o.fd, G.msgDrain).
+function feedSay(m,k,o){
+  var s, sub, fk, col, D, item, tag, key, segs, cnt=false, gl;
+  if(!G||G.sim||!G.player||G.msgDrain||(o&&o.fd)) return null;
+  s=String(m); if(!s) return null;
+  sub=(o&&o.sub)?String(o.sub):''; item=(o&&o.item)||'';
+  if(k==='pick'){
+    tag=(o&&o.sub)?String(o.sub):((o&&o.tag)?String(o.tag).toUpperCase():'');
+    if(o&&o.c==='danger'){ fk='danger'; col=HUDC.danger; key=(o.key?('k:'+o.key):''); }
+    else if(item&&ITEMS[item]){ fk='loot'; col=feedItemCol(item,o&&o.c); cnt=true; key='p:'+item+'|'+tag; }
+    else if((/^[+\-]\$/).test(s)){ fk='money'; col=(o&&o.c&&HUDC[o.c]&&o.c!=='gain')?HUDC[o.c]:UIC.r_gold; key='m:'+s+'|'+tag; }
+    else { fk='info'; col=feedItemCol('',o&&o.c); key=(o&&o.key)?('k:'+o.key):''; }
+    return feedAdd([{t:s,c:col}],fk,{key:key,tag:tag,n:(o&&o.n>0)?o.n:1,count:cnt,col:col});
+  }
+  fk=feedKindOf(s,k,o); col=feedCol(fk); gl=undefined;
+  if(fk==='power'){ D=feedPwrOf(s); if(D) col=D.hex; }
+  segs=[{t:s,c:(fk==='info'||fk==='dim')?feedCol(fk):col}];
+  if(sub) segs.push({t:'  \u00b7  '+sub,c:HUDC.dim});
+  return feedAdd(segs,fk,{key:(o&&o.key)?('k:'+o.key):'',col:col});
+}
+// a world label (rising text): loot names are the pickup lines, hit feedback stays on its target, a kill has its own line and
+// a medal carries its own figure; everything else (a revive, a notoriety rise, a seal broken) is a line here too.
+function feedLabel(t,c,ik){
+  var s=String(t);
+  if(!G||G.sim||!G.player||ik||!s) return null;
+  if((/^(WEAK SPOT|ACTIVE RELOAD|PICKED UP|CLOSE CALL)$/).test(s)||(/ (DESTROYED|ELIMINATED)$/).test(s)||feedPwrOf(s)) return null;
+  if((/^\s\+\$/).test(s)) return null;
+  if((/^\+\$[\d,]+$/).test(s)) return feedMoney(s);
+  return feedAdd([{t:s,c:c||HUDC.text}],'info',{col:c||null,gl:'info'});
+}
+// the figure of a kill rides on his own kill line when that line is under a second old; otherwise it is a line of its own
+function feedMoney(s){
+  var F=feedS(), Ln=F.lines[F.lines.length-1];
+  if(Ln&&Ln.fk==='kill'&&Ln.mine&&!Ln.money&&F.t-Ln.last<0.8){ Ln.money=s; Ln.mf=''; return Ln; }
+  return feedAdd([{t:s,c:UIC.r_gold}],'money',{key:'m:'+s});
+}
+function feedMedal(txt,pts){
+  return feedAdd([{t:String(txt),c:UIC.r_gold},{t:'  +'+arcadeCr(pts),c:UIC.r_gold}],'medal',{});
+}
+function feedSame(a,b){
+  a=String(a).toUpperCase().replace(/^ELITE /,''); b=String(b).toUpperCase().replace(/^ELITE /,'');
+  return a===b||a.indexOf(b)===0||b.indexOf(a)===0;
+}
+// by: who did it ('' when nobody known), mine: it was this player, mate: a teammate; vn the victim, verb after it when unattributed
+function feedKillLine(by,mine,mate,vn,vcol,verb){
+  var F, now, i, Ln, segs, acc;
+  if(!G||G.sim||!G.player) return null;
+  F=feedS(); now=F.t;
+  segs=by?[{t:by,c:mine?HUDC.text:HUDC.ally},{t:'  >  ',c:HUDC.dim},{t:vn,c:vcol}]:[{t:vn,c:vcol},{t:verb||' DESTROYED',c:HUDC.dim}];
+  acc=mine?UIC.acc:(mate?HUDC.ally:HUDC.danger);
+  for(i=F.lines.length-1;i>=Math.max(0,F.lines.length-6);i--){
+    Ln=F.lines[i];
+    if(!(Ln.fk==='kill'&&now-Ln.last<1.5&&feedSame(Ln.vn,vn))) continue;
+    if(by&&!Ln.by){ Ln.segs=segs; Ln.txt=by+'  >  '+vn; Ln.by=by; Ln.mine=mine; Ln.col=acc; Ln.vn=vn; Ln.mf=''; Ln.last=now; return Ln; }
+    if(!by&&Ln.by) return Ln;
+    if((by||'')===(Ln.by||'')){ Ln.n++; Ln.at=now; Ln.last=now; Ln.mf=''; return Ln; }
+    break;
+  }
+  Ln=feedAdd(segs,'kill',{key:'kill:'+(F.seq+1),col:acc});
+  if(Ln){ Ln.vn=vn; Ln.by=by; Ln.mine=!!mine; }
+  return Ln;
+}
+function feedKillEnt(e){
+  var p=G&&G.player, mine, seat, by, vn;
+  if(!G||G.sim||!p||!e) return null;
+  mine=!!e.byPlayer&&!p.specOut; seat=(e.bySeat|0);
+  if(!mine&&seat<=0&&!canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) return null;
+  vn=String(e.name||kindWord(e.kind));
+  by=mine?'YOU':(seat>0?String(netSeatName(seat)||('PLAYER '+(seat+1))).toUpperCase():'');
+  return feedKillLine(by,mine,seat>0,vn,(e.kind==='raider')?HUDC.danger:HUDC.warn,killWord(e));
+}
+function feedTag(item,tag){
+  var F=G&&G.fd, i, Ln;
+  if(!F) return;
+  for(i=F.lines.length-1;i>=0;i--){ Ln=F.lines[i]; if(Ln.fk==='loot'&&Ln.key.indexOf('p:'+item+'|')===0){ Ln.tag=String(tag||''); Ln.mf=''; return; } }
+}
+function feedTick(dt){ if(G&&G.fd) G.fd.t+=dt; }
+function feedRect(){
+  var rs=Math.max(1,hudRes()), fp=msgPx(hudFS(TYPE.label)), rh=Math.round(fp*1.5), gap=Math.max(2,Math.round(LH(2)*rs)), B=HUDBOX.body, h=FEED.show*rh+(FEED.show-1)*gap, bot;
+  bot=((B&&B.h>0&&B.y>H*0.5)?B.y:Math.round(H-LH(142)*rs*1.4))-Math.round(LH(8)*rs);
+  return {x:Math.round(LH(9)*rs),y:bot-h,w:Math.min(Math.round(LH(460)*rs),Math.round(W*0.3)),h:h,rh:rh,gap:gap,fp:fp};
+}
+function feedGlyph(name,x,cy,s,col){
+  var Pt=name?uiIconPath(name):null;
+  if(!Pt) return;
+  ctx.save();
+  try{ ctx.translate(x,cy-s/2); ctx.scale(s/24,s/24); ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke(Pt); } finally { ctx.restore(); }
+}
+// the words of a line, measured once per font: [{t,c,w}] and the total width
+function feedParts(ln,fL,maxW){
+  var P, w=0, i, sg, t, c0, tw;
+  if(ln.mf===fL&&ln.pr&&ln.pw===maxW) return ln.pr;
+  ctx.font=fL; P=[];
+  for(i=0;i<ln.segs.length;i++){ sg=ln.segs[i]; P.push({t:sg.t,c:sg.c||ln.col}); }
+  if(ln.n>1) P.push({t:'  x'+ln.n,c:HUDC.text});
+  if(ln.money) P.push({t:'  '+ln.money,c:UIC.r_gold});
+  if(ln.tag) P.push({t:'  \u00b7  '+ln.tag,c:HUDC.dim});
+  for(i=0;i<P.length;i++){ P[i].w=ctx.measureText(P[i].t).width; w+=P[i].w; }
+  if(w>maxW&&P.length){   // too long for the zone: the first piece gives way, with a mark at its end
+    t=P[0].t; tw=w-P[0].w;
+    while(t.length>3&&tw+ctx.measureText(t+'...').width>maxW) t=t.slice(0,-1);
+    P[0].t=t+'...'; P[0].w=ctx.measureText(P[0].t).width; w=tw+P[0].w;
+  }
+  ln.pr=P; ln.pr.w=w; ln.mf=fL; ln.pw=maxW;
+  return P;
+}
+function feedDraw(){
+  var F=G&&G.fd, R, rs, fL, pad, gs, oa, y, yt, x, w, i, n, ln, al, e, pr, j, tx, yb, tw0;
+  FEEDBOX.on=0; FEEDBOX.rows=[];
+  if(!G||G.sim||!G.player||G.over) return 0;
+  R=feedRect(); FEEDBOX.x=R.x; FEEDBOX.y=R.y; FEEDBOX.w=R.w; FEEDBOX.h=R.h; FEEDBOX.on=1;   // the zone is kept whether or not a line is up
+  if(!F||!F.lines.length) return 0;
+  rs=Math.max(1,hudRes()); fL=hudFS(TYPE.label); pad=Math.round(LH(7)*rs); gs=Math.round(R.fp*0.95); oa=ctx.globalAlpha;
+  ctx.save();
+  try{
+    ctx.font=fL; ctx.textBaseline='alphabetic'; ctx.textAlign='left';
+    y=R.y+R.h;
+    for(i=F.lines.length-1,n=0;i>=0&&n<FEED.show;i--,n++){
+      ln=F.lines[i]; al=feedAlpha(ln); e=Math.min(1,(F.t-ln.born)/FEED.enter);
+      pr=feedParts(ln,fL,R.w-pad*3-gs-Math.round(pad*0.7));
+      w=Math.min(R.w,pad+Math.round(pad*0.5)+(ln.gl?gs+Math.round(pad*0.7):0)+pr.w+pad);
+      x=R.x+Math.round((e-1)*LH(18)*rs); yt=y-R.rh;
+      ctx.globalAlpha=oa*al*e;
+      hudPlate(x,yt,w,R.rh,ln.col,HUDC.plate);
+      tx=x+pad+Math.round(pad*0.5);
+      if(ln.gl){ feedGlyph(ln.gl,tx,yt+R.rh/2,gs,ln.col); tx+=gs+Math.round(pad*0.7); }
+      yb=yt+Math.round(R.rh/2+R.fp*0.34);
+      ctx.font=fL;
+      for(j=0;j<pr.length;j++){ ctx.fillStyle=pr[j].c; ctx.fillText(pr[j].t,tx,yb); tx+=pr[j].w; }
+      FEEDBOX.rows.push({id:ln.id,t:ln.txt,fk:ln.fk,a:al,x:x,y:yt,w:w,h:R.rh});
+      y-=R.rh+R.gap;
+    }
+  } finally { ctx.restore(); ctx.globalAlpha=oa; }
+  return n;
+}
 function msgTick(dt){
   if(!G) return;
   dt=(dt>0)?Math.min(0.1,dt):0;
@@ -18159,6 +18358,7 @@ function msgTick(dt){
   locTick(dt);   // v22.xx (R34): the location tag
   loreTick(dt);   // v22.xx (R39): the map story card
   pickTick(dt);   // v22.50 (R16): the pickup stack
+  feedTick(dt);   // v27.24 (feed1): the feed clock
   giftTick();   // v22.75 (R30): an offer that ran out ends here, not in drawGiftLine
   // v13.32, v13.33: a short queue of lines that must not be lost, shown when the rows free up. v21.88 (R06): only into a row that is
   // free or past its protection. v21.91 (R07): the highest ranked waiting line first, stale ones dropped, 1.8 s while two or more wait.
@@ -18181,6 +18381,7 @@ function say(m,kind,o){
     var k=msgKind(kind), lg=(G.msgLog=G.msgLog||[]);
     lg.push({m:m,k:k,t:G.t||0,sub:(o&&o.sub)||''}); if(lg.length>16) lg.shift();
     if(k==='log') return;
+    try{ feedSay(m,k,o); }catch(_fsy){}   // v27.24 (feed1): every line said is in the feed, whatever lane it also takes
     if(k==='pick'){ pickSay(m,o); return; }   // v22.50 (R16): an item picked up is a row in the pickup stack, never a feed row
     if(msgAlertK(k)){ alertSay(m,k,o); return; }   // v22.13 (R08): crit, warn and ext take the alert lane, not a feed row
     // v22.xx, the raid text rewrite (R37): A LINE SAID UNDER THE SOLO PAUSE BOX SHOWS ON IT. HIS ORDER (2026-10-09): the raid text
@@ -18377,6 +18578,7 @@ function notoStamp(why){
 function labelPlateH(px){ px=(px>0)?px:13; return Math.round(px*0.74+px*0.2+2*Math.max(3,px*0.18)); }
 function label(x,y,txt,col,delay,big,ik){
   if(G.sim) return;
+  try{ feedLabel(txt,col,ik); }catch(_flb){}   // v27.24 (feed1): a label that is a message is a line in the feed too
   // Push off any live label that would land on top of this one. Without this a
   // container holding three items stacks all three lines in the same spot.
   // One spacing for the test and the placement, and the same rise the renderer uses.
@@ -25726,6 +25928,7 @@ if(e.state==='possum'){
       // v17.11, co-op hunt 2026-09-28: not once the host is out. A host who dies, extracts or abandons while the party is still up
       // top keeps the raid running for them, and a man he had dropped who bled out there added a kill to the run row he had already
       // saved, stepped his contracts and wrote a grudge into his save, for a raid he was no longer in. Such a death is credited to nobody.
+      try{ feedKillEnt(e); }catch(_fke){}   // v27.24 (feed1): the kill in the feed, his, a teammate's or nobody's
       if(e.byPlayer&&!(G.player&&G.player.specOut)){
         T.kills[e.kind]++; contractKill(e.kind);
         try{ gunKillNote(e); }catch(_gkn){}
@@ -35414,7 +35617,7 @@ function drawStatusIcons(){
   // vitals only when their top was below it, so a board dragged down, or a list grown or dragged up, had the icons drawn over it. Every
   // panel at the left is now treated the same, top to bottom: one that starts by the column's first row pushes the column below it, one
   // that starts lower ends the column above it. When that leaves no room for a row, the column moves to the right of those panels.
-  var _bx=[HUDBOX.raiders,HUDBOX.legend,HUDBOX.body].filter(function(b){ return b&&b.x<ox+wC&&b.x+b.w>ox; }).sort(function(a,b){ return a.y-b.y; }), _bi, _br;
+  var _bx=[HUDBOX.raiders,HUDBOX.legend,HUDBOX.body,FEEDBOX.on?FEEDBOX:null].filter(function(b){ return b&&b.x<ox+wC&&b.x+b.w>ox; }).sort(function(a,b){ return a.y-b.y; }), _bi, _br;
   for(_bi=0;_bi<_bx.length;_bi++){ B=_bx[_bi];
     if(B.y+B.h+g*hr<=oy||B.y>=yBot) continue;
     if(B.y<=oy+S*hr/2) oy=Math.round(B.y+B.h+g*hr);
@@ -36455,6 +36658,7 @@ hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     ctx.restore();                              // v10.43: end of the message scale
   }
+  try{ feedDraw(); }catch(_fdw){}   // v27.24 (feed1): the feed, bottom left (over the map too)
   };
   if(!G.mapOpen) _lanes();   // v22.xx (R38): with the map open the band is drawn after it, below
   // Extraction ring labels, drawn on the HUD above the fog. Three unexplained
@@ -37567,6 +37771,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     // Where the bottom of the legend has to land: just above the vitals, which
     // is what it must clear. HUDBOX.body is set earlier in this same frame.
     var _legTarget=(HUDBOX.body?HUDBOX.body.y:H)-LH(8);
+    if(FEEDBOX.on&&FEEDBOX.y-LH(8)<_legTarget) _legTarget=FEEDBOX.y-LH(8);   // v27.24 (feed1): the controls list stands above the feed
     var _legUB=(typeof _legAnchorY==='number'&&_legAnchorY>0)?_legAnchorY:_legTarget;
     var _legShift=_legTarget-_legUB;
     // v9.83: AND HIS DRAG RIDES ON TOP OF THE ANCHOR. The anchor above forces
@@ -44453,7 +44658,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.23: RANDOM KIT gives two random guns on their class keys and one of each wheel item. Check 27.23 fails on v27.22',
+  now:'v27.24: There is now one persistent feed at the bottom left that takes every raid line, newest at the bottom. Check 27.24 fails on v27.23',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -51229,6 +51434,7 @@ function netFeedTake(peer,m){
   return 'kf';
 }
 function netFeedPush(s,who){
+  try{ if(NET.role==='join'){ var _fm=(s===NET.seat); feedKillLine(_fm?'YOU':String(netSeatName(s)||'PILLAGER').toUpperCase(),_fm,!_fm,String(who),HUDC.warn,''); } }catch(_fkp){}   // v27.24 (feed1): the host window writes its own kill line when the body falls
   var nm=(s===NET.seat)?'YOU':(netSeatName(s)||'PILLAGER');
   if(!NET.feed) NET.feed=[];
   NET.feed.push({txt:nm+' killed '+who,me:(s===NET.seat),at:Date.now()});
@@ -52038,6 +52244,7 @@ function netEntWord(peer,m){
 // drops is the host world, a later slice). Nothing here draws from the seeded stream.
 function netEntDeathFx(e){
   try{ deathAnimAdd(e); }catch(_dz){}   // v17.47: his pick 29, the death animation in a linked window
+  try{ feedKillEnt(e); }catch(_fkm){}   // v27.24 (feed1): the kill in this window feed (the host word that names who did it joins this line)
   if(e&&e.name===BOSS_NAME){ try{ say(BOSS_NAME+' DESTROYED','obj',{sub:'Its hoard is open.'}); }catch(_bs){} }   // v17.56: the teammate hears the boss go down, as the host does   // v22.xx (R53): an objective row in caps
   try{
     var p=G.player;
@@ -55827,6 +56034,7 @@ function styTone(notes){
 function styMedal(txt,pts,x,y){
   var S=styS();
   if(!scoreBonus(pts,x,y-12,'')) return 0;
+  try{ feedMedal(txt,pts); }catch(_fmd){}   // v27.24 (feed1): the medal and its figure in the feed
   S.pops.push({txt:txt,pts:pts,t:+G.t||0});
   if(S.pops.length>8) S.pops.shift();
   try{ styTone(STY_SND[txt]); }catch(_sn){}
