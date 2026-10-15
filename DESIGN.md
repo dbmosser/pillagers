@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.16 - SIX NEW HEADGEARS
+
+Co-op hunt while he was away. His order of 2026-10-15: player cosmetics need major improvements, and every cosmetic should visibly change the silhouette at gameplay zoom, not just a tint. Six new headgears on the HEADGEAR rack that change the shape of the head: a Boonie Hat with a wide floppy brim, a Tactical Helmet with ear defenders and a lamp, a yellow Hard Hat with a ridge and a lamp, a Goggle Cap with the lenses pushed up, a Gas Mask with a hood and a filter canister on the side you face, and a Heavy Helmet with a tall crest, cheek guards and a nose bar. The trim takes the colour scheme accent, so a hat matches the rest of the look. They are earned (7 raids, 6 and 12 extractions, 9 raids, level 3, two Warden kills) and, like the Spartan Helmet, yours alone: no pillager or crowd member wears them. Cosmetic only.
+
+MEASURED. Check 28.16 passes, and fails on v28.15.
 ## v28.15 - THE NINTH BELT KEY STAYS ON SCREEN
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: on the stash the tactical belt row ran past the LOADOUT panel at the default menu size, key 9 off the edge of the screen at 1440p (key 9 right edge 2633 px, panel 2523, screen 2560). The box round the keys took the width of nine full size keys and never shrank, so the v18.98 rule that shrinks each key to fit had nothing to work on. Proven in headless Chromium at 1920x1080 with the menu zoom 1.3 (the 2560x1440 layout): key 9 right 1976 against the panel 1892 and the screen 1920. The box may now shrink (min-width:0), so the nine keys share one row inside the panel and stay square.

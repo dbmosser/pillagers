@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.15';
+var VER='28.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31612,6 +31612,15 @@ var COSMETICS=[
   // v10.45, his notes: a green Spartan helmet, and a white ghost mask.
   {id:'spartan',   name:'Spartan Helmet', how:'extracts:20', kind:'hat', crowd:0},
   {id:'ghostmask', name:'Ghost Mask',     how:'warden:3',    kind:'hat', crowd:0},
+  // v28.16 (cosm3), HIS ORDER (2026-10-15): "player cosmetics still need major improvements". HEAD LAYER: six headgears that change the head
+  // SHAPE at raid size, not a tint (a wide brim, a taller dome, ear pro, a lamp, a crest). Trimmed in the scheme accent. Yours alone, like the
+  // Spartan Helmet: nobody in the crowd and no pillager wears them (crowd:0).
+  {id:'boonie',    name:'Boonie Hat',       how:'runs:7',      kind:'hat', crowd:0},
+  {id:'tachelm',   name:'Tactical Helmet',  how:'extracts:6',  kind:'hat', crowd:0},
+  {id:'hardhat',   name:'Hard Hat',         how:'runs:9',      kind:'hat', crowd:0},
+  {id:'goggles',   name:'Goggle Cap',       how:'level:3',     kind:'hat', crowd:0},
+  {id:'gasmask',   name:'Gas Mask',         how:'extracts:12', kind:'hat', crowd:0},
+  {id:'heavyhelm', name:'Heavy Helmet',     how:'warden:2',    kind:'hat', crowd:0},
   // v10.17, his answer 14: BEARD, the seventh rack.
   {id:'clean',    name:'Clean Shaven', how:'always',      kind:'beard'},
   {id:'stubble',  name:'Stubble',      how:'runs:3',      kind:'beard'},
@@ -32949,6 +32958,70 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.beginPath(); wc.ellipse(hx2+3.6,ty-32.6,2.2,3.2,0.3,0,6.2832); wc.fill();
       wc.beginPath(); wc.ellipse(hx2,ty-26.8,2.4,3.4,0,0,6.2832); wc.fill();
       wc.fillStyle='#1a1c22'; rrF(hx2-9.2,ty-40.6,18.4,3.2,2);
+    } else if(HAT==='boonie'){
+      // v28.16 (cosm3): a floppy brim far wider than the head, a soft crown, a band in the accent.
+      var _hA=_SCH?_SCH.a:'#c8b060';
+      wc.fillStyle=INK;       rrF(hx2-13.6,ty-39.6,27.2,5.4,2.6);
+      wc.fillStyle='#6a6a48'; rrF(hx2-13.0,ty-39.1,26.0,4.2,2.1);
+      wc.fillStyle='#4a4a30'; rrF(hx2-13.0,ty-36.2,26.0,1.4,0.7);
+      wc.fillStyle='#8c8c64'; wc.fillRect(hx2-11.6,ty-38.9,9.0,0.9);
+      wc.fillStyle=INK;       rrF(hx2-8.4,ty-45.2,16.8,7.8,4);
+      wc.fillStyle='#5e5e40'; rrF(hx2-7.8,ty-44.7,15.6,6.8,3.4);
+      wc.fillStyle='#7a7a56'; rrF(hx2-6.4,ty-44.4,7.6,1.8,0.9);
+      wc.fillStyle=_hA;       wc.fillRect(hx2-7.8,ty-40.6,15.6,1.4);
+    } else if(HAT==='tachelm'){
+      // v28.16 (cosm3): a combat helmet, ear pro on both sides and a lamp on the front rail (the accent).
+      wc.fillStyle=INK;       rrF(hx2-9.8,ty-44.0,19.6,10.8,5.2);
+      wc.fillStyle='#4c5646'; rrF(hx2-9.2,ty-43.5,18.4,9.6,4.6);
+      wc.fillStyle='#6a7662'; rrF(hx2-7.8,ty-43.2,9.8,2.2,1.1);
+      wc.fillStyle='#363e32'; wc.fillRect(hx2-9.2,ty-36.2,18.4,1.4);
+      wc.fillStyle=INK;       rrF(hx2-12.2,ty-35.4,4.8,8.6,2.2); rrF(hx2+7.4,ty-35.4,4.8,8.6,2.2);
+      wc.fillStyle='#2a3028'; rrF(hx2-11.6,ty-34.8,3.6,7.4,1.6); rrF(hx2+8.0,ty-34.8,3.6,7.4,1.6);
+      wc.fillStyle='#454e42'; wc.fillRect(hx2-11.2,ty-34.6,1.0,6.8); wc.fillRect(hx2+8.4,ty-34.6,1.0,6.8);
+      wc.fillStyle=INK;       wc.fillRect(hx2+fl*3.8-2.1,ty-46.6,4.2,3.6);
+      wc.fillStyle=_SCH?_SCH.a:'#e8d890'; wc.fillRect(hx2+fl*3.8-1.5,ty-46.1,3.0,2.4);
+    } else if(HAT==='hardhat'){
+      // v28.16 (cosm3): a site worker hard hat, safety yellow, a ridge down the dome, a brim and a lamp.
+      wc.fillStyle=INK;       rrF(hx2-9.6,ty-44.0,19.2,9.8,5); rrF(hx2-11.4,ty-37.6,22.8,3.6,1.7);
+      wc.fillStyle='#e2b22c'; rrF(hx2-9.0,ty-43.5,18.0,8.8,4.5); rrF(hx2-10.8,ty-37.1,21.6,2.6,1.3);
+      wc.fillStyle='#ffd866'; rrF(hx2-7.4,ty-43.2,8.6,2.2,1.1);
+      wc.fillStyle='#b58a14'; wc.fillRect(hx2-1.0,ty-43.4,2.0,6.6); wc.fillRect(hx2-10.8,ty-35.8,21.6,0.7);
+      wc.fillStyle=INK;       wc.fillRect(hx2+fl*3.9-1.9,ty-41.4,3.8,3.2);
+      wc.fillStyle='#f6f2e0'; wc.fillRect(hx2+fl*3.9-1.3,ty-41.0,2.6,2.0);
+    } else if(HAT==='goggles'){
+      // v28.16 (cosm3): a flat cap with the goggles pushed up on the front of it, the lenses in the accent.
+      var _gA=_SCH?_SCH.a:'#7fd0ff';
+      wc.fillStyle=INK;       rrF(hx2-8.8,ty-41.4,17.6,6.0,2.8);
+      wc.fillStyle='#3a4452'; rrF(hx2-8.2,ty-40.9,16.4,5.0,2.4);
+      wc.fillStyle='#566380'; wc.fillRect(hx2-6.8,ty-40.6,7.0,1.0);
+      wc.fillStyle=INK;       wc.fillRect(hx2-8.8,ty-37.8,17.6,1.8);
+      wc.fillStyle='#262c36'; wc.fillRect(hx2-8.4,ty-37.5,16.8,1.1);
+      wc.fillStyle=INK;       wc.beginPath(); wc.ellipse(hx2-4.0,ty-39.0,3.7,3.1,0,0,6.2832); wc.ellipse(hx2+4.0,ty-39.0,3.7,3.1,0,0,6.2832); wc.fill();
+      wc.fillStyle=_gA;       wc.beginPath(); wc.ellipse(hx2-4.0,ty-39.0,2.8,2.2,0,0,6.2832); wc.ellipse(hx2+4.0,ty-39.0,2.8,2.2,0,0,6.2832); wc.fill();
+      wc.fillStyle='rgba(255,255,255,.75)'; wc.fillRect(hx2-5.6,ty-40.3,1.4,0.9); wc.fillRect(hx2+2.4,ty-40.3,1.4,0.9);
+    } else if(HAT==='gasmask'){
+      // v28.16 (cosm3): a hood, glass lenses over the eyes and a respirator with a filter on the side he faces.
+      var _mA=_SCH?_SCH.a:'#c8a24a';
+      wc.fillStyle=INK;       rrF(hx2-9.6,ty-43.2,19.2,10.2,5);
+      wc.fillStyle='#2e353c'; rrF(hx2-9.0,ty-42.7,18.0,9.0,4.4);
+      wc.fillStyle='#434c55'; rrF(hx2-7.6,ty-42.4,8.4,1.8,0.9);
+      wc.fillStyle=INK;       wc.beginPath(); wc.ellipse(hx2-3.6,ty-29.8,3.9,4.0,0,0,6.2832); wc.ellipse(hx2+3.6,ty-29.8,3.9,4.0,0,0,6.2832); wc.fill();
+      wc.fillStyle='rgba(60,98,86,.55)'; wc.beginPath(); wc.ellipse(hx2-3.6,ty-29.8,3.1,3.2,0,0,6.2832); wc.ellipse(hx2+3.6,ty-29.8,3.1,3.2,0,0,6.2832); wc.fill();
+      wc.fillStyle='rgba(225,255,240,.7)'; wc.fillRect(hx2-5.0,ty-31.9,1.5,1.0); wc.fillRect(hx2+2.2,ty-31.9,1.5,1.0);
+      wc.fillStyle=INK;       rrF(hx2-6.8,ty-26.4,13.6,8.6,3.8);
+      wc.fillStyle='#303840'; rrF(hx2-6.2,ty-25.9,12.4,7.6,3.2);
+      wc.fillStyle='#4a535d'; wc.fillRect(hx2-4.8,ty-25.4,9.6,1.0);
+      wc.fillStyle=INK;       rrF(hx2+fl*9.2-3.6,ty-32.0,7.2,8.0,2.6);
+      wc.fillStyle='#5c6652'; rrF(hx2+fl*9.2-3.0,ty-31.5,6.0,7.0,2.1);
+      wc.fillStyle=_mA;       wc.fillRect(hx2+fl*9.2-3.0,ty-29.0,6.0,1.4);
+    } else if(HAT==='heavyhelm'){
+      // v28.16 (cosm3): a heavy helmet, a tall dome with a crest in the accent, cheek guards and a nose bar, the face open under the brow.
+      wc.fillStyle=INK;       rrF(hx2-10.8,ty-46.0,21.6,13.8,6.4); rrF(hx2-11.4,ty-35.4,5.2,12.4,2.2); rrF(hx2+6.2,ty-35.4,5.2,12.4,2.2);
+      wc.fillStyle='#5a636c'; rrF(hx2-10.2,ty-45.5,20.4,12.8,5.8); rrF(hx2-10.8,ty-34.8,4.0,11.2,1.8); rrF(hx2+6.8,ty-34.8,4.0,11.2,1.8);
+      wc.fillStyle='#7c8792'; rrF(hx2-8.8,ty-45.2,17.6,3.6,3.2);
+      wc.fillStyle='#3e464e'; wc.fillRect(hx2-10.2,ty-34.2,20.4,1.6); wc.fillRect(hx2-0.8,ty-34.2,1.6,5.8);
+      wc.fillStyle=INK;       rrF(hx2-2.2,ty-50.2,4.4,10.2,1.6);
+      wc.fillStyle=_SCH?_SCH.a:'#d8903a'; rrF(hx2-1.4,ty-49.6,2.8,9.0,1.2);
     }
   }
   // v10.54, his notes: THE SUIT'S OWN PAINT. Last, over everything the racks
@@ -33109,7 +33182,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.textAlign='left';
   }
   // a small mouth, hurt pulls it into a grimace
-  wc.fillStyle=(_BLD==='curved'&&!(OUTF&&/^(skeleton|robot|trooper)$/.test(OUTF.mark))&&!/^(mask|spartan|ghostmask)$/.test(HAT))?'#c25a6c':'#8a5c46';   /* v20.15, code review: nor over a mask or helmet worn as a hat */   // v20.05: not on a skull, a robot or a helmet   // v20.01: Curved, a rose mouth
+  wc.fillStyle=(_BLD==='curved'&&!(OUTF&&/^(skeleton|robot|trooper)$/.test(OUTF.mark))&&!/^(mask|spartan|ghostmask|gasmask)$/.test(HAT))?'#c25a6c':'#8a5c46';   /* v20.15, code review: nor over a mask or helmet worn as a hat */   // v20.05: not on a skull, a robot or a helmet   // v20.01: Curved, a rose mouth
   if(st.hurt>0) wc.fillRect(hx2-2,ty-25.6,4,1.6);
   else wc.fillRect(hx2-1.5,ty-25.2,3,1);
 
@@ -46352,7 +46425,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.15: All nine tactical belt keys on the stash now stay inside the LOADOUT panel at 1440p and 4K. Check 28.15 fails on v28.14',
+  now:'v28.16: Six new headgears in FASHION: boonie, tactical helmet, hard hat, goggle cap, gas mask, heavy helmet. Check 28.16 fails on v28.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

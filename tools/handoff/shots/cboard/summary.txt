@@ -1,0 +1,11 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  c1-extracted-ledger                    NOT STAGED   4.4s    | EXCEPTION ReferenceError: P is not defined
+    at <anonymous>:1:2408
+    at async <anonymous>:1:21
+  c2-kia-ledger                          NOT STAGED  65.6s    | ERROR Unable to connect to the remote server
+  c3-leaderboard-step                    NOT STAGED   6.4s    | EXCEPTION ReferenceError: P is not defined
+    at <anonymous>:1:2408
+    at async <anonymous>:1:21
+  c4-leaderboard-step-outside            NOT STAGED   6.9s    | EXCEPTION ReferenceError: P is not defined
+    at <anonymous>:1:2408
+    at async <anonymous>:1:21

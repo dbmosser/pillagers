@@ -1,0 +1,7 @@
+v28.16: six new headgears
+
+Six new headgears in FASHION: boonie, tactical helmet, hard hat, goggle cap, gas mask, heavy helmet.
+
+Check 28.16. Fails on v28.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
