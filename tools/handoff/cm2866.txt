@@ -1,0 +1,7 @@
+v28.66: a fire never puts a body through a wall
+
+A fire that lights under you or a machine no longer pushes anyone through a wall.
+
+Check 28.66. Fails on v28.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

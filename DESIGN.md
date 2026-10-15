@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.66 - A FIRE NEVER PUTS A BODY THROUGH A WALL
+
+Co-op hunt while he was away. Cloud robustness hunt. A fire that lights on a body pushes it out to the edge of the disc along its own line from the centre, checking only that the edge spot is open floor. A fuel fire is 92 across from its centre and its spot is only kept 30 clear of walls, so most discs cross a wall (53 of the 60 planned fuel fires over seeds 1 to 30 on Cold Storage), and a body on the wall side of the centre was pushed straight through the wall, into a shut room or the far side of a building. Proven in headless Chromium on v27.27 (CAREER seed 7): the player stood 20 left of a 16 wide wall, a fire lit 60 left of the wall, and one frame later the player stood 44 to the right of it, through the wall, on four walls out of four. Machines and pillagers take the same push. Now the push takes an edge spot only when the line from where the body stood to that spot is clear, and tries seven angles instead of five (out to about 95 degrees from its own line, enough to slide along the wall) before it gives up, so a body is never put on the far side of the fire. Where the old first spot was clear nothing changes.
+
+MEASURED. Check 28.66 passes, and fails on v28.65.
 ## v28.65 - AN AIR STRIKE KILL IS NOT COUNTED ON YOUR GUN
 
 Co-op hunt while he was away. Cloud robustness hunt. Every gun counts its kills from the mark the last blow leaves on a body: a round marks it with the gun, a swing, a frag or a barrel marks it as theirs. The air strike left no mark, so a body you had shot and then finished with the strike kept your round's mark, and the kill went on that gun's tally (and, inside 1.5 s and past 45 m, paid a LONG SHOT). Proven in headless Chromium on v27.32 (CAREER seed 3): a crawler last hit by the Scav Pistol, then killed by an air strike: the gun tally went from {} to {pistol:1}. Now the strike marks the bodies it hits as an air strike blow, so the kill counts as yours (the kill mark is untouched) but on no gun and as no gun style.
