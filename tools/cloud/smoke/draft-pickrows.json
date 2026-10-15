@@ -1,0 +1,12 @@
+{
+ "title": "THE PICKUP STACK SHOWS SIX ROWS",
+ "why": "His answer 36 (2026-10-13): the pickup stack should show more rows. It held four; it now holds six.",
+ "now": "The pickup stack on the right edge now shows six rows instead of four.",
+ "edits": [
+  {
+   "anchor": "var PICKN=4, PICKLIFE=4;",
+   "replacement": "var PICKN=6, PICKLIFE=4;   // v27.xx (pickrows), HIS ANSWER 36 (2026-10-13): \"the pickup stack gets MORE rows\". Six rows, were four; each still lives four seconds, newest at the bottom"
+  }
+ ],
+ "check": "  {v:'VER',what:'his answer 36: the pickup stack holds six rows, not four: eight different pickups in a row leave the newest six, and the stack draws all six',\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||!window.__state||typeof pickSay!=='function'||typeof drawPickups!=='function') return 'SKIP: no pickup stack here';\n     var bad=[], g=null, i, n, names=[];\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';\n       g.pick=[]; g.bagOpen=false; g.mapOpen=false;\n       for(i=0;i<8;i++) pickSay('ZQ ROW '+i,{c:'text'});\n       if(g.pick.length!==6) bad.push('eight pickups left '+g.pick.length+' rows in the stack, not 6');\n       else if(g.pick[5].m!=='ZQ ROW 7'||g.pick[0].m!=='ZQ ROW 2') bad.push('the stack does not keep the newest six ('+g.pick[0].m+' to '+g.pick[5].m+')');\n       g.t+=0.4;\n       for(i=0;i<g.pick.length;i++) g.pick[i].at=g.t-1;\n       n=drawPickups();\n       if(H>=1000&&n!==6) bad.push('the stack drew '+n+' of its 6 rows at '+W+'x'+H);\n       g.pick=[];\n     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }\n     finally{\n       try{ if(g) g.pick=[]; }catch(_p){}\n       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.iv=0; __endRaid('abandon'); } }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join('; '):null; }},"
+}

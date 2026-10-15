@@ -1,0 +1,20 @@
+{
+ "title": "THE BOUNTY READS $1,500",
+ "why": "Every money figure on the screen reads with its comma ($1,234), through one helper. The bounty pillager built three of his texts by hand, so the BOUNTY ON THE MAP alert, its feed line and the label on his ring read $1500 (and player 2's alert too), while BOUNTY CLAIMED, a moment later, read +$1,500. Proven in headless Chromium on real frames: the ring drew BOUNTY  $1500 and the alert said HE HUNTS YOU  $1500, then BOUNTY CLAIMED  +$1,500. The three now use the same helper as every other figure.",
+ "now": "The bounty now reads $1,500 with its comma everywhere it shows.",
+ "edits": [
+  {
+   "anchor": "    try{ say('BOUNTY ON THE MAP','warn',{sub:'HE HUNTS YOU  $'+BOUNTY.pay}); }catch(_bs){}",
+   "replacement": "    try{ say('BOUNTY ON THE MAP','warn',{sub:'HE HUNTS YOU  '+arcadeCr(BOUNTY.pay)}); }catch(_bs){}   // v16.xx (cloud-raid-bountycomma), CLOUD HUNT 2026-10-15: $1,500 with its comma, as everywhere else"
+  },
+  {
+   "anchor": "    hudText('BOUNTY  $'+BOUNTY.pay,s.x,s.y+ev.r*q+U(16));",
+   "replacement": "    hudText('BOUNTY  '+arcadeCr(BOUNTY.pay),s.x,s.y+ev.r*q+U(16));   // v16.xx (cloud-raid-bountycomma): and on the ring"
+  },
+  {
+   "anchor": "    else if(id==='bounty') say('BOUNTY ON THE MAP','warn',{sub:'HE HUNTS '+String(((typeof netSeatName==='function')?netSeatName(0):'')||'THE HOST').toUpperCase()+'  $'+BOUNTY.pay});",
+   "replacement": "    else if(id==='bounty') say('BOUNTY ON THE MAP','warn',{sub:'HE HUNTS '+String(((typeof netSeatName==='function')?netSeatName(0):'')||'THE HOST').toUpperCase()+'  '+arcadeCr(BOUNTY.pay)});   // v16.xx (cloud-raid-bountycomma): and in player 2 window"
+  }
+ ],
+ "check": "  {v:'VER',what:'cloud-raid-bountycomma: the bounty figure reads $1,500 with its comma in the BOUNTY ON THE MAP alert and on its ring, as when it is paid',\n   run:function(){\n     if(!(window.__state&&window.__runPrep&&window.__loop&&window.__textTrace)) return 'SKIP: no raid or text trace here';\n     if(typeof arcadeDeploy!=='function'||typeof evLaunch!=='function'||typeof BOUNTY!=='object'||typeof arcadeCr!=='function') return 'SKIP: no arcade or bounty in this fixture';\n     var g=null, p=null, rs=say, own=false, lines=[], ev, i, ts, tr, bad=[], raw='$'+BOUNTY.pay, oIv;\n     try{\n       __topClear(); __runPrep();\n       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';\n       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';\n       p=g.player; keys={}; oIv=p.iv; p.iv=999;\n       say=function(m,kd,o){ lines.push(String(m)+'|'+((o&&o.sub)||'')); }; own=true;\n       g.t=5; flowTick(0.1); g.flow.ev.plan.length=0;\n       ev=evLaunch('bounty'); if(!ev) return 'SKIP: staging: no bounty could be launched';\n       for(i=0;i<200&&ev.ph==='warn';i++) flowTick(0.25);\n       if(ev.ph!=='live') return 'SKIP: staging: the bounty did not come in';\n       ts=performance.now(); for(i=0;i<3;i++){ ts+=16.7; __loop(ts); }\n       tr=__textTrace(function(){ ts+=16.7; __loop(ts); });\n       lines.forEach(function(l){ if(l.indexOf(raw)>=0) bad.push('the alert says '+l); });\n       tr.forEach(function(o){ if(String(o.t).indexOf('BOUNTY  '+raw)===0) bad.push('the ring says '+o.t); });\n       return bad.length?bad.join('; '):null;\n     }catch(x){ return 'threw: '+(x&&x.stack||x); }\n     finally{ if(own) say=rs; if(p) p.iv=oIv; try{ __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_t){} }\n   }},"
+}
