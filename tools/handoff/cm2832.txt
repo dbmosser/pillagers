@@ -1,0 +1,7 @@
+v28.32: the what is new card names polish pass 4
+
+The what is new card names polish pass 4.
+
+Check 28.32. Fails on v28.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

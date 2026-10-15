@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.32 - THE WHAT IS NEW CARD NAMES POLISH PASS 4
+
+Co-op hunt while he was away. The card was stamped v28.17 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 28.32 passes, and fails on v28.31.
 ## v28.31 - KID FIRING LEAVES HIS ITEM ALONE
 
 Co-op hunt while he was away. With Kid firing on, player 2 taking a frag, bandage or plate out from the wheel had it used for him: taking an item out leaves the gun as the selected slot, and kid firing tested only that slot, so with a machine in range it pressed the trigger and the item in his hand took it. Proven with eval: player 2 with a machine in range took a frag out and 0.35 s later it was cooked and thrown, 3 frags down to 2, while every other trigger path already skips a held item (v26.24: an item takes a fresh pull of the trigger). Now kid firing does not fire while an item is in his hand; it still turns him toward the machine, and with nothing in his hand it shoots exactly as before.
