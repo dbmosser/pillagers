@@ -2290,7 +2290,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.10';
+var VER='28.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18766,6 +18766,7 @@ var PICKN=6, PICKLIFE=4;   // v27.xx (pickrows), HIS ANSWER 36 (2026-10-13): "th
 function pickSay(m,o){
   if(!G) return;
   var q=(G.pick=G.pick||[]), now=G.t||0, it=(o&&o.item)||'', n=(o&&o.n>0)?Math.round(o.n):1, i, r;
+  if(it&&G.need&&G.need[it]>0&&!G.sim&&!(o&&o.tag)){ var _no={}, _nk; if(o) for(_nk in o) _no[_nk]=o[_nk]; _no.tag='NEEDED \u00b7 CONTRACT'; o=_no; }   // v26.xx (career9): a contract item says why it is gold
   // v22.59 (R19): a keyed row (o.key) said again, as BACKPACK FULL is every frame E is held on a full backpack, refreshes where it
   // is: new words, a new detail, its full time again, and no count.
   if(o&&o.key){ for(i=0;i<q.length;i++){ r=q[i]; if(r.key===o.key&&r.T>0){ r.m=String(m); r.sub=o.sub?String(o.sub):''; if(o.c) r.c=o.c; r.T=PICKLIFE; return; } } }
@@ -39625,6 +39626,22 @@ function trophyOpen(){
   try{ sndUi('open'); }catch(_su){}
   try{ var b=document.getElementById('closetrophy'); if(b&&!b._tr){ b._tr=1; b.onclick=function(){ document.getElementById('trophymodal').classList.remove('on'); try{ renderHub(); }catch(_rh){} }; } }catch(_cb){}
 }
+// v26.xx (career9), HIS ANSWER (2026-10-14) to the needed-item glow, "not sure how this works": IT SAYS WHY. The first time a shut box that holds a contract item is within 65 metres of you
+// (once for the save, P.needTold), one caps callout says CONTRACT ITEM NEARBY over GOLD GLOW MARKS THE BOX. And the item itself says why wherever it shows: its row in the pickup stack
+// carries the tag NEEDED . CONTRACT (set when the row is made, so a second one picked up still counts into the same row), and its name line in the backpack carries it in gold.
+function needHint(){
+  var p=G&&G.player, i, c;
+  if(!p||!G.needN||!P||P.needTold||G.sim) return 0;
+  for(i=0;i<(G.containers||[]).length;i++){
+    c=G.containers[i]; if(!needHolds(c)) continue;
+    if(Math.hypot(c.x-p.x,c.y-p.y)<650){
+      P.needTold=1; try{ saveProfile(); }catch(_s){}
+      try{ say('CONTRACT ITEM NEARBY','obj',{sub:'GOLD GLOW MARKS THE BOX'}); }catch(_sy){}
+      return 1;
+    }
+  }
+  return 0;
+}
 function careerTick(dt){
   if(!G||G.sim||G.arcade||G.over) return;
   G.cxT=(G.cxT||0)-(dt>0?dt:0);
@@ -39632,6 +39649,7 @@ function careerTick(dt){
   G.cxT=1;
   codexScan();
   needRefresh();
+  needHint();
 }
 careerStyle('careercss2',
   '#codexmodal .cxgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:10px;flex:1;min-height:0;overflow-y:auto;padding:4px 4px 8px 2px;align-content:start}'+
@@ -42086,6 +42104,7 @@ function drawBag(){
     ctx.font=bFS(TYPE.label);
     ctx.fillStyle=RCOL[sit?dispR(sst.key):null]||'#cdd6dd';
     ctx.fillText((sit?sit.name:sst.key)+(sst.idxs.length>1?('  x'+sst.idxs.length):''),x+11,hintY);
+    if(G.need&&G.need[sst.key]>0){ var _nt=(sit?sit.name:sst.key)+(sst.idxs.length>1?('  x'+sst.idxs.length):''); ctx.fillStyle='#ffd452'; ctx.fillText('NEEDED \u00b7 CONTRACT',x+11+ctx.measureText(_nt).width+LH(12)*BZ,hintY); }   // v26.xx (career9)
     ctx.textAlign='right'; ctx.fillStyle='#ffc04a';
     // v15.95, credits audit finding: THE BACKPACK PANEL PRINTS THE PRICE WITH THE THOUSANDS SEPARATOR. This line printed ival()
     // bare, so a selected Meridian Reactor Core read $2600 each while the stash hover and the tag-junk hint print the very same
@@ -46184,7 +46203,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.10: The air strike prompts name the controller buttons you set, not always LB + RB. Check 28.10 fails on v28.09',
+  now:'v28.11: The gold glow says why: a one-time callout and a NEEDED, CONTRACT tag on the item. Check 28.11 fails on v28.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

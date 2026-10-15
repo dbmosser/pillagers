@@ -52,8 +52,8 @@
                       "replacement":  "var GROUPS=[[\u0027outfit\u0027,\u0027OUTFIT\u0027],[\u0027scheme\u0027,\u0027COLOUR SCHEME\u0027],[\u0027build\u0027,\u0027BUILD\u0027],[\u0027vest\u0027,\u0027VEST\u0027],[\u0027pads\u0027,\u0027SHOULDERS\u0027]"
                   },
                   {
-                      "anchor":  "if(c.kind===\u0027scheme\u0027||c.kind===\u0027fit\u0027||c.kind===\u0027tattoo\u0027||c.kind===\u0027face\u0027",
-                      "replacement":  "if(c.kind===\u0027vest\u0027||c.kind===\u0027pads\u0027||c.kind===\u0027scheme\u0027||c.kind===\u0027fit\u0027||c.kind===\u0027tattoo\u0027||c.kind===\u0027face\u0027"
+                      "anchor":  "c.kind===\u0027scheme\u0027||c.kind===\u0027fit\u0027||c.kind===\u0027tattoo\u0027||c.kind===\u0027face\u0027",
+                      "replacement":  "c.kind===\u0027vest\u0027||c.kind===\u0027pads\u0027||c.kind===\u0027scheme\u0027||c.kind===\u0027fit\u0027||c.kind===\u0027tattoo\u0027||c.kind===\u0027face\u0027"
                   },
                   {
                       "anchor":  "slot===\u0027tattoo\u0027||slot===\u0027scheme\u0027){   // v10.54: outfit",

@@ -1,0 +1,5 @@
+## v28.11 - THE GLOW SAYS WHY
+
+Co-op hunt while he was away. His answer on the needed-item glow: he was not sure how it works. So it now explains itself. The first time a shut box that holds an item one of your contracts needs is near you, one caps callout reads CONTRACT ITEM NEARBY over GOLD GLOW MARKS THE BOX, once for your save and never again. The item says why wherever you see it: its row in the pickup stack carries the tag NEEDED, CONTRACT as soon as it is made, and picking up a second one still counts into the same row, and in the backpack its name line carries the same tag in gold. Nothing that drops or is paid changes.
+
+MEASURED. Check 28.11 passes, and fails on v28.10.

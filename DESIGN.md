@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.11 - THE GLOW SAYS WHY
+
+Co-op hunt while he was away. His answer on the needed-item glow: he was not sure how it works. So it now explains itself. The first time a shut box that holds an item one of your contracts needs is near you, one caps callout reads CONTRACT ITEM NEARBY over GOLD GLOW MARKS THE BOX, once for your save and never again. The item says why wherever you see it: its row in the pickup stack carries the tag NEEDED, CONTRACT as soon as it is made, and picking up a second one still counts into the same row, and in the backpack its name line carries the same tag in gold. Nothing that drops or is paid changes.
+
+MEASURED. Check 28.11 passes, and fails on v28.10.
 ## v28.10 - THE AIR STRIKE NAMES YOUR KEYS
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: the air strike prompts were written out by hand, so they ignored rebinding. The key half was fixed earlier (v27.43); on a controller, with CHANGE PAD BUTTONS moving previous gun to Y, the chord is really Y and RB, but the ready plate, the aim line and AIR STRIKE READY still said LB + RB. The three prompts now read the buttons as set; on the defaults they read exactly as before.
