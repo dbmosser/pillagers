@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.58 - THE WHAT IS NEW CARD NAMES POLISH PASS 6
+
+Co-op hunt while he was away. The card was stamped v28.45 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 28.58 passes, and fails on v28.57.
 ## v28.57 - THE SUPPORT MG SPINS UP AGAIN AFTER YOU ARE DOWNED
 
 Co-op hunt while he was away. The Support MG spin only wound down on a standing frame, so going down froze it at whatever it was. Proven in the cloud: spun up to full, downed for seconds, picked up, and the first fresh pull fired at full rate in the first tenth of a second, where a fresh pull from a standstill fires nothing for 0.15 s. v26.60 says a long pause starts the spin over, and a bleed-out is the longest pause there is. Going down now lets the spin go and cuts the whirr, so a pull after a pick-up winds up from the start.
