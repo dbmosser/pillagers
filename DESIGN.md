@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.69 - A MENU PRESS NEVER ACTS IN THE RAID AFTER CHANGE PAD BUTTONS
+
+Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: with CHANGE PAD BUTTONS moving an action onto A, B or MENU, the press that shut a menu went on into the raid as that action. With fire on A, A on RESUME RUN (or on ASCEND TO THIS SECTOR) fired a real shot; with dodge roll on B, B in the pause box rolled; with crouch on MENU, MENU crouched. Proven in headless Chromium through the real frame loop: fire bound to A, A on RESUME RUN, 1 shot fired; the standard buttons, 0. The menu marks a press as seen by the physical button but the raid reads the button the action is bound to, so the mark missed; the other way round, with pause moved onto B, a B in the raid opened the pause box and the next poll shut it again (holding B flickered it). Now the raid reads the marks of seen presses by action and hands them back by button, every button held while a menu has the controller is noted, and in the raid a moved action on a noted button reads as up until it is let go. The standard layout behaves exactly as before.
+
+MEASURED. Check 27.69 passes, and fails on v27.68.
 ## v27.68 - CONTROLLER B CLOSES SETTINGS
 
 Co-op hunt while he was away. Found in the cloud hunt of 2026-10-15: with MINIMAP ZOOM set to CLOSE, pressing B on a controller in Settings did not shut the window. B looks for the first button whose words read like a way out, and the MINIMAP ZOOM row reading CLOSE comes before the window CLOSE button, so B clicked the row: the zoom went from CLOSE to STANDARD and Settings stayed open. Proven in headless Chromium through the real pad poll: {"zoomBtn":"CLOSE","openAfterB":true,"span1":1000,"zoomBtn2":"STANDARD"}. B now skips the Settings option rows, so it reaches the window CLOSE button.

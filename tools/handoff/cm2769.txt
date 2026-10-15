@@ -1,0 +1,7 @@
+v27.69: a menu press never acts in the raid after change pad buttons
+
+With your own controller buttons, the press that closes the pause box or ascends no longer fires, rolls or crouches in the raid.
+
+Check 27.69. Fails on v27.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
