@@ -1,0 +1,7 @@
+v27.72: a restore code keeps locks and trophies
+
+A restore code now brings back your stash locks and your trophies.
+
+Check 27.72. Fails on v27.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

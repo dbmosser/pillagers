@@ -2249,7 +2249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='27.71';
+var VER='27.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44834,7 +44834,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v27.71: A restore code now brings back your ARMORY codex and the kills with each gun. Check 27.71 fails on v27.70',
+  now:'v27.72: A restore code now brings back your stash locks and your trophies. Check 27.72 fails on v27.71',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47564,6 +47564,10 @@ function restoreMake(){
          pk:P.pack||0,ra:P.racks||0,ar:P.arrays||0,cs:P.cstand||0,
          sc:(P.spClaimed||[]).slice(),ki:P.kills||{},cb:P.cosBought||{},
          j:P.junk||{},mi:P.mapIx||0,cd:P.cond||'day',wq:P.wxPick||'any',
+         // v27.72 (cloud-menus-restore-keeps-locks), CLOUD HUNT 2026-10-15: the stash locks and the trophy case travel with the code, kept short: the locks as a list of
+         // item ids, each trophy as the local calendar day it was earned (the case shows only month and day)
+         kp:(function(){ var a=[], k; if(P.keep&&typeof P.keep==='object') for(k in P.keep) if(P.keep[k]&&Object.prototype.hasOwnProperty.call(ITEMS,k)) a.push(k); return a; })(),
+         tr:(function(){ var q={}, k, t; if(P.trophies&&typeof P.trophies==='object'&&!Array.isArray(P.trophies)) for(k in P.trophies) if(P.trophies[k]&&trophyOf(k)){ t=+P.trophies[k]; if(!(t>864e5)) t=Date.now(); q[k]=Math.floor((t-new Date(t).getTimezoneOffset()*6e4)/864e5); } return q; })(),
          // v12.97: NET LIFETIME EARNINGS. A counter kept for the life of the
          // profile, not a restatement of the run log, which keeps only the last
          // sixty runs; leaving it out meant a restored character wore the figure
@@ -47640,6 +47644,14 @@ function restoreApply(o){
   P.pack=o.pk|0; P.racks=o.ra|0; P.arrays=o.ar|0; P.cstand=o.cs|0;
   P.spClaimed=(o.sc||[]).slice(); P.kills=o.ki||{}; P.cosBought=o.cb||{};
   P.junk=o.j||{}; P.mapIx=o.mi|0; P.cond=(o.cd==='night')?'night':'day';
+  // v27.72 (cloud-menus-restore-keeps-locks), CLOUD HUNT 2026-10-15: THE LOCKS AND THE TROPHIES ARE THE RESTORED CHARACTER'S. Neither was carried nor cleared, so his own
+  // code on a fresh browser lost every lock and GOLD HUNTER and OVERSEER DOWN for good, and a code pasted over another character kept that character's locks.
+  // Only items and trophies this build knows come through; an older code with neither starts both clean (the v15.00 rule). The locks come as a list of item ids
+  // (an object of them is read too); a trophy comes as a day number, set to noon of that day so the case shows the same date in any time zone (a value of 1e7
+  // or more is a time in ms and is kept as it is).
+  P.keep={}; P.trophies={}; (function(){ var _kk, _kv, _ka=[]; if(o.kp&&typeof o.kp==='object'){ if(Array.isArray(o.kp)) _ka=o.kp.slice(0,500); else for(_kk in o.kp) if(o.kp[_kk]) _ka.push(_kk); }
+    for(_kk=0;_kk<_ka.length;_kk++) if(typeof _ka[_kk]==='string'&&Object.prototype.hasOwnProperty.call(ITEMS,_ka[_kk])) P.keep[_ka[_kk]]=1;
+    if(o.tr&&typeof o.tr==='object'&&!Array.isArray(o.tr)) for(_kk in o.tr) if(Object.prototype.hasOwnProperty.call(o.tr,_kk)&&trophyOf(_kk)&&o.tr[_kk]){ _kv=+o.tr[_kk]; P.trophies[_kk]=!(_kv>0)?Date.now():(_kv<1e7?_kv*864e5+432e5:_kv); } })();
   P.wxPick=o.wq||'any';
   // v12.97: and the lifetime earnings with them. A code made before v12.97 has no
   // key for it, and an honest zero for a character whose maker never recorded it is
