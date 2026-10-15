@@ -1,0 +1,5 @@
+## v28.36 - PLAYER 2 GOES UP WITH HIS KEPT KIT
+
+Co-op hunt while he was away. The lift R quick ascent takes the kept kit (RANDOM KIT, BEST KIT, FREEBIE KIT on the map select screen) for player 1, but player 2 went up with MY LOADOUT whenever no kit card was raised for him: when the host lift R started the raid and on every drop in (his own lift R or JOIN THE RAID IN PROGRESS), because the host word only committed his packed list. Proven in a staged player 2 window with BEST KIT and RANDOM KIT kept: the up word filled no kit. Now the up word applies his kept kit when no kit card was raised; a card he answered, or one that timed out on his current kit, still decides as before.
+
+MEASURED. Check 28.36 passes, and fails on v28.35.

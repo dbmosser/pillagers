@@ -1,0 +1,7 @@
+v28.36: player 2 goes up with his kept kit
+
+In co-op, player 2 now goes up with the kit he picked on the map select screen (RANDOM KIT, BEST KIT or FREEBIE KIT) when player 1 takes the quick ascent or when he drops into a raid in progress.
+
+Check 28.36. Fails on v28.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

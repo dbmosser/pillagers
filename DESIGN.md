@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.36 - PLAYER 2 GOES UP WITH HIS KEPT KIT
+
+Co-op hunt while he was away. The lift R quick ascent takes the kept kit (RANDOM KIT, BEST KIT, FREEBIE KIT on the map select screen) for player 1, but player 2 went up with MY LOADOUT whenever no kit card was raised for him: when the host lift R started the raid and on every drop in (his own lift R or JOIN THE RAID IN PROGRESS), because the host word only committed his packed list. Proven in a staged player 2 window with BEST KIT and RANDOM KIT kept: the up word filled no kit. Now the up word applies his kept kit when no kit card was raised; a card he answered, or one that timed out on his current kit, still decides as before.
+
+MEASURED. Check 28.36 passes, and fails on v28.35.
 ## v28.35 - PLAYER 2 GETS CLOSE CALL
 
 Co-op hunt while he was away. An enemy round that reached player 2 while his roll i-frames were up never paid CLOSE CALL: the host pays it only in his own round loop, and the hit word the host sends player 2 did not say it was a round, so player 2 took it straight into damagePlayer, which stops at the i-frames with no stamina back, no +25 and no callout. Proven with eval: rolling player 2 kept 10 stamina and the score did not move, while the host in the same spot gets 55 and +25. Now the host marks a round on player 2 with rd:1 (a blast or a bite stays unmarked, matching the host, who is paid only for a round), and player 2 calls closeCall before damagePlayer when the word says round. A standing player 2 takes the round exactly as before.
