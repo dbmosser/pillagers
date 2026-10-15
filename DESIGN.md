@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.88 - THE CARD DOES NOT CLAIM SHARED POWER-UPS
+
+Co-op hunt while he was away. From the cloud review of the party builds: the What is New card said power-ups are shared in the two player game, which is not true. Each window drops power-ups for its own kills and the pickups belong to that window, nothing about them goes over the link. The card now says each player has his own power-ups.
+
+MEASURED. Check 27.88 passes, and fails on v27.87.
 ## v27.87 - THE WHAT IS NEW CARD NAMES POLISH PASS 1
 
 Co-op hunt while he was away. The card was stamped v27.74 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

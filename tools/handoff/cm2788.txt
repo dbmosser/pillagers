@@ -1,0 +1,7 @@
+v27.88: the card does not claim shared power-ups
+
+The What is New card says each player has his own power-ups.
+
+Check 27.88. Fails on v27.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

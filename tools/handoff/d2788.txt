@@ -1,0 +1,5 @@
+## v27.88 - THE CARD DOES NOT CLAIM SHARED POWER-UPS
+
+Co-op hunt while he was away. From the cloud review of the party builds: the What is New card said power-ups are shared in the two player game, which is not true. Each window drops power-ups for its own kills and the pickups belong to that window, nothing about them goes over the link. The card now says each player has his own power-ups.
+
+MEASURED. Check 27.88 passes, and fails on v27.87.
