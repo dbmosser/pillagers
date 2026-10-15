@@ -1,0 +1,7 @@
+v28.09: two players never look alike
+
+In a two-player game each player now has a coloured ring and a number, and two matching looks are told apart.
+
+Check 28.09. Fails on v28.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
