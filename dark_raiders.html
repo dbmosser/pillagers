@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.45';
+var VER='28.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46509,7 +46509,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.45: The what is new card names polish pass 5. Check 28.45 fails on v28.44',
+  now:'v28.46: When your host leaves and you pick up the raid, the fuel fires and raid events that already happened no longer start over. Check 28.46 fails on v28.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55056,6 +55056,7 @@ function netHostGone(why){
   // child took every hit in full and his gun stopped aiming, while the out word (no reset) kept both. This raid is marked as one
   // this window joined, and both read that mark too. G is built fresh for every raid, so the mark ends with it; solo never sets it.
   G.netWasJoin=1;
+  if(flowOn()){ var _S=flowS(), _E=evS(), _t=G.t||0, _j, _pp=G.player, _px=_pp.x, _py=_pp.y, _sp=G.spawnDbg&&G.spawnDbg.pt; if(!_S.fplan){ if(_sp){ _pp.x=_sp.x; _pp.y=_sp.y; } try{ firePlan(_S); }finally{ _pp.x=_px; _pp.y=_py; } } for(_j=0;_j<_S.fplan.length;_j++) if(_S.fplan[_j].at<=_t) _S.fplan[_j].on=1; if(!_E.plan&&_t>=3) evPlan(_E); for(_j=0;_E.plan&&_j<_E.plan.length&&_j<(_E.n|0);_j++) _E.plan[_j].on=1; if(_S.goals) _S.gtold=1; }   // v28.46 (cloud-cloud-coop-takeover-no-replay), CLOUD HUNT 2026-10-15: what the host already ran stays done (fires planned from the shared drop, the first E.n events, the goals told)
   // v17.69, HIS RULING 2026-10-02: THE REMAINING PLAYER PICKS UP THE RAID. Before, a host gone (its window closed, the link
   // lost, the party ended, or its raid let go) ended this raid as abandon (his ruling of 2026-09-25, now replaced). This window
   // built the whole surface itself and holds the bodies where the host last placed them, so it runs them from here: the raid

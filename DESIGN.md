@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.46 - A RAID PICKED UP FROM THE HOST DOES NOT REPLAY ITS EVENTS
+
+Co-op hunt while he was away. His ruling: the remaining player picks up the raid when the host is gone. Player 2's window never marked the host's fuel fires, raid events or the RUN GOALS line as done, because the host ran them. At the takeover the raid stops being shared, so his window planned them fresh with nothing marked: every fuel fire and raid event the host had already run came back at once, and RUN GOALS could be said again. Proven in a staged pair in one window. Seed 9071, host to 440 s: after the takeover both fuel fires said FUEL FIRE again and the bounty the host ran at 199 s launched again. Seed 9071, takeover at 195 s with player 2 far from the drop: his own fire plan put the second fire at 204 s in a new place, so a fire the host never planned lit. Seed 5008, takeover at 365 s with the convoy live and the bounty held behind it: the convoy launched again. Now, at the takeover, the fuel fire plan is drawn from the party drop point (the same plan the host drew) and fires already due are marked done, the events the host already launched (its event count, which player 2 has) are marked done so a held one still comes once, and the goals are marked as already told.
+
+MEASURED. Check 28.46 passes, and fails on v28.45.
 ## v28.45 - THE WHAT IS NEW CARD NAMES POLISH PASS 5
 
 Co-op hunt while he was away. The card was stamped v28.32 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
