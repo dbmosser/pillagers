@@ -1,0 +1,7 @@
+v27.98: the career leaderboard: data and board
+
+Your CAREER board now keeps your twenty best runs, deaths included.
+
+Check 27.98. Fails on v27.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.98 - THE CAREER LEADERBOARD: DATA AND BOARD
+
+Co-op hunt while he was away. His order of 2026-10-15: career mode should have a leaderboard shown after every match, built into the existing screens. This is the first of the builds for it. The CAREER list in his save (it held the ten best extractions) now keeps his twenty best runs by raid score, deaths as well as extractions, each with its sector, time and date, plus a count of every run and the three hundred best scores so a run outside the top twenty still knows its rank. A save from before seeds the count from the rows it has. The board view is the party scoreboard look from the DEMO (gold heading, bone rows, teal row for the run just played, grey column heads) built from the same row builder, with RANK number OF total, a NEW PERSONAL BEST plate for a number one, and a pinned row under the list for a run outside the top twenty. The score is also tallied by where it came from (kills, medals, goals, bounty, strongholds, vaults, forge) for the run card ledger that follows. The board ranks by raid score only. Nothing is drawn yet: the run card and the Undercroft entry are the next two builds.
+
+MEASURED. Check 27.98 passes, and fails on v27.97.
 ## v27.97 - THE DEMO BOARD HAS TWENTY ROWS
 
 Co-op hunt while he was away. His answers 12 and 13: the DEMO high score board has twenty rows, and it resets only through NEW PARTY in the operator menu. It listed the top ten runs of the last twelve hours, so a long party quietly lost its early scores off the board. Now it lists the top twenty of every run since the last NEW PARTY (or every run, when there has not been one), however old, and the attract page draws them in two columns of ten. NEW PARTY clears it, BEST EVER is unchanged, and the seeded night from NEW PARTY now lasts until the next NEW PARTY too, so the board stays fair for as long as it stays. The initials card is offered to any run that makes the twenty.
