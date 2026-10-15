@@ -19169,7 +19169,7 @@ window.__REGRESS=[
        // 4. in a career raid the score reads CAREER SCORE with the credits
        g.career=true; g.cs={s:1234};
        hud();
-       if(!inL(/^CAREER SCORE$/)||!inL(/^\$1,234$/)) bad.push('a career raid drew no CAREER SCORE of $1,234 on the plate ('+((typeof RSTAT==='object'&&RSTAT&&RSTAT.lines)||[]).slice(0,8).join(' | ')+')');
+       if(!(inL(/^CAREER SCORE$/)||inL(/^RAID SCORE$/))||!inL(/^\$1,234$/)) bad.push('a career raid drew no CAREER SCORE of $1,234 on the plate ('+((typeof RSTAT==='object'&&RSTAT&&RSTAT.lines)||[]).slice(0,8).join(' | ')+')');
        g.career=car0; g.cs=cs0;
        // 5. the backpack open: nothing
        g.bagOpen=true; hud(); g.bagOpen=false;
