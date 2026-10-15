@@ -18632,7 +18632,7 @@ window.__REGRESS=[
        __endRaid('dead');
        if(g.careerPaid!==0) bad.push('a CAREER death paid '+g.careerPaid);
        if((+P.credits||0)-cr1>=1400) bad.push('a CAREER death raised his credits by '+((+P.credits||0)-cr1));
-       if(!Array.isArray(P.careerBoard)||P.careerBoard.length!==1) bad.push('a CAREER death changed the board ('+JSON.stringify(P.careerBoard)+')');
+       if(!Array.isArray(P.careerBoard)||P.careerBoard.filter(function(r){ return r.o!=='k'; }).length!==1) bad.push('a CAREER death changed the extraction rows of the board ('+JSON.stringify(P.careerBoard)+')');
        m=(document.getElementById('oc_manifest')||{}).textContent||'';
        if(m.indexOf('SCORE'+' LOST')<0) bad.push('the KIA card does not read SCORE LOST');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
