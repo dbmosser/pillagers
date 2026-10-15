@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.86 - THE SCREEN CLEAR SPARES EVERYTHING SPECIAL
+
+Co-op hunt while he was away. From the cloud review of the party builds, and his own words about the screen clear ("this is like a nuke in zombies? keep it i guess but it shouldn't hurt pillagers"). The pulse already spared bosses, elites and pillagers, but a golden machine died to it (and dropped its hoard with no GOLD HUNTER), so did the convoy carrier, which solved the whole convoy event in one press, and so did the bounty hunter, the machines the Overseer summons and the stronghold garrisons. Now the pulse kills only ordinary machines. A second problem was in a linked window: player 2's pulse sent each machine to the host as a 9999-damage round, which the host throws away over 1500, so nothing died; and had it, each machine would have counted as his kill with score, streak, medals and air strike charge. His window now sends a pulse word that the host applies and credits to nobody, as the solo pulse does, and he is paid the same flat medal as solo.
+
+MEASURED. Check 27.86 passes, and fails on v27.85.
 ## v27.85 - DAMAGE NUMBERS BY WHAT THE HIT WAS
 
 Co-op hunt while he was away. His words: the damage numbers should be coloured by weak spot or element. They now say what the hit was before you read them. A hit on a weak point is the colour of that weak point (the Sentry vent and the Pillbox slit orange, the optic cyan, the Warden core seam amber, the Choir dorsal spine violet), where every weak point used to share one orange. A round from a forged gun is the colour of its element (fire red, shock blue, cryo ice, acid green). A hit the armour mostly soaked, a pillager plate, the Bulwark shield or the Warden armour, is grey. A plain hit stays white, and a hit from behind on a machine stays amber as before. A weak point comes first because it ignores armour, then the element, then the armour. The colour goes across to the other window in the same word, so player 2 sees the same colours, and the DAMAGE NUMBERS row in Settings still turns them all off. Looks only: no damage moved.

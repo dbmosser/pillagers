@@ -1,0 +1,7 @@
+v27.86: the screen clear spares everything special
+
+The screen clear leaves golden, carrier, bounty, summoned and stronghold machines alone and credits nobody in co-op.
+
+Check 27.86. Fails on v27.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
