@@ -1,0 +1,7 @@
+v27.34: player 2 kills count too
+
+Player 2 kills now count for his gun tally and his trophies.
+
+Check 27.34. Fails on v27.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
