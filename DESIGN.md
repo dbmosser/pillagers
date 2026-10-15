@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v27.38 - THE STYLE MEDALS ARE EMBLEMS
+
+Co-op hunt while he was away. His verdict on the party playtest was that the new features must be polished to the level of the older ones, and on the style medals he said to keep all of them but that they needed a UI overhaul, because Halo does medals well. A medal was a line of text on a small plate that rose over the cursor and was gone in under two seconds. Now each medal is an emblem of its own: a chamfered badge of beaten metal (copper for the plain medals, amber for the skilled ones, bright gold for the rare ones) with one picture that is its alone, a scope for LONG SHOT, a blade for MELEE KILL, two grenades for GRENADE DOUBLE, a skull for MULTI-KILL, a shield with a tick for UNTOUCHED, a burst for SCREEN CLEAR and two figures in team cyan for TEAM COMBO. The newest pops in large and settles with a ring flash and a sweep of light across the metal, the older ones slide along the row, and each stays up 4.2 seconds. The row sits at the left edge, in the clear stretch between the pillager board, the controls list and the feed, and the name and figure of the newest sit on a plate under it. The old text plates at the cursor are gone.
+
+MEASURED. Check 27.38 passes, and fails on v27.37.
 ## v27.37 - THE LOCKDOWN ALARM IS GONE
 
 Co-op hunt while he was away. His order of 2026-10-14: get rid of the sealed lockdown thing, that is a mess. The lockdown alarm raid event, which sealed a ring of ground for a minute with a cache in the middle and made the machines inside berserk, is removed completely: it is out of the event pool, so no raid plans it, and its fences with their collision, its lockdown cache, its callouts (SEALED IN, DISTRICT SEALED, DOORS OPEN, LOCKDOWN OVER), its marks on the minimap and the map, and everything player 2 was told about it are gone. The other five events stay (orbital debris, machine convoy, bounty pillager, coolant rupture, Overseer rampage), still one or two a raid, drawn on the same event stream so nothing else that is seeded moves. The older checks that staged the lockdown now report that it was taken out.
