@@ -1,0 +1,7 @@
+v28.73: the siren says locked on
+
+The lock-on siren now flashes LOCKED ON so you know what it means.
+
+Check 28.73. Fails on v28.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
