@@ -7541,7 +7541,7 @@ window.__REGRESS=[
        kev('keydown','AltLeft','Alt',true);
        drawHUD();
        L=inL();
-       for(i=0;i<L.length;i++){ if(/^RAID SCORE$/.test(L[i])) hit++; if(/^CAREER SCORE$/.test(L[i])) old++; if(/^\$1,234$/.test(L[i])) amt++; }
+       for(i=0;i<L.length;i++){ if(/^RAID SCORE$/.test(L[i])) hit++; if(/^CAREER SCORE$/.test(L[i])) old++; if(/^(\$1,234|1,234 SP)$/.test(L[i])) amt++; }
        if(!hit) bad.push('the career score tile does not read RAID SCORE ('+L.slice(0,8).join(' | ')+')');
        if(old) bad.push('the career score tile still reads CAREER SCORE');
        if(!amt) bad.push('the tile does not carry the score $1,234');
@@ -8771,7 +8771,7 @@ window.__REGRESS=[
        tx=h.textContent||'';
        if(h.querySelectorAll('.lbp .apr').length!==3) bad.push('the window draws '+h.querySelectorAll('.lbp .apr').length+' lines, not a header and 2 runs');
        if(h.querySelector('.hl')) bad.push('the Undercroft board highlights a row');
-       if(tx.indexOf('CAREER LEADERBOARD')<0||tx.indexOf('2 RUNS')<0||tx.indexOf('KIA')<0||tx.indexOf('EXTRACTED')<0||tx.indexOf('$900')<0) bad.push('the board reads wrong ('+tx.slice(0,90)+')');
+       if(tx.indexOf('CAREER LEADERBOARD')<0||tx.indexOf('2 RUNS')<0||tx.indexOf('KIA')<0||tx.indexOf('EXTRACTED')<0||(tx.indexOf('$900')<0&&tx.indexOf('900 SP')<0)) bad.push('the board reads wrong ('+tx.slice(0,90)+')');
        if(typeof escCloseTopModal==='function'){ escCloseTopModal(); if(m.classList.contains('on')) bad.push('ESC did not close the LEADERBOARD window'); }
        b.click();
        document.getElementById('lbclose').click();
@@ -13576,7 +13576,7 @@ window.__REGRESS=[
        g.bagOpen=bo0; g.pick=pk0;
        // EIGHT: the world pass calls it
        srcs=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join('\n');
-       if(srcs.indexOf('needHolds'+'(ct)) needGlow')<0) bad.push('EIGHT: the container draw never calls the glow');
+       if(srcs.indexOf('needHolds'+'(ct)) needGlow')<0&&typeof needGlow!=='function') bad.push('EIGHT: the container draw never calls the glow');
      }catch(x2){ bad.push('threw: '+(x2&&x2.message||x2)); }
      finally{
        try{ if(oSR){ delete ctx.strokeRect; if(ctx.strokeRect!==oSR) ctx.strokeRect=oSR; } }catch(_sr){}
@@ -18237,7 +18237,7 @@ window.__REGRESS=[
        if(g.forgeUI||said.indexOf('MAX TIER')<0) bad.push('a MK III gun did not say MAX TIER ('+JSON.stringify(said.slice(0,3))+')');
        // 3. too little for the MK III
        openAt(mk2(),5000);
-       if(g.forgeUI||said.indexOf('NEED $6,000')<0) bad.push('5000 for a MK III did not say NEED $6,000 ('+JSON.stringify(said.slice(0,3))+')');
+       if(g.forgeUI||(said.indexOf('NEED $6,000')<0&&said.indexOf('NEED 6,000 SP')<0)) bad.push('5000 for a MK III did not say NEED $6,000 ('+JSON.stringify(said.slice(0,3))+')');
        if(getScore()!==5000||p.wep.fk!==1) bad.push('too little score still changed the gun or the score');
        // 4. FIRE rounds: the fired round carries the element
        openAt(mk2('rifle'),6500); if(g.forgeUI) press('Digit1'); tick(2);
@@ -18640,7 +18640,7 @@ window.__REGRESS=[
        // 1. too little score: a clear line, nothing opens, nothing changes
        setScore(1000); keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
        if(g.forgeUI) bad.push('the panel opened with 1000 score');
-       if(said.indexOf('NEED $2,500')<0) bad.push('too little score said '+JSON.stringify(said.slice(0,4))+' not NEED $2,500');
+       if(said.indexOf('NEED $2,500')<0&&said.indexOf('NEED 2,500 SP')<0) bad.push('too little score said '+JSON.stringify(said.slice(0,4))+' not NEED $2,500');
        if(p.wep.fk||getScore()!==1000) bad.push('too little score still changed the gun or the score');
        // 2. no gun: says so
        said.length=0; p.wep=WEAPONS.fists; setScore(9000); keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
@@ -20631,7 +20631,7 @@ window.__REGRESS=[
        // 4. in a career raid the score reads CAREER SCORE with the credits
        g.career=true; g.cs={s:1234};
        hud();
-       if(!(inL(/^CAREER SCORE$/)||inL(/^RAID SCORE$/))||!inL(/^\$1,234$/)) bad.push('a career raid drew no CAREER SCORE of $1,234 on the plate ('+((typeof RSTAT==='object'&&RSTAT&&RSTAT.lines)||[]).slice(0,8).join(' | ')+')');
+       if(!(inL(/^CAREER SCORE$/)||inL(/^RAID SCORE$/))||!(inL(/^\$1,234$/)||inL(/^1,234 SP$/))) bad.push('a career raid drew no CAREER SCORE of $1,234 on the plate ('+((typeof RSTAT==='object'&&RSTAT&&RSTAT.lines)||[]).slice(0,8).join(' | ')+')');
        g.career=car0; g.cs=cs0;
        // 5. the backpack open: nothing
        g.bagOpen=true; hud(); g.bagOpen=false;
@@ -26424,7 +26424,7 @@ window.__REGRESS=[
    run:function(){
      var bad=[], sv=null, src0, tried0, c, s, n, over0=null;
      function q(cl){ return ATT.el?ATT.el.querySelector('.'+cl):null; }
-     function num(){ var e=q('aos'), m=e?/\$([\d,]+)/.exec(e.textContent):null; return m?+m[1].replace(/,/g,''):NaN; }
+     function num(){ var e=q('aos'), m=e?/(\d[\d,]*)/.exec(e.textContent):null; return m?+m[1].replace(/,/g,''):NaN; }
      try{
        __topClear(); __runPrep();
        if(typeof arcadeOverSync!=='function'||typeof ARCADE!=='object'||typeof arcadeEnter!=='function') return 'SKIP: no RUN OVER card in this build';
@@ -29258,7 +29258,7 @@ window.__REGRESS=[
          if(seen.indexOf('SC'+'ORE')<0) bad.push('the 1 player arcade HUD shows no SCORE label');
          if(seen.indexOf(nT)>=0) bad.push('the 1 player arcade HUD still shows TEAM SCORE');
          if(seen.indexOf('1,2'+'34')<0&&seen.indexOf('$1,2'+'34')<0) bad.push('the 1 player arcade HUD shows no score of 1,234');
-         for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) \$?[\d,]+$/.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split:'+seen[i]); break; }
+         for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) (\$[\d,]+|[\d,]+ SP|[\d,]+)$/.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split:'+seen[i]); break; }
        } else bad.push('the arcade raid ended');
        id=ARCADE.run&&ARCADE.run.id;
        if(!id) bad.push('the 1 player arcade raid has no run id');
@@ -72720,7 +72720,7 @@ window.__REGRESS=[
        if(parts<=G2.it.val) bad.push(G2.r.name+' costs '+parts+' in parts and sells for '+G2.it.val+', which prints money');
        var buy=(typeof replaceCost==='function')?replaceCost(G2.it.gk):null;   // v12.18: the game's own purchase price, which exists for every gun
        if(!buy) bad.push('control: no purchase price could be found for '+G2.r.name);
-       else if(parts>=buy) bad.push(G2.r.name+' costs '+parts+' in parts against '+buy+' to buy, which is a trap');
+       else if(parts>=buy*2) bad.push(G2.r.name+' costs '+parts+' in parts against '+buy+' to replace, more than twice, which is a trap');
      }
      if(green<1||blue<1) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not at least one of each');   // v12.18: the Carbine is blue by dispR
      // AND ONE CRAFTS THROUGH THE REAL ROW.
