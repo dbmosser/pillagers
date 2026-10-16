@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.72 - NO SHINING CIRCLE ON LOOT
+
+Co-op hunt while he was away. His order of 2026-10-15: get rid of the shining circle for items, do not highlight items like that any more, so he loots every box and enemy. The pulsing amber dot over every unopened container, the bigger coloured rings over a cache, and the gold ring over a box that holds an item a contract needs are gone from the world. The search bar, the ammunition tell, a cache name and the NEED edge on the pickup stack and in the backpack are unchanged.
+
+MEASURED. Check 28.72 passes, and fails on v28.71.
 ## v28.71 - SCORE READS IN SP, NOT DOLLARS
 
 Co-op hunt while he was away. His order of 2026-10-15: it was confusing that the score was shown in dollars when it does not match the loot value, and maybe score should just be SP, score points. Every score figure now reads N SP: the score tile on the HUD, the rows of the run card ledger (kills, medals, goals, bounty, strongholds, vaults, upgrades, the raid score), medal and kill popups, the forge costs, the run goals, the demo scoreboard and RUN OVER card, and the leaderboard SCORE column. Money stays money: the credits banked, the haul value, the raid total and the credits line on the raid plate keep the dollar sign. A point of score still banks as one credit on an extraction.

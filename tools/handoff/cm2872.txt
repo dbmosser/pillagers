@@ -1,0 +1,7 @@
+v28.72: no shining circle on loot
+
+Loot boxes no longer shine; every box looks the same until you open it.
+
+Check 28.72. Fails on v28.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

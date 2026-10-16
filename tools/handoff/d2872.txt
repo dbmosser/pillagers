@@ -1,0 +1,5 @@
+## v28.72 - NO SHINING CIRCLE ON LOOT
+
+Co-op hunt while he was away. His order of 2026-10-15: get rid of the shining circle for items, do not highlight items like that any more, so he loots every box and enemy. The pulsing amber dot over every unopened container, the bigger coloured rings over a cache, and the gold ring over a box that holds an item a contract needs are gone from the world. The search bar, the ammunition tell, a cache name and the NEED edge on the pickup stack and in the backpack are unchanged.
+
+MEASURED. Check 28.72 passes, and fails on v28.71.

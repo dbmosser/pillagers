@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.71';
+var VER='28.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34408,16 +34408,8 @@ if(ct.type==='botwreck'){
     // jackpot you can never find is the worst of both worlds. You know a cache is
     // rich the way you know a bank is rich; what you do not know is what is in any
     // particular drawer.
-    var pu=.5+.35*Math.sin(G.t*3+ct.x*.05);
-    wc.globalCompositeOperation='lighter';
-    wc.fillStyle=ct.cache?RCOL[ct.best]:'#ffc04a';
-    wc.globalAlpha=(ct.cache?.55:.28)*pu;
-    wc.beginPath(); wc.arc(ct.x,ct.y-lift-d2-3,ct.cache?15:6,0,6.2832); wc.fill();
-    if(ct.cache){
-      wc.globalAlpha=.30*pu; wc.fillStyle='#e0a0ff';
-      wc.beginPath(); wc.arc(ct.x,ct.y-lift-d2-3,30,0,6.2832); wc.fill();
-    }
-    wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+    // v28.xx (lean6), HIS ORDER (2026-10-15): "get rid of the shining circle for items, don't highlight items like that any more". The pulsing amber dot over every
+    // unopened container (and the cache rings) is gone, so every box is looted on its own look. The search bar, the ammunition tell and a cache name are unchanged.
     // AMMUNITION TELL, v1.70. v1.68 measured that two raids in five still run completely
     // dry and that a dry raid loses an average of 74 seconds to being unable to shoot.
     // The cause is not scarcity, there are 1,760 rounds on the dam against the 202 a raid
@@ -34430,7 +34422,7 @@ if(ct.type==='botwreck'){
     // the fog, so it cannot reveal anything through a wall or across unexplored ground:
     // you still have to go and look. And it says only "ammunition is in here", never how
     // much or what else, so the search is still a commitment.
-    if(!G.sim&&needHolds(ct)) needGlow(wc,ct,lift,d2);   // v26.xx (career3): a box that holds an item a contract needs
+    // v28.xx (lean6): no gold ring over a box that holds a contract item either (needGlow stays defined, the NEED edge in the backpack and the pickup stack is unchanged)
     if(!G.sim&&ammoTell(ct)){
       var apu=.45+.4*Math.sin(G.t*5.5+ct.x*.03);
       wc.globalAlpha=apu; wc.fillStyle='#ffc04a';
@@ -46533,7 +46525,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.71: Score now reads in SP (score points) everywhere; credits and loot value stay in dollars. Check 28.71 fails on v28.70',
+  now:'v28.72: Loot boxes no longer shine; every box looks the same until you open it. Check 28.72 fails on v28.71',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
