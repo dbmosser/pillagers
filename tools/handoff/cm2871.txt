@@ -1,0 +1,7 @@
+v28.71: score reads in sp, not dollars
+
+Score now reads in SP (score points) everywhere; credits and loot value stay in dollars.
+
+Check 28.71. Fails on v28.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

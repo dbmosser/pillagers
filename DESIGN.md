@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.71 - SCORE READS IN SP, NOT DOLLARS
+
+Co-op hunt while he was away. His order of 2026-10-15: it was confusing that the score was shown in dollars when it does not match the loot value, and maybe score should just be SP, score points. Every score figure now reads N SP: the score tile on the HUD, the rows of the run card ledger (kills, medals, goals, bounty, strongholds, vaults, upgrades, the raid score), medal and kill popups, the forge costs, the run goals, the demo scoreboard and RUN OVER card, and the leaderboard SCORE column. Money stays money: the credits banked, the haul value, the raid total and the credits line on the raid plate keep the dollar sign. A point of score still banks as one credit on an extraction.
+
+MEASURED. Check 28.71 passes, and fails on v28.70.
 ## v28.70 - FRAME CAP UP TO 240
 
 Co-op hunt while he was away. His order of 2026-10-15: frame cap options above 60. The Frame cap setting now also offers 75, 90, 120, 144, 165 and 240 frames a second, after Off, 60 and 30, so a fast screen can be held to its own rate. The new choices sit at the end of the row so a cap already saved keeps meaning what it did.
