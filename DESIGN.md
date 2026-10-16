@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.70 - FRAME CAP UP TO 240
+
+Co-op hunt while he was away. His order of 2026-10-15: frame cap options above 60. The Frame cap setting now also offers 75, 90, 120, 144, 165 and 240 frames a second, after Off, 60 and 30, so a fast screen can be held to its own rate. The new choices sit at the end of the row so a cap already saved keeps meaning what it did.
+
+MEASURED. Check 28.70 passes, and fails on v28.69.
 ## v28.69 - LIQUOR SCREEN EFFECT HALVED
 
 Co-op hunt while he was away. His order of 2026-10-15: one shot of liquor is too intense on the effects, turn it down. The drunk warp, sway and menu wobble are driven by one strength number that topped out at 8.5; it tops out at 4.25 now, so one shot draws half the warp it did and a whole stack is half as wild. Blotter, the staggering veer, the slow-down and the experience bonus are unchanged.

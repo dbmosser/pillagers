@@ -6093,6 +6093,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.70',what:'his order 2026-10-15 (frame cap): the Frame cap setting also offers 75, 90, 120, 144, 165 and 240 after Off, 60 and 30 (saved choices keep their meaning), and the cap passes about the right share of a fast clock',
+   run:function(){
+     if(typeof GAMEOPTS==='undefined'||typeof frameCapSkip!=='function'||typeof CAP_LAST==='undefined') return 'SKIP: no settings rows or frame cap here';
+     var bad=[], row=null, i, want=[75,90,120,144,165,240], got=[], c0=CFG.fpsCap, l0=CAP_LAST, n, ts;
+     for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k==='fpsCap') row=GAMEOPTS[i];
+     if(!row) return 'SKIP: no Frame cap row';
+     try{
+       for(i=0;i<row.opts.length;i++) got.push(row.opts[i].cfg.fpsCap);
+       if(got[0]!==0||got[1]!==60||got[2]!==30) bad.push('the first three Frame cap options moved ('+got.slice(0,3).join(',')+')');
+       for(i=0;i<want.length;i++) if(got.indexOf(want[i])<0) bad.push('no Frame cap option for '+want[i]+' (the row has '+got.join(',')+')');
+       CFG.fpsCap=120; CAP_LAST=0; n=0;
+       for(i=0,ts=10000;i<240;i++,ts+=1000/240) if(!frameCapSkip(ts)) n++;
+       if(n<100||n>130) bad.push('a 120 cap drew '+n+' of the 240 frames of a 240 Hz clock, not about 120');
+       CFG.fpsCap=240; CAP_LAST=0; n=0;
+       for(i=0,ts=10000;i<240;i++,ts+=1000/240) if(!frameCapSkip(ts)) n++;
+       if(n<230) bad.push('a 240 cap skipped frames of a 240 Hz clock ('+n+' of 240 drawn)');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ CFG.fpsCap=c0; CAP_LAST=l0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'28.69',what:'his order 2026-10-15 (liquor too intense): the Liquor screen effect strength is half of what it was, one dose draws the warp at about 0.96 where it drew 1.93',
    run:function(){
      if(typeof drawBuzzFx!=='function'||typeof buzzWarp!=='function'||typeof BUZZT==='undefined') return 'SKIP: no Liquor effects here';

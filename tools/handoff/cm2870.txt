@@ -1,0 +1,7 @@
+v28.70: frame cap up to 240
+
+The Frame cap setting now goes up to 75, 90, 120, 144, 165 and 240.
+
+Check 28.70. Fails on v28.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

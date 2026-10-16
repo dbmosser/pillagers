@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.69';
+var VER='28.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46533,7 +46533,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.69: A shot of liquor now bends the screen half as much. Check 28.69 fails on v28.68',
+  now:'v28.70: The Frame cap setting now goes up to 75, 90, 120, 144, 165 and 240. Check 28.70 fails on v28.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61878,7 +61878,14 @@ var GAMEOPTS=[
    opts:[
      {n:'Off', cfg:{fpsCap:0}},
      {n:'60',  cfg:{fpsCap:60}},
-     {n:'30',  cfg:{fpsCap:30}}
+     {n:'30',  cfg:{fpsCap:30}},
+     // lean5, HIS ORDER (2026-10-15): "Frame cap options above 60: 75, 90, 120, 144, 165, 240". They go at the END so a saved choice (an index) keeps meaning what it did.
+     {n:'75',  cfg:{fpsCap:75}},
+     {n:'90',  cfg:{fpsCap:90}},
+     {n:'120', cfg:{fpsCap:120}},
+     {n:'144', cfg:{fpsCap:144}},
+     {n:'165', cfg:{fpsCap:165}},
+     {n:'240', cfg:{fpsCap:240}}
    ], def:0},
   {k:'fxLevel', label:'Effects',
    hint:'Sparks and particles. Reduced draws about a third of them.',
