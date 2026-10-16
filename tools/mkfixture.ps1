@@ -6093,6 +6093,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.69',what:'his order 2026-10-15 (liquor too intense): the Liquor screen effect strength is half of what it was, one dose draws the warp at about 0.96 where it drew 1.93',
+   run:function(){
+     if(typeof drawBuzzFx!=='function'||typeof buzzWarp!=='function'||typeof BUZZT==='undefined') return 'SKIP: no Liquor effects here';
+     if(typeof __vpAlive==='function'&&!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
+     if(typeof G!=='undefined'&&G&&G.sim) return 'SKIP: a sim raid is loaded and draws no buzz';
+     var bad=[], P2=__P(), keepBuzz=P2.buzz, keepT=BUZZT, oW=buzzWarp, seen=[];
+     try{
+       if(window.__pinDPR) __pinDPR(1);
+       if(window.__forceSize) __forceSize(1920,1080);
+       P2.buzz=[{id:'liquor',tag:'drunk',t:90,dur:180}];
+       BUZZT=7.5;
+       buzzWarp=function(c2,cnv,t,dr){ seen.push(+dr); };
+       drawBuzzFx();
+       if(!seen.length) return 'SKIP: the Liquor effect drew no warp';
+       if(!(seen[0]>0.5)) bad.push('one Liquor dose draws the world warp at '+seen[0]+', which is no effect at all');
+       if(seen[0]>1.2) bad.push('one Liquor dose draws the world warp at '+seen[0].toFixed(2)+', not the halved 0.96 (it was 1.93)');
+       seen.length=0;
+       P2.buzz=[{id:'liquor',tag:'drunk',t:90,dur:180},{id:'liquor',tag:'drunk',t:90,dur:180},{id:'liquor',tag:'drunk',t:90,dur:180},{id:'liquor',tag:'drunk',t:90,dur:180}];
+       drawBuzzFx();
+       if(seen.length&&seen[0]>4.3) bad.push('a stack of Liquor draws the warp at '+seen[0].toFixed(2)+', past the halved ceiling of 4.25');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ buzzWarp=oW; P2.buzz=keepBuzz||[]; BUZZT=keepT; }
+     return bad.length?bad.join('; '):null; }},
   {v:'28.68',what:'his order 2026-10-15 (crawlers too fast): a crawler moves at 120 units a second, a fifth under the old 150, and chases a runner more slowly than before',
    run:function(){
      if(typeof mkCrawler!=='function'||typeof navSeek!=='function') return 'SKIP: no crawler here';

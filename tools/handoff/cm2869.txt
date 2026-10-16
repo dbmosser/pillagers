@@ -1,0 +1,7 @@
+v28.69: liquor screen effect halved
+
+A shot of liquor now bends the screen half as much.
+
+Check 28.69. Fails on v28.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

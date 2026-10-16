@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.69 - LIQUOR SCREEN EFFECT HALVED
+
+Co-op hunt while he was away. His order of 2026-10-15: one shot of liquor is too intense on the effects, turn it down. The drunk warp, sway and menu wobble are driven by one strength number that topped out at 8.5; it tops out at 4.25 now, so one shot draws half the warp it did and a whole stack is half as wild. Blotter, the staggering veer, the slow-down and the experience bonus are unchanged.
+
+MEASURED. Check 28.69 passes, and fails on v28.68.
 ## v28.68 - CRAWLERS ARE A FIFTH SLOWER
 
 Co-op hunt while he was away. His order of 2026-10-15: crawlers are too fast now. A crawler walked and chased at 150 units a second and now moves at 120, a fifth slower, so a runner can get away from one in the open and a doorway fight is less of a scramble. Its health, bite, reach, senses and counts are untouched.

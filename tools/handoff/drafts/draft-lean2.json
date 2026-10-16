@@ -1,0 +1,60 @@
+{
+    "title":  "SCORE READS IN SP, NOT DOLLARS",
+    "why":  "His order of 2026-10-15: it was confusing that the score was shown in dollars when it does not match the loot value, and maybe score should just be SP, score points. Every score figure now reads N SP: the score tile on the HUD, the rows of the run card ledger (kills, medals, goals, bounty, strongholds, vaults, upgrades, the raid score), medal and kill popups, the forge costs, the run goals, the demo scoreboard and RUN OVER card, and the leaderboard SCORE column. Money stays money: the credits banked, the haul value, the raid total and the credits line on the raid plate keep the dollar sign. A point of score still banks as one credit on an extraction.",
+    "now":  "Score now reads in SP (score points) everywhere; credits and loot value stay in dollars.",
+    "edits":  [
+                  {
+                      "anchor":  "function arcadeCr(n){ return \u0027$\u0027+arcadeN(n); }",
+                      "replacement":  "// lean2, HIS ORDER (2026-10-15): \"its still really confusing how score is in dollars but it doesn\u0027t match loot value etc -- maybe score just needs to be like sp (score\n// points)\". arcadeCr is the one helper every SCORE figure goes through (the HUD score tile, the ledger score rows, medals, popups, the boards), so it reads N SP now,\n// never $N. arcadeMoney is the dollar form for what is still money: the credits, the haul and the raid total. A score point banks as one credit.\nfunction arcadeCr(n){ return arcadeN(n)+\u0027 SP\u0027; }\nfunction arcadeMoney(n){ return \u0027$\u0027+arcadeN(n); }"
+                  },
+                  {
+                      "anchor":  "  function cnt(v,pre){ return \u0027\u003cb data-to=\"\u0027+(v|0)+\u0027\" data-pre=\"\u0027+(pre||\u0027\u0027)+\u0027\" data-dl=\"\u0027+(idx*90)+\u0027\"\u003e\u0027+(pre||\u0027\u0027)+arcadeCr(v)+\u0027\u003c/b\u003e\u0027; }",
+                      "replacement":  "  function cnt(v,pre,m){ return \u0027\u003cb data-to=\"\u0027+(v|0)+\u0027\" data-pre=\"\u0027+(pre||\u0027\u0027)+\u0027\" data-dl=\"\u0027+(idx*90)+\u0027\"\u0027+(m?\u0027 data-m=\"1\"\u0027:\u0027\u0027)+\u0027\u003e\u0027+(pre||\u0027\u0027)+(m?arcadeMoney(v):arcadeCr(v))+\u0027\u003c/b\u003e\u0027; }"
+                  },
+                  {
+                      "anchor":  "  if(ex) h+=row(\u0027cr\u0027,\u0027\u003cspan class=\"lgt\"\u003eCREDITS\u003c/span\u003e\u003cspan class=\"lgl\"\u003eBANKED\u003c/span\u003e\u0027+((fin\u003e0)?cnt(fin,\u0027+\u0027):\u0027\u003cb\u003e+\u0027+arcadeCr(0)+\u0027\u003c/b\u003e\u0027));",
+                      "replacement":  "  if(ex) h+=row(\u0027cr\u0027,\u0027\u003cspan class=\"lgt\"\u003eCREDITS\u003c/span\u003e\u003cspan class=\"lgl\"\u003eBANKED\u003c/span\u003e\u0027+((fin\u003e0)?cnt(fin,\u0027+\u0027,1):\u0027\u003cb\u003e+\u0027+arcadeMoney(0)+\u0027\u003c/b\u003e\u0027));"
+                  },
+                  {
+                      "anchor":  "\u003cspan class=\"lgl\"\u003eNOT BANKED\u003c/span\u003e\u003cb\u003e\u003cs\u003e+\u0027+arcadeCr(fin)+\u0027\u003c/s\u003e LOST\u003c/b\u003e\u0027);",
+                      "replacement":  "\u003cspan class=\"lgl\"\u003eNOT BANKED\u003c/span\u003e\u003cb\u003e\u003cs\u003e+\u0027+arcadeMoney(fin)+\u0027\u003c/s\u003e LOST\u003c/b\u003e\u0027);"
+                  },
+                  {
+                      "anchor":  "\u003cb id=\"haultot\" data-pre=\"\"\u003e\u0027+arcadeCr(hv)+\u0027\u003c/b\u003e\u0027);",
+                      "replacement":  "\u003cb id=\"haultot\" data-pre=\"\"\u003e\u0027+arcadeMoney(hv)+\u0027\u003c/b\u003e\u0027);"
+                  },
+                  {
+                      "anchor":  "\u003cspan class=\"lgl\"\u003eVALUE\u003c/span\u003e\u003cb\u003e\u003cs\u003e\u0027+arcadeCr(lostV||x.haul||0)+\u0027\u003c/s\u003e LOST\u003c/b\u003e\u0027);",
+                      "replacement":  "\u003cspan class=\"lgl\"\u003eVALUE\u003c/span\u003e\u003cb\u003e\u003cs\u003e\u0027+arcadeMoney(lostV||x.haul||0)+\u0027\u003c/s\u003e LOST\u003c/b\u003e\u0027);"
+                  },
+                  {
+                      "anchor":  "\u003cspan class=\"lgl\"\u003eRAID TOTAL\u003c/span\u003e\u0027+((tot\u003e0)?cnt(tot,\u0027\u0027):(\u0027\u003cb\u003e\u0027+arcadeCr(0)+\u0027\u003c/b\u003e\u0027)));",
+                      "replacement":  "\u003cspan class=\"lgl\"\u003eRAID TOTAL\u003c/span\u003e\u0027+((tot\u003e0)?cnt(tot,\u0027\u0027,1):(\u0027\u003cb\u003e\u0027+arcadeMoney(0)+\u0027\u003c/b\u003e\u0027)));"
+                  },
+                  {
+                      "anchor":  "function lbCountStart(el,to,delayMs,durMs){",
+                      "replacement":  "function lbFmt(el,n){ return el.getAttribute(\u0027data-m\u0027)?arcadeMoney(n):arcadeCr(n); }   // lean2: a figure flagged data-m is money, any other is score\nfunction lbCountStart(el,to,delayMs,durMs){"
+                  },
+                  {
+                      "anchor":  "  el.textContent=pre+arcadeCr(0);",
+                      "replacement":  "  el.textContent=pre+lbFmt(el,0);"
+                  },
+                  {
+                      "anchor":  "    el.textContent=pre+arcadeCr(Math.round((to|0)*(1-Math.pow(1-k,3))));",
+                      "replacement":  "    el.textContent=pre+lbFmt(el,Math.round((to|0)*(1-Math.pow(1-k,3))));"
+                  },
+                  {
+                      "anchor":  "el.textContent=(el.getAttribute(\u0027data-pre\u0027)||\u0027\u0027)+arcadeCr(+el.getAttribute(\u0027data-to\u0027)||0); }",
+                      "replacement":  "el.textContent=(el.getAttribute(\u0027data-pre\u0027)||\u0027\u0027)+lbFmt(el,+el.getAttribute(\u0027data-to\u0027)||0); }"
+                  },
+                  {
+                      "anchor":  "T.push({l:\u0027RAID SCORE\u0027,v:arcadeCr((G.cs\u0026\u0026G.cs.s)|0),c:\u0027#e8eef2\u0027,s:\u0027CREDITS \u0027+arcadeCr(P.credits|0)",
+                      "replacement":  "T.push({l:\u0027RAID SCORE\u0027,v:arcadeCr((G.cs\u0026\u0026G.cs.s)|0),c:\u0027#e8eef2\u0027,s:\u0027CREDITS \u0027+arcadeMoney(P.credits|0)"
+                  },
+                  {
+                      "anchor":  "T.push({l:\u0027CARRIED\u0027,v:\u0027$\u0027+hv.toLocaleString(),c:\u0027#e8eef2\u0027,s:\u0027CREDITS \u0027+arcadeCr(P.credits|0)",
+                      "replacement":  "T.push({l:\u0027CARRIED\u0027,v:\u0027$\u0027+hv.toLocaleString(),c:\u0027#e8eef2\u0027,s:\u0027CREDITS \u0027+arcadeMoney(P.credits|0)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his order 2026-10-15 (score as SP): every score figure reads N SP and never a dollar amount, in the CAREER ledger score rows and the Undercroft board SCORE column, while the credits banked, the haul value and the raid total stay in dollars\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__runPrep\u0026\u0026window.__endRaid\u0026\u0026window.__resetCfg\u0026\u0026window.__pinDefaults\u0026\u0026window.__cleanProfile\u0026\u0026window.__P\u0026\u0026window.__applyLoaded)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof ocLedger!==\u0027function\u0027||typeof lbCountEnd!==\u0027function\u0027||typeof careerBoardView!==\u0027function\u0027||typeof arcadeCr!==\u0027function\u0027) return \u0027SKIP: no ledger or board here\u0027;\n     var bad=[], g, c0=(typeof CAREER_ON===\u0027number\u0027)?CAREER_ON:0, snap=null, lg, man, rows, i, kills=\u0027\u0027, h, ht, tx;\n     function txt(sel){ var e=lg.querySelector(sel+\u0027 b\u0027); return e?e.textContent:\u0027\u0027; }\n     try{\n       snap=JSON.parse(JSON.stringify(__P()));\n       if(arcadeCr(1234)!==\u00271,234 SP\u0027) bad.push(\u0027a score of 1234 reads \u0027+arcadeCr(1234)+\u0027, not 1,234 SP\u0027);\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       CAREER_ON=1;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: no live raid\u0027;\n       if(!g.career||!g.cs) return \u0027SKIP: no CAREER raid in this build\u0027;\n       g.player.iv=99; g.player.hp=100; g.player.downed=false;\n       g.cs.s=750; g.cs.k=4; g.cs.b={kill:600,style:150};\n       __endRaid(\u0027extract\u0027);\n       man=document.getElementById(\u0027oc_manifest\u0027); lg=man?man.querySelector(\u0027.lg\u0027):null;\n       if(!lg) return \u0027SKIP: the CAREER extraction card has no ledger\u0027;\n       lbCountEnd(lg);\n       if(txt(\u0027.sc\u0027)!==\u00271,500 SP\u0027) bad.push(\u0027RAID SCORE reads \u0027+txt(\u0027.sc\u0027)+\u0027, not 1,500 SP\u0027);\n       rows=lg.querySelectorAll(\u0027.lgr\u0027);\n       for(i=0;i\u003crows.length;i++){ var l=rows[i].querySelector(\u0027.lgl\u0027); if(l\u0026\u0026l.textContent===\u0027KILLS\u0027){ var b=rows[i].querySelector(\u0027b\u0027); kills=b?b.textContent:\u0027\u0027; } }\n       if(kills!==\u0027600 SP\u0027) bad.push(\u0027the KILLS row reads \u0027+kills+\u0027, not 600 SP\u0027);\n       if(txt(\u0027.cr\u0027)!==\u0027+$1,500\u0027) bad.push(\u0027CREDITS BANKED reads \u0027+txt(\u0027.cr\u0027)+\u0027, not +$1,500 (credits stay dollars)\u0027);\n       ht=document.getElementById(\u0027haultot\u0027);\n       if(!ht||ht.textContent.charAt(0)!==\u0027$\u0027) bad.push(\u0027HAUL VALUE reads \u0027+(ht\u0026\u0026ht.textContent)+\u0027, not a dollar amount\u0027);\n       if(txt(\u0027.tot\u0027).charAt(0)!==\u0027$\u0027) bad.push(\u0027RAID TOTAL reads \u0027+txt(\u0027.tot\u0027)+\u0027, not a dollar amount\u0027);\n       if(/\\$/.test(txt(\u0027.sc\u0027))) bad.push(\u0027RAID SCORE still carries a dollar sign\u0027);\n       __endRaid(\u0027abandon\u0027);\n       P.careerBoard=[{s:900,k:2,m:0,t:1000,n:\u0027OLD\u0027}]; delete P.careerRuns; delete P.careerAll;\n       h=document.createElement(\u0027div\u0027); careerBoardView(h,{}); lbCountEnd(h); tx=h.textContent||\u0027\u0027;\n       if(tx.indexOf(\u0027900 SP\u0027)\u003c0) bad.push(\u0027the board SCORE column does not read 900 SP (\u0027+tx.slice(0,80)+\u0027)\u0027);\n       if(tx.indexOf(\u0027$900\u0027)\u003e=0) bad.push(\u0027the board SCORE column still reads $900\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       try{ CAREER_ON=c0; }catch(_r){}\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ if(snap\u0026\u0026window.__applyLoaded) __applyLoaded(snap); }catch(_s){}\n       __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
