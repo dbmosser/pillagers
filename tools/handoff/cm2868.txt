@@ -1,0 +1,7 @@
+v28.68: crawlers are a fifth slower
+
+Crawlers are a fifth slower, 120 instead of 150.
+
+Check 28.68. Fails on v28.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

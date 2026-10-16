@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.68 - CRAWLERS ARE A FIFTH SLOWER
+
+Co-op hunt while he was away. His order of 2026-10-15: crawlers are too fast now. A crawler walked and chased at 150 units a second and now moves at 120, a fifth slower, so a runner can get away from one in the open and a doorway fight is less of a scramble. Its health, bite, reach, senses and counts are untouched.
+
+MEASURED. Check 28.68 passes, and fails on v28.67.
 ## v28.67 - KIA IS A 50 PERCENT SCORE PENALTY
 
 Co-op hunt while he was away. His order of 2026-10-15: extracting should be a 2x multiplier on score, and KIA a 50 percent penalty. The x2 on an extraction was already in the DEMO and the CAREER payout. Now a run that ends dead counts half its score, rounded down: on a CAREER card the ledger shows a KIA -50% row and the RAID SCORE and the leaderboard row are the halved figure, and a 1 or 2 player DEMO run that ends on a death or the burn halves its team score on the RUN OVER card (a KIA -50% plate) and the party board. Credits are still banked only on an extraction, and the 2 player DEMO keeps its own rule that a death there loses that player score and drops them back in.

@@ -1,0 +1,16 @@
+{
+    "title":  "CRAWLERS ARE A FIFTH SLOWER",
+    "why":  "His order of 2026-10-15: crawlers are too fast now. A crawler walked and chased at 150 units a second and now moves at 120, a fifth slower, so a runner can get away from one in the open and a doorway fight is less of a scramble. Its health, bite, reach, senses and counts are untouched.",
+    "now":  "Crawlers are a fifth slower, 120 instead of 150.",
+    "edits":  [
+                  {
+                      "anchor":  "function mkCrawler(x,y){",
+                      "replacement":  "// v28.68 (lean3), HIS ORDER (2026-10-15): \"Crawlers are too fast now\". A crawler walked and chased at 150 units a second; it is 120 now (a fifth slower).\n// Its hit points, bite, reach, senses and every count are unchanged, and the Fast affix still takes a third of whatever the base is.\nfunction mkCrawler(x,y){"
+                  },
+                  {
+                      "anchor":  "alert:0,spd:150,dmg:13,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)",
+                      "replacement":  "alert:0,spd:120,dmg:13,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his order 2026-10-15 (crawlers too fast): a crawler moves at 120 units a second, a fifth under the old 150, and chases a runner more slowly than before\u0027,\n   run:function(){\n     if(typeof mkCrawler!==\u0027function\u0027||typeof navSeek!==\u0027function\u0027) return \u0027SKIP: no crawler here\u0027;\n     var bad=[], c, c2;\n     try{\n       c=mkCrawler(0,0);\n       if(!c||c.kind!==\u0027crawler\u0027) return \u0027SKIP: mkCrawler made no crawler\u0027;\n       if(c.spd\u003e125||c.spd\u003c115) bad.push(\u0027a crawler moves at \u0027+c.spd+\u0027 a second, not the 120 (a fifth under 150)\u0027);\n       c2=mkCrawler(50,50);\n       if(c2.spd!==c.spd) bad.push(\u0027two crawlers have different base speeds (\u0027+c.spd+\u0027 and \u0027+c2.spd+\u0027)\u0027);\n       if(c.dmg!==13||c.rng!==26) bad.push(\u0027the crawler bite or reach moved (dmg \u0027+c.dmg+\u0027, reach \u0027+c.rng+\u0027)\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

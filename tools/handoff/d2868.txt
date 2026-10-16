@@ -1,0 +1,5 @@
+## v28.68 - CRAWLERS ARE A FIFTH SLOWER
+
+Co-op hunt while he was away. His order of 2026-10-15: crawlers are too fast now. A crawler walked and chased at 150 units a second and now moves at 120, a fifth slower, so a runner can get away from one in the open and a doorway fight is less of a scramble. Its health, bite, reach, senses and counts are untouched.
+
+MEASURED. Check 28.68 passes, and fails on v28.67.

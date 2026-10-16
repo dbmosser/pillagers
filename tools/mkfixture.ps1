@@ -6093,6 +6093,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.68',what:'his order 2026-10-15 (crawlers too fast): a crawler moves at 120 units a second, a fifth under the old 150, and chases a runner more slowly than before',
+   run:function(){
+     if(typeof mkCrawler!=='function'||typeof navSeek!=='function') return 'SKIP: no crawler here';
+     var bad=[], c, c2;
+     try{
+       c=mkCrawler(0,0);
+       if(!c||c.kind!=='crawler') return 'SKIP: mkCrawler made no crawler';
+       if(c.spd>125||c.spd<115) bad.push('a crawler moves at '+c.spd+' a second, not the 120 (a fifth under 150)');
+       c2=mkCrawler(50,50);
+       if(c2.spd!==c.spd) bad.push('two crawlers have different base speeds ('+c.spd+' and '+c2.spd+')');
+       if(c.dmg!==13||c.rng!==26) bad.push('the crawler bite or reach moved (dmg '+c.dmg+', reach '+c.rng+')');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'28.67',what:'his order 2026-10-15 (score rule): a run that ends dead counts half its score (KIA -50%), in a CAREER raid (board row, ledger KIA row) and in the DEMO (RUN OVER score and plate), where an extraction was already x2',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__endRaid&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy';
