@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.67 - KIA IS A 50 PERCENT SCORE PENALTY
+
+Co-op hunt while he was away. His order of 2026-10-15: extracting should be a 2x multiplier on score, and KIA a 50 percent penalty. The x2 on an extraction was already in the DEMO and the CAREER payout. Now a run that ends dead counts half its score, rounded down: on a CAREER card the ledger shows a KIA -50% row and the RAID SCORE and the leaderboard row are the halved figure, and a 1 or 2 player DEMO run that ends on a death or the burn halves its team score on the RUN OVER card (a KIA -50% plate) and the party board. Credits are still banked only on an extraction, and the 2 player DEMO keeps its own rule that a death there loses that player score and drops them back in.
+
+MEASURED. Check 28.67 passes, and fails on v28.66.
 ## v28.66 - A FIRE NEVER PUTS A BODY THROUGH A WALL
 
 Co-op hunt while he was away. Cloud robustness hunt. A fire that lights on a body pushes it out to the edge of the disc along its own line from the centre, checking only that the edge spot is open floor. A fuel fire is 92 across from its centre and its spot is only kept 30 clear of walls, so most discs cross a wall (53 of the 60 planned fuel fires over seeds 1 to 30 on Cold Storage), and a body on the wall side of the centre was pushed straight through the wall, into a shut room or the far side of a building. Proven in headless Chromium on v27.27 (CAREER seed 7): the player stood 20 left of a 16 wide wall, a fire lit 60 left of the wall, and one frame later the player stood 44 to the right of it, through the wall, on four walls out of four. Machines and pillagers take the same push. Now the push takes an edge spot only when the line from where the body stood to that spot is clear, and tries seven angles instead of five (out to about 95 degrees from its own line, enough to slide along the wall) before it gives up, so a body is never put on the far side of the fire. Where the old first spot was clear nothing changes.

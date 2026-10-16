@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.66';
+var VER='28.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30988,7 +30988,7 @@ function ocEmblem(n,d,id){
     '<g transform="translate(12 12)"><path d="'+ic+'" fill="none" stroke="#ffc44a" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></g></svg><i>'+escHtml(n)+'</i></span>';
 }
 function ocLedger(how,lines,x){
-  var ex=(how==='extract'), c=G.cs, s=Math.max(0,c.s|0), fin=ex?s*2:s, b=c.b||{}, T=G.tel||{}, R=G.careerLb, rest=[], strip='', hv=0, ni=0, lostV=0, i, ln, m, sum=0, tot, h='', idx=0, prev='', kn=0, kk, tiles, ach=G.achNew||[], parts, p, v, tg;
+  var ex=(how==='extract'), c=G.cs, s=Math.max(0,c.s|0), fin=ex?s*2:Math.floor(s/2), b=c.b||{}, T=G.tel||{}, R=G.careerLb, rest=[], strip='', hv=0, ni=0, lostV=0, i, ln, m, sum=0, tot, h='', idx=0, prev='', kn=0, kk, tiles, ach=G.achNew||[], parts, p, v, tg;
   function cnt(v,pre){ return '<b data-to="'+(v|0)+'" data-pre="'+(pre||'')+'" data-dl="'+(idx*90)+'">'+(pre||'')+arcadeCr(v)+'</b>'; }
   function row(cls,inner){ var r='<div class="lgr '+cls+'" style="--i:'+idx+'">'+inner+'</div>'; idx++; return r; }
   for(i=0;i<lines.length;i++){
@@ -31009,9 +31009,10 @@ function ocLedger(how,lines,x){
     h+=row('','<span class="lgt">'+tg+'</span><span class="lgl">'+p[1]+'</span>'+((v<0)?('<b>-'+arcadeCr(-v)+'</b>'):cnt(v,'')));
   }
   if(ex) h+=row('','<span class="lgt">EXTRACTION</span><span class="lgl">x2</span>'+cnt(s,'+'));
+  else if(s>0) h+=row('lost','<span class="lgt">KIA</span><span class="lgl">-50%</span><b>-'+arcadeCr(s-fin)+'</b>');   // v28.67 (lean1): HIS RULE, KIA is a 50% score penalty
   h+=row('sc','<span class="lgl">RAID SCORE'+((R&&R.best)?' <em class="lgpb">PERSONAL BEST</em>':'')+'</span>'+((fin>0)?cnt(fin,''):('<b>'+arcadeCr(0)+'</b>')));
   if(ex) h+=row('cr','<span class="lgt">CREDITS</span><span class="lgl">BANKED</span>'+((fin>0)?cnt(fin,'+'):'<b>+'+arcadeCr(0)+'</b>'));
-  else h+=row('lost','<span class="lgt">CREDITS</span><span class="lgl">NOT BANKED</span><b><s>+'+arcadeCr(s)+'</s> LOST</b>');
+  else h+=row('lost','<span class="lgt">CREDITS</span><span class="lgl">NOT BANKED</span><b><s>+'+arcadeCr(fin)+'</s> LOST</b>');
   if(ex){
     h+=row('','<span class="lgt">HAUL</span><span class="lgl">ITEMS SECURED</span><b>'+ni+'</b>');
     if(strip){ h+='<div class="lgstrip" style="--i:'+idx+'">'+strip+'</div>'; idx++; }
@@ -46528,7 +46529,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.66: A fire that lights under you or a machine no longer pushes anyone through a wall. Check 28.66 fails on v28.65',
+  now:'v28.67: Dying now halves your run score (KIA -50%), as extracting doubles it. Check 28.67 fails on v28.66',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55551,7 +55552,7 @@ function careerSettle(how,lines){
     P.credits=(+P.credits||0)+fin;
   }
   if(how==='extract'||how==='dead'){   // v27.NN (cboard1): a death is a run on the board too; an abandon is not
-    try{ R=careerBoardAdd(how,(how==='extract')?fin:s); }catch(_cb){ R=null; }
+    try{ R=careerBoardAdd(how,(how==='extract')?fin:Math.floor(s/2)); }catch(_cb){ R=null; }
     G.careerLb=R;
     if(R){ rk=R.rank; best=R.best; if(best&&how==='extract') P.careerBest=fin; }
   }
@@ -58973,7 +58974,7 @@ function arcadeOnMsg(m){
       netSamePost({t:'arcendok',pair:NET.pair,run:_er});
       if(_er&&ARCADE.endRun===_er) return 'ignored';   // v23.50 (arcade26): a repeat of a run end already taken changes nothing
       ARCADE.endRun=_er;
-      if(m.x2){ ARCADE.mine=Math.max(0,ARCADE.mine|0)*2; ARCADE.mate=Math.max(0,ARCADE.mate|0)*2; }   // v24.xx (feat0g): the run ended on an extraction, x2
+      if(m.x2){ ARCADE.mine=Math.max(0,ARCADE.mine|0)*2; ARCADE.mate=Math.max(0,ARCADE.mate|0)*2; } else if(m.ko){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }   // v24.xx (feat0g): the run ended on an extraction, x2
       // v26.xx (outcomemusic): the host run end is how this window hears its own outcome: the doubled score of an extraction (x2) plays the
       // success piece, a death or the burn (ko) the failure piece, anything else (END RUN, an idle out) none. It plays while the raid is
       // still up here, or within four seconds of the marked out word that stopped it (the out word can arrive first).
@@ -59484,6 +59485,9 @@ function arcadeIdleTick(now){
 function arcadeRunEnd(why){
   if(!ARCADE.on||!G||!G.arcade) return false;
   if(ARCADE.role!=='host'&&!G.netWasJoin) return arcadeP2Out(why);
+  // v28.67 (lean1), HIS ORDER (2026-10-15): "EXTRACTING should be a 2x multiplier on score, KIA should be a 50% penalty". The extraction x2 was already in the
+  // DEMO (arcadeX2) and the CAREER payout; a run that ends on a death or the burn now counts half its score, on the RUN OVER card, the board row and the CAREER ledger.
+  if(why==='dead'||why==='burn'){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }
   var host=(ARCADE.role==='host'), me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0},
       mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:String(why||''),team:arcadeTeam(),p1:host?me:mt,p2:host?mt:me};
@@ -59591,7 +59595,7 @@ function arcadeOverSync(){
     c.textContent=''; c.setAttribute('data-at',sig);
     ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row; v23.56 (arcade31): in credits
       :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
-    if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']);   // v24.xx (feat0g): the run ended on an extraction
+    if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']); else if(oc&&(o.why==='dead'||o.why==='burn')) ln.splice(1,0,['aoh','KIA -50%']);   // v24.xx (feat0g): the run ended on an extraction
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1]; c.appendChild(el); }
     if(ini) arcadeIniDraw(c,ini);
   }

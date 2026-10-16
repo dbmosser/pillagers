@@ -1,0 +1,7 @@
+v28.67: kia is a 50 percent score penalty
+
+Dying now halves your run score (KIA -50%), as extracting doubles it.
+
+Check 28.67. Fails on v28.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

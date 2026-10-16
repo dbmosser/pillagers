@@ -1,0 +1,5 @@
+## v28.67 - KIA IS A 50 PERCENT SCORE PENALTY
+
+Co-op hunt while he was away. His order of 2026-10-15: extracting should be a 2x multiplier on score, and KIA a 50 percent penalty. The x2 on an extraction was already in the DEMO and the CAREER payout. Now a run that ends dead counts half its score, rounded down: on a CAREER card the ledger shows a KIA -50% row and the RAID SCORE and the leaderboard row are the halved figure, and a 1 or 2 player DEMO run that ends on a death or the burn halves its team score on the RUN OVER card (a KIA -50% plate) and the party board. Credits are still banked only on an extraction, and the 2 player DEMO keeps its own rule that a death there loses that player score and drops them back in.
+
+MEASURED. Check 28.67 passes, and fails on v28.66.
