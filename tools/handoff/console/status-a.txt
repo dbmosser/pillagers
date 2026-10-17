@@ -1,1 +1,1 @@
-10-17 09:34 running 02-corpus-fix (cap $5.00; spent today $9.23 of $40)
+10-17 11:57 02-corpus-fix: done, $3.8622

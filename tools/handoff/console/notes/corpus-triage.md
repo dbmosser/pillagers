@@ -16,18 +16,18 @@ Confidence is HIGH unless marked (low).
 ## A. REAL
 | # | Ver | Verdict | Reason | Fix | Status |
 |---|-----|---------|--------|-----|--------|
-| 10 | 27.38 | REAL | A medal makes 2 feed lines. scoreBonus() labels " +100 SP"; feedLabel (html ~19323) only skips labels that start " +$" (lean2 turned $ into SP), so the label becomes a second info line next to feedMedal's own line. Same SP break in feedLabel ~19324 (/^\+\$[\d,]+$/ no longer merges a kill popup "+50 SP" into the kill line, feedMoney) and feedSay pick (~19307 /^[+\-]\$/ so "+70 SP" is not a money row). | mk-cw script: make the three regexes accept both forms, `\$` or `[\d,]+ SP` (skip " +N SP" labels, merge "+N SP" into the kill line, treat a "+N SP" pick tag as money). Check 27.38 SEVEN then passes unchanged. | OPEN |
+| 10 | 27.38 | REAL | A medal makes 2 feed lines. scoreBonus() labels " +100 SP"; feedLabel (html ~19323) only skips labels that start " +$" (lean2 turned $ into SP), so the label becomes a second info line next to feedMedal's own line. Same SP break in feedLabel ~19324 (/^\+\$[\d,]+$/ no longer merges a kill popup "+50 SP" into the kill line, feedMoney) and feedSay pick (~19307 /^[+\-]\$/ so "+70 SP" is not a money row). | mk-cw script: make the three regexes accept both forms, `\$` or `[\d,]+ SP` (skip " +N SP" labels, merge "+N SP" into the kill line, treat a "+N SP" pick tag as money). Check 27.38 SEVEN then passes unchanged. | DONE (shipped v28.81 cw-feedsp, 27.38 passes) |
 
 ## B. FLAKY (pass alone; failed only inside the corpus run, an order or leftover-state effect)
 | # | Ver | Verdict | Reason | Fix | Status |
 |---|-----|---------|--------|-----|--------|
-| 5 | 28.48 | FLAKY | 2P shield bubble: passes alone. Corpus failure was "with no bubble the host still draws extra arcs" = absolute arc count compared with a count from an earlier entity (animation or time dependent arcs). Bubble flag logic (pb sent, kept, relayed, drawn) verified by the passing run. Watch it, it matters for 10/30. | Harden the check: compare arcs with pb=1 against the same entity with pb=0 in one call, not against a count taken earlier. Rerun the corpus; if it fails again alone, treat as REAL. | OPEN |
-| 6 | 28.16 | FLAKY | Head layer: passes alone. | none unless it recurs; then find the earlier check that leaves state (hero kit, G.pwr). | OPEN |
-| 7 | 28.13 | FLAKY | Passes alone. | as 28.16 | OPEN |
-| 8 | 28.12 | FLAKY | Passes alone. | as 28.16 | OPEN |
-| 43 | 19.00 | FLAKY | Status effects left side: passes alone. | as 28.16 | OPEN |
-| 45 | 18.25 | FLAKY | Trade-key floor lines: passes alone. | as 28.16 | OPEN |
-| 46 | 17.86 | FLAKY | Pause legend CTRL / C: passes alone. | as 28.16 | OPEN |
+| 5 | 28.48 | FLAKY | 2P shield bubble: passes alone. Corpus failure was "with no bubble the host still draws extra arcs" = absolute arc count compared with a count from an earlier entity (animation or time dependent arcs). Bubble flag logic (pb sent, kept, relayed, drawn) verified by the passing run. Watch it, it matters for 10/30. | Harden the check: compare arcs with pb=1 against the same entity with pb=0 in one call, not against a count taken earlier. Rerun the corpus; if it fails again alone, treat as REAL. | DONE (check hardened: same entity pb 0 vs pb 1, passes 3x) |
+| 6 | 28.16 | FLAKY | Head layer: passes alone. | none unless it recurs; then find the earlier check that leaves state (hero kit, G.pwr). | DONE (FLAKY-OK, passes 3x) |
+| 7 | 28.13 | FLAKY | Passes alone. | as 28.16 | DONE (FLAKY-OK, passes 3x) |
+| 8 | 28.12 | FLAKY | Passes alone. | as 28.16 | DONE (FLAKY-OK, passes 3x) |
+| 43 | 19.00 | FLAKY | Status effects left side: passes alone. | as 28.16 | DONE (was not flaky: failed alone in a fresh tab. Column band widened to 40 percent because the feed zone pushes the column right of the vitals, retargeted, passes 3x) |
+| 45 | 18.25 | FLAKY | Trade-key floor lines: passes alone. | as 28.16 | DONE (order dependent: key line follows state hub or raid. Check now stands in a raid for the key line, passes 3x) |
+| 46 | 17.86 | FLAKY | Pause legend CTRL / C: passes alone. | as 28.16 | DONE (order dependent, same fix as 18.25, passes 3x) |
 | 47 | 17.75 | FLAKY | Passes alone. | as 28.16 | OPEN |
 | 74 | 9.93 | FLAKY | RMB aims down sights legend: passes alone. | as 28.16 | OPEN |
 | 75 | 9.92 | FLAKY | Passes alone. | as 28.16 | OPEN |

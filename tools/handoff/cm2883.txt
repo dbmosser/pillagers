@@ -1,0 +1,7 @@
+v28.83: guns cost twice as much to craft
+
+The four guns on the crafting bench now cost twice the parts they did. Other recipes are unchanged.
+
+Check 28.83. Fails on v28.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

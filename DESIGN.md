@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.83 - GUNS COST TWICE AS MUCH TO CRAFT
+
+Co-op hunt while he was away. His order 2026-10-15: guns more expensive to craft. Each of the four gun recipes on the Undercroft bench now needs exactly twice its old parts. Every other recipe is unchanged.
+
+MEASURED. Check 28.83 passes, and fails on v28.82.
 ## v28.82 - THE HELD GUN CASTS A SHADOW
 
 Co-op hunt while he was away. Art build step 5 (his pick: Refined Chibi with Gear-heavy raider). The brief asks for a soft cast shadow and a gun shadow. The held gun now throws a soft dark strip on the body and far arm beneath it, lit from the top left, drawn under the gun sprite so it costs one fill.

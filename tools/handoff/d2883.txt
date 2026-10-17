@@ -1,0 +1,5 @@
+## v28.83 - GUNS COST TWICE AS MUCH TO CRAFT
+
+Co-op hunt while he was away. His order 2026-10-15: guns more expensive to craft. Each of the four gun recipes on the Undercroft bench now needs exactly twice its old parts. Every other recipe is unchanged.
+
+MEASURED. Check 28.83 passes, and fails on v28.82.
