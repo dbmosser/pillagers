@@ -71,14 +71,19 @@ function useTool(name, a) {
       writeFileSync(norm(a.path), t.replace(a.old_text, () => a.new_text)); return 'edited'; }
     if (name === 'run') { const c = String(a.command).trim().replace(/\\/g, '/');
       if (!ALLOW_CMD.some(re => re.test(c))) return 'REFUSED: not an allowed command. See the exact forms in your rules.';
-      const r = spawnSync(BASH, ['-c', c], { cwd: R, encoding: 'utf8', timeout: 4 * 3600 * 1000, maxBuffer: 64e6, env: { ...e, ANTHROPIC_API_KEY: '' } });
+      // 10-17 16:30: a helper took the lock with lock.sh, then ran fixq.sh without HELD=1, and fixq waited 46 minutes for the
+      // lock its own helper held, blocking every ship. The loop now remembers a lock it took and adds HELD=1 itself.
+      const c2 = (heldLock && /\/fixq\.sh /.test(c) && !/^HELD=1 /.test(c)) ? 'HELD=1 ' + c : c;
+      const r = spawnSync(BASH, ['-c', c2], { cwd: R, encoding: 'utf8', timeout: 4 * 3600 * 1000, maxBuffer: 64e6, env: { ...e, ANTHROPIC_API_KEY: '' } });
+      if (/\/lock\.sh$/.test(c) && r.status === 0) heldLock = true;
+      if (/\/unlock\.sh$/.test(c)) heldLock = false;
       const o = (r.stdout || '') + (r.stderr ? '\n[stderr]\n' + r.stderr : '');
       return 'exit ' + r.status + '\n' + (o.length > 5000 ? '[first part cut]\n' + o.slice(-5000) : o); }
     return 'unknown tool';
   } catch (err) { return 'ERROR: ' + String(err && err.message || err).slice(0, 500); }
 }
 const out = { result: '', total_cost_usd: 0, terminal_reason: '', subtype: '' };
-let cost = 0, lastText = '';
+let cost = 0, lastText = '', heldLock = false;
 const sys = [{ type: 'text', text: readFileSync(e.CW_RULES, 'utf8') + '\n\nS (the scratchpad) is ' + S.replace(/\\/g, '/') + '. Your tools: read_file, grep, list_dir, write_file, edit_file, run.', cache_control: { type: 'ephemeral' } }];
 const msgs = [{ role: 'user', content: [{ type: 'text', text: 'Your task id is ' + e.CW_TASK + '. Your lane is ' + (e.CW_LANE || 'a') + '. ' + readFileSync(e.CW_PROMPT_FILE, 'utf8') }] }];
 const headers = { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' };
@@ -120,6 +125,8 @@ try {
     msgs.push({ role: 'user', content: results });
   }
 } catch (err) { out.result = 'worker error: ' + String(err && err.message || err).slice(0, 500); out.terminal_reason = 'api_error'; }
+// a run that ends while still holding the lock it took would stop every ship: give it back
+if (heldLock) { try { spawnSync(BASH, ['-c', 'bash ' + S.replace(/\\/g, '/') + '/unlock.sh'], { cwd: R, encoding: 'utf8', timeout: 60000 }); } catch {} }
 out.total_cost_usd = Math.round(cost * 10000) / 10000;
 if (!out.result) out.result = lastText.slice(-3000) + (out.terminal_reason === 'budget' ? '\nTASK PARTIAL: the run hit its budget' : out.terminal_reason === 'max_turns' ? '\nTASK PARTIAL: the run hit its turn limit' : '');
 out.subtype = out.terminal_reason;
