@@ -43869,9 +43869,9 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); p=g.player; p.stimT=6; p.hp=100;
        ctx.fillText=function(s,x,y){ rec.push(String(s)+'@'+Math.round(x)+','+Math.round(y)); return rF.apply(this,arguments); };
-       ctx.arc=function(x,y,r,a0,a1){ if(a0===-1.5708) arcs.push(String(this.strokeStyle)+'@'+Math.round(x)+','+Math.round(y)); return rA.apply(this,arguments); };
+       ctx.arc=function(x,y,r,a0,a1){ if(a0===-1.5708) { var m=this.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1; arcs.push(String(this.strokeStyle)+'@'+Math.round((m.a*x+m.c*y+m.e)/d)+','+Math.round((m.b*x+m.d*y+m.f)/d)); } return rA.apply(this,arguments); };
        __frame(0.001);
-       o='state='+state+' arcade='+g.arcade+' mapOpen='+g.mapOpen+' over='+g.over+' sim='+g.sim+' W='+W+' H='+H+' stimOn='+STATUSL[1].on+' n='+rec.length+' arcs='+arcs.join('|')+' texts='+rec.slice(0,30).join('|');
+       o='state='+state+' arcade='+g.arcade+' mapOpen='+g.mapOpen+' over='+g.over+' sim='+g.sim+' W='+W+' H='+H+' stimOn='+STATUSL[1].on+' DPR='+DPR+' boxes='+['raiders','legend','body'].map(function(k){ var b=HUDBOX[k]; return k+':'+(b?[b.x,b.y,b.w,b.h].map(Math.round).join(','):'-'); }).join(' ')+' feed='+(FEEDBOX.on?[FEEDBOX.x,FEEDBOX.y,FEEDBOX.w,FEEDBOX.h].map(Math.round).join(','):'off')+' arcs='+arcs.join('|')+' texts='+rec.filter(function(s){ return /STIM|6s/.test(s); }).join('|');
      }catch(e){ o='threw '+e; }
      finally{ ctx.fillText=rF; ctx.arc=rA; try{ __endRaid('abandon'); }catch(_e){} __topClear(); }
      return o; }},
