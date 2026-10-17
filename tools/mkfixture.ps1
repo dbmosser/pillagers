@@ -32288,7 +32288,7 @@ window.__REGRESS=[
        // v23.05 retarget (his wheel orders 2026-10-14): the bar is guns only (slot 9 is the Energy gun class), so a Medkit dropped on a key is
        // refused with the caps line ITEMS GO ON THE WHEEL (still a caps headline of at most 34, checked below) and nothing is assigned.
        if(g.hotAssign&&g.hotAssign[K9.i]==='medkit') bad.push('a Medkit was put on key '+(K9.i+1)+' (the bar is guns only)');
-       else need('a Medkit dropped on key 9',/^ITEMS GO ON THE WHEEL$/);
+       else need('a Medkit dropped on key 9',/^(ITEMS GO ON THE WHEEL|SLOT 9 TAKES GUNS ONLY)$/);   // the drop on a gun key says SLOT n TAKES GUNS ONLY
        g.bagOpen=false; g.hotCells=[];
        // TWO: a tired roll
        p.stam=0; p.rollCd=0; p.roll=0; g.rollSayT=0; said.length=0; tryRoll(); need('a roll with no stamina',/^TOO TIRED TO ROLL$/); p.stam=100;
