@@ -29720,20 +29720,21 @@ window.__REGRESS=[
        if((ARCADE.pot|0)-pot0!==V) bad.push('a valuable worth '+V+' raised the pot by '+((ARCADE.pot|0)-pot0)+', not '+V);
        if((ARCADE.mine|0)-mine0!==V) bad.push('a valuable worth '+V+' raised the score by '+((ARCADE.mine|0)-mine0)+', not '+V);
        for(i=0;i<rows.length;i++) if(rows[i].l==='pick'&&rows[i].tag) tagd=rows[i].tag;
-       if(tagd.indexOf('+'+D)!==0) bad.push('the pickup tag reads '+(tagd||'nothing')+', not +'+D+'N');
+       if(tagd!=='+'+arcadeCr(V)) bad.push('the pickup tag reads '+(tagd||'nothing')+', not +'+arcadeCr(V));   // v28.xx (corpus retarget): his lean2 order, the score is SP, so the tag is +N SP
        ARCADE.banner=null; ARCADE.solo=0; ARCADE.mine=1234; ARCADE.mate=0; ARCADE.streak=null;
        cx=hcv.getContext('2d'); ft=cx.fillText; ownF=true;
        cx.fillText=function(s){ seen.push(String(s)); return ft.apply(this,arguments); };
        for(f=0;f<3;f++) __loop(performance.now()+(f+40)*16.7);
        if(!seen.length){ try{ drawHUD(); }catch(_dh){} }
        delete cx.fillText; ownF=false;
-       if(seen.indexOf(D+'1,2'+'34')<0) bad.push('the HUD score is not drawn as '+D+'1,234');
-       if(seen.indexOf('YOU '+D+'1,2'+'34')<0) bad.push('the HUD does not show YOU '+D+'1,234');
+       if(seen.indexOf(arcadeCr(1234))<0) bad.push('the HUD score is not drawn as 1,234 SP ('+seen.slice(0,12).join('|')+')');
+       if(seen.indexOf('YOU '+arcadeCr(1234))<0) bad.push('the HUD does not show YOU 1,234 SP');
+       if(seen.some(function(s){ return s.indexOf('$1,234')>=0; })) bad.push('the HUD score is still drawn in dollars');
        if(__state()===g&&!g.over){
          g.labels=[]; ARCADE.streak=null;
          d=arcadeKill('crawler',false,false,p.x+300,p.y);
          if(d!==50) bad.push('a crawler kill scored '+d+', not 50');
-         if(!hasLbl(g,'+'+D+'50')) bad.push('the crawler kill popup is not +'+D+'50 ('+(g.labels||[]).map(function(l){ return l&&l.txt; }).join(',')+')');
+         if(!hasLbl(g,'+'+arcadeCr(50))) bad.push('the crawler kill popup is not +50 SP ('+(g.labels||[]).map(function(l){ return l&&l.txt; }).join(',')+')');
        } else bad.push('the arcade raid ended');
        bT=arcadeBoardTonight; bB=arcadeBoardBest; ownB=true;
        arcadeBoardTonight=function(){ return [{run:'zz31',i:'QXZ',s:4321,t:Date.now()}]; };
@@ -29742,8 +29743,8 @@ window.__REGRESS=[
        arcadeAttBoard(pg);
        arcadeBoardTonight=bT; arcadeBoardBest=bB; ownB=false;
        tx=pg.textContent||'';
-       if(tx.indexOf(D+'4,3'+'21')<0) bad.push('the attract board row does not read '+D+'4,321 ('+tx+')');
-       if(tx.indexOf('BEST EVER '+D+'98,7'+'65')<0) bad.push('the attract board does not read BEST EVER '+D+'98,765 ('+tx+')');
+       if(tx.indexOf(arcadeCr(4321))<0) bad.push('the attract board row does not read 4,321 SP ('+tx+')');
+       if(tx.indexOf('BEST EVER '+arcadeCr(98765))<0) bad.push('the attract board does not read BEST EVER 98,765 SP ('+tx+')');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
        if(own) say=rs;
@@ -72746,7 +72747,9 @@ window.__REGRESS=[
          if(!g.drag||g.drag.key!=='gun_pistol') bad.push('pressing the pistol key started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':''));
          mouse.x=c5.x+c5.w/2; mouse.y=c5.y+c5.h/2;
          window.dispatchEvent(new MouseEvent('mouseup',{button:0,bubbles:true}));
-         if(typeof beltGunsOff==='function'){   // v25.xx (belt2) retarget: guns go on keys 1 to 4, so the drop on key 6 is refused and the pistol stays on key 4
+         if(typeof GUNKEYS==='number'&&GUNKEYS>=6){   // v28.xx (corpus retarget): his wheel4 order made all nine keys gun keys, so a gun drags to any key; the pistol moves from key 4 to key 6
+           if(g.hotAssign[5]!=='gun_pistol'||g.hotAssign[3]!==undefined) bad.push('the pistol did not move from key 4 to key 6 (plan '+JSON.stringify(g.hotAssign)+')');
+         } else if(typeof beltGunsOff==='function'){   // v25.xx (belt2) retarget: guns go on keys 1 to 4, so the drop on key 6 is refused and the pistol stays on key 4
            if(g.hotAssign[5]!==undefined||g.hotAssign[3]!=='gun_pistol') bad.push('the pistol dragged onto key 6 was not refused with the key left on key 4 (plan '+JSON.stringify(g.hotAssign)+')');
          } else if(g.hotAssign[5]!=='gun_pistol') bad.push('the pistol did not move to key 6 (plan '+JSON.stringify(g.hotAssign)+')');
        }
@@ -72761,20 +72764,23 @@ window.__REGRESS=[
      try{
        __topClear(); __runPrep(); __cleanProfile();
        G=null; __showScreen('hub'); __hubEnter();
-       P2.stash=['bandage','bandage','bandage','bandage','bandage','bandage','medkit','plate','plate','plate']; P2.kit=[]; P2.hotAssign={}; P2.stashTab='all'; saveProfile();
-       var w1=planPut(6,'bandage'); if(w1) bad.push('key 3 refused the Bandages: '+w1);
-       if(packedCount('bandage')!==3) bad.push('a stack of six Bandages on a key packed '+packedCount('bandage')+', not three');
-       var w2=planPut(7,'medkit'); if(w2) bad.push('key 4 refused the Medkit: '+w2);
-       if(packedCount('medkit')!==1) bad.push('one Medkit on a key packed '+packedCount('medkit'));
+       P2.stash=['bandage','bandage','bandage','bandage','bandage','bandage','medkit','plate','plate','plate','gun_smg']; P2.kit=[]; P2.hotAssign={}; P2.stashTab='all'; saveProfile();
+       // v28.xx (corpus retarget): the bar is guns only (his wheel4 order), so a key refuses an item with ITEMS GO ON THE WHEEL and packs nothing; the half-stack rule stands for a gun
+       var w1=planPut(6,'bandage'); if(w1!=='ITEMS GO ON THE WHEEL') bad.push('key 7 did not refuse the Bandages with ITEMS GO ON THE WHEEL (said '+w1+')');
+       if(packedCount('bandage')!==0) bad.push('a refused stack of Bandages still packed '+packedCount('bandage'));
+       var w2=planPut(7,'medkit'); if(w2!=='ITEMS GO ON THE WHEEL') bad.push('key 8 did not refuse the Medkit with ITEMS GO ON THE WHEEL (said '+w2+')');
+       if(packedCount('medkit')!==0) bad.push('a refused Medkit still packed '+packedCount('medkit'));
        P2.kit.push('plate','plate');   // two plates he packed by hand
-       var w3=planPut(8,'plate'); if(w3) bad.push('key 5 refused the plates: '+w3);
+       var w3=planPut(8,'plate'); if(w3!=='ITEMS GO ON THE WHEEL') bad.push('key 9 did not refuse the plates with ITEMS GO ON THE WHEEL (said '+w3+')');
        if(packedCount('plate')!==2) bad.push('a stack he had packed two of was changed to '+packedCount('plate'));
        renderHub();
        var c3=document.querySelector('#hotplanwrap [data-plan="6"]'), c4=document.querySelector('#hotplanwrap [data-plan="7"]');
        if(!c3||!c4) bad.push('control: the plan cells did not render');
        else {
-         if(!/x3/.test(c3.textContent)) bad.push('key 3 does not show x3 (shows "'+c3.textContent.trim()+'")');
-         if(/x1\b/.test(c4.textContent)) bad.push('key 4 shows a count for a single Medkit');
+         if((P2.hotAssign||{})[6]!==undefined||(P2.hotAssign||{})[7]!==undefined||(P2.hotAssign||{})[8]!==undefined) bad.push('a refused item was bound to a key anyway (plan '+JSON.stringify(P2.hotAssign)+')');
+         var w4=planPut(0,'gun_smg'); if(w4) bad.push('key 1 refused the SMG: '+w4);
+         if(packedCount('gun_smg')!==1) bad.push('a single SMG on a key packed '+packedCount('gun_smg')+', not one');
+         if((P2.hotAssign||{})[0]!=='gun_smg') bad.push('the SMG did not land on key 1 (plan '+JSON.stringify(P2.hotAssign)+')');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ P2.stash=keep.stash; P2.kit=keep.kit; P2.hotAssign=keep.hot||{}; P2.stashTab=keep.tab; try{ saveProfile(); renderHub(); }catch(_r){} __topClear(); __cleanProfile(); }
@@ -72808,7 +72814,9 @@ window.__REGRESS=[
        if(!plan2||typeof plan2.__grabDrop!=='function') bad.push('control: key 6 on the belt plan is not a drop target');
        else {
          plan2.__grabDrop('gun_pistol','rack');
-         if(typeof beltGunsOff==='function'){   // v25.xx (belt2) retarget: guns go on keys 1 to 4, so key 6 refuses the figure pistol
+         if(typeof GUNKEYS==='number'&&GUNKEYS>=6){   // v28.xx (corpus retarget): all nine keys take guns (wheel4), so the figure pistol takes key 6 and stays on the figure
+           if((P2.hotAssign||{})[5]!=='gun_pistol') bad.push('the figure pistol did not take key 6 (plan '+JSON.stringify(P2.hotAssign||{})+')');
+         } else if(typeof beltGunsOff==='function'){   // v25.xx (belt2) retarget: guns go on keys 1 to 4, so key 6 refuses the figure pistol
            if((P2.hotAssign||{})[5]!==undefined) bad.push('the figure pistol took key 6 although guns go on keys 1 to 4 (plan '+JSON.stringify(P2.hotAssign||{})+')');
          } else if((P2.hotAssign||{})[5]!=='gun_pistol') bad.push('the figure pistol did not take key 6 (plan '+JSON.stringify(P2.hotAssign||{})+')');
          if(P2.weapons.indexOf('pistol')<0||P2.equipped!=='pistol') bad.push('the figure pistol left the figure');
@@ -72939,6 +72947,8 @@ window.__REGRESS=[
        setHot(3);
        if(!p.wep||p.wep.id!=='smg') bad.push('key 4 showed the SMG but left '+(p.wep&&p.wep.id)+' in hand');
        if(g.bag.indexOf('gun_smg')>=0) bad.push('the SMG is still in the backpack after the key');
+       // TWO retired (v28.xx corpus): the bar is guns only (his wheel4 order), no derived Medical cell to press, so part two ends here.
+       if(true) return bad.length?bad.join('; '):null;
        // TWO: a derived cell drags.
        g.bag=['bandage']; g.hotAssign={}; g.bagOpen=true; g.drag=null; g.mapOpen=false;
        __frame(0.016); __frame(0.016);
@@ -72972,6 +72982,10 @@ window.__REGRESS=[
        var cell=(g.hotCells||[])[0];
        if(!cell) return 'SKIP: the belt drew no cells';
        if(!g.bagPanel) bad.push('control: the open backpack drew no panel');
+       // v28.xx (corpus retarget): slot 1 is the pistol class cell now; the gun in hand sits on its own class key, found through hotbarSlots
+       var _sl=hotbarSlots(), _ai=-1, _q;
+       for(_q=0;_q<_sl.length;_q++) if(_sl[_q]&&_sl[_q].k==='gunA'){ _ai=_q; break; }
+       if(_ai>=0&&g.hotCells&&g.hotCells[_ai]) cell=g.hotCells[_ai];
        mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
        cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
        if(!g.drag||g.drag.gunSlot!=='gunA') bad.push('pressing on the gun in slot 1 with the backpack open started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':''));
@@ -73198,8 +73212,9 @@ window.__REGRESS=[
        }
        // THE STIM, THROUGH THE REAL KEY.
        g.bag=['stim']; g.hotAssign={7:'stim'}; P.hotAssign={7:'stim'}; p.stam=20; p.stimT=0;   // the raid reads its own plan
-       setHot(7); useHot();
-       if(g.bag.indexOf('stim')>=0) bad.push('control: key 3 did not use the stim (bag '+g.bag.join(',')+')');
+       // v28.xx (corpus retarget): items are used from the wheel, not a belt key; the wheel Stim slot runs wheelHeal
+       if(typeof wheelHeal==='function') wheelHeal('stim'); else { setHot(7); useHot(); }
+       if(g.bag.indexOf('stim')>=0) bad.push('control: the wheel Stim slot did not use the stim (bag '+g.bag.join(',')+')');
        if(!(p.stimT>=9.9)) bad.push('the stim did not start its ten seconds (stimT '+p.stimT+')');
        var dStim=sprintRun();
        if(p.stam<99.9) bad.push('the bar drained to '+p.stam.toFixed(1)+' during a sprint under the stim; it should be unlimited');
@@ -81922,6 +81937,7 @@ window.__REGRESS=[
      return fin(bad.length?bad.join('; '):null); }},
   {v:'9.82',what:'an item drags off the tactical belt into the backpack, and to the stash',
    run:function(){
+     return 'SKIP: removed by his order (no tactical belt: the bar is guns only and items live on the wheel, his wheel4 order of 2026-10-14)';
      var bad=[];
      __pinDPR(1); __forceSize(1920,1080);
      // A 0x0 pane makes elementFromPoint null everywhere and every drag below
