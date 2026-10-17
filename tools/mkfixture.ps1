@@ -3134,6 +3134,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'9.03',what:'spending the last of a belted item leaves the slot dark and empty, never a different item',
    run:function(){
+     return 'SKIP: removed by his order (items on the belt; the bar is guns only, a spent item type shows dim with a 0 in the wheel, checked by 26.33)';
      __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
      var bad=[], g=__state();
      // Distinctive on purpose: the derived bar would put a THROWABLE on these
@@ -3187,6 +3188,7 @@ window.__REGRESS=[
      return bad.length?bad.join("; "):null; }},
   {v:'9.03',what:'an emptied belt slot is actually drawn darker, not just marked empty',
    run:function(){
+     return 'SKIP: removed by his order (items on the belt; the bar is guns only, a spent item type shows dim in the wheel, checked by 26.33)';
      if(!__vpAlive()) return 'SKIP: the pane has no layout, the HUD canvas has no pixels to read';
      __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __zoom.set(1,true);
      __deploy({kit:['medkit','medkit'],safe:null,mapIx:0,seed:4242});
@@ -4947,6 +4949,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'9.31',what:'an item can be taken back off the belt during a raid, and a click on its own slot is not that',
    run:function(){
+     return 'SKIP: removed by his order (items no longer go on the bar; they live on the wheel)';
      var bad=[];
      // HIS 11, the half that only ever worked in the Undercroft. Driven with real
      // keyboard and mouse events rather than by calling into the drag state, so
@@ -5802,6 +5805,7 @@ window.__REGRESS=[
      if(!pair) bad.push('no two buildings of the same size wear different floors, so the variety is unreachable in practice');     return bad.length?bad.join('; '):null; }},
   {v:'11.60',what:'a Frag Charge put on a tactical belt key is a live throwable cell: it shows the pouch count, it is the only cell for that grenade, selecting it points the throw selector at it, and the key throws it',
    run:function(){
+     return 'SKIP: removed by his order (no throwable cells on the bar; a frag is used from the wheel, its count read there, checked by 26.33)';
      if(!(window.__deploy&&window.__state&&window.__runPrep)) return 'SKIP: this fixture cannot deploy';
      if(typeof hotbarSlots!=='function'||typeof setHot!=='function'||typeof useHot!=='function') return 'SKIP: no tactical belt in this build';
      var bad=[], SLOT=(typeof BELT_CLASS!=='undefined')?4:1;   // v25.xx (belt3) retarget: a throwable key
@@ -28159,6 +28163,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'23.95',what:'his answer 32: the Tripwire Mine keeps a belt cell the pad can reach while an armour plate is carried, and the key holds when the plate is spent',
    run:function(){
+     return 'SKIP: removed by his order (no throwable or plate cells on the bar; the wheel has fixed eight slots)';
      if(!window.__deploy||!window.__endRaid||typeof hotbarSlots!=='function'||typeof beltStep!=='function') return 'SKIP: no raid here';
      if(!ITEMS.trip||THROWKEYS.indexOf('trip')<0) return 'SKIP: no Tripwire Mine in this build';
      var bad=[], g, p, s0, s1, s3, i, ti=-1, n, reached=false, gk=0;
@@ -46636,9 +46641,10 @@ window.__REGRESS=[
        if(!keysBind('KeyE','KeyF')) bad.push('binding interact onto F was refused');
        if(keysOf('KeyE')!=='KeyF'||keysOf('KeyF')!=='KeyE') bad.push('the swap did not happen ('+JSON.stringify(P.keymap)+')');
        if(keyRemap('KeyF')!=='KeyE'||keyRemap('KeyE')!=='KeyF') bad.push('the translation reads '+keyRemap('KeyF')+' for F and '+keyRemap('KeyE')+' for E');
-       if(keysLegendHtml().indexOf('F</b> interact')<0&&keysLegendHtml().indexOf('F</b> search / use')<0) bad.push('the pause legend does not say F interact');
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over) return 'SKIP: staging: no raid';
+       // 2026-10-17 (03-corpus-fix): the pause legend lists the keys of where you are (hub: use a station), so it is read from inside the raid, as 18.25 does.
+       if(keysLegendHtml().indexOf('F</b> interact')<0&&keysLegendHtml().indexOf('F</b> search / use')<0) bad.push('the pause legend does not say F interact');
        keys={};
        kd=new KeyboardEvent('keydown',{code:'KeyF',key:'f',bubbles:true,cancelable:true}); window.dispatchEvent(kd);
        if(!keys['KeyE']) bad.push('a real F press did not read as E in the game ('+JSON.stringify(Object.keys(keys).filter(function(k){ return keys[k]; }))+')');
@@ -77821,7 +77827,8 @@ window.__REGRESS=[
        else if(!a.searched) bad.push('he held E for 420 frames and searched nothing, so no gun was found to place');
        else{
          if(a.wep!=='pistol') bad.push('the '+a.want+' he found pushed the Scav Pistol out of his hands (he now holds '+a.wep+')');
-         if(a.sec!==a.want) bad.push('the '+a.want+' he found did not go to his empty second slot (it holds '+a.sec+')');
+         // 2026-10-17 (03-corpus-fix): the rarity roll (rarvar) can hand back the one-tier-up model, so the plain id or its _v id both count.
+         if(String(a.sec).replace(/_v$/,'')!==a.want) bad.push('the '+a.want+' he found did not go to his empty second slot (it holds '+a.sec+')');
          if(a.bag.indexOf('gun_pistol')>=0) bad.push('his Scav Pistol went in the bag even though the second slot was standing empty');
        }
        // 2. BOTH SLOTS FULL is unchanged, and the gun in the second slot is
@@ -77837,7 +77844,7 @@ window.__REGRESS=[
        else if(b.err) bad.push('looting threw with both slots full: '+b.err);
        else if(!b.searched) bad.push('the both-full arm searched nothing');
        else{
-         if(b.wep!==b.want) bad.push('with both slots full the '+b.want+' did not go into his hands (he holds '+b.wep+')');
+         if(String(b.wep).replace(/_v$/,'')!==b.want) bad.push('with both slots full the '+b.want+' did not go into his hands (he holds '+b.wep+')');
          if(b.sec!==SK) bad.push('with both slots full his second slot was disturbed (it holds '+b.sec+' instead of the '+SK+')');
          if(b.bag.indexOf('gun_pistol')<0) bad.push('with both slots full the Scav Pistol he was holding did not go to the bag');
        }
