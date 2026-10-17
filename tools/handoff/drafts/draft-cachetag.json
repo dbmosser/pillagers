@@ -1,0 +1,20 @@
+{
+    "title":  "A CACHE NAME IS DRAWN OVER THE WALLS",
+    "why":  "His note with a picture: the CHILL ROW CACHE name was cut in two by a wall, and the text should be on top. The name was drawn with its box in the depth-sorted world pass, so a wall in front of the box covered it. It is now drawn in the world text pass beside the nameplates, after every wall.",
+    "now":  "A named cache shows its name over the walls instead of behind them.",
+    "edits":  [
+                  {
+                      "anchor":  "      wc.font=FS(TYPE.head); wc.textAlign=\u0027center\u0027;\n      wc.fillStyle=INK; wc.fillText(ct.tag,ct.x+1,ct.y-lift-d2-25);\n      wc.fillStyle=\u0027#e6b4ff\u0027; wc.fillText(ct.tag,ct.x,ct.y-lift-d2-26);\n      wc.textAlign=\u0027left\u0027;\n",
+                      "replacement":  "      // v28.xx (cachetag), HIS NOTE (2026-10-16, a picture of CHILL ROW CACHE cut in two by a wall): \"text should be on top\". The name was\n      // drawn here with its box, in the depth-sorted world pass, so any wall drawn in front of the box covered it. It is queued now and drawn\n      // in the world text pass (_wtA) beside the nameplates, after every wall.\n      if(CACHETAGS.length\u003c48) CACHETAGS.push({t:ct.tag,x:ct.x,y:ct.y-lift-d2-26});\n"
+                  },
+                  {
+                      "anchor":  "function render2D(dt){\n",
+                      "replacement":  "var CACHETAGS=[];   // v28.xx (cachetag): named cache labels queued by the world pass, drawn over the walls by _wtA\nfunction render2D(dt){\n"
+                  },
+                  {
+                      "anchor":  "  var _wtA=function(){\n",
+                      "replacement":  "  var _wtA=function(){\n  // v28.xx (cachetag): the named caches, over every wall (queued by the container pass above)\n  var _ctq=CACHETAGS; CACHETAGS=[];\n  if(_ctq.length){ wc.font=FS(TYPE.head); wc.textAlign=\u0027center\u0027;\n    for(var _cq=0;_cq\u003c_ctq.length;_cq++){ var _cg=_ctq[_cq]; wc.fillStyle=INK; wc.fillText(_cg.t,_cg.x+1,_cg.y+1); wc.fillStyle=\u0027#e6b4ff\u0027; wc.fillText(_cg.t,_cg.x,_cg.y); }\n    wc.textAlign=\u0027left\u0027; }\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a named cache keeps its name over the walls: the name is drawn in the world text pass after every wall (his picture of CHILL ROW CACHE cut by a wall)\u0027,\n   run:function(){\n     if(typeof __frame!==\u0027function\u0027) return \u0027SKIP: no frame helper\u0027;\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, g=null, ct=null, i, c, hits=[];\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       for(i=0;i\u003cg.containers.length;i++){ c=g.containers[i]; if(c.cache\u0026\u0026c.tag\u0026\u0026!c.strong){ ct=c; break; } }\n       if(!ct) return \u0027SKIP: no named cache on this map\u0027;\n       g.player.x=ct.x; g.player.y=ct.y+90;\n       PR.fillText=function(s){ if(String(s)===String(ct.tag)) hits.push((/_wtA/).test(String(new Error().stack))); return of.apply(this,arguments); };\n       __frame(); __frame();\n       PR.fillText=of;\n       if(!hits.length) return \u0027the cache name \u0027+ct.tag+\u0027 was not drawn with the player beside it\u0027;\n       for(i=0;i\u003chits.length;i++) if(!hits[i]) return \u0027the cache name \u0027+ct.tag+\u0027 is drawn in the depth-sorted world pass, where a wall in front of the box covers it\u0027;\n       return null;\n     } finally {\n       PR.fillText=of;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

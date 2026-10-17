@@ -1,0 +1,24 @@
+{
+    "title":  "GUNS COST TWICE AS MUCH TO CRAFT",
+    "why":  "His order of 2026-10-15: guns should be more expensive to craft. Each of the four gun recipes on the bench (Compact SMG, Burst Carbine, Auto Rifle, Riot Scattergun) now asks for twice the parts it did. Nothing else on the bench moved. The old rule that a gun recipe must cost less in parts than the gun costs to replace is relaxed to under twice that, since these four can not be bought at the counter anyway.",
+    "now":  "The four craftable guns now cost twice the parts at the bench.",
+    "edits":  [
+                  {
+                      "anchor":  "  {name:\u0027Compact SMG\u0027,out:{gun_smg:1},need:{comp:4,cell:3,board:2,servo:1}},",
+                      "replacement":  "  // lean9, HIS ORDER (2026-10-15): \"guns should be more expensive to craft\". Every gun recipe asks for twice the parts it did (the bench price is the old price doubled).\n  {name:\u0027Compact SMG\u0027,out:{gun_smg:1},need:{comp:8,cell:6,board:4,servo:2}},"
+                  },
+                  {
+                      "anchor":  "  {name:\u0027Burst Carbine\u0027,out:{gun_carbine:1},need:{comp:4,servo:2,board:2}},",
+                      "replacement":  "  {name:\u0027Burst Carbine\u0027,out:{gun_carbine:1},need:{comp:8,servo:4,board:4}},"
+                  },
+                  {
+                      "anchor":  "  {name:\u0027Auto Rifle\u0027,out:{gun_rifle:1},need:{comp:5,servo:2,board:3,optic:1}},",
+                      "replacement":  "  {name:\u0027Auto Rifle\u0027,out:{gun_rifle:1},need:{comp:10,servo:4,board:6,optic:2}},"
+                  },
+                  {
+                      "anchor":  "  {name:\u0027Riot Scattergun\u0027,out:{gun_shotgun:1},need:{comp:5,cell:4,board:2,servo:2}}",
+                      "replacement":  "  {name:\u0027Riot Scattergun\u0027,out:{gun_shotgun:1},need:{comp:10,cell:8,board:4,servo:4}}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his order 2026-10-15 (guns cost more to craft): each of the four gun recipes on the bench asks for exactly twice the parts it did, and no other recipe moved\u0027,\n   run:function(){\n     if(typeof RECIPES===\u0027undefined\u0027||typeof ITEMS===\u0027undefined\u0027) return \u0027SKIP: no recipes in this build\u0027;\n     var old={gun_smg:{comp:4,cell:3,board:2,servo:1},gun_carbine:{comp:4,servo:2,board:2},gun_rifle:{comp:5,servo:2,board:3,optic:1},gun_shotgun:{comp:5,cell:4,board:2,servo:2}};\n     var bad=[], i, k, out, r, n=0, want, got;\n     for(i=0;i\u003cRECIPES.length;i++){\n       r=RECIPES[i]; out=null; for(k in r.out){ out=k; break; }\n       if(old[out]){\n         n++;\n         for(k in old[out]) if((r.need[k]|0)!==old[out][k]*2) bad.push(r.name+\u0027 needs \u0027+(r.need[k]|0)+\u0027 \u0027+k+\u0027, not \u0027+(old[out][k]*2)+\u0027 (twice the old \u0027+old[out][k]+\u0027)\u0027);\n         for(k in r.need) if(old[out][k]===undefined) bad.push(r.name+\u0027 asks for a new part \u0027+k);\n       } else if(out===\u0027comp\u0027){\n         if((r.need.scrap|0)!==3||(r.need.wire|0)!==2) bad.push(\u0027the Component Kit recipe moved (\u0027+JSON.stringify(r.need)+\u0027)\u0027);\n       } else if(out===\u0027medkit\u0027){\n         if((r.need.bandage|0)!==2||(r.need.comp|0)!==1) bad.push(\u0027the Medkit recipe moved (\u0027+JSON.stringify(r.need)+\u0027)\u0027);\n       }\n     }\n     if(n!==4) bad.push(\u0027the bench holds \u0027+n+\u0027 gun recipes, not four\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

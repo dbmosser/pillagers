@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.74 - THE WHAT IS NEW CARD NAMES POLISH PASS 7
+
+Co-op hunt while he was away. The card was stamped v28.58 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 28.74 passes, and fails on v28.73.
 ## v28.73 - THE SIREN SAYS LOCKED ON
 
 Co-op hunt while he was away. His words of 2026-10-15: there is a siren noise he hears sometimes and does not know what it means. It is the lock-on siren, which starts when a machine has had its eyes on you for over half a second. It now says what it is: a LOCKED ON alert, with a short line under it, the moment the siren starts, and it lands in the feed too. It says it once per lock-on, not over and over while the siren plays, and again for a fresh lock-on after the usual five second cool-off. The extraction low alarm already comes with the EXTRACTION CALLED alert.

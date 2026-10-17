@@ -1,7 +1,7 @@
 summary_head=c728a3ef
-corpus_head=d1f6e0a2
-corpus_file=/c/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/corpus-day-1015-1404.txt
 fuzz_head=d1f6e0a2
 llm_head=ba6883ec
 backup_day=2026-10-16
-summary_t=1792160156
+corpus_head=28732c0f
+corpus_file=C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/corpus-1016-1116.txt
+summary_t=1792196315

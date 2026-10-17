@@ -1,0 +1,7 @@
+v28.74: the what is new card names polish pass 7
+
+The what is new card names polish pass 7.
+
+Check 28.74. Fails on v28.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
