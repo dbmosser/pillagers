@@ -1,0 +1,7 @@
+v28.91: pre-raid: pack wheel items, ammo, keys and a data core on the map select screen
+
+The map select screen is now PRE-RAID, with a PACK row: plus, minus and MAX for each wheel item, ammo, key and gun, and a data core slot.
+
+Check 28.91. Fails on v28.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

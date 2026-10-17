@@ -6097,6 +6097,44 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.91',what:'the map select screen is PRE-RAID and packs wheel items, ammo, keys and a data core with plus and minus (his order: quickly pick how many of each wheel item, keys, ammo, and slot a data core there)',
+   run:function(){
+     if(typeof syncSectorPack!=='function') return 'there is no PRE-RAID pack row (no syncSectorPack)';
+     var host, hd, b;
+     function clk(k,d){ var x=host.querySelector('[data-pk="'+k+'"] [data-pd="'+d+'"]'); if(!x) return false; x.click(); return true; }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P.stash=['bandage','bandage','bandage','smoke','ammobox','ammobox','key_dam_vault','core']; P.kit=[]; P.freeKit=0; P.kitPick='mine'; P.intel=0;
+       renderSector();
+       hd=document.querySelector('#sectormodal h3');
+       if(!hd||!/PRE-RAID/.test(hd.textContent)) return 'the map select heading does not say PRE-RAID';
+       host=document.getElementById('sectorpack');
+       if(!host||host.style.display==='none'||!host.querySelector('[data-pk]')) return 'the pack row is not shown';
+       if(!clk('bandage','1')) return 'no plus button on the bandage';
+       host=document.getElementById('sectorpack'); clk('bandage','1');
+       host=document.getElementById('sectorpack');
+       if(packedCount('bandage')!==2) return 'two plus clicks packed '+packedCount('bandage')+' bandages, not 2';
+       if(!clk('bandage','max')) return 'no MAX on the bandage';
+       host=document.getElementById('sectorpack');
+       if(packedCount('bandage')!==3) return 'MAX packed '+packedCount('bandage')+' bandages, not 3';
+       clk('bandage','-1'); host=document.getElementById('sectorpack');
+       if(packedCount('bandage')!==2) return 'minus left '+packedCount('bandage')+' bandages packed, not 2';
+       if(!clk('ammobox','max')) return 'no ammo chip'; host=document.getElementById('sectorpack');
+       if(packedCount('ammobox')!==2) return 'MAX packed '+packedCount('ammobox')+' ammo boxes, not 2';
+       if(!clk('key_dam_vault','1')) return 'no key chip'; host=document.getElementById('sectorpack');
+       if(packedCount('key_dam_vault')!==1) return 'the key was not packed';
+       b=host.querySelector('[data-core]'); if(!b||b.disabled) return 'no data core slot button';
+       b.click();
+       if(!P.intel||heldCount('core')!==0) return 'the data core did not slot (intel '+P.intel+', stash cores '+heldCount('core')+')';
+       host=document.getElementById('sectorpack'); host.querySelector('[data-core]').click();
+       if(P.intel||heldCount('core')!==1) return 'the data core did not come back out';
+       P.kitPick='best'; syncSectorKit();
+       if(document.getElementById('sectorpack').style.display!=='none') return 'the pack row still shows with a kit pick';
+       return null;
+     } finally {
+       try{ __cleanProfile(); }catch(_e){}
+       __topClear();
+     } }},
   {v:'28.90',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

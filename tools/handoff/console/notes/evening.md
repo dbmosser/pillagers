@@ -2,5 +2,7 @@
 Already shipped before (git log): score SP, KIA 50%, liquor halved, frame cap 240, crawlers slower, no shining circle, siren/alarm text, deer carcass, fewer guns, gun craft x2, downed bar, cache name over walls.
 - DONE (c-04, v28.86 cw-stashbag): STASH/BAG value in top right, second small line of #topright.
 - DONE (c-05, v28.89 cw-hardloot): hardBonus()/isHard() near bodyBonus: elites (any kind) + sentry/bulwark/howler always leave a wreck and add one no-gun roll (cache table for elite, safe for hard machine).
-Open next, in order: PRE-RAID screen (next, big; may span runs); head bars over buildings; barrel fire DOT; mimic; breach hold; all text into feed; wheel in Undercroft + cursor; rocket launcher slot; craft hold bar + x10.
+- PARTIAL (c-06, cw-preraid): PRE-RAID = the sector page (#sectormodal, renderSector/syncSectorKit, kit row KIT = MY LOADOUT/FREEBIE/RANDOM/BEST). Slice 1: heading renamed PRE-RAID, #sectorpack row (syncSectorPack/packList/packSet/packCore) = chips with -, +, MAX per stash item that has .use (wheel items in wheel order, ammo, keys, guns), ALL/NONE, data core slot (P.intel). Edits P.kit (stash items stay until ascent). Shown with MY LOADOUT only.
+  STILL OPEN for PRE-RAID: CASH (a raid has no cash to carry in; needs a design: e.g. P.takeCash -> G.pedCarry or a raid wallet); maybe type-a-number / x5 step; also the stage (ASCENT CHECK) page is unchanged.
+Open next, in order: PRE-RAID cash (partial); head bars over buildings; barrel fire DOT; mimic; breach hold; all text into feed; wheel in Undercroft + cursor; rocket launcher slot; craft hold bar + x10.
 (Other lanes may be taking items: grep git log for the item before starting.)

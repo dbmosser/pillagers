@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.91 - PRE-RAID: PACK WHEEL ITEMS, AMMO, KEYS AND A DATA CORE ON THE MAP SELECT SCREEN
+
+Co-op hunt while he was away. His order (2026-10-15): "On the pre-raid screen (the map select screen, renamed PRE-RAID), quickly pick how much cash and how many of each wheel item to take, plus keys and guns. Also how much ammo to take. Slot a data core there too." The map select screen is now headed PRE-RAID and has a PACK row: a chip per kind of carryable item in the stash with minus, plus and MAX, ALL and NONE, and a data core slot. First slice: cash is not in yet because a raid has no cash to carry in.
+
+MEASURED. Check 28.91 passes, and fails on v28.90.
 ## v28.90 - THE WHAT IS NEW CARD NAMES POLISH PASS 8
 
 Co-op hunt while he was away. The card was stamped v28.74 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
