@@ -6093,6 +6093,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.79',what:'guns come up at about half the old rate in loot rolls (his order: fewer guns in loot)',
+   run:function(){
+     if(typeof LOOT!=='object'||typeof rollTable!=='function') return 'SKIP: no loot tables';
+     // the old gun share of each table, from the old weights: locker 6/111, safe 19/117, body 8/101, cache 33/142, jackpot 14/104
+     var old={locker:6/111,safe:19/117,body:8/101,cache:33/142,jackpot:14/104}, save=RNGS, N=30000, oldSum=0, newSum=0, t, i, k, n, tab, bad=[];
+     try{
+       RNGS=0x1badf00d;
+       for(t in old){
+         tab=LOOT[t]; if(!tab) return 'no '+t+' table';
+         n=0;
+         for(i=0;i<N;i++){ k=rollTable(tab); if(String(k).indexOf('gun_')===0) n++; }
+         oldSum+=old[t]; newSum+=n/N;
+         if(n/N>old[t]*0.75) bad.push(t+' guns '+(100*n/N).toFixed(1)+'% against '+(100*old[t]).toFixed(1)+'% before');
+       }
+     } finally { RNGS=save; }
+     if(bad.length) return 'guns not cut enough: '+bad.join('; ');
+     var ratio=newSum/oldSum;
+     if(ratio>0.62) return 'guns are '+(100*ratio).toFixed(0)+'% of the old rate, not about half';
+     if(ratio<0.4) return 'guns are '+(100*ratio).toFixed(0)+'% of the old rate, cut too far';
+     if(!LOOT.crate||LOOT.crate.length<5) return 'the crate table is gone';
+     return null; }},
   {v:'28.78',what:'the downed bar: a press with the slider in the middle halves the bleed-out for about a second and it lapses, a miss does nothing and locks the trigger, a held trigger and a standing player do nothing (his order)',
    run:function(){
      if(typeof downBarTick!=='function'||typeof downBarPos!=='function') return 'no downed bar in this build (downBarTick is missing)';
@@ -8597,10 +8618,10 @@ window.__REGRESS=[
        }
        for(i=0;i<ids.length;i++) for(j=i+1;j<ids.length;j++) if(diff(shots[ids[i]],shots[ids[j]])<250) bad.push(ids[i]+' and '+ids[j]+' draw alike');
        // the accent shows on the head: the trim on all but the hard hat, which is safety yellow whatever the scheme
-       var accN={boonie:1,tachelm:1,goggles:1,gasmask:1,heavyhelm:1}, a0, a1;
+       var accN={boonie:1,tachelm:1,goggles:1,gasmask:1}, a0, a1;   /* v28.79 (cw-heavycrest): the Heavy helmet crest is steel with a half-strength accent stripe (no neon bar); it is checked below by pixel difference */
        for(var id in accN){ a1=near(shots[id],'#ffb52e',16,0,132); a0=near(paint(mk(id,'schfrost')),'#ffb52e',16,0,132); if(a1<6) bad.push(id+' shows only '+a1+' pixels of the scheme accent'); if(a0>=a1) bad.push(id+' does not follow the scheme accent'); }
        // the hat on the figure the player wears: the hero path takes it from the rack
-       P.cosAll=true; P.cosHat='heavyhelm'; P.cosScheme='schember';
+       if(diff(shots.heavyhelm,paint(mk('heavyhelm','schfrost')))<3) bad.push('heavyhelm does not follow the scheme accent'); P.cosAll=true; P.cosHat='heavyhelm'; P.cosScheme='schember';
        var hd=paint({hero:1,own:{wep:null}}); if(diff(hd,shots.heavyhelm)>600) bad.push('the hero wearing the Heavy Helmet draws differently from the same helmet on a body ('+diff(hd,shots.heavyhelm)+' pixels)');
        // the mouth: nothing is drawn over a respirator
        var gm=mk('gasmask'); gm.build='curved'; var gd=paint(gm), sk=near(gd,'#c25a6c',10,0,240); if(sk>0) bad.push('a rose mouth is drawn over the gas mask');
