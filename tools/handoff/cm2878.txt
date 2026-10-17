@@ -1,0 +1,7 @@
+v28.78: downed bar
+
+When downed, hit fire with the slider in the red to bleed out at half speed.
+
+Check 28.78. Fails on v28.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

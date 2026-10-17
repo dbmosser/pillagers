@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.78 - DOWNED BAR
+
+Co-op hunt while he was away. His order: a mechanic like the active reload for when you are downed. A bar with a white slider sweeps back and forth once a second above the DOWN title, with a red sweet spot in the middle, a fifth of the bar. Press fire (left mouse, or the right trigger) while the slider is in the red and your bleed-out runs at half speed for a little over a second; keep hitting about once a second and you keep bleeding slowly. A press outside the red makes a dull sound, flashes the bar red and locks the trigger for 0.3 seconds, nothing more. A trigger held down as you fell does not count until you let go and pull again. Revive, self-revive and surrendering work exactly as before, and the bar is gone the moment you are up, dead or out.
+
+MEASURED. Check 28.78 passes, and fails on v28.77.
 ## v28.77 - THE LOW ALARM ONLY SOUNDS NEAR YOU AND SAYS WHAT IT IS
 
 Co-op hunt while he was away. His note: an annoying low siren plays in the background too often, and he does not know what it means. It is the alarm cue, raised by about twenty things, and machines far away fighting pillagers raised it all raid long. It now sounds only within 700 of you, at most once every 4 seconds, and the feed says MACHINE ALERT each time.
