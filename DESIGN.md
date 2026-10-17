@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.97 - TEAMMATE SEES RICOCHETS
+
+Co-op hunt while he was away. A round that ricochets off steel (v26.66) bounced only in the window that fired it. The teammate got one tracer at fire time, which died at the wall, so he saw the round stop on the steel and then maybe a damage number or a kill with no visible source, and never saw the spark or heard the ping. Proven in the fixture: the shooter window sends 1 tracer word for a bounced round, and the teammate tracer dies 3 frames in with its flight unturned. Now the bounce sends a second tracer word, flagged, from the bounce point (one extra word per round at most); the teammate draws it flying on with the ricochet spark and ping, and no muzzle flash at the wall.
+
+MEASURED. Check 28.97 passes, and fails on v28.96.
 ## v28.96 - THE HEAL BAR IS DRAWN OVER THE WALLS
 
 Co-op hunt while he was away. His order: the player reload bar and the other bars above the head draw on top of buildings and are never blocked by buildings or other raid elements. The reload, search and revive bars are HUD bars already; the heal and plate bar above the head was drawn before the depth-sorted pass, so a wall in front of the player covered it. It is drawn in the world text pass, after every wall.

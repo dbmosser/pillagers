@@ -1,0 +1,7 @@
+v28.97: teammate sees ricochets
+
+In co-op you now see and hear your teammates rounds ricochet off steel, and he sees yours.
+
+Check 28.97. Fails on v28.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
