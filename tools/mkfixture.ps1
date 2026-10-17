@@ -31433,7 +31433,7 @@ window.__REGRESS=[
          if(seen[i].indexOf(nD)===0) bad.push('DROPPING IN is drawn with no hold running');
        }
        if(!hasE) bad.push('the arcade HUD lost the EXTRACT compass readout');
-       if(HUDBOX.cond) bad.push('the CONDITIONS box is still laid out');
+       if(HUDBOX.cond&&!(g.flow&&g.flow.goals&&g.flow.goals.length)) bad.push('the CONDITIONS box is still laid out');   // v28.82 retarget (corpus-fix 23.35): with run goals the arcade draws the RUN INFO panel (v27.42), its title is not CONDITIONS (checked above)
        if(HUDBOX.raiders) bad.push('the CURRENT PILLAGERS box is still laid out');
        g.notoAt=null;
        ARCADE.holdT=2;
