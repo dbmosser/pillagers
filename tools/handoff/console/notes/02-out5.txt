@@ -1,0 +1,2 @@
+19.00: a Stim with 6 of its 10 seconds left drew no STIM ring on the left of the HUD [DBG rgba(230, 240, 246, 0.48)@943,488|rgba(230, 240, 246, 0.48)@943,488|#ffd25a@573,410 H=975 yMax=776.2 W=1886 DPR=1 feed=13,419,453,277]; no STIM name was written beside the Stim icon on the left; the Stim icon on the l
+ALL DONE

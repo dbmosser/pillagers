@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.81 - AN SP FIGURE IN THE FEED IS A FIGURE AGAIN
+
+Co-op hunt while he was away. Corpus check 27.38 found a medal making two feed lines. Lean2 changed score from $ to SP, but three feed tests still looked for $: the skip of a medal figure label, the merge of a kill popup into the kill line, and the money row for a pick tag.
+
+MEASURED. Check 28.81 passes, and fails on v28.80.
 ## v28.80 - FEWER GUNS IN LOOT
 
 Co-op hunt while he was away. His order: fewer guns in loot. Every gun row in the locker, safe, body, jackpot and cache loot tables now keeps half its old weight and gives the other half to other loot the table already holds, so the table totals and the seeded stream do not move.

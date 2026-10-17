@@ -1,0 +1,7 @@
+v28.81: an sp figure in the feed is a figure again
+
+A medal is one line in the feed again, and a kill popup joins its kill line.
+
+Check 28.81. Fails on v28.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

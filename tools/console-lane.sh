@@ -40,6 +40,16 @@ RUN_USD=$(cap RUN_USD 4); DAY_USD=$(cap DAY_USD 15); today=$(date +%F)
 spent=$(awk -v d="$today" '$1==d {s+=$2} END {printf "%.2f", s+0}' "$C/spend.txt" 2>/dev/null); spent=${spent:-0}
 if awk -v s="$spent" -v c="$DAY_USD" 'BEGIN{exit !(s+0>=c+0)}'; then
   echo "$(date '+%m-%d %H:%M') day cap reached (\$$spent of \$$DAY_USD)" > "$C/status-$L.txt"; exit 0; fi
+# 10-17, his "claude console resets nov 1 so ideally we'd pace the $200 between now and launch, which is halloween": the day's
+# share is what is left of TOTAL_USD over the days to END_DATE, released evenly through the day (one hour ahead), so the workers
+# and the gate move all day instead of spending the day's share in its first hour.
+TOTAL=$(cap TOTAL_USD 190); END=$(cap END_DATE 2026-10-31)
+before=$(awk -v d="$today" '$1<d {s+=$2} END {printf "%.2f", s+0}' "$C/spend.txt" 2>/dev/null)
+dl=$(( ( $(date -d "$END" +%s) - $(date -d "$today" +%s) ) / 86400 + 1 )); [ "$dl" -lt 1 ] && dl=1
+mins=$(( 10#$(date +%H) * 60 + 10#$(date +%M) + 60 ))
+read DAY_USD allow < <(awk -v t="$TOTAL" -v b="${before:-0}" -v d="$dl" -v m="$mins" -v g="$DAY_USD" 'BEGIN{c=(t-b)/d; if(c<0)c=0; if(c>g)c=g; a=c*m/1440; if(a>c)a=c; printf "%.2f %.2f", c, a}')
+if awk -v s="$spent" -v a="$allow" 'BEGIN{exit !(s+0>=a+0)}'; then
+  echo "$(date '+%m-%d %H:%M') pacing: spent \$$spent today, \$$allow allowed by now (\$$DAY_USD for today, $dl days to $END)" > "$C/status-$L.txt"; exit 0; fi
 if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | head -1); else t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | head -1); fi
 [ -z "$t" ] && { echo "$(date '+%m-%d %H:%M') no tasks left" > "$C/status-$L.txt"; exit 0; }
 k=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('PILLAGERS_API_KEY','User')" 2>/dev/null | tr -d '\r\n')

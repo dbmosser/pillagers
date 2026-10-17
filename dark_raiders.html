@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.80';
+var VER='28.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19305,7 +19305,7 @@ function feedSay(m,k,o){
     tag=(o&&o.sub)?String(o.sub):((o&&o.tag)?String(o.tag).toUpperCase():'');
     if(o&&o.c==='danger'){ fk='danger'; col=HUDC.danger; key=(o.key?('k:'+o.key):''); }
     else if(item&&ITEMS[item]){ fk='loot'; col=feedItemCol(item,o&&o.c); cnt=true; key='p:'+item+'|'+tag; }
-    else if((/^[+\-]\$/).test(s)){ fk='money'; col=(o&&o.c&&HUDC[o.c]&&o.c!=='gain')?HUDC[o.c]:UIC.r_gold; key='m:'+s+'|'+tag; }
+    /* v28.xx (cw-feedsp): a "+70 SP" pick tag is a money row, SP as well as $ */ else if((/^[+\-](\$|[\d,]+ SP$)/).test(s)){ fk='money'; col=(o&&o.c&&HUDC[o.c]&&o.c!=='gain')?HUDC[o.c]:UIC.r_gold; key='m:'+s+'|'+tag; }
     else { fk='info'; col=feedItemCol('',o&&o.c); key=(o&&o.key)?('k:'+o.key):''; }
     return feedAdd([{t:s,c:col}],fk,{key:key,tag:tag,n:(o&&o.n>0)?o.n:1,count:cnt,col:col});
   }
@@ -19321,8 +19321,10 @@ function feedLabel(t,c,ik){
   var s=String(t);
   if(!G||G.sim||!G.player||ik||!s) return null;
   if((/^(WEAK SPOT|ACTIVE RELOAD|PICKED UP|CLOSE CALL|NOTORIETY \+\d+)$/).test(s)||(/ (DESTROYED|ELIMINATED)$/).test(s)||feedPwrOf(s)) return null;
-  if((/^\s\+\$/).test(s)) return null;
-  if((/^\+\$[\d,]+$/).test(s)) return feedMoney(s);
+  // v28.xx (cw-feedsp): lean2 turned score from $ into SP, so the skip for a medal's own figure label (" +100 SP") has to read SP too, else a medal makes two feed lines.
+  if((/^\s\+(\$|[\d,]+ SP$)/).test(s)) return null;
+  // v28.xx (cw-feedsp): a kill popup "+50 SP" joins the kill line again, as "+$50" did before lean2.
+  if((/^\+(\$[\d,]+|[\d,]+ SP)$/).test(s)) return feedMoney(s);
   return feedAdd([{t:s,c:c||HUDC.text}],'info',{col:c||null,gl:'info'});
 }
 // the figure of a kill rides on his own kill line when that line is under a second old; otherwise it is a line of its own
@@ -46617,7 +46619,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.80: Guns turn up about half as often in containers and on bodies; other loot takes their place. Check 28.80 fails on v28.79',
+  now:'v28.81: A medal is one line in the feed again, and a kill popup joins its kill line. Check 28.81 fails on v28.80',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

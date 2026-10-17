@@ -1,0 +1,5 @@
+## v28.81 - AN SP FIGURE IN THE FEED IS A FIGURE AGAIN
+
+Co-op hunt while he was away. Corpus check 27.38 found a medal making two feed lines. Lean2 changed score from $ to SP, but three feed tests still looked for $: the skip of a medal figure label, the merge of a kill popup into the kill line, and the money row for a pick tag.
+
+MEASURED. Check 28.81 passes, and fails on v28.80.

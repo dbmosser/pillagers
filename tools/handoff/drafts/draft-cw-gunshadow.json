@@ -1,0 +1,12 @@
+{
+    "title":  "THE HELD GUN CASTS A SHADOW",
+    "why":  "Art build step 5 (his pick: Refined Chibi with Gear-heavy raider). The brief asks for a soft cast shadow and a gun shadow. The held gun now throws a soft dark strip on the body and far arm beneath it, lit from the top left, drawn under the gun sprite so it costs one fill.",
+    "now":  "Guns in hand now cast a soft shadow on the body under them.",
+    "edits":  [
+                  {
+                      "anchor":  "  wc.drawImage(B.c,B.x0+ext,B.y0,B.w,B.h);\n",
+                      "replacement":  "  // v28.xx (cw-gunshadow), art build step 5 (char-art-build-brief): \"a soft cast shadow and a gun shadow\". Lit from the top left, the gun throws a\n  // soft dark strip down onto the body and the far arm under it. Drawn before the gun sprite, so only the lower fringe shows.\n  wc.fillStyle=\u0027rgba(0,0,0,.26)\u0027; wc.fillRect(D.rv[0]+ext+1,D.by+1.2,D.tip-D.rv[0]-3,D.rv[1]+D.rv[3]-D.by+0.4);\n  wc.drawImage(B.c,B.x0+ext,B.y0,B.w,B.h);\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the held gun casts a soft shadow: painting the gun with its shadow strip held back changes pixels under the gun (the drawing, not a stand-in)\u0027,\n   run:function(){\n     if(typeof gunHeld!==\u0027function\u0027) return \u0027SKIP: no gunHeld\u0027;\n     var bad=[], skipped=0;\n     function paint(skip){\n       var cv2=document.createElement(\u0027canvas\u0027), x2, kw=wc, fr, d;\n       cv2.width=240; cv2.height=240; x2=cv2.getContext(\u00272d\u0027); fr=x2.fillRect;\n       x2.fillRect=function(a,b,c,e){ if(skip\u0026\u0026/^rgba\\(0,\\s*0,\\s*0,/.test(String(x2.fillStyle))){ skipped++; return; } return fr.call(x2,a,b,c,e); };\n       wc=x2;\n       try{ x2.translate(20,50); x2.scale(3,3); gunHeld(0,20,0,1,{hero:0},\u0027#555a66\u0027,null,false,false,false,0,0); } finally { wc=kw; }\n       return x2.getImageData(0,0,240,240).data;\n     }\n     try{\n       var a=paint(false), b=paint(true), i, diff=0, n=0;\n       for(i=3;i\u003ca.length;i+=4){ if(a[i]!==b[i]){ diff+=Math.abs(a[i]-b[i]); n++; } }\n       if(skipped\u003c1) bad.push(\u0027the gun paints no black translucent shadow fill\u0027);\n       if(n\u003c150) bad.push(\u0027the gun shadow touches only \u0027+n+\u0027 pixels (want 150 or more)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

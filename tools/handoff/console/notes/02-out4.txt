@@ -1,0 +1,4 @@
+cwdbg: state=raid arcade=undefined mapOpen=undefined over=null sim=false W=1886 H=975 stimOn=true DPR=1 boxes=raiders:7,141,366,177 legend:481,615,552,231 body:14,776,532,193 feed=13,323,453,277 arcs=rgba(230, 240, 246, 0.48)@943,488|#ffd25a@29,627 texts=STIM@48,17|6s@48,33
+18.25: PASS
+17.86: PASS
+ALL DONE

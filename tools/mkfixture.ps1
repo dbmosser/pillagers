@@ -6093,6 +6093,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.81',what:'cw-feedsp: score is SP since lean2, and the feed still treats an SP figure as a figure: a medal label " +100 SP" is no line of its own, a kill popup "+50 SP" joins the kill line, a "+70 SP" pick is a money row',
+   run:function(){
+     if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
+     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof feedLabel!=='function') return 'SKIP: no arcade or feed here';
+     var bad=[], g=null, rs=say, n0, r, kl, ml;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       say=function(){};
+       feedS(); n0=g.fd.lines.length;
+       r=feedLabel(' +100'+' SP','#ffc04a');
+       if(r||g.fd.lines.length!==n0) bad.push('a medal figure label made a line of its own ('+(g.fd.lines.length-n0)+' new)');
+       kl=feedKillLine('YOU',true,false,'SCAV',HUDC.danger,' DESTROYED'); n0=g.fd.lines.length;
+       r=feedLabel('+50'+' SP','#ffc04a');
+       if(!kl||g.fd.lines.length!==n0||kl.money!=='+50'+' SP') bad.push('a kill popup +50 SP did not join the kill line (money '+(kl&&kl.money)+', lines '+(g.fd.lines.length-n0)+' new)');
+       ml=feedSay('+70'+' SP','pick',{});
+       if(!ml||ml.fk!=='money') bad.push('a +70 SP pick is not a money row ('+(ml&&ml.fk)+')');
+       return bad.length?bad.join('; '):null;
+     } finally {
+       say=rs;
+       try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       try{ if(typeof ARCADE==='object'){ ARCADE.mine=0; ARCADE.holdT=0; } }catch(_h){}
+       __topClear();
+     } }},
   {v:'28.80',what:'guns come up at half the old rate in locker, safe, body, jackpot and cache loot rolls, and the loot table totals are unchanged (his order: fewer guns in loot)',
    run:function(){
      var tabs=['locker','safe','body','jackpot','cache'], oldTot={locker:111,safe:117,body:101,jackpot:104,cache:142};
