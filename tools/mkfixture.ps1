@@ -30853,12 +30853,14 @@ window.__REGRESS=[
        if(!arcadeDeploy({mapIx:0,seed:4242})||!__state()||!__state().arcade) return bad.concat(['no second arcade drop']).join('; ');
        try{ attStop(); }catch(_as2){}
        id=ARCADE.run.id; ARCADE.ownAt=Date.now(); said.length=0; posted.length=0;
+       try{ if(typeof ARCADE_PARTY_KEY==='string'){ pkOwn=true; localStorage.setItem(ARCADE_PARTY_KEY,JSON.stringify({t:t0-13*3600000+60000})); } }catch(_pk2){}   // retarget v23.41 (party5, v26.xx): tonight starts at the party stamp, so the 13 hour old 99999 row stays out of the bar here too
        ARCADE.mine=4000; arcadeHiTick();
        if(said.join(',').indexOf('NEW HIGH')>=0) bad.push('NEW HIGH SCORE under tonights best');
        ARCADE.mine=6000; arcadeHiTick(); arcadeHiTick();
        for(n=0,j=0;j<said.length;j++) if(said[j]==='NEW HIGH SCORE|ext') n++;
-       if(n!==1) bad.push('NEW HIGH SCORE was said '+n+' times over tonights best ('+said.join(',')+') DIAG auth '+arcadeBoardAuth()+' on '+ARCADE.on+' role '+ARCADE.role+' solo '+ARCADE.solo+' sim '+(__state()&&__state().sim)+' over '+(__state()&&__state().over)+' hiRun '+ARCADE.hiRun+' id '+id+' hiBar '+ARCADE.hiBar+' team '+arcadeTeam()+' party '+arcadePartyAt()+' now '+Date.now()+' tonight '+JSON.stringify(arcadeBoardTonight()));
+       if(n!==1) bad.push('NEW HIGH SCORE was said '+n+' times over tonights best ('+said.join(',')+')');
        if(!sent('archi')) bad.push('player 2 was not told of the high score');
+       try{ if(pkOwn){ if(pk0===null) localStorage.removeItem(ARCADE_PARTY_KEY); else localStorage.setItem(ARCADE_PARTY_KEY,pk0); pkOwn=false; } }catch(_pr2){}
        arcadeExtracted();
        r=row(id);
        if(!r||r.s!==8500) bad.push('the extraction did not checkpoint the row ('+JSON.stringify(r)+')');
