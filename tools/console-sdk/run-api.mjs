@@ -75,7 +75,7 @@ function useTool(name, a) {
       // lock its own helper held, blocking every ship. The loop now remembers a lock it took and adds HELD=1 itself.
       const c2 = (heldLock && /\/fixq\.sh /.test(c) && !/^HELD=1 /.test(c)) ? 'HELD=1 ' + c : c;
       const r = spawnSync(BASH, ['-c', c2], { cwd: R, encoding: 'utf8', timeout: 4 * 3600 * 1000, maxBuffer: 64e6, env: { ...e, ANTHROPIC_API_KEY: '' } });
-      if (/\/lock\.sh$/.test(c) && r.status === 0) heldLock = true;
+      if (/\/lock\.sh$/.test(c) && r.status === 0) { heldLock = true; lockAt = Date.now(); }
       if (/\/unlock\.sh$/.test(c)) heldLock = false;
       const o = (r.stdout || '') + (r.stderr ? '\n[stderr]\n' + r.stderr : '');
       return 'exit ' + r.status + '\n' + (o.length > 5000 ? '[first part cut]\n' + o.slice(-5000) : o); }
@@ -83,7 +83,7 @@ function useTool(name, a) {
   } catch (err) { return 'ERROR: ' + String(err && err.message || err).slice(0, 500); }
 }
 const out = { result: '', total_cost_usd: 0, terminal_reason: '', subtype: '' };
-let cost = 0, lastText = '', heldLock = false;
+let cost = 0, lastText = '', heldLock = false, lockAt = 0;
 const sys = [{ type: 'text', text: readFileSync(e.CW_RULES, 'utf8') + '\n\nS (the scratchpad) is ' + S.replace(/\\/g, '/') + '. Your tools: read_file, grep, list_dir, write_file, edit_file, run.', cache_control: { type: 'ephemeral' } }];
 const msgs = [{ role: 'user', content: [{ type: 'text', text: 'Your task id is ' + e.CW_TASK + '. Your lane is ' + (e.CW_LANE || 'a') + '. ' + readFileSync(e.CW_PROMPT_FILE, 'utf8') }] }];
 const headers = { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' };
@@ -122,6 +122,13 @@ try {
     const txt = j.content.filter(b => b.type === 'text').map(b => b.text).join('\n'); if (txt) lastText = txt;
     if (j.stop_reason !== 'tool_use') { out.terminal_reason = j.stop_reason || 'end'; break; }
     const results = j.content.filter(b => b.type === 'tool_use').map(b => ({ type: 'tool_result', tool_use_id: b.id, content: useTool(b.name, b.input || {}) }));
+    // 10-17 17:50: a helper held the lock 47 minutes with nothing to commit while two ships waited. Past 15 minutes the loop
+    // gives the lock back itself and tells the helper.
+    if (heldLock && Date.now() - lockAt > 15 * 60000) {
+      try { spawnSync(BASH, ['-c', 'bash ' + S.replace(/\\/g, '/') + '/unlock.sh'], { cwd: R, encoding: 'utf8', timeout: 60000 }); } catch {}
+      heldLock = false;
+      results.push({ type: 'text', text: 'NOTE: you held the ship lock over 15 minutes, so it was released for the other workers. Commit any fixture edits with fixq.sh (it takes the lock itself), and next time prepare your edits before you take the lock.' });
+    }
     msgs.push({ role: 'user', content: results });
   }
 } catch (err) { out.result = 'worker error: ' + String(err && err.message || err).slice(0, 500); out.terminal_reason = 'api_error'; }
