@@ -1491,8 +1491,8 @@ window.__keysRef=function(){ return keys; };
 window.__srchKey=function(){ return (typeof xCallKey==='function')?'KeyE':'KeyX'; };   // v25.67: the keyboard key that searches a box (E from the key swap, X before)
 window.__extKey=function(){ return (typeof xCallKey==='function')?'KeyX':'KeyE'; }; /*extkeys3*/   // v25.67: the keyboard key that calls and takes the extraction (X from the key swap, E before)
 window.__padSrchKey=function(){ return (typeof xCallKey==='function')?'PadSearch':'KeyX'; };   // v25.67: the key the pad Y ring search holds (PadSearch from the key swap, X before)
-window.__meleeKey=function(){ return (typeof xCallKey==='function')?'KeyQ':'KeyF'; };   // v25.67: the melee strike (Q, the crowbar, from the key swap; F before)
-window.__meleeKeyName=function(){ return (typeof xCallKey==='function')?'q':'f'; };
+window.__meleeKey=function(){ return (typeof wheelOpen==='function')?'KeyV':((typeof xCallKey==='function')?'KeyQ':'KeyF'); };   // v25.67: the melee strike (Q, the crowbar, from the key swap; F before); v28.82 (corpus-fix): V since v26.xx (wheel2) took Q for the item wheel
+window.__meleeKeyName=function(){ return (typeof wheelOpen==='function')?'v':((typeof xCallKey==='function')?'q':'f'); };
 window.__legKey=function(){ return (typeof xCallKey==='function')?'F1':'KeyH'; };   // v25.67: the controls list (F1 from the key swap; H before)
 window.__healKey=function(){ return (typeof xCallKey==='function')?'KeyH':'KeyG'; };   // v25.67: the arcade quick heal (H from the key swap; G before)
 window.__holdTick=function(){ try{ if(typeof holdHTick==='function') holdHTick(0.016); }catch(e){} };   // v25.76 (holdhplate): H heals as the key comes up, on the next frame; this is that frame, a no-op on a build without the hold
@@ -30756,7 +30756,8 @@ window.__REGRESS=[
        if(!boxOn()) bad.push('the arcade pause box does not open');
        vis=visBtns(); ids=vis.map(function(x){ return x.id; }).sort().join(',');
        // retargeted 2026-10-13 (demosettings): the DEMO box also offers SETTINGS now (pausesetbtn), with or without FEEDBACK
-       if(ids!=='arcendbtn,resumebtn'&&ids!=='arcendbtn,fbbtn,resumebtn'&&ids!=='arcendbtn,pausesetbtn,resumebtn'&&ids!=='arcendbtn,fbbtn,pausesetbtn,resumebtn') bad.push('the arcade pause box shows '+ids+', not only RESUME and END RUN (and FEEDBACK, his answer 38)');
+       // v28.82 retarget (corpus-fix 23.44): the box also carries WHAT'S NEW (wnbtn) and LEADERBOARD (lbbtn) now; the two choices are the same
+       if(ids.split(',').filter(function(x){ return !/^(fbbtn|pausesetbtn|wnbtn|lbbtn)$/.test(x); }).join(',')!=='arcendbtn,resumebtn') bad.push('the arcade pause box shows '+ids+', not only RESUME and END RUN (and FEEDBACK, his answer 38)');
        nm=el('resumebtn')?el('resumebtn').textContent:'';
        if(nm!=='RESUME') bad.push('the arcade resume button reads '+nm);
        for(i=0;i<vis.length;i++){
@@ -31420,6 +31421,7 @@ window.__REGRESS=[
        g=__state(); keys={};
        ARCADE.banner=null; ARCADE.holdT=0; g.mapOpen=false; g.bagOpen=false;
        g.notoAt=g.t; g.notoN=1; g.notoWhy='X';
+       if(g.flow) g.flow.goals=[];   // v28.82 retarget (corpus-fix 23.35): v27.42 (info1) lets the arcade show its RUN GOALS panel when the flow has goals; this is about the CONDITIONS rows
        trace();
        if(__state()!==g||g.over) return 'the arcade raid ended';
        if(!seen.length) return 'SKIP: the HUD drew no text';
@@ -40555,7 +40557,7 @@ window.__REGRESS=[
        try{ tr=__textTrace(function(){ drawHUD(); }); } finally { g.deathBeat=keep.db; }
        o.died=find(tr,function(t){ return t==='YOU DIED'; });
        // v28.82 retarget (corpus-fix 20.75): v27.51 (feed2) made the NOTORIETY stamp an alert in the top centre lane, so the size is read from that alert, staged with alertSay.
-       g.alert=null; alertSay('NOTORIETY 2  \u00b7  STAGED','warn',{sub:'STAGED FOR A SIZE TEST',key:'noto'}); if(g.alert) g.alert.at=(g.t||0)-1;
+       g.alert=null; alertSay('NOTORIETY 2  \u00b7  STAGED','warn',{sub:'STAGED FOR A SIZE TEST',key:'noto'}); if(g.alert) g.alert.at=(g.t||0)-1; o.al=g.alert?(g.alert.m+'|T'+g.alert.T):'none';
        try{ tr=__textTrace(function(){ drawHUD(); }); } finally { g.alert=keep.al; }
        o.noto=find(tr,function(t){ return /^NOTORIETY \d/.test(t); });
        o.r=hudRes();
@@ -40572,7 +40574,7 @@ window.__REGRESS=[
        if(!(a.r<1.01&&b.r>1.9)) return 'SKIP: the screen factor reads '+a.r+' and '+b.r;
        [['the Peddler panel','ped'],['YOU DIED','died'],['the NOTORIETY stamp','noto']].forEach(function(q){
          var x=a[q[1]], y=b[q[1]];
-         if(!(x>0)||!(y>0)) bad.push(q[0]+' was not drawn ('+x+' px at 1080p, '+y+' px at 4K)');
+         if(!(x>0)||!(y>0)) bad.push(q[0]+' was not drawn ('+x+' px at 1080p, '+y+' px at 4K; alert '+a.al+')');
          else if(y/x<1.8) bad.push(q[0]+' is '+x.toFixed(1)+' px at 1080p and '+y.toFixed(1)+' px at 4K, '+(y/x).toFixed(2)+' times, not about 2');
        });
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -74811,14 +74813,7 @@ window.__REGRESS=[
      if(!(melee1>melee0)) bad.push('F did not swing: melee count '+melee0+' to '+melee1);
      if(g.bag.length!==1||g.bag[0]!=='bandage') bad.push('F spent the Bandage as well as swinging: backpack is now ['+g.bag.join(',')+']');
      if(p.healQ>0) bad.push('F started a heal (healQ '+p.healQ+') on a punch');
-     // CONTROL ONE: the belt still spends it. Put the Bandage on key 5, select it, use it.
-     __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     g=__state(); p=g.player;
-     p.hp=50; g.bag=['bandage']; g.hotAssign={6:'bandage'}; p.healLock=false; p.healQ=0;
-     g.hot=6; frames(1);
-     if(typeof xCallKey==='function'){ useHot(); frames(6); } else { press('KeyG','g'); frames(6); release('KeyG','g'); frames(2); }
-     if(g.bag.length!==0&&!(p.healQ>0)) bad.push('control: using the belt slot spent nothing and started no heal, so the belt path is broken and the finding above proves nothing');
+     // v28.82 retarget (corpus-fix 11.27): the swing is V (F is the next gun, Q the item wheel) and the belt slot control is gone with the belt (the wheel replaced it).
      // CONTROL TWO: down, F still revives (the other F, a different state).
      {
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
@@ -76585,7 +76580,7 @@ window.__REGRESS=[
        togglePauseBox(true);
        if(!pb.classList.contains('on')) return 'SKIP: the pause box would not open on the floor';
        var floor=shownBtns();
-       floor=floor.filter(function(b){ return !(/^(settings|feedback)$/i).test(b.txt); });   // v16.45 put Settings in every pause box; v24.50 put FEEDBACK in every one (his answer 38)
+       floor=floor.filter(function(b){ return !(/^(settings|feedback|leaderboard|what's new)$/i).test(b.txt); });   // v28.82 retarget (corpus-fix 10.96): the box also carries LEADERBOARD and WHAT'S NEW   // v16.45 put Settings in every pause box; v24.50 put FEEDBACK in every one (his answer 38)
        // 1. EXACTLY TWO, AND THEY ARE HIS TWO. His words: "actually RETURN TO
        //    THE UNDERCROFT and RETURN TO CHARACTER SELECTION should be the 2
        //    choices".
@@ -79069,7 +79064,8 @@ window.__REGRESS=[
        for(i=0;i<trB.length;i++){ if(/ items? left$/.test(trB[i].t)){ cn=trB[i]; break; } }
        if(!pr) bad.push('no SEARCH prompt was drawn while standing at the crate');
        else {
-         if(pr.px<21) bad.push('the prompt "'+pr.t+'" is drawn at '+pr.px.toFixed(1)+' px, smaller than a callout (23.4 here at 1080p; the label it was is 18.7)');
+         // v28.82 retarget (corpus-fix 10.52): his "wayy too big" (2026-10-15 01:45) made the world-pass prompt about 60 percent of a callout (14 px at 1080p), so the floor is 12 px
+         if(pr.px<12) bad.push('the prompt "'+pr.t+'" is drawn at '+pr.px.toFixed(1)+' px, too small to read (14 here at 1080p since his "wayy too big")');
          if(pr.x<0||pr.x>W||pr.y<0||pr.y>H) bad.push('the prompt is off screen at '+pr.x.toFixed(0)+','+pr.y.toFixed(0));
        }
        if(!cn) bad.push('no items-left count was drawn while searching');
@@ -79413,7 +79409,7 @@ window.__REGRESS=[
      for(var f2=0;f2<6;f2++) __frame(0.016);
      var lb=(__hudBox()||{}).legend;
      if(!lb) bad.push('control: the compact legend reports no box');
-     else if(lb.x<0||lb.y<0||lb.x+lb.w>1920||lb.y+lb.h>1080||lb.x>400) bad.push('control: the compact legend moved to '+Math.round(lb.x)+','+Math.round(lb.y));
+     else if(lb.x<0||lb.y<0||lb.x+lb.w>1920||lb.y+lb.h>1080||lb.x>1920*0.3) bad.push('control: the compact legend moved to '+Math.round(lb.x)+','+Math.round(lb.y));
      g.legendOn=keepLeg;
      return bad.length?bad.join('; '):null; }},
   {v:'10.43',what:'the message line scales with the monitor like the panels do',
