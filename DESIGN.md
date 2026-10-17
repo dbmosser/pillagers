@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.76 - CRAWLERS BITE FOR LESS
+
+Co-op hunt while he was away. His note: crawlers deal too much damage per hit. A crawler bite drops from 13 to 9, about 30 percent less. Balancing.
+
+MEASURED. Check 28.76 passes, and fails on v28.75.
 ## v28.75 - A CACHE NAME IS DRAWN OVER THE WALLS
 
 Co-op hunt while he was away. His note with a picture: the CHILL ROW CACHE name was cut in two by a wall, and the text should be on top. The name was drawn with its box in the depth-sorted world pass, so a wall in front of the box covered it. It is now drawn in the world text pass beside the nameplates, after every wall.

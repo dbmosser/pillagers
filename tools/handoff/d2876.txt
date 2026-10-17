@@ -1,0 +1,5 @@
+## v28.76 - CRAWLERS BITE FOR LESS
+
+Co-op hunt while he was away. His note: crawlers deal too much damage per hit. A crawler bite drops from 13 to 9, about 30 percent less. Balancing.
+
+MEASURED. Check 28.76 passes, and fails on v28.75.

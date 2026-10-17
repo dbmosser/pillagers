@@ -6093,6 +6093,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.76',what:'a crawler bites for 9, not 13 (his note: crawlers deal too much damage per hit)',
+   run:function(){
+     if(typeof mkCrawler!=='function') return 'SKIP: no crawler maker';
+     var e=mkCrawler(100,100);
+     if(!e||typeof e.dmg!=='number') return 'SKIP: a crawler has no dmg field';
+     if(e.dmg!==9) return 'a crawler bites for '+e.dmg+', not 9';
+     return null; }},
   {v:'28.75',what:'a named cache keeps its name over the walls: the name is drawn in the world text pass after every wall (his picture of CHILL ROW CACHE cut by a wall)',
    run:function(){
      if(typeof __frame!=='function') return 'SKIP: no frame helper';

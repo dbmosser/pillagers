@@ -1,0 +1,12 @@
+{
+    "title":  "CRAWLERS BITE FOR LESS",
+    "why":  "His note: crawlers deal too much damage per hit. A crawler bite drops from 13 to 9, about 30 percent less. Balancing.",
+    "now":  "A crawler bite does 9 damage instead of 13.",
+    "edits":  [
+                  {
+                      "anchor":  "cd:0,alert:0,spd:120,dmg:13,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)});",
+                      "replacement":  "cd:0,alert:0,spd:120,dmg:9,rng:26,cone:1.5,hitT:0,legs:rnd(0,6.28)});   // v28.xx (crawldmg), HIS NOTE (2026-10-16): \"crawlers deal too much damage per hit\". 13 to 9 a bite (about 30 percent less), balancing"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a crawler bites for 9, not 13 (his note: crawlers deal too much damage per hit)\u0027,\n   run:function(){\n     if(typeof mkCrawler!==\u0027function\u0027) return \u0027SKIP: no crawler maker\u0027;\n     var e=mkCrawler(100,100);\n     if(!e||typeof e.dmg!==\u0027number\u0027) return \u0027SKIP: a crawler has no dmg field\u0027;\n     if(e.dmg!==9) return \u0027a crawler bites for \u0027+e.dmg+\u0027, not 9\u0027;\n     return null; }},"
+}

@@ -1,0 +1,7 @@
+v28.76: crawlers bite for less
+
+A crawler bite does 9 damage instead of 13.
+
+Check 28.76. Fails on v28.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
