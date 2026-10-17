@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.79';
+var VER='28.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3190,21 +3190,25 @@ var SHOP=[
 // second pistol to the stash. Every roll that drew it still draws once from the rest, so no seeded draw moved and the seed 4242
 // build holds the same entities and containers. The item (Scav Pistol (field)) stays: it is what your own pistol becomes in the
 // backpack, and a stash that already holds one keeps it.
+// v28.xx (cw-fewerguns), HIS ORDER (2026-10-15): "fewer guns in loot". Every gun_ row in the locker, safe, body, jackpot and cache tables
+// keeps half its old weight and hands the other half to a filler row of loot the table already holds, in the same place in the row. The
+// table total and every other boundary stay where they were, so a roll that landed on no gun lands on the same thing, the KEY rows still
+// cost their extra draw at the same spot, and the seed 4242 build keeps the same entities and containers (85/374, 165/593).
 var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
-  locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['frag',4],['stim',5],['gun_smg',2],['gun_carbine',2],['gun_magnum',2],['core',2]],
-  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',10],['medkit',7],['comp',6],['frag',5],['gun_rifle',5],['gun_shotgun',4],['gun_lmg',3],['gun_dmr',2],['gun_sniper',2],['blackbox',2],['KEY',4],['gun_whisper',2],['gun_lance',1]],
+  locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['frag',4],['stim',5],['gun_smg',1],['plate',1],['gun_carbine',1],['stim',1],['gun_magnum',1],['frag',1],['core',2]],
+  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',10],['medkit',7],['comp',6],['frag',5],['gun_rifle',2.5],['core',2.5],['gun_shotgun',2],['titan',2],['gun_lmg',1.5],['servo',1.5],['gun_dmr',1],['plate',1],['gun_sniper',1],['medkit',1],['blackbox',2],['KEY',4],['gun_whisper',1],['comp',1],['gun_lance',0.5],['frag',0.5]],
   body:[['ammobox',13],['bandage',10],['medkit',11],['plate',11],['stim',8],['frag',6],['smoke',4],
-        ['gun_smg',5],['gun_carbine',3],['optic',6],['servo',5],['board',4],
+        ['gun_smg',2.5],['medkit',2.5],['gun_carbine',1.5],['plate',1.5],['optic',6],['servo',5],['board',4],
         ['cell',4],['core',5],['comp',4],['titan',2]],
   // Caches hold no junk at all. Every entry here is rare or elite, so opening one
   // is always worth the 4.6 seconds it pins you in place.
 botwreck:[['ammobox',34],['scrap',20],['wire',12],['cell',10],['board',9],['comp',6],['stim',4],['optic',5]],
   jackpot:[['reactor',16],['wcore',14],['codex',13],['bloom',14],['blackbox',12],['relay',10],['titan',6],['core',5],
-           ['gun_lance',7],['gun_whisper',7]],
+           ['gun_lance',3.5],['codex',3.5],['gun_whisper',3.5],['bloom',3.5]],
   cache:[['blackbox',12],['reactor',10],['codex',10],['bloom',7],['relay',11],
-         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',8],['gun_rifle',7],['gun_lmg',6],['gun_shotgun',5],['medkit',6],['KEY',7],
-         ['gun_whisper',4],['gun_lance',3]]
+         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',4],['titan',4],['gun_rifle',3.5],['core',3.5],['gun_lmg',3],['ledger',3],['gun_shotgun',2.5],['coil',2.5],['medkit',6],['KEY',7],
+         ['gun_whisper',2],['relay',2],['gun_lance',1.5],['reactor',1.5]]
 };
 var DISTRICTS=[
   // Four genuine hue families at Chrono Trigger saturation. Three of the four
@@ -46613,7 +46617,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.79: The Heavy Helmet has a steel crest and a small glowing lens instead of a tall neon bar. Check 28.79 fails on v28.78',
+  now:'v28.80: Guns turn up about half as often in containers and on bodies; other loot takes their place. Check 28.80 fails on v28.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

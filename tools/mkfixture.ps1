@@ -6093,6 +6093,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.80',what:'guns come up at half the old rate in locker, safe, body, jackpot and cache loot rolls, and the loot table totals are unchanged (his order: fewer guns in loot)',
+   run:function(){
+     var tabs=['locker','safe','body','jackpot','cache'], oldTot={locker:111,safe:117,body:101,jackpot:104,cache:142};
+     var N=20000, guns=0, tot=0, i, j, k, rate, old, sv=RNGS, s;
+     // the old per-table gun share (weights before this change): 6/111, 19/117, 8/101, 14/104, 33/142
+     old=(6/111+19/117+8/101+14/104+33/142)/5;
+     try{
+       RNGS=0x1234567;
+       for(i=0;i<tabs.length;i++){
+         if(!LOOT[tabs[i]]) return 'no LOOT.'+tabs[i];
+         s=0; for(j=0;j<LOOT[tabs[i]].length;j++) s+=LOOT[tabs[i]][j][1];
+         if(Math.abs(s-oldTot[tabs[i]])>0.001) return 'LOOT.'+tabs[i]+' total weight is '+s+', was '+oldTot[tabs[i]]+' (it moves the seeded stream)';
+         for(j=0;j<N;j++){ k=rollTable(LOOT[tabs[i]]); tot++; if(String(k).indexOf('gun_')===0) guns++; }
+       }
+     } finally { RNGS=sv; }
+     rate=guns/tot;
+     if(rate>old*0.58) return 'guns come up '+(rate*100).toFixed(2)+'% of rolls, old rate '+(old*100).toFixed(2)+'%: not about half';
+     if(rate<old*0.42) return 'guns come up '+(rate*100).toFixed(2)+'% of rolls, too rare against the old '+(old*100).toFixed(2)+'%';
+     return null;
+   }},
   {v:'28.79',what:'the Heavy Helmet has no tall neon bar: on Toxic its scheme accent is a small lens, no taller than 4.5 px in any column, and the lens is still there',
    run:function(){
      if(typeof drawOp!=='function'||typeof cosFind!=='function') return 'SKIP: no drawOp';

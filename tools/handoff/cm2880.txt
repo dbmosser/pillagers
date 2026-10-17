@@ -1,0 +1,7 @@
+v28.80: fewer guns in loot
+
+Guns turn up about half as often in containers and on bodies; other loot takes their place.
+
+Check 28.80. Fails on v28.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

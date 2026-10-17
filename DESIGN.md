@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.80 - FEWER GUNS IN LOOT
+
+Co-op hunt while he was away. His order: fewer guns in loot. Every gun row in the locker, safe, body, jackpot and cache loot tables now keeps half its old weight and gives the other half to other loot the table already holds, so the table totals and the seeded stream do not move.
+
+MEASURED. Check 28.80 passes, and fails on v28.79.
 ## v28.79 - THE HEAVY HELMET LOSES ITS NEON BAR
 
 Co-op hunt while he was away. Art build step (his pick: Refined Chibi with Gear-heavy raider). The brief says to fix the neon green bar on the Heavy helmet that reads like a glitch. The crest was a tall bar in the raw scheme accent standing above the dome. It is now a low steel ridge, and the accent shows only as a small glowing lens with a glint on the brow.
