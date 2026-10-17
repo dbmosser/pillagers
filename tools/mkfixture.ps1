@@ -37152,7 +37152,7 @@ window.__REGRESS=[
        o0=G; try{ G=hubBagState(); fl=hotbarSlots(); } finally { G=o0; }
        // v21.93 retarget (gun keys by class, his order 2026-10-14, v26.39): each gun is on its CLASS key (rifle 3, smg 2, carbine 4, shotgun 6, marksman 7), not on keys 1 to 4 in the order held
        want=['rifle','smg','shotgun','dmr','carbine'];
-       function cki(w){ var c=gunClassOf(w); return gunClassKey(c); }
+       var cki=function(w){ var c=gunClassOf(w); return gunClassKey(c); };
        for(i=0;i<want.length;i++){ var ix=cki(want[i]); if(!(ix>=0&&fl[ix]&&fl[ix].kind==='gun'&&gid(fl[ix])===want[i])) bad.push('the Undercroft belt shows '+desc(fl[ix])+' on key '+(ix+1)+', not the '+want[i]); }
        // 2. The raid starts on the same four gun keys, everything else two keys down, and the fifth gun has no key.
        __deploy({kit:KIT.slice(),safe:null,mapIx:0,seed:4242});
