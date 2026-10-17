@@ -6097,6 +6097,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.96',what:'the heal bar over the head is drawn in the world text pass, after every wall (his order: bars above the head are never blocked by buildings)',
+   run:function(){
+     if(typeof __frame!=='function') return 'SKIP: no frame helper';
+     var PR=CanvasRenderingContext2D.prototype, of=PR.fillRect, g=null, p=null, hits=[], i;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       p=g.player; p.prep={t:10,max:30,kind:'heal',key:'bandage'};
+       PR.fillRect=function(x,y,w,h){ if(this.fillStyle==='#6fe0a0'&&h===9) hits.push((/_wtA/).test(String(new Error().stack))); return of.apply(this,arguments); };
+       __frame(); __frame();
+       PR.fillRect=of;
+       if(!hits.length) return 'the heal bar was not drawn while a heal was applying';
+       for(i=0;i<hits.length;i++) if(!hits[i]) return 'the heal bar is drawn in the depth-sorted world pass, where a wall in front of the player covers it';
+       return null;
+     } finally {
+       PR.fillRect=of;
+       try{ if(p) p.prep=null; }catch(_p){}
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'28.95',what:'cloud-coop-p2-near-miss-pins: on the host, four rounds of player 2 that go past a hostile pillager pin him as four of the host own do, a landed player 2 round counts once, and a man behind the one hit is not counted',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__deploy)) return 'SKIP: no raid here';

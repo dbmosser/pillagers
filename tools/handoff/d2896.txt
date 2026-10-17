@@ -1,0 +1,5 @@
+## v28.96 - THE HEAL BAR IS DRAWN OVER THE WALLS
+
+Co-op hunt while he was away. His order: the player reload bar and the other bars above the head draw on top of buildings and are never blocked by buildings or other raid elements. The reload, search and revive bars are HUD bars already; the heal and plate bar above the head was drawn before the depth-sorted pass, so a wall in front of the player covered it. It is drawn in the world text pass, after every wall.
+
+MEASURED. Check 28.96 passes, and fails on v28.95.

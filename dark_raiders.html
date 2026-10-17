@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.95';
+var VER='28.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35101,18 +35101,9 @@ if(!sc.seen) continue;
   // wall cover it and the whole point is that it reads at a glance mid-fight.
   // v11.82: two timers now (prep is medical, prepA is armour); each gets its
   // own bar, the armour bar a row above when both are running.
-  var _pbs=[p.prep,p.prepA], _pbi;
-  for(_pbi=0;_pbi<2;_pbi++) if(_pbs[_pbi]){
-    var _pb=_pbs[_pbi];
-    var _pf=clamp(_pb.t/_pb.max,0,1);
-    var _py=p.y-68-((_pbi&&p.prep)?13:0);   // v18.75: a size bigger (was 48 by 8), with the HUD bar (drawUseBar) as well
-    wc.fillStyle='rgba(6,9,13,.85)';
-    wc.fillRect(p.x-32,_py,64,11);
-    wc.strokeStyle='rgba(255,255,255,.22)'; wc.lineWidth=1;
-    wc.strokeRect(p.x-31.5,_py+0.5,63,10);
-    wc.fillStyle=_pb.kind==='armor'?'#5aa9e6':'#6fe0a0';
-    wc.fillRect(p.x-31,_py+1,62*_pf,9);
-  }
+  // v28.xx (cw-headbars), HIS ORDER (2026-10-15): "player reload bar and the other bars above the head draw on top of buildings and are never
+  // blocked by buildings or other raid elements". The heal and plate bar above the head was drawn here, before the depth-sorted pass, so a
+  // wall in front of the player covered it. It is drawn in the world text pass (_wtA) now, after every wall (the reload bar is a HUD bar already).
   // marked ring
   if(G.marked>0){
     wc.globalCompositeOperation='lighter';
@@ -36087,6 +36078,19 @@ var SHD=G.shells[i];
   // world transform (_wtA and _wtB, called before the weather). Only the order changes: what is drawn, where, and the canSee gate on
   // the nameplates are the same, and no pass is added.
   var _wtA=function(){
+  // v28.xx (cw-headbars): the heal and plate bars over the head, over every wall (HIS ORDER 2026-10-15: bars "never blocked by buildings")
+  var _pbs=[p.prep,p.prepA], _pbi;
+  for(_pbi=0;_pbi<2;_pbi++) if(_pbs[_pbi]){
+    var _pb=_pbs[_pbi];
+    var _pf=clamp(_pb.t/_pb.max,0,1);
+    var _py=p.y-68-((_pbi&&p.prep)?13:0);   // v18.75: a size bigger (was 48 by 8), with the HUD bar (drawUseBar) as well
+    wc.fillStyle='rgba(6,9,13,.85)';
+    wc.fillRect(p.x-32,_py,64,11);
+    wc.strokeStyle='rgba(255,255,255,.22)'; wc.lineWidth=1;
+    wc.strokeRect(p.x-31.5,_py+0.5,63,10);
+    wc.fillStyle=_pb.kind==='armor'?'#5aa9e6':'#6fe0a0';
+    wc.fillRect(p.x-31,_py+1,62*_pf,9);
+  }
   // v28.xx (cachetag): the named caches, over every wall (queued by the container pass above)
   var _ctq=CACHETAGS; CACHETAGS=[];
   if(_ctq.length){ wc.font=FS(TYPE.head); wc.textAlign='center';
@@ -46692,7 +46696,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.95: Player 2s fire pins pillagers the same way player 1s does: rounds that go close count, not only the ones that hit. Check 28.95 fails on v28.94',
+  now:'v28.96: The heal and plate bar over your head is never hidden behind a wall. Check 28.96 fails on v28.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

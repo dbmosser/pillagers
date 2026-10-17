@@ -1,2 +1,2 @@
-20.75: the NOTORIETY stamp was not drawn (0 px at 1080p, 0 px at 4K)
+23.35: PASS
 ALL DONE

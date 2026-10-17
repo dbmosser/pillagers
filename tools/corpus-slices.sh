@@ -14,7 +14,7 @@ CDP() { powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Port 
 while [ $A -lt $END ]; do
   B=$((A+STEP)); [ $B -gt $END ] && B=$END
   TAG="slice$A"
-  CDP -Open "http://localhost:8806/fixture.html?$TAG=1" >/dev/null; sleep 25
+  CDP -Open "http://localhost:8806/${FX:-fixture.html}?$TAG=1" >/dev/null; sleep 25
   CDP -Match "$TAG=1" -TimeoutSec 30 -Expr "(function(){ __regressBg($A,$B); return 'ok'; })()" >/dev/null
   last=0; still=0; busy=0; done_=0
   while true; do

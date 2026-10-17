@@ -50,12 +50,14 @@ while true; do
       echo "$(date +%H:%M) fuzz start at $head" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag > /dev/null 2>&1; echo "$(date +%H:%M) fuzz done" >> "$LOG") &
     fi
-    # (2) the corpus, once per new HEAD, when nothing has shipped for 45 min and the lock is free
-    qidle=$(( $(date +%s) - $(git -C "$R" log -1 --format=%ct 2>/dev/null || echo 0) ))
-    if [ "$(get corpus_head)" != "$head" ] && [ $qidle -ge 2700 ] && [ ! -d "$S/shipq.lock" ] && [ "$(running 'corpq\.sh')" = "0" ]; then
-      out="$S/corpus-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"
+    # (2) the corpus, at most every 4 hours on a new HEAD. 10-17 evening (his "check all your stuff ... other misestimates"): it no
+    #     longer waits for 45 min without a ship nor holds the ship lock (3.5 hours on 10-17): corpq.sh tests a frozen fixture copy.
+    cl="$S/corpus.lock"; [ -d "$cl" ] && [ $(( $(date +%s) - $(stat -c %Y "$cl") )) -gt 21600 ] && rmdir "$cl" 2>/dev/null
+    ct=$(get corpus_t); [ -z "$ct" ] && ct=0
+    if [ "$(get corpus_head)" != "$head" ] && [ $(( $(date +%s) - ct )) -ge 14400 ] && mkdir "$cl" 2>/dev/null; then
+      out="$S/corpus-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"; put corpus_t "$(date +%s)"
       echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
-      (bash -c "echo \"\$\$ corpus-night \$(date +%H:%M:%S)\" > '$S/shipq.owner'; exec bash '$S/corpq.sh' '$out'" > /dev/null 2>&1; echo "$(date +%H:%M) corpus done" >> "$LOG"; summary) &
+      (bash "$S/corpq.sh" "$out" > /dev/null 2>&1; rmdir "$cl" 2>/dev/null; echo "$(date +%H:%M) corpus done" >> "$LOG"; summary) &
     fi
     # (3) the local LLM, once per new HEAD, only with plenty of RAM
     if [ "$(get llm_head)" != "$head" ] && [ "$ram" -ge 20 ] && [ "$(running 'llm-night\.ps1')" = "0" ]; then

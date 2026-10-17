@@ -83,18 +83,18 @@ Fix for the group: accept /^\$?N( SP)?$/ in each. Do it once with the fixq pass.
 | 35 | 22.32 | STALE | Pillbox line drawn 800 29.7px not callout 700 22.3px: alerts are in the top-centre alert lane, bigger type, by design. | Compare against the alert lane font. | DONE (TYPE.title expected, passes) |
 | 37 | 21.88 | STALE | Two message rows with protection and queue: rows replaced by feed + alert lane. | Retire. | DONE (SKIP) |
 | 38 | 21.86 | STALE | Two message rows, boss bar band: same. | Retire. | DONE (SKIP) |
-| 41 | 20.75 | STALE | NOTORIETY stamp not drawn: notoStamp is an alert (say, key noto) plus a feed line now. | Check the alert instead. | OPEN |
-| 70 | 10.52 | STALE | "[E] SEARCH CRATE" drawn at 14px vs callout 23.4: prompt is ~60% size in the world pass on purpose (his "wayy too big", 10-15 01:45). | Lower the floor to the new size. | OPEN |
-| 72 | 10.44 | STALE | Only the control fails: compact legend at x 491 (> 400): the legend moved right of the bottom-left feed. | Allow x up to the feed width. | OPEN |
-| 24 | 23.44 | STALE | Arcade pause box ids now include wnbtn (WHAT'S NEW). | Add the id (10.96 same cause). | OPEN |
-| 66 | 10.96 | STALE | Undercroft pause box has 4 buttons (return, LEADERBOARD, WHAT'S NEW, character select). | Expect the four. | OPEN |
-| 28 | 23.35 | STALE | Arcade CONDITIONS box laid out: v27.42 (info1) lets the arcade show its goals panel when the flow has goals. | Clear g.flow goals in the check. | OPEN |
+| 41 | 20.75 | STALE | NOTORIETY stamp not drawn: notoStamp is an alert (say, key noto) plus a feed line now. | Check the alert instead. | DONE (staged with alertSay, passes) |
+| 70 | 10.52 | STALE | "[E] SEARCH CRATE" drawn at 14px vs callout 23.4: prompt is ~60% size in the world pass on purpose (his "wayy too big", 10-15 01:45). | Lower the floor to the new size. | DONE (floor 12 px, passes) |
+| 72 | 10.44 | STALE | Only the control fails: compact legend at x 491 (> 400): the legend moved right of the bottom-left feed. | Allow x up to the feed width. | DONE (limit 30 percent of width, passes) |
+| 24 | 23.44 | STALE | Arcade pause box ids now include wnbtn (WHAT'S NEW). | Add the id (10.96 same cause). | DONE (optional ids filtered, passes) |
+| 66 | 10.96 | STALE | Undercroft pause box has 4 buttons (return, LEADERBOARD, WHAT'S NEW, character select). | Expect the four. | DONE (filter extended, passes) |
+| 28 | 23.35 | STALE | Arcade CONDITIONS box laid out: v27.42 (info1) lets the arcade show its goals panel when the flow has goals. | Clear g.flow goals in the check. | DONE (goals regenerate in the loop, so the box check allows the goals panel; passes) |
 
 ## F. STALE, melee moved F to Q to V; F is next gun; 1-9 guns (wheel2, v26.xx)
 | # | Ver | Verdict | Reason | Fix | Status |
 |---|-----|---------|--------|-----|--------|
-| 63 | 11.38 | STALE | Control swing next to a hostile pillager does no damage: the check presses the old melee key. | Call meleeStrike() or press KeyV. | OPEN |
-| 64 | 11.27 | STALE | F no longer swings (F = next gun); heal on belt slot gone. | Retarget to V; drop the belt control. | OPEN |
+| 63 | 11.38 | STALE | Control swing next to a hostile pillager does no damage: the check presses the old melee key. | Call meleeStrike() or press KeyV. | DONE (__meleeKey helper now returns KeyV, passes) |
+| 64 | 11.27 | STALE | F no longer swings (F = next gun); heal on belt slot gone. | Retarget to V; drop the belt control. | DONE (V via helper, belt control dropped, passes) |
 | 65 | 11.26 | STALE | Pause box says "V melee" and "1-9 guns", not "Q melee" / "1-4 guns". | Update the words. | OPEN |
 | 69 | 10.64 | STALE | F did not strike with a rifle in hand: same key move. | Use V. | OPEN |
 

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.96 - THE HEAL BAR IS DRAWN OVER THE WALLS
+
+Co-op hunt while he was away. His order: the player reload bar and the other bars above the head draw on top of buildings and are never blocked by buildings or other raid elements. The reload, search and revive bars are HUD bars already; the heal and plate bar above the head was drawn before the depth-sorted pass, so a wall in front of the player covered it. It is drawn in the world text pass, after every wall.
+
+MEASURED. Check 28.96 passes, and fails on v28.95.
 ## v28.95 - PLAYER 2 NEAR MISSES PIN PILLAGERS
 
 Co-op hunt while he was away. Suppression (v26.62) counts every round that goes past a hostile pillager, and four inside 1.8 s pin him. On the host only player 2s rounds that LANDED counted (netShotTake ran suppHit on every shot word); his near misses ran the count only on the copy in his own window, which the next snapshot overwrote. So the host pinned a man with any four rounds near him and player 2 needed four hits. Proven in the fixture: four player 2 rounds past a hostile pillager left the hosts man at count 0, unpinned. Now player 2s window, at the same near-pass test the hosts rounds use (once per round per man, a round that stops on a man never reaches the one behind), counts the round for the host, and once a tenth of a second sends one reliable word {t:sup,q:{body:count}}; the host counts each body the same number of times (at most 16 a word), so the count is the hosts own rule. The shot word no longer counts on its own: a gun round is counted once by its sup word, and the shot word also carries frag, melee, finisher, air strike and screen clear damage, none of which pin when the host deals them. An older host ignores the unknown word.

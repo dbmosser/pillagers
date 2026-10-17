@@ -1,1 +1,1 @@
-10-17 17:49 running 08-corpus-fix (cap $4.00; spent today $25.14 of $190.00)
+10-17 18:44 08-corpus-fix: done, $1.2425
