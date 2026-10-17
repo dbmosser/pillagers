@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.92 - PLAYER 2 HIT STOP BY THE HOST RULE
+
+Co-op hunt while he was away. Hit stop (v26.55: a heavy round, 40 damage or more by the gun, holds the body for 0.06 s) was decided on the host for player 2s rounds by the number his window sent, which already has the weak point, armour and back shot multipliers in it, while the hosts own rounds use the raw gun damage. Proven in the fixture: player 2s Auto Rifle round into a Bulwark spine (59.8) held the body every time, the hosts never; his Magnum into a Bulwark front (7.44) never held it, the hosts does; his frag, melee and air strike words (80 and up) held bodies, the hosts own never do. Now player 2s gun round carries a heavy mark worked out from the raw gun damage exactly as the host round does, and the host holds the body only on that mark.
+
+MEASURED. Check 28.92 passes, and fails on v28.91.
 ## v28.91 - PRE-RAID: PACK WHEEL ITEMS, AMMO, KEYS AND A DATA CORE ON THE MAP SELECT SCREEN
 
 Co-op hunt while he was away. His order (2026-10-15): "On the pre-raid screen (the map select screen, renamed PRE-RAID), quickly pick how much cash and how many of each wheel item to take, plus keys and guns. Also how much ammo to take. Slot a data core there too." The map select screen is now headed PRE-RAID and has a PACK row: a chip per kind of carryable item in the stash with minus, plus and MAX, ALL and NONE, and a data core slot. First slice: cash is not in yet because a raid has no cash to carry in.

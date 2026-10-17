@@ -1,0 +1,7 @@
+v28.92: player 2 hit stop by the host rule
+
+Heavy rounds from player 2 hold enemies for the same beat and on the same guns as player 1s, and his grenades and melee no longer hold them.
+
+Check 28.92. Fails on v28.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

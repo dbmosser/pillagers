@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.91';
+var VER='28.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29331,7 +29331,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               }
               if(en.boss&&en.overheat>0){ edmg*=1.5; if(!WK&&!G.sim&&!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(1.5),'#ffc04a',0,true); } }   // v27.xx (weakx): and the exposed core says its multiplier too   // v26.xx (ai24): the Overseer core is exposed while it vents
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
-              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el,1); else en.hp-=affixSoak(en,edmg);   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: player 2 round is marked for the shield soak
+              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el,1,b.dmg>=HITSTOP_DMG); else en.hp-=affixSoak(en,edmg); /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: player 2 round says if it is heavy by the same raw number the host own round uses*/   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: player 2 round is marked for the shield soak
               en.hitT=.16; hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat
               // HIS Q42. The number IS the feedback: without it a weak point and
               // a body shot look identical, which is most of why the weak point
@@ -46683,7 +46683,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.91: The map select screen is now PRE-RAID, with a PACK row: plus, minus and MAX for each wheel item, ammo, key and gun, and a data core slot. Check 28.91 fails on v28.90',
+  now:'v28.92: Heavy rounds from player 2 hold enemies for the same beat and on the same guns as player 1s, and his grenades and melee no longer hold them. Check 28.92 fails on v28.91',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54407,7 +54407,7 @@ function netHitTake(peer,m){
 }
 // A LINKED WINDOW: its round, blade or charge landed on a body the host runs. The damage worked out here goes to the host,
 // with where this player stands, the bearing of the blow and the weak point it found; the body itself is not touched here.
-function netShotSend(e,dmg,ang,wk,ar,el,sk){   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: sk marks a gun round, the only blow the host soaks on a SHIELDED elite
+function netShotSend(e,dmg,ang,wk,ar,el,sk,hs){  /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: hs marks a heavy gun round (40 or more before multipliers), the host rule for hit stop*/   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: sk marks a gun round, the only blow the host soaks on a SHIELDED elite
   var q, m;
   if(!e||!e.nid||!NET.on||NET.role!=='join'||!netEntsPeer()) return false;
   q=netPeerOfSeat(0); if(!q) return false;
@@ -54417,6 +54417,7 @@ function netShotSend(e,dmg,ang,wk,ar,el,sk){   // v28.xx (cw-blastshield), CLOUD
   if(wk&&wk.name) m.wk=netClean(wk.name,16);
   if(ar>0) m.ar=+ar;   // v22.04 (K16): a round the host soaks with its own armour for this man: 1, or 1.5 for a back shot
   if(sk) m.sk=1;   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: a gun round: the host soaks it with the shield as its own rounds; a blast, a mine, fists or an air strike go past it
+  if(hs) m.hs=1;   // v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: the host holds the body by this mark, not by the multiplied number
   if(el&&ELEM[el]) m.el=el;   // v23.xx (forge7): THE FORGE, the element of player 2's MK III round; the host applies it
   return netSend(q,m);
 }
@@ -54449,7 +54450,7 @@ function netShotTake(peer,m){
   var _nel=(typeof m.el==='string'&&ELEM[m.el])?m.el:'';
   if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
-  e.hp-=(m.sk?affixSoak(e,d):d); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,d); suppHit(e);   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: only a round soaks on the shield (v26.72), as on the host
+  e.hp-=(m.sk?affixSoak(e,d):d); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,m.hs===1?HITSTOP_DMG:0); suppHit(e); /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: hit stop by the host rule, not by the multiplied number*/   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: only a round soaks on the shield (v26.72), as on the host
   if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
     px=-Math.sin(m.a); py=Math.cos(m.a);

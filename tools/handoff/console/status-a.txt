@@ -1,1 +1,1 @@
-10-17 17:38 running 06-corpus-fix (cap $4.00; spent today $22.98 of $190.00)
+10-17 17:41 06-corpus-fix: done, $0.3705

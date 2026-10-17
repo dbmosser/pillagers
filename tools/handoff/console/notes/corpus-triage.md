@@ -57,19 +57,19 @@ All of these build a tactical belt with items on keys 3-9 or Medical / Throwable
 | 54 | 12.31 | STALE | Staging: empty throwable cell, Bandage cell on key 4. | Retire. | DONE (SKIP) |
 | 55 | 12.28 | STALE | Peddler purchase tag: autoBelt key names gone; tag is a caps tag "BACKPACK" now (terse caps), not "In your backpack". | Expect the caps tag; drop the belt-key cases. | DONE (BACKPACK tag expected, key-6 case dropped, passes) |
 | 56 | 12.27 | STALE | Drop on a belt key says "ITEMS GO ON THE WHEEL" by design. | Retarget to that line, or retire. | DONE (SKIP, plan cells gone) |
-| 57 | 11.97 | STALE | Pistol dragged onto key 6 refused: key 1 is the pistol class now, key 6 shotgun. | Retarget to the class-key rule. | OPEN |
-| 58 | 11.96 | STALE | Keys 3-5 refused Bandages / Medkit / plates: they say ITEMS GO ON THE WHEEL (the design). | Retarget: the refusal is correct. | OPEN |
-| 59 | 11.95 | STALE | Pistol took key 6 although guns go on 1-4: now guns 1-9 by class. | Retarget to GUN_CLASS_OF. | OPEN |
-| 60 | 11.91 | STALE | Belt draws no Medical cell to press. | Retire. | OPEN |
-| 61 | 11.90 | STALE | Drag gun from slot 1 to the backpack with it open: slot 1 is the pistol class cell. | Check by hand later; retarget to class keys. (low) | OPEN |
-| 62 | 11.83 | STALE | Key 3 use stim, stim sprint: no key 3 stim (wheel Stim slot; key 3 is the rifle). | Retarget to the wheel Stim use. | OPEN |
-| 76 | 9.82 | STALE | Drag off the tactical belt onto the backpack: no tactical belt. | Retire. | OPEN |
+| 57 | 11.97 | STALE | Pistol dragged onto key 6 refused: key 1 is the pistol class now, key 6 shotgun. | Retarget to the class-key rule. | DONE |
+| 58 | 11.96 | STALE | Keys 3-5 refused Bandages / Medkit / plates: they say ITEMS GO ON THE WHEEL (the design). | Retarget: the refusal is correct. | DONE |
+| 59 | 11.95 | STALE | Pistol took key 6 although guns go on 1-4: now guns 1-9 by class. | Retarget to GUN_CLASS_OF. | DONE |
+| 60 | 11.91 | STALE | Belt draws no Medical cell to press. | Retire. | DONE |
+| 61 | 11.90 | STALE | Drag gun from slot 1 to the backpack with it open: slot 1 is the pistol class cell. | Check by hand later; retarget to class keys. (low) | DONE |
+| 62 | 11.83 | STALE | Key 3 use stim, stim sprint: no key 3 stim (wheel Stim slot; key 3 is the rifle). | Retarget to the wheel Stim use. | DONE |
+| 76 | 9.82 | STALE | Drag off the tactical belt onto the backpack: no tactical belt. | Retire. | DONE |
 
 ## D. STALE, score $ became SP (his order 2026-10-15, lean2: arcadeCr reads "N SP", arcadeMoney keeps $ for credits). Checks match "$..." or an exact "1,234" string.
 Fix for the group: accept /^\$?N( SP)?$/ in each. Do it once with the fixq pass.
 | # | Ver | Verdict | Reason | Fix | Status |
 |---|-----|---------|--------|-----|--------|
-| 21 | 23.56 | STALE | Pickup tag "+70 SP" not "+$N", HUD "$1,234", "YOU $1,234", popup "+$50", board "$4,321": all SP now. Credits still $ (arcadeMoney). | Expect SP forms for score, $ only for credits. | OPEN |
+| 21 | 23.56 | STALE | Pickup tag "+70 SP" not "+$N", HUD "$1,234", "YOU $1,234", popup "+$50", board "$4,321": all SP now. Credits still $ (arcadeMoney). | Expect SP forms for score, $ only for credits. | DONE |
 | 22 | 23.54 | STALE | 1P arcade HUD fillText is "1,234 SP" in one string; the check needs an exact "1,234". | Regex match. | OPEN |
 | 27 | 23.38 | STALE | Popups are "+50 SP" / "+100 SP"; hasLbl wants "+50". | Prefix match. | OPEN |
 | 29 | 23.29 | STALE | Team score "450 SP" vs exact "450". | Regex match. | OPEN |

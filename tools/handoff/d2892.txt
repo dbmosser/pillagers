@@ -1,0 +1,5 @@
+## v28.92 - PLAYER 2 HIT STOP BY THE HOST RULE
+
+Co-op hunt while he was away. Hit stop (v26.55: a heavy round, 40 damage or more by the gun, holds the body for 0.06 s) was decided on the host for player 2s rounds by the number his window sent, which already has the weak point, armour and back shot multipliers in it, while the hosts own rounds use the raw gun damage. Proven in the fixture: player 2s Auto Rifle round into a Bulwark spine (59.8) held the body every time, the hosts never; his Magnum into a Bulwark front (7.44) never held it, the hosts does; his frag, melee and air strike words (80 and up) held bodies, the hosts own never do. Now player 2s gun round carries a heavy mark worked out from the raw gun damage exactly as the host round does, and the host holds the body only on that mark.
+
+MEASURED. Check 28.92 passes, and fails on v28.91.
