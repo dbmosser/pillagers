@@ -1,0 +1,28 @@
+{
+    "title":  "STASH VALUE AND BAG VALUE IN THE TOP RIGHT",
+    "why":  "His order: \"Stash value and bag value are always shown in the top right corner, everywhere, with credits and XP.\" The corner readout kept credits and XP only. It now carries a small second line, STASH and BAG, on the Undercroft floor and in a raid.",
+    "now":  "The top right corner now also shows STASH and BAG values under credits and XP.",
+    "edits":  [
+                  {
+                      "anchor":  "var _trLast=\u0027\u0027;\n",
+                      "replacement":  "// v28.xx (cw-stashbag), HIS ORDER (2026-10-15): \"Stash value and bag value are always shown in the top right corner, everywhere, with credits and XP.\"\n// The corner readout gets a second, small line: STASH (what the stash would sell for) and BAG (what the raid bag holds, 0 outside a raid).\nfunction trStash(){ var v=0, i; try{ for(i=0;i\u003cP.stash.length;i++) v+=ival(P.stash[i]); }catch(_ts){} return v; }\nfunction trBag(){ var v=0; try{ if(G\u0026\u0026G.bag\u0026\u0026!G.over) v=bagValue(); }catch(_tb){} return v; }\nvar _trLast=\u0027\u0027;\n"
+                  },
+                  {
+                      "anchor":  "  var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), s=c+\u0027|\u0027+x;\n",
+                      "replacement":  "  var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), sv=trStash(), bv=trBag(), s=c+\u0027|\u0027+x+\u0027|\u0027+sv+\u0027|\u0027+bv;   // v28.xx (cw-stashbag)\n"
+                  },
+                  {
+                      "anchor":  "  el.innerHTML=c+\u0027 \u003csmall\u003eCREDITS\u003c/small\u003e \u0027+x+\u0027 \u003csmall\u003eXP\u003c/small\u003e\u0027;   // spaces, so the text reads right when copied\n",
+                      "replacement":  "  el.innerHTML=c+\u0027 \u003csmall\u003eCREDITS\u003c/small\u003e \u0027+x+\u0027 \u003csmall\u003eXP\u003c/small\u003e \u003cspan class=\"trsub\"\u003eSTASH \u0027+sv.toLocaleString()+\u0027 BAG \u0027+bv.toLocaleString()+\u0027\u003c/span\u003e\u0027;   // v28.xx (cw-stashbag): spaces, so the text reads right when copied\n"
+                  },
+                  {
+                      "anchor":  "  try{ return el.getBoundingClientRect().bottom||0; }catch(_e){ return 0; }\n",
+                      "replacement":  "  try{ return (el.getBoundingClientRect().bottom||0)+Math.round(18*(parseFloat(el.style.zoom)||1)); }catch(_e){ return 0; }   // v28.xx (cw-stashbag): the STASH and BAG line hangs 18 below the readout box\n"
+                  },
+                  {
+                      "anchor":  "  #topright small:last-child{ margin-right:0; }\n",
+                      "replacement":  "  #topright small:nth-last-child(2){ margin-right:0; }   /* v28.xx (cw-stashbag): the STASH and BAG line is the last child now */\n  #topright .trsub{ position:absolute; right:0; top:40px; line-height:16px; font-size:15px; font-weight:700; letter-spacing:.1em; color:var(--ash); }\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the corner readout also shows the STASH value and the BAG value, in the Undercroft and in a raid (his order: stash value and bag value always shown in the top right corner, everywhere, with credits and XP)\u0027,\n   run:function(){\n     if(typeof trStash!==\u0027function\u0027||typeof trBag!==\u0027function\u0027) return \u0027the corner readout has no stash or bag value (no trStash, no trBag)\u0027;\n     var el=document.getElementById(\u0027topright\u0027); if(!el) return \u0027SKIP: no corner readout\u0027;\n     var bad=[], k=null, kk, t, ev, eb, g, p=__P(), keep=p.stash;\n     for(kk in ITEMS){ if(ITEMS[kk]\u0026\u0026ITEMS[kk].val\u003e=10\u0026\u0026ival(kk)\u003e=10){ k=kk; break; } }\n     if(!k) return \u0027SKIP: no valued item\u0027;\n     function txt(){ _trLast=\u0027\u0027; syncTopRight(); return String(el.textContent||\u0027\u0027).replace(/\\s+/g,\u0027 \u0027); }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       G=null; keys={}; __showScreen(\u0027hub\u0027); __hubEnter();\n       p.stash=[k,k,k]; ev=3*ival(k);\n       t=txt();\n       if(t.indexOf(\u0027STASH \u0027+ev.toLocaleString())\u003c0) bad.push(\u0027on the floor the readout does not show STASH \u0027+ev.toLocaleString()+\u0027 (\"\u0027+t+\u0027\")\u0027);\n       if(!/BAG 0\\b/.test(t)) bad.push(\u0027on the floor the readout does not show BAG 0 (\"\u0027+t+\u0027\")\u0027);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       p=__P(); p.stash=[k,k,k]; g.bag.push(k,k); eb=bagValue(); if(!(eb\u003e=20)) return \u0027SKIP: the bag has no value\u0027;\n       t=txt();\n       if(t.indexOf(\u0027BAG \u0027+eb.toLocaleString())\u003c0) bad.push(\u0027in a raid the readout does not show BAG \u0027+eb.toLocaleString()+\u0027 (\"\u0027+t+\u0027\")\u0027);\n       if(t.indexOf(\u0027STASH \u0027+ev.toLocaleString())\u003c0) bad.push(\u0027in a raid the readout does not show STASH \u0027+ev.toLocaleString()+\u0027 (\"\u0027+t+\u0027\")\u0027);\n       if(!(topRightBottom()\u003eel.getBoundingClientRect().bottom+8)) bad.push(\u0027the lines under the readout are not cleared by topRightBottom\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var g2=__state(); if(g2\u0026\u0026!g2.over) __endRaid(\u0027abandon\u0027); }catch(_e){} try{ p.stash=keep; }catch(_k){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,7 @@
+v28.86: stash value and bag value in the top right
+
+The top right corner now also shows STASH and BAG values under credits and XP.
+
+Check 28.86. Fails on v28.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

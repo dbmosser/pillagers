@@ -635,7 +635,8 @@
      have no heading row in the corner, and at 4K the move put the figures on the PARTY frame's top line. They keep the corner. */
   body:has(.modal.on:not(#partymodal):not(#termsmodal):not(#gamblemodal):not(#barmodal):not(#askmodal)) #topright{ top:24px; right:33px; }   /* v19.74: and its right edge ends where the heading line ends, inside the frame */
   #topright small{ font-size:14px; color:var(--ash); letter-spacing:.12em; font-weight:400; margin-left:7px; margin-right:20px; }
-  #topright small:last-child{ margin-right:0; }
+  #topright small:nth-last-child(2){ margin-right:0; }   /* v28.xx (cw-stashbag): the STASH and BAG line is the last child now */
+  #topright .trsub{ position:absolute; right:0; top:40px; line-height:16px; font-size:15px; font-weight:700; letter-spacing:.1em; color:var(--ash); }
   .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
   /* The pause and modal overlays were a flat black wash with content floating
@@ -2304,7 +2305,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.85';
+var VER='28.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3780,20 +3781,24 @@ function txClick(cx,cy){
 // v11.52, HIS NOTE: credits and XP shown at all times in the upper right, in
 // the Undercroft and in a raid. One element, rewritten only when a figure
 // changes, so the frame loop can call it for free.
+// v28.xx (cw-stashbag), HIS ORDER (2026-10-15): "Stash value and bag value are always shown in the top right corner, everywhere, with credits and XP."
+// The corner readout gets a second, small line: STASH (what the stash would sell for) and BAG (what the raid bag holds, 0 outside a raid).
+function trStash(){ var v=0, i; try{ for(i=0;i<P.stash.length;i++) v+=ival(P.stash[i]); }catch(_ts){} return v; }
+function trBag(){ var v=0; try{ if(G&&G.bag&&!G.over) v=bagValue(); }catch(_tb){} return v; }
 var _trLast='';
 // v11.78: where the corner readout ends, in CSS pixels, so the raid HUD can
 // start its CONDITIONS box below it. The HUD canvas is W CSS pixels wide (the
 // device ratio is applied to the backing store, not to W), so no conversion.
 function topRightBottom(){
   var el=document.getElementById('topright'); if(!el) return 0;
-  try{ return el.getBoundingClientRect().bottom||0; }catch(_e){ return 0; }
+  try{ return (el.getBoundingClientRect().bottom||0)+Math.round(18*(parseFloat(el.style.zoom)||1)); }catch(_e){ return 0; }   // v28.xx (cw-stashbag): the STASH and BAG line hangs 18 below the readout box
 }
 function syncTopRight(){
   var el=document.getElementById('topright'); if(!el) return;
-  var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), s=c+'|'+x;
+  var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), sv=trStash(), bv=trBag(), s=c+'|'+x+'|'+sv+'|'+bv;   // v28.xx (cw-stashbag)
   if(s===_trLast) return;
   _trLast=s;
-  el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small>';   // spaces, so the text reads right when copied
+  el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small> <span class="trsub">STASH '+sv.toLocaleString()+' BAG '+bv.toLocaleString()+'</span>';   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
 }
 // v17.24, co-op hunt 2026-09-28: TWO TABS ON ONE SAVE. Each tab reads the save once, at boot, and every save writes its whole
 // profile over the key, so with the game open in two tabs the tab holding the older copy wiped what the other had banked (an
@@ -46662,7 +46667,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.85: Operators now throw a soft shadow to the lower right. Check 28.85 fails on v28.84',
+  now:'v28.86: The top right corner now also shows STASH and BAG values under credits and XP. Check 28.86 fails on v28.85',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

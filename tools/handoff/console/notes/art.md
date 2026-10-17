@@ -12,6 +12,10 @@ Findings about what already exists in the game (so do not redo): 1px INK outline
 vest with bandolier and pouches (cosm4, ~line 32113 and 32351), goggles hat with lens glints (~33169), gas mask glints, baked gun sprites (gunBake).
 So steps 2-4 are mostly shipped in earlier versions; what is left of them is only polish.
 
+SHIPPED (run c-03-art): step a, cw-castshadow = v28.85 (commit 5bfd6fe2). drawOp ground shadow is now shadowE(x+1.5,y+1.5,10,4,.34) plus a
+second lobe shadowE(x+6,y+2.5,6.5,2.5,.18). Check paints drawOp offscreen with and without shadowE, takes alpha diff on rows >= y+3: centroid >= +1.0,
+right reach >= 11.8, left reach >= -10.6. Fingerprint held. Next ship number is 28.86. Step a is DONE; remaining: b, c, d below.
+
 NEXT (each its own cw- key with a pixel/draw-call check):
 a. Soft cast shadow on the ground: drawOp starts with shadowE(x,y+1,10,4,.38); idea: shift it a little right/down (light top-left) and add a
    small second lobe toward the lit side opposite. Check old shadow-position checks first (grep shadowE in mkfixture.ps1).

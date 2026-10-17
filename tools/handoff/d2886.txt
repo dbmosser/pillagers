@@ -1,0 +1,5 @@
+## v28.86 - STASH VALUE AND BAG VALUE IN THE TOP RIGHT
+
+Co-op hunt while he was away. His order: "Stash value and bag value are always shown in the top right corner, everywhere, with credits and XP." The corner readout kept credits and XP only. It now carries a small second line, STASH and BAG, on the Undercroft floor and in a raid.
+
+MEASURED. Check 28.86 passes, and fails on v28.85.

@@ -1,0 +1,17 @@
+17.75: the pause legend does not say F interact
+9.93: PASS
+9.92: PASS
+10.68: PASS
+17.75: PASS
+9.93: PASS
+9.92: PASS
+10.68: PASS
+17.75: PASS
+9.93: PASS
+9.92: PASS
+10.68: PASS
+9.03: setup: slot 5 did not take the medkit binding; setup: slot 6 did not take the bandage binding; setup: slot 5 counted 0 medkits, not 2; slot 5 stopped being the medkit and became Fourth weapon; slot 6 stopped being the bandage and became Fourth weapon; an emptied slot 5 is not flagged empty, so the b
+9.31: the drag ONTO the belt stopped working, so the drag off cannot be judged
+11.60: a Frag Charge on belt key 5 builds a "gun" cell, so the trigger fires your gun instead of cooking it and the key does nothing; the belted Frag Charge reads x0 while the pouch holds 2; the bar carries 0 cells for the same Frag Charge
+23.95: with a plate carried the belt shows 0 Tripwire Mine cells, not 1; the plate lost its cell to the mine
+ALL DONE
