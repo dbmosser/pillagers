@@ -6097,6 +6097,52 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.88',what:'cloud-coop-p2-blast-past-shield: a blast, a mine, fists or an air strike from player 2 go straight past a shielded elite on the host as the host own do, and only his gun rounds (marked sk) are soaked by the shield',
+   run:function(){
+     if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__deploy)) return 'SKIP: no raid here';
+     if(typeof netOnMsg!=='function'||typeof netShotSend!=='function'||typeof mkCrawler!=='function'||typeof netEntMake!=='function'||typeof affixSoak!=='function'||typeof updateBullets!=='function'||typeof explodeFrag!=='function'||typeof airBlast!=='function') return 'SKIP: the co-op shot path is not here';
+     var bad=[], g=null, p=null, NK={}, k, oS=netSend, oSF=netSendFast, oB=netBroadcast, posted=[], h={seat:0,state:'in'}, hp={seat:1,state:'in'}, staged=false, e=null, m=null, n, a, aa, x=0, y=0, dx=1, dy=0, found=false, w, ws, i, L;
+     function take(word){ e.hp=400; e.maxhp=400; e.shieldHp=200; e.finished=0; e.downed=0; netOnMsg(hp,JSON.stringify(word)); return {lost:Math.round((400-e.hp)*100)/100,sh:e.shieldHp}; }
+     function shots(){ return posted.filter(function(q){ return q&&q.t==='shot'&&q.id===901; }); }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       p=g.player; p.iv=99; p.hp=100;
+       for(a=0;a<32;a++){ aa=a/32*6.2832; dx=Math.cos(aa); dy=Math.sin(aa); x=p.x+dx*150; y=p.y+dy*150; if(spotFree(g.map,x,y,40)&&rayHitG(x-dx*60,y-dy*60,dx,dy,60)>=59.5){ found=true; break; } }
+       if(!found) return 'SKIP: no clear lane next to the player';
+       for(k in NET) NK[k]=NET[k];
+       staged=true;
+       NET.on=true; NET.max=4; NET.specG=null; NET.up=[]; NET.upSeed=g.seed>>>0;
+       netSendFast=function(q,mm){ return true; };
+       netSend=function(q,mm){ posted.push(JSON.parse(JSON.stringify(mm))); return true; };
+       netBroadcast=function(mm){ return 1; };
+       e=mkCrawler(x,y); e.elite=1; e.affix='shield'; e.hp=e.maxhp=400; e.shieldHp=200;
+       // ONE: the host takes player 2 words: blasts, fists and the air strike go past the shield, a round marked sk is soaked
+       NET.role='host'; NET.seat=0; NET.peers=[hp]; NET.entMap={901:e}; g.ents=[e];
+       L=[['frag',{t:'shot',id:901,dmg:80,x:p.x,y:p.y,a:0}],['air strike',{t:'shot',id:901,dmg:50,x:p.x,y:p.y,a:0}],['fist',{t:'shot',id:901,dmg:30,x:p.x,y:p.y,a:0}]];
+       for(i=0;i<L.length;i++){ w=take(L[i][1]); if(w.lost!==L[i][1].dmg||w.sh!==200) bad.push('ONE: player 2 '+L[i][0]+' word of '+L[i][1].dmg+' lost '+w.lost+' with the shield at '+w.sh+' (the host own '+L[i][0]+' takes the full '+L[i][1].dmg+' and leaves the shield at 200)'); }
+       w=take({t:'shot',id:901,dmg:100,x:p.x,y:p.y,a:0,sk:1});
+       if(w.lost!==0||w.sh!==100) bad.push('ONE: player 2 round word (sk) of 100 lost '+w.lost+' with the shield at '+w.sh+' (the shield must soak it: 0 lost, shield 100)');
+       // TWO: player 2 window marks his gun round sk and not his frag or his air strike
+       NET.role='join'; NET.seat=1; NET.peers=[h]; NET.entMap={};
+       m=netEntMake(901,'crawler',x,y); m.hp=m.maxhp=400; m.nIn=1; NET.entMap[901]=m; g.ents=[m];
+       posted.length=0; g.bullets.length=0; g.bullets.push({x:x-dx*30,y:y-dy*30,vx:dx*1180,vy:dy*1180,dmg:23,life:0.4,player:true,owner:p,tint:'#fff',el:'',thru:0,gid:'rifle'});
+       for(n=0;n<6&&!shots().length;n++) updateBullets(1/60);
+       ws=shots(); if(!ws.length) bad.push('TWO: player 2 rifle round sent no shot word'); else if(ws[0].sk!==1) bad.push('TWO: player 2 rifle round word has no sk mark ('+JSON.stringify(ws[0])+')');
+       m.hp=400; posted.length=0; p.hp=100; explodeFrag({x:x,y:y}); p.hp=100;
+       ws=shots(); if(!ws.length) bad.push('TWO: player 2 frag sent no shot word'); else if('sk' in ws[0]) bad.push('TWO: player 2 frag word is marked sk ('+JSON.stringify(ws[0])+')');
+       m.hp=400; posted.length=0; airBlast({pts:[{x:x,y:y}]},0);
+       ws=shots(); if(!ws.length) bad.push('TWO: player 2 air strike blast sent no shot word'); else if('sk' in ws[0]) bad.push('TWO: player 2 air strike word is marked sk ('+JSON.stringify(ws[0])+')');
+     }catch(x2){ bad.push('threw: '+String(x2&&x2.message||x2)); }
+     finally{
+       netSend=oS; netSendFast=oSF; netBroadcast=oB;
+       if(staged){ for(k in NET) if(!(k in NK)) delete NET[k]; for(k in NK) NET[k]=NK[k]; }
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join(' | '):null;
+   }},
   {v:'28.87',what:'cloud-coop-overseer-phase-shake: when THE OVERSEER changes phase, player 2 window says the phase line and shakes like the host (shake at least 6)',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__topClear)) return 'SKIP: no raid here';
@@ -29376,14 +29422,18 @@ window.__REGRESS=[
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
        p=g.player; p.cooking=0; p.roll=0; p.downed=false;
        g.pouch.trip=0;
+       // v23.63 retarget (his wheel orders 2026-10-14, v26.xx): the belt is guns only, so a mine is no longer a belt cell; it is wheel slot 4
+       // (WHEEL_ORDER), counted by wheelHave and taken out with handTake. The bar must not change length when one is carried.
        s0=hotbarSlots();
-       for(i=0;i<s0.length;i++) if(s0[i]&&s0[i].k==='throw:trip') bad.push('a Tripwire Mine cell shows on key '+(i+1)+' with none carried');
+       for(i=0;i<s0.length;i++) if(s0[i]&&String(s0[i].k).indexOf('throw:')===0) bad.push('a throw cell shows on key '+(i+1)+' (the bar is guns only)');
+       if(wheelHave('trip')!==0) bad.push('the wheel counts '+wheelHave('trip')+' mines with none carried');
        g.pouch.trip=1;
        s1=hotbarSlots();
-       for(i=0;i<s1.length;i++) if(s1[i]&&s1[i].k==='throw:trip') ti=i;
-       if(ti<0) bad.push('no Tripwire Mine cell on the belt with one carried');
+       if(wheelHave('trip')!==1) bad.push('the wheel counts '+wheelHave('trip')+' mines with one carried, not 1');
+       if(typeof WHEEL_ORDER!=='undefined'&&WHEEL_ORDER.indexOf('trip')<0) bad.push('the wheel has no Tripwire place');
        if(s1.length!==s0.length) bad.push('the belt changed length: '+s0.length+' to '+s1.length);
-       for(i=0;i<s0.length;i++) if(s0[i]&&s0[i].kind!=='empty'&&(!s1[i]||s1[i].k!==s0[i].k)) bad.push('key '+(i+1)+' moved from '+s0[i].k+' to '+(s1[i]&&s1[i].k));
+       if(!handTake('trip')||!p.hand||p.hand.k!=='trip') bad.push('the wheel did not take the Tripwire Mine out');
+       p.hand=null;
        for(a=0;a<16&&!best;a++){
          var an=a*Math.PI/8, ux=Math.cos(an), uy=Math.sin(an), lx=p.x+ux*200, ly=p.y+uy*200;
          if(rayHitG(p.x,p.y,ux,uy,260)>=259&&rayHitG(lx,ly,-uy,ux,130)>=129&&rayHitG(lx,ly,uy,-ux,130)>=129) best={ux:ux,uy:uy};
@@ -29407,9 +29457,11 @@ window.__REGRESS=[
        g.trips.length=0;
        for(i=0;i<4;i++) tripArm({sx:p.x,sy:p.y,tx:p.x+best.ux*200,ty:p.y+best.uy*200});
        if(g.trips.length!==3) bad.push('an owner keeps '+g.trips.length+' wires, not 3');
-       g.pouch.smoke=0; g.pouch.decoy=0; g.pouch.frag=0; g.pouch.trip=1; g.tsel=0;
-       cycleThrow();
-       if(THROWKEYS[g.tsel]!=='trip') bad.push('Q never reaches the Tripwire Mine (it chose '+THROWKEYS[g.tsel]+')');
+       g.pouch.smoke=0; g.pouch.decoy=0; g.pouch.frag=0; g.pouch.trip=1; g.tsel=0; p.hand=null;
+       // v23.63 retarget: Q is the wheel now (no cycling); the mine out of the wheel sets the throw to the trip kind
+       if(!handTake('trip')) bad.push('the wheel would not take the only carried item, the mine');
+       else { handUse(p,p.hand); if(THROWKEYS[g.tsel]!=='trip') bad.push('with the mine out the throw chose '+THROWKEYS[g.tsel]+', not trip'); }
+       p.cooking=0; p.cookT=0; p.cookKind=null; p.hand=null;
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ mouseWorld=oMW; try{ var g2=__state(); if(g2&&!g2.over){ if(g2.trips) g2.trips.length=0; g2.player.cooking=0; __endRaid('abandon'); } }catch(_e){} __topClear(); }
      return bad.length?bad.join('; '):null; }},
@@ -30247,39 +30299,40 @@ window.__REGRESS=[
        g=__state(); p=g.player; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.ownAt=Date.now();
        if(!p||p.downed||p.dying||p.specOut) return 'SKIP: the arcade player is not standing';
        rows=arcadeCardRows();
-       if(!rows||!rows[6]||rows[6][0]!=='HEAL') bad.push('the controls card has no HEAL row 7');
-       else { if(rows[6][1]!==keyName(keysOf(__healKey()))) bad.push('the HEAL row keyboard label is '+rows[6][1]);
-         if(rows[6][2].indexOf('D-DOWN')<0) bad.push('the HEAL row pad label is '+rows[6][2]); }
-       // G on the keyboard, hp 40 with a Bandage
+       // v23.46 retarget (his wheel orders 2026-10-14): G is gone and the quick heal with it; the card row 7 is ITEMS (HOLD Q / HOLD D-DOWN) and a
+       // Bandage is used from the wheel (wheelHeal). The Bandage cap and the pad and key taps starting no heal are the same intent.
+       if(!rows||!rows[6]||rows[6][0]!=='ITEMS') bad.push('the controls card has no ITEMS row 7');
+       else { if(rows[6][1]!=='HOLD '+keyName(keysOf('KeyQ'))) bad.push('the ITEMS row keyboard label is '+rows[6][1]);
+         if(rows[6][2].indexOf('D-DOWN')<0) bad.push('the ITEMS row pad label is '+rows[6][2]); }
+       // a Bandage from the wheel, hp 40
        stage(g,40); nUH=0;
-       kd(__healKey(),'g'); __holdTick();
-       if(!p.prep||p.prep.kind!=='heal'||p.prep.key!==nB) bad.push('G in the arcade did not start the Bandage wind-up ('+JSON.stringify(p.prep)+')');
-       if(g.bag.indexOf(nB)>=0) bad.push('G in the arcade did not spend the Bandage');
-       if(nUH) bad.push('G in the arcade also used the belt');
+       if(!wheelHeal(nB)||!p.prep||p.prep.kind!=='heal'||p.prep.key!==nB) bad.push('the wheel Bandage in the arcade did not start the wind-up ('+JSON.stringify(p.prep)+')');
+       if(g.bag.indexOf(nB)>=0) bad.push('the wheel Bandage did not spend the Bandage');
+       // G does nothing now
+       stage(g,40); nUH=0;
+       kd('KeyG','g'); __holdTick();
+       if(p.prep||g.bag.indexOf(nB)<0) bad.push('G in the arcade started a heal (it is not a heal key any more)');
        // the Bandage cap: above 85 it is refused
-       stage(g,90); nUH=0;
-       kd(__healKey(),'g'); __holdTick();
-       if(p.prep) bad.push('G at hp 90 started a Bandage (they stop at 85)');
-       if(g.bag.indexOf(nB)<0) bad.push('G at hp 90 spent the Bandage');
-       // D-DOWN on the pad
+       stage(g,90);
+       if(wheelHeal(nB)||p.prep) bad.push('the wheel Bandage at hp 90 started a heal (they stop at 85)');
+       if(g.bag.indexOf(nB)<0) bad.push('the wheel Bandage at hp 90 spent the Bandage');
+       // a tap of D-DOWN on the pad starts no heal (HOLD opens the wheel)
        stage(g,40); stubPad();
        down13=false; pollPad(); down13=true; pollPad();
-       if(!p.prep||p.prep.kind!=='heal'||p.prep.key!==nB) bad.push('pad D-DOWN in the arcade did not start the Bandage wind-up ('+JSON.stringify(p.prep)+')');
-       stage(g,40); pollPad();
-       if(p.prep) bad.push('a held D-DOWN started a second heal');
-       down13=false; pollPad();
+       if(p.prep||g.bag.indexOf(nB)<0) bad.push('pad D-DOWN in the arcade started a heal ('+JSON.stringify(p.prep)+')');
+       down13=false; pollPad(); g.wheel=null;
        try{ arcadeLeave(); }catch(_lv){}
-       // a normal raid: G still uses the belt, D-DOWN starts no heal
+       // a normal raid: no quick heal, G and D-DOWN start no heal
        __topClear(); __runPrep();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g2=__state();
        if(!g2) return bad.length?bad.join('; '):'SKIP: __deploy built no raid';
        if(g2.arcade) bad.push('a normal raid is flagged arcade');
        if(arcadeQuickHeal()) bad.push('arcadeQuickHeal acted in a normal raid');
-       stage(g2,40); nUH=0;
-       if(typeof xCallKey!=='function'){ kd('KeyG','g'); if(!nUH) bad.push('G in a normal raid did not use the belt'); }
+       stage(g2,40); kd('KeyG','g');
+       if(g2.player.prep) bad.push('G in a normal raid started a heal');
        stage(g2,40); stubPad();
-       down13=false; pollPad(); down13=true; pollPad(); down13=false; pollPad();
+       down13=false; pollPad(); down13=true; pollPad(); down13=false; pollPad(); g2.wheel=null;
        if(g2.player.prep) bad.push('pad D-DOWN in a normal raid started a heal');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
@@ -30551,14 +30604,15 @@ window.__REGRESS=[
        rows=arcadeCardRows();
        if(!rows||(rows.length!==8&&rows.length!==9)) bad.push('arcadeCardRows gives '+(rows?rows.length:'no')+' rows, not 8 or 9');   // v23.xx: a LOOT row may close the card
        nm=(rows||[]).map(function(r){ return r&&r[0]; }).join(',');
-       if(nm!=='MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,HEAL,EXTRACT'&&nm!=='MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,HEAL,EXTRACT,LOOT') bad.push('the card rows are '+nm);
+       // v23.42 retarget (his wheel orders 2026-10-14): the HEAL row became ITEMS (HOLD Q opens the wheel)
+       if(nm!=='MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,ITEMS,EXTRACT'&&nm!=='MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,ITEMS,EXTRACT,LOOT') bad.push('the card rows are '+nm);
        for(i=0;i<(rows||[]).length;i++){ if(!rows[i]||typeof rows[i][1]!=='string'||!rows[i][1]||typeof rows[i][2]!=='string'||!rows[i][2]) bad.push('row '+i+' lacks a keyboard or a pad label'); }
        if(rows&&rows[7]&&rows[7][1].indexOf('HOLD ')!==0) bad.push('the EXTRACT keyboard label is '+rows[7][1]);
        if(typeof PAD==='object'&&PAD){ br=PAD.brand; ownB=true; PAD.brand='ps'; pr=arcadeCardRows(); PAD.brand=br; ownB=false;
          if(!pr[7]||pr[7][2].indexOf(' IN A TEAL RING')<0) bad.push('on a PlayStation pad the EXTRACT pad label reads '+(pr[7]&&pr[7][2])); }
        pg=document.createElement('div'); arcadeAttHow(pg); txt=pg.textContent||'';
        var _trn=pg.querySelectorAll('tr').length; if(_trn!==9&&_trn!==10) bad.push('the HOW TO PLAY page has '+_trn+' table rows, not 9 or 10 (a head and 8, or 9 with LOOT)');   // v23.xx: hold E to loot adds a LOOT row
-       if(txt.indexOf(nSw)<0||txt.indexOf('HEAL')<0) bad.push('the HOW TO PLAY page lacks SWITCH GUN or HEAL');
+       if(txt.indexOf(nSw)<0||txt.indexOf('ITEMS')<0) bad.push('the HOW TO PLAY page lacks SWITCH GUN or ITEMS');
        if(!arcadeDeploy({mapIx:0,seed:4242})) return bad.length?bad.join('; '):'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); keys={}; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.ownAt=Date.now();
        if(!g||!g.player||!g.player.arcSh) return bad.length?bad.join('; '):'SKIP: the arcade drop is not shielded';
@@ -32216,7 +32270,7 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy a raid';
      if(typeof hotbarSlots!=='function'||typeof tryRoll!=='function'||typeof cycleThrow!=='function'||typeof emptyThrowCell!=='function'||typeof bagHeldGun!=='function'||typeof cv==='undefined'||!cv||typeof mouse!=='object'||!mouse||!ITEMS.medkit) return 'SKIP: no belt drags, rolls or throwables here';
      var bad=[], P2=__P(), ha0=P2.hotAssign?JSON.parse(JSON.stringify(P2.hotAssign)):P2.hotAssign, mx0=mouse.x, my0=mouse.y, md0=mouse.down, realSay=say, said=[],
-         g=null, p=null, MK=ITEMS.medkit.name.toUpperCase(), K9={x:900,y:700,w:40,h:40,i:(typeof BELT_CLASS!=='undefined'?7:8)}, K1={x:100,y:700,w:40,h:40,i:0}, k, l, all=[];
+         g=null, p=null, MK=ITEMS.medkit.name.toUpperCase(), K9={x:900,y:700,w:40,h:40,i:8}, K1={x:100,y:700,w:40,h:40,i:0}, k, l, all=[];
      function up(C){ if(C){ mouse.x=C.x+20; mouse.y=C.y+20; } else { mouse.x=1500; mouse.y=300; } window.dispatchEvent(new MouseEvent('mouseup',{button:0})); }
      function last(){ return said.length?said[said.length-1]:null; }
      function need(tag,want){ var L=last(); if(!L) bad.push(tag+': said nothing'); else if(want&&!want.test(L.m)) bad.push(tag+': said '+JSON.stringify(L.m)); }
@@ -32231,11 +32285,10 @@ window.__REGRESS=[
        g.hotCells=[K1,K9];
        // ONE: a Medkit dropped on slot 9, then dragged off
        said.length=0; g.drag={key:'medkit',bagIx:0,px:0,py:0}; up(K9); g.drag=null;
-       if(g.hotAssign&&g.hotAssign[K9.i]==='medkit'){
-         need('a Medkit dropped on slot 9',new RegExp('^'+MK+' TO SLOT '+(K9.i+1)+'$'));
-         said.length=0; g.drag={key:'medkit',fromHot:K9.i,px:K9.x+20,py:K9.y+20}; up(null); g.drag=null;
-         need('slot 9 dragged off the belt',new RegExp('^'+MK+' OFF SLOT '+(K9.i+1)+'$'));
-       } else bad.push('staging: the Medkit did not go on slot 9 ('+JSON.stringify(g.hotAssign)+')');
+       // v23.05 retarget (his wheel orders 2026-10-14): the bar is guns only (slot 9 is the Energy gun class), so a Medkit dropped on a key is
+       // refused with the caps line ITEMS GO ON THE WHEEL (still a caps headline of at most 34, checked below) and nothing is assigned.
+       if(g.hotAssign&&g.hotAssign[K9.i]==='medkit') bad.push('a Medkit was put on key '+(K9.i+1)+' (the bar is guns only)');
+       else need('a Medkit dropped on key 9',/^ITEMS GO ON THE WHEEL$/);
        g.bagOpen=false; g.hotCells=[];
        // TWO: a tired roll
        p.stam=0; p.rollCd=0; p.roll=0; g.rollSayT=0; said.length=0; tryRoll(); need('a roll with no stamina',/^TOO TIRED TO ROLL$/); p.stam=100;
@@ -34555,7 +34608,11 @@ window.__REGRESS=[
        if(!(p.sec&&p.sec.id===ITEMS[best].gk)) return 'SKIP: staging: the '+nm+' did not go into the empty second slot (second slot '+(p.sec&&p.sec.id)+')';
        for(i=0;i<(g.pick||[]).length;i++) if(g.pick[i].item===best) row=g.pick[i];
        if(!row) bad.push('no pickup row for the '+nm);
-       else if(row.tag!=='SLOT 2') bad.push('the '+nm+' row is tagged '+JSON.stringify(row.tag||'')+', not SLOT 2');
+       else {
+         // v22.54 retarget (his gun-key order, v26.39): a gun lands on its CLASS key, so the tag names that key (the Meridian Lance is the Energy class, key 9), not "second slot"
+         var ck2=(typeof gunClassKey==='function'&&typeof gunClassOf==='function')?gunClassKey(gunClassOf(ITEMS[best].gk)):-1, want='SLOT '+(ck2>=0?ck2+1:2);
+         if(row.tag!==want) bad.push('the '+nm+' row is tagged '+JSON.stringify(row.tag||'')+', not '+want);
+       }
        rx=new RegExp(nm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'|STOWED|SWAP','i');
        for(i=0;i<said.length;i++) if(rx.test(said[i])){ bad.push('a second line about the gun was shown or queued: '+said[i]); break; }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -35081,13 +35138,18 @@ window.__REGRESS=[
        say=function(m,k,o){ heard.push({m:String(m),sub:String((o&&o.sub)||'')}); };
        heard=[]; setHot(1);
        if(!said(/^GUN SLOT 2 EMPTY$/)) bad.push('the vacant key 2 says '+JSON.stringify(heard.map(function(x){ return x.m; }))+', not GUN SLOT 2 EMPTY');
-       heard=[]; g.hot=2; p.fired=false; mouse.down=true; __sim(0.016); mouse.down=false; __sim(0.016);
+       // v22.43 retarget (gun keys by class, v26.39): key 3 is the Rifle class key and holds the rifle in his hands, so the trigger is tried on a key that is vacant
+       var vi=-1, sl2=hotbarSlots(); for(i=0;i<sl2.length&&vi<0;i++) if(sl2[i]&&sl2[i].vacant&&i!==1) vi=i;
+       if(vi<0) return 'SKIP: staging: no vacant gun key but key 2';
+       heard=[]; g.hot=vi; p.fired=false; mouse.down=true; __sim(0.016); mouse.down=false; __sim(0.016);
        h=said(/^EMPTY SLOT$/);
-       if(!h) bad.push('the trigger on the vacant key 3 says '+JSON.stringify(heard.map(function(x){ return x.m; }))+', not EMPTY SLOT');
+       if(!h) bad.push('the trigger on the vacant key '+(vi+1)+' says '+JSON.stringify(heard.map(function(x){ return x.m; }))+', not EMPTY SLOT');
        else if(!/^(PRESS \S+ FOR YOUR GUN|.+ TO YOUR GUN|(\[\S+\] )+GUN)$/.test(h.sub)) bad.push('EMPTY SLOT has '+JSON.stringify(h.sub)+' under it, not the key of the gun in capitals');
        g.hot=0;
        heard=[]; g.bag.push('gun_shotgun'); r=autoBelt('gun_shotgun');
-       if(!/^[^a-z]+ (ON KEY|TO SLOT) 2$/.test(String(r||''))||!said(/ (ON KEY|TO SLOT) 2$/)) bad.push('a shotgun found onto key 2 says '+JSON.stringify(r)+', not SHOTGUN ON KEY 2');
+       // v22.43 retarget: a shotgun goes to its class key (key 6 by his table), so the line names that key
+       var sgk=(typeof gunClassKey==='function'&&typeof gunClassOf==='function'&&gunClassKey(gunClassOf('shotgun'))>=0)?gunClassKey(gunClassOf('shotgun'))+1:2;
+       if(!new RegExp('^[^a-z]+ (ON KEY|TO SLOT) '+sgk+'$').test(String(r||''))||!said(new RegExp(' (ON KEY|TO SLOT) '+sgk+'$'))) bad.push('a shotgun found onto its class key '+sgk+' says '+JSON.stringify(r)+', not SHOTGUN TO SLOT '+sgk);
        heard=[]; g.bag.push('gun_dmr'); autoBelt('gun_dmr'); g.bag.push('gun_smg'); autoBelt('gun_smg');
        heard=[]; g.bag.push('gun_carbine'); r=autoBelt('gun_carbine');
        h=said(/^GUN SLOTS FULL$/);
@@ -35213,6 +35275,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'22.39',what:'an old belt plan with a Medkit on key 8 and a Stim on key 9 slides without covering Medical or the plate: after the load the two bindings sit on gun keys 3 and 4, and in the raid the Medical cell (it uses the heals he did not bind) and the Armour Plate cell still show on keys 8 and 9',
    run:function(){
+     return 'SKIP: removed by his order (items on the bar; v22.39 plan slide and the plate and Medical cells are gone, the bar is guns only on class keys and items live on the wheel)';   // v22.39 retired: his wheel orders 2026-10-14
      if(!window.__deploy||!window.__endRaid||!window.__state||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot deploy a raid or load a profile';
      if(typeof beltSlidePlan!=='function'||typeof hotbarSlots!=='function'||typeof GUNKEYS==='undefined'||GUNKEYS<4) return 'SKIP: no four gun keys here';
      if(!ITEMS.medkit||!ITEMS.stim||!ITEMS.bandage||!ITEMS.plate||!WEAPONS.rifle||!WEAPONS.smg) return 'SKIP: no medkit, stim, bandage, plate, rifle or smg here';
@@ -37087,19 +37150,22 @@ window.__REGRESS=[
        // 1. The Undercroft belt previews the packed guns on keys 3 and 4.
        P.weapons=['rifle','smg']; P.equipped='rifle'; P.equippedSec='smg'; P.hotAssign={}; P.kit=KIT.slice();
        o0=G; try{ G=hubBagState(); fl=hotbarSlots(); } finally { G=o0; }
-       for(i=0;i<4;i++) if(!(fl[i]&&fl[i].kind==='gun'&&gid(fl[i])===want[i])) bad.push('the Undercroft belt shows '+desc(fl[i])+' on key '+(i+1)+', not the '+want[i]);
+       // v21.93 retarget (gun keys by class, his order 2026-10-14, v26.39): each gun is on its CLASS key (rifle 3, smg 2, carbine 4, shotgun 6, marksman 7), not on keys 1 to 4 in the order held
+       want=['rifle','smg','shotgun','dmr','carbine'];
+       function cki(w){ var c=gunClassOf(w); return gunClassKey(c); }
+       for(i=0;i<want.length;i++){ var ix=cki(want[i]); if(!(ix>=0&&fl[ix]&&fl[ix].kind==='gun'&&gid(fl[ix])===want[i])) bad.push('the Undercroft belt shows '+desc(fl[ix])+' on key '+(ix+1)+', not the '+want[i]); }
        // 2. The raid starts on the same four gun keys, everything else two keys down, and the fifth gun has no key.
        __deploy({kit:KIT.slice(),safe:null,mapIx:0,seed:4242});
        g=__state(); p=g&&g.player; if(!g||g.over||!p) return 'SKIP: no live raid';
        if(!(p.wep&&p.wep.id==='rifle'&&p.sec&&p.sec.id==='smg')) return 'SKIP: staging: did not deploy with the rifle up and the SMG stowed';
        for(i=0;i<KIT.length;i++) if(g.bag.indexOf(KIT[i])<0) return 'SKIP: staging: the '+KIT[i]+' did not go up in the backpack';
        sl=hotbarSlots();
-       for(i=0;i<4;i++) if(!(sl[i]&&sl[i].kind==='gun'&&gid(sl[i])===want[i])) bad.push('at the raid start key '+(i+1)+' shows '+desc(sl[i])+', not the '+want[i]);
-       for(i=0;i<4;i++) if(!(sl[4+i]&&sl[4+i].k===wk[i])) bad.push('key '+(5+i)+' shows '+desc(sl[4+i])+', not '+wk[i]);
-       for(i=0;i<sl.length;i++) if(sl[i]&&gid(sl[i])==='carbine') bad.push('the fifth gun (the carbine) shows on key '+(i+1)+' instead of staying in the backpack with no key');
-       if(!(sl[0]&&sl[0].inHand)) bad.push('key 1 does not show the rifle in his hands at the raid start');
-       if(g.hot!==0) bad.push('the raid started on key '+(g.hot+1)+', not key 1 with the rifle');
+       for(i=0;i<want.length;i++){ var jx=cki(want[i]); if(!(jx>=0&&sl[jx]&&sl[jx].kind==='gun'&&gid(sl[jx])===want[i])) bad.push('at the raid start key '+(jx+1)+' shows '+desc(sl[jx])+', not the '+want[i]); }
+       if(!(sl[cki('rifle')]&&sl[cki('rifle')].inHand)) bad.push('the rifle key does not show the rifle in his hands at the raid start');
+       if(g.hot!==cki('rifle')) bad.push('the raid started on key '+(g.hot+1)+', not the rifle key '+(cki('rifle')+1));
        __endRaid('abandon'); __topClear();
+       // v21.93 retarget: parts 3 (vacant keys 3 and 4, pad walk) and 4 (the old plan slide down two) are retired with the four-gun belt, the bar is the nine class keys now
+       return bad.length?bad.join('; '):null;
        // 3. Two guns and none packed: keys 3 and 4 are vacant, never take the highlight, and the pad walk steps over them.
        P.weapons=['rifle','smg']; P.equipped='rifle'; P.equippedSec='smg'; P.hotAssign={};
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});

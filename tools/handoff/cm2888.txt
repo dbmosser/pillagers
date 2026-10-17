@@ -1,0 +1,7 @@
+v28.88: player 2 blasts go past the shield
+
+Player 2s grenades, melee and air strike now go straight past a shielded elites shield, the same as player 1s.
+
+Check 28.88. Fails on v28.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
