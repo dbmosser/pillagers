@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.90 - THE WHAT IS NEW CARD NAMES POLISH PASS 8
+
+Co-op hunt while he was away. The card was stamped v28.74 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 28.90 passes, and fails on v28.89.
 ## v28.89 - HARD ENEMIES DROP BETTER LOOT
 
 Co-op hunt while he was away. His order (2026-10-15): "Hard enemies drop better loot." An elite of any kind, a sentry, a bulwark or a howler now always leaves its wreck or body and adds one roll on a better table (cache for an elite, safe for a hard machine), never a gun. Rolled at the death, so the seeded build is unchanged.

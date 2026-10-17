@@ -1,0 +1,5 @@
+## v28.90 - THE WHAT IS NEW CARD NAMES POLISH PASS 8
+
+Co-op hunt while he was away. The card was stamped v28.74 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 28.90 passes, and fails on v28.89.

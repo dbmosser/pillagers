@@ -1,0 +1,9 @@
+16.85: SKIP: removed by his order (no tactical belt plan on the Stash screen; the wheel and the GUN KEYS panel replaced it)
+16.79: SKIP: removed by his order (no tactical belt row to walk; items go on the wheel, the bar is guns only)
+15.25: SKIP: removed by his order (guns sit on their class keys, cell 1 is the pistol class key and a gun never goes on an ordinary key; class keys checked by the gun-key checks)
+14.25: SKIP: removed by his order (items no longer go on belt keys; they live on the wheel)
+13.16: PASS
+12.31: SKIP: removed by his order (no throwable or Bandage cells on the bar; the bar is guns only on class keys, items are used from the wheel)
+12.28: PASS
+12.27: SKIP: removed by his order (no item keys on the belt plan; items go on the wheel and a refused key drop says ITEMS GO ON THE WHEEL, checked by the wheel checks)
+ALL DONE

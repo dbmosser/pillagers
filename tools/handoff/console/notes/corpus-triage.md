@@ -49,14 +49,14 @@ All of these build a tactical belt with items on keys 3-9 or Medical / Throwable
 | 33 | 22.43 | STALE | Belt line wording: "EMPTY SLOT", "SHOTGUN ON KEY 2": a shotgun goes to key 6 now (RIOT SCATTERGUN (FIELD) TO SLOT 6). | Retarget the words to the class key. | DONE (vacant key found dynamically, shotgun line names its class key, passes) |
 | 34 | 22.39 | STALE | Old belt plan {8: Medkit, 9: Stim} slides to gun keys; no plan slide, no plate key. | Retire. | DONE (SKIP: removed by his order) |
 | 36 | 21.93 | STALE | Belt shows rifle on key 1, shotgun key 3: guns are on class keys (key 1 pistol, 3 rifle...) with ghost gun cells. | Retarget to class keys or retire. | DONE (parts 1 and 2 retargeted to class keys, parts 3 and 4 retired, passes) |
-| 49 | 16.85 | STALE | Controller builds tactical belt on the Stash screen. | Retire (wheel, GUN KEYS panel replaced it). | OPEN |
-| 50 | 16.79 | STALE | D-LEFT around belt keys to key 8, bind item to a belt key. | Retire. | OPEN |
-| 51 | 15.25 | STALE | Backpack SMG by key 3, cell 1 never black: cell 1 is the pistol class key now. | Retire or retarget to class keys. | OPEN |
-| 52 | 14.25 | STALE | One item one key in the backpack; Medkit onto key 5. | Retire. | OPEN |
-| 53 | 13.16 | STALE | Tactical belt offers the picked plate: plates are a wheel slot, hold nothing on the bar. | Retarget: plate shows in the wheel, bar unchanged. | OPEN |
-| 54 | 12.31 | STALE | Staging: empty throwable cell, Bandage cell on key 4. | Retire. | OPEN |
-| 55 | 12.28 | STALE | Peddler purchase tag: autoBelt key names gone; tag is a caps tag "BACKPACK" now (terse caps), not "In your backpack". | Expect the caps tag; drop the belt-key cases. | OPEN |
-| 56 | 12.27 | STALE | Drop on a belt key says "ITEMS GO ON THE WHEEL" by design. | Retarget to that line, or retire. | OPEN |
+| 49 | 16.85 | STALE | Controller builds tactical belt on the Stash screen. | Retire (wheel, GUN KEYS panel replaced it). | DONE (SKIP) |
+| 50 | 16.79 | STALE | D-LEFT around belt keys to key 8, bind item to a belt key. | Retire. | DONE (SKIP) |
+| 51 | 15.25 | STALE | Backpack SMG by key 3, cell 1 never black: cell 1 is the pistol class key now. | Retire or retarget to class keys. | DONE (SKIP) |
+| 52 | 14.25 | STALE | One item one key in the backpack; Medkit onto key 5. | Retire. | DONE (SKIP) |
+| 53 | 13.16 | STALE | Tactical belt offers the picked plate: plates are a wheel slot, hold nothing on the bar. | Retarget: plate shows in the wheel, bar unchanged. | DONE (wheelList shows the plate, bar has none, passes) |
+| 54 | 12.31 | STALE | Staging: empty throwable cell, Bandage cell on key 4. | Retire. | DONE (SKIP) |
+| 55 | 12.28 | STALE | Peddler purchase tag: autoBelt key names gone; tag is a caps tag "BACKPACK" now (terse caps), not "In your backpack". | Expect the caps tag; drop the belt-key cases. | DONE (BACKPACK tag expected, key-6 case dropped, passes) |
+| 56 | 12.27 | STALE | Drop on a belt key says "ITEMS GO ON THE WHEEL" by design. | Retarget to that line, or retire. | DONE (SKIP, plan cells gone) |
 | 57 | 11.97 | STALE | Pistol dragged onto key 6 refused: key 1 is the pistol class now, key 6 shotgun. | Retarget to the class-key rule. | OPEN |
 | 58 | 11.96 | STALE | Keys 3-5 refused Bandages / Medkit / plates: they say ITEMS GO ON THE WHEEL (the design). | Retarget: the refusal is correct. | OPEN |
 | 59 | 11.95 | STALE | Pistol took key 6 although guns go on 1-4: now guns 1-9 by class. | Retarget to GUN_CLASS_OF. | OPEN |
