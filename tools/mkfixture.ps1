@@ -72988,7 +72988,7 @@ window.__REGRESS=[
        if(_ai>=0&&g.hotCells&&g.hotCells[_ai]) cell=g.hotCells[_ai];
        mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
        cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
-       if(!g.drag||g.drag.gunSlot!=='gunA') bad.push('pressing on the gun in slot 1 with the backpack open started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':''));
+       if(!g.drag||g.drag.gunSlot!=='gunA') bad.push('pressing on the gun in slot 1 with the backpack open started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':'')+' DBG ai '+_ai+' cell '+JSON.stringify(cell)+' panel '+JSON.stringify(g.bagPanel)+' mouse '+mouse.x+','+mouse.y+' slot '+JSON.stringify(_sl[_ai]||null).slice(0,160)+' cells '+(g.hotCells||[]).length);
        if(g.bagPanel){ mouse.x=g.bagPanel.x+g.bagPanel.w/2; mouse.y=g.bagPanel.y+g.bagPanel.h/2; }
        window.dispatchEvent(new MouseEvent('mouseup',{button:0}));
        if(g.bag.indexOf('gun_smg')<0) bad.push('the gun did not land in the backpack (bag '+g.bag.join(',')+')');
