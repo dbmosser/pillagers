@@ -1,0 +1,7 @@
+v28.94: pre-raid: pick how much cash to take
+
+The PRE-RAID page has a CASH chip: pick how much cash goes up with you to spend at the stall.
+
+Check 28.94. Fails on v28.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

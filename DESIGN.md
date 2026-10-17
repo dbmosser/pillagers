@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.94 - PRE-RAID: PICK HOW MUCH CASH TO TAKE
+
+Co-op hunt while he was away. His order (2026-10-15): "On the pre-raid screen (the map select screen, renamed PRE-RAID), quickly pick how much cash and how many of each wheel item to take, plus keys and guns." Cash was the open piece. The PACK row has a CASH chip with minus, plus and MAX (ALL and NONE set it too). The amount is the cash on him in the raid: the stall sells him no more than that (NOT ENOUGH CASH ON YOU), and banked Credits stay banked, nothing is lost with it. No pick means no cap, as before.
+
+MEASURED. Check 28.94 passes, and fails on v28.93.
 ## v28.93 - PLAYER 2 SEES THE MIMIC HE OPENED
 
 Co-op hunt while he was away. When player 2 opened a mimic crate, his search runs on the host, so the host woke the mimic: the host window said MIMIC and shook even when the box was far away, and the crawler went for the host player, not for player 2 who opened it. Player 2 only saw a plain crawler appear: no line, no shake, no spark. Proven in a staged pair in one window: seat 1 searches a forced mimic through netSrchTake, netSrchTick and mimicTick on the host; no mark goes to player 2, the host says MIMIC and shakes, and the crawler aims at the host player. Now the crawler goes for the player who opened the box, the MIMIC line and shake go to that player only (the host keeps them for a box he opens himself), and everyone sees the spark and hears the alarm. No sound is added, the alarm already comes over.

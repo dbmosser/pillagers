@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.93';
+var VER='28.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13574,6 +13574,7 @@ function pedBuy(ix){
   // money is told it is not banked yet rather than that he has nothing.
   // v22.56 (R18): a caps headline and a short detail, not a sentence of up to 110 characters. It still says the money is banked
   // money, and names the stall money on him that is not banked yet (v12.74).
+  if(G.cash!=null&&G.cash<st.price){ say('NOT ENOUGH CASH ON YOU','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'. Carrying '+'$'+G.cash.toLocaleString()+'.'}); return; }   // v28.xx (cw-precash), HIS ORDER (2026-10-15): "quickly pick how much cash ... to take": a raid that took a set amount of cash can spend no more than that at the stall
   if((P.credits||0)<st.price){ say('NOT ENOUGH BANKED CREDITS','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'.'+((G.pedCarry||0)>0?(' Carrying '+'$'+(G.pedCarry||0).toLocaleString()+'.'):'')}); return; }   // v22.xx (tr4fixc): the shooter voice, the headline says banked
 
   var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
@@ -13589,6 +13590,7 @@ function pedBuy(ix){
   var _pAmmo=!!(ITEMS[st.k]&&ITEMS[st.k].use==='ammo');
   if(!_pAmmo&&bagWeight()+wt>cap){ say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:bagDropHint()}); return; }   // v22.59 (R19): the same red row as a search
   P.credits-=st.price; saveProfile();
+  if(G.cash!=null) G.cash=Math.max(0,G.cash-st.price);   // v28.xx (cw-precash)
   st.sold=true; G.trade.traded=1; if(typeof NET==='object'&&NET&&NET.on&&!G.sim) netPedSoldSend(G.trade,ix);   // v21.72 (K4): and the rest of the party is told the row is sold
   if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
   else {
@@ -15062,6 +15064,10 @@ function startRaid(){
   try{ classKeysSettle({deploy:1}); }catch(_cks){}   // v25.xx (belt3): and what the throwable, medical and armour keys show is pinned for the raid
   try{ G.hot=gunCell(); }catch(_gh){}   // v13.42: a raid starts with the gun in hand selected, wherever his belt put it
   G.carriedIn=bagValue();
+  // v28.xx (cw-precash), HIS ORDER (2026-10-15): "On the pre-raid screen ... quickly pick how much cash ... to take". The amount set on the PRE-RAID page (P.takeCashRaid, written when he deploys with MY LOADOUT) is the cash on him: the stall sells him no more than that, and banked Credits stay banked (nothing is lost with it). No pick means no cap.
+  G.cash=null;
+  if(!G.sim&&P.takeCashRaid!=null) G.cash=Math.max(0,Math.min(P.takeCashRaid|0,P.credits|0));
+  P.takeCashRaid=null;
   G.carriedKit=(G.bag||[]).slice();   // v13.55: WHICH items came up, so an item contract counts only what was found   // v10.27: what the lift carried in, valued as the haul is
   if(NET.on&&NET.role==='host'&&!G.sim) netUpAnnounce(G);   // v15.79: the party is told to ascend into this world (the net section)
   // v17.21, co-op hunt 2026-09-28: THE HIRE IS SPENT AT THE LIFT, as the Data Core below is. It was spent only in endRaid, so a
@@ -46686,7 +46692,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.93: In co-op, when player 2 opens a mimic crate, it jumps at him and his screen says MIMIC and shakes, just like player 1s does for his own. Check 28.93 fails on v28.92',
+  now:'v28.94: The PRE-RAID page has a CASH chip: pick how much cash goes up with you to spend at the stall. Check 28.94 fails on v28.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61275,6 +61281,13 @@ function packSet(key,n){
   if(n>cur) packSome(key,n-cur); else if(n<cur) unpackSome(key,cur-n);
   saveProfile();
 }
+// v28.xx (cw-precash), HIS ORDER (2026-10-15): "quickly pick how much cash ... to take". P.takeCash is null for ALL (no cap) or a number of credits; the step is a tenth of the bank, in hundreds.
+function cashStep(d){
+  var c=P.credits|0, st=Math.max(100,Math.round(c/10/100)*100), cur=(P.takeCash==null)?c:Math.min(P.takeCash|0,c);
+  if(d==='all'){ P.takeCash=null; return; }
+  cur+=(d>0?st:-st);
+  P.takeCash=(cur>=c)?null:Math.max(0,cur);
+}
 function packCore(){
   if(P.intel){ P.intel=0; P.stash.push('core'); }
   else if(heldCount('core')>0){ spendHeld('core',1); P.intel=1; }
@@ -61289,7 +61302,7 @@ careerStyle('careercsspk',
   '.pkc button,.pkb{padding:2px 9px;font-size:14px;min-width:0}'+
   '.pkc b{min-width:1.4em;text-align:center}');
 function syncSectorPack(){
-  var host=document.getElementById('sectorpack'), keys, i, k, h, held, got, nc;
+  var host=document.getElementById('sectorpack'), keys, i, k, h, held, got, nc, tc;
   if(!host) return;
   if(kitPickOf()!=='mine'){ host.style.display='none'; host.innerHTML=''; return; }
   host.style.display='';
@@ -61301,6 +61314,8 @@ function syncSectorPack(){
        '<button data-pd="-1">-</button><b>'+got+'</b><span style="color:var(--ash)">/'+held+'</span><button data-pd="1">+</button><button data-pd="max">MAX</button></span>';
   }
   nc=heldCount('core');
+  tc=(P.takeCash==null)?null:Math.min(P.takeCash|0,P.credits|0);
+  h+='<span class="pkc'+(tc!==null?' on':'')+'" data-cashchip="1"><span class="pkn">CASH</span><button data-cash="-1">-</button><b style="min-width:4.2em">'+(tc===null?'ALL':tc.toLocaleString())+'</b><span style="color:var(--ash)">/'+(P.credits|0).toLocaleString()+'</span><button data-cash="1">+</button><button data-cash="all">MAX</button></span>';
   h+='<button class="pkb" data-pa="all">ALL</button><button class="pkb" data-pa="none">NONE</button>';
   h+='<button class="pkb" data-core="1"'+((!P.intel&&!nc)?' disabled':'')+(P.intel?' style="border-color:var(--amber);color:var(--amber)"':'')+'>'+
      (P.intel?'DATA CORE SLOTTED':(nc?('SLOT DATA CORE ('+nc+')'):'NO DATA CORE'))+'</button></div>';
@@ -61309,8 +61324,9 @@ function syncSectorPack(){
     var b=ev.target&&ev.target.closest?ev.target.closest('button'):null, ch, pk, d, pa, j, ks;
     if(!b||b.disabled) return;
     ch=b.closest('[data-pk]'); pk=ch?ch.getAttribute('data-pk'):null; d=b.getAttribute('data-pd'); pa=b.getAttribute('data-pa');
-    if(b.getAttribute('data-core')){ if(!packCore()) return; }
-    else if(pa){ ks=packList(); for(j=0;j<ks.length;j++) packSet(ks[j],pa==='all'?heldCount(ks[j]):0); }
+    if(b.getAttribute('data-cash')){ cashStep(b.getAttribute('data-cash')==='all'?'all':(+b.getAttribute('data-cash'))); }   // v28.xx (cw-precash)
+    else if(b.getAttribute('data-core')){ if(!packCore()) return; }
+    else if(pa){ P.takeCash=(pa==='all')?null:0; ks=packList(); for(j=0;j<ks.length;j++) packSet(ks[j],pa==='all'?heldCount(ks[j]):0); }
     else if(pk&&d){ packSet(pk,d==='max'?heldCount(pk):packedCount(pk)+(+d)); }
     else return;
     try{ sndUi('click'); }catch(_ps){}
@@ -61927,6 +61943,7 @@ document.getElementById('stagedrop').onclick=function(){   // v26.xx (kit1): eve
 document.getElementById('sectordeploy').onclick=function(){
   // v7.42: choosing the sector leads to the loadout question, not straight up.
   document.getElementById('sectormodal').classList.remove('on');
+  P.takeCashRaid=(kitPickOf()==='mine')?P.takeCash:null;   // v28.xx (cw-precash): the cash he picked goes up with MY LOADOUT only
   kitDeploy();   // v26.xx (kit1): the kit was chosen on this page, so it goes straight up
 };
 document.getElementById('closesector').onclick=function(){
