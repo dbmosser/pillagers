@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.75 - A CACHE NAME IS DRAWN OVER THE WALLS
+
+Co-op hunt while he was away. His note with a picture: the CHILL ROW CACHE name was cut in two by a wall, and the text should be on top. The name was drawn with its box in the depth-sorted world pass, so a wall in front of the box covered it. It is now drawn in the world text pass beside the nameplates, after every wall.
+
+MEASURED. Check 28.75 passes, and fails on v28.74.
 ## v28.74 - THE WHAT IS NEW CARD NAMES POLISH PASS 7
 
 Co-op hunt while he was away. The card was stamped v28.58 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

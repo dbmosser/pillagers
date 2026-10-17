@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.74';
+var VER='28.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34442,10 +34442,10 @@ if(ct.cache&&ct.tag&&!ct.strong){
       // Only a cache that was given a NAME announces itself, and it announces the
       // name it was actually given. No tag means no shout: that is the box behind
       // the locked door, and it stays the reward for getting the door open.
-      wc.font=FS(TYPE.head); wc.textAlign='center';
-      wc.fillStyle=INK; wc.fillText(ct.tag,ct.x+1,ct.y-lift-d2-25);
-      wc.fillStyle='#e6b4ff'; wc.fillText(ct.tag,ct.x,ct.y-lift-d2-26);
-      wc.textAlign='left';
+      // v28.xx (cachetag), HIS NOTE (2026-10-16, a picture of CHILL ROW CACHE cut in two by a wall): "text should be on top". The name was
+      // drawn here with its box, in the depth-sorted world pass, so any wall drawn in front of the box covered it. It is queued now and drawn
+      // in the world text pass (_wtA) beside the nameplates, after every wall.
+      if(CACHETAGS.length<48) CACHETAGS.push({t:ct.tag,x:ct.x,y:ct.y-lift-d2-26});
     }
     // v8.50, audit: the empty `if(ct.seal){}` that used to sit here claimed the
     // seal y-sorted with everything else. ct.seal was never set on any container
@@ -34630,6 +34630,7 @@ function lookLean(p){
   if(!w||!(w.mag>0)||p.hand) return LOOK_HANDS;
   return (w.optic>=2.5)?LOOK_LONG:LOOK_BASE;
 }
+var CACHETAGS=[];   // v28.xx (cachetag): named cache labels queued by the world pass, drawn over the walls by _wtA
 function render2D(dt){
   var p=G.player,i,j;
   gfxpBegin();   // v23.xx (gfx1): one frame in 15 times its passes
@@ -35931,6 +35932,11 @@ var SHD=G.shells[i];
   // world transform (_wtA and _wtB, called before the weather). Only the order changes: what is drawn, where, and the canSee gate on
   // the nameplates are the same, and no pass is added.
   var _wtA=function(){
+  // v28.xx (cachetag): the named caches, over every wall (queued by the container pass above)
+  var _ctq=CACHETAGS; CACHETAGS=[];
+  if(_ctq.length){ wc.font=FS(TYPE.head); wc.textAlign='center';
+    for(var _cq=0;_cq<_ctq.length;_cq++){ var _cg=_ctq[_cq]; wc.fillStyle=INK; wc.fillText(_cg.t,_cg.x+1,_cg.y+1); wc.fillStyle='#e6b4ff'; wc.fillText(_cg.t,_cg.x,_cg.y); }
+    wc.textAlign='left'; }
   if(NET.on) netUpTags();   // v15.79: the party names over their heads, beside the pillager nameplates
   // nameplates over anything you can currently see
   for(i=0;i<VIS.length;i++){
@@ -46530,7 +46536,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.74: The what is new card names polish pass 7. Check 28.74 fails on v28.73',
+  now:'v28.75: A named cache shows its name over the walls instead of behind them. Check 28.75 fails on v28.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

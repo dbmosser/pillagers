@@ -1,0 +1,5 @@
+## v28.75 - A CACHE NAME IS DRAWN OVER THE WALLS
+
+Co-op hunt while he was away. His note with a picture: the CHILL ROW CACHE name was cut in two by a wall, and the text should be on top. The name was drawn with its box in the depth-sorted world pass, so a wall in front of the box covered it. It is now drawn in the world text pass beside the nameplates, after every wall.
+
+MEASURED. Check 28.75 passes, and fails on v28.74.
