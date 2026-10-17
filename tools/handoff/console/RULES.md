@@ -62,7 +62,7 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
 - If your ship STOPs with "uncommitted changes", another worker is mid-edit: wait with bash S/lock.sh then bash S/unlock.sh
   (lock.sh waits for the lock), and ship again, up to 3 times. Never end a run just because of that STOP.
 - Never leave the game file edited. Only the ship scripts change it.
-- The lock stops EVERY worker's ships. Hold it at most 10 minutes: plan and write your fixture edits BEFORE you take it, then take
+- The lock stops EVERY worker's ships. Hold it at most 8 minutes (after 8 it is taken back automatically): plan and write your fixture edits BEFORE you take it, then take
   it, apply, runchk only the checks you touched, commit and release. Never think, explore or read code while you hold it.
   (10-17: one worker held it from 09:39 to 11:41 and nothing shipped for two hours.)
 

@@ -122,12 +122,12 @@ try {
     const txt = j.content.filter(b => b.type === 'text').map(b => b.text).join('\n'); if (txt) lastText = txt;
     if (j.stop_reason !== 'tool_use') { out.terminal_reason = j.stop_reason || 'end'; break; }
     const results = j.content.filter(b => b.type === 'tool_use').map(b => ({ type: 'tool_result', tool_use_id: b.id, content: useTool(b.name, b.input || {}) }));
-    // 10-17 17:50: a helper held the lock 47 minutes with nothing to commit while two ships waited. Past 15 minutes the loop
-    // gives the lock back itself and tells the helper.
-    if (heldLock && Date.now() - lockAt > 15 * 60000) {
+    // 10-17 17:50: a helper held the lock 47 minutes with nothing to commit while two ships waited. Past 8 minutes the loop
+    // gives the lock back itself and tells the helper (8 minutes, his "does it really need to be 15 mins").
+    if (heldLock && Date.now() - lockAt > 8 * 60000) {
       try { spawnSync(BASH, ['-c', 'bash ' + S.replace(/\\/g, '/') + '/unlock.sh'], { cwd: R, encoding: 'utf8', timeout: 60000 }); } catch {}
       heldLock = false;
-      results.push({ type: 'text', text: 'NOTE: you held the ship lock over 15 minutes, so it was released for the other workers. Commit any fixture edits with fixq.sh (it takes the lock itself), and next time prepare your edits before you take the lock.' });
+      results.push({ type: 'text', text: 'NOTE: you held the ship lock over 8 minutes, so it was released for the other workers. Commit any fixture edits with fixq.sh (it takes the lock itself), and next time prepare your edits before you take the lock.' });
     }
     msgs.push({ role: 'user', content: results });
   }
