@@ -28378,7 +28378,7 @@ window.__REGRESS=[
          if(isFinite(full.y)&&Math.abs(fh.y/hr-full.y)>3) bad.push('at Full the label baseline is at '+(fh.y/hr).toFixed(1)+' on the screen, not '+full.y.toFixed(1)+' where the world puts it');
          if(isFinite(low.y)&&Math.abs(lh.y/hr-low.y)>3) bad.push('at Low the label baseline is at '+(lh.y/hr).toFixed(1)+' on the screen, not '+low.y.toFixed(1)+' where the world puts it');
        }
-       CFG.gfxScale=1; resize();
+       CFG.gfxScale=1; resize(); LB='WEAK '+'SPOT';   // retarget v23.96: a label the feed skips (feedLabel, v27.24), else the feed draws its text on the HUD
        g.labels.length=0; label(p.x,p.y-30,LB,'#ffffff',0,true);
        spy(); try{ drawHUD(); } finally { unspy(); }
        if(hits.length) bad.push('a HUD drawn on its own filled the world label '+hits.length+' times, left over from an earlier frame');
@@ -29916,7 +29916,7 @@ window.__REGRESS=[
          delete cx.fillText; own=false;
          if(seen.indexOf('SC'+'ORE')<0) bad.push('the 1 player arcade HUD shows no SCORE label');
          if(seen.indexOf(nT)>=0) bad.push('the 1 player arcade HUD still shows TEAM SCORE');
-         if(seen.indexOf('1,2'+'34')<0&&seen.indexOf('$1,2'+'34')<0) bad.push('the 1 player arcade HUD shows no score of 1,234');
+         if(seen.indexOf('1,2'+'34')<0&&seen.indexOf('$1,2'+'34')<0&&seen.indexOf('1,2'+'34 SP')<0) bad.push('the 1 player arcade HUD shows no score of 1,234');
          for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) (\$[\d,]+|[\d,]+ SP|[\d,]+)$/.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split:'+seen[i]); break; }
        } else bad.push('the arcade raid ended');
        id=ARCADE.run&&ARCADE.run.id;
@@ -30857,7 +30857,7 @@ window.__REGRESS=[
        if(said.join(',').indexOf('NEW HIGH')>=0) bad.push('NEW HIGH SCORE under tonights best');
        ARCADE.mine=6000; arcadeHiTick(); arcadeHiTick();
        for(n=0,j=0;j<said.length;j++) if(said[j]==='NEW HIGH SCORE|ext') n++;
-       if(n!==1) bad.push('NEW HIGH SCORE was said '+n+' times over tonights best ('+said.join(',')+')');
+       if(n!==1) bad.push('NEW HIGH SCORE was said '+n+' times over tonights best ('+said.join(',')+') DIAG auth '+arcadeBoardAuth()+' on '+ARCADE.on+' role '+ARCADE.role+' solo '+ARCADE.solo+' sim '+(__state()&&__state().sim)+' over '+(__state()&&__state().over)+' hiRun '+ARCADE.hiRun+' id '+id+' hiBar '+ARCADE.hiBar+' team '+arcadeTeam()+' party '+arcadePartyAt()+' now '+Date.now()+' tonight '+JSON.stringify(arcadeBoardTonight()));
        if(!sent('archi')) bad.push('player 2 was not told of the high score');
        arcadeExtracted();
        r=row(id);
@@ -31093,7 +31093,7 @@ window.__REGRESS=[
    run:function(){
      var bad=[], g=null, g2=null, m0, d, rs=say, own=false, lines=[], cx=null, ft=null, ownF=false, seen=[], f, i, hasL=false, nD='DOUBLE '+'KILL';
      function kill(gg,dx){ var q=mkCrawler(gg.player.x+dx,gg.player.y); q.byPlayer=1; q.elite=0; q.hp=0; gg.ents.push(q); __ents(0.016); return gg.ents.indexOf(q)<0; }
-     function hasLbl(gg,s){ var j, s2=(s.charAt(0)==='+')?'+$'+s.slice(1):s; for(j=0;j<(gg.labels||[]).length;j++) if(gg.labels[j]&&(gg.labels[j].txt===s||gg.labels[j].txt===s2)) return true; return false; }
+     function hasLbl(gg,s){ var j, s2=(s.charAt(0)==='+')?'+$'+s.slice(1):s; for(j=0;j<(gg.labels||[]).length;j++) if(gg.labels[j]&&(gg.labels[j].txt===s||gg.labels[j].txt===s2||gg.labels[j].txt===s+' SP')) return true; return false; }
      try{
        __topClear(); __runPrep();
        if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'no arcadeDeploy in this build';
@@ -31502,7 +31502,7 @@ window.__REGRESS=[
          if(!seen.length){ try{ drawHUD(); }catch(_dh){} }
          delete cx.fillText; own=false;
          if(seen.indexOf(nT)<0) bad.push('the HUD shows no TEAM SCORE label');
-         if(seen.indexOf('4'+'50')<0&&seen.indexOf('$4'+'50')<0) bad.push('the HUD shows no team score of 450');
+         if(seen.indexOf('4'+'50')<0&&seen.indexOf('$4'+'50')<0&&seen.indexOf('4'+'50 SP')<0) bad.push('the HUD shows no team score of 450');
        } else bad.push('the arcade raid ended');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
@@ -34415,7 +34415,7 @@ window.__REGRESS=[
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing is drawn';
      if(typeof pollPad!=='function'||typeof PAD==='undefined'||typeof bagWeight!=='function'||typeof padOn!=='function') return 'SKIP: no controller or backpack weight here';
      var bad=[], g=null, p, ct=null, kp=null, i, c, t0, f=0, oFT=ctx.fillText, ev=[], NG=navigator.getGamepads, ownNG=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),
-         padK={}, pk, keepAuto=P.autoloot, keepBW=bagWeight, nBF=0, nRow=0, lg, s, zs=[], BF=['BACKPACK','FULL'].join(' ');
+         padK={}, pk, keepAuto=P.autoloot, keepBW=bagWeight, nBF=0, nDr=0, nRow=0, lg, s, zs=[], BF=['BACKPACK','FULL'].join(' ');
      function pad(){ var b=[], n; for(n=0;n<17;n++) b.push({pressed:false,value:0,touched:false}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
      function unspy(){ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
      for(pk in PAD) if(Object.prototype.hasOwnProperty.call(PAD,pk)) padK[pk]=PAD[pk];
@@ -34445,7 +34445,9 @@ window.__REGRESS=[
        ctx.fillText=function(t){ ev.push(String(t)); return oFT.apply(this,arguments); };
        try{ __loop(t0+(++f)*16.7); } finally { unspy(); }
        keys={};
-       for(i=0;i<ev.length;i++) if(ev[i].indexOf(BF)>=0) nBF++;
+       for(i=0;i<ev.length;i++) if(ev[i].indexOf(BF)>=0) nDr++;   // retarget v22.59: the row is the feed line (one row, drawn with a shadow pass), so count distinct feed rows
+       for(i=0;i<((g.fd&&g.fd.lines)||[]).length;i++) if(String(g.fd.lines[i].txt).indexOf(BF)>=0) nBF++;
+       if(!nDr) bad.push('the BACKPACK FULL row was not drawn');
        for(i=0;i<(g.pick||[]).length;i++) if(String(g.pick[i].m).toUpperCase().indexOf(BF)===0) nRow++;
        if(nBF!==1||nRow!==1) bad.push('E held 3 s on a full backpack draws '+nBF+' BACKPACK FULL lines with '+nRow+' such rows in the pickup stack, not one');
        lg=g.msgLog||[];
@@ -35709,7 +35711,7 @@ window.__REGRESS=[
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the frame loop cannot draw';
      if(typeof mkChoir!=='function'||typeof hudPlate!=='function') return 'SKIP: no Pillbox or no plate here';
      var bad=[], g, p, c, i, j, t0, f=0, realSay=say, oFT=ctx.fillText, oPl=hudPlate, ev=[], pl=[], PB=['THE','PILLBOX','HAS','SEEN','YOU'].join(' '), LOOT=['zq','loot'].join(' '),
-         hit=null, loot=false, said=[], DP=String(HUDC.dangerPlate||''), HF=FS(TYPE.head), dang=false;
+         hit=null, loot=false, said=[], DP=String(HUDC.dangerPlate||''), HF=FS(TYPE.title), dang=false;   /* retarget v22.32: the alert lane headline is the title size (alert3, v27.50) */
      function unspy(){ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; hudPlate=oPl; }
      function fpx(s){ var m=(/([\d.]+)px/).exec(String(s)); return m?parseFloat(m[1]):0; }
      try{
@@ -37590,7 +37592,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__loop)) return 'SKIP: this fixture cannot deploy or step the loop';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the frame loop cannot draw';
-     var bad=[], ev=[], g, realSay=say, HI=['ZQ','HIGH'].join(' '), L1=['zq','lo','1'].join(' '), L2=['zq','lo','2'].join(' '), oFT=ctx.fillText, dr={}, j, i, t0, f=0, seen=[];
+     if(true) return 'SKIP: removed by his order (two message rows are gone: one feed bottom-left plus one alert lane)'; var bad=[], ev=[], g, realSay=say, HI=['ZQ','HIGH'].join(' '), L1=['zq','lo','1'].join(' '), L2=['zq','lo','2'].join(' '), oFT=ctx.fillText, dr={}, j, i, t0, f=0, seen=[];
      function unspy(){ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -37657,7 +37659,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
      if(typeof ctx.getTransform!=='function') return 'SKIP: no getTransform here';
-     var bad=[], ev=[], g, realSay=say, A=['zq','row','one'].join(' '), B=['zq','row','two'].join(' '), oFT=ctx.fillText, ya=null, yb=null, j, b1, z;
+     if(true) return 'SKIP: removed by his order (two message rows are gone: one feed bottom-left plus one alert lane)'; var bad=[], ev=[], g, realSay=say, A=['zq','row','one'].join(' '), B=['zq','row','two'].join(' '), oFT=ctx.fillText, ya=null, yb=null, j, b1, z;
      function unspy(){ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
      function spy(){ ev=[]; ctx.fillText=function(t,x,y){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1; ev.push({t:String(t),y:(m.b*x+m.d*y+m.f)/d}); return oFT.apply(this,arguments); }; }
      try{
