@@ -29,7 +29,11 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    tools\handoff\drafts\draft-cw-KEY.json with title, why, now (no apostrophes), edits (anchor regex matched exactly once,
    replacement) and check. Start each code comment with "v28.xx (cw-KEY)" and quote his note when there is one.
 2. The check must FAIL on the current build and PASS on the new one. It tests the thing claimed, never a stand-in.
-3. Ship it: bash "S/shipq.sh" cw-KEY  (it waits for the lock, runs the gate, prints SHIPPED or STOP with the reason).
+3. PREFLIGHT FIRST (10-17): bash tools/handoff/preflight.sh LANE cw-KEY (LANE is your lane letter, given in your task line).
+   It runs the same gates as a ship on your lane's own Chrome, without the lock, in about 2 minutes, and changes nothing. Fix
+   your mk script until it prints PREFLIGHT PASS. Only then ship. The real gate is shared by every worker; do not spend it on a
+   draft that has not passed preflight.
+   Ship it: bash "S/shipq.sh" cw-KEY  (it waits for the lock, runs the gate, prints SHIPPED or STOP with the reason).
    Every ship also pushes GitHub and itch on its own.
 4. The gate also reruns the last ~80 checks and the seed 4242 fingerprint (ents 85/374, containers 165/593). A change that
    moves the fingerprint is wrong unless the task says otherwise.

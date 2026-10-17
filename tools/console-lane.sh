@@ -63,7 +63,7 @@ ws=$(cap WORKSPACE_ID "")
 # engine: both said "Credit balance is too low" while a plain API call worked. So the run is tools/console-sdk/run-api.mjs, a small
 # agent loop on the plain API whose own code enforces the same lockdown as ALLOW above. Prices (per million tokens) are estimates
 # for the run cap only (P_IN, P_OUT, P_CR, P_CW in caps.txt); the Console's spend limit is the real cap.
-ANTHROPIC_API_KEY="$k" CW_WS="$ws" CW_S="$S" CW_TASK="$name" CW_PROMPT_FILE="$t" CW_RULES="$C/RULES.md" CW_BUDGET="$left" \
+ANTHROPIC_API_KEY="$k" CW_WS="$ws" CW_S="$S" CW_LANE="$L" CW_TASK="$name" CW_PROMPT_FILE="$t" CW_RULES="$C/RULES.md" CW_BUDGET="$left" \
   CW_MODEL="$(cap MODEL claude-sonnet-5-5)" CW_P_IN="$(cap P_IN 3)" CW_P_OUT="$(cap P_OUT 15)" CW_P_CR="$(cap P_CR 0.3)" CW_P_CW="$(cap P_CW 3.75)" \
   node "$R/tools/console-sdk/run-api.mjs" > "$out" 2> "$C/log/$name-$stamp.err" < /dev/null
 k=""

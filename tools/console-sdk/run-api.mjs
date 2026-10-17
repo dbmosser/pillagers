@@ -30,7 +30,8 @@ const ALLOW_CMD = [
   new RegExp('^bash ' + Sx + '/(lock|unlock|clearstale)\\.sh$'),
   new RegExp('^powershell -NoProfile -ExecutionPolicy Bypass -File ' + Sx + '/mk-cw-[A-Za-z0-9_-]+\\.ps1$'),
   /^powershell -NoProfile -ExecutionPolicy Bypass -File tools\/cdp\.ps1 -Start -Port 9346$/,
-  /^git (status|log|diff|show)( [^"`$\\;&|<>]*)?$/ ];
+  /^git (status|log|diff|show)( [^"`$\\;&|<>]*)?$/,
+  /^bash tools\/handoff\/preflight\.sh [abc] cw-[A-Za-z0-9_-]+$/ ];   // 10-17: the gate without the lock, on the lane's own Chrome
 const cut = (s, n) => s.length > n ? s.slice(0, n) + '\n[cut at ' + n + ' chars]' : s;
 function readLines(p, off, lim) {
   const L = readFileSync(norm(p), 'utf8').split(/\r?\n/); const o = Math.max(1, off || 1), n = Math.min(lim || 200, 400);
@@ -79,7 +80,7 @@ function useTool(name, a) {
 const out = { result: '', total_cost_usd: 0, terminal_reason: '', subtype: '' };
 let cost = 0, lastText = '';
 const sys = [{ type: 'text', text: readFileSync(e.CW_RULES, 'utf8') + '\n\nS (the scratchpad) is ' + S.replace(/\\/g, '/') + '. Your tools: read_file, grep, list_dir, write_file, edit_file, run.', cache_control: { type: 'ephemeral' } }];
-const msgs = [{ role: 'user', content: [{ type: 'text', text: 'Your task id is ' + e.CW_TASK + '. ' + readFileSync(e.CW_PROMPT_FILE, 'utf8') }] }];
+const msgs = [{ role: 'user', content: [{ type: 'text', text: 'Your task id is ' + e.CW_TASK + '. Your lane is ' + (e.CW_LANE || 'a') + '. ' + readFileSync(e.CW_PROMPT_FILE, 'utf8') }] }];
 const headers = { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' };
 if (e.CW_WS) headers['anthropic-workspace-id'] = e.CW_WS;
 // 10-17, his "I just want them to be spent EFFICIENTLY": every turn re-sends the whole history, so keep it small. When the old tool
