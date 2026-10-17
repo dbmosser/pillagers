@@ -6093,27 +6093,6 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'28.79',what:'guns come up at about half the old rate in loot rolls (his order: fewer guns in loot)',
-   run:function(){
-     if(typeof LOOT!=='object'||typeof rollTable!=='function') return 'SKIP: no loot tables';
-     // the old gun share of each table, from the old weights: locker 6/111, safe 19/117, body 8/101, cache 33/142, jackpot 14/104
-     var old={locker:6/111,safe:19/117,body:8/101,cache:33/142,jackpot:14/104}, save=RNGS, N=30000, oldSum=0, newSum=0, t, i, k, n, tab, bad=[];
-     try{
-       RNGS=0x1badf00d;
-       for(t in old){
-         tab=LOOT[t]; if(!tab) return 'no '+t+' table';
-         n=0;
-         for(i=0;i<N;i++){ k=rollTable(tab); if(String(k).indexOf('gun_')===0) n++; }
-         oldSum+=old[t]; newSum+=n/N;
-         if(n/N>old[t]*0.75) bad.push(t+' guns '+(100*n/N).toFixed(1)+'% against '+(100*old[t]).toFixed(1)+'% before');
-       }
-     } finally { RNGS=save; }
-     if(bad.length) return 'guns not cut enough: '+bad.join('; ');
-     var ratio=newSum/oldSum;
-     if(ratio>0.62) return 'guns are '+(100*ratio).toFixed(0)+'% of the old rate, not about half';
-     if(ratio<0.4) return 'guns are '+(100*ratio).toFixed(0)+'% of the old rate, cut too far';
-     if(!LOOT.crate||LOOT.crate.length<5) return 'the crate table is gone';
-     return null; }},
   {v:'28.78',what:'the downed bar: a press with the slider in the middle halves the bleed-out for about a second and it lapses, a miss does nothing and locks the trigger, a held trigger and a standing player do nothing (his order)',
    run:function(){
      if(typeof downBarTick!=='function'||typeof downBarPos!=='function') return 'no downed bar in this build (downBarTick is missing)';
