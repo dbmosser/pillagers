@@ -1,0 +1,7 @@
+v28.77: the low alarm only sounds near you and says what it is
+
+The low alarm now only sounds when a machine near you is alerted, at most every 4 seconds, and the feed says MACHINE ALERT.
+
+Check 28.77. Fails on v28.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

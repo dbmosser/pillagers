@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.77 - THE LOW ALARM ONLY SOUNDS NEAR YOU AND SAYS WHAT IT IS
+
+Co-op hunt while he was away. His note: an annoying low siren plays in the background too often, and he does not know what it means. It is the alarm cue, raised by about twenty things, and machines far away fighting pillagers raised it all raid long. It now sounds only within 700 of you, at most once every 4 seconds, and the feed says MACHINE ALERT each time.
+
+MEASURED. Check 28.77 passes, and fails on v28.76.
 ## v28.76 - CRAWLERS BITE FOR LESS
 
 Co-op hunt while he was away. His note: crawlers deal too much damage per hit. A crawler bite drops from 13 to 9, about 30 percent less. Balancing.

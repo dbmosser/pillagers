@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.76';
+var VER='28.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5928,8 +5928,23 @@ function sfxHere(type,wx,wy,wid){
   if(on) NET.fxIn=true;
   try{ sfx(type,wx,wy,wid); }finally{ if(on) NET.fxIn=f; }
 }
+// v28.xx (alarmcap), HIS NOTE (2026-10-16): "theres still an annoying low siren in the background too often and i dont even know what it means".
+// The low siren is the 'alarm' cue, and about twenty things raise it: a machine spotting someone, the crawler shout, a mimic, a noisy
+// strongbox, the seal. Since machines and pillagers fight each other, machines far away raised it all raid long. It now sounds only within
+// ALARM_RANGE of you, at most once every ALARM_CD seconds, and each time it says what it is in the feed: MACHINE ALERT.
+var ALARM_CD=4, ALARM_RANGE=700, ALARM_LAST=-99;
+function alarmOk(wx,wy){
+  var p=G&&G.player;
+  if(p&&wx!==undefined&&wx!==null&&Math.hypot(wx-p.x,wy-p.y)>ALARM_RANGE) return false;
+  var now=((typeof performance!=='undefined'&&performance.now)?performance.now():Date.now())/1000;
+  if(now-ALARM_LAST<ALARM_CD) return false;
+  ALARM_LAST=now;
+  try{ if(G&&G.player&&!G.over) say('MACHINE ALERT','info'); }catch(_as){}
+  return true;
+}
 function sfx(type,wx,wy,wid){
   if(G&&G.sim) return;
+  if(type==='alarm'&&!alarmOk(wx,wy)) return;   // v28.xx (alarmcap)
   if(typeof NET==='object'&&NET&&NET.on&&!NET.fxIn&&wx!==undefined&&wx!==null) netFxNoise(type,wx,wy,wid);   // v16.21: the rest of the party hears it and sees its ring
   if(typeof NET==='object'&&NET&&NET.specTick) return;   // v16.14: the raid a spectating host keeps running for the party makes no sound in his window
   if(typeof type==='string'&&type.charAt(0)==='f'&&type.charAt(1)===':'){ if(typeof foley==='function') foley(type.slice(2),wx,wy,{local:1}); return; }   // v25.20 (his reload and bandage orders): a teammate's foley, where he is
@@ -46536,7 +46551,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.76: A crawler bite does 9 damage instead of 13. Check 28.76 fails on v28.75',
+  now:'v28.77: The low alarm now only sounds when a machine near you is alerted, at most every 4 seconds, and the feed says MACHINE ALERT. Check 28.77 fails on v28.76',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
