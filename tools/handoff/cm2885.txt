@@ -1,0 +1,7 @@
+v28.85: operators cast a soft shadow to the lower right
+
+Operators now throw a soft shadow to the lower right.
+
+Check 28.85. Fails on v28.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

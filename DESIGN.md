@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.85 - OPERATORS CAST A SOFT SHADOW TO THE LOWER RIGHT
+
+Co-op hunt while he was away. Art build step (his pick: Refined Chibi with Gear-heavy raider). The brief asks for a soft cast shadow. Light is from the top left, so the operator ground shadow now sits a little right and down of the feet with a faint second lobe trailing off, instead of a plain ellipse centred under the body. Two cached stamps, no extra path fills.
+
+MEASURED. Check 28.85 passes, and fails on v28.84.
 ## v28.84 - A DEAD DEER IS A DEER, NOT A MAN
 
 Co-op hunt while he was away. His note: deer becomes a human body, fix it. A shot deer left a meat container of type body, and that type drew the prone human figure. The container is now tagged a deer carcass and drawn as a deer lying on its side in the live deer art, with the old flat blob not drawn twice. Pillager and player bodies are unchanged.
