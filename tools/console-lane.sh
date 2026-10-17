@@ -48,7 +48,7 @@ before=$(awk -v d="$today" '$1<d {s+=$2} END {printf "%.2f", s+0}' "$C/spend.txt
 dl=$(( ( $(date -d "$END" +%s) - $(date -d "$today" +%s) ) / 86400 + 1 )); [ "$dl" -lt 1 ] && dl=1
 mins=$(( 10#$(date +%H) * 60 + 10#$(date +%M) + 60 ))
 read DAY_USD allow < <(awk -v t="$TOTAL" -v b="${before:-0}" -v d="$dl" -v m="$mins" -v g="$DAY_USD" 'BEGIN{c=(t-b)/d; if(c<0)c=0; if(c>g)c=g; a=c*m/1440; if(a>c)a=c; printf "%.2f %.2f", c, a}')
-if awk -v s="$spent" -v a="$allow" 'BEGIN{exit !(s+0>=a+0)}'; then
+if [ "$(cap PACE 1)" != 0 ] && awk -v s="$spent" -v a="$allow" 'BEGIN{exit !(s+0>=a+0)}'; then   # 10-17 13:55 his "you can spend it all today ... just spend it efficiently": PACE=0 turns the pacing off
   echo "$(date '+%m-%d %H:%M') pacing: spent \$$spent today, \$$allow allowed by now (\$$DAY_USD for today, $dl days to $END)" > "$C/status-$L.txt"; exit 0; fi
 if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | head -1); else t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | head -1); fi
 [ -z "$t" ] && { echo "$(date '+%m-%d %H:%M') no tasks left" > "$C/status-$L.txt"; exit 0; }

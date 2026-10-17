@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.83';
+var VER='28.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29443,7 +29443,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                 // a small mercy on a bad run, not a living. The noise of the shot
                 // has already cost more than the meat is worth.
                 if(CW.k==='deer'&&!G.sim){
-                  var cc2=setLoot(mkContainer(CW.x,CW.y,'body'),['meat']);
+                  var cc2=setLoot(mkContainer(CW.x,CW.y,'body'),['meat']); cc2.carcass='deer'; CW.crc=1;   // v28.xx (cw-deercarcass), HIS NOTE (2026-10-15): "deer becomes a human body: fix it". The meat container is tagged a deer carcass, drawn by drawDeerCarcass, not the prone man
                   G.containers.push(cc2);
                 }
               }
@@ -34347,6 +34347,35 @@ function drawSnitchS(e){
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   wc.restore();
 }
+// v28.xx (cw-deercarcass), HIS NOTE (2026-10-15): "deer becomes a human body: fix it". A shot deer leaves a meat container of type body, and
+// that type drew the prone man. This draws the deer lying on its side in the live deer palette: stiff legs out, head down, antlers on some,
+// blood under it. Facing and antlers come from grit(x,y), the positional hash: no random stream touched, nothing shimmers.
+function drawDeerCarcass(ct){
+  var fl=grit(ct.x,ct.y)>0.5?1:-1, ant=grit(ct.x+7,ct.y+3)>0.55;
+  wc.save(); wc.translate(ct.x,ct.y-3); wc.scale(fl,1);
+  wc.fillStyle='rgba(90,24,16,.55)'; wc.beginPath(); wc.ellipse(2,5,13,4,0,0,6.2832); wc.fill();
+  wc.strokeStyle=INK; wc.lineWidth=2.8; wc.beginPath();
+  wc.moveTo(-8,3); wc.lineTo(-12,9); wc.moveTo(-3,4); wc.lineTo(-5,11); wc.moveTo(4,4); wc.lineTo(7,11); wc.moveTo(8,3); wc.lineTo(13,8);
+  wc.stroke();
+  wc.strokeStyle='#6b563f'; wc.lineWidth=1.4; wc.beginPath();
+  wc.moveTo(-8,3); wc.lineTo(-12,9); wc.moveTo(-3,4); wc.lineTo(-5,11); wc.moveTo(4,4); wc.lineTo(7,11); wc.moveTo(8,3); wc.lineTo(13,8);
+  wc.stroke();
+  wc.fillStyle=INK; rrF(-13,-7,26,14,6);
+  wc.fillStyle='#6b563f'; rrF(-12,-6,24,12,5);
+  wc.fillStyle='#7d6749'; rrF(-12,-6,24,4.5,4);
+  wc.fillStyle='rgba(232,226,214,.55)'; rrF(-8,2.5,14,3,1.5); wc.fillRect(-13,-3,3,4);
+  wc.strokeStyle=INK; wc.lineWidth=5; wc.beginPath(); wc.moveTo(10,-2); wc.lineTo(19,3); wc.stroke();
+  wc.strokeStyle='#6b563f'; wc.lineWidth=3; wc.beginPath(); wc.moveTo(10,-2); wc.lineTo(19,3); wc.stroke();
+  wc.fillStyle=INK; rrF(17,0,8,7,2.5);
+  wc.fillStyle='#7d6749'; rrF(17.5,0.5,7,6,2);
+  wc.strokeStyle=INK; wc.lineWidth=1; wc.beginPath(); wc.moveTo(21,2); wc.lineTo(23,4); wc.moveTo(23,2); wc.lineTo(21,4); wc.stroke();
+  if(ant){
+    wc.strokeStyle='#4a3f30'; wc.lineWidth=1.5; wc.beginPath();
+    wc.moveTo(21,0); wc.lineTo(23,-6); wc.lineTo(27,-8); wc.moveTo(23,-6); wc.lineTo(21,-9);
+    wc.stroke();
+  }
+  wc.restore();
+}
 function drawContS(ct){
   var w,lift,d2,cF,cT;
   var cL;
@@ -34395,6 +34424,8 @@ if(ct.type==='botwreck'){
     wc.beginPath(); wc.moveTo(9,3); wc.lineTo(15,8); wc.lineTo(13,12); wc.stroke();
     wc.fillStyle='#4a2620'; wc.beginPath(); wc.arc(-4,-1,2,0,6.2832); wc.fill();
     wc.restore();
+  } else if(ct.carcass==='deer'){
+    drawDeerCarcass(ct);   // v28.xx (cw-deercarcass): a dead deer is a deer on its side, never the human body below
   } else if(ct.type==='body'){
     // A BODY IS A BODY, v3.65. HIS NOTE: "the random 'bodies' that players can
     // search don't look like bodies at all". Correct: this branch fell through
@@ -35267,6 +35298,9 @@ var SHD=G.shells[i];
       // A carcass, drawn before the live shapes so neither branch has to know
       // about it. Flat on its side, darker than the living animal, with the
       // ground stain under it, and no legs or motion at all.
+      if(CT.dead&&CT.crc){
+        // v28.xx (cw-deercarcass): a deer with its carcass container is drawn by the container (drawDeerCarcass), not twice
+      } else
       if(CT.dead){
         shadowE(CT.x,CT.y+1,CT.k==='deer'?15:5,CT.k==='deer'?5:2.5,.34);
         wc.fillStyle='#3a1b12';
@@ -46625,7 +46659,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.83: The four guns on the crafting bench now cost twice the parts they did. Other recipes are unchanged. Check 28.83 fails on v28.82',
+  now:'v28.84: A dead deer lies as a deer on its side instead of a human body. Check 28.84 fails on v28.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

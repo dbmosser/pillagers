@@ -1,0 +1,7 @@
+v28.84: a dead deer is a deer, not a man
+
+A dead deer lies as a deer on its side instead of a human body.
+
+Check 28.84. Fails on v28.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

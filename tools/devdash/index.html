@@ -28,7 +28,7 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <div id="lanes"></div></section>
 
 <section class="card"><h2>CONSOLE MONEY</h2>
-<div class="what">Your $200 of Claude Console credits, spread evenly until Halloween so the helpers work every day. These are estimates; the Console Billing page has the exact balance.</div>
+<div class="what">Your $200 of Claude Console credits. The helpers spend it as they work, a few dollars per job, with no rush and no waste, until it runs out. These are estimates; the Console Billing page has the exact balance.</div>
 <div id="money"></div></section>
 
 <section class="card"><h2>QUALITY CHECK LINE</h2>
@@ -93,8 +93,7 @@ async function tick(){
     d.lanes.map(l=>{const [c,t]=laneLine(l.status);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+
     '<div class="small" style="margin-top:8px">Jobs finished: '+d.done+(d.failed.length?' &middot; <span class="warn">Gave up: '+d.failed.length+'</span>':'')+'</div>';
   const s=d.spend, pct=Math.min(100,Math.round(100*s.all/s.total)), tp=Math.min(100,Math.round(100*s.today/Math.max(.01,s.share)));
-  $('money').innerHTML='<span class="stat"><b>$'+s.today.toFixed(2)+'</b>spent today</span><span class="stat"><b>$'+s.share.toFixed(2)+'</b>today\'s share</span><span class="stat"><b>'+s.daysLeft+'</b>days to Halloween</span>'+
-    '<div class="small" style="margin-top:8px">Today: $'+s.today.toFixed(2)+' of $'+s.share.toFixed(2)+'</div><div class="bar"><i style="width:'+tp+'%"></i></div>'+
+  $('money').innerHTML='<span class="stat"><b>$'+s.today.toFixed(2)+'</b>spent today</span><span class="stat"><b>$'+Math.max(0,s.total-s.all).toFixed(2)+'</b>left to spend</span>'+
     '<div class="small">Whole budget: $'+s.all.toFixed(2)+' of $'+s.total+' used</div><div class="bar"><i style="width:'+pct+'%"></i></div>';
   $('gate').innerHTML=row(d.lockOwner?'b':'d',null,d.lockOwner?'<b>Testing now:</b> '+esc(job(d.lockOwner.split(' ')[1]||''))+' (since '+esc(d.lockOwner.split(' ')[2]||'')+')':'Nobody in line right now')+
     d.shipq.slice().reverse().map(l=>{const [c,t,k]=shipLine(l);return row(c,t,esc(k));}).join('');

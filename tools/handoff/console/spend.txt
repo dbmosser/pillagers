@@ -9,3 +9,4 @@
 2026-10-17 0.2589 b-11-lean8-fewer-guns
 2026-10-17 0.4697 c-02-art
 2026-10-17 3.8622 02-corpus-fix
+2026-10-17 0.2491 b-12-lean9-gun-craft-cost

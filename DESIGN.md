@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.84 - A DEAD DEER IS A DEER, NOT A MAN
+
+Co-op hunt while he was away. His note: deer becomes a human body, fix it. A shot deer left a meat container of type body, and that type drew the prone human figure. The container is now tagged a deer carcass and drawn as a deer lying on its side in the live deer art, with the old flat blob not drawn twice. Pillager and player bodies are unchanged.
+
+MEASURED. Check 28.84 passes, and fails on v28.83.
 ## v28.83 - GUNS COST TWICE AS MUCH TO CRAFT
 
 Co-op hunt while he was away. His order 2026-10-15: guns more expensive to craft. Each of the four gun recipes on the Undercroft bench now needs exactly twice its old parts. Every other recipe is unchanged.
