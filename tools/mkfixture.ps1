@@ -43885,20 +43885,6 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ delete ctx.fillText; delete ctx.fillRect; if(ctx.fillText!==oFT) ctx.fillText=oFT; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'cwdbg',what:'DEBUG PROBE (temporary, cw-corpusfix)',
-   run:function(){
-     var g, p, rec=[], rF=ctx.fillText, rA=ctx.arc, arcs=[], o='';
-     try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       g=__state(); p=g.player; p.stimT=6; p.hp=100;
-       ctx.fillText=function(s,x,y){ rec.push(String(s)+'@'+Math.round(x)+','+Math.round(y)); return rF.apply(this,arguments); };
-       ctx.arc=function(x,y,r,a0,a1){ if(a0===-1.5708) { var m=this.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1; arcs.push(String(this.strokeStyle)+'@'+Math.round((m.a*x+m.c*y+m.e)/d)+','+Math.round((m.b*x+m.d*y+m.f)/d)); } return rA.apply(this,arguments); };
-       __frame(0.001);
-       o='state='+state+' arcade='+g.arcade+' mapOpen='+g.mapOpen+' over='+g.over+' sim='+g.sim+' W='+W+' H='+H+' stimOn='+STATUSL[1].on+' DPR='+DPR+' boxes='+['raiders','legend','body'].map(function(k){ var b=HUDBOX[k]; return k+':'+(b?[b.x,b.y,b.w,b.h].map(Math.round).join(','):'-'); }).join(' ')+' feed='+(FEEDBOX.on?[FEEDBOX.x,FEEDBOX.y,FEEDBOX.w,FEEDBOX.h].map(Math.round).join(','):'off')+' arcs='+arcs.join('|')+' texts='+rec.filter(function(s){ return /STIM|6s/.test(s); }).join('|');
-     }catch(e){ o='threw '+e; }
-     finally{ ctx.fillText=rF; ctx.arc=rA; try{ __endRaid('abandon'); }catch(_e){} __topClear(); }
-     return o; }},
   {v:'19.00',what:'the status effects sit down the left side, his notes of 2026-10-07: with nothing running no status ring is drawn there; a Stim with 6 of its 10 seconds left draws a STIM icon on the left with its ring 60 percent lit and 6s beside it; a Bandage put on at 50 draws a HEALING icon on the left, clear of the pillager board and the controls, its ring lit for the share of the heal still to come and its seconds beside it, and from 80 the same counts to the Bandage stop at 85; the green heal ring over his head is gone, and the dial that keeps it for the older check still brings it back',
  run:function(){
    if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
@@ -43913,7 +43899,10 @@ window.__REGRESS=[
    // Where a call lands on the screen in CSS pixels, through whatever transform the HUD had on when it was made.
    function scr(c,x,y){ var m=null, d=(typeof DPR==='number'&&DPR>0)?DPR:1; try{ m=c.getTransform(); }catch(_m){ m=null; } if(!m) return {x:x,y:y}; return {x:(m.a*x+m.c*y+m.e)/d,y:(m.b*x+m.d*y+m.f)/d}; }
    // The left quarter of the screen from 35 percent of its height down to the vitals: where the column goes, and not the posture chip.
-   function inCol(q){ return q.x>=0&&q.x<W*0.25&&q.y>H*0.35&&q.y<yMax; }
+   // v28.xx (cw-corpusfix): since the feed zone (v27.35, 24 percent wide, always kept) sits between the board and the vitals, the column often has no free
+   // stretch at the left edge and drawStatusIcons moves it to the right of those panels (its own documented fallback), about 30 percent across at 1886 wide.
+   // So the left band is 40 percent of the width, not 25; the overlap test of the later controls still holds it clear of the board, the feed and the controls.
+   function inCol(q){ return q.x>=0&&q.x<W*0.4&&q.y>H*0.35&&q.y<yMax; }
    function frame(){ texts.length=0; rings.length=0; head=0; try{ __frame(0.001); }catch(_f){ return false; } return true; }
    function ring(c){ for(var q=0;q<rings.length;q++) if(rings[q].c===c) return rings[q]; return null; }
    function textAt(s){ for(var q=0;q<texts.length;q++) if(texts[q].s===s) return texts[q]; return null; }
@@ -43932,7 +43921,7 @@ window.__REGRESS=[
      p.downed=false; p.roll=0; p.stam=100; p.stamLock=0; p.stamRelease=0;
      hooked=true;
      ctx.fillText=function(s,x,y){ var q=scr(this,x,y); if(inCol(q)) texts.push({s:String(s),x:q.x,y:q.y}); return realFT.apply(this,arguments); };
-     ctx.arc=function(x,y,r,a0,a1){ if(a0===-1.5708){ var q=scr(this,x,y); window.__dbgR=(window.__dbgR||[]).concat([String(this.strokeStyle)+'@'+Math.round(q.x)+','+Math.round(q.y)]); if(inCol(q)) rings.push({c:String(this.strokeStyle).toLowerCase(),x:q.x,y:q.y,f:(a1-a0)/6.2832}); } return realArc.apply(this,arguments); };
+     ctx.arc=function(x,y,r,a0,a1){ if(a0===-1.5708){ var q=scr(this,x,y); if(inCol(q)) rings.push({c:String(this.strokeStyle).toLowerCase(),x:q.x,y:q.y,f:(a1-a0)/6.2832}); } return realArc.apply(this,arguments); };
      wc.arc=function(x,y,r,a0,a1){ if(r===9&&a0===-1.5708&&String(this.strokeStyle).toLowerCase()==='#7fc4a0') head++; return realWArc.apply(this,arguments); };
      // CONTROL, NOTHING RUNNING: no Stim and no heal ring on the left, on either build.
      fresh(100);
@@ -43943,7 +43932,7 @@ window.__REGRESS=[
      fresh(100); p.stimT=6;
      if(!frame()) return skip('drawing a frame with a Stim running threw here');
      A=ring(STIMC);
-     if(!A) bad.push('a Stim with 6 of its '+STIM_SEC+' seconds left drew no STIM ring on the left of the HUD [DBG '+(window.__dbgR||[]).join('|')+' H='+H+' yMax='+yMax+' W='+W+' DPR='+DPR+' feed='+(FEEDBOX.on?[FEEDBOX.x,FEEDBOX.y,FEEDBOX.w,FEEDBOX.h].map(Math.round).join(','):'off')+']');
+     if(!A) bad.push('a Stim with 6 of its '+STIM_SEC+' seconds left drew no STIM ring on the left of the HUD');
      else if(Math.abs(A.f-6/STIM_SEC)>0.02) bad.push('the STIM ring was '+Math.round(A.f*100)+' percent lit with 6 of '+STIM_SEC+' seconds left');
      if(!textAt('STIM')) bad.push('no STIM name was written beside the Stim icon on the left');
      if(!textAt('6s')) bad.push('the Stim icon on the left did not say 6s with six seconds left');
