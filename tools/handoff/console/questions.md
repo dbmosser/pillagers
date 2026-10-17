@@ -1,0 +1,3 @@
+# Questions for him
+
+- 10-17 09:40 (b-11-lean8-fewer-guns): dark_raiders.html is DIRTY (uncommitted VER 28.79 + a gun-weight edit) after a cw-fewerguns STOP ("container fingerprint moved") that was not mine. shipone.sh does not revert the game file on a STOP, and I may not run git checkout, so every ship (cw-helmbar already, then mine) now STOPs "uncommitted changes" or MK FAILs. Please run `git checkout -- dark_raiders.html` (check first that no wanted work is in the diff: it is only that gun edit and VER/DEVNOW 28.79). Then run: bash S/shipq.sh cw-fewerguns. The mk script is ready (the fixed version: split rows, totals unchanged).

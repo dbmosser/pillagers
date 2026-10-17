@@ -2304,7 +2304,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.78';
+var VER='28.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33198,8 +33198,15 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle='#5a636c'; rrF(hx2-10.2,ty-45.5,20.4,12.8,5.8); rrF(hx2-10.8,ty-34.8,4.0,11.2,1.8); rrF(hx2+6.8,ty-34.8,4.0,11.2,1.8);
       wc.fillStyle='#7c8792'; rrF(hx2-8.8,ty-45.2,17.6,3.6,3.2);
       wc.fillStyle='#3e464e'; wc.fillRect(hx2-10.2,ty-34.2,20.4,1.6); wc.fillRect(hx2-0.8,ty-34.2,1.6,5.8);
-      wc.fillStyle=INK;       rrF(hx2-2.2,ty-50.2,4.4,10.2,1.6);
-      wc.fillStyle=_SCH?_SCH.a:'#d8903a'; rrF(hx2-1.4,ty-49.6,2.8,9.0,1.2);
+      // v28.xx (cw-helmbar), art build step (char-art-build-brief): "Fix in passing: the neon green bar on the Heavy helmet that reads like a glitch."
+      // The crest was a tall bar in the raw scheme accent (neon green on Toxic) standing above the dome. It is a low steel ridge now, and the accent
+      // sits only in a small lens on the brow (ink housing, glint), the glowing accent lens the gear-heavy look asks for.
+      wc.fillStyle=INK;       rrF(hx2-1.9,ty-48.8,3.8,6.2,1.4);
+      wc.fillStyle='#6d7882'; rrF(hx2-1.3,ty-48.3,2.6,5.2,1.0);
+      wc.fillStyle='#9aa5b0'; wc.fillRect(hx2-1.3,ty-48.0,1.0,2.2);
+      wc.fillStyle=INK;       rrF(hx2+fl*2.6-2.6,ty-40.2,5.2,3.4,1.2);
+      wc.fillStyle=_SCH?_SCH.a:'#d8903a'; rrF(hx2+fl*2.6-1.8,ty-39.6,3.6,2.2,0.9);
+      wc.fillStyle='#ffffff'; wc.fillRect(hx2+fl*2.6-1.4,ty-39.4,1.0,0.8);
     }
   }
   // v10.54, his notes: THE SUIT'S OWN PAINT. Last, over everything the racks
@@ -46606,7 +46613,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.78: When downed, hit fire with the slider in the red to bleed out at half speed. Check 28.78 fails on v28.77',
+  now:'v28.79: The Heavy Helmet has a steel crest and a small glowing lens instead of a tall neon bar. Check 28.79 fails on v28.78',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

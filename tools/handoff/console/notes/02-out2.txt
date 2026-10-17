@@ -1,0 +1,4 @@
+19.00: a Stim with 6 of its 10 seconds left drew no STIM ring on the left of the HUD; no STIM name was written beside the Stim icon on the left; the Stim icon on the left did not say 6s with six seconds left; a Bandage healing him (16.8 of 20 still to come) drew no HEALING ring on the left of the HUD; the 
+18.25: the pause-box key line does not name the trade key
+17.86: the legend reads "WASD walk   SHIFT jog   SPACE roll   E use a station   B / I backpack   TAB pause, or back out"
+ALL DONE

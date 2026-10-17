@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.79 - THE HEAVY HELMET LOSES ITS NEON BAR
+
+Co-op hunt while he was away. Art build step (his pick: Refined Chibi with Gear-heavy raider). The brief says to fix the neon green bar on the Heavy helmet that reads like a glitch. The crest was a tall bar in the raw scheme accent standing above the dome. It is now a low steel ridge, and the accent shows only as a small glowing lens with a glint on the brow.
+
+MEASURED. Check 28.79 passes, and fails on v28.78.
 ## v28.78 - DOWNED BAR
 
 Co-op hunt while he was away. His order: a mechanic like the active reload for when you are downed. A bar with a white slider sweeps back and forth once a second above the DOWN title, with a red sweet spot in the middle, a fifth of the bar. Press fire (left mouse, or the right trigger) while the slider is in the red and your bleed-out runs at half speed for a little over a second; keep hitting about once a second and you keep bleeding slowly. A press outside the red makes a dull sound, flashes the bar red and locks the trigger for 0.3 seconds, nothing more. A trigger held down as you fell does not count until you let go and pull again. Revive, self-revive and surrendering work exactly as before, and the bar is gone the moment you are up, dead or out.

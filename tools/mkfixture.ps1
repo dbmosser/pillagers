@@ -6093,6 +6093,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.79',what:'the Heavy Helmet has no tall neon bar: on Toxic its scheme accent is a small lens, no taller than 4.5 px in any column, and the lens is still there',
+   run:function(){
+     if(typeof drawOp!=='function'||typeof cosFind!=='function') return 'SKIP: no drawOp';
+     var keepOut=P.cosOutfit, bad=[];
+     function paint(st){
+       var cv2=document.createElement('canvas'), x2, kw=wc;
+       cv2.width=240; cv2.height=240; x2=cv2.getContext('2d'); wc=x2;
+       try{ x2.translate(120,200); x2.scale(3,3); drawOp(0,0,0,0,'#242832',0,0,'none',0,st); } finally { wc=kw; }
+       return x2.getImageData(0,0,240,240).data;
+     }
+     function acc(d,hex,tol){
+       var r0=parseInt(hex.slice(1,3),16), g0=parseInt(hex.slice(3,5),16), b0=parseInt(hex.slice(5,7),16), run=[], best=0, n=0, x, y, j, cur;
+       for(x=0;x<240;x++){ cur=0; for(y=0;y<132;y++){ j=(y*240+x)*4;
+         if(d[j+3]>200&&Math.abs(d[j]-r0)<=tol&&Math.abs(d[j+1]-g0)<=tol&&Math.abs(d[j+2]-b0)<=tol){ n++; cur++; if(cur>best) best=cur; } else cur=0; } }
+       return {n:n,tall:best/3};
+     }
+     try{
+       P.cosOutfit='outnone';
+       var st={hero:0,build:'lean',pack:'packbrown',boots:'bootblack',hair:'dark',cut:'crop',skin:'fair',fit:'slate',eyes:'eyebrown',hat:'heavyhelm',scheme:'schtoxic'};
+       var a=acc(paint(st),'#8dff2e',24);
+       if(a.tall>4.5) bad.push('the Heavy Helmet shows an accent bar '+a.tall.toFixed(1)+' px tall');
+       if(a.n<20) bad.push('the Heavy Helmet shows only '+a.n+' accent pixels, the lens is gone');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ if(keepOut===undefined) delete P.cosOutfit; else P.cosOutfit=keepOut; }
+     return bad.length?bad.join('; '):null; }},
   {v:'28.78',what:'the downed bar: a press with the slider in the middle halves the bleed-out for about a second and it lapses, a miss does nothing and locks the trigger, a held trigger and a standing player do nothing (his order)',
    run:function(){
      if(typeof downBarTick!=='function'||typeof downBarPos!=='function') return 'no downed bar in this build (downBarTick is missing)';

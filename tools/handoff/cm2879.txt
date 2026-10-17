@@ -1,0 +1,7 @@
+v28.79: the heavy helmet loses its neon bar
+
+The Heavy Helmet has a steel crest and a small glowing lens instead of a tall neon bar.
+
+Check 28.79. Fails on v28.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

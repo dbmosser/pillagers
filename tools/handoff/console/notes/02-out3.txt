@@ -1,0 +1,4 @@
+cwdbg: state=raid arcade=undefined mapOpen=undefined over=null sim=false W=1886 H=975 stimOn=true n=87 arcs=rgba(230, 240, 246, 0.48)@943,488|#ffd25a@20,20 texts=9:00@943,36|EXTRACT 141m@943,63|N@1762,69|RUN INFO@1633,287|noon   Foggy@1633,303|sight -40%@1639,319|CONTRACTS@1633,335|Extract with a haul wort
+18.25: PASS
+17.86: PASS
+ALL DONE

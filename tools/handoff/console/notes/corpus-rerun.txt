@@ -1,0 +1,77 @@
+9.03: setup: slot 5 did not take the medkit binding; setup: slot 6 did not take the bandage binding; setup: slot 5 counted 0 medkits, not 2; slot 5 stopped being the medkit and became Fourth weapon; slot 6 stopped being the bandage and became Fourth weapon; an emptied slot 5 is not flagged empty, so the b
+9.31: the drag ONTO the belt stopped working, so the drag off cannot be judged
+11.60: a Frag Charge on belt key 5 builds a "gun" cell, so the trigger fires your gun instead of cooking it and the key does nothing; the belted Frag Charge reads x0 while the pouch holds 2; the bar carries 0 cells for the same Frag Charge
+28.68: two crawlers have different base speeds (120 and 162); the crawler bite or reach moved (dmg 9, reach 26)
+28.48: PASS
+28.16: PASS
+28.13: PASS
+28.12: PASS
+27.82: THREE: the rampage start played  not one rampageRoar where the Overseer stands
+27.38: SEVEN: the medal made 2 feed lines, not one
+27.00: FIVE: the glow changed only 0 pixels around the box
+25.26: the Longshot is not longer than the Marksman
+25.01: with 1 machines on him 4 oscillators run, more than one siren voice; with 3 machines on him 4 oscillators run, more than one siren voice; with 6 machines on him 4 oscillators run, more than one siren voice
+24.87: the Keys list has no width cap (1500px)
+24.19: the keyboard focus and the pad focus are not one rule
+23.96: a HUD drawn on its own filled the world label 1 times, left over from an earlier frame
+23.95: with a plate carried the belt shows 0 Tripwire Mine cells, not 1; the plate lost its cell to the mine
+23.88: the Render resolution hint does not say it is the world only and the text stays sharp: The world only. HUD and text stay sharp. Lower runs faster.
+23.85: Settings: button "THE RAID" 14px tracked 0.16em, button "AUDIO" 14px tracked 0.16em, button "CONTROLS" 14px tracked 0.16em, button "CONTROLLER" 14px tracked 0.16em and 2 more
+23.63: no Tripwire Mine cell on the belt with one carried; Q never reaches the Tripwire Mine (it chose smoke)
+23.56: the pickup tag reads +70 SP, not +$N; the HUD score is not drawn as $1,234; the HUD does not show YOU $1,234; the crawler kill popup is not +$50 (+50 SP); the attract board row does not read $4,321 (TONIGHT'S BEST1.  QXZ4,321 SPBEST EVER 98,765 SP); the attract board does not read BEST EVER $98,765 
+23.54: the 1 player arcade HUD shows no score of 1,234
+23.46: the controls card has no HEAL row 7; G in the arcade did not start the Bandage wind-up (null); G in the arcade did not spend the Bandage; pad D-DOWN in the arcade did not start the Bandage wind-up (null)
+23.44: the arcade pause box shows arcendbtn,fbbtn,pausesetbtn,resumebtn,wnbtn, not only RESUME and END RUN (and FEEDBACK, his answer 38)
+23.42: the card rows are MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,ITEMS,EXTRACT,LOOT; the HOW TO PLAY page lacks SWITCH GUN or HEAL
+23.41: NEW HIGH SCORE was said 0 times over tonights best (); player 2 was not told of the high score
+23.38: no +50 popup for the first kill; no +100 popup in G.labels (+50 SP,+100 SP)
+23.35: the CONDITIONS box is still laid out
+23.29: the HUD shows no team score of 450
+23.05: staging: the Medkit did not go on slot 9 ({"1":"gun_smg"})
+22.59: E held 3 s on a full backpack draws 2 BACKPACK FULL lines with 1 such rows in the pickup stack, not one
+22.54: the Meridian Lance (field) row is tagged "SLOT 9", not SLOT 2
+22.43: the trigger on the vacant key 3 says [], not EMPTY SLOT; a shotgun found onto key 2 says "RIOT SCATTERGUN (FIELD) TO SLOT 6", not SHOTGUN ON KEY 2
+22.39: the old plan {8: Medkit, 9: Stim} loaded as {}, not the two of them on gun keys 3 and 4; in the raid no key shows the Armour Plate he carries (keys: gunkey:0, item:gun_smg, item:gun_rifle, gunkey:3, gunkey:4, gunkey:5, gunkey:6, gunkey:7, gunkey:8)
+22.32: the Pillbox line is drawn in 800 29.7px "Barlow Condensed", "Bahnschrift SemiCondensed", "Arial Narrow", "Roboto Condensed", sans-serif, not the callout size 700 22.3px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow","Roboto Condensed",sans-serif
+21.93: the Undercroft belt shows gunkey:0 (vacant) on key 1, not the rifle; the Undercroft belt shows gunA rifle on key 3, not the shotgun; the Undercroft belt shows item:gun_carbine carbine on key 4, not the dmr; at the raid start key 1 shows gunkey:0 (vacant), not the rifle; at the raid start key 3 shows
+21.88: the line the newest took the place of is still drawn
+21.86: the newest line (y 690) is not above the older one (y 662); with two rows the band bottom 196 is above the older row at y 662
+21.09: the tags are held to a 0 px column in a card with 774 px of room
+20.92: the row ends 211 px short of its right edge, of 1847
+20.75: the NOTORIETY stamp was not drawn (0 px at 1080p, 0 px at 4K)
+20.58: 0 of the 29 run tags are in reach of the pad; the pad highlight put on the Sound was off tag does not stay there
+19.00: PASS
+18.97: the note box is squashed to 0px
+18.25: PASS
+17.86: PASS
+17.75: PASS
+16.87: TOP GEAR did not pack two of each grenade (gun_pistol,medkit,smoke,frag,frag,frag,bandage,bandage,ammobox)
+16.85: D-pad down from the backpack never reached a belt key in 1 steps, and ended on Bandage; A on the Medkit in the backpack picked nothing up
+16.79: D-LEFT on the belt row did not walk round to the last key (8); the item was not bound to the belt key under the highlight ({}); A on the bound key did not pick the item back up (null); A in the backpack did not place the item
+15.25: with the SMG taken from the backpack by key 3, cell 1 is gun null while he holds the SMG
+14.25: control: the drop did not put Medkit on key 5 ({"6":"medkit"}); Medkit dragged onto key 5 stayed on key 4 as well ({"6":"medkit"}); control: dragging key 4 onto key 5 did not put Medkit on key 5 ({"6":"medkit","7":"scrap"}); dragging key 4 onto key 5 did not swap scrap back onto key 4 ({"6":"medkit"
+13.16: the tactical belt does not offer the plate he just picked up, so the key he would reach for is not there
+12.31: staging: no empty throwable cell on the belt; staging: key 4 is not a Bandage cell holding exactly one (kind gun, count 0)
+12.28: a medkit bought with no key set said "" (row tag "BACKPACK") and not In your backpack
+12.27: the drop packed nothing; after the drop the backpack column shows 0 items: the Bandage vanished into the key; the drop said "ITEMS GO ON THE WHEEL" and not which key took it; staging: belt cell 3 is not the assigned Bandage cell (kind gun); a spent Bandage key said "", not No Bandage left
+11.97: the pistol dragged onto key 6 was not refused with the key left on key 4 (plan {"5":"gun_pistol"})
+11.96: key 3 refused the Bandages: ITEMS GO ON THE WHEEL; a stack of six Bandages on a key packed 0, not three; key 4 refused the Medkit: ITEMS GO ON THE WHEEL; one Medkit on a key packed 0; key 5 refused the plates: ITEMS GO ON THE WHEEL; key 3 does not show x3 (shows "7")
+11.95: the figure pistol took key 6 although guns go on keys 1 to 4 (plan {"3":"gun_smg","5":"gun_pistol"})
+11.91: control: the belt drew no Medical cell to press
+11.90: pressing on the gun in slot 1 with the backpack open started no drag; the gun did not land in the backpack (bag )
+11.83: control: key 3 did not use the stim (bag stim); the stim did not start its ten seconds (stimT 0); the bar drained to 9.6 during a sprint under the stim; it should be unlimited; the stim clock did not run down during the sprint (stimT 0); under the stim the sprint covered 102 against 102 without, a r
+11.38: control: a melee swing next to a hostile pillager left his health at 78, so the strike no longer lands and the merc result proves nothing
+11.27: F did not swing: melee count 0 to 0; control: using the belt slot spent nothing and started no heal, so the belt path is broken and the finding above proves nothing
+11.26: the pause box does not say "Q melee"; the pause box does not say "1-4 guns"
+10.96: the Undercroft pause box offers 4 buttons, not two: RETURN TO THE UNDERCROFT / LEADERBOARD / WHAT'S NEW / RETURN TO CHARACTER SELECTION
+10.92: your marker is only 0 pixels of gold at 1920x1080, which is the size he called hard to see; your marker is 0.0 pixels of radius, no bigger than the old speck; your marker went from 0 to 0 pixels when the map zoom went to 1.50, so it is not following the map like the other markers; your marker radius
+10.68: PASS
+10.64: with a rifle in hand, F did not strike a body at arm's length; the cooldown case did not land its first blow
+10.52: the prompt "[E] SEARCH CRATE" is drawn at 14.0 px, smaller than a callout (23.4 here at 1080p; the label it was is 18.7)
+10.46: the jersey has no pale numeral on the sprite (2 px)
+10.44: control: the compact legend moved to 491,696
+10.11: the tabs read [ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS, VALUABLES, LOCKED, SORT: DEFAULT, ARMORY  6/19, TROPHIES  3/8], not [ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS]
+9.93: PASS
+9.92: PASS
+9.82: a release over the backpack reaches [] rather than the backpack column; dragging off the tactical belt onto the backpack leaves the item on key 5, which is his report: the handler refused anything not from the stash; the backpack counter reads 0 rather than 1 packed; the belt counter reads 1 rather 
+ALL DONE

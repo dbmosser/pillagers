@@ -1,0 +1,40 @@
+{
+    "title":  "FEWER GUNS IN LOOT",
+    "why":  "His order: fewer guns in loot. Every gun row in the locker, safe, body, jackpot and cache loot tables now keeps half its old weight and gives the other half to other loot the table already holds, so the table totals and the seeded stream do not move.",
+    "now":  "Guns turn up about half as often in containers and on bodies; other loot takes their place.",
+    "edits":  [
+                  {
+                      "anchor":  "var LOOT={",
+                      "replacement":  "// v28.xx (cw-fewerguns), HIS ORDER (2026-10-15): \"fewer guns in loot\". Every gun_ row in the locker, safe, body, jackpot and cache tables\n// keeps half its old weight and hands the other half to a filler row of loot the table already holds, in the same place in the row. The\n// table total and every other boundary stay where they were, so a roll that landed on no gun lands on the same thing, the KEY rows still\n// cost their extra draw at the same spot, and the seed 4242 build keeps the same entities and containers (85/374, 165/593).\nvar LOOT={"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_smg\u0027,2],[\u0027gun_carbine\u0027,2],[\u0027gun_magnum\u0027,2]",
+                      "replacement":  "[\u0027gun_smg\u0027,1],[\u0027plate\u0027,1],[\u0027gun_carbine\u0027,1],[\u0027stim\u0027,1],[\u0027gun_magnum\u0027,1],[\u0027frag\u0027,1]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_rifle\u0027,5],[\u0027gun_shotgun\u0027,4],[\u0027gun_lmg\u0027,3],[\u0027gun_dmr\u0027,2],[\u0027gun_sniper\u0027,2]",
+                      "replacement":  "[\u0027gun_rifle\u0027,2.5],[\u0027core\u0027,2.5],[\u0027gun_shotgun\u0027,2],[\u0027titan\u0027,2],[\u0027gun_lmg\u0027,1.5],[\u0027servo\u0027,1.5],[\u0027gun_dmr\u0027,1],[\u0027plate\u0027,1],[\u0027gun_sniper\u0027,1],[\u0027medkit\u0027,1]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_whisper\u0027,2],[\u0027gun_lance\u0027,1]]",
+                      "replacement":  "[\u0027gun_whisper\u0027,1],[\u0027comp\u0027,1],[\u0027gun_lance\u0027,0.5],[\u0027frag\u0027,0.5]]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_smg\u0027,5],[\u0027gun_carbine\u0027,3]",
+                      "replacement":  "[\u0027gun_smg\u0027,2.5],[\u0027medkit\u0027,2.5],[\u0027gun_carbine\u0027,1.5],[\u0027plate\u0027,1.5]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_lance\u0027,7],[\u0027gun_whisper\u0027,7]",
+                      "replacement":  "[\u0027gun_lance\u0027,3.5],[\u0027codex\u0027,3.5],[\u0027gun_whisper\u0027,3.5],[\u0027bloom\u0027,3.5]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_dmr\u0027,8],[\u0027gun_rifle\u0027,7],[\u0027gun_lmg\u0027,6],[\u0027gun_shotgun\u0027,5]",
+                      "replacement":  "[\u0027gun_dmr\u0027,4],[\u0027titan\u0027,4],[\u0027gun_rifle\u0027,3.5],[\u0027core\u0027,3.5],[\u0027gun_lmg\u0027,3],[\u0027ledger\u0027,3],[\u0027gun_shotgun\u0027,2.5],[\u0027coil\u0027,2.5]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_whisper\u0027,4],[\u0027gun_lance\u0027,3]",
+                      "replacement":  "[\u0027gun_whisper\u0027,2],[\u0027relay\u0027,2],[\u0027gun_lance\u0027,1.5],[\u0027reactor\u0027,1.5]"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027guns come up at half the old rate in locker, safe, body, jackpot and cache loot rolls, and the loot table totals are unchanged (his order: fewer guns in loot)\u0027,\n   run:function(){\n     var tabs=[\u0027locker\u0027,\u0027safe\u0027,\u0027body\u0027,\u0027jackpot\u0027,\u0027cache\u0027], oldTot={locker:111,safe:117,body:101,jackpot:104,cache:142};\n     var N=20000, guns=0, tot=0, i, j, k, rate, old, sv=RNGS, s;\n     // the old per-table gun share (weights before this change): 6/111, 19/117, 8/101, 14/104, 33/142\n     old=(6/111+19/117+8/101+14/104+33/142)/5;\n     try{\n       RNGS=0x1234567;\n       for(i=0;i\u003ctabs.length;i++){\n         if(!LOOT[tabs[i]]) return \u0027no LOOT.\u0027+tabs[i];\n         s=0; for(j=0;j\u003cLOOT[tabs[i]].length;j++) s+=LOOT[tabs[i]][j][1];\n         if(Math.abs(s-oldTot[tabs[i]])\u003e0.001) return \u0027LOOT.\u0027+tabs[i]+\u0027 total weight is \u0027+s+\u0027, was \u0027+oldTot[tabs[i]]+\u0027 (it moves the seeded stream)\u0027;\n         for(j=0;j\u003cN;j++){ k=rollTable(LOOT[tabs[i]]); tot++; if(String(k).indexOf(\u0027gun_\u0027)===0) guns++; }\n       }\n     } finally { RNGS=sv; }\n     rate=guns/tot;\n     if(rate\u003eold*0.58) return \u0027guns come up \u0027+(rate*100).toFixed(2)+\u0027% of rolls, old rate \u0027+(old*100).toFixed(2)+\u0027%: not about half\u0027;\n     if(rate\u003cold*0.42) return \u0027guns come up \u0027+(rate*100).toFixed(2)+\u0027% of rolls, too rare against the old \u0027+(old*100).toFixed(2)+\u0027%\u0027;\n     return null;\n   }},"
+}

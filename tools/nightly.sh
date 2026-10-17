@@ -11,7 +11,9 @@
 #   (2) the full regression corpus (corpq.sh, Chrome 9344) once per new game HEAD, when the ship queue has been idle 45 min
 #       (it holds the ship lock about 2.5 h);
 #   (3) the local-LLM audits (tools/llm-night.ps1) once per new HEAD, only with 20+ GB of RAM free (the model holds about 12 GB);
-#   (4) once a day, the itch and GitHub backup catch-up (tools/itch-daily.sh).
+#   (4) once a day, the itch and GitHub backup catch-up (tools/itch-daily.sh);
+#   (5) the Console worker (tools/console-worker.sh): one Claude task at a time, billed to his Console credits (status in
+#       tools/handoff/console/status.txt; a STOP file there pauses it).
 # - No new job starts while free RAM is under 6 GB (his floor).
 # - Every hour it writes tools/handoff/nightly/<date>.md, which Claude reads instead of the raw logs.
 # - ONE COPY: a heartbeat file younger than 10 min means another copy is alive, so this one exits. A Windows scheduled task
@@ -23,7 +25,7 @@ if [ -f "$HB" ] && [ $(( $(date +%s) - $(cat "$HB" 2>/dev/null || echo 0) )) -lt
 date +%s > "$HB"
 get(){ grep -m1 "^$1=" "$ST" | cut -d= -f2-; }
 put(){ grep -v "^$1=" "$ST" > "$ST.tmp"; echo "$1=$2" >> "$ST.tmp"; mv "$ST.tmp" "$ST"; }
-running(){ powershell -NoProfile -Command "(Get-CimInstance Win32_Process | Where-Object { \$_.CommandLine -match '$1' }).Count" 2>/dev/null | tr -dc '0-9'; }
+running(){ powershell -NoProfile -Command "@(Get-CimInstance Win32_Process | Where-Object { \$_.CommandLine -match '$1' }).Count" 2>/dev/null | tr -dc '0-9'; }
 freegb(){ powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -dc '0-9'; }
 summary(){
   d=$(date +%Y-%m-%d); f="$N/$d.md"; L="$R/tools/handoff/llm-night"
@@ -43,7 +45,8 @@ while true; do
   ram=$(freegb); [ -z "$ram" ] && ram=0
   if [ "$ram" -ge 6 ]; then
     # (1) the fuzzer, back to back
-    if [ -f "$R/tools/fuzz.ps1" ] && [ "$(running 'fuzz\.ps1')" = "0" ]; then
+    fa=$(running 'fuzz\.ps1'); fb=$(running 'fuzz\.ps1.*9332')   # an empty count means the check failed: start nothing
+    if [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ]; then
       echo "$(date +%H:%M) fuzz start at $head" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag > /dev/null 2>&1; echo "$(date +%H:%M) fuzz done" >> "$LOG") &
     fi
@@ -60,7 +63,25 @@ while true; do
       echo "$(date +%H:%M) llm audits start, since ${since:-whole file}" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/llm-night.ps1" -Model qwen2.5-coder:14b ${since:+-Since $since} > /dev/null 2>&1; echo "$(date +%H:%M) llm audits done" >> "$LOG") &
     fi
+    # (5) 2026-10-17, his "yes, build the unattended worker that spends my Console credits": the Console worker
+    #     (tools/console-worker.sh) runs one Claude task at a time on his Console credits; it waits quietly until his key is saved
+    #     10-17 later, his "max out my pc resources and the claude console resources": three lanes at once (tools/console-lane.sh
+    #     a, b, c), one worker each; lane a also waits for an older console-worker.sh run still going
+    for ln in a b c; do
+      [ "$ln" = a ] && [ "$(running 'console-worker\.sh')" != "0" ] && continue
+      if [ -f "$R/tools/console-lane.sh" ] && [ "$(running "console-lane\.sh $ln")" = "0" ]; then
+        (bash "$R/tools/console-lane.sh" $ln > /dev/null 2>&1) &
+      fi
+    done
+    # (6) 10-17: a second fuzzer on its own Chrome (9332) with its own seeds, beside the first (9331)
+    f2=$(running 'fuzz\.ps1.*9332')
+    if [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge 8 ]; then
+      echo "$(date +%H:%M) fuzz2 start at $head" >> "$LOG"
+      (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -Port 9332 > /dev/null 2>&1; echo "$(date +%H:%M) fuzz2 done" >> "$LOG") &
+    fi
   fi
+  # (7) 2026-10-17: once a day after 03:00, the half-price code review of the day's game commits (tools/review-nightly.sh)
+  if [ "$(get review_day)" != "$(date +%F)" ] && [ "$(date +%H)" -ge 3 ]; then put review_day "$(date +%F)"; (bash "$R/tools/review-nightly.sh" > /dev/null 2>&1) & fi
   now=$(date +%s); st=$(get summary_t); [ -z "$st" ] && st=0
   [ $(( now - st )) -ge 3600 ] && { summary; put summary_t "$now"; }
   sleep 300
