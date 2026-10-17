@@ -73022,11 +73022,11 @@ window.__REGRESS=[
        if(!g.bagPanel) bad.push('control: the open backpack drew no panel');
        // v28.xx (corpus retarget): slot 1 is the pistol class cell now; the gun in hand sits on its own class key, found through hotbarSlots
        var _sl=hotbarSlots(), _ai=-1, _q;
-       for(_q=0;_q<_sl.length;_q++) if(_sl[_q]&&_sl[_q].k==='gunA'){ _ai=_q; break; }
+       for(_q=0;_q<_sl.length;_q++) if(_sl[_q]&&_sl[_q].kind==='gun'&&_sl[_q].icon==='smg'&&!_sl[_q].vacant){ _ai=_q; break; }
        if(_ai>=0&&g.hotCells&&g.hotCells[_ai]) cell=g.hotCells[_ai];
        mouse.x=cell.x+cell.w/2; mouse.y=cell.y+cell.h/2;
        cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
-       if(!g.drag||g.drag.gunSlot!=='gunA') bad.push('pressing on the gun in slot 1 with the backpack open started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':'')+' DBG ai '+_ai+' cell '+JSON.stringify(cell)+' panel '+JSON.stringify(g.bagPanel)+' mouse '+mouse.x+','+mouse.y+' slot '+JSON.stringify(_sl[_ai]||null).slice(0,160)+' cells '+(g.hotCells||[]).length);
+       if(!g.drag||!/^gun[AB]$/.test(g.drag.gunSlot||'')) bad.push('pressing on the gun in slot 1 with the backpack open started no drag'+(g.drag?' (drag: '+JSON.stringify(g.drag).slice(0,60)+')':'')+' (hand gun key '+_ai+' of '+_sl.map(function(s){return s.k+'/'+s.icon;}).join(' ').slice(0,200)+')');
        if(g.bagPanel){ mouse.x=g.bagPanel.x+g.bagPanel.w/2; mouse.y=g.bagPanel.y+g.bagPanel.h/2; }
        window.dispatchEvent(new MouseEvent('mouseup',{button:0}));
        if(g.bag.indexOf('gun_smg')<0) bad.push('the gun did not land in the backpack (bag '+g.bag.join(',')+')');
