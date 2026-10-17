@@ -50,8 +50,9 @@ function data() {
   const commits = git(['log', '-14', '--format=%h|%ad|%s', '--date=format:%m-%d %H:%M']).split('\n').filter(Boolean).map(l => l.split('|'));
   const shipsToday = git(['log', '--since=midnight', '--format=%s']).split('\n').filter(s => /^v\d+\.\d+:/.test(s)).length;
   const hb = ageS(N + '/runner.heartbeat');
+  const titles = {}; (tail(S + "/shipq.log", 12).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
   return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30),
-    procs, runnerAgeS: hb, lockOwner, lanes, stopFile: existsSync(C + '/STOP'),
+    procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
     spend: { today: +spentToday.toFixed(2), all: +spentAll.toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
     done: existsSync(C + '/done') ? readdirSync(C + '/done').length : 0, failed: existsSync(C + '/failed') ? readdirSync(C + '/failed') : [],
     questions: tail(C + '/questions.md', 8), runs: tail(C + '/runs.log', 10), shipq: tail(S + '/shipq.log', 12),

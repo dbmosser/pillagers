@@ -3,16 +3,16 @@
 <title>Pillagers Dev</title>
 <style>
 :root{--bg:#0e1013;--card:#171a1f;--line:#262b33;--ink:#e9e6df;--dim:#9aa1ab;--amber:#f0a83a;--green:#5fd47a;--red:#ff6b5e;--blue:#6fb3ff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}html,body{overflow-x:hidden}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
 header{display:flex;flex-wrap:wrap;gap:18px;align-items:baseline;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2}
 h1{margin:0;font-size:20px;letter-spacing:.06em;color:var(--amber)}header .big{font-size:15px}header b{color:var(--ink)}
 .sub{color:var(--dim);font-size:13px}
-main{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px;padding:16px 20px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:14px;padding:16px 20px}
+.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 .card h2{margin:0 0 2px;font-size:15px;letter-spacing:.04em}.card .what{color:var(--dim);font-size:13px;margin-bottom:10px}
 .row{display:flex;gap:10px;padding:6px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}
 .dot{width:10px;height:10px;border-radius:50%;margin-top:6px;flex:none}.g{background:var(--green)}.r{background:var(--red)}.a{background:var(--amber)}.b{background:var(--blue)}.d{background:#555}
-.t{color:var(--dim);font-size:12px;white-space:nowrap;min-width:44px}.k{flex:1}
+.t{color:var(--dim);font-size:12px;white-space:nowrap;min-width:44px}.k{flex:1;min-width:0;overflow-wrap:anywhere}
 .bar{height:8px;background:#232830;border-radius:4px;overflow:hidden;margin:6px 0 2px}.bar i{display:block;height:100%;background:var(--amber)}
 .stat{display:inline-block;margin-right:18px}.stat b{font-size:20px;display:block}
 .small{font-size:13px;color:var(--dim)}.warn{color:var(--red)}
@@ -57,7 +57,8 @@ const JOBS=[[/corpus-triage/,'Sorting the old failing tests into "test is out of
  [/fewer-guns|fewerguns/,'Fewer guns in loot'],[/gun-craft|guncraft/,'Guns cost twice as much to craft'],[/deer/,'A dead deer leaves a deer, not a human body'],
  [/2p-drafts/,'Two-player fixes for the 10/30 party'],[/-art/,'The character art upgrade (Refined Chibi, gear-heavy)'],[/evening/,'Your 10/15 evening wish list, one item at a time'],
  [/review/,'Checking possible bugs found by the nightly code review']];
-const job=n=>{for(const [r,t] of JOBS) if(r.test(n)) return t; return n;};
+let TITLES={};
+const job=n=>{if(/corpus-night/.test(n)) return 'Full re-run of all the tests'; if(/^manual/.test(n)) return 'Claude saving tool changes'; for(const [r,t] of JOBS) if(r.test(n)) return t; if(TITLES[n]) return TITLES[n].charAt(0)+TITLES[n].slice(1).toLowerCase(); return n.replace(/^cw-/,'');};
 const LANE={a:'Helper A',b:'Helper B',c:'Helper C'};
 function laneLine(s){
   let m;
@@ -87,7 +88,7 @@ const row=(c,t,k)=>'<div class="row"><span class="dot '+c+'"></span>'+(t!==null?
 function ago(s){ if(s===null) return 'never'; if(s<90) return s+' seconds ago'; return Math.round(s/60)+' minutes ago'; }
 async function tick(){
   let d; try{ d=await (await fetch('/api',{cache:'no-store'})).json(); }catch(e){ $('upd').innerHTML='<span class="warn">Dashboard server not answering</span>'; return; }
-  $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
+  TITLES=d.titles||{}; $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
   $('lanes').innerHTML=(d.stopFile?row('r',null,'<b>All helpers are paused</b> because the STOP file is in tools/handoff/console. Delete it to restart them.'):'')+
     d.lanes.map(l=>{const [c,t]=laneLine(l.status);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+
     '<div class="small" style="margin-top:8px">Jobs finished: '+d.done+(d.failed.length?' &middot; <span class="warn">Gave up: '+d.failed.length+'</span>':'')+'</div>';
