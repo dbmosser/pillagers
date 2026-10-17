@@ -1,0 +1,5 @@
+## v28.89 - HARD ENEMIES DROP BETTER LOOT
+
+Co-op hunt while he was away. His order (2026-10-15): "Hard enemies drop better loot." An elite of any kind, a sentry, a bulwark or a howler now always leaves its wreck or body and adds one roll on a better table (cache for an elite, safe for a hard machine), never a gun. Rolled at the death, so the seeded build is unchanged.
+
+MEASURED. Check 28.89 passes, and fails on v28.88.

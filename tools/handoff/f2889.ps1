@@ -12,12 +12,12 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-if ($s.Contains("  {v:'28.88',what:")) { throw "check 28.88 is in the fixture already" }
+if ($s.Contains("  {v:'28.89',what:")) { throw "check 28.89 is in the fixture already" }
 
 SubRx @'
-  {v:'28.87',what:
+  {v:'28.88',what:
 '@ @'
-  {v:'28.88',what:'his order: hard enemies (elites, sentries, bulwarks, howlers) drop better loot, never a gun',
+  {v:'28.89',what:'his order: hard enemies (elites, sentries, bulwarks, howlers) drop better loot, never a gun',
    run:function(){
      if(typeof hardBonus!=='function') return 'a hard enemy drops nothing extra (no hardBonus)';
      var bad=[], g=null, i, k, n, c, e, keep, found=null, p, x;
@@ -50,7 +50,7 @@ SubRx @'
        try{ __endRaid('abandon'); }catch(_e){}
        __topClear();
      } }},
-  {v:'28.87',what:
+  {v:'28.88',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

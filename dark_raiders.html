@@ -2305,7 +2305,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.88';
+var VER='28.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26723,9 +26723,22 @@ function bodyBonus(e){
   RT={none:0,light:1,medium:2,heavy:3}[e.rig]||0;
   n=1+(RT>=2?1:0);
   for(i=0;i<n;i++){ k=rollLoot(LOOT.safe); if(k) out.push(k); }
+  out=out.concat(hardBonus(e));   // v28.xx (cw-hardloot): an elite pillager pays more again
   return out;
 }
-// v26.35 (nostarters): does the gun in a pillager's hands leave a copy on his body? Every gun with an item form does, except the one a
+// v28.xx (cw-hardloot), HIS ORDER (2026-10-15): "Hard enemies drop better loot." A hard enemy is an elite of any kind, or a sentry, bulwark or
+// howler. It always leaves a wreck (machines used to leave one 55 percent of the time) and adds one roll on a better table: the cache table
+// for an elite, the safe table for a hard machine. Never a gun, since guns are meant to be rare. Rolled at the death, so the build is unchanged.
+var HARD_M={sentry:1,bulwark:1,howler:1};
+function isHard(e){ return !!(e&&!e.merc&&!e.friendlyPC&&(e.elite||HARD_M[e.kind])); }
+function noGunRoll(t){ var k, j; for(j=0;j<8;j++){ k=rollLoot(t); if(k&&String(k).indexOf('gun_')!==0) return k; } return null; }
+function hardBonus(e){
+  var out=[], k;
+  if(!isHard(e)||!LOOT||!LOOT.cache||!LOOT.safe) return out;
+  k=noGunRoll(e.elite?LOOT.cache:LOOT.safe); if(k) out.push(k);
+  if(e.elite&&e.kind!=='raider'&&HARD_M[e.kind]){ k=noGunRoll(LOOT.safe); if(k) out.push(k); }
+  return out;
+}// v26.35 (nostarters): does the gun in a pillager's hands leave a copy on his body? Every gun with an item form does, except the one a
 // sidearm-row pillager spawned with (noGunDrop, set in mkRaider): that row used to carry the Tacker, which never dropped, and the rate
 // of dropped guns is kept where it was. The death path, the revive payout and the swap all ask here.
 function heldGunDrops(e){ return !!(e&&e.wep&&e.wep.id&&ITEMS['gun_'+e.wep.id]&&e.noGunDrop!==e.wep.id); }
@@ -27371,7 +27384,7 @@ if(e.state==='possum'){
       // search two hundred boxes hoping. Sentries are the ranged threat that drains a
       // magazine, so a sentry always yields ammunition alongside its salvage; crawlers
       // keep their existing roll. CFG.machAmmo is the dial and 0 restores v1.67.
-      } else if(e.kind!=='snitch'&&rr()<.55){
+      } else if(e.kind!=='snitch'&&(rr()<.55||(e.kind!=='raider'&&isHard(e)))){   // v28.xx (cw-hardloot): a hard machine always leaves its wreck
 // v4.15 HIS NOTE at 143 seconds of run #52: "crawlers are still turning
         // into crates when they are destroyed, their loot boxes should look
         // like downed crawlers instead, of course." Of course. Same complaint
@@ -27382,7 +27395,7 @@ if(e.state==='possum'){
         c2.bot=e.kind;
         var mdrop=[e.kind==='sentry'?pick(['servo','board','optic','cell']):pick(['scrap','wire','cell','ammobox'])];
         if(e.kind==='sentry'&&rr()<(CFG.machAmmo===undefined?1:CFG.machAmmo)) mdrop.push('ammobox');
-        setLoot(c2,mdrop);
+        setLoot(c2,mdrop.concat(e.kind==='raider'?[]:hardBonus(e)));   // v28.xx (cw-hardloot): and a better roll on top
         c2.time=.8; G.containers.push(c2);
       } else if(e.kind==='snitch'){
         var c3=setLoot(mkContainer(e.x,e.y,'botwreck'),[pick(['board','optic','comp'])]); c3.time=.7; c3.bot='snitch';
@@ -46667,7 +46680,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.88: Player 2s grenades, melee and air strike now go straight past a shielded elites shield, the same as player 1s. Check 28.88 fails on v28.87',
+  now:'v28.89: Elite pillagers and machines, sentries, bulwarks and howlers now drop better loot, and always leave a wreck. Check 28.89 fails on v28.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -41,14 +41,14 @@ All of these build a tactical belt with items on keys 3-9 or Medical / Throwable
 | 2 | 9.31 | STALE | Drag onto / off the belt: items do not go onto the bar any more. | Retire. | DONE (SKIP) |
 | 3 | 11.60 | STALE | Frag Charge on belt key 5 builds a gun cell: key 5 is the LMG class key. | Retarget: frag used from the wheel, count shown there. | DONE (SKIP; wheel counts covered by 26.xx checks) |
 | 17 | 23.95 | STALE | A plate carried plus a Tripwire Mine each get a belt cell: no throwable / plate cells on the bar. | Retire (wheel has fixed 8 slots). | DONE (SKIP) |
-| 20 | 23.63 | STALE | Tripwire Mine on the belt, Q chooses smoke: Q is the wheel. | Retarget to the wheel (Tripwire is wheel slot 4). | OPEN |
-| 23 | 23.46 | STALE | Controls card has no HEAL row 7; G / pad D-DOWN do not start a Bandage wind-up (G removed, heals from the wheel). | Retarget: card row is ITEMS, a Bandage comes from the wheel. | OPEN |
-| 25 | 23.42 | STALE | Card rows now MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,ITEMS,EXTRACT,LOOT: HEAL became ITEMS (wheel). | Accept ITEMS in the expected list and the HOW TO PLAY test. | OPEN |
-| 30 | 23.05 | STALE | Medkit did not go on slot 9: slot 9 is the Energy gun class. | Retire. | OPEN |
-| 32 | 22.54 | STALE | Meridian Lance row tagged SLOT 9 not SLOT 2: Lance is class key 9 by his gun-key order. | Expect SLOT 9. | OPEN |
-| 33 | 22.43 | STALE | Belt line wording: "EMPTY SLOT", "SHOTGUN ON KEY 2": a shotgun goes to key 6 now (RIOT SCATTERGUN (FIELD) TO SLOT 6). | Retarget the words to the class key. | OPEN |
-| 34 | 22.39 | STALE | Old belt plan {8: Medkit, 9: Stim} slides to gun keys; no plan slide, no plate key. | Retire. | OPEN |
-| 36 | 21.93 | STALE | Belt shows rifle on key 1, shotgun key 3: guns are on class keys (key 1 pistol, 3 rifle...) with ghost gun cells. | Retarget to class keys or retire. | OPEN |
+| 20 | 23.63 | STALE | Tripwire Mine on the belt, Q chooses smoke: Q is the wheel. | Retarget to the wheel (Tripwire is wheel slot 4). | DONE (retargeted to wheelHave and handTake, passes) |
+| 23 | 23.46 | STALE | Controls card has no HEAL row 7; G / pad D-DOWN do not start a Bandage wind-up (G removed, heals from the wheel). | Retarget: card row is ITEMS, a Bandage comes from the wheel. | DONE (ITEMS row, wheelHeal, G and D-DOWN tap start no heal, passes) |
+| 25 | 23.42 | STALE | Card rows now MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,ITEMS,EXTRACT,LOOT: HEAL became ITEMS (wheel). | Accept ITEMS in the expected list and the HOW TO PLAY test. | DONE (passes) |
+| 30 | 23.05 | STALE | Medkit did not go on slot 9: slot 9 is the Energy gun class. | Retire. | DONE (item drop retargeted to the refusal line SLOT 9 TAKES GUNS ONLY, rest of the check kept, passes) |
+| 32 | 22.54 | STALE | Meridian Lance row tagged SLOT 9 not SLOT 2: Lance is class key 9 by his gun-key order. | Expect SLOT 9. | DONE (expects the class key from gunClassKey, passes) |
+| 33 | 22.43 | STALE | Belt line wording: "EMPTY SLOT", "SHOTGUN ON KEY 2": a shotgun goes to key 6 now (RIOT SCATTERGUN (FIELD) TO SLOT 6). | Retarget the words to the class key. | DONE (vacant key found dynamically, shotgun line names its class key, passes) |
+| 34 | 22.39 | STALE | Old belt plan {8: Medkit, 9: Stim} slides to gun keys; no plan slide, no plate key. | Retire. | DONE (SKIP: removed by his order) |
+| 36 | 21.93 | STALE | Belt shows rifle on key 1, shotgun key 3: guns are on class keys (key 1 pistol, 3 rifle...) with ghost gun cells. | Retarget to class keys or retire. | DONE (parts 1 and 2 retargeted to class keys, parts 3 and 4 retired, passes) |
 | 49 | 16.85 | STALE | Controller builds tactical belt on the Stash screen. | Retire (wheel, GUN KEYS panel replaced it). | OPEN |
 | 50 | 16.79 | STALE | D-LEFT around belt keys to key 8, bind item to a belt key. | Retire. | OPEN |
 | 51 | 15.25 | STALE | Backpack SMG by key 3, cell 1 never black: cell 1 is the pistol class key now. | Retire or retarget to class keys. | OPEN |

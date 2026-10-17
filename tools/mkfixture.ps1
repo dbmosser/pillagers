@@ -6097,6 +6097,39 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.89',what:'his order: hard enemies (elites, sentries, bulwarks, howlers) drop better loot, never a gun',
+   run:function(){
+     if(typeof hardBonus!=='function') return 'a hard enemy drops nothing extra (no hardBonus)';
+     var bad=[], g=null, i, k, n, c, e, keep, found=null, p, x;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       for(i=0;i<40;i++){
+         k=hardBonus({kind:'raider',elite:1,rig:'none'});
+         if(k.length<1){ bad.push('an elite pillager adds no roll'); break; }
+         for(n=0;n<k.length;n++) if(String(k[n]).indexOf('gun_')===0){ bad.push('a hard drop is a gun: '+k[n]); }
+       }
+       if(hardBonus({kind:'crawler'}).length) bad.push('a plain crawler adds a roll');
+       if(hardBonus({kind:'sentry'}).length<1) bad.push('a sentry adds no roll');
+       if(hardBonus({kind:'bulwark'}).length<1) bad.push('a bulwark adds no roll');
+       if(hardBonus({kind:'raider',elite:1,merc:1}).length) bad.push('your hire adds a roll');
+       p=g.player;
+       keep=g.ents.slice();
+       for(x=0;x<6&&!found;x++){
+         e=mkCrawler(p.x+60+x*30,p.y+60); e.elite=1; e.hp=0; e.byPlayer=false; e.name='CWHARD'+x;
+         g.ents.length=0; g.ents.push(e);
+         updateEnts(0.016);
+         for(i=g.containers.length-1;i>=0;i--){ c=g.containers[i]; if(c&&c.bot==='crawler'&&Math.abs(c.x-e.x)<1&&Math.abs(c.y-e.y)<1){ found=c; break; } }
+         if(found&&found.loot.length<2) bad.push('an elite crawler wreck holds '+found.loot.length+' item, not 2');
+       }
+       if(!found) bad.push('a dead elite crawler left no wreck');
+       g.ents.length=0; for(i=0;i<keep.length;i++) g.ents.push(keep[i]);
+       return bad.length?bad.slice(0,4).join('; '):null;
+     } finally {
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'28.88',what:'cloud-coop-p2-blast-past-shield: a blast, a mine, fists or an air strike from player 2 go straight past a shielded elite on the host as the host own do, and only his gun rounds (marked sk) are soaked by the shield',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__deploy)) return 'SKIP: no raid here';
@@ -49905,6 +49938,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'16.85',what:'a controller builds the tactical belt on the Stash screen: with a Bandage and a Medkit packed and every belt key free, A on a faked controller over the Bandage in the backpack picks it up and moves nothing, D-pad down walks the highlight onto a belt key, A there puts the Bandage on that key, with the Medkit picked up B lets it go, moves nothing and leaves the Stash screen open, and a Medkit picked up when the Stash screen closes under it is let go at the next poll with its ghost hidden',
    run:function(){
+     return 'SKIP: removed by his order (no tactical belt plan on the Stash screen; the wheel and the GUN KEYS panel replaced it)';
      if(typeof pollPad!=='function'||typeof padMenu!=='function'||typeof padSetFocus!=='function'||typeof padFocusables!=='function'||typeof padOpenModal!=='function'||typeof padRelease!=='function'||typeof PAD==='undefined') return 'SKIP: no pad menu in this build';
      if(typeof renderHub!=='function'||typeof ITEMS==='undefined'||!ITEMS.bandage||!ITEMS.medkit) return 'SKIP: no Stash screen, Bandage or Medkit in this build';
      if(!(window.__P&&window.__applyLoaded&&window.__hubEnter)) return 'SKIP: this fixture cannot reach the Stash screen and restore the profile';
@@ -50244,6 +50278,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'16.79',what:'with the backpack open on a controller, A picks up the item under the highlight, D-DOWN still walks the stacks and past the last one lands on the tactical belt row, D-LEFT walks the belt keys, A places the item on the key under the highlight, A picks it back up, D-DOWN returns to the backpack and A puts it back there, as the mouse drag does; with the backpack shut A starts no drag',
    run:function(){
+     return 'SKIP: removed by his order (no tactical belt row to walk; items go on the wheel, the bar is guns only)';
      if(typeof pollPad!=='function'||typeof raidKey!=='function'||typeof hotbarSlots!=='function'||typeof bagStacks!=='function'||typeof saveProfile!=='function'||!window.__deploy||!window.__endRaid||!window.__frame||!window.__P) return 'SKIP: this build has no controller raid path';
      var NGA=navigator.getGamepads, _sp=saveProfile, bad=[], down={}, k0=null, keepPHA=null, k1=null, g0=null;
      function pad(){ var b=[],q; for(q=0;q<17;q++) b.push({pressed:!!down[q],value:down[q]?1:0,touched:!!down[q]}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
@@ -59239,6 +59274,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'15.25',what:'belt key 1 never goes black while he holds a gun: the SMG taken from the backpack on key 3 over a pistol leaves cell 1 showing the SMG, the same key with one gun carried leaves cell 2 showing it, and a stowed carbine on key 5 shows on cell 2 while key 5 and key 2 each bring it up and keep the highlight on the key pressed (his note)',
    run:function(){
+     return 'SKIP: removed by his order (guns sit on their class keys, cell 1 is the pistol class key and a gun never goes on an ordinary key; class keys checked by the gun-key checks)';
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof hotbarSlots!=='function'||typeof equipFromBag!=='function'||typeof setHot!=='function'||typeof hotSel!=='function') return 'SKIP: no tactical belt or equip from the backpack in this build';
      if(!ITEMS.gun_smg||!ITEMS.gun_carbine||!WEAPONS.pistol||!WEAPONS.smg||!WEAPONS.carbine||!WEAPONS.fists) return 'SKIP: no pistol, SMG or carbine in this build';
@@ -62083,6 +62119,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'14.25',what:'one item, one key in the Undercroft backpack: a Medkit dragged onto belt key 5 while key 4 holds Medkit leaves it on key 5 alone, and key 4 dragged onto a key 5 holding another item swaps that item back onto key 4 (Undercroft audit finding 4)',
    run:function(){
+     return 'SKIP: removed by his order (items no longer go on belt keys; they live on the wheel)';
      if(typeof hubBagOpenSet!=='function'||typeof withHubBag!=='function'||typeof mouse==='undefined') return 'SKIP: no Undercroft backpack in this build';
      var bad=[], prof, other=null;
      for(var k in ITEMS){ if(k!=='medkit'&&k.indexOf('gun_')!==0){ other=k; break; } }
@@ -66657,8 +66694,13 @@ window.__REGRESS=[
          bad.push('a plate found in a container turns itself straight into armour on the bar, so it can never be carried home, never be sold, never be put on a belt key and never be spent when he chooses, and the wind-up that makes armour a decision under fire is skipped');
        if(bagPlates()<1)
          bad.push('the looted plate is not in the backpack, so there is nothing to equip and nothing to carry out');
-       if(!beltHasPlate())
-         bad.push('the tactical belt does not offer the plate he just picked up, so the key he would reach for is not there');
+       // v28.xx retarget (his belt-to-wheel order): plates are a wheel slot and hold nothing on the bar, so the plate shows in the wheel with a count and the bar is unchanged.
+       var wl13=(typeof wheelList==='function')?wheelList():null, wp13=0;
+       if(wl13) for(var wi13=0;wi13<wl13.length;wi13++) if(wl13[wi13].k==='plate') wp13=wl13[wi13].n;
+       if(wl13&&wp13<1)
+         bad.push('the wheel does not offer the plate he just picked up, so the slot he would reach for shows nothing');
+       if(beltHasPlate())
+         bad.push('the plate got a cell on the gun bar, but plates are a wheel slot and hold nothing on the bar');
 
        // AND THE WIND-UP IS WHAT PUTS IT ON THE BAR.
        var before=Math.round(__state().player.armor);
@@ -71535,6 +71577,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'12.31',what:'with the gun in hand bound to key 5, which cell 1 shows too: a click on cell 1 fires the gun, and a click on an empty throwable and after the last Bandage keeps its cell, fires nothing, and names key 5, the key he bound (2026-09-07 audit P1; repaired to his ruling of 2026-09-13 at v13.42, and at v15.25 when cell 1 stopped going black)',
    run:function(){
+     return 'SKIP: removed by his order (no throwable or Bandage cells on the bar; the bar is guns only on class keys, items are used from the wheel)';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__mouse)) return 'SKIP: this fixture cannot deploy';
      if(typeof setHot!=='function'||typeof hotbarSlots!=='function'||typeof updatePlayer!=='function'||typeof hotSel!=='function') return 'SKIP: this build has no belt to drive';
      var bad=[];
@@ -71721,11 +71764,11 @@ window.__REGRESS=[
        if(g.bag.indexOf('gun_rifle')<0) bad.push('control: the bought rifle is not in the bag');
        // THE MEDKIT WITH NO KEY SET: the backpack.
        var m2=buy(1,'medkit');
-       if(typeof beltClassOf==='function'?!/^SLOT [78]$/.test(tg):(!/In your backpack/.test(m2)&&tg!=='BACKPACK')) bad.push('a medkit bought with no key set said "'+m2+'" (row tag "'+tg+'") and not In your backpack');
-       // THE MEDKIT ON KEY 6.
-       if(typeof beltClassOf==='function'){ g.hotAssign={7:'medkit'}; g.hotAuto={}; } else g.hotAssign[5]='medkit';
+       // v28.xx retarget (his belt-to-wheel order): an item never takes a belt key, so a medkit's pickup row carries the caps tag BACKPACK (terse caps, not "In your backpack"), with or without a stale key plan.
+       if(!hasRow||tg!=='BACKPACK') bad.push('a medkit bought with no key set said "'+m2+'" (row tag "'+tg+'") and not the BACKPACK tag');
+       g.hotAssign={}; g.hotAuto={};
        var m3=buy(2,'medkit');
-       var K6=(typeof beltClassOf==='function')?8:6; if(!new RegExp('tactical belt, key '+K6).test(m3)&&tg!=='SLOT '+K6) bad.push('a medkit bought with key 6 set to medkit said "'+m3+'" (row tag "'+tg+'") and not key 6');
+       if(!hasRow||tg!=='BACKPACK') bad.push('a second medkit bought said "'+m3+'" (row tag "'+tg+'") and not the BACKPACK tag');
        // THE PURCHASE ITSELF, unchanged: the credits fell by the three prices.
        if(P2.credits!==5000-60) bad.push('control: credits are '+P2.credits+' after three purchases priced 10, 20 and 30 from 5000');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -71740,6 +71783,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'12.27',what:'a stash drop onto the backpack for an item bound to a key with nothing packed lands on that key with a count and words, a bound key with nothing packed shows a 0 on the plan, and a spent belt key in a raid says No Bandage left (his note of 2026-09-07: bandages did not come over)',
    run:function(){
+     return 'SKIP: removed by his order (no item keys on the belt plan; items go on the wheel and a refused key drop says ITEMS GO ON THE WHEEL, checked by the wheel checks)';
      if(!(window.__P&&window.__hubEnter&&window.__showScreen&&window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot reach the stash screen and a raid';
      if(typeof renderHub!=='function'||typeof packedCount!=='function'||typeof useHot!=='function'||typeof hotbarSlots!=='function') return 'SKIP: this build has no belt plan to measure';
      var bad=[], P2=__P(), keep={stash:(P2.stash||[]).slice(),kit:(P2.kit||[]).slice(),hot:JSON.parse(JSON.stringify(P2.hotAssign||{})),freeKit:P2.freeKit};

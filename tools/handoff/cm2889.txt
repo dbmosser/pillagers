@@ -1,0 +1,7 @@
+v28.89: hard enemies drop better loot
+
+Elite pillagers and machines, sentries, bulwarks and howlers now drop better loot, and always leave a wreck.
+
+Check 28.89. Fails on v28.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

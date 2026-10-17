@@ -1,9 +1,9 @@
-23.63: no Tripwire Mine cell on the belt with one carried; Q never reaches the Tripwire Mine (it chose smoke)
-23.46: the controls card has no HEAL row 7; G in the arcade did not start the Bandage wind-up (null); G in the arcade did not spend the Bandage; pad D-DOWN in the arcade did not start the Bandage wind-up (null)
-23.42: the card rows are MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,ITEMS,EXTRACT,LOOT; the HOW TO PLAY page lacks SWITCH GUN or HEAL
-23.05: staging: the Medkit did not go on slot 9 ({"1":"gun_smg"})
-22.54: the Meridian Lance (field) row is tagged "SLOT 9", not SLOT 2
-22.43: the trigger on the vacant key 3 says [], not EMPTY SLOT; a shotgun found onto key 2 says "RIOT SCATTERGUN (FIELD) TO SLOT 6", not SHOTGUN ON KEY 2
-22.39: the old plan {8: Medkit, 9: Stim} loaded as {}, not the two of them on gun keys 3 and 4; in the raid no key shows the Armour Plate he carries (keys: gunkey:0, item:gun_smg, item:gun_rifle, gunkey:3, gunkey:4, gunkey:5, gunkey:6, gunkey:7, gunkey:8)
-21.93: the Undercroft belt shows gunkey:0 (vacant) on key 1, not the rifle; the Undercroft belt shows gunA rifle on key 3, not the shotgun; the Undercroft belt shows item:gun_carbine carbine on key 4, not the dmr; at the raid start key 1 shows gunkey:0 (vacant), not the rifle; at the raid start key 3 shows
+23.63: PASS
+23.46: PASS
+23.42: PASS
+23.05: a Medkit dropped on key 9: said "SLOT 9 TAKES GUNS ONLY"
+22.54: PASS
+22.43: PASS
+22.39: SKIP: removed by his order (items on the bar; v22.39 plan slide and the plate and Medical cells are gone, the bar is guns only on class keys and items live on the wheel)
+21.93: PASS
 ALL DONE

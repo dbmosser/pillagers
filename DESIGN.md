@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.89 - HARD ENEMIES DROP BETTER LOOT
+
+Co-op hunt while he was away. His order (2026-10-15): "Hard enemies drop better loot." An elite of any kind, a sentry, a bulwark or a howler now always leaves its wreck or body and adds one roll on a better table (cache for an elite, safe for a hard machine), never a gun. Rolled at the death, so the seeded build is unchanged.
+
+MEASURED. Check 28.89 passes, and fails on v28.88.
 ## v28.88 - PLAYER 2 BLASTS GO PAST THE SHIELD
 
 Co-op hunt while he was away. v26.72 says a SHIELDED elite soaks your rounds first and a blast, a mine or fire goes straight past it. On the host only the round path soaks (affixSoak is called only there); the host frag, fists, finisher and air strike take the full damage. But the host applied the shield to every shot word player 2 sends, so his frag, fists, finisher and air strike were eaten by the shield. Proven in the fixture: the host air strike on a shielded elite took 213 hit points and left the shield at 200; the same strike from player 2 took 13 and emptied the shield. Now player 2s gun round carries a mark and the host soaks only that word with the shield, so his frag, fists, finisher and air strike go past it as the hosts do.

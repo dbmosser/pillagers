@@ -52,15 +52,15 @@ setLoot(c2,mdrop.concat(e.kind==='raider'?[]:hardBonus(e)));   // v28.xx (cw-har
 '@
 
 SubRx @'
-var VER='28.87';
-'@ @'
 var VER='28.88';
+'@ @'
+var VER='28.89';
 '@
 
-$pat = "(?m)^  now:'v28\.87:.*$"
+$pat = "(?m)^  now:'v28\.88:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v28.88: Elite pillagers and machines, sentries, bulwarks and howlers now drop better loot, and always leave a wreck. Check 28.88 fails on v28.87',"
+$new = "  now:'v28.89: Elite pillagers and machines, sentries, bulwarks and howlers now drop better loot, and always leave a wreck. Check 28.89 fails on v28.88',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s
