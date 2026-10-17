@@ -1,0 +1,5 @@
+## v28.82 - THE HELD GUN CASTS A SHADOW
+
+Co-op hunt while he was away. Art build step 5 (his pick: Refined Chibi with Gear-heavy raider). The brief asks for a soft cast shadow and a gun shadow. The held gun now throws a soft dark strip on the body and far arm beneath it, lit from the top left, drawn under the gun sprite so it costs one fill.
+
+MEASURED. Check 28.82 passes, and fails on v28.81.

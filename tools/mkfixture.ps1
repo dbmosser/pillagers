@@ -6093,6 +6093,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.82',what:'the held gun casts a soft shadow: painting the gun with its shadow strip held back changes pixels under the gun (the drawing, not a stand-in)',
+   run:function(){
+     if(typeof gunHeld!=='function') return 'SKIP: no gunHeld';
+     var bad=[], skipped=0;
+     function paint(skip){
+       var cv2=document.createElement('canvas'), x2, kw=wc, fr, d;
+       cv2.width=240; cv2.height=240; x2=cv2.getContext('2d'); fr=x2.fillRect;
+       x2.fillRect=function(a,b,c,e){ if(skip&&/^rgba\(0,\s*0,\s*0,/.test(String(x2.fillStyle))){ skipped++; return; } return fr.call(x2,a,b,c,e); };
+       wc=x2;
+       try{ x2.translate(20,50); x2.scale(3,3); gunHeld(0,20,0,1,{hero:0},'#555a66',null,false,false,false,0,0); } finally { wc=kw; }
+       return x2.getImageData(0,0,240,240).data;
+     }
+     try{
+       var a=paint(false), b=paint(true), i, diff=0, n=0;
+       for(i=3;i<a.length;i+=4){ if(a[i]!==b[i]){ diff+=Math.abs(a[i]-b[i]); n++; } }
+       if(skipped<1) bad.push('the gun paints no black translucent shadow fill');
+       if(n<150) bad.push('the gun shadow touches only '+n+' pixels (want 150 or more)');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'28.81',what:'cw-feedsp: score is SP since lean2, and the feed still treats an SP figure as a figure: a medal label " +100 SP" is no line of its own, a kill popup "+50 SP" joins the kill line, a "+70 SP" pick is a money row',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';

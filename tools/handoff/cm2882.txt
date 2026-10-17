@@ -1,0 +1,7 @@
+v28.82: the held gun casts a shadow
+
+Guns in hand now cast a soft shadow on the body under them.
+
+Check 28.82. Fails on v28.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
