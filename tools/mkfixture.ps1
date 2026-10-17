@@ -7065,7 +7065,9 @@ window.__REGRESS=[
        if(st.pb) return 'with no bubble up the word still carries pb';
        e=host(st,[{seat:1,state:'in'}]);
        if(!e||e.pb!==0) return 'with no bubble the host still holds pb '+(e&&e.pb);
-       if(arcs(e)!==n0) return 'with no bubble the host still draws extra arcs round player 2';
+       // v28.xx (cw-corpusfix): the arc count of a different entity or moment (n0) moved with animation; compare the SAME entity, no bubble against bubble, in one go
+       n0=arcs(e); e.pb=1; n1=arcs(e); e.pb=0;
+       if(n1-n0<2) return 'with no bubble the host still draws the bubble arcs round player 2 ('+n0+' arcs with pb 0, '+n1+' with pb 1)';
        // the host's own bubble seen in player 2 window
        NET.role='host'; NET.seat=0; NET.peers=[{seat:1,state:'in'}]; NET.up=[]; S.act.shield=10;
        st=word(); if(!st||st.pb!==1) return 'the host has the SHIELD BUBBLE up but his word carries no bubble flag';
