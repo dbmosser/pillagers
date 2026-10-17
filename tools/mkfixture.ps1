@@ -6097,6 +6097,37 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.87',what:'cloud-coop-overseer-phase-shake: when THE OVERSEER changes phase, player 2 window says the phase line and shakes like the host (shake at least 6)',
+   run:function(){
+     if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__topClear)) return 'SKIP: no raid here';
+     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof netOnMsg!=='function'||typeof ovPhaseLine!=='function') return 'SKIP: no arcade, party or Overseer in this fixture';
+     var g=null, p=null, NK={}, k, oSF=netSendFast, oS=netSend, oSay=say, lines=[], h={seat:0,state:'in'}, staged=false, oIv=null, r, want;
+     try{
+       __topClear(); __runPrep();
+       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       p=g.player; oIv=p.iv; p.iv=99;
+       for(k in NET) NK[k]=NET[k]; staged=true;
+       NET.on=true; NET.max=4; NET.specG=null; NET.up=[]; NET.entMap={};
+       NET.role='join'; NET.seat=1; NET.peers=[h]; NET.upSeed=g.seed>>>0;
+       netSendFast=function(q,m){ return true; }; netSend=function(q,m){ return true; };
+       say=function(t){ lines.push(String(t)); };
+       want=ovPhaseLine(2); g.shake=0;
+       r=netOnMsg(h,JSON.stringify({t:'mark',k:'phase',nid:0,n:2,seat:0}));
+       if(lines.indexOf(want)<0) return 'player 2 window did not say the phase line ('+r+'; said: '+lines.join(' | ')+')';
+       if(!((g.shake||0)>=6)) return 'player 2 window said the Overseer phase line but did not shake (shake '+g.shake+', the host shakes 6)';
+       return null;
+     }catch(e){ return 'threw: '+(e&&e.message||e); }
+     finally{
+       netSendFast=oSF; netSend=oS; say=oSay;
+       if(staged){ for(k in NET) if(!(k in NK)) delete NET[k]; for(k in NK) NET[k]=NK[k]; }
+       if(p&&oIv!==null) p.iv=oIv;
+       try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+   }},
   {v:'28.86',what:'the corner readout also shows the STASH value and the BAG value, in the Undercroft and in a raid (his order: stash value and bag value always shown in the top right corner, everywhere, with credits and XP)',
    run:function(){
      if(typeof trStash!=='function'||typeof trBag!=='function') return 'the corner readout has no stash or bag value (no trStash, no trBag)';

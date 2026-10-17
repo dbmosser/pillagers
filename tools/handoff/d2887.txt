@@ -1,0 +1,5 @@
+## v28.87 - PLAYER 2 FEELS THE OVERSEER CHANGE PHASE
+
+Co-op hunt while he was away. When THE OVERSEER changes phase the host window shakes (shake 6), plays the alarm and says the phase line. Player 2 heard the alarm (it comes over as a sound) and saw the line, but his window never shook: the phase mark handler only said the line. Proven in a staged pair: the phase mark fed to player 2 window through netOnMsg says the line and leaves shake at 0. Now the same handler also shakes his window by 6, like the host. No sound is added, so the alarm is not heard twice.
+
+MEASURED. Check 28.87 passes, and fails on v28.86.

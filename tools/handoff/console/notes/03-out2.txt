@@ -1,0 +1,10 @@
+17.75: PASS
+17.75: PASS
+17.75: PASS
+10.68: PASS
+10.68: PASS
+9.03: SKIP: removed by his order (items on the belt; the bar is guns only, a spent item type shows dim with a 0 in the wheel, checked by 26.33)
+9.31: SKIP: removed by his order (items no longer go on the bar; they live on the wheel)
+11.60: SKIP: removed by his order (no throwable cells on the bar; a frag is used from the wheel, its count read there, checked by 26.33)
+23.95: SKIP: removed by his order (no throwable or plate cells on the bar; the wheel has fixed eight slots)
+ALL DONE

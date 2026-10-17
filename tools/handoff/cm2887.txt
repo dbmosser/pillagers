@@ -1,0 +1,7 @@
+v28.87: player 2 feels the overseer change phase
+
+In co-op, when THE OVERSEER changes phase, player 2s screen shakes too, just like player 1s.
+
+Check 28.87. Fails on v28.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

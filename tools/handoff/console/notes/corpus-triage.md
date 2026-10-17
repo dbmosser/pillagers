@@ -28,19 +28,19 @@ Confidence is HIGH unless marked (low).
 | 43 | 19.00 | FLAKY | Status effects left side: passes alone. | as 28.16 | DONE (was not flaky: failed alone in a fresh tab. Column band widened to 40 percent because the feed zone pushes the column right of the vitals, retargeted, passes 3x) |
 | 45 | 18.25 | FLAKY | Trade-key floor lines: passes alone. | as 28.16 | DONE (order dependent: key line follows state hub or raid. Check now stands in a raid for the key line, passes 3x) |
 | 46 | 17.86 | FLAKY | Pause legend CTRL / C: passes alone. | as 28.16 | DONE (order dependent, same fix as 18.25, passes 3x) |
-| 47 | 17.75 | FLAKY | Passes alone. | as 28.16 | OPEN |
-| 74 | 9.93 | FLAKY | RMB aims down sights legend: passes alone. | as 28.16 | OPEN |
-| 75 | 9.92 | FLAKY | Passes alone. | as 28.16 | OPEN |
-| 68 | 10.68 | FLAKY | "carbine did not go to his empty second slot (it holds carbine_v)": the rarity variant roll (20% one tier up, rarvar) sometimes turns the carbine into carbine_v; passed on the rerun. | In the check, pin the pick to the plain model (or accept gun_carbine and gun_carbine_v). | OPEN |
+| 47 | 17.75 | FLAKY | Passes alone. | as 28.16 | DONE (order dependent: legend is by state, hub says use a station. Check now reads it inside the raid, passes 3x) |
+| 74 | 9.93 | FLAKY | RMB aims down sights legend: passes alone. | as 28.16 | DONE (FLAKY-OK, passes 3x) |
+| 75 | 9.92 | FLAKY | Passes alone. | as 28.16 | DONE (FLAKY-OK, passes 3x) |
+| 68 | 10.68 | FLAKY | "carbine did not go to his empty second slot (it holds carbine_v)": the rarity variant roll (20% one tier up, rarvar) sometimes turns the carbine into carbine_v; passed on the rerun. | In the check, pin the pick to the plain model (or accept gun_carbine and gun_carbine_v). | DONE (check accepts the plain id or its _v id, passes) |
 
 ## C. STALE, belt became the wheel and fixed gun keys (his orders 2026-10-14: bar is guns only on keys 1-9 by class, HOLD Q wheel for all items, no H / G / U / J / 5-9 item shortcuts; starters removed, v26.39 nostarters2)
 All of these build a tactical belt with items on keys 3-9 or Medical / Throwable cells, drag items onto belt keys, or use G / H / pad D-pad heals. Those cells no longer exist. Fix for the group: retarget each to the wheel / gun-key design where the idea still holds (an item type is used from the wheel, a gun goes to its class key), or retire the check with fixq.sh. Do the whole group in one pass.
 | # | Ver | Verdict | Reason | Fix | Status |
 |---|-----|---------|--------|-----|--------|
-| 1 | 9.03 | STALE | Spent belted medkit / bandage slot stays dark: slots 5 and 6 no longer take item bindings (slot 5 is "Fourth weapon" now). Belt to gun-only bar. | Retire, or retarget to wheel (a type at 0 shows dim). | OPEN |
-| 2 | 9.31 | STALE | Drag onto / off the belt: items do not go onto the bar any more. | Retire. | OPEN |
-| 3 | 11.60 | STALE | Frag Charge on belt key 5 builds a gun cell: key 5 is the LMG class key. | Retarget: frag used from the wheel, count shown there. | OPEN |
-| 17 | 23.95 | STALE | A plate carried plus a Tripwire Mine each get a belt cell: no throwable / plate cells on the bar. | Retire (wheel has fixed 8 slots). | OPEN |
+| 1 | 9.03 | STALE | Spent belted medkit / bandage slot stays dark: slots 5 and 6 no longer take item bindings (slot 5 is "Fourth weapon" now). Belt to gun-only bar. | Retire, or retarget to wheel (a type at 0 shows dim). | DONE (SKIP, both 9.03 checks; wheel dim covered by 26.33) |
+| 2 | 9.31 | STALE | Drag onto / off the belt: items do not go onto the bar any more. | Retire. | DONE (SKIP) |
+| 3 | 11.60 | STALE | Frag Charge on belt key 5 builds a gun cell: key 5 is the LMG class key. | Retarget: frag used from the wheel, count shown there. | DONE (SKIP; wheel counts covered by 26.xx checks) |
+| 17 | 23.95 | STALE | A plate carried plus a Tripwire Mine each get a belt cell: no throwable / plate cells on the bar. | Retire (wheel has fixed 8 slots). | DONE (SKIP) |
 | 20 | 23.63 | STALE | Tripwire Mine on the belt, Q chooses smoke: Q is the wheel. | Retarget to the wheel (Tripwire is wheel slot 4). | OPEN |
 | 23 | 23.46 | STALE | Controls card has no HEAL row 7; G / pad D-DOWN do not start a Bandage wind-up (G removed, heals from the wheel). | Retarget: card row is ITEMS, a Bandage comes from the wheel. | OPEN |
 | 25 | 23.42 | STALE | Card rows now MOVE,AIM,FIRE,ROLL,RELOAD,SWITCH GUN,ITEMS,EXTRACT,LOOT: HEAL became ITEMS (wheel). | Accept ITEMS in the expected list and the HOW TO PLAY test. | OPEN |

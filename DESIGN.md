@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.87 - PLAYER 2 FEELS THE OVERSEER CHANGE PHASE
+
+Co-op hunt while he was away. When THE OVERSEER changes phase the host window shakes (shake 6), plays the alarm and says the phase line. Player 2 heard the alarm (it comes over as a sound) and saw the line, but his window never shook: the phase mark handler only said the line. Proven in a staged pair: the phase mark fed to player 2 window through netOnMsg says the line and leaves shake at 0. Now the same handler also shakes his window by 6, like the host. No sound is added, so the alarm is not heard twice.
+
+MEASURED. Check 28.87 passes, and fails on v28.86.
 ## v28.86 - STASH VALUE AND BAG VALUE IN THE TOP RIGHT
 
 Co-op hunt while he was away. His order: "Stash value and bag value are always shown in the top right corner, everywhere, with credits and XP." The corner readout kept credits and XP only. It now carries a small second line, STASH and BAG, on the Undercroft floor and in a raid.

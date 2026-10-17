@@ -2305,7 +2305,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.86';
+var VER='28.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46667,7 +46667,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.86: The top right corner now also shows STASH and BAG values under credits and XP. Check 28.86 fails on v28.85',
+  now:'v28.87: In co-op, when THE OVERSEER changes phase, player 2s screen shakes too, just like player 1s. Check 28.87 fails on v28.86',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54337,7 +54337,7 @@ function netMarkTake(peer,m){
   if(k==='big'){ if(mine&&!G.sim) say(wardenSpotLine(m.boss!==undefined?(m.boss|0):(e&&e.boss)),'warn'); return 'mark:big'; }   /* v24.xx (overseerline): the line names the one that saw him */   // v22.xx (tr3fixc): the shooter voice
   // v22.20, from the whole-game bug hunt of 2026-10-08 (K31): THE PILLBOX, THE PEDDLER AND THE SURVIVOR, told to the player who
   // walked up. The host sends these when one of the party is the player they saw (updateEnts); his own lines are said there.
-  if(k==='phase'){ if(!G.sim) say(ovPhaseLine(m.n|0),'warn'); return 'mark:phase'; }   // v26.xx (ai24): the Overseer changed phase, said to the whole party
+  if(k==='phase'){ if(!G.sim){ say(ovPhaseLine(m.n|0),'warn'); G.shake=Math.max(G.shake||0,6); } return 'mark:phase'; }   // v26.xx (ai24): the Overseer changed phase, said to the whole party   // v28.xx (cw-ovshake), CLOUD HUNT 2026-10-15: player 2 feels the same shake the host does (the alarm already comes over as a sound)
   if(k==='pill'){ if(mine&&!G.sim) say('THE PILLBOX HAS SEEN YOU','warn'); return 'mark:pill'; }
   if(k==='ped'){ if(mine&&!G.sim) say(pedOpen()?'THE PEDDLER WAVES YOU OVER':'THE PEDDLER TURNS HIS BACK',pedOpen()?'ally':'info'); return 'mark:ped'; }   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
   if(k==='sv'){
