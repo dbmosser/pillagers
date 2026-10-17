@@ -1,0 +1,5 @@
+## v28.93 - PLAYER 2 SEES THE MIMIC HE OPENED
+
+Co-op hunt while he was away. When player 2 opened a mimic crate, his search runs on the host, so the host woke the mimic: the host window said MIMIC and shook even when the box was far away, and the crawler went for the host player, not for player 2 who opened it. Player 2 only saw a plain crawler appear: no line, no shake, no spark. Proven in a staged pair in one window: seat 1 searches a forced mimic through netSrchTake, netSrchTick and mimicTick on the host; no mark goes to player 2, the host says MIMIC and shakes, and the crawler aims at the host player. Now the crawler goes for the player who opened the box, the MIMIC line and shake go to that player only (the host keeps them for a box he opens himself), and everyone sees the spark and hears the alarm. No sound is added, the alarm already comes over.
+
+MEASURED. Check 28.93 passes, and fails on v28.92.

@@ -1,0 +1,7 @@
+v28.93: player 2 sees the mimic he opened
+
+In co-op, when player 2 opens a mimic crate, it jumps at him and his screen says MIMIC and shakes, just like player 1s does for his own.
+
+Check 28.93. Fails on v28.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -70,19 +70,19 @@ Fix for the group: accept /^\$?N( SP)?$/ in each. Do it once with the fixq pass.
 | # | Ver | Verdict | Reason | Fix | Status |
 |---|-----|---------|--------|-----|--------|
 | 21 | 23.56 | STALE | Pickup tag "+70 SP" not "+$N", HUD "$1,234", "YOU $1,234", popup "+$50", board "$4,321": all SP now. Credits still $ (arcadeMoney). | Expect SP forms for score, $ only for credits. | DONE |
-| 22 | 23.54 | STALE | 1P arcade HUD fillText is "1,234 SP" in one string; the check needs an exact "1,234". | Regex match. | OPEN |
-| 27 | 23.38 | STALE | Popups are "+50 SP" / "+100 SP"; hasLbl wants "+50". | Prefix match. | OPEN |
-| 29 | 23.29 | STALE | Team score "450 SP" vs exact "450". | Regex match. | OPEN |
-| 26 | 23.41 | STALE (low) | NEW HIGH SCORE never said: arcadeHiTick code is unchanged. Likely the 'tonight' window (arcadeBoardTonight uses rows since arcadePartyAt, v26.xx party5) or the board rows now need u:'cr' / mode m (v23.57, v23.54) so the first run's row is not in the bar. Needs one probe run to confirm; not a game bug on the code read. | In the check set the party stamp to 0 and give the rows the current mode/scale tag; if it still says nothing, reopen as REAL (2P demo relevant). | OPEN |
+| 22 | 23.54 | STALE | 1P arcade HUD fillText is "1,234 SP" in one string; the check needs an exact "1,234". | Regex match. | DONE (accepts "1,234 SP", passes) |
+| 27 | 23.38 | STALE | Popups are "+50 SP" / "+100 SP"; hasLbl wants "+50". | Prefix match. | DONE (hasLbl accepts "+N SP", passes) |
+| 29 | 23.29 | STALE | Team score "450 SP" vs exact "450". | Regex match. | DONE (accepts "450 SP", passes) |
+| 26 | 23.41 | STALE (low) | NEW HIGH SCORE never said: arcadeHiTick code is unchanged. Likely the 'tonight' window (arcadeBoardTonight uses rows since arcadePartyAt, v26.xx party5) or the board rows now need u:'cr' / mode m (v23.57, v23.54) so the first run's row is not in the bar. Needs one probe run to confirm; not a game bug on the code read. | In the check set the party stamp to 0 and give the rows the current mode/scale tag; if it still says nothing, reopen as REAL (2P demo relevant). | DONE (probe: the 13 h old 99999 row was in the bar once the party stamp was restored early; check holds the stamp through the NEW HIGH part, game fine, passes) |
 
 ## E. STALE, feed and alert lane replaced the old message rows / world text (his orders 2026-10-15: one persistent feed bottom-left plus one top-centre alert lane, world text 60% size and depth sorted, no pickup stack, no notoriety banner; builds feed1-3 v27.24+, feed2 v27.51, feedocc)
 | # | Ver | Verdict | Reason | Fix | Status |
 |---|-----|---------|--------|-----|--------|
-| 16 | 23.96 | STALE | Only the last sub-check fails: "a HUD drawn alone filled the world label". Labels are now also a feed line (feedLabel, v27.24), so drawHUD draws the label text in the feed. Earlier parts pass. | Use a label text feedLabel skips (e.g. WEAK SPOT) for that sub-check. | OPEN |
-| 31 | 22.59 | STALE (low) | BACKPACK FULL: the pickup stack is not drawn now (feed line, key 'bagfull' dedupes to one line); two fillText hits are the feed line drawn with a shadow pass or line plus sub. Count distinct rows in g.fd, not fillText calls. If a real duplicate shows on screen reopen as REAL. | Retarget count to feed rows. | OPEN |
-| 35 | 22.32 | STALE | Pillbox line drawn 800 29.7px not callout 700 22.3px: alerts are in the top-centre alert lane, bigger type, by design. | Compare against the alert lane font. | OPEN |
-| 37 | 21.88 | STALE | Two message rows with protection and queue: rows replaced by feed + alert lane. | Retire. | OPEN |
-| 38 | 21.86 | STALE | Two message rows, boss bar band: same. | Retire. | OPEN |
+| 16 | 23.96 | STALE | Only the last sub-check fails: "a HUD drawn alone filled the world label". Labels are now also a feed line (feedLabel, v27.24), so drawHUD draws the label text in the feed. Earlier parts pass. | Use a label text feedLabel skips (e.g. WEAK SPOT) for that sub-check. | DONE (WEAK SPOT used for the last sub-check, passes) |
+| 31 | 22.59 | STALE (low) | BACKPACK FULL: the pickup stack is not drawn now (feed line, key 'bagfull' dedupes to one line); two fillText hits are the feed line drawn with a shadow pass or line plus sub. Count distinct rows in g.fd, not fillText calls. If a real duplicate shows on screen reopen as REAL. | Retarget count to feed rows. | DONE (distinct g.fd rows counted, drawn at least once, passes) |
+| 35 | 22.32 | STALE | Pillbox line drawn 800 29.7px not callout 700 22.3px: alerts are in the top-centre alert lane, bigger type, by design. | Compare against the alert lane font. | DONE (TYPE.title expected, passes) |
+| 37 | 21.88 | STALE | Two message rows with protection and queue: rows replaced by feed + alert lane. | Retire. | DONE (SKIP) |
+| 38 | 21.86 | STALE | Two message rows, boss bar band: same. | Retire. | DONE (SKIP) |
 | 41 | 20.75 | STALE | NOTORIETY stamp not drawn: notoStamp is an alert (say, key noto) plus a feed line now. | Check the alert instead. | OPEN |
 | 70 | 10.52 | STALE | "[E] SEARCH CRATE" drawn at 14px vs callout 23.4: prompt is ~60% size in the world pass on purpose (his "wayy too big", 10-15 01:45). | Lower the floor to the new size. | OPEN |
 | 72 | 10.44 | STALE | Only the control fails: compact legend at x 491 (> 400): the legend moved right of the bottom-left feed. | Allow x up to the feed width. | OPEN |

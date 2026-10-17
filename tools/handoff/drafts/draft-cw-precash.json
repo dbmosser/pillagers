@@ -1,0 +1,44 @@
+{
+    "title":  "PRE-RAID: PICK HOW MUCH CASH TO TAKE",
+    "why":  "His order (2026-10-15): \"On the pre-raid screen (the map select screen, renamed PRE-RAID), quickly pick how much cash and how many of each wheel item to take, plus keys and guns.\" Cash was the open piece. The PACK row has a CASH chip with minus, plus and MAX (ALL and NONE set it too). The amount is the cash on him in the raid: the stall sells him no more than that (NOT ENOUGH CASH ON YOU), and banked Credits stay banked, nothing is lost with it. No pick means no cap, as before.",
+    "now":  "The PRE-RAID page has a CASH chip: pick how much cash goes up with you to spend at the stall.",
+    "edits":  [
+                  {
+                      "anchor":  "  if((P.credits||0)\u003cst.price){ say(\u0027NOT ENOUGH BANKED CREDITS\u0027",
+                      "replacement":  "  if(G.cash!=null\u0026\u0026G.cash\u003cst.price){ say(\u0027NOT ENOUGH CASH ON YOU\u0027,\u0027info\u0027,{sub:\u0027Costs \u0027+\u0027$\u0027+st.price.toLocaleString()+\u0027. Carrying \u0027+\u0027$\u0027+G.cash.toLocaleString()+\u0027.\u0027}); return; }   // v28.xx (cw-precash), HIS ORDER (2026-10-15): \"quickly pick how much cash ... to take\": a raid that took a set amount of cash can spend no more than that at the stall\n  if((P.credits||0)\u003cst.price){ say(\u0027NOT ENOUGH BANKED CREDITS\u0027"
+                  },
+                  {
+                      "anchor":  "  P.credits-=st.price; saveProfile();\n",
+                      "replacement":  "  P.credits-=st.price; saveProfile();\n  if(G.cash!=null) G.cash=Math.max(0,G.cash-st.price);   // v28.xx (cw-precash)\n"
+                  },
+                  {
+                      "anchor":  "  G.carriedIn=bagValue();\n",
+                      "replacement":  "  G.carriedIn=bagValue();\n  // v28.xx (cw-precash), HIS ORDER (2026-10-15): \"On the pre-raid screen ... quickly pick how much cash ... to take\". The amount set on the PRE-RAID page (P.takeCashRaid, written when he deploys with MY LOADOUT) is the cash on him: the stall sells him no more than that, and banked Credits stay banked (nothing is lost with it). No pick means no cap.\n  G.cash=null;\n  if(!G.sim\u0026\u0026P.takeCashRaid!=null) G.cash=Math.max(0,Math.min(P.takeCashRaid|0,P.credits|0));\n  P.takeCashRaid=null;\n"
+                  },
+                  {
+                      "anchor":  "function packCore(){",
+                      "replacement":  "// v28.xx (cw-precash), HIS ORDER (2026-10-15): \"quickly pick how much cash ... to take\". P.takeCash is null for ALL (no cap) or a number of credits; the step is a tenth of the bank, in hundreds.\nfunction cashStep(d){\n  var c=P.credits|0, st=Math.max(100,Math.round(c/10/100)*100), cur=(P.takeCash==null)?c:Math.min(P.takeCash|0,c);\n  if(d===\u0027all\u0027){ P.takeCash=null; return; }\n  cur+=(d\u003e0?st:-st);\n  P.takeCash=(cur\u003e=c)?null:Math.max(0,cur);\n}\nfunction packCore(){"
+                  },
+                  {
+                      "anchor":  "  nc=heldCount(\u0027core\u0027);\n",
+                      "replacement":  "  nc=heldCount(\u0027core\u0027);\n  tc=(P.takeCash==null)?null:Math.min(P.takeCash|0,P.credits|0);\n  h+=\u0027\u003cspan class=\"pkc\u0027+(tc!==null?\u0027 on\u0027:\u0027\u0027)+\u0027\" data-cashchip=\"1\"\u003e\u003cspan class=\"pkn\"\u003eCASH\u003c/span\u003e\u003cbutton data-cash=\"-1\"\u003e-\u003c/button\u003e\u003cb style=\"min-width:4.2em\"\u003e\u0027+(tc===null?\u0027ALL\u0027:tc.toLocaleString())+\u0027\u003c/b\u003e\u003cspan style=\"color:var(--ash)\"\u003e/\u0027+(P.credits|0).toLocaleString()+\u0027\u003c/span\u003e\u003cbutton data-cash=\"1\"\u003e+\u003c/button\u003e\u003cbutton data-cash=\"all\"\u003eMAX\u003c/button\u003e\u003c/span\u003e\u0027;\n"
+                  },
+                  {
+                      "anchor":  "  var host=document.getElementById(\u0027sectorpack\u0027), keys, i, k, h, held, got, nc;",
+                      "replacement":  "  var host=document.getElementById(\u0027sectorpack\u0027), keys, i, k, h, held, got, nc, tc;"
+                  },
+                  {
+                      "anchor":  "    if(b.getAttribute(\u0027data-core\u0027)){ if(!packCore()) return; }",
+                      "replacement":  "    if(b.getAttribute(\u0027data-cash\u0027)){ cashStep(b.getAttribute(\u0027data-cash\u0027)===\u0027all\u0027?\u0027all\u0027:(+b.getAttribute(\u0027data-cash\u0027))); }   // v28.xx (cw-precash)\n    else if(b.getAttribute(\u0027data-core\u0027)){ if(!packCore()) return; }"
+                  },
+                  {
+                      "anchor":  "    else if(pa){ ks=packList();",
+                      "replacement":  "    else if(pa){ P.takeCash=(pa===\u0027all\u0027)?null:0; ks=packList();"
+                  },
+                  {
+                      "anchor":  "  kitDeploy();   // v26.xx (kit1): the kit was chosen on this page, so it goes straight up",
+                      "replacement":  "  P.takeCashRaid=(kitPickOf()===\u0027mine\u0027)?P.takeCash:null;   // v28.xx (cw-precash): the cash he picked goes up with MY LOADOUT only\n  kitDeploy();   // v26.xx (kit1): the kit was chosen on this page, so it goes straight up"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the PRE-RAID page picks how much cash to take and the stall sells no more than that (his order: quickly pick how much cash and how many of each wheel item to take)\u0027,\n   run:function(){\n     if(typeof cashStep!==\u0027function\u0027) return \u0027there is no cash pick on the PRE-RAID page (no cashStep)\u0027;\n     var g, host, b, p, keepCr, bad=[], cr0=0;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       // A. the chip\n       P.stash=[\u0027bandage\u0027]; P.kit=[]; P.freeKit=0; P.kitPick=\u0027mine\u0027; P.intel=0; P.credits=1000; P.takeCash=null;\n       renderSector();\n       host=document.getElementById(\u0027sectorpack\u0027);\n       b=host\u0026\u0026host.querySelector(\u0027[data-cash=\"-1\"]\u0027);\n       if(!b) return \u0027the pack row has no cash minus button\u0027;\n       b.click();\n       if(P.takeCash!==900) return \u0027one minus on 1000 credits left takeCash \u0027+P.takeCash+\u0027, not 900\u0027;\n       host=document.getElementById(\u0027sectorpack\u0027); host.querySelector(\u0027[data-cash=\"1\"]\u0027).click();\n       if(P.takeCash!==null) return \u0027plus back up to the bank did not read ALL (\u0027+P.takeCash+\u0027)\u0027;\n       host=document.getElementById(\u0027sectorpack\u0027); host.querySelector(\u0027[data-cash=\"-1\"]\u0027).click(); host=document.getElementById(\u0027sectorpack\u0027); host.querySelector(\u0027[data-cash=\"all\"]\u0027).click();\n       if(P.takeCash!==null) return \u0027MAX did not read ALL\u0027;\n       // B. the stall\n       P.credits=5000; P.takeCashRaid=300;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||g.sim||!g.player) return \u0027SKIP: staging: no live raid\u0027;\n       if(g.cash!==300) return \u0027a raid that took 300 credits has cash \u0027+g.cash;\n       p=g.player; g.ents.length=0; p.downed=false; g.bag=[]; g.pick=[]; g.msgLog=[];\n       g.trade={x:p.x,y:p.y,stock:[{k:\u0027scrap\u0027,price:400,sold:false}]};\n       pedBuy(0);\n       if(g.trade.stock[0].sold||P.credits!==5000) return \u0027a 400 credit buy went through on 300 cash (credits \u0027+P.credits+\u0027)\u0027;\n       g.trade={x:p.x,y:p.y,stock:[{k:\u0027scrap\u0027,price:250,sold:false}]};\n       pedBuy(0);\n       if(!g.trade.stock[0].sold||P.credits!==4750) return \u0027a 250 credit buy on 300 cash did not go through (credits \u0027+P.credits+\u0027)\u0027;\n       if(g.cash!==50) return \u0027cash on him after the 250 buy is \u0027+g.cash+\u0027, not 50\u0027;\n       // C. no pick, no cap\n       P.takeCashRaid=null; P.credits=5000;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(g.cash!=null) return \u0027a raid with no cash pick has a cash cap \u0027+g.cash;\n       return null;\n     } finally {\n       try{ P.takeCash=null; P.takeCashRaid=null; }catch(_e0){}\n       try{ __cleanProfile(); }catch(_e){}\n       try{ __topClear(); }catch(_e2){}\n     } }},"
+}

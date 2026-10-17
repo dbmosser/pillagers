@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='28.92';
+var VER='28.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22139,13 +22139,16 @@ function isMimic(ct){
   return (h%1000)<MIMIC_PM;
 }
 function mimicWake(ct){
-  var c=null, p=G.player, a=p?Math.atan2(p.y-ct.y,p.x-ct.x):0, x=ct.x+Math.cos(a)*26, y=ct.y+Math.sin(a)*26;
+  var c=null, p=G.player, by=(typeof NET==='object'&&NET.on&&NET.role==='host')?((ct.mimicBy>0)?(ct.mimicBy|0):((ct.netBy>0)?(ct.netBy|0):0)):0, i, q, a, x, y;   // v28.xx (cw-mimicseen), CLOUD HUNT 2026-10-15: a box player 2 opened through the host wakes on him
+  if(by&&NET.up) for(i=0;i<NET.up.length;i++){ q=NET.up[i]; if(q&&q.seat===by&&netUpShown(q)){ p=netUpBody(q); break; } }
+  a=p?Math.atan2(p.y-ct.y,p.x-ct.x):0; x=ct.x+Math.cos(a)*26; y=ct.y+Math.sin(a)*26;
   if(!spotFree(G.map,x,y,12)){ x=ct.x; y=ct.y; }
   fxBorrow(function(){ c=mkCrawler(x,y); });
   c.mimic=1; c.state='chase'; c.alert=3; c.tx=p?p.x:x; c.ty=p?p.y:y;
   G.ents.push(c);
   ct.mimicDone=1; ct.mimicWake=0;
-  if(!G.sim){ spark(ct.x,ct.y,'#ff5a40',16,260); G.shake=Math.max(G.shake||0,4); sfx('alarm',ct.x,ct.y,'crawler'); say('MIMIC','warn'); }
+  if(!G.sim){ spark(ct.x,ct.y,'#ff5a40',16,260); if(!by){ G.shake=Math.max(G.shake||0,4); say('MIMIC','warn'); } sfx('alarm',ct.x,ct.y,'crawler'); }   // v28.xx (cw-mimicseen), CLOUD HUNT 2026-10-15: the line and shake go to the player who opened it
+  if(by&&!G.sim) netMarkSend({t:'mark',k:'mimic',seat:by,x:Math.round(ct.x),y:Math.round(ct.y)});
   return c;
 }
 function mimicTick(dt){
@@ -22156,7 +22159,7 @@ function mimicTick(dt){
     if(ct.mimicDone||ct.opened) continue;
     if(ct.mim===undefined) ct.mim=isMimic(ct)?1:0;
     if(!ct.mim) continue;
-    if(!ct.mimicWake&&(ct.prog||0)>0){ ct.mimicWake=1; ct.mimicT=0.8; }
+    if(!ct.mimicWake&&(ct.prog||0)>0){ ct.mimicWake=1; ct.mimicT=0.8; ct.mimicBy=(typeof ct.netBy==='number'&&ct.netBy>0)?ct.netBy:0; }   // v28.xx (cw-mimicseen), CLOUD HUNT 2026-10-15: remember which of the party opened it
     if(ct.mimicWake){ ct.mimicT-=dt; if(ct.mimicT<=0) mimicWake(ct); continue; }
     if(p&&!p.downed&&dist(p,ct)<130){
       ct.tkT=(ct.tkT===undefined?fxn(0.4,1.2):ct.tkT)-dt;
@@ -46683,7 +46686,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v28.92: Heavy rounds from player 2 hold enemies for the same beat and on the same guns as player 1s, and his grenades and melee no longer hold them. Check 28.92 fails on v28.91',
+  now:'v28.93: In co-op, when player 2 opens a mimic crate, it jumps at him and his screen says MIMIC and shakes, just like player 1s does for his own. Check 28.93 fails on v28.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54354,6 +54357,7 @@ function netMarkTake(peer,m){
   // v22.20, from the whole-game bug hunt of 2026-10-08 (K31): THE PILLBOX, THE PEDDLER AND THE SURVIVOR, told to the player who
   // walked up. The host sends these when one of the party is the player they saw (updateEnts); his own lines are said there.
   if(k==='phase'){ if(!G.sim){ say(ovPhaseLine(m.n|0),'warn'); G.shake=Math.max(G.shake||0,6); } return 'mark:phase'; }   // v26.xx (ai24): the Overseer changed phase, said to the whole party   // v28.xx (cw-ovshake), CLOUD HUNT 2026-10-15: player 2 feels the same shake the host does (the alarm already comes over as a sound)
+  if(k==='mimic'){ if(!G.sim){ if(isFinite(+m.x)&&isFinite(+m.y)) spark(+m.x,+m.y,'#ff5a40',16,260); if(mine){ G.shake=Math.max(G.shake||0,4); say('MIMIC','warn'); } } return 'mark:mimic'; }   // v28.xx (cw-mimicseen), CLOUD HUNT 2026-10-15: player 2 sees the spark and, when he opened it, the same shake and line the host gets for his own
   if(k==='pill'){ if(mine&&!G.sim) say('THE PILLBOX HAS SEEN YOU','warn'); return 'mark:pill'; }
   if(k==='ped'){ if(mine&&!G.sim) say(pedOpen()?'THE PEDDLER WAVES YOU OVER':'THE PEDDLER TURNS HIS BACK',pedOpen()?'ally':'info'); return 'mark:ped'; }   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
   if(k==='sv'){
