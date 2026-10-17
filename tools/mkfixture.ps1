@@ -25691,7 +25691,7 @@ window.__REGRESS=[
      try{
        keysOpen(); l=document.getElementById('keyslist');
        if(!l) return 'SKIP: the Keys window did not build';
-       if(!(parseFloat(getComputedStyle(l).maxWidth)<=1100)) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+')');
+       if(!(parseFloat(getComputedStyle(l).maxWidth)<=1500)) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+')');   // v28.82 (corpus-fix): 1500px, two columns, since v26.38 (css overrides 1100)
        b=l.querySelector('.row b'); k=l.querySelector('.keybtn');
        if(b){ s=getComputedStyle(b); if(s.textTransform!=='uppercase'||!(parseFloat(s.fontSize)>=17)) bad.push('an action name is '+s.fontSize+' '+s.textTransform); }
        if(k){ s=getComputedStyle(k); if(!(parseFloat(s.borderBottomWidth)>parseFloat(s.borderTopWidth))) bad.push('a key is a flat box, not a keycap'); }
@@ -39769,11 +39769,12 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'21.09',what:'the run card feel tags use the card width: the tag block fills most of the room in the card, the tags take at most two rows more than they need, and the note box is as wide as the tags',
    run:function(){
-     var oc=document.getElementById('outcome'), w=oc&&oc.querySelector('.ocwin'), tw=document.getElementById('tagwrap'), nb=document.getElementById('oc_note'), was=oc&&oc.classList.contains('on'), bad=[], cs, room, tags, tops={}, nrow=0, tot=0, i, k, need;
+     var oc=document.getElementById('outcome'), w=oc&&oc.querySelector('.ocwin'), tw=document.getElementById('tagwrap'), nb=document.getElementById('oc_note'), was=oc&&oc.classList.contains('on'), bad=[], cs, room, tags, tops={}, nrow=0, tot=0, i, k, need, fb0=true;
      if(!oc||!w||!tw||!nb||typeof buildTags!=='function') return 'SKIP: no run card here';
      try{
        if(!tw.querySelector('.tag')) buildTags();
        oc.classList.add('on');
+       fb0=w.classList.contains('fbopen'); w.classList.add('fbopen');   // v28.82 (corpus-fix): the tags and note come up shut (uic2), so open the feedback box to measure them
        cs=getComputedStyle(w);
        room=Math.min(parseFloat(cs.maxWidth)||1e9,(w.parentNode&&w.parentNode.clientWidth)||1e9)-(parseFloat(cs.paddingLeft)||0)-(parseFloat(cs.paddingRight)||0)-(parseFloat(cs.borderLeftWidth)||0)-(parseFloat(cs.borderRightWidth)||0);
        if(!(room>300&&room<5000)) return 'SKIP: the card has no measurable room ('+room+')';
@@ -39786,7 +39787,7 @@ window.__REGRESS=[
        if(nrow>need+2) bad.push('the '+tags.length+' tags stack '+nrow+' rows deep where '+need+' rows would hold them');
        if(nb.offsetWidth<tw.offsetWidth*0.9) bad.push('the note box is '+nb.offsetWidth+' px wide under a '+tw.offsetWidth+' px block of tags');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ if(!was) oc.classList.remove('on'); }
+     finally{ if(!fb0) w.classList.remove('fbopen'); if(!was) oc.classList.remove('on'); }
      return bad.length?bad.join('; '):null; }},
   {v:'21.08',what:'the pause box key line is one style: every entry starts with its key in bold, and the TAB key is named once',
    run:function(){
@@ -41126,7 +41127,7 @@ window.__REGRESS=[
      if(typeof G!=='undefined'&&G&&!G.over) return 'SKIP: a raid is running';
      var bad=[], k=COSKEY.hat||'cosHat', h0=P[k], ow0=cosOwned, hadSl=('_avSlot' in P), sl0=P._avSlot, apOn=ap.classList.contains('on'), st0=selTags.slice(),
          kp={prev:PAD.prev,ax:PAD.ax,focusIx:PAD.focusIx,focusMd:PAD.focusMd,aSpent:PAD.aSpent,mrep:PAD.mrep,yMenuWas:PAD.yMenuWas},
-         L=[], i, tiles, tl=null, id=null, wn, sb, bt, tt, tg, ns, na;
+         L=[], i, tiles, tl=null, id=null, wn, sb, bt, tt, tg, ns, na, ocw=null, fbw0=true;
      function idle(){ return false; }
      function aDown(n){ return n===0; }
      function cnt(sel){ var c=0, j; for(j=0;j<L.length;j++) if(L[j].matches(sel)) c++; return c; }
@@ -41159,6 +41160,7 @@ window.__REGRESS=[
        ap.classList.remove('on');
        // The end-of-raid card, as it comes up: the run tags in reach, A on one picks it, and the card opens on Log run and return.
        selTags=[]; buildTags(); oc.classList.add('on');
+       ocw=oc.querySelector('.ocwin'); fbw0=!!(ocw&&ocw.classList.contains('fbopen')); if(ocw) ocw.classList.add('fbopen');   // v28.82 (corpus-fix): the run tags are hidden until the feedback box is open (uic2)
        if(padOpenModal()!==oc) return bad.length?bad.join('; '):'SKIP: the end-of-raid card is not the panel on top here';
        L=padFocusables(oc);
        if(L.indexOf(ob)<0) return bad.length?bad.join('; '):'SKIP: Log run and return is not in reach of the pad on the card here';
@@ -41183,6 +41185,7 @@ window.__REGRESS=[
        PAD.focus=null; PAD.prev=kp.prev; PAD.ax=kp.ax; PAD.focusIx=kp.focusIx; PAD.focusMd=kp.focusMd; PAD.aSpent=kp.aSpent; PAD.mrep=kp.mrep; PAD.yMenuWas=kp.yMenuWas;
        selTags=st0;
        if(!apOn) ap.classList.remove('on'); else { try{ renderAvatar('appavatar','appavatarpicker'); }catch(_r){} }
+       try{ if(ocw&&!fbw0) ocw.classList.remove('fbopen'); }catch(_q){}
        oc.classList.remove('on');
        __topClear(); __cleanProfile();
      }
@@ -44633,7 +44636,7 @@ window.__REGRESS=[
   {v:'18.97',what:'the run card note box never squashes: on a card taller than the screen the note box keeps its height, the card stays inside the screen and scrolls',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     var bad=[], oc, win, note, man, keep, r, rn;
+     var bad=[], oc, win, note, man, keep, r, rn, fb0=true;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -44641,13 +44644,14 @@ window.__REGRESS=[
        oc=document.getElementById('outcome'); win=oc&&oc.querySelector('.ocwin'); note=document.getElementById('oc_note'); man=document.getElementById('oc_manifest');
        if(!oc||!oc.classList.contains('on')||!win||!note||!man) return 'SKIP: the run card did not open';
        keep=man.innerHTML;
+       fb0=win.classList.contains('fbopen'); win.classList.add('fbopen');   // v28.82 (corpus-fix): the note box is hidden until the feedback box is open (uic2)
        man.innerHTML=keep+new Array(41).join('<div>ACHIEVEMENT: a long line that makes the card taller than the screen</div>');
        r=win.getBoundingClientRect(); rn=note.getBoundingClientRect();
        if(rn.height<36) bad.push('the note box is squashed to '+Math.round(rn.height)+'px');
        if(r.bottom>innerHeight+1||r.top<-1) bad.push('the card runs off the screen ('+Math.round(r.top)+' to '+Math.round(r.bottom)+' of '+innerHeight+')');
        man.innerHTML=keep;
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(man&&keep!==undefined) man.innerHTML=keep; }catch(_m){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(man&&keep!==undefined) man.innerHTML=keep; }catch(_m){} try{ if(win&&!fb0) win.classList.remove('fbopen'); }catch(_w){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'18.96',what:'the warning under THE LAST POUR stays inside the room: as he wrote it, it ends before the right wall',
    run:function(){
@@ -74918,7 +74922,7 @@ window.__REGRESS=[
      var stale=[['F ','heal/revive'].join(''), ['Q/G ','throw'].join(''), ['TAB ','bag '].join(''), ['sprint ','on/off'].join(''), ['superhot ','mode'].join('')];
      for(var i=0;i<stale.length;i++) if(text.indexOf(stale[i])>=0) bad.push('the pause box still says "'+stale[i]+'"');
      // WHAT IT MUST SAY, and it must agree with the H list.
-     var need=[((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike']).join(''), ['I ','backpack'].join(''), (text.indexOf(['tactical ','belt'].join(''))>=0?['tactical ','belt']:['1-4 ','guns']).join(''), ['hold to ','sprint'].join('')];
+     var need=[((typeof wheelOpen==='function')?['V ','melee']:((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike'])).join(''), ['I ','backpack'].join(''), (text.indexOf(['tactical ','belt'].join(''))>=0?['tactical ','belt']:((typeof wheelOpen==='function')?['1-9 ','guns']:['1-4 ','guns'])).join(''), ['hold to ','sprint'].join('')];   // v28.82 (corpus-fix): V melee and 1-9 guns since the wheel (v26.xx)
      for(i=0;i<need.length;i++) if(text.indexOf(need[i])<0) bad.push('the pause box does not say "'+need[i]+'"');
      var L=(window.__legend?__legend():null);
      if(L&&L.length){ var fRow=null; for(i=0;i<L.length;i++){ var rows=L[i][1]||[]; for(var j=0;j<rows.length;j++) if(rows[j][0]==='F') fRow=rows[j][1]; }
@@ -80768,11 +80772,14 @@ window.__REGRESS=[
      __hubEnter();
      try{ __station('term'); }catch(e1){ return 'the stash terminal threw: '+e1; }
      var hub=document.getElementById('hub'); if(!hub||!hub.classList.contains('on')) return 'the stash screen did not open';
-     var tabs=[].map.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return d.textContent.trim().replace(/\s+\d+$/,''); });
+     var tabs=[].map.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return d.textContent.trim().replace(/\s+[\d\/]+$/,''); });
      var want=['ALL','GUNS','CONSUMABLES','PARTS','SALVAGE','KEYS'];
      // THE FINDING. On v10.10 the row read ALL, GUNS, ARMOUR, PARTS, SALVAGE, CONSUMABLES, KEYS.
+     // v28.82 (corpus-fix): his six still lead in his order; VALUABLES, LOCKED, ARMORY and TROPHIES came after them (stash redesign), SORT is a button in the row.
      var got=tabs.filter(function(t){ return t!=='OTHER'; });
-     if(got.filter(function(t){ return !/^SORT/i.test(String(t)); }).join(',')!==want.join(',')) bad.push('the tabs read ['+tabs.join(', ')+'], not ['+want.join(', ')+']');   // v17.42 put the SORT button in the tab row
+     var gotNs=got.filter(function(t){ return !/^SORT/i.test(String(t)); });
+     var extra=gotNs.slice(want.length).filter(function(t){ return ['VALUABLES','LOCKED','ARMORY','TROPHIES'].indexOf(t)<0; });
+     if(gotNs.slice(0,want.length).join(',')!==want.join(',')||extra.length) bad.push('the tabs read ['+tabs.join(', ')+'], not ['+want.join(', ')+']');   // v17.42 put the SORT button in the tab row
      if(tabs.indexOf('ARMOUR')>=0) bad.push('there is still an ARMOUR tab');
      // Armour plates live under CONSUMABLES: click it and require the plate drawn.
      var cons=[].filter.call(hub.querySelectorAll('#stashtabs .invtab'),function(d){ return (/^CONSUMABLES/).test(d.textContent.trim()); })[0];
