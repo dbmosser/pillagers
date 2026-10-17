@@ -1,0 +1,7 @@
+v28.95: player 2 near misses pin pillagers
+
+Player 2s fire pins pillagers the same way player 1s does: rounds that go close count, not only the ones that hit.
+
+Check 28.95. Fails on v28.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
