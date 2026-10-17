@@ -43932,7 +43932,7 @@ window.__REGRESS=[
      p.downed=false; p.roll=0; p.stam=100; p.stamLock=0; p.stamRelease=0;
      hooked=true;
      ctx.fillText=function(s,x,y){ var q=scr(this,x,y); if(inCol(q)) texts.push({s:String(s),x:q.x,y:q.y}); return realFT.apply(this,arguments); };
-     ctx.arc=function(x,y,r,a0,a1){ if(a0===-1.5708){ var q=scr(this,x,y); if(inCol(q)) rings.push({c:String(this.strokeStyle).toLowerCase(),x:q.x,y:q.y,f:(a1-a0)/6.2832}); } return realArc.apply(this,arguments); };
+     ctx.arc=function(x,y,r,a0,a1){ if(a0===-1.5708){ var q=scr(this,x,y); window.__dbgR=(window.__dbgR||[]).concat([String(this.strokeStyle)+'@'+Math.round(q.x)+','+Math.round(q.y)]); if(inCol(q)) rings.push({c:String(this.strokeStyle).toLowerCase(),x:q.x,y:q.y,f:(a1-a0)/6.2832}); } return realArc.apply(this,arguments); };
      wc.arc=function(x,y,r,a0,a1){ if(r===9&&a0===-1.5708&&String(this.strokeStyle).toLowerCase()==='#7fc4a0') head++; return realWArc.apply(this,arguments); };
      // CONTROL, NOTHING RUNNING: no Stim and no heal ring on the left, on either build.
      fresh(100);
@@ -43943,7 +43943,7 @@ window.__REGRESS=[
      fresh(100); p.stimT=6;
      if(!frame()) return skip('drawing a frame with a Stim running threw here');
      A=ring(STIMC);
-     if(!A) bad.push('a Stim with 6 of its '+STIM_SEC+' seconds left drew no STIM ring on the left of the HUD');
+     if(!A) bad.push('a Stim with 6 of its '+STIM_SEC+' seconds left drew no STIM ring on the left of the HUD [DBG '+(window.__dbgR||[]).join('|')+' H='+H+' yMax='+yMax+' W='+W+' DPR='+DPR+' feed='+(FEEDBOX.on?[FEEDBOX.x,FEEDBOX.y,FEEDBOX.w,FEEDBOX.h].map(Math.round).join(','):'off')+']');
      else if(Math.abs(A.f-6/STIM_SEC)>0.02) bad.push('the STIM ring was '+Math.round(A.f*100)+' percent lit with 6 of '+STIM_SEC+' seconds left');
      if(!textAt('STIM')) bad.push('no STIM name was written beside the Stim icon on the left');
      if(!textAt('6s')) bad.push('the Stim icon on the left did not say 6s with six seconds left');
