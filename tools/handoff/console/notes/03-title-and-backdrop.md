@@ -33,6 +33,10 @@
 - Shots shots/03-r5 (before), shots/03-r5after. Critic: 01 = 3 (same), 45 = 3, 57 = 3. Left, all structural, none is the backdrop: P0 name input shows PILLAGER in capitals (needs lowering where the value is set, saves/net risk); logo is a gold gradient (old check 18.11 demands a gradient, guide bans it: a fixture retarget plus his call, the brand mark); five mode rows incl. dead server row (his ordered rows); saves block 898px wide vs 558 column; attract card needs a primary "press any key" button, 56px header, 72px footer (shared attract-card task).
 - Still not measured: 4K 60fps on the title (fight is 2 pillagers + robots, no sim).
 
+## Run 6 (lane b)
+- v31.00 cw-title-saves shipped: saves block max-width 900 to --menu-w (560); name box default shows "pillager" (titleNameShown; go() ignores the lowered default). Critic 01: 3, better than before. Left (all his rulings or structural): five mode rows (his ordered rows), logo gradient (check 18.11, brand mark), fullscreen button, saves block as a form (big, many checks), key legend. Nothing left that is the backdrop. 4K 60fps still not measured (no tool for it; the fight is 2 pillagers + robots, no sim). Shots shots/03-r6-before, 03-r6-after.
+- Stuck: 01 stays at 3 after 6 runs; only the saves/mode/logo restructure would move it, and that needs his call.
+
 ## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).

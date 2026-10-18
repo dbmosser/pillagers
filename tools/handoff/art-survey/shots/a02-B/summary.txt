@@ -1,0 +1,2 @@
+== 4k : window 3872x2263, viewport 3840x2160
+  duo                                    staged       7.1s    | {"scene":"duo","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1559,"y":1058,"w":415,"h":742,"fx":1560,"fy":1270},{"id":"mate","kind":"player","x":2274,"y":1139,"w":420,"h":789,"fx":2279,"fy":1310}],"objects":null}

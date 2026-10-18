@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.01 - THE ARCADE PAUSE BOX HAS NO HOSTING LINE
+
+Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. Only the player 1 pause box carried the line telling the host that closing the window ends the raid for the whole party. In the party arcade demo, both pause boxes are now alike; the window still asks before it closes, and a co-op host still sees the line.
+
+MEASURED. Check 31.01 passes, and fails on v31.00.
 ## v31.00 - TITLE: SAVES BLOCK AS WIDE AS THE MODES, NAME BOX LOWER CASE
 
 Co-op hunt while he was away. The critic scored the title 3 of 5: the saves block was 898px wide under a 558px mode column and the name box showed PILLAGER in capitals. The block is the menu width and the default name is lower case.

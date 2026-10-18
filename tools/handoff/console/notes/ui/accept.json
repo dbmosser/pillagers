@@ -575,17 +575,17 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The only real change is a shorter key legend (eight hints down to five); the capital-letter name field, orange gradient logo, five-row mode stack and save/name clutter are all still there, so the screen is still a template menu with a second accent colour.",
+  "verdict": "The saves block now lines up with the 558px mode stack and the name field reads in lower case, but the screen still has too many stacked controls, the amber gradient logo clashes with the lime accent, and none of the earlier structural fixes (logo, tagline, server row, top-right buttons) were made.",
   "findings": [
-   "P0 name input, x 511-1110, y 794-831: Set text-transform:lowercase on the input so it reads 'pillager'. Move the field, 'change name' and 'create a new save' into a 'new save' modal. Leave one 48px 'switch save' ghost button on the title screen.",
-   "P1 logo, x 800-1120, y 265-345: Make the logo flat --tx-1 #efe9dc, about 96px high, with a 2px dark offset. Delete the tagline, or set it at 20px --tx-2.",
-   "P1 mode stack, x 681-1239, y 413-693: Keep three rows: 'play', '2 player co-op' and 'demos', with demos opening a sub-list. Delete the server row and the tag. Set unfocused rows to --ui-panel with a 1px --ui-line-hi border. Give the focused row a 3px lime left bar on a --ui-raised fill and a pad 'A' glyph.",
-   "P1 saves block, x 511-1409, y 715-783: Collapse to one 48px row, 558px wide and centred under the stack: 'pillager new · 0 raids · $900 · 0 xp', with the name in tx-1 and the stats in tx-2 at 20px. Delete the 'saves' label and the lime outline. Add a ghost 'switch save' button.",
-   "P1 top-right buttons, x 1611-1823, y 33-80: Use the 48px ghost button spec at 20px text with a --ui-line-hi border. Anchor both at the 5% margin (x 96 from the right edge, y 48). Keep only 'settings', and move fullscreen into settings."
+   "P1 mode stack, x 681-1239, y 413-693: Delete the server row and the tag. Collapse the two demos into one 'demos' row that opens a sub-list. Fill unfocused rows with --ui-panel and a 1px --ui-line-hi border. Make the focus state a 3px lime left bar on --ui-raised, with a pad 'A' glyph. Keep the 56px row pitch.",
+   "P1 logo, x 800-1120, y 265-345: Make the logo flat --tx-1 #efe9dc at about 96px with a 2px dark offset. Delete the tagline or set it at 20px --tx-2. Leave 48px of space between the logo and the stack.",
+   "P1 saves block, x 681-1239, y 715-833: Collapse to one 48px row: 'pillager new · 0 raids · $900 · 0 xp', with the name in tx-1 and the stats in tx-2 at 20px, no lime outline, and no 'saves' label. Add a ghost 'switch save' button. Move name entry and 'create a new save' into a 'new save' modal.",
+   "P1 name field and buttons, x 681-1239, y 794-831: Remove from the title screen. If it stays, use a 48px high field with a 20px tx-2 'name' label, ghost buttons at 20px text, and a 2px lime focus border.",
+   "P1 top-right buttons, x 1611-1823, y 33-80: Keep only 'settings', as a 48px ghost button with 20px text and a --ui-line-hi border, anchored at x 96 from the right edge and y 48. Move fullscreen into settings."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-r5after/01-title-mode-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-r6-after/01-title-mode-menu-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T20:15"
+  "when": "2026-10-18T20:46"
  },
  "44-title-from-character-select": {
   "score": 2,

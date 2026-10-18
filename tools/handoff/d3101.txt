@@ -1,0 +1,5 @@
+## v31.01 - THE ARCADE PAUSE BOX HAS NO HOSTING LINE
+
+Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. Only the player 1 pause box carried the line telling the host that closing the window ends the raid for the whole party. In the party arcade demo, both pause boxes are now alike; the window still asks before it closes, and a co-op host still sees the line.
+
+MEASURED. Check 31.01 passes, and fails on v31.00.

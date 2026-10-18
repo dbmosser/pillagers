@@ -7,11 +7,18 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export const AS = path.resolve(here, '..');                     // art-survey
 export const ROOT = path.resolve(AS, '..', '..', '..');          // C:\claudecode\dark raiders
 let SRC = null;
-export function src() { if (SRC === null) SRC = fs.readFileSync(path.join(ROOT, 'tools', 'fixture.html'), 'utf8'); return SRC; }
+export function src() { if (SRC === null) SRC = fs.readFileSync(path.join(AS, 'game', 'base.html'), 'utf8'); return SRC; }
 // edits: [[find, replace, count?]]; every find must be present exactly count (default 1) times, or it throws
 export function apply(text, edits, tag) {
   for (const e of edits) {
     const [find, rep, cnt] = e; const want = cnt === undefined ? 1 : cnt;
+    if (find instanceof RegExp) {
+      const re = new RegExp(find.source, find.flags.includes('g') ? find.flags : find.flags + 'g');
+      const n = (text.match(re) || []).length;
+      if (n !== want) throw new Error(tag + ': pattern matched ' + n + ' times (want ' + want + '): ' + find.source.slice(0, 90));
+      text = text.replace(re, () => rep);
+      continue;
+    }
     let n = 0, i = -1; while ((i = text.indexOf(find, i + 1)) !== -1) n++;
     if (n !== want) throw new Error(tag + ': anchor found ' + n + ' times (want ' + want + '): ' + find.slice(0, 90));
     text = text.split(find).join(rep);

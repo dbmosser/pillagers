@@ -1,9 +1,9 @@
-<!doctype html><meta charset="utf-8"><body style="margin:0;background:#222;display:grid;grid-template-columns:repeat(3,560px);gap:6px;width:1698px"><style>
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#222;display:grid;grid-template-columns:repeat(2,560px);gap:6px;width:1132px"><style>
 .a12-d{position:relative;width:560px;height:340px;overflow:hidden;background:#0b0c0d;border:1px solid #23282c;border-radius:6px;box-sizing:border-box;font-family:'Barlow','Segoe UI',sans-serif;color:#f2efe6;text-transform:lowercase}
 .a12-d-cv{position:absolute;left:39px;top:11px;width:480px;height:270px;display:block;border-radius:3px;background:#587050}
 .a12-d-cap{position:absolute;left:0;right:0;bottom:0;height:48px;padding:0 20px;display:flex;align-items:center;gap:12px;border-top:1px solid #1c2024;background:#0b0c0d;font-size:17px;color:#a9a79e}
 .a12-d-cap b{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:21px;color:#e4ff2e;letter-spacing:.01em}
-</style><div style="position:relative;width:560px;height:340px"><div data-t="0.1" class="a12-d"><canvas class="a12-d-cv" width="480" height="270"></canvas><div class="a12-d-cap"><b>freeze and shake</b><span>a tiny pause, a shake, a red outline</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.1</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.14" class="a12-d"><canvas class="a12-d-cv" width="480" height="270"></canvas><div class="a12-d-cap"><b>freeze and shake</b><span>a tiny pause, a shake, a red outline</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.14</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.16" class="a12-d"><canvas class="a12-d-cv" width="480" height="270"></canvas><div class="a12-d-cap"><b>freeze and shake</b><span>a tiny pause, a shake, a red outline</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.16</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.2" class="a12-d"><canvas class="a12-d-cv" width="480" height="270"></canvas><div class="a12-d-cap"><b>freeze and shake</b><span>a tiny pause, a shake, a red outline</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.2</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.26" class="a12-d"><canvas class="a12-d-cv" width="480" height="270"></canvas><div class="a12-d-cap"><b>freeze and shake</b><span>a tiny pause, a shake, a red outline</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.26</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.6" class="a12-d"><canvas class="a12-d-cv" width="480" height="270"></canvas><div class="a12-d-cap"><b>freeze and shake</b><span>a tiny pause, a shake, a red outline</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.6</div></div><script>
+</style><div style="position:relative;width:560px;height:340px"><div data-t="0.1" class="a12-d"><canvas class="a12-d-cv" width="480" height="270"></canvas><div class="a12-d-cap"><b>freeze and shake</b><span>a tiny pause, a shake, a red outline</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.1</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.14" class="a12-d"><canvas class="a12-d-cv" width="480" height="270"></canvas><div class="a12-d-cap"><b>freeze and shake</b><span>a tiny pause, a shake, a red outline</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.14</div></div><script>
 (function(){
   var P='a12-d', GTW=615, LOOP=1.2;
   Array.prototype.forEach.call(document.querySelectorAll('.'+P),function(root){
@@ -67,11 +67,14 @@ function shot(t){
 }
 
 var tmp2=document.createElement('canvas'); tmp2.width=240; tmp2.height=210; var t2=tmp2.getContext('2d');
+var sil=null;
+function mkSil(){ var s=document.createElement('canvas'); s.width=240; s.height=210; var x=s.getContext('2d'); x.drawImage(SH.stand.img,0,0); var d=x.getImageData(0,0,240,210), i; for(i=3;i<d.data.length;i+=4) d.data[i]=d.data[i]>110?255:0; x.putImageData(d,0,0); return s; }
 function outline(x,y,col,a){
+  if(!sil) sil=mkSil();
   var m, d, k, dx, dy;
   for(m=0;m<2;m++){
     d=m?2:5; t2.setTransform(1,0,0,1,0,0); t2.globalCompositeOperation='source-over'; t2.clearRect(0,0,240,210);
-    for(k=0;k<8;k++){ dx=Math.round(Math.cos(k*0.7854)*d); dy=Math.round(Math.sin(k*0.7854)*d); t2.drawImage(tmp,0,0,224,196,6+dx,6+dy,224,196); }
+    for(k=0;k<8;k++){ dx=Math.round(Math.cos(k*0.7854)*d); dy=Math.round(Math.sin(k*0.7854)*d); t2.drawImage(sil,0,0,224,196,6+dx,6+dy,224,196); }
     t2.globalCompositeOperation='source-in'; t2.fillStyle=col; t2.fillRect(0,0,240,210); t2.globalCompositeOperation='source-over';
     c.save(); c.globalAlpha=a*(m?1:0.32); c.drawImage(tmp2,0,0,240,210,Math.round(x)-FX-6,Math.round(y)-FY-6,240,210); c.restore();
   }

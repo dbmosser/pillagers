@@ -1,0 +1,2 @@
+== 4k : window 3872x2263, viewport 3840x2160
+  duoaim                                 staged       8.9s    | {"scene":"duoaim","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1578,"y":1041,"w":371,"h":568,"fx":1560,"fy":1270},{"id":"mate","kind":"player","x":2391,"y":1111,"w":552,"h":507,"fx":2279,"fy":1310}],"objects":null}

@@ -545,3 +545,5 @@
 2026-10-18 0.0351 critic-02-raid-hud-redesign
 2026-10-18 0.0277 critic-12-ui-party-screens
 2026-10-18 1.5524 12-ui-party-screens
+2026-10-18 0.0307 critic-03-title-and-backdrop
+2026-10-18 0.5465 03-title-and-backdrop

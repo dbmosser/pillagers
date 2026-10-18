@@ -1,0 +1,7 @@
+v31.01: the arcade pause box has no hosting line
+
+The party arcade pause box is now the same in both windows: the extra hosting line only the player 1 window showed is gone.
+
+Check 31.01. Fails on v31.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

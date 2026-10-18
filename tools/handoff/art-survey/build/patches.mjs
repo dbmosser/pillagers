@@ -35,7 +35,7 @@ const isPlayer = "(st&&(st.hero||(st.own&&typeof st.own.seat==='number')))";
 const faceShift = 'wc.save(); wc.translate(Math.cos(face)*2.2,Math.sin(face)*0.8);';
 // B: the face slides toward the aim; aiming up the face is gone and the head reads as hair
 P['a03-B'] = { scene: 'duoaim', edits: [
-  ['  // v10.94, his note: THE FACE MARKS GO ON FIRST.', '  var _BACK=(Math.sin(face)<-0.35); if(_BACK){ wc.fillStyle=HAIRDARK; rrF(hx2-7.5,ty-37,15,13,5); }\n  if(!_BACK){ ' + faceShift + '\n  // v10.94, his note: THE FACE MARKS GO ON FIRST.'],
+  ['  // v10.94, HIS NOTE: THE FACE MARKS GO ON FIRST.', '  var _BACK=(Math.sin(face)<-0.35); if(_BACK){ wc.fillStyle=HAIRDARK; rrF(hx2-7.5,ty-37,15,13,5); if(_NHC){ wc.fillStyle=_NHC[1]; rrF(hx2-7.5,ty-37,15,4.6,5); wc.fillStyle=_NHC[2]; wc.fillRect(hx2-6.4,ty-36.6,9.6,1.3); } }\n  if(!_BACK){ ' + faceShift + '\n  // v10.94, HIS NOTE: THE FACE MARKS GO ON FIRST.'],
   ['  // v10.94: the face marks used to be painted here, over the eyes. They are', '  wc.restore(); }\n  // v10.94: the face marks used to be painted here, over the eyes. They are'],
   ['    // v10.36: TATTOO, ink on the face and neck, before the beard and headgear.', '    if(!_BACK){ ' + faceShift + '\n    // v10.36: TATTOO, ink on the face and neck, before the beard and headgear.'],
   ['    // HEADGEAR. Sits on top of the fringe and the face because that is where a', '    wc.restore(); }\n    // HEADGEAR. Sits on top of the fringe and the face because that is where a'],

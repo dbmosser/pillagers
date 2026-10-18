@@ -42,11 +42,14 @@ function body(K) {
   } else {
     extra += `
 var tmp2=document.createElement('canvas'); tmp2.width=240; tmp2.height=210; var t2=tmp2.getContext('2d');
+var sil=null;
+function mkSil(){ var s=document.createElement('canvas'); s.width=240; s.height=210; var x=s.getContext('2d'); x.drawImage(SH.stand.img,0,0); var d=x.getImageData(0,0,240,210), i; for(i=3;i<d.data.length;i+=4) d.data[i]=d.data[i]>110?255:0; x.putImageData(d,0,0); return s; }
 function outline(x,y,col,a){
+  if(!sil) sil=mkSil();
   var m, d, k, dx, dy;
   for(m=0;m<2;m++){
     d=m?2:5; t2.setTransform(1,0,0,1,0,0); t2.globalCompositeOperation='source-over'; t2.clearRect(0,0,240,210);
-    for(k=0;k<8;k++){ dx=Math.round(Math.cos(k*0.7854)*d); dy=Math.round(Math.sin(k*0.7854)*d); t2.drawImage(tmp,0,0,224,196,6+dx,6+dy,224,196); }
+    for(k=0;k<8;k++){ dx=Math.round(Math.cos(k*0.7854)*d); dy=Math.round(Math.sin(k*0.7854)*d); t2.drawImage(sil,0,0,224,196,6+dx,6+dy,224,196); }
     t2.globalCompositeOperation='source-in'; t2.fillStyle=col; t2.fillRect(0,0,240,210); t2.globalCompositeOperation='source-over';
     c.save(); c.globalAlpha=a*(m?1:0.32); c.drawImage(tmp2,0,0,240,210,Math.round(x)-FX-6,Math.round(y)-FY-6,240,210); c.restore();
   }

@@ -2805,7 +2805,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.00';
+var VER='31.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18334,6 +18334,7 @@ function togglePauseBox(on){
     var _bl=document.getElementById('pausebleed');
     if(_bl) _bl.style.display=(_inRaid&&_downNow)?'':'none';
     var _hw=document.getElementById('pausehost'); if(_hw) _hw.style.display=netHostHolds()?'':'none';   // v16.38: the host is told what quitting costs the party
+    if(_hw&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on) _hw.style.display='none';   // v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "please coordinate them better". Only the player 1 pause box carried this sentence; in the party arcade both pause boxes are alike (the window still asks before it closes)
     // v10.96, HIS NOTE: his two choices, in his words. Closing the box IS
     // returning to the Undercroft, so the resume button carries the first one; a
     // separate button that only closed the box would be two controls for one act.
@@ -48275,7 +48276,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.00: The saves block lines up with the mode buttons and the name box is lower case. Check 31.00 fails on v30.99',
+  now:'v31.01: The party arcade pause box is now the same in both windows: the extra hosting line only the player 1 window showed is gone. Check 31.01 fails on v31.00',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

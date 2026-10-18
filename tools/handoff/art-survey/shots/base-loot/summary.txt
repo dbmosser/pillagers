@@ -1,0 +1,2 @@
+== 4k : window 3872x2263, viewport 3840x2160
+  loot                                   staged       6.1s    | {"scene":"loot","plate":false,"zoom":6.793703703703704,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1913,"y":1111,"w":329,"h":355,"fx":1862,"fy":1251}],"objects":[{"id":"open-crate","kind":"container","fx":1387,"fy":1387},{"id":"open-locker","kind":"container","fx":1183,"fy":1047},{"id"
