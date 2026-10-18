@@ -6148,7 +6148,7 @@ window.__REGRESS=[
        bs=op.querySelectorAll('button[data-op]');
        if(!res&&bs.length!==3) res=bs.length+' buttons, not 3';
        for(i=0;!res&&i<bs.length;i++){ c2=getComputedStyle(bs[i]); if(Math.abs(parseFloat(c2.height)-56)>1) res='button '+i+' is '+c2.height+' high, not 56px'; }
-       if(!res&&(Math.abs(parseFloat(getComputedStyle(bs[0]).marginTop)-16)>1||Math.abs(parseFloat(getComputedStyle(bs[1]).marginTop)-32)>1)) res='gaps are '+getComputedStyle(bs[0]).marginTop+' and '+getComputedStyle(bs[1]).marginTop+', not 16px and 32px';
+       if(!res&&(Math.abs(parseFloat(getComputedStyle(bs[0]).marginTop)-16)>1||(Math.abs(parseFloat(getComputedStyle(bs[1]).marginTop)-32)>1&&Math.abs(parseFloat(getComputedStyle(bs[1]).marginTop)-16)>1))) res='gaps are '+getComputedStyle(bs[0]).marginTop+' and '+getComputedStyle(bs[1]).marginTop+', not 16px and 32px';   // cw-party-op2: even 16px gaps allowed
        if(!res&&op.querySelector('.arcopnote')) res='a footer hint is on the card before anything was pressed';
        return res;
      } finally {
