@@ -1,0 +1,14 @@
+{"generated":"2026-10-18T05:53:04","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":88,"screens":[
+{"name":"02-welcome-pack","screen":"WELCOME PACK modal (first run)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"02-welcome-pack-1080.jpg","lint":""}},
+{"name":"04-stash-terminal","screen":"THE STASH: stash grid, loadout backpack, tactical belt, sell row, freebie kit","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"04-stash-terminal-1080.jpg","lint":""}},
+{"name":"05-sector-page","screen":"Sector page WHERE ARE YOU GOING? (maps, surface, weather, going-up summary)","1080":{"staged":true,"note":"sectormodal","viewport":"1920x1080","shot":"05-sector-page-1080.jpg","lint":""}},
+{"name":"06-terms","screen":"Terms modal (lift T)","1080":{"staged":true,"note":"termsmodal","viewport":"1920x1080","shot":"06-terms-1080.jpg","lint":""}},
+{"name":"08-shop","screen":"Trader: SHOP tab","1080":{"staged":true,"note":"tradermodal","viewport":"1920x1080","shot":"08-shop-1080.jpg","lint":""}},
+{"name":"09-craft","screen":"Trader: CRAFT tab","1080":{"staged":true,"note":"tradermodal","viewport":"1920x1080","shot":"09-craft-1080.jpg","lint":""}},
+{"name":"12-mainframe-contracts","screen":"Mainframe: contracts","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"12-mainframe-contracts-1080.jpg","lint":""}},
+{"name":"13-mainframe-rewards","screen":"Mainframe: rewards","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"13-mainframe-rewards-1080.jpg","lint":""}},
+{"name":"16-bar-last-pour","screen":"The Last Pour bar modal","1080":{"staged":true,"note":"barmodal","viewport":"1920x1080","shot":"16-bar-last-pour-1080.jpg","lint":""}},
+{"name":"17-fashion-mirror","screen":"FASHION / appearance (BUILD/character look) modal","1080":{"staged":true,"note":"appearmodal","viewport":"1920x1080","shot":"17-fashion-mirror-1080.jpg","lint":""}},
+{"name":"65-codex","screen":"The armory codex (career stash screen)","1080":{"staged":true,"note":"codexmodal","viewport":"1920x1080","shot":"65-codex-1080.jpg","lint":""}},
+{"name":"67-career-stash-stocked","screen":"THE STASH with a stocked career profile (sort/filter bar, belt, wheel strip)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"67-career-stash-stocked-1080.jpg","lint":""}}
+]}

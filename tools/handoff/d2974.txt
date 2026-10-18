@@ -1,0 +1,5 @@
+## v29.74 - Run over card: the column is centred
+
+Co-op hunt while he was away. The run over column from v29.73 sat at the bottom of the screen because the clip element stayed in the page flow. The clip element goes behind, so the card and the button sit in the middle. Restyle only.
+
+MEASURED. Check 29.74 passes, and fails on v29.73.

@@ -1,0 +1,7 @@
+v29.74: run over card: the column is centred
+
+The run over screen is centred.
+
+Check 29.74. Fails on v29.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

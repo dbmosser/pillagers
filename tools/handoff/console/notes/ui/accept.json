@@ -50,10 +50,10 @@
  "07-party-coop": {
   "score": 2,
   "pass": false,
-  "verdict": "A text-heavy modal that reads as a generic dark template: two paragraphs of explaining copy swamp the actual choice (host or join), the controls are tiny and misaligned, and there is no pad focus or party-slot UI.",
-  "pic": "tools/handoff/console/notes/shots/all/07-party-coop-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:13"
+  "verdict": "The party card is a dark centred modal that follows the guide's panel and sentence-case rules, but it is a wall of small explaining text with a centred title, no hero or primary action, a bottom-text Close button and a misplaced Join button, so it reads as a debug dialog rather than a polished menu.",
+  "pic": "tools/handoff/console/notes/shots/b-31-after2/07-party-coop-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-18T09:49"
  },
  "08-shop": {
   "score": 2,
@@ -176,12 +176,12 @@
   "when": "2026-10-18T09:37"
  },
  "32-keys-window": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The new Keys window is a modest improvement (narrower card, a real close glyph, tighter columns), but it is still a dense, undifferentiated wall of identical rows and key boxes with tiny muted section labels, a clipped list and a non-standard layout, so it reads as a 2 rather than a polished screen.",
-  "pic": "tools/handoff/console/notes/shots/c-31p-after/32-keys-window-1080.jpg",
+  "verdict": "A clean, consistent, sentence-case modal that follows the guide's close and title rules, but it is a flat wall of 40-odd identical key boxes with no hierarchy, tiny muted section labels and no visible focus state, so it reads as a generic settings template.",
+  "pic": "tools/handoff/console/notes/shots/c-31s-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:38"
+  "when": "2026-10-18T09:49"
  },
  "33-raid-fight-alerts": {
   "score": 2,

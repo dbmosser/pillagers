@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.74 - Run over card: the column is centred
+
+Co-op hunt while he was away. The run over column from v29.73 sat at the bottom of the screen because the clip element stayed in the page flow. The clip element goes behind, so the card and the button sit in the middle. Restyle only.
+
+MEASURED. Check 29.74 passes, and fails on v29.73.
 ## v29.73 - Run over card: one centred column with a button
 
 Co-op hunt while he was away. The critic scored the run over card 2: a small box floating in a void with the prompt as loose text far below. The card and Press any button now sit in one centred column, the prompt as a plate button. Restyle only.
