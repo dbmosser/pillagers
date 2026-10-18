@@ -2875,7 +2875,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.52';
+var VER='31.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11813,7 +11813,8 @@ function FSz(spec,z){
 function beltFS(bw,k){ var f=FS(TYPE.micro), m=(/([\d.]+)px/).exec(f), n=m?parseFloat(m[1]):11, want=Math.round(bw*k); return (want>n)?f.replace((/([\d.]+)px/),want+'px'):f; }
 // v19.66, seen on a 4K text scan (2026-10-08): the line over the belt grew 1.3 times from 1080p to 4K while the extraction lines above
 // it (v19.54) and the rest of the HUD grow twice, so it read as small print. It is the larger of the slot size and the screen-grown size.
-function beltCapFS(bw){ var a=beltFS(bw,0.12), b=hudFS(TYPE.micro), pa=parseFloat(((/([\d.]+)px/).exec(a)||[0,0])[1])||0, pb=parseFloat(((/([\d.]+)px/).exec(b)||[0,0])[1])||0; return (pb>pa)?b:a; }
+/* v31.xx (cw-beltcap), the critic on screen 36 (2026-10-19): the line over the belt (scav pistol, fire, use) was the smallest print on the HUD, 13 px, unreadable from a couch. It takes the label size (15.6 px rendered, the size of prompts) and the emote strip and bars above it move up with it, as they already read this function. */
+function beltCapFS(bw){ var a=beltFS(bw,0.12), b=hudFS(TYPE.label), pa=parseFloat(((/([\d.]+)px/).exec(a)||[0,0])[1])||0, pb=parseFloat(((/([\d.]+)px/).exec(b)||[0,0])[1])||0; return (pb>pa)?b:a; }
 // v19.22, seen on the 4K raid screenshot (2026-10-08): a HUD font grown with the screen (hudRes), for the few raid labels drawn
 // straight in screen pixels that stayed their 1080p size at 4K.
 function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes==='function')?hudRes():1); return (r===1)?f:f.replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*r).toFixed(1)+'px'; }); }
@@ -49510,7 +49511,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.52: Every end card has a 48px X top right that leaves like the primary. Copy report is gone from the card. Haul tiles not yet shown are empty slots, and each settles in instead of flashing big. Check 31.52 fails on v31.51',
+  now:'v31.53: The line over the weapon belt is bigger and easier to read. Check 31.53 fails on v31.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

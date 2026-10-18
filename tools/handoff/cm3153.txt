@@ -1,0 +1,7 @@
+v31.53: the caption over the belt is prompt size
+
+The line over the weapon belt is bigger and easier to read.
+
+Check 31.53. Fails on v31.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

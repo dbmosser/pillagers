@@ -6101,6 +6101,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.53',what:'the caption over the belt (item name, fire, use) is prompt size (label, 15.6 px), not the 13 px micro print',
+   run:function(){
+     if(typeof beltCapFS!=='function') return 'SKIP: no beltCapFS';
+     var cap=parseFloat(((/([\d.]+)px/).exec(String(beltCapFS(40)))||[0,0])[1])||0;
+     var want=parseFloat(((/([\d.]+)px/).exec(String(FS(TYPE.label)))||[0,99])[1])||99;
+     if(cap<want-0.01) return 'the belt caption is '+cap+' px, under the label size '+want+' px';
+     return null; }},
   {v:'31.52',what:'the end cards have a 48px close X top right that leaves like the primary, copy report is off the card, and a haul tile not yet shown stays an empty slot (his Q43, the critic on 35 38 60 76 77)',
    run:function(){
      if(!(window.__deploy&&window.__endRaid&&window.__state&&window.__P)) return 'SKIP: this build cannot end a raid';

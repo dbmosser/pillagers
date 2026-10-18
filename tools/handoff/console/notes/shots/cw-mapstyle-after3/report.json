@@ -1,0 +1,9 @@
+{"generated":"2026-10-18T19:49:27","url":"http://localhost:8808/fxdrypfm.html","recipes":"tools/handoff/console/notes/shots/cw-mapstyle-recipes.json","seconds":53,"screens":[
+{"name":"60-mapfirst-1p","screen":"Raid opens on the sector map, keyboard prompt, eight contracts","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"60-mapfirst-1p-1080.jpg","lint":""}},
+{"name":"61-mapfirst-pad","screen":"Raid opens on the sector map, pad prompt","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"61-mapfirst-pad-1080.jpg","lint":""}},
+{"name":"62-mapfirst-2p-wait","screen":"Opening map after the press, waiting for p2","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"62-mapfirst-2p-wait-1080.jpg","lint":""}},
+{"name":"63-map-open-m","screen":"The map opened in the raid with M, a waypoint set","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"63-map-open-m-1080.jpg","lint":""}},
+{"name":"64-map-open-demo","screen":"The map in the demo: no contracts","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"64-map-open-demo-1080.jpg","lint":""}},
+{"name":"65-map-open-tv","screen":"The map at the TV text size","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"65-map-open-tv-1080.jpg","lint":""}},
+{"name":"66-map-open-p2","screen":"The map for player 2: the ally colour and a 2","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"66-map-open-p2-1080.jpg","lint":""}}
+]}

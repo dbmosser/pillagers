@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.53 - THE CAPTION OVER THE BELT IS PROMPT SIZE
+
+Co-op hunt while he was away. The critic on the raid hud (screen 36): the line over the belt, the item name with fire and use, is 12 px type and cannot be read from a couch. It now takes the label size the world prompts use. The emote strip and wind-up bars above it already take their height from the same function, so they move up with it.
+
+MEASURED. Check 31.53 passes, and fails on v31.52.
 ## v31.52 - END CARDS: CLOSE X, NO COPY REPORT, CLEAN HAUL REVEAL
 
 Co-op hunt while he was away. The critic scored the end cards 2 and 3: no close X (his Q43: a dialog is a card with an X), copy report is a dev action on a player card (moved to the one recorder page in Settings, Q8 reason in changes.md), and during the haul reveal a tile popping in at 1.5x looked like a stray box beside the strip.

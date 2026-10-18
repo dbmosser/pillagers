@@ -1,0 +1,8 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  60-mapfirst-1p                         staged       6.3s  
+  61-mapfirst-pad                        staged       5.9s  
+  62-mapfirst-2p-wait                    staged       7.4s  
+  63-map-open-m                          staged       6.7s  
+  64-map-open-demo                       staged       6.2s  
+  65-map-open-tv                         staged       6.6s  
+  66-map-open-p2                         staged       6.6s  
