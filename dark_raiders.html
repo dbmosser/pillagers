@@ -1676,7 +1676,7 @@ body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress, body #att
 body #attract[style*="block"]:has(.arcpage[style*="block"]) .arcpage.uimghost{ grid-row:1; }
 body #attract[style*="block"]:has(.arcover[style*="block"]) .arcover{ min-width:calc(var(--sp-5) * 15 * var(--attz,1)); }
 /* v30.xx (cw-partyglow), the critic on v30.14 (46 52 55 56 64): "the blur is so heavy and dark the world is unreadable mush; bake it at about 55 percent brightness with a lighter 6 to 8px blur". An 8px blur (still smears every label and the HUD text into colour) and a scrim that lets about half of the world through in the middle and a fifth at the edges. */
-body #attract{ -webkit-backdrop-filter:blur(var(--sp-1)); backdrop-filter:blur(var(--sp-1)); background:radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--ui-raised) 18%, transparent) 0%, color-mix(in srgb, var(--ui-bg) 62%, transparent) 50%, color-mix(in srgb, var(--ui-void) 84%, transparent) 100%); }
+body #attract{ -webkit-backdrop-filter:blur(var(--sp-2)); backdrop-filter:blur(var(--sp-2)); background:radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--ui-raised) 30%, transparent) 0%, color-mix(in srgb, var(--ui-bg) 76%, transparent) 50%, color-mix(in srgb, var(--ui-void) 90%, transparent) 100%); }   /* v30.xx (cw-partyglow2): 16px again, the 8px blur showed the hub labels (critic 56 = 2) */
 /* v29.98 (cw-partyprompt), the critic on v29.97 (46, 55, 56, 64 = 3 each): "Press any button is an instruction drawn as a filled button, a fake action", "the logo out-shouts the title", "No scores yet is the one message that matters and it is small and dim", "the ring is unexplained". The prompt is a footer hint now: a button glyph and the words in the accent, pulsing, no fill. The wordmark is the 32px logo on the 5 percent margin. The empty line is 20px light, the seed line a 16px label, the table heads 20px. Restyle only. */
 body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress, body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ background:transparent; border-color:transparent; color:var(--acc); padding:0; min-width:0; gap:calc(var(--sp-1) * var(--attz,1)); animation:attpulse 1.6s ease-in-out infinite; }
 body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress::before, body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress::before{ content:''; flex:none; box-sizing:border-box; width:calc(var(--sp-3) * var(--attz,1)); height:calc(var(--sp-3) * var(--attz,1)); border:1px solid var(--acc); border-radius:50%; background:radial-gradient(circle, var(--acc) 0 35%, transparent 38%); }
@@ -2778,7 +2778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.19';
+var VER='30.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47945,7 +47945,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.19: Settings detail names the first row below the tab strip. Check 30.19 fails on v30.18',
+  now:'v30.20: The party pages have a soft backdrop with no ghost words. Check 30.20 fails on v30.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,1 @@
+| Party backdrop: the 16px blur is back | v30.20 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.20 passes, fails on v30.19 |

@@ -432,12 +432,12 @@
   "when": "2026-10-18T12:46"
  },
  "72-settings-sec-display": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The only change is the detail text: placeholder junk (\"Edit the words / Don't use this unless you know what you are doing!\") became a real description, but it describes Vibration strength while the Display tab is open and no row is focused, so it is still wrong, and the modal is otherwise identical and flat.",
-  "pic": "tools/handoff/console/notes/shots/c-31r3-after/72-settings-sec-display-1080.jpg",
+  "verdict": "The new version fixes the two biggest defects of the old one (no focused row, and a placeholder 'Edit the words / Don't use this unless you know what you are doing!' help pane), so pad focus now reads and the help text is real, but the screen is still a cramped, small-type settings list with a stranded control column and no visual identity.",
+  "pic": "tools/handoff/console/notes/shots/c-31r3b-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T13:20"
+  "when": "2026-10-18T13:25"
  },
  "74-settings-change-pad-buttons": {
   "score": 2,

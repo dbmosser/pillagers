@@ -1,0 +1,12 @@
+{
+    "title":  "Party backdrop: the 16px blur is back",
+    "why":  "The 8px blur let the labels of the hub show through the party pages as ghost words and the critic scored the board 2 of 5 again. The 16px blur is back, with a scrim that keeps a little more of the glow.",
+    "now":  "The party pages have a soft backdrop with no ghost words.",
+    "edits":  [
+                  {
+                      "anchor":  "body #attract{ -webkit-backdrop-filter:blur(var(--sp-1)); backdrop-filter:blur(var(--sp-1)); background:radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--ui-raised) 18%, transparent) 0%, color-mix(in srgb, var(--ui-bg) 62%, transparent) 50%, color-mix(in srgb, var(--ui-void) 84%, transparent) 100%); }",
+                      "replacement":  "body #attract{ -webkit-backdrop-filter:blur(var(--sp-2)); backdrop-filter:blur(var(--sp-2)); background:radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--ui-raised) 30%, transparent) 0%, color-mix(in srgb, var(--ui-bg) 76%, transparent) 50%, color-mix(in srgb, var(--ui-void) 90%, transparent) 100%); }   /* v30.xx (cw-partyglow2): 16px again, the 8px blur showed the hub labels (critic 56 = 2) */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the attract backdrop blurs the world by 16px (the 16px spacing token): at 8px the hub labels read through the card scrim as ghost words (critic on v30.18: 56 back to 2; screens 46 52 55 56 64)\u0027,\n   run:function(){\n     if(typeof attEl!==\u0027function\u0027) return \u0027SKIP: no attract here\u0027;\n     var d, wasDisp, bf, m, res=null;\n     try{\n       __topClear(); __runPrep();\n       d=attEl(); wasDisp=d.style.display; d.style.display=\u0027block\u0027;\n       bf=String(getComputedStyle(d).backdropFilter||getComputedStyle(d).webkitBackdropFilter);\n       m=/blur\\(([0-9.]+)px\\)/.exec(bf);\n       if(!m) return \u0027the attract backdrop does not blur the world\u0027;\n       if(parseFloat(m[1])\u003c15) res=\u0027the backdrop blur is \u0027+m[1]+\u0027px, under the 16px token\u0027;\n       return res;\n     } finally { try{ d.style.display=wasDisp; }catch(_f){} }\n   }},"
+}

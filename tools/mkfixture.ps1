@@ -6097,6 +6097,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.20',what:'the attract backdrop blurs the world by 16px (the 16px spacing token): at 8px the hub labels read through the card scrim as ghost words (critic on v30.18: 56 back to 2; screens 46 52 55 56 64)',
+   run:function(){
+     if(typeof attEl!=='function') return 'SKIP: no attract here';
+     var d, wasDisp, bf, m, res=null;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       bf=String(getComputedStyle(d).backdropFilter||getComputedStyle(d).webkitBackdropFilter);
+       m=/blur\(([0-9.]+)px\)/.exec(bf);
+       if(!m) return 'the attract backdrop does not blur the world';
+       if(parseFloat(m[1])<15) res='the backdrop blur is '+m[1]+'px, under the 16px token';
+       return res;
+     } finally { try{ d.style.display=wasDisp; }catch(_f){} }
+   }},
   {v:'30.19',what:'after a tab chip jump the Settings detail pane names the first row below the sticky tab strip, not a row hidden under it',
    run:function(){
      var bad=[], sl, d, k, rows, i, a, c, m, t, bar, vis=null, nm='', chip, padWas=document.body.classList.contains('padon');

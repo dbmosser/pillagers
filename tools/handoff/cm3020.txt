@@ -1,0 +1,7 @@
+v30.20: party backdrop: the 16px blur is back
+
+The party pages have a soft backdrop with no ghost words.
+
+Check 30.20. Fails on v30.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

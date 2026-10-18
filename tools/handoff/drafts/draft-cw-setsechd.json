@@ -1,0 +1,12 @@
+{
+    "title":  "SETTINGS SECTION LABELS ARE BARE ANCHORS",
+    "why":  "Critic c-31 (Settings 72 at 3, P1): the 13px grey section label repeats the active tab.",
+    "now":  "Settings section labels hidden, 16px gap between groups.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #setlist .setjump + .row[style*=\"opacity:.7\"]{ display:none; }",
+                      "replacement":  "#root #setlist .setjump + .row[style*=\"opacity:.7\"]{ display:none; }\n/* v28.xx (cw-setsechd) critic c-31 (Settings 72 at 3, P1): \"the section label Display is 13px dim grey and repeats the active tab\". The label row stays in the list as the jump anchor but shows no text: a 16px gap between groups. */\n#root #setlist .row[style*=\"opacity:.7\"]{ height:0 !important; min-height:0 !important; padding:0 !important; margin:var(--sp-2) 0 0 !important; border:0 !important; overflow:hidden; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Settings section label rows show no text (the tab already says it) yet the Display chip still jumps to its rows\u0027,\n   run:function(){\n     var bad=[], sl, hd, chip, n, padWas=document.body.classList.contains(\u0027padon\u0027);\n     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n     try{\n       document.body.classList.remove(\u0027padon\u0027);\n       openSettings();\n       sl=document.getElementById(\u0027setlist\u0027); hd=document.getElementById(\u0027setsec_DISPLAY\u0027); chip=document.querySelector(\u0027.setjump button[data-sec=\"DISPLAY\"]\u0027);\n       if(!sl||!hd||!chip){ bad.push(\u0027no list, Display head or chip\u0027); }\n       else{\n         n=hd.getBoundingClientRect().height;\n         if(n\u003e4) bad.push(\u0027the Display label row is \u0027+Math.round(n)+\u0027px tall, it should be a bare anchor\u0027);\n         chip.click();\n         if(sl.scrollTop\u003c5) bad.push(\u0027the Display chip did not scroll the list\u0027);\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var q=document.getElementById(\u0027settingsmodal\u0027); if(q) q.classList.remove(\u0027on\u0027); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle(\u0027padon\u0027,padWas); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

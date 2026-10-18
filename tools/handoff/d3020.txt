@@ -1,0 +1,5 @@
+## v30.20 - Party backdrop: the 16px blur is back
+
+Co-op hunt while he was away. The 8px blur let the labels of the hub show through the party pages as ghost words and the critic scored the board 2 of 5 again. The 16px blur is back, with a scrim that keeps a little more of the glow.
+
+MEASURED. Check 30.20 passes, and fails on v30.19.
