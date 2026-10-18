@@ -6097,6 +6097,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.28',what:'no swearing in the baked on-screen lines (his answer Q76): the three lines that had it keep their attitude without it',
+   run:function(){
+     if(typeof TXSHIP!=='object'||!TXSHIP) return 'no TXSHIP table';
+     var bad=[], k, v, rx=/\b(shit\w*|fuck\w*|bastards?|damn\w*|hell|bitch\w*|crap\w*|asshole|ass|piss\w*)\b/i, n=0, sw=0;
+     for(k in TXSHIP){ v=String(TXSHIP[k]); n++; if(rx.test(v)){ sw++; bad.push('swearing in: '+v.slice(0,60)); } }
+     if(n<20) bad.push('the table is gone ('+n+' lines)');
+     var cs=0, rg=0, wi=0;
+     for(k in TXSHIP){ v=String(TXSHIP[k]); if(/cheapskate/.test(v)) cs++; if(/about to get real/.test(v)) rg++; if(/wild idea Claude/.test(v)) wi++; }
+     if(cs!==1||rg!==1||wi!==1) bad.push('the cleaned lines lost their attitude (cheapskate '+cs+', get real '+rg+', wild idea '+wi+')');
+     return bad.length?bad.join('; '):null; }},
   {v:'30.27',what:'each pillager role is worn gear drawn on the body (rush pauldrons, flank scarf, supp bandolier, mark hood, shield plate): nothing floats over the head, every piece touches the body, and it moves with the crouch',
    run:function(){
      if(typeof drawRoleMark!=='function'||typeof drawOp!=='function'||typeof PROLE==='undefined') return 'SKIP: no role gear here';

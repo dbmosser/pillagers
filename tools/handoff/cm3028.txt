@@ -1,0 +1,7 @@
+v30.28: clean the swearing out of the baked on-screen lines
+
+Three on-screen lines lost their swearing and kept their attitude.
+
+Check 30.28. Fails on v30.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.28 - Clean the swearing out of the baked on-screen lines
+
+Co-op hunt while he was away. His answer Q76 (2026-10-18): clean the swearing out of on-screen lines but keep the attitude. Three baked lines swore: "You cheap bastard.", "Shit is about to get real." and "This is some shit Claude came up with." They now read "You cheapskate.", "Things are about to get real." and "This is some wild idea Claude came up with."
+
+MEASURED. Check 30.28 passes, and fails on v30.27.
 ## v30.27 - PILLAGER ROLES ARE WORN GEAR, NOT MARKS IN THE AIR
 
 Co-op hunt while he was away. His answer 73 (10-18): drawn gear replaces the marks floating over pillagers heads. Rush wears spiked shoulder pauldrons, flank a knotted neck scarf, supp a bandolier with brass rounds and a hip ammo box, mark a hood framing the face and a shoulder mantle, shield a strapped arm plate. All drawn on the body and anchored to its bob, lean and crouch; nothing rises above the head but the hood rim. Colours and roles are unchanged.
