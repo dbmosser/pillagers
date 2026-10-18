@@ -1,0 +1,1 @@
+| melee is strong: one crowbar swing kills a crawler, elites take two, pillagers three, and every hit reads | v31.14 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.14 passes, fails on v31.13 |

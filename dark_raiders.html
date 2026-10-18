@@ -2817,7 +2817,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.13';
+var VER='31.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22379,6 +22379,7 @@ function meleeFoley(kind,x,y){
   if((G&&G.sim)||typeof foley!=='function') return false;
   if(kind==='swing'){ foley('strapRip',null,null,{rate:2.2,g:0.9,dur:0.2}); foley('boltLatch',null,null,{rate:2.4,g:0.4,at:0.05,dur:0.09,gap:0}); return true; }
   if(kind==='hit'){ foley('plateClack',x,y,{rate:0.75,g:1.2}); foley('lmgClack',x,y,{rate:0.9,g:0.6,at:0.03,gap:0}); return true; }
+  if(kind==='kill'){ foley('plateClack',x,y,{rate:0.55,g:1.5}); foley('lmgClack',x,y,{rate:0.7,g:0.8,at:0.04,gap:0}); return true; }   // v28.xx (cw-meleeone): the killing blow lands lower and heavier
   return false;
 }
 // v26.xx (meleebig), HIS NOTE 2026-10-13: "melee swing animation needs to be larger, more prominent". THE CROWBAR LANDS: a short pale
@@ -22402,8 +22403,46 @@ function meleeImpact(sx,sy,ex,ey,er){
 // left-click punch with bare hands stays at 6; the reach (60) and the 420 ms cooldown are the same; a blow from behind is still 1.5
 // times as hard (27, so two swings for a crawler); a blow still ignores armour; nothing an enemy does to you moves. No draw from the
 // seeded stream (the damage is a number), and the bot never swings a crowbar (meleeStrike refuses in a sim raid).
-var CROWBAR_DMG=18;
-function crowbarWep(){ var w=cloneObj(WEAPONS.fists); w.dmg=CROWBAR_DMG; return w; }
+// v28.xx (cw-meleeone), HIS ORDER (2026-10-18, newest, binding): "melee should be really strong and a viable combat option, should one-shot a crawler". IT REPLACES HIS NOTE OF
+// 2026-10-13 ABOVE ("3 swings should kill a crawler"): ONE SWING KILLS A CRAWLER. The blow is no longer a fixed 18, it is worked out from the body it lands on (crowbarDmgOn):
+//   a crawler or a snitch (the small bodies) dies to ONE swing at any enemy health setting, because the blow is its whole health (CROWBAR_DMG when that is more);
+//   an elite takes one swing more (an elite crawler 2: the blow is half its health);
+//   a pillager takes MELEE_SWINGS (3) from full health, an elite one 4, a wounded one fewer (the blow is a third of his health, 30 at least), and it still ignores armour;
+//   every other machine takes the flat CROWBAR_DMG, 30 (was 18): a Sentry 5 swings, a Howler or a Listener 4; the Overseer keeps the old CROWBAR_BOSS, 18, and the golden enemy
+//   takes the flat CROWBAR_DMG too (it has three times the health and a linked window cannot tell how much).
+// The number reads maxhp and the kind, elite, golden and boss marks, which a linked window has from the host (the 'ent new' word), so player 2 swing sends the host the very number
+// the host swing works out. DEMO and CAREER are the same. The bare hands punch (left click) stays 6; the reach (60), the 420 ms swing clock and the 1.5 times blow from behind on
+// a machine are as they were; the arc is now the 140 degrees the swing is drawn over (CROWBAR_ARC, 1.2 rad each side; the bare hands keep 0.9). The bot never swings
+// (meleeStrike refuses in a sim raid), and nothing here draws from the seeded stream.
+var CROWBAR_DMG=30, CROWBAR_BOSS=18, CROWBAR_ARC=1.2, MELEE_SWINGS={crawler:1,snitch:1,raider:3};
+function crowbarDmgOn(e){
+  var n, hp;
+  if(!e) return CROWBAR_DMG;
+  if(e.boss) return CROWBAR_BOSS;
+  n=Object.prototype.hasOwnProperty.call(MELEE_SWINGS,e.kind)?MELEE_SWINGS[e.kind]:0;
+  if(!n||e.golden) return CROWBAR_DMG;
+  hp=Math.max(+e.maxhp||0,+e.hp||0);
+  if(!(hp>0)) return CROWBAR_DMG;
+  if(e.elite) n++;
+  return Math.max(CROWBAR_DMG,Math.ceil(hp/n));
+}
+function crowbarWep(){ var w=cloneObj(WEAPONS.fists); w.dmg=CROWBAR_DMG; w.crowbar=1; w.arc=CROWBAR_ARC; return w; }   // v28.xx (cw-meleeone): the blow is worked out per body (crowbarDmgOn), and the swing is wide
+// v28.xx (cw-meleeone): THE BLOW READS. Every crowbar hit shows its number over the body (the large one with a bang when it kills) and the hit marker in the crosshair (the kill marker, and
+// its sound, on a kill); a pillager bleeds; a body the blow leaves standing is held for the hit stop beat (hitStopOn; a boss never is, and on a linked window the host holds it, the shot word
+// carries hs). A kill is the heavy one: a harder kick of the screen (CROWBAR_KILL_SHAKE; a blow that does not kill keeps meleeImpact 1.8), a white burst and a low thud under the
+// usual clack. Live play only, cosmetic stream only.
+var CROWBAR_KILL_SHAKE=3.4;
+function crowbarFeel(e,dmg,p){
+  var kill, n, top, col;
+  if(!G||G.sim||!e) return false;
+  kill=hitKills(e,dmg); n=Math.max(1,Math.round(dmg)); top=e.y-Math.round((e.r||12)*1.1); col=dmgNumCol(null,'',false,false);
+  if(!(NET.on&&netEntsPeer())) hitStopOn(e,HITSTOP_DMG);
+  G.hitMark={t:0,life:kill?.2:.15,kill:kill,weak:false};
+  if(CFG.dmgNumbers!==0){ dmgNum(e.x+fxn(-5,5),top,n,col,kill); if(NET.on) netFxDmg(e.x,top,n,col,kill); }
+  if(e.kind==='raider') bloodFx(e.x,e.y-14,p.x,p.y,kill?40:Math.min(30,n));
+  if(kill){ G.shake=Math.max(G.shake||0,CROWBAR_KILL_SHAKE); spark(e.x,e.y,'#ffffff',10,360); meleeFoley('kill',e.x,e.y); }
+  return kill;
+}
 // v26.xx (feel16), HIS ORDER (2026-10-14): "finisher ok". HOLD THE CROWBAR KEY (V) ON A DOWNED PILLAGER AND YOU EXECUTE HIM. A pillager on the floor
 // (hurt down, not yet dead) within FIN_REACH of you and in clear sight, held on V for FIN_T seconds, is finished at once: a heavy blow, a kick of
 // the screen and FIN_PTS added to the run score (DEMO and CAREER), and the kill pays as any kill of yours does. It beats his one self-revive,
@@ -22627,21 +22666,22 @@ if(wep.mag===0){
         if(_me.merc&&!_me.downed) continue;   // v11.38: your fists pass through your hire, like your rounds (v6.72)
         if(dist(sh,_me)>wep.rng+_me.r) continue;
         var _ma=Math.atan2(_me.y-sh.y,_me.x-sh.x);
-        if(Math.abs(Math.atan2(Math.sin(_ma-base),Math.cos(_ma-base)))>0.9) continue;
+        if(Math.abs(Math.atan2(Math.sin(_ma-base),Math.cos(_ma-base)))>(wep.arc||0.9)) continue;   // v28.xx (cw-meleeone): the crowbar swings over the 140 degrees it is drawn over (CROWBAR_ARC); the bare hands keep 0.9
         // v20.52, from the whole-game bug hunt of 2026-10-08 (H3): NO STRIKE THROUGH A WALL. The reach was measured centre to
         // centre with nothing in between, so a machine or a pillager just the other side of a building wall or a locked room
         // wall took the blow, sparked, turned on you, and a peaceful pillager in the next room charged you for it. A blow now
         // needs the same clear line a round needs (the map's own walls, so smoke and glass do not stop it), as the crawler and
         // Listener bites already do (v8.59).
         if(!losClear(sh.x,sh.y,_me.x,_me.y,G.map.segs)) continue;
-        var _mdm=wep.dmg*pwrMul('dmg',fromPlayer);
+        var _mdm=(wep.crowbar?crowbarDmgOn(_me):wep.dmg)*pwrMul('dmg',fromPlayer);   // v28.xx (cw-meleeone): the crowbar blow is worked out from the body it lands on
         if(_me.kind!=='raider'&&Math.abs(Math.atan2(Math.sin(base-_me.face),Math.cos(base-_me.face)))<0.9) _mdm*=1.5;   // v27.xx (crowbar15), the cloud review of 2026-10-15 (finding 14) and his answer 31: no bonus damage on a pillager, from any side; a machine keeps its blow from behind
-        if(NET.on&&netEntsPeer()) netShotSend(_me,_mdm,base,null); else _me.hp-=_mdm;   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
+        if(NET.on&&netEntsPeer()) netShotSend(_me,_mdm,base,null,0,'',0,wep.crowbar?1:0); else _me.hp-=_mdm;   // v28.xx (cw-meleeone): and the host holds a body the crowbar leaves standing (hs), as it holds its own   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
         _me.hitT=.16; _me.pHitT=.3; _me.pHitSeat=0;   // v11.37: your strike provokes; v17.31, co-op hunt 2026-09-28: yours, not a seat
         notoAggress(_me);            // v8.30: same rule, bare hands included
         if(_me.hp<=0) _me.byPlayer=true;
         _me.blow='m'; _me.blowT=G.t;   // v26.xx (party1): the last blow on him was a swing
         _swHit=true;
+        if(wep.crowbar) crowbarFeel(_me,_mdm,sh);   // v28.xx (cw-meleeone): the number, the hit marker, the hit stop, and a kill that reads
         if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); if(G.barT>0){ meleeFoley('hit',_me.x,_me.y); meleeImpact(sh.x,sh.y,_me.x,_me.y,_me.r); } }   // v26.xx (meleebig): and the crowbar lands with a flash, sparks and a small kick   // v25.xx (keyswap): a crowbar blow thuds
       }
     }
@@ -49112,7 +49152,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.13: F8 freezes the game so you can drag a box around any part of the screen. Press copy to put it on your clipboard, or save to write it to the exports folder. ESC or F8 carries on. Check 31.13 fails on v31.12',
+  now:'v31.14: melee is strong: one crowbar swing kills a crawler, an elite takes two, a pillager three, and each hit shows its number. Check 31.14 fails on v31.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

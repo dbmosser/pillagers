@@ -660,5 +660,14 @@
   "pic": "tools/handoff/console/notes/shots/cw-mapfirst-after/60-mapfirst-1p-1080.jpg",
   "task": "manual",
   "when": "2026-10-18T21:36"
+ },
+ "91-snip-panel-raid": {
+  "score": 0,
+  "pass": false,
+  "verdict": "critic answer was not JSON",
+  "findings": [],
+  "pic": "tools/handoff/console/notes/shots/cw-snip-after/91-snip-panel-raid-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-18T21:50"
  }
 }

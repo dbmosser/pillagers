@@ -1,0 +1,7 @@
+v31.14: melee is strong: one crowbar swing kills a crawler, elites take two, pillagers three, and every hit reads
+
+melee is strong: one crowbar swing kills a crawler, an elite takes two, a pillager three, and each hit shows its number.
+
+Check 31.14. Fails on v31.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,8 @@
+{"generated":"2026-10-18T17:49:47","url":"http://localhost:8808/fixture.html","recipes":"C:\\Users\\User1\\AppData\\Local\\Temp\\claude\\C--Users-User1-Desktop-dark-raiders\\8a09e991-b4f4-4b23-b10f-ded92e837fc3\\scratchpad\\snip-recipes3.json","seconds":67,"screens":[
+{"name":"90-snip-pick-raid","screen":"snip: pick phase in a raid","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"90-snip-pick-raid-1080.jpg","lint":""}},
+{"name":"91-snip-panel-raid","screen":"snip: box dragged in a raid, panel","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"91-snip-panel-raid-1080.jpg","lint":""}},
+{"name":"92-snip-title-result","screen":"snip result: title screen, copied picture","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"92-snip-title-result-1080.jpg","lint":""}},
+{"name":"93-snip-settings-result","screen":"snip result: settings window, copied picture","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"93-snip-settings-result-1080.jpg","lint":""}},
+{"name":"94-snip-raid-result","screen":"snip result: raid, box over the upper right block, copied picture","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"94-snip-raid-result-1080.jpg","lint":""}},
+{"name":"95-snip-edit-tag","screen":"edit the words on in a raid: the tag top left","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"95-snip-edit-tag-1080.jpg","lint":""}}
+]}
