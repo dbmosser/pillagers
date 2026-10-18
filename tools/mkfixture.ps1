@@ -6097,6 +6097,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.15',what:'the Settings key-hint line is 20px and the list fade is 24px',
+   run:function(){
+     var bad=[], m, fs, mk, l, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       openSettings('display');
+       m=document.getElementById('settingsmodal');
+       if(!m) bad.push('no settings modal');
+       else{
+         fs=parseFloat(getComputedStyle(m,'::after').fontSize);
+         if(!(fs>=19.5)) bad.push('the key hint is '+fs+'px');
+         l=document.getElementById('setlist');
+         mk=l?(getComputedStyle(l).webkitMaskImage||getComputedStyle(l).maskImage||''):'';
+         if(mk.indexOf('calc(100% - 24px)')<0 && mk.indexOf('calc(100% - 24')<0) bad.push('the list fade is not 24px: '+mk.slice(0,160));
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.14',what:'the operator card has two rows (New party, Exit demo): Back is gone and the X and Esc close it, and the focused row is a raised fill with a 3px accent bar, not an accent slab (critic on 62 and 63: 3 and 2 of 5)',
    run:function(){
      if(typeof arcadeOpOpen!=='function'||typeof arcadeOpClose!=='function'||typeof ARCADE!=='object'||!ARCADE) return 'SKIP: no operator card';

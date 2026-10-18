@@ -1,0 +1,7 @@
+v30.15: settings hint 20px, shorter list fade
+
+Bigger key hint, shorter list fade, air around pad rows.
+
+Check 30.15. Fails on v30.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

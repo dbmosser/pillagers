@@ -1,0 +1,5 @@
+## v30.15 - SETTINGS HINT 20PX, SHORTER LIST FADE
+
+Co-op hunt while he was away. Critic c-31 round 14 (Pad buttons 74 at 2): the hint was about 14px, the fade clipped a row mid-glyph, a wrapped label crowded the row above.
+
+MEASURED. Check 30.15 passes, and fails on v30.14.

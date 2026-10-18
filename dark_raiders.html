@@ -1851,6 +1851,10 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibi
 #root #settingsmodal::after, #root #keysmodal::after{ content:'Esc  Close'; flex:none; align-self:center; box-sizing:border-box; width:var(--cw); max-width:100%; padding-top:var(--sp-2); text-align:right; font:600 var(--fs-label)/1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); }
 body.padon #root #settingsmodal::after{ content:'LB RB  Tabs      A  Change      B  Back'; }
 body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
+/* v28.xx (cw-sethint2) critic c-31 round 14 (Pad buttons 74 at 2: "the Esc Close hint is about 14px"; "the fade clips the Gear row mid-glyph"; "a 3-line label is crammed against the row above"). Now: the hint is 20px, the list fade is 24px instead of 32 (with 24px of padding under the last row), and a pad row has 8px of air above and below its label. */
+#root #settingsmodal::after, #root #keysmodal::after{ font-size:var(--fs-body); }
+#root #keyslist, #root #setlist{ padding-bottom:var(--sp-3); -webkit-mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-3)), transparent); mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-3)), transparent); }
+#root #keyslist .row{ padding-block:var(--sp-1); }
 #root #settingsmodal, #root #keysmodal{ background:rgba(6,7,8,.98); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); }
 #root #setdetail:not(:has(.sdh)){ display:none; }
 #root #setdetail{ min-height:0; }
@@ -2772,7 +2776,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.14';
+var VER='30.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47939,7 +47943,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.14: The operator card has New party and Exit demo, and the X closes it. Check 30.14 fails on v30.13',
+  now:'v30.15: Bigger key hint, shorter list fade, air around pad rows. Check 30.15 fails on v30.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

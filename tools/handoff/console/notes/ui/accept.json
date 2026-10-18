@@ -438,5 +438,13 @@
   "pic": "tools/handoff/console/notes/shots/c-31x-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
   "when": "2026-10-18T13:08"
+ },
+ "74-settings-change-pad-buttons": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The modal is tidier in the new version (hard scroll clip with a fade, a key-hint line, a calmer backdrop), but the dense two-column list, wrapped labels, tiny hint and weak focus state keep it at amateur level.",
+  "pic": "tools/handoff/console/notes/shots/c-31x-after/74-settings-change-pad-buttons-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T13:09"
  }
 }
