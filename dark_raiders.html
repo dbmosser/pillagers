@@ -1540,6 +1540,20 @@ body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(-
 #root #setdetail .sdk{ font-size:var(--fs-title); letter-spacing:var(--track); text-transform:none; }
 #root #setdetail .sdv{ font-size:var(--fs-body); letter-spacing:var(--track); text-transform:none; border-radius:var(--rad); }
 #root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.5; }   /* v28.xx (cw-pausescrim) critic c-31 (pause 2, keys 2): the HUD showed through the pause card, and the Keys window opened with an explaining sentence above the list */ #root #pausebox{ background:color-mix(in srgb,var(--ui-void) 97%,transparent); } #root #keysmodal .msub{ display:none; }
+
+/* v28.xx (cw-setcard) critic c-31 (Settings 2, Keys 2): "a full-screen wall instead of a centred card", "no 48x48 header X", "two stacked tab strips", chamfer corner. Now the Settings and Keys windows are centred cards (content --cw wide, frame 24px beyond it) with a flat 4px frame, the one Close is a 48x48 X at the top right of the header row (the same button, moved: no second close), the Game and Send play data tabs sit on the title row, and the title is 32px. */
+#root #settingsmodal, #root #keysmodal{ --cw:calc(var(--sp-5) * 28); padding:var(--sp-5) max(var(--sp-5), calc(50% - var(--cw) / 2)); }
+#root #keysmodal{ --cw:calc(var(--sp-5) * 22); }
+#root #settingsmodal::before, #root #keysmodal::before{ inset:calc(var(--sp-5) - var(--sp-3)) max(var(--sp-3), calc(50% - var(--cw) / 2 - var(--sp-3))); border-color:var(--ui-line-hi); border-radius:var(--rad); clip-path:none;
+  background:linear-gradient(var(--acc),var(--acc)) var(--sp-3) 0/calc(var(--sp-4) + var(--sp-1)) 3px no-repeat, var(--ui-bg); background-origin:border-box; }
+#root #settingsmodal > h3, #root #keysmodal > h3{ font-size:var(--fs-title); text-transform:none; letter-spacing:var(--track); min-height:var(--sp-5); box-sizing:border-box; }
+#root #settingsmodal #closesettings, #root #keysmodal #closekeys{ position:absolute; top:var(--sp-5); right:max(var(--sp-5), calc(50% - var(--cw) / 2)); z-index:5; width:var(--sp-5); height:var(--sp-5); min-width:0 !important; min-height:0 !important; padding:0 !important; font-size:0 !important; line-height:1; display:flex; align-items:center; justify-content:center; }
+#root #settingsmodal #closesettings::after, #root #keysmodal #closekeys::after{ content:'\00d7'; font:400 var(--fs-title)/1 var(--f-cond); color:var(--tx-1); }
+#root #settingsmodal #closesettings:hover::after, #root #keysmodal #closekeys:hover::after{ color:var(--acc); }
+#root #settingsmodal > div:has(> #closesettings){ height:0; margin:0; padding:0; }
+#root #keysmodal #keysreset{ margin-right:auto; }
+#root #settingsmodal #settabs{ position:absolute; top:calc(var(--sp-5) + var(--sp-1)); left:calc(max(var(--sp-5), calc(50% - var(--cw) / 2)) + calc(var(--sp-5) * 4)); padding:0 !important; border:0 !important; background:transparent; width:auto; }
+#root #settingsmodal .msub{ font-size:var(--fs-label); }
 /* v28.xx (cw-pausestack) critic c-31 (pause 2, 25/42/49): the pause card was a keybind cheat-sheet over a row of mixed buttons. Now: title, then one column of 56px buttons at the menu width (16px gap, sentence case), Abandon set apart, and the key legend and the feedback sentence out of the keyboard card (F1 and Settings > Controls hold the keys; a pad keeps its legend) */
 #root #pausebox{ gap:var(--sp-3); }
 #root #pausebox #pausekeys, #root #pausebox > div[style*="margin-top:6px"]{ display:none !important; }
@@ -2474,7 +2488,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.62';
+var VER='29.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47563,7 +47577,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.62: The pause card, the end card, Settings and Keys now ease open and shut. Check 29.62 fails on v29.61',
+  now:'v29.63: Settings and Keys are centred cards with a close X at the top. Check 29.63 fails on v29.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

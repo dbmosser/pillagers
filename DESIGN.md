@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.63 - SETTINGS CARD
+
+Co-op hunt while he was away. Critic c-31 (Settings 2, Keys 2): full-screen slab, bottom Close, chamfer. They are centred flat cards with a 48px header X now.
+
+MEASURED. Check 29.63 passes, and fails on v29.62.
 ## v29.62 - Pause and end cards ease in too
 
 Co-op hunt while he was away. UI STEP 2b continued. His words: "they are just reallly compelling and smooth". The pause card, the end card, Settings and Keys join the title menu and the party window on the shared UI motion layer: 240 ms open with a 16 px rise, 140 ms close, items 35 ms apart, eased focus ring, confirm pulse. The end card plays no open sound. Menus only, no raid value touched.

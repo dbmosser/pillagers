@@ -1,1 +1,1 @@
-10-18 05:11 b-30-ui-hud: partial (run 1 of 5), $1.9693
+10-18 05:11 running b-30-ui-hud (cap $4.00; spent today $111.12 of $152.28)

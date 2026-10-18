@@ -1,0 +1,7 @@
+v29.63: settings card
+
+Settings and Keys are centred cards with a close X at the top.
+
+Check 29.63. Fails on v29.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
