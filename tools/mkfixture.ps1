@@ -41275,7 +41275,7 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'22.06',what:'F11 in the player 2 window runs that window fullscreen toggle and is never handed to player 1; other keys still go to player 1',
+  {v:'22.06',what:'F11 in the player 2 window runs that window fullscreen toggle and is never handed to player 1; other keys are played by that window itself and handed to nobody (retargeted for cw-p2keys, his order: keys control whatever screen is to the top)',
    run:function(){
      if(typeof netKeyFwd!=='function'||typeof netSamePost!=='function'||typeof fsToggle!=='function'||typeof netKeyHeld==='undefined'||typeof NET!=='object'||!NET) return 'SKIP: no player 2 window here';
      var NK={}, k, bad=[], oPost=netSamePost, oFs=fsToggle, posts=[], fs=0, kh0=netKeyHeld, k0=keys;
@@ -41288,9 +41288,9 @@ window.__REGRESS=[
        netSamePost=function(m){ posts.push(JSON.parse(JSON.stringify(m))); return true; };
        fsToggle=function(){ fs++; return true; };
        NET.same='p2'; NET.pair='zqk17pair';
-       // CONTROL: a plain key pressed in the player 2 window is handed to player 1, down and up
+       // CONTROL (retargeted for cw-p2keys): a plain key pressed in the player 2 window is played by that window and handed to nobody
        key('keydown','KeyJ'); key('keyup','KeyJ');
-       if(sent('KeyJ')!==2) return 'SKIP: staging: the player 2 window did not hand a key to player 1 ('+sent('KeyJ')+' words)';
+       if(sent('KeyJ')) bad.push('a plain key pressed in the player 2 window was handed to player 1 ('+sent('KeyJ')+' words)');
        if(fs) return 'SKIP: staging: a plain key ran the fullscreen toggle';
        key('keydown','F11'); key('keyup','F11');
        if(sent('F11')) bad.push('F11 in the player 2 window was handed to player 1 ('+sent('F11')+' words), which takes his window out of fullscreen');
@@ -54428,7 +54428,7 @@ window.__REGRESS=[
          if(handed(c)) bad.push(c+' that shut the pause box in the player 2 window was also handed to player 1, where it pauses him or shuts his map');
        }
        sent.length=0; press('KeyW'); press('KeyW','keyup');
-       if(!handed('KeyW')) bad.push('control: with the box shut the player 2 window no longer hands keys to player 1');
+       if(handed('KeyW')) bad.push('with the box shut the player 2 window handed a key to player 1 (retargeted for cw-p2keys: it plays its own keys)');
      } finally {
        netSamePost=oPost; NET.same=keep.same; NET.pair=keep.pair; keys=k0||{};
        try{ togglePauseBox(false); }catch(e){}
@@ -54436,41 +54436,32 @@ window.__REGRESS=[
        try{ __endRaid('abandon'); __topClear(); }catch(e){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'16.92',what:'a key the player 2 window handed to player 1 is handed back up when that window loses focus or closes, and a key let go over a text box there is still handed up, so player 1 never keeps walking with no key down',
+  {v:'16.92',what:'a key held in the player 2 window is let go in that window when it loses focus, a key typed into a text box there is no game key, and nothing is handed to player 1 (retargeted for cw-p2keys, his order: keys control whatever screen is to the top; it used to hand the held keys up to player 1)',
    run:function(){
-     if(typeof netKeyFwd!=='function'||typeof netSameOnMsg!=='function'||typeof netSamePost!=='function'||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no same machine pair';
+     if(typeof netKeyFwd!=='function'||typeof netSamePost!=='function'||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no same machine pair';
      var keep={same:NET.same,pair:NET.pair}, oPost=netSamePost, sent=[], bad=[], k0=keys, K=window.KeyboardEvent, inp=null;
      function press(el,code,ty){ el.dispatchEvent(new K(ty||'keydown',{code:code,key:code.replace(/^Key/,'').toLowerCase(),bubbles:true,cancelable:true})); }
-     function count(ty,code){ return sent.filter(function(m){ return m&&m.t==='key'&&m.ty===ty&&m.code===code; }).length; }
-     function play(){ var j, s=sent.slice(); NET.same='host'; keys={}; for(j=0;j<s.length;j++) netSameOnMsg(s[j]); NET.same='p2'; }
+     function words(){ return sent.filter(function(m){ return m&&m.t==='key'; }).length; }
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        netSamePost=function(m){ sent.push(m); return true; };
        NET.same='p2'; NET.pair='zqxheld'; keys={};
        press(document.body,'KeyW'); press(document.body,'ShiftLeft');
-       if(!count('keydown','KeyW')||!count('keydown','ShiftLeft')) return 'SKIP: staging: the player 2 window did not hand the keys down ('+JSON.stringify(sent)+')';
+       if(!keys['KeyW']||!keys['ShiftLeft']) bad.push('the player 2 window did not play W and Shift as its own keys');
        window.dispatchEvent(new Event('blur'));
-       if(count('keyup','KeyW')!==1||count('keyup','ShiftLeft')!==1) bad.push('the player 2 window lost focus with W and Shift held and handed up '+count('keyup','KeyW')+' W and '+count('keyup','ShiftLeft')+' Shift, not one of each');
-       play();
-       if(keys['KeyW']||keys['ShiftLeft']) bad.push('player 1 kept walking or sprinting with no key down after the player 2 window lost focus');
-       sent.length=0; window.dispatchEvent(new Event('blur'));
-       if(sent.length) bad.push('a second loss of focus handed keys up again ('+sent.length+')');
-       sent.length=0; press(document.body,'KeyE'); window.dispatchEvent(new Event('pagehide'));
-       if(count('keyup','KeyE')!==1) bad.push('closing the player 2 window with E held did not hand E up');
-       sent.length=0; inp=document.createElement('input'); document.body.appendChild(inp);
-       press(document.body,'KeyD'); press(inp,'KeyD','keyup');
-       if(count('keyup','KeyD')!==1) bad.push('D let go over a text box in the player 2 window was not handed up');
-       play();
-       if(keys['KeyD']) bad.push('player 1 kept D down after it was let go over a text box in the player 2 window');
-       sent.length=0; press(inp,'KeyQ'); press(inp,'KeyQ','keyup');
-       if(sent.length) bad.push('a key typed into a text box in the player 2 window was handed to player 1');
+       if(keys['KeyW']||keys['ShiftLeft']) bad.push('W or Shift stayed down in the player 2 window after it lost focus, so player 2 keeps walking or sprinting with no key down');
+       if(words()) bad.push('the player 2 window lost focus with W and Shift held and handed '+words()+' key words to player 1');
+       inp=document.createElement('input'); document.body.appendChild(inp);
+       press(inp,'KeyQ'); press(inp,'KeyQ','keyup');
+       if(keys['KeyQ']) bad.push('a key typed into a text box in the player 2 window was played as a game key');
+       if(words()) bad.push('a key typed into a text box in the player 2 window was handed to player 1');
        press(document.body,'KeyA'); NET.same=''; sent.length=0; keys={};
        window.dispatchEvent(new Event('blur'));
        if(sent.length) bad.push('outside a pair a loss of focus handed keys on');
      } finally {
-       NET.same='p2'; NET.pair='zqxheld';
+       NET.same=keep.same; NET.pair=keep.pair;
        try{ if(typeof netKeyLetGo==='function') netKeyLetGo(); }catch(e){}
-       netSamePost=oPost; NET.same=keep.same; NET.pair=keep.pair; keys=k0||{};
+       netSamePost=oPost; keys=k0||{};
        if(inp&&inp.parentNode) inp.parentNode.removeChild(inp);
        try{ __endRaid('abandon'); __topClear(); }catch(e){}
      }
@@ -54492,7 +54483,7 @@ window.__REGRESS=[
      cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      m=needle.exec(src);
      return m?('the build still says '+src.slice(Math.max(0,m.index-40),m.index+30).replace(/\s+/g,' ')):null; }},
-  {v:'16.89',what:'in a same machine pair the keyboard always drives player 1: the player 2 window hands a key to the pair channel and does not act on it, and the player 1 window plays a handed key as its own; outside a pair nothing is handed',
+  {v:'16.89',what:'in a same machine pair the window in front plays the keyboard as its own player (retargeted for cw-p2keys, his order: keys control whatever screen is to the top; it used to hand every key of the player 2 window to player 1): the player 2 window plays a key itself and hands none, the player 1 window still plays a key word it is handed; outside a pair nothing is handed',
    run:function(){
      if(typeof netSameOnMsg!=='function'||typeof netSamePost!=='function'||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no same machine pair';
      var keep={same:NET.same,pair:NET.pair}, oPost=netSamePost, sent=[], bad=[], k0=keys, K=window.KeyboardEvent;
@@ -54502,8 +54493,8 @@ window.__REGRESS=[
        netSamePost=function(m){ sent.push(m); return true; };
        NET.same='p2'; NET.pair='zqxkeys'; keys={};
        press('KeyW'); press('KeyW','keyup'); press('KeyW');
-       if(!sent.some(function(m){ return m&&m.t==='key'&&m.code==='KeyW'&&m.ty==='keydown'&&m.pair==='zqxkeys'; })) bad.push('the player 2 window did not hand a key to player 1 ('+JSON.stringify(sent)+')');
-       if(keys['KeyW']) bad.push('the player 2 window acted on a key meant for player 1');
+       if(sent.some(function(m){ return m&&m.t==='key'; })) bad.push('the player 2 window handed a key to player 1 ('+JSON.stringify(sent)+')');
+       if(!keys['KeyW']) bad.push('the player 2 window did not play its own key');
        press('KeyW','keyup');
        NET.same='host'; keys={};
        var r=netSameOnMsg({t:'key',pair:'zqxkeys',ty:'keydown',code:'KeyW',key:'w'});
