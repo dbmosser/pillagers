@@ -1,0 +1,108 @@
+{
+    "title":  "Gun keys renumbered, Rocket class on key 0",
+    "why":  "His order 2026-10-18: get rid of the marksman rifle, move everything past it down a number, and add a rocket launcher as 0. The Marksman class leaves the gun keys: sniper is 7, energy is 8, the Rocket class is key 0 and key 9 does nothing. Zoom to 100 moves to the numpad 0. A saved key table that holds the marksman class keeps its order, loses the marksman and gains the rocket.",
+    "now":  "Gun keys moved down one past the marksman: 7 sniper, 8 energy. Key 0 is set aside for the Rocket Launcher.",
+    "edits":  [
+                  {
+                      "anchor":  "var GUN_CLASSES=[\u0027pistol\u0027,\u0027smg\u0027,\u0027rifle\u0027,\u0027carbine\u0027,\u0027lmg\u0027,\u0027shotgun\u0027,\u0027marksman\u0027,\u0027sniper\u0027,\u0027energy\u0027];",
+                      "replacement":  "// v28.xx (cw-gunkeys0), HIS ORDER (2026-10-18): \"get rid of the marksman rifle, move everything past it down a number, and then add a rocket launcher as \u00270\u0027\". The\n// Marksman class is off the keys: 7 sniper, 8 energy, and the Rocket Launcher class sits on key 0 (the ninth cell, after 8). Key 9 does nothing.\nvar GUN_CLASSES=[\u0027pistol\u0027,\u0027smg\u0027,\u0027rifle\u0027,\u0027carbine\u0027,\u0027lmg\u0027,\u0027shotgun\u0027,\u0027sniper\u0027,\u0027energy\u0027,\u0027rocket\u0027];\nfunction slotKeyCode(i){ return i===8?\u0027Digit0\u0027:\u0027Digit\u0027+(i+1); }   // v28.xx (cw-gunkeys0): the ninth cell is key 0\nfunction slotKeyName(i){ return i===8?\u00270\u0027:String(i+1); }\nfunction gunKeysMigrate(a){   // a saved table that still holds the Marksman class loses it and gains the Rocket class, so no one\u0027s saved order is thrown away\n  if(!Array.isArray(a)||a.indexOf(\u0027marksman\u0027)\u003c0) return a;\n  var o=a.filter(function(c){ return c!==\u0027marksman\u0027; });\n  if(o.indexOf(\u0027rocket\u0027)\u003c0) o.push(\u0027rocket\u0027);\n  return o;\n}"
+                  },
+                  {
+                      "anchor":  "dmr:\u0027marksman\u0027,whisper:\u0027marksman\u0027,",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "var src=(typeof P===\u0027object\u0027\u0026\u0026P\u0026\u0026Array.isArray(P.gunKeys))?P.gunKeys:null, ok=",
+                      "replacement":  "var src=(typeof P===\u0027object\u0027\u0026\u0026P\u0026\u0026Array.isArray(P.gunKeys))?gunKeysMigrate(P.gunKeys):null, ok="
+                  },
+                  {
+                      "anchor":  "var dn=parseInt(code.slice(5),10);\n    if(dn\u003e=1\u0026\u0026dn\u003c=9){",
+                      "replacement":  "var dn=(code===\u0027Digit0\u0027)?9:parseInt(code.slice(5),10);   // v28.xx (cw-gunkeys0): key 0 is the ninth gun key\n    if(dn\u003e=1\u0026\u0026dn\u003c=9\u0026\u0026code!==\u0027Digit9\u0027){"
+                  },
+                  {
+                      "anchor":  "if(code===\u0027Digit0\u0027||code===\u0027Numpad0\u0027){ setZoom(1);",
+                      "replacement":  "if(code===\u0027Numpad0\u0027){ setZoom(1);   /* v28.xx (cw-gunkeys0): the 0 key is the Rocket Launcher now, so zoom to 100 is the numpad 0 only */"
+                  },
+                  {
+                      "anchor":  "[\u0027Digit0\u0027,\u0027zoom to 100%\u0027]",
+                      "replacement":  "[\u0027Numpad0\u0027,\u0027zoom to 100%\u0027]"
+                  },
+                  {
+                      "anchor":  "\u0027NumpadSubtract\u0027,\u0027Digit0\u0027]]];",
+                      "replacement":  "\u0027NumpadSubtract\u0027,\u0027Numpad0\u0027]]];"
+                  },
+                  {
+                      "anchor":  "KEYS_FIXED[physical]||/^Digit[1-9]$/.test(physical)",
+                      "replacement":  "KEYS_FIXED[physical]||/^Digit[0-8]$/.test(physical)"
+                  },
+                  {
+                      "anchor":  "return \u0027[\u0027+keyLabel(\u0027Digit\u0027+(gc+1),String(gc+1))+\u0027] GUN\u0027;",
+                      "replacement":  "return \u0027[\u0027+keyLabel(slotKeyCode(gc),slotKeyName(gc))+\u0027] GUN\u0027;"
+                  },
+                  {
+                      "anchor":  "String(keyLabel(\u0027Digit\u0027+(c.i+1),String(c.i+1))),\u0027SELECT\u0027",
+                      "replacement":  "String(keyLabel(slotKeyCode(c.i),slotKeyName(c.i))),\u0027SELECT\u0027"
+                  },
+                  {
+                      "anchor":  "var _hk=String(keyLabel(\u0027Digit\u0027+(c.i+1),String(c.i+1)))",
+                      "replacement":  "var _hk=String(keyLabel(slotKeyCode(c.i),slotKeyName(c.i)))"
+                  },
+                  {
+                      "anchor":  "keyLabel(\u0027Digit\u0027+(_swk+1),String(_swk+1))",
+                      "replacement":  "keyLabel(slotKeyCode(_swk),slotKeyName(_swk))"
+                  },
+                  {
+                      "anchor":  "_ptags[l]=\u0027SLOT \u0027+(_swk+1);",
+                      "replacement":  "_ptags[l]=\u0027SLOT \u0027+slotKeyName(_swk);"
+                  },
+                  {
+                      "anchor":  "keyLabel(\u0027Digit\u0027+((k\u003c0?1:k)+1),String((k\u003c0?1:k)+1))",
+                      "replacement":  "keyLabel(slotKeyCode(k\u003c0?1:k),slotKeyName(k\u003c0?1:k))"
+                  },
+                  {
+                      "anchor":  "(k\u003e=0?\u0027KEY \u0027+(k+1):\u0027BACKPACK\u0027)",
+                      "replacement":  "(k\u003e=0?\u0027KEY \u0027+slotKeyName(k):\u0027BACKPACK\u0027)"
+                  },
+                  {
+                      "anchor":  "_bk=(+_bi)+1;",
+                      "replacement":  "_bk=slotKeyName(+_bi);"
+                  },
+                  {
+                      "anchor":  "say(\u0027SLOT \u0027+(HC.i+1)+\u0027 TAKES GUNS ONLY\u0027)",
+                      "replacement":  "say(\u0027SLOT \u0027+slotKeyName(HC.i)+\u0027 TAKES GUNS ONLY\u0027)"
+                  },
+                  {
+                      "anchor":  "return {tag:(BELTAT\u003e=0)?(\u0027SLOT \u0027+(BELTAT+1)):\u0027BACKPACK\u0027,line:\u0027\u0027};",
+                      "replacement":  "return {tag:(BELTAT\u003e=0)?(\u0027SLOT \u0027+slotKeyName(BELTAT)):\u0027BACKPACK\u0027,line:\u0027\u0027};"
+                  },
+                  {
+                      "anchor":  "function beltTag(){ return (BELTAT\u003e=0)?(\u0027SLOT \u0027+(BELTAT+1))",
+                      "replacement":  "function beltTag(){ return (BELTAT\u003e=0)?(\u0027SLOT \u0027+slotKeyName(BELTAT))"
+                  },
+                  {
+                      "anchor":  "{sub:_rpKy\u003e=0?(\u0027SLOT \u0027+(_rpKy+1))",
+                      "replacement":  "{sub:_rpKy\u003e=0?(\u0027SLOT \u0027+slotKeyName(_rpKy))"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(String(q+1),bx+LH(4)",
+                      "replacement":  "ctx.fillText(slotKeyName(q),bx+LH(4)"
+                  },
+                  {
+                      "anchor":  "title=\"KEY \u0027+(i+1)+\u0027 \\u00b7 \u0027+GUN_CLASS_NAME[gl[i]]+\u0027 \\u00b7 DRAG ONTO ANOTHER KEY TO SWAP\"\u003e\u003cb\u003e\u0027+(i+1)+\u0027\u003c/b\u003e",
+                      "replacement":  "title=\"KEY \u0027+slotKeyName(i)+\u0027 \\u00b7 \u0027+GUN_CLASS_NAME[gl[i]]+\u0027 \\u00b7 DRAG ONTO ANOTHER KEY TO SWAP\"\u003e\u003cb\u003e\u0027+slotKeyName(i)+\u0027\u003c/b\u003e"
+                  },
+                  {
+                      "anchor":  "marksman:\u0027MARKSMAN\u0027,sniper:\u0027SNIPER\u0027,energy:\u0027ENERGY\u0027};",
+                      "replacement":  "sniper:\u0027SNIPER\u0027,energy:\u0027ENERGY\u0027,rocket:\u0027ROCKET\u0027};"
+                  },
+                  {
+                      "anchor":  "marksman:\u0027gun_dmr\u0027,sniper:\u0027gun_sniper\u0027,energy:\u0027gun_lance\u0027};",
+                      "replacement":  "sniper:\u0027gun_sniper\u0027,energy:\u0027gun_lance\u0027,rocket:\u0027gun_lance\u0027};"
+                  },
+                  {
+                      "anchor":  "marksman:\u0027dmr\u0027,sniper:\u0027sniper\u0027,energy:\u0027lance\u0027}",
+                      "replacement":  "sniper:\u0027sniper\u0027,energy:\u0027lance\u0027}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the gun keys: no marksman, 7 sniper, 8 energy, 0 the Rocket class (the ninth cell), 9 does nothing, and a saved table with the marksman class is kept as 8 plus the rocket (his order 2026-10-18)\u0027,\n   run:function(){\n     if(typeof slotKeyName!==\u0027function\u0027||typeof gunKeysMigrate!==\u0027function\u0027) return \u0027no slotKeyName or gunKeysMigrate: the gun keys are not renumbered\u0027;\n     var g=null, bad=[], sh=setHot, sz=(typeof setZoom===\u0027function\u0027)?setZoom:null, hots=[], zooms=0, svk, want, t, i;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       svk=P.gunKeys;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       want=\u0027pistol,smg,rifle,carbine,lmg,shotgun,sniper,energy,rocket\u0027;\n       P.gunKeys=undefined; t=gunKeyTable().join(\u0027,\u0027);\n       if(t!==want) bad.push(\u0027the key table is \u0027+t);\n       if(GUN_CLASSES.indexOf(\u0027marksman\u0027)\u003e=0) bad.push(\u0027the marksman class is still a key\u0027);\n       if(gunClassKey(\u0027sniper\u0027)!==6||gunClassKey(\u0027energy\u0027)!==7||gunClassKey(\u0027rocket\u0027)!==8) bad.push(\u0027sniper \u0027+gunClassKey(\u0027sniper\u0027)+\u0027 energy \u0027+gunClassKey(\u0027energy\u0027)+\u0027 rocket \u0027+gunClassKey(\u0027rocket\u0027));\n       P.gunKeys=[\u0027pistol\u0027,\u0027smg\u0027,\u0027rifle\u0027,\u0027carbine\u0027,\u0027lmg\u0027,\u0027shotgun\u0027,\u0027marksman\u0027,\u0027sniper\u0027,\u0027energy\u0027];\n       t=gunKeyTable().join(\u0027,\u0027);\n       if(t!==\u0027pistol,smg,rifle,carbine,lmg,shotgun,sniper,energy,rocket\u0027) bad.push(\u0027a saved table with the marksman became \u0027+t);\n       P.gunKeys=[\u0027energy\u0027,\u0027smg\u0027,\u0027rifle\u0027,\u0027carbine\u0027,\u0027lmg\u0027,\u0027shotgun\u0027,\u0027marksman\u0027,\u0027sniper\u0027,\u0027pistol\u0027];\n       t=gunKeyTable().join(\u0027,\u0027);\n       if(t!==\u0027energy,smg,rifle,carbine,lmg,shotgun,sniper,pistol,rocket\u0027) bad.push(\u0027a custom saved table became \u0027+t);\n       if(slotKeyName(8)!==\u00270\u0027||slotKeyName(0)!==\u00271\u0027||slotKeyName(6)!==\u00277\u0027||slotKeyCode(8)!==\u0027Digit0\u0027||slotKeyCode(7)!==\u0027Digit8\u0027) bad.push(\u0027the key names are wrong\u0027);\n       setHot=function(i){ hots.push(i); };\n       if(sz) setZoom=function(){ zooms++; };\n       [\u0027Digit1\u0027,\u0027Digit7\u0027,\u0027Digit8\u0027,\u0027Digit0\u0027,\u0027Digit9\u0027].forEach(function(c){ try{ raidKey(c,false,null); }catch(_e){} keys[c]=false; });\n       if(hots.join(\u0027,\u0027)!==\u00270,6,7,8\u0027) bad.push(\u0027keys 1 7 8 0 9 chose cells \u0027+hots.join(\u0027,\u0027)+\u0027 (want 0,6,7,8: 0 is the ninth cell, 9 nothing)\u0027);\n       if(sz){ raidKey(\u0027Numpad0\u0027,false,null); keys.Numpad0=false; if(zooms!==1) bad.push(\u0027zoom to 100 ran \u0027+zooms+\u0027 times after Digit0 and Numpad0 (want once, from the numpad)\u0027); }\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       setHot=sh; if(sz) setZoom=sz;\n       try{ P.gunKeys=svk; }catch(_e2){}\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

@@ -1,9 +1,6 @@
 # b-00a notes
-PLAN: keep GUNKEYS=9/HOTBAR_N=9 cells. GUN_CLASSES (line ~23147) becomes 8 classes + 'rocket' on cell index 8 labelled "0" (key Digit0). Key 9 unused.
-Files facts (line numbers of build 29.11):
-- WEAPONS table ~2774 (dmr 2774, whisper 2794, lance 2795); WTIER 2812; ITEMS gun_dmr 3091/gun_whisper 3092; loot tables 3207-3218
-- GUN_CLASS_OF 23148, GUN_CLASSES 23147, GHOST_OF 37194, GUN_CLASS_ICON 48533, GUN_FAMILY 41488 (art in gunArt 41507/gunIcon 41610 by fam)
-- sfx gun table 7588-7595; recoil table 20941-20946; DRAWT 22973; bullet spawn ~21058 fn near 21087; 21865 aim class
-- other refs: PED_GUNS 13355, 13429, 12720 pool, 27478, 29927 (lance sp), 46981-47031 kits/recipes, 47783, 55692 ARCADE_VAULT_GUNS
-- belt label: String(q+1) at ~37345; 'to slot '+(at+1) ~23225
-Status: nothing shipped yet.
+Plan: step1 key cw-gunkeys0 (S/mk-cw-gunkeys0.ps1): GUN_CLASSES drop marksman, add 'rocket' as 9th (key 0 via slotKeyName/slotKeyCode helpers), Digit0 zoom -> Numpad0, Digit9 nothing, labels.
+Step2 cw-rocket: WEAPONS.rocket + ITEMS.gun_rocket, class 'rocket' (GUN_CLASS_OF), rocket bullet w/ blast (explodeFrag-like at ~18411; bullets in updateBullets ~29319; splice at ~29721), reload via p.reserve (30 ammo per rocket, mag 2).
+Step3 cw-nomarksman: remove dmr + whisper everywhere (grep dmr|whisper|marksman), saves convert. Old fixture checks using dmr (25632,36400,38062,74559 wear) may need retarget by fixq.
+Known: fixture check at 12130 uses keysBind('Digit0') + legend row '0' - may fail after step1; retarget to Numpad0 / 'NUM 0'.
+Status: step1 mk script written.

@@ -1,0 +1,5 @@
+## v29.13 - A DEAD PILLBOX LEAVES WRECKAGE, NOT A BOX
+
+Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Pillbox left the generic purple cache box. The cache is now tagged a Pillbox wreck and drawn as the emplacement in pieces in its own palette: the cracked plinth, the burst squashed drum, the dead port, bent and fallen brass pipes, smoke while unsearched. Looting is unchanged.
+
+MEASURED. Check 29.13 passes, and fails on v29.12.

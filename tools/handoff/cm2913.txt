@@ -1,0 +1,7 @@
+v29.13: a dead pillbox leaves wreckage, not a box
+
+A dead Pillbox leaves a smoking wreck, not a box.
+
+Check 29.13. Fails on v29.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

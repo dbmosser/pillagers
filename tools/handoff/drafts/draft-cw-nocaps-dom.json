@@ -5,7 +5,7 @@
     "edits":  [
                   {
                       "anchor":  "    if(cur!==v){ tn.__txo=o; tn.nodeValue=v; hit++; }\n  }\n  return hit;\n}\nfunction txWatch(){\n  if(TXOBS||typeof MutationObserver!==\u0027function\u0027) return;\n  var root=document.getElementById(\u0027root\u0027); if(!root) return;\n",
-                      "replacement":  "    if(cur!==v){ tn.__txo=o; tn.nodeValue=v; hit++; }\n  }\n  // v28.xx (cw-nocaps-dom), HIS HARD RULE (2026-10-18): \"all text shown to the player, should never ever ever be in all caps\". The words in a\n  // tooltip, a placeholder or an aria label are shown too, so they go through the case fix as well (ncFix only: not his P.txt map).\n  var _ae=[root], _aq=root.querySelectorAll?root.querySelectorAll(\u0027[title],[placeholder],[aria-label]\u0027):[], _ai, _an, _aa=[\u0027title\u0027,\u0027placeholder\u0027,\u0027aria-label\u0027], _av, _nv;\n  for(_ai=0;_ai\u003c_aq.length;_ai++) _ae.push(_aq[_ai]);\n  for(_ai=0;_ai\u003c_ae.length;_ai++) if(_ae[_ai].getAttribute) for(_an=0;_an\u003c3;_an++){ _av=_ae[_ai].getAttribute(_aa[_an]); if(_av){ _nv=ncFix(_av); if(_nv!==_av){ _ae[_ai].setAttribute(_aa[_an],_nv); hit++; } } }\n  return hit;\n}\nfunction txWatch(){\n  if(TXOBS||typeof MutationObserver!==\u0027function\u0027) return;\n  var root=document.body||document.getElementById(\u0027root\u0027); if(!root) return;   // v28.xx (cw-nocaps-dom): the whole page, not only #root (the attract card, the REC mark, the fps box sit outside it)"
+                      "replacement":  "    if(cur!==v){ tn.__txo=o; tn.nodeValue=v; hit++; }\n  }\n  // v28.xx (cw-nocaps-dom), HIS HARD RULE (2026-10-18): \"all text shown to the player, should never ever ever be in all caps\". The words in a\n  // tooltip, a placeholder or an aria label are shown too, so they go through the case fix as well (ncFix only: not his P.txt map).\n  var _ae=[root], _aq=root.querySelectorAll?root.querySelectorAll(\u0027[title],[placeholder],[aria-label]\u0027):[], _ai, _an, _aa=[\u0027title\u0027,\u0027placeholder\u0027,\u0027aria-label\u0027], _av, _nv;\n  for(_ai=0;_ai\u003c_aq.length;_ai++) _ae.push(_aq[_ai]);\n  for(_ai=0;_ai\u003c_ae.length;_ai++) if(_ae[_ai].getAttribute) for(_an=0;_an\u003c3;_an++){ _av=_ae[_ai].getAttribute(_aa[_an]); if(_av){ _nv=ncFix(_av); if(_nv!==_av){ _ae[_ai].setAttribute(_aa[_an],_nv); hit++; } } }\n  return hit;\n}\nfunction txWatch(){\n  if(TXOBS||typeof MutationObserver!==\u0027function\u0027) return;\n  var root=document.body||document.getElementById(\u0027root\u0027); if(!root) return;   // v28.xx (cw-nocaps-dom): the whole page, not only #root (the attract card, the REC mark, the fps box sit outside it)\n"
                   },
                   {
                       "anchor":  "TXOBS.observe(root,{childList:true,subtree:true,characterData:true});",
@@ -13,7 +13,7 @@
                   },
                   {
                       "anchor":  "  TXOBS=new MutationObserver(function(){\n    if(TXBUSY) return;\n    TXBUSY=1;\n    try{ txDom(root); } finally { TXBUSY=0; }\n  });\n",
-                      "replacement":  "  TXOBS=new MutationObserver(function(recs){\n    if(TXBUSY) return;\n    TXBUSY=1;\n    // v28.xx (cw-nocaps-dom): what changed inside #root is swept as before; what changed elsewhere on the page is swept where it changed, so a\n    // counter that moves every frame outside #root does not cost a walk of the whole page\n    try{\n      var rt=document.getElementById(\u0027root\u0027), inR=!recs||!recs.length, outs=[], k, t;\n      for(k=0;recs\u0026\u0026k\u003crecs.length;k++){ t=recs[k].target; if(t\u0026\u0026t.nodeType===3) t=t.parentNode;\n        if(!t||(rt\u0026\u0026rt.contains(t))) inR=true; else if(outs.indexOf(t)\u003c0) outs.push(t); }\n      if(inR\u0026\u0026rt) txDom(rt); else if(inR) txDom(root);\n      for(k=0;k\u003couts.length;k++) if(outs[k].nodeType===1) txDom(outs[k]);\n    } finally { TXBUSY=0; }\n  });"
+                      "replacement":  "  TXOBS=new MutationObserver(function(recs){\n    if(TXBUSY) return;\n    TXBUSY=1;\n    // v28.xx (cw-nocaps-dom): what changed inside #root is swept as before; what changed elsewhere on the page is swept where it changed, so a\n    // counter that moves every frame outside #root does not cost a walk of the whole page\n    try{\n      var rt=document.getElementById(\u0027root\u0027), inR=!recs||!recs.length, outs=[], k, t;\n      for(k=0;recs\u0026\u0026k\u003crecs.length;k++){ t=recs[k].target; if(t\u0026\u0026t.nodeType===3) t=t.parentNode;\n        if(!t||(rt\u0026\u0026rt.contains(t))) inR=true; else if(outs.indexOf(t)\u003c0) outs.push(t); }\n      if(inR\u0026\u0026rt) txDom(rt); else if(inR) txDom(root);\n      for(k=0;k\u003couts.length;k++) if(outs[k].nodeType===1) txDom(outs[k]);\n    } finally { TXBUSY=0; }\n  });\n"
                   },
                   {
                       "anchor":  "content:\u0027TAKEN\u0027;",
@@ -21,11 +21,11 @@
                   },
                   {
                       "anchor":  "(\u0027NEED $\u0027+(GAMBLE_PRICE-P.credits).toLocaleString()+\u0027 MORE\u0027)",
-                      "replacement":  "(\u0027Need $\u0027+(GAMBLE_PRICE-P.credits).toLocaleString()+\u0027 more\u0027)/* v28.xx (cw-nocaps-dom): never all caps */"
+                      "replacement":  "(\u0027Need \\u0024\u0027+(GAMBLE_PRICE-P.credits).toLocaleString()+\u0027 more\u0027)/* v28.xx (cw-nocaps-dom): never all caps */"
                   },
                   {
                       "anchor":  "(\u0027NEED $\u0027+(WIRT_LOT_PRICE-P.credits).toLocaleString()+\u0027 MORE\u0027)",
-                      "replacement":  "(\u0027Need $\u0027+(WIRT_LOT_PRICE-P.credits).toLocaleString()+\u0027 more\u0027)/* v28.xx (cw-nocaps-dom): never all caps */"
+                      "replacement":  "(\u0027Need \\u0024\u0027+(WIRT_LOT_PRICE-P.credits).toLocaleString()+\u0027 more\u0027)/* v28.xx (cw-nocaps-dom): never all caps */"
                   },
                   {
                       "anchor":  "document.title=\u0027PILLAGERS, PLAYER 2\u0027;",

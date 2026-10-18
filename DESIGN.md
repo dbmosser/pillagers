@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.13 - A DEAD PILLBOX LEAVES WRECKAGE, NOT A BOX
+
+Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Pillbox left the generic purple cache box. The cache is now tagged a Pillbox wreck and drawn as the emplacement in pieces in its own palette: the cracked plinth, the burst squashed drum, the dead port, bent and fallen brass pipes, smoke while unsearched. Looting is unchanged.
+
+MEASURED. Check 29.13 passes, and fails on v29.12.
 ## v29.12 - A DEAD WARDEN LEAVES WRECKAGE, NOT A BOX
 
 Co-op hunt while he was away. His note: Warden wreck drops a box, it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Warden left the generic purple cache box. The cache is now tagged a Warden wreck and drawn as the Warden in pieces in its own palette: a slipped track, a slumped chassis, the toppled torso with a dead visor, the cannon on the ground, the torn off pod, smoke while unsearched. The Overseer wreck is the black and brass version, bigger. Looting is unchanged, and this adds the table the other machine wrecks plug into.
