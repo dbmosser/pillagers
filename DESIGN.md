@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.72 - every word on screen is lower case
+
+Co-op hunt while he was away. His order (2026-10-18): change all text shown to the player to lowercase only, he does not like random words capitalized. Every canvas line, measure, text node and tooltip already passes one text door (ncFix), so that door now lowers everything, acronyms and key names too. The few words the stylesheet writes itself (the Esc Resume and pad hint strips) are lowered by one CSS line.
+
+MEASURED. Check 30.72 passes, and fails on v30.71.
 ## v30.71 - THE LONGSHOT KICKS THE SCREEN HARDER
 
 Co-op hunt while he was away. His Q5: gun feel. The Longshot (170 damage, one shot every 1.6 s) used the generic heavy kick 4.5, about 1.9 px, the same as a Magnum before its pass. 7.0 is trauma 0.5, about 4 px, gone in 0.36 s, so it never stacks and the biggest hit has the biggest kick.

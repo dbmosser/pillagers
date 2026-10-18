@@ -332,17 +332,17 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "The table is clean and readable, and the lime accent tab and dark panel match the style guide. But the screen still has no close X, no real primary button, and several capital letters, and most of last round's fixes were not applied.",
+  "verdict": "The table is tidy and readable, but the card has none of the earlier fixes: capital letters are everywhere, there is no close button, 'press any button' is still not a real primary, and the type is small and flat.",
   "findings": [
-   "P0 Whole screen: 'Pillagers' wordmark, 'How to play', 'Keyboard', 'Controller', row names (Move, Aim, Fire...), 'WASD', 'Mouse', 'Left click', 'L stick', 'Hold Q': Lower-case every string: 'pillagers', 'how to play', 'keyboard', 'controller', 'move', 'aim', 'wasd', 'left click', 'l stick', 'rt', 'lb', 'hold q'. Key caps that are drawn as art are exempt; text labels are not.",
-   "P1 Card header, top-right (x≈1330, y≈172-228): Add a 48x48 ghost button with the close glyph at the top-right of a 56px header row. Put a 'b' pad glyph beside it and support Esc.",
-   "P1 Footer 'Press any button' with lime radio dot (x≈1180-1346, y≈856): Use a 56px primary button 'got it' in --acc (#e6ff3d) with --acc-ink text, min-width 200px, right-aligned in a 72px footer. Optionally keep 'press any button' as a 16px tx-2 hint to its left. Drop the dot.",
-   "P1 Row names (x≈573, y≈328-775) and column headers 'Keyboard'/'Controller': Set row names to 20px f-cond 600 tx-1 and column headers to 16px tx-2 with +.04em tracking. Make key caps 20px with 12px side padding. Keep the 56px pitch.",
-   "P1 Title 'How to play' (y≈216) and the card: Set the title to 32px/700 inside a 56px header row. Move the table down 16px to make room for the header row."
+   "P0 Whole screen: 'Pillagers' wordmark, 'How to play', 'Keyboard', 'Controller', every row name, 'Hold X', 'Left click', 'L stick', 'Press any button': Lower-case every string: 'pillagers', 'how to play', 'keyboard', 'controller', 'move', 'switch gun', 'hold x', 'in the ring' stays. Key caps drawn as art are exempt, but these are text labels, so lower-case 'wasd', 'rt', 'lb', 'rb', 'a', 'x', 'r', 'hold q', 'hold e' too.",
+   "P1 Card header, top-right (x≈1330-1378, y≈172-228): Add a 48x48 ghost button with the close glyph, right-aligned in a 56px header row, with a 'b' pad glyph beside it. Bind Esc.",
+   "P1 Footer 'Press any button' with lime radio dot (x≈1180-1346, y≈856): Replace it with a 56px primary button 'got it': --acc fill, --acc-ink text, 20px/700, min-width 200px, right-aligned in a 72px footer. Optionally keep a 16px tx-2 'press any button' hint to its left. Drop the dot.",
+   "P1 Card size and position (x 541-1378, y 172-907): Make it a dialog of about 720-900px wide with a 56px header and 72px footer. Or make it a full 90% window with the table centred at a 900px measure. Raise the scrim to rgba(6,7,8,.80).",
+   "P1 Row names (x≈573) and column headers 'Keyboard' / 'Controller' (y≈278): Set row names to 20px f-cond 600 tx-1. Set headers to 16px tx-2 with +.04em tracking. Make key caps 20px/700 with 12px side padding. Keep the 56px pitch."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-fight/46-arcade-attract-how-to-play-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-final/46-arcade-attract-how-to-play-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T19:09"
+  "when": "2026-10-18T19:13"
  },
  "37-raid-extracting-countdown": {
   "score": 2,

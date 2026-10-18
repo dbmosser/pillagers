@@ -6099,6 +6099,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.72',what:'every word on screen is lower case (his order: change all text shown to player to lowercase only)',
+   run:function(){
+     if(typeof ncFix!=='function'||typeof TX!=='function'||typeof txRecord!=='function') return 'SKIP: no text door';
+     var bad=[], cv=document.createElement('canvas'), x=cv.getContext('2d'), h, up=/[A-Z]/;
+     ['Run info','CREATE A NEW SAVE','Location revealed','Ascend. Pillage. Extract.','PRESS A','12 SP','Esc'].forEach(function(s){
+       var r=TX(s); if(typeof r==='string'&&up.test(r)) bad.push(s+' reads '+r); });
+     h=txRecord(function(){ x.font='20px sans-serif'; x.fillText(['Machine','Alert'].join(' '),0,20); });
+     if(!h.length||up.test(h[0].t)) bad.push('a drawn line still has capitals: '+(h[0]&&h[0].t));
+     var b=document.getElementById('newgame');
+     if(b&&typeof txDom==='function'){ txDom(b.parentNode); if(up.test(b.textContent)) bad.push('the new save button reads '+b.textContent); }
+     var pe=null; try{ var d=document.createElement('div'); d.className='__lcx'; document.body.appendChild(d); pe=getComputedStyle(d,'::before').textTransform; d.remove(); }catch(_p){}
+     if(pe!=='lowercase') bad.push('stylesheet words are not lowered ('+pe+')');
+     return bad.length?bad.join('; '):null;
+   }},
   {v:'30.71',what:'a Longshot shot kicks the camera 7.0, up from 4.5 (about 4 px), and five shots at full rate never stack past 5 px (his Q5 gun feel)',
    run:function(){
      if(typeof gunShake!=='function'||typeof gfxTrauma!=='function') return 'SKIP: no gunShake';

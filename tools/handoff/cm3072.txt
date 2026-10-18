@@ -1,0 +1,7 @@
+v30.72: every word on screen is lower case
+
+Every word on screen is now lower case, everywhere.
+
+Check 30.72. Fails on v30.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
