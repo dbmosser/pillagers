@@ -40246,7 +40246,8 @@ window.__REGRESS=[
        if(Math.abs(a.top-b.top)>2) bad.push('the search box top is '+Math.round(a.top-b.top)+' px off the SORT button top');
        if(Math.abs(b.height-c.height)>2) bad.push('SORT is '+Math.round(b.height)+' px tall beside '+Math.round(c.height)+' px tabs');
        if(Math.abs(b.top-c.top)<c.height&&Math.abs(b.top-c.top)>2) bad.push('SORT sits '+Math.round(b.top-c.top)+' px lower than the tabs on the same line');
-       padR=t.right-Math.max(a.right,b.right);
+       // v28.82 (corpus-fix): ARMORY and TROPHIES (career2, career4) now follow SORT in the same row, so the row ends at the last of the four
+       padR=t.right-Math.max(a.right,b.right,(document.getElementById('codexbtn')||sb).getBoundingClientRect().right,(document.getElementById('trophybtn')||sb).getBoundingClientRect().right);
        if(padR>t.width*0.08) bad.push('the row ends '+Math.round(padR)+' px short of its right edge, of '+Math.round(t.width));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(hub) hub.classList.remove('on'); }catch(_h){} __topClear(); __cleanProfile(); }
@@ -75018,7 +75019,11 @@ window.__REGRESS=[
    run:function(){
      var pb=document.getElementById('pausebox');
      if(!pb) return 'SKIP: no pause box in this document';
+     // v28.82 (corpus-fix): the key line follows WHERE you are (floor, DEMO, raid), so write the raid line into the box whatever the last check left, then put the state back
+     var stK=state, gaK=(G?G.arcade:undefined);
+     try{ state='raid'; if(G) G.arcade=0; if(typeof keysLegendApply==='function') keysLegendApply(); } finally{ state=stK; if(G) G.arcade=gaK; }
      var bad=[], html=pb.innerHTML||'', text=(pb.textContent||'').replace(/\s+/g,' ');
+     try{ if(typeof keysLegendApply==='function') keysLegendApply(); }catch(_kl){}
      // THE FINDING, assembled so this check cannot match itself.
      var literal=['&','amp;','nbsp;'].join('');
      var lit2=['&','nbsp;'].join('');
