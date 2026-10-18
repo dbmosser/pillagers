@@ -1,0 +1,7 @@
+v29.72: settings near
+
+Settings steppers sit beside their names; the pause title is left-aligned.
+
+Check 29.72. Fails on v29.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.72 - SETTINGS NEAR
+
+Co-op hunt while he was away. Critic c-31: Settings steppers sit 700px from their names; pause title centred. Settings card 816, name column 384 with the stepper beside it, pause title left over the column.
+
+MEASURED. Check 29.72 passes, and fails on v29.71.
 ## v29.71 - Undercroft lines go quiet
 
 Co-op hunt while he was away. UI step 7 (Undercroft screens, restyle only). Amber is for focus only: the credits and reputation lines, the picked contract row outline and the loud stat bars go to tx-2 and tx-1; sub lines and contract rows reach the 16px floor.

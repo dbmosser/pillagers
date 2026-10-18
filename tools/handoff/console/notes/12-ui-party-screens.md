@@ -11,4 +11,5 @@
   4. 47, 48, 53, 54 are in-raid HUD shots (controls card over the HUD): the HUD chrome belongs to the HUD task (b lane); the controls card itself needs
      key caps and a header and must not overlap the objective chips.
   5. Empty board state (56, 64) is a tiny card in a void: needs a useful empty state / ghost rows.
+- Run 3: took fresh before pics 12-c1 (all 13). Plan: ship #3 (run over card) first, then #5 (empty board). Do not re-read pics, go to code.
 - Do not re-run critic on all 13 (cost ~4 cents each, output long).
