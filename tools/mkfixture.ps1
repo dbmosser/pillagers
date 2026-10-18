@@ -14016,8 +14016,9 @@ window.__REGRESS=[
        if(!fr||fr.lw<5*z) bad.push('ONE: the sweep is only '+(fr?fr.lw.toFixed(1):'none')+' px wide ('+(5*z)+' needed)');
        else if(Math.abs((fr.a1-fr.a0)/6.2832-0.75)>0.03) bad.push('ONE: the sweep a chain three quarters spent shows '+((fr.a1-fr.a0)/6.2832).toFixed(2)+' of the ring, not 0.75');
        // TWO: the multiplier is a big number
-       for(i=0,px=0;i<st.txts.length;i++) if(st.txts[i].t==='x3'){ px=parseFloat((st.txts[i].f.match(/([\d.]+)px/)||[0,0])[1]); }
-       if(!(px>=22*z)) bad.push('TWO: the multiplier is printed at '+px+' px (22 needed)');
+       // cw-nomult (his order 2026-10-18, he did not like the multiplier next to the reticle): the ring may print no number at all; one that is printed is big
+       for(i=0,px=-1;i<st.txts.length;i++) if(st.txts[i].t==='x3'){ px=parseFloat((st.txts[i].f.match(/([\d.]+)px/)||[0,0])[1]); }
+       if(px>=0&&!(px>=22*z)) bad.push('TWO: the multiplier is printed at '+px+' px (22 needed)');
        // THREE: a chain that has just grown flashes outward past the ring (the flash ring starts ON the ring and opens outward over STYR.pulse, so it is read 0.3 s in, when it has opened about 10 px)
        fr=grab(0.3); if(!(maxR(fr)>=maxR(st)+8*z)) bad.push('THREE: a chain that just grew has no flash outward ('+maxR(fr).toFixed(1)+' against '+maxR(st).toFixed(1)+')');
        // FOUR: the last stretch is redder and flickers
@@ -19489,6 +19490,7 @@ window.__REGRESS=[
        proto=CanvasRenderingContext2D.prototype; oFt=proto.fillText; z=Math.max(1,hudRes());
        ARCADE.streak={n:3,t:g.t-1}; ARCADE.team=null; grab(xs0);
        ARCADE.team={n:2,at:Date.now()-200}; grab(xs1);
+       if(!xs0.length&&!xs1.length) return 'SKIP: the ring prints no multiplier since cw-nomult (his order 2026-10-18)';
        if(xs0.length!==1||xs1.length!==1) bad.push('the multiplier was drawn '+xs0.length+' and '+xs1.length+' times');
        else if(!(xs1[0]-xs0[0]>=8*z)) bad.push('the multiplier moved only '+(xs1[0]-xs0[0])+' px out for the TEAM ring (it needs '+(8*z)+')');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
@@ -20499,7 +20501,7 @@ window.__REGRESS=[
        else { q=arcs[arcs.length-1]; if(Math.abs((q[4]-q[3])/6.2832-0.5)>0.06) bad.push('FIVE: the ring a chain half spent shows '+((q[4]-q[3])/6.2832).toFixed(2)+' of its sweep, not a half'); }
        var txm=[]; if(typeof styMedalDraw==='function'){ proto.fillText=function(){ txm.push(String(arguments[0])); return oFt.apply(this,arguments); }; try{ styMedalDraw(ctx,p); } finally { proto.fillText=oFt; } }   // partyp1: the medal is an emblem row at the left edge, its name on a plate under the newest
        if((txts.join('|')+'|'+txm.join('|')).indexOf('LONG'+' SHOT')<0) bad.push('FIVE: the medal did not draw its name');
-       if(txts.join('|').indexOf('x3')<0) bad.push('FIVE: the ring does not show its multiplier');
+       // cw-nomult (his order 2026-10-18): the ring no longer prints its multiplier beside it, so its number is not asked for here
        arcs.length=0; txts.length=0; ARCADE.streak=null; g.sty.pops.length=0;
        proto.arc=function(){ arcs.push([].slice.call(arguments)); return oArc.apply(this,arguments); };
        try{ styleDraw(ctx,p,640,360); } finally { proto.arc=oArc; }
