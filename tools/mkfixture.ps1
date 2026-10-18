@@ -6097,6 +6097,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.71',what:'the Undercroft credits line is not amber, the picked contract row has no amber outline, and the window sub lines are 16px',
+   run:function(){
+     var bad=[], el=null;
+     try{
+       var rp=document.getElementById('repline'), ww=document.getElementById('wallet_work');
+       [rp,ww].forEach(function(n,i){ if(!n){ bad.push('missing line '+i); return; }
+         var c=getComputedStyle(n).color; if(/rgb\(24[0-9],\s*18[0-9],\s*59\)/.test(c)) bad.push('line '+i+' is amber '+c); });
+       if(rp&&rp.parentNode){ var fs=parseFloat(getComputedStyle(rp.parentNode).fontSize); if(fs<16) bad.push('the sub line is '+fs+'px, not 16'); }
+       var rt=document.getElementById('root')||document.body, box=document.getElementById('contracts');
+       if(box){
+         el=document.createElement('div'); el.className='crow sel'; el.setAttribute('data-con','9'); el.style.borderColor='var(--amber)';
+         el.innerHTML='<div class="cd">x</div><div class="cp"><span>0 / 1</span></div>'; el.style.display='none'; box.appendChild(el);
+         var bc=getComputedStyle(el).borderBottomColor; if(/rgb\(24[0-9],\s*18[0-9],\s*59\)/.test(bc)) bad.push('the picked row keeps an amber outline '+bc);
+       } else bad.push('no contracts list');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ if(el&&el.parentNode) el.parentNode.removeChild(el); }catch(_r){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.70',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

@@ -1,0 +1,7 @@
+v29.71: undercroft lines go quiet
+
+The shop, craft and Mainframe lines are quieter and easier to read.
+
+Check 29.71. Fails on v29.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

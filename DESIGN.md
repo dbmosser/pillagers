@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.71 - Undercroft lines go quiet
+
+Co-op hunt while he was away. UI step 7 (Undercroft screens, restyle only). Amber is for focus only: the credits and reputation lines, the picked contract row outline and the loud stat bars go to tx-2 and tx-1; sub lines and contract rows reach the 16px floor.
+
+MEASURED. Check 29.71 passes, and fails on v29.70.
 ## v29.70 - THE WHAT IS NEW CARD NAMES POLISH PASS 13
 
 Co-op hunt while he was away. The card was stamped v29.54 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

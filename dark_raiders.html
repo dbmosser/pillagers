@@ -1077,6 +1077,21 @@
   #root .vdet .cqty button.on{ color:var(--acc-ink); }
   #root .vdet .vbuy{ min-height:56px; font-size:20px; letter-spacing:.06em; }
   #root .vdet .vbuy:disabled:not(.padfocus){ background:var(--ui-hover); color:var(--tx-3) !important; border-color:var(--ui-line) !important; }
+  /* v28.xx (cw-undercroft2), UI STEP 7 (his bar: "style consistency across menus"; critic on 08 and 12): amber is for focus only, so the
+     credits and reputation lines under the Undercroft tabs go tx-2 at the 16px body floor; the hint lines and contract rows rise
+     from 13.5 and 13 to 16 and 14; the picked contract row loses its full amber outline (the 3px amber bar stays) and sits on the
+     raised fill; the stat bars are tx-2, 4px, so the rule under each stat no longer outshouts its number. Colours and sizes only. */
+  #root #tradermodal .msub, #root #opmodal .msub, #root #gamblemodal .msub, #root #barmodal .msub{ font-size:16px; line-height:1.5; }
+  #root #repline, #root #wallet_work, #root #wallet_merc, #root #wallet_gamble, #root #wallet_bar{ color:var(--tx-2) !important; font-weight:400 !important; }
+  #root #tradermodal .hint, #root #opmodal .hint{ font-size:16px; line-height:1.5; }
+  #root .crow .cd{ color:var(--tx-1); }
+  #root .crow .cd > span{ font-size:14px !important; }
+  #root .crow .cd > div{ color:var(--tx-2) !important; font-size:16px !important; }
+  #root .crow .cp{ color:var(--tx-2); font-size:16px; }
+  #root .crow .cp b{ color:var(--tx-1); font-weight:700; }
+  #root .crow.sel{ background:var(--ui-raised); border-color:transparent !important; border-bottom-color:var(--ui-line) !important; }
+  #root .vdet .vbar{ height:4px; }
+  #root .vdet .vbar i{ background:var(--tx-2); }
   #root .vendgrid{ border-radius:2px; border-color:var(--ui-line); }
   /* item cells: flat graphite, the rarity frame, a bar of the rarity along the foot and a faint tint of it behind the icon */
   #root .cell, #root .vcell{ border-radius:2px; transform:none;
@@ -2576,7 +2591,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.70';
+var VER='29.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47666,7 +47681,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.70: The what is new card names polish pass 13. Check 29.70 fails on v29.69',
+  now:'v29.71: The shop, craft and Mainframe lines are quieter and easier to read. Check 29.71 fails on v29.70',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
