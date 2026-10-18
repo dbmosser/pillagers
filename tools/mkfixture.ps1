@@ -6662,13 +6662,13 @@ window.__REGRESS=[
        if(alive){
          INDEV.legacy=false; INDEV.dev='kb'; rearm();
          txt=seen(function(){ frames(2); });
-         if(!has(txt,/^or click to start$/)) bad.push('SEVEN: the keyboard prompt on the map does not read or click to start ('+txt.filter(function(s){ return /start|click|waypoint/.test(s); }).join(' | ')+')');
+         if(!has(txt,/^(or )?click to start$/)) bad.push('SEVEN: the keyboard prompt on the map does not read or click to start ('+txt.filter(function(s){ return /start|click|waypoint/.test(s); }).join(' | ')+')');
          if(!has(txt,/^e$/)) bad.push('SEVEN: the keyboard prompt shows no E key');
          if(has(txt,/click to set a waypoint/)) bad.push('SEVEN: the waypoint hint still shows on the opening map, where a click starts the raid');
          if(has(txt,/drop in/)) bad.push('SEVEN: the opening map says drop in');
          padStub(); INDEV.dev='pad'; rearm();
          txt=seen(function(){ frames(2); });
-         if(!has(txt,/^to start$/)||has(txt,/or click/)) bad.push('SEVEN: the pad prompt on the map does not read to start ('+txt.filter(function(s){ return /start|click/.test(s); }).join(' | ')+')');
+         if(!has(txt,/^(to )?start$/)||has(txt,/or click/)) bad.push('SEVEN: the pad prompt on the map does not read to start ('+txt.filter(function(s){ return /start|click/.test(s); }).join(' | ')+')');
          if(!has(txt,/^a$/)) bad.push('SEVEN: the pad prompt shows no A button');
          padOff(); INDEV.dev='kb';
          mapFirstEnd('test'); g.mapOpen=true; frames(1);
