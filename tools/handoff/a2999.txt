@@ -1,0 +1,1 @@
+| Abandoned card: the loot left behind is a 56px figure | v29.99 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.99 passes, fails on v29.98 |

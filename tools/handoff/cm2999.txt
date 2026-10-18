@@ -1,0 +1,7 @@
+v29.99: abandoned card: the loot left behind is a 56px figure
+
+Abandoned card: the loot left behind is a big figure with a label.
+
+Check 29.99. Fails on v29.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

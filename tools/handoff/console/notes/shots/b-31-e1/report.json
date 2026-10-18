@@ -1,9 +1,6 @@
-{"generated":"2026-10-18T08:16:46","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":64,"screens":[
+{"generated":"2026-10-18T08:26:51","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":35,"screens":[
 {"name":"02-welcome-pack","screen":"WELCOME PACK modal (first run)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"02-welcome-pack-1080.jpg","lint":""}},
-{"name":"04-stash-terminal","screen":"THE STASH: stash grid, loadout backpack, tactical belt, sell row, freebie kit","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"04-stash-terminal-1080.jpg","lint":""}},
-{"name":"08-shop","screen":"Trader: SHOP tab","1080":{"staged":true,"note":"tradermodal","viewport":"1920x1080","shot":"08-shop-1080.jpg","lint":""}},
+{"name":"06-terms","screen":"Terms modal (lift T)","1080":{"staged":true,"note":"termsmodal","viewport":"1920x1080","shot":"06-terms-1080.jpg","lint":""}},
 {"name":"14-mainframe-racks","screen":"Mainframe: racks","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"14-mainframe-racks-1080.jpg","lint":""}},
-{"name":"39-hub-after-raid","screen":"Hub on return after a raid","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"39-hub-after-raid-1080.jpg","lint":""}},
-{"name":"41-hub-backpack","screen":"Backpack opened on the hub floor","1080":{"staged":true,"note":"{\"open\":true,\"snap\":true}","viewport":"1920x1080","shot":"41-hub-backpack-1080.jpg","lint":""}},
 {"name":"65-codex","screen":"The armory codex (career stash screen)","1080":{"staged":true,"note":"codexmodal","viewport":"1920x1080","shot":"65-codex-1080.jpg","lint":""}}
 ]}

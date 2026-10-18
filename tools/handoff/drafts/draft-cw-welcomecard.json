@@ -1,0 +1,16 @@
+{
+    "title":  "THE WELCOME PACK IS A CENTRED CARD",
+    "why":  "The critic scored the Welcome pack 2 of 5: a full-screen slab with seven rows hugging the left and the buttons 1600px apart. The style guide says a modal is a centred card at most 960 wide. It now takes the Terms frame, fitted to its content, with the list and footer 880 wide.",
+    "now":  "The welcome pack is a centred card.",
+    "edits":  [
+                  {
+                      "anchor":  "  #termsmodal .plist{ flex:0 1 auto; }\n",
+                      "replacement":  "  #termsmodal .plist{ flex:0 1 auto; }\n  /* v28.xx (cw-welcomecard), the critic on the Welcome pack (02 = 2 of 5): \"a full-screen slab with seven rows hugging the left and the buttons 1600px apart\". The style guide: a modal is a centred card, 960 wide at most, and never exceeds its content. The welcome pack takes the Terms frame (centred, fitted to what it holds), 960 wide, with its text, list and footer 880 wide. Restyle only. */\n  #welcomemodal{ align-items:center; justify-content:center; }\n  #welcomemodal::before{ inset:50% auto auto 50%; width:min(960px,calc(100% - 28px)); height:min(var(--cfh,840px),calc(100% - 28px)); transform:translate(-50%,-50%); }\n  #welcomemodal .msub, #welcomemodal .plist, #root #welcomemodal \u003e .ui-foot{ max-width:880px; width:100%; }\n  #welcomemodal .plist{ flex:0 1 auto; }\n"
+                  },
+                  {
+                      "anchor":  "var CARDFIT={termsmodal:600,gamblemodal:620,barmodal:640,partymodal:760};\n",
+                      "replacement":  "var CARDFIT={termsmodal:600,gamblemodal:620,barmodal:640,partymodal:760,welcomemodal:840};   // v28.xx (cw-welcomecard): the welcome pack is a fitted card too\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the welcome pack is a centred card 960 wide at most, not a full-window slab (the critic: seven rows hugging the left, buttons 1600px apart)\u0027,\n   run:function(){\n     var el=null, w=0, wm=0;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       el=document.getElementById(\u0027welcomemodal\u0027); if(!el) return \u0027SKIP: no welcome pack\u0027;\n       openModal(\u0027welcomemodal\u0027);\n       w=parseFloat(getComputedStyle(el,\u0027::before\u0027).width)||0; wm=el.getBoundingClientRect().width;\n       if(!(w\u003e0\u0026\u0026w\u003c=961)) return \u0027the welcome pack frame is \u0027+Math.round(w)+\u0027px wide in a \u0027+Math.round(wm)+\u0027px window; a card is 960 at most\u0027;\n       return null;\n     } finally {\n       try{ if(el) el.classList.remove(\u0027on\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

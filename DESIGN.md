@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.99 - Abandoned card: the loot left behind is a 56px figure
+
+Co-op hunt while he was away. The critic held the Abandoned card at 2 of 5 with a P0: no hero line, the loss is a 22px sentence. The loss is now one 56px figure over a 16px label, the shape the Killed card uses, and the XP line is 16px. The old sentence stays hidden in the card, words unchanged.
+
+MEASURED. Check 29.99 passes, and fails on v29.98.
 ## v29.98 - GHOST HEADER X, QUIETER FOCUS BOX, KEYS LABELS
 
 Co-op hunt while he was away. Critic c-31 round 10 (pause 25, Settings 26, Keys 32 all at 3): the X buttons read as bright white boxes that outweigh the title; the focused Settings value keeps a heavy box; Keys group labels are quieter than their rows. Ghost X (line-hi border, tx-2 glyph), no box on the focused value, tx-1 section labels.

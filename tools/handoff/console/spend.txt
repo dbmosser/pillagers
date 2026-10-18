@@ -386,3 +386,10 @@
 2026-10-18 0.0257 critic-13-ui-end-cards
 2026-10-18 0.0257 critic-13-ui-end-cards
 2026-10-18 0.0233 critic-12-ui-party-screens
+2026-10-18 0.0236 critic-12-ui-party-screens
+2026-10-18 0.0252 critic-12-ui-party-screens
+2026-10-18 0.0251 critic-12-ui-party-screens
+2026-10-18 0.0318 critic-c-31-ui-pause-settings
+2026-10-18 0.0294 critic-c-31-ui-pause-settings
+2026-10-18 0.0301 critic-c-31-ui-pause-settings
+2026-10-18 1.0028 c-31-ui-pause-settings
