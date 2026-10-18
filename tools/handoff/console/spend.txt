@@ -506,3 +506,7 @@
 2026-10-18 2.2394 05-party-launch-mode
 2026-10-18 0.0317 critic-03-title-and-backdrop
 2026-10-18 0.0220 critic-03-title-and-backdrop
+2026-10-18 0.0324 critic-03-title-and-backdrop
+2026-10-18 0.3407 b-02-gun-enemy-feel
+2026-10-18 0.0287 critic-03-title-and-backdrop
+2026-10-18 1.1097 03-title-and-backdrop

@@ -1,0 +1,1 @@
+| First controller is player 2, second is player 1 | v30.70 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.70 passes, fails on v30.69 |

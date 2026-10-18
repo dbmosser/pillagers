@@ -1,0 +1,56 @@
+{
+    "title":  "PARTY LAUNCH MODE: ONE ADDRESS OPENS BOTH WINDOWS ON THE ATTRACT",
+    "why":  "His Q28, Q30, Q31, Q24 of 10-18: the party shortcut opens both windows full screen on the attract, with Career and the stash out of reach. ?party=1\u0026pair=CODE puts the host window straight into the arcade with no title and no window.open; the player 2 window shows its attract at once; the host posts hostup so a reload of either window finds the pair again; any leave of the arcade but the operator EXIT DEMO reloads into the party and EXIT DEMO goes to the plain address; player 2 takes the first pad; stale player 2 marks are cleared at boot. Without ?party=1 nothing changes.",
+    "now":  "The party shortcut can open both windows on the attract with one address, Career and the stash out of reach, and a reload of either window finds its pair again.",
+    "edits":  [
+                  {
+                      "anchor":  "var NETP2=!NETSLOT\u0026\u0026netP2Of((typeof location!==\u0027undefined\u0027\u0026\u0026location.search)||\u0027\u0027);\n",
+                      "replacement":  "var NETP2=!NETSLOT\u0026\u0026netP2Of((typeof location!==\u0027undefined\u0027\u0026\u0026location.search)||\u0027\u0027);\n// v30.xx (cw-party), HIS Q28 (2026-10-18): \"one-click shortcut that opens both windows full screen on attract, with Career and stash out of reach\". ?party=1 on\n// the address is the party launch mode. Without it nothing below does anything. With it the title is never shown: the host window goes\n// straight into the arcade (partyHostBoot), the player 2 window shows its attract at once (partyP2Boot), and the title rows stay hidden by CSS.\nfunction partyOf(q){ return (/[?\u0026]party=1(\u0026|$)/).test(String(q||\u0027\u0027)); }\nvar PARTY=partyOf((typeof location!==\u0027undefined\u0027\u0026\u0026location.search)||\u0027\u0027), PARTY_EXIT=0;\nif(PARTY){ try{ document.documentElement.classList.add(\u0027party\u0027); if(NETP2||netPairOf(location.search)) document.documentElement.classList.add(\u0027partyhide\u0027); }catch(_pc){} }\n"
+                  },
+                  {
+                      "anchor":  "*{ text-transform:none !important; }\n",
+                      "replacement":  "*{ text-transform:none !important; }\n/* v30.xx (cw-party), his Q28: in the party launch mode (?party=1) Career, the saves and the stash are out of reach. The windows that go straight to the arcade never show the title at all; a host window with no pair code keeps only the 2 player arcade row. */\nhtml.partyhide #title{ display:none !important; }\nhtml.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party #modecoop, html.party #modearcade1, html.party #modepvp, html.party .modelater, html.party #titleset{ display:none !important; }\n"
+                  },
+                  {
+                      "anchor":  "if(typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2){\n  p2LiveBeat(); try{ setInterval(p2LiveBeat,2000); }catch(_si){}\n",
+                      "replacement":  "// v30.xx (cw-party), the stale player 2 marks: a player 2 window killed mid raid leaves salvagerun:p2raid and p2live, and for 75 s the 2 PLAYER row refuses (\"still in a raid in the other window\"). At a party boot nothing else can be open, so both go before anything reads them.\nfunction partyClearMarks(){ try{ localStorage.removeItem(p2RaidKey()); localStorage.removeItem(p2LiveKey()); }catch(_pm){} return true; }\nif(PARTY) partyClearMarks();if(typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2){\n  p2LiveBeat(); try{ setInterval(p2LiveBeat,2000); }catch(_si){}\n"
+                  },
+                  {
+                      "anchor":  "  if(NET.same===\u0027p2\u0027){\n    if(m.t===\u0027offer\u0027){\n",
+                      "replacement":  "  if(NET.same===\u0027p2\u0027){\n    // v30.xx (cw-party): the host window posts hostup at every boot and every 5 s while nobody is linked; a player 2 window that is not linked answers ready, and the old handshake follows (offer, answer, arcon). So a reload of EITHER window finds the pair again with no touch.\n    if(m.t===\u0027hostup\u0027){ if(NET.role) return \u0027ignored\u0027; netPadPost(); netSndPost(); netSamePost({t:\u0027ready\u0027,pair:NET.pair}); return \u0027ready\u0027; }\n    if(m.t===\u0027offer\u0027){"
+                  },
+                  {
+                      "anchor":  "// THE TITLE. Called once at boot with the start the old button runs.",
+                      "replacement":  "// v30.xx (cw-party), the party launch mode (his Q28, Q30, Q31, Q24 of 2026-10-18). The host window of ?party=1\u0026pair=CODE does what arcadePick does, without\n// window.open (the shortcut opens player 2 itself). With no pair code it returns nopair and the title keeps only the 2 player arcade row.\nfunction partyHostUp(){ if(NET.same!==\u0027host\u0027||!NET.pair) return false; if(netInCount()\u003e0) return false; return netSamePost({t:\u0027hostup\u0027,pair:NET.pair}); }\nfunction partyHostBoot(q){\n  q=(typeof q===\u0027string\u0027)?q:((typeof location!==\u0027undefined\u0027\u0026\u0026location.search)||\u0027\u0027);\n  if(!partyOf(q)) return \u0027off\u0027;\n  var pair=netPairOf(q), tl=document.getElementById(\u0027title\u0027);\n  partyClearMarks();\n  if(!pair) return \u0027nopair\u0027;\n  NET.pair=pair; NET.arcPick=1; NET.mode=\u0027coop\u0027; NET.pick=\u0027coop\u0027; NET.same=\u0027host\u0027; NET.p2win=null;\n  if(!NET.role) netStartHost();\n  netSameChan(); netPadInit(); netSndInit(); netSameHostLink();\n  try{ if(typeof NET.start===\u0027function\u0027) NET.start(); }catch(_ns){}\n  if(tl) tl.style.display=\u0027none\u0027;\n  if(!arcadeEnter(\u0027host\u0027)){ partyReload(); return \u0027fail\u0027; }\n  partyHostUp();\n  try{ clearInterval(NET.partyT); NET.partyT=setInterval(partyHostUp,5000); }catch(_pi){}\n  return \u0027host\u0027;\n}\n// The player 2 window never shows its title: the arcade attract is up at once (arcon from the host then changes nothing).\nfunction partyP2Boot(r){\n  if(!PARTY) return \u0027off\u0027;\n  var tl=document.getElementById(\u0027title\u0027);\n  if(tl) tl.style.display=\u0027none\u0027;\n  if(r!==\u0027ready\u0027) return \u0027wait\u0027;\n  return arcadeEnter(\u0027p2\u0027)?\u0027arcade\u0027:\u0027fail\u0027;\n}\nfunction partyNav(u){ try{ location.href=u; }catch(_pn){} }\nfunction partyPlainUrl(){ return String(location.href).split(\u0027#\u0027)[0].split(\u0027?\u0027)[0]; }\n// A reload back into the party attract, at most 4 in 30 s so a build that cannot enter the arcade never spins.\nfunction partyReload(){\n  var now=Date.now(), a=[], k=\u0027pillagers:partyreloads\u0027;\n  try{ a=JSON.parse(sessionStorage.getItem(k)||\u0027[]\u0027).filter(function(x){ return now-x\u003c30000; }); }catch(_p0){ a=[]; }\n  if(a.length\u003e=4) return false;\n  a.push(now); try{ sessionStorage.setItem(k,JSON.stringify(a)); }catch(_p1){}\n  try{ location.reload(); }catch(_p2){ return false; }\n  return true;\n}\n// The operator\u0027s EXIT DEMO (the card row and the chord): in the party launch mode it goes to the same address without ?party, the full title.\nfunction arcadeOpLeave(){\n  if(!PARTY) return arcadeLeave();\n  PARTY_EXIT=1;\n  var r=arcadeLeave();\n  partyNav(partyPlainUrl());\n  return r;\n}// THE TITLE. Called once at boot with the start the old button runs."
+                  },
+                  {
+                      "anchor":  "  if(rt) rt.onclick=function(){ if(NET.arcPick) arcadePick(); else netSamePick(NET.pick||\u0027coop\u0027); };\n",
+                      "replacement":  "  if(rt) rt.onclick=function(){ if(NET.arcPick) arcadePick(); else netSamePick(NET.pick||\u0027coop\u0027); };\n  if(PARTY\u0026\u0026st) st.onclick=function(){ arcadePick(); };   // v30.xx (cw-party): no Career start in the party launch mode\n  if(PARTY\u0026\u0026!(typeof NETP2!==\u0027undefined\u0027\u0026\u0026NETP2)){ try{ partyHostBoot(); }catch(_pb){} }"
+                  },
+                  {
+                      "anchor":  "  r=netSameBootP2();\n",
+                      "replacement":  "  r=netSameBootP2();\n  if(PARTY){ try{ partyP2Boot(r); }catch(_pp){} }   // v30.xx (cw-party)"
+                  },
+                  {
+                      "anchor":  "  if(typeof startFn===\u0027function\u0027) startFn();\n  return \u0027start\u0027;\n",
+                      "replacement":  "  if(PARTY\u0026\u0026typeof arcadePick===\u0027function\u0027){ arcadePick(); return \u0027start\u0027; }   // v30.xx (cw-party): ENTER on a party title is the arcade row, never Career\n  if(typeof startFn===\u0027function\u0027) startFn();\n  return \u0027start\u0027;"
+                  },
+                  {
+                      "anchor":  "  var ix=(role===\u0027p2\u0027)?1:0;\n",
+                      "replacement":  "  // v30.xx (cw-party), his Q24: player 1 keyboard and mouse, player 2 a pad. Controller 2 for player 2 left player 2 with no pad when ONE pad was plugged in (the host took it). In the party launch mode both picks stay -1 (the v16.35 rule): player 2 takes the FIRST connected pad and the host takes a second only if there is one.\n  var ix=PARTY?-1:((role===\u0027p2\u0027)?1:0);"
+                  },
+                  {
+                      "anchor":  "  if(hadRaid){ try{ showScreen(\u0027hub\u0027); }catch(_sh2){} }\n  return r;\n",
+                      "replacement":  "  if(hadRaid){ try{ showScreen(\u0027hub\u0027); }catch(_sh2){} }\n  if(PARTY\u0026\u0026!PARTY_EXIT) partyReload();   // v30.xx (cw-party): any leave except the operator\u0027s EXIT DEMO goes straight back into the party attract (the reload keeps ?party=1), never to the title\n  return r;"
+                  },
+                  {
+                      "anchor":  "  arcadeOpClose();\n  arcadeLeave();\n  return true;\n",
+                      "replacement":  "  arcadeOpClose();\n  arcadeOpLeave();   // v30.xx (cw-party)\n  return true;"
+                  },
+                  {
+                      "anchor":  "    arcadeLeave(); return true;\n",
+                      "replacement":  "    arcadeOpLeave(); return true;   // v30.xx (cw-party)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027party launch mode bisect: the party functions exist\u0027,\n   run:function(){ return (typeof partyHostBoot===\u0027function\u0027\u0026\u0026typeof PARTY!==\u0027undefined\u0027)?null:\u0027no party mode\u0027; }},"
+}

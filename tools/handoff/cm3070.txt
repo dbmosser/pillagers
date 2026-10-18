@@ -1,0 +1,7 @@
+v30.70: first controller is player 2, second is player 1
+
+The first controller switched on is now player 2 only, the second is player 1 only, and one controller alone goes to player 2. A window never plays the controller of the other player.
+
+Check 30.70. Fails on v30.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,5 +1,8 @@
 # Questions for him
 
+## URGENT (b-02, 10-18 15:10): every ship STOPs "gen-draft failed" since v30.69
+- tools/handoff/p3069.ps1, f3069.ps1, a3069.txt, d3069.txt, cm3069.txt, ppfa/fpfa/ppfe/fpfe.ps1 and tools/fxprobe68.html are tracked in git but DELETED in the working tree (a race: STOP 3069 cleanups at 15:00-15:07 ran while the v30.69 ship committed). gen-draft.ps1 line 10 reads p3069.ps1 as the header for the next number, so cw-kicksniper, cw-glyphs2, cw-hudstar, cw-title-fight and cw-p1p2mate all STOP. Workers cannot git checkout. Owner: git checkout -- tools/handoff/p3069.ps1 tools/handoff/f3069.ps1 (and the rest of the D list), or copy any p30xx.ps1 to p3069.ps1. (The v30.64 index.lock problem below is cleared: HEAD moved on to v30.69.)
+
 ## URGENT (b-02-gun-enemy-feel, 10-18): THE SHIP QUEUE IS BLOCKED
 - .git/index.lock is left over from the ship.sh "Segmentation fault: git add -A" at v30.64 (cw-kicklmg, 13:32). Last commit is v30.63 at 12:08. dark_raiders.html (v30.64 lmg:2.0, VER 30.64) and tools/mkfixture.ps1 (+25 lines, not mine) stay uncommitted, so every ship STOPs "uncommitted changes". Workers cannot delete index.lock. Owner: delete .git/index.lock (check no git runs), then commit "v30.64: the support mg no longer builds into a heavy shake" and the mkfixture lines. Then draft cw-kicksniper (preflight ok except old check 30.35 pins the Longshot kick at 4.5; retarget it to 4.5 or 7).
 

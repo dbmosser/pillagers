@@ -332,17 +332,17 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is tidy, sentence-case and on-palette, but it is still a flat key table with no focal point, no close button and no real primary action, so it reads as a competent template rather than a polished AAA screen.",
+  "verdict": "The table is clean and readable, and the lime accent tab and dark panel match the style guide. But the screen still has no close X, no real primary button, and several capital letters, and most of last round's fixes were not applied.",
   "findings": [
-   "P1 Card header, top-right (x≈1330, y≈172-228): Add a 48x48 ghost button with the close glyph at the header's top-right, plus a 'B' pad glyph and Esc. The header row should be 56px high with a 32px title.",
-   "P1 Footer 'Press any button' with amber radio-dot (x≈1180-1346, y≈856): Replace it with a 56px primary button 'Got it' (fill #f5b73b, ink #1a1205, min-width 200px) right-aligned in a 72px footer. Drop the ring, or keep 'Press any button' as a 16px tx-2 hint to its left.",
-   "P1 Title 'How to play' (y≈216) versus the table: Set the title to 32px/700. Row names should be 20px tx-1. Group the rows into Combat and Raid with a 16px gap and a 16px tx-2 sub-label, or add a 3px --extract left bar on the Extract row.",
-   "P1 Row names (x≈573, Move to Loot): Use 20px f-cond 600 in --tx-1. Keep the 56px row pitch.",
-   "P2 Extract rows, 'in the ring' hints (x≈835-1225, y≈720): Move the note to the label column as 'Extract' with a 16px tx-2 sub-line 'in the ring', or show it once. Make the circle 28px to match the cap height, or drop it."
+   "P0 Whole screen: 'Pillagers' wordmark, 'How to play', 'Keyboard', 'Controller', row names (Move, Aim, Fire...), 'WASD', 'Mouse', 'Left click', 'L stick', 'Hold Q': Lower-case every string: 'pillagers', 'how to play', 'keyboard', 'controller', 'move', 'aim', 'wasd', 'left click', 'l stick', 'rt', 'lb', 'hold q'. Key caps that are drawn as art are exempt; text labels are not.",
+   "P1 Card header, top-right (x≈1330, y≈172-228): Add a 48x48 ghost button with the close glyph at the top-right of a 56px header row. Put a 'b' pad glyph beside it and support Esc.",
+   "P1 Footer 'Press any button' with lime radio dot (x≈1180-1346, y≈856): Use a 56px primary button 'got it' in --acc (#e6ff3d) with --acc-ink text, min-width 200px, right-aligned in a 72px footer. Optionally keep 'press any button' as a 16px tx-2 hint to its left. Drop the dot.",
+   "P1 Row names (x≈573, y≈328-775) and column headers 'Keyboard'/'Controller': Set row names to 20px f-cond 600 tx-1 and column headers to 16px tx-2 with +.04em tracking. Make key caps 20px with 12px side padding. Keep the 56px pitch.",
+   "P1 Title 'How to play' (y≈216) and the card: Set the title to 32px/700 inside a 56px header row. Move the table down 16px to make room for the header row."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-j2/46-arcade-attract-how-to-play-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-18T14:26"
+  "pic": "tools/handoff/console/notes/shots/03-fight/46-arcade-attract-how-to-play-1080.jpg",
+  "task": "03-title-and-backdrop",
+  "when": "2026-10-18T19:09"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -554,16 +554,16 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The lime accent now lands on the primary button and the save row in the scrim version, and the background reads, but the screen still has the same cluttered saves block, five stacked mode buttons, a crowded key legend and an amber-gradient logo that clashes with the lime.",
+  "verdict": "The lime primary and the flat dark buttons are on-style, but none of the earlier advice was followed: the saves block, orange gradient logo, five-button stack and nine-hint legend are unchanged, and capitals still appear in several places.",
   "findings": [
-   "P1 Saves block, y 715-832: Collapse to one 48px row, 558px wide, aligned with the buttons: 'pillager new · 0 raids · 900 · 0 xp' in tx-2 20px, plus a ghost 'switch save' button. Move the name input and create-save into a modal. Delete the 'saves' label. Show no capitals.",
-   "P1 Logo, y 262-345, vs the lime primary: Flatten the logo to solid --acc or --tx-1 with a 2px dark offset, no gradient. Keep it near 96px. Write it lower case.",
-   "P1 Mode buttons, y 413-693: Keep 'play', '2 player co-op' and one 'demos' ghost that opens the arcade demos. Delete the server row. Use one 48px ghost height with an 8px gap.",
-   "P1 Key legend, y~1042: Cut to 3 hints: 'enter select', 'esc back', 'f1 controls', at 16px tx-2. Move the gameplay keys to the controls screen. Swap to pad glyphs when the last input was a pad.",
-   "P1 Focus and selection, y 413-469 and y 741-783: Focused ghost: --ui-raised fill, 1px tx-2 border and a 3px --acc left bar. Save row name in tx-1, with a 3px lime bar to mark it selected."
+   "P1 Logo, y 262-345: Use solid --acc or --tx-1 with a 2px dark offset, no gradient, about 96px high, written 'pillagers'. Lime on the logo and the button together is too much, so use tx-1 for the logo and keep lime for '1 player'.",
+   "P1 Capitals on screen: 'Go fullscreen', 'Pillager New', 'Saves', 'PILLAGER', 'Ascend. Pillage. Extract.', 'Change name', 'Create a new save', 'WASD', 'Mouse', 'LMB', 'Ctrl', 'F1', '$900', 'XP': Lower-case every string: 'go fullscreen', 'pillager new', 'saves', 'ascend. pillage. extract.' (or delete it). Force `text-transform: lowercase` on the input and set the placeholder to 'name'. Keycap text such as 'wasd', 'lmb' and 'esc' is lower case too, unless it sits inside key art.",
+   "P1 Saves block, y 715-832: Collapse to one 48px row, 558px wide: 'pillager new · 0 raids · 900 · 0 xp' in tx-2 20px plus a ghost 'switch save'. Move the rename and create-save fields into a modal. Delete the 'saves' label. Drop the '$' sign and the capitals.",
+   "P1 Mode buttons, y 413-693: Keep three: 'play' (primary), '2 player co-op' (ghost) and 'demos' (ghost, opens a sub-list). Delete the server row and the 'coming later' tag. Use 48px ghosts with an 8px gap.",
+   "P1 Key legend, y~1042: Cut to three: 'enter select', 'esc back', 'f1 controls', at 16px tx-2. Move the gameplay keys to the controls screen. Show pad glyphs when the last input was a pad."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-scrim/01-title-mode-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-fight/01-title-mode-menu-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T18:03"
+  "when": "2026-10-18T19:09"
  }
 }

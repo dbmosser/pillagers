@@ -2786,7 +2786,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.69';
+var VER='30.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48287,7 +48287,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.69: Behind the title and the scoreboard a pillager and a robot fight, live. Check 30.69 fails on v30.68',
+  now:'v30.70: The first controller switched on is now player 2 only, the second is player 1 only, and one controller alone goes to player 2. A window never plays the controller of the other player. Check 30.70 fails on v30.69',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53267,6 +53267,16 @@ function netPadNow(){ return ((typeof performance!=='undefined'&&performance&&pe
 function netPadFocused(){ try{ return (typeof document!=='undefined'&&document&&typeof document.hasFocus==='function')?!!document.hasFocus():true; }catch(e){ return true; } }
 function netPadIxOk(v){ return (typeof v==='number'&&v===(v|0)&&v>=0&&v<NET_PAD_MAX)?v:-1; }
 function netPadKey(side){ return 'salvagerun:samepad:'+((side==='p2')?'p2':'host'); }
+// v30.xx (cw-p2pads), HIS ORDER (2026-10-18): "first controller plugged in always controls p2 only, second controller plugged in always controls p1 only". A pick kept by the CONTROLLER row under the old
+// order (salvagerun:samepad:host or :p2) would still put a window on the pad he named then, over this rule. Once per browser, when the game loads, both kept picks are cleared and a flag is kept so a
+// pick he makes later is left alone. Returns whether it cleared them.
+function netPadOrderFix(){
+  var flag='salvagerun:samepad:order';
+  try{ if(localStorage.getItem(flag)==='1') return false; }catch(e){ return false; }
+  try{ localStorage.removeItem(netPadKey('host')); localStorage.removeItem(netPadKey('p2')); localStorage.setItem(flag,'1'); }catch(e2){ return false; }
+  return true;
+}
+try{ netPadOrderFix(); }catch(_pof){}
 // The pad index a side plays on, from its own pick, the other side's pick and the pads connected: -1 for none. The host
 // plays only a pad it picked; player 2 plays its pick unless the host picked the same, else the first free pad.
 // v17.27, co-op hunt 2026-09-28: THE PAD EACH SIDE IS PLAYING IS KEPT (NET.padWas, by pair code), so slot order alone no
@@ -53340,7 +53350,9 @@ function netPadSend(g,ix,at){   // v17.27: at is the pad the sending window play
   var p=[], v=[], a=[], i, b, bt=(g&&g.buttons)||[], ax=(g&&g.axes)||[];
   for(i=0;i<bt.length&&i<32;i++){ b=bt[i]; p.push((b&&(b.pressed||b.value>0.5))?1:0); v.push(b?(Math.round(((b.value!==undefined)?+b.value:(b.pressed?1:0))*100)/100):0); }
   for(i=0;i<ax.length&&i<8;i++) a.push(Math.round((+ax[i]||0)*1000)/1000);
-  if(!netSamePost({t:'pad',pair:NET.pair,ix:ix,own:NET.padIx,at:netPadIxOk(at),p:p,v:v,a:a,b:padBrandOf(g)})) return false;
+  // v30.xx (cw-p2pads), HIS ORDER (2026-10-18): "first controller plugged in always controls p2 only, second controller plugged in always controls p1 only". The state names the side it is for
+  // (to), so the window that takes it can tell a state meant for the other player and never play it (netPadRecv).
+  if(!netSamePost({t:'pad',pair:NET.pair,ix:ix,own:NET.padIx,at:netPadIxOk(at),to:(NET.same==='host')?'p2':'host',p:p,v:v,a:a,b:padBrandOf(g)})) return false;
   NET.padSent++;
   return true;
 }
@@ -53349,6 +53361,7 @@ function netPadSend(g,ix,at){   // v17.27: at is the pad the sending window play
 function netPadRecv(m){
   var ix=netPadIxOk(m.ix), own=netPadIxOk(m.own), want, i, n, v, bts=[], a=[];
   if(typeof m.own==='number') NET.padOther=own;
+  if(typeof m.to==='string'&&m.to!==NET.same) return 'padnot';   // v30.xx (cw-p2pads), HIS ORDER (2026-10-18): "my controller controls both screens at the same time, that is not the intent". A state meant for the other player is never played here
   want=netPadWant();
   if(ix<0){ NET.padFwd=null; return 'padnone'; }
   if(want===-1) return 'padnone';
@@ -60721,8 +60734,11 @@ function arcadeSoloPick(){
 // It never writes the kept pick (netPadSet writes salvagerun:samepad:*), and leaving the arcade loads his kept pick back
 // (netPadLoad) and tells the other window again. A new pick starts the kept sides over, as netPadSet does.
 function arcadePadsIn(role){
-  var ix=(role==='p2')?1:0;
-  if(NET.padIx!==ix){ NET.padIx=ix; NET.padWas=null; }
+  // v30.xx (cw-p2pads), HIS ORDER (2026-10-18): "right now if both games are fullscreened, my controller controls both screens at the same time, that is not the intent -- first controller plugged in
+  // always controls p2 only, second controller plugged in always controls p1 only". The order above (controller 1 is player 1, controller 2 is player 2) is gone. Neither window is put on a fixed
+  // controller now (pick -1): netPadFor gives player 2 the first controller connected and player 1 the next one, and one controller alone is player 2 (player 1 plays keyboard and mouse). With a
+  // fixed pick a window whose controller was not plugged in fell to the first free controller before the other window pick had reached it, so one controller was played by both windows.
+  if(NET.padIx!==-1){ NET.padIx=-1; NET.padWas=null; }
   netPadPost();
   return NET.padIx;
 }

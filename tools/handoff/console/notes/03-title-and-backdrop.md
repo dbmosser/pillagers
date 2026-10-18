@@ -18,6 +18,10 @@
 - P1 key legend 8 hints, 15px: cut to Enter, Esc, F1.
 - P2 logo gradient+shadow, top-right buttons 44 -> 48px, version stamp, 1px frame border.
 
-## Not done
+## Run 3 (this one)
+- v30.65 cw-title-scrim shipped (centre scrim lighter). v30.69 cw-title-fight shipped: scripted pillager-vs-robot fight (tskInit/tskStep/tskDraw, sorted into the hub draw list when tskOn()) behind title, scoreboard, how-to. Cheap: 2 pillagers + robots, no sim.
+- Shots shots/03-fight (01,45,46). Critic: 01 = 3, 46 = 3. Remaining findings are NOT the backdrop: capitals still on screen (lowercase door is another task), saves block, five buttons, legend, how-to needs close button + primary, logo gradient. 4K 60fps not measured.
+
+## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).

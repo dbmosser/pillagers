@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.70 - First controller is player 2, second is player 1
+
+Co-op hunt while he was away. His order (2026-10-18): right now if both games are fullscreened, my controller controls both screens at the same time, that is not the intent -- first controller plugged in always controls p2 only, second controller plugged in always controls p1 only. Entering the arcade put player 1 on controller 1 and player 2 on controller 2, and a window whose controller was not plugged in fell to the first free one before the other window pick reached it, so one controller was read by both windows. The arcade now leaves both windows on the order the controllers were plugged in (first is player 2, second is player 1, one alone is player 2), a controller state handed over names the side it is for and the other window refuses one meant for its partner, and a controller pick kept under the old order is cleared once.
+
+MEASURED. Check 30.70 passes, and fails on v30.69.
 ## v30.69 - TITLE: A LIVE PILLAGER AND ROBOT FIGHT BEHIND THE MENU
 
 Co-op hunt while he was away. His answers Q52 and Q54: behind the title, the scoreboard and the how-to pages, the live map with real pillager-versus-robot combat, no recorded clip, no frame cost. Two fights on the Undercroft floor either side of the menu: the game own pillager and sentry bodies, tracer shots, sparks, a robot that blows up and rolls back in, a pillager that goes down and gets up. Four bodies on a private random generator, so the raid seed and the seed 4242 fingerprint are untouched.
