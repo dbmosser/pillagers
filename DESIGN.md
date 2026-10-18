@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.86 - PLAYER 2 ARRIVES BESIDE PLAYER 1 IN THE UNDERCROFT
+
+Co-op hunt while he was away. His order of 2026-10-18: players 1 and 2 should be able to see each other in the undercroft. Both windows arrived on the same spot (the lamp at 140,390), so each body stood exactly under the other and neither could be seen until somebody walked. The player 2 window now arrives one body to the right of the lamp, still inside its light and clear of the walls; player 1 and solo play arrive exactly where they did.
+
+MEASURED. Check 30.86 passes, and fails on v30.85.
 ## v30.85 - MENUS BOUNCE ON OPEN
 
 Co-op hunt while he was away. His Q47 (2026-10-18): livelier menu motion, with bounce, overshoot about 6 to 10 percent, never ignoring a press. Windows and their rows rise on an ease-out-back curve (8 percent past home), the tab slide uses it, and the confirm pulse is 8 percent (was 6).

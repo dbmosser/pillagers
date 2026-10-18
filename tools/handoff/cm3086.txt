@@ -1,0 +1,7 @@
+v30.86: player 2 arrives beside player 1 in the undercroft
+
+Player 2 now arrives in the Undercroft standing beside player 1 instead of on top of him, so both can be seen at once.
+
+Check 30.86. Fails on v30.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

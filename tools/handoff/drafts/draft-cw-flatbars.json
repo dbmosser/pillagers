@@ -1,0 +1,16 @@
+{
+    "title":  "FLAT HUD BARS",
+    "why":  "The critic on the raid screen (10-19): the vitals bars are glossy gradients. The style guide asks for flat bars.",
+    "now":  "The health, armour and stamina bars are flat colour with no gloss.",
+    "edits":  [
+                  {
+                      "anchor":  "    try{ gr=ctx.createLinearGradient(0,y,0,y+h); gr.addColorStop(0,litHex(c,0.22,true)); gr.addColorStop(0.5,c); gr.addColorStop(1,darkHex(c,0.80)); ctx.fillStyle=gr; }catch(_g){ ctx.fillStyle=c; }",
+                      "replacement":  "    ctx.fillStyle=c;   // v28.xx (cw-flatbars): flat fill, no gradient (the critic, 10-19: bars are still glossy gradients; the style guide wants flat bars)"
+                  },
+                  {
+                      "anchor":  "    if(h\u003e=6){ ctx.fillStyle=\u0027rgba(255,255,255,.16)\u0027; ctx.fillRect(x,y+1,fw,Math.max(1,h*0.12)); }",
+                      "replacement":  "    // v28.xx (cw-flatbars): the light line along the top of the fill is gone with the gloss"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027every HUD bar is a flat fill: drawing health, armour and stamina bars makes no gradient (the critic, 10-19)\u0027,\n   run:function(){\n     if(typeof bar!==\u0027function\u0027) return \u0027SKIP: no bar()\u0027;\n     var oG=ctx.createLinearGradient, n=0, cols=[\u0027#5fae6f\u0027,\u0027#5aa9e6\u0027,\u0027#8fb5c8\u0027], i;\n     try{\n       ctx.createLinearGradient=function(){ n++; return oG.apply(this,arguments); };\n       ctx.save();\n       for(i=0;i\u003ccols.length;i++) bar(10,10+i*20,280,12,0.6,cols[i]);\n       ctx.restore();\n     } finally { ctx.createLinearGradient=oG; }\n     if(n\u003e0) return \u0027the bars still build \u0027+n+\u0027 gradients, so they are glossy\u0027;\n     return null;\n   }},"
+}

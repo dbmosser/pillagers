@@ -5,4 +5,5 @@
 - Gotchas: HELD=1 form is refused, use plain fixq.sh (it takes the lock itself, so unlock first). A // comment in a replacement that is followed by code on the same line kills the rest of the line: use /* */.
 - Before shots: shots/04-before (01, 04, 18, 25, 26, 40).
 - Not done on purpose: logo gradient, gold rarity badges, pad Y glyph, warn stay amber.
-- 10-18 later run: cw-bounce PREFLIGHT PASS (as v30.65, now stale number); two ship tries failed (STOP uncommitted, then queue wait killed at 10 min). Not shipped yet. Re-run preflight e cw-bounce, then shipq with run_in_background and long timeout. Then cw-cardwide, shots, critic.
+- 10-18 run (lane b): cw-bounce SHIPPED as v30.85. Next cw-cardwide. Settings card at 1080 is only 766px wide (--cw sp-5*15 at line ~1836), shop/codex etc to check. Before shots: shots/04-cw-before (02,04,08,18,65,07).
+- 10-18 earlier run: cw-bounce PREFLIGHT PASS (as v30.65, now stale number); two ship tries failed (STOP uncommitted, then queue wait killed at 10 min). Not shipped yet. Re-run preflight e cw-bounce, then shipq with run_in_background and long timeout. Then cw-cardwide, shots, critic.

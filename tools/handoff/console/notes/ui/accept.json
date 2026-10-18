@@ -130,17 +130,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The new HUD is slightly better: the contracts list is cut from 8 lines to 3 and the ammo count is now a clear hero number, but the screen is still a pile of small, uneven, debug-looking panels that ignore the style guide's type scale, placement margins and currency rules.",
+  "verdict": "The new version only lowercased the text and trimmed the contract list; the HUD is still an unstyled stack of small, crowded, mixed-size panels that ignores the style guide's panels, type scale and lime accent.",
   "findings": [
-   "P0 Whole HUD: pillagers list, Run Info, controls cheat sheet, minimap, currency block: Collapse the controls panel to a single 'F1 Controls' key hint (16px cap plus word) after the first 30s. Show the pillagers list only on Tab or as a 3-row, 40%-opacity strip. Keep only timer, health, ammo and the one objective always visible.",
-   "P0 Run Info panel (top right, y 305-465) and 'Extraction C available' chip: Use one panel with a 16px tx-2 label ('Contracts'), 16px rows and a right-aligned '0/1' counter. Never wrap; shorten to 'Haul $1,600+'. Dock the extraction chip inside the same panel, 8px below the last row, in --extract.",
-   "P1 Ammo/weapon panel (bottom right): Turn 'B / I backpack' into a 16px key cap plus 'Backpack' at the panel's bottom. Name 20px tx-1, ammo 56px at 800 weight. Remove the hatched resize corners. Give the panel 24px padding and 8px clearance from the status tag.",
-   "P1 Type scale across all panels: Snap to 56 (ammo, timer) / 20 (names, rows) / 16 (labels, hints). Minimum 16px for anything read. Titles go tx-1 at 16px +.04em, no amber. Use the same HP and stamina label size.",
-   "P1 Top-right currency block: One row, 20px: 'Credits 900 · XP 0'. Drop the stash line from the raid HUD. Replace '$' with SP or a gold icon in the pillagers list and the weapon panel. Set the margin to 96px (5% of 1920)."
+   "P0 Whole HUD: pillagers list, run info, controls cheat sheet, minimap, currency block: Collapse the controls panel to one 'f1 controls' hint (16px cap plus word) after 30s. Show the pillagers list only on tab, or as a 3-row strip at 40% opacity. Always visible: timer, hp, ammo and one objective only.",
+   "P0 Run info panel (top right, y 305-467) and the 'extraction c available' chip: Use one panel with the 16px tx-2 label 'contracts' and rows of 16px tx-1 with a right-aligned '0/2'. Never wrap; shorten to 'search 2 containers' and 'carry 2 optics lens'. Drop 'dawn clear' to the minimap. Dock the extraction chip inside the panel, 8px under the last row, in --extract.",
+   "P1 Ammo/weapon panel (bottom right): Name at 20px tx-1, ammo at 56px/800 with '/ 24' at 20px tx-2. Add a 16px key cap plus 'backpack' at the bottom. Remove the resize hatch. Give the panel 24px padding and 8px clearance from the status tag.",
+   "P1 Type scale across panels (hp, stamina, standing, pillagers, controls list, currency): Snap to 56 (ammo, timer) / 20 (names, rows) / 16 (labels, hints). Minimum 16px for anything read. Titles tx-1 at 16px +.04em, no amber. Make the hp and stamina labels the same size.",
+   "P1 Top-right currency block and pillagers list: One 20px row, 'credits 900 · xp 0'. Drop the stash line from the raid HUD. Use sp or an icon in the lists. Set the margins to 96px, or at minimum make all HUD edges match."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after/21-raid-hud-calm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after4/21-raid-hud-calm-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T15:47"
+  "when": "2026-10-18T20:02"
  },
  "22-raid-map-open": {
   "score": 2,
@@ -217,17 +217,17 @@
  "45-arcade-attract-board": {
   "score": 3,
   "pass": false,
-  "verdict": "The card now follows the guide (lower case, dark panel, lime top tab, ghost X, flat scrim), but it is a small sparse box with a weak 'press any key' prompt and a dead centre, so it reads as clean but unfinished.",
+  "verdict": "The backdrop is now blurred and the card has a lime tab and a close X, but it is still a small, empty card with a weak 'press any key' prompt, so it reads as a placeholder rather than a designed screen.",
   "findings": [
-   "P1 'press any key' prompt, bottom-right of card: Make it a 56px-high primary button: fill #e6ff3d, text #11150a at 20px/700, min-width 200px, right-aligned at 24px padding. Or at minimum use tx-1 at 20px with a lime focus bar. Make the ring a full-brightness #e6ff3d.",
-   "P1 card body, 'no scores yet': Left-align at x=714 in tx-2, 20px, weight 400 (or 600). Put it 24px below the 56px header row. Reduce the card height to about 220px, or add a dim 56px placeholder row so the empty state looks designed.",
-   "P1 card size and header: Either size it as a true dialog at 480x240, or as a 90% window with a real leaderboard layout. Add a 'B' pad glyph left of the X. Set the title to 32px/700 in a 56px header row, with the X at 24px from the card edges.",
-   "P2 'pillagers' wordmark, top-left: Either drop it, or make it a deliberate lockup: 32px/800 at the 5% margin (x=96, y=48), tx-2 or tx-1 at 70% opacity, with a small lime tab. Do not let it compete with the card title.",
-   "P2 background scene and scrim: Use a uniform rgba(6,7,8,.80) scrim and a blur of 6px or more. Give the card a 1px #4a5257 border at full opacity and a solid #16191b fill. Remove the vignette bars at the sides, or make them part of the scrim."
+   "P1 'press any key' prompt, bottom-right of card: Make it a 56px-high primary button: fill #e6ff3d, text #11150a at 20px/700, min-width 200px, right-aligned with 24px padding. Or drop the ring and set the text in tx-1 with a 3px lime underline.",
+   "P1 card body, 'no scores yet': Left-align it at x=714 in tx-2 at 20px/400, 24px below the header row. Cut the card height from about 255px to about 200px, or add a dim 56px placeholder row.",
+   "P1 card size, structure and close: Size it as a true 480x240 dialog, or build a 90% window with a real leaderboard layout. Set the header row to 56px with the title at 32px/700. Put the X at 24px from the top and right edges and add a 'B' glyph 8px to its left.",
+   "P2 'pillagers' wordmark, top-left: Set it at 32px/800 in tx-2 at 70% opacity with a 36px lime tab above it. Or remove it, since the attract screen does not need it.",
+   "P2 backdrop scene and side bars: Apply a uniform rgba(6,7,8,.80) scrim and blur of 8px or more over the full 1920 width. Crop or extend the scene so no letterbox bars remain."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-after/45-arcade-attract-board-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-r5/45-arcade-attract-board-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T19:58"
+  "when": "2026-10-18T20:04"
  },
  "50-arcade-hud-live": {
   "score": 2,
@@ -554,16 +554,31 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The lower-casing and the lime primary button are done and the screen reads cleaner, but the amber gradient logo, a five-row mode stack with a dead server row, an uppercase 'PILLAGER' input and a cluttered saves block and key legend still keep it at template level.",
+  "verdict": "The lime 'play' row is a clear primary and the column reads cleanly, but the screen still looks like a template: an amber gradient logo, a five-row mode stack with a 'coming later' dead row, a crowded saves and name block with a capital 'PILLAGER' on screen, and a long gameplay-key legend. Almost none of the earlier advice was applied.",
   "findings": [
-   "P1 name input, x 511-1110, y 794-831: Set text-transform: lowercase on the input and use the placeholder 'name'. Give it a 1px --ui-line-hi border and 4px radius. Move rename and create into a modal, or hide the field until the player picks 'new save'.",
-   "P1 logo, y 265-345: Make the logo flat --tx-1 #efe9dc with a 2px dark offset, about 96px high, and keep lime for the primary button only. Set the tagline in --tx-2 at 20px, or delete it.",
-   "P1 mode stack, y 413-693: Keep 'play', '2 player co-op' and 'demos' (opens a sub-list). Delete the server row and the 'coming later' tag. Make all rows 56px high with an 8px gap and a 4px radius. Add a 3px lime left bar and a pad 'A' glyph on the focused row.",
-   "P1 saves block, y 715-832: Collapse to one 48px row, 558px wide, centred: 'pillager new · 0 raids · 900 · 0 xp' in --tx-2 at 20px, plus a ghost 'switch save'. Delete the 'saves' label and the lime outline, and drop the '$'.",
-   "P1 key legend, y~1042: Cut to 'enter select', 'esc back' and 'f1 controls' at 16px --tx-2. Move the gameplay keys to the controls screen. Swap in pad glyphs when the last input was a pad."
+   "P0 name input, x 511-1110, y 794-831: Set text-transform:lowercase and use the placeholder 'name'. Hide the field and the 'change name' and 'create a new save' buttons behind a 'new save' modal. If it must stay, give it a 1px --ui-line-hi border and 4px radius, and keep it in the saves block at 20px.",
+   "P1 logo, x 800-1120, y 265-345: Make the logo flat --tx-1 #efe9dc with a 2px dark offset, about 96px high, and keep lime for the focused row only. Delete the tagline, or set it in --tx-2 at 20px.",
+   "P1 mode stack, x 681-1239, y 413-693: Keep 'play', '2 player co-op' and 'demos' (opens a sub-list). Delete the server row and the 'coming later' tag. Make all rows 56px high with an 8px gap and a 4px radius. Give the focused row a --ui-raised fill with a 3px lime left bar and a pad 'A' glyph. Keep the lime fill for 'play' only.",
+   "P1 saves block, x 511-1409, y 715-783: Collapse to one 48px row, 558px wide and centred under the stack: 'pillager new · 0 raids · 900 · 0 xp' in --tx-2 at 20px, with the name in tx-1. Add a ghost 'switch save' button. Delete the 'saves' label and the lime outline.",
+   "P1 key legend, y~1042: Cut to 'enter select', 'esc back' and 'f1 controls' at 16px --tx-2. Move the gameplay keys to the controls screen. Swap in pad glyphs (A select, B back) when the last input was a pad."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-after/01-title-mode-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-r5/01-title-mode-menu-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T19:59"
+  "when": "2026-10-18T20:03"
+ },
+ "44-title-from-character-select": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The title screen has a clear lime primary button, but the orange-gold gradient logo fights it, the trophy toast overlaps and hides the key-hint legend, and there are capitals on screen, a stacked menu and a saves block with no clear structure.",
+  "findings": [
+   "P0 bottom centre: trophy toast over key-hint legend: Move the toast to the top-centre or the bottom-right, at least 24px clear of the legend (e.g. y=96px). Or lift the legend 56px. Never overlap them.",
+   "P0 name field 'PILLAGER': Render the value with text-transform:lowercase and use 'pillager' as the default. Add a 16px tx-2 label 'name'.",
+   "P1 'pillagers' logo: Make the logo flat --tx-1 at 800 weight (~96px), or flat --acc. Remove the gradient and shadow so the lime '1 player' button is the only hot element.",
+   "P1 menu stack and saves block: Put the menu and saves in one centred 640px column on a 90% --ui-panel with a 1px --ui-line-hi border and 24px padding. Use a 56px row pitch with 8px gaps. Give 'saves' a 16px f-cond 600 tx-2 label with a 1px divider.",
+   "P1 menu content: Hide 'coming later' and group the demos under one 'demos' entry. Delete the duplicate stats line and keep it only in the save row. Aim for 3 to 4 visible actions."
+  ],
+  "pic": "tools/handoff/console/notes/shots/03-r5/44-title-from-character-select-1080.jpg",
+  "task": "03-title-and-backdrop",
+  "when": "2026-10-18T20:03"
  }
 }
