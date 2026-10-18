@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T18:19:43","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/console/notes/shots/cw-mapfirst-recipes.json","seconds":26,"screens":[
+{"name":"60-mapfirst-1p","screen":"Raid opens on the sector map, keyboard prompt","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"60-mapfirst-1p-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"60-mapfirst-1p-4k.jpg","lint":""}}
+]}

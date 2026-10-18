@@ -6101,6 +6101,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.24',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>31.24+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('POLISH'+' PASS 27.')!==0) bad.push('the card does not lead with the new news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'31.23',what:'cw-mapfirst2, from the critic on the opening map: the prompt on the opening map is one primary button, click to start with the key e (start with the pad a on a pad), and the map leaves the footer it sits in, at 1080 and at 4k; waiting for p2 keeps the same button',
    run:function(){
      if(typeof MAPFIRST!=='object'||typeof mapFirstFoot!=='function') return 'no footer for the opening prompt in this build (mapFirstFoot is missing)';

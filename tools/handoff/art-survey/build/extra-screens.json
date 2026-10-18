@@ -1,0 +1,15 @@
+[
+ {
+  "name": "busy",
+  "screen": "the loot scene on a cluttered floor"
+ },
+ {
+  "name": "duofar",
+  "screen": "P1 and the mate far apart"
+ },
+ {
+  "name": "trio2",
+  "screen": "the three builds, the guns aimed up and right so the bodies show",
+  "js": "window.__t2={f1:-0.6,fm:-0.6,f2:-0.6,cy:26}; return await window.__art.scene('trio2',{});"
+ }
+]

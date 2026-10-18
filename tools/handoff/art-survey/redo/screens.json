@@ -1,0 +1,6 @@
+{
+ "s1": {"js":"return await window.__art.scene('duo',{x:2600,y:3012});"},
+ "s2": {"js":"return await window.__art.scene('duo',{x:1400,y:1099});"},
+ "s3": {"js":"return await window.__art.scene('duo',{x:410,y:350});"},
+ "s4": {"js":"return await window.__art.scene('duo',{x:1180,y:2960});"}
+}

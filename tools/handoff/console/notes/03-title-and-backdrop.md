@@ -52,3 +52,5 @@
 ## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).
+
+- 2026-10-18 evening (coordinator): screens 46 and 56 now belong to task 12 only; this task keeps 01, 44, 45, 57 and the backdrop. See the SCREEN HANDOVER block at the end of the task file.

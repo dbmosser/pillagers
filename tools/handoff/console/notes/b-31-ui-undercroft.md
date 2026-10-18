@@ -20,3 +20,10 @@ Run 7: the b-31 question was missing from questions.md, so I re-logged it there 
 Run 8: questions.md line 10 still has no answer on the three rulings. No ship, no spend.
 Run 6: questions.md still has no answer on the three rulings (centred card/close X, $ price, explaining hint lines). No new ship, no spend.
 Run 9 (lane e): SHIPPED v30.00 cw-welcomecard, v30.07 cw-welcomefit, v30.11 cw-welcomeleft (+ card stamp v30.02 cw-cardp15). Welcome pack 02: critic 2 ('better: yes') x3, shots b-31-e1 (before) to b-31-e4. STUCK at 2 after two follow-ups: remaining P1s need his words deleted (intro paragraph, 'to your stash' sublines), rarity name colours, or a header close X (his footer CLOSE rule). Pattern that works for the other modals: copy the welcomemodal CSS block (frame ::before 960, msub/list/foot 880, CARDFIT entry, foot margin-top 14 !important). The opmodal screens (03-05, 08-17) are one shared full-window grid shell and still wait on his ONE GRID ruling. Not judged: 03-18, 39, 41-44, 65-67.
+
+## 2026-10-18 evening (coordinator): the three rulings are SETTLED, stop waiting
+His answers of 10-18 (memory pillagers-answers-1-78-2026-10-18.md) settle all three. Do not write "waiting on his word" again.
+- One grid and the bottom CLOSE button give way to the centred card with an X, nearly the entire screen (Q7: the style guide overrules his older layout orders; Q43). v31.02 (X in the corner) and v31.10 (90 percent card) are already in.
+- Prices keep the "$" (Q59: $ for money, SP for score). Nothing to change.
+- Explaining sentences may be shortened or deleted when the reason is logged in notes\ui\changes.md (Q8: "If it overrides my language, it better have a damn good reason").
+See the RE-QUEUED block at the end of the task file. (Lane e ran this job too; it has no notes file of its own, so this is its note.)

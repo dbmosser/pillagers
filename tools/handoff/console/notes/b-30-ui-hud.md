@@ -57,3 +57,6 @@ Order by safety for the 10/30 demo: (1) weapon card "B / I backpack" to 16px tx-
 ## Run 13 (lane e): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
 
 ## Run 14 (lane e): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
+
+## 2026-10-18 evening (coordinator): ANSWERED
+The "questions.md line 3" about the HUD points is answered: Q1 (run info 3 closest, all contracts on the map screen), Q55 and Q56 (demo hides credits, xp, stash, bag, item value, backpack hint), Q57 (ammo prominent, redesign the whole raid HUD), Q58 (now superseded by his newest order: top-right is a vertical 1 by 1 list, key cw-trcol, another helper; do not touch that corner), Q59 ($ for money, SP for score), Q64 (keep the low-ammo box marker). Most of it shipped under task 02. Do not write "still unanswered" again. See the RE-QUEUED block at the end of the task file.

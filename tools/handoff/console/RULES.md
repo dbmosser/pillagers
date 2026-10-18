@@ -1,18 +1,29 @@
 # RULES FOR THE CONSOLE WORKER (read every run)
 
 You are a headless Claude worker on the owner's Windows PC, improving his game PILLAGERS. No one is watching: never ask
-questions and never wait. Your runs are billed to his Claude Console credits, so be thrifty and finish real work.
+questions and never wait. Your runs are billed to his Claude Console credits (lanes a, b, c while they last) or run on Claude Code on his
+plan (lanes e and f, and the other lanes once the Console money is used up), so be thrifty and finish real work.
 
 ## The project
-- The game is ONE file: C:\claudecode\dark raiders\dark_raiders.html (Canvas 2D, about 4 MB, CRLF). Repo dbmosser/pillagers, branch master.
+- The game is ONE file: C:\claudecode\dark raiders\dark_raiders.html (Canvas 2D, about 5 MB, CRLF). Repo dbmosser/pillagers, branch master.
 - NEVER Read the whole game file or the whole fixture (tools/mkfixture.ps1); each is far too big. Grep with line numbers,
   then Read about 150 lines around the hit.
 - The deadline: the 2-player DEMO must be solid for his party on 10/30. There is NO public launch on 10/31 (his ruling 10-18;
-  party feedback first, launch date not set). New features until Mon 10/26, then fixes only; the party version locks Thu 10/29.
+  party feedback first, launch date not set). New features until Mon 10/26, then fixes only; the party version locks Thu 10/29. What helpers may and may not do after the cutoff and
+  after the lock is WAITING ON HIS ANSWERS (round 3 questions 41, 44 and 45); until he answers, do not invent rules for those dates.
 - His answers of 10-18 to 78 questions are BINDING: memory file pillagers-answers-1-78-2026-10-18.md (read it when your task
   names a question number like Q57).
-- Read C:\Users\User1\.claude\projects\C--Users-User1-Desktop-dark-raiders\memory\pillagers-sunday-start-2026-10-18.md
-  first, and any memory file named in your task. The memory folder is READ ONLY for you; never write there.
+- Read the CURRENT block at the top of tools/handoff/START-HERE.md first (where things stand), then your task file and any memory file
+  it names (folder C:\Users\User1\.claude\projects\C--Users-User1-Desktop-dark-raiders\memory). The memory folder is READ ONLY for you;
+  never write there. Some older memory notes are stale (the sweep list is tools/handoff/q-round3/helper-fixes.md); his 10-18 answers win.
+
+## Lanes (checked 10-18 against tools/nightly.sh, tools/console-lane.sh, tools/handoff/preflight.sh and console/caps.txt)
+- a, b, c: console-lane.sh lanes that tools/nightly.sh starts. a takes tasks named 0-9*, b takes b-*, c takes c-*; a lane with an empty
+  list takes any other lane's job. Console credits first, then Claude Code on his plan.
+- e, f: always Claude Code on his plan (CLI_ALWAYS), started by the other lanes. f runs only while the week's usage is 5 or more points
+  under the pacing line (CLI_BOOST). Weekly use must last to the reset (Sun 10-25 05:00Z).
+- d, g, h: session agents started by the coordinator, not by nightly.sh. They use their own preflight Chrome like everyone else.
+- Preflight Chrome ports 9351-9358 are lanes a to h in order. Do not use another lane's port.
 
 ## Hard rules (his, binding)
 - Never touch localhost:8802 (his play port), his keys or passwords, his PC settings, BIOS or drives.
@@ -22,7 +33,8 @@ questions and never wait. Your runs are billed to his Claude Console credits, so
   language, it better have a damn good reason" (Q8): write that reason next to the change in notes\ui\changes.md.
 - Never edit dark_raiders.html directly. Every game change ships through a mk script and the ship queue (below).
 - Never git push --force, reset, rebase or delete branches. Never commit anything in tools/handoff/console/.
-- Keep 6 GB of RAM free: never start more than one extra Chrome, and close what you start.
+- Keep 6 GB of RAM free. The machine already runs up to 13 test Chromes at once (list in the header of tools/nightly.sh). Start only
+  your own lane's Chromes (the preflight one, the uishots camera on your lane's port), close what you start, and never use another port.
 - In-game text is short, punchy callouts, and EVERY WORD ON SCREEN IS LOWER CASE (his order 2026-10-18, later the same day:
   "change all text shown to player to lowercase only -- i don't like how you have random words capitalized"; "location revealed",
   "machine alert", "sp", "esc"). One text door (ncFix, cw-lowercase) lowers everything drawn, so never write code that puts capitals
@@ -32,6 +44,32 @@ questions and never wait. Your runs are billed to his Claude Console credits, so
   like Fortnite (cw-glyphs); player 1 and player 2 windows look and behave the same, and see each other in the Undercroft (cw-p1p2);
   a name typed on the title goes into a new save (cw-newsavename). Do not undo any of these.
 - Never start agents, workflows, cloud sessions or scheduled tasks.
+
+## Vetoes: his "never again" list (binding; never propose, build, restyle or bring back; only he can lift one)
+World and play
+- Hills and verticality: never (his 2026-08-30 order). Woods is NOT vetoed (his 10-02 correction). Raised decks, catwalks and ramps are gone (09-13).
+- Bodies of the dead never come back (his v5.28 order).
+- Mimics: removed 10-18 (v30.94 cw-nomimic). Do not re-add or re-skin them.
+- Guns never wear and never jam; no gun condition; do not add a wear system uninvited (his 09-01 answers 14 and 18).
+- No bag limit and no weight, ever (his 09-01 answer 12). The old BACKPACK FULL path is dead code, not a rule.
+- Magnet power-up removed (10-15). Golden clue hunt cut (10-15). Whisper and Marksman guns: removed (v29.58, his 10-18 Q69).
+- Running out of bandages or throwables never autofires the gun (09-13). The scav pistol is spawn-only, never in containers or drops (10-12).
+- After dying or abandoning you come back with an empty loadout (09-11). Nobody rejoins a raid after dying or extracting (10-01).
+- Trading is dropping on the floor (10-03); never advertise the old offer system (T/Y).
+Sound and voice
+- No music in raids, only in the Undercroft (09-03). No spoken sounds anywhere: no pillager words or taunts, no operator or announcer voice (10-12, 10-13).
+- No tonal hum ambience, no 3-2-1 GO countdown, no machine count on SIEGE INCOMING (10-12).
+Screens and text
+- The arcade drop controls card (screen 47) is REMOVED (v30.50 cw-notutor, his Q70 no tutorial prompts; arcadeCardOn returns 0). Do not restyle it,
+  do not bring it back, do not critic-score it. The how to play page and the F1 list keep those rows. (Lane d restyled it in v30.10 and v30.12 for nothing.)
+- No multiplier plate beside the reticle (10-18 cw-nomult). No HEAVY / LOADED / LIGHT BACKPACK line, no "search resumed", no "you died carrying medical" (10-12).
+- "drop in", "dropping in", "at the drop", "deploy" and "insertion" are never used in player text. The lore word is "ascend" ("ascending in n").
+  "drop" is still right for loot drops.
+- All player text is lower case; $ is money and SP is score (see above).
+- Equipping a gun says nothing about the rest of the backpack (10-12).
+Process
+- Never touch his play port 8802. Hide PvP and show no live rank (his Q71 and Q72).
+After the cutoff (Mon 10/26) and after the lock (Thu 10/29): WAITING ON HIS ANSWERS, nothing added here yet.
 
 ## How a change ships
 S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders\8a09e991-b4f4-4b23-b10f-ded92e837fc3\scratchpad
@@ -66,7 +104,7 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
   git status / git log / git diff / git show (read only)
 - Run each command on its own: no pipes, no &&, no cd.
 
-## Three workers share the repo (lanes a, b, c), so keep the tree clean
+## Every lane (a to h) shares the one repo, so keep the tree clean
 - A ship STOPs when the game file or tools\mkfixture.ps1 has uncommitted edits. So edit tools\mkfixture.ps1 ONLY while you
   hold the lock, and commit before you let it go: bash S/lock.sh, edit, check with runchk.sh, then
   HELD=1 bash S/fixq.sh "MESSAGE" (commits while you hold the lock), then bash S/unlock.sh. Keep each hold short, a few checks at a time.

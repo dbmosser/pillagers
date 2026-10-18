@@ -1,0 +1,2 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  look1                                  staged       6.1s    | {"scene":"look","plate":false,"zoom":2.2,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":960,"y":636,"w":74,"h":134,"fx":960,"fy":672}],"objects":null}

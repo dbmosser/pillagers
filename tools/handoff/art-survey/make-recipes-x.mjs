@@ -13,7 +13,9 @@ const add = [
   { name: 'duoparty', screen: 'the duo with the party on (seat rings)', expect: duoExpect + "&&NET.peers.length===1".replace('NET', "__gx('NET')") },
   { name: 'trio', screen: 'P1 lean, a hired pillager broad, P2 curved', expect: duoExpect.replace('__state().ents.length===0', '__state().ents.length===1') },
 ];
-for (const a of add) r.screens.push({ name: a.name, screen: a.screen, before: 'staged by window.__art.scene (scene-extra.js)', query: '', expect: a.expect, js: "return await window.__art.scene('" + a.name + "',{});" });
+const extra = JSON.parse(fs.existsSync(path.join(here, 'build', 'extra-screens.json')) ? fs.readFileSync(path.join(here, 'build', 'extra-screens.json'), 'utf8') : '[]');
+for (const e of extra) add.push(e);
+for (const a of add) r.screens.push({ name: a.name, screen: a.screen, before: 'staged by window.__art.scene (scene-extra.js)', query: '', expect: (a.expect===undefined?'true':a.expect), js: a.js || ("return await window.__art.scene('" + a.name + "',{});") });
 r.prelude = r.prelude + '\n' + fs.readFileSync(path.join(here, 'scene-extra.js'), 'utf8');
 fs.writeFileSync(path.join(here, 'recipes-x.json'), JSON.stringify(r, null, 1));
 console.log('recipes-x.json: ' + r.screens.map(s => s.name).join(', '));

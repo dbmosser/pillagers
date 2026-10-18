@@ -6,3 +6,6 @@ Shared look: <style id="ui-shared"> ends at line ~1401, tokens --fs-*, --sp-*, -
 Pattern to copy: S/mk-cw-uishared-board.ps1 (append rules before </style> of ui-shared).
 Before pictures: pause box (25, 42) = small panel mid-screen, "Paused" title 25px amber, key chips line, 6 buttons in one row, wasted panel height.
 Keys window (32): 2-column rebind grid with huge empty space right, intro text 2 lines duplicated.
+
+## 2026-10-18 evening (coordinator): the open rulings are settled
+Q7 (layout orders yield to the guide, but Q61 keeps the feedback line, button and Send play data), Q8 (shorten or delete his lines with a logged reason in notes\ui\changes.md), Q43 (centred card with an X, nearly the entire screen), Q59 ($ for money, SP for score).

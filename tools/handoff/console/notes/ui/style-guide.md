@@ -1,7 +1,16 @@
 READY
 # Pillagers UI style guide (task 10-ui-look-book, 2026-10-18)
-Built from: references.md (Halo Reach, Halo 4, Diablo IV, ARC Raiders, Fortnite, Destiny 2), the 78 screens in notes/shots/all (critic scores in accept.json, per-screen notes in look-book.md), and the draw code. No ui-refs pictures exist yet in tools/handoff/ui-refs.
+Built from: references.md (Halo Reach, Halo 4, Diablo IV, ARC Raiders, Fortnite, Destiny 2), the 78 screens in notes/shots/all (critic scores in accept.json, per-screen notes in look-book.md), and the draw code. Reference pictures exist in tools/handoff/ui-refs/ (listing checked 2026-10-18 18:06): arc-raiders-1.jpg to arc-raiders-5.jpg and arc-raiders-6.png, plus destiny-2, diablo-iv, fortnite, halo-4 and halo-reach sets. Look at them with the Read tool before you judge a look.
 Rule of the guide: the code already HAS most tokens (CSS :root at line ~40, UIC and HUDC and TYPE in the script at ~10717-10762). The problem is that screens ignore them. So this guide mostly says which existing token to use and which variants to delete. Fix the guide, not a screen, when the guide is wrong.
+
+## 0. Settled by him on 10-18 (read first; where a later line disagrees, this section wins)
+- Money is "$", score is "sp" (his Q59: "$ for money, SP for score"). A price, a haul, a stash or bag value or a loot value keeps the "$" ("$900"). Only score is "sp", and a score drawn with a "$" is a bug.
+- ALL text shown to the player is lower case (his order of 10-18 afternoon: "change all text shown to player to lowercase only"). It REVERSES the sentence case this guide used before. Example strings in this file are written with capitals so the file reads normally; on screen they are lower case. A box the player types in shows what was typed. Never write code that puts capitals back (ncFix, key cw-lowercase, lowers everything drawn).
+- Accent: lime yellow, "whichever is most visible" (his Q46). The helpers' pick, --acc #e6ff3d, is shipped (v30.61 cw-limeacc; dark_raiders.html line 55 has --acc:#e6ff3d). Keep it unless he objects.
+- Motion: livelier, with bounce (his Q47). Shipped in v30.85 (cw-bounce). Sound (his Q48) is section 6.
+- Windows: a centred card with an X in the corner that takes up nearly the entire screen (his Q43). Shipped: v30.89 (settings and keys fill the screen as a card), v31.02 (windows close with an x in the corner), v31.10 (a centred 90 percent card for the shop, codex, trophies, fashion, mainframe, gamble, bar, terms, party and sector windows), v31.16 (the shop fills its card). Whether the 56px header and 72px footer rows of section 2 exist in the code: unverified.
+- Career HUD top-right: a vertical 1 by 1 list, every item the same size (his newest chat order, 10-18 afternoon). It replaces the Q58 "one row". Another helper builds it under key cw-trcol (not shipped as of v31.23). Screen tasks leave that corner alone.
+- PENDING his answer, do not invent: the colours for player 1 and player 2. Round 3 question r3-13 asks (raid: P1 amber, P2 cyan; new menus: P1 lime, P2 blue); he has not answered. If he picks "lime for player 1", the role of lime (--acc) changes too. Until then change no ring colour and add no new per-player tint.
 
 ## 1. Tokens (copy this block; names match the existing CSS vars, new ones marked NEW)
 ```
@@ -25,7 +34,7 @@ Rule of the guide: the code already HAS most tokens (CSS :root at line ~40, UIC 
 --scrim:rgba(6,7,8,.80);  /* NEW: behind every modal/card (was .82 and .6 and .45 in places) */
 /* type: two roles */
 --f-cond:"Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif; /* scan: titles, tabs, buttons, labels, numbers */
---f-body:"Barlow","Bahnschrift","Segoe UI",system-ui,sans-serif;                    /* read: descriptions, tooltips (sentence case) */
+--f-body:"Barlow","Bahnschrift","Segoe UI",system-ui,sans-serif;                    /* read: descriptions, tooltips (lower case on screen) */
 /* type scale: FIVE sizes at 1080p (scale by height/1080); nothing else */
 --fs-hero:56px;  /* NEW: one per screen: SP result, extract timer, ammo      f-cond 800 */
 --fs-title:32px; /* screen title, card title                                 f-cond 700 */
@@ -46,7 +55,7 @@ Avoid the template tells: no identical rounded boxes with one shadow, no gradien
 ## 2. Components (one of each)
 Panel P: fill --ui-panel at 90%, 1px --ui-line-hi border, --rad, padding 24px, NO double frame, NO corner tick, NO gradient, NO shadow. Optional 3px accent tab on the left edge or a 2px top tab 36px wide when the panel is "the star" (the existing hudPanel tick is this). Detail pane: same panel in --ui-raised. The cream paper card (--ui-paper) stays ONLY for the one-question ask dialog (#askmodal); shop, craft, hire, contracts detail panes become dark detail panes.
 Window (his Q43, 10-18: "centred card with an X, taking up nearly the entire screen"): every WINDOW (Settings, stash, shop, craft, hire, contracts, codex, trophies, mirror, board, what's new, welcome pack, party) is one centred card at 90% of the screen width and height (the 5% margin on every side), on --scrim, header row 56px high (title left 32px, the X right), body, footer action row 72px. The content inside keeps its own measure, centred in the card (list rows max 900px, a grid fills the card). Replaces the old 960x680 cap and the full-screen slabs. A DIALOG (ask, confirm, pause 480, end card 720) is NOT a window: it stays a small card sized to its content (480x240 for a question), centred, with the same X.
-Header H: title left at x = margin (5%), --fs-title f-cond 700, tx-1, sentence case, optional muted count on the same baseline in tx-2 20px ("10 of 20 found"). Never a sentence, never currency (currency lives in the one top-right currency block).
+Header H: title left at x = margin (5%), --fs-title f-cond 700, tx-1, lower case, optional muted count on the same baseline in tx-2 20px ("10 of 20 found"). Never a sentence, never currency (currency lives in the one top-right currency block).
 Close / back: ONE place: top-right of the modal header, a 48x48 square ghost button with the uiIcon "close" glyph, plus the pad glyph "B" beside it and Esc. Where a footer exists the primary sits right and a "Back" ghost sits left of it; no third close style. In-raid panels close with the same X.
 Primary button: 56px high (44px minimum in dense lists), fill --acc, text --acc-ink --fs-body 700, padding 0 32px, min-width 200px, --rad. One per screen. Hover: --acc-hover #f0ff7a. Pressed: --acc-press #c8e22c, 1px down.
 Secondary (ghost) button: same size, transparent, 1px --ui-line-hi, text tx-1. Hover: --ui-hover, border tx-2. Danger button: ghost with --danger border and text, never filled except on its confirm dialog. Disabled: 40% opacity, never see-through grey on cream, and say why in the label ("Need 29,100 more").
@@ -55,7 +64,7 @@ List row: 56px pitch (48 min), padding 0 16px, name --fs-body tx-1, value right-
 Tile (grid cell): square, --ui-raised fill, 1px --ui-line, --rad, rarity as a 3px bar on the bottom edge (not a name colour), count as a corner badge --fs-label, gutter 8px. Locked: 40% opacity, silhouette. Unfocused tiles at 70% brightness.
 Chip / key cap: 28px high, 1px --ui-line-hi, --fs-label, padding 0 8px. A key hint is a cap plus a word ("E  Loot"), never a bare letter. Pad glyphs replace key caps when the last input was a pad.
 Toast: ONE component. Top-centre, 40px high, 4px left bar (accent info, ok gain, danger threat), --fs-label, 3s, max 3 stacked, de-duplicated within 3s (the same event never shows as banner + toast + chip). Toasts never sit over a modal; they wait.
-Currency block: one, top-right, one row: "Credits 900 · XP 0" 20px with an icon; on raid cards "SP" only. Never "$" (his rule: score is SP). Never repeated inside a modal that has its own cost line.
+Currency block: one, top-right. In the career HUD it is a vertical 1 by 1 list with every item the same size (his newest order of 10-18 afternoon; it replaces the old "one row"; being built under key cw-trcol, so a screen task must not restyle it). Money is "$" ("$900", his Q59); score is "sp" and never gets a "$". On the arcade cards only "sp" shows. Never repeated inside a modal that has its own cost line.
 Progress bar: 6px high, --ui-line track, --acc fill (extract timer --extract, health stays on the HUD scheme).
 End cards (Extracted, KIA, Abandoned, Run over): one shell: centred 720px card on --scrim 80% with the HUD hidden. Title --fs-title (extract --extract, KIA --danger, other tx-1), ONE hero line --fs-hero (haul or SP), stats as one row of 4 (24px value over --fs-label), items as a uniform tile row, one primary button 56px + one ghost. 
 Backdrop: the live world dimmed to ~55% (scrim above), baked once on open. Never a flat grey wall.
@@ -72,7 +81,7 @@ Backdrop: the live world dimmed to ~55% (scrim above), baked once on open. Never
 - Hover (mouse) = focus (pad): ONE look. 3px --acc left bar on rows (or a 3px --acc outline on tiles), --ui-raised fill, text to tx-1. The existing .padfocus (3px lime outline + glow) is the tile style; rows get the bar. Mouse hover and pad focus must look identical.
 - Something is focused whenever a window opens; if it vanishes jump to the nearest. Selected (equipped, chosen) = filled badge/check or --acc fill, DIFFERENT from focus (ring).
 - Pressed: scale .98 or 1px down for 90ms. Disabled: 40%.
-- Two players: focus ring tinted per player (P1 lime, P2 --ally).
+- Two players: focus ring tinted per player. The colours are PENDING his answer to round 3 question r3-13 (raid: P1 amber, P2 cyan; new menus: P1 lime, P2 blue). Until he answers, change no ring colour and add no new per-player tint.
 - Destructive (Abandon, Sell all): hold 500ms with a filling ring, or a confirm dialog 480x240 (title "Abandon run?", one line, Abandon danger ghost + Keep playing primary focused).
 
 ## 5. Motion (smooth is mostly motion; targets from references.md, time-based)

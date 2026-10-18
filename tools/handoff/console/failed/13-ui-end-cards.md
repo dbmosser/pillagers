@@ -1,2 +1,13 @@
 UI STEP 5: THE END CARDS AND POP-UPS. Same method as 12-ui-party-screens (read its notes). Notes: notes\ui\end-cards.md.
 Screens: 35, 38, 40, 59, 60, 76, 77 and any other pop-up card in look-book.md. TASK DONE when each scores 4 or more from the critic (never your own grade), or PARTIAL.
+
+--- RE-QUEUED 2026-10-18 evening (coordinator). Read first; where it disagrees with the text above, this block wins. ---
+Why it is back: it ran out of tries (5 runs, twice) and most runs ended "still waiting on his word". He has answered since (memory file pillagers-answers-1-78-2026-10-18.md; the same lines are under "Resolved" in questions.md). Do not wait on a ruling and do not ask again.
+Settled:
+- Q59: $ for money, SP for score. The hero number on 35 and 38 and the line on 60 are the haul or loot VALUE, which is money: they keep the "$". Do not change them to SP. (The arcade run-over cards 52 and 55 show score: "sp", never "$"; they belong to task 12.)
+- Q7: the style guide overrules his older layout and size orders. Q8: you may shorten or delete a line he wrote, only with the reason logged in notes\ui\changes.md (old text, new text, reason). His words: "If it overrides my language, it better have a damn good reason". This includes words baked into old fixture checks (for example "Run abandoned. $X left behind."): retarget the old check through fixq.sh and log the reason.
+- Q43: windows are a centred card with an X, nearly the entire screen. The end cards are dialogs, not windows (guide section 2): the 720px card, with the same X in the corner. The critic's "no close X" finding is right: add it.
+- The "copy report" button on the career end cards (round 3 question r3-94; he has not answered): the working pick is to MOVE it into Settings next to Send play data. Merge it into that row; do not add a second control that does the same job. Take it off the end cards and log the reason in notes\ui\changes.md. If tools\handoff\q-round3\answers.md exists and says otherwise, follow answers.md. The feedback line and the feedback button stay (Q61).
+- Also binding: ALL text shown to the player is lower case.
+Already shipped since this job failed at 09:09: nothing on your screens by git log subject (35, 38, 40, 59, 60, 76, 77). Ships near them that are not yours: v30.98 player 2 gets the run over card (arcade), v31.20 the respawn count wording, v31.08 the what-is-new card stamp. Critic now (none is 4): 35, 38, 59, 77 = 3; 40, 60, 76 = 2.
+Still yours: the lone dark tile outside the card during the haul reveal on 76 (it looks like a leaked slot; fix first), the X and key hint on the end cards, then notes\ui\end-cards.md "Still open".

@@ -1,0 +1,8 @@
+﻿PILLAGERS FEEDBACK
+VERSION: v0.0687 (BUILD 30.57)
+TIME: Sun Oct 18 2026 11:48:28 GMT-0400 (Eastern Daylight Time)
+WHERE: IN A RAID, 6:51 IN
+RUNS: 50
+
+raid should show map at the beginning of the game and player has to click to proceed into the actual raid, clock/game doesn't start until map is dismissed, that way player can see where relevant hotspots, etc are
+

@@ -37,3 +37,5 @@ shots/12b-before and shots/12b-after (all 13 screens, 1080).
 1. 62: hide "tonight: 0 runs" when the count is 0; focus ring only the lime bar (no white ring).
 2. 52/55: stats as 4 equal columns, 24px values / 16px labels; score line with a 16px "score" label over a 56px number.
 3. 46: row names 20px, headers 16px tx-2 tracked, "left stick"/"right stick" spelled out in lower case.
+
+- 2026-10-18 evening (coordinator): screens 46 and 56 belong to this task only (03 dropped them); 03 keeps 45 for the title and backdrop, the attract card code is this task's. See the SCREEN HANDOVER block at the end of the task file.

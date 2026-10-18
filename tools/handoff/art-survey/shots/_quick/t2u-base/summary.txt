@@ -1,0 +1,2 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  t2u                                    staged       6.1s    | {"scene":"trio2","plate":false,"zoom":5,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":613,"y":511,"w":215,"h":235,"fx":571,"fy":601},{"id":"merc","kind":"pillager","x":1003,"y":511,"w":215,"h":235,"fx":961,"fy":601},{"id":"mate","kind":"player","x":1404,"y":503,"w":236,"h":251,"fx":1351,

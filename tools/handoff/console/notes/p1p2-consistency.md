@@ -33,13 +33,15 @@ works needs it (the host window runs the world).
 | 6 | settings that live in each save | each window plays on a copy of its OWN save (arcadeSandboxIn): CFG dials (P.cfg), HUD layout and collapsed panels (P.hud), kid damage (P.kidDmg). The sandbox forces text size, menu zoom, keys, autoloot, one rifle and the ARCADE_CFG dials in BOTH windows; the rest comes from each save. Measured on two fresh saves: 235 dials, 0 differ. They differ only when HIS save has changed dials or a HUD layout and the fresh player 2 save has not | none shipped: his 10-11 order keeps the HUD layout and kid settings of each save on purpose, and his 10-12 answer says the demo plays like career, so neither "both defaults" nor "player 2 copies player 1" is mine to pick | OPEN, asked in questions.md (two choices) |
 | 7 | attract, player 2 (and a benched player 1), live run | the strip "Join your team - Team score" was drawn at 28.5 percent from the bottom, behind the how to play card (it now reaches 84 percent), and read faintly through the card rows | with a page or the run over card up the strip sits on the bottom margin under the card, no band | DONE v31.15 (cw-p1p2strip) |
 | 8 | titles | player 1 title is the mode menu; player 2 title is Enter the undercroft + saves list showing $ (e.g. "$900") | by design (different job); the $ in the save row is a separate text rule | BY DESIGN |
-| 9 | feed at the drop | player 1 reads "Player 2 joined"; player 2 reads "You joined the raid in progress" (the late-join path: it really joins a raid the host already started) | the two lines say different true things (who came / what you did); the counter "Dropping in n" after a respawn is being reworded by another helper ("ascending in n") | BY DESIGN (the respawn counter left to its helper) |
+| 9 | feed at the drop | player 1 reads "Player 2 joined"; player 2 reads "You joined the raid in progress" (the late-join path: it really joins a raid the host already started) | the two lines say different true things (who came / what you did); the counter "Dropping in n" after a respawn was reworded by another helper to "ascending in n" (v31.20, 3a8f7954) | BY DESIGN for the two feed lines; the respawn counter is DONE v31.20 |
 | 10 | HUD, pause box, sounds, text size | same code both ways: HUD 1.5 scale, same menu zoom, same sounds (split left/right), same pause card | none | SAME |
 | 11 | attract and run over prompt | player 1 reads "Press any key" (or button, by last device, cw-glyphs2); player 2 reads "Player 2: press A" (pad window) although it has played its own keys since v30.68 | left to the glyphs lane | OPEN, asked in questions.md |
 
 Coordinator's list of 8 (sweep-4-reality G9): welcome pack (1, v31.11), run over card (2, v30.98), names (3, v30.88), hosting line
-(5, v31.01), settings (6, open, asked), join strip (7, v31.15), wording at the respawn (9, left to the helper who reads it
+(5, v31.01), settings (6, open, asked), join strip (7, v31.15), wording at the respawn (9, DONE v31.20: the respawn counter reads
 "ascending in n"), and the Undercroft overlap (4, v30.84 and v30.86).
+
+Still open as of 2026-10-18 evening (checked against this table and git log; no queued task lists any of them): #6 (settings that live in each save) and #11 (the player 2 "press A" wording). Both are questions to him in questions.md, not tasks. Whether #11 shipped since: unverified.
 
 ## Job B notes: what was chosen
 - The pair channel (netSamePost / netSameOnMsg, every word carries the pair code) now also carries the Undercroft body. Two new words:

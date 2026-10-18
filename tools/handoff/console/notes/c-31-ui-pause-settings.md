@@ -12,3 +12,9 @@ Critic contradicts itself: asks for a 55% dimmed world and also hide HUD; asked 
 - Row type 18px vs critic's 20px, stepper 400px from label, list cut by detail pane at a half row: next try = row names 20px, snap list height to whole rows (6 x 56px), chevrons 32px hit areas amber on focus.
 Run 4 (lane a): no ship. Re-shot the current build (shots/c-31y-before) and re-ran the critic on 72 (3) and 74 (2). Same findings as before, all in the stuck list. Row names are already 20px (--fs-body) and rows 56px, so that item is done. Still open: whole-row snap of the list, pad focus staging for 74/75, keycap elements, pad glyph chips. Each of these needs a layout choice or a staging change, not a CSS tweak.
 Next run (if any): those three, then keycap elements for hints, a pad-focus staging for 26/74.
+
+## 2026-10-18 evening (coordinator): the stuck items are settled
+- Moving the Send play data chip and re-ranking the pause box buttons: allowed (Q7, the guide overrules his older layout orders), but Q61 still binds: keep the feedback line, the feedback button and Send play data.
+- Shortening the pad labels that wrap to three lines: allowed (Q8), with the reason logged in notes\ui\changes.md.
+- Settings and Keys are a centred card with an X, nearly the entire screen (Q43; v30.89 shipped the card). Q59: $ for money, SP for score.
+See the RE-QUEUED block at the end of the task file.

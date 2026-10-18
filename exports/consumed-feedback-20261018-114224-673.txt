@@ -1,0 +1,8 @@
+﻿PILLAGERS FEEDBACK
+VERSION: v0.0687 (BUILD 30.57)
+TIME: Sun Oct 18 2026 11:42:24 GMT-0400 (Eastern Daylight Time)
+WHERE: IN A RAID, 1:59 IN
+RUNS: 50
+
+melee should damge world elements like windows, walls etc
+

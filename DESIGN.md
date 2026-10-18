@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.24 - THE WHAT IS NEW CARD NAMES POLISH PASS 27
+
+Co-op hunt while he was away. The card was stamped v31.08 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 31.24 passes, and fails on v31.23.
 ## v31.23 - the opening map prompt is one primary button and the map leaves it room
 
 Co-op hunt while he was away. Follow-up to the map first screen (v31.09). The critic (3 stars at most) named the prompt: a small dark pill, or click to start reads as a fragment, and at 4K it sat on the map frame. The prompt is now the one primary button of the screen as the style guide has it (56 high, lime fill, ink text at the callout size, minimum width 200): click to start with the key e chip, start with the pad a chip on a pad. After the press it is the same size in the panel colours, waiting for p2 with three pulsing dots. While the raid waits on its map the map projection leaves a footer for it, so at 4K the button sits under the frame; the map the player opens himself is as before. No rule changed: the press, the freeze and the two player start are the v31.09 code.

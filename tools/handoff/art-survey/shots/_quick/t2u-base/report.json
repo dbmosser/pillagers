@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T18:19:25","url":"http://localhost:8808/handoff/art-survey/game/base.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":15,"screens":[
+{"name":"t2u","screen":"trio, all aim up and right","1080":{"staged":true,"note":"{\"scene\":\"trio2\",\"plate\":false,\"zoom\":5,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":613,\"y\":511,\"w\":215,\"h\":235,\"fx\":571,\"fy\":601},{\"id\":\"merc\",\"kind\":\"pillager\",\"x\":1003,\"y\":511,\"w\":215,\"h\":235,\"fx\":961,\"fy\":601},{\"id\":\"mate\",\"kind\":\"player\",\"x\":1404,\"y\":503,\"w\":236,\"h\":251,\"fx\":1351,\"fy\":601}],\"objects\":null}","viewport":"1920x1080","shot":"t2u-1080.jpg","lint":""}}
+]}
