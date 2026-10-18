@@ -1,0 +1,7 @@
+v29.67: settings slim
+
+Settings and Keys are 960 cards with a detail strip.
+
+Check 29.67. Fails on v29.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

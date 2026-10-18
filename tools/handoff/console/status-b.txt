@@ -1,1 +1,1 @@
-10-18 05:20 b-30-ui-hud: failed, $0.0494
+10-18 05:25 running b-31-ui-undercroft (cap $4.00; spent today $116.56 of $152.28)

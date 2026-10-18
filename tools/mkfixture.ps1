@@ -6097,6 +6097,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.67',what:'Settings is a 960 card: the detail text is a strip under the list, steppers are plain until pointed at, the header X is drawn strokes',
+   run:function(){
+     if(typeof openSettings!=='function') return 'SKIP: no Settings here';
+     var bad=[], l, d, b, cx, cb;
+     try{
+       openSettings('display'); l=document.getElementById('setlist'); d=document.getElementById('setdetail');
+       if(!l||!d) return 'SKIP: no list';
+       try{ window.__setDetailSync(); }catch(_sy){}
+       if(!d.textContent) bad.push('detail strip is empty');
+       else if(d.getBoundingClientRect().top < l.getBoundingClientRect().bottom-2) bad.push('detail pane is beside the list, not under it');
+       b=l.querySelector('.row > button');
+       if(b){ var c=getComputedStyle(b).borderTopColor; if(!/rgba\(0, 0, 0, 0\)|transparent/.test(c)) bad.push('stepper box shows on every row: '+c); }
+       cb=document.getElementById('closesettings'); cx=cb?getComputedStyle(cb,'::after').content:'';
+       if(cx!=='""') bad.push('header X is a text glyph: '+cx);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ ['settingsmodal'].forEach(function(i){ var q=document.getElementById(i); if(q) q.classList.remove('on'); }); }catch(_k){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.66',what:'the attract pages sit on a spotlight backdrop, Press any button is pinned 8 percent from the bottom, the how to play card is 840px x scale with a line under the header row (critic: flat black, 32px prompt, faint headers, screens 46 56 64)',
    run:function(){
      if(typeof arcadeAttEl!=='function'||typeof arcadeAttHow!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';

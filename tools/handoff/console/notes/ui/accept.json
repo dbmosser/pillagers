@@ -234,10 +234,10 @@
  "52-arcade-run-over": {
   "score": 2,
   "pass": false,
-  "verdict": "A bare text-on-black end screen with a game title that outshouts the result, redundant score lines, a dim call to action, and no panel, art, or identity beyond the font.",
-  "pic": "tools/handoff/console/notes/shots/all/52-arcade-run-over-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:20"
+  "verdict": "The run-over card follows the guide's tokens and has a clear hero line, but it is a sparse, left-heavy box with a duplicated score, a dot-separated stats sentence, no button and a dim footer prompt, so it does not match the guide's end-card shell.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/52-arcade-run-over-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:32"
  },
  "57-title-2p-coop-picked": {
   "score": 2,
@@ -274,10 +274,10 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The Operator modal is now a clear dark card with one amber primary, a danger-ghost Exit and a quiet Back, but it overlaps and clips the Tonight's best card behind it, has no close X or key-hint strip, and its focus state is ambiguous.",
-  "pic": "tools/handoff/console/notes/shots/12-after1/62-arcade-operator-menu-1080.jpg",
+  "verdict": "A clean, on-guide modal with clear hierarchy (amber primary, red danger, ghost Back), but the stacked card overlaps the 'Tonight's best' panel behind it, the subtitle is tiny, and it lacks a close X, a pad glyph and a focus indicator.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T07:58"
+  "when": "2026-10-18T09:33"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -290,18 +290,18 @@
  "58-coop-player2-window-title": {
   "score": 2,
   "pass": false,
-  "verdict": "The title screen has a clear gold CTA and a decent logo, but it is a stack of small centered text, tutorial cards, a keybind strip and an orange paragraph of explanation, so the hierarchy is muddy and the screen reads like a web form rather than a game menu.",
-  "pic": "tools/handoff/console/notes/shots/all/58-coop-player2-window-title-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:22"
+  "verdict": "The title screen has a clear amber title and button, but it is cluttered with explaining paragraphs, tiny amber text, a stray \"$\" and an all-caps name field, so it reads as a generic web form rather than a game menu.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/58-coop-player2-window-title-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:33"
  },
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, style-guide-faithful dark panel with a clear title, tab accent and amber prompt, but it is a plain black void with a bare table, tiny column headers, and a dim 'Press any button' that reads like a template rather than a Pillagers attract screen.",
-  "pic": "tools/handoff/console/notes/shots/12-b3/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "A clean, sentence-case, on-palette controls table with a clear title and a legible two-column layout, but it is a plain spreadsheet that leaves wide empty margins, has no close or back control, and relies on weak label contrast and a loose title/footer treatment.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:17"
+  "when": "2026-10-18T09:30"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -330,10 +330,10 @@
  "55-arcade-run-over-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version finally uses the shared dark panel with a tab and puts the score first, but it is a small left-aligned box floating in a black void with tiny stats, no button and no world backdrop, so it reads as a placeholder rather than an end card.",
-  "pic": "tools/handoff/console/notes/shots/12-after3/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "A clean, sentence-case card with a clear hero line, but it is a sparse left-aligned stub that ignores the end-card shell (720px centred, stat row of 4, tiles, primary and ghost buttons), has no visible actions, and sits on a flat dark wall.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T08:17"
+  "when": "2026-10-18T09:33"
  },
  "60-abandoned-card": {
   "score": 2,
@@ -354,17 +354,49 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred pause card with a clear amber Resume and a red End run, but it has no close X and no pad glyph, the footer hint is tiny and muted, and the scrim is too light, so the HUD behind it still shows through.",
-  "pic": "tools/handoff/console/notes/shots/12-b3/49-arcade-pause-box-1080.jpg",
+  "verdict": "A clean, centred pause card with a clear amber Resume, a danger End run and sentence case, but it ignores the guide's header row, close X and key-hint rules, and the dimmed HUD behind it is still a muddy mess.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/49-arcade-pause-box-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:18"
+  "when": "2026-10-18T09:31"
  },
  "56-arcade-attract-board-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean but nearly empty black screen: the title, a tiny board that says 'No scores yet' and an amber prompt float with no world backdrop and no logo treatment, so it reads as a placeholder, not an attract screen.",
-  "pic": "tools/handoff/console/notes/shots/12-b3/56-arcade-attract-board-scored-1080.jpg",
+  "verdict": "A clean but nearly empty attract screen: the title and the lone card sit in a void, the 'board' has no content, and the dark bands, vignette and centered layout read as a generic template, not Pillagers.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:18"
+  "when": "2026-10-18T09:33"
+ },
+ "47-arcade-drop-controls-card": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The controls card is a legible, sentence-case table, but it is an unanchored dark box laid over a busy in-raid HUD with an amber border and amber labels that break the guide, and the rest of the HUD competes with it.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/47-arcade-drop-controls-card-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:31"
+ },
+ "48-arcade-hud-move-to-start": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The controls card is a dense, amber-heavy wall of text that outweighs the live HUD, while the HUD's own type sizes, panels and currency formats ignore the style guide.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/48-arcade-hud-move-to-start-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:31"
+ },
+ "53-arcade-extracted-bonus-initials": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The file is named 'extracted bonus initials', but it shows a cluttered in-raid HUD where 'Extract in progress' is repeated four times, and the HUD fragments use inconsistent sizes, fills, and frames, so it is far from the guide's one-shell end card.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/53-arcade-extracted-bonus-initials-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:32"
+ },
+ "54-arcade-initials-redrop": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The in-raid HUD tells the player that extraction is in progress five times at once, in four different type sizes, with no clear hero, and it has overlapping labels, clipped text, and several tiny or low-contrast elements that break the style guide.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/54-arcade-initials-redrop-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:32"
  }
 }

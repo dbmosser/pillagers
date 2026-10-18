@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.67 - SETTINGS SLIM
+
+Co-op hunt while he was away. Critic c-31: Settings and Keys cards too wide, label far from stepper, side pane empty, X glyph tiny. 960 card, detail strip, plain steppers, drawn X, 400 pause stack.
+
+MEASURED. Check 29.67 passes, and fails on v29.66.
 ## v29.66 - Attract pages: spotlight backdrop, smaller prompt, clearer table
 
 Co-op hunt while he was away. The critic scored how to play 3 and the board 2: flat black, a 32px prompt far from the card, faint column headers, identical rows. Backdrop spotlight, accent rule under the wordmark, a lower prompt, lined table, 840px card. Restyle only.

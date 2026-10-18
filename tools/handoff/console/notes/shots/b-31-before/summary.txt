@@ -1,0 +1,26 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  02-welcome-pack                        staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  03-hub-floor                           staged       6.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  04-stash-terminal                      staged       7.6s  total   6: clip 0 off 0 small 6 contrast 0 font 0 overlap 0 focus 0
+  05-sector-page                         staged       6.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  06-terms                               staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | termsmodal
+  07-party-coop                          staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | partymodal
+  08-shop                                staged       7.2s  total   3: clip 0 off 0 small 0 contrast 3 font 0 overlap 0 focus 0  | tradermodal
+  09-craft                               staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal
+  10-hire                                staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | tradermodal
+  11-wirt-gambler                        staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gamblemodal
+  12-mainframe-contracts                 staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  13-mainframe-rewards                   staged       7.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  14-mainframe-racks                     staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  15-mainframe-stats                     staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  16-bar-last-pour                       staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal
+  17-fashion-mirror                      staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | appearmodal
+  18-settings-hub                        staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  39-hub-after-raid                      staged      10.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  41-hub-backpack                        staged      11.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"snap":true}
+  42-hub-pause-box                       staged      12.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  43-stash-after-raid                    staged      11.7s  total   6: clip 0 off 0 small 6 contrast 0 font 0 overlap 0 focus 0
+  44-title-from-character-select         staged      12.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  65-codex                               staged       6.0s  total   9: clip 6 off 0 small 1 contrast 2 font 0 overlap 0 focus 0  | codexmodal
+  66-trophy-case                         staged       5.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | trophymodal
+  67-career-stash-stocked                staged       5.7s  total   8: clip 0 off 0 small 7 contrast 1 font 0 overlap 0 focus 0
