@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.14 - Operator card: two rows, focus is a bar
+
+Co-op hunt while he was away. Critic on 62 and 63 (3 and 2 of 5): the Back row repeated the X and Esc (three ways to close), and the focused row was a full width accent slab. Back goes, and focus is the shared row look: a raised fill and a 3px accent bar.
+
+MEASURED. Check 30.14 passes, and fails on v30.13.
 ## v30.13 - SETTINGS KEY-HINT LINE AND CLEAN BACKDROP
 
 Co-op hunt while he was away. Critic c-31 round 13 (Settings 18, 72 and Pad buttons 74 at 2): no key-hint strip anywhere, and menu text ghosted through the backdrop.

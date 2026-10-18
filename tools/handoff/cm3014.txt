@@ -1,0 +1,7 @@
+v30.14: operator card: two rows, focus is a bar
+
+The operator card has New party and Exit demo, and the X closes it.
+
+Check 30.14. Fails on v30.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -434,9 +434,9 @@
  "72-settings-sec-display": {
   "score": 2,
   "pass": false,
-  "verdict": "The modal shell is clean and close to the guide (sentence case, top-right X, one tab strip, 1px borders), but the screen shows no focused row, shows placeholder copy in the detail pane, and its small type is too small for a couch.",
-  "pic": "tools/handoff/console/notes/shots/c-31w-after/72-settings-sec-display-1080.jpg",
+  "verdict": "The new version fixes the clipped half-row ghost text and darkens the backdrop, but it is still a flat, generic settings list with a placeholder help pane, tiny controls, and no visible focus state.",
+  "pic": "tools/handoff/console/notes/shots/c-31x-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:56"
+  "when": "2026-10-18T13:08"
  }
 }

@@ -1,1 +1,1 @@
-10-18 09:04 13-ui-end-cards: partial (run 4 of 5), $0.0906
+10-18 09:09 13-ui-end-cards: failed, $0.0554

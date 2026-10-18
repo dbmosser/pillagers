@@ -6097,6 +6097,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.14',what:'the operator card has two rows (New party, Exit demo): Back is gone and the X and Esc close it, and the focused row is a raised fill with a 3px accent bar, not an accent slab (critic on 62 and 63: 3 and 2 of 5)',
+   run:function(){
+     if(typeof arcadeOpOpen!=='function'||typeof arcadeOpClose!=='function'||typeof ARCADE!=='object'||!ARCADE) return 'SKIP: no operator card';
+     var was=ARCADE.on, op, bs, cs, res=null, p, acc;
+     try{
+       ARCADE.on=true;
+       if(!arcadeOpOpen()) return 'the operator card did not open';
+       op=document.getElementById('arcop'); if(!op) return 'no operator card element';
+       bs=op.querySelectorAll('button[data-op]');
+       if(op.querySelector('[data-op="back"]')) res='the Back row is still on the operator card';
+       else if(bs.length!==2) res=bs.length+' rows, not 2 (New party, Exit demo)';
+       if(res) return res;
+       p=document.createElement('i'); p.style.color='var(--acc)'; document.body.appendChild(p); acc=getComputedStyle(p).color; p.remove();
+       cs=getComputedStyle(bs[0]);
+       if(cs.backgroundColor===acc) res='the focused row is an accent slab: '+cs.backgroundColor;
+       else if(parseFloat(cs.borderLeftWidth)<parseFloat(cs.borderTopWidth)*1.8||cs.borderLeftColor!==acc) res='the focused row has no 3px accent bar: '+cs.borderLeftWidth+' '+cs.borderLeftColor;
+       return res;
+     } finally { try{ arcadeOpClose(); }catch(e){} ARCADE.on=was; }
+   }},
   {v:'30.13',what:'Settings ends in a key-hint line (Esc Close, or A Change and B Back on a pad) and its backdrop is 98 percent void',
    run:function(){
      var bad=[], m, c, bg, pm, padWas=document.body.classList.contains('padon');
