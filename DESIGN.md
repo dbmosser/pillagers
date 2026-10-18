@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.36 - Initials for each player, no rude ones
+
+Co-op hunt while he was away. His answers Q62 and Q63 (10-18): one board entry per player, and block rude initials. A 2 player run asks player 1 and then player 2 for initials, the board shows both, and a short list of rude three letter sets is refused.
+
+MEASURED. Check 30.36 passes, and fails on v30.35.
 ## v30.35 - THE RIOT SCATTERGUN KICKS THE SCREEN
 
 Co-op hunt while he was away. His Q5: gun and enemy feel this week. The camera shake only grows when the shot number rises and is 18 px times trauma squared, so the flat 2.2 every light gun set was under half a pixel, and the Riot Scattergun (six pellets, 96 damage a pull) kicked like a pistol. The kick is now per gun, and the scattergun sets 6.5: about 4 px at 1080p, gone in a third of a second. Every other gun keeps its kick.

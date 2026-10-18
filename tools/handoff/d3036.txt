@@ -1,0 +1,5 @@
+## v30.36 - Initials for each player, no rude ones
+
+Co-op hunt while he was away. His answers Q62 and Q63 (10-18): one board entry per player, and block rude initials. A 2 player run asks player 1 and then player 2 for initials, the board shows both, and a short list of rude three letter sets is refused.
+
+MEASURED. Check 30.36 passes, and fails on v30.35.

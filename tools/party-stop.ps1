@@ -20,12 +20,15 @@ function Pick([string]$name, [string]$rx) {
   @($script:all | Where-Object { $_.ProcessId -ne $me -and $_.Name -ieq $name -and $_.CommandLine -and ($_.CommandLine -match $rx) })
 }
 function PickAny([string[]]$names, [string]$rx) { $o = @(); foreach ($n in $names) { $o += Pick $n $rx }; $o }
-function Kill([object[]]$procs, [string]$what) {
+# StopThese stops only the named processes. -Tree also stops everything they started (used only for the hidden test Chromes): a plain StopThese must
+# NOT take down a ship that a helper started, because a half-finished ship leaves the game file half-saved.
+function StopThese([object[]]$procs, [string]$what, [switch]$Tree) {
   $procs = @($procs | Where-Object { $_ })
   if ($procs.Count -eq 0) { Say ('  [skip] ' + $what + ': not running'); return }
   foreach ($p in $procs) {
     if ($DryRun) { Say ('  [would stop] ' + $what + ' (process ' + $p.ProcessId + ')') }
-    else { & taskkill.exe /F /T /PID $p.ProcessId 2>&1 | Out-Null }
+    elseif ($Tree) { & taskkill.exe /F /T /PID $p.ProcessId 2>&1 | Out-Null }
+    else { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }
   }
   if (-not $DryRun) { Say ('  [stopped] ' + $what + ' (' + $procs.Count + ' process(es))') }
 }
@@ -73,7 +76,7 @@ Say '  [ok] helpers paused (tools\handoff\console\STOP) and the stable build fro
 Say '2. The always-on runner'
 if (-not $DryRun) { & schtasks.exe /Change /TN 'Pillagers runner' /DISABLE 2>&1 | Out-Null }
 Say '  [ok] the "Pillagers runner" scheduled task is switched off'
-Kill (Pick 'bash.exe' $rxRunner) 'the runner (nightly.sh)'
+StopThese (Pick 'bash.exe' $rxRunner) 'the runner (nightly.sh)'
 if (-not $DryRun) { Remove-Item -LiteralPath ($H + '\nightly\runner.heartbeat') -Force -ErrorAction SilentlyContinue }
 
 # ---- 3. let the helpers and any ship in progress finish by themselves (up to -WaitMinutes)
@@ -90,8 +93,8 @@ while (-not $DryRun) {
 }
 Snap
 Say '4. The helpers'
-Kill (PickAny @('node.exe', 'claude.exe') $rxApi) 'helper runs (Claude working on a job)'
-Kill (Pick 'bash.exe' $rxLane) 'helper lanes (console-lane.sh a, b, c, e, f)'
+StopThese (PickAny @('node.exe', 'claude.exe') $rxApi) 'helper runs (Claude working on a job)'
+StopThese (Pick 'bash.exe' $rxLane) 'helper lanes (console-lane.sh a, b, c, e, f)'
 if (-not $DryRun) {
   Start-Sleep -Seconds 2
   Get-ChildItem -LiteralPath $C -Directory -Filter 'lane-*.lock' -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
@@ -103,21 +106,21 @@ if ($ship.Count -gt 0) { Say ('  [WARNING] a ship is still in progress (' + $shi
 # ---- 5-8. the robots, the full test run, the local AI, the nightly review
 Snap
 Say '5. The crash-hunting robots (fuzz.ps1)'
-Kill (Pick 'powershell.exe' $rxFuzz) 'the robots'
+StopThese (Pick 'powershell.exe' $rxFuzz) 'the robots'
 Say '6. The full test run (corpus)'
-Kill (Pick 'bash.exe' $rxCorpus) 'the full test run'
+StopThese (Pick 'bash.exe' $rxCorpus) 'the full test run'
 if (-not $DryRun) { Remove-Item -LiteralPath ($S + '\corpus.lock') -Recurse -Force -ErrorAction SilentlyContinue }
 Say '7. The local AI (Ollama)'
-Kill (Pick 'powershell.exe' $rxLlm) 'the overnight AI audit (llm-night.ps1)'
-Kill (@($script:all | Where-Object { $_.ProcessId -ne $me -and $_.Name -match '^(ollama|ollama app|ollama_llama_server)\.exe$' })) 'Ollama (the local AI program)'
+StopThese (Pick 'powershell.exe' $rxLlm) 'the overnight AI audit (llm-night.ps1)'
+StopThese (@($script:all | Where-Object { $_.ProcessId -ne $me -and $_.Name -match '^(ollama|ollama app|ollama_llama_server)\.exe$' })) 'Ollama (the local AI program)'
 Say '8. The hidden test browsers (Chrome on ports 9331-9399) and test servers'
 Start-Sleep -Seconds 1
 Snap
-Kill (TestChromes) 'hidden test Chromes (robots, test run, quality line, helpers practice browsers)'
-Kill (TestServers) 'test servers (8800, 8803-8811) and the picture sink'
+StopThese (TestChromes) 'hidden test Chromes (robots, test run, quality line, helpers practice browsers)' -Tree
+StopThese (TestServers) 'test servers (8800, 8803-8811) and the picture sink'
 if (-not $KeepDashboard) {
   Say '9. The dashboard window server'
-  Kill (Pick 'node.exe' 'server\.mjs\s*$') 'dashboard server (port 8820)'
+  StopThese (Pick 'node.exe' 'server\.mjs\s*$') 'dashboard server (port 8820)'
 }
 
 # ---- the check table

@@ -1,0 +1,7 @@
+v30.36: initials for each player, no rude ones
+
+Each player enters initials in a 2 player run, and rude initials are blocked.
+
+Check 30.36. Fails on v30.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
