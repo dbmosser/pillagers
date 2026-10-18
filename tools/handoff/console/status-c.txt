@@ -1,1 +1,1 @@
-10-18 08:10 b-30-ui-hud: partial (run 1 of 5), $0.0316
+10-18 08:15 running b-31-ui-undercroft (cap $4.00; spent today $88.81 of $176.54)

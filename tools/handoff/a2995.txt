@@ -1,0 +1,1 @@
+| End cards: a 40px title, bigger loss tiles, a clear Abandoned line | v29.95 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.95 passes, fails on v29.94 |

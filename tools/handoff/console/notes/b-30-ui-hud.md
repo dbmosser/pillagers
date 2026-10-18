@@ -49,3 +49,5 @@ Order by safety for the 10/30 demo: (1) weapon card "B / I backpack" to 16px tx-
 ## Run 9 (lane a): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
 
 ## Run 10 (lane c): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
+
+## Run 11 (lane e): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.

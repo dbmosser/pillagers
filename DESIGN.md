@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.95 - End cards: a 40px title, bigger loss tiles, a clear Abandoned line
+
+Co-op hunt while he was away. The critic scored KIA 3 and Abandoned 2 of 5: the title too small to lead, grey XP line loud, 64px tiles tight to the hero, no focal line on Abandoned. Title 40px, XP line tx-2, tiles 72px with 24px of room, brighter stat rules, the Abandoned loot line in its own 24px bone line. Restyle only, words unchanged.
+
+MEASURED. Check 29.95 passes, and fails on v29.94.
 ## v29.94 - Run over card: stat cells, and no first run card over the arcade
 
 Co-op hunt while he was away. Critic on 55 (3 of 5): the stats were a dot separated run-on line of 16px grey with a cryptic ext. They are cells now, a 32px value over a 16px label. The welcome pack also opened under the party attract on a fresh profile and showed through it, so no first run card opens while the arcade is up.

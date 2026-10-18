@@ -1,1 +1,1 @@
-10-18 08:10 b-31-ui-undercroft: partial (run 1 of 5), $0.2042862
+10-18 08:15 b-30-ui-hud: partial (run 2 of 5), $0.1765531

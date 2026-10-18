@@ -162,26 +162,26 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred pause card with one clear amber primary and a separated danger action, but it breaks the style guide on close placement, the footer hint and the sizing of the button stack, and it feels like a generic template.",
-  "pic": "tools/handoff/console/notes/shots/c-31s-after2/25-raid-pause-box-1080.jpg",
+  "verdict": "A clean, centred pause card with one amber primary, a danger ghost and clear sentence-case type, but it lacks a close X and pad glyphs, and its footer hint is tiny. It also has a generic stack-of-buttons look and a stray corner notch.",
+  "pic": "tools/handoff/console/notes/shots/c-31u-now/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:58"
+  "when": "2026-10-18T12:15"
  },
  "26-settings-from-pause-top": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The new settings card is narrower and drops the side pane for a bottom detail strip, but it is still a flat wall of same-weight rows with an explaining subtitle, a stray tab, tiny arrows far from their labels, and no visible focus, so it reads as a generic template.",
-  "pic": "tools/handoff/console/notes/shots/c-31p-after/26-settings-from-pause-top-1080.jpg",
+  "verdict": "A tidy, on-guide settings card with one tab strip, a top-right X and sentence case, but the focused row has no visible highlight, the tab strip is crowded, and the text is small and low-contrast for a couch.",
+  "pic": "tools/handoff/console/notes/shots/c-31u-now/26-settings-from-pause-top-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:37"
+  "when": "2026-10-18T12:15"
  },
  "32-keys-window": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The Keys window is now a centred card of about 1005x765 that no longer fills the screen, but the scroll area cuts the World rows in half at the bottom edge and the screen is still a flat grid of identical key caps with no focus state and no clear first read.",
-  "pic": "tools/handoff/console/notes/shots/c-31t-after/32-keys-window-1080.jpg",
+  "verdict": "A clean, consistent dark modal that follows the guide's header, close button and sentence-case rules, but it is a flat grid of identical key buttons with tiny section labels, a hard-clipped row at the bottom, a flat black backdrop and no visible focus state, so it reads as a competent template with no hierarchy or identity.",
+  "pic": "tools/handoff/console/notes/shots/c-31u-now/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T10:11"
+  "when": "2026-10-18T12:15"
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -296,12 +296,12 @@
   "when": "2026-10-18T10:50"
  },
  "46-arcade-attract-how-to-play": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "A clean, on-token control reference with a clear table and one amber action, but the card is a plain data grid on a flat dark void with no identity, a button that isn't a real prompt, and type that is small for couch reading.",
-  "pic": "tools/handoff/console/notes/shots/12-g1/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "The how-to-play card is a clean, readable controls table, but a ghosted Welcome pack screen bleeds through the scrim, the 'Pillagers' title floats outside the card, and the card breaks the modal rules for close, header and button placement.",
+  "pic": "tools/handoff/console/notes/shots/12-g3/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T11:56"
+  "when": "2026-10-18T12:16"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -330,10 +330,10 @@
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-token dark card with a clear title, hero score and a single amber action, but it is sparse and not the specified end-card shell, so it reads like a placeholder rather than a finished Run over screen.",
-  "pic": "tools/handoff/console/notes/shots/12-g1/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "The card follows the end-card shell reasonably well, with a clear title, hero line, divider and stats row, but the hub still shows through behind it, the primary button floats outside the card, and the stats are mostly zeros with no ghost button.",
+  "pic": "tools/handoff/console/notes/shots/12-g3/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T11:56"
+  "when": "2026-10-18T12:15"
  },
  "60-abandoned-card": {
   "score": 2,
@@ -362,10 +362,10 @@
  "56-arcade-attract-board-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean, on-palette, sentence-case attract screen, but it is a tiny centred cluster in a huge empty void with no key art or world backdrop, and its 'scored' board shows 'No scores yet', so it reads as a template placeholder rather than a Pillagers attract loop.",
-  "pic": "tools/handoff/console/notes/shots/12-g1/56-arcade-attract-board-scored-1080.jpg",
+  "verdict": "The arcade attract board is a clean dark card with a sentence-case title and one amber action, but an empty five-row list, a button that looks like it is on the wrong layer, and a busy, barely dimmed hub behind it make it feel unfinished and generic.",
+  "pic": "tools/handoff/console/notes/shots/12-g3/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T11:56"
+  "when": "2026-10-18T12:16"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,

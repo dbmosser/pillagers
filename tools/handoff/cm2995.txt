@@ -1,0 +1,7 @@
+v29.95: end cards: a 40px title, bigger loss tiles, a clear abandoned line
+
+End cards: bigger title and loss tiles, a clear loot line on Abandoned.
+
+Check 29.95. Fails on v29.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

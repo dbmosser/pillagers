@@ -1,0 +1,8 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  02-welcome-pack                        staged       6.4s  
+  04-stash-terminal                      staged       7.1s  
+  08-shop                                staged       7.3s    | tradermodal
+  14-mainframe-racks                     staged       7.0s    | opmodal
+  39-hub-after-raid                      staged      11.0s  
+  41-hub-backpack                        staged      11.9s    | {"open":true,"snap":true}
+  65-codex                               staged       6.0s    | codexmodal
