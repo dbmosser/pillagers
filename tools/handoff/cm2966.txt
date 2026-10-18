@@ -1,0 +1,7 @@
+v29.66: attract pages: spotlight backdrop, smaller prompt, clearer table
+
+The attract pages look cleaner and easier to read.
+
+Check 29.66. Fails on v29.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

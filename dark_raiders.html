@@ -1513,6 +1513,17 @@ body #attract:has(.arcover[style*="block"]) .attname{ display:none; }
 body #attract .arcover{ min-width:calc(var(--menu-w) * 1.5 * var(--attz,1)); }
 body #attract .arcover .aor + .aor{ margin-top:calc(var(--sp-1) * var(--attz,1)); }
 body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(--f-cond); letter-spacing:var(--track); color:var(--acc); }
+/* v28.xx (cw-party-att), his order 2026-10-18 (UI step 3, party screens 46, 56, 64): the critic scored how to play 3 and the board 2 ("flat pure black, no world,
+   Press any button 32px and detached 90px from the card, column headers faint, nine identical rows, the card too wide for its content"). The backdrop is a soft
+   spotlight (raised grey to void) behind the card, the wordmark gets the 3px accent rule, Press any button is pinned at 8 percent from the
+   bottom on every page (the 32px size stays: an older check holds it), the header row is 20px in bold with a 1px line, every row has a 1px line, and the how to play card is 840px x scale. Restyle only. */
+body #attract{ background:radial-gradient(ellipse at 50% 38%, var(--ui-raised) 0%, var(--ui-bg) 46%, var(--ui-void) 100%); }
+body #attract .attname::after{ content:''; display:block; width:calc(var(--sp-5) * var(--attz,1)); height:3px; background:var(--acc); margin:calc(var(--sp-2) * var(--attz,1)) auto 0; }
+body #attract .attpress{ bottom:8%; }
+body #attract .arcpage:has(table){ min-width:0; width:calc(var(--menu-w) * 1.5 * var(--attz,1)); }
+body #attract .arcpage th{ font-size:calc(var(--fs-body) * var(--attz,1)); font-weight:700; border-bottom:1px solid var(--ui-line-hi); }
+body #attract .arcpage td{ border-bottom:1px solid var(--ui-line); }
+body #attract .arcpage .apk{ font-weight:500; }
 /* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
    The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
    Pause: the title is the 32px title size in light text (the one amber thing in the box is Resume run), the key legend and the note line are 16px grey.
@@ -2510,7 +2521,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.65';
+var VER='29.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47599,7 +47610,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.65: Settings has one tab strip. Check 29.65 fails on v29.64',
+  now:'v29.66: The attract pages look cleaner and easier to read. Check 29.66 fails on v29.65',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

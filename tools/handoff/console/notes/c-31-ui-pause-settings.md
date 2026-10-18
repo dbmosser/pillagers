@@ -15,4 +15,6 @@ Old pins: REGRESS 6137 wants pause title 32px / legend 16px; 27283 wants legend 
 Genp: next card number is P13.
 
 Run 4 (v29.59 cw-keysclean): keys window lost the per-row Rebind buttons and amber section labels (key cap is the button now), min-width via var(). Critic on 32 keys: 2 (before 2), better_than_before yes. Still P0: full-bleed slab (list stops at x=1530 of 1900, dead right strip), no 48x48 header X, Reset to defaults on the left. Pictures: shots/c-31i-after -> c-31j-after.
+Run 5 (v29.63 cw-setcard, v29.64 cw-setfeel, v29.65 cw-setone): Settings/Keys card 1360/1080 px via var(), row hover bar on keys, Send play data folded into the one section strip (title tabs hidden on Game page). Critic on 26: 2 (better_than_before yes). Open P1: controls ~700px from labels (limit 400), type 14/15/18 drift, footer hint strip + Done, list ends mid-row (no fade mask), detail pane mostly empty, close X glyph small. Subtitle is his line: leave. Pictures c-31k-before, c-31l/m/n-after.
+Next step if resumed: shrink #setlist width so control sits within 400px of label, fade mask at list bottom, bigger header X (shared shell).
 STUCK: all remaining P0s are the shared modal shell (centred 960x680 card, header X on every modal). Needs its own shell task, not a pause/settings task. Ending PARTIAL.

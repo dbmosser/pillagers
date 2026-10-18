@@ -170,10 +170,10 @@
  "26-settings-from-pause-top": {
   "score": 2,
   "pass": false,
-  "verdict": "The settings modal keeps two stacked tab strips, an explaining joke sentence, a hard-clipped list and a half-empty detail pane, and the only change in the new shot is a faint fade on the last clipped row, so it still reads as a generic template.",
-  "pic": "tools/handoff/console/notes/shots/c-31m-after/26-settings-from-pause-top-1080.jpg",
+  "verdict": "The second version (c-31n) fixes the double tab strip by folding 'Send play data' into the one strip, but the screen is still a dense, flat settings wall with a joke subtitle, tiny type, a clipped list and a mostly empty detail pane.",
+  "pic": "tools/handoff/console/notes/shots/c-31n-after/26-settings-from-pause-top-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:19"
+  "when": "2026-10-18T09:23"
  },
  "32-keys-window": {
   "score": 3,

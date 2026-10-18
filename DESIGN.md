@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.66 - Attract pages: spotlight backdrop, smaller prompt, clearer table
+
+Co-op hunt while he was away. The critic scored how to play 3 and the board 2: flat black, a 32px prompt far from the card, faint column headers, identical rows. Backdrop spotlight, accent rule under the wordmark, a lower prompt, lined table, 840px card. Restyle only.
+
+MEASURED. Check 29.66 passes, and fails on v29.65.
 ## v29.65 - SETTINGS ONE STRIP
 
 Co-op hunt while he was away. Critic c-31 P0: two stacked tab strips in Settings. Send play data is a chip of the section strip now.

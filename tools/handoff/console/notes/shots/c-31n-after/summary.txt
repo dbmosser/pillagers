@@ -1,0 +1,3 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  26-settings-from-pause-top             staged       9.5s  
+  69-settings-sec-audio                  staged       8.1s    | settingsmodal

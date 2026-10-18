@@ -1,0 +1,1 @@
+| Attract pages: spotlight backdrop, smaller prompt, clearer table | v29.66 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.66 passes, fails on v29.65 |

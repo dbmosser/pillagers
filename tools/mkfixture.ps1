@@ -6097,6 +6097,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.66',what:'the attract pages sit on a spotlight backdrop, Press any button is pinned 8 percent from the bottom, the how to play card is 840px x scale with a line under the header row (critic: flat black, 32px prompt, faint headers, screens 46 56 64)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof arcadeAttHow!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';
+     var d, pg, wasDisp, z, res=null, ap, th, w;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       try{ if(typeof attZ==='function') attZ(d); }catch(_z){}
+       z=parseFloat(getComputedStyle(d).getPropertyValue('--attz'))||1;
+       pg=arcadeAttEl('arcpage'); pg.textContent=''; arcadeAttHow(pg); pg.style.display='block';
+       ap=d.querySelector('.attpress'); th=pg.querySelector('th'); w=parseFloat(getComputedStyle(pg).width);
+       if(getComputedStyle(d).backgroundImage.indexOf('radial-gradient')<0) res='the attract backdrop is still flat black';
+       else if(Math.abs(parseFloat(getComputedStyle(d).height)-ap.getBoundingClientRect().bottom-parseFloat(getComputedStyle(d).height)*0.08)>2) res='Press any button is not pinned 8 percent from the bottom';
+       else if(Math.abs(w-840*z)>3) res='the how to play card is '+w+'px wide, not 840px x '+z;
+       else if(parseFloat(getComputedStyle(th).borderBottomWidth)<1) res='no line under the header row';
+       return res;
+     } finally {
+       try{ pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+     }
+   }},
   {v:'29.65',what:'Settings has one tab strip: Send play data is a chip of the section strip, the title tabs show only on the Send play data page',
    run:function(){
      if(typeof openSettings!=='function') return 'SKIP: no Settings here';
