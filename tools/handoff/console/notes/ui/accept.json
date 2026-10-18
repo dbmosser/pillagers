@@ -122,10 +122,10 @@
  "18-settings-hub": {
   "score": 2,
   "pass": false,
-  "verdict": "Clean dark palette and sentence case, but two stacked tab strips, a joke subtitle, a full-screen slab with a small detail pane and dead space, tiny text and a toast stuck over the footer leave it well short of the guide.",
-  "pic": "tools/handoff/console/notes/shots/c-31d-now/18-settings-hub-1080.jpg",
+  "verdict": "A clean dark slab with correct sentence case, but it still has two stacked tab strips, a full-screen wall instead of a centred card, tiny muted text, a half-empty right side and a toast colliding with the footer, so it reads as a debug form rather than a game menu.",
+  "pic": "tools/handoff/console/notes/shots/c-31i-after/18-settings-hub-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T07:40"
+  "when": "2026-10-18T08:59"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -162,10 +162,10 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "This is a clean, correctly structured pause card with one amber primary and a danger ghost, but the newer shot crams the title against the top edge, leaves a tiny 'Esc Resume' hint jammed against the bottom, and the card still lacks a close X and a proper header row.",
-  "pic": "tools/handoff/console/notes/shots/c-31h-after/25-raid-pause-box-1080.jpg",
+  "verdict": "A clean, centred pause card with one clear amber primary and good sentence case, but it ignores the guide's close X and footer rules, has a tiny footer hint, a cut-corner tab that breaks the 4px panel rule, and gives no visible pad focus.",
+  "pic": "tools/handoff/console/notes/shots/c-31i-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:51"
+  "when": "2026-10-18T08:59"
  },
  "26-settings-from-pause-top": {
   "score": 2,
@@ -178,10 +178,10 @@
  "32-keys-window": {
   "score": 2,
   "pass": false,
-  "verdict": "Removing the explaining sentence recovered a row and made the list denser, but the screen is still a wall of identical boxed rows with tiny type, lowercase action names, and no focus state, so it reads as a debug dump instead of a polished menu.",
-  "pic": "tools/handoff/console/notes/shots/c-31e-after/32-keys-window-1080.jpg",
+  "verdict": "A clean, readable dark keybind grid, but it is still a full-screen slab with a bottom Close, tiny text, lowercase labels, 16 duplicate Rebind buttons and a leftover explaining sentence, so it breaks the guide's modal, close, type and hierarchy rules.",
+  "pic": "tools/handoff/console/notes/shots/c-31i-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T07:49"
+  "when": "2026-10-18T08:59"
  },
  "33-raid-fight-alerts": {
   "score": 2,

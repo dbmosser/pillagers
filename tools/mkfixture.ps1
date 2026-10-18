@@ -6097,6 +6097,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.59',what:'the Keys window has no separate Rebind box: the key cap is the control, and it waits for a press',
+   run:function(){
+     if(typeof keysOpen!=='function') return 'SKIP: no Keys window here';
+     var bad=[], l, rb, kb, sec, s, wasWait;
+     try{
+       keysOpen(); l=document.getElementById('keyslist');
+       if(!l) return 'SKIP: the Keys window did not build';
+       rb=l.querySelector('.rebind'); kb=l.querySelector('.keybtn[data-k="KeyE"]'); sec=l.querySelector('.keysec');
+       if(rb&&getComputedStyle(rb).display!=='none') bad.push('a Rebind box still shows beside the key cap');
+       if(sec&&getComputedStyle(sec).color===getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()) bad.push('a section head is still amber');
+       if(sec&&!(parseFloat(getComputedStyle(sec).fontSize)>=16)) bad.push('a section head is '+getComputedStyle(sec).fontSize);
+       if(!kb) bad.push('no key cap for the search key'); else { kb.click(); if(KEYS.waiting!=='KeyE') bad.push('the key cap did not wait for a press'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ KEYS.waiting=null; var m=document.getElementById('keysmodal'); if(m) m.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.58',what:'the Marksman Rifle and the Whisper are gone from every gun, item, loot and shop table, and a saved one pays its credits on load (his order 2026-10-18)',
    run:function(){
      var bad=[], k, i, t, p, paid, tabs, nm;

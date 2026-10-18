@@ -1,0 +1,7 @@
+v29.59: keys window clean
+
+The Keys window is cleaner: the key is the button.
+
+Check 29.59. Fails on v29.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
