@@ -6433,7 +6433,7 @@ window.__REGRESS=[
        pg=arcadeAttEl('arcpage'); pg.textContent=''; arcadeAttHow(pg); pg.style.display='block';
        ap=d.querySelector('.attpress'); th=pg.querySelector('th'); w=parseFloat(getComputedStyle(pg).width);
        if(getComputedStyle(d).backgroundImage.indexOf('radial-gradient')<0) res='the attract backdrop is still flat black';
-       else if(Math.abs(parseFloat(getComputedStyle(d).height)-ap.getBoundingClientRect().bottom-parseFloat(getComputedStyle(d).height)*0.08)>2) res='Press any button is not pinned 8 percent from the bottom';
+       else if(Math.abs(parseFloat(getComputedStyle(d).height)-ap.getBoundingClientRect().bottom-parseFloat(getComputedStyle(d).height)*0.08)>2&&!(ap.getBoundingClientRect().top>=pg.getBoundingClientRect().bottom-1&&ap.getBoundingClientRect().top-pg.getBoundingClientRect().bottom<=56*z+1)) res='Press any button is not pinned 8 percent from the bottom, nor 24px under the card';   // cw-party-att3: the page is one column with the button under the card
        else if(Math.abs(w-840*z)>3) res='the how to play card is '+w+'px wide, not 840px x '+z;
        else if(parseFloat(getComputedStyle(th).borderBottomWidth)<1) res='no line under the header row';
        return res;
