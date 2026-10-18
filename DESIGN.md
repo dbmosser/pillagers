@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.54 - PAD BUTTONS TABLE WIDE, SETTINGS FOCUS LINE, LONGER FADE
+
+Co-op hunt while he was away. Critic c-31w round 2: Pad buttons table was a 950px column in a 1820px card, the pointed Settings row hardly stood out, list bottoms sliced a line through the middle.
+
+MEASURED. Check 31.54 passes, and fails on v31.53.
 ## v31.53 - THE CAPTION OVER THE BELT IS PROMPT SIZE
 
 Co-op hunt while he was away. The critic on the raid hud (screen 36): the line over the belt, the item name with fire and use, is 12 px type and cannot be read from a couch. It now takes the label size the world prompts use. The emote strip and wind-up bars above it already take their height from the same function, so they move up with it.

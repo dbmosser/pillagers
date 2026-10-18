@@ -1,0 +1,5 @@
+## v31.54 - PAD BUTTONS TABLE WIDE, SETTINGS FOCUS LINE, LONGER FADE
+
+Co-op hunt while he was away. Critic c-31w round 2: Pad buttons table was a 950px column in a 1820px card, the pointed Settings row hardly stood out, list bottoms sliced a line through the middle.
+
+MEASURED. Check 31.54 passes, and fails on v31.53.

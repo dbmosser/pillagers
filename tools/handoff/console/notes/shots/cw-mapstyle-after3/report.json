@@ -1,4 +1,4 @@
-{"generated":"2026-10-18T19:49:27","url":"http://localhost:8808/fxdrypfm.html","recipes":"tools/handoff/console/notes/shots/cw-mapstyle-recipes.json","seconds":53,"screens":[
+{"generated":"2026-10-18T19:50:47","url":"http://localhost:8808/fxdrypfm.html","recipes":"tools/handoff/console/notes/shots/cw-mapstyle-recipes.json","seconds":13,"screens":[
 {"name":"60-mapfirst-1p","screen":"Raid opens on the sector map, keyboard prompt, eight contracts","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"60-mapfirst-1p-1080.jpg","lint":""}},
 {"name":"61-mapfirst-pad","screen":"Raid opens on the sector map, pad prompt","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"61-mapfirst-pad-1080.jpg","lint":""}},
 {"name":"62-mapfirst-2p-wait","screen":"Opening map after the press, waiting for p2","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"62-mapfirst-2p-wait-1080.jpg","lint":""}},

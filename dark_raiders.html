@@ -1977,6 +1977,10 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #pausebox #pausefb{ font:600 var(--fs-body)/26px var(--f-cond); letter-spacing:var(--track); }
 #root #pausebox #pausefb::placeholder{ color:var(--tx-1); }
 #root #pausebox:not(.asking) #abandonbtn, #root #pausebox:not(.asking) #arcendbtn, #root #pausebox:not(.asking) #charselbtn{ border-color:transparent !important; background:transparent; font-weight:600; }
+/* v31.xx (cw-pset9) critic c-31w round 2 (Pad buttons 74 at 2: "the table is a 950px column in a 1820px card, 430px of dead black each side", "the locked line is sliced in half by the footer divider"; Settings 72 at 3: "the focused row is hardly distinct, fill #1e2225 on #16191b", "the last row fades into a smudge"). Now: the Pad buttons and Keys table is 1440 wide (the two columns spread, 30 x 48), the pointed Settings row has the hover fill and a 1px accent line round it as well as the 4px bar, and both lists fade over 48px with 48px under the last row so a cut line fades out instead of being sliced. */
+#root #keysmodal #keyslist{ max-width:calc(var(--sp-5) * 30); }
+#root #setlist .row:not(.setjump):hover, #root #setlist .row:not(.setjump):focus-within, #root #setlist .row.dshow:not(.setjump), #root #setlist .row:not(.setjump):has(.padfocus){ background:var(--ui-hover); box-shadow:inset 4px 0 0 var(--acc), inset 0 0 0 1px var(--acc); }
+#root #keyslist, #root #setlist{ padding-bottom:var(--sp-5); -webkit-mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-5)), transparent); mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-5)), transparent); }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2875,7 +2879,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.53';
+var VER='31.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49511,7 +49515,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.53: The line over the weapon belt is bigger and easier to read. Check 31.53 fails on v31.52',
+  now:'v31.54: The pad buttons table spreads to 1440, the pointed Settings row has a lime outline and lighter fill, and list ends fade out over 48px. Check 31.54 fails on v31.53',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

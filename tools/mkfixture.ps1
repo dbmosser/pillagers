@@ -6101,6 +6101,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.54',what:'Pad buttons table is wide, the pointed Settings row has an accent line, lists fade over 48px',
+   run:function(){
+     var bad=[], kl, w, row, cs, mk, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       keysOpen(false); kl=document.getElementById('keyslist');
+       if(!kl) bad.push('no keys list');
+       else{
+         w=kl.getBoundingClientRect().width;
+         if(!(w>1200)) bad.push('the keys table is only '+Math.round(w)+' wide');
+         if(parseFloat(getComputedStyle(kl).paddingBottom)<47) bad.push('keys list has less than 48px under the last row: '+getComputedStyle(kl).paddingBottom);
+       }
+       try{ document.getElementById('keysmodal').classList.remove('on'); }catch(_k){}
+       openSettings('display');
+       row=document.querySelector('#setlist .row:not(.setjump)');
+       if(!row) bad.push('no settings row');
+       else{
+         row.classList.add('dshow'); cs=getComputedStyle(row);
+         if(cs.boxShadow.replace(/\s/g,'').split('inset').length<3) bad.push('the pointed row has no accent line: '+cs.boxShadow);
+         row.classList.remove('dshow');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); q=document.getElementById('keysmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.53',what:'the caption over the belt (item name, fire, use) is prompt size (label, 15.6 px), not the 13 px micro print',
    run:function(){
      if(typeof beltCapFS!=='function') return 'SKIP: no beltCapFS';

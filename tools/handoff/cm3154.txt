@@ -1,0 +1,7 @@
+v31.54: pad buttons table wide, settings focus line, longer fade
+
+The pad buttons table spreads to 1440, the pointed Settings row has a lime outline and lighter fill, and list ends fade out over 48px.
+
+Check 31.54. Fails on v31.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

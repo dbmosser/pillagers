@@ -11,4 +11,5 @@
   * ammo card: 'b / i backpack' 24px -> 16px tx-2. 02 owns (cw-cardhint).
 - RUN (latest): no ship. The uishots camera and critic.mjs are REFUSED for this run's command list, so no new pictures or scores were possible. Re-read the code: hotbar empty slots draw a class ghost (cw gunghost, his order v27.xx), so "no silhouettes" would reverse his order: skipped. Feed detail over 4 words is already dropped (cw-feedcalm). Stamina 0.45 alpha under 25 percent hp is deliberate (cw-lowhp2).
 - Remaining for a run that has the camera: re-shoot the 15 screens, critic each, fix P0/P1 not on 02's or cw-trcol's list.
-- Next run: do the toast dedupe and the hotbar empty-slot dim, then shoot 15 screens and critic each.
+- RUN (k, v31.5x): uishots and critic REFUSED again (preflight.sh and shipq work). SHIPPED v31.51 cw-codexfeed (codex note goes to feed only via feedSay, no top-lane duplicate) and v31.53 cw-beltcap (belt caption 13 -> 15.6px). Hotbar empty-slot ghosts are his order (gunghost), left alone. 'contract item nearby' sub is 5 words so the feed already drops it; the top lane shows it, his career9 wording, left. Still needs a run WITH the camera: re-shoot 15 screens + critic.
+- (older) Next run: do the toast dedupe and the hotbar empty-slot dim, then shoot 15 screens and critic each.
