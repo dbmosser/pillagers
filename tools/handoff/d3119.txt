@@ -1,0 +1,5 @@
+## v31.19 - TITLE: THE FIGHT BEHIND THE SCOREBOARD READS (BLUR 5 TO 2PX)
+
+Co-op hunt while he was away. His answers Q52 and Q54: real combat visible behind the attract pages and no frame cost at 4K. The 5px backdrop blur smeared the small fights and costs a full-screen blur of a moving canvas each frame. 2px.
+
+MEASURED. Check 31.19 passes, and fails on v31.18.

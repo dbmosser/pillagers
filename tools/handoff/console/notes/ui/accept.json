@@ -664,16 +664,16 @@
  "91-snip-panel-raid": {
   "score": 2,
   "pass": false,
-  "verdict": "The snip selection works as a tool, but the yellow frame, the tiny crowded copy/save box and the busy HUD around them lack hierarchy and polish, and the screen ignores the guide's lowercase, button and panel rules.",
+  "verdict": "The lime frame, size tag and copy/save actions are clearer than before, but the whole HUD is still at full strength, the controls cheat-sheet still collides with the frame, and the selection is still washed in blue, so it reads as a debug overlay rather than a polished snip mode.",
   "findings": [
-   "P1 copy / save action box (bottom right of the selection, ~1007-1238, 730-785): Make save the primary: lime fill #e6ff3d, ink text, 20px 700, 56px high, min-width 160px. Make copy a ghost with a 1px #4a5257 border. Use a 16px gap, 8px padding in one panel with a single 1px border, and attach it flush to the bottom-right of the frame with an 8px offset. Add a visible pad focus ring.",
-   "P1 selection frame and dim overlay (520-1239, 300-719): Dim the outside with --scrim at .6 and leave the inside untinted at 100%. Keep the 2px #e6ff3d border and add 8px square corner handles. Remove the blue fill.",
-   "P1 controls cheat-sheet (492-902, 697-867): Hide the controls list and other HUD hints while snipping. If it must stay, use 16px text with tx-2 #aaa498 at 4.5:1 or better and keep a 16px clearance from the frame.",
-   "P1 whole HUD while snipping (top-left board, run info, minimap, toasts, bottom hotbar): Fade all HUD to 25% opacity or hide it while snip mode is active. Keep only the frame, the size tag and the copy/save actions. Dedupe the toasts.",
-   "P1 capital letters and mixed styles on screen: Unify on Barlow Condensed and Barlow at 56/32/20/16/14. Check that the credit, hp and ammo text uses the same face and weight tokens."
+   "P1 controls cheat-sheet (492-902, 697-867): Hide the sheet while snip mode is active. If it must stay, move it at least 16px clear of the frame (top ≥ 735), use 16px #aaa498 text on a 24px row pitch, and add 16px padding so no row is clipped.",
+   "P1 whole HUD (pillagers board, run info, minimap, hotbar, hp/stamina, ammo block, toasts): Fade all HUD to 25% opacity while snipping. Keep only the frame, the size tag and the actions. Show one toast at most.",
+   "P1 selection interior (520-1239, 300-719): Remove the blue fill and show the inside at 100%. Dim the outside with --scrim (rgba(6,7,8,.80)). Add 8px square corner handles on the 2px lime border.",
+   "P1 copy / save action box (942-1239, 728-802): Drop the outer box and keep the two buttons only. Use 20px 700 labels, 56px high, 16px below the frame, right-aligned to it. Make save transparent with a 1px #4a5257 border. Add a 2px lime focus ring with a 2px offset.",
+   "P2 size tag '720 x 420 px' (520-630, 264-292): Use the panel component: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px f-cond 600 text. Sit it flush on the frame's top-left edge. Use '×'."
   ],
-  "pic": "tools/handoff/console/notes/shots/cw-snip-after/91-snip-panel-raid-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/cw-snip2-after/91-snip-panel-raid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T21:50"
+  "when": "2026-10-18T22:02"
  }
 }

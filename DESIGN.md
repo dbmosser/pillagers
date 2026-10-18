@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.19 - TITLE: THE FIGHT BEHIND THE SCOREBOARD READS (BLUR 5 TO 2PX)
+
+Co-op hunt while he was away. His answers Q52 and Q54: real combat visible behind the attract pages and no frame cost at 4K. The 5px backdrop blur smeared the small fights and costs a full-screen blur of a moving canvas each frame. 2px.
+
+MEASURED. Check 31.19 passes, and fails on v31.18.
 ## v31.18 - the snip panel reads at a glance: bigger copy and save buttons, a larger size tag, a darker dim
 
 Co-op hunt while he was away. The critic scored the F8 snip panel picture 2 (notes/shots/cw-snip-after/91). The findings on the snip own elements: the two buttons were small and looked alike, the size tag was 13px and hugged the frame, and the dim outside the frame was too light to frame the choice. Only those three change; no new control and no new key. Copy is the shared primary button (lime) and save the shared secondary beside it, both 48px high and 128px wide with 16px between, the size tag is 16px and sits 8px clear above the frame (measured, so it never leaves the screen), the dim is .6. Findings about the HUD were skipped on purpose: he wants to snip the HUD as it is.

@@ -1,0 +1,7 @@
+v31.19: title: the fight behind the scoreboard reads (blur 5 to 2px)
+
+The fight behind the scoreboard and how-to reads clearly.
+
+Check 31.19. Fails on v31.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

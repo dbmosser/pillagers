@@ -6101,6 +6101,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.19',what:'cw-title-sharp, his Q52/Q54: the glass behind the scoreboard and how-to blurs 2px so the live fight reads and the 4K frame stays cheap',
+   run:function(){
+     var blur='', rr, i, j;
+     try{ for(i=0;i<document.styleSheets.length;i++){ rr=document.styleSheets[i].cssRules; for(j=0;j<rr.length;j++){ if(rr[j].selectorText==='body #attract'&&rr[j].style.backdropFilter) blur=rr[j].style.backdropFilter; } } }catch(e){}
+     if(blur.indexOf('blur(2px)')<0) return 'the attract blur is '+blur;
+     return null; }},
   {v:'31.18',what:'cw-snip2, the F8 snip panel reads at a glance: copy is the shared primary button (lime fill) and save the shared secondary beside it, both at least 48 px high and 128 px wide with 16 px between them, the size tag is 16 px and sits clear above the frame without leaving the screen, and the dim outside the frame is .6',
    run:function(){
      if(typeof DEV_LOCAL==='undefined'||!DEV_LOCAL) return 'SKIP: not a local build, the snip tool is never here';
