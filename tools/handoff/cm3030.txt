@@ -1,0 +1,7 @@
+v30.30: pause card loses the plain hint
+
+The pause card no longer has a plain Esc Resume line.
+
+Check 30.30. Fails on v30.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

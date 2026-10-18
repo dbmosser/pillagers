@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.30 - PAUSE CARD LOSES THE PLAIN HINT
+
+Co-op hunt while he was away. Critic 49 (3 of 5): the unstyled Esc Resume text under the pause buttons. The header X already closes the card, so the hint goes and the card is shorter.
+
+MEASURED. Check 30.30 passes, and fails on v30.29.
 ## v30.29 - TV-size text in the demo
 
 Co-op hunt while he was away. His answer Q21 (10-18): TV-size text is on by default in the demo. The party runs on two TVs 6 to 10 feet away. The demo sandbox starts at HUD size 150 percent; his own size comes back on leaving.

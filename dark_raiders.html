@@ -1774,7 +1774,8 @@ body:not(.padon) #root #pausebox::before{ width:min(calc(var(--menu-w) + var(--s
     var(--ui-grain) 0 0/128px 128px repeat, var(--ui-bg); background-origin:border-box; }
 body #attract .arcpage::before, body #attract .arcover::before{ width:calc(var(--sp-1) * 4.5 * var(--attz,1)); }
 #root #pausebox #abandonbtn, #root #pausebox #arcendbtn, #root #pausebox #charselbtn{ margin-top:var(--sp-4); }
-body.padon #root #pausebox::after, #root #pausebox.asking::after{ display:none; }
+/* v30.xx (cw-pausehint) critic 49 (pause card, 3 of 5): "the unstyled Esc Resume hint ... or delete the hint, since the X already shows close, and cut the card height". One control per job: the header X closes the card (Esc still works), so the plain text hint is gone and the card is shorter */
+#root #pausebox::after, body.padon #root #pausebox::after, #root #pausebox.asking::after{ display:none !important; }
 #root #pausebox #abandonbtn, #root #pausebox #arcendbtn, #root #pausebox #charselbtn{ color:var(--danger) !important; border-color:var(--danger) !important; }
 /* v28.xx (cw-keysclean) critic c-31 round 3 (Keys window 32 at 2): "16 duplicate Rebind buttons ... 32 near-identical boxes ... merge them: make the key cap itself the button", the section heads in amber (amber is for focus), and 15px labels under the 16px floor. Now: the key cap is the one control (it already waits for a press, and a second press cancels), the Rebind box is gone, section heads are tx-2 at --fs-label, action names --fs-body, caps wider */
 #root #keyslist .rebind{ display:none; }
@@ -2789,7 +2790,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.29';
+var VER='30.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47997,7 +47998,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.29: The demo starts with bigger text for the TVs. Check 30.29 fails on v30.28',
+  now:'v30.30: The pause card no longer has a plain Esc Resume line. Check 30.30 fails on v30.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -6097,6 +6097,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.30',what:'the pause card has no plain Esc Resume hint under the buttons, the header X is the one way shown to close (critic 49)',
+   run:function(){
+     var pb=document.getElementById('pausebox'), padWas=document.body.classList.contains('padon'), cs, c;
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!__state()||__state().over) return 'SKIP: no live raid';
+       togglePauseBox(true); pauseFrameFit();
+       if(!pb||!pb.offsetHeight) return 'SKIP: the pause card did not open';
+       if(!document.getElementById('pausex')||!document.getElementById('pausex').offsetWidth) return 'the pause card lost its header X';
+       cs=getComputedStyle(pb,'::after'); c=cs.content||'';
+       if(cs.display!=='none'&&/Esc/.test(c)) return 'the pause card still draws the plain hint '+c+' ('+cs.display+')';
+       return null;
+     } finally { try{ togglePauseBox(false); }catch(_t){} document.body.classList.toggle('padon',padWas); }
+   }},
   {v:'30.29',what:'the demo starts with TV-size text (HUD size 150 percent) and leaving puts his own size back (his Q21)',
    run:function(){
      if(window.storage&&window.storage.set) return 'SKIP: this host saves through window.storage, not localStorage';

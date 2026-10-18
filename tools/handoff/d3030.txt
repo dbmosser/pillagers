@@ -1,0 +1,5 @@
+## v30.30 - PAUSE CARD LOSES THE PLAIN HINT
+
+Co-op hunt while he was away. Critic 49 (3 of 5): the unstyled Esc Resume text under the pause buttons. The header X already closes the card, so the hint goes and the card is shorter.
+
+MEASURED. Check 30.30 passes, and fails on v30.29.
