@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.12 - Arcade controls card: a title, clear of the feed and the F1 hint
+
+Co-op hunt while he was away. Critic on 47 (2 of 5): the F1 controls hint and a feed line showed through the edge of the card, and the card had no header. The card has a How to play title, sits above the feed, and the hint is not drawn under it.
+
+MEASURED. Check 30.12 passes, and fails on v30.11.
 ## v30.11 - THE WELCOME PACK HAS ONE FRAME AND A LEFT TITLE
 
 Co-op hunt while he was away. The critic on the centred welcome pack (2 of 5, better than before): a double frame, a centred title over left content, buttons under the 56px floor and 13px hints. The list border goes, the title is left at 32px, names are 20px and hints 16px, buttons 56px high and 200px wide.

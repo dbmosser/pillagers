@@ -1,0 +1,7 @@
+v30.12: arcade controls card: a title, clear of the feed and the f1 hint
+
+The controls card at the arcade drop has a title and nothing behind it.
+
+Check 30.12. Fails on v30.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

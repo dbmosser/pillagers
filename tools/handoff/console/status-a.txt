@@ -1,1 +1,1 @@
-10-18 08:58 running 13-ui-end-cards (cap $4.00; spent today $95.18 of $176.54)
+10-18 09:00 13-ui-end-cards: partial (run 2 of 5), $0.0475

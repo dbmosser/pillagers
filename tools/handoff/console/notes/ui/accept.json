@@ -10,10 +10,10 @@
  "02-welcome-pack": {
   "score": 2,
   "pass": false,
-  "verdict": "The welcome pack is now a centred card on a dimmed backdrop (image 2), but it is still a text-heavy list with a long explaining paragraph, small type, a centred title against left-aligned content, and no close X or pad focus cue.",
-  "pic": "tools/handoff/console/notes/shots/b-31-e3/02-welcome-pack-1080.jpg",
+  "verdict": "The e4 centred card is a real step toward the guide, but it still has an explaining paragraph, rarity-coloured names, a heavy 'Take the pack' button and a bare close button with no X; the e1 full-screen slab is the exact pattern the guide deletes.",
+  "pic": "tools/handoff/console/notes/shots/b-31-e4/02-welcome-pack-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T12:50"
+  "when": "2026-10-18T13:00"
  },
  "03-hub-floor": {
   "score": 2,

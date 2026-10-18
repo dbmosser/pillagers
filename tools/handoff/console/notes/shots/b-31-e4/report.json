@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T08:59:51","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":16,"screens":[
+{"name":"02-welcome-pack","screen":"WELCOME PACK modal (first run)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"02-welcome-pack-1080.jpg","lint":""}}
+]}

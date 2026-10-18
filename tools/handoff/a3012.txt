@@ -1,0 +1,1 @@
+| Arcade controls card: a title, clear of the feed and the F1 hint | v30.12 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.12 passes, fails on v30.11 |

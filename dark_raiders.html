@@ -2767,7 +2767,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.11';
+var VER='30.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -42296,7 +42296,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     var _hy=(FEEDBOX.on?FEEDBOX.y-LH(6):(HUDBOX.body?HUDBOX.body.y-LH(6):H-14));   // v27.26 (feedleg): the hint stands over the feed, not on its last line
     // v19.93, from the code review of 2026-10-08: no pad button sends H, so on a controller this hint (and H  hide below) named a key
     // the pad player cannot press, as H  full list did before v19.68. On a pad they are left out.
-    if(!(PAD&&PAD.on)) ctx.fillText(legendKeys('F1')+'  controls',14,_hy);   // v25.xx (keyswap): F1
+    if(!(PAD&&PAD.on)&&!(typeof arcadeCardOn==='function'&&arcadeCardOn()>0)) ctx.fillText(legendKeys('F1')+'  controls',14,_hy);   // v25.xx (keyswap): F1; v30.xx (cw-partyhud2): not while the arcade controls card is up (it showed through the card)
     return;
   }
   // COMPACT, the default since v2.94. Two columns, twelve bindings, micro type,
@@ -47934,7 +47934,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.11: The welcome pack has one frame, a left title and bigger buttons. Check 30.11 fails on v30.10',
+  now:'v30.12: The controls card at the arcade drop has a title and nothing behind it. Check 30.12 fails on v30.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56739,25 +56739,26 @@ function arcadeCardOn(){
 // v30.xx (cw-partyhud), the critic on the arcade drop (47 48 = 2): "an amber headed table that buries the playfield, amber row names, a two pixel amber box". The card is the how to play page on the HUD: Panel P with the accent bar, light action names, key caps (1px line, 4px radius) for every key, the extract ring as a teal ring glyph, a 1px line under every row.
 function arcadeChip(c,x,y,w,h){ var r=UIT.rad; c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
 function arcadeCardHud(){
-  var a=arcadeCardOn(), rows, i, j, k, w=[0,0,0], x, y, lh, pd, gp, hh, ch, cp, pw, ph, cx, ry, c, tw, px;
+  var a=arcadeCardOn(), rows, i, j, k, w=[0,0,0], x, y, lh, pd, gp, hh, tt, ch, cp, pw, ph, cx, ry, c, tw, px, y0;
   if(!(a>0)||!ctx) return;
   rows=arcadeCardRows();
-  ch=LH(24); cp=LH(8); gp=LH(24); lh=LH(30); pd=LH(18); hh=LH(26);
+  ch=LH(24); cp=LH(8); gp=LH(24); lh=LH(30); pd=LH(18); hh=LH(26); tt=LH(34);
   function cell(s){ s=String(s); return {p:s.replace(/ IN A TEAL RING$/i,'').split(' / '), ring:/ IN A TEAL RING$/i.test(s)}; }
   function cwid(s){ var q=cell(s), t=0, n; for(n=0;n<q.p.length;n++) t+=ctx.measureText(q.p[n]).width+cp*3; if(q.ring) t+=LH(20); return t; }
   ctx.save(); ctx.globalAlpha=a; ctx.textAlign='left'; ctx.textBaseline='middle';
   ctx.font=FS(TYPE.head); for(i=0;i<rows.length;i++) w[0]=Math.max(w[0],ctx.measureText(rows[i][0]).width);
   ctx.font=FS(TYPE.label); w[1]=ctx.measureText('KEYBOARD').width; w[2]=ctx.measureText('CONTROLLER').width;
   for(i=0;i<rows.length;i++) for(j=1;j<3;j++) w[j]=Math.max(w[j],cwid(rows[i][j]));
-  pw=Math.round(pd*2+w[0]+w[1]+w[2]+gp*2); ph=Math.round(pd*2+hh+lh*rows.length);
-  x=LH(24); y=Math.round(H*0.5-ph/2);
+  pw=Math.round(pd*2+w[0]+w[1]+w[2]+gp*2); ph=Math.round(pd*2+tt+hh+lh*rows.length);
+  x=LH(24); y=Math.round(Math.min(H*0.5-ph/2,H*0.68-ph));   // v30.xx (cw-partyhud2): centred, but never down over the feed
   uiPanel(ctx,x,y,pw,ph,UIC.acc);
-  cx=[x+pd,x+pd+w[0]+gp,x+pd+w[0]+gp+w[1]+gp];
+  cx=[x+pd,x+pd+w[0]+gp,x+pd+w[0]+gp+w[1]+gp]; y0=y+pd+tt;
+  ctx.font=FS(TYPE.title); ctx.fillStyle=UIC.tx_1; ctx.fillText('HOW TO PLAY',Math.round(cx[0]),Math.round(y+pd+tt*0.5));
   ctx.font=FS(TYPE.label); ctx.fillStyle=UIC.tx_2;
-  ctx.fillText('KEYBOARD',Math.round(cx[1]),Math.round(y+pd+hh*0.5)); ctx.fillText('CONTROLLER',Math.round(cx[2]),Math.round(y+pd+hh*0.5));
-  ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(Math.round(x+pd),Math.round(y+pd+hh-1),pw-pd*2,1);
+  ctx.fillText('KEYBOARD',Math.round(cx[1]),Math.round(y0+hh*0.5)); ctx.fillText('CONTROLLER',Math.round(cx[2]),Math.round(y0+hh*0.5));
+  ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(Math.round(x+pd),Math.round(y0+hh-1),pw-pd*2,1);
   for(i=0;i<rows.length;i++){
-    ry=Math.round(y+pd+hh+lh*i+lh*0.5);
+    ry=Math.round(y0+hh+lh*i+lh*0.5);
     ctx.font=FS(TYPE.head); ctx.fillStyle=UIC.tx_1; ctx.fillText(rows[i][0],Math.round(cx[0]),ry);
     for(j=1;j<3;j++){
       c=cell(rows[i][j]); px=cx[j]; ctx.font=FS(TYPE.label);
@@ -56768,7 +56769,7 @@ function arcadeCardHud(){
       }
       if(c.ring){ ctx.beginPath(); ctx.arc(Math.round(px+LH(5)),ry,LH(8),0,6.2832); ctx.lineWidth=3; ctx.strokeStyle=UIC.extract; ctx.stroke(); }
     }
-    if(i<rows.length-1){ ctx.fillStyle=UIC.ui_line; ctx.fillRect(Math.round(cx[0]),Math.round(y+pd+hh+lh*(i+1)-1),pw-pd*2,1); }
+    if(i<rows.length-1){ ctx.fillStyle=UIC.ui_line; ctx.fillRect(Math.round(cx[0]),Math.round(y0+hh+lh*(i+1)-1),pw-pd*2,1); }
   }
   ctx.restore();
 }

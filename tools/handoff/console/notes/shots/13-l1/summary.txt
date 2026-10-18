@@ -1,0 +1,5 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  35-kia-card                            staged      11.6s  
+  38-extracted-card                      staged      10.8s  
+  40-whats-new-card                      staged      13.6s    | runs 1 wnseen 0
+  60-abandoned-card                      staged      18.4s  

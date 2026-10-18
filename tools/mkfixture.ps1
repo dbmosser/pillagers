@@ -6097,6 +6097,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.12',what:'the arcade controls card has a How to play title, ends above the feed (under 69 percent of the screen height) and the F1 controls hint is not drawn under it (critic on 47: the hint and a feed line showed through the card edge)',
+   run:function(){
+     if(typeof arcadeCardHud!=='function'||typeof arcadeCardOn!=='function'||typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||!ARCADE||!window.__frame||!window.__state) return 'SKIP: no arcade raid here';
+     var proto=CanvasRenderingContext2D.prototype, oft=proto.fillText, orr=proto.roundRect, oOn=arcadeCardOn, texts=[], panel=null, bad=null, g;
+     try{
+       __topClear(); __runPrep();
+       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); if(!g||!g.arcade) return 'SKIP: the drop is not an arcade raid';
+       g.legendOn=0;
+       arcadeCardOn=function(){ return 1; };
+       proto.fillText=function(t){ texts.push(String(t)); return oft.apply(this,arguments); };
+       if(orr) proto.roundRect=function(x,y,w,h){ if(!panel&&h>H*0.35) panel={y:y,h:h}; return orr.apply(this,arguments); };
+       __frame(0.001);
+       if(!texts.some(function(t){ return /^how to play$/i.test(t); })) bad='the controls card has no How to play title';
+       else if(texts.some(function(t){ return /F1/.test(t)&&/controls\s*$/i.test(t); })) bad='the F1 controls hint is still drawn under the card';
+       else if(panel&&panel.y+panel.h>H*0.69+4) bad='the card ends at '+Math.round(panel.y+panel.h)+', below 69 percent of the height '+Math.round(H);
+       return bad;
+     } finally {
+       proto.fillText=oft; if(orr) proto.roundRect=orr; arcadeCardOn=oOn;
+       try{ if(ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       try{ __topClear(); }catch(_c){}
+     }
+   }},
   {v:'30.11',what:'the welcome pack has one frame (no border round the list), a left 32px title, 56px buttons and 16px hints (the critic: double frame, centred title, 15px buttons)',
    run:function(){
      var el=null, lb=null, h3=null, bt=null, hn=null, q, bad=[];
