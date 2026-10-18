@@ -1,0 +1,7 @@
+v29.33: the title and mode menu use the shared ui look
+
+The title screen and mode menu now share one set of sizes, spacing and colors.
+
+Check 29.33. Fails on v29.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

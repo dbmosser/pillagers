@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.33 - The title and mode menu use the shared UI look
+
+Co-op hunt while he was away. His order 2026-10-18 (UI step 2): ONE shared look in the code. The style guide is now tokens at :root (five type sizes 56/32/20/16/14, an 8px space grid, one 4px radius, button heights), the same table in the script (UIT, uiFont, uiPanel), and one style block (ui-shared) that reads only those tokens. The title and mode menu (screens 01 and 57) are the first screens on it: mode rows 48px at 20px type, the one primary 56px, ghost rows on the panel fill with a 1px line, all text 16px or more, cards on Panel P.
+
+MEASURED. Check 29.33 passes, and fails on v29.32.
 ## v29.32 - THE TITLE SAYS CREATE A NEW SAVE, NOT CREATE A NEW SAVE WITH A CAPITAL A
 
 Co-op hunt while he was away. UI step 30, menu map. The no-all-caps door lowers words of 3 or more letters and left the one-letter A alone, so the title button read Create A new save. An A between a word and a caps word now lowers with the line. A sector letter at the end of a line is untouched.
