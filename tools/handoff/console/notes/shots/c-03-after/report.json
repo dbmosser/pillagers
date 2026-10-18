@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T10:39:43","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":18,"screens":[
+{"name":"25-raid-pause-box","screen":"RAID PAUSED box (normal mode) with feedback box and buttons","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"25-raid-pause-box-1080.jpg","lint":""}}
+]}
