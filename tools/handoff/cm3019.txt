@@ -1,0 +1,7 @@
+v30.19: settings pane skips rows under the tab strip
+
+Settings detail names the first row below the tab strip.
+
+Check 30.19. Fails on v30.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

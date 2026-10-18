@@ -6097,6 +6097,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.19',what:'after a tab chip jump the Settings detail pane names the first row below the sticky tab strip, not a row hidden under it',
+   run:function(){
+     var bad=[], sl, d, k, rows, i, a, c, m, t, bar, vis=null, nm='', chip, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       openSettings();
+       sl=document.getElementById('setlist'); d=document.getElementById('setdetail');
+       chip=document.querySelector('.setjump button[data-sec="DISPLAY"]');
+       if(!sl||!d||!chip){ bad.push('no list, pane or Display chip'); }
+       else{
+         chip.click();
+         if(typeof window.__setDetailSync==='function') window.__setDetailSync();
+         a=sl.getBoundingClientRect(); bar=sl.querySelector('.setjump'); t=a.top+(bar?bar.getBoundingClientRect().height:0); rows=sl.querySelectorAll('.row');
+         for(i=0;i<rows.length;i++){ c=rows[i].getBoundingClientRect(); m=(c.top+c.bottom)/2; if(m>=t&&m<=a.bottom&&rows[i].querySelector('div > b')&&!/opacity:\s*\.7/.test(rows[i].getAttribute('style')||'')){ vis=rows[i]; break; } }
+         k=d.querySelector('.sdk'); nm=k?k.textContent:'';
+         if(sl.scrollTop<5) bad.push('the list did not scroll');
+         else if(!vis) bad.push('no row in view');
+         else if(nm!==vis.querySelector('div > b').textContent) bad.push('the pane names "'+nm+'" but the first row below the strip is "'+vis.querySelector('div > b').textContent+'"');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.18',what:'the attract backdrop blurs the world by 8px (the 8px spacing token) and the scrim at the centre lets the world through (critic on v30.14: the blur was so heavy and dark that the world was mush; screens 46 52 55 56 64)',
    run:function(){
      if(typeof attEl!=='function') return 'SKIP: no attract here';

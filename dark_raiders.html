@@ -2778,7 +2778,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.18';
+var VER='30.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47945,7 +47945,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.18: The party pages show a clearer, brighter backdrop. Check 30.18 fails on v30.17',
+  now:'v30.19: Settings detail names the first row below the tab strip. Check 30.19 fails on v30.18',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62127,7 +62127,7 @@ document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
   function real(r){ return r&&r.querySelector&&r.querySelector('div > b')&&!/opacity:\s*\.7/.test(r.getAttribute('style')||''); }
   function rowOf(t){ var r=(t&&t.closest)?t.closest('.row'):null; return (r&&sl.contains(r))?r:null; }
   // v28.xx (cw-setvis) critic c-31 (Settings 72 at 2, P0): "the detail pane names a row that is not on screen (Edit the words) and no row is visibly focused". The pane and the focus look now name the first row IN VIEW when nothing is pointed at, and follow the list as it scrolls or jumps to a tab.
-  function vis(x){ var a=sl.getBoundingClientRect(), c=x.getBoundingClientRect(), m=(c.top+c.bottom)/2; return !a.height||(m>=a.top&&m<=a.bottom); }
+  function vis(x){ var a=sl.getBoundingClientRect(), c=x.getBoundingClientRect(), m=(c.top+c.bottom)/2, bar=sl.querySelector('.setjump'), t=a.top+(bar?bar.getBoundingClientRect().height:0); return !a.height||(m>=t&&m<=a.bottom); }   // v28.xx (cw-setvis2) the sticky tab strip covers the top of the list: a row under it is not in view (after the Display tab the pane named the Controller row above it)
   function sync(){
     pend=0;
     var pf=sl.querySelector('.padfocus'), r=pf?rowOf(pf):null, q, i;

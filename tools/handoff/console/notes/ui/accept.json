@@ -320,20 +320,20 @@
   "when": "2026-10-18T12:56"
  },
  "63-arcade-operator-new-party-armed": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A clean, sparse dark card that follows the panel tokens, but it is a stack of identical full-width bars with tiny text, no close X, no pad glyphs, and a 'Confirm' state that is only marked by red; it reads as a generic template.",
-  "pic": "tools/handoff/console/notes/shots/12-d2/63-arcade-operator-new-party-armed-1080.jpg",
+  "verdict": "A clean, consistent dark card that follows the guide's panel, close button and sentence case, but the armed danger state is the only loud thing and the footer hint and helper text are tiny and weak, so it reads as a competent template rather than something with identity.",
+  "pic": "tools/handoff/console/notes/shots/12-g9/63-arcade-operator-new-party-armed-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:36"
+  "when": "2026-10-18T13:23"
  },
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, sentence-case end card that follows the guide's panel, accent tab and tone, but the 'Score 0 SP' hero is under-sized, the title is dimmer than the hero, and the dead-end 'Press any button' footer has no real primary action or close affordance.",
-  "pic": "tools/handoff/console/notes/shots/12-g7/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "The card is clean, sentence case and in the right palette, but it is a bare 0-score readout with undersized type, a weak 'Press any button' action and no end-card shell elements, so it feels like a placeholder rather than a polished end card.",
+  "pic": "tools/handoff/console/notes/shots/12-g9/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:58"
+  "when": "2026-10-18T13:23"
  },
  "60-abandoned-card": {
   "score": 3,
@@ -360,12 +360,12 @@
   "when": "2026-10-18T12:47"
  },
  "56-arcade-attract-board-scored": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "A clean, on-guide dark card with sentence case, an accent tab and a single amber primary, but it is an empty-state leaderboard with five dead placeholder rows, a button that does nothing visible, and unreadably dim text.",
-  "pic": "tools/handoff/console/notes/shots/12-g4/56-arcade-attract-board-scored-1080.jpg",
+  "verdict": "A tidy dark card that follows the panel tokens, but it is an empty five-row placeholder with weak hierarchy, dim text, a stray 'Pillagers' title and a wasted blurred backdrop, so it doesn't feel finished.",
+  "pic": "tools/handoff/console/notes/shots/12-g9/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:26"
+  "when": "2026-10-18T13:23"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,
