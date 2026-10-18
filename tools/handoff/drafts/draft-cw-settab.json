@@ -1,0 +1,12 @@
+{
+    "title":  "SETTINGS FIRST TAB IS GAME, NOT DISPLAY",
+    "why":  "Menu map c-30: the first Settings tab was called Display but holds every section, with a Display section inside it. Renamed Game. No setting moved or removed.",
+    "now":  "The first tab in Settings now reads Game. The Display section inside it keeps its name.",
+    "edits":  [
+                  {
+                      "anchor":  "var T=[[\u0027display\u0027,\u0027DISPLAY\u0027],[\u0027rec\u0027,\u0027SEND PLAY DATA\u0027]];",
+                      "replacement":  "var T=[[\u0027display\u0027,\u0027GAME\u0027],[\u0027rec\u0027,\u0027SEND PLAY DATA\u0027]];   // v28.xx (cw-settab), c-30 menu map: the first Settings tab was called DISPLAY but holds every section (the raid, audio, controls, controller, display, accessibility), so Display sat inside Display. It is the game tab now; the Display section keeps its name."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the first Settings tab is not called Display (it holds every section, Display is one of them)\u0027,\n   run:function(){\n     if(typeof openSettings!==\u0027function\u0027||typeof openModal!==\u0027function\u0027) return \u0027SKIP: no settings here\u0027;\n     var bad=[], m=document.getElementById(\u0027settingsmodal\u0027), was, tb, t;\n     if(!m) return \u0027SKIP: no settings window\u0027;\n     was=m.classList.contains(\u0027on\u0027);\n     try{\n       __topClear(); openSettings(\u0027display\u0027);\n       tb=document.getElementById(\u0027settabs\u0027);\n       if(!tb||!tb.children.length) return \u0027no Settings tabs\u0027;\n       t=String(tb.children[0].textContent).trim().toLowerCase();\n       if(t===\u0027display\u0027) bad.push(\u0027the first Settings tab is still called Display\u0027);\n       if(t!==\u0027game\u0027) bad.push(\u0027the first Settings tab reads \u0027+t+\u0027, not game\u0027);\n       if(tb.children.length\u003c2||String(tb.children[1].textContent).trim().toLowerCase()!==\u0027send play data\u0027) bad.push(\u0027the Send play data tab moved\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ __topClear(); }catch(_c){} if(was) try{ openModal(\u0027settingsmodal\u0027); }catch(_o){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

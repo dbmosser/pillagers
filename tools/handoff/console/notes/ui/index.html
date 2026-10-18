@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Pillagers UI look book</title>
+<style>
+body{margin:0;background:#0b0c0d;color:#efe9dc;font:18px/1.45 "Segoe UI",system-ui,sans-serif}
+header{padding:32px 5% 8px}
+h1{font-size:40px;margin:0 0 8px}
+h2{font-size:30px;margin:48px 5% 8px;border-bottom:1px solid #2e3337;padding-bottom:8px}
+p.lead{color:#aaa498;margin:0 0 8px;max-width:900px}
+nav{padding:0 5%;color:#aaa498}
+nav a{color:#f5b73b;margin-right:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(680px,1fr));gap:24px;padding:16px 5%}
+figure{margin:0;background:#16191b;border:1px solid #4a5257;border-radius:4px;padding:16px}
+figure img{width:100%;display:block;border:1px solid #2e3337}
+figcaption{margin-top:12px}
+.nm{font-weight:700;font-size:20px}
+.sc{display:inline-block;min-width:34px;text-align:center;padding:2px 8px;border-radius:4px;margin-left:8px;font-weight:700;color:#1a1205}
+.s1{background:#e5482f}.s2{background:#f5b73b}.s3{background:#d9d66b}.s4,.s5{background:#76b97c}.sn{background:#4a5257;color:#efe9dc}
+.sent{color:#aaa498;margin-top:4px}
+#changes{padding:0 5% 64px;color:#aaa498}
+</style></head><body>
+<header><h1>Pillagers UI look book</h1>
+<p class="lead">All 78 screens shot at 1080p on 2026-10-18, scored 1 to 5 by the critic (4 or more is done). Worst first in each group. Click a picture for full size. Rules and tokens: style-guide.md. Details per screen: look-book.md.</p>
+<p class="lead">Nearly every screen scored 2. The causes are shared: tiny text, a different panel and close button on each screen, explaining sentences, no visible pad focus. Fix the shared pieces once and most screens move up together.</p></header>
+<nav id="nav"></nav>
+<div id="root"></div>
+<h2 id="changes-h">Changes</h2>
+<div id="changes"><p>Nothing yet. Later tasks add one line each with before and after pictures.</p></div>
+<script>
+var G=['Party demo','Raid','End cards','Pause and settings','Undercroft'];
+// [file, group, score or null, name, one plain sentence]
+var E=[
+['01-title-mode-menu',0,2,'Title','One centred column of lore, cards and seven mixed-height buttons, no hero.'],
+['57-title-2p-coop-picked',0,2,'Title, 2 player picked','Same as the title plus a tiny orange paragraph and an error banner.'],
+['58-coop-player2-window-title',0,2,'Player 2 window title','Nine stacked bands in three widths, no focus ring on the main button.'],
+['44-title-from-character-select',0,null,'Title from character select','Not scored; shares the title shell.'],
+['02-welcome-pack',0,2,'Welcome pack','A full-screen slab with seven rows hugging the left and the buttons 1600px apart.'],
+['06-terms',0,2,'Terms','Every Sign button looks the same and there is no signed state.'],
+['07-party-coop',0,2,'Party co-op','Two paragraphs outweigh the Host and Join buttons, which are misaligned.'],
+['45-arcade-attract-board',0,2,'Arcade attract board','A black void with a mostly empty scoreboard and a dim prompt.'],
+['46-arcade-attract-how-to-play',0,2,'Arcade how to play','The prompt is bigger than the panel heading and keys are bare letters.'],
+['47-arcade-drop-controls-card',0,null,'Arcade drop controls card','Not scored; shares the arcade panel.'],
+['48-arcade-hud-move-to-start',0,null,'Arcade HUD, move to start','Not scored; shares the arcade HUD.'],
+['49-arcade-pause-box',0,null,'Arcade pause','Not scored; shares the pause box.'],
+['50-arcade-hud-live',0,2,'Arcade HUD live','Each corner uses a different type size and panel style.'],
+['51-arcade-alert-reinforcements',0,null,'Arcade alert','Not scored; shares the arcade HUD.'],
+['52-arcade-run-over',0,2,'Arcade run over','Bare text on black, and the game title outshouts the result.'],
+['53-arcade-extracted-bonus-initials',0,null,'Arcade extracted, initials','Not scored; shares the run over screen.'],
+['54-arcade-initials-redrop',0,null,'Arcade initials, redrop','Not scored.'],
+['55-arcade-run-over-scored',0,null,'Arcade run over, scored','Not scored; shares the run over screen.'],
+['56-arcade-attract-board-scored',0,null,'Arcade board, scored','Not scored; shares the attract board.'],
+['62-arcade-operator-menu',0,2,'Arcade operator menu','A small modal that fights the attract screen still visible behind it.'],
+['63-arcade-operator-new-party-armed',0,2,'Operator, new party armed','Same small modal as the operator menu.'],
+['64-arcade-board-seeded-night',0,null,'Arcade board, seeded night','Not scored; shares the attract board.'],
+['19-raid-hud-drop-first-raid',1,2,'Raid HUD, first drop','A permanent controls list and cramped contract text crowd the screen.'],
+['20-raid-hud-drop',1,null,'Raid HUD, drop','Not scored; shares the raid HUD.'],
+['21-raid-hud-calm',1,2,'Raid HUD, calm','The minimap label is clipped and five panel styles disagree.'],
+['22-raid-map-open',1,2,'Raid map','Labels overlap icons and zone names are hard to read.'],
+['23-raid-backpack-open',1,2,'Raid backpack','A very wide panel with three slots hugging the left and tiny stats.'],
+['24-raid-controls-full-H',1,null,'Raid controls sheet','Not scored; the full controls list.'],
+['33-raid-fight-alerts',1,2,'Raid fight alerts','The same alert appears three times and the minimap is clipped.'],
+['34-raid-downed-pickups',1,null,'Raid downed, pickups','Not scored; shares the raid HUD.'],
+['36-raid-low-health',1,null,'Raid low health','Not scored; shares the raid HUD.'],
+['37-raid-extracting-countdown',1,2,'Raid extracting','Three separate extraction strings float on the map.'],
+['59-raid-abandon-confirm',1,2,'Abandon confirm','The confirm sits under five rows of key chips instead of being its own dialog.'],
+['61-raid-wheel-open',1,2,'Raid wheel','The controls list overlaps the lower segments and labels touch the ring.'],
+['78-raid-pause-box-full-kit',1,null,'Raid pause, full kit','Not scored; shares the pause box.'],
+['35-kia-card',2,2,'KIA card','Six stacked centred text bands at the same small size.'],
+['38-extracted-card',2,2,'Extracted card','The haul total is smaller than the stats block, and three button styles.'],
+['60-abandoned-card',2,null,'Abandoned card','Not scored; shares the end card shell.'],
+['76-haul-reveal-mid',2,null,'Haul reveal, mid','Not scored; shares the Extracted card.'],
+['77-haul-reveal-done',2,2,'Haul reveal, done','Stats block is tiny and achievements are an orange sentence.'],
+['40-whats-new-card',2,2,'What is new card','A full-width flat slab that clips the station labels behind it.'],
+['39-hub-after-raid',2,null,'Hub after raid','Not scored; shares the hub.'],
+['25-raid-pause-box',3,2,'Raid pause','A wall of key binds is the biggest thing on the screen.'],
+['42-hub-pause-box',3,null,'Hub pause','Not scored; shares the pause box.'],
+['18-settings-hub',3,2,'Settings hub','Two stacked nav systems, rows 1300px wide, no focus state.'],
+['26-settings-from-pause-top',3,2,'Settings from pause','Same shell as the settings hub.'],
+['27-settings-scroll-600',3,null,'Settings, scrolled 600','Not scored; shares the settings shell.'],
+['28-settings-scroll-1200',3,null,'Settings, scrolled 1200','Not scored; shares the settings shell.'],
+['29-settings-scroll-1800',3,null,'Settings, scrolled 1800','Not scored; shares the settings shell.'],
+['30-settings-scroll-2400',3,null,'Settings, scrolled 2400','Not scored; shares the settings shell.'],
+['31-settings-send-play-data',3,null,'Settings, send play data','Not scored; shares the settings shell.'],
+['32-keys-window',3,2,'Keys window','Twenty-eight identical Rebind buttons and two intro sentences.'],
+['68-settings-sec-the-raid',3,null,'Settings: the raid','Not scored; shares the settings shell.'],
+['69-settings-sec-audio',3,null,'Settings: audio','Not scored; shares the settings shell.'],
+['70-settings-sec-controls',3,null,'Settings: controls','Not scored; shares the settings shell.'],
+['71-settings-sec-controller',3,null,'Settings: controller','Not scored; shares the settings shell.'],
+['72-settings-sec-display',3,null,'Settings: display','Not scored; shares the settings shell.'],
+['73-settings-sec-accessibility',3,null,'Settings: accessibility','Not scored; shares the settings shell.'],
+['74-settings-change-pad-buttons',3,null,'Settings: change pad buttons','Not scored; shares the settings shell.'],
+['75-settings-pad-rebind-waiting',3,null,'Settings: pad rebind waiting','Not scored; shares the settings shell.'],
+['03-hub-floor',4,2,'Hub floor','Eight identical label plates; Enter raid is no bigger than Settings.'],
+['04-stash-terminal',4,2,'Stash terminal','Five stacked text bands push Close into a corner and half the grid is empty.'],
+['05-sector-page',4,2,'Sector page','A tall banner holds two lines and the pack steppers all look alike.'],
+['08-shop',4,2,'Shop','A third of the screen is dead black and the cream detail card is the brightest thing.'],
+['09-craft',4,2,'Craft','The lower half is empty and the Hold to craft button is grey on beige.'],
+['10-hire',4,2,'Hire','A red banner is the loudest thing and the detail panel is mostly empty.'],
+['11-wirt-gambler',4,2,'Gambler','Gamble and Buy read as disabled; a red price is louder than the verbs.'],
+['12-mainframe-contracts',4,2,'Mainframe contracts','A cream detail card and identical rows with repeated tags.'],
+['13-mainframe-rewards',4,null,'Mainframe rewards','Not scored; shares the contracts shell.'],
+['14-mainframe-racks',4,1,'Mainframe racks','Placeholder profane helper text on screen and 2:1 disabled buttons.'],
+['15-mainframe-stats',4,null,'Mainframe stats','Not scored; shares the contracts shell.'],
+['16-bar-last-pour',4,2,'Bar, the last pour','Two identical yellow Ingest buttons and a title off the body axis.'],
+['17-fashion-mirror',4,2,'Fashion mirror','Thirty identical tiles with the unlock text repeated on each.'],
+['41-hub-backpack',4,null,'Hub backpack','Not scored; shares the backpack panel.'],
+['43-stash-after-raid',4,null,'Stash after raid','Not scored; shares the stash terminal.'],
+['65-codex',4,2,'Codex','The grid fills the top third and the rest is a dead void.'],
+['66-trophy-case',4,2,'Trophy case','Eight cards in a seven-column grid, with a toast pasted into the footer.'],
+['67-career-stash-stocked',4,null,'Career stash, stocked','Not scored; shares the stash terminal.']
+];
+var root=document.getElementById('root'),nav=document.getElementById('nav'),html='',nh='';
+G.forEach(function(g,gi){
+  var l=E.filter(function(e){return e[1]===gi});
+  l.sort(function(a,b){var x=a[2]==null?9:a[2],y=b[2]==null?9:b[2];return x-y});
+  nh+='<a href="#g'+gi+'">'+g+' ('+l.length+')</a>';
+  html+='<h2 id="g'+gi+'">'+g+'</h2><div class="grid">';
+  l.forEach(function(e){
+    var u='../shots/all/'+e[0]+'-1080.jpg', s=e[2]==null?'<span class="sc sn">n/a</span>':'<span class="sc s'+e[2]+'">'+e[2]+'</span>';
+    html+='<figure><a href="'+u+'" target="_blank"><img loading="lazy" src="'+u+'" alt="'+e[3]+'"></a><figcaption><span class="nm">'+e[0].split('-')[0]+' '+e[3]+'</span>'+s+'<div class="sent">'+e[4]+'</div></figcaption></figure>';
+  });
+  html+='</div>';
+});
+nav.innerHTML=nh+'<a href="#changes-h">Changes</a>';
+root.innerHTML=html;
+</script></body></html>

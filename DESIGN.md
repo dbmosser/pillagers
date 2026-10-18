@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.28 - SETTINGS FIRST TAB IS GAME, NOT DISPLAY
+
+Co-op hunt while he was away. Menu map c-30: the first Settings tab was called Display but holds every section, with a Display section inside it. Renamed Game. No setting moved or removed.
+
+MEASURED. Check 29.28 passes, and fails on v29.27.
 ## v29.27 - CONTROLLER ASKS HOW MANY ON A STACK MOVE
 
 Co-op hunt while he was away. Quality pass: the how-many prompt only opened on a Ctrl drag, and a pad has no Ctrl. A pad drop of a stack of two or more between stash and backpack now opens the same prompt.

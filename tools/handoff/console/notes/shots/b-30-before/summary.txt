@@ -1,0 +1,16 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  19-raid-hud-drop-first-raid            staged       7.6s  
+  20-raid-hud-drop                       staged       7.3s  
+  21-raid-hud-calm                       staged      14.2s  
+  22-raid-map-open                       staged       8.4s  
+  23-raid-backpack-open                  staged       8.8s  
+  24-raid-controls-full-H                NOT STAGED   9.3s    | expect failed: U.raid()&&__state().legendOn===2 -> false (legendOn 1)
+  33-raid-fight-alerts                   staged       9.0s    | 3 moved, hp 66
+  34-raid-downed-pickups                 staged       8.7s    | downed true hp 0
+  36-raid-low-health                     staged       7.2s  
+  37-raid-extracting-countdown           staged      10.1s  
+  48-arcade-hud-move-to-start            staged      21.9s  
+  50-arcade-hud-live                     staged      22.6s  
+  51-arcade-alert-reinforcements         staged      23.1s    | 3 moved
+  61-raid-wheel-open                     staged       8.6s  
+  78-raid-pause-box-full-kit             staged       8.5s  

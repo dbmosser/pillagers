@@ -1,0 +1,7 @@
+v29.28: settings first tab is game, not display
+
+The first tab in Settings now reads Game. The Display section inside it keeps its name.
+
+Check 29.28. Fails on v29.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

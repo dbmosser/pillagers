@@ -6097,6 +6097,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.28',what:'the first Settings tab is not called Display (it holds every section, Display is one of them)',
+   run:function(){
+     if(typeof openSettings!=='function'||typeof openModal!=='function') return 'SKIP: no settings here';
+     var bad=[], m=document.getElementById('settingsmodal'), was, tb, t;
+     if(!m) return 'SKIP: no settings window';
+     was=m.classList.contains('on');
+     try{
+       __topClear(); openSettings('display');
+       tb=document.getElementById('settabs');
+       if(!tb||!tb.children.length) return 'no Settings tabs';
+       t=String(tb.children[0].textContent).trim().toLowerCase();
+       if(t==='display') bad.push('the first Settings tab is still called Display');
+       if(t!=='game') bad.push('the first Settings tab reads '+t+', not game');
+       if(tb.children.length<2||String(tb.children[1].textContent).trim().toLowerCase()!=='send play data') bad.push('the Send play data tab moved');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} if(was) try{ openModal('settingsmodal'); }catch(_o){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.27',what:'a controller drop of a stack between the stash and the backpack asks how many, like the Ctrl drag',
    run:function(){
      if(typeof qtyAsk!=='function'||typeof qtyDrag!=='function'||typeof stashPadAct!=='function') return 'SKIP: no quantity prompt or pad drop';

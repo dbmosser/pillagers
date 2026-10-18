@@ -302,5 +302,21 @@
   "pic": "tools/handoff/console/notes/shots/all/46-arcade-attract-how-to-play-1080.jpg",
   "task": "10-ui-look-book",
   "when": "2026-10-18T06:22"
+ },
+ "37-raid-extracting-countdown": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The HUD is overloaded: a controls cheat-sheet, contracts list, scoreboard, pickup toasts, and a backpack panel all compete at once, with mismatched type sizes, overlapping labels, and no clear first read.",
+  "pic": "tools/handoff/console/notes/shots/all/37-raid-extracting-countdown-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:23"
+ },
+ "77-haul-reveal-done": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A centered modal with a nice teal title and a clear primary button, but the body is a long stack of small centered text lines with explaining sentences, weak hierarchy between the loot and the stats, and a cluttered HUD bleeding through behind it.",
+  "pic": "tools/handoff/console/notes/shots/all/77-haul-reveal-done-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:23"
  }
 }
