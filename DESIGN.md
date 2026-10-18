@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.15 - THE TEAM STRIP IS NOT BEHIND THE HOW TO PLAY CARD
+
+Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. A party window that waits while a run is live (player 2, or a benched player 1) draws JOIN YOUR TEAM, TEAM SCORE as a strip 28.5 percent from the bottom. The how to play card now reaches down to 84 percent of the screen, so the strip was drawn behind its rows and read faintly through the card. With a page or the run over card up it now sits on the bottom margin under the card.
+
+MEASURED. Check 31.15 passes, and fails on v31.14.
 ## v31.14 - melee is strong: one crowbar swing kills a crawler, elites take two, pillagers three, and every hit reads
 
 Co-op hunt while he was away. His order (2026-10-18, newest, binding): "melee should be really strong and a viable combat option, should one-shot a crawler". It replaces his note of 2026-10-13 (3 swings kill a crawler). The crowbar blow was a flat 18, so a crawler of 52 health took 3 swings and a higher enemy health setting made it worse. Now the blow is worked out from the body it lands on: a crawler or a snitch dies to one swing at any health setting, an elite one takes one more, a pillager 3 (an elite 4), every other machine takes a flat 30 (was 18, a sentry 5 swings), the Overseer keeps 18 and the golden enemy takes the flat 30. The swing arc is the 140 degrees it is drawn over (was 103), a hit shows its number and the hit marker, a pillager bleeds, a body left standing is held for the hit stop beat, and a kill kicks the screen harder with a low thud. Player 2 swing sends the host the same number (the copy has maxhp, elite, kind) and asks the host for the hit stop. The bare hands punch, the reach, the 420 ms clock, the blow from behind and the bot are unchanged.

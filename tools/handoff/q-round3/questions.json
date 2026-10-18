@@ -1502,7 +1502,7 @@
   {
     "id": "r3-69",
     "group": "The lock and the last week",
-    "about": "Of 196 new versions made on 10/18, 17 did nothing but add a line like \"polish pass 12\" to the What's New card, which shows once per version. Friends who later read the card learn nothing from those lines. Helpers can still record the version number somewhere else.",
+    "about": "Of the 200-plus new versions made on 10/18, about 18 did nothing but add a line like \"polish pass 12\" to the What's New card, which shows once per version. Friends who later read the card learn nothing from those lines. Helpers can still record the version number somewhere else.",
     "question": "Should the What's New card list only real changes?",
     "options": [
       {

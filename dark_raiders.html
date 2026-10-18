@@ -1640,7 +1640,8 @@ body #attract[style*="block"]:has(.arcover[style*="block"]) .arcover{ position:r
 body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ position:relative; left:auto; right:auto; bottom:auto; order:2; width:auto; min-width:calc(var(--menu-w) * .4 * var(--attz,1)); justify-self:end; box-sizing:border-box; height:calc(var(--btn-h) * var(--attz,1)); min-height:0; display:flex; align-items:center; justify-content:center; padding:0 calc(var(--sp-5) * var(--attz,1)); font-size:calc(var(--fs-body) * var(--attz,1)); line-height:1; border:1px solid var(--acc); border-radius:var(--rad); background:var(--acc); color:var(--acc-ink); animation:none; opacity:1; }
 body #attract[style*="block"]:has(.arcover[style*="block"]) .arcover .aos{ color:var(--tx-1); }
 body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(--f-cond); letter-spacing:var(--track); color:var(--acc); }
-/* v28.xx (cw-party-att), his order 2026-10-18 (UI step 3, party screens 46, 56, 64): the critic scored how to play 3 and the board 2 ("flat pure black, no world,
+/* v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better". While a run is live the waiting window (player 2, or a benched player 1) showed JOIN YOUR TEAM at 28.5 percent from the bottom, and the how to play card now reaches down to 84 percent, so the strip was drawn behind the card rows and read through the card (the picture of the waiting player 2 window on the how to play page). With a page or the run over card up the strip sits on the bottom margin under the card, with no band, where nothing else is. Without a page (the clip) it stays where it was. */
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .arcstrip, body #attract[style*="block"]:has(.arcover[style*="block"]) .arcstrip{ bottom:calc(var(--sp-3) * var(--attz,1)); background:none; }/* v28.xx (cw-party-att), his order 2026-10-18 (UI step 3, party screens 46, 56, 64): the critic scored how to play 3 and the board 2 ("flat pure black, no world,
    Press any button 32px and detached 90px from the card, column headers faint, nine identical rows, the card too wide for its content"). The backdrop is a soft
    spotlight (raised grey to void) behind the card, the wordmark gets the 3px accent rule, Press any button is pinned at 8 percent from the
    bottom on every page (the 32px size stays: an older check holds it), the header row is 20px in bold with a 1px line, every row has a 1px line, and the how to play card is 840px x scale. Restyle only. */
@@ -2817,7 +2818,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.14';
+var VER='31.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49152,7 +49153,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.14: melee is strong: one crowbar swing kills a crawler, an elite takes two, a pillager three, and each hit shows its number. Check 31.14 fails on v31.13',
+  now:'v31.15: While a party run is live the waiting window shows Join your team on the bottom edge under the how to play card, not behind its rows. Check 31.15 fails on v31.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

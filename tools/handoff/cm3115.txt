@@ -1,0 +1,7 @@
+v31.15: the team strip is not behind the how to play card
+
+While a party run is live the waiting window shows Join your team on the bottom edge under the how to play card, not behind its rows.
+
+Check 31.15. Fails on v31.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
