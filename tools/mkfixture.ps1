@@ -6097,6 +6097,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.48',what:'the mouse cursor shows (the arrow, and no reticle) while the item wheel is open with a mouse, and the reticle cursor is back when it closes (his order 2026-10-15)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: no raid here';
+     var g=null, bad=[], cur0=_curNow, st0=null;
+     try{ st0=cv.style.cursor; }catch(_c){}
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.bag=['bandage','medkit']; g.paused=false; g.bagOpen=false; g.mapOpen=false; g.wheel=null; g.player.hand=null; g.player.iv=99;
+       keys={}; mouse.down=false;
+       _curNow='none'; cv.style.cursor='none';
+       if(!wheelOpen()||!g.wheel) return 'SKIP: the wheel did not open';
+       g.wheel.pad=0;
+       try{ render2D(0); }catch(_r){}
+       drawHUD();
+       if(cv.style.cursor!=='default') bad.push('with the wheel open the cursor is '+cv.style.cursor+', not the arrow');
+       g.wheel=null; drawHUD();
+       if(cv.style.cursor!=='none') bad.push('after the wheel closed the cursor is '+cv.style.cursor+', not the reticle cursor');
+       return bad.length?bad.join('; '):null;
+     } finally {
+       try{ if(g) g.wheel=null; }catch(_w){}
+       try{ _curNow=cur0; if(st0!==null) cv.style.cursor=st0; }catch(_c2){}
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'29.47',what:'the run over card is Panel P on the shared look: 1px panel, 32px Run over, 56px score, 20px rows, centred, left aligned (critic: plain card, huge void, screens 52 and 55)',
    run:function(){
      if(typeof arcadeOverEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade overlay here';

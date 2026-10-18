@@ -1,0 +1,7 @@
+v29.48: the cursor shows over the item wheel
+
+The mouse arrow shows over the item wheel while it is open.
+
+Check 29.48. Fails on v29.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

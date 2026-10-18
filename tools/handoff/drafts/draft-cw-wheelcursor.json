@@ -1,0 +1,16 @@
+{
+    "title":  "The cursor shows over the item wheel",
+    "why":  "His order 2026-10-15: the mouse cursor shows over the wheel while it is open, so the player never loses the cursor when the wheel closes. The raid canvas hides the OS cursor (the reticle is the pointer) and the wheel plates covered the reticle, so the cursor vanished under the wheel. With a mouse the arrow is up while the wheel is open and the reticle steps aside; a pad keeps its reticle.",
+    "now":  "The mouse arrow shows over the item wheel while it is open.",
+    "edits":  [
+                  {
+                      "anchor":  "var _wantCur=(!p.downed\u0026\u0026(G.bagOpen||G.mapOpen))?\u0027default\u0027:",
+                      "replacement":  "// v28.xx (cw-wheelcursor), HIS ORDER (2026-10-15): \"The mouse cursor shows over the wheel while it is open, so the player never loses the cursor when the wheel closes.\" The arrow is up while a mouse holds the wheel open (a pad keeps its reticle).\n  var _wantCur=(!p.downed\u0026\u0026(G.bagOpen||G.mapOpen||(G.wheel\u0026\u0026!G.wheel.pad)))?\u0027default\u0027:"
+                  },
+                  {
+                      "anchor":  "// reticle at the cursor\nif(!p.downed\u0026\u0026!G.bagOpen\u0026\u0026!G.mapOpen){",
+                      "replacement":  "// reticle at the cursor\nif(!p.downed\u0026\u0026!G.bagOpen\u0026\u0026!G.mapOpen\u0026\u0026!(G.wheel\u0026\u0026!G.wheel.pad)){   // v28.xx (cw-wheelcursor): the arrow, not the cross, while the wheel is open"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the mouse cursor shows (the arrow, and no reticle) while the item wheel is open with a mouse, and the reticle cursor is back when it closes (his order 2026-10-15)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: no raid here\u0027;\n     var g=null, bad=[], cur0=_curNow, st0=null;\n     try{ st0=cv.style.cursor; }catch(_c){}\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.bag=[\u0027bandage\u0027,\u0027medkit\u0027]; g.paused=false; g.bagOpen=false; g.mapOpen=false; g.wheel=null; g.player.hand=null; g.player.iv=99;\n       keys={}; mouse.down=false;\n       _curNow=\u0027none\u0027; cv.style.cursor=\u0027none\u0027;\n       if(!wheelOpen()||!g.wheel) return \u0027SKIP: the wheel did not open\u0027;\n       g.wheel.pad=0;\n       try{ render2D(0); }catch(_r){}\n       drawHUD();\n       if(cv.style.cursor!==\u0027default\u0027) bad.push(\u0027with the wheel open the cursor is \u0027+cv.style.cursor+\u0027, not the arrow\u0027);\n       g.wheel=null; drawHUD();\n       if(cv.style.cursor!==\u0027none\u0027) bad.push(\u0027after the wheel closed the cursor is \u0027+cv.style.cursor+\u0027, not the reticle cursor\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       try{ if(g) g.wheel=null; }catch(_w){}\n       try{ _curNow=cur0; if(st0!==null) cv.style.cursor=st0; }catch(_c2){}\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

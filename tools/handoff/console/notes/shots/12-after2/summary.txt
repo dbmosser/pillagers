@@ -1,0 +1,3 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  52-arcade-run-over                     staged      15.6s    | welcomemodal
+  55-arcade-run-over-scored              staged      24.0s    | welcomemodal
