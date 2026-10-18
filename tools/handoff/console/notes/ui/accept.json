@@ -58,10 +58,10 @@
  "08-shop": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean dark grid with a good gold selection state, but the bottom half of the screen is empty, the cream detail panel clashes with the dark UI, and the currency header, tiny type, and flavor text undercut the polish.",
-  "pic": "tools/handoff/console/notes/shots/all/08-shop-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:14"
+  "verdict": "The cream paper detail pane is now a dark pane, which fixes the biggest style-guide violation and makes Buy pop, but the screen is still a full-screen slab with a huge dead lower half, an amber explainer line, a currency/stash cluster that reads as clutter, a quip footer and a text-only Close.",
+  "pic": "tools/handoff/console/notes/shots/b-31-after1/08-shop-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-18T09:37"
  },
  "09-craft": {
   "score": 2,
@@ -90,10 +90,10 @@
  "12-mainframe-contracts": {
   "score": 2,
   "pass": false,
-  "verdict": "A functional but generic dark list-and-detail template: the cream detail card clashes with the dark UI, the header currency cluster collides, every row looks identical, and there is placeholder copy and leftover clutter.",
-  "pic": "tools/handoff/console/notes/shots/all/12-mainframe-contracts-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:15"
+  "verdict": "The detail pane is now dark and uses the condensed title, which fixes the worst style break, but the screen is still a full-bleed slab with a heavy amber row, three lines per contract, a '$' currency, and an explaining sentence.",
+  "pic": "tools/handoff/console/notes/shots/b-31-after1/12-mainframe-contracts-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-18T09:37"
  },
  "14-mainframe-racks": {
   "score": 1,
@@ -170,10 +170,10 @@
  "26-settings-from-pause-top": {
   "score": 2,
   "pass": false,
-  "verdict": "The second version (c-31n) fixes the double tab strip by folding 'Send play data' into the one strip, but the screen is still a dense, flat settings wall with a joke subtitle, tiny type, a clipped list and a mostly empty detail pane.",
-  "pic": "tools/handoff/console/notes/shots/c-31n-after/26-settings-from-pause-top-1080.jpg",
+  "verdict": "The new settings card is narrower and drops the side pane for a bottom detail strip, but it is still a flat wall of same-weight rows with an explaining subtitle, a stray tab, tiny arrows far from their labels, and no visible focus, so it reads as a generic template.",
+  "pic": "tools/handoff/console/notes/shots/c-31p-after/26-settings-from-pause-top-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:23"
+  "when": "2026-10-18T09:37"
  },
  "32-keys-window": {
   "score": 3,

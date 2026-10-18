@@ -1,0 +1,1 @@
+| Attract pages: no dark bands, one accent, no operator shadow | v29.69 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.69 passes, fails on v29.68 |

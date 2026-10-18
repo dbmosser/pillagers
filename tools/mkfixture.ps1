@@ -6097,6 +6097,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.69',what:'while an attract page is up the title and prompt have no dark band and no accent underline, and the operator card has no drop shadow (critic: letterbox bands, two amber stubs, shadow on the guide-banned list; screens 46 56 62 63 64)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof arcadeAttBoard!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';
+     var d, pg, wasDisp, res=null, nm, ap, af;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       pg=arcadeAttEl('arcpage'); pg.textContent=''; arcadeAttBoard(pg); pg.style.display='block';
+       nm=d.querySelector('.attname'); ap=d.querySelector('.attpress');
+       if(getComputedStyle(nm).backgroundImage!=='none') res='the title still sits on a dark band';
+       else if(getComputedStyle(ap).backgroundImage!=='none') res='the prompt still sits on a dark band';
+       else if(getComputedStyle(nm,'::after').display!=='none') res='the wordmark still has the accent underline';
+       else if(/box-shadow:0 24px 64px/.test(String(arcadeOpOpen))) res='the operator card still has a drop shadow';
+       return res;
+     } finally {
+       try{ pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+     }
+   }},
   {v:'29.68',what:'the detail pane of the shop, craft, hire and contracts windows is a dark pane (raised graphite, light title and text), not the cream paper card',
    run:function(){
      var bad=[], el=null;

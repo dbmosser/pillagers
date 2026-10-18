@@ -1,0 +1,7 @@
+v29.69: attract pages: no dark bands, one accent, no operator shadow
+
+The attract pages and the operator card look cleaner.
+
+Check 29.69. Fails on v29.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

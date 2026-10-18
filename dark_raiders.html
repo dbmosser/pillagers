@@ -1556,6 +1556,12 @@ body #attract .arcpage:has(table){ min-width:0; width:calc(var(--menu-w) * 1.5 *
 body #attract .arcpage th{ font-size:calc(var(--fs-body) * var(--attz,1)); font-weight:700; border-bottom:1px solid var(--ui-line-hi); }
 body #attract .arcpage td{ border-bottom:1px solid var(--ui-line); }
 body #attract .arcpage .apk{ font-weight:500; }
+/* v28.xx (cw-party-att2), his order 2026-10-18 (UI step 3, party screens 46, 56, 64): the critic scored the pages 2 and 3 ("black bands behind the title and the prompt
+   look like a letterbox, two amber stubs, one under the wordmark and one on the card"). The soft dark bands are for the recorded clip (v21.53); while a page or the run over
+   card is up there is no clip behind, so the bands go, the wordmark loses its underline (the card keeps the one accent tab) and the shadows go. Restyle only. */
+body #attract:has(.arcpage[style*="block"]) .attname, body #attract:has(.arcover[style*="block"]) .attname,
+body #attract:has(.arcpage[style*="block"]) .attpress, body #attract:has(.arcover[style*="block"]) .attpress{ background:none; text-shadow:none; }
+body #attract:has(.arcpage[style*="block"]) .attname::after, body #attract:has(.arcover[style*="block"]) .attname::after{ display:none; }
 /* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
    The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
    Pause: the title is the 32px title size in light text (the one amber thing in the box is Resume run), the key legend and the note line are 16px grey.
@@ -2570,7 +2576,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.68';
+var VER='29.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47659,7 +47665,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.68: The shop, craft, hire and contracts detail panes are dark instead of cream. Check 29.68 fails on v29.67',
+  now:'v29.69: The attract pages and the operator card look cleaner. Check 29.69 fails on v29.68',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60389,7 +60395,7 @@ function arcadeOpOpen(){
   if(!ARCADE.on||!document.body) return false;
   var el=document.createElement('div'); el.id='arcop';
   el.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:20000;width:640px;box-sizing:border-box;padding:var(--sp-4);'+
-    'background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);box-shadow:0 24px 64px rgba(0,0,0,.6);color:var(--tx-1);font:600 var(--fs-body)/1.3 var(--f-cond);letter-spacing:var(--track);cursor:default';
+    'background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);box-shadow:none;color:var(--tx-1);font:600 var(--fs-body)/1.3 var(--f-cond);letter-spacing:var(--track);cursor:default';
   try{ el.style.zoom=menuScale(); }catch(_mz){}
   el.addEventListener('contextmenu',function(_ev){ _ev.preventDefault(); return false; });
   var bd=document.createElement('div'); bd.style.cssText='position:fixed;left:0;top:0;right:0;bottom:0;z-index:19999;background:var(--ui-scrim)';   // the attract is hidden behind the card

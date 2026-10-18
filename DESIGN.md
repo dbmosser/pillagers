@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.69 - Attract pages: no dark bands, one accent, no operator shadow
+
+Co-op hunt while he was away. The critic scored the attract pages 2 and 3: letterbox bands behind the title and prompt, two amber stubs, a drop shadow on the operator card. While a page is up the bands and the underline go and the operator shadow goes. Restyle only.
+
+MEASURED. Check 29.69 passes, and fails on v29.68.
 ## v29.68 - Detail panes go dark
 
 Co-op hunt while he was away. UI step 7 (Undercroft screens, restyle only). The style guide keeps the cream paper card for the ask dialog alone; the detail pane of the shop, craft, hire, contracts and gambler windows is now a dark raised pane with a 32px title, 16px labels and a 56px primary button. No text or logic changes.
