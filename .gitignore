@@ -24,3 +24,12 @@ tools/gd-*.html
 /stable.html
 /stable.html.tmp
 tools/handoff/reports/cache/
+
+# 2026-10-18: a ship commits with git add -A, so scratch files from preflights and probes that happened to exist were swept in
+# (a 12 MB fxprobe68.html in v30.69, and the preflight patch files ppfX/fpfX that each preflight then deletes again).
+tools/fxdry*.html
+tools/fxctl*.html
+tools/fxprobe*.html
+tools/fxcorpus*.html
+tools/handoff/ppf[a-z].ps1
+tools/handoff/fpf[a-z].ps1
