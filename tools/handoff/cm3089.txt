@@ -1,0 +1,7 @@
+v30.89: settings and keys fill the screen as a card
+
+Settings and Keys now fill nearly the whole screen as one card with the X in the corner.
+
+Check 30.89. Fails on v30.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

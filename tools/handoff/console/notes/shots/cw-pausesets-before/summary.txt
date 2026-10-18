@@ -2,3 +2,6 @@
   25-raid-pause-box                      staged       8.9s  
   26-settings-from-pause-top             staged       9.5s  
   27-settings-scroll-600                 staged       9.6s  
+== 4k : window 3872x2263, viewport 3840x2160
+  25-raid-pause-box                      staged       9.2s  
+  26-settings-from-pause-top             staged       9.7s  

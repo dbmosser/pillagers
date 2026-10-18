@@ -1854,6 +1854,11 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibi
 #root #settingsmodal::before, #root #keysmodal::before{ inset-block:calc(var(--py) - var(--sp-3)); }
 #root #settingsmodal #closesettings, #root #keysmodal #closekeys{ top:var(--py); }
 #root #settingsmodal #settabs{ top:calc(var(--py) + var(--sp-1)); }
+/* v28.xx (cw-cardwide), his Q43 (2026-10-18): windows are "a centred card with an X in the corner that takes up NEARLY THE WHOLE screen". The earlier critic rounds (cw-setnear2, cw-setheight) shrank Settings and Keys to 720 x 720; his word is later and wins (Q7). Now the card is the screen less 48 px each side and top and bottom, the frame sits 24 px outside that, the X stays in the card corner, and the rows keep one 960 wide column in the middle so a label never sits far from its stepper. */
+#root #settingsmodal, #root #keysmodal{ --cw:calc(100% - var(--sp-5) * 2); --py:var(--sp-5); }
+#root #settingsmodal .tpane, #root #settingsmodal #setwrap{ max-width:calc(var(--sp-5) * 20); margin-left:auto; margin-right:auto; width:100%; box-sizing:border-box; }
+#root #keysmodal #keyslist, #root #keysmodal #keysnote, #root #keysmodal .msub{ max-width:calc(var(--sp-5) * 20); margin-left:auto; margin-right:auto; width:100%; box-sizing:border-box; }
+#root #keysmodal #keyslist{ max-height:calc(100vh - var(--sp-5) * 6); }
 
 /* v28.xx (cw-pausex) critic c-31 (pause 25/42/49 at 3: "no close affordance, only a tiny Esc Resume"; Settings 26 at 3: "no focus is visible, the detail pane says Edit the words but that row has no raised fill or amber edge"; Keys 32 at 3: "the World rows are sliced off mid glyph, no fade", "section labels are tiny"). Now: the pause card has the same 48 x 48 header X as Settings and Keys (it resumes), the row the detail pane names wears the focus look, and the Keys list fades out over its last 32px with 24px labels. */
 #root #pausex{ position:absolute; z-index:2; top:calc(50% - var(--pbh, 50vh) / 2 + var(--sp-3)); right:calc(50% - var(--pw) / 2); width:var(--sp-5); height:var(--sp-5); min-width:0 !important; min-height:0 !important; padding:0 !important; font-size:0 !important; line-height:1; display:flex; align-items:center; justify-content:center; }
@@ -2796,7 +2801,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.88';
+var VER='30.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48321,7 +48326,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.88: In the party arcade demo both windows now call the two players Player 1 and Player 2 over the heads, on the team bar and in the feed. Check 30.88 fails on v30.87',
+  now:'v30.89: Settings and Keys now fill nearly the whole screen as one card with the X in the corner. Check 30.89 fails on v30.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

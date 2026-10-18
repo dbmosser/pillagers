@@ -170,14 +170,15 @@ try{
   if(-not $DryRun){
     Stop-Watchers; Stop-Party; Start-Sleep -Milliseconds 800
     New-Item -ItemType Directory -Force -Path (Split-Path $cfg.PROFILE) | Out-Null
-    # the game server: it must answer, or the window would open on an error page
+    # the game server: it must answer, or the window would open on an error page. 2026-10-18: a GET, not a HEAD: tools/serve.ps1 never
+    # answered a HEAD (it wrote a body and its catch swallowed the error), so every start since the shortcut was made said the server was down.
     $base=[uri]$cfg.URL_BASE; $up=$false
     for($i=0;$i -lt 2 -and -not $up;$i++){
-      try{ $rq=[Net.WebRequest]::Create($cfg.URL_BASE); $rq.Method='HEAD'; $rq.Timeout=3000; $rs=$rq.GetResponse(); $rs.Close(); $up=$true }catch{ $up=$false }
+      try{ $rq=[Net.WebRequest]::Create($cfg.URL_BASE); $rq.Method='GET'; $rq.Timeout=3000; $rs=$rq.GetResponse(); $rs.Close(); $up=$true }catch{ $up=$false }
       if(-not $up -and $i -eq 0){
         Log ('the server on port '+$base.Port+' did not answer, starting it')
         Start-Process -FilePath 'powershell.exe' -WindowStyle Hidden -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$R+'\tools\serve.ps1" -Root "'+$R+'" -Port '+$base.Port) | Out-Null
-        for($j=0;$j -lt 20 -and -not $up;$j++){ Start-Sleep -Milliseconds 750; try{ $rq=[Net.WebRequest]::Create($cfg.URL_BASE); $rq.Method='HEAD'; $rq.Timeout=2000; $rs=$rq.GetResponse(); $rs.Close(); $up=$true }catch{ $up=$false } }
+        for($j=0;$j -lt 20 -and -not $up;$j++){ Start-Sleep -Milliseconds 750; try{ $rq=[Net.WebRequest]::Create($cfg.URL_BASE); $rq.Method='GET'; $rq.Timeout=2000; $rs=$rq.GetResponse(); $rs.Close(); $up=$true }catch{ $up=$false } }
       }
     }
     if(-not $up){ Log ('the game server did not come up on '+$cfg.URL_BASE+'. Nothing opened.'); exit 1 }

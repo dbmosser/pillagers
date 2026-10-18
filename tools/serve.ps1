@@ -15,8 +15,8 @@ while($listener.IsListening){
       $ctx.Response.Headers.Add("Cache-Control","no-store")
       $b=[System.IO.File]::ReadAllBytes($path)
       $ctx.Response.ContentLength64=$b.Length
-      $ctx.Response.OutputStream.Write($b,0,$b.Length)
+      if($ctx.Request.HttpMethod -ne "HEAD"){ $ctx.Response.OutputStream.Write($b,0,$b.Length) }   # 2026-10-18: a HEAD gets the headers only (writing a body threw and the request hung)
     } else { $ctx.Response.StatusCode=404 }
     $ctx.Response.Close()
-  }catch{}
+  }catch{ try{ $ctx.Response.Abort() }catch{} }   # a request that fails is closed, never left hanging
 }

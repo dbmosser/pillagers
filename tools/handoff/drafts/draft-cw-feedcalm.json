@@ -1,0 +1,16 @@
+{
+    "title":  "CALMER LEFT FEED",
+    "why":  "The critic on the raid screen (10-19): the left toasts are faint and carry explaining sentences. Details over four words stay out of the feed line and old lines dim to 60 percent, not 35.",
+    "now":  "Left feed lines are short names and older lines stay readable.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(sub) segs.push({t:\u0027  \\u00b7  \u0027+sub,c:HUDC.dim});",
+                      "replacement":  "  if(sub\u0026\u0026sub.split(/\\s+/).length\u003c=4) segs.push({t:\u0027  \\u00b7  \u0027+sub,c:HUDC.dim});   // v28.xx (cw-feedcalm), the critic (2026-10-19): \u0027explaining sentences\u0027 in the left feed. A detail of five words or more (limited visibility due to fog, kill it for the hoard) stays out of the feed line; the headline is the line."
+                  },
+                  {
+                      "anchor":  "var FEED={show:10,keep:40,hold:6,dim:0.35,",
+                      "replacement":  "var FEED={show:10,keep:40,hold:6,dim:0.6,"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the left feed: a long detail sentence is not on the line, and an old line stays readable (dim 0.6 or more)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var g=null, ln, F;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: staging: no raid\u0027;\n       feedSay(\u0027FOG ZQ\u0027,\u0027info\u0027,{sub:\u0027Limited visibility due to fog.\u0027});\n       F=g.fd; if(!F||!F.lines.length) return \u0027the feed took no line\u0027;\n       ln=F.lines[F.lines.length-1];\n       if((/visibility/i).test(ln.txt)) return \u0027the feed line carries a sentence: \u0027+ln.txt;\n       feedSay(\u0027STRONGHOLD ZQ\u0027,\u0027info\u0027,{sub:\u00271 on the map\u0027});\n       ln=F.lines[F.lines.length-1];\n       if(!(/1 on the map/i).test(ln.txt)) return \u0027a short detail left the feed line: \u0027+ln.txt;\n       F.t+=FEED.hold+FEED.fade+1;\n       if(feedAlpha(ln)\u003c0.59) return \u0027an old feed line reads \u0027+feedAlpha(ln)+\u0027, under 0.6\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

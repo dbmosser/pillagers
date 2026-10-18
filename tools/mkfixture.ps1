@@ -6099,6 +6099,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.89',what:'his Q43: the Settings window is a centred card that takes up nearly the whole screen (frame within 60 px of every screen edge) with its X in the card corner',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], m, b, mr, br, z, cs, fw, fh, W=window.innerWidth, H=window.innerHeight, r;
+     try{
+       __topClear(); __hubEnter();
+       r=__station('dev','KeyE'); if(r&&r.err) return 'station: '+r.err;
+       m=document.getElementById('settingsmodal'); b=document.getElementById('closesettings');
+       if(!m||!b||!m.classList.contains('on')) return 'the settings window did not open';
+       UIM.step(600);
+       mr=m.getBoundingClientRect(); br=b.getBoundingClientRect(); z=parseFloat(m.style.zoom)||1;
+       cs=getComputedStyle(m,'::before');
+       fw=parseFloat(cs.width)*z; fh=parseFloat(cs.height)*z;
+       if(!(fw>=W-120)) bad.push('the card frame is '+Math.round(fw)+' px wide on a '+W+' px screen, want within 120');
+       if(!(fh>=H-120)) bad.push('the card frame is '+Math.round(fh)+' px tall on a '+H+' px screen, want within 120');
+       if(!(mr.right-br.right<=100*z)) bad.push('the X is '+Math.round(mr.right-br.right)+' px in from the right edge');
+       if(!(br.top-mr.top<=100*z)) bad.push('the X is '+Math.round(br.top-mr.top)+' px down from the top');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.88',what:'in the party arcade demo both windows call the two seats Player 1 and Player 2 whatever the saves are named (his order of 2026-10-18: p1 and p2 should look and behave the same), so a name over a teammate head, on the team bar and in the feed agree; outside the arcade the roster names stand as they were; a seat outside the party is still nobody',
    run:function(){
      if(typeof netSeatName!=='function'||typeof ARCADE==='undefined'||!ARCADE||typeof NET==='undefined'||!NET) return 'SKIP: this build has no seat names or no party arcade';

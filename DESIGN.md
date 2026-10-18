@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.89 - SETTINGS AND KEYS FILL THE SCREEN AS A CARD
+
+Co-op hunt while he was away. His Q43 (2026-10-18): windows are a centred card with an X in the corner that takes up nearly the whole screen. Settings and Keys were 720 wide cards; now the card is the screen less 48 px a side, the X stays in its corner, rows keep a 960 column.
+
+MEASURED. Check 30.89 passes, and fails on v30.88.
 ## v30.88 - THE TWO PARTY ARCADE SEATS ARE PLAYER 1 AND PLAYER 2 IN BOTH WINDOWS
 
 Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. The roster keeps the name each save had when the two windows linked, before the party arcade renamed them, so over a head, on the team bar and in the feed one window read a save name or Pillager where the other read Player 2. In the party arcade the two seats are now Player 1 and Player 2 in both windows; outside the arcade the roster names stand.

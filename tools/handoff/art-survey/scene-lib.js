@@ -241,12 +241,12 @@ A.scenes.duo=async function(o){
   var st=await A.stage(o), p=st.p, X=BASE.x, Y=BASE.y;
   p.x=X-36; p.y=Y; p.face=1.15;
   A.mate(X+36,Y+4,1.95);
-  A.cam(X,Y-10,3.2);
-  return {zoom:3.2,chars:[{id:'p1',kind:'player',ref:'p1'},{id:'mate',kind:'player',ref:'mate'}]};
+  A.cam(X,Y-10,5.0);
+  return {zoom:5.0,chars:[{id:'p1',kind:'player',ref:'p1'},{id:'mate',kind:'player',ref:'mate'}]};
 };
 
 A.scenes.fight=async function(o){
-  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=2.5;
+  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=3.0;
   var pa, pb, sen, cra;
   p.x=X-176; p.y=Y+14; p.face=0.1;
   A.mate(X-248,Y-40,0.0,{ads:1});
@@ -254,7 +254,7 @@ A.scenes.fight=async function(o){
   pb=A.pillager(X+14,Y+70,{id:'gamer',gun:'carbine',rig:'light',state:'chase',face:Math.PI-0.3});
   cra=A.machine('crawler',X+50,Y+34,{state:'chase',face:Math.PI});
   sen=A.machine('sentry',X+150,Y-6,{state:'chase',face:Math.PI-0.1});
-  sen.rng=170;   // its red sight cone stops short of the pair
+  sen.rng=100;   // its sight cone stops well short of the pair
   // the shots: P1 at the near pillager, both pillagers back at the pair, the sentry at P1
   A.shoot(p,p.wep,pa.x,pa.y-8,true,[70,200,330]);
   A.shoot(pa,pa.wep,p.x,p.y-6,false,[55,150]);
@@ -313,7 +313,7 @@ A.scene=async function(name,o){
   if(!o.plate){ chars=A.measure(r.chars); }
   else { s.ents.length=0; s.bullets.length=0; s.flashes.length=0; s.sparks.length=0; s.shells.length=0; s.puffs.length=0; s.noiseRings.length=0; gx('GFXMUZ.length=0'); window.__goldShine=0; A.only('none'); }
   A.draw(2);
-  return JSON.stringify({scene:name,plate:!!o.plate,zoom:r.zoom,w:CAM.w,h:CAM.h,chars:chars});
+  return JSON.stringify({scene:name,plate:!!o.plate,zoom:gx('ZOOM()'),w:CAM.w,h:CAM.h,chars:chars});
 };
 
 A.P1=function(){ return g().player; };
