@@ -6304,7 +6304,7 @@ window.__REGRESS=[
          g.ents.length=0; g.bagOpen=false; g.mapOpen=true; TRG.hid=1;   // hid 1 is how a raid runs: the page readout is clipped, so only the column keeps the header off the corner
          h=hdrRight(g.wx.name);
          if(!h) bad.push('the map header (time and weather) was not drawn with the map open');
-         else if(h.x>colL2+1) bad.push('the map header ends at x '+h.x.toFixed(0)+', over the column that starts at '+colL2.toFixed(0));
+         else if(h.x>((typeof mapCard==='function')?mapCard().xb.x:colL2)+1) bad.push('the map header ends at x '+h.x.toFixed(0)+', over the '+((typeof mapCard==='function')?'close button':'column')+' that starts at '+((typeof mapCard==='function')?mapCard().xb.x:colL2).toFixed(0));   // cw-mapstyle: the map is a card on an opaque backing now, so no HUD column shows under its header; the weather line has to end left of the card's X
          oTb=trBox; trBox=function(){ EDGEBOX.trcol=null; };
          h=hdrRight(g.wx.name); trBox=oTb;
          if(h&&h.x<=colL2+1) bad.push('control: the map header ends at x '+h.x.toFixed(0)+' with no column to keep clear of, left of the column at '+colL2.toFixed(0)+', so the header test proves nothing');
