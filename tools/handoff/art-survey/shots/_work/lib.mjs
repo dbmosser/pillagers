@@ -15,6 +15,7 @@ export function mkgame(name, reps, vars) {
     s = parts.join(r.to);
   }
   const inj = '<script>' + Object.entries(vars || {}).map(([k, v]) => 'window.' + k + '=' + JSON.stringify(v) + ';').join('') + '</script>';
+  if (s.length < 11000000) throw new Error(name + ': fixture looks truncated (' + s.length + ' bytes)');
   const m0 = '<meta charset="utf-8">';
   if (!s.startsWith(m0)) throw new Error('fixture does not start with the charset meta');
   s = m0 + inj + s.slice(m0.length);

@@ -47,7 +47,7 @@ function farInset() {
   h += mini(PIC, FX, FY, 92, feet, chipname(92, feet - 62 * s - 1, 0.4), 175, 330, 1050, 420);
   h += mini(PIC, FX, FY, 232, feet, chipname(232, feet - 62 * s - 1, 1), 175, 330, 1050, 420);
   h += mini(DOWN, FX, FY, 352, feet, chipname(352, feet - 62 * s - 1, 1) + downtag(352, feet - 77 * s - 1), 175, 330, 1050, 420);
-  h += `<div style="position:absolute;left:10px;bottom:7px;color:#f2efe6;font:600 17px/1 ${FONT};text-shadow:0 1px 2px #000,0 0 6px #000">mate far away or down</div>`;
+  for (const [lab, cx] of [['far', 92], ['near', 232], ['down', 352]]) h += `<div style="position:absolute;left:${cx}px;bottom:7px;transform:translateX(-50%);color:#f2efe6;font:600 17px/1 ${FONT};text-shadow:0 1px 2px #000,0 0 6px #000">${lab}</div>`;
   return `<div id="far" style="position:absolute;left:1480px;top:790px;width:420px;height:240px;box-sizing:border-box;border:2px solid rgba(242,239,230,.9);border-radius:3px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.65),0 8px 28px rgba(0,0,0,.55);background:#000">${h}</div>`;
 }
 

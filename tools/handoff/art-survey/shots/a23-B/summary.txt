@@ -1,0 +1,2 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  a23fight                               staged       6.1s    | {"scene":"fight","plate":false,"zoom":3,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":591,"y":533,"w":177,"h":157,"fx":553,"fy":595},{"id":"mate","kind":"player","x":372,"y":373,"w":170,"h":153,"fx":337,"fy":433},{"id":"pillager-a","kind":"pillager","x":953,"y":423,"w":208,"h":137,"fx":9

@@ -1,0 +1,12 @@
+{
+    "title":  "HOW TO PLAY SAYS LEFT STICK AND RIGHT STICK",
+    "why":  "The critic on screen 46 called L STICK and R STICK cryptic. The how to play card spells them out. Restyle only, the pad names elsewhere stay.",
+    "now":  "The how to play card says left stick and right stick in full.",
+    "edits":  [
+                  {
+                      "anchor":  "function arcadeAttKeys(cell,txt){\n",
+                      "replacement":  "// v28.xx (cw-sticks), the critic on 46 (3 of 5): \"L STICK and R STICK are cryptic\". The how to play keys say left stick and right stick in full.\nfunction arcadeKeyWord(s){ return String(s==null?\u0027\u0027:s).replace(/^L STICK$/i,\u0027LEFT STICK\u0027).replace(/^R STICK$/i,\u0027RIGHT STICK\u0027); }\nfunction arcadeAttKeys(cell,txt){\n  txt=arcadeKeyWord(txt);\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the how to play page spells out left stick and right stick (the critic: L STICK is cryptic)\u0027,\n   run:function(){\n     if(typeof arcadeKeyWord!==\u0027function\u0027) return \u0027the how to play keys still say L STICK and R STICK (no arcadeKeyWord)\u0027;\n     if(arcadeKeyWord(\u0027L STICK\u0027)!==\u0027LEFT STICK\u0027) return \u0027L STICK is \u0027+arcadeKeyWord(\u0027L STICK\u0027);\n     if(arcadeKeyWord(\u0027R STICK\u0027)!==\u0027RIGHT STICK\u0027) return \u0027R STICK is \u0027+arcadeKeyWord(\u0027R STICK\u0027);\n     if(arcadeKeyWord(\u0027A\u0027)!==\u0027A\u0027) return \u0027a plain key changed\u0027;\n     var c=document.createElement(\u0027div\u0027); arcadeAttKeys(c,\u0027L STICK\u0027);\n     if(!/left stick/i.test(c.textContent)) return \u0027the cell reads \u0027+c.textContent;\n     return null; }},"
+}

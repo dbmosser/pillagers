@@ -1,0 +1,2 @@
+== 4k : window 3872x2263, viewport 3840x2160
+  m-fightwind                            staged       7.8s    | {"scene":"fightwind","plate":false,"zoom":5.9944444444444445,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1180,"y":1064,"w":352,"h":313,"fx":1104,"fy":1188},{"id":"mate","kind":"player","x":743,"y":745,"w":338,"h":304,"fx":672,"fy":864},{"id":"pillager-a","kind":"pillager","x":1903,"y":

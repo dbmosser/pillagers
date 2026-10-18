@@ -1,0 +1,14 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  46-arcade-attract-how-to-play          staged      16.1s  
+  47-arcade-drop-controls-card           staged      10.2s  
+  48-arcade-hud-move-to-start            staged      22.4s  
+  49-arcade-pause-box                    staged      13.5s  
+  52-arcade-run-over                     staged      16.0s  
+  53-arcade-extracted-bonus-initials     staged      17.1s  
+  54-arcade-initials-redrop              staged      20.9s  
+  55-arcade-run-over-scored              staged      25.0s  
+  56-arcade-attract-board-scored         staged      34.6s  
+  58-coop-player2-window-title           staged       7.0s    |  title:true
+  62-arcade-operator-menu                staged       8.6s  
+  63-arcade-operator-new-party-armed     staged       8.6s  
+  64-arcade-board-seeded-night           staged      10.5s  

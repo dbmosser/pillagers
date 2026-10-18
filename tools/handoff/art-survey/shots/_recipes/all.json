@@ -72,7 +72,7 @@
    "before": "art survey a29-a37 (scratch recipes)",
    "query": "",
    "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
-   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.5); A.draw(2); return r;"
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.8); A.draw(2); return r;"
   },
   {
    "name": "a31-B",
@@ -80,7 +80,7 @@
    "before": "art survey a29-a37 (scratch recipes)",
    "query": "",
    "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
-   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.5); A.draw(2); return r;"
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.8); A.draw(2); return r;"
   },
   {
    "name": "a31-C",
@@ -88,7 +88,7 @@
    "before": "art survey a29-a37 (scratch recipes)",
    "query": "",
    "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
-   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.5); A.draw(2); return r;"
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.8); A.draw(2); return r;"
   },
   {
    "name": "a31-D",
@@ -96,7 +96,7 @@
    "before": "art survey a29-a37 (scratch recipes)",
    "query": "",
    "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
-   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.5); A.draw(2); return r;"
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.8); A.draw(2); return r;"
   },
   {
    "name": "a32-A",

@@ -190,10 +190,17 @@
  "26-settings-from-pause-top": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, mostly on-guide settings card with sentence case, one tab strip and a top-right X, but the tab strip scrolls away inside the list, text is small, and the pad focus differs between the two captures.",
-  "pic": "tools/handoff/console/notes/shots/c-31u-after2/26-settings-from-pause-top-1080.jpg",
-  "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:27"
+  "verdict": "The new settings window is a huge fix (the old one was a broken, empty header stuck at the bottom of a black screen), and it now reads as a real centred card with tabs, rows and focus. But the content is a narrow column with dead side space, the controls float far from their labels, and the bottom of the list and the footer are crowded and cut off.",
+  "findings": [
+   "P1 row controls (chevron, value, chevron): Right-align the stepper group to the row's right padding (16px). Or cap the row at 900px at 1080 so the label-to-control gap is under 400px. Make the chevrons about 24px with a 48px hit area.",
+   "P1 list bottom edge / 'how much is out there' row: Size the list to a whole number of 56px rows (at 4K, 112px each) or add a 24px fade mask at the bottom. Widen the scrollbar to 6-8px, with a visible track, and inset it 8px from the panel edge.",
+   "P1 window layout / side margins: Keep the 900px-at-1080 measure but align the title, tabs and footer to the same column. Or fill the card with a left category nav and a right detail pane.",
+   "P1 detail pane (edit the words): Drop the repeated title and shrink the pane to one 16px tx-2 line. Replace the copy with something neutral like 'changes the in-game wording'. Align the pane's left padding with the row text at x=522.",
+   "P2 tab strip: Use 20px tabs with 24px side padding and a 3px underline. Move 'send play data' into the list as a row, or make it a ghost button, and add LB/RB glyphs at the strip ends."
+  ],
+  "pic": "tools/handoff/console/notes/shots/cw-pausesets-after/26-settings-from-pause-top-4k.jpg",
+  "task": "manual",
+  "when": "2026-10-18T21:10"
  },
  "32-keys-window": {
   "score": 3,
@@ -608,5 +615,35 @@
   "pic": "tools/handoff/console/notes/shots/03-r5/44-title-from-character-select-1080.jpg",
   "task": "03-title-and-backdrop",
   "when": "2026-10-18T20:03"
+ },
+ "90-legend-full": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The new version only adds a superhot toggle row to the key legend and trims a few lines of copy; the legend is still a big, dense, tiny-text wall that sits over the middle of the playfield and fights with every HUD element.",
+  "findings": [
+   "undefined key legend (centre panel, 735-1170 x 155-927): Split it into a 2-column card sized to content, max ~60% height, with a 32px title ('controls') and a 48px X plus an esc/B hint. Cut it to the ~12 essential bindings. Use --ui-panel at 90% with a 1px --ui-line-hi border and 24px padding.",
+   "undefined legend text size and contrast: Set rows to 20px (minimum 16px). Key chips in tx-1 with a --ui-raised fill and 1px --ui-line. Descriptions in tx-2 at ≥4.5:1. Section heads at 16px with +.04em tracking in --acc or tx-1, not amber (--warn is for warnings only). Raise the fill to --scrim .80+ so the map does not show through.",
+   "undefined legend column alignment and new last row: Render the backtick as a key chip like the others. Add 1px --ui-line dividers on a 48px row pitch. Keep 8px grid spacing between sections. Move 'f1 hide' into a 16px footer legend with a pad glyph.",
+   "undefined HUD colour and weight consistency (pillagers list, run info, concealed tag, codex toast): Map every accent to a token: lime --acc for focus only, --warn for warnings, --extract for extraction. Pull the label out from behind the minimap or clip it cleanly. Cap the HUD to the 5-size scale. Dim or hide the legend's backdrop competition.",
+   "undefined run info panel (right, 1585-1900 x 305-445): Use one panel style (same title colour and size for both panels). 16px padding on all sides. Give each objective row a 32px pitch with the count right-aligned in tx-2. Make the chevron ≥24px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/cw-shkey-after/90-legend-full-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-18T21:09"
+ },
+ "92-settings-superhot-pane": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The window shell is right (centred card, title top-left, X top-right), but the pane is a flat, same-weight list with a clipped row, a mixed-up tab strip and an explanation block, so it reads as an unfinished template.",
+  "findings": [
+   "P0 list bottom edge, 'master volume' row and the detail pane above it: Clip the list at a whole row boundary (56px pitch) with 8px of padding above the detail pane. Remove the audio rows from the 'the raid' group. Add a visible scrollbar track 4px wide spanning the full list height, or a fade at the bottom edge.",
+   "P0 detail pane at bottom ('superhot mode / time only moves when you act. / key: `(left of 1)'): Show the description only for the focused row, as a single 16px tx-2 line. Move the key hint to a right-aligned keycap chip. Align the text to the row label x (499). Remove the title that repeats the focused row.",
+   "P1 row layout: label at x≈499, stepper arrows at x≈923 and x≈1175, values centred at x≈1049: Put the control block at x≈800–1100, or right-align it to the row edge (x=1420). Make the chevrons 24px, tx-2, with a lime fill on the focused row. Use 20px/600 for values and make the focused value lime.",
+   "P1 tab strip ('the raid / audio / controls / controller / display / accessibility' + 'send play data'): Move 'send play data' to the footer as a ghost button or into its own tab content. Set tabs at 20px/600 with 24px side padding and a 48px height. Add LB/RB glyphs at the strip ends.",
+   "P1 window card (outer frame) and the centred 960px column: Either widen the list to max 900px with a 5% margin and add a left category rail, or keep the 960px column and drop the full-width dividers. Place the 36px lime top tab inside the header, aligned to the title, or delete it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/cw-shkey-after/92-settings-superhot-pane-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-18T21:10"
  }
 }

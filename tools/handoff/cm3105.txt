@@ -1,0 +1,7 @@
+v31.05: f2 turns edit the words on and off from anywhere and freezes the raid while it is on
+
+F2 turns the word editor on and off from anywhere. In a raid it freezes the game so you can click and edit any text, and F2 again carries on.
+
+Check 31.05. Fails on v31.04.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

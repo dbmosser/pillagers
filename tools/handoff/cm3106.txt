@@ -1,0 +1,7 @@
+v31.06: shock, toxic waste and dry ice barrels join the red one
+
+Three new barrels join the red one: shock, toxic waste and dry ice. Each blast does its own thing, and a frozen crawler shatters.
+
+Check 31.06. Fails on v31.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

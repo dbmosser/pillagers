@@ -1,0 +1,7 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  90-legend-full                         staged      10.1s    | legendOn 2
+  91-settings-from-pause-after-scroll    staged      12.2s  
+  92-settings-superhot-pane              staged      11.4s    | pane: superhot modeofftime only moves when you act.key: ` (left of 1)
+  93-settings-from-pause-top             staged      10.1s    | first visit
+== 4k : window 3872x2263, viewport 3840x2160
+  92-settings-superhot-pane              staged      10.9s    | pane: superhot modeofftime only moves when you act.key: ` (left of 1)
