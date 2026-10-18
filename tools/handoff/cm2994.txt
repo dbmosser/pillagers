@@ -1,0 +1,7 @@
+v29.94: run over card: stat cells, and no first run card over the arcade
+
+The run over card shows kills, extractions and deaths as cells.
+
+Check 29.94. Fails on v29.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

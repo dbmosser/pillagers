@@ -16,3 +16,4 @@ Also then: cap racks buttons ~640px, codex grid 4 columns centred.
 Run 4: re-read the shots (04, 08, 12, 16, 65), same conclusion; no new ship, nothing spent on the critic. Waiting on his word on the three rulings above.
 Run 5: questions.md has no answer on the three rulings; nothing new to build on. No ship, no spend.
 Not judged after the changes: 03, 05, 07, 09-11, 13-18, 39, 41-44, 65-67.
+Run 6: questions.md still has no answer on the three rulings (centred card/close X, $ price, explaining hint lines). No new ship, no spend.

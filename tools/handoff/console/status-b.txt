@@ -1,1 +1,1 @@
-10-18 08:04 resting: Console money used up, 1 helper(s) run on your plan
+10-18 08:10 running c-31-ui-pause-settings (cap $4.00; spent today $88.63 of $176.54)

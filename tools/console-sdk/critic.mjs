@@ -33,7 +33,7 @@ if (caps.WORKSPACE_ID) H['anthropic-workspace-id'] = caps.WORKSPACE_ID;
 const res = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: H, body: JSON.stringify({ model: caps.MODEL || 'claude-sonnet-5-5', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] }) });
 const j = await res.json().catch(() => ({}));
 let cost = 0, txt = '', book = C + '/spend.txt';
-if (res.ok) { const u = j.usage || {}; cost = ((u.input_tokens || 0) * 3 + (u.output_tokens || 0) * 15) / 1e6;
+if (res.ok) { const u = j.usage || {}; cost = ((u.input_tokens || 0) * 1.71 + (u.output_tokens || 0) * 8.54) / 1e6;
   txt = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n'); }
 else if (/credit/i.test(String(j.error && j.error.message))) {
   // 10-18: when the month's Console credit is gone, the same review runs once through Claude Code on his plan (Read shows pictures)

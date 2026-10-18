@@ -192,12 +192,12 @@
   "when": "2026-10-18T06:18"
  },
  "35-kia-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The card is clean, centred and on-palette, but it reads as a generic template: the hero number is a banned \"$\" figure with no clear emphasis hierarchy, title and body type are undersized for a couch, and the explaining sentences and 5-item/4-tile mismatch make it feel unfinished.",
-  "pic": "tools/handoff/console/notes/shots/13-c6/35-kia-card-1080.jpg",
+  "verdict": "A clean, centred KIA card with the right bones (danger title, one hero number, 4-stat row, one primary plus one ghost), but the title is too small to lead, the hero uses a banned \"$\", and the stacked small grey text lines and tiny item tiles keep it below polished.",
+  "pic": "tools/handoff/console/notes/shots/13-f1/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:45"
+  "when": "2026-10-18T12:12"
  },
  "38-extracted-card": {
   "score": 3,
@@ -338,10 +338,10 @@
  "60-abandoned-card": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean dark card on the right tokens, but it has no hero line and no hierarchy: the title is a muted grey-tan, two cramped explaining sentences sit above the stats, and the dollar sign breaks the SP rule.",
-  "pic": "tools/handoff/console/notes/shots/13-c6/60-abandoned-card-1080.jpg",
+  "verdict": "The card has the right shell (centred, dark, one amber primary, stats row), but it has no hero line, the explaining sentences are cramped and tiny, and it still shows a banned '$' currency, so it reads as a template dialog instead of the guide's end card.",
+  "pic": "tools/handoff/console/notes/shots/13-f1/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:46"
+  "when": "2026-10-18T12:12"
  },
  "42-hub-pause-box": {
   "score": 3,

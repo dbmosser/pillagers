@@ -1632,6 +1632,14 @@ body #attract .arcpage .aprg{ display:inline-block; vertical-align:middle; box-s
 body #attract .arcpage .apr, body #attract .arcpage .apg{ align-items:center; min-height:calc(var(--btn-h) * var(--attz,1)); border-bottom:1px solid var(--ui-line); }
 body #attract .arcpage .apg{ display:flex; justify-content:space-between; gap:calc(var(--sp-4) * var(--attz,1)); color:var(--tx-2); opacity:.4; }
 body #attract:has(.arcpage[style*="block"]) .attname, body #attract:has(.arcover[style*="block"]) .attname{ color:var(--tx-2); }
+/* v29.94 (cw-partystats), the critic on v29.93 (55 = 3): "the stats are a dot separated run-on string of 16px grey, ext is cryptic, You 0 SP repeats the hero". The run over card shows kills, extractions and deaths as cells, a 32px value over a 16px label, one row for one player and a row each for two. The old text row stays in the page (hidden) for the readers of its words. Restyle only. */
+body #attract .arcover .aor{ display:none; }
+body #attract .arcover .aost{ display:grid; row-gap:calc(var(--sp-2) * var(--attz,1)); margin-top:calc(var(--sp-3) * var(--attz,1)); padding-top:calc(var(--sp-3) * var(--attz,1)); border-top:1px solid var(--ui-line); }
+body #attract .arcover .aosr{ display:flex; align-items:flex-end; gap:calc(var(--sp-3) * var(--attz,1)); }
+body #attract .arcover .aosn{ min-width:calc(var(--sp-5) * var(--attz,1)); font-size:calc(var(--fs-body) * var(--attz,1)); font-weight:700; line-height:1.1; color:var(--tx-2); }
+body #attract .arcover .aosc{ display:block; flex:1; }
+body #attract .arcover .aosc b{ display:block; font-size:calc(var(--fs-title) * var(--attz,1)); font-weight:700; line-height:1.1; color:var(--tx-1); }
+body #attract .arcover .aosc i{ display:block; margin-top:calc(var(--sp-1) * var(--attz,1)); font-style:normal; font-size:calc(var(--fs-label) * var(--attz,1)); font-weight:600; color:var(--tx-2); }
 /* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
    The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
    Pause: the title is the 32px title size in light text (the one amber thing in the box is Resume run), the key legend and the note line are 16px grey.
@@ -2680,7 +2688,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.93';
+var VER='29.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47832,7 +47840,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.93: How to play shows key caps, and the empty board shows ghost rows. Check 29.93 fails on v29.92',
+  now:'v29.94: The run over card shows kills, extractions and deaths as cells. Check 29.94 fails on v29.93',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60977,6 +60985,27 @@ function arcadeOverCount(c,o){
   if(k<1&&!o.cuRaf&&typeof requestAnimationFrame==='function'){ o.cuRaf=1; requestAnimationFrame(function(){ o.cuRaf=0; try{ if(ARCADE.over===o&&c.style.display!=='none') arcadeOverCount(c,o); }catch(_cu){} }); }
   return k<1;
 }
+// v29.94 (cw-partystats), critic 55 (3 of 5): the run over stats are cells, a value over a label (Kills, Extractions, Deaths). One player: three cells in a row. Two players: a row each, led by P1 and P2 and the player score.
+function arcadeOverStats(c,o){
+  var rows=ARCADE.solo?[[null,o&&o.p1]]:[['P1',o&&o.p1],['P2',o&&o.p2]], hd=[['Score','s'],['Kills','k'],['Extractions','x'],['Deaths','d']], g, row, cell, v, l, i, j, r;
+  if(!c||!o) return false;
+  g=document.createElement('div'); g.className='aost';
+  for(i=0;i<rows.length;i++){
+    r=rows[i][1]; if(!r) continue;
+    row=document.createElement('div'); row.className='aosr';
+    if(rows[i][0]){ cell=document.createElement('span'); cell.className='aosn'; cell.textContent=rows[i][0]; row.appendChild(cell); }
+    for(j=ARCADE.solo?1:0;j<hd.length;j++){
+      if(hd[j][1]==='d'&&!(r.d>=0)) continue;
+      cell=document.createElement('span'); cell.className='aosc';
+      v=document.createElement('b'); v.textContent=(hd[j][1]==='s')?arcadeCr(r.s):String(r[hd[j][1]]|0); cell.appendChild(v);
+      l=document.createElement('i'); l.textContent=hd[j][0]; cell.appendChild(l);
+      row.appendChild(cell);
+    }
+    g.appendChild(row);
+  }
+  c.appendChild(g);
+  return true;
+}
 function arcadeOverSync(){
   var o=ARCADE.over, oc=!!(o&&!o.board&&Date.now()-(+o.at||0)<ARCADE_IDLE.overMs), ini=arcadeIniLive()?ARCADE.ini:null,
       on=!!(ARCADE.on&&(oc||ini)&&!(G&&G.arcade&&!arcadeBenched())), c, i, ln, el, sig;   // v23.41 (arcade18): the initials card keeps it up
@@ -60989,6 +61018,7 @@ function arcadeOverSync(){
       :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
     if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']); else if(oc&&(o.why==='dead'||o.why==='burn')) ln.splice(1,0,['aoh','KIA -50%']);   // v24.xx (feat0g): the run ended on an extraction
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1]; c.appendChild(el); }
+    if(oc){ try{ arcadeOverStats(c,o); }catch(_os){} }
     if(ini) arcadeIniDraw(c,ini);
   }
   if(on&&oc){ try{ arcadeOverCount(c,o); }catch(_cu){} }   // v23.xx (his answer 20): the score counts up
@@ -63530,6 +63560,7 @@ function maybeShareAsk(){
 // painted over. Nothing here decides WHETHER a card is due; each maybe still
 // owns its own rule.
 function firstRunNext(){
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   /* v29.94 (cw-partystats): the welcome pack opened under the party attract on a fresh profile and showed through it. No first run card opens while the arcade is up; it waits for the next visit to the Undercroft */
   if(document.querySelector('.modal.on')) return;   // he is reading one already
   if(typeof maybeWelcome==='function'&&!P.welcomed){ maybeWelcome(); if(document.querySelector('.modal.on')) return; }
   // v10.88, HIS NOTE: the briefing card used to be the third link in this chain

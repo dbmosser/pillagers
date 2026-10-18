@@ -84,6 +84,9 @@ actually look good". So for any change a player can see:
   (a path with "before" in it is the old version; 1-4 pictures; about 4 cents). It answers with a score 1-5 and P0/P1/P2
   findings, and records the score in notes/ui/accept.json. Fix every P0 and P1 it names (ship a follow-up) and run it again.
   A screen is done at 4 or more. After two follow-ups that do not raise the score, write what is stuck in your notes and move on.
+- The critic does not know his rulings. Skip any finding that would reverse one (log it once in questions.md) and fix the rest.
+  A screen whose remaining findings all wait on him counts as done for now. NEVER end a run because a question is open: move on
+  to the next screen or the next part of your task. Do not ask again a question that questions.md already has.
 - Give numbers, not adjectives: "header 28 to 36px, 24px gap" is a change; "make it pop" is not. Never mix a game-feel change
   (shake, timings, speeds) into a UI or art change, and never touch feel values outside a task about feel.
 - Consistency beats a one-off: follow tools/handoff/console/notes/ui/style-guide.md once it exists, and fix the guide, not the

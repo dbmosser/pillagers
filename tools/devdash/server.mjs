@@ -38,8 +38,10 @@ function caps() { const o = {}; rd(C + '/caps.txt').split(/\r?\n/).forEach(l => 
 function data() {
   const today = new Date().toLocaleDateString('en-CA'), cp = caps();
   const sp = rd(C + '/spend.txt').split(/\r?\n/).filter(Boolean).map(l => l.split(' '));
-  const spentToday = sp.filter(x => x[0] === today).reduce((s, x) => s + (+x[1] || 0), 0);
-  const spentAll = sp.reduce((s, x) => s + (+x[1] || 0), 0), before = sp.filter(x => x[0] < today).reduce((s, x) => s + (+x[1] || 0), 0);
+  const spentToday0 = sp.filter(x => x[0] === today).reduce((s, x) => s + (+x[1] || 0), 0);
+  // 10-18: the real Console spend (tools/console-sdk/balance.mjs) wins over the estimate when it is under 3 hours old
+  let real = null; try { const r = JSON.parse(rd(C + '/real-spend.json')); if (r.month === today.slice(0, 7) && Date.now() - Date.parse(r.at) < 3 * 3600e3) real = r; } catch {}
+  const spentAll0 = sp.reduce((s, x) => s + (+x[1] || 0), 0), before = sp.filter(x => x[0] < today).reduce((s, x) => s + (+x[1] || 0), 0);
   const total = +(cp.TOTAL_USD || 190), end = cp.END_DATE || '2026-10-31';
   const daysLeft = Math.max(1, Math.round((new Date(end) - new Date(today)) / 864e5) + 1), share = Math.max(0, (total - before) / daysLeft);
   const tasks = existsSync(C + '/tasks') ? readdirSync(C + '/tasks').filter(f => f.endsWith('.md')).sort() : [];
@@ -53,7 +55,7 @@ function data() {
   const titles = {}; (tail(S + "/shipq.log", 12).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
   return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30),
     procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
-    spend: { today: +spentToday.toFixed(2), all: +spentAll.toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
+    spend: { real: !!real, today: +(real ? real.today_usd : spentToday0).toFixed(2), all: +(real ? real.month_usd : spentAll0).toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
     done: existsSync(C + '/done') ? readdirSync(C + '/done').length : 0, failed: existsSync(C + '/failed') ? readdirSync(C + '/failed') : [],
     questions: tail(C + '/questions.md', 8), runs: tail(C + '/runs.log', 10), shipq: tail(S + '/shipq.log', 12),
     nightly: tail(N + '/nightly.log', 8), fuzz: tail(R + '/tools/handoff/fuzz/fuzz.log', 4), review: tail(C + '/review/review.log', 3), commits };

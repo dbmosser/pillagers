@@ -65,11 +65,14 @@ retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basena
   grep -qxF "$n" "$C/retried.txt" 2>/dev/null && continue; echo "$n" >> "$C/retried.txt"
   awk -v n="$n" '$3==n{$3=n"-r2"} {print}' "$C/spend.txt" > "$C/spend.$L.tmp" && mv "$C/spend.$L.tmp" "$C/spend.txt"
   mv "$f" "$C/tasks/" 2>/dev/null && echo "$C/tasks/$n.md"; break; done; }
+# 10-18 08:10: two lanes picked the same job in the same second; picking is now one lane at a time (pick.lock, stale after 60 s)
+for i in $(seq 1 30); do mkdir "$C/pick.lock" 2>/dev/null && break; [ -n "$(find "$C/pick.lock" -maxdepth 0 -mmin +1 2>/dev/null)" ] && rm -rf "$C/pick.lock"; sleep 2; done
+busy=$(for d in "$C"/lane-*.lock; do [ "$d" = "$LK" ] && continue; cat "$d/task" 2>/dev/null; echo; done)
 if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | free); else t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | free); fi
 [ -z "$t" ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | sort | free)
 [ -z "$t" ] && t=$(retry)
+[ -n "$t" ] && basename "$t" > "$LK/task"; rm -rf "$C/pick.lock"
 [ -z "$t" ] && { echo "$(date '+%m-%d %H:%M') no tasks left" > "$C/status-$L.txt"; exit 0; }
-basename "$t" > "$LK/task"
 name=$(basename "$t" .md); stamp=$(date +%m%d-%H%M); out="$C/log/$name-$stamp.json"
 # 10-18 04:50, his "when console money runs out can't we use normal Claude Code?": once this month's Console spend reaches TOTAL_USD,
 # or the Console said the credit is gone (console-empty names the month), the lanes run on Claude Code on his Max plan instead.
@@ -77,6 +80,11 @@ name=$(basename "$t" .md); stamp=$(date +%m%d-%H%M); out="$C/log/$name-$stamp.js
 # CLI_LANES lanes run (default 1, lane a, which takes any job) and at most CLI_DAY_USD of API-equivalent cost a day (claude -p
 # reports it), released evenly through the day. Its costs go to cli-spend.txt, so spend.txt stays the real Console bill.
 month=$(date +%Y-%m); mspent=$(awk -v m="$month" 'substr($1,1,7)==m {s+=$2} END {printf "%.2f", s+0}' "$C/spend.txt")
+# 10-18, his "can't you make it so they pull the actual number instead of guessing??": the REAL Console spend (balance.mjs reads the
+# cost report with an Admin key he creates, PILLAGERS_ADMIN_KEY) replaces the estimate when under 3 hours old; refreshed every 20 min.
+RS="$C/real-spend.json"
+if [ -z "$(find "$RS" "$C/real-spend.err" -mmin -20 2>/dev/null)" ]; then timeout 60 node "$R/tools/console-sdk/balance.mjs" > "$C/real-spend.err" 2>&1 && rm -f "$C/real-spend.err"; fi
+if [ -n "$(find "$RS" -mmin -180 2>/dev/null)" ]; then rs=$(grep -o "\"month\":\"$month\",\"month_usd\":[0-9.]*" "$RS"); [ -n "$rs" ] && mspent=${rs##*:}; fi
 ENGINE=api; ALWAYS=0
 case ",$(cap CLI_ALWAYS "")," in *",$L,"*) ENGINE=cli; ALWAYS=1;; esac
 [ "$(cat "$C/console-empty" 2>/dev/null | tr -d '\r\n ')" = "$month" ] && ENGINE=cli
@@ -92,7 +100,7 @@ if [ $ENGINE = cli ]; then
     echo "$(date '+%m-%d %H:%M') pacing your weekly usage: \$$cday of \$$CD today (API-equivalent), \$$callow allowed by now" > "$C/status-$L.txt"; exit 0; fi
   echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan; \$$cday of \$$CD today)" > "$C/status-$L.txt"
   st=$(date +%s)
-  ( cd "$R" && env -u ANTHROPIC_API_KEY claude -p "Your task id is $name. Your lane is $L. You run in Claude Code: use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" \
+  ( cd "$R" && env -u ANTHROPIC_API_KEY claude -p "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" \
       --append-system-prompt "$(cat "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" \
       --allowedTools "${ALLOW[@]}" > "$out" 2> "$C/log/$name-$stamp.err" < /dev/null )
   cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); cost=${cost:-0}

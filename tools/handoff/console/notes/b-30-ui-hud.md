@@ -47,3 +47,5 @@ P2: toast bottom-left low contrast, wrong place (top-centre 40px with 4px left b
 Order by safety for the 10/30 demo: (1) weapon card "B / I backpack" to 16px tx-2 (find draw code), (2) currency block to one row only if he agrees, (3) HUD panel fills flat. Each its own mk script; look at 19,21,33,37,50 after each, then run the critic on 19,20,22-24,33,34,36,37,48,50,51,61,78 (none scored yet except 21 = 2).
 
 ## Run 9 (lane a): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
+
+## Run 10 (lane c): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
