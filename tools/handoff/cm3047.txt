@@ -1,0 +1,7 @@
+v30.47: the demo kit stays the same all night
+
+The starting guns stay the same all night and change after New party.
+
+Check 30.47. Fails on v30.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

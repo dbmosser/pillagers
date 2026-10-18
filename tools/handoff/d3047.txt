@@ -1,0 +1,5 @@
+## v30.47 - The demo kit stays the same all night
+
+Co-op hunt while he was away. His answer Q67 (10-18): same kit all night, and a new kit after NEW PARTY. The two random guns are drawn once and kept in the party record; every drop and respawn uses them and NEW PARTY draws the next pair.
+
+MEASURED. Check 30.47 passes, and fails on v30.46.

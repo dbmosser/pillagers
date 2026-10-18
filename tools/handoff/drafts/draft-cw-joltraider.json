@@ -1,0 +1,12 @@
+{
+    "title":  "A HIT RAIDER JUMPS BACK A LITTLE FARTHER",
+    "why":  "His Q5: enemy feel. The raider is the commonest body in a raid and a hit pushed it only 5 px for 0.16 s. It now jumps back 6.5 px at the full flash, easing to 0 over the same 0.16 s. The Crawler keeps 8 px, every other body 5.",
+    "now":  "A raider you hit now jumps back a little farther.",
+    "edits":  [
+                  {
+                      "anchor":  "var HIT_JOLT={crawler:8};",
+                      "replacement":  "var HIT_JOLT={crawler:8,raider:6.5};   // v28.xx (cw-joltraider), his Q5 enemy feel: the raider, the commonest body, 5 to 6.5 px at the full 0.16 s flash"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a raider in its hit flash is shoved 6.5 px away from the player (up from 5), the Crawler still 8 and an unnamed body 5 (his Q5 enemy feel)\u0027,\n   run:function(){\n     if(typeof animHitShift!==\u0027function\u0027) return \u0027SKIP: no animHitShift\u0027;\n     var g=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       var px=g.player.x, py=g.player.y;\n       var r=animHitShift({kind:\u0027raider\u0027,x:px+100,y:py,hitT:0.16});\n       var rh=animHitShift({kind:\u0027raider\u0027,x:px+100,y:py,hitT:0.08});\n       var c=animHitShift({kind:\u0027crawler\u0027,x:px+100,y:py,hitT:0.16});\n       var o=animHitShift({kind:\u0027warden\u0027,x:px+100,y:py,hitT:0.16});\n       if(!r||Math.abs(r.x-6.5)\u003e0.01||Math.abs(r.y)\u003e0.01) return \u0027a raider hit shove is \u0027+JSON.stringify(r)+\u0027, not 6.5 px\u0027;\n       if(!rh||Math.abs(rh.x-3.25)\u003e0.01) return \u0027a raider at half the flash is shoved \u0027+(rh\u0026\u0026rh.x)+\u0027, not 3.25 px\u0027;\n       if(!c||Math.abs(c.x-8)\u003e0.01) return \u0027a Crawler hit shove is \u0027+(c\u0026\u0026c.x)+\u0027, not 8 px\u0027;\n       if(!o||Math.abs(o.x-5)\u003e0.01) return \u0027an unnamed body hit shove is \u0027+(o\u0026\u0026o.x)+\u0027, not 5 px\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

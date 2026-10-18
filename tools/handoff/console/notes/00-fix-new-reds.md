@@ -1,15 +1,19 @@
 # 00-fix-new-reds notes
-Source: corpus-1018-0246.txt (v29.32). Candidate list notes/reds1.txt, outputs reds1.out (first full run).
-Method: runchk.sh LIST OUT under lock; edits to mkfixture.ps1 in place; HELD=1? (I used plain fixq.sh while holding lock: worked: commits + rebuilds).
-## done (committed 752cf020), all (b) retargets
-- 24.79 b: drink name no longer uppercase (never all caps rule), 19px+ kept
-- 24.87 b: action name same
-- 24.45 b: row labels not caps; list left edge tolerance (one-sided)
+Source: corpus-1018-0246.txt (v29.32). All fixture edits committed (752cf020, 823d06df, 7dd7ce2c, e4926979). All retargets (b), none a real game break.
+Final verification run (reds4.out, runchk on build after v30.43): all PASS.
+
+## one line per check
+- 9.18 b: title no-scroll check: margin retarget to the new title (cw-title-line); PASS
+- 29.10 b: quantity prompt (qtymodal) way out is Cancel/Esc, not a CLOSE button; PASS
+- 27.28 26.52 26.37 26.36 b: gun key checks retargeted to gunkeys0/gunsgone wording; PASS
+- 25.68 24.38 b/none: PASS already
+- 24.79 24.87 24.45 17.94 b: never all caps (names/labels/headers sentence case), 24.45 left edge one-sided
 - 24.63 b: mode row min height 50 -> 48
-- 17.94 b: modal headers not caps
-- 18.11 b: (already retargeted by cw-title-line dd2a1841), 18.73 now SKIPs (no step cards)
-- 29.10 25.68 24.38 PASS already
-## todo (failure first line from reds1.out)
-9.18 story margin 16 vs 26 at 977px; 27.28/26.52/26.37/26.36 gun keys; 24.52 [FIRE] keycap; 23.05 slot 0 text;
-21.93 SKIP; 21.84 zone name case; 21.81 EXPERIMENTAL; 13.05/13.03 EXPERIMENTAL; 11.78 readout 24px; 11.51 sector facts;
-10.10 modal close; 9.76 9.74 text edits; 9.46 legend hit box
+- 24.52 b: [FIRE] keycap retarget; PASS
+- 23.05 21.93 21.84 21.81 b: ncFix (sentence case drawn) applied to his-wording comparisons; PASS
+- 13.05 13.03 b: same ncFix retarget; PASS
+- 11.78 b: credits readout 32 -> 24px (style guide, Q7), height 40 -> 36
+- 11.51 b: sector line compared through ncFix
+- 10.10 b: modal close word is "Close"; qtymodal exempt (Cancel)
+- 9.76 9.74 9.46 b: probes in sentence case; legend filter ignores single-x words in lower panels
+- 18.73 SKIP (no step cards), 18.11 PASS

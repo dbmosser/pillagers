@@ -2779,7 +2779,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.46';
+var VER='30.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48082,7 +48082,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.46: A Crawler you hit now jumps back farther. Check 30.46 fails on v30.45',
+  now:'v30.47: The starting guns stay the same all night and change after New party. Check 30.47 fails on v30.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56818,10 +56818,8 @@ function arcadeGun(id){
 // The random loadout, from Math.random only (never rr, pick or rollFieldGun, which are the seeded stream).
 function arcadeKitApply(p,g,why){
   if(!p||!g) return false;
-  var A=ARCADE_GUNS1.filter(function(k){ return !!WEAPONS[k]; }), a, B, b, k;
-  a=A.length?A[Math.floor(Math.random()*A.length)]:'rifle';
-  B=ARCADE_GUNS2.filter(function(k2){ return k2!==a&&!!WEAPONS[k2]; });
-  b=B.length?B[Math.floor(Math.random()*B.length)]:null;
+  var a, b, k, _pk=arcadePartyKit();
+  a=_pk.a; b=_pk.b||null;   // v28.xx (cw-partykit), his answer Q67 (2026-10-18): "Same kit all night, and a new kit after NEW PARTY." The two guns are in the party record
   p.wep=arcadeGun(a); p.sec=b?arcadeGun(b):WEAPONS.fists;
   p.ammo=p.wep.mag; p.secAmmo=(p.sec&&p.sec.mag)||0; p.reserve=6*p.wep.mag;
   p.wepIssued=false; p.secIssued=false; p.wepFromArmory=false; p.secFromArmory=false;
@@ -60851,9 +60849,24 @@ function arcadePartyAt(){ return +arcadePartyRec().t||0; }
 function arcadePartySeed(){ var o=arcadePartyRec(), s=(+o.s)>>>0; return (s&&(+o.t||0)>0)?s:0; }   // v27.xx (board20): the seed lasts until the next NEW PARTY, as the board does
 function arcadePartyMap(){ var o=arcadePartyRec(); return (arcadePartySeed()&&typeof o.m==='number'&&o.m>=0&&o.m<FIXED_MAPS.length)?(o.m|0):-1; }
 function arcadePartyCode(){ var s=arcadePartySeed(); return s?s.toString(36).toUpperCase().slice(-4):''; }
+// v28.xx (cw-partykit), his answer Q67 (2026-10-18): THE KIT IS THE SAME ALL NIGHT. The random kit (a gun in hand from ARCADE_GUNS1, a different one stowed
+// from ARCADE_GUNS2) is drawn once and kept in the party record, so every drop, respawn and run of the night starts with it, in both windows; NEW PARTY
+// draws the next one. Math.random only, as before. A record without a kit (no party yet, or an older record) gets one drawn the first time it is asked for.
+function arcadeKitPickRandom(){
+  var A=ARCADE_GUNS1.filter(function(k){ return !!WEAPONS[k]; }), a=A.length?A[Math.floor(Math.random()*A.length)]:'rifle',
+      B=ARCADE_GUNS2.filter(function(k2){ return k2!==a&&!!WEAPONS[k2]; }), b=B.length?B[Math.floor(Math.random()*B.length)]:'';
+  return {a:a,b:b};
+}
+function arcadePartyKit(){
+  var o=arcadePartyRec(), k=o.kit;
+  if(k&&typeof k==='object'&&typeof k.a==='string'&&ARCADE_GUNS1.indexOf(k.a)>=0&&WEAPONS[k.a]&&(k.b===''||(typeof k.b==='string'&&ARCADE_GUNS2.indexOf(k.b)>=0&&k.b!==k.a&&WEAPONS[k.b]))) return k;
+  k=arcadeKitPickRandom(); o.kit=k;
+  try{ localStorage.setItem(ARCADE_PARTY_KEY,JSON.stringify(o)); }catch(_pk){}
+  return k;
+}
 function arcadeNewParty(){
   var _sd=((Math.random()*4294967296)>>>0)||1;   // v26.xx (party6): the night seed, picked as a raid picks its own
-  try{ localStorage.setItem(ARCADE_PARTY_KEY,JSON.stringify({t:Date.now(),s:_sd,m:(ARCADE.mapIx|0)})); }catch(_np){ return false; }
+  try{ localStorage.setItem(ARCADE_PARTY_KEY,JSON.stringify({t:Date.now(),s:_sd,m:(ARCADE.mapIx|0),kit:arcadeKitPickRandom()})); }catch(_np){ return false; }
   try{ if(ARCADE.att) ARCADE.att.ph=''; }catch(_ap){}   // the board page draws again
   return true;
 }

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.47 - The demo kit stays the same all night
+
+Co-op hunt while he was away. His answer Q67 (10-18): same kit all night, and a new kit after NEW PARTY. The two random guns are drawn once and kept in the party record; every drop and respawn uses them and NEW PARTY draws the next pair.
+
+MEASURED. Check 30.47 passes, and fails on v30.46.
 ## v30.46 - A HIT CRAWLER JUMPS BACK FARTHER
 
 Co-op hunt while he was away. His Q5: enemy feel. A hit body is drawn pushed 5 px for 0.16 s whatever it is. The Crawler is the smallest, lightest common machine (radius 15) so 5 px barely showed. It now jumps back 8 px at the full flash, easing to 0 over the same 0.16 s. Raiders and the rest keep 5 px.
