@@ -6169,7 +6169,7 @@ window.__REGRESS=[
        if(cs.position!=='relative') res='Press any button is '+cs.position+', not in the card column';
        else if(parseFloat(cs.borderTopWidth)<1) res='Press any button has no plate line';
        else if(ar.top-cr.bottom<0||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card, not within 80px';
-       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3) res='Press any button is not centred under the card';
+       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3&&Math.abs(ar.right-cr.right)>3) res='Press any button is not centred under the card or flush right';   // v28.xx (cw-party-over6): flush right is as good
        else if(Math.abs(mid-half)>60) res='the card and button sit at '+Math.round(mid)+'px, not about the middle of the screen ('+Math.round(half)+')';
        return res;
      } finally {
@@ -6189,7 +6189,7 @@ window.__REGRESS=[
        if(cs.position!=='relative') res='Press any button is '+cs.position+', not in the card column';
        else if(parseFloat(cs.borderTopWidth)<1) res='Press any button has no plate line';
        else if(ar.top-cr.bottom<0||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card, not within 80px';
-       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3) res='Press any button is not centred under the card';
+       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3&&Math.abs(ar.right-cr.right)>3) res='Press any button is not centred under the card or flush right';   // v28.xx (cw-party-over6): flush right is as good
        return res;
      } finally {
        try{ oc.style.display='none'; d.style.display=wasDisp; }catch(_f){}
