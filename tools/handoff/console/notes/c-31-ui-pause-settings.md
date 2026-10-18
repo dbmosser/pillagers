@@ -1,15 +1,8 @@
-# c-31-ui-pause-settings (lane b) run 2026-10-19
-
-Shipped: v29.96 cw-pausex (pause X, Settings focus row, Keys fade), v29.98 cw-xghost (ghost X, quieter focus box, Keys labels tx-1).
-Critic after both: 25 = 3, 26 = 3, 32 = 3 (each "better/same", never 4). Screens 18, 27-31, 42, 49, 68-75 not re-scored this run
-(42/49 share the pause card with 25).
-
-## Stuck (same findings every round, not fixed)
-- Backdrop: critic wants a baked world at 55% and HUD hidden under the pause card. Scrim is already .82; hiding the HUD
-  or baking the world is a game-render change (not UI CSS), left for a task about it.
-- Pad hint strip / B glyph / key caps in the footer ("Esc Resume" is bare text): needs a shared key-hint component for all
-  modals. Best next step: one shared footer hint row (cap + word, live to last input device) in ui-shared.
-- Settings: tab strip scrolls inside the list scroller, "Send play data" tab detached; detail pane repeats the row title.
-- Keys: no focused cap; labels fixed column width.
-- Pause card: chamfer corner and amber tab (critic wants 4px square + 36x2 tab), buttons 18px vs 20px, run-context line.
-Next worker: do the shared key-hint footer first (it appears in every critic list), then the Settings tab strip out of the scroller.
+# c-31-ui-pause-settings (lane b)
+Run 1: shots in notes/shots/c-31v-before (19 screens), c-31v-after (18,72,75).
+Shipped: v30.03 card P16, v30.05 cw-setnote (rebind callout short, detail pane hides title/value).
+Critic after: 75 = 2 (rebind banner is still a bar; list cramped, wraps); 72 = 2 and 18 = 2 (detail pane now shows
+only the "Don't use this..." help with no name: critic wants name+help back (P1); no focus fill; label-to-stepper
+gap ~400px; tiny arrows; tabs 17px; Send play data in tab strip; backdrop too dark; no key-hint strip).
+Scores before: 18:2 25:3 26:3 32:3 42:3 49:3 70:2 72:2 75:2. Others (27-31, 68,69,71,73,74) unscored.
+Next: settings row CSS round (stepper arrows 24px, focus row, tabs 20px), then pause box (25/42/49) round.

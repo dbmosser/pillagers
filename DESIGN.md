@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.06 - THE WHAT IS NEW CARD NAMES POLISH PASS 15
+
+Co-op hunt while he was away. The card was stamped v30.03 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 30.06 passes, and fails on v30.05.
 ## v30.05 - SHORT REBIND CALLOUT, QUIETER SETTINGS DETAIL PANE
 
 Co-op hunt while he was away. Critic c-31 round 11 (Pad buttons 75 at 2, Settings 18 and 72 at 3): the rebind banner is an explaining sentence at 14px with clipped corners; the Settings detail pane repeats the focused row title and value. One short callout at 20px, and a pane that shows only the help line.

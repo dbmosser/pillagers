@@ -122,10 +122,10 @@
  "18-settings-hub": {
   "score": 2,
   "pass": false,
-  "verdict": "The modal is now centred and no longer runs nearly edge to edge, but it is still a generic stack of identical setting rows with no focused row, a clipped half-row at the bottom, a tiny tab strip and a cramped 718px-wide column.",
-  "pic": "tools/handoff/console/notes/shots/c-31t-after/18-settings-hub-1080.jpg",
+  "verdict": "The only real change is that the half-clipped last row is now fully visible and the footer lost its repeated title and value, but the modal is still a dim, evenly weighted wall of identical rows with a tiny stepper cluster far from its labels, and nothing about it looks like Pillagers.",
+  "pic": "tools/handoff/console/notes/shots/c-31v-after/18-settings-hub-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T10:11"
+  "when": "2026-10-18T12:47"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -422,5 +422,21 @@
   "pic": "tools/handoff/console/notes/shots/13-c6/76-haul-reveal-mid-1080.jpg",
   "task": "13-ui-end-cards",
   "when": "2026-10-18T10:46"
+ },
+ "75-settings-pad-rebind-waiting": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The banner text is now bigger and shorter, and the clipped 'Gear' rows no longer peek out, but the modal is still a cramped scrolling list with wrapped labels, collided rows, and a sub-spec type scale.",
+  "pic": "tools/handoff/console/notes/shots/c-31v-after/75-settings-pad-rebind-waiting-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T12:46"
+ },
+ "72-settings-sec-display": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The new version fixes the clipped last row and drops the odd 'Edit the words' footer title, but the screen is still a flat wall of identical rows with no visible focus, an unexplained warning sentence and a stepper placed far from its label.",
+  "pic": "tools/handoff/console/notes/shots/c-31v-after/72-settings-sec-display-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T12:46"
  }
 }
