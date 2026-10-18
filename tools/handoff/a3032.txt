@@ -1,0 +1,1 @@
+| Easy mode question in the 2 player demo | v30.32 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.32 passes, fails on v30.31 |

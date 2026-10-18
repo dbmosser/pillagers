@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.32 - Easy mode question in the 2 player demo
+
+Co-op hunt while he was away. His answer Q66 (2026-10-18): the game asks the players if they want easy mode. In the 2 player demo, after a player drops back in from his second death of the run with no extraction yet, a short card asks once per window: Y or A yes, N or B no, 12 s with no answer is a no. Yes takes 30 percent off the damage he takes (the Forgiving setting). Only the arcade layer reads it, so normal raids and the seed 4242 fingerprint do not move.
+
+MEASURED. Check 30.32 passes, and fails on v30.31.
 ## v30.31 - SMALL ART TOUCHES: PACK BUCKLE, BOOT LACES, JERSEY SHADOW
 
 Co-op hunt while he was away. His answer 75 (10-18): finish the small art touches. The default pack gets a dark lower seam, a strap and a steel buckle; the boots get two pale lace dots behind the toe cap; the jersey 23 gets a soft ink shadow so it reads off the red. All inside the old outlines, so no anchor moves.

@@ -311,17 +311,17 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, consistent control-reference card that follows the style guide's panel, caps and sentence-case rules, but it has no close X, a weak 'Press any button' prompt, tiny muted text and a cramped, unfinished feel for a first-impression screen.",
+  "verdict": "The card is tidy, sentence-case and on-palette, but it is still a flat key table with no focal point, no close button and no real primary action, so it reads as a competent template rather than a polished AAA screen.",
   "findings": [
-   "P1 Card header, top-right: Add a 48x48 ghost close button at the header's top-right (card x≈1330, y≈172-228) with a close glyph and 'B' / 'Esc' hints. Keep 'Press any button' as the footer hint.",
-   "P1 Footer 'Press any button' with amber ring: Make it a 56px primary button ('Got it', min-width 200px, fill #f5b73b, ink #1a1205) right-aligned in a 72px footer, and drop the radio-dot.",
-   "P1 Table rows (Move … Loot): Brighten row names to tx-1 at 20px. Group the rows into Combat (Move, Aim, Fire, Roll, Reload, Switch gun) and Raid (Items, Extract, Loot) with 16px gaps, or highlight Extract with a 3px accent bar. Tighten the label column to about 160px.",
-   "P1 Extract rows, 'in the ring' hints: Set the note to 16px tx-2, put it in the label column ('Extract (in the ring)'), and keep only the Hold X cap in the key columns. Or enlarge the circle to 28px to match the cap height.",
-   "P2 Key caps, Controller column: Render pad glyphs (round A/X buttons, trigger and bumper shapes) in the controller column, and make chips 28px high with 16px label type and 0 8px padding."
+   "P1 Card header, top-right (x≈1330, y≈172-228): Add a 48x48 ghost button with the close glyph at the header's top-right, plus a 'B' pad glyph and Esc. The header row should be 56px high with a 32px title.",
+   "P1 Footer 'Press any button' with amber radio-dot (x≈1180-1346, y≈856): Replace it with a 56px primary button 'Got it' (fill #f5b73b, ink #1a1205, min-width 200px) right-aligned in a 72px footer. Drop the ring, or keep 'Press any button' as a 16px tx-2 hint to its left.",
+   "P1 Title 'How to play' (y≈216) versus the table: Set the title to 32px/700. Row names should be 20px tx-1. Group the rows into Combat and Raid with a 16px gap and a 16px tx-2 sub-label, or add a 3px --extract left bar on the Extract row.",
+   "P1 Row names (x≈573, Move to Loot): Use 20px f-cond 600 in --tx-1. Keep the 56px row pitch.",
+   "P2 Extract rows, 'in the ring' hints (x≈835-1225, y≈720): Move the note to the label column as 'Extract' with a 16px tx-2 sub-line 'in the ring', or show it once. Make the circle 28px to match the cap height, or drop it."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/46-arcade-attract-how-to-play-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-j2/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:48"
+  "when": "2026-10-18T14:26"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -388,17 +388,17 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is now clean: a plain 4px-radius frame, a ghost X, a clear amber Resume and a separated danger action. It still has the unstyled 'Esc Resume' hint, no visible pad focus state, and a card that is small and sparse at couch distance.",
+  "verdict": "The card is clean and consistent with the guide (one amber primary, ghost stack, red End run, X top-right), but it is still a plain button list with a tiny 400px-wide footprint, an unlit focus state, and a backdrop where the HUD and the How to play overlay still ghost through.",
   "findings": [
-   "P1 Footer hint 'Esc Resume' (bottom right): Draw a 28px-high cap with a 1px --ui-line-hi border around 'Esc' and set 'Resume' at 16px f-cond 600 tx-2 beside it. Swap to the B or Start glyph when the pad is active. Or delete the hint, since the X already shows close, and cut the card height by about 48px.",
-   "P1 Button stack focus state: Focused ghost row: 2px --acc border, --ui-raised fill and a 3px left --acc bar. Show a screenshot with focus on Settings and another on End run, where the focus border should be --danger.",
-   "P1 Card scale at 1080p: Set button text to 20px f-cond 700 and the title to 32px. Raise the buttons to 56px (they are about 56 now, so keep that) and widen the card to 520px.",
-   "P2 Backdrop: Use rgba(6,7,8,.80) over a baked world at 55%, and hide the 'How to play' overlay and the HUD while the pause card is open.",
-   "P2 End run group spacing and colour: Lighten the danger text to about #ef5a42 to reach at least 4.5:1, and keep the 1px --danger border."
+   "P1 Backdrop (both shots): Hide the HUD and the How to play overlay while paused. Bake the world once at 55% brightness under rgba(6,7,8,.80). Remove the leftover SP, ammo and objective ghosts.",
+   "P1 Footer hint 'Esc Resume' (image 1, bottom right): Delete it, as image 2 did, and keep the card at about 516px high. If it stays, use a 28px cap around 'Esc' with 'Resume' at 16px f-cond 600 tx-2, and swap to the B glyph on pad.",
+   "P1 Button stack focus state: Focused ghost row: 2px --acc border, --ui-raised fill, 3px left --acc bar. On End run the focus border is --danger. Capture one shot with focus on Settings and one on End run.",
+   "P1 Card scale and button type: Widen the card to 520px. Set button text to 20px f-cond 700 and the title to 32px. Keep the 56px buttons and give Resume a small pad glyph or icon on its left to add identity.",
+   "P2 End run button: Lighten the text to about #ef5a42 for at least 4.5:1 and keep the 1px --danger border. Keep the 48px gap above it."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/49-arcade-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-j2/49-arcade-pause-box-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:49"
+  "when": "2026-10-18T14:26"
  },
  "56-arcade-attract-board-scored": {
   "score": 3,

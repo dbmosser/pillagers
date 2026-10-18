@@ -2790,7 +2790,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.31';
+var VER='30.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17410,6 +17410,12 @@ function pollPad(){
   // v27.69 (cloud-menus-pad-menu-press-spent), CLOUD HUNT 2026-10-15: THE PRESS THAT SHUTS A MENU IS SPENT IN THE RAID WHATEVER CHANGE PAD BUTTONS PUT ON IT. padMenu stamps PAD.prev by the
   // physical button, the raid reads the logical one, so with fire moved onto A the A on RESUME RUN or ASCEND fired a real shot, B rolled and
   // MENU crouched. Every button held while a menu owns the pad is noted here; the raid ignores it until it is let go.
+  // v28.xx (cw-easymode): the easy mode question takes A (yes) or B (no) on this window pad; the press is spent, the rest of the pad plays on
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&easyLive()){
+    var _enw=[], _ei;
+    for(_ei=0;_ei<bt.length;_ei++) if(pressed(_ei)&&!PAD.prev[_ei]) _enw.push(_ei);
+    try{ easyPad(_enw); }catch(_epd){}
+  }
   if(padMenu(pressed)){ PAD.mSpent=[]; for(var _ms=0;_ms<bt.length;_ms++) if(pressed(_ms)) PAD.mSpent[_ms]=1; padRelease(); return; }
   if(state==='hub'){
     // This branch used to assign keys['KeyW'] and friends unconditionally, which
@@ -20625,7 +20631,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     if(p.downT<=0) killPlayer(src);
     return;
   }
-  amt*=CFG.eDmg;
+  amt*=CFG.eDmg*easyDmgMul();   // v28.xx (cw-easymode): a third off once he said yes to easy mode
   if(p.armor>0){
     // NOT ||, v2.16. No Rig has absorb 0.00 and 0 is falsy, so this fallback
     // silently handed a player wearing nothing 0.55 absorption, better than the
@@ -48010,7 +48016,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.31: Packs, boots and the jersey number have finer drawn detail. Check 30.31 fails on v30.30',
+  now:'v30.32: The 2 player demo now asks once if you want easy mode after your second death. Check 30.32 fails on v30.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -57317,6 +57323,7 @@ function arcadeRespawn(why){
   p.vx=0; p.vy=0; G.anchX=undefined; G.shake=0;
   if(why!=='bench') ARCADE.deaths=(ARCADE.deaths|0)+1;   // v23.25 (arcade6): coming off the bench is not a death
   if(why!=='bench'&&G.pwr) G.pwr.act={};   // v28.62 (cloud-raid-pwrdeath), CLOUD HUNT 2026-10-15: a death ends the power-ups; the dying test in pwrTick never ran, the death beat skips the player tick
+  try{ easyAskMaybe(why); }catch(_ea){}   // v28.xx (cw-easymode): his answer Q66, the easy mode question after the second death
   ARCADE.holdT=3;
   return true;
 }
@@ -60383,6 +60390,7 @@ function arcadeHud(){
   try{ arcadeDropHud(); }catch(_adh){}   // v23.35 (arcade13)
   try{ arcadeCardHud(); }catch(_ach){}   // v23.42 (arcade19): the controls card while shielded and 4 s after
   try{ arcadeIniHud(); }catch(_aih){}   // v23.45 (arcade22): the initials card at a top 10 extraction
+  try{ easyHud(); }catch(_eh){}   // v28.xx (cw-easymode): the easy mode question
   var b=ARCADE.banner, k, a, y, cx=Math.round(W/2), bw, bh;
   if(!b) return;
   k=G.t-b.t0;
@@ -60888,6 +60896,7 @@ function arcadeKeyAtt(e){
   if(!ARCADE.on||!e) return false;
   if(arcadeOpChord(e)) return true;   // v23.44 (arcade21): Ctrl+Shift+F10, the only way out
   if(ARCOP) return arcadeOpKey(e);   // v26.xx (party5): the operator menu takes the keys and clicks
+  if(easyKey(e)) return true;   // v28.xx (cw-easymode): Y or N answers the easy mode question
   if(arcadeIniRaid()) return arcadeIniKey(e);   // v23.45 (arcade22): the initials card at an extraction takes the keys (ESC still pauses)
   if(G&&G.arcade&&!arcadeBenched()) return false;            // a raid is on here: the key plays (v23.25, arcade6: unless player 1 is benched)
   if(ARCADE.role==='host'&&arcadeIniLive()) return arcadeIniKey(e);   // v23.41 (arcade18): the initials card takes the keys, and a click drops nobody in
@@ -61451,6 +61460,56 @@ function arcadeIniExtract(){
   if(!arcadeIniStart(id)||!ARCADE.ini) return false;
   ARCADE.iniX=id; ARCADE.ini.raid=1;
   return true;
+}
+// v28.xx (cw-easymode), HIS ANSWER (2026-10-18, Q66): "At some point the game asks the players if they want easy mode." In the 2 player demo, the
+// moment a player drops back in after his second death of the run with no extraction yet, a card asks once (per page, per window): keyboard Y or N,
+// pad A or B, no answer in 12 s is a no. Yes takes a third off the damage he takes (EASY_MUL, the Forgiving setting). The card never stops play: only
+// its own keys and buttons are taken. Nothing changes until he says yes, so a normal raid and the seed 4242 fingerprint are untouched.
+var EASY_MUL=0.7, EASY_MS=12000;
+function easyDmgMul(){ return (typeof ARCADE==='object'&&ARCADE&&ARCADE.easy&&G&&G.arcade)?EASY_MUL:1; }
+function easyLive(){ return !!(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&ARCADE.easyAsk&&G&&G.arcade&&!G.over&&!G.sim); }
+function easyAskMaybe(why){
+  if(typeof ARCADE!=='object'||!ARCADE||!ARCADE.on||ARCADE.solo||ARCADE.easyAsked||ARCADE.easy||why==='bench') return false;
+  if((ARCADE.deaths|0)<2||(ARCADE.ext|0)>0) return false;
+  ARCADE.easyAsked=1; ARCADE.easyAsk={at:Date.now()};
+  return true;
+}
+function easyAnswer(yes){
+  if(!ARCADE||!ARCADE.easyAsk) return false;
+  ARCADE.easyAsk=null;
+  if(yes){ ARCADE.easy=1; try{ say('Easy mode on','info'); }catch(_es){} }
+  return true;
+}
+function easyKey(e){
+  if(!easyLive()||!e||String(e.type||'')!=='keydown'||e.repeat||e.ctrlKey||e.altKey||e.metaKey) return false;
+  var cd=String(e.code||'');
+  if(cd!=='KeyY'&&cd!=='KeyN') return false;
+  try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){}
+  easyAnswer(cd==='KeyY');
+  return true;
+}
+function easyPad(nw){
+  if(!easyLive()||!nw) return false;
+  var i, b, yes=null;
+  for(i=0;i<nw.length&&yes===null;i++){ b=nw[i]; if(b===0) yes=true; else if(b===1) yes=false; }
+  if(yes===null) return false;
+  try{ PAD.prev[nw[i-1]]=true; if(!PAD.mSpent) PAD.mSpent=[]; PAD.mSpent[nw[i-1]]=1; }catch(_pp){}
+  easyAnswer(yes);
+  return true;
+}
+function easyHud(){
+  var n=ARCADE.easyAsk, cx, y, bw, bh, left;
+  if(!easyLive()||!ctx) return;
+  left=EASY_MS-(Date.now()-(+n.at||0));
+  if(left<=0){ easyAnswer(false); return; }
+  cx=Math.round(W/2); y=Math.round(H*0.30); bw=LH(440); bh=LH(96);
+  ctx.save(); ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  ctx.fillStyle='rgba(6,9,13,.86)'; ctx.fillRect(cx-bw/2,y-LH(40),bw,bh);
+  ctx.strokeStyle='rgba(127,227,212,.75)'; ctx.lineWidth=2; ctx.strokeRect(cx-bw/2+1,y-LH(40)+1,bw-2,bh-2);
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#7fe3d4'; hudText('Want easy mode?',cx,y-LH(12));
+  ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(242,230,200,.88)';
+  hudText(padB('Y or A  yes  \u00b7  N or B  no')+'  \u00b7  '+Math.ceil(left/1000),cx,y+LH(18));
+  ctx.restore();
 }
 function arcadeIniHud(){
   var n=ARCADE.ini, cx, y, bw, bh, i, gx, lx, left;
