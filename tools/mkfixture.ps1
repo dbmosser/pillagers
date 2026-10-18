@@ -36171,7 +36171,7 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'23.28',what:'arcade7, his order 2026-10-11: in the arcade controller 1 is player 1 and controller 2 is player 2, held in memory and told to the other window; the kept controller pick is never written, and leaving the arcade puts the kept pick back',
+  {v:'23.28',what:'arcade7, retargeted for cw-p2pads (his order 2026-10-18: first controller plugged in always controls p2 only, second controller plugged in always controls p1 only; it used to put controller 1 on player 1 and controller 2 on player 2): the arcade puts neither window on a fixed controller (pick -1, told to the other window), so the order plugged in decides; the kept controller pick is never written, and leaving the arcade puts the kept pick back',
    run:function(){
      var bad=[], out=[], sv=null, kh='', kp='', h0=null, p0=null, gps, i, pk=function(ix){ for(var j=0;j<out.length;j++) if(out[j]&&out[j].t==='padpick'&&out[j].ix===ix) return true; return false; }, gs=function(k){ try{ return localStorage.getItem(k); }catch(_g){ return null; } };
      try{
@@ -36189,12 +36189,12 @@ window.__REGRESS=[
        if(NET.padIx!==2) return 'SKIP: the kept host pick did not load ('+NET.padIx+')';
        out.length=0;
        if(!arcadeEnter('host')) bad.push('arcadeEnter(host) failed');
-       if(NET.padIx!==0) bad.push('in the arcade the host plays controller '+NET.padIx+', not the first (0)');
-       if(!pk(0)) bad.push('the host did not tell player 2 it is on the first controller (no padpick 0)');
+       if(NET.padIx!==-1) bad.push('in the arcade the host is put on controller '+NET.padIx+' by pick, not left to the order plugged in (-1)');
+       if(!pk(-1)) bad.push('the host did not tell player 2 it has no fixed controller (no padpick -1)');
        if(gs(kh)!=='2') bad.push('entering the arcade wrote the kept host pick ('+gs(kh)+')');
        gps=[{connected:true,buttons:[],axes:[]},{connected:true,buttons:[],axes:[]}];
-       i=netPadFor('host',NET.padIx,1,gps,null); if(i!==0) bad.push('with two controllers the host plays '+i+', not 0');
-       i=netPadFor('p2',1,0,gps,null); if(i!==1) bad.push('with two controllers player 2 plays '+i+', not 1');
+       i=netPadFor('host',NET.padIx,-1,gps,null); if(i!==1) bad.push('with two controllers the host plays '+i+', not the second (1)');
+       i=netPadFor('p2',-1,-1,gps,null); if(i!==0) bad.push('with two controllers player 2 plays '+i+', not the first (0)');
        out.length=0;
        arcadeLeave();
        if(ARCADE.on) bad.push('arcadeLeave left the arcade on');
@@ -36206,8 +36206,8 @@ window.__REGRESS=[
        NET.same='p2'; localStorage.setItem(kp,'3'); netPadLoad(); out.length=0;
        if(!arcadeEnter('p2')) bad.push('arcadeEnter(p2) failed');
        else {
-         if(NET.padIx!==1) bad.push('in the arcade player 2 plays controller '+NET.padIx+', not the second (1)');
-         if(!pk(1)) bad.push('player 2 did not tell the host it is on the second controller (no padpick 1)');
+         if(NET.padIx!==-1) bad.push('in the arcade player 2 is put on controller '+NET.padIx+' by pick, not left to the order plugged in (-1)');
+         if(!pk(-1)) bad.push('player 2 did not tell the host it has no fixed controller (no padpick -1)');
          if(gs(kp)!=='3') bad.push('entering the arcade wrote the kept player 2 pick ('+gs(kp)+')');
        }
        arcadeLeave();
