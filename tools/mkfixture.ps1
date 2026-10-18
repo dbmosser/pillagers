@@ -6099,6 +6099,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.78',what:'the how to play card has the 48px ghost X in its top right corner (critic 46 56)',
+   run:function(){
+     if(typeof arcadeAttHow!=='function'||typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade here';
+     var d, pg, wasDisp, cs, w, z=1;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       try{ if(typeof attZ==='function') attZ(d); }catch(_z){}
+       pg=arcadeAttEl('arcpage'); pg.textContent='';
+       arcadeAttHow(pg); pg.style.display='block'; pg.style.translate='none'; pg.style.opacity='1';
+       cs=getComputedStyle(pg,'::after');
+       if(!cs||cs.content==='none'||cs.content==='normal') return 'no X drawn on the how to play card: content '+(cs&&cs.content);
+       w=parseFloat(cs.width);
+       if(!(w>=40)) return 'the X is '+w+'px wide, not 48';
+       if(cs.position!=='absolute') return 'the X is not in the corner: '+cs.position;
+       return null;
+     } finally {
+       try{ pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+     }
+   }},
   {v:'30.77',what:'the player 2 window follows the last input device like any other window: the window in front plays the keys (cw-p2keys), so a key press in the player 2 window puts the key prompts up there, its pad puts the pad prompts up, a click or a real move of its mouse puts the key prompts up, and a pointer only crossing a window that has not the keyboard does not',
    run:function(){
      if(typeof INDEV!=='object'||!INDEV||typeof indevPadTick!=='function') return 'SKIP: no input device tracker in this build';

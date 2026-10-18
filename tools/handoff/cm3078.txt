@@ -1,0 +1,7 @@
+v30.78: arcade cards get the 48px x
+
+The how to play and board cards show a 48px X in the top right corner.
+
+Check 30.78. Fails on v30.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.78 - ARCADE CARDS GET THE 48PX X
+
+Co-op hunt while he was away. Critic 46 and 56 (3 of 5, three rounds): the how to play and board cards have no 48px ghost X in the header corner that every other window has. Added as a corner glyph; any button still closes the page.
+
+MEASURED. Check 30.78 passes, and fails on v30.77.
 ## v30.77 - the player 2 window follows the last input device too
 
 Co-op hunt while he was away. His order (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching", and "2P demo: P1 on keyboard and mouse sees key prompts, P2 on a pad sees pad prompts, each window switches on its own". The tracker of v30.66 treated the player 2 window as having no keyboard (it handed every key to player 1) and kept the pad prompts there. Since v30.68 (cw-p2keys: keys control whatever screen is to the top) the player 2 window plays its own keys, so a key press there left the pad prompts up. Every window is judged the same now; a mouse move counts only in the window that has the keyboard so the host pointer crossing the other window changes nothing there.

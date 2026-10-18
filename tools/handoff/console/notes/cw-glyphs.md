@@ -39,3 +39,19 @@ His order, verbatim: "player should get key prompts if that is the last input th
 - Hub trade offer the taker sees: one key (T or Y by padOn()). The giver line "They take it with T or Y" stays: it names the teammate key and the teammate may use the other device.
 - Old checks widened first (fixq): 23.39 said('STILL PLAYING?|warn|PRESS ANY') and the bench attract regex (BUTTON|KEY).
 - Check: stage by indevSet (not pollPad) because a real press in a benched arcade raid un-benches player 1; one real key() on the open initials card. Control (old build) fails 11 asserts; mutation (no in-place update) fails "did not follow".
+
+## Ship 2: v30.75 (cw-glyphs2) SHIPPED 15:44
+- As planned above (attract, idle callouts, easy mode card, initials hint with in-place update, trade offer the taker sees). Old checks 23.39 widened first (fixture commit 2d09bd73).
+- Gotcha: another worker's STOP cleanup (rm of the p/f/a/cm/d files of its new number) deleted the files of the version just shipped (v30.69) and every gen-draft failed ("Cannot find p3069.ps1"); fixed with git checkout HEAD -- those five files. Rule for me: read git status for D tools/handoff/p<ver>.ps1 after a gen-draft failed.
+- Gotcha: the ship STOPped "uncommitted changes" while a manual lock holder edited the fixture; waited with lock.sh as the rules say and shipped after it committed.
+
+## Ship 3: v30.77 (cw-glyphs3) SHIPPED 15:48
+- The player 2 window is judged like any other: since v30.68 (cw-p2keys) it plays its own keys when in front, so the tracker no longer keeps pad prompts there (indevP2 is gone). A mouse move counts only when real and the window has focus (indevMoveOk) so the host pointer crossing the back window changes nothing there; a click still counts.
+- The p2 step of check 30.66 removed (fixture commit e2efefbf); check 30.77 owns the case.
+
+## Still shows the wrong prompt (left on purpose)
+- Static help paragraphs (party modal #partytrade, the what is new / help text "press Z (Y on a controller)") name both devices in words; they are prose, not live prompts.
+- Stash detail pane idle line: "Right-click an item (Y on a controller)..." names both; an explaining sentence the UI lanes are likely to cut.
+- Giver toast "They take it with T or Y": names the teammate key and the teammate may use either device, so it stays.
+- Pad focus ring (PAD.focus) stays on the last pad-focused control after a key or mouse takes over; not a prompt.
+- The P2 window starts on key prompts until its pad is first pressed (any pad button, including the A that joins).
