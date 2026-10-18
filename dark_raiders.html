@@ -2309,7 +2309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.17';
+var VER='29.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2792,7 +2792,10 @@ var WEAPONS={
   // the bare MODEL into the armoury, so it is owned, and an owned gun is wearable
   // and enters the wear and repair economy a field-only gun stays out of.
   whisper:{id:'whisper',name:'Whisper',dmg:24,rof:400,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:'#a8d8c0'},
-  lance:{optic:2.5,id:'lance',name:'Meridian Lance',dmg:150,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'}
+  lance:{optic:2.5,id:'lance',name:'Meridian Lance',dmg:150,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'},
+  // v28.xx (cw-rocket), HIS ORDER (2026-10-18): "add a rocket launcher as '0'. It should take maybe 30 ammo per rocket and require a reload after 2 rockets". A slow rocket with a blast
+  // (rkt:1): two in the tube, a long reload, 30 of the one universal ammo pool for each rocket loaded.
+  rocket:{optic:2,id:'rocket',name:'Rocket Launcher',dmg:60,rof:700,spread:.012,mag:2,reload:3600,rng:900,auto:false,noise:700,tint:'#ffb070',rkt:1}
 };
 // v26.35 (nostarters), HIS ORDER (2026-10-14): "get rid of sputter tacker chatter scuttle -- i dont understand why those were ever in the
 // game". The four issued starter guns are gone. This list is what is left of the loaner draw: buildRaid still makes that one draw from four
@@ -2809,7 +2812,7 @@ var SIM_START=['pistol','smg','rifle','shotgun'];
 // Pistol 23, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet,
 // Whisper 24 and a shot every 0.40 s. The single shots land about 70 to 110 a second sustained; they still trade the magazine for reach and
 // the hit that ends a fight. The Burst Carbine (three a pull, about 85) is unchanged.
-var WTIER={fists:0,pistol:1,smg:2,magnum:3,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4,whisper:4,sniper:5,lance:5};
+var WTIER={fists:0,pistol:1,smg:2,magnum:3,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4,whisper:4,sniper:5,lance:5,rocket:5};
 // v23.xx (feat2a), HIS #17 (2026-10-12): "better gun stat cards - yes", and his answer 34: the card shows on pickup and in the
 // backpack. THE MODEL, pure and drawn by nobody yet (the pickup card and the backpack card are the next two builds, and the UI
 // redesign can restyle both without touching this). Five numbers, all higher-is-better: DMG a pull (a pellet gun counts every
@@ -3091,6 +3094,7 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
   gun_dmr:{name:'Marksman Rifle (field)',val:2000,wt:5,r:'rare',c:'#fff0c0',use:'gun',gk:'dmr'},
   gun_whisper:{name:'Whisper (field)',val:3400,wt:4,r:'elite',c:'#a8d8c0',use:'gun',gk:'whisper'},
   gun_lance:{name:'Meridian Lance (field)',val:4600,wt:6,r:'elite',c:'#d8b4ff',use:'gun',gk:'lance'},
+  gun_rocket:{name:'Rocket Launcher (field)',val:3800,wt:7,r:'elite',c:'#ffb070',use:'gun',gk:'rocket'},   // v28.xx (cw-rocket)
   gun_carbine:{name:'Burst Carbine (field)',val:1100,wt:4,r:'uncommon',c:'#ffd88a',use:'gun',gk:'carbine'},
   gun_shotgun:{name:'Riot Scattergun (field)',val:1300,wt:5,r:'rare',c:'#ffbe7a',use:'gun',gk:'shotgun'},
   gun_lmg:{name:'Support MG (field)',val:1900,wt:6,r:'rare',c:'#ffca90',use:'gun',gk:'lmg'},
@@ -7605,6 +7609,7 @@ function blip(type,d,pan){
       lmg:    {len:2400,lp:1500,hp:160,g:.15,decay:2.9,body:{f0:150,f1:60,d:.09,g:.11,type:'sine'}},
       // The Whisper is a cough, not a crack: short, heavily filtered, quiet.
       whisper:{len:900,lp:900,hp:200,g:.07,decay:4.2,body:{f0:140,f1:90,d:.05,g:.03,type:'sine'}},
+      rocket: {len:5200,lp:900,hp:70,g:.22,decay:1.8,body:{f0:70,f1:26,d:.2,g:.2,type:'sine'},tail:1},   // v28.xx (cw-rocket): a deep launch thump
       lance:  {len:5000,lp:1200,hp:60,g:.24,decay:2.2,body:{f0:90,f1:34,d:.14,g:.20,type:'sine'},tail:1}
     };
     var V=FV[gunBase(arguments[3])]||FV.rifle;   // v26.26 (rarvar1): a rarity twin has its model's voice
@@ -18427,7 +18432,7 @@ function explodeFrag(f){
   // worth the slot without reaching the 310 unit flash it already draws.
   // v11.77, HIS ORDER: bigger and harder. 150 to 190, and the two damage lines
   // below moved with it; the saved dial is migrated at cfgv 18.
-  var p=G.player,R=(CFG.fragR===undefined?190:CFG.fragR),i;
+  var p=G.player,R=f.R||(CFG.fragR===undefined?190:CFG.fragR),i;   // v28.xx (cw-rocket): a rocket blast brings its own radius
   try{ var _rd=Math.hypot(f.x-p.x,f.y-p.y); if(_rd<R*1.6) padRumble(Math.max(0.3,1-_rd/(R*1.6)),230); }catch(_rb){}   // v17.37: a blast near you thumps the pad
   sfx("boom",f.x,f.y);
   if(!G.sim){ spark(f.x,f.y,'#ffcf7a',34,340); decal(f.x,f.y,'#141210',fxn(20,30));   // v8.35
@@ -18454,7 +18459,7 @@ function explodeFrag(f){
   // exported with killer 'other'. The thrower is carried on the frag now, and
   // the blast position goes with it so the v4.28 direction ring points at it.
   var _fMine=!f.by;
-  var _fName=_fMine?'YOUR OWN CHARGE':((f.by.name||'A PILLAGER')+"'S CHARGE");
+  var _fName=_fMine?(f.nm||'YOUR OWN CHARGE'):((f.by.name||'A PILLAGER')+"'S CHARGE");
   // v13.14, HIS TELEMETRY: your own charge is not an unidentified source. It was
   // filed as other, the bucket for something the game cannot name, while the
   // very next line names it exactly. So the death card said YOUR OWN CHARGE and
@@ -20956,6 +20961,7 @@ var BLM={
   carbine:{add:0.55,rec:1.00,dly:0.15,cone:0.040},
   shotgun:{add:0.50,rec:0.90,dly:0.20,cone:0.030},
   whisper:{add:0.40,rec:1.10,dly:0.10,cone:0.040},
+  rocket: {add:0.90,rec:0.70,dly:0.20,cone:0.020},
   lance:  {add:0.60,rec:0.90,dly:0.20,cone:0.025},
   smg:    {add:0.040,rec:0.60,dly:0.25,cone:0.030},
   rifle:  {add:0.060,rec:0.80,dly:0.20,cone:0.040},
@@ -21065,10 +21071,10 @@ if(wep.mag===0){
   for(var pel=0;pel<shots;pel++){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,
-      vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?AR_BONUS:1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
-      life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
+      vx:Math.cos(ang)*(wep.rkt?RKT_SPD:1180),vy:Math.sin(ang)*(wep.rkt?RKT_SPD:1180),dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?AR_BONUS:1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
+      life:wep.rng/(wep.rkt?RKT_SPD:1180),player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
-      thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
+      rkt:wep.rkt?1:0,_pen:wep.rkt?99:0,thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
     if(NET.on) netFxShot(G.bullets[G.bullets.length-1],sh,wep,ang);   // v16.21: the rest of the party sees this round   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: with the gun, for where its flash is drawn
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
@@ -21111,7 +21117,7 @@ if(wep.mag===0){
       }
     }
   }
-  if(!G.sim&&!melee){
+  if(!G.sim&&!melee&&!wep.rkt){   // v28.xx (cw-rocket): a rocket tube throws no brass
     // v8.35: brass is decoration. Five SEEDED draws per shot fired, which the bot
     // never made, so one exchange of fire put the two on different streams.
     var sa=ang-1.5+fxn(-.3,.3);
@@ -21778,18 +21784,26 @@ function reloadBarDraw(x,y,p){
   ctx.fillRect(zx+zw-1,y0-ex,lw,BH+2*ex);
   if(f>0&&f<1){ ctx.fillStyle='rgb(255,255,255)'; ctx.fillRect(Math.round(x0+BW*f)-1,y0-1,2,BH+2); }
 }
+// v28.xx (cw-rocket), HIS ORDER (2026-10-18): "30 ammo per rocket and require a reload after 2 rockets". The one universal pool (p.reserve) pays 30 for each rocket loaded;
+// every other gun still pays one a round. rlRounds is what a reload would load, rlHave whether a reload can load anything, rsvShow the number the HUD shows beside the tube.
+var RKT_SPD=460, RKT_AMMO=30, RKT_R=170;
+function rktCost(w){ return (w&&w.rkt)?RKT_AMMO:1; }
+function rlRounds(p){ var c=rktCost(p.wep), r=(c>1)?Math.floor((p.reserve||0)/c):(p.reserve||0); return Math.max(0,Math.min((p.wep.mag||0)-(p.ammo||0),r)); }
+function rlHave(p){ var c=rktCost(p.wep); return c>1?Math.floor((p.reserve||0)/c)>0:p.reserve>0; }
+function rsvShow(p){ var c=rktCost(p.wep); return c>1?Math.floor((p.reserve||0)/c):p.reserve; }
+function rocketBlast(b){ explodeFrag({x:b.x,y:b.y,R:RKT_R,nm:'Your own rocket'}); }
 function tickReload(dt){
   var p=G.player, fx=!G.sim&&RLFX.on&&RLFX.p===p&&RLFX.w===p.wep&&RLFX.tot>0;   // v25.52 (his reload order): this reload has its steps
   if(p.reloading>0){
     p.reloading-=dt*1000;
     if(fx&&p.reloading>0) rlfxPlay(1-p.reloading/RLFX.tot);   // v25.52: the steps the clock crossed this frame
     if(p.reloading<=0){
-      var take=Math.min(p.wep.mag-p.ammo,p.reserve);
+      var take=rlRounds(p);   // v28.xx (cw-rocket)
       // v22.73, the raid text rewrite (R28): THE FEED STOPS REPEATING THE GUN CARD AND THE RETICLE. A reload said Reloading when it
       // began and Reloaded when it ended, an empty gun said Out of ammo, a swap said the gun name UP and a belt key said the item and
       // its count, each a feed row for what the gun card (RELOADING, the gun in hand, the rounds), the reticle ([R] RELOAD, NO AMMO)
       // and the belt band already show. The rows are gone; every sound stays.
-      p.ammo+=take; p.reserve-=take;
+      p.ammo+=take; p.reserve-=take*rktCost(p.wep);   // v28.xx (cw-rocket): a rocket costs 30
       // v25.xx (reloaddone), HIS ORDER 2026-10-13: "'reload done' needs a sound always". v25.52 gave each gun its own steps and played the
       // last one (the rack, the pump, the bolt) only when the gun was EMPTY, so a reload with a round still chambered finished in
       // silence on every gun. Now the short click and thud of v10.56 (reloadin, on the gun bus, quiet under gunfire) plays on EVERY
@@ -22983,7 +22997,7 @@ function gearFoley(kind,w){
 // updatePlayer, starts the clock when the gun in his hands is not the one it saw last frame; the first frame of a raid starts nothing (the gun
 // is drawn already), and the bot sim never waits (the clock is held at 0 under G.sim). p.drawT is the seconds left; p.drawLen the full time,
 // for the reticle. No seeded draw, nothing a bot reads.
-var DRAWT={pistol:0.25,magnum:0.35,smg:0.4,whisper:0.45,carbine:0.5,rifle:0.55,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0,lance:1.0};
+var DRAWT={pistol:0.25,magnum:0.35,smg:0.4,whisper:0.45,carbine:0.5,rifle:0.55,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0,lance:1.0,rocket:1.0};
 function drawTime(w){
   if(!w||!w.id||w.mag===0) return 0;
   return Object.prototype.hasOwnProperty.call(DRAWT,w.id)?DRAWT[w.id]:0.5;
@@ -23168,7 +23182,7 @@ function gunKeysMigrate(a){   // a saved table that still holds the Marksman cla
   if(o.indexOf('rocket')<0) o.push('rocket');
   return o;
 }
-var GUN_CLASS_OF={pistol:'pistol',magnum:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',sniper:'sniper',lance:'energy'};   // v26.39 (nostarters2): the four starter guns are in no table
+var GUN_CLASS_OF={pistol:'pistol',magnum:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',sniper:'sniper',lance:'energy',rocket:'rocket'};   // v26.39 (nostarters2): the four starter guns are in no table
 function gunClassOf(gk){ var b=(typeof RV_BASE==='object'&&RV_BASE&&RV_BASE[gk])||gk; return Object.prototype.hasOwnProperty.call(GUN_CLASS_OF,b)?GUN_CLASS_OF[b]:''; }
 function gunKeyTable(){   // the class on each key, from the profile when it holds a whole table (nine classes, each once), else his table
   var src=(typeof P==='object'&&P&&Array.isArray(P.gunKeys))?gunKeysMigrate(P.gunKeys):null, ok=!!src&&src.length===GUN_CLASSES.length, seen={}, i;
@@ -25315,11 +25329,11 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
   T.closestExtract=Math.min(T.closestExtract,closestRingDist(p));   // v8.58: the nearest OPEN ring, not the targeted one
 
   tickReload(dt);   // v13.83: also run from the roll branch, so a roll does not freeze it
-  if(keys['KeyR']&&p.reloading<=0&&!p.hand&&p.ammo<p.wep.mag&&p.reserve>0){ p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p); }   // v10.56; v25.52 (his reload order): the magazine out, then the steps
+  if(keys['KeyR']&&p.reloading<=0&&!p.hand&&p.ammo<p.wep.mag&&rlHave(p)){ p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p); }   // v10.56; v25.52 (his reload order): the magazine out, then the steps
   // HOLDING THE TRIGGER ON AN EMPTY MAGAZINE RELOADS IT, v5.44, his note. The
   // bot has done this since it was written; the player had to let go and press
   // R. Held only, so a tap on an empty gun still does nothing.
-  if(mouse.down&&p.reloading<=0&&!p.hand&&p.wep.mag>0&&p.ammo<=0&&p.reserve>0&&!p.downed&&p.jam<=0&&CFG.autoRel!==0){   // v26.xx (settings4): AUTO-RELOAD WHEN EMPTY
+  if(mouse.down&&p.reloading<=0&&!p.hand&&p.wep.mag>0&&p.ammo<=0&&rlHave(p)&&!p.downed&&p.jam<=0&&CFG.autoRel!==0){   // v26.xx (settings4): AUTO-RELOAD WHEN EMPTY
     p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p);   // v25.52 (his reload order)   // v10.56; v22.73 (R28): the gun card says RELOADING
   }
 
@@ -25474,10 +25488,10 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // on release, so an empty automatic clicks and says it once per pull, as a single shot gun always did on its pull, and
       // neither repeats while the trigger stays held. The same sound and the same line; no seeded draw.
 if(!p.fired||p.wep.auto){
-        if(p.reserve>0&&p.reloading<=0&&CFG.autoRel!==0){
+        if(rlHave(p)&&p.reloading<=0&&CFG.autoRel!==0){
           p.reloading=p.wep.reload; T.reloads++;
           if(!G.sim) reloadFoley(p);   // v25.52 (his reload order)   // v10.56; v22.73 (R28): the gun card says RELOADING
-        } else if((p.reserve<=0||(CFG.autoRel===0&&p.reloading<=0))&&!p.dryTold){ p.dryTold=1; if(!G.sim) blipMine('dry'); }   // v26.xx (settings4): with AUTO-RELOAD off the empty gun with a reserve clicks too   // v10.56: an empty gun clicks; v22.73 (R28): the reticle says NO AMMO
+        } else if((!rlHave(p)||(CFG.autoRel===0&&p.reloading<=0))&&!p.dryTold){ p.dryTold=1; if(!G.sim) blipMine('dry'); }   // v26.xx (settings4): with AUTO-RELOAD off the empty gun with a reserve clicks too   // v10.56: an empty gun clicks; v22.73 (R28): the reticle says NO AMMO
         p.fired=true;
       }
       p.lastShot=now;
@@ -27498,7 +27512,7 @@ if(e.state==='possum'){
         // an emplacement is exactly where a weapon nobody sells would end up.
         var cq=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['relay','codex','bloom']),pick(['titan','core','coil']),
-           pick(['gun_whisper','gun_lance']),'servo']);
+           pick(['gun_whisper','gun_lance','gun_rocket']),'servo']);
         cq.cache=1; cq.time=2.4; cq.tag='PILLBOX WRECK'; G.containers.push(cq); cq.bot='choir';   // v28.xx (cw-wreckpillbox), HIS NOTE (2026-10-18): "it would be cool if it showed wreckage instead. same for other enemy deaths". The Pillbox wreck is drawn by drawWreckChoir, not the purple box
         say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Search the wreck.'});   // v22.xx (R53): an objective row in caps
         decal(e.x,e.y,'#2a1a3a',rnd(28,40));
@@ -29741,7 +29755,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
       if(!hit&&!punched){ b.x=sx+ux*trav; b.y=sy+uy*trav; }
     }
     b.life-=dt;
-    if(hit||b.life<=0) G.bullets.splice(i,1);
+    if(hit||b.life<=0){ if(b.rkt&&b.player) rocketBlast(b); G.bullets.splice(i,1); }   // v28.xx (cw-rocket): a rocket goes off where it ends, on a body, a wall or the end of its range
   }
 }
 
@@ -32682,6 +32696,9 @@ var GUNDEF=(function(){
     grip(5.2), R(10.5,3,3,3.6,'c'), R(11,3.6,2,0.6,'v','O'), P([-3,-2.6, 3,-2.4, 3,2.6, -3,3.6],'d','F'), R(3,-3,13,6,'l','FHR'),
     R(16,-1.75,22,3.5,'m','HR'), R(16,-0.3,22,0.6,'v','O'), R(19,-2.6,1.4,5.2,'d'), R(23.6,-2.6,1.4,5.2,'d'), R(28.2,-2.6,1.4,5.2,'d'),
     R(32.8,-2.6,1.4,5.2,'d'), R(38,-2.1,1.6,4.2,'d'), R(6,-5.6,8,2.4,'d','H'), R(13.4,-5.3,0.7,1.8,'v','O')]};
+  D.rocket={tip:41,by:0,grip:5.2,fg:20,well:[12,3],port:[10,-3],rv:[3,-3,13,6],br:[14,41],p:[   // v28.xx (cw-rocket): a shoulder tube with a flared muzzle and a rocket nose
+    grip(5.2), P([-3,-2.6, 3,-2.4, 3,2.6, -3,3.6],'d','F'), R(3,-3,13,6,'l','FHR'), R(14,-4.2,24,8.4,'m','HR'), R(12,-4.6,1.6,9.2,'d'),
+    R(24,-4.6,1.6,9.2,'d'), R(36,-5.4,5,10.8,'d','H'), R(38.4,-2.4,2.6,4.8,'r','O'), R(6,-7.4,8,2.4,'d','H'), R(13.4,-7.1,0.7,1.8,'g','O')]};
   return D;
 })();
 function gunDef(w){ return GUNDEF[(w&&w.id)||'rifle']||GUNDEF.rifle; }
@@ -36585,11 +36602,12 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
   for(i=0;i<_BLS.length;i++){
 var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
     var _trc=(!isDay()&&!b.owner)?3:1;
-    wc.strokeStyle=b.tint; wc.lineWidth=(b.el||b.elw)?3:2;   // v23.xx (forge8): an elemental tracer is wider, in its colour
-    var _gtl=9*_trc, _gtv;
+    wc.strokeStyle=b.tint; wc.lineWidth=b.rkt?5:((b.el||b.elw)?3:2);   // v23.xx (forge8): an elemental tracer is wider, in its colour
+    var _gtl=(b.rkt?26:9)*_trc, _gtv;
     if(b.mzd>0){ _gtv=Math.hypot(b.x-b.sx,b.y-b.sy); if(_gtv<b.mzd) continue; _gtl=Math.min(_gtl,_gtv-b.mzd); }   // v27.xx (guns2x): a tracer starts at the drawn muzzle, not inside the gun
     wc.beginPath(); wc.moveTo(b.x-b.vx/bm*_gtl,b.y-b.vy/bm*_gtl-12);
     wc.lineTo(b.x,b.y-12); wc.stroke();
+    if(b.rkt){ wc.fillStyle='#fff3c8'; wc.beginPath(); wc.arc(b.x,b.y-12,4,0,6.2832); wc.fill(); }   // v28.xx (cw-rocket): the rocket has a hot head
     if(_trc>1){
       wc.strokeStyle='rgba(255,236,180,.9)'; wc.lineWidth=1;
       wc.beginPath(); wc.moveTo(b.x-b.vx/bm*14,b.y-b.vy/bm*14-12);
@@ -37381,7 +37399,7 @@ function drawBuzzFx(){
   // 6 shotgun, 7 marksman, 8 sniper, 9 lance; the Scav Pistol shape on 1, the Marksman Rifle on 7), drawn as one flat light grey silhouette at GHOST_A (about 27 percent), with
   // no rarity colour and no magazine bar, under its key number. Once he carries a gun of that class on the key (or drags one onto it for the raid) the key draws opaque exactly as
   // before; a key a gun was dragged off goes back to its ghost. The silhouette is the gun icon the belt already draws, filled flat (source-in), made once per gun and size.
-  var GHOST_A=0.27, GHOST_OF={pistol:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',sniper:'sniper',energy:'lance'}, GHOSTSPR={};
+  var GHOST_A=0.27, GHOST_OF={pistol:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',sniper:'sniper',energy:'lance',rocket:'rocket'}, GHOSTSPR={};
   function gunGhost(id,S){
     var e=null, k=id+'|'+Math.round(S), c=GHOSTSPR[k], t, x;
     try{ e=iconSprite(id,S); }catch(_gi){ e=null; }
@@ -38485,7 +38503,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen){
     // struck-through cross saying EMPTY - R (NO AMMO once the reserve ran out) while the corner read MELEE and the punch worked.
     // R does nothing there, because a reload needs fewer rounds loaded than the magazine holds and 0 is not below 0. A weapon
     // with no magazine is never empty now, so Bare Hands keep the plain cross. JAMMED, the reload ring and every gun are unchanged.
-    var rState=(p.jam>0)?'jam':(p.reloading>0?'reload':((p.ammo<=0&&!(p.wep&&p.wep.mag===0))?(p.reserve<=0?'dry':'empty'):''));
+    var rState=(p.jam>0)?'jam':(p.reloading>0?'reload':((p.ammo<=0&&!(p.wep&&p.wep.mag===0))?(!rlHave(p)?'dry':'empty'):''));
     var rCol=rState==='jam'?'rgba(224,72,58,.98)'
             :rState==='dry'?'rgba(224,72,58,.95)'
             :rState==='empty'?'rgba(255,192,74,.95)'
@@ -39755,7 +39773,7 @@ if(p.armor>0){
   else if(p.reloading>0){ ctx.fillStyle='#ffc04a'; ctx.fillText('RELOADING',W-16,by-LH(14)); }
   else {
     ctx.fillStyle=p.ammo===0?'#ff5a4a':'#cdd6dd';
-    ctx.fillText(p.ammo+' / '+p.reserve,W-16,by-LH(14));
+    ctx.fillText(p.ammo+' / '+rsvShow(p),W-16,by-LH(14));
   }
   // v10.89, HIS NOTE: the stowed gun is still shown, because it was never meant
   // to be a secret, but the bracket in front of it promised a key that no longer
@@ -41679,7 +41697,7 @@ var GUN_FAMILY={pistol:'hand',magnum:'revolver',
                 smg:'smg',
                 carbine:'rifle',rifle:'rifle',whisper:'rifle',
                 shotgun:'shotgun',
-                lmg:'lmg',dmr:'marksman',sniper:'marksman',lance:'lance'};
+                lmg:'lmg',dmr:'marksman',sniper:'marksman',lance:'lance',rocket:'rocket'};
 // v26.26 (rarvar1): a rarity twin is drawn, held and timed as its model: the model's row in every table keyed by a gun id.
 (function(){ var T=[GUN_FAMILY,GUNDEF,DRAWT,GEAR_LIGHT], i, b; for(b in RV_OF) for(i=0;i<T.length;i++) if(T[i]&&T[i][b]!==undefined) T[i][RV_OF[b]]=T[i][b]; })();
 // v18.10, HIS ORDER (2026-10-03, "item graphics like the guns still look terrible and need massive improvements"): THE GUNS
@@ -41784,6 +41802,15 @@ function gunArt(c,fam,id,W,col,S){
     R(-24,-21,4,3,0.5); c.fillStyle=ink; c.fill(); R(-2,-21,4,3,0.5); c.fill();
     line(-8,-6,-4,6,2.4,ink); c.beginPath(); c.arc(-4*u,7*u,2.4*u,0,6.2832); c.fillStyle=metal; c.fill(); c.strokeStyle=ink; c.lineWidth=OL*0.7; c.stroke();
     guard(-14,-2,0,10);
+  } else if(fam==='rocket'){   // v28.xx (cw-rocket): a fat olive tube, a flared muzzle, the rocket nose in the rarity colour
+    P([[-24,2],[-14,2],[-18,22],[-28,22]]); F(poly,2,22);
+    R(-52,-18,100,24,10); F('#4d5a3e',-18,6);
+    R(34,-22,14,32,3); F(metal,-22,10);
+    R(-56,-20,8,28,3); F('#2c3037',-20,8);
+    for(i=0;i<3;i++) line(-30+i*22,-17,-30+i*22,5,1.6,'rgba(0,0,0,.35)');
+    P([[48,-12],[66,-5],[48,2]]); F(col,-12,2);
+    R(-28,-28,30,8,3); F('#24272c',-28,-20); lens(-6,-24,3.2);
+    guard(-14,0,6,9);
   } else {
     P([[-24,2],[-14,2],[-18,22],[-28,22]]); F(poly,2,22);
     R(-44,-14,52,20,5); F(darkHex(col,0.75),-14,6);
@@ -42874,7 +42901,7 @@ function drawBag(){
   ctx.fillText(p.wep.name,x+11+LH(38)*BZ,cy);
   ctx.font=bFS(TYPE.label); ctx.textAlign='right';
   ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff5a4a':'#ffc04a');
-  ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+p.reserve),x+PW-11,cy);
+  ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+rsvShow(p)),x+PW-11,cy);
   ctx.textAlign='left';
   cy+=LH(14)*BZ;
   ctx.font=bFS(TYPE.micro); ctx.fillStyle='#6b7783';
@@ -47050,7 +47077,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.17: A dead Sentry leaves a smoking wreck of itself. Check 29.17 fails on v29.16',
+  now:'v29.18: New gun on key 0: the Rocket Launcher. Slow rocket, big blast, 2 to a load, 30 ammo a rocket. Found in the Pillbox wreck and the Wirt lot. Check 29.18 fails on v29.17',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47169,6 +47196,7 @@ var WIRT_LOT_PRICE=10000;
 // value is a robbery, below it is a printer, at it is pointless.
 var WIRT_LOT_POOL=[
   ['gun_lance'],
+  ['gun_rocket','plate','frag'],   // v28.xx (cw-rocket)
   ['gun_whisper','plate'],
   ['gun_sniper','plate'],
   ['gun_dmr','plate','medkit'],
@@ -48720,7 +48748,7 @@ function planPut(slot,key){
 // his table and his order back. They live on the profile (P.gunKeys, P.wheelOrder) and a CAREER raid reads them (gunKeyList for the class keys, wheelList for the ring); DEMO always uses
 // his table and his order. A table or an order that is not whole (a class or an item twice, or one missing) is not read: his own holds. Mouse first; the tiles are pad controls (padFocusables).
 var GUN_CLASS_NAME={pistol:'PISTOL',smg:'SMG',rifle:'RIFLE',carbine:'CARBINE',lmg:'LMG',shotgun:'SHOTGUN',sniper:'SNIPER',energy:'ENERGY',rocket:'ROCKET'};
-var GUN_CLASS_ICON={pistol:'gun_pistol',smg:'gun_smg',rifle:'gun_rifle',carbine:'gun_carbine',lmg:'gun_lmg',shotgun:'gun_shotgun',sniper:'gun_sniper',energy:'gun_lance',rocket:'gun_lance'};
+var GUN_CLASS_ICON={pistol:'gun_pistol',smg:'gun_smg',rifle:'gun_rifle',carbine:'gun_carbine',lmg:'gun_lmg',shotgun:'gun_shotgun',sniper:'gun_sniper',energy:'gun_lance',rocket:'gun_rocket'};
 var WHEEL_NAME={medkit:'MEDKIT',smoke:'SMOKE',frag:'FRAG',trip:'TRIPWIRE',plate:'ARMOUR',decoy:'DECOY',bandage:'BANDAGE',stim:'STIM'};
 var WHEEL_AT=[[0,1],[0,2],[1,2],[2,2],[2,1],[2,0],[1,0],[0,0]];   // row and column of each ring place on the 3 by 3 plate, clockwise from the top
 function wheelOrderTable(){

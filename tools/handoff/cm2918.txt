@@ -1,0 +1,7 @@
+v29.18: rocket launcher on key 0
+
+New gun on key 0: the Rocket Launcher. Slow rocket, big blast, 2 to a load, 30 ammo a rocket. Found in the Pillbox wreck and the Wirt lot.
+
+Check 29.18. Fails on v29.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

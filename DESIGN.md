@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.18 - Rocket Launcher on key 0
+
+Co-op hunt while he was away. His order 2026-10-18: add a rocket launcher as 0, about 30 ammo per rocket and a reload after 2 rockets. A slow rocket that goes off where it ends (a body, a wall or the end of its range) with a blast radius, 2 to a load, 30 of the one ammo pool a rocket loaded, its own sound, icon and drawn gun, the HUD shows rockets left. Found in the Pillbox wreck and Wirt lot (no seeded loot table changes).
+
+MEASURED. Check 29.18 passes, and fails on v29.17.
 ## v29.17 - A DEAD SENTRY LEAVES WRECKAGE, NOT A BOX
 
 Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Sentry left the generic brown wreck shared by every machine. It now leaves its own wreck in its own palette: the scorched tread with a dead wheel row, the slumped hull with the ochre chevrons, the camera head snapped off with a dead black lens, the twin gun fallen on the ground, a bent mast. Smoke while unsearched. Looting is unchanged.
