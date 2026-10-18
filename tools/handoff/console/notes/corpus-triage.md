@@ -95,18 +95,18 @@ Fix for the group: accept /^\$?N( SP)?$/ in each. Do it once with the fixq pass.
 |---|-----|---------|--------|-----|--------|
 | 63 | 11.38 | STALE | Control swing next to a hostile pillager does no damage: the check presses the old melee key. | Call meleeStrike() or press KeyV. | DONE (__meleeKey helper now returns KeyV, passes) |
 | 64 | 11.27 | STALE | F no longer swings (F = next gun); heal on belt slot gone. | Retarget to V; drop the belt control. | DONE (V via helper, belt control dropped, passes) |
-| 65 | 11.26 | STALE | Pause box says "V melee" and "1-9 guns", not "Q melee" / "1-4 guns". | Update the words. | OPEN |
-| 69 | 10.64 | STALE | F did not strike with a rifle in hand: same key move. | Use V. | OPEN |
+| 65 | 11.26 | STALE | Pause box says "V melee" and "1-9 guns", not "Q melee" / "1-4 guns". | Update the words. | DONE (raid key line written first, V melee and 1-9 guns, passes) |
+| 69 | 10.64 | STALE | F did not strike with a rifle in hand: same key move. | Use V. | DONE (helper already returns KeyV, passes) |
 
 ## G. STALE, run card chips, stash tabs, map marker, sprite, other late redesigns
 | # | Ver | Verdict | Reason | Fix | Status |
 |---|-----|---------|--------|-----|--------|
-| 39 | 21.09 | STALE | Run card feel tags are hidden unless the feedback box is open (css 1347: #tagwrap / #oc_note display none when not .fbopen), so width 0. | Open the feedback box first (add .fbopen) or retire. | OPEN |
-| 44 | 18.97 | STALE | Note box squashed to 0px: same hidden #oc_note. | same | OPEN |
-| 42 | 20.58 | STALE | "0 of 29 run tags in reach of the pad": same hidden tags (he already noted it failed in its harness). | same, with the card open on feedback | OPEN |
-| 40 | 20.92 | STALE (low) | Stash filter row ends 211px short: the row now holds 11 tabs (ARMORY, TROPHIES, LOCKED, SORT) after the stash redesign. | Retarget to the new filter row geometry. | OPEN |
-| 73 | 10.11 | STALE | Stash tabs are now ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS, VALUABLES, LOCKED, SORT, ARMORY, TROPHIES (his six were extended). | Expect the longer list, plates still under CONSUMABLES. | OPEN |
-| 14 | 24.87 | STALE | Keys list max-width is 1500px in two columns (css 1334 overrides 1100): the full key list (settings, v26.38+). | Cap at 1500. | OPEN |
+| 39 | 21.09 | STALE | Run card feel tags are hidden unless the feedback box is open (css 1347: #tagwrap / #oc_note display none when not .fbopen), so width 0. | Open the feedback box first (add .fbopen) or retire. | DONE (fbopen added then restored, passes) |
+| 44 | 18.97 | STALE | Note box squashed to 0px: same hidden #oc_note. | same | DONE (fbopen, passes) |
+| 42 | 20.58 | STALE | "0 of 29 run tags in reach of the pad": same hidden tags (he already noted it failed in its harness). | same, with the card open on feedback | DONE (fbopen, passes) |
+| 40 | 20.92 | STALE (low) | Stash filter row ends 211px short: the row now holds 11 tabs (ARMORY, TROPHIES, LOCKED, SORT) after the stash redesign. | Retarget to the new filter row geometry. | DONE (row ends at TROPHIES, passes) |
+| 73 | 10.11 | STALE | Stash tabs are now ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS, VALUABLES, LOCKED, SORT, ARMORY, TROPHIES (his six were extended). | Expect the longer list, plates still under CONSUMABLES. | DONE (his six lead, extras allowed, passes) |
+| 14 | 24.87 | STALE | Keys list max-width is 1500px in two columns (css 1334 overrides 1100): the full key list (settings, v26.38+). | Cap at 1500. | DONE (cap 1500, passes) |
 | 15 | 24.19 | STALE (low) | The check scans only styleSheets of the first <style> for a rule joining :focus-visible and .padfocus with var(--acc). The game has that rule (html 993-996), so keyboard and pad focus are still one rule. Check harness reads the wrong sheet or the rule text changed. | Scan every document.styleSheets entry. | OPEN |
 | 18 | 23.88 | STALE | Hint now reads "The world only. HUD and text stay sharp. Lower runs faster." The check regex is /WORLD/ and /SHARP/ case sensitive. | Make the regex case-insensitive. | OPEN |
 | 19 | 23.85 | STALE | Settings tabs (THE RAID, AUDIO, CONTROLS, CONTROLLER ...) are 14px tracked .16em (css 1133 and 1278) after the Settings sections; check caps tracking at .145em. | Raise the cap to .16em for Settings. | OPEN |

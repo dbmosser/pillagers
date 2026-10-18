@@ -5,19 +5,19 @@
 key | status | reason
 late-body-boss-range | DROPPED (lane-b) | superseded: v28.60 p2boss (boss mark) + v28.61 p2reach (sr reach in new word) already shipped; anchors gone
 overseer-phase-shake | DONE (lane-b) | v28.87 via cw-ovshake
-p2-blast-past-shield | CLAIMED lane-b | cw-blastshield
-p2-hit-stop-rule | CLAIMED lane-b | rebuild after blast-past-shield (same lines)
-p2-mimic-seen | CLAIMED lane-b |
-p2-near-miss-pins | CLAIMED lane-b |
-p2-screen-clear | |
-ricochet-seen | |
-teammate-hears-windup | |
-feel lane-target | |
-muzzle-net | |
-p2-blow-not-round | |
-padcap-nextgun | |
-role-twin | |
-raid bountyfire | |
+p2-blast-past-shield | DONE (lane-b) | v28.88 via cw-blastshield
+p2-hit-stop-rule | DONE (lane-b) | v28.92 via cw-hitstoprule
+p2-mimic-seen | DONE (lane-b) | v28.93 via cw-mimicseen
+p2-near-miss-pins | DONE (lane-b) | v28.95 via cw-nearmiss (anchor 3 retargeted to the hitstoprule line)
+p2-screen-clear | DROPPED (lane-b) | superseded: v27.86 partyp4 already sends a pulse word (nc,1500) and pays the medal in a linked window
+ricochet-seen | DONE (lane-b) | v28.97 via cw-ricoseen
+teammate-hears-windup | DONE (lane-b) | v28.99 via cw-windup (rebuilt: whirr via spkPlay lmgSpinUp since v27.95; one-line anchors)
+feel lane-target | CLAIMED lane-b (b-15) |
+muzzle-net | CLAIMED lane-b (b-15) |
+p2-blow-not-round | CLAIMED lane-b (b-15) |
+padcap-nextgun | CLAIMED lane-b (b-15) |
+role-twin | CLAIMED lane-b (b-15) |
+raid bountyfire | CLAIMED lane-b (b-15) |
 evsh | |
 shforge | |
 shrespawn | |

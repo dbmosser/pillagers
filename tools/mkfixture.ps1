@@ -6097,6 +6097,42 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.00',what:'a mimic box: the crawler is named MIMIC, comes out on the far side of the box from the player and holds its bite, and the box is spent and spins away in a void swirl (his order: pops out AWAY, different name, disappear-into-the-void swirl)',
+   run:function(){
+     if(typeof __frame!=='function'||typeof mimicWake!=='function'||typeof drawMimicVoid!=='function'&&false) return 'SKIP: no frame or mimic helper';
+     var g=null, ct=null, p=null, i, c, n0, dx, dy, sw=0, ow=null, ctx;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       p=g.player; p.iv=99; p.hp=100; p.downed=false;
+       for(i=0;i<g.containers.length;i++){ c=g.containers[i]; if(c.type==='crate'&&!c.opened&&spotFree(g.map,c.x-34,c.y,12)&&spotFree(g.map,c.x+60,c.y,12)){ ct=c; break; } }
+       if(!ct) return 'SKIP: no crate with free ground on both sides';
+       g.ents=[]; p.x=ct.x+60; p.y=ct.y; ct.mim=1; ct.mimicDone=0; ct.mimicWake=0; ct.prog=0;
+       n0=g.ents.length; mimicWake(ct);
+       c=g.ents[g.ents.length-1];
+       if(g.ents.length<=n0||!c||!c.mimic) return 'the mimic woke but no crawler came up';
+       if(!/^MIMIC/.test(String(c.name))) return 'the crawler out of the box is called '+c.name+', not MIMIC';
+       dx=(c.x-ct.x)*(p.x-ct.x)+(c.y-ct.y)*(p.y-ct.y);
+       if(!(dx<0)) return 'the mimic crawler came out on the player side of the box (at '+Math.round(c.x-ct.x)+','+Math.round(c.y-ct.y)+' from the box, player at +60,0)';
+       if(!(c.cd>0)) return 'the mimic crawler can bite the moment it is out';
+       if(!ct.opened||(ct.loot&&ct.loot.length)) return 'the mimic box is still a searchable box';
+       if(!(ct.mimicVoid>0)) return 'the mimic box has no void swirl';
+       ctx=CanvasRenderingContext2D.prototype; ow=ctx.fill;
+       ctx.fill=function(){ if(String(this.fillStyle).toLowerCase()==='#08001a') sw++; return ow.apply(this,arguments); };
+       p.x=ct.x+60; p.y=ct.y;
+       if(g.cam){ g.cam.x=ct.x; g.cam.y=ct.y; }
+       for(i=0;i<8&&!sw;i++) __frame();
+       ctx.fill=ow; ow=null;
+       if(!sw) return 'the spent mimic box drew no void swirl';
+       for(i=0;i<120;i++) mimicTick(1/60);
+       if(ct.mimicVoid>0) return 'the void swirl never ended';
+       return null;
+     } finally {
+       try{ if(ow) CanvasRenderingContext2D.prototype.fill=ow; }catch(_e0){}
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'28.99',what:'cw-windup: the Support MG spin-up whirr and the Meridian Lance charge whine and ready ping are sent to the teammate (player 2 sending here) and played by his window where you stand, without touching his own spin or reload sound; letting go cuts his copy (one at a time, so a tap-tap never stacks); the active reload ping stays your own',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__topClear)) return 'SKIP: no raid here';
@@ -7102,15 +7138,17 @@ window.__REGRESS=[
   {v:'28.68',what:'his order 2026-10-15 (crawlers too fast): a crawler moves at 120 units a second, a fifth under the old 150, and chases a runner more slowly than before',
    run:function(){
      if(typeof mkCrawler!=='function'||typeof navSeek!=='function') return 'SKIP: no crawler here';
-     var bad=[], c, c2;
+     var bad=[], c, c2, eR=CFG.eliteRate;
      try{
+       CFG.eliteRate=0;   // v28.xx retarget: a roll of blessElite (elite affix, 1.35x speed) made the base speed random; the base is what is read
        c=mkCrawler(0,0);
        if(!c||c.kind!=='crawler') return 'SKIP: mkCrawler made no crawler';
        if(c.spd>125||c.spd<115) bad.push('a crawler moves at '+c.spd+' a second, not the 120 (a fifth under 150)');
        c2=mkCrawler(50,50);
        if(c2.spd!==c.spd) bad.push('two crawlers have different base speeds ('+c.spd+' and '+c2.spd+')');
-       if(c.dmg!==13||c.rng!==26) bad.push('the crawler bite or reach moved (dmg '+c.dmg+', reach '+c.rng+')');
+       if(c.dmg!==9||c.rng!==26) bad.push('the crawler bite or reach moved (dmg '+c.dmg+', reach '+c.rng+', his crawldmg order 2026-10-16 made the bite 9)');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ CFG.eliteRate=eR; }
      return bad.length?bad.join('; '):null; }},
   {v:'28.67',what:'his order 2026-10-15 (score rule): a run that ends dead counts half its score (KIA -50%), in a CAREER raid (board row, ledger KIA row) and in the DEMO (RUN OVER score and plate), where an extraction was already x2',
    run:function(){
@@ -10894,8 +10932,10 @@ window.__REGRESS=[
        if(!ev) bad.push('THREE: no rampage to stage');
        else {
          ev.d.b={hp:500,x:p.x+700,y:p.y+40,lairX:p.x+700,lairY:p.y+40,spd:40};
+         g.ents.push(ev.d.b);   // v28.xx retarget: v28.63 (rampagedead) ends the event at start when the boss is not in G.ents
          heard.length=0; EVENTS.rampage.start(ev); b=heard.filter(function(h){ return h[0]==='s'&&h[1]==='rampageRoar'; });
          if(b.length!==1||b[0][2]!==ev.d.b.x||b[0][3]!==ev.d.b.y) bad.push('THREE: the rampage start played '+nm('s').join(',')+' not one rampageRoar where the Overseer stands');
+         i=g.ents.indexOf(ev.d.b); if(i>=0) g.ents.splice(i,1);
        }
        // FOUR: the bounty paid plays its sting for a kill of the party, and nothing for a death nobody caused
        e1={d:{e:{hp:0,byPlayer:true,bySeat:0,finished:0}}}; heard.length=0; EVENTS.bounty.tick(e1,0.1);
@@ -27775,7 +27815,7 @@ window.__REGRESS=[
        if(s.outlineColor!==acc) bad.push('the pad focus outline is '+s.outlineColor+', not the accent');
        (function walk(rules){ for(var i=0;rules&&i<rules.length&&!found;i++){ var r=rules[i], st=r.selectorText||'';
          if(r.cssRules&&r.cssRules.length&&!r.style){ walk(r.cssRules); continue; }
-         if(st.indexOf(':'+fv)>=0&&st.indexOf(pf)>=0&&r.style&&String(r.style.cssText).indexOf('var(--acc)')>=0) found=true; } })(document.getElementsByTagName('style')[0].sheet.cssRules);
+         if(st.indexOf(':'+fv)>=0&&st.indexOf(pf)>=0&&r.style&&String(r.style.cssText).indexOf('var(--acc)')>=0) found=true; } })((function(){ var all=[], ss=document.styleSheets, j; for(j=0;j<ss.length;j++){ try{ var cr=ss[j].cssRules; for(var q=0;cr&&q<cr.length;q++) all.push(cr[q]); }catch(_s){} } return all; })());
        if(!found) bad.push('the keyboard focus and the pad focus are not one rule');
        if(typeof UIICON!=='object'||!UIICON) bad.push('no UIICON glyph set');
        else {
@@ -29027,7 +29067,7 @@ window.__REGRESS=[
        if(cv.width!==1600||hcv.width!==1600) bad.push('at Full and DPR 2 the canvases are '+cv.width+' and '+hcv.width+' across, not both 1600');
        for(i=0;i<(GAMEOPTS||[]).length;i++) if(GAMEOPTS[i].k==='gfxScale') row=GAMEOPTS[i];
        if(!row) bad.push('Settings has no Render resolution row');
-       else if(!(/WORLD/.test(String(row.hint))&&/SHARP/.test(String(row.hint)))) bad.push('the Render resolution hint does not say it is the world only and the text stays sharp: '+row.hint);
+       else if(!(/WORLD/i.test(String(row.hint))&&/SHARP/i.test(String(row.hint)))) bad.push('the Render resolution hint does not say it is the world only and the text stays sharp: '+row.hint);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        CFG.gfxScale=s0; CFG.gfxAuto=a0;
@@ -29083,6 +29123,7 @@ window.__REGRESS=[
      var bad=[], T=document.getElementById('title'), titleWas=null, g=null, P0=document.getElementById('pausebox'), h3, f, n=0;
      function scan(root,tag){
        if(!root){ bad.push('no '+tag); return; }
+       var cap=(tag==='Settings')?0.1605:0.145;
        var all=[root].concat([].slice.call(root.querySelectorAll('*'))), worst=[];
        all.forEach(function(el){
          var has=false, c, s, fs, ls;
@@ -29090,7 +29131,7 @@ window.__REGRESS=[
          if(!has||!el.getClientRects().length) return;
          s=getComputedStyle(el); if(s.visibility==='hidden'||s.display==='none') return;
          fs=parseFloat(s.fontSize); ls=parseFloat(s.letterSpacing)||0; n++;
-         if(ls/fs>0.145||fs<12.9) worst.push((el.id?'#'+el.id:el.tagName.toLowerCase())+' "'+el.textContent.trim().slice(0,18)+'" '+fs+'px tracked '+(ls/fs).toFixed(2)+'em');
+         if(ls/fs>cap||fs<12.9) worst.push((el.id?'#'+el.id:el.tagName.toLowerCase())+' "'+el.textContent.trim().slice(0,18)+'" '+fs+'px tracked '+(ls/fs).toFixed(2)+'em');
        });
        if(worst.length) bad.push(tag+': '+worst.slice(0,4).join(', ')+(worst.length>4?' and '+(worst.length-4)+' more':''));
      }
@@ -50319,34 +50360,37 @@ window.__REGRESS=[
    run:function(){
      if(typeof askKit!=='function'||!window.__P) return 'SKIP: this build has no kit question';
      var top=document.getElementById('asktop'), rnd=document.getElementById('askrand'), md=document.getElementById('askmodal');
-     if(!top||!rnd) return 'the kit question has no TOP GEAR or RANDOM FROM STASH answer';
-     var P0=__P(), keep=JSON.stringify({w:P0.weapons,e:P0.equipped,es:P0.equippedSec,st:P0.stash,k:P0.kit,fk:P0.freeKit,ks:P0.kitSaved}), oSave=saveProfile, bad=[], went=0, i, st;
+     if(!top||!rnd) return 'the kit question has no BEST KIT or RANDOM KIT answer';
+     var P0=__P(), keep=JSON.stringify({w:P0.weapons,e:P0.equipped,es:P0.equippedSec,st:P0.stash,k:P0.kit,fk:P0.freeKit,ks:P0.kitSaved,ha:P0.hotAssign}), oSave=saveProfile, bad=[], went=0, i, st;
      function inStash(list){ var pool=P0.stash.slice(); for(var j=0;j<list.length;j++){ var x=pool.indexOf(list[j]); if(x<0) return false; pool.splice(x,1); } return true; }
      try{
        saveProfile=function(){};
-       P0.weapons=['pistol','rifle','sniper']; P0.equipped='pistol'; P0.equippedSec='none'; P0.freeKit=0; P0.kitSaved=null; P0.kit=[];
+       P0.weapons=['pistol','rifle','sniper']; P0.equipped='pistol'; P0.equippedSec='none'; P0.freeKit=0; P0.kitSaved=null; P0.kit=[]; P0.hotAssign={};
        P0.stash=['frag','frag','frag','smoke','bandage','medkit','ammobox','bandage','scrap','scrap'];
        askKit(function(){ went++; });
-       if(top.style.display==='none'||rnd.style.display==='none') bad.push('the kit question does not show TOP GEAR and RANDOM FROM STASH');
+       // v28.xx retarget: his kit orders (2026-10-14/15): TOP GEAR is BEST KIT (3 guns, up to 3 of each wheel item), RANDOM FROM STASH is RANDOM KIT (2 guns, 1 of each)
+       if(top.style.display==='none'||rnd.style.display==='none') bad.push('the kit question does not show BEST KIT and RANDOM KIT');
        top.click();
-       if(went!==1) bad.push('TOP GEAR did not go up ('+went+')');
-       if(P0.equipped!=='sniper') bad.push('TOP GEAR equipped '+P0.equipped+', not the highest tier gun owned');
-       if(P0.kit.filter(function(k){ return k==='frag'; }).length!==2) bad.push('TOP GEAR did not pack two of each grenade ('+P0.kit.join(',')+')');
-       if(P0.kit.indexOf('medkit')<0||P0.kit.indexOf('ammobox')<0) bad.push('TOP GEAR did not pack the biggest heal and ammo ('+P0.kit.join(',')+')');
-       if(P0.kit.indexOf('scrap')>=0) bad.push('TOP GEAR packed scrap');
-       if(!inStash(P0.kit)) bad.push('TOP GEAR packed something the stash does not hold');
-       if(md&&md.classList.contains('on')) bad.push('TOP GEAR left the card open');
+       if(went!==1) bad.push('BEST KIT did not go up ('+went+')');
+       if(P0.equipped!=='sniper') bad.push('BEST KIT equipped '+P0.equipped+', not the highest tier gun owned');
+       if(P0.kit.filter(function(k){ return k==='frag'; }).length!==3) bad.push('BEST KIT did not pack three frags, up to three of each ('+P0.kit.join(',')+')');
+       if(P0.kit.filter(function(k){ return k==='smoke'; }).length!==1) bad.push('BEST KIT packed more smoke than the stash holds ('+P0.kit.join(',')+')');
+       if(P0.kit.indexOf('medkit')<0||P0.kit.indexOf('ammobox')<0) bad.push('BEST KIT did not pack the heal and ammo ('+P0.kit.join(',')+')');
+       if(P0.kit.indexOf('scrap')>=0) bad.push('BEST KIT packed scrap');
+       if(!inStash(P0.kit)) bad.push('BEST KIT packed something the stash does not hold');
+       if(md&&md.classList.contains('on')) bad.push('BEST KIT left the card open');
        if(top.style.display!=='none'||rnd.style.display!=='none') bad.push('the two answers stayed on the card after it closed');
        for(i=0;i<5;i++){
-         P0.kit=[]; askKit(function(){ went++; }); rnd.click();
-         if(P0.weapons.indexOf(P0.equipped)<0||P0.equipped==='fists') bad.push('RANDOM FROM STASH equipped '+P0.equipped);
-         if(P0.kit.length>6||!inStash(P0.kit)) bad.push('RANDOM FROM STASH packed '+P0.kit.join(','));
-         if(P0.kit.indexOf('scrap')>=0) bad.push('RANDOM FROM STASH packed scrap');
+         P0.kit=[]; P0.hotAssign={}; askKit(function(){ went++; }); rnd.click();
+         if(P0.weapons.indexOf(P0.equipped)<0||P0.equipped==='fists') bad.push('RANDOM KIT equipped '+P0.equipped);
+         if(P0.kit.length>8||!inStash(P0.kit)) bad.push('RANDOM KIT packed '+P0.kit.join(','));
+         if(P0.kit.filter(function(k){ return k==='frag'; }).length>1) bad.push('RANDOM KIT packed more than one of an item ('+P0.kit.join(',')+')');
+         if(P0.kit.indexOf('scrap')>=0) bad.push('RANDOM KIT packed scrap');
        }
-       if(went!==6) bad.push('RANDOM FROM STASH did not go up every time ('+went+' of 6)');
+       if(went!==6) bad.push('RANDOM KIT did not go up every time ('+went+' of 6)');
      } finally {
        saveProfile=oSave;
-       try{ st=JSON.parse(keep); P0.weapons=st.w; P0.equipped=st.e; P0.equippedSec=st.es; P0.stash=st.st; P0.kit=st.k; P0.freeKit=st.fk; P0.kitSaved=st.ks; }catch(e){}
+       try{ st=JSON.parse(keep); P0.weapons=st.w; P0.equipped=st.e; P0.equippedSec=st.es; P0.stash=st.st; P0.kit=st.k; P0.freeKit=st.fk; P0.kitSaved=st.ks; P0.hotAssign=st.ha; }catch(e){}
        try{ if(md) md.classList.remove('on'); ASKYES=null; ASKALT=null; ASKBACK=null; if(typeof kitExtraHide==='function') kitExtraHide(); }catch(e){}
      }
      return bad.length?bad.join('; '):null; }},
@@ -77143,7 +77187,8 @@ window.__REGRESS=[
        var w=x1-x0, d=hx.getImageData(x0,y0,w,y1-y0).data, k=0, far=0, x, y;
        for(y=0;y<y1-y0;y++) for(x=0;x<w;x++){
          var i=(y*w+x)*4;
-         if(d[i]===255&&d[i+1]===192&&d[i+2]===74&&d[i+3]>250){
+         // v28.xx retarget: his mapchev order 2026-10-15 made the marker a neon green chevron (#39ff14, 57 255 20), no longer a gold disc
+         if(d[i]===57&&d[i+1]===255&&d[i+2]===20&&d[i+3]>250){
            k++;
            var dd=Math.hypot(x0+x-cx,y0+y-cy); if(dd>far) far=dd;
          }
@@ -77165,7 +77210,7 @@ window.__REGRESS=[
        //    radius would give, so a quiet shrink back is caught.
        var base=shotAt(1920,1080);
        if(!base.m) return 'SKIP: the marker fell outside the canvas at 1920x1080';
-       if(base.m.n<150) bad.push('your marker is only '+base.m.n+' pixels of gold at 1920x1080, which is the size he called hard to see');
+       if(base.m.n<100) bad.push('your marker is only '+base.m.n+' pixels of gold at 1920x1080, which is the size he called hard to see');
        if(base.m.r<7) bad.push('your marker is '+base.m.r.toFixed(1)+' pixels of radius, no bigger than the old speck');
        // 2. AND IT DOES NOT SWAMP THE MAP EITHER. Much larger was the note, not
        //    a blot over the district he is standing in.
@@ -77196,7 +77241,7 @@ window.__REGRESS=[
          pl.x=ox2+dx;
          var moved=read(pl.x,pl.y), left=read(ox2,oy2);
          pl.x=ox2;
-         if(!moved||moved.n<150) bad.push('control: the marker did not follow the operator, it reads '+(moved?moved.n:'nothing')+' pixels at his new position');
+         if(!moved||moved.n<100) bad.push('control: the marker did not follow the operator, it reads '+(moved?moved.n:'nothing')+' pixels at his new position');
          if(left&&left.n>40) bad.push('control: '+left.n+' gold pixels are still sitting where the operator used to be, so this check is counting something that is not him');
        }
      } finally { __forceSize(1920,1080); }

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.00 - A MIMIC POPS OUT AWAY FROM YOU AND ITS BOX SPINS INTO THE VOID
+
+Co-op hunt while he was away. His order: the MIMIC crawler from a looting box pops out AWAY from the player so he can kill it without taking damage, has a different name so he knows where it came from, and the box gets a unique disappear-into-the-void swirl animation. The crawler now comes out on the far side of the box, is named MIMIC, and holds its first bite for a second. The box is spent and spins away in a violet void swirl.
+
+MEASURED. Check 29.00 passes, and fails on v28.99.
 ## v28.99 - THE TEAMMATE HEARS THE SPIN-UP AND THE LANCE CHARGE
 
 Co-op hunt while he was away. The Support MG spin-up whirr (lmgWhirr from spinTick), the Meridian Lance charge whine and its ready ping (rlfxWhine and rlfxPing in rlfxPlay) are synth sounds played straight to the speakers, so unlike every foley clip they never went through netFxNoise and the teammate never heard them, though v25.52 promised that your teammate hears your reload where you stand and named the Lance whine and ping. Proven with eval: staged as player 2, a spin-up and a full Lance reload put no whirr, whine or ping in the queue sent to the party. Now each is sent as f:~whirr, f:~whine (with its length) or f:~ping, and the teammate window plays it with the same distance fade as a foley clip (not its stereo pan or through-the-wall muffle), without touching its own spin or reload sound. Letting go of the trigger (f:~whirrx) or a Lance reload cut short (f:~whinex) cuts the teammate copy too, and he hears at most one of each at a time, so a tap-tap does not stack whirrs. The active reload ping stays your own cue and is not sent.

@@ -1,9 +1,9 @@
-11.26: the pause box does not say "Q melee"; the pause box does not say "1-4 guns"; the pause box does not say "hold to sprint"; the pause box and the LEGEND table disagree about F: LEGEND says "next gun"
+11.26: the pause box does not say "V melee"; the pause box does not say "1-9 guns"; the pause box does not say "hold to sprint"; the pause box and the LEGEND table disagree about F: LEGEND says "next gun"
 10.64: PASS
-21.09: the tags are held to a 0 px column in a card with 774 px of room
-18.97: the note box is squashed to 0px
-20.58: 0 of the 29 run tags are in reach of the pad; the pad highlight put on the Sound was off tag does not stay there
+21.09: PASS
+18.97: PASS
+20.58: PASS
 20.92: the row ends 211 px short of its right edge, of 1847
-10.11: the tabs read [ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS, VALUABLES, LOCKED, SORT: DEFAULT, ARMORY  6/19, TROPHIES  3/8], not [ALL, GUNS, CONSUMABLES, PARTS, SALVAGE, KEYS]
-24.87: the Keys list has no width cap (1500px)
+10.11: PASS
+24.87: PASS
 ALL DONE

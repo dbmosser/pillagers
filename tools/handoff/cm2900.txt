@@ -1,0 +1,7 @@
+v29.00: a mimic pops out away from you and its box spins into the void
+
+A mimic crawler comes out away from you, named MIMIC, and its box spins into the void.
+
+Check 29.00. Fails on v28.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
