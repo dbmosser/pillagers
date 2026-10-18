@@ -1,0 +1,80 @@
+{
+    "title":  "Initials for each player, no rude ones",
+    "why":  "His answers Q62 and Q63 (10-18): one board entry per player, and block rude initials. A 2 player run asks player 1 and then player 2 for initials, the board shows both, and a short list of rude three letter sets is refused.",
+    "now":  "Each player enters initials in a 2 player run, and rude initials are blocked.",
+    "edits":  [
+                  {
+                      "anchor":  "out.push({run:x.run.slice(0,40),i:(typeof x.i===\u0027string\u0027)?x.i.slice(0,3).toUpperCase():\u0027\u0027,",
+                      "replacement":  "out.push({run:x.run.slice(0,40),i:(typeof x.i===\u0027string\u0027)?x.i.slice(0,3).toUpperCase():\u0027\u0027,i2:(typeof x.i2===\u0027string\u0027)?x.i2.slice(0,3).toUpperCase():\u0027\u0027,"
+                  },
+                  {
+                      "anchor":  "o=m[x.run]={run:x.run,i:x.i||\u0027\u0027,s:x.s,",
+                      "replacement":  "o=m[x.run]={run:x.run,i:x.i||\u0027\u0027,i2:x.i2||\u0027\u0027,s:x.s,"
+                  },
+                  {
+                      "anchor":  "    if(!o.i\u0026\u0026x.i) o.i=x.i;",
+                      "replacement":  "    if(!o.i\u0026\u0026x.i) o.i=x.i;\n    if(!o.i2\u0026\u0026x.i2) o.i2=x.i2;   // v28.xx (cw-iniplayer), his Q62: player 2 has initials of its own"
+                  },
+                  {
+                      "anchor":  "var id=ARCADE.run.id, s=arcadeTeam(), r, i, ini=\u0027\u0027;",
+                      "replacement":  "var id=ARCADE.run.id, s=arcadeTeam(), r, i, ini=\u0027\u0027, ini2=\u0027\u0027;"
+                  },
+                  {
+                      "anchor":  "if(!ini\u0026\u0026r[i].i) ini=r[i].i;",
+                      "replacement":  "if(!ini\u0026\u0026r[i].i) ini=r[i].i; if(!ini2\u0026\u0026r[i].i2) ini2=r[i].i2;"
+                  },
+                  {
+                      "anchor":  "r.push({run:id,i:ini,s:s,",
+                      "replacement":  "r.push({run:id,i:ini,i2:ini2,s:s,"
+                  },
+                  {
+                      "anchor":  "if(r[i].run===id) return !r[i].i;",
+                      "replacement":  "if(r[i].run===id) return !r[i].i||(r[i].m!==1\u0026\u0026!r[i].i2);"
+                  },
+                  {
+                      "anchor":  "function arcadeBoardIni(id,ini){",
+                      "replacement":  "function arcadeBoardIni(id,ini,who){"
+                  },
+                  {
+                      "anchor":  "if(r[i].run===id){ r[i].i=ini; n++; }",
+                      "replacement":  "if(r[i].run===id){ if(who===2) r[i].i2=ini; else r[i].i=ini; n++; }"
+                  },
+                  {
+                      "anchor":  "ARCADE.ini={run:run,l:[\u0027A\u0027,\u0027A\u0027,\u0027A\u0027],pos:0,at:Date.now(),touched:0,mirror:0};",
+                      "replacement":  "ARCADE.ini={run:run,l:[\u0027A\u0027,\u0027A\u0027,\u0027A\u0027],pos:0,at:Date.now(),touched:0,mirror:0,who:1};"
+                  },
+                  {
+                      "anchor":  "return netSamePost({t:\u0027arcinis\u0027,pair:NET.pair,run:n.run,l:n.l.join(\u0027\u0027),pos:n.pos,on:1});",
+                      "replacement":  "return netSamePost({t:\u0027arcinis\u0027,pair:NET.pair,run:n.run,l:n.l.join(\u0027\u0027),pos:n.pos,on:1,w:n.who|0});"
+                  },
+                  {
+                      "anchor":  "ARCADE.ini={run:String(m.run||\u0027\u0027).slice(0,40),l:l,pos:clamp(m.pos|0,0,2),at:Date.now(),touched:1,mirror:1};",
+                      "replacement":  "ARCADE.ini={run:String(m.run||\u0027\u0027).slice(0,40),l:l,pos:clamp(m.pos|0,0,2),at:Date.now(),touched:1,mirror:1,who:(m.w===2)?2:1};"
+                  },
+                  {
+                      "anchor":  "  if(op===\u0027done\u0027) return arcadeIniEnd();",
+                      "replacement":  "  if(op===\u0027done\u0027) return arcadeIniDone();"
+                  },
+                  {
+                      "anchor":  "  if(n.pos\u003e2) return arcadeIniEnd();",
+                      "replacement":  "  if(n.pos\u003e2) return arcadeIniDone();"
+                  },
+                  {
+                      "anchor":  "// The card closes: the owner writes the initials (??? when never touched); a mirror just goes.",
+                      "replacement":  "// v28.xx (cw-iniplayer), HIS ANSWERS Q62 and Q63 (2026-10-18): \"One board entry per player\" and \"Block rude initials\". A 2 player row takes\n// two sets of initials, player 1 first and then player 2 (the card says whose turn it is; any pad or the keyboard drives it, as before), and\n// the board shows both. A short list of rude three letter sets is refused on DONE (the letters reset and it says so) and becomes ??? when\n// the card times out with one on it.\nvar ARCADE_INI_RUDE=[\u0027ASS\u0027,\u0027FAG\u0027,\u0027FCK\u0027,\u0027FUC\u0027,\u0027FUK\u0027,\u0027FUQ\u0027,\u0027DIK\u0027,\u0027DCK\u0027,\u0027CUM\u0027,\u0027CNT\u0027,\u0027TIT\u0027,\u0027SHT\u0027,\u0027SEX\u0027,\u0027KKK\u0027,\u0027NIG\u0027,\u0027JIZ\u0027,\u0027TWT\u0027,\u0027WTF\u0027,\u0027HOE\u0027,\u0027NAZ\u0027];\nfunction arcadeIniRude(s){ return ARCADE_INI_RUDE.indexOf(String(s||\u0027\u0027).toUpperCase())\u003e=0; }\nfunction arcadeIniDone(){\n  var n=ARCADE.ini, s;\n  if(!n||n.mirror) return \u0027\u0027;\n  s=n.touched?n.l.join(\u0027\u0027):\u0027???\u0027;\n  if(n.touched\u0026\u0026arcadeIniRude(s)){\n    n.l=[\u0027A\u0027,\u0027A\u0027,\u0027A\u0027]; n.pos=0; n.touched=0; n.at=Date.now(); ARCADE.iniAy=1;\n    try{ sndUi(\u0027deny\u0027); }catch(_d){}\n    try{ say(\u0027Pick other initials\u0027,\u0027warn\u0027); }catch(_s){}\n    arcadeIniPost();\n    try{ arcadeOverSync(); }catch(_o){}\n    return \u0027\u0027;\n  }\n  return arcadeIniEnd();\n}\n// The card closes: the owner writes the initials (??? when never touched); a mirror just goes."
+                  },
+                  {
+                      "anchor":  "  var n=ARCADE.ini, s=\u0027\u0027;\n  if(!n) return \u0027\u0027;\n  ARCADE.ini=null;\n  if(!n.mirror){\n    s=n.touched?n.l.join(\u0027\u0027):\u0027???\u0027;\n    try{ arcadeBoardIni(n.run,s); }catch(_bi){}",
+                      "replacement":  "  var n=ARCADE.ini, s=\u0027\u0027;\n  if(!n) return \u0027\u0027;\n  if(!n.mirror){\n    s=n.touched?n.l.join(\u0027\u0027):\u0027???\u0027;\n    if(arcadeIniRude(s)) s=\u0027???\u0027;\n    if(!ARCADE.solo\u0026\u0026(n.who|0)!==2){   // v28.xx (cw-iniplayer), his Q62: player 1 is in, player 2 enters its own initials next\n      try{ arcadeBoardIni(n.run,s,1); }catch(_b1){}\n      n.who=2; n.l=[\u0027A\u0027,\u0027A\u0027,\u0027A\u0027]; n.pos=0; n.touched=0; n.at=Date.now(); ARCADE.iniAy=1;\n      arcadeIniPost();\n      try{ arcadeOverSync(); }catch(_o1){}\n      return s;\n    }\n  }\n  ARCADE.ini=null;\n  if(!n.mirror){\n    try{ arcadeBoardIni(n.run,s,(n.who|0)===2?2:1); }catch(_bi){}"
+                  },
+                  {
+                      "anchor":  "el.textContent=\u0027TOP 10 TONIGHT \\u00b7 ENTER INITIALS\u0027;",
+                      "replacement":  "el.textContent=ARCADE.solo?\u0027TOP 10 TONIGHT \\u00b7 ENTER INITIALS\u0027:(\u0027Player \u0027+((n.who|0)===2?2:1)+\u0027 \\u00b7 enter initials\u0027);   // v28.xx (cw-iniplayer), his Q62"
+                  },
+                  {
+                      "anchor":  "(i+1)+\u0027.  \u0027+String(r.i||\u0027???\u0027).slice(0,3).toUpperCase(),arcadeCr(r.s)",
+                      "replacement":  "(i+1)+\u0027.  \u0027+String(r.i||\u0027???\u0027).slice(0,3).toUpperCase()+((r.m!==1\u0026\u0026r.i2)?\u0027 \\u00b7 \u0027+String(r.i2).slice(0,3).toUpperCase():\u0027\u0027),arcadeCr(r.s)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his Q62 and Q63: a 2 player board row takes initials from each player, a 1 player row one set, and rude initials are refused\u0027,\n   run:function(){\n     if(window.storage\u0026\u0026window.storage.set) return \u0027SKIP: this host saves through window.storage, not localStorage\u0027;\n     if(typeof arcadeSandboxIn!==\u0027function\u0027||typeof arcadeIniStart!==\u0027function\u0027||typeof arcadeIniOp!==\u0027function\u0027||typeof arcadeBoardSave!==\u0027function\u0027) return \u0027SKIP: no arcade initials here\u0027;\n     if(typeof arcadeIniRude!==\u0027function\u0027) return \u0027there is no rude initials check\u0027;\n     var bad=[], BK=ARCADE_BOARD_KEY, bk=null, hadB=false, nsp=netSamePost, row, rows, i;\n     function rowOf(id){ var r=arcadeBoardLoad(), j; for(j=0;j\u003cr.length;j++) if(r[j].run===id) return r[j]; return null; }\n     function typeIt(s){ for(var j=0;j\u003cs.length;j++) arcadeIniOp(s.charAt(j)); }\n     try{\n       __topClear(); __runPrep();\n       if(ARCADE.on) return \u0027SKIP: the arcade is on after __topClear\u0027;\n       try{ bk=localStorage.getItem(BK); hadB=true; localStorage.removeItem(BK); }catch(_b){}\n       netSamePost=function(){ return true; };\n       if(!arcadeIniRude(\u0027FCK\u0027)||!arcadeIniRude(\u0027ass\u0027)) bad.push(\u0027FCK or ASS is not on the rude list\u0027);\n       if(arcadeIniRude(\u0027ABC\u0027)||arcadeIniRude(\u0027???\u0027)) bad.push(\u0027ABC or ??? is on the rude list\u0027);\n       if(!arcadeSandboxIn(\u0027host\u0027)) return \u0027arcadeSandboxIn failed\u0027;\n       ARCADE.solo=0; ARCADE.run={id:\u0027tq62\u0027}; ARCADE.ini=null;\n       arcadeBoardSave([{run:\u0027tq62\u0027,i:\u0027\u0027,s:5000,x:1,k:3,t:Date.now(),m:2,u:\u0027cr\u0027}]);\n       if(!arcadeBoardQual(\u0027tq62\u0027)) bad.push(\u0027a fresh 2 player row does not ask for initials\u0027);\n       arcadeIniStart(\u0027tq62\u0027); typeIt(\u0027ABC\u0027);\n       if(!ARCADE.ini||(ARCADE.ini.who|0)!==2) bad.push(\u0027after player 1 typed ABC the card is not on player 2 (who \u0027+(ARCADE.ini\u0026\u0026ARCADE.ini.who)+\u0027)\u0027);\n       row=rowOf(\u0027tq62\u0027);\n       if(!row||row.i!==\u0027ABC\u0027) bad.push(\u0027player 1 initials were not written (row i \u0027+(row\u0026\u0026row.i)+\u0027)\u0027);\n       typeIt(\u0027XYZ\u0027);\n       if(ARCADE.ini) bad.push(\u0027the card is still up after both players typed\u0027);\n       row=rowOf(\u0027tq62\u0027);\n       if(!row||row.i2!==\u0027XYZ\u0027) bad.push(\u0027player 2 initials were not written (row i2 \u0027+(row\u0026\u0026row.i2)+\u0027)\u0027);\n       if(arcadeBoardQual(\u0027tq62\u0027)) bad.push(\u0027a row with both sets of initials still asks for them\u0027);\n       // a rude set is refused\n       ARCADE.run={id:\u0027tq63\u0027}; arcadeBoardSave([{run:\u0027tq63\u0027,i:\u0027\u0027,s:4000,x:1,k:3,t:Date.now(),m:2,u:\u0027cr\u0027}]);\n       arcadeIniStart(\u0027tq63\u0027); typeIt(\u0027FCK\u0027);\n       row=rowOf(\u0027tq63\u0027);\n       if(!ARCADE.ini||(ARCADE.ini.who|0)!==1) bad.push(\u0027FCK was taken as player 1 initials\u0027);\n       if(row\u0026\u0026row.i) bad.push(\u0027FCK was written to the board (row i \u0027+row.i+\u0027)\u0027);\n       ARCADE.ini=null;\n       // a 1 player row takes one set\n       ARCADE.solo=1; ARCADE.run={id:\u0027tq64\u0027}; arcadeBoardSave([{run:\u0027tq64\u0027,i:\u0027\u0027,s:3000,x:1,k:3,t:Date.now(),m:1,u:\u0027cr\u0027}]);\n       arcadeIniStart(\u0027tq64\u0027); typeIt(\u0027QRS\u0027);\n       if(ARCADE.ini) bad.push(\u0027a 1 player card asked for a second set\u0027);\n       row=rowOf(\u0027tq64\u0027);\n       if(!row||row.i!==\u0027QRS\u0027) bad.push(\u00271 player initials were not written (row i \u0027+(row\u0026\u0026row.i)+\u0027)\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       netSamePost=nsp;\n       try{ ARCADE.ini=null; ARCADE.solo=0; ARCADE.run=null; }catch(_i){}\n       try{ if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE.on) arcadeLeave(); }catch(_l){}\n       try{ if(hadB){ if(bk===null) localStorage.removeItem(BK); else localStorage.setItem(BK,bk); } }catch(_b2){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

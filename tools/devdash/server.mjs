@@ -17,6 +17,13 @@ function ver() {
     const t = readFileSync(R + '/dark_raiders.html', 'utf8'); const x = /\nvar VER='([0-9.]+)'/.exec(t); verCache = { m, v: x ? x[1] : '?' }; } } catch {}
   return verCache.v;
 }
+// 10-18: the latest stable build (tools/stable.sh writes tools/handoff/stable.txt) and the latest morning/evening report (tools/report.mjs)
+const REP = R + '/tools/handoff/reports';
+function kv(p) { const o = {}; rd(p).split(/\r?\n/).forEach(l => { const m = /^(\w+)=(.*)$/.exec(l.trim()); if (m) o[m[1]] = m[2]; }); return o; }
+function latestReport() {
+  try { const f = readdirSync(REP).filter(n => /^\d{4}-\d\d-\d\d-(am|pm)\.html$/.test(n)).sort(); if (!f.length) return null;
+    const n = f[f.length - 1]; return { name: n, at: Math.round(statSync(REP + '/' + n).mtimeMs) }; } catch { return null; }
+}
 let cpuPrev = os.cpus(), cpu = 0;
 setInterval(() => { const c = os.cpus(); let idle = 0, tot = 0;
   c.forEach((k, i) => { const p = cpuPrev[i].times, t = k.times; const d = (t.user + t.nice + t.sys + t.idle + t.irq) - (p.user + p.nice + p.sys + p.idle + p.irq); tot += d; idle += t.idle - p.idle; });
@@ -53,7 +60,9 @@ function data() {
   const shipsToday = git(['log', '--since=midnight', '--format=%s']).split('\n').filter(s => /^v\d+\.\d+:/.test(s)).length;
   const hb = ageS(N + '/runner.heartbeat');
   const titles = {}; (tail(S + "/shipq.log", 12).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
-  return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30),
+  const st = kv(R + '/tools/handoff/stable.txt');
+  return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu,
+    stable: { version: st.version || '', at: st.at || '', address: st.address || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(), ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30),
     procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
     spend: { real: !!real, today: +(real ? real.today_usd : spentToday0).toFixed(2), all: +(real ? real.month_usd : spentAll0).toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
     done: existsSync(C + '/done') ? readdirSync(C + '/done').length : 0, failed: existsSync(C + '/failed') ? readdirSync(C + '/failed') : [],
@@ -63,5 +72,13 @@ function data() {
 const PAGE = () => rd("C:/claudecode/dark raiders/tools/devdash/index.html");   // read per request, so edits show at once
 http.createServer((q, s) => {
   if (q.url.startsWith('/api')) { s.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); s.end(JSON.stringify(data())); return; }
+  // 10-18: /report is the newest morning/evening report; /reports/NAME.html is a named one (names checked, nothing else is served)
+  if (q.url === '/report' || q.url.startsWith('/reports/')) {
+    let raw = ''; try { raw = decodeURIComponent(q.url.slice(9)).split('?')[0]; } catch {}
+    const lr = latestReport(), name = q.url === '/report' ? (lr && lr.name) : raw;
+    const body = name && /^\d{4}-\d\d-\d\d-(am|pm)\.html$/.test(name) ? rd(REP + '/' + name, null) : null;
+    if (body === null) { s.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }); s.end('No report yet. tools/report.mjs writes one at 07:00 and 18:00.'); return; }
+    s.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); s.end(body); return;
+  }
   s.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }); s.end(PAGE());
 }).listen(8820, '127.0.0.1');

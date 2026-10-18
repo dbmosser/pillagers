@@ -18,6 +18,10 @@
 # - Every hour it writes tools/handoff/nightly/<date>.md, which Claude reads instead of the raw logs.
 # - ONE COPY: a heartbeat file younger than 10 min means another copy is alive, so this one exits. A Windows scheduled task
 #   (tools/runner-start.vbs, every 15 min) starts it again if it ever dies, with or without a Claude session.
+# - 2026-10-18 (his orders): (8) once an hour tools/stable.sh decides whether a newer version is STABLE and publishes it as
+#   http://localhost:8802/stable.html; (9) at 07:00 and 18:00 tools/report.mjs writes the plain morning/evening report with pictures
+#   (tools/handoff/reports/); the second fuzzer runs on the corpus copy of the game so one exact version gets both the full test set and
+#   30+ robot minutes (what stable.sh needs); each corpus run leaves a .head file beside its output naming the commit it tested.
 S="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
 R="/c/claudecode/dark raiders"; N="$R/tools/handoff/nightly"; mkdir -p "$N"; ST="$N/state.txt"; LOG="$N/nightly.log"; HB="$N/runner.heartbeat"
 touch "$ST"
@@ -55,7 +59,7 @@ while true; do
     cl="$S/corpus.lock"; [ -d "$cl" ] && [ $(( $(date +%s) - $(stat -c %Y "$cl") )) -gt 21600 ] && rmdir "$cl" 2>/dev/null
     ct=$(get corpus_t); [ -z "$ct" ] && ct=0
     if [ "$(get corpus_head)" != "$head" ] && [ $(( $(date +%s) - ct )) -ge 14400 ] && mkdir "$cl" 2>/dev/null; then
-      out="$S/corpus-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"; put corpus_t "$(date +%s)"
+      out="$S/corpus-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"; put corpus_t "$(date +%s)"; echo "$head" > "$out.head"
       echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
       (bash "$S/corpq.sh" "$out" > /dev/null 2>&1; rmdir "$cl" 2>/dev/null; echo "$(date +%H:%M) corpus done" >> "$LOG"; summary) &
     fi
@@ -78,12 +82,24 @@ while true; do
     # (6) 10-17: a second fuzzer on its own Chrome (9332) with its own seeds, beside the first (9331)
     f2=$(running 'fuzz\.ps1.*9332')
     if [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge 8 ]; then
-      echo "$(date +%H:%M) fuzz2 start at $head" >> "$LOG"
-      (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -Port 9332 > /dev/null 2>&1; echo "$(date +%H:%M) fuzz2 done" >> "$LOG") &
+      # 10-18: on the corpus copy of the game (tools/fxcorpus.html, under 12 hours old) so the full test set and the robots meet on one version
+      fxarg=""; [ -n "$(find "$R/tools/fxcorpus.html" -mmin -720 2>/dev/null)" ] && fxarg="-Fixture fxcorpus.html"
+      echo "$(date +%H:%M) fuzz2 start at $head${fxarg:+ on the corpus copy}" >> "$LOG"
+      (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -Port 9332 $fxarg > /dev/null 2>&1; echo "$(date +%H:%M) fuzz2 done" >> "$LOG") &
     fi
   fi
   # (7) 2026-10-17: once a day after 03:00, the half-price code review of the day's game commits (tools/review-nightly.sh)
   if [ "$(get review_day)" != "$(date +%F)" ] && [ "$(date +%H)" -ge 3 ]; then put review_day "$(date +%F)"; (bash "$R/tools/review-nightly.sh" > /dev/null 2>&1) & fi
+  # (8) 2026-10-18, his "my play window always loads the latest stable build": once an hour tools/stable.sh checks whether a newer version is
+  #     STABLE (finished test run with no new failure + 30 robot minutes on the same version); if so it copies it to stable.html
+  #     (http://localhost:8802/stable.html), writes tools/handoff/stable.txt and tags it stable-vNN.NN. It reads only git and the logs.
+  stt=$(get stable_t); [ -z "$stt" ] && stt=0
+  if [ $(( $(date +%s) - stt )) -ge 3600 ] && [ -f "$R/tools/stable.sh" ]; then put stable_t "$(date +%s)"; (bash "$R/tools/stable.sh" --quiet >> "$LOG" 2>&1) & fi
+  # (9) 2026-10-18, his "a plain report of what changed, morning and evening, with pictures": tools/report.mjs (Node, no AI calls) writes
+  #     tools/handoff/reports/YYYY-MM-DD-am.html from 07:00 and -pm.html from 18:00; the dashboard links the newest one
+  hr=$(date +%H)
+  if [ "$hr" -ge 7 ] && [ "$hr" -lt 12 ] && [ "$(get report_am)" != "$(date +%F)" ] && [ -f "$R/tools/report.mjs" ]; then put report_am "$(date +%F)"; (node "$R/tools/report.mjs" --kind am --auto >> "$LOG" 2>&1) & fi
+  if [ "$hr" -ge 18 ] && [ "$(get report_pm)" != "$(date +%F)" ] && [ -f "$R/tools/report.mjs" ]; then put report_pm "$(date +%F)"; (node "$R/tools/report.mjs" --kind pm --auto >> "$LOG" 2>&1) & fi
   now=$(date +%s); st=$(get summary_t); [ -z "$st" ] && st=0
   [ $(( now - st )) -ge 3600 ] && { summary; put summary_t "$now"; }
   sleep 300

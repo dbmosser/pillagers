@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.34 - THE RAIDER RISES FROM UNDERGROUND AND RARE DROPS GET LIGHT SHAFTS
+
+Co-op hunt while he was away. His picks 77 and 75 of 10-14 and Q5 of 10-18, and the Ascend lore: you do not drop in, you come up from underground. A raid now starts with the raider rising out of a dark hatch in the ground in 1.3 s, and extraction sinks him back into it over the 1.4 s boarding hold. Any key, click, step or shot ends the rise and nothing is blocked. A pile somebody dropped stands in a rarity-coloured light shaft (taller and brighter the rarer it is, none for common); an unopened box never does.
+
+MEASURED. Check 30.34 passes, and fails on v30.33.
 ## v30.33 - A 2 player run ends only when both players are out
 
 Co-op hunt while he was away. His answer Q65 (10-18): in 2P the run ends when both players are out. One extraction used to double the score and end the run for both. Now the first player to extract stands out and the run goes on; the second extraction (either order) doubles and ends it.

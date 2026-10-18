@@ -7,6 +7,7 @@
 header{display:flex;flex-wrap:wrap;gap:18px;align-items:baseline;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2}
 h1{margin:0;font-size:20px;letter-spacing:.06em;color:var(--amber)}header .big{font-size:15px}header b{color:var(--ink)}
 .sub{color:var(--dim);font-size:13px}
+header a{color:var(--blue);text-decoration:none}header a:hover{text-decoration:underline}
 main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:14px;padding:16px 20px}
 .card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 .card h2{margin:0 0 2px;font-size:15px;letter-spacing:.04em}.card .what{color:var(--dim);font-size:13px;margin-bottom:10px}
@@ -21,6 +22,8 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <header><h1>PILLAGERS DEV</h1>
 <span class="big">Game version <b id="ver">?</b></span>
 <span class="big">Changes added today <b id="ships">0</b></span>
+<span class="big" id="stablebox" title="Open http://localhost:8802/stable.html to play it">Latest stable: <b id="stable">none yet</b></span>
+<a class="big" id="rep" href="/report" target="_blank" rel="noopener">Latest report</a>
 <span class="sub" id="upd">connecting...</span></header>
 <main>
 <section class="card"><h2>CLAUDE HELPERS</h2>
@@ -88,7 +91,9 @@ const row=(c,t,k)=>'<div class="row"><span class="dot '+c+'"></span>'+(t!==null?
 function ago(s){ if(s===null) return 'never'; if(s<90) return s+' seconds ago'; return Math.round(s/60)+' minutes ago'; }
 async function tick(){
   let d; try{ d=await (await fetch('/api',{cache:'no-store'})).json(); }catch(e){ $('upd').innerHTML='<span class="warn">Dashboard server not answering</span>'; return; }
-  TITLES=d.titles||{}; $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
+  TITLES=d.titles||{}; $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday;
+  const sb=d.stable||{}; $('stable').textContent=sb.version?('v'+sb.version+' ('+sb.at.slice(5)+')'+(sb.frozen?' frozen':'')):'none yet';
+  const rp=d.report; $('rep').textContent=rp?('Latest report ('+rp.name.replace(/\.html$/,'').slice(5)+')'):'Latest report (none yet)'; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
   $('lanes').innerHTML=(d.stopFile?row('r',null,'<b>All helpers are paused</b> because the STOP file is in tools/handoff/console. Delete it to restart them.'):'')+
     d.lanes.map(l=>{const [c,t]=laneLine(l.status);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+
     '<div class="small" style="margin-top:8px">Jobs finished: '+d.done+(d.failed.length?' &middot; <span class="warn">Gave up: '+d.failed.length+'</span>':'')+'</div>';

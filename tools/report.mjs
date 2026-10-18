@@ -134,8 +134,8 @@ for (const line of rd(NOTES + '/ui/changes.md').split(/\r?\n/)) {
 }
 picEntries.sort((x, y) => { const a = x.vs[0].split('.').map(Number), b = y.vs[0].split('.').map(Number); return b[0] - a[0] || b[1] - a[1]; });
 
-// ---- shrink and embed (a JPEG about 720 px wide; budget = 70 percent of the size cap)
-const PIC_BUDGET = Math.round(MAX_BYTES * 0.7), W = 720, Q = 58;
+// ---- shrink and embed (a JPEG about 960 px wide; budget = 70 percent of the size cap)
+const PIC_BUDGET = Math.round(MAX_BYTES * 0.7), W = 960, Q = 60;
 const srcOf = (d, f) => `${NOTES}/shots/${d}/${f}`;
 function cachePath(src) { const st = statSync(src); return `${CACHE}/${createHash('sha1').update(`${src}|${st.mtimeMs}|${st.size}|${W}|${Q}`).digest('hex').slice(0, 20)}.jpg`; }
 const wanted = [];

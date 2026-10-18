@@ -2790,7 +2790,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.33';
+var VER='30.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15663,6 +15663,64 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
 // in the loop, the start and late-join lines and its beeps), so a raid starts the way it did before v24.09: he has control on the
 // first frame, the raid clock and the world run from the first frame, and nothing is drawn over the middle of the screen. Nothing
 // replaces it.
+// v28.xx (cw-ascent), HIS PICK 77 (2026-10-14): "you don't drop in, you come up from underground". A raid starts with the raider rising out of a
+// dark hatch in the ground (1.3 s, ease out) and extraction sinks him back into it over the 1.4 s boarding hold, so the exit matches. It is
+// only how the figure is drawn: he can move, shoot and roll the whole time, and the first key, click, touch, step or shot ends the rise at
+// once. ascentSink gives how many pixels of him are still below the ground (0 = none); sim raids and a downed raider never sink. No seeded draw.
+var RISE_SEC=1.3, ASC_SINK=56;
+function ascentSink(p){
+  var g=G, r, k, s=0, z, i, zs;
+  if(!g||g.sim||!p||p.downed) return 0;
+  r=g.rise;
+  if(r){
+    if(p.moving||(p.muzzle>0)||(p.roll>0)||g.over){ g.rise=null; }
+    else {
+      k=((g.t||0)-r.t0)/r.dur;
+      if(!(k<1)){ g.rise=null; }
+      else { k=Math.max(0,k); s=ASC_SINK*(1-k)*(1-k)*(1-k); }
+    }
+  }
+  zs=g.zones;
+  if(zs&&!g.over) for(i=0;i<zs.length;i++){ z=zs[i]; if(z&&z.pullT>0){ k=Math.min(1,z.pullT/1.4); s=Math.max(s,ASC_SINK*k*k); } }
+  return s;
+}
+['keydown','mousedown','touchstart'].forEach(function(n){ window.addEventListener(n,function(e){ if(e&&e.repeat) return; if(G&&G.rise) G.rise=null; },true); });
+// the hatch, the teal light up out of it and the clip at the ground line; ascentEnd closes the clip and draws the dust ring
+function ascentBegin(p,s){
+  var f=s/ASC_SINK, y=p.y, gr;
+  wc.save();
+  wc.fillStyle='rgba(6,5,10,'+(.8*f).toFixed(3)+')'; wc.beginPath(); wc.ellipse(p.x,y,12+4*f,4.5+1.5*f,0,0,6.2832); wc.fill();
+  wc.globalCompositeOperation='lighter';
+  gr=wc.createLinearGradient(0,y-70,0,y);
+  gr.addColorStop(0,'rgba(53,214,200,0)'); gr.addColorStop(1,'rgba(53,214,200,'+(.30*f).toFixed(3)+')');
+  wc.fillStyle=gr; wc.fillRect(p.x-9,y-70,18,70);
+  wc.restore();
+  wc.save(); wc.beginPath(); wc.rect(p.x-40,y-110,80,111); wc.clip(); wc.translate(0,s);
+}
+function ascentEnd(p,s){
+  var f=s/ASC_SINK;
+  wc.restore();
+  wc.save(); wc.strokeStyle='rgba(205,195,170,'+(.5*f).toFixed(3)+')'; wc.lineWidth=1.2;
+  wc.beginPath(); wc.ellipse(p.x,p.y,14+18*(1-f),5+6*(1-f),0,0,6.2832); wc.stroke();
+  wc.restore();
+}
+// v28.xx (cw-ascent), HIS PICK 75 (2026-10-14): "rarity light shafts ... integrate it". A pile somebody DROPPED (his own drop or a teammate's: the
+// contents are known to everyone) stands in a column of its best rarity's colour: taller and brighter the rarer it is, none for common.
+// A box nobody has opened never gets one (his 2026-08-26 note: a box must not tell what it holds), and v28.xx lean6 stays: no ring, no pulse dot.
+var RSHAFT={uncommon:[58,.20],rare:[88,.30],elite:[118,.38],gold:[148,.46]};
+function lootShaft(ct,lift){
+  var r=ct.best, S=RSHAFT[r], c=RCOL[r], x=ct.x, y=ct.y-lift*0.5, h, a, gr;
+  if(!S||!c) return;
+  h=S[0]; a=S[1]*(1+.18*Math.sin((G.t||0)*2.2+ct.x*.05));
+  wc.save(); wc.globalCompositeOperation='lighter';
+  gr=wc.createLinearGradient(0,y-h,0,y);
+  gr.addColorStop(0,hexA(c,0)); gr.addColorStop(.7,hexA(c,(a*.5).toFixed(3))); gr.addColorStop(1,hexA(c,a.toFixed(3)));
+  wc.fillStyle=gr; wc.fillRect(x-5,y-h,10,h);
+  gr=wc.createLinearGradient(0,y-h,0,y);
+  gr.addColorStop(0,'rgba(255,255,255,0)'); gr.addColorStop(1,'rgba(255,255,255,'+(a*.55).toFixed(3)+')');
+  wc.fillStyle=gr; wc.fillRect(x-1.5,y-h,3,h);
+  wc.restore();
+}
 function startRaid(){
   if(netGuestHeld()) return false;   // v15.91: in a party only the host takes the lift; a guest goes up on the host word (the net section)
   // v21.96, from the whole-game bug hunt of 2026-10-08 (K6): THE RECORD OF PILED GUNS IS KEPT FOR THE RAID HE JOINS AGAIN. A new raid
@@ -15705,6 +15763,7 @@ function startRaid(){
   try{ classKeysSettle({deploy:1}); }catch(_cks){}   // v25.xx (belt3): and what the throwable, medical and armour keys show is pinned for the raid
   try{ G.hot=gunCell(); }catch(_gh){}   // v13.42: a raid starts with the gun in hand selected, wherever his belt put it
   G.carriedIn=bagValue();
+  if(G&&!G.sim) G.rise={t0:G.t||0,dur:RISE_SEC};   // v28.xx (cw-ascent), his pick 77: he comes up from underground
   // v28.xx (cw-precash), HIS ORDER (2026-10-15): "On the pre-raid screen ... quickly pick how much cash ... to take". The amount set on the PRE-RAID page (P.takeCashRaid, written when he deploys with MY LOADOUT) is the cash on him: the stall sells him no more than that, and banked Credits stay banked (nothing is lost with it). No pick means no cap.
   G.cash=null;
   if(!G.sim&&P.takeCashRaid!=null) G.cash=Math.max(0,Math.min(P.takeCashRaid|0,P.credits|0));
@@ -35766,6 +35825,7 @@ if(ct.bot&&WRECKDRAW[ct.bot]){
     wc.fillRect(ct.x-1.6,ct.y-lift+1,3.2,3.4);
   }
   wc.globalAlpha=1;
+  if(ct.dropped&&!ct.opened&&!G.sim&&ct.best){ try{ lootShaft(ct,lift); }catch(_ls){} }   // v28.xx (cw-ascent), his pick 75
   // SPEC 7.4: partial progress is shown ON the container, so a half opened
   // crate you left behind is legible from across the room and worth returning to.
   // v8.99: not while you are searching THIS one. The cursor already carries a
@@ -37093,6 +37153,9 @@ var SHD=G.shells[i];
       // about a second and a half and throws the other 15 away. What is left and the seconds are now to healReach, the drain's
       // own stop, and applyHeal stores that same reach as the total, so the ring runs from empty to full over the health that
       // arrives.
+      var _asc=0; try{ _asc=ascentSink(p); }catch(_ae){ _asc=0; }   // v28.xx (cw-ascent), his pick 77
+      if(_asc>0.5){ wc.save(); _svd++; ascentBegin(p,_asc); }
+      else _asc=0;
       drawOp(p.x,p.y,p.face,p.roll>0?(1-p.roll/.38)*12.6:p.bob,'#242832',
         0,p.muzzle,((G.deathBeat>0||p.hp<=0)?'down':(G.punchT>0?'fist':((pmode===''&&(G.handsT>0||p.hand||(p.wep&&p.wep.id==='fists')))?'none':pmode))),p.iv,
         {hero:1,own:p,team:'ally',moving:!!p.moving,sprint:!!G.sprinting,ads:!!p.ads,hurt:p.hitFlash,bulk:armorById(p.rig).bulk,
@@ -37100,6 +37163,7 @@ var SHD=G.shells[i];
          healSec:((p.healQ||0)>0&&(p.healRate||0)>0)?(Math.max(0,healReach(p)-p.hp)/(p.healRate)):0,
          rl:(p.reloading>0&&p.wep.reload)?clamp(1-p.reloading/p.wep.reload,0,1):0});
       try{ forgeGlow(p.x,p.y,p.face,p.wep,p.downed||p.hp<=0); }catch(_fg){}   // v23.xx (forge8): a forged gun glows at the hands
+      if(_asc>0){ ascentEnd(p,_asc); wc.restore(); _svd--; }   // v28.xx (cw-ascent)
       if(pWet){
         wc.restore(); _svd--;
         // The waterline itself: a dark ellipse where the body enters, a bright
@@ -48016,7 +48080,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.33: In a 2 player run, one player extracting no longer ends the run for the other. Check 30.33 fails on v30.32',
+  now:'v30.34: You rise up out of the ground when a raid starts and sink back into it when you board, and dropped rare loot has a coloured light shaft. Check 30.34 fails on v30.33',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

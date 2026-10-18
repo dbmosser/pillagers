@@ -1,0 +1,7 @@
+v30.34: the raider rises from underground and rare drops get light shafts
+
+You rise up out of the ground when a raid starts and sink back into it when you board, and dropped rare loot has a coloured light shaft.
+
+Check 30.34. Fails on v30.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
