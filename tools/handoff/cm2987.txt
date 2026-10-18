@@ -1,0 +1,7 @@
+v29.87: party pages: the slide ghost floats over the card
+
+The board and how to play pages change without a jump.
+
+Check 29.87. Fails on v29.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

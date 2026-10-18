@@ -1,0 +1,1 @@
+| Party pages: the slide ghost floats over the card | v29.87 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.87 passes, fails on v29.86 |

@@ -6097,6 +6097,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.87',what:'while an attract page is up the tab slide ghost (a copy of the old page) floats over the card and does not push the card or the button (screens 46 56 64)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof attEl!=='function'||typeof UIM==='undefined'||typeof UIM.tabOut!=='function') return 'SKIP: no arcade attract here';
+     var d, pg, wasDisp, s, y0, y1, gh, res=null;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       pg=arcadeAttEl('arcpage'); pg.textContent=''; pg.style.display='block'; pg.style.translate='none'; pg.style.opacity='1';
+       try{ d.querySelectorAll('.uimghost').forEach(function(g){ g.remove(); }); }catch(_g){}
+       s=document.createElement('div'); s.className='aph'; s.textContent='Tonights best'; pg.appendChild(s);
+       s=document.createElement('div'); s.className='apr'; s.textContent='1. ABC'; pg.appendChild(s);
+       y0=d.querySelector('.attpress').getBoundingClientRect().top;
+       UIM.tabOut(pg,1);
+       gh=d.querySelector('.uimghost');
+       if(!gh) return 'SKIP: the tab slide made no ghost';
+       y1=d.querySelector('.attpress').getBoundingClientRect().top;
+       if(Math.abs(y1-y0)>2) res='the ghost of the old page moved Press any button from '+Math.round(y0)+' to '+Math.round(y1);
+       else if(getComputedStyle(gh).position!=='absolute') res='the ghost page is '+getComputedStyle(gh).position+', not absolute';
+       return res;
+     } finally {
+       try{ d.querySelectorAll('.uimghost').forEach(function(g){ g.remove(); }); pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+     }
+   }},
   {v:'29.86',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

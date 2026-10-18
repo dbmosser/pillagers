@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.87 - Party pages: the slide ghost floats over the card
+
+Co-op hunt while he was away. The page change slides a copy of the old page for 200 ms. In the new one column layout that copy took a grid row and pushed the card and the button down. It floats now. Restyle only.
+
+MEASURED. Check 29.87 passes, and fails on v29.86.
 ## v29.86 - THE WHAT IS NEW CARD NAMES POLISH PASS 14
 
 Co-op hunt while he was away. The card was stamped v29.70 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
