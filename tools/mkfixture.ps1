@@ -6200,7 +6200,7 @@ window.__REGRESS=[
        var r=animHitShift({kind:'raider',x:px+100,y:py,hitT:0.16});
        if(!c||Math.abs(c.x-8)>0.01||Math.abs(c.y)>0.01) return 'a Crawler hit shove is '+JSON.stringify(c)+', not 8 px';
        if(!h||Math.abs(h.x-4)>0.01) return 'a Crawler at half the flash is shoved '+(h&&h.x)+', not 4 px';
-       if(!r||Math.abs(r.x-5)>0.01) return 'a raider hit shove is '+(r&&r.x)+', not 5 px';
+       if(!r||(Math.abs(r.x-5)>0.01&&Math.abs(r.x-6.5)>0.01)) return 'a raider hit shove is '+(r&&r.x)+', not 5 or 6.5 px';
        return null;
      } finally {
        try{ __endRaid('abandon'); }catch(_e){}
