@@ -1,0 +1,7 @@
+v29.01: the gate breach needs the hold and the garrison stays in the house
+
+Hold E at a stronghold gate to breach it, and its garrison stays in the house.
+
+Check 29.01. Fails on v29.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -6097,6 +6097,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.01',what:'the stronghold gate needs the hold: standing at it with no key never opens it, holding E opens it, and a defender is kept inside the building after the breach (his order: breach must really need the hold, the enemies in breach houses should not leave the house)',
+   run:function(){
+     if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__frame)) return 'SKIP: no raid or frame here';
+     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof flowTick!=='function'||typeof shNear!=='function') return 'SKIP: no arcade or strongholds here';
+     var bad=[], g=null, p=null, s=null, SS=null, gp, i, e, b, k0=keys;
+     try{
+       __topClear(); __runPrep();
+       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
+       p=g.player; keys={}; ARCADE.mine=0; ARCADE.holdT=0; g.t=4; flowTick(0.1); SS=g.flow.sh;
+       if(!SS||!SS.sites||!SS.sites.length) return 'SKIP: staging: the raid laid out no stronghold';
+       s=SS.sites[0]; if(s.kind!=='b') return 'SKIP: staging: the first stronghold is not a building';
+       b=g.map.buildings[s.bi]; gp=shGatePt(s);
+       p.iv=99; p.x=gp.x+s.nx*40; p.y=gp.y+s.ny*40; p.downed=false;
+       g.ents=g.ents.filter(function(q){ return !q||q.shi===s.i||dist(q,p)>1500; });
+       for(i=0;i<20;i++){ g.t+=0.25; flowTick(0.25); }
+       if(s.open||s.prog>0) bad.push('ONE: five seconds of standing at the gate with no key filled the ring to '+s.prog.toFixed(2)+(s.open?' and opened it':''));
+       keys={KeyE:true};
+       for(i=0;i<8;i++){ g.t+=0.25; flowTick(0.25); }
+       if(s.open||!(s.prog>0.5)) bad.push('TWO: holding E for 2 s left the ring at '+s.prog.toFixed(2)+(s.open?' and the gate open':''));
+       for(i=0;i<8&&!s.open;i++){ g.t+=0.25; flowTick(0.25); }
+       if(!s.open) bad.push('TWO: holding E for 4 s did not open the gate');
+       keys={};
+       e=null; for(i=0;i<(s.def||[]).length;i++) if(shAlive(s.def[i])){ e=s.def[i]; break; }
+       if(!e) return bad.length?bad.join(' | '):'SKIP: staging: no live defender';
+       flowTick(0.1);
+       e.x=b.x-40; e.y=b.y+b.h/2; flowTick(0.1);
+       if(!(e.x>b.x&&e.x<b.x+b.w&&e.y>b.y&&e.y<b.y+b.h)) bad.push('THREE: a defender put outside the house after the breach stayed outside at '+Math.round(e.x-b.x)+','+Math.round(e.y-b.y));
+       return bad.length?bad.join(' | '):null;
+     } finally {
+       keys=k0;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'29.00',what:'a mimic box: the crawler is named MIMIC, comes out on the far side of the box from the player and holds its bite, and the box is spent and spins away in a void swirl (his order: pops out AWAY, different name, disappear-into-the-void swirl)',
    run:function(){
      if(typeof __frame!=='function'||typeof mimicWake!=='function'||typeof drawMimicVoid!=='function'&&false) return 'SKIP: no frame or mimic helper';

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.01 - THE GATE BREACH NEEDS THE HOLD AND THE GARRISON STAYS IN THE HOUSE
+
+Co-op hunt while he was away. His order: hold-to-breach door, he did not have to hold, then got slaughtered by crawlers. Breach must really need the hold, and the enemies in breach houses should not leave the house. The gate ring now fills only while E (or the pad search button) is held at the gate, and after the breach the defenders of that building are kept inside its walls.
+
+MEASURED. Check 29.01 passes, and fails on v29.00.
 ## v29.00 - A MIMIC POPS OUT AWAY FROM YOU AND ITS BOX SPINS INTO THE VOID
 
 Co-op hunt while he was away. His order: the MIMIC crawler from a looting box pops out AWAY from the player so he can kill it without taking damage, has a different name so he knows where it came from, and the box gets a unique disappear-into-the-void swirl animation. The crawler now comes out on the far side of the box, is named MIMIC, and holds its first bite for a second. The box is spent and spins away in a violet void swirl.
