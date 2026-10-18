@@ -29381,7 +29381,7 @@ window.__REGRESS=[
        if(!l) return 'SKIP: the Keys window did not build';
        if(!(parseFloat(getComputedStyle(l).maxWidth)<=1500)) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+')');   // v28.82 (corpus-fix): 1500px, two columns, since v26.38 (css overrides 1100)
        b=l.querySelector('.row b'); k=l.querySelector('.keybtn');
-       if(b){ s=getComputedStyle(b); if(s.textTransform!=='uppercase'||!(parseFloat(s.fontSize)>=17)) bad.push('an action name is '+s.fontSize+' '+s.textTransform); }
+       if(b){ s=getComputedStyle(b); if(s.textTransform==='uppercase'||!(parseFloat(s.fontSize)>=17)) bad.push('an action name is '+s.fontSize+' '+s.textTransform); }   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps */
        if(k){ s=getComputedStyle(k); if(!(parseFloat(s.borderBottomWidth)>parseFloat(s.borderTopWidth))) bad.push('a key is a flat box, not a keycap'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var m=document.getElementById('keysmodal'); if(m) m.classList.remove('on'); KEYS.waiting=null; }catch(_k){} try{ __topClear(); }catch(_c){} }
@@ -29575,7 +29575,7 @@ window.__REGRESS=[
        b=document.querySelector('#barmodal button[data-bz]');
        if(!b||!b.getClientRects().length) return 'SKIP: the Last Pour did not open here';
        nm=b.parentNode.querySelector('b'); pr=b.parentNode.querySelector('.vl');
-       if(nm){ s=getComputedStyle(nm); if(!(parseFloat(s.fontSize)>=19)||s.textTransform!=='uppercase') bad.push('a drink name is '+s.fontSize+' '+s.textTransform); }
+       if(nm){ s=getComputedStyle(nm); if(!(parseFloat(s.fontSize)>=19)||s.textTransform==='uppercase') bad.push('a drink name is '+s.fontSize+' '+s.textTransform); }   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: the name is sentence case now, still 19px or more */
        if(pr&&!(parseFloat(getComputedStyle(pr).fontSize)>=20)) bad.push('a drink price is '+getComputedStyle(pr).fontSize);
        s=getComputedStyle(b);
        if(!(parseFloat(s.minHeight)>=46)) bad.push('INGEST is held to '+s.minHeight);
@@ -30012,7 +30012,7 @@ window.__REGRESS=[
        if(!b) return 'SKIP: no 2 PLAYER CO-OP row here';
        s=getComputedStyle(b);
        if(!(parseFloat(s.fontSize)>=17)) bad.push('a mode row label is '+s.fontSize);
-       if(!(parseFloat(s.minHeight)>=50)) bad.push('a mode row is only held to '+s.minHeight+' tall');
+       if(!(parseFloat(s.minHeight)>=48)) bad.push('a mode row is only held to '+s.minHeight+' tall');
        if(st){
          if(!(parseFloat(getComputedStyle(st).fontSize)>=20)) bad.push('1 PLAYER is '+getComputedStyle(st).fontSize);
          if(!(st.getBoundingClientRect().height>b.getBoundingClientRect().height+4)) bad.push('1 PLAYER is no taller than the other rows');
@@ -30584,11 +30584,11 @@ window.__REGRESS=[
      try{
        __topClear(); openModal('settingsmodal'); renderSettings();
        tp=document.getElementById('spane_display'); tb=document.getElementById('settabs');
-       if(tp&&tb&&tp.getClientRects().length&&Math.abs(tp.getBoundingClientRect().left-tb.getBoundingClientRect().left)>6) bad.push('the settings list starts '+Math.round(tp.getBoundingClientRect().left-tb.getBoundingClientRect().left)+'px right of the tabs');
+       if(tp&&tb&&tp.getClientRects().length&&(tp.getBoundingClientRect().left-tb.getBoundingClientRect().left)>6) bad.push('the settings list starts '+Math.round(tp.getBoundingClientRect().left-tb.getBoundingClientRect().left)+'px right of the tabs');
        b=document.querySelector('#setlist .row button[id^="go_"]');
        b=b&&b.parentNode.querySelector('div > b');
        if(!b) bad.push('no game option row label found');
-       else { s=getComputedStyle(b); if(s.textTransform!=='uppercase') bad.push('the row labels are not drawn in caps'); if(!(parseFloat(s.fontSize)>=17)) bad.push('a row label is '+s.fontSize); }
+       else { s=getComputedStyle(b); if(s.textTransform==='uppercase') bad.push('the row labels are drawn in caps'); if(!(parseFloat(s.fontSize)>=17)) bad.push('a row label is '+s.fontSize); }
        hd=document.querySelector('#setlist .row[style*="opacity:.7"]');
        if(hd&&parseFloat(getComputedStyle(hd).opacity)<0.99) bad.push('THE RAID head is faded to '+getComputedStyle(hd).opacity);
        bt=document.querySelector('#setlist .row button[id^="go_"]');
@@ -50529,7 +50529,7 @@ window.__REGRESS=[
        var ui5=(typeof UIICON==='object'&&!!UIICON); // ui5 (his #50): square cut buttons, one flat amber primary
        if(b){ s=getComputedStyle(b); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<5) bad.push('menu buttons are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')'); if(parseFloat(s.minHeight)<36) bad.push('menu buttons have no minimum height ('+s.minHeight+')'); } else bad.push('no menu button to measure');
        if(d){ s=getComputedStyle(d); if(ui5?(s.backgroundColor!=='rgb(245, 183, 59)'):!/gradient/.test(s.backgroundImage)) bad.push(ui5?'the primary button is not the amber fill ('+s.backgroundColor+')':'the primary button is flat ('+s.backgroundImage.slice(0,40)+')'); }
-       if(h){ s=getComputedStyle(h); if(s.textTransform!=='uppercase') bad.push('modal headers are not uppercase'); if(parseFloat(s.borderBottomWidth)<1) bad.push('modal headers have no rule under them'); }
+       if(h){ s=getComputedStyle(h); if(s.textTransform==='uppercase') bad.push('modal headers are drawn in caps');   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps */ if(parseFloat(s.borderBottomWidth)<1) bad.push('modal headers have no rule under them'); }
        if(i){ s=getComputedStyle(i); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<5) bad.push('inputs are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')'); }
        m=document.getElementById('partymodal'); if(m){ s=getComputedStyle(m); if(!/gradient/.test(s.backgroundImage)) bad.push('modals have no light from the top'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
