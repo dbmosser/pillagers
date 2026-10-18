@@ -34,7 +34,9 @@ const ALLOW_CMD = [
   /^bash tools\/handoff\/preflight\.sh [abc] cw-[A-Za-z0-9_-]+$/,   // 10-17: the gate without the lock, on the lane's own Chrome
   // 10-18, his "the weakest part of the whole game is still UI and presentation": the helpers get eyes. uishots stages named
   // screens on the current build and saves pictures that view_image shows the helper. Ports 9361-9363, one per lane.
-  /^powershell -NoProfile -ExecutionPolicy Bypass -File tools\/uishots\.ps1 -Screens [A-Za-z0-9,_-]+ -Out tools\/handoff\/console\/notes\/shots\/[A-Za-z0-9_-]+ -Res (1080|4k|1080,4k) -Port 936[123]( -NoLint)?$/ ];
+  /^powershell -NoProfile -ExecutionPolicy Bypass -File tools\/uishots\.ps1 -Screens [A-Za-z0-9,_-]+ -Out tools\/handoff\/console\/notes\/shots\/[A-Za-z0-9_-]+ -Res (1080|4k|1080,4k) -Port 936[123]( -NoLint)?$/,
+  // 10-18 research: an agent grades its own design work too kindly, so a separate skeptical critic judges the pictures
+  /^node tools\/console-sdk\/critic\.mjs( tools\/handoff\/[A-Za-z0-9_.\/-]+\.(jpe?g|png)){1,4}$/ ];
 const cut = (s, n) => s.length > n ? s.slice(0, n) + '\n[cut at ' + n + ' chars]' : s;
 function readLines(p, off, lim) {
   const L = readFileSync(norm(p), 'utf8').split(/\r?\n/); const o = Math.max(1, off || 1), n = Math.min(lim || 200, 400);

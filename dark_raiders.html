@@ -2309,7 +2309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.15';
+var VER='29.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27529,7 +27529,7 @@ if(e.state==='possum'){
       } else if(e.kind==='listener'){
         var cl2=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['core','titan','coil']),pick(['optic','servo','board']),'cell']);
-        cl2.time=1.3; G.containers.push(cl2);
+        cl2.time=1.3; G.containers.push(cl2); cl2.bot='listener';   // v28.xx (cw-wrecklistener), HIS NOTE (2026-10-18): "it would be cool if it showed wreckage instead. same for other enemy deaths". The Listener cache is drawn by drawWreckListener, not the purple box
         if(!G.sim) say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'It dropped a cache.'});   // v11.94, HIS NOTE: he could not tell this was a death   // v22.xx (R53): an objective row in caps
       // AMMUNITION COMES BACK OFF THE THINGS THAT MADE YOU SPEND IT, v1.68.
       // Measured over 40 raids on v1.67: the player fires 202 rounds a raid and 40
@@ -34684,6 +34684,32 @@ function drawWreckChoir(ct){
   wreckSmoke(ct,22);
 }
 WRECKDRAW.choir=drawWreckChoir;
+// v28.xx (cw-wrecklistener), HIS NOTE (2026-10-18): "it would be cool if it showed wreckage instead. same for other enemy deaths." The Listener wreck:
+// the tall thin machine fallen on its side in its own slate colours, the long arms sprawled, the legs bent, the dish torn off and lying beside it
+// with its red eye dead. Unsearched it smokes from the dish; searched the torso panel is open on a black cavity. grit(x,y) gives the facing.
+function drawWreckListener(ct){
+  var fl=grit(ct.x,ct.y)>.5?1:-1, o=!!ct.opened, bd='#3b4250', ed='#5d6878';
+  wc.save(); wc.translate(ct.x,ct.y-1); wc.scale(fl,1);
+  wc.fillStyle='rgba(8,6,4,.5)'; wc.beginPath(); wc.ellipse(0,2,24,7,0,0,6.2832); wc.fill();
+  wc.lineCap='round';
+  wc.strokeStyle=INK; wc.lineWidth=4.8; wc.beginPath(); wc.moveTo(8,-3); wc.lineTo(15,-7); wc.lineTo(23,-3); wc.moveTo(8,0); wc.lineTo(17,3); wc.lineTo(20,8); wc.stroke();
+  wc.strokeStyle=bd; wc.lineWidth=3.2; wc.stroke();
+  wc.fillStyle=INK; rrF(-7,-10,18,11,3);
+  wc.fillStyle=bd; rrF(-6.2,-9.2,16.4,9.4,2.6);
+  wc.fillStyle=ed; wc.fillRect(-5.8,-9,15.6,1.8);
+  if(o){ wc.fillStyle='#0e0b09'; rrF(-2,-7,9,6,2); }
+  wc.strokeStyle=INK; wc.lineWidth=3.6; wc.beginPath(); wc.moveTo(-6,-6); wc.lineTo(-15,-2); wc.lineTo(-23,-5); wc.moveTo(-5,-1); wc.lineTo(-13,4); wc.lineTo(-16,9); wc.stroke();
+  wc.strokeStyle=bd; wc.lineWidth=2.2; wc.stroke(); wc.lineCap='butt';
+  wc.save(); wc.translate(-24,-5); wc.rotate(.45);
+  wc.fillStyle=INK; wc.beginPath(); wc.ellipse(0,0,9.4,6.2,0,0,6.2832); wc.fill();
+  wc.fillStyle='#4a5364'; wc.beginPath(); wc.ellipse(0,0,8.2,5.2,0,0,6.2832); wc.fill();
+  wc.fillStyle='#2b3240'; wc.beginPath(); wc.ellipse(0,.6,5.2,3.2,0,0,6.2832); wc.fill();
+  wc.fillStyle='#4a2620'; wc.fillRect(-1.4,-1.2,2.8,2.4);
+  wc.restore();
+  wc.restore();
+  wreckSmoke(ct,9);
+}
+WRECKDRAW.listener=drawWreckListener;
 function drawContS(ct){
   var w,lift,d2,cF,cT;
   if(ct.mimicVoid!==undefined&&!ct.mimicVoidIn){ if(ct.mimicVoid>0) drawMimicVoid(ct); return; }   // v28.xx (cw-mimicaway): a spent mimic box is only its swirl, then nothing
@@ -46988,7 +47014,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.15: Gun keys moved down one past the marksman: 7 sniper, 8 energy. Key 0 is set aside for the Rocket Launcher. Check 29.15 fails on v29.14',
+  now:'v29.16: A dead Listener leaves a smoking wreck, not a box. Check 29.16 fails on v29.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

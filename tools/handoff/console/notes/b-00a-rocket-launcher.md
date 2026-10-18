@@ -3,4 +3,10 @@ Plan: step1 key cw-gunkeys0 (S/mk-cw-gunkeys0.ps1): GUN_CLASSES drop marksman, a
 Step2 cw-rocket: WEAPONS.rocket + ITEMS.gun_rocket, class 'rocket' (GUN_CLASS_OF), rocket bullet w/ blast (explodeFrag-like at ~18411; bullets in updateBullets ~29319; splice at ~29721), reload via p.reserve (30 ammo per rocket, mag 2).
 Step3 cw-nomarksman: remove dmr + whisper everywhere (grep dmr|whisper|marksman), saves convert. Old fixture checks using dmr (25632,36400,38062,74559 wear) may need retarget by fixq.
 Known: fixture check at 12130 uses keysBind('Digit0') + legend row '0' - may fail after step1; retarget to Numpad0 / 'NUM 0'.
-Status: step1 mk script written.
+Status: STEP 1 SHIPPED v29.15 (cw-gunkeys0). 28.41 check retargeted (fixture commit 8738e599). Helpers slotKeyName/slotKeyCode exist; GUN_CLASS_ICON.rocket currently 'gun_lance' placeholder; GUN_CLASS_NAME.rocket='ROCKET'. Preflight cmd: bash tools/handoff/preflight.sh b cw-KEY ; fixq needs: HELD=1 bash S/fixq.sh "msg" (no env prefix).
+Step 2 in progress (run 2): nothing in code yet; mk-cw-rocket.ps1 being written. DESIGN (all verified by reading):
+- fireWeapon@21011 pushes G.bullets (vx 1180); add rkt:1 + slow speed (520), life=rng/speed. updateBullets@29342 splice @29744 `if(hit||b.life<=0) G.bullets.splice(i,1)` -> before it, if b.rkt&&b.player: explodeFrag({x:b.x,y:b.y,R:..,nm:..}); explodeFrag@18424 R=(CFG.fragR..190) _fName 'YOUR OWN CHARGE'.
+- tracer draw @36522-36530 (lineWidth, _gtl=9*_trc).
+- universal ammo pool p.reserve. reload start sites: 25318 (KeyR), 25322 (held trigger empty), 25477/25480 (dry pull), reticle 38426; commit tickReload@21787 `take=Math.min(p.wep.mag-p.ammo,p.reserve)`; HUD 39696, 42815 `p.ammo+' / '+p.reserve`, 37510. Plan helpers rktCost/rlRounds/rlHave.
+- tables keyed by gun id: WEAPONS@2766-2795, WTIER@2812, ITEMS gun_*@3091 (gk), FV sfx@7596, BLM@20951, DRAWT@22986, GEAR_LIGHT@22968, GUNDEF@32633 (D.lance example), GUN_FAMILY@41616 + gunArt branch (else = lance) @41811, GUN_CLASS_OF@23171, GUN_CLASS_ICON/NAME@48660.
+- mk pattern: copy S/mk-cw-gunkeys0.ps1 (E anchor regex, check with {v:'VER',what,run}).

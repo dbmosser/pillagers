@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.16 - A DEAD LISTENER LEAVES WRECKAGE, NOT A BOX
+
+Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Listener left the generic purple cache box. The cache is now tagged a Listener wreck and drawn as the tall machine fallen on its side in its own slate colours, arms sprawled, the dish torn off beside it, smoke while unsearched. Looting is unchanged.
+
+MEASURED. Check 29.16 passes, and fails on v29.15.
 ## v29.15 - Gun keys renumbered, Rocket class on key 0
 
 Co-op hunt while he was away. His order 2026-10-18: get rid of the marksman rifle, move everything past it down a number, and add a rocket launcher as 0. The Marksman class leaves the gun keys: sniper is 7, energy is 8, the Rocket class is key 0 and key 9 does nothing. Zoom to 100 moves to the numpad 0. A saved key table that holds the marksman class keeps its order, loses the marksman and gains the rocket.

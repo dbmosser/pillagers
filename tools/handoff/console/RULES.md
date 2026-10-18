@@ -67,6 +67,25 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
   it, apply, runchk only the checks you touched, commit and release. Never think, explore or read code while you hold it.
   (10-17: one worker held it from 09:39 to 11:41 and nothing shipped for two hours.)
 
+## UI work: you can SEE the game (10-18)
+His words: "The weakest part of the whole game is still UI and presentation and organization of menus" and "You should be
+checking for optimization of design aspects and style consistency across menus, not just getting them right but making them
+actually look good". So for any change a player can see:
+- The camera: powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Screens 01,45 -Out tools/handoff/console/notes/shots/TASKID-before -Res 1080 -Port 936N
+  (N = 1 for lane a, 2 for b, 3 for c; -Res 1080,4k when size matters; add -NoLint to skip the lint). Screen names and their
+  staging are in tools/handoff/shots/ui-screens-js.json (78 screens; add a screen there only by asking in questions.md).
+  It shoots the CURRENT build (the fixture), so take "before" pictures first, and "after" pictures once your ship is in.
+  report.json also lists lint issues (clipped, off-screen, small, low-contrast text, overlaps).
+- Look with view_image. Judge like a picky art director at a AAA studio (ARC Raiders and Fortnite menus are his bar), not a
+  tester: alignment, spacing, hierarchy (what the eye hits first), one font family, few text sizes, few colors, consistent
+  panels, buttons, headers and close/back placement on EVERY screen. Clutter is a defect. Readable from a couch at 1080p.
+- After shipping, compare after with before. If it is not clearly better, fix it again (ship a follow-up); never leave it worse.
+- Consistency beats a one-off: follow tools/handoff/console/notes/ui/style-guide.md once it exists, and fix the guide, not the
+  screen, when the guide is wrong. His reference pictures, if any, are in tools/handoff/ui-refs/.
+- One control per job: never add a second row or menu that does what an existing control does; merge into it.
+- Log every visible change as one line in tools/handoff/console/notes/ui/changes.md: date, task, screen, what changed, before and
+  after picture paths. He reviews these.
+
 ## Fixture gotchas
 - The fixture REPLACES sfx() and say(). Put testable logic in its own function (see alarmOk in mk-alarmcap.ps1).
 - To prove a draw happens in the world text pass, test /_wtA/ against new Error().stack (see mk-cachetag.ps1).

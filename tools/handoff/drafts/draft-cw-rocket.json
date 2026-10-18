@@ -1,0 +1,144 @@
+{
+    "title":  "Rocket Launcher on key 0",
+    "why":  "His order 2026-10-18: add a rocket launcher as 0, about 30 ammo per rocket and a reload after 2 rockets. A slow rocket that goes off where it ends (a body, a wall or the end of its range) with a blast radius, 2 to a load, 30 of the one ammo pool a rocket loaded, its own sound, icon and drawn gun, the HUD shows rockets left. Found in the Pillbox wreck and Wirt lot (no seeded loot table changes).",
+    "now":  "New gun on key 0: the Rocket Launcher. Slow rocket, big blast, 2 to a load, 30 ammo a rocket. Found in the Pillbox wreck and the Wirt lot.",
+    "edits":  [
+                  {
+                      "anchor":  "noise:620,tint:\u0027#d8b4ff\u0027}\n};",
+                      "replacement":  "noise:620,tint:\u0027#d8b4ff\u0027},\n  // v28.xx (cw-rocket), HIS ORDER (2026-10-18): \"add a rocket launcher as \u00270\u0027. It should take maybe 30 ammo per rocket and require a reload after 2 rockets\". A slow rocket with a blast\n  // (rkt:1): two in the tube, a long reload, 30 of the one universal ammo pool for each rocket loaded.\n  rocket:{optic:2,id:\u0027rocket\u0027,name:\u0027Rocket Launcher\u0027,dmg:60,rof:700,spread:.012,mag:2,reload:3600,rng:900,auto:false,noise:700,tint:\u0027#ffb070\u0027,rkt:1}\n};"
+                  },
+                  {
+                      "anchor":  "sniper:5,lance:5};",
+                      "replacement":  "sniper:5,lance:5,rocket:5};"
+                  },
+                  {
+                      "anchor":  "gun_lance:{name:\u0027Meridian Lance (field)\u0027,val:4600,wt:6,r:\u0027elite\u0027,c:\u0027#d8b4ff\u0027,use:\u0027gun\u0027,gk:\u0027lance\u0027},",
+                      "replacement":  "gun_lance:{name:\u0027Meridian Lance (field)\u0027,val:4600,wt:6,r:\u0027elite\u0027,c:\u0027#d8b4ff\u0027,use:\u0027gun\u0027,gk:\u0027lance\u0027},\n  gun_rocket:{name:\u0027Rocket Launcher (field)\u0027,val:3800,wt:7,r:\u0027elite\u0027,c:\u0027#ffb070\u0027,use:\u0027gun\u0027,gk:\u0027rocket\u0027},   // v28.xx (cw-rocket)"
+                  },
+                  {
+                      "anchor":  "sniper:\u0027sniper\u0027,lance:\u0027energy\u0027};",
+                      "replacement":  "sniper:\u0027sniper\u0027,lance:\u0027energy\u0027,rocket:\u0027rocket\u0027};"
+                  },
+                  {
+                      "anchor":  "energy:\u0027gun_lance\u0027,rocket:\u0027gun_lance\u0027};",
+                      "replacement":  "energy:\u0027gun_lance\u0027,rocket:\u0027gun_rocket\u0027};"
+                  },
+                  {
+                      "anchor":  "energy:\u0027lance\u0027}, GHOSTSPR",
+                      "replacement":  "energy:\u0027lance\u0027,rocket:\u0027rocket\u0027}, GHOSTSPR"
+                  },
+                  {
+                      "anchor":  "lance:  {len:5000,lp:1200",
+                      "replacement":  "rocket: {len:5200,lp:900,hp:70,g:.22,decay:1.8,body:{f0:70,f1:26,d:.2,g:.2,type:\u0027sine\u0027},tail:1},   // v28.xx (cw-rocket): a deep launch thump\n      lance:  {len:5000,lp:1200"
+                  },
+                  {
+                      "anchor":  "lance:  {add:0.60,rec:0.90,dly:0.20,cone:0.025},",
+                      "replacement":  "rocket: {add:0.90,rec:0.70,dly:0.20,cone:0.020},\n  lance:  {add:0.60,rec:0.90,dly:0.20,cone:0.025},"
+                  },
+                  {
+                      "anchor":  "dmr:0.7,sniper:0.85,lmg:1.0,lance:1.0};",
+                      "replacement":  "dmr:0.7,sniper:0.85,lmg:1.0,lance:1.0,rocket:1.0};"
+                  },
+                  {
+                      "anchor":  "lmg:\u0027lmg\u0027,dmr:\u0027marksman\u0027,sniper:\u0027marksman\u0027,lance:\u0027lance\u0027};",
+                      "replacement":  "lmg:\u0027lmg\u0027,dmr:\u0027marksman\u0027,sniper:\u0027marksman\u0027,lance:\u0027lance\u0027,rocket:\u0027rocket\u0027};"
+                  },
+                  {
+                      "anchor":  "R(32.8,-2.6,1.4,5.2,\u0027d\u0027), R(38,-2.1,1.6,4.2,\u0027d\u0027), R(6,-5.6,8,2.4,\u0027d\u0027,\u0027H\u0027), R(13.4,-5.3,0.7,1.8,\u0027v\u0027,\u0027O\u0027)]};",
+                      "replacement":  "R(32.8,-2.6,1.4,5.2,\u0027d\u0027), R(38,-2.1,1.6,4.2,\u0027d\u0027), R(6,-5.6,8,2.4,\u0027d\u0027,\u0027H\u0027), R(13.4,-5.3,0.7,1.8,\u0027v\u0027,\u0027O\u0027)]};\n  D.rocket={tip:41,by:0,grip:5.2,fg:20,well:[12,3],port:[10,-3],rv:[3,-3,13,6],br:[14,41],p:[   // v28.xx (cw-rocket): a shoulder tube with a flared muzzle and a rocket nose\n    grip(5.2), P([-3,-2.6, 3,-2.4, 3,2.6, -3,3.6],\u0027d\u0027,\u0027F\u0027), R(3,-3,13,6,\u0027l\u0027,\u0027FHR\u0027), R(14,-4.2,24,8.4,\u0027m\u0027,\u0027HR\u0027), R(12,-4.6,1.6,9.2,\u0027d\u0027),\n    R(24,-4.6,1.6,9.2,\u0027d\u0027), R(36,-5.4,5,10.8,\u0027d\u0027,\u0027H\u0027), R(38.4,-2.4,2.6,4.8,\u0027r\u0027,\u0027O\u0027), R(6,-7.4,8,2.4,\u0027d\u0027,\u0027H\u0027), R(13.4,-7.1,0.7,1.8,\u0027g\u0027,\u0027O\u0027)]};"
+                  },
+                  {
+                      "anchor":  "  } else {\n    P([[-24,2],[-14,2],[-18,22],[-28,22]]); F(poly,2,22);\n    R(-44,-14,52,20,5); F(darkHex(col,0.75),-14,6);",
+                      "replacement":  "  } else if(fam===\u0027rocket\u0027){   // v28.xx (cw-rocket): a fat olive tube, a flared muzzle, the rocket nose in the rarity colour\n    P([[-24,2],[-14,2],[-18,22],[-28,22]]); F(poly,2,22);\n    R(-52,-18,100,24,10); F(\u0027#4d5a3e\u0027,-18,6);\n    R(34,-22,14,32,3); F(metal,-22,10);\n    R(-56,-20,8,28,3); F(\u0027#2c3037\u0027,-20,8);\n    for(i=0;i\u003c3;i++) line(-30+i*22,-17,-30+i*22,5,1.6,\u0027rgba(0,0,0,.35)\u0027);\n    P([[48,-12],[66,-5],[48,2]]); F(col,-12,2);\n    R(-28,-28,30,8,3); F(\u0027#24272c\u0027,-28,-20); lens(-6,-24,3.2);\n    guard(-14,0,6,9);\n  } else {\n    P([[-24,2],[-14,2],[-18,22],[-28,22]]); F(poly,2,22);\n    R(-44,-14,52,20,5); F(darkHex(col,0.75),-14,6);"
+                  },
+                  {
+                      "anchor":  "vx:Math.cos(ang)*1180,vy:Math.sin(ang)*1180,",
+                      "replacement":  "vx:Math.cos(ang)*(wep.rkt?RKT_SPD:1180),vy:Math.sin(ang)*(wep.rkt?RKT_SPD:1180),"
+                  },
+                  {
+                      "anchor":  "life:wep.rng/1180,player:",
+                      "replacement":  "life:wep.rng/(wep.rkt?RKT_SPD:1180),player:"
+                  },
+                  {
+                      "anchor":  "thru:(wep.id===\u0027lance\u0027)?1:0,gid:",
+                      "replacement":  "rkt:wep.rkt?1:0,_pen:wep.rkt?99:0,thru:(wep.id===\u0027lance\u0027)?1:0,gid:"
+                  },
+                  {
+                      "anchor":  "if(!G.sim\u0026\u0026!melee){\n    // v8.35: brass is decoration",
+                      "replacement":  "if(!G.sim\u0026\u0026!melee\u0026\u0026!wep.rkt){   // v28.xx (cw-rocket): a rocket tube throws no brass\n    // v8.35: brass is decoration"
+                  },
+                  {
+                      "anchor":  "if(hit||b.life\u003c=0) G.bullets.splice(i,1);",
+                      "replacement":  "if(hit||b.life\u003c=0){ if(b.rkt\u0026\u0026b.player) rocketBlast(b); G.bullets.splice(i,1); }   // v28.xx (cw-rocket): a rocket goes off where it ends, on a body, a wall or the end of its range"
+                  },
+                  {
+                      "anchor":  "var p=G.player,R=(CFG.fragR===undefined?190:CFG.fragR),i;",
+                      "replacement":  "var p=G.player,R=f.R||(CFG.fragR===undefined?190:CFG.fragR),i;   // v28.xx (cw-rocket): a rocket blast brings its own radius"
+                  },
+                  {
+                      "anchor":  "var _fName=_fMine?\u0027YOUR OWN CHARGE\u0027:",
+                      "replacement":  "var _fName=_fMine?(f.nm||\u0027YOUR OWN CHARGE\u0027):"
+                  },
+                  {
+                      "anchor":  "wc.lineTo(b.x,b.y-12); wc.stroke();\n    if(_trc\u003e1){",
+                      "replacement":  "wc.lineTo(b.x,b.y-12); wc.stroke();\n    if(b.rkt){ wc.fillStyle=\u0027#fff3c8\u0027; wc.beginPath(); wc.arc(b.x,b.y-12,4,0,6.2832); wc.fill(); }   // v28.xx (cw-rocket): the rocket has a hot head\n    if(_trc\u003e1){"
+                  },
+                  {
+                      "anchor":  "wc.strokeStyle=b.tint; wc.lineWidth=(b.el||b.elw)?3:2;",
+                      "replacement":  "wc.strokeStyle=b.tint; wc.lineWidth=b.rkt?5:((b.el||b.elw)?3:2);"
+                  },
+                  {
+                      "anchor":  "var _gtl=9*_trc, _gtv;",
+                      "replacement":  "var _gtl=(b.rkt?26:9)*_trc, _gtv;"
+                  },
+                  {
+                      "anchor":  "function tickReload(dt){",
+                      "replacement":  "// v28.xx (cw-rocket), HIS ORDER (2026-10-18): \"30 ammo per rocket and require a reload after 2 rockets\". The one universal pool (p.reserve) pays 30 for each rocket loaded;\n// every other gun still pays one a round. rlRounds is what a reload would load, rlHave whether a reload can load anything, rsvShow the number the HUD shows beside the tube.\nvar RKT_SPD=460, RKT_AMMO=30, RKT_R=170;\nfunction rktCost(w){ return (w\u0026\u0026w.rkt)?RKT_AMMO:1; }\nfunction rlRounds(p){ var c=rktCost(p.wep), r=(c\u003e1)?Math.floor((p.reserve||0)/c):(p.reserve||0); return Math.max(0,Math.min((p.wep.mag||0)-(p.ammo||0),r)); }\nfunction rlHave(p){ var c=rktCost(p.wep); return c\u003e1?Math.floor((p.reserve||0)/c)\u003e0:p.reserve\u003e0; }\nfunction rsvShow(p){ var c=rktCost(p.wep); return c\u003e1?Math.floor((p.reserve||0)/c):p.reserve; }\nfunction rocketBlast(b){ explodeFrag({x:b.x,y:b.y,R:RKT_R,nm:\u0027Your own rocket\u0027}); }\nfunction tickReload(dt){"
+                  },
+                  {
+                      "anchor":  "var take=Math.min(p.wep.mag-p.ammo,p.reserve);\n      // v22.73, the raid text rewrite (R28)",
+                      "replacement":  "var take=rlRounds(p);   // v28.xx (cw-rocket)\n      // v22.73, the raid text rewrite (R28)"
+                  },
+                  {
+                      "anchor":  "p.ammo+=take; p.reserve-=take;\n      // v25.xx (reloaddone)",
+                      "replacement":  "p.ammo+=take; p.reserve-=take*rktCost(p.wep);   // v28.xx (cw-rocket): a rocket costs 30\n      // v25.xx (reloaddone)"
+                  },
+                  {
+                      "anchor":  "p.ammo\u003cp.wep.mag\u0026\u0026p.reserve\u003e0){ p.reloading=p.wep.reload*buzzSlow();",
+                      "replacement":  "p.ammo\u003cp.wep.mag\u0026\u0026rlHave(p)){ p.reloading=p.wep.reload*buzzSlow();"
+                  },
+                  {
+                      "anchor":  "p.wep.mag\u003e0\u0026\u0026p.ammo\u003c=0\u0026\u0026p.reserve\u003e0\u0026\u0026!p.downed",
+                      "replacement":  "p.wep.mag\u003e0\u0026\u0026p.ammo\u003c=0\u0026\u0026rlHave(p)\u0026\u0026!p.downed"
+                  },
+                  {
+                      "anchor":  "if(p.reserve\u003e0\u0026\u0026p.reloading\u003c=0\u0026\u0026CFG.autoRel!==0){",
+                      "replacement":  "if(rlHave(p)\u0026\u0026p.reloading\u003c=0\u0026\u0026CFG.autoRel!==0){"
+                  },
+                  {
+                      "anchor":  "else if((p.reserve\u003c=0||(CFG.autoRel===0\u0026\u0026p.reloading\u003c=0))\u0026\u0026!p.dryTold)",
+                      "replacement":  "else if((!rlHave(p)||(CFG.autoRel===0\u0026\u0026p.reloading\u003c=0))\u0026\u0026!p.dryTold)"
+                  },
+                  {
+                      "anchor":  "(p.reserve\u003c=0?\u0027dry\u0027:\u0027empty\u0027)",
+                      "replacement":  "(!rlHave(p)?\u0027dry\u0027:\u0027empty\u0027)"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(p.ammo+\u0027 / \u0027+p.reserve,W-16,by-LH(14));",
+                      "replacement":  "ctx.fillText(p.ammo+\u0027 / \u0027+rsvShow(p),W-16,by-LH(14));"
+                  },
+                  {
+                      "anchor":  "(p.ammo+\u0027 / \u0027+p.reserve),x+PW-11,cy);",
+                      "replacement":  "(p.ammo+\u0027 / \u0027+rsvShow(p)),x+PW-11,cy);"
+                  },
+                  {
+                      "anchor":  "pick([\u0027gun_whisper\u0027,\u0027gun_lance\u0027]),\u0027servo\u0027]);",
+                      "replacement":  "pick([\u0027gun_whisper\u0027,\u0027gun_lance\u0027,\u0027gun_rocket\u0027]),\u0027servo\u0027]);"
+                  },
+                  {
+                      "anchor":  "  [\u0027gun_lance\u0027],\n  [\u0027gun_whisper\u0027,\u0027plate\u0027],",
+                      "replacement":  "  [\u0027gun_lance\u0027],\n  [\u0027gun_rocket\u0027,\u0027plate\u0027,\u0027frag\u0027],   // v28.xx (cw-rocket)\n  [\u0027gun_whisper\u0027,\u0027plate\u0027],"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Rocket Launcher: a slow rocket (a blast where it ends), 2 to a load, 30 of the ammo pool a rocket, on class key 0, with a loot source and its own icon and HUD count (his order 2026-10-18)\u0027,\n   run:function(){\n     if(typeof rlHave!==\u0027function\u0027||typeof rktCost!==\u0027function\u0027||typeof rsvShow!==\u0027function\u0027||!WEAPONS.rocket) return \u0027no Rocket Launcher: no rocket gun, no 30 ammo a rocket\u0027;\n     var g=null, bad=[], p, w=WEAPONS.rocket, e, f=null, i, hp0, bl, sp, ff;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       p=g.player;\n       if(w.mag!==2) bad.push(\u0027mag \u0027+w.mag+\u0027 (want 2 rockets a load)\u0027);\n       if(rktCost(w)!==30||rktCost(WEAPONS.pistol)!==1) bad.push(\u0027cost \u0027+rktCost(w)+\u0027 / \u0027+rktCost(WEAPONS.pistol));\n       p.wep=w; p.ammo=0; p.reserve=29; if(rlHave(p)) bad.push(\u002729 in the pool can load a rocket\u0027);\n       p.reserve=30; if(!rlHave(p)) bad.push(\u002730 in the pool cannot load a rocket\u0027);\n       p.reserve=100; p.ammo=0; p.reloading=1; tickReload(0.1);\n       if(p.ammo!==2||p.reserve!==40) bad.push(\u0027a reload from 100 left \u0027+p.ammo+\u0027 loaded, \u0027+p.reserve+\u0027 in the pool (want 2 and 40)\u0027);\n       p.reserve=59; p.ammo=0; p.reloading=1; tickReload(0.1);\n       if(p.ammo!==1||p.reserve!==29) bad.push(\u0027a reload from 59 left \u0027+p.ammo+\u0027 loaded, \u0027+p.reserve+\u0027 in the pool (want 1 and 29)\u0027);\n       p.reserve=100; if(rsvShow(p)!==3) bad.push(\u0027the HUD count is \u0027+rsvShow(p)+\u0027 (want 3 rockets from 100)\u0027);\n       p.wep=WEAPONS.pistol; p.ammo=0; p.reserve=5; p.reloading=1; tickReload(0.1);\n       if(p.ammo!==5||p.reserve!==0) bad.push(\u0027a pistol reload changed: \u0027+p.ammo+\u0027 / \u0027+p.reserve);\n       // the round\n       p.wep=w; p.ammo=2; g.bullets.length=0;\n       fireWeapon(p,w,p.x+100,p.y,true);\n       bl=g.bullets[g.bullets.length-1];\n       sp=bl?Math.hypot(bl.vx,bl.vy):0;\n       if(!bl||!bl.rkt) bad.push(\u0027the shot is not a rocket\u0027);\n       else if(!(sp\u003e200\u0026\u0026sp\u003c700)) bad.push(\u0027the rocket speed is \u0027+Math.round(sp)+\u0027 (want slow, under 700)\u0027);\n       // the blast: a rocket that ends 100 units short of a body still hurts it\n       g.bullets.length=0;\n       for(i=0;i\u003cg.ents.length;i++){ ff=g.ents[i]; if(ff.merc||ff.finished||ff.downed||!(ff.hp\u003e0)) continue; if(!losClear(ff.x-100,ff.y,ff.x,ff.y,g.map.segs)) continue; f=ff; break; }\n       if(!f) return \u0027SKIP: no clear target\u0027;\n       hp0=f.hp;\n       g.bullets.push({sx:f.x-100,sy:f.y,mzd:0,x:f.x-100,y:f.y,vx:RKT_SPD,vy:0,dmg:w.dmg,life:0.01,player:true,owner:p,tint:\u0027#ffb070\u0027,el:\u0027\u0027,rkt:1,_pen:99,thru:0,gid:\u0027rocket\u0027});\n       for(i=0;i\u003c3\u0026\u0026g.bullets.length;i++) updateBullets(1/60);\n       if(g.bullets.length) bad.push(\u0027the rocket is still flying\u0027);\n       if(!(f.hp\u003chp0)) bad.push(\u0027the blast 100 units off did nothing to the body (\u0027+hp0+\u0027 to \u0027+f.hp+\u0027)\u0027);\n       if(!(ITEMS.gun_rocket\u0026\u0026ITEMS.gun_rocket.gk===\u0027rocket\u0027)) bad.push(\u0027no gun_rocket item\u0027);\n       if(gunClassOf(\u0027rocket\u0027)!==\u0027rocket\u0027||gunClassKey(\u0027rocket\u0027)!==8) bad.push(\u0027the rocket is not on class key 0\u0027);\n       if(WIRT_LOT_POOL.join(\u0027|\u0027).indexOf(\u0027gun_rocket\u0027)\u003c0) bad.push(\u0027no loot source: not in the Wirt lot\u0027);\n       if(GUN_CLASS_ICON.rocket!==\u0027gun_rocket\u0027||!GUNDEF.rocket) bad.push(\u0027no icon or drawn gun\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

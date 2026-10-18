@@ -1,0 +1,10 @@
+{
+ "01-title-mode-menu": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A competent dark-and-amber template, but the title screen is a cluttered, text-heavy stack of equal-weight rows, with explainer copy, tiny low-contrast text and inconsistent casing that falls well short of ARC Raiders or Fortnite menu polish.",
+  "pic": "tools/handoff/console/notes/shots/test/01-title-mode-menu-1080.jpg",
+  "task": "test",
+  "when": "2026-10-18T05:39"
+ }
+}

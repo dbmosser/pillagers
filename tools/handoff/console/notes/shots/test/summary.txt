@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       5.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  45-arcade-attract-board                staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  23-raid-backpack-open                  staged       8.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
