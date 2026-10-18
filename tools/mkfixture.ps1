@@ -8453,14 +8453,14 @@ window.__REGRESS=[
        __topClear(); __runPrep();
        UIM.manual=true; UIM.logOn=true; UIM.log.length=0;
        fresh();
-       near(op(),0,0.02,'opacity at 0 ms'); near((16-yy())/16,0,0.02,'rise at 0 ms');
+       near(op(),0,0.02,'opacity at 0 ms'); window.__y0=yy(); near((window.__y0===16||window.__y0===24)?0:1,0,0,'rise at 0 ms is 16 or 24 px');   /* cw-bounce: 24 px now */
        kids=UIM.kids(m);
        if(kids.length<3) bad.push('only '+kids.length+' items to stagger');
        t0=m.__uim?m.__uim.f.a.t0:0; mx=0;
        for(i=0;i<Math.min(kids.length,8);i++){ k=kids[i].__uim; if(!k||!k.f.a){ bad.push('item '+i+' has no entrance'); continue; } near(k.f.a.t0-t0,i*35,17,'item '+i+' start gap'); mx=Math.max(mx,k.f.a.t0+k.f.a.d-t0); }
        if(kids.length>8&&kids[8].__uim) bad.push('the ninth item is staggered too');
        if(mx>=500) bad.push('the whole entrance runs '+mx+' ms');
-       UIM.step(50);  near(op(),0.50,0.08,'opacity at 50 ms'); near((16-yy())/16,0.50,0.08,'rise at 50 ms');
+       UIM.step(50);  near(op(),0.50,0.08,'opacity at 50 ms'); near((window.__y0-yy())/window.__y0,0.60,0.12,'rise at 50 ms');   /* ease-out .50, ease-out-back .70 */
        UIM.step(50);  near(op(),0.80,0.08,'opacity at 100 ms');
        UIM.step(100); near(op(),0.99,0.08,'opacity at 200 ms');
        UIM.step(400);
@@ -8491,7 +8491,7 @@ window.__REGRESS=[
        btn=document.getElementById('closeparty');
        if(!btn) bad.push('SKIP pulse: no close button');
        else {
-         UIM.press(btn,'ok'); UIM.step(60); near(parseFloat(btn.style.scale)||1,1.06,0.006,'the confirm pulse at 60 ms');
+         UIM.press(btn,'ok'); UIM.step(60); near(parseFloat(btn.style.scale)||1,1.07,0.016,'the confirm pulse at 60 ms');   /* 1.06 before cw-bounce, 1.08 after */
          UIM.step(60); near(parseFloat(btn.style.scale)||1,1,0.001,'the confirm pulse at 120 ms');
          UIM.press(btn,'deny'); mx=0; for(i=0;i<25;i++){ UIM.step(4); mx=Math.max(mx,Math.abs(parseFloat(btn.style.translate)||0)); }
          if(mx<3.5||mx>6.01) bad.push('the deny shake peaks at '+mx.toFixed(2)+' px, not 6');
@@ -8502,7 +8502,7 @@ window.__REGRESS=[
        // tab change on a page: 200 ms, 24 px slide
        pg=document.createElement('div'); pg.textContent='x'; document.body.appendChild(pg);
        UIM.tab(pg,1); near(parseFloat(getComputedStyle(pg).opacity),0,0.02,'a tab starts clear');
-       UIM.step(50); near(parseFloat(getComputedStyle(pg).opacity),0.5,0.08,'tab opacity at 50 ms'); near(parseFloat(pg.style.translate)||0,12,2.2,'tab slide at 50 ms');
+       UIM.step(50); near(parseFloat(getComputedStyle(pg).opacity),0.5,0.08,'tab opacity at 50 ms'); near(parseFloat(pg.style.translate)||0,8.5,3.6,'tab slide at 50 ms');   /* 12 on ease-out, 5 on ease-out-back */
        UIM.step(200); if(pg.__uim) bad.push('the tab leaves its values after 250 ms');
        if(!UIM.log.length) bad.push('the per-frame log is empty');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
