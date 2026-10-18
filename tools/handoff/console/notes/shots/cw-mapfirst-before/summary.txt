@@ -1,0 +1,6 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  20-raid-hud-drop                       staged       7.5s  
+  22-raid-map-open                       staged       8.6s  
+== 4k : window 3872x2263, viewport 3840x2160
+  20-raid-hud-drop                       staged       7.9s  
+  22-raid-map-open                       staged       9.4s  

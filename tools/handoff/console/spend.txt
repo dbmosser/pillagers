@@ -537,3 +537,5 @@
 2026-10-18 0.5781 03-title-and-backdrop-r2
 2026-10-18 0.0267 critic-12-ui-party-screens
 2026-10-18 0.0307 critic-12-ui-party-screens
+2026-10-18 0.0276 critic-12-ui-party-screens
+2026-10-18 0.0283 critic-12-ui-party-screens

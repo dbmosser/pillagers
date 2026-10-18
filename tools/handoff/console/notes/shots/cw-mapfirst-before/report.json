@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T16:25:33","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":49,"screens":[
+{"name":"20-raid-hud-drop","screen":"In-raid HUD 2.5 s after a kitted drop","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"20-raid-hud-drop-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"20-raid-hud-drop-4k.jpg","lint":""}},
+{"name":"22-raid-map-open","screen":"Sector map overlay (M)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"22-raid-map-open-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"22-raid-map-open-4k.jpg","lint":""}}
+]}

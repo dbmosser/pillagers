@@ -133,6 +133,7 @@ A.stage=async function(o){
   if(!o.night) __cfg({ambient:1500,viewFar:1500,coneDeg:360});   // a clear day: nothing hidden by the fog of war
   BASE={x:o.x||SITE.x,y:o.y||SITE.y};
   A.clearStage(BASE.x-410,BASE.y-290,BASE.x+410,BASE.y+250);
+  p.bob=0.02; p.lastShot=16.7; p.combatT=0.0167; p.swapT=0.0167; p.bloomQ=9.0167; p.crQuiet=99.0167;   // timers that creep with the frame gaps while the raid boots: pinned, so two runs match to the pixel
   p.x=BASE.x; p.y=BASE.y; p.face=(o.face===undefined?1.25:o.face); p.iv=99; p.moving=false; p.recoil=0; p.muzzle=0;
   A.hud();
   A.only(null);

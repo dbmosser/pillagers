@@ -1,0 +1,7 @@
+v30.94: mimic boxes are gone from the arcade and the career
+
+Mimic boxes are gone: no crate or locker hides a crawler, nothing ticks near a box, no MIMIC line.
+
+Check 30.94. Fails on v30.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
