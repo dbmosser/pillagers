@@ -1,0 +1,7 @@
+v29.79: run over card: a 56px button flush right
+
+The run over button is smaller and tidier.
+
+Check 29.79. Fails on v29.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

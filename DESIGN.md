@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.79 - Run over card: a 56px button flush right
+
+Co-op hunt while he was away. The critic said the full width 108px amber button was the loudest thing on the run over screen. It is now 56px high, flush right under the card. Restyle only.
+
+MEASURED. Check 29.79 passes, and fails on v29.78.
 ## v29.78 - SETTINGS TOAST HIDDEN
 
 Co-op hunt while he was away. Critic c-31: a toast sits in the Settings header over the title.

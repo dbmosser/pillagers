@@ -6097,6 +6097,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.79',what:'while the run over card is up, Press any button is a 56px (x scale) accent button, flush right under the card and not as wide as it (critic on v29.76: a 108px full width slab was the loudest thing on screen; screens 52 55)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';
+     var d, oc, wasDisp, ap, ar, cr, z, res=null, s;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       oc=arcadeAttEl('arcover'); oc.style.display='block'; s=document.createElement('div'); s.className='aos'; s.textContent='Score 1 SP'; oc.appendChild(s);
+       ap=d.querySelector('.attpress'); ar=ap.getBoundingClientRect(); cr=oc.getBoundingClientRect();
+       z=parseFloat(d.style.getPropertyValue('--attz'))||1;
+       if(Math.abs(ar.height-56*z)>3) res='Press any button is '+Math.round(ar.height)+'px high, not '+Math.round(56*z);
+       else if(ar.width>cr.width*0.6) res='Press any button is '+Math.round(ar.width)+'px wide under a '+Math.round(cr.width)+'px card';
+       else if(Math.abs(ar.right-cr.right)>3) res='Press any button ends at '+Math.round(ar.right)+', the card at '+Math.round(cr.right);
+       return res;
+     } finally {
+       try{ oc.textContent=''; oc.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+     }
+   }},
   {v:'29.78',what:'Settings: a hub toast is hidden while the Settings window is open',
    run:function(){
      if(typeof openSettings!=='function') return 'SKIP: no Settings here';
