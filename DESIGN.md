@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.25 - Hide PvP on the title
+
+Co-op hunt while he was away. His answer Q72 (10-18): hide PvP. The 2 player PvP rows leave the title menu.
+
+MEASURED. Check 30.25 passes, and fails on v30.24.
 ## v30.24 - PARTY BOARD AND OPERATOR CARD CLEAN UP
 
 Co-op hunt while he was away. Critic 56 and 64 (2 of 5): five dead ghost rows fill the empty board card. Critic 62 (3 of 5): no primary action on the operator card. Ghost rows are not drawn, the empty line is centred, New party is the amber primary, Exit demo a ghost.

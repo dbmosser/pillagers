@@ -6097,6 +6097,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.25',what:'the title does not show the PvP rows, and the arrows skip them (his Q72: hide PvP)',
+   run:function(){
+     var a=document.getElementById('modepvp'), b=document.getElementById('modepvpsrv'), w, rows, i;
+     if(!a||!b) return 'SKIP: no PvP rows in the page';
+     w=b.parentNode;
+     if(getComputedStyle(a).display!=='none') return 'the same machine PvP row is still shown';
+     if(getComputedStyle(w).display!=='none') return 'the PvP server row is still shown';
+     if(typeof netTitleRows==='function'){ rows=netTitleRows(); for(i=0;i<rows.length;i++){ if(rows[i]===a||rows[i]===b) return 'the arrows can still land on a PvP row'; } }
+     return null; }},
   {v:'30.24',what:'an empty board draws no ghost rows, one centred line; the operator New party is the amber primary and Exit demo a ghost (critic 56 64 62)',
    run:function(){
      if(typeof arcadeEnter!=='function'||typeof arcadeAttEl!=='function'||typeof arcadeAttBoard!=='function'||typeof attEl!=='function'||typeof ARCADE_BOARD_KEY!=='string') return 'SKIP: no arcade here';

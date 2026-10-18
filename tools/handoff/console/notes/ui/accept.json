@@ -273,17 +273,17 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "A tidy, on-guide small dark card with a clear title, X and key hints, but it floats on a flat near-black void with a barely visible focus state and no primary action, so it reads as a generic template dialog.",
+  "verdict": "The operator card is clean, on-token and readable, but it floats on a flat black void with no game identity, and the two rows are almost identical, so the one main action is only clear when the amber focus state in the second capture is showing.",
   "findings": [
-   "P1 Backdrop / whole screen: Bake the live scene or a dimmed arcade cabinet and attract frame at ~55% under --scrim rgba(6,7,8,.80). Add a faint cabinet marquee or CRT motif so the screen feels like this game.",
-   "P1 Row list: New party / Exit demo: Focused row: --ui-raised fill, 3px --acc left bar plus 1px --acc border, text 20px tx-1. Make 'New party' the one 56px --acc fill button with --acc-ink text. Make 'Exit demo' a ghost with a 1px --ui-line-hi border, or a danger outline. Dim idle rows to ~70%.",
-   "P1 Subtitle 'Tonight: 0 runs': Set it to 16px f-cond 600 tx-2, on the title baseline, with a 16px gap to the first row. Drop it when the value is 0, or show 'No runs tonight' only if it matters.",
-   "P2 Footer key-hint strip: Set the labels to 16px tx-2 with a uniform 24px gap between groups, and use a 28px-high cap with a heavier arrow glyph. Show pad glyphs (A, B) when the last input was a pad. Keep Esc/B in one place.",
-   "P2 Header: title and close button: Use a 56px header row with the title (32px f-cond 700) and the 48x48 X vertically centred on it. Move the subtitle below with a 16px gap. Add the B glyph left of the X when on pad."
+   "P1 Row list: New party / Exit demo (image 1, idle focus): Use one focus style in every state: --ui-raised fill, 3px --acc left bar, 1px --acc border. Make 'New party' the 56px --acc fill primary only if it is always the primary. Dim 'Exit demo' to 70%, or turn it into a ghost button with a 1px --ui-line-hi border.",
+   "P1 Backdrop / whole screen: Bake the arcade attract frame or the live world at 55% brightness under rgba(6,7,8,.80). Add a faint cabinet marquee or CRT scanline motif at 6–8% opacity behind the card.",
+   "P1 Rows as buttons: Make 'New party' a primary button with 32px side padding and a right-aligned arrow or a key cap ('Enter'). Make 'Exit demo' a ghost button with a 1px --ui-line-hi border and, optionally, a --danger outline. Put a 16px gap between them.",
+   "P2 Subtitle 'Tonight: 0 runs': Drop it when the value is 0. If it stays, set it to 16px f-cond 600 tx-2 on the title baseline in the header row, with a 24px gap above the first row.",
+   "P2 Header: title and close button: Use a 56px header row with the 32px title and the 48x48 X both vertically centred. Add the B glyph left of the X on pad. Move the subtitle below with a 16px gap."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-i1/62-arcade-operator-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-i2/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:59"
+  "when": "2026-10-18T14:06"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -401,19 +401,19 @@
   "when": "2026-10-18T13:49"
  },
  "56-arcade-attract-board-scored": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The backdrop is now blurred and dimmed, but the card still lists five empty placeholder rows, the 'Press any button' prompt is still small and tucked in the corner, and the wordmark is still plain text, so the screen reads as an empty template.",
+  "verdict": "The empty rows are gone and the card now fits its content, but the 'No scores yet' text is bright instead of muted, the press prompt is still a small corner label, and the 'Pillagers' text in the corner still stands in for a logo.",
   "findings": [
-   "P1 Score rows 1-5 (1. --- / --): Delete the 5 rows. Show one centred 'No scores yet' at 20px f-cond 600 in tx-2 #aaa498. Shrink the card to about 480x240. Keep rows only when real scores exist; then rank 1 is tx-1 at 20px and the other ranks are at least 4.5:1.",
-   "P1 'Press any button' prompt, bottom-right of card: Centre it under the content as a 56px-high primary prompt (min-width 200px, --acc fill, --acc-ink text 20px 700). Alternatively use 32px f-cond 700 tx-1 with a 28px pad 'A' glyph chip (1px --ui-line-hi) before the word.",
-   "P1 Hierarchy of the card: Keep the title as the only bold text. Make 'No scores yet' 20px, weight 600, tx-2. Make the press prompt the second-strongest element (amber fill or 32px tx-1).",
-   "P1 'Pillagers' wordmark, top-left at (95,72): Replace it with a real logo lockup (about 160x48) at the 5% margin, or put a 56px hero title above the card and delete the corner text. Keep only one of the two.",
-   "P2 Card shell, 558x500 at (681,290): Size the card to its content (480x240 for the empty state). Use 24px padding on all sides and keep the 36px accent tab."
+   "P1 'Press any button' prompt, bottom-right of card at (1040-1206, 616): Centre it under the content as a 56px-high primary prompt (min-width 200px, fill #f5b73b, text #1a1205 20px f-cond 700). Or use a 28px 'A' glyph chip with a 1px #4a5257 border, then the word at 32px tx-1.",
+   "P1 'Pillagers' wordmark, top-left at (95,72): Replace it with a real logo lockup (~160x48) at the 5% margin (96px, 54px). Or put a 56px f-cond 800 hero title above the card and delete the corner text. Keep only one.",
+   "P1 'No scores yet' at (960,534): Set it to 20px f-cond 600 in tx-2 #aaa498. Keep it centred and vertically centre it between the title row and the prompt, or left-align it with the title at x=713.",
+   "P2 Card shell, 558x255 at (681,412): Resize to 480x240 with 24px padding on all sides. Keep the 36px accent tab and 56px header row, and pin the 56px prompt row to the footer.",
+   "P2 Card title 'Tonight's best' at (713,456): Align the title baseline to a 56px header row. Add a 48x48 ghost close X with a 'B' glyph at the top-right, or state that the attract card dismisses on any button."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-i1/56-arcade-attract-board-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-i2/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:59"
+  "when": "2026-10-18T14:06"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,

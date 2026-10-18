@@ -1,0 +1,7 @@
+v30.25: hide pvp on the title
+
+The title no longer lists PvP.
+
+Check 30.25. Fails on v30.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

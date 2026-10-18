@@ -1,0 +1,16 @@
+{
+    "title":  "Hide PvP on the title",
+    "why":  "His answer Q72 (10-18): hide PvP. The 2 player PvP rows leave the title menu.",
+    "now":  "The title no longer lists PvP.",
+    "edits":  [
+                  {
+                      "anchor":  "\u003cbutton class=\"deploy ghost moderow\" id=\"modepvp\" data-mode=\"pvp\"\u003e2 PLAYER PVP (SAME MACHINE)\u003c/button\u003e",
+                      "replacement":  "\u003cbutton class=\"deploy ghost moderow\" id=\"modepvp\" data-mode=\"pvp\" style=\"display:none\"\u003e2 PLAYER PVP (SAME MACHINE)\u003c/button\u003e\u003c!-- v28.xx (cw-nopvp), his answer Q72 (2026-10-18): \"Hide PvP\". The row stays in the page so netTitleInit still wires it; it is not shown and the arrows skip it --\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cdiv class=\"modelater\"\u003e\u003cbutton class=\"deploy ghost moderow\" id=\"modepvpsrv\" data-mode=\"pvpsrv\" disabled\u003ePVP (SERVER)\u003c/button\u003e\u003cspan\u003ecoming later\u003c/span\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv class=\"modelater\" style=\"display:none\"\u003e\u003cbutton class=\"deploy ghost moderow\" id=\"modepvpsrv\" data-mode=\"pvpsrv\" disabled\u003ePVP (SERVER)\u003c/button\u003e\u003cspan\u003ecoming later\u003c/span\u003e\u003c/div\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title does not show the PvP rows, and the arrows skip them (his Q72: hide PvP)\u0027,\n   run:function(){\n     var a=document.getElementById(\u0027modepvp\u0027), b=document.getElementById(\u0027modepvpsrv\u0027), w, rows, i;\n     if(!a||!b) return \u0027SKIP: no PvP rows in the page\u0027;\n     w=b.parentNode;\n     if(getComputedStyle(a).display!==\u0027none\u0027) return \u0027the same machine PvP row is still shown\u0027;\n     if(getComputedStyle(w).display!==\u0027none\u0027) return \u0027the PvP server row is still shown\u0027;\n     if(typeof netTitleRows===\u0027function\u0027){ rows=netTitleRows(); for(i=0;i\u003crows.length;i++){ if(rows[i]===a||rows[i]===b) return \u0027the arrows can still land on a PvP row\u0027; } }\n     return null; }},"
+}

@@ -1,0 +1,12 @@
+{
+    "title":  "PAUSE CARD LOSES THE PLAIN HINT",
+    "why":  "Critic 49 (3 of 5): the unstyled Esc Resume text under the pause buttons. The header X already closes the card, so the hint goes and the card is shorter.",
+    "now":  "The pause card no longer has a plain Esc Resume line.",
+    "edits":  [
+                  {
+                      "anchor":  "body.padon #root #pausebox::after, #root #pausebox.asking::after{ display:none; }",
+                      "replacement":  "/* v30.xx (cw-pausehint) critic 49 (pause card, 3 of 5): \"the unstyled Esc Resume hint ... or delete the hint, since the X already shows close, and cut the card height\". One control per job: the header X closes the card (Esc still works), so the plain text hint is gone and the card is shorter */\n#root #pausebox::after, body.padon #root #pausebox::after, #root #pausebox.asking::after{ display:none !important; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pause card has no plain Esc Resume hint under the buttons, the header X is the one way shown to close (critic 49)\u0027,\n   run:function(){\n     var pb=document.getElementById(\u0027pausebox\u0027), padWas=document.body.classList.contains(\u0027padon\u0027), cs, c;\n     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n     try{\n       document.body.classList.remove(\u0027padon\u0027);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!__state()||__state().over) return \u0027SKIP: no live raid\u0027;\n       togglePauseBox(true); pauseFrameFit();\n       if(!pb||!pb.offsetHeight) return \u0027SKIP: the pause card did not open\u0027;\n       if(!document.getElementById(\u0027pausex\u0027)||!document.getElementById(\u0027pausex\u0027).offsetWidth) return \u0027the pause card lost its header X\u0027;\n       cs=getComputedStyle(pb,\u0027::after\u0027); c=cs.content||\u0027\u0027;\n       if(cs.display!==\u0027none\u0027\u0026\u0026/Esc/.test(c)) return \u0027the pause card still draws the plain hint \u0027+c+\u0027 (\u0027+cs.display+\u0027)\u0027;\n       return null;\n     } finally { try{ togglePauseBox(false); }catch(_t){} document.body.classList.toggle(\u0027padon\u0027,padWas); }\n   }},"
+}

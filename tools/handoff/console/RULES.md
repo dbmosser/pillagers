@@ -7,14 +7,19 @@ questions and never wait. Your runs are billed to his Claude Console credits, so
 - The game is ONE file: C:\claudecode\dark raiders\dark_raiders.html (Canvas 2D, about 4 MB, CRLF). Repo dbmosser/pillagers, branch master.
 - NEVER Read the whole game file or the whole fixture (tools/mkfixture.ps1); each is far too big. Grep with line numbers,
   then Read about 150 lines around the hit.
-- The deadline: the 2-player DEMO must be solid for his party on 10/30.
+- The deadline: the 2-player DEMO must be solid for his party on 10/30. There is NO public launch on 10/31 (his ruling 10-18;
+  party feedback first, launch date not set). New features until Mon 10/26, then fixes only; the party version locks Thu 10/29.
+- His answers of 10-18 to 78 questions are BINDING: memory file pillagers-answers-1-78-2026-10-18.md (read it when your task
+  names a question number like Q57).
 - Read C:\Users\User1\.claude\projects\C--Users-User1-Desktop-dark-raiders\memory\pillagers-sunday-start-2026-10-18.md
   first, and any memory file named in your task. The memory folder is READ ONLY for you; never write there.
 
 ## Hard rules (his, binding)
 - Never touch localhost:8802 (his play port), his keys or passwords, his PC settings, BIOS or drives.
 - Never use a browser yourself. Only the project's test scripts drive the test Chromes.
-- Never reword a line he edited, and never reverse one of his rulings. His rulings are in the memory folder.
+- Never reverse one of his rulings (they are in the memory folder), with two exceptions he gave on 10-18: the style guide may
+  overrule his older layout and size orders (Q7), and you may shorten or delete a line he wrote, but "If it overrides my
+  language, it better have a damn good reason" (Q8): write that reason next to the change in notes\ui\changes.md.
 - Never edit dark_raiders.html directly. Every game change ships through a mk script and the ship queue (below).
 - Never git push --force, reset, rebase or delete branches. Never commit anything in tools/handoff/console/.
 - Keep 6 GB of RAM free: never start more than one extra Chrome, and close what you start.
@@ -84,6 +89,7 @@ actually look good". So for any change a player can see:
   (a path with "before" in it is the old version; 1-4 pictures; about 4 cents). It answers with a score 1-5 and P0/P1/P2
   findings, and records the score in notes/ui/accept.json. Fix every P0 and P1 it names (ship a follow-up) and run it again.
   A screen is done at 4 or more. After two follow-ups that do not raise the score, write what is stuck in your notes and move on.
+- His finish line (Q6): 4 or more from the critic on EVERY screen.
 - The critic does not know his rulings. Skip any finding that would reverse one (log it once in questions.md) and fix the rest.
   A screen whose remaining findings all wait on him counts as done for now. NEVER end a run because a question is open: move on
   to the next screen or the next part of your task. Do not ask again a question that questions.md already has.

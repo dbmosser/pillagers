@@ -2364,8 +2364,8 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
       <button class="deploy ghost moderow" id="modearcade" data-mode="arcade">2 PLAYER ARCADE DEMO</button>
       <button class="deploy ghost moderow" id="modearcade1" data-mode="arcade1">1 PLAYER ARCADE DEMO</button>
       <div class="modelater"><button class="deploy ghost moderow" id="modecoopsrv" data-mode="coopsrv" disabled>2 PLAYER CO-OP (SERVER)</button><span>coming later</span></div>
-      <button class="deploy ghost moderow" id="modepvp" data-mode="pvp">2 PLAYER PVP (SAME MACHINE)</button>
-      <div class="modelater"><button class="deploy ghost moderow" id="modepvpsrv" data-mode="pvpsrv" disabled>PVP (SERVER)</button><span>coming later</span></div>
+      <button class="deploy ghost moderow" id="modepvp" data-mode="pvp" style="display:none">2 PLAYER PVP (SAME MACHINE)</button><!-- v28.xx (cw-nopvp), his answer Q72 (2026-10-18): "Hide PvP". The row stays in the page so netTitleInit still wires it; it is not shown and the arrows skip it -->
+      <div class="modelater" style="display:none"><button class="deploy ghost moderow" id="modepvpsrv" data-mode="pvpsrv" disabled>PVP (SERVER)</button><span>coming later</span></div>
       <!-- vNN.xx (ui5q1c, his #50): the note and RETRY are one alert card; netModeMsg shows and hides it with the note -->
       <div id="modealert" style="display:none"><div id="modemsg" style="display:none"></div><button class="deploy ghost" id="moderetry" style="display:none;padding:8px 24px">RETRY</button></div>
       <div id="p2line" style="display:none"></div>
@@ -2789,7 +2789,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.24';
+var VER='30.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47957,7 +47957,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.24: An empty board is one centred line; the operator card has one amber New party button. Check 30.24 fails on v30.23',
+  now:'v30.25: The title no longer lists PvP. Check 30.25 fails on v30.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

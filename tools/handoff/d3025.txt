@@ -1,0 +1,5 @@
+## v30.25 - Hide PvP on the title
+
+Co-op hunt while he was away. His answer Q72 (10-18): hide PvP. The 2 player PvP rows leave the title menu.
+
+MEASURED. Check 30.25 passes, and fails on v30.24.
