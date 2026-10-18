@@ -10,5 +10,7 @@ Code: gun card at ~line 40692-40760 of dark_raiders.html (ctx.fillText(_cornName
 3. cw-hudammo: bigger ammo.
 ## Log
 - SHIPPED v30.49 cw-hudcontracts (runInfoCap, RUNINFO_MAX=3 at file scope before EDGEBOX).
+- SHIPPED v30.51 cw-hudDemoTR (trDemo(), syncTopRight empty in demo). SHIPPED v30.53 cw-hudDemoCard (item line + backpack cue gated by trDemo()).
+- NEXT: cw-hudammo (gun card ammo bigger/hero; ammo line draws ~40731 `p.ammo+' / '+rsvShow(p)` with FS(TYPE.title), name FS(TYPE.head)); then low-ammo box marker keep (Q64); then screenshots after + critic.
 - Pattern learned: mk script at S/mk-cw-KEY.ps1 (copy of mk-alarmcap style); preflight: bash tools/handoff/preflight.sh a cw-KEY; ship: bash S/shipq.sh cw-KEY.
 - Run info drawn in drawHUD ~line 39880-39975 (rows[], 'RUN GOALS' rows kept). Top-right credits is DOM: find topRightBottom().

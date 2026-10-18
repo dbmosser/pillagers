@@ -96,26 +96,27 @@ function Pick-Screen([int]$want,[bool]$second){
 function Parse-Win([string]$s){
   $p=$s.Split('|'); return [pscustomobject]@{ H=[IntPtr][int64]$p[0]; Title=$p[1]; Style=[int]$p[2]; L=[int]$p[3]; T=[int]$p[4]; R=[int]$p[5]; B=[int]$p[6]; Pid=[int]$p[7] }
 }
-function Is-Full($w,$sc){
-  # full screen = no title bar (WS_CAPTION off) and the window covers exactly that screen
-  return ((($w.Style -band 0xC00000) -ne 0xC00000) -and ([Math]::Abs($w.L-$sc.X) -le 3) -and ([Math]::Abs($w.T-$sc.Y) -le 3) -and ([Math]::Abs(($w.R-$w.L)-$sc.W) -le 3) -and ([Math]::Abs(($w.B-$w.T)-$sc.H) -le 3))
+function Same-Rect($w,$sc){
+  # the window covers exactly that screen: that is full screen (Chrome's full screen has no frame, so its rectangle IS the screen)
+  return (([Math]::Abs($w.L-$sc.X) -le 12) -and ([Math]::Abs($w.T-$sc.Y) -le 12) -and ([Math]::Abs(($w.R-$w.L)-$sc.W) -le 12) -and ([Math]::Abs(($w.B-$w.T)-$sc.H) -le 12))
 }
 $script:lastTry=@{}
 # Puts one window full screen on a screen. Returns what it did. At most one attempt every 15 seconds per window.
+# F11 is pressed only on a window that is NOT full screen on the right screen (or that is full screen on a wrong one, to leave it first), so it never toggles a good window off.
 function Place-Window($w,$sc,[string]$who){
-  if(Is-Full $w $sc){ return 'ok' }
+  if(Same-Rect $w $sc){ return 'ok' }
   $k=[string]$w.H; $now=Get-Date
   if($script:lastTry.ContainsKey($k) -and (($now-$script:lastTry[$k]).TotalSeconds -lt 15)){ return 'wait' }
   $script:lastTry[$k]=$now
   if($DryRun){ Log ('would move the '+$who+' window to screen '+$sc.N+' ('+$sc.X+','+$sc.Y+' '+$sc.W+'x'+$sc.H+') and press F11'); return 'dry' }
-  $capOn=(($w.Style -band 0xC00000) -eq 0xC00000)
-  if(-not $capOn){ [PW]::Front($w.H); Start-Sleep -Milliseconds 400; if($cfg.FULLSCREEN -eq '1'){ [PW]::F11(); Start-Sleep -Milliseconds 1200 } }   # full screen on the wrong screen: leave it first
+  $onOther=$false; foreach($o in (Get-Screens)){ if($o.N -ne $sc.N -and (Same-Rect $w $o)){ $onOther=$true } }
+  if($onOther -and $cfg.FULLSCREEN -eq '1'){ [PW]::Front($w.H); Start-Sleep -Milliseconds 400; [PW]::F11(); Start-Sleep -Milliseconds 1200 }   # full screen on the wrong screen: leave it first
   $mw=[Math]::Min(1280,$sc.W-120); $mh=[Math]::Min(720,$sc.H-120)
   [void][PW]::ShowWindow($w.H,9)
   [void][PW]::MoveWindow($w.H,$sc.X+60,$sc.Y+60,$mw,$mh,$true)
   Start-Sleep -Milliseconds 400
   if($cfg.FULLSCREEN -eq '1'){ [PW]::Front($w.H); Start-Sleep -Milliseconds 500; [PW]::F11(); Start-Sleep -Milliseconds 1200 }
-  Log ('moved the '+$who+' window to screen '+$sc.N+' and went full screen')
+  Log ('moved the '+$who+' window to screen '+$sc.N+' and pressed F11')
   return 'moved'
 }
 
@@ -133,6 +134,12 @@ function Stop-Party(){
   for($i=0;$i -lt 12;$i++){ Start-Sleep -Milliseconds 500; if(@(Party-Chrome).Count -eq 0){ return } }
   foreach($p in (Party-Chrome)){ try{ Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }catch{} }
 }
+# Only one watcher at a time: a second click on the shortcut ends the first watcher, so two never fight over the same windows.
+function Stop-Watchers(){
+  foreach($p in @(Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -and $_.CommandLine -match 'tools.party.party\.ps1' -and $_.ProcessId -ne $PID })){
+    try{ Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }catch{}
+  }
+}
 if($ShowScreens){
   Log 'Screens Windows has (N is the number Settings > Display > Identify shows):'
   foreach($s in (Get-Screens)){ Log ('  screen '+$s.N+'  primary='+$s.Primary+'  at '+$s.X+','+$s.Y+'  '+$s.W+'x'+$s.H) }
@@ -140,7 +147,7 @@ if($ShowScreens){
   Log ('player 1 window goes to screen '+$a.N+', player 2 window to screen '+$b.N+'   (party.cfg: P1_DISPLAY='+$cfg.P1_DISPLAY+' P2_DISPLAY='+$cfg.P2_DISPLAY+')')
   exit 0
 }
-if($Stop){ Stop-Party; Log 'party Chrome closed'; exit 0 }
+if($Stop){ Stop-Watchers; Stop-Party; Log 'party Chrome closed'; exit 0 }
 
 $sc1=Pick-Screen ([int]$cfg.P1_DISPLAY) $false; $sc2=Pick-Screen ([int]$cfg.P2_DISPLAY) $true
 $opt=($cfg.URL_OPTIONS -eq '1')
@@ -161,7 +168,7 @@ if($DryRun){
 try{
   if(-not (Test-Path -LiteralPath $cfg.CHROME)){ Log ('Chrome not found at '+$cfg.CHROME); exit 1 }
   if(-not $DryRun){
-    Stop-Party; Start-Sleep -Milliseconds 800
+    Stop-Watchers; Stop-Party; Start-Sleep -Milliseconds 800
     New-Item -ItemType Directory -Force -Path (Split-Path $cfg.PROFILE) | Out-Null
     # the game server: it must answer, or the window would open on an error page
     $base=[uri]$cfg.URL_BASE; $up=$false

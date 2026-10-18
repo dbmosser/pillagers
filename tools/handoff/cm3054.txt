@@ -1,0 +1,7 @@
+v30.54: a hit sentry barely moves
+
+A Sentry you hit now barely moves.
+
+Check 30.54. Fails on v30.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

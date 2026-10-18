@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.54 - A HIT SENTRY BARELY MOVES
+
+Co-op hunt while he was away. His Q5: enemy feel. Every body was pushed 5 px by a hit. The Sentry is the heaviest common machine (radius 22), so it now barely rocks, 3 px at the full 0.16 s flash, which sets it apart from the raider (6.5 px) and the Crawler (8 px).
+
+MEASURED. Check 30.54 passes, and fails on v30.53.
 ## v30.53 - DEMO GUN CARD HIDES ITEM VALUE AND BACKPACK HINT
 
 Co-op hunt while he was away. His answer Q56 (10-18): in the demo also hide the item-value line and the backpack hint, keep the run goals. Career keeps both.
