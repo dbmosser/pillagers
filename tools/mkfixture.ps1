@@ -8614,10 +8614,12 @@ window.__REGRESS=[
        snap=JSON.parse(JSON.stringify(__P()));
        r=one('smg','sniper');
        if(r.demo) return 'SKIP: the raid was a DEMO raid';
-       if(r.A!=='{"1":"gun_smg","7":"gun_sniper"}') bad.push('SMG/Sniper keys read '+r.A+', not the SMG on key 2 and the Sniper on key 8');
+       // v28.xx (cw-gunkeys0) retarget: the marksman key is gone, so the Sniper is on key 7 (index 6) now; key 8 (index 7) on the older build
+       var snOk=function(a){ return a==='{"1":"gun_smg","7":"gun_sniper"}'||a==='{"1":"gun_smg","6":"gun_sniper"}'; };
+       if(!snOk(r.A)) bad.push('SMG/Sniper keys read '+r.A+', not the SMG on key 2 and the Sniper on its class key');
        if(r.hot!==1) bad.push('SMG/Sniper starts on key '+(r.hot+1)+', not key 2');
        r=one('sniper','smg');
-       if(r.A!=='{"1":"gun_smg","7":"gun_sniper"}'||r.hot!==7) bad.push('Sniper/SMG read '+r.A+' on key '+(r.hot+1));
+       if(!snOk(r.A)||(r.hot!==7&&r.hot!==6)) bad.push('Sniper/SMG read '+r.A+' on key '+(r.hot+1));
        r=one('pistol','magnum');
        if(r.A!=='{"0":"gun_pistol","1":"gun_magnum"}'||r.hot!==0) bad.push('Pistol/Magnum read '+r.A+' on key '+(r.hot+1));
        r=one('rifle','pistol');
