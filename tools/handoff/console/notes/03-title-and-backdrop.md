@@ -37,6 +37,12 @@
 - v31.00 cw-title-saves shipped: saves block max-width 900 to --menu-w (560); name box default shows "pillager" (titleNameShown; go() ignores the lowered default). Critic 01: 3, better than before. Left (all his rulings or structural): five mode rows (his ordered rows), logo gradient (check 18.11, brand mark), fullscreen button, saves block as a form (big, many checks), key legend. Nothing left that is the backdrop. 4K 60fps still not measured (no tool for it; the fight is 2 pillagers + robots, no sim). Shots shots/03-r6-before, 03-r6-after.
 - Stuck: 01 stays at 3 after 6 runs; only the saves/mode/logo restructure would move it, and that needs his call.
 
+## Run 7 (lane b)
+- No ship. Re-shot 01/45/46/56 (shots/03-r7-before) and ran the critic on the current build: 46 = 3, 56 = 2 (old-only pictures, no comparison), 01 = 3 (r6). Its findings contradict the earlier rounds: it now asks for a 90 percent window card, while the 4th-time critic (cw-partyempty) asked for a card sized to its content. It also asks for a darker scrim (.80), which fights his order (Q52/Q54: live map dimmed, fight must be seen). Skipped both.
+- Left on 46 (how-to): 9 rows with flat hierarchy, pad keys drawn as letter keycaps, "hold x" used for both extract and loot. The loot/extract clash is a controls question for him, not a style fix.
+- Live fight backdrop: shipped (v30.69, v30.82). 4K 60 fps not measured (no browser rule; the fight is 2 pillagers and a few robots, no sim). Screens 44 and 57 share the title and card code, so they move with 01 / 45.
+- Stuck: 01 = 3, 45/46/56 = 2 to 3. Only a card/saves restructure moves them, and the critic's advice flips between runs. Needs his call on the card size (content card vs 90 percent window).
+
 ## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).

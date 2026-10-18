@@ -1848,6 +1848,13 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ bottom
 
 /* v28.xx (cw-settoast) critic c-31 (Settings, P0): "a toast sits inside the modal header, between the title and the close button; toasts never sit over a modal". Now a toast waits out of sight while Settings or Keys is open. */
 body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibility:hidden; }
+/* v28.xx (cw-closex), his Q43 (2026-10-18): windows are "a centred card with an X in the corner". Settings, Keys and the pause card had the X; the shop, codex, trophies, fashion, mainframe, gamble, bar, terms, party and the stash still ended in a CLOSE button at the bottom right. Now each one's CLOSE is the same 48 px X at the top right of the frame (the same button, so B, Esc and the controller still find it by its word); a footer that held only CLOSE shrinks to nothing, and the credits readout steps left of the X. Style guide: one close place, the corner. */
+#root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back, #root #hub #stashclose{ position:absolute; top:22px; right:22px; bottom:auto; z-index:5; width:var(--sp-5); height:var(--sp-5); min-width:0 !important; min-height:0 !important; padding:0 !important; margin:0 !important; font-size:0 !important; line-height:1; display:flex; align-items:center; justify-content:center; background:transparent; border-color:var(--ui-line-hi); }
+#root #hub #stashclose{ top:8px; }
+#root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back::after, #root #hub #stashclose::after{ content:''; --xc:var(--tx-2); width:var(--sp-3); height:var(--sp-3); background:linear-gradient(45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%), linear-gradient(-45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%); }
+#root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back:hover::after, #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back:focus-visible::after, #root #hub #stashclose:hover::after, #root #hub #stashclose:focus-visible::after{ --xc:var(--tx-1); }
+#root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot:not(:has(> button:not(.ui-back):not([style*="display: none"]):not([style*="display:none"]))){ border-top:0; padding:0; height:0; min-height:0; }
+body:has(.modal.ui-win.on:not(#settingsmodal):not(#welcomemodal)) #topright, body:has(#hub.on) #topright{ right:90px !important; }
 
 /* v28.xx (cw-setheight) critic c-31 (Settings 18/70, Keys 32): "the card is about 1005x1030 and fills the screen height ... a modal never exceeds its content ... cap the card at 960x680". Now the Settings and Keys cards are 15 x 48 (720) tall and centred in the screen (top and bottom air --py, never under 48), the frame, the header X and the tab strip follow it. The list scrolls inside, as before. */
 /* v30.xx (cw-pausesets), HIS NOTE (2026-10-18): "accessing settings from pauise menu doesn't work right (maybe due to usperhot?)". The air above and below the Settings
@@ -2805,7 +2812,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.01';
+var VER='31.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48276,7 +48283,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.01: The party arcade pause box is now the same in both windows: the extra hosting line only the player 1 window showed is gone. Check 31.01 fails on v31.00',
+  now:'v31.02: Every window closes with the same X at its top right corner. Check 31.02 fails on v31.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

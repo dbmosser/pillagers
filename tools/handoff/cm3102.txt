@@ -1,0 +1,7 @@
+v31.02: windows close with an x in the corner
+
+Every window closes with the same X at its top right corner.
+
+Check 31.02. Fails on v31.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

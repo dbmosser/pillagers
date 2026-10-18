@@ -1,0 +1,5 @@
+## v31.02 - WINDOWS CLOSE WITH AN X IN THE CORNER
+
+Co-op hunt while he was away. His Q43: windows are a centred card with an X in the corner. Shop, codex, trophies, fashion, mainframe, gamble, bar, terms, party and the stash still had a CLOSE button bottom right. One close place now: the corner.
+
+MEASURED. Check 31.02 passes, and fails on v31.01.

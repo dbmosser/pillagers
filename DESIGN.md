@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.02 - WINDOWS CLOSE WITH AN X IN THE CORNER
+
+Co-op hunt while he was away. His Q43: windows are a centred card with an X in the corner. Shop, codex, trophies, fashion, mainframe, gamble, bar, terms, party and the stash still had a CLOSE button bottom right. One close place now: the corner.
+
+MEASURED. Check 31.02 passes, and fails on v31.01.
 ## v31.01 - THE ARCADE PAUSE BOX HAS NO HOSTING LINE
 
 Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. Only the player 1 pause box carried the line telling the host that closing the window ends the raid for the whole party. In the party arcade demo, both pause boxes are now alike; the window still asks before it closes, and a co-op host still sees the line.
