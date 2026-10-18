@@ -162,10 +162,10 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is now a clean, centred vertical stack with one amber primary and a separated red Abandon, which fixes the old control-cheat-sheet clutter, but it still has no close X, no pad focus or hint strip, and a faintly template-like look.",
-  "pic": "tools/handoff/console/notes/shots/c-31g-after/25-raid-pause-box-1080.jpg",
+  "verdict": "This is a clean, correctly structured pause card with one amber primary and a danger ghost, but the newer shot crams the title against the top edge, leaves a tiny 'Esc Resume' hint jammed against the bottom, and the card still lacks a close X and a proper header row.",
+  "pic": "tools/handoff/console/notes/shots/c-31h-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:45"
+  "when": "2026-10-18T08:51"
  },
  "26-settings-from-pause-top": {
   "score": 2,
@@ -346,17 +346,17 @@
  "42-hub-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is now a clean single-column menu with one amber primary and a clear title, but it still has template-menu blandness, a missing close control, weak backdrop and several off-guide metrics.",
-  "pic": "tools/handoff/console/notes/shots/c-31g-after/42-hub-pause-box-1080.jpg",
+  "verdict": "The pause card is now clean and reads in one pass: a single amber primary, ghost buttons and a danger-bordered exit. It is still cramped at the top and bottom, with a toast under the modal and no close button or pad hints, so it falls short of the style guide.",
+  "pic": "tools/handoff/console/notes/shots/c-31h-after/42-hub-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:45"
+  "when": "2026-10-18T08:52"
  },
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is now a clean, centred stack with one clear amber Resume and a separated danger End run, so the hierarchy reads at once. It is still a generic button-list template with no close X, no pad focus or hint strip, and a leftover controls table fighting behind the dim.",
-  "pic": "tools/handoff/console/notes/shots/c-31g-after/49-arcade-pause-box-1080.jpg",
+  "verdict": "A clean, clear pause card with one amber primary and a danger ghost, but the newer 640px version crams the title against the top and the footer hint against the bottom, and it still lacks the guide's close X and header row.",
+  "pic": "tools/handoff/console/notes/shots/c-31h-after/49-arcade-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:45"
+  "when": "2026-10-18T08:52"
  }
 }

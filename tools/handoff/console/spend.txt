@@ -197,3 +197,9 @@
 2026-10-18 0.0497 critic-c-31-ui-pause-settings
 2026-10-18 0.0509 critic-c-31-ui-pause-settings
 2026-10-18 0.0492 critic-c-31-ui-pause-settings
+2026-10-18 1.3274 11b-ui-motion
+2026-10-18 0.0512 critic-c-31-ui-pause-settings
+2026-10-18 4.006 b-00a-rocket-launcher
+2026-10-18 0.0529 critic-c-31-ui-pause-settings
+2026-10-18 0.0518 critic-c-31-ui-pause-settings
+2026-10-18 0.986 11b-ui-motion

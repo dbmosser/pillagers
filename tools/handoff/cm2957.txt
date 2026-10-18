@@ -1,0 +1,7 @@
+v29.57: pause frame fit
+
+The pause card gives its title and hint room.
+
+Check 29.57. Fails on v29.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

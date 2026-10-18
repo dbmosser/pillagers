@@ -2467,7 +2467,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.56';
+var VER='29.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17694,7 +17694,9 @@ function pauseFrameFit(){
   if(!b||!b.offsetHeight) return false;
   for(i=0;i<b.children.length;i++){ c=b.children[i]; if(c.offsetHeight>0){ t=Math.min(t,c.offsetTop); bo=Math.max(bo,c.offsetTop+c.offsetHeight); wd=Math.max(wd,c.offsetWidth); } }
   if(!(bo>t)) return false;
-  b.style.setProperty('--pbh',Math.max(400,Math.ceil(bo-t)+64)+'px');
+  // v28.xx (cw-pausefit) critic c-31 round 3 (pause 25/42/49 at 3): the title sat 14px under the card top and the Esc hint touched the bottom, because the hint is a pseudo element the child loop above cannot see. The frame now adds the hint row (24 gap, 16 text, 8 margin) when it shows, so the title and the hint both get the 32px the card pads with
+    var _hint=0; try{ _hint=(getComputedStyle(b,'::after').display!=='none'&&/Esc/.test(getComputedStyle(b,'::after').content))?48:0; }catch(_h){}
+    b.style.setProperty('--pbh',Math.max(400,Math.ceil(bo-t)+64+_hint)+'px');
   b.style.setProperty('--pbw',Math.max(780,Math.ceil(wd)+96)+'px');   // v19.94, seen on the 4K floor pause screenshot (2026-10-08): the floor's three buttons all but touched the frame sides
   return true;
 }
@@ -47527,7 +47529,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.56: The pause card is tighter, shows Esc to resume, and the leave buttons are red. Check 29.56 fails on v29.55',
+  now:'v29.57: The pause card gives its title and hint room. Check 29.57 fails on v29.56',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

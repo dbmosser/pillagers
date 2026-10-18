@@ -6097,6 +6097,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.57',what:'the pause card gives its title and its Esc hint 28px or more of air on a keyboard',
+   run:function(){
+     var bad=[], pb=document.getElementById('pausebox'), h3, r, cr, ch, sc, topGap, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!__state()||__state().over) return 'SKIP: no live raid';
+       togglePauseBox(true); pauseFrameFit();
+       h3=pb.querySelector('h3'); if(!h3) return 'no pause title';
+       r=pb.getBoundingClientRect(); sc=pb.offsetHeight?r.height/pb.offsetHeight:1;
+       ch=parseFloat(getComputedStyle(pb,'::before').height)*sc;
+       cr=r.top+r.height/2-ch/2;
+       topGap=h3.getBoundingClientRect().top-cr;
+       if(topGap<28*sc) bad.push('the title is only '+Math.round(topGap/sc)+'px under the card top');
+       var kids=pb.children, bo=-1e9, i; for(i=0;i<kids.length;i++){ if(kids[i].offsetHeight>0) bo=Math.max(bo,kids[i].getBoundingClientRect().bottom); }
+       var below=(cr+ch)-bo;
+       if(below<(32+16+8)*sc-4) bad.push('only '+Math.round(below/sc)+'px under the last button, no room for the Esc hint');
+     } finally { try{ togglePauseBox(false); }catch(_t){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.56',what:'the pause card is 640 wide on a keyboard with an Esc hint, the scrim is 99 percent, and the leave buttons are danger red',
    run:function(){
      var pb=document.getElementById('pausebox'), bad=[], cs, mm, a, s, padWas, ids=['abandonbtn','arcendbtn','charselbtn'], i, b, w, h;

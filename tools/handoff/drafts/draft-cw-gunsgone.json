@@ -1,0 +1,200 @@
+{
+    "title":  "THE MARKSMAN RIFLE AND THE WHISPER ARE GONE",
+    "why":  "His order (2026-10-18): get rid of the Marksman Rifle and the Whisper totally. Both guns, their field items, rarity twins, drawings, sounds, recoil, loot rows, shop and kit lists, the SP ladder and the arcade lists no longer name them, with same-weight fillers in the loot tables so the roll stream and the seed 4242 counts hold. A saved one turns into its credits on load (gunsGoneSweep) and never crashes the hub.",
+    "now":  "The Marksman Rifle and the Whisper are gone. A saved one pays its credits when the game loads.",
+    "edits":  [
+                  {
+                      "anchor":  "dmr:{optic:3,id:\u0027dmr\u0027,name:\u0027Marksman Rifle\u0027,dmg:64,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:\u0027#fff0c0\u0027},",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\". The Marksman Rifle is gone from the game."
+                  },
+                  {
+                      "anchor":  "whisper:{id:\u0027whisper\u0027,name:\u0027Whisper\u0027,dmg:24,rof:400,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:\u0027#a8d8c0\u0027},",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\". The Whisper is gone from the game."
+                  },
+                  {
+                      "anchor":  "lmg:4,dmr:4,whisper:4,sniper:5,",
+                      "replacement":  "lmg:4,sniper:5,"
+                  },
+                  {
+                      "anchor":  "gun_dmr:{name:\u0027Marksman Rifle (field)\u0027,val:2000,wt:5,r:\u0027rare\u0027,c:\u0027#fff0c0\u0027,use:\u0027gun\u0027,gk:\u0027dmr\u0027},",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\". gun_dmr is gone; a saved one pays 2000 (gunsGoneSweep)."
+                  },
+                  {
+                      "anchor":  "gun_whisper:{name:\u0027Whisper (field)\u0027,val:3400,wt:4,r:\u0027elite\u0027,c:\u0027#a8d8c0\u0027,use:\u0027gun\u0027,gk:\u0027whisper\u0027},",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\". gun_whisper is gone; a saved one pays 3400 (gunsGoneSweep)."
+                  },
+                  {
+                      "anchor":  "[\u0027gun_dmr\u0027,1],[\u0027plate\u0027,1],[\u0027gun_sniper\u0027,1]",
+                      "replacement":  "[\u0027gun_carbine\u0027,1],[\u0027plate\u0027,1],[\u0027gun_sniper\u0027,1]"
+                  },
+                  {
+                      "anchor":  "[\u0027KEY\u0027,4],[\u0027gun_whisper\u0027,1],[\u0027comp\u0027,1]",
+                      "replacement":  "[\u0027KEY\u0027,4],[\u0027gun_magnum\u0027,1],[\u0027comp\u0027,1]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_lance\u0027,3.5],[\u0027codex\u0027,3.5],[\u0027gun_whisper\u0027,3.5],[\u0027bloom\u0027,3.5]",
+                      "replacement":  "[\u0027gun_lance\u0027,3.5],[\u0027codex\u0027,3.5],[\u0027gun_rocket\u0027,3.5],[\u0027bloom\u0027,3.5]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_dmr\u0027,4],[\u0027titan\u0027,4]",
+                      "replacement":  "[\u0027gun_shotgun\u0027,4],[\u0027titan\u0027,4]"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_whisper\u0027,2],[\u0027relay\u0027,2]",
+                      "replacement":  "[\u0027gun_magnum\u0027,2],[\u0027relay\u0027,2]"
+                  },
+                  {
+                      "anchor":  "{kind:\u0027wep\u0027,k:\u0027dmr\u0027},",
+                      "replacement":  "{kind:\u0027wep\u0027,k:\u0027magnum\u0027},"
+                  },
+                  {
+                      "anchor":  "dmr:    {len:4200,lp:1400,hp:120,g:.20,decay:2.6,body:{f0:120,f1:45,d:.10,g:.14,type:\u0027sine\u0027},bolt:1},",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\"."
+                  },
+                  {
+                      "anchor":  "// The Whisper is a cough, not a crack: short, heavily filtered, quiet.\n      whisper:{len:900,lp:900,hp:200,g:.07,decay:4.2,body:{f0:140,f1:90,d:.05,g:.03,type:\u0027sine\u0027}},",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\"."
+                  },
+                  {
+                      "anchor":  "var _pool=[[\u0027dmr\u0027,26],[\u0027lmg\u0027,24],[\u0027magnum\u0027,20],[\u0027whisper\u0027,14],[\u0027sniper\u0027,11],[\u0027lance\u0027,5]];",
+                      "replacement":  "var _pool=[[\u0027rifle\u0027,26],[\u0027lmg\u0027,24],[\u0027magnum\u0027,20],[\u0027carbine\u0027,14],[\u0027sniper\u0027,11],[\u0027lance\u0027,5]];   // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\": the Auto Rifle and the Burst Carbine take the two rows"
+                  },
+                  {
+                      "anchor":  "var _t=0,_acc=0,_gk=\u0027dmr\u0027,_i,_gf=0.99;",
+                      "replacement":  "var _t=0,_acc=0,_gk=\u0027rifle\u0027,_i,_gf=0.99;"
+                  },
+                  {
+                      "anchor":  "var PED_GUNS=[\u0027gun_smg\u0027,\u0027gun_carbine\u0027,\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027,\u0027gun_lmg\u0027,\u0027gun_dmr\u0027];",
+                      "replacement":  "var PED_GUNS=[\u0027gun_smg\u0027,\u0027gun_carbine\u0027,\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027,\u0027gun_lmg\u0027,\u0027gun_sniper\u0027];   // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\": the Longshot takes the last stall slot"
+                  },
+                  {
+                      "anchor":  "pick([\u0027wcore\u0027,\u0027reactor\u0027,\u0027bloom\u0027,\u0027gun_dmr\u0027,\u0027gun_lmg\u0027])",
+                      "replacement":  "pick([\u0027wcore\u0027,\u0027reactor\u0027,\u0027bloom\u0027,\u0027gun_rifle\u0027,\u0027gun_lmg\u0027])"
+                  },
+                  {
+                      "anchor":  "g.player.wep=rollFieldGun(\u0027dmr\u0027);",
+                      "replacement":  "g.player.wep=rollFieldGun(\u0027rifle\u0027);"
+                  },
+                  {
+                      "anchor":  "dmr:    {add:0.70,rec:0.95,dly:0.15,cone:0.035},",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\"."
+                  },
+                  {
+                      "anchor":  "whisper:{add:0.40,rec:1.10,dly:0.10,cone:0.040},",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\"."
+                  },
+                  {
+                      "anchor":  "id===\u0027rifle\u0027||id===\u0027carbine\u0027||id===\u0027dmr\u0027){",
+                      "replacement":  "id===\u0027rifle\u0027||id===\u0027carbine\u0027){"
+                  },
+                  {
+                      "anchor":  "{rate:id===\u0027dmr\u0027?0.92:1}",
+                      "replacement":  "{rate:1}"
+                  },
+                  {
+                      "anchor":  "{rate:id===\u0027dmr\u0027?0.85:0.92}",
+                      "replacement":  "{rate:0.92}"
+                  },
+                  {
+                      "anchor":  "{rate:id===\u0027dmr\u0027?0.82:1}",
+                      "replacement":  "{rate:1}"
+                  },
+                  {
+                      "anchor":  "else if(id===\u0027smg\u0027||id===\u0027whisper\u0027){",
+                      "replacement":  "else if(id===\u0027smg\u0027){"
+                  },
+                  {
+                      "anchor":  "if(RLFX.w\u0026\u0026gunBase(RLFX.w.id)===\u0027whisper\u0027) o.g=(o.g===undefined?1:o.g)*0.7;   // the quiet gun reloads quietly",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\": the quiet gun is gone."
+                  },
+                  {
+                      "anchor":  "if(w===\u0027dmr\u0027||w===\u0027sniper\u0027||w===\u0027whisper\u0027||w===\u0027lance\u0027||w===\u0027magnum\u0027) return \u0027mark\u0027;",
+                      "replacement":  "if(w===\u0027sniper\u0027||w===\u0027lance\u0027||w===\u0027magnum\u0027) return \u0027mark\u0027;"
+                  },
+                  {
+                      "anchor":  "smg:1,whisper:1,fists:1",
+                      "replacement":  "smg:1,fists:1"
+                  },
+                  {
+                      "anchor":  "smg:0.4,whisper:0.45,carbine:0.5",
+                      "replacement":  "smg:0.4,carbine:0.5"
+                  },
+                  {
+                      "anchor":  "shotgun:0.6,dmr:0.7,sniper:0.85",
+                      "replacement":  "shotgun:0.6,sniper:0.85"
+                  },
+                  {
+                      "anchor":  "pick([\u0027gun_whisper\u0027,\u0027gun_lance\u0027,\u0027gun_rocket\u0027])",
+                      "replacement":  "pick([\u0027gun_sniper\u0027,\u0027gun_lance\u0027,\u0027gun_rocket\u0027])"
+                  },
+                  {
+                      "anchor":  "{sp:598500, kind:\u0027wep\u0027, v:\u0027dmr\u0027, label:\u0027THE DMR\u0027},",
+                      "replacement":  "{sp:598500, kind:\u0027wep\u0027, v:\u0027rifle\u0027, label:\u0027The auto rifle\u0027},"
+                  },
+                  {
+                      "anchor":  "{sp:874700, kind:\u0027wep\u0027, v:\u0027whisper\u0027, label:\u0027THE WHISPER\u0027},",
+                      "replacement":  "{sp:874700, kind:\u0027wep\u0027, v:\u0027carbine\u0027, label:\u0027The burst carbine\u0027},"
+                  },
+                  {
+                      "anchor":  "{sp:1013800, kind:\u0027wep\u0027, v:\u0027whisper\u0027, label:\u0027BACKUP WHISPER\u0027},",
+                      "replacement":  "{sp:1013800, kind:\u0027wep\u0027, v:\u0027shotgun\u0027, label:\u0027The scattergun\u0027},"
+                  },
+                  {
+                      "anchor":  "D.whisper={tip:29.4,by:0,grip:5,fg:16,well:[10.7,2.4],port:[9,-2.4],rv:[2.8,-2.4,11,4.8],br:[18.4,29.4],p:[\n    grip(5), R(9.5,2.4,2.4,5.4,\u0027l\u0027,\u0027H\u0027), P([-3,-2, 2.8,-1.6, 2.8,1.8, -3,2.8],\u0027d\u0027,\u0027F\u0027), P([-1.8,-0.6, 1.4,-0.5, 1.4,0.7, -1.8,1.4],\u0027k\u0027,\u0027O\u0027),\n    R(2.8,-2.4,11,4.8,\u0027m\u0027,\u0027FHR\u0027), R(13.8,-1.6,4.6,3.2,\u0027d\u0027), R(18.4,-2.2,11,4.4,\u0027d\u0027,\u0027HR\u0027), R(21.5,-2.2,0.6,4.4,\u0027k\u0027,\u0027OV\u0027),\n    R(25,-2.2,0.6,4.4,\u0027k\u0027,\u0027OV\u0027)]};",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\": the Whisper drawing is gone."
+                  },
+                  {
+                      "anchor":  "D.dmr={tip:35.6,by:0,grip:5.2,fg:20,well:[12.1,2.7],port:[10,-2.7],rv:[3,-2.7,13,5.4],br:[16,35.6],p:[\n    grip(5.2), R(10.5,2.7,3.2,4.6,\u0027l\u0027,\u0027H\u0027), P([-3,-2.6, 3,-2.2, 3,2.4, -3,3.6],\u0027d\u0027,\u0027F\u0027), R(-2.4,-3.6,4,1.2,\u0027l\u0027), R(3,-2.7,13,5.4,\u0027m\u0027,\u0027FHR\u0027),\n    R(16,-2.1,10,3.8,\u0027l\u0027,\u0027FHR\u0027), R(26,-0.9,7,1.8,\u0027m\u0027,\u0027H\u0027), R(33,-1.7,2.6,3.4,\u0027d\u0027), R(34,-1.7,0.6,3.4,\u0027k\u0027,\u0027O\u0027),\n    R(7,-3.4,1,0.8,\u0027d\u0027,\u0027O\u0027), R(12.5,-3.4,1,0.8,\u0027d\u0027,\u0027O\u0027), R(4.5,-6.4,11,3,\u0027d\u0027,\u0027H\u0027), R(3.8,-6.8,1.4,3.8,\u0027d\u0027), R(14.6,-6.9,1.8,4,\u0027d\u0027),\n    R(16,-6.6,0.7,3.4,\u0027g\u0027,\u0027O\u0027)]};",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\": the Marksman Rifle drawing is gone."
+                  },
+                  {
+                      "anchor":  "else if(_wid===\u0027whisper\u0027){ _L=11; _B=2; _tube=1; _mag=1; }\n  else if(_wid===\u0027dmr\u0027){ _L=15; _B=7; _sc=1; _mag=1; }",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\": no Whisper or Marksman Rifle body."
+                  },
+                  {
+                      "anchor":  "carbine:\u0027rifle\u0027,rifle:\u0027rifle\u0027,whisper:\u0027rifle\u0027,",
+                      "replacement":  "carbine:\u0027rifle\u0027,rifle:\u0027rifle\u0027,"
+                  },
+                  {
+                      "anchor":  "lmg:\u0027lmg\u0027,dmr:\u0027marksman\u0027,sniper:\u0027marksman\u0027",
+                      "replacement":  "lmg:\u0027lmg\u0027,sniper:\u0027marksman\u0027"
+                  },
+                  {
+                      "anchor":  "var can=(gunBase(id)===\u0027whisper\u0027);\n    P([[-52,-12]",
+                      "replacement":  "var can=false;   // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\": no suppressed gun\n    P([[-52,-12]"
+                  },
+                  {
+                      "anchor":  "var can=(gunBase(id)===\u0027whisper\u0027);\n    part(-20,-5,9,9,dk,\u0027stock\u0027);",
+                      "replacement":  "var can=false;   // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\": no suppressed gun\n    part(-20,-5,9,9,dk,\u0027stock\u0027);"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_whisper\u0027,\u0027plate\u0027],\n  [\u0027gun_sniper\u0027,\u0027plate\u0027],\n  [\u0027gun_dmr\u0027,\u0027plate\u0027,\u0027medkit\u0027],",
+                      "replacement":  "[\u0027gun_sniper\u0027,\u0027plate\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027gun_lmg\u0027,1],[\u0027gun_dmr\u0027,1],",
+                      "replacement":  "[\u0027gun_lmg\u0027,1],[\u0027gun_magnum\u0027,1],"
+                  },
+                  {
+                      "anchor":  "\u0027gun_dmr\u0027,\u0027gun_rifle\u0027,\u0027gun_shotgun\u0027,\u0027core\u0027,\u0027comp\u0027",
+                      "replacement":  "\u0027gun_carbine\u0027,\u0027gun_rifle\u0027,\u0027gun_shotgun\u0027,\u0027core\u0027,\u0027comp\u0027"
+                  },
+                  {
+                      "anchor":  "ARCADE_GUNS2=[\u0027magnum\u0027,\u0027dmr\u0027,\u0027shotgun\u0027,\u0027rifle\u0027,\u0027smg\u0027,\u0027carbine\u0027];",
+                      "replacement":  "ARCADE_GUNS2=[\u0027magnum\u0027,\u0027lmg\u0027,\u0027shotgun\u0027,\u0027rifle\u0027,\u0027smg\u0027,\u0027carbine\u0027];"
+                  },
+                  {
+                      "anchor":  "ARCADE_VAULT_GUNS=[\u0027gun_lance\u0027,\u0027gun_whisper\u0027,\u0027gun_sniper\u0027];",
+                      "replacement":  "ARCADE_VAULT_GUNS=[\u0027gun_lance\u0027,\u0027gun_rocket\u0027,\u0027gun_sniper\u0027];"
+                  },
+                  {
+                      "anchor":  "function applyLoadedProfile(r){",
+                      "replacement":  "// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): \"get rid of marksman rifle and whisper totally\". A saved Marksman Rifle or Whisper (and\n// its blue or gold twin) turns into credits at the field value (2000 and 3400; a twin 1.5 times), once, on load. Anything else that\n// names one (the packed kit, the belt plans, the forge record, the wear record, a dropped gun) just loses the name, so nothing\n// reads a gun the item table no longer has.\nvar GUNS_GONE={dmr:2000,whisper:3400};\nfunction goneGunVal(k){ var m=/^(?:gun_)?(dmr|whisper)(_v)?$/.exec(String(k)); return m?Math.round(GUNS_GONE[m[1]]*(m[2]?1.5:1)):0; }\nfunction gunsGoneSweep(p){\n  var paid=0, i, k, h, L, fn=function(x){ return !goneGunVal(x); }, hs;\n  if(!p||typeof p!==\u0027object\u0027) return 0;\n  [\u0027stash\u0027,\u0027weapons\u0027].forEach(function(f){ if(Array.isArray(p[f])) p[f]=p[f].filter(function(x){ var v=goneGunVal(x); paid+=v; return !v; }); });\n  [\u0027kit\u0027,\u0027dropKit\u0027,\u0027gunBeforeFree\u0027,\u0027kitBeforeFree\u0027].forEach(function(f){ if(Array.isArray(p[f])) p[f]=p[f].filter(fn); });\n  if(p.kitSaved\u0026\u0026typeof p.kitSaved===\u0027object\u0027\u0026\u0026Array.isArray(p.kitSaved.kit)) p.kitSaved.kit=p.kitSaved.kit.filter(fn);\n  hs=[p.hotAssign, p.hotBeforeFree, p.kitSaved\u0026\u0026p.kitSaved.hot];\n  for(i=0;i\u003chs.length;i++){ h=hs[i]; if(h\u0026\u0026typeof h===\u0027object\u0027) for(k in h) if(Object.prototype.hasOwnProperty.call(h,k)\u0026\u0026goneGunVal(h[k])) delete h[k]; }\n  [\u0027forged\u0027,\u0027wear\u0027].forEach(function(f){ h=p[f]; if(h\u0026\u0026typeof h===\u0027object\u0027\u0026\u0026!Array.isArray(h)) for(k in h) if(Object.prototype.hasOwnProperty.call(h,k)\u0026\u0026goneGunVal(k)) delete h[k]; });\n  if(Array.isArray(p.gunPiled)) p.gunPiled=p.gunPiled.filter(function(x){ return !(x\u0026\u0026goneGunVal(x.gk)); });\n  if(paid) p.credits=(+p.credits||0)+paid;\n  return paid;\n}\nfunction applyLoadedProfile(r){"
+                  },
+                  {
+                      "anchor":  "if(!Array.isArray(P.stash)) P.stash=[];\n          P.stash=P.stash.filter(function(k){ return !!ITEMS[k]; });",
+                      "replacement":  "try{ gunsGoneSweep(P); }catch(_ggs){}   // v28.xx (cw-gunsgone): a saved Marksman Rifle or Whisper pays its credits first\n          if(!Array.isArray(P.stash)) P.stash=[];\n          P.stash=P.stash.filter(function(k){ return !!ITEMS[k]; });"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Marksman Rifle and the Whisper are gone from every gun, item, loot and shop table, and a saved one pays its credits on load (his order 2026-10-18)\u0027,\n   run:function(){\n     var bad=[], k, i, t, p, paid, tabs, nm;\n     if(typeof gunsGoneSweep!==\u0027function\u0027) return \u0027no gunsGoneSweep: a saved Marksman Rifle or Whisper is not turned into credits\u0027;\n     for(k in WEAPONS) if(/dmr|whisper/.test(k)) bad.push(\u0027WEAPONS.\u0027+k);\n     for(k in ITEMS) if(/dmr|whisper/.test(k)) bad.push(\u0027ITEMS.\u0027+k);\n     if(typeof RV_OF===\u0027object\u0027\u0026\u0026(RV_OF.dmr||RV_OF.whisper)) bad.push(\u0027a rarity twin of a gone gun\u0027);\n     for(k in LOOT) for(i=0;i\u003cLOOT[k].length;i++) if(/dmr|whisper/.test(String(LOOT[k][i][0]))) bad.push(\u0027LOOT.\u0027+k+\u0027 row \u0027+i);\n     tabs={PED_GUNS:PED_GUNS, CRATE_KIT:CRATE_KIT, ARCADE_GUNS2:ARCADE_GUNS2, ARCADE_VAULT_GUNS:ARCADE_VAULT_GUNS, GAMBLE:GAMBLE_POOL.map(function(r){ return r[0]; }), WIRT:[].concat.apply([],WIRT_LOT_POOL)};\n     for(nm in tabs) for(i=0;i\u003ctabs[nm].length;i++) if(/dmr|whisper/.test(String(tabs[nm][i]))) bad.push(nm+\u0027 still lists \u0027+tabs[nm][i]);\n     if(!String(applyLoadedProfile).match(/gunsGoneSweep\\(/)) bad.push(\u0027the loader does not run gunsGoneSweep\u0027);\n     p={credits:100,stash:[\u0027gun_dmr\u0027,\u0027gun_whisper_v\u0027,\u0027plate\u0027],weapons:[\u0027dmr\u0027,\u0027whisper\u0027,\u0027rifle\u0027],kit:[\u0027gun_dmr\u0027,\u0027plate\u0027],hotAssign:{0:\u0027gun_whisper\u0027,1:\u0027gun_rifle\u0027},forged:{dmr:{a:1},rifle:{a:1}},wear:{whisper:3},gunPiled:[{gk:\u0027dmr\u0027},{gk:\u0027rifle\u0027}],equipped:\u0027rifle\u0027};\n     paid=gunsGoneSweep(p);\n     if(paid!==12500||p.credits!==12600) bad.push(\u0027paid \u0027+paid+\u0027, credits \u0027+p.credits+\u0027, not 12500 and 12600\u0027);\n     if(p.stash.join()!==\u0027plate\u0027||p.weapons.join()!==\u0027rifle\u0027||p.kit.join()!==\u0027plate\u0027) bad.push(\u0027the lists still hold them: \u0027+p.stash.join()+\u0027 / \u0027+p.weapons.join()+\u0027 / \u0027+p.kit.join());\n     if(p.hotAssign[0]!==undefined||p.hotAssign[1]!==\u0027gun_rifle\u0027||p.forged.dmr||!p.forged.rifle||p.wear.whisper!==undefined||p.gunPiled.length!==1) bad.push(\u0027the plans or records still name them\u0027);\n     if(gunsGoneSweep({credits:5,stash:[\u0027plate\u0027],weapons:[\u0027rifle\u0027]})!==0) bad.push(\u0027a clean profile was paid\u0027);\n     return bad.length?bad.slice(0,4).join(\u0027; \u0027):null;\n   }},"
+}

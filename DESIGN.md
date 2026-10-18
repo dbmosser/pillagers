@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.57 - PAUSE FRAME FIT
+
+Co-op hunt while he was away. Critic c-31 round 3 (pause 25/42/49 at 3): the title sat 14px under the card top and the Esc hint touched the bottom; the frame measure could not see the hint pseudo element. Frame now adds the hint row.
+
+MEASURED. Check 29.57 passes, and fails on v29.56.
 ## v29.56 - PAUSE CARD TIDY
 
 Co-op hunt while he was away. Critic c-31 round 2 (pause 25/42/49 at 3): the card was 780 wide round a 560 column, the HUD ghosted through, no way out was shown and the leave buttons matched Feedback. Card 640 on a keyboard, scrim 99 percent, an Esc hint, leave buttons in danger red.
