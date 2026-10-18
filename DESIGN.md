@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.54 - THE WHAT IS NEW CARD NAMES POLISH PASS 12
+
+Co-op hunt while he was away. The card was stamped v29.38 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 29.54 passes, and fails on v29.53.
 ## v29.53 - The end card total is the hero
 
 Co-op hunt while he was away. Critic pass 2 on the Extracted and KIA cards: no hero line, HUD bleeds through, feedback chip competes. The haul total is 56px, the scrim is near solid, the feedback prompt is a quiet text link. Restyle only.

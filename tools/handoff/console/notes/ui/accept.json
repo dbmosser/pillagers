@@ -202,10 +202,10 @@
  "38-extracted-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The extracted card is a centred, readable dark panel with a teal title and a clear primary button, but it breaks the end-card shell with no hero line, a wall of small explaining text, a '$' haul figure, an amber text label and a tiny secondary control.",
-  "pic": "tools/handoff/console/notes/shots/13-after1/38-extracted-card-1080.jpg",
+  "verdict": "The shell is right (centred card, teal title, one amber primary), and the second pass gets a proper hero line, but the card is still a wall of small centred explanatory sentences with a '$' haul that breaks the SP rule, so it reads as a debug report rather than an ARC Raiders-grade end card.",
+  "pic": "tools/handoff/console/notes/shots/13-after2/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T08:33"
+  "when": "2026-10-18T08:39"
  },
  "40-whats-new-card": {
   "score": 2,
@@ -314,10 +314,10 @@
  "77-haul-reveal-done": {
   "score": 2,
   "pass": false,
-  "verdict": "The new card is cleaner, with the HUD hidden, a blurred backdrop, flat panel fill and less amber noise, but it is still a wall of centred sentences with no hero number and no stat row, so it misses the end-card spec.",
-  "pic": "tools/handoff/console/notes/shots/13-after1/77-haul-reveal-done-1080.jpg",
+  "verdict": "The after2 card makes the haul number a proper 56px hero and drops the HUD behind the scrim, but it adds two long green contract sentences, a scrollbar, a crowded tall card and a dollar haul, so it is still a wall of centered text rather than the one-shell end card the guide describes.",
+  "pic": "tools/handoff/console/notes/shots/13-after2/77-haul-reveal-done-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T08:31"
+  "when": "2026-10-18T08:38"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 3,
@@ -338,9 +338,9 @@
  "60-abandoned-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The card is cleaner than before (HUD hidden, backdrop blurred, glow and gradient gone), but it is still a generic dark box with a weak title, a small unreadable stat line and a sentence-heavy body, nowhere near the end-card shell in the guide.",
-  "pic": "tools/handoff/console/notes/shots/13-after1/60-abandoned-card-1080.jpg",
+  "verdict": "The card is tidy and centred with a clear amber primary, but it is a small 718px box of tiny same-weight text with no hero line, a muted grey title, and a currency symbol and explaining sentences the guide bans, so it reads as a generic template, not the shared end-card shell.",
+  "pic": "tools/handoff/console/notes/shots/13-after2/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T08:31"
+  "when": "2026-10-18T08:39"
  }
 }

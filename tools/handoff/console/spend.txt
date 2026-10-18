@@ -188,3 +188,8 @@
 2026-10-18 0.0556 critic-13-ui-end-cards
 2026-10-18 0.0465 critic-13-ui-end-cards
 2026-10-18 0.0447 critic-13-ui-end-cards
+2026-10-18 0.0542 critic-13-ui-end-cards
+2026-10-18 0.0556 critic-13-ui-end-cards
+2026-10-18 0.0575 critic-13-ui-end-cards
+2026-10-18 4.032 13-ui-end-cards
+2026-10-18 4.0107 b-00a-rocket-launcher
