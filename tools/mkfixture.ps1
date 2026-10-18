@@ -11291,7 +11291,8 @@ window.__REGRESS=[
      } }},
   {v:'29.00',what:'a mimic box: the crawler is named MIMIC, comes out on the far side of the box from the player and holds its bite, and the box is spent and spins away in a void swirl (his order: pops out AWAY, different name, disappear-into-the-void swirl)',
    run:function(){
-     if(typeof __frame!=='function'||typeof mimicWake!=='function'||typeof drawMimicVoid!=='function'&&false) return 'SKIP: no frame or mimic helper';
+     if(typeof mimicWake!=='function') return 'SKIP: mimics removed since cw-nomimic (his note 2026-10-18)';
+     if(typeof __frame!=='function') return 'SKIP: no frame';
      var g=null, ct=null, p=null, i, c, n0, dx, dy, sw=0, ow=null, ctx;
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -11610,7 +11611,8 @@ window.__REGRESS=[
   {v:'28.93',what:'cloud-coop-p2-mimic-seen: when player 2 opens a mimic crate, the crawler goes for player 2, his window says MIMIC and shakes, and the host window does not',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__topClear)) return 'SKIP: no raid here';
-     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof netOnMsg!=='function'||typeof netSrchTake!=='function'||typeof mimicTick!=='function') return 'SKIP: no arcade, party or mimic in this fixture';
+     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof netOnMsg!=='function'||typeof netSrchTake!=='function') return 'SKIP: no arcade or party in this fixture';
+     if(typeof mimicTick!=='function') return 'SKIP: mimics removed since cw-nomimic (his note 2026-10-18)';
      var g=null, p=null, NK={}, k, oSF=netSendFast, oS=netSend, oB=netBroadcast, oSay=say, lines=[], sent=[], h={seat:0,state:'in'}, hp={seat:1,state:'in'}, staged=false, oIv=null, i, c, ct=null, n0, cr, mk=null, bx, by2, r;
      try{
        __topClear(); __runPrep();
@@ -21316,7 +21318,7 @@ window.__REGRESS=[
      var bad=[], g=null, p=null, all=null, i, k, ct, n=0, tot=0, nBox=0, mim=null, plain=null, seed0, found=false, crawlers, calls=[], oFoley, hadFoley, c2, s;
      function mimicCrawlers(){ var q=0, j; for(j=0;j<g.ents.length;j++) if(g.ents[j].mimic) q++; return q; }
      try{
-       if(typeof isMimic!=='function'||typeof mimicTick!=='function') return 'there are no mimic containers';
+       if(typeof isMimic!=='function'||typeof mimicTick!=='function') return 'SKIP: mimics removed since cw-nomimic (his note 2026-10-18)';
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
        p=g.player; p.iv=99; p.hp=100; p.downed=false; all=g.ents.slice(); seed0=G.seed;
