@@ -6149,7 +6149,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79',what:'party launch mode (his Q28): the ?p2=1&arc=1&party=1 window never shows its title, shows the arcade attract at once and takes the host offer',
+  {v:'30.79', what:'party launch mode (his Q28): the ?p2=1&arc=1&party=1 window never shows its title, shows the arcade attract at once and takes the host offer',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -6198,7 +6198,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79',what:'party launch mode (his Q28): after the HOST reloads, player 2 answers hostup with ready and the pair links again, and the host repeats hostup only while nobody is linked',
+  {v:'30.79', what:'party launch mode (his Q28): after the HOST reloads, player 2 answers hostup with ready and the pair links again, and the host repeats hostup only while nobody is linked',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -6258,7 +6258,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ NET.peers=[]; NET.role=null; rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79',what:'party launch mode (his Q28): leaving the arcade for any reason but EXIT DEMO reloads into the party and the title rows stay hidden; EXIT DEMO goes to the plain address',
+  {v:'30.79', what:'party launch mode (his Q28): leaving the arcade for any reason but EXIT DEMO reloads into the party and the title rows stay hidden; EXIT DEMO goes to the plain address',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -6320,7 +6320,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79',what:'party launch mode (his Q28): without ?party=1 nothing changes: no boot, no reload on leave, EXIT DEMO leaves in place',
+  {v:'30.79', what:'party launch mode (his Q28): without ?party=1 nothing changes: no boot, no reload on leave, EXIT DEMO leaves in place',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -6371,7 +6371,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79',what:'party launch mode (his Q28): stale player 2 marks (p2raid and p2live set 10 s ago by a killed window) do not stop a party boot from entering the arcade, and the marks are cleared',
+  {v:'30.79', what:'party launch mode (his Q28): stale player 2 marks (p2raid and p2live set 10 s ago by a killed window) do not stop a party boot from entering the arcade, and the marks are cleared',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
