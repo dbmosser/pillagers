@@ -1,0 +1,7 @@
+v31.50: the corner column is 300 wide at 1080p, and world names stay out from under the hud plates
+
+The corner column is 300 wide, and the names of caches and people no longer show through the gaps in the HUD.
+
+Check 31.50. Fails on v31.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

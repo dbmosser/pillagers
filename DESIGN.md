@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.50 - the corner column is 300 wide at 1080p, and world names stay out from under the HUD plates
+
+Co-op hunt while he was away. The follow-up on his one column order (2026-10-18), settled by the coordinator. (1) Width: the column was the run info panel width, 321 px at 1080p; the picture he chose in the menu survey (q16 A and q20 A) is 300, so the column is 300 px at 1080p (600 at 4k, the same share of the screen at other sizes), every row, the minimap square and the run info panel together. (2) The world name labels (the purple cache names, the nameplates, the party names, the strongbox and the forge names) are drawn under the HUD plates, so they showed in the 8 px gaps between the rows and round the edges of the score and clock plate. A label is no longer drawn while its rectangle overlaps the corner column or the score and clock plate, in career, in the demo and in the two player demo.
+
+MEASURED. Check 31.50 passes, and fails on v31.49.
 ## v31.49 - SETTINGS AND PAUSE POLISH: HINT ALIGNED, FOCUS ROW, QUIET ABANDON
 
 Co-op hunt while he was away. Critic c-31w on Settings 72/18 and pause 25: the key hint missed the X edge by 48px, row focus was weak, the report box broke the button type, abandon shouted as loud as resume.

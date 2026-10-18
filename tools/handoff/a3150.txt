@@ -1,0 +1,1 @@
+| the corner column is 300 wide at 1080p, and world names stay out from under the HUD plates | v31.50 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.50 passes, fails on v31.49 |

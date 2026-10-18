@@ -644,3 +644,6 @@
 2026-10-18 1.6422 12-ui-party-screens
 2026-10-18 0.4771 b-30-ui-hud
 2026-10-18 0.0366 critic-manual
+2026-10-18 0.0292 critic-c-31-ui-pause-settings
+2026-10-18 0.0282 critic-c-31-ui-pause-settings
+2026-10-18 0.0294 critic-c-31-ui-pause-settings

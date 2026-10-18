@@ -182,17 +182,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is cleaner and more consistent now that 'report a problem' is a single-height row like the other buttons, but it is still a plain stack of near-identical outlined boxes with weak identity, and the field-versus-button difference is faint.",
+  "verdict": "The pause card is slightly better because 'report a problem' now matches its sibling buttons and abandon is quieter, but it is still a flat stack of five equal-weight buttons with an oversized boxed X and no raid context.",
   "findings": [
-   "P1 'report a problem' row: Either make it a real button that opens a report dialog (f-cond 600 20px, tx-1, same fill as its siblings), or keep it a field with a visible text cursor or magnifier/pencil glyph and a tx-2 label at 4.5:1 or better. Pad focus should show a 2px --acc outline.",
-   "P1 button stack (settings, report, feedback, what's new): Demote report, feedback and what's new to a compact row of three 40px quiet text buttons or a 2-column grid under settings. Keep resume and settings full width and add a 16px key-hint label (esc) on resume. Show the raid state (time, location) in the header as a tx-2 16px line.",
-   "P2 Card header: title and close X: Shrink the X to 40px with a 2px glyph and no box until it is focused. Make the accent tab 3px by 36px flush with the card's left padding edge, or drop it.",
-   "P2 Vertical rhythm and the abandon gap: Put a 1px --ui-line divider centred in the gap, or shrink abandon to a narrower or text-only danger button. Make sure it opens a confirm step.",
-   "P2 Card proportions and the background: Use --scrim at .80 as specified so the raid stays faintly visible. Keep the card at 480 to 520px but bump button text to 20px with 64px rows for couch reading."
+   "P1 button stack (settings, report a problem, feedback, what's new): Keep resume run and settings full width. Put report, feedback and what's new in one row of three 40px quiet text buttons, or a 2-column grid. Give them the same --ui-panel fill as the others. Add a 16px tx-2 'esc' key hint on resume. Draw focus as a 2px --acc outline.",
+   "P1 abandon run: Keep it as a 40px-high text button with a 1px --danger border at 50% opacity, or add a 1px --ui-line divider centred in the 24px gap above it. Show a --danger 2px focus outline. Confirm before abandoning.",
+   "P2 card header: title and close X: Shrink the X to 40px with a 2px glyph and no box until it is focused. Align the accent tab to the 40px content edge, 3px by 36px, or drop it.",
+   "P2 header content: Add one 16px tx-2 line under the title with time and location, e.g. 'sector 3 · 04:12'. Keep it to one line.",
+   "P2 background scrim: Use --scrim at .80 as specified, so the raid stays faintly visible. Optionally blur the backdrop 4px."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31z-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31w-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T22:58"
+  "when": "2026-10-18T23:42"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -580,25 +580,32 @@
  "72-settings-sec-display": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, consistent dark settings modal with a clear amber focus row and one tab strip, but the stepper values sit far from their labels, a row is clipped at the list bottom, and the small type and tiny chevrons would be hard to read from a couch.",
-  "pic": "tools/handoff/console/notes/shots/c-31r3c-after/72-settings-sec-display-1080.jpg",
+  "verdict": "a clean, consistent dark settings card that is slightly better than before (lime arrows on the focused row, unfocused rows dimmed, footer hint aligned to the margin), but the lime focus is still faint, the whole panel is a narrow column in a mostly empty full-screen card, and the bottom fade is muddy.",
+  "findings": [
+   "P1 overall layout, card vs content column: widen the list to about 1400px (or add a left category rail of 280px) and raise row text to the 20px body size. Align the left edge with the title at x=48.",
+   "P1 focused row 'render resolution': give the focused row a fill of at least #262c30 plus a 1px --acc outline, or enlarge the focused value to 24px. Keep the lime arrows.",
+   "P1 bottom of the list, 'sprint zoom-out' row: snap the viewport to whole rows (the list height a multiple of 66px) or add a clean 24px gradient mask to the panel colour, and show a scroll indicator.",
+   "P1 unfocused rows (labels and values): move the value control to the right edge, or put thin row dividers plus a fixed 200px value column nearer the label. Make arrows at least 20px with a 44px hit area.",
+   "P2 tab bar: set the inactive tab colour to tx-2 at 4.5:1 or better, separate 'send play data' with a 1px divider or move it into the list, and add small lb and rb glyphs at the tab bar ends."
+  ],
+  "pic": "tools/handoff/console/notes/shots/c-31w-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T13:29"
+  "when": "2026-10-18T23:42"
  },
  "74-settings-change-pad-buttons": {
   "score": 2,
   "pass": false,
-  "verdict": "The lower-case defect and the wrapped labels are fixed, so the rows are cleaner, but the hierarchy, the lack of focus state, the clipped footer text and the narrow off-centre column are all unchanged and it still reads as a plain settings table.",
+  "verdict": "the only visible change is that 'esc close' moved right to align with the card margin; the cramped table, tiny weak section headers, clipped 'locked' line and empty side space from the last review are all still there.",
   "findings": [
-   "P1 all 16 key chips (ls, a, rt, d-left ...): Focused chip: 2px --acc outline, --ui-raised fill, --acc text, scale 1.04 with the bounce. Idle chips: 1px --ui-line-hi border, 4px radius, no bevel, and a --ui-raised fill so they read as the interactive part.",
-   "P1 section headers (move, fight, gear, world) vs row labels: Headers at 16px --tx-2 with +.08em tracking and a 3px x 16px lime tab on the left. Row labels 20px, weight 600, --tx-1. Chip text 16px. Add 24px above each group instead of relying on the divider alone.",
-   "P1 bottom of the scroll area, 'locked: these keep their jobs' at y~925: Add 24px bottom padding in the scroll region and a 16px fade mask. Set the text to --tx-2 (#aaa498) at 16px. Make the scrollbar thumb 6px wide in --ui-line-hi.",
-   "P1 layout: content column x480-1430 in a 1870px card: Either widen the table to span x49-1870 with the scrollbar on the card edge, or use a left 40% pane with a pad diagram that highlights the selected button. Keep a 48px margin.",
-   "P2 footer: 'reset to defaults' (bottom left) and 'esc close' (bottom right, y1021): Put both on one footer row at y~990. Reset is a secondary button (1px --ui-line-hi border, 20px text) on the left. The key hint is 16px --tx-2 on the right, or delete it, since the X already closes."
+   "P1 bottom of scroll area, 'locked: these keep their jobs' at y~925: add 24px bottom padding inside the scroll region, a 16px fade mask above the footer line at y~935, and set the text to 16px --tx-2 #aaa498. Make the scrollbar thumb 6px wide in --ui-line-hi.",
+   "P1 section headers (move, fight, gear, world) vs row labels: headers at 16px --tx-2 with +.08em tracking and a 3x16px --acc tab on the left. Row labels 20px, weight 600, --tx-1. Add 24px above each group.",
+   "P1 all 16 key chips (ls, a, rt, d-left ...): idle chip: --ui-raised fill, 1px --ui-line-hi border, 4px radius, 16px text. Focused chip: 2px --acc outline, --acc text, scale 1.04 with bounce. Make sure one chip is focused in the screenshot.",
+   "P1 layout: content column x480-1430 in a 1870px card: either span the table x49-1870 with the scrollbar on the card edge, or put a left 40% pane with a pad diagram that highlights the selected button. Keep a 48px margin.",
+   "P2 row labels vs chips, for example 'previous gun (hold: zoom out)' ending x743, chip at x760: set a 24px minimum gap, or make the label column 300px wide. Move '(hold: zoom out)' into a 16px --tx-2 sub-label, or drop it."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31z-after2/74-settings-change-pad-buttons-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31w-after/74-settings-change-pad-buttons-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T23:07"
+  "when": "2026-10-18T23:42"
  },
  "01-title-mode-menu": {
   "score": 3,
