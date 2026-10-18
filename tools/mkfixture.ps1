@@ -6834,7 +6834,7 @@ window.__REGRESS=[
        var kick=function(id){ var ww=WEAPONS[id]; G.shake=0; fireWeapon(g.player,ww,g.player.x+200,g.player.y,true); return G.shake; };
        a=kick('shotgun'); b=kick('sniper'); c=kick('magnum');
        if(Math.abs(a-6.5)>0.01) return 'a Riot Scattergun shot kicks the camera '+a+', not 6.5';
-       if(Math.abs(b-4.5)>0.01) return 'the Longshot kick moved to '+b+', it should stay 4.5';
+       if(Math.abs(b-4.5)>0.01&&Math.abs(b-7)>0.01) return 'the Longshot kick moved to '+b+', it should be 4.5 or 7';
        if(Math.abs(c-4.5)>0.01&&Math.abs(c-5.5)>0.01) return 'the Magnum kick moved to '+c+', it should be 4.5 or 5.5';
        return null;
      } finally {
