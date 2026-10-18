@@ -2794,7 +2794,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.79';
+var VER='30.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48312,7 +48312,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.79: The party shortcut can open both windows on the attract with one address, Career and the stash out of reach, and a reload of either window finds its pair again. Check 30.79 fails on v30.78',
+  now:'v30.80: Type a name on the title and click create a new save: the new save has that name. Check 30.80 fails on v30.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52395,6 +52395,32 @@ function slotBlocked(sn){
   return false;
 }
 function slotPtrKey(){ return (typeof NETP2!=='undefined'&&NETP2)?p2PtrKey():'salvagerun:activeSlot'; }
+// v30.xx (cw-newsavename), HIS ORDER (2026-10-18): "if I type a name into the text input bar on the title screen and then click 'create a
+// new save', it should pick up that name". CREATE A NEW SAVE reloads the game onto an empty slot, and a fresh save is always named
+// PILLAGER, so the typed name was dropped. The typed name (when it was typed, or is not the open save's own name) is kept beside the
+// save pointer for that reload, and the fresh save takes it as it boots: only the slot it was meant for, only a save with no raids
+// yet, only within two minutes, and only once.
+var NEWNAME_KEY='salvagerun:newname';
+function newNameKeep(v,slot,typed){
+  var k=NEWNAME_KEY+':'+slotPtrKey();
+  v=String(v||'').trim().slice(0,16);
+  try{
+    if(!v||(!typed&&v===P.pname)){ localStorage.removeItem(k); return ''; }
+    localStorage.setItem(k,JSON.stringify({s:String(slot),n:v,t:Date.now()}));
+  }catch(_nk){ return ''; }
+  return v;
+}
+function newNameTake(){
+  var k=NEWNAME_KEY+':'+slotPtrKey(), o=null;
+  try{ o=JSON.parse(localStorage.getItem(k)||'null'); localStorage.removeItem(k); }catch(_nt){ o=null; }
+  if(!o||typeof o.n!=='string'||!o.n.trim()) return '';
+  if(String(o.s)!==String(SLOT)) return '';
+  if(Math.abs(Date.now()-(+o.t||0))>120000) return '';
+  if((P.runs|0)>0) return '';
+  P.pname=o.n.trim().slice(0,16);
+  try{ saveProfile(); }catch(_ns){}
+  return P.pname;
+}
 function netSaveLocked(){ return !!(typeof NETSLOT!=='undefined'&&NETSLOT); }   // v17.93: the player 2 window moves its own pointer now
 function netClean(s,n){
   return String((s===undefined||s===null)?'':s).replace(/[\u0000-\u001f\u007f]/g,'').replace(/^\s+|\s+$/g,'').slice(0,n||16);
@@ -65836,6 +65862,7 @@ loadProfile().then(function(){
   // v11.47: the profile is read; the crash catcher may save from here on, and any
   // crash caught before the read is merged in now and its own key cleared.
   PLOADED=true;
+  try{ newNameTake(); }catch(_nnt){}   // v30.xx (cw-newsavename): a fresh save takes the name typed before CREATE A NEW SAVE
   try{ kidSync(); }catch(_kb){}   // v27.66 (cloud-menus-kid-sync-launch), CLOUD HUNT 2026-10-15: the kid rows the other window set were pulled only on its storage event and when Settings opened, so a window launched later played stale Kid damage, Kid firing and comes back after death; pulled once here at launch (not in loadProfile, which Restore backup also runs)
   try{
     var _pcm=JSON.parse(localStorage.getItem(PRECRASH)||'[]');
@@ -66015,6 +66042,7 @@ loadProfile().then(function(){
     renderSlots();
     var pin=document.getElementById('pnamein');
     if(pin) pin.value=P.pname||'';
+    if(pin) pin.oninput=function(){ pin.__typed=1; };   // v30.xx (cw-newsavename): a name typed here, even the same one, goes into a new save
     var psv=document.getElementById('pnamesave');
     if(psv) psv.onclick=function(){
       var v=(pin&&pin.value||'').trim().slice(0,16);
@@ -66030,6 +66058,7 @@ loadProfile().then(function(){
         if(!slotInfo(key)&&key!==SLOT&&!slotBlocked(key)){
           fsMark();   // v11.02, his note 8
           try{ if(!netSaveLocked()) localStorage.setItem(slotPtrKey(),key); }catch(e){}   // v15.74: a ?netslot copy never moves the save pointer; v15.76: nor the player 2 window
+          if(!netSaveLocked()) newNameKeep(pin&&pin.value,key,pin&&pin.__typed);   // v30.xx (cw-newsavename): the typed name goes with the new save
           location.reload(); return;
         }
       }

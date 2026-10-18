@@ -199,7 +199,7 @@ A.measure=function(chars){
   for(i=0;i<bl.length;i++) s.bullets.push(bl[i]); for(i=0;i<fl.length;i++) s.flashes.push(fl[i]); for(i=0;i<sp.length;i++) s.sparks.push(sp[i]);
   for(i=0;i<sh.length;i++) s.shells.push(sh[i]); for(i=0;i<pf.length;i++) s.puffs.push(pf[i]); for(i=0;i<nr.length;i++) s.noiseRings.push(nr[i]);
   gx('GFXMUZ.length=0'); for(i=0;i<gm.length;i++) gx('GFXMUZ').push(gm[i]);
-  window.__goldShine=gl;
+  window.__goldShine=gl; A.only(null);
   return out;
 };
 

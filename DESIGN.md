@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.80 - a name typed on the title goes into a new save
+
+Co-op hunt while he was away. His order (2026-10-18): if he types a name into the name box on the title and then clicks create a new save, the new save should have that name. The button reloads the game onto an empty slot and a fresh save was always named PILLAGER, so the typed name was dropped. The typed name now rides along with the reload and the fresh save takes it as it boots, only for that slot, only once, only a save with no raids.
+
+MEASURED. Check 30.80 passes, and fails on v30.79.
 ## v30.79 - PARTY LAUNCH MODE: ONE ADDRESS OPENS BOTH WINDOWS ON THE ATTRACT
 
 Co-op hunt while he was away. His Q28, Q30, Q31, Q24 of 10-18: the party shortcut opens both windows full screen on the attract, with Career and the stash out of reach. ?party=1&pair=CODE puts the host window straight into the arcade with no title and no window.open; the player 2 window shows its attract at once; the host posts hostup so a reload of either window finds the pair again; any leave of the arcade but the operator EXIT DEMO reloads into the party and EXIT DEMO goes to the plain address; stale player 2 marks are cleared at boot. Without ?party=1 nothing changes.

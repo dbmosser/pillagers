@@ -1,0 +1,7 @@
+v30.80: a name typed on the title goes into a new save
+
+Type a name on the title and click create a new save: the new save has that name.
+
+Check 30.80. Fails on v30.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -247,17 +247,17 @@
  "52-arcade-run-over": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-guide end card with a clear hero line and sentence case, but it ships as a bare stat slab with no real action button, a hero number smaller than spec, and nothing that makes a run-over moment feel like this game.",
+  "verdict": "The only visible change is 'press any button' becoming 'press any key', so every earlier structural problem remains: no real button, a muddy hierarchy, and a loose card with a dead bottom edge.",
   "findings": [
-   "P1 Footer action, bottom-right: Add a 56px primary 'Continue' (fill #f5b73b, ink #1a1205, min-width 200px) bottom-right and a ghost 'Back to menu' to its left. Drop the 'Press any button' line, or show it as a 28px key cap plus word in the bottom hint strip.",
-   "P1 Hero line 'Score 0 SP': Set the number at 56px f-cond 800 ('0') with 'SP' at 20px tx-2 beside it, and move 'Score' to a 16px label above. For a zero result, show a short state such as 'No score this run' in the title slot.",
-   "P1 Title 'Run over', top-left of the card: Set the title to 32px tx-1 (#efe9dc) 700. Keep the 36x2px amber tab. Remove the amber dot, or move amber to the primary button.",
-   "P1 Stats row (Kills, Extractions, Deaths): Use 4 equal columns of 24px values (f-cond 600) over 16px tx-2 labels, adding SP or Time. Brighten the labels to at least 4.5:1 (#aaa498 on #16191b). Reduce value weight to 600 so the hero wins.",
-   "P2 Card padding and vertical rhythm: Use 24px between the title and hero, 24px divider to stats, 32px stats to footer row, and a 72px footer row with the buttons vertically centred, so the bottom padding matches the top."
+   "P1 Footer, bottom-right ('press any key'): Add a 56px primary 'continue' (fill #e6ff3d, ink #11150a, 20px 700, min-width 200px) bottom-right and a 56px ghost 'back to menu' to its left. Keep 'press any button' only as a 16px hint. Do not make it key-only.",
+   "P1 Hero line 'score 0 sp': Put a 16px tx-2 'score' label above, then '0' at 56px f-cond 800 with 'sp' at 20px tx-2 beside it. For a zero run, use a state line such as 'no score this run'.",
+   "P1 Title 'run over', top-left: Set the title to 32px f-cond 700 tx-1 (#efe9dc). Keep the 36x2px lime tab. Add the 48x48 ghost X top-right per the window/dialog rule.",
+   "P1 Stats row (kills, extractions, deaths): Use 4 equal columns across 652px (add 'time' or 'sp'). Set values to 24px f-cond 600 tx-1 and labels to 16px f-cond 600 #aaa498 with +.04em tracking.",
+   "P2 Card vertical rhythm: Use 24px title to hero, 24px hero to divider, 24px divider to stats, 32px stats to footer, and a 72px footer row with the buttons centred. Match the 24px top and bottom padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/52-arcade-run-over-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12b-after/52-arcade-run-over-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:50"
+  "when": "2026-10-18T19:52"
  },
  "57-title-2p-coop-picked": {
   "score": 2,
@@ -294,17 +294,17 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The operator card is clean, on-token and readable, but it floats on a flat black void with no game identity, and the two rows are almost identical, so the one main action is only clear when the amber focus state in the second capture is showing.",
+  "verdict": "the new screenshot is pixel-identical to the old one, so none of the earlier advice was applied: it is still a tidy but bare two-row dark card floating in a black void.",
   "findings": [
-   "P1 Row list: New party / Exit demo (image 1, idle focus): Use one focus style in every state: --ui-raised fill, 3px --acc left bar, 1px --acc border. Make 'New party' the 56px --acc fill primary only if it is always the primary. Dim 'Exit demo' to 70%, or turn it into a ghost button with a 1px --ui-line-hi border.",
-   "P1 Backdrop / whole screen: Bake the arcade attract frame or the live world at 55% brightness under rgba(6,7,8,.80). Add a faint cabinet marquee or CRT scanline motif at 6–8% opacity behind the card.",
-   "P1 Rows as buttons: Make 'New party' a primary button with 32px side padding and a right-aligned arrow or a key cap ('Enter'). Make 'Exit demo' a ghost button with a 1px --ui-line-hi border and, optionally, a --danger outline. Put a 16px gap between them.",
-   "P2 Subtitle 'Tonight: 0 runs': Drop it when the value is 0. If it stays, set it to 16px f-cond 600 tx-2 on the title baseline in the header row, with a 24px gap above the first row.",
-   "P2 Header: title and close button: Use a 56px header row with the 32px title and the 48x48 X both vertically centred. Add the B glyph left of the X on pad. Move the subtitle below with a 16px gap."
+   "P1 whole screen / backdrop: Put the attract frame or live world at about 55% brightness under rgba(6,7,8,.80). Add a faint marquee or scanline motif at 6-8% opacity behind the card.",
+   "P1 row list: new party / exit demo: Make 'new party' a primary button with 32px side padding, min-width 200px, and a right-aligned arrow or 'enter' key cap. Remove the white outer ring and use the 3px lime bar and 1px acc border on the focused state. Make 'exit demo' a ghost button with a 1px --ui-line-hi border, with an optional --danger outline.",
+   "P1 card size and position vs the window rule: If it is a dialog, size it to 480x~300 and sit it over a visible backdrop. If it is a window, use the 90% card. Add a hero element such as a 56px 'operator' title or a run counter so the screen has a focal point other than the lime slab.",
+   "P2 subtitle 'tonight: 0 runs': Hide it when the value is 0. If it stays, put it on the title baseline in the header row at 16px f-cond 600 tx-2, and keep a 24px gap above the first row.",
+   "P2 header: title and X: Use a 56px header row with the title and X both vertically centred. Add a 'B' key cap 8px left of the X. Align the accent tab with the card's left padding edge or with the title's left edge."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-i2/62-arcade-operator-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12b-after/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T14:06"
+  "when": "2026-10-18T19:52"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -332,17 +332,17 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "The table is tidy and readable, but the card has none of the earlier fixes: capital letters are everywhere, there is no close button, 'press any button' is still not a real primary, and the type is small and flat.",
+  "verdict": "The lower-casing is done and a close X has been added, which fixes the two biggest compliance defects, but the screen is still a bare table with no primary button, a small ghost X, and no focus or pad glyph, so it reads as a debug sheet and not a polished card.",
   "findings": [
-   "P0 Whole screen: 'Pillagers' wordmark, 'How to play', 'Keyboard', 'Controller', every row name, 'Hold X', 'Left click', 'L stick', 'Press any button': Lower-case every string: 'pillagers', 'how to play', 'keyboard', 'controller', 'move', 'switch gun', 'hold x', 'in the ring' stays. Key caps drawn as art are exempt, but these are text labels, so lower-case 'wasd', 'rt', 'lb', 'rb', 'a', 'x', 'r', 'hold q', 'hold e' too.",
-   "P1 Card header, top-right (x≈1330-1378, y≈172-228): Add a 48x48 ghost button with the close glyph, right-aligned in a 56px header row, with a 'b' pad glyph beside it. Bind Esc.",
-   "P1 Footer 'Press any button' with lime radio dot (x≈1180-1346, y≈856): Replace it with a 56px primary button 'got it': --acc fill, --acc-ink text, 20px/700, min-width 200px, right-aligned in a 72px footer. Optionally keep a 16px tx-2 'press any button' hint to its left. Drop the dot.",
-   "P1 Card size and position (x 541-1378, y 172-907): Make it a dialog of about 720-900px wide with a 56px header and 72px footer. Or make it a full 90% window with the table centred at a 900px measure. Raise the scrim to rgba(6,7,8,.80).",
-   "P1 Row names (x≈573) and column headers 'Keyboard' / 'Controller' (y≈278): Set row names to 20px f-cond 600 tx-1. Set headers to 16px tx-2 with +.04em tracking. Make key caps 20px/700 with 12px side padding. Keep the 56px pitch."
+   "P1 Footer 'press any key' with lime radio dot (x≈1204-1346, y≈856): Replace it with a 56px high, min 200px wide --acc button 'got it' (--acc-ink text, 20px/700) in a 72px footer, right-aligned. Keep an optional 16px tx-2 'press any button' hint to its left. Remove the dot.",
+   "P1 Close X (x≈1306-1354, y≈190-237): Use the uiIcon close glyph at 24px, centred in a 48x48 ghost button, with its right edge at x=1346 to match the table. Add a 'b' pad glyph to its left and bind Esc. Add a visible focus state of a 2px --acc outline.",
+   "P1 Card as a whole (x 541-1378, y 172-907): Make it a dialog of 720-800px with a 56px header and a 72px footer separated by 1px --ui-line rules. Set the column widths to 180 / 1fr / 1fr. Raise the scrim to rgba(6,7,8,.80).",
+   "P1 Row names (x≈573) and column headers (y≈278): Row names: 20px f-cond 600 tx-1. Headers: 16px f-cond 600 tx-2 with +.04em tracking. Key caps: 20px/700 in a --ui-raised fill with 12px side padding. Add a lime emphasis to the 'extract' row only if it is the focused row.",
+   "P2 Key caps (all rows): Spell out 'left stick' and 'right stick'. Give the caps a 1px --ui-line-hi border, a --ui-raised fill, a 4px radius and a 1px bottom edge. For pad buttons, draw the actual face glyphs (A, X, LB, RB) as art."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-final/46-arcade-attract-how-to-play-1080.jpg",
-  "task": "03-title-and-backdrop",
-  "when": "2026-10-18T19:13"
+  "pic": "tools/handoff/console/notes/shots/12b-after/46-arcade-attract-how-to-play-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T19:52"
  },
  "37-raid-extracting-countdown": {
   "score": 2,

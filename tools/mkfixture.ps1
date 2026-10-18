@@ -6099,6 +6099,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.80',what:'a name typed on the title goes into the new save that create a new save makes (his order 2026-10-18)',
+   run:function(){
+     if(typeof newNameKeep!=='function'||typeof newNameTake!=='function') return 'a new save never reads the typed name (no newNameKeep)';
+     var b=document.getElementById('newgame'), src=(b&&b.onclick)?String(b.onclick):'', n0=P.pname, r0=P.runs, bad=[], nm=['Zor','blax'].join(''), other=(String(SLOT)==='7')?'6':'7';
+     try{
+       if(b&&b.onclick&&src.indexOf('newNameKeep')<0) bad.push('create a new save does not keep the typed name');
+       P.runs=0;
+       P.pname='Oldname'; newNameKeep(nm,SLOT,1); P.pname='PILLAGER';
+       if(newNameTake()!==nm||P.pname!==nm) bad.push('a fresh save did not take the typed name ('+P.pname+')');
+       P.pname='PILLAGER'; if(newNameTake()) bad.push('the name was taken twice');
+       P.pname='Oldname'; newNameKeep('Oldname',SLOT,0); P.pname='PILLAGER'; if(newNameTake()) bad.push('the open save name was carried over when nothing was typed');
+       P.pname='Oldname'; newNameKeep(nm,SLOT,1); P.pname='PILLAGER'; P.runs=3; if(newNameTake()) bad.push('a save with raids was renamed');
+       P.runs=0; P.pname='Oldname'; newNameKeep(nm,other,1); P.pname='PILLAGER'; if(newNameTake()) bad.push('another slot took the name');
+     } finally {
+       P.pname=n0; P.runs=r0;
+       try{ localStorage.removeItem(NEWNAME_KEY+':'+slotPtrKey()); }catch(_r){}
+       try{ saveProfile(); }catch(_s){}
+     }
+     return bad.length?bad.join('; '):null;
+   }},
   {v:'30.79',what:'party launch mode (his Q28): ?party=1&pair=CODE skips the title, enters the arcade as the host on that pair and opens no window',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
