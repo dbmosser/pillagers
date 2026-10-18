@@ -1,0 +1,5 @@
+## v31.36 - PAUSE AND SETTINGS POLISH (56PX REPORT ROW, FLUSH TAB, SHORT PAD LABELS)
+
+Co-op hunt while he was away. Critic c-31z: the pause report box was a 72px input among 56px buttons with dim text, the accent tab was inset, two pad labels wrapped to three lines, the scrollbar was a sliver, key caps looked like plain boxes.
+
+MEASURED. Check 31.36 passes, and fails on v31.35.

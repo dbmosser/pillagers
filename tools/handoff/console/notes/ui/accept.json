@@ -151,17 +151,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The hud is still a pile of mismatched widgets: the controls sheet and the run info panel are crowded, the minimap is clipped by a stray zone label and the top-right text is tiny, so the eye has nowhere to land except the loud ammo and hp numbers.",
+  "verdict": "The raid hud is still a pile of mismatched boxes: the controls cheat sheet and the right-column stack are as busy as before, the type is tiny and capitals show on screen, and nothing clearly leads the eye except the timer.",
   "findings": [
-   "P0 controls cheat sheet (bottom centre, x490-900, y697-867): Show a single 'f1 controls' chip (16px tx-2) after 30s and hide the panel by default. If it stays, use 16px text, 24px padding, and --ui-panel fill with a 1px --ui-line-hi border.",
-   "P0 run info panel and minimap (right, x1582-1900, y78-470): Title 'contracts' at 16px tx-2. Shorten rows to 'carry data core', 'haul $800', 'carry 2 circuit boards', with the count right-aligned in tx-1 and 24px padding. Remove or fix the zone label (tx-2, inside the map). Dock the extract chip 8px under the panel. Give the minimap a 1px --ui-line-hi border and a 4px radius, inset 5% from the screen edge.",
-   "P1 ammo panel and status tag (bottom right, x1578-1910, y815-1053): Order: name 20px tx-1, then ammo 56px/800 with '/ 24' at 20px tx-2, then 'b backpack' at 16px tx-2 at the bottom. Fill --ui-panel, 24px padding, flat. Give the status tag a tx-1 outline with no amber, and 8px clearance.",
-   "P1 pillagers list (top left, x10-390, y152-258): Show it on tab only, or at 40% opacity. Title in tx-1. Use --ui-panel fill, 1px --ui-line-hi border, 4px radius, 24px padding, 28px row pitch. Inset 5% from the edge.",
-   "P1 hp, stamina bars and 'standing' tag (bottom left, x25-520, y945-1068): Use one 16px label per bar in the same position (above, left-aligned). Bars are 12px tall with an 8px gap and the same left edge. Use --ok for hp with red below 30%. Merge 'standing' into the status tag. Keep 48px from the bottom edge."
+   "P0 controls cheat sheet (bottom centre, x492-902, y697-867): Hide it by default and show a single 'f1 controls' chip (16px tx-2) for the first 30s only. If it stays, use 16px text, 24px padding, an --ui-panel fill and a 1px --ui-line-hi border, with keys in tx-1 and actions in tx-2 at 4.5:1.",
+   "P0 right column (x1582-1902, y12-695): credits, xp, stash, backpack, minimap, run info: Merge credits, xp, stash and backpack into one panel. Use 16px tx-2 labels with right-aligned 20px tx-1 numbers, a 24px inset and an 8px gap between panels. Remove the clipped zone label. Give the minimap a 1px --ui-line-hi border and a 4px radius, inset 5% from the screen edge. Rewrite every string in lower case, and dock the extract chip 8px under the panel.",
+   "P1 ammo panel and status tags (bottom right, x1578-1910, y803-1053): Order it: name 20px tx-1, then ammo 56px/800 tx-1 with '/ 24' at 20px tx-2, then 'b backpack' at 16px tx-2 at the bottom. Use a flat --ui-panel fill at 90%, 24px padding, and a 1px --ui-line-hi border. Make the status tag a tx-1 outline with no amber and 8px clearance.",
+   "P1 current pillagers list (top left, x10-390, y152-258): Show it on tab only, or at 40% opacity. Use an --ui-panel fill, a 1px --ui-line-hi border, a 4px radius, 24px padding and a 28px row pitch. Make the title tx-1 at 16px. Inset it 5% from the edge.",
+   "P1 hp, stamina and 'standing' (bottom left, x25-520, y945-1068): Use a 16px label above each bar, left-aligned. Make the bars 12px tall with an 8px gap and the same left edge. Use --ok for hp, turning red below 30%. Merge 'standing' into the status tag, and keep 48px from the bottom edge."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after9/21-raid-hud-calm-1080.jpg",
-  "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T22:27"
+  "pic": "tools/handoff/console/notes/shots/b-30h-after/21-raid-hud-calm-1080.jpg",
+  "task": "b-30-ui-hud",
+  "when": "2026-10-18T22:56"
  },
  "22-raid-map-open": {
   "score": 2,
@@ -714,5 +714,35 @@
   "pic": "tools/handoff/console/notes/shots/b-30e/36-raid-low-health-1080.jpg",
   "task": "b-30-ui-hud",
   "when": "2026-10-18T22:26"
+ },
+ "51-arcade-alert-reinforcements": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The in-raid HUD is readable in places, but it is cluttered, with no clear hero element, and it mixes panel styles, type sizes and alert treatments, so it reads as an assembled debug overlay rather than one coherent system.",
+  "findings": [
+   "P0 top-centre alert stack (locked on card, 'pillager reinforcements' pill) and left-side event log: Show each alert once. Delete the sentence under 'locked on'. Keep the top-centre card for the single live alert and use the left log only for older events, capped at 3 rows at 16px.",
+   "P0 left event log (blackout, stronghold, golden enemy, pillager reinforcements, locked on): Use one row component: 32px high, --ui-panel at 90%, 3px left bar (accent for info, --danger for threat), 16px f-cond 600 text in tx-1, no icons except the warning glyph. Cap the list at 3 rows and fade older ones out.",
+   "P1 top-right: minimap plus 'run info' panel: Use one Panel P with 16px padding. Make 'run goals' a 16px tx-2 label, and make goal names 20px tx-1 with the reward right-aligned in tx-2. Drop the redundant 'run info' title. Add a 1px divider between rows.",
+   "P1 top-centre score block (0 sp, 9:45, extract 113m): Put score, timer and extract distance inside one Panel P, 16px from the top. Make the timer the 56px hero (f-cond 800) and score 20px. Keep the extract text in --extract inside the panel and attach the arrow to it.",
+   "P1 bottom-left vitals (standing, armour 56, stamina, hp 96): Use three bars of the same height (20px) with 8px gaps and the same label position, 16px f-cond 600 labels inside the left edge, and the value right-aligned. Colour by the palette: --ok for hp, --extract or tx-2 for stamina, a neutral for armour. Move 'standing' to a plain 16px tx-2 label above the bars."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-30h-after/51-arcade-alert-reinforcements-1080.jpg",
+  "task": "b-30-ui-hud",
+  "when": "2026-10-18T22:56"
+ },
+ "78-raid-pause-box-full-kit": {
+  "score": 3,
+  "pass": false,
+  "verdict": "a clean, readable pause card with a clear lime primary action and a red abandon, but it is a narrow, generic stack of identical buttons with a stray text box, not the near-full-screen centred card the guide calls for, and the scrim leaves the HUD behind it as muddy noise.",
+  "findings": [
+   "P1 report a problem field: Group 'report a problem' and 'feedback' together as one row, or make it a 56px secondary button that opens a text box. If it stays an input, add a 1px --ui-line-hi border plus a label, raise the placeholder to --tx-2 (4.5:1 minimum), and centre it vertically.",
+   "P1 whole card (720-1200 x 238-842): If pause counts as a dialog, document it as an exception in the guide. Otherwise widen it, for example into a two-column layout with the run summary on one side (time, loot, objectives) and the buttons on the other.",
+   "P1 background scrim: Set the scrim to rgba(6,7,8,.80) flat and blur the backdrop by 6-8px, or hide the HUD while the pause card is open.",
+   "P2 button stack: Show focus as a 3px lime left bar plus a --ui-raised fill on the focused row. Keep lime fill only for the primary. Move feedback and what's new into a quieter row of two 16px text links, and add a key hint (esc, or the pad button) to resume.",
+   "P2 title row: Align the accent tab to x=760 or put it flush on the card's left edge. Shrink the X to 40px with a --ui-line-hi border and a --tx-2 glyph, and bring it to full --tx-1 only on focus."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-30h-after/78-raid-pause-box-full-kit-1080.jpg",
+  "task": "b-30-ui-hud",
+  "when": "2026-10-18T22:56"
  }
 }

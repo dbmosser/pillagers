@@ -1,0 +1,16 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  19-raid-hud-drop-first-raid            staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  20-raid-hud-drop                       staged       7.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  21-raid-hud-calm                       staged      15.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  22-raid-map-open                       staged       8.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  23-raid-backpack-open                  staged       9.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  24-raid-controls-full-H                NOT STAGED   9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: U.raid()&&__state().legendOn===2 -> false (legendOn 1)
+  33-raid-fight-alerts                   staged      10.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 83
+  34-raid-downed-pickups                 staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | downed true hp 0
+  36-raid-low-health                     staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  37-raid-extracting-countdown           staged      10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  48-arcade-hud-move-to-start            staged      22.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  50-arcade-hud-live                     staged      22.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  51-arcade-alert-reinforcements         staged      23.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved
+  61-raid-wheel-open                     staged       8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  78-raid-pause-box-full-kit             staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

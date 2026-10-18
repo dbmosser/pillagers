@@ -6101,6 +6101,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.36',what:'the pause report box is a 56px row, and the two long pad labels are short',
+   run:function(){
+     var bad=[], f, h, i, a2='', a3='';
+     try{
+       f=document.getElementById('pausefb');
+       if(!f) bad.push('no pause report box');
+       else{ h=parseFloat(getComputedStyle(f).height); if(Math.abs(h-56)>1) bad.push('the report box is '+h+'px high, not 56'); }
+       for(i=0;i<PAD_ACTS.length;i++){ if(PAD_ACTS[i][0]===2) a2=String(PAD_ACTS[i][1]); if(PAD_ACTS[i][0]===3) a3=String(PAD_ACTS[i][1]); }
+       if(a2.length>20) bad.push('pad row X is long: '+a2);
+       if(a3.length>20||a3.indexOf('finish')<0) bad.push('pad row Y is long or lost finish: '+a3);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.35',what:'the career gun card reads name, ammo, then one quiet row with the backpack hint on the left (it is not above the gun name), and no run info row runs past the panel edge',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__frame||!window.__textTrace||typeof careerPostBuild!=='function') return 'SKIP: no raid here';

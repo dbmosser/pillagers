@@ -1,0 +1,7 @@
+v31.36: pause and settings polish (56px report row, flush tab, short pad labels)
+
+The pause report box is a 56px row, the card tab sits in the corner, pad labels fit on one line, the scrollbar is 6px, key caps have a lip.
+
+Check 31.36. Fails on v31.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

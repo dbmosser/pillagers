@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.36 - PAUSE AND SETTINGS POLISH (56PX REPORT ROW, FLUSH TAB, SHORT PAD LABELS)
+
+Co-op hunt while he was away. Critic c-31z: the pause report box was a 72px input among 56px buttons with dim text, the accent tab was inset, two pad labels wrapped to three lines, the scrollbar was a sliver, key caps looked like plain boxes.
+
+MEASURED. Check 31.36 passes, and fails on v31.35.
 ## v31.35 - GUN CARD HINT ROW, RUN INFO ROWS FIT
 
 Co-op hunt while he was away. The critic (10-19) on the raid HUD: the career gun card had the backpack hint above the gun name and a dead strip; a long run info row ran onto the panel edge.

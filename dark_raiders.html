@@ -1931,6 +1931,16 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #pausebox #pausefb::placeholder{ color:var(--tx-3); opacity:1; }
 #root #pausebox #pausefb:focus{ outline:none; border-color:var(--acc); }
 #root #pausebox.asking #pausefb{ display:none !important; }
+/* v31.xx (cw-pset6) critic c-31z (pause 25 at 3: "report a problem is a 72px input while every other row is a 56px button, dim grey text"; "the lime tab is inset, not flush"; Pad buttons 75 at 2: "labels wrap to three lines", "scrollbar is a thin sliver"; Keys 32: "make the key cap look like a key"). Now: the report box is one 56px row like the buttons (centred, tx-2 hint, grows to two rows only while you type), the accent tab on the pause, Settings and Keys cards sits flush in the top-left corner, the Settings and Keys scrollbar is 6px in the line colour, key caps have a 3px lip, and two pad labels are short (his words shortened under Q8: use / reload and help / finish, so they stay on one line). */
+#root #pausebox #pausefb{ height:var(--btn-h); padding:calc((var(--btn-h) - 28px) / 2) var(--sp-2); line-height:26px; overflow:hidden; }
+#root #pausebox #pausefb:focus{ height:calc(var(--btn-h) * 2); padding-top:var(--sp-2); overflow:auto; }
+#root #pausebox #pausefb:placeholder-shown:not(:focus){ text-align:center; }
+#root #pausebox #pausefb::placeholder{ color:var(--tx-2); }
+#root #pausebox::before, #root #settingsmodal::before, #root #keysmodal::before{ background:linear-gradient(var(--acc),var(--acc)) 0 0/calc(var(--sp-1) * 4.5) 2px no-repeat, var(--ui-grain) 0 0/128px 128px repeat, var(--ui-bg); background-origin:border-box; }
+#root #setlist::-webkit-scrollbar, #root #keyslist::-webkit-scrollbar{ width:6px; }
+#root #setlist::-webkit-scrollbar-thumb, #root #keyslist::-webkit-scrollbar-thumb{ background:var(--ui-line-hi); border-radius:3px; }
+#root #keyslist .keybtn{ border-radius:var(--rad); font-weight:700; box-shadow:inset 0 -3px 0 var(--ui-line-hi); }
+#root #keyslist .keybtn.wait{ box-shadow:none; }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2828,7 +2838,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.35';
+var VER='31.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18689,8 +18699,8 @@ function keysRowHtml(){
 // goes through PADLABEL (padLabelsApply rewrites it, and the two legends), keyLabel and pbn, so the names follow the binding. The sticks stay where they are.
 var PAD_BTN=['A','B','X','Y','LB','RB','LT','RT','VIEW','MENU','LS','RS','D-UP','D-DOWN','D-LEFT','D-RIGHT'];
 var PAD_ACTS=[[10,'sprint','MOVE'],[0,'dodge roll','MOVE'],[1,'crouch','MOVE'],
-  [7,'fire, use what is selected','FIGHT'],[6,'focus aim (hold)','FIGHT'],[11,'focus aim (toggle)','FIGHT'],[14,'aim distance shorter','FIGHT'],[15,'aim distance longer','FIGHT'],
-  [2,'use, search, reload, call for extraction','FIGHT'],[3,'search in a ring, help a teammate, finish a downed pillager','FIGHT'],
+  [7,'fire / use','FIGHT'],[6,'focus aim (hold)','FIGHT'],[11,'focus aim (toggle)','FIGHT'],[14,'aim distance shorter','FIGHT'],[15,'aim distance longer','FIGHT'],
+  [2,'use / reload','FIGHT'],[3,'help / finish','FIGHT'],
   [4,'previous gun (hold: zoom out)','GEAR'],[5,'next gun (hold: zoom in)','GEAR'],[13,'item wheel (hold)','GEAR'],[8,'backpack','GEAR'],
   [12,'ping (hold: the map)','WORLD'],[9,'pause','WORLD']];
 var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8,KeyV:3};   // v27.xx (feel2g): V, the finisher, is on action 3 (Y)
@@ -49265,7 +49275,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.35: The career gun card puts the backpack hint on its bottom row, and run info rows stay inside the panel. Check 31.35 fails on v31.34',
+  now:'v31.36: The pause report box is a 56px row, the card tab sits in the corner, pad labels fit on one line, the scrollbar is 6px, key caps have a lip. Check 31.36 fails on v31.35',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

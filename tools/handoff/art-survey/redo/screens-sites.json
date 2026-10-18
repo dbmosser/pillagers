@@ -1,0 +1,14 @@
+{
+ "c1": {
+  "js": "return await window.__art.scene('duo',{x:1829,y:3022});",
+  "expect": ""
+ },
+ "c2": {
+  "js": "return await window.__art.scene('duo',{x:1203,y:2818});",
+  "expect": ""
+ },
+ "c3": {
+  "js": "return await window.__art.scene('duo',{x:1191,y:3054});",
+  "expect": ""
+ }
+}

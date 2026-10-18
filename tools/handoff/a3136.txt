@@ -1,0 +1,1 @@
+| PAUSE AND SETTINGS POLISH (56PX REPORT ROW, FLUSH TAB, SHORT PAD LABELS) | v31.36 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.36 passes, fails on v31.35 |

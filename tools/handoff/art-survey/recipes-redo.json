@@ -67,6 +67,30 @@
    "js": "var r=await window.__art.scene('duo',{}); var gx=window.__gx; window.__noHud=function(){ var c=gx('ctx'), W=gx('W'), H=gx('H'), V=gx('ART37'); c.clearRect(0,0,W,H); var vg=c.createRadialGradient(W/2,H/2,H*V.v0,W/2,H/2,H*.85); vg.addColorStop(0,'rgba('+V.rgb+',0)'); vg.addColorStop(1,'rgba('+V.rgb+','+V.a+')'); c.fillStyle=vg; c.fillRect(0,0,W,H); }; gx('drawHUD=window.__noHud'); window.__art.draw(2); return r;"
   },
   {
+   "name": "c1",
+   "screen": "c1",
+   "before": "redo",
+   "query": "",
+   "expect": "",
+   "js": "return await window.__art.scene('duo',{x:1829,y:3022});"
+  },
+  {
+   "name": "c2",
+   "screen": "c2",
+   "before": "redo",
+   "query": "",
+   "expect": "",
+   "js": "return await window.__art.scene('duo',{x:1203,y:2818});"
+  },
+  {
+   "name": "c3",
+   "screen": "c3",
+   "before": "redo",
+   "query": "",
+   "expect": "",
+   "js": "return await window.__art.scene('duo',{x:1191,y:3054});"
+  },
+  {
    "name": "p37B3",
    "screen": "p37B3",
    "before": "redo",

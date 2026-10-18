@@ -1,6 +1,6 @@
 param([string[]]$Files, [int]$X=300, [int]$Y=700, [int]$W=300, [int]$H=200)
 Add-Type -AssemblyName System.Drawing
-foreach($f in $Files){
+foreach($f0 in ($Files -split ",")){ $f=(Resolve-Path $f0).Path
   $bmp=[System.Drawing.Bitmap]::FromFile($f); $r=0;$g=0;$b=0;$n=0
   for($yy=$Y;$yy -lt $Y+$H;$yy+=4){ for($xx=$X;$xx -lt $X+$W;$xx+=4){ $c=$bmp.GetPixel($xx,$yy); $r+=$c.R;$g+=$c.G;$b+=$c.B;$n++ } }
   $bmp.Dispose()

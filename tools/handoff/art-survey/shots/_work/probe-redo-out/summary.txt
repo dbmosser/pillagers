@@ -1,2 +1,2 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  probe                                  staged       5.8s    | {"bullets":[[1467,2947,"#ffd88a",{"x":1384,"y":2974,"r":11,"hp":100,"maxhp":100,"armor":0,"armorCap":60,"rig":"std","face":0.1,"wep":{"id":"carbine","name":"Burst Carbine","dmg":17,"burst":3,"rof":360,"spread":0.055,"mag":24,"reload":1900,"rng":500,"auto":false,"noise":400,"tint":"#ffd88a","q":"fiel
+  probe                                  staged       6.1s    | {"total":78,"found":12,"sample":[{"x":764,"y":2697,"w":43,"h":27,"g":"1110"},{"x":297,"y":2820,"w":58,"h":20,"g":"1010"},{"x":1774,"y":2444,"w":119,"h":135,"g":"0001"},{"x":992,"y":2778,"w":101,"h":80,"g":"0100"},{"x":1293,"y":2409,"w":79,"h":87,"g":"0001"},{"x":1929,"y":2946,"w":185,"h":152,"g":"10
