@@ -1,4 +1,6 @@
-{"generated":"2026-10-18T15:54:04","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":86,"screens":[
-{"name":"21-raid-hud-calm","screen":"In-raid HUD calm, extraction-point banner, CONCEALED IN COVER","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"21-raid-hud-calm-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"21-raid-hud-calm-4k.jpg","lint":""}},
-{"name":"50-arcade-hud-live","screen":"Arcade HUD after the run starts","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"50-arcade-hud-live-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"50-arcade-hud-live-4k.jpg","lint":""}}
+{"generated":"2026-10-18T16:07:45","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/console/notes/cw-trcol-recipes.json","seconds":147,"screens":[
+{"name":"tr1-career-calm","screen":"raid career","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"tr1-career-calm-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"tr1-career-calm-4k.jpg","lint":""}},
+{"name":"tr2-career-busy","screen":"raid career, notes, big figures","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"tr2-career-busy-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"tr2-career-busy-4k.jpg","lint":""}},
+{"name":"tr3-arcade","screen":"raid demo","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"tr3-arcade-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"tr3-arcade-4k.jpg","lint":""}},
+{"name":"tr4-p2-career","screen":"raid career in the player 2 window","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"tr4-p2-career-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"tr4-p2-career-4k.jpg","lint":""}}
 ]}

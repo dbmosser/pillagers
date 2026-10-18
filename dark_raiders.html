@@ -2796,7 +2796,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.87';
+var VER='30.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48321,7 +48321,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.87: The health, armour and stamina bars are flat colour with no gloss. Check 30.87 fails on v30.86',
+  now:'v30.88: In the party arcade demo both windows now call the two players Player 1 and Player 2 over the heads, on the team bar and in the feed. Check 30.88 fails on v30.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52893,7 +52893,10 @@ function netLookClean(lk){
 }
 function netSeatName(s){
   var r=NET.roster||[], i;
-  for(i=0;i<r.length;i++) if(r[i].seat===s) return r[i].name;
+  // v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better". The roster
+  // keeps the name each save had when the two windows linked, before the party arcade renamed them, so over a head, on the team bar and in the feed one
+  // window read a save name or Pillager where the other read Player 2. In the party arcade the two seats are Player 1 and Player 2 in both windows.
+  for(i=0;i<r.length;i++) if(r[i].seat===s) return (typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&!ARCADE.solo&&(s===0||s===1))?('Player '+(s+1)):r[i].name;
   return null;
 }
 function netInCount(){ var n=0, i; for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') n++; return n; }

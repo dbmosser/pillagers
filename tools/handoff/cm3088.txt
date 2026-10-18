@@ -1,0 +1,7 @@
+v30.88: the two party arcade seats are player 1 and player 2 in both windows
+
+In the party arcade demo both windows now call the two players Player 1 and Player 2 over the heads, on the team bar and in the feed.
+
+Check 30.88. Fails on v30.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

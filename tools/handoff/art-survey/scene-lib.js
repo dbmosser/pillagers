@@ -104,6 +104,7 @@ A.clearStage=function(x0,y0,x1,y1){
   for(i=s.containers.length-1;i>=0;i--){ b=s.containers[i]; if(inb(b.x,b.y,34)){ s.containers.splice(i,1); n++; } }
   for(i=s.brl.length-1;i>=0;i--){ b=s.brl[i]; if(inb(b.x,b.y,34)){ s.brl.splice(i,1); n++; } }
   for(i=s.lights.length-1;i>=0;i--){ b=s.lights[i]; if(inb(b.x,b.y,40)){ s.lights.splice(i,1); n++; } }
+  gx("G.grid=buildSegGrid(G.map.segs,WORLD_W,WORLD_H);");   // the sight lookup is rebuilt from what is left
   // the floor is baked again without them: no trunk marks, no leftover contact shadows (a fixed random stream keeps it the same every time)
   gx("RNGS=0x5eed1234; G.ground=bakeGround(G.map);");
   return n;
@@ -194,8 +195,8 @@ A.shoot=function(sh,wep,tx,ty,fromPlayer,rounds){
   return b;
 };
 
-// a frozen shot would show every muzzle light at its brightest frame; age them to the middle of their short life, and drop the sound marks
-A.settleFx=function(){ var s=g(), i; for(i=0;i<s.flashes.length;i++) s.flashes[i].t=s.flashes[i].life*0.8; s.noiseRings.length=0; s.pings.length=0; s.shake=0; };
+// a frozen shot would show every muzzle light at its brightest frame as a hard pale disc (they live a twentieth of a second); the discs and the sound marks are dropped, the muzzle sprites, tracers and shells stay
+A.settleFx=function(){ var s=g(), i; s.flashes.length=0; s.noiseRings.length=0; s.pings.length=0; s.shake=0; };
 
 // ---- measuring: where each character lands in the 1920x1080 picture ----
 function bbox(img0,img1,w,h){
@@ -266,7 +267,7 @@ A.scenes.fight=async function(o){
 };
 
 A.scenes.lineup=async function(o){
-  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=2.5, i, e, chars=[], x;
+  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=2.7, i, e, chars=[], x;
   var FY=Y+58, BY=Y-62, face=1.5708;
   // front row: P1 then the pillagers (the five roles by gun and rig, an elite, a golden one)
   var rows=[

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.88 - THE TWO PARTY ARCADE SEATS ARE PLAYER 1 AND PLAYER 2 IN BOTH WINDOWS
+
+Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. The roster keeps the name each save had when the two windows linked, before the party arcade renamed them, so over a head, on the team bar and in the feed one window read a save name or Pillager where the other read Player 2. In the party arcade the two seats are now Player 1 and Player 2 in both windows; outside the arcade the roster names stand.
+
+MEASURED. Check 30.88 passes, and fails on v30.87.
 ## v30.87 - FLAT HUD BARS
 
 Co-op hunt while he was away. The critic on the raid screen (10-19): the vitals bars are glossy gradients. The style guide asks for flat bars.

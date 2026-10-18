@@ -1,6 +1,10 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  21-raid-hud-calm                       staged      14.5s  
-  50-arcade-hud-live                     staged      22.3s  
+  tr1-career-calm                        staged      14.4s  
+  tr2-career-busy                        staged      12.7s  
+  tr3-arcade                             staged      22.7s  
+  tr4-p2-career                          staged      15.1s  
 == 4k : window 3872x2263, viewport 3840x2160
-  21-raid-hud-calm                       staged      14.4s  
-  50-arcade-hud-live                     staged      22.5s  
+  tr1-career-calm                        staged      15.3s  
+  tr2-career-busy                        staged      13.1s  
+  tr3-arcade                             staged      23.1s  
+  tr4-p2-career                          staged      15.3s  
