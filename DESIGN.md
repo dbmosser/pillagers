@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.10 - Ctrl drag asks how many to move
+
+Co-op hunt while he was away. His note: in the stash, ctrl drag an item to the backpack should ask how many to transfer. A Ctrl drag of a stack, stash to backpack or back, now opens a small prompt: a number and a slider with the most preselected, minus, plus, Half and All buttons for a pad, Enter moves, Esc cancels. A plain drag is unchanged and moves one.
+
+MEASURED. Check 29.10 passes, and fails on v29.09.
 ## v29.09 - NO STRONGHOLD OVER THE FORGE
 
 Co-op hunt while he was away. The Forge is placed at the raid build and the strongholds three seconds later. A stronghold could be a building that held the Forge, leaving it out of reach behind the shut gate. A building with the Forge in or within 70 of it is no longer a candidate. The old compound circle is gone since strongholds became real buildings, so this guards the building pick.

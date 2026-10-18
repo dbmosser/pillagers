@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.09';
+var VER='29.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46825,7 +46825,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.09: A stronghold is no longer a building with the Forge in it. Check 29.09 fails on v29.08',
+  now:'v29.10: Ctrl and drag a stack between the stash and the backpack to choose how many move. Enter confirms, Esc cancels. Check 29.10 fails on v29.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61693,7 +61693,7 @@ function grabbable(el,key,from,label){
     ev.preventDefault();
     // v15.68, grid audit finding: DRAGGING A BACKPACK STACK AND LETTING GO ON ITS OWN CELL MOVES NOTHING. The cell and the
     // press point are kept so the mousemove below can tell a drag from a click, and a new press forgets the last drag.
-    GRAB={key:key,from:from,el:el,x:ev.clientX,y:ev.clientY}; GRABSKIP=null;
+    GRAB={key:key,from:from,el:el,x:ev.clientX,y:ev.clientY,ctrl:!!(ev.ctrlKey||ev.metaKey)}; GRABSKIP=null;   // v28.xx (cw-stashqty): Ctrl held at the press counts too
     var g=grabGhost(label||key);
     // v12.25: a zoomed fixed element takes its offsets in its own zoomed pixels.
     var _gz=parseFloat(g.style.zoom)||1;
@@ -61705,6 +61705,103 @@ function dropzone(el,fn){
   if(!el) return;
   el.setAttribute('data-drop','1');
   el.__grabDrop=fn;
+}
+// v28.xx (cw-stashqty), HIS NOTE (2026-10-18): "in the stash, if I ctrl drag an item to the backpack, i should get a prompt asking me how many
+// I want to transfer". The prompt: a number and a slider with the most preselected, - and + and Half and All buttons for a pad, Enter moves, Esc cancels.
+var QTY=null;
+function qtyOpen(){ return !!(QTY&&QTY.md&&QTY.md.classList.contains('on')); }
+function qtyClose(){ if(QTY&&QTY.md) QTY.md.classList.remove('on'); }
+function qtyVal(){ var v=Math.round(+(QTY.num.value)||0); return Math.max(1,Math.min(QTY.max,v)); }
+function qtySet(v){ if(!QTY) return; v=Math.max(1,Math.min(QTY.max,Math.round(+v||0))); QTY.num.value=v; QTY.rng.value=v; }
+function qtyGo(){
+  if(!qtyOpen()) return;
+  var n=qtyVal(), fn=QTY.fn; qtyClose();
+  try{ if(fn) fn(n); }catch(_qg){}
+}
+function qtyAsk(title,name,max,fn){
+  var md=document.getElementById('qtymodal'), root=document.getElementById('root')||document.body;
+  if(!md){
+    md=document.createElement('div'); md.className='modal'; md.id='qtymodal';
+    md.style.cssText='z-index:80;align-items:center;justify-content:center';
+    md.innerHTML='<div class="panel" style="min-width:340px;max-width:92%;padding:18px 22px;text-align:center">'+
+      '<h3 id="qtyh" style="justify-content:center;font-size:24px"></h3><div class="msub" id="qtyname" style="margin-bottom:10px"></div>'+
+      '<div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-bottom:10px">'+
+      '<button id="qtym" style="padding:4px 14px">-</button><input id="qtyn" type="number" min="1" step="1" style="width:84px;text-align:center;font-size:18px">'+
+      '<button id="qtyp" style="padding:4px 14px">+</button></div>'+
+      '<input id="qtyr" type="range" min="1" step="1" style="margin-bottom:12px">'+
+      '<div style="display:flex;gap:8px;justify-content:center"><button id="qtyhalf">Half</button><button id="qtyall">All</button>'+
+      '<button id="qtyok">Move</button><button id="qtyno">Cancel</button></div></div>';
+    root.appendChild(md);
+  }
+  QTY={md:md,max:Math.max(1,max|0),fn:fn,num:document.getElementById('qtyn'),rng:document.getElementById('qtyr')};
+  document.getElementById('qtyh').textContent=title;
+  document.getElementById('qtyname').textContent=name+'  x'+QTY.max;
+  QTY.num.max=QTY.max; QTY.rng.max=QTY.max;
+  QTY.num.oninput=function(){ if(QTY) QTY.rng.value=qtyVal(); };
+  QTY.num.onchange=function(){ if(QTY) qtySet(qtyVal()); };
+  QTY.rng.oninput=function(){ if(QTY) QTY.num.value=QTY.rng.value; };
+  document.getElementById('qtym').onclick=function(){ qtySet(qtyVal()-1); };
+  document.getElementById('qtyp').onclick=function(){ qtySet(qtyVal()+1); };
+  document.getElementById('qtyhalf').onclick=function(){ qtySet(Math.max(1,Math.floor(QTY.max/2))); };
+  document.getElementById('qtyall').onclick=function(){ qtySet(QTY.max); };
+  document.getElementById('qtyok').onclick=function(){ qtyGo(); };
+  document.getElementById('qtyno').onclick=function(){ qtyClose(); };
+  qtySet(QTY.max);
+  md.classList.add('on');
+  try{ QTY.num.focus(); QTY.num.select(); }catch(_qf){}
+}
+try{ window.addEventListener('keydown',function(ev){
+  if(!qtyOpen()) return;
+  var c=ev.code, t=ev.target, isBtn=!!(t&&t.tagName==='BUTTON');
+  if(c==='Escape'){ ev.preventDefault(); ev.stopImmediatePropagation(); qtyClose(); return; }
+  if((c==='Enter'||c==='NumpadEnter')&&!isBtn){ ev.preventDefault(); ev.stopImmediatePropagation(); qtyGo(); return; }
+  if(c==='ArrowLeft'||c==='ArrowDown'){ ev.preventDefault(); ev.stopImmediatePropagation(); qtySet(qtyVal()-1); return; }
+  if(c==='ArrowRight'||c==='ArrowUp'){ ev.preventDefault(); ev.stopImmediatePropagation(); qtySet(qtyVal()+1); return; }
+  if(c==='Tab'){ ev.stopImmediatePropagation(); return; }
+  ev.stopImmediatePropagation();   // no game key reaches the screen behind the prompt
+},true); }catch(_qk){}
+// What the backpack grid shows of one item: packed copies, less one per belt key on it (renderKitCol's rule).
+function kitShownCount(key){
+  var K=stageKitLive(), ha=P.hotAssign||{}, sk, kk, at, c=0, i;
+  for(sk in ha){ kk=ha[sk]; if(!kk) continue;
+    if(kk.indexOf('gun_')===0&&(P.equipped===kk.slice(4)||P.equippedSec===kk.slice(4))) continue;
+    at=K.indexOf(kk); if(at>=0) K.splice(at,1); }
+  for(i=0;i<K.length;i++) if(K[i]===key) c++;
+  return c;
+}
+// Ctrl drag of a stack: true when it opened the prompt, false to let the plain drop run (one item, or a refusal to word).
+function qtyDrag(key,from,z){
+  var it=ITEMS[key], max, bq, onKey=false;
+  if(!it||!z||!P) return false;
+  if(from==='stash'&&z.id==='kitcol'){
+    max=Math.min(DEPLOY_SLOTS-stageKitLive().length,heldCount(key)-packedCount(key));
+    for(bq in (P.hotAssign||{})) if(P.hotAssign[bq]===key) onKey=true;
+    if(onKey&&packedCount(key)<1) return false;   // the belt route of the plain drop
+    if(max<2) return false;
+    qtyAsk('Move to backpack',it.name,max,function(n){
+      var room=Math.min(n,DEPLOY_SLOTS-stageKitLive().length,heldCount(key)-packedCount(key));
+      if(room<1){ say2('Backpack is full.'); return; }
+      packSome(key,room);
+      try{ sfx('pick'); }catch(_s){}
+      say2('Moved '+room+' '+it.name+' to the backpack.');
+      refreshInv();
+    });
+    return true;
+  }
+  if(from==='kit'&&z.id==='stashgrid'){
+    max=kitShownCount(key);
+    if(max<2) return false;
+    qtyAsk('Move to stash',it.name,max,function(n){
+      var have=Math.min(n,kitShownCount(key));
+      if(have<1) return;
+      unpackSome(key,have);
+      try{ sfx('pick'); }catch(_s){}
+      say2('Moved '+have+' '+it.name+' to the stash.');
+      refreshInv();
+    });
+    return true;
+  }
+  return false;
 }
 document.addEventListener('mousemove',function(ev){
   if(!GRAB) return;
@@ -61735,6 +61832,9 @@ document.addEventListener('mouseup',function(ev){
   // the shop. A rack grab that never moved is a click, and right-click stays the armoury verb. A real drag is unchanged, and
   // every other drag source keeps what a click did before.
   if(!held.moved&&held.from==='rack') return;
+  // v28.xx (cw-stashqty), HIS NOTE (2026-10-18): "in the stash, if I ctrl drag an item to the backpack, i should get a prompt asking me how many
+  // I want to transfer". Ctrl and a drag of a stack, stash to backpack or back, asks how many (qtyAsk). A plain drag is unchanged.
+  if(held.moved&&(ev.ctrlKey||ev.metaKey||held.ctrl)&&z&&typeof qtyDrag==='function'){ var _qd=false; try{ _qd=qtyDrag(held.key,held.from,z); }catch(_qe){} if(_qd) return; }
   if(z&&typeof z.__grabDrop==='function') z.__grabDrop(held.key,held.from);
 });
 function renderStage(prefill){

@@ -20,5 +20,5 @@ role-twin | DONE (lane-b) | v29.02 via cw-roletwin
 raid bountyfire | DROPPED (lane-b) | already fixed in HEAD: bounty pays only on byPlayer===true or bySeat>0
 # NOTE: preflight.sh is runnable (bash tools/handoff/preflight.sh b cw-KEY). A card-stamp STOP was fixed with mk-cw-cardP9 (P9 used, next is P10).
 evsh | DROPPED (lane-b) | already in HEAD: convoy ok() and the bounty pick both carry shAt(x,y,80)
-shforge | CLAIMED lane-b | strongholds are now real buildings (shCands), no fence/compound circle; rebuilding as cw-shforge: shCands skips a building holding the Forge
+shforge | DONE (lane-b) v29.09 via cw-shforge | strongholds are now real buildings (shCands), no fence/compound circle; rebuilding as cw-shforge: shCands skips a building holding the Forge
 shrespawn | DROPPED (lane-b) | obsolete: strongholds are now map buildings with walls, no fence and no p.shS side memory in HEAD

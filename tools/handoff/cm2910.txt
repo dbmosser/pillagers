@@ -1,0 +1,7 @@
+v29.10: ctrl drag asks how many to move
+
+Ctrl and drag a stack between the stash and the backpack to choose how many move. Enter confirms, Esc cancels.
+
+Check 29.10. Fails on v29.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

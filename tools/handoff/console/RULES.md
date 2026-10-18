@@ -18,7 +18,8 @@ questions and never wait. Your runs are billed to his Claude Console credits, so
 - Never edit dark_raiders.html directly. Every game change ships through a mk script and the ship queue (below).
 - Never git push --force, reset, rebase or delete branches. Never commit anything in tools/handoff/console/.
 - Keep 6 GB of RAM free: never start more than one extra Chrome, and close what you start.
-- In-game text is terse caps HUD callouts (like CoD, Fortnite, ARC Raiders): LOCATION REVEALED, MACHINE ALERT. Never an
+- In-game text is short, punchy callouts in SENTENCE CASE (his hard rule 2026-10-18: NEVER all caps; "Location revealed",
+  "Machine alert"; acronyms like SP, XP, HP, LMG stay). Never an
   explaining sentence on screen. Score is SP, never $.
 - Never start agents, workflows, cloud sessions or scheduled tasks.
 

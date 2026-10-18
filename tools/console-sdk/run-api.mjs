@@ -99,7 +99,12 @@ function trim() {
   const tu = []; for (const m of msgs) if (m.role === 'assistant') for (const b of m.content) if (b.type === 'tool_use') tu.push(b);
   for (const b of tu.slice(0, -KEEP)) for (const k of ['content', 'new_text', 'old_text'])
     if (b.input && typeof b.input[k] === 'string' && b.input[k].length > 300) b.input[k] = '[cleared]';
+  dropThinking();
 }
+// 10-18 01:03: every run died with "API 400: Invalid signature in thinking block ... bound to a different conversation" once trim()
+// had cleared old outputs: a thinking block is signed against what came before it. Old thinking is not needed to carry on, so a
+// trimmed history drops it (a probe showed the API accepts a history with the thinking blocks removed).
+function dropThinking() { for (const m of msgs) if (m.role === 'assistant') m.content = m.content.filter(b => b.type !== 'thinking' && b.type !== 'redacted_thinking'); }
 try {
   for (let turn = 0; ; turn++) {
     if (turn >= MAX_TURNS) { out.terminal_reason = 'max_turns'; break; }
@@ -113,9 +118,10 @@ try {
       res = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers, body: JSON.stringify({ model: MODEL, max_tokens: 16000, system: sys, tools: TOOLS, messages: msgs }) });
       j = await res.json().catch(() => ({}));
       if (res.status === 429 || res.status === 529 || res.status >= 500) { await new Promise(r => setTimeout(r, 20000 * (tries + 1))); continue; }
+      if (res.status === 400 && /thinking/i.test(String(j.error && j.error.message)) && tries === 0) { dropThinking(); continue; }
       break;
     }
-    if (!res.ok) { out.result = 'API ' + res.status + ': ' + String((j.error && j.error.message) || '').slice(0, 300); out.terminal_reason = 'api_error'; break; }
+    if (!res.ok) { out.result = 'API ' + res.status + ': ' + String((j.error && j.error.message) || '').slice(0, 800); out.terminal_reason = 'api_error'; break; }
     const u = j.usage || {};
     cost += ((u.input_tokens || 0) * PRICE.in + (u.output_tokens || 0) * PRICE.out + (u.cache_read_input_tokens || 0) * PRICE.cr + (u.cache_creation_input_tokens || 0) * PRICE.cw) / 1e6;
     msgs.push({ role: 'assistant', content: j.content });

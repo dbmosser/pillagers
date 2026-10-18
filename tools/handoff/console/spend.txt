@@ -34,3 +34,10 @@
 2026-10-17 0.8685 c-10-evening
 2026-10-17 0.8258 c-11-evening
 2026-10-17 1.874 b-15-2p-drafts
+2026-10-17 0.4401 b-16-2p-drafts
+2026-10-18 0.4689 c-00a-wreckage-apierr
+2026-10-18 0.5886 b-00a-rocket-launcher-apierr
+2026-10-18 0.5401 c-00a-wreckage-apierr
+2026-10-18 0.5171 b-00a-rocket-launcher-apierr
+2026-10-18 0.5226 c-00a-wreckage-apierr
+2026-10-18 0.4676 b-00a-rocket-launcher-apierr
