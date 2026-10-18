@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.91 - OPERATOR CARD GETS A CLOSE X AND KEYS
+
+Co-op hunt while he was away. Critic 62 and 63: the operator card had no close X and no key hints. Critic 58: the player 2 title carried an amber paragraph. Now a 48px X top right, an Esc Enter strip, and one short player 2 label.
+
+MEASURED. Check 29.91 passes, and fails on v29.90.
 ## v29.90 - What is new card: scrim, a 720px flat panel, left title, one Got it
 
 Co-op hunt while he was away. The critic scored the What is new card 2 of 5: no scrim so the station labels fought it, a 1560px slab, a centred amber title and no primary. Now a scrim, a 720px flat panel with a rule, the title top-left in tx-1 and one amber Got it bottom-right with the dismiss hint on the left. Drawing only; the text, the stamp and the dismiss rules are unchanged.

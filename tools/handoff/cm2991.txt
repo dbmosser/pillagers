@@ -1,0 +1,7 @@
+v29.91: operator card gets a close x and keys
+
+The operator card has a close X and a key strip. The player 2 window shows one short line.
+
+Check 29.91. Fails on v29.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

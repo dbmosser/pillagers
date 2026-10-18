@@ -194,26 +194,26 @@
  "35-kia-card": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean, centred KIA card, but it breaks the end-card spec: the hero is a '$' figure, the title is small, the explaining sentences are clutter, the items sit above the hero, and there is no pad focus.",
-  "pic": "tools/handoff/console/notes/shots/13-c5/35-kia-card-1080.jpg",
+  "verdict": "The card is clean, centred and on-palette, but it reads as a generic template: the hero number is a banned \"$\" figure with no clear emphasis hierarchy, title and body type are undersized for a couch, and the explaining sentences and 5-item/4-tile mismatch make it feel unfinished.",
+  "pic": "tools/handoff/console/notes/shots/13-c6/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:34"
+  "when": "2026-10-18T10:45"
  },
  "38-extracted-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The shell is right (dark card, teal title, one amber primary, uniform tile row), but it is overstuffed: two chip systems, three text lines before the hero, a '$' haul figure and tiny muted text crowd the layout, so it reads as a cluttered receipt, not a polished end card.",
-  "pic": "tools/handoff/console/notes/shots/13-c5/38-extracted-card-1080.jpg",
+  "verdict": "This is a clean, centred end card that follows the shell, with a teal title, one hero number and one amber primary. It is crowded with small text, uses a banned \"$\" on the hero, and the type is mostly under the 16px floor.",
+  "pic": "tools/handoff/console/notes/shots/13-c6/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:35"
+  "when": "2026-10-18T10:46"
  },
  "40-whats-new-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The What's new card is a full-width slab over a live hub with no scrim, so station labels, the weapon bar and a trophy toast fight it, and its content is five near-identical sentences with no hierarchy or action button.",
-  "pic": "tools/handoff/console/notes/shots/13-c5/40-whats-new-card-1080.jpg",
+  "verdict": "The new card is now a centred, scrimmed modal with a clear primary button and a left-aligned title, but the body is still a wall of near-identical changelog filler with no close X, and the HUD toast and hotbar remain on top of the dimmed world.",
+  "pic": "tools/handoff/console/notes/shots/13-c6/40-whats-new-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:35"
+  "when": "2026-10-18T10:45"
  },
  "45-arcade-attract-board": {
   "score": 2,
@@ -250,10 +250,10 @@
  "59-raid-abandon-confirm": {
   "score": 3,
   "pass": false,
-  "verdict": "The dialog now has a clear hierarchy (title states the question, amber 'Keep playing' is the safe primary, red ghost is the destructive option) and is sized to its content, but it still has a clipped corner and an unexplained consequence, there is no close or pad hint, and the HUD behind the scrim is still too visible.",
-  "pic": "tools/handoff/console/notes/shots/13-d1/59-raid-abandon-confirm-1080.jpg",
+  "verdict": "The c6 card is a clear step up: the title now matches the question, the safe action is the single amber primary, and the dead space is gone. It is still a bare dialog with no close X, no pad glyphs, no focus cue on the danger button, and a HUD behind it that clutters the scrim.",
+  "pic": "tools/handoff/console/notes/shots/13-c6/59-raid-abandon-confirm-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:39"
+  "when": "2026-10-18T10:45"
  },
  "65-codex": {
   "score": 2,
@@ -314,10 +314,10 @@
  "77-haul-reveal-done": {
   "score": 3,
   "pass": false,
-  "verdict": "The card follows the end-card shell (Extracted in teal, hero haul number, stat row of 4, one primary and one ghost button), but the haul hero sits below a cluttered middle, the card is packed with extra elements, and it uses '$' where the guide says SP.",
-  "pic": "tools/handoff/console/notes/shots/13-c5/77-haul-reveal-done-1080.jpg",
+  "verdict": "This is a solid, mostly on-system end card with a clear hero haul number, but the stacked sentences, a banned \"$\" currency, and an unclear tile row and chip rows crowd it and keep it from feeling polished.",
+  "pic": "tools/handoff/console/notes/shots/13-c6/77-haul-reveal-done-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:36"
+  "when": "2026-10-18T10:46"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 2,
@@ -338,10 +338,10 @@
  "60-abandoned-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The card follows the shared end-card shell (dark panel, amber primary, stats row), but the title is small and muted, there is no hero line, and the cramped explanatory text and stray '$' make it read as a template dialog, not a polished screen.",
-  "pic": "tools/handoff/console/notes/shots/13-c5/60-abandoned-card-1080.jpg",
+  "verdict": "A clean dark card on the right tokens, but it has no hero line and no hierarchy: the title is a muted grey-tan, two cramped explaining sentences sit above the stats, and the dollar sign breaks the SP rule.",
+  "pic": "tools/handoff/console/notes/shots/13-c6/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:35"
+  "when": "2026-10-18T10:46"
  },
  "42-hub-pause-box": {
   "score": 3,
@@ -416,11 +416,11 @@
   "when": "2026-10-18T10:12"
  },
  "76-haul-reveal-mid": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "A clean, centred end card that follows the shell (teal title, one hero number, 4-stat row, amber primary plus ghost), but the hero is the same size as the title, it still shows '$', and it carries too many stacked text blocks and tiny muted text.",
-  "pic": "tools/handoff/console/notes/shots/13-c5/76-haul-reveal-mid-1080.jpg",
+  "verdict": "The Extracted card follows the shell (teal title, dark panel, amber primary) but it is a stack of seven equal-weight centred bands, with a '$' hero that breaks the SP rule, a stray floating tile, and too many small text lines.",
+  "pic": "tools/handoff/console/notes/shots/13-c6/76-haul-reveal-mid-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:36"
+  "when": "2026-10-18T10:46"
  }
 }

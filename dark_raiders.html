@@ -825,7 +825,7 @@
   #modemenu .modelater span{ position:absolute; left:100%; top:50%; transform:translateY(-50%); margin-left:12px; white-space:nowrap;
     font-size:13px; letter-spacing:.12em; color:var(--ash); text-transform:uppercase; }
   #modemsg{ font-size:13px; line-height:1.5; color:var(--hazard); max-width:640px; }
-  #p2line{ font-size:13px; line-height:1.5; color:var(--amber); max-width:640px; }
+  #p2line{ font:600 var(--fs-label)/1.3 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); max-width:var(--menu-w); }   /* v28.xx (cw-partyx) critic 58: was an amber 13px paragraph */
   #gamblemodal{ align-items:center; justify-content:center; }
   #gamblemodal::before{ inset:50% auto auto 50%; width:min(1180px,calc(100% - 28px)); height:min(var(--cfh,620px),calc(100% - 28px)); transform:translate(-50%,-50%); }
   #gamblemodal .msub, #gamblemodal .plist{ max-width:1060px; width:100%; }
@@ -2670,7 +2670,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.90';
+var VER='29.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47822,7 +47822,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.90: What is new card: cleaner layout and a Got it button. Check 29.90 fails on v29.89',
+  now:'v29.91: The operator card has a close X and a key strip. The player 2 window shows one short line. Check 29.91 fails on v29.90',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52754,7 +52754,7 @@ function netTitleInit(startFn){
   for(i=0;i<hide.length;i++){ el=g(hide[i]); if(!el) continue; if(el.parentNode&&el.parentNode.className==='modelater') el=el.parentNode; el.style.display='none'; }
   if(st) st.textContent='ENTER THE UNDERCROFT';
   r=netSameBootP2();
-  if(pl){ pl.textContent='PLAYER 2. This window links up with the player 1 window on its own. Drag it to your second screen. Your controller works here whether this window is in front or not. World sound plays from the player 1 window; the SOUND row in the PARTY window switches it. MODE: '+netModeName(NET.mode)+'.'; pl.style.display=''; }   // v15.77: the controller sentence; v15.78: the sound sentence
+  if(pl){ pl.textContent='Player 2 window'; pl.style.display='';   /* v28.xx (cw-partyx) critic 58 (2 of 5): a stack of small explaining sentences. One short line now */ }   // v15.77: the controller sentence; v15.78: the sound sentence
   try{ document.title='Pillagers, player 2';   /* v28.xx (cw-nocaps-dom): never all caps */ }catch(e){}
   return r;
 }
@@ -60569,6 +60569,11 @@ function arcadeOpDraw(){
   el.innerHTML='';
   d=document.createElement('div'); d.style.cssText='position:absolute;left:var(--sp-4);top:-1px;width:var(--sp-5);height:3px;background:var(--acc)';
   el.appendChild(d);
+  // v28.xx (cw-partyx) critic 62 and 63 (3 and 2 of 5): "no close X, no key hints". A 48px ghost X sits top right, as on every modal, and a key strip runs under the rows.
+  d=document.createElement('button'); d.className='arcopx'; d.setAttribute('aria-label','Close'); d.innerHTML=uiIcon('close',24);
+  d.style.cssText='position:absolute;top:var(--sp-3);right:var(--sp-3);width:var(--btn-h-sm);height:var(--btn-h-sm);padding:0;display:flex;align-items:center;justify-content:center;background:transparent;color:var(--tx-1);border:1px solid var(--ui-line-hi);border-radius:var(--rad);cursor:pointer;outline:none';
+  d.onclick=function(ev){ try{ ev.stopPropagation(); }catch(_s){} arcadeOpClose(); };
+  el.appendChild(d);
   d=document.createElement('div'); d.className='arcoptitle'; d.textContent='Operator'; d.style.cssText='font:700 var(--fs-title)/1.1 var(--f-cond);letter-spacing:var(--track);color:var(--tx-1)';
   el.appendChild(d);
   d=document.createElement('div'); d.className='arcopsub'; d.textContent='Tonight: '+n+' run'+(n===1?'':'s')+(arcadePartyCode()?'  \u00b7  Seed '+arcadePartyCode():''); d.style.cssText='font:600 var(--fs-label)/1.3 var(--f-cond);letter-spacing:var(--track);color:var(--tx-2);margin:var(--sp-1) 0 var(--sp-2)';
@@ -60587,7 +60592,19 @@ function arcadeOpDraw(){
     d.style.cssText='font:600 var(--fs-label)/1.3 var(--f-cond);letter-spacing:var(--track);margin-top:var(--sp-3);color:'+(ARCOP.arm?'var(--tx-2)':'var(--ok)');
     el.appendChild(d);
   }
+  arcadeOpHints(el);
   arcadeOpStyle();
+}
+function arcadeOpHints(el){
+  var h=document.createElement('div'), ks=[['\u2191\u2193','Move'],['Enter','Pick'],['Esc','Back']], i, c, w;
+  h.className='arcophint';
+  h.style.cssText='display:flex;gap:var(--sp-3);align-items:center;margin-top:var(--sp-3);padding-top:var(--sp-2);border-top:1px solid var(--ui-line);font:600 var(--fs-label)/1 var(--f-cond);letter-spacing:var(--track);color:var(--tx-2)';
+  for(i=0;i<ks.length;i++){
+    w=document.createElement('span'); w.style.cssText='display:inline-flex;align-items:center;gap:var(--sp-1)';
+    c=document.createElement('b'); c.textContent=ks[i][0]; c.style.cssText='display:inline-block;padding:var(--sp-1);border:1px solid var(--ui-line-hi);border-radius:var(--rad);font-weight:600;color:var(--tx-1)';
+    w.appendChild(c); w.appendChild(document.createTextNode(ks[i][1])); h.appendChild(w);
+  }
+  el.appendChild(h);
 }
 function arcadeOpStyle(){
   if(!ARCOP) return;

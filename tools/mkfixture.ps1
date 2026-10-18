@@ -6097,6 +6097,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.91',what:'the operator card has a close X that closes it and a key strip, and the player 2 line is one short label (critic 58 62 63)',
+   run:function(){
+     if(typeof arcadeOpOpen!=='function'||typeof arcadeOpClose!=='function'||typeof ARCADE!=='object'||!ARCADE) return 'SKIP: no operator card';
+     var was=ARCADE.on, x, h, el, r, c;
+     try{
+       ARCADE.on=true;
+       if(!arcadeOpOpen()) return 'the operator card did not open';
+       el=document.getElementById('arcop'); if(!el) return 'no operator card element';
+       x=el.querySelector('.arcopx'); if(!x) return 'the operator card has no close X';
+       h=el.querySelector('.arcophint'); if(!h) return 'the operator card has no key strip';
+       if(!/Esc/.test(h.textContent)||!/Enter/.test(h.textContent)) return 'the key strip lacks Enter and Esc';
+       r=x.getBoundingClientRect(); c=el.getBoundingClientRect();
+       if(r.right>c.right+1||r.top<c.top-1||r.width<30) return 'the X is not top right and large enough: '+Math.round(r.width)+'px';
+       x.click();
+       if(document.getElementById('arcop')) return 'the X did not close the card';
+       if(/Drag it to your second screen/.test(String(netTitleInit))) return 'the player 2 line is still the long paragraph';
+     }finally{ try{ arcadeOpClose(); }catch(e){} ARCADE.on=was; }
+     return null; }},
   {v:'29.90',what:'the What is new card sits on a scrim as a 720px flat panel with a left title and one Got it primary (critic: no scrim, 1560px slab, centred amber title, no primary; screen 40)',
    run:function(){
      if(!window.__hubEnter) return 'SKIP: this fixture cannot open the floor';
