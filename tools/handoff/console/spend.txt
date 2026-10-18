@@ -316,3 +316,8 @@
 2026-10-18 0.0796 11b-ui-motion
 2026-10-18 0.0552 critic-13-ui-end-cards
 2026-10-18 0.0566 critic-13-ui-end-cards
+2026-10-18 0.0798 11b-ui-motion
+2026-10-18 0.0527 critic-13-ui-end-cards
+2026-10-18 0.0478 critic-13-ui-end-cards
+2026-10-18 0.0416 critic-13-ui-end-cards
+2026-10-18 4.0058 13-ui-end-cards

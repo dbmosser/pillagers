@@ -1,1 +1,1 @@
-10-18 06:22 11b-ui-motion: partial (run 3 of 5), $0.0796
+10-18 06:27 11b-ui-motion: partial (run 4 of 5), $0.0798

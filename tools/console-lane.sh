@@ -32,7 +32,9 @@ ALLOW=( "Read" "Grep" "Glob"
   "Bash(bash $S/runchk.sh *)" "Bash(bash $S/lock.sh)" "Bash(bash $S/unlock.sh)" "Bash(bash $S/clearstale.sh)"
   "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File $S/mk-cw-*)"
   "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Start -Port 9346)"
-  "Bash(git status:*)" "Bash(git log:*)" "Bash(git diff:*)" "Bash(git show:*)" )
+  "Bash(git status:*)" "Bash(git log:*)" "Bash(git diff:*)" "Bash(git show:*)"
+  "Bash(bash tools/handoff/preflight.sh *)" "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 *)"
+  "Bash(node tools/console-sdk/critic.mjs *)" )
 mkdir -p "$C/tasks" "$C/done" "$C/failed" "$C/log" "$C/notes"
 [ -f "$C/STOP" ] && { echo "$(date '+%m-%d %H:%M') paused (STOP file)" > "$C/status-$L.txt"; exit 0; }
 cap(){ v=$(grep -m1 "^$1=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -d '\r '); echo "${v:-$2}"; }
@@ -64,9 +66,38 @@ if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | free); el
 [ -z "$t" ] && t=$(retry)
 [ -z "$t" ] && { echo "$(date '+%m-%d %H:%M') no tasks left" > "$C/status-$L.txt"; exit 0; }
 basename "$t" > "$LK/task"
+name=$(basename "$t" .md); stamp=$(date +%m%d-%H%M); out="$C/log/$name-$stamp.json"
+# 10-18 04:50, his "when console money runs out can't we use normal Claude Code?": once this month's Console spend reaches TOTAL_USD,
+# or the Console said the credit is gone (console-empty names the month), the lanes run on Claude Code on his Max plan instead.
+# That plan is the same weekly usage his own sessions use and must last to the weekly reset (his hard rule 10-18), so only
+# CLI_LANES lanes run (default 1, lane a, which takes any job) and at most CLI_DAY_USD of API-equivalent cost a day (claude -p
+# reports it), released evenly through the day. Its costs go to cli-spend.txt, so spend.txt stays the real Console bill.
+month=$(date +%Y-%m); mspent=$(awk -v m="$month" 'substr($1,1,7)==m {s+=$2} END {printf "%.2f", s+0}' "$C/spend.txt")
+ENGINE=api
+[ "$(cat "$C/console-empty" 2>/dev/null | tr -d '\r\n ')" = "$month" ] && ENGINE=cli
+awk -v s="$mspent" -v t="$TOTAL" 'BEGIN{exit !(s+0>=t+0)}' && ENGINE=cli
+if [ $ENGINE = cli ]; then
+  [ "$(cap CLI 1)" = 0 ] && { echo "$(date '+%m-%d %H:%M') Console money used up for $month; the Claude Code engine is off (CLI=0)" > "$C/status-$L.txt"; exit 0; }
+  nl=$(cap CLI_LANES 1); { [ "$nl" -lt 2 ] && [ "$L" != a ]; } || { [ "$nl" -lt 3 ] && [ "$L" = c ]; } && {
+    echo "$(date '+%m-%d %H:%M') resting: Console money used up, $nl helper(s) run on your plan" > "$C/status-$L.txt"; exit 0; }
+  cday=$(awk -v d="$today" '$1==d {s+=$2} END {printf "%.2f", s+0}' "$C/cli-spend.txt" 2>/dev/null); cday=${cday:-0}
+  CD=$(cap CLI_DAY_USD 25); callow=$(awk -v c="$CD" -v m="$mins" 'BEGIN{a=c*m/1440; if(a>c)a=c; printf "%.2f", a}')
+  if awk -v s="$cday" -v a="$callow" 'BEGIN{exit !(s+0>=a+0)}'; then
+    echo "$(date '+%m-%d %H:%M') pacing your weekly usage: \$$cday of \$$CD today (API-equivalent), \$$callow allowed by now" > "$C/status-$L.txt"; exit 0; fi
+  echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan; \$$cday of \$$CD today)" > "$C/status-$L.txt"
+  st=$(date +%s)
+  ( cd "$R" && env -u ANTHROPIC_API_KEY claude -p "Your task id is $name. Your lane is $L. You run in Claude Code: use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" \
+      --append-system-prompt "$(cat "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" \
+      --allowedTools "${ALLOW[@]}" > "$out" 2> "$C/log/$name-$stamp.err" < /dev/null )
+  cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); cost=${cost:-0}
+  if awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
+    if grep -qi 'authenticate\|oauth\|not logged in\|/login' "$out"; then w="waiting for you to sign in to Claude Code once (terminal: claude, then /login)"
+    elif grep -qi 'limit' "$out"; then w="your plan's usage limit is reached; waiting"; else w="Claude Code run ended before any work (see $(basename "$out"))"; fi
+    echo "$(date '+%m-%d %H:%M') $w; $name kept" | tee -a "$C/runs.log" > "$C/status-$L.txt"; exit 0; fi
+  echo "$today $cost $name" >> "$C/cli-spend.txt"
+else
 k=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('PILLAGERS_API_KEY','User')" 2>/dev/null | tr -d '\r\n')
 [ -z "$k" ] && { echo "$(date '+%m-%d %H:%M') waiting for his key (Windows user variable PILLAGERS_API_KEY)" > "$C/status-$L.txt"; exit 0; }
-name=$(basename "$t" .md); stamp=$(date +%m%d-%H%M); out="$C/log/$name-$stamp.json"
 left=$(awk -v s="$spent" -v c="$DAY_USD" -v r="$RUN_USD" 'BEGIN{x=c-s; if(x>r)x=r; printf "%.2f", x}')
 echo "$(date '+%m-%d %H:%M') running $name (cap \$$left; spent today \$$spent of \$$DAY_USD)" > "$C/status-$L.txt"
 # his key is account-wide (sk-ant-usr), so the API wants the workspace named in a header: WORKSPACE_ID in caps.txt (not a secret)
@@ -83,9 +114,11 @@ k=""
 cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); cost=${cost:-0}
 # a refused key or empty credits costs nothing and is not a try at the task: say so and leave the task where it is
 if grep -q '"terminal_reason":"api_error"' "$out" && awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
+  grep -qi 'credit' "$out" && echo "$month" > "$C/console-empty"   # the next run switches to Claude Code
   echo "$(date '+%m-%d %H:%M') API error before any work (check the key and the Console credits); $name kept" | tee -a "$C/runs.log" > "$C/status-$L.txt"; exit 0; fi
 echo "$today $cost $name" >> "$C/spend.txt"
-n=$(grep -c " $name$" "$C/spend.txt")
+fi
+n=$(cat "$C/spend.txt" "$C/cli-spend.txt" 2>/dev/null | grep -c " $name$")
 if grep -q 'TASK DONE' "$out"; then mv "$t" "$C/done/"; r=done
 elif [ "$n" -ge "$(cap MAXRUNS 3)" ]; then mv "$t" "$C/failed/"; r=failed
 else r="partial (run $n of $(cap MAXRUNS 3))"; fi

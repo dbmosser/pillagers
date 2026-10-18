@@ -202,18 +202,18 @@
  "38-extracted-card": {
   "score": 3,
   "pass": false,
-  "verdict": "The extracted card is much closer to the shared end-card shell, with an extract-teal title, a hero Haul line, a stat row, achievement chips and one amber primary. It still has tiny muted text, a \"$\" currency sign, crowded stacked small lines above the hero and no close control, so it is not yet polished.",
-  "pic": "tools/handoff/console/notes/shots/13-c3/38-extracted-card-1080.jpg",
+  "verdict": "The c4 extracted card is cleaner than c3, with a quieter hero number, evenly spread stats and plain chips, but it is still a stack of small centred lines with an undersized hero, a '$' that breaks the SP rule, and no close or pad hint.",
+  "pic": "tools/handoff/console/notes/shots/13-c4/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:22"
+  "when": "2026-10-18T10:28"
  },
  "40-whats-new-card": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-width flat grey slab of repetitive changelog text slices through the middle of the hub, clipping the station labels and leaving the world HUD fighting it, so it reads as a debug dump and not a polished what's-new card.",
-  "pic": "tools/handoff/console/notes/shots/all/40-whats-new-card-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:19"
+  "verdict": "A full-width dark slab with a centred amber title and five near-identical wall-of-text lines, sitting over a busy hub with no scrim, no close button and no primary action, so it reads as a debug dump and not a polished card.",
+  "pic": "tools/handoff/console/notes/shots/13-c4/40-whats-new-card-1080.jpg",
+  "task": "13-ui-end-cards",
+  "when": "2026-10-18T10:28"
  },
  "45-arcade-attract-board": {
   "score": 2,
@@ -250,10 +250,10 @@
  "59-raid-abandon-confirm": {
   "score": 2,
   "pass": false,
-  "verdict": "A pause modal that doubles as a control cheat-sheet: the abandon confirmation is buried under five rows of keybind chips, a stray feedback sentence and mismatched button casing, while the HUD bleeding through behind the scrim adds noise.",
-  "pic": "tools/handoff/console/notes/shots/all/59-raid-abandon-confirm-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:21"
+  "verdict": "A dark card with two identical red-outlined buttons and a title that doesn't ask the question, so a destructive confirm has no hierarchy, no safe default and no clear focus, and the card is half empty.",
+  "pic": "tools/handoff/console/notes/shots/13-c4/59-raid-abandon-confirm-1080.jpg",
+  "task": "13-ui-end-cards",
+  "when": "2026-10-18T10:28"
  },
  "65-codex": {
   "score": 2,

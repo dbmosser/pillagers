@@ -32,12 +32,22 @@ const H = { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type':
 if (caps.WORKSPACE_ID) H['anthropic-workspace-id'] = caps.WORKSPACE_ID;
 const res = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: H, body: JSON.stringify({ model: caps.MODEL || 'claude-sonnet-5-5', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] }) });
 const j = await res.json().catch(() => ({}));
-if (!res.ok) { console.log('CRITIC API ' + res.status + ': ' + String(j.error && j.error.message).slice(0, 400)); process.exit(1); }
-const u = j.usage || {}, cost = ((u.input_tokens || 0) * 3 + (u.output_tokens || 0) * 15) / 1e6;
-const txt = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+let cost = 0, txt = '', book = C + '/spend.txt';
+if (res.ok) { const u = j.usage || {}; cost = ((u.input_tokens || 0) * 3 + (u.output_tokens || 0) * 15) / 1e6;
+  txt = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n'); }
+else if (/credit/i.test(String(j.error && j.error.message))) {
+  // 10-18: when the month's Console credit is gone, the same review runs once through Claude Code on his plan (Read shows pictures)
+  const exe = existsSync(process.env.USERPROFILE + '/.local/bin/claude.exe') ? process.env.USERPROFILE + '/.local/bin/claude.exe' : 'claude';
+  const env = { ...process.env }; delete env.ANTHROPIC_API_KEY;
+  const ask = 'Read each picture with the Read tool, then answer. ' + pics.map((p, i) => 'Image ' + (i + 1) + ' (' + (/before/i.test(p) ? 'OLD version' : 'NEW version') + '): ' + R + '/' + p).join('; ') + '. Review the NEW version' + (pics.some(p => /before/i.test(p)) ? ' and compare it with the OLD one.' : '.');
+  const r = spawnSync(exe, ['-p', ask, '--append-system-prompt', sys, '--model', 'sonnet', '--output-format', 'json', '--allowedTools', 'Read', '--max-turns', '8'], { cwd: R, env, encoding: 'utf8', windowsHide: true, timeout: 600000, maxBuffer: 32e6 });
+  let o = {}; try { o = JSON.parse(r.stdout); } catch {}
+  if (!o.result || o.is_error) { console.log('CRITIC (Claude Code) failed: ' + String(o.result || r.stderr || r.stdout).slice(0, 400)); process.exit(1); }
+  cost = o.total_cost_usd || 0; txt = o.result; book = C + '/cli-spend.txt'; }
+else { console.log('CRITIC API ' + res.status + ': ' + String(j.error && j.error.message).slice(0, 400)); process.exit(1); }
 let v; try { v = JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1)); } catch { v = { score: 0, verdict: 'critic answer was not JSON', raw: txt.slice(0, 1500) }; }
 const task = process.env.CW_TASK || 'manual';
-appendFileSync(C + '/spend.txt', new Date().toLocaleDateString('en-CA') + ' ' + cost.toFixed(4) + ' critic-' + task + '\n');
+appendFileSync(book, new Date().toLocaleDateString('en-CA') + ' ' + cost.toFixed(4) + ' critic-' + task + '\n');
 mkdirSync(U, { recursive: true });
 let acc = {}; try { acc = JSON.parse(readFileSync(U + '/accept.json', 'utf8')); } catch {}
 for (const p of pics.filter(p => !/before/i.test(p))) { const m = /(\d\d-[a-z0-9-]+?)(-1080|-4k)?\.(jpe?g|png)$/i.exec(p);

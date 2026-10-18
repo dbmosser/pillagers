@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.86 - THE WHAT IS NEW CARD NAMES POLISH PASS 14
+
+Co-op hunt while he was away. The card was stamped v29.70 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 29.86 passes, and fails on v29.85.
 ## v29.85 - End cards: equal stat cells, plain chips, a Haul label line
 
 Co-op hunt while he was away. The critic scored the Extracted and Killed cards 3 of 5: stat cells of unequal width, an amber bar on every chip, Haul as big as its number, a 13px feedback link. Now four equal 140px cells with no dividers, a 1px chip border, a 20px Haul label over the 56px figure, an 18px feedback link. Restyle only.
