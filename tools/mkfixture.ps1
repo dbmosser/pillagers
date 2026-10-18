@@ -6097,6 +6097,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.78',what:'Settings: a hub toast is hidden while the Settings window is open',
+   run:function(){
+     if(typeof openSettings!=='function') return 'SKIP: no Settings here';
+     var bad=[], t, made=false, cs;
+     try{
+       t=document.getElementById('hubtoast');
+       if(!t){ t=document.createElement('div'); t.id='hubtoast'; t.textContent='Test'; document.body.appendChild(t); made=true; }
+       openSettings('display');
+       cs=getComputedStyle(t);
+       if(cs.visibility!=='hidden') bad.push('the hub toast is '+cs.visibility+' over the open Settings window');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ if(made&&t.parentNode) t.parentNode.removeChild(t); }catch(_m){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.77',what:'Settings: the section strip is one row (the seven tabs share one top)',
    run:function(){
      if(typeof openSettings!=='function') return 'SKIP: no Settings here';

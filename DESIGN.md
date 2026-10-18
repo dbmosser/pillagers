@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.78 - SETTINGS TOAST HIDDEN
+
+Co-op hunt while he was away. Critic c-31: a toast sits in the Settings header over the title.
+
+MEASURED. Check 29.78 passes, and fails on v29.77.
 ## v29.77 - SETTINGS TABS ONE ROW
 
 Co-op hunt while he was away. Critic c-31: Send play data wraps to a second tab row in Settings.

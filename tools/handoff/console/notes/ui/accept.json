@@ -410,9 +410,9 @@
  "70-settings-sec-controls": {
   "score": 2,
   "pass": false,
-  "verdict": "A dark settings modal with a tidy single tab strip, but it is crowded and wide-set, with a joke sentence and a footer warning that are clutter, and the second capture also breaks the layout (wrapped tab and a clipped row).",
-  "pic": "tools/handoff/console/notes/shots/c-31s-after2/70-settings-sec-controls-1080.jpg",
+  "verdict": "It is a tidy dark settings card in sentence case with a clear close button, but the tab strip is cramped, a toast collides with the header, the section labels are tiny, and it shows two competing navigation systems with no focus state and a weak footer.",
+  "pic": "tools/handoff/console/notes/shots/c-31s-after3/70-settings-sec-controls-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:57"
+  "when": "2026-10-18T10:01"
  }
 }

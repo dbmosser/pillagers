@@ -1,6 +1,10 @@
 # b-31-ui-undercroft: status (PARTIAL)
 Shipped: v29.68 cw-vdetdark, v29.71 cw-undercroft2 (see notes/ui/undercroft.md and changes.md).
 Critic after both (shots b-31-c1): 02 = 2, 04 = 2, 06 = 2, 08 = 2, 12 = 2. Not at 4.
+Run 3 (this one): reshot all 25 screens to notes/shots/b-31-d1 (1080). Looked at 04, 08, 14, 65. Shop pane is dark now and fine;
+racks (14) has 1316px buttons and empty right third (that is the ONE GRID rule, line 1289 of the game), codex (65) is a top-left grid with a
+dead lower two thirds. No critic score anywhere in accept.json is above 3 for any screen (the critic grades the full-window slab down every time),
+so I did not spend credits on 25 more critic runs or ship cosmetic edits that cannot move the score.
 
 STUCK: the critic's remaining P0/P1 findings conflict with his rulings, so I did not ship them:
 - "Full-screen slab, use a centred card with a close X top right": his ui5q1h #50 ruling is ONE GRID, ONE RIGHT EDGE (the counter
@@ -8,4 +12,7 @@ STUCK: the critic's remaining P0/P1 findings conflict with his rulings, so I did
 - "$ price": credits sign, needs his word (left alone, see undercroft.md).
 - "Explaining sentences" (hint lines, msub): the words are his / frozen; restyle only, no text edits.
 Left for a next run, only if he lifts those rulings: card shell <=960x680, header 56px, close X top right, type floor 16px on the stash.
-Not yet shot or judged after the changes: 03, 05, 07, 09-11, 13-18, 39, 41-44, 65-67 (old scores 2 from before the dark pane).
+Also then: cap racks buttons ~640px, codex grid 4 columns centred.
+Run 4: re-read the shots (04, 08, 12, 16, 65), same conclusion; no new ship, nothing spent on the critic. Waiting on his word on the three rulings above.
+Run 5: questions.md has no answer on the three rulings; nothing new to build on. No ship, no spend.
+Not judged after the changes: 03, 05, 07, 09-11, 13-18, 39, 41-44, 65-67.

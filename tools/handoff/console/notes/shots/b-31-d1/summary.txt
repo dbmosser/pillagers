@@ -1,0 +1,26 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  02-welcome-pack                        staged       7.1s  
+  03-hub-floor                           staged       6.7s  
+  04-stash-terminal                      staged       7.0s  
+  05-sector-page                         staged       6.9s    | sectormodal
+  06-terms                               staged       7.0s    | termsmodal
+  07-party-coop                          staged       6.9s    | partymodal
+  08-shop                                staged       7.2s    | tradermodal
+  09-craft                               staged       7.1s    | tradermodal
+  10-hire                                staged       7.1s    | tradermodal
+  11-wirt-gambler                        staged       6.9s    | gamblemodal
+  12-mainframe-contracts                 staged       6.9s    | opmodal
+  13-mainframe-rewards                   staged       6.9s    | opmodal
+  14-mainframe-racks                     staged       6.9s    | opmodal
+  15-mainframe-stats                     staged       6.9s    | opmodal
+  16-bar-last-pour                       staged       6.9s    | barmodal
+  17-fashion-mirror                      staged       7.1s    | appearmodal
+  18-settings-hub                        staged       6.9s    | settingsmodal
+  39-hub-after-raid                      staged      10.9s  
+  41-hub-backpack                        staged      11.9s    | {"open":true,"snap":true}
+  42-hub-pause-box                       staged      11.9s  
+  43-stash-after-raid                    staged      11.6s  
+  44-title-from-character-select         staged      12.6s  
+  65-codex                               staged       6.0s    | codexmodal
+  66-trophy-case                         staged       6.6s    | trophymodal
+  67-career-stash-stocked                staged       6.5s  

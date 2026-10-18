@@ -1,0 +1,12 @@
+{
+    "title":  "SETTINGS TOAST HIDDEN",
+    "why":  "Critic c-31: a toast sits in the Settings header over the title.",
+    "now":  "Toasts wait while Settings is open.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #setlist .setjump button{ padding:0; white-space:nowrap; flex:0 0 auto; }",
+                      "replacement":  "#root #setlist .setjump button{ padding:0; white-space:nowrap; flex:0 0 auto; }\n\n/* v28.xx (cw-settoast) critic c-31 (Settings, P0): \"a toast sits inside the modal header, between the title and the close button; toasts never sit over a modal\". Now a toast waits out of sight while Settings or Keys is open. */\nbody:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibility:hidden; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027Settings: a hub toast is hidden while the Settings window is open\u0027,\n   run:function(){\n     if(typeof openSettings!==\u0027function\u0027) return \u0027SKIP: no Settings here\u0027;\n     var bad=[], t, made=false, cs;\n     try{\n       t=document.getElementById(\u0027hubtoast\u0027);\n       if(!t){ t=document.createElement(\u0027div\u0027); t.id=\u0027hubtoast\u0027; t.textContent=\u0027Test\u0027; document.body.appendChild(t); made=true; }\n       openSettings(\u0027display\u0027);\n       cs=getComputedStyle(t);\n       if(cs.visibility!==\u0027hidden\u0027) bad.push(\u0027the hub toast is \u0027+cs.visibility+\u0027 over the open Settings window\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var q=document.getElementById(\u0027settingsmodal\u0027); if(q) q.classList.remove(\u0027on\u0027); }catch(_k){} try{ if(made\u0026\u0026t.parentNode) t.parentNode.removeChild(t); }catch(_m){} try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

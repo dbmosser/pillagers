@@ -1,0 +1,7 @@
+v29.78: settings toast hidden
+
+Toasts wait while Settings is open.
+
+Check 29.78. Fails on v29.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
