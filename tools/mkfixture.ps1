@@ -86677,6 +86677,7 @@ window.__REGRESS=[
        ['oc_btn','oc_copy'].forEach(function(id){
          var b=document.getElementById(id);
          if(!b){ out.off.push(id+' is not on the card at all'); return; }
+         if(id==='oc_copy'&&getComputedStyle(b).display==='none') return;   // v31.52 (cw-endx): copy report left the card (recorder page in Settings holds it)
          var br=b.getBoundingClientRect();
          if(br.height<=0) out.off.push(id+' has no height');
          else if(br.bottom>wr.bottom+1) out.off.push(id+' sits '+Math.round(br.bottom-wr.bottom)+' pixels below the bottom of the card');
