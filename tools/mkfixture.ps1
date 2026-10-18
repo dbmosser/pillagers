@@ -6169,7 +6169,7 @@ window.__REGRESS=[
        try{ __topClear(); }catch(_t){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'29.60',what:'the focus ring eases to its target (30 percent at 16 ms, 80 at 66, 95 at 120), the focused cell grows to 1.05, one move logs exactly one tick, and a focus outside the menus hides the ring',
+  {v:'29.59',what:'the focus ring eases to its target (30 percent at 16 ms, 80 at 66, 95 at 120), the focused cell grows to 1.05, one move logs exactly one tick, and a focus outside the menus hides the ring',
    run:function(){
      if(typeof UIM!=='object'||!UIM||typeof UIM.step!=='function') return 'no motion layer (no UIM): the highlight jumps';
      var m=document.getElementById('partymodal'), was, bad=[], b1, b2, b3, ticks=[], os, x0, xf, f0, D;
@@ -6207,7 +6207,7 @@ window.__REGRESS=[
        try{ __topClear(); }catch(_t){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'29.60',what:'one UI sound per event kind: the focus tick has 3 or more pitches within 3 percent and at most one per 40 ms, confirm, back, deny, open and close are five different sounds, and sndUi asks the picker',
+  {v:'29.59',what:'one UI sound per event kind: the focus tick has 3 or more pitches within 3 percent and at most one per 40 ms, confirm, back, deny, open and close are five different sounds, and sndUi asks the picker',
    run:function(){
      if(typeof uiSndPick!=='function') return 'no sound picker (no uiSndPick): the which-sound decision cannot be tested';
      var bad=[], ps={}, st=-1, t=10, i, r, sig={}, ks=['ok','back','deny','open','close'], P={}, nn;
