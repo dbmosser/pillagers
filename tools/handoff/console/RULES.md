@@ -166,3 +166,5 @@ actually look good". So for any change a player can see:
   a later run of the same task continues from them.
 - A question for him: append it to tools\handoff\console\questions.md, take the best choice, and carry on.
 - End your final message with exactly one line: TASK DONE, or TASK PARTIAL: what remains.
+
+- WORDS (his order 10-18 PM): on screen a player is a "pillager", the AI humans are "pillager bots", and "raider" never shows. Code names (kind raider, CFG.nRaider) stay as they are.

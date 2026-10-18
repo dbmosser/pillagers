@@ -2851,7 +2851,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.46';
+var VER='31.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39169,11 +39169,10 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
 // Under a quarter health the health bar gets a pulsing 2px red outline, so the thing that kills you shouts louder than stamina. Returns true when it drew.
 function drawLowHpRing(x,y,w,h,hp,mx){
   if(!(hp>0)||!(mx>0)||hp/mx>=0.25) return false;
-  var t=((typeof performance!=='undefined'&&performance.now)?performance.now():Date.now())/1000, a=0.55+0.4*Math.sin(t*6);
+  var t=((typeof performance!=='undefined'&&performance.now)?performance.now():Date.now())/1000, a=0.78+0.22*Math.sin(t*6);   // v28.xx (cw-lowhp2): never dimmer than 0.56, the first cut was lost in a still picture
   ctx.save();
-  ctx.strokeStyle='rgba(224,72,58,'+a.toFixed(2)+')'; ctx.lineWidth=2;
-  ctx.strokeRect(x-1,y-1,w+2,h+2);
-  ctx.restore();
+  ctx.strokeStyle='rgba(255,90,70,'+a.toFixed(2)+')'; ctx.lineWidth=3;
+  ctx.strokeRect(x-1.5,y-1.5,w+3,h+3);  ctx.restore();
   return true;
 }
 function bar(x,y,w,h,f,c,bg){
@@ -41719,8 +41718,10 @@ if(p.armor>0){
     ctx.fillText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-50+8+_apm*0.36):by-37);   /* v28.xx (cw-barheight): follows the bar */
   }
   var _stc=p.stamLock?'#ff5a4a':(p.stam<35?'#ffc04a':'#8fb5c8');
+  var _lowDim=(p.hp>0&&p.hp/p.maxhp<0.25&&!p.stamLock);   // v28.xx (cw-lowhp2), the critic: stamina out-shouts a nearly dead health bar, so under a quarter health it steps back
+  if(_lowDim) ctx.globalAlpha=0.45;
   bar(16,by-29,HBW,16,p.stam/100,_stc);   /* v28.xx (cw-barheight): 16 high like the armour bar, same bottom edge as before */   /* v28.xx (cw-barsame): same width as the health bar */
-  // v18.40, THE STYLING PASS IN THE RAID (2026-10-04): THE STAMINA WORD SITS BESIDE ITS BAR. It was dark text inside a 12 unit bar
+  ctx.globalAlpha=1;  // v18.40, THE STYLING PASS IN THE RAID (2026-10-04): THE STAMINA WORD SITS BESIDE ITS BAR. It was dark text inside a 12 unit bar
   // in a face taller than the bar, so it spilled over the top edge and read as a smudge. It sits just past the bar's end now, in
   // the bar's own colour, and WINDED still replaces it when the bar locks.
   ctx.font=FS(TYPE.micro); ctx.fillStyle=_stc;
@@ -49454,7 +49455,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.46: The any-key prompt no longer out-shouts the title and lines up with the corner X. Check 31.46 fails on v31.45',
+  now:'v31.47: At low health the red outline is bolder and the stamina bar dims. Check 31.47 fails on v31.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -282,17 +282,17 @@
  "52-arcade-run-over": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is calmer than before: the title is now bright, the lime sub-line is quiet grey and the prompt is bigger. It is still a plain dark box with a small left-aligned stack, a half-empty right side and a weak, muted prompt.",
+  "verdict": "The title is now bright and the sub-line is a quiet grey rather than competing lime, but the prompt is still small and dim, the stats row is still left-heavy and the card is still a small box with dead space at the bottom.",
   "findings": [
-   "P1 Footer, bottom-right ('press any key'): Set the prompt in tx-1 #efe9dc at 24px f-cond 700, and make the glyph full --acc #e6ff3d. Keep it in the bottom row, but give the row 72px height and 24px padding. Do not add a separate button, since this is a walk-up screen.",
-   "P1 Hero 'score 0 sp': Put a 16px tx-2 'score' label above. Show '0' at 56px f-cond 800 tx-1 with 'sp' at 20px tx-2 beside it. The 'ended early -50%' line already explains the zero, so move it directly under the hero as a 16px --warn line.",
-   "P1 Title 'run over', top-left, and the 'ended early -50%' sub-line: Set the title to 32px f-cond 700 tx-1. Leave 16px between the title and the sub-line, and make the sub-line 16px tx-2 at least 4.5:1. Drop the X, because any key continues on this screen.",
-   "P1 Stats row (kills / extractions / deaths): Use 4 equal columns across 652px and add 'time' or 'sp'. Make values 24px f-cond 600 tx-1 and labels 16px f-cond 600 tx-2 with +.04em tracking.",
-   "P2 Card vertical rhythm and padding: Use 24px title→hero, 24px hero→divider, 24px divider→stats and 32px stats→footer. Make the footer row 72px with the prompt vertically centred, and enlarge the card if the run-over screen should match the windows."
+   "P1 Footer prompt 'press any key', bottom-right: Set the text at 24px f-cond 700 in tx-1 #efe9dc. Make the glyph full --acc #e6ff3d at 28px. Put the prompt in a 72px footer row with 24px padding and centre it vertically.",
+   "P1 Hero 'score 0 sp': Put a 16px tx-2 'score' label above. Show '0' at 56px f-cond 800 tx-1 with 'sp' at 20px tx-2 beside it. Move 'ended early -50%' directly under the hero as a 16px --warn line.",
+   "P1 Stats row (kills / extractions / deaths): Use equal columns across the 652px inner width. Set values at 24px f-cond 600 tx-1 and labels at 16px f-cond 600 tx-2 with +.04em tracking, at least 4.5:1 contrast. Add a fourth 'time' column, or centre each stat in its column.",
+   "P2 Card vertical rhythm: Use 24px title→hero, 24px hero→divider, 24px divider→stats and 32px stats→footer. Make the footer row 72px, with a 1px --ui-line divider above it if needed.",
+   "P2 Card size and backdrop: Darken the scrim to rgba(6,7,8,.80). Either enlarge the card to match the window card, or keep it compact with 32px padding, the 4px radius and an opaque --ui-panel fill."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r4-after/52-arcade-run-over-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r4-after2/52-arcade-run-over-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T23:25"
+  "when": "2026-10-18T23:33"
  },
  "57-title-2p-coop-picked": {
   "score": 2,
@@ -374,17 +374,17 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "Only the 'press any key' prompt got bigger (and the switch-gun text now reads '1-8, 0'); the card is otherwise unchanged, so the earlier structure, header and close-button problems all remain.",
+  "verdict": "The how-to-play card is a clean, readable two-column key table with a good lime tab and an all-lower-case layout, but almost none of the earlier fixes were applied: the prompt, the close button, the card width and the type sizes are unchanged, and the column headers got smaller.",
   "findings": [
-   "P1 footer prompt 'press any key' (x≈1138-1346, y≈842-875): Set it to 20px f-cond 700 in --acc, or 16px tx-2 next to a 56px lime 'got it' pill. Delete the radio dot, or use a 16px key glyph in its place. Put it in a 72px footer with a 1px --ui-line rule above it, right edge at x=1346.",
-   "P1 card header and close X (x≈1306-1354, y≈190-237): Use a 48x48 ghost button with a 24px close glyph, right edge at x=1346 and a 1px --ui-line-hi border. Add a 16px 'b' hint to its left. Make the header row 56px high with a 1px --ui-line rule below it.",
-   "P1 card structure (x 541-1378, y 172-907): Raise the scrim to rgba(6,7,8,.80). Either widen the card toward 90% of the screen, or keep this as a narrow dialog and fix its padding at 24px on every side. Close the footer gap with a 72px footer row.",
-   "P1 table columns (headers y≈278; key cells x≈759 and x≈1053): Use a 180px / 1fr / 1fr grid with 16px gaps. Give the 'in the ring' chip its own fixed slot to the right of the keycap in both columns.",
-   "P2 row names, headers and keycaps (x≈573-1230, y 278-775): Set row names to 20px f-cond 600 tx-1. Set headers to 16px f-cond 600 tx-2 with +.04em tracking. Set keycaps to 18-20px/600 on a --ui-raised fill with 12px side padding. Raise 'in the ring' to 16px."
+   "P1 footer prompt 'press any key' (x≈1204-1346, y≈843-866): Make it 20px f-cond 700 in --acc, or give it a 24px lime underline bar. Replace the radio dot with a 16px key glyph. Put it in a 72px footer row with a 1px --ui-line rule above, right edge at x=1346, and trim the dead space between the last table row and the footer to 24px.",
+   "P1 column headers 'keyboard' / 'controller' (x≈759 and x≈1053, y≈279): Set them to 16px f-cond 600, +.04em tracking, in --tx-2 (#aaa498 or brighter). Keep a 1px --ui-line rule below at 40px row height.",
+   "P1 close X (x≈1298-1346, y≈192-239): Either delete the X on this party screen, since any key continues, or use a 48x48 ghost button with a 24px glyph and a 16px 'b' hint to its left. Make the header row 56px with a 1px --ui-line rule below.",
+   "P1 card frame (x 541-1378, y 176-905): Raise the scrim to rgba(6,7,8,.80). Either widen the card to about 1700px with row names at 24px, or keep it narrow with a fixed 24px padding on every side.",
+   "P2 row names and key caps (x≈573-1230, y 325-772): Set row names to 20px f-cond 600 in --tx-1. Set keycaps to 20px/600 on --ui-raised with a 1px --ui-line-hi border and 12px side padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r4-after/46-arcade-attract-how-to-play-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r4-after2/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T23:26"
+  "when": "2026-10-18T23:34"
  },
  "37-raid-extracting-countdown": {
   "score": 2,

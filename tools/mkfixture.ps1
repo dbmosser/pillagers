@@ -6101,6 +6101,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.47',what:'under a quarter health the red outline on the health bar is thick (3px) and the stamina bar steps back (the critic: stamina out-shouts a nearly dead health bar)',
+   run:function(){
+     if(typeof drawLowHpRing!=='function') return 'there is no low health outline';
+     if(String(drawHUD).indexOf('_lowDim')<0) return 'the stamina bar does not step back at low health';
+     var w=0, rs=ctx.strokeRect;
+     try{
+       ctx.strokeRect=function(){ w=ctx.lineWidth; };
+       drawLowHpRing(16,900,300,26,18,100);
+     } finally { ctx.strokeRect=rs; }
+     if(w<3) return 'the low health outline is only '+w+'px thick';
+     return null; }},
   {v:'31.46',what:'the any-key prompt is body size (20px) so the title leads, and the corner X shares the prompt right line (critic 46 52 64)',
    run:function(){
      if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade here';
