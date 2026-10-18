@@ -1,0 +1,7 @@
+v31.20: the two player respawn count says ascending in n, not dropping in
+
+The respawn count on the demo HUD reads ascending in 3, 2, 1 (it said dropping in).
+
+Check 31.20. Fails on v31.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

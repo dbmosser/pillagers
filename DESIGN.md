@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.20 - the two player respawn count says ascending in n, not dropping in
+
+Co-op hunt while he was away. His lore (memory pillagers-lore-ascend.md, 2026-08-29): YOU DO NOT DROP. YOU ASCEND. Every player-facing line that says drop in is wrong. The arcade respawn count in the top lane said DROPPING IN n. It says ascending in n now, lower case like all text since 2026-10-18. The count itself, its timing and its place are unchanged.
+
+MEASURED. Check 31.20 passes, and fails on v31.19.
 ## v31.19 - TITLE: THE FIGHT BEHIND THE SCOREBOARD READS (BLUR 5 TO 2PX)
 
 Co-op hunt while he was away. His answers Q52 and Q54: real combat visible behind the attract pages and no frame cost at 4K. The 5px backdrop blur smeared the small fights and costs a full-screen blur of a moving canvas each frame. 2px.

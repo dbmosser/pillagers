@@ -43,6 +43,12 @@
 - Live fight backdrop: shipped (v30.69, v30.82). 4K 60 fps not measured (no browser rule; the fight is 2 pillagers and a few robots, no sim). Screens 44 and 57 share the title and card code, so they move with 01 / 45.
 - Stuck: 01 = 3, 45/46/56 = 2 to 3. Only a card/saves restructure moves them, and the critic's advice flips between runs. Needs his call on the card size (content card vs 90 percent window).
 
+## Run 8 (lane b)
+- v31.19 cw-title-sharp shipped: attract blur 5px to 2px (check 30.82 retargeted to accept 5 or 2, 9b874ee9). The two fights (pillager vs sentry, left and right) now read clearly behind 45/46/56; before they were smeared (shots/03-r8 vs 03-r8after). The blur was also the one real per-frame 4K cost on these pages (full-screen backdrop blur of a moving canvas); the title scrim keeps 3px.
+- Critic 45: 3 ("same"). Its findings are the attract card (prompt as primary button, card structure 56/72px rows, left-aligned empty state, close X border) plus a call for a .80 scrim and 8px blur, which contradicts Q52/Q54 and the shipped change; skipped. Card work belongs to a shared attract-card task.
+- 4K 60 fps still not measured (no tool lets me); the fight is 4 bodies, a few bolts, 90 sparks max.
+- Backdrop work is DONE. Nothing left that is the backdrop.
+
 ## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).

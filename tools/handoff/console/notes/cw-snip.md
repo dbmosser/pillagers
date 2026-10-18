@@ -24,3 +24,14 @@ SHIPPED as v31.13 (check 31.13, fails on v31.12, passes twice on v31.13).
 - History: the first draft used a blob: URL for the page layer and the canvas threw "Tainted canvases may not be exported". The scratch fixture tools/fxsnip.html was swept into two ships by
   `git add -A` (v31.07, v31.08). Removed in v31.13. Two 12 MB blobs stay in history (no rebase allowed). Lesson: never put scratch files under tools/.
 - Critic (shots/cw-snip-after/91, panel): score 2. P1s on my own elements: the buttons are small and look alike, the size chip is 13px, the dim is too light. The HUD findings were skipped on purpose (he wants to snip the HUD).
+
+## cw-snip2 (v31.18): the panel made readable
+Critic on the v31.13 panel (score 2) named three things of the snip's own: the two buttons small and alike, the size tag 13px and hugging the frame, the dim too light.
+SHIPPED v31.18 (check 31.18, fails on v31.17, passes twice on v31.18; the older snip check 31.13 still passes):
+- copy = shared `.ui-btn.pri` (lime fill), save = shared `.ui-btn` (secondary), each min 48px high / 128px wide, 16px gap, panel padding 12px. No new control, no new style, same data-snip names.
+- size tag 16px, measured (offsetWidth/Height) so it sits 8px above the frame, never past the right edge or the top.
+- dim outside the frame .6.
+- Re-run of the critic: still 2, "same". Left on purpose (not the snip's own elements, and he wants to snip the HUD as it is): the controls cheat-sheet overlaps the frame bottom in the staged raid,
+  two identical codex toasts stacked, the minimap clipped at the right edge, the blue-purple light tint inside the frame is the game's own light and not an overlay.
+  Not done (critic ideas, left as taste): 20px labels / 56px high buttons, a darker .8 dim, no outer panel box, square corner handles, "x" as a multiply sign (check 31.13 reads "240 x 180", so it would need fixq).
+- Pictures: shots/cw-snip2-after/91 (panel) and 94 (copied raid picture, proves the new button still copies).

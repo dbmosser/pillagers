@@ -2823,7 +2823,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.19';
+var VER='31.20';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49161,7 +49161,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.19: The fight behind the scoreboard and how-to reads clearly. Check 31.19 fails on v31.18',
+  now:'v31.20: The respawn count on the demo HUD reads ascending in 3, 2, 1 (it said dropping in). Check 31.20 fails on v31.19',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61726,7 +61726,8 @@ function arcadeDropHud(){
   var t=+ARCADE.holdT||0, n, y, cx=Math.round(W/2), s;
   if(!(t>0)) return;
   if(arcadeIniRaid()) return;   // v23.45 (arcade22): the initials card holds the drop, so no count yet
-  n=Math.max(1,Math.ceil(t)); s='DROPPING IN '+n;
+  // v31.20 (cw-ascendin), HIS LORE (memory pillagers-lore-ascend.md): "YOU DO NOT DROP. YOU ASCEND." The count said DROPPING IN n; it says ascending in n now.
+  n=Math.max(1,Math.ceil(t)); s='ascending in '+n;
   // v27.51 (feed2), HIS ORDER (2026-10-14): not a big banner at 36 percent of the screen but an alert in the top centre lane, the same
   // place as every other big moment. The same key refreshes it each frame, the number changing, and it lingers a second after the
   // count ends. The count goes in the lane only, never into the feed (a line per second would flood it).

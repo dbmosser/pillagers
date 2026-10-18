@@ -245,17 +245,17 @@
  "45-arcade-attract-board": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is cleaner, with a lime tab, a proper X and a left-aligned title, but the body is still an empty dead zone with a centred 'no scores yet', a weak 'press any key' prompt and an unhandled letterboxed backdrop.",
+  "verdict": "The card is clean and all lower case, but it is unchanged from the last review: the empty body is centered, the prompt is a dim ring-and-text with no real focus state, and the small card is neither a proper dialog nor a window.",
   "findings": [
-   "P1 'press any key' prompt, bottom-right of card: Make it a 56px-high primary button with fill #e6ff3d, text #11150a at 20px/700, min-width 200px, right-aligned with 24px padding. Or use tx-1 text with a 3px #e6ff3d underline and no ring.",
-   "P1 card body, 'no scores yet': Left-align it at x=714 in tx-2 at 20px/400, 24px below the header. Optionally show 3 dim placeholder rows at a 56px pitch with '1 ---', '2 ---', '3 ---' so the card reads as a leaderboard.",
-   "P1 card size and structure (682-1238 x 412-667): Make it a true 480x240 dialog, or a 90% window with a real leaderboard layout. Use a 56px header with the title at 32px/700 and a 72px footer row holding the primary action on the right.",
-   "P2 close X, top-right of card: Use a 1px #4a5257 border, a 20px close glyph, and a 'B' glyph 8px to its left. Inset it 24px from the top and right edges.",
-   "P2 'pillagers' wordmark, top-left: Set it in tx-2 at 70% opacity, or remove it. If kept, use 32px with a 36px lime tab above, aligned to the 5% margin (x=96)."
+   "P1 'press any key' prompt, bottom-right of card (1065-1206 x 605-628): Make it a 56px-high primary button with fill #e6ff3d, text #11150a at 20px/700, min-width 200px, right-aligned 24px from the card edge. Or use tx-1 text with a 3px #e6ff3d underline and drop the ring.",
+   "P1 card body, 'no scores yet' (x≈906-1014, y≈534): Left-align it at x=714 in tx-2, 20px/400, 24px below the header. Add 3 dim placeholder rows at a 56px pitch ('1 ---', '2 ---', '3 ---') with 1px #2e3337 dividers.",
+   "P1 card structure (682-1238 x 412-667): Choose one. For a dialog, make it 480x240 with 24px padding. For a window, make it 90% wide and tall with a 56px header and a 72px footer holding the primary on the right.",
+   "P2 close X, top-right of card (1167-1215 x 430-476): Use a 1px #4a5257 border, a 20px close glyph in tx-2, and a 'B' glyph 8px to its left. Inset it 24px from the top and right edges.",
+   "P2 'pillagers' wordmark, top-left (96-210 x 60-88): Set it in tx-2 at 70% opacity, or remove it. If kept, use 32px with a 36px lime tab above it, aligned to x=96."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-r5after/45-arcade-attract-board-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-r8after/45-arcade-attract-board-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T20:15"
+  "when": "2026-10-18T22:04"
  },
  "50-arcade-hud-live": {
   "score": 3,
