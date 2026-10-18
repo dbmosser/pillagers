@@ -1,0 +1,5 @@
+{"generated":"2026-10-18T19:01:42","url":"http://localhost:8808/fixture.html","recipes":"C:\\Users\\User1\\AppData\\Local\\Temp\\claude\\C--Users-User1-Desktop-dark-raiders\\8a09e991-b4f4-4b23-b10f-ded92e837fc3\\scratchpad\\party-recipes.json","seconds":30,"screens":[
+{"name":"97-party-plain-f2-f8","screen":"?party=1: plain F2 and F8 do nothing","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"97-party-plain-f2-f8-1080.jpg","lint":""}},
+{"name":"98-party-ctrl-f2","screen":"?party=1: Ctrl+F2 turns edit words on, tag names ctrl f2","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"98-party-ctrl-f2-1080.jpg","lint":""}},
+{"name":"99-party-ctrl-f8","screen":"?party=1: Ctrl+F8 starts the snip","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"99-party-ctrl-f8-1080.jpg","lint":""}}
+]}

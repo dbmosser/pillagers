@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  97-party-plain-f2-f8                   staged       7.5s  
+  98-party-ctrl-f2                       staged       7.6s  
+  99-party-ctrl-f8                       staged       7.5s  

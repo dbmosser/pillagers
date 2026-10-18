@@ -1,0 +1,7 @@
+v31.38: armour and stamina bars one height
+
+Armour and stamina bars are both 16 high with the same gap; health stays the tall hero bar.
+
+Check 31.38. Fails on v31.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

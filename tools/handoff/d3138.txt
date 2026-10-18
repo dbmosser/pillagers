@@ -1,0 +1,5 @@
+## v31.38 - ARMOUR AND STAMINA BARS ONE HEIGHT
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): three vitals bars with different heights; armour is 16 and stamina 12.
+
+MEASURED. Check 31.38 passes, and fails on v31.37.

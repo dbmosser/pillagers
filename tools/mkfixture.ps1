@@ -6101,6 +6101,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.38',what:'the armour and stamina bars are the same height (the critic, 10-19: three bars of the same height)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)||typeof bar!=='function') return 'SKIP: this fixture cannot deploy';
+     var g=null, oB=bar, rec=[], i, hs=[];
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
+       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; g.player.armor=40;
+       bar=function(x,y,w,h,f,c,bg){ rec.push({x:x,w:w,h:h}); return oB.apply(this,arguments); };
+       try{ __frame(0.016); }finally{ bar=oB; }
+       for(i=0;i<rec.length;i++) if(rec[i].x===16&&rec[i].h>=10&&rec[i].h<=18) hs.push(rec[i].h);
+       if(hs.length<2) return 'fewer than two small vitals bars drawn ('+hs.length+')';
+       for(i=1;i<hs.length;i++) if(hs[i]!==hs[0]) return 'the armour and stamina bars differ in height: '+hs.join(',');
+       return null;
+     } finally {
+       bar=oB;
+       try{ __endRaid('abandon'); }catch(_e2){}
+       __topClear();
+     } }},
   {v:'31.37',what:'cw-partykeys, the coordinator: at the party (?party=1, and the 2 player arcade demo played from it) a guest can hit F2 or F8 by accident, the F keys sit above the gun numbers, and freeze a raid he cannot read: there a plain F2 or F8 does nothing, Ctrl+F2 still edits the words (tag edit words: on (ctrl f2)) and Ctrl+F8 still snips, the chord does not flip the crouch, and outside party mode F2 and F8 stay as they were while a Ctrl chord does nothing',
    run:function(){
      if(typeof DEV_LOCAL==='undefined'||!DEV_LOCAL) return 'SKIP: not a local build, the word editor and the snip tool are never here';

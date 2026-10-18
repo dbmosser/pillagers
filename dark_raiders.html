@@ -2838,7 +2838,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.37';
+var VER='31.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41661,7 +41661,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   // the chip height follows the text size and the number holding it up did not.
   // Written as the bar position plus a stated gap, the clear space below the
   // chip is exactly LH(8) at every text size instead of whatever was left.
-  var _up=(p.armor>0)?(46+LH(5)):(25+LH(5));   // v4.57 cleared the stack; v8.97 states the gap
+  var _up=(p.armor>0)?(50+LH(5)):(29+LH(5));   /* v28.xx (cw-barheight): the taller bars lift the chip 4 */   // v4.57 cleared the stack; v8.97 states the gap
     ctx.font=FS(TYPE.label);
     var _pw=ctx.measureText(_ps).width;
     // v18.41, THE STYLING PASS IN THE RAID (2026-10-04): the posture chip (STANDING, CROUCHED, SPRINTING...) is a small rounded
@@ -41686,22 +41686,22 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     ctx.restore();
   }
 if(p.armor>0){
-    bar(16,by-46,HBW,16,p.armor/armorCap(),'#5aa9e6');   /* v28.xx (cw-barsame), the critic (2026-10-19): the three vitals bars had three widths (360, 280, 280); all are HBW wide now */
+    bar(16,by-50,HBW,16,p.armor/armorCap(),'#5aa9e6');   /* v28.xx (cw-barheight), the critic (2026-10-19): 'use three bars of the same height with the same gaps'. Armour and stamina are both 16 high with a 5 gap (stamina was 12), health stays the tall hero bar */   /* v28.xx (cw-barsame), the critic (2026-10-19): the three vitals bars had three widths (360, 280, 280); all are HBW wide now */
     // v23.19, parked by the raid text audit of 2026-10-09: THE ARMOUR NUMBER FITS ITS BAR, as the HP number does. At a larger text size
     // the label face grew past the 16 unit bar and stuck out over its top edge into the posture chip. It is never taller than the
     // bar holds now, and then centred in it; at the usual text size nothing changes.
     var _apf=FS(TYPE.label), _apx=parseFloat((/([\d.]+)px/.exec(_apf)||[0,13])[1]), _apm=16*1.08;
     if(_apx>_apm) _apf=_apf.replace(/[\d.]+px/,(Math.round(_apm*10)/10)+'px');
     ctx.font=_apf; ctx.fillStyle='#FFF6DC';
-    ctx.fillText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-46+8+_apm*0.36):by-33);
+    ctx.fillText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-50+8+_apm*0.36):by-37);   /* v28.xx (cw-barheight): follows the bar */
   }
   var _stc=p.stamLock?'#ff5a4a':(p.stam<35?'#ffc04a':'#8fb5c8');
-  bar(16,by-25,HBW,12,p.stam/100,_stc);   /* v28.xx (cw-barsame): same width as the health bar */
+  bar(16,by-29,HBW,16,p.stam/100,_stc);   /* v28.xx (cw-barheight): 16 high like the armour bar, same bottom edge as before */   /* v28.xx (cw-barsame): same width as the health bar */
   // v18.40, THE STYLING PASS IN THE RAID (2026-10-04): THE STAMINA WORD SITS BESIDE ITS BAR. It was dark text inside a 12 unit bar
   // in a face taller than the bar, so it spilled over the top edge and read as a smudge. It sits just past the bar's end now, in
   // the bar's own colour, and WINDED still replaces it when the bar locks.
   ctx.font=FS(TYPE.micro); ctx.fillStyle=_stc;
-  ctx.fillText(p.stamLock?'WINDED':'STAMINA',16+HBW+8,by-15);   /* v28.xx (cw-barsame): the word follows the longer bar */
+  ctx.fillText(p.stamLock?'WINDED':'STAMINA',16+HBW+8,by-17);   /* v28.xx (cw-barheight): centred on the taller bar */   /* v28.xx (cw-barsame): the word follows the longer bar */
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
   // v19.07, FROM THE REVIEW OF 2026-10-07 (found checking the status icons against the teammate HUD): THE CO-OP HUD DRAWS WHERE
@@ -49282,7 +49282,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.37: At the party, F2 and F8 now need Ctrl held, so a stray press from a guest does nothing. Ctrl and F2 edits the words, Ctrl and F8 snips. Check 31.37 fails on v31.36',
+  now:'v31.38: Armour and stamina bars are both 16 high with the same gap; health stays the tall hero bar. Check 31.38 fails on v31.37',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

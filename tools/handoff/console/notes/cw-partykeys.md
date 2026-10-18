@@ -1,4 +1,5 @@
 # cw-partykeys (lane h) - at the party F2 and F8 need Ctrl held
+SHIPPED as v31.37 (commit 76455d0b, check 31.37, fails on v31.36, passes twice on v31.37). It waited about 50 minutes in the ship queue behind other lanes (shipq is unfair), nothing else was wrong.
 The coordinator's job (2026-10-18): at the party player 1 is a guest on keyboard and mouse at localhost. The F keys sit right above the gun number keys, so a stray F2 (edit the words) or F8 (snip)
 froze the raid in a state the guest cannot read. Follows the hidden-operator pattern of the Ctrl+Shift+F10 operator card.
 
@@ -14,4 +15,4 @@ froze the raid in a state the guest cannot read. Follows the hidden-operator pat
 - Check (31.xx, key cw-partykeys): ONE control outside party (plain works, Ctrl chord does nothing); TWO party menu: plain F2/F8 do nothing, Ctrl+Shift and Ctrl+Alt do nothing, no toast; THREE party: Ctrl+F2 on with the
   tag, plain F2 does not turn it off, Ctrl+F2 off, Ctrl+F8 snip, plain F8 does not end it, ESC and Ctrl+F8 end it; FOUR party raid: plain F2/F8 leave the raid running, Ctrl+F2 and Ctrl+F8 freeze it and the crouch
   is given back. It sets the PARTY flag from the check (the fixture is not opened with ?party=1) and restores it in finally; fails on the build before (plain F2 under party changed the mode).
-- Not done / limits: the camera was not run with a real ?party=1 address for this one (see the report line in the changes file). The key name cw-partykeys was used once before (v29.93, party page key caps); this job is unrelated.
+- Real-address proof (camera, notes/shots/cw-partykeys-after, 97/98/99 on http://localhost:8808/fixture.html?party=1): plain F2 and F8 leave no tag and no snip; Ctrl+F2 raises "edit words: on (ctrl f2)"; Ctrl+F8 starts the snip. The key name cw-partykeys was used once before (v29.93, party page key caps); this job is unrelated.

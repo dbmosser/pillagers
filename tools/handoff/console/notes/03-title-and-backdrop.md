@@ -55,6 +55,9 @@
 - Remaining findings, all waiting on him or on another task: logo gradient (brand mark, check 18.11), five mode rows incl. server row and two demos (his ordered rows), saves block as a form, fullscreen button; 45 "card: task 12's". 44 and 57 share 01's code and have no new structural fixes to make.
 - 4K 60 fps on the title: not measurable by me (no tool); the fight is 4 bodies, a few bolts, 90 sparks max, and the per-frame backdrop blur was cut to 2px.
 
+## Run 10 (lane a)
+- No ship, no new pictures (uishots and the critic are not allowed commands on this run). After the 10-18 evening handover: 45 card findings are "card: task 12's". 01 = 3 and 44/57 share 01's code; the remaining findings (logo gradient, five ordered mode rows, saves form, fullscreen button) wait on him. Backdrop and Q50/Q51/Q53/Q72 shipped. 4K 60fps on the title not measurable by me.
+
 ## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).
