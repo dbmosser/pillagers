@@ -17,8 +17,8 @@ const DOWNU = [
   "    wc.strokeStyle='#a6e83a'; wc.beginPath(); wc.ellipse(cx,cy,28,11,0,-1.5708,-1.5708+6.2832*0.4); wc.stroke(); wc.restore();",
   "  }",
   "  if(o==='D'){",
-  "    wc.save(); wc.globalCompositeOperation='lighter';",
-  "    g=wc.createLinearGradient(0,cy,0,cy-70); g.addColorStop(0,'rgba(255,74,58,.4)'); g.addColorStop(1,'rgba(255,74,58,0)');",
+  "    wc.save();",
+  "    g=wc.createLinearGradient(0,cy,0,cy-70); g.addColorStop(0,'rgba(255,74,58,.55)'); g.addColorStop(1,'rgba(255,74,58,0)');",
   "    wc.fillStyle=g; wc.beginPath(); wc.moveTo(cx-4,cy); wc.lineTo(cx+4,cy); wc.lineTo(cx+2,cy-70); wc.lineTo(cx-2,cy-70); wc.closePath(); wc.fill(); wc.restore();",
   "  }",
   "};"

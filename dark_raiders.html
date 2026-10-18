@@ -2812,7 +2812,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.06';
+var VER='31.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48716,7 +48716,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.06: Three new barrels join the red one: shock, toxic waste and dry ice. Each blast does its own thing, and a frozen crawler shatters. Check 31.06 fails on v31.05',
+  now:'v31.07: The how to play card says left stick and right stick in full. Check 31.07 fails on v31.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61548,7 +61548,10 @@ function arcadeAttBoard(pg){
 // vNN.xx, UI REDESIGN ui5q1y (his #50, the 4K attract pictures): the attract name, PRESS ANY BUTTON, the team strip and the RUN OVER
 // card size with the screen up to a 4K TV (their caps doubled: 168, 240, 76 and 92px), as the attract pages do since ui5q1u.
 // v29.93 (cw-partykeys), critic 46 (3 of 5): "keys are bare letters, Hold X in a teal ring is an explaining sentence". A key cell is key caps (a pair like LB / RB is two caps), and the ring is a glyph.
+// v28.xx (cw-sticks), the critic on 46 (3 of 5): "L STICK and R STICK are cryptic". The how to play keys say left stick and right stick in full.
+function arcadeKeyWord(s){ return String(s==null?'':s).replace(/^L STICK$/i,'LEFT STICK').replace(/^R STICK$/i,'RIGHT STICK'); }
 function arcadeAttKeys(cell,txt){
+  txt=arcadeKeyWord(txt);
   var s=String(txt||''), ring=/ IN A TEAL RING$/i.test(s), parts=s.replace(/ IN A TEAL RING$/i,'').split(' / '), i, k;
   cell.textContent='';
   for(i=0;i<parts.length;i++){ k=document.createElement('span'); k.className='apkc'; k.textContent=parts[i]; cell.appendChild(k); }

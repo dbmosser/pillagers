@@ -1,0 +1,7 @@
+v31.07: how to play says left stick and right stick
+
+The how to play card says left stick and right stick in full.
+
+Check 31.07. Fails on v31.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

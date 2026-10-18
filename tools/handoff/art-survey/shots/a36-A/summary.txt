@@ -1,0 +1,2 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  a36-A                                  staged       6.8s    | {"scene":"duo","zoom":1,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":924,"y":576,"w":34,"h":60,"fx":924,"fy":593},{"id":"mate","kind":"player","x":996,"y":583,"w":34,"h":64,"fx":996,"fy":597}]}

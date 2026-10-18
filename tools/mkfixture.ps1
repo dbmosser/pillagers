@@ -6101,6 +6101,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.07',what:'the how to play page spells out left stick and right stick (the critic: L STICK is cryptic)',
+   run:function(){
+     if(typeof arcadeKeyWord!=='function') return 'the how to play keys still say L STICK and R STICK (no arcadeKeyWord)';
+     if(arcadeKeyWord('L STICK')!=='LEFT STICK') return 'L STICK is '+arcadeKeyWord('L STICK');
+     if(arcadeKeyWord('R STICK')!=='RIGHT STICK') return 'R STICK is '+arcadeKeyWord('R STICK');
+     if(arcadeKeyWord('A')!=='A') return 'a plain key changed';
+     var c=document.createElement('div'); arcadeAttKeys(c,'L STICK');
+     if(!/left stick/i.test(c.textContent)) return 'the cell reads '+c.textContent;
+     return null; }},
   {v:'31.06',what:'cw-barrels3, his note (2026-10-18): "add other exploding barrels, e.g. electricity, toxic waste, dry ice": three new kinds beside the red one, laid by a pure hash of the seed and the spot (all four in a few raids, the same kinds on the same seed, the seed 4242 fingerprint unchanged), each with its own blast on the Forge effects (shock stuns and arcs, acid eats armour and leaves a pool, cryo freezes and leaves a fog, a frozen crawler shatters), its own sound, drawn in a real frame, lit in a chain by a real round, never hurting a teammate in co-op',
    run:function(){
      if(typeof brlKindAt!=='function'||typeof BRLK!=='object') return 'the barrels have only the red kind in this build (no brlKindAt)';

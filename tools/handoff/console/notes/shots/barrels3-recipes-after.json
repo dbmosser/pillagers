@@ -1,0 +1,78 @@
+{
+ "about": "cw-barrels3 camera recipes (after)",
+ "prelude": "window.__uis=window.__uis||(function(){ function kv(c){ if(/^Key[A-Z]$/.test(c)) return c.slice(3).toLowerCase(); if(/^Digit\\d$/.test(c)) return c.slice(5); if(c==='Space') return ' '; return c; } var U={ wait:function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }, down:function(c){ window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, up:function(c){ window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, key:async function(c,hold){ U.down(c); await U.wait(hold||50); U.up(c); }, el:function(s){ return typeof s==='string'?document.querySelector(s):s; }, on:function(s){ var e=U.el(s); if(!e) return false; var b=e.getBoundingClientRect(); if(b.width<1||b.height<1) return false; return e.checkVisibility?e.checkVisibility({opacityProperty:true,visibilityProperty:true}):true; }, click:function(s){ var e=U.el(s); if(!e) return false; e.click(); return true; }, closeModals:function(){ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(m){ m.classList.remove('on'); }); }, untitle:function(){ var t=document.getElementById('title'); if(t) t.classList.remove('on'); }, until:async function(f,ms){ var t0=Date.now(); while(Date.now()-t0<(ms||5000)){ try{ if(f()) return true; }catch(e){} await U.wait(100); } return false; }, prep:async function(){ try{ __pinDPR(1); }catch(e){} }, floor:async function(){ U.click('#titlestart'); await U.until(function(){ return U.on('#welcomemodal'); },3000); U.click('#welcometake'); await U.wait(900); __hubEnter(); await U.wait(400); }, hold:async function(c,ms){ U.down(c); await U.wait(ms); U.up(c); }, raid:function(){ var g=__state(); return !!(g&&g.player&&!g.over); }, dep:function(o){ U.untitle(); U.closeModals(); __topClear(); return __deploy(o); }, near:function(list,n){ var g=__state(), p=g.player; return list.slice().sort(function(a,b){ return Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y); }).slice(0,n); }, modal:function(){ var m=[].slice.call(document.querySelectorAll('.modal.on')).filter(function(x){ return U.on(x); }); return m.map(function(x){ return x.id; }).join(' '); } }; return U; })()",
+ "screens": [
+  {
+   "name": "b1-red-closeup",
+   "screen": "red barrel close-up",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='red'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no red barrel'; B=B.b; p.x=B.x+6; p.y=B.y+96; __zoom.set(2.6,true); await U.wait(1100); return 'barrel '+(B.k||'red')+' at '+Math.round(B.x)+','+Math.round(B.y);",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b2-red-blast",
+   "screen": "red barrel blast",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='red'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no red barrel'; B=B.b; p.x=B.x+6; p.y=B.y+120; var c=cs[0], c2=cs[1]; c.x=B.x-70; c.y=B.y+10; c2.x=B.x+120; c2.y=B.y-20; c.hp=c.maxhp=900; c2.hp=c2.maxhp=900; c.state='patrol'; c2.state='patrol'; g.ents.push(c,c2); __zoom.set(2.0,true); await U.wait(900); B.fuse=0.01; await U.wait(200); return 'blast '+(B.k||'red');",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b3-shock-closeup",
+   "screen": "shock barrel close-up",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='shock'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no shock barrel'; B=B.b; p.x=B.x+6; p.y=B.y+96; __zoom.set(2.6,true); await U.wait(1100); return 'barrel '+(B.k||'red')+' at '+Math.round(B.x)+','+Math.round(B.y);",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b4-shock-blast",
+   "screen": "shock barrel blast",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='shock'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no shock barrel'; B=B.b; p.x=B.x+6; p.y=B.y+120; var c=cs[0], c2=cs[1]; c.x=B.x-70; c.y=B.y+10; c2.x=B.x+120; c2.y=B.y-20; c.hp=c.maxhp=900; c2.hp=c2.maxhp=900; c.state='patrol'; c2.state='patrol'; g.ents.push(c,c2); __zoom.set(2.0,true); await U.wait(900); B.fuse=0.01; await U.wait(200); return 'blast '+(B.k||'red');",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b5-acid-closeup",
+   "screen": "acid barrel close-up",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='acid'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no acid barrel'; B=B.b; p.x=B.x+6; p.y=B.y+96; __zoom.set(2.6,true); await U.wait(1100); return 'barrel '+(B.k||'red')+' at '+Math.round(B.x)+','+Math.round(B.y);",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b6-acid-blast",
+   "screen": "acid barrel blast",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='acid'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no acid barrel'; B=B.b; p.x=B.x+6; p.y=B.y+120; var c=cs[0], c2=cs[1]; c.x=B.x-70; c.y=B.y+10; c2.x=B.x+120; c2.y=B.y-20; c.hp=c.maxhp=900; c2.hp=c2.maxhp=900; c.state='patrol'; c2.state='patrol'; g.ents.push(c,c2); __zoom.set(2.0,true); await U.wait(900); B.fuse=0.01; await U.wait(200); return 'blast '+(B.k||'red');",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b7-cryo-closeup",
+   "screen": "cryo barrel close-up",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='cryo'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no cryo barrel'; B=B.b; p.x=B.x+6; p.y=B.y+96; __zoom.set(2.6,true); await U.wait(1100); return 'barrel '+(B.k||'red')+' at '+Math.round(B.x)+','+Math.round(B.y);",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b8-cryo-blast",
+   "screen": "cryo barrel blast",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='cryo'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no cryo barrel'; B=B.b; p.x=B.x+6; p.y=B.y+120; var c=cs[0], c2=cs[1]; c.x=B.x-70; c.y=B.y+10; c2.x=B.x+120; c2.y=B.y-20; c.hp=c.maxhp=900; c2.hp=c2.maxhp=900; c.state='patrol'; c2.state='patrol'; g.ents.push(c,c2); __zoom.set(2.0,true); await U.wait(900); B.fuse=0.01; await U.wait(200); return 'blast '+(B.k||'red');",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b9-lineup-four-kinds",
+   "screen": "all four barrel kinds in a row",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl[0]; p.x=B.x; p.y=B.y+110; var ks=['red','shock','acid','cryo']; g.brl.length=0; ks.forEach(function(k,i){ g.brl.push({id:i,x:B.x-66+i*44,y:B.y,hp:30,fuse:-1,by:-1,gone:0,k:k}); }); __zoom.set(2.8,true); await U.wait(1300); return 'lineup';",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b10-lineup-lit",
+   "screen": "all four lit and flickering",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl[0]; p.x=B.x; p.y=B.y+110; var ks=['red','shock','acid','cryo']; g.brl.length=0; ks.forEach(function(k,i){ g.brl.push({id:i,x:B.x-66+i*44,y:B.y,hp:30,fuse:-1,by:-1,gone:0,k:k}); }); g.brl.forEach(function(b){ b.fuse=9; }); __zoom.set(2.8,true); await U.wait(900); return 'lineup lit';",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b11-acid-pool",
+   "screen": "the acid pool a blast leaves, a pillager standing in it",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='acid'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no acid barrel'; B=B.b; p.x=B.x+6; p.y=B.y+130; var r=rs[0]; r.x=B.x-20; r.y=B.y+20; r.rig='heavy'; r.armor=120; r.hp=r.maxhp=900; g.ents.push(r); __zoom.set(2.0,true); await U.wait(600); B.fuse=0.01; await U.wait(1400); return 'pool, armour '+Math.round(r.armor);",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "b12-cryo-fog",
+   "screen": "the frost fog a blast leaves, a crawler frozen in it",
+   "js": "U.dep({kit:[],safe:null,mapIx:0,seed:4242}); await U.wait(1300); var g=__state(), p=g.player; var cs=g.ents.filter(function(e){ return e.kind==='crawler'; }), rs=g.ents.filter(function(e){ return e.kind==='raider'; }); g.ents.length=0; p.iv=99; p.downed=false; p.hp=100; var B=g.brl.filter(function(b){ return (b.k||'red')==='cryo'; }).map(function(b){ var n=0; g.brl.forEach(function(c){ if(c!==b&&Math.hypot(c.x-b.x,c.y-b.y)<70) n++; }); return {b:b,n:n}; }).sort(function(a,b){ return b.n-a.n; })[0]; if(!B) return 'SKIP: no cryo barrel'; B=B.b; p.x=B.x+6; p.y=B.y+130; var c=cs[0]; c.x=B.x-30; c.y=B.y+10; c.hp=c.maxhp=900; g.ents.push(c); __zoom.set(2.0,true); await U.wait(600); B.fuse=0.01; await U.wait(900); return 'fog, frozen '+(c.frozenT>0);",
+   "expect": "U.raid()&&U.modal()===\"\""
+  }
+ ]
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.07 - HOW TO PLAY SAYS LEFT STICK AND RIGHT STICK
+
+Co-op hunt while he was away. The critic on screen 46 called L STICK and R STICK cryptic. The how to play card spells them out. Restyle only, the pad names elsewhere stay.
+
+MEASURED. Check 31.07 passes, and fails on v31.06.
 ## v31.06 - shock, toxic waste and dry ice barrels join the red one
 
 Co-op hunt while he was away. His note (2026-10-18 15:47, in a raid, build 30.73): "add other exploding barrels, e.g. electricity, toxic waste, dry ice". Three new kinds laid beside the red one on the Forge elements: SHOCK (yellow drum, black bolt, a blue spark off the lid): a smaller blast that stuns what it strikes and chains arcs on to the next bodies. ACID (green drum, black trefoil, a drip down the side): the smallest blast, eats armour and leaves a pool for six seconds that hurts and keeps eating. CRYO (ice-blue drum, snowflake, wisps of cold): a frost burst, the middle freezes and the rim is slowed, with a fog for five seconds that keeps chilling; a frozen crawler shatters in any barrel blast. No barrel was added and no draw was taken: the kind of each existing barrel is a pure hash of the raid seed and its spot (55 percent red, 15 percent each of the new three), so the seeded stream, the ents and the containers are exactly what they were (seed 4242: ents 85/374, containers 165/593) and every window of a party sees the same kinds. Each kind has its own sound built from the recordings already in the bank, lights the barrels in its reach in a chain, and never hurts a teammate (no team damage, as the red one). The stun and the cold are the own code of the gun, lifted into elemStun and elemChill.

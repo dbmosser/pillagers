@@ -1,0 +1,2 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  a33-B                                  NOT STAGED   6.2s    | expect failed: !!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day' -> false ({"scene":"fight","plate":false,"zoom":3,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x

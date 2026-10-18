@@ -1,21 +1,7 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  90-snip-pick-raid                      NOT STAGED   8.4s    | EXCEPTION ReferenceError: DEV_LOCAL is not defined
-    at snipStart (<anonymous>:132:16)
-    at <anonymous>:232:415
-    at async <anonymous>:1:21
-  91-snip-panel-raid                     NOT STAGED   8.1s    | EXCEPTION ReferenceError: DEV_LOCAL is not defined
-    at snipStart (<anonymous>:132:16)
-    at <anonymous>:232:427
-    at async <anonymous>:1:21
-  92-snip-title-result                   NOT STAGED   5.9s    | EXCEPTION ReferenceError: DEV_LOCAL is not defined
-    at snipStart (<anonymous>:132:16)
-    at <anonymous>:232:415
-    at async <anonymous>:1:21
-  93-snip-settings-result                NOT STAGED   9.9s    | EXCEPTION ReferenceError: DEV_LOCAL is not defined
-    at snipStart (<anonymous>:132:16)
-    at <anonymous>:232:415
-    at async <anonymous>:1:21
-  94-snip-raid-result                    NOT STAGED   8.4s    | EXCEPTION ReferenceError: DEV_LOCAL is not defined
-    at snipStart (<anonymous>:132:16)
-    at <anonymous>:232:415
-    at async <anonymous>:1:21
+  90-snip-pick-raid                      staged       9.5s  
+  91-snip-panel-raid                     staged       9.0s  
+  92-snip-title-result                   NOT STAGED   7.4s    | expect failed: window.__ds==='on' -> false
+  93-snip-settings-result                NOT STAGED  10.9s    | expect failed: window.__ds==='on'&&U.on('#settingsmodal') -> false
+  94-snip-raid-result                    NOT STAGED   8.8s    | expect failed: window.__ds==='on' -> false
+  95-snip-save-result                    NOT STAGED   4.6s    | EXCEPTION SyntaxError: Invalid or unexpected token
