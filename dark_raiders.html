@@ -1451,6 +1451,33 @@ body #attract .arcpage th{ font-size:calc(var(--fs-label) * var(--attz,1)); font
 body #attract .arcpage td, body #attract .arcpage th{ padding:calc(var(--sp-1) * var(--attz,1)) calc(var(--sp-3) * var(--attz,1)); }
 body #attract .arcpage .apk{ color:var(--tx-2); }
 body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(--f-cond); letter-spacing:var(--track); color:var(--acc); }
+/* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
+   The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
+   Pause: the title is the 32px title size in light text (the one amber thing in the box is Resume run), the key legend and the note line are 16px grey.
+   Settings: rows are 20px names on a 56px pitch with the sentence moved to the detail pane (it shows the sentence for the row under the pad or mouse, so
+   nothing is lost), the focused row is raised with a 3px amber edge, the section chips are text tabs with a 3px underline, the list is 960px wide so the
+   stepper sits by its label, the detail pane reads at 32 and 20px. No wording moved. */
+#root #pausebox h3{ font:700 var(--fs-title)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }
+#root #pausebox #pausekeys{ font-size:var(--fs-label) !important; color:var(--tx-2) !important; letter-spacing:var(--track) !important; line-height:1.8 !important; }
+#root #pausebox > div[style*="margin-top:6px"]{ font-size:var(--fs-label) !important; color:var(--tx-2) !important; margin-top:var(--sp-1) !important; }
+#root #settingsmodal .tpane{ max-width:calc(var(--sp-5) * 33); }
+#root #setwrap > #setlist{ flex:0 1 calc(var(--sp-5) * 20); padding-bottom:var(--sp-3); }
+#root #setlist .row:not(.setjump){ min-height:var(--btn-h); }
+#root #setlist .row > div:first-child > b{ font-size:var(--fs-body); font-weight:600; letter-spacing:var(--track); text-transform:none; }
+#root #setlist .row > div:first-child > .hint{ display:none; }
+#root #setlist .row:not(.setjump):hover, #root #setlist .row:not(.setjump):has(.padfocus), #root #setlist .row:not(.setjump):focus-within{ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--acc); }
+#root #setlist .row > button{ min-width:calc(var(--sp-5) * 4) !important; min-height:var(--btn-h-sm); font-size:var(--fs-body); letter-spacing:var(--track); border-radius:var(--rad); }
+#root #setlist .row > button:hover:not(:disabled), #root #setlist .row > button.padfocus{ color:var(--acc); }
+#root #setlist .setjump{ padding:0 var(--sp-2); }
+#root #setlist .setjump .sj{ gap:var(--sp-3); }
+#root #setlist .setjump button{ min-height:var(--btn-h-sm); padding:0 var(--sp-1); border:0 !important; border-bottom:3px solid transparent !important; border-radius:0; background:transparent; clip-path:none; font:600 var(--fs-body)/1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); }
+#root #setlist .setjump button:hover:not(:disabled):not(.on){ background:transparent; color:var(--tx-1); border-bottom-color:var(--ui-line-hi) !important; }
+#root #setlist .setjump button.on{ background:transparent; color:var(--tx-1); border-bottom-color:var(--acc) !important; }
+#root #setlist .row[style*="opacity:.7"] > div:first-child > b{ font-size:var(--fs-label); font-weight:600; letter-spacing:var(--track); color:var(--tx-2); padding-left:0; box-shadow:none; }
+#root #setlist .row[style*="opacity:.7"]{ padding-top:var(--sp-3); }
+#root #setdetail .sdk{ font-size:var(--fs-title); letter-spacing:var(--track); text-transform:none; }
+#root #setdetail .sdv{ font-size:var(--fs-body); letter-spacing:var(--track); text-transform:none; border-radius:var(--rad); }
+#root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.5; }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2367,7 +2394,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.38';
+var VER='29.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47355,7 +47382,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.38: The what is new card names polish pass 11. Check 29.38 fails on v29.37',
+  now:'v29.39: Pause and Settings screens are cleaner and easier to read. Check 29.39 fails on v29.38',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v29.39: pause box and settings move onto the shared ui look
+
+Pause and Settings screens are cleaner and easier to read.
+
+Check 29.39. Fails on v29.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

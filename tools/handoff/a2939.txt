@@ -1,0 +1,1 @@
+| Pause box and Settings move onto the shared UI look | v29.39 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.39 passes, fails on v29.38 |
