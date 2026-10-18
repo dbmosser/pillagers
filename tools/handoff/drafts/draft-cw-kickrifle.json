@@ -1,0 +1,12 @@
+{
+    "title":  "THE AUTO RIFLE KICKS THE SCREEN A LITTLE MORE",
+    "why":  "His Q5: gun feel. The Auto Rifle used the flat 2.2 kick, 0.44 px, nothing you could see. It now sets 2.7: 0.66 px a round, and a held 25 round magazine climbs slowly (its 132 ms rate drains 0.185 trauma a round, 2.7 adds 0.193) but stays under 3 px.",
+    "now":  "The Auto Rifle now gives the screen a small kick as you fire.",
+    "edits":  [
+                  {
+                      "anchor":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6};",
+                      "replacement":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7};   // v28.xx (cw-kickrifle): the Auto Rifle 2.2 to 2.7, one round 0.44 px to 0.66 px of camera kick and a held 25 round magazine (132 ms a round, trauma drains 0.185 a round, 2.7 adds 0.193) climbs slowly to under 3 px, so a burst has weight and a held mag never goes wild"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027an Auto Rifle round kicks the camera 2.7, up from 2.2, and a held full magazine stays under 3.3 px (his Q5 gun feel)\u0027,\n   run:function(){\n     if(typeof gunShake!==\u0027function\u0027||typeof gfxTrauma!==\u0027function\u0027) return \u0027SKIP: no gunShake\u0027;\n     var g=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       var w=WEAPONS.rifle, mx=0, i, nx=0, t=0, dt=1/60, n=0, one=-1;\n       CFG.shake=1; CFG.fxInt=1; GFX.shG=null; G.shake=0; gfxTrauma(dt);\n       for(i=0;i\u003c420;i++){\n         t+=dt;\n         if(t\u003e=nx\u0026\u0026n\u003cw.mag){ G.shake=0; fireWeapon(g.player,w,g.player.x+200,g.player.y,true); if(n===0) one=G.shake; nx+=w.rof/1000; n++; }\n         gfxTrauma(dt); if(GFX.shA\u003emx) mx=GFX.shA;\n         if(G.shake\u003e0) G.shake=Math.max(0,G.shake-dt*26);\n       }\n       if(Math.abs(one-2.7)\u003e0.01) return \u0027an Auto Rifle round sets a kick of \u0027+one+\u0027, not 2.7\u0027;\n       if(!(mx\u003e0.5)) return \u0027a held Auto Rifle magazine shakes the camera only \u0027+mx.toFixed(2)+\u0027 px, under 0.5\u0027;\n       if(!(mx\u003c3.3)) return \u0027a held Auto Rifle magazine shakes the camera \u0027+mx.toFixed(2)+\u0027 px, over 3.3\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}
