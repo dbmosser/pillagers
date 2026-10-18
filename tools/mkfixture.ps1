@@ -81,6 +81,8 @@ window.__mapShot=function(){
 // the drawing legitimately changes, MEASURE AGAIN and move the number here.
 window.__FLOORS={bar:600,prog:600,ring:60,pulse:10,
   live:{bar:1319,prog:1319,ring:120,pulse:21.3}};
+// v28.xx (cw-limeacc): the accent as the browser paints it, so a check holds whatever the accent colour is (amber before, lime yellow now)
+window.__ACC=function(){ var p=document.createElement('i'), c; p.style.background='var(--acc)'; document.body.appendChild(p); c=getComputedStyle(p).backgroundColor; p.remove(); return c; };
 window.__state=function(){ return G; };
 // The telemetry consent rule, exposed so its truth table can be driven. autoExport
 // and downloadExport are stubbed below and must stay stubbed, so this is the only
@@ -7128,7 +7130,7 @@ window.__REGRESS=[
        arcadeCardOn=function(){ return 1; };
        proto.arc=function(){ na++; return oa.apply(this,arguments); };
        proto.arcTo=function(){ nt++; return ot.apply(this,arguments); };
-       proto.fillText=function(t){ var f=String(this.fillStyle).toLowerCase(); if(/^move$/i.test(String(t))) nameCol=f; if(f==='#ffc04a'||f==='#f5b73b') amber++; return oft.apply(this,arguments); };
+       proto.fillText=function(t){ var f=String(this.fillStyle).toLowerCase(); if(/^move$/i.test(String(t))) nameCol=f; if(f==='#ffc04a'||f==='#f5b73b'||f==='#e6ff3d') amber++; return oft.apply(this,arguments); };
        arcadeCardHud();
        if(nt<40) bad='the controls card draws '+nt+' key cap corners, not a cap for every key';
        else if(na<2) bad='the extract ring is not drawn as a ring glyph';
@@ -7655,8 +7657,8 @@ window.__REGRESS=[
        if(ab.textContent.trim()!=='Keep playing') bad.push('the way back reads "'+ab.textContent+'"');
        ab.style.transition='none'; cb.style.transition='none'; void ab.offsetWidth;   // a colour fade would read as transparent
        bgA=getComputedStyle(ab).backgroundColor; bgC=getComputedStyle(cb).backgroundColor;
-       if(bgA!=='rgb(245, 183, 59)') bad.push('Keep playing is '+bgA+', not the amber primary');
-       if(bgC===bgA||bgC==='rgb(245, 183, 59)') bad.push('the YES button is also '+bgC);
+       if(bgA!==__ACC()) bad.push('Keep playing is '+bgA+', not the amber primary');
+       if(bgC===bgA||bgC===__ACC()) bad.push('the YES button is also '+bgC);
        rA=ab.getBoundingClientRect(); rC=cb.getBoundingClientRect();
        if(rA.top>=rC.top) bad.push('Keep playing is not above the YES button');
        ch=parseFloat(getComputedStyle(pb,'::before').height);
@@ -7971,12 +7973,12 @@ window.__REGRESS=[
        oc=arcadeAttEl('arcover'); oc.style.display='block'; s=document.createElement('div'); s.className='aos'; s.textContent='Score 1 SP'; oc.appendChild(s);
        ap=d.querySelector('.attpress'); cs=getComputedStyle(ap);
        ar=ap.getBoundingClientRect(); cr=oc.getBoundingClientRect(); sc=getComputedStyle(s).color;
-       if(cs.backgroundColor!=='rgb(245, 183, 59)'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)') res='Press any button fill is '+cs.backgroundColor+', not the solid accent or a hint with no fill';   /* v29.98 (cw-partyprompt): a footer hint has no fill */
+       if(cs.backgroundColor!==__ACC()&&cs.backgroundColor!=='rgba(0, 0, 0, 0)') res='Press any button fill is '+cs.backgroundColor+', not the solid accent or a hint with no fill';   /* v29.98 (cw-partyprompt): a footer hint has no fill */
        else if(cs.animationName!=='none'&&cs.animationName!=='attpulse') res='Press any button animates ('+cs.animationName+')';
        else if(ar.width>cr.width+3||ar.right>cr.right+3||ar.right<cr.right-48) res='Press any button is '+Math.round(ar.width)+'px ending at '+Math.round(ar.right)+', the card is '+Math.round(cr.width)+'px ending at '+Math.round(cr.right);   // v28.xx (cw-party-over6): flush right, no wider than the card
        else if(ar.height<48*(parseFloat(d.style.getPropertyValue('--attz'))||1)-2) res='Press any button is only '+Math.round(ar.height)+'px high';
        else if(ar.top<cr.top||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card';   /* v29.95 (cw-partycard): under the card or inside its footer */
-       else if(sc==='rgb(245, 183, 59)') res='the score is still the accent colour';
+       else if(sc===__ACC()) res='the score is still the accent colour';
        return res;
      } finally {
        try{ oc.textContent=''; oc.style.display='none'; d.style.display=wasDisp; }catch(_f){}
@@ -8880,7 +8882,7 @@ window.__REGRESS=[
      if(!h3||!pk||!sl) return 'no pause title, key legend or settings list';
      cs=getComputedStyle(h3);
      if(parseFloat(cs.fontSize)!==32) bad.push('pause title is '+cs.fontSize+', not 32px');
-     if(cs.color===getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()||cs.color==='rgb(245, 183, 59)') bad.push('pause title is amber');
+     if(cs.color===getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()||cs.color===__ACC()) bad.push('pause title is amber');
      if(parseFloat(getComputedStyle(pk).fontSize)!==16) bad.push('key legend is '+getComputedStyle(pk).fontSize+', not 16px');
      tmp=document.createElement('div'); tmp.className='row'; tmp.innerHTML='<div><b>x</b><div class="hint">y</div></div><button>z</button>';
      var tj=document.createElement('div'); tj.className='setjump'; tj.innerHTML='<div class="sj"><button class="on">a</button></div>';
@@ -29824,7 +29826,7 @@ window.__REGRESS=[
        s=getComputedStyle(b);
        if(!(parseFloat(s.minHeight)>=46)) bad.push('INGEST is held to '+s.minHeight);
        if(!(parseFloat(s.fontSize)>=16)) bad.push('INGEST is '+s.fontSize);
-       if(!b.disabled&&s.backgroundColor!=='rgb(245, 183, 59)') bad.push('INGEST is not amber ('+s.backgroundColor+')');
+       if(!b.disabled&&s.backgroundColor!==__ACC()) bad.push('INGEST is not amber ('+s.backgroundColor+')');
        if(b.disabled&&s.color==='rgb(122, 118, 110)') bad.push('a greyed INGEST is in the faint third text colour');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ __topClear(); }catch(_c){} }
@@ -30028,10 +30030,10 @@ window.__REGRESS=[
        if(typeof keysLegendApply==='function') keysLegendApply();
        acc=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()||'#f5b73b';
        s=getComputedStyle(rs);
-       if(s.backgroundColor!=='rgb(245, 183, 59)') bad.push('RESUME RUN is not the amber primary ('+s.backgroundColor+', the accent is '+acc+')');
+       if(s.backgroundColor!==__ACC()) bad.push('RESUME RUN is not the amber primary ('+s.backgroundColor+', the accent is '+acc+')');
        if(!(parseFloat(s.fontSize)>=16)) bad.push('RESUME RUN is '+s.fontSize);
        if(!(parseFloat(s.minHeight)>=46)) bad.push('RESUME RUN is held to '+s.minHeight);
-       if(ab&&getComputedStyle(ab).backgroundColor==='rgb(245, 183, 59)') bad.push('ABANDON RUN is filled amber too');
+       if(ab&&getComputedStyle(ab).backgroundColor===__ACC()) bad.push('ABANDON RUN is filled amber too');
        if(!(parseFloat(getComputedStyle(pk).fontSize)>=15)) bad.push('the key legend is '+getComputedStyle(pk).fontSize);
        b=document.createElement('b'); b.textContent='K'; pk.appendChild(b); s=getComputedStyle(b); var bw=parseFloat(s.borderBottomWidth), bs=s.borderBottomStyle; pk.removeChild(b);   // a key as the legend writes it
        if(!(bw>0.5)||bs==='none') bad.push('the legend keys are bold words, not keycaps ('+bw+' '+bs+')');
@@ -47135,7 +47137,7 @@ window.__REGRESS=[
        m.appendChild(el); document.body.appendChild(m);
        s=getComputedStyle(el);
        if(!(parseFloat(s.outlineWidth)>=3)) bad.push('the focus outline is '+s.outlineWidth);
-       if(!(/rgba\((255, 192, 74|245, 183, 59)/.test(s.boxShadow)&&(s.boxShadow.match(/rgba/g)||[]).length>=2)) bad.push('the focus has no glow ('+s.boxShadow.slice(0,60)+')');
+       if(!(/rgba\((255, 192, 74|245, 183, 59|230, 255, 61)/.test(s.boxShadow)&&(s.boxShadow.match(/rgba/g)||[]).length>=2)) bad.push('the focus has no glow ('+s.boxShadow.slice(0,60)+')');
        if(parseFloat(s.opacity)<1) bad.push('a faded element stays faded when focused ('+s.opacity+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ document.body.removeChild(m); }catch(_r){} }
@@ -49986,7 +49988,7 @@ window.__REGRESS=[
        s=getComputedStyle(h); if(!s.textShadow||s.textShadow==='none') bad.push('the outcome word has no glow');
        var ui5=(typeof UIICON==='object'&&!!UIICON); // ui5 (his #50): square cut chips and a flat amber primary replace the pills and the gradient
        s=getComputedStyle(t); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<12) bad.push('the feel tags are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')');
-       s=getComputedStyle(b); if(ui5?(s.backgroundColor!=='rgb(245, 183, 59)'):!/gradient/.test(s.backgroundImage)) bad.push(ui5?'LOG RUN AND RETURN is not the amber primary ('+s.backgroundColor+')':'LOG RUN AND RETURN is flat');
+       s=getComputedStyle(b); if(ui5?(s.backgroundColor!==__ACC()):!/gradient/.test(s.backgroundImage)) bad.push(ui5?'LOG RUN AND RETURN is not the amber primary ('+s.backgroundColor+')':'LOG RUN AND RETURN is flat');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ tw.removeChild(t); }catch(_r){} if(o&&!was) o.classList.remove('on'); }
      return bad.length?bad.join('; '):null; }},
@@ -50772,7 +50774,7 @@ window.__REGRESS=[
      try{
        var ui5=(typeof UIICON==='object'&&!!UIICON); // ui5 (his #50): square cut buttons, one flat amber primary
        if(b){ s=getComputedStyle(b); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<5) bad.push('menu buttons are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')'); if(parseFloat(s.minHeight)<36) bad.push('menu buttons have no minimum height ('+s.minHeight+')'); } else bad.push('no menu button to measure');
-       if(d){ s=getComputedStyle(d); if(ui5?(s.backgroundColor!=='rgb(245, 183, 59)'):!/gradient/.test(s.backgroundImage)) bad.push(ui5?'the primary button is not the amber fill ('+s.backgroundColor+')':'the primary button is flat ('+s.backgroundImage.slice(0,40)+')'); }
+       if(d){ s=getComputedStyle(d); if(ui5?(s.backgroundColor!==__ACC()):!/gradient/.test(s.backgroundImage)) bad.push(ui5?'the primary button is not the amber fill ('+s.backgroundColor+')':'the primary button is flat ('+s.backgroundImage.slice(0,40)+')'); }
        if(h){ s=getComputedStyle(h); if(s.textTransform==='uppercase') bad.push('modal headers are drawn in caps');   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps */ if(parseFloat(s.borderBottomWidth)<1) bad.push('modal headers have no rule under them'); }
        if(i){ s=getComputedStyle(i); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<5) bad.push('inputs are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')'); }
        m=document.getElementById('partymodal'); if(m){ s=getComputedStyle(m); if(!/gradient/.test(s.backgroundImage)) bad.push('modals have no light from the top'); }
