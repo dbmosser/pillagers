@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.60 - Menus ease open and the focus glides
+
+Co-op hunt while he was away. His words about the Halo, Diablo IV, ARC Raiders, Fortnite and Destiny 2 menus: "they are just reallly compelling and smooth". Smooth is motion and sound. One shared UI motion layer on its own clock: open 240 ms with a 16 px rise, close 140 ms, items 35 ms apart, tab slide 200 ms, a focus ring that eases (95 percent in 120 ms), a confirm pulse, a deny shake, and a press during a move retargets. One sound per event kind (a focus tick with four pitches, at most one per 40 ms; confirm, back, deny). On the title menu, the party window and the arcade board pages. Menus only.
+
+MEASURED. Check 29.60 passes, and fails on v29.59.
 ## v29.59 - KEYS WINDOW CLEAN
 
 Co-op hunt while he was away. Critic c-31 round 3 (Keys 2): 16 duplicate Rebind boxes beside the key caps, amber section heads, 15px labels. The key cap is the one control, section heads tx-2 16px, names 20px.

@@ -1,0 +1,5 @@
+## v29.60 - Menus ease open and the focus glides
+
+Co-op hunt while he was away. His words about the Halo, Diablo IV, ARC Raiders, Fortnite and Destiny 2 menus: "they are just reallly compelling and smooth". Smooth is motion and sound. One shared UI motion layer on its own clock: open 240 ms with a 16 px rise, close 140 ms, items 35 ms apart, tab slide 200 ms, a focus ring that eases (95 percent in 120 ms), a confirm pulse, a deny shake, and a press during a move retargets. One sound per event kind (a focus tick with four pitches, at most one per 40 ms; confirm, back, deny). On the title menu, the party window and the arcade board pages. Menus only.
+
+MEASURED. Check 29.60 passes, and fails on v29.59.

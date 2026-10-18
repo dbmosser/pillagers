@@ -1,0 +1,1 @@
+| Menus ease open and the focus glides | v29.60 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.60 passes, fails on v29.59 |

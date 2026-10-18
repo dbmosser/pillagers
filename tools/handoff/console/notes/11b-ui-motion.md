@@ -1,7 +1,6 @@
 # 11b-ui-motion notes
 - References numbers: references.md lines 36-50, checks 77-89.
-- Existing sound layer: sndUi(kind) ~5004, SND_UI table, 30ms guard, sndUiClick capture ~5022. padSetFocus ~16651 calls sndUi('move'). Test of old sounds at mkfixture 27931-27980 (kinds only, no freqs).
 - DON'T grep broad patterns on the game file (data urls blow up output). Use anchored patterns.
-- Plan (single mk script mk-cw-uimotion.ps1): 5 edits: (1) SND_UI/sndUi -> uiSndPick pure fn + rate cap 40ms for move, 3 pitch variants; (2) sndUiClick -> UIM.pulse/shake; (3) padSetFocus -> UIM.focus(el); (4) arcadeAttLoop after pg.setAttribute('data-ph',ph) -> UIM.tab(pg,1); (5) UIM layer inserted after titleFit IIFE (before document.addEventListener('wheel'...). 
-- UIM: steppable clock (UIM.manual/step), tweens on root opacity + items `translate`/`scale` individual CSS props (compose with transform), observer on #title & #partymodal class 'on' (open 240 out / close 140 in via inline display), stagger 35ms max 8, focus ring div eases k=1-exp(-dt/.04), focus scale 1.05, pulse, shake, tab (200ms, 24px), frame log UIM.log.
-- Retarget uses smoothstep from current value, duration scaled by remaining.
+- Built S\mk-cw-uimotion.ps1 (10 edits, 3 checks); PREFLIGHT PASS as v29.60 (2026-10-18). UIM layer after titleFit IIFE; uiSndPick pure fn; scope '#title,#partymodal' + arcade attract board tab (UIM.tab/tabOut in arcadeAttLoop).
+- Checks: open 0/50/100/200 ms, stagger gaps, close <150ms, interrupt (close at 30ms of open, reopen mid-close), pulse 1.06 at 60ms, shake <=6px, tab slide, focus ring 33/81/95 percent, one tick per focus change, sound picker.
+- Not done: 4K frame-time measure, pause/end cards on the layer (add selector to UIM.scope + UIM.watch(id)), hover ring, backdrop drift.

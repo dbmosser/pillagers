@@ -1,0 +1,40 @@
+{
+    "title":  "RUN INFO PANEL ON THE SHARED PALETTE",
+    "why":  "UI step 4, the HUD in play. The run info panel (conditions, contracts, goals) used five colours that are not in the style guide (#ffc04a, #c9b27a, #cdd6dd, #8a96a1, #7fc4a0). It now reads the shared UIC table: the accent for headings, tx_1 for contract and goal rows, tx_2 for the chevron, ok and danger for notes. Same text, same layout, same count of contracts (his v6.79).",
+    "now":  "Run info panel uses the same colors as the menus.",
+    "edits":  [
+                  {
+                      "anchor":  "rows.push({k:\u0027CONTRACTS\u0027,v:\u0027\u0027,c:\u0027#ffc04a\u0027});",
+                      "replacement":  "rows.push({k:\u0027CONTRACTS\u0027,v:\u0027\u0027,c:UIC.acc});   // v28.xx (cw-runinfopal), UI step 4 (style guide: one palette): the run info panel used five off-palette colours (#ffc04a, #c9b27a, #cdd6dd, #8a96a1, #7fc4a0); it now reads UIC: accent headings, tx_1 rows, tx_2 chevron, ok and danger for notes."
+                  },
+                  {
+                      "anchor":  "rows.push({k:\u0027RUN GOALS\u0027,v:\u0027\u0027,c:\u0027#ffc04a\u0027});",
+                      "replacement":  "rows.push({k:\u0027RUN GOALS\u0027,v:\u0027\u0027,c:UIC.acc});"
+                  },
+                  {
+                      "anchor":  "_clines.push({v:_live[_cs].txt,vc:\u0027#c9b27a\u0027});",
+                      "replacement":  "_clines.push({v:_live[_cs].txt,vc:UIC.tx_1});"
+                  },
+                  {
+                      "anchor":  "vc:_gl.done?\u0027#7fc4a0\u0027:\u0027#cdd6dd\u0027});",
+                      "replacement":  "vc:_gl.done?UIC.ok:UIC.tx_1});"
+                  },
+                  {
+                      "anchor":  "ctx.fillStyle=\u0027#ffc04a\u0027; ctx.fillText(\u0027RUN INFO\u0027,bx+pad,ry);",
+                      "replacement":  "ctx.fillStyle=UIC.acc; ctx.fillText(\u0027RUN INFO\u0027,bx+pad,ry);"
+                  },
+                  {
+                      "anchor":  "ctx.textAlign=\u0027right\u0027; ctx.fillStyle=\u0027#8a96a1\u0027;\n    hudChev(bx+bw-pad,ry,!HOc.c);",
+                      "replacement":  "ctx.textAlign=\u0027right\u0027; ctx.fillStyle=UIC.tx_2;\n    hudChev(bx+bw-pad,ry,!HOc.c);"
+                  },
+                  {
+                      "anchor":  "ctx.fillStyle=R2.vc||\u0027#8a96a1\u0027;",
+                      "replacement":  "ctx.fillStyle=R2.vc||UIC.tx_2;"
+                  },
+                  {
+                      "anchor":  "vc:lost?\u0027#c0503a\u0027:\u0027#7fc4a0\u0027});",
+                      "replacement":  "vc:lost?UIC.danger:UIC.ok});"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the run info panel is on the shared palette: accent headings and tx_1 goal rows, not the old off-palette amber and grey\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)||typeof goalsTick!==\u0027function\u0027||typeof careerPostBuild!==\u0027function\u0027) return \u0027SKIP: this fixture cannot deploy and draw\u0027;\n     var bad=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText, heads={}, rowc=null, g, gl, i, key;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       try{ careerPostBuild(g); }catch(_c){}\n       g.bagOpen=false; g.mapOpen=false; g.ents.length=0; keys={};\n       try{ goalsTick(0.1); }catch(_gt){}\n       for(i=0;i\u003c4;i++) __frame(0.016);\n       if(!(g.flow\u0026\u0026g.flow.goals\u0026\u0026g.flow.goals.length)) return \u0027SKIP: the raid has no run goals here\u0027;\n       g.t=2; try{ goalsTick(0.1); }catch(_g2){}\n       gl=g.flow.goals[0]; key=String(gl.t).slice(0,8).toLowerCase();\n       proto.fillText=function(t,x,y){ var s=String(t).toLowerCase(); if(/^(run info|run goals)$/.test(s)) heads[s]=String(this.fillStyle).toLowerCase(); else if(rowc===null\u0026\u0026key\u0026\u0026s.indexOf(key)===0) rowc=String(this.fillStyle).toLowerCase(); return o.apply(this,arguments); };\n       __frame(0.001);\n       if(heads[\u0027run info\u0027]!==UIC.acc) bad.push(\u0027the run info heading is \u0027+heads[\u0027run info\u0027]+\u0027, not the accent \u0027+UIC.acc);\n       if(heads[\u0027run goals\u0027]!==UIC.acc) bad.push(\u0027the run goals heading is \u0027+heads[\u0027run goals\u0027]+\u0027, not the accent \u0027+UIC.acc);\n       if(rowc!==UIC.tx_1) bad.push(\u0027the first goal row is \u0027+rowc+\u0027, not tx_1 \u0027+UIC.tx_1);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ proto.fillText=o; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

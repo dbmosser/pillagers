@@ -178,10 +178,10 @@
  "32-keys-window": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean, readable dark keybind grid, but it is still a full-screen slab with a bottom Close, tiny text, lowercase labels, 16 duplicate Rebind buttons and a leftover explaining sentence, so it breaks the guide's modal, close, type and hierarchy rules.",
-  "pic": "tools/handoff/console/notes/shots/c-31i-after/32-keys-window-1080.jpg",
+  "verdict": "The second pass removes the repeated Rebind buttons and the amber section labels, so it is calmer and the key caps now read as the main control, but it is still a flat full-screen settings slab that breaks the guide's modal, close, button and type rules.",
+  "pic": "tools/handoff/console/notes/shots/c-31j-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:59"
+  "when": "2026-10-18T09:05"
  },
  "33-raid-fight-alerts": {
   "score": 2,

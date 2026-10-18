@@ -13,3 +13,6 @@ Settings hub P0/P1: two stacked tab strips, subtitle "So you are too good for de
 
 Old pins: REGRESS 6137 wants pause title 32px / legend 16px; 27283 wants legend >=15px with keycaps; ui-shared check 29.33 forbids raw px/rgba literals in ui-shared (use var()).
 Genp: next card number is P13.
+
+Run 4 (v29.59 cw-keysclean): keys window lost the per-row Rebind buttons and amber section labels (key cap is the button now), min-width via var(). Critic on 32 keys: 2 (before 2), better_than_before yes. Still P0: full-bleed slab (list stops at x=1530 of 1900, dead right strip), no 48x48 header X, Reset to defaults on the left. Pictures: shots/c-31i-after -> c-31j-after.
+STUCK: all remaining P0s are the shared modal shell (centred 960x680 card, header X on every modal). Needs its own shell task, not a pause/settings task. Ending PARTIAL.

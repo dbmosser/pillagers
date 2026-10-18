@@ -1,0 +1,7 @@
+v29.60: menus ease open and the focus glides
+
+Menus now ease open, the focus glides to each button, and every press has its own small sound.
+
+Check 29.60. Fails on v29.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
