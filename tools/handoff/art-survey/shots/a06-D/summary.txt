@@ -1,2 +1,2 @@
 == 4k : window 3872x2263, viewport 3840x2160
-  duoparty                               staged       6.8s    | {"scene":"duoparty","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1559,"y":1101,"w":333,"h":594,"fx":1560,"fy":1270},{"id":"mate","kind":"player","x":2275,"y":1173,"w":336,"h":631,"fx":2279,"fy":1310}],"objects":null}
+  duoparty                               staged       6.9s    | {"scene":"duoparty","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1559,"y":1101,"w":333,"h":594,"fx":1560,"fy":1270},{"id":"mate","kind":"player","x":2275,"y":1173,"w":336,"h":631,"fx":2279,"fy":1310}],"objects":null}

@@ -675,5 +675,35 @@
   "pic": "tools/handoff/console/notes/shots/cw-snip2-after/91-snip-panel-raid-1080.jpg",
   "task": "manual",
   "when": "2026-10-18T22:02"
+ },
+ "20-raid-hud-drop": {
+  "score": 2,
+  "pass": false,
+  "verdict": "the raid hud has too many competing text boxes and no clear first read: the kit bar and bottom-left bars are readable, but the top-right career corner collides with the minimap, tiny low-contrast type is scattered everywhere, and panel styles, capitals and amber/lime accents are inconsistent.",
+  "findings": [
+   "P0 top-right: credits / xp / stash line, minimap, and the purple 'the long d…' label: put the career items in one panel (--ui-panel at 90%, 1px --ui-line-hi) in a vertical list with a 48px safe margin. move the minimap below it with 16px gap, inside the 5% margin. move the zone name out of the map or truncate it cleanly. use tx-1 for the values at 20px and tx-2 for labels at 16px.",
+   "P0 whole screen: panel language: use one panel P everywhere: fill --ui-panel at 90%, 1px --ui-line-hi, 4px radius, 16px padding, no ticks. keep the 2px lime top tab only on the ammo panel as the star.",
+   "P1 capitals on screen: 'run Info', 'contract Item nearby' (centre toast and bottom-left), 'extraction c available': lower-case 'run info' and 'contract item nearby'. show each notice once, in a single toast stack at the bottom-left, and delete the centre duplicates.",
+   "P1 left-middle keys cheat sheet (wasd … f1 full list) and the explanatory toast 'gold glow marks the box': collapse the cheat sheet to a single 'f1 keys' hint at 14px in the footer and show the list only on demand. remove the explaining sentence. if kept, give it a 16px minimum size and 24px padding.",
+   "P1 bottom-right ammo panel: make 12 / 24 the only hero (56px, 800). set the weapon name to 20px tx-1 and the backpack hint to 16px tx-2 in the footer. use a solid panel fill. merge the cover state into the status row beside the 'standing' tag."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-30e/20-raid-hud-drop-1080.jpg",
+  "task": "b-30-ui-hud",
+  "when": "2026-10-18T22:25"
+ },
+ "34-raid-downed-pickups": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The downed state is readable at the centre, but the HUD around it is a crowded pile of mismatched panels, type sizes and colours, with stray capitals, clipped text and a typo, and it would not pass for AAA.",
+  "findings": [
+   "P0 top-right career HUD, minimap and run info stack: Put the career row in the 16px label style inside a 1px --ui-line-hi panel. Inset the minimap 5% from the screen edge and keep its label inside the frame. Fix the string to 'extraction available'. Use a 16px gap between modules and the same right margin (about 48px) for all three.",
+   "P0 centre downed state (down, bar, 15.42s, self-revive prompt): Put a --scrim 80% plate behind the whole block. Make the timer the 56px hero in tx-1. Set 'down' at 32px. Style the bar with one 8px --danger fill. Put the prompt on the plate at 20px tx-1 with the key in an accent chip.",
+   "P1 whole HUD, panel and type consistency: Use one panel P: --ui-panel 90%, 1px --ui-line-hi, 4px radius, 16px padding. Allow only the sizes 56/32/20/16/14. Make headers 16px tx-2 and keep lime for focus only.",
+   "P1 left pickup feed and floating world labels: Show a single feed, right-aligned, with at most 3 rows of identical height (32px) and a 8px gap. Remove the left duplicate. Fix the double-draw of the world labels so each shows once, with a 1px outline and no overlap.",
+   "P1 bottom-right weapon/ammo panel: Make ammo the 56px hero in tx-1 with the reserve in tx-2 at 20px. Raise secondary text to tx-2 (#aaa498) at 16px minimum. Move the key hint to the footer at 14px. Leave a 16px gap between the status tag and the panel."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-30e/34-raid-downed-pickups-1080.jpg",
+  "task": "b-30-ui-hud",
+  "when": "2026-10-18T22:26"
  }
 }

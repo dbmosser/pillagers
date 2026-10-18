@@ -580,3 +580,5 @@
 2026-10-18 0.0317 critic-manual
 2026-10-18 0.0323 critic-manual
 2026-10-18 0.0323 critic-manual
+2026-10-18 0.0283 critic-b-30-ui-hud
+2026-10-18 0.0299 critic-b-30-ui-hud

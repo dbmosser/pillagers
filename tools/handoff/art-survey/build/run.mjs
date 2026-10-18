@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { buildCopy, shoot, AS } from './lib.mjs';
-const { P } = await import('./patches.mjs');
+const { P } = await import('./patches2.mjs');
 const keep = process.argv.includes('--keep');
 const names = process.argv.slice(2).filter(a => !a.startsWith('--'));
 for (const n of names) {

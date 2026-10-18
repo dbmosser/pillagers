@@ -1,2 +1,2 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  a14                                    staged       6.9s    | {"scene":"a14","calls":9,"chars":[{"id":"p1","kind":"player","x":891,"y":617,"w":130,"h":83,"fx":891,"fy":631},{"id":"mate","kind":"player","x":1058,"y":611,"w":150,"h":323,"fx":1051,"fy":651}]}
+  a14                                    staged       7.2s    | {"scene":"a14","calls":9,"chars":[{"id":"p1","kind":"player","x":891,"y":617,"w":130,"h":83,"fx":891,"fy":631},{"id":"mate","kind":"player","x":1058,"y":611,"w":150,"h":323,"fx":1051,"fy":651}]}

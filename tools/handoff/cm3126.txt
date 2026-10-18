@@ -1,0 +1,7 @@
+v31.26: the superhot key is named in words, left of 1, on the f1 list and beside the settings row
+
+The Superhot key is named in words on the F1 list and beside the Settings row: left of 1.
+
+Check 31.26. Fails on v31.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

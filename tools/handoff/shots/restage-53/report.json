@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T18:25:59","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":26,"screens":[
+{"name":"53-arcade-extracted-bonus-initials","screen":"Arcade EXTRACTED! bonus card + EXTRACT IN PROGRESS callout + TOP 10 initials card","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"53-arcade-extracted-bonus-initials-1080.jpg","lint":{"issues":[],"stats":{"viewport":"1920x1080","scaleTo1080":1,"texts":10,"controls":0,"focusProbed":0,"canvasText":"out of scope: canvas-drawn text (raid HUD, world tags, map labels) is not in the DOM; judge it from the shot","counts":{"clip":0,"offscreen":0,"small":0,"contrast":0,"font":0,"overlap":0,"focus":0,"total":0}}}}}
+]}

@@ -131,8 +131,8 @@ A.scenes.busy=async function(o){
   var piles=[["medkit",52,24,"uncommon"],["core",100,2,"rare"],["blackbox",150,24,"elite"],["gun_sniper",198,2,"gold"]];
   for(i=0;i<piles.length;i++){ c=A.box("crate",X+piles[i][1],Y+piles[i][2],{loot:[piles[i][0]],drop:1}); objs.push({id:"pile-"+piles[i][3],kind:"pile",ref:c}); }
   // dark closed boxes right behind him, so the back of his outline sits against them, and two wrecks
-  c=A.box("locker",X-20,Y-44,{loot:["board"]}); objs.push({id:"closed-locker",kind:"container",ref:c});
-  c=A.box("safe",X+30,Y-46,{loot:["comp"]}); objs.push({id:"closed-safe",kind:"container",ref:c});
+  c=A.box("locker",X-16,Y-32,{loot:["board"]}); objs.push({id:"closed-locker",kind:"container",ref:c});
+  c=A.box("safe",X+34,Y-34,{loot:["comp"]}); objs.push({id:"closed-safe",kind:"container",ref:c});
   c=A.box("botwreck",X-70,Y-62,{loot:["board"]}); c.bot="sentry"; objs.push({id:"wreck-sentry",kind:"wreck",ref:c});
   c=A.box("botwreck",X+84,Y-58,{loot:["comp"]}); c.bot="crawler"; objs.push({id:"wreck-crawler",kind:"wreck",ref:c});
   // barrels round the edge

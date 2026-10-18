@@ -1,2 +1,2 @@
 == 4k : window 3872x2263, viewport 3840x2160
-  trio                                   staged       7.5s    | {"scene":"trio","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1219,"y":1145,"w":239,"h":572,"fx":1220,"fy":1270},{"id":"merc","kind":"pillager","x":1919,"y":1180,"w":286,"h":511,"fx":1919,"fy":1290},{"id":"mate","kind":"player","x":2626,"y":1218,"w":
+  trio2                                  staged       7.3s    | {"scene":"trio2","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1218,"y":1236,"w":396,"h":506,"fx":1140,"fy":1430},{"id":"merc","kind":"pillager","x":2012,"y":1258,"w":473,"h":450,"fx":1919,"fy":1430},{"id":"mate","kind":"player","x":2804,"y":1235,"w"

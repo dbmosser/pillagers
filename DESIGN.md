@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.26 - the superhot key is named in words, left of 1, on the F1 list and beside the Settings row
+
+Co-op hunt while he was away. Follow-up to cw-shkey (his note 2026-10-18: "superhot mode needs a toggle key."). The picture of the Settings pane and the F1 list showed the key as a lone backquote tick, hard to see and read as "`(left of 1)". The key left of 1 is now named in words in both places: LEFT OF 1 on the Superhot row of the F1 list (the same words the Keys window uses) and key: left of 1 under the Superhot row in Settings. No new key and no new row.
+
+MEASURED. Check 31.26 passes, and fails on v31.25.
 ## v31.25 - CAREER TOP RIGHT IN ONE ROW
 
 Co-op hunt while he was away. His answer Q58 (10-18): career top right goes into one row. Credits and XP were one line and the stash and bag figures a second line under it.

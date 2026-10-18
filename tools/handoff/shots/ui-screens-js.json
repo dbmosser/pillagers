@@ -421,10 +421,10 @@
                     {
                         "name":  "53-arcade-extracted-bonus-initials",
                         "screen":  "Arcade EXTRACTED! bonus card + EXTRACT IN PROGRESS callout + TOP 10 initials card",
-                        "before":  "KeyK to drop again; hold KeyW 1.2 s; player to G.active; z.beaconT=2, G.beaconT=2; keydown KeyE (held); wait 4 s",
+                        "before":  "KeyK to drop; wait 3 s; __endRaid(\u0027extract\u0027), the game\u0027s own extract ending (10-18: the old beacon hold never finished an extraction, so the shot was a mid-extract raid HUD); wait 3 s",
                         "query":  "",
-                        "expect":  "U.raid()||U.on(\u0027#outcome\u0027)",
-                        "js":  "U.click(\u0027#modearcade1\u0027); await U.wait(2500); await U.key(\u0027KeyK\u0027); await U.wait(4000); await U.hold(\u0027KeyW\u0027,1200); var g=__state(), p=g.player, z=g.active; if(!z) return \u0027SKIP: no active extraction point\u0027; p.x=z.x; p.y=z.y; z.beaconT=2; g.beaconT=2; U.down(\u0027KeyE\u0027); await U.wait(4000); return U.modal();"
+                        "expect":  "U.on(\u0027#attract\u0027)||U.on(\u0027#outcome\u0027)",
+                        "js":  "U.click(\u0027#modearcade1\u0027); await U.wait(2500); await U.key(\u0027KeyK\u0027); await U.wait(3000); if(!U.raid()) return \u0027SKIP: the arcade drop did not start a raid\u0027; __endRaid(\u0027extract\u0027); await U.wait(3000); return U.modal();"
                     },
                     {
                         "name":  "54-arcade-initials-redrop",

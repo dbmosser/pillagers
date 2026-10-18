@@ -5,7 +5,7 @@ export const INSETS = {
   a01: { x: 781, y: 445, h: 450 },                                   // P1's head and the top of his shoulders
   a02: { x: 781, y: 410, h: 800, right: 10, top: 10 },               // P1 head to chest, tall (the figure grows, so the head moves up)
   a03: { x: 781, y: 455 },                                           // P1's head from above
-  a04: { xs: [608, 960, 1310], y: 535, w: 480, h: 380 },             // the three figures side by side: lean, broad (hired), curved
+  a04: { xs: [575, 962, 1352], y: 640, w: 480, h: 400 },             // the three bodies side by side from chest to feet: lean, broad (hired), curved
   a05: { crops: [{ x: 781, y: 440 }, { x: 781, y: 585 }] },          // P1 head and vest, then belt and boots
   a06: { crops: [{ x: 781, y: 392 }, { x: 781, y: 640 }] },          // P1 above the head (the tag), then the feet (the ring)
   a07: { x: 958, y: 553, w: 560, h: 540 },                           // P1 whole, on the busy ground

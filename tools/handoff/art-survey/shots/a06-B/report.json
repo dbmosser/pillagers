@@ -1,3 +1,3 @@
-{"generated":"2026-10-18T16:52:44","url":"http://localhost:8808/handoff/art-survey/game/a06-B.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":19,"screens":[
+{"generated":"2026-10-18T18:25:51","url":"http://localhost:8808/handoff/art-survey/game/a06-B.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":18,"screens":[
 {"name":"duoparty","screen":"the duo with the party on (seat rings)","4k":{"staged":true,"note":"{\"scene\":\"duoparty\",\"plate\":false,\"zoom\":9.99074074074074,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":1560,\"y\":1100,\"w\":358,\"h\":619,\"fx\":1560,\"fy\":1270},{\"id\":\"mate\",\"kind\":\"player\",\"x\":2275,\"y\":1173,\"w\":361,\"h\":656,\"fx\":2279,\"fy\":1310}],\"objects\":null}","viewport":"3840x2160","shot":"duoparty-4k.jpg","lint":""}}
 ]}
