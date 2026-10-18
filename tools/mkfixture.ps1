@@ -6097,6 +6097,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.55',what:'the pause card is a title and one column of 56px sentence-case buttons at the menu width, with no key legend or feedback sentence on a keyboard card',
+   run:function(){
+     var pb=document.getElementById('pausebox'), box, rs, ab, pk, fs, padWas, bad=[], cs, s, i, ids=['resumebtn','pausesetbtn','fbbtn','wnbtn'], b;
+     if(!pb) return 'SKIP: no pause box here';
+     padWas=document.body.classList.contains('padon'); document.body.classList.remove('padon');
+     try{
+       rs=document.getElementById('resumebtn'); ab=document.getElementById('abandonbtn'); pk=document.getElementById('pausekeys'); box=rs&&rs.parentNode;
+       if(!box||!ab||!pk) return 'no pause buttons or key line';
+       if(getComputedStyle(box).flexDirection!=='column') bad.push('the pause buttons are a '+getComputedStyle(box).flexDirection+', not a column');
+       for(i=0;i<ids.length;i++){ b=document.getElementById(ids[i]); if(!b) continue; s=getComputedStyle(b);
+         if(parseFloat(s.minHeight)!==56) bad.push(ids[i]+' is held to '+s.minHeight+', not 56px');
+         if(s.textTransform!=='none') bad.push(ids[i]+' is drawn in '+s.textTransform); }
+       if(getComputedStyle(pk).display!=='none') bad.push('the key legend still sits on the keyboard pause card');
+       fs=[].filter.call(pb.children,function(c){ return c.tagName==='DIV'&&/Please provide feedback/.test(c.textContent); })[0];
+       if(fs&&getComputedStyle(fs).display!=='none') bad.push('the feedback sentence still sits on the pause card');
+       if(parseFloat(getComputedStyle(ab).marginTop)<24) bad.push('Abandon is not set apart ('+getComputedStyle(ab).marginTop+')');
+       document.body.classList.add('padon');
+       if(getComputedStyle(pk).display==='none') bad.push('a pad loses its legend');
+     } finally { document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.54',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

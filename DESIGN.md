@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.55 - PAUSE CARD AS A BUTTON COLUMN
+
+Co-op hunt while he was away. Critic c-31 (pause 25/42/49 at 2): a cheat-sheet legend, an explaining sentence and a row of mixed buttons. The card is now the title over one column of 56px sentence-case buttons at the menu width, Abandon set apart, no legend or sentence on a keyboard card (a pad keeps its legend).
+
+MEASURED. Check 29.55 passes, and fails on v29.54.
 ## v29.54 - THE WHAT IS NEW CARD NAMES POLISH PASS 12
 
 Co-op hunt while he was away. The card was stamped v29.38 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

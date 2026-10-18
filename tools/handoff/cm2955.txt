@@ -1,0 +1,7 @@
+v29.55: pause card as a button column
+
+The pause screen is a clean button column.
+
+Check 29.55. Fails on v29.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
