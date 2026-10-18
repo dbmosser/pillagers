@@ -2817,7 +2817,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.11';
+var VER='31.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19650,11 +19650,11 @@ function brlPoolDraw(f){
       wc.beginPath(); wc.arc(x+Math.cos(a)*R*0.55*((j%3+1)/3),y+Math.sin(a)*R*0.33*((j%3+1)/3),1+ph*3,0,6.2832); wc.stroke();
     }
   } else {
-    wc.globalAlpha=0.20*fade; wc.fillStyle='#d6f1ff'; wc.beginPath(); wc.ellipse(x,y,R*0.9,R*0.54,0,0,6.2832); wc.fill();
-    wc.globalAlpha=0.45*fade; wc.strokeStyle='#ffffff'; wc.lineWidth=1.2; wc.beginPath(); wc.ellipse(x,y,R*0.88,R*0.53,0,0,6.2832); wc.stroke();
-    for(j=0;j<5;j++){   // five soft clouds that drift round the middle
-      a=j*1.2566+t*0.22; s=R*(0.62+0.1*Math.sin(t*0.9+j*1.7));
-      wc.globalAlpha=0.34*fade; wc.drawImage(sp,x+Math.cos(a)*R*0.34-s,y+Math.sin(a)*R*0.2-s*0.62-16,s*2,s*1.24);
+    wc.globalAlpha=0.32*fade; wc.fillStyle='#cfeeff'; wc.beginPath(); wc.ellipse(x,y,R*0.92,R*0.56,0,0,6.2832); wc.fill();   // v28.xx (cw-barrels3b): a thicker fog, it was a faint outline in the pictures
+    wc.globalAlpha=0.6*fade; wc.strokeStyle='#ffffff'; wc.lineWidth=1.4; wc.beginPath(); wc.ellipse(x,y,R*0.9,R*0.55,0,0,6.2832); wc.stroke();
+    for(j=0;j<6;j++){   // six thick clouds that drift round the middle
+      a=j*1.0472+t*0.22; s=R*(0.70+0.1*Math.sin(t*0.9+j*1.7));
+      wc.globalAlpha=0.46*fade; wc.drawImage(sp,x+Math.cos(a)*R*0.38-s,y+Math.sin(a)*R*0.22-s*0.62-16,s*2,s*1.24);
     }
     wc.fillStyle='#ffffff';
     for(j=0;j<7;j++){   // and ice dust that glints
@@ -48880,7 +48880,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.11: In the party arcade the player 2 screen no longer shows the welcome pack behind the party pages, it shows the Undercroft like player 1. Check 31.11 fails on v31.10',
+  now:'v31.12: The frost fog a dry ice barrel leaves is now a thick cloud you can read at a glance. Check 31.12 fails on v31.11',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

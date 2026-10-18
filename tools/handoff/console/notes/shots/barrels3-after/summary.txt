@@ -44,3 +44,13 @@
   b8-cryo-blast                          staged       7.3s    | blast cryo crawler stun false frozen true hp 871
   b11-acid-pool                          staged       8.5s    | pool, armour 59
   b12-cryo-fog                           staged       8.5s    | fog, frozen true
+== 1080 : window 1952x1183, viewport 1920x1080
+  b1-red-closeup                         staged       7.6s    | barrel red at 1163,858
+  b3-shock-closeup                       staged       7.4s    | barrel shock at 2114,1309
+  b5-acid-closeup                        staged       8.0s    | barrel acid at 1682,2269
+  b7-cryo-closeup                        staged       7.4s    | barrel cryo at 2118,1282
+== 4k : window 3872x2263, viewport 3840x2160
+  b1-red-closeup                         staged       7.4s    | barrel red at 1163,858
+  b3-shock-closeup                       staged       7.3s    | barrel shock at 2114,1309
+  b5-acid-closeup                        staged       7.2s    | barrel acid at 1682,2269
+  b7-cryo-closeup                        staged       7.3s    | barrel cryo at 2118,1282

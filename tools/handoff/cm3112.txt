@@ -1,0 +1,7 @@
+v31.12: the frost fog of a dry ice barrel is a thick cloud
+
+The frost fog a dry ice barrel leaves is now a thick cloud you can read at a glance.
+
+Check 31.12. Fails on v31.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
