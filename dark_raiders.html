@@ -1692,6 +1692,14 @@ body:not(.padon) #root #pausebox::before{ width:min(calc(var(--pw) + var(--sp-5)
 #root #setlist .setjump .sj{ gap:var(--sp-2); }
 #root #pausebox h3{ box-sizing:border-box; width:var(--pw); max-width:100%; margin:0; padding-bottom:var(--sp-2); border-bottom:1px solid var(--ui-line); text-align:left; }
 #root #pausebox::after{ box-sizing:border-box; width:var(--pw); max-width:100%; text-align:right; }
+
+/* v28.xx (cw-setnear2) critic c-31 round 2 (Settings 2): "steppers float 400px from the label with 200px of dead space to their right", "the section label Controls repeats the active tab", "the toast overlaps the card footer". Now: the card is 15 x 48 wide, the stepper is right-aligned at the row edge (6 x 48 wide), the section label that sits straight under the tab strip is gone (the tab already says it), and the toast moves to the top while Settings is open. */
+#root #settingsmodal{ --cw:calc(var(--sp-5) * 15); }
+#root #setlist .row:not(.setjump) > div:first-child{ flex:1 1 auto !important; }
+#root #setlist .row:not(.setjump) > button{ margin-left:auto; min-width:calc(var(--sp-5) * 6) !important; }
+#root #setlist .setjump + .row[style*="opacity:.7"]{ display:none; }
+#root #settingsmodal .msub{ display:none; }
+body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ bottom:auto; top:var(--sp-5); }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2608,7 +2616,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.74';
+var VER='29.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47698,7 +47706,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.74: The run over screen is centred. Check 29.74 fails on v29.73',
+  now:'v29.75: Settings steppers sit at the row edge; the toast moves to the top. Check 29.75 fails on v29.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v29.75: settings right steppers
+
+Settings steppers sit at the row edge; the toast moves to the top.
+
+Check 29.75. Fails on v29.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

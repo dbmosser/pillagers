@@ -10,10 +10,10 @@
  "02-welcome-pack": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-screen slab with seven small rows floating in a huge empty panel, an explaining paragraph, tiny text and a primary button stranded far from the close, so it ignores the guide's centred-card modal rules.",
-  "pic": "tools/handoff/console/notes/shots/b-31-after2/02-welcome-pack-1080.jpg",
+  "verdict": "A full-screen slab with seven short rows stranded in a huge empty box, an explaining paragraph, tiny text and the primary button far from the content; it ignores the centred-card modal rule.",
+  "pic": "tools/handoff/console/notes/shots/b-31-c1/02-welcome-pack-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:48"
+  "when": "2026-10-18T09:56"
  },
  "03-hub-floor": {
   "score": 2,
@@ -26,10 +26,10 @@
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "A dense full-screen slab with tiny type, three competing instruction strips, a toast on top of the modal and a half-empty stash grid, so it works as a debug inventory dump rather than a polished AAA stash screen.",
-  "pic": "tools/handoff/console/notes/shots/b-31-after2/04-stash-terminal-1080.jpg",
+  "verdict": "This is a dense full-screen slab with no clear focal point, tiny unreadable type, explaining sentences stacked in four places, and a tooltip-like toast sitting over the modal, so it ignores most of the style guide.",
+  "pic": "tools/handoff/console/notes/shots/b-31-c1/04-stash-terminal-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:49"
+  "when": "2026-10-18T09:55"
  },
  "05-sector-page": {
   "score": 2,
@@ -42,10 +42,10 @@
  "06-terms": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean dark modal that follows the panel rules, but it is a flat wall of same-weight rows with an explaining paragraph, no primary action, centred title, wrong close placement and sub-minimum text, so nothing leads the eye and it reads like a generic template.",
-  "pic": "tools/handoff/console/notes/shots/b-31-after2/06-terms-1080.jpg",
+  "verdict": "A tidy dark modal that obeys the palette, but every element sits at the same grey weight, the type is far below the 16/20px floor, and an explaining paragraph plus a duplicate toast clutter it, so it reads as a generic template and not a polished game screen.",
+  "pic": "tools/handoff/console/notes/shots/b-31-c1/06-terms-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:49"
+  "when": "2026-10-18T09:56"
  },
  "07-party-coop": {
   "score": 2,
@@ -58,10 +58,10 @@
  "08-shop": {
   "score": 2,
   "pass": false,
-  "verdict": "The cream paper detail pane is now a dark pane, which fixes the biggest style-guide violation and makes Buy pop, but the screen is still a full-screen slab with a huge dead lower half, an amber explainer line, a currency/stash cluster that reads as clutter, a quip footer and a text-only Close.",
-  "pic": "tools/handoff/console/notes/shots/b-31-after1/08-shop-1080.jpg",
+  "verdict": "The dark tile grid and amber Buy button are a decent start, but the screen is a full-bleed slab with half its area empty, tiny sub-16px text, a stacked currency block, a bottom-left toast-like quip, a bottom-left Close instead of top-right X, and a '$' price that breaks the style guide.",
+  "pic": "tools/handoff/console/notes/shots/b-31-c1/08-shop-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:37"
+  "when": "2026-10-18T09:55"
  },
  "09-craft": {
   "score": 2,
@@ -90,10 +90,10 @@
  "12-mainframe-contracts": {
   "score": 2,
   "pass": false,
-  "verdict": "The detail pane is now dark and uses the condensed title, which fixes the worst style break, but the screen is still a full-bleed slab with a heavy amber row, three lines per contract, a '$' currency, and an explaining sentence.",
-  "pic": "tools/handoff/console/notes/shots/b-31-after1/12-mainframe-contracts-1080.jpg",
+  "verdict": "A full-bleed dark slab with a flat, monotone list: it is tidy but generic, with tiny type, a muddy amber focus row, and several style-guide violations (the $ sign, explaining sentences, a toast over a modal, and a top-left close that is not a close icon).",
+  "pic": "tools/handoff/console/notes/shots/b-31-c1/12-mainframe-contracts-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:37"
+  "when": "2026-10-18T09:54"
  },
  "14-mainframe-racks": {
   "score": 1,
@@ -330,10 +330,10 @@
  "55-arcade-run-over-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean, sentence-case card with a clear hero line, but it is a sparse left-aligned stub that ignores the end-card shell (720px centred, stat row of 4, tiles, primary and ghost buttons), has no visible actions, and sits on a flat dark wall.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "A clean but sparse end card with a dim button-less prompt, a 40px hero, and a mismatch against the guide's end-card shell (no scrim over the world, no stats row, no primary button, no close), so it reads as a placeholder, not a polished run-over screen.",
+  "pic": "tools/handoff/console/notes/shots/12-c3/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:33"
+  "when": "2026-10-18T09:54"
  },
  "60-abandoned-card": {
   "score": 2,

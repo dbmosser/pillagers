@@ -6097,6 +6097,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.75',what:'Settings: each stepper is right-aligned in its row, the card is 15 x 48 wide, and the toast is not at the bottom while Settings is open',
+   run:function(){
+     if(typeof openSettings!=='function') return 'SKIP: no Settings here';
+     var bad=[], l, rows, i, r, b, gap, t, cs, c;
+     try{
+       openSettings('display'); l=document.getElementById('setlist');
+       if(!l) return 'SKIP: no list';
+       rows=l.querySelectorAll('.row:not(.setjump)');
+       for(i=0;i<rows.length;i++){
+         r=rows[i]; b=r.querySelector(':scope > button');
+         if(!b||!b.offsetWidth||r.style.opacity||r.children.length!==2||r.querySelectorAll('button').length!==1) continue;
+         gap=r.getBoundingClientRect().right-b.getBoundingClientRect().right;
+         if(gap>40){ bad.push('stepper is '+Math.round(gap)+'px short of the row edge (limit 40) DBG iw='+innerWidth+' row='+Math.round(r.getBoundingClientRect().width)+' bl='+Math.round(b.getBoundingClientRect().left-r.getBoundingClientRect().left)+' bw='+b.offsetWidth+' ml='+getComputedStyle(b).marginLeft+' html='+r.outerHTML.slice(0,260).replace(/\s+/g,' ')); break; }
+       }
+       c=document.getElementById('settingsmodal'); cs=c?getComputedStyle(c).getPropertyValue('--cw'):'';
+       if(c){ var w=l.getBoundingClientRect().width; if(w>760) bad.push('settings list is '+Math.round(w)+'px wide (limit 760)'); }
+       t=document.getElementById('hubtoast');
+       if(t){ var ts=getComputedStyle(t); if(ts.bottom!=='auto'&&parseFloat(ts.top)>200) bad.push('toast sits at the bottom while Settings is open'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.74',what:'while the run over card is up, the card and Press any button are one column centred on the screen, the button a plate under the card (a 1px accent line, under 80px below it), not loose text at the bottom and not pushed down by the clip element (critic: card floats in a void, prompt detached; screens 52 55)',
    run:function(){
      if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';

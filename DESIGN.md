@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.75 - SETTINGS RIGHT STEPPERS
+
+Co-op hunt while he was away. Critic c-31: steppers float mid-row; section label repeats the tab; toast overlaps the card. Card 720 wide, steppers right-aligned, toast to the top.
+
+MEASURED. Check 29.75 passes, and fails on v29.74.
 ## v29.74 - Run over card: the column is centred
 
 Co-op hunt while he was away. The run over column from v29.73 sat at the bottom of the screen because the clip element stayed in the page flow. The clip element goes behind, so the card and the button sit in the middle. Restyle only.
