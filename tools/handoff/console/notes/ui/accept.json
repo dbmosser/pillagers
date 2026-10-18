@@ -232,17 +232,17 @@
  "50-arcade-hud-live": {
   "score": 2,
   "pass": false,
-  "verdict": "The HUD is still a loose scatter of unframed text and mismatched panels: the score cluster is clipped at the top edge, lime text is still on the goals panel, the vitals are glossy gradient bars, and the weapon block is a huge dim box. Almost none of the earlier fixes were applied.",
+  "verdict": "Lower case is now applied and the weapon block has a clear hero ammo number, but the earlier structural advice was mostly ignored: the top cluster is still unboxed on the map, the vitals are still gradient bars with a boxed 'standing', run info is still double-titled, and the notices are still faint long sentences.",
   "findings": [
-   "P0 Top-centre score cluster (Score / 0 SP / 9:46 / Extract 113m): Put the cluster in a 90% --ui-panel strip with its top at y=54. Make '0 SP' 56px f-cond 800 tx-1. Set 9:46 at 20px tx-1 and 'Extract 113m' at 16px --extract with the arrow beside it. Delete the 'Score' label or set it at 16px tx-2.",
-   "P1 Right 'Run info / Run goals' panel (x≈1500-1900, y≈245-390): Keep one 20px tx-1 'Run goals' title and delete 'Run info'. Set the rows at 16px tx-2 on a 32px pitch, with SP values right-aligned in tx-1. Use a 1px --ui-line-hi border, 24px padding and a 16px gap below the minimap. Remove all lime.",
-   "P1 Bottom-left vitals (Standing, Armour 60, Stamina, HP 100): Use three flat bars, each 10px high and 360px wide, with --ui-line tracks and no gradient. Put 16px labels and values on the left, outside the bars. Make 'Standing' a 16px tx-2 label with no box. Move the block to x=96 with its bottom at 54px.",
-   "P1 Left notices (Storm, Stronghold, Golden enemy) and world labels: Use the toast component: 40px high, a solid 90% --ui-panel fill, a 4px left accent bar and 16px tx-1 text. Show only the name, at most 3 toasts for 3s, then fade. Start them at x=96. Keep world labels inside the screen, 16px minimum, on a panel pill. Delete the persistent 'F1 controls' text or put it on a pill.",
-   "P1 Bottom-right weapon/ammo block (Support MG 60 / 360): Shrink it to about 320x120 with a 1px --ui-line-hi border and a 90% --ui-panel fill, and keep a 48px margin from the screen edges. Set the name at 20px tx-1, the ammo at 56px f-cond 800 and '/ 360' at 20px tx-2. Remove the lime tick."
+   "P1 Top-centre score cluster (score / 0 sp / 9:46 / extract 179m): Put it in a 90% --ui-panel strip at y=54. Make '0 sp' 56px f-cond 800 tx-1, '9:46' 20px tx-1, and 'extract 179m' 16px --extract with the arrow beside it. Delete 'score' or set it at 16px tx-2.",
+   "P1 Right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Keep one 20px tx-1 'run goals' title and delete 'run info'. Set the rows at 16px tx-2 on a 32px pitch, with SP values right-aligned in tx-1. Use a 1px --ui-line-hi border and 24px padding, leave a 16px gap below the minimap, and replace the caret with the standard 48px close glyph or remove it.",
+   "P1 Bottom-left vitals (standing, armour 60, stamina, hp 100): Use three flat bars, each 10px high and 360px wide, on --ui-line tracks with no gradient. Put 16px labels and values on the left, outside the bars. Make 'standing' a plain 16px tx-2 label with no box. Move the block to x=96 with its bottom at 54px.",
+   "P1 Left notices (storm, stronghold, golden enemy): Use the toast component: 40px high, a solid 90% --ui-panel fill, a 4px left accent bar and 16px tx-1 text. Show only the name ('storm', 'stronghold', 'golden enemy'), at most 3 toasts for 3s, then fade. Start them at x=96. Put 'f1 controls' on a pill or delete it.",
+   "P1 Bottom-right weapon block (compact smg 30 / 180): Shrink it to about 320x120 on a 90% --ui-panel fill with a 1px --ui-line-hi border. Keep a 48px margin from the screen edges. Set the name at 20px tx-1, the ammo at 56px f-cond 800 and '/ 180' at 20px tx-2. Remove the lime tick."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after2/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after4/50-arcade-hud-live-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T16:07"
+  "when": "2026-10-18T20:02"
  },
  "52-arcade-run-over": {
   "score": 3,

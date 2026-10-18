@@ -1,0 +1,17 @@
+{"generated":"2026-10-18T16:02:03","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":184,"screens":[
+{"name":"19-raid-hud-drop-first-raid","screen":"In-raid HUD at drop on the first raid (LOANER GUN + RAIN callouts, legend, pillager list, conditions/contracts, belt, HP)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"19-raid-hud-drop-first-raid-1080.jpg","lint":""}},
+{"name":"20-raid-hud-drop","screen":"In-raid HUD 2.5 s after a kitted drop","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"20-raid-hud-drop-1080.jpg","lint":""}},
+{"name":"21-raid-hud-calm","screen":"In-raid HUD calm, extraction-point banner, CONCEALED IN COVER","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"21-raid-hud-calm-1080.jpg","lint":""}},
+{"name":"22-raid-map-open","screen":"Sector map overlay (M)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"22-raid-map-open-1080.jpg","lint":""}},
+{"name":"23-raid-backpack-open","screen":"In-raid BACKPACK panel (B)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"23-raid-backpack-open-1080.jpg","lint":""}},
+{"name":"24-raid-controls-full-H","screen":"Full controls list (H)","1080":{"staged":false,"note":"expect failed: U.raid()\u0026\u0026__state().legendOn===2 -\u003e false (legendOn 1)","viewport":"1920x1080","shot":"24-raid-controls-full-H-1080.jpg","lint":""}},
+{"name":"33-raid-fight-alerts","screen":"In-raid fight: THE PILLBOX HAS SEEN YOU alert, LOCATION REVEALED, enemy name tags, HP 83","1080":{"staged":true,"note":"3 moved, hp 66","viewport":"1920x1080","shot":"33-raid-fight-alerts-1080.jpg","lint":""}},
+{"name":"34-raid-downed-pickups","screen":"DOWN state (self-revive timer, HP 0, damage number) plus the pickup stack and world loot labels","1080":{"staged":true,"note":"downed true hp 0","viewport":"1920x1080","shot":"34-raid-downed-pickups-1080.jpg","lint":""}},
+{"name":"36-raid-low-health","screen":"In-raid HUD at low health (HP 18)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"36-raid-low-health-1080.jpg","lint":""}},
+{"name":"37-raid-extracting-countdown","screen":"Extraction countdown: ring, EXTRACT B INBOUND 15s, 9 HOSTILES CLOSING IN, pickup stack","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"37-raid-extracting-countdown-1080.jpg","lint":""}},
+{"name":"48-arcade-hud-move-to-start","screen":"Arcade HUD before start: SCORE, shield ring, MOVE TO START, armour bar","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"48-arcade-hud-move-to-start-1080.jpg","lint":""}},
+{"name":"50-arcade-hud-live","screen":"Arcade HUD after the run starts","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"50-arcade-hud-live-1080.jpg","lint":""}},
+{"name":"51-arcade-alert-reinforcements","screen":"Arcade alert PILLAGER REINFORCEMENTS with sentries near the player","1080":{"staged":true,"note":"3 moved","viewport":"1920x1080","shot":"51-arcade-alert-reinforcements-1080.jpg","lint":""}},
+{"name":"61-raid-wheel-open","screen":"The item wheel open in a raid (hold Q), one segment hovered","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"61-raid-wheel-open-1080.jpg","lint":""}},
+{"name":"78-raid-pause-box-full-kit","screen":"Pause box in the raid after the item wheel was used (belt/wheel strip visible)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"78-raid-pause-box-full-kit-1080.jpg","lint":""}}
+]}

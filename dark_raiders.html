@@ -2796,7 +2796,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.84';
+var VER='30.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48318,7 +48318,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.84: The other player now appears in the Undercroft as soon as both windows are on the floor, walking and standing where they are, with a name over the head, and disappears when that window leaves the floor. Check 30.84 fails on v30.83',
+  now:'v30.85: Menus open with a small bounce and buttons pop a little harder when pressed. Check 30.85 fails on v30.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62502,7 +62502,8 @@ function titleFit(){
 // so nothing is ignored or restarted. Only the title menu and the party window are on it so far (UIM.scope); the values are written as the CSS
 // properties opacity, translate and scale, which compose with every transform the menus already use. Menus only: no raid value is touched.
 var UIM={manual:false,t:0,last:0,raf:0,logOn:false,log:[],st:[],scope:'#title,#partymodal,#pausebox,#outcome,#settingsmodal,#keysmodal,#tradermodal,#gamblemodal,#barmodal,#appearmodal,#trophymodal,#codexmodal,#lbmodal,#wnmodal,#sectormodal,#stagemodal,#carrymodal,#cratemodal,#opmodal,#welcomemodal,#termsmodal',ring:null,rg:{on:0,x:0,y:0,w:0,h:0},fel:null};
-UIM.E={out:function(u){ u=1-u; return 1-u*u*u; },inn:function(u){ return u*u; },sm:function(u){ return u*u*(3-2*u); }};
+// v28.xx (cw-bounce), his Q47 (2026-10-18): "livelier motion, with bounce". back is ease-out-back with c1 = 1.5: it runs past its target by 8 percent of the travel and settles (his range 6 to 10), so a window rises 24 px, then 1.9 px past, then home. Only position and slide use it; opacity never leaves 0 to 1.
+UIM.E={out:function(u){ u=1-u; return 1-u*u*u; },inn:function(u){ return u*u; },sm:function(u){ return u*u*(3-2*u); },back:function(u){ var v=u-1; return 1+2.5*v*v*v+1.5*v*v; }};
 UIM.S=function(el){
   var s=el.__uim, b=1;
   if(!s){
@@ -62527,7 +62528,7 @@ UIM.clear=function(s){
 UIM.paint=function(s){
   var el=s.el, p=0, sh=0, u, sc, w, fld, anim=false, tx;
   if(el.__uim!==s) return;
-  if(s.fx){ u=(UIM.t-s.fx.t0)/s.fx.d; if(u>=1) s.fx=null; else if(u>0){ if(s.fx.k==='pulse') p=0.06*Math.sin(Math.PI*u); else sh=6*(1-u)*Math.sin(u*6*Math.PI); } }
+  if(s.fx){ u=(UIM.t-s.fx.t0)/s.fx.d; if(u>=1) s.fx=null; else if(u>0){ if(s.fx.k==='pulse') p=0.08*Math.sin(Math.PI*u); /* v28.xx (cw-bounce): the confirm pulse peaks at 1.08 (was 1.06) */ else sh=6*(1-u)*Math.sin(u*6*Math.PI); } }
   for(fld in s.f){ if(s.f[fld].on){ anim=true; break; } }
   if(!anim&&!s.fx&&s.a===1&&s.x===0&&s.y===0&&s.s===1&&s.sT===1){ UIM.clear(s); return; }
   sc=s.s*(1+p); tx=s.x+sh;
@@ -62604,11 +62605,11 @@ UIM.open=function(el){
   var s=el.__uim, busy=!!(s&&((s.f.a&&s.f.a.on)||(s.f.y&&s.f.y.on))), kids, i, q;
   if(!s) s=UIM.S(el);
   if(s.closing){ s.closing=0; el.style.display=''; el.style.pointerEvents=''; }
-  if(!busy){ s.a=0; s.y=16; }
-  UIM.go(el,'a',1,240,'out',{full:1}); UIM.go(el,'y',0,240,'out',{full:16});
+  if(!busy){ s.a=0; s.y=24; }   // v28.xx (cw-bounce): 24 px rise (was 16) that overshoots 8 percent
+  UIM.go(el,'a',1,240,'out',{full:1}); UIM.go(el,'y',0,240,'back',{full:24});
   if(!busy){
     kids=UIM.kids(el); s.kids=kids;
-    for(i=0;i<kids.length&&i<8;i++){ q=UIM.S(kids[i]); q.a=0; q.y=12; UIM.go(kids[i],'a',1,240,'out',{delay:i*35}); UIM.go(kids[i],'y',0,240,'out',{delay:i*35}); UIM.paint(q); }
+    for(i=0;i<kids.length&&i<8;i++){ q=UIM.S(kids[i]); q.a=0; q.y=16; UIM.go(kids[i],'a',1,240,'out',{delay:i*35}); UIM.go(kids[i],'y',0,240,'back',{delay:i*35}); UIM.paint(q); }
   }
   UIM.paint(s);
 };
@@ -62648,7 +62649,7 @@ UIM.tab=function(pg,dir){
   var s=pg.__uim, busy=!!(s&&((s.f.a&&s.f.a.on)||(s.f.x&&s.f.x.on)));
   s=UIM.S(pg);
   if(!busy){ s.a=0; s.x=24*dir; }
-  UIM.go(pg,'a',1,200,'out',{full:1}); UIM.go(pg,'x',0,200,'out',{full:24});
+  UIM.go(pg,'a',1,200,'out',{full:1}); UIM.go(pg,'x',0,200,'back',{full:24});
   UIM.paint(s);
 };
 UIM.tabOut=function(pg,dir){

@@ -6099,6 +6099,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.85',what:'menu motion has bounce (his Q47): a window rises 24 px and runs 6 to 10 percent past home before it settles, opacity never goes over 1, the confirm pulse peaks at 1.08, and a press mid-open still starts at once',
+   run:function(){
+     if(typeof UIM!=='object'||!UIM||typeof UIM.step!=='function') return 'no motion layer (no UIM)';
+     var m=document.getElementById('partymodal'), was, bad=[], mn=0, mx=0, i, s, btn, k;
+     if(!m) return 'SKIP: no party window';
+     was=m.classList.contains('on');
+     try{
+       __topClear(); __runPrep();
+       UIM.manual=true;
+       m.classList.remove('on'); UIM.chg(m); UIM.clearAll(); m.classList.add('on'); UIM.chg(m);
+       for(i=0;i<60;i++){ UIM.step(8); s=m.__uim; if(!s) break; if(s.y<mn) mn=s.y; if(s.a>mx) mx=s.a; }
+       if(!(mn<=-1.44&&mn>=-2.4)) bad.push('the open rise runs '+(-mn).toFixed(2)+' px past home, '+(-mn/24*100).toFixed(1)+' percent of 24 px, want 6 to 10');
+       if(mx>1.0001) bad.push('the opacity went to '+mx.toFixed(3));
+       UIM.step(600);
+       if(m.__uim||m.style.translate!=='') bad.push('the open leaves its values on the window');
+       btn=document.getElementById('closeparty');
+       if(!btn) bad.push('SKIP pulse: no close button');
+       else { UIM.press(btn,'ok'); UIM.step(60); k=parseFloat(btn.style.scale)||1; if(Math.abs(k-1.08)>0.006) bad.push('the confirm pulse peaks at '+k.toFixed(3)+', want 1.08'); UIM.step(80); }
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       try{ UIM.manual=false; if(!was){ m.classList.remove('on'); UIM.chg(m); } UIM.clearAll(); if(was&&!m.classList.contains('on')) m.classList.add('on'); }catch(_f){}
+       try{ __topClear(); }catch(_t){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.84',what:'the two windows of a pair see each other in the Undercroft over the pair channel (his order of 2026-10-18: players 1 and 2 should be able to see each other in the undercroft): a mate word with the pair code makes the floor draw him once with the operator body where he stands, in his own look, with his name over him, and a nameless one reads player 2 in the host window and player 1 in the other; a word with another pair code is ignored; with no pair on a word draws nothing and a floor update posts nothing; with the pair on a floor update posts where this player stands with the pair code and his look, a few times a second; a word that he left removes him, so does a long silence; a linked party that already shows him draws him once; leaving the floor for a raid posts that this window left; and the seeded stream never moves',
    run:function(){
      if(typeof NET==='undefined'||!NET||typeof netSameOnMsg!=='function'||typeof netSamePost!=='function'||typeof drawHubWorld!=='function'||typeof updateHubWorld!=='function'||typeof netReset!=='function')

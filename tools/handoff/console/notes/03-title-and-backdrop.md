@@ -22,6 +22,12 @@
 - v30.65 cw-title-scrim shipped (centre scrim lighter). v30.69 cw-title-fight shipped: scripted pillager-vs-robot fight (tskInit/tskStep/tskDraw, sorted into the hub draw list when tskOn()) behind title, scoreboard, how-to. Cheap: 2 pillagers + robots, no sim.
 - Shots shots/03-fight (01,45,46). Critic: 01 = 3, 46 = 3. Remaining findings are NOT the backdrop: capitals still on screen (lowercase door is another task), saves block, five buttons, legend, how-to needs close button + primary, logo gradient. 4K 60fps not measured.
 
+## Run 4
+- v30.82 cw-title-see shipped: no floor labels/HUD drawn behind the attract pages, blur 16 to 5px, scrim lighter at edges, fights stand at y 300 (mid height). Fixture check 30.20 retargeted (cefdc363). Also cw-cardP22 (stamp). Fixture: 5 of 6 v30.79 party checks got "v:'30.79', what:" (space) so the gen anchor (above the previous version's first check) matches once.
+- Shots shots/03-after. Critic: 45 = 3, 46 = 3 (card structure: lone "press any key", tiny close X, no header/footer rules; those are a shared attract-card task, not the backdrop), 01 = 3.
+- Tried name box lower case: input value PILLAGER is stored uppercase and the global * rule sets text-transform none !important, so CSS cannot lower it; draft cw-title-name STOPPED, not shipped. Needs the name lowered where the input value is set (risk to saves/net names).
+- 4K 60fps still not measured (the fight is 2 pillagers + robots, no sim).
+
 ## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).

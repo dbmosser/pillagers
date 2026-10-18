@@ -84,6 +84,37 @@ A.only=function(spec){   // spec: null = everyone, 'none' = nobody, {x,y} = only
   window.__only=spec||null;
 };
 
+// ---- a clear stage: trees, bushes, crates, props, lamps and barrels inside the rectangle are taken out of the lists the picture draws
+// (rect in world units; walls and buildings are never touched, the site is chosen so none stands there) ----
+A.clearStage=function(x0,y0,x1,y1){
+  var s=g(), m=s.map, i, j, n=0, w, b, gone=[], gc=s.ground.getContext('2d');
+  function inb(x,y,r){ return x+r>x0&&x-r<x1&&y+r>y0&&y-r<y1; }
+  var alive=m.walls.filter(function(q){ return q.tree&&q.x>-1000; });
+  for(i=m.walls.length-1;i>=0;i--){ w=m.walls[i];
+    if(w.x<-1000) continue;
+    if(!(w.tree||w.furn||w.wreck)) continue;
+    var ext=w.tree?(w.canopy||30)+40:20;
+    if(w.x+w.w+ext>x0&&w.x-ext<x1&&w.y+w.h+ext+30>y0&&w.y-ext-60<y1){ if(w.tree) gone.push({x:w.x,y:w.y,w:w.w,h:w.h}); w.x=-9000; w.y=-9000; n++; } }   // moved off the map, not spliced: wall ids and the wall grid keep their places
+  // the gone trees no longer cast a sight shadow (fog wedges) and their baked trunk marks are painted over with clean grass
+  var vs=s.vseg, k, q;
+  for(k=vs.length-1;k>=0;k--){ q=vs[k]; for(j=0;j<gone.length;j++){ var t=gone[j];
+    if(q.x1>=t.x-3&&q.x1<=t.x+t.w+3&&q.x2>=t.x-3&&q.x2<=t.x+t.w+3&&q.y1>=t.y-3&&q.y1<=t.y+t.h+3&&q.y2>=t.y-3&&q.y2<=t.y+t.h+3){ vs.splice(k,1); break; } } }
+  var offs=[[0,70],[70,0],[-70,0],[0,-70],[70,70],[-70,70],[70,-70],[-70,-70],[0,120],[120,0],[-120,0]];
+  gone.forEach(function(t){
+    var cx=t.x+t.w/2, cy=t.y+t.h/2, px=Math.round(cx-26), py=Math.round(cy-26), o, ok, sx, sy, d;
+    for(var oi=0;oi<offs.length;oi++){ o=offs[oi]; sx=px+o[0]; sy=py+o[1]; ok=true;
+      for(d=0;d<gone.length&&ok;d++){ if(Math.abs(gone[d].x-(sx+26))<46&&Math.abs(gone[d].y-(sy+26))<46) ok=false; }
+      for(d=0;d<alive.length&&ok;d++){ if(Math.abs(alive[d].x-(sx+26))<46&&Math.abs(alive[d].y-(sy+26))<46) ok=false; }
+      if(ok) break; }
+    if(ok) gc.drawImage(s.ground,sx,sy,52,52,px,py,52,52);
+  });
+  for(i=m.bushes.length-1;i>=0;i--){ b=m.bushes[i]; if(inb(b.x,b.y,(b.r||20)+16)){ m.bushes.splice(i,1); n++; } }
+  for(i=s.containers.length-1;i>=0;i--){ b=s.containers[i]; if(inb(b.x,b.y,34)){ s.containers.splice(i,1); n++; } }
+  for(i=s.brl.length-1;i>=0;i--){ b=s.brl[i]; if(inb(b.x,b.y,34)){ s.brl.splice(i,1); n++; } }
+  for(i=s.lights.length-1;i>=0;i--){ b=s.lights[i]; if(inb(b.x,b.y,40)){ s.lights.splice(i,1); n++; } }
+  return n;
+};
+
 // ---- the common staging ----
 A.stage=async function(o){
   o=o||{};

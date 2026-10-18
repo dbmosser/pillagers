@@ -1,0 +1,7 @@
+v30.85: menus bounce on open
+
+Menus open with a small bounce and buttons pop a little harder when pressed.
+
+Check 30.85. Fails on v30.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
