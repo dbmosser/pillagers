@@ -2402,7 +2402,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.45';
+var VER='29.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32580,6 +32580,9 @@ function drawPackExtra(id,px,ty,fl,pw,sch){
     wc.fillStyle='#5a2418'; wc.fillRect(bx-3.2,ty-16.4,6.4,0.9);
     wc.fillStyle=A; wc.fillRect(bx-1.0,ty-23.3,2.0,1.5);
     wc.fillStyle='#5a2418'; wc.fillRect(bx-0.6,ty-19.6,1.2,2.4);
+    // v28.xx (cw-heavygear), art build step b (char-art-build-brief): "chipped paint edges and colour-panel stripes on armour ... chunkier ... packs". The Heavy fuel can gets a scheme colour panel stripe and three bare steel paint chips, all inside the old outline.
+    wc.fillStyle=A; wc.fillRect(bx-3.2,ty-14.9,6.4,0.9);
+    wc.fillStyle='#dfe6ec'; wc.fillRect(bx-3.0,ty-19.0,1.2,0.9); wc.fillRect(bx+1.9,ty-18.4,1.2,0.9); wc.fillRect(bx+1.0,ty-12.9,1.4,0.8);
   } else if(id==='packframe'){
     wc.fillStyle=INK; rrF(px-pw/2-2.4,ty-30.2,pw+4.8,10.6,2.4);
     wc.fillStyle=sch?sch.pack:'#4a5a3a'; rrF(px-pw/2-1.8,ty-29.7,pw+3.6,9.6,1.9);
@@ -33087,6 +33090,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillStyle='#69747e'; rrF(x-6.2+swing2*.5,ty-9.7-liftB*.5,4.0,4.6,1.0); rrF(x+2.0+swing*.5,ty-9.7-liftA*.5,4.0,4.6,1.0);
     wc.fillStyle='#8f9ba6'; wc.fillRect(x-6.0+swing2*.5,ty-9.6-liftB*.5,3.6,1.0); wc.fillRect(x+2.2+swing*.5,ty-9.6-liftA*.5,3.6,1.0);
     wc.fillStyle=_SCH?_SCH.a:'#c8a24a'; wc.fillRect(x-6.0+swing2*.5,ty-6.6-liftB*.5,3.6,0.9); wc.fillRect(x+2.2+swing*.5,ty-6.6-liftA*.5,3.6,0.9);
+    // v28.xx (cw-heavygear), art build step b (char-art-build-brief): "chipped paint edges ... on armour". The Heavy shin guards are scuffed: two bare steel chips on each plate, inside the old outline.
+    wc.fillStyle='#dfe6ec'; wc.fillRect(x-5.8+swing2*.5,ty-8.4-liftB*.5,1.2,0.8); wc.fillRect(x-3.6+swing2*.5,ty-7.6-liftB*.5,1.2,0.8); wc.fillRect(x+2.4+swing*.5,ty-7.6-liftA*.5,1.2,0.8); wc.fillRect(x+4.6+swing*.5,ty-8.4-liftA*.5,1.2,0.8);
   } else if(!OUTF&&_BTID==='bootgaiter'){   // v28.12 (cosm5): tall laced gaiters up to the knee, wider than the trouser leg
     wc.fillStyle=INK; rrF(x-7.0+swing2*.5,ty-10.8-liftB*.5,5.8,7.4,1.5); rrF(x+1.2+swing*.5,ty-10.8-liftA*.5,5.8,7.4,1.5);
     wc.fillStyle=_BT[0]; rrF(x-6.4+swing2*.5,ty-10.3-liftB*.5,4.6,6.4,1.1); rrF(x+1.8+swing*.5,ty-10.3-liftA*.5,4.6,6.4,1.1);
@@ -47410,7 +47415,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.45: The Raider helmet and bandolier now show chipped paint and a colour stripe. Check 29.45 fails on v29.44',
+  now:'v29.46: The Heavy fuel can and shin guards now show chipped paint and a colour stripe. Check 29.46 fails on v29.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

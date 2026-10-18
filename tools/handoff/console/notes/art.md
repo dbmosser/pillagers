@@ -20,6 +20,15 @@ SHIPPED (run c-60-art, 10-18): step b, cw-setplates = v29.43 (commit 212d9689). 
 Big Pauldron: lower lip, seam, 3 rivets, 4 chips. Raider round pad: 2 chips (spiked pad stays clean). All inside the old outline. Check renders drawVest/drawPads
 offscreen at 4x, counts #dfe6ec pixels, samples the stripe pixels, asserts bbox no bigger than the old outline. Fingerprint held. Step b is DONE.
 Not drawn on: Raider vestband / tachelm helmet (could get a chip or two later). No picture taken (no UI screen shows a worn set).
+SHIPPED (run c-61-art, 10-18): step b finish, cw-raiderchip = v29.45 (commit ca6aec5a). Raider Tactical Helmet: scheme colour stripe across the dome (ty-40.4, 14.4x1.1)
++ 4 steel chips #dfe6ec. Bandolier strap: 4 steel flecks between cartridges. Check renders drawOp (hat tachelm vs none, 4x) and drawVest offscreen, counts chip pixels and the
+longest accent run. Fingerprint held. Step b is now fully DONE (Heavy and Raider sets all chipped). Not done: c (bake, perf only, risky) and d (pictures; needs a worn-set staging screen).
+
+SHIPPING (run c-61-art #2, 10-18): cw-heavygear = v29.46. Heavy fuel can pack: scheme stripe (bx-3.2,ty-14.9,6.4x0.9) + 3 steel chips; Heavy shin guards: 2 chips per plate.
+Check paints drawOp offscreen 4x (packbrown/bootblack base vs packfuel vs bootshin), counts #dfe6ec chip pixels (>=24 each) and accent pixels (>=90 more for the can).
+Preflight PASS (c). If this note says SHIPPING and git log has no v29.46, ship again: draft is tools/handoff/drafts/draft-cw-heavygear.json, mk script S/mk-cw-heavygear.ps1.
+Ship STOPped twice with "uncommitted changes": tools/mkfixture.ps1 was dirty from lane a (12-ui-party-screens).
+
 REMAINING: c (bake sprites; biggest, riskiest, perf only, no visible gain), d (before/after pictures and a 2P frame; needs a staging screen for a worn set, ask in questions.md).
 
 NEXT (each its own cw- key with a pixel/draw-call check):

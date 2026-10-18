@@ -1,0 +1,7 @@
+v29.46: the heavy fuel can and shin guards are chipped
+
+The Heavy fuel can and shin guards now show chipped paint and a colour stripe.
+
+Check 29.46. Fails on v29.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
