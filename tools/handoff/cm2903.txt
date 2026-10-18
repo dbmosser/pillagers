@@ -1,0 +1,7 @@
+v29.03: all on-screen text goes into the feed
+
+The story card, a cooked grenade shout, ACTIVE RELOAD and CLOSE CALL also show in the feed.
+
+Check 29.03. Fails on v29.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

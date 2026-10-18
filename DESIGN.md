@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.03 - ALL ON-SCREEN TEXT GOES INTO THE FEED
+
+Co-op hunt while he was away. His order 2026-10-15: "All text shown to the player on screen also goes into the player feed." say() and world labels already fed it. Four texts still bypassed it: the map story lore card (name and text), the last-second cooked grenade shout, ACTIVE RELOAD, and a CLOSE CALL label with no score. They are feed lines now. WEAK SPOT, PICKED UP and NOTORIETY +n stay out on purpose (hit mark, pickup row, own line).
+
+MEASURED. Check 29.03 passes, and fails on v29.02.
 ## v29.02 - A PILLAGER WITH A RARER COPY OF A GUN FIGHTS LIKE ONE WITH THE PLAIN GUN
 
 Co-op hunt while he was away. Each pillagers fighting role (rusher, flanker, suppressor, marksman) is picked from the gun he carries, but the rarer copy of a gun has its own name, so it was not recognised and the role fell to a random pick: a pillager with a rarer Shotgun could come out as a suppressor, one with a rarer Support MG as a rusher. Proven in the cloud: 60 pillagers each with the plain and the rarer copy of Magnum, Shotgun, Carbine, Support MG, Marksman Rifle, Whisper and Rifle; the plain guns always gave their own role, the rarer copies spread over all three random roles. The role now reads the rarer copy as the gun it is a copy of. Pillagers with plain guns are unchanged.
