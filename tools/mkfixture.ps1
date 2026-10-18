@@ -86547,13 +86547,13 @@ window.__REGRESS=[
      // CONTROL THREE: a shape with a word in it must still travel, or this has
      // been fixed by turning v9.75 off.
      var target=null;
-     for(i=0;i<before.length;i++) if(/^EXTRACT \d+m$/.test(before[i])){ target=before[i]; break; }
+     for(i=0;i<before.length;i++) if(/^extract \d+m$/i.test(before[i])){ target=before[i]; break; }   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): drawn as Extract 120m */
      if(!target) return bad.length?bad.join('; '):'SKIP: no lettered numbered line was drawn to test with';
-     __tx.set(target,'ZQX RING '+target.replace(/^EXTRACT /,''));
+     __tx.set(target,'Zqx ring '+target.replace(/^extract /i,''));
      p.x+=40; p.y+=40;
      for(var f2=0;f2<3;f2++) __loop(performance.now()+1000+f2*16.7);
      var trav=null, moved=drawn();
-     for(i=0;i<moved.length;i++) if(/^ZQX RING \d+m$/.test(moved[i])){ trav=moved[i]; break; }
+     for(i=0;i<moved.length;i++) if(/^Zqx ring \d+m$/.test(moved[i])){ trav=moved[i]; break; }
      __tx.set(target,'');
      if(!trav)
        bad.push('control: a line with a word in it stopped travelling, so the shape match is off rather than narrowed');
@@ -88450,8 +88450,8 @@ window.__REGRESS=[
      var cv=document.querySelector('canvas'), H=cv.height;
      // Found by the legend's OWN words, so the vitals text sitting directly
      // below it cannot contaminate the extent.
-     var LBL=['move','sprint','crouch','roll','fire','aim','reload','swap gun',
-              'hotbar','bag','backpack','search','map','H  full list','F1  full list'];
+     var LBL=['move','sprint','crouch','roll','fire','aim','sights','reload','swap gun','next gun','melee','item wheel','guns',
+              'hotbar','bag','backpack','search','extract','map','H  full list','F1  full list'];   /* v30.xx (00-fix-new-reds): the compact legend words of today (LEGEND_MINI) added to the old ones */
      var leg=[], i;
      for(i=0;i<draws.length;i++) if(LBL.indexOf(draws[i].t)>=0) leg.push(draws[i]);
      // v30.xx (00-fix-new-reds): the legend's words stand in two columns (one x each, four or more rows per column); a same-spelled word drawn
