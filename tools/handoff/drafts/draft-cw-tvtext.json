@@ -1,0 +1,16 @@
+{
+    "title":  "TV-size text in the demo",
+    "why":  "His answer Q21 (10-18): TV-size text is on by default in the demo. The party runs on two TVs 6 to 10 feet away. The demo sandbox starts at HUD size 150 percent; his own size comes back on leaving.",
+    "now":  "The demo starts with bigger text for the TVs.",
+    "edits":  [
+                  {
+                      "anchor":  "keymap:{},keymapV:2,crashes:[]};",
+                      "replacement":  "keymap:{},keymapV:2,crashes:[],uiScale:1.5,menuZoom:1.25};   // v28.xx (cw-tvtext), his answer Q21 (2026-10-18): \"TV-size text is on by default in the demo\". The party plays on two TVs 6 to 10 ft away: HUD size 150 percent (UISCALES step 3) with the matching menu zoom (1.5 / 1.2), the pair hudSizeStep sets. Settings can still change it for the night; arcadeSandboxOut puts his own profile back"
+                  },
+                  {
+                      "anchor":  "  netUpPutP(JSON.stringify(sb));\n  try{ KEYS.inv=null; keysInv(); }catch(_ki){}\n  return true;",
+                      "replacement":  "  netUpPutP(JSON.stringify(sb));\n  try{ KEYS.inv=null; keysInv(); }catch(_ki){}\n  try{ applyMenuZoom(); }catch(_tz){}   // v28.xx (cw-tvtext): the TV size takes hold at once\n  return true;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the demo starts with TV-size text (HUD size 150 percent) and leaving puts his own size back (his Q21)\u0027,\n   run:function(){\n     if(window.storage\u0026\u0026window.storage.set) return \u0027SKIP: this host saves through window.storage, not localStorage\u0027;\n     if(typeof arcadeSandboxIn!==\u0027function\u0027||typeof arcadeSandboxOut!==\u0027function\u0027||typeof uiScale!==\u0027function\u0027) return \u0027SKIP: no arcade sandbox here\u0027;\n     var bad=[], us0, had;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       had=Object.prototype.hasOwnProperty.call(P,\u0027uiScale\u0027); us0=P.uiScale; P.uiScale=1.2;\n       if(!arcadeSandboxIn(\u0027host\u0027)) return \u0027arcadeSandboxIn failed\u0027;\n       if(Math.abs(uiScale()-1.5)\u003e0.001) bad.push(\u0027inside the demo the HUD size is \u0027+uiScale()+\u0027, not 1.5\u0027);\n       arcadeSandboxOut();\n       if(Math.abs(uiScale()-1.2)\u003e0.001) bad.push(\u0027after leaving the demo the HUD size is \u0027+uiScale()+\u0027, not his 1.2\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{ try{ if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE.on) arcadeLeave(); }catch(_l){} if(had) P.uiScale=us0; else delete P.uiScale; __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

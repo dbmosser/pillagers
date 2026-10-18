@@ -1,0 +1,7 @@
+v30.26: vault guns drop from golden enemies, the overseer and rarely anywhere
+
+Golden enemies and the Overseer now drop a vault gun, and any kill can rarely leave one.
+
+Check 30.26. Fails on v30.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

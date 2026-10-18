@@ -2789,7 +2789,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.25';
+var VER='30.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -28090,7 +28090,7 @@ if(e.state==='possum'){
       if(e.kind==='warden'){
         var cw=setLoot(mkContainer(e.x,e.y,'cache'),['wcore',pick(['reactor','codex','bloom']),pick(['titan','core','coil'])]);
         cw.cache=1; cw.time=2.0; cw.tag='WARDEN WRECK'; G.containers.push(cw); cw.bot='warden'; cw.ov=(e.boss||e.name===BOSS_NAME)?1:0;   // v28.xx (cw-wreckwarden), HIS NOTE (2026-10-18): "Warden wreck drops a box. it would be cool if it showed wreckage instead". The cache is tagged a Warden wreck and drawn by drawWreckWarden, not the purple box
-        if(e.boss){ var cb=setLoot(mkContainer(e.x+40,e.y+10,'cache'),['reactor','codex','bloom','titan','coil']); cb.cache=1; cb.time=3.0; cb.tag='OVERSEER HOARD'; G.containers.push(cb); say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Its hoard is open.'}); }   // v17.45: his pick 21   // v22.xx (R53): an objective row in caps
+        if(e.boss){ var cb=setLoot(mkContainer(e.x+40,e.y+10,'cache'),['reactor','codex','bloom','titan','coil',vaultGunPick()]); cb.cache=1; cb.time=3.0; cb.tag='OVERSEER HOARD'; G.containers.push(cb); say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Its hoard is open.'}); }   // v17.45: his pick 21   // v22.xx (R53): an objective row in caps
         if(!e.boss) say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'It dropped a cache.'});   // v22.xx (R53): not said again for the boss
         decal(e.x,e.y,'#3a2a10',rnd(30,44));
       } else if(e.kind==='choir'){
@@ -28163,6 +28163,7 @@ if(e.state==='possum'){
         var c3=setLoot(mkContainer(e.x,e.y,'botwreck'),[pick(['board','optic','comp'])]); c3.time=.7; c3.bot='snitch';
         G.containers.push(c3);
       }
+      try{ vaultKillDrop(e); }catch(_vkd){}   // v28.xx (cw-vaultdrops): a small chance of a vault gun off any kill
       if((G.arcade||G.career)&&!G.sim&&(e.byPlayer||e.bySeat>0)){ try{ arcadeKeycardDrop(e); }catch(_akd){} }   // v23.9x (feat4c): an elite, or every 12th kill, drops a keycard
       // Only announce a kill you could actually witness. Machines and raiders
       // shoot each other, so an ungated label prints readable text through walls
@@ -47957,7 +47958,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.25: The title no longer lists PvP. Check 30.25 fails on v30.24',
+  now:'v30.26: Golden enemies and the Overseer now drop a vault gun, and any kill can rarely leave one. Check 30.26 fails on v30.25',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -58834,9 +58835,21 @@ function goldMake(e){
   e.golden=1; e.maxhp=Math.round((e.maxhp||e.hp)*GOLD.hp); e.hp=e.maxhp; e.r=Math.round(e.r*GOLD.big);
   return e;
 }
+// v28.xx (cw-vaultdrops), HIS ANSWER (2026-10-18, Q68): "Vault guns also drop from golden enemies and the Overseer, plus a low drop rate anywhere."
+// The vault guns are the Longshot, the Meridian Lance and the Rocket Launcher. The golden hoard and the Overseer hoard each hold one more, and any
+// kill of a machine or pillager has a small chance (VAULT_RATE, double for a hard one) to leave one. Math.random, so the seeded stream does not move.
+var VAULT_GUNS=['gun_sniper','gun_lance','gun_rocket'], VAULT_RATE=0.015;
+function vaultGunPick(){ return VAULT_GUNS[Math.floor(Math.random()*VAULT_GUNS.length)]; }
+function vaultKillDrop(e){
+  if(!e||(G&&G.sim)||e.boss||e.golden||e.merc||e.friendlyPC||e.neutral||e.summoned||e.kind==='warden'||e.kind==='choir'||e.kind==='snitch') return null;
+  if(Math.random()>=VAULT_RATE*(isHard(e)?2:1)) return null;
+  var c=setLoot(mkContainer(e.x+14,e.y+8,'cache'),[vaultGunPick()]); c.cache=1; c.time=1.6; G.containers.push(c);
+  return c;
+}
 function goldDrop(x,y){
   var L=[], c=null, G0=goldS(), n=(G0.n=(G0.n|0)+1), seed=(((G.seed>>>0)^Math.imul(n,7919))>>>0)||1;
   sideStream(seed,GOLD.tag+1,function(){ var k; for(k=0;k<3;k++) L.push(rollLoot(LOOT.jackpot)); for(k=0;k<2;k++) L.push(rollLoot(LOOT.cache)); });
+  try{ L.push(vaultGunPick()); }catch(_vg){}   // v28.xx (cw-vaultdrops): a vault gun rides on the golden hoard
   sideStream(seed,GOLD.tag+2,function(){ c=setLoot(mkContainer(x+16,y+8,'jackpot'),L); });
   c.time=2.6; c.tag='GOLDEN HOARD'; c.wreck=1; G.containers.push(c); evS().wrecks.push(c);
   try{ spark(x,y,'#ffc72e',30,320); flash(x,y,260,'#ffc72e',.5); }catch(_gd){}

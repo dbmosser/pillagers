@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.26 - Vault guns drop from golden enemies, the Overseer and rarely anywhere
+
+Co-op hunt while he was away. His answer Q68 (2026-10-18): the vault guns (Longshot, Meridian Lance, Rocket Launcher) also drop from golden enemies and the Overseer, plus a low drop rate anywhere. The golden hoard and the Overseer hoard each gain one vault gun, and any kill has a 1.5 percent chance (3 percent for a hard enemy) to leave one. Math.random, so the seeded stream and the seed 4242 fingerprint do not move.
+
+MEASURED. Check 30.26 passes, and fails on v30.25.
 ## v30.25 - Hide PvP on the title
 
 Co-op hunt while he was away. His answer Q72 (10-18): hide PvP. The 2 player PvP rows leave the title menu.
