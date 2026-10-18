@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.05 - THE AIM LANE POINTS AT THE PLAYER THE MACHINE WILL SHOOT
+
+Co-op hunt while he was away. In two-player play a Sentry or Warden winding up a shot drew its red aim lane on the player in the window you look at whenever that player stood in front of it, even when the machine was turning to shoot the teammate. Proven in the cloud: player 2 nearer the Sentry and 15 degrees from the host, the lane sat on the host for the whole windup while the shot went to player 2. The lane now snaps onto you only when you are the machines target, in either window, as it always does solo; otherwise it follows the way the machine faces, which is where the round goes.
+
+MEASURED. Check 29.05 passes, and fails on v29.04.
 ## v29.04 - THE NEXT GUN KEYCAP NAMES RB ON A CONTROLLER
 
 Co-op hunt while he was away. Since v26.02 each tactical belt key shows the key that acts on it, the controller button when a controller is on. The next gun key showed D-DOWN, but on a controller D-DOWN opens the item wheel and never changes the gun; the controller walks the belt with RB (the controls card says LB/RB change tactical belt slot). Proven in the cloud: with a controller on, the cap read D-DOWN, and a D-DOWN tap opened the wheel without changing the gun. With a controller on, that key now names the button the belt walk forward is on (RB by default, R1 on a PlayStation pad, or wherever he moved it). The keyboard still shows F, and the self-revive prompt still says D-DOWN.
