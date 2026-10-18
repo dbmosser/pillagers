@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.97 - OPERATOR CARD DROPS THE EMPTY RUN COUNT
+
+Co-op hunt while he was away. Critic 62 (3 of 5): the line tonight 0 runs is noise, and a white ring on the amber button fights it. The line shows only with runs or a seed; the focus ring is amber.
+
+MEASURED. Check 30.97 passes, and fails on v30.96.
 ## v30.96 - SCORE PLATE AT THE TOP
 
 Co-op hunt while he was away. The critic on the raid screen (10-19): the score cluster at the top centre has no plate. One HUD plate now hangs from the top edge behind the label, the number and the clock.

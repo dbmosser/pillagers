@@ -2802,7 +2802,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.96';
+var VER='30.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48272,7 +48272,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.96: The score, label and clock sit on one plate hung from the top edge. Check 30.96 fails on v30.95',
+  now:'v30.97: The operator card shows no run count until there is one; the focus ring is amber. Check 30.97 fails on v30.96',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61276,7 +61276,7 @@ function arcadeOpDraw(){
   el.appendChild(d);
   d=document.createElement('div'); d.className='arcoptitle'; d.textContent='Operator'; d.style.cssText='font:700 var(--fs-title)/1.1 var(--f-cond);letter-spacing:var(--track);color:var(--tx-1)';
   el.appendChild(d);
-  d=document.createElement('div'); d.className='arcopsub'; d.textContent='Tonight: '+n+' run'+(n===1?'':'s')+(arcadePartyCode()?'  \u00b7  Seed '+arcadePartyCode():''); d.style.cssText='font:600 var(--fs-label)/1.3 var(--f-cond);letter-spacing:var(--track);color:var(--tx-2);margin:var(--sp-1) 0 var(--sp-2)';
+  d=document.createElement('div'); d.className='arcopsub'; var _sp=[]; if(n>0) _sp.push('Tonight: '+n+' run'+(n===1?'':'s')); if(arcadePartyCode()) _sp.push('Seed '+arcadePartyCode()); d.textContent=_sp.join('  \u00b7  '); d.style.cssText=_sp.length?'font:600 var(--fs-label)/1.3 var(--f-cond);letter-spacing:var(--track);color:var(--tx-2);margin:var(--sp-1) 0 var(--sp-2)':'height:var(--sp-2)';   /* v30.xx (cw-opclean) critic 62 (3 of 5): "tonight: 0 runs" is noise on a card whose job is two actions. The line shows only when there is a run to count or a seed to read */
   el.appendChild(d);
   for(i=0;i<rows.length;i++){
     (function(ix,r){
@@ -61316,7 +61316,7 @@ function arcadeOpStyle(){
     bc=red?'var(--danger)':'var(--ui-line-hi)';
     bs[i].style.cssText='display:block;box-sizing:border-box;width:100%;height:var(--btn-h);margin:var(--sp-2) 0 0;padding:0 var(--sp-3);text-align:left;cursor:pointer;border-radius:var(--rad);'+
       'font:700 var(--fs-body)/1 var(--f-cond);letter-spacing:var(--track);box-shadow:none;outline:none;'+
-      'background:'+((i===0&&!ARCOP.arm)?'var(--acc)':(on?(red?'var(--danger-bg)':'var(--ui-hover)'):'transparent'))+';color:'+((i===0&&!ARCOP.arm)?'var(--acc-ink)':fg)+';border:1px solid '+((i===0&&!ARCOP.arm)?'var(--acc)':bc)+';border-left:3px solid '+((i===0&&!ARCOP.arm)?'var(--acc)':(on?(red?'var(--danger)':'var(--acc)'):bc))+';'+((i===0&&!ARCOP.arm&&on)?'box-shadow:0 0 0 2px var(--ui-panel),0 0 0 4px var(--tx-1);':'');   /* v30.xx (cw-partyempty) critic 62 (3 of 5): "no primary action, the focused row nearly matches the idle row". New party is the one amber fill with a ring when focused; Exit demo is a ghost until focused (red only then); the armed confirm stays the red outline */
+      'background:'+((i===0&&!ARCOP.arm)?'var(--acc)':(on?(red?'var(--danger-bg)':'var(--ui-hover)'):'transparent'))+';color:'+((i===0&&!ARCOP.arm)?'var(--acc-ink)':fg)+';border:1px solid '+((i===0&&!ARCOP.arm)?'var(--acc)':bc)+';border-left:3px solid '+((i===0&&!ARCOP.arm)?'var(--acc)':(on?(red?'var(--danger)':'var(--acc)'):bc))+';'+((i===0&&!ARCOP.arm&&on)?'box-shadow:0 0 0 2px var(--ui-panel),0 0 0 4px var(--acc);':'');   /* v30.xx (cw-partyempty) critic 62 (3 of 5): "no primary action, the focused row nearly matches the idle row". New party is the one amber fill with a ring when focused; Exit demo is a ghost until focused (red only then); the armed confirm stays the red outline */
   }
 }
 function arcadeOpMove(d){
