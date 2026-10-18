@@ -1,0 +1,7 @@
+v30.03: the what is new card names polish pass 16
+
+The what is new card names polish pass 16.
+
+Check 30.03. Fails on v30.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
