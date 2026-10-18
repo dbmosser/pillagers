@@ -257,7 +257,7 @@
 2026-10-18 0.0328 critic-c-31-ui-pause-settings
 2026-10-18 0.6948 c-31-ui-pause-settings-r2
 2026-10-18 0.0278 critic-12-ui-party-screens
-2026-10-18 1.8788 12-ui-party-screens
+2026-10-18 1.8788 12-ui-party-screens-r2
 2026-10-18 0.0279 critic-b-31-ui-undercroft
 2026-10-18 0.0275 critic-b-31-ui-undercroft
 2026-10-18 0.0305 critic-b-31-ui-undercroft
@@ -288,7 +288,7 @@
 2026-10-18 0.0274 critic-c-31-ui-pause-settings
 2026-10-18 0.0291 critic-12-ui-party-screens
 2026-10-18 0.0236 critic-12-ui-party-screens
-2026-10-18 1.9187 12-ui-party-screens
+2026-10-18 1.9187 12-ui-party-screens-r2
 2026-10-18 0.0267 critic-13-ui-end-cards
 2026-10-18 0.0270 critic-13-ui-end-cards
 2026-10-18 0.0323 critic-c-31-ui-pause-settings
@@ -333,7 +333,7 @@
 2026-10-18 0.0320 critic-12-ui-party-screens
 2026-10-18 0.0303 critic-12-ui-party-screens
 2026-10-18 0.0287 critic-12-ui-party-screens
-2026-10-18 2.2831 12-ui-party-screens
+2026-10-18 2.2831 12-ui-party-screens-r2
 2026-10-18 0.0278 critic-13-ui-end-cards
 2026-10-18 0.0269 critic-12-ui-party-screens
 2026-10-18 0.0229 critic-12-ui-party-screens
@@ -353,7 +353,7 @@
 2026-10-18 0.0435 b-30-ui-hud-r2
 2026-10-18 0.0288 critic-12-ui-party-screens
 2026-10-18 0.0340 critic-12-ui-party-screens
-2026-10-18 1.4288 12-ui-party-screens
+2026-10-18 1.4288 12-ui-party-screens-r2
 2026-10-18 1.5929 13-ui-end-cards-r1
 2026-10-18 0.0264 critic-12-ui-party-screens
 2026-10-18 0.0263 critic-12-ui-party-screens
@@ -460,3 +460,19 @@
 2026-10-18 0.571 c-31-ui-pause-settings
 2026-10-18 0.0244 critic-12-ui-party-screens
 2026-10-18 0.0237 critic-12-ui-party-screens
+2026-10-18 0.0245 critic-12-ui-party-screens
+2026-10-18 0.0283 critic-12-ui-party-screens
+2026-10-18 0.0306 critic-12-ui-party-screens
+2026-10-18 0.0230 critic-12-ui-party-screens
+2026-10-18 0.0264 critic-12-ui-party-screens
+2026-10-18 0.0303 critic-12-ui-party-screens
+2026-10-18 0.0300 critic-12-ui-party-screens
+2026-10-18 0.0228 critic-12-ui-party-screens
+2026-10-18 0.0239 critic-12-ui-party-screens
+2026-10-18 0.0278 critic-12-ui-party-screens
+2026-10-18 0.0237 critic-12-ui-party-screens
+2026-10-18 0.0230 critic-12-ui-party-screens
+2026-10-18 0.0262 critic-12-ui-party-screens
+2026-10-18 1.0775 12-ui-party-screens-r2
+2026-10-18 0.0247 critic-12-ui-party-screens
+2026-10-18 0.0241 critic-12-ui-party-screens

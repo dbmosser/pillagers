@@ -1,0 +1,7 @@
+v30.24: party board and operator card clean up
+
+An empty board is one centred line; the operator card has one amber New party button.
+
+Check 30.24. Fails on v30.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -3,3 +3,4 @@ b-30-ui-hud
 b-31-ui-undercroft
 c-31-ui-pause-settings
 13-ui-end-cards
+12-ui-party-screens

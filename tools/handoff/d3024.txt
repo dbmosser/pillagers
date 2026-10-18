@@ -1,0 +1,5 @@
+## v30.24 - PARTY BOARD AND OPERATOR CARD CLEAN UP
+
+Co-op hunt while he was away. Critic 56 and 64 (2 of 5): five dead ghost rows fill the empty board card. Critic 62 (3 of 5): no primary action on the operator card. Ghost rows are not drawn, the empty line is centred, New party is the amber primary, Exit demo a ghost.
+
+MEASURED. Check 30.24 passes, and fails on v30.23.

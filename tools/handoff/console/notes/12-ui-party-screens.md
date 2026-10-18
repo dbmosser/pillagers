@@ -1,50 +1,8 @@
-# 12-ui-party-screens notes
-
-Run 4 (lane a). Run 3 shipped 52,55 (over cards) - see below.
-
-## Shipped earlier (screens 52, 55 run over card)
-- v29.73 over3: one centred column + button; v29.74 over4: video absolute; v29.76 over5: grid column, solid accent button, light score.
-- v29.79 over6: button 56px high, flush right, tokens (ui-shared forbids raw px literals in CSS bodies: use --btn-h, --fs-body, --menu-w, --sp-N).
-- Old checks 29.73/29.74/29.76 retargeted to "flush right or centred" via fixq.
-- Critic on 55 after v29.76: 2. c5/62 = 3.
-
-## Run 4 critic scores (shots in notes/shots/12-d1, before any change)
-- 46 how to play: 3. P1: prompt detached 150px, amber bolder than title; table bare (no keycaps); 'Hold X in a teal ring' text wrong for keyboard + explaining; row pitch 45 < 48; card padding 32 vs 24.
-- 49 pause box: 3. P: HUD ghost shows through dim, no close X, footer Esc hint 14px, chamfer corner glyph.
-- 48, 53, 54 are in-raid HUD screens: the critic grades the whole HUD (feed, score clipped at y0, $ in bag, extract x3). Mostly hud.md work, not reachable by a card fix. Likely stay <4; note and move on.
-- Screens CSS: arcade page/over card in game CSS ~lines 1517-1591 (body #attract .arcpage/.arcover), pause 1598-1618.
-- p2line at line 828; 46 how-to-play table built in script (arcpage).
-
-## Run 5 (build v29.89 at start; shots notes/shots/12-e1; critic scores 10:41)
-- Others shipped on party pages meanwhile: 29.84 one column+56px button, 29.87 slide ghost floats, 29.88 operator menu one red/solid backdrop, 29.89 abandon.
-- Scores now: 46=3, 62=3, 58=2 (stack of small explaining sentences, amber 12px paragraph, mixed sizes), 63=2, 56=2, 64=2, 47=2, 49=3, 52=2, 55=2, 48/53/54=2 (HUD).
-- Common P1 across critic: no close X, no key/pad hints, empty attract (no hook), type below floor.
-- DON'T list scratchpad dir (huge). DON'T re-read old scores (accept.json 236-410 is the list).
-
-## Run 6
-- Shipped v29.91 cw-partyx: operator card close X + key strip; p2line one 16px label. Critic 62: 3 (better). Pictures 12-f1.
-- Critic's remaining P1 on 62: delete Back row (checks mkfixture ~6228 and ~7327 pin 3 buttons: retarget under lock), hints 16px, backdrop is opaque by his order (do not dim world there).
-- 58 is the shared title menu (lore, 3-step row, key legend, $ in save row): belongs to a title task, not a card fix.
-- Still <4: 46,47,48,49,52,53,54,55,56,58,63,64. HUD screens 48/53/54 belong to hud.md work.
-- mk script gotcha: anchor text mid-line: a // comment in a replacement swallows the rest of that line; use /* */.
-
-## Lessons
-- Edit mkfixture with 7-space indent in the 6100-6200 range; lock.sh first, then edit, then HELD=1 bash fixq.sh, then unlock.sh.
-- Preflight takes ~2 min. Gate reruns old checks: any old check asserting centred/width will regress.
-- Don't re-read the game CSS 1500-1630 more than once: it costs a lot. Notes first.
-
-## Run 7 (lane d, Claude Code; start build v29.92)
-- Critic at start (shots 12-g1): 46=3 55=3 49=3 56=2 (no row staged: board shows No scores yet; 55 shows Score 0 SP, extraction in the stager does not score).
-- Shipped v29.93 cw-partykeys (key caps, ring glyph, 56px rows, ghost board rows, translucent backdrop), v29.94 cw-partystats (run over stat cells, no first run card while arcade is up).
-- LEARNED: behind #attract is the Undercroft hub (labels, HUD). With the welcome pack open (fresh profile stage) it showed through at 46. Critic then: 46=2 (welcome pack ghost), 55=3, 56=2 (P0 hub legible, ghost rows read as clutter, button outside card, two titles).
-- Plan v29.95 cw-partycard: button inside card bottom right (grid-area 1/1), wordmark absolute top-left logo, over card 720 wide, #attract backdrop-filter blur(--sp-2). Needs old checks 29.84/79/76/74/73/66/49 retargeted tolerant (accept old and new) under the lock.
-- TODO after: close .modal.on in arcadeEnter (welcome pack open before arcade click at 46), pause box X (49), operator Back row (62/63), HUD controls card restyle (47/48). 58 title and HUD 48/53/54 stay PARTIAL.
-
-## Run 7 RESULT (lane d, 2026-10-18 08:00 to 09:55, v29.92 to v30.20; shots 12-g1 start, 12-g10 end)
-Shipped (all with preflight, each its own check): 29.93 partykeys, 29.94 partystats, 29.97 partycard, 30.01 partyprompt, 30.04 partyclear, 30.10 partyhud, 30.12 partyhud2, 30.14 partyop4, 30.16 partyopbd, 30.18 partyglow (8px blur, reverted by) 30.20 partyglow2.
-Final critic: 46=3 52=3 55=3 64=3 62=3 63=3 49=3, 56=2, 47=2, 48/53/54=2 (HUD, not touched: whole-HUD verdicts), 58=2 (title page, not touched).
-- The critic gives 3 to every clean card and keeps coming back with a contradicting P1 on the same control: "Press any button is a fake button" (filled) and then "no primary action" (hint). A 4 was never reached; every other P1 it named on these cards was fixed at least once.
-- LEARNED: behind #attract is the Undercroft hub; a window left open on the title (welcome pack, fresh profile) showed through (fixed: arcadeEnter closes .modal.on; firstRunNext returns while ARCADE.on). A blurred backdrop (16px, backdrop-filter, same as the end cards) hides the hub labels; 8px lets them read.
-- LEARNED: checks run in the game script scope, so stub a game function by plain assignment (arcadeCardOn=function...), never window.name=; computed border widths inside the zoomed operator card are scaled by menuScale (compare to the top border, not to 3).
-- LEARNED: tolerant retargets (accept old and new layout) are committed first under the lock, then the build ships; the fixture commits this run: 7ab39675, aaaf722f, 1fcadaf9, 930c8240, b73c7483.
-- Still open: HUD screens 48/53/54/47 (whole HUD graded: corner panels, feed, hero ammo; belongs to hud.md work), 58 (title redesign), empty board design (56/64), a 4th stat on the run over card, the Esc Resume hint on 49 as a key cap, pad glyphs in the how to play table.
+# 12-ui-party-screens (lane a)
+- Run 8: shipped v30.22 card P17, v30.23 cw-modalflat. Shots 12-h1 (before), 12-h2 (after).
+- Critic on 12-h2: 46=3, 49=3, 52=3, 55=3, 62=3, 63=3, 58=2 (title page: needs a big cut, other task owns it), 56=2, 64=2, 47/48/53/54=2 (these are in-raid HUD stages, the critic grades the HUD behind the card; HUD is another task).
+- Still open, in order of worth:
+  - 56/64 empty board: critic flip-flops (v29.93 asked for ghost rows, now asks for none). Try: one centred empty state and a close X + real Back button in the card.
+  - 46/49/62/63: "Esc Resume" hint (#pausebox::after) is plain text, make it key cap + label; focus on ghost buttons; backdrop is flat void on 62/63.
+  - 62/63: armed row dark red on dark red (use 1px danger border, ghost fill).
+- Honest note: nothing reaches 4 yet; the critic keeps finding 3s on small sparse cards.
