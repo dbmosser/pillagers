@@ -1,0 +1,7 @@
+v31.51: a new codex gun is one feed line, not two callouts
+
+A gun you find for the first time is noted once in the left feed, no longer twice on screen.
+
+Check 31.51. Fails on v31.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

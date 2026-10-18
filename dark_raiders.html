@@ -2861,7 +2861,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.50';
+var VER='31.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -42417,7 +42417,7 @@ function codexScan(){
     a=G.bag||[]; for(i=0;i<a.length;i++) item(a[i]);
     p=G.player;
     if(p){ if(p.wep&&p.wep.id) put(p.wep.id); if(p.sec&&p.sec.id) put(p.sec.id); }
-    if(n&&state==='raid'){ try{ say('CODEX ENTRY','info',{sub:String(WEAPONS[nw[0]].name).toUpperCase()+'  \u00b7  '+(ITEMRAR[gunRarity(nw[0])]||'')}); }catch(_cs){} }
+    if(n&&state==='raid'){ try{ /* v31.xx (cw-codexfeed), the critic on screen 36 (2026-10-19): a new gun showed twice, top centre and bottom left. say() puts every line in the feed AND the top lane, so this one goes to the feed only (a quiet note, not an alert). */ feedSay('CODEX ENTRY','info',{sub:String(WEAPONS[nw[0]].name).toUpperCase()+'  \u00b7  '+(ITEMRAR[gunRarity(nw[0])]||'')}); }catch(_cs){} }
   }
   if(n){ try{ saveProfile(); }catch(_sv){} }
   return n;
@@ -49496,7 +49496,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.50: The corner column is 300 wide, and the names of caches and people no longer show through the gaps in the HUD. Check 31.50 fails on v31.49',
+  now:'v31.51: A gun you find for the first time is noted once in the left feed, no longer twice on screen. Check 31.51 fails on v31.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,5 @@
+## v31.51 - A NEW CODEX GUN IS ONE FEED LINE, NOT TWO CALLOUTS
+
+Co-op hunt while he was away. The critic on the raid hud (screen 36): a codex entry showed top centre and again bottom left, the same words twice. say() writes every line into the feed and also into the top lane. The codex note now goes to the feed only, so it reads once, in the left list.
+
+MEASURED. Check 31.51 passes, and fails on v31.50.

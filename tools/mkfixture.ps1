@@ -6101,6 +6101,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.51',what:'a new codex gun is one feed line at the bottom left, not also a second callout top centre (the critic: it showed twice)',
+   run:function(){
+     var g=null, rs=say, said=[], i, n, found=false, p;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       if(state!=='raid') return 'not in a raid after deploy';
+       say=function(m){ said.push(String(m)); };
+       P.codex={};
+       n=codexScan();
+       if(!n) return 'the scan found no new gun to note';
+       if(said.indexOf('CODEX ENTRY')>=0) return 'a new codex gun still says CODEX ENTRY through the top lane as well as the feed';
+       p=feedS().lines;
+       for(i=0;i<p.length;i++) if(String(p[i].txt).indexOf('CODEX ENTRY')===0) found=true;
+       if(!found) return 'a new codex gun is not in the feed at all';
+       return null;
+     } finally {
+       say=rs;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'31.50',what:'cw-trcol2, the follow-up on his one column order (2026-10-18): the corner column is 300 px wide at 1080p (his menu survey pick, q16 and q20 A; 600 at 4k) and a world name label (a named cache, a nameplate, the strongbox) is not drawn while it would overlap the column (the rows, the gap between two rows, the minimap) or the score and clock plate at the top centre, in career, in the demo and in the two player demo, and still is drawn beside them',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize&&window.__runPrep&&window.__topClear&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and draw';
