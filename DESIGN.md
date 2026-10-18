@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.55 - THE SECTOR MAP, THIRD PASS
+
+Co-op hunt while he was away. The critic scored the sector map card 3 of 5 again and named what was left: marker tags that floated away from their marks (the mark under a tag was treated as an obstacle, so a tag was pushed up a whole line), contract rows that were uneven (a bar on some rows, a word on the rule rows) and a panel that ended short of the map frame, a hot ground tag with a second explaining line that crossed the ring, zone names still loud against the marks, walls that competed with the tags, and the sector name and the muted words sector map on different baselines.
+
+MEASURED. Check 31.55 passes, and fails on v31.54.
 ## v31.54 - PAD BUTTONS TABLE WIDE, SETTINGS FOCUS LINE, LONGER FADE
 
 Co-op hunt while he was away. Critic c-31w round 2: Pad buttons table was a 950px column in a 1820px card, the pointed Settings row hardly stood out, list bottoms sliced a line through the middle.

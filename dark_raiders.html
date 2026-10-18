@@ -2879,7 +2879,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.54';
+var VER='31.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45305,11 +45305,13 @@ function mapCardBack(cd){
 // green, a rule contract shows holding or broken). When the rows cannot all have two lines they share the height on one line each with a thin bar.
 function mapContractsDraw(cd,rows){
   var c=cd.col, z=cd.z, u=cd.u, q=Math.round(20*u), th=Math.round(52*u), r=Math.max(2,Math.round(4*z)), lw=Math.max(1,Math.round(z)), n=rows.length, nd=0, i, row, ry, pitch, two,
-      y0, avail, nat=Math.round(76*u), mid, mid2, wRew, wCnt, maxW, barW, bh=Math.max(3,Math.round(4*z)), txt, cnt, cc, ch,
+      y0, avail, nat=Math.round(76*u), mid, mid2, wRew, wCnt, maxW, barW, bh=Math.max(3,Math.round(4*z)), txt, cnt, cc, ch, fr, fcol,
       nameFont=FSz('600 15.4px '+HUDF,z), cntFont=FSz(TYPE.label,z), rewFont=FSz('600 12px '+HUDF,z);
   for(i=0;i<n;i++) if(rows[i].done) nd++;
-  y0=c.y+th; avail=c.h-th-Math.round(8*u); pitch=Math.min(nat,Math.floor(avail/n)); two=(pitch>=Math.round(58*u));
+  y0=c.y+th; avail=c.h-th-Math.round(8*u); pitch=Math.min(nat,Math.floor(avail/n));
   ch=Math.min(c.h,th+n*pitch+Math.round(8*u));
+  if(th+n*nat+Math.round(8*u)>=0.7*c.h){ pitch=Math.floor(avail/n); ch=c.h; }   // v31.xx (cw-mapstyle3): a list that fills the column runs to the bottom of the map frame (the panel ended 6 px short of it)
+  two=(pitch>=Math.round(58*u));
   ctx.save();
   try{
     mapRR(c.x+lw/2,c.y+lw/2,c.w-lw,ch-lw,r); ctx.fillStyle=UIC.ui_raised; ctx.fill(); ctx.lineWidth=lw; ctx.strokeStyle=UIC.ui_line; ctx.stroke();
@@ -45321,6 +45323,8 @@ function mapContractsDraw(cd,rows){
       row=rows[i]; ry=y0+i*pitch;
       cnt=row.done?'done':(row.rule?row.rule:(row.p+'/'+row.n));
       cc=row.done?UIC.ok:((row.rule==='broken')?UIC.danger:((row.rule==='ready')?UIC.ok:UIC.tx_2));
+      fr=row.rule?((row.rule==='holding'||row.rule==='open')?0:1):(row.p/row.n);   // a rule contract has the same bar: empty while it holds, full when it is ready or broken
+      fcol=(row.done||row.rule==='ready')?UIC.ok:((row.rule==='broken')?UIC.danger:UIC.acc);
       txt=row.pay?('$'+row.pay.toLocaleString()):'';
       ctx.font=rewFont; wRew=txt?hudRawW(txt):0;
       ctx.font=cntFont; wCnt=hudRawW(cnt);
@@ -45329,24 +45333,20 @@ function mapContractsDraw(cd,rows){
       ctx.font=nameFont; ctx.fillStyle=UIC.tx_1; ctx.textAlign='left'; ctx.fillText(mapFit(row.name,maxW),c.x+q,mid);
       if(txt){ ctx.font=rewFont; ctx.fillStyle=UIC.tx_2; ctx.textAlign='right'; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign='left'; }
       if(two){
-        if(row.rule){ ctx.font=cntFont; ctx.fillStyle=cc; ctx.fillText(cnt,c.x+q,mid2); }
-        else {
-          barW=c.w-2*q-wCnt-Math.round(12*u);
-          ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,mid2-bh/2,barW,bh);
-          ctx.fillStyle=row.done?UIC.ok:UIC.acc; ctx.fillRect(c.x+q,mid2-bh/2,barW*(row.p/row.n),bh);
-          ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign='right'; ctx.fillText(cnt,c.x+c.w-q,mid2); ctx.textAlign='left';
-        }
+        barW=c.w-2*q-wCnt-Math.round(12*u);
+        ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,mid2-bh/2,barW,bh);
+        if(fr>0){ ctx.fillStyle=fcol; ctx.fillRect(c.x+q,mid2-bh/2,barW*fr,bh); }
+        ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign='right'; ctx.fillText(cnt,c.x+c.w-q,mid2); ctx.textAlign='left';
       } else {
         ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign='right'; ctx.fillText(cnt,c.x+c.w-q-(wRew?(wRew+q):0),mid); ctx.textAlign='left';
-        if(!row.rule){
-          barW=c.w-2*q; ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW,bh);
-          ctx.fillStyle=row.done?UIC.ok:UIC.acc; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW*(row.p/row.n),bh);
-        }
+        barW=c.w-2*q; ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW,bh);
+        if(fr>0){ ctx.fillStyle=fcol; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW*fr,bh); }
       }
       if(i<n-1&&two){ ctx.strokeStyle=UIC.ui_line; ctx.lineWidth=lw; ctx.beginPath(); ctx.moveTo(c.x+q,ry+pitch); ctx.lineTo(c.x+c.w-q,ry+pitch); ctx.stroke(); }
     }
   } finally { ctx.restore(); }
-}// The writing and the controls of the card, drawn after the map labels (they are placed by the map, these are not): the header (the sector name, the muted
+}
+// The writing and the controls of the card, drawn after the map labels (they are placed by the map, these are not): the header (the sector name, the muted
 // words sector map, the weather, the X), the contracts column and the footer (the key hints and the SURVEYED figure).
 function mapCardChrome(cd){
   var z=cd.z, u=cd.u, p=cd.p, g=G, hy=cd.y+cd.hh/2, fyc=cd.fy+(cd.y+cd.h-cd.fy)/2, nm, x0, hx, wxs, xb=cd.xb, hov, f=null, hint, x1, r=Math.max(2,Math.round(4*z)),
@@ -45356,8 +45356,8 @@ function mapCardChrome(cd){
     ctx.textBaseline='middle'; ctx.textAlign='left'; ctx.globalAlpha=1;
     nm=(g.map&&g.map.name)?String(g.map.name):''; x0=cd.x+p;
     ctx.font=FSz('700 24.6px '+HUDF,z); ctx.fillStyle=UIC.tx_1;
-    ttl=nm||'SECTOR MAP'; ctx.fillText(ttl,x0,hy); hx=x0+hudRawW(ttl)+Math.round(16*u);
-    if(nm){ ctx.font=FSz('500 15.4px '+HUDF,z); ctx.fillStyle=UIC.tx_2; ctx.fillText('SECTOR MAP',hx,hy); hx+=hudRawW('SECTOR MAP')+Math.round(24*u); }
+    ttl=nm||'SECTOR MAP'; var _tfp=parseFloat(((/([\d.]+)px/).exec(ctx.font)||[0,24])[1])||24, _tby=Math.round(hy+_tfp*0.34); ctx.textBaseline='alphabetic'; ctx.fillText(ttl,x0,_tby); hx=x0+hudRawW(ttl)+Math.round(16*u);   // v31.xx (cw-mapstyle3): the sector name and the muted words sit on one baseline
+    if(nm){ ctx.font=FSz('500 15.4px '+HUDF,z); ctx.fillStyle=UIC.tx_2; ctx.fillText('SECTOR MAP',hx,_tby); hx+=hudRawW('SECTOR MAP')+Math.round(24*u); }  ctx.textBaseline='middle';
     if(g.intel){ ctx.font=FSz(TYPE.label,z); ctx.fillStyle=UIC.tx_2; ctx.fillText('elites and keys are live intel',hx,hy); hx+=hudRawW('elites and keys are live intel')+Math.round(24*u); }
     wxs=(isDay()?tod().name:'night')+' \u00b7 '+g.wx.name+(g.wxNext?(' \u2192 '+g.wxNext.name+' '+Math.round(g.wxT*100)+'%'):'');   // v31.xx (cw-mapstyle2): one separator between the hour and the weather, no double spaces
     ctx.font=FSz('600 15.4px '+HUDF,z); ctx.textAlign='right'; ctx.fillStyle=(wx().id==='clear')?UIC.tx_2:UIC.tx_1; ctx.fillText(wxs,xb.x-Math.round(24*u),hy); ctx.textAlign='left';
@@ -45477,8 +45477,11 @@ function mapPlaceLabels(Q,hdrY,fn){
     cur={items:[L],last:L,p:L.p,i:i}; G2.push(cur);
   }
   G2.forEach(function(g){ var u=null; g.items.forEach(function(L){ var q=mapLabelRect(L,0,0); u=u?{l:Math.min(u.l,q.l),t:Math.min(u.t,q.t),r:Math.max(u.r,q.r),b:Math.max(u.b,q.b)}:q; }); g.r=u; });
-  function hits(a,ic){ for(var h=0;h<placed.length;h++){ var b=placed[h]; if(a.l<b.r+2&&b.l<a.r+2&&a.t<b.b+1&&b.t<a.b+1) return true; }
-    if(ic) for(var h2=0;h2<MAPICONS.length;h2++){ var b2=MAPICONS[h2]; if(a.l<b2.r+5&&b2.l<a.r+5&&a.t<b2.b+5&&b2.t<a.b+5) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark
+  /* v31.xx (cw-mapstyle3): the mark a tag is anchored to (the tag sits just above it) is no obstacle for that tag, so the tag keeps its place at the mark and is not pushed off it (the critic: labels float away from their icons) */
+  var _mz=(typeof hudRes==='function')?hudRes():1;
+  G2.forEach(function(g){ var L0=g.items[0], sx=L0.x*L0.m.a+L0.m.e, sy=L0.y*L0.m.d+L0.m.f, q, I; g.own=[]; for(q=0;q<MAPICONS.length;q++){ I=MAPICONS[q]; if(sx>=I.l&&sx<=I.r&&sy>=I.t-30*_mz&&sy<=(I.t+I.b)/2) g.own.push(q); } });
+  function hits(a,ic,own){ var _ax=Math.max(2,(a.b-a.t)*0.3); for(var h=0;h<placed.length;h++){ var b=placed[h]; if(a.l<b.r+_ax&&b.l<a.r+_ax&&a.t<b.b+1&&b.t<a.b+1) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */
+    if(ic) for(var h2=0;h2<MAPICONS.length;h2++){ if(own&&own.indexOf(h2)>=0) continue; var b2=MAPICONS[h2]; if(a.l<b2.r+5&&b2.l<a.r+5&&a.t<b2.b+5&&b2.t<a.b+5) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark
     return false; }
   // v19.31, seen on the 4K map screenshot (2026-10-08): a label moved off a clash could be moved anywhere, so RECEIVING APRON went up
   // past the SECTOR MAP line and half off the top of the screen. A moved label now stays on the screen and below the header line.
@@ -45489,7 +45492,7 @@ function mapPlaceLabels(Q,hdrY,fn){
     // v19.64, seen on the 4K map screenshot (2026-10-08): a tag sits just above its marker, so moving it DOWN off a clash put it on its
     // own marker (CACHE printed across its ring). Up and to the sides are tried first now, down last.
     tries=[[0,0],[0,-(gh+3)],[-(gw*0.6),0],[gw*0.6,0],[0,-2*(gh+3)],[0,gh+3],[0,2*(gh+3)],[0,-3*(gh+3)],[0,3*(gh+3)]];
-    for(var _pass=0;_pass<2&&!ok;_pass++) for(k=0;k<tries.length&&!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(r.t<_bT||r.b>_bH||r.l<_bL||r.r>_bW) continue; if(!hits(r,_pass===0)){ ok=true; g.dx=dx; g.dy=dy; placed.push(r); out.push(g); } }   // v31.xx (cw-mapstyle): first clear of the marks too, then clear of the other labels only
+    for(var _pass=0;_pass<2&&!ok;_pass++) for(k=0;k<tries.length&&!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(r.t<_bT||r.b>_bH||r.l<_bL||r.r>_bW) continue; if(!hits(r,_pass===0,dy<=0?g.own:null)){ ok=true; g.dx=dx; g.dy=dy; placed.push(r); out.push(g); } }   // v31.xx (cw-mapstyle): first clear of the marks too, then clear of the other labels only
     if(!ok&&g.p>=3){ g.dx=0; g.dy=0; placed.push(g.r); out.push(g); }
   });
   out.sort(function(a,b){ return a.i-b.i; });
@@ -45603,7 +45606,7 @@ function drawMapOverlayRaw(){
     ctx.fillStyle='rgba(63,157,233,.16)';
     ctx.fillRect(ox+wq3.x*sc,oy+wq3.y*sc,wq3.w*sc,wq3.h*sc);
   }
-  ctx.fillStyle='#3b4247';   // v31.xx (cw-mapstyle2): the walls a step darker, between the style guide's two line colours, so the perimeter is not a second frame inside the card
+  ctx.fillStyle='#30363a';   // v31.xx (cw-mapstyle3): the walls another step darker so the tags and zone names stand out from them
   for(i=0;i<G.map.walls.length;i++){
     var wl=G.map.walls[i];
     ctx.fillRect(ox+wl.x*sc,oy+wl.y*sc,Math.max(1,wl.w*sc),Math.max(1,wl.h*sc));
@@ -45630,7 +45633,7 @@ function drawMapOverlayRaw(){
     // a district across the top of it.
     var zx=ox+(80+(Z2.mc+0.5)*G.map.cw)*sc;
     var zy=oy+(80+(Z2.mr+0.5)*G.map.ch)*sc-G.map.ch*sc*0.34;
-    ctx.font=FS('600 13.5px '+HUDF);   // v31.xx (cw-mapstyle2): zone names a size under the extraction names and not bold, so the map has a hierarchy (the critic: flat, everything one weight)
+    ctx.font=FS(TYPE.label);   // v31.xx (cw-mapstyle3): zone names at the label size, under the extraction names (the critic: still too loud against the marks)
     ctx.fillStyle='rgba(239,233,220,.66)';   // v31.xx (cw-mapstyle): zone names are the style guide's tx-1 at about 70 percent over a dark halo (they were the district tint at 28 percent, dark on dark)
     ctx.fillText(Z2.name||DISTRICTS[Z2.d].name,zx,zy);
   }
@@ -45907,8 +45910,7 @@ if(G.trail&&G.trail.length>1){
     // is bigger (a big screen, a bigger text setting) the second line printed over the first. They are a line height apart now.
     var _hgf=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11;
     ctx.fillText('HOT GROUND',hx,hy-hr-5);
-    ctx.fillStyle='rgba(229,72,47,.78)';
-    ctx.fillText('richer, and busier',hx,hy-hr-5+Math.max(12,_hgf*1.15));
+    // v31.xx (cw-mapstyle3): the second line (richer, and busier) is gone, an explaining line (his Q8, logged in changes.md): the ring, the warning mark and the name already say it, and it printed across the ring edge
     ctx.textAlign='left';
   })();
   // Drawn AFTER the fog on purpose: the extraction rings and your own marker are
@@ -49515,7 +49517,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.54: The pad buttons table spreads to 1440, the pointed Settings row has a lime outline and lighter fill, and list ends fade out over 48px. Check 31.54 fails on v31.53',
+  now:'v31.55: The sector map tags sit at their marks, every contract has a bar, the contracts list runs to the bottom of the map, and the hot ground says only its name. Check 31.55 fails on v31.54',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

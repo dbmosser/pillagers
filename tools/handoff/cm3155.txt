@@ -1,0 +1,7 @@
+v31.55: the sector map, third pass
+
+The sector map tags sit at their marks, every contract has a bar, the contracts list runs to the bottom of the map, and the hot ground says only its name.
+
+Check 31.55. Fails on v31.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
