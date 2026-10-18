@@ -1,2 +1,2 @@
 == 4k : window 3872x2263, viewport 3840x2160
-  loot                                   staged       6.0s    | {"scene":"loot","plate":false,"zoom":6.793703703703704,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1913,"y":1106,"w":348,"h":365,"fx":1862,"fy":1251}],"objects":[{"id":"open-crate","kind":"container","fx":1387,"fy":1387},{"id":"open-locker","kind":"container","fx":1183,"fy":1047},{"id"
+  busy                                   staged       6.9s    | {"scene":"busy","plate":false,"zoom":6.793703703703704,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1913,"y":1105,"w":349,"h":362,"fx":1862,"fy":1251}],"objects":[{"id":"open-crate","kind":"container","fx":1428,"fy":1373},{"id":"open-locker","kind":"container","fx":1210,"fy":1034},{"id"

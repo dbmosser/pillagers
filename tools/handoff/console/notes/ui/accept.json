@@ -151,17 +151,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "the hud is still a pile of unrelated boxes with different type sizes, edges and fills, and the earlier clutter advice (controls cheat sheet, pillagers list, run info) was not followed.",
+  "verdict": "The hud is still a pile of mismatched widgets: the controls sheet and the run info panel are crowded, the minimap is clipped by a stray zone label and the top-right text is tiny, so the eye has nowhere to land except the loud ammo and hp numbers.",
   "findings": [
-   "P0 controls cheat sheet (bottom centre, x490-900, y697-867): collapse it to a single 'f1 controls' hint (16px key cap plus word) after 30s. Remove the panel from the default view. If it stays, set it to 16px tx-2 text in two columns, with 24px padding.",
-   "P0 run info panel (right, x1582-1900, y305-467) and 'extraction c available' chip: title 'contracts' at 16px tx-2. Rows at 16px tx-1 with '0/2' right-aligned, shortened to 'search 2 cases', 'carry 2 servo actuators', 'search 2 containers'. Move 'dawn clear' onto the minimap. Dock the extract chip 8px under the last row inside the same panel. Fix or remove the clipped zone-name label on the minimap.",
-   "P1 pillagers list (top left, x10-390, y152-258): show it on tab only, or as a 3-row strip at 40% opacity. Title in tx-1, never amber. Use --ui-panel fill, 1px --ui-line-hi border, 4px radius, 24px padding, 28px row pitch.",
-   "P1 ammo panel (bottom right, x1578-1910, y843-1053) and 'concealed · in cover' tag: order: name 20px tx-1, ammo 56px/800 with '/ 24' at 20px tx-2, then 'b backpack' at 16px tx-2 at the bottom. Fill --ui-panel, 24px padding, 8px clearance from the status tag. Use a tx-1 outline chip for status, with no amber fill.",
-   "P1 hp and stamina bars and 'standing' tag (bottom left): use one 16px label above or inside each bar, same position and size. Bars 12px tall at 8px gap and the same left edge. Move 'standing' into the status tag with 'concealed' on the right. Use --ok for hp with a red state under 30%."
+   "P0 controls cheat sheet (bottom centre, x490-900, y697-867): Show a single 'f1 controls' chip (16px tx-2) after 30s and hide the panel by default. If it stays, use 16px text, 24px padding, and --ui-panel fill with a 1px --ui-line-hi border.",
+   "P0 run info panel and minimap (right, x1582-1900, y78-470): Title 'contracts' at 16px tx-2. Shorten rows to 'carry data core', 'haul $800', 'carry 2 circuit boards', with the count right-aligned in tx-1 and 24px padding. Remove or fix the zone label (tx-2, inside the map). Dock the extract chip 8px under the panel. Give the minimap a 1px --ui-line-hi border and a 4px radius, inset 5% from the screen edge.",
+   "P1 ammo panel and status tag (bottom right, x1578-1910, y815-1053): Order: name 20px tx-1, then ammo 56px/800 with '/ 24' at 20px tx-2, then 'b backpack' at 16px tx-2 at the bottom. Fill --ui-panel, 24px padding, flat. Give the status tag a tx-1 outline with no amber, and 8px clearance.",
+   "P1 pillagers list (top left, x10-390, y152-258): Show it on tab only, or at 40% opacity. Title in tx-1. Use --ui-panel fill, 1px --ui-line-hi border, 4px radius, 24px padding, 28px row pitch. Inset 5% from the edge.",
+   "P1 hp, stamina bars and 'standing' tag (bottom left, x25-520, y945-1068): Use one 16px label per bar in the same position (above, left-aligned). Bars are 12px tall with an 8px gap and the same left edge. Use --ok for hp with red below 30%. Merge 'standing' into the status tag. Keep 48px from the bottom edge."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after7/21-raid-hud-calm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after9/21-raid-hud-calm-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T21:01"
+  "when": "2026-10-18T22:27"
  },
  "22-raid-map-open": {
   "score": 2,
@@ -260,17 +260,17 @@
  "50-arcade-hud-live": {
   "score": 3,
   "pass": false,
-  "verdict": "The new HUD is cleaner: lower case is fixed, the score sits on a panel, the ammo has a proper hero number and the minimap is clearer. But it still looks like several unrelated widgets, with a stamina label colliding with a hotbar slot, a duplicated run info/run goals title, and the hotbar showing two highlights.",
+  "verdict": "The HUD is cleaner and fully lower case, with the score now boxed and the minimap moved, but the stamina label still crowds the hotbar, a pink 'dock cache' label collides with 'f1 controls', and the old styling (bright gradient bars, caret, tooltip) is mostly unchanged.",
   "findings": [
-   "P0 stamina label vs hotbar slot 1 (x≈538-620, y≈988-1035): Put the 16px 'stamina' label left of the bar, or end the bars at x=360 and start the hotbar at x≥570. Keep 24px clear between the vitals and the hotbar.",
-   "P1 hotbar (x≈570-1555, y≈950-1060) and its tooltip: Give only the active slot a 2px --acc border and --ui-raised fill. All others get 1px --ui-line and 40% opacity when empty. Delete the 'fire / use' tooltip or turn it into one 16px tx-2 legend. Set count badges at 16px.",
-   "P1 right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Keep one 20px tx-1 'run goals' title, 16px tx-2 rows on a 32px pitch with sp values right-aligned. Use 24px padding, a 1px --ui-line-hi border and a 16px gap under the minimap. Drop the caret or make it a 48px close glyph.",
-   "P1 top-centre score block (x≈880-1040, y≈0-135): Make one strip 360x96 at y=54 holding '0 sp' at 56px f-cond 800 tx-1, '9:46' at 20px tx-2 and 'extract 113m' at 16px --extract, all inside the panel. Delete 'score' and put the arrow inside the strip.",
-   "P1 bottom-left vitals (x≈24-530, y≈905-1070): Use three flat 10px bars, all 360px wide, on --ui-line tracks. Put 16px labels and values outside the bars, left of them. Colour hp with --ok and stamina with --acc, and leave armour neutral. Make 'standing' plain 16px tx-2 text. Set the block 54px in from the bottom and 96px from the left."
+   "P0 top-left, 'dock cache' over 'f1 controls' (x≈0-135, y≈155-195): Keep world labels out of the HUD safe zone (clamp to x≥96). Hide them when they overlap a HUD element, and use tx-1 16px, not pink. Move 'f1 controls' to a 16px tx-2 footer legend at x=96, y=1026.",
+   "P0 stamina label vs hotbar slot 1 (x≈455-535, y≈988-1015): Put the 16px labels left of the bars. Fix the bars at 360px wide (x=96-456) and start the hotbar at x≥570, leaving 24px clear.",
+   "P1 bottom-left vitals (x≈24-443, y≈965-1068): Use flat 10px bars on --ui-line tracks. Colour hp with --ok, stamina with --acc, and armour neutral tx-2. Put 16px labels and values outside the bars. Make 'standing' plain 16px tx-2 text. Inset the block 96px from the left and 54px from the bottom.",
+   "P1 hotbar and tooltip (x≈570-1555, y≈925-1060): Only the active slot gets a 2px --acc border and a --ui-raised fill. Give the other slots a 1px --ui-line border with no blue. Delete the tooltip or reduce it to a 16px tx-2 legend with no chip. Set slot numbers and counts at 16px.",
+   "P1 right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Use one 20px tx-1 'run goals' title with 16px tx-2 rows on a 32px pitch and right-aligned sp values. Add 24px padding and a 1px --ui-line-hi border. Leave a 16px gap under the minimap. Delete 'run info' and make the caret a 48px close target."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after8/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after9/50-arcade-hud-live-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T21:59"
+  "when": "2026-10-18T22:26"
  },
  "52-arcade-run-over": {
   "score": 3,
@@ -703,6 +703,15 @@
    "P1 bottom-right weapon/ammo panel: Make ammo the 56px hero in tx-1 with the reserve in tx-2 at 20px. Raise secondary text to tx-2 (#aaa498) at 16px minimum. Move the key hint to the footer at 14px. Leave a 16px gap between the status tag and the panel."
   ],
   "pic": "tools/handoff/console/notes/shots/b-30e/34-raid-downed-pickups-1080.jpg",
+  "task": "b-30-ui-hud",
+  "when": "2026-10-18T22:26"
+ },
+ "36-raid-low-health": {
+  "score": 0,
+  "pass": false,
+  "verdict": "critic answer was not JSON",
+  "findings": [],
+  "pic": "tools/handoff/console/notes/shots/b-30e/36-raid-low-health-1080.jpg",
   "task": "b-30-ui-hud",
   "when": "2026-10-18T22:26"
  }

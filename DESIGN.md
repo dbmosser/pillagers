@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.27 - END RUN from the demo pause menu halves the score like a death
+
+Co-op hunt while he was away. His Q60 (2026-10-18): ending early halves the score, the same as dying. In the demo a death or the burn already counted half, but END RUN from the pause menu paid in full, so a guest could keep a high score by ending the run instead of dying. END RUN now halves both scores (one player and two), player 2 halves its own figures from the same run end word without the failure music, and the RUN OVER card says ended early -50%. An idle out is left alone for now (question 78) and an extraction still doubles.
+
+MEASURED. Check 31.27 passes, and fails on v31.26.
 ## v31.26 - the superhot key is named in words, left of 1, on the F1 list and beside the Settings row
 
 Co-op hunt while he was away. Follow-up to cw-shkey (his note 2026-10-18: "superhot mode needs a toggle key."). The picture of the Settings pane and the F1 list showed the key as a lone backquote tick, hard to see and read as "`(left of 1)". The key left of 1 is now named in words in both places: LEFT OF 1 on the Superhot row of the F1 list (the same words the Keys window uses) and key: left of 1 under the Superhot row in Settings. No new key and no new row.

@@ -2823,7 +2823,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.26';
+var VER='31.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49225,7 +49225,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.26: The Superhot key is named in words on the F1 list and beside the Settings row: left of 1. Check 31.26 fails on v31.25',
+  now:'v31.27: End run from the demo pause menu now counts half the score, on the RUN OVER card (both players) and the board, the same as dying. Check 31.27 fails on v31.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61969,7 +61969,7 @@ function arcadeOnMsg(m){
       netSamePost({t:'arcendok',pair:NET.pair,run:_er});
       if(_er&&ARCADE.endRun===_er) return 'ignored';   // v23.50 (arcade26): a repeat of a run end already taken changes nothing
       ARCADE.endRun=_er;
-      if(m.x2){ ARCADE.mine=Math.max(0,ARCADE.mine|0)*2; ARCADE.mate=Math.max(0,ARCADE.mate|0)*2; } else if(m.ko){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }   // v24.xx (feat0g): the run ended on an extraction, x2
+      if(m.x2){ ARCADE.mine=Math.max(0,ARCADE.mine|0)*2; ARCADE.mate=Math.max(0,ARCADE.mate|0)*2; } else if(m.ko||m.hf){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }   // v24.xx (feat0g): the run ended on an extraction, x2
       // v26.xx (outcomemusic): the host run end is how this window hears its own outcome: the doubled score of an extraction (x2) plays the
       // success piece, a death or the burn (ko) the failure piece, anything else (END RUN, an idle out) none. It plays while the raid is
       // still up here, or within four seconds of the marked out word that stopped it (the out word can arrive first).
@@ -62542,8 +62542,9 @@ function arcadeRunEnd(why){
   if(ARCADE.role!=='host'&&!G.netWasJoin) return arcadeP2Out(why);
   // v28.67 (lean1), HIS ORDER (2026-10-15): "EXTRACTING should be a 2x multiplier on score, KIA should be a 50% penalty". The extraction x2 was already in the
   // DEMO (arcadeX2) and the CAREER payout; a run that ends on a death or the burn now counts half its score, on the RUN OVER card, the board row and the CAREER ledger.
-  if(why==='dead'||why==='burn'){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }
-  var host=(ARCADE.role==='host'), me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0},
+  // v31.27 (cw-endhalf), HIS Q60 (2026-10-18): "Ending early halves the score, the same as dying." END RUN from the pause menu (why 'menu') halves both scores like a death or the burn.
+  // An idle out stays as it was (question 78 decides it) and an extraction still doubles (arcadeX2).
+  if(why==='dead'||why==='burn'||why==='menu'){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }  var host=(ARCADE.role==='host'), me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0},
       mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:String(why||''),team:arcadeTeam(),p1:host?me:mt,p2:host?mt:me};
   try{ outMusic(why==='extract'?'win':((why==='dead'||why==='burn')?'kia':'')); }catch(_om){}   // v26.xx (outcomemusic): the RUN OVER card of an extraction run, a death or a burn plays its piece; an idle out or END RUN none
@@ -62569,9 +62570,10 @@ function arcadeEndSend(){
   var id=String((ARCADE.run&&ARCADE.run.id)||''), now=Date.now();
   var x2=ARCADE.x2?1:0; ARCADE.x2=0;   // v24.xx (feat0g): an extraction run end tells player 2 the score was doubled
   var ko=(!x2&&ARCADE.over&&(ARCADE.over.why==='dead'||ARCADE.over.why==='burn'))?1:0;   // v26.xx (outcomemusic): a run that ended on a death or the burn, so player 2 plays the failure piece
-  ARCADE.endSend={id:id,at:now,last:now,x2:x2,ko:ko};
-  netSamePost(ko?{t:'arcend',pair:NET.pair,run:id,x2:x2,ko:1}:{t:'arcend',pair:NET.pair,run:id,x2:x2});
-  return true;
+  var hf=(!x2&&ARCADE.over&&ARCADE.over.why==='menu')?1:0;   // v31.27 (cw-endhalf): the run ended on END RUN, so player 2 halves its figures too (no failure piece: hf, not ko)
+  ARCADE.endSend={id:id,at:now,last:now,x2:x2,ko:ko,hf:hf};
+  var _am={t:'arcend',pair:NET.pair,run:id,x2:x2}; if(ko) _am.ko=1; if(hf) _am.hf=1;
+  netSamePost(_am);  return true;
 }
 // Run from the attract tick. Returns what it did: '', again or done.
 function arcadeEndTick(now){
@@ -62581,8 +62583,8 @@ function arcadeEndTick(now){
   if(!ARCADE.on||ARCADE.role!=='host'||now-e.at>=ARCADE_END.ms||(G&&G.arcade)){ ARCADE.endSend=null; return 'done'; }
   if(now-e.last<ARCADE_END.every) return '';
   e.last=now;
-  netSamePost(e.ko?{t:'arcend',pair:NET.pair,run:e.id,x2:e.x2?1:0,ko:1}:{t:'arcend',pair:NET.pair,run:e.id,x2:e.x2?1:0});
-  return 'again';
+  var _am={t:'arcend',pair:NET.pair,run:e.id,x2:e.x2?1:0}; if(e.ko) _am.ko=1; if(e.hf) _am.hf=1;   // v31.27 (cw-endhalf): the same word every time, hf kept for END RUN
+  netSamePost(_am);  return 'again';
 }
 // v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better". The host built
 // the RUN OVER card (TEAM SCORE, a row each, KIA -50% or EXTRACTED x2, the best moments) in arcadeRunEnd and player 2 only tore its raid down, so at the end of
@@ -62594,7 +62596,7 @@ function arcadeOverMirror(m){
   if(!ARCADE.on||ARCADE.role!=='p2'||ARCADE.solo) return null;
   me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0};
   mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
-  ARCADE.over={at:Date.now(),why:(m&&m.x2)?'extract':((m&&m.ko)?'dead':''),team:arcadeTeam(),p1:mt,p2:me};
+  ARCADE.over={at:Date.now(),why:(m&&m.x2)?'extract':((m&&m.ko)?'dead':((m&&m.hf)?'menu':'')),team:arcadeTeam(),p1:mt,p2:me};
   try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}
   return ARCADE.over;
 }
@@ -62685,7 +62687,7 @@ function arcadeOverSync(){
     c.textContent=''; c.setAttribute('data-at',sig);
     ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row; v23.56 (arcade31): in credits
       :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
-    if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']); else if(oc&&(o.why==='dead'||o.why==='burn')) ln.splice(1,0,['aoh','KIA -50%']);   // v24.xx (feat0g): the run ended on an extraction
+    if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']); else if(oc&&(o.why==='dead'||o.why==='burn')) ln.splice(1,0,['aoh','KIA -50%']); else if(oc&&o.why==='menu') ln.splice(1,0,['aoh','ended early -50%']);   // v24.xx (feat0g): the run ended on an extraction
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1]; c.appendChild(el); }
     if(oc){ try{ arcadeOverStats(c,o); }catch(_os){} }
     if(ini) arcadeIniDraw(c,ini);

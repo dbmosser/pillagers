@@ -1,2 +1,2 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  a17                                    staged       6.7s    | {"scene":"a17","bush":true,"conceal":0.09999999999999998,"crouch":true,"chars":[{"id":"p1","kind":"player","x":781,"y":571,"w":166,"h":297,"fx":781,"fy":631},{"id":"mate","kind":"player","x":1139,"y":583,"w":168,"h":316,"fx":1141,"fy":651}]}
+  a17                                    staged       6.1s    | {"scene":"a17","bush":true,"conceal":0.09999999999999998,"crouch":true,"chars":[{"id":"p1","kind":"player","x":781,"y":571,"w":176,"h":297,"fx":781,"fy":631},{"id":"mate","kind":"player","x":1139,"y":583,"w":168,"h":316,"fx":1141,"fy":651}]}

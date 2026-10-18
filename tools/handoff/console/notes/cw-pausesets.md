@@ -25,7 +25,7 @@ under Settings with Superhot on and keys and mouse held, a Settings row click le
 player 2 window (NET.same='p2': scroll reset, ESC shuts Settings only and is not handed to player 1), the list and CLOSE fit at
 1080p at menu zoom 1.3 and 1.1, no padding from 100vh. Tested by forcing the old formula live: the padding arm fails.
 
-## 2. A toggle key for Superhot (cw-shkey)
+## 2. A toggle key for Superhot (v31.04 cw-shkey, v31.26 cw-shkey2)
 
 The key already existed: the key left of 1 (Backquote) has toggled Superhot since v7.23. It sets the same dial and the same saved
 word as the one Settings row, and nothing on screen named it except CHANGE KEYS (LEFT OF 1). So I did NOT add a second key or a
@@ -39,3 +39,20 @@ second row (one control per job). Instead:
 - 2-player: Superhot stays the host's dial (his v16.74 order; it rides the world word), so only the host window toggles it. A press
   in the linked window says SUPERHOT FOLLOWS THE HOST and changes nothing (as before). New: the linked window now also says
   SUPERHOT ON or OFF when the host flips it mid raid (the first word of a party stays silent).
+- v31.26 (cw-shkey2) says the key in words: the F1 row reads "left of 1  superhot on/off" and the pane reads "key: left of 1". v31.04
+  showed a lone backquote tick, which the critic called odd and which was hard to see. Check 31.04 was retargeted (fixture commit
+  a9178b07) so it accepts the tick or the words, so it held on both builds.
+- Checks: 31.04 (fails on 31.03: stale lines on three quick presses, no key on the F1 list or the pane, no host toast on the linked
+  window; passes twice on 31.04) and 31.26 (the words, clear of the word beside them).
+
+## Pictures and critic
+- Pause: before notes/shots/cw-pausesets-before (26 at 4K is the collapsed window), after notes/shots/cw-pausesets-after. Critic 3,
+  better than before. Its remaining findings (steppers float far from the labels, last row cut by the detail pane, thin scrollbar)
+  are the Settings row layout and belong to the Settings lanes, not to this bug.
+- Superhot key: before notes/shots/cw-shkey-before, after notes/shots/cw-shkey-after (tick) and cw-shkey-after2 (words). The critic
+  scored the F1 list 2 ("same"): it is a long pre-existing wall of keys, and the new row is one line in it.
+
+## Left over
+- Superhot is still the host's dial in 2 player (his v16.74 order). If he wants the joined window to toggle it too, that is a
+  ruling to reverse, so it stays as is.
+- The What is New card needed a refresh (v31.08, polish pass 26) before cw-shkey2 could ship; other lanes were shipping at the same time.

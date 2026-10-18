@@ -1,0 +1,7 @@
+v31.27: end run from the demo pause menu halves the score like a death
+
+End run from the demo pause menu now counts half the score, on the RUN OVER card (both players) and the board, the same as dying.
+
+Check 31.27. Fails on v31.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

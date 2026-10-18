@@ -1,0 +1,2 @@
+# waiting/: jobs that wait for input. Lanes never pick from here; the coordinator moves a job back into tasks/ when its input exists.
+- 09-2p-bugfix-from-real-test.md (moved 10-18 evening): it waits for his first real 2-player test results (tools/handoff/q-round3/answers.md r3-01..03, or a new pause-box note). The two unread notes in exports/ now (15:42 pause settings, 15:43 superhot key) already belong to the cw-pausesets/cw-shkey helper, so 09 would only duplicate that work, and every empty run counts toward MAXRUNS.

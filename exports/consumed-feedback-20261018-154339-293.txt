@@ -1,0 +1,8 @@
+﻿PILLAGERS FEEDBACK
+VERSION: v0.0703 (BUILD 30.73)
+TIME: Sun Oct 18 2026 15:43:39 GMT-0400 (Eastern Daylight Time)
+WHERE: IN A RAID, 1:31 IN
+RUNS: 52
+
+superhot mode needs a toggle key.
+

@@ -1,0 +1,8 @@
+﻿PILLAGERS FEEDBACK
+VERSION: v0.0703 (BUILD 30.73)
+TIME: Sun Oct 18 2026 15:42:07 GMT-0400 (Eastern Daylight Time)
+WHERE: IN A RAID, 29s IN
+RUNS: 52
+
+accessing settings from pauise menu doesn't work right (maybe due to usperhot?)
+

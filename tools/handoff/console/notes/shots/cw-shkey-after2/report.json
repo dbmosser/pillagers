@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T18:27:24","url":"http://localhost:8808/fixture.html","recipes":"C:\\Users\\User1\\AppData\\Local\\Temp\\claude\\C--Users-User1-Desktop-dark-raiders\\8a09e991-b4f4-4b23-b10f-ded92e837fc3\\scratchpad\\shots-recipes.json","seconds":29,"screens":[
+{"name":"90-legend-full","screen":"F1 full controls list in a raid","1080":{"staged":true,"note":"legendOn 2","viewport":"1920x1080","shot":"90-legend-full-1080.jpg","lint":""}},
+{"name":"92-settings-superhot-pane","screen":"","1080":{"staged":false,"note":"expect failed: U.on(\u0027#settingsmodal\u0027)\u0026\u0026(document.getElementById(\u0027setdetail\u0027).textContent||\u0027\u0027).indexOf(\u0027`\u0027)\u003e=0 -\u003e false (pane: superhot modeofftime only moves when you act.key: left of 1)","viewport":"1920x1080","shot":"92-settings-superhot-pane-1080.jpg","lint":""}}
+]}

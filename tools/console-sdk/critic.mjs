@@ -21,6 +21,7 @@ Rubric (weight): hierarchy, what the eye hits first and whether it should (3); c
 type sizes, palette, panels, buttons, title and close/back placement (3); craft: alignment, spacing, padding, clipping, overlaps,
 crowding, contrast (2); identity, does it feel like this game and not a generic template (1); readability at 1080 from a couch, with
 pad focus visible (1). ALL LOWER CASE is required: the owner ordered every word on screen lower case (2026-10-18), so never flag lower case as a defect and flag any capital letter on screen except inside art. Clutter and explaining sentences on screen are defects.
+Party walk-up screens (attract, how to play, waiting, run over, scoreboard, player 2's title) continue on ANY key or button by the owner's order (instant start for walk-up guests), and the prompt names the key or pad button of the device in use; that live prompt IS the primary action there, so judge its size, place and contrast, but never ask for a separate clickable or filled button on those screens.
 Style guide:\n${guide}\n
 Answer with ONLY a JSON object: {"score":1-5,"better_than_before":"yes"|"no"|"same"|"n/a","verdict":"one plain sentence",
 "findings":[{"sev":"P0"|"P1"|"P2","where":"...","what":"...","fix":"concrete, numeric where possible"}]} with at most 8 findings, worst first.`;

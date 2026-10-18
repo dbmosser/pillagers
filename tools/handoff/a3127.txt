@@ -1,0 +1,1 @@
+| END RUN from the demo pause menu halves the score like a death | v31.27 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.27 passes, fails on v31.26 |

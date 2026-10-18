@@ -60,12 +60,18 @@ P['a06-B'] = { scene: 'duoparty', edits: [
 ] };
 // a06-C is not shot again; only its zoom boxes change (insets.mjs)
 
-// ---- a06-D: the whole coat in the player's colour. Player 1 amber, player 2 cyan, strong; the palette of those two schemes is rewritten in this copy
+// ---- a06-D: the whole outfit in the player's colour, strong: player 1 amber, player 2 cyan, whatever each picked. Everything except skin, hair, face and the gun itself is washed in the
+// seat colour (a colour filter on the hat, vest, pads, pack, coat, legs and boots), and the two schemes get a bright amber / cyan palette in this copy so the trims match.
+const TEAMF = { amber: 'sepia(1) saturate(3.6) hue-rotate(-6deg) brightness(1.1)', cyan: 'sepia(1) saturate(3.6) hue-rotate(150deg) brightness(1.08)' };
 P['a06-D'] = { scene: 'duoparty', edits: [
   [RINGCALL, '/* no ring */'],
   ['  S=id?SCHEMES[id]:null; if(!S) return null;', "  var _sm=st.hero?seatHere():((st.own&&typeof st.own.seat==='number')?(st.own.seat|0):-1); if(_sm===0) id='schember'; else if(_sm===1) id='schfrost';\n  S=id?SCHEMES[id]:null; if(!S) return null;"],
   ["schember:   {p:'#a8501f',s:'#2a2224',a:'#ffb52e'},", "schember:   {p:'#f5a812',s:'#8c5208',a:'#fff2bd'},"],
   ["schfrost:   {p:'#4a7f9f',s:'#1a2733',a:'#c4f0ff'},", "schfrost:   {p:'#1fc6f2',s:'#0a5e7c',a:'#e9fcff'},"],
+  wrapDrawOp("function(orig,args,x,y,face,ph,coat,pk,muzzle,mode,iv,st){ var sm=seatMarkOf(st); window.__TF=(sm===0)?'" + TEAMF.amber + "':((sm===1)?'" + TEAMF.cyan + "':'none'); wc.save(); wc.filter=window.__TF; try{ return orig.apply(null,args); } finally{ wc.restore(); } }"),
+  ['  var hx2=x+leanX;', "  var hx2=x+leanX; wc.filter='none';"],
+  ['    // HEADGEAR. Sits on top of the fringe and the face because that is where a', "    wc.filter=window.__TF;\n    // HEADGEAR. Sits on top of the fringe and the face because that is where a"],
+  ['  wc.drawImage(B.c,B.x0+ext,B.y0,B.w,B.h);', "  wc.filter='none'; wc.drawImage(B.c,B.x0+ext,B.y0,B.w,B.h); wc.filter=window.__TF||'none';"],
 ] };
 
 // ---- a07: four outline treatments on the cluttered floor (scene busy)

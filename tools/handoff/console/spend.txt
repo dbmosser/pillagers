@@ -478,11 +478,11 @@
 2026-10-18 0.0241 critic-12-ui-party-screens
 2026-10-18 0.0271 critic-12-ui-party-screens
 2026-10-18 0.0306 critic-12-ui-party-screens
-2026-10-18 1.3187 12-ui-party-screens
+2026-10-18 1.3187 12-ui-party-screens-r3
 2026-10-18 0.9821 c-01-pillager-gear
 2026-10-18 0.0289 critic-12-ui-party-screens
 2026-10-18 0.0246 critic-12-ui-party-screens
-2026-10-18 0.5696 12-ui-party-screens
+2026-10-18 0.5696 12-ui-party-screens-r3
 2026-10-18 1.1227 b-01-easy-mode-drops-words
 2026-10-18 0.7062 c-02-ascent-and-light-shafts
 2026-10-18 0.5056 c-03-pause-feedback-box
@@ -518,7 +518,7 @@
 2026-10-18 0.0319 critic-12-ui-party-screens
 2026-10-18 0.0286 critic-12-ui-party-screens
 2026-10-18 0.0286 critic-12-ui-party-screens
-2026-10-18 1.8659 12-ui-party-screens
+2026-10-18 1.8659 12-ui-party-screens-r3
 2026-10-18 0.0228 critic-03-title-and-backdrop
 2026-10-18 0.0271 critic-03-title-and-backdrop
 2026-10-18 0.0266 critic-03-title-and-backdrop
@@ -544,7 +544,7 @@
 2026-10-18 1.3828 04-style-guide-update-r2
 2026-10-18 0.0351 critic-02-raid-hud-redesign
 2026-10-18 0.0277 critic-12-ui-party-screens
-2026-10-18 1.5524 12-ui-party-screens
+2026-10-18 1.5524 12-ui-party-screens-r3
 2026-10-18 0.0307 critic-03-title-and-backdrop
 2026-10-18 0.5465 03-title-and-backdrop
 2026-10-18 0.0305 critic-03-title-and-backdrop
@@ -562,7 +562,7 @@
 2026-10-18 0.0299 critic-12-ui-party-screens
 2026-10-18 0.0284 critic-12-ui-party-screens
 2026-10-18 0.0264 critic-12-ui-party-screens
-2026-10-18 1.0698 12-ui-party-screens
+2026-10-18 1.0698 12-ui-party-screens-r3
 2026-10-18 0.0321 critic-manual
 2026-10-18 0.0310 critic-04-style-guide-update
 2026-10-18 1.2148 04-style-guide-update-r2
@@ -582,3 +582,6 @@
 2026-10-18 0.0323 critic-manual
 2026-10-18 0.0283 critic-b-30-ui-hud
 2026-10-18 0.0299 critic-b-30-ui-hud
+2026-10-18 0.0370 critic-b-30-ui-hud
+2026-10-18 0.0323 critic-02-raid-hud-redesign
+2026-10-18 0.0296 critic-02-raid-hud-redesign

@@ -1,0 +1,3 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  90-legend-full                         staged       9.2s    | legendOn 2
+  92-settings-superhot-pane              NOT STAGED  11.3s    | expect failed: U.on('#settingsmodal')&&(document.getElementById('setdetail').textContent||'').indexOf('`')>=0 -> false (pane: superhot modeofftime only moves when you act.key: left of 1)
