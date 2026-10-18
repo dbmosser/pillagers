@@ -1,0 +1,7 @@
+v30.67: run info title is white
+
+The Run info panel title is white and its section headings are grey.
+
+Check 30.67. Fails on v30.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

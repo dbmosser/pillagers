@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.67 - RUN INFO TITLE IS WHITE
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): lime is spent on a label in the Run info panel. The title is white and the section headings grey.
+
+MEASURED. Check 30.67 passes, and fails on v30.66.
 ## v30.66 - prompts follow the last input device
 
 Co-op hunt while he was away. His order (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching -- fortnite does a great job with this". The game showed pad prompts whenever a pad was plugged in. Each window now keeps the last input device it saw: any key press, mouse click, wheel turn or mouse move of more than 6 pixels is the keyboard, a pad button press or a stick push past its deadzone is the pad (drift and a held stick never flip it). padOn(), the one reader every prompt asks, is true only for a connected pad that is also the last device used, and the body.padon class that drives the DOM hints follows it the same frame. The player 2 window, which has no keyboard or mouse of its own, keeps the pad prompts. Twenty canvas and DOM hints that read the connected pad directly now ask the same reader.

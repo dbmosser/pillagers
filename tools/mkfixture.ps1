@@ -6099,6 +6099,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.67',what:'the Run info panel has a white title and grey section headings, no lime (the critic, 10-19)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var g=null, oF=ctx.fillText, rec=[], t, lime=[], i;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
+       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false;
+       ctx.fillText=function(s){ rec.push({s:String(s),c:String(this.fillStyle).toLowerCase()}); return oF.apply(this,arguments); };
+       try{ __frame(0.016); }finally{ ctx.fillText=oF; }
+       t=rec.filter(function(r){ return (/^run info$/i).test(r.s); });
+       if(!t.length) return 'the Run info panel is not drawn in this staging';
+       if(t[t.length-1].c==='#e6ff3d') return 'the Run info title is lime';
+       for(i=0;i<rec.length;i++){ if(rec[i].c==='#e6ff3d'&&(/^(run goals|contracts)$/i).test(rec[i].s)) lime.push(rec[i].s); }
+       if(lime.length) return 'a Run info section heading is lime: '+lime.join(',');
+       return null;
+     } finally {
+       ctx.fillText=oF;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'30.66',what:'prompts follow the last input device in real time: a key press puts the key prompts up, a pad button or stick puts the pad prompts up, a pad that is only plugged in or drifting changes nothing, in the raid hint and the DOM hints (his order: Fortnite style glyph switching)',
    run:function(){
      if(typeof INDEV!=='object'||!INDEV||typeof indevPadTick!=='function') return 'prompts do not follow the last input device (no INDEV tracker)';

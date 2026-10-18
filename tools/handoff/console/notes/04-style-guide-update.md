@@ -5,3 +5,4 @@
 - Gotchas: HELD=1 form is refused, use plain fixq.sh (it takes the lock itself, so unlock first). A // comment in a replacement that is followed by code on the same line kills the rest of the line: use /* */.
 - Before shots: shots/04-before (01, 04, 18, 25, 26, 40).
 - Not done on purpose: logo gradient, gold rarity badges, pad Y glyph, warn stay amber.
+- 10-18 later run: cw-bounce PREFLIGHT PASS (as v30.65, now stale number); two ship tries failed (STOP uncommitted, then queue wait killed at 10 min). Not shipped yet. Re-run preflight e cw-bounce, then shipq with run_in_background and long timeout. Then cw-cardwide, shots, critic.

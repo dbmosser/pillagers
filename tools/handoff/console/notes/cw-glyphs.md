@@ -18,3 +18,16 @@ His order, verbatim: "player should get key prompts if that is the last input th
 
 ## Ships
 (see bottom, updated as they land)
+
+## Ship 1: v30.66 (cw-glyphs) SHIPPED 13:5x
+- INDEV tracker + padOn() = connected AND last device used (p2 window keeps pad prompts) + padBodyCls follows padOn() + indevPadTick hook in pollPad + 21 direct (PAD&&PAD.on) prompt sites routed to padOn() (F1 legend, mini legend, bag and hub hints, walk to dismiss, belt voice).
+- Fixture: __runPrep sets INDEV.legacy=true (committed in 8eb65cea together with v30.64) so older checks that set PAD.on by hand keep their meaning. My check turns it off.
+- Check 30.66: plugged-in pad changes nothing; pad press -> pad prompts (raid backpack hint VIEW, use key X, settings strip A Change); key press -> back at once; drift and a held stick do not flip; mouse jitter ignored, 40 px move flips, untrusted mouse events ignored; p2 window keeps pad prompts. Control (v30.65) fails: no INDEV. Mutation (old padOn) fails 7 asserts.
+- Gotcha for later: I took the ship lock while cw-kicklmg still held it past 8 min; its commit hit a stale .git/index.lock (0 bytes, 13:30) and v30.64 was left uncommitted for 15 minutes (every ship STOPped "uncommitted changes"). I removed the stale index.lock under the lock and ran tools/handoff/ship.sh commit 3064 cm3064.txt, pushed (8eb65cea). Rule for me: never take the lock while shipq.owner is under 8 min old; after any fixq COMMIT FAILED do not unlock until the commit is done.
+- Preflight tip: recent.ps1 now fronts each tab (a background tab runs JS many times slower); my own early TIMEOUT was that.
+
+## Still to route (ship 2 and 3)
+- arcade attract 'PRESS ANY BUTTON' (arcadeAttShow, idle say subs) -> key on a keyboard; needs two old checks widened (fixture 35386, 35402).
+- initials entry hint (DOM .aoq and canvas arcadeIniHud) 'TYPE OR arrows . A NEXT . B BACK . ENTER / MENU DONE' mixes both devices -> split.
+- easy mode card 'Y or A yes . N or B no' mixes both -> split.
+- pad focus ring (PAD.focus / padfocus) stays on the last pad focused control after switching to the mouse; not a prompt, left alone.

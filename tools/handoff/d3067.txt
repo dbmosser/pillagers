@@ -1,0 +1,5 @@
+## v30.67 - RUN INFO TITLE IS WHITE
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): lime is spent on a label in the Run info panel. The title is white and the section headings grey.
+
+MEASURED. Check 30.67 passes, and fails on v30.66.
