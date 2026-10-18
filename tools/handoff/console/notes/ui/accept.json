@@ -2,9 +2,17 @@
  "01-title-mode-menu": {
   "score": 2,
   "pass": false,
-  "verdict": "A competent dark-and-amber template, but the title screen is a cluttered, text-heavy stack of equal-weight rows, with explainer copy, tiny low-contrast text and inconsistent casing that falls well short of ARC Raiders or Fortnite menu polish.",
-  "pic": "tools/handoff/console/notes/shots/test/01-title-mode-menu-1080.jpg",
-  "task": "test",
-  "when": "2026-10-18T05:39"
+  "verdict": "A competent dark-and-amber palette with a clear primary button, but the screen is a cluttered web-form stack of lore, tutorial cards, key hints, seven mode buttons, and save admin, with no real hero and many tiny, low-contrast elements.",
+  "pic": "tools/handoff/console/notes/shots/all/01-title-mode-menu-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:10"
+ },
+ "02-welcome-pack": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A full-screen dark slab with a tiny left-hugging list, a wall of explaining text and a huge dead void; it reads as a debug dump rather than a welcome reward moment, with no hierarchy and no celebration.",
+  "pic": "tools/handoff/console/notes/shots/all/02-welcome-pack-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:12"
  }
 }

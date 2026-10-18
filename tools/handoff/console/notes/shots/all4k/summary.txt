@@ -1,0 +1,7 @@
+== 4k : window 3872x2263, viewport 3840x2160
+  01-title-mode-menu                     staged       5.0s  
+  45-arcade-attract-board                staged       7.4s  
+  50-arcade-hud-live                     staged      22.2s  
+  52-arcade-run-over                     staged      15.2s    | welcomemodal
+  25-raid-pause-box                      staged       9.0s  
+  18-settings-hub                        staged       7.1s    | settingsmodal

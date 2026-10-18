@@ -1,0 +1,7 @@
+v29.24: a dead crier leaves wreckage, not a box
+
+A dead Crier lies crashed and smoking.
+
+Check 29.24. Fails on v29.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

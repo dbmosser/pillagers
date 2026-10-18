@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.24 - A DEAD CRIER LEAVES WRECKAGE, NOT A BOX
+
+Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Crier left the generic brown wreck. It now leaves the drone crashed on the ground: the pod cracked on its bent X frame with four dead rotor hubs and still blades, the lamp black, the loudspeaker horn broken off with its ochre ring. Smoke while unsearched. Looting is unchanged.
+
+MEASURED. Check 29.24 passes, and fails on v29.23.
 ## v29.23 - Support MG loosens on a long burst
 
 Co-op hunt while he was away. His order: the Support MG should get marginally less accurate the longer it fires without a break. Unbroken fire heats it over 4.5 seconds, up to 30 percent wider spread on top of the bloom, the cursor ring opens with it, and it is back to normal about a second after the trigger is let go. The spin-up is unchanged.
