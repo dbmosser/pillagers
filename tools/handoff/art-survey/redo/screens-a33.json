@@ -1,0 +1,6 @@
+{
+ "a33-C": {
+  "js": "var r=await window.__art.scene('fight',{}); var A=window.__art, gx=window.__gx, s=A.state(), p=s.player, pa=s.ents[0], pb=s.ents[1], E=gx('ELEM'), i, b;\nfor(i=0;i<s.bullets.length;i++){ b=s.bullets[i]; if(b.owner===p){ b.el='shock'; b.tint=E.shock.c; } else if(b.owner===pa){ b.el='fire'; b.tint=E.fire.c; } else if(b.owner===pb){ b.el='acid'; b.tint=E.acid.c; } }\nA.draw(2); return r;",
+  "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__P().cond==='day'&&__state().bullets.length>=8&&__state().bullets.filter(b=>b.el).length>=6"
+ }
+}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.34 - THE DOWNED TIMER GETS ITS OWN CENTRED ROW
+
+Co-op hunt while he was away. Critic on screen 34: the timer was pushed to the edge of the plate and the block was off-centre. The timer now sits centred under the word down, the bar and the prompt follow in one column, and the plate is 480 wide.
+
+MEASURED. Check 31.34 passes, and fails on v31.33.
 ## v31.33 - the key lists and tips name the keys as they are now
 
 Co-op hunt while he was away. GEARRULES said Keys 1 to 4 bring up your guns (v21.93) and taught a belt of 1-4 guns, 5-6 throw, 7-8 heal, 9 plate with G, H, U and J (v26.02), and keep a plate on a key. The Settings Keys window still listed H heal (tap), armour plate (hold), but H does nothing since the item wheel took the heals. The locked keys read 1 - 9 and the rebind note said 1-9 cannot be rebound, but the gun keys are 1 to 8 and 0 (nine kinds, the rocket launcher on 0, key 9 does nothing). The item hover card named HEAL, THROW and PLATE keys that do nothing. All now say what is true, short and lower case: the guns on 1 to 8 and 0, the heals, grenades and plate on the item wheel (hold q).

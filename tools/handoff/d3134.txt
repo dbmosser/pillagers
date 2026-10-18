@@ -1,0 +1,5 @@
+## v31.34 - THE DOWNED TIMER GETS ITS OWN CENTRED ROW
+
+Co-op hunt while he was away. Critic on screen 34: the timer was pushed to the edge of the plate and the block was off-centre. The timer now sits centred under the word down, the bar and the prompt follow in one column, and the plate is 480 wide.
+
+MEASURED. Check 31.34 passes, and fails on v31.33.

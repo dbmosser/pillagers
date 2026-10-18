@@ -6101,6 +6101,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.34',what:'the downed timer has its own centred row under the word down, and the plate is 480 wide with room for it (critic on screen 34: one centred column)',
+   run:function(){
+     if(typeof downPlateRect!=='function') return 'no downPlateRect';
+     var r=downPlateRect(960,500,39,19,false,false,false,null,true), g, p, i, d0;
+     if(r.w!==480) return 'the plate is '+r.w+' wide, not 480';
+     if(r.h<170) return 'the plate leaves no row for a centred timer ('+r.h+' tall, wants 170 or more)';
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       p=g.player; g.ents.length=0; p.hp=0; p.downed=true; p.downT=60; p.revived=1; p.iv=99; p.pendKiller=null;
+       if(typeof __vpAlive==='function'&&!__vpAlive()) return null;
+       d0=DP_DRAWS; for(i=0;i<3;i++) __loop(performance.now()+i*17);
+       if(DP_DRAWS<=d0) return 'a downed frame drew no plate';
+       return null;
+     } finally {
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'31.33',what:'cw-gearrules: the key lists and tips name the keys as they are now: the Keys window has no H row (H does nothing, the item wheel on hold q is the only heal), the locked gun keys and the rebind note say 1 to 8 and 0, the controls tips say keys 1 to 8 and 0 and point at the item wheel (no tip teaches 1 to 4, 5-6, 7-8, 9 plate or the G, H, U, J keys), and an item hover card names the item wheel and not HEAL, THROW or PLATE keys',
    run:function(){
      if(typeof GEARRULES==='undefined'||!GEARRULES.length||typeof KEYS_ACTS==='undefined'||typeof KEYS_SECT==='undefined'||typeof keysListBody!=='function'||typeof keysBind!=='function') return 'SKIP: no tips or key list in this build';

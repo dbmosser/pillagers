@@ -27,7 +27,7 @@ export function shoot(name, screen, recipes, urlName) {
   const outDir = path.join(AS, 'shots', name);
   fs.rmSync(outDir, { recursive: true, force: true });
   const args = ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'tools/uishots.ps1', '-Screens', screen, '-Recipes', recipes || path.join(AS, 'recipes-redo.json'),
-    '-Url', (urlName && urlName.startsWith('http')) ? urlName : 'http://localhost:8808/handoff/art-survey/game/' + (urlName || name) + '.html', '-Out', outDir, '-Res', '1080', '-Port', String(PORT), '-NoLint'];
+    '-Url', (urlName && urlName.startsWith('http')) ? urlName : 'http://localhost:8808/handoff/art-survey/game/' + (urlName || name) + '.html', '-Out', outDir, '-Res', (process.env.RES || '1080'), '-Port', String(PORT), '-NoLint'];
   const r = spawnSync('powershell', args, { cwd: ROOT, encoding: 'utf8', timeout: 240000 });
   const jpg = path.join(outDir, screen + '-1080.jpg');
   const ok = fs.existsSync(jpg);

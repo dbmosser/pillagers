@@ -8,3 +8,7 @@
   tr2-career-busy                        staged      12.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
   tr3-arcade                             staged      22.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
   tr4-p2-career                          staged      14.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 1080 : window 1952x1183, viewport 1920x1080
+  22-raid-map-open                       staged       8.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  23-raid-backpack-open                  staged       8.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  37-raid-extracting-countdown           staged      10.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

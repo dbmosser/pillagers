@@ -2828,7 +2828,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.33';
+var VER='31.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26589,11 +26589,11 @@ function downBarTick(p,dt){
 // Panel P), sized from the same row math the block uses, and the timer is the big type of the word down. DP_DRAWS counts the plates for the check.
 var DP_DRAWS=0;
 function downPlateRect(cx,dy,hH,hD,revived,giveOn,hasPull,dv,barOn){
-  var yb=dy-hH-4, top=barOn?(yb-14-3-16):(dy-hH-12), rowY=dy+Math.round(hH*0.42)+10+Math.round(hD*1.15);
+  var yb=dy-hH-4, top=barOn?(yb-14-3-16):(dy-hH-12), rowY=dy+Math.round(hH*0.42)+Math.round(hH*1.05)+10+Math.round(hD*1.15);
   if(hasPull) rowY+=Math.round(hD*1.35)+Math.round(hD*0.4)+10;
   if(revived&&giveOn) rowY+=Math.round(hD*1.25);
   if(dv){ if(dv.msg) rowY+=Math.round(hD*1.5)+Math.round(hH*0.30); if(dv.sub) rowY+=Math.round(hD*1.35); }
-  return {x:Math.round(cx-260),y:top,w:520,h:rowY+16-top};
+  return {x:Math.round(cx-240),y:top,w:480,h:rowY+16-top};
 }
 function downPlateDraw(r){ DP_DRAWS++; uiPanel(ctx,r.x,r.y,r.w,r.h); }
 function downBarDraw(cx,yb,p){
@@ -41973,12 +41973,12 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     try{ downBarDraw(W/2,_dy-_hH-4,p); }catch(_dbd){}   // v28.xx (downbar1): the slider bar, above the title, inside the same scale
     // The bar clears DOWN by its descent, and is narrower so the timer beside it
     // has room of its own instead of leaning on the line below.
-    var _barY=_dy+Math.round(_hH*0.42);
+    var _tmY=_dy+Math.round(_hH*1.05), _barY=_dy+Math.round(_hH*0.42)+Math.round(_hH*1.05);   // v28.xx (cw-downplate2): the timer has its own row under the word down, centred
     bar(W/2-100,_barY,200,10,p.downT/CFG.downTime,'#c8452f');
     // cw-downgain, HIS WORDS (2026-10-18): "players clock should include 2 decimals so that it is shown to run down". Left aligned so the digits do not
     // push into the bar as they change, and green while a hit's +0.50s shows.
-    ctx.font=_fH; ctx.fillStyle=(p.dbGainT>DB_POP*0.5)?'#9fe8b0':'#ffb0a0'; ctx.textAlign='left';   // v28.xx (cw-downplate): the timer is the hero, as big as the word down
-    ctx.fillText(Math.max(0,p.downT).toFixed(2)+'s',W/2+110,_barY+9); ctx.textAlign='center';
+    ctx.font=_fH; ctx.fillStyle=(p.dbGainT>DB_POP*0.5)?'#9fe8b0':'#ffb0a0'; ctx.textAlign='center';   // v28.xx (cw-downplate2): one centred column (critic on screen 34: the timer was pushed to the plate edge)
+    ctx.fillText(Math.max(0,p.downT).toFixed(2)+'s',W/2,_tmY);
     var _rowY=_barY+10+Math.round(_hD*1.15);
     ctx.font=_fD; ctx.fillStyle='#e8d5d2';
     // v8.87, his wording. The old line opened with what he had just used up.
@@ -49265,7 +49265,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.33: The Keys window no longer lists an H heal row, it says the locked gun keys are 1 - 8, 0, and the controls tips point at the item wheel (hold q) instead of the old belt keys. Check 31.33 fails on v31.32',
+  now:'v31.34: When you are down, the timer now sits centred under the word down and everything stacks in one column. Check 31.34 fails on v31.33',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

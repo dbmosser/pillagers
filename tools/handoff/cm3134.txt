@@ -1,0 +1,7 @@
+v31.34: the downed timer gets its own centred row
+
+When you are down, the timer now sits centred under the word down and everything stacks in one column.
+
+Check 31.34. Fails on v31.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
