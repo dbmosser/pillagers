@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.84 - Party pages: one column, a 56px button under the card
+
+Co-op hunt while he was away. The critic scored the board and how to play 2 and 3: the prompt sat 150px under the card, detached. The attract pages now use the run over layout: wordmark, card, then a 56px accent button flush right. Restyle only.
+
+MEASURED. Check 29.84 passes, and fails on v29.83.
 ## v29.83 - End cards: lost items as tiles, a loss figure, contract chips
 
 Co-op hunt while he was away. The critic scored the Killed in action card 2 of 5: no hero figure, five rows each repeating Lost with the name in rarity colour, long green contract sentences. Now one tile row (64px, 3px rarity bar, x2 stacks), one 56px loss figure, one chip per contract. The old words stay as hidden text. Restyle only.

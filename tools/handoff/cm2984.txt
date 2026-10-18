@@ -1,0 +1,7 @@
+v29.84: party pages: one column, a 56px button under the card
+
+The score board and how to play pages line up with the run over card.
+
+Check 29.84. Fails on v29.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

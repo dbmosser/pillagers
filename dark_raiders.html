@@ -1608,6 +1608,12 @@ body #attract .arcpage .apk{ font-weight:500; }
 body #attract:has(.arcpage[style*="block"]) .attname, body #attract:has(.arcover[style*="block"]) .attname,
 body #attract:has(.arcpage[style*="block"]) .attpress, body #attract:has(.arcover[style*="block"]) .attpress{ background:none; text-shadow:none; }
 body #attract:has(.arcpage[style*="block"]) .attname::after, body #attract:has(.arcover[style*="block"]) .attname::after{ display:none; }
+/* v28.xx (cw-party-att3), his order 2026-10-18 (UI step 3, party screens 46, 56, 64): the critic scored how to play 3 and the board 2 ("the prompt sits 150px under the card, detached; a wordmark, a card and a prompt on three unrelated edges; the loudest thing is a glowing amber line"). While a page is up the screen is the same one column as the run over card: the wordmark flush left on the card edge, the card, a 24px gap, then Press any button as the 56px solid accent button flush right (no pulse, no glow). One layout for every party page. Restyle only. */
+body #attract[style*="block"]:has(.arcpage[style*="block"]){ display:grid !important; grid-template-columns:max-content; justify-content:center; align-content:center; row-gap:calc(var(--sp-3) * var(--attz,1)); }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) > video{ position:absolute; left:0; top:0; }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .attname{ position:relative; left:auto; right:auto; top:auto; order:0; padding:0; text-align:left; }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .arcpage{ position:relative; left:auto; top:auto; transform:none; order:1; max-width:none; }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress{ position:relative; left:auto; right:auto; bottom:auto; order:2; width:auto; min-width:calc(var(--menu-w) * .4 * var(--attz,1)); justify-self:end; box-sizing:border-box; height:calc(var(--btn-h) * var(--attz,1)); min-height:0; display:flex; align-items:center; justify-content:center; padding:0 calc(var(--sp-5) * var(--attz,1)); font-size:calc(var(--fs-body) * var(--attz,1)); line-height:1; border:1px solid var(--acc); border-radius:var(--rad); background:var(--acc); color:var(--acc-ink); animation:none; opacity:1; }
 /* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
    The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
    Pause: the title is the 32px title size in light text (the one amber thing in the box is Resume run), the key legend and the note line are 16px grey.
@@ -2651,7 +2657,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.83';
+var VER='29.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47781,7 +47787,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.83: The death card shows lost items as tiles with one big loss figure. Check 29.83 fails on v29.82',
+  now:'v29.84: The score board and how to play pages line up with the run over card. Check 29.84 fails on v29.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

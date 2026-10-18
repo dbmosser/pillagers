@@ -200,12 +200,12 @@
   "when": "2026-10-18T10:17"
  },
  "38-extracted-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The Extracted card follows the end-card shell (720px card, teal title, Haul hero, amber primary and ghost), but explaining sentences, a currency mark the rules ban, a tiny hero and the lack of a close control leave it a text-heavy, dim template.",
-  "pic": "tools/handoff/console/notes/shots/13-c2/38-extracted-card-1080.jpg",
+  "verdict": "The extracted card is much closer to the shared end-card shell, with an extract-teal title, a hero Haul line, a stat row, achievement chips and one amber primary. It still has tiny muted text, a \"$\" currency sign, crowded stacked small lines above the hero and no close control, so it is not yet polished.",
+  "pic": "tools/handoff/console/notes/shots/13-c3/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:17"
+  "when": "2026-10-18T10:22"
  },
  "40-whats-new-card": {
   "score": 2,

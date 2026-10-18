@@ -1,0 +1,24 @@
+{
+    "title":  "Operator menu: one red, even gaps, a solid backdrop",
+    "why":  "The critic scored the operator menu 2: Exit demo and the armed confirm were both red, the gaps were uneven and the board showed through the scrim. Restyle only.",
+    "now":  "The operator menu is calmer: one red thing, even gaps.",
+    "edits":  [
+                  {
+                      "anchor":  "z-index:19999;background:var(--ui-scrim)\u0027",
+                      "replacement":  "z-index:19999;background:color-mix(in srgb,var(--ui-void) 97%,transparent)\u0027"
+                  },
+                  {
+                      "anchor":  "red=((i===0\u0026\u0026ARCOP.arm)||ex);",
+                      "replacement":  "red=((i===0\u0026\u0026ARCOP.arm)||(ex\u0026\u0026on));   // v28.xx (cw-party-op3): the critic on screens 62 63 (2 of 5): Exit demo wore the same red as the armed confirm, so nothing read as the one danger; red now shows on the armed confirm and on Exit demo only while it is the focused row"
+                  },
+                  {
+                      "anchor":  "margin:\u0027+(ex?\u0027var(--sp-4)\u0027:\u0027var(--sp-2)\u0027)+\u0027 0 0;",
+                      "replacement":  "margin:var(--sp-2) 0 0;"
+                  },
+                  {
+                      "anchor":  "margin-top:var(--sp-3);color:\u0027+(ARCOP.arm?\u0027var(--danger)\u0027:\u0027var(--ok)\u0027)",
+                      "replacement":  "margin-top:var(--sp-3);color:\u0027+(ARCOP.arm?\u0027var(--tx-2)\u0027:\u0027var(--ok)\u0027)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027operator menu: the backdrop is a near solid scrim (the board no longer shows through), the three buttons share one 16px gap, and Exit demo is not red until it is focused (critic 2 of 5: one red, uneven gaps, clutter behind; screens 62 63)\u0027,\n   run:function(){\n     if(typeof arcadeEnter!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027||typeof arcadeLeave!==\u0027function\u0027||typeof ARCADE_BOARD_KEY!==\u0027string\u0027) return \u0027SKIP: no arcade here\u0027;\n     var PK=\u0027pillagers:arcade:\u0027+\u0027party\u0027, bk=localStorage.getItem(ARCADE_BOARD_KEY), pk=localStorage.getItem(PK), op, bs, bd, m, a, res=null;\n     function key(code,o){ o=o||{}; var tg=document.body||window;\n       tg.dispatchEvent(new KeyboardEvent(\u0027keydown\u0027,{code:code,key:code,ctrlKey:!!o.c,shiftKey:!!o.s,bubbles:true,cancelable:true}));\n       tg.dispatchEvent(new KeyboardEvent(\u0027keyup\u0027,{code:code,key:code,ctrlKey:!!o.c,shiftKey:!!o.s,bubbles:true,cancelable:true})); keys={}; }\n     try{\n       __topClear(); __runPrep();\n       if(ARCADE.on) return \u0027SKIP: the arcade is on after __topClear\u0027;\n       if(!arcadeEnter(\u0027host\u0027)||!ARCADE.on) return \u0027SKIP: arcadeEnter did not turn the arcade on\u0027;\n       key(\u0027F10\u0027,{c:1,s:1});\n       op=document.getElementById(\u0027arc\u0027+\u0027op\u0027);\n       if(!op) return \u0027the operator chord opened no operator menu\u0027;\n       bs=op.querySelectorAll(\u0027button[data-op]\u0027);\n       if(bs.length!==3) return bs.length+\u0027 buttons, not 3\u0027;\n       if(Math.abs(parseFloat(getComputedStyle(bs[1]).marginTop)-parseFloat(getComputedStyle(bs[2]).marginTop))\u003e1) res=\u0027the gaps are \u0027+getComputedStyle(bs[1]).marginTop+\u0027 and \u0027+getComputedStyle(bs[2]).marginTop+\u0027, not one gap\u0027;\n       if(!res\u0026\u0026bs[1].style.color.indexOf(\u0027danger\u0027)\u003e=0) res=\u0027Exit demo is red while it is not focused: \u0027+bs[1].style.color;\n       bd=op.previousElementSibling; m=bd?/rgba?\\([^)]*\\)|color\\(srgb[^)]*\\)/.exec(getComputedStyle(bd).backgroundColor):null; a=bd?getComputedStyle(bd).backgroundColor:\u0027\u0027;\n       if(!res){ var al=/\\/\\s*([0-9.]+)\\s*\\)/.exec(a); var av=al?parseFloat(al[1]):(/rgba\\([^)]*,\\s*([0-9.]+)\\)/.exec(a)?parseFloat(/rgba\\([^)]*,\\s*([0-9.]+)\\)/.exec(a)[1]):1); if(av\u003c0.95) res=\u0027the operator backdrop is \u0027+a+\u0027, the board shows through\u0027; }\n       return res;\n     } finally {\n       try{ if(typeof arcadeOpClose===\u0027function\u0027) arcadeOpClose(); }catch(_c){}\n       try{ if(ARCADE.on) arcadeLeave(); }catch(_l){}\n       try{ if(bk===null) localStorage.removeItem(ARCADE_BOARD_KEY); else localStorage.setItem(ARCADE_BOARD_KEY,bk); if(pk===null) localStorage.removeItem(PK); else localStorage.setItem(PK,pk); }catch(_s){}\n     }\n   }},"
+}
