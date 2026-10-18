@@ -12,12 +12,12 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-if ($s.Contains("  {v:'31.11',what:")) { throw "check 31.11 is in the fixture already" }
+if ($s.Contains("  {v:'31.24',what:")) { throw "check 31.24 is in the fixture already" }
 
 SubRx @'
-  {v:'31.10',what:
+  {v:'31.23',what:
 '@ @'
-  {v:'31.11',what:'cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1 by 1 list, all the same size: in a raid the credits, xp, stash, backpack (career) and notes logged rows, the minimap and the run info panel are ONE column from the top right corner, each its own plate on one right edge and one width, the rows one height and one type size, no two on a row, none overlapping, at 1080p, at 4K and in the demo',
+  {v:'31.24',what:'cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1 by 1 list, all the same size: in a raid the credits, xp, stash, backpack (career) and notes logged rows, the minimap and the run info panel are ONE column from the top right corner, each its own plate on one right edge and one width, the rows one height and one type size, no two on a row, none overlapping, at 1080p, at 4K and in the demo',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize&&window.__runPrep&&window.__topClear&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and draw';
      if(typeof HUDBOX==='undefined'||typeof MMAP==='undefined'||typeof TX!=='function'||typeof syncTopRight!=='function') return 'SKIP: no HUD boxes here';
@@ -139,7 +139,7 @@ SubRx @'
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'31.10',what:
+  {v:'31.23',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

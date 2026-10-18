@@ -1,0 +1,16 @@
+{
+    "title":  "CAREER TOP RIGHT IN ONE ROW",
+    "why":  "His answer Q58 (10-18): career top right goes into one row. Credits and XP were one line and the stash and bag figures a second line under it.",
+    "now":  "In career the top right corner is one row: credits, XP, stash and bag side by side.",
+    "edits":  [
+                  {
+                      "anchor":  "  #topright small:nth-last-child(2){ margin-right:0; }   /* v28.xx (cw-stashbag): the STASH and BAG line is the last child now */",
+                      "replacement":  "  #topright small:nth-last-child(2){ margin-right:22px; }   /* v28.xx (cw-trrow), HIS ANSWER Q58 (2026-10-18): career top right goes into one row. The XP label is followed by the stash and bag figures on the same line now. */"
+                  },
+                  {
+                      "anchor":  "  #topright .trsub{ position:absolute; right:0; top:40px; line-height:16px; font-size:15px; font-weight:700; letter-spacing:.1em; color:var(--ash); }",
+                      "replacement":  "  #topright .trsub{ position:static; display:inline; line-height:inherit; font-size:16px; font-weight:700; letter-spacing:.1em; color:var(--ash); }   /* v28.xx (cw-trrow): was a second line hanging under the readout (absolute, top 40px); now inline in the one row */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the career corner readout is one row: credits, XP, stash and bag sit on the same line, the stash and bag figures are not a second line under it (his answer Q58)\u0027,\n   run:function(){\n     if(typeof syncTopRight!==\u0027function\u0027) return \u0027SKIP: no syncTopRight\u0027;\n     var el=document.getElementById(\u0027topright\u0027); if(!el) return \u0027SKIP: no corner readout\u0027;\n     var bad=[], sub, r, rs, cs;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       G=null; keys={}; __showScreen(\u0027hub\u0027); __hubEnter();\n       _trLast=\u0027\u0027; syncTopRight();\n       sub=el.querySelector(\u0027.trsub\u0027); if(!sub) return \u0027the readout has no stash and bag part\u0027;\n       cs=getComputedStyle(sub);\n       if(cs.position===\u0027absolute\u0027) bad.push(\u0027the stash and bag part is still positioned under the readout\u0027);\n       r=el.getBoundingClientRect(); rs=sub.getBoundingClientRect();\n       if(!(rs.height\u003e0)) bad.push(\u0027the stash and bag part has no size\u0027);\n       if(rs.bottom\u003er.bottom+2||rs.top\u003cr.top-2) bad.push(\u0027the stash and bag part is outside the readout row (top \u0027+Math.round(rs.top)+\u0027 bottom \u0027+Math.round(rs.bottom)+\u0027 against \u0027+Math.round(r.top)+\u0027..\u0027+Math.round(r.bottom)+\u0027)\u0027);\n       if(!/CREDITS/.test(el.textContent)||!/\\bXP\\b/.test(el.textContent)||!/STASH/.test(el.textContent)||!/BAG/.test(el.textContent)) bad.push(\u0027the one row lost a label (\"\u0027+el.textContent+\u0027\")\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var g2=__state(); if(g2\u0026\u0026!g2.over) __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,1 @@
+| the opening map prompt is one primary button and the map leaves it room | v31.23 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.23 passes, fails on v31.22 |

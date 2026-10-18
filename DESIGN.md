@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.23 - the opening map prompt is one primary button and the map leaves it room
+
+Co-op hunt while he was away. Follow-up to the map first screen (v31.09). The critic (3 stars at most) named the prompt: a small dark pill, or click to start reads as a fragment, and at 4K it sat on the map frame. The prompt is now the one primary button of the screen as the style guide has it (56 high, lime fill, ink text at the callout size, minimum width 200): click to start with the key e chip, start with the pad a chip on a pad. After the press it is the same size in the panel colours, waiting for p2 with three pulsing dots. While the raid waits on its map the map projection leaves a footer for it, so at 4K the button sits under the frame; the map the player opens himself is as before. No rule changed: the press, the freeze and the two player start are the v31.09 code.
+
+MEASURED. Check 31.23 passes, and fails on v31.22.
 ## v31.22 - the crowbar breaks windows, cover and walls the way a bullet does
 
 Co-op hunt while he was away. His in-game note (2026-10-18 11:42): "melee should damge world elements like windows, walls etc". A crowbar swing that strikes no body now strikes the wall, window, furniture, wreck, tree or building wall in front of it (the middle swing line first, four more to 0.8 rad either side, within 46 of him) for 40 through damageWall, the one door a bullet damages a wall by. So it breaks exactly as a shot does: a window in one swing (with the glass sound and debris), furniture in 2, a tree 3, a wreck 4, a building wall 8, its bar shows, the sight map and the routing are rebuilt, and in a shared raid player 2 swing asks the host, which breaks it and tells every window. What a bullet cannot break stays whole (map edge, locked room, keyed door, stronghold shell, and the destruction setting off): it only rings. A body in the blow takes it instead. Breaking something is loud (340, a pistol is 330).

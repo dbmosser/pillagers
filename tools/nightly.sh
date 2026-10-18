@@ -6,18 +6,30 @@
 # - 2026-10-15: "set it up so you are always doing that or something productive with my pc in a low token manner, if you aren't doing
 #   anything else and even if i'm at my pc".
 # - 2026-10-15: "do whatever you have to in order to continually work on the game and make progress 24 hours a day -- this is RULE NUMBER ONE".
-# Every 5 min, whether or not he is at the PC (about half the PC: at most two test Chromes of its own):
+# Every 5 min, whether or not he is at the PC. Nothing in this file reads light.flag (the old "he is at the PC" flag): fuzz.ps1 is
+# started with -IgnoreFlag, so the flag cannot stop the robots; the only guards are the RAM floor below and each job's own checks.
+# Test Chromes (checked 10-18 against the scripts): up to 13 can be open at once: fuzzers 9331 and 9332, corpus 9344, ship gate 9346,
+# preflight one per lane a to h (9351-9358), one screenshot camera (uishots, 9339); each lane's own camera uses 9361-9366, so more if
+# several cameras run (that last part is unverified). The old line "at most two test Chromes" was wrong. Jobs:
 #   (1) the input fuzzer (tools/fuzz.ps1, Chrome 9331) runs back to back, two hours at a time, with new seeds each run;
-#   (2) the full regression corpus (corpq.sh, Chrome 9344) once per new game HEAD, when the ship queue has been idle 45 min
-#       (it holds the ship lock about 2.5 h);
+#   (2) the full regression corpus (corpq.sh, Chrome 9344): at most every 4 hours AND only on a new game HEAD (corpus_t and corpus_head
+#       in state.txt). It does not wait for the ship queue to be idle and takes no ship lock (it tests a frozen copy, tools/fxcorpus.html);
+#       one run takes 2.5 to 3.5 hours;
 #   (3) the local-LLM audits (tools/llm-night.ps1) once per new HEAD, only with 20+ GB of RAM free (the model holds about 12 GB);
 #   (4) once a day, the itch and GitHub backup catch-up (tools/itch-daily.sh);
-#   (5) the Console worker (tools/console-worker.sh): one Claude task at a time, billed to his Console credits (status in
-#       tools/handoff/console/status.txt; a STOP file there pauses it).
+#   (5) the Console worker LANES (tools/console-lane.sh LANE; the older tools/console-worker.sh is still honoured: lane a waits while it runs).
+#       This file starts lanes a, b and c, each one Claude task at a time (a lane with an empty list takes another lane's job). Lanes e and f
+#       (CLI_ALWAYS in tools/handoff/console/caps.txt) are started by the lanes themselves and always run on Claude Code on his plan, paced by
+#       his real plan usage; when the Console money is used up a, b and c switch to Claude Code too, but only CLI_LANES of them (1) run.
+#       Lanes d, g and h are NOT started here: they are
+#       session agents that only borrow a preflight Chrome. Status is in tools/handoff/console/status-LANE.txt; a STOP file in
+#       tools/handoff/console pauses all lanes;
+#   (6) a second fuzzer on Chrome 9332 (8+ GB free) and (7) once a day after 03:00 the review of the day's commits (tools/review-nightly.sh).
 # - No new job starts while free RAM is under 6 GB (his floor).
 # - Every hour it writes tools/handoff/nightly/<date>.md, which Claude reads instead of the raw logs.
 # - ONE COPY: a heartbeat file younger than 10 min means another copy is alive, so this one exits. A Windows scheduled task
-#   (tools/runner-start.vbs, every 15 min) starts it again if it ever dies, with or without a Claude session.
+#   (tools/runner-start.vbs, every 15 min; task "Pillagers runner", seen Enabled on 10-18) starts it again if it ever dies, with or
+#   without a Claude session. tools/party-stop.ps1 disables that task for the party; nothing turns it back on except party-start.ps1.
 # - 2026-10-18 (his orders): (8) once an hour tools/stable.sh decides whether a newer version is STABLE and publishes it as
 #   http://localhost:8802/stable.html; (9) at 07:00 and 18:00 tools/report.mjs writes the plain morning/evening report with pictures
 #   (tools/handoff/reports/); the second fuzzer runs on the corpus copy of the game so one exact version gets both the full test set and

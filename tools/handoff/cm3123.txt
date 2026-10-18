@@ -1,0 +1,7 @@
+v31.23: the opening map prompt is one primary button and the map leaves it room
+
+The opening map has one start button. Click it, press E or press A. After you press it says waiting for your partner.
+
+Check 31.23. Fails on v31.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
