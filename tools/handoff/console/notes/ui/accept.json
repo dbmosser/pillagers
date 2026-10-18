@@ -138,10 +138,10 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version trims the run-info contract list and tones down the credits and backpack hint, but the HUD is still a pile of small, equal-weight dark boxes with tiny text, dollar signs, a clipped minimap label and a title-case 'Run Info' that breaks the sentence-case rule.",
-  "pic": "tools/handoff/console/notes/shots/b-30-after2/21-raid-hud-calm-1080.jpg",
+  "verdict": "The raid HUD is virtually unchanged: the contract list is reshuffled and one toast is gone, but it is still a pile of small, equally weighted, dim-on-busy-map panels with a dollar sign, a clipped label and no clear first read.",
+  "pic": "tools/handoff/console/notes/shots/b-30c-after/21-raid-hud-calm-1080.jpg",
   "task": "b-30-ui-hud",
-  "when": "2026-10-18T06:49"
+  "when": "2026-10-18T09:11"
  },
  "22-raid-map-open": {
   "score": 2,

@@ -1,0 +1,7 @@
+v29.62: pause and end cards ease in too
+
+The pause card, the end card, Settings and Keys now ease open and shut.
+
+Check 29.62. Fails on v29.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

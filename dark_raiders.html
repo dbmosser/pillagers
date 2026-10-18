@@ -2474,7 +2474,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.61';
+var VER='29.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17699,6 +17699,7 @@ function keysOpen(pad){
       '<div id="keyslist" data-lint-scroll style="max-height:58vh;overflow-y:auto;padding-right:6px"></div><div class="pbox" style="display:flex;gap:8px;margin-top:14px"><button id="keysreset" style="padding:8px 22px">RESET TO DEFAULTS</button><button id="closekeys" style="padding:8px 22px;margin-left:auto">CLOSE</button></div>';
     (document.getElementById('partymodal')&&document.getElementById('partymodal').parentNode||document.body).appendChild(m);   // v17.85: beside the other windows, in their font
     try{ if(typeof applyMenuZoom==='function') applyMenuZoom(); }catch(_kz){}   // vNN.xx (ui5q1v, the 4K Keys shot): built after the zoom was set, so it takes the menu zoom now, as every window does
+    try{ UIM.watch(m); }catch(_uw){}   // v29.61 (cw-uimotion2): the Keys window is built on first use, so it joins the motion layer here
     document.getElementById('keysreset').onclick=function(){ if(KEYS.pad){ padReset(); PADB.waiting=null; keysRender(); try{ renderSettings(); }catch(_r0){} return; } keysReset(); KEYS.waiting=null; keysRender(); try{ renderSettings(); }catch(_r){} };
     document.getElementById('closekeys').onclick=function(){ KEYS.waiting=null; m.classList.remove('on'); try{ renderSettings(); }catch(_r2){} };
   }
@@ -47562,7 +47563,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.61: Run info panel uses the same colors as the menus. Check 29.61 fails on v29.60',
+  now:'v29.62: The pause card, the end card, Settings and Keys now ease open and shut. Check 29.62 fails on v29.61',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61366,7 +61367,7 @@ function titleFit(){
 // refused press shakes 6 px over 100 ms. A press or a close during a move RETARGETS from the value it has now (smoothstep, shorter for what is left),
 // so nothing is ignored or restarted. Only the title menu and the party window are on it so far (UIM.scope); the values are written as the CSS
 // properties opacity, translate and scale, which compose with every transform the menus already use. Menus only: no raid value is touched.
-var UIM={manual:false,t:0,last:0,raf:0,logOn:false,log:[],st:[],scope:'#title,#partymodal',ring:null,rg:{on:0,x:0,y:0,w:0,h:0},fel:null};
+var UIM={manual:false,t:0,last:0,raf:0,logOn:false,log:[],st:[],scope:'#title,#partymodal,#pausebox,#outcome,#settingsmodal,#keysmodal',ring:null,rg:{on:0,x:0,y:0,w:0,h:0},fel:null};
 UIM.E={out:function(u){ u=1-u; return 1-u*u*u; },inn:function(u){ return u*u; },sm:function(u){ return u*u*(3-2*u); }};
 UIM.S=function(el){
   var s=el.__uim, b=1;
@@ -61500,8 +61501,8 @@ UIM.chg=function(el){
   var on=el.classList.contains('on'), modal=(el.id!=='title');
   if(on===!!el.__uimOn) return;
   el.__uimOn=on;
-  if(on){ UIM.open(el); if(modal){ try{ sndUi('open'); }catch(_s){} } }
-  else if(modal){ UIM.close(el); try{ sndUi('close'); }catch(_s){} }
+  if(on){ UIM.open(el); if(modal&&el.id!=='outcome'){ try{ sndUi('open'); }catch(_s){} } }   // v29.61 (cw-uimotion2): the end card keeps its own sting
+  else if(modal){ UIM.close(el); if(el.id!=='outcome'){ try{ sndUi('close'); }catch(_s){} } }
   else UIM.reset(el);
 };
 UIM.watch=function(el){
@@ -61538,7 +61539,9 @@ UIM.focus=function(el,old){
   if(el&&UIM.inScope(el)){ UIM.S(el).sT=1.05; UIM.fel=el; UIM.wake(); }
   else if(UIM.fel) UIM.unfocus();
 };
-UIM.watch(document.getElementById('title')); UIM.watch(document.getElementById('partymodal'));document.addEventListener('wheel',function(e){
+// v29.61 (cw-uimotion2), UI STEP 2b (his words: "they are just reallly compelling and smooth"): the pause card, the end card, Settings and Keys ease open and shut
+// on the same layer as the title menu and the party window. The end card makes no open sound of its own (the extraction sting plays there).
+['title','partymodal','pausebox','outcome','settingsmodal','keysmodal'].forEach(function(id){ UIM.watch(document.getElementById(id)); });document.addEventListener('wheel',function(e){
   // ANY menu surface, which is the fix: a modal on its own is enough, and the
   // title screen counts. The only thing that keeps the wheel is a live raid
   // with nothing open over it, where the wheel zooms the world.

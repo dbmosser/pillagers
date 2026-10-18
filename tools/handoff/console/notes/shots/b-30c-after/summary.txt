@@ -1,0 +1,6 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  19-raid-hud-drop-first-raid            staged       7.9s  
+  21-raid-hud-calm                       staged      14.5s  
+  33-raid-fight-alerts                   staged       9.1s    | 3 moved, hp 66
+  37-raid-extracting-countdown           staged      10.2s  
+  50-arcade-hud-live                     staged      21.9s  

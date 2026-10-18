@@ -1,0 +1,1 @@
+| Pause and end cards ease in too | v29.62 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.62 passes, fails on v29.61 |
