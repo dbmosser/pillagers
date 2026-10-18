@@ -6097,6 +6097,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.30',what:'the title key line names F1 for the controls list, not H (H heals since keyswap)',
+   run:function(){
+     var rows=document.querySelectorAll('#title .kbrow'), t='', i;
+     for(i=0;i<rows.length;i++) t+=' '+rows[i].textContent;
+     if(!t) return 'no title key line found';
+     if(/\bH\s+controls/.test(t)) return 'the title still says H controls, but H heals';
+     if(!/\bF1\s+controls/.test(t)) return 'the title key line does not say F1 controls';
+     return null;
+   }},
   {v:'29.29',what:'the compact controls list opens on arrival and folds to its one-line hint 30 seconds into the raid, once (style guide: hidden except F1 and the first 30 s)',
    run:function(){
      if(typeof legendAuto!=='function') return 'the controls list never folds at 30 s (no legendAuto)';

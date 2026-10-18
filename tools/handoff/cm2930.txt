@@ -1,0 +1,7 @@
+v29.30: the title key line names f1 for the controls list
+
+The title key line now says F1 controls, the key that really opens the list (H heals).
+
+Check 29.30. Fails on v29.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

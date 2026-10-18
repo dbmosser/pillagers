@@ -1,0 +1,12 @@
+{
+    "title":  "THE TITLE SAYS CREATE A NEW SAVE, NOT CREATE A NEW SAVE WITH A CAPITAL A",
+    "why":  "UI step 30, menu map. The no-all-caps door lowers words of 3 or more letters and left the one-letter A alone, so the title button read Create A new save. An A between a word and a caps word now lowers with the line. A sector letter at the end of a line is untouched.",
+    "now":  "The title button now reads Create a new save.",
+    "edits":  [
+                  {
+                      "anchor":  "    var n=ncCand(w,o,s); if(!n) return w;\n",
+                      "replacement":  "    // v28.xx (cw-menu-newsave), UI step 30: the one-letter article A between caps words stayed a capital (\"Create A new save\" on the title). It lowers with its line.\n    if(w===\u0027A\u0027\u0026\u0026has3\u0026\u0026/\\s/.test(s.charAt(o-1))\u0026\u0026/^\\s+[A-Z]{3,}/.test(s.slice(o+1))) return \u0027a\u0027;\n    var n=ncCand(w,o,s); if(!n) return w;\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title button reads Create a new save, not Create A new save (the article A lowers with its line)\u0027,\n   run:function(){\n     var a=TX(\u0027CREATE A NEW SAVE\u0027), b=TX(\u0027SECTOR A\u0027), c=TX(\u0027ENTER RAID!\u0027);\n     if(a!==\u0027Create a new save\u0027) return \u0027CREATE A NEW SAVE reads \"\u0027+a+\u0027\"\u0027;\n     if(b!==\u0027Sector A\u0027) return \u0027a lone sector letter changed: \"\u0027+b+\u0027\"\u0027;\n     if(c!==\u0027Enter raid!\u0027) return \u0027other text changed: \"\u0027+c+\u0027\"\u0027;\n     return null;\n   }},"
+}

@@ -1,0 +1,12 @@
+{
+    "title":  "THE TITLE KEY LINE NAMES F1 FOR THE CONTROLS LIST",
+    "why":  "UI step 30, menu map. The title key line said H controls. Since keyswap H is the quick heal and F1 shows the controls, so a party guest who read the title and pressed H healed instead of seeing the controls. It says F1 now. Nothing else changed.",
+    "now":  "The title key line now says F1 controls, the key that really opens the list (H heals).",
+    "edits":  [
+                  {
+                      "anchor":  "      \u003cb style=\"color:var(--bone)\"\u003eH\u003c/b\u003e controls\n",
+                      "replacement":  "      \u003c!-- v28.xx (cw-menu-f1hint), UI step 30 (menu map): the title key line said H opens the controls. Since keyswap (v25.xx) H heals and F1 is the controls list, so a guest who read the title pressed H and healed. It names F1. --\u003e\n      \u003cb style=\"color:var(--bone)\"\u003eF1\u003c/b\u003e controls\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title key line names F1 for the controls list, not H (H heals since keyswap)\u0027,\n   run:function(){\n     var rows=document.querySelectorAll(\u0027#title .kbrow\u0027), t=\u0027\u0027, i;\n     for(i=0;i\u003crows.length;i++) t+=\u0027 \u0027+rows[i].textContent;\n     if(!t) return \u0027no title key line found\u0027;\n     if(/\\bH\\s+controls/.test(t)) return \u0027the title still says H controls, but H heals\u0027;\n     if(!/\\bF1\\s+controls/.test(t)) return \u0027the title key line does not say F1 controls\u0027;\n     return null;\n   }},"
+}

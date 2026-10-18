@@ -1,0 +1,2 @@
+# UI changes (one line each: date, task, screen, what changed, before/after pictures)
+- 2026-10-18, b-30-ui-hud, raid HUD (screens 19-24, 33), controls list folds to its one-line hint 30 s into a raid (was open all of raids 1-3); F1 still opens it. Before: notes/shots/b-30-before/21-raid-hud-calm-1080.jpg. After: none yet (screens stage at t=0).

@@ -1858,7 +1858,8 @@
       <b style="color:var(--bone)">E</b> search &nbsp;
       <b style="color:var(--bone)">B / I</b> backpack &nbsp;
       <b style="color:var(--bone)">M</b> map &nbsp;
-      <b style="color:var(--bone)">H</b> controls
+      <!-- v28.xx (cw-menu-f1hint), UI step 30 (menu map): the title key line said H opens the controls. Since keyswap (v25.xx) H heals and F1 is the controls list, so a guest who read the title pressed H and healed. It names F1. -->
+      <b style="color:var(--bone)">F1</b> controls
     </div>
     <!-- v19.95, seen on the controller pass (2026-10-08): with a pad on, the title's key row named WASD, MOUSE and LMB. The pad row
          (his layout, LEGEND_PAD) shows instead, through padB on a PlayStation pad. -->
@@ -2309,7 +2310,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.29';
+var VER='29.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47271,7 +47272,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.29: The controls list folds to its one-line hint 30 seconds into a raid. F1 opens it again. Check 29.29 fails on v29.28',
+  now:'v29.30: The title key line now says F1 controls, the key that really opens the list (H heals). Check 29.30 fails on v29.29',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.30 - THE TITLE KEY LINE NAMES F1 FOR THE CONTROLS LIST
+
+Co-op hunt while he was away. UI step 30, menu map. The title key line said H controls. Since keyswap H is the quick heal and F1 shows the controls, so a party guest who read the title and pressed H healed instead of seeing the controls. It says F1 now. Nothing else changed.
+
+MEASURED. Check 29.30 passes, and fails on v29.29.
 ## v29.29 - CONTROLS LIST FOLDS AWAY AFTER 30 SECONDS
 
 Co-op hunt while he was away. UI step 4, the HUD in play. The style guide says the controls list is hidden except on F1 and in the first 30 seconds. It sat over the play space for a whole raid on the first three. It still opens on arrival (his v6.68 note) and now folds to the one-line hint 30 seconds in. F1 cycles it as before.
