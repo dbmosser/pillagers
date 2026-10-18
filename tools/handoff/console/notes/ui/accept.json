@@ -272,12 +272,12 @@
   "when": "2026-10-18T06:21"
  },
  "62-arcade-operator-menu": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A small, bright operator modal sits on top of a dimmed attract screen whose title, scoreboard and 'Press any button' prompt are still visible and compete with it, so the layering is muddled and the modal is tiny for a 1080 couch view.",
-  "pic": "tools/handoff/console/notes/shots/all/62-arcade-operator-menu-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:22"
+  "verdict": "The Operator modal is now a clear dark card with one amber primary, a danger-ghost Exit and a quiet Back, but it overlaps and clips the Tonight's best card behind it, has no close X or key-hint strip, and its focus state is ambiguous.",
+  "pic": "tools/handoff/console/notes/shots/12-after1/62-arcade-operator-menu-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T07:58"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -318,5 +318,13 @@
   "pic": "tools/handoff/console/notes/shots/all/77-haul-reveal-done-1080.jpg",
   "task": "10-ui-look-book",
   "when": "2026-10-18T06:23"
+ },
+ "63-arcade-operator-new-party-armed": {
+  "score": 3,
+  "pass": false,
+  "verdict": "The Operator modal is cleaner and better centred than before, with larger text and more padding, but the red Confirm and Exit demo buttons look almost the same, so the choice is muddy, and the 'Back' button has no visible focus.",
+  "pic": "tools/handoff/console/notes/shots/12-after1/63-arcade-operator-new-party-armed-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T07:59"
  }
 }

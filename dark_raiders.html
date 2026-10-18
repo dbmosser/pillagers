@@ -2402,7 +2402,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.44';
+var VER='29.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32462,6 +32462,8 @@ function drawVest(id,b,cx,ty,cc,sch,fl){
     wc.strokeStyle='#8a6e48'; wc.lineWidth=0.8; wc.beginPath(); wc.moveTo(x1,y1-0.8); wc.lineTo(x2,y2-0.8); wc.stroke();
     for(i=0;i<5;i++){ t=0.14+i*0.18; px=x1+(x2-x1)*t; py=y1+(y2-y1)*t; wc.fillStyle=INK; wc.fillRect(px-1.3,py-1.7,2.6,3.4); wc.fillStyle='#d8b04a'; wc.fillRect(px-0.8,py-1.2,1.6,2.4); wc.fillStyle='#fff0b0'; wc.fillRect(px-0.8,py-1.2,1.6,0.7); }
     wc.fillStyle=INK; wc.fillRect(x1-0.9,y1-1.1,3.0,3.0); wc.fillStyle=A; wc.fillRect(x1-0.4,y1-0.6,2.0,2.0);
+    // v28.xx (cw-raiderchip): the Raider bandolier strap is worn: four bare steel flecks on its lit edge, between the cartridges.
+    wc.fillStyle='#dfe6ec'; for(i=0;i<4;i++){ t=0.23+i*0.18; px=x1+(x2-x1)*t; py=y1+(y2-y1)*t; wc.fillRect(px-0.7,py-1.0,1.4,1.0); }
   } else if(id==='vestharn'){
     wc.fillStyle=cc; rrF(cx-W+0.4,ty-21.4,2*W-0.8,9.8,2.0);
     wc.fillStyle=litHex(cc,.2,true); wc.fillRect(cx-W+0.6,ty-21.2,2*W-1.2,1.6);
@@ -33522,6 +33524,9 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle='#454e42'; wc.fillRect(hx2-11.2,ty-34.6,1.0,6.8); wc.fillRect(hx2+8.4,ty-34.6,1.0,6.8);
       wc.fillStyle=INK;       wc.fillRect(hx2+fl*3.8-2.1,ty-46.6,4.2,3.6);
       wc.fillStyle=_SCH?_SCH.a:'#e8d890'; wc.fillRect(hx2+fl*3.8-1.5,ty-46.1,3.0,2.4);
+      // v28.xx (cw-raiderchip), art build step b (char-art-build-brief): "chipped paint edges and colour-panel stripes on armour ... heavy headgear". The Raider helmet gets a scheme colour panel stripe across the dome and four bare steel paint chips, all inside the old outline.
+      wc.fillStyle=_SCH?_SCH.a:'#e8d890'; wc.fillRect(hx2-7.2,ty-40.4,14.4,1.1);
+      wc.fillStyle='#dfe6ec'; wc.fillRect(hx2-7.4,ty-41.6,1.4,1.0); wc.fillRect(hx2+5.4,ty-42.6,1.4,1.0); wc.fillRect(hx2+6.4,ty-38.2,1.4,1.0); wc.fillRect(hx2-4.6,ty-38.0,1.4,1.0);
     } else if(HAT==='hardhat'){
       // v28.16 (cosm3): a site worker hard hat, safety yellow, a ridge down the dome, a brim and a lamp.
       wc.fillStyle=INK;       rrF(hx2-9.6,ty-44.0,19.2,9.8,5); rrF(hx2-11.4,ty-37.6,22.8,3.6,1.7);
@@ -47405,7 +47410,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.44: The operator menu is a bigger, cleaner card with an accent tab. Check 29.44 fails on v29.43',
+  now:'v29.45: The Raider helmet and bandolier now show chipped paint and a colour stripe. Check 29.45 fails on v29.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

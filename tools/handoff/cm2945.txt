@@ -1,0 +1,7 @@
+v29.45: the raider helmet and bandolier are chipped
+
+The Raider helmet and bandolier now show chipped paint and a colour stripe.
+
+Check 29.45. Fails on v29.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
