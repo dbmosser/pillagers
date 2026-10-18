@@ -1,0 +1,13 @@
+version=29.09
+at=2026-10-18 10:23
+iso=2026-10-18T14:23:38.220Z
+commit=f43573d2ebdebe4f903d5d7c9144682ea78045d4
+tag=stable-v29.09
+address=http://localhost:8802/stable.html
+corpus=corpus-1017-2244.txt
+corpus_failing=9
+corpus_new_failures=0
+robot_minutes=357
+robot_raids=100
+robot_problems=0
+size=5155257

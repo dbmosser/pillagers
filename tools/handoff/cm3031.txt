@@ -1,0 +1,7 @@
+v30.31: small art touches: pack buckle, boot laces, jersey shadow
+
+Packs, boots and the jersey number have finer drawn detail.
+
+Check 30.31. Fails on v30.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

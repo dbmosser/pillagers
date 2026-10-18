@@ -19,3 +19,7 @@ tools/fixture-soak-*.html
 tools/handoff/fuzz/*.jsonl
 tools/handoff/fuzz/fuzz-trace.txt
 tools/gd-*.html
+
+# 2026-10-18: the stable play copy (tools/stable.sh): an exact copy of one old version, served by :8802 as /stable.html. The git tag stable-vNN.NN keeps it.
+/stable.html
+/stable.html.tmp

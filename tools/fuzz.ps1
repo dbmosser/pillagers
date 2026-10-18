@@ -32,7 +32,8 @@ param(
   [string]$FlagFile='',
   [switch]$IgnoreFlag,
   [switch]$SelfTest,
-  [switch]$Trace
+  [switch]$Trace,
+  [string]$Fixture='fixture.html'
 )
 $ErrorActionPreference='Stop'
 $R='C:\claudecode\dark raiders'; $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'
@@ -43,6 +44,10 @@ $Enc=New-Object Text.UTF8Encoding $false
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 if($Seed -eq 0){ $Seed=[int]((Get-Date).Ticks % 2000000000) }
 if($Port -in 8802,9346,9335,9345,9344){ Write-Output ('refusing port '+$Port); exit 2 }
+# 2026-10-18: -Fixture NAME runs the robots on another fixture in tools\ . nightly.sh gives the second robot the corpus copy (tools\fxcorpus.html), so one exact
+# version gets both the full test set and 30+ robot minutes, which is what tools\stable.sh needs. It uses its own copy name so the two robots never share a file.
+if($Fixture -notmatch '^[A-Za-z0-9._-]+\.html$'){ $Fixture='fixture.html' }
+$FzName = $(if($Fixture -eq 'fixture.html'){ 'fixture-soak-fuzz.html' } else { 'fixture-soak-fuzzc.html' })
 
 function Stamp(){ (Get-Date).ToString('yyyy-MM-dd HH:mm:ss') }
 function Clean([string]$s){ ($s -replace '[^\x20-\x7e]','?') }
@@ -60,7 +65,7 @@ function Kill-Chrome(){
   }catch{}
 }
 function Probe-Server([int]$p){
-  try{ $rq=[Net.WebRequest]::Create('http://localhost:'+$p+'/fixture-soak-fuzz.html'); $rq.Timeout=4000; $rs=$rq.GetResponse(); $len=$rs.ContentLength; $rs.Close(); return ($len -gt 5000000) }catch{ return $false }
+  try{ $rq=[Net.WebRequest]::Create('http://localhost:'+$p+'/'+$FzName); $rq.Timeout=4000; $rs=$rq.GetResponse(); $len=$rs.ContentLength; $rs.Close(); return ($len -gt 5000000) }catch{ return $false }
 }
 function Pick-Server(){
   $c=@(); if($Srv -gt 0){ $c+=$Srv }; $c+=@(8810,8809,8808,8807,8806,8805,8804,8803)
@@ -72,9 +77,9 @@ function Copy-Fixture(){
   # its own copy: a ship mid-run rebuilds fixture.html, and a half written file must never be served
   for($i=0;$i -lt 8;$i++){
     try{
-      $t1=(Get-Item ($T+'\fixture.html')).LastWriteTimeUtc
-      Copy-Item ($T+'\fixture.html') ($T+'\fixture-soak-fuzz.html') -Force
-      $fi=Get-Item ($T+'\fixture-soak-fuzz.html'); $s2=Get-Item ($T+'\fixture.html')
+      $t1=(Get-Item ($T+'\'+$Fixture)).LastWriteTimeUtc
+      Copy-Item ($T+'\'+$Fixture) ($T+'\'+$FzName) -Force
+      $fi=Get-Item ($T+'\'+$FzName); $s2=Get-Item ($T+'\'+$Fixture)
       $tail=[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($fi.FullName),[int]($fi.Length-300),300)
       if($fi.Length -gt 5000000 -and $fi.Length -eq $s2.Length -and $s2.LastWriteTimeUtc -eq $t1 -and $tail -match '</script>'){ return $true }
     }catch{}
@@ -139,7 +144,7 @@ $script:Hook=[IO.File]::ReadAllText($T+'\fuzz-hook.js')
 function Open-Page(){
   $base='http://127.0.0.1:'+$Port
   try{ (Invoke-RestMethod ($base+'/json') -TimeoutSec 5) | Where-Object { $_.type -eq 'page' } | ForEach-Object { try{ Invoke-RestMethod ($base+'/json/close/'+$_.id) -TimeoutSec 5 | Out-Null }catch{} } }catch{}
-  $tab=Invoke-RestMethod -Method Put -Uri ($base+'/json/new?http://localhost:'+$script:srvPort+'/fixture-soak-fuzz.html') -TimeoutSec 10
+  $tab=Invoke-RestMethod -Method Put -Uri ($base+'/json/new?http://localhost:'+$script:srvPort+'/'+$FzName) -TimeoutSec 10
   Ws-Connect $tab.webSocketDebuggerUrl
   Cmd 'Page.enable'
   Cmd 'Emulation.setDeviceMetricsOverride' '{"width":1920,"height":1080,"deviceScaleFactor":1,"mobile":false}'
@@ -408,7 +413,7 @@ try{
   # a hidden watchdog, so a killed fuzz.ps1 (he is back) cannot leave this Chrome burning CPU: it waits for this process, then ends the Chrome
   $wdScript='Wait-Process -Id '+$PID+' -ErrorAction SilentlyContinue; Get-CimInstance Win32_Process -Filter "Name=''chrome.exe''" | Where-Object { $_.CommandLine -match ''remote-debugging-port='+$Port+'(\s|$)'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }'
   Start-Process -FilePath powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-EncodedCommand',[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($wdScript))) | Out-Null
-  if(-not (Copy-Fixture)){ throw 'could not copy tools\fixture.html (missing or half written)' }
+  if(-not (Copy-Fixture)){ throw ('could not copy tools\'+$Fixture+' (missing or half written)') }
   $script:srvPort=Pick-Server
   if($script:srvPort -eq 0){
     $script:ownSrv=Start-Process -FilePath powershell.exe -WindowStyle Hidden -PassThru -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$T+'\serve.ps1" -Root "'+$T+'" -Port 8811')

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.31 - SMALL ART TOUCHES: PACK BUCKLE, BOOT LACES, JERSEY SHADOW
+
+Co-op hunt while he was away. His answer 75 (10-18): finish the small art touches. The default pack gets a dark lower seam, a strap and a steel buckle; the boots get two pale lace dots behind the toe cap; the jersey 23 gets a soft ink shadow so it reads off the red. All inside the old outlines, so no anchor moves.
+
+MEASURED. Check 30.31 passes, and fails on v30.30.
 ## v30.30 - PAUSE CARD LOSES THE PLAIN HINT
 
 Co-op hunt while he was away. Critic 49 (3 of 5): the unstyled Esc Resume text under the pause buttons. The header X already closes the card, so the hint goes and the card is shorter.

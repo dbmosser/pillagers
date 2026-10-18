@@ -2790,7 +2790,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.30';
+var VER='30.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33609,6 +33609,9 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     var _toe=(fl>0)?3.0:0.2;
     wc.fillStyle=litHex(_BT[0],.30); wc.fillRect(x-6.5+swing2+_toe,ty-4.2-liftB,2.2,1.0);
     wc.fillStyle=litHex(_BT[1],.30); wc.fillRect(x+1.1+swing+_toe,ty-4.2-liftA,2.2,1.0);
+    // v28.xx (cw-smalltouch), HIS ANSWER 75: "Finish the small art touches." Boots get two pale lace dots behind the toe cap, toward the facing.
+    var _lc=(fl>0)?_toe-1.6:_toe+2.4;
+    wc.fillStyle='#d8d4c4'; wc.fillRect(x-6.5+swing2+_lc,ty-3.9-liftB,1.0,0.75); wc.fillRect(x-6.5+swing2+_lc,ty-2.6-liftB,1.0,0.75); wc.fillRect(x+1.1+swing+_lc,ty-3.9-liftA,1.0,0.75); wc.fillRect(x+1.1+swing+_lc,ty-2.6-liftA,1.0,0.75);
   }
   if(!OUTF&&_BTID==='bootshin'){   // v28.12 (cosm5): shin guards, a plate over the front of each lower leg
     wc.fillStyle=INK; rrF(x-6.8+swing2*.5,ty-10.2-liftB*.5,5.2,5.6,1.4); rrF(x+1.4+swing*.5,ty-10.2-liftA*.5,5.2,5.6,1.4);
@@ -33638,6 +33641,12 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=_PKC;
   rrF(x-fl*9-pw/2+leanX,ty-21,pw,9,2);
   if(_SCH){ wc.fillStyle=_SCH.a; wc.fillRect(x-fl*9-pw/2+leanX+0.6,ty-20.4,pw-1.2,1.2); }
+  // v28.xx (cw-smalltouch), HIS ANSWER 75 (2026-10-18): "Finish the small art touches." The plain pack was a flat brown block: it gets a dark lower seam, a strap down the flap and a steel buckle, all inside the old outline.
+  if(/^#[0-9a-fA-F]{6}$/.test(_PKC)){
+    var _pkx=x-fl*9+leanX;
+    wc.fillStyle=darkHex(_PKC,.35); wc.fillRect(_pkx-pw/2+0.6,ty-14.2,pw-1.2,0.9); wc.fillRect(_pkx-0.5,ty-19.2,1.0,5.0);
+    wc.fillStyle='#cfd5db'; wc.fillRect(_pkx-0.9,ty-16.6,1.8,1.5);
+  }
   if(/^pack(roll|radio|fuel|frame)$/.test(_PKID)) drawPackExtra(_PKID,x-fl*9+leanX,ty,fl,pw,_SCH);   // v28.12 (cosm5)   // v28.04 (cosm1): the accent flap
   }
   if(!_BLD){
@@ -33690,10 +33699,13 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     // Broad and Curved they now run down the body's own sides.
     if(_BLD){ wc.save(); buildPath(x+leanX,ty,(_BLD==='broad')?BUILD_BROAD:BUILD_CURVED,0); wc.clip(); wc.beginPath(); wc.rect(x+leanX-12,ty-21.4,24,10); wc.clip(); buildPath(x+leanX,ty,(_BLD==='broad')?BUILD_BROAD:BUILD_CURVED,0); wc.strokeStyle='#14161b'; wc.lineWidth=2.8; wc.stroke(); wc.restore(); }
     else { wc.fillStyle='#14161b'; wc.fillRect(_jx,ty-21.4,1.4,10); wc.fillRect(_jx+11.6,ty-21.4,1.4,10); }
-    wc.fillStyle='#f4f2ec';
-    var _jy=ty-20;
-    wc.fillRect(_jx+2.6,_jy,3.4,1.5); wc.fillRect(_jx+4.5,_jy,1.5,2.6); wc.fillRect(_jx+2.6,_jy+1.9,3.4,1.5); wc.fillRect(_jx+2.6,_jy+1.9,1.5,2.6); wc.fillRect(_jx+2.6,_jy+3.8,3.4,1.5);
-    wc.fillRect(_jx+7.2,_jy,3.4,1.5); wc.fillRect(_jx+9.1,_jy,1.5,5.3); wc.fillRect(_jx+7.2,_jy+1.9,3.4,1.5); wc.fillRect(_jx+7.2,_jy+3.8,3.4,1.5);
+        var _jy=ty-20, _jp, _jo;
+    // v28.xx (cw-smalltouch), HIS ANSWER 75: "Finish the small art touches." The 23 gets a soft ink shadow down and to the right, so the number reads off the red shirt.
+    for(_jp=0;_jp<2;_jp++){
+      wc.fillStyle=_jp?'#f4f2ec':'rgba(20,22,27,.6)'; _jo=_jp?0:0.6;
+      wc.fillRect(_jx+2.6+_jo,_jy+_jo,3.4,1.5); wc.fillRect(_jx+4.5+_jo,_jy+_jo,1.5,2.6); wc.fillRect(_jx+2.6+_jo,_jy+1.9+_jo,3.4,1.5); wc.fillRect(_jx+2.6+_jo,_jy+1.9+_jo,1.5,2.6); wc.fillRect(_jx+2.6+_jo,_jy+3.8+_jo,3.4,1.5);
+      wc.fillRect(_jx+7.2+_jo,_jy+_jo,3.4,1.5); wc.fillRect(_jx+9.1+_jo,_jy+_jo,1.5,5.3); wc.fillRect(_jx+7.2+_jo,_jy+1.9+_jo,3.4,1.5); wc.fillRect(_jx+7.2+_jo,_jy+3.8+_jo,3.4,1.5);
+    }
   }
   // SPEC 9.7: the rig has to be READABLE. Armour is drawn in a cool steel ramp
   // rather than in the coat colour, so it reads as armour on all six raider
@@ -47998,7 +48010,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.30: The pause card no longer has a plain Esc Resume line. Check 30.30 fails on v30.29',
+  now:'v30.31: Packs, boots and the jersey number have finer drawn detail. Check 30.31 fails on v30.30',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

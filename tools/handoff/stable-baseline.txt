@@ -1,0 +1,84 @@
+v10.11 the stash tabs are his six in his order, with armour plates under CONSUMA
+v10.38 the WHAT IS NEW card is current, opens with what an alpha is, and names w
+v10.41 his words, first batch, read back off the screens: the pause box, the dow
+v10.44 the full controls list is centred, on the screen and clear of the conditi
+v10.46 the number 23 jersey is on the clothing rack, red with black panels and a
+v10.52 the prompt over a container is drawn as a callout and the items-left coun
+v10.64 F strikes with a gun in hand, through the real key handler, and both cont
+v10.68 a gun found in a raid fills the empty second slot instead of shoving the
+v10.92 your own marker on the map is far bigger than the eight pixels it was, an
+v10.96 pausing in the Undercroft offers exactly his two choices, and the second
+v11.26 the pause screen key line prints no literal entity and names the keys the
+v11.27 F is one thing: a press while hurt with a Bandage in the backpack swings
+v11.38 a melee swing next to your own merc does not hurt him; a swing next to a
+v11.60 a Frag Charge put on a tactical belt key is a live throwable cell: it sho
+v11.83 a stim is ten seconds of unlimited stamina and a fifth more speed, used t
+v11.90 with the backpack open, the gun in your hands can be dragged off its belt
+v11.91 a belt key holding a gun from the backpack equips it into your hands, and
+v11.95 an armoury gun drags like an item: dropped on a belt key it leaves the ra
+v11.96 a belt key on a stack packs half the stack and the plan cell shows the co
+v11.97 with the backpack closed, a click on the hand cell still only selects, a
+v12.27 a stash drop onto the backpack for an item bound to a key with nothing pa
+v12.28 a Peddler purchase says where it went: a bought rifle names the belt key
+v12.31 with the gun in hand bound to key 5, which cell 1 shows too: a click on c
+v13.16 a looted armour plate does not turn itself into armour: the bar does not
+v13.31 the sector page the lift opens tells a player with nothing equipped that
+v14.25 one item, one key in the Undercroft backpack: a Medkit dragged onto belt
+v15.25 belt key 1 never goes black while he holds a gun: the SMG taken from the
+v16.79 with the backpack open on a controller, A picks up the item under the hig
+v16.85 a controller builds the tactical belt on the Stash screen: with a Bandage
+v16.87 the kit question offers TOP GEAR and RANDOM FROM STASH: top gear equips t
+v17.75 remappable keys: binding interact onto F swaps it with melee, a real F pr
+v17.86 the pause legend built from the key map says CTRL / C crouch toggle, as t
+v18.25 the floor says how to trade while a party is on: the pause-box key line n
+v18.97 the run card note box never squashes: on a card taller than the screen th
+v19.00 the status effects sit down the left side, his notes of 2026-10-07: with
+v20.58 a controller reaches the FASHION racks, slot rows and saved looks and the
+v20.75 at 4K the Peddler panel, YOU DIED and the NOTORIETY stamp are drawn twice
+v20.92 the stash search box is as tall as the tabs and SORT beside it and level
+v21.09 the run card feel tags use the card width: the tag block fills most of th
+v21.86 two message rows: a line said while another shows takes the top row and t
+v21.88 a lower line cannot push a higher one off: with a warning and a line on t
+v21.93 four gun keys: with the rifle and SMG in his hands and a shotgun, a marks
+v22.32 threats are alert headlines in the shooter voice: a Pillbox that sees him
+v22.39 an old belt plan with a Medkit on key 8 and a Stim on key 9 slides withou
+v22.43 the belt lines read like a shooter HUD (his order of 2026-10-09): a vacan
+v22.54 pickup rows say where it went: the best gun searched out of a crate with
+v22.59 backpack full is one red row: with a controller connected, E held for 3 s
+v23.05 tactical belt and gun lines in the slot word: a Medkit dropped on slot 9
+v23.29 arcade8, his order 2026-10-11: in the arcade a credited kill scores into
+v23.35 arcade13, his order 2026-10-11: the arcade HUD draws no CONDITIONS panel,
+v23.38 arcade15, his order 2026-10-11: popups and streaks, two crawler kills 0.5
+v23.41 arcade18, his order 2026-10-11: the party scoreboard, initials and NEW HI
+v23.42 arcade19, his order 2026-10-11: the controls card, arcadeCardRows gives 8
+v23.44 arcade21, his yes 2026-10-11: the operator lock, in an arcade raid ESC an
+v23.46 arcade23, his yes 2026-10-11: one-button quick heal in the arcade, with a
+v23.54 arcade30, his order 2026-10-11 evening (arcade mode also needs a single p
+v23.56 arcade31, his order 2026-10-11 evening (in arcade mode, credits and point
+v23.63 his #6 and answer 32: a Tripwire Mine goes on the belt like a grenade and
+v23.85 his #50 (UI redesign ui3): the menu type scale: window titles in the cond
+v23.88 graphics program gfx4: a lower Render resolution shrinks only the world c
+v23.95 his answer 32: the Tripwire Mine keeps a belt cell the pad can reach whil
+v23.96 graphics program gfx5: world text draws on the HUD canvas: in a drawn rai
+v24.19 his #50 (UI redesign ui5): the shared components: in a window a primary b
+v24.87 his #50 (UI redesign ui5q1w, from the visual QA of the Keys window): the
+v25.01 his order 2026-10-12, the lock-on beeping is annoying and inconsistent wh
+v25.26 his order: the guns in your hands are bigger, every class reads, the maga
+v25.53 his mode design and answers (2026-10-12): a CAREER extraction doubles the
+v26.30 his order (2026-10-14), the other ways a gun turns up: a pillager carries
+v26.77 his yes (suggestion 27): rarely a crate or locker is a mimic (a fixed few
+v27.00 career3, his yes to the needed-item glow (31): what an unfinished contrac
+v27.38 partyp1, his verdict on the style medals (keep all of them, Halo style):
+v27.82 his order (add the sounds): the five raid events have sounds: each plays
+v28.12 pack and boot shapes: four packs and two boots that change the outline, i
+v28.13 the body layer: a vest rack and a shoulder rack that change the chest and
+v28.16 the head layer: six new headgears that change the head shape at raid size
+v28.48 cloud-coop-teammate-shield-bubble: a SHIELD BUBBLE power-up is seen round
+v28.68 his order 2026-10-15 (crawlers too fast): a crawler moves at 120 units a
+v9.03 an emptied belt slot is actually drawn darker, not just marked empty
+v9.03 spending the last of a belted item leaves the slot dark and empty, never a
+v9.19 the names on screen are his names, not the ones I reached for
+v9.31 an item can be taken back off the belt during a raid, and a click on its o
+v9.82 an item drags off the tactical belt into the backpack, and to the stash
+v9.92 C and CTRL toggle crouch, one press down and the next up, and the legends
+v9.93 the pause screen and the legends say RMB aims down sights, and the compact
