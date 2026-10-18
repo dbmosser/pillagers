@@ -1,0 +1,7 @@
+v29.04: the next gun keycap names rb on a controller
+
+On a controller the tactical belts next gun keycap says RB, the button that changes to it.
+
+Check 29.04. Fails on v29.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

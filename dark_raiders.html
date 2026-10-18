@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.03';
+var VER='29.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -37321,7 +37321,9 @@ function drawBuzzFx(){
         else if(S.kind==='armor'&&(S.count|0)>0){ _cc='KeyH'; _cpre='HOLD '; }
         else if(S.kind==='gun'&&!S.vacant&&S.icon){ if(_bgHalf&&S.inHand) _cc='KeyR'; else if(q===_nG){ _cc='KeyF'; _cgr=true; } }
         if(_cc&&!(padOn()&&!PADLABEL[_cc])){
-          var _ct=_cpre+String(keyLabel(_cc,_cc.slice(3))), _cs=Math.round(bw*0.2), _cw, _ckx=bx+LH(4), _cky;
+          // v28.xx (cw-padcap), CLOUD HUNT 2026-10-15: on a controller the next gun cap said D-DOWN (PADLABEL.KeyF), but D-DOWN opens
+          // the item wheel; the pad walks the belt to the next gun on RB (logical button 5, as bound), so that cap names that button, as the controls card does.
+          var _ct=_cpre+String((_cc==='KeyF'&&padOn())?padB(pbn(5)):keyLabel(_cc,_cc.slice(3))), _cs=Math.round(bw*0.2), _cw, _ckx=bx+LH(4), _cky;
           _cky=(_gunReal?(hy+bw-LH(4)-Math.max(3,Math.round(bw*0.05))-LH(3)):(hy+bw-LH(5)))-_cs;   // above the magazine bar on a gun key
           ctx.font=beltFS(bw,0.13);
           _cw=Math.min(Math.round(bw*0.62),Math.max(_cs,Math.round(ctx.measureText(_ct).width+_cs*0.6)));
@@ -46819,7 +46821,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.03: The story card, a cooked grenade shout, ACTIVE RELOAD and CLOSE CALL also show in the feed. Check 29.03 fails on v29.02',
+  now:'v29.04: On a controller the tactical belts next gun keycap says RB, the button that changes to it. Check 29.04 fails on v29.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

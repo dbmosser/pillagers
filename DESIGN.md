@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.04 - THE NEXT GUN KEYCAP NAMES RB ON A CONTROLLER
+
+Co-op hunt while he was away. Since v26.02 each tactical belt key shows the key that acts on it, the controller button when a controller is on. The next gun key showed D-DOWN, but on a controller D-DOWN opens the item wheel and never changes the gun; the controller walks the belt with RB (the controls card says LB/RB change tactical belt slot). Proven in the cloud: with a controller on, the cap read D-DOWN, and a D-DOWN tap opened the wheel without changing the gun. With a controller on, that key now names the button the belt walk forward is on (RB by default, R1 on a PlayStation pad, or wherever he moved it). The keyboard still shows F, and the self-revive prompt still says D-DOWN.
+
+MEASURED. Check 29.04 passes, and fails on v29.03.
 ## v29.03 - ALL ON-SCREEN TEXT GOES INTO THE FEED
 
 Co-op hunt while he was away. His order 2026-10-15: "All text shown to the player on screen also goes into the player feed." say() and world labels already fed it. Four texts still bypassed it: the map story lore card (name and text), the last-second cooked grenade shout, ACTIVE RELOAD, and a CLOSE CALL label with no score. They are feed lines now. WEAK SPOT, PICKED UP and NOTORIETY +n stay out on purpose (hit mark, pickup row, own line).
