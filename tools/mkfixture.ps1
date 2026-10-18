@@ -25792,7 +25792,7 @@ window.__REGRESS=[
      var bad=[], gear=null, i, row=null, d=parseFloat(VER)-parseFloat(WHATSNEW_VER), s;
      for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='GEAR') gear=LEGEND[i][1];
      if(!gear) return 'SKIP: the controls list has no GEAR heading';
-     for(i=0;i<gear.length;i++) if(gear[i][0]==='1-9') row=gear[i];
+     for(i=0;i<gear.length;i++) if(gear[i][0]==='1-9'||gear[i][0]==='1-8, 0') row=gear[i];   // retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass
      if(!row) bad.push('the controls list has no 1-9 row');
      else if(!/kind/.test(row[1])||!/stash/.test(row[1])) bad.push('the 1-9 row says '+JSON.stringify(row[1])+', not a gun for each kind set in the stash');
      if(parseFloat(WHATSNEW_VER)>26.43+0.001) return bad.length?bad.join('; '):'SKIP: the card has moved on, a later card check covers it';
@@ -28411,10 +28411,10 @@ window.__REGRESS=[
        var bad9=[], gear9=null, i9, rows9=LEGEND_MINI, ix9=-1;
        for(i9=0;i9<LEGEND.length;i9++) if(LEGEND[i9][0]==='GEAR') gear9=LEGEND[i9][1];
        if(!gear9) return 'SKIP: no GEAR section in the controls list';
-       if(!gear9.some(function(r){ return r[0]==='1-9'&&/gun/.test(r[1]); })) bad9.push('the controls list has no 1-9 guns row');
+       if(!gear9.some(function(r){ return (r[0]==='1-9'||r[0]==='1-8, 0')&&/gun/.test(r[1]); }))   /* retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass */ bad9.push('the controls list has no 1-9 guns row');
        if(!gear9.some(function(r){ return /Q/.test(r[0])&&/wheel/.test(r[1]); })) bad9.push('the controls list has no HOLD Q item wheel row');
        if(gear9.some(function(r){ return ['G','U','H','J','5-6','7-8'].indexOf(r[0])>=0; })) bad9.push('the controls list still has an item key row');
-       for(i9=0;i9<rows9.length;i9++) if(rows9[i9][0]==='1-9') ix9=i9;
+       for(i9=0;i9<rows9.length;i9++) if(rows9[i9][0]==='1-9'||rows9[i9][0]==='1-8, 0') ix9=i9;
        if(ix9<0) bad9.push('the compact list has no 1-9 guns row'); else { if(ix9%2!==0) bad9.push('1-9 sits in the right hand column (entry '+ix9+')'); if(!rows9[ix9+1]||rows9[ix9+1][0]!=='B / I') bad9.push('B / I does not follow 1-9 on the same row'); }
        if(rows9.length%2!==0) bad9.push('the compact list has an odd number of entries ('+rows9.length+')');
        return bad9.length?bad9.join('; '):null;
@@ -28898,7 +28898,7 @@ window.__REGRESS=[
        if(!(sl[K8.i]&&sl[K8.i].kind==='gun'&&sl[K8.i].itemKey==='gun_rifle')) return bad.length?bad.join('; '):'SKIP: staging: key 8 does not show the rifle';
        down(K8); up(K9); g.drag=null;
        if(g.hotAssign[8]!==undefined||g.hotAssign[K8.i]!=='gun_rifle') bad.push('a gun key dragged onto key 9 moved or was bound there (keys '+JSON.stringify(g.hotAssign)+')');
-       if(!said.some(function(t){ return t==='GUNS GO ON KEYS 1 TO '+GUNKEYS; })) bad.push('that drag did not say GUNS GO ON KEYS 1 TO '+GUNKEYS+' (said '+said.join(' / ')+')');
+       if(!said.some(function(t){ return t==='GUNS GO ON KEYS 1 TO '+GUNKEYS||t==='GUNS GO ON KEYS 1 TO 8 AND 0'; })) bad.push('that drag did not say GUNS GO ON KEYS 1 TO '+GUNKEYS+' (said '+said.join(' / ')+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        say=s0;
@@ -28922,7 +28922,7 @@ window.__REGRESS=[
      function down(C){ mouse.x=C.x+20; mouse.y=C.y+20; cv.dispatchEvent(new MouseEvent('mousedown',{button:0})); }
      function up(C){ mouse.x=C.x+20; mouse.y=C.y+20; window.dispatchEvent(new MouseEvent('mouseup',{button:0})); }
      function pinOf(id){ var k; for(k in g.hotAssign) if(g.hotAssign[k]==='gun_'+id) return +k; return -1; }
-     function toldRef(){ return said.some(function(t){ return t===REF; }); }
+     function toldRef(){ return said.some(function(t){ return t===REF||t==='GUNS GO ON KEYS 1 TO 8 AND 0'; }); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        snap=JSON.parse(JSON.stringify(__P()));
@@ -29644,7 +29644,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof LEGEND_MINI==='undefined') return 'SKIP: no compact legend here';
      var bad=[], rows=LEGEND_MINI, i, ix=-1, k, found, want={'Q':'melee','F':'next gun','G':'throw','H':'heal','E':'search','X':'extract'}; if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9){ delete want.G; delete want.H; want.Q='item wheel'; want.V='melee'; }
-     for(i=0;i<rows.length;i++) if(rows[i][0]==='1-9'||rows[i][0]==='1-4') ix=i;   // v25.xx (belt8) retarget: the row is 1-4 guns now
+     for(i=0;i<rows.length;i++) if(rows[i][0]==='1-9'||rows[i][0]==='1-8, 0'||rows[i][0]==='1-4') ix=i;   // retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass   // v25.xx (belt8) retarget: the row is 1-4 guns now
      if(ix<0) bad.push('the compact list has no 1-9 row');
      else{
        if(ix%2!==0) bad.push('1-9 TACTICAL BELT sits in the right hand column (entry '+ix+'), so its label has no next column to be measured against');
@@ -42988,7 +42988,7 @@ window.__REGRESS=[
        // v25.xx (belt2) retarget: from belt2 on, a gun belongs on keys 1 to 4 and a drag onto key 6 is refused in words with nothing moved (this check keeps testing that the drag leaves the belt whole)
        if(typeof beltGunsOff==='function'){
          if(g.hotAssign[5]!==undefined||pa[5]!==undefined) bad.push('a gun dragged onto key 6 was bound there although guns go on keys 1 to 4 (keys '+JSON.stringify(g.hotAssign)+')');
-         if(!said.some(function(t){ return /^GUNS GO ON KEYS 1 TO \d$/.test(t); })) bad.push('the refused drag onto key 6 did not say GUNS GO ON KEYS 1 TO 4 (said '+said.join(' / ')+')');
+         if(!said.some(function(t){ return /^GUNS GO ON KEYS 1 TO (\d|8 AND 0)$/.test(t); })) bad.push('the refused drag onto key 6 did not say GUNS GO ON KEYS 1 TO 4 (said '+said.join(' / ')+')');
          if(!(gid(sl[0])===a&&sl[0].inHand)||g.hotAssign[0]!=='gun_'+a) bad.push('the refused drag moved gun 1 off key 1 (keys '+JSON.stringify(g.hotAssign)+')');
          if(!(p.wep&&p.wep.id===a&&p.sec&&p.sec.id===b)) bad.push('the refused drag changed the guns in his hands to '+(p.wep&&p.wep.id)+'/'+(p.sec&&p.sec.id));
        } else {
@@ -55068,7 +55068,7 @@ window.__REGRESS=[
        ctx.fillText=function(s,x,y){ seen.push({s:String(s),x:x,y:y,f:ctx.font}); return oFT.apply(this,arguments); };
        try{ drawHUD(); }catch(_h){}
        delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;   // never leave an own fillText: the older checks capture text on the prototype
-       for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9'||seen[i].s==='1-4') kx=seen[i]; if(seen[i].s==='tactical belt'||seen[i].s==='guns') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
+       for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9'||seen[i].s==='1-8, 0'||seen[i].s==='1-4') kx=seen[i];   /* retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass */ if(seen[i].s==='tactical belt'||seen[i].s==='guns') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
        if(!kx||!lx||!nx) bad.push('the legend did not draw its belt row ('+(kx?'':'no key ')+(lx?'':'no label ')+(nx?'':'no next key')+')');
        else{ ctx.font=lx.f; var w=ctx.measureText(lx.s).width; if(lx.x+w>nx.x-4) bad.push('TACTICAL BELT runs into the next column ('+Math.round(lx.x+w)+' past '+Math.round(nx.x)+')'); }
        __endRaid('abandon'); __topClear();
@@ -82877,7 +82877,7 @@ window.__REGRESS=[
      var stale=[['F ','heal/revive'].join(''), ['Q/G ','throw'].join(''), ['TAB ','bag '].join(''), ['sprint ','on/off'].join(''), ['superhot ','mode'].join('')];
      for(var i=0;i<stale.length;i++) if(text.indexOf(stale[i])>=0) bad.push('the pause box still says "'+stale[i]+'"');
      // WHAT IT MUST SAY, and it must agree with the H list.
-     var need=[((typeof wheelOpen==='function')?['V ','melee']:((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike'])).join(''), ['I ','backpack'].join(''), (text.indexOf(['tactical ','belt'].join(''))>=0?['tactical ','belt']:((typeof wheelOpen==='function')?['1-9 ','guns']:['1-4 ','guns'])).join(''), ['hold to ','sprint'].join('')];   // v28.82 (corpus-fix): V melee and 1-9 guns since the wheel (v26.xx)
+     var need=[((typeof wheelOpen==='function')?['V ','melee']:((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike'])).join(''), ['I ','backpack'].join(''), (text.indexOf(['tactical ','belt'].join(''))>=0?['tactical ','belt']:((typeof wheelOpen==='function')?[(text.indexOf('1-8, 0 ')>=0?'1-8, 0 ':'1-9 '),'guns']:['1-4 ','guns'])).join(''), ['hold to ','sprint'].join('')];   // v28.82 (corpus-fix): V melee and 1-9 guns since the wheel (v26.xx)
      for(i=0;i<need.length;i++) if(text.indexOf(need[i])<0) bad.push('the pause box does not say "'+need[i]+'"');
      var L=(window.__legend?__legend():null);
      if(L&&L.length){ var fRow=null; for(i=0;i<L.length;i++){ var rows=L[i][1]||[]; for(var j=0;j<rows.length;j++) if(rows[j][0]==='F') fRow=rows[j][1]; }
