@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.41 - The attract board card is one menu width and its empty line is the body size
+
+Co-op hunt while he was away. The critic scored the attract board 2 of 5: an 845px card (44% of the screen) held two short lines with a huge empty right side, and the empty line was 18px, off the 20/16 scale. A page with no table is now one menu width (560 times the menu scale), the empty line is the 20px body size times the scale. The how to play page keeps its width. No wording moved.
+
+MEASURED. Check 29.41 passes, and fails on v29.40.
 ## v29.40 - The attract page is a Panel P with a star tab and a full width table
 
 Co-op hunt while he was away. The critic scored the attract board and how to play 2 of 5: the card barely separated from the page (near black, not the panel color), the table sat in a narrow block with the heading centred and the table left, no star tab. Now the page is the guide Panel P: --ui-panel at 90%, 24 and 32px padding, a 3px accent tab on the top edge, the headline at the left edge, the table full width with the action column at 24%. No wording moved.

@@ -162,18 +162,18 @@
  "25-raid-pause-box": {
   "score": 2,
   "pass": false,
-  "verdict": "The pause menu is serviceable, with a clear primary button and a sentence-case title, but a dense five-row keybind wall, an apologetic feedback sentence and a barely dimmed HUD bleeding through make it look like a debug overlay rather than a polished AAA pause screen.",
-  "pic": "tools/handoff/console/notes/shots/all/25-raid-pause-box-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:18"
+  "verdict": "The only real change is a cream-white title in place of the amber one, which fits the 'boldness in one place' rule, but the pause card is still a dense key-cap cheat sheet with a feedback sentence and five equal-width buttons, and the live HUD still shows through behind it.",
+  "pic": "tools/handoff/console/notes/shots/c-31-after/25-raid-pause-box-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T07:15"
  },
  "26-settings-from-pause-top": {
   "score": 2,
   "pass": false,
-  "verdict": "A dense, flat, low-contrast settings dump with duplicate tab rows, tiny text and a mostly empty detail panel; it works as a template but has no hierarchy or game identity.",
-  "pic": "tools/handoff/console/notes/shots/all/26-settings-from-pause-top-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:18"
+  "verdict": "The new settings screen is calmer and the nested tab strip and descriptions are cleaner, but it is now a lopsided full-bleed slab with a dead right half, a leftover joke subtitle, two tab strips, and a Close button that breaks the style guide.",
+  "pic": "tools/handoff/console/notes/shots/c-31-after/26-settings-from-pause-top-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T07:16"
  },
  "32-keys-window": {
   "score": 2,
@@ -218,10 +218,10 @@
  "45-arcade-attract-board": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version fixes the old one's fighting amber and wide-tracked type and now follows the guide's colours and sentence case, but it is still a flat black screen with a small title, an empty board and a dim, tiny prompt, so it has no identity and no AAA attract-screen presence.",
-  "pic": "tools/handoff/console/notes/shots/11-after-board/45-arcade-attract-board-1080.jpg",
+  "verdict": "The new attract screen follows the guide's panel, tab and type tokens and is calmer than the old one, but it is still a black void with a small logo, an empty-state card and a dim prompt, with no world backdrop and no identity.",
+  "pic": "tools/handoff/console/notes/shots/11-after4/45-arcade-attract-board-1080.jpg",
   "task": "11-ui-shared-style",
-  "when": "2026-10-18T06:59"
+  "when": "2026-10-18T07:13"
  },
  "50-arcade-hud-live": {
   "score": 2,
@@ -296,12 +296,12 @@
   "when": "2026-10-18T06:22"
  },
  "46-arcade-attract-how-to-play": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The new version is calmer and more consistent (amber now means only the prompt, rows are evenly spaced), but it is still a plain text table on a black void with no game identity, an undersized logo, and a card that has nothing to do with the world.",
-  "pic": "tools/handoff/console/notes/shots/11-after-board/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "The new screen is cleaner and follows the guide (dark panel, accent tab, quiet labels, fixed 'A teal' casing, sensible sizes), but it is still a plain black page with a text table, no world backdrop and no pad glyphs, so it reads as a debug sheet rather than a game screen.",
+  "pic": "tools/handoff/console/notes/shots/11-after4/46-arcade-attract-how-to-play-1080.jpg",
   "task": "11-ui-shared-style",
-  "when": "2026-10-18T06:59"
+  "when": "2026-10-18T07:13"
  },
  "37-raid-extracting-countdown": {
   "score": 2,

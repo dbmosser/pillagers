@@ -1,0 +1,1 @@
+| The attract board card is one menu width and its empty line is the body size | v29.41 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.41 passes, fails on v29.40 |

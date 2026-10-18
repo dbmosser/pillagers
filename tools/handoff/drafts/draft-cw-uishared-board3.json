@@ -1,0 +1,16 @@
+{
+    "title":  "The attract board card is one menu width and its empty line is the body size",
+    "why":  "The critic scored the attract board 2 of 5: an 845px card (44% of the screen) held two short lines with a huge empty right side, and the empty line was 18px, off the 20/16 scale. A page with no table is now one menu width (560 times the menu scale), the empty line is the 20px body size times the scale. The how to play page keeps its width. No wording moved.",
+    "now":  "The score board card is narrower and its text is the standard size.",
+    "edits":  [
+                  {
+                      "anchor":  "body #attract .arcpage table{ width:100%; margin:0; }\n",
+                      "replacement":  "body #attract .arcpage table{ width:100%; margin:0; }\n/* v28.xx (cw-uishared-board3): the critic scored the board 2 of 5 (\"845px card holding two short lines, empty right side, the 18px line is off the\n   scale\"). A page with no table (the board) is one menu width, like the title buttons; its empty line is the 20px body size. */\nbody #attract .arcpage:not(:has(table)){ min-width:calc(var(--menu-w) * var(--attz,1)); }\n"
+                  },
+                  {
+                      "anchor":  "body #attract .arcpage .apn{ color:var(--tx-2); opacity:1; line-height:1.4; }\n",
+                      "replacement":  "body #attract .arcpage .apn{ color:var(--tx-2); opacity:1; line-height:1.4; font-size:calc(var(--fs-body) * var(--attz,1)); }\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the attract board card is one menu width wide (not 44% of the screen) and its empty line is the 20px body size times the menu scale (critic 2 of 5 on screen 45)\u0027,\n   run:function(){\n     if(typeof attZ!==\u0027function\u0027||typeof arcadeAttEl!==\u0027function\u0027||typeof arcadeAttLine!==\u0027function\u0027) return \u0027no attract page here\u0027;\n     var pg=arcadeAttEl(\u0027arcpage\u0027), d=attZ(attEl()), was=pg.style.display, was2=d.style.display, h, ln, z, w, fs;\n     try{\n       d.style.display=\u0027block\u0027; pg.style.display=\u0027block\u0027;\n       h=document.createElement(\u0027div\u0027); h.className=\u0027aph\u0027; h.textContent=\u0027x\u0027; pg.appendChild(h);\n       arcadeAttLine(pg,\u0027apn\u0027,\u0027NO SCORES YET\u0027); ln=pg.querySelector(\u0027.apn\u0027);\n       if(!ln) return \u0027no empty line\u0027;\n       z=parseFloat(d.style.getPropertyValue(\u0027--attz\u0027))||1; w=pg.offsetWidth; fs=parseFloat(getComputedStyle(ln).fontSize);\n       if(Math.abs(w-560*z)\u003e4) return \u0027the board card is \u0027+w+\u0027px wide, not the 560 menu width times \u0027+z;\n       if(Math.abs(fs-20*z)\u003e0.6) return \u0027the empty line is \u0027+fs+\u0027px, not 20 times \u0027+z;\n       return null;\n     } finally { try{ h.remove(); }catch(_r){} try{ if(ln) ln.remove(); }catch(_r2){} pg.style.display=was; d.style.display=was2; }\n   }},"
+}

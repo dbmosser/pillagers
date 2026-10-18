@@ -1,0 +1,7 @@
+v29.41: the attract board card is one menu width and its empty line is the body size
+
+The score board card is narrower and its text is the standard size.
+
+Check 29.41. Fails on v29.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

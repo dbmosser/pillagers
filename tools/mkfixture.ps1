@@ -6097,6 +6097,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.41',what:'the attract board card is one menu width wide (not 44% of the screen) and its empty line is the 20px body size times the menu scale (critic 2 of 5 on screen 45)',
+   run:function(){
+     if(typeof attZ!=='function'||typeof arcadeAttEl!=='function'||typeof arcadeAttLine!=='function') return 'no attract page here';
+     var pg=arcadeAttEl('arcpage'), d=attZ(attEl()), was=pg.style.display, was2=d.style.display, h, ln, z, w, fs;
+     try{
+       d.style.display='block'; pg.style.display='block';
+       h=document.createElement('div'); h.className='aph'; h.textContent='x'; pg.appendChild(h);
+       arcadeAttLine(pg,'apn','NO SCORES YET'); ln=pg.querySelector('.apn');
+       if(!ln) return 'no empty line';
+       z=parseFloat(d.style.getPropertyValue('--attz'))||1; w=pg.offsetWidth; fs=parseFloat(getComputedStyle(ln).fontSize);
+       if(Math.abs(w-560*z)>4) return 'the board card is '+w+'px wide, not the 560 menu width times '+z;
+       if(Math.abs(fs-20*z)>0.6) return 'the empty line is '+fs+'px, not 20 times '+z;
+       return null;
+     } finally { try{ h.remove(); }catch(_r){} try{ if(ln) ln.remove(); }catch(_r2){} pg.style.display=was; d.style.display=was2; }
+   }},
   {v:'29.40',what:'the attract page is Panel P: 90% panel fill, a 3px accent tab on the top edge, the headline at the left edge and the how to play table filling the panel width (critic 2 of 5 on screens 45, 46)',
    run:function(){
      if(typeof attZ!=='function'||typeof arcadeAttEl!=='function') return 'no attract page here';
