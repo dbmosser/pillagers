@@ -7467,7 +7467,8 @@ window.__REGRESS=[
        bf=String(getComputedStyle(d).backdropFilter||getComputedStyle(d).webkitBackdropFilter);
        m=/blur\(([0-9.]+)px\)/.exec(bf);
        if(!m) return 'the attract backdrop does not blur the world';
-       if(parseFloat(m[1])<15) res='the backdrop blur is '+m[1]+'px, under the 16px token';
+       // v28.xx (cw-title-see), his Q52/Q54: the live fight must show through, so the blur is 5px; the ghost hub labels this check guarded against are no longer drawn behind the attract pages (tskOn in hubStationNames and drawHubHUD).
+       if(parseFloat(m[1])<15&&(parseFloat(m[1])<4||(typeof hubStationNames==='function'&&String(hubStationNames).indexOf('tskOn()')<0))) res='the backdrop blur is '+m[1]+'px: under 16px only when the hub labels are not drawn behind the attract pages, and never under 4px';
        return res;
      } finally { try{ d.style.display=wasDisp; }catch(_f){} }
    }},
