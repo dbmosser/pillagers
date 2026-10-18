@@ -2786,7 +2786,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.67';
+var VER='30.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16403,7 +16403,7 @@ cv.addEventListener('mousemove',function(e){
   // v16.77, his order: a real mouse move takes the crosshair back from the pad, which places it every frame while it owns
   // it (padCursorPut). Not in the player 2 window of a same machine party: that window has no mouse of its own, so the
   // host pointer crossing it must not drag the child crosshair away.
-  if(typeof PAD!=='undefined'&&PAD&&!(typeof NET!=='undefined'&&NET&&NET.same==='p2')) PAD.curOwn=0;
+  if(typeof PAD!=='undefined'&&PAD&&(!(typeof NET!=='undefined'&&NET&&NET.same==='p2')||netPadFocused())) PAD.curOwn=0;   // v30.xx (cw-p2keys), HIS ORDER (2026-10-18): "keys control whatever screen is to the top". The player 2 window took the crosshair back from its pad never, so its mouse could not aim while a pad was on there (the pad placed the crosshair again every frame). In front, the mouse takes it back as in the player 1 window; a pointer only crossing a window that is not in front still leaves the pad crosshair alone
   try{ msMove(_mrx,_mry,_mpx,_mpy); }catch(_ms){ MS.th=null; }   // v26.xx (settings3): MOUSE SENSITIVITY
   if(HUDDRAG){
     P.hud=P.hud||{}; var HD=P.hud[HUDDRAG.id]=P.hud[HUDDRAG.id]||{};
@@ -16419,6 +16419,10 @@ cv.addEventListener('mousemove',function(e){
   }
 });
 cv.addEventListener('mousedown',function(e){
+  // v30.xx (cw-p2keys), HIS ORDER (2026-10-18): "keys control whatever screen is to the top" and the mouse acts in the window it points at. A click in the player 2 window
+  // is a deliberate use of the mouse there, so it takes the crosshair from that window pad at once and aims where it landed, in front yet or not (the first click on a window behind
+  // it focuses it, and its mousemove cannot take the crosshair before that).
+  if(typeof PAD!=='undefined'&&PAD&&typeof NET!=='undefined'&&NET&&NET.same==='p2'){ PAD.curOwn=0; try{ var _p2r=cv.getBoundingClientRect(); mouse.x=e.clientX-_p2r.left; mouse.y=e.clientY-_p2r.top; }catch(_p2m){} }
   // MARK A WAYPOINT. While the map is up the click belongs to the map and must
   // not reach the trigger, which is why this returns rather than falling through.
   // Right button clears, left button sets, and a click outside the map rectangle
@@ -48168,7 +48172,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.67: The Run info panel title is white and its section headings are grey. Check 30.67 fails on v30.66',
+  now:'v30.68: The keyboard now controls whichever game window is in front, so the player 2 window plays its own keys. Check 30.68 fails on v30.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52983,32 +52987,17 @@ function netSameJoinDone(r){
 function netSameAcceptDone(r){ if(r&&r.err){ NET.err=r.err; netRefresh(); return 'err'; } return 'ok'; }
 // EVERY WORD ON THE CHANNEL, from the real channel or a stand-in. Only a word carrying this pair code is read. Returns what
 // it did, so a check can read the answer.
-// v16.89, from his playtest report (player 1 could not extract while downed after player 2 had extracted): IN A SAME MACHINE
-// PAIR THE KEYBOARD ALWAYS DRIVES PLAYER 1. Player 1 plays the keyboard and mouse, player 2 a controller (his rule of v16.35).
-// The browser gives the keyboard to the window last clicked, so after a click on the player 2 window every key went there:
-// E, WASD and the rest moved player 2 and did nothing for player 1. The player 2 window now hands every key it receives to
-// the player 1 window over the pair channel and does not act on it; the player 1 window plays it as its own key. A text box
-// in the player 2 window still types. The mouse is not handed over: it acts where it points.
-function netKeyFwd(ev){
-  if(!(typeof NET==='object'&&NET&&NET.same==='p2'&&NET.pair)) return;
-  var tn=(ev.target&&ev.target.tagName)||'', up=(ev.type==='keyup'), cd=String(ev.code||'');
-  // v22.06, from the whole-game bug hunt of 2026-10-08 (K17): F11 BELONGS TO THIS WINDOW. Every key pressed here was handed to the
-  // player 1 window and stopped, F11 too, so the v17.92 toggle never ran in the player 2 window: F11 there never fullscreened it,
-  // and in the player 1 window it ran the toggle, which took a fullscreen player 1 out of fullscreen. F11, down and up, now stays
-  // here and fullscreens this window. Every other key still goes to player 1.
-  if(cd==='F11') return;
-  // v16.92, co-op hunt 2026-09-28: A KEY HELD HERE IS LET GO IN THE PLAYER 1 WINDOW. A key let go over a text box was dropped
-  // here, and a key still down when this window lost focus sent its keyup to another program, so player 1 kept walking,
-  // sprinting or holding E with no key down. This window now remembers what it handed down, a keyup for it is handed on even
-  // over a text box (the box still sees it), and netKeyLetGo below hands up whatever is left when the keyboard goes.
-  var box=(tn==='INPUT'||tn==='TEXTAREA'||tn==='SELECT');
-  if(box&&!(up&&netKeyHeld[cd])) return;
-  if(up) delete netKeyHeld[cd]; else if(cd) netKeyHeld[cd]=1;
-  netSamePost({t:'key',pair:NET.pair,ty:up?'keyup':'keydown',code:cd,key:String(ev.key||''),rep:!!ev.repeat,sh:!!ev.shiftKey,ct:!!ev.ctrlKey});
-  if(box) return;
-  ev.preventDefault(); ev.stopImmediatePropagation();
-}
-var netKeyHeld={};   // v16.92: the codes this player 2 window handed down to player 1 and has not yet handed up
+// v16.89, from his playtest report (player 1 could not extract while downed after player 2 had extracted), used to be: IN A SAME MACHINE PAIR THE
+// KEYBOARD ALWAYS DRIVES PLAYER 1. The player 2 window handed every key it received to the player 1 window over the pair channel and did not act on it.
+// v30.xx (cw-p2keys), HIS ORDER (2026-10-18): "if I bring the 2nd player screen to the front, it should take my key input, e.g. keys control whatever
+// screen is to the top". THE WINDOW IN FRONT PLAYS THE KEYS AS ITS OWN PLAYER. netKeyFwd no longer posts a key to the pair and no longer stops it, so
+// this window own handlers run: in the player 2 window the keyboard drives player 2, in the player 1 window player 1. The mouse acts where it points
+// (the player 2 window takes the crosshair from its pad once it is in front, see the mousemove and mousedown listeners) and F11 stays local, as before.
+// The function and its listeners stay so nothing else breaks, the player 1 window can still play a key word it is handed (netSameOnMsg), and
+// netKeyLetGo below still hands up anything left in netKeyHeld, which is normally empty now. The window blur and focus listeners (releaseAllKeys)
+// let go of every key held in whichever window loses the keyboard, so neither player keeps walking after a click on the other window.
+function netKeyFwd(ev){ return false; }
+var netKeyHeld={};   // v16.92, now normally empty (v30.xx, cw-p2keys): the codes this window once handed down to player 1 and has not yet handed up
 // v16.92: hands up every key still held for player 1 and forgets them; run when this window loses the keyboard, is hidden or closes.
 // Plain keyups, not a releaseAllKeys on the host, so player 1s open backpack and his mouse drag are left alone.
 function netKeyLetGo(){
@@ -61085,7 +61074,9 @@ function arcadeKeyAtt(e){
   if(arcadeIniRaid()) return arcadeIniKey(e);   // v23.45 (arcade22): the initials card at an extraction takes the keys (ESC still pauses)
   if(G&&G.arcade&&!arcadeBenched()) return false;            // a raid is on here: the key plays (v23.25, arcade6: unless player 1 is benched)
   if(ARCADE.role==='host'&&arcadeIniLive()) return arcadeIniKey(e);   // v23.41 (arcade18): the initials card takes the keys, and a click drops nobody in
-  if(ARCADE.role!=='host') return false;   // player 2 joins with A on its own pad; its keys go on to player 1 (netKeyFwd)
+  // v30.xx (cw-p2keys), HIS ORDER (2026-10-18): "keys control whatever screen is to the top". The player 2 window used to let its keys go on to player 1 (netKeyFwd), so only A on its pad
+  // joined it. A plain key or click in the player 2 window now asks to drop in, the same ask as A (arcadePadAtt, below); a raid, the operator menu and the easy mode question took their keys above.
+  if(ARCADE.role!=='host'&&ARCADE.role!=='p2') return false;
   var ty=String(e.type||''), cd=String(e.code||''), ky=String(e.key||'');
   if(arcadeOverGuard()&&ty!=='wheel'){ try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_og){} return true; }   // v24.48 (his #39): the RUN OVER card is read, not mashed through
   if(ty==='wheel') return false;
@@ -61096,6 +61087,7 @@ function arcadeKeyAtt(e){
   }
   try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){}   // the press that drops in does nothing else
   if(ty==='keydown'&&e.repeat) return true;
+  if(ARCADE.role==='p2'){ try{ arcadePadAtt(true,true); }catch(_p2a){} return true; }   // v30.xx (cw-p2keys): player 2 asks to drop in with a key or a click, as with A on its pad (the guards and the ask repeat live in arcadePadAtt and arcadeAttTick)
   if(!arcadeBenched()&&arcadeOverAdvance()) return true;   // v25.xx (demoendboard): a press on the RUN OVER card shows the board first
   if(arcadeBenched()) arcadeUnbench(); else arcadeDropIn();   // v23.25 (arcade6)
   return true;

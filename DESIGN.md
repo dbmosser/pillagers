@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.68 - The window in front takes the keys
+
+Co-op hunt while he was away. His order (2026-10-18): if I bring the 2nd player screen to the front, it should take my key input, e.g. keys control whatever screen is to the top. The player 2 window handed every key to the player 1 window and did not act on it (v16.89). It now plays its own keys; the keyboard drives whichever window is in front. The player 2 mouse takes the crosshair back from its pad once the window is in front, and a key or click there drops player 2 into the arcade like A.
+
+MEASURED. Check 30.68 passes, and fails on v30.67.
 ## v30.67 - RUN INFO TITLE IS WHITE
 
 Co-op hunt while he was away. The critic on the raid screen (10-19): lime is spent on a label in the Run info panel. The title is white and the section headings grey.

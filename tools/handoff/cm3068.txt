@@ -1,0 +1,7 @@
+v30.68: the window in front takes the keys
+
+The keyboard now controls whichever game window is in front, so the player 2 window plays its own keys.
+
+Check 30.68. Fails on v30.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
