@@ -1,0 +1,7 @@
+v30.17: settings pane follows the rows in view
+
+Settings detail and focus follow the first row in view.
+
+Check 30.17. Fails on v30.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
