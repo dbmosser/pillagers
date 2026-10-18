@@ -1,0 +1,6 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  18-settings-hub                        staged       7.3s    | settingsmodal
+  25-raid-pause-box                      staged       9.1s  
+  26-settings-from-pause-top             staged       9.4s  
+  32-keys-window                         staged      10.7s  
+  42-hub-pause-box                       staged      11.9s  

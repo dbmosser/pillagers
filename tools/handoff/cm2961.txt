@@ -1,0 +1,7 @@
+v29.61: run info panel on the shared palette
+
+Run info panel uses the same colors as the menus.
+
+Check 29.61. Fails on v29.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

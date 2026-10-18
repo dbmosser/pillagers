@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.61 - RUN INFO PANEL ON THE SHARED PALETTE
+
+Co-op hunt while he was away. UI step 4, the HUD in play. The run info panel (conditions, contracts, goals) used five colours that are not in the style guide (#ffc04a, #c9b27a, #cdd6dd, #8a96a1, #7fc4a0). It now reads the shared UIC table: the accent for headings, tx_1 for contract and goal rows, tx_2 for the chevron, ok and danger for notes. Same text, same layout, same count of contracts (his v6.79).
+
+MEASURED. Check 29.61 passes, and fails on v29.60.
 ## v29.60 - Menus ease open and the focus glides
 
 Co-op hunt while he was away. His words about the Halo, Diablo IV, ARC Raiders, Fortnite and Destiny 2 menus: "they are just reallly compelling and smooth". Smooth is motion and sound. One shared UI motion layer on its own clock: open 240 ms with a 16 px rise, close 140 ms, items 35 ms apart, tab slide 200 ms, a focus ring that eases (95 percent in 120 ms), a confirm pulse, a deny shake, and a press during a move retargets. One sound per event kind (a focus tick with four pitches, at most one per 40 ms; confirm, back, deny). On the title menu, the party window and the arcade board pages. Menus only.

@@ -1,0 +1,1 @@
+| RUN INFO PANEL ON THE SHARED PALETTE | v29.61 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.61 passes, fails on v29.60 |
