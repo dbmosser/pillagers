@@ -21,6 +21,13 @@ Run 4 (lane a). Run 3 shipped 52,55 (over cards) - see below.
 - Common P1 across critic: no close X, no key/pad hints, empty attract (no hook), type below floor.
 - DON'T list scratchpad dir (huge). DON'T re-read old scores (accept.json 236-410 is the list).
 
+## Run 6
+- Shipped v29.91 cw-partyx: operator card close X + key strip; p2line one 16px label. Critic 62: 3 (better). Pictures 12-f1.
+- Critic's remaining P1 on 62: delete Back row (checks mkfixture ~6228 and ~7327 pin 3 buttons: retarget under lock), hints 16px, backdrop is opaque by his order (do not dim world there).
+- 58 is the shared title menu (lore, 3-step row, key legend, $ in save row): belongs to a title task, not a card fix.
+- Still <4: 46,47,48,49,52,53,54,55,56,58,63,64. HUD screens 48/53/54 belong to hud.md work.
+- mk script gotcha: anchor text mid-line: a // comment in a replacement swallows the rest of that line; use /* */.
+
 ## Lessons
 - Edit mkfixture with 7-space indent in the 6100-6200 range; lock.sh first, then edit, then HELD=1 bash fixq.sh, then unlock.sh.
 - Preflight takes ~2 min. Gate reruns old checks: any old check asserting centred/width will regress.

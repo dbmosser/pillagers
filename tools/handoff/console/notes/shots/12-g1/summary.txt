@@ -1,0 +1,14 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  46-arcade-attract-how-to-play          staged      15.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  47-arcade-drop-controls-card           staged       9.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  48-arcade-hud-move-to-start            staged      21.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  49-arcade-pause-box                    staged      12.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  52-arcade-run-over                     staged      14.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | welcomemodal
+  53-arcade-extracted-bonus-initials     staged      16.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  54-arcade-initials-redrop              staged      19.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  55-arcade-run-over-scored              staged      23.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | welcomemodal
+  56-arcade-attract-board-scored         staged      34.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  58-coop-player2-window-title           staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  |  title:true
+  62-arcade-operator-menu                staged       7.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  63-arcade-operator-new-party-armed     staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  64-arcade-board-seeded-night           staged       9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

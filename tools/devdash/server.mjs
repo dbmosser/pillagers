@@ -44,7 +44,7 @@ function data() {
   const daysLeft = Math.max(1, Math.round((new Date(end) - new Date(today)) / 864e5) + 1), share = Math.max(0, (total - before) / daysLeft);
   const tasks = existsSync(C + '/tasks') ? readdirSync(C + '/tasks').filter(f => f.endsWith('.md')).sort() : [];
   const lane = f => /^[0-9]/.test(f) ? 'a' : f[0];
-  const lanes = ['a', 'b', 'c'].map(l => ({ lane: l, status: rd(C + '/status-' + l + '.txt').trim(), busy: existsSync(C + '/lane-' + l + '.lock'),
+  const lanes = ['a', 'b', 'c', 'd', 'e'].filter(l => l < 'd' || existsSync(C + '/status-' + l + '.txt')).map(l => ({ lane: l, status: rd(C + '/status-' + l + '.txt').trim(), busy: existsSync(C + '/lane-' + l + '.lock'),
     queue: tasks.filter(f => lane(f) === l).map(f => f.replace(/\.md$/, '')) }));
   const lockOwner = existsSync(S + '/shipq.lock') ? rd(S + '/shipq.owner').trim() : '';
   const commits = git(['log', '-14', '--format=%h|%ad|%s', '--date=format:%m-%d %H:%M']).split('\n').filter(Boolean).map(l => l.split('|'));

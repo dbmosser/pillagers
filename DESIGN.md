@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.93 - Party pages: key caps, ghost board rows, a see-through backdrop
+
+Co-op hunt while he was away. Critic on 46 (3 of 5) and 56 (2 of 5): the keys were bare letters, the action names dim, the rows 45px apart, the teal ring a sentence, the empty board a card holding one line, the backdrop a flat void. Keys are key caps, names light, rows 56px, the ring a glyph, five ghost rows on an empty board, the backdrop lets the world through. Restyle only.
+
+MEASURED. Check 29.93 passes, and fails on v29.92.
 ## v29.92 - Abandoned card: the title is the plain title colour
 
 Co-op hunt while he was away. The critic scored the abandoned card 2 of 5 and named the title: dull grey, dimmer than every other line, reads as disabled. Only extract and KIA take a colour, so this one takes the plain title colour. One colour value.

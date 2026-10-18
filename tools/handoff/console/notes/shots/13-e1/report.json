@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T08:05:45","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":29,"screens":[
+{"name":"76-haul-reveal-mid","screen":"Extracted card while the haul reveal is running","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"76-haul-reveal-mid-1080.jpg","lint":""}},
+{"name":"77-haul-reveal-done","screen":"Extracted card after the haul reveal (HAUL total)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"77-haul-reveal-done-1080.jpg","lint":""}}
+]}

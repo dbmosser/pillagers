@@ -59,7 +59,7 @@ const JOBS=[[/corpus-triage/,'Sorting the old failing tests into "test is out of
  [/review/,'Checking possible bugs found by the nightly code review']];
 let TITLES={};
 const job=n=>{if(/corpus-night/.test(n)) return 'Full re-run of all the tests'; if(/^manual/.test(n)) return 'Claude saving tool changes'; for(const [r,t] of JOBS) if(r.test(n)) return t; if(TITLES[n]) return TITLES[n].charAt(0)+TITLES[n].slice(1).toLowerCase(); return n.replace(/^cw-/,'');};
-const LANE={a:'Helper A',b:'Helper B',c:'Helper C'};
+const LANE={a:'Helper A',b:'Helper B',c:'Helper C',d:'Helper D (from the chat, your plan)',e:'Helper E (your plan)'};
 function laneLine(s){
   let m;
   if(!s) return ['d','Not started yet'];

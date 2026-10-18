@@ -17,6 +17,10 @@
 R="/c/claudecode/dark raiders"; C="$R/tools/handoff/console"; cd "$R" || exit 1
 L=${1:-a}   # 10-17 LANES (his "max out ... the claude console resources"): one worker per lane at once; lane a = tasks named 0-9*, lane b = b-*, lane c = c-*
 LK="$C/lane-$L.lock"   # one worker per lane: a lock folder holding the pid (Git Bash pids do not show in Windows process lists)
+# 10-18 06:10: CLI_ALWAYS lanes (e.g. e) always run on Claude Code on his plan, beside the Console lanes (his weekly usage was at 1%
+# with the week 4% gone). The runner starts only a, b and c, so each of those starts any CLI_ALWAYS lane that is not running.
+for x in $(grep -m1 "^CLI_ALWAYS=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr "," "  "); do
+  [ "$x" = "$L" ] || [ -d "$C/lane-$x.lock" ] || (bash "$0" "$x" > /dev/null 2>&1 &); done
 if ! mkdir "$LK" 2>/dev/null; then p=$(cat "$LK/pid" 2>/dev/null); [ -n "$p" ] && kill -0 "$p" 2>/dev/null && exit 0; rm -rf "$LK"; mkdir "$LK" 2>/dev/null || exit 0; fi
 echo $$ > "$LK/pid"; trap 'rm -rf "$LK"' EXIT
 S="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
@@ -73,13 +77,15 @@ name=$(basename "$t" .md); stamp=$(date +%m%d-%H%M); out="$C/log/$name-$stamp.js
 # CLI_LANES lanes run (default 1, lane a, which takes any job) and at most CLI_DAY_USD of API-equivalent cost a day (claude -p
 # reports it), released evenly through the day. Its costs go to cli-spend.txt, so spend.txt stays the real Console bill.
 month=$(date +%Y-%m); mspent=$(awk -v m="$month" 'substr($1,1,7)==m {s+=$2} END {printf "%.2f", s+0}' "$C/spend.txt")
-ENGINE=api
+ENGINE=api; ALWAYS=0
+case ",$(cap CLI_ALWAYS "")," in *",$L,"*) ENGINE=cli; ALWAYS=1;; esac
 [ "$(cat "$C/console-empty" 2>/dev/null | tr -d '\r\n ')" = "$month" ] && ENGINE=cli
 awk -v s="$mspent" -v t="$TOTAL" 'BEGIN{exit !(s+0>=t+0)}' && ENGINE=cli
 if [ $ENGINE = cli ]; then
   [ "$(cap CLI 1)" = 0 ] && { echo "$(date '+%m-%d %H:%M') Console money used up for $month; the Claude Code engine is off (CLI=0)" > "$C/status-$L.txt"; exit 0; }
-  nl=$(cap CLI_LANES 1); { [ "$nl" -lt 2 ] && [ "$L" != a ]; } || { [ "$nl" -lt 3 ] && [ "$L" = c ]; } && {
-    echo "$(date '+%m-%d %H:%M') resting: Console money used up, $nl helper(s) run on your plan" > "$C/status-$L.txt"; exit 0; }
+  nl=$(cap CLI_LANES 1)
+  if [ $ALWAYS = 0 ] && { { [ "$nl" -lt 2 ] && [ "$L" != a ]; } || { [ "$nl" -lt 3 ] && [ "$L" = c ]; }; }; then
+    echo "$(date '+%m-%d %H:%M') resting: Console money used up, $nl helper(s) run on your plan" > "$C/status-$L.txt"; exit 0; fi
   cday=$(awk -v d="$today" '$1==d {s+=$2} END {printf "%.2f", s+0}' "$C/cli-spend.txt" 2>/dev/null); cday=${cday:-0}
   CD=$(cap CLI_DAY_USD 25); callow=$(awk -v c="$CD" -v m="$mins" 'BEGIN{a=c*m/1440; if(a>c)a=c; printf "%.2f", a}')
   if awk -v s="$cday" -v a="$callow" 'BEGIN{exit !(s+0>=a+0)}'; then

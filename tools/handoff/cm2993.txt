@@ -1,0 +1,7 @@
+v29.93: party pages: key caps, ghost board rows, a see-through backdrop
+
+How to play shows key caps, and the empty board shows ghost rows.
+
+Check 29.93. Fails on v29.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

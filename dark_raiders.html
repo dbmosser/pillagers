@@ -1622,6 +1622,16 @@ body #attract[style*="block"]:has(.arcpage[style*="block"]) .arcpage{ position:r
 body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress{ position:relative; left:auto; right:auto; bottom:auto; order:2; width:auto; min-width:calc(var(--menu-w) * .4 * var(--attz,1)); justify-self:end; box-sizing:border-box; height:calc(var(--btn-h) * var(--attz,1)); min-height:0; display:flex; align-items:center; justify-content:center; padding:0 calc(var(--sp-5) * var(--attz,1)); font-size:calc(var(--fs-body) * var(--attz,1)); line-height:1; border:1px solid var(--acc); border-radius:var(--rad); background:var(--acc); color:var(--acc-ink); animation:none; opacity:1; }
 /* v28.xx (cw-party-att4): the tab slide (UIM.tabOut) puts a ghost copy of the old page in the attract for 200 ms; in the page column that copy took a grid row and the card jumped. The ghost floats over the card cell instead. */
 body #attract[style*="block"]:has(.arcpage[style*="block"]) .arcpage.uimghost{ position:absolute; grid-column:1; grid-row:2; left:auto; top:auto; transform:none; order:1; }
+/* v29.93 (cw-partykeys), the critic on v29.92 (46 = 3, 56 = 2, 64 = 2): "action names dim and 45px apart, keys are bare letters, Hold X in a teal ring is a sentence, the empty board is a card in a void with nothing behind it". Names are light, rows are 56px x scale, keys are key caps (1px line, 4px radius), the ring is a glyph, an empty board shows five ghost rows, the backdrop lets the world through and the wordmark steps back while a page is up. Restyle only. */
+body #attract{ background:radial-gradient(ellipse at 50% 38%, color-mix(in srgb, var(--ui-raised) 40%, transparent) 0%, color-mix(in srgb, var(--ui-bg) 88%, transparent) 46%, color-mix(in srgb, var(--ui-void) 96%, transparent) 100%); }
+body #attract .arcpage .apk{ color:var(--tx-1); font-weight:600; }
+body #attract .arcpage th{ font-size:calc(var(--fs-label) * var(--attz,1)); color:var(--tx-2); font-weight:600; }
+body #attract .arcpage td{ height:calc(var(--btn-h) * var(--attz,1)); padding-top:0; padding-bottom:0; vertical-align:middle; }
+body #attract .arcpage .apkc{ display:inline-flex; align-items:center; box-sizing:border-box; height:calc(var(--sp-4) * var(--attz,1)); padding:0 calc(var(--sp-1) * var(--attz,1)); margin-right:calc(var(--sp-1) * var(--attz,1)); border:1px solid var(--ui-line-hi); border-radius:var(--rad); font-weight:700; color:var(--tx-1); }
+body #attract .arcpage .aprg{ display:inline-block; vertical-align:middle; box-sizing:border-box; width:calc(var(--sp-3) * var(--attz,1)); height:calc(var(--sp-3) * var(--attz,1)); border:3px solid var(--extract); border-radius:50%; }
+body #attract .arcpage .apr, body #attract .arcpage .apg{ align-items:center; min-height:calc(var(--btn-h) * var(--attz,1)); border-bottom:1px solid var(--ui-line); }
+body #attract .arcpage .apg{ display:flex; justify-content:space-between; gap:calc(var(--sp-4) * var(--attz,1)); color:var(--tx-2); opacity:.4; }
+body #attract:has(.arcpage[style*="block"]) .attname, body #attract:has(.arcover[style*="block"]) .attname{ color:var(--tx-2); }
 /* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
    The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
    Pause: the title is the 32px title size in light text (the one amber thing in the box is Resume run), the key legend and the note line are 16px grey.
@@ -2670,7 +2680,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.92';
+var VER='29.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47822,7 +47832,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.92: Abandoned card: the title is easier to read. Check 29.92 fails on v29.91',
+  now:'v29.93: How to play shows key caps, and the empty board shows ghost rows. Check 29.93 fails on v29.92',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60403,7 +60413,7 @@ function arcadeAttBoard(pg){
   try{ if(typeof arcadeBoardBest==='function') best=+arcadeBoardBest()||0; }catch(_bb){ best=0; }
   arcadeAttLine(pg,'aph','TONIGHT\u2019S BEST');
   try{ if(arcadePartyCode()) arcadeAttLine(pg,'apb','SEEDED NIGHT  \u00b7  '+arcadePartyCode()); }catch(_pc){}   // v26.xx (party6): the board says the night is seeded
-  if(!rows.length) arcadeAttLine(pg,'apn','NO SCORES YET');
+  if(!rows.length){ arcadeAttLine(pg,'apn','NO SCORES YET'); for(i=0;i<5;i++) arcadeAttLine(pg,'apg',(i+1)+'.  ---','--'); }   /* v29.93 (cw-partykeys) critic 56 (2 of 5): an empty board was a card holding one line. Five ghost rows give it its shape */
   var cols=null, c1=null, c2=null;
   if(rows.length>10){ cols=document.createElement('div'); cols.className='apcols'; c1=document.createElement('div'); c1.className='apcol'; c2=document.createElement('div'); c2.className='apcol'; cols.appendChild(c1); cols.appendChild(c2); pg.appendChild(cols); }   // v27.xx (board20): ten rows a column
   for(i=0;i<rows.length&&i<ARCADE_BOARD.top;i++){ r=rows[i]||{}; arcadeAttLine(cols?(i<10?c1:c2):pg,'apr'+((id&&r.run===id)?' hl':''),(i+1)+'.  '+String(r.i||'???').slice(0,3).toUpperCase(),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits
@@ -60416,6 +60426,13 @@ function arcadeAttBoard(pg){
 // inherits the colour, font and spacing of the page now (arcattcss), so every key reads in bone at the page size.
 // vNN.xx, UI REDESIGN ui5q1y (his #50, the 4K attract pictures): the attract name, PRESS ANY BUTTON, the team strip and the RUN OVER
 // card size with the screen up to a 4K TV (their caps doubled: 168, 240, 76 and 92px), as the attract pages do since ui5q1u.
+// v29.93 (cw-partykeys), critic 46 (3 of 5): "keys are bare letters, Hold X in a teal ring is an explaining sentence". A key cell is key caps (a pair like LB / RB is two caps), and the ring is a glyph.
+function arcadeAttKeys(cell,txt){
+  var s=String(txt||''), ring=/ IN A TEAL RING$/i.test(s), parts=s.replace(/ IN A TEAL RING$/i,'').split(' / '), i, k;
+  cell.textContent='';
+  for(i=0;i<parts.length;i++){ k=document.createElement('span'); k.className='apkc'; k.textContent=parts[i]; cell.appendChild(k); }
+  if(ring){ k=document.createElement('i'); k.className='aprg'; cell.appendChild(k); }
+}
 function arcadeAttHow(pg){
   var t=document.createElement('table'), tr, c, i, j, h=['','KEYBOARD','CONTROLLER'], rw;
   arcadeAttLine(pg,'aph','HOW TO PLAY');
@@ -60425,8 +60442,8 @@ function arcadeAttHow(pg){
   for(i=0;i<rows.length;i++){
     rw=rows[i]; tr=t.insertRow();
     c=tr.insertCell(); c.className='apk'; c.textContent=rw[0];
-    c=tr.insertCell(); c.textContent=rw[1];
-    c=tr.insertCell(); c.textContent=rw[2];
+    c=tr.insertCell(); arcadeAttKeys(c,rw[1]);
+    c=tr.insertCell(); arcadeAttKeys(c,rw[2]);
   }
   pg.appendChild(t);
 }

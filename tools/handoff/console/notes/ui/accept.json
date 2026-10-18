@@ -298,10 +298,10 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-palette controls table with a clear amber action and sentence case, but it reads as a generic spreadsheet with weak hierarchy, small row text for a couch, and a button that wastes the primary slot.",
-  "pic": "tools/handoff/console/notes/shots/12-e1/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "A clean, on-token control reference with a clear table and one amber action, but the card is a plain data grid on a flat dark void with no identity, a button that isn't a real prompt, and type that is small for couch reading.",
+  "pic": "tools/handoff/console/notes/shots/12-g1/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:41"
+  "when": "2026-10-18T11:56"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -314,10 +314,10 @@
  "77-haul-reveal-done": {
   "score": 3,
   "pass": false,
-  "verdict": "This is a solid, mostly on-system end card with a clear hero haul number, but the stacked sentences, a banned \"$\" currency, and an unclear tile row and chip rows crowd it and keep it from feeling polished.",
-  "pic": "tools/handoff/console/notes/shots/13-c6/77-haul-reveal-done-1080.jpg",
-  "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:46"
+  "verdict": "The end card has a clear shell and the haul number leads the eye, but it breaks the guide in several places: a $ currency sign where the guide says SP, too many stacked elements, undersized text, a weak item row and a hero that is smaller than specified.",
+  "pic": "tools/handoff/console/notes/shots/13-e1/77-haul-reveal-done-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-18T12:06"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 2,
@@ -328,12 +328,12 @@
   "when": "2026-10-18T10:36"
  },
  "55-arcade-run-over-scored": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The card is now sentence case with a clear title-to-hero hierarchy and a right-aligned button, but it is mostly empty, the hero is undersized, and the screen shows a zero score with no real content, so it falls short of the End card shell.",
-  "pic": "tools/handoff/console/notes/shots/12-c5/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "A clean, on-token dark card with a clear title, hero score and a single amber action, but it is sparse and not the specified end-card shell, so it reads like a placeholder rather than a finished Run over screen.",
+  "pic": "tools/handoff/console/notes/shots/12-g1/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:06"
+  "when": "2026-10-18T11:56"
  },
  "60-abandoned-card": {
   "score": 2,
@@ -354,18 +354,18 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, well-ordered pause card with a clear primary action and sentence case, but it still misses the guide on close placement, button size and key hints, and it sits on a murky backdrop that shows the HUD and a controls table through the dim.",
-  "pic": "tools/handoff/console/notes/shots/12-d1/49-arcade-pause-box-1080.jpg",
+  "verdict": "A clean, guide-following pause card with a clear single primary and a danger-separated End run, but it still lacks a close X, sits on a near-black scrim that has lost the world, and has a tiny hint and no visible pad focus.",
+  "pic": "tools/handoff/console/notes/shots/12-g1/49-arcade-pause-box-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:14"
+  "when": "2026-10-18T11:57"
  },
  "56-arcade-attract-board-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "The screen is clean and follows the tokens, but it is an empty attract screen with a title, a nearly empty 'No scores yet' card and a prompt, and it has no game identity or visual hook, so it reads as a placeholder.",
-  "pic": "tools/handoff/console/notes/shots/12-d2/56-arcade-attract-board-scored-1080.jpg",
+  "verdict": "A clean, on-palette, sentence-case attract screen, but it is a tiny centred cluster in a huge empty void with no key art or world backdrop, and its 'scored' board shows 'No scores yet', so it reads as a template placeholder rather than a Pillagers attract loop.",
+  "pic": "tools/handoff/console/notes/shots/12-g1/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:37"
+  "when": "2026-10-18T11:56"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,
