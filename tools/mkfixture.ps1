@@ -6264,7 +6264,7 @@ window.__REGRESS=[
            row.dispatchEvent(new MouseEvent('mouseover',{bubbles:true}));
            window.__setDetailSync();
            w=(el('setdetail')||{}).textContent||'';
-           if(w.indexOf('`')<0) bad.push('the pane beside the Settings list does not name the key for Superhot ('+w.slice(0,80)+')');
+           if(w.indexOf('`')<0&&!/left of 1/i.test(w)) bad.push('the pane beside the Settings list does not name the key for Superhot ('+w.slice(0,80)+')');   // retargeted (cw-shkey2): the key is named as the tick or in words
          }
          el('settingsmodal').classList.remove('on');
        }
@@ -6273,7 +6273,7 @@ window.__REGRESS=[
        proto.fillText=function(){ txt.push(String(arguments[0])); return oFt.apply(this,arguments); };
        try{ __frame(0.016); } finally { proto.fillText=oFt; }
        if(!txt.some(function(s){ return /superhot/i.test(s); })) bad.push('the F1 controls list does not mention Superhot');
-       if(txt.indexOf('`')<0) bad.push('the F1 controls list does not show the key left of 1');
+       if(txt.indexOf('`')<0&&!txt.some(function(s){ return /^left of 1$/i.test(s); })) bad.push('the F1 controls list does not show the key left of 1');   // retargeted (cw-shkey2): the key is shown as the tick or in words
        g.legendOn=1;
        // THE PLAYER 2 WINDOW: it follows the host. Its own press says so and changes nothing; the host flipping it mid raid is said there too.
        if(hasNet){
