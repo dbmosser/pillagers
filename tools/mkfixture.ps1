@@ -10399,13 +10399,13 @@ window.__REGRESS=[
        togglePauseBox(true);
        if(!box.classList.contains('on')) bad.push('staging: the pause box did not open on the floor');
        if(getComputedStyle(b).display==='none') bad.push('the LEADERBOARD button is hidden on the floor');
-       if(b.textContent!=='LEADERBOARD') bad.push('the button reads "'+b.textContent+'"');
+       if(b.textContent.toUpperCase()!=='LEADERBOARD') bad.push('the button reads "'+b.textContent+'"');
        b.click();
        if(!m.classList.contains('on')) bad.push('the button did not open the LEADERBOARD window');
        tx=h.textContent||'';
        if(h.querySelectorAll('.lbp .apr').length!==3) bad.push('the window draws '+h.querySelectorAll('.lbp .apr').length+' lines, not a header and 2 runs');
        if(h.querySelector('.hl')) bad.push('the Undercroft board highlights a row');
-       if(tx.indexOf('CAREER LEADERBOARD')<0||tx.indexOf('2 RUNS')<0||tx.indexOf('KIA')<0||tx.indexOf('EXTRACTED')<0||(tx.indexOf('$900')<0&&tx.indexOf('900 SP')<0)) bad.push('the board reads wrong ('+tx.slice(0,90)+')');
+       if((tx=tx.toUpperCase()).indexOf('CAREER LEADERBOARD')<0||tx.indexOf('2 RUNS')<0||tx.indexOf('KIA')<0||tx.indexOf('EXTRACTED')<0||(tx.indexOf('$900')<0&&tx.indexOf('900 SP')<0)) bad.push('the board reads wrong ('+tx.slice(0,90)+')');
        if(typeof escCloseTopModal==='function'){ escCloseTopModal(); if(m.classList.contains('on')) bad.push('ESC did not close the LEADERBOARD window'); }
        b.click();
        document.getElementById('lbclose').click();
@@ -13015,7 +13015,7 @@ window.__REGRESS=[
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__frame||!window.__textTrace||typeof goalsHud!=='function'||typeof careerPostBuild!=='function') return 'SKIP: no raid or goals here';
      var bad=[], g, tr, i, gl, at, wasA, ok;
-     function at2(t){ return tr.filter(function(e){ return e.t.indexOf(t)===0; }); }
+     function at2(t){ return tr.filter(function(e){ return e.t.toUpperCase().indexOf(String(t).toUpperCase())===0; }); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        try{ __pinDPR(1); }catch(_d){}
@@ -13995,10 +13995,10 @@ window.__REGRESS=[
        bs=host.querySelectorAll('.kitb');
        if(bs.length!==4) bad.push('ONE: '+bs.length+' kit choices, not 4');
        labs=Array.prototype.map.call(bs,function(e){ return e.firstElementChild.textContent; }).join('|');
-       if(labs!=='MY LOADOUT|FREEBIE KIT|RANDOM KIT|BEST KIT') bad.push('ONE: the kit choices read '+labs);
+       if(labs.toUpperCase()!=='MY LOADOUT|FREEBIE KIT|RANDOM KIT|BEST KIT') bad.push('ONE: the kit choices read '+labs);
        dets=Array.prototype.map.call(bs,function(e){ return e.querySelector('.kd').textContent; });
-       if(dets[2].indexOf('2 GUNS')<0||dets[3].indexOf('3 GUNS')<0) bad.push('ONE: the details read '+dets.join('|'));
-       for(i=0;i<dets.length;i++) if(dets[i]!==dets[i].toUpperCase()||!dets[i].length) bad.push('ONE: detail '+i+' is not a caps line ('+dets[i]+')');
+       if(dets[2].toUpperCase().indexOf('2 GUNS')<0||dets[3].toUpperCase().indexOf('3 GUNS')<0) bad.push('ONE: the details read '+dets.join('|'));
+       for(i=0;i<dets.length;i++) if(!dets[i].length||(dets[i].length>3&&dets[i]===dets[i].toUpperCase())) bad.push('ONE: detail '+i+' is empty or all caps ('+dets[i]+')');
        on=host.querySelectorAll('.kitb.on');
        if(on.length!==1||on[0].getAttribute('data-kit')!=='mine') bad.push('ONE: the default is not MY LOADOUT alone');
        if(host.parentElement!==sm) bad.push('ONE: the row is not in the sector panel');
@@ -14008,7 +14008,7 @@ window.__REGRESS=[
        if(on.length!==1||on[0].getAttribute('data-kit')!=='rand') bad.push('TWO: RANDOM KIT did not become the only choice on');
        if(q.kitPick!=='rand') bad.push('TWO: the choice was not kept ('+q.kitPick+')');
        tx=document.getElementById('sectorkit').textContent;
-       if(tx.indexOf('RANDOM KIT')<0) bad.push('TWO: the line under the row does not name RANDOM KIT ('+tx.slice(0,60)+')');
+       if(tx.toUpperCase().indexOf('RANDOM KIT')<0) bad.push('TWO: the line under the row does not name RANDOM KIT ('+tx.slice(0,60)+')');
        renderSector(); on=host.querySelectorAll('.kitb.on');
        if(on.length!==1||on[0].getAttribute('data-kit')!=='rand') bad.push('TWO: the page forgot the kit when it was drawn again');
        q.kitPick='nonsense'; renderSector(); on=host.querySelectorAll('.kitb.on');
@@ -14044,8 +14044,8 @@ window.__REGRESS=[
        shut(); went=0; fills.length=0; q.freeKit=0;
        askKit(function(){ fired++; },true);
        if(!am.classList.contains('on')) bad.push('SIX: the party card did not open');
-       if(document.getElementById('askrand').textContent.trim()!=='RANDOM KIT'||document.getElementById('asktop').textContent.trim()!=='BEST KIT') bad.push('SIX: the party card reads '+document.getElementById('askrand').textContent+' and '+document.getElementById('asktop').textContent);
-       if(am.textContent.indexOf('RANDOM FROM STASH')>=0||am.textContent.indexOf('TOP GEAR')>=0) bad.push('SIX: the old names are still on the card');
+       if(document.getElementById('askrand').textContent.trim().toUpperCase()!=='RANDOM KIT'||document.getElementById('asktop').textContent.trim().toUpperCase()!=='BEST KIT') bad.push('SIX: the party card reads '+document.getElementById('askrand').textContent+' and '+document.getElementById('asktop').textContent);
+       if(am.textContent.toUpperCase().indexOf('RANDOM FROM STASH')>=0||am.textContent.toUpperCase().indexOf('TOP GEAR')>=0) bad.push('SIX: the old names are still on the card');
        document.getElementById('askrand').click();
        if(fired!==1||fills.join()!=='true') bad.push('SIX: RANDOM KIT on the card fired '+fired+' and filled '+fills.join());
        askKit(function(){ fired++; },true); document.getElementById('asktop').click();
@@ -18929,8 +18929,8 @@ window.__REGRESS=[
        delete P.gunKeys; delete P.wheelOrder; hubOn();
        if(document.querySelectorAll('#kitsetup [data-gk]').length!==9) bad.push('ONE: the GUN KEYS plate has '+document.querySelectorAll('#kitsetup [data-gk]').length+' tiles, not 9');
        if(document.querySelectorAll('#kitsetup [data-wh]').length!==8) bad.push('ONE: the WHEEL plate has '+document.querySelectorAll('#kitsetup [data-wh]').length+' tiles, not 8');
-       a=tile('[data-gk',7); if(!a||!/SNIPER/.test(a.textContent||'')) bad.push('ONE: key 8 is not the Sniper tile ('+(a&&a.textContent)+')');
-       a=tile('[data-wh',0); if(!a||!/MEDKIT/.test(a.textContent||'')) bad.push('ONE: the top place is not the Medkit tile ('+(a&&a.textContent)+')');
+       a=tile('[data-gk',7); if(!a||!/SNIPER/i.test(a.textContent||'')) bad.push('ONE: key 8 is not the Sniper tile ('+(a&&a.textContent)+')');
+       a=tile('[data-wh',0); if(!a||!/MEDKIT/i.test(a.textContent||'')) bad.push('ONE: the top place is not the Medkit tile ('+(a&&a.textContent)+')');
        // TWO: a drag of the Sniper tile onto key 2 swaps the classes, and the plate is drawn again
        a=tile('[data-gk',7); b=tile('[data-gk',1);
        if(!a||!b||typeof b.__grabDrop!=='function') return bad.concat(['TWO: the key tiles are not drag and drop']).join('; ');
@@ -18938,7 +18938,7 @@ window.__REGRESS=[
        if(!GRAB||GRAB.from!=='gk:7') bad.push('TWO: pressing the key 8 tile started no drag ('+(GRAB&&GRAB.from)+')');
        b.__grabDrop(GRAB?GRAB.key:'gkc:sniper','gk:7'); try{ grabEnd(); }catch(_g){}
        if(!P.gunKeys||P.gunKeys[1]!=='sniper'||P.gunKeys[7]!=='smg') bad.push('TWO: after the drop the table reads '+JSON.stringify(P.gunKeys));
-       b=tile('[data-gk',1); if(!b||!/SNIPER/.test(b.textContent||'')) bad.push('TWO: key 2 is not drawn as the Sniper after the swap');
+       b=tile('[data-gk',1); if(!b||!/SNIPER/i.test(b.textContent||'')) bad.push('TWO: key 2 is not drawn as the Sniper after the swap');
        a=tile('[data-wh',7); b=tile('[data-wh',0);
        if(!a||!b||typeof b.__grabDrop!=='function') return bad.concat(['TWO: the wheel tiles are not drag and drop']).join('; ');
        b.__grabDrop('whl:stim','wh:7');
@@ -18966,7 +18966,7 @@ window.__REGRESS=[
        else {
          a.click(); b.click();
          if(P.gunKeys!==undefined||P.wheelOrder!==undefined) bad.push('FIVE: RESET left the profile with '+JSON.stringify(P.gunKeys)+' and '+JSON.stringify(P.wheelOrder));
-         a=tile('[data-gk',7); if(!a||!/SNIPER/.test(a.textContent||'')) bad.push('FIVE: key 8 is not the Sniper tile again after RESET');
+         a=tile('[data-gk',7); if(!a||!/SNIPER/i.test(a.textContent||'')) bad.push('FIVE: key 8 is not the Sniper tile again after RESET');
        }
        gk0=null; wo0=null;
        try{ __applyLoaded(snap); }catch(_r3){}
@@ -20753,7 +20753,7 @@ window.__REGRESS=[
      try{
        b=m.querySelector('[data-esc]');
        if(!b) bad.push('the feedback window has no way out marked for ESC');
-       else if(b.textContent.trim()!=='CLOSE') bad.push('the way out of the feedback window says '+JSON.stringify(b.textContent.trim())+', not CLOSE');
+       else if(b.textContent.trim().toUpperCase()!=='CLOSE') bad.push('the way out of the feedback window says '+JSON.stringify(b.textContent.trim())+', not CLOSE');
        fbOpen();
        if(!m.classList.contains('on')) return 'SKIP: the feedback window would not open here';
        document.dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',key:'Escape',bubbles:true,cancelable:true}));
@@ -24409,13 +24409,13 @@ window.__REGRESS=[
      try{
        P.credits=900; renderGamble();
        b=document.getElementById('gamblebtn'); a=getComputedStyle(b,'::after').content||'';
-       if(a.indexOf('NEED')<0) bad.push('GAMBLE out of reach has no reason chip ('+a+')');
+       if(a.toUpperCase().indexOf('NEED')<0) bad.push('GAMBLE out of reach has no reason chip ('+a+')');
        else if(a.indexOf('1,600')<0) bad.push('the GAMBLE chip does not name the 1,600 still needed: '+a);
        lb=document.getElementById('wirtlotbtn');
-       if(lb&&lb.disabled&&(getComputedStyle(lb,'::after').content||'').indexOf('NEED')<0) bad.push('the offer BUY out of reach has no reason chip');
+       if(lb&&lb.disabled&&(getComputedStyle(lb,'::after').content||'').toUpperCase().indexOf('NEED')<0) bad.push('the offer BUY out of reach has no reason chip');
        P.credits=9999999; renderGamble();
        a=getComputedStyle(document.getElementById('gamblebtn'),'::after').content||'';
-       if(a.indexOf('NEED')>=0) bad.push('GAMBLE that can be paid still shows a chip');
+       if(a.toUpperCase().indexOf('NEED')>=0) bad.push('GAMBLE that can be paid still shows a chip');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ P.credits=c0; try{ renderGamble(); }catch(_r){} }
      return bad.length?bad.join('; '):null; }},
@@ -30866,7 +30866,7 @@ window.__REGRESS=[
        if(typeof ARCADE!=='object'||typeof arcadeDeploy!=='function'||typeof arcadeBoardLoad!=='function') return 'no arcade in this build';
        row=document.getElementById('modearcade'+'1');
        if(!row) return 'the title has no 1 PLAYER ARCADE DEMO row';
-       if(String(row.textContent).trim()!=='1 PLAYER ARCADE'+' DEMO') bad.push('the 1 player arcade row reads '+row.textContent);
+       if(String(row.textContent).trim().toUpperCase()!=='1 PLAYER ARCADE'+' DEMO') bad.push('the 1 player arcade row reads '+row.textContent);
        if(row.getAttribute('data-mode')!=='arcade1') bad.push('the 1 player arcade row is not a mode row the arrows and the pad land on');
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(__state()&&!__state().over) __endRaid('abandon');
@@ -30903,7 +30903,7 @@ window.__REGRESS=[
          if(seen.indexOf('SC'+'ORE')<0) bad.push('the 1 player arcade HUD shows no SCORE label');
          if(seen.indexOf(nT)>=0) bad.push('the 1 player arcade HUD still shows TEAM SCORE');
          if(seen.indexOf('1,2'+'34')<0&&seen.indexOf('$1,2'+'34')<0&&seen.indexOf('1,2'+'34 SP')<0) bad.push('the 1 player arcade HUD shows no score of 1,234');
-         for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) (\$[\d,]+|[\d,]+ SP|[\d,]+)$/.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split:'+seen[i]); break; }
+         for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) (\$[\d,]+|[\d,]+ SP|[\d,]+)$/i.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split:'+seen[i]); break; }
        } else bad.push('the arcade raid ended');
        id=ARCADE.run&&ARCADE.run.id;
        if(!id) bad.push('the 1 player arcade raid has no run id');
@@ -32759,7 +32759,7 @@ window.__REGRESS=[
        if(typeof arcadeEnter!=='function'||typeof arcadeOnMsg!=='function'||typeof ARCADE!=='object') return 'no arcadeEnter in this build';
        row=document.getElementById('modearcade');
        if(!row) bad.push('the title has no arcade row');
-       else if(String(row.textContent).trim()!=='2 PLAYER ARCADE'+' DEMO') bad.push('the arcade row reads '+row.textContent);
+       else if(String(row.textContent).trim().toUpperCase()!=='2 PLAYER ARCADE'+' DEMO') bad.push('the arcade row reads '+row.textContent);
        rows=netTitleRows();
        if(!row||rows.indexOf(row)<0) bad.push('the arcade row is not one the arrows and the pad land on');
        if(__state()&&!__state().over) __endRaid('abandon');
@@ -32779,7 +32779,7 @@ window.__REGRESS=[
        if(!has('arcon')) bad.push('a player 2 window saying ready is not told arcon');
        ap=ATT.el&&ATT.el.querySelector('.attpress');
        if(!ATT.on||!ATT.el||ATT.el.style.display==='none') bad.push('the arcade attract is not up');
-       else if(!ap||ap.textContent!=='PRESS ANY'+' BUTTON') bad.push('the host attract reads '+(ap&&ap.textContent));
+       else if(!ap||ap.textContent.toUpperCase()!=='PRESS ANY'+' BUTTON') bad.push('the host attract reads '+(ap&&ap.textContent));
        window.dispatchEvent(new MouseEvent('mousemove',{clientX:300,clientY:300,bubbles:true}));
        window.dispatchEvent(new MouseEvent('mousemove',{clientX:620,clientY:480,bubbles:true}));
        if(__state()) bad.push('a mousemove started a raid');
@@ -32802,7 +32802,7 @@ window.__REGRESS=[
        else {
          if(P.pname!=='PLAYER 2') bad.push('player 2 is named '+P.pname);
          ap=ATT.el&&ATT.el.querySelector('.attpress');
-         if(!ATT.on||!ap||ap.textContent.indexOf('PLAYER 2: PRESS'+' A')!==0) bad.push('the player 2 attract reads '+(ap&&ap.textContent));   /* retargeted (present: his answer 17): PRESS A TO JOIN as well */
+         if(!ATT.on||!ap||ap.textContent.toUpperCase().indexOf('PLAYER 2: PRESS'+' A')!==0) bad.push('the player 2 attract reads '+(ap&&ap.textContent));   /* retargeted (present: his answer 17): PRESS A TO JOIN as well */
          kd('KeyJ','j');
          if(__state()) bad.push('a key in the player 2 window started a raid there');
          if(has('arcon')) bad.push('player 2 sent arcon');
@@ -33838,8 +33838,8 @@ window.__REGRESS=[
        g.beaconT=null; z.beaconT=null; z.callT=0; p.x=z.x; p.y=z.y;
        spy();
        try{ drawHUD(); } finally { unspy(); }
-       for(i=0;i<ft.length;i++){ s=ft[i]; if((/^\d+:\d\d$/).test(s)) fclk++; if((/^(EXTRACT|EXTRACTION|WAYPOINT) \d+m$/).test(s)) fcmp++; if(s.indexOf(CALL)>0&&s.indexOf('HOLD')===0) fcal++; }
-       for(i=0;i<st.length;i++){ s=st[i]; if((/^\d+:\d\d$/).test(s)) clk++; if((/^(EXTRACT|EXTRACTION|WAYPOINT) \d+m$/).test(s)) cmp++; if(s.indexOf(CALL)>0&&s.indexOf('HOLD')===0) cal++; }
+       for(i=0;i<ft.length;i++){ s=String(ft[i]).toUpperCase(); if((/^\d+:\d\d$/).test(s)) fclk++; if((/^(EXTRACT|EXTRACTION|WAYPOINT) \d+m$/).test(s)) fcmp++; if(s.indexOf(CALL)>0&&s.indexOf('HOLD')===0) fcal++; }
+       for(i=0;i<st.length;i++){ s=String(st[i]).toUpperCase(); if((/^\d+:\d\d$/).test(s)) clk++; if((/^(EXTRACT|EXTRACTION|WAYPOINT) \d+m$/).test(s)) cmp++; if(s.indexOf(CALL)>0&&s.indexOf('HOLD')===0) cal++; }
        if(!fclk) return 'SKIP: staging: the raid clock was not drawn';
        if(!fcmp) return 'SKIP: staging: the compass line was not drawn';
        if(!fcal) return 'SKIP: staging: HOLD [E] TO CALL FOR EXTRACTION was not drawn in the ring';
@@ -43490,7 +43490,7 @@ window.__REGRESS=[
      if(typeof pollPad!=='function') return 'SKIP: no controller poll here';
      var t=document.getElementById('title'), bad=[], had=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), og=navigator.getGamepads, on0=PAD.on, b0=PAD.brand, pad, kb, pr, tOn;
      if(!t) return 'SKIP: no title screen';
-     kb=t.querySelector('.kbrow')||[].slice.call(t.querySelectorAll('div')).filter(function(d){ return d.children.length>4&&/WASD/.test(d.textContent)&&/LMB/.test(d.textContent); })[0];
+     kb=t.querySelector('.kbrow')||[].slice.call(t.querySelectorAll('div')).filter(function(d){ return d.children.length>4&&/WASD/i.test(d.textContent)&&/LMB/i.test(d.textContent); })[0];
      if(!kb) return 'SKIP: no title key row';
      tOn=t.classList.contains('on');
      pad={id:'Xbox Wireless Controller (STANDARD GAMEPAD)',index:0,connected:true,mapping:'standard',timestamp:1,axes:[0,0,0,0],buttons:Array.apply(null,Array(17)).map(function(){ return {pressed:false,touched:false,value:0}; })};
@@ -43500,7 +43500,7 @@ window.__REGRESS=[
        pollPad(); pollPad();
        pr=t.querySelector('.padrow');
        if(getComputedStyle(kb).display!=='none') bad.push('with a pad on the title still shows the WASD row');
-       if(!pr||getComputedStyle(pr).display==='none'||pr.textContent.indexOf('STICK')<0) bad.push('with a pad on the title shows no pad row');
+       if(!pr||getComputedStyle(pr).display==='none'||pr.textContent.toUpperCase().indexOf('STICK')<0) bad.push('with a pad on the title shows no pad row');
        pad.id='DualSense Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 0ce6)'; pollPad(); pollPad();
        if(pr&&PAD.brand==='ps'&&pr.textContent.indexOf('R2')<0) bad.push('on a PlayStation pad the title row does not say R2');
        navigator.getGamepads=function(){ return [null,null,null,null]; }; pollPad();
@@ -47671,7 +47671,7 @@ window.__REGRESS=[
      try{
        P.runs=0; P.kit=[]; renderKitCol(); shown=el.style.display!=='none';
        if(!shown) bad.push('a new player with nothing packed does not see the first raid pointer');
-       if(!/FIRST RAID/.test(el.textContent)||!/ENTER RAID/.test(el.textContent)) bad.push('the pointer reads '+JSON.stringify(el.textContent));
+       if(!/FIRST RAID/i.test(el.textContent)||!/ENTER RAID/i.test(el.textContent)) bad.push('the pointer reads '+JSON.stringify(el.textContent));
        P.runs=3; renderKitCol(); if(el.style.display!=='none') bad.push('a player with three runs still sees the first raid pointer');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ P.runs=r0; P.kit=k0; try{ renderKitCol(); }catch(_r){} }
@@ -48904,7 +48904,7 @@ window.__REGRESS=[
        click(c,{ctrl:true});
        if(packed()!==1) bad.push('CTRL and a click on a stash item packed '+packed()+' of it, not one');
        c=cellOf(); if(c){ click(c,{ctrl:true}); if(packed()!==2) bad.push('a second CTRL click did not pack a second one ('+packed()+')'); }
-       if(!kb||!/CTRL/.test(kb.textContent||'')) bad.push('the stash key bar does not name CTRL');
+       if(!kb||!/CTRL/i.test(kb.textContent||'')) bad.push('the stash key bar does not name CTRL');
        __P().kit=[]; renderHub(); c=cellOf();
        if(c){ click(c,{shift:true}); if(packed()!==4) bad.push('control: SHIFT no longer packs the whole stack ('+packed()+')'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -52427,7 +52427,7 @@ window.__REGRESS=[
    run:function(){
      var el=document.getElementById('pausehost');
      if(!el||typeof netHostHolds!=='function') return 'this build never tells the host it is hosting';
-     if(String(el.textContent).indexOf('YOU ARE HOSTING')!==0||String(el.textContent).indexOf('ends the raid for your whole party')<0) return 'the hosting line reads: '+el.textContent;
+     if(String(el.textContent).toUpperCase().indexOf('YOU ARE HOSTING')!==0||String(el.textContent).indexOf('ends the raid for your whole party')<0) return 'the hosting line reads: '+el.textContent;
      var keep={on:NET.on,role:NET.role,peers:NET.peers,upSeed:NET.upSeed}, kG=G, a, b, c, ev={returnValue:null,prevented:0,preventDefault:function(){ this.prevented=1; }};
      try{
        G={sim:false,over:false}; NET.on=true; NET.role='host'; NET.peers=[{state:'in',seat:1}]; NET.upSeed=77;
@@ -55875,7 +55875,7 @@ window.__REGRESS=[
      var wasOn=t.classList.contains('on'), _s2=say2, NG=navigator.getGamepads, stubbed=false, S0=SKEY, kP=null, lsWas=null;
      var oOpen=window.open, hadBC=('BroadcastChannel' in window), oBC=window.BroadcastChannel, oH=netHost, oJ=netJoin, oA=netAccept, oStart=NET.start, oNP2=(typeof NETP2!=='undefined')?NETP2:undefined;
      var opens=[], chans=[], calls={host:0,join:0,accept:0,start:0,msg:0}, openRet=null, codes={join:'',accept:''}, spied=false;
-     var MAIN='salvagerun:profile', AS='salvagerun:activeSlot', mo=document.getElementById('partymode');
+     var MAIN='salvagerun:profile', AS='salvagerun:activeSlot', mo=document.getElementById('partymode'), txt=function(el){ return String((el&&el.textContent)||'').replace(/\s+/g,' ').replace(/^ | $/g,'').toUpperCase(); };
      var g=function(id){ return document.getElementById(id); };
      function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
      function skip(m){ return bad.length?(bad.join('; ')+' (then SKIP: '+m+')'):('SKIP: '+m); }
@@ -61715,7 +61715,7 @@ window.__REGRESS=[
        var sp=txSplit(k);
        P0.txt=P0.txt||{}; P0.txp=P0.txp||{}; P0.txp[sp.pat]='ZQXP '+sp.pat; TXPANY=1;
        var got=String(TX(k));
-       if(got.indexOf('ZQXP ')!==0) bad.push('his own pattern for the line '+k.slice(0,40)+' lost to the baked words: '+got.slice(0,60));
+       if(got.toUpperCase().indexOf('ZQXP ')!==0) bad.push('his own pattern for the line '+k.slice(0,40)+' lost to the baked words: '+got.slice(0,60));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ TXPANY=keepAny; P0.txt=JSON.parse(keepTxt); if(P0.txt===null) delete P0.txt; P0.txp=JSON.parse(keepTxp); if(P0.txp===null) delete P0.txp; }catch(_r){} }
      return bad.length?bad.join('; '):null; }},
@@ -61775,7 +61775,7 @@ window.__REGRESS=[
        P0.txt=P0.txt||{}; P0.txt[label]='ZQXW '+label;
        openItemMenu(120,120,'bandage','stash',2);
        m=document.querySelector('.imenu');
-       if(!m||String(m.textContent).indexOf('ZQXW ')<0) bad.push('the row '+label+' was reworded in his profile and the menu still opened with the original words');
+       if(!m||String(m.textContent).toUpperCase().indexOf('ZQXW ')<0) bad.push('the row '+label+' was reworded in his profile and the menu still opened with the original words');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ closeItemMenu(); }catch(_m){} try{ P0.txt=JSON.parse(keepTxt); if(P0.txt===null) delete P0.txt; }catch(_r){} try{ __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
@@ -68327,7 +68327,7 @@ window.__REGRESS=[
            bad.push('the operator stands in the Undercroft in a gun stance rather than empty-handed');
        }
        var floorText=painted.map(function(d){ return String(d.t); }).join(' | ');
-       if(floorText.indexOf('signal')>=0||floorText.indexOf('SIGNAL')>=0)
+       if(floorText.toLowerCase().indexOf('signal')>=0)
          bad.push('the belt caption on the Undercroft floor still offers FIRE and SIGNAL, and there is nothing down there to fire at and nobody to signal');
 
        // THE RAID, which is the control: neither of these may have been fixed by
@@ -68344,7 +68344,7 @@ window.__REGRESS=[
            if(seen.length&&!rArmed)
              bad.push('control: in a RAID the operator is handed no weapon either, so the gun was taken off him everywhere rather than only in the Undercroft');
            var raidText=rp.map(function(d){ return String(d.t); }).join(' | ');
-           if(raidText.indexOf('[V] signal')<0&&raidText.indexOf('[FIRE] use')<0)
+           if(raidText.toLowerCase().indexOf('[v] signal')<0&&raidText.toLowerCase().indexOf('[fire] use')<0)
              bad.push('control: the belt caption is gone from the RAID as well, where FIRE and SIGNAL are real actions he uses, so it was deleted rather than moved out of the Undercroft');
          }catch(_d){ bad.push('the raid control threw: '+(_d&&_d.message||_d)); }
          try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
@@ -80350,7 +80350,7 @@ window.__REGRESS=[
      var pb=document.querySelector('.pausebox');
      var pbt=pb?(pb.textContent||'').replace(/\s+/g,' '):'';
      if(!pb) return 'SKIP: no pause box in this build';
-     if(!/RAID PAUSED/.test(pbt)) return 'the pause box does not say RAID PAUSED, it says "'+pbt.slice(0,40)+'"';
+     if(!/RAID PAUSED/i.test(pbt)) return 'the pause box does not say RAID PAUSED, it says "'+pbt.slice(0,40)+'"';
      if(!/E interact/.test(pbt)&&!/E search \/ use/.test(pbt)) bad.push('the pause box controls line does not say E interact');   /* keyswap v25.67: E is search / use, X is extraction */
      if(!/CTRL \/ C crouch toggle/.test(pbt)) bad.push('the pause box does not say CTRL / C crouch toggle');
      if(!/Please provide feedback/.test(pbt)) bad.push('the pause box feedback line is not his');
@@ -80368,7 +80368,7 @@ window.__REGRESS=[
        if(cb.style.display!=='none'){ abtn.click(); }
        abtn.click();
        var live=cb.textContent.trim();
-       if(!/^YES, ABANDON THIS RUN/.test(live)) bad.push('the live abandon confirm reads "'+live+'"');
+       if(!/^YES, ABANDON THIS RUN/i.test(live)) bad.push('the live abandon confirm reads "'+live+'"');
        abtn.click();
        cb.style.display=wasShown||'none';
      }
@@ -80509,7 +80509,7 @@ window.__REGRESS=[
        if(!/Settings/.test(txt)) bad.push('the question does not say it can be changed in Settings');
        var yes=document.getElementById('shareyes'), no=document.getElementById('shareno');
        if(!yes||!no) bad.push('the window lacks its YES or its CLOSE');
-       if(no&&no.textContent.trim()!=='CLOSE') bad.push('the way out reads "'+no.textContent.trim()+'" and not CLOSE');
+       if(no&&no.textContent.trim().toUpperCase()!=='CLOSE') bad.push('the way out reads "'+no.textContent.trim()+'" and not CLOSE');
        if(no&&!no.hasAttribute('data-esc')) bad.push('ESC does not reach the CLOSE');
        // YES MEANS YES, ONCE.
        if(yes) yes.click();
@@ -82026,7 +82026,7 @@ window.__REGRESS=[
      // TWO: the choice is on it, and it works both ways.
      var d=document.getElementById('condday'), nt=document.getElementById('condnight');
      if(!d||!nt) return done('the sector page has no DAY and NIGHT buttons');
-     if(!/^DAY$/.test(d.textContent.trim())||!/^NIGHT$/.test(nt.textContent.trim())) bad.push('the buttons read ['+d.textContent.trim()+'] and ['+nt.textContent.trim()+']');
+     if(!/^DAY$/i.test(d.textContent.trim())||!/^NIGHT$/i.test(nt.textContent.trim())) bad.push('the buttons read ['+d.textContent.trim()+'] and ['+nt.textContent.trim()+']');
      nt.click();
      if(P2.cond!=='night') bad.push('clicking NIGHT left the surface at '+P2.cond);
      if(typeof isDay==='function'&&isDay()) bad.push('after NIGHT the game still says it is day');
@@ -82036,7 +82036,7 @@ window.__REGRESS=[
      if(P2.cond!=='day') bad.push('clicking DAY left the surface at '+P2.cond);
      // THREE: the old stash button, while it still exists, stays in step.
      var cb=document.getElementById('condbtn');
-     if(cb){ nt.click(); if(!/NIGHT/.test(cb.textContent)) bad.push('the stash button did not follow the sector page to NIGHT'); d.click(); }
+     if(cb){ nt.click(); if(!/NIGHT/i.test(cb.textContent)) bad.push('the stash button did not follow the sector page to NIGHT'); d.click(); }
      // CONTROL: the sector page still leads to the loadout question.
      var dep=document.getElementById('sectordeploy');
      if(dep&&typeof kitDeploy!=='function'){ dep.click(); if(!(ask&&ask.classList.contains('on'))&&!document.getElementById('stagemodal').classList.contains('on')) bad.push('control: ASCEND on the sector page no longer leads to the loadout question'); }
@@ -82215,7 +82215,7 @@ window.__REGRESS=[
        if(cg.borderTopColor===co.borderTopColor) bad.push('both sections share one border colour, so nothing tells them apart');
        var gap=ro.top-rg.bottom;
        if(!(gap>=8)) bad.push('the two sections are '+Math.round(gap)+' px apart, which is not clear air');
-       if(!/THE GAMBLE/.test(sg.textContent)||!/LIMITED TIME OFFER/.test(so.textContent)) bad.push('the section heads are not THE GAMBLE and LIMITED TIME OFFER');
+       if(!/THE GAMBLE/i.test(sg.textContent)||!/LIMITED TIME OFFER/i.test(so.textContent)) bad.push('the section heads are not THE GAMBLE and LIMITED TIME OFFER');
        if(!sg.querySelector('#gamblebtn')) bad.push('the Gamble button is not inside THE GAMBLE');
        if(!so.querySelector('#wirtlot')) bad.push('the offer card is not inside LIMITED TIME OFFER');
      }
@@ -84950,7 +84950,7 @@ window.__REGRESS=[
                 ', which is not something he can hit');
      if(!ti.contains(b))
        bad.push('the fullscreen button is not inside the title screen');
-     if(!/FULLSCREEN/.test(b.textContent||''))
+     if(!/FULLSCREEN/i.test(b.textContent||''))
        bad.push('the button reads "'+(b.textContent||'')+'", which does not say what it does');
      // AND IT HAS TO ACTUALLY ASK. A button that looks right and calls nothing is
      // the exact failure this build exists to end: the advice was already there
