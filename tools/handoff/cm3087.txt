@@ -1,0 +1,7 @@
+v30.87: flat hud bars
+
+The health, armour and stamina bars are flat colour with no gloss.
+
+Check 30.87. Fails on v30.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

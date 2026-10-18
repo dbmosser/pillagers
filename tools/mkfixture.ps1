@@ -6099,6 +6099,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.87',what:'every HUD bar is a flat fill: drawing health, armour and stamina bars makes no gradient (the critic, 10-19)',
+   run:function(){
+     if(typeof bar!=='function') return 'SKIP: no bar()';
+     var oG=ctx.createLinearGradient, n=0, cols=['#5fae6f','#5aa9e6','#8fb5c8'], i;
+     try{
+       ctx.createLinearGradient=function(){ n++; return oG.apply(this,arguments); };
+       ctx.save();
+       for(i=0;i<cols.length;i++) bar(10,10+i*20,280,12,0.6,cols[i]);
+       ctx.restore();
+     } finally { ctx.createLinearGradient=oG; }
+     if(n>0) return 'the bars still build '+n+' gradients, so they are glossy';
+     return null;
+   }},
   {v:'30.86',what:'the player 2 window arrives on the Undercroft floor beside the lamp and not on the very spot player 1 arrives on, so the two bodies never stand on top of each other (his order of 2026-10-18: players 1 and 2 should be able to see each other in the undercroft): player 1 still arrives at the lamp, 140,390; player 2 arrives at least 30 units away from it, inside the lamp light and clear of the walls',
    run:function(){
      if(typeof NETP2==='undefined'||typeof showScreen!=='function'||!window.__hubEnter||!window.__topClear) return 'SKIP: this fixture cannot reach the Undercroft floor as a player 2 window';

@@ -18,7 +18,8 @@ var A={}, U=window.__uis, G0=null;
 A.look1={build:'broad',skin:'tan',cut:'crop',hair:'dark',beard:'stubble',eyes:'eyeblue',face:'facescar',scheme:'schcrimson',hat:'tachelm',vest:'vestband',pads:'padsround',pack:'packblack',boots:'bootblack',gloves:'gloveblack',patch:'patchskull',tattoo:'tatnone',outfit:'outnone'};
 A.look2={hair:'red',hat:'boonie',skin:'umber',fit:'slate',cut:'long',beard:'clean',eyes:'eyegreen',face:'facefreckles',boots:'bootgaiter',gloves:'glovegrey',pack:'packframe',patch:'patchstar',tattoo:'tatnone',outfit:'outnone',build:'curved',scheme:'schverdant',vest:'vestharn',pads:'padsnone'};
 
-var BASE={x:1500,y:2500};   // set by A.where(); P1 stands here
+var SITE={x:1560,y:2960};   // the woods meadow: the one open stretch of grass on the map, every scene is shot here so all plates share one floor
+var BASE={x:SITE.x,y:SITE.y};   // P1 stands here
 var CAM={w:1920,h:1080};
 
 function gx(s){ return __gx(s); }
@@ -94,17 +95,17 @@ A.clearStage=function(x0,y0,x1,y1){
     if(w.x<-1000) continue;
     if(!(w.tree||w.furn||w.wreck)) continue;
     var ext=w.tree?(w.canopy||30)+40:20;
-    if(w.x+w.w+ext>x0&&w.x-ext<x1&&w.y+w.h+ext+30>y0&&w.y-ext-60<y1){ if(w.tree) gone.push({x:w.x,y:w.y,w:w.w,h:w.h}); w.x=-9000; w.y=-9000; n++; } }   // moved off the map, not spliced: wall ids and the wall grid keep their places
-  // the gone trees no longer cast a sight shadow (fog wedges) and their baked trunk marks are painted over with clean grass
+    if(w.x+w.w+ext>x0&&w.x-ext<x1&&w.y+w.h+ext+30>y0&&w.y-ext-60<y1){ gone.push({x:w.x,y:w.y,w:w.w,h:w.h}); w.x=-9000; w.y=-9000; n++; } }   // moved off the map, not spliced: wall ids and the wall grid keep their places
+  // what was taken out no longer casts a sight shadow (the fog wedges the picture would show behind it)
   var vs=s.vseg, k, q;
   for(k=vs.length-1;k>=0;k--){ q=vs[k]; for(j=0;j<gone.length;j++){ var t=gone[j];
     if(q.x1>=t.x-3&&q.x1<=t.x+t.w+3&&q.x2>=t.x-3&&q.x2<=t.x+t.w+3&&q.y1>=t.y-3&&q.y1<=t.y+t.h+3&&q.y2>=t.y-3&&q.y2<=t.y+t.h+3){ vs.splice(k,1); break; } } }
-  // the floor is baked again without them: no trunk marks, no leftover contact shadows (a fixed random stream keeps it the same every time)
-  gx("RNGS=0x5eed1234; G.ground=bakeGround(G.map);");
   for(i=m.bushes.length-1;i>=0;i--){ b=m.bushes[i]; if(inb(b.x,b.y,(b.r||20)+16)){ m.bushes.splice(i,1); n++; } }
   for(i=s.containers.length-1;i>=0;i--){ b=s.containers[i]; if(inb(b.x,b.y,34)){ s.containers.splice(i,1); n++; } }
   for(i=s.brl.length-1;i>=0;i--){ b=s.brl[i]; if(inb(b.x,b.y,34)){ s.brl.splice(i,1); n++; } }
   for(i=s.lights.length-1;i>=0;i--){ b=s.lights[i]; if(inb(b.x,b.y,40)){ s.lights.splice(i,1); n++; } }
+  // the floor is baked again without them: no trunk marks, no leftover contact shadows (a fixed random stream keeps it the same every time)
+  gx("RNGS=0x5eed1234; G.ground=bakeGround(G.map);");
   return n;
 };
 
@@ -126,7 +127,8 @@ A.stage=async function(o){
   s.puffs.length=0; s.decals.length=0; s.throws.length=0; s.labels.length=0; s.dmgN.length=0; s.noiseRings.length=0; s.pings.length=0;
   s.t=40; s.shake=0; s.msg=''; s.msgT=0;
   if(!o.night) __cfg({ambient:1500,viewFar:1500,coneDeg:360});   // a clear day: nothing hidden by the fog of war
-  BASE={x:o.x||1500,y:o.y||2500};
+  BASE={x:o.x||SITE.x,y:o.y||SITE.y};
+  A.clearStage(BASE.x-410,BASE.y-290,BASE.x+410,BASE.y+250);
   p.x=BASE.x; p.y=BASE.y; p.face=(o.face===undefined?1.25:o.face); p.iv=99; p.moving=false; p.recoil=0; p.muzzle=0;
   A.hud();
   A.only(null);

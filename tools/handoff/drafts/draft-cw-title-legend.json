@@ -1,0 +1,16 @@
+{
+    "title":  "TITLE: FEWER KEY HINTS, 48PX BUTTONS",
+    "why":  "The critic scored the title 3 of 5: nine gameplay key hints on a menu strip and top-right buttons at 44px. The legend keeps move, aim, fire, search and F1; the buttons are 48px.",
+    "now":  "The title key line is shorter and the top-right buttons are taller.",
+    "edits":  [
+                  {
+                      "anchor":  "      \u003cb style=\"color:var(--bone)\"\u003eCTRL\u003c/b\u003e crouch \u0026nbsp;\n      \u003cb style=\"color:var(--bone)\"\u003eE\u003c/b\u003e search \u0026nbsp;\n      \u003cb style=\"color:var(--bone)\"\u003eB / I\u003c/b\u003e backpack \u0026nbsp;\n      \u003cb style=\"color:var(--bone)\"\u003eM\u003c/b\u003e map \u0026nbsp;\n",
+                      "replacement":  "      \u003c!-- v28.xx (cw-title-legend), the critic on screen 01 (3 of 5, P1): \"nine key hints are gameplay controls on a menu, clutter, too small to read from a couch; cut it\". Five stay (move, aim, fire, search, F1 for the rest); crouch, backpack and map live in the F1 controls list. --\u003e\n      \u003cb style=\"color:var(--bone)\"\u003eE\u003c/b\u003e search \u0026nbsp;\n"
+                  },
+                  {
+                      "anchor":  "#root #title #titleres button{ min-height:44px; padding:0 24px; font-size:16px; }",
+                      "replacement":  "#root #title #titleres button{ min-height:48px; padding:0 24px; font-size:16px; }   /* v28.xx (cw-title-legend), the critic (3 of 5, P2): the top-right buttons 44 to 48px, the guide button height --btn-h-sm. */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title key legend is five hints at most (crouch, backpack and map live in the F1 list) and the top-right buttons are 48px high (critic on screen 01, 3 of 5: nine hints, small buttons)\u0027,\n   run:function(){\n     var t=document.getElementById(\u0027title\u0027), kb=t\u0026\u0026t.querySelector(\u0027.kbrow\u0027), tr=document.getElementById(\u0027titleres\u0027), n, bt, was, h;\n     if(!t||!kb||!tr) return \u0027SKIP: no title here\u0027;\n     was=t.classList.contains(\u0027on\u0027); if(!was) t.classList.add(\u0027on\u0027);\n     try{\n       n=kb.querySelectorAll(\u0027b\u0027).length;\n       if(n\u003e5) return \u0027the title key legend has \u0027+n+\u0027 hints, more than 5\u0027;\n       if(!/\\bF1\\s+controls/.test(kb.textContent||\u0027\u0027)) return \u0027the title key legend lost F1 controls\u0027;\n       bt=tr.querySelector(\u0027button\u0027); if(!bt) return \u0027no top-right button\u0027;\n       h=bt.getBoundingClientRect().height;\n       return h\u003c47.5?(\u0027the top-right buttons are \u0027+Math.round(h)+\u0027px high, not 48\u0027):null;\n     } finally { if(!was) t.classList.remove(\u0027on\u0027); } }},"
+}

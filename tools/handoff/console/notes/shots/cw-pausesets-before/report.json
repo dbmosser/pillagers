@@ -1,0 +1,5 @@
+{"generated":"2026-10-18T16:05:25","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":35,"screens":[
+{"name":"25-raid-pause-box","screen":"RAID PAUSED box (normal mode) with feedback box and buttons","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"25-raid-pause-box-1080.jpg","lint":""}},
+{"name":"26-settings-from-pause-top","screen":"Settings opened from pause, top (THE RAID section)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"26-settings-from-pause-top-1080.jpg","lint":""}},
+{"name":"27-settings-scroll-600","screen":"Settings list scrolled (graphics/sound rows)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"27-settings-scroll-600-1080.jpg","lint":""}}
+]}

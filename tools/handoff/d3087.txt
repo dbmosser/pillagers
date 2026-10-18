@@ -1,0 +1,5 @@
+## v30.87 - FLAT HUD BARS
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the vitals bars are glossy gradients. The style guide asks for flat bars.
+
+MEASURED. Check 30.87 passes, and fails on v30.86.
