@@ -6097,6 +6097,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.19',what:'a killed Crawler leaves wreckage in its own shape (drawn by the Crawler wreck path, drawWreckCrawler), not the generic wreck box (his note: show wreckage instead, same for other enemy deaths)',
+   run:function(){
+     if(typeof __frame!=='function'||typeof mkCrawler!=='function'||typeof __ents!=='function') return 'SKIP: no frame or entity helper';
+     var PR=CanvasRenderingContext2D.prototype, otr=PR.translate, g=null, p, e, i, c, ct=null, hit=0;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       p=g.player; p.iv=99; p.hp=100; p.downed=false;
+       e=mkCrawler(p.x+60,p.y); e.elite=1; e.hp=0; e.byPlayer=1; g.ents=[e]; __ents(0.016);
+       for(i=0;i<g.containers.length;i++){ c=g.containers[i]; if(Math.abs(c.x-e.x)<2&&Math.abs(c.y-e.y)<2&&c.bot==='crawler'){ ct=c; break; } }
+       if(!ct) return 'a dead Crawler left no wreck container tagged crawler';
+       p.x=ct.x-60; p.y=ct.y;
+       PR.translate=function(x,y){ if(Math.abs(x-ct.x)<0.01&&/drawContS/.test(String(new Error().stack))&&/drawWreckCrawler/.test(String(new Error().stack))) hit++; return otr.apply(this,arguments); };
+       __frame(); __frame();
+       PR.translate=otr;
+       if(!hit) return 'a dead Crawler loot is not drawn by the Crawler wreck path (still the generic wreck)';
+       return null;
+     } finally {
+       PR.translate=otr;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'29.18',what:'the Rocket Launcher: a slow rocket (a blast where it ends), 2 to a load, 30 of the ammo pool a rocket, on class key 0, with a loot source and its own icon and HUD count (his order 2026-10-18)',
    run:function(){
      if(typeof rlHave!=='function'||typeof rktCost!=='function'||typeof rsvShow!=='function'||!WEAPONS.rocket) return 'no Rocket Launcher: no rocket gun, no 30 ammo a rocket';

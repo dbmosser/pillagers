@@ -1,0 +1,7 @@
+v29.19: a dead crawler leaves wreckage, not a box
+
+A dead Crawler lies on its back, smoking.
+
+Check 29.19. Fails on v29.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

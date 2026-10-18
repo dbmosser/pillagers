@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.19 - A DEAD CRAWLER LEAVES WRECKAGE, NOT A BOX
+
+Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Crawler left the generic brown wreck. It now lies on its back as the crawler: the three rust shell segments cracked open, its six legs curled up in the air and snapped, the gunmetal sensor head fallen off with three dead eyes and a mandible blade. Smoke while unsearched. Looting is unchanged.
+
+MEASURED. Check 29.19 passes, and fails on v29.18.
 ## v29.18 - Rocket Launcher on key 0
 
 Co-op hunt while he was away. His order 2026-10-18: add a rocket launcher as 0, about 30 ammo per rocket and a reload after 2 rockets. A slow rocket that goes off where it ends (a body, a wall or the end of its range) with a blast radius, 2 to a load, 30 of the one ammo pool a rocket loaded, its own sound, icon and drawn gun, the HUD shows rockets left. Found in the Pillbox wreck and Wirt lot (no seeded loot table changes).
