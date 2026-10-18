@@ -1,0 +1,7 @@
+v30.79: party launch mode: one address opens both windows on the attract
+
+The party shortcut can open both windows on the attract with one address, Career and the stash out of reach, and a reload of either window finds its pair again.
+
+Check 30.79. Fails on v30.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

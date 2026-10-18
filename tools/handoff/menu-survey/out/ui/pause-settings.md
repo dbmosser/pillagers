@@ -13,4 +13,5 @@ Before pictures: pause box (25, 42) = small panel mid-screen, "Paused" title 25p
 - Buttons (q05 C): bar and wash; danger = 2px #ff5a3c.
 - Motion (q09, q10, q32): pop open, spring glide on the tile ring, rows rise on controls tab switch (see motion.md).
 - Text lower case (his 10-18 order): "paused", "end run", "what's new". The old 'Abandon run' / 'Resume' mixed casing is gone.
-Critic baseline stays as before until the new shots are taken (task 30).
+Jobs: task 30 = the pause tiles, the abandon confirm and the settings page; task 23 = the controls window (q31 D) with the key and pad glyphs.
+Critic baseline stays as before until the new shots are taken.

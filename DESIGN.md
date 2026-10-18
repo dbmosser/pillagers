@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.79 - PARTY LAUNCH MODE: ONE ADDRESS OPENS BOTH WINDOWS ON THE ATTRACT
+
+Co-op hunt while he was away. His Q28, Q30, Q31, Q24 of 10-18: the party shortcut opens both windows full screen on the attract, with Career and the stash out of reach. ?party=1&pair=CODE puts the host window straight into the arcade with no title and no window.open; the player 2 window shows its attract at once; the host posts hostup so a reload of either window finds the pair again; any leave of the arcade but the operator EXIT DEMO reloads into the party and EXIT DEMO goes to the plain address; stale player 2 marks are cleared at boot. Without ?party=1 nothing changes.
+
+MEASURED. Check 30.79 passes, and fails on v30.78.
 ## v30.78 - ARCADE CARDS GET THE 48PX X
 
 Co-op hunt while he was away. Critic 46 and 56 (3 of 5, three rounds): the how to play and board cards have no 48px ghost X in the header corner that every other window has. Added as a corner glyph; any button still closes the page.

@@ -5,6 +5,9 @@
 <style>
 /* v28.xx (cw-nocaps-net), HIS HARD RULE (2026-10-18): never any all-caps text. The words themselves are fixed in TX (ncFix). */
 *{ text-transform:none !important; }
+/* v30.xx (cw-party), his Q28: in the party launch mode (?party=1) Career, the saves and the stash are out of reach. The windows that go straight to the arcade never show the title at all; a host window with no pair code keeps only the 2 player arcade row. */
+html.partyhide #title{ display:none !important; }
+html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party #modecoop, html.party #modearcade1, html.party #modepvp, html.party .modelater, html.party #titleset{ display:none !important; }
 /* v30.xx (cw-lowercase), HIS ORDER (2026-10-18): every word on screen is lower case. The words a stylesheet writes itself (the
    Esc  Resume and pad hint strips, Taken) never pass the text door, so they are lowered here. */
 *::before, *::after{ text-transform:lowercase !important; }
@@ -2791,7 +2794,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.78';
+var VER='30.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3920,6 +3923,12 @@ var NETSLOT=netSlotOf((typeof location!=='undefined'&&location.search)||'');
 // saves. ?netslot wins when both are on the address, since it is the explicit test override. Like a ?netslot copy, a player 2
 // window never writes salvagerun:activeSlot (netSaveLocked, read by both title writes). Without either, SKEY is exactly what it was.
 var NETP2=!NETSLOT&&netP2Of((typeof location!=='undefined'&&location.search)||'');
+// v30.xx (cw-party), HIS Q28 (2026-10-18): "one-click shortcut that opens both windows full screen on attract, with Career and stash out of reach". ?party=1 on
+// the address is the party launch mode. Without it nothing below does anything. With it the title is never shown: the host window goes
+// straight into the arcade (partyHostBoot), the player 2 window shows its attract at once (partyP2Boot), and the title rows stay hidden by CSS.
+function partyOf(q){ return (/[?&]party=1(&|$)/).test(String(q||'')); }
+var PARTY=partyOf((typeof location!=='undefined'&&location.search)||''), PARTY_EXIT=0;
+if(PARTY){ try{ document.documentElement.classList.add('party'); if(NETP2||netPairOf(location.search)) document.documentElement.classList.add('partyhide'); }catch(_pc){} }
 if(NETSLOT) SKEY=netSlotKey(NETSLOT);
 else if(NETP2){ SLOT=p2SlotPick(); SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT); }   // v17.93: player 2 plays a numbered save of its own
 var RESTORE_BACKUP_KEY=SKEY+':prerestore';   // v14.06, save audit: each slot keeps its own UNDO backup; save 1 keeps the old key name
@@ -48303,7 +48312,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.78: The how to play and board cards show a 48px X in the top right corner. Check 30.78 fails on v30.77',
+  now:'v30.79: The party shortcut can open both windows on the attract with one address, Career and the stash out of reach, and a reload of either window finds its pair again. Check 30.79 fails on v30.78',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52373,7 +52382,9 @@ function p2RaidKey(){ return 'salvagerun:p2raid'; }
 function p2LiveBeat(){ try{ localStorage.setItem(p2LiveKey(),String(Date.now())); if(typeof G!=='undefined'&&G&&!G.sim&&!G.over) localStorage.setItem(p2RaidKey(),String(Date.now())); else localStorage.removeItem(p2RaidKey()); return true; }catch(_b){ return false; } }
 function p2RaidNow(){ var t=0; try{ t=+localStorage.getItem(p2RaidKey())||0; }catch(_g){ t=0; } return !!(t&&Math.abs(Date.now()-t)<75000); }
 function p2LiveNow(){ var t=0; try{ t=+localStorage.getItem(p2LiveKey())||0; }catch(_g){ t=0; } return !!(t&&Math.abs(Date.now()-t)<75000); }
-if(typeof NETP2!=='undefined'&&NETP2){
+// v30.xx (cw-party), the stale player 2 marks: a player 2 window killed mid raid leaves salvagerun:p2raid and p2live, and for 75 s the 2 PLAYER row refuses ("still in a raid in the other window"). At a party boot nothing else can be open, so both go before anything reads them.
+function partyClearMarks(){ try{ localStorage.removeItem(p2RaidKey()); localStorage.removeItem(p2LiveKey()); }catch(_pm){} return true; }
+if(PARTY) partyClearMarks();if(typeof NETP2!=='undefined'&&NETP2){
   p2LiveBeat(); try{ setInterval(p2LiveBeat,2000); }catch(_si){}
   try{ window.addEventListener('pagehide',function(){ try{ localStorage.removeItem(p2LiveKey()); localStorage.removeItem(p2RaidKey()); }catch(_r){} }); }catch(_ph){}
 }
@@ -53176,6 +53187,8 @@ function netSameOnMsg(m){
     return 'ignored';
   }
   if(NET.same==='p2'){
+    // v30.xx (cw-party): the host window posts hostup at every boot and every 5 s while nobody is linked; a player 2 window that is not linked answers ready, and the old handshake follows (offer, answer, arcon). So a reload of EITHER window finds the pair again with no touch.
+    if(m.t==='hostup'){ if(NET.role) return 'ignored'; netPadPost(); netSndPost(); netSamePost({t:'ready',pair:NET.pair}); return 'ready'; }
     if(m.t==='offer'){
       if(typeof m.code!=='string') return 'bad';
       if(NET.role) return 'ignored';
@@ -53203,7 +53216,52 @@ function netSameBootP2(pair,mode){
   netSamePost({t:'ready',pair:NET.pair});
   return 'ready';
 }
-// THE TITLE. Called once at boot with the start the old button runs. Wires the same machine rows and RETRY; in the player 2
+// v30.xx (cw-party), the party launch mode (his Q28, Q30, Q31, Q24 of 2026-10-18). The host window of ?party=1&pair=CODE does what arcadePick does, without
+// window.open (the shortcut opens player 2 itself). With no pair code it returns nopair and the title keeps only the 2 player arcade row.
+function partyHostUp(){ if(NET.same!=='host'||!NET.pair) return false; if(netInCount()>0) return false; return netSamePost({t:'hostup',pair:NET.pair}); }
+function partyHostBoot(q){
+  q=(typeof q==='string')?q:((typeof location!=='undefined'&&location.search)||'');
+  if(!partyOf(q)) return 'off';
+  var pair=netPairOf(q), tl=document.getElementById('title');
+  partyClearMarks();
+  if(!pair) return 'nopair';
+  NET.pair=pair; NET.arcPick=1; NET.mode='coop'; NET.pick='coop'; NET.same='host'; NET.p2win=null;
+  if(!NET.role) netStartHost();
+  netSameChan(); netPadInit(); netSndInit(); netSameHostLink();
+  try{ if(typeof NET.start==='function') NET.start(); }catch(_ns){}
+  if(tl) tl.style.display='none';
+  if(!arcadeEnter('host')){ partyReload(); return 'fail'; }
+  partyHostUp();
+  try{ clearInterval(NET.partyT); NET.partyT=setInterval(partyHostUp,5000); }catch(_pi){}
+  return 'host';
+}
+// The player 2 window never shows its title: the arcade attract is up at once (arcon from the host then changes nothing).
+function partyP2Boot(r){
+  if(!PARTY) return 'off';
+  var tl=document.getElementById('title');
+  if(tl) tl.style.display='none';
+  if(r!=='ready') return 'wait';
+  return arcadeEnter('p2')?'arcade':'fail';
+}
+function partyNav(u){ try{ location.href=u; }catch(_pn){} }
+function partyPlainUrl(){ return String(location.href).split('#')[0].split('?')[0]; }
+// A reload back into the party attract, at most 4 in 30 s so a build that cannot enter the arcade never spins.
+function partyReload(){
+  var now=Date.now(), a=[], k='pillagers:partyreloads';
+  try{ a=JSON.parse(sessionStorage.getItem(k)||'[]').filter(function(x){ return now-x<30000; }); }catch(_p0){ a=[]; }
+  if(a.length>=4) return false;
+  a.push(now); try{ sessionStorage.setItem(k,JSON.stringify(a)); }catch(_p1){}
+  try{ location.reload(); }catch(_p2){ return false; }
+  return true;
+}
+// The operator's EXIT DEMO (the card row and the chord): in the party launch mode it goes to the same address without ?party, the full title.
+function arcadeOpLeave(){
+  if(!PARTY) return arcadeLeave();
+  PARTY_EXIT=1;
+  var r=arcadeLeave();
+  partyNav(partyPlainUrl());
+  return r;
+}// THE TITLE. Called once at boot with the start the old button runs. Wires the same machine rows and RETRY; in the player 2
 // window it hides the rows, names the window and starts the pairing.
 function netTitleInit(startFn){
   var g=function(id){ return document.getElementById(id); };
@@ -53216,10 +53274,13 @@ function netTitleInit(startFn){
   if(ar) ar.onclick=function(){ arcadePick(); };
   if(ar1) ar1.onclick=function(){ arcadeSoloPick(); };   // v23.54 (arcade30)
   if(rt) rt.onclick=function(){ if(NET.arcPick) arcadePick(); else netSamePick(NET.pick||'coop'); };
+  if(PARTY&&st) st.onclick=function(){ arcadePick(); };   // v30.xx (cw-party): no Career start in the party launch mode
+  if(PARTY&&!(typeof NETP2!=='undefined'&&NETP2)){ try{ partyHostBoot(); }catch(_pb){} }
   if(!(typeof NETP2!=='undefined'&&NETP2)) return 'host';
   for(i=0;i<hide.length;i++){ el=g(hide[i]); if(!el) continue; if(el.parentNode&&el.parentNode.className==='modelater') el=el.parentNode; el.style.display='none'; }
   if(st) st.textContent='ENTER THE UNDERCROFT';
   r=netSameBootP2();
+  if(PARTY){ try{ partyP2Boot(r); }catch(_pp){} }   // v30.xx (cw-party)
   if(pl){ pl.textContent='Player 2 window'; pl.style.display='';   /* v28.xx (cw-partyx) critic 58 (2 of 5): a stack of small explaining sentences. One short line now */ }   // v15.77: the controller sentence; v15.78: the sound sentence
   try{ document.title='Pillagers, player 2';   /* v28.xx (cw-nocaps-dom): never all caps */ }catch(e){}
   return r;
@@ -53254,6 +53315,7 @@ function netTitleMove(dir){
 function netTitleEnter(startFn){
   var cur=(typeof PAD!=='undefined'&&PAD)?PAD.focus:null, m=document.getElementById('modemenu');
   if(cur&&m&&m.contains(cur)&&cur.getAttribute&&(cur.getAttribute('data-mode')||cur.id==='moderetry')&&!cur.disabled&&cur.id!=='titlestart'){ cur.click(); return 'row'; }   // v23.99 (his #39): RETRY too
+  if(PARTY&&typeof arcadePick==='function'){ arcadePick(); return 'start'; }   // v30.xx (cw-party): ENTER on a party title is the arcade row, never Career
   if(typeof startFn==='function') startFn();
   return 'start';
 }
@@ -61051,7 +61113,7 @@ function arcadeOpChord(e){
   if(!ARCOP&&!(G&&G.arcade&&!G.over)&&!arcadeIniLive()&&arcadeOpOpen()) return true;   // v26.xx (party5): on the attract it opens the OPERATOR menu
   try{ if(typeof pauseOpen!=='undefined'&&pauseOpen) togglePauseBox(false); }catch(_tp){}
   arcadeOpClose();
-  arcadeLeave();
+  arcadeOpLeave();   // v30.xx (cw-party)
   return true;
 }
 // v26.xx (party5), HIS ANSWER 22 (2026-10-12): "a", a NEW PARTY reset in the operator menu. THE OPERATOR MENU. On the attract the
@@ -61192,7 +61254,7 @@ function arcadeOpPick(ix){
   if(r.id==='exit'){
     arcadeOpClose();
     try{ if(typeof pauseOpen!=='undefined'&&pauseOpen) togglePauseBox(false); }catch(_tp2){}
-    arcadeLeave(); return true;
+    arcadeOpLeave(); return true;   // v30.xx (cw-party)
   }
   arcadeOpClose(); return true;
 }// A key, click or touch while the operator menu is up. A click inside the card goes on to its row.
@@ -61354,6 +61416,7 @@ function arcadeLeave(){
   ARCADE.solo=0;   // v23.54 (arcade30)
   arcadePadsOut();   // v23.28 (arcade7): his kept controller pick back
   if(hadRaid){ try{ showScreen('hub'); }catch(_sh2){} }
+  if(PARTY&&!PARTY_EXIT) partyReload();   // v30.xx (cw-party): any leave except the operator's EXIT DEMO goes straight back into the party attract (the reload keeps ?party=1), never to the title
   return r;
 }
 // v23.39, HIS ORDER (2026-10-11), build 16 of 20 (arcade16): IDLE RETURN AND END RUN. A party machine must go back to the demo on its
