@@ -120,12 +120,12 @@
   "when": "2026-10-18T06:16"
  },
  "18-settings-hub": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The only real change is that the half-clipped last row is now fully visible and the footer lost its repeated title and value, but the modal is still a dim, evenly weighted wall of identical rows with a tiny stepper cluster far from its labels, and nothing about it looks like Pillagers.",
-  "pic": "tools/handoff/console/notes/shots/c-31v-after/18-settings-hub-1080.jpg",
+  "verdict": "The new settings modal is cleaner: the half-clipped ghost row is gone and the detail text is larger, but it is still a long, dim, evenly weighted list with tiny tabs, a stranded value column and a mushy backdrop.",
+  "pic": "tools/handoff/console/notes/shots/c-31w-after/18-settings-hub-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:47"
+  "when": "2026-10-18T12:55"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -162,10 +162,10 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred pause card with a clear amber primary, a danger-outlined Abandon and a top-right close, but the underlying HUD is nearly invisible and the card has several small deviations from the guide (cut corner, thin hint, button sizes).",
-  "pic": "tools/handoff/console/notes/shots/c-31u-after2/25-raid-pause-box-1080.jpg",
+  "verdict": "A clean, guide-compliant pause card with one clear primary and sentence case, but it reads like a generic template, the HUD ghosts through the scrim, and the footer hint and lack of pad focus fall short.",
+  "pic": "tools/handoff/console/notes/shots/c-31w-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:27"
+  "when": "2026-10-18T12:55"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -314,10 +314,10 @@
  "77-haul-reveal-done": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred end card that follows the shell (teal title, hero haul number, stats row, tile row, one amber primary) and is clearly better organised than a typical amateur screen. Too much text and too many tiers of small grey type crowd the top and bottom, and it uses a '$' where the guide says score is SP.",
-  "pic": "tools/handoff/console/notes/shots/13-h1/77-haul-reveal-done-1080.jpg",
+  "verdict": "The end card has a sound shell with a teal title, one amber primary and a centred stack, but it is overloaded with five text tiers, a '$' hero that breaks the SP rule, and body text that is too small for a couch.",
+  "pic": "tools/handoff/console/notes/shots/13-k1/77-haul-reveal-done-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:22"
+  "when": "2026-10-18T12:56"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 2,
@@ -434,9 +434,9 @@
  "72-settings-sec-display": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version fixes the clipped last row and drops the odd 'Edit the words' footer title, but the screen is still a flat wall of identical rows with no visible focus, an unexplained warning sentence and a stepper placed far from its label.",
-  "pic": "tools/handoff/console/notes/shots/c-31v-after/72-settings-sec-display-1080.jpg",
+  "verdict": "The modal shell is clean and close to the guide (sentence case, top-right X, one tab strip, 1px borders), but the screen shows no focused row, shows placeholder copy in the detail pane, and its small type is too small for a couch.",
+  "pic": "tools/handoff/console/notes/shots/c-31w-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:46"
+  "when": "2026-10-18T12:56"
  }
 }

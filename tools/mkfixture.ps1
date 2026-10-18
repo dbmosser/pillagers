@@ -6097,6 +6097,37 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.10',what:'the controls card on the arcade drop is the how to play table on the HUD: light action names, a key cap for every key, the extract ring as a ring glyph and no amber names; the run over footer is 104px and its title the muted colour (critic: 47 48 = 2, 46 55 = 3; screens 46 47 48 52 55)',
+   run:function(){
+     if(typeof arcadeCardHud!=='function'||typeof arcadeCardOn!=='function'||typeof ctx==='undefined'||!ctx) return 'SKIP: no arcade controls card here';
+     var proto=CanvasRenderingContext2D.prototype, oa=proto.arc, ot=proto.arcTo, oft=proto.fillText, oOn=arcadeCardOn, na=0, nt=0, nameCol=null, amber=0, bad=null, d, oc, s, z, wasDisp, cs;
+     try{
+       __topClear(); __runPrep();
+       arcadeCardOn=function(){ return 1; };
+       proto.arc=function(){ na++; return oa.apply(this,arguments); };
+       proto.arcTo=function(){ nt++; return ot.apply(this,arguments); };
+       proto.fillText=function(t){ var f=String(this.fillStyle).toLowerCase(); if(/^move$/i.test(String(t))) nameCol=f; if(f==='#ffc04a'||f==='#f5b73b') amber++; return oft.apply(this,arguments); };
+       arcadeCardHud();
+       if(nt<40) bad='the controls card draws '+nt+' key cap corners, not a cap for every key';
+       else if(na<2) bad='the extract ring is not drawn as a ring glyph';
+       else if(nameCol!==String(UIC.tx_1).toLowerCase()) bad='the action names are '+nameCol+', not the light text colour';
+       else if(amber>0) bad=amber+' words are still amber on the controls card';
+     } finally { proto.arc=oa; proto.arcTo=ot; proto.fillText=oft; arcadeCardOn=oOn; }
+     if(bad) return bad;
+     if(typeof arcadeAttEl==='function'&&typeof attEl==='function'){
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       try{
+         try{ if(typeof attZ==='function') attZ(d); }catch(_z){}
+         z=parseFloat(d.style.getPropertyValue('--attz'))||1;
+         oc=arcadeAttEl('arcover'); oc.textContent=''; oc.style.display='block';
+         s=document.createElement('div'); s.className='aoh'; s.textContent='Run over'; oc.appendChild(s);
+         s=document.createElement('div'); s.className='aos'; s.textContent='Score 1 SP'; oc.appendChild(s);
+         cs=getComputedStyle(oc);
+         if(Math.abs(parseFloat(cs.paddingBottom)-104*z)>2) bad='the run over footer is '+cs.paddingBottom+', not 104px x '+z;
+       } finally { try{ oc.textContent=''; oc.style.display='none'; d.style.display=wasDisp; }catch(_f){} }
+     }
+     return bad;
+   }},
   {v:'30.09',what:'the Settings pane names the row, the stepper arrows are 28px and the first section label that repeats the tab is hidden',
    run:function(){
      var bad=[], d, k, a, h, i, bs, fs=null, padWas=document.body.classList.contains('padon');

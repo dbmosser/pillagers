@@ -1679,6 +1679,10 @@ body #attract .arcpage .apb{ font-size:calc(var(--fs-label) * var(--attz,1)); }
 body #attract .arcpage .apg{ opacity:.6; }
 body #attract .arcpage th{ font-size:calc(var(--fs-body) * var(--attz,1)); }
 body #attract .arcpage .aprt{ margin-left:calc(var(--sp-1) * var(--attz,1)); font-size:calc(var(--fs-label) * var(--attz,1)); font-weight:600; color:var(--tx-2); }
+/* v30.xx (cw-partyhud), the critic on v30.04 (46, 55 = 3): "amber text is banned, the glyph carries the amber"; "a 50px dead gap between the stats and the footer"; "the run over title is as loud as the hero". The prompt words are the light text colour (the button glyph stays accent), the card footer is 104px again, the run over title is the muted text colour so the score leads. Restyle only. */
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress, body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ color:var(--tx-1); }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .arcpage, body #attract[style*="block"]:has(.arcover[style*="block"]) .arcover{ padding-bottom:calc((var(--sp-3) * 2 + var(--btn-h)) * var(--attz,1)); }
+body #attract .arcover .aoh:first-child{ color:var(--tx-2); }
 /* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
    The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
    Pause: the title is the 32px title size in light text (the one amber thing in the box is Resume run), the key legend and the note line are 16px grey.
@@ -2757,7 +2761,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.09';
+var VER='30.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47924,7 +47928,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.09: Settings pane names the row, arrows are bigger, no repeated section label. Check 30.09 fails on v30.08',
+  now:'v30.10: The controls card at the arcade drop looks like the how to play page. Check 30.10 fails on v30.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56726,26 +56730,39 @@ function arcadeCardOn(){
   return Math.max(0,Math.min(1,(ARCADE_CARD_T-t)/0.6));
 }
 // the card on the HUD canvas, at the left, centred on the screen height
+// v30.xx (cw-partyhud), the critic on the arcade drop (47 48 = 2): "an amber headed table that buries the playfield, amber row names, a two pixel amber box". The card is the how to play page on the HUD: Panel P with the accent bar, light action names, key caps (1px line, 4px radius) for every key, the extract ring as a teal ring glyph, a 1px line under every row.
+function arcadeChip(c,x,y,w,h){ var r=UIT.rad; c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
 function arcadeCardHud(){
-  var a=arcadeCardOn(), rows, i, j, w=[0,0,0], x, y, lh, pd, gp, hh, pw, ph, cx;
+  var a=arcadeCardOn(), rows, i, j, k, w=[0,0,0], x, y, lh, pd, gp, hh, ch, cp, pw, ph, cx, ry, c, tw, px;
   if(!(a>0)||!ctx) return;
   rows=arcadeCardRows();
-  ctx.save(); ctx.globalAlpha=a; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-  for(i=0;i<rows.length;i++) for(j=0;j<3;j++){ ctx.font=j?FS(TYPE.label):FS(TYPE.head); w[j]=Math.max(w[j],ctx.measureText(rows[i][j]).width); }
-  ctx.font=FS(TYPE.micro); w[1]=Math.max(w[1],ctx.measureText('KEYBOARD').width); w[2]=Math.max(w[2],ctx.measureText('CONTROLLER').width);
-  lh=LH(26); pd=LH(14); gp=LH(18); hh=LH(20);
+  ch=LH(24); cp=LH(8); gp=LH(24); lh=LH(30); pd=LH(18); hh=LH(26);
+  function cell(s){ s=String(s); return {p:s.replace(/ IN A TEAL RING$/i,'').split(' / '), ring:/ IN A TEAL RING$/i.test(s)}; }
+  function cwid(s){ var q=cell(s), t=0, n; for(n=0;n<q.p.length;n++) t+=ctx.measureText(q.p[n]).width+cp*3; if(q.ring) t+=LH(20); return t; }
+  ctx.save(); ctx.globalAlpha=a; ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.font=FS(TYPE.head); for(i=0;i<rows.length;i++) w[0]=Math.max(w[0],ctx.measureText(rows[i][0]).width);
+  ctx.font=FS(TYPE.label); w[1]=ctx.measureText('KEYBOARD').width; w[2]=ctx.measureText('CONTROLLER').width;
+  for(i=0;i<rows.length;i++) for(j=1;j<3;j++) w[j]=Math.max(w[j],cwid(rows[i][j]));
   pw=Math.round(pd*2+w[0]+w[1]+w[2]+gp*2); ph=Math.round(pd*2+hh+lh*rows.length);
   x=LH(24); y=Math.round(H*0.5-ph/2);
-  ctx.fillStyle='rgba(6,9,13,.80)'; ctx.fillRect(x,y,pw,ph);
-  ctx.strokeStyle='rgba(255,192,74,.55)'; ctx.lineWidth=2; ctx.strokeRect(x+1,y+1,pw-2,ph-2);
+  uiPanel(ctx,x,y,pw,ph,UIC.acc);
   cx=[x+pd,x+pd+w[0]+gp,x+pd+w[0]+gp+w[1]+gp];
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#9a8f78';
-  hudText('KEYBOARD',Math.round(cx[1]),Math.round(y+pd+LH(10))); hudText('CONTROLLER',Math.round(cx[2]),Math.round(y+pd+LH(10)));
+  ctx.font=FS(TYPE.label); ctx.fillStyle=UIC.tx_2;
+  ctx.fillText('KEYBOARD',Math.round(cx[1]),Math.round(y+pd+hh*0.5)); ctx.fillText('CONTROLLER',Math.round(cx[2]),Math.round(y+pd+hh*0.5));
+  ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(Math.round(x+pd),Math.round(y+pd+hh-1),pw-pd*2,1);
   for(i=0;i<rows.length;i++){
-    var ry=Math.round(y+pd+hh+lh*i+LH(17));
-    ctx.font=FS(TYPE.head); ctx.fillStyle='#ffc04a'; hudText(rows[i][0],Math.round(cx[0]),ry);
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#e8eef2'; hudText(rows[i][1],Math.round(cx[1]),ry);
-    ctx.fillStyle='#7fe3d4'; hudText(rows[i][2],Math.round(cx[2]),ry);
+    ry=Math.round(y+pd+hh+lh*i+lh*0.5);
+    ctx.font=FS(TYPE.head); ctx.fillStyle=UIC.tx_1; ctx.fillText(rows[i][0],Math.round(cx[0]),ry);
+    for(j=1;j<3;j++){
+      c=cell(rows[i][j]); px=cx[j]; ctx.font=FS(TYPE.label);
+      for(k=0;k<c.p.length;k++){
+        tw=ctx.measureText(c.p[k]).width;
+        arcadeChip(ctx,Math.round(px),Math.round(ry-ch/2),Math.round(tw+cp*2),ch); ctx.fillStyle=UIC.ui_raised; ctx.fill(); ctx.lineWidth=1; ctx.strokeStyle=UIC.ui_line_hi; ctx.stroke();
+        ctx.fillStyle=UIC.tx_1; ctx.fillText(c.p[k],Math.round(px+cp),ry); px+=tw+cp*3;
+      }
+      if(c.ring){ ctx.beginPath(); ctx.arc(Math.round(px+LH(5)),ry,LH(8),0,6.2832); ctx.lineWidth=3; ctx.strokeStyle=UIC.extract; ctx.stroke(); }
+    }
+    if(i<rows.length-1){ ctx.fillStyle=UIC.ui_line; ctx.fillRect(Math.round(cx[0]),Math.round(y+pd+hh+lh*(i+1)-1),pw-pd*2,1); }
   }
   ctx.restore();
 }

@@ -1,0 +1,1 @@
+| Arcade drop controls card is the how to play table | v30.10 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.10 passes, fails on v30.09 |

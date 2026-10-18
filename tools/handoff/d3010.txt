@@ -1,0 +1,5 @@
+## v30.10 - Arcade drop controls card is the how to play table
+
+Co-op hunt while he was away. Critic on the arcade drop (47 and 48, 2 of 5): the controls card was an amber headed table with a two pixel amber box. It is the how to play page on the HUD now: Panel P, light action names, key caps, a teal ring glyph for the extract ring. The prompt on the party pages is light text, the run over footer is 104px, the run over title the muted colour.
+
+MEASURED. Check 30.10 passes, and fails on v30.09.

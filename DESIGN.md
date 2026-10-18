@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.10 - Arcade drop controls card is the how to play table
+
+Co-op hunt while he was away. Critic on the arcade drop (47 and 48, 2 of 5): the controls card was an amber headed table with a two pixel amber box. It is the how to play page on the HUD now: Panel P, light action names, key caps, a teal ring glyph for the extract ring. The prompt on the party pages is light text, the run over footer is 104px, the run over title the muted colour.
+
+MEASURED. Check 30.10 passes, and fails on v30.09.
 ## v30.09 - SETTINGS PANE NAMES THE ROW, BIGGER ARROWS
 
 Co-op hunt while he was away. Critic c-31 round 12 (Settings 18 and 72 at 2): the footer showed a warning with no setting name; the stepper arrows were tiny; the first section label repeated the tab.

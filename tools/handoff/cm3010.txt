@@ -1,0 +1,7 @@
+v30.10: arcade drop controls card is the how to play table
+
+The controls card at the arcade drop looks like the how to play page.
+
+Check 30.10. Fails on v30.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

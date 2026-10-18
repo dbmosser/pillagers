@@ -410,3 +410,7 @@
 2026-10-18 0.0328 critic-manual
 2026-10-18 0.0337 critic-13-ui-end-cards
 2026-10-18 0.6189 13-ui-end-cards
+2026-10-18 0.0316 critic-c-31-ui-pause-settings
+2026-10-18 0.0228 critic-c-31-ui-pause-settings
+2026-10-18 0.0262 critic-13-ui-end-cards
+2026-10-18 0.0266 critic-c-31-ui-pause-settings
