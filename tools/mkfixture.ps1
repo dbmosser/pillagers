@@ -6101,6 +6101,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.43',what:'the party cards (how to play, board, run over) are 97 percent panel and the run over title is tx-1 with a tx-2 second line, not lime (critic 52 64)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade here';
+     var d, wasDisp, pg, ov, h1, h2, probe, t1, t2, got, a, m, res=null;
+     function alpha(c){ m=/\/\s*([\d.]+)\s*\)\s*$/.exec(c)||/,\s*([\d.]+)\s*\)\s*$/.exec(c); return m?parseFloat(m[1]):1; }
+     function col(v){ probe=document.createElement('i'); probe.style.color=v; document.body.appendChild(probe); var r=getComputedStyle(probe).color; probe.remove(); return r; }
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       try{ if(typeof attZ==='function') attZ(d); }catch(_z){}
+       pg=arcadeAttEl('arcpage'); pg.style.display='block';
+       ov=arcadeAttEl('arcover'); ov.textContent=''; ov.style.display='block';
+       h1=document.createElement('div'); h1.className='aoh'; h1.textContent='run over'; ov.appendChild(h1);
+       h2=document.createElement('div'); h2.className='aoh'; h2.textContent='ended early -50%'; ov.appendChild(h2);
+       a=alpha(getComputedStyle(pg).backgroundColor);
+       if(a<0.95) return 'the board and how to play card fill is '+a+' opaque, under 0.95';
+       a=alpha(getComputedStyle(ov).backgroundColor);
+       if(a<0.95) return 'the run over card fill is '+a+' opaque, under 0.95';
+       t1=getComputedStyle(h1).color; if(t1!==col('var(--tx-1)')) return 'the run over title is '+t1+', not tx-1';
+       t2=getComputedStyle(h2).color; if(t2===col('var(--acc)')) return 'the run over second line is still the lime accent';
+       return res;
+     } finally {
+       try{ ov.textContent=''; ov.style.display='none'; pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+       __topClear();
+     } }},
   {v:'31.42',what:'cw-gunkeys19: the gun keys are named 1-8, 0 wherever they are named, never 1-9 (key 9 does nothing, key 0 is the rocket launcher): the controls list, the compact list, the pause line, the demo controls card and the stash key row read the keys the game really gives the guns, a gun on the wrong key is refused in words that say 1 to 8 and 0, and with a gun under the cursor on the stash key 0 binds the ninth gun key and key 9 binds nothing',
    run:function(){
      if(typeof LEGEND==='undefined'||typeof LEGEND_MINI==='undefined'||typeof keysLegendHtml!=='function'||typeof GUN_CLASSES==='undefined'||typeof slotKeyName!=='function') return 'SKIP: this build has no gun key table or controls lists';

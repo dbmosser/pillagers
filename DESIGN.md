@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.43 - PARTY CARDS: SOLID FILL AND A READABLE RUN OVER TITLE
+
+Co-op hunt while he was away. Critic 52 and 64 (2 of 5): sprites show through the translucent card, the run over title is dim grey, the ended early line is lime and out-shouts the title, the any-key prompt is a footnote. The cards are 97 percent panel, the title is tx-1, the second line tx-2, the prompt at least 24px.
+
+MEASURED. Check 31.43 passes, and fails on v31.42.
 ## v31.42 - the gun keys are named 1-8, 0 everywhere
 
 Co-op hunt while he was away. The gun keys are 1 to 8 and 0 (the rocket launcher took 0 and key 9 does nothing), but the controls list, the compact list, the pause line, the demo controls card and the stash key row still said 1-9, and a gun put on the wrong key was told guns go on keys 1 to 9. The number-key bind in the stash had the same mix-up: with a gun under the cursor key 9 bound the rocket launcher key and key 0 did nothing.

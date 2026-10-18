@@ -1,0 +1,7 @@
+v31.43: party cards: solid fill and a readable run over title
+
+The how to play, board and run over cards are solid, the run over title reads, and the any-key prompt is bigger.
+
+Check 31.43. Fails on v31.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

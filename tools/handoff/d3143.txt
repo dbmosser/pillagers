@@ -1,0 +1,5 @@
+## v31.43 - PARTY CARDS: SOLID FILL AND A READABLE RUN OVER TITLE
+
+Co-op hunt while he was away. Critic 52 and 64 (2 of 5): sprites show through the translucent card, the run over title is dim grey, the ended early line is lime and out-shouts the title, the any-key prompt is a footnote. The cards are 97 percent panel, the title is tx-1, the second line tx-2, the prompt at least 24px.
+
+MEASURED. Check 31.43 passes, and fails on v31.42.
