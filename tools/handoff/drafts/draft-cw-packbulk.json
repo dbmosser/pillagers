@@ -1,0 +1,16 @@
+{
+    "title":  "PACK ALL AND CLEAR SIT BY THE PACK LABEL",
+    "why":  "Quality pass: the two whole-pack buttons stood after the cash chip and read as cash buttons beside its own MAX. They now come right after the PACK label and are named Pack all and Clear.",
+    "now":  "On the pre-raid screen, Pack all and Clear sit next to the Pack label.",
+    "edits":  [
+                  {
+                      "anchor":  "min-width:5.8em\"\u003ePACK\u003c/span\u003e\u0027;",
+                      "replacement":  "min-width:5.8em\"\u003ePACK\u003c/span\u003e\u003cbutton class=\"pkb\" data-pa=\"all\"\u003ePACK ALL\u003c/button\u003e\u003cbutton class=\"pkb\" data-pa=\"none\"\u003eCLEAR\u003c/button\u003e\u0027;"
+                  },
+                  {
+                      "anchor":  "  h+=\u0027\u003cbutton class=\"pkb\" data-pa=\"all\"\u003eALL\u003c/button\u003e\u003cbutton class=\"pkb\" data-pa=\"none\"\u003eNONE\u003c/button\u003e\u0027;",
+                      "replacement":  "  // v28.xx (cw-packbulk), quality pass: the two whole-pack buttons stood after the CASH chip and read as cash buttons beside its own MAX. They sit right after the PACK label now and say what they do, PACK ALL and CLEAR."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pre-raid pack row puts PACK ALL and CLEAR right after the PACK label, not beside the cash chip\u0027,\n   run:function(){\n     if(typeof syncSectorPack!==\u0027function\u0027) return \u0027SKIP: no pack row\u0027;\n     var host, b, bs, i, last;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       P.stash=[\u0027bandage\u0027,\u0027bandage\u0027,\u0027smoke\u0027,\u0027core\u0027]; P.kit=[]; P.freeKit=0; P.kitPick=\u0027mine\u0027; P.intel=0; P.credits=1000; P.takeCash=null;\n       renderSector();\n       host=document.getElementById(\u0027sectorpack\u0027);\n       if(!host||host.style.display===\u0027none\u0027) return \u0027the pack row is not shown\u0027;\n       bs=host.querySelectorAll(\u0027button\u0027);\n       if(!bs.length||bs[0].getAttribute(\u0027data-pa\u0027)!==\u0027all\u0027) return \u0027the first pack button is not the pack all button\u0027;\n       if(!bs[1]||bs[1].getAttribute(\u0027data-pa\u0027)!==\u0027none\u0027) return \u0027the second pack button is not the clear button\u0027;\n       if(!/pack all/i.test(bs[0].textContent)||!/clear/i.test(bs[1].textContent)) return \u0027the whole-pack buttons are not named pack all and clear (\u0027+bs[0].textContent+\u0027, \u0027+bs[1].textContent+\u0027)\u0027;\n       last=bs[bs.length-1];\n       if(last.getAttribute(\u0027data-pa\u0027)) return \u0027a whole-pack button still ends the row, beside the cash chip\u0027;\n       bs[0].click();\n       if(P.takeCash!==null||packedCount(\u0027bandage\u0027)!==2) return \u0027pack all did not pack the bandages\u0027;\n       host=document.getElementById(\u0027sectorpack\u0027); host.querySelector(\u0027[data-pa=\"none\"]\u0027).click();\n       if(P.takeCash!==0||packedCount(\u0027bandage\u0027)!==0) return \u0027clear did not empty the pack\u0027;\n       return null;\n     } finally {\n       try{ __cleanProfile(); }catch(_e){}\n       __topClear();\n     } }},"
+}

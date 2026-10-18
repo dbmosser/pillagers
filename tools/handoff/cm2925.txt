@@ -1,0 +1,7 @@
+v29.25: a dead peddler leaves his remains, not a box
+
+A dead Peddler leaves his pack and spilled stock.
+
+Check 29.25. Fails on v29.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

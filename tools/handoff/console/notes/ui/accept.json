@@ -14,5 +14,117 @@
   "pic": "tools/handoff/console/notes/shots/all/02-welcome-pack-1080.jpg",
   "task": "10-ui-look-book",
   "when": "2026-10-18T06:12"
+ },
+ "03-hub-floor": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The hub reads as a prototype: the eight same-size station labels compete with each other, the HUD text is tiny and pushed into the corners, and the bottom of the screen is cluttered with a hotbar, a toast and a hint line.",
+  "pic": "tools/handoff/console/notes/shots/all/03-hub-floor-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:12"
+ },
+ "04-stash-terminal": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A dense, cluttered stash screen with no clear focal point, tiny low-contrast labels and several stacked instruction and explanation strips; it reads as a debug tool, not a polished extraction-shooter menu.",
+  "pic": "tools/handoff/console/notes/shots/all/04-stash-terminal-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:12"
+ },
+ "05-sector-page": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A dense, form-like pre-raid screen where a half-empty brown banner with a tiny map, rows of identical amber chips and three explanatory paragraphs bury the one decision that matters, so it reads as a debug panel rather than a polished menu.",
+  "pic": "tools/handoff/console/notes/shots/all/05-sector-page-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:13"
+ },
+ "06-terms": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A tidy but flat, generic dark modal with no focal point, no visible pad focus, a wordy intro paragraph, and footer buttons that break the content margins, so it reads as a debug list rather than a game contract screen.",
+  "pic": "tools/handoff/console/notes/shots/all/06-terms-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:13"
+ },
+ "07-party-coop": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A text-heavy modal that reads as a generic dark template: two paragraphs of explaining copy swamp the actual choice (host or join), the controls are tiny and misaligned, and there is no pad focus or party-slot UI.",
+  "pic": "tools/handoff/console/notes/shots/all/07-party-coop-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:13"
+ },
+ "08-shop": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A clean dark grid with a good gold selection state, but the bottom half of the screen is empty, the cream detail panel clashes with the dark UI, and the currency header, tiny type, and flavor text undercut the polish.",
+  "pic": "tools/handoff/console/notes/shots/all/08-shop-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:14"
+ },
+ "09-craft": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The craft grid is clean and readable, but the screen is a top-heavy template with a dead lower half, a cream detail card that clashes with the dark UI, and a header that collides and shows redundant currency.",
+  "pic": "tools/handoff/console/notes/shots/all/09-craft-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:14"
+ },
+ "10-hire": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A tidy but generic grid, undermined by a loud red glitch banner that outranks everything, a washed-out cream detail panel with a disabled-looking Hire button, and duplicated currency and price data.",
+  "pic": "tools/handoff/console/notes/shots/all/10-hire-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:14"
+ },
+ "11-wirt-gambler": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A tidy but generic dark modal with no focal point: the title, two competing boxes and a pile of explanatory text all sit at similar weight, and the buttons look disabled and have no visible pad focus.",
+  "pic": "tools/handoff/console/notes/shots/all/11-wirt-gambler-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:15"
+ },
+ "12-mainframe-contracts": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A functional but generic dark list-and-detail template: the cream detail card clashes with the dark UI, the header currency cluster collides, every row looks identical, and there is placeholder copy and leftover clutter.",
+  "pic": "tools/handoff/console/notes/shots/all/12-mainframe-contracts-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:15"
+ },
+ "14-mainframe-racks": {
+  "score": 1,
+  "pass": false,
+  "verdict": "A flat, text-heavy dark form with placeholder profanity on screen, disabled buttons that read as dead rectangles, a collision in the header currency block, and nothing to draw the eye, so it is far below the polish bar.",
+  "pic": "tools/handoff/console/notes/shots/all/14-mainframe-racks-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:15"
+ },
+ "16-bar-last-pour": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A clean but generic dark modal with a mismatched centered title, two identical yellow buttons that flatten hierarchy, no visible pad focus, and a lot of dead space.",
+  "pic": "tools/handoff/console/notes/shots/all/16-bar-last-pour-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:15"
+ },
+ "17-fashion-mirror": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A competent dark-panel template with a clear two-column layout, but the grid is a wall of near-identical tiles, the operator preview is dwarfed, and the header, footer and list clip or crowd, so it reads as a debug inventory and not a Fortnite-grade fashion screen.",
+  "pic": "tools/handoff/console/notes/shots/all/17-fashion-mirror-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:16"
+ },
+ "18-settings-hub": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A dense, flat settings list with two competing tab rows, a duplicated detail panel and a wasted right half, so it reads as a debug form rather than a polished AAA settings screen.",
+  "pic": "tools/handoff/console/notes/shots/all/18-settings-hub-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:16"
  }
 }

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.25 - A DEAD PEDDLER LEAVES HIS REMAINS, NOT A BOX
+
+Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Peddler left the purple cache box. The cache is now tagged and drawn as the trader fallen in his duster with the wide hat knocked off, his pack frame and bedroll toppled beside him, the stock spilled, the lantern knocked out. Looting is unchanged.
+
+MEASURED. Check 29.25 passes, and fails on v29.24.
 ## v29.24 - A DEAD CRIER LEAVES WRECKAGE, NOT A BOX
 
 Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Crier left the generic brown wreck. It now leaves the drone crashed on the ground: the pod cracked on its bent X frame with four dead rotor hubs and still blades, the lamp black, the loudspeaker horn broken off with its ochre ring. Smoke while unsearched. Looting is unchanged.
