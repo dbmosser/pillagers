@@ -6,7 +6,16 @@ import { spawnSync } from 'node:child_process';
 import { AS, ROOT } from './lib.mjs';
 const { INSETS } = await import('./insets.mjs');
 const names = process.argv.slice(2).filter(a => !a.startsWith('--'));
+function pageMulti(name, ins) {   // several crops side by side along the top right (a04: the three builds), each 3x
+  const pic = '../shots/' + name + '/pic.jpg', k = 3, W = ins.w || 480, H = ins.h || 380, gap = 8, right = ins.right === undefined ? 20 : ins.right, top = ins.top === undefined ? 20 : ins.top;
+  const n = ins.xs.length, total = n * W + (n - 1) * gap;
+  let boxes = '';
+  ins.xs.forEach((cx, i) => { const bx = cx * k - W / 2, by = ins.y * k - H / 2, left = 1920 - right - total + i * (W + gap);
+    boxes += '<div style="position:absolute;left:' + left + 'px;top:' + top + 'px;width:' + W + 'px;height:' + H + 'px;box-sizing:border-box;border:2px solid rgba(242,239,230,.9);border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.65),0 8px 28px rgba(0,0,0,.55);background:url(' + pic + ') -' + bx + 'px -' + by + 'px/' + (1920 * k) + 'px ' + (1080 * k) + 'px no-repeat"></div>'; });
+  return '<!doctype html><html><head><meta charset="utf-8"><title>' + name + '</title><style>html,body{margin:0;padding:0;width:1920px;height:1080px;overflow:hidden;background:#000}#f{position:absolute;left:0;top:0;width:1920px;height:1080px;background:url(' + pic + ') 0 0/1920px 1080px no-repeat}#t{position:absolute;right:' + (right + 10) + 'px;top:' + (top + 8) + 'px;padding:2px 9px 3px;border-radius:3px;background:rgba(10,12,14,.72);color:#f2efe6;font:700 22px/1 "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif;letter-spacing:.04em}</style></head><body><div id="f"></div>' + boxes + '<div id="t">3x</div></body></html>';
+}
 function page(name, ins) {
+  if (ins.xs) return pageMulti(name, ins);
   const pic = '../shots/' + name + '/pic.jpg';
   const W = ins.w || 640, H = ins.h || 400, k = 3;
   const bx = ins.x * k - W / 2, by = ins.y * k - H / 2;     // ins.x, ins.y: the centre of the region, in 1080 picture pixels

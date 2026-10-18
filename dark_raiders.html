@@ -2812,7 +2812,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.03';
+var VER='31.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15931,8 +15931,10 @@ window.addEventListener('keydown',function(e){
       // dial, so the click turned Superhot off and the row redrew as Off, as if the click did nothing. Redrawn only while the
       // window is open, the same guard toggleTune uses when the console closes over Settings.
       try{ var _smB=document.getElementById('settingsmodal'); if(_smB&&_smB.classList.contains('on')) renderSettings(); }catch(_rsB){}
-      var _shMsg='SUPERHOT '+(CFG.superhot?'ON':'OFF');
-      if(G&&!G.over&&!G.sim) say(_shMsg); else if(typeof say2==='function') say2(_shMsg);
+      // v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." The key left of 1 has toggled Superhot since v7.23, but nothing on screen named it
+      // (only CHANGE KEYS did), and its line could read the wrong state: the lines it said were not replaced, so on, off, on within a second left OFF on top and OFF
+      // last in the feed with Superhot on. shSay keeps one line, the state just set; the key is named on the F1 list and beside the Settings row.
+      shSay(CFG.superhot);
     }
     return;
   }
@@ -41652,7 +41654,7 @@ var LEGEND=[
   // v27.65 (cloud-menus-keys-x-no-board), CLOUD HUNT 2026-10-15: the controls card X row said call for extraction, then board; board is a retired word, so it says call for extraction, then extract
 ['WORLD',[['E','search, use, open'],['X','call for extraction, then extract'],['M','map'],['F1','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['O','order your hire']]],
   ['TEAM',[['Z','drop an item for a teammate'],['N','ping, twice for danger']]],   // v18.27: his order, trading is dropping
-  ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom'],['F9','record your play for the title']]]   // v21.56: the recorder (v21.18) was named only on the what is new card
+  ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom'],['F9','record your play for the title'],['`','superhot on/off']]]   // v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." The key left of 1 is named here   // v21.56: the recorder (v21.18) was named only on the what is new card
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
 // The thirteen keys a player actually presses, two columns, no headings. Anything
@@ -48283,7 +48285,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.03: HUD panels are flat with a clearer 1px edge and the demo gun card is shorter. Check 31.03 fails on v31.02',
+  now:'v31.04: The key left of 1 turns Superhot on and off. It is on the F1 list and beside the Settings row, and the line always shows the state just set. Check 31.04 fails on v31.03',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55077,14 +55079,24 @@ function netKidMul(){ var h=(typeof NET.kidHost==='number'&&NET.kidHost>=KID_MIN
 // host value back on top after any other Settings row is clicked, and cycleGameOpt refuses the row and the key while a host
 // word rules, with a line that says so. The host window and solo play never reach any of it.
 function netShHost(){ return (typeof NET==='object'&&NET&&NET.on&&NET.role==='join'&&(NET.shHost===0||NET.shHost===1))?NET.shHost:null; }
+// v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." THE ONE SUPERHOT LINE. The key (and the host word on a linked window) says the state it
+// set. An older Superhot line is taken out of the left feed first, so the line on screen is always the state now, never "SUPERHOT OFF" last with Superhot on (a repeat
+// within a second only refreshed the older line where it stood), and never a count. The message row is keyed, so it is replaced where it stands.
+function shSay(on){
+  var m='SUPERHOT '+(on?'ON':'OFF'), F, i;
+  try{ F=(G&&G.fd&&G.fd.lines)?G.fd.lines:null; if(F) for(i=F.length-1;i>=0;i--) if((/^SUPERHOT (ON|OFF)$/).test(F[i].txt||'')) F.splice(i,1); }catch(_sf){}
+  if(G&&!G.over&&!G.sim) say(m,'info',{key:'shtoggle'}); else if(typeof say2==='function') say2(m);
+}
 function netShTake(v){
   v=v?1:0;
+  var _shNew=(NET.shHost===0||NET.shHost===1)&&NET.shHost!==v;   // cw-shkey: the host changed it in the raid, the first word of a party is not news
   if(NET.shHost!==0&&NET.shHost!==1) NET.shOwn=CFG.superhot?1:0;
   NET.shHost=v;
   if((CFG.superhot?1:0)!==v){
     CFG.superhot=v;
     try{ var _sm=document.getElementById('settingsmodal'); if(_sm&&_sm.classList.contains('on')) renderSettings(); }catch(_rs){}
   }
+  if(_shNew&&G&&!G.over&&!G.sim){ try{ shSay(v); }catch(_shs){} }   // cw-shkey: the linked window says it too
   return v;
 }
 function netShDrop(){
@@ -62818,6 +62830,8 @@ document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
     var b=r.querySelector('div > b'), h=r.querySelector('.hint'), v=r.querySelector('button'), sel=r.querySelector('select');
     var vt=v?v.textContent:(sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'');
     var html='<div class="sdk">'+escHtml(b.textContent)+'</div>'+(vt?'<div class="sdv">'+escHtml(vt)+'</div>':'')+(h&&h.textContent?'<div class="sdh">'+escHtml(h.textContent)+'</div>':'');
+    // v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." The pane that explains a row also names the key that does what the row does.
+    if(v&&v.id==='go_superhot') html+='<div class="sdh">key: '+escHtml(keyName('Backquote'))+' (left of 1)</div>';
     if(dt.innerHTML!==html) dt.innerHTML=html;
   }
   function soon(){ if(!pend){ pend=1; setTimeout(sync,0); } }

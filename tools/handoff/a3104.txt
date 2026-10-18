@@ -1,0 +1,1 @@
+| superhot toggle key: named on the F1 list and beside the Settings row, one honest line, and the second window says when the host flips it | v31.04 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.04 passes, fails on v31.03 |

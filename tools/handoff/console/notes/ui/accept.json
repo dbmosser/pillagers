@@ -151,17 +151,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version only lowercased the text and trimmed the contract list; the HUD is still an unstyled stack of small, crowded, mixed-size panels that ignores the style guide's panels, type scale and lime accent.",
+  "verdict": "the hud is still a pile of unrelated boxes with different type sizes, edges and fills, and the earlier clutter advice (controls cheat sheet, pillagers list, run info) was not followed.",
   "findings": [
-   "P0 Whole HUD: pillagers list, run info, controls cheat sheet, minimap, currency block: Collapse the controls panel to one 'f1 controls' hint (16px cap plus word) after 30s. Show the pillagers list only on tab, or as a 3-row strip at 40% opacity. Always visible: timer, hp, ammo and one objective only.",
-   "P0 Run info panel (top right, y 305-467) and the 'extraction c available' chip: Use one panel with the 16px tx-2 label 'contracts' and rows of 16px tx-1 with a right-aligned '0/2'. Never wrap; shorten to 'search 2 containers' and 'carry 2 optics lens'. Drop 'dawn clear' to the minimap. Dock the extraction chip inside the panel, 8px under the last row, in --extract.",
-   "P1 Ammo/weapon panel (bottom right): Name at 20px tx-1, ammo at 56px/800 with '/ 24' at 20px tx-2. Add a 16px key cap plus 'backpack' at the bottom. Remove the resize hatch. Give the panel 24px padding and 8px clearance from the status tag.",
-   "P1 Type scale across panels (hp, stamina, standing, pillagers, controls list, currency): Snap to 56 (ammo, timer) / 20 (names, rows) / 16 (labels, hints). Minimum 16px for anything read. Titles tx-1 at 16px +.04em, no amber. Make the hp and stamina labels the same size.",
-   "P1 Top-right currency block and pillagers list: One 20px row, 'credits 900 · xp 0'. Drop the stash line from the raid HUD. Use sp or an icon in the lists. Set the margins to 96px, or at minimum make all HUD edges match."
+   "P0 controls cheat sheet (bottom centre, x490-900, y697-867): collapse it to a single 'f1 controls' hint (16px key cap plus word) after 30s. Remove the panel from the default view. If it stays, set it to 16px tx-2 text in two columns, with 24px padding.",
+   "P0 run info panel (right, x1582-1900, y305-467) and 'extraction c available' chip: title 'contracts' at 16px tx-2. Rows at 16px tx-1 with '0/2' right-aligned, shortened to 'search 2 cases', 'carry 2 servo actuators', 'search 2 containers'. Move 'dawn clear' onto the minimap. Dock the extract chip 8px under the last row inside the same panel. Fix or remove the clipped zone-name label on the minimap.",
+   "P1 pillagers list (top left, x10-390, y152-258): show it on tab only, or as a 3-row strip at 40% opacity. Title in tx-1, never amber. Use --ui-panel fill, 1px --ui-line-hi border, 4px radius, 24px padding, 28px row pitch.",
+   "P1 ammo panel (bottom right, x1578-1910, y843-1053) and 'concealed · in cover' tag: order: name 20px tx-1, ammo 56px/800 with '/ 24' at 20px tx-2, then 'b backpack' at 16px tx-2 at the bottom. Fill --ui-panel, 24px padding, 8px clearance from the status tag. Use a tx-1 outline chip for status, with no amber fill.",
+   "P1 hp and stamina bars and 'standing' tag (bottom left): use one 16px label above or inside each bar, same position and size. Bars 12px tall at 8px gap and the same left edge. Move 'standing' into the status tag with 'concealed' on the right. Use --ok for hp with a red state under 30%."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after4/21-raid-hud-calm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after7/21-raid-hud-calm-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T20:02"
+  "when": "2026-10-18T21:01"
  },
  "22-raid-map-open": {
   "score": 2,
@@ -253,17 +253,17 @@
  "50-arcade-hud-live": {
   "score": 3,
   "pass": false,
-  "verdict": "The lower case, the dropped gradients and the clearer ammo number are real gains, but the HUD still reads as a stack of unrelated boxes: the score strip, the run-goals panel, the vitals bars and the weapon block have different borders, padding and sizes, and the earlier fixes (run info, standing box, vitals layout) were only partly applied.",
+  "verdict": "The hud has been reshuffled a little (a hotbar was added, the weapon block is bigger) but the earlier fixes were not applied: it is still a pile of unrelated boxes with inconsistent type sizes, edge margins and fills, and nothing reads as one system.",
   "findings": [
-   "P1 Right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Delete 'run info'. Keep one 20px tx-1 'run goals' title and set the rows at 16px tx-2 on a 32px pitch with SP values right-aligned in tx-1. Use 24px padding, a 1px --ui-line-hi border, and a 16px gap below the minimap. Remove the caret or replace it with the 48px close glyph.",
-   "P1 Bottom-left vitals (armour 60 / stamina / hp 100): Use three flat bars, each 10px high and 360px wide, on --ui-line tracks with no gradient. Put 16px labels and values to the left of the bars, outside them. Make 'standing' a plain 16px tx-2 label with no box. Start the block at x=96 with its bottom at 54px.",
-   "P1 Top-centre score cluster (score / 0 sp / 9:46 / extract 148m): Put the whole cluster in one 90% --ui-panel strip at y=54 that includes the extract line. Make '0 sp' 56px f-cond 800 tx-1, '9:46' 20px tx-2, and 'extract 148m' 16px --extract. Delete 'score' or set it at 16px tx-2.",
-   "P1 Bottom-right weapon block (compact smg 30 / 180): Shrink it to about 320x120 with a 1px --ui-line-hi border and a 48px margin from the screen edges. Set the name at 20px tx-1, the ammo at 56px f-cond 800 and '/ 180' at 20px tx-2. Remove the lime tick.",
-   "P1 Left notices (stronghold · 1 on the map / golden enemy): Use the toast component: 40px high, a solid 90% --ui-panel fill, a 4px left accent bar, and 16px tx-1 text showing only the name. Start the toasts at x=96, show at most 3 for 3s, then fade. Put 'f1 controls' on a pill or delete it."
+   "P1 top-centre score cluster (x≈880-1040, y≈0-130): Make one strip 360x96 at y=54 (the 5% margin) that holds '0 sp' at 56px f-cond 800 tx-1, '9:46' at 20px tx-2 and 'extract 136m' at 16px --extract. Delete 'score'. Put the arrow inside the strip, left of the distance.",
+   "P1 right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Delete 'run info'. Use one 20px tx-1 'run goals' title, then 16px tx-2 rows on a 32px pitch with sp values right-aligned in tx-1. Add 24px padding, a 1px --ui-line-hi border and a 16px gap below the minimap. Drop the caret or make it a 48px close glyph.",
+   "P1 bottom-left vitals (x≈24-530, y≈905-1070): Use three flat 10px bars, all 360px wide, on --ui-line tracks. Put 16px labels and values left of the bars, outside them, in tx-2/tx-1. Make 'standing' a plain 16px tx-2 label with no box. Start at x=96 and end 54px from the bottom. Colour only hp, using --ok, and use --acc for stamina.",
+   "P1 bottom-right weapon block (x≈1578-1910, y≈868-1020): Make it 320x120 with 48px margins and a solid 90% --ui-panel fill. Use a 20px tx-1 name, 56px f-cond 800 ammo and '/ 42' at 20px tx-2. Remove the lime tick.",
+   "P1 hotbar (x≈570-1555, y≈950-1060) and its tooltip: Show one focused slot with a 2px --acc border and give the rest 1px --ui-line. Dim empty slots to 40%. Set badges at 16px. Move 'fire / use' into a single footer legend at 16px, or delete it. Remove the second highlight."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after6/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after7/50-arcade-hud-live-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T20:36"
+  "when": "2026-10-18T21:01"
  },
  "52-arcade-run-over": {
   "score": 3,

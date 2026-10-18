@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T17:00:00","url":"http://localhost:8808/handoff/art-survey/game/base-duodown.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":16,"screens":[
+{"name":"duodown","screen":"the duo, P2 is down","4k":{"staged":true,"note":"{\"scene\":\"duodown\",\"plate\":false,\"zoom\":9.99074074074074,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":1559,\"y\":1100,\"w\":333,\"h\":593,\"fx\":1560,\"fy\":1270},{\"id\":\"mate\",\"kind\":\"player\",\"x\":2278,\"y\":1282,\"w\":259,\"h\":165,\"fx\":2279,\"fy\":1310}],\"objects\":null}","viewport":"3840x2160","shot":"duodown-4k.jpg","lint":""}}
+]}

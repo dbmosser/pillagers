@@ -1,0 +1,20 @@
+{
+    "title":  "VITALS BARS ONE WIDTH",
+    "why":  "The critic on the raid screen (10-19): the hp, armour and stamina bars have three widths (360, 280, 280).",
+    "now":  "HP, armour and stamina bars are the same width.",
+    "edits":  [
+                  {
+                      "anchor":  "    bar(16,by-46,280,16,p.armor/armorCap(),\u0027#5aa9e6\u0027);",
+                      "replacement":  "    bar(16,by-46,HBW,16,p.armor/armorCap(),\u0027#5aa9e6\u0027);   /* v28.xx (cw-barsame), the critic (2026-10-19): the three vitals bars had three widths (360, 280, 280); all are HBW wide now */"
+                  },
+                  {
+                      "anchor":  "  bar(16,by-25,280,12,p.stam/100,_stc);",
+                      "replacement":  "  bar(16,by-25,HBW,12,p.stam/100,_stc);   /* v28.xx (cw-barsame): same width as the health bar */"
+                  },
+                  {
+                      "anchor":  "  ctx.fillText(p.stamLock?\u0027WINDED\u0027:\u0027STAMINA\u0027,16+280+8,by-15);",
+                      "replacement":  "  ctx.fillText(p.stamLock?\u0027WINDED\u0027:\u0027STAMINA\u0027,16+HBW+8,by-15);   /* v28.xx (cw-barsame): the word follows the longer bar */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027hp, armour and stamina bars are all the same width (the critic, 10-19: three widths)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)||typeof bar!==\u0027function\u0027) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var g=null, oB=bar, rec=[], i, ws=[];\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; g.player.armor=40;\n       bar=function(x,y,w,h,f,c,bg){ rec.push({x:x,w:w,h:h}); return oB.apply(this,arguments); };\n       try{ __frame(0.016); }finally{ bar=oB; }\n       for(i=0;i\u003crec.length;i++) if(rec[i].x===16\u0026\u0026rec[i].h\u003e=12\u0026\u0026rec[i].h\u003c=26) ws.push(rec[i].w);\n       if(ws.length\u003c3) return \u0027fewer than three vitals bars drawn (\u0027+ws.length+\u0027)\u0027;\n       for(i=1;i\u003cws.length;i++) if(ws[i]!==ws[0]) return \u0027the vitals bars differ in width: \u0027+ws.join(\u0027,\u0027);\n       return null;\n     } finally {\n       bar=oB;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e2){}\n       __topClear();\n     } }},"
+}

@@ -1,0 +1,7 @@
+v31.04: superhot toggle key: named on the f1 list and beside the settings row, one honest line, and the second window says when the host flips it
+
+The key left of 1 turns Superhot on and off. It is on the F1 list and beside the Settings row, and the line always shows the state just set.
+
+Check 31.04. Fails on v31.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

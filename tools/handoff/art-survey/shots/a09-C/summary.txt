@@ -1,2 +1,2 @@
 == 4k : window 3872x2263, viewport 3840x2160
-  duo                                    NOT STAGED  68.4s    | ERROR Unable to connect to the remote server
+  duo                                    staged       6.4s    | {"scene":"duo","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1581,"y":1101,"w":377,"h":594,"fx":1560,"fy":1270},{"id":"mate","kind":"player","x":2298,"y":1173,"w":383,"h":631,"fx":2279,"fy":1310}],"objects":null}

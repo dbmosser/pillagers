@@ -12,6 +12,7 @@ const sv = (cx, cy, S) => `wc.save(); wc.translate(${cx},${cy}); wc.scale(${S},$
 // ---------------------------------------------------------------- the base looks (no change)
 P['base-duo'] = { scene: 'duo', edits: [] };
 P['base-loot'] = { scene: 'loot', edits: [] };
+P['base-duodown'] = { scene: 'duodown', edits: [] };
 
 // ---------------------------------------------------------------- a01 head size: the head block of drawOp scaled about the neck point (hx2,ty-22)
 const headScale = (S) => [

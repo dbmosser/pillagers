@@ -1,3 +1,3 @@
-{"generated":"2026-10-18T16:56:05","url":"http://localhost:8808/handoff/art-survey/game/a09-C.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":80,"screens":[
-{"name":"duo","screen":"P1 and the co-op mate, standing close on open grass at midday, nobody else, no HUD","4k":{"staged":false,"note":"ERROR Unable to connect to the remote server","viewport":"","shot":"","lint":""}}
+{"generated":"2026-10-18T17:01:26","url":"http://localhost:8808/handoff/art-survey/game/a09-C.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":15,"screens":[
+{"name":"duo","screen":"P1 and the co-op mate, standing close on open grass at midday, nobody else, no HUD","4k":{"staged":true,"note":"{\"scene\":\"duo\",\"plate\":false,\"zoom\":9.99074074074074,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":1581,\"y\":1101,\"w\":377,\"h\":594,\"fx\":1560,\"fy\":1270},{\"id\":\"mate\",\"kind\":\"player\",\"x\":2298,\"y\":1173,\"w\":383,\"h\":631,\"fx\":2279,\"fy\":1310}],\"objects\":null}","viewport":"3840x2160","shot":"duo-4k.jpg","lint":""}}
 ]}

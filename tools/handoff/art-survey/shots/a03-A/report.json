@@ -1,3 +1,3 @@
-{"generated":"2026-10-18T16:48:37","url":"http://localhost:8808/handoff/art-survey/game/a03-A.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":21,"screens":[
+{"generated":"2026-10-18T17:00:18","url":"http://localhost:8808/handoff/art-survey/game/a03-A.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":16,"screens":[
 {"name":"duoaim","screen":"the duo, P1 aims up and right, P2 aims right","4k":{"staged":true,"note":"{\"scene\":\"duoaim\",\"plate\":false,\"zoom\":9.99074074074074,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":1578,\"y\":1041,\"w\":371,\"h\":568,\"fx\":1560,\"fy\":1270},{\"id\":\"mate\",\"kind\":\"player\",\"x\":2391,\"y\":1111,\"w\":552,\"h\":507,\"fx\":2279,\"fy\":1310}],\"objects\":null}","viewport":"3840x2160","shot":"duoaim-4k.jpg","lint":""}}
 ]}
