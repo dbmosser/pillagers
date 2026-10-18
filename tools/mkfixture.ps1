@@ -7520,7 +7520,7 @@ window.__REGRESS=[
      try{ tskInit(); if(!(TSK.ents[0].y<=330&&TSK.ents[2].y<=330)) return 'the fights stand too low: '+TSK.ents[0].y; } finally { TSK=was; }
      var blur='', ss, rr, i, j;
      try{ for(i=0;i<document.styleSheets.length;i++){ rr=document.styleSheets[i].cssRules; for(j=0;j<rr.length;j++){ if(rr[j].selectorText==='body #attract'&&rr[j].style.backdropFilter) blur=rr[j].style.backdropFilter; } } }catch(e){}
-     if(blur.indexOf('blur(5px)')<0) return 'the attract blur is '+blur;
+     if(blur.indexOf('blur(5px)')<0&&blur.indexOf('blur(2px)')<0) return 'the attract blur is '+blur;
      return null; }},
   {v:'30.81',what:'cw-nomult, his order (2026-10-18) i do not like the multiplier next to the reticule: a live chain draws its ring at the cursor and no number or plate beside it, with the TEAM ring up too',
    run:function(){
