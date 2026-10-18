@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.45 - the initials card has its heading again
+
+Co-op hunt while he was away. When each player got a set of initials, the heading line of the card was rewritten to say whose turn it is, but the statement that adds the heading to the card was left inside the comment after it. Since then the card has shown the three letters and the hint and nothing else, so a two player run was not told whether player 1 or player 2 was typing, and a one player run was not told what the letters were for.
+
+MEASURED. Check 31.45 passes, and fails on v31.44.
 ## v31.44 - LOW HEALTH PULSES A RED OUTLINE ON THE HEALTH BAR
 
 Co-op hunt while he was away. The critic scored the low health screen 2 with a P0: the state is too weak, nothing tells you that you are nearly dead. Under 25 percent health the bar now gets a pulsing 2px red outline.

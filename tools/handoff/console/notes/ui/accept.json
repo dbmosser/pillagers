@@ -721,13 +721,19 @@
   "when": "2026-10-18T22:51"
  },
  "36-raid-low-health": {
-  "score": 0,
+  "score": 2,
   "pass": false,
-  "verdict": "critic answer was not JSON",
-  "findings": [],
-  "pic": "tools/handoff/console/notes/shots/b-30e/36-raid-low-health-1080.jpg",
+  "verdict": "The change is only a trimmed contract list and a slightly tighter key legend; the low-health state still has no urgency and the HUD is still a pile of mismatched boxes with clutter everywhere.",
+  "findings": [
+   "P0 hp bar, bottom left: Draw a --danger (#e5482f) fill at 18% of the bar, 16px tall minimum, pulsing 1.2s. Add a red edge vignette at 20% opacity. Put 'hp 18' at 32px inside or above the bar with no tab.",
+   "P1 top-right career stack (credits, xp, stash, backpack): Fix the clipped label with a 16px minimum gap. Reduce the stack to one compact column about 240px wide, use the same row height as the contracts panel, and drop duplicated values. Frame the minimap as the same panel with a 1px --ui-line-hi border.",
+   "P1 key legend panel, bottom centre: Hide it after the first 30s or collapse it to a single 'f1 keys' hint at 16px. If it stays, align columns on an 8px grid and give the dim text --tx-2 or lighter.",
+   "P1 HUD panels (pillagers list, run info, ammo card, extraction chip, concealed chip): Use one panel P (--ui-panel 90%, 1px --ui-line-hi, 4px radius, 16px padding). Set titles to 16px tx-1 and body to 16px minimum. Fix the glyph and check the string spellings. Give the contracts panel 16px right padding.",
+   "P2 hotbar, bottom centre: Dim empty slots to 40% opacity and remove their silhouettes. Raise the prompt to 16px. Make the selected slot the only one with a lime ring."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-30j-after/36-raid-low-health-1080.jpg",
   "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:26"
+  "when": "2026-10-18T23:26"
  },
  "51-arcade-alert-reinforcements": {
   "score": 2,

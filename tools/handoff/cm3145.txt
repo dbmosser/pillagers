@@ -1,0 +1,7 @@
+v31.45: the initials card has its heading again
+
+The initials card shows its heading again: player 1 then player 2 enter initials in a two player run, and top 10 tonight, enter initials in a one player run.
+
+Check 31.45. Fails on v31.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

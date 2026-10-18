@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T19:26:33","url":"http://localhost:8808/fxdrypfm.html","recipes":"tools/handoff/console/notes/shots/cw-mapstyle-recipes.json","seconds":37,"screens":[
+{"name":"60-mapfirst-1p","screen":"Raid opens on the sector map, keyboard prompt, eight contracts","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"60-mapfirst-1p-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"60-mapfirst-1p-4k.jpg","lint":""}},
+{"name":"63-map-open-m","screen":"The map opened in the raid with M, a waypoint set","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"63-map-open-m-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"63-map-open-m-4k.jpg","lint":""}}
+]}

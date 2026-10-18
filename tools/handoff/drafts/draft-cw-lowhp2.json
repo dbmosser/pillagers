@@ -1,0 +1,16 @@
+{
+    "title":  "LOW HEALTH: THICKER RED OUTLINE, STAMINA STEPS BACK",
+    "why":  "The critic still scored low health 2 with a P0: the first cut was too faint in a picture and the pale stamina bar out-shouts the health bar. The outline is now 3px and never dimmer than 0.56 alpha, and under 25 percent health the stamina bar is drawn at 45 percent.",
+    "now":  "At low health the red outline is bolder and the stamina bar dims.",
+    "edits":  [
+                  {
+                      "anchor":  "  var t=((typeof performance!==\u0027undefined\u0027\u0026\u0026performance.now)?performance.now():Date.now())/1000, a=0.55+0.4*Math.sin(t*6);\n  ctx.save();\n  ctx.strokeStyle=\u0027rgba(224,72,58,\u0027+a.toFixed(2)+\u0027)\u0027; ctx.lineWidth=2;\n  ctx.strokeRect(x-1,y-1,w+2,h+2);\n",
+                      "replacement":  "  var t=((typeof performance!==\u0027undefined\u0027\u0026\u0026performance.now)?performance.now():Date.now())/1000, a=0.78+0.22*Math.sin(t*6);   // v28.xx (cw-lowhp2): never dimmer than 0.56, the first cut was lost in a still picture\n  ctx.save();\n  ctx.strokeStyle=\u0027rgba(255,90,70,\u0027+a.toFixed(2)+\u0027)\u0027; ctx.lineWidth=3;\n  ctx.strokeRect(x-1.5,y-1.5,w+3,h+3);"
+                  },
+                  {
+                      "anchor":  "  bar(16,by-29,HBW,16,p.stam/100,_stc);   /* v28.xx (cw-barheight): 16 high like the armour bar, same bottom edge as before */   /* v28.xx (cw-barsame): same width as the health bar */\n",
+                      "replacement":  "  var _lowDim=(p.hp\u003e0\u0026\u0026p.hp/p.maxhp\u003c0.25\u0026\u0026!p.stamLock);   // v28.xx (cw-lowhp2), the critic: stamina out-shouts a nearly dead health bar, so under a quarter health it steps back\n  if(_lowDim) ctx.globalAlpha=0.45;\n  bar(16,by-29,HBW,16,p.stam/100,_stc);   /* v28.xx (cw-barheight): 16 high like the armour bar, same bottom edge as before */   /* v28.xx (cw-barsame): same width as the health bar */\n  ctx.globalAlpha=1;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027under a quarter health the red outline on the health bar is thick (3px) and the stamina bar steps back (the critic: stamina out-shouts a nearly dead health bar)\u0027,\n   run:function(){\n     if(typeof drawLowHpRing!==\u0027function\u0027) return \u0027there is no low health outline\u0027;\n     if(String(drawHUD).indexOf(\u0027_lowDim\u0027)\u003c0) return \u0027the stamina bar does not step back at low health\u0027;\n     var w=0, rs=ctx.strokeRect;\n     try{\n       ctx.strokeRect=function(){ w=ctx.lineWidth; };\n       drawLowHpRing(16,900,300,26,18,100);\n     } finally { ctx.strokeRect=rs; }\n     if(w\u003c3) return \u0027the low health outline is only \u0027+w+\u0027px thick\u0027;\n     return null; }},"
+}
