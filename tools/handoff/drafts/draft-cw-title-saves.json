@@ -1,0 +1,20 @@
+{
+    "title":  "TITLE: SAVES BLOCK AS WIDE AS THE MODES, NAME BOX LOWER CASE",
+    "why":  "The critic scored the title 3 of 5: the saves block was 898px wide under a 558px mode column and the name box showed PILLAGER in capitals. The block is the menu width and the default name is lower case.",
+    "now":  "The saves block lines up with the mode buttons and the name box is lower case.",
+    "edits":  [
+                  {
+                      "anchor":  "  #root #slotpanel{ max-width:900px; margin-left:auto; margin-right:auto; }",
+                      "replacement":  "  #root #slotpanel{ max-width:var(--menu-w); margin-left:auto; margin-right:auto; }   /* v28.xx (cw-title-saves), the critic on screen 01 (3 of 5): \"the saves block is 898px wide under a 558px mode column\". One column: the saves block is as wide as the mode buttons (--menu-w). */"
+                  },
+                  {
+                      "anchor":  "    if(pin) pin.value=P.pname||\u0027\u0027;",
+                      "replacement":  "    window.titleNameShown=function(n){ return n===\u0027PILLAGER\u0027?\u0027pillager\u0027:n; };   // v28.xx (cw-title-saves), the critic on screen 01 (P0): the name box showed PILLAGER in capitals, and every word on screen is lower case (his order 2026-10-18). Only the default name is lowered; a name he typed keeps its letters.\n    if(pin) pin.value=titleNameShown(P.pname||\u0027\u0027);"
+                  },
+                  {
+                      "anchor":  "if(_nv\u0026\u0026_nv!==P.pname){ P.pname=_nv; saveProfile(); }",
+                      "replacement":  "if(_nv\u0026\u0026_nv!==P.pname\u0026\u0026_nv!==titleNameShown(P.pname)){ P.pname=_nv; saveProfile(); }   // v28.xx (cw-title-saves): the lowered default is not a new name"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title name box shows the default name in lower case, and the saves block is no wider than the mode column (critic on screen 01: capitals on screen, 898px block under a 558px column)\u0027,\n   run:function(){\n     var t=document.getElementById(\u0027title\u0027), sp=document.getElementById(\u0027slotpanel\u0027), pin=document.getElementById(\u0027pnamein\u0027), was, w;\n     if(!t||!sp||!pin) return \u0027SKIP: no title here\u0027;\n     if(typeof titleNameShown!==\u0027function\u0027) return \u0027the name box has no lower case door (titleNameShown)\u0027;\n     if(titleNameShown(\u0027PILLAGER\u0027)!==\u0027pillager\u0027) return \u0027the default name shows as \u0027+titleNameShown(\u0027PILLAGER\u0027);\n     if(titleNameShown(\u0027Bob\u0027)!==\u0027Bob\u0027) return \u0027a typed name was changed to \u0027+titleNameShown(\u0027Bob\u0027);\n     if(P.pname===\u0027PILLAGER\u0027\u0026\u0026/[A-Z]/.test(pin.value)) return \u0027the name box still shows \u0027+pin.value;\n     was=t.classList.contains(\u0027on\u0027); if(!was) t.classList.add(\u0027on\u0027);\n     try{\n       w=parseFloat(getComputedStyle(sp).maxWidth);\n       return (w\u003e561||isNaN(w))?(\u0027the saves block may be \u0027+w+\u0027px wide, wider than the 560px mode column\u0027):null;\n     } finally { if(!was) t.classList.remove(\u0027on\u0027); } }},"
+}

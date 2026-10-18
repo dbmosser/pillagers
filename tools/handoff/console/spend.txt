@@ -542,3 +542,6 @@
 2026-10-18 0.0314 critic-04-style-guide-update
 2026-10-18 0.0315 critic-04-style-guide-update
 2026-10-18 1.3828 04-style-guide-update
+2026-10-18 0.0351 critic-02-raid-hud-redesign
+2026-10-18 0.0277 critic-12-ui-party-screens
+2026-10-18 1.5524 12-ui-party-screens

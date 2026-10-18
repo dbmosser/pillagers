@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  04-stash-terminal                      staged       7.6s  
+  08-shop                                staged       7.4s    | tradermodal
+  65-codex                               staged       6.3s    | codexmodal

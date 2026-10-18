@@ -1,0 +1,5 @@
+{"generated":"2026-10-18T16:36:12","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":48,"screens":[
+{"name":"46-arcade-attract-how-to-play","screen":"Arcade attract: HOW TO PLAY page (keyboard + controller table)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"46-arcade-attract-how-to-play-1080.jpg","lint":""}},
+{"name":"52-arcade-run-over","screen":"Arcade RUN OVER card, score $0","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"52-arcade-run-over-1080.jpg","lint":""}},
+{"name":"62-arcade-operator-menu","screen":"DEMO operator menu (Ctrl+Shift+F10 on the attract)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"62-arcade-operator-menu-1080.jpg","lint":""}}
+]}

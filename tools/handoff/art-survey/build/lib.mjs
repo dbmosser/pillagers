@@ -27,9 +27,9 @@ export function shoot(name, scene, recipes) {
   const outDir = path.join(AS, 'shots', name);
   fs.rmSync(outDir, { recursive: true, force: true });
   const args = ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'tools/uishots.ps1', '-Screens', scene, '-Recipes', path.join(AS, recipes || 'recipes-s.json'),
-    '-Url', 'http://localhost:8808/handoff/art-survey/game/' + name + '.html', '-Out', outDir, '-Res', '1080', '-Port', '9371', '-NoLint'];
+    '-Url', 'http://localhost:8808/handoff/art-survey/game/' + name + '.html', '-Out', outDir, '-Res', '4k', '-Port', '9371', '-NoLint'];
   const r = spawnSync('powershell', args, { cwd: ROOT, encoding: 'utf8', timeout: 240000 });
-  const jpg = path.join(outDir, scene + '-1080.jpg');
+  const jpg = path.join(outDir, scene + '-4k.jpg');
   const ok = fs.existsSync(jpg);
   const note = (r.stdout || '').split('\n').filter(l => /staged|NOT STAGED|error|Error/i.test(l)).join(' | ').slice(0, 300);
   return { ok, jpg, note, err: ok ? '' : ((r.stderr || '') + (r.stdout || '')).slice(-600) };

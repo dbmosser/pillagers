@@ -1,0 +1,20 @@
+{
+    "title":  "FLAT HUD PANELS, SHORTER DEMO CARD",
+    "why":  "The critic on the raid screen (10-19): panels have a gradient wash and a faint border; the demo gun card has an empty strip over the name. The style guide: Panel P has no gradient, a 1px line.",
+    "now":  "HUD panels are flat with a clearer 1px edge and the demo gun card is shorter.",
+    "edits":  [
+                  {
+                      "anchor":  "  try{ g=ctx.createLinearGradient(0,y,0,y+h); g.addColorStop(0,\u0027rgba(24,27,30,\u0027+a+\u0027)\u0027); g.addColorStop(1,\u0027rgba(14,16,18,\u0027+a+\u0027)\u0027); ctx.fillStyle=g; }catch(_g){ ctx.fillStyle=\u0027rgba(17,19,21,\u0027+a+\u0027)\u0027; }",
+                      "replacement":  "  ctx.fillStyle=\u0027rgba(17,19,21,\u0027+a+\u0027)\u0027;   // v28.xx (cw-panelflat), the critic (2026-10-19) and the style guide (Panel P: \u0027NO gradient\u0027): one flat fill, was a top-to-bottom wash"
+                  },
+                  {
+                      "anchor":  "  ctx.strokeStyle=\u0027rgba(74,82,87,.9)\u0027; ctx.lineWidth=1; ctx.stroke();",
+                      "replacement":  "  ctx.strokeStyle=\u0027rgba(112,122,130,.95)\u0027; ctx.lineWidth=1; ctx.stroke();   // v28.xx (cw-panelflat): the 1px line is lighter so the edge reads (the critic: \u0027no 1px border\u0027)"
+                  },
+                  {
+                      "anchor":  "var _gtop=trDemo()?LH(76):LH(90), _gh=trDemo()?LH(72):LH(100);",
+                      "replacement":  "var _gtop=trDemo()?LH(62):LH(90), _gh=trDemo()?LH(58):LH(100);   /* v28.xx (cw-panelflat), the critic (2026-10-19): the demo card had dead space over the name; it is 58 high, the top moves down 14 */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the HUD panel is a flat fill (no gradient wash) and the demo gun card is 60 high or less, no empty strip above the name (the critic, 10-19)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)||typeof hudPanel!==\u0027function\u0027) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var g=null, oP=hudPanel, rec=[], a0, keep=ctx, oc=document.createElement(\u0027canvas\u0027), c2, ng=0, og, i, dc=null;\n     try{\n       oc.width=240; oc.height=140; c2=oc.getContext(\u00272d\u0027); og=c2.createLinearGradient;\n       c2.createLinearGradient=function(){ ng++; return og.apply(c2,arguments); };\n       try{ ctx=c2; hudPanel(20,20,200,100); } finally { ctx=keep; }\n       if(ng\u003e0) return \u0027the HUD panel still paints a gradient (\u0027+ng+\u0027)\u0027;\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; a0=g.arcade; g.arcade=1;\n       hudPanel=function(x,y,w,h,a,plain){ rec.push({w:w,h:h,a:a}); return oP.apply(this,arguments); };\n       try{ __frame(0.016); }finally{ hudPanel=oP; }\n       for(i=0;i\u003crec.length;i++) if(rec[i].a===0.62) dc=rec[i];\n       if(!dc) return \u0027the demo gun card is not drawn\u0027;\n       if(dc.h\u003eLH(60)+0.5) return \u0027the demo gun card is \u0027+dc.h+\u0027 high, over \u0027+LH(60);\n       return null;\n     } finally {\n       ctx=keep; hudPanel=oP;\n       try{ if(g) g.arcade=a0; }catch(_e){}\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e2){}\n       __topClear();\n     } }},"
+}

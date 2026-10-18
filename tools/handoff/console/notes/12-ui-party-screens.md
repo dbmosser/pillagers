@@ -20,6 +20,11 @@ shots/12b-before and shots/12b-after (all 13 screens, 1080).
 - Open P1/P2 left on 52/55: title "run over" is tx-2 (kept on purpose, score leads); stats labels are 14-15px (fs-label token);
   card sits on the blurred hub (his scrim ruling). 62/63: the white ring on the lime row and the "tonight: 0 runs" line.
 
+## Lane c run (10-19)
+- v30.97 cw-opclean shipped (item 1 below done). Critic 62 after: 3, better, still 3. It now asks for a visible backdrop
+  (contradicts cw-partyopbd: ghost text showed through, so the solid void stays), a smaller dialog, a B key cap. Stuck: stop on 62.
+- 46 and 52/55 untouched this run (critic keeps flipping on the footer prompt; see Stuck). Items 2 and 3 remain.
+
 ## Next run could try (one ship each, none reverse a ruling)
 1. 62: hide "tonight: 0 runs" when the count is 0; focus ring only the lime bar (no white ring).
 2. 52/55: stats as 4 equal columns, 24px values / 16px labels; score line with a 16px "score" label over a 56px number.

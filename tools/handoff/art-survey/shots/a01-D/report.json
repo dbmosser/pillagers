@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T16:37:06","url":"http://localhost:8808/handoff/art-survey/game/a01-D.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-s.json","seconds":15,"screens":[
+{"name":"duo","screen":"P1 and the co-op mate, standing close on open grass at midday, nobody else, no HUD","4k":{"staged":true,"note":"{\"scene\":\"duo\",\"plate\":false,\"zoom\":9.99074074074074,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":1559,\"y\":1076,\"w\":333,\"h\":643,\"fx\":1560,\"fy\":1270},{\"id\":\"mate\",\"kind\":\"player\",\"x\":2275,\"y\":1150,\"w\":336,\"h\":678,\"fx\":2279,\"fy\":1310}],\"objects\":null}","viewport":"3840x2160","shot":"duo-4k.jpg","lint":""}}
+]}

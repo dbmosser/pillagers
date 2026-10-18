@@ -244,19 +244,19 @@
   "when": "2026-10-18T20:15"
  },
  "50-arcade-hud-live": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "Lower case is now applied and the weapon block has a clear hero ammo number, but the earlier structural advice was mostly ignored: the top cluster is still unboxed on the map, the vitals are still gradient bars with a boxed 'standing', run info is still double-titled, and the notices are still faint long sentences.",
+  "verdict": "The lower case, the dropped gradients and the clearer ammo number are real gains, but the HUD still reads as a stack of unrelated boxes: the score strip, the run-goals panel, the vitals bars and the weapon block have different borders, padding and sizes, and the earlier fixes (run info, standing box, vitals layout) were only partly applied.",
   "findings": [
-   "P1 Top-centre score cluster (score / 0 sp / 9:46 / extract 179m): Put it in a 90% --ui-panel strip at y=54. Make '0 sp' 56px f-cond 800 tx-1, '9:46' 20px tx-1, and 'extract 179m' 16px --extract with the arrow beside it. Delete 'score' or set it at 16px tx-2.",
-   "P1 Right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Keep one 20px tx-1 'run goals' title and delete 'run info'. Set the rows at 16px tx-2 on a 32px pitch, with SP values right-aligned in tx-1. Use a 1px --ui-line-hi border and 24px padding, leave a 16px gap below the minimap, and replace the caret with the standard 48px close glyph or remove it.",
-   "P1 Bottom-left vitals (standing, armour 60, stamina, hp 100): Use three flat bars, each 10px high and 360px wide, on --ui-line tracks with no gradient. Put 16px labels and values on the left, outside the bars. Make 'standing' a plain 16px tx-2 label with no box. Move the block to x=96 with its bottom at 54px.",
-   "P1 Left notices (storm, stronghold, golden enemy): Use the toast component: 40px high, a solid 90% --ui-panel fill, a 4px left accent bar and 16px tx-1 text. Show only the name ('storm', 'stronghold', 'golden enemy'), at most 3 toasts for 3s, then fade. Start them at x=96. Put 'f1 controls' on a pill or delete it.",
-   "P1 Bottom-right weapon block (compact smg 30 / 180): Shrink it to about 320x120 on a 90% --ui-panel fill with a 1px --ui-line-hi border. Keep a 48px margin from the screen edges. Set the name at 20px tx-1, the ammo at 56px f-cond 800 and '/ 180' at 20px tx-2. Remove the lime tick."
+   "P1 Right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Delete 'run info'. Keep one 20px tx-1 'run goals' title and set the rows at 16px tx-2 on a 32px pitch with SP values right-aligned in tx-1. Use 24px padding, a 1px --ui-line-hi border, and a 16px gap below the minimap. Remove the caret or replace it with the 48px close glyph.",
+   "P1 Bottom-left vitals (armour 60 / stamina / hp 100): Use three flat bars, each 10px high and 360px wide, on --ui-line tracks with no gradient. Put 16px labels and values to the left of the bars, outside them. Make 'standing' a plain 16px tx-2 label with no box. Start the block at x=96 with its bottom at 54px.",
+   "P1 Top-centre score cluster (score / 0 sp / 9:46 / extract 148m): Put the whole cluster in one 90% --ui-panel strip at y=54 that includes the extract line. Make '0 sp' 56px f-cond 800 tx-1, '9:46' 20px tx-2, and 'extract 148m' 16px --extract. Delete 'score' or set it at 16px tx-2.",
+   "P1 Bottom-right weapon block (compact smg 30 / 180): Shrink it to about 320x120 with a 1px --ui-line-hi border and a 48px margin from the screen edges. Set the name at 20px tx-1, the ammo at 56px f-cond 800 and '/ 180' at 20px tx-2. Remove the lime tick.",
+   "P1 Left notices (stronghold · 1 on the map / golden enemy): Use the toast component: 40px high, a solid 90% --ui-panel fill, a 4px left accent bar, and 16px tx-1 text showing only the name. Start the toasts at x=96, show at most 3 for 3s, then fade. Put 'f1 controls' on a pill or delete it."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after4/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after6/50-arcade-hud-live-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T20:02"
+  "when": "2026-10-18T20:36"
  },
  "52-arcade-run-over": {
   "score": 3,
@@ -315,17 +315,17 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "the new screenshot is pixel-identical to the old one, so none of the earlier advice was applied: it is still a tidy but bare two-row dark card floating in a black void.",
+  "verdict": "The subtitle is gone and the white focus ring is now a lime ring, so the card is cleaner, but it is still a bare lime slab on an empty black void with no focal point, no backdrop and no B key cap.",
   "findings": [
    "P1 whole screen / backdrop: Put the attract frame or live world at about 55% brightness under rgba(6,7,8,.80). Add a faint marquee or scanline motif at 6-8% opacity behind the card.",
-   "P1 row list: new party / exit demo: Make 'new party' a primary button with 32px side padding, min-width 200px, and a right-aligned arrow or 'enter' key cap. Remove the white outer ring and use the 3px lime bar and 1px acc border on the focused state. Make 'exit demo' a ghost button with a 1px --ui-line-hi border, with an optional --danger outline.",
-   "P1 card size and position vs the window rule: If it is a dialog, size it to 480x~300 and sit it over a visible backdrop. If it is a window, use the 90% card. Add a hero element such as a 56px 'operator' title or a run counter so the screen has a focal point other than the lime slab.",
-   "P2 subtitle 'tonight: 0 runs': Hide it when the value is 0. If it stays, put it on the title baseline in the header row at 16px f-cond 600 tx-2, and keep a 24px gap above the first row.",
-   "P2 header: title and X: Use a 56px header row with the title and X both vertically centred. Add a 'B' key cap 8px left of the X. Align the accent tab with the card's left padding edge or with the title's left edge."
+   "P1 new party row: Make it a 56px primary button with 32px padding and a right-aligned 'enter' key cap. Show focus as a 3px --acc-hover left bar plus a 2px tx-1 outer outline at a 2px offset, or drop the ring entirely.",
+   "P1 card size and hierarchy: Treat it as a dialog at 480x~300 over a visible backdrop, or give it a hero such as a 56px f-cond 800 'operator' title or a run counter. Keep one bold element per screen.",
+   "P2 exit demo row: Use a 1px --ui-line-hi border and tx-1 text. Optionally use a --danger border and text for exit. Right-align a 'esc' key cap in the row.",
+   "P2 header row: Make the tab 3px by 36px. Centre the title and X on one 56px header line. Add a 'B' key cap 8px left of the X."
   ],
-  "pic": "tools/handoff/console/notes/shots/12b-after/62-arcade-operator-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12c-after1/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T19:52"
+  "when": "2026-10-18T20:36"
  },
  "61-raid-wheel-open": {
   "score": 2,

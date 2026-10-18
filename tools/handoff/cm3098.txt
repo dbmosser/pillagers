@@ -1,0 +1,7 @@
+v30.98: player 2 gets the run over card too
+
+At the end of a party arcade run the player 2 window now shows the same Run over card as player 1, with the team score and a row for each player.
+
+Check 30.98. Fails on v30.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.98 - PLAYER 2 GETS THE RUN OVER CARD TOO
+
+Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. The host built the RUN OVER card (team score, a row each, EXTRACTED x2 or KIA -50%, the best moments) at the end of a run and player 2 only tore its raid down, so at the end of every run one TV showed the result and the other showed the attract. Player 2 now builds the same card from its own score and the host score it was sent, after the doubling or the halving has been applied to both. Nothing is saved or sent from it: the board row, the music and the initials stay the host job.
+
+MEASURED. Check 30.98 passes, and fails on v30.97.
 ## v30.97 - OPERATOR CARD DROPS THE EMPTY RUN COUNT
 
 Co-op hunt while he was away. Critic 62 (3 of 5): the line tonight 0 runs is noise, and a white ring on the amber button fights it. The line shows only with runs or a seed; the focus ring is amber.

@@ -2802,7 +2802,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.97';
+var VER='30.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48272,7 +48272,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.97: The operator card shows no run count until there is one; the focus ring is amber. Check 30.97 fails on v30.96',
+  now:'v30.98: At the end of a party arcade run the player 2 window now shows the same Run over card as player 1, with the team score and a row for each player. Check 30.98 fails on v30.97',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61008,6 +61008,7 @@ function arcadeOnMsg(m){
       // success piece, a death or the burn (ko) the failure piece, anything else (END RUN, an idle out) none. It plays while the raid is
       // still up here, or within four seconds of the marked out word that stopped it (the out word can arrive first).
       try{ if((G&&G.arcade&&!G.netWasJoin)||Date.now()-(+ARCADE.p2StopAt||0)<4000) outMusic(m.x2?'win':(m.ko?'kia':'')); }catch(_om){}
+      try{ arcadeOverMirror(m); }catch(_aom){}   // v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better". The RUN OVER card with the team score is player 1 alone; player 2 gets it too
       return arcadeEndTake();
     }
     // v23.25 (arcade6): the answers to arcjoin. fresh 1: wait for the raid word. fresh 0: ask to join the raid in progress (again every
@@ -61612,6 +61613,20 @@ function arcadeEndTick(now){
   e.last=now;
   netSamePost(e.ko?{t:'arcend',pair:NET.pair,run:e.id,x2:e.x2?1:0,ko:1}:{t:'arcend',pair:NET.pair,run:e.id,x2:e.x2?1:0});
   return 'again';
+}
+// v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better". The host built
+// the RUN OVER card (TEAM SCORE, a row each, KIA -50% or EXTRACTED x2, the best moments) in arcadeRunEnd and player 2 only tore its raid down, so at the end of
+// every run one TV showed the result and the other showed the attract. Player 2 now builds the same card from its own score and the host score it was sent,
+// after the x2 or the half has been applied to both, the same way round (player 1 on top). Nothing is saved or sent: the board row, the music and the
+// initials stay the host job, and the initials card still arrives by arcinis.
+function arcadeOverMirror(m){
+  var me, mt;
+  if(!ARCADE.on||ARCADE.role!=='p2'||ARCADE.solo) return null;
+  me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0};
+  mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
+  ARCADE.over={at:Date.now(),why:(m&&m.x2)?'extract':((m&&m.ko)?'dead':''),team:arcadeTeam(),p1:mt,p2:me};
+  try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}
+  return ARCADE.over;
 }
 // Player 2 takes the host run end, from arcend or the marked out word, whichever comes first.
 function arcadeEndTake(){

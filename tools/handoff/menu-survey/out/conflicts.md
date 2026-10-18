@@ -49,3 +49,9 @@
 24. NUMBER AT THE CURSOR. Your q17 answer added the ring at the cursor. The ring picture also put the ammo number under the ring. The plate already shows it, so the ring is built alone (no second number in the middle of the fight). Suggested: accept; say so if you want the number there too.
 
 25. PICTURE OR SURVEY TEXT. Where the picture you chose and the survey's own description disagree I built the picture: the minimap frame is a light grey 3 pixel line with a small compass needle, and the title backdrop has a third teal layer. Suggested: accept.
+
+26. SETTINGS VALUES AT THE RIGHT. While you were away the helper hunt (v30.95) moved each settings value right next to its name, because the critic disliked the long gap. Your q30 C picture has the value at the right end of a wide row. Built as pictured. Suggested: your picture; if the gap bothers you, say so and the rows get narrower, the value stays at the right end.
+
+27. PLATE BEHIND THE SCORE. Your q16 picture draws the score and the clock bare on the world. While you were away the helper hunt (v30.96) hung one dark plate behind them because the critic asked for it. Built: the numbers sit exactly where your picture puts them and the plate stays only if it is quiet and solid. Suggested: keep a quiet plate (readable on bright floors, like the feed plates you chose in q08). Say so if you want it bare as pictured.
+
+28. THE DOWN SCREEN. Your q23 picture shows a ring with the seconds around your raider and a small down. The game has a down bar with a sliding mark (the half second per hit you ordered) and a clock with two decimals (your 10-18 words). Built: the ring and a small pill carry the time (two decimals kept), the old plain bleed bar goes, the sliding-mark bar and its half-second pop stay. The self-revive line becomes a short prompt (f  self-revive) with no explaining tail. Suggested: accept.
