@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.06 - THE WHAT IS NEW CARD NAMES POLISH PASS 9
+
+Co-op hunt while he was away. The card was stamped v28.90 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 29.06 passes, and fails on v29.05.
 ## v29.05 - THE AIM LANE POINTS AT THE PLAYER THE MACHINE WILL SHOOT
 
 Co-op hunt while he was away. In two-player play a Sentry or Warden winding up a shot drew its red aim lane on the player in the window you look at whenever that player stood in front of it, even when the machine was turning to shoot the teammate. Proven in the cloud: player 2 nearer the Sentry and 15 degrees from the host, the lane sat on the host for the whole windup while the shot went to player 2. The lane now snaps onto you only when you are the machines target, in either window, as it always does solo; otherwise it follows the way the machine faces, which is where the round goes.
