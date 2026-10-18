@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.09 - a raid opens on the sector map and the clock waits for a click
+
+Co-op hunt while he was away. His note (2026-10-18, build 30.57, in a raid): "raid should show map at the beginning of the game and player has to click to proceed into the actual raid, clock/game does not start until map is dismissed, that way player can see where relevant hotspots, etc are". Before, a raid dropped him on the ground with the clock already running and the map was one key press away with the clock still running behind it. Now every raid (DEMO and CAREER, one or two players) opens on the game sector map over a frozen world: the clock, the pillagers, the weather and the bleed all stand still (it is the same freeze as the pause, G.paused through syncPause, and in a shared raid netPauseLive is false while the map is up). A click, E, Space, Enter, Esc, Tab or M, or pad A (B and D-up shut the map and count too), starts it; the click is never a shot, and the press has to come a quarter second into the raid so the click or key that launched it cannot also dismiss it. One prompt under the map, with the key or the pad button of the last device used: or click to start / to start. With two players each state word says mf (0 running, 1 on the map, 2 pressed), the window that pressed reads waiting for p2 (or the name) and the clock starts when both have pressed, or when the other is already running; a seat that never answers is waited for 4 s, a shared raid lets go after 60 s, and the PARTY arcade, where nobody may be at the machine, closes the map by itself after 20 s. The bot sim and every older check start live raids: the fixture sets MAPFIRST.skip=1.
+
+MEASURED. Check 31.09 passes, and fails on v31.08.
 ## v31.08 - THE WHAT IS NEW CARD NAMES POLISH PASS 26
 
 Co-op hunt while he was away. The card was stamped v30.92 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

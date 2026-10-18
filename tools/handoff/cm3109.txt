@@ -1,0 +1,7 @@
+v31.09: a raid opens on the sector map and the clock waits for a click
+
+A raid opens on the sector map. Click, press E or press A to start. The clock waits for you, and for your partner.
+
+Check 31.09. Fails on v31.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

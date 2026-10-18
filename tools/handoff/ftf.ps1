@@ -12,18 +12,18 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-if ($s.Contains("  {v:'31.04',what:")) { throw "check 31.04 is in the fixture already" }
+if ($s.Contains("  {v:'31.09',what:")) { throw "check 31.09 is in the fixture already" }
 
 SubRx @'
-  {v:'31.03',what:
+  {v:'31.08',what:
 '@ @'
-  {v:'31.04',what:'cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1 by 1 list, all the same size: in a raid the credits, xp, stash, bag (career) and notes logged rows, the minimap and the run info panel are ONE column from the top right corner, each its own plate on one right edge and one width, the rows one height and one type size, no two on a row, none overlapping, at 1080p, at 4K and in the demo',
+  {v:'31.09',what:'cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1 by 1 list, all the same size: in a raid the credits, xp, stash, backpack (career) and notes logged rows, the minimap and the run info panel are ONE column from the top right corner, each its own plate on one right edge and one width, the rows one height and one type size, no two on a row, none overlapping, at 1080p, at 4K and in the demo',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize&&window.__runPrep&&window.__topClear&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and draw';
      if(typeof HUDBOX==='undefined'||typeof MMAP==='undefined'||typeof TX!=='function'||typeof syncTopRight!=='function') return 'SKIP: no HUD boxes here';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
      var bad=[], proto=CanvasRenderingContext2D.prototype, oFt=proto.fillText, oBp=proto.beginPath, oMv=proto.moveTo, oLn=proto.lineTo, oFl=proto.fill;
-     var sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, p0=null, keepC, keepX, keepHud, hadHud, g=null, o, oSolo, el, now, cs0, i;
+     var sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, p0=null, keepC, keepX, keepHud, hadHud, g=null, o, oSolo, el, now, cs0, i, colL=0, colL2=0, h=null, oTb=null, oSz=null;
      function grab(){
        var r={t:[],p:[]}, bb=null, D=(ctx.getTransform().a)||1;
        function pt(c,x,y){ var m=c.getTransform(), X=(m.a*x+m.c*y+m.e)/D, Y=(m.b*x+m.d*y+m.f)/D; if(!bb) bb={x0:X,y0:Y,x1:X,y1:Y}; else { if(X<bb.x0) bb.x0=X; if(X>bb.x1) bb.x1=X; if(Y<bb.y0) bb.y0=Y; if(Y>bb.y1) bb.y1=Y; } }
@@ -35,6 +35,7 @@ SubRx @'
        try{ __frame(0.016); } finally { proto.fillText=oFt; proto.beginPath=oBp; proto.moveTo=oMv; proto.lineTo=oLn; proto.fill=oFl; }
        return r;
      }
+     function hdrRight(wn){ var r=grab(), a, w=String(wn).toLowerCase(), best=null; for(a=0;a<r.t.length;a++) if(r.t[a].al==='right'&&r.t[a].d.toLowerCase().indexOf(w)>=0&&(!best||r.t[a].y<best.y)) best=r.t[a]; return best; }
      function judge(tag,r,wallet,notes){
        var C=HUDBOX.cond, n=(wallet?4:0)+(notes?1:0), labs=[], pl=[], px=[], vx=[], gaps=[], k, p, q, lab, val, ref=null, L, Rr, a, low=[];
        if(wallet){ labs.push('credits'); labs.push('xp'); labs.push('stash'); labs.push('backpack'); }
@@ -83,7 +84,18 @@ SubRx @'
        p0=__P(); p0.credits=4471337; p0.xp=98761; p0.hud={};
        g.tel.notes=[{t:1,txt:'probe note 4242'}];
        syncTopRight();
-       o=grab(); judge('career 1080p',o,true,true);
+       o=grab(); colL=HUDBOX.cond?HUDBOX.cond.x:0; judge('career 1080p',o,true,true);
+       if(g.wx&&g.wx.name&&colL){   // the map header: the time and weather line ends left of the column (the page box it used to keep clear of is clipped in a raid)
+         oSz=CFG.mmSz; CFG.mmSz=1.35; __frame(0.016); colL2=HUDBOX.cond?HUDBOX.cond.x:0;   // the large minimap, so the column starts well left of where the header ends on its own
+         g.ents.length=0; g.bagOpen=false; g.mapOpen=true; TRG.hid=1;   // hid 1 is how a raid runs: the page readout is clipped, so only the column keeps the header off the corner
+         h=hdrRight(g.wx.name);
+         if(!h) bad.push('the map header (time and weather) was not drawn with the map open');
+         else if(h.x>colL2+1) bad.push('the map header ends at x '+h.x.toFixed(0)+', over the column that starts at '+colL2.toFixed(0));
+         oTb=trBox; trBox=function(){ EDGEBOX.trcol=null; };
+         h=hdrRight(g.wx.name); trBox=oTb;
+         if(h&&h.x<=colL2+1) bad.push('control: the map header ends at x '+h.x.toFixed(0)+' with no column to keep clear of, left of the column at '+colL2.toFixed(0)+', so the header test proves nothing');
+         g.mapOpen=false; TRG.hid=0; CFG.mmSz=oSz; __frame(0.016);
+       }
        el=document.getElementById('topright');
        if(el){
          if(typeof trHide!=='function') bad.push('the credits and xp are still loose page text in the corner and not rows of the column');
@@ -114,6 +126,8 @@ SubRx @'
        }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
+       if(oTb) trBox=oTb;
+       if(oSz!==null) CFG.mmSz=oSz;
        proto.fillText=oFt; proto.beginPath=oBp; proto.moveTo=oMv; proto.lineTo=oLn; proto.fill=oFl;
        try{ if(typeof trHide==='function') trHide(1e15); }catch(_h){}
        keys={};
@@ -125,7 +139,7 @@ SubRx @'
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'31.03',what:
+  {v:'31.08',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

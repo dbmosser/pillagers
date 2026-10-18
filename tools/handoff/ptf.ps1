@@ -214,15 +214,15 @@ SubRx @'
 '@
 
 SubRx @'
-var VER='31.03';
+var VER='31.08';
 '@ @'
-var VER='31.04';
+var VER='31.09';
 '@
 
-$pat = "(?m)^  now:'v31\.03:.*$"
+$pat = "(?m)^  now:'v31\.08:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v31.04: The upper right corner of the raid is one column of equal plates: credits, xp, stash, bag, notes logged, the minimap and the run info. Check 31.04 fails on v31.03',"
+$new = "  now:'v31.09: The upper right corner of the raid is one column of equal plates: credits, xp, stash, backpack, notes logged, the minimap and the run info. Check 31.09 fails on v31.08',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s
