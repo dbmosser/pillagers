@@ -1804,7 +1804,10 @@ body #attract .arcpage::before, body #attract .arcover::before{ width:calc(var(-
 body #attract .arcpage, body #attract .arcover{ background:color-mix(in srgb, var(--ui-panel) 97%, transparent); }
 body #attract .arcover .aoh:first-child{ color:var(--tx-1); }
 body #attract .arcover .aoh + .aoh{ color:var(--tx-2); }
-body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress, body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ font-size:max(24px, calc(var(--fs-title) * var(--attz,1))); }
+/* v31.xx (cw-partylook5), the critic on v31.43 (46 52 64): "the prompt grew to about 30px and is now louder than the 32px title, set it to 20px f-cond 700 in tx-1", "the X right edge is 8px off the prompt right edge". The any-key prompt is body size (20px), so the title leads; the corner X sits on the same 32px right line as the prompt; the table heads are 16px labels. Restyle only; the prompt stays the live any-key footer */
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress, body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ font-size:calc(var(--fs-body) * var(--attz,1)); font-weight:700; }
+body #attract .arcpage::after{ right:calc(var(--sp-4) * var(--attz,1)); }
+body #attract .arcpage th{ font-size:calc(var(--fs-label) * var(--attz,1)); }
 #root #pausebox #abandonbtn, #root #pausebox #arcendbtn, #root #pausebox #charselbtn{ margin-top:var(--sp-4); }
 /* v30.xx (cw-pausehint) critic 49 (pause card, 3 of 5): "the unstyled Esc Resume hint ... or delete the hint, since the X already shows close, and cut the card height". One control per job: the header X closes the card (Esc still works), so the plain text hint is gone and the card is shorter */
 #root #pausebox::after, body.padon #root #pausebox::after, #root #pausebox.asking::after{ display:none !important; }
@@ -2848,7 +2851,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.45';
+var VER='31.46';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49451,7 +49454,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.45: The initials card shows its heading again: player 1 then player 2 enter initials in a two player run, and top 10 tonight, enter initials in a one player run. Check 31.45 fails on v31.44',
+  now:'v31.46: The any-key prompt no longer out-shouts the title and lines up with the corner X. Check 31.46 fails on v31.45',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

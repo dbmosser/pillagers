@@ -1,0 +1,7 @@
+v31.46: party cards: prompt at body size, x on the prompt line
+
+The any-key prompt no longer out-shouts the title and lines up with the corner X.
+
+Check 31.46. Fails on v31.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

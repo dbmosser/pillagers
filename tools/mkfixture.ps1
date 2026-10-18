@@ -6101,6 +6101,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.46',what:'the any-key prompt is body size (20px) so the title leads, and the corner X shares the prompt right line (critic 46 52 64)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade here';
+     var d, wasDisp, pg, pr, fs, xr, mr, z, res=null;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       try{ if(typeof attZ==='function') attZ(d); }catch(_z){}
+       pg=arcadeAttEl('arcpage'); pg.style.display='block';
+       pr=d.querySelector('.attpress'); if(!pr) return 'SKIP: no attpress';
+       z=parseFloat(getComputedStyle(d).getPropertyValue('--attz'))||1;
+       fs=parseFloat(getComputedStyle(pr).fontSize);
+       if(fs>20.5*z+0.01) return 'the any-key prompt is '+fs+'px, over the 20px body size (zoom '+z+')';
+       xr=getComputedStyle(pg,'::after').right; mr=getComputedStyle(pr).marginRight;
+       if(xr!==mr) return 'the corner X right edge is '+xr+' but the prompt right margin is '+mr;
+       return res;
+     } finally {
+       try{ pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+       __topClear();
+     } }},
   {v:'31.45',what:'cw-inihead: the initials card is drawn with its heading: a 2 player card says whose turn it is (player 1, then player 2) and that it is the initials, a 1 player card says top 10 tonight and the initials, and the heading is the first line of the card above the three letters and the hint (a line comment swallowed the statement that adds it from v30.36 on, so the card showed the letters and the hint only)',
    run:function(){
      if(typeof arcadeIniDraw!=='function'||typeof ARCADE!=='object'||!ARCADE) return 'SKIP: no initials card in this build';

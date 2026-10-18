@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.46 - PARTY CARDS: PROMPT AT BODY SIZE, X ON THE PROMPT LINE
+
+Co-op hunt while he was away. Critic 46 52 64 on v31.43: the any-key prompt grew to about 30px and out-shouts the 32px title; the corner X right edge is 8px off the prompt. The prompt is 20px (body), the X shares its 32px right line, table heads are 16px labels.
+
+MEASURED. Check 31.46 passes, and fails on v31.45.
 ## v31.45 - the initials card has its heading again
 
 Co-op hunt while he was away. When each player got a set of initials, the heading line of the card was rewritten to say whose turn it is, but the statement that adds the heading to the card was left inside the comment after it. Since then the card has shown the three letters and the hint and nothing else, so a two player run was not told whether player 1 or player 2 was typing, and a one player run was not told what the letters were for.
