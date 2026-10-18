@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.36 - THE TITLE HAS A SETTINGS BUTTON
+
+Co-op hunt while he was away. UI step 30, menu map. Settings could only be reached from the pause box inside a game, so a party guest on the title could not turn the sound down or the text up. A Settings button sits beside Go fullscreen, opens the same window, and CLOSE or ESC returns to the title. Nothing was removed.
+
+MEASURED. Check 29.36 passes, and fails on v29.35.
 ## v29.35 - The title screen is calmer: flat step columns and one pitch for the mode rows
 
 Co-op hunt while he was away. The critic scored the title 2 of 5 on the shared look (template page, step cards that read as buttons, five amber things, mode rows at 56/48/48/48/40/48/40, no pad focus cue). The cards are now flat columns under a 1px rule with the step number in the accent, every mode row is 48px on the 8px grid, the save buttons are ghost with light text, key caps use the 14px size, and a focus bar marks the row a pad is on. No wording moved.

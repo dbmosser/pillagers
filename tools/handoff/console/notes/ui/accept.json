@@ -2,10 +2,10 @@
  "01-title-mode-menu": {
   "score": 2,
   "pass": false,
-  "verdict": "The new title screen is a little cleaner, with less amber text and a more readable type treatment, but it is still a crowded template page with seven near-identical mode buttons, several explaining sentences and no pad focus cue.",
-  "pic": "tools/handoff/console/notes/shots/11-after1/01-title-mode-menu-1080.jpg",
+  "verdict": "The new title menu is calmer and less boxy, with amber now limited to the title, the one primary button and the focus outline, but it still reads as a stacked web form, with too much explaining text, a cramped bottom edge, and sizes and currency that break the guide.",
+  "pic": "tools/handoff/console/notes/shots/11-after2/01-title-mode-menu-1080.jpg",
   "task": "11-ui-shared-style",
-  "when": "2026-10-18T06:47"
+  "when": "2026-10-18T06:52"
  },
  "02-welcome-pack": {
   "score": 2,

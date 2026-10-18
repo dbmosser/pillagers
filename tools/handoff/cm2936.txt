@@ -1,0 +1,7 @@
+v29.36: the title has a settings button
+
+The title has a Settings button next to Go fullscreen. It opens the same Settings window and ESC closes it.
+
+Check 29.36. Fails on v29.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

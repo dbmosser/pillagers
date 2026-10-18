@@ -6097,6 +6097,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.36',what:'the title has a Settings button that opens Settings, and ESC closes it',
+   run:function(){
+     var b=document.getElementById('titleset'), m=document.getElementById('settingsmodal');
+     if(!b) return 'the title has no Settings button';
+     if(!document.querySelector('#title #titleset')) return 'the Settings button is not on the title';
+     try{
+       m.classList.remove('on');
+       b.click();
+       if(!m.classList.contains('on')) return 'the title Settings button did not open Settings';
+       escCloseTopModal0();
+       if(m.classList.contains('on')) return 'ESC did not close Settings';
+       return null;
+     } finally { try{ m.classList.remove('on'); }catch(_e){} }
+   }},
   {v:'29.35',what:'the title is calmer on the shared look: the three step cards are flat columns (no box), every mode row is 48px or more on the 8px grid, the step numbers carry the one accent, the save buttons are not accent text (critic 2 of 5)',
    run:function(){
      var t=document.querySelector('#title .tcard'), s=document.querySelector('#title .tstep'), r, i, ids=['modecoop','modearcade','modearcade1','modecoopsrv','modepvp','modepvpsrv'], h, cs;
