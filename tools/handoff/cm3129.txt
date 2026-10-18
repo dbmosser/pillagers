@@ -1,0 +1,7 @@
+v31.29: the dead backpack full message and its refusals are gone
+
+A full backpack can no longer refuse a stall sale or a search, and the dead backpack full message is gone from the game.
+
+Check 31.29. Fails on v31.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

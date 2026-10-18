@@ -8,8 +8,8 @@ function g(){ return __state(); }
 
 // a26: P1 and the pillagers in the front row, the nine machines in one row behind them, centres spaced from the widths measured in the plain lineup
 A.scenes.lineupbig=async function(o){
-  var st=await A.stage(o), p=st.p, s=st.s, X=A.base().x, Y=A.base().y, Z=2.2, i, e, chars=[], x;
-  var FY=Y+132, BY=Y-12, face=1.5708;
+  var st=await A.stage(o), p=st.p, s=st.s, X=A.base().x, Y=A.base().y, Z=2.5, i, e, chars=[], x;
+  var XC=X-33, FY=Y+132, BY=Y-12, face=1.5708;   // the meadow runs from 434 left to 368 right of the site centre (a building stands beyond each end): the row is centred in it
   var rows=[
     {n:'pillager-rush',  id:'beef',  gun:'shotgun',rig:'none'},
     {n:'pillager-flank', id:'prone', gun:'carbine',rig:'light'},
@@ -18,7 +18,7 @@ A.scenes.lineupbig=async function(o){
     {n:'pillager-shield',id:'sigma', gun:'smg',    rig:'heavy'},
     {n:'pillager-elite', id:'crouch',gun:'rifle',  rig:'medium',elite:1},
     {n:'pillager-golden',id:'lag',   gun:'carbine',rig:'light', golden:1}];
-  var sp=70, x0=X-3.5*sp;
+  var sp=70, x0=XC-3.5*sp;
   p.x=x0; p.y=FY; p.face=face;
   chars.push({id:'p1',kind:'player',ref:'p1'});
   for(i=0;i<rows.length;i++){
@@ -30,17 +30,17 @@ A.scenes.lineupbig=async function(o){
   var ms=[['sentry','sentry',40],['crawler','crawler',42],['snitch','crier',34],['bulwark','bulwark',48],['howler','howler',41],['listener','listener',26],['choir','pillbox',60],['warden','warden',59],['overseer','overseer',87]];
   var gap=18, tot=0, ents=[], hw=[];
   for(i=0;i<ms.length;i++){
-    e=(ms[i][0]==='overseer')?A.overseer(X,BY,face):A.machine(ms[i][0],X,BY,{face:face});
+    e=(ms[i][0]==='overseer')?A.overseer(XC,BY,face):A.machine(ms[i][0],XC,BY,{face:face});
     if(ms[i][0]==='sentry') e.rng=2;   // no sight cone on the ground in a line-up
     ents.push(e); hw.push(ms[i][2]*0.75); tot+=hw[i]*2+(i?gap:0);
   }
-  x=X-tot/2;
+  x=XC-tot/2;
   for(i=0;i<ents.length;i++){
     x+=hw[i]; ents[i].x=x; ents[i].tx=x; ents[i].y=BY; ents[i].ty=BY; x+=hw[i]+gap;
     chars.push({id:ms[i][1],kind:'machine',ref:ents[i]});
   }
   A.settleFx();
-  A.cam(X,Y+6,Z);
+  A.cam(XC,Y+6,Z);
   return {zoom:Z,chars:chars};
 };
 

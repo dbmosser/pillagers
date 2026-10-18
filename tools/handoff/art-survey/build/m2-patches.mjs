@@ -52,8 +52,10 @@ var __EYEC={sentry:'#54e0ff',crawler:'#ffb23a',snitch:'#b6ff4a',listener:'#ff5ad
 window.__EYEB=1;
 `;
 P['a25-B'] = { screen: 'm-lineupmood', edits: [...W(),
-  ['function sprEyeOf(e){', "function sprEyeOf(e){ var r=sprEyeOf0(e); if(window.__EYEB&&r.c==='#dfe9f0'&&r.h===0&&e&&__EYEC[e.kind]) return {c:__EYEC[e.kind],a:0.95,h:1.6}; return r; }\nfunction sprEyeOf0(e){"],
-  ['function mbEye(e,T){', "function mbEye(e,T){ var r=mbEye0(e,T); if(window.__EYEB&&r[0]==='#dfe9f0'&&__EYEC[e.kind]) return [__EYEC[e.kind],.95,1]; return r; }\nfunction mbEye0(e,T){"],
+  ['function sprEyeOf(e){', "function sprEyeOf(e){ var r=sprEyeOf0(e); if(window.__EYEB&&r.c==='#dfe9f0'&&r.h===0&&e&&__EYEC[e.kind]) return {c:__EYEC[e.kind],a:1,h:2.6}; return r; }\nfunction sprEyeOf0(e){"],
+  ["if(E[2]){ wc.globalAlpha=E[2]>1?.22:.15; wc.beginPath(); wc.arc(ex,y-32.4,4.2,0,6.2832); wc.fill(); }", "if(E[2]){ wc.globalAlpha=E[3]?.42:(E[2]>1?.22:.15); wc.beginPath(); wc.arc(ex,y-32.4,4.2*(E[3]?2.3:1),0,6.2832); wc.fill(); }"],
+  ["if(E[2]){ wc.globalAlpha=E[2]>1?.22:.15; wc.beginPath(); wc.arc(sx,y-19.4,4,0,6.2832); wc.fill(); }", "if(E[2]){ wc.globalAlpha=E[3]?.42:(E[2]>1?.22:.15); wc.beginPath(); wc.arc(sx,y-19.4,4*(E[3]?2.3:1),0,6.2832); wc.fill(); }"],
+  ['function mbEye(e,T){', "function mbEye(e,T){ var r=mbEye0(e,T); if(window.__EYEB&&r[0]==='#dfe9f0'&&__EYEC[e.kind]) return [__EYEC[e.kind],1,1,1]; return r; }\nfunction mbEye0(e,T){"],
   ["lg.addColorStop(0,'#ff5a4a');", "lg.addColorStop(0,(window.__EYEB&&!(e.seenYou||e.state==='chase'))?'#ff5ad2':'#ff5a4a');"],
   ["wc.fillStyle='#ff5a4a';\n    wc.fillRect(e.x-1.4+sway*1.2,hy-1.2,2.8,2.4);", "wc.fillStyle=(window.__EYEB&&!(e.seenYou||e.state==='chase'))?'#ff5ad2':'#ff5a4a';\n    wc.fillRect(e.x-1.4+sway*1.2,hy-1.2,2.8,2.4);"],
   inject(EYEB)] };

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.29 - the dead backpack full message and its refusals are gone
+
+Co-op hunt while he was away. His ruling: no bag limit, no weight, ever (PACKCAP is 99999 since 2026-08-22). Four places still refused or dropped a gun for a full backpack and said BACKPACK FULL: the stall sale, the crate search, and the two gun swaps that push a gun into the backpack. With the cap at 99999 none of them can run. They are removed with bagDropHint (the detail under that row) and the cap locals only they read. The pack cap constant, the autoloot cull, arcadeBagFree and the bot greed test stay, because the test fixture names them.
+
+MEASURED. Check 31.29 passes, and fails on v31.28.
 ## v31.28 - player 2 prompt follows the device player 2 used last
 
 Co-op hunt while he was away. His order of 2026-10-18 (afternoon, item 5): prompts follow the last input device, Fortnite style, key prompts after a key and pad prompts only while the pad is in use. Player 1 attract already said press any key or press any button by the last device. Player 2 attract (and the run over card, which sits on it) said player 2: press a whatever player 2 touched last. Since cw-p2keys the player 2 window has its own keys and mouse and a key or a click there asks to drop in like A, so the prompt now follows player 2 own last device: a key press reads player 2: press any key, a press on its pad reads player 2: press a (the pad own name for A).

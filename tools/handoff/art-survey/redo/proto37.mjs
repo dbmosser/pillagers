@@ -10,9 +10,11 @@ const grainFn = (amp, px) => `function(c,W,H,DPR){ if(!window.__gtile){ var t=do
   c.save(); c.setTransform(1,0,0,1,0,0); c.imageSmoothingEnabled=false; c.globalCompositeOperation='source-over'; var pw=256*${px}*DPR; for(var yy=0;yy<c.canvas.height;yy+=pw) for(var xx=0;xx<c.canvas.width;xx+=pw) c.drawImage(window.__gtile,xx,yy,pw,pw); c.restore(); }`;
 const mk = (grade, grain, vig) => `var r=await window.__art.scene('duo',{}); var gx=window.__gx; ${hud(vig[0], vig[1], vig[2])} ${hook(grade, grain)} window.__art.draw(2); return r;`;
 const S = {};
-const gB1 = `function(c,W,H,DPR){ c.save(); c.setTransform(DPR,0,0,DPR,0,0); c.globalCompositeOperation='screen'; c.fillStyle='rgb(14,26,58)'; c.fillRect(0,0,W,H); c.globalCompositeOperation='soft-light'; c.globalAlpha=.55; c.fillStyle='#ffb870'; c.fillRect(0,0,W,H); c.restore(); }`;
-const gB2 = `function(c,W,H,DPR){ c.save(); c.setTransform(DPR,0,0,DPR,0,0); c.globalCompositeOperation='screen'; c.fillStyle='rgb(22,38,84)'; c.fillRect(0,0,W,H); c.globalCompositeOperation='overlay'; c.globalAlpha=.35; c.fillStyle='#ffa850'; c.fillRect(0,0,W,H); c.globalAlpha=1; c.globalCompositeOperation='multiply'; c.fillStyle='rgb(235,238,250)'; c.fillRect(0,0,W,H); c.restore(); }`;
-S.p37B1 = { js: mk(gB1, grainFn(0.06, 2), [0.66, '10,18,44', 0.38]) };
-S.p37B2 = { js: mk(gB2, grainFn(0.06, 2), [0.70, '8,14,40', 0.36]) };
+
+const filt = (f) => ;
+const gB3 = ;
+const gB4 = ;
+S.p37B3 = { js: mk(gB3, grainFn(0.045, 2), [0.68, '8,16,40', 0.36]) };
+S.p37B4 = { js: mk(gB4, grainFn(0.045, 2), [0.74, '8,16,40', 0.34]) };
 fs.writeFileSync(new URL('screens.json', import.meta.url), JSON.stringify(S, null, 1));
 console.log(Object.keys(S).join(','));

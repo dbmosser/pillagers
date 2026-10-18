@@ -2823,7 +2823,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.28';
+var VER='31.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14622,7 +14622,7 @@ function pedBuy(ix){
   if(G.cash!=null&&G.cash<st.price){ say('NOT ENOUGH CASH ON YOU','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'. Carrying '+'$'+G.cash.toLocaleString()+'.'}); return; }   // v28.xx (cw-precash), HIS ORDER (2026-10-15): "quickly pick how much cash ... to take": a raid that took a set amount of cash can spend no more than that at the stall
   if((P.credits||0)<st.price){ say('NOT ENOUGH BANKED CREDITS','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'.'+((G.pedCarry||0)>0?(' Carrying '+'$'+(G.pedCarry||0).toLocaleString()+'.'):'')}); return; }   // v22.xx (tr4fixc): the shooter voice, the headline says banked
 
-  var cap=PACKCAP[P.pack],wt=(ITEMS[st.k]?ITEMS[st.k].wt:1);
+  // v31.29 (cw-nobagfull), HIS RULING: no bag limit, no weight, ever. A stall sale is never refused for a full backpack, so no cap or weight is read here.
   // v12.60, 2026-09-08 audit: AMMUNITION GOES WHERE AMMUNITION GOES. Every other
   // path that hands him a box puts the rounds into the reserve, which is the one
   // pool the spec asks for, and the box stops existing. This one pushed the key
@@ -14633,7 +14633,6 @@ function pedBuy(ix){
   // in the reserve take no room in a backpack, and a full backpack must not stop
   // a man buying ammunition.
   var _pAmmo=!!(ITEMS[st.k]&&ITEMS[st.k].use==='ammo');
-  if(!_pAmmo&&bagWeight()+wt>cap){ say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:bagDropHint()}); return; }   // v22.59 (R19): the same red row as a search
   P.credits-=st.price; saveProfile();
   if(G.cash!=null) G.cash=Math.max(0,G.cash-st.price);   // v28.xx (cw-precash)
   st.sold=true; G.trade.traded=1; if(typeof NET==='object'&&NET&&NET.on&&!G.sim) netPedSoldSend(G.trade,ix);   // v21.72 (K4): and the rest of the party is told the row is sold
@@ -20573,16 +20572,6 @@ function pickSay(m,o){
   while(q.length>PICKN) q.shift();
 }
 // v22.56 (R18): the tag on the newest row of an item, set after the grant that pushed it (a gift FROM a teammate, the Survivor).
-// v22.59 (R19): the detail under BACKPACK FULL names the button that drops the selected item on the device in hand: the key Z is
-// bound to on the keyboard (keyLabel, so an unmoved keyboard reads [Z]), and Y on a controller, the button pollPad gives
-// bagDropSel with the backpack open (padB names it for a PlayStation pad).
-// v22.xx (tr4fixc): THE BACKPACK FULL DETAIL NAMES BOTH STEPS, AS A CAPS TAG. The detail read [Z] drops the selected item., a
-// sentence on a row whose other tags are short caps, and it was not true where it was read: Z (and Y on a controller) drops only
-// with the backpack open, and the pickup stack shows only with it shut. It now reads [B] BACKPACK, a middle dot, [Z] DROP on the
-// keyboard (keyLabel, so a moved key reads as moved) and [VIEW] BACKPACK, a middle dot, [Y] DROP on a controller (VIEW opens the
-// backpack in pollPad; padB names both for a PlayStation pad). With autoloot on it reads the same: autoloot never sheds rare or
-// elite, and those can still be dropped by hand.
-function bagDropHint(){ return padOn()?padB('['+pbn(8)+'] BACKPACK  \u00b7  ['+pbn(3)+'] DROP'):('['+keyLabel('KeyB','B')+'] BACKPACK  \u00b7  ['+keyLabel('KeyZ','Z')+'] DROP'); }
 function pickTag(item,tag){
   try{ feedTag(item,tag); }catch(_ftg){}   // v27.24 (feed1): and on the feed line
   var q=G&&G.pick, i;
@@ -24920,7 +24909,6 @@ function gunClassSwapIn(o,oi,key,nw){
   A[oi]=key; U[oi]=1;
   BELTAT=oi;
   BELTDISP={item:'gun_'+old.id,name:String(old.name||old.id),tag:bagged?'BACKPACK':'LEFT BEHIND'};
-  if(bagged&&bagWeight()>PACKCAP[P.pack]){ ix=G.bag.lastIndexOf('gun_'+old.id); if(ix>=0){ dropItem(ix); say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:(BELTDISP.name+' dropped').toUpperCase()}); BELTDISP=null; } }
   if(hand) G.hot=gunCell();
   if(!gearFoley('swap',nc)) blip('pick');
 }
@@ -25090,10 +25078,6 @@ function beltGunFull(key,quiet,slots,xo){
     sl2=hotbarSlots(); BELTAT=-1;
     for(gi=0;gi<GUNKEYS&&gi<sl2.length;gi++) if(sl2[gi]&&sl2[gi].kind==='gun'&&!sl2[gi].vacant&&!sl2[gi].inHand&&sl2[gi].icon===nc.id){ BELTAT=gi; break; }
     BELTDISP={item:'gun_'+ow.id,name:String(ow.name||ow.id),tag:bagged?'BACKPACK':'LEFT BEHIND'};
-    if(bagged&&bagWeight()>PACKCAP[P.pack]){   // no room for the gun it pushed out: it drops at his feet, and the red row names it
-      ix=G.bag.lastIndexOf('gun_'+ow.id);
-      if(ix>=0){ dropItem(ix); say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:(BELTDISP.name+' dropped').toUpperCase()}); BELTDISP=null; }
-    }
   }
   txt=(BELTAT>=0)?(it.name+' to slot '+(BELTAT+1)).toUpperCase():(it.name+' stowed').toUpperCase();
   if(!quiet){ say(txt); if(BELTDISP){ say(BELTDISP.name,'pick',{item:BELTDISP.item,tag:BELTDISP.tag}); BELTDISP=null; } }
@@ -26882,14 +26866,8 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   // slowest and least able to leave. Moved below, where sprint is final.
   if(p.ads) sprint=false;
   G.sprinting=sprint;
-  // v8.37: RESTORED. v8.34 deleted this line as part of removing the carry
-  // penalty and left four reads of `cap` in the container block below, which
-  // threw on every frame the player held E on a box. The bag CAP and the carry
-  // PENALTY were always two different rules; only the penalty was retired.
-  // With PACKCAP at [99999,99999,99999] the bag-full branch below is correctly
-  // inert, which is his 2026-08-22 order, and this line is what makes it inert
-  // rather than fatal. updateBot has kept its own copy throughout.
-  var cap=PACKCAP[P.pack];
+  // v31.29 (cw-nobagfull), HIS RULING: no bag limit, no weight, ever. Nothing in this function reads the old pack cap any more (the search never refuses for a full
+  // backpack); updateBot keeps its own copy for its greed test.
   var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset));
   if(wading) sprint=false;
   G.sprinting=sprint;
@@ -27587,23 +27565,9 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
   // v23.xx, HIS ORDER (2026-10-11 evening): "i dont like the autoloot, change it back to hold E to loot". The arcade searches by holding
   // E (or X, or the pad search button) like every other raid again, at the usual speed; arcadeAutoSrch stays for the tests but is not asked.
   if(near&&((keys['KeyE']&&!(keys['PadX']&&onPad))||keys['PadSearch'])){   // v25.xx (keyswap): E searches in a ring too; the pad X in a ring still calls instead (PadX), and its Y search is PadSearch
-    // With autoloot on, a full bag sheds its worst rather than refusing you, so
-    // you can keep grabbing and the pack manages itself. It never sheds rare or
-    // elite, so if that is all you are carrying it still refuses.
-    // v23.49 (arcade25): in the arcade a box holding only valuables, ammo and throwables puts nothing in the backpack (arcadeBagFree),
-    // so a full backpack neither refuses it nor sheds for it.
-    var _abf=!!(G.arcade&&arcadeBagFree(near));
-    if(!_abf&&bagWeight()>=cap&&P.autoloot) autoCull(cap);
-    if(!_abf&&bagWeight()>=cap){
-      // v22.59, the raid text rewrite (R19): BACKPACK FULL IS ONE RED ROW. HIS ORDER (2026-10-09): a raid line is a short caps
-      // headline and, only when needed, a short detail. This said Backpack full with the raw capacity number in brackets and Z drops
-      // the selected item, in the middle of the screen, naming Z even with a controller in hand. It is now one keyed red row in the
-      // pickup stack, BACKPACK FULL, refreshed every frame E is held (v21.91: never a second row), with the button that drops the
-      // selected item on the device in hand as its detail, or that nothing is left worth dropping when autoloot is on.
-      say('BACKPACK FULL','pick',{key:'bagfull',c:'danger',sub:bagDropHint()});   // v22.xx (tr4fixc): the shooter voice, autoloot too
-      G.searching=null; G.searchT=0;
-    }
-    else {
+    // v31.29 (cw-nobagfull), HIS RULING: no bag limit, no weight, ever. A search is never refused for a full backpack and never sheds anything, so the BACKPACK FULL
+    // row, the autoloot cull and the arcade full-pack test (arcadeBagFree) have no caller here any more.
+    {
       // SPEC 7.4: PROGRESS PERSISTS. Coming back to a container you started
       // resumes where you left off, so breaking off to deal with a noise is a
       // real decision rather than a wasted commitment. Progress lives on the
@@ -49225,7 +49189,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.28: The player 2 prompt reads player 2: press any key after a key press and player 2: press a after a press on its pad, like player 1. Check 31.28 fails on v31.27',
+  now:'v31.29: A full backpack can no longer refuse a stall sale or a search, and the dead backpack full message is gone from the game. Check 31.29 fails on v31.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

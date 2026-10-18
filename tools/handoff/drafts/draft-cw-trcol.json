@@ -4,8 +4,8 @@
     "now":  "The upper right corner of the raid is one column of equal plates: credits, xp, stash, backpack, notes logged, the minimap and the run info.",
     "edits":  [
                   {
-                      "anchor":  "  #topright .trsub{ position:absolute; right:0; top:40px; line-height:16px; font-size:15px; font-weight:700; letter-spacing:.1em; color:var(--ash); }\n",
-                      "replacement":  "  #topright .trsub{ position:absolute; right:0; top:40px; line-height:16px; font-size:15px; font-weight:700; letter-spacing:.1em; color:var(--ash); }\n  body.trcol #topright{ clip-path:inset(50%); }   /* v30.xx (cw-trcol), HIS ORDER (2026-10-18): in a raid the credits, xp, stash and bag are rows of the HUD column drawn on the canvas, so the page text is clipped away there (it keeps its box, for whatever reads it) */\n"
+                      "anchor":  "  #topright .trsub{ position:static; display:inline; line-height:inherit; font-size:16px; font-weight:700; letter-spacing:.1em; color:var(--ash); }   /* v28.xx (cw-trrow): was a second line hanging under the readout (absolute, top 40px); now inline in the one row */\n",
+                      "replacement":  "  #topright .trsub{ position:static; display:inline; line-height:inherit; font-size:16px; font-weight:700; letter-spacing:.1em; color:var(--ash); }   /* v28.xx (cw-trrow): was a second line hanging under the readout (absolute, top 40px); now inline in the one row */\n  body.trcol #topright{ clip-path:inset(50%); }   /* v30.xx (cw-trcol), HIS ORDER (2026-10-18): in a raid the credits, xp, stash and bag are rows of the HUD column drawn on the canvas, so the page text is clipped away there (it keeps its box, for whatever reads it) */\n"
                   },
                   {
                       "anchor":  "var _trLast=\u0027\u0027;\n",
