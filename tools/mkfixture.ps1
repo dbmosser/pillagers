@@ -6817,7 +6817,7 @@ window.__REGRESS=[
        P.stash=['bandage','bandage','bandage','smoke','ammobox','ammobox','key_dam_vault','core']; P.kit=[]; P.freeKit=0; P.kitPick='mine'; P.intel=0;
        renderSector();
        hd=document.querySelector('#sectormodal h3');
-       if(!hd||!/PRE-RAID/.test(hd.textContent)) return 'the map select heading does not say PRE-RAID';
+       if(!hd||!/pre-raid/i.test(hd.textContent)) return 'the map select heading does not say Pre-raid';   /* v28.xx (cw-nocaps-net): case-blind, his rule: never all caps */
        host=document.getElementById('sectorpack');
        if(!host||host.style.display==='none'||!host.querySelector('[data-pk]')) return 'the pack row is not shown';
        if(!clk('bandage','1')) return 'no plus button on the bandage';
