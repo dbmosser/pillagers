@@ -1,0 +1,7 @@
+v29.29: controls list folds away after 30 seconds
+
+The controls list folds to its one-line hint 30 seconds into a raid. F1 opens it again.
+
+Check 29.29. Fails on v29.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

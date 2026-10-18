@@ -2309,7 +2309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.28';
+var VER='29.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -9262,6 +9262,15 @@ function tod(){ return (G&&G.tod)||TODS[2]; }
 // moved to OFF stopped its clock and froze the closing rings. G.raidLen is set once, in buildRaid beside timeLeft, and nothing
 // changes it after, so it says whether THIS raid has a clock. CFG.raidSec is asked only when no raid carries one.
 function raidClockOn(){ return (G&&typeof G.raidLen==='number')?G.raidLen>0:CFG.raidSec>0; }
+// v28.xx (cw-legend30), UI step 4, the HUD in play (style guide: the controls list is hidden except on F1 and in the first 30 seconds).
+// The list opens on arrival (his v6.68 note: always open on arrival) and, once, at 30 seconds into the raid, folds to the one-line
+// hint if it is still the compact list. F1 still cycles it, and a list he opens again later is left alone.
+function legendAuto(sec){
+  if(!G||G.legendAutoDone||sec<30) return false;
+  G.legendAutoDone=true;
+  if(G.legendOn===1){ G.legendOn=0; return true; }
+  return false;
+}
 function elapsed(){
   if(!G) return 0;
   if(!raidClockOn()) return G.t||0;
@@ -40342,6 +40351,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     // v27.26 (feedleg), seen in the busy frame picture: the controls list stood above the feed and ran up over the CURRENT PILLAGERS board.
     // The compact list now stands on the vitals as before but to the right of the feed, and shrinks if it must so that it ends before
     // 47 percent of the screen width (the player stands in the middle of it). The feed keeps its own zone at the left.
+    legendAuto(elapsed());   // v28.xx (cw-legend30): the compact controls list folds away 30 seconds in
     if(FEEDBOX.on&&G.legendOn===1){
       var _lgX=FEEDBOX.x+FEEDBOX.w+Math.round(LH(10)*_lgR), _lgZ=LEGZ0;
       if(LEGMW>0) _lgZ=Math.max(0.9,Math.min(LEGZ0,((W*0.47-_lgX)/LEGMW)/(_lgR*_lgU)));
@@ -47261,7 +47271,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.28: The first tab in Settings now reads Game. The Display section inside it keeps its name. Check 29.28 fails on v29.27',
+  now:'v29.29: The controls list folds to its one-line hint 30 seconds into a raid. F1 opens it again. Check 29.29 fails on v29.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

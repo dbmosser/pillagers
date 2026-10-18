@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.29 - CONTROLS LIST FOLDS AWAY AFTER 30 SECONDS
+
+Co-op hunt while he was away. UI step 4, the HUD in play. The style guide says the controls list is hidden except on F1 and in the first 30 seconds. It sat over the play space for a whole raid on the first three. It still opens on arrival (his v6.68 note) and now folds to the one-line hint 30 seconds in. F1 cycles it as before.
+
+MEASURED. Check 29.29 passes, and fails on v29.28.
 ## v29.28 - SETTINGS FIRST TAB IS GAME, NOT DISPLAY
 
 Co-op hunt while he was away. Menu map c-30: the first Settings tab was called Display but holds every section, with a Display section inside it. Renamed Game. No setting moved or removed.

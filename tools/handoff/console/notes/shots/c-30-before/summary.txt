@@ -1,0 +1,12 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       4.8s  
+  07-party-coop                          staged       7.2s    | partymodal
+  18-settings-hub                        staged       6.9s    | settingsmodal
+  25-raid-pause-box                      staged       8.8s  
+  26-settings-from-pause-top             staged       9.3s  
+  42-hub-pause-box                       staged      11.8s  
+  49-arcade-pause-box                    staged      13.0s  
+  62-arcade-operator-menu                staged       7.8s  
+  57-title-2p-coop-picked                staged       8.2s  
+  44-title-from-character-select         staged      12.5s  
+  32-keys-window                         staged      10.6s  

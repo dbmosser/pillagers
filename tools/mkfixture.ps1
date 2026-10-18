@@ -6097,6 +6097,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.29',what:'the compact controls list opens on arrival and folds to its one-line hint 30 seconds into the raid, once (style guide: hidden except F1 and the first 30 s)',
+   run:function(){
+     if(typeof legendAuto!=='function') return 'the controls list never folds at 30 s (no legendAuto)';
+     if(!window.__deploy||!window.__endRaid) return 'SKIP: no raid in this fixture';
+     var bad=[], r0=P.runs, oSay=say, g=null, rl;
+     function at(s){ g.t=s; rl=(g.raidLen===undefined?CFG.raidSec:g.raidLen); g.timeLeft=rl-s; try{ drawHUD(); }catch(_h){} }
+     try{
+       say=function(){};
+       P.runs=0; __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: staging: no raid';
+       g.legendOn=1; g.legendAutoDone=false;
+       at(5);
+       if(g.legendOn!==1) bad.push('the list folded at 5 s ('+g.legendOn+')');
+       at(31);
+       if(g.legendOn!==0) bad.push('the list is still open at 31 s ('+g.legendOn+')');
+       g.legendOn=1; at(40);
+       if(g.legendOn!==1) bad.push('a list he opened again after 30 s was folded again');
+       g.legendOn=2; g.legendAutoDone=false; at(35);
+       if(g.legendOn!==2) bad.push('the full list was folded at 35 s');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ say=oSay; P.runs=r0; try{ if(G&&!G.over) __endRaid('abandon'); __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.28',what:'the first Settings tab is not called Display (it holds every section, Display is one of them)',
    run:function(){
      if(typeof openSettings!=='function'||typeof openModal!=='function') return 'SKIP: no settings here';

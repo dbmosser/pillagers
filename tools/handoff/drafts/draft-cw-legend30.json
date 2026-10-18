@@ -1,0 +1,16 @@
+{
+    "title":  "CONTROLS LIST FOLDS AWAY AFTER 30 SECONDS",
+    "why":  "UI step 4, the HUD in play. The style guide says the controls list is hidden except on F1 and in the first 30 seconds. It sat over the play space for a whole raid on the first three. It still opens on arrival (his v6.68 note) and now folds to the one-line hint 30 seconds in. F1 cycles it as before.",
+    "now":  "The controls list folds to its one-line hint 30 seconds into a raid. F1 opens it again.",
+    "edits":  [
+                  {
+                      "anchor":  "function elapsed(){\n",
+                      "replacement":  "// v28.xx (cw-legend30), UI step 4, the HUD in play (style guide: the controls list is hidden except on F1 and in the first 30 seconds).\n// The list opens on arrival (his v6.68 note: always open on arrival) and, once, at 30 seconds into the raid, folds to the one-line\n// hint if it is still the compact list. F1 still cycles it, and a list he opens again later is left alone.\nfunction legendAuto(sec){\n  if(!G||G.legendAutoDone||sec\u003c30) return false;\n  G.legendAutoDone=true;\n  if(G.legendOn===1){ G.legendOn=0; return true; }\n  return false;\n}\nfunction elapsed(){\n"
+                  },
+                  {
+                      "anchor":  "    if(FEEDBOX.on\u0026\u0026G.legendOn===1){\n",
+                      "replacement":  "    legendAuto(elapsed());   // v28.xx (cw-legend30): the compact controls list folds away 30 seconds in\n    if(FEEDBOX.on\u0026\u0026G.legendOn===1){\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the compact controls list opens on arrival and folds to its one-line hint 30 seconds into the raid, once (style guide: hidden except F1 and the first 30 s)\u0027,\n   run:function(){\n     if(typeof legendAuto!==\u0027function\u0027) return \u0027the controls list never folds at 30 s (no legendAuto)\u0027;\n     if(!window.__deploy||!window.__endRaid) return \u0027SKIP: no raid in this fixture\u0027;\n     var bad=[], r0=P.runs, oSay=say, g=null, rl;\n     function at(s){ g.t=s; rl=(g.raidLen===undefined?CFG.raidSec:g.raidLen); g.timeLeft=rl-s; try{ drawHUD(); }catch(_h){} }\n     try{\n       say=function(){};\n       P.runs=0; __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.legendOn=1; g.legendAutoDone=false;\n       at(5);\n       if(g.legendOn!==1) bad.push(\u0027the list folded at 5 s (\u0027+g.legendOn+\u0027)\u0027);\n       at(31);\n       if(g.legendOn!==0) bad.push(\u0027the list is still open at 31 s (\u0027+g.legendOn+\u0027)\u0027);\n       g.legendOn=1; at(40);\n       if(g.legendOn!==1) bad.push(\u0027a list he opened again after 30 s was folded again\u0027);\n       g.legendOn=2; g.legendAutoDone=false; at(35);\n       if(g.legendOn!==2) bad.push(\u0027the full list was folded at 35 s\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ say=oSay; P.runs=r0; try{ if(G\u0026\u0026!G.over) __endRaid(\u0027abandon\u0027); __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
