@@ -1,0 +1,7 @@
+v29.31: hud has one hero: quiet credits and backpack cue
+
+The corner credits are smaller and cream. The backpack hint is grey.
+
+Check 29.31. Fails on v29.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

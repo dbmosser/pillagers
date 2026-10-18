@@ -628,7 +628,7 @@
      the readout's real bottom (drawHUD reads it) rather than the readout
      fitting the band above the box. */
   #topright{ position:fixed; top:6px; right:20px; height:44px; line-height:44px; z-index:9000; pointer-events:none;
-    font-family:var(--f-body); font-weight:800; font-size:32px; color:var(--amber); white-space:nowrap; text-align:right; }
+    font-family:var(--f-body); font-weight:800; font-size:24px; color:#efe9dc; white-space:nowrap; text-align:right; }   /* v28.xx (cw-hudhero), UI step 4 (style guide: credits are text, not a second hero; amber is for focus): was 32px amber */
   #topright{ text-shadow:0 0 3px rgba(4,6,9,.95),0 0 8px rgba(4,6,9,.8); }   /* v18.62: the corner readout reads over a light wall (CREDITS vanished on the Undercroft side wall) */
   /* v19.73, seen on the 4K shop and settings screenshots (2026-10-08): with a window open the corner readout sits in its heading row
      (v11.52, v12.19), but 18 pixels above the heading, so at every size its figures sat on the window's frame. While a window is
@@ -636,7 +636,7 @@
   /* v19.89, from the code review of 2026-10-08: the centred card windows (PARTY, TERMS, the gambler, the bar, the one question card)
      have no heading row in the corner, and at 4K the move put the figures on the PARTY frame's top line. They keep the corner. */
   body:has(.modal.on:not(#partymodal):not(#termsmodal):not(#gamblemodal):not(#barmodal):not(#askmodal)) #topright{ top:24px; right:33px; }   /* v19.74: and its right edge ends where the heading line ends, inside the frame */
-  #topright small{ font-size:14px; color:var(--ash); letter-spacing:.12em; font-weight:400; margin-left:7px; margin-right:20px; }
+  #topright small{ font-size:16px; color:var(--ash); letter-spacing:.12em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:nth-last-child(2){ margin-right:0; }   /* v28.xx (cw-stashbag): the STASH and BAG line is the last child now */
   #topright .trsub{ position:absolute; right:0; top:40px; line-height:16px; font-size:15px; font-weight:700; letter-spacing:.1em; color:var(--ash); }
   .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
@@ -2310,7 +2310,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.30';
+var VER='29.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40002,7 +40002,7 @@ if(p.armor>0){
   // LH(34) is 71 and the weapon name climbs straight through it. Scaled now, and
   // moved clear of the tallest line in the stack.
   if(!G.bagOpen){
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#ffc04a';
+    ctx.font=FS(TYPE.label); ctx.fillStyle='#aaa498';   // v28.xx (cw-hudhero), UI step 4: the backpack cue is a quiet hint (style guide tx-2), not bold amber; amber is for focus
     // v22.65, the raid text rewrite (R23): THE BACKPACK CUE FOLLOWS KEY CHANGES. On the keyboard it always said B / I even after
     // CHANGE KEYS moved the backpack; both keys now come from keyLabel, so an unmoved keyboard reads B / I as before.
     ctx.fillText(padOn()?padB(pbn(8)+'  BACKPACK'):(keyLabel('KeyB','B')+' / '+keyLabel('KeyI','I')+'  BACKPACK'),W-16,by-LH(70));   // v13.52: pad B is the dodge roll  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the backpack cue said VIEW after the backpack moved to another button, and VIEW no longer opened it; it names the button it is on
@@ -47272,7 +47272,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.30: The title key line now says F1 controls, the key that really opens the list (H heals). Check 29.30 fails on v29.29',
+  now:'v29.31: The corner credits are smaller and cream. The backpack hint is grey. Check 29.31 fails on v29.30',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

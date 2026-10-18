@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.31 - HUD HAS ONE HERO: QUIET CREDITS AND BACKPACK CUE
+
+Co-op hunt while he was away. UI step 4, the HUD in play. Credits at 32 px amber and a bold amber backpack cue shouted as loud as the ammo count. The style guide keeps amber for focus and one hero number. Credits are 24 px cream now, the labels 16 px, and the backpack cue is quiet grey. No layout moves.
+
+MEASURED. Check 29.31 passes, and fails on v29.30.
 ## v29.30 - THE TITLE KEY LINE NAMES F1 FOR THE CONTROLS LIST
 
 Co-op hunt while he was away. UI step 30, menu map. The title key line said H controls. Since keyswap H is the quick heal and F1 shows the controls, so a party guest who read the title and pressed H healed instead of seeing the controls. It says F1 now. Nothing else changed.
