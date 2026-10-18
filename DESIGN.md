@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.22 - the crowbar breaks windows, cover and walls the way a bullet does
+
+Co-op hunt while he was away. His in-game note (2026-10-18 11:42): "melee should damge world elements like windows, walls etc". A crowbar swing that strikes no body now strikes the wall, window, furniture, wreck, tree or building wall in front of it (the middle swing line first, four more to 0.8 rad either side, within 46 of him) for 40 through damageWall, the one door a bullet damages a wall by. So it breaks exactly as a shot does: a window in one swing (with the glass sound and debris), furniture in 2, a tree 3, a wreck 4, a building wall 8, its bar shows, the sight map and the routing are rebuilt, and in a shared raid player 2 swing asks the host, which breaks it and tells every window. What a bullet cannot break stays whole (map edge, locked room, keyed door, stronghold shell, and the destruction setting off): it only rings. A body in the blow takes it instead. Breaking something is loud (340, a pistol is 330).
+
+MEASURED. Check 31.22 passes, and fails on v31.21.
 ## v31.21 - VITALS BARS 300 WIDE
 
 Co-op hunt while he was away. The critic (10-19): after the bars went one width (360) the stamina word ran into belt slot 1. 300 keeps one width and clears the belt.

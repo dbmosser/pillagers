@@ -2823,7 +2823,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.21';
+var VER='31.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22517,6 +22517,46 @@ function drawFinisher(c,p){
   }
   return true;
 }
+// v28.xx (cw-meleebreak), HIS NOTE (2026-10-18 11:42, in the game): "melee should damge world elements like windows, walls etc". THE CROWBAR BREAKS THINGS, BY THE ROAD A BULLET TAKES.
+// A swing that strikes no body strikes what is in front of it: the nearest wall, window, piece of furniture, wreck, tree or building wall along the swing line (the line ahead and four
+// more, to 0.8 rad either side, the middle one first), within CROWBAR_WALL_R (46) of him. The blow is CROWBAR_WALL (40) and goes through damageWall, the one door every wall damage
+// uses, so a thing breaks exactly as one shot does: wallHp decides what it is (a window 25, furniture 60, a tree 120, a wreck 150, a building wall 320, terrain 700), its bar shows,
+// the geometry is rebuilt (walls, sight, routing), the debris and the crash are the same, and in a shared raid the window of player 2 asks the host, which breaks it and tells every
+// window (netWallAsk, netWallGone). What a bullet cannot break stays whole: the map edge, a locked room, a keyed door, a stronghold shell (wallHp is null), and the destruction setting
+// (CFG.destruct 0) protects glass too; those only ring (a clank and a few sparks, nothing counted). A body in the blow takes it instead (the wall behind is not struck). Breaking
+// something is loud (CROWBAR_WALL_NOISE, 340, a pistol is 330), a plain hit is not. Live play only; no seeded draw but the ones damageWall already makes when a wall falls.
+var CROWBAR_WALL=40, CROWBAR_WALL_R=46, CROWBAR_WALL_NOISE=340, CROWBAR_RAYS=[0,0.4,-0.4,0.8,-0.8];
+function rayRect(px,py,ux,uy,w,maxT){   // distance along the ray to where it enters the rectangle (0 when it starts inside), or -1
+  var t0=0, t1=maxT, a, b, lo, hi;
+  if(Math.abs(ux)<1e-9){ if(px<w.x||px>w.x+w.w) return -1; }
+  else { a=(w.x-px)/ux; b=(w.x+w.w-px)/ux; lo=Math.min(a,b); hi=Math.max(a,b); if(lo>t0) t0=lo; if(hi<t1) t1=hi; if(t0>t1) return -1; }
+  if(Math.abs(uy)<1e-9){ if(py<w.y||py>w.y+w.h) return -1; }
+  else { a=(w.y-py)/uy; b=(w.y+w.h-py)/uy; lo=Math.min(a,b); hi=Math.max(a,b); if(lo>t0) t0=lo; if(hi<t1) t1=hi; if(t0>t1) return -1; }
+  return t0;
+}
+function crowbarWallAt(p,base){
+  var k, a, ux, uy, L, i, w, t, best, bt;
+  if(!G||!G.wgrid||!p) return null;
+  for(k=0;k<CROWBAR_RAYS.length;k++){
+    a=base+CROWBAR_RAYS[k]; ux=Math.cos(a); uy=Math.sin(a);
+    L=wallsNear(G.wgrid,p.x+ux*CROWBAR_WALL_R*0.5,p.y+uy*CROWBAR_WALL_R*0.5,CROWBAR_WALL_R);
+    best=null; bt=CROWBAR_WALL_R+1;
+    for(i=0;i<L.length;i++){ w=L[i]; t=rayRect(p.x,p.y,ux,uy,w,CROWBAR_WALL_R); if(t>=0&&t<bt){ bt=t; best=w; } }
+    if(best) return {w:best,x:p.x+ux*bt,y:p.y+uy*bt};
+  }
+  return null;
+}
+function crowbarWalls(p,base){
+  var h=crowbarWallAt(p,base), w;
+  if(!h||!G||G.sim) return false;
+  w=h.w;
+  if(CFG.destruct===0||wallHp(w)===null){ spark(h.x,h.y,'#cdd6dd',5,150); sfx('clank',h.x,h.y,matOf(w)); return true; }   // it rings and holds
+  damageWall(w,CROWBAR_WALL*pwrMul('dmg',true),h.x,h.y);
+  spark(h.x,h.y,'#ffd9a0',6,170); if(G.puffs) G.puffs.push({x:h.x,y:h.y,t:0,life:.22,c:'#8a939c',r:9});
+  sfx('clank',h.x,h.y,matOf(w)); G.shake=Math.max(G.shake||0,1.4); if(G.barT>0) meleeFoley('hit',h.x,h.y);   // the crowbar thuds as it lands
+  if(w.hpLeft!==undefined&&w.hpLeft<=0) ping(h.x,h.y,CROWBAR_WALL_NOISE,false,false,'player','fire');   // it went: glass and brick are loud
+  return true;
+}
 function meleeStrike(){
   if(!G||G.over||G.paused||G.sim||G.trade) return false;
   var p=G.player;
@@ -22694,6 +22734,7 @@ if(wep.mag===0){
         if(!G.sim){ spark(_me.x,_me.y,'#cdd6dd',10,200); sfx('clank',_me.x,_me.y); if(G.barT>0){ meleeFoley('hit',_me.x,_me.y); meleeImpact(sh.x,sh.y,_me.x,_me.y,_me.r); } }   // v26.xx (meleebig): and the crowbar lands with a flash, sparks and a small kick   // v25.xx (keyswap): a crowbar blow thuds
       }
     }
+    if(wep.crowbar&&fromPlayer&&!_swHit&&!G.sim&&crowbarWalls(sh,base)) _swHit=true;   // v28.xx (cw-meleebreak): a swing that struck nobody strikes the wall, window or piece of cover in front of it
     if(!G.sim&&!_swHit&&fromPlayer&&!(G.barT>0)) blip('foot');   // v25.xx (keyswap): a crowbar miss is its whoosh, not a footfall
     return;
   }
@@ -49161,7 +49202,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.21: The three vitals bars are 300 wide and the stamina word clears the belt. Check 31.21 fails on v31.20',
+  now:'v31.22: the crowbar breaks windows, cover and walls the way a bullet does: a window in one swing, a building wall in about eight. Check 31.22 fails on v31.21',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

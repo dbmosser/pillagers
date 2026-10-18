@@ -576,3 +576,4 @@
 2026-10-18 0.0258 critic-manual
 2026-10-18 0.0296 critic-03-title-and-backdrop
 2026-10-18 0.3578 03-title-and-backdrop
+2026-10-18 1.595 02-raid-hud-redesign

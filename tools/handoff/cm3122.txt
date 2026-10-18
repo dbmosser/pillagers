@@ -1,0 +1,7 @@
+v31.22: the crowbar breaks windows, cover and walls the way a bullet does
+
+the crowbar breaks windows, cover and walls the way a bullet does: a window in one swing, a building wall in about eight.
+
+Check 31.22. Fails on v31.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
