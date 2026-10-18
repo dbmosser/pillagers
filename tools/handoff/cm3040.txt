@@ -1,0 +1,7 @@
+v30.40: the compact smg no longer builds into a heavy shake
+
+The Compact SMG now shakes the screen lightly and evenly while you hold the trigger.
+
+Check 30.40. Fails on v30.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

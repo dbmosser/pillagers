@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.40 - THE COMPACT SMG NO LONGER BUILDS INTO A HEAVY SHAKE
+
+Co-op hunt while he was away. His Q5: gun feel. The Compact SMG fires every 88 ms and each round set a 2.2 kick: 0.157 trauma a round against 0.123 that drains between rounds, so a held magazine climbed round after round into a big screen shake. 2.2 to 1.9 cuts the worst shake of a held magazine from 4.65 px to 1.4 px and keeps a light buzz.
+
+MEASURED. Check 30.40 passes, and fails on v30.39.
 ## v30.39 - THE WHAT IS NEW CARD NAMES POLISH PASS 19
 
 Co-op hunt while he was away. The card was stamped v30.38 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

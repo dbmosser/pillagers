@@ -1,0 +1,1 @@
+| THE COMPACT SMG NO LONGER BUILDS INTO A HEAVY SHAKE | v30.40 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.40 passes, fails on v30.39 |
