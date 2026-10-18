@@ -28,6 +28,11 @@
 - Tried name box lower case: input value PILLAGER is stored uppercase and the global * rule sets text-transform none !important, so CSS cannot lower it; draft cw-title-name STOPPED, not shipped. Needs the name lowered where the input value is set (risk to saves/net names).
 - 4K 60fps still not measured (the fight is 2 pillagers + robots, no sim).
 
+## Run 5
+- v30.90 cw-title-legend shipped: kbrow 8 hints to 5, top buttons 48px (check 30.88/30.90 uses computed min-height, the gate zoom is 0.9; textContent is lowercased so test /i). Scrim (v30.65) was already in.
+- Shots shots/03-r5 (before), shots/03-r5after. Critic: 01 = 3 (same), 45 = 3, 57 = 3. Left, all structural, none is the backdrop: P0 name input shows PILLAGER in capitals (needs lowering where the value is set, saves/net risk); logo is a gold gradient (old check 18.11 demands a gradient, guide bans it: a fixture retarget plus his call, the brand mark); five mode rows incl. dead server row (his ordered rows); saves block 898px wide vs 558 column; attract card needs a primary "press any key" button, 56px header, 72px footer (shared attract-card task).
+- Still not measured: 4K 60fps on the title (fight is 2 pillagers + robots, no sim).
+
 ## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).

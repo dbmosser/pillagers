@@ -2799,7 +2799,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.91';
+var VER='30.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2810,7 +2810,7 @@ var VER='30.91';
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='30.76';
+var WHATSNEW_VER='30.92';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -2841,6 +2841,7 @@ function wnShort(s){
 var WNSEEN=1;   // v27.xx (wnbutton), HIS ANSWER 37: the card no longer shows by itself on the floor (it was 0 until you walked off it); WHAT'S NEW in the pause box shows the notes. Left at 0 by a check, the old card still draws.          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
+  'POLISH PASS 25. More fixes to the screens, the sounds and two player play.',
   'POLISH PASS 22. More fixes to the screens, the sounds and two player play.',
   'POLISH PASS 24. More fixes to the screens, the sounds and two player play.',
   'POLISH PASS 20. More fixes to the screens, the sounds and two player play.',
@@ -48336,7 +48337,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.91: Downed: a good hit on the bar gives half a second back and shows +0.50s. The bleed clock counts down in hundredths. Check 30.91 fails on v30.90',
+  now:'v30.92: The what is new card names polish pass 25. Check 30.92 fails on v30.91',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -269,10 +269,17 @@
  "57-title-2p-coop-picked": {
   "score": 2,
   "pass": false,
-  "verdict": "The new title screen is cleaner (flat rows, no amber-on-everything, fixed 'Create a new save' casing, F1 and Settings added), but it is still a long, cluttered stack of explaining text and seven same-weight buttons with no clear primary action, and it runs to the bottom edge.",
-  "pic": "tools/handoff/console/notes/shots/11-after3/57-title-2p-coop-picked-1080.jpg",
-  "task": "11-ui-shared-style",
-  "when": "2026-10-18T07:04"
+  "verdict": "the title screen has a good dark column and one lime accent, but the orange gradient logo, a stacked error bar, a capitalised input value and tiny low-contrast labels make it read as an unfinished template rather than a polished screen.",
+  "findings": [
+   "P0 name input field, 'PILLAGER': render the value lower case ('pillager') with text-transform lowercase and store it that way. Use the 56px row style: --ui-raised fill, 1px --ui-line-hi border, 4px radius, a 'name' label above it at 16px tx-2, and a lime 2px focus border.",
+   "P0 popup-blocked error bar between the menu and 'saves': shorten it to 'popup blocked' with a ghost 'retry' button, or show it as a toast above the menu. Leave at least 24px between it and the mode list. Keep one lime fill per screen, so make retry a ghost button with a --danger border.",
+   "P1 'pillagers' logo and tagline: make the logo flat --tx-1 or flat --acc at 56px f-cond 800 with no gradient or shadow, or make it an actual art asset. Raise the tagline to tx-2 at 20px, or delete it.",
+   "P1 mode list rows (1 player … 2 player co-op (server)): make '1 player' the 56px lime --acc primary. Make the rest ghost rows. Give the focused row a --ui-raised fill plus a 3px lime left bar. Cut the demo variants or group them under 'more'. Use a 16px tag with 8px padding, or drop the disabled row.",
+   "P1 saves section (saves label, 'pillager new' row, input row): line the saves block up with the 558px column or make it a proper panel. Use a 16px label. Use tx-1 for the name and tx-2 for the stats. Make every control in the row 48px high with 8px gaps. Move 'change name' and 'create' into one ghost style."
+  ],
+  "pic": "tools/handoff/console/notes/shots/03-r5after/57-title-2p-coop-picked-1080.jpg",
+  "task": "03-title-and-backdrop",
+  "when": "2026-10-18T20:15"
  },
  "59-raid-abandon-confirm": {
   "score": 3,

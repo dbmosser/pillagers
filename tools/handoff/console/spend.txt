@@ -488,7 +488,7 @@
 2026-10-18 0.5056 c-03-pause-feedback-box
 2026-10-18 0.0322 critic-03-title-and-backdrop
 2026-10-18 1.5402 b-02-gun-enemy-feel
-2026-10-18 3.0692 03-title-and-backdrop
+2026-10-18 3.0692 03-title-and-backdrop-r2
 2026-10-18 2.9461 00-fix-new-reds
 2026-10-18 0.0749 00-fix-new-reds
 2026-10-18 0.0272 critic-03-title-and-backdrop
@@ -500,7 +500,7 @@
 2026-10-18 0.0308 critic-02-raid-hud-redesign
 2026-10-18 0.0293 critic-02-raid-hud-redesign
 2026-10-18 2.1664 b-02-gun-enemy-feel
-2026-10-18 2.0019 03-title-and-backdrop
+2026-10-18 2.0019 03-title-and-backdrop-r2
 2026-10-18 1.9968 02-raid-hud-redesign
 2026-10-18 0.2893 b-02-gun-enemy-feel
 2026-10-18 2.2394 05-party-launch-mode
@@ -509,7 +509,7 @@
 2026-10-18 0.0324 critic-03-title-and-backdrop
 2026-10-18 0.3407 b-02-gun-enemy-feel
 2026-10-18 0.0287 critic-03-title-and-backdrop
-2026-10-18 1.1097 03-title-and-backdrop
+2026-10-18 1.1097 03-title-and-backdrop-r2
 2026-10-18 0.0288 critic-03-title-and-backdrop
 2026-10-18 0.0259 critic-03-title-and-backdrop
 2026-10-18 0.0342 b-02-gun-enemy-feel
@@ -522,7 +522,7 @@
 2026-10-18 0.0228 critic-03-title-and-backdrop
 2026-10-18 0.0271 critic-03-title-and-backdrop
 2026-10-18 0.0266 critic-03-title-and-backdrop
-2026-10-18 1.2299 03-title-and-backdrop
+2026-10-18 1.2299 03-title-and-backdrop-r2
 2026-10-18 0.0353 critic-02-raid-hud-redesign
 2026-10-18 0.0365 critic-02-raid-hud-redesign
 2026-10-18 0.0271 critic-03-title-and-backdrop
@@ -533,3 +533,7 @@
 2026-10-18 0.0285 critic-04-style-guide-update
 2026-10-18 0.0317 critic-03-title-and-backdrop
 2026-10-18 0.0241 critic-03-title-and-backdrop
+2026-10-18 0.0274 critic-03-title-and-backdrop
+2026-10-18 0.5781 03-title-and-backdrop-r2
+2026-10-18 0.0267 critic-12-ui-party-screens
+2026-10-18 0.0307 critic-12-ui-party-screens

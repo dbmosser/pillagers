@@ -31,6 +31,8 @@ A.freeze=async function(){
   gx('hidWant=function(){return false;}');
   await U.wait(200);
   gx('RNGS=0x1badf00d; FXS=0x2545F491;');
+  // the figures' own sway (hair, pack, hat tip) is a spring run on the real clock: with the clock held still every figure is at rest, the same every time
+  if(!window.__pnStub){ window.__pnStub=1; try{ performance.now=function(){ return 5000; }; }catch(e){} }
 };
 
 // ---- the HUD: wiped, only the dark edge of the screen stays (and the golden shine, without its word) ----
@@ -122,6 +124,7 @@ A.stage=async function(o){
   U.dep({kit:['gun_carbine','medkit','bandage','plate','frag','smoke'],seed:4242,mapIx:0});
   await A.freeze();
   var s=g(), p=s.player;
+  p._jg=null;   // whatever sway he picked up while the raid was still running is wiped
   if(!o.night){ s.tod=gx('TODS[2]'); s.wx=gx('WEATHER[0]'); s.wxNext=null; }
   __belt.set(3);                       // the carbine in his hands
   s.rise=null; s.ents.length=0; s.wild.length=0; s.bullets.length=0; s.flashes.length=0; s.sparks.length=0; s.shells.length=0;
