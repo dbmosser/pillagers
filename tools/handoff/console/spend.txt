@@ -605,3 +605,5 @@
 2026-10-18 0.0363 critic-c-31-ui-pause-settings
 2026-10-18 0.0455 03-title-and-backdrop
 2026-10-18 0.0225 03-title-and-backdrop
+2026-10-18 0.0327 critic-b-30-ui-hud
+2026-10-18 0.4989 b-30-ui-hud

@@ -1,6 +1,26 @@
 == 1080 : window 1952x1183, viewport 1920x1080
+  60-mapfirst-1p                         staged       6.3s  
+  61-mapfirst-pad                        staged       6.0s  
+  62-mapfirst-2p-wait                    staged       7.3s  
+  63-map-open-m                          staged       6.5s  
+  64-map-open-demo                       staged       6.6s  
+  65-map-open-tv                         staged       6.5s  
+  66-map-open-p2                         staged       6.5s  
+== 4k : window 3872x2263, viewport 3840x2160
   60-mapfirst-1p                         staged       6.4s  
-  63-map-open-m                          staged       6.6s  
+  61-mapfirst-pad                        staged       6.0s  
+  62-mapfirst-2p-wait                    staged       7.6s  
+  63-map-open-m                          staged       7.2s  
+  64-map-open-demo                       staged       7.2s  
+  65-map-open-tv                         staged       6.8s  
+  66-map-open-p2                         staged       6.6s  
+== 1080 : window 1952x1183, viewport 1920x1080
+  60-mapfirst-1p                         staged       6.2s  
+  61-mapfirst-pad                        staged       6.0s  
+  62-mapfirst-2p-wait                    staged       7.4s  
+  64-map-open-demo                       staged       6.3s  
 == 4k : window 3872x2263, viewport 3840x2160
   60-mapfirst-1p                         staged       6.6s  
-  63-map-open-m                          staged       7.1s  
+  61-mapfirst-pad                        staged       6.3s  
+  62-mapfirst-2p-wait                    staged       7.7s  
+  64-map-open-demo                       staged       6.7s  

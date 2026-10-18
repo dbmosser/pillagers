@@ -6101,6 +6101,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.39',what:'the Keys list shows lower case words: no first-letter capital, and key caps have no bevel',
+   run:function(){
+     var bad=[], b, k, cs, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       keysOpen(false);
+       b=document.querySelector('#keyslist .row b'); k=document.querySelector('#keyslist .keybtn');
+       if(!b) bad.push('no key row');
+       else{ cs=getComputedStyle(b,'::first-letter'); if(cs.textTransform==='uppercase') bad.push('the first letter of a key action is still upper case'); }
+       if(k && getComputedStyle(k).boxShadow!=='none') bad.push('the key cap still has a bevel: '+getComputedStyle(k).boxShadow);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('keysmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.38',what:'the armour and stamina bars are the same height (the critic, 10-19: three bars of the same height)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)||typeof bar!=='function') return 'SKIP: this fixture cannot deploy';

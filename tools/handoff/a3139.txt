@@ -1,0 +1,1 @@
+| KEYS LIST: LOWER CASE WORDS, FLAT KEY CAPS | v31.39 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.39 passes, fails on v31.38 |

@@ -1,0 +1,7 @@
+v31.39: keys list: lower case words, flat key caps
+
+The Keys and Pad buttons lists show lower case words and flat key caps.
+
+Check 31.39. Fails on v31.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40,7 +40,7 @@
    "before": "",
    "query": "",
    "expect": "U.raid()&&__state().mapOpen&&__state().arcade",
-   "js": "__gx(\"arcadeDeploy({mapIx:0,seed:4242})\"); await U.wait(800); __gx(\"G.mapOpen=true;\"); await U.wait(900);"
+   "js": "__gx(\"arcadeDeploy({mapIx:0,seed:4242})\"); await U.wait(500); U.untitle(); __gx(\"G.mapOpen=true;\"); await U.wait(500); U.untitle(); await U.wait(300);"
   },
   {
    "name": "65-map-open-tv",

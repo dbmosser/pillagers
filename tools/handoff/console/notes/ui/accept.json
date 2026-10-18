@@ -732,17 +732,17 @@
  "51-arcade-alert-reinforcements": {
   "score": 2,
   "pass": false,
-  "verdict": "The in-raid HUD is readable in places, but it is cluttered, with no clear hero element, and it mixes panel styles, type sizes and alert treatments, so it reads as an assembled debug overlay rather than one coherent system.",
+  "verdict": "The HUD is still a pile of different-looking widgets: pillager reinforcements shows twice (top pill and left log), the left log is a stack of mismatched pills, and the score, minimap, vitals and ammo panels share no common panel, type scale or padding.",
   "findings": [
-   "P0 top-centre alert stack (locked on card, 'pillager reinforcements' pill) and left-side event log: Show each alert once. Delete the sentence under 'locked on'. Keep the top-centre card for the single live alert and use the left log only for older events, capped at 3 rows at 16px.",
-   "P0 left event log (blackout, stronghold, golden enemy, pillager reinforcements, locked on): Use one row component: 32px high, --ui-panel at 90%, 3px left bar (accent for info, --danger for threat), 16px f-cond 600 text in tx-1, no icons except the warning glyph. Cap the list at 3 rows and fade older ones out.",
-   "P1 top-right: minimap plus 'run info' panel: Use one Panel P with 16px padding. Make 'run goals' a 16px tx-2 label, and make goal names 20px tx-1 with the reward right-aligned in tx-2. Drop the redundant 'run info' title. Add a 1px divider between rows.",
-   "P1 top-centre score block (0 sp, 9:45, extract 113m): Put score, timer and extract distance inside one Panel P, 16px from the top. Make the timer the 56px hero (f-cond 800) and score 20px. Keep the extract text in --extract inside the panel and attach the arrow to it.",
-   "P1 bottom-left vitals (standing, armour 56, stamina, hp 96): Use three bars of the same height (20px) with 8px gaps and the same label position, 16px f-cond 600 labels inside the left edge, and the value right-aligned. Colour by the palette: --ok for hp, --extract or tx-2 for stamina, a neutral for armour. Move 'standing' to a plain 16px tx-2 label above the bars."
+   "P0 top-centre 'pillager reinforcements' pill plus left event log (both shots): Show a live alert only in the top card. Log only older events, max 3 rows. Delete 'machine has you in sight'. Remove the duplicate pill.",
+   "P0 left event log: rain / blackout, stronghold, golden enemy, pillager reinforcements: One row component: fixed 320px wide, 32px high, --ui-panel at 90%, 3px left bar (--warn for info, --danger for threat), 16px f-cond 600 tx-1 text, 8px gap between rows, max 3 rows with older ones fading out. Drop the info icons.",
+   "P1 top-right minimap + 'run info' panel: Drop 'run info'. Make 'run goals' a 16px tx-2 label, goal names 20px tx-1, rewards right-aligned in tx-2. Use 16px padding, a 1px --ui-line divider between rows, an 8px gap below the minimap and a 24px margin from the screen edge.",
+   "P1 top-centre score block (0 sp / 9:45 / extract 113m): One Panel P, 16px from the top, containing the 56px f-cond 800 timer, a 20px score and the 16px --extract line with the arrow attached to it.",
+   "P1 bottom-left vitals (standing, armour, stamina, hp): Three bars, each 20px high with 8px gaps. Put the 16px label inside the left edge and the value on the right. Use --ok for hp, --extract for stamina and a neutral for armour. Make 'standing' a plain 16px tx-2 label above the bars. Render the damage chip as a tx-1 number."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30h-after/51-arcade-alert-reinforcements-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-30i-after/51-arcade-alert-reinforcements-1080.jpg",
   "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:56"
+  "when": "2026-10-18T23:04"
  },
  "78-raid-pause-box-full-kit": {
   "score": 3,
