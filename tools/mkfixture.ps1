@@ -29177,7 +29177,7 @@ window.__REGRESS=[
        if(!ARCADE.on) bad.push('END RUN left the arcade');
        if(!cardOn()) bad.push('after END RUN the RUN OVER card is not up');
        if(!arcadeIniLive()) return bad.length?bad.join('; '):'SKIP: staging: the run did not make the board, so no initials card';
-       arcadeIniOp('done'); arcadeAttShow();
+       arcadeIniOp('done'); if(arcadeIniLive()&&(ARCADE.ini.who|0)===2) arcadeIniOp('done'); arcadeAttShow();   // retarget (cw-iniplayer, his Q62): player 2's set comes after player 1's
        if(!pageOn()) bad.push('after the initials the high score board is not shown');
        else { tx=pg().textContent; if(tx.indexOf(arcadeCr(fin85))<0) bad.push('the board does not list the run ('+tx.slice(0,80)+')'); }
        if(cardOn()) bad.push('the RUN OVER card is still up over the board');
@@ -38733,6 +38733,7 @@ window.__REGRESS=[
        tr=frame(base+151*100);
        if(!has(tr,nE)||!eq(tr,'Q')||!eq(tr,'W')||!eq(tr,'B')) bad.push('the card does not draw the letters QWB');
        kd('Enter','Enter');
+       if(ARCADE.ini&&(ARCADE.ini.who|0)===2) kd('Enter','Enter');   // retarget (cw-iniplayer, his Q62): a 2 player row takes player 1's initials and then player 2's, so a second Enter finishes the card
        if(ARCADE.ini) bad.push('Enter did not finish the card');
        r=row(id);
        if(!r||r.i!=='QWB') bad.push('the run row does not carry the initials QWB ('+(r?r.i:'no row')+')');
@@ -38994,7 +38995,7 @@ window.__REGRESS=[
        rs=say; own=true; say=function(m,k){ said.push(String(m)+'|'+String(k||'')); };
        localStorage.removeItem(K);
        if(arcadeBoardTonight().length!==0||arcadeBoardBest()!==0) bad.push('an empty board is not empty');
-       localStorage.setItem(K,JSON.stringify({v:1,rows:[{run:'a',s:500,t:t0-1000,u:'cr'},{run:'b',s:900,t:t0-2000,u:'cr'},{run:'a',s:1200,i:'AAA',t:t0-500,u:'cr'},{run:'old',s:99999,i:'ZZZ',t:t0-13*3600000,u:'cr'}]}));
+       localStorage.setItem(K,JSON.stringify({v:1,rows:[{run:'a',s:500,t:t0-1000,u:'cr'},{run:'b',s:900,t:t0-2000,u:'cr'},{run:'a',s:1200,i:'AAA',i2:'BBB',t:t0-500,u:'cr'},{run:'old',s:99999,i:'ZZZ',t:t0-13*3600000,u:'cr'}]}));
        try{ if(typeof ARCADE_PARTY_KEY==='string'){ pk0=localStorage.getItem(ARCADE_PARTY_KEY); pkOwn=true; localStorage.setItem(ARCADE_PARTY_KEY,JSON.stringify({t:t0-13*3600000+60000})); } }catch(_pk){}   // a4x12: the 13 hour old row is before a party start, so it is left out on both builds
        rows=arcadeBoardTonight();
        if(rows.length!==2||rows[0].run!=='a'||rows[0].s!==1200||rows[0].i!=='AAA'||rows[1].run!=='b'||rows[1].s!==900) bad.push('tonight is not one row per run from the last 12 hours, best first ('+JSON.stringify(rows)+')');
@@ -39007,7 +39008,7 @@ window.__REGRESS=[
        if(!arcadeIniStart('b')) bad.push('arcadeIniStart did not start');
        arcadeAttShow();
        tx=card();
-       if(tx.indexOf('INITIALS')<0) bad.push('no initials card on the attract ('+tx+')');
+       if(tx.toUpperCase().indexOf('INITIALS')<0) bad.push('no initials card on the attract ('+tx+')');
        if(!ARCADE.att||ARCADE.att.ph!=='over') bad.push('the loop pages show over the initials card ('+(ARCADE.att&&ARCADE.att.ph)+')');
        if(!sent('arcinis')) bad.push('the host did not send the card to player 2');
        arcadeIniOp('up');
@@ -39021,9 +39022,12 @@ window.__REGRESS=[
        if(card().indexOf('BZA')<0) bad.push('the card does not show the letters ('+card()+')');
        kd('KeyK','k');
        if(__state()) bad.push('a key on the initials card dropped into a raid');
+       // retarget (cw-iniplayer, his Q62): a 2 player row takes player 1's initials and then player 2's: the card stays up for player 2, says whose turn it is, and DONE finishes the second set (before that build the first set closed the card)
+       if(ARCADE.ini&&(ARCADE.ini.who|0)===2){ var p2T=1; arcadeAttShow(); if(card().toUpperCase().indexOf('PLAYER 2')<0) bad.push('the card does not say it is player 2s turn ('+card()+')'); arcadeIniOp('done'); }
        if(ARCADE.ini) bad.push('the 3rd letter did not finish the initials');
        r=row('b');
        if(!r||r.i!=='BZK') bad.push('the initials did not reach the board ('+(r?r.i:'no row')+')');
+       if(p2T&&(!r||r.i2!=='???')) bad.push('player 2s untouched set did not reach the board as ??? ('+(r?r.i2:'no row')+')');
        if(card()) bad.push('the initials card stayed up ('+card()+')');
        // a run end over tonights scores asks for initials; 20 s untouched keeps ???
        if(!arcadeDeploy({mapIx:0,seed:4242})||!__state()||!__state().arcade) return bad.concat(['no arcade drop']).join('; ');
@@ -39034,9 +39038,10 @@ window.__REGRESS=[
        if(!r||r.s!==5000) bad.push('the run end did not write the board row ('+JSON.stringify(r)+')');
        if(!ARCADE.ini||ARCADE.ini.run!==id) bad.push('a top 10 run end did not ask for initials');
        tx=card();
-       if(tx.indexOf('RUN '+'OVER')<0||tx.indexOf('INITIALS')<0) bad.push('the RUN OVER card has no initials card ('+tx+')');
+       if(tx.indexOf('RUN '+'OVER')<0||tx.toUpperCase().indexOf('INITIALS')<0) bad.push('the RUN OVER card has no initials card ('+tx+')');
        if(ARCADE.ini) ARCADE.ini.at=Date.now()-21000;
        arcadeIniTick(Date.now());
+       if(ARCADE.ini&&(ARCADE.ini.who|0)===2){ ARCADE.ini.at=Date.now()-21000; arcadeIniTick(Date.now()); }   // retarget (cw-iniplayer): player 2's set times out the same way
        r=row(id);
        if(ARCADE.ini||!r||r.i!=='???') bad.push('20 s untouched did not keep ??? ('+(r?r.i:'no row')+')');
        // NEW HIGH SCORE once, and an extraction checkpoints the row
@@ -39048,8 +39053,8 @@ window.__REGRESS=[
        if(said.join(',').indexOf('NEW HIGH')>=0) bad.push('NEW HIGH SCORE under tonights best');
        ARCADE.mine=6000; arcadeHiTick(); arcadeHiTick();
        for(n=0,j=0;j<said.length;j++) if(said[j]==='NEW HIGH SCORE|ext') n++;
-       if(n!==1) bad.push('NEW HIGH SCORE was said '+n+' times over tonights best ('+said.join(',')+')');
-       if(!sent('archi')) bad.push('player 2 was not told of the high score');
+       if(n!==0) bad.push('NEW HIGH SCORE was said '+n+' times mid-run, but his answer Q71 (cw-noliverank) took the live rank readout out ('+said.join(',')+')');   // retarget (cw-noliverank): the callout compared the team with the board mid-run; the board shows after the run only
+       if(sent('archi')) bad.push('player 2 was told of a high score mid-run');
        try{ if(pkOwn){ if(pk0===null) localStorage.removeItem(ARCADE_PARTY_KEY); else localStorage.setItem(ARCADE_PARTY_KEY,pk0); pkOwn=false; } }catch(_pr2){}
        arcadeExtracted();
        r=row(id);
@@ -39117,7 +39122,7 @@ window.__REGRESS=[
        if(!a||!(a.t<1)) bad.push('the loop clock did not start at 0 ('+(a&&a.t)+')');
        if(d.style.display!=='block') bad.push('the arcade attract is not up');
        ap=q('attpress');
-       if(!ap||ap.textContent!=='PRESS ANY '+'BUTTON') bad.push('the host attract reads '+(ap?ap.textContent:'nothing'));
+       if(!ap||ap.textContent!==(typeof indevKey==='function'&&!padOn()?'PRESS ANY KEY':'PRESS ANY '+'BUTTON')) bad.push('the host attract reads '+(ap?ap.textContent:'nothing'));   /* retarget (cw-inihead): the prompt follows the last device used (the live key and pad prompts): a keyboard reads PRESS ANY KEY, a pad PRESS ANY BUTTON */
        bo=q('arcboo');
        // retargeted 2026-10-12 (nohallow): his answer 22 removed the Halloween banner; a build that still has the dressing shows it, a build without it says nothing about Halloween on the attract
        if(typeof arcadeHallow==='function'){ if(!on(bo)||bo.textContent!=='HAPPY '+'HALLOWEEN') bad.push('no HAPPY HALLOWEEN banner on the attract'); }
@@ -39886,7 +39891,7 @@ window.__REGRESS=[
          if(!has('arcgo',1)) bad.push('player 2 was not told arcgo fresh 1');
          arcadeAttTick();
          ap=ATT.el&&ATT.el.querySelector('.attpress');
-         if(!ATT.on||!ap||ap.textContent!=='PLAYER 1: PRESS ANY'+' BUTTON') bad.push('the benched attract reads '+(ap&&ap.textContent)+' (on '+ATT.on+')');
+         if(!ATT.on||!ap||ap.textContent!=='PLAYER 1: PRESS ANY '+(typeof indevKey==='function'&&!padOn()?'KEY':'BUTTON')) bad.push('the benched attract reads '+(ap&&ap.textContent)+' (on '+ATT.on+')');
          x0=p.x; y0=p.y; keys.KeyD=true; keys.KeyS=true;
          for(f=0;f<20;f++) __loop(performance.now()+f*16.7);
          keys.KeyD=false; keys.KeyS=false;
@@ -39982,7 +39987,7 @@ window.__REGRESS=[
        if(!has('arcon')) bad.push('a player 2 window saying ready is not told arcon');
        ap=ATT.el&&ATT.el.querySelector('.attpress');
        if(!ATT.on||!ATT.el||ATT.el.style.display==='none') bad.push('the arcade attract is not up');
-       else if(!ap||ap.textContent.toUpperCase()!=='PRESS ANY'+' BUTTON') bad.push('the host attract reads '+(ap&&ap.textContent));
+       else if(!ap||ap.textContent.toUpperCase()!==(typeof indevKey==='function'&&!padOn()?'PRESS ANY KEY':'PRESS ANY '+'BUTTON')) bad.push('the host attract reads '+(ap&&ap.textContent));   /* retarget (cw-inihead): the prompt follows the last device used */
        window.dispatchEvent(new MouseEvent('mousemove',{clientX:300,clientY:300,bubbles:true}));
        window.dispatchEvent(new MouseEvent('mousemove',{clientX:620,clientY:480,bubbles:true}));
        if(__state()) bad.push('a mousemove started a raid');
