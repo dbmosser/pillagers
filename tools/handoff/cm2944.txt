@@ -1,0 +1,7 @@
+v29.44: the operator menu is a panel p card with sentence case and 56px buttons
+
+The operator menu is a bigger, cleaner card with an accent tab.
+
+Check 29.44. Fails on v29.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -16,6 +16,12 @@ SHIPPED (run c-03-art): step a, cw-castshadow = v28.85 (commit 5bfd6fe2). drawOp
 second lobe shadowE(x+6,y+2.5,6.5,2.5,.18). Check paints drawOp offscreen with and without shadowE, takes alpha diff on rows >= y+3: centroid >= +1.0,
 right reach >= 11.8, left reach >= -10.6. Fingerprint held. Next ship number is 28.86. Step a is DONE; remaining: b, c, d below.
 
+SHIPPED (run c-60-art, 10-18): step b, cw-setplates = v29.43 (commit 212d9689). Heavy Plates vest: 2 scheme colour stripes + 6 bare steel chips (#dfe6ec).
+Big Pauldron: lower lip, seam, 3 rivets, 4 chips. Raider round pad: 2 chips (spiked pad stays clean). All inside the old outline. Check renders drawVest/drawPads
+offscreen at 4x, counts #dfe6ec pixels, samples the stripe pixels, asserts bbox no bigger than the old outline. Fingerprint held. Step b is DONE.
+Not drawn on: Raider vestband / tachelm helmet (could get a chip or two later). No picture taken (no UI screen shows a worn set).
+REMAINING: c (bake sprites; biggest, riskiest, perf only, no visible gain), d (before/after pictures and a 2P frame; needs a staging screen for a worn set, ask in questions.md).
+
 NEXT (each its own cw- key with a pixel/draw-call check):
 a. Soft cast shadow on the ground: drawOp starts with shadowE(x,y+1,10,4,.38); idea: shift it a little right/down (light top-left) and add a
    small second lobe toward the lit side opposite. Check old shadow-position checks first (grep shadowE in mkfixture.ps1).

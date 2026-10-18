@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.44 - The operator menu is a Panel P card with sentence case and 56px buttons
+
+Co-op hunt while he was away. The critic scored the operator menu 2 of 5: a small 420px card in a different style than the scoreboard, 11px hint, all caps, Back as a list button, the attract showing behind. Now the shared Panel P: 640px, 32px padding, 3px accent tab, title 32px, subtitle 16px, three 56px buttons 16px apart with Exit demo set 32px apart in danger red, 82% scrim, sentence case, the footer hint gone (a note shows only after New party). Same keys, same rows, same order.
+
+MEASURED. Check 29.44 passes, and fails on v29.43.
 ## v29.43 - HEAVY AND RAIDER ARMOUR IS CHIPPED AND STRIPED
 
 Co-op hunt while he was away. Art build step b (his pick: Refined Chibi with Gear-heavy raider). The Heavy plates, the Big Pauldron and the Raider round pads now carry bare steel paint chips on their edges, the plates carry two scheme colour panel stripes, and the Big Pauldron gets a lower lip, a seam and three rivets. Everything stays inside the old outline, so no anchor moves. The spiked pad and the other vests stay clean.

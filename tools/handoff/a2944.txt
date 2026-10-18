@@ -1,0 +1,1 @@
+| The operator menu is a Panel P card with sentence case and 56px buttons | v29.44 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.44 passes, fails on v29.43 |
