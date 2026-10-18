@@ -25085,12 +25085,12 @@ window.__REGRESS=[
        // TWO: the plate. Standard is 216 at the screen factor; large and small scale it, and what is drawn is the rect
        CFG.minimap=1; CFG.mmSz=1; CFG.mmSpan=1000; R=hudRes(); draw();
        if(!MMAP.box) return 'SKIP: the minimap was not drawn here';
-       w0=MMAP.box.w; if(w0!==Math.round(216*R)) bad.push('TWO: control: the standard plate is '+w0+' wide, not '+Math.round(216*R));
+       w0=MMAP.box.w; if(w0<Math.round(216*R)) bad.push('TWO: control: the standard plate is '+w0+' wide, under the old '+Math.round(216*R));   // 2026-10-18 (cw-trcol), his one column order: the plate is as wide as the run info panel and the rows above it, so the standard is that wide or wider; large and small are measured against it
        bs0=MMAP.bs; bb=MMAP.box.y+MMAP.box.h;
-       CFG.mmSz=1.35; draw(); if(MMAP.box.w!==Math.round(216*R*1.35)) bad.push('TWO: LARGE drew a plate '+MMAP.box.w+' wide, not '+Math.round(216*R*1.35));
+       CFG.mmSz=1.35; draw(); if(Math.abs(MMAP.box.w-w0*1.35)>2) bad.push('TWO: LARGE drew a plate '+MMAP.box.w+' wide, not 1.35 times the standard '+w0);
        if(!(MMAP.box.y+MMAP.box.h>bb)) bad.push('TWO: LARGE did not grow the plate down');
        if(MMAP.box.x+MMAP.box.w>Math.round(W-16*R)+1) bad.push('TWO: LARGE left the screen corner');
-       CFG.mmSz=0.75; draw(); if(MMAP.box.w!==Math.round(216*R*0.75)) bad.push('TWO: SMALL drew a plate '+MMAP.box.w+' wide, not '+Math.round(216*R*0.75));
+       CFG.mmSz=0.75; draw(); if(Math.abs(MMAP.box.w-w0*0.75)>2) bad.push('TWO: SMALL drew a plate '+MMAP.box.w+' wide, not 0.75 times the standard '+w0);
        CFG.mmSz=1;
        // THREE: the span: closer shows less street over the same plate, so the bake is made at a bigger scale; wider the other way
        CFG.mmSpan=700; draw(); bw=MMAP.bs; if(!(bw>bs0*1.3&&bw<bs0*1.55)) bad.push('THREE: CLOSE baked at '+bw+' against '+bs0+' standard, not about 1.43 times');
@@ -31233,7 +31233,7 @@ window.__REGRESS=[
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
        CFG.minimap=1; drawHUD(); b1=MMAP.box;
        if(!b1) bad.push('MINIMAP ON draws no minimap in a raid');
-       else if(Math.abs(b1.w-Math.round(216*hudRes()))>1) bad.push('the minimap is '+b1.w+' wide, not 216 times the screen scale '+hudRes());
+       else if(b1.w<Math.round(216*hudRes())-1) bad.push('the minimap is '+b1.w+' wide, under 216 times the screen scale '+hudRes());   // 2026-10-18 (cw-trcol): as wide as the column (the run info panel), never narrower than the old 216
        CFG.minimap=0; drawHUD(); b2=MMAP.box;
        if(b2) bad.push('MINIMAP OFF still draws the minimap');
        if(b1&&HUDBOX.cond&&!(HUDBOX.cond.y<b1.y+b1.h)) bad.push('with the minimap off the CONDITIONS panel stays down where the minimap was');
@@ -51325,7 +51325,7 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:1,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
-       g.ents.length=0; g.bagOpen=false; g.mapOpen=true; wn=g.wx&&g.wx.name;
+       g.ents.length=0; g.bagOpen=false; g.mapOpen=true; try{ if(typeof TRG==='object'&&TRG) TRG.hid=0; }catch(_th){} wn=g.wx&&g.wx.name;   // 2026-10-18 (cw-trcol): this check models the page readout (it stubs its box), so the page text counts as showing, whatever the last frame loop left
        if(!wn) return 'SKIP: no weather name';
        FS=function(spec){ var f=fs0(spec); return String(f).replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*2).toFixed(1)+'px'; }); };
        proto.fillText=function(t,x,y){ if(this.textAlign==='right'&&String(t).indexOf(wn)>=0&&this.canvas){ var m=this.getTransform(), r=this.canvas.getBoundingClientRect(), kk=r.width>0?r.width/this.canvas.width:1, fm=(/([\d.]+)px/).exec(String(this.font)); hit={x:(m.a*x+m.e)*kk+r.left,y:(m.d*y+m.f)*kk+r.top,fp:(fm?parseFloat(fm[1]):12)*m.d*kk}; } return o.apply(this,arguments); };
@@ -51347,7 +51347,7 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:1,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
-       g.ents.length=0; g.bagOpen=false; g.mapOpen=true; wn=g.wx&&g.wx.name;
+       g.ents.length=0; g.bagOpen=false; g.mapOpen=true; try{ if(typeof TRG==='object'&&TRG) TRG.hid=0; }catch(_th){} wn=g.wx&&g.wx.name;   // 2026-10-18 (cw-trcol): this check models the page readout (it stubs its box), so the page text counts as showing, whatever the last frame loop left
        if(!wn) return 'SKIP: no weather name';
        proto.fillText=function(t,x,y){ if(this.textAlign==='right'&&String(t).indexOf(wn)>=0&&this.canvas){ var m=this.getTransform(), r=this.canvas.getBoundingClientRect(), kk=r.width>0?r.width/this.canvas.width:1; hit={x:(m.a*x+m.e)*kk+r.left,y:(m.d*y+m.f)*kk+r.top}; } return o.apply(this,arguments); };
        if(!grab()) return 'SKIP: the conditions line was not drawn';
