@@ -1,0 +1,7 @@
+v30.00: the welcome pack is a centred card
+
+The welcome pack is a centred card.
+
+Check 30.00. Fails on v29.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

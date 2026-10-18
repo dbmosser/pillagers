@@ -336,12 +336,12 @@
   "when": "2026-10-18T12:26"
  },
  "60-abandoned-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The card follows the end-card shell and sentence case, but it has no hero line, shows a forbidden \"$\" and small low-contrast text, and its explaining sentences make the hierarchy flat, so it is a competent template rather than something a player would call polished.",
-  "pic": "tools/handoff/console/notes/shots/13-i1/60-abandoned-card-1080.jpg",
+  "verdict": "The abandoned card now follows the shared end-card shell and finally has a hero number, but it is still small and timid, with a sub-minimum XP line, a leftover \"$\" and no close X or pad glyphs, so it falls short of ARC Raiders polish.",
+  "pic": "tools/handoff/console/notes/shots/13-i2/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:25"
+  "when": "2026-10-18T12:31"
  },
  "42-hub-pause-box": {
   "score": 3,

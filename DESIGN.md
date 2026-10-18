@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.00 - THE WELCOME PACK IS A CENTRED CARD
+
+Co-op hunt while he was away. The critic scored the Welcome pack 2 of 5: a full-screen slab with seven rows hugging the left and the buttons 1600px apart. The style guide says a modal is a centred card at most 960 wide. It now takes the Terms frame, fitted to its content, with the list and footer 880 wide.
+
+MEASURED. Check 30.00 passes, and fails on v29.99.
 ## v29.99 - Abandoned card: the loot left behind is a 56px figure
 
 Co-op hunt while he was away. The critic held the Abandoned card at 2 of 5 with a P0: no hero line, the loss is a 22px sentence. The loss is now one 56px figure over a 16px label, the shape the Killed card uses, and the XP line is 16px. The old sentence stays hidden in the card, words unchanged.

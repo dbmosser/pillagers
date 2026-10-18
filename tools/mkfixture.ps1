@@ -6097,6 +6097,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.00',what:'the welcome pack is a centred card 960 wide at most, not a full-window slab (the critic: seven rows hugging the left, buttons 1600px apart)',
+   run:function(){
+     var el=null, w=0, wm=0;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       el=document.getElementById('welcomemodal'); if(!el) return 'SKIP: no welcome pack';
+       openModal('welcomemodal');
+       w=parseFloat(getComputedStyle(el,'::before').width)||0; wm=el.getBoundingClientRect().width;
+       if(!(w>0&&w<=961)) return 'the welcome pack frame is '+Math.round(w)+'px wide in a '+Math.round(wm)+'px window; a card is 960 at most';
+       return null;
+     } finally {
+       try{ if(el) el.classList.remove('on'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'29.99',what:'the Abandoned card shows the loot left behind as one 56px figure with a label (critic: no hero line; screen 60), the old words kept hidden',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: cannot deploy and end a raid here';

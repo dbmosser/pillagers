@@ -1,0 +1,21 @@
+{"generated":"2026-10-18T08:32:12","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":196,"screens":[
+{"name":"18-settings-hub","screen":"Settings from the hub station, top of DISPLAY tab","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"18-settings-hub-1080.jpg","lint":""}},
+{"name":"25-raid-pause-box","screen":"RAID PAUSED box (normal mode) with feedback box and buttons","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"25-raid-pause-box-1080.jpg","lint":""}},
+{"name":"26-settings-from-pause-top","screen":"Settings opened from pause, top (THE RAID section)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"26-settings-from-pause-top-1080.jpg","lint":""}},
+{"name":"27-settings-scroll-600","screen":"Settings list scrolled (graphics/sound rows)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"27-settings-scroll-600-1080.jpg","lint":""}},
+{"name":"28-settings-scroll-1200","screen":"Settings list scrolled (difficulty rows)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"28-settings-scroll-1200-1080.jpg","lint":""}},
+{"name":"29-settings-scroll-1800","screen":"Settings list scrolled (keys, kid mode, text size, layout, music)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"29-settings-scroll-1800-1080.jpg","lint":""}},
+{"name":"30-settings-scroll-2400","screen":"Settings list bottom (save file, restore, tuning, dev box)","1080":{"staged":true,"note":"scrollTop 2400.4453125 of 4223","viewport":"1920x1080","shot":"30-settings-scroll-2400-1080.jpg","lint":""}},
+{"name":"31-settings-send-play-data","screen":"Settings SEND PLAY DATA tab","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"31-settings-send-play-data-1080.jpg","lint":""}},
+{"name":"32-keys-window","screen":"CHANGE KEYS window (keysmodal)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"32-keys-window-1080.jpg","lint":""}},
+{"name":"42-hub-pause-box","screen":"Pause box on the hub (RETURN TO THE UNDERCROFT / CHARACTER SELECTION)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"42-hub-pause-box-1080.jpg","lint":""}},
+{"name":"49-arcade-pause-box","screen":"Arcade pause box (RESUME / END RUN)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"49-arcade-pause-box-1080.jpg","lint":""}},
+{"name":"68-settings-sec-the-raid","screen":"Settings, section THE RAID (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"68-settings-sec-the-raid-1080.jpg","lint":""}},
+{"name":"69-settings-sec-audio","screen":"Settings, section AUDIO (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"69-settings-sec-audio-1080.jpg","lint":""}},
+{"name":"70-settings-sec-controls","screen":"Settings, section CONTROLS (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"70-settings-sec-controls-1080.jpg","lint":""}},
+{"name":"71-settings-sec-controller","screen":"Settings, section CONTROLLER (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"71-settings-sec-controller-1080.jpg","lint":""}},
+{"name":"72-settings-sec-display","screen":"Settings, section DISPLAY (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"72-settings-sec-display-1080.jpg","lint":""}},
+{"name":"73-settings-sec-accessibility","screen":"Settings, section ACCESSIBILITY (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"73-settings-sec-accessibility-1080.jpg","lint":""}},
+{"name":"74-settings-change-pad-buttons","screen":"CHANGE PAD BUTTONS window","1080":{"staged":true,"note":"keysmodal","viewport":"1920x1080","shot":"74-settings-change-pad-buttons-1080.jpg","lint":""}},
+{"name":"75-settings-pad-rebind-waiting","screen":"CHANGE PAD BUTTONS with a row waiting (PRESS A BUTTON)","1080":{"staged":true,"note":"keysmodal","viewport":"1920x1080","shot":"75-settings-pad-rebind-waiting-1080.jpg","lint":""}}
+]}
