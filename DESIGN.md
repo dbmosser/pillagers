@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.75 - party prompts follow the last input device
+
+Co-op hunt while he was away. His order (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching -- fortnite does a great job with this". v30.66 routed the raid, hub and menu prompts. These still named both devices at once or one fixed device: the arcade attract and the idle callouts said press any button, the easy mode question said Y or A and N or B, the initials hint said type or arrows, A next, B back, Enter / Menu done, and the trade offer said T or Y. Each now asks the one reader (padOn) and shows the keys or the buttons of the last device used; the open initials card follows in place.
+
+MEASURED. Check 30.75 passes, and fails on v30.74.
 ## v30.74 - THE WHAT IS NEW CARD NAMES POLISH PASS 24
 
 Co-op hunt while he was away. The card was stamped v30.58 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

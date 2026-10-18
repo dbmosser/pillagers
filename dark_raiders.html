@@ -2789,7 +2789,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.74';
+var VER='30.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48300,7 +48300,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.74: The what is new card names polish pass 24. Check 30.74 fails on v30.73',
+  now:'v30.75: Party prompts now show keys or buttons by what you used last: press any key or button, yes or no, the initials hint and the trade offer. Check 30.75 fails on v30.74',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54606,7 +54606,7 @@ function netHubGiftTake(peer,m,fr){
   if(m.op==='offer'){
     if(!it) return 'bad';
     H.in={id:String(m.id).slice(0,40),k:key,from:fr,t:Date.now()};
-    say2(nm+' offers you '+it.name+'. Press T or '+padB('Y')+' to take it.'); try{ blip('pick'); }catch(_b){}
+    say2(nm+' offers you '+it.name+'. Press '+(padOn()?padB('Y'):'T')+' to take it.'); try{ blip('pick'); }catch(_b){}   // v30.xx (cw-glyphs2): the taker sees the one key of the device in use
     return 'offer';
   }
   if(m.op==='yes'){
@@ -54632,7 +54632,7 @@ function drawHubGiftLine(){
   var H=NET.hg, gi=H&&H.in, go=H&&H.out, now=Date.now(), s=null, t, it, w, y;
   if(gi&&now-gi.t>HUB_GIFT_T*1000+5000){ H.in=null; gi=null; }
   if(go&&now-go.t>HUB_GIFT_T*1000+5000){ H.out=null; go=null; }
-  if(gi&&!gi.yes&&(t=HUB_GIFT_T-(now-gi.t)/1000)>0){ it=ITEMS[gi.k]; s=hubGiftName(gi.from)+' offers you '+(it?it.name:gi.k)+'.  T or '+padB('Y')+' to take it.  '+Math.ceil(t)+'s'; }
+  if(gi&&!gi.yes&&(t=HUB_GIFT_T-(now-gi.t)/1000)>0){ it=ITEMS[gi.k]; s=hubGiftName(gi.from)+' offers you '+(it?it.name:gi.k)+'.  '+(padOn()?padB('Y'):'T')+' to take it.  '+Math.ceil(t)+'s'; }   // v30.xx (cw-glyphs2): one key, the device in use
   else if(go&&(t=HUB_GIFT_T-(now-go.t)/1000)>0){ it=ITEMS[go.k]; s='Offered '+(it?it.name:go.k)+' to '+hubGiftName(go.to)+'. Waiting for them to take it.  '+Math.ceil(t)+'s'; }
   if(!s) return null;
   y=LH(76);
@@ -61005,7 +61005,7 @@ function arcadeAttUndress(){
 // The arcade attract: the attract overlay with the clip when there is one, PRESS ANY BUTTON (host) or PLAYER 2: PRESS A, up
 // whenever this window has no arcade raid.
 function arcadeAttShow(){
-  var d=attEl(), v=d.querySelector('video'), ap=d.querySelector('.attpress'), w=(ARCADE.role==='p2')?'PLAYER 2: PRESS A':(arcadeBenched()?'PLAYER 1: PRESS ANY BUTTON':'PRESS ANY BUTTON'), pr;
+  var d=attEl(), v=d.querySelector('video'), ap=d.querySelector('.attpress'), w=(ARCADE.role==='p2')?'PLAYER 2: PRESS A':((arcadeBenched()?'PLAYER 1: ':'')+'PRESS ANY '+(padOn()?'BUTTON':'KEY')), pr;   // v30.xx (cw-glyphs2), HIS ORDER (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching". The host attract names the device last used; player 2 is the pad window and keeps PRESS A
   if(ap&&ap.textContent!==w) ap.textContent=w;
   if(!ATT.on||!ARCADE.att) ARCADE.att={t:0,at:Date.now(),ph:'',ov:0};   // v23.40 (arcade17): the loop starts again each time the attract comes up
   ATT.on=true; if(d.style.display!=='block') d.style.display='block';
@@ -61406,11 +61406,11 @@ function arcadeIdleTick(now){
   }
   if(w<ARCADE_IDLE.ask){ ARCADE.idleSaid=0; return ''; }
   if(w<ARCADE_IDLE.warn){
-    if(ARCADE.idleSaid!=='ask'){ ARCADE.idleSaid='ask'; try{ say('STILL PLAYING?','warn',{sub:'PRESS ANY BUTTON',key:'arcidle'}); }catch(_s1){} }
+    if(ARCADE.idleSaid!=='ask'){ ARCADE.idleSaid='ask'; try{ say('STILL PLAYING?','warn',{sub:'PRESS ANY '+(padOn()?'BUTTON':'KEY'),key:'arcidle'}); }catch(_s1){} }   // v30.xx (cw-glyphs2): key or button by the last device used
     return 'ask';
   }
   n=Math.max(1,Math.ceil((ARCADE_IDLE.out-w)/1000));
-  if(ARCADE.idleSaid!==n){ ARCADE.idleSaid=n; try{ say((end?'RUN ENDS IN ':'OUT IN ')+n,'warn',{sub:'PRESS ANY BUTTON',key:'arcidle'}); }catch(_s2){} }
+  if(ARCADE.idleSaid!==n){ ARCADE.idleSaid=n; try{ say((end?'RUN ENDS IN ':'OUT IN ')+n,'warn',{sub:'PRESS ANY '+(padOn()?'BUTTON':'KEY'),key:'arcidle'}); }catch(_s2){} }   // v30.xx (cw-glyphs2): key or button by the last device used
   return 'warn';
 }
 // The run end, from idle or END RUN. Player 2 that is not the run authority goes out instead.
@@ -61554,6 +61554,7 @@ function arcadeOverSync(){
     if(ini) arcadeIniDraw(c,ini);
   }
   if(on&&oc){ try{ arcadeOverCount(c,o); }catch(_cu){} }   // v23.xx (his answer 20): the score counts up
+  if(on&&ini){ try{ var _iq=c.querySelector('.aoq'), _it=iniHint(); if(_iq&&_iq.textContent!==_it) _iq.textContent=_it; }catch(_qx){} }   // v30.xx (cw-glyphs2): the initials hint follows the last device used, in place (the card itself is rebuilt only when a letter changes)
   c.style.display=on?'block':'none';
   return on;
 }
@@ -61783,6 +61784,10 @@ function arcadePadIni(nw,ax){
   if(op){ if(ARCADE.ini.mirror) netSamePost({t:'arcini',pair:NET.pair,op:op}); else arcadeIniOp(op); }
   return true;
 }
+// v30.xx (cw-glyphs2), HIS ORDER (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up
+// if player is actively using the controller". The initials hint said TYPE OR the arrows, A NEXT, B BACK, ENTER / MENU DONE: both devices at once. It names the keys
+// of the keyboard, or the buttons of the pad (MENU stays an upper case word so a PlayStation pad can rename it, see padB), by the last device used.
+function iniHint(){ return padOn()?padB('\u25b2\u25bc letter  \u00b7  A next  \u00b7  B back  \u00b7  MENU done'):'Type or \u25b2\u25bc  \u00b7  Space next  \u00b7  Backspace back  \u00b7  Enter done'; }
 function arcadeIniDraw(c,n){
   var el, sp, i, st;
   if(!document.getElementById('arcinicss')){
@@ -61796,7 +61801,7 @@ function arcadeIniDraw(c,n){
   el=document.createElement('div'); el.className='aol';
   for(i=0;i<3;i++){ sp=document.createElement('span'); sp.textContent=n.l[i]||'A'; if(i===n.pos) sp.className='cur'; el.appendChild(sp); }
   c.appendChild(el);
-  el=document.createElement('div'); el.className='aoq'; el.textContent=padB('TYPE OR \u25b2\u25bc  \u00b7  A NEXT  \u00b7  B BACK  \u00b7  ENTER / MENU DONE'); c.appendChild(el);
+  el=document.createElement('div'); el.className='aoq'; el.textContent=iniHint(); c.appendChild(el);   // v30.xx (cw-glyphs2): the hint of the device last used (arcadeOverSync keeps it current)
 }
 // v23.45, HIS YES (2026-10-11), arcade22: INITIALS AT THE FIRST QUALIFYING EXTRACTION. His words: a team that walks away still gets its
 // name on the board. The initials card came only at the run end, so a party that walked off mid-run left ??? or nothing. Now the
@@ -61864,7 +61869,7 @@ function easyHud(){
   ctx.strokeStyle='rgba(127,227,212,.75)'; ctx.lineWidth=2; ctx.strokeRect(cx-bw/2+1,y-LH(40)+1,bw-2,bh-2);
   ctx.font=FS(TYPE.head); ctx.fillStyle='#7fe3d4'; hudText('Want easy mode?',cx,y-LH(12));
   ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(242,230,200,.88)';
-  hudText(padB('Y or A  yes  \u00b7  N or B  no')+'  \u00b7  '+Math.ceil(left/1000),cx,y+LH(18));
+  hudText((padOn()?padB('A yes  \u00b7  B no'):'Y yes  \u00b7  N no')+'  \u00b7  '+Math.ceil(left/1000),cx,y+LH(18));   // v30.xx (cw-glyphs2), HIS ORDER (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching". The card named both devices (Y or A, N or B); it names the one in use
   ctx.restore();
 }
 function arcadeIniHud(){
@@ -61882,7 +61887,7 @@ function arcadeIniHud(){
     ctx.fillRect(lx-LH(19),y+LH(44),LH(38),(i===n.pos)?3:2);
   }
   ctx.font=FS(TYPE.micro); ctx.fillStyle='rgba(242,230,200,.82)';
-  hudText(padB('TYPE OR \u25b2\u25bc  \u00b7  A NEXT  \u00b7  B BACK  \u00b7  ENTER / MENU DONE')+'  \u00b7  '+left,cx,y+LH(80));
+  hudText(iniHint()+'  \u00b7  '+left,cx,y+LH(80));   // v30.xx (cw-glyphs2): the hint of the device last used
   ctx.restore();
 }
 // NEW HIGH SCORE: the run authority, every half second in an arcade raid. The bar is tonights best of the other runs, read once per run.

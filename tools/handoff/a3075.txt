@@ -1,0 +1,1 @@
+| party prompts follow the last input device | v30.75 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.75 passes, fails on v30.74 |

@@ -1,0 +1,7 @@
+v30.75: party prompts follow the last input device
+
+Party prompts now show keys or buttons by what you used last: press any key or button, yes or no, the initials hint and the trade offer.
+
+Check 30.75. Fails on v30.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
