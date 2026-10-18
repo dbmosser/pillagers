@@ -1,9 +1,10 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-18 10:36
+Checked: 2026-10-18 11:37
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
+  corpus-1018-0647  v29.90  failing 58, new 44  robots 0 min/0 problems  -> 44 check(s) newly failing, e.g. v29.75 Settings: each stepper is right-aligned in its row, t | v29.72 Settings: the stepper sits within 400px of its name a
   corpus-1018-0246  v29.32  failing 36, new 25  robots 0 min/0 problems  -> 25 check(s) newly failing, e.g. v9.18 the title screen never makes you scroll to reach your  | v29.10 a Ctrl drag of a stack between the stash and the back
   corpus-1017-2244  v29.09  failing 9, new 0  robots 357 min/0 problems  -> this is the current stable
   corpus-1017-1843  v28.95  failing 34, new 0  robots 0 min/0 problems  -> waiting for robots: 0 of 30 minutes on this exact version
@@ -12,17 +13,17 @@ Newest test runs, newest first:
   corpus-1016-1116  v28.73  failing 79, new 0  robots 594 min/0 problems  -> oldest run, kept only as a reference
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v9.18 the title screen never makes you scroll to reach your saves
-  v29.10 a Ctrl drag of a stack between the stash and the backpack asks how many (
   v27.28 kit3, his word on BEST KIT: his three best guns by the colour they wear,
   v26.52 settings11, his order 2026-10-14: the Keys window covers every key the ra
   v26.37 gunkeys2, his order: the Stash screen has a GUN KEYS plate (a tile for ea
   v26.36 gunkeys1, his order: a gun always goes to the key of its class (1 pistol,
-  v25.68 his order (the scavenging noise less repetitive): 20 s of searching never
   v24.79 his #50 (UI redesign ui5q1o, from the AAA judge of the Last Pour shot): a
   v24.63 his #50 (UI redesign ui5q1a, from the AAA judge of the title shots): the
   v24.52 his #50 and #35 (UI redesign ui5q1n, from the AAA judge of the raid HUD s
   v24.45 his #50 (UI redesign ui5q1g, from the AAA judge of the Settings shot): th
-  v24.38 graphics program gfx25: a round going north that stops on the south face
-  v21.84 a wrapped line draws his words: the CONDITIONS panel and the sector map z
-  v21.81 the raid text rewrite: measureText measures the words that are drawn (his
+  v18.73 the title step cards are solid: ASCEND, PILLAGE and EXTRACT have a dark f
+  v18.11 stage B of the styling pass: the title wordmark is a gold gradient clippe
+  v17.94 stage A of the styling pass: every menu button is rounded to one radius w
+  v13.05 the Undercroft floor and the raid HUD paint his wording too: every string
+  v13.03 the experimental warning on the Undercroft floor is spelled the way the h
+  v11.78 the credits and XP readout in the corner is twice the size everywhere, on

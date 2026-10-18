@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.57 - THE AUTO RIFLE KICKS THE SCREEN A LITTLE MORE
+
+Co-op hunt while he was away. His Q5: gun feel. The Auto Rifle used the flat 2.2 kick, 0.44 px, nothing you could see. It now sets 2.7: 0.66 px a round, and a held 25 round magazine climbs slowly (its 132 ms rate drains 0.185 trauma a round, 2.7 adds 0.193) but stays under 3 px.
+
+MEASURED. Check 30.57 passes, and fails on v30.56.
 ## v30.56 - THE WHAT IS NEW CARD NAMES POLISH PASS 21
 
 Co-op hunt while he was away. The card was stamped v30.55 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

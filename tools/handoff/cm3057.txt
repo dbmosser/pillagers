@@ -1,0 +1,7 @@
+v30.57: the auto rifle kicks the screen a little more
+
+The Auto Rifle now gives the screen a small kick as you fire.
+
+Check 30.57. Fails on v30.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
