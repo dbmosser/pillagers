@@ -192,12 +192,12 @@
   "when": "2026-10-18T06:18"
  },
  "35-kia-card": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "A clean, centred KIA card with the right bones (danger title, one hero number, 4-stat row, one primary plus one ghost), but the title is too small to lead, the hero uses a banned \"$\", and the stacked small grey text lines and tiny item tiles keep it below polished.",
-  "pic": "tools/handoff/console/notes/shots/13-f1/35-kia-card-1080.jpg",
+  "verdict": "A tidy, centred KIA card whose red title and amber button read clearly, but the hero is a '$' figure the guide bans, the type is far below the 56/32/20/16 scale, and the card is still one stack of small same-weight lines with no real focal point.",
+  "pic": "tools/handoff/console/notes/shots/13-g1/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:12"
+  "when": "2026-10-18T12:19"
  },
  "38-extracted-card": {
   "score": 3,
@@ -336,12 +336,12 @@
   "when": "2026-10-18T12:15"
  },
  "60-abandoned-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The card has the right shell (centred, dark, one amber primary, stats row), but it has no hero line, the explaining sentences are cramped and tiny, and it still shows a banned '$' currency, so it reads as a template dialog instead of the guide's end card.",
-  "pic": "tools/handoff/console/notes/shots/13-f1/60-abandoned-card-1080.jpg",
+  "verdict": "Judging the g1 version, which is the better of the two: it is a clean, centred end card with a clear amber primary and decent spacing. It still reads as a template, though. It has no hero line, no close or pad hints, small dim text, a '$' amount and explanatory copy, and its tiny fine print is too weak for a couch at 1080.",
+  "pic": "tools/handoff/console/notes/shots/13-g1/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:12"
+  "when": "2026-10-18T12:18"
  },
  "42-hub-pause-box": {
   "score": 3,

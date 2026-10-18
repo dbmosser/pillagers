@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.96 - PAUSE X, SETTINGS FOCUS ROW, KEYS FADE
+
+Co-op hunt while he was away. Critic c-31 round 9 (pause 25/42/49, Settings 26, Keys 32 all at 3): no header X on the pause card, no visible focus row in Settings, Keys rows sliced mid glyph with 16px labels. One 48px X that resumes, the shown row wears the focus look, a 32px fade and 20px section labels.
+
+MEASURED. Check 29.96 passes, and fails on v29.95.
 ## v29.95 - End cards: a 40px title, bigger loss tiles, a clear Abandoned line
 
 Co-op hunt while he was away. The critic scored KIA 3 and Abandoned 2 of 5: the title too small to lead, grey XP line loud, 64px tiles tight to the hero, no focal line on Abandoned. Title 40px, XP line tx-2, tiles 72px with 24px of room, brighter stat rules, the Abandoned loot line in its own 24px bone line. Restyle only, words unchanged.

@@ -32,3 +32,10 @@ Run 4 (lane a). Run 3 shipped 52,55 (over cards) - see below.
 - Edit mkfixture with 7-space indent in the 6100-6200 range; lock.sh first, then edit, then HELD=1 bash fixq.sh, then unlock.sh.
 - Preflight takes ~2 min. Gate reruns old checks: any old check asserting centred/width will regress.
 - Don't re-read the game CSS 1500-1630 more than once: it costs a lot. Notes first.
+
+## Run 7 (lane d, Claude Code; start build v29.92)
+- Critic at start (shots 12-g1): 46=3 55=3 49=3 56=2 (no row staged: board shows No scores yet; 55 shows Score 0 SP, extraction in the stager does not score).
+- Shipped v29.93 cw-partykeys (key caps, ring glyph, 56px rows, ghost board rows, translucent backdrop), v29.94 cw-partystats (run over stat cells, no first run card while arcade is up).
+- LEARNED: behind #attract is the Undercroft hub (labels, HUD). With the welcome pack open (fresh profile stage) it showed through at 46. Critic then: 46=2 (welcome pack ghost), 55=3, 56=2 (P0 hub legible, ghost rows read as clutter, button outside card, two titles).
+- Plan v29.95 cw-partycard: button inside card bottom right (grid-area 1/1), wordmark absolute top-left logo, over card 720 wide, #attract backdrop-filter blur(--sp-2). Needs old checks 29.84/79/76/74/73/66/49 retargeted tolerant (accept old and new) under the lock.
+- TODO after: close .modal.on in arcadeEnter (welcome pack open before arcade click at 46), pause box X (49), operator Back row (62/63), HUD controls card restyle (47/48). 58 title and HUD 48/53/54 stay PARTIAL.

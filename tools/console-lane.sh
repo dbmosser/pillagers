@@ -94,11 +94,22 @@ if [ $ENGINE = cli ]; then
   nl=$(cap CLI_LANES 1)
   if [ $ALWAYS = 0 ] && { { [ "$nl" -lt 2 ] && [ "$L" != a ]; } || { [ "$nl" -lt 3 ] && [ "$L" = c ]; }; }; then
     echo "$(date '+%m-%d %H:%M') resting: Console money used up, $nl helper(s) run on your plan" > "$C/status-$L.txt"; exit 0; fi
-  cday=$(awk -v d="$today" '$1==d {s+=$2} END {printf "%.2f", s+0}' "$C/cli-spend.txt" 2>/dev/null); cday=${cday:-0}
-  CD=$(cap CLI_DAY_USD 25); callow=$(awk -v c="$CD" -v m="$mins" 'BEGIN{a=c*m/1440; if(a>c)a=c; printf "%.2f", a}')
-  if awk -v s="$cday" -v a="$callow" 'BEGIN{exit !(s+0>=a+0)}'; then
-    echo "$(date '+%m-%d %H:%M') pacing your weekly usage: \$$cday of \$$CD today (API-equivalent), \$$callow allowed by now" > "$C/status-$L.txt"; exit 0; fi
-  echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan; \$$cday of \$$CD today)" > "$C/status-$L.txt"
+  # 10-18, his "really we should pace for like 85% because i want to use the account for other stuff too" and "can't you make it so
+  # they pull the actual number instead of guessing??": the REAL plan usage (claude -p "/usage", which costs nothing) paces these
+  # lanes. Weekly use must stay under PLAN_TARGET% (85) of the share of the week gone, and the 5-hour window under PLAN_SESSION_MAX%,
+  # so he always has room. CLI_BOOST lanes (f) run only while the week is 5 or more points under that line.
+  PU="$C/plan-usage.txt"
+  if [ -z "$(find "$PU" -mmin -5 2>/dev/null)" ]; then
+    u=$(cd "$R" && MSYS_NO_PATHCONV=1 env -u ANTHROPIC_API_KEY timeout 90 claude -p "/usage" --output-format json 2>/dev/null | grep -o 'Current session: [0-9]*% used\|Current week (all models): [0-9]*% used' | grep -o '[0-9]*%' | tr -d '%' | tr '\n' ' ')
+    set -- $u; [ -n "$2" ] && echo "$1 $2 $(date +%s)" > "$PU"; fi
+  read ses wk _ < "$PU" 2>/dev/null
+  [ -z "$wk" ] && { echo "$(date '+%m-%d %H:%M') cannot read your plan usage yet; waiting" > "$C/status-$L.txt"; exit 0; }
+  WR=$(date -d "$(cap WEEK_RESET 2026-10-25T05:00:00Z)" +%s); nw=$(date +%s); while [ "$nw" -ge "$WR" ]; do WR=$((WR+604800)); done
+  line=$(awk -v r="$WR" -v n="$nw" -v t="$(cap PLAN_TARGET 85)" 'BEGIN{printf "%.1f", (1-(r-n)/604800)*t}')
+  boost=0; case ",$(cap CLI_BOOST ""),," in *",$L,"*) boost=5;; esac
+  if awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}' || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
+    echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the 85% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; exit 0; fi
+  echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan: week $wk% of the $line% line, 5-hour $ses%)" > "$C/status-$L.txt"
   st=$(date +%s)
   ( cd "$R" && env -u ANTHROPIC_API_KEY claude -p "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" \
       --append-system-prompt "$(cat "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" \

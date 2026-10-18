@@ -72,7 +72,7 @@ His words: "The weakest part of the whole game is still UI and presentation and 
 checking for optimization of design aspects and style consistency across menus, not just getting them right but making them
 actually look good". So for any change a player can see:
 - The camera: powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Screens 01,45 -Out tools/handoff/console/notes/shots/TASKID-before -Res 1080 -Port 936N
-  (N = 1 for lane a, 2 for b, 3 for c, 4 for d, 5 for e; -Res 1080,4k when size matters; add -NoLint to skip the lint). Screen names and their
+  (N = 1 for lane a, 2 for b, 3 for c, 4 for d, 5 for e, 6 for f; -Res 1080,4k when size matters; add -NoLint to skip the lint). Screen names and their
   staging are in tools/handoff/shots/ui-screens-js.json (78 screens; add a screen there only by asking in questions.md).
   It shoots the CURRENT build (the fixture), so take "before" pictures first, and "after" pictures once your ship is in.
   report.json also lists lint issues (clipped, off-screen, small, low-contrast text, overlaps).

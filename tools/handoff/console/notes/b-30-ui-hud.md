@@ -51,3 +51,9 @@ Order by safety for the 10/30 demo: (1) weapon card "B / I backpack" to 16px tx-
 ## Run 10 (lane c): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
 
 ## Run 11 (lane e): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
+
+## Run 12 (lane c): questions.md line 3 still unanswered. Also checked the legend 30 s idea: line 15419 is his v6.68 note ("always open on arrival"), so changing it reverses a ruling. Nothing shipped, no repeat audit.
+
+## Run 13 (lane e): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.
+
+## Run 14 (lane e): questions.md line 3 still unanswered. Nothing shipped, no repeat audit.

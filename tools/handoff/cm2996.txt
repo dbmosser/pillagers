@@ -1,0 +1,7 @@
+v29.96: pause x, settings focus row, keys fade
+
+Pause card has a close X, Settings shows the focused row, Keys fades out.
+
+Check 29.96. Fails on v29.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

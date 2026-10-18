@@ -1,0 +1,5 @@
+## v29.96 - PAUSE X, SETTINGS FOCUS ROW, KEYS FADE
+
+Co-op hunt while he was away. Critic c-31 round 9 (pause 25/42/49, Settings 26, Keys 32 all at 3): no header X on the pause card, no visible focus row in Settings, Keys rows sliced mid glyph with 16px labels. One 48px X that resumes, the shown row wears the focus look, a 32px fade and 20px section labels.
+
+MEASURED. Check 29.96 passes, and fails on v29.95.

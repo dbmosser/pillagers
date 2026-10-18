@@ -1781,6 +1781,16 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibi
 #root #settingsmodal::before, #root #keysmodal::before{ inset-block:calc(var(--py) - var(--sp-3)); }
 #root #settingsmodal #closesettings, #root #keysmodal #closekeys{ top:var(--py); }
 #root #settingsmodal #settabs{ top:calc(var(--py) + var(--sp-1)); }
+
+/* v28.xx (cw-pausex) critic c-31 (pause 25/42/49 at 3: "no close affordance, only a tiny Esc Resume"; Settings 26 at 3: "no focus is visible, the detail pane says Edit the words but that row has no raised fill or amber edge"; Keys 32 at 3: "the World rows are sliced off mid glyph, no fade", "section labels are tiny"). Now: the pause card has the same 48 x 48 header X as Settings and Keys (it resumes), the row the detail pane names wears the focus look, and the Keys list fades out over its last 32px with 24px labels. */
+#root #pausex{ position:absolute; z-index:2; top:calc(50% - var(--pbh, 50vh) / 2 + var(--sp-3)); right:calc(50% - var(--pw) / 2); width:var(--sp-5); height:var(--sp-5); min-width:0 !important; min-height:0 !important; padding:0 !important; font-size:0 !important; line-height:1; display:flex; align-items:center; justify-content:center; }
+#root #pausex::after{ content:''; --xc:var(--tx-1); width:var(--sp-3); height:var(--sp-3); background:linear-gradient(45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%), linear-gradient(-45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%); }
+#root #pausex:hover::after{ --xc:var(--acc); }
+#root #pausebox.asking #pausex{ display:none; }
+#root #setlist .row.dshow:not(.setjump){ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--acc); }
+#root #setlist .row.dshow:not(.setjump) > button{ border-color:var(--ui-line-hi); background:var(--ui-void); color:var(--acc); }
+#root #keyslist{ padding-bottom:var(--sp-4); -webkit-mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-4)), transparent); mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-4)), transparent); }
+#root #keyslist .keysec{ font-size:var(--fs-body); padding-top:var(--sp-3); }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -1807,6 +1817,7 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibi
     <!-- v23.39 (arcade16): the arcade pause box offers END RUN in place of Settings and Abandon run -->
     <button id="arcendbtn" style="padding:8px 22px;border-color:var(--rust);color:var(--rust);display:none">END RUN</button>
   </div>
+  <button id="pausex" title="Resume" aria-label="Resume"></button>
   <div id="pausebleed" style="display:none;font-size:13.5px;color:var(--rust);margin-top:8px;text-align:center;max-width:620px;line-height:1.7">YOU ARE DOWNED.  You can extract while downed</div>
   <div id="pausehost" style="display:none;font-size:13.5px;color:var(--amber);margin-top:8px;text-align:center;max-width:620px;line-height:1.7">YOU ARE HOSTING. Closing this window or ending the party ends the raid for your whole party.</div>
 </div>
@@ -2697,7 +2708,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.95';
+var VER='29.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17966,7 +17977,7 @@ try{ window.addEventListener('keydown',function(ev){
 function pauseFrameFit(){
   var b=document.getElementById('pausebox'), i, c, t=1e9, bo=-1e9, wd=0;
   if(!b||!b.offsetHeight) return false;
-  for(i=0;i<b.children.length;i++){ c=b.children[i]; if(c.offsetHeight>0){ t=Math.min(t,c.offsetTop); bo=Math.max(bo,c.offsetTop+c.offsetHeight); wd=Math.max(wd,c.offsetWidth); } }
+  for(i=0;i<b.children.length;i++){ c=b.children[i]; if(c.offsetHeight>0&&c.id!=='pausex'){ t=Math.min(t,c.offsetTop); bo=Math.max(bo,c.offsetTop+c.offsetHeight); wd=Math.max(wd,c.offsetWidth); } }
   if(!(bo>t)) return false;
   // v28.xx (cw-pausefit) critic c-31 round 3 (pause 25/42/49 at 3): the title sat 14px under the card top and the Esc hint touched the bottom, because the hint is a pseudo element the child loop above cannot see. The frame now adds the hint row (24 gap, 16 text, 8 margin) when it shows, so the title and the hint both get the 32px the card pads with
     var _hint=0; try{ _hint=(getComputedStyle(b,'::after').display!=='none'&&/Esc/.test(getComputedStyle(b,'::after').content))?48:0; }catch(_h){}
@@ -47849,7 +47860,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.95: End cards: bigger title and loss tiles, a clear loot line on Abandoned. Check 29.95 fails on v29.94',
+  now:'v29.96: Pause card has a close X, Settings shows the focused row, Keys fades out. Check 29.96 fails on v29.95',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61957,6 +61968,8 @@ document.getElementById('resumebtn').onclick=function(){
   disarmAbandon();   // v10.96: the same four lines this used to carry itself
   togglePauseBox(false);   // v12.02: the close banks the note, for this button and for ESC alike
 };
+// v28.xx (cw-pausex) the header X on the pause card is the Resume button's twin
+document.getElementById('pausex').onclick=function(){ document.getElementById('resumebtn').onclick(); };
 // v4.24 HIS ORDER: no accidental abandons. First click arms a YES button on
 // the FAR side of the row (left of Resume, nowhere near the cursor), so a
 // double-click lands on a button that has already changed roles harmlessly.
@@ -62019,6 +62032,8 @@ document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
     if(!real(r)&&hov){ q=sl.querySelectorAll('.row'); for(i=0;i<q.length;i++){ var bb=q[i].querySelector('div > b'); if(bb&&bb.textContent===hov){ r=q[i]; break; } } }
     if(!real(r)){ q=sl.querySelectorAll('.row'); r=null; for(i=0;i<q.length;i++) if(real(q[i])){ r=q[i]; break; } }
     if(!r){ if(dt.innerHTML) dt.innerHTML=''; return; }
+    // v28.xx (cw-pausex) the row the pane names wears the focus look even with no pointer on it
+    var _cur=sl.querySelector('.row.dshow'); if(_cur!==r){ if(_cur) _cur.classList.remove('dshow'); r.classList.add('dshow'); }
     var b=r.querySelector('div > b'), h=r.querySelector('.hint'), v=r.querySelector('button'), sel=r.querySelector('select');
     var vt=v?v.textContent:(sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'');
     var html='<div class="sdk">'+escHtml(b.textContent)+'</div>'+(vt?'<div class="sdv">'+escHtml(vt)+'</div>':'')+(h&&h.textContent?'<div class="sdh">'+escHtml(h.textContent)+'</div>':'');

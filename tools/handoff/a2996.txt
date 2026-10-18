@@ -1,0 +1,1 @@
+| PAUSE X, SETTINGS FOCUS ROW, KEYS FADE | v29.96 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.96 passes, fails on v29.95 |
