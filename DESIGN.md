@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.52 - A HIT RAIDER JUMPS BACK A LITTLE FARTHER
+
+Co-op hunt while he was away. His Q5: enemy feel. The raider is the commonest body in a raid and a hit pushed it only 5 px for 0.16 s. It now jumps back 6.5 px at the full flash, easing to 0 over the same 0.16 s. The Crawler keeps 8 px, every other body 5.
+
+MEASURED. Check 30.52 passes, and fails on v30.51.
 ## v30.51 - DEMO HIDES CREDITS XP STASH AND BAG
 
 Co-op hunt while he was away. His answer Q55 (10-18): in the demo hide credits, XP, stash and bag. The top right readout is now empty in the demo and unchanged in career.

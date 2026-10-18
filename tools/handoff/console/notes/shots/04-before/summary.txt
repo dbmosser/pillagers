@@ -1,0 +1,7 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       5.8s  
+  04-stash-terminal                      staged       7.5s  
+  18-settings-hub                        staged       7.7s    | settingsmodal
+  25-raid-pause-box                      staged       9.1s  
+  26-settings-from-pause-top             staged       9.6s  
+  40-whats-new-card                      staged      12.4s    | runs 1 wnseen 0

@@ -1,0 +1,16 @@
+{
+    "title":  "DEMO GUN CARD HIDES ITEM VALUE AND BACKPACK HINT",
+    "why":  "His answer Q56 (10-18): in the demo also hide the item-value line and the backpack hint, keep the run goals. Career keeps both.",
+    "now":  "The demo gun card no longer shows the item-value line or the backpack hint.",
+    "edits":  [
+                  {
+                      "anchor":  "  ctx.fillText(G.bag.length+\u0027 ITEM\u0027+(G.bag.length===1?\u0027\u0027:\u0027S\u0027)+\u0027  $\u0027+_cv.toLocaleString(),W-16,by);",
+                      "replacement":  "  if(!trDemo()) ctx.fillText(G.bag.length+\u0027 ITEM\u0027+(G.bag.length===1?\u0027\u0027:\u0027S\u0027)+\u0027  $\u0027+_cv.toLocaleString(),W-16,by);   // v28.xx (cw-hudDemoCard), his Q56 (2026-10-18): the item-value line is hidden in the demo"
+                  },
+                  {
+                      "anchor":  "  if(!G.bagOpen){\n    ctx.font=FS(TYPE.label); ctx.fillStyle=\u0027#aaa498\u0027;",
+                      "replacement":  "  if(!G.bagOpen\u0026\u0026!trDemo()){   // v28.xx (cw-hudDemoCard), his Q56 (2026-10-18): the backpack hint is hidden in the demo\n    ctx.font=FS(TYPE.label); ctx.fillStyle=\u0027#aaa498\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the demo gun card has no item-value line and no backpack hint; career keeps both (his Q56, 10-18)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var g=null, oF=ctx.fillText, tx=[], a0, car, dem;\n     function cue(){ tx=[]; ctx.fillText=function(s){ tx.push(String(s)); return oF.apply(this,arguments); }; try{ __frame(0.016); }finally{ ctx.fillText=oF; }\n       return {bp:tx.some(function(s){ return (/\\S\\s+BACKPACK$/i).test(s); }), val:tx.some(function(s){ return (/^\\d+ items?\\s+\\$/i).test(s); })}; }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; a0=g.arcade;\n       g.arcade=0; car=cue();\n       g.arcade=1; dem=cue();\n       if(!car.bp||!car.val) return \u0027career lost the backpack hint or the item-value line (hint \u0027+car.bp+\u0027, value \u0027+car.val+\u0027)\u0027;\n       if(dem.bp) return \u0027the demo still shows the backpack hint\u0027;\n       if(dem.val) return \u0027the demo still shows the item-value line\u0027;\n       return null;\n     } finally {\n       try{ if(g) g.arcade=a0; }catch(_e){}\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e2){}\n       __topClear();\n     } }},"
+}

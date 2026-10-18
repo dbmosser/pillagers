@@ -49,6 +49,8 @@ public static class PW {
   [DllImport("user32.dll")] public static extern bool MoveWindow(IntPtr h, int x, int y, int w, int hh, bool repaint);
   [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int cmd);
   [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
+  [DllImport("user32.dll")] static extern bool PostMessage(IntPtr h, uint msg, IntPtr w, IntPtr l);
+  public static void Close(IntPtr h) { PostMessage(h, 0x10, IntPtr.Zero, IntPtr.Zero); }   // WM_CLOSE: the page closes itself and runs its own cleanup
   [DllImport("user32.dll")] public static extern void keybd_event(byte vk, byte scan, uint flags, UIntPtr extra);
   // every visible Chrome window whose title starts with the prefix: "handle|title|style|left|top|right|bottom|pid"
   public static string[] Find(string prefix) {
@@ -124,6 +126,11 @@ function Party-Chrome(){
   return @(Get-CimInstance Win32_Process -Filter "Name='chrome.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -and $_.CommandLine.Contains($pf) })
 }
 function Stop-Party(){
+  $procs=@(Party-Chrome); if($procs.Count -eq 0){ return }
+  $pids=@($procs | ForEach-Object { [int]$_.ProcessId })
+  # ask each window to close first, so the game runs its own cleanup (a window killed mid raid leaves a mark that makes the game refuse a new 2 player pick for 75 s); kill what is left after 6 s
+  foreach($s in [PW]::Find('')){ $w=Parse-Win $s; if($pids -contains $w.Pid){ [PW]::Close($w.H) } }
+  for($i=0;$i -lt 12;$i++){ Start-Sleep -Milliseconds 500; if(@(Party-Chrome).Count -eq 0){ return } }
   foreach($p in (Party-Chrome)){ try{ Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }catch{} }
 }
 if($ShowScreens){

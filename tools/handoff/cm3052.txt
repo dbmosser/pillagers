@@ -1,0 +1,7 @@
+v30.52: a hit raider jumps back a little farther
+
+A raider you hit now jumps back a little farther.
+
+Check 30.52. Fails on v30.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
