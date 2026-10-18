@@ -6121,8 +6121,8 @@ window.__REGRESS=[
        document.body.classList.remove('padon');
        openSettings('display');
        if(typeof window.__setDetailSync==='function') window.__setDetailSync();
-       d=document.getElementById('setdetail'); k=d&&d.querySelector('.sdk'); h=d&&d.querySelector('.sdh');
-       if(k&&getComputedStyle(k).display!=='none') bad.push('the detail pane still repeats the row title');
+       d=document.getElementById('setdetail'); k=d&&d.querySelector('.sdv'); h=d&&d.querySelector('.sdh');
+       if(k&&getComputedStyle(k).display!=='none') bad.push('the detail pane still repeats the row value');
        if(!d) bad.push('no detail pane');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ PADB.waiting=null; KEYS.waiting=null; var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
