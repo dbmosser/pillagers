@@ -1,0 +1,7 @@
+v29.21: a dead howler leaves wreckage, not a box
+
+A dead Howler leaves a smoking mortar wreck.
+
+Check 29.21. Fails on v29.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
