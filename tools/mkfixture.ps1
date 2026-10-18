@@ -6097,6 +6097,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.29',what:'the demo starts with TV-size text (HUD size 150 percent) and leaving puts his own size back (his Q21)',
+   run:function(){
+     if(window.storage&&window.storage.set) return 'SKIP: this host saves through window.storage, not localStorage';
+     if(typeof arcadeSandboxIn!=='function'||typeof arcadeSandboxOut!=='function'||typeof uiScale!=='function') return 'SKIP: no arcade sandbox here';
+     var bad=[], us0, had;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       had=Object.prototype.hasOwnProperty.call(P,'uiScale'); us0=P.uiScale; P.uiScale=1.2;
+       if(!arcadeSandboxIn('host')) return 'arcadeSandboxIn failed';
+       if(Math.abs(uiScale()-1.5)>0.001) bad.push('inside the demo the HUD size is '+uiScale()+', not 1.5');
+       arcadeSandboxOut();
+       if(Math.abs(uiScale()-1.2)>0.001) bad.push('after leaving the demo the HUD size is '+uiScale()+', not his 1.2');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){} if(had) P.uiScale=us0; else delete P.uiScale; __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.28',what:'no swearing in the baked on-screen lines (his answer Q76): the three lines that had it keep their attitude without it',
    run:function(){
      if(typeof TXSHIP!=='object'||!TXSHIP) return 'no TXSHIP table';

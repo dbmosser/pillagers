@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.29 - TV-size text in the demo
+
+Co-op hunt while he was away. His answer Q21 (10-18): TV-size text is on by default in the demo. The party runs on two TVs 6 to 10 feet away. The demo sandbox starts at HUD size 150 percent; his own size comes back on leaving.
+
+MEASURED. Check 30.29 passes, and fails on v30.28.
 ## v30.28 - Clean the swearing out of the baked on-screen lines
 
 Co-op hunt while he was away. His answer Q76 (2026-10-18): clean the swearing out of on-screen lines but keep the attitude. Three baked lines swore: "You cheap bastard.", "Shit is about to get real." and "This is some shit Claude came up with." They now read "You cheapskate.", "Things are about to get real." and "This is some wild idea Claude came up with."

@@ -1,0 +1,7 @@
+v30.29: tv-size text in the demo
+
+The demo starts with bigger text for the TVs.
+
+Check 30.29. Fails on v30.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

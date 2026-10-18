@@ -2789,7 +2789,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.28';
+var VER='30.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47997,7 +47997,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.28: Three on-screen lines lost their swearing and kept their attitude. Check 30.28 fails on v30.27',
+  now:'v30.29: The demo starts with bigger text for the TVs. Check 30.29 fails on v30.28',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56640,7 +56640,7 @@ function netHostGone(why){
 // mid-arcade therefore leaves the save as it was before the arcade began. Later builds add the raid, the pads and the attract.
 var ARCADE={on:0,role:'',realJs:null,cfg0:null,mapIx:0};
 var ARCADE_SBX={weapons:['rifle'],equipped:'rifle',equippedSec:'none',kitChosen:1,dropKit:[],stash:[],kit:[],hotAssign:null,
-  merc:null,mercOut:null,intel:0,terms:[],contracts:[],gunPiled:[],raidSpliced:[],notoriety:0,runs:0,autoloot:1,keymap:{},keymapV:2,crashes:[]};
+  merc:null,mercOut:null,intel:0,terms:[],contracts:[],gunPiled:[],raidSpliced:[],notoriety:0,runs:0,autoloot:1,keymap:{},keymapV:2,crashes:[],uiScale:1.5,menuZoom:1.25};   // v28.xx (cw-tvtext), his answer Q21 (2026-10-18): "TV-size text is on by default in the demo". The party plays on two TVs 6 to 10 ft away: HUD size 150 percent (UISCALES step 3) with the matching menu zoom (1.5 / 1.2), the pair hudSizeStep sets. Settings can still change it for the night; arcadeSandboxOut puts his own profile back
 // v23.27 (arcfixb), from the review of the arcade core: EVERY DIAL IS PUT BACK WHEN THE ARCADE IS LEFT. The sandbox kept his profile
 // aside but not the live dials (CFG), and only the two arcade overlay dials were put back at leave. A guest who opened Settings
 // from the pause box (damage, kid mode, volume, text size, a preset) or moved a tuning console slider changed the live dials, and
@@ -56667,6 +56667,7 @@ function arcadeSandboxIn(role){
   ARCADE.realJs=js; ARCADE.on=1;
   netUpPutP(JSON.stringify(sb));
   try{ KEYS.inv=null; keysInv(); }catch(_ki){}
+  try{ applyMenuZoom(); }catch(_tz){}   // v28.xx (cw-tvtext): the TV size takes hold at once
   return true;
 }
 function arcadeSandboxOut(){
