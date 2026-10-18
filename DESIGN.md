@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.45 - No live rank, no board during a run
+
+Co-op hunt while he was away. His answer Q71 (10-18): no live rank readout, and no scoreboard until the game is over. The mid-run NEW HIGH SCORE callout is gone, and a window that is out of a live run (benched or extracted) skips the board page in its attract loop.
+
+MEASURED. Check 30.45 passes, and fails on v30.44.
 ## v30.44 - THE SCAV PISTOL KICKS THE SCREEN A LITTLE
 
 Co-op hunt while he was away. His Q5: gun feel. The camera shake is 18 px times trauma squared, so the flat 2.2 kick was 0.4 px, nothing you could see. The Scav Pistol (the gun every party guest starts with) now sets 3.6: about 1.2 px a shot, 1.0 px over six taps at full rate.

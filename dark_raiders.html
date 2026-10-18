@@ -2779,7 +2779,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.44';
+var VER='30.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48081,7 +48081,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.44: The Scav Pistol now gives the screen a small kick with every shot. Check 30.44 fails on v30.43',
+  now:'v30.45: The board and the high-score callout wait until the run is over. Check 30.45 fails on v30.44',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60741,6 +60741,8 @@ function arcadeAttHow(pg){
   }
   pg.appendChild(t);
 }
+// v28.xx (cw-noliverank), his Q71: a run is live and this window is out of it (a benched player 1, or player 2 hearing the host score word)
+function arcadeAttLive(){ return !!(arcadeBenched()||(ARCADE.role==='p2'&&!(G&&G.arcade)&&Date.now()-(+ARCADE.scSeen||0)<ARCADE_ATT.live)); }
 // The team strip: a run is live and this window is out of it.
 function arcadeAttStrip(){
   var p2=(ARCADE.role==='p2'), up=!(G&&G.arcade), live=arcadeBenched()||(p2&&up&&Date.now()-(+ARCADE.scSeen||0)<ARCADE_ATT.live), s='';
@@ -60755,7 +60757,7 @@ function arcadeAttLoop(ovOn){
   if(!a) a=ARCADE.att={t:0,at:now,ph:'',ov:0};
   a.t=Math.max(0,+a.t||0)+Math.min(1,Math.max(0,(now-(+a.at||now))/1000)); a.at=now;
   if(ovOn){ a.ov=1; ph='over'; }
-  else { if(a.ov){ a.ov=0; a.t=clip?ARCADE_ATT.video:0; } ph=arcadeAttPhase(a.t,clip); }
+  else { if(a.ov){ a.ov=0; a.t=clip?ARCADE_ATT.video:0; } ph=arcadeAttPhase(a.t,clip); if(ph==='board'&&arcadeAttLive()) ph='howto'; }   // v28.xx (cw-noliverank), his Q71: the board waits until the run is over
   if(ph!==a.ph){
     a.ph=ph; try{ UIM.tabOut(pg,1); }catch(_um){} pg.textContent='';   // v28.xx (cw-uimotion): the old page slides out as the new one slides in
     if(ph==='board') arcadeAttBoard(pg); else if(ph==='howto') arcadeAttHow(pg);
@@ -61646,6 +61648,7 @@ function arcadeIniHud(){
 }
 // NEW HIGH SCORE: the run authority, every half second in an arcade raid. The bar is tonights best of the other runs, read once per run.
 function arcadeHiTick(){
+  return false;   // v28.xx (cw-noliverank), his answer Q71 (2026-10-18): "No live rank readout, and no scoreboard until the game is over." The mid-run NEW HIGH SCORE callout compared the team with the board; the board shows after the run only
   if(!arcadeBoardAuth()||!G||!G.arcade||G.over||G.sim||!ARCADE.run||!ARCADE.run.id) return false;
   var id=ARCADE.run.id, r, i, b=0, t=arcadeTeam();
   if(ARCADE.hiRun!==id){

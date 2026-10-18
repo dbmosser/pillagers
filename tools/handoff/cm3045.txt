@@ -1,0 +1,7 @@
+v30.45: no live rank, no board during a run
+
+The board and the high-score callout wait until the run is over.
+
+Check 30.45. Fails on v30.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,16 @@
+{
+    "title":  "A HIT CRAWLER JUMPS BACK FARTHER",
+    "why":  "His Q5: enemy feel. A hit body is drawn pushed 5 px for 0.16 s whatever it is. The Crawler is the smallest, lightest common machine (radius 15) so 5 px barely showed. It now jumps back 8 px at the full flash, easing to 0 over the same 0.16 s. Raiders and the rest keep 5 px.",
+    "now":  "A Crawler you hit now jumps back farther.",
+    "edits":  [
+                  {
+                      "anchor":  "function animHitShift(e){",
+                      "replacement":  "var HIT_JOLT={crawler:8};   // v28.xx (cw-joltcrawler), his Q5 enemy feel: a hit shoves a body this many px at full hit flash (0.16 s); the light Crawler (radius 15) 5 to 8 px, so a tap reads as a hit; every other body keeps 5\nfunction animHitShift(e){"
+                  },
+                  {
+                      "anchor":  "a=5*Math.max(0,Math.min(1,e.hitT/0.16));",
+                      "replacement":  "a=(HIT_JOLT[e.kind]||5)*Math.max(0,Math.min(1,e.hitT/0.16));"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a Crawler in its hit flash is shoved 8 px away from the player (up from 5), half that at half the flash, and a raider still 5 px (his Q5 enemy feel)\u0027,\n   run:function(){\n     if(typeof animHitShift!==\u0027function\u0027) return \u0027SKIP: no animHitShift\u0027;\n     var g=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       var px=g.player.x, py=g.player.y;\n       var c=animHitShift({kind:\u0027crawler\u0027,x:px+100,y:py,hitT:0.16});\n       var h=animHitShift({kind:\u0027crawler\u0027,x:px+100,y:py,hitT:0.08});\n       var r=animHitShift({kind:\u0027raider\u0027,x:px+100,y:py,hitT:0.16});\n       if(!c||Math.abs(c.x-8)\u003e0.01||Math.abs(c.y)\u003e0.01) return \u0027a Crawler hit shove is \u0027+JSON.stringify(c)+\u0027, not 8 px\u0027;\n       if(!h||Math.abs(h.x-4)\u003e0.01) return \u0027a Crawler at half the flash is shoved \u0027+(h\u0026\u0026h.x)+\u0027, not 4 px\u0027;\n       if(!r||Math.abs(r.x-5)\u003e0.01) return \u0027a raider hit shove is \u0027+(r\u0026\u0026r.x)+\u0027, not 5 px\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

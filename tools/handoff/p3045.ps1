@@ -12,26 +12,31 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# RUN INFO SHOWS THE 3 CLOSEST CONTRACTS (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
+# No live rank, no board during a run (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
 
 SubRx @'
-var EDGEBOX={}, GUNCARD_LAST=null;   // v24.9x (ringbadge): the gun card, pickup rows and co-op kill feed as last drawn, screen pixels
+function arcadeHiTick(){
+  if(!arcadeBoardAuth()
 '@ @'
-// v28.xx (cw-hudcontracts), HIS ANSWER Q1 (2026-10-18): "the Run info box shows at most the 3 contracts closest to done; ALL contracts are listed on the map screen."
-// Replaces his v6.79 "ALL of them, not three and a footnote". runInfoCap takes the live contract rows and returns the 3 nearest to finishing, nearest first.
-var RUNINFO_MAX=3;
-function runInfoCap(live){
-  var a=(live||[]).slice();
-  a.sort(function(x,y){ return x.left-y.left; });
-  return a.slice(0,RUNINFO_MAX);
-}
-var EDGEBOX={}, GUNCARD_LAST=null;   // v24.9x (ringbadge): the gun card, pickup rows and co-op kill feed as last drawn, screen pixels
+function arcadeHiTick(){
+  return false;   // v28.xx (cw-noliverank), his answer Q71 (2026-10-18): "No live rank readout, and no scoreboard until the game is over." The mid-run NEW HIGH SCORE callout compared the team with the board; the board shows after the run only
+  if(!arcadeBoardAuth()
 '@
 
 SubRx @'
-      _live.sort(function(a,b){ return a.left-b.left; });
+// The team strip: a run is live and this window is out of it.
+function arcadeAttStrip(){
 '@ @'
-      _live=runInfoCap(_live);   // v28.xx (cw-hudcontracts), his Q1 (2026-10-18): the 3 closest to done, not all of them (the map screen lists all)
+// v28.xx (cw-noliverank), his Q71: a run is live and this window is out of it (a benched player 1, or player 2 hearing the host score word)
+function arcadeAttLive(){ return !!(arcadeBenched()||(ARCADE.role==='p2'&&!(G&&G.arcade)&&Date.now()-(+ARCADE.scSeen||0)<ARCADE_ATT.live)); }
+// The team strip: a run is live and this window is out of it.
+function arcadeAttStrip(){
+'@
+
+SubRx @'
+ph=arcadeAttPhase(a.t,clip); }
+'@ @'
+ph=arcadeAttPhase(a.t,clip); if(ph==='board'&&arcadeAttLive()) ph='howto'; }   // v28.xx (cw-noliverank), his Q71: the board waits until the run is over
 '@
 
 SubRx @'
@@ -43,7 +48,7 @@ var VER='30.45';
 $pat = "(?m)^  now:'v30\.44:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v30.45: The Run info box in the raid shows only the 3 contracts closest to done. Check 30.45 fails on v30.44',"
+$new = "  now:'v30.45: The board and the high-score callout wait until the run is over. Check 30.45 fails on v30.44',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s
