@@ -1,0 +1,7 @@
+v31.44: low health pulses a red outline on the health bar
+
+Under a quarter health the health bar pulses a red outline.
+
+Check 31.44. Fails on v31.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

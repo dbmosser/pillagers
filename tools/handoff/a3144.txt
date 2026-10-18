@@ -1,0 +1,1 @@
+| LOW HEALTH PULSES A RED OUTLINE ON THE HEALTH BAR | v31.44 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.44 passes, fails on v31.43 |

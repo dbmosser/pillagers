@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.44 - LOW HEALTH PULSES A RED OUTLINE ON THE HEALTH BAR
+
+Co-op hunt while he was away. The critic scored the low health screen 2 with a P0: the state is too weak, nothing tells you that you are nearly dead. Under 25 percent health the bar now gets a pulsing 2px red outline.
+
+MEASURED. Check 31.44 passes, and fails on v31.43.
 ## v31.43 - PARTY CARDS: SOLID FILL AND A READABLE RUN OVER TITLE
 
 Co-op hunt while he was away. Critic 52 and 64 (2 of 5): sprites show through the translucent card, the run over title is dim grey, the ended early line is lime and out-shouts the title, the any-key prompt is a footnote. The cards are 97 percent panel, the title is tx-1, the second line tx-2, the prompt at least 24px.

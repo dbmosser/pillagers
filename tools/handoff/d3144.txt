@@ -1,0 +1,5 @@
+## v31.44 - LOW HEALTH PULSES A RED OUTLINE ON THE HEALTH BAR
+
+Co-op hunt while he was away. The critic scored the low health screen 2 with a P0: the state is too weak, nothing tells you that you are nearly dead. Under 25 percent health the bar now gets a pulsing 2px red outline.
+
+MEASURED. Check 31.44 passes, and fails on v31.43.

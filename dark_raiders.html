@@ -2848,7 +2848,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.43';
+var VER='31.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39162,6 +39162,17 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
 // were flat rectangles. They are rounded capsules now: a dark track, the fill lit along its top and its own colour through the
 // middle (so the colour a check or an eye reads at the centre is the colour it always was), a thin light line along the top
 // and a rounded steel ring. Same position, size and fraction everywhere.
+// v28.xx (cw-lowhp), the critic on the low health shot (2026-10-19, P0): 'low-health state is weak, the player does not notice they are nearly dead'.
+// Under a quarter health the health bar gets a pulsing 2px red outline, so the thing that kills you shouts louder than stamina. Returns true when it drew.
+function drawLowHpRing(x,y,w,h,hp,mx){
+  if(!(hp>0)||!(mx>0)||hp/mx>=0.25) return false;
+  var t=((typeof performance!=='undefined'&&performance.now)?performance.now():Date.now())/1000, a=0.55+0.4*Math.sin(t*6);
+  ctx.save();
+  ctx.strokeStyle='rgba(224,72,58,'+a.toFixed(2)+')'; ctx.lineWidth=2;
+  ctx.strokeRect(x-1,y-1,w+2,h+2);
+  ctx.restore();
+  return true;
+}
 function bar(x,y,w,h,f,c,bg){
   var r=Math.max(1,Math.min(h/2,6)), fw=w*clamp(f,0,1), gr;
   function rp(px,py,pw,ph){ ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(px,py,pw,ph,r); else ctx.rect(px,py,pw,ph); }
@@ -41645,6 +41656,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   if(_hpx>_hpm) _hpf=_hpf.replace(/[\d.]+px/,(Math.round(_hpm*10)/10)+'px');
   ctx.font=_hpf; ctx.fillStyle='#FFF6DC';
   ctx.fillText('HP  '+Math.round(p.hp),24,(_hpx>_hpm)?Math.round(by+HBH/2+_hpm*0.36):by+18);
+  drawLowHpRing(16,by,HBW,HBH,p.hp,p.maxhp);   // v28.xx (cw-lowhp)
   // v19.07: the co-op HUD (teammate rows, kill feed, pings, the controller paused word) is drawn after the corner scale ends, below
   // YOUR OWN STATUS, beside the health because that is where you already look.
   // Same verb and same colour the raider board gives them, from the same table,
@@ -49439,7 +49451,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.43: The how to play, board and run over cards are solid, the run over title reads, and the any-key prompt is bigger. Check 31.43 fails on v31.42',
+  now:'v31.44: Under a quarter health the health bar pulses a red outline. Check 31.44 fails on v31.43',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

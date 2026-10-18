@@ -282,17 +282,17 @@
  "52-arcade-run-over": {
   "score": 3,
   "pass": false,
-  "verdict": "The only visible change is 'press any button' becoming 'press any key', so every earlier structural problem remains: no real button, a muddy hierarchy, and a loose card with a dead bottom edge.",
+  "verdict": "The card is calmer than before: the title is now bright, the lime sub-line is quiet grey and the prompt is bigger. It is still a plain dark box with a small left-aligned stack, a half-empty right side and a weak, muted prompt.",
   "findings": [
-   "P1 Footer, bottom-right ('press any key'): Add a 56px primary 'continue' (fill #e6ff3d, ink #11150a, 20px 700, min-width 200px) bottom-right and a 56px ghost 'back to menu' to its left. Keep 'press any button' only as a 16px hint. Do not make it key-only.",
-   "P1 Hero line 'score 0 sp': Put a 16px tx-2 'score' label above, then '0' at 56px f-cond 800 with 'sp' at 20px tx-2 beside it. For a zero run, use a state line such as 'no score this run'.",
-   "P1 Title 'run over', top-left: Set the title to 32px f-cond 700 tx-1 (#efe9dc). Keep the 36x2px lime tab. Add the 48x48 ghost X top-right per the window/dialog rule.",
-   "P1 Stats row (kills, extractions, deaths): Use 4 equal columns across 652px (add 'time' or 'sp'). Set values to 24px f-cond 600 tx-1 and labels to 16px f-cond 600 #aaa498 with +.04em tracking.",
-   "P2 Card vertical rhythm: Use 24px title to hero, 24px hero to divider, 24px divider to stats, 32px stats to footer, and a 72px footer row with the buttons centred. Match the 24px top and bottom padding."
+   "P1 Footer, bottom-right ('press any key'): Set the prompt in tx-1 #efe9dc at 24px f-cond 700, and make the glyph full --acc #e6ff3d. Keep it in the bottom row, but give the row 72px height and 24px padding. Do not add a separate button, since this is a walk-up screen.",
+   "P1 Hero 'score 0 sp': Put a 16px tx-2 'score' label above. Show '0' at 56px f-cond 800 tx-1 with 'sp' at 20px tx-2 beside it. The 'ended early -50%' line already explains the zero, so move it directly under the hero as a 16px --warn line.",
+   "P1 Title 'run over', top-left, and the 'ended early -50%' sub-line: Set the title to 32px f-cond 700 tx-1. Leave 16px between the title and the sub-line, and make the sub-line 16px tx-2 at least 4.5:1. Drop the X, because any key continues on this screen.",
+   "P1 Stats row (kills / extractions / deaths): Use 4 equal columns across 652px and add 'time' or 'sp'. Make values 24px f-cond 600 tx-1 and labels 16px f-cond 600 tx-2 with +.04em tracking.",
+   "P2 Card vertical rhythm and padding: Use 24px title→hero, 24px hero→divider, 24px divider→stats and 32px stats→footer. Make the footer row 72px with the prompt vertically centred, and enlarge the card if the run-over screen should match the windows."
   ],
-  "pic": "tools/handoff/console/notes/shots/12b-after/52-arcade-run-over-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r4-after/52-arcade-run-over-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T19:52"
+  "when": "2026-10-18T23:25"
  },
  "57-title-2p-coop-picked": {
   "score": 2,
@@ -374,17 +374,17 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "the only visible change is 'l stick' and 'r stick' becoming 'left stick' and 'right stick', which is a small clarity gain; the card, close button, footer and column layout I flagged last time are all unchanged.",
+  "verdict": "Only the 'press any key' prompt got bigger (and the switch-gun text now reads '1-8, 0'); the card is otherwise unchanged, so the earlier structure, header and close-button problems all remain.",
   "findings": [
-   "P1 footer 'press any key' with lime radio dot (x≈1204-1346, y≈846-868): remove the dot. Add a 56px high, min 200px wide --acc button 'got it' (--acc-ink text, 20px/700, 4px radius) with its right edge at x=1346, in a 72px footer. Put a 16px tx-2 'press any button' hint to its left.",
-   "P1 close X (x≈1306-1354, y≈190-237): use the uiIcon close glyph at 24px in a 48x48 ghost button with its right edge at x=1346 and a 1px --ui-line-hi border. Add a 'b' pad glyph to its left and a 2px --acc focus outline.",
-   "P1 card structure (x 541-1378, y 172-907): make the header 56px high with a 1px --ui-line rule below it, and the footer 72px high with a 1px --ui-line rule above it. Raise the scrim to rgba(6,7,8,.80).",
-   "P1 column layout (headers y≈278, key cells x≈759 and x≈1053): set the grid to 180px / 1fr / 1fr with 16px gaps. Put the 'in the ring' chip in its own fixed slot to the right of the keycap in both columns.",
-   "P2 row names, headers and keycaps (x≈573-1170, y 278-775): set row names to 20px f-cond 600 tx-1. Set headers to 16px f-cond 600 tx-2 with +.04em tracking. Set keycaps to 18-20px/600 on a --ui-raised fill with 12px side padding. Raise 'in the ring' to 16px."
+   "P1 footer prompt 'press any key' (x≈1138-1346, y≈842-875): Set it to 20px f-cond 700 in --acc, or 16px tx-2 next to a 56px lime 'got it' pill. Delete the radio dot, or use a 16px key glyph in its place. Put it in a 72px footer with a 1px --ui-line rule above it, right edge at x=1346.",
+   "P1 card header and close X (x≈1306-1354, y≈190-237): Use a 48x48 ghost button with a 24px close glyph, right edge at x=1346 and a 1px --ui-line-hi border. Add a 16px 'b' hint to its left. Make the header row 56px high with a 1px --ui-line rule below it.",
+   "P1 card structure (x 541-1378, y 172-907): Raise the scrim to rgba(6,7,8,.80). Either widen the card toward 90% of the screen, or keep this as a narrow dialog and fix its padding at 24px on every side. Close the footer gap with a 72px footer row.",
+   "P1 table columns (headers y≈278; key cells x≈759 and x≈1053): Use a 180px / 1fr / 1fr grid with 16px gaps. Give the 'in the ring' chip its own fixed slot to the right of the keycap in both columns.",
+   "P2 row names, headers and keycaps (x≈573-1230, y 278-775): Set row names to 20px f-cond 600 tx-1. Set headers to 16px f-cond 600 tx-2 with +.04em tracking. Set keycaps to 18-20px/600 on a --ui-raised fill with 12px side padding. Raise 'in the ring' to 16px."
   ],
-  "pic": "tools/handoff/console/notes/shots/12d-after/46-arcade-attract-how-to-play-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r4-after/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T21:24"
+  "when": "2026-10-18T23:26"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -541,17 +541,17 @@
  "64-arcade-board-seeded-night": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean, on-palette modal that obeys the sentence-case and panel rules, but it is an empty leaderboard of dashes with undersized, low-contrast text, no close control and no primary button, so it reads as a placeholder rather than a polished screen.",
+  "verdict": "the card is already a compact empty state with an x and a lime tab, but the subtitle is still tiny and dim, the empty message floats in dead space, and the prompt got bigger without getting better placed.",
   "findings": [
-   "P0 Whole card body, rows 1-5: Remove the five dummy rows. Show one centred empty state: 'No scores yet' in tx-1 20px, plus a single 16px tx-2 line only if it is needed. Or collapse the card to roughly 480x240 per the card-dialog spec. A modal must never exceed its content.",
-   "P1 Card header (x713-884, y320): Add a 48x48 ghost close button at the top-right of the header (x~1180-1228) with the B glyph. Replace 'Press any button' with a 56px ghost 'Back' or primary 'Close' button in the 72px footer, plus a 'B  Back' key-hint cap.",
-   "P1 Subtitle 'Seeded night · CBT2' (y373) and row text: Set the subtitle to 16px f-cond 600 in tx-2 (#aaa498 or brighter). Put it on the same baseline as the title as a muted count, or directly beneath it. Raise the row numbers to 20px and tx-2. Never go dimmer than #aaa498 on #16191b.",
-   "P1 'Press any button' prompt (x1040-1206, y750): Use the real pad glyph (A/B) in a 28px chip with a word ('A  Close'). Or make it a 56px high, 200px minimum ghost button with a visible focus border in --acc, right-aligned in a 72px footer.",
-   "P2 Card padding and vertical spacing: Lock the rhythm to the 8px grid: 24px padding, 56px header, rows at a 56px pitch, 72px footer. Remove the extra empty rows to cut the card height to about 360px."
+   "P1 'press any key' prompt (x998-1206, y615-645): Set it to 20px f-cond 600 in tx-1 (#efe9dc) with the key or pad glyph of the device in use as a 24px chip. Keep it right-aligned on the 24px padding line, with a 72px footer zone above a 1px --ui-line divider.",
+   "P1 subtitle 'seeded night · 0s9i' (x713, y496): Set it to 16px f-cond 600 in tx-2 (#aaa498) with +.04em tracking. Drop the raw seed, or show it as 'seeded night' only. Put it 8px under the title.",
+   "P1 'no scores yet' (x906-1013, y545): Centre it in the body zone between y520 and y600, at 20px tx-1. Optionally add a 16px tx-2 line such as 'play a seeded night to post one' below it. Or left-align it to x713 so it follows the title edge.",
+   "P2 close x button (x1167-1215, y417-465): Enlarge the glyph to 20px in tx-1. Show a 2px --acc focus border on the x when it is the active control, or remove the box since any key closes the card.",
+   "P2 card vertical rhythm (x681-1239, y400-680): Use 24px padding, a title row of 56px, a 16px gap, a body of 96px and a footer of 72px, for a total of about 280px. Keep the lime top tab at 36x3 as a deliberate accent."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/64-arcade-board-seeded-night-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r4-after/64-arcade-board-seeded-night-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:52"
+  "when": "2026-10-18T23:26"
  },
  "70-settings-sec-controls": {
   "score": 2,
