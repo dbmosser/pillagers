@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.22 - THE WHAT IS NEW CARD NAMES POLISH PASS 10
+
+Co-op hunt while he was away. The card was stamped v29.06 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 29.22 passes, and fails on v29.21.
 ## v29.21 - A DEAD HOWLER LEAVES WRECKAGE, NOT A BOX
 
 Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Howler left the generic brown wreck. It now leaves its own: the splayed legs buckled under a cracked hull, the turret ring knocked askew, the fat mortar tube snapped off on the ground with its ochre muzzle ring, the ammo drum rolled clear. Smoke while unsearched. Looting is unchanged.
