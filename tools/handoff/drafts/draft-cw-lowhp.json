@@ -1,0 +1,16 @@
+{
+    "title":  "LOW HEALTH PULSES A RED OUTLINE ON THE HEALTH BAR",
+    "why":  "The critic scored the low health screen 2 with a P0: the state is too weak, nothing tells you that you are nearly dead. Under 25 percent health the bar now gets a pulsing 2px red outline.",
+    "now":  "Under a quarter health the health bar pulses a red outline.",
+    "edits":  [
+                  {
+                      "anchor":  "function bar(x,y,w,h,f,c,bg){\n",
+                      "replacement":  "// v28.xx (cw-lowhp), the critic on the low health shot (2026-10-19, P0): \u0027low-health state is weak, the player does not notice they are nearly dead\u0027.\n// Under a quarter health the health bar gets a pulsing 2px red outline, so the thing that kills you shouts louder than stamina. Returns true when it drew.\nfunction drawLowHpRing(x,y,w,h,hp,mx){\n  if(!(hp\u003e0)||!(mx\u003e0)||hp/mx\u003e=0.25) return false;\n  var t=((typeof performance!==\u0027undefined\u0027\u0026\u0026performance.now)?performance.now():Date.now())/1000, a=0.55+0.4*Math.sin(t*6);\n  ctx.save();\n  ctx.strokeStyle=\u0027rgba(224,72,58,\u0027+a.toFixed(2)+\u0027)\u0027; ctx.lineWidth=2;\n  ctx.strokeRect(x-1,y-1,w+2,h+2);\n  ctx.restore();\n  return true;\n}\nfunction bar(x,y,w,h,f,c,bg){\n"
+                  },
+                  {
+                      "anchor":  "  ctx.fillText(\u0027HP  \u0027+Math.round(p.hp),24,(_hpx\u003e_hpm)?Math.round(by+HBH/2+_hpm*0.36):by+18);\n",
+                      "replacement":  "  ctx.fillText(\u0027HP  \u0027+Math.round(p.hp),24,(_hpx\u003e_hpm)?Math.round(by+HBH/2+_hpm*0.36):by+18);\n  drawLowHpRing(16,by,HBW,HBH,p.hp,p.maxhp);   // v28.xx (cw-lowhp)\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027under a quarter health the health bar gets a pulsing red outline (the critic: low health is too weak a state), and the raid HUD calls it\u0027,\n   run:function(){\n     if(typeof drawLowHpRing!==\u0027function\u0027) return \u0027there is no low health outline (no drawLowHpRing)\u0027;\n     if(String(drawHUD).indexOf(\u0027drawLowHpRing(\u0027)\u003c0) return \u0027the raid HUD never draws the low health outline\u0027;\n     var n=0, rs=ctx.strokeRect, a, b, c;\n     try{\n       ctx.strokeRect=function(){ n++; };\n       a=drawLowHpRing(16,900,300,26,18,100); var na=n;\n       b=drawLowHpRing(16,900,300,26,80,100); var nb=n-na;\n       c=drawLowHpRing(16,900,300,26,0,100);\n     } finally { ctx.strokeRect=rs; }\n     if(!a||na\u003c1) return \u0027hp 18 of 100 draws no outline\u0027;\n     if(b||nb) return \u0027hp 80 of 100 still draws the outline\u0027;\n     if(c) return \u0027hp 0 draws the outline\u0027;\n     return null; }},"
+}

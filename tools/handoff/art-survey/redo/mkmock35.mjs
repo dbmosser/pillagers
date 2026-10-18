@@ -1,0 +1,26 @@
+// redo/mkmock35.mjs : writes mock/a35-A..D.html. Frame = the 4k picture at 1920x1080, inset 560x350 top right = 3x of the frame around (cx,cy) (frame pixels).
+// node redo/mkmock35.mjs A:1420,850 B:1480,900 C:1400,640 D:1420,840
+import fs from 'node:fs';
+import { AS } from './lib.mjs';
+for (const a of process.argv.slice(2)) {
+  const [k, c] = a.split(':'); const [cx, cy] = c.split(',').map(Number);
+  const bx = Math.round(3 * cx - 280), by = Math.round(3 * cy - 175);
+  const html = `<!doctype html>
+<html><head><meta charset="utf-8"><title>a35-${k}</title>
+<style>
+html,body{margin:0;padding:0;background:#000}
+body{width:1920px;height:1080px;overflow:hidden;position:relative}
+.frame{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.inset{position:absolute;left:1346px;top:14px;width:560px;height:350px;box-sizing:border-box;border:2px solid rgba(255,255,255,.88);
+  box-shadow:0 0 0 1px rgba(0,0,0,.55),0 6px 22px rgba(0,0,0,.5);background-image:url(../shots/a35-${k}/a35-${k}-4k.jpg);background-repeat:no-repeat;background-size:5760px 3240px;
+  background-position:-${bx}px -${by}px;image-rendering:auto}
+.tag{position:absolute;left:1346px;top:14px;padding:3px 10px 4px;background:rgba(0,0,0,.7);color:#fff;font:700 22px/1 "Segoe UI",Arial,sans-serif;letter-spacing:.5px}
+</style></head><body>
+<img class="frame" src="../shots/a35-${k}/a35-${k}-4k.jpg" width="1920" height="1080" alt="">
+<div class="inset"></div>
+<div class="tag">3x</div>
+</body></html>
+`;
+  fs.writeFileSync(AS + '/mock/a35-' + k + '.html', html);
+  console.log('mock a35-' + k + ' bg ' + (-bx) + ',' + (-by));
+}

@@ -1,0 +1,43 @@
+{
+ "about": "cw-trcol2: the four cw-trcol screens, plus two with world name labels put where they showed through the HUD plates",
+ "prelude": "window.__uis=window.__uis||(function(){ function kv(c){ if(/^Key[A-Z]$/.test(c)) return c.slice(3).toLowerCase(); if(/^Digit\\d$/.test(c)) return c.slice(5); if(c==='Space') return ' '; return c; } var U={ wait:function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }, down:function(c){ window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, up:function(c){ window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, key:async function(c,hold){ U.down(c); await U.wait(hold||50); U.up(c); }, el:function(s){ return typeof s==='string'?document.querySelector(s):s; }, on:function(s){ var e=U.el(s); if(!e) return false; var b=e.getBoundingClientRect(); if(b.width<1||b.height<1) return false; return e.checkVisibility?e.checkVisibility({opacityProperty:true,visibilityProperty:true}):true; }, click:function(s){ var e=U.el(s); if(!e) return false; e.click(); return true; }, closeModals:function(){ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(m){ m.classList.remove('on'); }); }, untitle:function(){ var t=document.getElementById('title'); if(t) t.classList.remove('on'); }, until:async function(f,ms){ var t0=Date.now(); while(Date.now()-t0<(ms||5000)){ try{ if(f()) return true; }catch(e){} await U.wait(100); } return false; }, prep:async function(){ try{ __pinDPR(1); }catch(e){} }, floor:async function(){ U.click('#titlestart'); await U.until(function(){ return U.on('#welcomemodal'); },3000); U.click('#welcometake'); await U.wait(900); __hubEnter(); await U.wait(400); }, hold:async function(c,ms){ U.down(c); await U.wait(ms); U.up(c); }, raid:function(){ var g=__state(); return !!(g&&g.player&&!g.over); }, dep:function(o){ U.untitle(); U.closeModals(); __topClear(); return __deploy(o); }, near:function(list,n){ var g=__state(), p=g.player; return list.slice().sort(function(a,b){ return Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y); }).slice(0,n); }, modal:function(){ var m=[].slice.call(document.querySelectorAll('.modal.on')).filter(function(x){ return U.on(x); }); return m.map(function(x){ return x.id; }).join(' '); } }; return U; })()",
+ "screens": [
+  {
+   "name": "tr1-career-calm",
+   "screen": "raid career",
+   "js": "U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(9500);",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "tr2-career-busy",
+   "screen": "raid career, notes, big figures",
+   "js": "U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(3000); var P=__P(); P.credits=12345; P.xp=678; P.stash=['gun_carbine','medkit','plate']; __state().bag.push('medkit','plate','frag'); __state().tel.notes=[{t:1,txt:'probe'},{t:2,txt:'probe 2'}]; try{ saveProfile(); }catch(e){} await U.wait(4500);",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "tr3-arcade",
+   "screen": "raid demo",
+   "js": "U.click('#modearcade1'); await U.wait(2500); await U.key('KeyK'); await U.wait(4000); await U.hold('KeyW',1500); await U.wait(9000);",
+   "expect": "U.raid()&&!U.on(\"#pausebox\")"
+  },
+  {
+   "name": "tr4-p2-career",
+   "screen": "raid career in the player 2 window",
+   "query": "?p2=1&mode=coop&pair=zzshot",
+   "js": "U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(9500);",
+   "expect": "U.raid()"
+  },
+  {
+   "name": "tr5-career-labels",
+   "screen": "raid career with two cache names put in the gap between two rows and on the score plate",
+   "js": "U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(2500); __gx('careerPostBuild(__state())'); var P=__P(); P.credits=12345; P.xp=678; P.stash=['gun_carbine','medkit','plate']; __state().bag.push('medkit','plate','frag'); try{ saveProfile(); }catch(e){} await U.wait(1500); var rs=__gx(\"(function(mode){\\n  var g=__state(), Z=ZOOM(), z=TRG.z, k=H/1080, i, c, cs=[], colCx=W-(16+TRG.bw/2)*z, mm=MMAP.box;\\n  for(i=0;i<g.containers.length;i++){ c=g.containers[i]; if(c.type==='cache'&&c.tag&&!c.strong&&!c.opened) cs.push(c); }\\n  function at(c,cx,cy){ c.x=VX+cx/Z; c.y=VY+cy/Z+56; }\\n  if(cs.length<2) return 'only '+cs.length+' named caches';\\n  if(mode==='career'){ at(cs[0],colCx,(TRG.y0+2*(TRG.rh+TRG.gp)+TRG.rh+TRG.gp/2)*z+8*k); at(cs[1],W/2,53*k); }\\n  else { at(cs[0],mm.x+mm.w*0.2,mm.y+mm.h*0.55); at(cs[1],W/2,64*k); }\\n  return 'staged '+cs[0].tag+' and '+cs[1].tag;\\n})('career')\"); await U.wait(1500); window.__stageNote=rs;",
+   "expect": "U.raid()&&U.modal()===\"\""
+  },
+  {
+   "name": "tr6-arcade-labels",
+   "screen": "raid demo with two cache names put over the minimap and on the score plate",
+   "js": "U.click('#modearcade1'); await U.wait(2500); await U.key('KeyK'); await U.wait(4000); await U.hold('KeyW',1500); await U.wait(6000); var rs=__gx(\"(function(mode){\\n  var g=__state(), Z=ZOOM(), z=TRG.z, k=H/1080, i, c, cs=[], colCx=W-(16+TRG.bw/2)*z, mm=MMAP.box;\\n  for(i=0;i<g.containers.length;i++){ c=g.containers[i]; if(c.type==='cache'&&c.tag&&!c.strong&&!c.opened) cs.push(c); }\\n  function at(c,cx,cy){ c.x=VX+cx/Z; c.y=VY+cy/Z+56; }\\n  if(cs.length<2) return 'only '+cs.length+' named caches';\\n  if(mode==='career'){ at(cs[0],colCx,(TRG.y0+2*(TRG.rh+TRG.gp)+TRG.rh+TRG.gp/2)*z+8*k); at(cs[1],W/2,53*k); }\\n  else { at(cs[0],mm.x+mm.w*0.2,mm.y+mm.h*0.55); at(cs[1],W/2,64*k); }\\n  return 'staged '+cs[0].tag+' and '+cs[1].tag;\\n})('demo')\"); await U.wait(1500); window.__stageNote=rs;",
+   "expect": "U.raid()&&!U.on(\"#pausebox\")"
+  }
+ ]
+}

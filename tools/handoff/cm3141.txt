@@ -1,0 +1,7 @@
+v31.41: the sector map is a card with every contract on it
+
+The map you see first is a clean card with the sector name, a close button, readable zone names and every contract listed on the right.
+
+Check 31.41. Fails on v31.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
