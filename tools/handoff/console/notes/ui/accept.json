@@ -2,10 +2,10 @@
  "01-title-mode-menu": {
   "score": 2,
   "pass": false,
-  "verdict": "The new title menu loses the three boxed cards and gains a Settings button, but it is still a long, crowded stack of explaining sentences and equal-weight buttons that reads like a web form, not an ARC Raiders-grade title screen.",
-  "pic": "tools/handoff/console/notes/shots/c-30c-after/01-title-mode-menu-1080.jpg",
-  "task": "c-30-ui-menu-map",
-  "when": "2026-10-18T06:53"
+  "verdict": "The new title menu is a bit cleaner (white button text, less amber, no boxed step cards, a Settings button), but it is still a crowded stack of seven same-size buttons under a wall of explaining text, and the screen keeps breaking the style guide.",
+  "pic": "tools/handoff/console/notes/shots/11-after3/01-title-mode-menu-1080.jpg",
+  "task": "11-ui-shared-style",
+  "when": "2026-10-18T07:03"
  },
  "02-welcome-pack": {
   "score": 2,
@@ -218,10 +218,10 @@
  "45-arcade-attract-board": {
   "score": 2,
   "pass": false,
-  "verdict": "A sentence-case, centered attract screen with a clear title and prompt, but it sits on a flat black void with no art, an empty leaderboard, and a dim call to action, so it reads as a placeholder and not a game's front door.",
-  "pic": "tools/handoff/console/notes/shots/all/45-arcade-attract-board-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:20"
+  "verdict": "The new version fixes the old one's fighting amber and wide-tracked type and now follows the guide's colours and sentence case, but it is still a flat black screen with a small title, an empty board and a dim, tiny prompt, so it has no identity and no AAA attract-screen presence.",
+  "pic": "tools/handoff/console/notes/shots/11-after-board/45-arcade-attract-board-1080.jpg",
+  "task": "11-ui-shared-style",
+  "when": "2026-10-18T06:59"
  },
  "50-arcade-hud-live": {
   "score": 2,
@@ -242,10 +242,10 @@
  "57-title-2p-coop-picked": {
   "score": 2,
   "pass": false,
-  "verdict": "A competent dark-amber template with a clear title, but the screen is a crowded stack of explainer text, tutorial cards, a control legend, seven near-identical mode buttons, an error banner and a save form, so nothing leads the eye to the action and the style is inconsistent.",
-  "pic": "tools/handoff/console/notes/shots/all/57-title-2p-coop-picked-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:21"
+  "verdict": "The new title screen is cleaner (flat rows, no amber-on-everything, fixed 'Create a new save' casing, F1 and Settings added), but it is still a long, cluttered stack of explaining text and seven same-weight buttons with no clear primary action, and it runs to the bottom edge.",
+  "pic": "tools/handoff/console/notes/shots/11-after3/57-title-2p-coop-picked-1080.jpg",
+  "task": "11-ui-shared-style",
+  "when": "2026-10-18T07:04"
  },
  "59-raid-abandon-confirm": {
   "score": 2,
@@ -298,10 +298,10 @@
  "46-arcade-attract-how-to-play": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean, legible black-screen controls table with a consistent amber and bone palette, but it is flat, generic and visually unfinished: the \"Press any button\" prompt outweighs the content, the table has no structure, and nothing says extraction shooter.",
-  "pic": "tools/handoff/console/notes/shots/all/46-arcade-attract-how-to-play-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:22"
+  "verdict": "The new version is calmer and more consistent (amber now means only the prompt, rows are evenly spaced), but it is still a plain text table on a black void with no game identity, an undersized logo, and a card that has nothing to do with the world.",
+  "pic": "tools/handoff/console/notes/shots/11-after-board/46-arcade-attract-how-to-play-1080.jpg",
+  "task": "11-ui-shared-style",
+  "when": "2026-10-18T06:59"
  },
  "37-raid-extracting-countdown": {
   "score": 2,

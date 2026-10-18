@@ -1,0 +1,6 @@
+{"generated":"2026-10-18T03:03:27","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":42,"screens":[
+{"name":"01-title-mode-menu","screen":"Title / mode menu: logo, 3 step cards, controls line, mode rows, SAVES","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"01-title-mode-menu-1080.jpg","lint":""}},
+{"name":"45-arcade-attract-board","screen":"Arcade attract: PRESS ANY BUTTON + TONIGHT\u0027S BEST (no scores) + HAPPY HALLOWEEN","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"45-arcade-attract-board-1080.jpg","lint":""}},
+{"name":"46-arcade-attract-how-to-play","screen":"Arcade attract: HOW TO PLAY page (keyboard + controller table)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"46-arcade-attract-how-to-play-1080.jpg","lint":""}},
+{"name":"57-title-2p-coop-picked","screen":"Title after picking 2 PLAYER CO-OP: blocked-popup message + RETRY","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"57-title-2p-coop-picked-1080.jpg","lint":""}}
+]}
