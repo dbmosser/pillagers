@@ -1,0 +1,1 @@
+| The attract page is a Panel P with a star tab and a full width table | v29.40 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.40 passes, fails on v29.39 |

@@ -1,0 +1,7 @@
+v29.40: the attract page is a panel p with a star tab and a full width table
+
+The attract page is a proper panel with a tab, and the table fills it.
+
+Check 29.40. Fails on v29.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.40 - The attract page is a Panel P with a star tab and a full width table
+
+Co-op hunt while he was away. The critic scored the attract board and how to play 2 of 5: the card barely separated from the page (near black, not the panel color), the table sat in a narrow block with the heading centred and the table left, no star tab. Now the page is the guide Panel P: --ui-panel at 90%, 24 and 32px padding, a 3px accent tab on the top edge, the headline at the left edge, the table full width with the action column at 24%. No wording moved.
+
+MEASURED. Check 29.40 passes, and fails on v29.39.
 ## v29.39 - Pause box and Settings move onto the shared UI look
 
 Co-op hunt while he was away. His order 2026-10-18 (UI step 6): the critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no row focus, steppers far from labels). CSS only, in the ui-shared block (no raw literals): pause title 32px light text, key legend and note 16px grey; Settings rows 20px names on a 56px pitch, the sentence only in the detail pane, raised row with a 3px amber edge for pad focus, section chips as text tabs with a 3px underline, 960px list so the stepper sits by its label, 48px steppers, detail pane 32 and 20px. No wording changed.
