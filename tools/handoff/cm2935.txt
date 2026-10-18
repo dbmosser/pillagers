@@ -1,0 +1,7 @@
+v29.35: the title screen is calmer: flat step columns and one pitch for the mode rows
+
+The title screen has fewer boxes and one row height, with a focus bar on the menu row.
+
+Check 29.35. Fails on v29.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.35 - The title screen is calmer: flat step columns and one pitch for the mode rows
+
+Co-op hunt while he was away. The critic scored the title 2 of 5 on the shared look (template page, step cards that read as buttons, five amber things, mode rows at 56/48/48/48/40/48/40, no pad focus cue). The cards are now flat columns under a 1px rule with the step number in the accent, every mode row is 48px on the 8px grid, the save buttons are ghost with light text, key caps use the 14px size, and a focus bar marks the row a pad is on. No wording moved.
+
+MEASURED. Check 29.35 passes, and fails on v29.34.
 ## v29.34 - RUN INFO TEXT IS THE LABEL SIZE
 
 Co-op hunt while he was away. UI step 4, the HUD in play. The run info panel (conditions, contracts, goals) was drawn at the 13 px micro size, below the 16 px floor of the style guide, and was the densest block on the screen. It is drawn at the label size now, in a slightly wider and taller row, so the same contracts wrap the same way. Every contract is still shown (his v6.79).

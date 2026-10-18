@@ -1,0 +1,20 @@
+{
+    "title":  "THE TITLE HAS A SETTINGS BUTTON",
+    "why":  "UI step 30, menu map. Settings could only be reached from the pause box inside a game, so a party guest on the title could not turn the sound down or the text up. A Settings button sits beside Go fullscreen, opens the same window, and CLOSE or ESC returns to the title. Nothing was removed.",
+    "now":  "The title has a Settings button next to Go fullscreen. It opens the same Settings window and ESC closes it.",
+    "edits":  [
+                  {
+                      "anchor":  "      \u003cbutton id=\"titlefs\" style=\"padding:5px 14px;font-size:13px;letter-spacing:.12em\"\u003eGO FULLSCREEN\u003c/button\u003e\u003c/div\u003e\n",
+                      "replacement":  "      \u003cbutton id=\"titlefs\" style=\"padding:5px 14px;font-size:13px;letter-spacing:.12em\"\u003eGO FULLSCREEN\u003c/button\u003e\n      \u003c!-- v28.xx (cw-menu-titleset), UI step 30 (menu map): the title had no way into Settings. A party guest who wanted the sound down, or the text bigger, had to start a game, press ESC and find Settings there. It sits beside Go fullscreen, the other screen-level setting. --\u003e\n      \u003cbutton id=\"titleset\" style=\"padding:5px 14px;font-size:13px;letter-spacing:.12em\"\u003eSETTINGS\u003c/button\u003e\u003c/div\u003e\n"
+                  },
+                  {
+                      "anchor":  "      if(fb) fb.onclick=function(ev){ if(ev) ev.stopPropagation(); fsToggle(); };\n",
+                      "replacement":  "      if(fb) fb.onclick=function(ev){ if(ev) ev.stopPropagation(); fsToggle(); };\n      // v28.xx (cw-menu-titleset): the title\u0027s own way into Settings; CLOSE and ESC come back here.\n      var _tset=document.getElementById(\u0027titleset\u0027);\n      if(_tset) _tset.onclick=function(ev){ if(ev) ev.stopPropagation(); openSettings(); };\n"
+                  },
+                  {
+                      "anchor":  "#root #title #titlefs{ min-height",
+                      "replacement":  "#root #title #titlefs, #root #title #titleset{ min-height"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title has a Settings button that opens Settings, and ESC closes it\u0027,\n   run:function(){\n     var b=document.getElementById(\u0027titleset\u0027), m=document.getElementById(\u0027settingsmodal\u0027);\n     if(!b) return \u0027the title has no Settings button\u0027;\n     if(!document.querySelector(\u0027#title #titleset\u0027)) return \u0027the Settings button is not on the title\u0027;\n     try{\n       m.classList.remove(\u0027on\u0027);\n       b.click();\n       if(!m.classList.contains(\u0027on\u0027)) return \u0027the title Settings button did not open Settings\u0027;\n       escCloseTopModal0();\n       if(m.classList.contains(\u0027on\u0027)) return \u0027ESC did not close Settings\u0027;\n       return null;\n     } finally { try{ m.classList.remove(\u0027on\u0027); }catch(_e){} }\n   }},"
+}

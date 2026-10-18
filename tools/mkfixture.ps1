@@ -6097,6 +6097,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.35',what:'the title is calmer on the shared look: the three step cards are flat columns (no box), every mode row is 48px or more on the 8px grid, the step numbers carry the one accent, the save buttons are not accent text (critic 2 of 5)',
+   run:function(){
+     var t=document.querySelector('#title .tcard'), s=document.querySelector('#title .tstep'), r, i, ids=['modecoop','modearcade','modearcade1','modecoopsrv','modepvp','modepvpsrv'], h, cs;
+     if(!t||!s) return 'no step card';
+     cs=getComputedStyle(t);
+     if(cs.borderLeftWidth!=='0px'||cs.borderRightWidth!=='0px'||cs.borderBottomWidth!=='0px') return 'the step card still has a box border';
+     if(cs.borderTopLeftRadius!=='0px') return 'the step card still has rounded corners';
+     for(i=0;i<ids.length;i++){ r=document.getElementById(ids[i]); if(!r) return 'no row '+ids[i]; h=parseFloat(getComputedStyle(r).minHeight); if(h<48||h%8) return ids[i]+' row is '+h+'px min height, not 48 on the 8px grid'; }
+     if(getComputedStyle(s).color===getComputedStyle(t.querySelector('.tbody')).color) return 'the step number does not carry the accent';
+     if(getComputedStyle(document.getElementById('newgame')).color===getComputedStyle(document.getElementById('titlestart')).backgroundColor) return 'the create save button is still accent text';
+     return null;
+   }},
   {v:'29.34',what:'the run info panel is drawn at the label size (16 px class), not the 13 px micro size',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';
