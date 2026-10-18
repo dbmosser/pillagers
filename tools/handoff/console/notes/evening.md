@@ -8,5 +8,6 @@ Already shipped before (git log): score SP, KIA 50%, liquor halved, frame cap 24
 - DONE (c-07, v28.96 cw-headbars): heal/plate bar above head moved from the pre-sort world pass into _wtA (after every wall). Reload/search/revive/downed bars were HUD bars already (drawn on top).
 - DONE (c-08, v28.98 cw-barrelfire): brlBlast calls brlFireAdd; G.bfire list, 7 s fire r64, burns player 5/0.5 s (not a teammate's barrel), enemies 22/s, never blocks; ticked in brlTick, drawn in the DR sort pass (brlFireDraw).
 - DONE (c-09, v29.00 cw-mimicaway): mimic crawler spawns 34 on the far side of the box (fallback angles), named MIMIC x-NN, cd 1.0 s; box is spent (opened, no loot) and drawMimicVoid plays a 1.5 s violet swirl (ct.mimicVoid), then gone. Host window only (P2 just sees an opened box).
-Open next, in order: breach hold; all text into feed; wheel in Undercroft + cursor; rocket launcher slot; craft hold bar + x10.
+- DONE (c-10, v29.01 cw-breachhold): stronghold gate ring fills only while E / PadSearch held (shHeld, host and P2 window); shLeash keeps both waves of defenders inside the building after breach (e.shIn flag, clamp to building rect). Label still HOLD TO BREACH. Old checks 27.46/27.12/26.91 retargeted with keys={KeyE:true} (27.12 SKIPs in the fixture, as before).
+Open next, in order: all text into feed; wheel in Undercroft + cursor; rocket launcher slot; craft hold bar + x10.
 (Other lanes may be taking items: grep git log for the item before starting.)

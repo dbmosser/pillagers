@@ -1,0 +1,4 @@
+27.46: PASS
+27.12: SKIP: no arcade, party or strongholds in this fixture
+26.91: PASS
+ALL DONE

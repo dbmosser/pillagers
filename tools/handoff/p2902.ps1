@@ -12,13 +12,14 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# PLAYER 2'S CROWBAR AND BLASTS ACT LIKE THE HOST'S (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
+# A PILLAGER WITH A RARER COPY OF A GUN FIGHTS LIKE ONE WITH THE PLAIN GUN (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
 
 SubRx @'
-  if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
+  w=(e.wep&&e.wep.id)||''; h=raiderHash(e);
 '@ @'
-  /* v28.xx (cw-blowround), CLOUD HUNT 2026-10-15: only a gun round (sk) rolls him out of the line; player 2 crowbar, frag, finisher and air strike do not, as the host own blows do not */
-  if(m.sk&&CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
+  // v28.xx (cw-roletwin), CLOUD HUNT 2026-10-15: a rarity twin (shotgun_v and the rest) has its own id, so the tests below missed it
+  // and the role fell to the hash pick (a twin Shotgun could come out a suppressor). gunBase reads the twin as the gun it is a copy of.
+  w=gunBase((e.wep&&e.wep.id)||''); h=raiderHash(e);
 '@
 
 SubRx @'
@@ -30,7 +31,7 @@ var VER='29.02';
 $pat = "(?m)^  now:'v29\.01:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v29.02: Player 2s crowbar, frag charges and air strikes hit a pillager the same way the hosts do. Check 29.02 fails on v29.01',"
+$new = "  now:'v29.02: A pillager carrying a rarer copy of a gun now fights the way that guns carrier always does. Check 29.02 fails on v29.01',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

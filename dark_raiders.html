@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.01';
+var VER='29.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21818,7 +21818,9 @@ function raiderRole(e){
   var w, h;
   if(!e||e.kind!=='raider'||e.merc||e.friendlyPC||e.ghost) return null;
   if(e.prole&&PROLE[e.prole]) return e.prole;
-  w=(e.wep&&e.wep.id)||''; h=raiderHash(e);
+  // v28.xx (cw-roletwin), CLOUD HUNT 2026-10-15: a rarity twin (shotgun_v and the rest) has its own id, so the tests below missed it
+  // and the role fell to the hash pick (a twin Shotgun could come out a suppressor). gunBase reads the twin as the gun it is a copy of.
+  w=gunBase((e.wep&&e.wep.id)||''); h=raiderHash(e);
   if(e.rig==='heavy') return 'shield';
   if(w==='lmg') return 'supp';
   if(w==='dmr'||w==='sniper'||w==='whisper'||w==='lance'||w==='magnum') return 'mark';
@@ -46807,7 +46809,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.01: Hold E at a stronghold gate to breach it, and its garrison stays in the house. Check 29.01 fails on v29.00',
+  now:'v29.02: A pillager carrying a rarer copy of a gun now fights the way that guns carrier always does. Check 29.02 fails on v29.01',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

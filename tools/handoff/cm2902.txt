@@ -1,0 +1,7 @@
+v29.02: a pillager with a rarer copy of a gun fights like one with the plain gun
+
+A pillager carrying a rarer copy of a gun now fights the way that guns carrier always does.
+
+Check 29.02. Fails on v29.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

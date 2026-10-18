@@ -6097,6 +6097,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.02',what:'cw-roletwin: a pillager carrying a rarity twin gets the same role as one carrying its base gun, and the base guns keep their roles',
+   run:function(){
+     if(typeof RV_BASE!=='object'||!RV_BASE||typeof raiderRole!=='function') return 'SKIP: no rarity twins here';
+     var bad=[], id, b, i, r0, r1, n=0, exp={lmg:'supp',dmr:'mark',whisper:'mark',magnum:'mark',shotgun:'rush',carbine:'flank'};
+     for(id in RV_BASE){
+       b=RV_BASE[id]; if(!WEAPONS[id]||!WEAPONS[b]) continue; n++;
+       for(i=0;i<8;i++){
+         r0=raiderRole({kind:'raider',wep:WEAPONS[b],ident:'Twin'+i,rig:'std'});
+         r1=raiderRole({kind:'raider',wep:WEAPONS[id],ident:'Twin'+i,rig:'std'});
+         if(r0!==r1){ bad.push('a pillager Twin'+i+' with the '+id+' is '+r1+' where with the '+b+' he is '+r0); break; }
+       }
+     }
+     if(!n) return 'SKIP: no rarity twin in WEAPONS';
+     for(b in exp){ if(WEAPONS[b]&&raiderRole({kind:'raider',wep:WEAPONS[b],ident:'Base',rig:'std'})!==exp[b]) bad.push('the '+b+' no longer gives '+exp[b]); }
+     return bad.length?bad.slice(0,4).join('; '):null;
+   }},
   {v:'29.01',what:'the stronghold gate needs the hold: standing at it with no key never opens it, holding E opens it, and a defender is kept inside the building after the breach (his order: breach must really need the hold, the enemies in breach houses should not leave the house)',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__frame)) return 'SKIP: no raid or frame here';
