@@ -1,0 +1,7 @@
+v31.42: the gun keys are named 1-8, 0 everywhere
+
+Every list names the gun keys 1-8, 0, a gun on the wrong key is told guns go on keys 1 to 8 and 0, and in the stash key 0 binds the gun under the cursor to the rocket launcher key while key 9 does nothing.
+
+Check 31.42. Fails on v31.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

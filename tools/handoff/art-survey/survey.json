@@ -1,0 +1,1392 @@
+{
+ "questions": [
+  {
+   "id": "a01",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Head size",
+   "context": "Your raider is a big head on a small body: the head is 15 by 13 pixels on a figure about 34 pixels tall, so about 38 percent of the figure is head. A big head lets a face show from across the room, a smaller head looks more like a soldier. Same two raiders, four head sizes.",
+   "question": "How big should the head be next to the body?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Big head (today)",
+     "description": "Cartoon proportions. The face and the hat read from far away.",
+     "spec": "No change. Head block 15x13 centred at (x+leanX, ty-33)."
+    },
+    {
+     "key": "B",
+     "label": "Trimmed head",
+     "description": "A little smaller, still friendly. Faces still read on a TV.",
+     "spec": "In drawOp wrap the whole head block (from 'var hx2=x+leanX' to the end of the hat and hair code, plus the hair-behind block for long hair and pigtails) in wc.save(); wc.translate(hx2,ty-22); wc.scale(0.82,0.82); wc.translate(-hx2,-(ty-22)); ...; wc.restore(). The neck point (hx2,ty-22) stays put so the head still sits on the shoulders. Head becomes about 12.3x10.7, about 31 percent of the figure. Nothing else changes."
+    },
+    {
+     "key": "C",
+     "label": "Soldier head",
+     "description": "A small head: more grown-up and serious, but faces get hard to read.",
+     "spec": "Same wrap as B with scale 0.65 (head about 9.8x8.5, about 25 percent of the figure). Hats and hair scale with it."
+    },
+    {
+     "key": "D",
+     "label": "Mascot head",
+     "description": "Even bigger and cuter. Faces and hats read very clearly, the body shrinks next to it.",
+     "spec": "Same wrap as B with scale 1.2 about the same neck point (head about 18x15.6, about 46 percent). Hats and hair scale with it."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "Refined chibi was your pick and the big head is what lets a face read from 10 feet; the other three are here so you can be sure."
+  },
+  {
+   "id": "a02",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Figure size",
+   "context": "At 1080p your raider is about 40 pixels tall on a 1080 pixel screen, around 4 percent of the height. You said things look too small, and you also said to keep the camera where it is. This question changes only how big the figures are drawn (you, your mate, pillagers). The street, walls and machines stay as they are. The camera has its own question later.",
+   "question": "How big should the raiders be drawn against the street?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Raiders are small against the street, you see a lot of ground.",
+     "spec": "No change."
+    },
+    {
+     "key": "B",
+     "label": "A quarter bigger",
+     "description": "Faces, guns and packs read better; a raider stands a little taller than a doorway feels.",
+     "spec": "Wrap the human draw sites (hero drawOp in the render2D entity pass about line 37243, the two pillager drawOp calls about 37331 and 37424, the co-op mate draw about 54121) in wc.save(); wc.translate(x,y); wc.scale(1.25,1.25); wc.translate(-x,-y); ...; wc.restore() about the feet, so shadow, seat ring and gun scale with the body. Hit boxes and the camera are untouched for the picture; raise nameplates 9 px so they clear the hat. Machines stay as they are."
+    },
+    {
+     "key": "C",
+     "label": "Half again",
+     "description": "Big and chunky, easy to see from the couch. Crowds and rooms feel tighter.",
+     "spec": "Same as B with scale 1.5 and nameplates raised 17 px."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A quarter bigger is about where faces and guns read on a TV from 8 feet without the figures crowding the corridors."
+  },
+  {
+   "id": "a03",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Face from above",
+   "context": "Your raider always faces the camera and the dark pupils slide toward where you aim. Seen from above, a head could also turn with the aim, or be covered by gear. Same two raiders, four faces.",
+   "question": "How should the head and face read from above?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Face to camera, eyes follow (today)",
+     "description": "A friendly face, the pupils show where you aim.",
+     "spec": "No change."
+    },
+    {
+     "key": "B",
+     "label": "Head turns with the aim",
+     "description": "Face slides toward the aim, and you see the back of the head when aiming up the screen.",
+     "spec": "In the head block shift every face part (eyes, brows, mouth, beard, face marks) by cos(face)*2.2 px sideways and sin(face)*0.8 px up or down. When sin(face) < -0.35 draw no face at all: fill the head with the hair colour (HAIRDARK) so it reads as the back of the head, hat unchanged. Aiming down draws the face as today."
+    },
+    {
+     "key": "C",
+     "label": "Visor",
+     "description": "A coloured visor band instead of eyes. Looks like gear, not a cartoon.",
+     "spec": "Players only (pillagers keep their faces): draw no eyes, an ink-outlined visor band 11x4 px across the eye line (y about ty-31) in the scheme accent colour (SCHEMES a), with a 2x1 px white glint at the top left. Mouth and beard still drawn."
+    },
+    {
+     "key": "D",
+     "label": "Bigger eyes, more mood",
+     "description": "Eyes and brows exaggerated so a face shows from far.",
+     "spec": "Scale eye whites and pupils 1.35 about each eye centre; add a 1 px ink brow line 3 px long above each eye, tilted 8 degrees inward while sprinting or aiming down sights and outward when hurt. Players only."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "It already looks where you aim with the pupils, and turning the head means more baked views for every cosmetic."
+  },
+  {
+   "id": "a04",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "The three builds",
+   "context": "Your build changes the body: lean is slim, broad is wide on thicker legs, curved is clearly female with the jiggle. At game size lean and broad can still look alike. All three builds stand in the same clothes so only the body differs.",
+   "question": "How different should the three builds look from each other?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Small differences, clothes do most of the work.",
+     "spec": "SCENE NOTE for all options: P1 lean, P2 curved, and a hired pillager (merc) between them with the broad build, all three in Standard Issue clothes. No change to the drawing."
+    },
+    {
+     "key": "B",
+     "label": "Stronger shapes",
+     "description": "Broad is clearly wider, lean clearly slimmer, curved a stronger hourglass.",
+     "spec": "Broad: _LSX 1.2 to 1.4, BUILD_BROAD torso path widened 18 percent about the spine, gun arm aw 3.3 to 4.2. Lean: torso 11 to 9.5 wide, _LSX 0.9, arm aw 2.4 to 1.8. Curved: BUILD_CURVED hips +20 percent, chest +15 percent, bodyJiggle amplitude x1.4. Hit boxes unchanged."
+    },
+    {
+     "key": "C",
+     "label": "Different heights too",
+     "description": "Lean is taller and slim, broad is shorter and wide, so you can tell them from the outline alone.",
+     "spec": "Wrap each body about the feet: lean wc.scale(0.92,1.08), broad wc.scale(1.1,0.96), curved (1,1). Shadows scale with it. Nothing else changes."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "It makes the three bodies different at a glance without touching heights, hit boxes or anchors."
+  },
+  {
+   "id": "a05",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Cosmetics at game size",
+   "context": "Hats, hair, vests, packs, boots and patches are earned, and you want them to show. At game size the small pieces blur together. Same two raiders with different clothes, four ways of drawing them.",
+   "question": "How should earned cosmetics read at game size?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Fine detail, most of it gets lost at game size.",
+     "spec": "No change. SCENE NOTE: P1 and P2 wear different hat, hair, vest, pack, boots and patch."
+    },
+    {
+     "key": "B",
+     "label": "Bigger pieces",
+     "description": "Hats, hair, packs and vests drawn larger so earned items show.",
+     "spec": "Scale the hat and hair block 1.18 about the neck point (hx2,ty-22), the pack 1.3 about (x-fl*9, ty-16.5), vest and pauldron plates 1.12 about (x,ty-17), the chest patch 1.6. Body, legs and head unchanged."
+    },
+    {
+     "key": "C",
+     "label": "Louder colours",
+     "description": "Same shapes, richer colour and thicker trim lines.",
+     "spec": "Draw each body inside wc.filter='saturate(1.25) brightness(1.06)'; double the height of the scheme accent trims (boot collar, pack flap, vest straps) from 1.0 to 2.0 px. Shapes unchanged."
+    },
+    {
+     "key": "D",
+     "label": "Bold shapes, fewer details",
+     "description": "Tiny details dropped, outlines on hat, pack and vest thicker, like a sticker.",
+     "spec": "Skip the 1 px accents added by cw-smalltouch and cw-heavygear (lace dots, buckle, seam, chips, stitch lines) and draw the ink plate of hat, pack, vest and boots 0.6 px bigger on every side."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Bigger pieces make earned items show without changing how the raider looks."
+  },
+  {
+   "id": "a06",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Player 1 or player 2",
+   "context": "In two player you need to know at a glance which raider is you and which is your mate. Today each stands in a ground ring, amber for 1 and cyan for 2, with a number badge, and they wear different clothes. A ring can hide under walls and bushes. Same two raiders, four ways to tell them apart.",
+   "question": "How should the two players be told apart?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Ground ring and number (today)",
+     "description": "A coloured ring on the floor with a small numbered badge.",
+     "spec": "No change: drawSeatRing, ellipse 13.6x5.6, ring in SEATCOL[seat] (#ffb02e, #38d6ff), badge radius 4.7 at (x,y+8.4)."
+    },
+    {
+     "key": "B",
+     "label": "Coloured edge on the body",
+     "description": "A glowing outline in the player's colour follows the body itself.",
+     "spec": "Remove drawSeatRing for both bodies. Wrap the hero draw and the mate draw in h=rimOpen(body,SEATCOL[seat]) ... rimClose(h), the helper that outlines affixed elites (body needs x,y,r). Keep a 3 px number dot (the badge, radius 3) at the feet."
+    },
+    {
+     "key": "C",
+     "label": "Arrow and number over the head",
+     "description": "A small coloured arrow and number floats above each raider.",
+     "spec": "Remove the ring. Over each head, 8 px above the hat: a down-pointing chevron 9x6 px in SEATCOL with a 1 px ink outline, and the number (10 px bold, lower case 'p1' or 'p2') beside it; the pair bobs 2 px at 1.2 Hz. Drawn in the world text pass."
+    },
+    {
+     "key": "D",
+     "label": "Team coloured clothes",
+     "description": "Player 1 wears amber, player 2 wears cyan, always.",
+     "spec": "Remove the ring. Force schemeOf: seat 0 uses SCHEMES.schember and seat 1 uses SCHEMES.schfrost whatever each player picked (in both windows). Accent trim stays."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A coloured edge on the body follows them everywhere and cannot hide under a wall or a bush the way a ring can."
+  },
+  {
+   "id": "a07",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "loot",
+   "method": "game",
+   "title": "Outline on busy ground",
+   "context": "Figures have a dark outline so they stand out from the ground. On busy ground (crates, loot, rubble) a dark outline can get lost. Same raider next to open containers, four edge treatments.",
+   "question": "How should a raider be separated from busy ground?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Dark outline (today)",
+     "description": "A thin black-brown line round the figure.",
+     "spec": "No change. INK '#120e0c', plates 1 to 1.6 px."
+    },
+    {
+     "key": "B",
+     "label": "Dark outline and a light edge",
+     "description": "The same outline plus a thin light edge on the lit top-left side.",
+     "spec": "Wrap the body in rimOpen/rimClose style scratch drawing: after the body, stamp the same silhouette shifted (-1,-1) with source-in to #f2efe6 at 0.35 alpha under the sprite, so only the top and left edges show. Ink outline unchanged."
+    },
+    {
+     "key": "C",
+     "label": "Light halo round everyone",
+     "description": "A pale glow edge outside the dark outline, on every figure.",
+     "spec": "Under the sprite stamp the silhouette 8 times at 1.4 px offsets in #f2efe6 at 0.55 alpha (the rim code with d=1.4), ink outline on top."
+    },
+    {
+     "key": "D",
+     "label": "Softer brown outline",
+     "description": "No hard black line, a warm dark brown instead.",
+     "spec": "For figures only set INK='#3a2f28' for the duration of each drawOp call and restore it after. Nothing else changes."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A thin light edge keeps the dark outline and adds separation on busy ground without the sticker look of a halo."
+  },
+  {
+   "id": "a08",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Gun and backpack",
+   "context": "Guns are already 30 percent bigger than they were (1.3 times). You said you could hardly tell what they were before. This is about how big and how clear the gun and the pack read in the raider's hands and on the back.",
+   "question": "How big and clear should the gun and backpack be?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Gun 1.3 times, pack small and brown.",
+     "spec": "No change (GUNK 1.3, pack width 6+pk*5)."
+    },
+    {
+     "key": "B",
+     "label": "Bigger gun and pack",
+     "description": "Gun about a quarter bigger, pack grows with it so the figure stays balanced.",
+     "spec": "GUNK 1.3 to 1.65 (var near line 33462). Backpack: pw=(6+pk*5)*1.25 and the two pack rrF heights 11 and 9 become 13.5 and 11."
+    },
+    {
+     "key": "C",
+     "label": "Gun with a colour stripe",
+     "description": "Same size, but each gun carries a stripe in its rarity colour (or its element colour when forged).",
+     "spec": "In gunHeld after the gun sprite draw add a 2 px strip along the top edge from the grip to the muzzle in rc (the rarity colour already computed there), or the ELEM colour on a forged gun, alpha 0.9. GUNK stays 1.3."
+    },
+    {
+     "key": "D",
+     "label": "Hero guns",
+     "description": "Huge guns, nearly as long as the figure is tall. Very readable, very toy-like.",
+     "spec": "GUNK 2.0, pack as B."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "You asked for bigger guns twice and this is the next step, with the pack growing so the figure keeps its balance."
+  },
+  {
+   "id": "a09",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Shadow under the figure",
+   "context": "Under each raider is a soft two-part shadow that falls a little right and down, since the light is top left. On bright floors it is faint and the figure can look pasted on. Same two raiders, four shadows.",
+   "question": "How should the shadow under a raider look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Soft shadow (today)",
+     "description": "A small soft blob, a second lobe trailing to the right.",
+     "spec": "No change: shadowE(x+1.5,y+1.5,10,4,.34) and shadowE(x+6,y+2.5,6.5,2.5,.18)."
+    },
+    {
+     "key": "B",
+     "label": "Bigger and darker",
+     "description": "Grounds the figure on bright floors.",
+     "spec": "shadowE(x+1.5,y+2,12.5,5,.5) and shadowE(x+7,y+3,8,3,.28)."
+    },
+    {
+     "key": "C",
+     "label": "Long shadow from the top-left light",
+     "description": "The shadow stretches toward the lower right, like a late afternoon sun.",
+     "spec": "Replace both lobes with one dark ellipse 11x4 stretched with a skew transform wc.transform(1,0,-0.9,1,0,0) about the feet to about 26 px long toward the lower right, alpha 0.3, drawn under the body, plus a small contact ellipse 7x2.5 alpha 0.4."
+    },
+    {
+     "key": "D",
+     "label": "Flat silhouette shadow",
+     "description": "A cut-out shape of the raider lying on the ground, like a cartoon.",
+     "spec": "Draw the body again in solid black at 0.3 alpha, offset 3 px right and 4 px down and squashed to 55 percent height about the feet (scratch canvas like rimOpen), under the real body. Remove the ellipse lobes."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A darker contact shadow grounds the figure on bright floors and costs the same two stamped shadows."
+  },
+  {
+   "id": "a10",
+   "group": "players-look",
+   "kind": "image",
+   "scene": "duo",
+   "method": "mock",
+   "title": "Mate name tag",
+   "context": "When your mate is on screen their name floats over their head on a dark plate in ally blue, and a red plate with the seconds when they are down. The tag can sit on hats and walls and tells you nothing about their health.",
+   "question": "What should the tag over your mate look like?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Name plate (today)",
+     "description": "Dark plate with the name in ally blue.",
+     "spec": "Start from the duo frame with the characters. Over P2's head (positions file, 62 px above the feet): dark plate rgba(6,9,13,.86), 13 px high, name in #7fb8ff at the small label size, centred. All text lower case, name 'mia'."
+    },
+    {
+     "key": "B",
+     "label": "Colour chip and name",
+     "description": "A small coloured chip with the player number, then the name in white.",
+     "spec": "Same position. No plate. Chip 14x10 px, radius 3, fill #38d6ff (seat 2 colour), text 'p2' 8 px bold dark ink; name 'mia' in white 11 px after the chip with a 2 px black outline. Lower case."
+    },
+    {
+     "key": "C",
+     "label": "Name only when far",
+     "description": "No tag while your mate is close. A tag fades in only when they are far away or down.",
+     "spec": "Show frame without any tag (mate within 260 px). Add an inset (x1500 y60, 420x240) showing the far case: tag as in B fading in at 0.4 alpha at 300 px and full alpha at 400 px, plus the red 'down 16s' tag when down. Lower case."
+    },
+    {
+     "key": "D",
+     "label": "Name plus health bar",
+     "description": "The plate from today with a thin health bar under the name.",
+     "spec": "As A plus a 36x3 px bar under the plate: dark #14171a track, fill green #5fae6f above 50, amber #d0a13c to 25, red #c8452f below, 1 px black outline. P2 shown at 60 percent health (bar 22 px green). Lower case."
+    }
+   ],
+   "pick": "D",
+   "pick_reason": "The one thing a mate needs across the room is whether you are hurt and need a revive soon."
+  },
+  {
+   "id": "a11",
+   "group": "players-states",
+   "kind": "motion",
+   "scene": "none",
+   "method": "mock",
+   "title": "Walking and sprinting",
+   "context": "How your raider moves. Each box is a loop of 3 s: walking for 1.5 s, then sprinting for 1.5 s. Today the legs swing and the body bobs a little, with a small lean forward when sprinting.",
+   "question": "What should walking and sprinting feel like?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Calm swing, small bob, a small lean when sprinting.",
+     "spec": "Canvas 480x270 per option, 3.0 s loop at 60 fps. Draw the figure with the game's own drawOp (the sprite sheet cell function) at 4x, feet on a ground line at y=215, facing right, carbine in hands. Step every 0.28 s walking (0 to 1.5 s) and 0.20 s sprinting (1.5 to 3.0 s) in all options. TODAY: leg swing 2.9 px walking, 4.2 px sprinting; foot lift 2.2 and 3.4 px; body bob |sin(ph)|*1.5 px; lean toward facing 0.7 px walking and 1.6 px sprinting."
+    },
+    {
+     "key": "B",
+     "label": "Bouncy",
+     "description": "Livelier: bigger bob and a little squash and stretch on every step.",
+     "spec": "Same canvas and timing. Leg swing 3.4 px walking and 5.0 px sprinting; bob 2.6 px walking and 3.6 px sprinting; at each footfall scaleY 0.94 and scaleX 1.04 for 60 ms (ease-out), then scaleY 1.03 and scaleX 0.98 at the top of the step; lean 1.2 px walking and 2.8 px sprinting; gun bobs 1 px with the body."
+    },
+    {
+     "key": "C",
+     "label": "Heavy and grounded",
+     "description": "Smaller steps, a slight side sway, and dust kicked up when sprinting.",
+     "spec": "Same canvas and timing. Swing 2.4 px walking and 3.6 px sprinting; bob 0.8 px; body sways +-0.8 px sideways at half the step rate; sprint hunch: body leans 2.5 px and head leads a further 1.5 px; a dust puff at the heel on each sprint footfall: grey #8a8478 circle radius 2 to 5 px, alpha 0.35 to 0 over 260 ms."
+    },
+    {
+     "key": "D",
+     "label": "Speed streaks",
+     "description": "Today's walk, but sprinting leaves ghosts and short streaks behind.",
+     "spec": "Walking exactly as option A. Sprinting as A plus two ghost copies of the figure at 6 px and 12 px behind (alpha 0.22 and 0.10, same pose delayed 2 and 4 frames) and three 8 px horizontal streak lines at hip height 8 px behind the body (white alpha 0.25 to 0)."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "You asked for livelier motion with bounce on the screens, and the same taste on the body keeps the raider from looking like it slides."
+  },
+  {
+   "id": "a12",
+   "group": "players-states",
+   "kind": "motion",
+   "scene": "none",
+   "method": "mock",
+   "title": "Hit reaction",
+   "context": "The moment a shot lands on a raider (you, your mate or a pillager). Today a red glow flashes on the chest for about 0.4 s and pillagers get a small shove away from you, up to 5 px. Each box shows one hit every 1.2 s.",
+   "question": "How should a raider react when shot?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Red chest glow (today)",
+     "description": "A red glow on the chest that fades.",
+     "spec": "Canvas 480x270 per option, loop 1.2 s (hit at 0.1 s), figure by the game's own drawOp at 4x on a ground line, facing right, shot arriving from the left. TODAY: additive red rgba(255,70,56) on the torso box with alpha clamp(hurt*2,0,.8), fading linearly over 0.4 s; the figure shoves 4 px away from the shot over 0.16 s (HIT_JOLT) and back."
+    },
+    {
+     "key": "B",
+     "label": "White flash then red",
+     "description": "One quick white flash, then red, with a small recoil.",
+     "spec": "Same canvas and timing. 0 to 66 ms: the whole body filled white (source-atop #ffffff at 0.9). 66 to 300 ms: red tint rgba(255,60,48) alpha 0.55 to 0 over the whole body. Recoil 2.5 px away from the shot, out over 80 ms (ease-out) and back over 140 ms."
+    },
+    {
+     "key": "C",
+     "label": "Squash flinch",
+     "description": "The body squashes and springs back, the head tilts away.",
+     "spec": "Same canvas and timing. 0 to 80 ms: scaleY 0.88 and scaleX 1.08 about the feet (ease-out). 80 to 200 ms: spring to scaleY 1.04 and scaleX 0.97, then settle to 1.0 by 300 ms. Head tilts 8 degrees away from the shot for 120 ms. Red tint on the chest only, alpha 0.35 to 0 over 250 ms."
+    },
+    {
+     "key": "D",
+     "label": "Freeze and shake",
+     "description": "A tiny pause, then a short shake with a red outline.",
+     "spec": "Same canvas and timing. 0 to 70 ms: figure frozen (hit pause). 70 to 170 ms: horizontal shake +-2.5 px, 4 cycles, decaying. Red outline (#ff3b30, rim code) from 0 to 180 ms with alpha 1 to 0. No body tint."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A white flash is the one hit sign that reads on every floor and every colour of clothes, and it lasts only a few frames."
+  },
+  {
+   "id": "a13",
+   "group": "players-states",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Low health",
+   "context": "Under 32 health the whole screen gets a pulsing red wash and a heartbeat plays, and the raider's body looks the same as at full health. Same scene with player 1 at 18 health, four looks.",
+   "question": "How should being nearly dead look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Red wash on the screen (today)",
+     "description": "The whole screen pulses red. The body looks fine.",
+     "spec": "No change: drawHUD fills rgba(200,30,20,.10+.09*sin(G.t*hpFlashRate())) over the screen when p.hp<32. SCENE NOTE: P1 at hp 18, P2 at full health."
+    },
+    {
+     "key": "B",
+     "label": "The body shows it",
+     "description": "No wash. Blood on the chest, slumped shoulders, drips on the ground.",
+     "spec": "Skip the full-screen wash. On P1: two dark red stains (#8a1c14, alpha 0.8) 3x3 and 4x3 px on chest and arm; shoulders drop 1.5 px; walk bob slowed 30 percent; every 0.9 s two 3 px red drops fall from the hands to the ground (1 s fade, light blood). Players only."
+    },
+    {
+     "key": "C",
+     "label": "Edge pulse only",
+     "description": "The street stays clear, only the screen edges pulse red.",
+     "spec": "Replace the wash with a radial gradient on the HUD canvas: transparent to H*0.55, rgba(200,30,20,.45) at H*0.9, pulsing alpha 0.6 to 1.0 at the same rate. Body unchanged."
+    },
+    {
+     "key": "D",
+     "label": "Body and edge pulse",
+     "description": "Both of the above. Your mate can see you are hurt too.",
+     "spec": "Option B body changes plus option C edge pulse."
+    }
+   ],
+   "pick": "D",
+   "pick_reason": "Your mate can see you are hurt, and the edge pulse keeps the whole street readable while you are in trouble."
+  },
+  {
+   "id": "a14",
+   "group": "players-states",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Downed and revive",
+   "context": "When you are downed you fall flat, a red 'down' timer counts and your mate can revive you. Today a downed raider is a small flat shape on the floor and a red tag shows the seconds. Same scene: player 1 downed, player 2 kneeling beside.",
+   "question": "How should a downed raider and the revive look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Flat shape and red tag (today)",
+     "description": "A small flat body with a red tag and the seconds.",
+     "spec": "No change: drawOp mode 'down' (ink 24x8, coat 22x6, head 6x6) and the red netUpTags plate 'down 16s'. SCENE NOTE: P1 downed, P2 beside holding the revive. Text lower case."
+    },
+    {
+     "key": "B",
+     "label": "Kneeling and pulsing ring",
+     "description": "The raider kneels, head dropped, gun on the ground, a red ring pulses.",
+     "spec": "In the 'down' branch draw the normal body in mode 'crouchnone' lowered 5 px with the head 4 px lower, the gun sprite lying on the ground beside, and a red ring (ellipse rx 18 ry 7, 2 px, #ff4a3a alpha 0.4 to 0.9) pulsing at 1.2 Hz. Keep the red tag."
+    },
+    {
+     "key": "C",
+     "label": "Revive ring that fills",
+     "description": "A big ring on the floor around the body fills with colour as your mate revives.",
+     "spec": "Flat body as A plus a ring rx 28 ry 11, 3 px: track rgba(255,255,255,.3), fill arc #a6e83a at 40 percent complete, and the seconds '16' in 12 px lower case at the centre. No red tag."
+    },
+    {
+     "key": "D",
+     "label": "Beacon",
+     "description": "A red light column and a small plus sign above the body, seen from across the screen.",
+     "spec": "Flat body as A plus a vertical beam 70 px tall, 8 px wide at the base (red #ff4a3a gradient alpha 0.4 to 0, 'lighter'), and a 12 px white plus in a red circle bobbing 3 px above it. No text tag."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "The ring shows where your mate stands and the revive filling, with no words, and that picture is already known from other co-op games."
+  },
+  {
+   "id": "a15",
+   "group": "players-states",
+   "kind": "motion",
+   "scene": "none",
+   "method": "mock",
+   "title": "Player death",
+   "context": "When your raider dies. Nothing stays on the floor afterwards (no bodies, your ruling). Today the figure turns into a flat shape that squashes and fades in 0.8 s. Each box is one death, looping every 1.6 s.",
+   "question": "How should your raider fall when it dies?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Squash and fade (today)",
+     "description": "A flat shape that squashes and fades.",
+     "spec": "Canvas 480x270 per option, loop 1.6 s (death at 0.2 s), figure by the game's own drawOp at 4x, facing right, shot from the left. TODAY: ellipse in the coat colour (rx 10, ry 8 px), alpha 0.85 to 0 over 0.8 s, rotating 1.4 rad, scaleX 1 to 0.65, scaleY 0.55+0.45k, thin ink edge. The figure itself disappears at 0 s."
+    },
+    {
+     "key": "B",
+     "label": "Fall and turn to light",
+     "description": "The raider drops flat, then breaks into rising points of light.",
+     "spec": "Same canvas and timing. 0 to 0.22 s: figure rotates 90 degrees away from the hit and drops 6 px (ease-in). 0.22 to 0.40 s: lies flat. 0.40 to 0.90 s: figure fades while 14 light points (2x2 px, seat colour #ffb02e) rise 22 px with 6 px sideways drift and fade."
+    },
+    {
+     "key": "C",
+     "label": "Knocked away",
+     "description": "Thrown along the shot with a spin, fades, a few drops of light blood.",
+     "spec": "Same canvas and timing. 0 to 0.35 s: figure moves 16 px along the shot direction, spins 20 degrees, ease-out. 0.2 to 0.75 s: figure alpha 1 to 0. At 0.05 s five red drops (3 px, #b02a20) arc out over 0.35 s; one 6 px stain stays on the ground and fades over 6 s."
+    },
+    {
+     "key": "D",
+     "label": "Drops the kit",
+     "description": "The raider fades quickly while the gun and the pack clatter to the floor.",
+     "spec": "Same canvas and timing. 0 to 0.30 s: figure alpha 1 to 0. The gun spins 540 degrees and lands 14 px away with two small bounces (6 px then 2 px); the pack pops 10 px away and lands at 0.35 s. Both fade out from 0.7 s to 0.9 s."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "It shows which way the shot came from and uses the light blood you allowed, with nothing left after it."
+  },
+  {
+   "id": "a16",
+   "group": "players-states",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Aim and facing",
+   "context": "Where you aim shows as the crosshair with a ring that opens when your aim is loose, and the gun and the pupils point the same way. A line or pointer from the figure could help or just add clutter on a TV. Same scene with player 1 aiming across the screen.",
+   "question": "Should the figure show where it faces with something extra?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Nothing extra (today)",
+     "description": "Gun, eyes and crosshair already show it.",
+     "spec": "No change. SCENE NOTE: P1 aims to the right with the sights held, crosshair 360 px from P1."
+    },
+    {
+     "key": "B",
+     "label": "Faint dotted line",
+     "description": "Soft dots from the gun to the crosshair.",
+     "spec": "From the muzzle to 40 px short of the crosshair draw 2 px dots every 8 px, white alpha 0.22, under the figures, always on while a gun is held."
+    },
+    {
+     "key": "C",
+     "label": "Laser while aiming",
+     "description": "A thin red line only while the sights are held.",
+     "spec": "While ADS: 1.5 px line #ff4a3a alpha 0.55 from the muzzle to the first wall or enemy, ending in a 3 px dot. Not drawn otherwise."
+    },
+    {
+     "key": "D",
+     "label": "Short pointer",
+     "description": "A small coloured arrow just outside the body toward the aim.",
+     "spec": "A 7x9 px triangle in SEATCOL (amber for solo), ink outline 1 px, 30 px from the feet centre toward the aim at height ty-14."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "The gun, the eyes and the crosshair already say where you aim, and every extra line is clutter on a TV."
+  },
+  {
+   "id": "a17",
+   "group": "players-states",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Crouching and hiding",
+   "context": "Crouching lowers the raider 5 pixels, and the corner of the screen says 'concealed, in cover' when a bush or crate hides you. The body itself shows very little. Same scene with player 1 crouched in cover, four looks.",
+   "question": "How should a hidden raider look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Just lower (today)",
+     "description": "Dropped 5 pixels, otherwise the same.",
+     "spec": "No change. SCENE NOTE: P1 crouched and concealed beside a bush, P2 standing."
+    },
+    {
+     "key": "B",
+     "label": "Low and faded",
+     "description": "A bit smaller and see-through while hidden. Solid means seen.",
+     "spec": "When the concealed flag is true: wc.globalAlpha=0.68 for the whole body, scale 0.92 about the feet, crouch lift stays 5."
+    },
+    {
+     "key": "C",
+     "label": "Darker and quieter",
+     "description": "Colours drain and darken while hidden.",
+     "spec": "When concealed: draw the body inside wc.filter='saturate(.65) brightness(.78)'. Ink outline unchanged."
+    },
+    {
+     "key": "D",
+     "label": "Leaf cover",
+     "description": "A few leaves on the shoulders and pack, like camouflage.",
+     "spec": "When crouched in a bush: four small green leaf ellipses (5x3 px, #4d8a3e and #6fae52) on shoulders, pack and head, drawn over the body."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "One glance says faded means hidden and solid means seen, for you and for your mate."
+  },
+  {
+   "id": "a18",
+   "group": "enemies-pillagers",
+   "kind": "image",
+   "scene": "fight",
+   "method": "game",
+   "title": "Pillager or raider",
+   "context": "Pillagers and players are the same doll today: pillagers get angry brows and role-coloured gear. In a fight at 40 pixels tall, a pillager can still look like your mate. Same fight, four ways to make a pillager look like the enemy.",
+   "question": "What should make a pillager read as the enemy at a glance?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Brows and gear (today)",
+     "description": "Angry brows and role coloured gear.",
+     "spec": "No change."
+    },
+    {
+     "key": "B",
+     "label": "Masked and goggled",
+     "description": "A cloth over the lower face and goggles, so the face reads as covered.",
+     "spec": "For pillagers only (st.team==='foe' and st.own.kind==='raider'): lower-face cloth 12x5 px #2b2a2e with ink outline from just under the eyes to the chin (head centre is (x+leanX,ty-33)), a 2 px knot at the side, and two goggle lenses 4x3 px #e0a030 alpha 0.85 with a 1 px glint over the eyes."
+    },
+    {
+     "key": "C",
+     "label": "War paint",
+     "description": "A red stripe across the eyes and a red armband.",
+     "spec": "Pillagers only: 2 px band #c8321e from ear to ear over the eyes, 3 px red armband on the arm away from the gun, coat darkened 10 percent."
+    },
+    {
+     "key": "D",
+     "label": "Scrap armour and grime",
+     "description": "Mismatched metal on one shoulder and a dirty tint, against the clean players.",
+     "spec": "Pillagers only: a shoulder plate 6x5 px #8a8f94 with a rust patch (#7a3a2a) and two rivets on the shoulder away from the gun; whole figure drawn inside wc.filter='brightness(.9) saturate(.85) sepia(.12)'."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A covered face is the fastest not-one-of-us read at 40 pixels tall and costs two small shapes."
+  },
+  {
+   "id": "a19",
+   "group": "enemies-pillagers",
+   "kind": "image",
+   "scene": "lineup",
+   "method": "game",
+   "title": "Pillager colours",
+   "context": "Each pillager has a role (rushers red, flankers green, suppressors amber, markers blue, shield bearers violet) shown by one gear shape, and the coat is half the role colour. Same row of pillagers, four ways to use colour.",
+   "question": "How strongly should a pillager's role show in colour?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Half-tinted coats (today)",
+     "description": "Coat half role colour plus a gear shape.",
+     "spec": "No change: raiderCoat mixes 45 percent identity coat and 55 percent role colour."
+    },
+    {
+     "key": "B",
+     "label": "Role colour is the whole coat",
+     "description": "Each role wears one strong uniform colour.",
+     "spec": "raiderCoat returns PROLE[role].c darkened 12 percent (darkHex 0.12) instead of the mix. Gear shapes unchanged."
+    },
+    {
+     "key": "C",
+     "label": "Plain coats, loud gear",
+     "description": "Grey-brown coats, the gear is bright and bigger.",
+     "spec": "raiderCoat returns #4a4842 mixed 10 percent with the role colour; drawRoleMark gear (spikes, scarf, bandolier, hood, plate) drawn 1.3x about its anchor and lit with litHex 0.2."
+    },
+    {
+     "key": "D",
+     "label": "One crew colour",
+     "description": "Everyone in the same dark red, the gear shows the role.",
+     "spec": "raiderCoat returns #7a2f2a for all pillagers (roles from gear only, gear colours unchanged)."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A single strong colour per role reads from across the street, which half-tinted coats do not."
+  },
+  {
+   "id": "a20",
+   "group": "enemies-pillagers",
+   "kind": "image",
+   "scene": "lineup",
+   "method": "game",
+   "title": "Elite look",
+   "context": "Elite pillagers and machines wear a thin purple ring on the ground and, if they have a special power, an outline in that power's colour (blue shield, orange explosion, yellow fast, green healing). Same row with the pillager and the sentry marked as elite.",
+   "question": "How should an elite stand out from the rest?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Ground ring and outline (today)",
+     "description": "A thin purple ring, plus a coloured outline for powers.",
+     "spec": "No change: purple ellipse ring (rx r*1.2, 2 px, alpha .28 to .52) and rimOpen outline for affixed elites."
+    },
+    {
+     "key": "B",
+     "label": "Bigger and gilded",
+     "description": "A fifth bigger with brass trim, no ring.",
+     "spec": "Elites drawn 1.2x about the feet with a 1 px brass (#c9a24a) line along the shoulders or hull top; no ground ring."
+    },
+    {
+     "key": "C",
+     "label": "Glow round the body",
+     "description": "A soft purple glow around the whole figure.",
+     "spec": "Radial gradient 'lighter' centred (x,y-r), radius r*1.9, #d08ce8 alpha 0.30 to 0, pulsing 0.22 to 0.38 at 1.5 Hz, plus a 1 px outline in the same colour (rim code); no ground ring."
+    },
+    {
+     "key": "D",
+     "label": "Rank chevrons",
+     "description": "Small chevrons drawn on the chest or hull, no glow.",
+     "spec": "Two chevrons 5x3 px #d08ce8 with 1 px ink outline on the chest (pillager) or hull top (machine) plus a brass edge; no ring, no glow."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "A glow shows from far and at night, where a ring on the floor hides behind a wall."
+  },
+  {
+   "id": "a21",
+   "group": "enemies-pillagers",
+   "kind": "image",
+   "scene": "lineup",
+   "method": "game",
+   "title": "The golden enemy",
+   "context": "One golden enemy is in every raid and drops a big hoard. Today it has a pulsing gold glow, a gold ring on the floor, three orbiting sparkles and a gold label over it. Same row with one pillager made golden.",
+   "question": "How should the golden enemy show?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Glow, ring and sparkles (today)",
+     "description": "Gold glow and a ring.",
+     "spec": "No change: goldDraw (radial 2.6R glow, ellipse ring 2.5 px, three orbit sparkles 2.4 px, label 'golden')."
+    },
+    {
+     "key": "B",
+     "label": "Solid gold body",
+     "description": "The whole body turns gold with a shine sweeping across it.",
+     "spec": "Draw the golden body inside wc.filter='sepia(1) saturate(3) hue-rotate(-12deg) brightness(1.1)'; every 2 s a white strip 5 px wide at 25 percent alpha sweeps across the silhouette in 0.4 s. Keep the ring, drop the glow."
+    },
+    {
+     "key": "C",
+     "label": "Light pillar",
+     "description": "A tall gold beam over it, seen from across the street, plus today's ring.",
+     "spec": "Today's look plus a vertical beam from 1.1R above the body up another 130 px, 8 px wide at the base, gradient #ffd24a alpha 0.45 to 0 ('lighter')."
+    },
+    {
+     "key": "D",
+     "label": "Falling gold",
+     "description": "Gold motes drip off it as it moves.",
+     "spec": "Today's look plus a 2x2 px #ffd24a mote every 0.12 s from a random point on the body, falling 10 px and fading over 0.5 s."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "You can spot the hoard from across the street, the same way the beams on rare drops work."
+  },
+  {
+   "id": "a22",
+   "group": "enemies-pillagers",
+   "kind": "image",
+   "scene": "fight",
+   "method": "game",
+   "title": "A pillager spots you",
+   "context": "When a pillager sees you, a red mark appears over its nameplate and a sound plays, with no spoken words (your ruling). Gear on the body replaced the marks over heads. Same fight, four ways to show a pillager just noticed you.",
+   "question": "How should a pillager show it has seen you?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Mark over the head (today)",
+     "description": "A small red mark pops above the pillager.",
+     "spec": "No change: the alert mark on the nameplate. SCENE NOTE: both pillagers in 'chase' state the moment they notice, 0.2 s after the state flip."
+    },
+    {
+     "key": "B",
+     "label": "Body tell",
+     "description": "The pillager hops, eyes flare red, brows tighten. No mark.",
+     "spec": "Store e._tl=G.t when e.state first reads 'chase' or 'alarm'. For 0.45 s: body y offset -3*sin(pi*f), eyes drawn as #ff3b30 dots with a 1.6x 'lighter' halo, brows 1 px thicker. The nameplate mark is not drawn."
+    },
+    {
+     "key": "C",
+     "label": "Sight line",
+     "description": "A thin red line from the pillager to you that fades.",
+     "spec": "A line from the gun muzzle to the player, 1.5 px #ff4a3a alpha 0.6 to 0 over 0.35 s. No nameplate mark."
+    },
+    {
+     "key": "D",
+     "label": "Ground ping",
+     "description": "A red ring spreads on the floor under the pillager.",
+     "spec": "Ellipse at the feet rx 10 to 34 and ry 4 to 13 over 0.4 s, 2 px #ff4a3a alpha 0.7 to 0. No nameplate mark."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "You cut the marks over heads, and the body doing the signal is the same idea as the gear drawn on it."
+  },
+  {
+   "id": "a23",
+   "group": "enemies-pillagers",
+   "kind": "image",
+   "scene": "fight",
+   "method": "game",
+   "title": "Pillager death",
+   "context": "Nothing stays after a pillager dies except the loot. Today the figure becomes a flat coloured shape that squashes and fades for 0.8 s. Same fight, photographed 0.25 s after one pillager was shot.",
+   "question": "How should a pillager look as it dies?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Squash and fade (today)",
+     "description": "A flat coloured shape that fades.",
+     "spec": "No change: drawDeathAnims. SCENE NOTE: a pillager shot 0.25 s ago from the left, the other still fighting."
+    },
+    {
+     "key": "B",
+     "label": "Fall and fade",
+     "description": "The real figure tips over flat and fades, with a small light puff.",
+     "spec": "On death draw the pillager's own sprite tipping 85 degrees away from the shot about the feet over 0.2 s, then alpha 1 to 0 over 0.5 s; a small red puff (BLOOD_MIST r 6) and two drops. Nothing remains after 0.8 s."
+    },
+    {
+     "key": "C",
+     "label": "Knocked back with light blood",
+     "description": "Thrown away along the shot, a short spray of light blood, one stain.",
+     "spec": "Sprite moves 12 px along the shot direction while spinning 20 degrees, alpha 1 to 0 over 0.6 s; six drops (3 px #b02a20) arc out; one 5 px stain via decal fading over 6 s."
+    },
+    {
+     "key": "D",
+     "label": "Drops the gun and loot",
+     "description": "The pillager fades while its gun spins to the floor and loot sparkles pop out.",
+     "spec": "Figure alpha 1 to 0 over 0.3 s; its gun sprite spins 540 degrees and lands 14 px away (two bounces); three 2 px sparkles in the loot's rarity colour pop out. All gone by 0.9 s."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "It shows where the shot came from and uses the light blood you allowed, and leaves nothing on the floor."
+  },
+  {
+   "id": "a24",
+   "group": "enemies-machines",
+   "kind": "image",
+   "scene": "lineup",
+   "method": "game",
+   "title": "Machine style",
+   "context": "Today the machines are clean grey industrial, with orange hazard stripes and orange and cyan wheel lights. Raiders look clean too, so machines and raiders can feel alike. Same row of machines, four styles.",
+   "question": "What style should the machines have?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Clean industrial (today)",
+     "description": "Tidy grey steel with hazard stripes.",
+     "spec": "No change."
+    },
+    {
+     "key": "B",
+     "label": "Rusty scrap",
+     "description": "Dirty, rusted and patched, like scrap that was made to fight.",
+     "spec": "Draw each machine into a scratch canvas (as rimOpen does) with wc.filter='sepia(.45) saturate(1.35) hue-rotate(-14deg) brightness(.86) contrast(1.1)', then 'source-atop' three rust blotches (#7a3a2a alpha .45, ellipses 6 to 9 px at fixed spots from the entity id) and a grime gradient rgba(46,30,18,.5) over the lowest 30 percent; blit back. Elite brass unchanged."
+    },
+    {
+     "key": "C",
+     "label": "Glowing tech",
+     "description": "Dark, matte hulls with bright glowing seams and lights.",
+     "spec": "Draw inside wc.filter='saturate(.5) brightness(.6) contrast(1.35)'; then 'lighter' 1 px cyan (#35e8ff) lines along the hull top edge and tread, wheel lights and lens halo 1.8x, a soft cyan ground glow ellipse alpha .18."
+    },
+    {
+     "key": "D",
+     "label": "Toy bright",
+     "description": "Cheerful saturated colours, like a toy robot.",
+     "spec": "Draw inside wc.filter='saturate(1.7) brightness(1.12) contrast(.95)' and set INK to '#2b2540' for the machine draw."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "ARC Raiders machines are scrap and dirt, and rust also sets them apart from the clean raiders."
+  },
+  {
+   "id": "a25",
+   "group": "enemies-machines",
+   "kind": "image",
+   "scene": "lineup",
+   "method": "game",
+   "title": "Machine eye light",
+   "context": "Each machine's lens tells you its mood: dim white when calm, amber when suspicious, red when hunting, orange when overheated. Same row of machines with three of them forced into other moods.",
+   "question": "How should the lens light show a machine's mood?",
+   "options": [
+    {
+     "key": "A",
+     "label": "The colour language (today)",
+     "description": "White, amber, red, orange. Small glow.",
+     "spec": "No change (sprEyeOf and mbEye). SCENE NOTE: nearest three machines forced to 'investigate', 'chase' and overheat, the rest calm."
+    },
+    {
+     "key": "B",
+     "label": "A colour per machine",
+     "description": "Each kind has its own calm colour, red when hunting.",
+     "spec": "Calm lens colours: sentry #54e0ff, crawler #ffb23a, crier #b6ff4a, listener #ff5ad2, bulwark #ff8a3c, howler #b07cff, warden #ffffff. Hunting is #ff3b30 as today."
+    },
+    {
+     "key": "C",
+     "label": "Bigger glow",
+     "description": "Same colours with a much bigger glow that shows across the street.",
+     "spec": "Halo factor x2.2, a 'lighter' disc radius 3x lens at alpha .22 in every mood, calm lens alpha .5 to .8."
+    },
+    {
+     "key": "D",
+     "label": "Always red, mood by blink",
+     "description": "Always red, and blink speed tells the mood.",
+     "spec": "Calm: red at 35 percent alpha blinking 0.8 Hz; investigating: 70 percent steady; hunting: 100 percent pulsing 3 Hz with a halo; overheated stays orange."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "The colours stay the ones you know, and a lens you can see from across the street is the warning."
+  },
+  {
+   "id": "a26",
+   "group": "enemies-machines",
+   "kind": "image",
+   "scene": "lineup",
+   "method": "game",
+   "title": "Machine size",
+   "context": "Machines run from a small crawler (15 units across) and drone (11) to a sentry (22) and a warden (30), with the Overseer 1.47 times a warden. Next to your raiders at the current size. Same row, four size settings. The camera is not touched.",
+   "question": "How big should the machines look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Current sizes.",
+     "spec": "No change."
+    },
+    {
+     "key": "B",
+     "label": "A quarter bigger",
+     "description": "Every machine 25 percent bigger.",
+     "spec": "Draw every machine kind through wc.save(); wc.translate(x,y); wc.scale(1.25,1.25); wc.translate(-x,-y) about its feet. Shadows scale with it. Hit boxes untouched."
+    },
+    {
+     "key": "C",
+     "label": "Bigger by threat",
+     "description": "Small ones stay small, the dangerous ones loom.",
+     "spec": "Scale about the feet: crawler 1.0, crier 1.0, listener 1.1, sentry 1.25, bulwark 1.3, howler 1.3, pillbox 1.3, warden 1.5; the Overseer is not scaled."
+    },
+    {
+     "key": "D",
+     "label": "Half again",
+     "description": "Every machine 50 percent bigger. They tower over the raiders.",
+     "spec": "Same as B with 1.5."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "The bigger the threat the bigger it looks, so a glance tells you what to run from."
+  },
+  {
+   "id": "a27",
+   "group": "enemies-machines",
+   "kind": "image",
+   "scene": "fight",
+   "method": "game",
+   "title": "Warning before a shot",
+   "context": "A machine warns you before it fires: the lens glows red and grows over 0.4 s (0.7 s for the warden). With many things going on it is easy to miss. Same fight, the two machines caught halfway through their warning.",
+   "question": "How should a machine warn you before it fires?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Lens glow (today)",
+     "description": "The lens glows brighter and bigger.",
+     "spec": "No change: drawWindupGlow. SCENE NOTE: sentry and warden with windup set to 40 percent of its start value."
+    },
+    {
+     "key": "B",
+     "label": "Charging ring",
+     "description": "A ring shrinks onto the gun and flashes white at the end.",
+     "spec": "Replace the glow with a ring at the muzzle: radius 26 to 8 px over the windup, 3 px #ff3b30 alpha .4 to .95, then a 6 px white core flash on the last 3 frames."
+    },
+    {
+     "key": "C",
+     "label": "Aim line",
+     "description": "A thin red line grows from the gun toward the shot, so you can step aside.",
+     "spec": "A line from the muzzle along e.face for its range (e.rng) or to the first wall, 1.5 px #ff3b30 alpha 0.6, growing 0 to full length over the windup."
+    },
+    {
+     "key": "D",
+     "label": "Body pulse and ground ring",
+     "description": "The whole body flashes red in three pulses with a ring on the floor.",
+     "spec": "Body 'lighter' red rgba(255,59,48) alpha 0 to .35 in three steps over the windup, plus a ground ellipse rx e.r*1.3 ry e.r*0.5 2 px red alpha .6."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "A line is the only warning that also shows where the shot will go, which a glow cannot."
+  },
+  {
+   "id": "a28",
+   "group": "enemies-machines",
+   "kind": "image",
+   "scene": "fight",
+   "method": "game",
+   "title": "Destroying a machine",
+   "context": "When a machine is destroyed it turns into a flat grey shape for a moment and then a wreck with loot. The moment of destruction has little to see. Same fight, a sentry and a crawler photographed 0.2 s after they were destroyed.",
+   "question": "How should a machine break when it is destroyed?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Squash and fade (today)",
+     "description": "A flat grey shape that fades.",
+     "spec": "No change: drawDeathAnims plus gfxOnDeath. SCENE NOTE: sentry and crawler destroyed 0.2 s ago."
+    },
+    {
+     "key": "B",
+     "label": "Small blast and smoke",
+     "description": "A quick fireball with smoke, using the explosion you already have.",
+     "spec": "On machine death call boomFx(x,y,0.6,'bot') and add five metal chunks (2 to 3 px, the machine's own colours) flying 24 px over 0.4 s; the wreck smokes with a thin dark wisp for 4 s."
+    },
+    {
+     "key": "C",
+     "label": "Sparks and arcs",
+     "description": "Blue electric arcs and a burst of sparks as the hull collapses.",
+     "spec": "Twelve sparks (spark(x,y,'#9fe8ff',12,260)), three 1 px arc lines #35e8ff alpha .8 over the body for 0.3 s, hull scaleY 1 to 0.6 over 0.25 s, then the wreck."
+    },
+    {
+     "key": "D",
+     "label": "Bursts into parts",
+     "description": "The machine splits into big chunks that fly out and settle.",
+     "spec": "Four chunks (6 to 9 px polygons in the machine's colours with ink edge) fly 20 px and settle over 0.5 s; the body is gone at 0.1 s."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "It uses the explosion and smoke code you already have, so it matches the bigger explosions you ordered."
+  },
+  {
+   "id": "a29",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Ground and wall colour",
+   "context": "Floors and walls are warm tan and muted purple-grey, with fairly strong colour, and raiders are mid-tone. On a warm floor a tan raider blends in. Same scene, four colour treatments of the world only (raiders, guns and loot keep their colour).",
+   "question": "How should the ground and walls be coloured against the figures?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Current palette.",
+     "spec": "No change."
+    },
+    {
+     "key": "B",
+     "label": "Quieter world",
+     "description": "Slightly drained, so every figure pops.",
+     "spec": "Immediately after the ground and walls are drawn and before the first body (the entity loop), copy the world canvas to a scratch canvas and draw it back with wc.filter='saturate(.65) brightness(.95)'."
+    },
+    {
+     "key": "C",
+     "label": "Cool world, warm raiders",
+     "description": "Floors tinted cool blue-grey, figures keep their warm colours.",
+     "spec": "Same place: redraw the world with wc.filter='hue-rotate(-10deg) saturate(.8)' then a 'multiply' fill #b8c4dc alpha .22."
+    },
+    {
+     "key": "D",
+     "label": "Brighter and poppier",
+     "description": "More colour and contrast, a more cheerful look.",
+     "spec": "Same place: redraw the world with wc.filter='saturate(1.4) contrast(1.08) brightness(1.05)'."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A quieter ground makes every figure, gun and loot pop; the worst case today is a tan raider on a warm floor."
+  },
+  {
+   "id": "a30",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "dark",
+   "method": "game",
+   "title": "Night look",
+   "context": "Night is darker than day (you asked for moodier nights) but you also called night unplayable when it was too dark in the past. Same scene at night, four lightings.",
+   "question": "How should night look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Current night.",
+     "spec": "No change: NIGHT_SHEET .55, NIGHT_MOOD 1, fog rgba(4,7,26,.60)."
+    },
+    {
+     "key": "B",
+     "label": "Moonlit blue",
+     "description": "Blue light, readable figures, a darker mood without black.",
+     "spec": "NIGHT_SHEET .45 with sheet colour rgba(10,20,60,..), night fog alpha .50, and a cool 'screen' fill rgba(20,40,90,.10) over the world before the figures."
+    },
+    {
+     "key": "C",
+     "label": "Near black, lamps only",
+     "description": "Very dark, only lamps and flashes light the street.",
+     "spec": "NIGHT_SHEET .75, night fog alpha .78, lamp radius +30 percent and lamp colour #ffb866 stronger (L.i x1.2)."
+    },
+    {
+     "key": "D",
+     "label": "Warm dusk",
+     "description": "Dim but warm brown, like late evening.",
+     "spec": "NIGHT_SHEET .50 with sheet colour rgba(40,16,10,..), night fog alpha .55."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "It keeps the darker mood you asked for and the blue keeps figures readable; near black is what you called unplayable before."
+  },
+  {
+   "id": "a31",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Sight cone and fog",
+   "context": "What you cannot see is covered by a dim layer (fog of war) with your sight cone cut out of it, and enemies only show where you can see them. Today the dim layer is dark brown by day. Same scene, four ways to look.",
+   "question": "How should the area you cannot see look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Dark fog (today)",
+     "description": "Soft dim brown outside the cone.",
+     "spec": "No change: day fog rgba(58,46,38,.46), night rgba(4,7,26,.60)."
+    },
+    {
+     "key": "B",
+     "label": "Lighter fog",
+     "description": "More of the street stays readable.",
+     "spec": "Day fog alpha .30, night .42. Enemies still only drawn where seen."
+    },
+    {
+     "key": "C",
+     "label": "Heavy fog, crisp cone",
+     "description": "Tense: dark outside, a sharper cone edge.",
+     "spec": "Day fog alpha .62, night .75; the cone cutout edge blur halved."
+    },
+    {
+     "key": "D",
+     "label": "Grey haze",
+     "description": "Outside the cone the colour drains instead of going dark.",
+     "spec": "Fog fill alpha .16 and composite a grey (#808080) fill with 'saturation' at alpha .6 where the fog sheet is drawn onto the world."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "More of the street stays readable on a TV while enemies still only show where you can see them."
+  },
+  {
+   "id": "a32",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "loot",
+   "method": "game",
+   "title": "Loot visibility",
+   "context": "Unlooted containers carry a coloured mark for the best rarity inside (green, blue, purple, gold) and rare drops get a glow and a beam. Loot is the point of the game and the amount stays as it is. Same scene, four ways to show it.",
+   "question": "How loud should loot and containers be?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Current marks and beams.",
+     "spec": "No change (container pip, gfxPreFog loot glow and beams)."
+    },
+    {
+     "key": "B",
+     "label": "Louder",
+     "description": "Every rarity gets a beam and a glow pool.",
+     "spec": "Beam heights green 40, blue 60, purple 90, gold 130 px, 7 px wide at the base, alpha .5 to 0; glow pool radius 26 px in the rarity colour alpha .35 pulsing at 1.4 Hz under each container and drop."
+    },
+    {
+     "key": "C",
+     "label": "Quieter and close",
+     "description": "No beams, a small glow that sparkles when you get near.",
+     "spec": "Remove the beams; a 22 px pool alpha .3, and a 2 px sparkle twinkling every 0.4 s only within 400 px of the player."
+    },
+    {
+     "key": "D",
+     "label": "Outline and bob",
+     "description": "A pulsing outline on the container and an item icon bobbing over it.",
+     "spec": "rimOpen outline in the rarity colour 1.5 px pulsing .5 to 1 at 1.4 Hz round each container; a 12 px item icon bobbing 3 px above it."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Rare drops should be visible from the end of the street, and every rarity keeps its own colour and height."
+  },
+  {
+   "id": "a33",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "fight",
+   "method": "game",
+   "title": "Muzzle flash and tracers",
+   "context": "A shot makes a short star of light at the gun and a short bright line (the tracer, 9 px long) that flies out. At night enemy tracers are three times longer. Same fight, four looks.",
+   "question": "How should shots look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Short star, short line.",
+     "spec": "No change. SCENE NOTE: P1 and one pillager firing, tracers in flight."
+    },
+    {
+     "key": "B",
+     "label": "Bigger flash with floor light",
+     "description": "A bigger star and a warm flash on the floor.",
+     "spec": "Muzzle star x1.6 and flash(x,y,70,'#ffc27a',.08) at the muzzle ('lighter' warm light on the floor)."
+    },
+    {
+     "key": "C",
+     "label": "Long glowing tracers",
+     "description": "Longer streaks with a soft glow, in the gun's colour.",
+     "spec": "Tracers 22 px long, 2.5 px wide, plus a second stroke 6 px wide alpha .25 in the same tint; elemental guns keep their colour."
+    },
+    {
+     "key": "D",
+     "label": "Short and sharp",
+     "description": "Quieter, smaller flash and tracer.",
+     "spec": "Muzzle star x0.8, tracer 6 px, no glow."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "Tracers are what you see most in a firefight, and a longer streak shows where shots come from."
+  },
+  {
+   "id": "a34",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "fight",
+   "method": "game",
+   "title": "Hit sparks and blood",
+   "context": "Bullets hitting a machine throw small sparks and hitting a pillager or player throws a light red puff and a drop. Blood is light and only from pillagers and players (your ruling). Same fight a moment after hits.",
+   "question": "How strong should hit effects be?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Small sparks, a light puff.",
+     "spec": "No change (spark 2.4 px squares, bloodFx puff r 5+4k). SCENE NOTE: photographed 0.1 s after hits on a machine and a pillager."
+    },
+    {
+     "key": "B",
+     "label": "Chunkier",
+     "description": "More and bigger sparks, a stronger puff.",
+     "spec": "Sparks x1.8 in count and 3.4 px with a white-yellow core (#ffe9a8); metal hits add four grey flecks; blood puff radius 7+5k, five droplets, floor drop 4 px."
+    },
+    {
+     "key": "C",
+     "label": "Stains stay a while",
+     "description": "The light blood leaves more marks on the floor that fade slowly.",
+     "spec": "decal chance .55 to .95, size x1.4, fade over 14 s. Still light."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Hits are the feedback you feel most, and chunkier sparks read at TV distance without any more blood."
+  },
+  {
+   "id": "a35",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "fight",
+   "method": "game",
+   "title": "Explosions",
+   "context": "Barrels and grenades make a fire flash, a ring, flying bits and smoke. You asked for bigger explosions. Same fight a moment after an explosive barrel goes off about 4 metres from the machines.",
+   "question": "How big and what kind of explosions?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Current explosion.",
+     "spec": "No change (boomFx size 1)."
+    },
+    {
+     "key": "B",
+     "label": "Bigger blast with scorch",
+     "description": "The same explosion 60 percent bigger, leaving a burnt mark.",
+     "spec": "boomFx size 1.6 (cap 2.5), ring R=20+160k, plus decal(x,y,'rgba(20,16,12,.55)',26) lasting 20 s."
+    },
+    {
+     "key": "C",
+     "label": "Fireball and smoke column",
+     "description": "A fire column rises and a dark smoke column drifts up.",
+     "spec": "As A plus four fire blobs rising 30 px over 0.3 s and a smoke column rising and drifting 60 px over 4 s in a darker colour."
+    },
+    {
+     "key": "D",
+     "label": "Chunky cartoon puff",
+     "description": "A bright, outlined puff, fewer particles, more toy-like.",
+     "spec": "A white disc 60 px for two frames, then an orange-yellow ring of blobs with a 2 px black outline; smoke light grey with an outline; fewer particles."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "The same effect scaled up with a scorch costs nothing new, since size is one number."
+  },
+  {
+   "id": "a36",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Camera distance",
+   "context": "The camera shows about 1920 world units across at 1080p, and your raiders are small in it. You said to keep the camera, and also that everything looks too small. Here is the camera alone. Same scene, four distances.",
+   "question": "How close should the camera be?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Current distance.",
+     "spec": "No change (zoom 1.0)."
+    },
+    {
+     "key": "B",
+     "label": "15 percent closer",
+     "description": "Everything bigger, about a seventh less street ahead.",
+     "spec": "__setZoom(1.15)."
+    },
+    {
+     "key": "C",
+     "label": "30 percent closer",
+     "description": "Chunky and close, you see much less of the street.",
+     "spec": "__setZoom(1.3)."
+    },
+    {
+     "key": "D",
+     "label": "10 percent wider",
+     "description": "More street, even smaller figures.",
+     "spec": "__setZoom(0.9)."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A clear step up in size for the TV that still shows well beyond the longest enemy gun range."
+  },
+  {
+   "id": "a37",
+   "group": "world-fx",
+   "kind": "image",
+   "scene": "duo",
+   "method": "game",
+   "title": "Finishing look",
+   "context": "The last layers over the picture are a dark vignette at the edges, a colour grade, a little bloom and grain. They decide whether the game feels clean, moody or filmic. Same scene, four finishes.",
+   "question": "What finishing look should the raid have?",
+   "options": [
+    {
+     "key": "A",
+     "label": "As now",
+     "description": "Current vignette, grade, grain.",
+     "spec": "No change (vignette radial from H*.42 to H*.85 alpha .45, CFG.gfxPost grade, grain)."
+    },
+    {
+     "key": "B",
+     "label": "Cinematic",
+     "description": "Warm light, cool shadows, stronger edges and more grain.",
+     "spec": "Vignette alpha .62; at the top of drawHUD after the vignette add 'soft-light' #ffb870 alpha .10 over the top half and 'multiply' #b8c4e0 alpha .12; grain +50 percent."
+    },
+    {
+     "key": "C",
+     "label": "Clean and bright",
+     "description": "Light vignette, no grain, a little more colour.",
+     "spec": "Vignette alpha .25; grain off; saturation +10 percent (wc.filter on the final draw)."
+    },
+    {
+     "key": "D",
+     "label": "Faded film",
+     "description": "Softer contrast, washed colour, lifted blacks, heavy grain.",
+     "spec": "Contrast -8 percent, saturation -15 percent, lifted blacks rgba(20,20,40,.08) 'lighten', grain +80 percent."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "ARC Raiders mood that only shifts colour and edges, so loot and rarity colours still read."
+  }
+ ]
+}

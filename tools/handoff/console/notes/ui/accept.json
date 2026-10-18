@@ -661,19 +661,19 @@
   "when": "2026-10-18T21:10"
  },
  "60-mapfirst-1p": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "Only the start prompt changed: it is now a lime button, but the map is still a saturated blue-and-navy debug plot with no window card, no header row, no close X, and labels still colliding.",
+  "verdict": "The map now sits in a proper dark card with a header, an x, a contracts list and a start button, so it finally matches the other menus, but the map labels still collide and the contract list is dense and uneven.",
   "findings": [
-   "P0 whole screen: palette and frame: Put the map in a card at 90% w/h (5% margin) with fill #16191b, 1px #4a5257 border, 4px radius, on rgba(6,7,8,.8). Recolour the walls to #2e3337 with #4a5257 outlines and drop the 14px periwinkle frame to a 1px line. Keep colour only for extract teal, danger red and rarity bars, and use lime for the player and focus.",
-   "P0 bottom 'click to start' button: Make it 56px high, min-width 200px, label 'start run' at 20px/700 in #11150a, with an E chip and a pad glyph at 24px. Centre it in a 72px footer row inside the card with at least 16px clear of the map edge.",
-   "P1 header row: 'sector map', 'dawn clear', no close: Add a 56px header row: 'sector map' at 32px/700 #efe9dc left, 'dawn · clear' at 20px #aaa498 on the same baseline, and a 48x48 ghost X with a B glyph at the right inside the 5% margin. Align the currency block to the same margin.",
-   "P1 extract c, cache stacks, foreman office, blast freezer labels: Give every label a 2px #0b0c0d halo or pill. Offset labels 8px from their icons and collision-test them. Merge stacked cache icons into one badge with a count. Keep 16px of padding from the card edge.",
-   "P1 zone names: the long dock, packing floor, chill row, the sump, scrap line: Set zone names to 16px f-cond 600 #aaa498 +.04em with a #0b0c0d halo, placed in a clear corner of each zone and not over walls. Put them above the wall layer."
+   "P1 map labels: extract b, stays open, strongbox, blast freezer locked, cache, seal 0%: Add a 2px #0b0c0d halo or pill to every label. Offset labels 8px from their icons and collision-test them. Keep 16px clear of the map frame so 'extract b' is not clipped. Merge each cache stack into one badge with a count. Anchor 'seal 0%' to its ring.",
+   "P1 zone names: packing floor, chill row, the long dock, the sump, scrap line: Set zone names to 16px f-cond 600 #aaa498 with +.04em tracking and a halo, in a clear corner of each zone. Keep the extract labels in teal 20px/700 as the only loud labels.",
+   "P1 contracts panel (right): Use a fixed 72px row. Put the name at 20px/600 #efe9dc on the left and the reward at 16px #aaa498 on the right, with a 4px bar at the bottom of every row. Show lime only on the active bar and green on done. Cap the list at 6 rows with a 'x of 8' scroll cue. Keep 24px padding.",
+   "P1 header: 'cold storage' / 'sector map' / 'dawn clear': Set the title to 32px/700 and 'sector map' to 16px #aaa498 on the same baseline. Write 'dawn · clear' at 20px. Make the x a 48×48 ghost with a #4a5257 1px border, and add a B glyph for pad.",
+   "P2 footer: 'click to start' button and 'surveyed 0%': Make the button 56px high with a 20px/700 #11150a label and a 24px key chip. Raise 'surveyed 0%' to 16px #aaa498 and place it directly under the map's bottom-left corner."
   ],
-  "pic": "tools/handoff/console/notes/shots/cw-mapfirst-after2/60-mapfirst-1p-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/cw-mapstyle-after/60-mapfirst-1p-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T22:15"
+  "when": "2026-10-18T23:20"
  },
  "91-snip-panel-raid": {
   "score": 2,

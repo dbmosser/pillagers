@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.42 - the gun keys are named 1-8, 0 everywhere
+
+Co-op hunt while he was away. The gun keys are 1 to 8 and 0 (the rocket launcher took 0 and key 9 does nothing), but the controls list, the compact list, the pause line, the demo controls card and the stash key row still said 1-9, and a gun put on the wrong key was told guns go on keys 1 to 9. The number-key bind in the stash had the same mix-up: with a gun under the cursor key 9 bound the rocket launcher key and key 0 did nothing.
+
+MEASURED. Check 31.42 passes, and fails on v31.41.
 ## v31.41 - THE SECTOR MAP IS A CARD WITH EVERY CONTRACT ON IT
 
 Co-op hunt while he was away. His answers of 10-18: Q6 (the critic must give 4 on every screen), Q7 (the style guide overrules his older layout and size orders), Q43 (a window is one centred card with an X taking nearly the whole screen) and Q1 (all contracts go on the map screen). The critic scored the map the raid opens on 2 of 5 for its art: a navy void with a thick periwinkle frame and walls, no card, header row or X, labels over their own icons, zone names dark grey on dark grey, and a grey explaining line. The map is now one charcoal card with a 1px border and a header row (the sector name and an X), zone names in light text over a dark halo, labels that keep off the marks, a glyph for each extraction ring and the hot ground, the player marker in the player colour (lime for player 1 and a solo raid, the ally blue for player 2, with a number in a two player game), a footer with the key hint and the surveyed figure, and on the opening map the start button bottom right. Every contract of the profile is listed in a column at the right with its progress and reward in $, finished ones as done; the demo hides contracts, so it lists none. The sentence what you walk stays on the map is cut. Nothing seeded moves.

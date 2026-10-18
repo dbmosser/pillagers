@@ -1,0 +1,1 @@
+| the gun keys are named 1-8, 0 everywhere | v31.42 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.42 passes, fails on v31.41 |
