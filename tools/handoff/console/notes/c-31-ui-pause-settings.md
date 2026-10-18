@@ -18,3 +18,8 @@ Next run (if any): those three, then keycap elements for hints, a pad-focus stag
 - Shortening the pad labels that wrap to three lines: allowed (Q8), with the reason logged in notes\ui\changes.md.
 - Settings and Keys are a centred card with an X, nearly the entire screen (Q43; v30.89 shipped the card). Q59: $ for money, SP for score.
 See the RE-QUEUED block at the end of the task file.
+
+## Run 5 (lane c, evening)
+Shipped v31.36 cw-pset6 (56px report row, flush tab, short pad labels) and v31.39 cw-pset7 (keys list lower case, flat key caps). Shots shots/c-31z-before, c-31z-after, c-31z-after2. Critic: 74 = 2 (better), 18 = 2 (same), 25 = see after set.
+Remaining critic asks (all layout work): 18/72: 280px left category nav + list + right detail pane, chevrons right-aligned at the row edge and lit only on focus, tab strip 20px with LB/RB glyphs, send play data to the footer as a ghost button, one-line description (P0). 74: focus chip state (2px acc outline), section header tab, 24px bottom padding, widen the column to the card.
+Next run: the settings nav+detail layout (one big step), then the keys column width and footer row.

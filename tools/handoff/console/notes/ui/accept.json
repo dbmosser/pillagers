@@ -128,17 +128,17 @@
  "18-settings-hub": {
   "score": 2,
   "pass": false,
-  "verdict": "the settings card now fills the screen as the style guide asks, but the content is still one narrow column floating in a huge empty card, the audio rows still leak into the raid tab, the heat row has a stray gap, and the list clips mid-row at the bottom.",
+  "verdict": "The new settings screen is visually identical to the old one: the narrow 960px column still floats in a card with empty flanks, the 'send play data' link still sits in the tab strip, and the long description still dominates the bottom, so none of the earlier advice was applied.",
   "findings": [
-   "P0 list rows 'heat when you call for extraction' and 'master volume' (y~700-840): move the volume rows to the audio tab. Make every row exactly 56px with label and value vertically centred. Find and remove the extra margin or padding on the row that follows a section break.",
-   "P0 overall card composition (x 25-1895, content x 481-1439): fill the card: a 280px left nav, or a stacked category list, replaces the tab strip. A right-hand detail pane (480px) takes the description. Or cap the list at 900px and align the title and footer to that column. Do not leave empty flanks.",
-   "P1 bottom of list, 'music volume' row at y~870: snap the scroll to whole 56px rows. Or add a 24px fade mask at the bottom edge. Show the scrollbar as a 4px track in --ui-line-hi. Leave 24px padding under the detail pane.",
-   "P1 value controls (chevrons at x=923 and x=1175, value at x=1049): right-align the control group at the row's right padding (x≈1420). Make chevrons 24px in tx-2, lit lime only on the focused row. Or widen the value column to 240px.",
-   "P1 tab strip (y=140) and 'send play data': use 20px tabs, 48px high, with 24px side padding. Add LB/RB glyphs at the strip ends. Move 'send play data' into the footer as a ghost button, or into the accessibility tab. Start the scrollbar below the strip."
+   "P0 overall card composition (card x 25-1895, content x 481-1439): Add a 280px left category nav (tabs stacked, 56px rows, lime bar on the active one) at x=49. Put the list in the middle at about 700px. Put a 480px detail pane on the right, and drop the bottom description block.",
+   "P0 description block (x 481-1439, y 793-995): Cut the copy to one line of 16px tx-2, 90 characters at most, or move it into a right-hand detail pane. Leave 24px padding under the text and keep it 24px clear of the footer rule at y=995.",
+   "P1 value controls (chevrons x=923 and x=1175, value x=1049): Right-align the group to the row padding (x≈1415) with a 240px value column. Use 24px chevrons in tx-2 and light them lime only on the focused row. Show the chevrons on the other rows at 40% opacity or hide them.",
+   "P1 list bottom (y~775-793): Snap scrolling to whole 56px rows. Add a 24px fade mask at the bottom edge. Start the scrollbar below the tab strip at y=166 as a 4px track in --ui-line-hi.",
+   "P1 tab strip (y=140) and 'send play data' (x~1300-1416): Use 20px tabs, 48px high, with 24px side padding. Add LB/RB glyphs at the strip ends. Move 'send play data' into the footer as a ghost button or into the accessibility tab."
   ],
-  "pic": "tools/handoff/console/notes/shots/04-cw-after/18-settings-hub-1080.jpg",
-  "task": "04-style-guide-update",
-  "when": "2026-10-18T20:31"
+  "pic": "tools/handoff/console/notes/shots/c-31z-after2/18-settings-hub-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T23:07"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -588,17 +588,17 @@
  "74-settings-change-pad-buttons": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version fixes the worst craft bug: the three-line wrapped label that crowded the y row is gone and the rows sit on an even grid. The screen is still a flat, small-type table with capital letters on labels, a clipped footer line, no visible pad focus and a lot of dead space.",
+  "verdict": "The lower-case defect and the wrapped labels are fixed, so the rows are cleaner, but the hierarchy, the lack of focus state, the clipped footer text and the narrow off-centre column are all unchanged and it still reads as a plain settings table.",
   "findings": [
-   "P0 row labels: Sprint, Dodge roll, Crouch, Fire / use, Focus aim, Aim distance, Use / reload, Help / finish, Previous gun, Next gun, Item wheel, Backpack, Ping, Pause: Lower-case every action label at the source string or render path (e.g. 'sprint', 'dodge roll', 'fire / use'). Do not use a text-transform hack that leaves capitals in the data.",
-   "P1 whole screen: section headers vs row labels vs key buttons: Set the section headers to --fs-label 16px, --tx-2, +.08em tracking, with a 3px lime tab or 24px spacing above each group. Set the row labels to 20px --tx-1. Set the key chips to --fs-label in a raised fill so the bindable value reads as the interactive part.",
-   "P1 all 16 key buttons (ls, a, rt, ...): Show a 2px --acc outline and --ui-raised fill on the focused chip, plus a lime scale of about 1.04 with the bounce. Remove the bottom bevel and use a 1px --ui-line-hi border with a 4px radius.",
-   "P1 bottom of the scroll area, 'locked: these keep their jobs': Add 24px bottom padding inside the scroll region and a 16px fade mask instead of a hard cut. Raise the text to --tx-2 (#aaa498) at 16px. Make the scrollbar thumb 6px wide in --ui-line-hi.",
-   "P1 layout: content column x480-1430 inside a 1870px card: Either widen the table to span x49-1870 with the same 2-column grid and scrollbar on the card edge, or add a left detail pane (pad diagram, 40% width) so the empty side earns its space. Keep the margin at 48px."
+   "P1 all 16 key chips (ls, a, rt, d-left ...): Focused chip: 2px --acc outline, --ui-raised fill, --acc text, scale 1.04 with the bounce. Idle chips: 1px --ui-line-hi border, 4px radius, no bevel, and a --ui-raised fill so they read as the interactive part.",
+   "P1 section headers (move, fight, gear, world) vs row labels: Headers at 16px --tx-2 with +.08em tracking and a 3px x 16px lime tab on the left. Row labels 20px, weight 600, --tx-1. Chip text 16px. Add 24px above each group instead of relying on the divider alone.",
+   "P1 bottom of the scroll area, 'locked: these keep their jobs' at y~925: Add 24px bottom padding in the scroll region and a 16px fade mask. Set the text to --tx-2 (#aaa498) at 16px. Make the scrollbar thumb 6px wide in --ui-line-hi.",
+   "P1 layout: content column x480-1430 in a 1870px card: Either widen the table to span x49-1870 with the scrollbar on the card edge, or use a left 40% pane with a pad diagram that highlights the selected button. Keep a 48px margin.",
+   "P2 footer: 'reset to defaults' (bottom left) and 'esc close' (bottom right, y1021): Put both on one footer row at y~990. Reset is a secondary button (1px --ui-line-hi border, 20px text) on the left. The key hint is 16px --tx-2 on the right, or delete it, since the X already closes."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31z-after/74-settings-change-pad-buttons-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31z-after2/74-settings-change-pad-buttons-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T22:58"
+  "when": "2026-10-18T23:07"
  },
  "01-title-mode-menu": {
   "score": 3,

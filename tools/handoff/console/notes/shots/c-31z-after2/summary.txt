@@ -1,0 +1,5 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  32-keys-window                         staged      11.0s  
+  74-settings-change-pad-buttons         staged       8.7s    | keysmodal
+  75-settings-pad-rebind-waiting         staged       9.0s    | keysmodal
+  18-settings-hub                        staged       7.9s    | settingsmodal
