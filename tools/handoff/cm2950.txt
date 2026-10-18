@@ -1,0 +1,7 @@
+v29.50: the item wheel opens in the undercroft
+
+Hold Q on the Undercroft floor to see the item wheel.
+
+Check 29.50. Fails on v29.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

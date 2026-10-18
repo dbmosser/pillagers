@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.50 - The item wheel opens in the Undercroft
+
+Co-op hunt while he was away. His order 2026-10-15: the wheel is accessible in the Undercroft, even though nothing can be used there. A held Q on the floor opens the same eight slot ring with the counts from what the stash packs. The floor has nothing to use, so letting go on a slot says so in one line and closes; the hint reads Release to close. The wheel stays shut under a window, the backpack, the title and the pause box.
+
+MEASURED. Check 29.50 passes, and fails on v29.49.
 ## v29.49 - The run over card is wider and the wordmark steps out
 
 Co-op hunt while he was away. The critic scored the run over screen 2: a small box under a competing wordmark. The wordmark hides while the card is up, and the card is 840px times scale wide. Restyle only.

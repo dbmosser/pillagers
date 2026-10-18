@@ -330,9 +330,9 @@
  "55-arcade-run-over-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version finally puts the result in a guide-style dark card with a clear hero line, but it is a small, left-aligned box floating in a black void under a competing centred wordmark, with no buttons, no backdrop and a tiny stats line.",
-  "pic": "tools/handoff/console/notes/shots/12-after2/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "The new version finally uses the shared dark panel with a tab and puts the score first, but it is a small left-aligned box floating in a black void with tiny stats, no button and no world backdrop, so it reads as a placeholder rather than an end card.",
+  "pic": "tools/handoff/console/notes/shots/12-after3/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T08:11"
+  "when": "2026-10-18T08:17"
  }
 }
