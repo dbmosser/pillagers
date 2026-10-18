@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.39 - THE WHAT IS NEW CARD NAMES POLISH PASS 19
+
+Co-op hunt while he was away. The card was stamped v30.38 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 30.39 passes, and fails on v30.38.
 ## v30.38 - THE WHAT IS NEW CARD NAMES POLISH PASS 18
 
 Co-op hunt while he was away. The card was stamped v30.22 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
