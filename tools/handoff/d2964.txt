@@ -1,0 +1,5 @@
+## v29.64 - SETTINGS FEEL
+
+Co-op hunt while he was away. Critic c-31 follow-up: clipped last row, faint chevrons, no row focus, explaining hint bar and lowercase names in Keys.
+
+MEASURED. Check 29.64 passes, and fails on v29.63.

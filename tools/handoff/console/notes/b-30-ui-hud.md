@@ -3,7 +3,7 @@
 ## Done
 - v29.61 (cw-runinfopal): Run Info panel headings and goal rows on the shared palette (UIC.acc, tx_1).
 - Fixture fix a590d06d: three checks were labelled v29.60, so the ship anchor `{v:'29.60',what:` matched 3 times and every ship STOPped ("check patch did not apply"). Two relabelled 29.59. If a ship adds several checks in one version again, this will recur: give extra checks a different v.
-- Pictures: shots/b-30c-before, shots/b-30c-after (19,21,33,37,50).
+- Pictures: shots/b-30c-before, shots/b-30c-after (19,21,33,37,50); shots/b-30d-before = current build of 19,20,22,23,24,33,34,36,37,48,50,51,61,78 (24 is NOT STAGED: legendOn stays 1, the staging expects 2).
 
 ## Critic on 21-raid-hud-calm (before vs after v29.61): score 2, "same"
 P0: no hierarchy - make the extract timer or ammo the one hero (56px), collapse scoreboard and controls cheat sheet by default.
@@ -13,6 +13,14 @@ P1: "$" still on scoreboard and weapon panel (rule: SP). Corner grip ticks; pane
 P1: purple location label clipped behind minimap ("The long ..."), off palette; clip/move it, tx-1 16px.
 P2: toast bottom-left low contrast, wrong place (top-centre 40px with 4px left bar). Controls cheat sheet only first raid / F1. "B / I backpack" outranks ammo; shrink to 16px tx-2.
 
+## Run 3 findings (why nothing more shipped)
+- Several critic points collide with his rulings, so they are NOT safe to do unasked:
+  * Contracts "max 3": v6.79 his note is "ALL of them, not three and a footnote" (Run Info build, ~line 39391).
+  * "$" in career (scoreboard Current pillagers, weapon card "5 items $1,770") is credits/stash value; only arcade score is SP. Needs his word before changing career text.
+  * Stash/bag line top-right is his (cw-stashbag, line 644/4034).
+- The purple "The long ..." label is a WORLD landmark label drawn under the minimap box, not a HUD element; it is clipped because the minimap sits over it. Fix would be in the world text pass (not found by grep of colours; look at gfxWorldText ~46791).
+- "B / I backpack" in the weapon card: did not find its draw code by grep for 'backpack' (text must be assembled from a key-name table). Search for the weapon card at the ammo "12 / 24" draw instead (look for 'fire'/'use' chips near the belt).
+- Screen 24 staging fails (legendOn 1 vs 2): tell him via questions.md if it matters.
+
 ## Remaining (next run)
-Order by safety for the 10/30 demo: (1) location label clip/colour (drawLore/loc, G.loc near line 19156), (2) "$" to SP check on scoreboard/weapon panel (check his rulings first), (3) currency block to one row, (4) HUD panel fills flat. Each is its own mk script; look at 19,21,33,37,50 after each.
-Not yet audited by critic: screens 19,20,22-24,33,34,36,37,48,50,51,61,78.
+Order by safety for the 10/30 demo: (1) weapon card "B / I backpack" to 16px tx-2 (find draw code), (2) currency block to one row only if he agrees, (3) HUD panel fills flat. Each its own mk script; look at 19,21,33,37,50 after each, then run the critic on 19,20,22-24,33,34,36,37,48,50,51,61,78 (none scored yet except 21 = 2).

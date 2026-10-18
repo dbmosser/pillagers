@@ -1,0 +1,7 @@
+v29.64: settings feel
+
+Settings and Keys read cleaner: bigger names, a fade on the list, a hint bar only when listening.
+
+Check 29.64. Fails on v29.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

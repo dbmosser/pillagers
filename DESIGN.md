@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.64 - SETTINGS FEEL
+
+Co-op hunt while he was away. Critic c-31 follow-up: clipped last row, faint chevrons, no row focus, explaining hint bar and lowercase names in Keys.
+
+MEASURED. Check 29.64 passes, and fails on v29.63.
 ## v29.63 - SETTINGS CARD
 
 Co-op hunt while he was away. Critic c-31 (Settings 2, Keys 2): full-screen slab, bottom Close, chamfer. They are centred flat cards with a 48px header X now.

@@ -170,18 +170,18 @@
  "26-settings-from-pause-top": {
   "score": 2,
   "pass": false,
-  "verdict": "The new screenshot is pixel-identical to the old one: a full-bleed settings slab with two stacked tab strips, a joke subtitle, tiny low-contrast labels, and an empty right half, none of which the style guide allows.",
-  "pic": "tools/handoff/console/notes/shots/c-31c-now/26-settings-from-pause-top-1080.jpg",
+  "verdict": "The settings screen is now a centred card with a top-right close X and a tighter value column, but it still shows two tab strips, an explaining sentence, tiny text, and a list that is cut off at the bottom, so it reads as a template form rather than a game menu.",
+  "pic": "tools/handoff/console/notes/shots/c-31l-after/26-settings-from-pause-top-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T07:30"
+  "when": "2026-10-18T09:14"
  },
  "32-keys-window": {
   "score": 2,
   "pass": false,
-  "verdict": "The second pass removes the repeated Rebind buttons and the amber section labels, so it is calmer and the key caps now read as the main control, but it is still a flat full-screen settings slab that breaks the guide's modal, close, button and type rules.",
-  "pic": "tools/handoff/console/notes/shots/c-31j-after/32-keys-window-1080.jpg",
+  "verdict": "The new Keys screen is a real step toward the guide, with a centred card, a top-right X and tighter label-to-key distance, but it is still a dense wall of identical rows and boxes with no hierarchy, an explaining sentence, lowercase labels, and a clipped list.",
+  "pic": "tools/handoff/console/notes/shots/c-31l-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:05"
+  "when": "2026-10-18T09:14"
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -298,10 +298,10 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "The new screen is cleaner and follows the guide (dark panel, accent tab, quiet labels, fixed 'A teal' casing, sensible sizes), but it is still a plain black page with a text table, no world backdrop and no pad glyphs, so it reads as a debug sheet rather than a game screen.",
-  "pic": "tools/handoff/console/notes/shots/11-after4/46-arcade-attract-how-to-play-1080.jpg",
-  "task": "11-ui-shared-style",
-  "when": "2026-10-18T07:13"
+  "verdict": "A clean, style-guide-faithful dark panel with a clear title, tab accent and amber prompt, but it is a plain black void with a bare table, tiny column headers, and a dim 'Press any button' that reads like a template rather than a Pillagers attract screen.",
+  "pic": "tools/handoff/console/notes/shots/12-b3/46-arcade-attract-how-to-play-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:17"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -354,9 +354,9 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, clear pause card with one amber primary and a danger ghost, but the newer 640px version crams the title against the top and the footer hint against the bottom, and it still lacks the guide's close X and header row.",
-  "pic": "tools/handoff/console/notes/shots/c-31h-after/49-arcade-pause-box-1080.jpg",
-  "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:52"
+  "verdict": "A clean, centred pause card with a clear amber Resume and a red End run, but it has no close X and no pad glyph, the footer hint is tiny and muted, and the scrim is too light, so the HUD behind it still shows through.",
+  "pic": "tools/handoff/console/notes/shots/12-b3/49-arcade-pause-box-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:18"
  }
 }

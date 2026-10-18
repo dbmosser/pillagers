@@ -1554,6 +1554,23 @@ body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(-
 #root #keysmodal #keysreset{ margin-right:auto; }
 #root #settingsmodal #settabs{ position:absolute; top:calc(var(--sp-5) + var(--sp-1)); left:calc(max(var(--sp-5), calc(50% - var(--cw) / 2)) + calc(var(--sp-5) * 4)); padding:0 !important; border:0 !important; background:transparent; width:auto; }
 #root #settingsmodal .msub{ font-size:var(--fs-label); }
+
+/* v28.xx (cw-setfeel) critic c-31 (Settings 2, Keys 2): "the last row is clipped mid-control", "chevrons nearly invisible, values outshout the names", "no focused row", "the instruction banner is an explaining sentence", "labels are lowercase", "key text is tiny, caps are not raised", "reset button is below 44px". Settings: row names 20px, section labels 16px, values 20px at 600, chevrons tx-2, a fade on the list bottom, the row under the pointer gets a raised fill and an amber bar. Keys: the idle hint bar is gone (it shows again while listening or on a swap), action names start with a capital, caps are raised with 20px text, section labels 16px, Reset is 48px high. */
+#root #setlist{ padding-bottom:var(--sp-4); -webkit-mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-4)), transparent); mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-4)), transparent); }
+#root #setlist .row > div:first-child > b{ font-size:var(--fs-body); }
+#root #setlist .row[style*="opacity:.7"] > div:first-child > b, #root #setlist .row[style*="opacity:.7"] b{ font-size:var(--fs-label); color:var(--tx-2); }
+#root #setlist .row > button{ font-size:var(--fs-body); font-weight:600; }
+#root #setlist .row > button::before, #root #setlist .row > button::after{ color:var(--tx-2) !important; }
+#root #setlist .row:not([style*="opacity:.7"]):hover, #root #setlist .row:not([style*="opacity:.7"]):focus-within{ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--acc); }
+#root #keysmodal #keysnote:not(.wait):not(.set):not(.clash){ display:none; }
+#root #keyslist .row b{ display:block; }
+#root #keyslist .row b::first-letter{ text-transform:uppercase; }
+#root #keyslist .row b{ font-size:var(--fs-body); }
+#root #keyslist .keybtn{ background:var(--ui-raised); border-color:var(--ui-line-hi); font-size:var(--fs-body); min-height:var(--sp-5); }
+#root #keyslist .keybtn:hover:not(:disabled){ border-color:var(--acc); }
+#root #keyslist .keybtn.wait{ background:var(--acc) !important; border-color:var(--acc) !important; }
+#root #keyslist .keysec{ font-size:var(--fs-label); color:var(--tx-2); letter-spacing:var(--track); }
+#root #keysmodal #keysreset{ min-height:var(--sp-5); font-size:var(--fs-body); }
 /* v28.xx (cw-pausestack) critic c-31 (pause 2, 25/42/49): the pause card was a keybind cheat-sheet over a row of mixed buttons. Now: title, then one column of 56px buttons at the menu width (16px gap, sentence case), Abandon set apart, and the key legend and the feedback sentence out of the keyboard card (F1 and Settings > Controls hold the keys; a pad keeps its legend) */
 #root #pausebox{ gap:var(--sp-3); }
 #root #pausebox #pausekeys, #root #pausebox > div[style*="margin-top:6px"]{ display:none !important; }
@@ -2488,7 +2505,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.63';
+var VER='29.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47577,7 +47594,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.63: Settings and Keys are centred cards with a close X at the top. Check 29.63 fails on v29.62',
+  now:'v29.64: Settings and Keys read cleaner: bigger names, a fade on the list, a hint bar only when listening. Check 29.64 fails on v29.63',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
