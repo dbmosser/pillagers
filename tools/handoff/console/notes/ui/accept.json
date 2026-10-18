@@ -274,10 +274,10 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-palette operator card with a clear focused row and correct sentence case, but it is a small, bare template-style box floating on a flat black void, with no close control, no key hints and a stat line below the type floor.",
-  "pic": "tools/handoff/console/notes/shots/12-e1/62-arcade-operator-menu-1080.jpg",
+  "verdict": "A clean, on-guide dark card with sentence case, a single amber focus row and a proper close and key-hint strip, but it is a generic centred list floating on a flat black void with a redundant Back and undersized text.",
+  "pic": "tools/handoff/console/notes/shots/12-f1/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:41"
+  "when": "2026-10-18T10:50"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -290,10 +290,10 @@
  "58-coop-player2-window-title": {
   "score": 2,
   "pass": false,
-  "verdict": "The title and the amber CTA read clearly, but the screen is a stack of small explaining sentences, an amber 12px paragraph and mixed type sizes, so it looks like a dev template and not a polished AAA title menu.",
-  "pic": "tools/handoff/console/notes/shots/12-e1/58-coop-player2-window-title-1080.jpg",
+  "verdict": "The co-op player 2 title screen is better now that the amber paragraph is replaced by a short 'Player 2 window' label, but it is still a stacked page of centred text with seven competing text blocks, tiny type, and a dimmed background that adds nothing.",
+  "pic": "tools/handoff/console/notes/shots/12-f1/58-coop-player2-window-title-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:42"
+  "when": "2026-10-18T10:50"
  },
  "46-arcade-attract-how-to-play": {
   "score": 3,

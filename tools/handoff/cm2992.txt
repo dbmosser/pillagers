@@ -1,0 +1,7 @@
+v29.92: abandoned card: the title is the plain title colour
+
+Abandoned card: the title is easier to read.
+
+Check 29.92. Fails on v29.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

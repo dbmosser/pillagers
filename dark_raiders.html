@@ -2670,7 +2670,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.91';
+var VER='29.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31591,7 +31591,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     })();
     DEATH_FEED_HTML=(DEATH_FEED_HTML||'')+recapHtml(T);   // v23.xx (feat3a): DAMAGE TAKEN
   }
-  else { t.textContent='ABANDONED'; t.style.color='var(--ash)';
+  else { t.textContent='ABANDONED'; t.style.color='var(--tx-1)';   // v28.xx (cw-abtitle60) the critic on screen 60 (2 of 5): "the title is dull grey, dimmer than every other text, reads as disabled". Only extract and KIA take a colour; this one is the plain title colour.
     s.textContent=G.netLeft?G.netLeft   // v15.91: the host left, so this run ended for the whole party, his ruling
       :((isFinite(T.closestExtract)&&T.closestExtract<1e8)
       ?('CLOSEST YOU CAME TO EXTRACTION: '+metres(T.closestExtract)+'M')
@@ -47822,7 +47822,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.91: The operator card has a close X and a key strip. The player 2 window shows one short line. Check 29.91 fails on v29.90',
+  now:'v29.92: Abandoned card: the title is easier to read. Check 29.92 fails on v29.91',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
