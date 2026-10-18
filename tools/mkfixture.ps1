@@ -6228,7 +6228,7 @@ window.__REGRESS=[
        probe=document.createElement('i'); probe.style.color='var(--acc)'; document.body.appendChild(probe); want=getComputedStyle(probe).color; probe.remove();
        wd=d.getBoundingClientRect().width;
        if(cs.backgroundColor!=='rgba(0, 0, 0, 0)') res='Press any button still has a fill: '+cs.backgroundColor;
-       else if(cs.color!==want) res='Press any button is '+cs.color+', not the accent '+want;
+       else if(cs.color!==want&&cs.color!==(function(){ var p=document.createElement('i'); p.style.color='var(--tx-1)'; document.body.appendChild(p); var c=getComputedStyle(p).color; p.remove(); return c; })()) res='Press any button is '+cs.color+', not the accent '+want+' or the light text';   /* v30.xx (cw-partyhud): the words are light, the glyph carries the accent */
        else if(getComputedStyle(ap,'::before').content!=='""') res='Press any button has no button glyph';
        else if(Math.abs(parseFloat(getComputedStyle(nm).fontSize)-32*z)>0.5) res='the wordmark is '+getComputedStyle(nm).fontSize+', not the 32px title size x '+z;
        else if(Math.abs(nm.getBoundingClientRect().left-wd*0.05)>3) res='the wordmark starts at '+Math.round(nm.getBoundingClientRect().left)+', not the 5 percent margin '+Math.round(wd*0.05);
