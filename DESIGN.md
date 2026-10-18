@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.99 - Settings from the pause menu opens at the top every time; the dead screen-height padding rule is gone
+
+Co-op hunt while he was away. His note (2026-10-18, build 30.73, in a raid): "accessing settings from pauise menu doesn't work right (maybe due to usperhot?)". Not Superhot: with Superhot on and a key held the world stands still under Settings (the pause outranks Superhot), and P, the Settings button, a row, CLOSE and ESC all behave. Two real faults: (1) at any screen taller than 1080p (he plays at 4K) the Settings and Keys cards took their air from an unzoomed 100vh inside a zoomed window, so the list collapsed to a sliver (v30.89 cw-cardwide already overrides it with a plain margin; the dead rule is removed here and a check reads the margin); (2) the Settings window is kept in the page and only hidden, so it kept its scroll offset between visits and a second visit from the pause box opened half way down the list. A fresh open now starts at the top; a tab or jump inside the open window keeps its place.
+
+MEASURED. Check 30.99 passes, and fails on v30.98.
 ## v30.98 - PLAYER 2 GETS THE RUN OVER CARD TOO
 
 Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. The host built the RUN OVER card (team score, a row each, EXTRACTED x2 or KIA -50%, the best moments) at the end of a run and player 2 only tore its raid down, so at the end of every run one TV showed the result and the other showed the attract. Player 2 now builds the same card from its own score and the host score it was sent, after the doubling or the halving has been applied to both. Nothing is saved or sent from it: the board row, the music and the initials stay the host job.

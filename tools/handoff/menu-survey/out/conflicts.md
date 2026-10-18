@@ -38,7 +38,7 @@
 
 19. PLAYER 2 BLUE AND THE GREEN A. The player 2 slot is blue (#4fb4ff); the A glyph chip next to "press a to join" stays its own green (#6cc36c). Suggested: accept.
 
-20. TIME. About thirty small jobs (20 to 34b), each sized for one helper run, against the Mon 10/26 feature cutoff. They go into the queue in eight waves (task-amendments.md has the table) because a later job needs an earlier one to be in the game first. If it runs short the career-only jobs (29a, 29b, 31a, 31b, 32a, 32b) are dropped first and every party-facing job stays. Layout changes end Mon 10/26. Suggested: accept.
+20. TIME. About thirty small jobs (20 to 34b), each sized for one helper run, against the Mon 10/26 feature cutoff. They go into the queue in nine waves (task-amendments.md has the table) because a later job needs an earlier one to be in the game first. If it runs short the career-only jobs (29a, 29b, 31a, 31b, 32a, 32b) are dropped first and every party-facing job stays. Layout changes end Mon 10/26. Suggested: accept.
 
 21. YOUR QUESTION: would it help to link another AI with native photo generation? Suggested: yes for pictures only (a painted title backdrop, item or loot icons, mood boards), no for menus: menus need exact pixels, the real fonts and lower-case text, which the game draws itself and picture generators garble. Not needed before 10/30; pick an art style first.
 

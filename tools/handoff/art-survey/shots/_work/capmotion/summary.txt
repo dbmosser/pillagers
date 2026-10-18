@@ -1,2 +1,2 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  capmotion                              staged       7.5s    | {"S":4,"box":[72,48,296,268],"fx":72,"fy":192,"sets":{"A-walk":{"w":224,"h":220,"n":24,"png":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAFQAAAADcCAYAAACB1sjPAAAQAElEQVR4Aez9B4Al112gi/+qw0x3T4fpnijNSBrlYEkjWZJt2cYG5BwI9oLNgzWsd2H3Ebzwfyy7rEn7jB+7sAG8wMMLu2sMD2zABmwMGFvGSbIsyco5jqQZaWakCT09PZ37/u+5
+  capmotion                              staged       7.4s    | {"S":4,"box":[72,48,296,244],"fx":72,"fy":192,"sets":{"A-walk":{"w":224,"h":196,"n":24,"png":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAFQAAAADECAYAAABuU0g5AAAQAElEQVR4Aey9B4Ak113g/a/uyWl3ZqPyKqxyliVZsnFOwjocDmwMRzzgO5Jt7uC47wMOk+6AO44cfMDZvgNjY2zMOWPjbAVLVpasrJW0Wu2uNu/Mzk6sr171dE+Hqq56Va/yb9Sv

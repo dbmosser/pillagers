@@ -1,0 +1,7 @@
+v30.99: settings from the pause menu opens at the top every time; the dead screen-height padding rule is gone
+
+Settings from the pause menu opens at the top every time.
+
+Check 30.99. Fails on v30.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

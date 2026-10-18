@@ -1850,7 +1850,10 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ bottom
 body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibility:hidden; }
 
 /* v28.xx (cw-setheight) critic c-31 (Settings 18/70, Keys 32): "the card is about 1005x1030 and fills the screen height ... a modal never exceeds its content ... cap the card at 960x680". Now the Settings and Keys cards are 15 x 48 (720) tall and centred in the screen (top and bottom air --py, never under 48), the frame, the header X and the tab strip follow it. The list scrolls inside, as before. */
-#root #settingsmodal, #root #keysmodal{ --py:max(var(--sp-5), calc((100vh - var(--sp-5) * 15) / 2)); padding-top:var(--py); padding-bottom:var(--py); }
+/* v30.xx (cw-pausesets), HIS NOTE (2026-10-18): "accessing settings from pauise menu doesn't work right (maybe due to usperhot?)". The air above and below the Settings
+   and Keys cards was a share of 100vh, and 100vh inside a zoomed window is NOT divided by the zoom, so on a screen taller than 1080p (he plays at 4K) it grew past the
+   screen and squeezed the list to a sliver. The later cw-cardwide rule overrode it with a plain margin, so the share is dead; it is gone here so nothing can bring it back. */
+#root #settingsmodal, #root #keysmodal{ --py:var(--sp-5); padding-top:var(--py); padding-bottom:var(--py); }
 #root #settingsmodal::before, #root #keysmodal::before{ inset-block:calc(var(--py) - var(--sp-3)); }
 #root #settingsmodal #closesettings, #root #keysmodal #closekeys{ top:var(--py); }
 #root #settingsmodal #settabs{ top:calc(var(--py) + var(--sp-1)); }
@@ -2802,7 +2805,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.98';
+var VER='30.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48272,7 +48275,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.98: At the end of a party arcade run the player 2 window now shows the same Run over card as player 1, with the team score and a row for each player. Check 30.98 fails on v30.97',
+  now:'v30.99: Settings from the pause menu opens at the top every time. Check 30.99 fails on v30.98',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65813,6 +65816,7 @@ function renderCosmetics(target,kindOnly,hid,pid){
 // buildExport are untouched and still fill the same elements.
 function openSettings(tab){
   var want=tab||'display';
+  var _smOn=false; try{ _smOn=document.getElementById('settingsmodal').classList.contains('on'); }catch(_so){}   // v30.xx (cw-pausesets): a fresh open starts at the top; a tab or a jump inside the open window keeps its place
   // v8.77: DISARM THE WIPE. The confirm state lived on the button's dataset and
   // the button is static markup that is never rebuilt, so arming it and walking
   // away left a one-click, no-warning wipe of the whole flight recorder waiting
@@ -65841,6 +65845,10 @@ function openSettings(tab){
     if(pane) pane.style.display=(want===t[0])?'':'none';
   });
   openModal('settingsmodal');
+  // v30.xx (cw-pausesets), HIS NOTE (2026-10-18): "accessing settings from pauise menu doesn't work right (maybe due to usperhot?)". Not Superhot: a pause stands the world
+  // still under Settings with Superhot on and a key held (checked). The window is kept in the page and only hidden, so it kept its scroll between visits: a second visit from
+  // the pause box opened half way down the list, with the section he wanted off the top. A fresh open now starts at the top, as the first one does.
+  if(!_smOn){ try{ var _sl0=document.getElementById('setlist'); if(_sl0&&_sl0.scrollTop) _sl0.scrollTop=0; }catch(_sr0){} }
   // v27.73 (cloud-menus-settings-chip-on-open), CLOUD HUNT 2026-10-15: the section chips were lit while the window was still hidden, where every head reads as
   // at the top, so the last chip (ACCESSIBILITY) lit on every open until a scroll. Now they are lit again once the window shows.
   try{ setSecSpy(document.getElementById('setlist')); }catch(_ss){}

@@ -1,0 +1,1 @@
+| Settings from the pause menu opens at the top every time; the dead screen-height padding rule is gone | v30.99 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.99 passes, fails on v30.98 |

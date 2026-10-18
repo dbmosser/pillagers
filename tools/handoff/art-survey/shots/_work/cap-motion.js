@@ -8,7 +8,7 @@ const S=4, CX=36, CY=60, CW=100, CH=74;     // a cell is CW x CH game units, the
 function mkcv(w,h){ const c=document.createElement('canvas'); c.width=w; c.height=h; return c; }
 function fig(x2,o){
   window.__x2=x2; window.__fo=o; window.__MOT=o.mot||undefined;
-  __gx("(function(){ var k=wc, o=window.__fo, p=G.player; wc=window.__x2; try{ drawOp(0,0,0,o.ph||0,'#242832',0,0,'',0,{hero:1,own:p,team:'ally',moving:!!o.moving,sprint:!!o.sprint,ads:false,hurt:o.hurt||0,bulk:armorById(p.rig).bulk,rl:0}); } finally{ wc=k; } })()");
+  __gx("(function(){ var k=wc, sk=shadowE, o=window.__fo, p=G.player; wc=window.__x2; shadowE=function(){}; try{ drawOp(0,0,0,o.ph||0,'#242832',0,0,'',0,{hero:1,own:p,team:'ally',moving:!!o.moving,sprint:!!o.sprint,ads:false,hurt:o.hurt||0,bulk:armorById(p.rig).bulk,rl:0}); } finally{ wc=k; shadowE=sk; } })()");
   window.__MOT=undefined;
 }
 function cell(o,drawFn){
@@ -34,6 +34,7 @@ for(const k in MOTS){
 sets['stand']=[cell({ph:0,moving:0,sprint:0})];
 sets['hurtA']=[0.4,0.35,0.3,0.25,0.2,0.15,0.1,0.05].map(h=>cell({ph:0,hurt:h}));
 sets['hurtC']=[0.175,0.14,0.105,0.07,0.035].map(h=>cell({ph:0,hurt:h}));
+sets['shadow']=[cell(null,function(x2){ window.__x2=x2; __gx("(function(){ var k=wc; wc=window.__x2; try{ shadowE(1.5,1.5,10,4,.34); shadowE(6,2.5,6.5,2.5,.18); } finally{ wc=k; } })()"); })];
 // the held gun alone, and the pack alone (same colours as drawOp uses)
 sets['gun']=[cell(null,function(x2){
   window.__x2=x2;
@@ -55,7 +56,7 @@ function bbox(c){
   return x1<0?null:[x0,y0,x1+1,y1+1];
 }
 function unionOf(names){ let u=null; for(const n of names) for(const c of sets[n]){ const b=bbox(c); if(!b) continue; u=u?[Math.min(u[0],b[0]),Math.min(u[1],b[1]),Math.max(u[2],b[2]),Math.max(u[3],b[3])]:b; } return u; }
-const figNames=Object.keys(sets).filter(n=>n!=='gun'&&n!=='pack');
+const figNames=Object.keys(sets).filter(n=>n!=='gun'&&n!=='pack'&&n!=='shadow');
 const U1=unionOf(figNames);
 // round the box to whole game units so the feet stay on the pixel grid of the figure
 const bx0=Math.floor(U1[0]/S)*S-S, by0=Math.floor(U1[1]/S)*S-S, bx1=Math.ceil(U1[2]/S)*S+S, by1=Math.ceil(U1[3]/S)*S+S;
@@ -66,9 +67,12 @@ function sheet(cells,box){
 }
 const out={S:S,box:[bx0,by0,bx1,by1],fx:CX*S-bx0,fy:CY*S-by0,sets:{}};
 for(const n of figNames){ out.sets[n]=sheet(sets[n],[bx0,by0,bx1,by1]); }
-for(const n of ['gun','pack']){ const b=bbox(sets[n][0]); const bb=[b[0]-2,b[1]-2,b[2]+2,b[3]+2]; out.sets[n]=sheet(sets[n],bb); out.sets[n].ox=CX*S-bb[0]; out.sets[n].oy=CY*S-bb[1]; }
+for(const n of ['gun','pack','shadow']){ const b=bbox(sets[n][0]); const bb=[b[0]-2,b[1]-2,b[2]+2,b[3]+2]; out.sets[n]=sheet(sets[n],bb); out.sets[n].ox=CX*S-bb[0]; out.sets[n].oy=CY*S-bb[1]; }
 // what the figure is wearing, for the colour of the death ellipse and the stain
 out.coat=__gx("(function(){ var st={hero:1,own:G.player}; var sc=schemeOf(st); return sc?sc.arm:'#a02020'; })()");
 out.coatP=__gx("(function(){ var sc=schemeOf({hero:1,own:G.player}); return sc?sc.p:'#a02020'; })()");
+async function loadImg(u){ return await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=u; }); }
+out.webpDiff={};
+for(const n of ['A-sprint','hurtA','gun']){ const sh=out.sets[n]; const im=await loadImg(sh.webp), im2=await loadImg(sh.png); const c=mkcv(im.width,im.height), c2=mkcv(im.width,im.height); c.getContext('2d').drawImage(im,0,0); c2.getContext('2d').drawImage(im2,0,0); const d1=c.getContext('2d').getImageData(0,0,c.width,c.height).data, d2=c2.getContext('2d').getImageData(0,0,c.width,c.height).data; let bad=0,mx=0; for(let i=0;i<d1.length;i++){ const dd=Math.abs(d1[i]-d2[i]); if(dd>0){ bad++; if(dd>mx)mx=dd; } } out.webpDiff[n]={bad:bad,max:mx}; }
 window.__capDone=true;
 return JSON.stringify(out);

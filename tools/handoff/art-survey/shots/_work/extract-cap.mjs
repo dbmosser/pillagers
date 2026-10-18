@@ -11,4 +11,4 @@ for (const [n, sh] of Object.entries(o.sets)) {
   tot += Math.min(png.length, webp.length);
 }
 fs.writeFileSync('sprites/meta.json', JSON.stringify({ S: o.S, box: o.box, fx: o.fx, fy: o.fy, coat: o.coat, coatP: o.coatP, sets: Object.fromEntries(Object.entries(o.sets).map(([n, s]) => [n, { w: s.w, h: s.h, n: s.n, ox: s.ox, oy: s.oy }])) }, null, 1));
-console.log('total', tot, 'coat', o.coat, o.coatP, 'fx,fy', o.fx, o.fy);
+console.log('diff',JSON.stringify(o.webpDiff)); console.log('total', tot, 'coat', o.coat, o.coatP, 'fx,fy', o.fx, o.fy);
