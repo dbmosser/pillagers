@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.58 - THE MARKSMAN RIFLE AND THE WHISPER ARE GONE
+
+Co-op hunt while he was away. His order (2026-10-18): get rid of the Marksman Rifle and the Whisper totally. Both guns, their field items, rarity twins, drawings, sounds, recoil, loot rows, shop and kit lists, the SP ladder and the arcade lists no longer name them, with same-weight fillers in the loot tables so the roll stream and the seed 4242 counts hold. A saved one turns into its credits on load (gunsGoneSweep) and never crashes the hub.
+
+MEASURED. Check 29.58 passes, and fails on v29.57.
 ## v29.57 - PAUSE FRAME FIT
 
 Co-op hunt while he was away. Critic c-31 round 3 (pause 25/42/49 at 3): the title sat 14px under the card top and the Esc hint touched the bottom; the frame measure could not see the hint pseudo element. Frame now adds the hint row.

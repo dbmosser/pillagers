@@ -2467,7 +2467,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.57';
+var VER='29.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2932,7 +2932,7 @@ var WEAPONS={
   pistol:{id:'pistol',name:'Scav Pistol',dmg:23,rof:290,spread:.055,mag:12,reload:1400,rng:420,auto:false,noise:330,tint:'#ffd48a'},
   smg:{id:'smg',name:'Compact SMG',dmg:12,rof:88,spread:.115,mag:30,reload:1850,rng:360,auto:true,noise:300,tint:'#ffe0a0'},
   rifle:{optic:2,id:'rifle',name:'Auto Rifle',dmg:23,rof:132,spread:.070,mag:25,reload:2050,rng:520,auto:true,noise:420,tint:'#ffcf7a'},
-  dmr:{optic:3,id:'dmr',name:'Marksman Rifle',dmg:64,rof:680,spread:.016,mag:8,reload:2300,rng:760,auto:false,noise:520,tint:'#fff0c0'},
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally". The Marksman Rifle is gone from the game.
   // v6.69, his note: a beefy Scav Pistol. Two body shots instead of five, for half the
   // magazine, twice the trigger delay and a report that brings the room.
   magnum:{id:'magnum',name:'Magnum',dmg:62,rof:620,spread:.042,mag:6,reload:1900,rng:480,auto:false,noise:520,tint:'#ffb870'},
@@ -2952,7 +2952,7 @@ var WEAPONS={
   // which the board has contradicted since those rows were added: a reward grants
   // the bare MODEL into the armoury, so it is owned, and an owned gun is wearable
   // and enters the wear and repair economy a field-only gun stays out of.
-  whisper:{id:'whisper',name:'Whisper',dmg:24,rof:400,spread:.048,mag:30,reload:2100,rng:430,auto:true,noise:90,tint:'#a8d8c0'},
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally". The Whisper is gone from the game.
   lance:{optic:2.5,id:'lance',name:'Meridian Lance',dmg:150,rof:60,spread:.010,mag:3,reload:4000,rng:820,auto:false,noise:620,tint:'#d8b4ff'},
   // v28.xx (cw-rocket), HIS ORDER (2026-10-18): "add a rocket launcher as '0'. It should take maybe 30 ammo per rocket and require a reload after 2 rockets". A slow rocket with a blast
   // (rkt:1): two in the tube, a long reload, 30 of the one universal ammo pool for each rocket loaded.
@@ -2973,7 +2973,7 @@ var SIM_START=['pistol','smg','rifle','shotgun'];
 // Pistol 23, Magnum 62, Marksman Rifle 64, Longshot 170, Meridian Lance 150, Riot Scattergun 16 a pellet,
 // Whisper 24 and a shot every 0.40 s. The single shots land about 70 to 110 a second sustained; they still trade the magazine for reach and
 // the hit that ends a fight. The Burst Carbine (three a pull, about 85) is unchanged.
-var WTIER={fists:0,pistol:1,smg:2,magnum:3,carbine:3,shotgun:3,rifle:3,lmg:4,dmr:4,whisper:4,sniper:5,lance:5,rocket:5};
+var WTIER={fists:0,pistol:1,smg:2,magnum:3,carbine:3,shotgun:3,rifle:3,lmg:4,sniper:5,lance:5,rocket:5};
 // v23.xx (feat2a), HIS #17 (2026-10-12): "better gun stat cards - yes", and his answer 34: the card shows on pickup and in the
 // backpack. THE MODEL, pure and drawn by nobody yet (the pickup card and the backpack card are the next two builds, and the UI
 // redesign can restyle both without touching this). Five numbers, all higher-is-better: DMG a pull (a pellet gun counts every
@@ -3252,8 +3252,8 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
   gun_pistol:{name:'Scav Pistol (field)',val:300,wt:3,r:'common',c:'#ffd48a',use:'gun',gk:'pistol'},
   gun_smg:{name:'Compact SMG (field)',val:900,wt:4,r:'uncommon',c:'#ffe0a0',use:'gun',gk:'smg'},
   gun_rifle:{name:'Auto Rifle (field)',val:1500,wt:5,r:'rare',c:'#ffcf7a',use:'gun',gk:'rifle'},
-  gun_dmr:{name:'Marksman Rifle (field)',val:2000,wt:5,r:'rare',c:'#fff0c0',use:'gun',gk:'dmr'},
-  gun_whisper:{name:'Whisper (field)',val:3400,wt:4,r:'elite',c:'#a8d8c0',use:'gun',gk:'whisper'},
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally". gun_dmr is gone; a saved one pays 2000 (gunsGoneSweep).
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally". gun_whisper is gone; a saved one pays 3400 (gunsGoneSweep).
   gun_lance:{name:'Meridian Lance (field)',val:4600,wt:6,r:'elite',c:'#d8b4ff',use:'gun',gk:'lance'},
   gun_rocket:{name:'Rocket Launcher (field)',val:3800,wt:7,r:'elite',c:'#ffb070',use:'gun',gk:'rocket'},   // v28.xx (cw-rocket)
   gun_carbine:{name:'Burst Carbine (field)',val:1100,wt:4,r:'uncommon',c:'#ffd88a',use:'gun',gk:'carbine'},
@@ -3369,7 +3369,7 @@ var SHOP=[
 var LOOT={
   crate:[['scrap',32],['wire',22],['cell',13],['bandage',11],['ammobox',15],['board',5],['comp',3],['optic',2]],
   locker:[['wire',15],['cell',13],['board',15],['optic',11],['bandage',7],['ammobox',13],['plate',7],['servo',6],['smoke',4],['decoy',3],['frag',4],['stim',5],['gun_smg',1],['plate',1],['gun_carbine',1],['stim',1],['gun_magnum',1],['frag',1],['core',2]],
-  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',10],['medkit',7],['comp',6],['frag',5],['gun_rifle',2.5],['core',2.5],['gun_shotgun',2],['titan',2],['gun_lmg',1.5],['servo',1.5],['gun_dmr',1],['plate',1],['gun_sniper',1],['medkit',1],['blackbox',2],['KEY',4],['gun_whisper',1],['comp',1],['gun_lance',0.5],['frag',0.5]],
+  safe:[['core',20],['titan',14],['optic',11],['servo',10],['board',9],['plate',10],['medkit',7],['comp',6],['frag',5],['gun_rifle',2.5],['core',2.5],['gun_shotgun',2],['titan',2],['gun_lmg',1.5],['servo',1.5],['gun_carbine',1],['plate',1],['gun_sniper',1],['medkit',1],['blackbox',2],['KEY',4],['gun_magnum',1],['comp',1],['gun_lance',0.5],['frag',0.5]],
   body:[['ammobox',13],['bandage',10],['medkit',11],['plate',11],['stim',8],['frag',6],['smoke',4],
         ['gun_smg',2.5],['medkit',2.5],['gun_carbine',1.5],['plate',1.5],['optic',6],['servo',5],['board',4],
         ['cell',4],['core',5],['comp',4],['titan',2]],
@@ -3377,10 +3377,10 @@ var LOOT={
   // is always worth the 4.6 seconds it pins you in place.
 botwreck:[['ammobox',34],['scrap',20],['wire',12],['cell',10],['board',9],['comp',6],['stim',4],['optic',5]],
   jackpot:[['reactor',16],['wcore',14],['codex',13],['bloom',14],['blackbox',12],['relay',10],['titan',6],['core',5],
-           ['gun_lance',3.5],['codex',3.5],['gun_whisper',3.5],['bloom',3.5]],
+           ['gun_lance',3.5],['codex',3.5],['gun_rocket',3.5],['bloom',3.5]],
   cache:[['blackbox',12],['reactor',10],['codex',10],['bloom',7],['relay',11],
-         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_dmr',4],['titan',4],['gun_rifle',3.5],['core',3.5],['gun_lmg',3],['ledger',3],['gun_shotgun',2.5],['coil',2.5],['medkit',6],['KEY',7],
-         ['gun_whisper',2],['relay',2],['gun_lance',1.5],['reactor',1.5]]
+         ['titan',14],['core',12],['ledger',10],['coil',10],['gun_shotgun',4],['titan',4],['gun_rifle',3.5],['core',3.5],['gun_lmg',3],['ledger',3],['gun_shotgun',2.5],['coil',2.5],['medkit',6],['KEY',7],
+         ['gun_magnum',2],['relay',2],['gun_lance',1.5],['reactor',1.5]]
 };
 var DISTRICTS=[
   // Four genuine hue families at Chrono Trigger saturation. Three of the four
@@ -4129,6 +4129,25 @@ function beltItemsOff(h){
   }
   return out;
 }
+// v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally". A saved Marksman Rifle or Whisper (and
+// its blue or gold twin) turns into credits at the field value (2000 and 3400; a twin 1.5 times), once, on load. Anything else that
+// names one (the packed kit, the belt plans, the forge record, the wear record, a dropped gun) just loses the name, so nothing
+// reads a gun the item table no longer has.
+var GUNS_GONE={dmr:2000,whisper:3400};
+function goneGunVal(k){ var m=/^(?:gun_)?(dmr|whisper)(_v)?$/.exec(String(k)); return m?Math.round(GUNS_GONE[m[1]]*(m[2]?1.5:1)):0; }
+function gunsGoneSweep(p){
+  var paid=0, i, k, h, L, fn=function(x){ return !goneGunVal(x); }, hs;
+  if(!p||typeof p!=='object') return 0;
+  ['stash','weapons'].forEach(function(f){ if(Array.isArray(p[f])) p[f]=p[f].filter(function(x){ var v=goneGunVal(x); paid+=v; return !v; }); });
+  ['kit','dropKit','gunBeforeFree','kitBeforeFree'].forEach(function(f){ if(Array.isArray(p[f])) p[f]=p[f].filter(fn); });
+  if(p.kitSaved&&typeof p.kitSaved==='object'&&Array.isArray(p.kitSaved.kit)) p.kitSaved.kit=p.kitSaved.kit.filter(fn);
+  hs=[p.hotAssign, p.hotBeforeFree, p.kitSaved&&p.kitSaved.hot];
+  for(i=0;i<hs.length;i++){ h=hs[i]; if(h&&typeof h==='object') for(k in h) if(Object.prototype.hasOwnProperty.call(h,k)&&goneGunVal(h[k])) delete h[k]; }
+  ['forged','wear'].forEach(function(f){ h=p[f]; if(h&&typeof h==='object'&&!Array.isArray(h)) for(k in h) if(Object.prototype.hasOwnProperty.call(h,k)&&goneGunVal(k)) delete h[k]; });
+  if(Array.isArray(p.gunPiled)) p.gunPiled=p.gunPiled.filter(function(x){ return !(x&&goneGunVal(x.gk)); });
+  if(paid) p.credits=(+p.credits||0)+paid;
+  return paid;
+}
 function applyLoadedProfile(r){
       // v14.43, title and saves audit finding 3: A SAVE THE LOADER CANNOT READ IS KEPT BEFORE IT IS REPLACED. Stored data that
       // will not parse, or has no numeric credits, is ignored below, and boot then saves the fresh character over that key, so
@@ -4312,6 +4331,7 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
             if(_c&&typeof _c.desc==='string')
               _c.desc=_c.desc.replace(/snitches/g,'criers').replace(/snitch/g,'crier');
           });
+          try{ gunsGoneSweep(P); }catch(_ggs){}   // v28.xx (cw-gunsgone): a saved Marksman Rifle or Whisper pays its credits first
           if(!Array.isArray(P.stash)) P.stash=[];
           P.stash=P.stash.filter(function(k){ return !!ITEMS[k]; });
           if(!Array.isArray(P.weapons)) P.weapons=[];
@@ -4606,7 +4626,7 @@ var CGEAR={
     {kind:'key'}
   ],
   elite:[
-    {kind:'wep',k:'dmr'},
+    {kind:'wep',k:'magnum'},
     {kind:'wep',k:'lmg'},
     {kind:'stash',ks:['bloom'],                           label:'Bloom Sample'},
     {kind:'stash',ks:['titan','core','coil'],             label:'A crate of rare salvage'},
@@ -7765,13 +7785,12 @@ function blip(type,d,pan){
       smg:    {len:1500,lp:2100,hp:200,g:.11,decay:4.0,body:{f0:170,f1:80,d:.07,g:.08,type:'sine'}},
       carbine:{len:2000,lp:2300,hp:220,g:.13,decay:3.6,body:{f0:210,f1:80,d:.08,g:.10,type:'sine'}},
       rifle:  {len:2600,lp:0,hp:180,g:.16,decay:3.2,body:{f0:180,f1:60,d:.10,g:.12,type:'sine'}},
-      dmr:    {len:4200,lp:1400,hp:120,g:.20,decay:2.6,body:{f0:120,f1:45,d:.10,g:.14,type:'sine'},bolt:1},
+      // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally".
       magnum: {len:3800,lp:1100,hp:80,g:.24,decay:2.4,body:{f0:95,f1:38,d:.12,g:.20,type:'sine'},tail:1},
       sniper: {len:5600,lp:1000,hp:60,g:.26,decay:2.2,body:{f0:80,f1:32,d:.14,g:.22,type:'sine'},tail:1,bolt:1},
       shotgun:{len:4200,lp:900,hp:100,g:.22,decay:2.2,body:{f0:120,f1:45,d:.12,g:.14,type:'sine'},pump:1},
       lmg:    {len:2400,lp:1500,hp:160,g:.15,decay:2.9,body:{f0:150,f1:60,d:.09,g:.11,type:'sine'}},
-      // The Whisper is a cough, not a crack: short, heavily filtered, quiet.
-      whisper:{len:900,lp:900,hp:200,g:.07,decay:4.2,body:{f0:140,f1:90,d:.05,g:.03,type:'sine'}},
+      // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally".
       rocket: {len:5200,lp:900,hp:70,g:.22,decay:1.8,body:{f0:70,f1:26,d:.2,g:.2,type:'sine'},tail:1},   // v28.xx (cw-rocket): a deep launch thump
       lance:  {len:5000,lp:1200,hp:60,g:.24,decay:2.2,body:{f0:90,f1:34,d:.14,g:.20,type:'sine'},tail:1}
     };
@@ -12928,8 +12947,8 @@ function blessElite(e){
   e.r=Math.round(e.r*1.12);
   if(e.kind==='raider'&&CFG.eliteGuns!==0){
     // Weighted toward the workhorses; the Lance stays the rarest thing on a body.
-    var _pool=[['dmr',26],['lmg',24],['magnum',20],['whisper',14],['sniper',11],['lance',5]];
-    var _t=0,_acc=0,_gk='dmr',_i,_gf=0.99;
+    var _pool=[['rifle',26],['lmg',24],['magnum',20],['carbine',14],['sniper',11],['lance',5]];   // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally": the Auto Rifle and the Burst Carbine take the two rows
+    var _t=0,_acc=0,_gk='rifle',_i,_gf=0.99;
     for(_i=0;_i<_pool.length;_i++) _t+=_pool[_i][1];
     var _want=gunRoll*_t;
     for(_i=0;_i<_pool.length;_i++){ _acc+=_pool[_i][1]; if(_want<_acc){ _gk=_pool[_i][0]; _gf=(_want-(_acc-_pool[_i][1]))/_pool[_i][1]; break; } }
@@ -13563,7 +13582,7 @@ var PED_STOCK=['medkit','medkit','plate','ammobox','bandage','comp','optic','tit
 // Every gun in the game, reachable from the stall. His order, and it also gives
 // the Peddler a reason to exist beyond plates.
 // v24.xx (scavspawnonly): six now, the Scav Pistol is spawn-only (his order 2026-10-12); the slot still draws once.
-var PED_GUNS=['gun_smg','gun_carbine','gun_shotgun','gun_rifle','gun_lmg','gun_dmr'];
+var PED_GUNS=['gun_smg','gun_carbine','gun_shotgun','gun_rifle','gun_lmg','gun_sniper'];   // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally": the Longshot takes the last stall slot
 function pedPrice(k){ return Math.round(ival(k)*1.9); }
 // He closes his stall to you once you have killed one of him. Notoriety is
 // permanent and it is meant to be: shooting the unarmed man is the greediest
@@ -13637,7 +13656,7 @@ function mkPeddler(x,y,map){
     var ix=ri(0,pool.length-1),k2=pool.splice(ix,1)[0];
     stock.push({k:k2,price:pedPrice(k2),sold:false});
   }
-  var _show=pick(['wcore','reactor','bloom','gun_dmr','gun_lmg']);
+  var _show=pick(['wcore','reactor','bloom','gun_rifle','gun_lmg']);
   stock.push({k:_show,price:Math.round(ival(_show)*3),sold:false,showpiece:1});
   return {kind:'peddler',x:x,y:y,r:12,hp:150,maxhp:150,_lastHp:150,face:1.57,
     coat:'#d8a13a',name:'THE PEDDLER',neutral:1,stock:stock,bag:[],
@@ -15248,7 +15267,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
         else g.bag.push(DEV[dk]);
       }
       g.pouch.frag+=2; g.pouch.smoke+=2; g.pouch.decoy+=2;
-      g.player.wep=rollFieldGun('dmr'); g.player.ammo=g.player.wep.mag;
+      g.player.wep=rollFieldGun('rifle'); g.player.ammo=g.player.wep.mag;
       g.player.wepIssued=true; g.player.wepFromArmory=false;
     }
     var carried=0;
@@ -21152,11 +21171,11 @@ var BLOOM_PX=14, BLOOM_SPREAD=0.35;
 var BLM={
   pistol: {add:0.45,rec:1.30,dly:0.10,cone:0.050},
   magnum: {add:0.70,rec:1.00,dly:0.15,cone:0.040},
-  dmr:    {add:0.70,rec:0.95,dly:0.15,cone:0.035},
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally".
   sniper: {add:1.00,rec:0.70,dly:0.20,cone:0.025},
   carbine:{add:0.55,rec:1.00,dly:0.15,cone:0.040},
   shotgun:{add:0.50,rec:0.90,dly:0.20,cone:0.030},
-  whisper:{add:0.40,rec:1.10,dly:0.10,cone:0.040},
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally".
   rocket: {add:0.90,rec:0.70,dly:0.20,cone:0.020},
   lance:  {add:0.60,rec:0.90,dly:0.20,cone:0.025},
   smg:    {add:0.040,rec:0.60,dly:0.25,cone:0.030},
@@ -21871,11 +21890,11 @@ function reloadPlan(w,dry,n){
     a(0.66,'magIn',{rate:0.8});   // the belt is laid
     a(0.84,'boltLatch',{rate:0.75});   // the cover slams
     if(dry) a(1,'rifleCharge',{rate:0.85});
-  } else if(id==='rifle'||id==='carbine'||id==='dmr'){
-    a(0,'rifleMagOut',{rate:id==='dmr'?0.92:1});
-    a(0.75,'magIn',{rate:id==='dmr'?0.85:0.92});
-    if(dry) a(1,'rifleCharge',{rate:id==='dmr'?0.82:1});
-  } else if(id==='smg'||id==='whisper'){
+  } else if(id==='rifle'||id==='carbine'){
+    a(0,'rifleMagOut',{rate:1});
+    a(0.75,'magIn',{rate:0.92});
+    if(dry) a(1,'rifleCharge',{rate:1});
+  } else if(id==='smg'){
     a(0,'magOut',{rate:1.08});
     a(0.75,'magIn',{rate:1.08});
     if(dry) a(1,'rifleCharge',{rate:1.18});
@@ -21901,7 +21920,7 @@ function rlfxPlay(f){
     s=RLFX.st[RLFX.i++]; o={gap:0};
     for(q in s.o) o[q]=s.o[q];
     if(k>0) o.at=0.07*k;
-    if(RLFX.w&&gunBase(RLFX.w.id)==='whisper') o.g=(o.g===undefined?1:o.g)*0.7;   // the quiet gun reloads quietly
+    // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally": the quiet gun is gone.
     k++;
     if(s.r==='~whine'){ rlfxWhine(Math.max(0.1,RLFX.tot*(1-s.f)/1000)); netSynth('~whine',RLFX.p,Math.max(0.1,RLFX.tot*(1-s.f)/1000).toFixed(2)); }   // v28.xx (cw-windup), CLOUD HUNT 2026-10-15: the teammate hears the Lance charge (v25.52 promised it)
     else if(s.r==='~ping'){ rlfxPing(o.at||0); netSynth('~ping',RLFX.p,''); }
@@ -22095,7 +22114,7 @@ function raiderRole(e){
   w=gunBase((e.wep&&e.wep.id)||''); h=raiderHash(e);
   if(e.rig==='heavy') return 'shield';
   if(w==='lmg') return 'supp';
-  if(w==='dmr'||w==='sniper'||w==='whisper'||w==='lance'||w==='magnum') return 'mark';
+  if(w==='sniper'||w==='lance'||w==='magnum') return 'mark';
   if(w==='shotgun') return 'rush';
   if(w==='carbine') return 'flank';
   if(w==='rifle') return (h%2)?'mark':'flank';
@@ -23185,7 +23204,7 @@ function bagHeldGun(slot){
 // bank) a swap or an equip is a strap and holster rattle and the draw clacking up, lighter and quicker for a pistol, an SMG or the
 // Magnum and heavier for a rifle, the LMG, a shotgun, the Longshot or the Lance; a drop is a soft thump. Yours is centred; your
 // teammates hear it where you stand. Cosmetic only: no seeded draw, nothing under G.sim, no game state.
-var GEAR_LIGHT={pistol:1,magnum:1,smg:1,whisper:1,fists:1};
+var GEAR_LIGHT={pistol:1,magnum:1,smg:1,fists:1};
 var GEAR_AT=-1;   // v25.xx (plopswap): the raid clock at the last holster clack, so the belt key does not add a second sound over it
 function gearFoley(kind,w){
   if((G&&G.sim)||typeof foley!=='function') return false;
@@ -23203,7 +23222,7 @@ function gearFoley(kind,w){
 // updatePlayer, starts the clock when the gun in his hands is not the one it saw last frame; the first frame of a raid starts nothing (the gun
 // is drawn already), and the bot sim never waits (the clock is held at 0 under G.sim). p.drawT is the seconds left; p.drawLen the full time,
 // for the reticle. No seeded draw, nothing a bot reads.
-var DRAWT={pistol:0.25,magnum:0.35,smg:0.4,whisper:0.45,carbine:0.5,rifle:0.55,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0,lance:1.0,rocket:1.0};
+var DRAWT={pistol:0.25,magnum:0.35,smg:0.4,carbine:0.5,rifle:0.55,shotgun:0.6,sniper:0.85,lmg:1.0,lance:1.0,rocket:1.0};
 function drawTime(w){
   if(!w||!w.id||w.mag===0) return 0;
   return Object.prototype.hasOwnProperty.call(DRAWT,w.id)?DRAWT[w.id]:0.5;
@@ -27718,7 +27737,7 @@ if(e.state==='possum'){
         // an emplacement is exactly where a weapon nobody sells would end up.
         var cq=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['relay','codex','bloom']),pick(['titan','core','coil']),
-           pick(['gun_whisper','gun_lance','gun_rocket']),'servo']);
+           pick(['gun_sniper','gun_lance','gun_rocket']),'servo']);
         cq.cache=1; cq.time=2.4; cq.tag='PILLBOX WRECK'; G.containers.push(cq); cq.bot='choir';   // v28.xx (cw-wreckpillbox), HIS NOTE (2026-10-18): "it would be cool if it showed wreckage instead. same for other enemy deaths". The Pillbox wreck is drawn by drawWreckChoir, not the purple box
         say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Search the wreck.'});   // v22.xx (R53): an objective row in caps
         decal(e.x,e.y,'#2a1a3a',rnd(28,40));
@@ -30134,7 +30153,7 @@ var SEASON_TIERS=[
   {sp:561800, kind:'kit', v:['relay','relay','relay'], label:'THREE RELAYS'},
   {sp:573800, kind:'kit', v:['titan','titan','titan','coil','coil','coil'], label:'TITANS AND COILS'},
   {sp:586000, kind:'credits', v:21000, label:'$21,000 WAR CHEST'},
-  {sp:598500, kind:'wep', v:'dmr', label:'THE DMR'},
+  {sp:598500, kind:'wep', v:'rifle', label:'The auto rifle'},
   {sp:611300, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','plate','plate','plate','plate','plate','plate'], label:'SIX MEDKITS SIX PLATES'},
   {sp:624300, kind:'kit', v:['ledger','ledger','ledger','relay','relay'], label:'LEDGERS AND RELAYS'},
   {sp:637600, kind:'credits', v:24000, label:'$24,000 SCORE'},
@@ -30152,14 +30171,14 @@ var SEASON_TIERS=[
   {sp:821100, kind:'kit', v:['core','core','core','core','core','core','core','core','core','core','core','core'], label:'DOZEN DATA CORES'},
   {sp:838600, kind:'kit', v:['frag','frag','frag','frag','frag','frag','frag','frag','ammobox','ammobox','ammobox','ammobox','ammobox','ammobox','plate','plate','plate','plate','plate','plate'], label:'AMMO AND ARMOUR CRATE'},
   {sp:856500, kind:'credits', v:35000, label:'THIRTY-FIVE GRAND'},
-  {sp:874700, kind:'wep', v:'whisper', label:'THE WHISPER'},
+  {sp:874700, kind:'wep', v:'carbine', label:'The burst carbine'},
   {sp:893300, kind:'kit', v:['reactor','reactor','reactor'], label:'THREE REACTORS'},
   {sp:912400, kind:'kit', v:['wcore','wcore'], label:'TWO WARDEN CORES'},
   {sp:931800, kind:'credits', v:40000, label:'FORTY GRAND'},
   {sp:951700, kind:'kit', v:['bloom','bloom','bloom'], label:'THREE BLOOMS'},
   {sp:971900, kind:'credits', v:50000, label:'FIFTY GRAND'},
   {sp:992600, kind:'kit', v:['wcore','wcore','blackbox','blackbox'], label:'WARDEN CORES AND BLACK BOXES'},
-  {sp:1013800, kind:'wep', v:'whisper', label:'BACKUP WHISPER'},
+  {sp:1013800, kind:'wep', v:'shotgun', label:'The scattergun'},
   {sp:1035400, kind:'kit', v:['medkit','medkit','medkit','medkit','medkit','medkit','medkit','medkit','stim','stim','stim','stim','stim','stim','frag','frag','frag','frag','frag','frag','plate','plate','plate','plate','plate','plate'], label:'FULL RESUPPLY CRATE'},
   {sp:1057400, kind:'credits', v:60000, label:'SIXTY GRAND'},
   {sp:1080000, kind:'kit', v:['wcore','wcore','wcore'], label:'THREE WARDEN CORES'},
@@ -32895,10 +32914,7 @@ var GUNDEF=(function(){
     R(16,-2.2,0.9,0.9,'k','O'), R(18,-2.2,0.9,0.9,'k','O'), R(20,-2.2,0.9,0.9,'k','O'), R(22,-2.2,0.9,0.9,'k','O'),
     R(22.8,-3.9,0.9,1.7,'d'), R(24,-1,4.8,2,'m','H'), R(28.6,-1.4,1.4,2.8,'d'),
     R(7,-2.9,4,0.5,'d','O'), R(6,-5,6,2.3,'d','H'), R(11.3,-4.7,0.7,1.7,'g','O')]};
-  D.whisper={tip:29.4,by:0,grip:5,fg:16,well:[10.7,2.4],port:[9,-2.4],rv:[2.8,-2.4,11,4.8],br:[18.4,29.4],p:[
-    grip(5), R(9.5,2.4,2.4,5.4,'l','H'), P([-3,-2, 2.8,-1.6, 2.8,1.8, -3,2.8],'d','F'), P([-1.8,-0.6, 1.4,-0.5, 1.4,0.7, -1.8,1.4],'k','O'),
-    R(2.8,-2.4,11,4.8,'m','FHR'), R(13.8,-1.6,4.6,3.2,'d'), R(18.4,-2.2,11,4.4,'d','HR'), R(21.5,-2.2,0.6,4.4,'k','OV'),
-    R(25,-2.2,0.6,4.4,'k','OV')]};
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally": the Whisper drawing is gone.
   D.shotgun={tip:28.4,by:-1.3,grip:5,fg:17.5,well:[10,3],port:[8,-3],rv:[3,-3,9,6],br:[12,28.4],p:[
     grip(5), P([-3,-2.2, 3,-2, 3,2.4, -3,3.6],'w'), R(3,-3,9,6,'m','FHR'), R(5,-1.6,5,1.9,'d'), R(5.4,-1.4,1,1.5,'r','O'),
     R(7,-1.4,1,1.5,'r','O'), R(8.6,-1.4,1,1.5,'r','O'), R(12,0.1,13,2.2,'d','R'), R(12,-2.6,15.5,2.6,'m','H'), R(14,-0.4,7,4,'W','H'),
@@ -32908,11 +32924,7 @@ var GUNDEF=(function(){
     R(7,-5.6,6,1.1,'d'), R(7,-5.6,1.1,2.5,'d'), R(11.9,-5.6,1.1,2.5,'d'), R(21,2.6,9.5,0.9,'d'), R(21.5,3.8,8.5,0.9,'d'),
     R(16,-2.4,11,4.8,'l','FHR'), R(18,-1.2,1.6,1.5,'k','OV'), R(21,-1.2,1.6,1.5,'k','OV'), R(24,-1.2,1.6,1.5,'k','OV'),
     R(27,-1.1,4,2.2,'m','H'), R(31,-1.7,1.6,3.4,'d')]};
-  D.dmr={tip:35.6,by:0,grip:5.2,fg:20,well:[12.1,2.7],port:[10,-2.7],rv:[3,-2.7,13,5.4],br:[16,35.6],p:[
-    grip(5.2), R(10.5,2.7,3.2,4.6,'l','H'), P([-3,-2.6, 3,-2.2, 3,2.4, -3,3.6],'d','F'), R(-2.4,-3.6,4,1.2,'l'), R(3,-2.7,13,5.4,'m','FHR'),
-    R(16,-2.1,10,3.8,'l','FHR'), R(26,-0.9,7,1.8,'m','H'), R(33,-1.7,2.6,3.4,'d'), R(34,-1.7,0.6,3.4,'k','O'),
-    R(7,-3.4,1,0.8,'d','O'), R(12.5,-3.4,1,0.8,'d','O'), R(4.5,-6.4,11,3,'d','H'), R(3.8,-6.8,1.4,3.8,'d'), R(14.6,-6.9,1.8,4,'d'),
-    R(16,-6.6,0.7,3.4,'g','O')]};
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally": the Marksman Rifle drawing is gone.
   D.sniper={tip:39.3,by:0,grip:5.2,fg:20,well:[12.3,2.8],port:[10,-2.8],rv:[3,-2.8,12,5.6],br:[25,39.3],p:[
     grip(5.2), R(11,2.8,2.6,3,'l'), P([-3.4,-2.6, 3,-2.4, 3,2.4, -3.4,3.8],'d','F'), R(-2.6,-4,4.4,1.5,'l','F'), R(3,-2.8,12,5.6,'m','FHR'),
     R(9.2,2.6,0.8,2.2,'d'), C(9.6,5.2,1.2,'l','H'), R(15,-2,10,3.6,'l','FHR'), R(25,-0.8,11,1.6,'m','H'), R(26,-0.25,9,0.5,'k','OV'),
@@ -33898,8 +33910,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   else if(_wid==='smg'){ _L=10; _B=3; _mag=1; }
   else if(_wid==='shotgun'){ _L=12; _B=7; _pump=1; }
   else if(_wid==='lmg'){ _L=14; _B=6; _drum=1; }
-  else if(_wid==='whisper'){ _L=11; _B=2; _tube=1; _mag=1; }
-  else if(_wid==='dmr'){ _L=15; _B=7; _sc=1; _mag=1; }
+  // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally": no Whisper or Marksman Rifle body.
   else if(_wid==='sniper'||_wid==='lance'){ _L=17; _B=8; _sc=1; }
   else { _mag=1; }   // carbine, rifle and anything new: the 13px body
   // v23.xx (gfxsil), HIS #24: the gun was a dark grey bar on a dark coat over dark ground, so what a body held did not read.
@@ -42101,9 +42112,9 @@ function drawTrade(){
 // with the shape people know it by, outlined dark so it reads at 22 pixels.
 var GUN_FAMILY={pistol:'hand',magnum:'revolver',
                 smg:'smg',
-                carbine:'rifle',rifle:'rifle',whisper:'rifle',
+                carbine:'rifle',rifle:'rifle',
                 shotgun:'shotgun',
-                lmg:'lmg',dmr:'marksman',sniper:'marksman',lance:'lance',rocket:'rocket'};
+                lmg:'lmg',sniper:'marksman',lance:'lance',rocket:'rocket'};
 // v26.26 (rarvar1): a rarity twin is drawn, held and timed as its model: the model's row in every table keyed by a gun id.
 (function(){ var T=[GUN_FAMILY,GUNDEF,DRAWT,GEAR_LIGHT], i, b; for(b in RV_OF) for(i=0;i<T.length;i++) if(T[i]&&T[i][b]!==undefined) T[i][RV_OF[b]]=T[i][b]; })();
 // v18.10, HIS ORDER (2026-10-03, "item graphics like the guns still look terrible and need massive improvements"): THE GUNS
@@ -42161,7 +42172,7 @@ function gunArt(c,fam,id,W,col,S){
     R(38,-10,8,6,1); F('#202328',-10,-4);
     guard(-12,6,4,10);
   } else if(fam==='rifle'){
-    var can=(gunBase(id)==='whisper');
+    var can=false;   // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally": no suppressed gun
     P([[-52,-12],[-32,-14],[-32,4],[-52,10]]); F(poly,-14,10);
     R(-34,-11,10,8,1.5); F(metal,-11,-3);
     P([[-20,2],[-10,2],[-14,24],[-25,24]]); F(poly,2,24);
@@ -42266,7 +42277,7 @@ function gunIcon(c,id,cx,cy,S,tint){
     part(-11,3,4,8,dk,'grip');                      // grip
     part(2,3,4,6,dk,'fore');                        // foregrip
   } else if(fam==='rifle'){
-    var can=(gunBase(id)==='whisper');
+    var can=false;   // v28.xx (cw-gunsgone), HIS ORDER (2026-10-18): "get rid of marksman rifle and whisper totally": no suppressed gun
     part(-20,-5,9,9,dk,'stock');                    // full stock
     part(-11,-7,18,10,col,'rec');                   // receiver
     part(6,-4,(can?8:14),4,metal,'barrel');         // barrel
@@ -47529,7 +47540,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.57: The pause card gives its title and hint room. Check 29.57 fails on v29.56',
+  now:'v29.58: The Marksman Rifle and the Whisper are gone. A saved one pays its credits when the game loads. Check 29.58 fails on v29.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47649,9 +47660,7 @@ var WIRT_LOT_PRICE=10000;
 var WIRT_LOT_POOL=[
   ['gun_lance'],
   ['gun_rocket','plate','frag'],   // v28.xx (cw-rocket)
-  ['gun_whisper','plate'],
   ['gun_sniper','plate'],
-  ['gun_dmr','plate','medkit'],
   ['gun_lmg','plate','medkit'],
   ['gun_shotgun','plate','frag','medkit'],
   ['gun_rifle','plate','frag','medkit']
@@ -47698,7 +47707,7 @@ var GAMBLE_POOL=[
   ['scrap',10],['wire',10],['cell',9],['bandage',9],['ammobox',10],['board',8],
   ['optic',7],['plate',6],['servo',6],['comp',6],['medkit',5],['smoke',4],['decoy',3],['frag',3],
   ['core',4],['coil',3],['ledger',3],['titan',3],
-  ['gun_smg',3],['gun_carbine',2],['gun_shotgun',2],['gun_rifle',2],['gun_lmg',1],['gun_dmr',1],
+  ['gun_smg',3],['gun_carbine',2],['gun_shotgun',2],['gun_rifle',2],['gun_lmg',1],['gun_magnum',1],
   ['blackbox',1],['relay',1],['codex',1],['reactor',1],['bloom',1],['KEY',3]
 ];
 // SPEC 3.1: vendors you actually talk to, not interaction prompts on crates.
@@ -48450,7 +48459,7 @@ function renderWirtLot(){
 // Every row also has a button, because a drag that fails silently teaches
 // nothing and a button always works.
 var CRATE_KIT=['medkit','plate','ammobox','frag','smoke','decoy','bandage',
-               'gun_dmr','gun_rifle','gun_shotgun','core','comp'];
+               'gun_carbine','gun_rifle','gun_shotgun','core','comp'];
 function crateTake(k){
   P.stash.push(k); saveProfile(); renderCrate(); renderHub();
   say2('Took '+ITEMS[k].name+'.'); blip('pick');
@@ -56243,7 +56252,7 @@ function arcadeSandboxOut(){
 // that has one (and a raid length chosen there moved nothing). The overlay is empty now: a DEMO raid builds from the same dials a CAREER raid does.
 var ARCADE_CFG={};
 var ARCADE_GUNS1=['rifle','carbine','smg','shotgun','lmg'];
-var ARCADE_GUNS2=['magnum','dmr','shotgun','rifle','smg','carbine'];   // v26.35 (nostarters): the Auto Rifle where the Chatter was
+var ARCADE_GUNS2=['magnum','lmg','shotgun','rifle','smg','carbine'];   // v26.35 (nostarters): the Auto Rifle where the Chatter was
 // The session overlay of the dials. The old values are kept in ARCADE.cfg0 (undefined for a dial that was not set), and
 // arcadeSandboxOut puts them back.
 function arcadeCfgIn(){
@@ -56390,7 +56399,7 @@ var ARCADE_RAID_SEC=600;
 // walls stand whole, nothing alive, no spawn, no ring and no drop point is inside, and it touches no map room. The pick and the
 // loot are drawn on their own side stream, so the main stream does not move and both windows build the same vaults. The map
 // build itself is untouched: a plain raid is exactly as before.
-var ARCADE_VAULTS=2, ARCADE_VAULT_TAG=7, ARCADE_VAULT_GUNS=['gun_lance','gun_whisper','gun_sniper'];
+var ARCADE_VAULTS=2, ARCADE_VAULT_TAG=7, ARCADE_VAULT_GUNS=['gun_lance','gun_rocket','gun_sniper'];
 function arcadeVaultBox(m,bi){
   var j, w, n=0, x0=1e9, y0=1e9, x1=-1e9, y1=-1e9;
   for(j=0;j<m.walls.length;j++){ w=m.walls[j]; if(!w||w.ib!==bi||w.furn) continue; n++;

@@ -1,0 +1,7 @@
+v29.58: the marksman rifle and the whisper are gone
+
+The Marksman Rifle and the Whisper are gone. A saved one pays its credits when the game loads.
+
+Check 29.58. Fails on v29.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
