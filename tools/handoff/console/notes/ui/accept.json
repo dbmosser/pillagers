@@ -434,10 +434,10 @@
  "72-settings-sec-display": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version fixes the clipped half-row ghost text and darkens the backdrop, but it is still a flat, generic settings list with a placeholder help pane, tiny controls, and no visible focus state.",
-  "pic": "tools/handoff/console/notes/shots/c-31x-after/72-settings-sec-display-1080.jpg",
+  "verdict": "The only change is the detail text: placeholder junk (\"Edit the words / Don't use this unless you know what you are doing!\") became a real description, but it describes Vibration strength while the Display tab is open and no row is focused, so it is still wrong, and the modal is otherwise identical and flat.",
+  "pic": "tools/handoff/console/notes/shots/c-31r3-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T13:08"
+  "when": "2026-10-18T13:20"
  },
  "74-settings-change-pad-buttons": {
   "score": 2,

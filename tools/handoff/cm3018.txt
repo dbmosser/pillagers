@@ -1,0 +1,7 @@
+v30.18: party backdrop: a lighter blur and scrim
+
+The party pages show a clearer, brighter backdrop.
+
+Check 30.18. Fails on v30.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

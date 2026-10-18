@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.18 - Party backdrop: a lighter blur and scrim
+
+Co-op hunt while he was away. Critic on 46, 52, 55, 56 and 64: the 16px blur under a heavy scrim crushed the world into mush. The blur is 8px and the scrim lets about half of the world through in the middle.
+
+MEASURED. Check 30.18 passes, and fails on v30.17.
 ## v30.17 - SETTINGS PANE FOLLOWS THE ROWS IN VIEW
 
 Co-op hunt while he was away. Critic c-31 (Settings 72 at 2, P0): after a tab jump the detail pane named the first row of the whole list (off screen) and no visible row wore the focus look.
