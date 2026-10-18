@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T17:21:09","url":"http://localhost:8808/handoff/art-survey/game/a37-A.html","recipes":"C:/claudecode/dark raiders/tools/handoff/art-survey/shots/_recipes/all.json","seconds":15,"screens":[
+{"name":"a37-A","screen":"a37-A","1080":{"staged":true,"note":"{\"scene\":\"duo\",\"plate\":false,\"zoom\":5,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":781,\"y\":546,\"w\":166,\"h\":297,\"fx\":781,\"fy\":631},{\"id\":\"mate\",\"kind\":\"player\",\"x\":1139,\"y\":583,\"w\":168,\"h\":316,\"fx\":1141,\"fy\":651}],\"objects\":null}","viewport":"1920x1080","shot":"a37-A-1080.jpg","lint":""}}
+]}

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.08 - THE WHAT IS NEW CARD NAMES POLISH PASS 26
+
+Co-op hunt while he was away. The card was stamped v30.92 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 31.08 passes, and fails on v31.07.
 ## v31.07 - HOW TO PLAY SAYS LEFT STICK AND RIGHT STICK
 
 Co-op hunt while he was away. The critic on screen 46 called L STICK and R STICK cryptic. The how to play card spells them out. Restyle only, the pad names elsewhere stay.

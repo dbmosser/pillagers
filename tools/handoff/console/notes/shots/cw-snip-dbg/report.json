@@ -1,3 +1,3 @@
-{"generated":"2026-10-18T17:20:07","url":"http://localhost:8808/fxsnip.html","recipes":"C:\\Users\\User1\\AppData\\Local\\Temp\\claude\\C--Users-User1-Desktop-dark-raiders\\8a09e991-b4f4-4b23-b10f-ded92e837fc3\\scratchpad\\dbg-recipes.json","seconds":15,"screens":[
-{"name":"99-dbg","screen":"dbg","1080":{"staged":false,"note":"EXCEPTION Error: DBG blob taint | data-utf8 ok | data-b64 ok\n    at \u003canonymous\u003e:1:3139\n    at async \u003canonymous\u003e:1:21","viewport":"1920x1080","shot":"99-dbg-1080.jpg","lint":""}}
+{"generated":"2026-10-18T17:22:13","url":"http://localhost:8808/fxsnip.html","recipes":"C:\\Users\\User1\\AppData\\Local\\Temp\\claude\\C--Users-User1-Desktop-dark-raiders\\8a09e991-b4f4-4b23-b10f-ded92e837fc3\\scratchpad\\dbg-recipes.json","seconds":20,"screens":[
+{"name":"99-dbg","screen":"dbg","1080":{"staged":false,"note":"EXCEPTION Error: DBG string | http://localhost:8799/telemetry | http://127.0.0.1:9/blackhole | true | localhost\n    at \u003canonymous\u003e:1:2299\n    at async \u003canonymous\u003e:1:21","viewport":"1920x1080","shot":"99-dbg-1080.jpg","lint":""}}
 ]}

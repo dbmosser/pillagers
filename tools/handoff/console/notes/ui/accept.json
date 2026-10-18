@@ -350,34 +350,34 @@
   "when": "2026-10-18T06:22"
  },
  "58-coop-player2-window-title": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A centred, template-like title page that explains too much in small muted text, with a big amber title competing with the amber button, three stray amber headings, mixed sizes and a $ currency, so it fails the guide's hierarchy and clutter rules.",
+  "verdict": "the clutter is gone and the lime button now leads the screen, but the amber gradient title competes with it, the lower block is cramped and the type is off-scale.",
   "findings": [
-   "P0 Whole screen: lore paragraph, 3-step columns, key-hint strip, 'First time out' line, saves hint line: Delete the lore paragraph, the three-step columns, the 'First time out' sentence and the 'Changing save reloads…' sentence. Keep the title, one primary button and a short saves list. Move the key hints to a bottom-edge legend at 16px and show them only in raid or on the controls screen.",
-   "P0 Title 'Pillagers' (about 56px amber gradient) vs 'Enter the undercroft' button: Make the title flat tx-1 at 56px (hero) and leave amber to the primary button. Put the button directly under the title with 24px gap, and add a tx-2 subtitle at 20px between them if one is needed.",
-   "P1 Primary button 'Enter the undercroft' (x681–1239, 56px high): Set width to 320–400px, centred. Put 'Player 2 window' as a tx-2 16px chip or in the header, not under the button. Keep the 24px gap above and below.",
-   "P1 Type system across the page: Snap every text to 56/32/20/16 only. Use tx-2 #aaa498 (4.5:1 minimum) for anything read. Raise the step descriptions and hint words to 16px minimum, or remove them.",
-   "P1 Step headings '1 · Ascend', '2 · Pillage', '3 · Extract': Remove the section entirely, or if kept, use tx-1 headings with no amber, constrain to the same 900px column and use --ui-line dividers."
+   "P1 title 'pillagers' (about 56px, amber gradient with drop shadow): Fill it flat --tx-1 #efe9dc with no gradient and no shadow, f-cond 800 at 56px. Leave lime to the button and the focused save row.",
+   "P1 button, 'player 2 window' label and saves block (y 511–735): Use an 8px grid: 24px between title block and button, 32px from button to saves. Move 'player 2 window' into a 16px tx-2 chip above the title or into the top-left, not under the button. Give the saves label a 16px tx-2 size with 8px below it.",
+   "P1 name row: 'pillager' input, 'change name', 'create a new save': Make the row 48px high with 16px labels at weight 600. Make the input a --ui-raised field with a 1px --ui-line-hi border and a visible focus ring in lime. Fold the two actions into one 'new save' ghost button, or keep 'change name' only on the selected row.",
+   "P1 type scale across the page (tagline, 'saves', row values, hints, 'v0.0737'): Snap to 56/32/20/16/14. Make the tagline 20px --tx-2 #aaa498 with a --scrim panel or stronger vignette behind it. Make the row stats 16px tx-2. Keep the version at 14px, only in the footer.",
+   "P1 background art behind the menu column: Raise the --scrim to .80 across the centre, or put the menu column on a 560px-wide --ui-panel at 90% with a 1px --ui-line-hi border. Keep the art visible at the edges only."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/58-coop-player2-window-title-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12d-after/58-coop-player2-window-title-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:51"
+  "when": "2026-10-18T21:25"
  },
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "The reference table is tidy and readable, but the footer is still a lone radio dot with 'press any key' instead of a real primary button, the close X is still undersized and unfocused, and the card is not framed as a proper dialog with header and footer.",
+  "verdict": "the only visible change is 'l stick' and 'r stick' becoming 'left stick' and 'right stick', which is a small clarity gain; the card, close button, footer and column layout I flagged last time are all unchanged.",
   "findings": [
-   "P1 Footer 'press any key' with lime radio dot (x≈1204-1346, y≈846-868): Remove the dot. Add a 56px high, min 200px wide --acc button 'got it' (--acc-ink text, 20px/700, 4px radius), right-aligned in a 72px footer with its right edge at x=1346. Put a 16px tx-2 'press any button' hint to its left.",
-   "P1 Close X (x≈1306-1354, y≈190-237): Use the uiIcon close glyph at 24px in a 48x48 ghost button with its right edge at x=1346 and a 1px --ui-line-hi border. Add a 'b' pad glyph to its left and bind Esc. Add a 2px --acc focus outline.",
-   "P1 Card structure (x 541-1378, y 172-907): Make the header 56px high with a 1px --ui-line rule below it. Make the footer 72px high with a 1px --ui-line rule above it. Set the card width to 720-800px. Raise the scrim to rgba(6,7,8,.80), because the busy blurred lobby still shows through.",
-   "P1 Column layout (headers at y≈278, key cells x≈759 and x≈1053): Set the grid to 180px / 1fr / 1fr with 16px gaps so the keyboard and controller columns split the remaining width evenly. Align the 'in the ring' chips in a consistent place.",
-   "P2 Type hierarchy in rows and headers (x≈573-1130, y 278-775): Row names 20px f-cond 600 tx-1. Headers 16px f-cond 600 tx-2 with +.04em tracking. Key caps 18-20px/600 on a --ui-raised fill with 12px side padding."
+   "P1 footer 'press any key' with lime radio dot (x≈1204-1346, y≈846-868): remove the dot. Add a 56px high, min 200px wide --acc button 'got it' (--acc-ink text, 20px/700, 4px radius) with its right edge at x=1346, in a 72px footer. Put a 16px tx-2 'press any button' hint to its left.",
+   "P1 close X (x≈1306-1354, y≈190-237): use the uiIcon close glyph at 24px in a 48x48 ghost button with its right edge at x=1346 and a 1px --ui-line-hi border. Add a 'b' pad glyph to its left and a 2px --acc focus outline.",
+   "P1 card structure (x 541-1378, y 172-907): make the header 56px high with a 1px --ui-line rule below it, and the footer 72px high with a 1px --ui-line rule above it. Raise the scrim to rgba(6,7,8,.80).",
+   "P1 column layout (headers y≈278, key cells x≈759 and x≈1053): set the grid to 180px / 1fr / 1fr with 16px gaps. Put the 'in the ring' chip in its own fixed slot to the right of the keycap in both columns.",
+   "P2 row names, headers and keycaps (x≈573-1170, y 278-775): set row names to 20px f-cond 600 tx-1. Set headers to 16px f-cond 600 tx-2 with +.04em tracking. Set keycaps to 18-20px/600 on a --ui-raised fill with 12px side padding. Raise 'in the ring' to 16px."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-after/46-arcade-attract-how-to-play-1080.jpg",
-  "task": "03-title-and-backdrop",
-  "when": "2026-10-18T19:59"
+  "pic": "tools/handoff/console/notes/shots/12d-after/46-arcade-attract-how-to-play-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T21:24"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -474,17 +474,17 @@
  "47-arcade-drop-controls-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The How to play card is a clean, readable table, but it sits on top of a fully live HUD with duplicate storm toasts, a clipped player label and an unmoved currency block, so the screen reads as cluttered and off-guide.",
+  "verdict": "The controls card and the duplicate storm toasts are gone, so the screen reads as a plain in-raid HUD, but the HUD is crowded with mismatched panels, type sizes and styles, and the pad focus and hierarchy are unresolved.",
   "findings": [
-   "P0 Whole screen: controls card over live HUD: Dim the world with the scrim rgba(6,7,8,.80) and hide the HUD while the card is open. Centre the card (max 960x680) with a 56px header, a close X at top-right, and a 72px footer holding a 56px primary 'Got it' button.",
-   "P0 Storm toasts at (960,165) and (180,783): Show one toast only: top-centre, 40px high, 4px left accent bar, --fs-label, 3s. Suppress it while the controls card is open.",
-   "P1 Player label at (960,350): Draw the label above the HUD and world occlusion with a 1px panel backing, in tx-1. Move it 24px above the player so it clears the wall, and drop the teal.",
-   "P1 Controls card (40-487, 162-732): Add a 48x48 ghost X at the header's top-right plus 'B' and 'Esc' key caps. Set the title to 32px f-cond 700. Add a footer with a 56px primary 'Got it' button at the bottom-right. Centre the card.",
-   "P1 Table rows and key caps: Raise the headers to 16px tx-2 at 600 weight, then set the row dividers to --ui-line (#2e3337) at a visible 1px. Replace the rings with a single 'hold' glyph, or drop them. Set cap text to 18-20px on a 28px cap."
+   "P1 Bottom-left vitals (24-526, 905-1068): Make all three bars 12px high with 8px gaps and the same 16px f-cond label inside the left edge. Use --ok for hp, a muted tx-2 fill for stamina, and one cool blue for armour. Align the right edges and fold the 'standing' pill into a 16px tx-2 tag above the stack.",
+   "P1 Top-right run info panel (1502-1902, 244-390): Put it in panel P (fill #16191b at 90%, 1px --ui-line-hi border, 4px radius, 16px padding). Set the title to 20px 700 tx-1 and 'run goals' to 16px tx-2. Use a 32px row pitch with rewards right-aligned in tx-2. Leave a 16px gap below the minimap and make the chevron 24px.",
+   "P1 Bottom-right ammo panel (1577-1910, 868-1022): Use one panel style for every HUD block. Set the weapon name to 20px tx-2, the hero '60' to 56px 800 tx-1, and '/ 360' to 20px tx-2 on the same baseline. Give the panel a 16px inset and a 5% margin that matches the other corners.",
+   "P1 Top-left 'f1 controls' hint (22-135, 155-180): Draw 'f1' as a 28px key cap with tx-1 text on --ui-panel, followed by 'controls' in 16px tx-2 on a panel backing. Make the 'blackout' tag, the top toast and this hint share one pill style with 4px radius, a 3px left bar and 16px text.",
+   "P1 Top-centre score block and extract line (880-1040, 0-135): Offset the card 24px from the top. Make the timer the 56px hero and 'sp' a 20px tx-2 line. Put the extract line inside the card as a 16px teal row. Move the toast to 72px below the card, and move the arrow to a screen-edge indicator."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/47-arcade-drop-controls-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12d-after/47-arcade-drop-controls-card-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:49"
+  "when": "2026-10-18T21:25"
  },
  "48-arcade-hud-move-to-start": {
   "score": 2,
@@ -504,17 +504,17 @@
  "53-arcade-extracted-bonus-initials": {
   "score": 2,
   "pass": false,
-  "verdict": "The shot, named 'extracted bonus initials', shows an in-raid HUD mid-extract with no end card or initials entry, and the same extract message is repeated four times while the corner panels, type sizes and credit/stash lines break the style guide.",
+  "verdict": "This is still a cluttered in-raid HUD, not the extracted/bonus/initials end card the filename promises, and the same extract message appears four times at four different sizes.",
   "findings": [
-   "P0 Whole screen vs. filename (extracted / bonus / initials): Capture the end card: hide the HUD, put a 720px centred card on rgba(6,7,8,.80), title 32px --extract, one 56px hero line for SP, a 4-stat row, then initials tiles and one 56px primary button.",
-   "P0 Top-centre banner, centre 'Hold [X] to extract', bottom 'Extract in progress! C 28S left', left toast stack: Keep one 40px toast or one centre prompt. Delete the banner, the bottom text and the toast duplicate. Show a single countdown at 56px --extract. Fix the string to '28 s left'.",
-   "P1 Top-centre cluster: Score 0 SP / 9:51 / Extraction 0m / arrow: One hero value at 56px f-cond 800 (the timer during extract, otherwise SP). Put the 'Score' label in tx-2 at 16px. Remove 'Extraction 0m' and the loose arrow, or fold them into the one extract bar. Keep everything inside a 5% margin.",
-   "P1 Top-right currency block and 'Stash 0 bag 390': One row, 'Credits 900 · XP 0', at 20px with an icon, on a --ui-panel 90% backing. Remove the stash line or move it to the lobby. Replace '$390' with an SP value or delete it. Leave 16px between the block and the minimap.",
-   "P1 Run Info panel (right) and left toast stack: Panel P: --ui-panel, 1px --ui-line-hi, 4px radius, 24px padding. One title in tx-1 at 20px. Rows at 16px minimum with 8px gaps and values right-aligned in tx-2. Cap toasts at 3, 40px high, and delete the tip sentences. Raise the Storm line to 4.5:1 contrast or remove it."
+   "P0 Whole screen vs. filename (extracted / bonus / initials): Capture the end state: hide the HUD, show a 720px centred card on rgba(6,7,8,.80), 32px --extract title, one 56px hero SP number, a 4-stat row, initials tiles, and one 56px --acc primary button.",
+   "P0 Extract messaging: centre banner card, 'hold [x] to extract' at ~48px, bottom 'extract in progress! b 28s left', left toast 'extract in progress!': Keep one centre prompt only. Delete the banner card, the toast and the bottom line. Show one 56px f-cond 800 --extract countdown ('28 s') with a 16px 'hold [x]' label under it. Remove the stray 'b'.",
+   "P1 Top-centre cluster: 'score / 0 sp / 9:51 / extraction 0m / arrow': One 56px hero (the extract timer while extracting, otherwise SP), with a 16px tx-2 'score' label. Fold the extraction distance and arrow into one element inside the panel. Give it 24px padding and a 5% top margin.",
+   "P1 Run info panel (right, ~1500-1900 x 245-390): Panel P: --ui-panel, 1px --ui-line-hi, 4px radius, 24px padding. One 20px tx-1 title, delete the duplicate 'run goals' line. Rows at 16px with 8px gaps, values right-aligned in tx-2. 16px gap below the minimap.",
+   "P1 Left toast stack (5 toasts, 20-430 x 600-775): Cap at 3 toasts, 40px high, 8px gap, 5% left margin. Remove the duplicates and the tip text. Use the danger colour only on the glyph, with tx-1 for the text."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/53-arcade-extracted-bonus-initials-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12d-after/53-arcade-extracted-bonus-initials-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:50"
+  "when": "2026-10-18T21:25"
  },
  "54-arcade-initials-redrop": {
   "score": 2,

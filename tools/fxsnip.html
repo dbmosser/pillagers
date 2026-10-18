@@ -2812,7 +2812,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.06';
+var VER='31.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4483,7 +4483,7 @@ function snipBase(){
 // the small canvases turned into pictures, the scroll offsets and typed text kept, and it is rendered as an SVG picture and laid over the canvases. It takes a moment, so SNIP.domBusy says so; if it fails the
 // snip is the canvases alone and the note says "page layer failed". SNIP.dom = 0 turns the layer off (the check does that, since a check cannot wait).
 function snipDomStart(base,k,gen){
-  var ob=document.body, vw=Math.round(window.innerWidth), vh=Math.round(window.innerHeight), cb, oa, ca, n, i, j, o, c, t, im, a, kid, sl, st, rm, rt, ser, svg, url, done=0, tm=0, pic;
+  var ob=document.body, vw=Math.round(window.innerWidth), vh=Math.round(window.innerHeight), cb, oa, ca, n, i, j, o, c, t, im, a, kid, sl, st, rm, rt, ser, svg, sb, done=0, tm=0;
   cb=ob.cloneNode(true);
   oa=ob.querySelectorAll('*'); ca=cb.querySelectorAll('*'); n=Math.min(oa.length,ca.length);
   for(i=0;i<n;i++){
@@ -4506,26 +4506,25 @@ function snipDomStart(base,k,gen){
   rt=cb.querySelector('#root'); if(rt) rt.style.setProperty('background','transparent','important');
   ser=new XMLSerializer().serializeToString(cb).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'');
   svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+vw+'" height="'+vh+'"><foreignObject x="0" y="0" width="'+vw+'" height="'+vh+'">'+ser+'</foreignObject></svg>';
-  url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}));
+  sb=new Blob([svg],{type:'image/svg+xml;charset=utf-8'});   // read back as a data: address, since a blob: address taints the canvas it is drawn on and a data: one does not
   SNIP.domBusy=1; SNIP.domState='busy';
   SNIP.domP=new Promise(function(res){
     var img=new Image();
     function fin(ok){
       if(done) return; done=1;
       if(tm){ clearTimeout(tm); tm=0; }
-      try{ URL.revokeObjectURL(url); }catch(_r){}
       if(SNIP.gen===gen){ SNIP.domBusy=0; SNIP.domState=ok?'on':'failed'; }
       res(!!ok);
     }
     img.onload=function(){
       var ok=0, tc;
       if(done) return;
-      try{ tc=document.createElement('canvas'); tc.width=tc.height=1; tc.getContext('2d').drawImage(img,0,0,1,1); tc.toDataURL(); base.getContext('2d').drawImage(img,0,0,base.width,base.height); ok=1; }catch(_t){ window.__snipWhy="draw "+_t; }
+      try{ tc=document.createElement('canvas'); tc.width=tc.height=1; tc.getContext('2d').drawImage(img,0,0,1,1); tc.toDataURL(); base.getContext('2d').drawImage(img,0,0,base.width,base.height); ok=1; }catch(_t){}
       fin(ok);
     };
-    img.onerror=function(){ window.__snipWhy="onerror len "+svg.length; fin(0); };
+    img.onerror=function(){ fin(0); };
     tm=setTimeout(function(){ tm=0; fin(0); },6000);
-    try{ img.src=url; }catch(_s){ fin(0); }
+    try{ var fr=new FileReader(); fr.onload=function(){ try{ img.src=fr.result; }catch(_s){ fin(0); } }; fr.onerror=function(){ fin(0); }; fr.readAsDataURL(sb); }catch(_f){ fin(0); }
   });
 }
 function snipNote(b){
@@ -4541,7 +4540,7 @@ function snipUi(){
   bx=document.createElement('div'); bx.id='snipbox';
   bx.style.cssText='position:fixed;display:none;box-sizing:border-box;z-index:9501;border:2px solid var(--acc);box-shadow:0 0 0 100vmax rgba(0,0,0,.5);pointer-events:none';
   sz=document.createElement('div'); sz.id='snipsz'; sz.style.cssText=plate+'display:none;padding:2px 8px 1px;color:var(--tx-1);font-size:13px';
-  ht=document.createElement('div'); ht.id='sniphint'; ht.style.cssText=plate+'left:50%;top:14px;transform:translateX(-50%);padding:3px 12px 2px;color:var(--acc)';
+  ht=document.createElement('div'); ht.id='sniphint'; ht.style.cssText=plate+'left:8px;top:68px;padding:3px 12px 2px;color:var(--acc)';
   ht.textContent='snip: drag a box. esc cancels.';
   host.appendChild(ov); host.appendChild(bx); host.appendChild(sz); host.appendChild(ht);
   SNIP.ov=ov; SNIP.bx=bx; SNIP.sz=sz; SNIP.ht=ht;
@@ -4579,7 +4578,7 @@ function snipStart(){
   try{ base=snipBase(); }catch(_b){ return false; }
   SNIP.gen++; SNIP.base=base; SNIP.k=DPRH||1; SNIP.box=null; SNIP.d=null; SNIP.png=''; SNIP.ph='pick'; SNIP.acted=0; SNIP.eat=0; SNIP.said='';
   SNIP.domBusy=0; SNIP.domP=null; SNIP.domState=SNIP.dom?'':'off';
-  if(SNIP.dom){ try{ snipDomStart(base,SNIP.k,SNIP.gen); }catch(_d){ SNIP.domBusy=0; SNIP.domP=null; SNIP.domState='failed'; window.__snipWhy="start "+_d+" "+(_d&&_d.stack); } }
+  if(SNIP.dom){ try{ snipDomStart(base,SNIP.k,SNIP.gen); }catch(_d){ SNIP.domBusy=0; SNIP.domP=null; SNIP.domState='failed'; } }
   snipUi();
   SNIP.on=1;
   try{ syncPause(); }catch(_sp){}   // a raid stands still from this moment, through the one pause (devFreeze)
@@ -48951,7 +48950,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.06: Three new barrels join the red one: shock, toxic waste and dry ice. Each blast does its own thing, and a frozen crawler shatters. Check 31.06 fails on v31.05',
+  now:'v31.07: The how to play card says left stick and right stick in full. Check 31.07 fails on v31.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61783,7 +61782,10 @@ function arcadeAttBoard(pg){
 // vNN.xx, UI REDESIGN ui5q1y (his #50, the 4K attract pictures): the attract name, PRESS ANY BUTTON, the team strip and the RUN OVER
 // card size with the screen up to a 4K TV (their caps doubled: 168, 240, 76 and 92px), as the attract pages do since ui5q1u.
 // v29.93 (cw-partykeys), critic 46 (3 of 5): "keys are bare letters, Hold X in a teal ring is an explaining sentence". A key cell is key caps (a pair like LB / RB is two caps), and the ring is a glyph.
+// v28.xx (cw-sticks), the critic on 46 (3 of 5): "L STICK and R STICK are cryptic". The how to play keys say left stick and right stick in full.
+function arcadeKeyWord(s){ return String(s==null?'':s).replace(/^L STICK$/i,'LEFT STICK').replace(/^R STICK$/i,'RIGHT STICK'); }
 function arcadeAttKeys(cell,txt){
+  txt=arcadeKeyWord(txt);
   var s=String(txt||''), ring=/ IN A TEAL RING$/i.test(s), parts=s.replace(/ IN A TEAL RING$/i,'').split(' / '), i, k;
   cell.textContent='';
   for(i=0;i<parts.length;i++){ k=document.createElement('span'); k.className='apkc'; k.textContent=parts[i]; cell.appendChild(k); }

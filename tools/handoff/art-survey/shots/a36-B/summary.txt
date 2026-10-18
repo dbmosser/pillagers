@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  a36-B                                  staged       6.8s    | {"scene":"duo","zoom":1.15,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":918,"y":574,"w":39,"h":69,"fx":919,"fy":594},{"id":"mate","kind":"player","x":1001,"y":583,"w":39,"h":73,"fx":1001,"fy":599}]}
+== 4k : window 3872x2263, viewport 3840x2160
+  a36-B                                  staged       9.8s    | {"scene":"duo","zoom":2.2978703703703705,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1836,"y":1150,"w":77,"h":136,"fx":1837,"fy":1189},{"id":"mate","kind":"player","x":2002,"y":1166,"w":78,"h":145,"fx":2002,"fy":1198}]}

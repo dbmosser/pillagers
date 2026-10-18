@@ -1,0 +1,7 @@
+v31.08: the what is new card names polish pass 26
+
+The what is new card names polish pass 26.
+
+Check 31.08. Fails on v31.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

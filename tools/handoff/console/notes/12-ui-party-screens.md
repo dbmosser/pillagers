@@ -25,6 +25,14 @@ shots/12b-before and shots/12b-after (all 13 screens, 1080).
   (contradicts cw-partyopbd: ghost text showed through, so the solid void stays), a smaller dialog, a B key cap. Stuck: stop on 62.
 - 46 and 52/55 untouched this run (critic keeps flipping on the footer prompt; see Stuck). Items 2 and 3 remain.
 
+## Lane b run (10-19, 12d pictures)
+- v31.07 cw-sticks shipped (item 3 done). Critic: 46 = 3 same (asks for a got-it button again), 58 = 3 better, 47 = ? and 53 = 2.
+- 47 and 53: the staged picture is the live raid HUD, not a party card (53 "extracted bonus initials" shows mid-extract HUD).
+  Staging lives in ui-screens-js.json (not mine to edit); HUD belongs to task hud. Needs staging fix from owner/lane that owns shots.
+- 58 title: critic wants flat tx-1 title, no amber gradient; the wordmark colour is his art, left alone.
+- 55 already has 4... 3 equal stat columns, 56px score; item 2 is effectively done by earlier ships.
+- Remaining ask loop is the footer prompt contradiction (see Stuck). Nothing safe left to ship; stop.
+
 ## Next run could try (one ship each, none reverse a ruling)
 1. 62: hide "tonight: 0 runs" when the count is 0; focus ring only the lime bar (no white ring).
 2. 52/55: stats as 4 equal columns, 24px values / 16px labels; score line with a 16px "score" label over a 56px number.

@@ -1,4 +1,4 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  99-dbg                                 NOT STAGED   6.2s    | EXCEPTION Error: DBG blob taint | data-utf8 ok | data-b64 ok
-    at <anonymous>:1:3139
+  99-dbg                                 NOT STAGED   6.4s    | EXCEPTION Error: DBG string | http://localhost:8799/telemetry | http://127.0.0.1:9/blackhole | true | localhost
+    at <anonymous>:1:2299
     at async <anonymous>:1:21

@@ -1,0 +1,46 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  b1-red-closeup                         staged       7.6s    | barrel red at 426,3237
+  b2-red-blast                           staged       7.6s    | blast red
+  b3-shock-closeup                       staged       8.5s    | barrel shock at 399,3255
+  b4-shock-blast                         staged       8.1s    | blast shock
+  b5-acid-closeup                        staged       8.4s    | barrel acid at 1815,1307
+  b6-acid-blast                          staged       7.6s    | blast acid
+  b7-cryo-closeup                        staged       7.7s    | barrel cryo at 472,2334
+  b8-cryo-blast                          staged       8.3s    | blast cryo
+  b9-lineup-four-kinds                   staged       8.2s    | lineup
+  b10-lineup-lit                         staged       7.8s    | lineup lit
+  b11-acid-pool                          staged       8.6s    | pool, armour 73
+  b12-cryo-fog                           staged       7.9s    | fog, frozen true
+== 4k : window 3872x2263, viewport 3840x2160
+  b1-red-closeup                         staged       7.5s    | barrel red at 426,3237
+  b2-red-blast                           staged       7.8s    | blast red
+  b3-shock-closeup                       staged       8.1s    | barrel shock at 399,3255
+  b4-shock-blast                         staged       8.3s    | blast shock
+  b5-acid-closeup                        staged       7.9s    | barrel acid at 1815,1307
+  b6-acid-blast                          staged       7.7s    | blast acid
+  b7-cryo-closeup                        staged       8.2s    | barrel cryo at 472,2334
+  b8-cryo-blast                          staged       7.7s    | blast cryo
+  b9-lineup-four-kinds                   staged       7.9s    | lineup
+  b10-lineup-lit                         staged       7.3s    | lineup lit
+  b11-acid-pool                          staged       8.6s    | pool, armour 73
+  b12-cryo-fog                           staged       7.9s    | fog, frozen true
+== 1080 : window 1952x1183, viewport 1920x1080
+  b2-red-blast                           staged       8.3s    | blast red
+  b4-shock-blast                         staged       7.6s    | blast shock
+  b6-acid-blast                          staged       7.7s    | blast acid
+  b8-cryo-blast                          staged       7.6s    | blast cryo
+  b11-acid-pool                          staged       8.5s    | pool, armour 53
+  b12-cryo-fog                           staged       8.9s    | fog, frozen true
+== 4k : window 3872x2263, viewport 3840x2160
+  b2-red-blast                           staged       9.3s    | blast red
+  b4-shock-blast                         staged       8.6s    | blast shock
+  b6-acid-blast                          staged       9.8s    | blast acid
+  b8-cryo-blast                          staged       8.3s    | blast cryo
+  b11-acid-pool                          staged       8.7s    | pool, armour 54
+  b12-cryo-fog                           staged       8.2s    | fog, frozen true
+== 1080 : window 1952x1183, viewport 1920x1080
+  b4-shock-blast                         staged       7.4s    | blast shock crawler stun true frozen false hp 829
+  b6-acid-blast                          staged       8.0s    | blast acid crawler stun false frozen false hp 835
+  b8-cryo-blast                          staged       7.3s    | blast cryo crawler stun false frozen true hp 871
+  b11-acid-pool                          staged       8.5s    | pool, armour 59
+  b12-cryo-fog                           staged       8.5s    | fog, frozen true

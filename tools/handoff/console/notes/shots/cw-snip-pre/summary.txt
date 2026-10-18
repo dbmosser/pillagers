@@ -1,7 +1,7 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  90-snip-pick-raid                      staged       9.5s  
-  91-snip-panel-raid                     staged       9.0s  
-  92-snip-title-result                   NOT STAGED   7.4s    | expect failed: window.__ds==='on' -> false
-  93-snip-settings-result                NOT STAGED  10.9s    | expect failed: window.__ds==='on'&&U.on('#settingsmodal') -> false
-  94-snip-raid-result                    NOT STAGED   8.8s    | expect failed: window.__ds==='on' -> false
-  95-snip-save-result                    NOT STAGED   4.6s    | EXCEPTION SyntaxError: Invalid or unexpected token
+  92-snip-title-result                   staged       7.0s  
+  93-snip-settings-result                staged      10.6s  
+  94-snip-raid-result                    staged       8.3s  
+  95-snip-save-result                    NOT STAGED   8.0s    | EXCEPTION TypeError: Cannot read properties of undefined (reading 'b')
+    at <anonymous>:1:3200
+    at async <anonymous>:1:21
