@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.15 - Gun keys renumbered, Rocket class on key 0
+
+Co-op hunt while he was away. His order 2026-10-18: get rid of the marksman rifle, move everything past it down a number, and add a rocket launcher as 0. The Marksman class leaves the gun keys: sniper is 7, energy is 8, the Rocket class is key 0 and key 9 does nothing. Zoom to 100 moves to the numpad 0. A saved key table that holds the marksman class keeps its order, loses the marksman and gains the rocket.
+
+MEASURED. Check 29.15 passes, and fails on v29.14.
 ## v29.14 - No all-caps text outside the menus
 
 Co-op hunt while he was away. His hard rule (2026-10-18): nothing shown to the player is ever in all caps. The text watcher saw only #root, so the attract card, the REC mark and the fps box sat outside it, and tooltips and placeholders were never fixed. It now watches the whole page and fixes title, placeholder and aria-label text. The Taken stamp, the Need chips and the Player 2 tab title are written in sentence case.

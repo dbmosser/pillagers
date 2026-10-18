@@ -1,0 +1,7 @@
+v29.15: gun keys renumbered, rocket class on key 0
+
+Gun keys moved down one past the marksman: 7 sniper, 8 energy. Key 0 is set aside for the Rocket Launcher.
+
+Check 29.15. Fails on v29.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

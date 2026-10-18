@@ -2309,7 +2309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.14';
+var VER='29.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13673,7 +13673,7 @@ function pedBuy(ix){
   // bound, and the backpack grid keeps a belt-claimed copy off its cells (v8.78),
   // so the rifle he paid for was on the belt and not in the backpack he opened.
   // The line says which surface it is on, as the found-gun line does.
-  var _bk=0; if(G.hotAssign) for(var _bi in G.hotAssign) if(G.hotAssign[_bi]===st.k){ _bk=(+_bi)+1; break; }
+  var _bk=0; if(G.hotAssign) for(var _bi in G.hotAssign) if(G.hotAssign[_bi]===st.k){ _bk=slotKeyName(+_bi); break; }
   // v22.56 (R18): the purchase is two rows in the pickup stack, the item tagged where it went (SLOT 6, BACKPACK, or the rounds
   // it put in the reserve, v12.60) and a dim -$ row for the price, instead of a sentence in the middle of the screen.
   say(ITEMS[st.k].name,'pick',{item:st.k,tag:_pAmmo?('+'+(ITEMS[st.k].amt||0)+' ROUNDS'):(_bk?('SLOT '+_bk):'BACKPACK')});
@@ -15520,8 +15520,8 @@ function raidKey(code,repeat,ev){
   // moves: ENTER equips the selected bag gun to hand now, and the digits mean
   // exactly one thing everywhere in the game.
   if(G&&!G.over&&!repeat&&code.indexOf('Digit')===0){
-    var dn=parseInt(code.slice(5),10);
-    if(dn>=1&&dn<=9){
+    var dn=(code==='Digit0')?9:parseInt(code.slice(5),10);   // v28.xx (cw-gunkeys0): key 0 is the ninth gun key
+    if(dn>=1&&dn<=9&&code!=='Digit9'){
       // v26.02 (beltkeys), HIS ORDER 2026-10-13: "in each instance, the player should LEAVE THE GUN EQUIPPED and it should just instantly use the
       // item in the slot". Keys 1 to 4 select and draw guns as before. In a raid keys 5 to 9 are INSTANT keys: 5 and 6 throw the grenade on that
       // key, 7 and 8 use the heal on that key, 9 slots a plate, and the gun stays in his hands every time (beltInstant). They move neither the
@@ -15618,7 +15618,7 @@ function raidKey(code,repeat,ev){
   if(code==='NumpadAdd'){ setZoom(zoomTarget()*1.15); if(G&&!G.over) say('ZOOM '+Math.round(ZT*100)+'%','sys'); }   // v22.xx (R55): a system label in caps
   if(code==='NumpadSubtract'){ setZoom(zoomTarget()/1.15); if(G&&!G.over) say('ZOOM '+Math.round(ZT*100)+'%','sys'); }   // v22.xx (R55): a system label in caps
   if((code==='Minus'||code==='Equal')&&!repeat) hudSizeStep((code==='Equal')?1:-1);
-  if(code==='Digit0'||code==='Numpad0'){ setZoom(1); if(G&&!G.over) say('ZOOM 100%','sys'); }   // v22.xx (R55): a system label in caps
+  if(code==='Numpad0'){ setZoom(1);   /* v28.xx (cw-gunkeys0): the 0 key is the Rocket Launcher now, so zoom to 100 is the numpad 0 only */ if(G&&!G.over) say('ZOOM 100%','sys'); }   // v22.xx (R55): a system label in caps
 }
 // v9.95, HIS NOTE: one step of HUD size, the thing - and = do, so ctrl-wheel can
 // do exactly the same thing. dir is +1 for bigger, -1 for smaller.
@@ -16181,7 +16181,7 @@ window.addEventListener('mouseup',function(e){
         // uses for the extraction prompt, and it applies here for the same reason:
         // a gesture that silently does nothing teaches you the feature is missing.
         if(_si&&_siDerived){
-          say('SLOT '+(HC.i+1)+' TAKES GUNS ONLY');   // v22.43: the shooter voice   // v22.xx (R52): the slot word
+          say('SLOT '+slotKeyName(HC.i)+' TAKES GUNS ONLY');   // v22.43: the shooter voice   // v22.xx (R52): the slot word
           dropped=true; break;
         }
         // v25.xx (belt2), HIS ORDER 2026-10-13: a gun belongs on keys 1 to GUNKEYS; one dropped on a key past them is refused in words (v8.67 and v22.52 let it go anywhere).
@@ -17193,7 +17193,7 @@ var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['Ke
   // v26.xx (settings11), HIS ORDER 2026-10-14 ("make sure it covers every current action"): THE KEYS THAT WERE MISSING. H (tap to heal, hold for an armour plate, v25.xx holdhplate),
   // CAPS LOCK (auto-jog), the HUD size pair, the zoom pair and the zoom reset all work in the raid and were not on the list, so none could be moved and a bind onto one
   // did not swap. They are on it now. The keys that cannot move (1 to 9, P, TAB, ESC, BACKSPACE, the key left of 1, F11) are listed at the end, locked.
-  ['KeyH','heal (tap), armour plate (hold)'],['KeyG','air strike (when charged)'],['CapsLock','auto-jog'],['Equal','hud bigger'],['Minus','hud smaller'],['NumpadAdd','zoom in'],['NumpadSubtract','zoom out'],['Digit0','zoom to 100%']];
+  ['KeyH','heal (tap), armour plate (hold)'],['KeyG','air strike (when charged)'],['CapsLock','auto-jog'],['Equal','hud bigger'],['Minus','hud smaller'],['NumpadAdd','zoom in'],['NumpadSubtract','zoom out'],['Numpad0','zoom to 100%']];
 var KEYS={inv:null,waiting:null,built:0,inited:0,note:null};
 // v25.xx (keyremap), HIS ORDER 2026-10-13 ("add something in settings where the player can remap keys"): the version of the map (a map made
 // before the key swap named jobs that have moved, so a profile older than this starts on the defaults, once, at load), and the keys no action
@@ -17223,7 +17223,7 @@ function keysOf(logical){ var m=keysMap(); return (typeof m[logical]==='string')
 function keysBind(logical,physical){
   var m=keysMap(), k, other=null, old=keysOf(logical), i;
   if(typeof logical!=='string'||typeof physical!=='string'||!physical) return false;
-  if(KEYS_FIXED[physical]||/^Digit[1-9]$/.test(physical)){ KEYS.note={t:'clash',s:keyName(physical)+' KEEPS ITS OWN JOB. ESC, TAB, P, BACKSPACE, F9, F11, THE KEY LEFT OF 1 AND 1-9 CANNOT BE REBOUND.'}; return false; }   // v25.xx (keyremap): the pause key and its kin are reserved
+  if(KEYS_FIXED[physical]||/^Digit[0-8]$/.test(physical)){ KEYS.note={t:'clash',s:keyName(physical)+' KEEPS ITS OWN JOB. ESC, TAB, P, BACKSPACE, F9, F11, THE KEY LEFT OF 1 AND 1-9 CANNOT BE REBOUND.'}; return false; }   // v25.xx (keyremap): the pause key and its kin are reserved
   if(!P.keymap||typeof P.keymap!=='object') P.keymap={}; m=P.keymap;
   for(i=0;i<KEYS_ACTS.length;i++){ k=KEYS_ACTS[i][0]; if(k!==logical&&keysOf(k)===physical){ other=k; break; } }
   if(!other&&physical!==logical){ for(i=0;i<KEYS_ACTS.length;i++){ k=KEYS_ACTS[i][0]; if(k===physical&&k!==logical&&keysOf(k)===k){ other=k; break; } } }
@@ -17240,7 +17240,7 @@ function keysReset(){ if(P){ P.keymap={}; P.keymapV=KEYS_V; } KEYS.note={t:'set'
 // so every reader of keys, in the raid, the Undercroft and the menus, sees it as the key it stands for, and an unbound button keeps the
 // browser back and forward. The pad is never touched.
 var KEYS_SECT=[['MOVE',['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC','CapsLock']],['FIGHT',['KeyR','KeyQ','KeyV','KeyF','KeyH','KeyG']],
-  ['WORLD',['KeyE','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyO','AltLeft']],['PARTY',['KeyT','KeyZ','KeyN','Mouse1']],['VIEW',['Equal','Minus','NumpadAdd','NumpadSubtract','Digit0']]];
+  ['WORLD',['KeyE','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyO','AltLeft']],['PARTY',['KeyT','KeyZ','KeyN','Mouse1']],['VIEW',['Equal','Minus','NumpadAdd','NumpadSubtract','Numpad0']]];
 function keysActName(code){ var i; for(i=0;i<KEYS_ACTS.length;i++) if(KEYS_ACTS[i][0]===code) return String(KEYS_ACTS[i][1]).toUpperCase(); return String(code).toUpperCase(); }
 function keysRow1(a){
   var k=a[0], w=(KEYS.waiting===k), ch=(keysOf(k)!==k);
@@ -17937,7 +17937,7 @@ function emptyThrowCell(tk){
 function gunKeyLine(){
   var gc=gunCell();
   if(padOn()) return padB('['+pbn(4)+'] ['+pbn(5)+'] GUN');   // v13.52: no pad button reaches a digit; the bumpers walk the belt   // v23.xx (tr9fixm): a short detail, never an explaining sentence
-  return '['+keyLabel('Digit'+(gc+1),String(gc+1))+'] GUN';   // v23.xx (tr9fixm): a short detail, never an explaining sentence
+  return '['+keyLabel(slotKeyCode(gc),slotKeyName(gc))+'] GUN';   // v23.xx (tr9fixm): a short detail, never an explaining sentence
 }
 function doThrow(){
   var p=G.player;
@@ -19225,10 +19225,10 @@ function beltInfoCard(S,c){
   if(!k||!c) return null;
   it=ITEMS[k]; rk=dispR(k)||it.r||'common'; v=ival(k); n=(S.count|0);
   o={name:String(it.name).toUpperCase(), col:RCOL[rk]||HUDC.text, rar:ITEMRAR[rk]||'', held:'HELD '+n, rows:beltInfoRows(k),
-     val:(v>0)?('$'+v.toLocaleString()):'', keys:[[String(keyLabel('Digit'+(c.i+1),String(c.i+1))),'SELECT'],['FIRE','USE']]};
+     val:(v>0)?('$'+v.toLocaleString()):'', keys:[[String(keyLabel(slotKeyCode(c.i),slotKeyName(c.i))),'SELECT'],['FIRE','USE']]};
   if(!padOn()){   // v25.xx (belt6b): and the key of its class
     if(state!=='hub'&&(it.use==='throw'||it.use==='heal'||it.use==='stim'||it.use==='armor')){   // v26.02 (beltkeys): the digit acts at once, G and H act on the pick, U and J move it
-      var _hk=String(keyLabel('Digit'+(c.i+1),String(c.i+1))), _hh=String(keyLabel('KeyH','H'));
+      var _hk=String(keyLabel(slotKeyCode(c.i),slotKeyName(c.i))), _hh=String(keyLabel('KeyH','H'));
       if(it.use==='throw') o.keys=[[_hk,'THROW'],[String(keyLabel('KeyG','G')),'THROW CHOSEN'],[String(keyLabel('KeyU','U')),'NEXT']];
       else if(it.use==='heal') o.keys=[[_hk,'HEAL'],[_hh,'HEAL CHOSEN'],[String(keyLabel('KeyJ','J')),'NEXT']];
       else if(it.use==='stim') o.keys=[[_hk,'USE'],[_hh,'USE CHOSEN'],[String(keyLabel('KeyJ','J')),'NEXT']];
@@ -22715,8 +22715,8 @@ function grantLoot(ct,keys,delay0){
           var _swk=-1, _sws=hotbarSlots(), _swj;
           for(_swj=0;_swj<_sws.length&&_swk<0;_swj++) if(_sws[_swj]&&_sws[_swj].kind==='gun'&&!_sws[_swj].vacant&&!_sws[_swj].inHand&&_sws[_swj].icon===found.id) _swk=_swj;
           if(_swk<0) _swk=1;
-          _lootSub=(padOn()?padB(pbn(4)+' or '+pbn(5)+' to swap'):('Press '+keyLabel('Digit'+(_swk+1),String(_swk+1))+' to swap')).toUpperCase();  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the pickup line said LB or RB after the belt buttons moved; it names them as set
-          _ptags[l]='SLOT '+(_swk+1);   // v22.54 (R17): the row says the slot it took, and that slot is the key that swaps to it
+          _lootSub=(padOn()?padB(pbn(4)+' or '+pbn(5)+' to swap'):('Press '+keyLabel(slotKeyCode(_swk),slotKeyName(_swk))+' to swap')).toUpperCase();  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the pickup line said LB or RB after the belt buttons moved; it names them as set
+          _ptags[l]='SLOT '+slotKeyName(_swk);   // v22.54 (R17): the row says the slot it took, and that slot is the key that swaps to it
           if(found.qRank>=2) blip('pickGun');
         }
       }
@@ -23157,11 +23157,21 @@ function equipFromBag(ix,slot){
 // magazine come with it, up to the new magazine (what does not fit stays with the gun that goes to the backpack). This replaces the v25.xx (belt1)
 // rule that a tenth gun takes the key of the weakest. A drag on the bar still moves a gun to any key, for this raid only: the table is the default
 // and the plan on the profile is not written by a raid drag. The table is P.gunKeys when the stash set one (CAREER); DEMO always uses his table.
-var GUN_CLASSES=['pistol','smg','rifle','carbine','lmg','shotgun','marksman','sniper','energy'];
-var GUN_CLASS_OF={pistol:'pistol',magnum:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',dmr:'marksman',whisper:'marksman',sniper:'sniper',lance:'energy'};   // v26.39 (nostarters2): the four starter guns are in no table
+// v28.xx (cw-gunkeys0), HIS ORDER (2026-10-18): "get rid of the marksman rifle, move everything past it down a number, and then add a rocket launcher as '0'". The
+// Marksman class is off the keys: 7 sniper, 8 energy, and the Rocket Launcher class sits on key 0 (the ninth cell, after 8). Key 9 does nothing.
+var GUN_CLASSES=['pistol','smg','rifle','carbine','lmg','shotgun','sniper','energy','rocket'];
+function slotKeyCode(i){ return i===8?'Digit0':'Digit'+(i+1); }   // v28.xx (cw-gunkeys0): the ninth cell is key 0
+function slotKeyName(i){ return i===8?'0':String(i+1); }
+function gunKeysMigrate(a){   // a saved table that still holds the Marksman class loses it and gains the Rocket class, so no one's saved order is thrown away
+  if(!Array.isArray(a)||a.indexOf('marksman')<0) return a;
+  var o=a.filter(function(c){ return c!=='marksman'; });
+  if(o.indexOf('rocket')<0) o.push('rocket');
+  return o;
+}
+var GUN_CLASS_OF={pistol:'pistol',magnum:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',sniper:'sniper',lance:'energy'};   // v26.39 (nostarters2): the four starter guns are in no table
 function gunClassOf(gk){ var b=(typeof RV_BASE==='object'&&RV_BASE&&RV_BASE[gk])||gk; return Object.prototype.hasOwnProperty.call(GUN_CLASS_OF,b)?GUN_CLASS_OF[b]:''; }
 function gunKeyTable(){   // the class on each key, from the profile when it holds a whole table (nine classes, each once), else his table
-  var src=(typeof P==='object'&&P&&Array.isArray(P.gunKeys))?P.gunKeys:null, ok=!!src&&src.length===GUN_CLASSES.length, seen={}, i;
+  var src=(typeof P==='object'&&P&&Array.isArray(P.gunKeys))?gunKeysMigrate(P.gunKeys):null, ok=!!src&&src.length===GUN_CLASSES.length, seen={}, i;
   for(i=0;ok&&i<src.length;i++){ if(GUN_CLASSES.indexOf(src[i])<0||seen[src[i]]) ok=false; else seen[src[i]]=1; }
   return ok?src:GUN_CLASSES;
 }
@@ -23250,7 +23260,7 @@ function gunClassUpgrade(ct,key,itm,found){
   autoBelt(key,1,{found:found,dropped:!!(ct&&ct.dropped)});
   if(BELTDISP){ say(BELTDISP.name,'pick',{item:BELTDISP.item,tag:BELTDISP.tag}); BELTDISP=null; }
   if(found.qRank>=2) blip('pickGun');
-  return {tag:(BELTAT>=0)?('SLOT '+(BELTAT+1)):'BACKPACK',line:''};
+  return {tag:(BELTAT>=0)?('SLOT '+slotKeyName(BELTAT)):'BACKPACK',line:''};
 }
 var _gunKeyHint='';
 function gunKeysSettle(o){
@@ -23334,7 +23344,7 @@ function drawGun(ix){
 // the belt key index, -2 for the backpack (no free key), -1 for nowhere new. A quiet call (the loot grant) says nothing; the grant
 // writes beltTag() on the item's row in the pickup stack instead.
 var BELTAT=-1;
-function beltTag(){ return (BELTAT>=0)?('SLOT '+(BELTAT+1)):(BELTAT===-2?'BACKPACK':''); }
+function beltTag(){ return (BELTAT>=0)?('SLOT '+slotKeyName(BELTAT)):(BELTAT===-2?'BACKPACK':''); }
 // v25.xx (belt1), HIS ORDER 2026-10-13: "so player can only carry 4 guns max", and his decision (1 b): "swap with lowest gun that is not
 // actively being used, move lowest gun to inventory". GUN SLOTS FULL IS GONE. With keys 1 to GUNKEYS all showing a real gun, a gun that
 // arrives takes the place of the WEAKEST gun that is not in his hands (the stowed gun, or a backpack gun on a gun key), and that gun goes
@@ -25664,7 +25674,7 @@ if(!p.fired||p.wep.auto){
             // v22.43, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 3): the line said he put it
             // in your hands, and since v21.93 the item goes into the backpack (a gun onto a free gun key). It names where it went.
             var _rpKy=-1; for(var _rpa in (G.hotAssign||{})) if(G.hotAssign[_rpa]===_rpk){ _rpKy=+_rpa; break; }
-            say((ITEMS[_rpk].name+' received').toUpperCase(),'info',{sub:_rpKy>=0?('SLOT '+(_rpKy+1)):(ITEMS[_rpk].use==='throw'?'ON BELT':'IN BACKPACK')});   // v22.xx (R52): the slot word
+            say((ITEMS[_rpk].name+' received').toUpperCase(),'info',{sub:_rpKy>=0?('SLOT '+slotKeyName(_rpKy)):(ITEMS[_rpk].use==='throw'?'ON BELT':'IN BACKPACK')});   // v22.xx (R52): the slot word
             label(downRdr.x,downRdr.y-34,'+'+ITEMS[_rpk].name.toUpperCase(),'#ffc04a',0.35,false);
           }
         }
@@ -37309,7 +37319,7 @@ function drawBuzzFx(){
   // 6 shotgun, 7 marksman, 8 sniper, 9 lance; the Scav Pistol shape on 1, the Marksman Rifle on 7), drawn as one flat light grey silhouette at GHOST_A (about 27 percent), with
   // no rarity colour and no magazine bar, under its key number. Once he carries a gun of that class on the key (or drags one onto it for the raid) the key draws opaque exactly as
   // before; a key a gun was dragged off goes back to its ghost. The silhouette is the gun icon the belt already draws, filled flat (source-in), made once per gun and size.
-  var GHOST_A=0.27, GHOST_OF={pistol:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',marksman:'dmr',sniper:'sniper',energy:'lance'}, GHOSTSPR={};
+  var GHOST_A=0.27, GHOST_OF={pistol:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',sniper:'sniper',energy:'lance'}, GHOSTSPR={};
   function gunGhost(id,S){
     var e=null, k=id+'|'+Math.round(S), c=GHOSTSPR[k], t, x;
     try{ e=iconSprite(id,S); }catch(_gi){ e=null; }
@@ -37460,7 +37470,7 @@ function drawBuzzFx(){
       }
       ctx.globalAlpha=1;
       ctx.font=beltFS(bw,0.13); ctx.fillStyle='rgba(160,172,184,.8)';   // v18.71: grows with the slot
-      ctx.fillText(String(q+1),bx+LH(4),hy+Math.max(LH(11),Math.round(bw*0.13)+LH(3)));
+      ctx.fillText(slotKeyName(q),bx+LH(4),hy+Math.max(LH(11),Math.round(bw*0.13)+LH(3)));
       // A slot he arranged himself is marked, so an assigned bar can be told from
       // the default one at a glance.
       if(S.assigned&&!S.auto){   // v21.83: not on a gun pin, which the game set, not he
@@ -46978,7 +46988,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.14: Tooltips, placeholders and text outside the menus show in sentence case too. Check 29.14 fails on v29.13',
+  now:'v29.15: Gun keys moved down one past the marksman: 7 sniper, 8 energy. Key 0 is set aside for the Rocket Launcher. Check 29.15 fails on v29.14',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -48647,8 +48657,8 @@ function planPut(slot,key){
 // 1 to 9: drag a tile onto another key and the two classes trade) and WHEEL (which item sits at each of the eight ring places: drag a tile onto another place and the two trade). RESET puts
 // his table and his order back. They live on the profile (P.gunKeys, P.wheelOrder) and a CAREER raid reads them (gunKeyList for the class keys, wheelList for the ring); DEMO always uses
 // his table and his order. A table or an order that is not whole (a class or an item twice, or one missing) is not read: his own holds. Mouse first; the tiles are pad controls (padFocusables).
-var GUN_CLASS_NAME={pistol:'PISTOL',smg:'SMG',rifle:'RIFLE',carbine:'CARBINE',lmg:'LMG',shotgun:'SHOTGUN',marksman:'MARKSMAN',sniper:'SNIPER',energy:'ENERGY'};
-var GUN_CLASS_ICON={pistol:'gun_pistol',smg:'gun_smg',rifle:'gun_rifle',carbine:'gun_carbine',lmg:'gun_lmg',shotgun:'gun_shotgun',marksman:'gun_dmr',sniper:'gun_sniper',energy:'gun_lance'};
+var GUN_CLASS_NAME={pistol:'PISTOL',smg:'SMG',rifle:'RIFLE',carbine:'CARBINE',lmg:'LMG',shotgun:'SHOTGUN',sniper:'SNIPER',energy:'ENERGY',rocket:'ROCKET'};
+var GUN_CLASS_ICON={pistol:'gun_pistol',smg:'gun_smg',rifle:'gun_rifle',carbine:'gun_carbine',lmg:'gun_lmg',shotgun:'gun_shotgun',sniper:'gun_sniper',energy:'gun_lance',rocket:'gun_lance'};
 var WHEEL_NAME={medkit:'MEDKIT',smoke:'SMOKE',frag:'FRAG',trip:'TRIPWIRE',plate:'ARMOUR',decoy:'DECOY',bandage:'BANDAGE',stim:'STIM'};
 var WHEEL_AT=[[0,1],[0,2],[1,2],[2,2],[2,1],[2,0],[1,0],[0,0]];   // row and column of each ring place on the 3 by 3 plate, clockwise from the top
 function wheelOrderTable(){
@@ -48662,7 +48672,7 @@ function kitSetupRender(){
   if(!gg||!wg) return;
   gl=gunKeyTable().slice(); wl=wheelOrderTable().slice();
   h='';
-  for(i=0;i<gl.length;i++) h+='<div class="kst" data-gk="'+i+'" title="KEY '+(i+1)+' \u00b7 '+GUN_CLASS_NAME[gl[i]]+' \u00b7 DRAG ONTO ANOTHER KEY TO SWAP"><b>'+(i+1)+'</b>'+iconImgHTML(GUN_CLASS_ICON[gl[i]],30)+'<span>'+GUN_CLASS_NAME[gl[i]]+'</span></div>';
+  for(i=0;i<gl.length;i++) h+='<div class="kst" data-gk="'+i+'" title="KEY '+slotKeyName(i)+' \u00b7 '+GUN_CLASS_NAME[gl[i]]+' \u00b7 DRAG ONTO ANOTHER KEY TO SWAP"><b>'+slotKeyName(i)+'</b>'+iconImgHTML(GUN_CLASS_ICON[gl[i]],30)+'<span>'+GUN_CLASS_NAME[gl[i]]+'</span></div>';
   gg.innerHTML=h;
   for(i=0;i<wl.length;i++) cell[WHEEL_AT[i][0]*3+WHEEL_AT[i][1]]=i;
   h='';
@@ -58442,7 +58452,7 @@ function arcadeGunLoot(ct,key,itm,found){
     if(push) gunKeysSettle({deploy:1});
     if(T) T.gunsEquipped=(T.gunsEquipped||0)+1;
     k=keyOf('gun_'+found.id);
-    _lootSub=(padOn()?padB(pbn(4)+' or '+pbn(5)+' to swap'):('Press '+keyLabel('Digit'+((k<0?1:k)+1),String((k<0?1:k)+1))+' to swap')).toUpperCase();  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the pickup line said LB or RB after the belt buttons moved; it names them as set
+    _lootSub=(padOn()?padB(pbn(4)+' or '+pbn(5)+' to swap'):('Press '+keyLabel(slotKeyCode(k<0?1:k),slotKeyName(k<0?1:k))+' to swap')).toUpperCase();  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the pickup line said LB or RB after the belt buttons moved; it names them as set
     if(found.qRank>=2) blip('pickGun');
     return {tag:'STOWED',line:(found.name+' stowed').toUpperCase()};
   }
@@ -58456,7 +58466,7 @@ function arcadeGunLoot(ct,key,itm,found){
     gunKeysSettle({deploy:1});
     k=keyOf(key);
     if(found.qRank>=2) blip('pickGun');
-    return {tag:(k>=0?'KEY '+(k+1):'BACKPACK'),line:''};
+    return {tag:(k>=0?'KEY '+slotKeyName(k):'BACKPACK'),line:''};
   }
   if(ct&&ct.dropped) gunQTrim(gk);
   n=arcadeLoot(key);

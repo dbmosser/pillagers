@@ -42,3 +42,4 @@
 2026-10-18 0.5226 c-00a-wreckage-apierr
 2026-10-18 0.4676 b-00a-rocket-launcher-apierr
 2026-10-18 0.8143 c-00b-stash-ctrl-drag
+2026-10-18 1.9454 00-no-all-caps

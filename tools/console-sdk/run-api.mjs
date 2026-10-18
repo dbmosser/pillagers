@@ -31,7 +31,10 @@ const ALLOW_CMD = [
   new RegExp('^powershell -NoProfile -ExecutionPolicy Bypass -File ' + Sx + '/mk-cw-[A-Za-z0-9_-]+\\.ps1$'),
   /^powershell -NoProfile -ExecutionPolicy Bypass -File tools\/cdp\.ps1 -Start -Port 9346$/,
   /^git (status|log|diff|show)( [^"`$\\;&|<>]*)?$/,
-  /^bash tools\/handoff\/preflight\.sh [abc] cw-[A-Za-z0-9_-]+$/ ];   // 10-17: the gate without the lock, on the lane's own Chrome
+  /^bash tools\/handoff\/preflight\.sh [abc] cw-[A-Za-z0-9_-]+$/,   // 10-17: the gate without the lock, on the lane's own Chrome
+  // 10-18, his "the weakest part of the whole game is still UI and presentation": the helpers get eyes. uishots stages named
+  // screens on the current build and saves pictures that view_image shows the helper. Ports 9361-9363, one per lane.
+  /^powershell -NoProfile -ExecutionPolicy Bypass -File tools\/uishots\.ps1 -Screens [A-Za-z0-9,_-]+ -Out tools\/handoff\/console\/notes\/shots\/[A-Za-z0-9_-]+ -Res (1080|4k|1080,4k) -Port 936[123]( -NoLint)?$/ ];
 const cut = (s, n) => s.length > n ? s.slice(0, n) + '\n[cut at ' + n + ' chars]' : s;
 function readLines(p, off, lim) {
   const L = readFileSync(norm(p), 'utf8').split(/\r?\n/); const o = Math.max(1, off || 1), n = Math.min(lim || 200, 400);
@@ -57,6 +60,7 @@ const TOOLS = [
   { name: 'list_dir', description: 'List a folder.', input_schema: { type: 'object', properties: { path: { type: 'string' } }, required: ['path'] } },
   { name: 'write_file', description: 'Create or replace a file. Allowed only for S/mk-cw-*.ps1, tools/handoff/console/notes/**, tools/handoff/console/questions.md.', input_schema: { type: 'object', properties: { path: { type: 'string' }, content: { type: 'string' } }, required: ['path', 'content'] } },
   { name: 'edit_file', description: 'Replace one exact, unique piece of text in a file (the write paths plus tools/mkfixture.ps1).', input_schema: { type: 'object', properties: { path: { type: 'string' }, old_text: { type: 'string' }, new_text: { type: 'string' } }, required: ['path', 'old_text', 'new_text'] } },
+  { name: 'view_image', description: 'Look at a screenshot (jpg or png) under tools/handoff/console/notes/, tools/handoff/shots/ or tools/handoff/ui-refs/. A picture costs about as much as reading 150 lines, so look at the ones you need.', input_schema: { type: 'object', properties: { path: { type: 'string' } }, required: ['path'] } },
   { name: 'run', description: 'Run ONE allowed command exactly as listed in your rules (ship, fixq, genP, runchk, lock, unlock, clearstale, a mk-cw script, the cdp 9346 restart, read-only git). Anything else is refused.', input_schema: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } } ];
 function useTool(name, a) {
   try {
@@ -69,6 +73,11 @@ function useTool(name, a) {
       const t = readFileSync(norm(a.path), 'utf8'); const n = t.split(a.old_text).length - 1;
       if (n !== 1) return 'NOT CHANGED: old_text found ' + n + ' times (must be exactly once)';
       writeFileSync(norm(a.path), t.replace(a.old_text, () => a.new_text)); return 'edited'; }
+    if (name === 'view_image') { const x = low(a.path);
+      if (!['/tools/handoff/console/notes/', '/tools/handoff/shots/', '/tools/handoff/ui-refs/'].some(d => x.startsWith(RL + d)) || !/\.(jpe?g|png)$/.test(x))
+        return 'REFUSED: only jpg or png files in the notes, shots or ui-refs folders';
+      const buf = readFileSync(norm(a.path)); if (buf.length > 3.7e6) return 'TOO BIG: ' + buf.length + ' bytes; use the 1080 shot';
+      return [{ type: 'text', text: a.path }, { type: 'image', source: { type: 'base64', media_type: /png$/.test(x) ? 'image/png' : 'image/jpeg', data: buf.toString('base64') } }]; }
     if (name === 'run') { const c = String(a.command).trim().replace(/\\/g, '/');
       if (!ALLOW_CMD.some(re => re.test(c))) return 'REFUSED: not an allowed command. See the exact forms in your rules.';
       // 10-17 16:30: a helper took the lock with lock.sh, then ran fixq.sh without HELD=1, and fixq waited 46 minutes for the
@@ -84,7 +93,7 @@ function useTool(name, a) {
 }
 const out = { result: '', total_cost_usd: 0, terminal_reason: '', subtype: '' };
 let cost = 0, lastText = '', heldLock = false, lockAt = 0;
-const sys = [{ type: 'text', text: readFileSync(e.CW_RULES, 'utf8') + '\n\nS (the scratchpad) is ' + S.replace(/\\/g, '/') + '. Your tools: read_file, grep, list_dir, write_file, edit_file, run.', cache_control: { type: 'ephemeral' } }];
+const sys = [{ type: 'text', text: readFileSync(e.CW_RULES, 'utf8') + '\n\nS (the scratchpad) is ' + S.replace(/\\/g, '/') + '. Your tools: read_file, grep, list_dir, write_file, edit_file, view_image, run.', cache_control: { type: 'ephemeral' } }];
 const msgs = [{ role: 'user', content: [{ type: 'text', text: 'Your task id is ' + e.CW_TASK + '. Your lane is ' + (e.CW_LANE || 'a') + '. ' + readFileSync(e.CW_PROMPT_FILE, 'utf8') }] }];
 const headers = { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' };
 if (e.CW_WS) headers['anthropic-workspace-id'] = e.CW_WS;
@@ -92,10 +101,12 @@ if (e.CW_WS) headers['anthropic-workspace-id'] = e.CW_WS;
 // outputs pass TRIM characters, all but the newest KEEP are cleared (and the big file bodies the worker wrote). That costs one cache
 // rewrite of a smaller history, instead of reading a big one on every later turn.
 const TRIM = Number(e.CW_TRIM || 120000), KEEP = 8;
+// a picture counts as 20k characters, so old pictures are cleared like old outputs
+const blen = c => Array.isArray(c) ? c.reduce((s, x) => s + (x.type === 'image' ? 20000 : String(x.text || '').length), 0) : String(c).length;
 function trim() {
   const tr = []; for (const m of msgs) for (const b of m.content) if (b.type === 'tool_result') tr.push(b);
-  if (tr.reduce((s, b) => s + String(b.content).length, 0) < TRIM) return;
-  for (const b of tr.slice(0, -KEEP)) if (String(b.content).length > 300) b.content = '[older output cleared to save cost; run the tool again if you need it]';
+  if (tr.reduce((s, b) => s + blen(b.content), 0) < TRIM) return;
+  for (const b of tr.slice(0, -KEEP)) if (blen(b.content) > 300) b.content = '[older output cleared to save cost; run the tool again if you need it]';
   const tu = []; for (const m of msgs) if (m.role === 'assistant') for (const b of m.content) if (b.type === 'tool_use') tu.push(b);
   for (const b of tu.slice(0, -KEEP)) for (const k of ['content', 'new_text', 'old_text'])
     if (b.input && typeof b.input[k] === 'string' && b.input[k].length > 300) b.input[k] = '[cleared]';

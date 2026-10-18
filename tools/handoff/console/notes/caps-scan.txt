@@ -1,0 +1,557 @@
+4216	9.19	if(/EXTRACT CACHE/.test(tags[i])) bad.push('map '+mi+' still tags a cache "'+tags[i]+'"');
+4221	9.19	for(var j=0;j<tags.length;j++) if(/ELITE CACHE/.test(tags[j])) elite=true;
+5720	9.49	if(/^CURRENT PILLAGERS/.test(t)) head=t;
+5913	11.57	if(a.indexOf('LIGHTNING INCOMING')<0) bad.push('at 1.6 s the label reads "'+a+'"');
+5915	11.57	if(b.indexOf('LIGHTNING INCOMING')<0||b.indexOf('1S')<0) bad.push('at 0.3 s the label reads "'+b+'" and not LIGHTNING INCOMING 1S');
+6210	29.11	function capsWord(x){ var m, re=/(^|[^A-Za-z0-9'])([A-Z]{3,})(?![A-Za-z0-9'])/g; while((m=re.exec(x))){ w=m[2]; if(!NCKEEP[w]&&!/^[IVX]+$/.test(w)) return w; } return nul
+6609	29.00	if(!/^MIMIC/.test(String(c.name))) return 'the crawler out of the box is called '+c.name+', not MIMIC';
+6947	28.93	if(lines.indexOf('MIMIC')>=0||(g.shake||0)>=4) return 'the host window said MIMIC or shook (shake '+g.shake+') for a mimic player 2 opened 900 away';
+6951	28.93	if(lines.indexOf('MIMIC')<0) return 'player 2 window did not say MIMIC ('+r+'; said: '+lines.join(' | ')+')';
+7185	28.86	if(!/BAG 0\b/.test(t)) bad.push('on the floor the readout does not show BAG 0 ("'+t+'")');
+7445	28.77	if(said.indexOf('MACHINE ALERT')<0) return 'the alarm does not say MACHINE ALERT';
+7571	28.71	for(i=0;i<rows.length;i++){ var l=rows[i].querySelector('.lgl'); if(l&&l.textContent==='KILLS'){ var b=rows[i].querySelector('b'); kills=b?b.textContent:''; } }
+7669	28.67	if(tx.indexOf('KIA')<0||tx.indexOf('50%')<0) bad.push('the KIA ledger has no KIA -50% row');
+7688	28.67	if(!c||c.textContent.indexOf('KIA')<0||c.textContent.indexOf('50%')<0) bad.push('the RUN OVER card has no KIA -50% plate ('+(c?c.textContent.slice(0,60):'no card')+')');
+7782	28.64	if(lines.indexOf('STRONGHOLD CLEARED')>=0||g.flow.sh.sites[0].clear) bad.push('the takeover paid STRONGHOLD CLEARED for a garrison nobody fought (score '+ARCADE.mine+')')
+7783	28.64	if(lines.indexOf('GOLDEN ENEMY DOWN')>=0||hoards>0) bad.push('the takeover dropped '+hoards+' golden hoard for a golden enemy nobody killed');
+7885	28.60	if(says.indexOf('WARDEN ARMOUR')>=0) bad.push('player 2 is told WARDEN ARMOUR on the Overseer');
+8075	28.53	function frame(){ var cap=[]; proto.fillText=function(t){ if(String(t).indexOf('FINISH')>=0) cap.push(String(t)); return oF.apply(this,arguments); }; try{ render2D(0); dr
+9063	28.33	for(i=0;i<L.length;i++){ if(/^RAID SCORE$/.test(L[i])) hit++; if(/^CAREER SCORE$/.test(L[i])) old++; if(/^(\$1,234|1,234 SP)$/.test(L[i])) amt++; }
+9939	28.14	if(tx.indexOf('BEST KIT')<0||tx.indexOf('THIS RAID ONLY')<0) bad.push('ONE: the line under the row reads "'+tx.slice(0,80)+'"');
+9941	28.14	if(document.getElementById('sectorkit').textContent.indexOf('THIS RAID ONLY')>=0) bad.push('ONE: MY LOADOUT says THIS RAID ONLY');
+10116	28.11	if(said.join('~').indexOf('CONTRACT ITEM NEARBY|GOLD GLOW MARKS THE BOX')<0) bad.push('ONE: no hint with a contract box 20 metres off ('+said.join('~')+')');
+10144	28.11	if(rec.indexOf('NEEDED \u00b7 CONTRACT')<0) bad.push('FOUR: the backpack name line does not say NEEDED . CONTRACT');
+10148	28.11	if(rec.indexOf('NEEDED \u00b7 CONTRACT')>=0) bad.push('FOUR: the backpack says NEEDED with nothing needed');
+10287	28.08	if(b.textContent!=='LEADERBOARD') bad.push('the button reads "'+b.textContent+'"');
+10293	28.08	if(tx.indexOf('CAREER LEADERBOARD')<0||tx.indexOf('2 RUNS')<0||tx.indexOf('KIA')<0||tx.indexOf('EXTRACTED')<0||(tx.indexOf('$900')<0&&tx.indexOf('900 SP')<0)) bad.push('t
+10428	28.05	if(bd.textContent.indexOf('RANK #1 OF 1')<0) bad.push('the readout is not RANK #1 OF 1 ('+bd.textContent.slice(0,60)+')');
+10429	28.05	if(bd.textContent.indexOf('NEW PERSONAL BEST')<0) bad.push('a number one has no NEW PERSONAL BEST plate');
+10582	28.03	if(lg.textContent.indexOf('OBJECTIVES')<0||lg.textContent.indexOf('COMBAT')<0) bad.push('the ledger rows are not grouped COMBAT and OBJECTIVES');
+10583	28.03	if(/items? secured for|You extracted with|ACHIEVEMENT:|CAREER SCORE/.test(tx)) bad.push('a sentence the ledger replaces is still on the card');
+10610	28.03	if(lg.textContent.indexOf('LOST')<0) bad.push('the KIA ledger never says LOST');
+10766	27.98	if(tx.indexOf('OUTCOME')<0||tx.indexOf('SECTOR')<0||tx.indexOf('DATE')<0||tx.indexOf('KIA')<0) bad.push('the columns or the KIA word are missing');
+10769	27.98	if(!pg||!pg.querySelector('.lbpb')||pg.querySelector('.lbpb').textContent!=='NEW PERSONAL BEST') bad.push('no NEW PERSONAL BEST plate on a number one');
+11023	27.93	if(String(L.children[0].textContent).toUpperCase().indexOf('ALPHA')<0) bad.push('the first note is not the alpha line ('+L.children[0].textContent.slice(0,40)+')');
+11177	27.88	for(i=0;i<WHATSNEW.length;i++) if(/^TWO PLAYER FLOW/.test(WHATSNEW[i])) line=WHATSNEW[i];
+12003	27.68	if(!zb||String(zb.textContent).trim()!=='CLOSE') return 'SKIP: the MINIMAP ZOOM row does not read CLOSE here';
+12307	27.56	proto.fillText=function(t){ if(String(t).indexOf('NEW IN v')===0) said=true; return oft.apply(this,arguments); };
+12441	27.51	a=g.alert; if(!a||String(a.m).indexOf('NOTORIETY')!==0) bad.push('a notoriety rise is not an alert in the top lane');
+12443	27.51	F=g.fd; ln=null; if(F) for(i=0;i<F.lines.length;i++) if(F.lines[i].txt.indexOf('NOTORIETY')===0) ln=F.lines[i];
+12452	27.51	F=g.fd; if(F) for(i=0;i<F.lines.length;i++) if(F.lines[i].txt.indexOf('DROPPING IN')===0) bad.push('the drop-in count is written into the feed');
+12497	27.49	seen=tr.filter(function(t){ return /^PHASE /.test(t.t); }).map(function(t){ return t.t; });
+12543	27.47	n=0; for(i=0;i<lines.length;i++) if(/^GOLDEN ENEMY\|/.test(lines[i])) n++;
+12668	27.46	if(!lines.some(function(q){ return /^GATE BREACHED/.test(q); })) bad.push('SIX: player 2 was not told GATE BREACHED');
+12915	27.42	if(g.fd&&g.fd.lines.some(function(l){ return l.txt.indexOf('RUN GOALS')===0; })) bad.push('a RUN GOALS callout is still said at the start of the raid');
+13487	27.27	if(!lines.some(function(m){ return /^GOAL DONE/.test(m); })) bad.push('TWO: player 2 was not told GOAL DONE ('+lines.join(' / ')+')');
+13512	27.27	else if(!RSTAT.lines.some(function(m){ return /RUN GOAL/.test(m); })) bad.push('SIX: the raid status shows no run goal ('+RSTAT.lines.join(' / ').slice(0,200)+')');
+13636	27.24	if(F.lines[F.lines.length-1].txt.indexOf('FILL 49')!==0) bad.push('the newest line is not at the end');
+13641	27.24	if(R.rows.length&&R.rows[0].t.indexOf('FILL 49')!==0) bad.push('the newest line is not the bottom line');
+13804	27.21	n=labs.filter(function(s){ return s.indexOf('ALL')===0; }).length;
+13806	27.21	if(labs.join('|').indexOf('MEDICAL')>=0) bad.push('ONE: a MEDICAL tab is still there');
+13814	27.21	tabs.forEach(function(e){ if(e.textContent.indexOf('VALUABLES')===0) valN=numOf(e); if(e.textContent.indexOf('LOCKED')===0) lockN=numOf(e); });
+13824	27.21	if(on.length!==1||on[0].textContent.indexOf('VALUABLES')!==0) bad.push('THREE: '+on.length+' tabs on after VALUABLES');
+13830	27.21	if(on.length!==1||on[0].textContent.indexOf('LOCKED')!==0) bad.push('THREE: '+on.length+' tabs on after LOCKED');
+13885	27.20	if(dets[2].indexOf('2 GUNS')<0||dets[3].indexOf('3 GUNS')<0) bad.push('ONE: the details read '+dets.join('|'));
+13896	27.20	if(tx.indexOf('RANDOM KIT')<0) bad.push('TWO: the line under the row does not name RANDOM KIT ('+tx.slice(0,60)+')');
+13932	27.20	if(document.getElementById('askrand').textContent.trim()!=='RANDOM KIT'||document.getElementById('asktop').textContent.trim()!=='BEST KIT') bad.push('SIX: the party card 
+13933	27.20	if(am.textContent.indexOf('RANDOM FROM STASH')>=0||am.textContent.indexOf('TOP GEAR')>=0) bad.push('SIX: the old names are still on the card');
+13981	27.19	if(!lines.some(function(m){ return /^AIR STRIKE READY/.test(m); })) bad.push('TWO: player 2 was not told AIR STRIKE READY');
+13992	27.19	if(!lines.some(function(m){ return /^AIR STRIKE INBOUND/.test(m); })) bad.push('THREE: the host was not told AIR STRIKE INBOUND');
+14007	27.19	if(!lines.some(function(m){ return /^AIR STRIKE INBOUND/.test(m); })) bad.push('FOUR: player 2 was not told AIR STRIKE INBOUND');
+14088	27.18	if(!lines.some(function(m){ return /^GOLDEN ENEMY DOWN/.test(m); })) bad.push('THREE: player 2 was not told GOLDEN ENEMY DOWN ('+lines.join(' / ')+')');
+14310	27.12	if(!lines.some(function(m){ return /^GATE BREACHED/.test(m); })) bad.push('THREE: player 2 was not told GATE BREACHED ('+lines.join(' / ')+')');
+14316	27.12	if(!lines.some(function(m){ return /^STRONGHOLD CLEARED/.test(m); })) bad.push('FOUR: player 2 was not told STRONGHOLD CLEARED ('+lines.join(' / ')+')');
+14429	27.09	if(!lines.some(function(m){ return /^SEALED IN/.test(m); })) bad.push('ONE: player 2 was not told SEALED IN ('+lines.join(' / ')+')');
+14455	27.09	if(!lines.some(function(m){ return /^DOORS OPEN/.test(m); })) bad.push('THREE: player 2 was not told DOORS OPEN ('+lines.join(' / ')+')');
+14511	27.08	if(tot.indexOf('HAUL')!==0||tot.indexOf('$')<0) bad.push('TWO: the HAUL line reads "'+tot+'"');
+14831	27.03	for(i=0;i<sold.length;i++) if(sold[i].textContent.indexOf('SOLD OUT')<0){ bad.push('FOUR: a sold-out cell does not say SOLD OUT'); break; }
+14897	27.02	if(!hasChips){ txt=Array.prototype.map.call(chips,function(c){ return c.textContent; }).join('|'); if(txt.indexOf('VALUABLES')<0||txt.indexOf('LOCKED')<0) bad.push('FIVE:
+14975	27.01	if(!t||t.textContent.indexOf('TROPHIES')<0) bad.push('FOUR: no TROPHIES button on the stash');
+14984	27.01	for(i=0;i<no.length;i++) if(no[i].textContent.indexOf('LOCKED')<0){ bad.push('FOUR: a dark plaque does not say LOCKED'); break; }
+15179	26.97	for(i=0;i<no.length;i++){ t=no[i].textContent; if(t.indexOf('NOT FOUND')<0) bad.push('THREE: an unfound tile does not say NOT FOUND'); if(t.indexOf(WEAPONS[no[i].getAttri
+15180	26.97	if(tiles.length&&!/COMMON|UNCOMMON|RARE|ELITE|GOLD/.test(tiles[tiles.length-1].textContent)) bad.push('THREE: a tile does not carry its rarity');
+15184	26.97	if(!t||t.textContent.indexOf('ARMORY')<0) bad.push('FOUR: no ARMORY button on the stash');
+15711	26.90	if(!/NEW PARTY/.test(op.textContent)) bad.push('the operator menu has no NEW PARTY');
+15712	26.90	if(!/EXIT DEMO/.test(op.textContent)) bad.push('the operator menu has no EXIT DEMO');
+17901	26.54	b=[].filter.call(host.querySelectorAll('.row b'),function(x){ return x.textContent==='KID MODE'; })[0];
+17907	26.54	if(keysListBody().indexOf('LEFT OF 1')<0) bad.push('FOUR: the Superhot key is not named LEFT OF 1');
+17940	26.53	if(el.textContent!=='CHANGE PAD BUTTONS') bad.push('ONE: the button reads '+el.textContent);
+17949	26.53	if(h.indexOf('MOVE')<0||h.indexOf('FIGHT')<0||h.indexOf('GEAR')<0||h.indexOf('L STICK')<0) bad.push('ONE: the pad window lacks its sections and locked sticks');
+17977	26.53	if(!/PRESS A BUTTON/.test((document.querySelector('#keyslist .keybtn[data-k="5"]')||{}).textContent||'')) bad.push('FIVE: the row does not read PRESS A BUTTON');
+18020	26.52	if(/class="keysec">OTHER</.test(h)) bad.push('ONE: a key is left in an OTHER heap');
+18022	26.52	if(h.indexOf('1 - 9')<0||h.indexOf('keyfixed')<0||h.indexOf('BACKSPACE')<0) bad.push('ONE: the locked keys are not listed');
+18397	26.46	else if(box.textContent!=='60 FPS') bad.push('FOUR: sixty frames a second read '+box.textContent);
+18399	26.46	if(box&&box.textContent!=='30 FPS') bad.push('FOUR: thirty frames a second read '+box.textContent);
+18817	26.37	a=tile('[data-gk',7); if(!a||!/SNIPER/.test(a.textContent||'')) bad.push('ONE: key 8 is not the Sniper tile ('+(a&&a.textContent)+')');
+18818	26.37	a=tile('[data-wh',0); if(!a||!/MEDKIT/.test(a.textContent||'')) bad.push('ONE: the top place is not the Medkit tile ('+(a&&a.textContent)+')');
+18826	26.37	b=tile('[data-gk',1); if(!b||!/SNIPER/.test(b.textContent||'')) bad.push('TWO: key 2 is not drawn as the Sniper after the swap');
+18854	26.37	a=tile('[data-gk',7); if(!a||!/SNIPER/.test(a.textContent||'')) bad.push('FIVE: key 8 is not the Sniper tile again after RESET');
+19376	26.30	if(rec.indexOf('RARE')<0) bad.push('the blue Compact SMG card does not say RARE ('+txt.slice(0,100)+')');
+19377	26.30	if(rec.indexOf('UPGRADE')<0) bad.push('the blue Compact SMG card against the green one does not say UPGRADE');
+19378	26.30	if(rec.indexOf('VS COMPACT SMG UNCOMMON')<0) bad.push('the card does not say which rarity the same model is against ('+txt.slice(0,160)+')');
+19381	26.30	if(a===null||a.indexOf('RARE')<0||a.indexOf('+25%')<0) bad.push('the damage row of the blue Compact SMG hover does not say its rarity and what it adds ('+a+')');
+19428	26.29	if(txt.indexOf('HEALS TO 85')<0) bad.push('ONE: the picked bandage showed no HEALS TO 85 ('+txt.filter(function(s){ return /HEAL|COOK|THROW/.test(s); }).join('|')+')');
+19545	26.27	for(i=0;i<['frag','smoke','bandage','medkit','plate','stim'].length;i++){ k=['frag','smoke','bandage','medkit','plate','stim'][i]; pl=beltDropRefusal(k,2); if(!pl||!/WHEE
+19753	26.25	if(said.indexOf('GUN UPGRADED')<0) bad.push('no GUN UPGRADED line');
+19758	26.25	if(g.forgeUI||said.indexOf('MAX TIER')<0) bad.push('a MK III gun did not say MAX TIER ('+JSON.stringify(said.slice(0,3))+')');
+19761	26.25	if(g.forgeUI||(said.indexOf('NEED $6,000')<0&&said.indexOf('NEED 6,000 SP')<0)) bad.push('5000 for a MK III did not say NEED $6,000 ('+JSON.stringify(said.slice(0,3))+')'
+20164	26.21	if(said.indexOf('NEED $2,500')<0&&said.indexOf('NEED 2,500 SP')<0) bad.push('too little score said '+JSON.stringify(said.slice(0,4))+' not NEED $2,500');
+20168	26.21	if(g.forgeUI||said.indexOf('NO GUN IN HAND')<0) bad.push('fists did not say NO GUN IN HAND ('+JSON.stringify(said.slice(0,3))+')');
+20183	26.21	if(said.indexOf('GUN UPGRADED')<0) bad.push('no GUN UPGRADED line ('+JSON.stringify(said.slice(0,5))+')');
+20409	26.17	if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
+20578	26.12	function frameLines(){ ev=[]; ctx.fillText=function(t){ ev.push(String(t)); return oFT.apply(this,arguments); }; try{ __frame(0.016); } finally { unspy(); } return ev.fil
+20594	26.12	nOut=frameLines().filter(function(t){ return t.indexOf('EXTRACTION')===0; }).length;
+20641	26.10	else if(b.textContent.trim()!=='CLOSE') bad.push('the way out of the feedback window says '+JSON.stringify(b.textContent.trim())+', not CLOSE');
+20895	26.04	if(!said.some(function(t){ return t.indexOf('RECOVERING')>=0; })) bad.push('crouched and still, seven seconds in, the HUD does not say RECOVERING');
+21263	25.97	r=cardTexts(4); if(r.indexOf('THROW')<0) bad.push('THREE: the Frag card has no THROW key row ('+r.join('|')+')');
+21264	25.97	r=cardTexts(6); if(r.indexOf('HEAL')<0) bad.push('THREE: the Bandage card has no HEAL key row ('+r.join('|')+')');
+21265	25.97	r=cardTexts(8); if(r.indexOf('PLATE')<0) bad.push('THREE: the plate card has no PLATE key row ('+r.join('|')+')');
+21353	25.95	else if(!/BACKPACK/.test(String(line(/^NO HEAL ON BELT$/).o.sub||''))) bad.push('THREE: NO HEAL ON BELT has '+JSON.stringify(line(/^NO HEAL ON BELT$/).o.sub)+' under it, 
+21401	25.94	if(!said.some(function(m){ return /^NO THROWABLE/.test(m); })) bad.push('FIVE: U with no grenade on a key said '+JSON.stringify(said));
+21772	25.87	if(!/TO SLOT 3$/.test(String(r||''))) bad.push('FOUR: the call returned '+JSON.stringify(r)+', not a TO SLOT 3 headline');
+21779	25.87	if(!/TO BACKPACK$/.test(String(r||''))) bad.push('FIVE: a tied find returned '+JSON.stringify(r)+', not a TO BACKPACK headline');
+22502	25.71	if(note().indexOf('SWAPPED')<0||note().indexOf('CLASH')<0) bad.push('the clash was not shown ('+note()+')');
+22523	25.71	if(b){ b.click(); if(KEYS.waiting!=='KeyE') bad.push('REBIND did not wait for a key'); bk=el('#keyslist .keybtn[data-k="KeyE"]'); if(!bk||bk.textContent.indexOf('PRESS A 
+22742	25.66	for(i=0;i<keep.length;i++){ if(/^\d+:\d\d$/.test(keep[i].s)) hasClk=true; if(/^EXTRACT/.test(keep[i].s)) hasCmp=true; if(/PILLAGER SPOTTED|THE COLD MILE|RADIO CHECK/.test
+23177	25.58	if(!el||String(el).indexOf('CRYO')!==0) bad.push('the rifle hover has no ELEMENT CRYO row ('+el+')');
+23229	25.57	if(!p.wep||p.wep.id!=='rifle'||p.wep.el!=='cryo'||p.wep.fk!==2||String(p.wep.name).indexOf('MK III')<0) bad.push('the next deploy came up with '+(p.wep&&p.wep.name)+' el 
+23393	25.53	if(m.indexOf('SCORE'+' LOST')<0&&!(m.indexOf('RAID'+' SCORE')>=0&&m.indexOf('LOST')>=0)) bad.push('the KIA card does not read SCORE LOST or a RAID SCORE with the credits 
+23625	25.50	var sk=bad.filter(function(b){ return b.indexOf('SKIP')===0; });
+23700	25.49	var sk=bad.filter(function(b){ return b.indexOf('SKIP')===0; });
+24297	25.35	if(a.indexOf('NEED')<0) bad.push('GAMBLE out of reach has no reason chip ('+a+')');
+24300	25.35	if(lb&&lb.disabled&&(getComputedStyle(lb,'::after').content||'').indexOf('NEED')<0) bad.push('the offer BUY out of reach has no reason chip');
+24303	25.35	if(a.indexOf('NEED')>=0) bad.push('GAMBLE that can be paid still shows a chip');
+25347	25.13	if(txt.indexOf('SCORE')<0||!txt.some(function(s){ return s.indexOf('150')>=0; })) bad.push('the clock spot does not read SCORE and 150 in a CAREER raid ('+txt.join(' | ')
+25615	25.07	if(asked.indexOf('DOWN')>=0) bad.push('going down still asks for the spoken DOWN bark');
+26168	24.92	if(txt.indexOf('MEDICAL')>=0) bad.push('the KIA card still says he died carrying medical he never used: '+txt.slice(0,160));
+26169	24.92	if(txt.indexOf('KILLED BY')<0) bad.push('the KIA card lost KILLED BY: '+txt.slice(0,160));
+26170	24.92	if(txt.indexOf('WITH ')<0) bad.push('the KIA card lost WITH (the weapon): '+txt.slice(0,160));
+26171	24.92	if(txt.indexOf('FROM EXTRACTION')<0) bad.push('the KIA card lost the distance to extraction: '+txt.slice(0,160));
+26172	24.92	if(txt.indexOf('IN CONTACT')<0) bad.push('the KIA card lost IN CONTACT: '+txt.slice(0,160));
+26272	24.90	if(oc&&oc.style.display!=='none'&&(oc.textContent||'').indexOf('EXTRACTED'+' x2')<0) bad.push('the RUN OVER card does not read EXTRACTED x2 ('+String(oc.textContent).slic
+26400	24.85	if(lw.some(function(s){ return s.indexOf('OVERSEER')>=0||s.indexOf(HG)>=0; })) bad.push('a plain warden seeing you says '+JSON.stringify(lw));
+26586	24.77	if(tx.indexOf('BEST '+'STREAK')<0||tx.indexOf('6 KILLS')<0||tx.indexOf('P2')<0) bad.push('BEST STREAK is not the 6 of player 2 ('+tx+')');
+26804	24.69	if(rows.indexOf('KEYCARD DROPPED')<0) bad.push('no KEYCARD DROPPED callout ('+rows.join(' | ')+')');
+27172	24.57	if(asked.indexOf('RELOADING')<0) bad.push('a reload does not ask for the RELOADING bark ('+asked.join(',')+')');
+27173	24.57	if(asked.indexOf('NOAMMO')<0) bad.push('a dry gun does not ask for the OUT OF AMMO bark ('+asked.join(',')+')');
+27360	24.50	if(String(got[0].t).indexOf('ZQX NOTE 4242')<0) bad.push('the saved text does not carry the typed note');
+27361	24.50	if(String(got[0].t).indexOf('VERSION')<0) bad.push('the saved text does not name the version');
+27970	24.30	if(!/SCORE/.test((q('aos')||{}).textContent||'')) bad.push('the score line lost its label ('+(q('aos')||{}).textContent+')');
+28073	24.27	if(fills.indexOf('[E] SEARCH')<0) bad.push('the whole line is no longer filled once ('+JSON.stringify(fills).slice(0,100)+')');
+28103	24.26	if(String(b.textContent).indexOf('PRESS '+'AGAIN')<0) bad.push('the first press of END RUN reads '+b.textContent);
+28105	24.26	if(String(b.textContent)!=='END RUN') bad.push('a reopened pause box still shows END RUN armed ('+b.textContent+')');
+28112	24.26	if(String(b.textContent)!=='END RUN') bad.push('END RUN still reads '+b.textContent+' after the run ended');
+28939	24.04	if(asked.indexOf('TWOMIN')<0) bad.push('two minutes left is not called ('+asked.join(',')+')');
+28940	24.04	if(asked.indexOf('ONEMIN')<0) bad.push('one minute left is not called ('+asked.join(',')+')');
+28941	24.04	if(typeof arcadeHiSay==='function'&&asked.indexOf('HISCORE')<0) bad.push('NEW HIGH SCORE is not called ('+asked.join(',')+')');
+29539	23.89	if(/^(Barlow|Barlow Condensed|IBM Plex Mono)$/.test(fam)&&src.indexOf('data:font/woff2')>=0) fams[fam+' '+r.style.getPropertyValue('font-weight')]=1; } } }
+29596	23.87	else if(man.indexOf('SENTRY')<0||man.indexOf('-60')<0) bad.push('DAMAGE TAKEN does not total the sentry at 60: '+man.slice(0,160));
+29732	23.83	else if(b.textContent!=='HIGH') bad.push('the LIGHTING button reads '+b.textContent+' on a fresh profile, not HIGH');
+29735	23.83	else if(b.textContent!=='STANDARD') bad.push('the HUD SIZE button reads '+b.textContent+' on a fresh profile, not STANDARD');
+30741	23.55	if(!rows.some(function(r){ return r[0]==='LOOT'&&r[1].indexOf('HOLD ')===0&&r[2].indexOf('HOLD ')===0; })) bad.push('the controls card has no LOOT row');
+30754	23.54	if(String(row.textContent).trim()!=='1 PLAYER ARCADE'+' DEMO') bad.push('the 1 player arcade row reads '+row.textContent);
+30791	23.54	for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) (\$[\d,]+|[\d,]+ SP|[\d,]+)$/.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split:'+seen[i]); break; }
+31308	23.46	if(rows[6][2].indexOf('D-DOWN')<0) bad.push('the ITEMS row pad label is '+rows[6][2]); }
+31533	23.44	if(el('resumebtn')&&el('resumebtn').textContent==='RESUME') bad.push('a normal pause box reads RESUME');
+31613	23.42	if(rows&&rows[7]&&rows[7][1].indexOf('HOLD ')!==0) bad.push('the EXTRACT keyboard label is '+rows[7][1]);
+31615	23.42	if(!pr[7]||pr[7][2].indexOf(' IN A TEAL RING')<0) bad.push('on a PlayStation pad the EXTRACT pad label reads '+(pr[7]&&pr[7][2])); }
+31618	23.42	if(txt.indexOf(nSw)<0||txt.indexOf('ITEMS')<0) bad.push('the HOW TO PLAY page lacks SWITCH GUN or ITEMS');
+31692	23.41	if(tx.indexOf('INITIALS')<0) bad.push('no initials card on the attract ('+tx+')');
+31703	23.41	if(card().indexOf('BZA')<0) bad.push('the card does not show the letters ('+card()+')');
+31719	23.41	if(tx.indexOf('RUN '+'OVER')<0||tx.indexOf('INITIALS')<0) bad.push('the RUN OVER card has no initials card ('+tx+')');
+31730	23.41	if(said.join(',').indexOf('NEW HIGH')>=0) bad.push('NEW HIGH SCORE under tonights best');
+31745	23.41	if(card().indexOf('QRS')<0) bad.push('player 2 does not show the card ('+card()+')');
+31802	23.40	if(!ap||ap.textContent!=='PRESS ANY '+'BUTTON') bad.push('the host attract reads '+(ap?ap.textContent:'nothing'));
+31805	23.40	if(typeof arcadeHallow==='function'){ if(!on(bo)||bo.textContent!=='HAPPY '+'HALLOWEEN') bad.push('no HAPPY HALLOWEEN banner on the attract'); }
+31806	23.40	else if(String(d.textContent||'').toUpperCase().indexOf('HALLO'+'WEEN')>=0) bad.push('the attract still says HALLO'+'WEEN after his answer 22 removed it');
+31811	23.40	if(!on(pg)||tx.indexOf('TONIGHT')<0||tx.indexOf('BEST')<0) bad.push('the board page is not shown ('+tx+')');
+31814	23.40	if(!on(pg)||tx.indexOf('HOW TO '+'PLAY')<0||tx.indexOf('KEYBOARD')<0||tx.indexOf('CONTROLLER')<0||tx.indexOf('MOVE')<0) bad.push('the HOW TO PLAY page is not shown ('+tx+
+31831	23.40	if(!ap||ap.textContent.indexOf('PLAYER 2: PRESS'+' A')!==0) bad.push('the player 2 attract reads '+(ap?ap.textContent:'nothing'));   /* retargeted (present: his answer 17
+31832	23.40	if(!on(sp)||sp.textContent.indexOf('JOIN YOUR '+'TEAM')<0||sp.textContent.indexOf('2,500')<0) bad.push('player 2 out of a live run has no JOIN YOUR TEAM strip ('+(sp?sp.t
+31834	23.40	if(!on(sp)||sp.textContent.indexOf('LINKING')<0) bad.push('player 2 waiting to get in does not read LINKING ('+(sp?sp.textContent:'')+')');
+31850	23.40	if(!on(sp)||sp.textContent.indexOf('JOIN YOUR '+'TEAM')<0||sp.textContent.indexOf('1,234')<0) bad.push('a benched player 1 has no team strip ('+(sp?sp.textContent:'')+')'
+31903	23.39	if(!ap||ap.textContent!=='PLAYER 1: PRESS ANY BUTTON') bad.push('the bench attract reads '+(ap?ap.textContent:'nothing'));
+32571	23.25	if(!ATT.on||!ap||ap.textContent!=='PLAYER 1: PRESS ANY'+' BUTTON') bad.push('the benched attract reads '+(ap&&ap.textContent)+' (on '+ATT.on+')');
+32647	23.24	else if(String(row.textContent).trim()!=='2 PLAYER ARCADE'+' DEMO') bad.push('the arcade row reads '+row.textContent);
+32667	23.24	else if(!ap||ap.textContent!=='PRESS ANY'+' BUTTON') bad.push('the host attract reads '+(ap&&ap.textContent));
+32690	23.24	if(!ATT.on||!ap||ap.textContent.indexOf('PLAYER 2: PRESS'+' A')!==0) bad.push('the player 2 attract reads '+(ap&&ap.textContent));   /* retargeted (present: his answer 17
+32906	23.19	ctx.fillText=function(t){ if(/^ARMOUR\s+\d/.test(String(t))) seen.push(ctx.font); return of.apply(this,arguments); };   /* belt redo: the belt's plate cell also draws the
+32933	23.17	var bad=[], g, p, all, e, n0, said=function(){ return (g.labels||[]).filter(function(l){ return / DOWNED$/.test(String(l.txt)); }).length; };
+32978	23.15	if(!got.some(function(t){ return t.indexOf('TEAMMATE DOWN | REVIVE ZQXA')===0; })) bad.push('the first teammate down alert is gone, overwritten by the second ('+JSON.stri
+33058	23.12	for(i=n0;i<said.length;i++) if(said[i].m.indexOf('AMMUNITION')>=0) hit=said[i];
+33255	23.06	if(said[i].m.indexOf('CONTRACT DONE')===0) hit=said[i];
+33363	23.04	said=said.filter(function(l){ return String(l.m).toUpperCase().indexOf('STIM')>=0||String(l.m).toLowerCase().indexOf('stim')>=0; });
+33447	23.02	if(!tr.some(function(s){ return s.indexOf('SEARCH WRECK')>=0; })) bad.push('a machine wreck does not prompt SEARCH WRECK (drawn: '+JSON.stringify(tr.filter(function(s){ r
+33460	23.02	if(all.indexOf('CRIER DESTROYED')<0) bad.push('a dead Crier in a linked window is not labelled CRIER DESTROYED (labels: '+JSON.stringify(all)+')');
+33470	23.02	if(!tr.some(function(s){ return s.indexOf('CRIER')>=0&&(/\d+m$/).test(s); })) bad.push('a ping on a Crier is not drawn naming the CRIER with its distance (drawn: '+JSON.s
+33575	22.99	for(i=0;i<tr.length;i++){ if(tr[i].t.indexOf(CV)>=0) bad.push('the ring band reads '+JSON.stringify(tr[i].t)); if(/^2 HOSTILES CLOSING IN$/.test(tr[i].t)) hit=tr[i].t; }
+33726	22.95	for(i=0;i<ft.length;i++){ s=ft[i]; if((/^\d+:\d\d$/).test(s)) fclk++; if((/^(EXTRACT|EXTRACTION|WAYPOINT) \d+m$/).test(s)) fcmp++; if(s.indexOf(CALL)>0&&s.indexOf('HOLD')
+33727	22.95	for(i=0;i<st.length;i++){ s=st[i]; if((/^\d+:\d\d$/).test(s)) clk++; if((/^(EXTRACT|EXTRACTION|WAYPOINT) \d+m$/).test(s)) cmp++; if(s.indexOf(CALL)>0&&s.indexOf('HOLD')==
+33755	22.94	for(i=0;i<tr.length;i++){ t=tr[i].t; if(t.indexOf('ZQX PINGER')===0&&!out.ping){ out.ping=tr[i].px; out.lbl=t; } if(t.indexOf(CR)===0&&!out.crier) out.crier=tr[i].px; }
+33889	22.91	for(i=0;i<tr.length;i++){ s=tr[i].t; if((s.indexOf(' offers you ')>0||s.indexOf(' OFFERS ')>0)&&!out.offer) out.offer=tr[i].px; if(s.indexOf('APPLYING ')===0&&!out.use) o
+33966	22.90	l=bad.filter(function(s){ return s.indexOf('SKIP')!==0; });
+34220	22.83	if(bad.length===1&&bad[0].indexOf('SKIP: ')===0) return bad[0];
+34312	22.81	if(said.length&&said[0].m.toUpperCase().indexOf('EARSHOT')>=0) sk.push('the pillager 40 units away is not in sight of the hail');
+34420	22.79	if(l&&l.m.indexOf('BANDAGES STOP')===0&&!(l.o&&l.o.sub)) bad.push('the Bandage ceiling line has no detail naming the Medkit');
+34454	22.78	function cnt(){ var c=0; for(var j=0;j<said.length;j++) if(said[j].indexOf(ND)===0||/^EXTRACTION [A-Z?] IS CLOSED/.test(said[j])) c++; return c; }   /* tr6fixc: the caps 
+34490	22.78	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+34508	22.77	if(!tr.some(function(o){ return o.t.indexOf('SELF-REVIVE')>=0; })) return 'SKIP: the downed screen drew no SELF-REVIVE row here, so it cannot be what says it';
+34509	22.77	dn=said.filter(function(s){ return s.indexOf('DOWN')===0; });
+34530	22.77	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+34537	22.76	function lbl(){ var L=g.labels||[], j; for(j=0;j<L.length;j++) if(String(L[j].txt).indexOf('NOTORIETY +1')===0) return true; return false; }
+34581	22.76	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+34601	22.75	n=0; for(i=0;i<said.length;i++) if(said[i].indexOf(EX)>=0&&said[i].indexOf('ZQXKID')>=0) n++;
+34623	22.75	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+34720	22.73	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+34744	22.72	l=null; for(i=0;i<said.length;i++) if(said[i].m.indexOf('ZQX')===0) l=said[i];
+34783	22.71	else if(!caps(ln.sub)||String(ln.sub).indexOf(CK)<0||String(ln.sub).indexOf('AUTO-JOG')<0) bad.push('the STOP FIRST detail reads '+JSON.stringify(String(ln.sub||''))+', n
+34802	22.71	else if(!caps(td.sub)||String(td.sub).indexOf('MOTH')<0||String(td.sub).indexOf('REVIVE')<0) bad.push('the '+TD+' detail reads '+JSON.stringify(String(td.sub||''))+', not
+34907	22.68	txt=has(function(s){ return s.indexOf('REVIVE')>=0&&s.indexOf(NM)>=0; });
+34908	22.68	if(!txt) bad.push('a downed teammate 40 units away has no REVIVE prompt naming him ('+JSON.stringify(seen.filter(function(s){ return s.indexOf(NM)>=0||s.indexOf('DOWN')>=
+34910	22.68	if(!has(function(s){ return s.indexOf('DOWN')===0&&s.indexOf('12s')>0; })) bad.push('a downed teammate 40 units away shows no DOWN with his seconds');
+34914	22.68	if(has(function(s){ return s.indexOf('REVIVE')>=0&&s.indexOf(NM)>=0; })) bad.push('a downed teammate 400 units away, out of reach, still shows a revive prompt');
+34915	22.68	if(!has(function(s){ return s.indexOf('DOWN')===0; })) bad.push('a downed teammate 400 units away does not show DOWN over his head');
+34951	22.67	if(pr.length!==1||pr[0].indexOf('SEARCH')<0) return 'SKIP: staging: the crate alone drew '+JSON.stringify(pr)+', not one SEARCH prompt';
+34955	22.67	else if(pr[0].indexOf('UNLOCK')<0||pr[0].indexOf(LK.name)<0) bad.push('with a door he holds the key for and a crate both in reach the one prompt is '+JSON.stringify(pr[0]
+34958	22.67	if(pr.length!==1||pr[0].indexOf('SEARCH')<0) bad.push('with no key the locked door and a crate drew '+JSON.stringify(pr)+', not the one SEARCH prompt E acts on');
+35014	22.66	a=find(function(s){ return (/TO CALL FOR EXTRACTION$/).test(s)&&s.indexOf('HOLD')===0; });
+35016	22.66	else if(a.s.indexOf('HOLD [')!==0) bad.push('the in-ring call row reads '+JSON.stringify(a.s)+', not HOLD [key] TO');
+35022	22.66	else { if(b.s.indexOf('HOLD [')!==0) bad.push('the seal prompt reads '+JSON.stringify(b.s)+', not HOLD [key] TO'); if(!b.plate) bad.push('the seal prompt has no plate'); 
+35040	22.65	for(var j=0;j<seen.length;j++) if(/ \/ .*  BACKPACK$/.test(seen[j])) return seen[j]; return null; }
+35078	22.64	if((s.indexOf(nm)<0&&s.indexOf(nm.toUpperCase())<0)||(s.indexOf('[Y] to take it')<0&&s.indexOf('[Y] TAKE')<0)||s.indexOf(TOR)>=0||s.indexOf('12s')<0) bad.push('with a con
+35081	22.64	if((s.indexOf(nm)<0&&s.indexOf(nm.toUpperCase())<0)||(s.indexOf('[T] to take it')<0&&s.indexOf('[T] TAKE')<0)||s.indexOf(ORY)>=0) bad.push('on the keyboard the offer line
+35084	22.64	if((s.indexOf('Offered '+nm)===0?(s.indexOf('Waiting')<0||s.indexOf('Waiting for them')>=0):!(s.indexOf('OFFER SENT')===0&&s.indexOf(nm.toUpperCase()+' TO ')>0))||s.index
+35153	22.62	if(s.indexOf('BACKPACK')<0||s.indexOf('DROP')<0) bad.push(where+': the detail does not name the backpack and the drop ['+s+']');
+35174	22.62	for(i=0;i<lg.length;i++) if(String(lg[i].m).indexOf('NOT ENOUGH')===0) s=String(lg[i].sub||'');
+35681	22.52	if(!said.some(function(t){ return /^GUNS GO ON KEYS 1 TO \d$/.test(t); })) bad.push('the refused drag onto key 6 did not say GUNS GO ON KEYS 1 TO 4 (said '+said.join(' / 
+35692	22.52	if(said.length&&!/ON KEY 6|TO SLOT 6/.test(l1)) bad.push('the line for that drag names no key 6 in the shooter voice: '+l1);
+36126	22.44	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+36155	22.43	else if(!/^(PRESS \S+ FOR YOUR GUN|.+ TO YOUR GUN|(\[\S+\] )+GUN)$/.test(h.sub)) bad.push('EMPTY SLOT has '+JSON.stringify(h.sub)+' under it, not the key of the gun in ca
+36164	22.43	if(!h&&/^[^a-z]+ TO SLOT 4$/.test(String(r||''))&&said(/^[^a-z]+ TO SLOT 4$/)&&g.hotAssign[3]==='gun_carbine'&&g.bag.indexOf('gun_smg')>=0&&!said(/GUN SLOTS FULL/)){ /* v
+36166	22.43	else if(!/ IN BACKPACK$/.test(h.sub)||h.sub!==h.sub.toUpperCase()) bad.push('GUN SLOTS FULL has '+JSON.stringify(h.sub)+' under it, not the gun IN BACKPACK');
+36242	22.41	for(i=0;i<ev.length;i++) if(ev[i].indexOf('INBOUND')>=0) n++;
+36243	22.41	if(n!==1) bad.push('standing in the called ring 20 s out, '+n+' drawn lines say INBOUND ('+ev.filter(function(t){ return t.indexOf('INBOUND')>=0; }).join(' | ')+'), not o
+36282	22.40	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+36391	22.36	say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('MERIDIAN')===0) return realSay.apply(this,arguments); };
+36426	22.36	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+36444	22.35	say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('MOTH')===0||s.indexOf('TEAMMATE')===0) return realSay.apply(this,arguments); };
+36463	22.35	if(!(a&&a.m===TD&&a.k==='crit'&&String(a.sub||'').indexOf('MOTH')>=0)) bad.push('the alert is not '+TD+' as a critical line naming MOTH ('+JSON.stringify(a&&{m:a.m,k:a.k,
+36482	22.35	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+36544	22.33	say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('THIRTY')===0) return realSay.apply(this,arguments); };
+36581	22.33	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+36599	22.32	say=function(m){ var s=String(m); said.push(s); if(s.indexOf('zq')===0||s.indexOf('THE PILLBOX')===0) return realSay.apply(this,arguments); };
+36604	22.32	if(!said.some(function(s){ return s.indexOf('THE PILLBOX')===0; })) return 'SKIP: staging: the Pillbox said nothing (said: '+said.join(' | ').slice(0,120)+')';
+36611	22.32	for(j=0;j<ev.length;j++){ if(ev[j].t.indexOf('THE PILLBOX')===0&&!hit) hit=ev[j]; if(ev[j].t===LOOT) loot=true; }
+36708	22.29	if((no.textContent||'').trim()!=='KEEP MY KIT') bad.push('the way out of the teammate card reads '+no.textContent+', but the party takes him up anyway');
+37146	22.17	function draw(){ seen=[]; try{ drawHUD(); }catch(_h){} return seen.filter(function(s){ return /RELOAD$/.test(s)||/^EMPTY - /.test(s); }); }
+37162	22.17	if(pd.indexOf('[X] RELOAD')<0) bad.push('on a controller the empty reticle reads '+(pd[0]||'nothing')+', not [X] RELOAD');
+37165	22.17	if(pd.indexOf('[SQUARE] RELOAD')<0) bad.push('on a PlayStation pad the empty reticle reads '+(pd[0]||'nothing')+', not [SQUARE] RELOAD');
+37328	22.13	say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('CRIER')===0||s.indexOf('A CRIER')===0) return realSay.apply(this,arguments); };
+37342	22.13	if(head&&!/^CRIER REVEALED YOUR (LAST )?LOCATION$/.test(head)) bad.push('the Crier headline reads '+JSON.stringify(head));
+37829	22.00	if(txt.some(function(s){ return /CLICK/.test(s); })) bad.push('on a controller the map header still says CLICK');
+37830	22.00	if(!txt.some(function(s){ return /R STICK/.test(s)&&/D-UP/.test(s); })) bad.push('on a controller the map header does not name R STICK and D-UP');
+37833	22.00	if(!txt.some(function(s){ return /CLICK/.test(s)&&/waypoint/.test(s); })) bad.push('with the mouse the map header lost its CLICK line');
+38231	21.92	say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('MOTH')===0||s.indexOf('TEAMMATE')===0) return realSay.apply(this,arguments); };
+38245	21.92	for(j=0;j<rows.length;j++) if(String(rows[j].m).indexOf('MOTH')===0){ seen=i; break; }
+38246	21.92	if(seen<0&&g.alert&&g.alert.T>0&&(String(g.alert.m).indexOf('MOTH')===0||String(g.alert.sub||'').indexOf('MOTH')>=0)) seen=i;   /* tr5fixb: the detail may read REVIVE MOT
+38254	21.92	sayWhenFree=function(m,kd){ if(String(m).indexOf('Extraction')===0||String(m).indexOf('EXTRACTION')===0) kinds.push(kd); };
+38337	21.91	for(i=0;i<bad.length;i++) if(bad[i].indexOf('SKIP: ')===0&&bad.length===1) return bad[0];
+38446	21.90	for(i=0;i<said.length;i++) if(/NO KEY/.test(said[i])) bad.push('the drop said: '+said[i]);
+38921	21.78	if(!said.some(function(t){ return /^CRIER REVEALED YOUR (LAST )?LOCATION$/.test(t); })) bad.push('the alarm line is not CRIER REVEALED YOUR LOCATION (said: '+said.join(' 
+38981	21.75	drew().forEach(function(t){ if(/STOWED/.test(t)) bad.push('with Bare Hands in the other slot the card says '+t); if(/OTHER GUN/.test(t)) bad.push('Bare Hands is listed as
+38984	21.75	if(s2.some(function(t){ return /STOWED/.test(t); })) bad.push('the card still says STOWED');
+39017	21.74	kb=seen.filter(function(s){ return / TO CUT THE SEAL$/.test(s); });
+39019	21.74	pd=seen.filter(function(s){ return / TO CUT THE SEAL$/.test(s); });
+39023	21.74	if(pd.indexOf('HOLD X TO CUT THE SEAL')<0&&pd.indexOf('HOLD [X] TO CUT THE SEAL')<0) bad.push('on a controller the seal prompt reads '+(pd[0]||'nothing')+', not HOLD X');
+39254	21.65	if(said.some(function(t){ return t.indexOf('RECOVERING')>=0; })) bad.push('with no regen running the HUD still says RECOVERING');
+39256	21.65	if(!said.some(function(t){ return t.indexOf('RECOVERING')>=0; })) bad.push('with the regen running the HUD does not say RECOVERING');
+39331	21.61	if(!said.some(function(t){ return t.indexOf('DOWN')===0; })) return 'SKIP: staging: the downed screen was not drawn';
+39353	21.59	if(!/PRESS ANY BUTTON/.test(t)) bad.push('with a controller it reads '+JSON.stringify(t));
+39355	21.59	if(!/PRESS ANY KEY/.test(t)) bad.push('without a controller it reads '+JSON.stringify(t));
+39547	21.45	if(!/RUNS?$/.test(String(el.textContent))) return 'the stats heading shows '+JSON.stringify(el.textContent)+' with nothing saying it counts runs';
+40020	21.26	var src=String(pollPad), i=src.indexOf('padMenu(pressed)'), j=src.indexOf('ATT.on');
+40229	21.17	else if(!/PRESS ANY KEY/.test(d.textContent||'')) bad.push('the clip does not say PRESS ANY KEY');
+40265	21.15	if(!texts.some(function(t){ return t.indexOf('CALLED')===0; })) return 'SKIP: staging: the called ring was not drawn as called';
+41167	20.79	for(i=0;i<txt.length;i++){ if(txt[i].indexOf('[A]')>=0) bad.push('on a PlayStation pad a Peddler row reads: '+txt[i]); if(txt[i].indexOf('[CROSS]')>=0) nX++; }
+41286	20.75	o.noto=find(tr,function(t){ return /^NOTORIETY \d/.test(t); });
+41542	20.66	if(!/3 downs/.test(t)||!/2 revives/.test(t)||!/ZQX MATE/.test(t)) bad.push('after the teammate finished, the card does not show his 3 downs and 2 revives ('+t.slice(0,140
+41947	20.55	O=band(function(s){ return s.indexOf(' offers you ')>=0||s.indexOf(' OFFERS ')>=0; },1);
+42590	20.38	if(lines.some(function(s){ return s.indexOf('raised the alarm')>=0||s.indexOf('CRIER REVEALED')>=0; })) bad.push('the host was told a Crier raised the alarm on him');   /
+42597	20.38	if(!lines.some(function(s){ return s.indexOf('crier has you')>=0||s.indexOf('CRIER IS REVEALING')>=0; })) bad.push('player 2 was not told a Crier has him');   // v21.78: 
+42927	20.25	tab=[].slice.call(document.querySelectorAll('#tradertabs .invtab')).filter(function(x){ return x.textContent.trim()==='CRAFT'; })[0];
+42944	20.24	b=[].slice.call(document.querySelectorAll('#sectormodal button')).filter(function(x){ return /ASCEND TO THIS SECTOR/.test(x.textContent); })[0];
+42979	20.21	pics=[].slice.call(o.querySelectorAll('img')).filter(function(im){ return !im.closest('.haulstrip')&&/LOST/.test((im.parentElement&&im.parentElement.textContent)||''); })
+43378	19.95	kb=t.querySelector('.kbrow')||[].slice.call(t.querySelectorAll('div')).filter(function(d){ return d.children.length>4&&/WASD/.test(d.textContent)&&/LMB/.test(d.textConten
+43388	19.95	if(!pr||getComputedStyle(pr).display==='none'||pr.textContent.indexOf('STICK')<0) bad.push('with a pad on the title shows no pad row');
+43529	19.87	if(String(el.textContent).indexOf('LMB')<0) return 'SKIP: the box did not open on the keyboard line';
+43532	19.87	if(t1.indexOf('LMB')>=0||t1.indexOf('STICK')<0) bad.push('a pad plugged in with the box open left the keyboard line up');
+43535	19.87	if(t2.indexOf('LMB')<0) bad.push('a pad pulled out with the box open left the pad line up');
+43550	19.86	if(h.indexOf('SQUARE')<0) bad.push('the pause key line does not name SQUARE');
+43552	19.86	if(row&&(row.textContent.indexOf('CROSS')<0||/(^|\s)A(\s|$)/.test(row.textContent))) bad.push('the stash pad row still names A ('+row.textContent.replace(/\s+/g,' ').trim
+43653	19.80	for(i=0;i<labs.length;i++){ if(!/^(PROGRESS|REWARDS)$/.test(labs[i].textContent.trim())) continue; n++; f=parseFloat(getComputedStyle(labs[i]).fontSize); if(!(f>=12.4)) b
+43785	19.72	function grab(){ var i, hd=false, dm=null; rec.length=0; __wnseen(0); __hubFrame(0.016); for(i=0;i<rec.length;i++){ if(rec[i].indexOf('NEW IN v')===0) hd=true; if(!dm&&/d
+43797	19.72	else if(sp.dm.indexOf('ENTER')>=0) bad.push('on a controller the card still says '+sp.dm);
+43798	19.72	if(!sk.dm||sk.dm.indexOf('ENTER')<0) bad.push('control: with keyboard and mouse the card does not name ENTER');
+43814	19.71	if(tp.indexOf('LMB')>=0||tp.indexOf('MOUSE')>=0) bad.push('on a controller the pause box still lists the mouse');
+43815	19.71	if(tp.indexOf('RT')<0||tp.indexOf('STICK')<0) bad.push('on a controller the pause box does not list the pad buttons');
+43816	19.71	if(tk.indexOf('LMB')<0) bad.push('control: with keyboard and mouse the pause box does not list LMB');
+43877	19.67	tab=[].slice.call(document.querySelectorAll('#tradertabs .invtab')).filter(function(x){ return x.textContent==='CRAFT'; })[0];
+43903	19.66	ctx.fillText=function(t,x,y){ var s=String(t), m=ctx.getTransform(), fm=(/([\d.]+)px/).exec(String(ctx.font)), px=(fm?parseFloat(fm[1]):0)*m.d/d, sy=(m.d*y+m.f)/d; if(s.i
+43955	19.63	function grab(){ var m=null; for(k=0;k<4;k++) __frame(0.05); proto.fillText=function(t){ var s=String(t); if(!m&&(/  .  (LOCKED|OPEN)$/.test(s)||s==='CACHE'||s==='LOOTED'
+44037	19.59	for(i=0;i<texts.length;i++){ t=texts[i]; if(/^\+\d+ more/.test(t)) more=true; if(t==='YOU'||/^CURRENT /.test(t)||/^\+\d/.test(t)||/ out /.test(t)||/\$|^\[|DEAD|EXTRACTED|
+44074	19.57	ctx.fillText=function(t,x,y){ if(String(t).indexOf('COOKING ')===0&&!hit){ var m=ctx.getTransform(), fm=(/([\d.]+)px/).exec(String(ctx.font)); hit={px:(fm?parseFloat(fm[1
+44096	19.56	ctx.fillText=function(t,x,y){ var s=String(t); if(/^\[[^\]]+\] CALL FOR EXTRACTION$/.test(s)) world++; if(/^HOLD .* TO CALL FOR EXTRACTION$/.test(s)) belt++; return oFT.a
+44116	19.55	ctx.fillText=function(t,x,y){ if(/^\[[^\]]+\] CALL FOR EXTRACTION$/.test(String(t))&&!hit){ var m=ctx.getTransform(), fm=(/([\d.]+)px/).exec(String(ctx.font)); hit={px:(f
+44141	19.54	ctx.fillText=function(t,x,y){ if(String(t).indexOf('TO CALL FOR EXTRACTION')>0&&!hit){ var m=ctx.getTransform(), fm=(/([\d.]+)px/).exec(String(ctx.font)); hit={px:(fm?par
+44163	19.53	rec.forEach(function(r){ if(r.t.indexOf('SURVEYED')===0) s1=r; if(r.t.indexOf('what you walk')===0) s2=r; });
+44343	19.43	proto.fillText=function(s,x,y){ if(this===wc){ var str=String(s), w=this.measureText((typeof TX==='function')?TX(str):str).width, fm=(/([\d.]+)px/).exec(String(this.font)
+44484	19.34	ctx.fillText=function(t,x,y){ if(String(t).indexOf('[FIRE] use')>=0&&!cap){ var m=ctx.getTransform(), fm=(/([\d.]+)px/).exec(String(ctx.font)), fp=fm?parseFloat(fm[1]):11
+44576	19.29	rec.forEach(function(r){ if(r.t.indexOf('SURVEYED')===0) s1=r; if(r.t.indexOf('what you walk')===0) s2=r; if(r.t==='HOT GROUND') h1=r; if(r.t.indexOf('richer, and')===0) 
+44589	19.28	function card(){ rec.length=0; __wnseen(0); __hubFrame(0.016); return rec.some(function(r){ return r.indexOf('NEW IN v')===0; }); }
+44691	19.22	function grab(){ rec.length=0; g.pCrouch=true; p.x=z.x+150; p.y=z.y; g.anchX=p.x; g.anchY=p.y; __frame(0.001); __frame(0.001); var c=null, r=null; for(var k=0;k<rec.lengt
+44716	19.21	function grab(){ rec.length=0; __wnseen(0); __hubFrame(0.016); var hd=null, dm=null, ln=null, i; for(i=0;i<rec.length;i++){ if(!hd&&rec[i].t.indexOf('NEW IN v')===0) hd=r
+44755	19.20	if(!el||!/WORN/.test(el.innerText||el.textContent||'')) bad.push('the clicked hat does not show as worn on the rack');
+44981	19.10	ctx.fillText=function(s,x,y){ var t=String(s), m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1, fm=(/([\d.]+)px/).exec(String(ctx.font)), fp=fm?parseFloat(fm
+45088	19.04	for(i=0;i<rows.length;i++) if(rows[i].indexOf('LOST')>=0){ n++; if(rows[i].indexOf('<img')>=0) withPic++; }
+45318	18.95	function grab(){ var out={t:null,f:null}; ctx.fillText=function(s){ var m=(/([\d.]+)px/).exec(String(ctx.font)), px=m?parseFloat(m[1]):0, sc=ctx.getTransform().a/((typeof
+45893	18.75	if(rec.some(function(r){ return r.s.indexOf('APPLYING ')===0||r.s.indexOf('SLOTTING ')===0; })) bad.push('control: a use bar was drawn with nothing being used');
+45895	18.75	hasB=rec.filter(function(r){ return r.s.indexOf('APPLYING BANDAGE')===0; })[0];
+45898	18.75	for(i=0;i<rec.length;i++){ if(rec[i].s.indexOf('APPLYING BANDAGE')===0) yB=rec[i].y; if(rec[i].s.indexOf('SLOTTING ARMOUR PLATE')===0) yA=rec[i].y; }
+45975	18.71	for(i=0;i<rec.length;i++){ if(rec[i].s.indexOf('[FIRE] use')>=0) cap=rec[i]; }
+45995	18.70	ctx.fillText=function(s,x,y){ var m=ctx.getTransform(), d=(typeof DPR==='number'&&DPR>0)?DPR:1, w=ctx.measureText(String(s)).width; if(String(s).indexOf('EXTRACTION POINT
+46111	18.63	if(labs[T.s].id==='bar'){ for(j=i+1;j<ops.length;j++) if(ops[j].k==='t'&&ops[j].s.indexOf('EXPERIMENTAL')>=0){ if(ops[j].y-ops[j].a<R.y+R.h-0.5) bad.push('the warning und
+46127	18.62	for(i=0;i<rec.length;i++){ if(rec[i].s==='THE UNDERCROFT') tl=rec[i]; if(rec[i].s.indexOf(' in stash')>=0) st=rec[i]; if(rec[i].s.indexOf('USE STATION')>=0) foot=rec[i]; 
+46143	18.61	function grab(){ rec=[]; ctx.fillText=function(s){ rec.push(String(s)); return oFT.apply(this,arguments); }; try{ __frame(0.016); } finally { delete ctx.fillText; if(ctx.
+46192	18.59	else { f0=hubFootKeys('WASD WALK  x  SHIFT JOG  x  E USE STATION  x  E TAKE THE DROPPED ITEM'); if(f0.indexOf('G USE STATION')<0||f0.indexOf('G TAKE THE DROPPED ITEM')<0)
+46404	18.49	texts.forEach(function(t){ if(/^EXTRACT /.test(t[0])||/^\d+:\d\d$/.test(t[0])) compY=Math.max(compY,t[1]); if(e&&t[0]===String(e.name)) bossY=t[1]; });
+46642	18.35	if(r&&String(r).indexOf('SKIP')!==0) bad.push('the promise and the arrivals still differ: '+String(r).slice(0,120));
+46848	18.25	if(!lines.some(function(s){ return /TAKE AN OFFER|TAKE THE DROPPED/.test(s); })) bad.push('the Undercroft bottom line does not say how to take a dropped item');
+46933	18.21	ctx.fillText=function(s){ seq++; if(/offers you| OFFERS /.test(String(s))) gl=seq; if(e&&String(s)===String(e.name)) bl=seq; return oFT.apply(this,arguments); };
+47266	18.05	rows.forEach(function(x){ if(x&&x.label&&/Offer to KID|Drop on the floor/.test(x.label)) row=x; });
+47503	17.93	if(String(L.getItem(slotKeyOf(k))||'').indexOf('KID')<0) bad.push('the old hidden save did not move into slot '+k);
+47515	17.93	try{ for(i=0;i<made.length;i++){ if(L.getItem(slotKeyOf(made[i]))&&String(L.getItem(slotKeyOf(made[i]))).indexOf('KID')>=0) L.removeItem(slotKeyOf(made[i])); } }catch(_c1
+47559	17.89	if(!/FIRST RAID/.test(el.textContent)||!/ENTER RAID/.test(el.textContent)) bad.push('the pointer reads '+JSON.stringify(el.textContent));
+47691	17.81	if(seen.indexOf('CIRCLE')<0||seen.indexOf('CROSS')<0) bad.push('the full legend on a PlayStation pad drew '+JSON.stringify(seen.filter(function(s){ return /^(A|B|X|Y|CROS
+47744	17.77	if(s.indexOf('A HEADLINE IN CAPS.')!==0) bad.push('the headline was lost: '+s.slice(0,40));
+47881	17.71	if(!/KID MODE/.test(document.body.innerHTML)) bad.push('Settings has no KID MODE heading');
+47918	17.70	if(!b||b.textContent.indexOf('BOTH PLAYERS')<0) bad.push('the PARTY button reads '+JSON.stringify(b&&b.textContent));
+47919	17.70	b.onclick(); if(netSndWho()!=='p1'||b.textContent.indexOf('PLAYER 1 ONLY')<0) bad.push('the button did not cycle to player 1 only ('+netSndWho()+', '+JSON.stringify(b.tex
+47983	17.68	if(!lines.some(function(t){ return t.indexOf('MOTH is down')===0||t.indexOf('MOTH DOWN')===0||(t.indexOf('TEAMMATE DOWN')===0&&t.indexOf('MOTH')>0); })) bad.push('the win
+48111	17.63	if(!lines.some(function(t){ return t.indexOf('MOTH is out of this raid (extracted)')===0||t.indexOf('MOTH EXTRACTED')===0; })) bad.push('the host was told '+JSON.stringif
+48134	17.62	if(!lines.some(function(t){ return t.indexOf('MOTH is joining the raid')===0||t.indexOf('MOTH IS JOINING')===0; })) bad.push('the host was told '+JSON.stringify(lines));
+48156	17.61	if(!/ENTER RAID/.test(b.textContent||'')) bad.push('the join button does not say the lift joins too ('+b.textContent+')');
+48157	17.61	if(b.textContent.indexOf('JOIN THE RAID IN PROGRESS')!==0) bad.push('the join button no longer leads with JOIN THE RAID IN PROGRESS');
+48369	17.52	if(!s||(s.indexOf(nm)<0&&s.indexOf(nm.toUpperCase())<0)||(s.indexOf('T or Y')<0&&!/\[[A-Z0-9-]+\] to take it/.test(s)&&!/\[[A-Z0-9-]+\] TAKE/.test(s))||s.indexOf('12s')<0
+48375	17.52	if(!s||(s.indexOf('Offered')<0&&s.indexOf('OFFER SENT')<0)||(s.indexOf(nm)<0&&s.indexOf(nm.toUpperCase())<0)) bad.push('the giver saw '+JSON.stringify(s));
+48728	17.40	if(!el||!/FIRST OUT/.test(el.textContent||'')||!/OF 12/.test(el.textContent||'')) bad.push('the Mainframe does not list the achievements with a count ('+(el?(el.textConte
+48756	17.39	if(!/YOU/.test(txt())||!/EXTRACTED/.test(txt())) bad.push('the end card shows no PARTY row for this player ('+txt().slice(0,80)+'; on '+NET.on+', seat '+NET.seat+', scSd 
+48759	17.39	if(!/KILLED/.test(txt())||!/3 kills/.test(txt())) bad.push('the teammate word did not fill his row ('+txt().slice(0,120)+')');
+48792	17.38	if(!kb||!/CTRL/.test(kb.textContent||'')) bad.push('the stash key bar does not name CTRL');
+49921	17.14	if(!said.some(function(s){ return s.indexOf('ZQX MATE')>=0; })) bad.push('a host up top was told nothing in the raid when his teammate could not go up (status: '+NET.stat
+50242	17.05	function starts(){ return said.filter(function(m){ return m.indexOf('Reviving ZQX')===0; }).length; }
+50594	16.97	if(texts.join(' | ').indexOf('THREW ')>=0) return 'SKIP: staging: drawHUD threw ('+texts.join(' | ').slice(0,120)+')';
+50852	16.88	if(String(L[1]||'').toUpperCase().indexOf('YOUR PARTY GOES UP TOGETHER')<0) bad.push('the co-op line is no longer second');
+51054	16.84	if(!said.some(function(m){ return m.indexOf('tactical belt')>=0||m.indexOf('SELECT A HEAL')===0; })) bad.push('Y with a gun selected did not say to select a heal on the t
+51539	16.74	if(L.indexOf(NM)<0||(L.indexOf('is out of this raid')<0&&L.indexOf('HOST IS OUT')<0)||(want&&L.indexOf(want)<0)) bad.push(tag+'the raid line does not say who is out and h
+51649	16.71	if(String(L[1]||'').toUpperCase().indexOf('YOUR PARTY GOES UP TOGETHER')<0) bad.push('the co-op line is no longer second');
+51650	16.71	if(String(L[2]||'').toUpperCase().indexOf('CHOOSES A KIT')<0) bad.push('the party line is no longer third');
+51741	16.68	function told(){ return said.filter(function(m){ return m.indexOf('ZQX MATE revived')>=0||m.indexOf('ZQX MATE IS BACK UP')>=0; }).length; }   // tr5fixc: or the caps call
+52034	16.54	if(String(L[1]||'').toUpperCase().indexOf('YOUR PARTY GOES UP TOGETHER')<0) bad.push('the co-op line is no longer second');
+52035	16.54	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+52183	16.46	if(src.indexOf("if(G.mapOpen) G.mapOpen=false; else if(NET.on&&NET.upSeed) netPingMake(); else G.mapOpen=true;")<0) bad.push('D-UP does not ping');
+52184	16.46	if(src.indexOf("if(_lbN&&_rbN&&(!PAD.prev[4]||!PAD.prev[5])&&G&&!G.over&&NET.on) netPingMake();")>=0) bad.push('both bumpers still ping');
+52241	16.43	if(src.indexOf("else if(NET.on&&NET.upSeed) netPingMake();")<0) bad.push('a controller cannot ping');   // v16.46 moved it to a D-UP tap
+52285	16.40	if(t.indexOf('YOUR PARTY')<0||t.indexOf('KITE')<0||t.indexOf('EXTRACTED')<0||t.indexOf('3 kills')<0||(t.indexOf('1,240c')<0&&t.indexOf('$1,240')<0)) bad.push('the card do
+52286	16.40	if(t.indexOf('YOU')<0||t.indexOf('KILLED')<0) bad.push('the card does not show this player killed: '+t);
+52288	16.40	if(t.indexOf('STILL UP TOP')<0) bad.push('a player with no result is not shown still up top: '+t);
+52315	16.38	if(String(el.textContent).indexOf('YOU ARE HOSTING')!==0||String(el.textContent).indexOf('ends the raid for your whole party')<0) return 'the hosting line reads: '+el.tex
+52348	16.37	if(!y||y.textContent!=='MY LOADOUT'||!a||a.textContent!=='FREEBIE KIT'||a.style.display==='none') bad.push('the teammate card does not offer MY LOADOUT and FREEBIE KIT');
+52411	16.33	if(t.indexOf('ONE OF THE TWO')>=0) bad.push('the co-op line still says world sound plays from one window');
+52524	16.26	if(draw().indexOf('ZQX MATE')>=0) bad.push('control: alone the HUD names a teammate');
+52532	16.26	if(t.indexOf('ZQX MATE')<0) bad.push('in a party raid the HUD does not name the teammate');
+52533	16.26	if(t.indexOf('DOWN 9s')<0) bad.push('the HUD does not show the downed teammate with his seconds ('+t.slice(0,120)+')');
+52746	16.16	NEW=[(src.indexOf('No throwable on your tactical belt.')>=0?'No throwable on your tactical belt.':'NO THROWABLE ON THE TACTICAL BELT'),(src.indexOf('Too tired to roll.')>
+52871	16.12	if(all.indexOf('WITH ITS OWN CONTROLLER AND SOUND')>=0) bad.push('the card still says the second window has its own sound');
+52872	16.12	if(all.indexOf('LEFT SPEAKER')<0) bad.push('the card does not say where each player sound plays');   // v16.33: split speakers are the default since v16.29
+52873	16.12	if(all.indexOf('SHOWS YOU TO THE ENEMY')<0) bad.push('the lightning line does not name who the flash shows you to');
+53012	16.08	if(solo.indexOf('ZQX MATE')>=0) bad.push('control: alone the map names a teammate');
+53017	16.08	if(up.indexOf('ZQX MATE')<0) bad.push('with the map open a teammate up top is not named on it');
+53018	16.08	if(up.indexOf('DOWN')>=0) bad.push('a teammate on his feet is marked DOWN');
+53021	16.08	if(dn.indexOf('ZQX MATE')<0||dn.indexOf('DOWN')<0) bad.push('a teammate who is down is not marked DOWN on the map');
+53039	16.07	if(!L[0]||String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+53525	15.96	try{ renderMainframe(); var ht=String(hint.textContent||''); if(ht.indexOf('ZQXFRIEND walks your raids')<0) bad.push('after the restore the Mainframe does not name the fr
+53707	15.92	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+54019	15.91	var _pickUp=(typeof netHostGone==='function'&&String(netHostGone).indexOf('NET.upSeed=0')>=0);
+54022	15.91	if(!_pickUp&&(!card||ttl!=='ABANDONED'||sub.indexOf('HOST')<0||sub.indexOf('ABANDON')<0)) bad.push('the run card does not say the host left (card '+card+', title '+ttl+',
+54035	15.91	if(!_pickUp&&(sub.indexOf('HOST')<0||sub.indexOf('ABANDON')<0)) bad.push('after the lost link the run card does not say the host was lost: '+sub);
+54717	15.81	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+55067	15.79	if(texts.indexOf('ZQX MATE')<0) bad.push('his name is not painted over his head');
+55069	15.79	if(frame()!==n0||texts.indexOf('ZQX MATE')>=0) bad.push('with the party off the raid frame still draws him, or his name ('+ops.length+' against '+n0+')');
+55082	15.79	if(texts.indexOf('ZQX MATE')>=0) bad.push('after his raid ended his name is still painted');
+55177	15.79	if(texts.indexOf('ZQX HOST')<0) bad.push('the host name is not painted over its head');
+55221	15.79	if(wn!=='up:no'||!NET.status||NET.status.indexOf('ZQX MATE')<0||NET.status.indexOf('title')<0) bad.push('the host does not say who was left behind and why ('+wn+', '+NET.
+55361	15.78	if(txt(g('partysndbtn')).indexOf('SOUND ON')<0) bad.push('the host row does not read SOUND ON: '+txt(g('partysndbtn')));
+55375	15.78	if(txt(g('partysndbtn')).indexOf('SOUND OFF')<0) bad.push('the row does not read SOUND OFF after one press: '+txt(g('partysndbtn')));
+55430	15.78	if(txt(g('partysndbtn')).indexOf('SOUND OFF')<0) bad.push('the player 2 row does not read SOUND OFF: '+txt(g('partysndbtn')));
+55563	15.77	if(txt(g('partypadbtn')).indexOf('CONTROLLER')<0) bad.push('the CONTROLLER row does not name a controller: '+txt(g('partypadbtn')));
+55567	15.77	if(txt(g('partypadbtn')).indexOf('CONTROLLER 1')<0) bad.push('the row does not read CONTROLLER 1 after one press: '+txt(g('partypadbtn')));
+55702	15.77	if(txt(g('partypadbtn')).indexOf('CONTROLLER 2')<0) bad.push('the player 2 row does not read CONTROLLER 2: '+txt(g('partypadbtn')));
+55888	15.76	if(mo&&(!shown(mo)||txt(mo).indexOf('CO-OP')<0||txt(mo).indexOf('SAME MACHINE')<0)) bad.push('the PARTY window does not name the mode: '+txt(mo));
+55895	15.76	if(mo&&txt(mo).indexOf('PVP')<0) bad.push('the PARTY window does not name the pvp mode: '+txt(mo));
+56496	15.72	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+57462	15.61	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+58272	15.51	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+58481	15.48	if(up.title.indexOf('RAID PAUSED')<0||!up.offered||up.line||!up.armed) return 'SKIP: on his feet the pause box read '+tell(up)+', so the box cannot be read here';
+58965	15.42	function plate(d){ for(var i=0;i<d.length;i++) if(d[i]===HID||d[i]===NEAR||d[i].indexOf('PARTLY HIDDEN')===0) return d[i]; return 'no crouch plate'; }
+59230	15.39	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+59269	15.38	if(s2.indexOf('THE PEDDLER')!==0) continue;
+59323	15.38	if(down===null||down.indexOf('THE PEDDLER')!==0) return 'SKIP: no Peddler plate was drawn while he was down ('+down+'), so the plate cannot be read on the floor';
+59728	15.33	function shutSaid(){ for(var i=0;i<queued.length;i++) if(queued[i].indexOf(SHUT)>=0||/ CLOSED\b/.test(queued[i])) return true; return false; }
+60201	15.27	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+60874	15.15	if(CFG.superhot!==1||(has2&&s1.indexOf('SUPERHOT ON')<0)) return skip('the backquote key did not turn Superhot on here (dial '+CFG.superhot+', said '+s1.slice(0,40)+')');
+60889	15.15	if(CFG.superhot!==0||(has2&&s3.indexOf('SUPERHOT OFF')<0)) return skip('the backquote key did not turn Superhot off here (dial '+CFG.superhot+', said '+s3.slice(0,40)+')'
+60989	15.12	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+61587	14.94	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+61603	14.93	if(got.indexOf('ZQXP ')!==0) bad.push('his own pattern for the line '+k.slice(0,40)+' lost to the baked words: '+got.slice(0,60));
+61621	14.92	if(!hA||hA.kind!=='dom'||String(hA.orig).indexOf('AAAA')<0) return 'SKIP: a click over the first words did not open on them here ('+(hA&&hA.orig)+')';
+61623	14.92	if(!hC||String(hC.orig).indexOf('CCCC')<0) bad.push('a click over the words after the bold phrase opened the editor on '+JSON.stringify(hC&&hC.orig));
+61663	14.90	if(!m||String(m.textContent).indexOf('ZQXW ')<0) bad.push('the row '+label+' was reworded in his profile and the menu still opened with the original words');
+61813	14.83	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+62041	14.73	if(String(bo.textContent).toUpperCase().indexOf('NEED')<0) return 'SKIP: a gun not owned and short of its price read '+bo.textContent+' here';
+62044	14.73	if(tw.toUpperCase().indexOf('NEED')>=0) bad.push('the shop asks for money for the '+SHOP[own].k+' you already own: '+tw);
+62060	14.72	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+62289	14.60	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+62758	14.40	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+63068	14.27	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+63573	14.14	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+63678	14.11	if(!lines().some(function(t){ return t.indexOf(CLOSED)>=0||/ CLOSED\b/.test(t); })) return 'SKIP: a ring closing alone said nothing through the tick, so nothing here can 
+63685	14.11	var hasC=L.some(function(t){ return t.indexOf(CLOSED)>=0||/ CLOSED\b/.test(t); }), hasW=L.some(function(t){ return t.indexOf(WARN)>=0||(/ CLOSING\b/).test(t); });
+63949	14.02	if(L[0]&&String(L[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+65199	13.66	if(all.indexOf('COOKING')<0) bad.push('the card never mentions the cooked grenade');
+65200	13.66	if(all.indexOf('WHILE YOU ARE DOWN')<0) bad.push('the card never mentions the belt while down');
+65201	13.66	if((wn.lines||[])[0]&&String(wn.lines[0]).toUpperCase().indexOf('ALPHA')<0) bad.push('the card no longer opens with what an alpha is');
+66524	13.39	if(g1&&g1.pick) for(var q=0;q<g1.pick.length;q++) if(String(g1.pick[q].m).charAt(0)==='+'&&/SURVIVOR/.test(String(g1.pick[q].tag||''))) pickPaid=true; };
+67206	13.27	if(a.indexOf('ENTER RAID')<0)
+67214	13.27	if(b.indexOf('ENTER RAID')<0)
+67261	13.25	if(u.indexOf('ESC')<0||u.indexOf('FULLSCREEN')<0) continue;
+67263	13.25	var qualified=(u.indexOf('OWN TAB')>=0)||(u.indexOf('ANOTHER PAGE')>=0);
+67264	13.25	if(u.indexOf('NO LONGER DROPS YOU OUT OF FULLSCREEN')>=0&&!qualified)
+67307	13.24	for(var h=0;h<heard.length;h++) if(heard[h].indexOf('to your empty slot')>=0||/ STOWED \| /.test(heard[h])||/ # SLOT \d+$/.test(heard[h])){ line=heard[h]; break; }   /* b
+67309	13.24	if(/\bX swaps\b/.test(line)||/\bPRESS X TO SWAP\b/.test(line))
+67311	13.24	if(line.indexOf('tactical belt')<0&&!/ TO SWAP$/.test(line)&&!/ # SLOT \d+$/.test(line))
+67369	13.22	if(idxB<0&&t.indexOf('TAB PAUSES AND BACKS OUT')===0) idxB=i;   // v13.45: B backed out until his TAB ruling
+67370	13.22	if(idxP<0&&t.indexOf('AN ARMOUR PLATE YOU FIND')===0) idxP=i;
+67371	13.22	if(idxX<0&&t.indexOf('X SEARCHES WHAT YOU ARE STANDING ON')===0) idxX=i;
+67761	13.15	var _medLine=[].slice.call(document.scripts).some(function(sc){ return String(sc.textContent||'').indexOf('YOU DIED CARRYING '+'MEDICAL')>=0; });
+67762	13.15	if(_medLine&&txt!==null&&txt.indexOf('MEDICAL')<0)
+67773	13.15	if(t2!==null&&t2.indexOf('MEDICAL')>=0)
+67785	13.15	if(t3!==null&&t3.indexOf('MEDICAL')>=0)
+67849	13.14	if(s2.tel&&String(s2.tel.lastHitName||'').indexOf('YOUR OWN')>=0)
+68054	13.10	if(txt.indexOf('SEARCH')>=0&&txt.indexOf('['+((typeof xCallKey==='function')?'E':'X')+'] SEARCH')<0)
+68215	13.08	if(floorText.indexOf('signal')>=0||floorText.indexOf('SIGNAL')>=0)
+68232	13.08	if(raidText.indexOf('[V] signal')<0&&raidText.indexOf('[FIRE] use')<0)
+68487	13.04	if(txt.indexOf('ABANDONED')<0)
+69006	12.94	if(txt.indexOf('TO SURRENDER')>=0)
+69008	12.94	if(txt.indexOf('HOLD E TO EXTRACT')<0&&txt.indexOf('HOLD [E] TO EXTRACT')<0&&txt.indexOf('HOLD [X] TO EXTRACT')<0)   /* keyswap v25.67: X extracts */
+69018	12.94	if(txt2.indexOf('HOLD E TO EXTRACT')<0&&txt2.indexOf('HOLD [E] TO EXTRACT')<0&&txt2.indexOf('HOLD [X] TO EXTRACT')<0)   /* keyswap v25.67: X extracts */
+69759	12.81	verb:txt.indexOf('TO EXTRACT')>=0};
+70193	12.73	function told(m){ return /\bswaps?\b/i.test(m)||/^SLOT \d+$/.test(gt); }
+70634	12.64	if(t1.indexOf('NEED')<0)
+70640	12.64	if(t2.indexOf('NEED')<0)
+70644	12.64	if(t3.indexOf('NEED')>=0)
+70650	12.64	if(t4.indexOf('NEED $')>=0)
+72321	12.36	if(newSaid.indexOf('DOWN. ')>=0) bad.push('a hit on the body during the death fade throws a toast over the death fade: '+newSaid);
+72368	12.35	if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: a death did not open the outcome card, so the payout path is not being measured');
+72369	12.35	if(txt.indexOf('LOST')<0) bad.push('control: the death card lists nothing as lost, so the ledger it shares with the pocket branch is not running');
+72536	12.32	if(lab.indexOf('HOLD')<0) bad.push('the bench button reads "'+(b.textContent||'')+'", which does not say it has to be held');
+72749	12.28	else if(!/tactical belt, key [1-9]/.test(m1)&&!/^SLOT [1-9]$/.test(tg)) bad.push('the rifle line said "'+m1+'" (row tag "'+tg+'") and not which belt key it went to');
+72810	12.27	if(!/No Bandage left|NO BANDAGE LEFT/.test(g.msg||'')) bad.push('a spent Bandage key said "'+(g.msg||'')+'", not No Bandage left');
+72866	12.26	if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
+72959	12.24	for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++){ tryExtractTick(0.1,true); if(first===null) first=String(window.__lastSay||''); if(Z.beaconT!==null&&Z.beacon
+72962	12.24	if(line===null||!/^(Pulled|EXTRACTION CALLED)/.test(line)) bad.push('control: the call did not say Pulled (said "'+String(line).slice(0,60)+'")');
+73087	12.21	if(!subs.some(function(t){ return t.indexOf(newWords)===0&&/12S LEFT/.test(t); })) bad.push('the map does not say '+newWords+' with the seconds left (drew: '+subs.join(' 
+73114	12.20	var line=null; for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FRAG CHARGES REACH FURTHER')===0) line=WHATSNEW[i];
+73156	12.18	var line=null; if(typeof WHATSNEW!=='undefined') for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FOUR GUNS ON THE CRAFTING BENCH')===0) line=WHATSNEW[i];
+73157	12.18	if(line&&line.indexOf('Compact SMG and Burst Carbine in green')>=0) bad.push('the card still calls the Burst Carbine green');
+73347	12.10	if(!/spent/.test(s1)&&!(s1.indexOf('DOWN')!==0&&p.downed&&window.__textTrace&&__textTrace(function(){ drawHUD(); }).some(function(o){ return (/Bleeding out/).test(o.t); }
+73352	12.10	if(!/F to get back up/.test(s2)&&!(s2.indexOf('DOWN')!==0&&p.downed&&window.__textTrace&&__textTrace(function(){ drawHUD(); }).some(function(o){ return (/SELF-REVIVE/).te
+73501	12.04	if(!/Only bandages left|BANDAGES STOP AT/.test(s1)) bad.push('at '+cap+' health with only Bandages the verb said "'+s1+'"');
+73506	12.04	if(!/Already at full|HEALTH FULL/.test(s2)) bad.push('at full health with a Medkit the verb said "'+s2+'"');
+73539	12.03	if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: the card did not open on the death');
+73817	11.94	if(!said.some(function(t){ return t.indexOf('The Crier raised the alarm.')===0||t.indexOf('CRIER REVEALED')===0; })) bad.push('the alarm line does not name the Crier (sai
+73829	11.94	if(!said.some(function(t){ return /You get one per raid\./.test(t); })&&!(p.downed&&window.__textTrace&&!said.some(function(t){ return t.indexOf('DOWN')===0; })&&__textTr
+73888	11.92	if(rec.some(function(r){ return r.t.indexOf('NEW IN v')===0; })) bad.push('a profile with no runs was shown the card');
+73895	11.92	if(!hd&&rec[i].t.indexOf('NEW IN v')===0) hd=rec[i];
+73896	11.92	if(!dm&&/press ENTER or walk to dismiss/.test(rec[i].t)) dm=rec[i];
+74024	11.88	if(all.indexOf('CONDITIONS')<0) return 'SKIP: the conditions panel is not drawn here';
+74026	11.88	if(all.indexOf('killed yet')>=0||all.indexOf('killed')>=0&&all.indexOf('BROKEN, ')>=0&&/BROKEN, \d+ killed/.test(all)) bad.push('the panel still prints the kill-nothing v
+74107	11.85	var names=rec.filter(function(r){ return r.t.indexOf('EXTRACT ')===0&&r.t.length<=10; });
+74108	11.85	var subs=rec.filter(function(r){ return /^(closes in |STAYS OPEN|CLOSED|CALLED |EXTRACT NOW|EXTRACT IN PROGRESS)/.test(r.t); });
+74254	11.81	if(t1.indexOf('KILLED')<0) bad.push('control: the death card did not come up (card says: '+t1.slice(0,60)+')');
+74463	11.74	if(line.indexOf('EXTRACT IN PROGRESS')<0) bad.push('the boarding window reads "'+line+'" instead of saying the extraction is in progress');
+74532	11.72	else if(txt.indexOf('FLOOR NOTES')<0) bad.push('the report carries the note but does not say what it is');
+75344	11.33	if(tt.indexOf('TAB bag')>=0) bad.push('the title controls line still says "TAB bag"');
+75440	11.30	if(m.indexOf('ENTER')>=0) bad.push('the belt key still names ENTER: "'+m+'"');
+75447	11.30	if(m2.indexOf('ENTER')>=0||m2.indexOf(wrong)>=0) bad.push('control: key 1 for the gun in hand printed "'+m2+'"');
+76675	11.04	if(say&&String(say.textContent).indexOf('ZQXLOST')<0)
+76772	11.03	if(txt.toUpperCase().indexOf('RESTORE CODE')<0) bad.push('the report does not say what the code is');
+77324	10.96	if(joined.indexOf('RETURN TO THE UNDERCROFT')<0)
+77326	10.96	if(joined.indexOf('RETURN TO CHARACTER SELECTION')<0)
+77331	10.96	for(var i=0;i<floor.length;i++) if(floor[i].txt.toUpperCase().indexOf('CHARACTER')>=0) back=document.getElementById(floor[i].id);
+77367	10.96	if(rj.indexOf('ABANDON')<0) bad.push('control: the raid pause box no longer offers a way to abandon the run: '+rj);
+77368	10.96	if(rj.indexOf('RESUME')<0) bad.push('control: the raid pause box no longer offers a way to resume: '+rj);
+77369	10.96	if(rj.indexOf('CHARACTER')>=0) bad.push('the raid pause box offers to go back to the character screen mid-raid: '+rj);
+77386	10.96	if((_ab.textContent||'').toUpperCase().indexOf('KEEP PLAYING')>=0)
+77655	10.93	else if(String(mir.label).toUpperCase().indexOf('FASHION')<0) bad.push('the racks station is called '+mir.label+', which is neither of the names he has used');
+79164	10.65	if(txt.indexOf('FLIGHT RECORDER')<0) bad.push('what it handed over is not the run report');
+79166	10.65	if(txt.indexOf('EXTRACT')<0) bad.push('the raid it just played is not in the report it handed over');
+79337	10.61	var hub=null; for(var i=0;i<all.length;i++) if(/UNDERCROFT/.test(all[i].name)) hub=all[i];
+79758	10.53	if(!/OFF$/.test(b.textContent)) bad.push('the switch says "'+b.textContent+'" while the flag is off');
+79766	10.53	if(!/OFF$/.test(b.textContent)) bad.push('after two clicks the switch says "'+b.textContent+'"');
+79794	10.52	for(i=0;i<trA.length;i++){ if(/^\[.*\] SEARCH /.test(trA[i].t)){ pr=trA[i]; break; } }
+79936	10.49	if(/^TEXT EDITS:/m.test(rep2)||/^TEXT PATTERNS:/m.test(rep2)) bad.push('control: an empty edit map still writes a line');
+79937	10.49	if(rep2.indexOf('FLIGHT RECORDER')<0) bad.push('control: the report lost its header');
+80127	10.44	else if(/they go to the backpack|keep one on a key|Plates top you up|selects, FIRE uses|in the stash or on the/.test(t)) rules.push(d);
+80238	10.41	if(!/RAID PAUSED/.test(pbt)) return 'the pause box does not say RAID PAUSED, it says "'+pbt.slice(0,40)+'"';
+80256	10.41	if(!/^YES, ABANDON THIS RUN/.test(live)) bad.push('the live abandon confirm reads "'+live+'"');
+80397	10.39	if(no&&no.textContent.trim()!=='CLOSE') bad.push('the way out reads "'+no.textContent.trim()+'" and not CLOSE');
+80453	10.38	if(!/ALPHA/.test(L[0]||'')) bad.push('the first line does not say it is an alpha: "'+String(L[0]).slice(0,60)+'"');
+80458	10.38	L.forEach(function(l,i){ if(/HOTBAR/.test(l)&&!/TACTICAL BELT/.test(l)) bad.push('line '+(i+1)+' calls the belt a hotbar'); });
+80482	10.37	if(rep.indexOf('CRASHES')<0||rep.indexOf(tag)<0) bad.push('the run report does not carry the crash');
+80503	10.37	if(rep.indexOf('FLIGHT RECORDER')<0) bad.push('control: the report lost its header');
+80739	10.30	if(!b.disabled||b.textContent.trim()!=='LOCKED') bad.push('with no extraction the switch reads "'+b.textContent.trim()+'" and is '+(b.disabled?'locked':'live'));
+80743	10.30	if(!b||b.disabled||b.textContent.trim()!=='OFF') bad.push('after one extraction the switch reads "'+(b?b.textContent.trim():'none')+'"');
+80772	10.29	if(!/Compact SMG/.test(list)||!/Burst Carbine/.test(list)) bad.push('the pack does not list a green gun and a blue gun ("'+list.slice(0,60)+'")');
+81037	10.22	if(!/MENU SIZE\s*\d+%/.test(said)) bad.push('the wheel changed the size and said nothing ("'+String(said).slice(0,40)+'")');
+81255	10.16	if(!/CLICK TO WEAR/.test(md.querySelector('[data-lookwear="1"]').textContent)) bad.push('a saved look does not say CLICK TO WEAR');
+81400	10.12	if(/LOADOUTS/.test(pk.textContent)) bad.push('the picker still says LOADOUTS');
+81434	10.11	if(tabs.indexOf('ARMOUR')>=0) bad.push('there is still an ARMOUR tab');
+81447	10.11	if(tabs.indexOf('OTHER')>=0) bad.push('an OTHER tab is drawn with nothing in it');
+81553	10.08	if(!/^PILLBOX/.test(String(e.name))) bad.push('the emplacement is named ['+e.name+']');
+81574	10.08	if(!/PILLBOX/.test(said)) bad.push('the sighting line does not say PILLBOX: ['+said+']');
+81914	9.97	if(!/^DAY$/.test(d.textContent.trim())||!/^NIGHT$/.test(nt.textContent.trim())) bad.push('the buttons read ['+d.textContent.trim()+'] and ['+nt.textContent.trim()+']');
+81924	9.97	if(cb){ nt.click(); if(!/NIGHT/.test(cb.textContent)) bad.push('the stash button did not follow the sector page to NIGHT'); d.click(); }
+82103	9.94	if(!/THE GAMBLE/.test(sg.textContent)||!/LIMITED TIME OFFER/.test(so.textContent)) bad.push('the section heads are not THE GAMBLE and LIMITED TIME OFFER');
+82608	9.87	for(var q=0;q<all.length;q++) if(/LAMPLIGHTERS/.test(all[q].name)) lamps=all[q];
+83489	9.76	for(i=0;i<before.length;i++) if(/^EXTRACT \d+m$/.test(before[i])){ target=before[i]; break; }
+83495	9.76	for(i=0;i<moved.length;i++) if(/^ZQX RING \d+m$/.test(moved[i])){ trav=moved[i]; break; }
+83531	9.75	for(i=0;i<before.length;i++) if(/^EXTRACT \d+m$/.test(before[i])){ target=before[i]; break; }
+83538	9.75	for(i=0;i<now.length;i++) if(/^ZQX RUN FOR THE RING \d+m$/.test(now[i])){ immediate=now[i]; break; }
+83546	9.75	if(/^ZQX RUN FOR THE RING \d+m$/.test(after[i])) kept=after[i];
+83547	9.75	if(/^EXTRACT \d+m$/.test(after[i])) stale=after[i];
+83564	9.75	for(i=0;i<back.length;i++) if(/^EXTRACT \d+m$/.test(back[i])){ restored=back[i]; break; }
+83914	9.71	if(spentTxt.indexOf('DOWN')<0&&keepTxt.indexOf('DOWN')<0)
+83947	9.70	if((title.textContent||'').indexOf('KILLED')<0)
+83949	9.70	if(txt.indexOf('IN CONTACT')<0)
+84382	9.64	if(d.align==='right'){ if(/^\$|DEAD|EXTRACTED/.test(d.t)) byY[k].right=d.t; }
+84389	9.64	if(/CURRENT PILLAGERS/.test(r3.left)) return;   // the header, not a row
+84838	9.58	if(!/FULLSCREEN/.test(b.textContent||''))
+84970	9.56	if(!ext&&/^(EXTRACT|EXTRACTION|WAYPOINT) /.test(d.t)) ext=d;
+84971	9.56	if(!mk&&d.t.indexOf('MARKED')===0) mk=d;
+85620	9.43	if(/REPAIRS/.test(html)) bad.push('the workshop still draws a REPAIRS section');
+85630	9.43	if(!/CRAFTING/.test(fresh))
+85636	9.43	if(!/CRAFTING/.test(html)) bad.push('control: the workshop no longer draws its CRAFTING heading');
+85870	9.42	if(r&&r.indexOf('SKIP: ')===0){ res.skipped.push('v'+t.v+' '+t.what+' -> '+r.slice(6)); continue; }
+85900	9.42	if(r&&String(r).indexOf('SKIP: ')===0) res.skipped.push('v'+t.v+' '+t.what+' -> '+String(r).slice(6));
+86219	9.42	if(/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|TITLE|OPTION)$/.test(p.tagName)) return NodeFilter.FILTER_REJECT;
+86335	9.42	if(e.tabIndex<0&&!/^(BUTTON|A|INPUT|SELECT|TEXTAREA)$/.test(e.tagName)) return;
