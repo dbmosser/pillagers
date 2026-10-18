@@ -1,0 +1,7 @@
+v29.77: settings tabs one row
+
+The Settings section tabs sit on one row.
+
+Check 29.77. Fails on v29.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

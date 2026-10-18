@@ -162,10 +162,10 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, well-ordered pause card with a clear amber primary, a danger-ghost Abandon and sentence case throughout, but it lacks the guide's close button, uses undersized type, and shows faint HUD ghosting behind it.",
-  "pic": "tools/handoff/console/notes/shots/c-31s-after/25-raid-pause-box-1080.jpg",
+  "verdict": "A clean, centred pause card with one clear amber primary and a separated danger action, but it breaks the style guide on close placement, the footer hint and the sizing of the button stack, and it feels like a generic template.",
+  "pic": "tools/handoff/console/notes/shots/c-31s-after2/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:49"
+  "when": "2026-10-18T09:58"
  },
  "26-settings-from-pause-top": {
   "score": 2,
@@ -330,10 +330,10 @@
  "55-arcade-run-over-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean but sparse end card with a dim button-less prompt, a 40px hero, and a mismatch against the guide's end-card shell (no scrim over the world, no stats row, no primary button, no close), so it reads as a placeholder, not a polished run-over screen.",
-  "pic": "tools/handoff/console/notes/shots/12-c3/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "The Run over card is tidy and in sentence case, but a full-width amber slab that says 'Press any button' beats a 0 SP score in the hierarchy, the tiny stats line repeats the headline, and the card is a sparse floating box with no end-card structure.",
+  "pic": "tools/handoff/console/notes/shots/12-c4/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:54"
+  "when": "2026-10-18T09:59"
  },
  "60-abandoned-card": {
   "score": 2,

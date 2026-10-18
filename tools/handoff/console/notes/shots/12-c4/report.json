@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T05:58:50","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":48,"screens":[
+{"name":"52-arcade-run-over","screen":"Arcade RUN OVER card, score $0","1080":{"staged":true,"note":"welcomemodal","viewport":"1920x1080","shot":"52-arcade-run-over-1080.jpg","lint":""}},
+{"name":"55-arcade-run-over-scored","screen":"Arcade RUN OVER card with $2,500","1080":{"staged":true,"note":"welcomemodal","viewport":"1920x1080","shot":"55-arcade-run-over-scored-1080.jpg","lint":""}}
+]}

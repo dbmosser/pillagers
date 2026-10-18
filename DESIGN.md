@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.77 - SETTINGS TABS ONE ROW
+
+Co-op hunt while he was away. Critic c-31: Send play data wraps to a second tab row in Settings.
+
+MEASURED. Check 29.77 passes, and fails on v29.76.
 ## v29.76 - Run over card: one solid button, one amber
 
 Co-op hunt while he was away. The critic scored the run over screen 2: the prompt a muddy ghost box, centred under left aligned text, amber spent twice. The column is one card wide, the button is the one solid primary as wide as the card, the score goes light. Restyle only.

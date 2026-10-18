@@ -1,0 +1,12 @@
+{
+    "title":  "SETTINGS TABS ONE ROW",
+    "why":  "Critic c-31: Send play data wraps to a second tab row in Settings.",
+    "now":  "The Settings section tabs sit on one row.",
+    "edits":  [
+                  {
+                      "anchor":  "body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ bottom:auto; top:var(--sp-5); }",
+                      "replacement":  "body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ bottom:auto; top:var(--sp-5); }\n\n/* v28.xx (cw-settab1) critic c-31 (Settings 2): \"the tab strip is two rows, Send play data sits alone on a second line and the underline sits mid-header\". Now the section strip is one row: no wrap, 16px between labels, no side padding, so all seven fit in the card. */\n#root #setlist .setjump .sj{ flex-wrap:nowrap; gap:var(--sp-2); }\n#root #setlist .setjump button{ padding:0; white-space:nowrap; flex:0 0 auto; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027Settings: the section strip is one row (the seven tabs share one top)\u0027,\n   run:function(){\n     if(typeof openSettings!==\u0027function\u0027) return \u0027SKIP: no Settings here\u0027;\n     var bad=[], bs, i, t0, l;\n     try{\n       openSettings(\u0027display\u0027); l=document.getElementById(\u0027setlist\u0027);\n       if(!l) return \u0027SKIP: no list\u0027;\n       bs=l.querySelectorAll(\u0027.setjump button\u0027);\n       if(bs.length\u003c6) return \u0027SKIP: strip too short\u0027;\n       t0=bs[0].getBoundingClientRect().top;\n       for(i=1;i\u003cbs.length;i++){ if(Math.abs(bs[i].getBoundingClientRect().top-t0)\u003e4){ bad.push(\u0027tab \u0027+i+\u0027 (\u0027+bs[i].textContent+\u0027) wraps to a second row\u0027); break; } }\n       for(i=0;i\u003cbs.length;i++){ if(bs[i].scrollWidth\u003ebs[i].clientWidth+1){ bad.push(\u0027tab \u0027+bs[i].textContent+\u0027 is clipped\u0027); break; } }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var q=document.getElementById(\u0027settingsmodal\u0027); if(q) q.classList.remove(\u0027on\u0027); }catch(_k){} try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

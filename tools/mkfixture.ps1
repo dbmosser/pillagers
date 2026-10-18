@@ -6097,6 +6097,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.77',what:'Settings: the section strip is one row (the seven tabs share one top)',
+   run:function(){
+     if(typeof openSettings!=='function') return 'SKIP: no Settings here';
+     var bad=[], bs, i, t0, l;
+     try{
+       openSettings('display'); l=document.getElementById('setlist');
+       if(!l) return 'SKIP: no list';
+       bs=l.querySelectorAll('.setjump button');
+       if(bs.length<6) return 'SKIP: strip too short';
+       t0=bs[0].getBoundingClientRect().top;
+       for(i=1;i<bs.length;i++){ if(Math.abs(bs[i].getBoundingClientRect().top-t0)>4){ bad.push('tab '+i+' ('+bs[i].textContent+') wraps to a second row'); break; } }
+       for(i=0;i<bs.length;i++){ if(bs[i].scrollWidth>bs[i].clientWidth+1){ bad.push('tab '+bs[i].textContent+' is clipped'); break; } }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.76',what:'while the run over card is up, Press any button is one solid accent button as wide as the card and lined up with it, no pulse, and the score is light text so the amber is spent once (critic on v29.74: muddy ghost button, centred under left aligned text, amber twice; screens 52 55)',
    run:function(){
      if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';

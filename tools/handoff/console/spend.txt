@@ -277,3 +277,5 @@
 2026-10-18 0.0457 critic-b-31-ui-undercroft
 2026-10-18 1.4029 b-31-ui-undercroft
 2026-10-18 0.0579 critic-c-31-ui-pause-settings
+2026-10-18 0.0425 critic-c-31-ui-pause-settings
+2026-10-18 0.0489 critic-12-ui-party-screens
