@@ -1,0 +1,7 @@
+v30.62: resize hatch only on hover
+
+The raid HUD panels show their resize hatch only when the pointer is over them.
+
+Check 30.62. Fails on v30.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

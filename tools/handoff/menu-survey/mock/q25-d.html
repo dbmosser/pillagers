@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>q25-d small and fast</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0b0c0d}
+body{position:relative;font-family:"Bahnschrift SemiCondensed","Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;color:#f2efe6;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;text-transform:none}
+.a{position:absolute}
+.bd{position:absolute;inset:0;background-size:cover;background-position:center}
+.ov{position:absolute;inset:0}
+.panel{position:absolute;background:#14171a;border:1px solid #2e3337;border-radius:4px}
+.tabmark{position:absolute;left:-1px;top:-1px;width:36px;height:4px;background:#e4ff2e;border-radius:4px 0 0 0}
+.muted{color:#a9a79e}
+.lime{color:#e4ff2e}
+.teal{color:#47d8c6}
+.blue{color:#4fb4ff}
+.danger{color:#ff5a3c}
+.hero{font-weight:700;-webkit-text-stroke:.011em currentColor;letter-spacing:-.012em;line-height:1;white-space:nowrap}
+.nw{white-space:nowrap}
+.btn{position:absolute;display:flex;align-items:center;justify-content:center;gap:18px;font-weight:700;border-radius:4px;white-space:nowrap;line-height:1}
+.btn.pri{background:#e4ff2e;color:#0d1200}
+.btn.gh{border:2px solid #4a5257;color:#f2efe6;background:rgba(255,255,255,.02)}
+.gl{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:3px solid currentColor;font-weight:800;font-size:24px;line-height:1;flex:none;padding-bottom:1px}
+.gl.s{width:32px;height:32px;border-width:2.5px;font-size:19px}
+.chip{display:inline-flex;align-items:center;white-space:nowrap;font-weight:700;border-radius:4px;line-height:1}
+.chip.tl{background:rgba(71,216,198,.14);border:1.5px solid #47d8c6;color:#47d8c6}
+.chip.lm{background:#e4ff2e;color:#0d1200}
+
+.inset{border:1px solid #4a5257;background:#14171a;border-radius:4px;position:absolute}
+.xpbar{height:6px;border-radius:3px;background:#2e3337;overflow:hidden;position:absolute}
+.xpbar i{display:block;height:100%;background:#e4ff2e;border-radius:3px}
+.stat b{display:block;font-weight:700;line-height:1.15}
+.stat span{display:block;color:#a9a79e;line-height:1.2}
+
+.card{left:680px;top:350px;width:560px;height:380px}
+.ttl{left:32px;top:34px;font-size:40px;line-height:48px;font-weight:700}
+.ln{left:32px;top:108px;font-size:56px;line-height:64px;font-weight:700;white-space:nowrap}
+.ln span{font-weight:600}
+.xp{left:32px;top:184px;font-size:24px;line-height:28px;color:#aab84f}
+.btns{left:32px;bottom:32px;display:flex;gap:16px}
+.btns .btn{position:static;width:240px;height:72px;font-size:28px}
+.in{left:40px;top:740px;width:400px;height:260px}
+.in .ttl{left:32px;top:26px;font-size:36px;line-height:44px}
+.in .ln{left:32px;top:84px}
+.in .btns{left:32px;bottom:26px;gap:16px}
+.in .btns .btn{width:160px;height:56px;font-size:24px}
+</style></head>
+<body>
+<div class="bd" style="inset:-12px;background-image:url('../../console/notes/shots/all/21-raid-hud-calm-1080.jpg');filter:blur(4px)"></div>
+<div class="ov" style="background:rgba(0,0,0,0.55)"></div>
+<div class="panel card"><div class="tabmark" style="background:#47d8c6"></div>
+ <div class="a ttl teal">Extracted</div>
+ <div class="a ln">$1,770 <span>secured</span></div>
+ <div class="a xp">+130 XP</div>
+ <div class="a btns"><div class="btn pri">Back</div><div class="btn gh">Details</div></div>
+</div>
+<div class="inset in"><div class="tabmark" style="background:#ff5a3c"></div>
+ <div class="a ttl danger">Killed in action</div>
+ <div class="a ln">$1,770 <span>lost</span></div>
+ <div class="a btns"><div class="btn pri">Back</div><div class="btn gh">Details</div></div>
+</div>
+</body></html>

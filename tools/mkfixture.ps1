@@ -6099,6 +6099,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.62',what:'the raid HUD panels draw no resize hatch until the pointer is over them (style guide: no clutter)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var g=null, oS=ctx.stroke, n=0, mx0, my0, k, B=null, kk;
+     function count(){ n=0; ctx.stroke=function(){ if(ctx.strokeStyle==='rgba(140, 152, 163, 0.45)') n++; return oS.apply(this,arguments); }; try{ __frame(0.016); }finally{ ctx.stroke=oS; } return n; }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
+       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; mx0=mouse.x; my0=mouse.y;
+       __frame(0.016);
+       for(kk in HUDZ){ if(HUDBOX[kk]&&!hudOff(kk).c&&HUDBOX[kk].w>40&&HUDBOX[kk].h>40){ k=kk; B=HUDBOX[kk]; break; } }
+       if(!B) return 'SKIP: no resizable panel on screen';
+       mouse.x=-50; mouse.y=-50;
+       if(count()>0) return 'the resize hatch is drawn on a panel with the pointer far away ('+n+' strokes)';
+       mouse.x=B.x+B.w/2; mouse.y=B.y+B.h/2;
+       if(count()===0) return 'the resize hatch does not show with the pointer over the '+k+' panel';
+       return null;
+     } finally {
+       ctx.stroke=oS; try{ mouse.x=mx0; mouse.y=my0; }catch(_m){}
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'30.61',what:'the accent is lime yellow (his Q46): --acc and UIC.acc are the same lime, 7:1 or better against the panel, ink on it 7:1, 20 degrees or more of hue from rarity gold, warn and danger, and the pause Resume button wears it',
    run:function(){
      function rgb(h){ h=String(h).trim().replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; }

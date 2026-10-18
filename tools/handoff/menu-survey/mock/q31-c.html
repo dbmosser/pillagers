@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>q31 C pad diagram and list</title>
+<style>
+:root{--panel:#14171a;--raised:#1e2225;--line:#2e3337;--line-hi:#4a5257;--text:#f2efe6;--muted:#a9a79e;--lime:#e4ff2e;--ink:#0d1200;--danger:#ff5a3c}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0b0c0d}
+body{position:relative;font-family:Bahnschrift,"Segoe UI Variable Display","Segoe UI",sans-serif;font-weight:500;color:var(--text);-webkit-font-smoothing:antialiased;letter-spacing:.01em}
+.abs{position:absolute}
+.bd{position:absolute;background-repeat:no-repeat}
+.dim{position:absolute;inset:0}
+.ico{display:block;flex:none}
+.hint{position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center;align-items:center;gap:44px;font-size:24px;color:var(--muted);font-weight:500}
+.hint span.it{display:flex;align-items:center;gap:12px}
+.pad{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:2px solid #6b7176;background:rgba(20,23,26,.9);color:var(--text);font-size:21px;font-weight:700;letter-spacing:0}
+.pad.sh{border-radius:10px;width:auto;min-width:46px;padding:0 10px;height:34px;font-size:19px}
+.close{position:absolute;width:56px;height:56px;border-radius:4px;border:1px solid var(--line-hi);display:flex;align-items:center;justify-content:center;color:var(--text);background:transparent}
+.ghost{position:absolute;height:56px;padding:0 28px;border-radius:4px;border:1px solid var(--line-hi);display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;color:var(--text);background:rgba(255,255,255,.03)}
+.card{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:4px;box-shadow:0 30px 90px rgba(0,0,0,.55)}
+
+.card{left:96px;top:54px;width:1728px;height:972px;box-shadow:0 0 0 1px var(--line),0 30px 90px rgba(0,0,0,.55);border:0}
+.hdr{position:absolute;left:136px;top:82px;font-size:48px;line-height:56px;font-weight:700}
+.close{left:1744px;top:82px}
+.hint{bottom:7px}
+.cap{display:inline-flex;align-items:center;justify-content:center;min-width:120px;height:48px;padding:0 16px;border-radius:6px;background:var(--raised);border:1px solid var(--line-hi);border-bottom-width:3px;font-size:24px;font-weight:600;color:#fff;white-space:nowrap}
+.cap.wait{border:3px solid var(--lime);box-shadow:0 0 0 4px rgba(228,255,46,.18),0 0 30px rgba(228,255,46,.45);background:#262b12;font-size:22px}
+.r{position:absolute;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--line);font-weight:500;color:var(--text)}
+.r.on{background:linear-gradient(90deg,rgba(228,255,46,.20),rgba(228,255,46,.07));border-bottom-color:transparent;font-weight:600}
+.r.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--lime)}
+.sec{position:absolute;height:40px;line-height:40px;padding-left:16px;font-size:22px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+.reset{left:136px;top:946px}
+.chips{position:absolute;left:136px;top:152px;height:48px;display:flex;align-items:center;gap:12px}
+.chip{height:48px;padding:0 28px;border-radius:24px;border:1px solid var(--line-hi);background:var(--raised);font-size:26px;line-height:46px;color:var(--muted);font-weight:600}
+.chip.on{background:var(--lime);border-color:var(--lime);color:var(--ink);font-weight:700}
+
+  .r{height:64px;font-size:26px}
+  .gp{display:inline-flex;align-items:center;justify-content:center;min-width:64px;height:40px;padding:0 14px;border-radius:20px;background:var(--raised);border:1px solid var(--line-hi);font-size:22px;font-weight:700;color:#fff;white-space:nowrap}
+  .gp.c{width:40px;min-width:40px;padding:0;border-radius:50%}
+  .gp.wait{background:var(--lime);border-color:var(--lime);color:var(--ink);box-shadow:0 0 0 4px rgba(228,255,46,.2),0 0 24px rgba(228,255,46,.45)}
+  .cl{position:absolute;font-size:26px;line-height:30px;font-weight:600;color:var(--text);white-space:nowrap}
+  .cl.lime{color:var(--lime)}
+  .vl{position:absolute;left:944px;top:236px;width:1px;height:540px;background:var(--line)}
+  </style></head>
+<body>
+<div class="bd" style="left:-40px;top:-40px;width:2000px;height:1160px;background-image:url('../../console/notes/shots/all4k/50-arcade-hud-live-4k.jpg');background-size:3000px 1687px;background-position:-590px -185px;filter:blur(12px)"></div><div class="dim" style="background:rgba(6,7,8,0.55)"></div><div class="card"></div><div class="hdr">Controls</div><div class="close"><svg class="ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M5 5l14 14M19 5L5 19"/></svg></div><div class="chips"><span class="pad sh">LB</span><div class="chip">Keyboard</div><div class="chip on">Controller</div><span class="pad sh">RB</span></div><div class="vl"></div><svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <g transform="translate(300,330)" fill="none" stroke="#e8e5db" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="92" y="14" width="60" height="20" rx="9" fill="#14171a"/>
+    <rect x="308" y="14" width="60" height="20" rx="9" fill="#14171a"/>
+    <rect x="78" y="40" width="92" height="18" rx="9" fill="#14171a"/>
+    <rect x="290" y="40" width="92" height="18" rx="9" fill="#14171a"/>
+    <path d="M230 62 C290 62 335 64 370 72 C415 84 440 146 448 211 C452 256 430 288 400 284 C365 280 345 231 300 216 C275 208 250 208 230 208 C210 208 185 208 160 216 C115 231 95 280 60 284 C30 288 8 256 12 211 C20 146 45 84 90 72 C125 64 170 62 230 62 Z" fill="#14171a"/>
+    <circle cx="110" cy="130" r="30"/><circle cx="110" cy="130" r="17"/>
+    <path d="M162 142h20v20h20v20h-20v20h-20v-20h-20v-20h20z"/>
+    <circle cx="290" cy="178" r="28"/><circle cx="290" cy="178" r="16"/>
+    <circle cx="230" cy="92" r="15"/>
+    <circle cx="190" cy="118" r="7"/><circle cx="270" cy="118" r="7"/>
+    <circle cx="352" cy="98" r="15"/><circle cx="322" cy="128" r="15" fill="#e4ff2e" stroke="#e4ff2e"/><circle cx="382" cy="128" r="15"/><circle cx="352" cy="158" r="15"/>
+  </g>
+  <g font-family="Bahnschrift,Segoe UI,sans-serif" font-weight="700" font-size="17" text-anchor="middle" fill="#e8e5db">
+    <text x="652" y="434">Y</text><text x="622" y="464" fill="#0d1200">X</text><text x="682" y="464">B</text><text x="652" y="494">A</text>
+    <text x="422" y="382" font-size="13">LB</text><text x="636" y="382" font-size="13">RB</text>
+    <text x="422" y="359" font-size="12">LT</text><text x="638" y="359" font-size="12">RT</text>
+  </g><polyline points="422,344 422,316 350,316" fill="none" stroke="#7b8187" stroke-width="1.6"/><circle cx="422" cy="344" r="3.4" fill="#aab0b5"/><polyline points="378,379 350,379" fill="none" stroke="#7b8187" stroke-width="1.6"/><circle cx="378" cy="379" r="3.4" fill="#aab0b5"/><polyline points="380,460 350,460" fill="none" stroke="#7b8187" stroke-width="1.6"/><circle cx="380" cy="460" r="3.4" fill="#aab0b5"/><polyline points="442,502 350,502" fill="none" stroke="#7b8187" stroke-width="1.6"/><circle cx="442" cy="502" r="3.4" fill="#aab0b5"/><polyline points="638,344 638,316 760,316" fill="none" stroke="#7b8187" stroke-width="1.6"/><circle cx="638" cy="344" r="3.4" fill="#aab0b5"/><polyline points="682,379 760,379" fill="none" stroke="#7b8187" stroke-width="1.6"/><circle cx="682" cy="379" r="3.4" fill="#aab0b5"/><polyline points="667,428 760,428" fill="none" stroke="#7b8187" stroke-width="1.6"/><circle cx="667" cy="428" r="3.4" fill="#aab0b5"/><polyline points="667,488 760,488" fill="none" stroke="#7b8187" stroke-width="1.6"/><circle cx="667" cy="488" r="3.4" fill="#aab0b5"/><polyline points="628,472 628,552 760,552" fill="none" stroke="#e4ff2e" stroke-width="1.6"/><circle cx="628" cy="472" r="3.4" fill="#e4ff2e"/></svg><div class="cl " style="right:1580px;top:301px">Aim</div><div class="cl " style="right:1580px;top:364px">Switch gun</div><div class="cl " style="right:1580px;top:445px">Move</div><div class="cl " style="right:1580px;top:487px">Items</div><div class="cl " style="left:770px;top:301px">Fire</div><div class="cl " style="left:770px;top:364px">Switch gun</div><div class="cl " style="left:770px;top:413px">Loot</div><div class="cl " style="left:770px;top:473px">Roll</div><div class="cl lime" style="left:770px;top:537px">Reload</div><div class="r" style="left:1000px;top:236px;width:720px"><span>Fire</span><span style="display:flex;align-items:center"><span class="gp">RT</span></span></div><div class="r" style="left:1000px;top:300px;width:720px"><span>Aim</span><span style="display:flex;align-items:center"><span class="gp">LT</span></span></div><div class="r" style="left:1000px;top:364px;width:720px"><span>Move</span><span style="display:flex;align-items:center"><span class="gp">Left stick</span></span></div><div class="r" style="left:1000px;top:428px;width:720px"><span>Roll</span><span style="display:flex;align-items:center"><span class="gp c">A</span></span></div><div class="r on" style="left:1000px;top:492px;width:720px"><span>Reload</span><span style="display:flex;align-items:center"><span class="gp c wait">X</span></span></div><div class="r" style="left:1000px;top:556px;width:720px"><span>Switch gun</span><span style="display:flex;align-items:center"><span class="gp">LB</span><span class="gp" style="margin-left:8px">RB</span></span></div><div class="r" style="left:1000px;top:620px;width:720px"><span>Items</span><span style="display:flex;align-items:center"><span class="gp"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg></span></span></div><div class="r" style="left:1000px;top:684px;width:720px"><span>Loot</span><span style="display:flex;align-items:center"><span class="gp c">Y</span></span></div><div class="ghost reset">Reset to defaults</div><div class="hint"><span class="it"><span class="pad">A</span>Pick a button</span><span class="it"><span class="pad">B</span>Cancel</span></div>
+</body></html>

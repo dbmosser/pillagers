@@ -14,8 +14,10 @@ Rule of the guide: the code already HAS most tokens (CSS :root at line ~40, UIC 
 --ui-line-hi:#4a5257;/* panel border, idle button border           */
 --tx-1:#efe9dc;     /* text                                        */
 --tx-2:#aaa498;     /* muted text (floor: 4.5:1 on panel, never dimmer for anything read) */
---acc:#f5b73b;      /* THE accent: focus, the one main action, hero number */
---acc-ink:#1a1205;  /* text on an accent fill                      */
+--acc:#e6ff3d;      /* THE accent (his Q46, 10-18): lime yellow. Focus, selected, the one main action, hero number. 15:1 on --ui-panel, 16:1 on --ui-void (same at 1080 and 4K: contrast is colour, not size) */
+--acc-ink:#11150a;  /* text on an accent fill, 15:1                */
+--acc-hover:#f0ff7a; --acc-press:#c8e22c;   /* main button hover and pressed                */
+--warn:#f5b73b;     /* the OLD amber, kept only as warning text/glyph so a warning never reads as the accent */
 --danger:#e5482f;   /* KIA, Abandon, hostile, "cannot afford"      */
 --ok:#76b97c;       /* signed, built, recovered                    */
 --extract:#47d8c6;  /* extraction only (Extracted card, countdown) */
@@ -37,12 +39,13 @@ Rule of the guide: the code already HAS most tokens (CSS :root at line ~40, UIC 
 --m-fast:90ms; --m-med:160ms; --m-in:240ms; --m-out:140ms;
 --m-ease:cubic-bezier(.2,.8,.2,1); --m-ease-in:cubic-bezier(.4,0,1,1);
 ```
-Boldness goes in ONE place per screen: the title or the main action, never both. Everything else is quiet (tx-2, line, panel). Amber is for focus and the one primary action, so amber text on a body paragraph, amber warnings and amber credits all go (use tx-1, danger, tx-1).
+Boldness goes in ONE place per screen: the title or the main action, never both. Everything else is quiet (tx-2, line, panel). Lime (--acc) is for focus, selected and the one primary action, so lime text on a body paragraph and lime credits all go (use tx-1). Keep it apart from its neighbours: rarity gold (#ffc72e, hue 44) is a 3px bar, never a fill; warn amber (hue 40) is a small glyph or short word; danger red (hue 10); ok green (hue 125); extract teal. The accent is 24 degrees of hue from gold, so never put the two side by side as fills.
+His taste, 10-18 (Q40, 42, 44, 45): clean and modern. No pixel or arcade font anywhere (Barlow Condensed and Barlow only; the tabular f-mono is for numbers in a table, never a headline). Straight copy: no arcade wink, no "Insert coin", no "Game over" jokes; say what it is ("Run over", "Press any button" stays because it is the action). No single model game: borrow per element (Halo Reach/4: the calm column menu and the focus bar; Diablo IV: the dark inventory grid with rarity bars; ARC Raiders: the flat dark panel with one hot accent; Fortnite: big bold bouncy CTA and punchy confirm; Destiny 2: the hero number and the quiet type; see references.md).
 Avoid the template tells: no identical rounded boxes with one shadow, no gradient washes (the .panel linear-gradient goes), no everything-same-weight rows. Hierarchy comes from size (hero 56 vs body 20), weight (800 vs 400) and brightness (tx-1 vs tx-2).
 
 ## 2. Components (one of each)
 Panel P: fill --ui-panel at 90%, 1px --ui-line-hi border, --rad, padding 24px, NO double frame, NO corner tick, NO gradient, NO shadow. Optional 3px accent tab on the left edge or a 2px top tab 36px wide when the panel is "the star" (the existing hudPanel tick is this). Detail pane: same panel in --ui-raised. The cream paper card (--ui-paper) stays ONLY for the one-question ask dialog (#askmodal); shop, craft, hire, contracts detail panes become dark detail panes.
-Modal: centred, max 960x680 (card dialogs 480x240), on --scrim, header row 56px high (title left 32px, close right), body, footer action row 72px. Full-screen slabs (stash, what's new, welcome pack, party) become centred cards. A modal never exceeds its content.
+Window (his Q43, 10-18: "centred card with an X, taking up nearly the entire screen"): every WINDOW (Settings, stash, shop, craft, hire, contracts, codex, trophies, mirror, board, what's new, welcome pack, party) is one centred card at 90% of the screen width and height (the 5% margin on every side), on --scrim, header row 56px high (title left 32px, the X right), body, footer action row 72px. The content inside keeps its own measure, centred in the card (list rows max 900px, a grid fills the card). Replaces the old 960x680 cap and the full-screen slabs. A DIALOG (ask, confirm, pause 480, end card 720) is NOT a window: it stays a small card sized to its content (480x240 for a question), centred, with the same X.
 Header H: title left at x = margin (5%), --fs-title f-cond 700, tx-1, sentence case, optional muted count on the same baseline in tx-2 20px ("10 of 20 found"). Never a sentence, never currency (currency lives in the one top-right currency block).
 Close / back: ONE place: top-right of the modal header, a 48x48 square ghost button with the uiIcon "close" glyph, plus the pad glyph "B" beside it and Esc. Where a footer exists the primary sits right and a "Back" ghost sits left of it; no third close style. In-raid panels close with the same X.
 Primary button: 56px high (44px minimum in dense lists), fill --acc, text --acc-ink --fs-body 700, padding 0 32px, min-width 200px, --rad. One per screen. Hover: #f7c25a. Pressed: #dfa52f, 1px down.

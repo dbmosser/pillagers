@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.62 - RESIZE HATCH ONLY ON HOVER
+
+Co-op hunt while he was away. Critic on the raid HUD (10-18): hatched resize grips on every panel are clutter. The style guide says chrome shows only when used. The hatch now draws only while the pointer is over its panel.
+
+MEASURED. Check 30.62 passes, and fails on v30.61.
 ## v30.61 - THE ACCENT IS LIME YELLOW
 
 Co-op hunt while he was away. His Q46 (2026-10-18): the accent for selected things and main buttons is lime yellow, whichever shade is most visible on the dark. #e6ff3d is 15:1 on the panel and the ink on it is 15:1. Rarity gold, warn amber, danger red and the extract teal stay as they are, so the accent never reads as one of them.

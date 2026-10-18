@@ -1,0 +1,1 @@
+| RESIZE HATCH ONLY ON HOVER | v30.62 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.62 passes, fails on v30.61 |

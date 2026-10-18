@@ -1,0 +1,5 @@
+## v30.62 - RESIZE HATCH ONLY ON HOVER
+
+Co-op hunt while he was away. Critic on the raid HUD (10-18): hatched resize grips on every panel are clutter. The style guide says chrome shows only when used. The hatch now draws only while the pointer is over its panel.
+
+MEASURED. Check 30.62 passes, and fails on v30.61.

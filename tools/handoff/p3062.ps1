@@ -12,14 +12,13 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-# TITLE: LET THE WORLD SHOW (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
+# RESIZE HATCH ONLY ON HOVER (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
 
 SubRx @'
-linear-gradient(90deg, rgba(17,19,21,.8) 0%, rgba(17,19,21,.9) 26%, rgba(17,19,21,.9) 74%, rgba(17,19,21,.8) 100%);
-    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+      var hot=(HUDRESIZE&&HUDRESIZE.id===gk)||hudOnGrip(GB,mouse.x,mouse.y);
 '@ @'
-linear-gradient(90deg, rgba(17,19,21,.7) 0%, rgba(17,19,21,.58) 26%, rgba(17,19,21,.58) 74%, rgba(17,19,21,.7) 100%);
-    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); }   /* v28.xx (cw-title-scrim), the critic (3 of 5, P2): the backdrop was so dark it read flat. Centre column scrim .9 to .58, sides .8 to .7, blur 4 to 3px, so the live world shows (Q52). */
+      var hot=(HUDRESIZE&&HUDRESIZE.id===gk)||hudOnGrip(GB,mouse.x,mouse.y);
+      if(!hot&&!inRect(GB,mouse.x,mouse.y)) continue;   // v28.xx (cw-hudgrips), the style guide (no clutter: chrome only when used): the resize hatch shows only while the pointer is over its panel
 '@
 
 SubRx @'
@@ -31,7 +30,7 @@ var VER='30.62';
 $pat = "(?m)^  now:'v30\.61:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v30.62: The title backdrop is brighter. Check 30.62 fails on v30.61',"
+$new = "  now:'v30.62: The raid HUD panels show their resize hatch only when the pointer is over them. Check 30.62 fails on v30.61',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s
