@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.65 - SETTINGS ONE STRIP
+
+Co-op hunt while he was away. Critic c-31 P0: two stacked tab strips in Settings. Send play data is a chip of the section strip now.
+
+MEASURED. Check 29.65 passes, and fails on v29.64.
 ## v29.64 - SETTINGS FEEL
 
 Co-op hunt while he was away. Critic c-31 follow-up: clipped last row, faint chevrons, no row focus, explaining hint bar and lowercase names in Keys.

@@ -1571,6 +1571,11 @@ body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(-
 #root #keyslist .keybtn.wait{ background:var(--acc) !important; border-color:var(--acc) !important; }
 #root #keyslist .keysec{ font-size:var(--fs-label); color:var(--tx-2); letter-spacing:var(--track); }
 #root #keysmodal #keysreset{ min-height:var(--sp-5); font-size:var(--fs-body); }
+
+/* v28.xx (cw-setone) critic c-31 (Settings 2, P0): "two nav systems on one screen ... delete one". The Game and Send play data tabs beside the title are gone while you are on the Game page: Send play data is the last chip of the one section strip (same chip, same page), and the title row shows the two tabs only on the Send play data page, so the way back is still there. Keys: the row under the pointer gets the raised fill and the amber bar like Settings. */
+#root #settingsmodal:not(.recmode) #settabs{ visibility:hidden; pointer-events:none; }
+#root #setlist .setjump button[data-go]{ margin-left:auto; }
+#root #keyslist .row:hover{ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--acc); }
 /* v28.xx (cw-pausestack) critic c-31 (pause 2, 25/42/49): the pause card was a keybind cheat-sheet over a row of mixed buttons. Now: title, then one column of 56px buttons at the menu width (16px gap, sentence case), Abandon set apart, and the key legend and the feedback sentence out of the keyboard card (F1 and Settings > Controls hold the keys; a pad keeps its legend) */
 #root #pausebox{ gap:var(--sp-3); }
 #root #pausebox #pausekeys, #root #pausebox > div[style*="margin-top:6px"]{ display:none !important; }
@@ -2505,7 +2510,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.64';
+var VER='29.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47594,7 +47599,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.64: Settings and Keys read cleaner: bigger names, a fade on the list, a hint bar only when listening. Check 29.64 fails on v29.63',
+  now:'v29.65: Settings has one tab strip. Check 29.65 fails on v29.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63909,7 +63914,7 @@ function setSecsHtml(S,X){
     if(!b) continue;
     h+=setSecHead(n)+b; j+='<button type="button" data-sec="'+n+'">'+n+'</button>';
   }
-  return '<div class="row setjump"><div class="sj">'+j+'</div></div>'+h+'<div id="setsec_end"></div>';
+  return '<div class="row setjump"><div class="sj">'+j+'<button type="button" data-go="rec">Send play data</button></div></div>'+h+'<div id="setsec_end"></div>';
 }
 function setSecJump(host,n){
   // measured in the same pixels the rectangles use (the menu zoom makes a scrollTop pixel and a rectangle pixel differ), a few passes to settle
@@ -63942,7 +63947,7 @@ function setSecMove(host){
     if(!nx) nx=document.getElementById('setsec_end');
     if(nx&&nx.parentNode) nx.parentNode.insertBefore(r,nx);
   }
-  [].forEach.call(host.querySelectorAll('.setjump button'),function(b){ b.onclick=function(){ setSecJump(host,b.getAttribute('data-sec')); setSecSpy(host); }; });
+  [].forEach.call(host.querySelectorAll('.setjump button'),function(b){ b.onclick=function(){ if(b.getAttribute('data-go')){ openSettings(b.getAttribute('data-go')); return; } setSecJump(host,b.getAttribute('data-sec')); setSecSpy(host); }; });
   host.onscroll=function(){ setSecSpy(host); }; setSecSpy(host);   // v26.xx (settingsfix)
 }
 function renderSettingsInner(host){
@@ -64708,7 +64713,7 @@ function openSettings(tab){
   try{ renderSettings(); }catch(e){}
   try{ document.getElementById('exporttext').value=buildExport(); }catch(e){}
   var T=[['display','GAME'],['rec','SEND PLAY DATA']];   // v28.xx (cw-settab), c-30 menu map: the first Settings tab was called DISPLAY but holds every section (the raid, audio, controls, controller, display, accessibility), so Display sat inside Display. It is the game tab now; the Display section keeps its name.
-  var tb=document.getElementById('settabs');
+  var tb=document.getElementById('settabs'); try{ document.getElementById('settingsmodal').classList.toggle('recmode',want==='rec'); }catch(_rm){}
   if(tb){
     tb.innerHTML='';
     T.forEach(function(t){

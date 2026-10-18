@@ -22,5 +22,20 @@ P2: toast bottom-left low contrast, wrong place (top-centre 40px with 4px left b
 - "B / I backpack" in the weapon card: did not find its draw code by grep for 'backpack' (text must be assembled from a key-name table). Search for the weapon card at the ammo "12 / 24" draw instead (look for 'fire'/'use' chips near the belt).
 - Screen 24 staging fails (legendOn 1 vs 2): tell him via questions.md if it matters.
 
+## Run 4 (audit only, nothing shipped)
+- Critic baseline on the current build (single picture, so no before/after): 37 extracting = 2, 50 arcade-live = 2 (21 = 2 earlier). Others not scored.
+- Same P0/P1 every time, all big redesigns that clash with his rulings or need his word: ammo to 56px hero (TYPE.num is 34px source on purpose, v23.94 ui4); one-row currency block (cw-stashbag his); "$" to SP in bag line (40272, career credits); max 3 contracts (his v6.79 "ALL of them"); 5% safe margin on every HUD box; strip explanation lines from the feed; flat panels. None safe to ship unasked before 10/30.
+- Safe candidates left, each a small mk script: (a) brighten idle hotbar icons (slots 4-0 are near-black silhouettes, P2 both screens), (b) hotbar slot numbers 16px, (c) extraction "inbound" + "hostiles closing in" merged into one line (touches alert logic, check first).
+- Backpack cue is already 16px tx-2 (cw-hudhero, line 40281); the "bigger" look in pictures is the HUD zoom.
+- Verdict: the HUD cannot reach 4 on the critic without his decisions on hero size, currency row and $ vs SP. Asked in questions.md.
+
+## Run 5 (nothing shipped, 2026-10-18)
+- Guide is READY; questions.md still has no answer from him on the HUD points.
+- Safe candidate (a) brighten idle hotbar icons is NOT safe: slots 4-0 are the "gunghost" silhouettes at GHOST_A 0.27, HIS ORDER 2026-10-14 ("translucent, then fill in opaque once the player has that gun", code ~37866). Struck off the list.
+- Left: (b) slot numbers 16px, (c) merge "inbound" and "hostiles closing in" (alert logic). Both low value; the critic score will not move from 2 without his answers on hero size, currency row, $ vs SP, contracts count.
+- Do not repeat this audit; wait for his answers in questions.md.
+
+## Run 6 (2026-10-18): checked questions.md, still no answer on the HUD points. Nothing shipped, no repeat audit.
+
 ## Remaining (next run)
 Order by safety for the 10/30 demo: (1) weapon card "B / I backpack" to 16px tx-2 (find draw code), (2) currency block to one row only if he agrees, (3) HUD panel fills flat. Each its own mk script; look at 19,21,33,37,50 after each, then run the critic on 19,20,22-24,33,34,36,37,48,50,51,61,78 (none scored yet except 21 = 2).

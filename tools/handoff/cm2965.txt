@@ -1,0 +1,7 @@
+v29.65: settings one strip
+
+Settings has one tab strip.
+
+Check 29.65. Fails on v29.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -6097,6 +6097,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.65',what:'Settings has one tab strip: Send play data is a chip of the section strip, the title tabs show only on the Send play data page',
+   run:function(){
+     if(typeof openSettings!=='function') return 'SKIP: no Settings here';
+     var bad=[], tb, go, rec;
+     try{
+       openSettings('display'); tb=document.getElementById('settabs'); go=document.querySelector('#setlist .setjump button[data-go]');
+       if(!tb) return 'SKIP: no tabs';
+       if(getComputedStyle(tb).visibility!=='hidden') bad.push('the title tabs show on the Game page');
+       if(!go) bad.push('no Send play data chip in the section strip');
+       else {
+         go.click(); rec=document.getElementById('spane_rec');
+         if(!rec||rec.style.display==='none') bad.push('the chip did not open Send play data');
+         if(getComputedStyle(tb).visibility==='hidden') bad.push('no way back on the Send play data page');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ openSettings('display'); }catch(_o){} try{ ['settingsmodal'].forEach(function(i){ var q=document.getElementById(i); if(q) q.classList.remove('on'); }); }catch(_k){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.64',what:'Keys hides its idle hint bar and capitalises action names; Settings fades the list bottom',
    run:function(){
      if(typeof openSettings!=='function'||typeof keysOpen!=='function') return 'SKIP: no Settings here';

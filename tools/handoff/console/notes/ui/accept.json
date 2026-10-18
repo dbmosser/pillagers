@@ -170,18 +170,18 @@
  "26-settings-from-pause-top": {
   "score": 2,
   "pass": false,
-  "verdict": "The settings screen is now a centred card with a top-right close X and a tighter value column, but it still shows two tab strips, an explaining sentence, tiny text, and a list that is cut off at the bottom, so it reads as a template form rather than a game menu.",
-  "pic": "tools/handoff/console/notes/shots/c-31l-after/26-settings-from-pause-top-1080.jpg",
+  "verdict": "The settings modal keeps two stacked tab strips, an explaining joke sentence, a hard-clipped list and a half-empty detail pane, and the only change in the new shot is a faint fade on the last clipped row, so it still reads as a generic template.",
+  "pic": "tools/handoff/console/notes/shots/c-31m-after/26-settings-from-pause-top-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:14"
+  "when": "2026-10-18T09:19"
  },
  "32-keys-window": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The new Keys screen is a real step toward the guide, with a centred card, a top-right X and tighter label-to-key distance, but it is still a dense wall of identical rows and boxes with no hierarchy, an explaining sentence, lowercase labels, and a clipped list.",
-  "pic": "tools/handoff/console/notes/shots/c-31l-after/32-keys-window-1080.jpg",
+  "verdict": "The second pass fixes the worst problems of the first (lowercase labels, tiny key text, the explaining banner) and reads as a clean, consistent dark card, but the window is a long two-column form with no focus state, undersized section headers and a missing key hint strip, so it still looks like a settings dump rather than a designed screen.",
+  "pic": "tools/handoff/console/notes/shots/c-31m-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:14"
+  "when": "2026-10-18T09:19"
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -356,6 +356,14 @@
   "pass": false,
   "verdict": "A clean, centred pause card with a clear amber Resume and a red End run, but it has no close X and no pad glyph, the footer hint is tiny and muted, and the scrim is too light, so the HUD behind it still shows through.",
   "pic": "tools/handoff/console/notes/shots/12-b3/49-arcade-pause-box-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:18"
+ },
+ "56-arcade-attract-board-scored": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A clean but nearly empty black screen: the title, a tiny board that says 'No scores yet' and an amber prompt float with no world backdrop and no logo treatment, so it reads as a placeholder, not an attract screen.",
+  "pic": "tools/handoff/console/notes/shots/12-b3/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
   "when": "2026-10-18T09:18"
  }

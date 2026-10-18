@@ -1,0 +1,24 @@
+{
+    "title":  "SETTINGS ONE STRIP",
+    "why":  "Critic c-31 P0: two stacked tab strips in Settings. Send play data is a chip of the section strip now.",
+    "now":  "Settings has one tab strip.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #keysmodal #keysreset{ min-height:var(--sp-5); font-size:var(--fs-body); }",
+                      "replacement":  "#root #keysmodal #keysreset{ min-height:var(--sp-5); font-size:var(--fs-body); }\n\n/* v28.xx (cw-setone) critic c-31 (Settings 2, P0): \"two nav systems on one screen ... delete one\". The Game and Send play data tabs beside the title are gone while you are on the Game page: Send play data is the last chip of the one section strip (same chip, same page), and the title row shows the two tabs only on the Send play data page, so the way back is still there. Keys: the row under the pointer gets the raised fill and the amber bar like Settings. */\n#root #settingsmodal:not(.recmode) #settabs{ visibility:hidden; pointer-events:none; }\n#root #setlist .setjump button[data-go]{ margin-left:auto; }\n#root #keyslist .row:hover{ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--acc); }"
+                  },
+                  {
+                      "anchor":  "\u003cdiv class=\"row setjump\"\u003e\u003cdiv class=\"sj\"\u003e\u0027+j+\u0027\u003c/div\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv class=\"row setjump\"\u003e\u003cdiv class=\"sj\"\u003e\u0027+j+\u0027\u003cbutton type=\"button\" data-go=\"rec\"\u003eSend play data\u003c/button\u003e\u003c/div\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "b.onclick=function(){ setSecJump(host,b.getAttribute(\u0027data-sec\u0027)); setSecSpy(host); };",
+                      "replacement":  "b.onclick=function(){ if(b.getAttribute(\u0027data-go\u0027)){ openSettings(b.getAttribute(\u0027data-go\u0027)); return; } setSecJump(host,b.getAttribute(\u0027data-sec\u0027)); setSecSpy(host); };"
+                  },
+                  {
+                      "anchor":  "var tb=document.getElementById(\u0027settabs\u0027);",
+                      "replacement":  "var tb=document.getElementById(\u0027settabs\u0027); try{ document.getElementById(\u0027settingsmodal\u0027).classList.toggle(\u0027recmode\u0027,want===\u0027rec\u0027); }catch(_rm){}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027Settings has one tab strip: Send play data is a chip of the section strip, the title tabs show only on the Send play data page\u0027,\n   run:function(){\n     if(typeof openSettings!==\u0027function\u0027) return \u0027SKIP: no Settings here\u0027;\n     var bad=[], tb, go, rec;\n     try{\n       openSettings(\u0027display\u0027); tb=document.getElementById(\u0027settabs\u0027); go=document.querySelector(\u0027#setlist .setjump button[data-go]\u0027);\n       if(!tb) return \u0027SKIP: no tabs\u0027;\n       if(getComputedStyle(tb).visibility!==\u0027hidden\u0027) bad.push(\u0027the title tabs show on the Game page\u0027);\n       if(!go) bad.push(\u0027no Send play data chip in the section strip\u0027);\n       else {\n         go.click(); rec=document.getElementById(\u0027spane_rec\u0027);\n         if(!rec||rec.style.display===\u0027none\u0027) bad.push(\u0027the chip did not open Send play data\u0027);\n         if(getComputedStyle(tb).visibility===\u0027hidden\u0027) bad.push(\u0027no way back on the Send play data page\u0027);\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ openSettings(\u0027display\u0027); }catch(_o){} try{ [\u0027settingsmodal\u0027].forEach(function(i){ var q=document.getElementById(i); if(q) q.classList.remove(\u0027on\u0027); }); }catch(_k){} try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
