@@ -1,0 +1,7 @@
+v30.66: prompts follow the last input device
+
+Prompts follow what you used last: press a key and you see keys, touch the controller and you see its buttons.
+
+Check 30.66. Fails on v30.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

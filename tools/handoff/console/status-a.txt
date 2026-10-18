@@ -1,1 +1,1 @@
-10-18 13:49 running 05-party-launch-mode (cap $4.00; spent today $121.70 of $176.54)
+10-18 14:04 running 02-raid-hud-redesign (cap $4.00; spent today $124.23 of $176.54)

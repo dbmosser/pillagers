@@ -217,10 +217,17 @@
  "45-arcade-attract-board": {
   "score": 2,
   "pass": false,
-  "verdict": "A bare black screen with a small 'Pillagers' wordmark, an empty-state leaderboard card and dim 'Press any button' text; it is tidy and on-palette but has no identity, no world backdrop and no focal point, and the card was only narrowed from 845px to 558px.",
-  "pic": "tools/handoff/console/notes/shots/11-after5/45-arcade-attract-board-1080.jpg",
-  "task": "11-ui-shared-style",
-  "when": "2026-10-18T07:18"
+  "verdict": "A small, clean dark card on a blurred backdrop follows the tokens (lime tab, condensed type), but it is mostly empty, capitalised, and its only action reads as dim text with no clear focus.",
+  "findings": [
+   "P1 card title 'Tonight's best', 'Pillagers' wordmark top-left: Set every string lower case: 'tonight's best' and 'pillagers'. Only capitals inside baked art are allowed.",
+   "P1 'Press any button' prompt, bottom-right of card: Make it a 56px-high primary button, fill #e6ff3d, text #11150a at 20px/700, min-width 200px. Or use tx-1 at 20px with a visible focus bar. Keep it right-aligned at 24px padding.",
+   "P1 card body, 'No scores yet': Left-align at x=714 under the title. Use tx-2 at 20px weight 400. Shrink the card to content (about 480x200), or add a one-line cue, such as a dim placeholder row with 56px pitch.",
+   "P1 card header: Add a 48x48 ghost X at the top-right with a B pad glyph. Make the title exactly 32px/700 with a 56px header row and 24px padding.",
+   "P2 background blur and wordmark: Use a flat rgba(6,7,8,.80) scrim with a light 4–6px blur. Either blur the wordmark with the rest or give it a deliberate lockup position. Remove the amber smear at the top-left."
+  ],
+  "pic": "tools/handoff/console/notes/shots/03-scrim/45-arcade-attract-board-1080.jpg",
+  "task": "03-title-and-backdrop",
+  "when": "2026-10-18T18:03"
  },
  "50-arcade-hud-live": {
   "score": 2,
@@ -547,16 +554,16 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The title screen is much cleaner now, with the explaining sentences gone, a clear logo, and a top-right utility row, but it still has five stacked mode buttons, a raw save-editing form, and a gradient logo and tag text that are too small and dim.",
+  "verdict": "The lime accent now lands on the primary button and the save row in the scrim version, and the background reads, but the screen still has the same cluttered saves block, five stacked mode buttons, a crowded key legend and an amber-gradient logo that clashes with the lime.",
   "findings": [
-   "P1 Saves block, y 715-832: Collapse to one 48px row, 558px wide, aligned with the buttons: 'Pillager New · 0 raids · Credits 900 · 0 XP' in tx-2 20px, with a ghost 'Switch save' button on the right. Border --ui-line-hi. Move the name input, Change name and Create a new save into a 960x680 Saves modal. Delete the 'Saves' label.",
-   "P1 Mode buttons, y 413-693: Show 'Play' (56px primary), '2 player co-op (same machine)' (48px ghost) and a 'Demos' ghost that opens the two arcade demos. Delete the server row, or show it at 40% opacity with no chip. Use an 8px gap and one 48px height for all ghosts.",
-   "P1 Key legend, y~1042: Cut to 3 hints ('Enter  Select', 'Esc  Back', 'F1  Controls'). Use 16px labels in tx-2 with 28px-high caps. Move the gameplay keys to the Controls screen. Swap to pad glyphs when the last input was a pad.",
-   "P1 Focus and selection, y 413-469: For a focused ghost row: --ui-raised fill, 1px tx-2 border and a 3px amber left bar. Keep amber only on the primary and the focus.",
-   "P2 Logo and tagline, y 262-390: Keep the logo at about 96px but flatten it to --acc with a 2px dark offset. Set the tagline to 20px tx-2, 24px below the logo and 32px above the first button."
+   "P1 Saves block, y 715-832: Collapse to one 48px row, 558px wide, aligned with the buttons: 'pillager new · 0 raids · 900 · 0 xp' in tx-2 20px, plus a ghost 'switch save' button. Move the name input and create-save into a modal. Delete the 'saves' label. Show no capitals.",
+   "P1 Logo, y 262-345, vs the lime primary: Flatten the logo to solid --acc or --tx-1 with a 2px dark offset, no gradient. Keep it near 96px. Write it lower case.",
+   "P1 Mode buttons, y 413-693: Keep 'play', '2 player co-op' and one 'demos' ghost that opens the arcade demos. Delete the server row. Use one 48px ghost height with an 8px gap.",
+   "P1 Key legend, y~1042: Cut to 3 hints: 'enter select', 'esc back', 'f1 controls', at 16px tx-2. Move the gameplay keys to the controls screen. Swap to pad glyphs when the last input was a pad.",
+   "P1 Focus and selection, y 413-469 and y 741-783: Focused ghost: --ui-raised fill, 1px tx-2 border and a 3px --acc left bar. Save row name in tx-1, with a 3px lime bar to mark it selected."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-after/01-title-mode-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-scrim/01-title-mode-menu-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T15:50"
+  "when": "2026-10-18T18:03"
  }
 }

@@ -503,3 +503,6 @@
 2026-10-18 2.0019 03-title-and-backdrop
 2026-10-18 1.9968 02-raid-hud-redesign
 2026-10-18 0.2893 b-02-gun-enemy-feel
+2026-10-18 2.2394 05-party-launch-mode
+2026-10-18 0.0317 critic-03-title-and-backdrop
+2026-10-18 0.0220 critic-03-title-and-backdrop
