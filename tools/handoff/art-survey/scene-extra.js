@@ -2,6 +2,7 @@
 // They are the standard duo staged the same way (same site, light, camera, zoom), with one thing changed for the question that needs it.
 //   duoaim    the duo, but P1 aims up and to the right (you see the back of his head) and P2 aims right (a side view)   (a03)
 //   trio      P1 lean, a hired pillager with the broad build, P2 curved: all three in Standard Issue with the same hair and no hat   (a04)
+//   duodown   the duo, but P2 is down on the ground with 16 s to go (the far-or-down case of a10)
 //   duoparty  the duo with the party on, so the seat rings and badges the game draws in a two player match show   (a06)
 (function(){
 var A=window.__art, U=window.__uis;
@@ -12,6 +13,14 @@ A.scenes.duoaim=async function(o){
   var st=await A.stage(o), p=st.p, X=A.base().x, Y=A.base().y;
   p.x=X-36; p.y=Y; p.face=-1.05;
   A.mate(X+36,Y+4,0.3);
+  A.cam(X,Y-10,5.0);
+  return {zoom:5.0,chars:[{id:'p1',kind:'player',ref:'p1'},{id:'mate',kind:'player',ref:'mate'}]};
+};
+
+A.scenes.duodown=async function(o){
+  var st=await A.stage(o), p=st.p, X=A.base().x, Y=A.base().y;
+  p.x=X-36; p.y=Y; p.face=1.15;
+  var u=A.mate(X+36,Y+4,1.95); u.dn=1; u.dt=16;
   A.cam(X,Y-10,5.0);
   return {zoom:5.0,chars:[{id:'p1',kind:'player',ref:'p1'},{id:'mate',kind:'player',ref:'mate'}]};
 };

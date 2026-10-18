@@ -1,2 +1,2 @@
 == 4k : window 3872x2263, viewport 3840x2160
-  duoparty                               NOT STAGED   7.6s    | ERROR The underlying connection was closed: A connection that was expected to be kept alive was closed by the server.
+  duoparty                               staged       6.0s    | {"scene":"duoparty","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1559,"y":1020,"w":333,"h":755,"fx":1560,"fy":1270},{"id":"mate","kind":"player","x":2275,"y":1085,"w":336,"h":807,"fx":2279,"fy":1310}],"objects":null}

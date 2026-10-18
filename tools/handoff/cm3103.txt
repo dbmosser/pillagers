@@ -1,0 +1,7 @@
+v31.03: flat hud panels, shorter demo card
+
+HUD panels are flat with a clearer 1px edge and the demo gun card is shorter.
+
+Check 31.03. Fails on v31.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

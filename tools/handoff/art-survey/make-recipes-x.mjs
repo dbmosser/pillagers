@@ -9,6 +9,7 @@ const mate = "!!__gx('NET.up[1]')";
 const duoExpect = r.screens.find(s => s.name === 'duo').expect;
 const add = [
   { name: 'duoaim', screen: 'the duo, P1 aims up and right, P2 aims right', expect: duoExpect },
+  { name: 'duodown', screen: 'the duo, P2 is down', expect: duoExpect },
   { name: 'duoparty', screen: 'the duo with the party on (seat rings)', expect: duoExpect + "&&NET.peers.length===1".replace('NET', "__gx('NET')") },
   { name: 'trio', screen: 'P1 lean, a hired pillager broad, P2 curved', expect: duoExpect.replace('__state().ents.length===0', '__state().ents.length===1') },
 ];

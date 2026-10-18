@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  m-lineupmood                           staged       7.7s    | {"scene":"lineupmood","plate":false,"zoom":2.7,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":203,"y":714,"w":91,"h":167,"fx":204,"fy":757},{"id":"pillager-rush","kind":"pillager","x":405,"y":729,"w":88,"h":152,"fx":393,"fy":757},{"id":"pillager-flank","kind":"pillager","x":587,"y":721,"w
+== 4k : window 3872x2263, viewport 3840x2160
+  m-lineupmood                           staged      11.6s    | {"scene":"lineupmood","plate":false,"zoom":5.3950000000000005,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":411,"y":1427,"w":180,"h":334,"fx":411,"fy":1512},{"id":"pillager-rush","kind":"pillager","x":814,"y":1455,"w":174,"h":305,"fx":789,"fy":1512},{"id":"pillager-flank","kind":"pillage

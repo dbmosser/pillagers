@@ -1,0 +1,2 @@
+== 4k : window 3872x2263, viewport 3840x2160
+  duo                                    NOT STAGED  68.4s    | ERROR Unable to connect to the remote server

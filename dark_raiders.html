@@ -2812,7 +2812,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.02';
+var VER='31.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40780,7 +40780,7 @@ if(p.armor>0){
        var _gdx=(typeof _boG==='object'&&_boG)?(_boG.dx||0):0, _lim=_hcL?(W+((_hcL.x+_hcL.w+LH(8))-_gdx-W)/_gz):-1e9;   // the belt edge, brought into this corner's scaled space
        if(_hcL&&_wpx<_lim){ _wpx=_lim; _wpw=_wpR-_wpx; }   // v18.39: never over the belt (it covered key 9)
        /* v28.xx (cw-hudstar): the demo hides the item line and the backpack hint (Q56), so the card is 72 high and not 100 with an empty strip; it keeps the tab, it is the star */
-       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(76):LH(90), _gh=trDemo()?LH(72):LH(100); hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62); } ctx.textAlign='right'; }catch(_wp){}
+       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(62):LH(90), _gh=trDemo()?LH(58):LH(100);   /* v28.xx (cw-panelflat), the critic (2026-10-19): the demo card had dead space over the name; it is 58 high, the top moves down 14 */ hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62); } ctx.textAlign='right'; }catch(_wp){}
   ctx.fillText(_cornName,W-16,by-LH(46));   // v28.xx (cw-hudammo): the name rides higher (was 34) so the big ammo figure has the room
   ctx.font=FS(TYPE.title);
   if(!_heldGun){
@@ -42187,10 +42187,10 @@ function hudPanel(x,y,w,h,a,plain){
   function path(px,py,pw,ph,pc){ ctx.beginPath(); ctx.moveTo(px+pc,py); ctx.lineTo(px+pw,py); ctx.lineTo(px+pw,py+ph); ctx.lineTo(px,py+ph); ctx.lineTo(px,py+pc); ctx.closePath(); }
   ctx.save();
   path(x,y,w,h,c);
-  try{ g=ctx.createLinearGradient(0,y,0,y+h); g.addColorStop(0,'rgba(24,27,30,'+a+')'); g.addColorStop(1,'rgba(14,16,18,'+a+')'); ctx.fillStyle=g; }catch(_g){ ctx.fillStyle='rgba(17,19,21,'+a+')'; }
+  ctx.fillStyle='rgba(17,19,21,'+a+')';   // v28.xx (cw-panelflat), the critic (2026-10-19) and the style guide (Panel P: 'NO gradient'): one flat fill, was a top-to-bottom wash
   ctx.fill();
   path(x+.5,y+.5,w-1,h-1,Math.max(0,c-.5));
-  ctx.strokeStyle='rgba(74,82,87,.9)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.strokeStyle='rgba(112,122,130,.95)'; ctx.lineWidth=1; ctx.stroke();   // v28.xx (cw-panelflat): the 1px line is lighter so the edge reads (the critic: 'no 1px border')
   if(w>c+20&&!plain){ ctx.fillStyle='#e6ff3d'; ctx.fillRect(x+c+4,y,Math.min(36,w*0.25),2); }   // the tab of the menu plate (ui6); v28.xx (cw-hudstar): only where plain is not set
   ctx.restore();
 }function drawRaiderBoard(){
@@ -48283,7 +48283,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.02: Every window closes with the same X at its top right corner. Check 31.02 fails on v31.01',
+  now:'v31.03: HUD panels are flat with a clearer 1px edge and the demo gun card is shorter. Check 31.03 fails on v31.02',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -116,8 +116,8 @@ function mmRect(){
 '@ @'
 function mmRect(){
   // v30.xx (cw-trcol), HIS ORDER (2026-10-18): the minimap is a square as wide as the rows above it and the run info panel under it (the Settings size S, N, L
-  // widens the whole column), one gap under the last row. It was 216 wide in the corner of a 268 wide panel, at the left of a differently wide readout.
-  var g=trGeo(), s=Math.min(Math.round(g.bw*g.z),Math.round(H*0.4));   // v26.xx (settings7): MINIMAP SIZE
+  // widens the whole column), one gap under the last row, and never taller than half the screen (a run info panel zoomed to the limit). It was 216 wide above a 268 wide panel.
+  var g=trGeo(), s=Math.min(Math.round(g.bw*g.z),Math.round(H*0.5));   // v26.xx (settings7): MINIMAP SIZE
   return {x:Math.round(W-16*g.z-s),y:g.yE,w:s,h:s};
 }
 

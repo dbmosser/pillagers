@@ -12,7 +12,7 @@ window.__noHud2=function(){
   window.__noHud0();
   var c=gx('ctx'), W=gx('W'), H=gx('H'), g;
   if(!(gx('G.player.hp')<32)) return;
-  var ph=0.75;   // the pulse frozen high: sin = 0.75
+  var ph=0.4;   // the pulse frozen a little above its middle: sin = 0.4
   if(opt==='A'){ c.fillStyle='rgba(200,30,20,'+(.10+.09*ph)+')'; c.fillRect(0,0,W,H); }
   if(opt==='C'||opt==='D'){ g=c.createRadialGradient(W/2,H/2,H*0.55,W/2,H/2,H*0.9); g.addColorStop(0,'rgba(200,30,20,0)'); g.addColorStop(1,'rgba(200,30,20,.45)');
     c.save(); c.globalAlpha=0.6+0.4*(0.5+0.5*ph); c.fillStyle=g; c.fillRect(0,0,W,H); c.restore(); }

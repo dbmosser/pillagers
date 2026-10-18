@@ -1,0 +1,5 @@
+## v31.03 - FLAT HUD PANELS, SHORTER DEMO CARD
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): panels have a gradient wash and a faint border; the demo gun card has an empty strip over the name. The style guide: Panel P has no gradient, a 1px line.
+
+MEASURED. Check 31.03 passes, and fails on v31.02.

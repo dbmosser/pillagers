@@ -1,0 +1,2210 @@
+[
+  {
+    "id": "r3-01",
+    "group": "The party night and the two players",
+    "about": "Your worst-problems list from 10/18 starts with stutter or harsh sound, then crash or freeze. Your notes from the first real 2-player test (around noon) cover buttons, pads, lower case and seeing each other, but say nothing about slowdowns. The answer decides what the overnight test robots hunt for.",
+    "question": "In your first real 2-player test, did the game stutter or slow down?",
+    "options": [
+      {
+        "key": "a",
+        "text": "No, it ran smooth in both windows"
+      },
+      {
+        "key": "b",
+        "text": "A little, now and then (say which window and when, if you remember)"
+      },
+      {
+        "key": "c",
+        "text": "Yes, clearly, enough to hurt the play (say which window and when)"
+      }
+    ],
+    "pick": "a",
+    "why": "no report of a slowdown has come in, so I assume it ran smooth until you say otherwise."
+  },
+  {
+    "id": "r3-02",
+    "group": "The party night and the two players",
+    "about": "Harsh or doubled sound is the other half of your number-one worry. Two game windows share one sound output on this PC, which is the likeliest place for crackle, doubling or a sound that is too sharp on a TV. Your 10/18 notes do not say whether you heard any.",
+    "question": "In your first real 2-player test, did the sound crackle, double up or hurt the ears?",
+    "options": [
+      {
+        "key": "a",
+        "text": "No, it sounded fine"
+      },
+      {
+        "key": "b",
+        "text": "Some crackle or doubled sound (say when: shooting, explosions, menus)"
+      },
+      {
+        "key": "c",
+        "text": "Yes, harsh enough that you turned it down"
+      }
+    ],
+    "pick": "a",
+    "why": "no report has come in, so I assume it sounded fine until you say otherwise."
+  },
+  {
+    "id": "r3-03",
+    "group": "The party night and the two players",
+    "about": "Crashes and freezes are second on your worry list. Your notes from the first test say nothing about a window closing, a frozen picture or a stuck screen. Round 2 question 1 asks what to do when a window dies, which only matters if it has happened.",
+    "question": "In your first real 2-player test, did anything freeze, close by itself or get stuck?",
+    "options": [
+      {
+        "key": "a",
+        "text": "No"
+      },
+      {
+        "key": "b",
+        "text": "A freeze or stuck screen that fixed itself"
+      },
+      {
+        "key": "c",
+        "text": "A window closed or the game had to be reloaded (say which window)"
+      }
+    ],
+    "pick": "a",
+    "why": "no report has come in, so I assume nothing broke until you say otherwise."
+  },
+  {
+    "id": "r3-04",
+    "group": "The party night and the two players",
+    "about": "On 10/11 you asked for instant start: any button starts the run and player 2 joins by pressing A. In the 10/18 survey you picked two ready cards with a Start button greyed out until both are ready. Both cannot be true, and starting is the first thing every guest does.",
+    "question": "When a guest walks up and presses a button, should the run start right away or wait for both players?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Start right away for whoever pressed; player 2 joins by pressing A"
+      },
+      {
+        "key": "b",
+        "text": "Wait: nothing starts until both cards show ready, then one Start press"
+      },
+      {
+        "key": "c",
+        "text": "Start right away, but show \"player 2: press a\" for 10 seconds first"
+      }
+    ],
+    "pick": "a",
+    "why": "it keeps your walk-up order and never strands a lone guest (round 2 question 7 only fits a or c)."
+  },
+  {
+    "id": "r3-05",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you ordered that keys control whatever window is in front. At the party, player 1 uses keyboard and mouse on one TV and player 2 a pad on the other. If a guest clicks and player 2's window comes to the front, player 1's keys and mouse play in player 2's window and player 1 stands still.",
+    "question": "At the party, if player 2's window comes to the front, whose character should the keyboard and mouse move?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Whoever's window is in front (your 10/18 order)"
+      },
+      {
+        "key": "b",
+        "text": "Always player 1, in the party shortcut only; pads stay locked to their player"
+      },
+      {
+        "key": "c",
+        "text": "As you ordered, plus a small marker on each screen showing where the keyboard and mouse are"
+      }
+    ],
+    "pick": "c",
+    "why": "it keeps your order and tells a guest at once why player 1 stopped."
+  },
+  {
+    "id": "r3-06",
+    "group": "The party night and the two players",
+    "about": "You ordered that the first pad plugged in is always player 2 and the second is player 1. A wireless pad can fall asleep and wake later, and if two pads reconnect in the other order the players swap characters mid-run. This matters only for wireless pads (round 2 question 2 asks about a cable).",
+    "question": "If a pad drops out and comes back, how should the game decide whose it is?",
+    "options": [
+      {
+        "key": "a",
+        "text": "By plug-in order, as you ordered (a swap is possible)"
+      },
+      {
+        "key": "b",
+        "text": "The game remembers whose pad is whose for the rest of the run"
+      },
+      {
+        "key": "c",
+        "text": "The run pauses with \"pad lost\" until the right pad is back"
+      }
+    ],
+    "pick": "b",
+    "why": "it keeps your plug-in rule for the start of a run and stops two guests swapping characters halfway."
+  },
+  {
+    "id": "r3-07",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you ordered that players 1 and 2 should be able to see each other in the Undercroft. In co-op on one PC they now do. In the party demo the Undercroft is only a blurred picture behind the waiting screen and a press starts the raid at once. A helper asked which you meant and changed nothing.",
+    "question": "Should the two party-demo players see each other before a run?",
+    "options": [
+      {
+        "key": "a",
+        "text": "No: the demo starts the raid straight away; your order applies to co-op on one PC only"
+      },
+      {
+        "key": "b",
+        "text": "A short shared walk in the Undercroft before every run [a big job before 10/26]"
+      },
+      {
+        "key": "c",
+        "text": "Both characters stand side by side on the waiting screen (no walking)"
+      }
+    ],
+    "pick": "c",
+    "why": "it gives you \"they see each other\" without new walking code before the cutoff."
+  },
+  {
+    "id": "r3-08",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you ruled no tutorial prompts: the game must be completely self-explanatory. You also ordered live key and pad pictures like Fortnite's. The game shows a short label next to things you can use (\"e search\", \"hold v to finish\"), and a helper reading \"no prompts\" literally would remove those too.",
+    "question": "Which on-screen help should the demo keep?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Only short \"do it now\" labels next to something you can use, with the live key or pad picture; nothing that teaches"
+      },
+      {
+        "key": "b",
+        "text": "No labels; the how-to page on the waiting screen is the only help"
+      },
+      {
+        "key": "c",
+        "text": "The labels, plus a one-time reminder for what guests miss most (healing, throwing, the finisher)"
+      }
+    ],
+    "pick": "a",
+    "why": "that is the Fortnite style you asked for, and a label is not a tutorial."
+  },
+  {
+    "id": "r3-09",
+    "group": "The party night and the two players",
+    "about": "On 10/15 you said you never noticed the events, the combo ring or the power-ups and wanted clear alerts, names and map marks, and a prompt for the finisher. On 10/18 you ruled no tutorial prompts. An alert that an event started is not a lesson, but a literal reading of your rule would remove it.",
+    "question": "Do the alerts you asked for on 10/15 (events, power-ups, the combo ring, the finisher label) stay?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, all of them stay; they say what just happened or what to do now, nothing more"
+      },
+      {
+        "key": "b",
+        "text": "Events and power-ups stay, but the finisher label goes"
+      },
+      {
+        "key": "c",
+        "text": "They all go; the picture and sound must say it"
+      }
+    ],
+    "pick": "a",
+    "why": "they are the things you said you missed in play, and none of them teaches a lesson."
+  },
+  {
+    "id": "r3-10",
+    "group": "The party night and the two players",
+    "about": "On 10/2 you ruled that if the first player's window goes away mid-raid, the other player keeps the raid and plays on alone. On 10/18 you ruled a 2-player run ends when both are out. At the party player 2's window mirrors player 1's, so if player 1's window closes, player 2 may have nothing left to play.",
+    "question": "At the party, if player 1's window closes or crashes mid-run, what happens to player 2?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The run ends for both; the score counts as an early end"
+      },
+      {
+        "key": "b",
+        "text": "Player 2 carries on alone (your 10/2 order) [helpers tell you before 10/26 if the mirror window cannot do it]"
+      },
+      {
+        "key": "c",
+        "text": "Player 2 sees \"player 1 left\" and chooses"
+      }
+    ],
+    "pick": "b",
+    "why": "it is your standing order; if it cannot work, the helpers tell you and we use c."
+  },
+  {
+    "id": "r3-11",
+    "group": "The party night and the two players",
+    "about": "On 10/11 you said yes to a one-button quick heal. On 10/14 you ordered everything through the item wheel and the pad's quick heal was removed. The keyboard list in the game still shows heal on one tap of H, so player 1 heals in one press while player 2 must hold D-down, flick the stick and let go mid-fight.",
+    "question": "How should healing work, so both seats match?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Wheel only for both players (the leftover tap-H heal on the keyboard goes)"
+      },
+      {
+        "key": "b",
+        "text": "One tap heals for both (D-down on the pad, H on the keyboard); the wheel stays for choosing"
+      },
+      {
+        "key": "c",
+        "text": "Leave it as it is"
+      }
+    ],
+    "pick": "a",
+    "why": "it follows your later 10/14 ruling and makes the seats equal; if healing in a panic proves too slow, b is a small change."
+  },
+  {
+    "id": "r3-12",
+    "group": "The party night and the two players",
+    "about": "On the pad, X reloads and also searches a box in reach. Your 9/27 layout asked for that, but the game's own notes record a bug where a reload press next to a box searched instead. Player 2 is on the pad at the party, mid-fight, near boxes. On 10/15 you said to do what you think is best on the pad.",
+    "question": "Should reload get a pad button that does nothing else?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes: reload on its own button; search and open move to one other button (helpers send you a picture first)"
+      },
+      {
+        "key": "b",
+        "text": "No: X stays reload and search, and reload wins while a fight is on"
+      },
+      {
+        "key": "c",
+        "text": "Leave it as it is"
+      }
+    ],
+    "pick": "a",
+    "why": "a wrong press in a fight is what a guest remembers, and you already said to do what is best."
+  },
+  {
+    "id": "r3-13",
+    "group": "The party night and the two players",
+    "about": "On 10/15 you said the pad needs a revamp but to keep hold-Y for the finisher \"for now\", with the revamp later. \"Later\" has no date and the cutoff is 10/26. The pad guide lists no button for melee, armour plate or air strike, so helpers will confirm whether a pad player can use them.",
+    "question": "How much of the rest of the pad layout should be reworked before 10/26?",
+    "options": [
+      {
+        "key": "a",
+        "text": "All of it: helpers rework it and send you one picture to approve"
+      },
+      {
+        "key": "b",
+        "text": "Only give melee, armour plate and air strike a pad button if they have none"
+      },
+      {
+        "key": "c",
+        "text": "Nothing until after the party"
+      }
+    ],
+    "pick": "b",
+    "why": "it fixes the gaps that matter at the party and moves nothing a guest has already learned."
+  },
+  {
+    "id": "r3-14",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you said there are many inconsistencies between the player 1 and player 2 games and to coordinate them better. A helper listed about ten, such as a welcome window under player 2's waiting screen, no run-over card in player 2's window, names over heads reading \"pillager\", and each window keeping its own settings.",
+    "question": "If only some of the differences can be fixed before Mon 10/26, which group goes first?",
+    "options": [
+      {
+        "key": "a",
+        "text": "What a guest sees at the end of a run: player 2's run-over card, the names, the stray welcome window"
+      },
+      {
+        "key": "b",
+        "text": "What the hands can do: the pad's missing or slower buttons"
+      },
+      {
+        "key": "c",
+        "text": "Settings: both windows using the same text size and layout"
+      }
+    ],
+    "pick": "a",
+    "why": "the run-over card is the last thing a guest sees and the loudest gap; then b, then c."
+  },
+  {
+    "id": "r3-15",
+    "group": "The party night and the two players",
+    "about": "Each window keeps its own copy of the settings, so a guest who turns the text size or screen size down in player 1's window changes nothing on player 2's TV. You ordered on 10/18 that the two games should match, and that all settings are reachable from the demo pause menu.",
+    "question": "When a guest changes a setting in one window, what should the other window do?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Copy it at once, everything"
+      },
+      {
+        "key": "b",
+        "text": "Keep its own settings"
+      },
+      {
+        "key": "c",
+        "text": "Copy it, except sound volume (each TV may need its own)"
+      }
+    ],
+    "pick": "c",
+    "why": "the looks should match and the volume depends on the TV."
+  },
+  {
+    "id": "r3-16",
+    "group": "The party night and the two players",
+    "about": "In the raid, player 1 is amber and player 2 is cyan. In the new menus from the picture survey, player 1 gets a lime bar and player 2 a blue one. Lime is also the colour of the selected row and the main button, so a lime player 1 can look like a button.",
+    "question": "Which colours say \"player 1\" and \"player 2\" everywhere?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Player 1 amber, player 2 cyan, everywhere; lime only means \"selected\" and the main button"
+      },
+      {
+        "key": "b",
+        "text": "Player 1 lime, player 2 blue, everywhere (the rings in the raid change)"
+      },
+      {
+        "key": "c",
+        "text": "Keep the split: amber and cyan in the raid, lime and blue in menus"
+      }
+    ],
+    "pick": "a",
+    "why": "amber and cyan already read well on the map, and lime keeps one meaning."
+  },
+  {
+    "id": "r3-17",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you ruled that all settings are reachable from the demo pause menu, and that the raid stays the same all night so the board is fair. Some rows only change looks or sound, but others change the rules: damage taken, kid mode, \"player 2 comes back after death\", auto-fire, superhot. One guest at 11 pm could change the game for the whole night.",
+    "question": "Which settings may guests change in the party demo?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Everything, as you ruled; a guest who changes the rules is the operator's problem"
+      },
+      {
+        "key": "b",
+        "text": "Only look and sound rows; the rule-changing rows are hidden in the demo"
+      },
+      {
+        "key": "c",
+        "text": "Everything, but New Party puts the rule-changing rows back to normal"
+      }
+    ],
+    "pick": "c",
+    "why": "it keeps your ruling that everything is reachable and still gives the next pair a fair game."
+  },
+  {
+    "id": "r3-18",
+    "group": "The party night and the two players",
+    "about": "The party demo does not start from fixed party settings. It runs on your own settings (damage level, enemy numbers and so on) and puts them back afterwards. So the party's difficulty is whatever you last set on your own game that afternoon, and a fair board needs it to stay the same all night.",
+    "question": "What should the party demo's rules be?",
+    "options": [
+      {
+        "key": "a",
+        "text": "A fixed set of party settings that never changes with your own game"
+      },
+      {
+        "key": "b",
+        "text": "Your own settings as they are on the night, which you look over before the doors open"
+      },
+      {
+        "key": "c",
+        "text": "Fixed party settings, with the operator card showing which are active"
+      }
+    ],
+    "pick": "a",
+    "why": "the board is then the same on every night, whatever you were testing that afternoon."
+  },
+  {
+    "id": "r3-19",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you ruled that the game asks the players whether they want easy mode. It is built: after a player's second death it asks, and yes takes a third off the damage they take. Your other rulings say no aim assist, the same game in demo and Career, and no kid switch, so what \"easier\" means was never said.",
+    "question": "When a guest says yes to easier, what should change?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Only a third less damage taken, as now"
+      },
+      {
+        "key": "b",
+        "text": "A third less damage, plus the gun fires by itself at the nearest enemy for pad players"
+      },
+      {
+        "key": "c",
+        "text": "A third less damage, plus more ammo and heals"
+      },
+      {
+        "key": "d",
+        "text": "No easy mode at all"
+      }
+    ],
+    "pick": "a",
+    "why": "it keeps \"no aim assist\" and \"the same game\" intact and is already built."
+  },
+  {
+    "id": "r3-20",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you answered \"every gun on its own key\". The game has ten guns on keys 1 to 9 and 0. The Scav Pistol and the Magnum share key 1 (the better one keeps the key, the other goes to the backpack with no key), while key 9 sits unused. Helpers read your answer as \"every kind of gun has a key\".",
+    "question": "Should every one of the ten guns have its own key, with the Magnum on key 9?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, the Magnum on 9, so ten guns have ten keys"
+      },
+      {
+        "key": "b",
+        "text": "No, the pistols share key 1 and the better one wins"
+      },
+      {
+        "key": "c",
+        "text": "Remove the Scav Pistol once a Magnum is found"
+      }
+    ],
+    "pick": "a",
+    "why": "it is literally your answer, and key 9 is idle."
+  },
+  {
+    "id": "r3-21",
+    "group": "The party night and the two players",
+    "about": "On 10/11 you ordered that the gun in your hands is never replaced in real time. Now, when you pick up a better copy of the gun you are holding, it swaps into your hands at once and the magazine rounds come with it. Your orders only mention putting a new gun in the next open slot, so the swap into the hands was a helper's choice.",
+    "question": "You pick up a better copy of the gun you are holding, mid-fight. What should happen?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Nothing changes in your hands; the better gun goes to its key and you switch when you want"
+      },
+      {
+        "key": "b",
+        "text": "It swaps in once you have stopped shooting and reloading for two seconds"
+      },
+      {
+        "key": "c",
+        "text": "It swaps in at once, as now"
+      }
+    ],
+    "pick": "a",
+    "why": "it is exactly your 10/11 order."
+  },
+  {
+    "id": "r3-22",
+    "group": "The party night and the two players",
+    "about": "You ruled one self-revive per raid, and on 9/25 that a teammate can pick you up. Nothing says whether pick-ups by a partner are limited. In the 2-player demo a pick-up keeps your score while a respawn loses it, so the number of pick-ups changes how risky the game is.",
+    "question": "How many times can a partner pick up a downed player?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Any number of times; each takes a few seconds in the open"
+      },
+      {
+        "key": "b",
+        "text": "Once per player per run"
+      },
+      {
+        "key": "c",
+        "text": "Any number of times, but each pick-up leaves the player with less health"
+      }
+    ],
+    "pick": "a",
+    "why": "saving each other is the fun of two players, and the score rule already makes dying costly."
+  },
+  {
+    "id": "r3-23",
+    "group": "The party night and the two players",
+    "about": "You ruled no team damage: grenades, lightning and the nuke never hurt a teammate, and bullets never do. Nothing says what your own explosives do to you. The grenade can hurt the thrower and a red barrel's fire burns whoever lit it, but the tripwire hurts nobody. On 9/5 both your deaths were your own charge, and you asked for a countdown and a warning shout.",
+    "question": "Should your own grenade, barrel or air strike hurt you?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, all of them, but never your partner; the tripwire also hurts whoever sets it off"
+      },
+      {
+        "key": "b",
+        "text": "No, never yourself or your partner"
+      },
+      {
+        "key": "c",
+        "text": "Yes, but at half damage"
+      }
+    ],
+    "pick": "a",
+    "why": "you asked for the cook countdown because it hurts, and one rule is easier to learn."
+  },
+  {
+    "id": "r3-24",
+    "group": "The party night and the two players",
+    "about": "In the picture survey you picked a goals pill that opens the full list when you hold Tab (D-pad up on the pad). But Tab already pauses and backs out, D-pad up already pings (tap) and opens the map (hold), and holding Alt already shows raid status. A guest holding Tab to see goals could pause the game.",
+    "question": "Which button should show the full goals list?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Hold the same button as the raid-status peek (Alt on the keyboard, the matching pad button), so goals and status open together"
+      },
+      {
+        "key": "b",
+        "text": "Hold Tab and D-pad up, as in the picture"
+      },
+      {
+        "key": "c",
+        "text": "No hold at all: the full list stays on screen"
+      }
+    ],
+    "pick": "a",
+    "why": "it reuses a button that already means \"show me how I'm doing\"."
+  },
+  {
+    "id": "r3-25",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you ruled the game must be completely self-explanatory and, in the demo, to keep the run goals (for example \"6 crates +200 sp\"). That list is what tells a guest how to score. The pill you picked shows only the nearest goal and hides the rest behind a hold.",
+    "question": "In the party demo, how should the goals show?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Always open, the full list; the pill is for Career"
+      },
+      {
+        "key": "b",
+        "text": "The pill everywhere; guests find the list by holding the button"
+      },
+      {
+        "key": "c",
+        "text": "Open for the first minute of a run, then it folds into the pill"
+      }
+    ],
+    "pick": "c",
+    "why": "it teaches how to score at the start, then clears the screen."
+  },
+  {
+    "id": "r3-26",
+    "group": "The party night and the two players",
+    "about": "On 10/13 you said the countdown clock needs to be bigger. In the raid screen you picked in the survey, the score is the biggest number at the top and the clock is smaller below it. The 10 minutes burning down is the main pressure in a run, and guests read it from 6 to 10 feet away.",
+    "question": "Which should be the biggest number at the top of the raid screen?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The clock, turning red in the last minute; the score below it"
+      },
+      {
+        "key": "b",
+        "text": "The score, as in the picture; the clock smaller below it"
+      },
+      {
+        "key": "c",
+        "text": "Both the same size, side by side"
+      }
+    ],
+    "pick": "a",
+    "why": "it is your 10/13 order, and the clock is what ends the run."
+  },
+  {
+    "id": "r3-27",
+    "group": "The party night and the two players",
+    "about": "In the survey you picked a row of ammo pips and added \"also keep a ring at the cursor\". The cursor already carries a combo ring, a spread ring and the reload ring, so this would be a fourth. Fifteen pips fit a pistol but not the Support MG (about 60 rounds) or the rocket launcher (2 rounds).",
+    "question": "What should the ring at the cursor show for ammo?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Nothing until the magazine is nearly empty, then a thin ring drains (the pips stay on the ammo plate)"
+      },
+      {
+        "key": "b",
+        "text": "A thin ring that always shows how full the magazine is"
+      },
+      {
+        "key": "c",
+        "text": "No ring; only the pips and the number"
+      }
+    ],
+    "pick": "a",
+    "why": "it shows the one thing pips cannot (the last rounds, while you look at the target) without a permanent fourth ring."
+  },
+  {
+    "id": "r3-28",
+    "group": "The party night and the two players",
+    "about": "The raid screen you picked has four corners and was drawn for one player. This is a 2-player game, so every guest has a partner on the other TV. Nothing says where the partner's name, health and downed state go, or how the team score and a player's own score show. Round 2 asks which score numbers to show but not where.",
+    "question": "Where should your partner's status sit on your screen?",
+    "options": [
+      {
+        "key": "a",
+        "text": "A small block under your own health, bottom-left (name, health bar, \"down\" state)"
+      },
+      {
+        "key": "b",
+        "text": "Top-left, under the goals list"
+      },
+      {
+        "key": "c",
+        "text": "Only a name tag and an arrow in the world, no block"
+      }
+    ],
+    "pick": "a",
+    "why": "your health stays in one corner and it is how most squad games show a partner."
+  },
+  {
+    "id": "r3-29",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you ruled to keep the feedback line, its button and Send play data. In the party demo the pause menu shows in both windows. Player 2 has only a pad and cannot type a note, and a note typed in player 1's window pauses that player.",
+    "question": "How should the Feedback tile work at the party?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Show it in both windows (a pad player just cannot type)"
+      },
+      {
+        "key": "b",
+        "text": "Show it only in player 1's window, the one with the keyboard; pad players tell you in person"
+      },
+      {
+        "key": "c",
+        "text": "Hide it for the party and collect comments by talking"
+      }
+    ],
+    "pick": "b",
+    "why": "it keeps your ruling where it works and avoids a dead box on the pad."
+  },
+  {
+    "id": "r3-30",
+    "group": "The party night and the two players",
+    "about": "The picture survey added a Controls tile to the pause menu. The game already has a quick-reference page on F1, a how-to page on the waiting screen and a key list in Settings. Your rule is one control per job, and four copies of the same list will drift apart.",
+    "question": "What should the Controls tile in the pause menu open?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The same quick-reference page as F1 and the waiting screen (one page, three doors); Settings keeps the list for changing keys"
+      },
+      {
+        "key": "b",
+        "text": "The key list in Settings"
+      },
+      {
+        "key": "c",
+        "text": "No Controls tile"
+      }
+    ],
+    "pick": "a",
+    "why": "a guest wants to look, not to rebind."
+  },
+  {
+    "id": "r3-31",
+    "group": "The party night and the two players",
+    "about": "On 10/18 you asked for the live map behind the waiting, scoreboard and how-to screens \"with real pillager-vs-robot combat\". The helpers built a staged fight (two pillagers and a robot following a script) because a real one is a multi-day job with a frame-rate risk on a 4K TV. This is what the TVs show most of the night.",
+    "question": "Is the staged fight behind the waiting screen good enough?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Fine, if it reads as real combat on a TV; revisit after the party"
+      },
+      {
+        "key": "b",
+        "text": "No, build the real thing even if it takes until after the party"
+      },
+      {
+        "key": "c",
+        "text": "Take the fight out and keep the dimmed map"
+      }
+    ],
+    "pick": "a",
+    "why": "the real version is a multi-day job with a frame-rate risk and the party is 12 days away."
+  },
+  {
+    "id": "r3-32",
+    "group": "The party night and the two players",
+    "about": "You picked frosted-glass cards and a blurred, dimmed world behind menus. In a 2-player run one player can have the pause menu open while the world keeps moving behind it, so the blur must redraw every frame in two windows on one PC. Nobody has measured the cost, and stutter is your number-one worry.",
+    "question": "If the blur costs frame rate on the two TVs, what gives?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The blur stays everywhere; helpers lower something else"
+      },
+      {
+        "key": "b",
+        "text": "A plain dim with no blur in the party demo"
+      },
+      {
+        "key": "c",
+        "text": "Blur only when the world is frozen (both players paused); a plain dim otherwise"
+      }
+    ],
+    "pick": "c",
+    "why": "it looks like your pick when it is free and avoids the cost mid-fight."
+  },
+  {
+    "id": "r3-33",
+    "group": "The party night and the two players",
+    "about": "The one-click party shortcut you asked for on 10/18 exists, but its only logged start (15:36 that day) ended with \"the game server did not come up\" and nothing opened. Helpers also found it still opens the plain title screen, where Career is one click away, until one setting is changed. Helpers cannot double-click a desktop shortcut and watch both TVs for you.",
+    "question": "When can you double-click the party shortcut once and tell me what happened?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Tonight"
+      },
+      {
+        "key": "b",
+        "text": "Tomorrow evening (10/19)"
+      },
+      {
+        "key": "c",
+        "text": "At the rehearsal only"
+      }
+    ],
+    "pick": "a",
+    "why": "it is the single point of failure on the night, and finding a fault now leaves a week to fix it."
+  },
+  {
+    "id": "r3-34",
+    "group": "The party night and the two players",
+    "about": "The two windows find each other through a link that uses an outside internet service to introduce them (it takes about 6 seconds, longer on a slow line). If the PC at the party has a slow, dropping or no connection, the link may take long or fail. Only you know the room.",
+    "question": "Will the party PC be on the internet that night?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, a steady connection"
+      },
+      {
+        "key": "b",
+        "text": "Probably, but it could drop"
+      },
+      {
+        "key": "c",
+        "text": "No internet"
+      }
+    ],
+    "pick": "b",
+    "why": "I cannot count on the room, so the helpers test the link with the network off and during a drop either way."
+  },
+  {
+    "id": "r3-35",
+    "group": "The party night and the two players",
+    "about": "As part of the feel work you asked for on 10/18, helpers changed how hard each gun kicks the screen (the Scattergun and Longshot kick more; the Compact SMG and Support MG less, so a held trigger does not shake) and how far a hit body is pushed back (Crawler a bit more, Sentry less). Each change is small, at most about 4 pixels at 1080p.",
+    "question": "Keep the new per-gun screen kicks and the hit shoves?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Keep all"
+      },
+      {
+        "key": "b",
+        "text": "Keep the gun kicks, undo the shoves"
+      },
+      {
+        "key": "c",
+        "text": "Undo all"
+      }
+    ],
+    "pick": "a",
+    "why": "every change is small and you will feel them in the next test."
+  },
+  {
+    "id": "r3-36",
+    "group": "The party night and the two players",
+    "about": "The controls list used to stay open for your first three raids. Helpers made it fold into a one-line hint 30 seconds into a raid, because it crowded the screen; F1 opens it again. The demo already shows no controls card since your no-tutorial answer, so this mostly affects Career.",
+    "question": "Keep the controls list folding away after 30 seconds?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Keep"
+      },
+      {
+        "key": "b",
+        "text": "Leave it open for the whole first raid"
+      },
+      {
+        "key": "c",
+        "text": "Never fold it"
+      }
+    ],
+    "pick": "a",
+    "why": "it crowded the screen, and your answer 70 says the game must explain itself without a card."
+  },
+  {
+    "id": "r3-37",
+    "group": "The party night and the two players",
+    "about": "The rulebook says to ask how a playtest felt. Player 2 plays the party on a pad, and the pad seat is where a guest is most likely to feel left out: no mouse, no aim help (your rule), and a small delay because player 2's window mirrors player 1's.",
+    "question": "In your test, how did the pad seat feel next to keyboard and mouse?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Just as fun"
+      },
+      {
+        "key": "b",
+        "text": "Playable but clearly worse (aim, delay or buttons; say which)"
+      },
+      {
+        "key": "c",
+        "text": "Frustrating enough that you would not hand it to a guest"
+      }
+    ],
+    "pick": "b",
+    "why": "with no aim help a pad is usually a little worse, and I would rather plan for it than be surprised."
+  },
+  {
+    "id": "r3-38",
+    "group": "The party night and the two players",
+    "about": "\"Guests can't tell how to start\" is fourth on your worry list. You know the game, so you cannot see what a stranger sees. The second player is the nearest thing to a stranger: they see \"join your team\" while the first player is already playing.",
+    "question": "Did the second player understand how to join and what to press without being told?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, with no help"
+      },
+      {
+        "key": "b",
+        "text": "After a hint from you (say what you had to explain)"
+      },
+      {
+        "key": "c",
+        "text": "No, they were lost"
+      }
+    ],
+    "pick": "b",
+    "why": "\"nobody needed a hint\" is rare in a first test, and what you had to explain tells the helpers what the screen must say."
+  },
+  {
+    "id": "r3-39",
+    "group": "The party night and the two players",
+    "about": "On 10/14 you ordered that sharing between teammates works by dropping an item, with an automatic ping. The rulebook says to ask after a playtest whether a partner would actually use it. Whether the two of you handed items to each other, and whether it made sense, decides if the share-by-drop work stays as it is.",
+    "question": "In the test, did the two of you share items by dropping them, and did it work?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, it worked and made sense"
+      },
+      {
+        "key": "b",
+        "text": "We did not try it"
+      },
+      {
+        "key": "c",
+        "text": "We tried and it was confusing or did not work (say what)"
+      }
+    ],
+    "pick": "b",
+    "why": "it was a first test focused on the party flow, so the next test should include one item hand-over."
+  },
+  {
+    "id": "r3-40",
+    "group": "The party night and the two players",
+    "about": "The rulebook also asks after a playtest whether the boss was fun. The Overseer (worth 2,000 points) waits in a lair in the middle of the map. Round 2 asks whether it should come out to hunt the pair and how big its entrance should be, and those answers depend on how the fight feels now.",
+    "question": "Did you reach the Overseer in the test, and how was the fight?",
+    "options": [
+      {
+        "key": "a",
+        "text": "We did not reach it"
+      },
+      {
+        "key": "b",
+        "text": "Yes, and it was fun"
+      },
+      {
+        "key": "c",
+        "text": "Yes, but too easy, too hard or confusing (say which)"
+      }
+    ],
+    "pick": "a",
+    "why": "in a 10-minute first test most pairs never get there."
+  },
+  {
+    "id": "r3-41",
+    "group": "The lock and the last week",
+    "about": "Your rule is new features until Mon 10/26, then fixes only, and the party version locks Thu 10/29. \"Fixes\" is never defined. No screen has reached 4 from the picture judge yet (the best is 3), so look work is the biggest thing still open. Helpers read rules literally.",
+    "question": "After Mon 10/26, what may helpers still change?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Only things that crash, freeze or break 2-player play"
+      },
+      {
+        "key": "b",
+        "text": "Also look-only changes (colours, spacing, words) until Wed 10/28; after that only crash, freeze and 2-player fixes"
+      },
+      {
+        "key": "c",
+        "text": "Anything that is not a brand new feature, up to the lock"
+      }
+    ],
+    "pick": "b",
+    "why": "the look work is furthest behind and is the safest kind of change, but it stops a day and a half before the lock."
+  },
+  {
+    "id": "r3-42",
+    "group": "The lock and the last week",
+    "about": "You set the feature cutoff for Mon 10/26 but gave no hour. Helpers and the overnight runs need to know when to switch to fixes only, and some jobs take hours. A job that starts at 11 pm on Monday is still a new feature that nobody has played.",
+    "question": "What hour does the feature cutoff fall at on Mon 10/26?",
+    "options": [
+      {
+        "key": "a",
+        "text": "9 pm"
+      },
+      {
+        "key": "b",
+        "text": "Midnight"
+      },
+      {
+        "key": "c",
+        "text": "Whenever you say \"cutoff\" in chat; nothing switches on its own"
+      }
+    ],
+    "pick": "a",
+    "why": "a fixed hour gives the helpers something to plan around, and you can still say it earlier in chat."
+  },
+  {
+    "id": "r3-43",
+    "group": "The lock and the last week",
+    "about": "You set the lock for Thu 10/29 evening. \"Evening\" could be 6 pm or midnight. Whatever ships just before the lock is the version nobody has played, and Friday morning must stay clear for setting up the party.",
+    "question": "What hour does the lock fall at on Thu 10/29?",
+    "options": [
+      {
+        "key": "a",
+        "text": "8 pm, or earlier the moment you say \"locked\" in chat"
+      },
+      {
+        "key": "b",
+        "text": "Midnight"
+      },
+      {
+        "key": "c",
+        "text": "When you say so in chat; nothing happens on its own"
+      }
+    ],
+    "pick": "a",
+    "why": "an early fixed hour leaves a quiet evening to prove the locked copy starts."
+  },
+  {
+    "id": "r3-44",
+    "group": "The lock and the last week",
+    "about": "On 10/18 you ruled to lock the party version on Thu 10/29 evening. \"Locked version\" could mean three things: the newest version, the last one marked stable, or the last one you actually played. Nobody is assigned to switch the party shortcut to it either. Today the newest stable version is an old one (29.09, from this morning), while you are playing 30.73.",
+    "question": "Which version becomes the party version on Thursday night?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The one you last played and approved; helpers keep testing only and change nothing"
+      },
+      {
+        "key": "b",
+        "text": "The newest version that passed all the tests"
+      },
+      {
+        "key": "c",
+        "text": "The newest version, whatever the tests say"
+      }
+    ],
+    "pick": "a",
+    "why": "one exact version that you have actually played is the only lock that cannot surprise you."
+  },
+  {
+    "id": "r3-45",
+    "group": "The lock and the last week",
+    "about": "The party shortcut loads the address you play on, which always shows the newest version. After the lock, a late change from a helper could reach a party window, and a window reloads by itself after a crash (up to four times in 30 seconds). A lock that is only a label would not stop that.",
+    "question": "On party night, should the two windows load a copy that cannot change?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes: a frozen copy made Thursday evening at its own address, which helpers cannot change by accident"
+      },
+      {
+        "key": "b",
+        "text": "The normal address, but only versions you approved can appear there after the lock"
+      },
+      {
+        "key": "c",
+        "text": "Leave it as it is now"
+      }
+    ],
+    "pick": "a",
+    "why": "it is the cheapest guarantee that \"locked\" really means locked."
+  },
+  {
+    "id": "r3-46",
+    "group": "The lock and the last week",
+    "about": "On 10/18 you ruled: tag versions as stable or intermediate, and your play window always loads the latest stable. But the newest stable is old (29.09, from this morning) and your notes this afternoon name version 30.73, so you are playing the newest. What the ruling says and what you do are different.",
+    "question": "Which version should your own play window load?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The newest version always; stable only matters for the party"
+      },
+      {
+        "key": "b",
+        "text": "The latest stable always, even if it is behind (you see changes later)"
+      },
+      {
+        "key": "c",
+        "text": "Both: two shortcuts, one for the newest and one for the latest stable"
+      }
+    ],
+    "pick": "c",
+    "why": "you see new work and can still fall back to a steady version, and it keeps your stable ruling."
+  },
+  {
+    "id": "r3-47",
+    "group": "The lock and the last week",
+    "about": "You asked for stable versions and for me to tell you what counts as stable. The only definition sits inside a technical file: a finished full test run with no new failure, plus 30 minutes of robot play on the same version. Nothing says when you get a say, and no new version has qualified since this morning.",
+    "question": "What should make a version stable (the one your play window loads)?",
+    "options": [
+      {
+        "key": "a",
+        "text": "It passed all the tests and you played one 2-player run on it"
+      },
+      {
+        "key": "b",
+        "text": "It is the last version each night that passed all the tests"
+      },
+      {
+        "key": "c",
+        "text": "Only versions you name stable yourself"
+      }
+    ],
+    "pick": "b",
+    "why": "b keeps your play window fresh without you doing anything, and for the Thursday lock I add a human test (a)."
+  },
+  {
+    "id": "r3-48",
+    "group": "The lock and the last week",
+    "about": "Many automatic tests fail only because a screen was redesigned: the test still looks for the old screen. A version cannot be called stable while any test is red, and the file that would list known-red tests does not exist, so the party would run on a version many days behind.",
+    "question": "Who may call a test out of date?",
+    "options": [
+      {
+        "key": "a",
+        "text": "I may, one test at a time and only when the new look is the cause; each is listed in the evening report and you approve the final list at the lock"
+      },
+      {
+        "key": "b",
+        "text": "Nobody: every test must pass, so the party would run on the old look"
+      },
+      {
+        "key": "c",
+        "text": "You approve each batch in chat"
+      }
+    ],
+    "pick": "a",
+    "why": "it unfreezes stable without hiding real bugs, and you still sign the list at the lock."
+  },
+  {
+    "id": "r3-49",
+    "group": "The lock and the last week",
+    "about": "On 10/18 you ruled that next week's Claude allowance goes even, then all-in Thursday to Saturday (it refills Sun 10/25). Your later rulings lock the game Thursday evening, stop everything Friday, and have no launch on Saturday. The all-in days are now the days with nothing left to build.",
+    "question": "How should next week's Claude allowance be spent?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Most of it Sun 10/25 to Mon 10/26 before the cutoff, light Tue to Thu (fixes only), nothing Friday, all-in again Saturday on whatever you ask for after the party"
+      },
+      {
+        "key": "b",
+        "text": "Even all week, like this week"
+      },
+      {
+        "key": "c",
+        "text": "Saved for Fri to Sun, after the party"
+      }
+    ],
+    "pick": "a",
+    "why": "your later rulings stop the game changing on Thursday, so the work that matters has to happen before it."
+  },
+  {
+    "id": "r3-50",
+    "group": "The lock and the last week",
+    "about": "By my estimate about $50 of the $198 Console credit is left for the 12 days to go (question 61 is about reading the real number). It refills Nov 1, so leftovers are lost, but running out on 10/22 would leave the lock week with no Console helpers. Your \"no paid extra usage\" ruling was about your plan, not this credit.",
+    "question": "If the Console credit runs out before the lock, what then?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The Console helpers stop and only the two plan helpers carry on; I hold back the last bit for crash and 2-player fixes"
+      },
+      {
+        "key": "b",
+        "text": "You add more credit yourself"
+      },
+      {
+        "key": "c",
+        "text": "Spend it freely until it is gone, then we see"
+      }
+    ],
+    "pick": "a",
+    "why": "unspent credit only disappears on Nov 1 anyway, and the lock week is when a crash fix is worth the most."
+  },
+  {
+    "id": "r3-51",
+    "group": "The lock and the last week",
+    "about": "New things may go in until Mon 10/26. On 10/15 you froze new feature work until the polish pass was done. Since then you added orders in chat and in pause-box notes (a superhot toggle key, other exploding barrels, no mimics), and round 2 re-asks the heat dial, combos and missions.",
+    "question": "Until Mon 10/26, which new things may go in?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Your own orders (chat and pause-box notes) and the lists you picked on 10/18; ideas the helpers think up go on an after-the-party list"
+      },
+      {
+        "key": "b",
+        "text": "Only the lists you picked on 10/18; your new notes wait"
+      },
+      {
+        "key": "c",
+        "text": "Also the round 2 extras (heat dial, combos, looks extras, experimental settings, missions)"
+      }
+    ],
+    "pick": "a",
+    "why": "your orders are your orders, and the party is about a solid 2-player demo rather than more untested extras."
+  },
+  {
+    "id": "r3-52",
+    "group": "The lock and the last week",
+    "about": "Your 10/15 freeze covered the audio picks and the raid-screen-and-extras picks (for example sounds that follow the space, share-by-drop). On 10/18 you said to do the extras you said yes to this week, and the raid screen is being redesigned now. Nobody has said whether those two batches are still on hold.",
+    "question": "Are the audio batch and the raid-screen-and-extras batch still on hold until after the party?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, both on hold"
+      },
+      {
+        "key": "b",
+        "text": "Audio may go in before Monday; the raid-screen-and-extras batch stays on hold"
+      },
+      {
+        "key": "c",
+        "text": "Both may go in before Monday, inside the raid screen redesign"
+      }
+    ],
+    "pick": "a",
+    "why": "the raid screen is being rebuilt, and harsh sound is handled by the loudness pass (round 2 question 73), not by new sounds."
+  },
+  {
+    "id": "r3-53",
+    "group": "The lock and the last week",
+    "about": "Your finish line is 4 or more from the picture judge on every screen. Today none of the 56 scored screens is at 4 (one at 1, 36 at 2, 19 at 3). Half old and half new looks worse than all old. Guests see the waiting screen, how to play, the raid screen, the pause menu, the run-over card and the scoreboard, and almost none of the other 50.",
+    "question": "If not every screen is done by Mon 10/26, which ones are finished first?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The ones guests see at the party; the rest stay as they are, consistent with each other"
+      },
+      {
+        "key": "b",
+        "text": "All screens in list order"
+      },
+      {
+        "key": "c",
+        "text": "Stop the restyle on Fri 10/23 and tidy what exists so it looks even"
+      }
+    ],
+    "pick": "a",
+    "why": "it puts the effort where the party looks."
+  },
+  {
+    "id": "r3-54",
+    "group": "The lock and the last week",
+    "about": "On 10/18 you said keep the normal title screen, no party version, and do the raid screen first, then run-over, then title. But the party shortcut skips the title and boots into the waiting screen (scoreboard, how to play, \"press any button\"). So title work is for a screen only you will see, while the waiting screen is what guests stand in front of all night.",
+    "question": "Where should the new logo, tagline and background work go first?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The waiting screen first; the real title after the party"
+      },
+      {
+        "key": "b",
+        "text": "The title first, as you ordered; the waiting screen inherits it"
+      },
+      {
+        "key": "c",
+        "text": "Both before Mon 10/26, even if that squeezes other work"
+      }
+    ],
+    "pick": "a",
+    "why": "the same logo and background reach the screen guests actually see."
+  },
+  {
+    "id": "r3-55",
+    "group": "The lock and the last week",
+    "about": "A screen is done at 4 or more from the picture judge, and a helper gives up after two follow-ups that do not raise the score. The judge costs about 4 cents a call, does not know your rulings and sometimes contradicts itself (one note flagged a dollar sign in the ammo panel, though you ruled $ is money). The best any screen has reached is 3.",
+    "question": "What does \"done\" mean for the party?",
+    "options": [
+      {
+        "key": "a",
+        "text": "4 only for the raid screen, waiting screen, pause menu and run-over card; 3 is enough for everything else"
+      },
+      {
+        "key": "b",
+        "text": "4 everywhere until the cutoff"
+      },
+      {
+        "key": "c",
+        "text": "You look at before-and-after pictures and judge screen by screen"
+      }
+    ],
+    "pick": "a",
+    "why": "it keeps your bar where guests look and stops spending on the rest."
+  },
+  {
+    "id": "r3-56",
+    "group": "The lock and the last week",
+    "about": "On 10/18 you ruled that the style guide may overrule your layout and size guidance, and asked for the whole raid screen to be redesigned. Helpers have also restyled the run-over, abandoned and welcome cards. There is no step where you see the biggest changes before they reach the party version, and a dislike on 10/27 is too late.",
+    "question": "Do you want to see the biggest screens before they are in the party version?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes: before-and-after pictures of the raid screen, waiting screen and run-over card in the evening report; no reply by Sun 10/25 noon means they stay"
+      },
+      {
+        "key": "b",
+        "text": "Only if I am unsure"
+      },
+      {
+        "key": "c",
+        "text": "No, helpers go ahead"
+      }
+    ],
+    "pick": "a",
+    "why": "it costs a few minutes of your time, and a hard date stops it blocking anything."
+  },
+  {
+    "id": "r3-57",
+    "group": "The lock and the last week",
+    "about": "The rulebook says never reword a line you edited. Your 10/18 answer 8 says helpers may shorten or delete your lines with a logged reason. Answer 61 keeps the feedback line, its button and Send play data. Buttons are not covered by answer 8, and no list exists of what is untouchable.",
+    "question": "Is there anything of yours that helpers must never change, even with a reason?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Just the feedback line, its button and Send play data"
+      },
+      {
+        "key": "b",
+        "text": "Those plus a short list you give me in chat"
+      },
+      {
+        "key": "c",
+        "text": "Nothing; answer 8 covers it"
+      }
+    ],
+    "pick": "a",
+    "why": "it matches answer 61 and costs you nothing; add to the list whenever you notice a line you love."
+  },
+  {
+    "id": "r3-58",
+    "group": "The lock and the last week",
+    "about": "The overnight code review and the test runs turn what they find into fix jobs by themselves. Nothing tells them about the cutoff, so after 10/26 they keep producing fixes that change the game with nobody deciding. Every automatic change after the cutoff is a version with less play-testing.",
+    "question": "After 10/26, what should the overnight review and test runs do with what they find?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Only crash, freeze and 2-player findings become fix jobs; everything else goes on an after-the-party list"
+      },
+      {
+        "key": "b",
+        "text": "Everything becomes a job, as now"
+      },
+      {
+        "key": "c",
+        "text": "Nothing becomes a job by itself; it all goes to your morning report"
+      }
+    ],
+    "pick": "a",
+    "why": "it keeps the safety net for what ruins a party and parks the rest."
+  },
+  {
+    "id": "r3-59",
+    "group": "The lock and the last week",
+    "about": "The party runs off one game page on this PC. If that page does not come up on the night (address taken, program crashed), there is no stated fallback, and the two-window set-up cannot run from a plain file.",
+    "question": "If the game page will not open at the party, what is the backup?",
+    "options": [
+      {
+        "key": "a",
+        "text": "A second copy of the party version at a different local address, started by one button on the desktop"
+      },
+      {
+        "key": "b",
+        "text": "The itch page"
+      },
+      {
+        "key": "c",
+        "text": "No backup; you restart the PC"
+      }
+    ],
+    "pick": "a",
+    "why": "one button is something you can press in 10 seconds, and the itch page would not give the two-window set-up."
+  },
+  {
+    "id": "r3-60",
+    "group": "The lock and the last week",
+    "about": "On 10/18 you ruled no paid extra usage. The Console website has an automatic reload setting that only you can see. If it is on, the credit could refill itself when it runs out, which is paid extra usage. It takes a couple of minutes, and I can give you the steps.",
+    "question": "Can you look in the Console and make sure automatic reload is switched off?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, tonight"
+      },
+      {
+        "key": "b",
+        "text": "Yes, this week"
+      },
+      {
+        "key": "c",
+        "text": "It is already off; I know"
+      }
+    ],
+    "pick": "a",
+    "why": "it makes \"no paid extra usage\" certain for the price of two minutes."
+  },
+  {
+    "id": "r3-61",
+    "group": "The lock and the last week",
+    "about": "The number that steers the helpers' spending is my estimate, and it has been wrong before (once 1.76 times too high). The only real figure was the $89.92 you saw on the dashboard at 08:20. I cannot read the real balance without a read-only code that only you can create in the Console and put in place on this PC (I never handle your keys). The helpers' own key expires 11-16.",
+    "question": "Will you create the read-only code so I can read the real balance?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, tonight (I give you the steps)"
+      },
+      {
+        "key": "b",
+        "text": "No code; you type the dashboard balance in chat each morning"
+      },
+      {
+        "key": "c",
+        "text": "No; trust my estimate"
+      }
+    ],
+    "pick": "a",
+    "why": "it puts a real number behind every spending decision."
+  },
+  {
+    "id": "r3-62",
+    "group": "The lock and the last week",
+    "about": "You ruled that the helpers' work goes to the Console credit by default, not your weekly plan, with an 85% target by the reset. But two helpers (e and f), I and my extra agents run on your plan. At 15:34 on 10/18 the week was 11% used against a line of 7.4%, so the plan helpers paused, while your own chat and my work use the plan fastest.",
+    "question": "When the week's usage runs ahead of the line, what gives way first?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The two plan helpers pause; your chat and my work always continue"
+      },
+      {
+        "key": "b",
+        "text": "I slow down first; the plan helpers continue"
+      },
+      {
+        "key": "c",
+        "text": "Whichever costs least per hour"
+      }
+    ],
+    "pick": "a",
+    "why": "talking to you must never wait on a background job."
+  },
+  {
+    "id": "r3-63",
+    "group": "The lock and the last week",
+    "about": "The rulebook says no agent teams unless you ask, and my notes say fan-outs burn the weekly window. But I run several extra agents at a time on your plan today, plus the two plan helpers, and the week's usage is ahead of the line.",
+    "question": "May I run several extra agents on your plan at the same time?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, up to 3 at a time while the week is under the line, none while it is over"
+      },
+      {
+        "key": "b",
+        "text": "No: only me and the two plan helpers"
+      },
+      {
+        "key": "c",
+        "text": "Any number"
+      }
+    ],
+    "pick": "a",
+    "why": "it is how work is getting done now, and the weekly line keeps it from eating the week."
+  },
+  {
+    "id": "r3-64",
+    "group": "The lock and the last week",
+    "about": "Three of your rules disagree about helpers while you are at the PC: use less when I am here (9/25), keep working even if I am at the PC (10/15), and test-window limits of 1 to 6. In reality about 13 test windows run, using about 88% of the processor at one reading, on the PC the party will use.",
+    "question": "When you are playing on this PC, what should the robots and helpers do?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Keep going at half: one robot only, no big test run and no local AI code review while a game window is open"
+      },
+      {
+        "key": "b",
+        "text": "Full speed always; you accept some stutter in test sessions"
+      },
+      {
+        "key": "c",
+        "text": "Pause everything while you play"
+      }
+    ],
+    "pick": "a",
+    "why": "stutter is your worst problem, and this follows rule number one by keeping the work going at half."
+  },
+  {
+    "id": "r3-65",
+    "group": "The lock and the last week",
+    "about": "The overnight robots restart every 15 minutes whether or not you are at the PC, and only the stop script (run by hand on the party day) turns them off. A rehearsal or a long test on Wednesday gets robots running too. A test that stutters because of the robots proves nothing, and the party night itself must be quiet.",
+    "question": "When should the robots and helpers stop by themselves?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Automatically whenever the party launcher window is open, and completely from the Thursday lock until the start script runs"
+      },
+      {
+        "key": "b",
+        "text": "Only when you run the stop script on Fri morning"
+      },
+      {
+        "key": "c",
+        "text": "Never automatically"
+      }
+    ],
+    "pick": "a",
+    "why": "it protects every real test and the party without you having to remember."
+  },
+  {
+    "id": "r3-66",
+    "group": "The lock and the last week",
+    "about": "On 10/18 you ruled phone alerts when something is stuck or nothing has shipped for 2 hours, only between 9 am and 9 pm. Nothing exists for it yet and the channel was never chosen. It would say only \"stuck\" or \"nothing shipped for 2 hours\", never game content, and sending anything off the PC needs your yes. The publishing line sat jammed from 13:32 to about 15:00 on 10/18 before anyone saw it.",
+    "question": "How should the phone alert reach you?",
+    "options": [
+      {
+        "key": "a",
+        "text": "A free push-notification app on your phone (you install one app and I set it up)"
+      },
+      {
+        "key": "b",
+        "text": "A text message"
+      },
+      {
+        "key": "c",
+        "text": "An email"
+      },
+      {
+        "key": "d",
+        "text": "No alert; only the morning and evening reports"
+      }
+    ],
+    "pick": "a",
+    "why": "it is free, quick, and shows on the lock screen."
+  },
+  {
+    "id": "r3-67",
+    "group": "The lock and the last week",
+    "about": "Twice on 10/18 the line that publishes new versions jammed: first a leftover lock file, then some deleted files. Every ship stopped and the helpers' only allowed move was to write to you, while your own rule is that I never ask you to run commands. Each jam cost hours.",
+    "question": "When the publishing line jams, who fixes it?",
+    "options": [
+      {
+        "key": "a",
+        "text": "A small automatic repair that does only two things: remove a lock file older than 30 minutes and restore deleted files; each use is logged in the report"
+      },
+      {
+        "key": "b",
+        "text": "I fix it when I see it; helpers only report; if I am asleep it waits"
+      },
+      {
+        "key": "c",
+        "text": "You do, from written steps"
+      }
+    ],
+    "pick": "a",
+    "why": "both of the 10/18 jams were of this kind, and a narrow repair cannot break the game."
+  },
+  {
+    "id": "r3-68",
+    "group": "The lock and the last week",
+    "about": "Your pause-box notes land in a folder and are seen only when I start a session. Your latest (15:42 to 15:47 on 10/18) said opening settings from the pause menu does not work right, and asked for a superhot toggle key, other exploding barrels and no mimics. The first matters for the party.",
+    "question": "When you send a note from the pause box, how soon should it be acted on?",
+    "options": [
+      {
+        "key": "a",
+        "text": "A helper job within the hour: crash, 2-player and menu problems first; new ideas follow your answer to question 51"
+      },
+      {
+        "key": "b",
+        "text": "It waits until I next wake up (could be hours)"
+      },
+      {
+        "key": "c",
+        "text": "You tell me in chat when one matters"
+      }
+    ],
+    "pick": "a",
+    "why": "the pause menu is where the party's trouble will show up first."
+  },
+  {
+    "id": "r3-69",
+    "group": "The lock and the last week",
+    "about": "Round 1 question 89 asked whether your itch page is private. It was skipped with the launch section, but it is not about the launch: every version that passes the tests is uploaded to the page, even one with a half-finished screen, and \"no new people before the party\" is only true if the page is private. A helper saw a password box, but only you can confirm the setting.",
+    "question": "Is your itch page private (password or restricted link only)?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, private; uploads are fine"
+      },
+      {
+        "key": "b",
+        "text": "It is public; stop the uploads"
+      },
+      {
+        "key": "c",
+        "text": "Not sure; pause the uploads until you look"
+      }
+    ],
+    "pick": "c",
+    "why": "I would rather pause than show a half-finished game to strangers on a guess."
+  },
+  {
+    "id": "r3-70",
+    "group": "The lock and the last week",
+    "about": "The publishing line uploads to your itch page about 30 times a day, and a daily upload does it again. The ship script says every ship pushes to GitHub and itch. On 10/15 you said not to worry about itch right now, and round 2 question 84 proposes never publishing off the PC without your yes, which would stop all this.",
+    "question": "How often should passing versions go to your itch page?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Every passing version, as now (only if the page is private)"
+      },
+      {
+        "key": "b",
+        "text": "Once a day only; the daily backup already does that"
+      },
+      {
+        "key": "c",
+        "text": "Stop until after the party; the GitHub backup stays"
+      }
+    ],
+    "pick": "b",
+    "why": "the backup still happens, ships go faster, and nothing half-done is posted all day."
+  },
+  {
+    "id": "r3-71",
+    "group": "The lock and the last week",
+    "about": "On 10/18 you set the first real 2-player test for that day and said as many sessions as you can. The sessions that follow have no days or times, and they are the only evidence the party will work. A set time lets helpers have a fresh version ready and fixes come back before the next session. Round 2 question 31 asks only about the full rehearsal.",
+    "question": "When will you and a second player test the 2-player demo between now and the rehearsal?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Each evening 10/19 to 10/23 for about 30 minutes"
+      },
+      {
+        "key": "b",
+        "text": "Weekends only"
+      },
+      {
+        "key": "c",
+        "text": "When it happens; you tell me"
+      }
+    ],
+    "pick": "a",
+    "why": "a set time means a fresh version is ready and fixes come back before the next session."
+  },
+  {
+    "id": "r3-72",
+    "group": "The lock and the last week",
+    "about": "The pause menu in the demo still carries the What's New card, which lists version-by-version changes: developer notes, not guest text. Your 10/13 answer moved the card to a pause-menu button, and the survey added a corner card and a pause tile. The card also blocks new versions: its version number must be kept up to date by hand or publishing stops (it is 0.15 behind; it stops at 0.16).",
+    "question": "Should guests see the What's New card in the party demo?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Hide it in the demo; keep it for Career"
+      },
+      {
+        "key": "b",
+        "text": "Show it, cut to three plain lines"
+      },
+      {
+        "key": "c",
+        "text": "Leave it as it is"
+      }
+    ],
+    "pick": "a",
+    "why": "it removes a source of stray text and an automatic stop in one move."
+  },
+  {
+    "id": "r3-73",
+    "group": "The lock and the last week",
+    "about": "Of 178 new versions made on 10/18, 16 did nothing but add a line like \"polish pass 12\" to the What's New card, which shows once per version. Friends who later read the card learn nothing from those lines. Helpers can still record the version number somewhere else.",
+    "question": "Should the What's New card list only real changes?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, only real changes you can see"
+      },
+      {
+        "key": "b",
+        "text": "Fine as it is"
+      },
+      {
+        "key": "c",
+        "text": "Remove the card entirely"
+      }
+    ],
+    "pick": "a",
+    "why": "a long list of \"polish pass\" lines tells a reader nothing."
+  },
+  {
+    "id": "r3-74",
+    "group": "The lock and the last week",
+    "about": "On 10/15 you ordered that all text shown to the player on screen also goes into the player feed (the small list of what just happened). It is built and has a test. The style guide says one pop-up at a time, with repeats merged. The raid screen redesign decides how the feed looks, and the test goes red if lines are dropped.",
+    "question": "Should every message that appears also be listed in the feed?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, the feed keeps everything (small, fading); pop-ups stay one at a time"
+      },
+      {
+        "key": "b",
+        "text": "Only the important ones (loot, kills, downed, extract) go in the feed"
+      },
+      {
+        "key": "c",
+        "text": "No feed"
+      }
+    ],
+    "pick": "a",
+    "why": "it is your standing order, already built and tested; the redesign only has to place it well."
+  },
+  {
+    "id": "r3-75",
+    "group": "Scoring and rules",
+    "about": "On 10/12 you said a respawning player in the 2-player demo loses all score. On 10/15 you said a kill costs 50 percent, and on 10/18 that ending early halves the score, the same as dying. In the game, a 2-player death sets that player's score to zero and respawns them, while a 1-player death ends the run and halves it.",
+    "question": "In a 2-player run, when one player dies and respawns, what happens to their score so far?",
+    "options": [
+      {
+        "key": "a",
+        "text": "They lose half of it, then respawn (the 50 percent rule everywhere)"
+      },
+      {
+        "key": "b",
+        "text": "They lose all of it, then respawn (as now)"
+      },
+      {
+        "key": "c",
+        "text": "They keep it all but wait a few seconds to respawn"
+      }
+    ],
+    "pick": "a",
+    "why": "your two later rulings both say half, and one rule for 1 and 2 players is simplest."
+  },
+  {
+    "id": "r3-76",
+    "group": "Scoring and rules",
+    "about": "The Forge upgrades a gun for 2,500 points (MK II) or 6,000 (MK III), paid out of the raid score in demo and Career (your 10/12 order). In the demo the high score is the only goal, so upgrading lowers your own score. The screen also shows the price in dollars, though money and score are different things.",
+    "question": "Upgrading a gun at the Forge costs score points. How should the board count that?",
+    "options": [
+      {
+        "key": "a",
+        "text": "The cost comes off your score, as now: you upgrade only if it will win you more than it costs"
+      },
+      {
+        "key": "b",
+        "text": "The cost is paid, but the board counts everything you earned, including what you spent"
+      },
+      {
+        "key": "c",
+        "text": "No Forge in the party demo"
+      }
+    ],
+    "pick": "a",
+    "why": "\"paid with raid score\" is your ruling; only the label needs to say points."
+  },
+  {
+    "id": "r3-77",
+    "group": "Scoring and rules",
+    "about": "On 10/13 you ruled the high score board has 20 rows. In the survey you picked a top-ten table with big letter boxes, and the text size makes 20 rows barely fit. Under ten guests playing about 15 runs make about 30 entries over the night, and round 2 question 46 may add two rows per run.",
+    "question": "How should the \"tonight's best\" board show scores?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Ten rows, big, as in the picture; the other ten are kept but not shown"
+      },
+      {
+        "key": "b",
+        "text": "Twenty rows in one smaller list"
+      },
+      {
+        "key": "c",
+        "text": "Two columns of ten (1 to 10 and 11 to 20), big enough to read from the sofa"
+      }
+    ],
+    "pick": "c",
+    "why": "everyone can find their name and it stays readable at 6 to 10 feet."
+  },
+  {
+    "id": "r3-78",
+    "group": "Scoring and rules",
+    "about": "On 10/18 you ruled that ending early halves the score, the same as dying. The game halves a run that ends by dying or by the burn clock, but a run ended from the pause menu (End run) or by walking away (the idle timeout) pays in full, so a guest can bank a high score by ending instead of dying. Helpers will make End run halve the score.",
+    "question": "A run that ends because nobody pressed anything for a while (the idle timeout): should it halve the score too?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, the same as quitting"
+      },
+      {
+        "key": "b",
+        "text": "No, only the End run button halves"
+      },
+      {
+        "key": "c",
+        "text": "The idle timeout throws the run away, with nothing on the board"
+      }
+    ],
+    "pick": "a",
+    "why": "walking away is a way of ending early, and your ruling says early ends halve."
+  },
+  {
+    "id": "r3-79",
+    "group": "Scoring and rules",
+    "about": "On 10/18 you ruled no live rank readout and no scoreboard until the game is over. The run-over card could show one line after the run, like \"412 below your best\", to make one more run tempting. It appears only after the run, so it fits your ruling.",
+    "question": "Should the run-over card show a near-miss line such as \"412 below your best\"?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, one short line after the run"
+      },
+      {
+        "key": "b",
+        "text": "No"
+      },
+      {
+        "key": "c",
+        "text": "Only when the run was within 10 percent of the best"
+      }
+    ],
+    "pick": "a",
+    "why": "it respects \"nothing until it is over\" and is the cheapest reason for a pair to queue again."
+  },
+  {
+    "id": "r3-80",
+    "group": "Scoring and rules",
+    "about": "The run-over card could also show a tip based on how you died, like \"crouch to search quietly\". On 10/18 you ruled no tutorial prompts and that the game must be completely self-explanatory, in answer to a question that named this tip.",
+    "question": "Should the run-over card show a tip based on how you died?",
+    "options": [
+      {
+        "key": "a",
+        "text": "No tips"
+      },
+      {
+        "key": "b",
+        "text": "Yes, one short tip, only after the run"
+      },
+      {
+        "key": "c",
+        "text": "Only for a player on their first run"
+      }
+    ],
+    "pick": "a",
+    "why": "a tip is a tutorial, and you ruled those out."
+  },
+  {
+    "id": "r3-81",
+    "group": "Scoring and rules",
+    "about": "In Career raids a live list ranks the pillagers (you and the AI crews) by what they carry. You judge a run in points (SP), the list ranks in dollars, and you ruled no live rank readout. The demo already hides the list, and on 9/3 the pillager board was among the screen items that bother you most.",
+    "question": "What should the live pillager list in Career raids do?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Keep it as it is, ranked by what each carries"
+      },
+      {
+        "key": "b",
+        "text": "Hide it like in the demo; show it only on the end card"
+      },
+      {
+        "key": "c",
+        "text": "Rank everyone by points, so the AI crews get a score too"
+      }
+    ],
+    "pick": "b",
+    "why": "it clashes with \"no live rank\" and was on your list of things that bother you."
+  },
+  {
+    "id": "r3-82",
+    "group": "Scoring and rules",
+    "about": "On 10/12 you ruled no level-up unlocks, and on 9/3 that cosmetics are earned, never bought. About 13 hats and outfits still unlock at level 2, 3 or 4, and XP, levels and the ten-step Progress track still exist in Career. In the demo nothing is earned.",
+    "question": "What should we do with levels?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Remove level unlocks; hats and outfits unlock by things you do (extractions, kills, wardens, runs); XP stays only as the shop gate"
+      },
+      {
+        "key": "b",
+        "text": "Remove levels, XP and the Progress track entirely (open shop; cosmetics by deeds)"
+      },
+      {
+        "key": "c",
+        "text": "Leave it until after the party"
+      }
+    ],
+    "pick": "a",
+    "why": "it is a small change that matches your ruling and does not touch the shop."
+  },
+  {
+    "id": "r3-83",
+    "group": "Scoring and rules",
+    "about": "On 10/12 you ruled Career supports two players in two windows, and that 1 score equals 1 credit, banked only when you extract. Each window has its own save, and in the demo the score is combined. Nothing says who banks what in a 2-player Career raid.",
+    "question": "In a 2-player Career raid, who gets the credits?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Each player banks their own score into their own save"
+      },
+      {
+        "key": "b",
+        "text": "The team score is split evenly"
+      },
+      {
+        "key": "c",
+        "text": "The host banks all of it"
+      }
+    ],
+    "pick": "a",
+    "why": "it matches one save per player and \"banked only when you extract\"."
+  },
+  {
+    "id": "r3-84",
+    "group": "Scoring and rules",
+    "about": "On 10/15 you ordered a Career leaderboard after every match and a stats page that reconciles score with haul. The loot-reveal card you picked in the survey has no leaderboard step and no score-versus-haul lines. Either the existing three steps (summary, haul, leaderboard) stay and the new card is only the loot step, or the board goes.",
+    "question": "After the loot-reveal card, do the Career leaderboard and the score-and-haul numbers keep their own step?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes: the loot-reveal card with the numbers, then a leaderboard step"
+      },
+      {
+        "key": "b",
+        "text": "Combine: one card with a \"rank 3 of 18\" line, and the board only from the hub"
+      },
+      {
+        "key": "c",
+        "text": "Drop the leaderboard step"
+      }
+    ],
+    "pick": "a",
+    "why": "both are your explicit orders, and a rebuilt card should not quietly drop one."
+  },
+  {
+    "id": "r3-85",
+    "group": "Words and naming",
+    "about": "On 10/12 you ruled that the modes are named DEMO and CAREER, and that Career supports 2 players. The title still lists \"1 player\", \"2 player co-op (same machine)\", \"2 player arcade demo\" and \"1 player arcade demo\". Guests using the party shortcut never see it, but you and any outside player do.",
+    "question": "What should the title rows say?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Four rows: 2 player demo, 1 player demo, 2 player career, 1 player career, demo on top"
+      },
+      {
+        "key": "b",
+        "text": "Two rows, demo and career; the next step asks 1 or 2 players"
+      },
+      {
+        "key": "c",
+        "text": "Leave as it is"
+      }
+    ],
+    "pick": "b",
+    "why": "it matches your two names and keeps the title short."
+  },
+  {
+    "id": "r3-86",
+    "group": "Words and naming",
+    "about": "On 10/12 you ruled that the title highlights DEMO first. The title today lists \"1 player\" (Career) first and highlights it, and the 2 player arcade demo is third. The party shortcut skips the title, so this matters only for you and for anyone who starts the game the normal way.",
+    "question": "Which row should the normal title highlight first?",
+    "options": [
+      {
+        "key": "a",
+        "text": "1 player (Career), as now"
+      },
+      {
+        "key": "b",
+        "text": "2 player demo"
+      },
+      {
+        "key": "c",
+        "text": "1 player demo"
+      }
+    ],
+    "pick": "b",
+    "why": "you ruled demo first, the demo is the polished mode, and nothing else depends on it."
+  },
+  {
+    "id": "r3-87",
+    "group": "Words and naming",
+    "about": "On 10/18 you ordered all text shown to the player to be lower case only. The rule is clear for sentences. It is less clear for the three initials a guest types for the board: the classic arcade look is capitals, as in AAA, and lower case initials may look odd at that size.",
+    "question": "What case should the three board initials use?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Lower case, like everything else"
+      },
+      {
+        "key": "b",
+        "text": "Capitals (the arcade look); everything else lower case"
+      },
+      {
+        "key": "c",
+        "text": "Capitals while typing, lower case on the board"
+      }
+    ],
+    "pick": "a",
+    "why": "it follows your order exactly, and if it looks wrong on the TV one line flips it."
+  },
+  {
+    "id": "r3-88",
+    "group": "Words and naming",
+    "about": "Your lower-case order also touches the button pictures. The letters A, B, X and Y are printed on the real pad in the guest's hand, and in the survey you picked pictures in the real Xbox colours so guests instantly know which button to press. A lower-case green \"a\" no longer matches the pad.",
+    "question": "Should the letters on the pad button pictures and key caps also be lower case?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Everything lower case, including pad letters and key caps"
+      },
+      {
+        "key": "b",
+        "text": "Pad button pictures keep the printed capitals (pictures of real buttons); key caps and all words are lower case"
+      },
+      {
+        "key": "c",
+        "text": "Pad pictures and key caps both keep their printed look"
+      }
+    ],
+    "pick": "b",
+    "why": "it keeps your rule for every word and your order that the prompts match the real controller."
+  },
+  {
+    "id": "r3-89",
+    "group": "Words and naming",
+    "about": "Your lower-case order says all text. The Pillagers wordmark on the title and the waiting screen is text too, but it is also the game's one brand mark and the store image.",
+    "question": "Should the Pillagers logo also be lower case?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Yes, \"pillagers\", like everything else"
+      },
+      {
+        "key": "b",
+        "text": "No, the logo keeps its capital P as a brand mark"
+      }
+    ],
+    "pick": "a",
+    "why": "your rule says all text, and one line flips it if the logo looks wrong."
+  },
+  {
+    "id": "r3-90",
+    "group": "Words and naming",
+    "about": "Your vocabulary rules say \"pillager\" for them and you, never raider, bot, AI, NPC or enemy, and the machines have their own names (Sentry, Crawler and so on). The game says \"golden enemy down\", \"machine alert\" and \"pillbox\". The golden one can be any body, and there is no word for \"anything trying to kill you\" when it could be either.",
+    "question": "What do we call something hostile when it could be a machine or a pillager (for example \"golden enemy down\")?",
+    "options": [
+      {
+        "key": "a",
+        "text": "\"enemy\" as the catch-all, only where it could be either; specific names for specific things"
+      },
+      {
+        "key": "b",
+        "text": "Always the specific name (\"golden sentry down\", \"golden pillager down\")"
+      },
+      {
+        "key": "c",
+        "text": "\"target\""
+      }
+    ],
+    "pick": "b",
+    "why": "it follows your vocabulary rule and tells the guest exactly what died."
+  },
+  {
+    "id": "r3-91",
+    "group": "Words and naming",
+    "about": "The game uses \"team score\", \"party score\", \"teammate down\", \"the party window\" (the linked pair), \"new party\" (reset the board) and \"party seed\". \"Party\" means the two linked windows and also the real party night. \"Squad\" appears nowhere, though your genre callout list has \"squadmate down\".",
+    "question": "Which words for the two players and for the night?",
+    "options": [
+      {
+        "key": "a",
+        "text": "\"team\" for the two players in a run (team score, teammate down); \"party\" only for the real party night (new party, party board)"
+      },
+      {
+        "key": "b",
+        "text": "\"party\" for both"
+      },
+      {
+        "key": "c",
+        "text": "Rename \"new party\" to \"new night\" and keep the rest"
+      }
+    ],
+    "pick": "a",
+    "why": "\"team\" and \"teammate\" are already everywhere, and only the operator sees \"new party\"."
+  },
+  {
+    "id": "r3-92",
+    "group": "Words and naming",
+    "about": "You called the end card \"run over\" on 10/12 and \"match\" once on 10/15, and the game says raid in some places and run in others. Your vocabulary list does not define it.",
+    "question": "What is one trip up top called on screen?",
+    "options": [
+      {
+        "key": "a",
+        "text": "\"run\" (run over, run info, run goals); \"raid\" stays inside the code"
+      },
+      {
+        "key": "b",
+        "text": "\"raid\" everywhere (raid over, raid info)"
+      },
+      {
+        "key": "c",
+        "text": "Leave it mixed"
+      }
+    ],
+    "pick": "a",
+    "why": "\"run\" is the word you used for the card and the info box."
+  },
+  {
+    "id": "r3-93",
+    "group": "Words and naming",
+    "about": "On 10/13 you answered \"contracts and missions\" for Career. On 10/15 you said run goals should merge into conditions, maybe renamed \"run info\". On 10/18 you said all contracts move to the map screen. The run card says objectives, the raid says run goals, the Mainframe says contracts, and \"missions\" is not in the game.",
+    "question": "Which words for what?",
+    "options": [
+      {
+        "key": "a",
+        "text": "\"goals\" for what a raid asks of you automatically; \"contracts\" for jobs you take before in Career; no \"missions\""
+      },
+      {
+        "key": "b",
+        "text": "Everything is \"contracts\""
+      },
+      {
+        "key": "c",
+        "text": "Everything is \"goals\""
+      }
+    ],
+    "pick": "a",
+    "why": "two different things really exist (automatic and chosen), and naming them differently helps."
+  },
+  {
+    "id": "r3-94",
+    "group": "Words and naming",
+    "about": "Your vocabulary calls the nine keyed cells at the bottom \"the tactical belt\". Since 10/14 the bar holds guns only, and grenades, heals and plates live in a wheel opened by holding Q. The pad guide still says \"LB / RB tactical belt\", the in-game gear rules still say keys 1 to 4 bring up your guns, and there is no word for the wheel.",
+    "question": "What do we call the gun row and the wheel?",
+    "options": [
+      {
+        "key": "a",
+        "text": "\"tactical belt\" for the gun row, \"item wheel\" for the wheel"
+      },
+      {
+        "key": "b",
+        "text": "\"belt\" for both; the wheel opens from it"
+      },
+      {
+        "key": "c",
+        "text": "\"guns\" for the row and \"items\" for the wheel; drop \"tactical belt\""
+      }
+    ],
+    "pick": "a",
+    "why": "it keeps your word and names the new thing."
+  },
+  {
+    "id": "r3-95",
+    "group": "Words and naming",
+    "about": "Helpers added a Settings button on the title screen next to \"go fullscreen\" (before, Settings could only be opened inside a game), renamed the first Settings tab from Display to Game, and changed the title's key line to say \"f1 controls\" (it said H, but H is heal). The button is hidden in party mode.",
+    "question": "Keep the Settings button on the title and the tab name \"game\"?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Keep both"
+      },
+      {
+        "key": "b",
+        "text": "Keep the button, bring back the name \"display\""
+      },
+      {
+        "key": "c",
+        "text": "Remove the button"
+      }
+    ],
+    "pick": "a",
+    "why": "a friend with the wrong volume needs Settings before a game, and the button is hidden in party mode."
+  },
+  {
+    "id": "r3-96",
+    "group": "After the party",
+    "about": "Your rule number one is progress 24 hours a day. The stop script on the party day turns off the overnight runner, and nothing turns it back on unless you double-click the start script. If you forget after the party, the PC sits idle for days. The party-day stop list also says the runner restarts itself, which is not true.",
+    "question": "After the party, when do the helpers and overnight robots start again?",
+    "options": [
+      {
+        "key": "a",
+        "text": "By themselves, Sat 10/31 at 8 am"
+      },
+      {
+        "key": "b",
+        "text": "Only when you double-click the start script"
+      },
+      {
+        "key": "c",
+        "text": "When you tell me in chat"
+      }
+    ],
+    "pick": "a",
+    "why": "you will be tired after the party and rule number one says never idle."
+  },
+  {
+    "id": "r3-97",
+    "group": "After the party",
+    "about": "On 10/12 you called the Undercroft too complicated and froze it. Then you asked for more work there, and on 10/18 you ruled to keep all areas going, party screens and the Undercroft. The original complaint (too complicated) was never answered. The trader, hire bench, gambler, bar, Fashion Depot, Mainframe and stash are separate stops.",
+    "question": "After the party, what do we do about the Undercroft being too complicated?",
+    "options": [
+      {
+        "key": "a",
+        "text": "You name the two things that annoy you most and the helpers fix those"
+      },
+      {
+        "key": "b",
+        "text": "Combine stations: fewer places to walk, fewer screens"
+      },
+      {
+        "key": "c",
+        "text": "Drop the walkable hub; Career uses one menu"
+      },
+      {
+        "key": "d",
+        "text": "Decide after the party feedback"
+      }
+    ],
+    "pick": "d",
+    "why": "the party shows what actually hurts, and until then the Undercroft only gets restyled."
+  },
+  {
+    "id": "r3-98",
+    "group": "After the party",
+    "about": "On 10/12 you ruled telemetry on, anonymous. A 9/12 note said consent must stay off by default so a stranger who opens a link has not agreed to send anything. On 10/18 you ruled to keep the feedback line, its button and Send play data. When friends and strangers play later, those can be read two ways.",
+    "question": "When other people play, should the game send anonymous play reports?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Ask once at first start; off until they say yes (how it works now)"
+      },
+      {
+        "key": "b",
+        "text": "On by default, anonymous, with a clear off switch"
+      },
+      {
+        "key": "c",
+        "text": "Never; only a feedback button"
+      }
+    ],
+    "pick": "b",
+    "why": "it is your later ruling (anonymous, on) and the off switch keeps it honest."
+  },
+  {
+    "id": "r3-99",
+    "group": "After the party",
+    "about": "On 10/12 you ordered the bigger map frozen for now and The Cold Mile disabled, and said to delete dead code after making a backup copy and to split the big game file. On 10/18 you ruled those wait until after the party.",
+    "question": "After the party, what do we do with the disabled maps?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Keep them frozen until Career returns"
+      },
+      {
+        "key": "b",
+        "text": "Remove them after making a backup copy, to shrink the game file"
+      },
+      {
+        "key": "c",
+        "text": "Bring The Cold Mile back for Career"
+      }
+    ],
+    "pick": "a",
+    "why": "you said \"for now\", and removing is easy later."
+  },
+  {
+    "id": "r3-100",
+    "group": "After the party",
+    "about": "The Career end cards have a \"copy report\" button that puts the raid, and every raid before it, on your clipboard so you can paste it to the developer. Four helper jobs for the end cards failed ten times in a row while waiting on this and one other choice. The demo has its own run-over card without it.",
+    "question": "What should happen to the \"copy report\" button on the Career end cards?",
+    "options": [
+      {
+        "key": "a",
+        "text": "Keep it where it is"
+      },
+      {
+        "key": "b",
+        "text": "Move it into Settings next to Send play data"
+      },
+      {
+        "key": "c",
+        "text": "Remove it; the feedback line and Send play data cover it"
+      }
+    ],
+    "pick": "b",
+    "why": "it is one job (sending data) in one place, and the end card gets quieter."
+  }
+]

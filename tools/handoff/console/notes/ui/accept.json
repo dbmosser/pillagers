@@ -18,10 +18,17 @@
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "This is a dense full-screen slab with no clear focal point, tiny unreadable type, explaining sentences stacked in four places, and a tooltip-like toast sitting over the modal, so it ignores most of the style guide.",
-  "pic": "tools/handoff/console/notes/shots/b-31-c1/04-stash-terminal-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:55"
+  "verdict": "The only real change is a new top-right X in place of the footer close button, but the stash is still a dense, flat, cluttered terminal with no clear focal point, tiny type and several guide violations.",
+  "findings": [
+   "P0 whole screen, hierarchy: Add a 32px f-cond 700 'stash' title at x=5% with a muted '13 held' at 20px. Keep one lime primary ('take the freebie kit', 56px high, filled --acc). Make the first-raid banner a muted tx-2 line without the lime border. Collapse the belt, gun keys and item wheel into one tab or drawer.",
+   "P0 window frame / close: Build a card at 90% width and height (96px side margins, 54px top and bottom) on rgba(6,7,8,.80). Add a 56px header with the title left and the 48x48 X at right with a 'B' glyph. Move the currency into a separate block that does not collide with the X. Add a 72px footer row.",
+   "P1 currency block top-right: Put the currency in one right-aligned block 24px left of the X, with credits at --fs-body 700 and a tx-2 label at 16px. Move 'stash 3,750 bag 0' into the footer or a tooltip.",
+   "P1 text sizes throughout (belt, gun keys, item wheel, key legend, 'reset', item labels): Set every read label to at least 16px f-cond 600, and enlarge gun-key and wheel cells to a 56px pitch. Delete 'oc going up' or replace it with a real status. Drop the swap hint.",
+   "P1 explaining sentences and clutter (bottom half): Delete both help paragraphs. Keep the key legend as a 14px footer line with the pad glyphs. Cut the freebie text to 'issued gear: pistol, 2 bandages, frag, plate'. Move the toast to a top-centre slot that auto-dismisses."
+  ],
+  "pic": "tools/handoff/console/notes/shots/04-r2-after/04-stash-terminal-1080.jpg",
+  "task": "04-style-guide-update",
+  "when": "2026-10-18T20:53"
  },
  "05-sector-page": {
   "score": 2,
@@ -50,17 +57,17 @@
  "08-shop": {
   "score": 2,
   "pass": false,
-  "verdict": "the new shop screen is pixel-identical to the old one: a dark, competent item grid with a loud lime buy button, but it still ignores the guide's window, header, close and type rules and wastes the bottom third of the screen.",
+  "verdict": "the only real change is a big X at top-right, and it is now the loudest thing in the header; the empty bottom 40%, the quip, the subtitle and the cramped currency block are all still there, so this is still an amateur layout.",
   "findings": [
-   "P0 whole screen vs. old: Make it a 90% x 90% centred card (5% margin) on rgba(6,7,8,.80), with a 56px header holding the title left at 32px and a 48x48 X ghost button at top-right with a B glyph.",
-   "P0 bottom 40% of screen (y 690-1000): Fill the card: use 120-140px tiles in a 6-8 column grid that stretches to the panel bottom, or stretch the detail pane to the full body height with the buy block pinned to the bottom. Remove the empty gap above the footer.",
-   "P1 footer: 'everything here works. cannot say the same for you.' pill and 'close' button: Delete the quip. Move close to the 48x48 X in the header, and put a ghost 'back' at the footer left, 56px high, with a pad glyph B.",
-   "P1 header: 'shop, craft, and hire' + tab strip + 'shop before you drop.' subtitle: Title 'shop' at 32/700. Delete the subtitle. Make the currency one clean block: '900' at 20px tx-1 with 'credits' at 16px tx-2, and drop the stash and bag line into the footer legend at 14px.",
-   "P1 detail pane: stat rows and quantity stepper: Stats at 16px with tx-2 labels on 1px #2e3337 dividers at a 48-56px pitch. Narrow the stepper to about 200px and center it, or place it on the same row as the buy button. Use one currency format everywhere."
+   "P0 bottom 40% of screen (y 690-1000): stretch the body to the card bottom: 120-140px tiles in a 6-8 column grid that fills the panel height, and make the detail pane full height with price, stepper and buy pinned to its bottom edge at 56px high.",
+   "P0 whole screen vs window spec: make a centred card at 1728x972 (5% margin) on --scrim, 1px #4a5257 border, 4px radius, header row 56px with the title at x=32 and the X at right.",
+   "P1 top-right X and currency block (x 1650-1895, y 22-80): inset the X 16px from the card edge and add a B glyph beside it. make currency one block: '900' at 20px tx-1 and 'credits' at 16px tx-2. move xp, stash and bag to the 14px footer legend.",
+   "P1 footer pill 'everything here works. cannot say the same for you.': delete it. footer row is 72px with a ghost 'back' on the left (56px high, B glyph) and the 14px legend at the right.",
+   "P1 header: title, tab strip and subtitle: title 'shop' at 32/700, keep the one tab strip (48px high, 3px lime underline), delete the subtitle, and put the tabs on the header row or directly under it with 16px spacing."
   ],
-  "pic": "tools/handoff/console/notes/shots/04-cw-after/08-shop-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/04-r2-after/08-shop-1080.jpg",
   "task": "04-style-guide-update",
-  "when": "2026-10-18T20:31"
+  "when": "2026-10-18T20:53"
  },
  "09-craft": {
   "score": 2,

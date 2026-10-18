@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.03 - FLAT HUD PANELS, SHORTER DEMO CARD
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): panels have a gradient wash and a faint border; the demo gun card has an empty strip over the name. The style guide: Panel P has no gradient, a 1px line.
+
+MEASURED. Check 31.03 passes, and fails on v31.02.
 ## v31.02 - WINDOWS CLOSE WITH AN X IN THE CORNER
 
 Co-op hunt while he was away. His Q43: windows are a centred card with an X in the corner. Shop, codex, trophies, fashion, mainframe, gamble, bar, terms, party and the stash still had a CLOSE button bottom right. One close place now: the corner.
