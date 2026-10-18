@@ -6099,6 +6099,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.95',what:'on the wide Settings card a row stepper sits within 420 px of its label, never at the far edge of the 960 column',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], m, row, lab, st, r;
+     try{
+       __topClear(); __hubEnter();
+       r=__station('dev','KeyE'); if(r&&r.err) return 'station: '+r.err;
+       m=document.getElementById('settingsmodal');
+       if(!m||!m.classList.contains('on')) return 'the settings window did not open';
+       UIM.step(600);
+       row=document.querySelector('#setlist .row:not(.setjump) > button'); if(!row) return 'no stepper row';
+       row=row.parentNode; lab=row.firstElementChild.getBoundingClientRect(); st=row.querySelector(':scope > button').getBoundingClientRect();
+       var z=parseFloat(m.style.zoom)||1;
+       if(!((st.left-lab.left)<=420*z)) bad.push('the stepper starts '+Math.round((st.left-lab.left)/z)+' px from the label, want 420 or less');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.94',what:'cw-nomimic, his note (2026-10-18, in a raid): "get rid of the mimics, its just too confusing". No box is a mimic: raids dealt in the career and the arcade on several seeds with an old profile that had mimic on, every closed box stood beside and then searched on the real hold E path. No faint tick, no crawler comes out, no MIMIC line, no void swirl, and no settings row for them',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__sim)||typeof arcadeDeploy!=='function') return 'SKIP: no raid here';

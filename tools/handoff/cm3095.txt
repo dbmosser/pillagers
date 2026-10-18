@@ -1,0 +1,7 @@
+v30.95: settings steppers sit next to their labels
+
+Settings values sit right next to their names.
+
+Check 30.95. Fails on v30.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

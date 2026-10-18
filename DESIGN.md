@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.95 - SETTINGS STEPPERS SIT NEXT TO THEIR LABELS
+
+Co-op hunt while he was away. Critic on Settings after the wide card (2 of 5): label and stepper 650 px apart. The name column is 384 wide and the stepper follows it.
+
+MEASURED. Check 30.95 passes, and fails on v30.94.
 ## v30.94 - mimic boxes are gone from the arcade and the career
 
 Co-op hunt while he was away. His note (2026-10-18, in a raid at 2:12, build 30.73): "get rid of the mimics, its just too confusing". About one crate or locker in fifty hid a dormant crawler that burst out 0.8 s after you started to search it (v26.77, his yes of 2026-10-14; v28.xx the crawler came out away from you named MIMIC and the box spun away in a void swirl). A faint tick sounded as you walked up to one. All of it is removed: no box is a mimic, nothing ticks, no crawler comes out, no MIMIC line, no alarm, no swirl, and the dead functions isMimic, mimicWake, mimicTick and drawMimicVoid and the party mark that told player 2 about one are deleted. isMimic was a pure hash with no random draw, so the seeded stream and the fingerprint (ents 85/374, containers 165/593) do not move. There was never a settings row for it (applyCfg keeps only keys that DEF has), so an old profile that saved mimic on loads back as off.

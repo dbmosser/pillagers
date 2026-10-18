@@ -7,8 +7,8 @@
 //   duo      P1 and the co-op mate, close, on open ground, midday, nobody else
 //   fight    the duo, two pillagers and two machines a few metres away, shots in the air
 //   lineup   P1 and every kind of enemy in two rows (5 pillager roles, an elite, a golden one; 9 machines)
-//   loot     P1 beside open containers and loot piles with their rarity beams
-//   dark     the duo at night in a blackout
+//   loot     P1 beside five opened boxes, four loot piles with their rarity beams and two machine wrecks
+//   dark     the duo at night in a blackout (every lamp dead): the darkest the game gets
 //   NAME-plate is the same frame with both players and every enemy hidden (scene opts {plate:true})
 // scene() returns a JSON string: {scene, plate, zoom, w, h, chars:[{id,kind,x,y,w,h,fx,fy}]} (screen pixels at 1920x1080).
 window.__art=window.__art||(function(){
