@@ -160,12 +160,12 @@
   "when": "2026-10-18T06:17"
  },
  "25-raid-pause-box": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The pause card has a clear title and one amber primary, but it is still a dense keybind cheat-sheet with an explaining sentence, and the HUD underneath still shows through the scrim as muddy clutter.",
-  "pic": "tools/handoff/console/notes/shots/c-31e-after/25-raid-pause-box-1080.jpg",
+  "verdict": "The pause card is now a clean, centred vertical stack with one amber primary and a separated red Abandon, which fixes the old control-cheat-sheet clutter, but it still has no close X, no pad focus or hint strip, and a faintly template-like look.",
+  "pic": "tools/handoff/console/notes/shots/c-31g-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T07:48"
+  "when": "2026-10-18T08:45"
  },
  "26-settings-from-pause-top": {
   "score": 2,
@@ -342,5 +342,21 @@
   "pic": "tools/handoff/console/notes/shots/13-after2/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
   "when": "2026-10-18T08:39"
+ },
+ "42-hub-pause-box": {
+  "score": 3,
+  "pass": false,
+  "verdict": "The pause card is now a clean single-column menu with one amber primary and a clear title, but it still has template-menu blandness, a missing close control, weak backdrop and several off-guide metrics.",
+  "pic": "tools/handoff/console/notes/shots/c-31g-after/42-hub-pause-box-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T08:45"
+ },
+ "49-arcade-pause-box": {
+  "score": 3,
+  "pass": false,
+  "verdict": "The pause card is now a clean, centred stack with one clear amber Resume and a separated danger End run, so the hierarchy reads at once. It is still a generic button-list template with no close X, no pad focus or hint strip, and a leftover controls table fighting behind the dim.",
+  "pic": "tools/handoff/console/notes/shots/c-31g-after/49-arcade-pause-box-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T08:45"
  }
 }

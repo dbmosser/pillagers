@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.56 - PAUSE CARD TIDY
+
+Co-op hunt while he was away. Critic c-31 round 2 (pause 25/42/49 at 3): the card was 780 wide round a 560 column, the HUD ghosted through, no way out was shown and the leave buttons matched Feedback. Card 640 on a keyboard, scrim 99 percent, an Esc hint, leave buttons in danger red.
+
+MEASURED. Check 29.56 passes, and fails on v29.55.
 ## v29.55 - PAUSE CARD AS A BUTTON COLUMN
 
 Co-op hunt while he was away. Critic c-31 (pause 25/42/49 at 2): a cheat-sheet legend, an explaining sentence and a row of mixed buttons. The card is now the title over one column of 56px sentence-case buttons at the menu width, Abandon set apart, no legend or sentence on a keyboard card (a pad keeps its legend).

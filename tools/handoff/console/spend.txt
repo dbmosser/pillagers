@@ -193,3 +193,7 @@
 2026-10-18 0.0575 critic-13-ui-end-cards
 2026-10-18 4.032 13-ui-end-cards
 2026-10-18 4.0107 b-00a-rocket-launcher
+2026-10-18 0.6823 11b-ui-motion
+2026-10-18 0.0497 critic-c-31-ui-pause-settings
+2026-10-18 0.0509 critic-c-31-ui-pause-settings
+2026-10-18 0.0492 critic-c-31-ui-pause-settings

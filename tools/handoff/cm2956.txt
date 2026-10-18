@@ -1,0 +1,7 @@
+v29.56: pause card tidy
+
+The pause card is tighter, shows Esc to resume, and the leave buttons are red.
+
+Check 29.56. Fails on v29.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -6097,6 +6097,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.56',what:'the pause card is 640 wide on a keyboard with an Esc hint, the scrim is 99 percent, and the leave buttons are danger red',
+   run:function(){
+     var pb=document.getElementById('pausebox'), bad=[], cs, mm, a, s, padWas, ids=['abandonbtn','arcendbtn','charselbtn'], i, b, w, h;
+     if(!pb) return 'SKIP: no pause box here';
+     padWas=document.body.classList.contains('padon'); document.body.classList.remove('padon');
+     try{
+       cs=getComputedStyle(pb).backgroundColor; mm=/[\/,]\s*([0-9.]+)\s*\)\s*$/.exec(cs); a=/^rgb\(/.test(cs)?1:(mm?parseFloat(mm[1]):(/^color\(/.test(cs)?1:0));
+       if(!(a>=0.985)) bad.push('the pause scrim is '+cs+', the HUD still ghosts through');
+       w=getComputedStyle(pb,'::before').width; if(!/\b640px/.test(w)) bad.push('the pause card is '+w+' wide, not 640px');
+       h=getComputedStyle(pb,'::after').content; if(!/Esc/.test(h)) bad.push('no Esc hint under the buttons ('+h+')');
+       for(i=0;i<ids.length;i++){ b=document.getElementById(ids[i]); if(!b) continue; s=getComputedStyle(b).color; if(s!=='rgb(229, 72, 47)') bad.push(ids[i]+' text is '+s+', not danger red'); }
+       document.body.classList.add('padon');
+       w=getComputedStyle(pb,'::before').width; if(/\b640px/.test(w)) bad.push('a pad card lost its legend width');
+     } finally { document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.55',what:'the pause card is a title and one column of 56px sentence-case buttons at the menu width, with no key legend or feedback sentence on a keyboard card',
    run:function(){
      var pb=document.getElementById('pausebox'), box, rs, ab, pk, fs, padWas, bad=[], cs, s, i, ids=['resumebtn','pausesetbtn','fbbtn','wnbtn'], b;

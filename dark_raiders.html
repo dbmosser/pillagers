@@ -1544,7 +1544,13 @@ body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(-
 body.padon #root #pausebox #pausekeys{ display:block !important; }
 #root #pausebox > div:has(> #resumebtn){ flex-direction:column; align-items:stretch; width:var(--menu-w); max-width:100%; gap:var(--sp-2) !important; margin-top:0; }
 #root #pausebox > div:has(> #resumebtn) > button{ box-sizing:border-box; width:100%; min-width:0 !important; min-height:var(--btn-h); padding:0 var(--sp-3) !important; border-radius:var(--rad); font:600 var(--fs-body)/1 var(--f-cond); letter-spacing:var(--track); text-transform:none; }
-#root #pausebox #abandonbtn, #root #pausebox #arcendbtn{ margin-top:var(--sp-3); }
+#root #pausebox #abandonbtn, #root #pausebox #arcendbtn, #root #pausebox #charselbtn{ margin-top:var(--sp-3); }
+/* v28.xx (cw-pausetidy) critic c-31 round 2 (pause 3, 25/42/49): the card was 780 wide round a 560 column, the HUD still ghosted through at 97 percent, the way out was not shown, and the leave buttons were the same grey as Feedback. Now: card 640 wide on a keyboard (a pad keeps its legend width), scrim 99 percent, an Esc hint under the buttons, leave buttons in --danger */
+body:not(.padon) #root #pausebox::before{ width:min(calc(var(--menu-w) + var(--sp-5) + var(--sp-4)),calc(100% - var(--sp-4))) !important; }
+#root #pausebox{ background:color-mix(in srgb,var(--ui-void) 99%,transparent); }
+#root #pausebox::after{ content:'Esc  Resume'; font:600 var(--fs-label)/1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); margin-top:var(--sp-1); }
+body.padon #root #pausebox::after, #root #pausebox.asking::after{ display:none; }
+#root #pausebox #abandonbtn, #root #pausebox #arcendbtn, #root #pausebox #charselbtn{ color:var(--danger) !important; border-color:var(--danger) !important; }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2461,7 +2467,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.55';
+var VER='29.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47521,7 +47527,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.55: The pause screen is a clean button column. Check 29.55 fails on v29.54',
+  now:'v29.56: The pause card is tighter, shows Esc to resume, and the leave buttons are red. Check 29.56 fails on v29.55',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
