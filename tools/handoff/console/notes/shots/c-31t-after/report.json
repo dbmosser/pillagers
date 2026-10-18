@@ -1,0 +1,5 @@
+{"generated":"2026-10-18T06:11:04","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":33,"screens":[
+{"name":"18-settings-hub","screen":"Settings from the hub station, top of DISPLAY tab","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"18-settings-hub-1080.jpg","lint":""}},
+{"name":"32-keys-window","screen":"CHANGE KEYS window (keysmodal)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"32-keys-window-1080.jpg","lint":""}},
+{"name":"70-settings-sec-controls","screen":"Settings, section CONTROLS (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"70-settings-sec-controls-1080.jpg","lint":""}}
+]}

@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  18-settings-hub                        staged       7.6s    | settingsmodal
+  32-keys-window                         staged      10.7s  
+  70-settings-sec-controls               staged       7.8s    | settingsmodal

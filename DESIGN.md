@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.81 - End cards: a stats row and achievement chips
+
+Co-op hunt while he was away. The critic scored the Extracted, Killed in action and Abandoned cards 2 of 5: the stats are a run-on dotted sentence in 14px grey and the achievements are sentences. They are now a row of four cells (24px value, 16px label) and name chips. The old words stay as hidden text. Restyle only.
+
+MEASURED. Check 29.81 passes, and fails on v29.80.
 ## v29.80 - SETTINGS AND KEYS CARD HEIGHT
 
 Co-op hunt while he was away. Critic c-31: Settings and Keys fill the whole screen height. Cap both cards at 720 tall, centred.

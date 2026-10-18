@@ -1,0 +1,7 @@
+v29.81: end cards: a stats row and achievement chips
+
+End cards show a tidy row of stats and short achievement chips.
+
+Check 29.81. Fails on v29.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

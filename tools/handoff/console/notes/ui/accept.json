@@ -122,10 +122,10 @@
  "18-settings-hub": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean dark slab with correct sentence case, but it still has two stacked tab strips, a full-screen wall instead of a centred card, tiny muted text, a half-empty right side and a toast colliding with the footer, so it reads as a debug form rather than a game menu.",
-  "pic": "tools/handoff/console/notes/shots/c-31i-after/18-settings-hub-1080.jpg",
+  "verdict": "The modal is now centred and no longer runs nearly edge to edge, but it is still a generic stack of identical setting rows with no focused row, a clipped half-row at the bottom, a tiny tab strip and a cramped 718px-wide column.",
+  "pic": "tools/handoff/console/notes/shots/c-31t-after/18-settings-hub-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:59"
+  "when": "2026-10-18T10:11"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -176,12 +176,12 @@
   "when": "2026-10-18T09:37"
  },
  "32-keys-window": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "A clean, consistent, sentence-case modal that follows the guide's close and title rules, but it is a flat wall of 40-odd identical key boxes with no hierarchy, tiny muted section labels and no visible focus state, so it reads as a generic settings template.",
-  "pic": "tools/handoff/console/notes/shots/c-31s-after/32-keys-window-1080.jpg",
+  "verdict": "The Keys window is now a centred card of about 1005x765 that no longer fills the screen, but the scroll area cuts the World rows in half at the bottom edge and the screen is still a flat grid of identical key caps with no focus state and no clear first read.",
+  "pic": "tools/handoff/console/notes/shots/c-31t-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:49"
+  "when": "2026-10-18T10:11"
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -194,18 +194,18 @@
  "35-kia-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The KIA card is a centred stack of small, same-weight lines with no hero number, no stat row and no tile row, so it ignores the end-card shell and the eye only has the red title and amber button to land on.",
+  "verdict": "The KIA card has the right shell (centred, dark scrim, red title, one amber primary), but it ignores the end-card spec: no hero line, no stat row or tile row, tiny centred text, a \"$\" currency and explaining sentences.",
   "pic": "tools/handoff/console/notes/shots/13-c1/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:10"
+  "when": "2026-10-18T10:11"
  },
  "38-extracted-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The shell is right (centred card, teal title, one amber primary), and the second pass gets a proper hero line, but the card is still a wall of small centred explanatory sentences with a '$' haul that breaks the SP rule, so it reads as a debug report rather than an ARC Raiders-grade end card.",
-  "pic": "tools/handoff/console/notes/shots/13-after2/38-extracted-card-1080.jpg",
+  "verdict": "The shell is roughly right (centred dark card, teal title, one amber primary), but it is a wall of centred explaining sentences with a hero line that uses the banned \"$\" and sits below the item tiles, so it reads like a debug report and not an extraction card.",
+  "pic": "tools/handoff/console/notes/shots/13-c1/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T08:39"
+  "when": "2026-10-18T10:10"
  },
  "40-whats-new-card": {
   "score": 2,
@@ -290,18 +290,18 @@
  "58-coop-player2-window-title": {
   "score": 2,
   "pass": false,
-  "verdict": "The title screen has a clear amber title and button, but it is cluttered with explaining paragraphs, tiny amber text, a stray \"$\" and an all-caps name field, so it reads as a generic web form rather than a game menu.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/58-coop-player2-window-title-1080.jpg",
+  "verdict": "A centred title screen that stacks about ten text blocks, including a tiny amber four-line co-op paragraph, so the one thing to do (Enter the undercroft) is buried and the screen reads as a web form rather than a AAA front door.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/58-coop-player2-window-title-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:33"
+  "when": "2026-10-18T10:12"
  },
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, sentence-case, on-palette controls table with a clear title and a legible two-column layout, but it is a plain spreadsheet that leaves wide empty margins, has no close or back control, and relies on weak label contrast and a loose title/footer treatment.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "A clean, on-palette, sentence-case controls card that reads fine from a couch, but it is a plain spreadsheet with a generic template look and no game identity, and it breaks a few of the guide's hierarchy and spacing rules.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:30"
+  "when": "2026-10-18T10:14"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -314,18 +314,18 @@
  "77-haul-reveal-done": {
   "score": 2,
   "pass": false,
-  "verdict": "The after2 card makes the haul number a proper 56px hero and drops the HUD behind the scrim, but it adds two long green contract sentences, a scrollbar, a crowded tall card and a dollar haul, so it is still a wall of centered text rather than the one-shell end card the guide describes.",
-  "pic": "tools/handoff/console/notes/shots/13-after2/77-haul-reveal-done-1080.jpg",
+  "verdict": "The end card has the right shell (centred card, teal title, big haul number, amber primary), but the middle is a wall of centred 14-16px explaining sentences with no stat row, so the eye has no clear route and it reads as a debug log, not an ARC Raiders-grade result screen.",
+  "pic": "tools/handoff/console/notes/shots/13-c1/77-haul-reveal-done-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T08:38"
+  "when": "2026-10-18T10:12"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean dark modal that follows the panel tokens, but the armed state is a wall of red full-width bars with no clear primary, tiny labels, no close X, and a modal stacked over a live menu card.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/63-arcade-operator-new-party-armed-1080.jpg",
+  "verdict": "A clean dark card with the right tokens, but every action is red, so the confirm step has no clear primary, no focus indicator, no close X, and the buttons look like a generic template.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/63-arcade-operator-new-party-armed-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:34"
+  "when": "2026-10-18T10:16"
  },
  "55-arcade-run-over-scored": {
   "score": 2,
@@ -354,50 +354,50 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred pause card with a clear amber Resume, a danger End run and sentence case, but it ignores the guide's header row, close X and key-hint rules, and the dimmed HUD behind it is still a muddy mess.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/49-arcade-pause-box-1080.jpg",
+  "verdict": "A clean, well-ordered pause card with a clear primary action and sentence case, but it still misses the guide on close placement, button size and key hints, and it sits on a murky backdrop that shows the HUD and a controls table through the dim.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/49-arcade-pause-box-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:31"
+  "when": "2026-10-18T10:14"
  },
  "56-arcade-attract-board-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "The black title and prompt bands from the earlier version are gone, so it reads cleaner, but it is still a nearly empty screen with a tiny, orphaned 'no scores yet' card, a plain text title and no identity or focus.",
-  "pic": "tools/handoff/console/notes/shots/12-a4/56-arcade-attract-board-scored-1080.jpg",
+  "verdict": "It's tidy and on-palette, but it is a mostly empty dark screen with a small, bare card, a dim amber prompt and no sign of the game, so it looks like a placeholder and not an attract screen.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:39"
+  "when": "2026-10-18T10:15"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The controls card is a legible, sentence-case table, but it is an unanchored dark box laid over a busy in-raid HUD with an amber border and amber labels that break the guide, and the rest of the HUD competes with it.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/47-arcade-drop-controls-card-1080.jpg",
+  "verdict": "The controls card is a readable table, but it is a pale amber-bordered box dropped over the live HUD with no title, no close, and mixed type, so the whole screen reads as an unfinished overlay instead of a styled card.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/47-arcade-drop-controls-card-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:31"
+  "when": "2026-10-18T10:12"
  },
  "48-arcade-hud-move-to-start": {
   "score": 2,
   "pass": false,
-  "verdict": "The controls card is a dense, amber-heavy wall of text that outweighs the live HUD, while the HUD's own type sizes, panels and currency formats ignore the style guide.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/48-arcade-hud-move-to-start-1080.jpg",
+  "verdict": "The raid HUD is readable at a glance, but the controls overlay is a big amber-headed table that buries the playfield, and the corners use a mix of type sizes, mismatched panel styles, and tiny, low-contrast text that ignore the style guide.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/48-arcade-hud-move-to-start-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:31"
+  "when": "2026-10-18T10:14"
  },
  "53-arcade-extracted-bonus-initials": {
   "score": 2,
   "pass": false,
-  "verdict": "The file is named 'extracted bonus initials', but it shows a cluttered in-raid HUD where 'Extract in progress' is repeated four times, and the HUD fragments use inconsistent sizes, fills, and frames, so it is far from the guide's one-shell end card.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/53-arcade-extracted-bonus-initials-1080.jpg",
+  "verdict": "A crowded in-raid HUD that announces the same extraction event five separate times, mixes many type sizes and colours, and has clipped and mis-sized text in the corners, so it falls short of the one-hero, five-size style guide.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/53-arcade-extracted-bonus-initials-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:32"
+  "when": "2026-10-18T10:15"
  },
  "54-arcade-initials-redrop": {
   "score": 2,
   "pass": false,
-  "verdict": "The in-raid HUD tells the player that extraction is in progress five times at once, in four different type sizes, with no clear hero, and it has overlapping labels, clipped text, and several tiny or low-contrast elements that break the style guide.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/54-arcade-initials-redrop-1080.jpg",
+  "verdict": "A busy in-raid HUD where the extract prompt, a heavy orange wash and a dozen competing text styles fight for attention, with overlapping labels, three duplicate extract messages and sub-minimum type, so it falls well short of the style guide.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/54-arcade-initials-redrop-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:32"
+  "when": "2026-10-18T10:15"
  },
  "64-arcade-board-seeded-night": {
   "score": 2,
@@ -410,9 +410,9 @@
  "70-settings-sec-controls": {
   "score": 2,
   "pass": false,
-  "verdict": "It is a tidy dark settings card in sentence case with a clear close button, but the tab strip is cramped, a toast collides with the header, the section labels are tiny, and it shows two competing navigation systems with no focus state and a weak footer.",
-  "pic": "tools/handoff/console/notes/shots/c-31s-after3/70-settings-sec-controls-1080.jpg",
+  "verdict": "The new settings card is shorter, so it shows only 6 rows before the fade-out cut (the old one showed about 9). It trades usable content for centering, and it keeps the same weak hierarchy, a stray footer warning, and undersized type.",
+  "pic": "tools/handoff/console/notes/shots/c-31t-after/70-settings-sec-controls-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T10:01"
+  "when": "2026-10-18T10:12"
  }
 }

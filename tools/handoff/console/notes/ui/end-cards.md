@@ -8,10 +8,8 @@ Critic BEFORE: all 2. Common findings (35,38,60,77 share #outcome card, markup ~
 - P1 tiles: full coloured border -> 3px rarity bar bottom
 59 (pause+abandon confirm): key legend dominates, no primary; 'NO, keep playing' caps; Keep playing = amber primary; drop feedback sentence
 40 (whats new): 1560px slab, no close/primary, centred title, filler repeat rows; wants 960 max card, Got it primary, header row
-Plan (small ships, each its own cw- key): 
- 1 cw-endcard-shell: #outcome scrim + HUD hide + card flat/720/radius + buttons 56px + title no glow
- 2 cw-abandon-confirm: pause confirm buttons (keep playing primary, sentence case)
- 3 cw-whatsnew-card: width cap, Got it button
 ## Log
-- SHIPPED v29.52 cw-endcard-shell (scrim, HUD hide, flat shell). After1 critic: 35=2, 38=3, 60=2, 77=2. Remaining P0/P1: no hero number, stat row, sentence-wall. 
-- Next: cw-endcard-hero (hero line + stat row). Lines are built in fn near 30613 'var lines=[]' ; ocLedger at ~31452 builds the stat ledger rows (row('hv',...) HAUL VALUE, cnt()).
+- SHIPPED v29.52 cw-endcard-shell, v29.53 cw-endcard-hero (haul total 56px hero, scrim .94).
+- Run 2 (13-c1 shots taken on v29.80): critic 35=2, 77=2. Remaining: stats sentence -> 4 cell row, achievement sentences -> chips, buttons footer layout (ghost left, primary right), 16px floor, lost item list as tiles.
+- Plan: cw-endcard-stats (ocStatRow fn before ocLedger, hidden .ocsr keeps old text for fixture checks like 22.02 'on the surface'; .ocstat/.ocach CSS). Then buttons, then 40 whats new, 59 confirm.
+- $ stays: haulTotalLine and Credits use $ everywhere in game (not touching).
