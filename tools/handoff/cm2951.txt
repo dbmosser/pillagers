@@ -1,0 +1,7 @@
+v29.51: the craft hold has a clear bar, and the bench crafts x5, x10 or max
+
+The craft hold fills a clear bar. Pick x5, x10 or Max on the bench to craft several with one hold.
+
+Check 29.51. Fails on v29.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

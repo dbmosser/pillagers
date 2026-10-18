@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.51 - The craft hold has a clear bar, and the bench crafts x5, x10 or Max
+
+Co-op hunt while he was away. His order 2026-10-15: "Hold to craft does not work correctly: it needs a clear 1-second bar" and "A way to craft multiples quickly (for example craft 10)". The old fill was 55% amber over an amber button, so a hold looked like nothing. Now a press turns the button into a dark track with a solid amber fill and light text, and it resets when the hold ends. Chips x1, x5, x10 and Max sit above the button when the stash holds at least two sets; one 1-second hold crafts that many, never more than the stash allows.
+
+MEASURED. Check 29.51 passes, and fails on v29.50.
 ## v29.50 - The item wheel opens in the Undercroft
 
 Co-op hunt while he was away. His order 2026-10-15: the wheel is accessible in the Undercroft, even though nothing can be used there. A held Q on the floor opens the same eight slot ring with the counts from what the stash packs. The floor has nothing to use, so letting go on a slot says so in one line and closes; the hint reads Release to close. The wheel stays shut under a window, the backpack, the title and the pause box.
