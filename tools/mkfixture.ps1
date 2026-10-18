@@ -6097,6 +6097,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.05',what:'the rebind callout is one short line without "ten seconds", and the Settings detail pane hides its repeated title and value',
+   run:function(){
+     var bad=[], el, t, d, k, h, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       el=document.createElement('div'); document.body.appendChild(el);
+       PADB.waiting=0; padNoteShow(el); t=el.textContent; PADB.waiting=null;
+       if(/ten seconds/i.test(t)) bad.push('the pad rebind callout still explains: '+t);
+       if(/\.\s/.test(t)||/\.$/.test(t)) bad.push('the pad rebind callout is a sentence: '+t);
+       KEYS.waiting=KEYS_ACTS[0][0]; keysNoteShow.call(null); KEYS.waiting=null;
+       el.remove();
+       document.body.classList.remove('padon');
+       openSettings('display');
+       if(typeof window.__setDetailSync==='function') window.__setDetailSync();
+       d=document.getElementById('setdetail'); k=d&&d.querySelector('.sdk'); h=d&&d.querySelector('.sdh');
+       if(k&&getComputedStyle(k).display!=='none') bad.push('the detail pane still repeats the row title');
+       if(!d) bad.push('no detail pane');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ PADB.waiting=null; KEYS.waiting=null; var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.04',what:'starting the arcade closes any window still open on the title: the welcome pack of a fresh profile stayed open under the party attract and showed through the backdrop (screens 46 64)',
    run:function(){
      if(typeof arcadeEnter!=='function'||typeof arcadeLeave!=='function'||typeof ARCADE!=='object'||!ARCADE) return 'SKIP: no arcade here';

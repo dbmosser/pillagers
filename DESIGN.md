@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.05 - SHORT REBIND CALLOUT, QUIETER SETTINGS DETAIL PANE
+
+Co-op hunt while he was away. Critic c-31 round 11 (Pad buttons 75 at 2, Settings 18 and 72 at 3): the rebind banner is an explaining sentence at 14px with clipped corners; the Settings detail pane repeats the focused row title and value. One short callout at 20px, and a pane that shows only the help line.
+
+MEASURED. Check 30.05 passes, and fails on v30.04.
 ## v30.04 - Party start clears any open window
 
 Co-op hunt while he was away. The welcome pack of a fresh profile stayed open under the party attract and showed through its backdrop in the pictures of how to play and the board. Starting the arcade now closes every window still open on the title.
