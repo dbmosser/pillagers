@@ -1,0 +1,7 @@
+v30.41: title: one line
+
+The title shows one line, Ascend. Pillage. Extract., instead of the story and the three step cards.
+
+Check 30.41. Fails on v30.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

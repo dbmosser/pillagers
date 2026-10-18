@@ -1,15 +1,12 @@
 # Questions for him
 
-- 10-18 (b-30-ui-hud): The critic holds the HUD at 2 of 5 for the same reasons each time, and each needs your word: (1) ammo figure to one 56px hero (now 34px source, your v23.94); (2) top-right currency to one row "Credits 900 · XP 0" and drop the stash/bag line (your cw-stashbag); (3) "$" on the bag line and scoreboard (credits value) to SP or credits; (4) contracts list max 3 (you said ALL of them). I changed none of them. Say yes to any and it ships.
+## Open (asked in chat 10-18)
+- The title's mode list has two "coming later" online rows in the middle of the rows that work. Move them to the bottom, or hide them? (c-30-ui-menu-map)
+- The empty scoreboard (before anyone has played) shows five faint placeholder rows. Keep them, or show one line such as "No scores yet"? (12-ui-party-screens)
 
-- 10-18 (c-30-ui-menu-map): (1) The pause box has "Please provide feedback anything that went or felt wrong." over the FEEDBACK button: an explaining sentence and the same job twice. It looks like your wording from v10.41, so I left it. Drop it, or keep? (2) The title mode list has the two "coming later" server rows between live rows. Move them to the bottom (after PVP same machine)? Left in your order.
-
-- 10-17 09:40 (b-11-lean8-fewer-guns): dark_raiders.html is DIRTY (uncommitted VER 28.79 + a gun-weight edit) after a cw-fewerguns STOP ("container fingerprint moved") that was not mine. shipone.sh does not revert the game file on a STOP, and I may not run git checkout, so every ship (cw-helmbar already, then mine) now STOPs "uncommitted changes" or MK FAILs. Please run `git checkout -- dark_raiders.html` (check first that no wanted work is in the diff: it is only that gun edit and VER/DEVNOW 28.79). Then run: bash S/shipq.sh cw-fewerguns. The mk script is ready (the fixed version: split rows, totals unchanged).
-
-- 10-20 (b-20-quality-pass): the Current pillagers board and the end card rows still draw $ for values (for example $2,950, about 20 places in dark_raiders.html). Your rule is score in SP, never $. Are those haul and credit values meant to stay $ (credits are $ in the shop), or should the pillager board read SP? Left as is.
-- 10-20 (b-31-ui-undercroft): the critic holds the 25 Undercroft screens (welcome pack, stash, shop, mainframe, codex) at 2 to 3 of 5. Three findings need your word, so I left them: (1) full-window slab to a centred card of at most 960x680 with a close X top right (this reverses your ONE GRID, ONE RIGHT EDGE #50 and the footer Close); (2) "$" on prices to SP or credits; (3) the explaining hint lines under the Mainframe buttons and stash (frozen words). Say yes to (1) and I cap the card, cap racks buttons near 640px and centre the codex grid.
-
-## 2026-10-18 12-ui-party-screens (lane d, run 7)
-- Screens 55 and 56 are staged as "scored" but the staged extraction scores 0 SP, so 55 shows "Score 0 SP" and 56 shows an empty board (the critic grades an empty board and a zero card). Could the stage in tools/handoff/shots/ui-screens-js.json seed one board row (and a real score) before the shot? My pick: left as is, the empty states are designed (five ghost rows, three stat cells).
-- The critic flips on the empty board (56, 64): one run wants the five ghost rows removed, the next wants them brighter. I kept them. Say if you want a single "No scores yet" line instead.
-- Screen 58 (player 2 window title) is the whole title page (lore, three steps, key legend, saves); it needs the title redesign (left column, one primary, no lore), not a card fix. Left for the title task.
+## Resolved by his answers of 10-18 (memory pillagers-answers-1-78-2026-10-18.md); helpers act on these
+- HUD (b-30): ammo becomes prominent and the whole raid HUD is redesigned (Q57); the career top-right becomes ONE row with nothing removed (Q58 a); $ for money, including the bag line, haul values, prices and the pillagers board; SP only for score (Q59 a); Run info shows the 3 closest contracts, and ALL contracts go on the map screen (Q1). The work is now task 02-raid-hud-redesign.
+- Pause box line "Please provide feedback anything that went or felt wrong.": KEEP it, along with the button and Send play data (Q61 b).
+- Undercroft (b-31): windows become a centred card with an X that takes up NEARLY THE WHOLE screen (Q43 a; not a 960x680 cap). The style guide overrules his older layout orders (Q7). Helpers may shorten or delete his explaining lines, but only with a good reason logged in notes/ui/changes.md (Q8 a).
+- Title on screen 58 and the rest: the title redesign is task 03 (Q50-Q54).
+- The 10-17 note about a dirty game file is stale; ships have run cleanly since.

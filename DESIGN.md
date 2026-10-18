@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.41 - TITLE: ONE LINE
+
+Co-op hunt while he was away. His Q51 (10-18): drop the story paragraph and the three step cards for one line, Ascend. Pillage. Extract. Q53: no raiders beside the logo (none are there). The title is calmer: logo, one line, keys, the mode rows.
+
+MEASURED. Check 30.41 passes, and fails on v30.40.
 ## v30.40 - THE COMPACT SMG NO LONGER BUILDS INTO A HEAVY SHAKE
 
 Co-op hunt while he was away. His Q5: gun feel. The Compact SMG fires every 88 ms and each round set a 2.2 kick: 0.157 trauma a round against 0.123 that drains between rounds, so a held magazine climbed round after round into a big screen shake. 2.2 to 1.9 cuts the worst shake of a held magazine from 4.65 px to 1.4 px and keeps a light buzz.

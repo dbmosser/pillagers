@@ -1,0 +1,12 @@
+{
+    "title":  "THE SCAV PISTOL KICKS THE SCREEN A LITTLE",
+    "why":  "His Q5: gun feel. The camera shake is 18 px times trauma squared, so the flat 2.2 kick was 0.4 px, nothing you could see. The Scav Pistol (the gun every party guest starts with) now sets 3.6: about 1.2 px a shot, 1.0 px over six taps at full rate.",
+    "now":  "The Scav Pistol now gives the screen a small kick with every shot.",
+    "edits":  [
+                  {
+                      "anchor":  "var GUN_SHAKE={shotgun:6.5,smg:1.9};",
+                      "replacement":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6};   // v28.xx (cw-kickpistol): the Scav Pistol 2.2 to 3.6, one tap 0.4 px to 1.2 px of camera kick (trauma 0.157 to 0.257, size 18 x trauma squared); six taps at its 290 ms rate stay under 1.1 px"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a Scav Pistol shot kicks the camera 3.6 (about 1.2 px), up from 2.2 (0.4 px), and six taps at full rate stay under 1.5 px (his Q5 gun feel)\u0027,\n   run:function(){\n     if(typeof gunShake!==\u0027function\u0027||typeof gfxTrauma!==\u0027function\u0027) return \u0027SKIP: no gunShake\u0027;\n     var g=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       var w=WEAPONS.pistol, mx=0, i, nx=0, t=0, dt=1/60, n=0, one=-1;\n       CFG.shake=1; CFG.fxInt=1; GFX.shG=null; G.shake=0; gfxTrauma(dt);\n       for(i=0;i\u003c300;i++){\n         t+=dt;\n         if(t\u003e=nx\u0026\u0026n\u003c6){ G.shake=0; fireWeapon(g.player,w,g.player.x+200,g.player.y,true); if(n===0) one=G.shake; nx+=w.rof/1000; n++; }\n         gfxTrauma(dt); if(GFX.shA\u003emx) mx=GFX.shA;\n         if(G.shake\u003e0) G.shake=Math.max(0,G.shake-dt*26);\n       }\n       if(Math.abs(one-3.6)\u003e0.01) return \u0027a Scav Pistol shot sets a kick of \u0027+one+\u0027, not 3.6\u0027;\n       if(!(mx\u003e0.9)) return \u0027six pistol taps shake the camera only \u0027+mx.toFixed(2)+\u0027 px, under 0.9\u0027;\n       if(!(mx\u003c1.5)) return \u0027six pistol taps shake the camera \u0027+mx.toFixed(2)+\u0027 px, over 1.5\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

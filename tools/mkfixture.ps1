@@ -6097,6 +6097,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.41',what:'the title shows one line, Ascend. Pillage. Extract., with no story paragraph, no step cards and nothing beside the logo (his Q51 and Q53)',
+   run:function(){
+     var t=document.getElementById('title'), tg=document.getElementById('titletag'), wm=t&&t.querySelector('.wordmark'), bad=[], was;
+     if(!t||!wm) return 'SKIP: no title here';
+     was=t.classList.contains('on'); if(!was) t.classList.add('on');
+     try{
+       if(!tg) return 'the title has no one line';
+       if((tg.textContent||'').trim()!=='Ascend. Pillage. Extract.') bad.push('the line reads '+(tg.textContent||'').trim());
+       if(t.querySelectorAll('.tcard').length) bad.push('the step cards are still there');
+       if(/elites left|Take the lift up/.test(t.textContent||'')) bad.push('the story paragraph is still there');
+       if(wm.parentNode.querySelector('img,canvas,svg')) bad.push('something sits beside the logo');
+       if(tg.getBoundingClientRect().width<=0) bad.push('the line is not shown');
+     } finally { if(!was) t.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.40',what:'a full held magazine of the Compact SMG shakes the camera between 0.8 and 2.5 px at its worst, down from 4.65 (the 2.2 kick climbed with every round, his Q5 gun feel)',
    run:function(){
      if(typeof gunShake!=='function'||typeof gfxTrauma!=='function') return 'SKIP: no gunShake';
