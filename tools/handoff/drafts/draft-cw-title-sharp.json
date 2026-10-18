@@ -1,0 +1,12 @@
+{
+    "title":  "TITLE: THE FIGHT BEHIND THE SCOREBOARD READS (BLUR 5 TO 2PX)",
+    "why":  "His answers Q52 and Q54: real combat visible behind the attract pages and no frame cost at 4K. The 5px backdrop blur smeared the small fights and costs a full-screen blur of a moving canvas each frame. 2px.",
+    "now":  "The fight behind the scoreboard and how-to reads clearly.",
+    "edits":  [
+                  {
+                      "anchor":  "body #attract{ -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px);",
+                      "replacement":  "/* v31.xx (cw-title-sharp), his Q52/Q54 \"REAL pillager-versus-robot combat\" and \"it must not cost frame rate: 60 fps at 4K\": the 5px blur smeared the two tiny fights behind the scoreboard and how-to into mud (shot 03-r8/45) and is a full-screen blur of a moving canvas every frame at 4K. 2px keeps the glass and lets the fight read, and the pass is cheaper. */\nbody #attract{ -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-title-sharp, his Q52/Q54: the glass behind the scoreboard and how-to blurs 2px so the live fight reads and the 4K frame stays cheap\u0027,\n   run:function(){\n     var blur=\u0027\u0027, rr, i, j;\n     try{ for(i=0;i\u003cdocument.styleSheets.length;i++){ rr=document.styleSheets[i].cssRules; for(j=0;j\u003crr.length;j++){ if(rr[j].selectorText===\u0027body #attract\u0027\u0026\u0026rr[j].style.backdropFilter) blur=rr[j].style.backdropFilter; } } }catch(e){}\n     if(blur.indexOf(\u0027blur(2px)\u0027)\u003c0) return \u0027the attract blur is \u0027+blur;\n     return null; }},"
+}

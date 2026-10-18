@@ -564,3 +564,5 @@
 2026-10-18 0.0264 critic-12-ui-party-screens
 2026-10-18 1.0698 12-ui-party-screens
 2026-10-18 0.0321 critic-manual
+2026-10-18 0.0310 critic-04-style-guide-update
+2026-10-18 1.2148 04-style-guide-update

@@ -1,0 +1,7 @@
+v31.11: the player 2 party attract starts on a clear screen
+
+In the party arcade the player 2 screen no longer shows the welcome pack behind the party pages, it shows the Undercroft like player 1.
+
+Check 31.11. Fails on v31.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

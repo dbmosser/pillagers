@@ -1,0 +1,8 @@
+﻿PILLAGERS FEEDBACK
+VERSION: v0.0703 (BUILD 30.73)
+TIME: Sun Oct 18 2026 15:47:36 GMT-0400 (Eastern Daylight Time)
+WHERE: IN A RAID, 3:36 IN
+RUNS: 52
+
+add other exploding barrels, e.g. electricity, toxic waste, dry ice
+

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.11 - THE PLAYER 2 PARTY ATTRACT STARTS ON A CLEAR SCREEN
+
+Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. The player 2 window leaves its title for the floor first, and that floor opens the welcome pack of a fresh save while the arcade is still off. The window clear that runs at the start of arcadeEnter comes before it, so the pack stayed open under the player 2 attract and was what showed through the blur, while player 1 showed the Undercroft. The windows are cleared again once the arcade is on.
+
+MEASURED. Check 31.11 passes, and fails on v31.10.
 ## v31.10 - WINDOWS ARE A 90 PERCENT CARD
 
 Co-op hunt while he was away. His Q43: windows are a centred card with an X in the corner taking nearly the whole screen. The windows were a slab 14 px from the edge with a clipped tick. Now a card with a 5 percent margin all round, 4 px corners, no tick, the X and credits inside its top right.

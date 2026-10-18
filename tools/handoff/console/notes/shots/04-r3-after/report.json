@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T17:38:24","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":29,"screens":[
+{"name":"08-shop","screen":"Trader: SHOP tab","1080":{"staged":true,"note":"tradermodal","viewport":"1920x1080","shot":"08-shop-1080.jpg","lint":""}},
+{"name":"65-codex","screen":"The armory codex (career stash screen)","1080":{"staged":true,"note":"codexmodal","viewport":"1920x1080","shot":"65-codex-1080.jpg","lint":""}}
+]}

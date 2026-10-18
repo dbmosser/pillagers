@@ -57,17 +57,17 @@
  "08-shop": {
   "score": 2,
   "pass": false,
-  "verdict": "the only real change is a big X at top-right, and it is now the loudest thing in the header; the empty bottom 40%, the quip, the subtitle and the cramped currency block are all still there, so this is still an amateur layout.",
+  "verdict": "the shop is now a centred card with an X, which matches the window spec, but the body still stops at y 740 and leaves a dead 280px black slab, the footer pill is now straddling the card's bottom border, and the subtitle, currency clutter and 'shop, craft, and hire' title are all unchanged.",
   "findings": [
-   "P0 bottom 40% of screen (y 690-1000): stretch the body to the card bottom: 120-140px tiles in a 6-8 column grid that fills the panel height, and make the detail pane full height with price, stepper and buy pinned to its bottom edge at 56px high.",
-   "P0 whole screen vs window spec: make a centred card at 1728x972 (5% margin) on --scrim, 1px #4a5257 border, 4px radius, header row 56px with the title at x=32 and the X at right.",
-   "P1 top-right X and currency block (x 1650-1895, y 22-80): inset the X 16px from the card edge and add a B glyph beside it. make currency one block: '900' at 20px tx-1 and 'credits' at 16px tx-2. move xp, stash and bag to the 14px footer legend.",
-   "P1 footer pill 'everything here works. cannot say the same for you.': delete it. footer row is 72px with a ghost 'back' on the left (56px high, B glyph) and the 14px legend at the right.",
-   "P1 header: title, tab strip and subtitle: title 'shop' at 32/700, keep the one tab strip (48px high, 3px lime underline), delete the subtitle, and put the tabs on the header row or directly under it with 16px spacing."
+   "P0 card body, y 740-1020: stretch the grid panel and detail pane to the footer top (y~950). use a 6-column grid with tiles of about 180px, or fill the panel height. pin price, stepper and a 56px buy button to the bottom of the detail pane.",
+   "P0 footer pill 'everything here works. cannot say the same for you.' (x 767-1153, y 1016-1053): delete it. add a 72px footer row inside the card (y 952-1024) with a ghost 'back' button on the left, 56px high with a B glyph, and the 14px legend on the right.",
+   "P1 header, x 119-1800, y 67-125: keep the X at the right edge, inset 16px from the card edge and vertically centred in the 56px header, with a B glyph to its left. reduce the currency to one block, '900' at 20px tx-1 and 'credits' at 16px tx-2, with 24px between it and the X. move xp, stash and bag to the footer legend.",
+   "P1 title and subtitle, x 119-335 and y 195-210: title 'shop' at 32/700. delete the subtitle. put the tab strip (48px high, 3px lime underline) on the same row as the title or directly below it, with one divider only. that recovers about 60px for the grid.",
+   "P1 detail pane stat rows, x 1357-1776, y 380-490: use a 1px #2e3337 divider, 48px row pitch, labels in tx-2 and values in tx-1 at 20px."
   ],
-  "pic": "tools/handoff/console/notes/shots/04-r2-after/08-shop-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/04-r3-after/08-shop-1080.jpg",
   "task": "04-style-guide-update",
-  "when": "2026-10-18T20:53"
+  "when": "2026-10-18T21:38"
  },
  "09-craft": {
   "score": 2,
