@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.17 - VITALS BARS ONE WIDTH
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the hp, armour and stamina bars have three widths (360, 280, 280).
+
+MEASURED. Check 31.17 passes, and fails on v31.16.
 ## v31.16 - THE SHOP FILLS ITS CARD
 
 Co-op hunt while he was away. The critic scored the shop 2: the grid and detail stopped 280 px short of the card foot, a subtitle repeated the tab, and the answer line sat across the card border. Now the body stretches to the foot with buy pinned at the bottom of the detail, the subtitle is gone, the answer line sits inside the card.

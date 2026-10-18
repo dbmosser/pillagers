@@ -1,0 +1,5 @@
+{"generated":"2026-10-18T17:57:58","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":28,"screens":[
+{"name":"04-stash-terminal","screen":"THE STASH: stash grid, loadout backpack, tactical belt, sell row, freebie kit","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"04-stash-terminal-1080.jpg","lint":""}},
+{"name":"18-settings-hub","screen":"Settings from the hub station, top of DISPLAY tab","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"18-settings-hub-1080.jpg","lint":""}},
+{"name":"65-codex","screen":"The armory codex (career stash screen)","1080":{"staged":true,"note":"codexmodal","viewport":"1920x1080","shot":"65-codex-1080.jpg","lint":""}}
+]}

@@ -1,0 +1,5 @@
+## v31.17 - VITALS BARS ONE WIDTH
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the hp, armour and stamina bars have three widths (360, 280, 280).
+
+MEASURED. Check 31.17 passes, and fails on v31.16.

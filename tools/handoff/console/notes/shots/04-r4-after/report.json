@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T17:56:17","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":15,"screens":[
+{"name":"08-shop","screen":"Trader: SHOP tab","1080":{"staged":true,"note":"tradermodal","viewport":"1920x1080","shot":"08-shop-1080.jpg","lint":""}}
+]}

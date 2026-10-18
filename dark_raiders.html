@@ -2822,7 +2822,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.16';
+var VER='31.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41563,7 +41563,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     ctx.restore();
   }
 if(p.armor>0){
-    bar(16,by-46,280,16,p.armor/armorCap(),'#5aa9e6');
+    bar(16,by-46,HBW,16,p.armor/armorCap(),'#5aa9e6');   /* v28.xx (cw-barsame), the critic (2026-10-19): the three vitals bars had three widths (360, 280, 280); all are HBW wide now */
     // v23.19, parked by the raid text audit of 2026-10-09: THE ARMOUR NUMBER FITS ITS BAR, as the HP number does. At a larger text size
     // the label face grew past the 16 unit bar and stuck out over its top edge into the posture chip. It is never taller than the
     // bar holds now, and then centred in it; at the usual text size nothing changes.
@@ -41573,12 +41573,12 @@ if(p.armor>0){
     ctx.fillText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-46+8+_apm*0.36):by-33);
   }
   var _stc=p.stamLock?'#ff5a4a':(p.stam<35?'#ffc04a':'#8fb5c8');
-  bar(16,by-25,280,12,p.stam/100,_stc);
+  bar(16,by-25,HBW,12,p.stam/100,_stc);   /* v28.xx (cw-barsame): same width as the health bar */
   // v18.40, THE STYLING PASS IN THE RAID (2026-10-04): THE STAMINA WORD SITS BESIDE ITS BAR. It was dark text inside a 12 unit bar
   // in a face taller than the bar, so it spilled over the top edge and read as a smudge. It sits just past the bar's end now, in
   // the bar's own colour, and WINDED still replaces it when the bar locks.
   ctx.font=FS(TYPE.micro); ctx.fillStyle=_stc;
-  ctx.fillText(p.stamLock?'WINDED':'STAMINA',16+280+8,by-15);
+  ctx.fillText(p.stamLock?'WINDED':'STAMINA',16+HBW+8,by-15);   /* v28.xx (cw-barsame): the word follows the longer bar */
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
   // v19.07, FROM THE REVIEW OF 2026-10-07 (found checking the status icons against the teammate HUD): THE CO-OP HUD DRAWS WHERE
@@ -49157,7 +49157,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.16: The shop, craft and hire body fills the card. Check 31.16 fails on v31.15',
+  now:'v31.17: HP, armour and stamina bars are the same width. Check 31.17 fails on v31.16',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -57,17 +57,17 @@
  "08-shop": {
   "score": 2,
   "pass": false,
-  "verdict": "the shop is now a centred card with an X, which matches the window spec, but the body still stops at y 740 and leaves a dead 280px black slab, the footer pill is now straddling the card's bottom border, and the subtitle, currency clutter and 'shop, craft, and hire' title are all unchanged.",
+  "verdict": "the subtitle is gone and the panels now run to the bottom with the buy button pinned, but the grid is still tiny tiles floating in a huge empty panel, the joke pill sits inside the card, and the header and footer are still not to spec.",
   "findings": [
-   "P0 card body, y 740-1020: stretch the grid panel and detail pane to the footer top (y~950). use a 6-column grid with tiles of about 180px, or fill the panel height. pin price, stepper and a 56px buy button to the bottom of the detail pane.",
-   "P0 footer pill 'everything here works. cannot say the same for you.' (x 767-1153, y 1016-1053): delete it. add a 72px footer row inside the card (y 952-1024) with a ghost 'back' button on the left, 56px high with a B glyph, and the 14px legend on the right.",
-   "P1 header, x 119-1800, y 67-125: keep the X at the right edge, inset 16px from the card edge and vertically centred in the 56px header, with a B glyph to its left. reduce the currency to one block, '900' at 20px tx-1 and 'credits' at 16px tx-2, with 24px between it and the X. move xp, stash and bag to the footer legend.",
-   "P1 title and subtitle, x 119-335 and y 195-210: title 'shop' at 32/700. delete the subtitle. put the tab strip (48px high, 3px lime underline) on the same row as the title or directly below it, with one divider only. that recovers about 60px for the grid.",
-   "P1 detail pane stat rows, x 1357-1776, y 380-490: use a 1px #2e3337 divider, 48px row pitch, labels in tx-2 and values in tx-1 at 20px."
+   "P0 grid panel, x 119-1307, y 190-1002: use a 6-column grid of tiles that stretch to fill the width (about 190px square) with 8px gutters. group them under small section labels (medical, ammo, gear) to fill the panel. close the detail pane gap by adding a 160px item art or icon at the top, or by moving the price block up under the stats.",
+   "P0 pill 'everything here works. cannot say the same for you.' (x 767-1153, y 975-1012): delete it. add the 72px footer row (y 952-1024) with a ghost 'back' button (56px high, B glyph) on the left and the 14px legend on the right. shorten both panels to end at y~940.",
+   "P1 header, x 1574-1807, y 67-125: keep one currency block: '900' at 20px tx-1 with 'credits' at 16px tx-2. move xp, stash and bag to the footer legend. put 24px between the block and the 48x48 X, and add the B glyph. title the window 'shop' at 32/700.",
+   "P1 tabs and double rule, x 119-1801, y 124-190: tabs at 20px f-cond 600 with 24px side padding, 48px high, a 3px lime underline, and one divider only. put the strip on the title row or directly under it, and drop the second rule.",
+   "P1 tile prices, x 284-1285, y 215-230: make prices tx-2 at 16px. use danger red for unaffordable prices only. show 'sold out' as a 16px tx-2 label with the tile at 40% opacity. keep lime for the focused tile border and the buy button."
   ],
-  "pic": "tools/handoff/console/notes/shots/04-r3-after/08-shop-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/04-r4-after/08-shop-1080.jpg",
   "task": "04-style-guide-update",
-  "when": "2026-10-18T21:38"
+  "when": "2026-10-18T21:56"
  },
  "09-craft": {
   "score": 2,
