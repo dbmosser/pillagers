@@ -1,0 +1,7 @@
+v29.27: controller asks how many on a stack move
+
+On a controller, moving a stack between stash and backpack asks how many.
+
+Check 29.27. Fails on v29.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

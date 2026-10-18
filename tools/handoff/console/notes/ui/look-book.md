@@ -14,7 +14,25 @@ R8. Content packed in the top half, dead black lower third (shop, craft); cream 
 R9. Stray capitals in labels: "Host A party", "Create A new save".
 R10. Amber used for everything (buttons, credits, warnings, tutorial banners) so it means nothing.
 
+## Raid HUD recurring defects (19, 21, 33, 22, 23)
+H1. Permanent controls cheat-sheet (WASD list, ~12px, duplicate LMB row) in the middle of the lower screen. Show it only on F1 or the first 30s.
+H2. Minimap: no frame, cut by the screen edge, purple zone label "The l..ng" drawn over it and clipped (P0 on 21, 33).
+H3. Run info/contracts: 7-8 lines at 12-13px, ragged wrap. Cap at 3 tracked, 16px+, right-aligned counts.
+H4. Panels: five styles (chevron, resize grip, orange tab, bare translucent, red banner). One HUD panel: 1px line, 85% fill, 2px accent tab, no grips.
+H5. Weapon card bottom-right: no fill, "B / I backpack" bigger than a hint, ammo 12/24 duplicates hotbar 24. Ammo hero 40px.
+H6. Same alert shown 3 times (banner + toast + chip). One event, one place; dedupe in 3s.
+H7. Hotbar: empty slots drawn as ghost weapon icons; two selection colours (gold + blue). One selected style.
+H8. Typo seen in toast: "Equlp" / "Scav plstol" (probably the screenshot font at small size; check).
+
 ## Per screen
+19 raid HUD first raid | 2 | H1 cheat-sheet, H3 contracts, duplicate hint toast ("welcome pack" + equip hint) | one toast style, 4 key hints max.
+21 raid HUD calm | 2 | H2 minimap label clipped, H1, H3 | tier scale 32/20/14, one panel spec.
+22 raid map | 2 | labels overlap icons on the right edge (Cache struck through by rings), zone names ~2:1 contrast, "Hot ground / richer, and busier" 11px orange on red-brown; no close glyph | zone labels 60-70% white 20px with outline; 32px title; close chip top-right; thinner frame.
+23 raid backpack | 2 | panel 1190px wide with 3 slots hugging left, 11-13px stats, title 20px with 12px "B or I to close" | 720-800px panel, 6x4 slot grid with empty slots dimmed, label/value stat table 18px, key-chip footer, title 28px; rarity as a bar, focus = gold 3px.
+25 pause box | 2 | five-row keybind wall is the largest element; HUD cheat-sheet shows through the dim; "Please provide feedback..." 13px sentence above a Feedback button; Abandon run next to What's new | dim 75% + hide HUD, delete wall and sentence, title 36px, buttons stacked 320x56, Abandon apart with confirm, Resume focus ring.
+26 settings from pause | 2 | same shell as 18 (two nav rows, empty detail panel, 13px descriptions) | see 18.
+32 keys window | 2 | all rows same weight; two intro sentences; 28 identical ghost Rebind buttons, 360px dead strip right | key cap is the button, labels sentence case 18px, label column 260px, full-width scroll, Close primary.
+33 raid fight alerts | 2 | minimap clipped H2; alert 3x (H6); contracts H3 | one 28px threat banner, toasts only for info.
 01 title | 2 | one centred column of lore + 3 cards + key legend + 7 buttons, no hero; button heights 62/52/40 mixed; save form 898px wide vs 558px button column, "Create A new save" | left column: title + 4 main items (Play, Co-op, Arcade, Saves) on a lit art backdrop, one 56px row height, key hints at 18px in a bottom bar, version bottom-right 12px.
 02 welcome pack | 2 | full-screen slab with seven rows hugging the left, 1600px of dead width, CTA 144x44 bottom-left and Close bottom-right 1600px away; intro paragraph; item name colours inconsistent, gun icons 32px dark | centred 900x640 card, two big gun tiles over five small tiles, rarity as a bar not name colour, one 280x56 CTA, close X top-right.
 03 hub floor | 2 | eight identical black label plates, "Enter raid!" no bigger than "Settings"; "***Experimental feature may glitch***" under The last pour; hotbar of nine empty slots overlaps stations, HUD text 12-14px | Enter raid label 36px accent with ring, others 22px at 60% and only near; hotbar only equipped slots; one currency panel 24px; toast top-centre.

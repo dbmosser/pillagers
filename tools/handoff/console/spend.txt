@@ -74,3 +74,17 @@
 2026-10-18 0.0325 critic-10-ui-look-book
 2026-10-18 0.0336 critic-10-ui-look-book
 2026-10-18 0.0335 critic-10-ui-look-book
+2026-10-18 0.0336 critic-10-ui-look-book
+2026-10-18 0.0348 critic-10-ui-look-book
+2026-10-18 0.0320 critic-10-ui-look-book
+2026-10-18 0.0303 critic-10-ui-look-book
+2026-10-18 0.0398 critic-10-ui-look-book
+2026-10-18 0.0327 critic-10-ui-look-book
+2026-10-18 0.0377 critic-10-ui-look-book
+2026-10-18 0.0313 critic-10-ui-look-book
+2026-10-18 0.0344 critic-10-ui-look-book
+2026-10-18 0.0326 critic-10-ui-look-book
+2026-10-18 0.0343 critic-10-ui-look-book
+2026-10-18 0.0353 critic-10-ui-look-book
+2026-10-18 0.0351 critic-10-ui-look-book
+2026-10-18 0.0323 critic-10-ui-look-book

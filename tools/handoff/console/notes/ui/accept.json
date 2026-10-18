@@ -190,5 +190,117 @@
   "pic": "tools/handoff/console/notes/shots/all/33-raid-fight-alerts-1080.jpg",
   "task": "10-ui-look-book",
   "when": "2026-10-18T06:18"
+ },
+ "35-kia-card": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The death card has a clear red title and a single yellow primary button, but the stacked centered text, the tiny low-contrast lines, the 'Lost' repetition and the cluttered info above make it look like a debug dialog rather than a polished AAA screen.",
+  "pic": "tools/handoff/console/notes/shots/all/35-kia-card-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:19"
+ },
+ "38-extracted-card": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The Extracted card has a clear title and a strong primary button, but it is a dense stack of small centered text lines with weak hierarchy, a muddy dimmed HUD behind it, and no pad focus cue.",
+  "pic": "tools/handoff/console/notes/shots/all/38-extracted-card-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:19"
+ },
+ "40-whats-new-card": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A full-width flat grey slab of repetitive changelog text slices through the middle of the hub, clipping the station labels and leaving the world HUD fighting it, so it reads as a debug dump and not a polished what's-new card.",
+  "pic": "tools/handoff/console/notes/shots/all/40-whats-new-card-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:19"
+ },
+ "45-arcade-attract-board": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A sentence-case, centered attract screen with a clear title and prompt, but it sits on a flat black void with no art, an empty leaderboard, and a dim call to action, so it reads as a placeholder and not a game's front door.",
+  "pic": "tools/handoff/console/notes/shots/all/45-arcade-attract-board-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:20"
+ },
+ "50-arcade-hud-live": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A busy, mismatched HUD where tiny, low-contrast text sits on a noisy map, the bottom-right panel overlaps the world and its own props, and the corners disagree on type, size and panel style.",
+  "pic": "tools/handoff/console/notes/shots/all/50-arcade-hud-live-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:20"
+ },
+ "52-arcade-run-over": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A bare text-on-black end screen with a game title that outshouts the result, redundant score lines, a dim call to action, and no panel, art, or identity beyond the font.",
+  "pic": "tools/handoff/console/notes/shots/all/52-arcade-run-over-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:20"
+ },
+ "57-title-2p-coop-picked": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A competent dark-amber template with a clear title, but the screen is a crowded stack of explainer text, tutorial cards, a control legend, seven near-identical mode buttons, an error banner and a save form, so nothing leads the eye to the action and the style is inconsistent.",
+  "pic": "tools/handoff/console/notes/shots/all/57-title-2p-coop-picked-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:21"
+ },
+ "59-raid-abandon-confirm": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A pause modal that doubles as a control cheat-sheet: the abandon confirmation is buried under five rows of keybind chips, a stray feedback sentence and mismatched button casing, while the HUD bleeding through behind the scrim adds noise.",
+  "pic": "tools/handoff/console/notes/shots/all/59-raid-abandon-confirm-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:21"
+ },
+ "65-codex": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A legible but sparse card grid that fills only the top third of the screen, leaving a huge dead void, with a weak title, a jammed header, and no visible focus state.",
+  "pic": "tools/handoff/console/notes/shots/all/65-codex-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:21"
+ },
+ "66-trophy-case": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The trophy cards are tidy individually, but the screen is two-thirds empty, the grid orphans a single card on row two, nothing shows focus, and the header stats and toast are crude.",
+  "pic": "tools/handoff/console/notes/shots/all/66-trophy-case-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:21"
+ },
+ "62-arcade-operator-menu": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A small, bright operator modal sits on top of a dimmed attract screen whose title, scoreboard and 'Press any button' prompt are still visible and compete with it, so the layering is muddled and the modal is tiny for a 1080 couch view.",
+  "pic": "tools/handoff/console/notes/shots/all/62-arcade-operator-menu-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:22"
+ },
+ "61-raid-wheel-open": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The wheel itself has a clear gold focus segment, but it is buried under a controls cheat-sheet that overlaps it, a minimap and contracts list that clip, and a dozen competing HUD panels with inconsistent type and no shared panel style.",
+  "pic": "tools/handoff/console/notes/shots/all/61-raid-wheel-open-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:22"
+ },
+ "58-coop-player2-window-title": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The title screen has a clear gold CTA and a decent logo, but it is a stack of small centered text, tutorial cards, a keybind strip and an orange paragraph of explanation, so the hierarchy is muddy and the screen reads like a web form rather than a game menu.",
+  "pic": "tools/handoff/console/notes/shots/all/58-coop-player2-window-title-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:22"
+ },
+ "46-arcade-attract-how-to-play": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A clean, legible black-screen controls table with a consistent amber and bone palette, but it is flat, generic and visually unfinished: the \"Press any button\" prompt outweighs the content, the table has no structure, and nothing says extraction shooter.",
+  "pic": "tools/handoff/console/notes/shots/all/46-arcade-attract-how-to-play-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:22"
  }
 }

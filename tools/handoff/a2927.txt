@@ -1,0 +1,1 @@
+| CONTROLLER ASKS HOW MANY ON A STACK MOVE | v29.27 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.27 passes, fails on v29.26 |

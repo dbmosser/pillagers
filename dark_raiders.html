@@ -2309,7 +2309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.26';
+var VER='29.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47261,7 +47261,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.26: On the pre-raid screen, Pack all and Clear sit next to the Pack label. Check 29.26 fails on v29.25',
+  now:'v29.27: On a controller, moving a stack between stash and backpack asks how many. Check 29.27 fails on v29.26',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62108,6 +62108,8 @@ function stashPadAct(el){
     return true;
   }
   if(el===held.el&&!held.moved){ try{ el.click(); }catch(_pc){} return true; }
+  // v28.xx (cw-padqty), quality pass on cw-stashqty (his note: "if I ctrl drag an item to the backpack, i should get a prompt asking me how many I want to transfer"): a pad has no Ctrl, so A on the other side of a stack of two or more never reached that prompt. It opens it now, the same qtyDrag the mouse runs; a single item and every refusal still drop as before.
+  if(z&&el!==held.el&&typeof qtyDrag==='function'){ var _pq=false; try{ _pq=qtyDrag(held.key,held.from,z); }catch(_pe2){} if(_pq) return true; }
   if(z&&typeof z.__grabDrop==='function') z.__grabDrop(held.key,held.from);
   return true;
 }
