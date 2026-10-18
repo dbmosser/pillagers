@@ -1,0 +1,25 @@
+28.08: PASS
+27.42: PASS
+27.20: PASS
+26.52: ONE: Digit0 is not on the Keys list; ONE: the Keys window draws no row for Digit0; TWO: the raid code reads Digit0 and it is not on the Keys list
+26.37: ONE: key 8 is not the Sniper tile (8ENERGY); TWO: after the drop the table reads ["pistol","energy","rifle","carbine","lmg","shotgun","sniper","smg","rocket"]; TWO: key 2 is not drawn as the Sniper after the swap; FOUR: a Longshot packed for the raid sits on key 7, not 2 (keys {"6":"gun_sniper","7":
+26.10: PASS
+25.35: PASS
+23.54: PASS
+23.24: PASS
+22.95: SKIP: staging: the compass line was not drawn
+20.38: the host was branded MARKED by a Crier that marked player 2; the host was told a Crier raised the alarm on him; player 2 was never told the Crier fired
+19.95: PASS
+17.89: PASS
+17.38: PASS
+16.38: PASS
+15.76: PASS
+14.93: PASS
+14.90: PASS
+13.08: PASS
+10.41: the downed line reads "You are downed. You can extract while downed"
+10.39: PASS
+9.97: PASS
+9.94: PASS
+9.58: PASS
+ALL DONE

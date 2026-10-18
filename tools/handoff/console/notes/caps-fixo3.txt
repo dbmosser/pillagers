@@ -1,0 +1,3 @@
+10.41: the pause box controls line does not say E interact; the pause box does not say CTRL / C crouch toggle
+20.38: PASS
+ALL DONE

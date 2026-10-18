@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.20 - A DEAD BULWARK LEAVES WRECKAGE, NOT A BOX
+
+Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Bulwark left the generic brown wreck. It now leaves its own: the big shield slab fallen flat with its ochre chevron band and rust edge trim, the hunched body slumped beside it with its rust plate and a stompy foot, the sensor dome rolled off with a dead eye. Smoke while unsearched. Looting is unchanged.
+
+MEASURED. Check 29.20 passes, and fails on v29.19.
 ## v29.19 - A DEAD CRAWLER LEAVES WRECKAGE, NOT A BOX
 
 Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Crawler left the generic brown wreck. It now lies on its back as the crawler: the three rust shell segments cracked open, its six legs curled up in the air and snapped, the gunmetal sensor head fallen off with three dead eyes and a mandible blade. Smoke while unsearched. Looting is unchanged.

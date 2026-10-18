@@ -29,4 +29,8 @@ RUN 2 (10-18): S/mk-cw-capscan.ps1 scans the fixture for checks testing caps wor
   Ran all 330 via runchk (outputs notes/caps-o1..o5.txt). Non-PASS/SKIP: 28.08 27.42 27.20 26.52 26.37 26.10 25.35 23.54 23.24 22.95 20.38 19.95 17.89 17.38
   16.38 15.76 14.93 14.90 13.08 10.41 10.39 9.97 9.94 9.58 (some fail for other reasons: 26.52 Digit0, 19.95, 14.90, 13.08, 16.38 check each).
   Fix by case-blind regex (add i flag) via fixture edit under lock; then runchk the list; HELD=1 fixq.
-Status: TASK PARTIAL (the no-caps behaviour is shipped; old-check retargeting remains).
+RUN 3 (10-18): retargeted ~35 old checks case-blind (commits 466534b6, b1dd8871); reran the list: all PASS except
+  26.52 / 26.37 (fail on the v29.15 gun key renumber, Digit0 and key 8, NOT caps; another worker's area), 22.95 (SKIP staging),
+  10.41 (pause box controls line: no E interact / CTRL text at check time; likely stale hub pause line, not caps). 29.11 and 29.14 PASS.
+  Source scan: no CSS content caps, alert/confirm/prompt, OffscreenCanvas, textTransform, svg text, option text. The TX net covers canvas+DOM.
+Status: TASK DONE (no all-caps word can reach the player; checks retargeted). Leftovers above belong to other tasks.

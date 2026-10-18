@@ -1,0 +1,7 @@
+v29.20: a dead bulwark leaves wreckage, not a box
+
+A dead Bulwark leaves its slab and a smoking wreck.
+
+Check 29.20. Fails on v29.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

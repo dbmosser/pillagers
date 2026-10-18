@@ -46,3 +46,5 @@
 2026-10-18 4.1245 b-00a-rocket-launcher
 2026-10-18 0.0401 critic-test
 2026-10-18 4.0209 b-00a-rocket-launcher
+2026-10-18 2.557 00-no-all-caps
+2026-10-18 3.1714 b-00a-rocket-launcher
