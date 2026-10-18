@@ -260,17 +260,17 @@
  "50-arcade-hud-live": {
   "score": 3,
   "pass": false,
-  "verdict": "The hud has been reshuffled a little (a hotbar was added, the weapon block is bigger) but the earlier fixes were not applied: it is still a pile of unrelated boxes with inconsistent type sizes, edge margins and fills, and nothing reads as one system.",
+  "verdict": "The new HUD is cleaner: lower case is fixed, the score sits on a panel, the ammo has a proper hero number and the minimap is clearer. But it still looks like several unrelated widgets, with a stamina label colliding with a hotbar slot, a duplicated run info/run goals title, and the hotbar showing two highlights.",
   "findings": [
-   "P1 top-centre score cluster (x≈880-1040, y≈0-130): Make one strip 360x96 at y=54 (the 5% margin) that holds '0 sp' at 56px f-cond 800 tx-1, '9:46' at 20px tx-2 and 'extract 136m' at 16px --extract. Delete 'score'. Put the arrow inside the strip, left of the distance.",
-   "P1 right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Delete 'run info'. Use one 20px tx-1 'run goals' title, then 16px tx-2 rows on a 32px pitch with sp values right-aligned in tx-1. Add 24px padding, a 1px --ui-line-hi border and a 16px gap below the minimap. Drop the caret or make it a 48px close glyph.",
-   "P1 bottom-left vitals (x≈24-530, y≈905-1070): Use three flat 10px bars, all 360px wide, on --ui-line tracks. Put 16px labels and values left of the bars, outside them, in tx-2/tx-1. Make 'standing' a plain 16px tx-2 label with no box. Start at x=96 and end 54px from the bottom. Colour only hp, using --ok, and use --acc for stamina.",
-   "P1 bottom-right weapon block (x≈1578-1910, y≈868-1020): Make it 320x120 with 48px margins and a solid 90% --ui-panel fill. Use a 20px tx-1 name, 56px f-cond 800 ammo and '/ 42' at 20px tx-2. Remove the lime tick.",
-   "P1 hotbar (x≈570-1555, y≈950-1060) and its tooltip: Show one focused slot with a 2px --acc border and give the rest 1px --ui-line. Dim empty slots to 40%. Set badges at 16px. Move 'fire / use' into a single footer legend at 16px, or delete it. Remove the second highlight."
+   "P0 stamina label vs hotbar slot 1 (x≈538-620, y≈988-1035): Put the 16px 'stamina' label left of the bar, or end the bars at x=360 and start the hotbar at x≥570. Keep 24px clear between the vitals and the hotbar.",
+   "P1 hotbar (x≈570-1555, y≈950-1060) and its tooltip: Give only the active slot a 2px --acc border and --ui-raised fill. All others get 1px --ui-line and 40% opacity when empty. Delete the 'fire / use' tooltip or turn it into one 16px tx-2 legend. Set count badges at 16px.",
+   "P1 right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Keep one 20px tx-1 'run goals' title, 16px tx-2 rows on a 32px pitch with sp values right-aligned. Use 24px padding, a 1px --ui-line-hi border and a 16px gap under the minimap. Drop the caret or make it a 48px close glyph.",
+   "P1 top-centre score block (x≈880-1040, y≈0-135): Make one strip 360x96 at y=54 holding '0 sp' at 56px f-cond 800 tx-1, '9:46' at 20px tx-2 and 'extract 113m' at 16px --extract, all inside the panel. Delete 'score' and put the arrow inside the strip.",
+   "P1 bottom-left vitals (x≈24-530, y≈905-1070): Use three flat 10px bars, all 360px wide, on --ui-line tracks. Put 16px labels and values outside the bars, left of them. Colour hp with --ok and stamina with --acc, and leave armour neutral. Make 'standing' plain 16px tx-2 text. Set the block 54px in from the bottom and 96px from the left."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after7/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after8/50-arcade-hud-live-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T21:01"
+  "when": "2026-10-18T21:59"
  },
  "52-arcade-run-over": {
   "score": 3,

@@ -1,0 +1,275 @@
+<title>Pillagers Open Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: the same review bench as the menu survey. A sticky bar carries progress, a "not answered" filter and the groups;
+   each question is one row: the question big, what it is about in grey, then its choices as a stacked list of tap targets. */
+:root{
+  --bg:#eceeef; --panel:#f8f9f9; --line:#d3d8db; --fg:#15191c; --muted:#5a6268; --accent:#1d6a8f;
+  --accent-soft:rgba(29,106,143,.12); --ok:#2f7a4b; --warn-bg:#fbf3dc; --warn-line:#e2c873; --warn-fg:#5b4a12;
+  --f-display:"Barlow Condensed","Arial Narrow","Segoe UI",system-ui,sans-serif;
+  --f-body:"Barlow","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#111416; --panel:#181c1f; --line:#2a3034; --fg:#e8e6e1; --muted:#979a98; --accent:#7cc0e0;
+  --accent-soft:rgba(124,192,224,.14); --ok:#7fc79a; --warn-bg:#2a2414; --warn-line:#6b5a24; --warn-fg:#e9d9a4; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#111416; --panel:#181c1f; --line:#2a3034; --fg:#e8e6e1; --muted:#979a98; --accent:#7cc0e0;
+  --accent-soft:rgba(124,192,224,.14); --ok:#7fc79a; --warn-bg:#2a2414; --warn-line:#6b5a24; --warn-fg:#e9d9a4; color-scheme:dark; }
+body{ background:var(--bg); color:var(--fg); font:400 17px/1.5 var(--f-body); }
+*{ box-sizing:border-box; }
+.wrap{ max-width:1040px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+h1,h2,h3{ font-family:var(--f-display); text-wrap:balance; margin:0; }
+button{ font:inherit; color:inherit; }
+a{ color:var(--accent); }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+header.top{ padding-block:40px 20px; }
+header.top h1{ font-size:clamp(34px, 5vw, 52px); font-weight:800; line-height:1.02; }
+header.top .lede{ max-width:68ch; margin:12px 0 0; color:var(--muted); }
+header.top .lede b{ color:var(--fg); font-weight:600; }
+.note{ margin:14px 0 0; padding:10px 14px; border-radius:var(--r); border:1px solid var(--line); background:var(--panel); color:var(--muted); font-size:15px; max-width:80ch; }
+
+.bar{ position:sticky; top:env(safe-area-inset-top, 0px); z-index:20; background:color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.bar .wrap{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding-block:10px; }
+.prog{ display:flex; align-items:center; gap:10px; font-variant-numeric:tabular-nums; font-weight:600; white-space:nowrap; }
+.meter{ width:120px; height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
+.meter i{ display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+.filt{ display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--panel); }
+.filt button{ border:0; background:transparent; padding:6px 12px; font-size:14px; font-weight:600; cursor:pointer; color:var(--muted); }
+.filt button[aria-pressed="true"]{ background:var(--accent); color:var(--panel); }
+.save{ margin-left:auto; font-size:14px; color:var(--muted); }
+.groups{ display:flex; gap:6px; width:100%; overflow-x:auto; scrollbar-width:thin; padding-bottom:2px; }
+.groups a{ flex:none; text-decoration:none; color:var(--fg); font:600 14px/1 var(--f-body); padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:var(--panel); white-space:nowrap; }
+.groups a b{ font:700 13px/1 var(--f-display); color:var(--muted); letter-spacing:.06em; margin-right:5px; }
+.groups a span{ color:var(--muted); font-variant-numeric:tabular-nums; margin-left:5px; }
+.groups a.done span{ color:var(--ok); }
+
+section.round{ padding-top:36px; }
+section.round > h2{ font-size:clamp(30px, 4vw, 40px); font-weight:800; }
+section.round > p{ margin:6px 0 0; color:var(--muted); max-width:70ch; }
+section.group{ padding-top:24px; }
+section.group > h3{ font-size:22px; font-weight:700; letter-spacing:.01em; color:var(--muted); padding-bottom:10px; border-bottom:1px solid var(--line); }
+section.group[hidden], article.q[hidden]{ display:none; }
+
+article.q{ padding-block:26px; border-bottom:1px solid var(--line); scroll-margin-top:110px; display:grid; grid-template-columns:64px minmax(0,1fr); gap:0 14px; }
+article.q.flash{ animation:flash 1.4s ease-out; }
+@keyframes flash{ 0%{ background:var(--accent-soft); } 100%{ background:transparent; } }
+.qid{ font:700 17px/1.6 var(--f-display); color:var(--muted); letter-spacing:.04em; font-variant-numeric:tabular-nums; }
+.qbody{ min-width:0; display:flex; flex-direction:column; gap:8px; }
+.qbody h4{ font:700 clamp(23px, 2.6vw, 28px)/1.15 var(--f-display); margin:0; text-wrap:balance; }
+.ctx{ margin:0; color:var(--muted); max-width:74ch; }
+.fix{ margin:2px 0 0; padding:10px 14px; border-radius:var(--r); border:1px solid var(--warn-line); background:var(--warn-bg); color:var(--warn-fg); font-size:15.5px; max-width:78ch; }
+.fix b{ font-weight:700; }
+.fix a{ color:inherit; font-weight:600; }
+.opts{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+.opt{ display:grid; grid-template-columns:36px minmax(0,1fr) auto; align-items:start; gap:12px; text-align:left; padding:11px 14px; border-radius:var(--r); border:1px solid var(--line); background:var(--panel); cursor:pointer; transition:border-color .15s, box-shadow .15s; }
+.opt:hover{ border-color:color-mix(in srgb, var(--accent) 50%, var(--line)); }
+.opt .k{ width:30px; height:30px; border-radius:50%; border:2px solid var(--muted); display:grid; place-items:center; font:800 18px/1 var(--f-display); color:var(--muted); text-transform:lowercase; }
+.opt .t{ padding-top:3px; }
+.opt .mine{ font-size:12.5px; font-weight:600; padding:3px 8px; border-radius:4px; background:var(--accent-soft); color:var(--accent); white-space:nowrap; margin-top:3px; }
+.opt[aria-checked="true"]{ border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+.opt[aria-checked="true"] .k{ background:var(--accent); border-color:var(--accent); color:var(--panel); }
+.opt.none .t{ color:var(--muted); font-weight:600; }
+.opt.none[aria-checked="true"] .t{ color:var(--fg); }
+.why{ margin:4px 0 0; font-size:15px; color:var(--muted); max-width:78ch; }
+.why b{ color:var(--fg); }
+textarea{ width:100%; min-height:52px; resize:vertical; font:400 16px/1.45 var(--f-body); color:var(--fg); background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:10px 12px; }
+textarea::placeholder{ color:var(--muted); }
+.state{ font-size:14px; color:var(--muted); }
+.state.answered{ color:var(--ok); font-weight:600; }
+
+.empty{ padding:40px 0; color:var(--muted); }
+footer{ padding-block:36px 60px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; color:var(--muted); font-size:15px; }
+.btn{ font-weight:600; padding:10px 16px; border-radius:var(--r); border:1px solid var(--accent); color:var(--accent); background:transparent; cursor:pointer; }
+.btn:hover{ background:var(--accent-soft); }
+.copied{ color:var(--ok); }
+@media (max-width:640px){
+  article.q{ grid-template-columns:1fr; }
+  .qid{ line-height:1.2; margin-bottom:4px; }
+  .opt{ grid-template-columns:32px minmax(0,1fr); }
+  .opt .mine{ grid-column:2; justify-self:start; margin-top:0; }
+  .meter{ width:64px; }
+  .save{ font-size:13px; }
+}
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+</style>
+
+<header class="top"><div class="wrap">
+  <h1>Open questions, rounds 2 and 3</h1>
+  <p class="lede">/*LEDE*/</p>
+  <p class="note" id="offline" hidden>Your answers are saved in this browser only, because the shared store is not available in this view. When you are done, click "Copy my answers" at the bottom and paste them to me in chat.</p>
+</div></header>
+
+<nav class="bar" aria-label="Progress and groups"><div class="wrap">
+  <div class="prog"><span id="pcount">0 answered</span><span class="meter"><i id="pbar"></i></span></div>
+  <div class="filt" role="group" aria-label="Which questions to show"><button type="button" id="fAll" aria-pressed="true">All</button><button type="button" id="fOpen" aria-pressed="false">Not answered yet</button></div>
+  <span class="save" id="savestate">Loading your saved answers</span>
+  <div class="groups" id="groups"></div>
+</div></nav>
+
+<main class="wrap" id="main"></main>
+<p class="wrap empty" id="allDone" hidden>Every question here has an answer. Switch back to "All" to see them.</p>
+
+<footer class="wrap">
+  <button class="btn" id="copy" type="button">Copy my answers</button>
+  <span id="copymsg">Copies every pick and comment as plain text, ready to paste into chat.</span>
+</footer>
+<textarea id="copybuf" aria-hidden="true" tabindex="-1" style="position:fixed;left:-9999px;top:0;width:10px;height:10px"></textarea>
+
+<script type="application/json" id="data">/*DATA*/</script>
+<script>
+(function(){
+  var D = JSON.parse(document.getElementById('data').textContent);
+  var R = D.rounds, Q = [], byId = {};
+  R.forEach(function(r){ r.groups.forEach(function(g){ g.questions.forEach(function(q){ q.round = r; Q.push(q); byId[q.id] = q; }); }); });
+  var A = {};            // id -> {pick, note}
+  var db = null, local = false, pending = {}, timers = {};
+  var LSK = 'pillagers-open-questions-r2r3';
+  function el(t, c, txt){ var e = document.createElement(t); if(c) e.className = c; if(txt != null) e.textContent = txt; return e; }
+  // text with [[id]] tokens becomes text plus links to those questions
+  function rich(parent, s){
+    String(s || '').split(/(\[\[[^\]]+\]\])/).forEach(function(part){
+      var m = /^\[\[([^\]|]+)(?:\|([^\]]+))?\]\]$/.exec(part);
+      if(m && byId[m[1]]){ var a = el('a', null, m[2] || byId[m[1]].label); a.href = '#' + m[1]; a.addEventListener('click', function(e){ e.preventDefault(); jump(m[1]); }); parent.appendChild(a); }
+      else parent.appendChild(document.createTextNode(part));
+    });
+  }
+  function jump(id){
+    var art = document.getElementById(id); if(!art) return;
+    if(art.hidden || art.parentNode.hidden){ setFilter(false); }
+    art.scrollIntoView({behavior:'smooth', block:'start'}); art.classList.remove('flash'); void art.offsetWidth; art.classList.add('flash');
+  }
+
+  // ---- build
+  var main = document.getElementById('main'), groupsNav = document.getElementById('groups');
+  R.forEach(function(r){
+    var rs = el('section', 'round'); rs.id = 'round-' + r.key;
+    rs.appendChild(el('h2', null, r.title));
+    if(r.intro){ var p = el('p'); rich(p, r.intro); rs.appendChild(p); }
+    main.appendChild(rs);
+    r.groups.forEach(function(g, gi){
+      var gs = el('section', 'group'); gs.id = 'g-' + r.key + '-' + gi; gs.dataset.g = gs.id;
+      gs.appendChild(el('h3', null, g.heading));
+      rs.appendChild(gs);
+      var a = el('a'); a.href = '#' + gs.id; a.dataset.g = gs.id; a.appendChild(el('b', null, r.short)); a.appendChild(document.createTextNode(g.heading)); a.appendChild(el('span'));
+      a.addEventListener('click', function(e){ e.preventDefault(); gs.scrollIntoView({behavior:'smooth', block:'start'}); });
+      groupsNav.appendChild(a);
+      g.questions.forEach(function(q){
+        q.gid = gs.id;
+        var art = el('article', 'q'); art.id = q.id;
+        art.appendChild(el('div', 'qid', q.label));
+        var b = el('div', 'qbody');
+        b.appendChild(el('h4', null, q.question));
+        if(q.about){ var c = el('p', 'ctx'); rich(c, q.about); b.appendChild(c); }
+        if(q.fix){ var f = el('p', 'fix'); f.appendChild(el('b', null, 'Read this first. ')); rich(f, q.fix); b.appendChild(f); }
+        var opts = el('div', 'opts'); opts.setAttribute('role', 'radiogroup'); opts.setAttribute('aria-label', q.label + ' choices');
+        q.options.concat([{key:'none', text:'None of these (say what in the box)'}]).forEach(function(o){
+          var bt = el('button', 'opt' + (o.key === 'none' ? ' none' : '')); bt.type = 'button'; bt.setAttribute('role', 'radio'); bt.setAttribute('aria-checked', 'false'); bt.dataset.k = o.key;
+          bt.appendChild(el('span', 'k', o.key === 'none' ? '–' : o.key));
+          bt.appendChild(el('span', 't', o.text));
+          if(q.pick === o.key) bt.appendChild(el('span', 'mine', 'my pick'));
+          bt.addEventListener('click', function(){ choose(q.id, (A[q.id] || {}).pick === o.key ? '' : o.key); });
+          opts.appendChild(bt);
+        });
+        b.appendChild(opts);
+        if(q.pick){ var w = el('p', 'why'); w.appendChild(el('b', null, 'My pick: ' + q.pick + (q.why ? ', because ' : '.'))); if(q.why) w.appendChild(document.createTextNode(q.why)); b.appendChild(w); }
+        var ta = el('textarea'); ta.id = 'note-' + q.id; ta.placeholder = 'Your own words (optional)'; ta.setAttribute('aria-label', 'Your own words for ' + q.label);
+        ta.addEventListener('input', function(){ setNote(q.id, ta.value); });
+        b.appendChild(ta);
+        var st = el('div', 'state', 'Not answered yet (skipping it means I go with my pick)'); st.id = 'st-' + q.id; b.appendChild(st);
+        art.appendChild(b);
+        gs.appendChild(art);
+      });
+    });
+  });
+
+  // ---- state on screen
+  function done(id){ var a = A[id] || {}; return !!(a.pick || (a.note || '').trim()); }
+  function textOf(q, k){ var o = q.options.filter(function(x){ return x.key === k; })[0]; return o ? o.text : k; }
+  function paint(id){
+    var a = A[id] || {}, q = byId[id], art = document.getElementById(id); if(!art) return;
+    art.querySelectorAll('.opt').forEach(function(bt){ bt.setAttribute('aria-checked', a.pick === bt.dataset.k ? 'true' : 'false'); });
+    var ta = document.getElementById('note-' + id); if(document.activeElement !== ta && ta.value !== (a.note || '')) ta.value = a.note || '';
+    var st = document.getElementById('st-' + id), d = done(id);
+    st.className = 'state' + (d ? ' answered' : '');
+    st.textContent = !d ? 'Not answered yet (skipping it means I go with my pick)' : a.pick === 'none' ? 'Answered: none of these' : a.pick ? 'Answered: ' + a.pick + (((a.note || '').trim()) ? ', with a comment' : '') : 'Answered with a comment';
+  }
+  function totals(){
+    var n = 0, per = {};
+    Q.forEach(function(q){ var d = done(q.id); if(d) n++; per[q.gid] = per[q.gid] || [0, 0]; per[q.gid][1]++; if(d) per[q.gid][0]++; });
+    document.getElementById('pcount').textContent = n + ' of ' + Q.length + ' answered';
+    document.getElementById('pbar').style.width = (100 * n / Q.length) + '%';
+    groupsNav.querySelectorAll('a').forEach(function(a){ var p = per[a.dataset.g] || [0, 0]; a.querySelector('span').textContent = p[0] + '/' + p[1]; a.classList.toggle('done', p[0] === p[1]); });
+  }
+  function paintAll(){ Q.forEach(function(q){ paint(q.id); }); totals(); }
+
+  // ---- filter: applied when the button is pressed, so a question does not vanish while you answer it
+  var onlyOpen = false;
+  function setFilter(open){
+    onlyOpen = open;
+    document.getElementById('fAll').setAttribute('aria-pressed', open ? 'false' : 'true');
+    document.getElementById('fOpen').setAttribute('aria-pressed', open ? 'true' : 'false');
+    var shown = 0;
+    document.querySelectorAll('section.group').forEach(function(gs){
+      var any = false;
+      gs.querySelectorAll('article.q').forEach(function(art){ var h = open && done(art.id); art.hidden = h; if(!h){ any = true; shown++; } });
+      gs.hidden = !any;
+    });
+    document.querySelectorAll('section.round').forEach(function(rs){ rs.hidden = !rs.querySelector('section.group:not([hidden])'); });
+    groupsNav.querySelectorAll('a').forEach(function(a){ var gs = document.getElementById(a.dataset.g); a.hidden = gs.hidden; });
+    document.getElementById('allDone').hidden = shown > 0;
+  }
+  document.getElementById('fAll').addEventListener('click', function(){ setFilter(false); });
+  document.getElementById('fOpen').addEventListener('click', function(){ setFilter(true); window.scrollTo({top: document.getElementById('main').offsetTop - 80, behavior:'smooth'}); });
+
+  // ---- saving: one write at a time per question, comments after a pause
+  var saveEl = document.getElementById('savestate');
+  function choose(id, k){ A[id] = A[id] || {}; A[id].pick = k; paint(id); totals(); persist(id); }
+  function setNote(id, v){ A[id] = A[id] || {}; A[id].note = v; totals(); clearTimeout(timers[id]); timers[id] = setTimeout(function(){ timers[id] = null; paint(id); persist(id); }, 900); }
+  function keepLocal(){ try{ localStorage.setItem(LSK, JSON.stringify(A)); }catch(e){} }
+  function persist(id){
+    keepLocal();
+    if(local || !db){ saveEl.textContent = 'Saved in this browser'; return; }
+    pending[id] = (pending[id] || Promise.resolve()).then(function(){
+      var a = A[id] || {}; saveEl.textContent = 'Saving';
+      return db.collection('answers').doc(id).set({ pick: a.pick || '', note: a.note || '', at: new Date().toISOString() })
+        .then(function(){ saveEl.textContent = 'All answers saved'; })
+        .catch(function(e){ saveEl.textContent = 'Could not save (' + ((e && e.code) || 'error') + '). Your answers are kept in this browser; use Copy my answers.'; });
+    });
+  }
+  try{ var saved = JSON.parse(localStorage.getItem(LSK) || '{}'); if(saved && typeof saved === 'object') A = saved; }catch(e){}
+  paintAll();
+  var started = false;
+  function goLocal(){ if(started) return; started = true; local = true; document.getElementById('offline').hidden = false; saveEl.textContent = 'Saving in this browser'; }
+  var useP = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('db') : Promise.resolve(null);
+  useP.then(function(d){
+    if(!d){ goLocal(); return; }
+    started = true; db = d;
+    db.collection('answers').onSnapshot(function(snap){
+      snap.docs.forEach(function(doc){ if(!byId[doc.id]) return; var v = doc.data() || {}; if(!timers[doc.id]) A[doc.id] = { pick: v.pick || '', note: v.note || '' }; });
+      paintAll(); keepLocal();
+      if(saveEl.textContent.indexOf('Loading') === 0) saveEl.textContent = snap.size ? 'Your saved answers are loaded' : 'Picks save by themselves';
+    }, function(e){ saveEl.textContent = 'Live saving stopped (' + ((e && e.code) || 'error') + '). New picks stay in this browser.'; local = true; });
+  }, function(){ goLocal(); });
+  setTimeout(function(){ if(!started) goLocal(); }, 11000);
+
+  // ---- copy as text, in the "12b" form he already uses
+  document.getElementById('copy').addEventListener('click', function(){
+    var lines = ['My answers (open questions, rounds 2 and 3):'], n = 0, lastR = null;
+    Q.forEach(function(q){ var a = A[q.id] || {}, note = (a.note || '').trim().replace(/\s+/g, ' '); if(!a.pick && !note) return;
+      if(q.round !== lastR){ lastR = q.round; lines.push(''); lines.push(q.round.title + ':'); }
+      n++; lines.push(q.label + (a.pick === 'none' ? ' none of these' : (a.pick || '')) + (note ? ': ' + note : '')); });
+    var txt = lines.join('\n'), msg = document.getElementById('copymsg');
+    if(!n){ msg.textContent = 'Nothing answered yet.'; msg.className = ''; return; }
+    function fallback(){ var b = document.getElementById('copybuf'); b.value = txt; b.select(); try{ document.execCommand('copy'); msg.textContent = 'Copied ' + n + ' answers.'; }catch(e){ msg.textContent = 'Select and copy this: ' + txt; } msg.className = 'copied'; }
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function(){ msg.textContent = 'Copied ' + n + ' answers. Paste them to me in chat.'; msg.className = 'copied'; }, fallback);
+    else fallback();
+  });
+
+  if(location.hash && byId[location.hash.slice(1)]) setTimeout(function(){ jump(location.hash.slice(1)); }, 50);
+})();
+</script>

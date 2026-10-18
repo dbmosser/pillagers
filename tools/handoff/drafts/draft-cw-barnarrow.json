@@ -1,0 +1,12 @@
+{
+    "title":  "VITALS BARS 300 WIDE",
+    "why":  "The critic (10-19): after the bars went one width (360) the stamina word ran into belt slot 1. 300 keeps one width and clears the belt.",
+    "now":  "The three vitals bars are 300 wide and the stamina word clears the belt.",
+    "edits":  [
+                  {
+                      "anchor":  "  var HBW=360,HBH=26;",
+                      "replacement":  "  var HBW=300,HBH=26;   /* v28.xx (cw-barnarrow), the critic (2026-10-19): at 360 the stamina word past the bar ran into belt slot 1; all three vitals bars are 300 wide, the word ends clear of the belt */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stamina word does not reach the belt: it ends left of belt slot 1 at 1080p (the critic, 10-19: it overlapped slot 1)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var g=null, oFT=ctx.fillText, at=null, aw=0, cv=ctx.canvas;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false;\n       ctx.fillText=function(s,x,y){ if(String(s)===\u0027STAMINA\u0027||String(s)===\u0027WINDED\u0027){ at=x; aw=ctx.measureText(String(s)).width; } return oFT.apply(this,arguments); };\n       try{ __frame(0.016); }finally{ ctx.fillText=oFT; }\n       if(at===null) return \u0027the stamina word is not drawn\u0027;\n       if(at+aw\u003e16+300+8+aw+1) return \u0027the stamina word starts too far right (x \u0027+at+\u0027)\u0027;\n       if(at\u003e16+300+9) return \u0027the stamina word is past the 300 wide bar end plus gap (x \u0027+at+\u0027)\u0027;\n       return null;\n     } finally {\n       ctx.fillText=oFT;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e2){}\n       __topClear();\n     } }},"
+}

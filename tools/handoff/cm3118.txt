@@ -1,0 +1,7 @@
+v31.18: the snip panel reads at a glance: bigger copy and save buttons, a larger size tag, a darker dim
+
+The snip buttons are bigger: copy is the main one in lime and save sits beside it. The size tag is easier to read and the screen around your box is darker.
+
+Check 31.18. Fails on v31.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

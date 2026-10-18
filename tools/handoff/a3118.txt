@@ -1,0 +1,1 @@
+| the snip panel reads at a glance: bigger copy and save buttons, a larger size tag, a darker dim | v31.18 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.18 passes, fails on v31.17 |

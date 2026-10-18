@@ -2822,7 +2822,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.17';
+var VER='31.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4549,8 +4549,8 @@ function snipUi(){
   ov=document.createElement('div'); ov.id='snipov';
   ov.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;z-index:9500;cursor:crosshair;background:rgba(0,0,0,.3);user-select:none;-webkit-user-select:none';
   bx=document.createElement('div'); bx.id='snipbox';
-  bx.style.cssText='position:fixed;display:none;box-sizing:border-box;z-index:9501;border:2px solid var(--acc);box-shadow:0 0 0 100vmax rgba(0,0,0,.5);pointer-events:none';
-  sz=document.createElement('div'); sz.id='snipsz'; sz.style.cssText=plate+'display:none;padding:2px 8px 1px;color:var(--tx-1);font-size:13px';
+  bx.style.cssText='position:fixed;display:none;box-sizing:border-box;z-index:9501;border:2px solid var(--acc);box-shadow:0 0 0 100vmax rgba(0,0,0,.6);pointer-events:none';
+  sz=document.createElement('div'); sz.id='snipsz'; sz.style.cssText=plate+'display:none;padding:3px 10px 2px;color:var(--tx-1);font-size:16px';
   ht=document.createElement('div'); ht.id='sniphint'; ht.style.cssText=plate+'left:8px;top:68px;padding:3px 12px 2px;color:var(--acc)';
   ht.textContent='snip: drag a box. esc cancels.';
   host.appendChild(ov); host.appendChild(bx); host.appendChild(sz); host.appendChild(ht);
@@ -4565,15 +4565,18 @@ function snipPaint(){
   bx.style.display='block'; bx.style.left=b.x+'px'; bx.style.top=b.y+'px'; bx.style.width=b.w+'px'; bx.style.height=b.h+'px';
   sz.textContent=b.w+' x '+b.h+' px'+(k!==1?', '+Math.round(b.w*k)+' x '+Math.round(b.h*k)+' image':'');
   sz.style.display='block';
-  x=Math.max(4,Math.min(window.innerWidth-160,b.x)); y=b.y-26;
-  if(y<4){ y=b.y+4; x=Math.max(4,Math.min(window.innerWidth-160,b.x+4)); }
+  // v30.xx (cw-snip2): the size tag is 16px and sits clear above the frame (its own height and width measured, so it never runs off the right edge or the top)
+  var cw=sz.offsetWidth||200, ch=sz.offsetHeight||26;
+  x=Math.max(4,Math.min(window.innerWidth-cw-4,b.x)); y=b.y-ch-8;
+  if(y<4){ y=b.y+8; x=Math.max(4,Math.min(window.innerWidth-cw-4,b.x+8)); }
   sz.style.left=x+'px'; sz.style.top=y+'px';
 }
 function snipPanel(){
   var host=document.getElementById('root')||document.body, b=SNIP.box, pn=document.createElement('div'), vw=window.innerWidth, vh=window.innerHeight, r, x, y;
   pn.id='snippanel';
-  pn.style.cssText='position:fixed;left:0;top:0;z-index:9503;display:flex;gap:8px;padding:8px;background:rgba(11,12,13,.94);border:1px solid var(--ui-line-hi);cursor:default';
-  pn.innerHTML='<button type="button" data-snip="copy" style="min-width:104px">copy</button><button type="button" data-snip="save" style="min-width:104px">save</button>';
+  pn.style.cssText='position:fixed;left:0;top:0;z-index:9503;display:flex;gap:16px;padding:12px;background:rgba(11,12,13,.94);border:1px solid var(--ui-line-hi);cursor:default';
+  // v30.xx (cw-snip2): the shared buttons - copy is the primary (the lime fill), save the secondary beside it, 48px high and 128px wide, so they read at a glance
+  pn.innerHTML='<button type="button" class="ui-btn pri" data-snip="copy" style="min-width:128px;min-height:48px">copy</button><button type="button" class="ui-btn" data-snip="save" style="min-width:128px;min-height:48px">save</button>';
   host.appendChild(pn);
   r=pn.getBoundingClientRect();
   x=b.x+b.w-r.width; y=b.y+b.h+8;
@@ -49157,7 +49160,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.17: HP, armour and stamina bars are the same width. Check 31.17 fails on v31.16',
+  now:'v31.18: The snip buttons are bigger: copy is the main one in lime and save sits beside it. The size tag is easier to read and the screen around your box is darker. Check 31.18 fails on v31.17',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
