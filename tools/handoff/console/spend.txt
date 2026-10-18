@@ -486,3 +486,7 @@
 2026-10-18 1.1227 b-01-easy-mode-drops-words
 2026-10-18 0.7062 c-02-ascent-and-light-shafts
 2026-10-18 0.5056 c-03-pause-feedback-box
+2026-10-18 0.0322 critic-03-title-and-backdrop
+2026-10-18 1.5402 b-02-gun-enemy-feel
+2026-10-18 3.0692 03-title-and-backdrop
+2026-10-18 2.9461 00-fix-new-reds

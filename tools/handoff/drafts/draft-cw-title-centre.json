@@ -1,0 +1,12 @@
+{
+    "title":  "TITLE: CENTRE THE LINE",
+    "why":  "The critic: the line sat left at x=435 while the stack is centred on 960 (P0), and was the boldest text under the logo. Centred, 20px, quieter.",
+    "now":  "The title line is centred and quieter.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #title #titletag{ margin:24px 0 16px; font:700 var(--fs-title)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }",
+                      "replacement":  "#root #title #titletag{ margin:24px auto 16px; text-align:center; font:600 var(--fs-body)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); }   /* v28.xx (cw-title-centre), the critic (2 of 5, P0): \"left-aligned at x=435 while everything else is centred on 960; the boldest text under the logo, it competes with the title\". Centred (auto margins, 24px above and 16px below), 20px in tx-2 so the logo and 1 player lead. */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title line is centred on the title column and quieter than the logo\u0027,\n   run:function(){\n     var t=document.getElementById(\u0027title\u0027), tg=document.getElementById(\u0027titletag\u0027), wm=t\u0026\u0026t.querySelector(\u0027.wordmark\u0027), was, bad=[];\n     if(!t||!tg) return \u0027SKIP: no title here\u0027;\n     was=t.classList.contains(\u0027on\u0027); if(!was) t.classList.add(\u0027on\u0027);\n     try{\n       var r=tg.getBoundingClientRect(), p=tg.parentNode.getBoundingClientRect(), tr=document.createRange();\n       tr.selectNodeContents(tg); var q=tr.getBoundingClientRect();\n       var dx=Math.abs((q.left+q.right)/2-(p.left+p.right)/2);\n       if(dx\u003e6) bad.push(\u0027the line is \u0027+dx.toFixed(0)+\u0027px off the centre of the title column\u0027);\n       if(parseFloat(getComputedStyle(tg).fontSize)\u003e24) bad.push(\u0027the line is over 24px, it competes with the logo\u0027);\n     } finally { if(!was) t.classList.remove(\u0027on\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

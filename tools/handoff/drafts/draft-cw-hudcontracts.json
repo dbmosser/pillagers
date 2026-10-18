@@ -1,0 +1,16 @@
+{
+    "title":  "RUN INFO SHOWS THE 3 CLOSEST CONTRACTS",
+    "why":  "His answer Q1 (10-18): the Run info box shows at most the 3 contracts closest to done, all contracts are listed on the map screen. It listed every live contract, 8 rows on a full board.",
+    "now":  "The Run info box in the raid shows only the 3 contracts closest to done.",
+    "edits":  [
+                  {
+                      "anchor":  "var EDGEBOX={}, GUNCARD_LAST=null;   // v24.9x (ringbadge): the gun card, pickup rows and co-op kill feed as last drawn, screen pixels",
+                      "replacement":  "// v28.xx (cw-hudcontracts), HIS ANSWER Q1 (2026-10-18): \"the Run info box shows at most the 3 contracts closest to done; ALL contracts are listed on the map screen.\"\n// Replaces his v6.79 \"ALL of them, not three and a footnote\". runInfoCap takes the live contract rows and returns the 3 nearest to finishing, nearest first.\nvar RUNINFO_MAX=3;\nfunction runInfoCap(live){\n  var a=(live||[]).slice();\n  a.sort(function(x,y){ return x.left-y.left; });\n  return a.slice(0,RUNINFO_MAX);\n}\nvar EDGEBOX={}, GUNCARD_LAST=null;   // v24.9x (ringbadge): the gun card, pickup rows and co-op kill feed as last drawn, screen pixels"
+                  },
+                  {
+                      "anchor":  "      _live.sort(function(a,b){ return a.left-b.left; });",
+                      "replacement":  "      _live=runInfoCap(_live);   // v28.xx (cw-hudcontracts), his Q1 (2026-10-18): the 3 closest to done, not all of them (the map screen lists all)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Run info box shows at most the 3 contracts closest to done (his Q1, 10-18)\u0027,\n   run:function(){\n     if(typeof runInfoCap!==\u0027function\u0027) return \u0027no runInfoCap: the Run info box still lists every contract\u0027;\n     var r=runInfoCap([{left:5,txt:\u0027e\u0027},{left:1,txt:\u0027a\u0027},{left:3,txt:\u0027c\u0027},{left:2,txt:\u0027b\u0027},{left:4,txt:\u0027d\u0027},{left:6,txt:\u0027f\u0027}]);\n     if(r.length!==3) return \u0027it keeps \u0027+r.length+\u0027 contracts, not 3\u0027;\n     if(r.map(function(x){return x.txt;}).join(\u0027\u0027)!==\u0027abc\u0027) return \u0027it keeps \u0027+r.map(function(x){return x.txt;}).join(\u0027\u0027)+\u0027, not the 3 closest (abc)\u0027;\n     if(runInfoCap([{left:2,txt:\u0027x\u0027}]).length!==1) return \u0027one contract is lost\u0027;\n     if(String(drawHUD).indexOf(\u0027runInfoCap(_live)\u0027)\u003c0) return \u0027drawHUD does not use runInfoCap\u0027;\n     return null; }},"
+}

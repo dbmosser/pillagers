@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.44 - THE SCAV PISTOL KICKS THE SCREEN A LITTLE
+
+Co-op hunt while he was away. His Q5: gun feel. The camera shake is 18 px times trauma squared, so the flat 2.2 kick was 0.4 px, nothing you could see. The Scav Pistol (the gun every party guest starts with) now sets 3.6: about 1.2 px a shot, 1.0 px over six taps at full rate.
+
+MEASURED. Check 30.44 passes, and fails on v30.43.
 ## v30.43 - TITLE: ROOM AROUND THE LINE
 
 Co-op hunt while he was away. The critic wants air: the one line sat 12px under the fullscreen row. 24px above and 16px below.

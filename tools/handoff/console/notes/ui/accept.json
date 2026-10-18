@@ -529,5 +529,20 @@
   "pic": "tools/handoff/console/notes/shots/c-31x-after2/74-settings-change-pad-buttons-1080.jpg",
   "task": "c-31-ui-pause-settings",
   "when": "2026-10-18T13:13"
+ },
+ "01-title-mode-menu": {
+  "score": 2,
+  "pass": false,
+  "verdict": "Cutting the lore paragraph and the three-column blurbs removed real clutter, but the new tagline is stranded left of the centred stack, the screen still has too many text lines and small controls, and it still breaks the guide's tokens.",
+  "findings": [
+   "P0 Tagline 'Ascend. Pillage. Extract.' at x~435, y~347: Centre it on x=960 under the title. Set it in f-cond 600 at 20px in tx-2, or delete it. Keep one hero element (the logo) and let '1 player' be the only amber fill.",
+   "P1 Whole stack, y 170-920: Keep title, then the 5 mode buttons, then a single quiet footer. Move 'Go fullscreen' and 'Settings' to a top-right corner row. Collapse the saves block to one line ('Pillager New · 0 raids · 900 credits') with a ghost 'Switch save' button. Drop the name field and the Create button to a Saves sub-screen.",
+   "P1 Explaining sentences: 'Best in fullscreen…', 'First time out. Take the welcome pack…', 'Changing save reloads the game…': Delete all three. Show the fullscreen hint only as a tooltip or toast. Replace the first-time sentence with a small 'New' chip on '1 player'. Only the save-reload warning stays, and only inside the confirm dialog.",
+   "P1 Key legend row, y~393: Move the legend to a bottom-edge strip at 5% margin in --fs-label 16px, switching to pad glyphs when the last input was a pad. Show 3-4 keys at most; the rest belong in F1 controls.",
+   "P1 Mode buttons, y 430-709: Group by function: 'Play', 'Co-op', then a 'Demos' ghost row. Use a 56px primary and 48px secondary rows on an 8px gap. Give focus a 3px amber left bar plus a --ui-raised fill. Disabled at 40% opacity with the chip dropped."
+  ],
+  "pic": "tools/handoff/console/notes/shots/03-after2/01-title-mode-menu-1080.jpg",
+  "task": "03-title-and-backdrop",
+  "when": "2026-10-18T14:56"
  }
 }

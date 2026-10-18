@@ -1,0 +1,16 @@
+{
+    "title":  "No tutorial prompts in the demo raid",
+    "why":  "His answer Q70 (10-18): no tutorial prompts, the game must be completely self-explanatory. The controls card at every drop is off and the shield tag no longer says MOVE TO START. The HOW TO PLAY page on the attract stays.",
+    "now":  "No controls card pops up when a demo run starts.",
+    "edits":  [
+                  {
+                      "anchor":  "function arcadeCardOn(){\n  var p=G\u0026\u0026G.player, t;",
+                      "replacement":  "function arcadeCardOn(){\n  // v28.xx (cw-notutor), his answer Q70 (2026-10-18): \"No tutorial prompts. The game must be completely self-explanatory.\" The controls card that\n  // came up at every drop (and for 4 s after the shield) is gone from the raid; the HOW TO PLAY page on the attract and F1 keep the same rows.\n  return 0;\n  var p=G\u0026\u0026G.player, t;"
+                  },
+                  {
+                      "anchor":  "tg=\u0027SHIELD \\u00b7 MOVE TO START\u0027;",
+                      "replacement":  "tg=\u0027Shield\u0027;   // v28.xx (cw-notutor), his Q70: the tag names the shield, it no longer tells him what to do"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his Q70: no tutorial prompt in the first demo raid; the controls card does not come up at the drop and the shield tag does not say MOVE TO START\u0027,\n   run:function(){\n     if(typeof arcadeDeploy!==\u0027function\u0027||typeof arcadeCardOn!==\u0027function\u0027||typeof arcadeShieldRing!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027) return \u0027SKIP: no arcade here\u0027;\n     var bad=[], g, seen=[], of, ownF=false;\n     try{\n       __topClear(); __runPrep();\n       if(ARCADE.on) return \u0027SKIP: the arcade is on after __topClear\u0027;\n       if(!arcadeDeploy({mapIx:0,seed:4242})) return \u0027SKIP: arcadeDeploy built no arcade raid\u0027;\n       g=__state(); keys={}; ARCADE.holdT=0; ARCADE.waveT=0; g.player.arcSh=1;\n       if(arcadeCardOn()\u003e0) bad.push(\u0027the controls card is up while the player is shielded at the drop (\u0027+arcadeCardOn()+\u0027)\u0027);\n       ownF=Object.prototype.hasOwnProperty.call(wc,\u0027fillText\u0027); of=wc.fillText;\n       wc.fillText=function(t){ seen.push(String(t)); return of.apply(this,arguments); };\n       arcadeShieldRing(g.player.x,g.player.y,true);\n       if(seen.some(function(s){ return /MOVE TO/i.test(s); })) bad.push(\u0027the shield tag still says \u0027+seen.join(\u0027 / \u0027));\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       try{ if(of){ if(ownF) wc.fillText=of; else delete wc.fillText; } }catch(_f){}\n       try{ if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE.on) arcadeLeave(); }catch(_l){}\n       try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

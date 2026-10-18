@@ -1,1 +1,1 @@
-10-18 10:40 running 00-fix-new-reds (cap $4.00; spent today $105.42 of $176.54)
+10-18 11:04 running 00-fix-new-reds (cap $4.00; spent today $113.01 of $176.54)

@@ -1,29 +1,29 @@
-9.18: control: at 977px tall the story block margin is 16px, it should still be 26px
+9.18: PASS
 29.10: PASS
-27.28: ONE: the Whisper is not packed once (gun_lmg,medkit,medkit,medkit,smoke,smoke,frag,trip,trip,trip,plate,plate,plate,bandage,bandage,bandage,stim,stim,stim,ammobox); ONE: whisper is not on its class key ({"4":"gun_lmg","6":"gun_sniper","7":"gun_lance"}); SIX: the short pack reads gun_lmg,medkit,medki
-26.52: ONE: Digit0 is not on the Keys list; ONE: the Keys window draws no row for Digit0; TWO: the raid code reads Digit0 and it is not on the Keys list
-26.37: ONE: key 8 is not the Sniper tile (8ENERGY); TWO: after the drop the table reads ["pistol","energy","rifle","carbine","lmg","shotgun","sniper","smg","rocket"]; TWO: key 2 is not drawn as the Sniper after the swap; FOUR: a Longshot packed for the raid sits on key 7, not 2 (keys {"6":"gun_sniper","7":
-26.36: ONE: a picked up dmr went to key 0, not 7; ONE: a picked up sniper went to key 7, not 8; ONE: a picked up lance went to key 8, not 9; FOUR: the stowed Marksman Rifle sits on key 0, not 7; FOUR: a Whisper did not replace a weaker Marksman Rifle on key 7 (stowed undefined, keys {"2":"gun_rifle"}); FOU
+27.28: PASS
+26.52: PASS
+26.37: PASS
+26.36: PASS
 25.68: PASS
-24.79: a drink name is 20px none
-24.63: a mode row is only held to 48px tall
-24.52: the belt caption draws [FIRE] as a bracketed word, not a keycap (fire)
-24.45: the settings list starts -174px right of the tabs; the row labels are not drawn in caps
+24.79: PASS
+24.63: PASS
+24.52: PASS
+24.45: PASS
 24.38: PASS
-24.87: an action name is 20px none
-23.05: a Medkit dropped on key 9: said "SLOT 0 TAKES GUNS ONLY"
-21.93: SKIP: no rifle, smg, shotgun, marksman rifle or carbine here
-21.84: (then SKIP: the staged zone name ZQ YARD was not drawn on one line, drawn ["Zq yard"])
-21.81: the shipped rewording of a line translates again: ***EXPERIMENTAL FEATURE MAY GLITCH***
-18.73: the step card has no fill (none)
-18.11: the step cards are square; the step cards are flat
-17.94: modal headers are not uppercase
-13.05: the Undercroft floor paints [***EXPERIMENTAL***] where he rewrote that line to say [***EXPERIMENTAL FEATURE MAY GLITCH***]: his wording is matched on the whole string, so whatever is drawn there is no longer the sentence his edit was written against and his version has gone off the screen without a 
-13.03: the warning on the floor is drawn as [***Experimental feature may glitch***] where he rewrote that warning to say [***EXPERIMENTAL FEATURE MAY GLITCH***]: the hire tab carries the same warning and his wording reaches that one, because his edits are matched on the whole string and the floor spells it
-11.78: on the floor the readout is 24px and not 28px or more; on the floor the readout is 40px tall and not 40px or more; in a raid the readout is 24px and not 28px or more; in a raid the readout is 40px tall and not 40px or more
-11.51: the exact sector line no longer maps to his wording; a sector line with other figures was rewritten by digit shape into "...ners a raid  ·  median haul $1,690", so one map can print the other map name
-10.10: windows with no way out: qtymodal; windows whose way out is not CLOSE: fbmodal says Close, wnmodal says Close, lbmodal says Close, tradermodal says Close, gamblemodal says Close, appearmodal says Close, barmodal says Close, trophymodal says Close, codexmodal says Close, termsmodal says Close, partym
-9.76: control: the line he actually edited did not change either, so the edit was thrown away
-9.74: the canvas still does not show an edited line: "9:00" was replaced and nothing drew it; a panel line did not take the edit, it still reads "Zqx his words"; control: clearing the edit left the panel reading "Zqx original line" rather than the original
-9.46: the legend paints down to 949 and its hit box ends at 869, so its last 80 pixels are not clickable; clicking the middle of the drawn legend answers nothing; clicking its last line answers nothing
+24.87: PASS
+23.05: PASS
+21.93: PASS
+21.84: PASS
+21.81: PASS
+18.73: SKIP: no title step cards here
+18.11: PASS
+17.94: PASS
+13.05: PASS
+13.03: PASS
+11.78: PASS
+11.51: PASS
+10.10: PASS
+9.76: SKIP: no lettered numbered line was drawn to test with
+9.74: PASS
+9.46: SKIP: the legend drew only 9 of its 13 rows
 ALL DONE
