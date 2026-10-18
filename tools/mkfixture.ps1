@@ -7723,7 +7723,7 @@ window.__REGRESS=[
        if(topGap<28*sc) bad.push('the title is only '+Math.round(topGap/sc)+'px under the card top');
        var kids=pb.children, bo=-1e9, i; for(i=0;i<kids.length;i++){ if(kids[i].offsetHeight>0) bo=Math.max(bo,kids[i].getBoundingClientRect().bottom); }
        var below=(cr+ch)-bo;
-       if(below<(32+16+8)*sc-4) bad.push('only '+Math.round(below/sc)+'px under the last button, no room for the Esc hint');
+       if(below<32*sc-4) bad.push('only '+Math.round(below/sc)+'px under the last button');   /* v30.xx (cw-pausehint): the plain Esc hint is gone (critic 49), so 32px under the last button is the floor */
      } finally { try{ togglePauseBox(false); }catch(_t){} document.body.classList.toggle('padon',padWas); }
      return bad.length?bad.join('; '):null; }},
   {v:'29.56',what:'the pause card is 640 wide on a keyboard with an Esc hint, the scrim is 99 percent, and the leave buttons are danger red',
@@ -7735,7 +7735,7 @@ window.__REGRESS=[
        cs=getComputedStyle(pb).backgroundColor; mm=/[\/,]\s*([0-9.]+)\s*\)\s*$/.exec(cs); a=/^rgb\(/.test(cs)?1:(mm?parseFloat(mm[1]):(/^color\(/.test(cs)?1:0));
        if(!(a>=0.985)) bad.push('the pause scrim is '+cs+', the HUD still ghosts through');
        w=getComputedStyle(pb,'::before').width; if(!/\b480px/.test(w)) bad.push('the pause card is '+w+' wide, not 480px');
-       h=getComputedStyle(pb,'::after').content; if(!/Esc/.test(h)) bad.push('no Esc hint under the buttons ('+h+')');
+       /* v30.xx (cw-pausehint): the plain Esc hint under the buttons is gone (critic 49: the header X shows close), so it is no longer required */
        for(i=0;i<ids.length;i++){ b=document.getElementById(ids[i]); if(!b) continue; s=getComputedStyle(b).color; if(s!=='rgb(229, 72, 47)') bad.push(ids[i]+' text is '+s+', not danger red'); }
        document.body.classList.add('padon');
        w=getComputedStyle(pb,'::before').width; if(/\b480px/.test(w)) bad.push('a pad card lost its legend width');
