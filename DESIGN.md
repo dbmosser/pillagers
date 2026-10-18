@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.14 - No all-caps text outside the menus
+
+Co-op hunt while he was away. His hard rule (2026-10-18): nothing shown to the player is ever in all caps. The text watcher saw only #root, so the attract card, the REC mark and the fps box sat outside it, and tooltips and placeholders were never fixed. It now watches the whole page and fixes title, placeholder and aria-label text. The Taken stamp, the Need chips and the Player 2 tab title are written in sentence case.
+
+MEASURED. Check 29.14 passes, and fails on v29.13.
 ## v29.13 - A DEAD PILLBOX LEAVES WRECKAGE, NOT A BOX
 
 Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Pillbox left the generic purple cache box. The cache is now tagged a Pillbox wreck and drawn as the emplacement in pieces in its own palette: the cracked plinth, the burst squashed drum, the dead port, bent and fallen brass pipes, smoke while unsearched. Looting is unchanged.

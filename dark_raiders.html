@@ -508,7 +508,7 @@
   /* v8.09, his order: a clear indication that you took it. The cell you clicked
      lights and stamps itself, because that is where the eye already is. */
   .vcell.took{ border-color:var(--gain); background:rgba(111,224,160,.22); }
-  .vcell.took:after{ content:'TAKEN'; position:absolute; left:0; right:0; top:38%;
+  .vcell.took:after{ content:'Taken'; position:absolute; left:0; right:0; top:38%;
     text-align:center; font-size:13px; letter-spacing:.12em; color:var(--gain);
     text-shadow:0 1px 3px rgba(6,9,13,.9); }
   /* v21.46, from the 4K visual pass (2026-10-09): a price you cannot pay reads grey, so the shop says at a glance what you can buy */
@@ -2309,7 +2309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.13';
+var VER='29.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3714,17 +3714,30 @@ function txDom(root){
     var v=TX(o);
     if(cur!==v){ tn.__txo=o; tn.nodeValue=v; hit++; }
   }
+  // v28.xx (cw-nocaps-dom), HIS HARD RULE (2026-10-18): "all text shown to the player, should never ever ever be in all caps". The words in a
+  // tooltip, a placeholder or an aria label are shown too, so they go through the case fix as well (ncFix only: not his P.txt map).
+  var _ae=[root], _aq=root.querySelectorAll?root.querySelectorAll('[title],[placeholder],[aria-label]'):[], _ai, _an, _aa=['title','placeholder','aria-label'], _av, _nv;
+  for(_ai=0;_ai<_aq.length;_ai++) _ae.push(_aq[_ai]);
+  for(_ai=0;_ai<_ae.length;_ai++) if(_ae[_ai].getAttribute) for(_an=0;_an<3;_an++){ _av=_ae[_ai].getAttribute(_aa[_an]); if(_av){ _nv=ncFix(_av); if(_nv!==_av){ _ae[_ai].setAttribute(_aa[_an],_nv); hit++; } } }
   return hit;
 }
 function txWatch(){
   if(TXOBS||typeof MutationObserver!=='function') return;
-  var root=document.getElementById('root'); if(!root) return;
-  TXOBS=new MutationObserver(function(){
+  var root=document.body||document.getElementById('root'); if(!root) return;   // v28.xx (cw-nocaps-dom): the whole page, not only #root (the attract card, the REC mark, the fps box sit outside it)
+  TXOBS=new MutationObserver(function(recs){
     if(TXBUSY) return;
     TXBUSY=1;
-    try{ txDom(root); } finally { TXBUSY=0; }
+    // v28.xx (cw-nocaps-dom): what changed inside #root is swept as before; what changed elsewhere on the page is swept where it changed, so a
+    // counter that moves every frame outside #root does not cost a walk of the whole page
+    try{
+      var rt=document.getElementById('root'), inR=!recs||!recs.length, outs=[], k, t;
+      for(k=0;recs&&k<recs.length;k++){ t=recs[k].target; if(t&&t.nodeType===3) t=t.parentNode;
+        if(!t||(rt&&rt.contains(t))) inR=true; else if(outs.indexOf(t)<0) outs.push(t); }
+      if(inR&&rt) txDom(rt); else if(inR) txDom(root);
+      for(k=0;k<outs.length;k++) if(outs[k].nodeType===1) txDom(outs[k]);
+    } finally { TXBUSY=0; }
   });
-  TXOBS.observe(root,{childList:true,subtree:true,characterData:true});
+  TXOBS.observe(root,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title','placeholder','aria-label']});   // v28.xx (cw-nocaps-dom)
   txDom(root);
 }
 // The editor itself. One floating input, positioned over whatever was clicked,
@@ -46965,7 +46978,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.13: A dead Pillbox leaves a smoking wreck, not a box. Check 29.13 fails on v29.12',
+  now:'v29.14: Tooltips, placeholders and text outside the menus show in sentence case too. Check 29.14 fails on v29.13',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -47791,7 +47804,7 @@ function renderGamble(){
   // a dull grey button and nothing said what it was waiting for. It keeps the solid greyed look (ui5q1m) at full strength, and a
   // red chip on it says how much more it needs (NEED $1,600 MORE). The offer BUY below does the same.
   b.style.opacity=1;
-  b.setAttribute('data-need',P.credits<GAMBLE_PRICE?('NEED $'+(GAMBLE_PRICE-P.credits).toLocaleString()+' MORE'):'');
+  b.setAttribute('data-need',P.credits<GAMBLE_PRICE?('Need \u0024'+(GAMBLE_PRICE-P.credits).toLocaleString()+' more')/* v28.xx (cw-nocaps-dom): never all caps */:'');
   renderWirtLot();
 }
 // v15.03, wirt audit finding: THE LIMITED TIME OFFER CARD KEEPS TIME WHILE THE PANEL IS OPEN. renderWirtLot reads the clock once,
@@ -47851,7 +47864,7 @@ function renderWirtLot(){
   var lb=document.getElementById('wirtlotbtn');
   if(lb){
     lb.disabled=!afford;
-    lb.style.opacity=1; lb.setAttribute('data-need',afford?'':('NEED $'+(WIRT_LOT_PRICE-P.credits).toLocaleString()+' MORE'));   // vNN.xx (ui5q2f): the reason chip
+    lb.style.opacity=1; lb.setAttribute('data-need',afford?'':('Need \u0024'+(WIRT_LOT_PRICE-P.credits).toLocaleString()+' more')/* v28.xx (cw-nocaps-dom): never all caps */);   // vNN.xx (ui5q2f): the reason chip
     lb.onclick=function(){
       if(P.credits<WIRT_LOT_PRICE) return;
       var lot2=lot;   // v11.61: the lot that was NAMED AND PRICED on the card, not the clock at click time
@@ -51868,7 +51881,7 @@ function netTitleInit(startFn){
   if(st) st.textContent='ENTER THE UNDERCROFT';
   r=netSameBootP2();
   if(pl){ pl.textContent='PLAYER 2. This window links up with the player 1 window on its own. Drag it to your second screen. Your controller works here whether this window is in front or not. World sound plays from the player 1 window; the SOUND row in the PARTY window switches it. MODE: '+netModeName(NET.mode)+'.'; pl.style.display=''; }   // v15.77: the controller sentence; v15.78: the sound sentence
-  try{ document.title='PILLAGERS, PLAYER 2'; }catch(e){}
+  try{ document.title='Pillagers, player 2';   /* v28.xx (cw-nocaps-dom): never all caps */ }catch(e){}
   return r;
 }
 // The mode rows a keyboard or a pad can land on: shown and not greyed.

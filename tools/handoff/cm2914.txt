@@ -1,0 +1,7 @@
+v29.14: no all-caps text outside the menus
+
+Tooltips, placeholders and text outside the menus show in sentence case too.
+
+Check 29.14. Fails on v29.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

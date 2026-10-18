@@ -1,0 +1,1 @@
+| No all-caps text outside the menus | v29.14 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.14 passes, fails on v29.13 |
