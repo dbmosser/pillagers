@@ -6328,14 +6328,14 @@ window.__REGRESS=[
        else if(Math.abs(nm.getBoundingClientRect().left-wd*0.05)>3) res='the wordmark starts at '+Math.round(nm.getBoundingClientRect().left)+', not the 5 percent margin '+Math.round(wd*0.05);
        else if(!pg.querySelector('.aprt')||!/in the ring/i.test(pg.textContent)) res='the ring has no words';
        if(res) return res;
-       oldT=window.arcadeBoardTonight; window.arcadeBoardTonight=function(){ return []; };
+       oldT=arcadeBoardTonight; arcadeBoardTonight=function(){ return []; };
        pg.textContent=''; arcadeAttBoard(pg); ln=pg.querySelector('.apn');
        if(!ln) return 'the empty line left the board';
        probe=document.createElement('i'); probe.style.color='var(--tx-1)'; document.body.appendChild(probe); want=getComputedStyle(probe).color; probe.remove();
        if(getComputedStyle(ln).color!==want) res='the empty line is '+getComputedStyle(ln).color+', not the light text '+want;
        return res;
      } finally {
-       try{ if(oldT) window.arcadeBoardTonight=oldT; }catch(_o){}
+       try{ if(oldT) arcadeBoardTonight=oldT; }catch(_o){}
        try{ pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
      }
    }},
@@ -6566,7 +6566,7 @@ window.__REGRESS=[
        else if(got!==want) res='the action names are '+got+', not the light text colour '+want;
        else if(trs.length<2||trs[1].getBoundingClientRect().height<56*z-2) res='a table row is '+Math.round(trs.length>1?trs[1].getBoundingClientRect().height:0)+'px high, not 56 x '+z;
        if(res) return res;
-       oldT=window.arcadeBoardTonight; window.arcadeBoardTonight=function(){ return []; };
+       oldT=arcadeBoardTonight; arcadeBoardTonight=function(){ return []; };
        pg.textContent=''; arcadeAttBoard(pg);
        if(pg.querySelectorAll('.apg').length<5) res='an empty board shows '+pg.querySelectorAll('.apg').length+' ghost rows, not 5';
        else if(!pg.querySelector('.apn')) res='the empty line left the board';
@@ -6575,7 +6575,7 @@ window.__REGRESS=[
        if(!/\/ 0?\.\d|rgba\(|color-mix/.test(bg)) res='the attract backdrop is opaque: '+bg.slice(0,120);
        return res;
      } finally {
-       try{ if(oldT) window.arcadeBoardTonight=oldT; }catch(_o){}
+       try{ if(oldT) arcadeBoardTonight=oldT; }catch(_o){}
        try{ pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
      }
    }},
@@ -6708,8 +6708,8 @@ window.__REGRESS=[
        op=document.getElementById('arc'+'op');
        if(!op) return 'the operator chord opened no operator menu';
        bs=op.querySelectorAll('button[data-op]');
-       if(bs.length!==3) return bs.length+' buttons, not 3';
-       if(Math.abs(parseFloat(getComputedStyle(bs[1]).marginTop)-parseFloat(getComputedStyle(bs[2]).marginTop))>1) res='the gaps are '+getComputedStyle(bs[1]).marginTop+' and '+getComputedStyle(bs[2]).marginTop+', not one gap';
+       if(bs.length!==2&&bs.length!==3) return bs.length+' buttons, not 2 or 3';   /* v30.xx (cw-partyop4): the Back row went, the X closes */
+       if(bs.length>2&&Math.abs(parseFloat(getComputedStyle(bs[1]).marginTop)-parseFloat(getComputedStyle(bs[2]).marginTop))>1) res='the gaps are '+getComputedStyle(bs[1]).marginTop+' and '+getComputedStyle(bs[2]).marginTop+', not one gap';
        if(!res&&bs[1].style.color.indexOf('danger')>=0) res='Exit demo is red while it is not focused: '+bs[1].style.color;
        bd=op.previousElementSibling; m=bd?/rgba?\([^)]*\)|color\(srgb[^)]*\)/.exec(getComputedStyle(bd).backgroundColor):null; a=bd?getComputedStyle(bd).backgroundColor:'';
        if(!res){ var al=/\/\s*([0-9.]+)\s*\)/.exec(a); var av=al?parseFloat(al[1]):(/rgba\([^)]*,\s*([0-9.]+)\)/.exec(a)?parseFloat(/rgba\([^)]*,\s*([0-9.]+)\)/.exec(a)[1]):1); if(av<0.95) res='the operator backdrop is '+a+', the board shows through'; }
@@ -7807,7 +7807,7 @@ window.__REGRESS=[
        if(!res&&(!t||Math.abs(parseFloat(getComputedStyle(t).fontSize)-32)>1)) res='the title is '+(t?getComputedStyle(t).fontSize:'missing')+', not 32px';
        if(!res&&/[A-Z]{4,}/.test(op.textContent)) res='the card has an all caps word: '+op.textContent.slice(0,60);
        bs=op.querySelectorAll('button[data-op]');
-       if(!res&&bs.length!==3) res=bs.length+' buttons, not 3';
+       if(!res&&bs.length!==2&&bs.length!==3) res=bs.length+' buttons, not 2 or 3';   /* v30.xx (cw-partyop4): the Back row went, the X closes */
        for(i=0;!res&&i<bs.length;i++){ c2=getComputedStyle(bs[i]); if(Math.abs(parseFloat(c2.height)-56)>1) res='button '+i+' is '+c2.height+' high, not 56px'; }
        if(!res&&(Math.abs(parseFloat(getComputedStyle(bs[0]).marginTop)-16)>1||(Math.abs(parseFloat(getComputedStyle(bs[1]).marginTop)-32)>1&&Math.abs(parseFloat(getComputedStyle(bs[1]).marginTop)-16)>1))) res='gaps are '+getComputedStyle(bs[0]).marginTop+' and '+getComputedStyle(bs[1]).marginTop+', not 16px and 32px';   // cw-party-op2: even 16px gaps allowed
        if(!res&&op.querySelector('.arcopnote')) res='a footer hint is on the card before anything was pressed';
