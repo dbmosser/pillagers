@@ -1,0 +1,2271 @@
+{
+  "intro": "Here are 100 more questions for Pillagers, plus seven left over from last time (R1 to R7). Answer with the number and a letter, like 12b, or the number and your own words; skip any you like, and for anything you skip I go with my pick.",
+  "groups": [
+    {
+      "heading": "The party night itself",
+      "questions": [
+        {
+          "id": "1",
+          "about": "On the night, player 1's window runs the raid and player 2's window is a mirror of it. If player 1's window crashes, or a guest closes it by accident, player 2's TV has nothing to show. The launcher already reopens player 2's window if it gets closed, but nothing brings the pair back together as a pair.",
+          "question": "If either window dies during the party, what should happen?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Nothing automatic (you double-click the Pillagers Party shortcut again, about 20 seconds)"
+            },
+            {
+              "key": "b",
+              "label": "The launcher restarts both windows on the title screen by itself within about 10 seconds (the scoreboard is kept in the party profile, only the run in progress is lost)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "with guests waiting a rig that heals itself beats you running to the PC, and a lost run costs 10 minutes at worst."
+        },
+        {
+          "id": "2",
+          "about": "Player 2 plays on an Xbox pad. A wireless pad can run out of battery, fall asleep or lose its link in the middle of a run, and the guest cannot fix that alone. An Xbox pad also works on a USB cable, which has no battery and no pairing. Your order today says the first pad plugged in is player 2, so a cable pad has to be plugged in first.",
+          "question": "How should player 2's pad be connected on the night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Wireless, with fresh batteries and a spare set next to the TV"
+            },
+            {
+              "key": "b",
+              "label": "On a USB cable all night (you would need a cable of about 3 m / 10 ft to reach the sofa)"
+            },
+            {
+              "key": "c",
+              "label": "On a cable, with a charged wireless pad kept nearby as plan B"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the one failure a guest cannot recover from is a dead pad, and a cable removes it for the price of a cable."
+        },
+        {
+          "id": "3",
+          "about": "Player 1 aims with the mouse, and Windows treats the two TVs as one big desktop. Today the mouse pointer can slide off the edge of TV 1 and onto TV 2. If a guest then clicks there, the keyboard stops reaching player 1's game until somebody clicks back. The game has no way to hold the mouse inside its window, and the test sheet only warns people.",
+          "question": "Should the game hold the mouse inside player 1's window while a raid is on?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, keep warning guests (a line on the setup sheet)"
+            },
+            {
+              "key": "b",
+              "label": "Yes, hold it during a raid and let go when the pause menu opens (helpers re-test the aim feel on your PC first, and drop back to a if it feels different)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "a guest sliding the mouse onto TV 2 is the most likely way to ruin a run without anyone knowing why."
+        },
+        {
+          "id": "4",
+          "about": "If TV 2, its cable or its pad dies on the night, you would otherwise be stuck. The game also has a 1 player arcade demo that needs only one TV and one input.",
+          "question": "Should we add a second desktop shortcut, \"Pillagers Party (one TV)\", that opens a single window on TV 1 straight into the 1 player arcade demo, as plan B?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes (one extra shortcut, never used if all goes well)"
+            },
+            {
+              "key": "b",
+              "label": "No, you would fix the rig instead"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it costs almost nothing and a guest can keep playing while you fix the problem."
+        },
+        {
+          "id": "5",
+          "about": "Each of the two windows makes its own sound, but Chrome plays all of it through the one speaker or TV that Windows uses as its sound output. The other TV stays silent unless you duplicate the sound by hand. Inside that one output, player 1's sounds lean left and player 2's lean right. Sending each window's sound to its own TV is possible, but it needs a new \"pick the sound device\" choice for each window.",
+          "question": "Where should the sound come from on the night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "One place plays everything (one TV, a soundbar or a speaker; nothing new to build, the left/right lean stays)"
+            },
+            {
+              "key": "b",
+              "label": "Each TV plays only its own player's sound (a sound-device choice per window, saved by the launcher; if a device is missing it falls back to a)"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "you are all in one room and one good speaker for both players works fine with nothing new that can break. If your TV speakers matter, tell me and I do b."
+        },
+        {
+          "id": "6",
+          "about": "The plan is player 1 on keyboard and mouse and player 2 on an Xbox pad. Your order today says that if two pads are plugged in, the first is player 2 and the second is player 1, so a night with two pads works too. Which combination you expect decides where the helpers spend their testing time. Two pads would also remove the mouse-wandering problem.",
+          "question": "What will the two players hold on the night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Keyboard and mouse for player 1, pad for player 2 (as planned)"
+            },
+            {
+              "key": "b",
+              "label": "Two pads (you keep the keyboard for yourself)"
+            },
+            {
+              "key": "c",
+              "label": "Either one: be ready for both, because guests may prefer a pad"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "it only costs a few extra test runs and a guest who dislikes the mouse can simply be handed the second pad."
+        },
+        {
+          "id": "7",
+          "about": "On 10/11 you asked for instant drop-in: any key or button starts the run, and player 2 joins by pressing A on their own screen. That works for a walk-up game, but a guest who joins a few minutes in has less time and fewer points than a guest who started at the beginning, and their score goes on the board next to everyone else's.",
+          "question": "How long into a run may player 2 still join?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Any time until the last 2 minutes"
+            },
+            {
+              "key": "b",
+              "label": "Only in the first 60 seconds; after that their screen says to wait for the next run"
+            },
+            {
+              "key": "c",
+              "label": "Not at all: both players must be in before the raid begins"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it keeps your instant drop-in for the walk-up moment, and keeps the board fair, since nobody joins with just a few minutes left."
+        },
+        {
+          "id": "8",
+          "about": "After a run you see the run-over card, then type initials, then see the board, and one more press starts the next run after a hold of a second or two. So the same two guests can keep playing, and a winner who is still mashing buttons can start another run before anyone reads the board. About 15 runs fit into three hours, and there are under ten guests.",
+          "question": "Should the game force a pause between pairs?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, guests sort it out themselves"
+            },
+            {
+              "key": "b",
+              "label": "Yes, after the board the game ignores start presses for 10 seconds, so the board is read and the controllers can change hands"
+            },
+            {
+              "key": "c",
+              "label": "Yes, 10 seconds, and the board line says to pass the controllers on (one short line)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it fixes the accidental restart and gives the next pair a natural moment to step up, with nothing new to read."
+        },
+        {
+          "id": "9",
+          "about": "You decided there are no tutorial prompts in the raid. The game already shows a controls card for a few seconds as each raider drops in, and the idle loop has a how-to-play card. Once the card fades, a guest who forgot which button reloads has nowhere to look. A printed card next to each TV costs the game nothing and cannot get in the way of play.",
+          "question": "Should helpers make a one-page printable controls card for each seat (one for keyboard and mouse, one for the pad), with pictures and a few words?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, two cards ready to print by Wed 10/28"
+            },
+            {
+              "key": "b",
+              "label": "Yes, and a bigger wall poster version too"
+            },
+            {
+              "key": "c",
+              "label": "No, the on-screen cards and your explaining are enough"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it covers the guest who is too shy to ask, and it is the one place a reminder can live without touching the game."
+        },
+        {
+          "id": "10",
+          "about": "The idle loop plays a short video clip, recorded inside the game by pressing F9 during a raid, with the scoreboard and the how-to-play card beside it. It is the first thing every guest sees and what the TVs show for most of the three hours. The clip that is there now was recorded before the party raid, the party kit and the new look existed.",
+          "question": "Who records the idle loop clip, and when?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Leave the clip that is there"
+            },
+            {
+              "key": "b",
+              "label": "You record a fresh 60 seconds of a good run on the locked party raid at the Tuesday rehearsal (F9 in a raid), and helpers check it"
+            },
+            {
+              "key": "c",
+              "label": "A bot plays and records it (bots play worse than you do, so it would show weaker play)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the clip is the game's shop window for the whole night, and your play shows it at its best."
+        },
+        {
+          "id": "11",
+          "about": "The game draws every frame at the size of the screen. A 4K TV has four times the pixels of a 1080p one, and two windows (one of them running the whole raid) is a heavy load for one PC for three hours. At 6 to 10 feet the difference between true 4K and 1080p stretched up is small. I do not know which TVs you have.",
+          "question": "At what size should each window draw?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The full size of each TV (sharpest, hardest on the PC)"
+            },
+            {
+              "key": "b",
+              "label": "Never more than 1440p (a middle road)"
+            },
+            {
+              "key": "c",
+              "label": "1080p inside, stretched to the TV by the browser (steadiest frame rate, slightly softer)"
+            },
+            {
+              "key": "d",
+              "label": "Decide by test: helpers measure both TVs on your PC and pick the sharpest size that holds 60 frames a second"
+            }
+          ],
+          "pick": "d",
+          "pick_reason": "the right answer depends on your TVs and your PC, and a measured number beats a guess."
+        },
+        {
+          "id": "12",
+          "about": "Each window has its own safety limiter that stops its sound from clipping. Windows adds the two windows together after that, and nothing limits the sum. A big moment in both windows at once (explosions, the Overseer) can come out louder than either limiter allows and can crackle through TV speakers.",
+          "question": "How do we protect against that?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Do nothing"
+            },
+            {
+              "key": "b",
+              "label": "Lower only the loudest sounds a few decibels in party mode (explosions, heavy guns, the boss)"
+            },
+            {
+              "key": "c",
+              "label": "Lower everything by about 20 percent in party mode (you can still turn the TV up)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it takes the sharp peaks off and keeps quiet cues like footsteps audible."
+        },
+        {
+          "id": "13",
+          "about": "Keyboard and mouse presses only reach the window that is in front, and player 1's keyboard belongs to player 1's window. A pop-up, an accidental click on TV 2 or an Alt-Tab can bring another window to the front and player 1's keys go dead. The launcher puts player 1's window in front once at the start.",
+          "question": "Should the launcher keep player 1's window in front for the whole night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, only at the start"
+            },
+            {
+              "key": "b",
+              "label": "Yes, check every 2 seconds and bring it back if something else took the front (it will not fight a Windows system dialog)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "a dead keyboard looks to a guest like a broken game, and this repairs it before they notice."
+        },
+        {
+          "id": "14",
+          "about": "On Windows 11 the round Xbox button in the middle of an Xbox pad opens the Windows Game Bar (a panel for recording and chat) over whatever is in front. A guest pressing it by accident would cover a TV and could take the keyboard focus away from player 1.",
+          "question": "Should the setup sheet tell you to switch the Game Bar off in Windows for the night and back on after?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, one step on the setup sheet and one on the stop list"
+            },
+            {
+              "key": "b",
+              "label": "No, tell guests not to press that button"
+            },
+            {
+              "key": "c",
+              "label": "Both"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "you cannot control what a guest presses, and it is a switch you flip once."
+        },
+        {
+          "id": "15",
+          "about": "Windows can interrupt a game in four ways: a restart-for-updates reminder, notification pop-ups, the screen turning off and the PC going to sleep. The game already asks the browser to keep the screen awake, but the party notes say nothing about the update reminder or pop-ups. A restart in the middle of a party would be the worst failure there is.",
+          "question": "Do you want one printable \"before guests arrive\" checklist of about 10 lines (pads charged or cable in, TV inputs and volume, the TV's Game Mode on, Do Not Disturb on, Windows updates paused until Saturday, Game Bar off, PC plugged in, shortcut works, and so on) next to the stop list?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, a one-page file on your Desktop"
+            },
+            {
+              "key": "b",
+              "label": "Yes, but only the Windows items"
+            },
+            {
+              "key": "c",
+              "label": "No"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "the hour before the doors open is when small things get forgotten."
+        },
+        {
+          "id": "16",
+          "about": "NEW PARTY locks one raid for the night, and the weather is rolled together with the raid. The game has clear, rainy, foggy, blackout and storming weather. Fog cuts the view to about 60 percent and a blackout leaves only about 18 percent light. In a bright living room a blackout raid on a TV is hard to read, and it would be the same raid for every run all night.",
+          "question": "Which weather may the party night lock in?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Clear only"
+            },
+            {
+              "key": "b",
+              "label": "Clear or light rain"
+            },
+            {
+              "key": "c",
+              "label": "Anything the dice give (moodier, harder to read)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "readability across a room matters most, and rain still gives some atmosphere."
+        },
+        {
+          "id": "17",
+          "about": "Some TVs cut off a thin strip around the picture (called overscan) unless a setting such as Just Scan or Screen Fit is on. Anything the game draws right at the edge (ammo, health, the timer) would be partly hidden.",
+          "question": "What should we do about it?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Nothing, you check the TV setting at setup"
+            },
+            {
+              "key": "b",
+              "label": "The game keeps its raid HUD about 3 percent in from the edges in party mode as a safety margin"
+            },
+            {
+              "key": "c",
+              "label": "Both"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "the margin is cheap insurance and the TV setting gives the sharpest picture."
+        },
+        {
+          "id": "18",
+          "about": "Before guests arrive you want to know the rig is healthy without playing a whole run. The hidden operator card (Ctrl+Shift+F10, the one with New Party) could show a short plain list of ticks and crosses.",
+          "question": "Should the operator card show a quick self-check: pad found, both windows linked, sound on, frame rate fine, scoreboard saved, build name?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, five or six lines"
+            },
+            {
+              "key": "b",
+              "label": "Yes, and a \"play a test sound in both windows\" button"
+            },
+            {
+              "key": "c",
+              "label": "No"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it answers \"is everything fine?\" in two seconds, and a test button can wait."
+        },
+        {
+          "id": "19",
+          "about": "For most of the three hours the TVs will show the idle loop. Two windows animating at full detail for hours heats the PC, spins up the fans and wastes power that the raid itself needs.",
+          "question": "While nobody is playing, should the windows draw more calmly?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, same as in a raid"
+            },
+            {
+              "key": "b",
+              "label": "Yes, 30 frames a second and fewer effects on the idle loop, back to full the moment someone presses a button"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it keeps the PC cooler and quieter and leaves headroom for the raid itself."
+        },
+        {
+          "id": "20",
+          "about": "The collector program on your PC (port 8799) already saves party runs into the exports folder. It could also save a picture of each run-over card and of the board, so you can post or look at them afterwards.",
+          "question": "Should each finished run save a picture of the run-over card and the board to a folder on the night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, automatic and silent (about 30 small pictures for the night)"
+            },
+            {
+              "key": "b",
+              "label": "No pictures"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "the party is something you will want to remember, and nobody has to hold a phone up."
+        },
+        {
+          "id": "21",
+          "about": "There is a hidden operator card with New Party, but nothing that closes the night with a moment.",
+          "question": "Should the operator card have an \"end the night\" button that shows the night's top 5 big on both TVs, with a short flourish?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes"
+            },
+            {
+              "key": "b",
+              "label": "No, just leave the board up"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "a small ceremony at the end is what people remember, and it costs one button in a card guests never see."
+        }
+      ]
+    },
+    {
+      "heading": "Two-player play and fairness",
+      "questions": [
+        {
+          "id": "22",
+          "about": "Today a 2-player run that ends on an extraction doubles both players' scores, and a run that ends when the 10 minutes burn out halves both. So if you extract at minute 5 with 3,000 points and your partner is later caught by the burn, your banked 3,000 is halved too, even though you did everything right. If your partner extracts later instead, you get doubled for waiting.",
+          "question": "Whose fate should decide a player's multiplier?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The team's (both double or both halve, as today)"
+            },
+            {
+              "key": "b",
+              "label": "Each player's own (you extracted: doubled; you were caught by the burn: halved; your partner's result never touches yours)"
+            },
+            {
+              "key": "c",
+              "label": "An early extractor keeps their score as it is, unless the partner also extracts, then both double"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it matches your rule of one board entry per player and nobody gets punished for a partner's mistake."
+        },
+        {
+          "id": "23",
+          "about": "End run needs two presses within 3 seconds. Today, if player 1 does it, the run ends for both players. If player 2 does it, only player 2 leaves and the run goes on. Your rule is that a 2-player run ends when both players are out, so the two seats do not behave alike.",
+          "question": "What should End run do?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The same for both seats: it takes out only the player who pressed, and the run ends when both are out"
+            },
+            {
+              "key": "b",
+              "label": "As today (player 1's ends everything)"
+            },
+            {
+              "key": "c",
+              "label": "Either player's End run ends the run for both, after a confirmation line on both screens"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it is the one rule that is the same for everyone and matches the \"both out\" rule you already gave."
+        },
+        {
+          "id": "24",
+          "about": "In a 2-player run the raid only stops when both players are paused. If one guest opens the pause menu (to read the controls, change a setting or ask a question), their raider stands in the open while enemies keep coming. The same happens when a pad drops out, because pulling a pad pauses only that player's window. A guest can lose a whole score in the time it takes to read one menu.",
+          "question": "What should happen to a raider whose player is paused?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Leave it (they pause at their own risk)"
+            },
+            {
+              "key": "b",
+              "label": "The raider is safe while the pause menu is open: enemies leave them alone and nothing can hurt them, and the other player keeps playing (the pause still stays paused until they resume)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "guests will pause to ask a question, and coming back dead feels like a trick."
+        },
+        {
+          "id": "25",
+          "about": "When one player extracts early, that player's TV drops to the idle loop with a team-score strip until the partner finishes, which can be several minutes. The extracted guest has nothing to do and the idle loop is not what they want to look at.",
+          "question": "What should the extracted player's TV show while waiting?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The idle loop with the team score (as today)"
+            },
+            {
+              "key": "b",
+              "label": "Their partner's view, live, with a small line saying they are waiting"
+            },
+            {
+              "key": "c",
+              "label": "A top-down map of the raid with both positions"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it keeps the guest in the game, they can cheer or advise, and the room gets a second view of the action."
+        },
+        {
+          "id": "26",
+          "about": "Both players can shoot the same machine. A kill is worth points (a crawler 50, a pillager 150, a warden 400, the Overseer 2,000). As far as I can tell only the player who lands the last shot gets them. A guest who wore a big machine down and had it finished by the partner will feel robbed, and every player now has their own board entry.",
+          "question": "Who gets the points when both players hurt the same machine?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The player who lands the killing shot (as I believe it is today)"
+            },
+            {
+              "key": "b",
+              "label": "Both players get the full points if both hurt it in the last 5 seconds"
+            },
+            {
+              "key": "c",
+              "label": "The points are split by how much damage each did"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it ends kill-stealing arguments at a party and fits a co-op game, at the cost of slightly higher scores for pairs who fight together."
+        },
+        {
+          "id": "27",
+          "about": "Player 2's window is a mirror. What player 2 presses is sent to player 1's window, which runs the raid, and the result comes back. That adds a small delay between pressing and seeing the shot on player 2's TV, which player 1 does not have. If it is more than about 3 frames, player 2 will feel sluggish and lose every shared fight. Nobody has measured it on your PC yet.",
+          "question": "How good must player 2's feel be?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Helpers measure the delay, show you the number, and you decide"
+            },
+            {
+              "key": "b",
+              "label": "A hard limit: no more than 50 milliseconds (about 3 frames) extra for player 2, and helpers add prediction (player 2's own movement is drawn at once while the host catches up) if it is over"
+            },
+            {
+              "key": "c",
+              "label": "Don't worry about it"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "a real number beats a guess, and I expect we will end up setting a limit like b once we have it."
+        },
+        {
+          "id": "28",
+          "about": "Easy mode (a gentler raid) is offered today after a player's second death in a 2-player run, and the offer times out after 12 seconds. In a 2-player run each death loses all of that player's points, so a new guest can lose everything twice before anything is offered.",
+          "question": "When should Easy mode be offered?",
+          "options": [
+            {
+              "key": "a",
+              "label": "After the second death (as today)"
+            },
+            {
+              "key": "b",
+              "label": "After the first death"
+            },
+            {
+              "key": "c",
+              "label": "As a choice for each player before the run starts"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the first death is when a new guest decides whether the game is for them, and the offer costs nothing to ignore."
+        },
+        {
+          "id": "29",
+          "about": "As far as I can tell a 2-player raid has the same machines as a 1-player raid, just with twice the firepower. Two guests with full ammo can clear the map faster and then stand around. Helpers will confirm what is actually there.",
+          "question": "Should a raid with two players be a bigger fight?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, the same raid"
+            },
+            {
+              "key": "b",
+              "label": "About 40 percent more machines when two are playing"
+            },
+            {
+              "key": "c",
+              "label": "The same number, but big targets (the Overseer, bulwarks, wardens) have about 60 percent more health when two are playing"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "tougher big targets last long enough for both players to enjoy them, without more things to draw and slow the frame rate."
+        },
+        {
+          "id": "30",
+          "about": "With no aim assist (your rule), a pad guest aims with a thumbstick against a mouse player. How the stick feels, meaning how fast it turns and how big its dead zone is, decides whether the pad seat is any fun. Helpers will check which of these the Settings already offer; either way the starting point is the same for everyone.",
+          "question": "How should the pad aim feel be set for the night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Leave the defaults"
+            },
+            {
+              "key": "b",
+              "label": "Helpers prepare three presets (slow, normal, quick), you try them with your real pad at the rehearsal and choose one as the party default"
+            },
+            {
+              "key": "c",
+              "label": "Helpers pick one from your pad's numbers without you testing"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "only your hands on your pad can say which feels right, and it takes ten minutes."
+        }
+      ]
+    },
+    {
+      "heading": "How you test and report",
+      "questions": [
+        {
+          "id": "31",
+          "about": "A full dress rehearsal means running the exact party flow: the shortcut, both windows, several runs back to back, a pause, a pad pulled out, then the stop script. The cutoff for new things is Mon 10/26 and the build locks Thu 10/29 evening, so the rehearsal has to leave at least a day to fix what it finds.",
+          "question": "When should the full dress rehearsal happen?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Sun 10/25, once"
+            },
+            {
+              "key": "b",
+              "label": "Tue 10/27 evening, plus a short second one on Thu 10/29 after the lock (boot, one run, stop)"
+            },
+            {
+              "key": "c",
+              "label": "Wed 10/28, once"
+            },
+            {
+              "key": "d",
+              "label": "Two full ones: Sun 10/25 and Wed 10/28"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "Tuesday leaves time to fix what it shows, and the Thursday check proves the locked copy really starts."
+        },
+        {
+          "id": "32",
+          "about": "On Thu 10/29 evening somebody has to say \"this build is good for the party\". Without a clear bar that becomes a gut call at the worst possible time.",
+          "question": "What must be true before you call the build ready?",
+          "options": [
+            {
+              "key": "a",
+              "label": "3 full 2-player runs in a row with nothing broken, and the 3-hour non-stop test passed"
+            },
+            {
+              "key": "b",
+              "label": "a), and one person who has never seen the game plays a run without you explaining anything"
+            },
+            {
+              "key": "c",
+              "label": "You decide by feel"
+            }
+          ],
+          "pick": "b",
+          "pick_note": "b if you can find that person, otherwise a",
+          "pick_reason": "someone new finds in two minutes what you and I can no longer see."
+        },
+        {
+          "id": "33",
+          "about": "A game that runs fine for 15 minutes can slow down or crash after hours, for instance when memory slowly fills up. On 10/11 two 3-hour tests of the one-window demo came back clean (no errors, 60 frames a second). The party is different: two windows, one of them running the raid for both, and around 15 runs back to back. That has not had a 3-hour test.",
+          "question": "Should helpers run a 3-hour non-stop test of the two-window rig (scripted 2-player runs one after another) before the lock, and treat any slowdown or crash as a blocker?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, and any slowdown or crash is a blocker"
+            },
+            {
+              "key": "b",
+              "label": "Yes, but only report what they see"
+            },
+            {
+              "key": "c",
+              "label": "No, the one-window tests are enough"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "a game that is smooth at 6 pm and sluggish at 8 pm is the failure guests would notice most."
+        },
+        {
+          "id": "34",
+          "about": "You cannot see what a new player sees. Someone who has never seen the game finds the confusing spots within minutes: what to press, where to go, what just killed them.",
+          "question": "Can you get one or two people who have not seen the game to play a rehearsal run before 10/29?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, at least one"
+            },
+            {
+              "key": "b",
+              "label": "Maybe, only on the evening before"
+            },
+            {
+              "key": "c",
+              "label": "No, helpers' simulated guests only"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "nothing helpers can simulate tells us what a real first-timer does in their first 60 seconds."
+        },
+        {
+          "id": "35",
+          "about": "Guests may bring their own pad. Chrome usually reports PlayStation and Switch pads with the same button positions as an Xbox pad, but the on-screen button pictures would be wrong unless the game shows PlayStation or Switch shapes. You ordered live button pictures that match the input in use, which is being built now.",
+          "question": "Which pads must be tested, and shown with their own button pictures, at the party?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Xbox only"
+            },
+            {
+              "key": "b",
+              "label": "Xbox and PlayStation"
+            },
+            {
+              "key": "c",
+              "label": "Xbox, PlayStation and Switch"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "Xbox is what you own and can test, and any other pad will still work, just with Xbox pictures. We can add the others after the party."
+        },
+        {
+          "id": "36",
+          "about": "While you play a rehearsal run you will notice small things: a sound is wrong, a jolt, an odd enemy. Pausing to type a note ruins the run, and by the time you type, the feeling is gone.",
+          "question": "Should there be a \"mark this moment\" key (for example F8 on the keyboard, since F9 is already the recorder, and holding both shoulder buttons on the pad) that quietly saves a picture of both windows, the last 20 seconds of game events and the time, so you can describe it later?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, one key"
+            },
+            {
+              "key": "b",
+              "label": "No, I will use the pause box"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it lets you keep playing and gives helpers the evidence they cannot get from \"it felt off\"."
+        },
+        {
+          "id": "37",
+          "about": "Helpers can only look at pictures, not video. When you say \"it was janky around minute 6\", they cannot see it.",
+          "question": "During rehearsals and overnight test runs, should each window quietly save a small picture every 30 seconds and a note of any frame-rate dip or error into a folder helpers can read?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, on rehearsal and test runs only"
+            },
+            {
+              "key": "b",
+              "label": "Yes, including the party night (small pictures, for the debrief afterwards)"
+            },
+            {
+              "key": "c",
+              "label": "No"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the party night is the best test the game will ever get, and small pictures every 30 seconds cost the frame rate nothing."
+        },
+        {
+          "id": "38",
+          "about": "Your time at the PC is limited to mornings, early afternoons and evenings. Playing a new build without a guide can waste a whole session on things that did not change.",
+          "question": "Should helpers leave a short \"play this build\" sheet on your Desktop each evening: the build name, the five things that changed, and exactly what to look at for each?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, 5 items in plain words"
+            },
+            {
+              "key": "b",
+              "label": "Yes, up to 10 items"
+            },
+            {
+              "key": "c",
+              "label": "No, I play freely and report"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it points your limited time at what is new and keeps your reports sharp."
+        },
+        {
+          "id": "39",
+          "about": "Your reports arrive as notes, pause-box texts and chat messages, in any order. Some are bugs, some are feelings and some are new ideas, and the week has a cutoff on 10/26.",
+          "question": "Should helpers sort each report into \"fix now\", \"after the party\" or \"won't do\", show you the sorted list each evening, and act only on \"fix now\"?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, and you can overrule any line"
+            },
+            {
+              "key": "b",
+              "label": "Yes, but ask me before anything goes to \"won't do\""
+            },
+            {
+              "key": "c",
+              "label": "No, ask me about each report"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "nothing you said gets quietly dropped, and the cutoff stops swallowing the whole week."
+        }
+      ]
+    },
+    {
+      "heading": "What to switch off if it is janky",
+      "questions": [
+        {
+          "id": "40",
+          "about": "You said yes to switching off janky raid features after the rehearsal. To do that quickly there has to be an agreed order of what goes first.",
+          "question": "If the rehearsal shows trouble, what goes first? My order, first to go on top: the raid events (debris, convoy, bounty, coolant, rampage), then special weather (fog, blackout, storm), then the vaults, then the golden enemy, then power-ups, then style medals, and last of all the Overseer.",
+          "options": [
+            {
+              "key": "a",
+              "label": "That order"
+            },
+            {
+              "key": "b",
+              "label": "The same, but power-ups and medals are never cut (they make runs fun)"
+            },
+            {
+              "key": "c",
+              "label": "You choose after the rehearsal looking at the pictures"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "events and weather are the likeliest to confuse a first-timer, while power-ups and medals are what make a run feel like a game."
+        },
+        {
+          "id": "41",
+          "about": "On the night, you do not want to hunt through eight separate switches while guests wait. The hidden operator card could have one switch that turns every optional raid extra off for the next run.",
+          "question": "Should the operator card have one \"safe raid\" switch?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, one switch for all the optional extras"
+            },
+            {
+              "key": "b",
+              "label": "No, separate switches only (see R4 at the end)"
+            },
+            {
+              "key": "c",
+              "label": "Both"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "in a bad moment one switch you can find in two seconds beats a list."
+        },
+        {
+          "id": "42",
+          "about": "After the rehearsal there will be about two days before the lock. Someone has to decide what gets cut, and fast.",
+          "question": "Who decides what is cut?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Helpers cut anything that crashes or freezes the game right away and propose the rest with pictures, and you say yes or no"
+            },
+            {
+              "key": "b",
+              "label": "Helpers propose everything, and nothing is cut until you answer"
+            },
+            {
+              "key": "c",
+              "label": "Helpers decide everything and tell you afterwards"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "crashes should never wait for your answer, while anything that changes how the game plays is your call."
+        },
+        {
+          "id": "43",
+          "about": "\"Janky\" has no number yet, so helpers cannot tell when a feature fails.",
+          "question": "What frame rate counts as janky on the real two-TV rig?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Anything under 60 for more than a few seconds"
+            },
+            {
+              "key": "b",
+              "label": "Under 45 for more than 3 seconds, or any single freeze over a quarter of a second"
+            },
+            {
+              "key": "c",
+              "label": "You decide by eye"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "60 is the aim but short dips are normal, while a quarter-second freeze is something every guest sees."
+        },
+        {
+          "id": "44",
+          "about": "The game has an automatic quality ladder. When the frame rate sags it turns effects down first, then makes the picture less sharp, down to half size. Half size looks blurry on a big TV and guests would ask what is wrong.",
+          "question": "How low may the ladder go on the party night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "All the way, whatever it takes to hold the frame rate"
+            },
+            {
+              "key": "b",
+              "label": "Effects can go down, picture sharpness no lower than 75 percent"
+            },
+            {
+              "key": "c",
+              "label": "Effects can go down, picture sharpness never changes"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it protects the frame rate without anything looking visibly soft."
+        },
+        {
+          "id": "45",
+          "about": "On the night you will not be watching a frame-rate number. If a window is struggling you want to know without opening anything.",
+          "question": "Should each window show a tiny coloured dot (green fine, yellow slow, red struggling) in a corner, small enough that guests ignore it?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, always"
+            },
+            {
+              "key": "b",
+              "label": "Yes, but hidden until you press a key combination (for example Ctrl+Shift+F7)"
+            },
+            {
+              "key": "c",
+              "label": "No"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it is there when you want it and gives guests nothing to ask about."
+        }
+      ]
+    },
+    {
+      "heading": "Scoring and the scoreboard",
+      "questions": [
+        {
+          "id": "46",
+          "about": "You ruled that each player gets their own board entry. Today a 2-player run makes one row on the board showing both players' initials (like \"ABC . XYZ\") and the team's total. So the board is a list of pairs, not of players.",
+          "question": "What should a 2-player run put on the board?",
+          "options": [
+            {
+              "key": "a",
+              "label": "One row per pair, both initials, team total (as today)"
+            },
+            {
+              "key": "b",
+              "label": "Two rows per run, each player's own points under their own initials"
+            },
+            {
+              "key": "c",
+              "label": "Both: a board of pairs and a board of players"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it is what you ordered, and each guest gets their own name on the board."
+        },
+        {
+          "id": "47",
+          "about": "A player who accepts Easy mode (a gentler raid) earns the same points on the board. Easy mode is chosen per window, and the board does not know about it.",
+          "question": "How should an Easy mode run appear on the board?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Exactly the same as any other"
+            },
+            {
+              "key": "b",
+              "label": "A small \"easy\" tag next to the row, same points"
+            },
+            {
+              "key": "c",
+              "label": "The points are cut by 30 percent and tagged"
+            },
+            {
+              "key": "d",
+              "label": "Easy runs do not reach the board"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the board stays honest and nobody who is new gets punished for needing a gentler start."
+        },
+        {
+          "id": "48",
+          "about": "After the score counts up, the run-over card already shows three \"best moments\" (best streak, biggest haul, longest shot), each marked P1 or P2 in a 2-player run. A friendly extra would be a small crown on whoever scored the most, and one or two more moments such as closest call (the least health you survived on) or most damage.",
+          "question": "What should the run-over card add?",
+          "options": [
+            {
+              "key": "a",
+              "label": "A crown for the top scorer, nothing else"
+            },
+            {
+              "key": "b",
+              "label": "The crown plus two more moments (closest call, most damage)"
+            },
+            {
+              "key": "c",
+              "label": "Nothing, it is fine as it is"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "a crown is a friendly dare to play again, it only shows after the run, and the three moments already tell the story."
+        },
+        {
+          "id": "49",
+          "about": "The first pair at the party sees an empty board. A board with scores already on it gives the first guests something to beat. The scores could be your best runs from the rehearsals.",
+          "question": "Should the board start the night with a few scores already on it?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, the first pair sets the bar"
+            },
+            {
+              "key": "b",
+              "label": "Yes, your three best rehearsal scores stay on as the \"house\" entries under your initials"
+            },
+            {
+              "key": "c",
+              "label": "Yes, invented scores from bot runs"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "real scores from real runs give guests a believable target, and invented ones feel fake."
+        },
+        {
+          "id": "50",
+          "about": "The run-over card already counts the score up (your answer 20 from 10/12), then shows the best moments. For the party, the count-up and the moments are one more wait before the board and before the next pair, and a guest who has seen it three times may be tired of it.",
+          "question": "How should the run-over count-up behave at the party?",
+          "options": [
+            {
+              "key": "a",
+              "label": "As it is"
+            },
+            {
+              "key": "b",
+              "label": "The same, but any button press skips straight to the final score"
+            },
+            {
+              "key": "c",
+              "label": "Shorter, about 3 to 4 seconds, and any press skips it"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the first time it is a treat and the fifth time it is a wait, and a skip serves both."
+        },
+        {
+          "id": "51",
+          "about": "You ruled out any live rank or live scoreboard. During the raid the screen shows a team score. With a board entry for each player, a player might also want their own points. That is different from a rank, because it is only their own number.",
+          "question": "What score numbers should a player see during the raid?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The team score only (as I believe it is today)"
+            },
+            {
+              "key": "b",
+              "label": "Their own points plus the team total"
+            },
+            {
+              "key": "c",
+              "label": "Both players' points"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "your own points and the team total tell you what you did without turning the raid into a race."
+        },
+        {
+          "id": "52",
+          "about": "Pressing New Party clears tonight's boards for one player and for two players, but a \"best ever\" score stays and is shown on the idle loop all night. Your own rehearsal runs, or any score from a test, will set a best ever that real guests may never come close to, and it will sit on the TVs saying so.",
+          "question": "Should New Party also clear the \"best ever\" score?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, best ever stays (as it is)"
+            },
+            {
+              "key": "b",
+              "label": "Yes, New Party clears best ever too, so the night starts clean"
+            },
+            {
+              "key": "c",
+              "label": "Best ever stays, but only runs from the party profile count, never rehearsal or test runs"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the board and best ever should both tell the story of tonight, and you can still keep a copy of the old ones in the exports folder."
+        },
+        {
+          "id": "53",
+          "about": "Two runs can both score 4,200. One got there by extracting, which doubles the score, and the other by playing to the end of the clock, which would have halved it. At the moment the board shows only the number and the initials.",
+          "question": "Should each board row also show how the run ended?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, only the score and the initials"
+            },
+            {
+              "key": "b",
+              "label": "A small mark on rows that were extracted"
+            },
+            {
+              "key": "c",
+              "label": "A small mark for each ending (extracted, out of time, died)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "extracting is the skill you want to reward, and one small mark says it without adding clutter."
+        },
+        {
+          "id": "54",
+          "about": "The end-of-night screen (question 21) has to name somebody first, and \"the winner\" can mean different things. One guest may have the single best run, while another was the most consistent over several runs.",
+          "question": "Who is the winner of the night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The player with the single best run on the board"
+            },
+            {
+              "key": "b",
+              "label": "The player with the best total of their own best two runs"
+            },
+            {
+              "key": "c",
+              "label": "Nobody; the board just speaks for itself"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it is simple to explain to a room, and the end-of-the-night screen can name that player first."
+        }
+      ]
+    },
+    {
+      "heading": "Game feel",
+      "questions": [
+        {
+          "id": "55",
+          "about": "Settings has a screen shake row. On a TV across the room, big shakes read as impact, but on a big screen they can make some guests queasy and make aiming harder. The magnum now kicks the screen harder (v30.63).",
+          "question": "What should screen shake start at for guests?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Off"
+            },
+            {
+              "key": "b",
+              "label": "About half"
+            },
+            {
+              "key": "c",
+              "label": "Full"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "guests still feel the guns, and anyone who dislikes it can change it in the pause menu."
+        },
+        {
+          "id": "56",
+          "about": "The Xbox pad rumbles when you are hit, go down or when blasts go off, and the rumble builds up while you fire the light machine gun. Rumble drains batteries quickly and a long burst can buzz hard in a guest's hands.",
+          "question": "How strong should rumble be at the party?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Full"
+            },
+            {
+              "key": "b",
+              "label": "About half"
+            },
+            {
+              "key": "c",
+              "label": "Off"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it is still fun and easy on batteries and hands over three hours."
+        },
+        {
+          "id": "57",
+          "about": "Settings has a frame cap row, and today it starts at Off, so each window draws as fast as the PC can. A cap keeps the PC cooler and quieter and keeps the two windows evenly paced, which matters when one window is running the whole raid for both. Most TVs show 60 frames a second anyway.",
+          "question": "What should the frame cap be at the party?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Off (as it is now)"
+            },
+            {
+              "key": "b",
+              "label": "60 in both windows"
+            },
+            {
+              "key": "c",
+              "label": "60 in both windows, or 120 if both TVs are 120 Hz models (you tell me)"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "extra frames the TV cannot show only heat the PC, and an even 60 in both windows feels smoother than one window racing ahead of the other."
+        },
+        {
+          "id": "58",
+          "about": "Every gun has its own fixed key. When a gun is completely out of ammo (not just an empty magazine), a guest with no tutorial prompts may keep clicking it and not know to press another key.",
+          "question": "When the gun in your hands has no ammo at all left, should the game switch to your next gun that still has some?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, the player switches (as I believe it is now)"
+            },
+            {
+              "key": "b",
+              "label": "Yes, automatically, with a short callout saying which gun"
+            },
+            {
+              "key": "c",
+              "label": "Yes, automatically and silently"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "an empty gun is the commonest dead end for a new guest, and the callout teaches the fixed keys without a prompt."
+        },
+        {
+          "id": "59",
+          "about": "With no tutorial prompts, a guest hit by something they did not see learns nothing. A short wind-up before heavy attacks (a flash, or a ring on the ground) teaches the game without any words.",
+          "question": "Which enemy attacks should show a clear warning about half a second before they land?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Only the heavy ones (bulwark, warden, the boss, air strikes)"
+            },
+            {
+              "key": "b",
+              "label": "Every attack from every machine"
+            },
+            {
+              "key": "c",
+              "label": "Leave it as it is"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "the heavy hits are where a new guest loses a life for no reason, and warnings on everything would make the screen noisy."
+        },
+        {
+          "id": "60",
+          "about": "Two raiders share one map, and in a narrow corridor a solid raider can block the other, which is annoying and can even trap a guest between a wall and their partner. Helpers will check what happens today.",
+          "question": "Should the two raiders be able to walk through each other?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, they block each other (more realistic, can jam in corridors)"
+            },
+            {
+              "key": "b",
+              "label": "Yes, they pass through each other"
+            },
+            {
+              "key": "c",
+              "label": "They push each other gently out of the way"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it is a party game and nothing should ever stop a guest moving, and friendly bullets already never hurt each other, so it matches."
+        },
+        {
+          "id": "61",
+          "about": "The raid has lightning in storms, explosions, air strikes and muzzle flashes, and the party puts them on two big TVs in a room with up to ten people. Rapid flashing (more than about three bright flashes a second) can trigger seizures in people with photosensitive epilepsy, and you cannot know who is in the room.",
+          "question": "Should party mode limit rapid flashing, so nothing flashes bright more than about three times a second and lightning is softened?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, as a rule in party mode"
+            },
+            {
+              "key": "b",
+              "label": "Yes, as a Settings switch that is on by default"
+            },
+            {
+              "key": "c",
+              "label": "No"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it is a safety matter for guests you cannot screen, it costs almost nothing in look, and nobody has to find a switch."
+        }
+      ]
+    },
+    {
+      "heading": "Raid content and pacing for a 10-minute run",
+      "questions": [
+        {
+          "id": "62",
+          "about": "Guests have never seen the game and there are no tutorial prompts, so the first seconds decide whether they get it. If a machine is on them at once they panic. If nothing happens for 30 seconds they wander off.",
+          "question": "How long before the first fight?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Right away"
+            },
+            {
+              "key": "b",
+              "label": "About 15 to 20 seconds: a short walk, then the first machines notice you"
+            },
+            {
+              "key": "c",
+              "label": "Whatever the locked raid gives"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it gives guests time to find the controls before the first shot is fired at them."
+        },
+        {
+          "id": "63",
+          "about": "The Overseer (the boss, worth 2,000 points) waits in a lair in the middle of the map. In 10 minutes many pairs never go there, so many guests never see the best moment of the game.",
+          "question": "Should the Overseer come out to hunt the pair?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, lair only"
+            },
+            {
+              "key": "b",
+              "label": "Yes, around minute 7 it leaves the lair and heads for the pair, every run"
+            },
+            {
+              "key": "c",
+              "label": "Only if the pair has not gone to the lair by around minute 7"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "brave pairs still get to find it, and everyone else meets it anyway."
+        },
+        {
+          "id": "64",
+          "about": "The Raid Director rolls one or two events per raid (debris, convoy, bounty, coolant, rampage). In a 10-minute run with two players that can mean long quiet stretches.",
+          "question": "How many events should a party raid have?",
+          "options": [
+            {
+              "key": "a",
+              "label": "One or two, as now"
+            },
+            {
+              "key": "b",
+              "label": "Three, spaced out (about minutes 2, 5 and 8)"
+            },
+            {
+              "key": "c",
+              "label": "Four, shorter"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it fills the quiet stretches while leaving time to react between them."
+        },
+        {
+          "id": "65",
+          "about": "The machines come in kinds: crawlers, criers, sentries, pillagers, listeners, howlers, bulwarks, wardens and a choir, worth from 50 to 500 points each. In a 10-minute run, the order in which a new guest meets them decides whether the game teaches itself or just kills them. The Director and the wave strength decide the mix today.",
+          "question": "Should the party raid introduce the kinds in a planned order?",
+          "options": [
+            {
+              "key": "a",
+              "label": "As the Director does it now"
+            },
+            {
+              "key": "b",
+              "label": "A planned order: crawlers and criers first, sentries and pillagers from about minute 2, and the heavy kinds (bulwark, warden, choir) only after about minute 5"
+            },
+            {
+              "key": "c",
+              "label": "Everything from the start"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "a guest learns one new threat at a time instead of meeting all of them at once, and the heavy ones arrive when the guest can already shoot."
+        },
+        {
+          "id": "66",
+          "about": "A 10-minute run can fizzle out toward the end. A finale in the last 90 seconds could pour more machines in, so the last minute becomes the most exciting one before the burn clock runs out.",
+          "question": "Should the last 90 seconds get a \"final rush\"?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No"
+            },
+            {
+              "key": "b",
+              "label": "Yes: more machines and kills worth 1.5 times"
+            },
+            {
+              "key": "c",
+              "label": "Yes: more machines only, scoring unchanged"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "it gives the finale without adding another scoring rule."
+        },
+        {
+          "id": "67",
+          "about": "The game has several sectors (maps). GREYWATER is the hardest to extract from. The party locks one sector for the night, and which one decides how easy the first run feels.",
+          "question": "Which sector should the party use?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The easiest one"
+            },
+            {
+              "key": "b",
+              "label": "A middle one, picked by helpers from bot-run results and confirmed by you on pictures"
+            },
+            {
+              "key": "c",
+              "label": "You pick by eye"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "bot results tell us which sector pairs can actually finish, and your eye on pictures confirms it looks good."
+        },
+        {
+          "id": "68",
+          "about": "The game has five times of day (the light and colour of the whole map), and the locked party raid will use just one of them all night. Bright midday is easiest to read, late afternoon is warmer and moodier, and dusk is the most dramatic but darkest. I cannot judge this without seeing it on your TVs.",
+          "question": "Which time of day should the party raid use?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Bright midday"
+            },
+            {
+              "key": "b",
+              "label": "Late afternoon"
+            },
+            {
+              "key": "c",
+              "label": "Helpers take a picture of the locked party map at each time of day and you choose by eye"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "this is a matter of taste and readability together, and a picture settles it in a minute."
+        }
+      ]
+    },
+    {
+      "heading": "Sound and music",
+      "questions": [
+        {
+          "id": "69",
+          "about": "Rain and storms have their own background sound. Through TV speakers, a constant wash of rain can cover the quiet cues that tell a guest where danger is, such as footsteps and a machine locking on.",
+          "question": "If the party raid has rain, how loud should the rain sound be?",
+          "options": [
+            {
+              "key": "a",
+              "label": "As it is"
+            },
+            {
+              "key": "b",
+              "label": "About a third quieter"
+            },
+            {
+              "key": "c",
+              "label": "Rain looks the same but makes no sound"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the rain still sets the mood, and the cues that keep guests alive stay audible."
+        },
+        {
+          "id": "70",
+          "about": "The title and idle loop play music, and for most of three hours that could be the same piece over and over, with nobody playing, while guests talk over it.",
+          "question": "What should the idle loop's music do over a long night?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Keep playing as it is"
+            },
+            {
+              "key": "b",
+              "label": "Fade out after 5 minutes of nobody playing and come back when someone presses a button"
+            },
+            {
+              "key": "c",
+              "label": "Use three variations of the piece in turn"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the room gets quiet between pairs and the music feels like a reward when it returns."
+        },
+        {
+          "id": "71",
+          "about": "Explosions and the boss use deep bass. On a soundbar or a TV with a subwoofer it can rattle a room, shake things off shelves and tire people out over three hours.",
+          "question": "How strong should the deepest bass be in party mode?",
+          "options": [
+            {
+              "key": "a",
+              "label": "As it is"
+            },
+            {
+              "key": "b",
+              "label": "Trimmed a little (a gentle roll-off of the lowest tones)"
+            },
+            {
+              "key": "c",
+              "label": "As it is, unless you tell me you have a subwoofer"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it costs almost nothing, and the impact still comes from the mid tones."
+        },
+        {
+          "id": "72",
+          "about": "In co-op you want to hear that your partner is in trouble. As far as I can tell, a downed partner shows a revive prompt when you are next to them, and the edge arrow points to their position, but nothing calls you across the map.",
+          "question": "Should there be a clear alert when your partner goes down?",
+          "options": [
+            {
+              "key": "a",
+              "label": "A clear alert sound and a pulse on the edge arrow"
+            },
+            {
+              "key": "b",
+              "label": "The same, plus a double buzz on a pad"
+            },
+            {
+              "key": "c",
+              "label": "No"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the point of the pair mode is looking after each other, and in a loud room the buzz in a pad guest's hands is the one signal they cannot miss."
+        },
+        {
+          "id": "73",
+          "about": "Some sounds may be much louder than others, or too sharp on TV speakers. The helpers can measure every sound's loudness as a number rather than guessing.",
+          "question": "Should helpers do a measured loudness pass and level the sounds against each other (for example, nothing more than 6 decibels louder than gunfire, quiet cues still audible, and the shrillest high-pitched beeps softened because they tire the ears over three hours)?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, a measured pass and fixes"
+            },
+            {
+              "key": "b",
+              "label": "Yes, a report only, no changes"
+            },
+            {
+              "key": "c",
+              "label": "No"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "\"real numbers, not guesses\" is your rule and a measured pass is cheap."
+        }
+      ]
+    },
+    {
+      "heading": "Art and characters",
+      "questions": [
+        {
+          "id": "74",
+          "about": "The Overseer, the boss worth 2,000 points, has no entrance. As far as I can tell it is simply there when someone reaches the lair, or when it appears. For a boss that is the best moment of a 10-minute run, a guest who has never seen it could walk right into it without understanding what just woke up.",
+          "question": "How big should the Overseer's entrance be?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Nothing special, as it is"
+            },
+            {
+              "key": "b",
+              "label": "A short callout, a low horn and a brief ground tremor on both windows (the camera stays where it is)"
+            },
+            {
+              "key": "c",
+              "label": "A 2-second camera swing to the boss on both windows, with control paused for that moment"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it tells the room \"this is the big one\" without taking control away from anybody, and a camera swing in two linked windows is a lot to get right."
+        },
+        {
+          "id": "75",
+          "about": "Across a room, small machines, pickups and bullets can blur into one another. A \"squint test\" would shrink every screenshot to a small blurry version and check that each enemy type, pickup and bullet can still be told apart.",
+          "question": "Should helpers run a squint test on the party raid and fix whatever fails?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes"
+            },
+            {
+              "key": "b",
+              "label": "No"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "a guest who cannot tell a threat from a pickup from a sofa is a guest who dies without understanding."
+        },
+        {
+          "id": "76",
+          "about": "Players can already zoom with the keypad plus and minus keys, but a party guest will never find that. The camera shows a fixed amount of the map by default. On a TV at 6 to 10 feet, raiders and machines look small compared with a monitor at arm's length. Showing about 10 percent less of the map makes everything bigger, but you see enemies coming a little later.",
+          "question": "What should the party start zoom be?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The same as Career"
+            },
+            {
+              "key": "b",
+              "label": "About 10 percent closer in party mode (the zoom keys still work)"
+            },
+            {
+              "key": "c",
+              "label": "Helpers take pictures at three zoom levels with the real TVs on the rehearsal day and you choose by eye"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "only your eyes at the real distance can say what is right, and it takes one picture each."
+        },
+        {
+          "id": "77",
+          "about": "You said the new Refined Chibi raiders only go in if they are solid by the cutoff on 10/26. \"Solid\" needs a judge.",
+          "question": "Who decides if the new raider art is solid?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The picture judge (4 of 5) and you, looking at pictures"
+            },
+            {
+              "key": "b",
+              "label": "The picture judge only"
+            },
+            {
+              "key": "c",
+              "label": "You only"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "the judge catches sloppy detail and you catch whether it still feels like Pillagers."
+        },
+        {
+          "id": "78",
+          "about": "With one raid locked for the whole night, guests will look at the same map for three hours. Time spent on extra props, floor detail and lighting for that one map shows up in every run, while the same time spread across all sectors shows up in none.",
+          "question": "Should helpers spend extra art time on the party map only?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, extra props, floor detail and lighting on the locked party map"
+            },
+            {
+              "key": "b",
+              "label": "No, spread the art evenly over all maps"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "every guest sees the party map, and the other sectors can wait until after."
+        },
+        {
+          "id": "79",
+          "about": "Roughly one in twelve men cannot tell red from green. Health, hostile marks and warnings use colour, and the two seat rings are amber and cyan. A shape or a brightness difference alongside each colour would let everyone play.",
+          "question": "Should every colour cue also have a shape or brightness difference?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, always, no switch needed"
+            },
+            {
+              "key": "b",
+              "label": "A colour-blind mode in Settings"
+            },
+            {
+              "key": "c",
+              "label": "No"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it works for everyone from the first second and needs no setting to find."
+        }
+      ]
+    },
+    {
+      "heading": "How the helpers should work",
+      "questions": [
+        {
+          "id": "80",
+          "about": "With 12 days left, helpers will be working on many things at once. A clear order tells them what loses when time is short.",
+          "question": "Is this the right order for the week? 1) crashes and freezes in the 2-player rig, 2) the party flow (start, turns, board, stop), 3) 2-player fairness and feel, 4) performance on two TVs, 5) the look of party screens and raid screen, 6) everything else.",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes"
+            },
+            {
+              "key": "b",
+              "label": "Put the look of party screens above performance"
+            },
+            {
+              "key": "c",
+              "label": "My own order (tell me)"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "a game that freezes or confuses beats a game that is pretty."
+        },
+        {
+          "id": "81",
+          "about": "The build locks Thu 10/29 evening, and the locked copy (stable) is what runs at the party. If something breaks on Friday, someone has to know whether helpers may touch it.",
+          "question": "After the lock, what may helpers change in the locked copy?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Nothing at all"
+            },
+            {
+              "key": "b",
+              "label": "Only fixes for crashes and freezes, only after you say yes, each with a new locked tag and a quick re-test"
+            },
+            {
+              "key": "c",
+              "label": "Any fix helpers judge urgent, reported to you afterwards"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "the party needs a build you trust, and a fix on Friday should never be a surprise."
+        },
+        {
+          "id": "82",
+          "about": "Helpers run on your Console credits (the key expires 11-16). Without a daily limit, a busy day could burn through the credits before the party.",
+          "question": "How should helpers spend your Console credits?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No cap; they use what they need, and I tell you when half is gone"
+            },
+            {
+              "key": "b",
+              "label": "A daily cap: the credits that are left divided by the days to 10/30, with a small reserve kept for the last three days"
+            },
+            {
+              "key": "c",
+              "label": "Stop at a fixed amount you name"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it spreads the money across the days that matter and still leaves a reserve."
+        },
+        {
+          "id": "83",
+          "about": "A helper redoes a screen until the picture judge gives it a 4 of 5. Some screens bounce between 2 and 3 for many rounds, which costs money and sometimes makes them worse.",
+          "question": "After how many tries without reaching 4 should a helper stop and show you the two best versions?",
+          "options": [
+            {
+              "key": "a",
+              "label": "4 tries"
+            },
+            {
+              "key": "b",
+              "label": "6 tries"
+            },
+            {
+              "key": "c",
+              "label": "10 tries"
+            },
+            {
+              "key": "d",
+              "label": "Never, keep going"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "that is enough to try real changes, and after it you decide by eye."
+        },
+        {
+          "id": "84",
+          "about": "These are the things I would tell every helper never to do: test on or restart the address you play on; delete or overwrite your saves, your exports folder or the party scoreboard; publish to itch or send anything off the PC without your yes; turn on paid extra usage or buy anything; change the locked copy after the lock without your yes; undo one of your binding answers without asking; and say something works without having run it and looked at a picture.",
+          "question": "Is that the right list?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, as written"
+            },
+            {
+              "key": "b",
+              "label": "Not quite: tell me what to add or remove"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "each item protects something you cannot get back or something you have already told us to protect."
+        },
+        {
+          "id": "85",
+          "about": "Helpers are allowed to decide small things themselves and report them as done. \"Small\" needs an edge, or a helper may decide something that changes how a run plays.",
+          "question": "What counts as a small thing helpers can decide alone?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Anything that does not change score, damage, timing or what appears in a raid"
+            },
+            {
+              "key": "b",
+              "label": "That, plus tuning within 10 percent either way"
+            },
+            {
+              "key": "c",
+              "label": "Anything except a brand new feature"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it keeps all the fairness and difficulty choices with you."
+        },
+        {
+          "id": "86",
+          "about": "Most of the party is two windows working together, but many helper checks still look at one window at a time. A change can look perfect in one window and break the other.",
+          "question": "Should a helper only call a 2-player change done after it has seen it work in both windows, with a picture from each?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes"
+            },
+            {
+              "key": "b",
+              "label": "No, one window is enough"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "that is where the party actually breaks."
+        }
+      ]
+    },
+    {
+      "heading": "The Undercroft and career after the party",
+      "questions": [
+        {
+          "id": "87",
+          "about": "Your Career save lives inside your normal Chrome on this PC. Clearing browser data, a profile problem or a crash can wipe browser storage. Settings already has a \"save file\" button that writes a backup file to Downloads, but you have to remember to press it. A daily automatic copy would protect hours of progress. Helpers would only copy the save and never touch the save itself.",
+          "question": "Should the game also make an automatic backup file of your Career save once a day, keeping the last 7?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes"
+            },
+            {
+              "key": "b",
+              "label": "No, the save file button is enough"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "losing a save you spent evenings on is worse than any bug, and the cost is one small file a day."
+        },
+        {
+          "id": "88",
+          "about": "The demo has no tutorial by your order. Career is the full game, with stash, shop, crafting and contracts, and a friend trying it later will be lost.",
+          "question": "After the party, how should a brand new Career player be helped?",
+          "options": [
+            {
+              "key": "a",
+              "label": "A guided first raid: a few short hints that appear once and never again"
+            },
+            {
+              "key": "b",
+              "label": "A one-page how-to-play only"
+            },
+            {
+              "key": "c",
+              "label": "First helpers play a fresh Career save and show you where a new player gets lost, then you decide"
+            },
+            {
+              "key": "d",
+              "label": "Nothing, learn by playing"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "we should see where people really get stuck before we write a single hint."
+        },
+        {
+          "id": "89",
+          "about": "In Career, two players on one PC each have their own character and stash. Some co-op games let partners share a chest.",
+          "question": "After the party, should two Career players be able to share a stash?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, separate stashes"
+            },
+            {
+              "key": "b",
+              "label": "A shared \"party chest\" both can use"
+            },
+            {
+              "key": "c",
+              "label": "Not a priority"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "Career co-op is still the same-PC version and the party comes first."
+        },
+        {
+          "id": "90",
+          "about": "Career already has a \"Forgiving\" choice in Settings that takes a third off the damage you take. The party demo offers the same thing on a card after you die. In Career a new player has to find the setting by themselves.",
+          "question": "Should Career also offer Forgiving on a card after a few deaths?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No, the setting is enough"
+            },
+            {
+              "key": "b",
+              "label": "Yes, the same offer as in the demo"
+            },
+            {
+              "key": "c",
+              "label": "Yes, but only for a new save's first five raids"
+            }
+          ],
+          "pick": "c",
+          "pick_reason": "that is where new players give up, and it leaves experienced players alone."
+        },
+        {
+          "id": "91",
+          "about": "You ordered full controller navigation on 10/12. The Undercroft (the Career hub with the stash, shop and crafting) is where gaps are most likely, because the party work went to the arcade screens first and the keyboard and mouse came first before that.",
+          "question": "After the party, should helpers do a pad-only pass over the whole hub, checking that every screen can be reached and used with a pad alone?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, after the party"
+            },
+            {
+              "key": "b",
+              "label": "No, keyboard and mouse is enough for the hub"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "a pad is how most people will play a game like this on a TV, and a pad-only pass finds the gaps in one sitting."
+        }
+      ]
+    },
+    {
+      "heading": "What comes after the party",
+      "questions": [
+        {
+          "id": "92",
+          "about": "At the party you will be busy and cannot take notes. Afterwards we want to know what guests loved, what confused them and what broke.",
+          "question": "How should the party be captured for the debrief?",
+          "options": [
+            {
+              "key": "a",
+              "label": "You tell me what you remember and I ask you ten short questions"
+            },
+            {
+              "key": "b",
+              "label": "The game logs everything automatically (runs played, run lengths, top scores, crashes, frame-rate dips, pictures) and helpers write a one-page summary"
+            },
+            {
+              "key": "c",
+              "label": "A paper card for guests with three questions, photographed afterwards"
+            }
+          ],
+          "pick": "a",
+          "pick_note": "a and b together",
+          "pick_reason": "the log tells us what happened and your memory tells us how it felt. Skip c unless you want it."
+        },
+        {
+          "id": "93",
+          "about": "There is no public launch on 10/31. The release date is unset. Someone has to decide it eventually, and it is best decided with a clear head.",
+          "question": "When do you want to set the public release date?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Sun 11/1, after the party debrief"
+            },
+            {
+              "key": "b",
+              "label": "By 11/7, a week after"
+            },
+            {
+              "key": "c",
+              "label": "When the build passes the picture judge (4 of 5) and has had five days without a bug you can reproduce"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "you will know a lot more after a night of real guests."
+        },
+        {
+          "id": "94",
+          "about": "The 2-window, one-PC, two-TV setup is special to your party. Most people who find the game online will have one screen and one pad or keyboard.",
+          "question": "For the public release, what should lead?",
+          "options": [
+            {
+              "key": "a",
+              "label": "The one-player game (the 2-player couch mode is a bonus)"
+            },
+            {
+              "key": "b",
+              "label": "The 2-player couch mode (it is the unique thing)"
+            },
+            {
+              "key": "c",
+              "label": "Both equally"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "most people will play alone first, and the couch mode is a good bonus for those who have two screens."
+        },
+        {
+          "id": "95",
+          "about": "The title has a \"2 player co-op (server)\" row marked coming later, and the game has code for online play between two PCs from earlier work. Online co-op would let friends play across the internet instead of on one PC.",
+          "question": "What should happen with online co-op?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Not now, after launch only if people ask for it"
+            },
+            {
+              "key": "b",
+              "label": "Yes, the first thing after the party"
+            },
+            {
+              "key": "c",
+              "label": "Drop it for good"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it is a big feature that needs real testing across two PCs and the same-PC version is what the party uses."
+        },
+        {
+          "id": "96",
+          "about": "Friends can test the game after the party and tell you what a real stranger would. Your earlier plan for an alpha for friends already has a feedback path and a crash catcher.",
+          "question": "How many outside testers should get the game after the party, and when?",
+          "options": [
+            {
+              "key": "a",
+              "label": "About five friends in the week after the party"
+            },
+            {
+              "key": "b",
+              "label": "About twenty, two weeks after"
+            },
+            {
+              "key": "c",
+              "label": "None until the release date is set"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "five friends will find the worst problems without a pile of messages to read."
+        },
+        {
+          "id": "97",
+          "about": "The itch.io page needs good pictures. Helpers can pick the best screenshots from the rehearsal runs and party-night pictures.",
+          "question": "Should helpers pick and prepare the best 6 screenshots for the store page?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, after the party, from the rehearsal and party-night pictures"
+            },
+            {
+              "key": "b",
+              "label": "No, you will pick them"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it uses pictures we already have, and you only need to say yes or no to each."
+        },
+        {
+          "id": "98",
+          "about": "A \"seed of the day\" gives everyone the same raid for a day, so players can compare scores on their own. It needs no server.",
+          "question": "Should the game get a seed-of-the-day raid?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Never"
+            },
+            {
+              "key": "b",
+              "label": "After launch, as a simple option"
+            },
+            {
+              "key": "c",
+              "label": "Before launch"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "it is a good reason to come back each day, but it needs the release to exist first."
+        },
+        {
+          "id": "99",
+          "about": "After the party you will want a rest. The weekly allowance refills on Sunday, and helpers burn it quickly.",
+          "question": "After the party, should helpers run at a lighter pace for a week?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, about 30 percent of the allowance, so you get a break and a clear head"
+            },
+            {
+              "key": "b",
+              "label": "Full speed"
+            },
+            {
+              "key": "c",
+              "label": "Stop helpers for three days"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "decisions made on a rested head are better than decisions made on the night."
+        },
+        {
+          "id": "100",
+          "about": "After the party, there are several things you said yes to: the heat dial and nemesis crew, elemental combos, looks-only extras, the Experimental settings and missions (see R1 to R5), plus online co-op, a second map and the Career first-time experience.",
+          "question": "What should come first after the party?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Polish what exists, and fix everything guests ran into"
+            },
+            {
+              "key": "b",
+              "label": "The new features you said yes to"
+            },
+            {
+              "key": "c",
+              "label": "Online co-op"
+            },
+            {
+              "key": "d",
+              "label": "A second map"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "a night of real guests will show more than any list, and the rest can then be ordered by what the guests liked."
+        }
+      ]
+    },
+    {
+      "heading": "carried over",
+      "questions": [
+        {
+          "id": "R1",
+          "about": "You said yes to two ideas on 10/14. The heat dial lets you pick extra-hard rules before a run (tougher machines, fewer heals, a darker night) for a bigger score multiplier. The nemesis crew is the pillager crew that killed you coming back next raid, marked, with a bounty on them. Since 10/15 you have asked for the existing features to be polished before anything new goes in.",
+          "question": "When should the heat dial and nemesis crew go in?",
+          "options": [
+            {
+              "key": "a",
+              "label": "After launch"
+            },
+            {
+              "key": "b",
+              "label": "Before the party"
+            },
+            {
+              "key": "c",
+              "label": "Drop them"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "both change how a run plays and need real testing, and the party needs the existing 2-player demo to be rock solid."
+        },
+        {
+          "id": "R2",
+          "about": "Guns can already carry fire, shock, cryo or acid. Combos would make those elements react with the world. Frozen enemies would shatter for blast damage, shock would chain through wet floors, fire would ignite oil and the red barrels, and acid would strip armour so a spark can finish a machine. You said yes on 10/14 and asked for it to be done \"competently\".",
+          "question": "Should elemental combos go in before the party?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes"
+            },
+            {
+              "key": "b",
+              "label": "No"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "each combo has to be watched by eye in play, and a half-working one in front of party guests would look glitchy."
+        },
+        {
+          "id": "R3",
+          "about": "Three looks-only extras got a yes from you on 10/14. Rise from underground means your raider climbs up out of the ground at the start of a raid (\"you don't drop in, you come up from underground\"). Light shafts mean dropped purple and gold guns throw a thin beam of light and a ring on the ground, and opening a rare box pops a flash. Slow motion means 0.4 seconds at 30 percent speed on big moments: the Overseer dying, the last siege machine, a self-revive, a last-second extraction.",
+          "question": "Which of these go in before the party?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Rise from underground and light shafts"
+            },
+            {
+              "key": "b",
+              "label": "Those two plus slow motion"
+            },
+            {
+              "key": "c",
+              "label": "None until after"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "guests see these in the first minute and they are low risk. Slow motion in a 2-player game has to slow both screens in step, which is likely the trickiest of the three. (The git log shows the first two are already in; if so, a only needs your confirmation.)"
+        },
+        {
+          "id": "R4",
+          "about": "You ordered an Experimental section in Settings to switch the newer features on and off (Raid Director, Air strike, Fuel fires and so on). It was never built; the drafts were held back while polishing came first. For the party, its real use is a quick way to turn off a feature that misbehaves in front of guests. The hidden operator card (Ctrl+Shift+F10, the one with New Party) is where only you would see it.",
+          "question": "What should happen with the Experimental settings section?",
+          "options": [
+            {
+              "key": "a",
+              "label": "A short list of about 8 in the operator card (the ones most likely to misbehave)"
+            },
+            {
+              "key": "b",
+              "label": "The full 30 in Settings (a lot more to check by eye before the party)"
+            },
+            {
+              "key": "c",
+              "label": "Skip it"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it gives you the emergency switch at the party without cluttering Settings. If you also pick the one \"safe raid\" switch in question 41, the two work together."
+        },
+        {
+          "id": "R5",
+          "about": "Today a raid has two kinds of objectives. Run goals are the short list of goals shown during a raid. Contracts are jobs you take in advance, such as destroying a number of one kind of machine, that pay credits. Missions would be a third layer: a chain of linked objectives, such as find a keycard, open the vault, extract with its item. On 10/13 you answered \"contracts and missions\" for Career, but run goals arrived after, and on 10/14 you said no to chained contracts.",
+          "question": "Do you want separate missions (a chain of objectives) on top of run goals and contracts?",
+          "options": [
+            {
+              "key": "a",
+              "label": "No"
+            },
+            {
+              "key": "b",
+              "label": "Yes, after the party"
+            },
+            {
+              "key": "c",
+              "label": "Yes, before the party"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "run goals already give each raid a short list of objectives, and a third layer would add clutter with little new to do."
+        },
+        {
+          "id": "R6",
+          "about": "The title's mode list has two \"coming later\" online rows (a 2-player server co-op row and a PvP server row) among the rows that work. A helper has already hidden the PvP one, but the \"2 player co-op (server)\" row still sits in the middle of working rows, greyed out.",
+          "question": "What should happen to the coming-later row?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Move it to the bottom of the list"
+            },
+            {
+              "key": "b",
+              "label": "Hide it completely until it works"
+            },
+            {
+              "key": "c",
+              "label": "Leave it where it is"
+            }
+          ],
+          "pick": "b",
+          "pick_reason": "a greyed row that does nothing makes guests ask about it, and it can come back when online co-op is real."
+        },
+        {
+          "id": "R7",
+          "about": "The empty scoreboard (before anyone has played) used to show five faint placeholder rows. A helper has since made it show one centred line, \"no scores yet\", and hidden the faint rows.",
+          "question": "Is that how the empty board should look?",
+          "options": [
+            {
+              "key": "a",
+              "label": "Yes, the one line"
+            },
+            {
+              "key": "b",
+              "label": "Bring the five faint rows back"
+            },
+            {
+              "key": "c",
+              "label": "Show nothing at all"
+            }
+          ],
+          "pick": "a",
+          "pick_reason": "it says plainly what you are looking at, and it is what the picture judge asked for four times."
+        }
+      ]
+    }
+  ]
+}

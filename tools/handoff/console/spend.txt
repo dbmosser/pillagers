@@ -513,3 +513,5 @@
 2026-10-18 0.0288 critic-03-title-and-backdrop
 2026-10-18 0.0259 critic-03-title-and-backdrop
 2026-10-18 0.0342 b-02-gun-enemy-feel
+2026-10-18 0.0297 critic-12-ui-party-screens
+2026-10-18 0.0269 critic-12-ui-party-screens

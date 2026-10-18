@@ -33,3 +33,8 @@ tools/fxprobe*.html
 tools/fxcorpus*.html
 tools/handoff/ppf[a-z].ps1
 tools/handoff/fpf[a-z].ps1
+
+# 2026-10-18: the art survey builds patched copies of the game (12 MB each) to photograph options; never commit them
+tools/handoff/art-survey/game/
+tools/handoff/art-survey/mock/*.png
+tools/handoff/art-survey/mock/_lc_*.html

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.74 - THE WHAT IS NEW CARD NAMES POLISH PASS 24
+
+Co-op hunt while he was away. The card was stamped v30.58 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 30.74 passes, and fails on v30.73.
 ## v30.73 - ONE LIME TAB ON THE RAID HUD, A SHORTER DEMO GUN CARD
 
 Co-op hunt while he was away. The critic on the raid screen (10-19): the lime tick on every panel spends the accent, and the ammo card has an empty strip now the demo hides the item line and backpack hint. Style guide: the tab marks the star panel only.
