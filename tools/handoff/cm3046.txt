@@ -1,0 +1,7 @@
+v30.46: a hit crawler jumps back farther
+
+A Crawler you hit now jumps back farther.
+
+Check 30.46. Fails on v30.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

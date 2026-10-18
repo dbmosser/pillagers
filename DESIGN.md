@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.46 - A HIT CRAWLER JUMPS BACK FARTHER
+
+Co-op hunt while he was away. His Q5: enemy feel. A hit body is drawn pushed 5 px for 0.16 s whatever it is. The Crawler is the smallest, lightest common machine (radius 15) so 5 px barely showed. It now jumps back 8 px at the full flash, easing to 0 over the same 0.16 s. Raiders and the rest keep 5 px.
+
+MEASURED. Check 30.46 passes, and fails on v30.45.
 ## v30.45 - No live rank, no board during a run
 
 Co-op hunt while he was away. His answer Q71 (10-18): no live rank readout, and no scoreboard until the game is over. The mid-run NEW HIGH SCORE callout is gone, and a window that is out of a live run (benched or extracted) skips the board page in its attract loop.
