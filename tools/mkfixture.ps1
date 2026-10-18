@@ -6097,6 +6097,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.76',what:'while the run over card is up, Press any button is one solid accent button as wide as the card and lined up with it, no pulse, and the score is light text so the amber is spent once (critic on v29.74: muddy ghost button, centred under left aligned text, amber twice; screens 52 55)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';
+     var d, oc, wasDisp, ap, ar, cr, cs, res=null, s, sc;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       oc=arcadeAttEl('arcover'); oc.style.display='block'; s=document.createElement('div'); s.className='aos'; s.textContent='Score 1 SP'; oc.appendChild(s);
+       ap=d.querySelector('.attpress'); cs=getComputedStyle(ap);
+       ar=ap.getBoundingClientRect(); cr=oc.getBoundingClientRect(); sc=getComputedStyle(s).color;
+       if(cs.backgroundColor!=='rgb(245, 183, 59)') res='Press any button fill is '+cs.backgroundColor+', not the solid accent';
+       else if(cs.animationName!=='none') res='Press any button still pulses ('+cs.animationName+')';
+       else if(Math.abs(ar.width-cr.width)>3||Math.abs(ar.left-cr.left)>3) res='Press any button is '+Math.round(ar.width)+'px at '+Math.round(ar.left)+', the card is '+Math.round(cr.width)+'px at '+Math.round(cr.left);
+       else if(ar.height<48*(parseFloat(d.style.getPropertyValue('--attz'))||1)-2) res='Press any button is only '+Math.round(ar.height)+'px high';
+       else if(ar.top-cr.bottom<0||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card';
+       else if(sc==='rgb(245, 183, 59)') res='the score is still the accent colour';
+       return res;
+     } finally {
+       try{ oc.textContent=''; oc.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+     }
+   }},
   {v:'29.75',what:'Settings: each stepper is right-aligned in its row, the card is 15 x 48 wide, and the toast is not at the bottom while Settings is open',
    run:function(){
      if(typeof openSettings!=='function') return 'SKIP: no Settings here';

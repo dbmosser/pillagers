@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.76 - Run over card: one solid button, one amber
+
+Co-op hunt while he was away. The critic scored the run over screen 2: the prompt a muddy ghost box, centred under left aligned text, amber spent twice. The column is one card wide, the button is the one solid primary as wide as the card, the score goes light. Restyle only.
+
+MEASURED. Check 29.76 passes, and fails on v29.75.
 ## v29.75 - SETTINGS RIGHT STEPPERS
 
 Co-op hunt while he was away. Critic c-31: steppers float mid-row; section label repeats the tab; toast overlaps the card. Card 720 wide, steppers right-aligned, toast to the top.

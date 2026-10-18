@@ -1563,11 +1563,13 @@ body #attract .arcover .aor + .aor{ margin-top:calc(var(--sp-1) * var(--attz,1))
    Press any button is plain text 400px under the card, no primary action"). While the run over card is up the screen is one centred column: the card (840px x scale, as it was),
    a 24px gap, then Press any button as a real button (1px accent line, accent at 14 percent, 8px radius, 16 and 48px padding). The prompt keeps its words and its
    32px size; only where it sits and its plate change. */
-body #attract[style*="block"]:has(.arcover[style*="block"]){ display:flex !important; flex-direction:column; align-items:center; justify-content:center; gap:calc(var(--sp-4) * var(--attz,1)); }
+/* v28.xx (cw-party-over5), the critic on v29.74 (screen 55, score 2): "Press any button is a muddy ghost-amber box that looks disabled, the button is centred while the card text is left aligned, amber is spent twice". The column is a grid one card wide, so the button is exactly as wide as the card and lines up with its edges, it is the one solid primary (accent fill, dark ink, 56px high, no pulse), and the score goes light so the amber is spent once. */
+body #attract[style*="block"]:has(.arcover[style*="block"]){ display:grid !important; grid-template-columns:max-content; justify-content:center; align-content:center; row-gap:calc(var(--sp-4) * var(--attz,1)); }
 /* v28.xx (cw-party-over4): the recorded clip element stays in the page flow and pushed the column to the bottom (seen in the picture of v29.73); it goes behind. */
 body #attract[style*="block"]:has(.arcover[style*="block"]) > video{ position:absolute; left:0; top:0; }
 body #attract[style*="block"]:has(.arcover[style*="block"]) .arcover{ position:relative; left:auto; top:auto; transform:none; order:1; }
-body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ position:relative; left:auto; right:auto; bottom:auto; order:2; width:max-content; padding:calc(var(--sp-2) * var(--attz,1)) calc(var(--sp-5) * var(--attz,1)); border:1px solid var(--acc); border-radius:var(--rad); background:color-mix(in srgb, var(--acc) 14%, transparent); }
+body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ position:relative; left:auto; right:auto; bottom:auto; order:2; width:auto; box-sizing:border-box; min-height:calc(var(--sp-5) * 2.25 * var(--attz,1)); display:flex; align-items:center; justify-content:center; padding:0 calc(var(--sp-5) * var(--attz,1)); border:1px solid var(--acc); border-radius:var(--rad); background:var(--acc); color:var(--acc-ink); animation:none; opacity:1; }
+body #attract[style*="block"]:has(.arcover[style*="block"]) .arcover .aos{ color:var(--tx-1); }
 body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(--f-cond); letter-spacing:var(--track); color:var(--acc); }
 /* v28.xx (cw-party-att), his order 2026-10-18 (UI step 3, party screens 46, 56, 64): the critic scored how to play 3 and the board 2 ("flat pure black, no world,
    Press any button 32px and detached 90px from the card, column headers faint, nine identical rows, the card too wide for its content"). The backdrop is a soft
@@ -2616,7 +2618,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.75';
+var VER='29.76';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47706,7 +47708,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.75: Settings steppers sit at the row edge; the toast moves to the top. Check 29.75 fails on v29.74',
+  now:'v29.76: The run over screen has a clear button. Check 29.76 fails on v29.75',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

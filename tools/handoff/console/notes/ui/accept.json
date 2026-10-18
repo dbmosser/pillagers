@@ -410,9 +410,9 @@
  "70-settings-sec-controls": {
   "score": 2,
   "pass": false,
-  "verdict": "The settings modal has a consistent dark palette and a clear tab strip, but its flat, same-weight rows, small text, a toast colliding with the footer and a stray explaining sentence keep it at amateur level.",
-  "pic": "tools/handoff/console/notes/shots/c-31s-after/70-settings-sec-controls-1080.jpg",
+  "verdict": "A dark settings modal with a tidy single tab strip, but it is crowded and wide-set, with a joke sentence and a footer warning that are clutter, and the second capture also breaks the layout (wrapped tab and a clipped row).",
+  "pic": "tools/handoff/console/notes/shots/c-31s-after2/70-settings-sec-controls-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:49"
+  "when": "2026-10-18T09:57"
  }
 }

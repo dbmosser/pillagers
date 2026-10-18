@@ -1,0 +1,6 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  25-raid-pause-box                      staged       8.9s  
+  70-settings-sec-controls               staged       8.1s    | settingsmodal
+  18-settings-hub                        staged       6.9s    | settingsmodal
+  31-settings-send-play-data             staged       9.9s  
+  69-settings-sec-audio                  staged       7.9s    | settingsmodal

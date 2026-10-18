@@ -1,0 +1,7 @@
+v29.76: run over card: one solid button, one amber
+
+The run over screen has a clear button.
+
+Check 29.76. Fails on v29.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
