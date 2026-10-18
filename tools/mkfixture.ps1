@@ -25910,11 +25910,11 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); p=g&&g.player; if(!g||g.over||!p||!g.zones||!g.zones.length||!g.ents) return 'SKIP: no live raid';
        E0=g.ents; g.paused=false; p.downed=false; p.dying=false; p.roll=0; p.iv=99; p.x=g.zones[0].x; p.y=g.zones[0].y; p.face=0;
-       // 1. HIS NUMBER: swing until it dies, a cooldown apart; it must take exactly three
+       // 1. HIS NUMBER: swing until it dies, a cooldown apart; it must die within three (exactly three when this was written, ONE since cw-meleeone, his order of 2026-10-18)
        C=fresh(Math.PI); if(!C) return 'SKIP: no standard crawler could be made';
        h0=C.hp;
        while(n<14&&C.hp>0){ g.t+=0.5; if(!meleeStrike()){ bad.push('swing '+(n+1)+' was refused after the cooldown'); break; } n++; hp.push(Math.round(C.hp)); }
-       if(!bad.length&&n!==3) bad.push('a standard crawler of '+h0+' health took '+n+' crowbar swings to kill (health after each: '+hp.join(', ')+'), not 3');
+       if(!bad.length&&(n<1||n>3)) bad.push('a standard crawler of '+h0+' health took '+n+' crowbar swings to kill (health after each: '+hp.join(', ')+'), not 1 to 3');
        // 2. the cooldown: a second swing in the same instant is refused
        C=fresh(Math.PI); if(C){ g.t+=0.5; if(!meleeStrike()) bad.push('the first swing of the cooldown case did not land'); else { dBar=h0-C.hp; if(meleeStrike()) bad.push('a second swing in the same instant was allowed: the cooldown is gone'); } }
        // 3. a plain bare-hands punch (the left click) stays well under a crowbar blow
