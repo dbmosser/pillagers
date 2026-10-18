@@ -545,18 +545,18 @@
   "when": "2026-10-18T13:13"
  },
  "01-title-mode-menu": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The tagline is now centred, but the stack is still a cluttered centred form: a 4-line header, a key legend, five equal-width mode bars, two explaining sentences and a full saves editor, with no clear first read beyond the amber 1 player bar.",
+  "verdict": "The title screen is much cleaner now, with the explaining sentences gone, a clear logo, and a top-right utility row, but it still has five stacked mode buttons, a raw save-editing form, and a gradient logo and tag text that are too small and dim.",
   "findings": [
-   "P0 Header block, y 170-400: title, subtitle, fullscreen hint, 2 buttons, tagline and key legend: Keep the logo (raise it to about 96px) and the tagline at 20px tx-2 with 24px above and below. Delete the subtitle line (move 'v0.0678' to a 14px footer at bottom-left). Delete 'Best in fullscreen…'. Move 'Go fullscreen' and 'Settings' to a top-right row at the 5% margin (y=54, x≈1824 right edge), as 48px ghost buttons.",
-   "P1 Explaining sentences at y~292, y~731 and y~850: Delete all three. Show a 28px 'New' chip on the '1 player' row if the save has 0 raids. Move the reload warning into the Switch save confirm dialog.",
-   "P1 Saves block, y 760-912: Collapse to one 48px row: 'Pillager New · 0 raids · 900 credits · 0 XP' in tx-2 20px, with a ghost 'Switch save' button on the right. Put rename and create in a Saves modal (960x680). Use a --ui-line-hi border on the row, not amber. Replace '$900' with 'Credits 900'.",
-   "P1 Mode buttons, y 423-703: Show 'Play' (56px primary, amber), 'Co-op (same machine)' (48px ghost) and a ghost 'Demos' that opens a sub-list with the two arcade demos. Use an 8px gap. Remove the 'coming later' row or show it at 40% opacity with no chip. Focus: --ui-raised fill plus a 3px amber left bar.",
-   "P1 Key legend, y~386: Move it to a bottom-edge strip at y≈1010 in --fs-label 16px. Show 4 hints ('Enter  Select', 'Esc  Back', 'F1  Controls', 'Tab  Switch save'), switching to pad glyphs when the last input was a pad. Chips should be 28px high with a key cap plus a word."
+   "P1 Saves block, y 715-832: Collapse to one 48px row, 558px wide, aligned with the buttons: 'Pillager New · 0 raids · Credits 900 · 0 XP' in tx-2 20px, with a ghost 'Switch save' button on the right. Border --ui-line-hi. Move the name input, Change name and Create a new save into a 960x680 Saves modal. Delete the 'Saves' label.",
+   "P1 Mode buttons, y 413-693: Show 'Play' (56px primary), '2 player co-op (same machine)' (48px ghost) and a 'Demos' ghost that opens the two arcade demos. Delete the server row, or show it at 40% opacity with no chip. Use an 8px gap and one 48px height for all ghosts.",
+   "P1 Key legend, y~1042: Cut to 3 hints ('Enter  Select', 'Esc  Back', 'F1  Controls'). Use 16px labels in tx-2 with 28px-high caps. Move the gameplay keys to the Controls screen. Swap to pad glyphs when the last input was a pad.",
+   "P1 Focus and selection, y 413-469: For a focused ghost row: --ui-raised fill, 1px tx-2 border and a 3px amber left bar. Keep amber only on the primary and the focus.",
+   "P2 Logo and tagline, y 262-390: Keep the logo at about 96px but flatten it to --acc with a 2px dark offset. Set the tagline to 20px tx-2, 24px below the logo and 32px above the first button."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-mid/01-title-mode-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-after/01-title-mode-menu-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T15:17"
+  "when": "2026-10-18T15:50"
  }
 }

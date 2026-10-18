@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>q30 C one long page</title>
+<style>
+:root{--panel:#14171a;--raised:#1e2225;--line:#2e3337;--line-hi:#4a5257;--text:#f2efe6;--muted:#a9a79e;--lime:#e4ff2e;--ink:#0d1200;--danger:#ff5a3c}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0b0c0d}
+body{position:relative;font-family:Bahnschrift,"Segoe UI Variable Display","Segoe UI",sans-serif;font-weight:500;color:var(--text);-webkit-font-smoothing:antialiased;letter-spacing:.01em}
+.abs{position:absolute}
+.bd{position:absolute;background-repeat:no-repeat}
+.dim{position:absolute;inset:0}
+.ico{display:block;flex:none}
+.hint{position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center;align-items:center;gap:44px;font-size:24px;color:var(--muted);font-weight:500}
+.hint span.it{display:flex;align-items:center;gap:12px}
+.pad{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:2px solid #6b7176;background:rgba(20,23,26,.9);color:var(--text);font-size:21px;font-weight:700;letter-spacing:0}
+.pad.sh{border-radius:10px;width:auto;min-width:46px;padding:0 10px;height:34px;font-size:19px}
+.close{position:absolute;width:56px;height:56px;border-radius:4px;border:1px solid var(--line-hi);display:flex;align-items:center;justify-content:center;color:var(--text);background:transparent}
+.ghost{position:absolute;height:56px;padding:0 28px;border-radius:4px;border:1px solid var(--line-hi);display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;color:var(--text);background:rgba(255,255,255,.03)}
+.card{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:4px;box-shadow:0 30px 90px rgba(0,0,0,.55)}
+
+.card{left:96px;top:54px;width:1728px;height:972px;box-shadow:0 0 0 1px var(--line),0 30px 90px rgba(0,0,0,.55);border:0}
+.hdr{position:absolute;left:136px;top:82px;font-size:48px;line-height:56px;font-weight:700}
+.close{left:1744px;top:82px}
+.r{position:absolute;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--line);font-size:28px;font-weight:500}
+.r.on{background:linear-gradient(90deg,rgba(228,255,46,.20),rgba(228,255,46,.07));border-bottom-color:transparent;font-weight:600}
+.r.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--lime)}
+.step{display:flex;align-items:center;gap:6px}
+.step svg{color:var(--muted)}
+.r.on .step svg{color:var(--lime)}
+.v{min-width:116px;text-align:center;font-weight:600}
+.hint{bottom:7px}
+
+  .chips{position:absolute;left:460px;top:152px;width:1000px;height:36px;display:flex;gap:10px;z-index:3}
+  .chip{height:36px;padding:0 18px;border-radius:18px;border:1px solid var(--line-hi);background:var(--raised);font-size:24px;line-height:34px;color:var(--muted);font-weight:600;white-space:nowrap}
+  .chip.on{background:var(--lime);border-color:var(--lime);color:var(--ink);font-weight:700}
+  .clip{position:absolute;left:96px;top:152px;width:1728px;height:874px;overflow:hidden;border-radius:0 0 4px 4px}
+  .clip .fade{position:absolute;left:0;right:0;top:0;height:90px;background:linear-gradient(#14171a 40%,rgba(20,23,26,0));z-index:2}
+  .clip .fadeb{position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(rgba(20,23,26,0),#14171a 85%);z-index:2}
+  .sh{position:absolute;font-size:40px;line-height:48px;font-weight:700}
+  .help2{position:absolute;font-size:24px;line-height:32px;color:var(--muted);padding-left:24px}
+  .track{position:absolute;left:1810px;top:152px;width:6px;height:850px;background:var(--line);border-radius:3px;opacity:.55}
+  .thumb{position:absolute;left:1810px;top:262px;width:6px;height:330px;background:var(--lime);border-radius:3px}
+  </style></head>
+<body>
+<div class="bd" style="left:-40px;top:-40px;width:2000px;height:1160px;background-image:url('../../console/notes/shots/all4k/50-arcade-hud-live-4k.jpg');background-size:3000px 1687px;background-position:-590px -185px;filter:blur(12px)"></div><div class="dim" style="background:rgba(6,7,8,0.55)"></div><div class="card"></div><div class="hdr">Settings</div><div class="close"><svg class="ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M5 5l14 14M19 5L5 19"/></svg></div><div class="clip"><div class="fade"></div><div class="fadeb"></div><div class="sh" style="left:460px;top:80px">The raid</div><div class="r" style="left:460px;top:140px;width:1000px;"><span>Shared sight</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">On</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="r" style="left:460px;top:212px;width:1000px;"><span>Superhot mode</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">Off</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="sh" style="left:460px;top:316px">Audio</div><div class="r" style="left:460px;top:376px;width:1000px;"><span>Master volume</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">Full</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="r" style="left:460px;top:448px;width:1000px;"><span>Sound effects</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">Full</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="r on" style="left:460px;top:520px;width:1000px;border-bottom:0"><span>Music</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">Off</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="help2" style="left:460px;top:596px">Plays in the menus and at the hub.</div><div class="r" style="left:460px;top:644px;width:1000px;"><span>Subtitles</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">On</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="sh" style="left:460px;top:760px">Controls</div></div>
+  <div class="chips"><div class="chip">The raid</div><div class="chip on">Audio</div><div class="chip">Controls</div><div class="chip">Controller</div><div class="chip">Display</div><div class="chip">Accessibility</div></div>
+  <div class="track"></div><div class="thumb"></div><div class="hint"><span class="it"><span class="pad sh">LB RB</span>Jump</span><span class="it"><span class="pad">A</span>Change</span><span class="it"><span class="pad">B</span>Back</span></div>
+</body></html>

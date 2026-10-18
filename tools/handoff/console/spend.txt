@@ -494,3 +494,4 @@
 2026-10-18 0.0272 critic-03-title-and-backdrop
 2026-10-18 0.0349 critic-02-raid-hud-redesign
 2026-10-18 0.0350 critic-02-raid-hud-redesign
+2026-10-18 0.0277 critic-03-title-and-backdrop

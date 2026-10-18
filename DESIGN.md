@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.61 - THE ACCENT IS LIME YELLOW
+
+Co-op hunt while he was away. His Q46 (2026-10-18): the accent for selected things and main buttons is lime yellow, whichever shade is most visible on the dark. #e6ff3d is 15:1 on the panel and the ink on it is 15:1. Rarity gold, warn amber, danger red and the extract teal stay as they are, so the accent never reads as one of them.
+
+MEASURED. Check 30.61 passes, and fails on v30.60.
 ## v30.60 - TITLE: CLEAN THE STACK
 
 Co-op hunt while he was away. The critic (2 of 5): six stacked rows of small text between the logo and the menu, and three explaining sentences. Logo 96px, subtitle to a version footer, Go fullscreen and Settings top-right, key legend a bottom strip, the three sentences gone, the world dimmed less.

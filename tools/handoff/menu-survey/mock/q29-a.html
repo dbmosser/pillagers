@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>q29 A centred stack</title>
+<style>
+:root{--panel:#14171a;--raised:#1e2225;--line:#2e3337;--line-hi:#4a5257;--text:#f2efe6;--muted:#a9a79e;--lime:#e4ff2e;--ink:#0d1200;--danger:#ff5a3c}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0b0c0d}
+body{position:relative;font-family:Bahnschrift,"Segoe UI Variable Display","Segoe UI",sans-serif;font-weight:500;color:var(--text);-webkit-font-smoothing:antialiased;letter-spacing:.01em}
+.abs{position:absolute}
+.bd{position:absolute;background-repeat:no-repeat}
+.dim{position:absolute;inset:0}
+.ico{display:block;flex:none}
+.hint{position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center;align-items:center;gap:44px;font-size:24px;color:var(--muted);font-weight:500}
+.hint span.it{display:flex;align-items:center;gap:12px}
+.pad{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:2px solid #6b7176;background:rgba(20,23,26,.9);color:var(--text);font-size:21px;font-weight:700;letter-spacing:0}
+.pad.sh{border-radius:10px;width:auto;min-width:46px;padding:0 10px;height:34px;font-size:19px}
+.close{position:absolute;width:56px;height:56px;border-radius:4px;border:1px solid var(--line-hi);display:flex;align-items:center;justify-content:center;color:var(--text);background:transparent}
+.ghost{position:absolute;height:56px;padding:0 28px;border-radius:4px;border:1px solid var(--line-hi);display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;color:var(--text);background:rgba(255,255,255,.03)}
+.card{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:4px;box-shadow:0 30px 90px rgba(0,0,0,.55)}
+
+  .title{position:absolute;left:0;right:0;text-align:center;font-size:48px;line-height:56px;font-weight:700;letter-spacing:.005em}
+  .fb{position:absolute;left:0;right:0;text-align:center;font-size:22px;line-height:30px;color:var(--muted);font-weight:500}
+  .b{position:absolute;left:40px;width:480px;height:72px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:600;background:var(--raised);border:1px solid var(--line);color:var(--text)}
+  .b.on{background:var(--lime);border-color:var(--lime);color:var(--ink);font-weight:700;box-shadow:0 0 36px rgba(228,255,46,.28)}
+  .b.dg{background:transparent;border:2px solid rgba(255,90,60,.75);color:var(--danger)}
+  </style></head>
+<body>
+<div class="bd" style="left:-40px;top:-40px;width:2000px;height:1160px;background-image:url('../../console/notes/shots/all4k/50-arcade-hud-live-4k.jpg');background-size:3000px 1687px;background-position:-590px -185px;filter:blur(12px)"></div><div class="dim" style="background:rgba(6,7,8,0.55)"></div>
+  <div class="card" style="left:680px;top:170px;width:560px;height:740px">
+    <div class="title" style="top:56px">Paused</div>
+    <div class="fb" style="top:128px">Tell us anything that felt wrong</div>
+    <div class="b on" style="top:220px">Resume</div><div class="b" style="top:308px">Settings</div><div class="b" style="top:396px">Feedback</div><div class="b" style="top:484px">What&rsquo;s new</div><div class="b dg" style="top:604px">End run</div>
+  </div><div class="hint"><span class="it"><span class="pad">A</span>Select</span><span class="it"><span class="pad">B</span>Resume</span></div>
+</body></html>

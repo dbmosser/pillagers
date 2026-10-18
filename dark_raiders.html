@@ -46,7 +46,7 @@
     --ui-line:#2e3337; --ui-line-hi:#4a5257; --ui-scrim:rgba(6,7,8,.82);
     --ui-paper:#ebe5d6; --ui-paper-2:#ddd5c3; --ui-paper-ink:#17150f; --ui-paper-ink-2:#5a554a;
     --tx-1:#efe9dc; --tx-2:#aaa498; --tx-3:#7a766e; --tx-off:#55524c;
-    --acc:#f5b73b; --acc-ink:#1a1205; --acc-dim:rgba(245,183,59,.16);
+    --acc:#e6ff3d; --acc-ink:#11150a; --acc-dim:rgba(230,255,61,.16);
     --danger:#e5482f; --danger-bg:rgba(60,12,8,.86); --warn:#f5b73b; --ok:#76b97c;
     --extract:#47d8c6; --ally:#9cc7ff; --armour:#7fa6c9;
     --r-common:#9da3a8; --r-uncommon:#5fbf6a; --r-rare:#3f9de9; --r-elite:#a866e0; --r-gold:#ffc72e;
@@ -67,7 +67,7 @@
        space grid, one radius, one scrim, the button heights. UIT in the script is the same table; the check keeps them equal. */
     --fs-hero:56px; --fs-title:32px; --fs-body:20px; --fs-label:16px; --fs-fine:14px;
     --sp-1:8px; --sp-2:16px; --sp-3:24px; --sp-4:32px; --sp-5:48px; --rad:4px; --scrim:rgba(6,7,8,.80); --track:.04em;
-    --btn-h:56px; --btn-h-sm:48px; --btn-h-xs:40px; --menu-w:560px; --acc-hover:#f7c25a; --acc-press:#dfa52f;
+    --btn-h:56px; --btn-h-sm:48px; --btn-h-xs:40px; --menu-w:560px; --acc-hover:#f0ff7a; --acc-press:#c8e22c;
   }  #root {
     /* Chrono Trigger window palette. --steel was defined and referenced nowhere
        in the entire file, so it is a free slot and becomes the mid-blue inner
@@ -226,11 +226,11 @@
   .pmoreGONE { display:none; margin-top:6px; padding:6px 10px; cursor:pointer;
     font-size:14px; color:var(--amber); border:1px solid var(--steel-hi);
     border-radius:3px; text-align:center; }
-  .pmore:hover { background:rgba(245,183,59,.08); }
+  .pmore:hover { background:rgba(230,255,61,.08); }
   .pmore.show { display:block; }
   .row { display:flex; align-items:center; gap:10px; padding:10px 14px; font-size:16px;
     border-bottom:1px solid rgba(46,51,55,.35); }
-  .row:hover { background:rgba(245,183,59,.06); }
+  .row:hover { background:rgba(230,255,61,.06); }
   .row .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .row .vl { color:var(--amber); font-size:15px; }
   .swatch { width:3px; height:13px; border-radius:1px; flex:none; }
@@ -265,8 +265,8 @@
 .avboots{ width:42px; height:8px; border-radius:0 0 4px 4px; border:2px solid #14161b; border-top:0; margin-top:-1px; }   /* v10.32 */
 .avslot{ display:flex; align-items:center; gap:8px; padding:5px 10px; cursor:pointer;
   border-top:1px solid rgba(46,51,55,.55); }
-.avslot:hover{ background:rgba(245,183,59,.10); }
-.avslot.on{ background:rgba(245,183,59,.16); }
+.avslot:hover{ background:rgba(230,255,61,.10); }
+.avslot.on{ background:rgba(230,255,61,.16); }
 .avsic{ width:26px; height:26px; border-radius:3px; border:1px solid var(--steel-hi);
   display:flex; align-items:center; justify-content:center; font-size:13px;
   background:rgba(0,0,0,.3); flex:none; }
@@ -421,7 +421,7 @@
   .imenuhead em{ font-style:normal; color:var(--ash); font-size:13px; }
   .imenurow{ padding:6px 11px; cursor:pointer; display:flex; gap:10px;
     justify-content:space-between; align-items:center; }
-  .imenurow:hover{ background:rgba(245,183,59,.14); color:#fff; }
+  .imenurow:hover{ background:rgba(230,255,61,.14); color:#fff; }
   .imenurow em{ font-style:normal; color:var(--ash); font-size:13px; letter-spacing:.06em; }
   .imenurow.dim{ opacity:.38; cursor:default; }
   .imenurow.dim:hover{ background:none; color:var(--bone); }
@@ -505,8 +505,8 @@
     width:100%; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2;
     -webkit-box-orient:vertical; letter-spacing:.02em; }
   .vcell.on .vlbl{ color:var(--bone); }
-  .vcell:hover{ background:rgba(245,183,59,.10); }
-  .vcell.on{ border-color:var(--amber); background:rgba(245,183,59,.15);
+  .vcell:hover{ background:rgba(230,255,61,.10); }
+  .vcell.on{ border-color:var(--amber); background:rgba(230,255,61,.15);
     box-shadow:0 0 0 1px var(--amber) inset; }
   .vcell.locked{ opacity:.42; }
   /* v8.09, his order: a clear indication that you took it. The cell you clicked
@@ -584,7 +584,7 @@
   .cell{ position:relative; aspect-ratio:1/1; border:1px solid var(--steel-hi);
     border-radius:3px; background:rgba(0,0,0,.32); display:flex;
     align-items:center; justify-content:center; cursor:pointer; transition:all .1s; }
-  .cell:hover{ background:rgba(245,183,59,.10); transform:translateY(-1px); }
+  .cell:hover{ background:rgba(230,255,61,.10); transform:translateY(-1px); }
   .cell.c-common{ border-color:var(--r-common); }
   .cell.c-uncommon{ border-color:var(--r-uncommon); box-shadow:inset 0 0 8px rgba(95,191,106,.16); }
   .cell.c-rare{ border-color:var(--r-rare); box-shadow:inset 0 0 8px rgba(63,157,233,.20); }
@@ -606,7 +606,7 @@
   button { font-family:var(--f-body); background:transparent;
     border:1px solid var(--steel-hi); color:var(--bone); padding:10px 18px; font-size:14px;
     letter-spacing:.06em; cursor:pointer; text-transform:uppercase; transition:all .12s; }
-  button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(245,183,59,.08); }
+  button:hover:not(:disabled){ border-color:var(--amber); color:var(--amber); background:rgba(230,255,61,.08); }
   button:disabled{ opacity:.3; cursor:not-allowed; }
   button:focus-visible{ outline:2px solid var(--coolant); outline-offset:1px; }
   .deploy { padding:12px; font-family:var(--f-body); font-weight:800;
@@ -614,7 +614,7 @@
     color:#2a1a06; background:linear-gradient(180deg,#ffd980,#f0a02a); }
   .deploy:hover{ background:linear-gradient(180deg,#ffe4a0,#ffbe52); border-color:#fff0c8; color:#2a1a06; }
   .ghost { background:transparent; color:var(--amber); }
-  .ghost:hover{ background:rgba(245,183,59,.09); }
+  .ghost:hover{ background:rgba(230,255,61,.09); }
   .stat { display:flex; justify-content:space-between; padding:6px 12px; font-size:14px; }
   .stat b{ color:var(--bone); font-weight:500; } .stat span{ color:var(--ash); }
   .equipped{ padding:10px 12px; border-bottom:1px solid var(--steel-hi); background:rgba(53,214,200,.04); }
@@ -748,7 +748,7 @@
      is drawn faded, it came out a dim brown. Thicker, with a brighter ring and a soft glow, and the focused thing always at full
      strength, so player 2 finds it from the couch. */
   .padfocus{ outline:3px solid var(--amber) !important; outline-offset:2px; opacity:1 !important;
-    box-shadow:0 0 0 6px rgba(245,183,59,.35), 0 0 22px 4px rgba(245,183,59,.45) !important; }
+    box-shadow:0 0 0 6px rgba(230,255,61,.35), 0 0 22px 4px rgba(230,255,61,.45) !important; }
   /* v19.92, from the code review of 2026-10-08: the full strength above made a button that went dead under the highlight (the last
      affordable rack just built, v15.52 keeps the highlight there on purpose) or a locked shop cell look live. They stay dimmed. */
   button:disabled.padfocus, .vcell.locked.padfocus{ opacity:.55 !important; }
@@ -926,16 +926,16 @@
   #root .row:hover{ background:rgba(170,164,152,.07); }
   #root .plist .row + .row{ border-top-color:rgba(170,164,152,.10); border-radius:0; }
   #root button{ border-radius:6px; border-color:rgba(170,164,152,.45); padding:9px 18px; min-height:38px; font-weight:600; letter-spacing:.08em; }
-  #root button:hover:not(:disabled){ background:rgba(245,183,59,.10); box-shadow:0 0 0 1px rgba(245,183,59,.25) inset; }
+  #root button:hover:not(:disabled){ background:rgba(230,255,61,.10); box-shadow:0 0 0 1px rgba(230,255,61,.25) inset; }
   #root button:active:not(:disabled){ transform:translateY(1px); }
   #root .deploy{ background:linear-gradient(180deg,#ffd97f 0%,#ffb634 100%); color:#1a1408; border:1px solid #ffe9b0; border-radius:8px;
     box-shadow:0 8px 22px rgba(255,180,50,.22), 0 1px 0 rgba(255,255,255,.35) inset; letter-spacing:.12em; font-weight:800; }
   #root .deploy:hover:not(:disabled){ filter:brightness(1.06); color:#1a1408; background:linear-gradient(180deg,#ffe08f 0%,#ffbd40 100%); box-shadow:0 10px 26px rgba(255,180,50,.3); }
-  #root .deploy.ghost{ background:transparent; color:var(--amber); border-color:rgba(245,183,59,.55); box-shadow:none; }
-  #root .deploy.ghost:hover:not(:disabled){ background:rgba(245,183,59,.10); color:var(--amber); }
+  #root .deploy.ghost{ background:transparent; color:var(--amber); border-color:rgba(230,255,61,.55); box-shadow:none; }
+  #root .deploy.ghost:hover:not(:disabled){ background:rgba(230,255,61,.10); color:var(--amber); }
   #root input:not([type=range]):not([type=checkbox]), #root textarea{ background:rgba(0,0,0,.35); border:1px solid rgba(170,164,152,.35); border-radius:6px;
     color:var(--bone); padding:9px 12px; }
-  #root input:not([type=range]):focus, #root textarea:focus{ border-color:var(--amber); outline:none; box-shadow:0 0 0 2px rgba(245,183,59,.22); }
+  #root input:not([type=range]):focus, #root textarea:focus{ border-color:var(--amber); outline:none; box-shadow:0 0 0 2px rgba(230,255,61,.22); }
   *::-webkit-scrollbar{ width:8px; height:8px; }
   *::-webkit-scrollbar-thumb{ background:rgba(170,164,152,.35); border-radius:8px; }
   *::-webkit-scrollbar-thumb:hover{ background:rgba(170,164,152,.55); }
@@ -956,9 +956,9 @@
      top and a lift on hover; the tabs as rounded chips. The rarity border colours, sizes and every id are unchanged. */
   #root .cell, #root .vcell{ border-radius:8px; background:linear-gradient(180deg,rgba(170,164,152,.07) 0%,rgba(0,0,0,.34) 100%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.05); }
-  #root .cell:hover, #root .vcell:hover{ background:linear-gradient(180deg,rgba(245,183,59,.14) 0%,rgba(0,0,0,.30) 100%); transform:translateY(-2px);
+  #root .cell:hover, #root .vcell:hover{ background:linear-gradient(180deg,rgba(230,255,61,.14) 0%,rgba(0,0,0,.30) 100%); transform:translateY(-2px);
     box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.07); }
-  #root .vcell.on{ background:linear-gradient(180deg,rgba(245,183,59,.22) 0%,rgba(245,183,59,.08) 100%); }
+  #root .vcell.on{ background:linear-gradient(180deg,rgba(230,255,61,.22) 0%,rgba(230,255,61,.08) 100%); }
   #root .invtab{ border-radius:8px; }
   #root .vendgrid{ border-radius:10px; }
   #root .vdet{ border-radius:12px; box-shadow:0 16px 40px rgba(0,0,0,.40); }
@@ -990,8 +990,8 @@
   #root button:active:not(:disabled){ transform:translateY(1px); background:var(--ui-raised); }
   #root .deploy, #root #oc_btn, #root .ui-btn.pri{ min-height:44px; border:1px solid var(--acc); border-radius:2px; background:var(--acc); background-image:none;
     color:var(--acc-ink); font-family:var(--f-cond); font-weight:700; font-size:16px; letter-spacing:.08em; box-shadow:none; filter:none; text-shadow:none; }
-  #root .deploy:hover:not(:disabled), #root #oc_btn:hover:not(:disabled), #root .ui-btn.pri:hover:not(:disabled){ background:#f7c25a; background-image:none; border-color:#f7c25a; color:var(--acc-ink); filter:none; box-shadow:none; }
-  #root .deploy:active:not(:disabled), #root #oc_btn:active:not(:disabled), #root .ui-btn.pri:active:not(:disabled){ background:#dfa52f; }
+  #root .deploy:hover:not(:disabled), #root #oc_btn:hover:not(:disabled), #root .ui-btn.pri:hover:not(:disabled){ background:#f0ff7a; background-image:none; border-color:#f0ff7a; color:var(--acc-ink); filter:none; box-shadow:none; }
+  #root .deploy:active:not(:disabled), #root #oc_btn:active:not(:disabled), #root .ui-btn.pri:active:not(:disabled){ background:#c8e22c; }
   #root .deploy.ghost, #root .ghost{ min-height:40px; background:transparent; border-color:var(--ui-line-hi); color:var(--acc); font-weight:600; }
   #root .deploy.ghost:hover:not(:disabled), #root .ghost:hover:not(:disabled){ background:var(--ui-hover); border-color:var(--acc); color:var(--acc); }
   /* a disabled button greys its words and frame and is never see-through, even where its own markup dims it or colours it (the pad focus keeps its v19.92 dimming) */
@@ -999,7 +999,7 @@
   #root .deploy:not(.ghost):disabled, #root #oc_btn:disabled{ background:var(--ui-hover); border-color:var(--ui-hover); }
   /* the buttons on the cream card keep the card ink */
   #root .vbuy{ border-radius:2px; min-height:48px; background:var(--acc); color:var(--acc-ink); font-family:var(--f-cond); letter-spacing:.08em; }
-  #root .vbuy:hover:not(:disabled){ background:#f7c25a; color:var(--acc-ink); }
+  #root .vbuy:hover:not(:disabled){ background:#f0ff7a; color:var(--acc-ink); }
   #root .vdet .vbuy:disabled:not(.padfocus){ background:var(--ui-paper-2); color:var(--ui-paper-ink-2) !important; border-color:transparent !important; }
   #root .vqty button{ border-radius:2px; background:var(--ui-paper-2); color:var(--ui-paper-ink); }
   #root .vqty button:hover:not(:disabled){ background:#cbc2ae; color:var(--ui-paper-ink); }
@@ -1018,7 +1018,7 @@
   #root button:focus-visible, #root .invtab:focus-visible, #root .cell:focus-visible, #root .vcell:focus-visible, #root .tag:focus-visible,
   #root .ui-btn:focus-visible, #root .ui-tab:focus-visible, #root .ui-row:focus-visible, .padfocus{
     outline:3px solid var(--acc) !important; outline-offset:3px !important;
-    box-shadow:inset 4px 0 0 var(--tx-1), inset 0 -3px 0 var(--bar,transparent), 0 0 0 6px rgba(245,183,59,.22), 0 0 0 7px rgba(11,12,13,.6) !important; }
+    box-shadow:inset 4px 0 0 var(--tx-1), inset 0 -3px 0 var(--bar,transparent), 0 0 0 6px rgba(230,255,61,.22), 0 0 0 7px rgba(11,12,13,.6) !important; }
   #root .ui-btn.danger:focus-visible, #root .ui-btn.danger.padfocus{ outline-color:var(--danger) !important; }
   /* rows */
   #root .row{ border-radius:2px; }
@@ -1232,7 +1232,7 @@
   #root #barmodal .plist .row .vl{ font-family:var(--f-cond); font-size:22px; font-weight:700; min-width:72px; text-align:right; }
   #root #barmodal button[data-bz]{ min-height:48px; min-width:170px !important; font-size:17px; font-weight:700; letter-spacing:.12em;
     background:var(--acc); border-color:var(--acc); color:var(--acc-ink); }
-  #root #barmodal button[data-bz]:hover:not(:disabled){ background:#f7c25a; border-color:#f7c25a; color:var(--acc-ink); }
+  #root #barmodal button[data-bz]:hover:not(:disabled){ background:#f0ff7a; border-color:#f0ff7a; color:var(--acc-ink); }
   #root #barmodal button[data-bz]:disabled{ background:var(--ui-hover); border-color:var(--ui-line-hi) !important; color:var(--tx-2) !important; }
   /* vNN.xx, UI REDESIGN ui5q1s (his #50, from the visual lint of every screen): LOST READS ON THE CARD. The LOST tags in the run card
      manifest were the danger red, 3.9:1 against the card; they are a lighter red of the same hue, 5.6:1. */
@@ -1250,7 +1250,7 @@
   #root #pausebox #resumebtn, #root #pausebox #pausesetbtn, #root #pausebox #abandonbtn, #root #pausebox #confirmabandon,
   #root #pausebox #charselbtn, #root #pausebox #arcendbtn{ min-height:48px; padding:0 26px !important; font-size:16px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
   #root #pausebox #resumebtn{ min-width:220px; background:var(--acc); border-color:var(--acc); color:var(--acc-ink); }
-  #root #pausebox #resumebtn:hover:not(:disabled){ background:#f7c25a; border-color:#f7c25a; color:var(--acc-ink); }
+  #root #pausebox #resumebtn:hover:not(:disabled){ background:#f0ff7a; border-color:#f0ff7a; color:var(--acc-ink); }
   /* vNN.xx, UI REDESIGN ui5q1j (his #50, from the AAA judge of the Fashion shot): THE RACKS FILL THE PANEL. The rack tiles were
      96px, so a requirement such as 12 EXTRACTIONS ran edge to edge against both borders and PUT 3 WARDENS DOWN (0 OF 3) broke into
      five lines over the name; the racks used only the left half of the panel; and a locked tile looked almost like an owned one.
@@ -1515,14 +1515,14 @@
   #root #modemsg{ flex:1; max-width:none; text-align:left; font-size:15px; line-height:1.45; color:var(--tx-1); }
   #root #modemenu #moderetry{ flex:none; min-width:150px; min-height:48px; padding:0 22px !important; background:var(--acc); border-color:var(--acc);
     color:var(--acc-ink); font-size:17px; font-weight:700; letter-spacing:.12em; }
-  #root #modemenu #moderetry:hover:not(:disabled){ background:#f7c25a; border-color:#f7c25a; color:var(--acc-ink); }
+  #root #modemenu #moderetry:hover:not(:disabled){ background:#f0ff7a; border-color:#f0ff7a; color:var(--acc-ink); }
   /* vNN.xx, UI REDESIGN ui5q1m (his #50, from the AAA judge of the Wirt shot): THE GAMBLE IS THE BUTTON. GAMBLE and BUY were small
      outline buttons with 12px labels, greyed to ghosts when the credits fall short, so the main action of the window was its weakest
      element. GAMBLE is a full width 48px amber primary now and the offer BUY a 48px button; when the credits fall short both read as
      solid greyed buttons with words in the second text colour. No word changed. */
   #root #gamblebtn{ flex:1; min-height:48px; padding:0 22px !important; font-size:17px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
     background:var(--acc); border-color:var(--acc) !important; color:var(--acc-ink) !important; }
-  #root #gamblebtn:hover:not(:disabled){ background:#f7c25a; border-color:#f7c25a !important; }
+  #root #gamblebtn:hover:not(:disabled){ background:#f0ff7a; border-color:#f0ff7a !important; }
   #root #gamblebtn:disabled, #root #wirtlot button:disabled{ background:var(--ui-hover); border-color:var(--ui-line-hi) !important; color:var(--tx-2) !important; }
   #root #wirtlot button{ min-height:48px; min-width:180px; font-size:16px; font-weight:700; letter-spacing:.1em; }
   /* vNN.xx, UI REDESIGN ui5q1b (his #50, from the AAA judge of the Wirt and Last Pour shots): A WINDOW SITS IN A DARK ROOM. The room
@@ -2017,7 +2017,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
       <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 2500c</button>
     </div>
   </div>
-  <div id="wirtsec_offer" style="border:1px solid var(--amber);padding:10px 12px;margin:14px 0 0;background:rgba(245,183,59,.05)">
+  <div id="wirtsec_offer" style="border:1px solid var(--amber);padding:10px 12px;margin:14px 0 0;background:rgba(230,255,61,.05)">
     <div style="font-size:13px;letter-spacing:.14em;color:var(--amber);font-weight:700;margin-bottom:6px">LIMITED TIME OFFER</div>
     <div id="wirtlot" style="display:flex;align-items:center;gap:12px"></div>
   </div>
@@ -2206,7 +2206,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
     <!-- v19.40, seen on the 4K REWARDS screenshot (2026-10-08): the count was dark text meant for the amber fill, but with the fill near empty
          (XP out of 1,200,000) it sat on the dark track and could not be read. Light text with a dark edge reads on both; the bar is a little taller. -->
     <div id="seasonbar" style="height:20px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
-      <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#f5b73b,#f5b73b)"></div>
+      <div id="seasonfill" style="height:100%;width:0%;background:linear-gradient(90deg,#e6ff3d,#e6ff3d)"></div>
       <div id="seasontext" style="position:absolute;inset:0;text-align:center;font-size:13px;line-height:20px;color:#f3ead8;font-weight:700;text-shadow:0 0 3px #000,0 1px 2px #000"></div>
     </div>
     <button class="deploy ghost" id="seasonclaimall" style="margin:0 0 8px;padding:8px 18px;width:100%">CLAIM ALL</button>
@@ -2786,7 +2786,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.60';
+var VER='30.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11308,7 +11308,8 @@ function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes==='function')?
 // HUDC keeps its names and its plates; its colours now come from UIC.
 var UIC={ui_void:'#0b0c0d', ui_bg:'#111315', ui_panel:'#16191b', ui_raised:'#1e2225', ui_hover:'#272c30', ui_line:'#2e3337',
   ui_line_hi:'#4a5257', ui_scrim:'rgba(6,7,8,.82)', ui_paper:'#ebe5d6', ui_paper_2:'#ddd5c3', ui_paper_ink:'#17150f', ui_paper_ink_2:'#5a554a',
-  tx_1:'#efe9dc', tx_2:'#aaa498', tx_3:'#7a766e', tx_off:'#55524c', acc:'#f5b73b', acc_ink:'#1a1205', acc_dim:'rgba(245,183,59,.16)',
+  // v28.xx (cw-limeacc), his Q46 (2026-10-18): the accent is lime yellow, the most visible shade on the dark. warn stays the old amber on purpose, so a warning is never the accent.
+  tx_1:'#efe9dc', tx_2:'#aaa498', tx_3:'#7a766e', tx_off:'#55524c', acc:'#e6ff3d', acc_ink:'#11150a', acc_dim:'rgba(230,255,61,.16)',
   danger:'#e5482f', danger_bg:'rgba(60,12,8,.86)', warn:'#f5b73b', ok:'#76b97c', extract:'#47d8c6', ally:'#9cc7ff', armour:'#7fa6c9',
   r_common:'#9da3a8', r_uncommon:'#5fbf6a', r_rare:'#3f9de9', r_elite:'#a866e0', r_gold:'#ffc72e'};   // 2026-10-12 (rarity): gold is gold, as RCOL
 var HUDC={text:UIC.tx_1, dim:UIC.tx_2, danger:UIC.danger, warn:UIC.warn, extract:UIC.extract, gain:UIC.ok, ally:UIC.ally,
@@ -42144,7 +42145,7 @@ function hudPanel(x,y,w,h,a){
   ctx.fill();
   path(x+.5,y+.5,w-1,h-1,Math.max(0,c-.5));
   ctx.strokeStyle='rgba(74,82,87,.9)'; ctx.lineWidth=1; ctx.stroke();
-  if(w>c+20){ ctx.fillStyle='#f5b73b'; ctx.fillRect(x+c+4,y,Math.min(36,w*0.25),2); }   // the amber tick of the menu plate (ui6)
+  if(w>c+20){ ctx.fillStyle='#e6ff3d'; ctx.fillRect(x+c+4,y,Math.min(36,w*0.25),2); }   // the amber tick of the menu plate (ui6)
   ctx.restore();
 }function drawRaiderBoard(){
   delete HUDBOX.raiders;
@@ -48114,7 +48115,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.60: The title is cleaner: bigger logo, one line, the menu. Check 30.60 fails on v30.59',
+  now:'v30.61: Main buttons, the selected tab and the focus ring are lime yellow instead of amber. Check 30.61 fails on v30.60',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62156,7 +62157,7 @@ UIM.mkRing=function(){
   var r=UIM.ring;
   if(r&&r.isConnected) return r;
   r=document.createElement('div'); r.id='uimring';
-  r.style.cssText='position:fixed;left:0;top:0;pointer-events:none;z-index:99999;box-sizing:border-box;border:2px solid #f5b73b;border-radius:6px;box-shadow:0 0 14px 2px rgba(245,183,59,.4);display:none;will-change:transform';
+  r.style.cssText='position:fixed;left:0;top:0;pointer-events:none;z-index:99999;box-sizing:border-box;border:2px solid #e6ff3d;border-radius:6px;box-shadow:0 0 14px 2px rgba(230,255,61,.4);display:none;will-change:transform';
   document.body.appendChild(r); UIM.ring=r;
   return r;
 };

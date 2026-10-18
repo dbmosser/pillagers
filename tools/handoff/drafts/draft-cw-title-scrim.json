@@ -1,0 +1,12 @@
+{
+    "title":  "TITLE: LET THE WORLD SHOW",
+    "why":  "The critic: the title backdrop was so dark it read flat. The centre scrim drops from .9 to .58.",
+    "now":  "The title backdrop is brighter.",
+    "edits":  [
+                  {
+                      "anchor":  "linear-gradient(90deg, rgba(17,19,21,.8) 0%, rgba(17,19,21,.9) 26%, rgba(17,19,21,.9) 74%, rgba(17,19,21,.8) 100%);\n    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }",
+                      "replacement":  "linear-gradient(90deg, rgba(17,19,21,.7) 0%, rgba(17,19,21,.58) 26%, rgba(17,19,21,.58) 74%, rgba(17,19,21,.7) 100%);\n    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); }   /* v28.xx (cw-title-scrim), the critic (3 of 5, P2): the backdrop was so dark it read flat. Centre column scrim .9 to .58, sides .8 to .7, blur 4 to 3px, so the live world shows (Q52). */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title glass lets the world behind it show (centre scrim at most 0.65)\u0027,\n   run:function(){\n     var t=document.getElementById(\u0027title\u0027); if(!t) return \u0027SKIP: no title here\u0027;\n     var was=t.classList.contains(\u0027on\u0027); if(!was) t.classList.add(\u0027on\u0027);\n     try{\n       var bi=getComputedStyle(t).backgroundImage, m=/linear-gradient\\(([^]*)\\)\\s*$/.exec(bi), a=[], re=/rgba\\(\\s*17,\\s*19,\\s*21,\\s*([0-9.]+)\\)/g, x;\n       if(!m) return \u0027no linear scrim on the title: \u0027+bi.slice(0,80);\n       while((x=re.exec(m[1]))) a.push(parseFloat(x[1]));\n       if(a.length\u003c4) return \u0027scrim stops not found: \u0027+a.length;\n       var mid=Math.max(a[1],a[2]);\n       return mid\u003e0.65?(\u0027the centre scrim is \u0027+mid+\u0027, over 0.65, the world behind is flat\u0027):null;\n     } finally { if(!was) t.classList.remove(\u0027on\u0027); } }},"
+}

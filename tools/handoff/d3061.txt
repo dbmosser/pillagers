@@ -1,0 +1,5 @@
+## v30.61 - THE ACCENT IS LIME YELLOW
+
+Co-op hunt while he was away. His Q46 (2026-10-18): the accent for selected things and main buttons is lime yellow, whichever shade is most visible on the dark. #e6ff3d is 15:1 on the panel and the ink on it is 15:1. Rarity gold, warn amber, danger red and the extract teal stay as they are, so the accent never reads as one of them.
+
+MEASURED. Check 30.61 passes, and fails on v30.60.

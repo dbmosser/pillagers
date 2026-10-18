@@ -1,0 +1,7 @@
+v30.61: the accent is lime yellow
+
+Main buttons, the selected tab and the focus ring are lime yellow instead of amber.
+
+Check 30.61. Fails on v30.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

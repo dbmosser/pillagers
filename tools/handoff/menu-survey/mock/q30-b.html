@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>q30 B left rail</title>
+<style>
+:root{--panel:#14171a;--raised:#1e2225;--line:#2e3337;--line-hi:#4a5257;--text:#f2efe6;--muted:#a9a79e;--lime:#e4ff2e;--ink:#0d1200;--danger:#ff5a3c}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0b0c0d}
+body{position:relative;font-family:Bahnschrift,"Segoe UI Variable Display","Segoe UI",sans-serif;font-weight:500;color:var(--text);-webkit-font-smoothing:antialiased;letter-spacing:.01em}
+.abs{position:absolute}
+.bd{position:absolute;background-repeat:no-repeat}
+.dim{position:absolute;inset:0}
+.ico{display:block;flex:none}
+.hint{position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center;align-items:center;gap:44px;font-size:24px;color:var(--muted);font-weight:500}
+.hint span.it{display:flex;align-items:center;gap:12px}
+.pad{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:2px solid #6b7176;background:rgba(20,23,26,.9);color:var(--text);font-size:21px;font-weight:700;letter-spacing:0}
+.pad.sh{border-radius:10px;width:auto;min-width:46px;padding:0 10px;height:34px;font-size:19px}
+.close{position:absolute;width:56px;height:56px;border-radius:4px;border:1px solid var(--line-hi);display:flex;align-items:center;justify-content:center;color:var(--text);background:transparent}
+.ghost{position:absolute;height:56px;padding:0 28px;border-radius:4px;border:1px solid var(--line-hi);display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;color:var(--text);background:rgba(255,255,255,.03)}
+.card{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:4px;box-shadow:0 30px 90px rgba(0,0,0,.55)}
+
+.card{left:96px;top:54px;width:1728px;height:972px;box-shadow:0 0 0 1px var(--line),0 30px 90px rgba(0,0,0,.55);border:0}
+.hdr{position:absolute;left:136px;top:82px;font-size:48px;line-height:56px;font-weight:700}
+.close{left:1744px;top:82px}
+.r{position:absolute;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--line);font-size:28px;font-weight:500}
+.r.on{background:linear-gradient(90deg,rgba(228,255,46,.20),rgba(228,255,46,.07));border-bottom-color:transparent;font-weight:600}
+.r.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--lime)}
+.step{display:flex;align-items:center;gap:6px}
+.step svg{color:var(--muted)}
+.r.on .step svg{color:var(--lime)}
+.v{min-width:116px;text-align:center;font-weight:600}
+.hint{bottom:7px}
+
+  .rail{position:absolute;left:136px;top:190px;width:320px}
+  .rail div{position:relative;height:72px;display:flex;align-items:center;padding-left:28px;font-size:32px;font-weight:600;color:var(--muted)}
+  .rail div.on{color:#fff;background:linear-gradient(90deg,rgba(228,255,46,.20),rgba(228,255,46,.07))}
+  .rail div.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--lime)}
+  .vl{position:absolute;left:488px;top:190px;width:1px;height:520px;background:var(--line)}
+  .hb{position:absolute;left:96px;top:970px;width:1728px;height:56px;background:var(--raised);border-top:1px solid var(--line);border-radius:0 0 4px 4px;display:flex;align-items:center;padding-left:40px;font-size:24px;color:var(--muted)}
+  </style></head>
+<body>
+<div class="bd" style="left:-40px;top:-40px;width:2000px;height:1160px;background-image:url('../../console/notes/shots/all4k/50-arcade-hud-live-4k.jpg');background-size:3000px 1687px;background-position:-590px -185px;filter:blur(12px)"></div><div class="dim" style="background:rgba(6,7,8,0.55)"></div><div class="card"></div><div class="hdr">Settings</div><div class="close"><svg class="ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M5 5l14 14M19 5L5 19"/></svg></div>
+  <div class="rail"><div class="">The raid</div><div class="on">Audio</div><div class="">Controls</div><div class="">Controller</div><div class="">Display</div><div class="">Accessibility</div></div><div class="vl"></div>
+  <div class="r" style="left:520px;top:190px;width:1100px;"><span>Master volume</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">Full</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="r" style="left:520px;top:262px;width:1100px;"><span>Sound effects</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">Full</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="r on" style="left:520px;top:334px;width:1100px;"><span>Music</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">Off</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="r" style="left:520px;top:406px;width:1100px;"><span>Subtitles</span><span class="step"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span class="v">On</span><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></div>
+  <div class="hb">Plays in the menus and at the hub.</div><div class="hint"><span class="it"><span class="pad sh">LB RB</span>Section</span><span class="it"><span class="pad">A</span>Change</span><span class="it"><span class="pad">B</span>Back</span></div>
+</body></html>
