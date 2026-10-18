@@ -1,0 +1,5 @@
+## v30.49 - RUN INFO SHOWS THE 3 CLOSEST CONTRACTS
+
+Co-op hunt while he was away. His answer Q1 (10-18): the Run info box shows at most the 3 contracts closest to done, all contracts are listed on the map screen. It listed every live contract, 8 rows on a full board.
+
+MEASURED. Check 30.49 passes, and fails on v30.48.

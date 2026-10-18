@@ -1,0 +1,7 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       5.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  44-title-from-character-select         staged      13.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  45-arcade-attract-board                staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  46-arcade-attract-how-to-play          staged      15.6s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0
+  56-arcade-attract-board-scored         staged      34.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  57-title-2p-coop-picked                staged       8.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

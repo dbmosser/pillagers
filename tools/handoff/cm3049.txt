@@ -1,0 +1,7 @@
+v30.49: run info shows the 3 closest contracts
+
+The Run info box in the raid shows only the 3 contracts closest to done.
+
+Check 30.49. Fails on v30.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

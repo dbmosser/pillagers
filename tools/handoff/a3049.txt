@@ -1,0 +1,1 @@
+| RUN INFO SHOWS THE 3 CLOSEST CONTRACTS | v30.49 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.49 passes, fails on v30.48 |

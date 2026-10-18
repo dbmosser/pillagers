@@ -6097,6 +6097,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.49',what:'the Run info box shows at most the 3 contracts closest to done (his Q1, 10-18)',
+   run:function(){
+     if(typeof runInfoCap!=='function') return 'no runInfoCap: the Run info box still lists every contract';
+     var r=runInfoCap([{left:5,txt:'e'},{left:1,txt:'a'},{left:3,txt:'c'},{left:2,txt:'b'},{left:4,txt:'d'},{left:6,txt:'f'}]);
+     if(r.length!==3) return 'it keeps '+r.length+' contracts, not 3';
+     if(r.map(function(x){return x.txt;}).join('')!=='abc') return 'it keeps '+r.map(function(x){return x.txt;}).join('')+', not the 3 closest (abc)';
+     if(runInfoCap([{left:2,txt:'x'}]).length!==1) return 'one contract is lost';
+     if(String(drawHUD).indexOf('runInfoCap(_live)')<0) return 'drawHUD does not use runInfoCap';
+     return null; }},
   {v:'30.48',what:'the title line is centred on the title column and quieter than the logo',
    run:function(){
      var t=document.getElementById('title'), tg=document.getElementById('titletag'), wm=t&&t.querySelector('.wordmark'), was, bad=[];

@@ -2779,7 +2779,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.48';
+var VER='30.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38649,6 +38649,14 @@ function hudDodge(sx,sy,halfW,hgt,tail){
 // called it), EXTRACTION A INBOUND 18S (as the ring prompt and the alert lane say INBOUND), EXTRACT IN PROGRESS! A 12S (his phrase of
 // 2026-10-03, as the band says it) and EXTRACTION A CLOSED (the alert lane line). Each fits in 28 characters; the sentences ran to 64
 // and, held at the screen edge, printed under the gun card.
+// v28.xx (cw-hudcontracts), HIS ANSWER Q1 (2026-10-18): "the Run info box shows at most the 3 contracts closest to done; ALL contracts are listed on the map screen."
+// Replaces his v6.79 "ALL of them, not three and a footnote". runInfoCap takes the live contract rows and returns the 3 nearest to finishing, nearest first.
+var RUNINFO_MAX=3;
+function runInfoCap(live){
+  var a=(live||[]).slice();
+  a.sort(function(x,y){ return x.left-y.left; });
+  return a.slice(0,RUNINFO_MAX);
+}
 var EDGEBOX={}, GUNCARD_LAST=null;   // v24.9x (ringbadge): the gun card, pickup rows and co-op kill feed as last drawn, screen pixels
 function zoneBadge(z){
   var L=extLetter(z); L=(L==='?')?'':' '+L;
@@ -39878,7 +39886,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
       }
       // Nearest to finishing first: "you are on five of six" is the fact that
       // decides whether the sixth is worth crossing the street for.
-      _live.sort(function(a,b){ return a.left-b.left; });
+      _live=runInfoCap(_live);   // v28.xx (cw-hudcontracts), his Q1 (2026-10-18): the 3 closest to done, not all of them (the map screen lists all)
       // v6.79, his note: ALL of them, not three and a footnote. Still sorted nearest to
       // finishing first, so the one worth crossing the street for is at the top.
       for(var _cs=0;_cs<_live.length;_cs++) _clines.push({v:_live[_cs].txt,vc:UIC.tx_1});
@@ -48082,7 +48090,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.48: The title line is centred and quieter. Check 30.48 fails on v30.47',
+  now:'v30.49: The Run info box in the raid shows only the 3 contracts closest to done. Check 30.49 fails on v30.48',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
