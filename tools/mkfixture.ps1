@@ -11974,6 +11974,7 @@ window.__REGRESS=[
   {v:'28.78',what:'the downed bar: a press with the slider in the middle halves the bleed-out for about a second and it lapses, a miss does nothing and locks the trigger, a held trigger and a standing player do nothing (his order)',
    run:function(){
      if(typeof downBarTick!=='function'||typeof downBarPos!=='function') return 'no downed bar in this build (downBarTick is missing)';
+     if(typeof DB_GAIN==='number') return 'SKIP: a hit gives half a second back since cw-downgain (his words 2026-10-18); its own check covers the bar';
      var bad=[], g, p, md=mouse.down, a, r0, rH, r, i;
      function stage(){ __resetCfg(); __pinDefaults(0); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); p=g.player; g.ents.length=0;
        p.hp=0; p.downed=true; p.downT=60; p.revived=1; p.iv=99; p.pendKiller=null; p.dbOn=0; p.dbSteady=0; p.dbLock=0; mouse.down=false; }
