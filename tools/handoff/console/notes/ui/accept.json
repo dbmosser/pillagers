@@ -130,10 +130,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The raid HUD is virtually unchanged: the contract list is reshuffled and one toast is gone, but it is still a pile of small, equally weighted, dim-on-busy-map panels with a dollar sign, a clipped label and no clear first read.",
-  "pic": "tools/handoff/console/notes/shots/b-30c-after/21-raid-hud-calm-1080.jpg",
-  "task": "b-30-ui-hud",
-  "when": "2026-10-18T09:11"
+  "verdict": "The new HUD is slightly better: the contracts list is cut from 8 lines to 3 and the ammo count is now a clear hero number, but the screen is still a pile of small, uneven, debug-looking panels that ignore the style guide's type scale, placement margins and currency rules.",
+  "findings": [
+   "P0 Whole HUD: pillagers list, Run Info, controls cheat sheet, minimap, currency block: Collapse the controls panel to a single 'F1 Controls' key hint (16px cap plus word) after the first 30s. Show the pillagers list only on Tab or as a 3-row, 40%-opacity strip. Keep only timer, health, ammo and the one objective always visible.",
+   "P0 Run Info panel (top right, y 305-465) and 'Extraction C available' chip: Use one panel with a 16px tx-2 label ('Contracts'), 16px rows and a right-aligned '0/1' counter. Never wrap; shorten to 'Haul $1,600+'. Dock the extraction chip inside the same panel, 8px below the last row, in --extract.",
+   "P1 Ammo/weapon panel (bottom right): Turn 'B / I backpack' into a 16px key cap plus 'Backpack' at the panel's bottom. Name 20px tx-1, ammo 56px at 800 weight. Remove the hatched resize corners. Give the panel 24px padding and 8px clearance from the status tag.",
+   "P1 Type scale across all panels: Snap to 56 (ammo, timer) / 20 (names, rows) / 16 (labels, hints). Minimum 16px for anything read. Titles go tx-1 at 16px +.04em, no amber. Use the same HP and stamina label size.",
+   "P1 Top-right currency block: One row, 20px: 'Credits 900 · XP 0'. Drop the stash line from the raid HUD. Replace '$' with SP or a gold icon in the pillagers list and the weapon panel. Set the margin to 96px (5% of 1920)."
+  ],
+  "pic": "tools/handoff/console/notes/shots/02-after/21-raid-hud-calm-1080.jpg",
+  "task": "02-raid-hud-redesign",
+  "when": "2026-10-18T15:47"
  },
  "22-raid-map-open": {
   "score": 2,
@@ -218,10 +225,17 @@
  "50-arcade-hud-live": {
   "score": 2,
   "pass": false,
-  "verdict": "A busy, mismatched HUD where tiny, low-contrast text sits on a noisy map, the bottom-right panel overlaps the world and its own props, and the corners disagree on type, size and panel style.",
-  "pic": "tools/handoff/console/notes/shots/all/50-arcade-hud-live-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:20"
+  "verdict": "The in-raid HUD still ignores the style guide: the currency block is gone but the same amber labels, mixed type sizes, floating unframed text and washed-out grey notices remain, and the ammo count is now the dominant element.",
+  "findings": [
+   "P1 Top-centre score cluster (Score / 0 SP / 9:46 / Extract 113m): Put the cluster in a 90% --ui-panel strip starting at y≥54px (5% margin). Make SP the single 56px f-cond 800 hero. Set the timer at 20px tx-1 and 'Extract 113m' at 16px --extract. Drop the 'Score' label or set it at 16px tx-2.",
+   "P1 Run info / Run goals panel (right, y≈245-390): Use one 20px tx-1 title with a 16px tx-2 'Run goals' label. Right-align the SP values in tx-2 at 16px. Make rows 32px pitch, add a 1px --ui-line-hi border with 24px padding, and remove the hatch. Leave 16px between the minimap and the panel.",
+   "P1 Bottom-right weapon/ammo block (Burst Carbine 24 / 144): Use a panel P of about 320x120 with a 1px --ui-line-hi border. Set the weapon name at 20px tx-1 and ammo at 56px f-cond 800, with the reserve at 20px tx-2. Remove the dead space. If the backpack hint returns, show it as a key-cap chip.",
+   "P1 Left notices (Storm · Lightning shows you from farther off, Stronghold, Golden enemy): Use the toast component: 40px high, a 4px left accent bar, 16px tx-1 text on a solid 90% --ui-panel. Keep 'Storm' and drop the explanation. Show at most 3 for 3s, then fade, rather than leaving them on screen permanently.",
+   "P2 Bottom-left vitals (Standing, Armour 60, Stamina, HP 100): Use flat 6-10px bars with a --ui-line track. Put labels at 16px outside the bars, aligned left. Keep health on the HUD scheme but remove the gradient. Use a consistent bar height and move the block in to the 5% margin."
+  ],
+  "pic": "tools/handoff/console/notes/shots/02-after/50-arcade-hud-live-1080.jpg",
+  "task": "02-raid-hud-redesign",
+  "when": "2026-10-18T15:47"
  },
  "52-arcade-run-over": {
   "score": 3,

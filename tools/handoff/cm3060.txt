@@ -1,0 +1,7 @@
+v30.60: title: clean the stack
+
+The title is cleaner: bigger logo, one line, the menu.
+
+Check 30.60. Fails on v30.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

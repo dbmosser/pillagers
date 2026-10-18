@@ -492,3 +492,5 @@
 2026-10-18 2.9461 00-fix-new-reds
 2026-10-18 0.0749 00-fix-new-reds
 2026-10-18 0.0272 critic-03-title-and-backdrop
+2026-10-18 0.0349 critic-02-raid-hud-redesign
+2026-10-18 0.0350 critic-02-raid-hud-redesign

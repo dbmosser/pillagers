@@ -1,0 +1,5 @@
+## v30.60 - TITLE: CLEAN THE STACK
+
+Co-op hunt while he was away. The critic (2 of 5): six stacked rows of small text between the logo and the menu, and three explaining sentences. Logo 96px, subtitle to a version footer, Go fullscreen and Settings top-right, key legend a bottom strip, the three sentences gone, the world dimmed less.
+
+MEASURED. Check 30.60 passes, and fails on v30.59.

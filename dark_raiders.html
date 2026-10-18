@@ -126,7 +126,7 @@
   .screen.on { display:flex; }
    /* v18.11, THE STYLING PASS, STAGE B: THE TITLE. A vignette instead of a flat wash, so the Undercroft still shows through
       (v17.83) and the column reads; a wordmark with a gold gradient and a glow; the three step cards as glass cards. */
-   #title.on { background:radial-gradient(ellipse 70% 62% at 50% 42%, rgba(17,19,21,.60) 0%, rgba(17,19,21,.84) 70%, rgba(17,19,21,.96) 100%); }
+   #title.on { background:radial-gradient(ellipse 70% 62% at 50% 42%, rgba(17,19,21,.40) 0%, rgba(17,19,21,.60) 70%, rgba(17,19,21,.82) 100%); }
    #title .wordmark{ font-family:'Titan One','Rubik',sans-serif; font-size:64px; letter-spacing:.02em; line-height:1;
      background:linear-gradient(180deg,#ffe9a8 0%,#f5b73b 55%,#e08a1a 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
      filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(245,183,59,.28)); }
@@ -1566,6 +1566,13 @@
 #root #title .titlecol > div[style*="grid"]{ margin-top:var(--sp-3) !important; gap:var(--sp-4) !important; }
 #root #title .kbrow, #root #title .padrow{ margin-top:var(--sp-3) !important; }
 #root #title .kbrow b{ font-size:var(--fs-fine) !important; }
+/* v28.xx (cw-title-clean), the critic (2 of 5, P0/P1) on the title: "six stacked rows of small text between the logo and the menu; delete the subtitle, move Go fullscreen and Settings top-right, move the key legend to a bottom strip, the logo about 96px, version in a 14px footer". Logo 64 to 96px; Go fullscreen and Settings 44px high at the top-right, 32px from the top and 5vw from the edge; the version bottom-left, 16px, tx-2; the key legend one bottom strip, 16px, 24px from the bottom; the saves note line gone. */
+#root #title .wordmark{ font-size:96px; }
+#root #title #titleres{ position:fixed; top:32px; right:5vw; margin:0 !important; display:flex; gap:12px; z-index:2; }
+#root #title #titleres button{ min-height:44px; padding:0 24px; font-size:16px; }
+#root #title #titlefoot{ position:fixed; left:5vw; bottom:24px; margin:0; font:600 var(--fs-fine)/1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); }
+#root #title .kbrow, #root #title .padrow{ position:fixed; left:0; right:0; bottom:24px; margin:0 !important; text-align:center; font-size:16px !important; }
+#root #title #slotnote{ margin:0 !important; }
 #root #title #modemenu button.moderow:focus-visible{ outline:none; background:var(--ui-raised); border-color:var(--acc); box-shadow:inset 3px 0 0 var(--acc); }
 #root #title #slotpanel #pnamesave, #root #title #slotpanel #newgame{ background:transparent; border:1px solid var(--ui-line-hi) !important; color:var(--tx-1) !important; }
 #root #title #slotpanel #pnamein{ text-transform:none; }
@@ -2307,11 +2314,11 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 <div class="screen on" id="title">
   <div class="titlecol" style="margin:auto;width:100%;text-align:center;padding:0 20px">
     <div class="wordmark">PILLAGERS</div>
-    <div style="margin-top:9px;font-size:13px;letter-spacing:.12em;color:var(--ash)">
-      A 2.5D EXTRACTION RAID  &middot;  <span id="titlever"></span></div>
+    <div id="titlefoot">
+      <span id="titlever"></span></div>
     <div id="titleres" style="margin-top:7px;font-size:13px;letter-spacing:.12em;color:var(--tx-2);
          display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
-      <span>BEST IN FULLSCREEN AT 1080p, 1440p OR 4K</span>
+      <!-- v28.xx (cw-title-clean): the best-in-fullscreen sentence is gone, the buttons stay -->
       <button id="titlefs" style="padding:5px 14px;font-size:13px;letter-spacing:.12em">GO FULLSCREEN</button>
       <!-- v28.xx (cw-menu-titleset), UI step 30 (menu map): the title had no way into Settings. A party guest who wanted the sound down, or the text bigger, had to start a game, press ESC and find Settings there. It sits beside Go fullscreen, the other screen-level setting. -->
       <button id="titleset" style="padding:5px 14px;font-size:13px;letter-spacing:.12em">SETTINGS</button></div>
@@ -2367,12 +2374,12 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
       <!-- v11.02, HIS NOTE 8: he asked why changing save leaves fullscreen. It
            reloads the game, and a browser always drops fullscreen on a reload.
            Said here, where the click is. -->
-      <div id="slotnote" style="margin-top:6px;font-size:13px;color:var(--ash);letter-spacing:.06em">Changing save reloads the game, which is why it leaves fullscreen.</div>
+      <div id="slotnote" style="margin-top:6px;font-size:13px;color:var(--ash);letter-spacing:.06em"></div>
       <div id="fsback" style="display:none;margin-top:6px;font-size:13px;color:var(--amber);letter-spacing:.06em">You were in fullscreen. The reload dropped it, as it always does. GO FULLSCREEN is above.</div>
       <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
         <input id="pnamein" maxlength="16" autocomplete="off" spellcheck="false"
           style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:13px;letter-spacing:.08em"
-          placeholder="NAME YOUR PILLAGER">
+          placeholder="Name your pillager">
         <button class="deploy ghost" id="pnamesave" style="padding:7px 16px">CHANGE NAME</button>
         <!-- vNN.xx (ui5q1a, his #50): CREATE A NEW SAVE shares the name row, so the saves block is not a web form -->
         <button class="deploy ghost" id="newgame" style="padding:7px 16px">CREATE A NEW SAVE</button>
@@ -2779,7 +2786,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.59';
+var VER='30.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48107,7 +48114,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.59: The gun card shows the rounds in the gun as a big number with the reserve small beside it. Check 30.59 fails on v30.58',
+  now:'v30.60: The title is cleaner: bigger logo, one line, the menu. Check 30.60 fails on v30.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65635,8 +65642,8 @@ loadProfile().then(function(){
         // does. This says what actually happens, asking the same question the game
         // asks before it offers the pack.
         : ((typeof welcomeFresh==='function'&&welcomeFresh())
-            ? 'First time out. Take the welcome pack, then walk to ENTER RAID.'
-            : 'First time out. Walk to ENTER RAID when you are ready.');
+            ? ''
+            : '');
     }
     subSync();
     // v7.64, his order: saves on the front door. Slot 1 is the original

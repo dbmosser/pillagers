@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.60 - TITLE: CLEAN THE STACK
+
+Co-op hunt while he was away. The critic (2 of 5): six stacked rows of small text between the logo and the menu, and three explaining sentences. Logo 96px, subtitle to a version footer, Go fullscreen and Settings top-right, key legend a bottom strip, the three sentences gone, the world dimmed less.
+
+MEASURED. Check 30.60 passes, and fails on v30.59.
 ## v30.59 - AMMO IS THE HERO NUMBER
 
 Co-op hunt while he was away. His answer Q57 (10-18): ammo needs to be prominent, ideally redesign the whole raid HUD. The rounds in the gun are now the big number (44 rendered), the reserve small beside it, amber at a quarter magazine and red when empty.
