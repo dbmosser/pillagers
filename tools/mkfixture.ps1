@@ -6097,6 +6097,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.23',what:'modal cards are a plain rectangle with a 36 wide accent tab, no chamfer (critic 49 pause card)',
+   run:function(){
+     var m, cs, bg, cp, bs;
+     m=document.createElement('div'); m.className='modal on'; m.id='__cwflat'; m.style.visibility='hidden';
+     (document.getElementById('root')||document.body).appendChild(m);
+     try{
+       cs=getComputedStyle(m,'::before'); cp=String(cs.clipPath); bs=String(cs.backgroundSize);
+       if(cp!=='none') return 'the modal card still has a chamfer: '+cp.slice(0,40);
+       if(bs.indexOf('36px 2px')!==0) return 'the accent tab is not 36 x 2: '+bs.slice(0,40);
+       bg=String(cs.backgroundImage);
+       if(/135deg/.test(bg)) return 'the corner tick gradient is still drawn';
+     }finally{ try{ m.remove(); }catch(e){} }
+     return null; }},
   {v:'30.22',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

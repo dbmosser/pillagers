@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.23 - MODAL CARDS LOSE THE CHAMFER TICK
+
+Co-op hunt while he was away. Critic 49 on the pause card: a one-off chamfered corner and a 48 wide tab, the style guide says no corner tick and a 36 x 2 tab. Every modal card and the pause card become a plain 4px rectangle, the arcade cards share the tab width, End run sits 48 below Feedback.
+
+MEASURED. Check 30.23 passes, and fails on v30.22.
 ## v30.22 - THE WHAT IS NEW CARD NAMES POLISH PASS 17
 
 Co-op hunt while he was away. The card was stamped v30.06 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

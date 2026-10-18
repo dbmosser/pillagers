@@ -1,0 +1,5 @@
+## v30.23 - MODAL CARDS LOSE THE CHAMFER TICK
+
+Co-op hunt while he was away. Critic 49 on the pause card: a one-off chamfered corner and a 48 wide tab, the style guide says no corner tick and a 36 x 2 tab. Every modal card and the pause card become a plain 4px rectangle, the arcade cards share the tab width, End run sits 48 below Feedback.
+
+MEASURED. Check 30.23 passes, and fails on v30.22.
