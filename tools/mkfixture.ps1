@@ -6101,6 +6101,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.49',what:'Settings: the key hint ends at the X edge; the pause report box wears the button type; abandon has no box',
+   run:function(){
+     var bad=[], sm, cs, pf, ab, a, pl, pr, cw, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       pf=document.getElementById('pausefb'); ab=document.getElementById('abandonbtn');
+       if(!pf||!ab) bad.push('pause parts missing');
+       else{
+         if(getComputedStyle(pf).fontWeight!=='600') bad.push('the report box is not weight 600: '+getComputedStyle(pf).fontWeight);
+         if(getComputedStyle(ab).borderTopColor.replace(/\s/g,'')!=='rgba(0,0,0,0)') bad.push('abandon still has a box: '+getComputedStyle(ab).borderTopColor);
+       }
+       openSettings('display');
+       sm=document.getElementById('settingsmodal'); cs=getComputedStyle(sm);
+       a=parseFloat(getComputedStyle(sm,'::after').width); pl=parseFloat(cs.paddingLeft); pr=parseFloat(cs.paddingRight); cw=sm.clientWidth-pl-pr;
+       if(!(Math.abs(a-cw)<3)) bad.push('the key hint is '+a+' wide, the card content is '+cw);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.48',what:'cw-mapstyle2: on the sector map card the weather line has one separator, zone names are a size under the extraction names and not bold, the contract names are all in the main text colour with the reward in the smaller type, the footer has a close hint with its key (not on the opening map), and no label sits within 8 px of the map frame',
    run:function(){
      if(typeof mapCard!=='function'||typeof mapContractRows!=='function') return 'no map card in this build (mapCard or mapContractRows is missing)';

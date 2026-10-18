@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.49 - SETTINGS AND PAUSE POLISH: HINT ALIGNED, FOCUS ROW, QUIET ABANDON
+
+Co-op hunt while he was away. Critic c-31w on Settings 72/18 and pause 25: the key hint missed the X edge by 48px, row focus was weak, the report box broke the button type, abandon shouted as loud as resume.
+
+MEASURED. Check 31.49 passes, and fails on v31.48.
 ## v31.48 - THE SECTOR MAP CARD, SECOND PASS
 
 Co-op hunt while he was away. The critic scored the sector map card 3 of 5 (up from 2) and named what was left: labels crowding each other and touching the frame, zone names as loud as the extraction names, a contracts list with uneven rows and a bold reward that outweighed the contract name, two spaces in the weather line, a finished contract dimmed, a grey perimeter wall that read as a second frame, saturated ground blocks, and no close hint for the pad. This pass keeps labels 10 px off the frame and 5 px off every mark, sets zone names a size smaller and not bold, gives the contracts an even 76 px row with the reward in the label type and the progress bar under every counted row, uses one separator in the weather line, puts a close hint with its key at the right of the footer, and calms the wall, water, hot ground and cache colours. His Q6 (4 of 5 everywhere), Q7 and Q43.

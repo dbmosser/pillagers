@@ -642,3 +642,5 @@
 2026-10-18 0.0237 critic-12-ui-party-screens
 2026-10-18 1.0391 b-30-ui-hud
 2026-10-18 1.6422 12-ui-party-screens
+2026-10-18 0.4771 b-30-ui-hud
+2026-10-18 0.0366 critic-manual

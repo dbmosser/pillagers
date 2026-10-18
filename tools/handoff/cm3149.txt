@@ -1,0 +1,7 @@
+v31.49: settings and pause polish: hint aligned, focus row, quiet abandon
+
+The Settings hint lines up under the X, the pointed row reads clearly, the report box matches the buttons and abandon is a quiet red text button.
+
+Check 31.49. Fails on v31.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

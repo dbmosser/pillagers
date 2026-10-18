@@ -663,17 +663,17 @@
  "60-mapfirst-1p": {
   "score": 3,
   "pass": false,
-  "verdict": "The map now sits in a proper dark card with a header, an x, a contracts list and a start button, so it finally matches the other menus, but the map labels still collide and the contract list is dense and uneven.",
+  "verdict": "The screen now follows the card, header, contracts panel and footer system and is far calmer than the old blue map. The map labels are still the weak spot: they float away from their icons, collide, and have no halo, and the contract rows are uneven.",
   "findings": [
-   "P1 map labels: extract b, stays open, strongbox, blast freezer locked, cache, seal 0%: Add a 2px #0b0c0d halo or pill to every label. Offset labels 8px from their icons and collision-test them. Keep 16px clear of the map frame so 'extract b' is not clipped. Merge each cache stack into one badge with a count. Anchor 'seal 0%' to its ring.",
-   "P1 zone names: packing floor, chill row, the long dock, the sump, scrap line: Set zone names to 16px f-cond 600 #aaa498 with +.04em tracking and a halo, in a clear corner of each zone. Keep the extract labels in teal 20px/700 as the only loud labels.",
-   "P1 contracts panel (right): Use a fixed 72px row. Put the name at 20px/600 #efe9dc on the left and the reward at 16px #aaa498 on the right, with a 4px bar at the bottom of every row. Show lime only on the active bar and green on done. Cap the list at 6 rows with a 'x of 8' scroll cue. Keep 24px padding.",
-   "P1 header: 'cold storage' / 'sector map' / 'dawn clear': Set the title to 32px/700 and 'sector map' to 16px #aaa498 on the same baseline. Write 'dawn · clear' at 20px. Make the x a 48×48 ghost with a #4a5257 1px border, and add a B glyph for pad.",
-   "P2 footer: 'click to start' button and 'surveyed 0%': Make the button 56px high with a 20px/700 #11150a label and a 24px key chip. Raise 'surveyed 0%' to 16px #aaa498 and place it directly under the map's bottom-left corner."
+   "P1 map labels: cache, strongbox, cache (right edge), extract b / chill row / cache (centre-right): Anchor every label 8px from its icon with a fixed side (above for pickups, right for extracts). Add a 2px #0b0c0d halo to every label. Collision-test labels and push zone names into a clear corner of their zone. Merge the two crate stacks on the right into one badge with a count.",
+   "P1 hot ground label (red on red zone): Cut it to a 'hot ground' tag in #efe9dc 16px/600 with a halo, placed above the ring. Drop 'richer, and busier', or move it to a tooltip. Keep red for the ring and the warning glyph only.",
+   "P1 contracts panel rows: Use a fixed 72px row. Put the name at 20px/600 on the left and the reward at 16px #aaa498 on the right. Draw a 4px bar on every row, empty for 'holding', and move the count onto the bar line. Show lime only on the active bar and green on done. Cap the list at 6 rows with a 'x of 8' cue. Match the panel height to the map at 160-920.",
+   "P2 zone names: packing floor, chill row, the long dock, the sump, scrap line: Set them to 16px f-cond 600 #aaa498 with +.04em tracking and a halo, in a clear zone corner. Keep the 20px/700 teal extract labels as the only loud ones.",
+   "P2 map surface and frame: Drop the wall strokes to #2e3337 so labels and icons pop. Thin the frame to a 1px #4a5257 border plus the rad. Enlarge pickup icons to 24px and extract rings to 48px."
   ],
-  "pic": "tools/handoff/console/notes/shots/cw-mapstyle-after/60-mapfirst-1p-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/cw-mapstyle-after2/60-mapfirst-1p-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T23:20"
+  "when": "2026-10-18T23:39"
  },
  "91-snip-panel-raid": {
   "score": 2,

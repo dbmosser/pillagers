@@ -1954,6 +1954,16 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #keyslist .row b::first-letter{ text-transform:none; }
 #root #keyslist .keybtn{ box-shadow:none; }
 #root #keyslist{ padding-bottom:var(--sp-4); }
+/* v31.xx (cw-pset8) critic c-31w (Settings 72 and 18 at 3: "esc close is not aligned to the X right edge (1822 against 1870)", "focus is weak: 3px edge, label stays white", "arrows stay grey"; pause 25 at 3: "report a problem uses a different type style from its siblings, muted grey on a bluish fill", "abandon is as big and loud as the primary"). Now: the key hint line ends exactly under the X (full width of the card content), the list rows read tx-2 until you point at one, the pointed row gets a 4px accent bar, a tx-1 label and accent arrows, the detail strip sits 16px under the list, the report box is condensed 600 tx-1 on the panel fill like its siblings, and abandon is a quiet red text button (no box) until it asks. */
+#root #settingsmodal::after, #root #keysmodal::after{ width:100%; }
+#root #setlist .row:not(.setjump) > div:first-child > b{ color:var(--tx-2); }
+#root #setlist .row:not(.setjump):hover > div:first-child > b, #root #setlist .row:not(.setjump):focus-within > div:first-child > b, #root #setlist .row.dshow:not(.setjump) > div:first-child > b, #root #setlist .row:not(.setjump):has(.padfocus) > div:first-child > b{ color:var(--tx-1); }
+#root #setlist .row:not(.setjump):hover, #root #setlist .row:not(.setjump):focus-within, #root #setlist .row.dshow:not(.setjump), #root #setlist .row:not(.setjump):has(.padfocus){ box-shadow:inset 4px 0 0 var(--acc); }
+#root #setlist .row:not(.setjump):hover > button::before, #root #setlist .row:not(.setjump):hover > button::after, #root #setlist .row:not(.setjump):focus-within > button::before, #root #setlist .row:not(.setjump):focus-within > button::after, #root #setlist .row.dshow:not(.setjump) > button::before, #root #setlist .row.dshow:not(.setjump) > button::after{ color:var(--acc) !important; }
+#root #setdetail{ margin-top:var(--sp-2); }
+#root #pausebox #pausefb{ font:600 var(--fs-body)/26px var(--f-cond); letter-spacing:var(--track); }
+#root #pausebox #pausefb::placeholder{ color:var(--tx-1); }
+#root #pausebox:not(.asking) #abandonbtn, #root #pausebox:not(.asking) #arcendbtn, #root #pausebox:not(.asking) #charselbtn{ border-color:transparent !important; background:transparent; font-weight:600; }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2851,7 +2861,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.48';
+var VER='31.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49465,7 +49475,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.48: The sector map is calmer: quieter zone names, labels clear of the frame, an even contracts list and a close hint. Check 31.48 fails on v31.47',
+  now:'v31.49: The Settings hint lines up under the X, the pointed row reads clearly, the report box matches the buttons and abandon is a quiet red text button. Check 31.49 fails on v31.48',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

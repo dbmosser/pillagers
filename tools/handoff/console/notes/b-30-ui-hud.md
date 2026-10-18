@@ -9,4 +9,6 @@
   * toast duplicates (codex entry shown top centre and bottom left); "contract item nearby" explaining sentence on toast. NEXT candidate: one codex toast only.
   * hotbar: dim empty slots to 40 percent, no silhouettes; prompt 'scav pistol fire use' 12px -> 16px. NEXT candidate.
   * ammo card: 'b / i backpack' 24px -> 16px tx-2. 02 owns (cw-cardhint).
+- RUN (latest): no ship. The uishots camera and critic.mjs are REFUSED for this run's command list, so no new pictures or scores were possible. Re-read the code: hotbar empty slots draw a class ghost (cw gunghost, his order v27.xx), so "no silhouettes" would reverse his order: skipped. Feed detail over 4 words is already dropped (cw-feedcalm). Stamina 0.45 alpha under 25 percent hp is deliberate (cw-lowhp2).
+- Remaining for a run that has the camera: re-shoot the 15 screens, critic each, fix P0/P1 not on 02's or cw-trcol's list.
 - Next run: do the toast dedupe and the hotbar empty-slot dim, then shoot 15 screens and critic each.

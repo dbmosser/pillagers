@@ -1,0 +1,5 @@
+## v31.49 - SETTINGS AND PAUSE POLISH: HINT ALIGNED, FOCUS ROW, QUIET ABANDON
+
+Co-op hunt while he was away. Critic c-31w on Settings 72/18 and pause 25: the key hint missed the X edge by 48px, row focus was weak, the report box broke the button type, abandon shouted as loud as resume.
+
+MEASURED. Check 31.49 passes, and fails on v31.48.
