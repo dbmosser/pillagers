@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.73 - ONE LIME TAB ON THE RAID HUD, A SHORTER DEMO GUN CARD
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the lime tick on every panel spends the accent, and the ammo card has an empty strip now the demo hides the item line and backpack hint. Style guide: the tab marks the star panel only.
+
+MEASURED. Check 30.73 passes, and fails on v30.72.
 ## v30.72 - every word on screen is lower case
 
 Co-op hunt while he was away. His order (2026-10-18): change all text shown to the player to lowercase only, he does not like random words capitalized. Every canvas line, measure, text node and tooltip already passes one text door (ncFix), so that door now lowers everything, acronyms and key names too. The few words the stylesheet writes itself (the Esc Resume and pad hint strips) are lowered by one CSS line.

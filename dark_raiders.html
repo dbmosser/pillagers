@@ -2789,7 +2789,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.72';
+var VER='30.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -38889,7 +38889,7 @@ function drawUseBar(){
     s=(PR.kind==='armor'?'SLOTTING ':'APPLYING ')+nm;
     if(typeof PR.aid==='number'){ try{ s+=' ON '+String(netSeatName(PR.aid)||'YOUR TEAMMATE').toUpperCase(); }catch(_an){ s+=' ON YOUR TEAMMATE'; } }
     s+='   '+Math.max(0,(PR.max||0)-(PR.t||0)).toFixed(1)+'s';
-    if(typeof hudPanel==='function') hudPanel(x-_ux,y-_ut,w+_ux*2,h+_uh,0.78);   // v22.xx (R40): the paddings grow with the screen
+    if(typeof hudPanel==='function') hudPanel(x-_ux,y-_ut,w+_ux*2,h+_uh,0.78,1);   // v22.xx (R40): the paddings grow with the screen
     else { ctx.fillStyle='rgba(6,9,13,.78)'; ctx.fillRect(x-_ux,y-_ut,w+_ux*2,h+_uh); }
     ctx.fillStyle='#e8f0f6'; ctx.fillText(s,W/2,y-_uc);
     ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y,w,h);
@@ -40051,7 +40051,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     if(MMAP.box) by=Math.max(by,Math.ceil((mmBottom()+Math.round(10*hudRes()))/_cz));   // v24.xx (minimap1): and under the minimap
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
-hudPanel(bx,by,bw,bh);   // v18.13: the one HUD panel
+hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     var ry=by+pad+LH(8);
     ctx.fillStyle=UIC.tx_1; ctx.fillText('RUN INFO',bx+pad,ry);   // v27.42 (info1): was CONDITIONS; v28.xx (cw-runinfotitle), the critic (2026-10-19): 'Lime is spent on a label ... Remove all lime.' The title is white
@@ -40615,7 +40615,7 @@ var by=H-34;
     // on screen, and the chip is a HUD panel like the rest.
     var _zg=(HUDZ.gear||1)*hudRes()*hudUserZ('gear'), _og=hudOff('gear'), _ptop=H+((by-LH(90))-H)*_zg+(_og.dy||0), _cyb=Math.min(by-LH(86)-_gGrow,_ptop-LH(6));
     var _cr2=Math.max(1,hudRes());
-    if(typeof hudPanel==='function') hudPanel(W-8-cw2-16*_cr2,_cyb-LH(20)*_cr2,cw2+16*_cr2,LH(20)*_cr2,0.78); else { ctx.fillRect(W-8-cw2-16*_cr2,_cyb-LH(20)*_cr2,cw2+16*_cr2,LH(20)*_cr2); }
+    if(typeof hudPanel==='function') hudPanel(W-8-cw2-16*_cr2,_cyb-LH(20)*_cr2,cw2+16*_cr2,LH(20)*_cr2,0.78,1); else { ctx.fillRect(W-8-cw2-16*_cr2,_cyb-LH(20)*_cr2,cw2+16*_cr2,LH(20)*_cr2); }
     ctx.fillStyle=ccol; ctx.fillText(clab,W-8-8*_cr2,_cyb-LH(6)*_cr2);   // v19.22: centred in its panel
     ctx.textAlign='left';
   }
@@ -40697,7 +40697,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     var _pw=ctx.measureText(_ps).width;
     // v18.41, THE STYLING PASS IN THE RAID (2026-10-04): the posture chip (STANDING, CROUCHED, SPRINTING...) is a small rounded
     // HUD panel like the boxes around it, same place and size.
-    if(typeof hudPanel==='function') hudPanel(18,by-_up-LH(18),_pw+14,LH(16),0.78);
+    if(typeof hudPanel==='function') hudPanel(18,by-_up-LH(18),_pw+14,LH(16),0.78,1);
     else { ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(20,by-_up-LH(17),_pw+10,LH(14)); }
     ctx.fillStyle=STATCOL[_ps.split(' + ')[0]]||'#a5b1bc';
     ctx.fillText(_ps,25,by-_up-LH(6));
@@ -40804,7 +40804,8 @@ if(p.armor>0){
        var _wpx=Math.min(W-252,W-16-_wtx-LH(14)), _wpw=_wpR-_wpx, _hcL=(G.hotCells&&G.hotCells.length)?G.hotCells[G.hotCells.length-1]:null;
        var _gdx=(typeof _boG==='object'&&_boG)?(_boG.dx||0):0, _lim=_hcL?(W+((_hcL.x+_hcL.w+LH(8))-_gdx-W)/_gz):-1e9;   // the belt edge, brought into this corner's scaled space
        if(_hcL&&_wpx<_lim){ _wpx=_lim; _wpw=_wpR-_wpx; }   // v18.39: never over the belt (it covered key 9)
-       if(_wpw>LH(60)) hudPanel(_wpx,by-LH(90),_wpw,LH(100),0.62); ctx.textAlign='right'; }catch(_wp){}
+       /* v28.xx (cw-hudstar): the demo hides the item line and the backpack hint (Q56), so the card is 72 high and not 100 with an empty strip; it keeps the tab, it is the star */
+       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(76):LH(90), _gh=trDemo()?LH(72):LH(100); hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62); } ctx.textAlign='right'; }catch(_wp){}
   ctx.fillText(_cornName,W-16,by-LH(46));   // v28.xx (cw-hudammo): the name rides higher (was 34) so the big ammo figure has the room
   ctx.font=FS(TYPE.title);
   if(!_heldGun){
@@ -42201,7 +42202,8 @@ function hudChev(xr,yb,open){
   else { ctx.moveTo(cx-s,cy-s*0.5); ctx.lineTo(cx,cy+s*0.5); ctx.lineTo(cx+s,cy-s*0.5); }
   ctx.stroke(); ctx.restore();
 }
-function hudPanel(x,y,w,h,a){
+// v28.xx (cw-hudstar), the critic (2026-10-19) on the raid HUD: 'the lime tick on every panel spends the accent'. The style guide gives the 2px tab to the panel that is the star (the gun card, the ammo). Every other raid panel passes plain=1 and draws no tab.
+function hudPanel(x,y,w,h,a,plain){
   var c, g;
   if(!(w>0&&h>0)) return;
   c=Math.max(0,Math.min(10,w/3,h/3)); a=(a===undefined)?0.88:a;
@@ -42212,7 +42214,7 @@ function hudPanel(x,y,w,h,a){
   ctx.fill();
   path(x+.5,y+.5,w-1,h-1,Math.max(0,c-.5));
   ctx.strokeStyle='rgba(74,82,87,.9)'; ctx.lineWidth=1; ctx.stroke();
-  if(w>c+20){ ctx.fillStyle='#e6ff3d'; ctx.fillRect(x+c+4,y,Math.min(36,w*0.25),2); }   // the amber tick of the menu plate (ui6)
+  if(w>c+20&&!plain){ ctx.fillStyle='#e6ff3d'; ctx.fillRect(x+c+4,y,Math.min(36,w*0.25),2); }   // the tab of the menu plate (ui6); v28.xx (cw-hudstar): only where plain is not set
   ctx.restore();
 }function drawRaiderBoard(){
   delete HUDBOX.raiders;
@@ -42325,7 +42327,7 @@ function hudPanel(x,y,w,h,a){
   }
   var _rShown=rows.length+(_rHid?1:0);
   var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1-LH(3));   // v21.55, from the 4K visual pass (V-B11): the board ended a full empty row under the last name; now the room under it matches the room over the heading
-  hudPanel(PADX-8,y0-LH(13),LW,boxH);   // v18.13: the one HUD panel
+  hudPanel(PADX-8,y0-LH(13),LW,boxH,undefined,1);   // v18.13: the one HUD panel
   ctx.font=FS(TYPE.micro);
   ctx.fillStyle='#ffc04a';
   ctx.fillText('CURRENT PILLAGERS  '+live,PADX,y0-LH(2));
@@ -42430,7 +42432,7 @@ function raidStatusDraw(){
   for(i=0;i<T.length;i++) tilesH+=(T[i].big?U(56):U(46))+U(6);
   var PW=Math.min(pad*2+tileW+(hasR?colW+gap:0),W-U(16)), PH=headH+Math.max(boardH,tilesH)+pad, x0=Math.round((W-PW)/2), y0=Math.round(Math.max(U(8),H*0.07)), bx=x0+pad, by=y0+headH;
   ctx.save(); ctx.textBaseline='alphabetic';
-  hudPanel(x0,y0,PW,PH,0.93);
+  hudPanel(x0,y0,PW,PH,0.93,1);
   rsText('RAID STATUS',bx,y0+U(23),'#f5b73b',fH);
   rsText((arc?'DEMO   ':(car?'CAREER   ':''))+'HOLD '+keyName(keysOf('AltLeft')),x0+PW-pad,y0+U(22),'#8a96a1',fM,'right');
   ctx.fillStyle='rgba(74,82,87,.9)'; ctx.fillRect(bx,y0+headH-U(4),PW-pad*2,Math.max(1,Math.round(k)));
@@ -42568,7 +42570,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     // frame later. Both now ride outside the zoom with the anchor.
     mx=clamp(mx,4,Math.max(4,W-MW-4));
     my=clamp(my,LH(14),Math.max(LH(14),H-MH-4));
-    hudPanel(mx-8,my-6,MW,MH+10);   // v18.13: the one HUD panel
+    hudPanel(mx-8,my-6,MW,MH+10,undefined,1);   // v18.13: the one HUD panel
     HUDBOX.legend={x:mx-8,y:my-6,w:MW,h:MH+10,tg:{x:mx-8+MW-LH(20),y:my-6,w:LH(20),h:LH(14)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1'; ctx.font=MONO;
     hudChev(mx-8+MW-4,my+LH(4),true);   // vNN.xx (ui5q2p): a drawn chevron, not [-]
@@ -42634,7 +42636,7 @@ var _hL=rows*LH(12);
   }
 var LEGW=Math.round(_lgW+LH(28));
   x=Math.max(14,Math.round((W-LEGW)/2));
-  hudPanel(x-8,top-6,LEGW,boxH+10,0.84);   // v18.13: the one HUD panel
+  hudPanel(x-8,top-6,LEGW,boxH+10,0.84,1);   // v18.13: the one HUD panel
 var cy=top+LH(6);
   for(i=0;i<LEG.length;i++){
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#ffc04a';
@@ -48297,7 +48299,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.72: Every word on screen is now lower case, everywhere. Check 30.72 fails on v30.71',
+  now:'v30.73: Only the gun card keeps its lime tab, and in the demo it is shorter. Check 30.73 fails on v30.72',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

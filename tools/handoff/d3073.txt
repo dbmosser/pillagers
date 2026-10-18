@@ -1,0 +1,5 @@
+## v30.73 - ONE LIME TAB ON THE RAID HUD, A SHORTER DEMO GUN CARD
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the lime tick on every panel spends the accent, and the ammo card has an empty strip now the demo hides the item line and backpack hint. Style guide: the tab marks the star panel only.
+
+MEASURED. Check 30.73 passes, and fails on v30.72.

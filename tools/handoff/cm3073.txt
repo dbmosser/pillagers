@@ -1,0 +1,7 @@
+v30.73: one lime tab on the raid hud, a shorter demo gun card
+
+Only the gun card keeps its lime tab, and in the demo it is shorter.
+
+Check 30.73. Fails on v30.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
