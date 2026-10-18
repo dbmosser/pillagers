@@ -2823,7 +2823,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.27';
+var VER='31.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49225,7 +49225,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.27: End run from the demo pause menu now counts half the score, on the RUN OVER card (both players) and the board, the same as dying. Check 31.27 fails on v31.26',
+  now:'v31.28: The player 2 prompt reads player 2: press any key after a key press and player 2: press a after a press on its pad, like player 1. Check 31.28 fails on v31.27',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62126,7 +62126,7 @@ function arcadeAttUndress(){
 // The arcade attract: the attract overlay with the clip when there is one, PRESS ANY BUTTON (host) or PLAYER 2: PRESS A, up
 // whenever this window has no arcade raid.
 function arcadeAttShow(){
-  var d=attEl(), v=d.querySelector('video'), ap=d.querySelector('.attpress'), w=(ARCADE.role==='p2')?'PLAYER 2: PRESS A':((arcadeBenched()?'PLAYER 1: ':'')+'PRESS ANY '+(padOn()?'BUTTON':'KEY')), pr;   // v30.xx (cw-glyphs2), HIS ORDER (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching". The host attract names the device last used; player 2 is the pad window and keeps PRESS A
+  var d=attEl(), v=d.querySelector('video'), ap=d.querySelector('.attpress'), w=(ARCADE.role==='p2')?/* v31.28 (cw-p2prompt), HIS ORDER (2026-10-18): player 2 names the device it used last, like player 1: a key press reads press any key, the pad reads its A */('PLAYER 2: PRESS '+(padOn()?padB('A'):'ANY KEY')):((arcadeBenched()?'PLAYER 1: ':'')+'PRESS ANY '+(padOn()?'BUTTON':'KEY')), pr;   // v30.xx (cw-glyphs2), HIS ORDER (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching". The host attract names the device last used; player 2 is the pad window and keeps PRESS A
   if(ap&&ap.textContent!==w) ap.textContent=w;
   if(!ATT.on||!ARCADE.att) ARCADE.att={t:0,at:Date.now(),ph:'',ov:0};   // v23.40 (arcade17): the loop starts again each time the attract comes up
   ATT.on=true; if(d.style.display!=='block') d.style.display='block';

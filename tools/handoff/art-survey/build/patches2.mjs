@@ -97,3 +97,7 @@ P['a09-D'] = { scene: 'duo', edits: [STRIPFIX, wrapDrawOp(`function(orig,args,x,
     wc.restore();
     wc.save(); wc.setTransform(1,0,0,1,0,0); wc.drawImage(RIM.ca,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h); wc.restore();
   }`)] };
+
+// ---- a10-C: two real game frames of the mate (far away, and down), shot from the unchanged game; the tag is mocked over them (build/mock-a10c.mjs)
+P['a10-far'] = { scene: 'a10far', edits: [] };
+P['a10-down'] = { scene: 'a10down', edits: [] };

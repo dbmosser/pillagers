@@ -1,0 +1,7 @@
+v31.28: player 2 prompt follows the device player 2 used last
+
+The player 2 prompt reads player 2: press any key after a key press and player 2: press a after a press on its pad, like player 1.
+
+Check 31.28. Fails on v31.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

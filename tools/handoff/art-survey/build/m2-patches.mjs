@@ -21,7 +21,7 @@ function __toyMap(v,fam){
   mx=Math.max(r,g,b); mn=Math.min(r,g,b);
   if(mx-mn>46) return v;
   l=(0.3*r+0.59*g+0.11*b)/255;
-  if(__TOYB) l=Math.min(1,l*2.15);
+  if(__TOYB) l=Math.min(1,l*2.5);
   if(l>0.75) return v;
   if(l<0.14) return __TOYINK;
   if(l<0.225) return F.deep;

@@ -1,0 +1,2 @@
+== 4k : window 3872x2263, viewport 3840x2160
+  a10down                                staged       7.2s    | {"scene":"duofar","plate":false,"zoom":6.793703703703704,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1504,"y":1097,"w":352,"h":355,"fx":1441,"fy":1237},{"id":"mate","kind":"player","x":2392,"y":1164,"w":176,"h":113,"fx":2392,"fy":1183}],"objects":null}

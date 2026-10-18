@@ -8,6 +8,16 @@
   "screen": "P1 and the mate far apart"
  },
  {
+  "name": "a10far",
+  "screen": "the mate far away",
+  "js": "window.__far={z:3.4,d:170}; return await window.__art.scene('duofar',{});"
+ },
+ {
+  "name": "a10down",
+  "screen": "the mate down",
+  "js": "window.__far={z:3.4,d:70,down:1}; return await window.__art.scene('duofar',{});"
+ },
+ {
   "name": "trio2",
   "screen": "the three builds, the guns aimed up and right so the bodies show",
   "js": "window.__t2={f1:-0.6,fm:-0.6,f2:-0.6,cy:26}; return await window.__art.scene('trio2',{});"

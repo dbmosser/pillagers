@@ -1,0 +1,5 @@
+## v31.28 - player 2 prompt follows the device player 2 used last
+
+Co-op hunt while he was away. His order of 2026-10-18 (afternoon, item 5): prompts follow the last input device, Fortnite style, key prompts after a key and pad prompts only while the pad is in use. Player 1 attract already said press any key or press any button by the last device. Player 2 attract (and the run over card, which sits on it) said player 2: press a whatever player 2 touched last. Since cw-p2keys the player 2 window has its own keys and mouse and a key or a click there asks to drop in like A, so the prompt now follows player 2 own last device: a key press reads player 2: press any key, a press on its pad reads player 2: press a (the pad own name for A).
+
+MEASURED. Check 31.28 passes, and fails on v31.27.

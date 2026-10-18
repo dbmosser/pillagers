@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.28 - player 2 prompt follows the device player 2 used last
+
+Co-op hunt while he was away. His order of 2026-10-18 (afternoon, item 5): prompts follow the last input device, Fortnite style, key prompts after a key and pad prompts only while the pad is in use. Player 1 attract already said press any key or press any button by the last device. Player 2 attract (and the run over card, which sits on it) said player 2: press a whatever player 2 touched last. Since cw-p2keys the player 2 window has its own keys and mouse and a key or a click there asks to drop in like A, so the prompt now follows player 2 own last device: a key press reads player 2: press any key, a press on its pad reads player 2: press a (the pad own name for A).
+
+MEASURED. Check 31.28 passes, and fails on v31.27.
 ## v31.27 - END RUN from the demo pause menu halves the score like a death
 
 Co-op hunt while he was away. His Q60 (2026-10-18): ending early halves the score, the same as dying. In the demo a death or the burn already counted half, but END RUN from the pause menu paid in full, so a guest could keep a high score by ending the run instead of dying. END RUN now halves both scores (one player and two), player 2 halves its own figures from the same run end word without the failure music, and the RUN OVER card says ended early -50%. An idle out is left alone for now (question 78) and an extraction still doubles.

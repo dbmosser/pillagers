@@ -11,5 +11,5 @@ export const INSETS = {
   'a06-C': { crops: [{ x: 781, y: 368 }, { x: 1137, y: 385 }] },     // the two tags in full: P1's arrow and p1, P2's arrow and p2, with the hat under each
   a07: { x: 958, y: 553, w: 560, h: 540 },                           // P1 whole, on the busy ground
   a08: { crops: [{ x: 800, y: 600 }, { x: 1185, y: 545 }] },         // P1's gun, then P2's backpack
-  a09: { x: 800, y: 650, w: 760, h: 480 },                           // P1's feet and the shadow on the floor
+  a09: { x: 820, y: 640 },                           // P1's feet and the shadow on the floor
 };

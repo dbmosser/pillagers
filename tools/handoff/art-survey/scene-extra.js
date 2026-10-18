@@ -90,7 +90,8 @@ A.scenes.trio2=async function(o){
 A.scenes.duofar=async function(o){
   var st=await A.stage(o), p=st.p, X=A.base().x, Y=A.base().y, Z=(window.__far&&window.__far.z)||2.7, D=(window.__far&&window.__far.d)||170;
   p.x=X-D; p.y=Y+4; p.face=0.1;
-  A.mate(X+D,Y-4,3.0);
+  var u=A.mate(X+D,Y-4,3.0);
+  if(window.__far&&window.__far.down){ u.dn=1; u.dt=16; }
   A.cam(X,Y-6,Z);
   return {zoom:Z,chars:[{id:'p1',kind:'player',ref:'p1'},{id:'mate',kind:'player',ref:'mate'}]};
 };

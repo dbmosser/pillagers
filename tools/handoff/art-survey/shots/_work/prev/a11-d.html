@@ -3,7 +3,7 @@
 .a11-d-cv{position:absolute;left:39px;top:11px;width:480px;height:270px;display:block;border-radius:3px;background:#587050}
 .a11-d-cap{position:absolute;left:0;right:0;bottom:0;height:48px;padding:0 20px;display:flex;align-items:center;gap:12px;border-top:1px solid #1c2024;background:#0b0c0d;font-size:17px;color:#a9a79e}
 .a11-d-cap b{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:21px;color:#e4ff2e;letter-spacing:.01em}
-</style><div style="position:relative;width:560px;height:340px"><div data-t="0.4" class="a11-d"><canvas class="a11-d-cv" width="480" height="270"></canvas><div class="a11-d-cap"><b>speed streaks</b><span>sprint leaves ghosts and streaks</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.4</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.55" class="a11-d"><canvas class="a11-d-cv" width="480" height="270"></canvas><div class="a11-d-cap"><b>speed streaks</b><span>sprint leaves ghosts and streaks</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.55</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.7" class="a11-d"><canvas class="a11-d-cv" width="480" height="270"></canvas><div class="a11-d-cap"><b>speed streaks</b><span>sprint leaves ghosts and streaks</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.7</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.85" class="a11-d"><canvas class="a11-d-cv" width="480" height="270"></canvas><div class="a11-d-cap"><b>speed streaks</b><span>sprint leaves ghosts and streaks</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.85</div></div><script>
+</style><div style="position:relative;width:560px;height:340px"><div data-t="1.52" class="a11-d"><canvas class="a11-d-cv" width="480" height="270"></canvas><div class="a11-d-cap"><b>speed streaks</b><span>sprint leaves ghosts and streaks</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.52</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.6" class="a11-d"><canvas class="a11-d-cv" width="480" height="270"></canvas><div class="a11-d-cap"><b>speed streaks</b><span>sprint leaves ghosts and streaks</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.6</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.7" class="a11-d"><canvas class="a11-d-cv" width="480" height="270"></canvas><div class="a11-d-cap"><b>speed streaks</b><span>sprint leaves ghosts and streaks</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.7</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.85" class="a11-d"><canvas class="a11-d-cv" width="480" height="270"></canvas><div class="a11-d-cap"><b>speed streaks</b><span>sprint leaves ghosts and streaks</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.85</div></div><script>
 (function(){
   var P='a11-d', GTW=615, LOOP=3;
   Array.prototype.forEach.call(document.querySelectorAll('.'+P),function(root){
@@ -57,8 +57,9 @@ function loadAll(SH,go){
 }
 
     
+var SDW=0.28, SDS=0.2;
 function pose(t){
-  var sp=t>=1.5, lt=sp?t-1.5:t, sd=sp?0.20:0.28, ph=Math.PI*lt/sd, idx=Math.round((ph%TWO)/TWO*24)%24;
+  var sp=t>=1.5, lt=sp?t-1.5:t, sd=sp?SDS:SDW, ph=Math.PI*lt/sd, idx=Math.round((ph%TWO)/TWO*24)%24;
   if(idx<0) idx+=24;
   return {sp:sp, lt:lt, sd:sd, ph:ph, idx:idx, u:((ph/Math.PI)%1+1)%1, bob:(sp?BOBS:BOBW)*Math.abs(Math.sin(ph))*U4};
 }
@@ -69,20 +70,24 @@ function label(sp){
 }
 var BOBW=1.5, BOBS=1.5;
 function ghosts(t,sh){
-  var g, q, d=[[2/60,6*U4,0.22],[4/60,12*U4,0.10]];
-  for(g=0;g<2;g++){ q=pose(t-d[g][0]); spr(sh,q.idx,CXF-d[g][1],GY-q.bob,{a:d[g][2]}); }
+  var g, q, d=[[2/60,7*U4,0.58],[4/60,14*U4,0.32]];
+  for(g=1;g>=0;g--){ q=pose(t-d[g][0]); spr(sh,q.idx,CXF-d[g][1],GY-q.bob,{a:d[g][2]}); }
 }
-function streaks(bob){
-  var i, y, g, ys=[10,13,16];
-  for(i=0;i<3;i++){ y=GY-bob-ys[i]*U4; g=c.createLinearGradient(CXF-76,0,CXF-76-8*U4,0); g.addColorStop(0,'rgba(255,255,255,.25)'); g.addColorStop(1,'rgba(255,255,255,0)');
-    c.strokeStyle=g; c.lineWidth=2.5; c.beginPath(); c.moveTo(CXF-76,y); c.lineTo(CXF-76-8*U4,y); c.stroke(); }
+function streaks(t,bob){
+  var i, y, g, ys=[9,13,17], ln=[130,170,108], x0=CXF-34, L, wob;
+  for(i=0;i<3;i++){
+    wob=0.88+0.12*Math.sin(t*46+i*2.1); L=ln[i]*wob; y=GY-bob-ys[i]*U4;
+    g=c.createLinearGradient(x0,0,x0-L,0); g.addColorStop(0,'rgba(255,255,255,.95)'); g.addColorStop(0.45,'rgba(255,255,255,.6)'); g.addColorStop(1,'rgba(255,255,255,0)');
+    c.save(); c.strokeStyle=g; c.lineWidth=4; c.lineCap='round'; c.beginPath(); c.moveTo(x0,y); c.lineTo(x0-L,y); c.stroke(); c.restore();
+  }
 }
     function draw(t){
       
       var p=pose(t), off=scroll(t), sh=p.sp?SH.sprint:SH.walk, o={}, fx=CXF;
       ground(off);
       shadow(CXF);
-      if(p.sp){ ghosts(t,sh); streaks(p.bob); }
+      if(p.sp){ ghosts(t,sh); streaks(t,p.bob); }
+      
       
       spr(sh,p.idx,fx,GY-p.bob,o);
       

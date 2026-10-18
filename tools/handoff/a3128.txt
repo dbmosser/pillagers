@@ -1,0 +1,1 @@
+| player 2 prompt follows the device player 2 used last | v31.28 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.28 passes, fails on v31.27 |

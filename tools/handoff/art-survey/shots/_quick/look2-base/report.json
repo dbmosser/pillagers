@@ -1,3 +1,0 @@
-{"generated":"2026-10-18T18:17:36","url":"http://localhost:8808/handoff/art-survey/game/base.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":15,"screens":[
-{"name":"look2","screen":"look around ruin 2","1080":{"staged":true,"note":"{\"scene\":\"look\",\"plate\":false,\"zoom\":2.2,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":960,\"y\":600,\"w\":74,\"h\":63,\"fx\":960,\"fy\":672}],\"objects\":null}","viewport":"1920x1080","shot":"look2-1080.jpg","lint":""}}
-]}

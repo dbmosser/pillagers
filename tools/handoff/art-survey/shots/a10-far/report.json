@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T18:31:42","url":"http://localhost:8808/handoff/art-survey/game/a10-far.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\art-survey\\recipes-x.json","seconds":16,"screens":[
+{"name":"a10far","screen":"the mate far away","4k":{"staged":true,"note":"{\"scene\":\"duofar\",\"plate\":false,\"zoom\":6.793703703703704,\"w\":1920,\"h\":1080,\"chars\":[{\"id\":\"p1\",\"kind\":\"player\",\"x\":825,\"y\":1098,\"w\":352,\"h\":354,\"fx\":762,\"fy\":1237},{\"id\":\"mate\",\"kind\":\"player\",\"x\":2992,\"y\":1048,\"w\":383,\"h\":345,\"fx\":3072,\"fy\":1183}],\"objects\":null}","viewport":"3840x2160","shot":"a10far-4k.jpg","lint":""}}
+]}

@@ -3,7 +3,7 @@
 .a11-c-cv{position:absolute;left:39px;top:11px;width:480px;height:270px;display:block;border-radius:3px;background:#587050}
 .a11-c-cap{position:absolute;left:0;right:0;bottom:0;height:48px;padding:0 20px;display:flex;align-items:center;gap:12px;border-top:1px solid #1c2024;background:#0b0c0d;font-size:17px;color:#a9a79e}
 .a11-c-cap b{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:21px;color:#e4ff2e;letter-spacing:.01em}
-</style><div style="position:relative;width:560px;height:340px"><div data-t="0.1" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>small steps, a sway, dust on a sprint</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.1</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.2" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>small steps, a sway, dust on a sprint</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.2</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.52" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>small steps, a sway, dust on a sprint</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.52</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.6" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>small steps, a sway, dust on a sprint</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.6</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.65" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>small steps, a sway, dust on a sprint</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.65</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.75" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>small steps, a sway, dust on a sprint</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.75</div></div><script>
+</style><div style="position:relative;width:560px;height:340px"><div data-t="0.05" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>short quick steps, a hard plant, dust</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.05</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.12" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>short quick steps, a hard plant, dust</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.12</div></div><div style="position:relative;width:560px;height:340px"><div data-t="0.2" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>short quick steps, a hard plant, dust</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=0.2</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.55" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>short quick steps, a hard plant, dust</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.55</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.6" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>short quick steps, a hard plant, dust</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.6</div></div><div style="position:relative;width:560px;height:340px"><div data-t="1.66" class="a11-c"><canvas class="a11-c-cv" width="480" height="270"></canvas><div class="a11-c-cap"><b>heavy and grounded</b><span>short quick steps, a hard plant, dust</span></div></div><div style="position:absolute;right:6px;top:4px;color:#e4ff2e;font:600 14px sans-serif;z-index:5">t=1.66</div></div><script>
 (function(){
   var P='a11-c', GTW=615, LOOP=3;
   Array.prototype.forEach.call(document.querySelectorAll('.'+P),function(root){
@@ -57,8 +57,9 @@ function loadAll(SH,go){
 }
 
     
+var SDW=0.2, SDS=0.14;
 function pose(t){
-  var sp=t>=1.5, lt=sp?t-1.5:t, sd=sp?0.20:0.28, ph=Math.PI*lt/sd, idx=Math.round((ph%TWO)/TWO*24)%24;
+  var sp=t>=1.5, lt=sp?t-1.5:t, sd=sp?SDS:SDW, ph=Math.PI*lt/sd, idx=Math.round((ph%TWO)/TWO*24)%24;
   if(idx<0) idx+=24;
   return {sp:sp, lt:lt, sd:sd, ph:ph, idx:idx, u:((ph/Math.PI)%1+1)%1, bob:(sp?BOBS:BOBW)*Math.abs(Math.sin(ph))*U4};
 }
@@ -68,21 +69,28 @@ function label(sp){
   c.fillStyle='rgba(11,12,13,.62)'; c.fillRect(10,10,w,24); c.fillStyle=sp?'#e4ff2e':'#f2efe6'; c.textBaseline='middle'; c.fillText(s,19,22.5); c.restore();
 }
 var BOBW=0.8, BOBS=0.8;
+function shadowS(x,k){ var s=SH.shadow; c.save(); c.translate(Math.round(x),GY); c.scale(k,k); c.drawImage(s.img,Math.round(-s.ox),Math.round(-s.oy)); c.restore(); }
 function dust(t){
-  var k, tb, tau, kk, xb, x, y;
-  for(k=0;k<8;k++){ tb=1.5+k*0.20; tau=t-tb; if(tau<0||tau>=0.26) continue; kk=tau/0.26;
-    x=CXF-24-(scroll(t)-scroll(tb)); y=GY-3-10*kk;
-    c.save(); c.globalAlpha=0.35*(1-kk); c.fillStyle='#8a8478'; c.beginPath(); c.arc(x,y,(2+3*kk)*U4,0,TWO); c.fill(); c.restore(); }
+  var k, tb, tau, kk, x, y, sp, dur, side;
+  for(k=0;k<20;k++){
+    if(k<8){ tb=k*SDW; sp=0; if(tb>=1.5) continue; } else { tb=1.5+(k-8)*SDS; sp=1; }
+    if(tb>t) continue; tau=t-tb; dur=sp?0.28:0.22; if(tau>=dur) continue; kk=tau/dur; side=(k%2)?5:-4;
+    x=CXF-22+side-(scroll(t)-scroll(tb)); y=GY-3-(sp?11:6)*kk;
+    c.save(); c.globalAlpha=(sp?0.6:0.42)*(1-kk); c.fillStyle='#8a8478'; c.beginPath(); c.arc(x,y,((sp?2:1.5)+(sp?3.4:2.2)*kk)*U4,0,TWO); c.fill();
+    c.globalAlpha=(sp?0.3:0.2)*(1-kk); c.fillStyle='#b8b2a0'; c.beginPath(); c.arc(x+3,y-3,((sp?1.2:0.9)+(sp?2.2:1.4)*kk)*U4,0,TWO); c.fill(); c.restore(); }
 }
     function draw(t){
       
       var p=pose(t), off=scroll(t), sh=p.sp?SH.sprint:SH.walk, o={}, fx=CXF;
       ground(off);
-      shadow(CXF);
+      
+      shadowS(CXF,1+(p.sp?0.14:0.09)*(1-eo(p.u*p.sd/0.10)));
       
       fx+=0.8*U4*Math.sin(p.ph);
+      var tau=p.u*p.sd, hit=1-eo(tau/(p.sp?0.12:0.10)), sqz=(p.sp?0.065:0.05)*hit;
+      o.sy=1-sqz; o.sx=1+sqz*0.4;
       spr(sh,p.idx,fx,GY-p.bob,o);
-      if(p.sp) dust(t);
+      dust(t);
       groundFront(off);
       label(p.sp);
     }
