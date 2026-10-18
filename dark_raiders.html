@@ -1458,6 +1458,23 @@ body #attract .arcpage th{ font-size:calc(var(--fs-label) * var(--attz,1)); font
 body #attract .arcpage td, body #attract .arcpage th{ padding:calc(var(--sp-1) * var(--attz,1)) calc(var(--sp-3) * var(--attz,1)); }
 body #attract .arcpage .apk{ color:var(--tx-2); width:24%; }
 body #attract .arcpage td, body #attract .arcpage th{ text-align:left; padding-left:0; }
+/* v28.xx (cw-party-over), his order 2026-10-18 (UI step 3, party screens 52 and 55): the run over card on the shared look. The look book scored it plain:
+   "the title is plain, a huge void, ext abbreviation, no panel". Now Panel P like the board page: --ui-panel at 90%, 1px line, 24 and 32px padding, the 3px accent tab,
+   centred on the screen, left aligned. Run over 32px, the score 56px in the accent, the player rows 20px in tx-2, best moments 16px labels over 20px figures.
+   Every size is a guide token times --attz. Restyle only: the words, the count-up and the initials keys are untouched. */
+body #attract .arcover{ left:50%; right:auto; top:50%; transform:translate(-50%,-50%); width:max-content; min-width:calc(var(--menu-w) * var(--attz,1)); max-width:92%; box-sizing:border-box; padding:calc(var(--sp-3) * var(--attz,1)) calc(var(--sp-4) * var(--attz,1)); background:color-mix(in srgb, var(--ui-panel) 90%, transparent); border:1px solid var(--ui-line-hi); border-radius:var(--rad); font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); text-shadow:none; text-align:left; }
+body #attract .arcover::before{ content:''; position:absolute; left:calc(var(--sp-4) * var(--attz,1)); top:-1px; width:calc(var(--sp-5) * var(--attz,1)); height:3px; background:var(--acc); }
+body #attract .arcover .aoh{ font-size:calc(var(--fs-title) * var(--attz,1)); line-height:1.1; font-weight:700; color:var(--tx-1); }
+body #attract .arcover .aoh + .aoh{ font-size:calc(var(--fs-body) * var(--attz,1)); line-height:1.4; color:var(--acc); margin-top:calc(var(--sp-1) * var(--attz,1)); }
+body #attract .arcover .aos{ font-size:calc(var(--fs-hero) * var(--attz,1)); line-height:1.1; font-weight:800; color:var(--acc); margin:calc(var(--sp-1) * var(--attz,1)) 0 calc(var(--sp-2) * var(--attz,1)); }
+body #attract .arcover .aor{ font-size:calc(var(--fs-body) * var(--attz,1)); color:var(--tx-2); margin:0; opacity:1; line-height:1.5; }
+body #attract .arcover .aobm{ justify-content:flex-start !important; gap:calc(var(--sp-4) * var(--attz,1)) !important; margin:calc(var(--sp-3) * var(--attz,1)) 0 0 !important; }
+body #attract .arcover .aobmt{ text-align:left !important; }
+body #attract .arcover .aobmt > div:first-child{ font-size:calc(var(--fs-label) * var(--attz,1)) !important; color:var(--tx-2) !important; opacity:1 !important; letter-spacing:var(--track) !important; }
+body #attract .arcover .aobmt > div:last-child{ font-size:calc(var(--fs-body) * var(--attz,1)) !important; line-height:1.4; color:var(--acc) !important; }
+body #attract .arcover .aoi{ font-size:calc(var(--fs-label) * var(--attz,1)); color:var(--tx-2); margin-top:calc(var(--sp-3) * var(--attz,1)); }
+body #attract .arcover .aol{ font-size:calc(var(--fs-hero) * var(--attz,1)); line-height:1.1; letter-spacing:.3em; margin:calc(var(--sp-1) * var(--attz,1)) 0; }
+body #attract .arcover .aoq{ font-size:calc(var(--fs-label) * var(--attz,1)); color:var(--tx-2); opacity:1; }
 body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(--f-cond); letter-spacing:var(--track); color:var(--acc); }
 /* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
    The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
@@ -2402,7 +2419,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.46';
+var VER='29.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47415,7 +47432,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.46: The Heavy fuel can and shin guards now show chipped paint and a colour stripe. Check 29.46 fails on v29.45',
+  now:'v29.47: The run over card is a clean panel with a big score. Check 29.47 fails on v29.46',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v29.47: the run over card is a panel p card on the shared look
+
+The run over card is a clean panel with a big score.
+
+Check 29.47. Fails on v29.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

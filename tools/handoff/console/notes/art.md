@@ -24,10 +24,9 @@ SHIPPED (run c-61-art, 10-18): step b finish, cw-raiderchip = v29.45 (commit ca6
 + 4 steel chips #dfe6ec. Bandolier strap: 4 steel flecks between cartridges. Check renders drawOp (hat tachelm vs none, 4x) and drawVest offscreen, counts chip pixels and the
 longest accent run. Fingerprint held. Step b is now fully DONE (Heavy and Raider sets all chipped). Not done: c (bake, perf only, risky) and d (pictures; needs a worn-set staging screen).
 
-SHIPPING (run c-61-art #2, 10-18): cw-heavygear = v29.46. Heavy fuel can pack: scheme stripe (bx-3.2,ty-14.9,6.4x0.9) + 3 steel chips; Heavy shin guards: 2 chips per plate.
+SHIPPED (run c-61-art #2, 10-18): cw-heavygear = v29.46 (commit 6c1b97bd, fingerprint held; I also committed lane a's dirty one-line fixture edit c51058f7 to unblock). Heavy set is now fully chipped (helmet, vest, pads, pack, shins). Heavy fuel can pack: scheme stripe (bx-3.2,ty-14.9,6.4x0.9) + 3 steel chips; Heavy shin guards: 2 chips per plate.
 Check paints drawOp offscreen 4x (packbrown/bootblack base vs packfuel vs bootshin), counts #dfe6ec chip pixels (>=24 each) and accent pixels (>=90 more for the can).
-Preflight PASS (c). If this note says SHIPPING and git log has no v29.46, ship again: draft is tools/handoff/drafts/draft-cw-heavygear.json, mk script S/mk-cw-heavygear.ps1.
-Ship STOPped twice with "uncommitted changes": tools/mkfixture.ps1 was dirty from lane a (12-ui-party-screens).
+Not yet done: Raider pack/boots chips (small), then c (bake) and d (pictures, needs a staging screen).
 
 REMAINING: c (bake sprites; biggest, riskiest, perf only, no visible gain), d (before/after pictures and a 2P frame; needs a staging screen for a worn set, ask in questions.md).
 

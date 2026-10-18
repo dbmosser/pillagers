@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.47 - The run over card is a Panel P card on the shared look
+
+Co-op hunt while he was away. The look book scored the run over card plain: a bare title, a huge void, no panel. Now the shared Panel P like the board page: 90% panel, 1px line, 24 and 32px padding, the 3px accent tab, centred, left aligned. Run over 32px, score 56px in the accent, rows 20px in the soft text, best moments 16px labels over 20px figures. Restyle only: words, count-up and initials untouched.
+
+MEASURED. Check 29.47 passes, and fails on v29.46.
 ## v29.46 - THE HEAVY FUEL CAN AND SHIN GUARDS ARE CHIPPED
 
 Co-op hunt while he was away. Art build step b, the last Heavy set pieces (his pick: Refined Chibi with Gear-heavy raider). The Fuel Can Pack gets a scheme colour panel stripe and three bare steel paint chips; the Shin Guards get two steel chips on each plate. Everything stays inside the old outline, so no anchor moves.
